@@ -32,7 +32,7 @@
     "@opentelemetry/resource-detector-aws": "1.2.5",
     "@opentelemetry/sdk-node": "0.34.0",
     "@opentelemetry/sdk-trace-node": "1.8.0",
-    "@pocket-tools/apollo-utils": "3.4.0",
+    "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "7.58.1",
     "@sentry/tracing": "7.58.1",
