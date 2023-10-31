@@ -1,0 +1,2156 @@
+{
+  "recommendation_api_candidate_sets": [
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "f340f4ad-ce0a-543a-a87f-ca8321a3c978"
+          },
+          "version": {
+            "N": "1"
+          },
+          "flow": {
+            "S": "CollectionsFlow"
+          },
+          "created_at": {
+            "N": "1615335211"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "item_id": {
+                    "N": "527111584"
+                  },
+                  "publisher": {
+                    "S": "youtube.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "2128830897"
+                  },
+                  "publisher": {
+                    "S": "newyorker.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3115291557"
+                  },
+                  "publisher": {
+                    "S": "aeon.co"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "2939364760"
+                  },
+                  "publisher": {
+                    "S": "ted.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "1085990651"
+                  },
+                  "publisher": {
+                    "S": "theconversation.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "440515234"
+                  },
+                  "publisher": {
+                    "S": "psychologytoday.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "950477974"
+                  },
+                  "publisher": {
+                    "S": "youtube.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "2588011487"
+                  },
+                  "publisher": {
+                    "S": "thebrainscientist.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "188279195"
+                  },
+                  "publisher": {
+                    "S": "friendsfoodfamily.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "2207530508"
+                  },
+                  "publisher": {
+                    "S": "nytimes.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "1641238235"
+                  },
+                  "publisher": {
+                    "S": "popsci.com"
+                  }
+                }
+              }
+            ]
+          },
+          "run": {
+            "S": "sfn-ea1ef59d-6338-b9c0-ecc9-a2e153fccea6_2c204ea8-e8bb-05a6-5838-ce55e6ad7a36"
+          },
+          "expires_at": {
+            "N": "1617754390"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "a6696de0-2695-4ab8-b389-6dd82e28ff98"
+          },
+          "version": {
+            "N": "1"
+          },
+          "flow": {
+            "S": "AlgorithmicCandidatesFlow"
+          },
+          "created_at": {
+            "N": "1615417966"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3268903453"
+                  },
+                  "publisher": {
+                    "S": "theconversation.com"
+                  },
+                  "feed_id": {
+                    "N": "1"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3254128851"
+                  },
+                  "publisher": {
+                    "S": "theatlantic.com"
+                  },
+                  "feed_id": {
+                    "N": "1"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3238063666"
+                  },
+                  "publisher": {
+                    "S": "theatlantic.com"
+                  },
+                  "feed_id": {
+                    "N": "1"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3231438719"
+                  },
+                  "publisher": {
+                    "S": "medium.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3264545122"
+                  },
+                  "publisher": {
+                    "S": "bbc.com"
+                  },
+                  "feed_id": {
+                    "N": "1"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3241951860"
+                  },
+                  "publisher": {
+                    "S": "cnbc.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3226023169"
+                  },
+                  "publisher": {
+                    "S": "medium.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3227808566"
+                  },
+                  "publisher": {
+                    "S": "bbc.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3260955498"
+                  },
+                  "publisher": {
+                    "S": "aeon.co"
+                  },
+                  "feed_id": {
+                    "N": "1"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3228663824"
+                  },
+                  "publisher": {
+                    "S": "markmanson.net"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3232545454"
+                  },
+                  "publisher": {
+                    "S": "inc.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3177272960"
+                  },
+                  "publisher": {
+                    "S": "ted.com"
+                  },
+                  "feed_id": {
+                    "N": "1"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3253247748"
+                  },
+                  "publisher": {
+                    "S": "huffpost.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3210272790"
+                  },
+                  "publisher": {
+                    "S": "huffpost.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3212913716"
+                  },
+                  "publisher": {
+                    "S": "entrepreneur.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3271842817"
+                  },
+                  "publisher": {
+                    "S": "inc.com"
+                  },
+                  "feed_id": {
+                    "N": "1"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3270402654"
+                  },
+                  "publisher": {
+                    "S": "theatlantic.com"
+                  },
+                  "feed_id": {
+                    "N": "1"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3218769388"
+                  },
+                  "publisher": {
+                    "S": "inc.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3239722168"
+                  },
+                  "publisher": {
+                    "S": "nytimes.com"
+                  },
+                  "feed_id": {
+                    "N": "1"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3234412185"
+                  },
+                  "publisher": {
+                    "S": "thecut.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3236222095"
+                  },
+                  "publisher": {
+                    "S": "theladders.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3246812680"
+                  },
+                  "publisher": {
+                    "S": "ted.com"
+                  },
+                  "feed_id": {
+                    "N": "1"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3224008133"
+                  },
+                  "publisher": {
+                    "S": "thecut.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3251163975"
+                  },
+                  "publisher": {
+                    "S": "medium.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3224591025"
+                  },
+                  "publisher": {
+                    "S": "nytimes.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3247198793"
+                  },
+                  "publisher": {
+                    "S": "thecut.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3229168702"
+                  },
+                  "publisher": {
+                    "S": "lithub.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3211216646"
+                  },
+                  "publisher": {
+                    "S": "lifehack.org"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3273730580"
+                  },
+                  "publisher": {
+                    "S": "brainpickings.org"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3200656530"
+                  },
+                  "publisher": {
+                    "S": "forbes.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3215524033"
+                  },
+                  "publisher": {
+                    "S": "medium.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3217132175"
+                  },
+                  "publisher": {
+                    "S": "nytimes.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3248775132"
+                  },
+                  "publisher": {
+                    "S": "medium.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3273906931"
+                  },
+                  "publisher": {
+                    "S": "entrepreneur.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3228550618"
+                  },
+                  "publisher": {
+                    "S": "chronicle.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3253277514"
+                  },
+                  "publisher": {
+                    "S": "thecut.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3210728883"
+                  },
+                  "publisher": {
+                    "S": "psychologytoday.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3245317994"
+                  },
+                  "publisher": {
+                    "S": "theatlantic.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3241054191"
+                  },
+                  "publisher": {
+                    "S": "theatlantic.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3262831573"
+                  },
+                  "publisher": {
+                    "S": "medium.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3253985174"
+                  },
+                  "publisher": {
+                    "S": "medium.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3227561853"
+                  },
+                  "publisher": {
+                    "S": "thecut.com"
+                  },
+                  "feed_id": {
+                    "N": "1"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3249731107"
+                  },
+                  "publisher": {
+                    "S": "hbr.org"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3262930172"
+                  },
+                  "publisher": {
+                    "S": "thecut.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3220654520"
+                  },
+                  "publisher": {
+                    "S": "fastcompany.com"
+                  },
+                  "feed_id": {
+                    "NULL": true
+                  }
+                }
+              }
+            ]
+          },
+          "run": {
+            "S": "sfn-3fc5c893-25b3-6ae2-42df-055eda498600_d6e52a89-7ab3-eb2e-8fe1-b3c36f974db8"
+          },
+          "expires_at": {
+            "N": "1936909266"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "2868239335"
+                  },
+                  "not_syndicated": {
+                    "BOOL": false
+                  },
+                  "publisher": {
+                    "S": "getpocket.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "2826966565"
+                  },
+                  "not_syndicated": {
+                    "BOOL": false
+                  },
+                  "publisher": {
+                    "S": "getpocket.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3323662104"
+                  },
+                  "not_syndicated": {
+                    "BOOL": false
+                  },
+                  "publisher": {
+                    "S": "getpocket.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3331740613"
+                  },
+                  "not_syndicated": {
+                    "BOOL": true
+                  },
+                  "publisher": {
+                    "S": "outsideonline.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3242376659"
+                  },
+                  "not_syndicated": {
+                    "BOOL": false
+                  },
+                  "publisher": {
+                    "S": "getpocket.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "2840735204"
+                  },
+                  "not_syndicated": {
+                    "BOOL": false
+                  },
+                  "publisher": {
+                    "S": "getpocket.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "2762667661"
+                  },
+                  "not_syndicated": {
+                    "BOOL": false
+                  },
+                  "publisher": {
+                    "S": "getpocket.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "2696910975"
+                  },
+                  "not_syndicated": {
+                    "BOOL": false
+                  },
+                  "publisher": {
+                    "S": "getpocket.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "2707965210"
+                  },
+                  "not_syndicated": {
+                    "BOOL": false
+                  },
+                  "publisher": {
+                    "S": "getpocket.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "2960012279"
+                  },
+                  "not_syndicated": {
+                    "BOOL": false
+                  },
+                  "publisher": {
+                    "S": "getpocket.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3255547942"
+                  },
+                  "not_syndicated": {
+                    "BOOL": false
+                  },
+                  "publisher": {
+                    "S": "getpocket.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3330359351"
+                  },
+                  "not_syndicated": {
+                    "BOOL": true
+                  },
+                  "publisher": {
+                    "S": "shondaland.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3330697527"
+                  },
+                  "not_syndicated": {
+                    "BOOL": true
+                  },
+                  "publisher": {
+                    "S": "theatlantic.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "2776760177"
+                  },
+                  "not_syndicated": {
+                    "BOOL": false
+                  },
+                  "publisher": {
+                    "S": "getpocket.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3082903783"
+                  },
+                  "not_syndicated": {
+                    "BOOL": false
+                  },
+                  "publisher": {
+                    "S": "getpocket.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3082868520"
+                  },
+                  "not_syndicated": {
+                    "BOOL": false
+                  },
+                  "publisher": {
+                    "S": "getpocket.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3239410405"
+                  },
+                  "not_syndicated": {
+                    "BOOL": false
+                  },
+                  "publisher": {
+                    "S": "getpocket.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "2655642692"
+                  },
+                  "not_syndicated": {
+                    "BOOL": false
+                  },
+                  "publisher": {
+                    "S": "getpocket.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "2776949605"
+                  },
+                  "not_syndicated": {
+                    "BOOL": false
+                  },
+                  "publisher": {
+                    "S": "getpocket.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "2685661247"
+                  },
+                  "not_syndicated": {
+                    "BOOL": false
+                  },
+                  "publisher": {
+                    "S": "getpocket.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3319573849"
+                  },
+                  "not_syndicated": {
+                    "BOOL": false
+                  },
+                  "publisher": {
+                    "S": "getpocket.com"
+                  }
+                }
+              }
+            ]
+          },
+          "created_at": {
+            "N": "1621375933"
+          },
+          "expires_at": {
+            "N": "1936909266"
+          },
+          "flow": {
+            "S": "CuratedCandidatesFlow"
+          },
+          "id": {
+            "S": "5857f00b-634f-441d-9fe9-e892a5743f48"
+          },
+          "run": {
+            "S": "sfn-58e1539f-742b-945f-fbef-1217c63c5010_b27424d8-a3af-948c-9f48-2be1212e3c9a"
+          },
+          "version": {
+            "N": "1"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "bd1f50d5-5776-5c41-81aa-7fdbd17608df"
+          },
+          "version": {
+            "N": "1"
+          },
+          "flow": {
+            "S": "CollectionsFlow"
+          },
+          "created_at": {
+            "N": "1615422009"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "item_id": {
+                    "N": "2729245683"
+                  },
+                  "publisher": {
+                    "S": "nytimes.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3171600991"
+                  },
+                  "publisher": {
+                    "S": "stitcher.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "2787568852"
+                  },
+                  "publisher": {
+                    "S": "penguinrandomhouse.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3140930558"
+                  },
+                  "publisher": {
+                    "S": "open.spotify.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "1734268492"
+                  },
+                  "publisher": {
+                    "S": "netflix.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "1583057724"
+                  },
+                  "publisher": {
+                    "S": "netflix.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "2578049313"
+                  },
+                  "publisher": {
+                    "S": "vulture.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "3170629629"
+                  },
+                  "publisher": {
+                    "S": "stitcher.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "555360854"
+                  },
+                  "publisher": {
+                    "S": "amazon.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "2415092151"
+                  },
+                  "publisher": {
+                    "S": "christyharrison.com"
+                  }
+                }
+              }
+            ]
+          },
+          "run": {
+            "S": "sfn-17a3c61d-37c5-7fc5-7264-c49a5d132af3_b1c6584d-1214-6d5e-bae7-dccdb0ea46cf"
+          },
+          "expires_at": {
+            "N": "1617841205"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "35018233-48cd-4ec4-bcfd-7b1b1ccf30de"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3570242203"
+                  },
+                  "publisher": {
+                    "S": "getpocket.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3883305270"
+                  },
+                  "publisher": {
+                    "S": "scientificamerican.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3826531099"
+                  },
+                  "publisher": {
+                    "S": "getpocket.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3883136246"
+                  },
+                  "publisher": {
+                    "S": "theguardian.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3881872977"
+                  },
+                  "publisher": {
+                    "S": "nytimes.com"
+                  }
+                }
+              }
+            ]
+          },
+          "created_at": {
+            "N": "1686521361"
+          },
+          "expires_at": {
+            "N": "1936909266"
+          },
+          "flow": {
+            "S": "recommendation_api/legacy_candidate_sets/curated_feeds"
+          },
+          "run": {
+            "S": "687999b8-71ff-4d9a-b26e-c0cf9d378a56"
+          },
+          "type": {
+            "S": "recommendation"
+          },
+          "version": {
+            "N": "3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "493a5556-9800-449f-8f8c-c27bb6c8c810"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3883368380"
+                  },
+                  "publisher": {
+                    "S": "politico.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3879193669"
+                  },
+                  "publisher": {
+                    "S": "saveur.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3876134775"
+                  },
+                  "publisher": {
+                    "S": "newyorker.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3883315171"
+                  },
+                  "publisher": {
+                    "S": "theatlantic.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3827065549"
+                  },
+                  "publisher": {
+                    "S": "getpocket.com"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3570242203"
+                  },
+                  "publisher": {
+                    "S": "getpocket.com"
+                  }
+                }
+              }
+            ]
+          },
+          "created_at": {
+            "N": "1686524971"
+          },
+          "expires_at": {
+            "N": "1936909266"
+          },
+          "flow": {
+            "S": "recommendation_api/legacy_candidate_sets/curated_feeds"
+          },
+          "run": {
+            "S": "0b702435-5511-4620-b54c-02bdf7404dc6"
+          },
+          "type": {
+            "S": "recommendation"
+          },
+          "version": {
+            "N": "3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "c7a0201d-0e36-4b3e-b09a-70dd239f057b"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3885997350"
+                  },
+                  "publisher": {
+                    "S": "vice.com"
+                  }
+                }
+              }
+            ]
+          },
+          "created_at": {
+            "N": "1686524971"
+          },
+          "expires_at": {
+            "N": "1936909266"
+          },
+          "flow": {
+            "S": "recommendation_api/legacy_candidate_sets/topics"
+          },
+          "run": {
+            "S": "44855b06-dfd5-488d-919e-3d60e0d8b90c"
+          },
+          "type": {
+            "S": "recommendation"
+          },
+          "version": {
+            "N": "3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "c7a0201d-0e36-4b3e-b09a-70dd239f057b"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3885997350"
+                  },
+                  "publisher": {
+                    "S": "vice.com"
+                  }
+                }
+              }
+            ]
+          },
+          "created_at": {
+            "N": "1686524971"
+          },
+          "expires_at": {
+            "N": "1936909266"
+          },
+          "flow": {
+            "S": "recommendation_api/legacy_candidate_sets/topics"
+          },
+          "run": {
+            "S": "44855b06-dfd5-488d-919e-3d60e0d8b90c"
+          },
+          "type": {
+            "S": "recommendation"
+          },
+          "version": {
+            "N": "3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "496ae933-d84c-4546-8730-145f0fccf36d"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "feed_id": {
+                    "NULL": true
+                  },
+                  "item_id": {
+                    "N": "3870332551"
+                  },
+                  "publisher": {
+                    "S": "forbes.com"
+                  }
+                }
+              }
+            ]
+          },
+          "created_at": {
+            "N": "1686524971"
+          },
+          "expires_at": {
+            "N": "1936909266"
+          },
+          "flow": {
+            "S": "AlgorithmicCandidatesFlow"
+          },
+          "run": {
+            "S": "sfn-3ed401de-a91a-66d4-20a9-043d4f400290_90dacaa0-9d4b-a744-13d4-1dcf526e0624"
+          },
+          "type": {
+            "S": "recommendation"
+          },
+          "version": {
+            "N": "3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "c29fbf48-0093-49d2-ae55-4e01a3cf800e"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3880396946"
+                  },
+                  "publisher": {
+                    "S": "wired.com"
+                  }
+                }
+              }
+            ]
+          },
+          "created_at": {
+            "N": "1686524971"
+          },
+          "expires_at": {
+            "N": "1936909266"
+          },
+          "flow": {
+            "S": "recommendation_api/legacy_candidate_sets/topics"
+          },
+          "run": {
+            "S": "44855b06-dfd5-488d-919e-3d60e0d8b90c"
+          },
+          "type": {
+            "S": "recommendation"
+          },
+          "version": {
+            "N": "3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "b85a946e-a093-4f14-8d7d-412b34f1206b"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3885912701"
+                  },
+                  "publisher": {
+                    "S": "vice.com"
+                  }
+                }
+              }
+            ]
+          },
+          "created_at": {
+            "N": "1686524971"
+          },
+          "expires_at": {
+            "N": "1936909266"
+          },
+          "flow": {
+            "S": "recommendation_api/legacy_candidate_sets/topics"
+          },
+          "run": {
+            "S": "44855b06-dfd5-488d-919e-3d60e0d8b90c"
+          },
+          "type": {
+            "S": "recommendation"
+          },
+          "version": {
+            "N": "3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "ad9b3930-9f16-43dc-ae5c-eb14766c1ec9"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3884450820"
+                  },
+                  "publisher": {
+                    "S": "gq-magazine.co.uk"
+                  }
+                }
+              }
+            ]
+          },
+          "created_at": {
+            "N": "1686524971"
+          },
+          "expires_at": {
+            "N": "1936909266"
+          },
+          "flow": {
+            "S": "recommendation_api/legacy_candidate_sets/topics"
+          },
+          "run": {
+            "S": "44855b06-dfd5-488d-919e-3d60e0d8b90c"
+          },
+          "type": {
+            "S": "recommendation"
+          },
+          "version": {
+            "N": "3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "f0cc2cf4-f6db-48b4-bd50-8fd118e5fb92"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "feed_id": {
+                    "NULL": true
+                  },
+                  "item_id": {
+                    "N": "3866559830"
+                  },
+                  "publisher": {
+                    "S": "eater.com"
+                  }
+                }
+              }
+            ]
+          },
+          "created_at": {
+            "N": "1686524971"
+          },
+          "expires_at": {
+            "N": "1936909266"
+          },
+          "flow": {
+            "S": "AlgorithmicCandidatesFlow"
+          },
+          "run": {
+            "S": "sfn-3ed401de-a91a-66d4-20a9-043d4f400290_90dacaa0-9d4b-a744-13d4-1dcf526e0624"
+          },
+          "type": {
+            "S": "recommendation"
+          },
+          "version": {
+            "N": "3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "5aa1e0d8-3f56-4bed-9708-f4eaa9b5bb49"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3883596696"
+                  },
+                  "publisher": {
+                    "S": "espn.com"
+                  }
+                }
+              }
+            ]
+          },
+          "created_at": {
+            "N": "1686524971"
+          },
+          "expires_at": {
+            "N": "1936909266"
+          },
+          "flow": {
+            "S": "AlgorithmicCandidatesFlow"
+          },
+          "run": {
+            "S": "sfn-3ed401de-a91a-66d4-20a9-043d4f400290_90dacaa0-9d4b-a744-13d4-1dcf526e0624"
+          },
+          "type": {
+            "S": "recommendation"
+          },
+          "version": {
+            "N": "3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "5681d1c4-7e50-4e35-a54b-643a3bd14769"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3885554423"
+                  },
+                  "publisher": {
+                    "S": "apnews.com"
+                  }
+                }
+              }
+            ]
+          },
+          "created_at": {
+            "N": "1686524971"
+          },
+          "expires_at": {
+            "N": "1936909266"
+          },
+          "flow": {
+            "S": "recommendation_api/legacy_candidate_sets/topics"
+          },
+          "run": {
+            "S": "44855b06-dfd5-488d-919e-3d60e0d8b90c"
+          },
+          "type": {
+            "S": "recommendation"
+          },
+          "version": {
+            "N": "3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "fb1e0d23-28e0-448d-82a8-a7cb0a6c1ad1"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3886345797"
+                  },
+                  "publisher": {
+                    "S": "washingtonpost.com"
+                  }
+                }
+              }
+            ]
+          },
+          "created_at": {
+            "N": "1686524971"
+          },
+          "expires_at": {
+            "N": "1936909266"
+          },
+          "flow": {
+            "S": "recommendation_api/legacy_candidate_sets/topics"
+          },
+          "run": {
+            "S": "44855b06-dfd5-488d-919e-3d60e0d8b90c"
+          },
+          "type": {
+            "S": "recommendation"
+          },
+          "version": {
+            "N": "3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "5abdc94e-76d5-4f59-8e8d-22c8ee084a2d"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3862569349"
+                  },
+                  "publisher": {
+                    "S": "scroll.in"
+                  }
+                }
+              }
+            ]
+          },
+          "created_at": {
+            "N": "1686524971"
+          },
+          "expires_at": {
+            "N": "1936909266"
+          },
+          "flow": {
+            "S": "recommendation_api/legacy_candidate_sets/topics"
+          },
+          "run": {
+            "S": "44855b06-dfd5-488d-919e-3d60e0d8b90c"
+          },
+          "type": {
+            "S": "recommendation"
+          },
+          "version": {
+            "N": "3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "d893eb54-f3ce-43df-a0c9-76cd8fd53d4b"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3885820834"
+                  },
+                  "publisher": {
+                    "S": "theconversation.com"
+                  }
+                }
+              }
+            ]
+          },
+          "created_at": {
+            "N": "1686524971"
+          },
+          "expires_at": {
+            "N": "1936909266"
+          },
+          "flow": {
+            "S": "recommendation_api/legacy_candidate_sets/topics"
+          },
+          "run": {
+            "S": "0b702435-5511-4620-b54c-02bdf7404dc6"
+          },
+          "type": {
+            "S": "recommendation"
+          },
+          "version": {
+            "N": "3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "70e59f76-d488-48a2-b99d-076f667bb9e4"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "feed_id": {
+                    "NULL": true
+                  },
+                  "item_id": {
+                    "N": "3884599523"
+                  },
+                  "publisher": {
+                    "S": "wired.com"
+                  }
+                }
+              }
+            ]
+          },
+          "created_at": {
+            "N": "1686524971"
+          },
+          "expires_at": {
+            "N": "1936909266"
+          },
+          "flow": {
+            "S": "AlgorithmicCandidatesFlow"
+          },
+          "run": {
+            "S": "sfn-3ed401de-a91a-66d4-20a9-043d4f400290_90dacaa0-9d4b-a744-13d4-1dcf526e0624"
+          },
+          "type": {
+            "S": "recommendation"
+          },
+          "version": {
+            "N": "3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "81ee1a0f-19a2-4a26-8223-75baffab5af0"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3885933869"
+                  },
+                  "publisher": {
+                    "S": "newyorker.com"
+                  }
+                }
+              }
+            ]
+          },
+          "created_at": {
+            "N": "1686524971"
+          },
+          "expires_at": {
+            "N": "1936909266"
+          },
+          "flow": {
+            "S": "recommendation_api/legacy_candidate_sets/topics"
+          },
+          "run": {
+            "S": "44855b06-dfd5-488d-919e-3d60e0d8b90c"
+          },
+          "type": {
+            "S": "recommendation"
+          },
+          "version": {
+            "N": "3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "46ec119b-2705-4631-8cc2-69092b95b26a"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "feed_id": {
+                    "NULL": true
+                  },
+                  "item_id": {
+                    "N": "3877074923"
+                  },
+                  "publisher": {
+                    "S": "techcrunch.com"
+                  }
+                }
+              }
+            ]
+          },
+          "created_at": {
+            "N": "1686524971"
+          },
+          "expires_at": {
+            "N": "1936909266"
+          },
+          "flow": {
+            "S": "AlgorithmicCandidatesFlow"
+          },
+          "run": {
+            "S": "sfn-3ed401de-a91a-66d4-20a9-043d4f400290_90dacaa0-9d4b-a744-13d4-1dcf526e0624"
+          },
+          "type": {
+            "S": "recommendation"
+          },
+          "version": {
+            "N": "3"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "e10b7582-73e8-40b2-bba9-84e27b8de046"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "feed_id": {
+                    "N": "1"
+                  },
+                  "item_id": {
+                    "N": "3886047149"
+                  },
+                  "publisher": {
+                    "S": "bbc.com"
+                  }
+                }
+              }
+            ]
+          },
+          "created_at": {
+            "N": "1686524971"
+          },
+          "expires_at": {
+            "N": "1936909266"
+          },
+          "flow": {
+            "S": "recommendation_api/legacy_candidate_sets/topics"
+          },
+          "run": {
+            "S": "44855b06-dfd5-488d-919e-3d60e0d8b90c"
+          },
+          "type": {
+            "S": "recommendation"
+          },
+          "version": {
+            "N": "3"
+          }
+        }
+      }
+    }
+  ]
+}

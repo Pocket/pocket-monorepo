@@ -1,0 +1,66 @@
+{
+  "TableName": "SYNAPI-local-HistoricSlugs",
+  "BillingMode": "PAY_PER_REQUEST",
+  "KeySchema": [
+    {
+      "AttributeName": "id",
+      "KeyType": "HASH"
+    }
+  ],
+  "AttributeDefinitions": [
+    {
+      "AttributeName": "id",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "legacyId",
+      "AttributeType": "N"
+    },
+    {
+      "AttributeName": "articleId",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "slug",
+      "AttributeType": "S"
+    }
+  ],
+  "GlobalSecondaryIndexes": [
+    {
+      "IndexName": "byLegacyId",
+      "KeySchema": [
+        {
+          "AttributeName": "legacyId",
+          "KeyType": "HASH"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      }
+    },
+    {
+      "IndexName": "bySlug",
+      "KeySchema": [
+        {
+          "AttributeName": "slug",
+          "KeyType": "HASH"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      }
+    },
+    {
+      "IndexName": "byArticleId",
+      "KeySchema": [
+        {
+          "AttributeName": "articleId",
+          "KeyType": "HASH"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      }
+    }
+  ]
+}

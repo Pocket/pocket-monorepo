@@ -1,39 +1,123 @@
-version: '3.1'
+version: '3'
 services:
+  ## Start Common Processes Config
+  # Note this is not the collector we use in Prod, but works for local testing
+  otlpcollector:
+    image: otel/opentelemetry-collector-contrib
+    command:
+      [
+        '--config',
+        '/etc/otelcol-contrib/config.yaml',
+        '--set=service.telemetry.logs.level=error',
+      ]
+    # If we want to set a custom config we would do it by mounting the file below.
+    # volumes:
+    #   - ./otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
+    ports:
+      - 1888:1888 # pprof extension
+      - 8888:8888 # Prometheus metrics exposed by the collector
+      - 8889:8889 # Prometheus exporter metrics
+      - 13133:13133 # health_check extension
+      - 4317:4317 # OTLP gRPC receiver
+      - 4318:4318 # OTLP http receiver
+      - 55679:55679 # zpages extension
+
+  memcached:
+    image: memcached:latest
+    ports:
+      - 11212:11211
+      - 11211:11211
+    healthcheck:
+      # Exiting as healthy for now, memcached does not have a built in way we can healthcheck
+      test: ['CMD', 'bash', '-c', 'exit 0']
+      interval: 5s
+      timeout: 10s
+      start_period: 10s
+      retries: 15
+
+  redis:
+    image: redis:7
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 10s
+      start_period: 10s
+      retries: 15
+    ports:
+      - '6379:6379'
+
   mysql:
     image: mysql:5.7
-    platform: linux/amd64
-    env_file:
-      - ./.docker/local.env
-    ports:
-      - '3310:3306'
+    platform: linux/amd64 #5.7 only supports amd64
+    working_dir: /image
     volumes:
-      - .docker/mysql/schema:/docker-entrypoint-initdb.d:delegated
+      - ./.docker/shared-57-dbs/schema:/docker-entrypoint-initdb.d:delegated
+      - ./.docker/shared-57-dbs/conf:/etc/mysql/conf.d:delegated
+    healthcheck:
+      # We use a command here because a mysqladmin ping will give a false positive before mysql is accepting connections
+      # https://chrisguitarguy.com/2023/03/06/waiting-for-mysql-to-be-ready-in-docker-compose/
+      test: ['CMD', 'mysql', '-u', 'root', '-e', 'USE finished_startup;']
+      interval: 5s
+      timeout: 20s
+      start_period: 60s
+      retries: 30
+    ports:
+      - '3306:3306'
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
       - TZ=UTC
 
-  otlpcollector:
-    image: amazon/aws-otel-collector
-    command: --config=/etc/ecs/ecs-default-config.yaml --set=service.telemetry.logs.level=error
-    env_file:
-      - .docker/local.env
+  postgres:
+    image: postgres:latest
     ports:
-      - '4137:4137'
-      - '4138:4138'
-
-  app:
-    image: node:18
-    working_dir: /app
-    ports:
-      - '4006:4006'
-    volumes:
-      - ./:/app
-    env_file:
-      - .docker/local.env
+      - '5432:5432'
     environment:
-      - NODE_ENV=local
-    entrypoint: ./.docker/scripts/local-start.sh
-    depends_on:
-      - mysql
-      - otlpcollector
+      POSTGRES_PASSWORD: password
+      PGUSER: pocket
+      POSTGRES_USER: pocket
+      POSTGRES_DB: pocket
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready', '-d', 'db_prod']
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+
+  localstack:
+    image: localstack/localstack:1.2
+    ports:
+      - '4567-4584:4567-4584'
+    volumes:
+      - ./.docker/aws-resources:/docker-entrypoint-initaws.d
+    environment:
+      LOCALSTACK_API_KEY: ${LOCALSTACK_API_KEY}
+      DEBUG: 1
+      SERVICES: s3,kinesis,sqs,xray,dynamodb,sts,events,firehose
+      DATA_DIR: /tmp/localstack/data
+      DOCKER_HOST: unix:///var/run/docker.sock
+      ORT_WEB_UI: 8080
+      EXTRA_CORS_ALLOWED_HEADERS: Content-Disposition, Content-Type, x-amz-acl
+      EXTRA_CORS_EXPOSE_HEADERS: ETag
+      HOSTNAME_EXTERNAL: localstack
+      LOCALSTACK_HOST: localstack
+      LS_LOG: warn
+    healthcheck:
+      test:
+        - CMD
+        - bash
+        - -c
+        - curl --write-out '%{http_code}' --silent --output /dev/null http://localhost:4566/_localstack/health
+      interval: 5s
+      timeout: 10s
+      start_period: 10s
+
+  snowplow:
+    image: pocket/snowplow-micro:dev
+    healthcheck:
+      test: ['CMD', 'bash', '-c', 'curl -sf localhost:9090/micro/all']
+      interval: 5s
+      timeout: 10s
+      start_period: 10s
+      retries: 30
+    ports:
+      - '9090:9090'

@@ -1,0 +1,38 @@
+{
+  "TableName": "ANNOT-local-highlight-notes",
+  "BillingMode": "PAY_PER_REQUEST",
+  "KeySchema": [
+    {
+      "AttributeName": "highlightId",
+      "KeyType": "HASH"
+    }
+  ],
+  "AttributeDefinitions": [
+    {
+      "AttributeName": "highlightId",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "userId",
+      "AttributeType": "S"
+    }
+  ],
+  "GlobalSecondaryIndexes": [
+    {
+      "IndexName": "userId",
+      "KeySchema": [
+        {
+          "AttributeName": "userId",
+          "KeyType": "HASH"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "KEYS_ONLY"
+      },
+      "ProvisionedThroughput": {
+        "ReadCapacityUnits": 5,
+        "WriteCapacityUnits": 5
+      }
+    }
+  ]
+}

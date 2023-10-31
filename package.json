@@ -1,8 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
+    "build": "dotenv -- turbo run build",
+    "dev": "dotenv -- turbo run dev",
     "lint": "turbo run lint",
     "format": "turbo run format",
     "clean": "turbo run clean && rm -rf node_modules"
@@ -11,7 +11,8 @@
     "eslint": "^8.48.0",
     "prettier": "^3.0.3",
     "tsconfig": "workspace:*",
-    "turbo": "latest"
+    "turbo": "latest",
+    "dotenv-cli": "latest"
   },
   "packageManager": "pnpm@8.6.10",
   "name": "pocket-monorepo"

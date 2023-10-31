@@ -1,0 +1,8 @@
+[mysqld]
+# This line is required to disable strict mode. This is required because
+# php ActiveRecord appends time zone to the end of the date times which is
+# invalid in MySql with strict.
+# Default:
+# sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
+# Ours:
+sql_mode=NO_ENGINE_SUBSTITUTION

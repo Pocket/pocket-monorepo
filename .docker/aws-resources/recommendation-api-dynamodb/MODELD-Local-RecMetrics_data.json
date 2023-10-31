@@ -1,0 +1,61 @@
+{
+  "MODELD-Local-RecMetrics": [
+    {
+      "PutRequest": {
+        "Item": {
+          "date_key": {
+            "S": "2021-05-23"
+          },
+          "dbt_unloaded_at": {
+            "S": "2021-05-24 17:28:08.000 Z"
+          },
+          "dydb_ingested_at": {
+            "S": "2021-05-24 17:28:16"
+          },
+          "recommendations_pk": {
+            "S": "1294742773/2e3ddc90-8def-46d7-b85f-da7525c66fb1"
+          },
+          "resolved_id": {
+            "N": "1294742773"
+          },
+          "slate_id": {
+            "S": "2e3ddc90-8def-46d7-b85f-da7525c66fb1"
+          },
+          "trailing_14_day_impressions": {
+            "N": "107"
+          },
+          "trailing_14_day_opens": {
+            "N": "7"
+          },
+          "trailing_1_day_impressions": {
+            "N": "3"
+          },
+          "trailing_1_day_opens": {
+            "N": "0"
+          },
+          "trailing_21_day_impressions": {
+            "N": "207"
+          },
+          "trailing_21_day_opens": {
+            "N": "6"
+          },
+          "trailing_28_day_impressions": {
+            "N": "307"
+          },
+          "trailing_28_day_opens": {
+            "N": "8"
+          },
+          "trailing_7_day_impressions": {
+            "N": "17"
+          },
+          "trailing_7_day_opens": {
+            "N": "5"
+          },
+          "version": {
+            "N": "1"
+          }
+        }
+      }
+    }
+  ]
+}

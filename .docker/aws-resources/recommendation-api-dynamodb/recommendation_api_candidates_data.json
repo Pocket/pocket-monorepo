@@ -1,0 +1,108 @@
+{
+  "recommendation_api_candidates": [
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "a187ffb4-5c6f-4079-bad9-92442e97bdd1"
+          },
+          "topic_id": {
+            "S": "1bf756c0-632f-49e8-9cce-324f38f4cc71"
+          },
+          "type": {
+            "S": "curated"
+          },
+          "topic_id-type": {
+            "S": "1bf756c0-632f-49e8-9cce-324f38f4cc71|curated"
+          },
+          "created_at": {
+            "S": "2020-03-05T00:13:52.093Z"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "item_id": {
+                    "N": "5"
+                  },
+                  "feed_id": {
+                    "N": "2"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "7"
+                  },
+                  "feed_id": {
+                    "N": "7"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "9"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "id": {
+            "S": "a187ffb4-5c6f-4079-bad9-92125e97bdd1"
+          },
+          "topic_id": {
+            "S": "1bf756c0-632f-49e8-9cce-324f38f4cc71"
+          },
+          "topic_id-type": {
+            "S": "1bf756c0-632f-49e8-9cce-324f38f4cc71|curated"
+          },
+          "type": {
+            "S": "curated"
+          },
+          "created_at": {
+            "S": "2020-07-05T00:16:54.093Z"
+          },
+          "candidates": {
+            "L": [
+              {
+                "M": {
+                  "item_id": {
+                    "N": "123511234"
+                  },
+                  "feed_id": {
+                    "N": "123"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "654263"
+                  },
+                  "feed_id": {
+                    "N": "2"
+                  }
+                }
+              },
+              {
+                "M": {
+                  "item_id": {
+                    "N": "856346"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
