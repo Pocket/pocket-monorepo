@@ -1,0 +1,39 @@
+version: '3.1'
+services:
+  mysql:
+    image: mysql:5.7
+    platform: linux/amd64
+    env_file:
+      - ./.docker/local.env
+    ports:
+      - '3310:3306'
+    volumes:
+      - .docker/mysql/schema:/docker-entrypoint-initdb.d:delegated
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - TZ=UTC
+
+  otlpcollector:
+    image: amazon/aws-otel-collector
+    command: --config=/etc/ecs/ecs-default-config.yaml --set=service.telemetry.logs.level=error
+    env_file:
+      - .docker/local.env
+    ports:
+      - '4137:4137'
+      - '4138:4138'
+
+  app:
+    image: node:18
+    working_dir: /app
+    ports:
+      - '4006:4006'
+    volumes:
+      - ./:/app
+    env_file:
+      - .docker/local.env
+    environment:
+      - NODE_ENV=local
+    entrypoint: ./.docker/scripts/local-start.sh
+    depends_on:
+      - mysql
+      - otlpcollector
