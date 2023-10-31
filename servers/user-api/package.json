@@ -3,7 +3,6 @@
   "name": "user-api",
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "clean": "rm -rf node_modules && rm -rf dist",
     "watch": "tsc -w & nodemon",
     "start": "node dist/main.js",
     "dev": "npm run build && NODE_ENV=development npm run watch",

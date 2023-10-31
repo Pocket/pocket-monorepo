@@ -7,7 +7,7 @@
   "types": "dist/index.d.ts",
   "module": "dist/index.mjs",
   "scripts": {
-    "build": "tsup src/* --format cjs,esm --dts",
+    "build": "tsup src/index.ts --format cjs,esm --dts",
     "dev": "pnpm run build -- --watch",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\"",
