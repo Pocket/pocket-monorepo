@@ -1,3 +1,0 @@
-[submodule "servers/user-api"]
-	path = servers/user-api
-	url = git@github.com:Pocket/user-api.git

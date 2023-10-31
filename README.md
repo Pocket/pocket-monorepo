@@ -8,7 +8,7 @@ This Turborepo includes the following packages/servers:
 
 ### Servers and Packages
 
-- `servers`: a all our microservices, currently added as git submodules pointed to a monorepo branch
+- `servers`: a all our microservices, a point in time copy of our main repos right now.
 - `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `tsconfig`: `tsconfig.json`s used throughout the monorepo
 
@@ -21,10 +21,6 @@ This Turborepo has some additional tools already setup for you:
 - [TypeScript](https://www.typescriptlang.org/) for static type checking
 - [ESLint](https://eslint.org/) for code linting
 - [Prettier](https://prettier.io) for code formatting
-
-### First time setup
-
-:warning: Until we fully commit to a monorepo for all TS based systems, we are pulling in all of the relevant code via git submodules. Beacuse of this we need to run `git submodule update --init --recursive` to init all the submodules.
 
 ### Build
 
