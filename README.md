@@ -1,24 +1,14 @@
-# Turborepo starter
+# Pocket Monorepo
 
-This is an official starter Turborepo.
-
-## Using this example
-
-Run the following command:
-
-```sh
-npx create-turbo@latest
-```
+This repo contains all the Pocket Typescript systems built as a monorepo but deployed as microservices.
 
 ## What's inside?
 
-This Turborepo includes the following packages/apps:
+This Turborepo includes the following packages/servers:
 
-### Apps and Packages
+### Servers and Packages
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
+- `servers`: a all our microservices, currently added as git submodules pointed to a monorepo branch
 - `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `tsconfig`: `tsconfig.json`s used throughout the monorepo
 
@@ -32,12 +22,16 @@ This Turborepo has some additional tools already setup for you:
 - [ESLint](https://eslint.org/) for code linting
 - [Prettier](https://prettier.io) for code formatting
 
+### First time setup
+
+:warning: Until we fully commit to a monorepo for all TS based systems, we are pulling in all of the relevant code via git submodules. Beacuse of this we need to run `git submodule update --init --recursive` to init all the submodules.
+
 ### Build
 
 To build all apps and packages, run the following command:
 
-```
-cd my-turborepo
+```bash
+cd pocket-monorepo
 pnpm build
 ```
 
@@ -45,29 +39,13 @@ pnpm build
 
 To develop all apps and packages, run the following command:
 
-```
-cd my-turborepo
+```bash
+cd pocket-monorepo
+docker compose up --wait
 pnpm dev
 ```
 
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
+This will bring up the docker shared services (MySQL, Memcached, Redis) and then run all the apps in a dev mode.
 
 ## Useful Links
 
