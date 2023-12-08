@@ -11,5 +11,3 @@ ENV GIT_SHA=${GIT_SHA}
 EXPOSE ${PORT}
 
 CMD ["npm", "start"]
-
-# TODO: https://github.com/moby/moby/issues/735
