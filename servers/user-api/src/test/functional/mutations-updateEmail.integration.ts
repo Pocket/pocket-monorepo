@@ -9,7 +9,6 @@ import { startServer } from '../../apollo';
 import request from 'supertest';
 import { print } from 'graphql';
 import * as utils from '../../utils/email';
-import config from '../../config';
 
 describe('updateUserEmailByFxaId Mutation test', () => {
   const db = readClient();
@@ -25,11 +24,11 @@ describe('updateUserEmailByFxaId Mutation test', () => {
     server.stop();
   });
   beforeAll(async () => {
-    ({ app, server, url } = await startServer(config.app.port));
+    ({ app, server, url } = await startServer(0));
   });
 
   describe('updateEmailByFxAId', () => {
-    const userId = '1';
+    const userId = 1;
     const fxaId = 'abc123';
     const seedEmail = 'abc@123.com';
     const email = 'def@456.com';

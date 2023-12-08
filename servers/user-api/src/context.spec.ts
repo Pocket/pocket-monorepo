@@ -95,7 +95,7 @@ describe('tests for context factory initialization', () => {
  * @returns A Knex instance with mocked update and insert methods
  */
 function getDb(): Knex {
-  const db: Knex = knex({ client: 'mysql' });
+  const db: Knex = knex({ client: 'mysql2' });
   jest.spyOn(db, 'update').mockImplementation(() => {
     return this;
   });

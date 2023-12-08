@@ -2,18 +2,19 @@ import { NotFoundError } from '@pocket-tools/apollo-utils';
 import { IContext } from '../context';
 import { readClient } from '../database/client';
 import { UserDataService } from './userDataService';
+import { UserFirefoxAccountSeed } from '../test/functional/seeds';
 
 describe('userDataService', () => {
   const db = readClient();
   describe('getPocketIdByFxaId', () => {
     beforeAll(async () => {
       await db('user_firefox_account').truncate();
-      await db('user_firefox_account').insert([
-        {
+      await db('user_firefox_account').insert(
+        UserFirefoxAccountSeed({
           user_id: 777,
           firefox_uid: '1234',
-        },
-      ]);
+        }),
+      );
     });
     afterAll(async () => {
       await db('user_firefox_account').truncate();

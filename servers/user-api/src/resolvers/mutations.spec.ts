@@ -14,7 +14,7 @@ describe('Mutations', () => {
     });
     it('should throw error for updateEmailByFxaId if ID != userid in headers', async () => {
       const forbiddenError = new ForbiddenError(
-        `FxA user id mismatch in deletion`,
+        `FxA user id mismatch in update email`,
       );
       await expect(
         updateUserEmailByFxaId('', { id: '999', email: 'abc@def' }, context),

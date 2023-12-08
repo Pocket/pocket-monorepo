@@ -1,21 +1,34 @@
 import { Knex } from 'knex';
+import {
+  UserSeed,
+  UsersMetaSeed,
+  UserFirefoxAccountSeed,
+  UserProfileSeed,
+} from './seeds';
 
 /**
  * Helper function to seed data for testing update email mutations
  */
 export async function seedEmailMutation(
-  userId: string,
+  userId: number,
   fxaId: string,
   email: string,
   db: Knex,
 ): Promise<void> {
   const inputData = {
-    users: { user_id: userId, email: email },
+    users: UserSeed({ user_id: userId, email: email }),
     newsletter_subscribers: { user_id: userId, email: email },
     users_tokens: { user_id: userId, status: 1, token: email, service_id: 3 },
-    users_meta: { user_id: userId, property: 38, value: 'someValue' },
-    user_firefox_account: { user_id: userId, firefox_uid: fxaId },
-    user_profile: { user_id: userId, username: 'chicory' },
+    users_meta: UsersMetaSeed({
+      user_id: userId,
+      property: 38,
+      value: 'someValue',
+    }),
+    user_firefox_account: UserFirefoxAccountSeed({
+      user_id: userId,
+      firefox_uid: fxaId,
+    }),
+    user_profile: UserProfileSeed({ user_id: userId, username: 'chicory' }),
   };
   await Promise.all(
     Object.entries(inputData).map(([tableName, input]) =>

@@ -2,10 +2,10 @@ import { readClient } from '../../database/client';
 import { ExpireUserWebSessionReason } from '../../types';
 import { gql } from 'graphql-tag';
 import { expect } from 'chai';
-import config from '../../config';
 import { startServer } from '../../apollo';
 import request from 'supertest';
 import { print } from 'graphql';
+import { UserFirefoxAccountSeed } from './seeds';
 
 jest.mock('../../aws/pinpointController');
 
@@ -27,13 +27,6 @@ describe('Expire user web session tokens mutation', () => {
     premium: false,
   };
 
-  // Tables that need special seeding
-  const tablesToExclude = ['user_firefox_account'];
-
-  const allTables = Object.entries(config.database.userPIITables).flatMap(
-    ([_, tables]) => tables,
-  );
-
   const EXPIRE_USER_WEB_SESSION = gql`
     mutation Mutation($id: ID!, $reason: ExpireUserWebSessionReason!) {
       expireUserWebSessionByFxaId(id: $id, reason: $reason)
@@ -41,7 +34,7 @@ describe('Expire user web session tokens mutation', () => {
   `;
 
   beforeAll(async () => {
-    ({ app, server, url } = await startServer(config.app.port));
+    ({ app, server, url } = await startServer(0));
   });
   afterAll(async () => {
     await db.destroy();
@@ -50,24 +43,21 @@ describe('Expire user web session tokens mutation', () => {
   afterEach(() => jest.clearAllMocks());
 
   beforeEach(async () => {
-    await Promise.all(
-      allTables.map((tableName) => {
-        return db(tableName).truncate();
-      }),
-    );
     await db('readitla_ril-tmp.user_web_session_tokens').truncate();
     await db('readitla_ril-tmp.user_firefox_account').truncate();
 
-    await db('readitla_ril-tmp.user_firefox_account').insert([
-      {
-        user_id: 1234,
-        firefox_uid: 'abc1234',
-      },
-      {
-        user_id: 4321,
-        firefox_uid: 'abc4321',
-      },
-    ]);
+    await db('readitla_ril-tmp.user_firefox_account').insert(
+      [
+        {
+          user_id: 1234,
+          firefox_uid: 'abc1234',
+        },
+        {
+          user_id: 4321,
+          firefox_uid: 'abc4321',
+        },
+      ].map((input) => UserFirefoxAccountSeed(input)),
+    );
 
     await db('readitla_ril-tmp.user_web_session_tokens').insert([
       {
@@ -76,16 +66,6 @@ describe('Expire user web session tokens mutation', () => {
         look_up: 'CA',
       },
     ]);
-
-    await Promise.all(
-      Object.entries(config.database.userPIITables).flatMap(([key, tables]) => {
-        return tables.map((tableName) => {
-          if (tablesToExclude.indexOf(tableName) < 0) {
-            return db(tableName).insert({ [key]: 1 });
-          }
-        });
-      }),
-    );
   });
 
   describe('expireUserWebSessionByFxaId', () => {

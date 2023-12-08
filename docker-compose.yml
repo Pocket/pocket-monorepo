@@ -110,6 +110,10 @@ services:
       interval: 5s
       timeout: 10s
       start_period: 10s
+    networks:
+      default:
+        aliases:
+          - sqs.us-east-1.localhost.localstack.cloud
 
   snowplow:
     image: pocket/snowplow-micro:dev

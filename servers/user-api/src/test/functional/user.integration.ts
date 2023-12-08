@@ -6,7 +6,12 @@ import { UserDataService } from '../../dataService/userDataService';
 import request from 'supertest';
 import { print } from 'graphql';
 import { startServer } from '../../apollo';
-import config from '../../config';
+import {
+  OauthUserAccessSeed,
+  UserFirefoxAccountSeed,
+  UserProfileSeed,
+  UserSeed,
+} from './seeds';
 
 describe('User', () => {
   const getUserDataSpy = sinon.spy(UserDataService.prototype, 'getUserData');
@@ -37,7 +42,7 @@ describe('User', () => {
 
   const user1 = {
     user_id: 1,
-    feed_id: 1,
+    feed_id: '1',
     premium_status: 0,
     first_name: 'Pocket',
     last_name: 'User',
@@ -54,7 +59,7 @@ describe('User', () => {
 
   const user2 = {
     user_id: 2,
-    feed_id: 2,
+    feed_id: '2',
     premium_status: 1,
     first_name: '', // names are empty by default
     last_name: '',
@@ -76,35 +81,36 @@ describe('User', () => {
   afterEach(() => getUserDataSpy.resetHistory());
 
   beforeAll(async () => {
-    ({ app, server, url } = await startServer(config.app.port));
+    ({ app, server, url } = await startServer(0));
 
     await db('readitla_ril-tmp.user_firefox_account').truncate();
-    await db('readitla_ril-tmp.user_firefox_account').insert([
-      {
+    await db('readitla_ril-tmp.user_firefox_account').insert(
+      UserFirefoxAccountSeed({
         user_id: 1,
         firefox_uid: 'abc1',
-      },
-    ]);
+      }),
+    );
     await db('users').truncate();
-    await db('users').insert([user1]);
-    await db('users').insert([user2]);
+    await db('users').insert([user1, user2].map((input) => UserSeed(input)));
     await db('user_profile').truncate();
-    await db('user_profile').insert([user1Profile]);
-    await db('user_profile').insert([user2Profile]);
-
+    await db('user_profile').insert(
+      [user1Profile, user2Profile].map((input) => UserProfileSeed(input)),
+    );
     await db('oauth_user_access').truncate();
-    await db('oauth_user_access').insert([
-      {
-        user_id: 1,
-        consumer_key: 'consumer_key',
-        access_token: 'access_token',
-      },
-      {
-        user_id: 2,
-        consumer_key: 'consume_key',
-        access_token: 'access_token_2',
-      },
-    ]);
+    await db('oauth_user_access').insert(
+      [
+        {
+          user_id: 1,
+          consumer_key: 'consumer_key',
+          access_token: 'access_token',
+        },
+        {
+          user_id: 2,
+          consumer_key: 'consume_key',
+          access_token: 'access_token_2',
+        },
+      ].map((input) => OauthUserAccessSeed(input)),
+    );
   });
 
   describe('getUser', () => {

@@ -8,10 +8,15 @@ import config from '../../config';
 import { startServer } from '../../apollo';
 import request from 'supertest';
 import { print } from 'graphql';
+import { PiiTableSeed, truncatePiiTables } from './seeds';
 
 jest.mock('../../aws/pinpointController');
 
 describe('Delete user mutations', () => {
+  const allTables = Object.entries(config.database.userPIITables).flatMap(
+    ([_, tables]) => tables,
+  );
+  const userId = 1;
   const db = readClient();
   let server;
   let app;
@@ -19,24 +24,9 @@ describe('Delete user mutations', () => {
   let deleteUserEndpointsMock;
   let eventObj = null;
 
-  // Tables that need special seeding
-  const tablesToExclude = [
-    'user_firefox_account',
-    'oauth_user_access',
-    'user_profile',
-  ];
-
-  const allTables = Object.entries(config.database.userPIITables).flatMap(
-    ([_, tables]) => tables,
-  );
-
   beforeAll(async () => {
-    ({ app, server, url } = await startServer(config.app.port));
-    await Promise.all(
-      allTables.map((table: string) => {
-        return db(table).truncate();
-      }),
-    );
+    ({ app, server, url } = await startServer(0));
+    await truncatePiiTables();
   });
   afterAll(async () => {
     await db.destroy();
@@ -49,47 +39,9 @@ describe('Delete user mutations', () => {
       eventObj = eventData;
     });
 
-    await Promise.all(
-      allTables.map((tableName) => {
-        return db(tableName).truncate();
-      }),
-    );
     await db('readitla_auth.users').truncate();
     await db('readitla_auth.user_providers').truncate();
-    await db('user_profile').insert([
-      {
-        user_id: 1,
-        username: 'username',
-        name: 'Pocket User',
-        description: 'my bio',
-        avatar_url: 's3://my-avatar',
-      },
-    ]);
-
-    await db('oauth_user_access').insert([
-      {
-        user_id: 1,
-        consumer_key: 'consumer_key',
-        access_token: 'access_token',
-      },
-    ]);
-
-    await db('user_firefox_account').insert([
-      {
-        user_id: 1,
-        firefox_uid: '1',
-      },
-    ]);
-
-    await Promise.all(
-      Object.entries(config.database.userPIITables).flatMap(([key, tables]) => {
-        return tables.map((tableName) => {
-          if (tablesToExclude.indexOf(tableName) < 0) {
-            return db(tableName).insert({ [key]: 1 });
-          }
-        });
-      }),
-    );
+    await PiiTableSeed(userId, '1');
 
     deleteUserEndpointsMock = PinpointController.prototype.deleteUserEndpoints =
       jest.fn();
@@ -97,12 +49,7 @@ describe('Delete user mutations', () => {
 
   afterEach(async () => {
     eventObj = null;
-
-    await Promise.all(
-      allTables.map((tableName) => {
-        return db(tableName).truncate();
-      }),
-    );
+    await truncatePiiTables();
   });
 
   describe('deleteUser', () => {

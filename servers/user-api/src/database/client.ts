@@ -39,7 +39,7 @@ export function createConnection(dbConfig: {
   const { host, port, user, password } = dbConfig;
 
   return knex({
-    client: 'mysql',
+    client: 'mysql2',
     connection: {
       host: host,
       port: parseInt(port),

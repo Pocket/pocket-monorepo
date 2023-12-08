@@ -14,7 +14,7 @@ describe('Apple Migration', () => {
   let server;
   let app;
   let url;
-  const userId = '1';
+  const userId = 1;
   const fxaId = 'abc123';
   const seedEmail = 'abc@123.com';
   const inputTestEmail = 'def@456.com';
@@ -45,7 +45,7 @@ describe('Apple Migration', () => {
     server.stop();
   });
   beforeAll(async () => {
-    ({ app, server, url } = await startServer(config.app.port));
+    ({ app, server, url } = await startServer(0));
   });
 
   beforeEach(async () => {

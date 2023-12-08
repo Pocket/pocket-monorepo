@@ -476,6 +476,8 @@ export class UserDataService {
           //firefox_access_token is not used anywhere in pocket context
           // setting a placeholder string for non-nullable value
           firefox_access_token: 'firefox-apple-migration',
+          // This cannot be null but can be an empty string
+          firefox_avatar: '',
           api_id: config.apple_migration_api_id,
           birth: now,
           updated_at: now,

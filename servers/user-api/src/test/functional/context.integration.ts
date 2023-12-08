@@ -5,7 +5,7 @@ import { UserDataService } from '../../dataService/userDataService';
 import { startServer } from '../../apollo';
 import { print } from 'graphql';
 import request from 'supertest';
-import config from '../../config';
+import { UserFirefoxAccountSeed, UserProfileSeed, UserSeed } from './seeds';
 
 describe('Context manager', () => {
   const db = readClient();
@@ -22,22 +22,26 @@ describe('Context manager', () => {
   const fetchUserIdSpy = sinon.spy(UserDataService, 'fromFxaId');
 
   beforeAll(async () => {
-    ({ app, server, url } = await startServer(config.app.port));
+    ({ app, server, url } = await startServer(0));
     await Promise.all([
       db('user_firefox_account').truncate(),
       db('users').truncate(),
       db('user_profile').truncate(),
     ]);
     await Promise.all([
-      db('user_firefox_account').insert({ user_id: '1', firefox_uid: '123' }),
-      db('users').insert({ user_id: '1' }),
-      db('user_profile').insert({ user_id: 1, username: 'dracula' }),
+      db('user_firefox_account').insert(
+        UserFirefoxAccountSeed({ user_id: 1, firefox_uid: '123' }),
+      ),
+      db('users').insert(UserSeed({ user_id: 1 })),
+      db('user_profile').insert(
+        UserProfileSeed({ user_id: 1, username: 'dracula' }),
+      ),
     ]);
-    afterEach(() => fetchUserIdSpy.resetHistory());
-    afterAll(() => {
-      fetchUserIdSpy.restore();
-      server.stop();
-    });
+  });
+  afterEach(() => fetchUserIdSpy.resetHistory());
+  afterAll(() => {
+    fetchUserIdSpy.restore();
+    server.stop();
   });
   it('pulls userId from database if fxaId is passed to request', async () => {
     const res = await request(app)

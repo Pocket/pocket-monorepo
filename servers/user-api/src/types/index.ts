@@ -1,3 +1,5 @@
+export * as db from './database';
+
 // The User Profile model
 // Corresponds to user_profile table
 export type UserProfile = {
