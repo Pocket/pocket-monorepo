@@ -18,7 +18,7 @@
   "license": "ISC",
   "devDependencies": {
     "@pocket-tools/eslint-config": "2.1.7",
-    "@pocket-tools/tsconfig": "2.0.1",
+    "tsconfig": "workspace:*",
     "@types/chai": "4.3.5",
     "@types/jest": "29.5.4",
     "chai": "4.3.8",

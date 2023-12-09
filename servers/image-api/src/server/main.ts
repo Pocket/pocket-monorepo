@@ -25,7 +25,7 @@ Sentry.init({
   ...config.sentry,
   debug: config.sentry.environment == 'development',
 });
-const app = express();
+const app: express.Express = express();
 
 // Inject initialized event emittters to create context factory function
 const contextFactory = (req: express.Request) => {

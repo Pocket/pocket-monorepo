@@ -1,8 +1,8 @@
 {
-  "extends": "@pocket-tools/tsconfig",
+  "extends": "tsconfig/graphql.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": "src"
   },
   "exclude": [
     "node_modules/",
@@ -10,6 +10,5 @@
   ],
   "include": [
     "src/**/*.ts", 
-    "src/config"
-  ],
+  ]
 }

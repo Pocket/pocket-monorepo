@@ -11,7 +11,7 @@ export default {
   redis: {
     primaryEndpoint: process.env.REDIS_PRIMARY_ENDPOINT || 'localhost',
     readerEndpoint: process.env.REDIS_READER_ENDPOINT || 'localhost',
-    port: process.env.REDIS_PORT ?? 6379,
+    port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
   },
   sentry: {
     dsn: process.env.SENTRY_DSN || '',
