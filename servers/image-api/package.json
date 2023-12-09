@@ -11,13 +11,13 @@
     "test-ci": "npm test",
     "test": "jest \"\\.spec\\.ts\"",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",
-    "lint-check": "eslint --fix-dry-run \"src/**/*.ts\"",
-    "lint-fix": "eslint --fix \"src/**/*.ts\""
+    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix \"src/**/*.ts\""
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@pocket-tools/eslint-config": "2.1.7",
+    "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",
     "@types/chai": "4.3.5",
     "@types/jest": "29.5.4",
