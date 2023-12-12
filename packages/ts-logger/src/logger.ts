@@ -1,4 +1,6 @@
-import winston, { Logger, LoggerOptions } from 'winston';
+import winston from 'winston';
+
+import type { Logger, LoggerOptions } from 'winston';
 
 const levels = {
   error: 0,

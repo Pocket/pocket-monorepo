@@ -8,7 +8,7 @@ import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { InternalErrorCode } from '../errorHandler/errorHandler';
 import { setLogger } from '@pocket-tools/ts-logger';
 
-export const defaultLogger = setLogger();
+const defaultLogger = setLogger();
 
 /**
  * This is a list of error codes to not report in the sentry

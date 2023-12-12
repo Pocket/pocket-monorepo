@@ -17,8 +17,6 @@
     "sourceMap": true,
     "inlineSources": true,
     "sourceRoot": "/",
-    "declaration": true,
-    "noEmitHelpers": true,
-    "importHelpers": true
+    "declaration": true
   }
 }
