@@ -12,7 +12,151 @@ commands:
           command: |
             corepack enable
             corepack prepare pnpm@latest-8 --activate
-      - run:
+      - run:  
           name: Install Dependencies
           command: |
             pnpm install
+  setup_working_directory:
+    parameters:
+       repo_folder:
+        type: string
+       package:
+        type: string
+    steps:
+      - install_npm
+      - run:
+          name: Setup Repo
+          command: |
+            turbo prune --scope=client --docker
+
+jobs:
+  build_image:
+    description: Build and/or push docker image to ECR. Runs codebuild if specified ECR does not exist to create it
+
+    parameters:
+      aws-access-key-id:
+        description: 'AWS access key id environment variable'
+        type: string
+      aws-region:
+        description: 'AWS region environment variable'
+        type: string
+        default: AWS_DEFAULT_REGION
+      aws-secret-access-key:
+        description: 'AWS secret access key environment variable'
+        type: string
+      codebuild-project-name:
+        description: 'The CodeBuild project name'
+        type: string
+        default: ''
+      codebuild-project-branch:
+        description: 'The git branch to build'
+        type: string
+        default: ''
+      docker-image:
+        description: 'Docker image to use for the job'
+        type: string
+        default: cimg/base:2023.06
+      ecr-url:
+        description: 'The ecr url'
+        type: string
+      extra-build-args:
+        description: 'Extra flags to pass to docker build. For examples, see https://docs.docker.com/engine/reference/commandline/build'
+        type: string
+        default: --build-arg GIT_SHA=${CIRCLE_SHA1}
+      path:
+        description: 'Path to the directory containing your Dockerfile and build context. Defaults to . (working directory).'
+        type: string
+        default: /tmp/workspace/app_prod
+      push:
+        description: 'Whether or not to push the code'
+        type: boolean
+        default: false
+      repo-name:
+        description: 'The ecr repo name'
+        type: string
+      tag:
+        description: 'The docker tag name'
+        type: string
+        default: latest,$CIRCLE_SHA1
+      remote-docker-version:
+        type: string
+        default: 20.10.18
+        description: Specific remote docker version
+      remote-docker-layer-caching:
+        type: boolean
+        default: true
+        description: >
+          Enable Docker layer caching if using remote Docker engine.
+          Defaults to false.
+
+    executor: aws-cli/default
+
+    steps:
+      - checkout
+      - aws-cli/setup:
+          aws-access-key-id: << parameters.aws-access-key-id >>
+          aws-secret-access-key: << parameters.aws-secret-access-key >>
+          aws-region: << parameters.aws-region >>
+      - run:
+          name: Setup common environment variables
+          command: |
+            { \
+              echo 'export AWS_ECR_ACCOUNT_URL="<< parameters.ecr-url >>"'; \
+              echo 'export AWS_REGION="$<< parameters.aws-region >>"'; \
+              echo 'export REPO_NAME="<< parameters.repo-name >>"'; \
+              echo 'export CODEBUILD_PROJECT_NAME="<< parameters.codebuild-project-name >>"'; \
+              echo 'export CODEBUILD_PROJECT_BRANCH="<< parameters.codebuild-project-branch >>"'; \
+            } >> "$BASH_ENV"
+      - when:
+          condition: <<parameters.push>>
+          steps:
+            - run:
+                name: Docker build/push
+                command: |
+                  #!/bin/bash
+                  GET_ECR=$(aws ecr describe-repositories --repository-names "${REPO_NAME}" || true)
+                  # If the ECR does not exist, run the code build project to create it
+                  if [ -z "$GET_ECR" ]; then
+                    echo -e "Starting CodeBuild for ${CODEBUILD_PROJECT_NAME}.\n"
+                    BUILD_ID=$(aws codebuild start-build --project-name "${CODEBUILD_PROJECT_NAME}" --environment-variables-override name=GIT_BRANCH,value="${CODEBUILD_PROJECT_BRANCH}" --source-version "${CODEBUILD_PROJECT_BRANCH}" --query 'build.id' --output text)
+                    BUILD_STATUS="IN_PROGRESS"
+
+                    # Wait for the CodeBuild to complete.
+                    while [ "$BUILD_STATUS" == "IN_PROGRESS" ]; do
+                      sleep 10
+                      echo "Checking build status"
+                      BUILD_STATUS=$(aws codebuild batch-get-builds --ids "$BUILD_ID" --query 'builds[0].buildStatus' --output text)
+                      if [ "$BUILD_STATUS" == "IN_PROGRESS" ]; then
+                        echo -e "Build is ${BUILD_STATUS}, waiting for build to complete...waiting for 10 seconds before next check...\n"
+                      fi
+                    done
+
+                    if [ "$BUILD_STATUS" != "SUCCEEDED" ]; then
+                      echo "CodeBuild failed to succeed with status ${BUILD_STATUS}"
+                      exit 1
+                    else
+                      echo -e "CodeBuild succeeded\n"
+                    fi
+                  fi
+            - aws-ecr/build-and-push-image:
+                checkout: false
+                repo: << parameters.repo-name >>
+                setup-remote-docker: true
+                remote-docker-version: <<parameters.remote-docker-version>>
+                remote-docker-layer-caching: <<parameters.remote-docker-layer-caching>>
+                path: << parameters.path >>
+                aws-access-key-id: << parameters.aws-access-key-id >>
+                aws-secret-access-key: << parameters.aws-secret-access-key >>
+                tag: << parameters.tag >>
+                extra-build-args: << parameters.extra-build-args >>
+      - unless:
+          condition: <<parameters.push>>
+          steps:
+            - setup_remote_docker:
+                version: <<parameters.remote-docker-version>>
+                docker_layer_caching: <<parameters.remote-docker-layer-caching>>
+            - aws-ecr/build-image:
+                repo: << parameters.repo-name >>
+                tag: << parameters.tag >>
+                path: << parameters.path >>
+                extra-build-args: << parameters.extra-build-args >>

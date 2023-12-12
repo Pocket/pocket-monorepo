@@ -18,7 +18,6 @@
   "license": "ISC",
   "devDependencies": {
     "eslint-config-custom": "workspace:*",
-    "tsconfig": "workspace:*",
     "@types/chai": "4.3.5",
     "@types/jest": "29.5.4",
     "chai": "4.3.8",
@@ -29,6 +28,7 @@
     "ts-jest": "29.1.1"
   },
   "dependencies": {
+    "tsconfig": "workspace:*",
     "@apollo/subgraph": "2.5.3",
     "@pocket-tools/apollo-utils": "2.3.2",
     "@sentry/node": "7.66.0",
@@ -41,5 +41,10 @@
     "axios-retry": "3.7.0",
     "dataloader": "2.2.2",
     "parse-url": "8.1.0"
-  }
+  },
+  "files": [
+    "dist",
+    "schema.graphql",
+    "package.json"
+  ]
 }
