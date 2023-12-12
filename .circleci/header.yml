@@ -1,0 +1,41 @@
+# Workflow shortcuts
+# Anything in this file will be added to all the yaml files, before CircleCI merges them.
+# This is because yaml files need to be valid before merge and that means things like anchors must be defined in each file.
+
+not_main: &not_main
+  filters:
+    branches:
+      ignore:
+        - main
+
+only_main: &only_main
+  filters:
+    branches:
+      only:
+        - main
+
+not_dev: &not_dev
+  filters:
+    branches:
+      ignore:
+        - dev
+
+only_dev_main: &only_dev_main
+  filters:
+    branches:
+      only:
+        - dev
+        - main
+
+not_dev_main: &not_dev_main
+  filters:
+    branches:
+      ignore:
+        - dev
+        - main
+
+only_dev: &only_dev
+  filters:
+    branches:
+      only:
+        - dev

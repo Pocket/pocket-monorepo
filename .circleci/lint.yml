@@ -1,0 +1,18 @@
+jobs:
+  lint:
+    docker:
+      - image: cimg/node:20.10
+    steps:
+      - checkout
+      - install_pnpm
+      - run:
+          name: Lint
+          command: |
+            pnpm run lint
+
+workflows:
+  lint:
+    jobs:
+      - lint:
+          <<: *not_main
+          context: pocket

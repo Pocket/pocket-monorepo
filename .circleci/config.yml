@@ -1,0 +1,39 @@
+version: 2.1
+
+# this allows you to use CircleCI's dynamic configuration feature
+setup: true
+
+# the continuation orb is required in order to use dynamic configuration
+orbs:
+  continuation: circleci/continuation@0.1.2
+  path-filtering: circleci/path-filtering@1.0.0
+
+# our defined job, and its steps
+jobs:
+  setup:
+    executor: continuation/default
+    steps:
+      - checkout # checkout code
+      - run:
+          name: Generate List of Configs to Merge
+          command: |
+            # Generate a list of all the circleci configs we want to run
+            file_list=(".circleci/common.yml" ".circleci/lint.yml" ".circleci/image-api.yml")       
+            touch /tmp/configs.txt
+
+            # Add file header to each file and dump it to the config list
+            for file in "${file_list[@]}"; do
+              echo "$file" >> /tmp/configs.txt
+              awk -v new_content="$(cat .circleci/header.yml)" 'BEGIN {print new_content} {print}' "$file" > temp_file && mv temp_file "$file"
+            done
+      - path-filtering/generate-config:
+          config-list-path: /tmp/configs.txt
+          generated-config-path: /tmp/generated-config.yml
+      - continuation/continue:
+          configuration_path: /tmp/generated-config.yml # use newly generated config to continue
+
+# our single workflow, that triggers the setup job defined above
+workflows:
+  setup:
+    jobs:
+      - setup

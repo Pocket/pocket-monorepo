@@ -1,0 +1,18 @@
+version: 2.1
+
+orbs:
+  pocket: pocket/circleci-orbs@2.2.0
+  aws-cli: circleci/aws-cli@1.2.1
+
+commands:
+  install_pnpm:
+    steps:
+      - run:
+          name: Install pnpm package manager
+          command: |
+            corepack enable
+            corepack prepare pnpm@latest-8 --activate
+      - run:
+          name: Install Dependencies
+          command: |
+            pnpm install
