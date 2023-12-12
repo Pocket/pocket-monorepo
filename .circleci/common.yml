@@ -3,6 +3,7 @@ version: 2.1
 orbs:
   pocket: pocket/circleci-orbs@2.2.0
   aws-cli: circleci/aws-cli@1.2.1
+  aws-ecr: circleci/aws-ecr@7.3.0
 
 commands:
   install_pnpm:
@@ -16,20 +17,40 @@ commands:
           name: Install Dependencies
           command: |
             pnpm install
-  setup_working_directory:
-    parameters:
-       repo_folder:
-        type: string
-       package:
-        type: string
-    steps:
-      - install_npm
-      - run:
-          name: Setup Repo
-          command: |
-            turbo prune --scope=client --docker
 
 jobs:
+  test_integrations:
+    description: Run integration tests against external services, e.g. MySQL
+    parameters:
+      scope:
+        description: The pnpm scope to run tests for
+        type: string
+    docker:
+      - image:  cimg/node:20.10
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+        environment:
+          NODE_ENV: test
+          AWS_XRAY_LOG_LEVEL: silent
+          AWS_XRAY_CONTEXT_MISSING: LOG_ERROR
+      - image: redis:latest
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - checkout
+      - install_pnpm
+      - run:
+          name: run setup.sh
+          command: |
+            export $(egrep -v '^#' .docker/local.env | xargs -0) && ./.circleci/scripts/setup.sh --hosts
+      - run:
+          name: run tests
+          command: |
+            export $(egrep -v '^#' .docker/local.env | xargs -0)
+            pnpm run --filter=<< parameters.scope >> test-integrations
+
   build_image:
     description: Build and/or push docker image to ECR. Runs codebuild if specified ECR does not exist to create it
 
@@ -78,10 +99,6 @@ jobs:
         description: 'The docker tag name'
         type: string
         default: latest,$CIRCLE_SHA1
-      remote-docker-version:
-        type: string
-        default: 20.10.18
-        description: Specific remote docker version
       remote-docker-layer-caching:
         type: boolean
         default: true
@@ -93,10 +110,10 @@ jobs:
 
     steps:
       - checkout
-      - aws-cli/setup:
-          aws-access-key-id: << parameters.aws-access-key-id >>
-          aws-secret-access-key: << parameters.aws-secret-access-key >>
-          aws-region: << parameters.aws-region >>
+      # - aws-cli/setup:
+      #     aws-access-key-id: << parameters.aws-access-key-id >>
+      #     aws-secret-access-key: << parameters.aws-secret-access-key >>
+      #     aws-region: << parameters.aws-region >>
       - run:
           name: Setup common environment variables
           command: |
@@ -107,56 +124,54 @@ jobs:
               echo 'export CODEBUILD_PROJECT_NAME="<< parameters.codebuild-project-name >>"'; \
               echo 'export CODEBUILD_PROJECT_BRANCH="<< parameters.codebuild-project-branch >>"'; \
             } >> "$BASH_ENV"
-      - when:
-          condition: <<parameters.push>>
-          steps:
-            - run:
-                name: Docker build/push
-                command: |
-                  #!/bin/bash
-                  GET_ECR=$(aws ecr describe-repositories --repository-names "${REPO_NAME}" || true)
-                  # If the ECR does not exist, run the code build project to create it
-                  if [ -z "$GET_ECR" ]; then
-                    echo -e "Starting CodeBuild for ${CODEBUILD_PROJECT_NAME}.\n"
-                    BUILD_ID=$(aws codebuild start-build --project-name "${CODEBUILD_PROJECT_NAME}" --environment-variables-override name=GIT_BRANCH,value="${CODEBUILD_PROJECT_BRANCH}" --source-version "${CODEBUILD_PROJECT_BRANCH}" --query 'build.id' --output text)
-                    BUILD_STATUS="IN_PROGRESS"
+      # - when:
+      #     condition: <<parameters.push>>
+      #     steps:
+      #       - run:
+      #           name: Docker build/push
+      #           command: |
+      #             #!/bin/bash
+      #             GET_ECR=$(aws ecr describe-repositories --repository-names "${REPO_NAME}" || true)
+      #             # If the ECR does not exist, run the code build project to create it
+      #             if [ -z "$GET_ECR" ]; then
+      #               echo -e "Starting CodeBuild for ${CODEBUILD_PROJECT_NAME}.\n"
+      #               BUILD_ID=$(aws codebuild start-build --project-name "${CODEBUILD_PROJECT_NAME}" --environment-variables-override name=GIT_BRANCH,value="${CODEBUILD_PROJECT_BRANCH}" --source-version "${CODEBUILD_PROJECT_BRANCH}" --query 'build.id' --output text)
+      #               BUILD_STATUS="IN_PROGRESS"
 
-                    # Wait for the CodeBuild to complete.
-                    while [ "$BUILD_STATUS" == "IN_PROGRESS" ]; do
-                      sleep 10
-                      echo "Checking build status"
-                      BUILD_STATUS=$(aws codebuild batch-get-builds --ids "$BUILD_ID" --query 'builds[0].buildStatus' --output text)
-                      if [ "$BUILD_STATUS" == "IN_PROGRESS" ]; then
-                        echo -e "Build is ${BUILD_STATUS}, waiting for build to complete...waiting for 10 seconds before next check...\n"
-                      fi
-                    done
+      #               # Wait for the CodeBuild to complete.
+      #               while [ "$BUILD_STATUS" == "IN_PROGRESS" ]; do
+      #                 sleep 10
+      #                 echo "Checking build status"
+      #                 BUILD_STATUS=$(aws codebuild batch-get-builds --ids "$BUILD_ID" --query 'builds[0].buildStatus' --output text)
+      #                 if [ "$BUILD_STATUS" == "IN_PROGRESS" ]; then
+      #                   echo -e "Build is ${BUILD_STATUS}, waiting for build to complete...waiting for 10 seconds before next check...\n"
+      #                 fi
+      #               done
 
-                    if [ "$BUILD_STATUS" != "SUCCEEDED" ]; then
-                      echo "CodeBuild failed to succeed with status ${BUILD_STATUS}"
-                      exit 1
-                    else
-                      echo -e "CodeBuild succeeded\n"
-                    fi
-                  fi
-            - aws-ecr/build-and-push-image:
-                checkout: false
-                repo: << parameters.repo-name >>
-                setup-remote-docker: true
-                remote-docker-version: <<parameters.remote-docker-version>>
-                remote-docker-layer-caching: <<parameters.remote-docker-layer-caching>>
-                path: << parameters.path >>
-                aws-access-key-id: << parameters.aws-access-key-id >>
-                aws-secret-access-key: << parameters.aws-secret-access-key >>
-                tag: << parameters.tag >>
-                extra-build-args: << parameters.extra-build-args >>
+      #               if [ "$BUILD_STATUS" != "SUCCEEDED" ]; then
+      #                 echo "CodeBuild failed to succeed with status ${BUILD_STATUS}"
+      #                 exit 1
+      #               else
+      #                 echo -e "CodeBuild succeeded\n"
+      #               fi
+      #             fi
+            # - aws-ecr/build-and-push-image:
+            #     checkout: false
+            #     repo: << parameters.repo-name >>
+            #     setup-remote-docker: true
+            #     remote-docker-version: <<parameters.remote-docker-version>>
+            #     remote-docker-layer-caching: <<parameters.remote-docker-layer-caching>>
+            #     path: << parameters.path >>
+            #     aws-access-key-id: << parameters.aws-access-key-id >>
+            #     aws-secret-access-key: << parameters.aws-secret-access-key >>
+            #     tag: << parameters.tag >>
+            #     extra-build-args: << parameters.extra-build-args >>
       - unless:
           condition: <<parameters.push>>
           steps:
             - setup_remote_docker:
-                version: <<parameters.remote-docker-version>>
                 docker_layer_caching: <<parameters.remote-docker-layer-caching>>
             - aws-ecr/build-image:
                 repo: << parameters.repo-name >>
                 tag: << parameters.tag >>
-                path: << parameters.path >>
                 extra-build-args: << parameters.extra-build-args >>

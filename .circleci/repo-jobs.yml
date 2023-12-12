@@ -9,10 +9,23 @@ jobs:
           name: Lint
           command: |
             pnpm run lint
+  test:
+    docker:
+      - image: cimg/node:20.10
+    steps:
+      - checkout
+      - install_pnpm
+      - run:
+          name: Test
+          command: |
+            pnpm run test
 
 workflows:
-  lint:
+  repo:
     jobs:
       - lint:
+          <<: *not_main
+          context: pocket
+      - test:
           <<: *not_main
           context: pocket

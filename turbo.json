@@ -10,6 +10,10 @@
     },
     "lint": {},
     "format": {},
+    "test": {},
+    "test-integrations": {
+      "cache": false
+    },
     "dev": {
       "cache": false,
       "persistent": true,

@@ -1,98 +1,15 @@
 
-jobs:
-
-  image-api_test_integrations:
-    description: Run integration tests against external services, e.g. MySQL
-    docker:
-      - image:  cimg/node:20.10
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD
-        environment:
-          NODE_ENV: test
-          AWS_XRAY_LOG_LEVEL: silent
-          AWS_XRAY_CONTEXT_MISSING: LOG_ERROR
-      - image: redis:latest
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            # when lock file changes, use increasingly general patterns to restore cache
-            # If this gets our of sync, you can increment the version (vX).  Just be
-            # sure to match that version when saving the cache as well.
-            - node-v1-{{ checksum "package-lock.json" }}
-            - node-v1-
-      - run:
-          name: Authenticate with GitHub package registry
-          command: echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" > ~/.npmrc
-      - run:
-          name: install node modules
-          command: npm ci
-      # Save the cache to avoid extraneous downloads
-      - save_cache:
-          key: node-v1-{{ checksum "package-lock.json" }}
-          paths:
-            - ./node_modules
-      - run:
-          name: run setup.sh
-          command: |
-            export $(egrep -v '^#' .docker/local.env | xargs -0) && ./.circleci/scripts/setup.sh --hosts
-      - run:
-          name: run tests
-          command: |
-            export $(egrep -v '^#' .docker/local.env | xargs -0)
-            npm run test-integrations  -- --ci --watchAll=false --forceExit
-
-  image-api_test_specs:
-    description: Run spec tests
-    docker:
-      - image: cimg/node:20.10
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD
-        environment:
-          NODE_ENV: test
-          AWS_XRAY_LOG_LEVEL: silent
-          AWS_XRAY_CONTEXT_MISSING: LOG_ERROR
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            # when lock file changes, use increasingly general patterns to restore cache
-            # If this gets our of sync, you can increment the version (vX).  Just be
-            # sure to match that version when saving the cache as well.
-            - node-v1-{{ checksum "package-lock.json" }}
-            - node-v1-
-      - run:
-          name: install node modules
-          command: npm ci
-      # Save the cache to avoid extraneous downloads
-      - save_cache:
-          key: node-v1-{{ checksum "package-lock.json" }}
-          paths:
-            - ./node_modules
-      - run:
-          name: run tests
-          command: npm run test
-
 workflows:
   image-api:
     jobs:
-      - image-api_test_specs:
+      - test_integrations:
           <<: *not_main
           context: pocket
-          name: image-api/test_specs
-
-      - image-api_test_integrations:
-          <<: *not_main
-          context: pocket
-          name: image-api/test_integrations
+          name: image-api_test_integrations
+          scope: image-api
 
       - pocket/apollo:
-          name: image-api/apollo
+          name: image-api_apollo
           fed_graph_name: pocket-client-api
           graph_name: image-api
           prod_graph_url: https://image-api.readitlater.com
@@ -100,7 +17,7 @@ workflows:
           current_branch: << pipeline.git.branch >>
 
       - pocket/apollo:
-          name: image-api/apollo_admin
+          name: image-api_apollo_admin
           fed_graph_name: pocket-admin-api
           graph_name: image-api
           prod_graph_url: https://image-api.readitlater.com
@@ -112,20 +29,20 @@ workflows:
       - build_image:
           <<: *not_dev_main
           context: pocket
-          name: image-api/build_docker
+          name: image-api_build_docker
           aws-access-key-id: Dev_AWS_ACCESS_KEY
           aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
           aws-region: Dev_AWS_DEFAULT_REGION
           repo-name: imageapi-dev-app
           ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
           push: false
-          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=image-api --build-arg APP_PATH=servers/image-api --build-arg SENTRY_AUTH_TOKEN=SENTRY_BEARER --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=pocket/image-api 
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=image-api --build-arg APP_PATH=servers/image-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=image-api 
 
       # Build & Deploy the Dev Docker Image
       - build_image:
           <<: *only_dev
           context: pocket
-          name: image-api/build_docker_dev
+          name: image-api_build_docker_dev
           aws-access-key-id: Dev_AWS_ACCESS_KEY
           aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
           aws-region: Dev_AWS_DEFAULT_REGION
@@ -134,13 +51,13 @@ workflows:
           repo-name: imageapi-dev-app
           ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
           push: true
-          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=image-api --build-arg APP_PATH=servers/image-api --build-arg SENTRY_AUTH_TOKEN=SENTRY_BEARER --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=pocket/image-api 
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=image-api --build-arg APP_PATH=servers/image-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=image-api 
 
       # Dev
       - pocket/execute_codepipeline:
           <<: *only_dev
           context: pocket
-          name: image-api/deploy_dev
+          name: image-api_deploy_dev
           environment: Dev
           aws-access-key-id: Dev_AWS_ACCESS_KEY
           aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
@@ -149,13 +66,13 @@ workflows:
           codebuild-project-name: ImageAPI-Dev
           codebuild-project-branch: dev
           requires:
-            - image-api/build_docker_dev
+            - image-api_build_docker_dev
 
       # Build & Deploy the Prod Docker Image
       - build_image:
           <<: *only_main
           context: pocket
-          name: image-api/build_docker_prod
+          name: image-api_build_docker_prod
           aws-access-key-id: Prod_AWS_ACCESS_KEY
           aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
           aws-region: Prod_AWS_DEFAULT_REGION
@@ -164,13 +81,13 @@ workflows:
           repo-name: imageapi-prod-app
           ecr-url: 996905175585.dkr.ecr.us-east-1.amazonaws.com
           push: true
-          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=image-api --build-arg APP_PATH=servers/image-api --build-arg SENTRY_AUTH_TOKEN=SENTRY_BEARER --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=pocket/image-api 
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=image-api --build-arg APP_PATH=servers/image-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=image-api 
 
       # Prod
       - pocket/execute_codepipeline:
           <<: *only_main
           context: pocket
-          name: image-api/deploy_prod
+          name: image-api_deploy_prod
           environment: Prod
           aws-access-key-id: Prod_AWS_ACCESS_KEY
           aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
@@ -179,12 +96,12 @@ workflows:
           codebuild-project-name: ImageAPI-Prod
           codebuild-project-branch: main
           requires:
-            - image-api/build_docker_prod
+            - image-api_build_docker_prod
 
       # Prod
       - pocket/setup_deploy_params:
           <<: *only_main
-          name: image-api/setup-deploy-params-prod
+          name: image-api_setup-deploy-params-prod
           aws_access_key_id: Prod_AWS_ACCESS_KEY
           aws_secret_access_key: Prod_AWS_SECRET_ACCESS_KEY
           context: pocket
@@ -194,7 +111,7 @@ workflows:
       # Dev
       - pocket/setup_deploy_params:
           <<: *only_dev
-          name: image-api/setup-deploy-params-dev
+          name: image-api_setup-deploy-params-dev
           aws_access_key_id: Dev_AWS_ACCESS_KEY
           aws_secret_access_key: Dev_AWS_SECRET_ACCESS_KEY
           context: pocket
@@ -204,25 +121,23 @@ workflows:
       # # Notify sentry of main deployment
       # - pocket/sentry_release_notification:
       #     <<: *only_main
-      #     name: image-api/sentry-release-notification-prod
+      #     name: image-api_sentry-release-notification-prod
       #     context: pocket
       #     repository_name: Pocket/image-api
       #     sentry_project_name: image-api
       #     sentry_env: production
       #     sentry_org: pocket
-      #     image-api-path: /tmp/image-api
       #     requires:
-      #       - image-api/deploy_prod
+      #       - image-api_deploy_prod
 
       # # Notify sentry of dev deployment
       # - pocket/sentry_release_notification:
       #     <<: *only_dev
-      #     name: image-api/sentry-release-notification-dev
+      #     name: image-api_sentry-release-notification-dev
       #     context: pocket
       #     repository_name: Pocket/image-api
       #     sentry_project_name: image-api
       #     sentry_env: development
       #     sentry_org: pocket
-      #     workspace-path: /tmp/workspace
       #     requires:
-      #       - image-api/deploy_dev
+      #       - image-api_deploy_dev

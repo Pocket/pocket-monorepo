@@ -6,6 +6,8 @@
     "dev": "dotenv -- turbo run dev",
     "lint": "turbo run lint",
     "format": "turbo run format",
+    "test": "dotenv -- turbo run test",
+    "test-integrations": "dotenv -- turbo run test-integrations",
     "clean": "rm -rf .turbo node_modules packages/**/.turbo packages/**/dist packages/**/node_modules servers/**/logs servers/**/.turbo servers/**/dist servers/**/node_modules infrastructure/**/dist infrastructure/**/node_modules infrastructure/**/.turbo"
   },
   "dependencies": {
