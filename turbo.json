@@ -10,8 +10,11 @@
     },
     "lint": {},
     "format": {},
-    "test": {},
+    "test": {
+      "dependsOn": ["^build"]
+    },
     "test-integrations": {
+      "dependsOn": ["^build"],
       "cache": false
     },
     "dev": {

@@ -3,7 +3,7 @@ workflows:
   image-api:
     jobs:
       - test_integrations:
-          <<: *not_main
+          <<: *not_dev_main
           context: pocket
           name: image-api_test_integrations
           scope: image-api
@@ -12,6 +12,7 @@ workflows:
           name: image-api_apollo
           fed_graph_name: pocket-client-api
           graph_name: image-api
+          schema_file_path: servers/image-api/schema.graphql
           prod_graph_url: https://image-api.readitlater.com
           dev_graph_url: https://image-api.getpocket.dev
           current_branch: << pipeline.git.branch >>
@@ -19,6 +20,7 @@ workflows:
       - pocket/apollo:
           name: image-api_apollo_admin
           fed_graph_name: pocket-admin-api
+          schema_file_path: servers/image-api/schema.graphql
           graph_name: image-api
           prod_graph_url: https://image-api.readitlater.com
           dev_graph_url: https://image-api.getpocket.dev
@@ -53,20 +55,20 @@ workflows:
           push: true
           extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=image-api --build-arg APP_PATH=servers/image-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=image-api 
 
-      # Dev
-      - pocket/execute_codepipeline:
-          <<: *only_dev
-          context: pocket
-          name: image-api_deploy_dev
-          environment: Dev
-          aws-access-key-id: Dev_AWS_ACCESS_KEY
-          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
-          aws-region: Dev_AWS_DEFAULT_REGION
-          codepipeline-name: ImageAPI-Dev-CodePipeline
-          codebuild-project-name: ImageAPI-Dev
-          codebuild-project-branch: dev
-          requires:
-            - image-api_build_docker_dev
+      # # Dev
+      # - pocket/execute_codepipeline:
+      #     <<: *only_dev
+      #     context: pocket-dev
+      #     name: image-api_deploy_dev
+      #     environment: Dev
+      #     aws-access-key-id: Dev_AWS_ACCESS_KEY
+      #     aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+      #     aws-region: Dev_AWS_DEFAULT_REGION
+      #     codepipeline-name: ImageAPI-Dev-CodePipeline
+      #     codebuild-project-name: ImageAPI-Dev
+      #     codebuild-project-branch: dev
+      #     requires:
+      #       - image-api_build_docker_dev
 
       # Build & Deploy the Prod Docker Image
       - build_image:
@@ -83,40 +85,20 @@ workflows:
           push: true
           extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=image-api --build-arg APP_PATH=servers/image-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=image-api 
 
-      # Prod
-      - pocket/execute_codepipeline:
-          <<: *only_main
-          context: pocket
-          name: image-api_deploy_prod
-          environment: Prod
-          aws-access-key-id: Prod_AWS_ACCESS_KEY
-          aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
-          aws-region: Prod_AWS_DEFAULT_REGION
-          codepipeline-name: ImageAPI-Prod-CodePipeline
-          codebuild-project-name: ImageAPI-Prod
-          codebuild-project-branch: main
-          requires:
-            - image-api_build_docker_prod
-
-      # Prod
-      - pocket/setup_deploy_params:
-          <<: *only_main
-          name: image-api_setup-deploy-params-prod
-          aws_access_key_id: Prod_AWS_ACCESS_KEY
-          aws_secret_access_key: Prod_AWS_SECRET_ACCESS_KEY
-          context: pocket
-          env: Prod
-          service_name: ImageAPI
-
-      # Dev
-      - pocket/setup_deploy_params:
-          <<: *only_dev
-          name: image-api_setup-deploy-params-dev
-          aws_access_key_id: Dev_AWS_ACCESS_KEY
-          aws_secret_access_key: Dev_AWS_SECRET_ACCESS_KEY
-          context: pocket
-          env: Dev
-          service_name: ImageAPI
+      # # Prod
+      # - pocket/execute_codepipeline:
+      #     <<: *only_main
+      #     context: pocket-prod
+      #     name: image-api_deploy_prod
+      #     environment: Prod
+      #     aws-access-key-id: Prod_AWS_ACCESS_KEY
+      #     aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
+      #     aws-region: Prod_AWS_DEFAULT_REGION
+      #     codepipeline-name: ImageAPI-Prod-CodePipeline
+      #     codebuild-project-name: ImageAPI-Prod
+      #     codebuild-project-branch: main
+      #     requires:
+      #       - image-api_build_docker_prod
 
       # # Notify sentry of main deployment
       # - pocket/sentry_release_notification:

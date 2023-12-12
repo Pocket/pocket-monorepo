@@ -24,8 +24,8 @@ workflows:
   repo:
     jobs:
       - lint:
-          <<: *not_main
+          <<: *not_dev_main
           context: pocket
       - test:
-          <<: *not_main
+          <<: *not_dev_main
           context: pocket
