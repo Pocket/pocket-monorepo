@@ -14,23 +14,23 @@
             with:
               interval: 20s
               checks-yaml: |
-                - job: ci/circleci: image-api_apollo_admin
+                - job: "image-api_apollo_admin"
                   paths:
                   - servers/image-api/**
                   - infrastructure/image-api/**
-                - job: ci/circleci: image-api_apollo
+                - job: "image-api_apollo"
                   paths:
                   - servers/image-api/**
                   - infrastructure/image-api/**
-                - job: ci/circleci: image-api_build_docker
+                - job: "image-api_build_docker"
                   paths:
                   - servers/image-api/**
                   - infrastructure/image-api/**
-                - job: ci/circleci: image-api_infrastructure_plan_prod
+                - job: "image-api_infrastructure_plan_prod"
                   paths:
                   - servers/image-api/**
                   - infrastructure/image-api/**
-                - job: ci/circleci: image-api_test_integrations
+                - job: "image-api_test_integrations"
                   paths:
                   - servers/image-api/**
                   - infrastructure/image-api/**
