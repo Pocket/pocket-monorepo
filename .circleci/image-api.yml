@@ -55,6 +55,43 @@ workflows:
           push: true
           extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=image-api --build-arg APP_PATH=servers/image-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=image-api 
 
+      - infrastructure:
+          <<: *not_dev_main
+          context: pocket
+          name: image-api_infrastructure_plan_prod
+          scope: image-api-cdk
+          stack-output-path: infrastructure/image-api/cdktf.out/stacks/image-api
+          resource-class: pocket/default-prod
+          workspace: Prod
+          dev: false
+          apply: false
+
+      - infrastructure:
+          <<: *only_dev
+          context: pocket
+          name: image-api_infrastructure_apply_dev
+          scope: image-api-cdk
+          stack-output-path: infrastructure/image-api/cdktf.out/stacks/image-api
+          resource-class: pocket/default-dev
+          workspace: Dev
+          apply: true
+          dev: true
+          requires:
+            - image-api_build_docker_dev
+
+      - infrastructure:
+          <<: *only_main
+          context: pocket
+          name: image-api_infrastructure_apply_prod
+          scope: image-api-cdk
+          stack-output-path: infrastructure/image-api/cdktf.out/stacks/image-api
+          resource-class: pocket/default-prod
+          workspace: Prod
+          apply: true
+          dev: false
+          requires:
+            - image-api_build_docker_prod
+
       # # Dev
       # - pocket/execute_codepipeline:
       #     <<: *only_dev

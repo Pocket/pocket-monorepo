@@ -8,6 +8,8 @@
     "format": "turbo run format",
     "test": "dotenv -- turbo run test",
     "test-integrations": "dotenv -- turbo run test-integrations",
+    "synth:infra:prod": "dotenv -- turbo run synth:infra:prod",
+    "synth:infra:dev": "dotenv -- turbo run synth:infra:dev",
     "clean": "rm -rf .turbo node_modules packages/**/.turbo packages/**/dist packages/**/node_modules servers/**/logs servers/**/.turbo servers/**/dist servers/**/node_modules infrastructure/**/dist infrastructure/**/node_modules infrastructure/**/.turbo"
   },
   "dependencies": {

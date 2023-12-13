@@ -5,7 +5,8 @@
   "types": "src/main.ts",
   "private": true,
   "scripts": {
-    "build:dev": "npm run build && NODE_ENV=development npm run synth",
+    "synth:infra:dev": "NODE_ENV=development npm run build && NODE_ENV=development npm run synth",
+    "synth:infra:prod": "NODE_ENV=production npm run build && NODE_ENV=production npm run synth",
     "build": "rm -rf dist && tsc",
     "synth": "cdktf synth",
     "compile": "tsc --pretty",

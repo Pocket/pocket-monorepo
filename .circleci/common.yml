@@ -4,6 +4,7 @@ orbs:
   pocket: pocket/circleci-orbs@2.2.0
   aws-cli: circleci/aws-cli@2.0.6
   aws-ecr: circleci/aws-ecr@7.3.0
+  tfenv: sogaoh/orb-tfenv@0.0.1
 
 commands:
   install_pnpm:
@@ -17,8 +18,111 @@ commands:
           name: Install Dependencies
           command: |
             pnpm install
+  install_infrastructure_pnpm:
+    steps:
+      - run: 
+          name: Install and setup node
+          command: |
+            . /home/circleci/.codebuild_shims_wrapper.sh
+            nvm install
+            nvm use
+            npm install -g pnpm
+            pnpm install        
+  install_codebuild_secrets:
+    steps:
+      - run: 
+          name: Setup our secrets from AWS Secret Manager
+          command: |
+            . /home/circleci/.codebuild_shims_wrapper.sh
+            echo 'export SECRET_VALUE="$(aws secretsmanager get-secret-value --secret-id CodeBuild/Default --query SecretString --output text)"' >> "$BASH_ENV"
+            echo 'export TERRAFORM_TOKEN="$(echo $SECRET_VALUE | jq -r '.terraform_token')"' >> "$BASH_ENV"
+            echo 'export PAGERDUTY_TOKEN="$(echo $SECRET_VALUE | jq -r '.mozilla_pagerduty_token')"' >> "$BASH_ENV"
+            echo 'export GITHUB_ACCESS_TOKEN="$(echo $SECRET_VALUE | jq -r '.github_access_token')"' >> "$BASH_ENV"
+      - run:
+          name: Save off terraform token
+          command: |
+            echo Setting Up Terraform Token
+            rc="credentials \"app.terraform.io\" { "
+            rc="${rc} token=\"$TERRAFORM_TOKEN\" "
+            rc="${rc}}"
+            echo "$rc" > ~/.terraformrc
 
 jobs:
+
+  infrastructure:
+    description: Build and optionally deploy the infratructure
+    parameters:
+      scope:
+        description: The pnpm scope to build for
+        type: string
+      stack-output-path:
+        description: The pnpm output path
+        type: string
+      resource-class:
+        description: The self hosted runnner to run on
+        type: string
+      apply:
+        description: If you should apply
+        type: boolean
+        default: false
+      dev:
+        description: Whether or not its a dev build
+        type: boolean
+        default: false
+      workspace:
+        description: The terraform workspace
+        type: string
+    # Our self hosted runners dont support docker images, cause its not deployed in kubernetes, so we have some special steps
+    machine: true
+    resource_class: << parameters.resource-class >>
+    steps:
+      - checkout
+      - install_infrastructure_pnpm
+      - install_codebuild_secrets
+      - when:
+          condition: <<parameters.dev>>
+          steps:
+            - run:
+                name: Build Dev Infra
+                command: |
+                  . /home/circleci/.codebuild_shims_wrapper.sh
+                  nvm use
+                  pnpm run --filter=<< parameters.scope >> synth:infra:dev
+      - unless:
+          condition: <<parameters.dev>>
+          steps:
+            - run:
+                name: Build Prod Infra
+                command: |
+                  . /home/circleci/.codebuild_shims_wrapper.sh
+                  nvm use
+                  pnpm run --filter=<< parameters.scope >> synth:infra:prod
+      - run:
+          name: Setup terraform
+          command: |
+            . /home/circleci/.codebuild_shims_wrapper.sh
+            cd << parameters.stack-output-path >>
+            tfenv use
+            echo 'export TF_WORKSPACE="<< parameters.workspace >>"' >> "$BASH_ENV"
+            terraform init
+      - when:
+          condition: <<parameters.apply>>
+          steps:
+            - run:
+                name: Terraform apply
+                command: |
+                  . /home/circleci/.codebuild_shims_wrapper.sh
+                  cd << parameters.stack-output-path >>
+                  terraform apply      
+      - unless:
+          condition: <<parameters.apply>>
+          steps:
+            - run:
+                name: Terraform plan
+                command: |
+                  . /home/circleci/.codebuild_shims_wrapper.sh
+                  cd << parameters.stack-output-path >>
+                  terraform plan
 
   test_integrations:
     description: Run integration tests against external services, e.g. MySQL
@@ -27,7 +131,7 @@ jobs:
         description: The pnpm scope to run tests for
         type: string
     docker:
-      - image:  cimg/node:20.10
+      - image: *node_image
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
@@ -73,10 +177,6 @@ jobs:
         description: 'The git branch to build'
         type: string
         default: ''
-      docker-image:
-        description: 'Docker image to use for the job'
-        type: string
-        default: cimg/base:2023.06
       ecr-url:
         description: 'The ecr url'
         type: string
