@@ -38,6 +38,7 @@ commands:
             echo 'export TERRAFORM_TOKEN="$(echo $SECRET_VALUE | jq -r '.terraform_token')"' >> "$BASH_ENV"
             echo 'export PAGERDUTY_TOKEN="$(echo $SECRET_VALUE | jq -r '.mozilla_pagerduty_token')"' >> "$BASH_ENV"
             echo 'export GITHUB_ACCESS_TOKEN="$(echo $SECRET_VALUE | jq -r '.github_access_token')"' >> "$BASH_ENV"
+            echo 'export GITHUB_TOKEN="$(echo $SECRET_VALUE | jq -r '.github_access_token')"' >> "$BASH_ENV"
       - run:
           name: Save off terraform token
           command: |
@@ -77,6 +78,12 @@ jobs:
     resource_class: << parameters.resource-class >>
     steps:
       - checkout
+      - run:
+          name: Install tfcmt
+          command: |
+            curl -L https://github.com/suzuki-shunsuke/tfcmt/releases/download/v4.7.2/tfcmt_linux_amd64.tar.gz | tar xvzf - tfcmt
+            mv tfcmt /home/circleci/tfcmt
+            chmod a+x /home/circleci/tfcmt
       - install_infrastructure_pnpm
       - install_codebuild_secrets
       - when:
@@ -113,7 +120,7 @@ jobs:
                 command: |
                   . /home/circleci/.codebuild_shims_wrapper.sh
                   cd << parameters.stack-output-path >>
-                  terraform apply      
+                  /home/circleci/tfcmt plan -- terraform apply -auto-approve
       - unless:
           condition: <<parameters.apply>>
           steps:
@@ -122,7 +129,7 @@ jobs:
                 command: |
                   . /home/circleci/.codebuild_shims_wrapper.sh
                   cd << parameters.stack-output-path >>
-                  terraform plan
+                  /home/circleci/tfcmt plan -- terraform plan
 
   test_integrations:
     description: Run integration tests against external services, e.g. MySQL

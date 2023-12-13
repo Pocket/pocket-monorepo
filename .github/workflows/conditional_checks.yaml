@@ -1,0 +1,37 @@
+---
+    name: Require Conditional Status Checks
+    on:
+      pull_request:
+        branches:
+          - main
+    jobs:
+      conditional-check:
+        runs-on:
+          - ubuntu-20.04
+        steps:
+          - name: Ensure All Conditional Checks Have Passed
+            uses: blend/require-conditional-status-checks@2022.02.04
+            with:
+              interval: 20s
+              checks-yaml: |
+                - job: ci/circleci: image-api_apollo_admin
+                  paths:
+                  - servers/image-api/**
+                  - infrastructure/image-api/**
+                - job: ci/circleci: image-api_apollo
+                  paths:
+                  - servers/image-api/**
+                  - infrastructure/image-api/**
+                - job: ci/circleci: image-api_build_docker
+                  paths:
+                  - servers/image-api/**
+                  - infrastructure/image-api/**
+                - job: ci/circleci: image-api_infrastructure_plan_prod
+                  paths:
+                  - servers/image-api/**
+                  - infrastructure/image-api/**
+                - job: ci/circleci: image-api_test_integrations
+                  paths:
+                  - servers/image-api/**
+                  - infrastructure/image-api/**
+    
