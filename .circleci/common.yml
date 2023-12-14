@@ -119,7 +119,7 @@ jobs:
       - restore_cache:
           name: Restore Tfenv
           keys:
-            - tfenv
+            - tfenv-v2
 
       - run:
           name: Install tfcmt
@@ -175,9 +175,10 @@ jobs:
                   /home/circleci/tfcmt plan --skip-no-changes --patch -- terraform plan
 
       - save_cache:
-          key: tfenv
+          key: tfenv-v2
           paths:
-            - /home/circleci/.tfenv
+            - /home/circleci/.tfenv/versions/*
+            - /home/circleci/.tfenv/bin/terraform-*
 
   test_integrations:
     description: Run integration tests against external services, e.g. MySQL
