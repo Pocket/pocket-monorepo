@@ -1,18 +1,26 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env.*local"],
+  "globalDependencies": ["**/.env.*local", "packages/tsconfig/**"],
   "globalDotEnv": [".env"],
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
       "dotEnv": [".env.production.local", ".env.local", ".env.production", ".env"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+      "outputs": ["dist/**"]
     },
-    "test": {
-      "dependsOn": ["^build"]
+    "synth": {
+      "dependsOn": ["^build"],
+      "outputs": ["cdktf.out/**"]
     },
     "lint": {},
     "format": {},
+    "test": {
+      "dependsOn": ["^build"]
+    },
+    "test-integrations": {
+      "dependsOn": ["^build"],
+      "cache": false
+    },
     "dev": {
       "cache": false,
       "persistent": true,

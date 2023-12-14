@@ -1,0 +1,474 @@
+version: 2.1
+
+orbs:
+  aws-cli: circleci/aws-cli@2.0.6
+  aws-ecr: circleci/aws-ecr@7.3.0
+  aws-code-deploy: circleci/aws-code-deploy@3.0.0
+
+# This is an enum that is used within all our jobs and our exit early job.
+# As a new "service/deployment" is added you should add to the enum.
+# Then each job you pass a "for" to, so that we can determine if this job is for this "commit"
+repo_for_enum: &repo_for_enum
+  for:
+    description: which repo this job is relevant for
+    type: enum
+    enum: 
+      - image_api
+
+resource_class_enmum: &resource_class_enmum
+  resource-class:
+    description: The self hosted runnner to run on
+    type: enum
+    enum: 
+      - pocket/default-dev
+      - pocket/default-prod
+
+
+parameters:
+  image_api:
+    type: boolean
+    default: false
+
+commands:
+  # Refrenced from https://github.com/kelvintaywl-cci/dynamic-config-showcase/blob/main/.circleci/next.yml
+  exit-early-if-irrelevant:
+    parameters:
+      <<: *repo_for_enum
+    steps:
+      - run:
+          name: stop early unless relevant
+          command: |
+            # looks up the relevant pipeline parameter via the env var
+            export RELEVANT=$(eval echo "\$<< parameters.for >>")
+
+            # NOTE: env var values are strings (not boolean)
+            if [ "${RELEVANT}" = "1" ]; then
+              echo "continuing, since job is for << parameters.for >>"
+            else
+              echo "stopping early!"
+              circleci-agent step halt
+            fi
+          environment:
+            image_api: << pipeline.parameters.image_api >>
+
+  install_pnpm:
+    steps:
+      - run:
+          name: Install pnpm package manager
+          command: |
+            corepack enable
+            corepack prepare pnpm@latest-8 --activate
+      - run:  
+          name: Install Dependencies
+          command: |
+            pnpm install
+  install_infrastructure_pnpm:
+    steps:
+      - run: 
+          name: Install and setup node
+          command: |
+            . /home/circleci/.codebuild_shims_wrapper.sh
+            nvm install
+            nvm use
+            npm install -g pnpm   
+            pnpm install     
+  install_codebuild_secrets:
+    steps:
+      - run: 
+          name: Setup our secrets from AWS Secret Manager
+          command: |
+            . /home/circleci/.codebuild_shims_wrapper.sh
+            echo 'export SECRET_VALUE="$(aws secretsmanager get-secret-value --secret-id CodeBuild/Default --query SecretString --output text)"' >> "$BASH_ENV"
+            echo 'export TERRAFORM_TOKEN="$(echo $SECRET_VALUE | jq -r '.terraform_token')"' >> "$BASH_ENV"
+            echo 'export PAGERDUTY_TOKEN="$(echo $SECRET_VALUE | jq -r '.mozilla_pagerduty_token')"' >> "$BASH_ENV"
+            echo 'export GITHUB_ACCESS_TOKEN="$(echo $SECRET_VALUE | jq -r '.github_access_token')"' >> "$BASH_ENV"
+            echo 'export GITHUB_TOKEN="$(echo $SECRET_VALUE | jq -r '.github_access_token')"' >> "$BASH_ENV"
+      - run:
+          name: Save off terraform token
+          command: |
+            echo Setting Up Terraform Token
+            rc="credentials \"app.terraform.io\" { "
+            rc="${rc} token=\"$TERRAFORM_TOKEN\" "
+            rc="${rc}}"
+            echo "$rc" > ~/.terraformrc
+
+jobs:
+
+  infrastructure:
+    description: Build and optionally deploy the infratructure
+    parameters:
+      scope:
+        description: The pnpm scope to build for
+        type: string
+      stack-output-path:
+        description: The pnpm output path
+        type: string
+      apply:
+        description: If you should apply
+        type: boolean
+        default: false
+      dev:
+        description: Whether or not its a dev build
+        type: boolean
+        default: false
+      workspace:
+        description: The terraform workspace
+        type: string
+      <<: [*repo_for_enum, *resource_class_enmum]
+    # Our self hosted runners dont support docker images, cause its not deployed in kubernetes, so we have some special steps
+    machine: true
+    resource_class: << parameters.resource-class >>
+    steps:
+      - exit-early-if-irrelevant:
+          for: << parameters.for >>
+      - checkout
+      - restore_cache:
+          name: Restore Tfenv
+          keys:
+            - tfenv-v2
+      - run:
+          name: Install tfcmt
+          command: |
+            curl -L https://github.com/suzuki-shunsuke/tfcmt/releases/download/v4.7.2/tfcmt_linux_amd64.tar.gz | tar xvzf - tfcmt
+            mv tfcmt /home/circleci/tfcmt
+            chmod a+x /home/circleci/tfcmt
+      - install_infrastructure_pnpm
+      - install_codebuild_secrets
+      - when:
+          condition: <<parameters.dev>>
+          steps:
+            - run:
+                name: Build Dev Infra
+                command: |
+                  . /home/circleci/.codebuild_shims_wrapper.sh
+                  nvm use
+                  export NODE_ENV=development
+                  pnpm run --filter=<< parameters.scope >>... build
+                  pnpm run --filter=<< parameters.scope >> synth
+      - unless:
+          condition: <<parameters.dev>>
+          steps:
+            - run:
+                name: Build Prod Infra
+                command: |
+                  . /home/circleci/.codebuild_shims_wrapper.sh
+                  nvm use
+                  export NODE_ENV=production
+                  pnpm run --filter=<< parameters.scope >>... build
+                  pnpm run --filter=<< parameters.scope >> synth
+      - run:
+          name: Setup terraform
+          command: |
+            . /home/circleci/.codebuild_shims_wrapper.sh
+            cd << parameters.stack-output-path >>
+            tfenv use
+            echo 'export TF_WORKSPACE="<< parameters.workspace >>"' >> "$BASH_ENV"
+            terraform init
+      - when:
+          condition: <<parameters.apply>>
+          steps:
+            - attach_workspace:
+                at: /tmp/workspace
+            - run:
+                name: Terraform apply
+                command: |
+                  . /home/circleci/.codebuild_shims_wrapper.sh
+                  cd << parameters.stack-output-path >>
+                  /home/circleci/tfcmt apply -- terraform apply -auto-approve
+                  cp appspec.json /tmp/workspace/
+            - persist_to_workspace:
+                root: /tmp/workspace
+                paths:
+                  - 'appspec.json'
+      - unless:
+          condition: <<parameters.apply>>
+          steps:
+            - run:
+                name: Terraform plan
+                command: |
+                  . /home/circleci/.codebuild_shims_wrapper.sh
+                  cd << parameters.stack-output-path >>
+                  /home/circleci/tfcmt plan --skip-no-changes --patch -- terraform plan
+
+      - save_cache:
+          key: tfenv-v2
+          paths:
+            - /home/circleci/.tfenv/versions/*
+            - /home/circleci/.tfenv/bin/terraform-*
+
+  code_deploy_ecs:
+    parameters:
+      workspace:
+        description: Workspace where the appspec.json and task.json are at
+        type: string
+        default: /tmp/workspace
+      codedeploy-app-name:
+        description: CodeDeploy app name
+        type: string
+      codedeploy-group-name:
+        description: CodeDeploy group name
+        type: string
+      <<: [*repo_for_enum, *resource_class_enmum]
+    # Our self hosted runners dont support docker images, cause its not deployed in kubernetes, so we have some special steps
+    machine: true
+    resource_class: << parameters.resource-class >>
+    steps:
+      - exit-early-if-irrelevant:
+          for: << parameters.for >>
+      - attach_workspace:
+          at: << parameters.workspace >>
+      - run:
+          name: CodeDeploy
+          command: |
+            . /home/circleci/.codebuild_shims_wrapper.sh
+            export appspec=$(cat '<< parameters.workspace >>/appspec.json')
+            export REVISION="revisionType=AppSpecContent,appSpecContent={content='$appspec'}"
+            aws deploy \
+            create-deployment \
+            --application-name="<< parameters.codedeploy-app-name >>"  \
+            --deployment-group-name="<< parameters.codedeploy-group-name >>" \
+            --description="Triggered from CircleCI" \
+            --revision="$REVISION" \
+            --no-cli-pager
+
+  test_integrations:
+    description: Run integration tests against external services, e.g. MySQL
+    parameters:
+      scope:
+        description: The pnpm scope to run tests for
+        type: string
+      <<: *repo_for_enum
+    docker:
+      - image: *node_image
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+        environment:
+          NODE_ENV: test
+          AWS_XRAY_LOG_LEVEL: silent
+          AWS_XRAY_CONTEXT_MISSING: LOG_ERROR
+      - image: redis:latest
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - exit-early-if-irrelevant:
+          for: << parameters.for >>
+      - checkout
+      - install_pnpm
+      - run:
+          name: run setup.sh
+          command: |
+            export $(egrep -v '^#' .docker/local.env | xargs -0) && ./.circleci/scripts/setup.sh --hosts
+      - run:
+          name: run tests
+          command: |
+            export $(egrep -v '^#' .docker/local.env | xargs -0)
+            pnpm run --filter=<< parameters.scope >>... test-integrations
+
+  build_image:
+    description: Build and/or push docker image to ECR. Runs codebuild if specified ECR does not exist to create it
+
+    parameters:
+      aws-access-key-id:
+        description: 'AWS access key id environment variable'
+        type: string
+      aws-region:
+        description: 'AWS region value'
+        type: string
+      aws-secret-access-key:
+        description: 'AWS secret access key environment variable'
+        type: string
+      codebuild-project-name:
+        description: 'The CodeBuild project name'
+        type: string
+        default: ''
+      codebuild-project-branch:
+        description: 'The git branch to build'
+        type: string
+        default: ''
+      ecr-url:
+        description: 'The ecr url'
+        type: string
+      extra-build-args:
+        description: 'Extra flags to pass to docker build. For examples, see https://docs.docker.com/engine/reference/commandline/build'
+        type: string
+        default: --build-arg GIT_SHA=${CIRCLE_SHA1}
+      push:
+        description: 'Whether or not to push the code'
+        type: boolean
+        default: false
+      repo-name:
+        description: 'The ecr repo name'
+        type: string
+      tag:
+        description: 'The docker tag name'
+        type: string
+        default: latest,$CIRCLE_SHA1
+      <<: *repo_for_enum
+    executor: aws-cli/default
+
+    steps:
+      - exit-early-if-irrelevant:
+          for: << parameters.for >>
+      - checkout
+      - aws-cli/setup:
+          aws-access-key-id: << parameters.aws-access-key-id >>
+          aws-secret-access-key: << parameters.aws-secret-access-key >>
+          aws-region: << parameters.aws-region >>
+      - run:
+          name: Setup common environment variables
+          command: |
+            { \
+              echo 'export AWS_ECR_ACCOUNT_URL="<< parameters.ecr-url >>"'; \
+              echo 'export REPO_NAME="<< parameters.repo-name >>"'; \
+              echo 'export CODEBUILD_PROJECT_NAME="<< parameters.codebuild-project-name >>"'; \
+              echo 'export CODEBUILD_PROJECT_BRANCH="<< parameters.codebuild-project-branch >>"'; \
+            } >> "$BASH_ENV"
+      - when:
+          condition: <<parameters.push>>
+          steps:
+            - aws-ecr/build-and-push-image:
+                checkout: false
+                repo: << parameters.repo-name >>
+                setup-remote-docker: true
+                remote-docker-layer-caching: true
+                aws-access-key-id: << parameters.aws-access-key-id >>
+                aws-secret-access-key: << parameters.aws-secret-access-key >>
+                tag: << parameters.tag >>
+                extra-build-args: << parameters.extra-build-args >>
+      - unless:
+          condition: <<parameters.push>>
+          steps:
+            - setup_remote_docker:
+                docker-layer-caching: true
+            - aws-ecr/build-image:
+                repo: << parameters.repo-name >>
+                tag: << parameters.tag >>
+                extra-build-args: << parameters.extra-build-args >>
+
+  apollo:
+    description: >
+      Runs Apollo rover schema check on the production graphql federated schema.
+      If it is the production branch will deploy the subgraph to the production federated graph.
+      If the branch is the development branch, will deploy the subgraph to the development federated graph.
+
+    parameters:
+      fed_graph_name:
+        type: string
+        description: The name of federated graph to check
+      graph_name:
+        type: string
+        description: The name of this subgraph
+      schema_file_path:
+        type: string
+        description: The patht to the schema file
+        default: ./schema.graphql
+      prod_graph_url:
+        type: string
+        description: The production subgraph url
+      dev_graph_url:
+        type: string
+        description: The development subgraph url
+      prod_graph_variant_name:
+        type: string
+        description: The production variant graph name
+        default: "current"
+      dev_graph_variant_name:
+        type: string
+        description: The development variant graph name
+        default: "development"
+      prod_branch:
+        type: string
+        description: The production git branch
+        default: "main"
+      dev_branch:
+        type: string
+        description: The development git branch
+        default: "dev"
+      apollo_key_env:
+        type: env_var_name
+        default: APOLLO_KEY
+        description: The environment variable name of the apollo key to user
+
+    docker:
+      - image: cimg/base:2022.07
+        auth:
+          username: $DOCKER_LOGIN
+          password: $DOCKER_PASSWORD
+
+    steps:
+      - checkout
+      - run:
+          name: install rover
+          command: |
+            # download and install Rover
+            curl -sSL https://rover.apollo.dev/nix/latest | sh
+
+            # This allows the PATH changes to persist to the next `run` step
+            echo "export PATH=$HOME/.rover/bin:$PATH" >> "$BASH_ENV"
+      - run:
+          name: check service
+          command: |
+            export APOLLO_KEY=$<< parameters.apollo_key_env >>
+            rover subgraph check << parameters.fed_graph_name >>@<< parameters.prod_graph_variant_name >> --schema << parameters.schema_file_path >> --name=<< parameters.graph_name >>
+      - when:
+          condition:
+            equal: [<< parameters.prod_branch >>, << pipeline.git.branch >>]
+          steps:
+            - run:
+                name: push service to prod
+                command: |
+                  export APOLLO_KEY=$<< parameters.apollo_key_env >>
+                  rover subgraph publish << parameters.fed_graph_name >>@<< parameters.prod_graph_variant_name >> --schema << parameters.schema_file_path >> --routing-url << parameters.prod_graph_url >> --name=<< parameters.graph_name >>
+      - when:
+          condition:
+            equal: [<< parameters.dev_branch >>, << pipeline.git.branch >>]
+          steps:
+            - run:
+                name: push service to dev
+                command: |
+                  export APOLLO_KEY=$<< parameters.apollo_key_env >>
+                  rover subgraph publish << parameters.fed_graph_name >>@<< parameters.dev_graph_variant_name >> --schema << parameters.schema_file_path >> --routing-url << parameters.dev_graph_url >> --name=<< parameters.graph_name >>
+
+  sentry_release_notification:
+    description: Create new release in Sentry
+    resource_class: small
+    parameters:
+      sentry_project_name:
+        type: string
+        description: the Sentry project name
+      sentry_env:
+        type: string
+        default: Prod
+        description: Which environment the release is going to
+      sentry_org:
+        type: string
+        description: The sentry org
+      <<: *repo_for_enum
+    docker:
+      - image: getsentry/sentry-cli
+        auth:
+          username: $DOCKER_LOGIN
+          password: $DOCKER_PASSWORD
+    steps:
+      - exit-early-if-irrelevant:
+          for: << parameters.for >>
+      - run:
+          name: Setup Environment variables
+          command: |
+            echo "export SENTRY_AUTH_TOKEN="$SENTRY_BEARER"" >> "$BASH_ENV"
+            echo "export SENTRY_ORG=<< parameters.sentry_org >>" >> "$BASH_ENV"
+            echo "export SENTRY_PROJECT=<< parameters.sentry_project_name >>" >> "$BASH_ENV"
+      - run:
+          name: Sentry Release Notification
+          command: |
+            source "$BASH_ENV"
+            sentry-cli releases new "$CIRCLE_SHA1"
+            sentry-cli releases set-commits "$CIRCLE_SHA1" --commit "Pocket/pocket-monorepo@$CIRCLE_SHA1"
+            sentry-cli releases finalize "$CIRCLE_SHA1"
+      - run:
+          name: Sentry Deploy Notification
+          command: |
+            source "$BASH_ENV"
+            sentry-cli releases deploys "$CIRCLE_SHA1" new -e "<< parameters.sentry_env >>"
