@@ -70,8 +70,8 @@ commands:
             . /home/circleci/.codebuild_shims_wrapper.sh
             nvm install
             nvm use
-            npm install -g pnpm
-            pnpm install        
+            npm install -g pnpm   
+            pnpm install     
   install_codebuild_secrets:
     steps:
       - run: 
@@ -143,7 +143,9 @@ jobs:
                 command: |
                   . /home/circleci/.codebuild_shims_wrapper.sh
                   nvm use
-                  pnpm run --filter=<< parameters.scope >> synth:infra:dev
+                  export NODE_ENV=development
+                  pnpm run --filter=<< parameters.scope >>... build
+                  pnpm run --filter=<< parameters.scope >> synth
       - unless:
           condition: <<parameters.dev>>
           steps:
@@ -152,7 +154,9 @@ jobs:
                 command: |
                   . /home/circleci/.codebuild_shims_wrapper.sh
                   nvm use
-                  pnpm run --filter=<< parameters.scope >> synth:infra:prod
+                  export NODE_ENV=production
+                  pnpm run --filter=<< parameters.scope >>... build
+                  pnpm run --filter=<< parameters.scope >> synth
       - run:
           name: Setup terraform
           command: |
@@ -258,7 +262,7 @@ jobs:
           name: run tests
           command: |
             export $(egrep -v '^#' .docker/local.env | xargs -0)
-            pnpm run --filter=<< parameters.scope >> test-integrations
+            pnpm run --filter=<< parameters.scope >>... test-integrations
 
   build_image:
     description: Build and/or push docker image to ECR. Runs codebuild if specified ECR does not exist to create it

@@ -6,15 +6,11 @@
     "build": {
       "dependsOn": ["^build"],
       "dotEnv": [".env.production.local", ".env.local", ".env.production", ".env"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**", "cdktf"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
-    "synth:infra:prod": {
+    "synth": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", "cdktf.out/**"]
-    },
-    "synth:infra:dev": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", "cdktf.out/**"]
+      "outputs": ["cdktf.out/**"]
     },
     "lint": {},
     "format": {},
