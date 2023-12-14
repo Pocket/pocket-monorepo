@@ -15,6 +15,15 @@ repo_for_enum: &repo_for_enum
     enum: 
       - image_api
 
+resource_class_enmum: &resource_class_enmum
+  resource-class:
+    description: The self hosted runnner to run on
+    type: enum
+    enum: 
+      - pocket/default-dev
+      - pocket/default-prod
+
+
 parameters:
   image_api:
     type: boolean
@@ -94,9 +103,6 @@ jobs:
       stack-output-path:
         description: The pnpm output path
         type: string
-      resource-class:
-        description: The self hosted runnner to run on
-        type: string
       apply:
         description: If you should apply
         type: boolean
@@ -108,7 +114,7 @@ jobs:
       workspace:
         description: The terraform workspace
         type: string
-      <<: *repo_for_enum
+      <<: [*repo_for_enum, *resource_class_enmum]
     # Our self hosted runners dont support docker images, cause its not deployed in kubernetes, so we have some special steps
     machine: true
     resource_class: << parameters.resource-class >>
@@ -198,7 +204,10 @@ jobs:
       codedeploy-group-name:
         description: CodeDeploy group name
         type: string
-      <<: *repo_for_enum
+      <<: [*repo_for_enum, *resource_class_enmum]
+    # Our self hosted runners dont support docker images, cause its not deployed in kubernetes, so we have some special steps
+    machine: true
+    resource_class: << parameters.resource-class >>
     steps:
       - exit-early-if-irrelevant:
           for: << parameters.for >>
@@ -207,11 +216,12 @@ jobs:
       - run:
           name: CodeDeploy
           command: |
+            . /home/circleci/.codebuild_shims_wrapper.sh
             export REVISION="$(cat '<< parameters.workspace >>/appspec.json')"
             aws deploy \
             create-deployment \
             --application-name="<< parameters.codedeploy-app-name >>"  \
-            --deployment-group-name="<< codedeploy-group-name >>" \
+            --deployment-group-name="<< parameters.codedeploy-group-name >>" \
             --description="Triggered from CircleCI" \
             --revision="$REVISION"
 
@@ -426,10 +436,6 @@ jobs:
         type: string
         default: Prod
         description: Which environment the release is going to
-      sentry_key:
-        type: env_var_name
-        default: SENTRY_BEARER
-        description: Sentry authentication token
       sentry_org:
         type: string
         description: The sentry org
@@ -445,7 +451,7 @@ jobs:
       - run:
           name: Setup Environment variables
           command: |
-            echo "export SENTRY_AUTH_TOKEN="$<< parameters.sentry_key >>"" >> "$BASH_ENV"
+            echo "export SENTRY_AUTH_TOKEN="$SENTRY_BEARER"" >> "$BASH_ENV"
             echo "export SENTRY_ORG=<< parameters.sentry_org >>" >> "$BASH_ENV"
             echo "export SENTRY_PROJECT=<< parameters.sentry_project_name >>" >> "$BASH_ENV"
       - run:

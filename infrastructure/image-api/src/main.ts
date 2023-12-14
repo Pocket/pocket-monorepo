@@ -5,7 +5,6 @@ import {
   RemoteBackend,
   TerraformStack,
 } from 'cdktf';
-import { AwsProvider, datasources, kms, sns } from '@cdktf/provider-aws';
 import { config } from './config';
 import {
   ApplicationRedis,
@@ -15,10 +14,16 @@ import {
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
 import * as fs from 'fs';
-import { PagerdutyProvider } from '@cdktf/provider-pagerduty';
-import { NullProvider } from '@cdktf/provider-null';
-import { LocalProvider } from '@cdktf/provider-local';
-import { ArchiveProvider } from '@cdktf/provider-archive';
+
+import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
+import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
+import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
+import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/data-aws-kms-alias';
+import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
+import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
+import { NullProvider } from '@cdktf/provider-null/lib/provider';
+import { LocalProvider } from '@cdktf/provider-local/lib/provider';
+import { ArchiveProvider } from '@cdktf/provider-archive/lib/provider';
 
 class ImageAPI extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -37,8 +42,8 @@ class ImageAPI extends TerraformStack {
     });
 
     const pocketVPC = new PocketVPC(this, 'pocket-vpc');
-    const region = new datasources.DataAwsRegion(this, 'region');
-    const caller = new datasources.DataAwsCallerIdentity(this, 'caller');
+    const region = new DataAwsRegion(this, 'region');
+    const caller = new DataAwsCallerIdentity(this, 'caller');
 
     const { primaryEndpoint, readerEndpoint } = this.createElasticache(
       this,
@@ -63,7 +68,7 @@ class ImageAPI extends TerraformStack {
    * @private
    */
   private getCodeDeploySnsTopic() {
-    return new sns.DataAwsSnsTopic(this, 'backend_notifications', {
+    return new DataAwsSnsTopic(this, 'backend_notifications', {
       name: `Backend-${config.environment}-ChatBot`,
     });
   }
@@ -73,7 +78,7 @@ class ImageAPI extends TerraformStack {
    * @private
    */
   private getSecretsManagerKmsAlias() {
-    return new kms.DataAwsKmsAlias(this, 'kms_alias', {
+    return new DataAwsKmsAlias(this, 'kms_alias', {
       name: 'alias/aws/secretsmanager',
     });
   }
@@ -130,10 +135,10 @@ class ImageAPI extends TerraformStack {
 
   private createPocketAlbApplication(dependencies: {
     pagerDuty: PocketPagerDuty;
-    region: datasources.DataAwsRegion;
-    caller: datasources.DataAwsCallerIdentity;
-    secretsManagerKmsAlias: kms.DataAwsKmsAlias;
-    snsTopic: sns.DataAwsSnsTopic;
+    region: DataAwsRegion;
+    caller: DataAwsCallerIdentity;
+    secretsManagerKmsAlias: DataAwsKmsAlias;
+    snsTopic: DataAwsSnsTopic;
     primaryEndpoint: string;
     readerEndpoint: string;
   }): PocketALBApplication {

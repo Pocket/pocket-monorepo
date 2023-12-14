@@ -80,6 +80,9 @@ COPY --from=setup /app/out/full/ ./
 COPY turbo.json turbo.json
 RUN pnpm run build --filter=$SCOPE
 
+## Installing only the dev dependencies after we used them to build
+RUN rm -rf node_modules/ && pnpm install --prod --filter=${SCOPE} --frozen-lockfile
+
 # Inject sentry source maps
 RUN pnpm --filter=$SCOPE --prod deploy pruned
 RUN pnpx @sentry/cli sourcemaps inject pruned/dist

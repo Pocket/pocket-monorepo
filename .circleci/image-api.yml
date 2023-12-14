@@ -93,6 +93,7 @@ workflows:
           context: pocket
           for: image_api
           name: image-api_code_deploy_ecs_dev
+          resource-class: pocket/default-dev
           codedeploy-app-name: ImageAPI-Prod-ECS
           codedeploy-group-name: ImageAPI-Prod-ECS
           requires:
@@ -103,6 +104,7 @@ workflows:
           <<: *only_dev
           name: image-api_sentry-release-notification-dev
           context: pocket
+          for: image_api
           sentry_project_name: image-api
           sentry_env: development
           sentry_org: pocket
@@ -145,16 +147,18 @@ workflows:
           context: pocket
           for: image_api
           name: image-api_code_deploy_ecs_prod
+          resource-class: pocket/default-prod
           codedeploy-app-name: ImageAPI-Prod-ECS
           codedeploy-group-name: ImageAPI-Prod-ECS
           requires:
             - image-api_build_docker_prod
 
       # Notify sentry of main deployment
-      - pocket/sentry_release_notification:
+      - sentry_release_notification:
           <<: *only_main
           name: image-api_sentry-release-notification-prod
           context: pocket
+          for: image_api
           sentry_project_name: image-api
           sentry_env: production
           sentry_org: pocket

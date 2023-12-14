@@ -1,6 +1,7 @@
 import winston from 'winston';
 
 import type { Logger, LoggerOptions } from 'winston';
+export type { Logger, LoggerOptions };
 
 const levels = {
   error: 0,

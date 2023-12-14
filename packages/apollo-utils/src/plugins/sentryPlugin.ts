@@ -6,9 +6,9 @@ import {
 } from '@apollo/server';
 import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { InternalErrorCode } from '../errorHandler/errorHandler';
-import { setLogger } from '@pocket-tools/ts-logger';
+import { setLogger, Logger } from '@pocket-tools/ts-logger';
 
-export const defaultLogger = setLogger();
+export const defaultLogger: Logger = setLogger();
 
 /**
  * This is a list of error codes to not report in the sentry
