@@ -224,7 +224,7 @@ class ImageAPI extends TerraformStack {
       ],
       codeDeploy: {
         useCodeDeploy: true,
-        useCodePipeline: true,
+        useCodePipeline: false,
         notifications: {
           notifyOnFailed: true,
           notifyOnStarted: false,

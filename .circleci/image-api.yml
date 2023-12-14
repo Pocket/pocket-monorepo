@@ -13,7 +13,6 @@ workflows:
           schema_file_path: servers/image-api/schema.graphql
           prod_graph_url: https://image-api.readitlater.com
           dev_graph_url: https://image-api.getpocket.dev
-          current_branch: << pipeline.git.branch >>
 
       - apollo:
           name: image-api_apollo_admin
@@ -22,7 +21,6 @@ workflows:
           graph_name: image-api
           prod_graph_url: https://image-api.readitlater.com
           dev_graph_url: https://image-api.getpocket.dev
-          current_branch: << pipeline.git.branch >>
           apollo_key_env: APOLLO_ADMIN_KEY
 
       - test_integrations:
@@ -62,22 +60,6 @@ workflows:
       # Dev Branch Deployment (Dev Environment)
       ######
 
-      # Build & Deploy the Dev Docker Image
-      - build_image:
-          <<: *only_dev
-          context: pocket
-          for: image_api
-          name: image-api_build_docker_dev
-          aws-access-key-id: Dev_AWS_ACCESS_KEY
-          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
-          aws-region: Dev_AWS_DEFAULT_REGION
-          codebuild-project-name: ImageAPI-Dev
-          codebuild-project-branch: dev
-          repo-name: imageapi-dev-app
-          ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
-          push: true
-          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=image-api --build-arg APP_PATH=servers/image-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=image-api --build-arg PORT=4867
-
       - infrastructure:
           <<: *only_dev
           context: pocket
@@ -89,25 +71,47 @@ workflows:
           workspace: Dev
           apply: true
           dev: true
+
+      # Build & Deploy the Dev Docker Image
+      - build_image:
+          <<: *only_dev
+          context: pocket
+          for: image_api
+          name: image-api_build_docker_dev
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          repo-name: imageapi-dev-app
+          ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
+          push: true
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=image-api --build-arg APP_PATH=servers/image-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=image-api --build-arg PORT=4867
+          requires:
+            - image-api_infrastructure_apply_dev
+
+      - code_deploy_ecs:
+          <<: *only_main
+          context: pocket
+          for: image_api
+          name: image-api_code_deploy_ecs_dev
+          codedeploy-app-name: ImageAPI-Prod-ECS
+          codedeploy-group-name: ImageAPI-Prod-ECS
           requires:
             - image-api_build_docker_dev
 
-    #   # Notify sentry of dev deployment
-    #   - pocket/sentry_release_notification:
-    #       <<: *only_dev
-    #       name: image-api_sentry-release-notification-dev
-    #       context: pocket
-    #       repository_name: Pocket/image-api
-    #       sentry_project_name: image-api
-    #       sentry_env: development
-    #       sentry_org: pocket
-    #       requires:
-    #         - image-api_deploy_dev
+      # Notify sentry of dev deployment
+      - sentry_release_notification:
+          <<: *only_dev
+          name: image-api_sentry-release-notification-dev
+          context: pocket
+          sentry_project_name: image-api
+          sentry_env: development
+          sentry_org: pocket
+          requires:
+            - image-api_code_deploy_ecs_dev
 
       ######
       # Main Branch Deployment (Prod Environment)
       ######
-
       - infrastructure:
           <<: *only_main
           context: pocket
@@ -119,8 +123,6 @@ workflows:
           workspace: Prod
           apply: true
           dev: false
-          requires:
-            - image-api_build_docker_prod
 
       # Build & Deploy the Prod Docker Image
       - build_image:
@@ -131,24 +133,32 @@ workflows:
           aws-access-key-id: Prod_AWS_ACCESS_KEY
           aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
           aws-region: Prod_AWS_DEFAULT_REGION
-          codebuild-project-name: ImageAPI-Prod
-          codebuild-project-branch: main
           repo-name: imageapi-prod-app
           ecr-url: 996905175585.dkr.ecr.us-east-1.amazonaws.com
           push: true
           extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=image-api --build-arg APP_PATH=servers/image-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=image-api --build-arg PORT=4867
+          requires:
+            - image-api_infrastructure_apply_prod
 
+      - code_deploy_ecs:
+          <<: *only_main
+          context: pocket
+          for: image_api
+          name: image-api_code_deploy_ecs_prod
+          codedeploy-app-name: ImageAPI-Prod-ECS
+          codedeploy-group-name: ImageAPI-Prod-ECS
+          requires:
+            - image-api_build_docker_prod
 
-    #   # Notify sentry of main deployment
-    #   - pocket/sentry_release_notification:
-    #       <<: *only_main
-    #       name: image-api_sentry-release-notification-prod
-    #       context: pocket
-    #       repository_name: Pocket/image-api
-    #       sentry_project_name: image-api
-    #       sentry_env: production
-    #       sentry_org: pocket
-    #       requires:
-    #         - image-api_deploy_prod
+      # Notify sentry of main deployment
+      - pocket/sentry_release_notification:
+          <<: *only_main
+          name: image-api_sentry-release-notification-prod
+          context: pocket
+          sentry_project_name: image-api
+          sentry_env: production
+          sentry_org: pocket
+          requires:
+            - image-api_code_deploy_ecs_prod
 
 

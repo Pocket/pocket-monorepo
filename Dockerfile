@@ -85,7 +85,7 @@ RUN pnpm --filter=$SCOPE --prod deploy pruned
 RUN pnpx @sentry/cli sourcemaps inject pruned/dist
 
 # If sentry project was passed, upload the source maps
-RUN if [ -n "$SENTRY_PROJECT" ] ; then pnpx @sentry/cli sourcemaps upload pruned/dist --auth-token ${SENTRY_AUTH_TOKEN} --org ${SENTRY_ORG} --project ${SENTRY_PROJECT} ; fi
+RUN if [ -n "$SENTRY_PROJECT" ] ; then pnpx @sentry/cli sourcemaps upload pruned/dist --release ${GIT_SHA} --auth-token ${SENTRY_AUTH_TOKEN} --org ${SENTRY_ORG} --project ${SENTRY_PROJECT} ; fi
 
 #----------------------------------------
 # Docker build step that:

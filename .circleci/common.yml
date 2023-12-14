@@ -3,7 +3,7 @@ version: 2.1
 orbs:
   aws-cli: circleci/aws-cli@2.0.6
   aws-ecr: circleci/aws-ecr@7.3.0
-  tfenv: sogaoh/orb-tfenv@0.0.1
+  aws-code-deploy: circleci/aws-code-deploy@3.0.0
 
 # This is an enum that is used within all our jobs and our exit early job.
 # As a new "service/deployment" is added you should add to the enum.
@@ -158,12 +158,18 @@ jobs:
       - when:
           condition: <<parameters.apply>>
           steps:
+            - attach_workspace:
+                at: /tmp/workspace
             - run:
                 name: Terraform apply
                 command: |
                   . /home/circleci/.codebuild_shims_wrapper.sh
                   cd << parameters.stack-output-path >>
-                  /home/circleci/tfcmt plan -- terraform apply -auto-approve
+                  /home/circleci/tfcmt apply -- terraform apply -auto-approve
+            - persist_to_workspace:
+                root: /tmp/workspace
+                paths:
+                  - 'appspec.json'
       - unless:
           condition: <<parameters.apply>>
           steps:
@@ -179,6 +185,35 @@ jobs:
           paths:
             - /home/circleci/.tfenv/versions/*
             - /home/circleci/.tfenv/bin/terraform-*
+
+  code_deploy_ecs:
+    parameters:
+      workspace:
+        description: Workspace where the appspec.json and task.json are at
+        type: string
+        default: /tmp/workspace
+      codedeploy-app-name:
+        description: CodeDeploy app name
+        type: string
+      codedeploy-group-name:
+        description: CodeDeploy group name
+        type: string
+      <<: *repo_for_enum
+    steps:
+      - exit-early-if-irrelevant:
+          for: << parameters.for >>
+      - attach_workspace:
+          at: << parameters.workspace >>
+      - run:
+          name: CodeDeploy
+          command: |
+            export REVISION="$(cat '<< parameters.workspace >>/appspec.json')"
+            aws deploy \
+            create-deployment \
+            --application-name="<< parameters.codedeploy-app-name >>"  \
+            --deployment-group-name="<< codedeploy-group-name >>" \
+            --description="Triggered from CircleCI" \
+            --revision="$REVISION"
 
   test_integrations:
     description: Run integration tests against external services, e.g. MySQL
@@ -335,9 +370,6 @@ jobs:
         type: string
         description: The development git branch
         default: "dev"
-      current_branch:
-        type: string
-        description: The pipeline current branch of the orb, set this to << pipeline.git.branch >> in your usage of this
       apollo_key_env:
         type: env_var_name
         default: APOLLO_KEY
@@ -366,7 +398,7 @@ jobs:
             rover subgraph check << parameters.fed_graph_name >>@<< parameters.prod_graph_variant_name >> --schema << parameters.schema_file_path >> --name=<< parameters.graph_name >>
       - when:
           condition:
-            equal: [<< parameters.prod_branch >>, << parameters.current_branch >>]
+            equal: [<< parameters.prod_branch >>, << pipeline.git.branch >>]
           steps:
             - run:
                 name: push service to prod
@@ -375,10 +407,56 @@ jobs:
                   rover subgraph publish << parameters.fed_graph_name >>@<< parameters.prod_graph_variant_name >> --schema << parameters.schema_file_path >> --routing-url << parameters.prod_graph_url >> --name=<< parameters.graph_name >>
       - when:
           condition:
-            equal: [<< parameters.dev_branch >>, << parameters.current_branch >>]
+            equal: [<< parameters.dev_branch >>, << pipeline.git.branch >>]
           steps:
             - run:
                 name: push service to dev
                 command: |
                   export APOLLO_KEY=$<< parameters.apollo_key_env >>
                   rover subgraph publish << parameters.fed_graph_name >>@<< parameters.dev_graph_variant_name >> --schema << parameters.schema_file_path >> --routing-url << parameters.dev_graph_url >> --name=<< parameters.graph_name >>
+
+  sentry_release_notification:
+    description: Create new release in Sentry
+    resource_class: small
+    parameters:
+      sentry_project_name:
+        type: string
+        description: the Sentry project name
+      sentry_env:
+        type: string
+        default: Prod
+        description: Which environment the release is going to
+      sentry_key:
+        type: env_var_name
+        default: SENTRY_BEARER
+        description: Sentry authentication token
+      sentry_org:
+        type: string
+        description: The sentry org
+      <<: *repo_for_enum
+    docker:
+      - image: getsentry/sentry-cli
+        auth:
+          username: $DOCKER_LOGIN
+          password: $DOCKER_PASSWORD
+    steps:
+      - exit-early-if-irrelevant:
+          for: << parameters.for >>
+      - run:
+          name: Setup Environment variables
+          command: |
+            echo "export SENTRY_AUTH_TOKEN="$<< parameters.sentry_key >>"" >> "$BASH_ENV"
+            echo "export SENTRY_ORG=<< parameters.sentry_org >>" >> "$BASH_ENV"
+            echo "export SENTRY_PROJECT=<< parameters.sentry_project_name >>" >> "$BASH_ENV"
+      - run:
+          name: Sentry Release Notification
+          command: |
+            source "$BASH_ENV"
+            sentry-cli releases new "$CIRCLE_SHA1"
+            sentry-cli releases set-commits "$CIRCLE_SHA1" --commit "Pocket/pocket-monorepo@$CIRCLE_SHA1"
+            sentry-cli releases finalize "$CIRCLE_SHA1"
+      - run:
+          name: Sentry Deploy Notification
+          command: |
+            source "$BASH_ENV"
+            sentry-cli releases deploys "$CIRCLE_SHA1" new -e "<< parameters.sentry_env >>"
