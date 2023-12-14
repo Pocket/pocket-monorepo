@@ -64,6 +64,7 @@ export interface ApplicationECSServiceProps extends TerraformMetaArguments {
   lifecycleIgnoreChanges?: string[]; // defaults to ['task_definition', 'desired_count', 'load_balancer']
   ecsIamConfig: ApplicationECSIAMProps;
   useCodeDeploy: boolean; //defaults to true
+  useTerraformBasedCodeDeploy?: boolean; //defaults to true
   useCodePipeline?: boolean;
   successTerminationWaitTimeInMinutes?: number;
   codeDeployNotifications?: {
@@ -211,7 +212,10 @@ export class ApplicationECSService extends Construct {
           provider: this.config.provider,
         }));
 
-      if (!this.config.useCodePipeline) {
+      if (
+        !this.config.useCodePipeline &&
+        this.config.useTerraformBasedCodeDeploy
+      ) {
         /**
          * If you make any changes to the Task Definition this must be called since we ignore changes to it.
          *
@@ -259,6 +263,8 @@ export class ApplicationECSService extends Construct {
     config.desiredCount = config.desiredCount || 2;
     //Need to use ?? because useCodeDeploy can be false
     config.useCodeDeploy = config.useCodeDeploy ?? true;
+    config.useTerraformBasedCodeDeploy =
+      config.useTerraformBasedCodeDeploy ?? true;
 
     config.lifecycleIgnoreChanges = config.lifecycleIgnoreChanges || [
       'desired_count',

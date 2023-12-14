@@ -114,6 +114,10 @@ export interface PocketALBApplicationProps extends TerraformMetaArguments {
      */
     useCodeDeploy: boolean;
     /**
+     * Option to deploy a new version using terraform, instead of externally
+     */
+    useTerraformBasedCodeDeploy?: boolean;
+    /**
      * Optional SNS topic for CodeDeploy notifications.
      */
     snsNotificationTopicArn?: string;
@@ -610,6 +614,8 @@ export class PocketALBApplication extends Construct {
       useCodeDeploy: this.config.codeDeploy.useCodeDeploy,
       codeDeployNotifications: this.config.codeDeploy.notifications,
       useCodePipeline: this.config.codeDeploy.useCodePipeline,
+      useTerraformBasedCodeDeploy:
+        this.config.codeDeploy.useTerraformBasedCodeDeploy,
       successTerminationWaitTimeInMinutes:
         this.config.codeDeploy.successTerminationWaitTimeInMinutes,
       codeDeploySnsNotificationTopicArn:

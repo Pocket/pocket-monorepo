@@ -15,6 +15,9 @@ ARG SENTRY_AUTH_TOKEN
 ARG SENTRY_ORG
 ARG SENTRY_PROJECT
 
+## Add curl for health checks
+RUN apk add --no-cache curl
+
 ## Add turbo and pnpm to all followup builder images
 # Dockerfile
 RUN corepack enable && corepack prepare pnpm@latest --activate

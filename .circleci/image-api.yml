@@ -89,13 +89,13 @@ workflows:
             - image-api_infrastructure_apply_dev
 
       - code_deploy_ecs:
-          <<: *only_main
+          <<: *only_dev
           context: pocket
           for: image_api
           name: image-api_code_deploy_ecs_dev
           resource-class: pocket/default-dev
-          codedeploy-app-name: ImageAPI-Prod-ECS
-          codedeploy-group-name: ImageAPI-Prod-ECS
+          codedeploy-app-name: ImageAPI-Dev-ECS
+          codedeploy-group-name: ImageAPI-Dev-ECS
           requires:
             - image-api_build_docker_dev
 

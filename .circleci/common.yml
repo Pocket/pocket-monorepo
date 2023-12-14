@@ -126,7 +126,6 @@ jobs:
           name: Restore Tfenv
           keys:
             - tfenv-v2
-
       - run:
           name: Install tfcmt
           command: |
@@ -176,6 +175,7 @@ jobs:
                   . /home/circleci/.codebuild_shims_wrapper.sh
                   cd << parameters.stack-output-path >>
                   /home/circleci/tfcmt apply -- terraform apply -auto-approve
+                  cp appspec.json /tmp/workspace/
             - persist_to_workspace:
                 root: /tmp/workspace
                 paths:
@@ -221,13 +221,15 @@ jobs:
           name: CodeDeploy
           command: |
             . /home/circleci/.codebuild_shims_wrapper.sh
-            export REVISION="$(cat '<< parameters.workspace >>/appspec.json')"
+            export appspec=$(cat '<< parameters.workspace >>/appspec.json')
+            export REVISION="revisionType=AppSpecContent,appSpecContent={content='$appspec'}"
             aws deploy \
             create-deployment \
             --application-name="<< parameters.codedeploy-app-name >>"  \
             --deployment-group-name="<< parameters.codedeploy-group-name >>" \
             --description="Triggered from CircleCI" \
-            --revision="$REVISION"
+            --revision="$REVISION" \
+            --no-cli-pager
 
   test_integrations:
     description: Run integration tests against external services, e.g. MySQL
