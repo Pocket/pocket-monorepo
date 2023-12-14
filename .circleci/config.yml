@@ -3,15 +3,14 @@ version: 2.1
 # this allows you to use CircleCI's dynamic configuration feature
 setup: true
 
-# the continuation orb is required in order to use dynamic configuration
 orbs:
-  continuation: circleci/continuation@0.1.2
   path-filtering: circleci/path-filtering@1.0.0
+  continuation: circleci/continuation@1.0.0
 
 # our defined job, and its steps
 jobs:
   setup:
-    executor: continuation/default
+    executor: path-filtering/default
     steps:
       - checkout # checkout code
       - run:
@@ -29,8 +28,27 @@ jobs:
       - path-filtering/generate-config:
           config-list-path: /tmp/configs.txt
           generated-config-path: /tmp/generated-config.yml
+      - run:
+          name: Reset Git
+          command: |
+            git reset --hard
+      # Set up path mapping, in the future we should generate this as a conf file, and pass it to the option.
+      # We will need to set this to true when ever the packages folder changes as well.
+      # Right now though, we will only deploy if the actual servers/infra change,
+      # as its likely any change in the packages will change the underlying code.
+      # Worst case, bump the version in package.json to triger a deploy
+      # 
+      # NOTE: we use _ for the parameters to the pipeline because 
+      # circleci uses it as an ENV down the pipe and ENV vars can't be used with a -
+      - path-filtering/set-parameters:
+          config-path: /tmp/generated-config.yml
+          output-path: /tmp/pipeline-parameters.json
+          mapping: |
+            servers/image-api/.* image_api true
+            infrastructure/image-api/.* image_api true
       - continuation/continue:
-          configuration_path: /tmp/generated-config.yml # use newly generated config to continue
+            configuration_path: /tmp/generated-config.yml
+            parameters: /tmp/pipeline-parameters.json
 
 # our single workflow, that triggers the setup job defined above
 workflows:

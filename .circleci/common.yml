@@ -6,7 +6,37 @@ orbs:
   aws-ecr: circleci/aws-ecr@7.3.0
   tfenv: sogaoh/orb-tfenv@0.0.1
 
+
+
+parameters:
+  image_api:
+    type: boolean
+    default: false
+
 commands:
+  # Refrenced from https://github.com/kelvintaywl-cci/dynamic-config-showcase/blob/main/.circleci/next.yml
+  exit-early-if-irrelevant:
+    parameters:
+      for:
+        description: which repo this job is relevant for
+        type: string
+    steps:
+      - run:
+          name: stop early unless relevant
+          command: |
+            # looks up the relevant pipeline parameter via the env var
+            export RELEVANT=$(eval echo "\$<< parameters.for >>")
+
+            # NOTE: env var values are strings (not boolean)
+            if [ "${RELEVANT}" = "1" ]; then
+              echo "continuing, since job is for << parameters.for >>"
+            else
+              echo "stopping early!"
+              circleci-agent step halt
+            fi
+          environment:
+            image_api: << pipeline.parameters.image_api >>
+
   install_pnpm:
     steps:
       - run:
@@ -73,15 +103,21 @@ jobs:
       workspace:
         description: The terraform workspace
         type: string
+      for:
+        description: which repo this job is relevant for
+        type: string
     # Our self hosted runners dont support docker images, cause its not deployed in kubernetes, so we have some special steps
     machine: true
     resource_class: << parameters.resource-class >>
     steps:
+      - exit-early-if-irrelevant:
+          for: << parameters.for >>
       - checkout
       - restore_cache:
           name: Restore Tfenv
           keys:
             - tfenv
+
       - run:
           name: Install tfcmt
           command: |
@@ -146,6 +182,9 @@ jobs:
       scope:
         description: The pnpm scope to run tests for
         type: string
+      for:
+        description: which repo this job is relevant for
+        type: string
     docker:
       - image: *node_image
         auth:
@@ -160,6 +199,8 @@ jobs:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
     steps:
+      - exit-early-if-irrelevant:
+          for: << parameters.for >>
       - checkout
       - install_pnpm
       - run:
@@ -211,10 +252,14 @@ jobs:
         description: 'The docker tag name'
         type: string
         default: latest,$CIRCLE_SHA1
-
+      for:
+        description: which repo this job is relevant for
+        type: string
     executor: aws-cli/default
 
     steps:
+      - exit-early-if-irrelevant:
+          for: << parameters.for >>
       - checkout
       - aws-cli/setup:
           aws-access-key-id: << parameters.aws-access-key-id >>

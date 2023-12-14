@@ -4,6 +4,7 @@ workflows:
     jobs:
       - test_integrations:
           <<: *not_dev_main
+          for: image_api
           context: pocket
           name: image-api_test_integrations
           scope: image-api
@@ -31,6 +32,7 @@ workflows:
       - build_image:
           <<: *not_dev_main
           context: pocket
+          for: image_api
           name: image-api_build_docker
           aws-access-key-id: Dev_AWS_ACCESS_KEY
           aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
@@ -44,6 +46,7 @@ workflows:
       - build_image:
           <<: *only_dev
           context: pocket
+          for: image_api
           name: image-api_build_docker_dev
           aws-access-key-id: Dev_AWS_ACCESS_KEY
           aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
@@ -58,6 +61,7 @@ workflows:
       - infrastructure:
           <<: *not_dev_main
           context: pocket
+          for: image_api
           name: image-api_infrastructure_plan_prod
           scope: image-api-cdk
           stack-output-path: infrastructure/image-api/cdktf.out/stacks/image-api
@@ -69,6 +73,7 @@ workflows:
       - infrastructure:
           <<: *only_dev
           context: pocket
+          for: image_api
           name: image-api_infrastructure_apply_dev
           scope: image-api-cdk
           stack-output-path: infrastructure/image-api/cdktf.out/stacks/image-api
@@ -82,6 +87,7 @@ workflows:
       - infrastructure:
           <<: *only_main
           context: pocket
+          for: image_api
           name: image-api_infrastructure_apply_prod
           scope: image-api-cdk
           stack-output-path: infrastructure/image-api/cdktf.out/stacks/image-api
@@ -111,6 +117,7 @@ workflows:
       - build_image:
           <<: *only_main
           context: pocket
+          for: image-api
           name: image-api_build_docker_prod
           aws-access-key-id: Prod_AWS_ACCESS_KEY
           aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
