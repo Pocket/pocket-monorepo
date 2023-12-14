@@ -44,7 +44,7 @@ workflows:
           repo-name: imageapi-dev-app
           ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
           push: false
-          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=image-api --build-arg APP_PATH=servers/image-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=image-api 
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=image-api --build-arg APP_PATH=servers/image-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=image-api --build-arg PORT=4867 
      
       - infrastructure:
           <<: *not_dev_main
@@ -76,7 +76,7 @@ workflows:
           repo-name: imageapi-dev-app
           ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
           push: true
-          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=image-api --build-arg APP_PATH=servers/image-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=image-api 
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=image-api --build-arg APP_PATH=servers/image-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=image-api --build-arg PORT=4867
 
       - infrastructure:
           <<: *only_dev
@@ -136,7 +136,7 @@ workflows:
           repo-name: imageapi-prod-app
           ecr-url: 996905175585.dkr.ecr.us-east-1.amazonaws.com
           push: true
-          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=image-api --build-arg APP_PATH=servers/image-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=image-api 
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=image-api --build-arg APP_PATH=servers/image-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=image-api --build-arg PORT=4867
 
 
     #   # Notify sentry of main deployment
