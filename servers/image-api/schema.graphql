@@ -1,0 +1,86 @@
+extend schema
+  @link(
+    url: "https://specs.apollo.dev/federation/v2.0"
+    import: ["@key", "@shareable"]
+  )
+
+"A String in the format of a url."
+scalar Url
+
+enum CacheControlScope {
+  PUBLIC
+  PRIVATE
+}
+
+"""
+We need to manually implement cacheControl in the schema for now
+https://stackoverflow.com/questions/52922080/how-to-implement-caching-on-apollo-server-hapi-graphql
+https://github.com/apollographql/federation/issues/356
+"""
+directive @cacheControl(
+  maxAge: Int
+  scope: CacheControlScope
+) on FIELD_DEFINITION | OBJECT | INTERFACE
+
+"""
+The image file type
+"""
+enum ImageFileType {
+  WEBP
+  JPEG
+  PNG
+}
+
+"""
+Set of parameters that will be used to change an image
+"""
+input CachedImageInput {
+  "Id of the image in the returned result set"
+  id: ID!
+
+  "Quality of the image in whole percentage, 100 = full, quality 50 = half quality"
+  qualityPercentage: Int
+
+  "Width of the image"
+  width: Int
+
+  "Height of the image"
+  height: Int
+
+  "File type of the requested image"
+  fileType: ImageFileType
+}
+
+"""
+An image that is keyed on URL
+"""
+type Image @key(fields: "url") @cacheControl(maxAge: 86400) {
+  "The url of the image"
+  url: Url!
+
+  "The determined width of the image at the url"
+  width: Int @shareable
+
+  "The determined height of the image at the url"
+  height: Int @shareable
+
+  "Query to get a cached and modified set of images based on the image from the original url, images will be matched by the client assigned id value"
+  cachedImages(imageOptions: [CachedImageInput!]!): [CachedImage]
+}
+
+"""
+A requested image that is cached and has the requested image parameters
+"""
+type CachedImage {
+  "Id of the image that matches the ID from the requested options"
+  id: ID!
+
+  "URL of the cached image"
+  url: Url
+
+  "Width of the cached image"
+  width: Int
+
+  "Height of the cached image"
+  height: Int
+}

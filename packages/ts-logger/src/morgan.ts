@@ -1,10 +1,11 @@
-import { Logger } from 'winston';
+import type { Logger } from 'winston';
 import { setLogger } from './logger';
-import morgan, { StreamOptions } from 'morgan';
+import morgan from 'morgan';
+import type { StreamOptions } from 'morgan';
 
 // preferably pass through Logger with more context
 // to setMorgan function below.
-const defaultLogger = setLogger();
+const defaultLogger: Logger = setLogger();
 
 // if userid header used, inject it into HTTP request logs
 morgan.token('req-userid', function (req, _res) {

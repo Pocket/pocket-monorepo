@@ -1,21 +1,23 @@
 {
   "private": true,
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "build": "dotenv -- turbo run build",
     "dev": "dotenv -- turbo run dev",
-    "test": "dotenv -- turbo run test",
     "lint": "turbo run lint",
     "format": "turbo run format",
-    "clean": "rm -rf node_modules packages/**/.turbo packages/**/dist packages/**/node_modules servers/**/logs servers/**/.turbo servers/**/dist servers/**/node_modules servers/**/.aws/.turbo servers/**/.aws/dist servers/**/.aws/node_modules"
+    "test": "dotenv -- turbo run test",
+    "test-integrations": "dotenv -- turbo run test-integrations",
+    "synth": "dotenv -- turbo run synth",
+    "clean": "rm -rf .turbo node_modules packages/**/.turbo packages/**/dist packages/**/node_modules servers/**/logs servers/**/.turbo servers/**/dist servers/**/node_modules infrastructure/**/dist infrastructure/**/node_modules infrastructure/**/.turbo"
+  },
+  "dependencies": {
+    "dotenv-cli": "latest"
   },
   "devDependencies": {
-    "dotenv-cli": "latest",
-    "eslint": "^8.55.0",
-    "prettier": "^3.1.0",
-    "tsconfig": "workspace:*",
     "turbo": "latest"
   },
-  "packageManager": "pnpm@8.6.10",
+  "packageManager": "pnpm@8.12.0",
   "name": "pocket-monorepo",
   "engines": {
     "node": "^20"
