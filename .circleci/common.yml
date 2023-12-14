@@ -1,7 +1,6 @@
 version: 2.1
 
 orbs:
-  pocket: pocket/circleci-orbs@2.2.0
   aws-cli: circleci/aws-cli@2.0.6
   aws-ecr: circleci/aws-ecr@7.3.0
   tfenv: sogaoh/orb-tfenv@0.0.1
@@ -277,34 +276,6 @@ jobs:
       - when:
           condition: <<parameters.push>>
           steps:
-            - run:
-                name: Docker build/push
-                command: |
-                  #!/bin/bash
-                  GET_ECR=$(aws ecr describe-repositories --repository-names "${REPO_NAME}" || true)
-                  # If the ECR does not exist, run the code build project to create it
-                  if [ -z "$GET_ECR" ]; then
-                    echo -e "Starting CodeBuild for ${CODEBUILD_PROJECT_NAME}.\n"
-                    BUILD_ID=$(aws codebuild start-build --project-name "${CODEBUILD_PROJECT_NAME}" --environment-variables-override name=GIT_BRANCH,value="${CODEBUILD_PROJECT_BRANCH}" --source-version "${CODEBUILD_PROJECT_BRANCH}" --query 'build.id' --output text)
-                    BUILD_STATUS="IN_PROGRESS"
-
-                    # Wait for the CodeBuild to complete.
-                    while [ "$BUILD_STATUS" == "IN_PROGRESS" ]; do
-                      sleep 10
-                      echo "Checking build status"
-                      BUILD_STATUS=$(aws codebuild batch-get-builds --ids "$BUILD_ID" --query 'builds[0].buildStatus' --output text)
-                      if [ "$BUILD_STATUS" == "IN_PROGRESS" ]; then
-                        echo -e "Build is ${BUILD_STATUS}, waiting for build to complete...waiting for 10 seconds before next check...\n"
-                      fi
-                    done
-
-                    if [ "$BUILD_STATUS" != "SUCCEEDED" ]; then
-                      echo "CodeBuild failed to succeed with status ${BUILD_STATUS}"
-                      exit 1
-                    else
-                      echo -e "CodeBuild succeeded\n"
-                    fi
-                  fi
             - aws-ecr/build-and-push-image:
                 checkout: false
                 repo: << parameters.repo-name >>
@@ -323,3 +294,90 @@ jobs:
                 repo: << parameters.repo-name >>
                 tag: << parameters.tag >>
                 extra-build-args: << parameters.extra-build-args >>
+
+  apollo:
+    description: >
+      Runs Apollo rover schema check on the production graphql federated schema.
+      If it is the production branch will deploy the subgraph to the production federated graph.
+      If the branch is the development branch, will deploy the subgraph to the development federated graph.
+
+    parameters:
+      fed_graph_name:
+        type: string
+        description: The name of federated graph to check
+      graph_name:
+        type: string
+        description: The name of this subgraph
+      schema_file_path:
+        type: string
+        description: The patht to the schema file
+        default: ./schema.graphql
+      prod_graph_url:
+        type: string
+        description: The production subgraph url
+      dev_graph_url:
+        type: string
+        description: The development subgraph url
+      prod_graph_variant_name:
+        type: string
+        description: The production variant graph name
+        default: "current"
+      dev_graph_variant_name:
+        type: string
+        description: The development variant graph name
+        default: "development"
+      prod_branch:
+        type: string
+        description: The production git branch
+        default: "main"
+      dev_branch:
+        type: string
+        description: The development git branch
+        default: "dev"
+      current_branch:
+        type: string
+        description: The pipeline current branch of the orb, set this to << pipeline.git.branch >> in your usage of this
+      apollo_key_env:
+        type: env_var_name
+        default: APOLLO_KEY
+        description: The environment variable name of the apollo key to user
+
+    docker:
+      - image: cimg/base:2022.07
+        auth:
+          username: $DOCKER_LOGIN
+          password: $DOCKER_PASSWORD
+
+    steps:
+      - checkout
+      - run:
+          name: install rover
+          command: |
+            # download and install Rover
+            curl -sSL https://rover.apollo.dev/nix/latest | sh
+
+            # This allows the PATH changes to persist to the next `run` step
+            echo "export PATH=$HOME/.rover/bin:$PATH" >> "$BASH_ENV"
+      - run:
+          name: check service
+          command: |
+            export APOLLO_KEY=$<< parameters.apollo_key_env >>
+            rover subgraph check << parameters.fed_graph_name >>@<< parameters.prod_graph_variant_name >> --schema << parameters.schema_file_path >> --name=<< parameters.graph_name >>
+      - when:
+          condition:
+            equal: [<< parameters.prod_branch >>, << parameters.current_branch >>]
+          steps:
+            - run:
+                name: push service to prod
+                command: |
+                  export APOLLO_KEY=$<< parameters.apollo_key_env >>
+                  rover subgraph publish << parameters.fed_graph_name >>@<< parameters.prod_graph_variant_name >> --schema << parameters.schema_file_path >> --routing-url << parameters.prod_graph_url >> --name=<< parameters.graph_name >>
+      - when:
+          condition:
+            equal: [<< parameters.dev_branch >>, << parameters.current_branch >>]
+          steps:
+            - run:
+                name: push service to dev
+                command: |
+                  export APOLLO_KEY=$<< parameters.apollo_key_env >>
+                  rover subgraph publish << parameters.fed_graph_name >>@<< parameters.dev_graph_variant_name >> --schema << parameters.schema_file_path >> --routing-url << parameters.dev_graph_url >> --name=<< parameters.graph_name >>

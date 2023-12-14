@@ -6,7 +6,7 @@ workflows:
       ######
       # Every PR Jobs
       ######
-      - pocket/apollo:
+      - apollo:
           name: image-api_apollo
           fed_graph_name: pocket-client-api
           graph_name: image-api
@@ -15,7 +15,7 @@ workflows:
           dev_graph_url: https://image-api.getpocket.dev
           current_branch: << pipeline.git.branch >>
 
-      - pocket/apollo:
+      - apollo:
           name: image-api_apollo_admin
           fed_graph_name: pocket-admin-api
           schema_file_path: servers/image-api/schema.graphql
