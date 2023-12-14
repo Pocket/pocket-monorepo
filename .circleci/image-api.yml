@@ -2,13 +2,10 @@
 workflows:
   image-api:
     jobs:
-      - test_integrations:
-          <<: *not_dev_main
-          for: image_api
-          context: pocket
-          name: image-api_test_integrations
-          scope: image-api
 
+      ######
+      # Every PR Jobs
+      ######
       - pocket/apollo:
           name: image-api_apollo
           fed_graph_name: pocket-client-api
@@ -28,6 +25,13 @@ workflows:
           current_branch: << pipeline.git.branch >>
           apollo_key_env: APOLLO_ADMIN_KEY
 
+      - test_integrations:
+          <<: *not_dev_main
+          for: image_api
+          context: pocket
+          name: image-api_test_integrations
+          scope: image-api
+
       # Try building the ECS docker image on each branch
       - build_image:
           <<: *not_dev_main
@@ -41,6 +45,22 @@ workflows:
           ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
           push: false
           extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=image-api --build-arg APP_PATH=servers/image-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=image-api 
+     
+      - infrastructure:
+          <<: *not_dev_main
+          context: pocket
+          for: image_api
+          name: image-api_infrastructure_plan_prod
+          scope: image-api-cdk
+          stack-output-path: infrastructure/image-api/cdktf.out/stacks/image-api
+          resource-class: pocket/default-prod
+          workspace: Prod
+          dev: false
+          apply: false
+
+      ######
+      # Dev Branch Deployment (Dev Environment)
+      ######
 
       # Build & Deploy the Dev Docker Image
       - build_image:
@@ -59,18 +79,6 @@ workflows:
           extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=image-api --build-arg APP_PATH=servers/image-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=image-api 
 
       - infrastructure:
-          <<: *not_dev_main
-          context: pocket
-          for: image_api
-          name: image-api_infrastructure_plan_prod
-          scope: image-api-cdk
-          stack-output-path: infrastructure/image-api/cdktf.out/stacks/image-api
-          resource-class: pocket/default-prod
-          workspace: Prod
-          dev: false
-          apply: false
-
-      - infrastructure:
           <<: *only_dev
           context: pocket
           for: image_api
@@ -83,6 +91,22 @@ workflows:
           dev: true
           requires:
             - image-api_build_docker_dev
+
+    #   # Notify sentry of dev deployment
+    #   - pocket/sentry_release_notification:
+    #       <<: *only_dev
+    #       name: image-api_sentry-release-notification-dev
+    #       context: pocket
+    #       repository_name: Pocket/image-api
+    #       sentry_project_name: image-api
+    #       sentry_env: development
+    #       sentry_org: pocket
+    #       requires:
+    #         - image-api_deploy_dev
+
+      ######
+      # Main Branch Deployment (Prod Environment)
+      ######
 
       - infrastructure:
           <<: *only_main
@@ -98,26 +122,11 @@ workflows:
           requires:
             - image-api_build_docker_prod
 
-      # # Dev
-      # - pocket/execute_codepipeline:
-      #     <<: *only_dev
-      #     context: pocket-dev
-      #     name: image-api_deploy_dev
-      #     environment: Dev
-      #     aws-access-key-id: Dev_AWS_ACCESS_KEY
-      #     aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
-      #     aws-region: Dev_AWS_DEFAULT_REGION
-      #     codepipeline-name: ImageAPI-Dev-CodePipeline
-      #     codebuild-project-name: ImageAPI-Dev
-      #     codebuild-project-branch: dev
-      #     requires:
-      #       - image-api_build_docker_dev
-
       # Build & Deploy the Prod Docker Image
       - build_image:
           <<: *only_main
           context: pocket
-          for: image-api
+          for: image_api
           name: image-api_build_docker_prod
           aws-access-key-id: Prod_AWS_ACCESS_KEY
           aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
@@ -129,41 +138,17 @@ workflows:
           push: true
           extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=image-api --build-arg APP_PATH=servers/image-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=image-api 
 
-      # # Prod
-      # - pocket/execute_codepipeline:
-      #     <<: *only_main
-      #     context: pocket-prod
-      #     name: image-api_deploy_prod
-      #     environment: Prod
-      #     aws-access-key-id: Prod_AWS_ACCESS_KEY
-      #     aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
-      #     aws-region: Prod_AWS_DEFAULT_REGION
-      #     codepipeline-name: ImageAPI-Prod-CodePipeline
-      #     codebuild-project-name: ImageAPI-Prod
-      #     codebuild-project-branch: main
-      #     requires:
-      #       - image-api_build_docker_prod
 
-      # # Notify sentry of main deployment
-      # - pocket/sentry_release_notification:
-      #     <<: *only_main
-      #     name: image-api_sentry-release-notification-prod
-      #     context: pocket
-      #     repository_name: Pocket/image-api
-      #     sentry_project_name: image-api
-      #     sentry_env: production
-      #     sentry_org: pocket
-      #     requires:
-      #       - image-api_deploy_prod
+    #   # Notify sentry of main deployment
+    #   - pocket/sentry_release_notification:
+    #       <<: *only_main
+    #       name: image-api_sentry-release-notification-prod
+    #       context: pocket
+    #       repository_name: Pocket/image-api
+    #       sentry_project_name: image-api
+    #       sentry_env: production
+    #       sentry_org: pocket
+    #       requires:
+    #         - image-api_deploy_prod
 
-      # # Notify sentry of dev deployment
-      # - pocket/sentry_release_notification:
-      #     <<: *only_dev
-      #     name: image-api_sentry-release-notification-dev
-      #     context: pocket
-      #     repository_name: Pocket/image-api
-      #     sentry_project_name: image-api
-      #     sentry_env: development
-      #     sentry_org: pocket
-      #     requires:
-      #       - image-api_deploy_dev
+

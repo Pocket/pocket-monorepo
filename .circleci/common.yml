@@ -6,7 +6,15 @@ orbs:
   aws-ecr: circleci/aws-ecr@7.3.0
   tfenv: sogaoh/orb-tfenv@0.0.1
 
-
+# This is an enum that is used within all our jobs and our exit early job.
+# As a new "service/deployment" is added you should add to the enum.
+# Then each job you pass a "for" to, so that we can determine if this job is for this "commit"
+repo_for_enum: &repo_for_enum
+  for:
+    description: which repo this job is relevant for
+    type: enum
+    enum: 
+      - image_api
 
 parameters:
   image_api:
@@ -17,9 +25,7 @@ commands:
   # Refrenced from https://github.com/kelvintaywl-cci/dynamic-config-showcase/blob/main/.circleci/next.yml
   exit-early-if-irrelevant:
     parameters:
-      for:
-        description: which repo this job is relevant for
-        type: string
+      <<: *repo_for_enum
     steps:
       - run:
           name: stop early unless relevant
@@ -103,9 +109,7 @@ jobs:
       workspace:
         description: The terraform workspace
         type: string
-      for:
-        description: which repo this job is relevant for
-        type: string
+      <<: *repo_for_enum
     # Our self hosted runners dont support docker images, cause its not deployed in kubernetes, so we have some special steps
     machine: true
     resource_class: << parameters.resource-class >>
@@ -182,9 +186,7 @@ jobs:
       scope:
         description: The pnpm scope to run tests for
         type: string
-      for:
-        description: which repo this job is relevant for
-        type: string
+      <<: *repo_for_enum
     docker:
       - image: *node_image
         auth:
@@ -252,9 +254,7 @@ jobs:
         description: 'The docker tag name'
         type: string
         default: latest,$CIRCLE_SHA1
-      for:
-        description: which repo this job is relevant for
-        type: string
+      <<: *repo_for_enum
     executor: aws-cli/default
 
     steps:
