@@ -1,0 +1,287 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PocketApiGatewayLambdaIntegration renders an api gateway with a lambda integration 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-api-lambda_endpoint-lambda_lambda-default-file_8FD40136": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-api-lambda_endpoint-lambda_assume-policy-document_345E1069": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-api-lambda_endpoint-lambda_execution-policy-document_4437ECD0": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    },
+    "aws_route53_zone": {
+      "test-api-lambda_base-dns_main_hosted_zone_5F97294A": {
+        "name": "getpocket.dev"
+      }
+    }
+  },
+  "resource": {
+    "aws_acm_certificate": {
+      "test-api-lambda_api-gateway-certificate_8D77B940": {
+        "domain_name": "exampleapi.getpocket.dev",
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "validation_method": "DNS"
+      }
+    },
+    "aws_acm_certificate_validation": {
+      "test-api-lambda_api-gateway-certificate_certificate_validation_6C09E593": {
+        "certificate_arn": "\${aws_acm_certificate.test-api-lambda_api-gateway-certificate_8D77B940.arn}",
+        "depends_on": [
+          "aws_route53_record.test-api-lambda_api-gateway-certificate_certificate_record_BED7C8FC",
+          "aws_acm_certificate.test-api-lambda_api-gateway-certificate_8D77B940"
+        ],
+        "validation_record_fqdns": [
+          "\${aws_route53_record.test-api-lambda_api-gateway-certificate_certificate_record_BED7C8FC.fqdn}"
+        ]
+      }
+    },
+    "aws_api_gateway_base_path_mapping": {
+      "test-api-lambda_api-gateway-base-path-mapping_CC4D8627": {
+        "api_id": "\${aws_api_gateway_rest_api.api-gateway-rest.id}",
+        "base_path": "fxaProxy",
+        "domain_name": "\${aws_api_gateway_domain_name.test-api-lambda_api-gateway-domain-name_6DBA5B05.domain_name}",
+        "stage_name": "\${aws_api_gateway_stage.api-gateway-stage.stage_name}"
+      }
+    },
+    "aws_api_gateway_deployment": {
+      "api-gateway-deployment": {
+        "depends_on": [
+          "aws_api_gateway_integration.test-api-lambda_endpoint-integration_8D80A8F8",
+          "aws_api_gateway_method.test-api-lambda_endpoint-method_B2F73D1A",
+          "aws_api_gateway_resource.test-api-lambda_endpoint_02B05EB1",
+          "aws_lambda_alias.test-api-lambda_endpoint-lambda_alias_A14F4FF8"
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "rest_api_id": "\${aws_api_gateway_rest_api.api-gateway-rest.id}",
+        "triggers": {
+          "deployedAt": "1637693316456",
+          "redeployment": "\${sha1(jsonencode({\\"resources\\" = [aws_api_gateway_integration.test-api-lambda_endpoint-integration_8D80A8F8.id, aws_api_gateway_method.test-api-lambda_endpoint-method_B2F73D1A.id, aws_api_gateway_resource.test-api-lambda_endpoint_02B05EB1.id, aws_lambda_alias.test-api-lambda_endpoint-lambda_alias_A14F4FF8.id]}))}"
+        }
+      }
+    },
+    "aws_api_gateway_domain_name": {
+      "test-api-lambda_api-gateway-domain-name_6DBA5B05": {
+        "certificate_arn": "\${aws_acm_certificate.test-api-lambda_api-gateway-certificate_8D77B940.arn}",
+        "depends_on": [
+          "aws_acm_certificate_validation.test-api-lambda_api-gateway-certificate_certificate_validation_6C09E593"
+        ],
+        "domain_name": "exampleapi.getpocket.dev"
+      }
+    },
+    "aws_api_gateway_integration": {
+      "test-api-lambda_endpoint-integration_8D80A8F8": {
+        "http_method": "POST",
+        "integration_http_method": "POST",
+        "resource_id": "\${aws_api_gateway_resource.test-api-lambda_endpoint_02B05EB1.id}",
+        "rest_api_id": "\${aws_api_gateway_rest_api.api-gateway-rest.id}",
+        "type": "AWS_PROXY",
+        "uri": "\${aws_lambda_alias.test-api-lambda_endpoint-lambda_alias_A14F4FF8.invoke_arn}"
+      }
+    },
+    "aws_api_gateway_method": {
+      "test-api-lambda_endpoint-method_B2F73D1A": {
+        "authorization": "NONE",
+        "http_method": "POST",
+        "resource_id": "\${aws_api_gateway_resource.test-api-lambda_endpoint_02B05EB1.id}",
+        "rest_api_id": "\${aws_api_gateway_rest_api.api-gateway-rest.id}"
+      }
+    },
+    "aws_api_gateway_resource": {
+      "test-api-lambda_endpoint_02B05EB1": {
+        "parent_id": "\${aws_api_gateway_rest_api.api-gateway-rest.root_resource_id}",
+        "path_part": "endpoint",
+        "rest_api_id": "\${aws_api_gateway_rest_api.api-gateway-rest.id}"
+      }
+    },
+    "aws_api_gateway_rest_api": {
+      "api-gateway-rest": {
+        "name": "test-api-lambda"
+      }
+    },
+    "aws_api_gateway_stage": {
+      "api-gateway-stage": {
+        "deployment_id": "\${aws_api_gateway_deployment.api-gateway-deployment.id}",
+        "rest_api_id": "\${aws_api_gateway_rest_api.api-gateway-rest.id}",
+        "stage_name": "test"
+      }
+    },
+    "aws_cloudwatch_log_group": {
+      "test-api-lambda_endpoint-lambda_log-group_E143678F": {
+        "depends_on": [
+          "aws_lambda_function.test-api-lambda_endpoint-lambda_3FA91964"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-api-lambda_endpoint-lambda_3FA91964.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_iam_policy": {
+      "test-api-lambda_endpoint-lambda_execution-policy_6847E583": {
+        "name": "lambda-endpoint-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-api-lambda_endpoint-lambda_execution-policy-document_4437ECD0.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-api-lambda_endpoint-lambda_execution-role_46759F27": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-api-lambda_endpoint-lambda_assume-policy-document_345E1069.json}",
+        "name": "lambda-endpoint-ExecutionRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-api-lambda_endpoint-lambda_execution-role-policy-attachment_5BF51F3C": {
+        "depends_on": [
+          "aws_iam_role.test-api-lambda_endpoint-lambda_execution-role_46759F27",
+          "aws_iam_policy.test-api-lambda_endpoint-lambda_execution-policy_6847E583"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-api-lambda_endpoint-lambda_execution-policy_6847E583.arn}",
+        "role": "\${aws_iam_role.test-api-lambda_endpoint-lambda_execution-role_46759F27.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-api-lambda_endpoint-lambda_alias_A14F4FF8": {
+        "depends_on": [
+          "aws_lambda_function.test-api-lambda_endpoint-lambda_3FA91964"
+        ],
+        "function_name": "\${aws_lambda_function.test-api-lambda_endpoint-lambda_3FA91964.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-api-lambda_endpoint-lambda_3FA91964.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_function": {
+      "test-api-lambda_endpoint-lambda_3FA91964": {
+        "filename": "\${data.archive_file.test-api-lambda_endpoint-lambda_lambda-default-file_8FD40136.output_path}",
+        "function_name": "lambda-endpoint-Function",
+        "handler": "index.handler",
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-api-lambda_endpoint-lambda_execution-role_46759F27.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-api-lambda_endpoint-lambda_lambda-default-file_8FD40136.output_base64sha256}",
+        "timeout": 5
+      }
+    },
+    "aws_lambda_permission": {
+      "test-api-lambda_test-api-lambda_endpoint-lambda_alias_A14F4FF8-allow-gateway-lambda-invoke_F4009ED6": {
+        "action": "lambda:InvokeFunction",
+        "function_name": "\${aws_lambda_alias.test-api-lambda_endpoint-lambda_alias_A14F4FF8.function_name}",
+        "principal": "apigateway.amazonaws.com",
+        "qualifier": "\${aws_lambda_alias.test-api-lambda_endpoint-lambda_alias_A14F4FF8.name}",
+        "source_arn": "\${aws_api_gateway_rest_api.api-gateway-rest.execution_arn}/\${aws_api_gateway_stage.api-gateway-stage.stage_name}/\${aws_api_gateway_method.test-api-lambda_endpoint-method_B2F73D1A.http_method}\${aws_api_gateway_resource.test-api-lambda_endpoint_02B05EB1.path}"
+      }
+    },
+    "aws_route53_record": {
+      "test-api-lambda_api-gateway-certificate_certificate_record_BED7C8FC": {
+        "depends_on": [
+          "aws_acm_certificate.test-api-lambda_api-gateway-certificate_8D77B940"
+        ],
+        "name": "\${tolist(aws_acm_certificate.test-api-lambda_api-gateway-certificate_8D77B940.domain_validation_options).0.resource_record_name}",
+        "records": [
+          "\${tolist(aws_acm_certificate.test-api-lambda_api-gateway-certificate_8D77B940.domain_validation_options).0.resource_record_value}"
+        ],
+        "ttl": 60,
+        "type": "\${tolist(aws_acm_certificate.test-api-lambda_api-gateway-certificate_8D77B940.domain_validation_options).0.resource_record_type}",
+        "zone_id": "\${aws_route53_zone.test-api-lambda_base-dns_subhosted_zone_B29688D6.zone_id}"
+      },
+      "test-api-lambda_apigateway-route53-domain-record_A8180A05": {
+        "alias": {
+          "evaluate_target_health": true,
+          "name": "\${aws_api_gateway_domain_name.test-api-lambda_api-gateway-domain-name_6DBA5B05.cloudfront_domain_name}",
+          "zone_id": "\${aws_api_gateway_domain_name.test-api-lambda_api-gateway-domain-name_6DBA5B05.cloudfront_zone_id}"
+        },
+        "depends_on": [
+          "aws_acm_certificate_validation.test-api-lambda_api-gateway-certificate_certificate_validation_6C09E593"
+        ],
+        "name": "\${aws_api_gateway_domain_name.test-api-lambda_api-gateway-domain-name_6DBA5B05.domain_name}",
+        "type": "A",
+        "zone_id": "\${aws_route53_zone.test-api-lambda_base-dns_subhosted_zone_B29688D6.zone_id}"
+      },
+      "test-api-lambda_base-dns_subhosted_zone_ns_B7A2A51A": {
+        "name": "exampleapi.getpocket.dev",
+        "records": "\${aws_route53_zone.test-api-lambda_base-dns_subhosted_zone_B29688D6.name_servers}",
+        "ttl": 86400,
+        "type": "NS",
+        "zone_id": "\${data.aws_route53_zone.test-api-lambda_base-dns_main_hosted_zone_5F97294A.zone_id}"
+      }
+    },
+    "aws_route53_zone": {
+      "test-api-lambda_base-dns_subhosted_zone_B29688D6": {
+        "name": "exampleapi.getpocket.dev"
+      }
+    },
+    "aws_s3_bucket": {
+      "test-api-lambda_endpoint-lambda_code-bucket_8153D419": {
+        "acl": "private",
+        "bucket": "pocket-lambda-endpoint",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-api-lambda_endpoint-lambda_code-bucket-public-access-block_704E5627": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-api-lambda_endpoint-lambda_code-bucket_8153D419.id}"
+      }
+    }
+  }
+}"
+`;

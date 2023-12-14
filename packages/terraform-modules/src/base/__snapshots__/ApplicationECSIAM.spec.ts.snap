@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApplicationECSIAM renders ECS IAM with minimal config 1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "testECSService_ecs-task-assume_E7A7BA71": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "ecs-tasks.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_iam_role": {
+      "testECSService_ecs-execution-role_46F1514F": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-task-assume_E7A7BA71.json}",
+        "name": "abides-dev-TaskExecutionRole"
+      },
+      "testECSService_ecs-task-role_C04CE6DA": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-task-assume_E7A7BA71.json}",
+        "name": "abides-dev-TaskRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "testECSService_ecs-task-execution-default-attachment_9FDF40D5": {
+        "policy_arn": "someArn",
+        "role": "\${aws_iam_role.testECSService_ecs-execution-role_46F1514F.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationECSIAM renders ECS IAM with tags 1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "testECSService_ecs-task-assume_E7A7BA71": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "ecs-tasks.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_iam_role": {
+      "testECSService_ecs-execution-role_46F1514F": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-task-assume_E7A7BA71.json}",
+        "name": "abides-dev-TaskExecutionRole",
+        "tags": {
+          "donnie": "throwinrockstonight",
+          "letsgo": "bowling"
+        }
+      },
+      "testECSService_ecs-task-role_C04CE6DA": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-task-assume_E7A7BA71.json}",
+        "name": "abides-dev-TaskRole",
+        "tags": {
+          "donnie": "throwinrockstonight",
+          "letsgo": "bowling"
+        }
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "testECSService_ecs-task-execution-default-attachment_9FDF40D5": {
+        "policy_arn": "someArn",
+        "role": "\${aws_iam_role.testECSService_ecs-execution-role_46F1514F.id}"
+      }
+    }
+  }
+}"
+`;

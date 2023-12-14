@@ -1,0 +1,162 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApplicationSqsSnsTopicSubscription renders an Lambda <> SNS subscription without tags 1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "lambda-sns-subscription_sns-dlq-policy-document_8DAB362F": {
+        "depends_on": [
+          "aws_sqs_queue.lambda-sns-subscription_sns-topic-dlq_C5D5F199"
+        ],
+        "statement": [
+          {
+            "actions": [
+              "sqs:SendMessage"
+            ],
+            "condition": [
+              {
+                "test": "ArnEquals",
+                "values": [
+                  "arn:aws:sns:TopicName"
+                ],
+                "variable": "aws:SourceArn"
+              }
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "sns.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ],
+            "resources": [
+              "\${aws_sqs_queue.lambda-sns-subscription_sns-topic-dlq_C5D5F199.arn}"
+            ]
+          }
+        ]
+      }
+    },
+    "aws_lambda_function": {
+      "lambda": {
+        "function_name": "test-lambda"
+      }
+    }
+  },
+  "resource": {
+    "aws_lambda_permission": {
+      "lambda-sns-subscription_lambda-sns-subscription-lambda-permission_03B5A953": {
+        "action": "lambda:InvokeFunction",
+        "function_name": "\${data.aws_lambda_function.lambda.function_name}",
+        "principal": "sns.amazonaws.com",
+        "source_arn": "arn:aws:sns:TopicName"
+      }
+    },
+    "aws_sns_topic_subscription": {
+      "lambda-sns-subscription_1ED18AE9": {
+        "depends_on": [
+          "aws_sqs_queue.lambda-sns-subscription_sns-topic-dlq_C5D5F199"
+        ],
+        "endpoint": "\${data.aws_lambda_function.lambda.arn}",
+        "protocol": "lambda",
+        "redrive_policy": "{\\"deadLetterTargetArn\\":\\"\${aws_sqs_queue.lambda-sns-subscription_sns-topic-dlq_C5D5F199.arn}\\"}",
+        "topic_arn": "arn:aws:sns:TopicName"
+      }
+    },
+    "aws_sqs_queue": {
+      "lambda-sns-subscription_sns-topic-dlq_C5D5F199": {
+        "name": "test-sns-subscription-SNS-Topic-DLQ"
+      }
+    },
+    "aws_sqs_queue_policy": {
+      "lambda-sns-subscription_sns-dlq-policy_31243636": {
+        "policy": "\${data.aws_iam_policy_document.lambda-sns-subscription_sns-dlq-policy-document_8DAB362F.json}",
+        "queue_url": "\${aws_sqs_queue.lambda-sns-subscription_sns-topic-dlq_C5D5F199.url}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationSqsSnsTopicSubscription renders an SQS SNS subscription with tags 1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "lambda-sns-subscription_sns-dlq-policy-document_8DAB362F": {
+        "depends_on": [
+          "aws_sqs_queue.lambda-sns-subscription_sns-topic-dlq_C5D5F199"
+        ],
+        "statement": [
+          {
+            "actions": [
+              "sqs:SendMessage"
+            ],
+            "condition": [
+              {
+                "test": "ArnEquals",
+                "values": [
+                  "arn:aws:sns:TopicName"
+                ],
+                "variable": "aws:SourceArn"
+              }
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "sns.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ],
+            "resources": [
+              "\${aws_sqs_queue.lambda-sns-subscription_sns-topic-dlq_C5D5F199.arn}"
+            ]
+          }
+        ]
+      }
+    },
+    "aws_lambda_function": {
+      "lambda": {
+        "function_name": "test-lambda"
+      }
+    }
+  },
+  "resource": {
+    "aws_lambda_permission": {
+      "lambda-sns-subscription_lambda-sns-subscription-lambda-permission_03B5A953": {
+        "action": "lambda:InvokeFunction",
+        "function_name": "\${data.aws_lambda_function.lambda.function_name}",
+        "principal": "sns.amazonaws.com",
+        "source_arn": "arn:aws:sns:TopicName"
+      }
+    },
+    "aws_sns_topic_subscription": {
+      "lambda-sns-subscription_1ED18AE9": {
+        "depends_on": [
+          "aws_sqs_queue.lambda-sns-subscription_sns-topic-dlq_C5D5F199"
+        ],
+        "endpoint": "\${data.aws_lambda_function.lambda.arn}",
+        "protocol": "lambda",
+        "redrive_policy": "{\\"deadLetterTargetArn\\":\\"\${aws_sqs_queue.lambda-sns-subscription_sns-topic-dlq_C5D5F199.arn}\\"}",
+        "topic_arn": "arn:aws:sns:TopicName"
+      }
+    },
+    "aws_sqs_queue": {
+      "lambda-sns-subscription_sns-topic-dlq_C5D5F199": {
+        "name": "test-sns-subscription-SNS-Topic-DLQ",
+        "tags": {
+          "hello": "there"
+        }
+      }
+    },
+    "aws_sqs_queue_policy": {
+      "lambda-sns-subscription_sns-dlq-policy_31243636": {
+        "policy": "\${data.aws_iam_policy_document.lambda-sns-subscription_sns-dlq-policy-document_8DAB362F.json}",
+        "queue_url": "\${aws_sqs_queue.lambda-sns-subscription_sns-topic-dlq_C5D5F199.url}"
+      }
+    }
+  }
+}"
+`;

@@ -1,0 +1,93 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`allows passing different values for nrql config 1`] = `
+"{
+  "resource": {
+    "newrelic_nrql_alert_condition": {
+      "test-synthetic_alert-condition_4C991B53": {
+        "aggregation_delay": "180",
+        "aggregation_method": "cadence",
+        "aggregation_window": 3000,
+        "close_violations_on_expiration": true,
+        "critical": {
+          "operator": "above",
+          "threshold": 2,
+          "threshold_duration": 900,
+          "threshold_occurrences": "AT_LEAST_ONCE"
+        },
+        "expiration_duration": 600,
+        "fill_option": "static",
+        "fill_value": 0,
+        "name": "test-synthetic-nrql",
+        "nrql": {
+          "query": "SELECT * FROM MY-COOL-TABLE"
+        },
+        "policy_id": 1707149,
+        "slide_by": 60,
+        "violation_time_limit_seconds": 2592000
+      }
+    },
+    "newrelic_synthetics_monitor": {
+      "test-synthetic_test-synthetic-synthetics-monitor_914DC880": {
+        "locations_public": [
+          "AWS_US_WEST_2",
+          "AWS_EU_WEST_2",
+          "AWS_US_EAST_2"
+        ],
+        "name": "test-synthetic-synthetics",
+        "period": "EVERY_5_MINUTES",
+        "status": "ENABLED",
+        "type": "SIMPLE",
+        "uri": "acme.getpocket.dev",
+        "verify_ssl": true
+      }
+    }
+  }
+}"
+`;
+
+exports[`renders a Pocket New Relic synthetic check 1`] = `
+"{
+  "resource": {
+    "newrelic_nrql_alert_condition": {
+      "test-synthetic_alert-condition_4C991B53": {
+        "aggregation_delay": "180",
+        "aggregation_method": "cadence",
+        "aggregation_window": 3000,
+        "close_violations_on_expiration": true,
+        "critical": {
+          "operator": "above",
+          "threshold": 2,
+          "threshold_duration": 900,
+          "threshold_occurrences": "AT_LEAST_ONCE"
+        },
+        "expiration_duration": 600,
+        "fill_option": "static",
+        "fill_value": 0,
+        "name": "test-synthetic-nrql",
+        "nrql": {
+          "query": "SELECT count(result) from SyntheticCheck where result = 'FAILED' and monitorName = '\${newrelic_synthetics_monitor.test-synthetic_test-synthetic-synthetics-monitor_914DC880.name}'"
+        },
+        "policy_id": 1707149,
+        "slide_by": 60,
+        "violation_time_limit_seconds": 2592000
+      }
+    },
+    "newrelic_synthetics_monitor": {
+      "test-synthetic_test-synthetic-synthetics-monitor_914DC880": {
+        "locations_public": [
+          "AWS_US_WEST_2",
+          "AWS_EU_WEST_2",
+          "AWS_US_EAST_2"
+        ],
+        "name": "test-synthetic-synthetics",
+        "period": "EVERY_5_MINUTES",
+        "status": "ENABLED",
+        "type": "SIMPLE",
+        "uri": "acme.getpocket.dev",
+        "verify_ssl": true
+      }
+    }
+  }
+}"
+`;

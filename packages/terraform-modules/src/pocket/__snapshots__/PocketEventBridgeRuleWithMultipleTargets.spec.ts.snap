@@ -1,0 +1,253 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PocketEventBridgeRuleWithMultipleTargets renders an event bridge and multiple targets 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-lambda_lambda-default-file_7A7DBB68": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-lambda_assume-policy-document_D538087D": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-lambda_execution-policy-document_D94D17B4": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_event_rule": {
+      "test-event-bridge-for-multiple-targets-1_event-bridge-rule_1CCF9D7B": {
+        "description": "Test description",
+        "event_bus_name": "default",
+        "event_pattern": "{\\"source\\":[\\"aws.states\\"],\\"detail-type\\":[\\"Step Functions Execution Status Change\\"]}",
+        "lifecycle": {
+        },
+        "name": "test-event-bridge-rule-multiple-targets-Rule"
+      }
+    },
+    "aws_cloudwatch_event_target": {
+      "test-event-bridge-for-multiple-targets-1_event-bridge-rule_event-bridge-target-test-lambda-id_DE65E71F": {
+        "arn": "lambda.arn",
+        "dead_letter_config": {
+        },
+        "depends_on": [
+          "aws_lambda_alias.test-lambda_alias_CCFDFCE9",
+          "aws_cloudwatch_event_rule.test-event-bridge-for-multiple-targets-1_event-bridge-rule_1CCF9D7B"
+        ],
+        "event_bus_name": "default",
+        "rule": "\${aws_cloudwatch_event_rule.test-event-bridge-for-multiple-targets-1_event-bridge-rule_1CCF9D7B.name}",
+        "target_id": "test-lambda-id"
+      },
+      "test-event-bridge-for-multiple-targets-1_event-bridge-rule_event-bridge-target-test-sqs-id_2DE721FF": {
+        "arn": "\${aws_sqs_queue.test-queue.arn}",
+        "dead_letter_config": {
+        },
+        "depends_on": [
+          "aws_sqs_queue.test-queue",
+          "aws_cloudwatch_event_rule.test-event-bridge-for-multiple-targets-1_event-bridge-rule_1CCF9D7B"
+        ],
+        "event_bus_name": "default",
+        "rule": "\${aws_cloudwatch_event_rule.test-event-bridge-for-multiple-targets-1_event-bridge-rule_1CCF9D7B.name}",
+        "target_id": "test-sqs-id"
+      }
+    },
+    "aws_cloudwatch_log_group": {
+      "test-lambda_log-group_ACC182B5": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_iam_policy": {
+      "test-lambda_execution-policy_19C785A8": {
+        "name": "test-lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-lambda_execution-policy-document_D94D17B4.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-lambda_execution-role_9D4EE856": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda_assume-policy-document_D538087D.json}",
+        "name": "test-lambda-ExecutionRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-lambda_execution-role-policy-attachment_8796505D": {
+        "depends_on": [
+          "aws_iam_role.test-lambda_execution-role_9D4EE856",
+          "aws_iam_policy.test-lambda_execution-policy_19C785A8"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-lambda_execution-policy_19C785A8.arn}",
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-lambda_alias_CCFDFCE9": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "function_name": "\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-lambda_8915D118.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_function": {
+      "test-lambda_8915D118": {
+        "filename": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_path}",
+        "function_name": "test-lambda-Function",
+        "handler": "index.handler",
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_base64sha256}",
+        "timeout": 5
+      }
+    },
+    "aws_s3_bucket": {
+      "test-lambda_code-bucket_177F316E": {
+        "acl": "private",
+        "bucket": "pocket-test-lambda",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-lambda_code-bucket-public-access-block_1E7CE5AE": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-lambda_code-bucket_177F316E.id}"
+      }
+    },
+    "aws_sqs_queue": {
+      "test-queue": {
+        "name": "Test-SQS-Queue"
+      }
+    }
+  }
+}"
+`;
+
+exports[`PocketEventBridgeRuleWithMultipleTargets renders an event bridge and pre-existing targets 1`] = `
+"{
+  "resource": {
+    "aws_cloudwatch_event_rule": {
+      "test-event-bridge-for-multiple-targets-1_event-bridge-rule_1CCF9D7B": {
+        "description": "Test description",
+        "event_bus_name": "default",
+        "event_pattern": "{\\"source\\":[\\"aws.states\\"],\\"detail-type\\":[\\"Step Functions Execution Status Change\\"]}",
+        "lifecycle": {
+        },
+        "name": "test-event-bridge-rule-multiple-targets-Rule"
+      }
+    },
+    "aws_cloudwatch_event_target": {
+      "test-event-bridge-for-multiple-targets-1_event-bridge-rule_event-bridge-target-test-lambda-id_DE65E71F": {
+        "arn": "lambda.arn",
+        "dead_letter_config": {
+        },
+        "event_bus_name": "default",
+        "rule": "\${aws_cloudwatch_event_rule.test-event-bridge-for-multiple-targets-1_event-bridge-rule_1CCF9D7B.name}",
+        "target_id": "test-lambda-id"
+      },
+      "test-event-bridge-for-multiple-targets-1_event-bridge-rule_event-bridge-target-test-sqs-id_2DE721FF": {
+        "arn": "testSqs.arn",
+        "dead_letter_config": {
+        },
+        "event_bus_name": "default",
+        "rule": "\${aws_cloudwatch_event_rule.test-event-bridge-for-multiple-targets-1_event-bridge-rule_1CCF9D7B.name}",
+        "target_id": "test-sqs-id"
+      }
+    }
+  }
+}"
+`;
+
+exports[`PocketEventBridgeRuleWithMultipleTargets renders an event bridge rule with prevent destroy flag 1`] = `
+"{
+  "resource": {
+    "aws_cloudwatch_event_rule": {
+      "test-event-bridge-for-multiple-targets-1_event-bridge-rule_1CCF9D7B": {
+        "description": "Test description",
+        "event_bus_name": "default",
+        "event_pattern": "{\\"source\\":[\\"aws.states\\"],\\"detail-type\\":[\\"Step Functions Execution Status Change\\"]}",
+        "lifecycle": {
+          "prevent_destroy": true
+        },
+        "name": "test-event-bridge-rule-multiple-targets-Rule"
+      }
+    },
+    "aws_cloudwatch_event_target": {
+      "test-event-bridge-for-multiple-targets-1_event-bridge-rule_event-bridge-target-test-lambda-id_DE65E71F": {
+        "arn": "lambda.arn",
+        "dead_letter_config": {
+        },
+        "event_bus_name": "default",
+        "rule": "\${aws_cloudwatch_event_rule.test-event-bridge-for-multiple-targets-1_event-bridge-rule_1CCF9D7B.name}",
+        "target_id": "test-lambda-id"
+      },
+      "test-event-bridge-for-multiple-targets-1_event-bridge-rule_event-bridge-target-test-sqs-id_2DE721FF": {
+        "arn": "testSqs.arn",
+        "dead_letter_config": {
+        },
+        "event_bus_name": "default",
+        "rule": "\${aws_cloudwatch_event_rule.test-event-bridge-for-multiple-targets-1_event-bridge-rule_1CCF9D7B.name}",
+        "target_id": "test-sqs-id"
+      }
+    }
+  }
+}"
+`;

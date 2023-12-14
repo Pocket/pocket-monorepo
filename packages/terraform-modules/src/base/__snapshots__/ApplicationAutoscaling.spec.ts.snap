@@ -1,0 +1,321 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApplicationAutoscaling constructor renders autoscaling without tags 1`] = `
+"{
+  "resource": {
+    "aws_appautoscaling_policy": {
+      "testAutoscaling_scale_in_policy_8085C07C": {
+        "depends_on": [
+          "aws_appautoscaling_target.testAutoscaling_autoscaling_target_DFDF5955"
+        ],
+        "name": "test--ScaleInPolicy",
+        "policy_type": "StepScaling",
+        "resource_id": "\${aws_appautoscaling_target.testAutoscaling_autoscaling_target_DFDF5955.resource_id}",
+        "scalable_dimension": "\${aws_appautoscaling_target.testAutoscaling_autoscaling_target_DFDF5955.scalable_dimension}",
+        "service_namespace": "\${aws_appautoscaling_target.testAutoscaling_autoscaling_target_DFDF5955.service_namespace}",
+        "step_scaling_policy_configuration": {
+          "adjustment_type": "ChangeInCapacity",
+          "cooldown": 60,
+          "metric_aggregation_type": "Average",
+          "step_adjustment": [
+            {
+              "metric_interval_upper_bound": "0",
+              "scaling_adjustment": -1
+            }
+          ]
+        },
+        "target_tracking_scaling_policy_configuration": null
+      },
+      "testAutoscaling_scale_out_policy_DE69B04C": {
+        "depends_on": [
+          "aws_appautoscaling_target.testAutoscaling_autoscaling_target_DFDF5955"
+        ],
+        "name": "test--ScaleOutPolicy",
+        "policy_type": "StepScaling",
+        "resource_id": "\${aws_appautoscaling_target.testAutoscaling_autoscaling_target_DFDF5955.resource_id}",
+        "scalable_dimension": "\${aws_appautoscaling_target.testAutoscaling_autoscaling_target_DFDF5955.scalable_dimension}",
+        "service_namespace": "\${aws_appautoscaling_target.testAutoscaling_autoscaling_target_DFDF5955.service_namespace}",
+        "step_scaling_policy_configuration": {
+          "adjustment_type": "ChangeInCapacity",
+          "cooldown": 60,
+          "metric_aggregation_type": "Average",
+          "step_adjustment": [
+            {
+              "metric_interval_lower_bound": "0",
+              "scaling_adjustment": 2
+            }
+          ]
+        },
+        "target_tracking_scaling_policy_configuration": null
+      }
+    },
+    "aws_appautoscaling_target": {
+      "testAutoscaling_autoscaling_target_DFDF5955": {
+        "max_capacity": 5,
+        "min_capacity": 1,
+        "resource_id": "service/ecs-cluster-test/ecs-service-test",
+        "scalable_dimension": "ecs:service:DesiredCount",
+        "service_namespace": "ecs"
+      }
+    },
+    "aws_cloudwatch_metric_alarm": {
+      "testAutoscaling_scale_in_alarm_D552E48E": {
+        "alarm_actions": [
+          "\${aws_appautoscaling_policy.testAutoscaling_scale_in_policy_8085C07C.arn}"
+        ],
+        "alarm_description": "Alarm to reduce capacity if container CPU is low",
+        "alarm_name": "test- Service Low CPU",
+        "comparison_operator": "LessThanThreshold",
+        "dimensions": {
+          "ClusterName": "ecs-cluster-test",
+          "ServiceName": "ecs-service-test"
+        },
+        "evaluation_periods": 2,
+        "metric_name": "CPUUtilization",
+        "namespace": "AWS/ECS",
+        "period": 60,
+        "statistic": "Average",
+        "threshold": 30,
+        "treat_missing_data": "notBreaching"
+      },
+      "testAutoscaling_scale_out_alarm_DBD72533": {
+        "alarm_actions": [
+          "\${aws_appautoscaling_policy.testAutoscaling_scale_out_policy_DE69B04C.arn}"
+        ],
+        "alarm_description": "Alarm to add capacity if container CPU is high",
+        "alarm_name": "test- Service High CPU",
+        "comparison_operator": "GreaterThanThreshold",
+        "dimensions": {
+          "ClusterName": "ecs-cluster-test",
+          "ServiceName": "ecs-service-test"
+        },
+        "evaluation_periods": 2,
+        "metric_name": "CPUUtilization",
+        "namespace": "AWS/ECS",
+        "period": 60,
+        "statistic": "Average",
+        "threshold": 45,
+        "treat_missing_data": "notBreaching"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationAutoscaling generateAutoScalingPolicy renders a scale-in AutoscalingPolicy 1`] = `
+"{
+  "resource": {
+    "aws_appautoscaling_policy": {
+      "test-resource_scale_in_policy_FC19C991": {
+        "depends_on": [
+          "aws_appautoscaling_target.test-resource_autoscaling_target_50BC4A94"
+        ],
+        "name": "test--ScaleInPolicy",
+        "policy_type": "StepScaling",
+        "resource_id": "\${aws_appautoscaling_target.test-resource_autoscaling_target_50BC4A94.resource_id}",
+        "scalable_dimension": "\${aws_appautoscaling_target.test-resource_autoscaling_target_50BC4A94.scalable_dimension}",
+        "service_namespace": "\${aws_appautoscaling_target.test-resource_autoscaling_target_50BC4A94.service_namespace}",
+        "step_scaling_policy_configuration": {
+          "adjustment_type": "ChangeInCapacity",
+          "cooldown": 60,
+          "metric_aggregation_type": "Average",
+          "step_adjustment": [
+            {
+              "metric_interval_upper_bound": "0",
+              "scaling_adjustment": -1
+            }
+          ]
+        },
+        "target_tracking_scaling_policy_configuration": null
+      }
+    },
+    "aws_appautoscaling_target": {
+      "test-resource_autoscaling_target_50BC4A94": {
+        "max_capacity": 5,
+        "min_capacity": 1,
+        "resource_id": "service/ecs-cluster-test/ecs-service-test",
+        "scalable_dimension": "ecs:service:DesiredCount",
+        "service_namespace": "ecs"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationAutoscaling generateAutoScalingPolicy renders a scale-out AutoscalingPolicy 1`] = `
+"{
+  "resource": {
+    "aws_appautoscaling_policy": {
+      "test-resource_scale_out_policy_CE22053C": {
+        "depends_on": [
+          "aws_appautoscaling_target.test-resource_autoscaling_target_50BC4A94"
+        ],
+        "name": "test--ScaleOutPolicy",
+        "policy_type": "StepScaling",
+        "resource_id": "\${aws_appautoscaling_target.test-resource_autoscaling_target_50BC4A94.resource_id}",
+        "scalable_dimension": "\${aws_appautoscaling_target.test-resource_autoscaling_target_50BC4A94.scalable_dimension}",
+        "service_namespace": "\${aws_appautoscaling_target.test-resource_autoscaling_target_50BC4A94.service_namespace}",
+        "step_scaling_policy_configuration": {
+          "adjustment_type": "ChangeInCapacity",
+          "cooldown": 60,
+          "metric_aggregation_type": "Average",
+          "step_adjustment": [
+            {
+              "metric_interval_lower_bound": "0",
+              "scaling_adjustment": 2
+            }
+          ]
+        },
+        "target_tracking_scaling_policy_configuration": null
+      }
+    },
+    "aws_appautoscaling_target": {
+      "test-resource_autoscaling_target_50BC4A94": {
+        "max_capacity": 5,
+        "min_capacity": 1,
+        "resource_id": "service/ecs-cluster-test/ecs-service-test",
+        "scalable_dimension": "ecs:service:DesiredCount",
+        "service_namespace": "ecs"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationAutoscaling generateAutoScalingTarget renders an AutoscalingTarget 1`] = `
+"{
+  "resource": {
+    "aws_appautoscaling_target": {
+      "test-resource_autoscaling_target_50BC4A94": {
+        "max_capacity": 5,
+        "min_capacity": 1,
+        "resource_id": "service/ecs-cluster-test/ecs-service-test",
+        "scalable_dimension": "ecs:service:DesiredCount",
+        "service_namespace": "ecs"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationAutoscaling generateCloudwatchMetricAlarm renders a scale-in Cloudwatch Alarm 1`] = `
+"{
+  "resource": {
+    "aws_appautoscaling_policy": {
+      "test-resource_scale_in_policy_FC19C991": {
+        "depends_on": [
+          "aws_appautoscaling_target.test-resource_autoscaling_target_50BC4A94"
+        ],
+        "name": "test--ScaleInPolicy",
+        "policy_type": "StepScaling",
+        "resource_id": "\${aws_appautoscaling_target.test-resource_autoscaling_target_50BC4A94.resource_id}",
+        "scalable_dimension": "\${aws_appautoscaling_target.test-resource_autoscaling_target_50BC4A94.scalable_dimension}",
+        "service_namespace": "\${aws_appautoscaling_target.test-resource_autoscaling_target_50BC4A94.service_namespace}",
+        "step_scaling_policy_configuration": {
+          "adjustment_type": "ChangeInCapacity",
+          "cooldown": 60,
+          "metric_aggregation_type": "Average",
+          "step_adjustment": [
+            {
+              "metric_interval_upper_bound": "0",
+              "scaling_adjustment": -1
+            }
+          ]
+        },
+        "target_tracking_scaling_policy_configuration": null
+      }
+    },
+    "aws_appautoscaling_target": {
+      "test-resource_autoscaling_target_50BC4A94": {
+        "max_capacity": 5,
+        "min_capacity": 1,
+        "resource_id": "service/ecs-cluster-test/ecs-service-test",
+        "scalable_dimension": "ecs:service:DesiredCount",
+        "service_namespace": "ecs"
+      }
+    },
+    "aws_cloudwatch_metric_alarm": {
+      "test-resource_scale_in_alarm_73254138": {
+        "alarm_actions": [
+          "\${aws_appautoscaling_policy.test-resource_scale_in_policy_FC19C991.arn}"
+        ],
+        "alarm_description": "Alarm to reduce capacity if container CPU is low",
+        "alarm_name": "test- Service Low CPU",
+        "comparison_operator": "LessThanThreshold",
+        "dimensions": {
+          "ClusterName": "ecs-cluster-test",
+          "ServiceName": "ecs-service-test"
+        },
+        "evaluation_periods": 2,
+        "metric_name": "CPUUtilization",
+        "namespace": "AWS/ECS",
+        "period": 60,
+        "statistic": "Average",
+        "threshold": 30,
+        "treat_missing_data": "notBreaching"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationAutoscaling generateCloudwatchMetricAlarm renders a scale-out Cloudwatch Alarm 1`] = `
+"{
+  "resource": {
+    "aws_appautoscaling_policy": {
+      "test-resource_scale_out_policy_CE22053C": {
+        "depends_on": [
+          "aws_appautoscaling_target.test-resource_autoscaling_target_50BC4A94"
+        ],
+        "name": "test--ScaleOutPolicy",
+        "policy_type": "StepScaling",
+        "resource_id": "\${aws_appautoscaling_target.test-resource_autoscaling_target_50BC4A94.resource_id}",
+        "scalable_dimension": "\${aws_appautoscaling_target.test-resource_autoscaling_target_50BC4A94.scalable_dimension}",
+        "service_namespace": "\${aws_appautoscaling_target.test-resource_autoscaling_target_50BC4A94.service_namespace}",
+        "step_scaling_policy_configuration": {
+          "adjustment_type": "ChangeInCapacity",
+          "cooldown": 60,
+          "metric_aggregation_type": "Average",
+          "step_adjustment": [
+            {
+              "metric_interval_lower_bound": "0",
+              "scaling_adjustment": 2
+            }
+          ]
+        },
+        "target_tracking_scaling_policy_configuration": null
+      }
+    },
+    "aws_appautoscaling_target": {
+      "test-resource_autoscaling_target_50BC4A94": {
+        "max_capacity": 5,
+        "min_capacity": 1,
+        "resource_id": "service/ecs-cluster-test/ecs-service-test",
+        "scalable_dimension": "ecs:service:DesiredCount",
+        "service_namespace": "ecs"
+      }
+    },
+    "aws_cloudwatch_metric_alarm": {
+      "test-resource_scale_out_alarm_5BADC0D8": {
+        "alarm_actions": [
+          "\${aws_appautoscaling_policy.test-resource_scale_out_policy_CE22053C.arn}"
+        ],
+        "alarm_description": "Alarm to add capacity if container CPU is high",
+        "alarm_name": "test- Service High CPU",
+        "comparison_operator": "GreaterThanThreshold",
+        "dimensions": {
+          "ClusterName": "ecs-cluster-test",
+          "ServiceName": "ecs-service-test"
+        },
+        "evaluation_periods": 2,
+        "metric_name": "CPUUtilization",
+        "namespace": "AWS/ECS",
+        "period": 60,
+        "statistic": "Average",
+        "threshold": 45,
+        "treat_missing_data": "notBreaching"
+      }
+    }
+  }
+}"
+`;

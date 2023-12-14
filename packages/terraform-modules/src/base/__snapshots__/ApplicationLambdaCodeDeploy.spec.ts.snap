@@ -1,0 +1,505 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApplicationLambdaCodeDeploy renders a lambda code deploy app 1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "test-lambda-code-deploy_code-deploy-assume-role-policy-document_484EBB89": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "codedeploy.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "resource": {
+    "aws_codedeploy_app": {
+      "test-lambda-code-deploy_code-deploy-app_A7640CFE": {
+        "compute_platform": "Lambda",
+        "name": "Test-Lambda-Code-Deploy-Lambda"
+      }
+    },
+    "aws_codedeploy_deployment_group": {
+      "test-lambda-code-deploy_code-deployment-group_3F73EBCE": {
+        "app_name": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}",
+        "auto_rollback_configuration": {
+          "enabled": true,
+          "events": [
+            "DEPLOYMENT_FAILURE"
+          ]
+        },
+        "depends_on": [
+          "aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE"
+        ],
+        "deployment_config_name": "CodeDeployDefault.LambdaAllAtOnce",
+        "deployment_group_name": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}",
+        "deployment_style": {
+          "deployment_option": "WITH_TRAFFIC_CONTROL",
+          "deployment_type": "BLUE_GREEN"
+        },
+        "service_role_arn": "\${aws_iam_role.test-lambda-code-deploy_code-deploy-role_9DA8B07C.arn}"
+      }
+    },
+    "aws_iam_role": {
+      "test-lambda-code-deploy_code-deploy-role_9DA8B07C": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda-code-deploy_code-deploy-assume-role-policy-document_484EBB89.json}",
+        "name": "Test-Lambda-Code-Deploy-CodeDeployRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-lambda-code-deploy_code-deploy-policy-attachment_84E423E0": {
+        "depends_on": [
+          "aws_iam_role.test-lambda-code-deploy_code-deploy-role_9DA8B07C"
+        ],
+        "policy_arn": "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForLambda",
+        "role": "\${aws_iam_role.test-lambda-code-deploy_code-deploy-role_9DA8B07C.name}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationLambdaCodeDeploy renders a lambda code deploy app with all notifications enabled 1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "test-lambda-code-deploy_code-deploy-assume-role-policy-document_484EBB89": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "codedeploy.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "resource": {
+    "aws_codedeploy_app": {
+      "test-lambda-code-deploy_code-deploy-app_A7640CFE": {
+        "compute_platform": "Lambda",
+        "name": "Test-Lambda-Code-Deploy-Lambda"
+      }
+    },
+    "aws_codedeploy_deployment_group": {
+      "test-lambda-code-deploy_code-deployment-group_3F73EBCE": {
+        "app_name": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}",
+        "auto_rollback_configuration": {
+          "enabled": true,
+          "events": [
+            "DEPLOYMENT_FAILURE"
+          ]
+        },
+        "depends_on": [
+          "aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE"
+        ],
+        "deployment_config_name": "CodeDeployDefault.LambdaAllAtOnce",
+        "deployment_group_name": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}",
+        "deployment_style": {
+          "deployment_option": "WITH_TRAFFIC_CONTROL",
+          "deployment_type": "BLUE_GREEN"
+        },
+        "service_role_arn": "\${aws_iam_role.test-lambda-code-deploy_code-deploy-role_9DA8B07C.arn}"
+      }
+    },
+    "aws_codestarnotifications_notification_rule": {
+      "test-lambda-code-deploy_notifications_7F614EE2": {
+        "detail_type": "BASIC",
+        "event_type_ids": [
+          "codedeploy-application-deployment-failed",
+          "codedeploy-application-deployment-succeeded",
+          "codedeploy-application-deployment-started"
+        ],
+        "name": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}",
+        "resource": "arn:aws:codedeploy:us-east-1:123:application:\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}",
+        "target": [
+          {
+            "address": "test:deploy-topic:arn"
+          }
+        ]
+      }
+    },
+    "aws_iam_role": {
+      "test-lambda-code-deploy_code-deploy-role_9DA8B07C": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda-code-deploy_code-deploy-assume-role-policy-document_484EBB89.json}",
+        "name": "Test-Lambda-Code-Deploy-CodeDeployRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-lambda-code-deploy_code-deploy-policy-attachment_84E423E0": {
+        "depends_on": [
+          "aws_iam_role.test-lambda-code-deploy_code-deploy-role_9DA8B07C"
+        ],
+        "policy_arn": "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForLambda",
+        "role": "\${aws_iam_role.test-lambda-code-deploy_code-deploy-role_9DA8B07C.name}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationLambdaCodeDeploy renders a lambda code deploy app with default notifications 1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "test-lambda-code-deploy_code-deploy-assume-role-policy-document_484EBB89": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "codedeploy.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "resource": {
+    "aws_codedeploy_app": {
+      "test-lambda-code-deploy_code-deploy-app_A7640CFE": {
+        "compute_platform": "Lambda",
+        "name": "Test-Lambda-Code-Deploy-Lambda"
+      }
+    },
+    "aws_codedeploy_deployment_group": {
+      "test-lambda-code-deploy_code-deployment-group_3F73EBCE": {
+        "app_name": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}",
+        "auto_rollback_configuration": {
+          "enabled": true,
+          "events": [
+            "DEPLOYMENT_FAILURE"
+          ]
+        },
+        "depends_on": [
+          "aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE"
+        ],
+        "deployment_config_name": "CodeDeployDefault.LambdaAllAtOnce",
+        "deployment_group_name": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}",
+        "deployment_style": {
+          "deployment_option": "WITH_TRAFFIC_CONTROL",
+          "deployment_type": "BLUE_GREEN"
+        },
+        "service_role_arn": "\${aws_iam_role.test-lambda-code-deploy_code-deploy-role_9DA8B07C.arn}"
+      }
+    },
+    "aws_codestarnotifications_notification_rule": {
+      "test-lambda-code-deploy_notifications_7F614EE2": {
+        "detail_type": "BASIC",
+        "event_type_ids": [
+          "codedeploy-application-deployment-failed"
+        ],
+        "name": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}",
+        "resource": "arn:aws:codedeploy:us-east-1:123:application:\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}",
+        "target": [
+          {
+            "address": "test:deploy-topic:arn"
+          }
+        ]
+      }
+    },
+    "aws_iam_role": {
+      "test-lambda-code-deploy_code-deploy-role_9DA8B07C": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda-code-deploy_code-deploy-assume-role-policy-document_484EBB89.json}",
+        "name": "Test-Lambda-Code-Deploy-CodeDeployRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-lambda-code-deploy_code-deploy-policy-attachment_84E423E0": {
+        "depends_on": [
+          "aws_iam_role.test-lambda-code-deploy_code-deploy-role_9DA8B07C"
+        ],
+        "policy_arn": "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForLambda",
+        "role": "\${aws_iam_role.test-lambda-code-deploy_code-deploy-role_9DA8B07C.name}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationLambdaCodeDeploy renders a lambda code deploy app with sns topic arn 1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "test-lambda-code-deploy_code-deploy-assume-role-policy-document_484EBB89": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "codedeploy.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "resource": {
+    "aws_codedeploy_app": {
+      "test-lambda-code-deploy_code-deploy-app_A7640CFE": {
+        "compute_platform": "Lambda",
+        "name": "Test-Lambda-Code-Deploy-Lambda"
+      }
+    },
+    "aws_codedeploy_deployment_group": {
+      "test-lambda-code-deploy_code-deployment-group_3F73EBCE": {
+        "app_name": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}",
+        "auto_rollback_configuration": {
+          "enabled": true,
+          "events": [
+            "DEPLOYMENT_FAILURE"
+          ]
+        },
+        "depends_on": [
+          "aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE"
+        ],
+        "deployment_config_name": "CodeDeployDefault.LambdaAllAtOnce",
+        "deployment_group_name": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}",
+        "deployment_style": {
+          "deployment_option": "WITH_TRAFFIC_CONTROL",
+          "deployment_type": "BLUE_GREEN"
+        },
+        "service_role_arn": "\${aws_iam_role.test-lambda-code-deploy_code-deploy-role_9DA8B07C.arn}"
+      }
+    },
+    "aws_codestarnotifications_notification_rule": {
+      "test-lambda-code-deploy_notifications_7F614EE2": {
+        "detail_type": "BASIC",
+        "event_type_ids": [
+          "codedeploy-application-deployment-failed"
+        ],
+        "name": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}",
+        "resource": "arn:aws:codedeploy:us-east-1:123:application:\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}",
+        "target": [
+          {
+            "address": "test:deploy-topic:arn"
+          }
+        ]
+      }
+    },
+    "aws_iam_role": {
+      "test-lambda-code-deploy_code-deploy-role_9DA8B07C": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda-code-deploy_code-deploy-assume-role-policy-document_484EBB89.json}",
+        "name": "Test-Lambda-Code-Deploy-CodeDeployRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-lambda-code-deploy_code-deploy-policy-attachment_84E423E0": {
+        "depends_on": [
+          "aws_iam_role.test-lambda-code-deploy_code-deploy-role_9DA8B07C"
+        ],
+        "policy_arn": "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForLambda",
+        "role": "\${aws_iam_role.test-lambda-code-deploy_code-deploy-role_9DA8B07C.name}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationLambdaCodeDeploy renders a lambda code deploy app with sns topic arn and detail type 1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "test-lambda-code-deploy_code-deploy-assume-role-policy-document_484EBB89": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "codedeploy.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "resource": {
+    "aws_codedeploy_app": {
+      "test-lambda-code-deploy_code-deploy-app_A7640CFE": {
+        "compute_platform": "Lambda",
+        "name": "Test-Lambda-Code-Deploy-Lambda"
+      }
+    },
+    "aws_codedeploy_deployment_group": {
+      "test-lambda-code-deploy_code-deployment-group_3F73EBCE": {
+        "app_name": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}",
+        "auto_rollback_configuration": {
+          "enabled": true,
+          "events": [
+            "DEPLOYMENT_FAILURE"
+          ]
+        },
+        "depends_on": [
+          "aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE"
+        ],
+        "deployment_config_name": "CodeDeployDefault.LambdaAllAtOnce",
+        "deployment_group_name": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}",
+        "deployment_style": {
+          "deployment_option": "WITH_TRAFFIC_CONTROL",
+          "deployment_type": "BLUE_GREEN"
+        },
+        "service_role_arn": "\${aws_iam_role.test-lambda-code-deploy_code-deploy-role_9DA8B07C.arn}"
+      }
+    },
+    "aws_codestarnotifications_notification_rule": {
+      "test-lambda-code-deploy_notifications_7F614EE2": {
+        "detail_type": "FULL",
+        "event_type_ids": [
+          "codedeploy-application-deployment-failed"
+        ],
+        "name": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}",
+        "resource": "arn:aws:codedeploy:us-east-1:123:application:\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}",
+        "target": [
+          {
+            "address": "test:deploy-topic:arn"
+          }
+        ]
+      }
+    },
+    "aws_iam_role": {
+      "test-lambda-code-deploy_code-deploy-role_9DA8B07C": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda-code-deploy_code-deploy-assume-role-policy-document_484EBB89.json}",
+        "name": "Test-Lambda-Code-Deploy-CodeDeployRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-lambda-code-deploy_code-deploy-policy-attachment_84E423E0": {
+        "depends_on": [
+          "aws_iam_role.test-lambda-code-deploy_code-deploy-role_9DA8B07C"
+        ],
+        "policy_arn": "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForLambda",
+        "role": "\${aws_iam_role.test-lambda-code-deploy_code-deploy-role_9DA8B07C.name}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationLambdaCodeDeploy renders a lambda code deploy app with started and succeeded notifications only 1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "test-lambda-code-deploy_code-deploy-assume-role-policy-document_484EBB89": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "codedeploy.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "resource": {
+    "aws_codedeploy_app": {
+      "test-lambda-code-deploy_code-deploy-app_A7640CFE": {
+        "compute_platform": "Lambda",
+        "name": "Test-Lambda-Code-Deploy-Lambda"
+      }
+    },
+    "aws_codedeploy_deployment_group": {
+      "test-lambda-code-deploy_code-deployment-group_3F73EBCE": {
+        "app_name": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}",
+        "auto_rollback_configuration": {
+          "enabled": true,
+          "events": [
+            "DEPLOYMENT_FAILURE"
+          ]
+        },
+        "depends_on": [
+          "aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE"
+        ],
+        "deployment_config_name": "CodeDeployDefault.LambdaAllAtOnce",
+        "deployment_group_name": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}",
+        "deployment_style": {
+          "deployment_option": "WITH_TRAFFIC_CONTROL",
+          "deployment_type": "BLUE_GREEN"
+        },
+        "service_role_arn": "\${aws_iam_role.test-lambda-code-deploy_code-deploy-role_9DA8B07C.arn}"
+      }
+    },
+    "aws_codestarnotifications_notification_rule": {
+      "test-lambda-code-deploy_notifications_7F614EE2": {
+        "detail_type": "BASIC",
+        "event_type_ids": [
+          "codedeploy-application-deployment-succeeded",
+          "codedeploy-application-deployment-started"
+        ],
+        "name": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}",
+        "resource": "arn:aws:codedeploy:us-east-1:123:application:\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}",
+        "target": [
+          {
+            "address": "test:deploy-topic:arn"
+          }
+        ]
+      }
+    },
+    "aws_iam_role": {
+      "test-lambda-code-deploy_code-deploy-role_9DA8B07C": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda-code-deploy_code-deploy-assume-role-policy-document_484EBB89.json}",
+        "name": "Test-Lambda-Code-Deploy-CodeDeployRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-lambda-code-deploy_code-deploy-policy-attachment_84E423E0": {
+        "depends_on": [
+          "aws_iam_role.test-lambda-code-deploy_code-deploy-role_9DA8B07C"
+        ],
+        "policy_arn": "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForLambda",
+        "role": "\${aws_iam_role.test-lambda-code-deploy_code-deploy-role_9DA8B07C.name}"
+      }
+    }
+  }
+}"
+`;

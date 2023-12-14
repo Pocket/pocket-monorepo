@@ -1,0 +1,223 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApplicationMemcache renders memcached with minimal config 1`] = `
+"{
+  "data": {
+    "aws_vpc": {
+      "testMemcached_vpc_192C8AF1": {
+        "filter": [
+          {
+            "name": "vpc-id",
+            "values": [
+              "cool-vpc"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "resource": {
+    "aws_elasticache_cluster": {
+      "testMemcached_elasticache_cluster_4853BD62": {
+        "apply_immediately": true,
+        "cluster_id": "abides-dev",
+        "depends_on": [
+          "aws_elasticache_subnet_group.testMemcached_elasticache_subnet_group_609E6233",
+          "aws_security_group.testMemcached_elasticache_security_group_F23969B6"
+        ],
+        "engine": "memcached",
+        "engine_version": "1.6.6",
+        "node_type": "cache.t2.micro",
+        "num_cache_nodes": 2,
+        "parameter_group_name": "default.memcached1.6",
+        "port": 11211,
+        "security_group_ids": [
+          "\${aws_security_group.testMemcached_elasticache_security_group_F23969B6.id}"
+        ],
+        "subnet_group_name": "\${aws_elasticache_subnet_group.testMemcached_elasticache_subnet_group_609E6233.name}"
+      }
+    },
+    "aws_elasticache_subnet_group": {
+      "testMemcached_elasticache_subnet_group_609E6233": {
+        "name": "abides-dev-ElasticacheSubnetGroup",
+        "subnet_ids": [
+          "1234-123"
+        ]
+      }
+    },
+    "aws_security_group": {
+      "testMemcached_elasticache_security_group_F23969B6": {
+        "description": "Managed by Terraform",
+        "ingress": [
+          {
+            "cidr_blocks": null,
+            "description": null,
+            "from_port": 11211,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "tcp",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 11211
+          }
+        ],
+        "name_prefix": "abides-dev",
+        "vpc_id": "\${data.aws_vpc.testMemcached_vpc_192C8AF1.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationMemcache renders memcached with node change 1`] = `
+"{
+  "data": {
+    "aws_vpc": {
+      "testMemcached_vpc_192C8AF1": {
+        "filter": [
+          {
+            "name": "vpc-id",
+            "values": [
+              "cool-vpc"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "resource": {
+    "aws_elasticache_cluster": {
+      "testMemcached_elasticache_cluster_4853BD62": {
+        "apply_immediately": true,
+        "cluster_id": "abides-dev",
+        "depends_on": [
+          "aws_elasticache_subnet_group.testMemcached_elasticache_subnet_group_609E6233",
+          "aws_security_group.testMemcached_elasticache_security_group_F23969B6"
+        ],
+        "engine": "memcached",
+        "engine_version": "1.6.6",
+        "node_type": "cache.m4.2xlarge",
+        "num_cache_nodes": 5,
+        "parameter_group_name": "default.memcached1.6",
+        "port": 11211,
+        "security_group_ids": [
+          "\${aws_security_group.testMemcached_elasticache_security_group_F23969B6.id}"
+        ],
+        "subnet_group_name": "\${aws_elasticache_subnet_group.testMemcached_elasticache_subnet_group_609E6233.name}"
+      }
+    },
+    "aws_elasticache_subnet_group": {
+      "testMemcached_elasticache_subnet_group_609E6233": {
+        "name": "abides-dev-ElasticacheSubnetGroup",
+        "subnet_ids": [
+          "1234-123"
+        ]
+      }
+    },
+    "aws_security_group": {
+      "testMemcached_elasticache_security_group_F23969B6": {
+        "description": "Managed by Terraform",
+        "ingress": [
+          {
+            "cidr_blocks": null,
+            "description": null,
+            "from_port": 11211,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "tcp",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 11211
+          }
+        ],
+        "name_prefix": "abides-dev",
+        "vpc_id": "\${data.aws_vpc.testMemcached_vpc_192C8AF1.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationMemcache renders memcached with tags 1`] = `
+"{
+  "data": {
+    "aws_vpc": {
+      "testMemcached_vpc_192C8AF1": {
+        "filter": [
+          {
+            "name": "vpc-id",
+            "values": [
+              "cool-vpc"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "resource": {
+    "aws_elasticache_cluster": {
+      "testMemcached_elasticache_cluster_4853BD62": {
+        "apply_immediately": true,
+        "cluster_id": "abides-dev",
+        "depends_on": [
+          "aws_elasticache_subnet_group.testMemcached_elasticache_subnet_group_609E6233",
+          "aws_security_group.testMemcached_elasticache_security_group_F23969B6"
+        ],
+        "engine": "memcached",
+        "engine_version": "1.6.6",
+        "node_type": "cache.t2.micro",
+        "num_cache_nodes": 2,
+        "parameter_group_name": "default.memcached1.6",
+        "port": 11211,
+        "security_group_ids": [
+          "\${aws_security_group.testMemcached_elasticache_security_group_F23969B6.id}"
+        ],
+        "subnet_group_name": "\${aws_elasticache_subnet_group.testMemcached_elasticache_subnet_group_609E6233.name}",
+        "tags": {
+          "donnie": "throwinrockstonight",
+          "letsgo": "bowling"
+        }
+      }
+    },
+    "aws_elasticache_subnet_group": {
+      "testMemcached_elasticache_subnet_group_609E6233": {
+        "name": "abides-dev-ElasticacheSubnetGroup",
+        "subnet_ids": [
+          "1234-123"
+        ],
+        "tags": {
+          "donnie": "throwinrockstonight",
+          "letsgo": "bowling"
+        }
+      }
+    },
+    "aws_security_group": {
+      "testMemcached_elasticache_security_group_F23969B6": {
+        "description": "Managed by Terraform",
+        "ingress": [
+          {
+            "cidr_blocks": null,
+            "description": null,
+            "from_port": 11211,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "tcp",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 11211
+          }
+        ],
+        "name_prefix": "abides-dev",
+        "tags": {
+          "donnie": "throwinrockstonight",
+          "letsgo": "bowling"
+        },
+        "vpc_id": "\${data.aws_vpc.testMemcached_vpc_192C8AF1.id}"
+      }
+    }
+  }
+}"
+`;
