@@ -89,7 +89,7 @@ class ImageAPI extends TerraformStack {
    * @private
    */
   private createApplicationCodePipeline(app: PocketALBApplication) {
-    new PocketECSCodePipeline(this, 'code-pipeline', {
+    new PocketECSCodePipeline(this, 'imageapi_code-pipeline', {
       prefix: config.prefix,
       source: {
         codeStarConnectionArn: config.codePipeline.githubConnectionArn,
@@ -162,7 +162,7 @@ class ImageAPI extends TerraformStack {
       `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.prefix}/*`,
     ];
 
-    return new PocketALBApplication(this, 'application', {
+    return new PocketALBApplication(this, `imageapi_application`, {
       internal: true,
       prefix: config.prefix,
       alb6CharacterPrefix: config.shortName,
