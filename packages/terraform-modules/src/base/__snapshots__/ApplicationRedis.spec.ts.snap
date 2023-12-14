@@ -1,0 +1,229 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApplicationRedis renders redis with minimal config 1`] = `
+"{
+  "data": {
+    "aws_vpc": {
+      "testRedis_vpc_442CAD26": {
+        "filter": [
+          {
+            "name": "vpc-id",
+            "values": [
+              "cool-vpc"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "resource": {
+    "aws_elasticache_replication_group": {
+      "testRedis_elasticache_replication_group_E03AAD61": {
+        "apply_immediately": true,
+        "automatic_failover_enabled": true,
+        "depends_on": [
+          "aws_elasticache_subnet_group.testRedis_elasticache_subnet_group_389F6AE7",
+          "aws_security_group.testRedis_elasticache_security_group_36C6CB6D"
+        ],
+        "description": "abides-dev | Managed by terraform",
+        "engine_version": "7.0",
+        "multi_az_enabled": true,
+        "node_type": "cache.t3.micro",
+        "num_cache_clusters": 2,
+        "parameter_group_name": "default.redis7",
+        "port": 6379,
+        "replication_group_id": "abides-dev",
+        "security_group_ids": [
+          "\${aws_security_group.testRedis_elasticache_security_group_36C6CB6D.id}"
+        ],
+        "subnet_group_name": "\${aws_elasticache_subnet_group.testRedis_elasticache_subnet_group_389F6AE7.name}"
+      }
+    },
+    "aws_elasticache_subnet_group": {
+      "testRedis_elasticache_subnet_group_389F6AE7": {
+        "name": "abides-dev-ElasticacheSubnetGroup",
+        "subnet_ids": [
+          "1234-123"
+        ]
+      }
+    },
+    "aws_security_group": {
+      "testRedis_elasticache_security_group_36C6CB6D": {
+        "description": "Managed by Terraform",
+        "ingress": [
+          {
+            "cidr_blocks": null,
+            "description": null,
+            "from_port": 6379,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "tcp",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 6379
+          }
+        ],
+        "name_prefix": "abides-dev",
+        "vpc_id": "\${data.aws_vpc.testRedis_vpc_442CAD26.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationRedis renders redis with node change 1`] = `
+"{
+  "data": {
+    "aws_vpc": {
+      "testRedis_vpc_442CAD26": {
+        "filter": [
+          {
+            "name": "vpc-id",
+            "values": [
+              "cool-vpc"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "resource": {
+    "aws_elasticache_replication_group": {
+      "testRedis_elasticache_replication_group_E03AAD61": {
+        "apply_immediately": true,
+        "automatic_failover_enabled": true,
+        "depends_on": [
+          "aws_elasticache_subnet_group.testRedis_elasticache_subnet_group_389F6AE7",
+          "aws_security_group.testRedis_elasticache_security_group_36C6CB6D"
+        ],
+        "description": "abides-dev | Managed by terraform",
+        "engine_version": "7.0",
+        "multi_az_enabled": true,
+        "node_type": "cache.m4.2xlarge",
+        "num_cache_clusters": 5,
+        "parameter_group_name": "default.redis7",
+        "port": 6379,
+        "replication_group_id": "abides-dev",
+        "security_group_ids": [
+          "\${aws_security_group.testRedis_elasticache_security_group_36C6CB6D.id}"
+        ],
+        "subnet_group_name": "\${aws_elasticache_subnet_group.testRedis_elasticache_subnet_group_389F6AE7.name}"
+      }
+    },
+    "aws_elasticache_subnet_group": {
+      "testRedis_elasticache_subnet_group_389F6AE7": {
+        "name": "abides-dev-ElasticacheSubnetGroup",
+        "subnet_ids": [
+          "1234-123"
+        ]
+      }
+    },
+    "aws_security_group": {
+      "testRedis_elasticache_security_group_36C6CB6D": {
+        "description": "Managed by Terraform",
+        "ingress": [
+          {
+            "cidr_blocks": null,
+            "description": null,
+            "from_port": 6379,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "tcp",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 6379
+          }
+        ],
+        "name_prefix": "abides-dev",
+        "vpc_id": "\${data.aws_vpc.testRedis_vpc_442CAD26.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationRedis renders redis with tags 1`] = `
+"{
+  "data": {
+    "aws_vpc": {
+      "testRedis_vpc_442CAD26": {
+        "filter": [
+          {
+            "name": "vpc-id",
+            "values": [
+              "cool-vpc"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "resource": {
+    "aws_elasticache_replication_group": {
+      "testRedis_elasticache_replication_group_E03AAD61": {
+        "apply_immediately": true,
+        "automatic_failover_enabled": true,
+        "depends_on": [
+          "aws_elasticache_subnet_group.testRedis_elasticache_subnet_group_389F6AE7",
+          "aws_security_group.testRedis_elasticache_security_group_36C6CB6D"
+        ],
+        "description": "abides-dev | Managed by terraform",
+        "engine_version": "7.0",
+        "multi_az_enabled": true,
+        "node_type": "cache.t3.micro",
+        "num_cache_clusters": 2,
+        "parameter_group_name": "default.redis7",
+        "port": 6379,
+        "replication_group_id": "abides-dev",
+        "security_group_ids": [
+          "\${aws_security_group.testRedis_elasticache_security_group_36C6CB6D.id}"
+        ],
+        "subnet_group_name": "\${aws_elasticache_subnet_group.testRedis_elasticache_subnet_group_389F6AE7.name}",
+        "tags": {
+          "donnie": "throwinrockstonight",
+          "letsgo": "bowling"
+        }
+      }
+    },
+    "aws_elasticache_subnet_group": {
+      "testRedis_elasticache_subnet_group_389F6AE7": {
+        "name": "abides-dev-ElasticacheSubnetGroup",
+        "subnet_ids": [
+          "1234-123"
+        ],
+        "tags": {
+          "donnie": "throwinrockstonight",
+          "letsgo": "bowling"
+        }
+      }
+    },
+    "aws_security_group": {
+      "testRedis_elasticache_security_group_36C6CB6D": {
+        "description": "Managed by Terraform",
+        "ingress": [
+          {
+            "cidr_blocks": null,
+            "description": null,
+            "from_port": 6379,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "tcp",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 6379
+          }
+        ],
+        "name_prefix": "abides-dev",
+        "tags": {
+          "donnie": "throwinrockstonight",
+          "letsgo": "bowling"
+        },
+        "vpc_id": "\${data.aws_vpc.testRedis_vpc_442CAD26.id}"
+      }
+    }
+  }
+}"
+`;

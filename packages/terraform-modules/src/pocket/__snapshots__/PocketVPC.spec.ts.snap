@@ -1,0 +1,108 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders a VPC with minimal config 1`] = `
+"{
+  "data": {
+    "aws_caller_identity": {
+      "testPocketVPC_current_identity_433574E3": {
+      }
+    },
+    "aws_kms_alias": {
+      "testPocketVPC_secrets_manager_key_3F5AECFC": {
+        "name": "alias/aws/secretsmanager"
+      }
+    },
+    "aws_region": {
+      "testPocketVPC_current_region_1C1E28CD": {
+      }
+    },
+    "aws_security_groups": {
+      "testPocketVPC_default_security_groups_48E7EA82": {
+        "filter": [
+          {
+            "name": "group-name",
+            "values": [
+              "default"
+            ]
+          },
+          {
+            "name": "vpc-id",
+            "values": [
+              "\${data.aws_vpc.testPocketVPC_vpc_52CB41F5.id}"
+            ]
+          }
+        ]
+      },
+      "testPocketVPC_internal_security_groups_2506B665": {
+        "filter": [
+          {
+            "name": "group-name",
+            "values": [
+              "pocket-vpc-internal"
+            ]
+          },
+          {
+            "name": "vpc-id",
+            "values": [
+              "\${data.aws_vpc.testPocketVPC_vpc_52CB41F5.id}"
+            ]
+          }
+        ]
+      }
+    },
+    "aws_ssm_parameter": {
+      "testPocketVPC_private_subnets_3CC52CDC": {
+        "name": "/Shared/PrivateSubnets"
+      },
+      "testPocketVPC_public_subnets_21F01977": {
+        "name": "/Shared/PublicSubnets"
+      },
+      "testPocketVPC_vpc_ssm_param_DED34ABC": {
+        "name": "/Shared/Vpc"
+      }
+    },
+    "aws_subnets": {
+      "testPocketVPC_private_subnet_ids_61A307A3": {
+        "filter": [
+          {
+            "name": "subnet-id",
+            "values": "\${split(\\",\\", data.aws_ssm_parameter.testPocketVPC_private_subnets_3CC52CDC.value)}"
+          },
+          {
+            "name": "vpc-id",
+            "values": [
+              "\${data.aws_vpc.testPocketVPC_vpc_52CB41F5.id}"
+            ]
+          }
+        ]
+      },
+      "testPocketVPC_public_subnet_ids_5AC8BE89": {
+        "filter": [
+          {
+            "name": "subnet-id",
+            "values": "\${split(\\",\\", data.aws_ssm_parameter.testPocketVPC_public_subnets_21F01977.value)}"
+          },
+          {
+            "name": "vpc-id",
+            "values": [
+              "\${data.aws_vpc.testPocketVPC_vpc_52CB41F5.id}"
+            ]
+          }
+        ]
+      }
+    },
+    "aws_vpc": {
+      "testPocketVPC_vpc_52CB41F5": {
+        "filter": [
+          {
+            "name": "vpc-id",
+            "values": [
+              "\${data.aws_ssm_parameter.testPocketVPC_vpc_ssm_param_DED34ABC.value}"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}"
+`;

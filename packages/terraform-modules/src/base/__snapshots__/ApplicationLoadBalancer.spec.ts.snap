@@ -1,0 +1,627 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApplicationLoadBalancer renders an ALB with logs with a new bucket 1`] = `
+"{
+  "data": {
+    "aws_elb_service_account": {
+      "testALB_elb-service-account_4BDD06CE": {
+      }
+    },
+    "aws_iam_policy_document": {
+      "testALB_iam-log-bucket-policy-document_C7E41154": {
+        "statement": [
+          {
+            "actions": [
+              "s3:PutObject"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "arn:aws:iam::\${data.aws_elb_service_account.testALB_elb-service-account_4BDD06CE.id}:root"
+                ],
+                "type": "AWS"
+              }
+            ],
+            "resources": [
+              "arn:aws:s3:::\${aws_s3_bucket.testALB_log-bucket_E9787BB1.bucket}/*"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "resource": {
+    "aws_alb": {
+      "testALB_alb_F6B33218": {
+        "access_logs": {
+          "bucket": "\${aws_s3_bucket.testALB_log-bucket_E9787BB1.bucket}",
+          "enabled": true,
+          "prefix": "server-logs/test-/alb"
+        },
+        "internal": false,
+        "name_prefix": "TEST",
+        "security_groups": [
+          "\${aws_security_group.testALB_alb_security_group_57C45F23.id}"
+        ],
+        "subnets": [
+          "a",
+          "b"
+        ],
+        "tags": {
+          "hobby": "bowling",
+          "name": "thedude"
+        }
+      }
+    },
+    "aws_s3_bucket": {
+      "testALB_log-bucket_E9787BB1": {
+        "bucket": "logging-bucket",
+        "tags": {
+          "hobby": "bowling",
+          "name": "thedude"
+        }
+      }
+    },
+    "aws_s3_bucket_policy": {
+      "testALB_log-bucket-policy_EB762FB5": {
+        "bucket": "\${aws_s3_bucket.testALB_log-bucket_E9787BB1.bucket}",
+        "policy": "\${data.aws_iam_policy_document.testALB_iam-log-bucket-policy-document_C7E41154.json}"
+      }
+    },
+    "aws_security_group": {
+      "testALB_alb_security_group_57C45F23": {
+        "description": "External security group  (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": null,
+            "from_port": 443,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "TCP",
+            "security_groups": null,
+            "self": null,
+            "to_port": 443
+          },
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": null,
+            "from_port": 80,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "TCP",
+            "security_groups": null,
+            "self": null,
+            "to_port": 80
+          }
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "test--HTTP/S Security Group",
+        "tags": {
+          "Name": "test--HTTP/S Security Group",
+          "hobby": "bowling",
+          "name": "thedude"
+        },
+        "vpc_id": "123"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationLoadBalancer renders an ALB with logs with a new bucket and prefix 1`] = `
+"{
+  "data": {
+    "aws_elb_service_account": {
+      "testALB_elb-service-account_4BDD06CE": {
+      }
+    },
+    "aws_iam_policy_document": {
+      "testALB_iam-log-bucket-policy-document_C7E41154": {
+        "statement": [
+          {
+            "actions": [
+              "s3:PutObject"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "arn:aws:iam::\${data.aws_elb_service_account.testALB_elb-service-account_4BDD06CE.id}:root"
+                ],
+                "type": "AWS"
+              }
+            ],
+            "resources": [
+              "arn:aws:s3:::\${aws_s3_bucket.testALB_log-bucket_E9787BB1.bucket}/*"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "resource": {
+    "aws_alb": {
+      "testALB_alb_F6B33218": {
+        "access_logs": {
+          "bucket": "\${aws_s3_bucket.testALB_log-bucket_E9787BB1.bucket}",
+          "enabled": true,
+          "prefix": "logs/ahoy/cool/service"
+        },
+        "internal": false,
+        "name_prefix": "TEST",
+        "security_groups": [
+          "\${aws_security_group.testALB_alb_security_group_57C45F23.id}"
+        ],
+        "subnets": [
+          "a",
+          "b"
+        ],
+        "tags": {
+          "hobby": "bowling",
+          "name": "thedude"
+        }
+      }
+    },
+    "aws_s3_bucket": {
+      "testALB_log-bucket_E9787BB1": {
+        "bucket": "logging-bucket",
+        "tags": {
+          "hobby": "bowling",
+          "name": "thedude"
+        }
+      }
+    },
+    "aws_s3_bucket_policy": {
+      "testALB_log-bucket-policy_EB762FB5": {
+        "bucket": "\${aws_s3_bucket.testALB_log-bucket_E9787BB1.bucket}",
+        "policy": "\${data.aws_iam_policy_document.testALB_iam-log-bucket-policy-document_C7E41154.json}"
+      }
+    },
+    "aws_security_group": {
+      "testALB_alb_security_group_57C45F23": {
+        "description": "External security group  (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": null,
+            "from_port": 443,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "TCP",
+            "security_groups": null,
+            "self": null,
+            "to_port": 443
+          },
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": null,
+            "from_port": 80,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "TCP",
+            "security_groups": null,
+            "self": null,
+            "to_port": 80
+          }
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "test--HTTP/S Security Group",
+        "tags": {
+          "Name": "test--HTTP/S Security Group",
+          "hobby": "bowling",
+          "name": "thedude"
+        },
+        "vpc_id": "123"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationLoadBalancer renders an ALB with logs with an existing bucket 1`] = `
+"{
+  "data": {
+    "aws_s3_bucket": {
+      "testALB_log-bucket_E9787BB1": {
+        "bucket": "logging-bucket"
+      }
+    }
+  },
+  "resource": {
+    "aws_alb": {
+      "testALB_alb_F6B33218": {
+        "access_logs": {
+          "bucket": "\${data.aws_s3_bucket.testALB_log-bucket_E9787BB1.bucket}",
+          "enabled": true,
+          "prefix": "server-logs/test-/alb"
+        },
+        "internal": false,
+        "name_prefix": "TEST",
+        "security_groups": [
+          "\${aws_security_group.testALB_alb_security_group_57C45F23.id}"
+        ],
+        "subnets": [
+          "a",
+          "b"
+        ],
+        "tags": {
+          "hobby": "bowling",
+          "name": "thedude"
+        }
+      }
+    },
+    "aws_security_group": {
+      "testALB_alb_security_group_57C45F23": {
+        "description": "External security group  (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": null,
+            "from_port": 443,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "TCP",
+            "security_groups": null,
+            "self": null,
+            "to_port": 443
+          },
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": null,
+            "from_port": 80,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "TCP",
+            "security_groups": null,
+            "self": null,
+            "to_port": 80
+          }
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "test--HTTP/S Security Group",
+        "tags": {
+          "Name": "test--HTTP/S Security Group",
+          "hobby": "bowling",
+          "name": "thedude"
+        },
+        "vpc_id": "123"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationLoadBalancer renders an ALB with logs with an existing bucket and prefix 1`] = `
+"{
+  "data": {
+    "aws_s3_bucket": {
+      "testALB_log-bucket_E9787BB1": {
+        "bucket": "logging-bucket"
+      }
+    }
+  },
+  "resource": {
+    "aws_alb": {
+      "testALB_alb_F6B33218": {
+        "access_logs": {
+          "bucket": "\${data.aws_s3_bucket.testALB_log-bucket_E9787BB1.bucket}",
+          "enabled": true,
+          "prefix": "logs/ahoy/cool/service"
+        },
+        "internal": false,
+        "name_prefix": "TEST",
+        "security_groups": [
+          "\${aws_security_group.testALB_alb_security_group_57C45F23.id}"
+        ],
+        "subnets": [
+          "a",
+          "b"
+        ],
+        "tags": {
+          "hobby": "bowling",
+          "name": "thedude"
+        }
+      }
+    },
+    "aws_security_group": {
+      "testALB_alb_security_group_57C45F23": {
+        "description": "External security group  (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": null,
+            "from_port": 443,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "TCP",
+            "security_groups": null,
+            "self": null,
+            "to_port": 443
+          },
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": null,
+            "from_port": 80,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "TCP",
+            "security_groups": null,
+            "self": null,
+            "to_port": 80
+          }
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "test--HTTP/S Security Group",
+        "tags": {
+          "Name": "test--HTTP/S Security Group",
+          "hobby": "bowling",
+          "name": "thedude"
+        },
+        "vpc_id": "123"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationLoadBalancer renders an ALB with tags 1`] = `
+"{
+  "resource": {
+    "aws_alb": {
+      "testALB_alb_F6B33218": {
+        "internal": false,
+        "name_prefix": "TEST",
+        "security_groups": [
+          "\${aws_security_group.testALB_alb_security_group_57C45F23.id}"
+        ],
+        "subnets": [
+          "a",
+          "b"
+        ],
+        "tags": {
+          "hobby": "bowling",
+          "name": "thedude"
+        }
+      }
+    },
+    "aws_security_group": {
+      "testALB_alb_security_group_57C45F23": {
+        "description": "External security group  (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": null,
+            "from_port": 443,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "TCP",
+            "security_groups": null,
+            "self": null,
+            "to_port": 443
+          },
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": null,
+            "from_port": 80,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "TCP",
+            "security_groups": null,
+            "self": null,
+            "to_port": 80
+          }
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "test--HTTP/S Security Group",
+        "tags": {
+          "Name": "test--HTTP/S Security Group",
+          "hobby": "bowling",
+          "name": "thedude"
+        },
+        "vpc_id": "123"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationLoadBalancer renders an ALB without tags 1`] = `
+"{
+  "resource": {
+    "aws_alb": {
+      "testALB_alb_F6B33218": {
+        "internal": false,
+        "name_prefix": "TEST",
+        "security_groups": [
+          "\${aws_security_group.testALB_alb_security_group_57C45F23.id}"
+        ],
+        "subnets": [
+          "a",
+          "b"
+        ]
+      }
+    },
+    "aws_security_group": {
+      "testALB_alb_security_group_57C45F23": {
+        "description": "External security group  (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": null,
+            "from_port": 443,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "TCP",
+            "security_groups": null,
+            "self": null,
+            "to_port": 443
+          },
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": null,
+            "from_port": 80,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "TCP",
+            "security_groups": null,
+            "self": null,
+            "to_port": 80
+          }
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "test--HTTP/S Security Group",
+        "tags": {
+          "Name": "test--HTTP/S Security Group"
+        },
+        "vpc_id": "123"
+      }
+    }
+  }
+}"
+`;

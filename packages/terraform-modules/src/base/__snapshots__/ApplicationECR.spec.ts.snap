@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApplicationECR renders an ECR with tags 1`] = `
+"{
+  "resource": {
+    "aws_ecr_lifecycle_policy": {
+      "testECR_ecr-repo-lifecyclepolicy_4B354AF7": {
+        "depends_on": [
+          "aws_ecr_repository.testECR_ecr-repo_E42B68DA"
+        ],
+        "policy": "{\\"rules\\":[{\\"rulePriority\\":1,\\"description\\":\\"expire old images\\",\\"selection\\":{\\"tagStatus\\":\\"any\\",\\"countType\\":\\"imageCountMoreThan\\",\\"countNumber\\":800},\\"action\\":{\\"type\\":\\"expire\\"}}]}",
+        "repository": "\${aws_ecr_repository.testECR_ecr-repo_E42B68DA.name}"
+      }
+    },
+    "aws_ecr_repository": {
+      "testECR_ecr-repo_E42B68DA": {
+        "image_scanning_configuration": {
+          "scan_on_push": true
+        },
+        "name": "bowling",
+        "tags": {
+          "description": "tiedtheroomtogether",
+          "name": "rug"
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationECR renders an ECR without tags 1`] = `
+"{
+  "resource": {
+    "aws_ecr_lifecycle_policy": {
+      "testECR_ecr-repo-lifecyclepolicy_4B354AF7": {
+        "depends_on": [
+          "aws_ecr_repository.testECR_ecr-repo_E42B68DA"
+        ],
+        "policy": "{\\"rules\\":[{\\"rulePriority\\":1,\\"description\\":\\"expire old images\\",\\"selection\\":{\\"tagStatus\\":\\"any\\",\\"countType\\":\\"imageCountMoreThan\\",\\"countNumber\\":800},\\"action\\":{\\"type\\":\\"expire\\"}}]}",
+        "repository": "\${aws_ecr_repository.testECR_ecr-repo_E42B68DA.name}"
+      }
+    },
+    "aws_ecr_repository": {
+      "testECR_ecr-repo_E42B68DA": {
+        "image_scanning_configuration": {
+          "scan_on_push": true
+        },
+        "name": "bowling"
+      }
+    }
+  }
+}"
+`;

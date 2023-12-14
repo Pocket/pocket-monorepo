@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApplicationSQSQueue renders an sqs queue with max message size 1`] = `
+"{
+  "resource": {
+    "aws_sqs_queue": {
+      "testSQS_sqs_queue_B45AAD64": {
+        "fifo_queue": false,
+        "max_message_size": 86753,
+        "name": "TEST"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationSQSQueue renders an sqs queue with tags 1`] = `
+"{
+  "resource": {
+    "aws_sqs_queue": {
+      "testSQS_sqs_queue_B45AAD64": {
+        "fifo_queue": false,
+        "name": "TEST",
+        "tags": {
+          "environment": "prod",
+          "test": "123"
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationSQSQueue renders an sqs queue without tags 1`] = `
+"{
+  "resource": {
+    "aws_sqs_queue": {
+      "testSQS_sqs_queue_B45AAD64": {
+        "fifo_queue": false,
+        "name": "TEST"
+      }
+    }
+  }
+}"
+`;
