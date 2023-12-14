@@ -1,0 +1,469 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Pocket Cloudwatch Synthetics adds optional Alarms & Alarm Actions to Synthetic Checks  1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "test-synthetics_test-synthetics_synthetic_check_access_C1AC681E": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "*"
+            ]
+          },
+          {
+            "actions": [
+              "s3:PutObject",
+              "s3:GetObject"
+            ],
+            "resources": [
+              "\${aws_s3_bucket.test-synthetics_test-synthetics_synthetic_check_artifacts_6B281C96.arn}/*"
+            ]
+          },
+          {
+            "actions": [
+              "s3:GetObject"
+            ],
+            "resources": [
+              "arn:aws:s3:::pocket-syntheticchecks-dev/*"
+            ]
+          },
+          {
+            "actions": [
+              "s3:GetBucketLocation"
+            ],
+            "resources": [
+              "\${aws_s3_bucket.test-synthetics_test-synthetics_synthetic_check_artifacts_6B281C96.arn}"
+            ]
+          },
+          {
+            "actions": [
+              "s3:ListAllMyBuckets"
+            ],
+            "resources": [
+              "*"
+            ]
+          },
+          {
+            "actions": [
+              "cloudwatch:PutMetricData"
+            ],
+            "condition": [
+              {
+                "test": "StringEquals",
+                "values": [
+                  "CloudWatchSynthetics"
+                ],
+                "variable": "cloudwatch:namespace"
+              }
+            ],
+            "resources": [
+              "*"
+            ]
+          },
+          {
+            "actions": [
+              "ec2:AttachNetworkInterface",
+              "ec2:CreateNetworkInterface",
+              "ec2:DeleteNetworkInterface",
+              "ec2:DescribeNetworkInterfaces"
+            ],
+            "resources": [
+              "*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-synthetics_test-synthetics_synthetic_check_assume_9E375AF4": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_metric_alarm": {
+      "test-synthetics_test-synthetics_synthetic_check_alarm_query_0_161FA4E1": {
+        "alarm_actions": [
+          "arn:aws:sns:us-east-1:123456789101:Test-Sns-Topic"
+        ],
+        "alarm_description": "Alert when \${aws_synthetics_canary.test-synthetics_test-synthetics_synthetic_check_query_0_ECB1B9B3.name} canary success percentage has decreased below 66% in the last 15 minutes",
+        "alarm_name": "\${aws_synthetics_canary.test-synthetics_test-synthetics_synthetic_check_query_0_ECB1B9B3.name}",
+        "comparison_operator": "LessThanThreshold",
+        "dimensions": {
+          "CanaryName": "\${aws_synthetics_canary.test-synthetics_test-synthetics_synthetic_check_query_0_ECB1B9B3.name}"
+        },
+        "evaluation_periods": 3,
+        "insufficient_data_actions": [
+        ],
+        "metric_name": "SuccessPercent",
+        "namespace": "CloudWatchSynthetics",
+        "ok_actions": [
+          "arn:aws:sns:us-east-1:123456789101:Test-Sns-Topic"
+        ],
+        "period": 300,
+        "statistic": "Average",
+        "threshold": 66,
+        "treat_missing_data": "breaching"
+      },
+      "test-synthetics_test-synthetics_synthetic_check_alarm_uptime_0_47F383EB": {
+        "alarm_actions": [
+          "arn:aws:sns:us-east-1:123456789101:Test-Sns-Topic"
+        ],
+        "alarm_description": "Alert when \${aws_synthetics_canary.test-synthetics_test-synthetics_synthetic_check_uptime_0_2398A479.name} canary success percentage has decreased below 66% in the last 15 minutes",
+        "alarm_name": "\${aws_synthetics_canary.test-synthetics_test-synthetics_synthetic_check_uptime_0_2398A479.name}",
+        "comparison_operator": "LessThanThreshold",
+        "dimensions": {
+          "CanaryName": "\${aws_synthetics_canary.test-synthetics_test-synthetics_synthetic_check_uptime_0_2398A479.name}"
+        },
+        "evaluation_periods": 3,
+        "insufficient_data_actions": [
+        ],
+        "metric_name": "SuccessPercent",
+        "namespace": "CloudWatchSynthetics",
+        "ok_actions": [
+          "arn:aws:sns:us-east-1:123456789101:Test-Sns-Topic"
+        ],
+        "period": 300,
+        "statistic": "Average",
+        "threshold": 66,
+        "treat_missing_data": "breaching"
+      }
+    },
+    "aws_iam_policy": {
+      "test-synthetics_test-synthetics_synthetic_check_access_policy_F0C0ABD7": {
+        "name": "pocket-acme-dev-synthetic-check-access",
+        "policy": "\${data.aws_iam_policy_document.test-synthetics_test-synthetics_synthetic_check_access_C1AC681E.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-synthetics_synthetic_check_role_B358E7A9": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-synthetics_test-synthetics_synthetic_check_assume_9E375AF4.json}",
+        "name": "pocket-acme-dev-synthetic-check"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-synthetics_test-synthetics_synthetic_check_access_attach_4D7F0A0A": {
+        "policy_arn": "\${aws_iam_policy.test-synthetics_test-synthetics_synthetic_check_access_policy_F0C0ABD7.arn}",
+        "role": "\${aws_iam_role.test-synthetics_synthetic_check_role_B358E7A9.id}"
+      }
+    },
+    "aws_s3_bucket": {
+      "test-synthetics_test-synthetics_synthetic_check_artifacts_6B281C96": {
+        "bucket": "pocket-acme-dev-synthetic-checks"
+      }
+    },
+    "aws_s3_bucket_lifecycle_configuration": {
+      "test-synthetics_test-synthetics_synthetic_check_artifacts_lifecycle_4D55C3CA": {
+        "bucket": "\${aws_s3_bucket.test-synthetics_test-synthetics_synthetic_check_artifacts_6B281C96.id}",
+        "rule": [
+          {
+            "expiration": {
+              "days": 30
+            },
+            "id": "30-day-retention",
+            "status": "Enabled"
+          }
+        ]
+      }
+    },
+    "aws_synthetics_canary": {
+      "test-synthetics_test-synthetics_synthetic_check_query_0_ECB1B9B3": {
+        "artifact_s3_location": "s3://\${aws_s3_bucket.test-synthetics_test-synthetics_synthetic_check_artifacts_6B281C96.bucket}/",
+        "execution_role_arn": "\${aws_iam_role.test-synthetics_synthetic_check_role_B358E7A9.arn}",
+        "handler": "synthetic.query",
+        "name": "acme-dev-query-0",
+        "run_config": {
+          "environment_variables": {
+            "GRAPHQL_ENDPOINT": "acme.getpocket.dev",
+            "GRAPHQL_JMESPATH": "errors[0].message",
+            "GRAPHQL_QUERY": "{\\"query\\": \\"query { someGraphQlQuery(arg1: \\\\\\"1\\\\\\", arg2: \\\\\\"1\\\\\\") {returnedAttr} }\\"}",
+            "GRAPHQL_RESPONSE": "Error - Not Found: A resource by that arg1 could not be found",
+            "GRAPHQL_USERID": "1"
+          },
+          "timeout_in_seconds": 180
+        },
+        "runtime_version": "syn-nodejs-puppeteer-4.0",
+        "s3_bucket": "pocket-syntheticchecks-dev",
+        "s3_key": "aws-synthetic-dev.zip",
+        "schedule": {
+          "expression": "rate(5 minutes)"
+        },
+        "start_canary": true
+      },
+      "test-synthetics_test-synthetics_synthetic_check_uptime_0_2398A479": {
+        "artifact_s3_location": "s3://\${aws_s3_bucket.test-synthetics_test-synthetics_synthetic_check_artifacts_6B281C96.bucket}/",
+        "execution_role_arn": "\${aws_iam_role.test-synthetics_synthetic_check_role_B358E7A9.arn}",
+        "handler": "synthetic.uptime",
+        "name": "acme-dev-uptime-0",
+        "run_config": {
+          "environment_variables": {
+            "UPTIME_BODY": "ok",
+            "UPTIME_URL": "acme.getpocket.dev/.well-known/apollo/server-health"
+          },
+          "timeout_in_seconds": 180
+        },
+        "runtime_version": "syn-nodejs-puppeteer-4.0",
+        "s3_bucket": "pocket-syntheticchecks-dev",
+        "s3_key": "aws-synthetic-dev.zip",
+        "schedule": {
+          "expression": "rate(5 minutes)"
+        },
+        "start_canary": true
+      }
+    }
+  }
+}"
+`;
+
+exports[`Pocket Cloudwatch Synthetics renders desired AWS Synthetic Checks 1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "test-synthetics_test-synthetics_synthetic_check_access_C1AC681E": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "*"
+            ]
+          },
+          {
+            "actions": [
+              "s3:PutObject",
+              "s3:GetObject"
+            ],
+            "resources": [
+              "\${aws_s3_bucket.test-synthetics_test-synthetics_synthetic_check_artifacts_6B281C96.arn}/*"
+            ]
+          },
+          {
+            "actions": [
+              "s3:GetObject"
+            ],
+            "resources": [
+              "arn:aws:s3:::pocket-syntheticchecks-dev/*"
+            ]
+          },
+          {
+            "actions": [
+              "s3:GetBucketLocation"
+            ],
+            "resources": [
+              "\${aws_s3_bucket.test-synthetics_test-synthetics_synthetic_check_artifacts_6B281C96.arn}"
+            ]
+          },
+          {
+            "actions": [
+              "s3:ListAllMyBuckets"
+            ],
+            "resources": [
+              "*"
+            ]
+          },
+          {
+            "actions": [
+              "cloudwatch:PutMetricData"
+            ],
+            "condition": [
+              {
+                "test": "StringEquals",
+                "values": [
+                  "CloudWatchSynthetics"
+                ],
+                "variable": "cloudwatch:namespace"
+              }
+            ],
+            "resources": [
+              "*"
+            ]
+          },
+          {
+            "actions": [
+              "ec2:AttachNetworkInterface",
+              "ec2:CreateNetworkInterface",
+              "ec2:DeleteNetworkInterface",
+              "ec2:DescribeNetworkInterfaces"
+            ],
+            "resources": [
+              "*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-synthetics_test-synthetics_synthetic_check_assume_9E375AF4": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_metric_alarm": {
+      "test-synthetics_test-synthetics_synthetic_check_alarm_query_0_161FA4E1": {
+        "alarm_actions": [
+        ],
+        "alarm_description": "Alert when \${aws_synthetics_canary.test-synthetics_test-synthetics_synthetic_check_query_0_ECB1B9B3.name} canary success percentage has decreased below 66% in the last 15 minutes",
+        "alarm_name": "\${aws_synthetics_canary.test-synthetics_test-synthetics_synthetic_check_query_0_ECB1B9B3.name}",
+        "comparison_operator": "LessThanThreshold",
+        "dimensions": {
+          "CanaryName": "\${aws_synthetics_canary.test-synthetics_test-synthetics_synthetic_check_query_0_ECB1B9B3.name}"
+        },
+        "evaluation_periods": 3,
+        "insufficient_data_actions": [
+        ],
+        "metric_name": "SuccessPercent",
+        "namespace": "CloudWatchSynthetics",
+        "ok_actions": [
+        ],
+        "period": 300,
+        "statistic": "Average",
+        "threshold": 66,
+        "treat_missing_data": "breaching"
+      },
+      "test-synthetics_test-synthetics_synthetic_check_alarm_uptime_0_47F383EB": {
+        "alarm_actions": null,
+        "alarm_description": "Alert when \${aws_synthetics_canary.test-synthetics_test-synthetics_synthetic_check_uptime_0_2398A479.name} canary success percentage has decreased below 66% in the last 15 minutes",
+        "alarm_name": "\${aws_synthetics_canary.test-synthetics_test-synthetics_synthetic_check_uptime_0_2398A479.name}",
+        "comparison_operator": "LessThanThreshold",
+        "dimensions": {
+          "CanaryName": "\${aws_synthetics_canary.test-synthetics_test-synthetics_synthetic_check_uptime_0_2398A479.name}"
+        },
+        "evaluation_periods": 3,
+        "insufficient_data_actions": [
+        ],
+        "metric_name": "SuccessPercent",
+        "namespace": "CloudWatchSynthetics",
+        "ok_actions": null,
+        "period": 300,
+        "statistic": "Average",
+        "threshold": 66,
+        "treat_missing_data": "breaching"
+      }
+    },
+    "aws_iam_policy": {
+      "test-synthetics_test-synthetics_synthetic_check_access_policy_F0C0ABD7": {
+        "name": "pocket-acme-dev-synthetic-check-access",
+        "policy": "\${data.aws_iam_policy_document.test-synthetics_test-synthetics_synthetic_check_access_C1AC681E.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-synthetics_synthetic_check_role_B358E7A9": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-synthetics_test-synthetics_synthetic_check_assume_9E375AF4.json}",
+        "name": "pocket-acme-dev-synthetic-check"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-synthetics_test-synthetics_synthetic_check_access_attach_4D7F0A0A": {
+        "policy_arn": "\${aws_iam_policy.test-synthetics_test-synthetics_synthetic_check_access_policy_F0C0ABD7.arn}",
+        "role": "\${aws_iam_role.test-synthetics_synthetic_check_role_B358E7A9.id}"
+      }
+    },
+    "aws_s3_bucket": {
+      "test-synthetics_test-synthetics_synthetic_check_artifacts_6B281C96": {
+        "bucket": "pocket-acme-dev-synthetic-checks"
+      }
+    },
+    "aws_s3_bucket_lifecycle_configuration": {
+      "test-synthetics_test-synthetics_synthetic_check_artifacts_lifecycle_4D55C3CA": {
+        "bucket": "\${aws_s3_bucket.test-synthetics_test-synthetics_synthetic_check_artifacts_6B281C96.id}",
+        "rule": [
+          {
+            "expiration": {
+              "days": 30
+            },
+            "id": "30-day-retention",
+            "status": "Enabled"
+          }
+        ]
+      }
+    },
+    "aws_synthetics_canary": {
+      "test-synthetics_test-synthetics_synthetic_check_query_0_ECB1B9B3": {
+        "artifact_s3_location": "s3://\${aws_s3_bucket.test-synthetics_test-synthetics_synthetic_check_artifacts_6B281C96.bucket}/",
+        "execution_role_arn": "\${aws_iam_role.test-synthetics_synthetic_check_role_B358E7A9.arn}",
+        "handler": "synthetic.query",
+        "name": "acme-dev-query-0",
+        "run_config": {
+          "environment_variables": {
+            "GRAPHQL_ENDPOINT": "acme.getpocket.dev",
+            "GRAPHQL_JMESPATH": "errors[0].message",
+            "GRAPHQL_QUERY": "{\\"query\\": \\"query { someGraphQlQuery(arg1: \\\\\\"1\\\\\\", arg2: \\\\\\"1\\\\\\") {returnedAttr} }\\"}",
+            "GRAPHQL_RESPONSE": "Error - Not Found: A resource by that arg1 could not be found",
+            "GRAPHQL_USERID": "1"
+          },
+          "timeout_in_seconds": 180
+        },
+        "runtime_version": "syn-nodejs-puppeteer-4.0",
+        "s3_bucket": "pocket-syntheticchecks-dev",
+        "s3_key": "aws-synthetic-dev.zip",
+        "schedule": {
+          "expression": "rate(5 minutes)"
+        },
+        "start_canary": true
+      },
+      "test-synthetics_test-synthetics_synthetic_check_uptime_0_2398A479": {
+        "artifact_s3_location": "s3://\${aws_s3_bucket.test-synthetics_test-synthetics_synthetic_check_artifacts_6B281C96.bucket}/",
+        "execution_role_arn": "\${aws_iam_role.test-synthetics_synthetic_check_role_B358E7A9.arn}",
+        "handler": "synthetic.uptime",
+        "name": "acme-dev-uptime-0",
+        "run_config": {
+          "environment_variables": {
+            "UPTIME_BODY": "ok",
+            "UPTIME_URL": "acme.getpocket.dev/.well-known/apollo/server-health"
+          },
+          "timeout_in_seconds": 180
+        },
+        "runtime_version": "syn-nodejs-puppeteer-4.0",
+        "s3_bucket": "pocket-syntheticchecks-dev",
+        "s3_key": "aws-synthetic-dev.zip",
+        "schedule": {
+          "expression": "rate(5 minutes)"
+        },
+        "start_canary": true
+      }
+    }
+  }
+}"
+`;

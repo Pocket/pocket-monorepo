@@ -8,6 +8,9 @@
       "dotEnv": [".env.production.local", ".env.local", ".env.production", ".env"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
+    "test": {
+      "dependsOn": ["^build"]
+    },
     "lint": {},
     "format": {},
     "dev": {

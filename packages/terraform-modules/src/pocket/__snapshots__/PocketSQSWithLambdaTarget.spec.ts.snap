@@ -1,0 +1,557 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders a lambda triggered by an existing sqs queue 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-sqs-lambda_lambda-default-file_52E1CC8A": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-sqs-lambda_assume-policy-document_98DE5C4D": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-sqs-lambda_execution-policy-document_2C5F0106": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-sqs-lambda_lambda_sqs_policy_3C63A136": {
+        "statement": [
+          {
+            "actions": [
+              "sqs:SendMessage",
+              "sqs:ReceiveMessage",
+              "sqs:DeleteMessage",
+              "sqs:GetQueueAttributes",
+              "sqs:ChangeMessageVisibility"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "\${data.aws_sqs_queue.test-sqs-lambda_lambda_sqs_queue_D097423A.arn}"
+            ]
+          }
+        ]
+      }
+    },
+    "aws_sqs_queue": {
+      "test-sqs-lambda_lambda_sqs_queue_D097423A": {
+        "name": "my-existing-sqs"
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "test-sqs-lambda_log-group_F69AB78F": {
+        "depends_on": [
+          "aws_lambda_function.test-sqs-lambda_C2DB9DC9"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-sqs-lambda_C2DB9DC9.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_iam_policy": {
+      "test-sqs-lambda_execution-policy_ED32F1C0": {
+        "name": "test-sqs-lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-sqs-lambda_execution-policy-document_2C5F0106.json}"
+      },
+      "test-sqs-lambda_sqs-policy_E98CC69F": {
+        "depends_on": [
+          "aws_iam_role.test-sqs-lambda_execution-role_7323CCD9"
+        ],
+        "name": "test-sqs-lambda-LambdaSQSPolicy",
+        "policy": "\${data.aws_iam_policy_document.test-sqs-lambda_lambda_sqs_policy_3C63A136.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-sqs-lambda_execution-role_7323CCD9": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-sqs-lambda_assume-policy-document_98DE5C4D.json}",
+        "name": "test-sqs-lambda-ExecutionRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-sqs-lambda_execution-role-policy-attachment_45759A7F": {
+        "depends_on": [
+          "aws_iam_role.test-sqs-lambda_execution-role_7323CCD9",
+          "aws_iam_policy.test-sqs-lambda_execution-policy_ED32F1C0"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-sqs-lambda_execution-policy_ED32F1C0.arn}",
+        "role": "\${aws_iam_role.test-sqs-lambda_execution-role_7323CCD9.name}"
+      },
+      "test-sqs-lambda_execution-role-policy-attachment_CA21C309": {
+        "depends_on": [
+          "aws_iam_role.test-sqs-lambda_execution-role_7323CCD9",
+          "aws_iam_policy.test-sqs-lambda_sqs-policy_E98CC69F"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-sqs-lambda_sqs-policy_E98CC69F.arn}",
+        "role": "\${aws_iam_role.test-sqs-lambda_execution-role_7323CCD9.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-sqs-lambda_alias_2C2A09A2": {
+        "depends_on": [
+          "aws_lambda_function.test-sqs-lambda_C2DB9DC9"
+        ],
+        "function_name": "\${aws_lambda_function.test-sqs-lambda_C2DB9DC9.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-sqs-lambda_C2DB9DC9.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_event_source_mapping": {
+      "test-sqs-lambda_lambda_event_source_mapping_C60D5FF2": {
+        "event_source_arn": "\${data.aws_sqs_queue.test-sqs-lambda_lambda_sqs_queue_D097423A.arn}",
+        "function_name": "\${aws_lambda_alias.test-sqs-lambda_alias_2C2A09A2.arn}"
+      }
+    },
+    "aws_lambda_function": {
+      "test-sqs-lambda_C2DB9DC9": {
+        "filename": "\${data.archive_file.test-sqs-lambda_lambda-default-file_52E1CC8A.output_path}",
+        "function_name": "test-sqs-lambda-Function",
+        "handler": "index.handler",
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-sqs-lambda_execution-role_7323CCD9.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-sqs-lambda_lambda-default-file_52E1CC8A.output_base64sha256}",
+        "timeout": 5
+      }
+    },
+    "aws_s3_bucket": {
+      "test-sqs-lambda_code-bucket_34D549A2": {
+        "acl": "private",
+        "bucket": "pocket-test-sqs-lambda",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-sqs-lambda_code-bucket-public-access-block_942034EC": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-sqs-lambda_code-bucket_34D549A2.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`renders a plain sqs queue and lambda target 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-sqs-lambda_lambda-default-file_52E1CC8A": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-sqs-lambda_assume-policy-document_98DE5C4D": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-sqs-lambda_execution-policy-document_2C5F0106": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-sqs-lambda_lambda_sqs_policy_3C63A136": {
+        "statement": [
+          {
+            "actions": [
+              "sqs:SendMessage",
+              "sqs:ReceiveMessage",
+              "sqs:DeleteMessage",
+              "sqs:GetQueueAttributes",
+              "sqs:ChangeMessageVisibility"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "\${aws_sqs_queue.test-sqs-lambda_lambda_sqs_queue_7C6D24B3.arn}"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "test-sqs-lambda_log-group_F69AB78F": {
+        "depends_on": [
+          "aws_lambda_function.test-sqs-lambda_C2DB9DC9"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-sqs-lambda_C2DB9DC9.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_iam_policy": {
+      "test-sqs-lambda_execution-policy_ED32F1C0": {
+        "name": "test-sqs-lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-sqs-lambda_execution-policy-document_2C5F0106.json}"
+      },
+      "test-sqs-lambda_sqs-policy_E98CC69F": {
+        "depends_on": [
+          "aws_iam_role.test-sqs-lambda_execution-role_7323CCD9"
+        ],
+        "name": "test-sqs-lambda-LambdaSQSPolicy",
+        "policy": "\${data.aws_iam_policy_document.test-sqs-lambda_lambda_sqs_policy_3C63A136.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-sqs-lambda_execution-role_7323CCD9": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-sqs-lambda_assume-policy-document_98DE5C4D.json}",
+        "name": "test-sqs-lambda-ExecutionRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-sqs-lambda_execution-role-policy-attachment_45759A7F": {
+        "depends_on": [
+          "aws_iam_role.test-sqs-lambda_execution-role_7323CCD9",
+          "aws_iam_policy.test-sqs-lambda_execution-policy_ED32F1C0"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-sqs-lambda_execution-policy_ED32F1C0.arn}",
+        "role": "\${aws_iam_role.test-sqs-lambda_execution-role_7323CCD9.name}"
+      },
+      "test-sqs-lambda_execution-role-policy-attachment_CA21C309": {
+        "depends_on": [
+          "aws_iam_role.test-sqs-lambda_execution-role_7323CCD9",
+          "aws_iam_policy.test-sqs-lambda_sqs-policy_E98CC69F"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-sqs-lambda_sqs-policy_E98CC69F.arn}",
+        "role": "\${aws_iam_role.test-sqs-lambda_execution-role_7323CCD9.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-sqs-lambda_alias_2C2A09A2": {
+        "depends_on": [
+          "aws_lambda_function.test-sqs-lambda_C2DB9DC9"
+        ],
+        "function_name": "\${aws_lambda_function.test-sqs-lambda_C2DB9DC9.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-sqs-lambda_C2DB9DC9.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_event_source_mapping": {
+      "test-sqs-lambda_lambda_event_source_mapping_C60D5FF2": {
+        "event_source_arn": "\${aws_sqs_queue.test-sqs-lambda_lambda_sqs_queue_7C6D24B3.arn}",
+        "function_name": "\${aws_lambda_alias.test-sqs-lambda_alias_2C2A09A2.arn}"
+      }
+    },
+    "aws_lambda_function": {
+      "test-sqs-lambda_C2DB9DC9": {
+        "filename": "\${data.archive_file.test-sqs-lambda_lambda-default-file_52E1CC8A.output_path}",
+        "function_name": "test-sqs-lambda-Function",
+        "handler": "index.handler",
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-sqs-lambda_execution-role_7323CCD9.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-sqs-lambda_lambda-default-file_52E1CC8A.output_base64sha256}",
+        "timeout": 5
+      }
+    },
+    "aws_s3_bucket": {
+      "test-sqs-lambda_code-bucket_34D549A2": {
+        "acl": "private",
+        "bucket": "pocket-test-sqs-lambda",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-sqs-lambda_code-bucket-public-access-block_942034EC": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-sqs-lambda_code-bucket_34D549A2.id}"
+      }
+    },
+    "aws_sqs_queue": {
+      "test-sqs-lambda_lambda_sqs_queue_7C6D24B3": {
+        "fifo_queue": false,
+        "name": "test-sqs-lambda-Queue"
+      }
+    }
+  }
+}"
+`;
+
+exports[`renders a plain sqs queue with a deadletter and lambda target 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-sqs-lambda_lambda-default-file_52E1CC8A": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-sqs-lambda_assume-policy-document_98DE5C4D": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-sqs-lambda_execution-policy-document_2C5F0106": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-sqs-lambda_lambda_sqs_policy_3C63A136": {
+        "statement": [
+          {
+            "actions": [
+              "sqs:SendMessage",
+              "sqs:ReceiveMessage",
+              "sqs:DeleteMessage",
+              "sqs:GetQueueAttributes",
+              "sqs:ChangeMessageVisibility"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "\${aws_sqs_queue.test-sqs-lambda_lambda_sqs_queue_7C6D24B3.arn}"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "test-sqs-lambda_log-group_F69AB78F": {
+        "depends_on": [
+          "aws_lambda_function.test-sqs-lambda_C2DB9DC9"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-sqs-lambda_C2DB9DC9.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_iam_policy": {
+      "test-sqs-lambda_execution-policy_ED32F1C0": {
+        "name": "test-sqs-lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-sqs-lambda_execution-policy-document_2C5F0106.json}"
+      },
+      "test-sqs-lambda_sqs-policy_E98CC69F": {
+        "depends_on": [
+          "aws_iam_role.test-sqs-lambda_execution-role_7323CCD9"
+        ],
+        "name": "test-sqs-lambda-LambdaSQSPolicy",
+        "policy": "\${data.aws_iam_policy_document.test-sqs-lambda_lambda_sqs_policy_3C63A136.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-sqs-lambda_execution-role_7323CCD9": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-sqs-lambda_assume-policy-document_98DE5C4D.json}",
+        "name": "test-sqs-lambda-ExecutionRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-sqs-lambda_execution-role-policy-attachment_45759A7F": {
+        "depends_on": [
+          "aws_iam_role.test-sqs-lambda_execution-role_7323CCD9",
+          "aws_iam_policy.test-sqs-lambda_execution-policy_ED32F1C0"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-sqs-lambda_execution-policy_ED32F1C0.arn}",
+        "role": "\${aws_iam_role.test-sqs-lambda_execution-role_7323CCD9.name}"
+      },
+      "test-sqs-lambda_execution-role-policy-attachment_CA21C309": {
+        "depends_on": [
+          "aws_iam_role.test-sqs-lambda_execution-role_7323CCD9",
+          "aws_iam_policy.test-sqs-lambda_sqs-policy_E98CC69F"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-sqs-lambda_sqs-policy_E98CC69F.arn}",
+        "role": "\${aws_iam_role.test-sqs-lambda_execution-role_7323CCD9.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-sqs-lambda_alias_2C2A09A2": {
+        "depends_on": [
+          "aws_lambda_function.test-sqs-lambda_C2DB9DC9"
+        ],
+        "function_name": "\${aws_lambda_function.test-sqs-lambda_C2DB9DC9.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-sqs-lambda_C2DB9DC9.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_event_source_mapping": {
+      "test-sqs-lambda_lambda_event_source_mapping_C60D5FF2": {
+        "event_source_arn": "\${aws_sqs_queue.test-sqs-lambda_lambda_sqs_queue_7C6D24B3.arn}",
+        "function_name": "\${aws_lambda_alias.test-sqs-lambda_alias_2C2A09A2.arn}"
+      }
+    },
+    "aws_lambda_function": {
+      "test-sqs-lambda_C2DB9DC9": {
+        "filename": "\${data.archive_file.test-sqs-lambda_lambda-default-file_52E1CC8A.output_path}",
+        "function_name": "test-sqs-lambda-Function",
+        "handler": "index.handler",
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-sqs-lambda_execution-role_7323CCD9.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-sqs-lambda_lambda-default-file_52E1CC8A.output_base64sha256}",
+        "timeout": 5
+      }
+    },
+    "aws_s3_bucket": {
+      "test-sqs-lambda_code-bucket_34D549A2": {
+        "acl": "private",
+        "bucket": "pocket-test-sqs-lambda",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-sqs-lambda_code-bucket-public-access-block_942034EC": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-sqs-lambda_code-bucket_34D549A2.id}"
+      }
+    },
+    "aws_sqs_queue": {
+      "test-sqs-lambda_lambda_sqs_queue_7C6D24B3": {
+        "fifo_queue": false,
+        "name": "test-sqs-lambda-Queue",
+        "redrive_policy": "{\\"maxReceiveCount\\":3,\\"deadLetterTargetArn\\":\\"\${aws_sqs_queue.test-sqs-lambda_lambda_sqs_queue_redrive_sqs_queue_EBFF9A33.arn}\\"}"
+      },
+      "test-sqs-lambda_lambda_sqs_queue_redrive_sqs_queue_EBFF9A33": {
+        "fifo_queue": false,
+        "name": "test-sqs-lambda-Queue-Deadletter"
+      }
+    }
+  }
+}"
+`;

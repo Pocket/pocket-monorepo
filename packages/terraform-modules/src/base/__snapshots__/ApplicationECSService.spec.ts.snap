@@ -1,0 +1,1554 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApplicationECSService attaches persistent (efs) storage to a ECS task 1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "testECSService_ecs-iam_ecs-task-assume_97906D9E": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "ecs-tasks.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "testECSService_ecs-lebowski_226D2007": {
+        "name_prefix": "/ecs/abides-dev/lebowski",
+        "retention_in_days": 30
+      }
+    },
+    "aws_ecr_lifecycle_policy": {
+      "testECSService_ecr-lebowski_ecr-repo-lifecyclepolicy_19C9732F": {
+        "depends_on": [
+          "aws_ecr_repository.testECSService_ecr-lebowski_ecr-repo_6D07DF86"
+        ],
+        "policy": "{\\"rules\\":[{\\"rulePriority\\":1,\\"description\\":\\"expire old images\\",\\"selection\\":{\\"tagStatus\\":\\"any\\",\\"countType\\":\\"imageCountMoreThan\\",\\"countNumber\\":800},\\"action\\":{\\"type\\":\\"expire\\"}}]}",
+        "repository": "\${aws_ecr_repository.testECSService_ecr-lebowski_ecr-repo_6D07DF86.name}"
+      }
+    },
+    "aws_ecr_repository": {
+      "testECSService_ecr-lebowski_ecr-repo_6D07DF86": {
+        "image_scanning_configuration": {
+          "scan_on_push": true
+        },
+        "name": "abides-dev-lebowski"
+      }
+    },
+    "aws_ecs_service": {
+      "testECSService_ecs-service_33F309B3": {
+        "cluster": "gorp",
+        "depends_on": [
+          "aws_ecr_repository.testECSService_ecr-lebowski_ecr-repo_6D07DF86"
+        ],
+        "deployment_controller": {
+          "type": "ECS"
+        },
+        "deployment_maximum_percent": 200,
+        "deployment_minimum_healthy_percent": 100,
+        "desired_count": 2,
+        "launch_type": "FARGATE",
+        "lifecycle": {
+          "ignore_changes": [
+            "desired_count",
+            "load_balancer"
+          ]
+        },
+        "load_balancer": [
+        ],
+        "name": "abides-dev",
+        "network_configuration": {
+          "security_groups": [
+            "\${aws_security_group.testECSService_ecs_security_group_67979722.id}"
+          ],
+          "subnets": [
+            "1.1.1.1",
+            "2.2.2.2"
+          ]
+        },
+        "propagate_tags": "SERVICE",
+        "task_definition": "\${aws_ecs_task_definition.testECSService_ecs-task_A268C927.arn}"
+      }
+    },
+    "aws_ecs_task_definition": {
+      "testECSService_ecs-task_A268C927": {
+        "container_definitions": "[{\\"dnsSearchDomains\\":null,\\"environmentFiles\\":null,\\"logConfiguration\\":{\\"logDriver\\":\\"awslogs\\",\\"secretOptions\\":[],\\"options\\":{\\"awslogs-group\\":\\"\${aws_cloudwatch_log_group.testECSService_ecs-lebowski_226D2007.name}\\",\\"awslogs-region\\":\\"us-east-1\\",\\"awslogs-stream-prefix\\":\\"ecs\\"}},\\"entryPoint\\":null,\\"portMappings\\":[],\\"linuxParameters\\":null,\\"cpu\\":0,\\"environment\\":[],\\"resourceRequirements\\":null,\\"ulimits\\":null,\\"repositoryCredentials\\":null,\\"dnsServers\\":null,\\"mountPoints\\":[{\\"containerPath\\":\\"/someMountPoint\\",\\"sourceVolume\\":\\"sourceVolume\\"}],\\"workingDirectory\\":null,\\"secrets\\":null,\\"dockerSecurityOptions\\":null,\\"memory\\":null,\\"memoryReservation\\":null,\\"volumesFrom\\":[],\\"stopTimeout\\":null,\\"image\\":\\"\${aws_ecr_repository.testECSService_ecr-lebowski_ecr-repo_6D07DF86.repository_url}:latest\\",\\"startTimeout\\":null,\\"firelensConfiguration\\":null,\\"dependsOn\\":null,\\"disableNetworking\\":null,\\"interactive\\":null,\\"healthCheck\\":null,\\"essential\\":true,\\"links\\":null,\\"hostname\\":null,\\"extraHosts\\":null,\\"pseudoTerminal\\":null,\\"user\\":null,\\"readonlyRootFilesystem\\":false,\\"dockerLabels\\":null,\\"systemControls\\":null,\\"privileged\\":null,\\"name\\":\\"lebowski\\"}]",
+        "cpu": "512",
+        "depends_on": [
+          "aws_ecr_repository.testECSService_ecr-lebowski_ecr-repo_6D07DF86"
+        ],
+        "execution_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-execution-role_88EFEECE.arn}",
+        "family": "abides-dev",
+        "memory": "2048",
+        "network_mode": "awsvpc",
+        "requires_compatibilities": [
+          "FARGATE"
+        ],
+        "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
+        "volume": [
+          {
+            "efs_volume_configuration": {
+              "file_system_id": "someId"
+            },
+            "name": "sourceVolume"
+          }
+        ]
+      }
+    },
+    "aws_efs_file_system_policy": {
+      "testECSService_efsFsPolicy_AAD586DA": {
+        "depends_on": [
+          "time_sleep.testECSService_waitTwoMinutes_F8D60FA5"
+        ],
+        "file_system_id": "someId",
+        "policy": "{\\"Version\\":\\"2012-10-17\\",\\"Id\\":\\"abides-dev\\",\\"Statement\\":[{\\"Sid\\":\\"abides-dev\\",\\"Effect\\":\\"Allow\\",\\"Principal\\":{\\"AWS\\":\\"*\\"},\\"Resource\\":\\"fakeArn\\",\\"Action\\":[\\"elasticfilesystem:ClientMount\\",\\"elasticfilesystem:ClientWrite\\",\\"elasticfilesystem:ClientRootAccess\\"],\\"Condition\\":{\\"Bool\\":{\\"elasticfilesystem:AccessedViaMountTarget\\":\\"true\\"}}}]}"
+      }
+    },
+    "aws_efs_mount_target": {
+      "testECSService_efs_mount_target_C9F488D3": {
+        "file_system_id": "someId",
+        "for_each": "\${toset([\\"1.1.1.1\\", \\"2.2.2.2\\"])}",
+        "security_groups": [
+          "\${aws_security_group.testECSService_efs_mount_sg_BE274D85.id}"
+        ],
+        "subnet_id": "\${each.value}"
+      }
+    },
+    "aws_iam_role": {
+      "testECSService_ecs-iam_ecs-execution-role_88EFEECE": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-iam_ecs-task-assume_97906D9E.json}",
+        "name": "abides-dev-TaskExecutionRole"
+      },
+      "testECSService_ecs-iam_ecs-task-role_83E10144": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-iam_ecs-task-assume_97906D9E.json}",
+        "name": "abides-dev-TaskRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "testECSService_ecs-iam_ecs-task-execution-default-attachment_7AC36BF7": {
+        "policy_arn": "someArn",
+        "role": "\${aws_iam_role.testECSService_ecs-iam_ecs-execution-role_88EFEECE.id}"
+      }
+    },
+    "aws_security_group": {
+      "testECSService_ecs_security_group_67979722": {
+        "description": "Internal ECS Security Group (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "abides-dev-ECSSecurityGroup",
+        "vpc_id": "myhouse"
+      },
+      "testECSService_efs_mount_sg_BE274D85": {
+        "description": "ECS EFS Mount (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+          {
+            "cidr_blocks": [
+            ],
+            "description": "required",
+            "from_port": 2049,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "TCP",
+            "security_groups": [
+              "\${aws_security_group.testECSService_ecs_security_group_67979722.id}"
+            ],
+            "self": null,
+            "to_port": 2049
+          }
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "abides-dev-ECSSMountPoint",
+        "vpc_id": "myhouse"
+      }
+    },
+    "time_sleep": {
+      "testECSService_waitTwoMinutes_F8D60FA5": {
+        "create_duration": "2m",
+        "depends_on": [
+        ]
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationECSService renders an ECS service with code deploy 1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "testECSService_ecs-iam_ecs-task-assume_97906D9E": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "ecs-tasks.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_ecs_service": {
+      "testECSService_ecs-service_33F309B3": {
+        "cluster": "gorp",
+        "depends_on": [
+        ],
+        "deployment_controller": {
+          "type": "CODE_DEPLOY"
+        },
+        "deployment_maximum_percent": 200,
+        "deployment_minimum_healthy_percent": 100,
+        "desired_count": 2,
+        "launch_type": "FARGATE",
+        "lifecycle": {
+          "ignore_changes": [
+            "desired_count",
+            "load_balancer",
+            "task_definition"
+          ]
+        },
+        "load_balancer": [
+        ],
+        "name": "abides-dev",
+        "network_configuration": {
+          "security_groups": [
+            "\${aws_security_group.testECSService_ecs_security_group_67979722.id}"
+          ],
+          "subnets": [
+            "1.1.1.1",
+            "2.2.2.2"
+          ]
+        },
+        "propagate_tags": "SERVICE",
+        "task_definition": "\${aws_ecs_task_definition.testECSService_ecs-task_A268C927.arn}"
+      }
+    },
+    "aws_ecs_task_definition": {
+      "testECSService_ecs-task_A268C927": {
+        "container_definitions": "[]",
+        "cpu": "512",
+        "depends_on": [
+        ],
+        "execution_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-execution-role_88EFEECE.arn}",
+        "family": "abides-dev",
+        "memory": "2048",
+        "network_mode": "awsvpc",
+        "requires_compatibilities": [
+          "FARGATE"
+        ],
+        "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
+        "volume": [
+        ]
+      }
+    },
+    "aws_iam_role": {
+      "testECSService_ecs-iam_ecs-execution-role_88EFEECE": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-iam_ecs-task-assume_97906D9E.json}",
+        "name": "abides-dev-TaskExecutionRole"
+      },
+      "testECSService_ecs-iam_ecs-task-role_83E10144": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-iam_ecs-task-assume_97906D9E.json}",
+        "name": "abides-dev-TaskRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "testECSService_ecs-iam_ecs-task-execution-default-attachment_7AC36BF7": {
+        "policy_arn": "someArn",
+        "role": "\${aws_iam_role.testECSService_ecs-iam_ecs-execution-role_88EFEECE.id}"
+      }
+    },
+    "aws_security_group": {
+      "testECSService_ecs_security_group_67979722": {
+        "description": "Internal ECS Security Group (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "abides-dev-ECSSecurityGroup",
+        "vpc_id": "myhouse"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationECSService renders an ECS service with code deploy and excludes the code deployment command resource when useCodePipeline is true 1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "testECSService_ecs-iam_ecs-task-assume_97906D9E": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "ecs-tasks.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_ecs_service": {
+      "testECSService_ecs-service_33F309B3": {
+        "cluster": "gorp",
+        "depends_on": [
+        ],
+        "deployment_controller": {
+          "type": "CODE_DEPLOY"
+        },
+        "deployment_maximum_percent": 200,
+        "deployment_minimum_healthy_percent": 100,
+        "desired_count": 2,
+        "launch_type": "FARGATE",
+        "lifecycle": {
+          "ignore_changes": [
+            "desired_count",
+            "load_balancer",
+            "task_definition"
+          ]
+        },
+        "load_balancer": [
+        ],
+        "name": "abides-dev",
+        "network_configuration": {
+          "security_groups": [
+            "\${aws_security_group.testECSService_ecs_security_group_67979722.id}"
+          ],
+          "subnets": [
+            "1.1.1.1",
+            "2.2.2.2"
+          ]
+        },
+        "propagate_tags": "SERVICE",
+        "task_definition": "\${aws_ecs_task_definition.testECSService_ecs-task_A268C927.arn}"
+      }
+    },
+    "aws_ecs_task_definition": {
+      "testECSService_ecs-task_A268C927": {
+        "container_definitions": "[]",
+        "cpu": "512",
+        "depends_on": [
+        ],
+        "execution_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-execution-role_88EFEECE.arn}",
+        "family": "abides-dev",
+        "memory": "2048",
+        "network_mode": "awsvpc",
+        "requires_compatibilities": [
+          "FARGATE"
+        ],
+        "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
+        "volume": [
+        ]
+      }
+    },
+    "aws_iam_role": {
+      "testECSService_ecs-iam_ecs-execution-role_88EFEECE": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-iam_ecs-task-assume_97906D9E.json}",
+        "name": "abides-dev-TaskExecutionRole"
+      },
+      "testECSService_ecs-iam_ecs-task-role_83E10144": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-iam_ecs-task-assume_97906D9E.json}",
+        "name": "abides-dev-TaskRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "testECSService_ecs-iam_ecs-task-execution-default-attachment_7AC36BF7": {
+        "policy_arn": "someArn",
+        "role": "\${aws_iam_role.testECSService_ecs-iam_ecs-execution-role_88EFEECE.id}"
+      }
+    },
+    "aws_security_group": {
+      "testECSService_ecs_security_group_67979722": {
+        "description": "Internal ECS Security Group (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "abides-dev-ECSSecurityGroup",
+        "vpc_id": "myhouse"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationECSService renders an ECS service with code deploy notifications set for failed only 1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "testECSService_ecs-iam_ecs-task-assume_97906D9E": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "ecs-tasks.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_ecs_service": {
+      "testECSService_ecs-service_33F309B3": {
+        "cluster": "gorp",
+        "depends_on": [
+        ],
+        "deployment_controller": {
+          "type": "CODE_DEPLOY"
+        },
+        "deployment_maximum_percent": 200,
+        "deployment_minimum_healthy_percent": 100,
+        "desired_count": 2,
+        "launch_type": "FARGATE",
+        "lifecycle": {
+          "ignore_changes": [
+            "desired_count",
+            "load_balancer",
+            "task_definition"
+          ]
+        },
+        "load_balancer": [
+        ],
+        "name": "abides-dev",
+        "network_configuration": {
+          "security_groups": [
+            "\${aws_security_group.testECSService_ecs_security_group_67979722.id}"
+          ],
+          "subnets": [
+            "1.1.1.1",
+            "2.2.2.2"
+          ]
+        },
+        "propagate_tags": "SERVICE",
+        "task_definition": "\${aws_ecs_task_definition.testECSService_ecs-task_A268C927.arn}"
+      }
+    },
+    "aws_ecs_task_definition": {
+      "testECSService_ecs-task_A268C927": {
+        "container_definitions": "[]",
+        "cpu": "512",
+        "depends_on": [
+        ],
+        "execution_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-execution-role_88EFEECE.arn}",
+        "family": "abides-dev",
+        "memory": "2048",
+        "network_mode": "awsvpc",
+        "requires_compatibilities": [
+          "FARGATE"
+        ],
+        "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
+        "volume": [
+        ]
+      }
+    },
+    "aws_iam_role": {
+      "testECSService_ecs-iam_ecs-execution-role_88EFEECE": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-iam_ecs-task-assume_97906D9E.json}",
+        "name": "abides-dev-TaskExecutionRole"
+      },
+      "testECSService_ecs-iam_ecs-task-role_83E10144": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-iam_ecs-task-assume_97906D9E.json}",
+        "name": "abides-dev-TaskRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "testECSService_ecs-iam_ecs-task-execution-default-attachment_7AC36BF7": {
+        "policy_arn": "someArn",
+        "role": "\${aws_iam_role.testECSService_ecs-iam_ecs-execution-role_88EFEECE.id}"
+      }
+    },
+    "aws_security_group": {
+      "testECSService_ecs_security_group_67979722": {
+        "description": "Internal ECS Security Group (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "abides-dev-ECSSecurityGroup",
+        "vpc_id": "myhouse"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationECSService renders an ECS service with full container definition props 1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "testECSService_ecs-iam_ecs-task-assume_97906D9E": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "ecs-tasks.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_ecs_service": {
+      "testECSService_ecs-service_33F309B3": {
+        "cluster": "gorp",
+        "depends_on": [
+        ],
+        "deployment_controller": {
+          "type": "ECS"
+        },
+        "deployment_maximum_percent": 400,
+        "deployment_minimum_healthy_percent": 80,
+        "desired_count": 4,
+        "launch_type": "ROCKET",
+        "lifecycle": {
+          "ignore_changes": [
+            "bowling",
+            "donnie",
+            "autobahn"
+          ]
+        },
+        "load_balancer": [
+        ],
+        "name": "abides-dev",
+        "network_configuration": {
+          "security_groups": [
+            "\${aws_security_group.testECSService_ecs_security_group_67979722.id}"
+          ],
+          "subnets": [
+            "1.1.1.1",
+            "2.2.2.2"
+          ]
+        },
+        "propagate_tags": "SERVICE",
+        "task_definition": "\${aws_ecs_task_definition.testECSService_ecs-task_A268C927.arn}"
+      }
+    },
+    "aws_ecs_task_definition": {
+      "testECSService_ecs-task_A268C927": {
+        "container_definitions": "[{\\"dnsSearchDomains\\":null,\\"environmentFiles\\":null,\\"logConfiguration\\":{\\"logDriver\\":\\"awslogs\\",\\"secretOptions\\":[],\\"options\\":{\\"awslogs-group\\":\\"test/log/group\\",\\"awslogs-region\\":\\"us-east-1\\",\\"awslogs-stream-prefix\\":\\"ecs\\"}},\\"entryPoint\\":null,\\"portMappings\\":[{\\"containerPort\\":3002,\\"hostPort\\":3001}],\\"linuxParameters\\":null,\\"cpu\\":0,\\"environment\\":[{\\"name\\":\\"rug\\",\\"value\\":\\"tiedtheroomtogether\\"}],\\"resourceRequirements\\":null,\\"ulimits\\":null,\\"repositoryCredentials\\":{\\"credentialsParameter\\":\\"someArn\\"},\\"dnsServers\\":null,\\"mountPoints\\":[],\\"workingDirectory\\":null,\\"secrets\\":[{\\"name\\":\\"donnie\\",\\"valueFrom\\":\\"throwinrockstonight\\"}],\\"dockerSecurityOptions\\":null,\\"memory\\":null,\\"memoryReservation\\":null,\\"volumesFrom\\":[],\\"stopTimeout\\":null,\\"image\\":\\"beverage-here/0.1\\",\\"startTimeout\\":null,\\"firelensConfiguration\\":null,\\"dependsOn\\":null,\\"disableNetworking\\":null,\\"interactive\\":null,\\"healthCheck\\":null,\\"essential\\":true,\\"links\\":null,\\"hostname\\":null,\\"extraHosts\\":null,\\"pseudoTerminal\\":null,\\"user\\":null,\\"readonlyRootFilesystem\\":false,\\"dockerLabels\\":null,\\"systemControls\\":null,\\"privileged\\":null,\\"name\\":\\"lebowski\\"}]",
+        "cpu": "512",
+        "depends_on": [
+        ],
+        "execution_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-execution-role_88EFEECE.arn}",
+        "family": "abides-dev",
+        "memory": "2048",
+        "network_mode": "awsvpc",
+        "requires_compatibilities": [
+          "FARGATE"
+        ],
+        "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
+        "volume": [
+        ]
+      }
+    },
+    "aws_iam_role": {
+      "testECSService_ecs-iam_ecs-execution-role_88EFEECE": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-iam_ecs-task-assume_97906D9E.json}",
+        "name": "abides-dev-TaskExecutionRole"
+      },
+      "testECSService_ecs-iam_ecs-task-role_83E10144": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-iam_ecs-task-assume_97906D9E.json}",
+        "name": "abides-dev-TaskRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "testECSService_ecs-iam_ecs-task-execution-default-attachment_7AC36BF7": {
+        "policy_arn": "someArn",
+        "role": "\${aws_iam_role.testECSService_ecs-iam_ecs-execution-role_88EFEECE.id}"
+      }
+    },
+    "aws_security_group": {
+      "testECSService_ecs_security_group_67979722": {
+        "description": "Internal ECS Security Group (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "abides-dev-ECSSecurityGroup",
+        "vpc_id": "myhouse"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationECSService renders an ECS service with full container definition props and ALB security group config 1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "testECSService_ecs-iam_ecs-task-assume_97906D9E": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "ecs-tasks.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_alb_listener_rule": {
+      "testECSService_listener_rule_A3A4BB9D": {
+        "action": [
+          {
+            "target_group_arn": "\${aws_alb_target_group.testECSService_blue_target_group_ecs_target_group_AB8F309D.arn}",
+            "type": "forward"
+          }
+        ],
+        "condition": [
+          {
+            "path_pattern": {
+              "values": [
+                "*"
+              ]
+            }
+          }
+        ],
+        "lifecycle": {
+          "ignore_changes": [
+            "action"
+          ]
+        },
+        "listener_arn": "listen-to-me",
+        "priority": 1
+      }
+    },
+    "aws_alb_target_group": {
+      "testECSService_blue_target_group_ecs_target_group_AB8F309D": {
+        "deregistration_delay": "120",
+        "health_check": {
+          "healthy_threshold": 5,
+          "interval": 15,
+          "path": "/health",
+          "protocol": "HTTP",
+          "unhealthy_threshold": 3
+        },
+        "name_prefix": "shortb",
+        "port": 80,
+        "protocol": "HTTP",
+        "tags": {
+          "type": "blue"
+        },
+        "target_type": "ip",
+        "vpc_id": "myhouse"
+      }
+    },
+    "aws_ecs_service": {
+      "testECSService_ecs-service_33F309B3": {
+        "cluster": "gorp",
+        "depends_on": [
+          "aws_alb_target_group.testECSService_blue_target_group_ecs_target_group_AB8F309D",
+          "aws_alb_listener_rule.testECSService_listener_rule_A3A4BB9D"
+        ],
+        "deployment_controller": {
+          "type": "ECS"
+        },
+        "deployment_maximum_percent": 200,
+        "deployment_minimum_healthy_percent": 100,
+        "desired_count": 2,
+        "launch_type": "FARGATE",
+        "lifecycle": {
+          "ignore_changes": [
+            "desired_count",
+            "load_balancer"
+          ]
+        },
+        "load_balancer": [
+          {
+            "container_name": "runme",
+            "container_port": 3000,
+            "target_group_arn": "\${aws_alb_target_group.testECSService_blue_target_group_ecs_target_group_AB8F309D.arn}"
+          }
+        ],
+        "name": "abides-dev",
+        "network_configuration": {
+          "security_groups": [
+            "\${aws_security_group.testECSService_ecs_security_group_67979722.id}"
+          ],
+          "subnets": [
+            "1.1.1.1",
+            "2.2.2.2"
+          ]
+        },
+        "propagate_tags": "SERVICE",
+        "task_definition": "\${aws_ecs_task_definition.testECSService_ecs-task_A268C927.arn}"
+      }
+    },
+    "aws_ecs_task_definition": {
+      "testECSService_ecs-task_A268C927": {
+        "container_definitions": "[{\\"dnsSearchDomains\\":null,\\"environmentFiles\\":null,\\"logConfiguration\\":{\\"logDriver\\":\\"awslogs\\",\\"secretOptions\\":[],\\"options\\":{\\"awslogs-group\\":\\"test/log/group\\",\\"awslogs-region\\":\\"us-east-1\\",\\"awslogs-stream-prefix\\":\\"ecs\\"}},\\"entryPoint\\":null,\\"portMappings\\":[{\\"containerPort\\":3002,\\"hostPort\\":3001}],\\"linuxParameters\\":null,\\"cpu\\":0,\\"environment\\":[{\\"name\\":\\"rug\\",\\"value\\":\\"tiedtheroomtogether\\"}],\\"resourceRequirements\\":null,\\"ulimits\\":null,\\"repositoryCredentials\\":{\\"credentialsParameter\\":\\"someArn\\"},\\"dnsServers\\":null,\\"mountPoints\\":[],\\"workingDirectory\\":null,\\"secrets\\":[{\\"name\\":\\"donnie\\",\\"valueFrom\\":\\"throwinrockstonight\\"}],\\"dockerSecurityOptions\\":null,\\"memory\\":null,\\"memoryReservation\\":null,\\"volumesFrom\\":[],\\"stopTimeout\\":null,\\"image\\":\\"beverage-here/0.1\\",\\"startTimeout\\":null,\\"firelensConfiguration\\":null,\\"dependsOn\\":null,\\"disableNetworking\\":null,\\"interactive\\":null,\\"healthCheck\\":null,\\"essential\\":true,\\"links\\":null,\\"hostname\\":null,\\"extraHosts\\":null,\\"pseudoTerminal\\":null,\\"user\\":null,\\"readonlyRootFilesystem\\":false,\\"dockerLabels\\":null,\\"systemControls\\":null,\\"privileged\\":null,\\"name\\":\\"lebowski\\"}]",
+        "cpu": "512",
+        "depends_on": [
+        ],
+        "execution_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-execution-role_88EFEECE.arn}",
+        "family": "abides-dev",
+        "memory": "2048",
+        "network_mode": "awsvpc",
+        "requires_compatibilities": [
+          "FARGATE"
+        ],
+        "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
+        "volume": [
+        ]
+      }
+    },
+    "aws_iam_role": {
+      "testECSService_ecs-iam_ecs-execution-role_88EFEECE": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-iam_ecs-task-assume_97906D9E.json}",
+        "name": "abides-dev-TaskExecutionRole"
+      },
+      "testECSService_ecs-iam_ecs-task-role_83E10144": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-iam_ecs-task-assume_97906D9E.json}",
+        "name": "abides-dev-TaskRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "testECSService_ecs-iam_ecs-task-execution-default-attachment_7AC36BF7": {
+        "policy_arn": "someArn",
+        "role": "\${aws_iam_role.testECSService_ecs-iam_ecs-execution-role_88EFEECE.id}"
+      }
+    },
+    "aws_security_group": {
+      "testECSService_ecs_security_group_67979722": {
+        "description": "Internal ECS Security Group (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+          {
+            "cidr_blocks": [
+            ],
+            "description": "required",
+            "from_port": 80,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "TCP",
+            "security_groups": [
+              "strike"
+            ],
+            "self": null,
+            "to_port": 3000
+          }
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "abides-dev-ECSSecurityGroup",
+        "vpc_id": "myhouse"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationECSService renders an ECS service with minimal config 1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "testECSService_ecs-iam_ecs-task-assume_97906D9E": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "ecs-tasks.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_ecs_service": {
+      "testECSService_ecs-service_33F309B3": {
+        "cluster": "gorp",
+        "depends_on": [
+        ],
+        "deployment_controller": {
+          "type": "ECS"
+        },
+        "deployment_maximum_percent": 200,
+        "deployment_minimum_healthy_percent": 100,
+        "desired_count": 2,
+        "launch_type": "FARGATE",
+        "lifecycle": {
+          "ignore_changes": [
+            "desired_count",
+            "load_balancer"
+          ]
+        },
+        "load_balancer": [
+        ],
+        "name": "abides-dev",
+        "network_configuration": {
+          "security_groups": [
+            "\${aws_security_group.testECSService_ecs_security_group_67979722.id}"
+          ],
+          "subnets": [
+            "1.1.1.1",
+            "2.2.2.2"
+          ]
+        },
+        "propagate_tags": "SERVICE",
+        "task_definition": "\${aws_ecs_task_definition.testECSService_ecs-task_A268C927.arn}"
+      }
+    },
+    "aws_ecs_task_definition": {
+      "testECSService_ecs-task_A268C927": {
+        "container_definitions": "[]",
+        "cpu": "512",
+        "depends_on": [
+        ],
+        "execution_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-execution-role_88EFEECE.arn}",
+        "family": "abides-dev",
+        "memory": "2048",
+        "network_mode": "awsvpc",
+        "requires_compatibilities": [
+          "FARGATE"
+        ],
+        "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
+        "volume": [
+        ]
+      }
+    },
+    "aws_iam_role": {
+      "testECSService_ecs-iam_ecs-execution-role_88EFEECE": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-iam_ecs-task-assume_97906D9E.json}",
+        "name": "abides-dev-TaskExecutionRole"
+      },
+      "testECSService_ecs-iam_ecs-task-role_83E10144": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-iam_ecs-task-assume_97906D9E.json}",
+        "name": "abides-dev-TaskRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "testECSService_ecs-iam_ecs-task-execution-default-attachment_7AC36BF7": {
+        "policy_arn": "someArn",
+        "role": "\${aws_iam_role.testECSService_ecs-iam_ecs-execution-role_88EFEECE.id}"
+      }
+    },
+    "aws_security_group": {
+      "testECSService_ecs_security_group_67979722": {
+        "description": "Internal ECS Security Group (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "abides-dev-ECSSecurityGroup",
+        "vpc_id": "myhouse"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationECSService renders an ECS service with mountPoints deduplicated in the task definition 1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "testECSService_ecs-iam_ecs-task-assume_97906D9E": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "ecs-tasks.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "testECSService_ecs-container1_FA0D3F88": {
+        "name_prefix": "/ecs/abides-dev/container1",
+        "retention_in_days": 30
+      },
+      "testECSService_ecs-container2_E4AB2284": {
+        "name_prefix": "/ecs/abides-dev/container2",
+        "retention_in_days": 30
+      },
+      "testECSService_ecs-container3_1286AAA3": {
+        "name_prefix": "/ecs/abides-dev/container3",
+        "retention_in_days": 30
+      }
+    },
+    "aws_ecr_lifecycle_policy": {
+      "testECSService_ecr-container1_ecr-repo-lifecyclepolicy_FAA9164A": {
+        "depends_on": [
+          "aws_ecr_repository.testECSService_ecr-container1_ecr-repo_6BB90A2E"
+        ],
+        "policy": "{\\"rules\\":[{\\"rulePriority\\":1,\\"description\\":\\"expire old images\\",\\"selection\\":{\\"tagStatus\\":\\"any\\",\\"countType\\":\\"imageCountMoreThan\\",\\"countNumber\\":800},\\"action\\":{\\"type\\":\\"expire\\"}}]}",
+        "repository": "\${aws_ecr_repository.testECSService_ecr-container1_ecr-repo_6BB90A2E.name}"
+      },
+      "testECSService_ecr-container2_ecr-repo-lifecyclepolicy_326A08A8": {
+        "depends_on": [
+          "aws_ecr_repository.testECSService_ecr-container2_ecr-repo_6980E3F0"
+        ],
+        "policy": "{\\"rules\\":[{\\"rulePriority\\":1,\\"description\\":\\"expire old images\\",\\"selection\\":{\\"tagStatus\\":\\"any\\",\\"countType\\":\\"imageCountMoreThan\\",\\"countNumber\\":800},\\"action\\":{\\"type\\":\\"expire\\"}}]}",
+        "repository": "\${aws_ecr_repository.testECSService_ecr-container2_ecr-repo_6980E3F0.name}"
+      },
+      "testECSService_ecr-container3_ecr-repo-lifecyclepolicy_C3FDC63F": {
+        "depends_on": [
+          "aws_ecr_repository.testECSService_ecr-container3_ecr-repo_F25059FD"
+        ],
+        "policy": "{\\"rules\\":[{\\"rulePriority\\":1,\\"description\\":\\"expire old images\\",\\"selection\\":{\\"tagStatus\\":\\"any\\",\\"countType\\":\\"imageCountMoreThan\\",\\"countNumber\\":800},\\"action\\":{\\"type\\":\\"expire\\"}}]}",
+        "repository": "\${aws_ecr_repository.testECSService_ecr-container3_ecr-repo_F25059FD.name}"
+      }
+    },
+    "aws_ecr_repository": {
+      "testECSService_ecr-container1_ecr-repo_6BB90A2E": {
+        "image_scanning_configuration": {
+          "scan_on_push": true
+        },
+        "name": "abides-dev-container1"
+      },
+      "testECSService_ecr-container2_ecr-repo_6980E3F0": {
+        "image_scanning_configuration": {
+          "scan_on_push": true
+        },
+        "name": "abides-dev-container2"
+      },
+      "testECSService_ecr-container3_ecr-repo_F25059FD": {
+        "image_scanning_configuration": {
+          "scan_on_push": true
+        },
+        "name": "abides-dev-container3"
+      }
+    },
+    "aws_ecs_service": {
+      "testECSService_ecs-service_33F309B3": {
+        "cluster": "gorp",
+        "depends_on": [
+          "aws_ecr_repository.testECSService_ecr-container1_ecr-repo_6BB90A2E",
+          "aws_ecr_repository.testECSService_ecr-container2_ecr-repo_6980E3F0",
+          "aws_ecr_repository.testECSService_ecr-container3_ecr-repo_F25059FD"
+        ],
+        "deployment_controller": {
+          "type": "ECS"
+        },
+        "deployment_maximum_percent": 200,
+        "deployment_minimum_healthy_percent": 100,
+        "desired_count": 2,
+        "launch_type": "ROCKET",
+        "lifecycle": {
+          "ignore_changes": [
+            "desired_count",
+            "load_balancer"
+          ]
+        },
+        "load_balancer": [
+        ],
+        "name": "abides-dev",
+        "network_configuration": {
+          "security_groups": [
+            "\${aws_security_group.testECSService_ecs_security_group_67979722.id}"
+          ],
+          "subnets": [
+            "1.1.1.1",
+            "2.2.2.2"
+          ]
+        },
+        "propagate_tags": "SERVICE",
+        "task_definition": "\${aws_ecs_task_definition.testECSService_ecs-task_A268C927.arn}"
+      }
+    },
+    "aws_ecs_task_definition": {
+      "testECSService_ecs-task_A268C927": {
+        "container_definitions": "[{\\"dnsSearchDomains\\":null,\\"environmentFiles\\":null,\\"logConfiguration\\":{\\"logDriver\\":\\"awslogs\\",\\"secretOptions\\":[],\\"options\\":{\\"awslogs-group\\":\\"\${aws_cloudwatch_log_group.testECSService_ecs-container1_FA0D3F88.name}\\",\\"awslogs-region\\":\\"us-east-1\\",\\"awslogs-stream-prefix\\":\\"ecs\\"}},\\"entryPoint\\":null,\\"portMappings\\":[],\\"linuxParameters\\":null,\\"cpu\\":0,\\"environment\\":[],\\"resourceRequirements\\":null,\\"ulimits\\":null,\\"repositoryCredentials\\":null,\\"dnsServers\\":null,\\"mountPoints\\":[],\\"workingDirectory\\":null,\\"secrets\\":null,\\"dockerSecurityOptions\\":null,\\"memory\\":null,\\"memoryReservation\\":null,\\"volumesFrom\\":[],\\"stopTimeout\\":null,\\"image\\":\\"\${aws_ecr_repository.testECSService_ecr-container1_ecr-repo_6BB90A2E.repository_url}:latest\\",\\"startTimeout\\":null,\\"firelensConfiguration\\":null,\\"dependsOn\\":null,\\"disableNetworking\\":null,\\"interactive\\":null,\\"healthCheck\\":null,\\"essential\\":true,\\"links\\":null,\\"hostname\\":null,\\"extraHosts\\":null,\\"pseudoTerminal\\":null,\\"user\\":null,\\"readonlyRootFilesystem\\":false,\\"dockerLabels\\":null,\\"systemControls\\":null,\\"privileged\\":null,\\"name\\":\\"container1\\"},{\\"dnsSearchDomains\\":null,\\"environmentFiles\\":null,\\"logConfiguration\\":{\\"logDriver\\":\\"awslogs\\",\\"secretOptions\\":[],\\"options\\":{\\"awslogs-group\\":\\"\${aws_cloudwatch_log_group.testECSService_ecs-container2_E4AB2284.name}\\",\\"awslogs-region\\":\\"us-east-1\\",\\"awslogs-stream-prefix\\":\\"ecs\\"}},\\"entryPoint\\":null,\\"portMappings\\":[],\\"linuxParameters\\":null,\\"cpu\\":0,\\"environment\\":[],\\"resourceRequirements\\":null,\\"ulimits\\":null,\\"repositoryCredentials\\":null,\\"dnsServers\\":null,\\"mountPoints\\":[{\\"sourceVolume\\":\\"src1\\",\\"containerPath\\":\\"/src1\\"},{\\"sourceVolume\\":\\"src2\\",\\"containerPath\\":\\"/src2\\"}],\\"workingDirectory\\":null,\\"secrets\\":null,\\"dockerSecurityOptions\\":null,\\"memory\\":null,\\"memoryReservation\\":null,\\"volumesFrom\\":[],\\"stopTimeout\\":null,\\"image\\":\\"\${aws_ecr_repository.testECSService_ecr-container2_ecr-repo_6980E3F0.repository_url}:latest\\",\\"startTimeout\\":null,\\"firelensConfiguration\\":null,\\"dependsOn\\":null,\\"disableNetworking\\":null,\\"interactive\\":null,\\"healthCheck\\":null,\\"essential\\":true,\\"links\\":null,\\"hostname\\":null,\\"extraHosts\\":null,\\"pseudoTerminal\\":null,\\"user\\":null,\\"readonlyRootFilesystem\\":false,\\"dockerLabels\\":null,\\"systemControls\\":null,\\"privileged\\":null,\\"name\\":\\"container2\\"},{\\"dnsSearchDomains\\":null,\\"environmentFiles\\":null,\\"logConfiguration\\":{\\"logDriver\\":\\"awslogs\\",\\"secretOptions\\":[],\\"options\\":{\\"awslogs-group\\":\\"\${aws_cloudwatch_log_group.testECSService_ecs-container3_1286AAA3.name}\\",\\"awslogs-region\\":\\"us-east-1\\",\\"awslogs-stream-prefix\\":\\"ecs\\"}},\\"entryPoint\\":null,\\"portMappings\\":[],\\"linuxParameters\\":null,\\"cpu\\":0,\\"environment\\":[],\\"resourceRequirements\\":null,\\"ulimits\\":null,\\"repositoryCredentials\\":null,\\"dnsServers\\":null,\\"mountPoints\\":[{\\"sourceVolume\\":\\"src1\\",\\"containerPath\\":\\"/src1\\",\\"readOnly\\":true},{\\"sourceVolume\\":\\"src3\\",\\"containerPath\\":\\"/src3\\"}],\\"workingDirectory\\":null,\\"secrets\\":null,\\"dockerSecurityOptions\\":null,\\"memory\\":null,\\"memoryReservation\\":null,\\"volumesFrom\\":[],\\"stopTimeout\\":null,\\"image\\":\\"\${aws_ecr_repository.testECSService_ecr-container3_ecr-repo_F25059FD.repository_url}:latest\\",\\"startTimeout\\":null,\\"firelensConfiguration\\":null,\\"dependsOn\\":null,\\"disableNetworking\\":null,\\"interactive\\":null,\\"healthCheck\\":null,\\"essential\\":true,\\"links\\":null,\\"hostname\\":null,\\"extraHosts\\":null,\\"pseudoTerminal\\":null,\\"user\\":null,\\"readonlyRootFilesystem\\":false,\\"dockerLabels\\":null,\\"systemControls\\":null,\\"privileged\\":null,\\"name\\":\\"container3\\"}]",
+        "cpu": "512",
+        "depends_on": [
+          "aws_ecr_repository.testECSService_ecr-container1_ecr-repo_6BB90A2E",
+          "aws_ecr_repository.testECSService_ecr-container2_ecr-repo_6980E3F0",
+          "aws_ecr_repository.testECSService_ecr-container3_ecr-repo_F25059FD"
+        ],
+        "execution_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-execution-role_88EFEECE.arn}",
+        "family": "abides-dev",
+        "memory": "2048",
+        "network_mode": "awsvpc",
+        "requires_compatibilities": [
+          "FARGATE"
+        ],
+        "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
+        "volume": [
+          {
+            "name": "src1"
+          },
+          {
+            "name": "src2"
+          },
+          {
+            "name": "src3"
+          }
+        ]
+      }
+    },
+    "aws_iam_role": {
+      "testECSService_ecs-iam_ecs-execution-role_88EFEECE": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-iam_ecs-task-assume_97906D9E.json}",
+        "name": "abides-dev-TaskExecutionRole"
+      },
+      "testECSService_ecs-iam_ecs-task-role_83E10144": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-iam_ecs-task-assume_97906D9E.json}",
+        "name": "abides-dev-TaskRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "testECSService_ecs-iam_ecs-task-execution-default-attachment_7AC36BF7": {
+        "policy_arn": "someArn",
+        "role": "\${aws_iam_role.testECSService_ecs-iam_ecs-execution-role_88EFEECE.id}"
+      }
+    },
+    "aws_security_group": {
+      "testECSService_ecs_security_group_67979722": {
+        "description": "Internal ECS Security Group (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "abides-dev-ECSSecurityGroup",
+        "vpc_id": "myhouse"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationECSService renders an ECS service without a log group container definition props 1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "testECSService_ecs-iam_ecs-task-assume_97906D9E": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "ecs-tasks.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "testECSService_ecs-lebowski_226D2007": {
+        "name_prefix": "/ecs/abides-dev/lebowski",
+        "retention_in_days": 30
+      }
+    },
+    "aws_ecs_service": {
+      "testECSService_ecs-service_33F309B3": {
+        "cluster": "gorp",
+        "depends_on": [
+        ],
+        "deployment_controller": {
+          "type": "ECS"
+        },
+        "deployment_maximum_percent": 400,
+        "deployment_minimum_healthy_percent": 80,
+        "desired_count": 4,
+        "launch_type": "ROCKET",
+        "lifecycle": {
+          "ignore_changes": [
+            "bowling",
+            "donnie",
+            "autobahn"
+          ]
+        },
+        "load_balancer": [
+        ],
+        "name": "abides-dev",
+        "network_configuration": {
+          "security_groups": [
+            "\${aws_security_group.testECSService_ecs_security_group_67979722.id}"
+          ],
+          "subnets": [
+            "1.1.1.1",
+            "2.2.2.2"
+          ]
+        },
+        "propagate_tags": "SERVICE",
+        "task_definition": "\${aws_ecs_task_definition.testECSService_ecs-task_A268C927.arn}"
+      }
+    },
+    "aws_ecs_task_definition": {
+      "testECSService_ecs-task_A268C927": {
+        "container_definitions": "[{\\"dnsSearchDomains\\":null,\\"environmentFiles\\":null,\\"logConfiguration\\":{\\"logDriver\\":\\"awslogs\\",\\"secretOptions\\":[],\\"options\\":{\\"awslogs-group\\":\\"\${aws_cloudwatch_log_group.testECSService_ecs-lebowski_226D2007.name}\\",\\"awslogs-region\\":\\"us-east-1\\",\\"awslogs-stream-prefix\\":\\"ecs\\"}},\\"entryPoint\\":null,\\"portMappings\\":[{\\"containerPort\\":3002,\\"hostPort\\":3001}],\\"linuxParameters\\":null,\\"cpu\\":0,\\"environment\\":[{\\"name\\":\\"rug\\",\\"value\\":\\"tiedtheroomtogether\\"}],\\"resourceRequirements\\":null,\\"ulimits\\":null,\\"repositoryCredentials\\":{\\"credentialsParameter\\":\\"someArn\\"},\\"dnsServers\\":null,\\"mountPoints\\":[],\\"workingDirectory\\":null,\\"secrets\\":[{\\"name\\":\\"donnie\\",\\"valueFrom\\":\\"throwinrockstonight\\"}],\\"dockerSecurityOptions\\":null,\\"memory\\":null,\\"memoryReservation\\":null,\\"volumesFrom\\":[],\\"stopTimeout\\":null,\\"image\\":\\"beverage-here/0.1\\",\\"startTimeout\\":null,\\"firelensConfiguration\\":null,\\"dependsOn\\":null,\\"disableNetworking\\":null,\\"interactive\\":null,\\"healthCheck\\":null,\\"essential\\":true,\\"links\\":null,\\"hostname\\":null,\\"extraHosts\\":null,\\"pseudoTerminal\\":null,\\"user\\":null,\\"readonlyRootFilesystem\\":false,\\"dockerLabels\\":null,\\"systemControls\\":null,\\"privileged\\":null,\\"name\\":\\"lebowski\\"}]",
+        "cpu": "512",
+        "depends_on": [
+        ],
+        "execution_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-execution-role_88EFEECE.arn}",
+        "family": "abides-dev",
+        "memory": "2048",
+        "network_mode": "awsvpc",
+        "requires_compatibilities": [
+          "FARGATE"
+        ],
+        "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
+        "volume": [
+        ]
+      }
+    },
+    "aws_iam_role": {
+      "testECSService_ecs-iam_ecs-execution-role_88EFEECE": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-iam_ecs-task-assume_97906D9E.json}",
+        "name": "abides-dev-TaskExecutionRole"
+      },
+      "testECSService_ecs-iam_ecs-task-role_83E10144": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-iam_ecs-task-assume_97906D9E.json}",
+        "name": "abides-dev-TaskRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "testECSService_ecs-iam_ecs-task-execution-default-attachment_7AC36BF7": {
+        "policy_arn": "someArn",
+        "role": "\${aws_iam_role.testECSService_ecs-iam_ecs-execution-role_88EFEECE.id}"
+      }
+    },
+    "aws_security_group": {
+      "testECSService_ecs_security_group_67979722": {
+        "description": "Internal ECS Security Group (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "abides-dev-ECSSecurityGroup",
+        "vpc_id": "myhouse"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationECSService renders an ECS service without an image container definition props 1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "testECSService_ecs-iam_ecs-task-assume_97906D9E": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "ecs-tasks.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_ecr_lifecycle_policy": {
+      "testECSService_ecr-lebowski_ecr-repo-lifecyclepolicy_19C9732F": {
+        "depends_on": [
+          "aws_ecr_repository.testECSService_ecr-lebowski_ecr-repo_6D07DF86"
+        ],
+        "policy": "{\\"rules\\":[{\\"rulePriority\\":1,\\"description\\":\\"expire old images\\",\\"selection\\":{\\"tagStatus\\":\\"any\\",\\"countType\\":\\"imageCountMoreThan\\",\\"countNumber\\":800},\\"action\\":{\\"type\\":\\"expire\\"}}]}",
+        "repository": "\${aws_ecr_repository.testECSService_ecr-lebowski_ecr-repo_6D07DF86.name}"
+      }
+    },
+    "aws_ecr_repository": {
+      "testECSService_ecr-lebowski_ecr-repo_6D07DF86": {
+        "image_scanning_configuration": {
+          "scan_on_push": true
+        },
+        "name": "abides-dev-lebowski"
+      }
+    },
+    "aws_ecs_service": {
+      "testECSService_ecs-service_33F309B3": {
+        "cluster": "gorp",
+        "depends_on": [
+          "aws_ecr_repository.testECSService_ecr-lebowski_ecr-repo_6D07DF86"
+        ],
+        "deployment_controller": {
+          "type": "ECS"
+        },
+        "deployment_maximum_percent": 400,
+        "deployment_minimum_healthy_percent": 80,
+        "desired_count": 4,
+        "launch_type": "ROCKET",
+        "lifecycle": {
+          "ignore_changes": [
+            "bowling",
+            "donnie",
+            "autobahn"
+          ]
+        },
+        "load_balancer": [
+        ],
+        "name": "abides-dev",
+        "network_configuration": {
+          "security_groups": [
+            "\${aws_security_group.testECSService_ecs_security_group_67979722.id}"
+          ],
+          "subnets": [
+            "1.1.1.1",
+            "2.2.2.2"
+          ]
+        },
+        "propagate_tags": "SERVICE",
+        "task_definition": "\${aws_ecs_task_definition.testECSService_ecs-task_A268C927.arn}"
+      }
+    },
+    "aws_ecs_task_definition": {
+      "testECSService_ecs-task_A268C927": {
+        "container_definitions": "[{\\"dnsSearchDomains\\":null,\\"environmentFiles\\":null,\\"logConfiguration\\":{\\"logDriver\\":\\"awslogs\\",\\"secretOptions\\":[],\\"options\\":{\\"awslogs-group\\":\\"test/log/group\\",\\"awslogs-region\\":\\"us-east-1\\",\\"awslogs-stream-prefix\\":\\"ecs\\"}},\\"entryPoint\\":null,\\"portMappings\\":[{\\"containerPort\\":3002,\\"hostPort\\":3001}],\\"linuxParameters\\":null,\\"cpu\\":0,\\"environment\\":[{\\"name\\":\\"rug\\",\\"value\\":\\"tiedtheroomtogether\\"}],\\"resourceRequirements\\":null,\\"ulimits\\":null,\\"repositoryCredentials\\":{\\"credentialsParameter\\":\\"someArn\\"},\\"dnsServers\\":null,\\"mountPoints\\":[],\\"workingDirectory\\":null,\\"secrets\\":[{\\"name\\":\\"donnie\\",\\"valueFrom\\":\\"throwinrockstonight\\"}],\\"dockerSecurityOptions\\":null,\\"memory\\":null,\\"memoryReservation\\":null,\\"volumesFrom\\":[],\\"stopTimeout\\":null,\\"image\\":\\"\${aws_ecr_repository.testECSService_ecr-lebowski_ecr-repo_6D07DF86.repository_url}:latest\\",\\"startTimeout\\":null,\\"firelensConfiguration\\":null,\\"dependsOn\\":null,\\"disableNetworking\\":null,\\"interactive\\":null,\\"healthCheck\\":null,\\"essential\\":true,\\"links\\":null,\\"hostname\\":null,\\"extraHosts\\":null,\\"pseudoTerminal\\":null,\\"user\\":null,\\"readonlyRootFilesystem\\":false,\\"dockerLabels\\":null,\\"systemControls\\":null,\\"privileged\\":null,\\"name\\":\\"lebowski\\"}]",
+        "cpu": "512",
+        "depends_on": [
+          "aws_ecr_repository.testECSService_ecr-lebowski_ecr-repo_6D07DF86"
+        ],
+        "execution_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-execution-role_88EFEECE.arn}",
+        "family": "abides-dev",
+        "memory": "2048",
+        "network_mode": "awsvpc",
+        "requires_compatibilities": [
+          "FARGATE"
+        ],
+        "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
+        "volume": [
+        ]
+      }
+    },
+    "aws_iam_role": {
+      "testECSService_ecs-iam_ecs-execution-role_88EFEECE": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-iam_ecs-task-assume_97906D9E.json}",
+        "name": "abides-dev-TaskExecutionRole"
+      },
+      "testECSService_ecs-iam_ecs-task-role_83E10144": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-iam_ecs-task-assume_97906D9E.json}",
+        "name": "abides-dev-TaskRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "testECSService_ecs-iam_ecs-task-execution-default-attachment_7AC36BF7": {
+        "policy_arn": "someArn",
+        "role": "\${aws_iam_role.testECSService_ecs-iam_ecs-execution-role_88EFEECE.id}"
+      }
+    },
+    "aws_security_group": {
+      "testECSService_ecs_security_group_67979722": {
+        "description": "Internal ECS Security Group (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "abides-dev-ECSSecurityGroup",
+        "vpc_id": "myhouse"
+      }
+    }
+  }
+}"
+`;

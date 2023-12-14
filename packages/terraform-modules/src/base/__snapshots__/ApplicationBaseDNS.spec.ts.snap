@@ -1,0 +1,120 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApplicationBaseDNS constructor renders base DNS with tags 1`] = `
+"{
+  "data": {
+    "aws_route53_zone": {
+      "testDNS_main_hosted_zone": {
+        "name": "gobowling.info"
+      }
+    }
+  },
+  "resource": {
+    "aws_route53_record": {
+      "testDNS_subhosted_zone_ns_5F02B4AB": {
+        "name": "dev.gobowling.info",
+        "records": "\${aws_route53_zone.testDNS_subhosted_zone_0D42EC63.name_servers}",
+        "ttl": 86400,
+        "type": "NS",
+        "zone_id": "\${data.aws_route53_zone.testDNS_main_hosted_zone.zone_id}"
+      }
+    },
+    "aws_route53_zone": {
+      "testDNS_subhosted_zone_0D42EC63": {
+        "name": "dev.gobowling.info",
+        "tags": {
+          "hobby": "bowling",
+          "name": "thedude"
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationBaseDNS constructor renders base DNS without tags 1`] = `
+"{
+  "data": {
+    "aws_route53_zone": {
+      "testDNS_main_hosted_zone": {
+        "name": "gobowling.info"
+      }
+    }
+  },
+  "resource": {
+    "aws_route53_record": {
+      "testDNS_subhosted_zone_ns_5F02B4AB": {
+        "name": "dev.gobowling.info",
+        "records": "\${aws_route53_zone.testDNS_subhosted_zone_0D42EC63.name_servers}",
+        "ttl": 86400,
+        "type": "NS",
+        "zone_id": "\${data.aws_route53_zone.testDNS_main_hosted_zone.zone_id}"
+      }
+    },
+    "aws_route53_zone": {
+      "testDNS_subhosted_zone_0D42EC63": {
+        "name": "dev.gobowling.info"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationBaseDNS generateRoute53Record renders a route 53 record 1`] = `
+"{
+  "resource": {
+    "aws_route53_record": {
+      "test-resource_subhosted_zone_ns_47594402": {
+        "name": "dev.gobowling.info",
+        "records": [
+          "some",
+          "records"
+        ],
+        "ttl": 86400,
+        "type": "NS",
+        "zone_id": "some-zone-id"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationBaseDNS generateRoute53Zone renders a route 53 zone 1`] = `
+"{
+  "resource": {
+    "aws_route53_zone": {
+      "test-resource_subhosted_zone_262A1A23": {
+        "name": "dev.gobowling.info"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationBaseDNS generateRoute53Zone renders a route 53 zone with tags 1`] = `
+"{
+  "resource": {
+    "aws_route53_zone": {
+      "test-resource_subhosted_zone_262A1A23": {
+        "name": "dev.gobowling.info",
+        "tags": {
+          "hobby": "bowling",
+          "name": "thedude"
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationBaseDNS retrieveAwsRoute53Zone retrieves a route 53 zone 1`] = `
+"{
+  "data": {
+    "aws_route53_zone": {
+      "test-resource_some-zone_main_hosted_zone_B55D697C": {
+        "name": "gobowling.info"
+      }
+    }
+  }
+}"
+`;

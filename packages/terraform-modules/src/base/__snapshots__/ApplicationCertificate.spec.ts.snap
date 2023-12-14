@@ -1,0 +1,239 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApplicationCertificate constructor renders a cert with a zone domain 1`] = `
+"{
+  "resource": {
+    "aws_acm_certificate": {
+      "testCert_certificate_3EDC39B5": {
+        "domain_name": "dev.gobowling.info",
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "validation_method": "DNS"
+      }
+    },
+    "aws_acm_certificate_validation": {
+      "testCert_certificate_validation_80E8BDA3": {
+        "certificate_arn": "\${aws_acm_certificate.testCert_certificate_3EDC39B5.arn}",
+        "depends_on": [
+          "aws_route53_record.testCert_certificate_record_93AF392D",
+          "aws_acm_certificate.testCert_certificate_3EDC39B5"
+        ],
+        "validation_record_fqdns": [
+          "\${aws_route53_record.testCert_certificate_record_93AF392D.fqdn}"
+        ]
+      }
+    },
+    "aws_route53_record": {
+      "testCert_certificate_record_93AF392D": {
+        "depends_on": [
+          "aws_acm_certificate.testCert_certificate_3EDC39B5"
+        ],
+        "name": "\${tolist(aws_acm_certificate.testCert_certificate_3EDC39B5.domain_validation_options).0.resource_record_name}",
+        "records": [
+          "\${tolist(aws_acm_certificate.testCert_certificate_3EDC39B5.domain_validation_options).0.resource_record_value}"
+        ],
+        "ttl": 60,
+        "type": "\${tolist(aws_acm_certificate.testCert_certificate_3EDC39B5.domain_validation_options).0.resource_record_type}",
+        "zone_id": "gobowling.info"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationCertificate constructor renders a cert with a zone id 1`] = `
+"{
+  "resource": {
+    "aws_acm_certificate": {
+      "testCert_certificate_3EDC39B5": {
+        "domain_name": "dev.gobowling.info",
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "validation_method": "DNS"
+      }
+    },
+    "aws_acm_certificate_validation": {
+      "testCert_certificate_validation_80E8BDA3": {
+        "certificate_arn": "\${aws_acm_certificate.testCert_certificate_3EDC39B5.arn}",
+        "depends_on": [
+          "aws_route53_record.testCert_certificate_record_93AF392D",
+          "aws_acm_certificate.testCert_certificate_3EDC39B5"
+        ],
+        "validation_record_fqdns": [
+          "\${aws_route53_record.testCert_certificate_record_93AF392D.fqdn}"
+        ]
+      }
+    },
+    "aws_route53_record": {
+      "testCert_certificate_record_93AF392D": {
+        "depends_on": [
+          "aws_acm_certificate.testCert_certificate_3EDC39B5"
+        ],
+        "name": "\${tolist(aws_acm_certificate.testCert_certificate_3EDC39B5.domain_validation_options).0.resource_record_name}",
+        "records": [
+          "\${tolist(aws_acm_certificate.testCert_certificate_3EDC39B5.domain_validation_options).0.resource_record_value}"
+        ],
+        "ttl": 60,
+        "type": "\${tolist(aws_acm_certificate.testCert_certificate_3EDC39B5.domain_validation_options).0.resource_record_type}",
+        "zone_id": "malibu"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationCertificate constructor renders a cert with tags 1`] = `
+"{
+  "resource": {
+    "aws_acm_certificate": {
+      "testCert_certificate_3EDC39B5": {
+        "domain_name": "dev.gobowling.info",
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "tags": {
+          "hobby": "bowling",
+          "name": "thedude"
+        },
+        "validation_method": "DNS"
+      }
+    },
+    "aws_acm_certificate_validation": {
+      "testCert_certificate_validation_80E8BDA3": {
+        "certificate_arn": "\${aws_acm_certificate.testCert_certificate_3EDC39B5.arn}",
+        "depends_on": [
+          "aws_route53_record.testCert_certificate_record_93AF392D",
+          "aws_acm_certificate.testCert_certificate_3EDC39B5"
+        ],
+        "validation_record_fqdns": [
+          "\${aws_route53_record.testCert_certificate_record_93AF392D.fqdn}"
+        ]
+      }
+    },
+    "aws_route53_record": {
+      "testCert_certificate_record_93AF392D": {
+        "depends_on": [
+          "aws_acm_certificate.testCert_certificate_3EDC39B5"
+        ],
+        "name": "\${tolist(aws_acm_certificate.testCert_certificate_3EDC39B5.domain_validation_options).0.resource_record_name}",
+        "records": [
+          "\${tolist(aws_acm_certificate.testCert_certificate_3EDC39B5.domain_validation_options).0.resource_record_value}"
+        ],
+        "ttl": 60,
+        "type": "\${tolist(aws_acm_certificate.testCert_certificate_3EDC39B5.domain_validation_options).0.resource_record_type}",
+        "zone_id": "gobowling.info"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationCertificate generateAcmCertificate renders an acm certificate with tags 1`] = `
+"{
+  "resource": {
+    "aws_acm_certificate": {
+      "test-resource_certificate_15680B70": {
+        "domain_name": "dev.gobowling.info",
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "tags": {
+          "hobby": "bowling",
+          "name": "thedude"
+        },
+        "validation_method": "DNS"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationCertificate generateAcmCertificate renders an acm certificate without tags 1`] = `
+"{
+  "resource": {
+    "aws_acm_certificate": {
+      "test-resource_certificate_15680B70": {
+        "domain_name": "dev.gobowling.info",
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "validation_method": "DNS"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationCertificate generateAcmCertificateValidation renders an acm certificate validation 1`] = `
+"{
+  "resource": {
+    "aws_acm_certificate": {
+      "test-resource_certificate_15680B70": {
+        "domain_name": "dev.gobowling.info",
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "validation_method": "DNS"
+      }
+    },
+    "aws_acm_certificate_validation": {
+      "test-resource_certificate_validation_7DB80AF0": {
+        "certificate_arn": "\${aws_acm_certificate.test-resource_certificate_15680B70.arn}",
+        "depends_on": [
+          "aws_route53_record.test-resource_certificate_record_59EDF3C1",
+          "aws_acm_certificate.test-resource_certificate_15680B70"
+        ],
+        "validation_record_fqdns": [
+          "\${aws_route53_record.test-resource_certificate_record_59EDF3C1.fqdn}"
+        ]
+      }
+    },
+    "aws_route53_record": {
+      "test-resource_certificate_record_59EDF3C1": {
+        "depends_on": [
+          "aws_acm_certificate.test-resource_certificate_15680B70"
+        ],
+        "name": "\${tolist(aws_acm_certificate.test-resource_certificate_15680B70.domain_validation_options).0.resource_record_name}",
+        "records": [
+          "\${tolist(aws_acm_certificate.test-resource_certificate_15680B70.domain_validation_options).0.resource_record_value}"
+        ],
+        "ttl": 60,
+        "type": "\${tolist(aws_acm_certificate.test-resource_certificate_15680B70.domain_validation_options).0.resource_record_type}",
+        "zone_id": "dev.gobowling.info"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationCertificate generateRoute53Record renders a route 53 record 1`] = `
+"{
+  "resource": {
+    "aws_acm_certificate": {
+      "test-resource_certificate_15680B70": {
+        "domain_name": "dev.gobowling.info",
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "validation_method": "DNS"
+      }
+    },
+    "aws_route53_record": {
+      "test-resource_certificate_record_59EDF3C1": {
+        "depends_on": [
+          "aws_acm_certificate.test-resource_certificate_15680B70"
+        ],
+        "name": "\${tolist(aws_acm_certificate.test-resource_certificate_15680B70.domain_validation_options).0.resource_record_name}",
+        "records": [
+          "\${tolist(aws_acm_certificate.test-resource_certificate_15680B70.domain_validation_options).0.resource_record_value}"
+        ],
+        "ttl": 60,
+        "type": "\${tolist(aws_acm_certificate.test-resource_certificate_15680B70.domain_validation_options).0.resource_record_type}",
+        "zone_id": "dev.gobowling.info"
+      }
+    }
+  }
+}"
+`;

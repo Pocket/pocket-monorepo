@@ -1,0 +1,359 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApplicationRDSCluster renders a RDS cluster 1`] = `
+"{
+  "data": {
+    "aws_vpc": {
+      "testRDSCluster_vpc_F47EEEFE": {
+        "filter": [
+          {
+            "name": "vpc-id",
+            "values": [
+              "rug"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "resource": {
+    "aws_db_subnet_group": {
+      "testRDSCluster_rds_subnet_group_88022457": {
+        "name_prefix": "bowling-",
+        "subnet_ids": [
+          "0",
+          "1"
+        ],
+        "tags": {
+          "whodis": "walter"
+        }
+      }
+    },
+    "aws_rds_cluster": {
+      "testRDSCluster_rds_cluster_B5FD08B5": {
+        "cluster_identifier_prefix": "bowling-",
+        "copy_tags_to_snapshot": true,
+        "database_name": "walter",
+        "db_subnet_group_name": "\${aws_db_subnet_group.testRDSCluster_rds_subnet_group_88022457.name}",
+        "engine": "aurora-mysql",
+        "lifecycle": {
+          "ignore_changes": [
+            "master_username",
+            "master_password"
+          ]
+        },
+        "master_password": "bowling",
+        "master_username": "walter",
+        "tags": {
+          "whodis": "walter"
+        },
+        "vpc_security_group_ids": [
+          "\${aws_security_group.testRDSCluster_rds_security_group_4A9D257E.id}"
+        ]
+      }
+    },
+    "aws_secretsmanager_secret": {
+      "testRDSCluster_rds_secret_A2014138": {
+        "depends_on": [
+          "aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5"
+        ],
+        "description": "Secret For \${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.cluster_identifier}",
+        "name": "bowling-/\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.cluster_identifier}",
+        "tags": {
+          "whodis": "walter"
+        }
+      }
+    },
+    "aws_secretsmanager_secret_version": {
+      "testRDSCluster_rds_secret_version_55C44893": {
+        "depends_on": [
+          "aws_secretsmanager_secret.testRDSCluster_rds_secret_A2014138"
+        ],
+        "secret_id": "\${aws_secretsmanager_secret.testRDSCluster_rds_secret_A2014138.id}",
+        "secret_string": "{\\"engine\\":\\"aurora-mysql\\",\\"host\\":\\"\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.endpoint}\\",\\"username\\":\\"\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.master_username}\\",\\"password\\":\\"\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.master_password}\\",\\"dbname\\":\\"\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.database_name}\\",\\"port\\":3306,\\"database_url\\":\\"mysql://\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.master_username}:\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.master_password}@\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.endpoint}:3306/\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.database_name}\\"}"
+      }
+    },
+    "aws_security_group": {
+      "testRDSCluster_rds_security_group_4A9D257E": {
+        "description": "Managed by Terraform",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+          {
+            "cidr_blocks": [
+              "\${data.aws_vpc.testRDSCluster_vpc_F47EEEFE.cidr_block}"
+            ],
+            "description": null,
+            "from_port": 3306,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "tcp",
+            "security_groups": null,
+            "self": null,
+            "to_port": 3306
+          }
+        ],
+        "name_prefix": "bowling-",
+        "tags": {
+          "whodis": "walter"
+        },
+        "vpc_id": "\${data.aws_vpc.testRDSCluster_vpc_F47EEEFE.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationRDSCluster renders a RDS cluster with a database URL 1`] = `
+"{
+  "data": {
+    "aws_vpc": {
+      "testRDSCluster_vpc_F47EEEFE": {
+        "filter": [
+          {
+            "name": "vpc-id",
+            "values": [
+              "rug"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "resource": {
+    "aws_db_subnet_group": {
+      "testRDSCluster_rds_subnet_group_88022457": {
+        "name_prefix": "bowling-",
+        "subnet_ids": [
+          "0",
+          "1"
+        ],
+        "tags": {
+          "whodis": "walter"
+        }
+      }
+    },
+    "aws_rds_cluster": {
+      "testRDSCluster_rds_cluster_B5FD08B5": {
+        "cluster_identifier_prefix": "bowling-",
+        "copy_tags_to_snapshot": true,
+        "database_name": "walter",
+        "db_subnet_group_name": "\${aws_db_subnet_group.testRDSCluster_rds_subnet_group_88022457.name}",
+        "engine": "aurora-mysql",
+        "lifecycle": {
+          "ignore_changes": [
+            "master_username",
+            "master_password"
+          ]
+        },
+        "master_password": "bowling",
+        "master_username": "walter",
+        "tags": {
+          "whodis": "walter"
+        },
+        "vpc_security_group_ids": [
+          "\${aws_security_group.testRDSCluster_rds_security_group_4A9D257E.id}"
+        ]
+      }
+    },
+    "aws_secretsmanager_secret": {
+      "testRDSCluster_rds_secret_A2014138": {
+        "depends_on": [
+          "aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5"
+        ],
+        "description": "Secret For \${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.cluster_identifier}",
+        "name": "bowling-/\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.cluster_identifier}",
+        "tags": {
+          "whodis": "walter"
+        }
+      }
+    },
+    "aws_secretsmanager_secret_version": {
+      "testRDSCluster_rds_secret_version_55C44893": {
+        "depends_on": [
+          "aws_secretsmanager_secret.testRDSCluster_rds_secret_A2014138"
+        ],
+        "secret_id": "\${aws_secretsmanager_secret.testRDSCluster_rds_secret_A2014138.id}",
+        "secret_string": "{\\"engine\\":\\"aurora-mysql\\",\\"host\\":\\"\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.endpoint}\\",\\"username\\":\\"\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.master_username}\\",\\"password\\":\\"\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.master_password}\\",\\"dbname\\":\\"\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.database_name}\\",\\"port\\":3306,\\"database_url\\":\\"mysql://\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.master_username}:\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.master_password}@\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.endpoint}:3306/\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.database_name}\\"}"
+      }
+    },
+    "aws_security_group": {
+      "testRDSCluster_rds_security_group_4A9D257E": {
+        "description": "Managed by Terraform",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+          {
+            "cidr_blocks": [
+              "\${data.aws_vpc.testRDSCluster_vpc_F47EEEFE.cidr_block}"
+            ],
+            "description": null,
+            "from_port": 3306,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "tcp",
+            "security_groups": null,
+            "self": null,
+            "to_port": 3306
+          }
+        ],
+        "name_prefix": "bowling-",
+        "tags": {
+          "whodis": "walter"
+        },
+        "vpc_id": "\${data.aws_vpc.testRDSCluster_vpc_F47EEEFE.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationRDSCluster renders a RDS cluster without a name 1`] = `
+"{
+  "data": {
+    "aws_vpc": {
+      "testRDSCluster_vpc_F47EEEFE": {
+        "filter": [
+          {
+            "name": "vpc-id",
+            "values": [
+              "rug"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "resource": {
+    "aws_db_subnet_group": {
+      "testRDSCluster_rds_subnet_group_88022457": {
+        "subnet_ids": [
+          "0",
+          "1"
+        ],
+        "tags": {
+          "whodis": "walter"
+        }
+      }
+    },
+    "aws_rds_cluster": {
+      "testRDSCluster_rds_cluster_B5FD08B5": {
+        "copy_tags_to_snapshot": true,
+        "database_name": "walter",
+        "db_subnet_group_name": "\${aws_db_subnet_group.testRDSCluster_rds_subnet_group_88022457.name}",
+        "engine": "aurora-mysql",
+        "lifecycle": {
+          "ignore_changes": [
+            "master_username",
+            "master_password"
+          ]
+        },
+        "master_password": "bowling",
+        "master_username": "walter",
+        "tags": {
+          "whodis": "walter"
+        },
+        "vpc_security_group_ids": [
+          "\${aws_security_group.testRDSCluster_rds_security_group_4A9D257E.id}"
+        ]
+      }
+    },
+    "aws_secretsmanager_secret": {
+      "testRDSCluster_rds_secret_A2014138": {
+        "depends_on": [
+          "aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5"
+        ],
+        "description": "Secret For \${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.cluster_identifier}",
+        "name": "bowling-/\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.cluster_identifier}",
+        "tags": {
+          "whodis": "walter"
+        }
+      }
+    },
+    "aws_secretsmanager_secret_version": {
+      "testRDSCluster_rds_secret_version_55C44893": {
+        "depends_on": [
+          "aws_secretsmanager_secret.testRDSCluster_rds_secret_A2014138"
+        ],
+        "secret_id": "\${aws_secretsmanager_secret.testRDSCluster_rds_secret_A2014138.id}",
+        "secret_string": "{\\"engine\\":\\"aurora-mysql\\",\\"host\\":\\"\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.endpoint}\\",\\"username\\":\\"\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.master_username}\\",\\"password\\":\\"\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.master_password}\\",\\"dbname\\":\\"\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.database_name}\\",\\"port\\":3306,\\"database_url\\":\\"mysql://\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.master_username}:\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.master_password}@\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.endpoint}:3306/\${aws_rds_cluster.testRDSCluster_rds_cluster_B5FD08B5.database_name}\\"}"
+      }
+    },
+    "aws_security_group": {
+      "testRDSCluster_rds_security_group_4A9D257E": {
+        "description": "Managed by Terraform",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+          {
+            "cidr_blocks": [
+              "\${data.aws_vpc.testRDSCluster_vpc_F47EEEFE.cidr_block}"
+            ],
+            "description": null,
+            "from_port": 3306,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "tcp",
+            "security_groups": null,
+            "self": null,
+            "to_port": 3306
+          }
+        ],
+        "name_prefix": "bowling-",
+        "tags": {
+          "whodis": "walter"
+        },
+        "vpc_id": "\${data.aws_vpc.testRDSCluster_vpc_F47EEEFE.id}"
+      }
+    }
+  }
+}"
+`;
