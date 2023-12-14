@@ -4,6 +4,8 @@ import {
   DataTerraformRemoteState,
   RemoteBackend,
   TerraformStack,
+  MigrateIds,
+  Aspects,
 } from 'cdktf';
 import { config } from './config';
 import {
@@ -61,6 +63,10 @@ class ImageAPI extends TerraformStack {
     });
 
     this.createApplicationCodePipeline(pocketApp);
+
+    // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
+    // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
+    Aspects.of(this).add(new MigrateIds());
   }
 
   /**
@@ -89,7 +95,7 @@ class ImageAPI extends TerraformStack {
    * @private
    */
   private createApplicationCodePipeline(app: PocketALBApplication) {
-    new PocketECSCodePipeline(this, 'imageapi_code-pipeline', {
+    new PocketECSCodePipeline(this, 'code-pipeline', {
       prefix: config.prefix,
       source: {
         codeStarConnectionArn: config.codePipeline.githubConnectionArn,
@@ -162,7 +168,7 @@ class ImageAPI extends TerraformStack {
       `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.prefix}/*`,
     ];
 
-    return new PocketALBApplication(this, `imageapi_application`, {
+    return new PocketALBApplication(this, 'application', {
       internal: true,
       prefix: config.prefix,
       alb6CharacterPrefix: config.shortName,
@@ -331,7 +337,6 @@ class ImageAPI extends TerraformStack {
     };
   }
 }
-
 const app = new App();
 const stack = new ImageAPI(app, 'image-api');
 const tfEnvVersion = fs.readFileSync('.terraform-version', 'utf8');

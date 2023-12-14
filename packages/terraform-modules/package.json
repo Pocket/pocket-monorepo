@@ -26,8 +26,8 @@
     "@cdktf/provider-pagerduty": "12.1.1",
     "@cdktf/provider-time": "9.0.2",
     "@sinonjs/commons": "3.0.0",
-    "cdktf": "0.19.2",
-    "cdktf-cli": "0.19.2",
+    "cdktf": "0.20.0-pre.58",
+    "cdktf-cli": "0.20.0-pre.58",
     "constructs": "10.3.0",
     "parse-domain": "5.0.0"
   },
