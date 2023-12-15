@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { validatePagination } from './validatePagination';
 
 describe('pagination validation', () => {
@@ -7,21 +6,21 @@ describe('pagination validation', () => {
 
   it('should throw error if first and last are set', () => {
     const pagination = { first: 100, last: 20 };
-    expect(() => validatePagination(pagination)).throw(
+    expect(() => validatePagination(pagination)).toThrow(
       'Please set either {after and first} or {before and last}',
     );
   });
 
   it('should throw error if before and after are set', () => {
     const pagination = { before: 'b_cursor', after: 'a_cursor' };
-    expect(() => validatePagination(pagination)).throw(
+    expect(() => validatePagination(pagination)).toThrow(
       'Please set either {after and first} or {before and last}',
     );
   });
 
   it('should throw error if before and first are set', () => {
     const pagination = { before: 'b_cursor', first: 20 };
-    expect(() => validatePagination(pagination)).throw(
+    expect(() => validatePagination(pagination)).toThrow(
       'Please set either {after and first} or {before and last}',
     );
   });
@@ -31,7 +30,7 @@ describe('pagination validation', () => {
     const pagination = { before: before, last: 10 };
     expect(() =>
       validatePagination(pagination, defaultPageSize, maxPageSize),
-    ).throw('Invalid before cursor');
+    ).toThrow('Invalid before cursor');
   });
 
   it('should set last to default pagination size if before is set', () => {
@@ -41,7 +40,7 @@ describe('pagination validation', () => {
       defaultPageSize,
       maxPageSize,
     );
-    expect(actual).to.deep.equal({ before: before, last: defaultPageSize });
+    expect(actual).toEqual({ before: before, last: defaultPageSize });
   });
 
   it('should set last to default pagination size if its negative', () => {
@@ -51,32 +50,32 @@ describe('pagination validation', () => {
       defaultPageSize,
       maxPageSize,
     );
-    expect(actual).to.deep.equal({ before: before, last: defaultPageSize });
+    expect(actual).toEqual({ before: before, last: defaultPageSize });
   });
 
   it('should set first to default pagination size if its negative', () => {
     const after = Buffer.from('10').toString('base64');
     const actual = validatePagination({ after: after, first: -20 });
-    expect(actual).to.deep.equal({ after: after, first: defaultPageSize });
+    expect(actual).toEqual({ after: after, first: defaultPageSize });
   });
 
   it('should set last to default pagination size if its negative', () => {
     const actual = validatePagination({ last: -20 });
-    expect(actual).to.deep.equal({ last: defaultPageSize });
+    expect(actual).toEqual({ last: defaultPageSize });
   });
 
   it('should set first to defaultPageSize if pagination is null', () => {
     const actual = validatePagination(null, 50, 100);
-    expect(actual).to.deep.equal({ first: 50 });
+    expect(actual).toEqual({ first: 50 });
   });
 
   it('should set first to maxPageSize if its greater than maxPageSize', () => {
     const actual = validatePagination({ first: 200 }, 40, 200);
-    expect(actual).to.deep.equal({ first: 200 });
+    expect(actual).toEqual({ first: 200 });
   });
 
   it('should set last to maxPageSize if its greater than maxPageSize', () => {
     const actual = validatePagination({ last: 200 });
-    expect(actual).to.deep.equal({ last: maxPageSize });
+    expect(actual).toEqual({ last: maxPageSize });
   });
 });
