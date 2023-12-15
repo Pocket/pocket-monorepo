@@ -44,8 +44,7 @@ jobs:
           config-path: /tmp/generated-config.yml
           output-path: /tmp/pipeline-parameters.json
           mapping: |
-            servers/image-api/.* image_api true
-            infrastructure/image-api/.* image_api true
+            ((servers|infrastructure)/image-api/.*)|(packages/(apollo-utils|ts-logger|terraform-modules)/.*)|(pnpm-lock\.yaml) image_api true
       - continuation/continue:
             configuration_path: /tmp/generated-config.yml
             parameters: /tmp/pipeline-parameters.json
