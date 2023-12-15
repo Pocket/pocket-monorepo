@@ -8,8 +8,10 @@ nodeSDKBuilder({
   serviceName: config.tracing.serviceName,
   release: config.sentry.release,
 }).then(async () => {
-  await startServer(4867);
-  serverLogger.info(`🚀 Public server ready at http://localhost:4867`);
+  await startServer(config.app.serverPort);
+  serverLogger.info(
+    `🚀 Public server ready at http://localhost:${config.app.serverPort}`,
+  );
 });
 
 import { startServer } from './apollo';
