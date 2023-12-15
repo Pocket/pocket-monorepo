@@ -1,0 +1,19 @@
+{
+  "TableName": "MODELD-Local-RecMetrics",
+  "KeySchema": [
+    {
+      "AttributeName": "recommendations_pk",
+      "KeyType": "HASH"
+    }
+  ],
+  "AttributeDefinitions": [
+    {
+      "AttributeName": "recommendations_pk",
+      "AttributeType": "S"
+    }
+  ],
+  "ProvisionedThroughput": {
+    "ReadCapacityUnits": 5,
+    "WriteCapacityUnits": 5
+  }
+}

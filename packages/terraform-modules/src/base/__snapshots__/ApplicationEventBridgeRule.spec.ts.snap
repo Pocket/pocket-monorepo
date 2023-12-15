@@ -1,0 +1,152 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AplicationEventBridgeRule renders an event bridge with description 1`] = `
+"{
+  "resource": {
+    "aws_cloudwatch_event_rule": {
+      "test-event-bridge-rule_DA4F2E87": {
+        "description": "Test description",
+        "event_bus_name": "default",
+        "event_pattern": "{\\"source\\":[\\"aws.states\\"],\\"detail-type\\":[\\"Step Functions Execution Status Change\\"]}",
+        "lifecycle": {
+        },
+        "name": "Test-EventBridge-Rule"
+      }
+    }
+  }
+}"
+`;
+
+exports[`AplicationEventBridgeRule renders an event bridge with event bus name 1`] = `
+"{
+  "resource": {
+    "aws_cloudwatch_event_rule": {
+      "test-event-bridge-rule_DA4F2E87": {
+        "event_bus_name": "test-bus",
+        "event_pattern": "{\\"source\\":[\\"aws.states\\"],\\"detail-type\\":[\\"Step Functions Execution Status Change\\"]}",
+        "lifecycle": {
+        },
+        "name": "Test-EventBridge-Rule"
+      }
+    }
+  }
+}"
+`;
+
+exports[`AplicationEventBridgeRule renders an event bridge with pre-existing sqs target 1`] = `
+"{
+  "resource": {
+    "aws_cloudwatch_event_rule": {
+      "test-event-bridge-rule_DA4F2E87": {
+        "event_bus_name": "default",
+        "event_pattern": "{\\"source\\":[\\"aws.states\\"],\\"detail-type\\":[\\"Step Functions Execution Status Change\\"]}",
+        "lifecycle": {
+        },
+        "name": "Test-EventBridge-Rule"
+      }
+    },
+    "aws_cloudwatch_event_target": {
+      "test-event-bridge-rule_event-bridge-target-sqs_E09C359A": {
+        "arn": "\${aws_sqs_queue.test-queue.arn}",
+        "dead_letter_config": {
+        },
+        "event_bus_name": "default",
+        "rule": "\${aws_cloudwatch_event_rule.test-event-bridge-rule_DA4F2E87.name}",
+        "target_id": "sqs"
+      }
+    },
+    "aws_sqs_queue": {
+      "test-queue": {
+        "name": "Test-SQS-Queue"
+      }
+    }
+  }
+}"
+`;
+
+exports[`AplicationEventBridgeRule renders an event bridge with scheduleExpression 1`] = `
+"{
+  "resource": {
+    "aws_cloudwatch_event_rule": {
+      "test-event-bridge-rule_DA4F2E87": {
+        "event_bus_name": "default",
+        "lifecycle": {
+        },
+        "name": "Test-EventBridge-Rule",
+        "schedule_expression": "rate(1 minute)"
+      }
+    }
+  }
+}"
+`;
+
+exports[`AplicationEventBridgeRule renders an event bridge with sqs target 1`] = `
+"{
+  "resource": {
+    "aws_cloudwatch_event_rule": {
+      "test-event-bridge-rule_DA4F2E87": {
+        "event_bus_name": "default",
+        "event_pattern": "{\\"source\\":[\\"aws.states\\"],\\"detail-type\\":[\\"Step Functions Execution Status Change\\"]}",
+        "lifecycle": {
+        },
+        "name": "Test-EventBridge-Rule"
+      }
+    },
+    "aws_cloudwatch_event_target": {
+      "test-event-bridge-rule_event-bridge-target-sqs_E09C359A": {
+        "arn": "\${aws_sqs_queue.test-queue.arn}",
+        "dead_letter_config": {
+        },
+        "depends_on": [
+          "aws_sqs_queue.test-queue",
+          "aws_cloudwatch_event_rule.test-event-bridge-rule_DA4F2E87"
+        ],
+        "event_bus_name": "default",
+        "rule": "\${aws_cloudwatch_event_rule.test-event-bridge-rule_DA4F2E87.name}",
+        "target_id": "sqs"
+      }
+    },
+    "aws_sqs_queue": {
+      "test-queue": {
+        "name": "Test-SQS-Queue"
+      }
+    }
+  }
+}"
+`;
+
+exports[`AplicationEventBridgeRule renders an event bridge with tags 1`] = `
+"{
+  "resource": {
+    "aws_cloudwatch_event_rule": {
+      "test-event-bridge-rule_DA4F2E87": {
+        "event_bus_name": "default",
+        "event_pattern": "{\\"source\\":[\\"aws.states\\"],\\"detail-type\\":[\\"Step Functions Execution Status Change\\"]}",
+        "lifecycle": {
+        },
+        "name": "Test-EventBridge-Rule",
+        "tags": {
+          "for": "test",
+          "my": "tag"
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`AplicationEventBridgeRule renders an event bridge without a target 1`] = `
+"{
+  "resource": {
+    "aws_cloudwatch_event_rule": {
+      "test-event-bridge-rule_DA4F2E87": {
+        "event_bus_name": "default",
+        "event_pattern": "{\\"source\\":[\\"aws.states\\"],\\"detail-type\\":[\\"Step Functions Execution Status Change\\"]}",
+        "lifecycle": {
+        },
+        "name": "Test-EventBridge-Rule"
+      }
+    }
+  }
+}"
+`;

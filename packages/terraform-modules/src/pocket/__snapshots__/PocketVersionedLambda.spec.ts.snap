@@ -1,0 +1,2447 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`it can treat missing data as breaching 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-lambda_lambda-default-file_7A7DBB68": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-lambda_assume-policy-document_D538087D": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-lambda_execution-policy-document_D94D17B4": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "test-lambda_log-group_ACC182B5": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_cloudwatch_metric_alarm": {
+      "test-lambda_invocations_D15DE20B": {
+        "alarm_actions": [
+        ],
+        "alarm_description": "Total invocations breaches threshold",
+        "alarm_name": "test-lambda-Lambda-Invocations-Alarm",
+        "comparison_operator": "GreaterThanThreshold",
+        "datapoints_to_alarm": 1,
+        "dimensions": {
+          "FunctionName": "\${aws_lambda_alias.test-lambda_alias_CCFDFCE9.function_name}",
+          "Resource": "\${aws_lambda_alias.test-lambda_alias_CCFDFCE9.function_name}:\${aws_lambda_alias.test-lambda_alias_CCFDFCE9.name}"
+        },
+        "evaluation_periods": 1,
+        "insufficient_data_actions": [
+        ],
+        "metric_name": "Invocations",
+        "namespace": "AWS/Lambda",
+        "ok_actions": [
+        ],
+        "period": 60,
+        "statistic": "Sum",
+        "threshold": 1,
+        "treat_missing_data": "breaching"
+      }
+    },
+    "aws_iam_policy": {
+      "test-lambda_execution-policy_19C785A8": {
+        "name": "test-lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-lambda_execution-policy-document_D94D17B4.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-lambda_execution-role_9D4EE856": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda_assume-policy-document_D538087D.json}",
+        "name": "test-lambda-ExecutionRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-lambda_execution-role-policy-attachment_8796505D": {
+        "depends_on": [
+          "aws_iam_role.test-lambda_execution-role_9D4EE856",
+          "aws_iam_policy.test-lambda_execution-policy_19C785A8"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-lambda_execution-policy_19C785A8.arn}",
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-lambda_alias_CCFDFCE9": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "function_name": "\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-lambda_8915D118.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_function": {
+      "test-lambda_8915D118": {
+        "filename": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_path}",
+        "function_name": "test-lambda-Function",
+        "handler": "index.handler",
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_base64sha256}",
+        "timeout": 5
+      }
+    },
+    "aws_s3_bucket": {
+      "test-lambda_code-bucket_177F316E": {
+        "acl": "private",
+        "bucket": "pocket-test-lambda",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-lambda_code-bucket-public-access-block_1E7CE5AE": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-lambda_code-bucket_177F316E.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`renders a lambda target 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-lambda_lambda-default-file_7A7DBB68": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-lambda_assume-policy-document_D538087D": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-lambda_execution-policy-document_D94D17B4": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "test-lambda_log-group_ACC182B5": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_iam_policy": {
+      "test-lambda_execution-policy_19C785A8": {
+        "name": "test-lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-lambda_execution-policy-document_D94D17B4.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-lambda_execution-role_9D4EE856": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda_assume-policy-document_D538087D.json}",
+        "name": "test-lambda-ExecutionRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-lambda_execution-role-policy-attachment_8796505D": {
+        "depends_on": [
+          "aws_iam_role.test-lambda_execution-role_9D4EE856",
+          "aws_iam_policy.test-lambda_execution-policy_19C785A8"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-lambda_execution-policy_19C785A8.arn}",
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-lambda_alias_CCFDFCE9": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "function_name": "\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-lambda_8915D118.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_function": {
+      "test-lambda_8915D118": {
+        "filename": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_path}",
+        "function_name": "test-lambda-Function",
+        "handler": "index.handler",
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_base64sha256}",
+        "timeout": 5
+      }
+    },
+    "aws_s3_bucket": {
+      "test-lambda_code-bucket_177F316E": {
+        "acl": "private",
+        "bucket": "pocket-test-lambda",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-lambda_code-bucket-public-access-block_1E7CE5AE": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-lambda_code-bucket_177F316E.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`renders a lambda target with tags 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-lambda_lambda-default-file_7A7DBB68": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-lambda_assume-policy-document_D538087D": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-lambda_execution-policy-document_D94D17B4": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "test-lambda_log-group_ACC182B5": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "retention_in_days": 14,
+        "tags": {
+          "for": "test",
+          "my": "tags"
+        }
+      }
+    },
+    "aws_iam_policy": {
+      "test-lambda_execution-policy_19C785A8": {
+        "name": "test-lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-lambda_execution-policy-document_D94D17B4.json}",
+        "tags": {
+          "for": "test",
+          "my": "tags"
+        }
+      }
+    },
+    "aws_iam_role": {
+      "test-lambda_execution-role_9D4EE856": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda_assume-policy-document_D538087D.json}",
+        "name": "test-lambda-ExecutionRole",
+        "tags": {
+          "for": "test",
+          "my": "tags"
+        }
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-lambda_execution-role-policy-attachment_8796505D": {
+        "depends_on": [
+          "aws_iam_role.test-lambda_execution-role_9D4EE856",
+          "aws_iam_policy.test-lambda_execution-policy_19C785A8"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-lambda_execution-policy_19C785A8.arn}",
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-lambda_alias_CCFDFCE9": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "function_name": "\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-lambda_8915D118.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_function": {
+      "test-lambda_8915D118": {
+        "filename": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_path}",
+        "function_name": "test-lambda-Function",
+        "handler": "index.handler",
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_base64sha256}",
+        "tags": {
+          "for": "test",
+          "my": "tags"
+        },
+        "timeout": 5
+      }
+    },
+    "aws_s3_bucket": {
+      "test-lambda_code-bucket_177F316E": {
+        "acl": "private",
+        "bucket": "pocket-test-lambda",
+        "force_destroy": true,
+        "tags": {
+          "for": "test",
+          "my": "tags"
+        }
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-lambda_code-bucket-public-access-block_1E7CE5AE": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-lambda_code-bucket_177F316E.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`renders a lambda with alarms 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-lambda_lambda-default-file_7A7DBB68": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-lambda_assume-policy-document_D538087D": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-lambda_execution-policy-document_D94D17B4": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "test-lambda_log-group_ACC182B5": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_cloudwatch_metric_alarm": {
+      "test-lambda_concurrentexecutions_B7910145": {
+        "alarm_actions": [
+        ],
+        "alarm_description": "Total concurrentexecutions breaches threshold",
+        "alarm_name": "test-lambda-Lambda-ConcurrentExecutions-Alarm",
+        "comparison_operator": "GreaterThanThreshold",
+        "datapoints_to_alarm": 1,
+        "dimensions": {
+          "FunctionName": "\${aws_lambda_alias.test-lambda_alias_CCFDFCE9.function_name}",
+          "Resource": "\${aws_lambda_alias.test-lambda_alias_CCFDFCE9.function_name}:\${aws_lambda_alias.test-lambda_alias_CCFDFCE9.name}"
+        },
+        "evaluation_periods": 1,
+        "insufficient_data_actions": [
+        ],
+        "metric_name": "ConcurrentExecutions",
+        "namespace": "AWS/Lambda",
+        "ok_actions": [
+        ],
+        "period": 60,
+        "statistic": "Sum",
+        "threshold": 1,
+        "treat_missing_data": "missing"
+      },
+      "test-lambda_duration_E92A1EBB": {
+        "alarm_actions": [
+        ],
+        "alarm_description": "Total duration breaches threshold",
+        "alarm_name": "test-lambda-Lambda-Duration-Alarm",
+        "comparison_operator": "GreaterThanThreshold",
+        "datapoints_to_alarm": 1,
+        "dimensions": {
+          "FunctionName": "\${aws_lambda_alias.test-lambda_alias_CCFDFCE9.function_name}",
+          "Resource": "\${aws_lambda_alias.test-lambda_alias_CCFDFCE9.function_name}:\${aws_lambda_alias.test-lambda_alias_CCFDFCE9.name}"
+        },
+        "evaluation_periods": 1,
+        "insufficient_data_actions": [
+        ],
+        "metric_name": "Duration",
+        "namespace": "AWS/Lambda",
+        "ok_actions": [
+        ],
+        "period": 60,
+        "statistic": "Sum",
+        "threshold": 1,
+        "treat_missing_data": "missing"
+      },
+      "test-lambda_errors_E579F2B3": {
+        "alarm_actions": [
+        ],
+        "alarm_description": "Total errors breaches threshold",
+        "alarm_name": "test-lambda-Lambda-Errors-Alarm",
+        "comparison_operator": "GreaterThanThreshold",
+        "datapoints_to_alarm": 1,
+        "dimensions": {
+          "FunctionName": "\${aws_lambda_alias.test-lambda_alias_CCFDFCE9.function_name}",
+          "Resource": "\${aws_lambda_alias.test-lambda_alias_CCFDFCE9.function_name}:\${aws_lambda_alias.test-lambda_alias_CCFDFCE9.name}"
+        },
+        "evaluation_periods": 1,
+        "insufficient_data_actions": [
+        ],
+        "metric_name": "Errors",
+        "namespace": "AWS/Lambda",
+        "ok_actions": [
+        ],
+        "period": 60,
+        "statistic": "Sum",
+        "threshold": 1,
+        "treat_missing_data": "missing"
+      },
+      "test-lambda_invocations_D15DE20B": {
+        "alarm_actions": [
+        ],
+        "alarm_description": "Total invocations breaches threshold",
+        "alarm_name": "test-lambda-Lambda-Invocations-Alarm",
+        "comparison_operator": "GreaterThanThreshold",
+        "datapoints_to_alarm": 1,
+        "dimensions": {
+          "FunctionName": "\${aws_lambda_alias.test-lambda_alias_CCFDFCE9.function_name}",
+          "Resource": "\${aws_lambda_alias.test-lambda_alias_CCFDFCE9.function_name}:\${aws_lambda_alias.test-lambda_alias_CCFDFCE9.name}"
+        },
+        "evaluation_periods": 1,
+        "insufficient_data_actions": [
+        ],
+        "metric_name": "Invocations",
+        "namespace": "AWS/Lambda",
+        "ok_actions": [
+        ],
+        "period": 60,
+        "statistic": "Sum",
+        "threshold": 1,
+        "treat_missing_data": "missing"
+      },
+      "test-lambda_throttles_562A3BCE": {
+        "alarm_actions": [
+        ],
+        "alarm_description": "Total throttles breaches threshold",
+        "alarm_name": "test-lambda-Lambda-Throttles-Alarm",
+        "comparison_operator": "GreaterThanThreshold",
+        "datapoints_to_alarm": 1,
+        "dimensions": {
+          "FunctionName": "\${aws_lambda_alias.test-lambda_alias_CCFDFCE9.function_name}",
+          "Resource": "\${aws_lambda_alias.test-lambda_alias_CCFDFCE9.function_name}:\${aws_lambda_alias.test-lambda_alias_CCFDFCE9.name}"
+        },
+        "evaluation_periods": 1,
+        "insufficient_data_actions": [
+        ],
+        "metric_name": "Throttles",
+        "namespace": "AWS/Lambda",
+        "ok_actions": [
+        ],
+        "period": 60,
+        "statistic": "Sum",
+        "threshold": 1,
+        "treat_missing_data": "missing"
+      }
+    },
+    "aws_iam_policy": {
+      "test-lambda_execution-policy_19C785A8": {
+        "name": "test-lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-lambda_execution-policy-document_D94D17B4.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-lambda_execution-role_9D4EE856": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda_assume-policy-document_D538087D.json}",
+        "name": "test-lambda-ExecutionRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-lambda_execution-role-policy-attachment_8796505D": {
+        "depends_on": [
+          "aws_iam_role.test-lambda_execution-role_9D4EE856",
+          "aws_iam_policy.test-lambda_execution-policy_19C785A8"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-lambda_execution-policy_19C785A8.arn}",
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-lambda_alias_CCFDFCE9": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "function_name": "\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-lambda_8915D118.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_function": {
+      "test-lambda_8915D118": {
+        "filename": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_path}",
+        "function_name": "test-lambda-Function",
+        "handler": "index.handler",
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_base64sha256}",
+        "timeout": 5
+      }
+    },
+    "aws_s3_bucket": {
+      "test-lambda_code-bucket_177F316E": {
+        "acl": "private",
+        "bucket": "pocket-test-lambda",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-lambda_code-bucket-public-access-block_1E7CE5AE": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-lambda_code-bucket_177F316E.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`renders a lambda with code deploy 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-lambda_lambda-default-file_7A7DBB68": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-lambda_assume-policy-document_D538087D": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-lambda_execution-policy-document_D94D17B4": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-lambda_lambda-code-deploy_code-deploy-assume-role-policy-document_C6C06F39": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "codedeploy.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "test-lambda_log-group_ACC182B5": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_codedeploy_app": {
+      "test-lambda_lambda-code-deploy_code-deploy-app_7C98647C": {
+        "compute_platform": "Lambda",
+        "name": "test-lambda-Lambda"
+      }
+    },
+    "aws_codedeploy_deployment_group": {
+      "test-lambda_lambda-code-deploy_code-deployment-group_07908CD9": {
+        "app_name": "\${aws_codedeploy_app.test-lambda_lambda-code-deploy_code-deploy-app_7C98647C.name}",
+        "auto_rollback_configuration": {
+          "enabled": true,
+          "events": [
+            "DEPLOYMENT_FAILURE"
+          ]
+        },
+        "depends_on": [
+          "aws_codedeploy_app.test-lambda_lambda-code-deploy_code-deploy-app_7C98647C"
+        ],
+        "deployment_config_name": "CodeDeployDefault.LambdaAllAtOnce",
+        "deployment_group_name": "\${aws_codedeploy_app.test-lambda_lambda-code-deploy_code-deploy-app_7C98647C.name}",
+        "deployment_style": {
+          "deployment_option": "WITH_TRAFFIC_CONTROL",
+          "deployment_type": "BLUE_GREEN"
+        },
+        "service_role_arn": "\${aws_iam_role.test-lambda_lambda-code-deploy_code-deploy-role_6EA86ECC.arn}"
+      }
+    },
+    "aws_codestarnotifications_notification_rule": {
+      "test-lambda_lambda-code-deploy_notifications_E3D09B45": {
+        "detail_type": "FULL",
+        "event_type_ids": [
+          "codedeploy-application-deployment-failed"
+        ],
+        "name": "\${aws_codedeploy_app.test-lambda_lambda-code-deploy_code-deploy-app_7C98647C.name}",
+        "resource": "arn:aws:codedeploy:us-east-1:test-account:application:\${aws_codedeploy_app.test-lambda_lambda-code-deploy_code-deploy-app_7C98647C.name}",
+        "target": [
+          {
+            "address": "arn:test"
+          }
+        ]
+      }
+    },
+    "aws_iam_policy": {
+      "test-lambda_execution-policy_19C785A8": {
+        "name": "test-lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-lambda_execution-policy-document_D94D17B4.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-lambda_execution-role_9D4EE856": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda_assume-policy-document_D538087D.json}",
+        "name": "test-lambda-ExecutionRole"
+      },
+      "test-lambda_lambda-code-deploy_code-deploy-role_6EA86ECC": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda_lambda-code-deploy_code-deploy-assume-role-policy-document_C6C06F39.json}",
+        "name": "test-lambda-CodeDeployRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-lambda_execution-role-policy-attachment_8796505D": {
+        "depends_on": [
+          "aws_iam_role.test-lambda_execution-role_9D4EE856",
+          "aws_iam_policy.test-lambda_execution-policy_19C785A8"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-lambda_execution-policy_19C785A8.arn}",
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.name}"
+      },
+      "test-lambda_lambda-code-deploy_code-deploy-policy-attachment_0805E344": {
+        "depends_on": [
+          "aws_iam_role.test-lambda_lambda-code-deploy_code-deploy-role_6EA86ECC"
+        ],
+        "policy_arn": "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForLambda",
+        "role": "\${aws_iam_role.test-lambda_lambda-code-deploy_code-deploy-role_6EA86ECC.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-lambda_alias_CCFDFCE9": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "function_name": "\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-lambda_8915D118.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_function": {
+      "test-lambda_8915D118": {
+        "filename": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_path}",
+        "function_name": "test-lambda-Function",
+        "handler": "index.handler",
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash",
+            "publish"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_base64sha256}",
+        "timeout": 5
+      }
+    },
+    "aws_s3_bucket": {
+      "test-lambda_code-bucket_177F316E": {
+        "acl": "private",
+        "bucket": "pocket-test-lambda",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-lambda_code-bucket-public-access-block_1E7CE5AE": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-lambda_code-bucket_177F316E.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`renders a lambda with code deploy with all deploy notifications turned on 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-lambda_lambda-default-file_7A7DBB68": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-lambda_assume-policy-document_D538087D": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-lambda_execution-policy-document_D94D17B4": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-lambda_lambda-code-deploy_code-deploy-assume-role-policy-document_C6C06F39": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "codedeploy.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "test-lambda_log-group_ACC182B5": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_codedeploy_app": {
+      "test-lambda_lambda-code-deploy_code-deploy-app_7C98647C": {
+        "compute_platform": "Lambda",
+        "name": "test-lambda-Lambda"
+      }
+    },
+    "aws_codedeploy_deployment_group": {
+      "test-lambda_lambda-code-deploy_code-deployment-group_07908CD9": {
+        "app_name": "\${aws_codedeploy_app.test-lambda_lambda-code-deploy_code-deploy-app_7C98647C.name}",
+        "auto_rollback_configuration": {
+          "enabled": true,
+          "events": [
+            "DEPLOYMENT_FAILURE"
+          ]
+        },
+        "depends_on": [
+          "aws_codedeploy_app.test-lambda_lambda-code-deploy_code-deploy-app_7C98647C"
+        ],
+        "deployment_config_name": "CodeDeployDefault.LambdaAllAtOnce",
+        "deployment_group_name": "\${aws_codedeploy_app.test-lambda_lambda-code-deploy_code-deploy-app_7C98647C.name}",
+        "deployment_style": {
+          "deployment_option": "WITH_TRAFFIC_CONTROL",
+          "deployment_type": "BLUE_GREEN"
+        },
+        "service_role_arn": "\${aws_iam_role.test-lambda_lambda-code-deploy_code-deploy-role_6EA86ECC.arn}"
+      }
+    },
+    "aws_codestarnotifications_notification_rule": {
+      "test-lambda_lambda-code-deploy_notifications_E3D09B45": {
+        "detail_type": "FULL",
+        "event_type_ids": [
+          "codedeploy-application-deployment-failed",
+          "codedeploy-application-deployment-succeeded",
+          "codedeploy-application-deployment-started"
+        ],
+        "name": "\${aws_codedeploy_app.test-lambda_lambda-code-deploy_code-deploy-app_7C98647C.name}",
+        "resource": "arn:aws:codedeploy:us-east-1:test-account:application:\${aws_codedeploy_app.test-lambda_lambda-code-deploy_code-deploy-app_7C98647C.name}",
+        "target": [
+          {
+            "address": "arn:test"
+          }
+        ]
+      }
+    },
+    "aws_iam_policy": {
+      "test-lambda_execution-policy_19C785A8": {
+        "name": "test-lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-lambda_execution-policy-document_D94D17B4.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-lambda_execution-role_9D4EE856": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda_assume-policy-document_D538087D.json}",
+        "name": "test-lambda-ExecutionRole"
+      },
+      "test-lambda_lambda-code-deploy_code-deploy-role_6EA86ECC": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda_lambda-code-deploy_code-deploy-assume-role-policy-document_C6C06F39.json}",
+        "name": "test-lambda-CodeDeployRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-lambda_execution-role-policy-attachment_8796505D": {
+        "depends_on": [
+          "aws_iam_role.test-lambda_execution-role_9D4EE856",
+          "aws_iam_policy.test-lambda_execution-policy_19C785A8"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-lambda_execution-policy_19C785A8.arn}",
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.name}"
+      },
+      "test-lambda_lambda-code-deploy_code-deploy-policy-attachment_0805E344": {
+        "depends_on": [
+          "aws_iam_role.test-lambda_lambda-code-deploy_code-deploy-role_6EA86ECC"
+        ],
+        "policy_arn": "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRoleForLambda",
+        "role": "\${aws_iam_role.test-lambda_lambda-code-deploy_code-deploy-role_6EA86ECC.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-lambda_alias_CCFDFCE9": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "function_name": "\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-lambda_8915D118.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_function": {
+      "test-lambda_8915D118": {
+        "filename": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_path}",
+        "function_name": "test-lambda-Function",
+        "handler": "index.handler",
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash",
+            "publish"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_base64sha256}",
+        "timeout": 5
+      }
+    },
+    "aws_s3_bucket": {
+      "test-lambda_code-bucket_177F316E": {
+        "acl": "private",
+        "bucket": "pocket-test-lambda",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-lambda_code-bucket-public-access-block_1E7CE5AE": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-lambda_code-bucket_177F316E.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`renders a lambda with concurrencyLimit 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-lambda_lambda-default-file_7A7DBB68": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-lambda_assume-policy-document_D538087D": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-lambda_execution-policy-document_D94D17B4": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "test-lambda_log-group_ACC182B5": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_iam_policy": {
+      "test-lambda_execution-policy_19C785A8": {
+        "name": "test-lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-lambda_execution-policy-document_D94D17B4.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-lambda_execution-role_9D4EE856": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda_assume-policy-document_D538087D.json}",
+        "name": "test-lambda-ExecutionRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-lambda_execution-role-policy-attachment_8796505D": {
+        "depends_on": [
+          "aws_iam_role.test-lambda_execution-role_9D4EE856",
+          "aws_iam_policy.test-lambda_execution-policy_19C785A8"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-lambda_execution-policy_19C785A8.arn}",
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-lambda_alias_CCFDFCE9": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "function_name": "\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-lambda_8915D118.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_function": {
+      "test-lambda_8915D118": {
+        "filename": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_path}",
+        "function_name": "test-lambda-Function",
+        "handler": "index.handler",
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": 10,
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_base64sha256}",
+        "timeout": 5
+      }
+    },
+    "aws_s3_bucket": {
+      "test-lambda_code-bucket_177F316E": {
+        "acl": "private",
+        "bucket": "pocket-test-lambda",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-lambda_code-bucket-public-access-block_1E7CE5AE": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-lambda_code-bucket_177F316E.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`renders a lambda with environment variables 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-lambda_lambda-default-file_7A7DBB68": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-lambda_assume-policy-document_D538087D": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-lambda_execution-policy-document_D94D17B4": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "test-lambda_log-group_ACC182B5": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_iam_policy": {
+      "test-lambda_execution-policy_19C785A8": {
+        "name": "test-lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-lambda_execution-policy-document_D94D17B4.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-lambda_execution-role_9D4EE856": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda_assume-policy-document_D538087D.json}",
+        "name": "test-lambda-ExecutionRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-lambda_execution-role-policy-attachment_8796505D": {
+        "depends_on": [
+          "aws_iam_role.test-lambda_execution-role_9D4EE856",
+          "aws_iam_policy.test-lambda_execution-policy_19C785A8"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-lambda_execution-policy_19C785A8.arn}",
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-lambda_alias_CCFDFCE9": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "function_name": "\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-lambda_8915D118.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_function": {
+      "test-lambda_8915D118": {
+        "environment": {
+          "variables": {
+            "IS": "good",
+            "my": "var"
+          }
+        },
+        "filename": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_path}",
+        "function_name": "test-lambda-Function",
+        "handler": "index.handler",
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_base64sha256}",
+        "timeout": 5
+      }
+    },
+    "aws_s3_bucket": {
+      "test-lambda_code-bucket_177F316E": {
+        "acl": "private",
+        "bucket": "pocket-test-lambda",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-lambda_code-bucket-public-access-block_1E7CE5AE": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-lambda_code-bucket_177F316E.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`renders a lambda with execution policy 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-lambda_lambda-default-file_7A7DBB68": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-lambda_assume-policy-document_D538087D": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-lambda_execution-policy-document_D94D17B4": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          },
+          {
+            "actions": [
+              "*"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "test-lambda_log-group_ACC182B5": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_iam_policy": {
+      "test-lambda_execution-policy_19C785A8": {
+        "name": "test-lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-lambda_execution-policy-document_D94D17B4.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-lambda_execution-role_9D4EE856": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda_assume-policy-document_D538087D.json}",
+        "name": "test-lambda-ExecutionRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-lambda_execution-role-policy-attachment_8796505D": {
+        "depends_on": [
+          "aws_iam_role.test-lambda_execution-role_9D4EE856",
+          "aws_iam_policy.test-lambda_execution-policy_19C785A8"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-lambda_execution-policy_19C785A8.arn}",
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-lambda_alias_CCFDFCE9": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "function_name": "\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-lambda_8915D118.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_function": {
+      "test-lambda_8915D118": {
+        "filename": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_path}",
+        "function_name": "test-lambda-Function",
+        "handler": "index.handler",
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_base64sha256}",
+        "timeout": 5
+      }
+    },
+    "aws_s3_bucket": {
+      "test-lambda_code-bucket_177F316E": {
+        "acl": "private",
+        "bucket": "pocket-test-lambda",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-lambda_code-bucket-public-access-block_1E7CE5AE": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-lambda_code-bucket_177F316E.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`renders a lambda with lambda description 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-lambda_lambda-default-file_7A7DBB68": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-lambda_assume-policy-document_D538087D": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-lambda_execution-policy-document_D94D17B4": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "test-lambda_log-group_ACC182B5": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_iam_policy": {
+      "test-lambda_execution-policy_19C785A8": {
+        "name": "test-lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-lambda_execution-policy-document_D94D17B4.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-lambda_execution-role_9D4EE856": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda_assume-policy-document_D538087D.json}",
+        "name": "test-lambda-ExecutionRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-lambda_execution-role-policy-attachment_8796505D": {
+        "depends_on": [
+          "aws_iam_role.test-lambda_execution-role_9D4EE856",
+          "aws_iam_policy.test-lambda_execution-policy_19C785A8"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-lambda_execution-policy_19C785A8.arn}",
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-lambda_alias_CCFDFCE9": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "function_name": "\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-lambda_8915D118.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_function": {
+      "test-lambda_8915D118": {
+        "filename": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_path}",
+        "function_name": "test-lambda-Function",
+        "handler": "index.handler",
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_base64sha256}",
+        "timeout": 5
+      }
+    },
+    "aws_s3_bucket": {
+      "test-lambda_code-bucket_177F316E": {
+        "acl": "private",
+        "bucket": "pocket-test-lambda",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-lambda_code-bucket-public-access-block_1E7CE5AE": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-lambda_code-bucket_177F316E.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`renders a lambda with log retention 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-lambda_lambda-default-file_7A7DBB68": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-lambda_assume-policy-document_D538087D": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-lambda_execution-policy-document_D94D17B4": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "test-lambda_log-group_ACC182B5": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "retention_in_days": 10
+      }
+    },
+    "aws_iam_policy": {
+      "test-lambda_execution-policy_19C785A8": {
+        "name": "test-lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-lambda_execution-policy-document_D94D17B4.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-lambda_execution-role_9D4EE856": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda_assume-policy-document_D538087D.json}",
+        "name": "test-lambda-ExecutionRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-lambda_execution-role-policy-attachment_8796505D": {
+        "depends_on": [
+          "aws_iam_role.test-lambda_execution-role_9D4EE856",
+          "aws_iam_policy.test-lambda_execution-policy_19C785A8"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-lambda_execution-policy_19C785A8.arn}",
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-lambda_alias_CCFDFCE9": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "function_name": "\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-lambda_8915D118.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_function": {
+      "test-lambda_8915D118": {
+        "filename": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_path}",
+        "function_name": "test-lambda-Function",
+        "handler": "index.handler",
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_base64sha256}",
+        "timeout": 5
+      }
+    },
+    "aws_s3_bucket": {
+      "test-lambda_code-bucket_177F316E": {
+        "acl": "private",
+        "bucket": "pocket-test-lambda",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-lambda_code-bucket-public-access-block_1E7CE5AE": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-lambda_code-bucket_177F316E.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`renders a lambda with memorySizeInMb 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-lambda_lambda-default-file_7A7DBB68": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-lambda_assume-policy-document_D538087D": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-lambda_execution-policy-document_D94D17B4": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "test-lambda_log-group_ACC182B5": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_iam_policy": {
+      "test-lambda_execution-policy_19C785A8": {
+        "name": "test-lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-lambda_execution-policy-document_D94D17B4.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-lambda_execution-role_9D4EE856": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda_assume-policy-document_D538087D.json}",
+        "name": "test-lambda-ExecutionRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-lambda_execution-role-policy-attachment_8796505D": {
+        "depends_on": [
+          "aws_iam_role.test-lambda_execution-role_9D4EE856",
+          "aws_iam_policy.test-lambda_execution-policy_19C785A8"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-lambda_execution-policy_19C785A8.arn}",
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-lambda_alias_CCFDFCE9": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "function_name": "\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-lambda_8915D118.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_function": {
+      "test-lambda_8915D118": {
+        "filename": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_path}",
+        "function_name": "test-lambda-Function",
+        "handler": "index.handler",
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 512,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_base64sha256}",
+        "timeout": 5
+      }
+    },
+    "aws_s3_bucket": {
+      "test-lambda_code-bucket_177F316E": {
+        "acl": "private",
+        "bucket": "pocket-test-lambda",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-lambda_code-bucket-public-access-block_1E7CE5AE": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-lambda_code-bucket_177F316E.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`renders a lambda with s3 bucket 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-lambda_lambda-default-file_7A7DBB68": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-lambda_assume-policy-document_D538087D": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-lambda_execution-policy-document_D94D17B4": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "test-lambda_log-group_ACC182B5": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_iam_policy": {
+      "test-lambda_execution-policy_19C785A8": {
+        "name": "test-lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-lambda_execution-policy-document_D94D17B4.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-lambda_execution-role_9D4EE856": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda_assume-policy-document_D538087D.json}",
+        "name": "test-lambda-ExecutionRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-lambda_execution-role-policy-attachment_8796505D": {
+        "depends_on": [
+          "aws_iam_role.test-lambda_execution-role_9D4EE856",
+          "aws_iam_policy.test-lambda_execution-policy_19C785A8"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-lambda_execution-policy_19C785A8.arn}",
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-lambda_alias_CCFDFCE9": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "function_name": "\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-lambda_8915D118.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_function": {
+      "test-lambda_8915D118": {
+        "filename": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_path}",
+        "function_name": "test-lambda-Function",
+        "handler": "index.handler",
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_base64sha256}",
+        "timeout": 5
+      }
+    },
+    "aws_s3_bucket": {
+      "test-lambda_code-bucket_177F316E": {
+        "acl": "private",
+        "bucket": "test-bucket",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-lambda_code-bucket-public-access-block_1E7CE5AE": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-lambda_code-bucket_177F316E.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`renders a lambda with timeout 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-lambda_lambda-default-file_7A7DBB68": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-lambda_assume-policy-document_D538087D": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-lambda_execution-policy-document_D94D17B4": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "test-lambda_log-group_ACC182B5": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_iam_policy": {
+      "test-lambda_execution-policy_19C785A8": {
+        "name": "test-lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-lambda_execution-policy-document_D94D17B4.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-lambda_execution-role_9D4EE856": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda_assume-policy-document_D538087D.json}",
+        "name": "test-lambda-ExecutionRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-lambda_execution-role-policy-attachment_8796505D": {
+        "depends_on": [
+          "aws_iam_role.test-lambda_execution-role_9D4EE856",
+          "aws_iam_policy.test-lambda_execution-policy_19C785A8"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-lambda_execution-policy_19C785A8.arn}",
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-lambda_alias_CCFDFCE9": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "function_name": "\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-lambda_8915D118.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_function": {
+      "test-lambda_8915D118": {
+        "filename": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_path}",
+        "function_name": "test-lambda-Function",
+        "handler": "index.handler",
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_base64sha256}",
+        "timeout": 300
+      }
+    },
+    "aws_s3_bucket": {
+      "test-lambda_code-bucket_177F316E": {
+        "acl": "private",
+        "bucket": "pocket-test-lambda",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-lambda_code-bucket-public-access-block_1E7CE5AE": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-lambda_code-bucket_177F316E.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`renders a lambda with vpc config 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-lambda_lambda-default-file_7A7DBB68": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-lambda_assume-policy-document_D538087D": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-lambda_execution-policy-document_D94D17B4": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          },
+          {
+            "actions": [
+              "ec2:DescribeNetworkInterfaces",
+              "ec2:CreateNetworkInterface",
+              "ec2:DeleteNetworkInterface",
+              "ec2:DescribeInstances",
+              "ec2:AttachNetworkInterface"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "test-lambda_log-group_ACC182B5": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_iam_policy": {
+      "test-lambda_execution-policy_19C785A8": {
+        "name": "test-lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-lambda_execution-policy-document_D94D17B4.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-lambda_execution-role_9D4EE856": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-lambda_assume-policy-document_D538087D.json}",
+        "name": "test-lambda-ExecutionRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-lambda_execution-role-policy-attachment_8796505D": {
+        "depends_on": [
+          "aws_iam_role.test-lambda_execution-role_9D4EE856",
+          "aws_iam_policy.test-lambda_execution-policy_19C785A8"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-lambda_execution-policy_19C785A8.arn}",
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-lambda_alias_CCFDFCE9": {
+        "depends_on": [
+          "aws_lambda_function.test-lambda_8915D118"
+        ],
+        "function_name": "\${aws_lambda_function.test-lambda_8915D118.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-lambda_8915D118.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_function": {
+      "test-lambda_8915D118": {
+        "filename": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_path}",
+        "function_name": "test-lambda-Function",
+        "handler": "index.handler",
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-lambda_execution-role_9D4EE856.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-lambda_lambda-default-file_7A7DBB68.output_base64sha256}",
+        "timeout": 5,
+        "vpc_config": {
+          "security_group_ids": [
+            "sec1",
+            "sec2"
+          ],
+          "subnet_ids": [
+            "1",
+            "2"
+          ]
+        }
+      }
+    },
+    "aws_s3_bucket": {
+      "test-lambda_code-bucket_177F316E": {
+        "acl": "private",
+        "bucket": "pocket-test-lambda",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-lambda_code-bucket-public-access-block_1E7CE5AE": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-lambda_code-bucket_177F316E.id}"
+      }
+    }
+  }
+}"
+`;

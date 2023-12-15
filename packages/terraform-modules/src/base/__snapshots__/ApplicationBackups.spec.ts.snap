@@ -1,0 +1,105 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ApplicationBackup renders vault with plans with tags 1`] = `
+"{
+  "resource": {
+    "aws_backup_plan": {
+      "testBackup_backup-plan_AB394A83": {
+        "name": "TestPlan",
+        "rule": [
+          {
+            "rule_name": "TestBackupRule",
+            "schedule": "cron( 0 5 ? * * *)",
+            "target_vault_name": "\${aws_backup_vault.testBackup_backup-vault_C40F1BAC.name}"
+          }
+        ],
+        "tags": {
+          "hobby": "bowling",
+          "name": "thedude"
+        }
+      }
+    },
+    "aws_backup_selection": {
+      "testBackup_backup-selection_67969F7D": {
+        "iam_role_arn": "arn:aws:iam::1234567890:role/service-role/AWSBackupDefaultServiceRole",
+        "name": "prefix-Backup-Selection",
+        "plan_id": "\${aws_backup_plan.testBackup_backup-plan_AB394A83.id}",
+        "resources": [
+          "arn:aws:rds:us-east-1:123456790:db:test"
+        ],
+        "selection_tag": [
+          {
+            "key": "backups",
+            "type": "STRINGEQUALS",
+            "value": "True"
+          }
+        ]
+      }
+    },
+    "aws_backup_vault": {
+      "testBackup_backup-vault_C40F1BAC": {
+        "kms_key_arn": "arn:aws:kms:us-east-1:1234567890:key/mrk-1234",
+        "name": "prefix-name",
+        "tags": {
+          "hobby": "bowling",
+          "name": "thedude"
+        }
+      }
+    },
+    "aws_backup_vault_policy": {
+      "testBackup_backup-vault-policy_A278B298": {
+        "backup_vault_name": "\${aws_backup_vault.testBackup_backup-vault_C40F1BAC.name}",
+        "policy": "{\\"Version\\": \\"2012-10-17\\",\\"Statement\\": [{\\"Effect\\": \\"Allow\\",\\"Action\\": \\"backup:CopyIntoBackupVault\\",\\"Resource\\": \\"*\\",\\"Principal\\": \\"*\\",\\"Condition\\": {\\"StringEquals\\": {\\"aws:PrincipalOrgID\\": [\\"o-1234567890\\"]}}}]}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationBackup renders vault with plans without tags 1`] = `
+"{
+  "resource": {
+    "aws_backup_plan": {
+      "testBackup_backup-plan_AB394A83": {
+        "name": "TestPlan",
+        "rule": [
+          {
+            "rule_name": "TestBackupRule",
+            "schedule": "cron( 0 5 ? * * *)",
+            "target_vault_name": "\${aws_backup_vault.testBackup_backup-vault_C40F1BAC.name}"
+          }
+        ]
+      }
+    },
+    "aws_backup_selection": {
+      "testBackup_backup-selection_67969F7D": {
+        "iam_role_arn": "arn:aws:iam::1234567890:role/service-role/AWSBackupDefaultServiceRole",
+        "name": "prefix-Backup-Selection",
+        "plan_id": "\${aws_backup_plan.testBackup_backup-plan_AB394A83.id}",
+        "resources": [
+          "arn:aws:rds:us-east-1:123456790:db:test"
+        ],
+        "selection_tag": [
+          {
+            "key": "backups",
+            "type": "STRINGEQUALS",
+            "value": "True"
+          }
+        ]
+      }
+    },
+    "aws_backup_vault": {
+      "testBackup_backup-vault_C40F1BAC": {
+        "kms_key_arn": "arn:aws:kms:us-east-1:1234567890:key/mrk-1234",
+        "name": "prefix-name"
+      }
+    },
+    "aws_backup_vault_policy": {
+      "testBackup_backup-vault-policy_A278B298": {
+        "backup_vault_name": "\${aws_backup_vault.testBackup_backup-vault_C40F1BAC.name}",
+        "policy": "{\\"Version\\": \\"2012-10-17\\",\\"Statement\\": [{\\"Effect\\": \\"Allow\\",\\"Action\\": \\"backup:CopyIntoBackupVault\\",\\"Resource\\": \\"*\\",\\"Principal\\": \\"*\\",\\"Condition\\": {\\"StringEquals\\": {\\"aws:PrincipalOrgID\\": [\\"o-1234567890\\"]}}}]}"
+      }
+    }
+  }
+}"
+`;

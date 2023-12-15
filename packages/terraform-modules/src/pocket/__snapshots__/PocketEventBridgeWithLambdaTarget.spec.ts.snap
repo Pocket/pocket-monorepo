@@ -1,0 +1,354 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders an event bridge and lambda target with event bus name 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-event-bridge-lambda_lambda-default-file_57164BB7": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-event-bridge-lambda_assume-policy-document_59E97C0B": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-event-bridge-lambda_execution-policy-document_0A3C0E28": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_event_rule": {
+      "test-event-bridge-lambda_event-bridge-rule_529FF7C2": {
+        "event_bus_name": "test-bus",
+        "event_pattern": "{\\"source\\":[\\"aws.states\\"],\\"detail-type\\":[\\"Step Functions Execution Status Change\\"]}",
+        "lifecycle": {
+        },
+        "name": "test-event-bridge-lambda-Rule"
+      }
+    },
+    "aws_cloudwatch_event_target": {
+      "test-event-bridge-lambda_event-bridge-rule_event-bridge-target-lambda_30D0509D": {
+        "arn": "\${aws_lambda_alias.test-event-bridge-lambda_alias_2EC274FC.arn}",
+        "dead_letter_config": {
+        },
+        "depends_on": [
+          "aws_lambda_alias.test-event-bridge-lambda_alias_2EC274FC",
+          "aws_cloudwatch_event_rule.test-event-bridge-lambda_event-bridge-rule_529FF7C2"
+        ],
+        "event_bus_name": "test-bus",
+        "rule": "\${aws_cloudwatch_event_rule.test-event-bridge-lambda_event-bridge-rule_529FF7C2.name}",
+        "target_id": "lambda"
+      }
+    },
+    "aws_cloudwatch_log_group": {
+      "test-event-bridge-lambda_log-group_CF4CF8D4": {
+        "depends_on": [
+          "aws_lambda_function.test-event-bridge-lambda_65C2E1CE"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-event-bridge-lambda_65C2E1CE.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_iam_policy": {
+      "test-event-bridge-lambda_execution-policy_F6422B9B": {
+        "name": "test-event-bridge-lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-event-bridge-lambda_execution-policy-document_0A3C0E28.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-event-bridge-lambda_execution-role_7936A26A": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-event-bridge-lambda_assume-policy-document_59E97C0B.json}",
+        "name": "test-event-bridge-lambda-ExecutionRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-event-bridge-lambda_execution-role-policy-attachment_2614BB3C": {
+        "depends_on": [
+          "aws_iam_role.test-event-bridge-lambda_execution-role_7936A26A",
+          "aws_iam_policy.test-event-bridge-lambda_execution-policy_F6422B9B"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-event-bridge-lambda_execution-policy_F6422B9B.arn}",
+        "role": "\${aws_iam_role.test-event-bridge-lambda_execution-role_7936A26A.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-event-bridge-lambda_alias_2EC274FC": {
+        "depends_on": [
+          "aws_lambda_function.test-event-bridge-lambda_65C2E1CE"
+        ],
+        "function_name": "\${aws_lambda_function.test-event-bridge-lambda_65C2E1CE.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-event-bridge-lambda_65C2E1CE.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_function": {
+      "test-event-bridge-lambda_65C2E1CE": {
+        "filename": "\${data.archive_file.test-event-bridge-lambda_lambda-default-file_57164BB7.output_path}",
+        "function_name": "test-event-bridge-lambda-Function",
+        "handler": "index.handler",
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-event-bridge-lambda_execution-role_7936A26A.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-event-bridge-lambda_lambda-default-file_57164BB7.output_base64sha256}",
+        "timeout": 5
+      }
+    },
+    "aws_lambda_permission": {
+      "test-event-bridge-lambda_lambda-permission_D900B300": {
+        "action": "lambda:InvokeFunction",
+        "depends_on": [
+          "aws_lambda_alias.test-event-bridge-lambda_alias_2EC274FC",
+          "aws_cloudwatch_event_rule.test-event-bridge-lambda_event-bridge-rule_529FF7C2"
+        ],
+        "function_name": "\${aws_lambda_alias.test-event-bridge-lambda_alias_2EC274FC.function_name}",
+        "principal": "events.amazonaws.com",
+        "qualifier": "\${aws_lambda_alias.test-event-bridge-lambda_alias_2EC274FC.name}",
+        "source_arn": "\${aws_cloudwatch_event_rule.test-event-bridge-lambda_event-bridge-rule_529FF7C2.arn}"
+      }
+    },
+    "aws_s3_bucket": {
+      "test-event-bridge-lambda_code-bucket_3703E73B": {
+        "acl": "private",
+        "bucket": "pocket-test-event-bridge-lambda",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-event-bridge-lambda_code-bucket-public-access-block_A1A4EF9D": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-event-bridge-lambda_code-bucket_3703E73B.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`renders an event bridge and lambda target with rule description 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-event-bridge-lambda_lambda-default-file_57164BB7": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-event-bridge-lambda_assume-policy-document_59E97C0B": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-event-bridge-lambda_execution-policy-document_0A3C0E28": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_event_rule": {
+      "test-event-bridge-lambda_event-bridge-rule_529FF7C2": {
+        "description": "Test description",
+        "event_bus_name": "default",
+        "event_pattern": "{\\"source\\":[\\"aws.states\\"],\\"detail-type\\":[\\"Step Functions Execution Status Change\\"]}",
+        "lifecycle": {
+        },
+        "name": "test-event-bridge-lambda-Rule"
+      }
+    },
+    "aws_cloudwatch_event_target": {
+      "test-event-bridge-lambda_event-bridge-rule_event-bridge-target-lambda_30D0509D": {
+        "arn": "\${aws_lambda_alias.test-event-bridge-lambda_alias_2EC274FC.arn}",
+        "dead_letter_config": {
+        },
+        "depends_on": [
+          "aws_lambda_alias.test-event-bridge-lambda_alias_2EC274FC",
+          "aws_cloudwatch_event_rule.test-event-bridge-lambda_event-bridge-rule_529FF7C2"
+        ],
+        "event_bus_name": "default",
+        "rule": "\${aws_cloudwatch_event_rule.test-event-bridge-lambda_event-bridge-rule_529FF7C2.name}",
+        "target_id": "lambda"
+      }
+    },
+    "aws_cloudwatch_log_group": {
+      "test-event-bridge-lambda_log-group_CF4CF8D4": {
+        "depends_on": [
+          "aws_lambda_function.test-event-bridge-lambda_65C2E1CE"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-event-bridge-lambda_65C2E1CE.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_iam_policy": {
+      "test-event-bridge-lambda_execution-policy_F6422B9B": {
+        "name": "test-event-bridge-lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-event-bridge-lambda_execution-policy-document_0A3C0E28.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-event-bridge-lambda_execution-role_7936A26A": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-event-bridge-lambda_assume-policy-document_59E97C0B.json}",
+        "name": "test-event-bridge-lambda-ExecutionRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-event-bridge-lambda_execution-role-policy-attachment_2614BB3C": {
+        "depends_on": [
+          "aws_iam_role.test-event-bridge-lambda_execution-role_7936A26A",
+          "aws_iam_policy.test-event-bridge-lambda_execution-policy_F6422B9B"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-event-bridge-lambda_execution-policy_F6422B9B.arn}",
+        "role": "\${aws_iam_role.test-event-bridge-lambda_execution-role_7936A26A.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-event-bridge-lambda_alias_2EC274FC": {
+        "depends_on": [
+          "aws_lambda_function.test-event-bridge-lambda_65C2E1CE"
+        ],
+        "function_name": "\${aws_lambda_function.test-event-bridge-lambda_65C2E1CE.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-event-bridge-lambda_65C2E1CE.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_function": {
+      "test-event-bridge-lambda_65C2E1CE": {
+        "filename": "\${data.archive_file.test-event-bridge-lambda_lambda-default-file_57164BB7.output_path}",
+        "function_name": "test-event-bridge-lambda-Function",
+        "handler": "index.handler",
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-event-bridge-lambda_execution-role_7936A26A.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-event-bridge-lambda_lambda-default-file_57164BB7.output_base64sha256}",
+        "timeout": 5
+      }
+    },
+    "aws_lambda_permission": {
+      "test-event-bridge-lambda_lambda-permission_D900B300": {
+        "action": "lambda:InvokeFunction",
+        "depends_on": [
+          "aws_lambda_alias.test-event-bridge-lambda_alias_2EC274FC",
+          "aws_cloudwatch_event_rule.test-event-bridge-lambda_event-bridge-rule_529FF7C2"
+        ],
+        "function_name": "\${aws_lambda_alias.test-event-bridge-lambda_alias_2EC274FC.function_name}",
+        "principal": "events.amazonaws.com",
+        "qualifier": "\${aws_lambda_alias.test-event-bridge-lambda_alias_2EC274FC.name}",
+        "source_arn": "\${aws_cloudwatch_event_rule.test-event-bridge-lambda_event-bridge-rule_529FF7C2.arn}"
+      }
+    },
+    "aws_s3_bucket": {
+      "test-event-bridge-lambda_code-bucket_3703E73B": {
+        "acl": "private",
+        "bucket": "pocket-test-event-bridge-lambda",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-event-bridge-lambda_code-bucket-public-access-block_A1A4EF9D": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-event-bridge-lambda_code-bucket_3703E73B.id}"
+      }
+    }
+  }
+}"
+`;

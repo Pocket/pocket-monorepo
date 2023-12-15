@@ -1,0 +1,1 @@
+GRANT ALL ON borealis.* TO 'pkt_savecount'@'%';
