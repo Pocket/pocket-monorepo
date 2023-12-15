@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import {
   BASE_IMAGE_REFERENCE_RESOLVER,
   IMAGE_REFERENCE_RESOLVER_SOURCE_METADATA,
@@ -12,6 +11,7 @@ import request from 'supertest';
 import { ContextManager } from '../server/context';
 import { Express } from 'express';
 import { ApolloServer } from '@apollo/server';
+import { expect } from '@jest/globals';
 
 describe('queries: resolveReference', () => {
   const cache = getElasticacheRedis();
@@ -59,10 +59,10 @@ describe('queries: resolveReference', () => {
         },
       });
 
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data).to.not.be.null;
-    expect(res.body.data?._entities).to.have.lengthOf(1);
-    expect(res.body.data?._entities[0].url).to.equal(testUrl);
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data).not.toBeNull();
+    expect(res.body.data?._entities).toHaveLength(1);
+    expect(res.body.data?._entities[0].url).toBe(testUrl);
   });
 
   it('should request the source image metadata only once and cache result', async () => {
@@ -99,15 +99,15 @@ describe('queries: resolveReference', () => {
         },
       });
 
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data).to.not.be.null;
-    expect(res.body.data?._entities).to.have.lengthOf(1);
-    expect(res.body.data?._entities[0].url).to.equal(testUrl);
-    expect(res.body.data?._entities[0].width).to.equal(250);
-    expect(res.body.data?._entities[0].height).to.equal(250);
-    expect(nock.pendingMocks.length).to.equal(0);
-    expect(await hasCacheValue(testUrl)).to.be.true;
-    expect(await getCacheValue(testUrl)).to.deep.equal({
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data).not.toBeNull();
+    expect(res.body.data?._entities).toHaveLength(1);
+    expect(res.body.data?._entities[0].url).toBe(testUrl);
+    expect(res.body.data?._entities[0].width).toBe(250);
+    expect(res.body.data?._entities[0].height).toBe(250);
+    expect(nock.pendingMocks.length).toBe(0);
+    expect(await hasCacheValue(testUrl)).toBe(true);
+    expect(await getCacheValue(testUrl)).toEqual({
       url: testUrl,
       width: 250,
       height: 250,
@@ -128,12 +128,12 @@ describe('queries: resolveReference', () => {
         },
       });
 
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data).to.not.be.null;
-    expect(res.body.data?._entities).to.have.lengthOf(1);
-    expect(res.body.data?._entities[0].url).to.equal(testUrl);
-    expect(res.body.data?._entities[0].width).to.equal(250);
-    expect(res.body.data?._entities[0].height).to.equal(250);
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data).not.toBeNull();
+    expect(res.body.data?._entities).toHaveLength(1);
+    expect(res.body.data?._entities[0].url).toBe(testUrl);
+    expect(res.body.data?._entities[0].width).toBe(250);
+    expect(res.body.data?._entities[0].height).toBe(250);
   });
 
   it('should return the cached image url and not request metadata', async () => {
@@ -152,12 +152,12 @@ describe('queries: resolveReference', () => {
         },
       });
 
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data).to.not.be.null;
-    expect(res.body.data?._entities).to.have.lengthOf(1);
-    expect(res.body.data?._entities[0].url).to.equal(testUrl);
-    expect(res.body.data?._entities[0].cachedImages[0].url).to.equal(
-      'https://endpoint.com/1800x300/filters:format(WEBP):quality(100):no_upscale():strip_exif()/https%3A%2F%2Fvia.placeholder.com%2F250',
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data).not.toBeNull();
+    expect(res.body.data?._entities).toHaveLength(1);
+    expect(res.body.data?._entities[0].url).toBe(testUrl);
+    expect(res.body.data?._entities[0].cachedImages[0].url).toBe(
+      'https://endpoint.com/1800x300/filters:format(WEBP):quality(100):no_upscale():strip_exif()/https%3A%2F%2Fvia.placeholder.com%2F250'
     );
   });
 
@@ -201,18 +201,18 @@ describe('queries: resolveReference', () => {
 
     const cachedImageUrl = `https://endpoint.com/${imagePath}`;
 
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data).to.not.be.null;
-    expect(res.body.data?._entities).to.have.lengthOf(1);
-    expect(res.body.data?._entities[0].url).to.equal(testUrl);
-    expect(nock.pendingMocks.length).to.equal(0);
-    expect(await hasCacheValue(cachedImageUrl)).to.be.true;
-    expect(await getCacheValue(cachedImageUrl)).to.deep.equal({
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data).not.toBeNull();
+    expect(res.body.data?._entities).toHaveLength(1);
+    expect(res.body.data?._entities[0].url).toBe(testUrl);
+    expect(nock.pendingMocks.length).toBe(0);
+    expect(await hasCacheValue(cachedImageUrl)).toBe(true);
+    expect(await getCacheValue(cachedImageUrl)).toEqual({
       url: cachedImageUrl,
       width: 1280,
       height: 909,
     });
-    expect(res.body.data?._entities[0].cachedImages[0]).to.deep.equal({
+    expect(res.body.data?._entities[0].cachedImages[0]).toEqual({
       id: 'requested-image-1',
       url: cachedImageUrl,
       width: 1280,
@@ -234,11 +234,11 @@ describe('queries: resolveReference', () => {
         },
       });
 
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data).to.not.be.null;
-    expect(res.body.data?._entities).to.have.lengthOf(1);
-    expect(res.body.data?._entities[0].url).to.equal(testUrl);
-    expect(res.body.data?._entities[0].cachedImages[0]).to.deep.equal({
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data).not.toBeNull();
+    expect(res.body.data?._entities).toHaveLength(1);
+    expect(res.body.data?._entities[0].url).toBe(testUrl);
+    expect(res.body.data?._entities[0].cachedImages[0]).toEqual({
       id: 'requested-image-1',
       url: cachedImageUrl,
       width: 1280,
