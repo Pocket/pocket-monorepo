@@ -1,6 +1,4 @@
-import { gql } from 'graphql-tag';
-
-export const BASE_IMAGE_REFERENCE_RESOLVER = gql`
+export const BASE_IMAGE_REFERENCE_RESOLVER = `
   query ($representations: [_Any!]!) {
     _entities(representations: $representations) {
       ... on Image {
@@ -10,7 +8,7 @@ export const BASE_IMAGE_REFERENCE_RESOLVER = gql`
   }
 `;
 
-export const IMAGE_REFERENCE_RESOLVER_SOURCE_METADATA = gql`
+export const IMAGE_REFERENCE_RESOLVER_SOURCE_METADATA = `
   query ($representations: [_Any!]!) {
     _entities(representations: $representations) {
       ... on Image {
@@ -22,7 +20,7 @@ export const IMAGE_REFERENCE_RESOLVER_SOURCE_METADATA = gql`
   }
 `;
 
-export const BASE_CACHED_IMAGE_REFERENCE_RESOLVER = gql`
+export const BASE_CACHED_IMAGE_REFERENCE_RESOLVER = `
   query ($representations: [_Any!]!) {
     _entities(representations: $representations) {
       ... on Image {
@@ -44,7 +42,7 @@ export const BASE_CACHED_IMAGE_REFERENCE_RESOLVER = gql`
   }
 `;
 
-export const CACHED_IMAGE_REFERENCE_RESOLVER_METADATA = gql`
+export const CACHED_IMAGE_REFERENCE_RESOLVER_METADATA = `
   query ($representations: [_Any!]!) {
     _entities(representations: $representations) {
       ... on Image {

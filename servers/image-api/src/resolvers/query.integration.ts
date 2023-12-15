@@ -30,14 +30,12 @@ describe('queries: resolveReference', () => {
   };
 
   beforeAll(async () => {
-    nock.disableNetConnect(); //disable real network requests
     ({ app, server, url } = await startServer(0));
   });
 
   afterAll(async () => {
     await server.stop();
     nock.cleanAll();
-    nock.enableNetConnect();
   });
 
   beforeEach(async () => {
@@ -104,13 +102,13 @@ describe('queries: resolveReference', () => {
     expect(res.body.errors).to.be.undefined;
     expect(res.body.data).to.not.be.null;
     expect(res.body.data?._entities).to.have.lengthOf(1);
-    expect(res.body.data?._entities[0].url).to.equal(url);
+    expect(res.body.data?._entities[0].url).to.equal(testUrl);
     expect(res.body.data?._entities[0].width).to.equal(250);
     expect(res.body.data?._entities[0].height).to.equal(250);
     expect(nock.pendingMocks.length).to.equal(0);
     expect(await hasCacheValue(testUrl)).to.be.true;
     expect(await getCacheValue(testUrl)).to.deep.equal({
-      url: url,
+      url: testUrl,
       width: 250,
       height: 250,
     });
