@@ -110,6 +110,7 @@ COPY --from=builder /app/node_modules/ ./node_modules/
 # Don't run production as root
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nodejs
+RUN chown -R nodejs:nodejs /app
 USER nodejs
 
 ENV NODE_ENV=production

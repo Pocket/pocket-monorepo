@@ -1,5 +1,3 @@
-import { getTestServer } from '../test/server';
-import { expect } from 'chai';
 import {
   BASE_IMAGE_REFERENCE_RESOLVER,
   IMAGE_REFERENCE_RESOLVER_SOURCE_METADATA,
@@ -7,11 +5,19 @@ import {
   CACHED_IMAGE_REFERENCE_RESOLVER_METADATA,
 } from './sample-queries';
 import nock from 'nock';
-import { getRedisCache } from '../cache';
+import { getElasticacheRedis } from '../cache';
+import { startServer } from '../server/apollo';
+import request from 'supertest';
+import { ContextManager } from '../server/context';
+import { Express } from 'express';
+import { ApolloServer } from '@apollo/server';
+import { expect } from '@jest/globals';
 
 describe('queries: resolveReference', () => {
-  const server = getTestServer();
-  const cache = getRedisCache();
+  const cache = getElasticacheRedis();
+  let app: Express;
+  let server: ApolloServer<ContextManager>;
+  let url: string;
 
   const getCacheKey = (url: string): string => {
     return cache.getKey(`image-data-${url}`);
@@ -24,14 +30,12 @@ describe('queries: resolveReference', () => {
   };
 
   beforeAll(async () => {
-    nock.disableNetConnect(); //disable real network requests
-    await server.start();
+    ({ app, server, url } = await startServer(0));
   });
 
   afterAll(async () => {
     await server.stop();
     nock.cleanAll();
-    nock.enableNetConnect();
   });
 
   beforeEach(async () => {
@@ -39,23 +43,26 @@ describe('queries: resolveReference', () => {
   });
 
   it('should return the source image url and not request image metadata', async () => {
-    const url = 'https://via.placeholder.com/150';
-    const result = await server.executeOperation({
-      query: BASE_IMAGE_REFERENCE_RESOLVER,
-      variables: {
-        representations: [
-          {
-            __typename: 'Image',
-            url: url,
-          },
-        ],
-      },
-    });
+    const testUrl = 'https://via.placeholder.com/150';
 
-    expect(result.errors).to.be.undefined;
-    expect(result.data).to.not.be.null;
-    expect(result.data?._entities).to.have.lengthOf(1);
-    expect(result.data?._entities[0].url).to.equal(url);
+    const res = await request(app)
+      .post(url)
+      .send({
+        query: BASE_IMAGE_REFERENCE_RESOLVER,
+        variables: {
+          representations: [
+            {
+              __typename: 'Image',
+              url: testUrl,
+            },
+          ],
+        },
+      });
+
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data).not.toBeNull();
+    expect(res.body.data?._entities).toHaveLength(1);
+    expect(res.body.data?._entities[0].url).toBe(testUrl);
   });
 
   it('should request the source image metadata only once and cache result', async () => {
@@ -77,74 +84,80 @@ describe('queries: resolveReference', () => {
         },
       });
 
-    const url = 'https://via.placeholder.com/250';
-    let result = await server.executeOperation({
-      query: IMAGE_REFERENCE_RESOLVER_SOURCE_METADATA,
-      variables: {
-        representations: [
-          {
-            __typename: 'Image',
-            url: url,
-          },
-        ],
-      },
-    });
+    const testUrl = 'https://via.placeholder.com/250';
+    let res = await request(app)
+      .post(url)
+      .send({
+        query: IMAGE_REFERENCE_RESOLVER_SOURCE_METADATA,
+        variables: {
+          representations: [
+            {
+              __typename: 'Image',
+              url: testUrl,
+            },
+          ],
+        },
+      });
 
-    expect(result.errors).to.be.undefined;
-    expect(result.data).to.not.be.null;
-    expect(result.data?._entities).to.have.lengthOf(1);
-    expect(result.data?._entities[0].url).to.equal(url);
-    expect(result.data?._entities[0].width).to.equal(250);
-    expect(result.data?._entities[0].height).to.equal(250);
-    expect(nock.pendingMocks.length).to.equal(0);
-    expect(await hasCacheValue(url)).to.be.true;
-    expect(await getCacheValue(url)).to.deep.equal({
-      url: url,
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data).not.toBeNull();
+    expect(res.body.data?._entities).toHaveLength(1);
+    expect(res.body.data?._entities[0].url).toBe(testUrl);
+    expect(res.body.data?._entities[0].width).toBe(250);
+    expect(res.body.data?._entities[0].height).toBe(250);
+    expect(nock.pendingMocks.length).toBe(0);
+    expect(await hasCacheValue(testUrl)).toBe(true);
+    expect(await getCacheValue(testUrl)).toEqual({
+      url: testUrl,
       width: 250,
       height: 250,
     });
 
     //try again and make sure it returns the cached result. Nock will error if it makes another request
-    result = await server.executeOperation({
-      query: IMAGE_REFERENCE_RESOLVER_SOURCE_METADATA,
-      variables: {
-        representations: [
-          {
-            __typename: 'Image',
-            url: url,
-          },
-        ],
-      },
-    });
+    res = await request(app)
+      .post(url)
+      .send({
+        query: IMAGE_REFERENCE_RESOLVER_SOURCE_METADATA,
+        variables: {
+          representations: [
+            {
+              __typename: 'Image',
+              url: testUrl,
+            },
+          ],
+        },
+      });
 
-    expect(result.errors).to.be.undefined;
-    expect(result.data).to.not.be.null;
-    expect(result.data?._entities).to.have.lengthOf(1);
-    expect(result.data?._entities[0].url).to.equal(url);
-    expect(result.data?._entities[0].width).to.equal(250);
-    expect(result.data?._entities[0].height).to.equal(250);
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data).not.toBeNull();
+    expect(res.body.data?._entities).toHaveLength(1);
+    expect(res.body.data?._entities[0].url).toBe(testUrl);
+    expect(res.body.data?._entities[0].width).toBe(250);
+    expect(res.body.data?._entities[0].height).toBe(250);
   });
 
   it('should return the cached image url and not request metadata', async () => {
-    const url = 'https://via.placeholder.com/250';
-    const result = await server.executeOperation({
-      query: BASE_CACHED_IMAGE_REFERENCE_RESOLVER,
-      variables: {
-        representations: [
-          {
-            __typename: 'Image',
-            url: url,
-          },
-        ],
-      },
-    });
+    const testUrl = 'https://via.placeholder.com/250';
+    const res = await request(app)
+      .post(url)
+      .send({
+        query: BASE_CACHED_IMAGE_REFERENCE_RESOLVER,
+        variables: {
+          representations: [
+            {
+              __typename: 'Image',
+              url: testUrl,
+            },
+          ],
+        },
+      });
 
-    expect(result.errors).to.be.undefined;
-    expect(result.data).to.not.be.null;
-    expect(result.data?._entities).to.have.lengthOf(1);
-    expect(result.data?._entities[0].url).to.equal(url);
-    expect(result.data?._entities[0].cachedImages[0].url).to.equal(
-      'https://endpoint.com/1800x300/filters:format(WEBP):quality(100):no_upscale():strip_exif()/https%3A%2F%2Fvia.placeholder.com%2F250',
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data).not.toBeNull();
+    expect(res.body.data?._entities).toHaveLength(1);
+    expect(res.body.data?._entities[0].url).toBe(testUrl);
+    expect(res.body.data?._entities[0].cachedImages[0].url).toBe(
+      'https://endpoint.com/1800x300/filters:format(WEBP):quality(100):no_upscale():strip_exif()/https%3A%2F%2Fvia.placeholder.com%2F250'
     );
   });
 
@@ -171,33 +184,35 @@ describe('queries: resolveReference', () => {
         },
       });
 
-    const url = 'https://via.placeholder.com/250';
-    let result = await server.executeOperation({
-      query: CACHED_IMAGE_REFERENCE_RESOLVER_METADATA,
-      variables: {
-        representations: [
-          {
-            __typename: 'Image',
-            url: url,
-          },
-        ],
-      },
-    });
+    const testUrl = 'https://via.placeholder.com/250';
+    let res = await request(app)
+      .post(url)
+      .send({
+        query: CACHED_IMAGE_REFERENCE_RESOLVER_METADATA,
+        variables: {
+          representations: [
+            {
+              __typename: 'Image',
+              url: testUrl,
+            },
+          ],
+        },
+      });
 
     const cachedImageUrl = `https://endpoint.com/${imagePath}`;
 
-    expect(result.errors).to.be.undefined;
-    expect(result.data).to.not.be.null;
-    expect(result.data?._entities).to.have.lengthOf(1);
-    expect(result.data?._entities[0].url).to.equal(url);
-    expect(nock.pendingMocks.length).to.equal(0);
-    expect(await hasCacheValue(cachedImageUrl)).to.be.true;
-    expect(await getCacheValue(cachedImageUrl)).to.deep.equal({
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data).not.toBeNull();
+    expect(res.body.data?._entities).toHaveLength(1);
+    expect(res.body.data?._entities[0].url).toBe(testUrl);
+    expect(nock.pendingMocks.length).toBe(0);
+    expect(await hasCacheValue(cachedImageUrl)).toBe(true);
+    expect(await getCacheValue(cachedImageUrl)).toEqual({
       url: cachedImageUrl,
       width: 1280,
       height: 909,
     });
-    expect(result.data?._entities[0].cachedImages[0]).to.deep.equal({
+    expect(res.body.data?._entities[0].cachedImages[0]).toEqual({
       id: 'requested-image-1',
       url: cachedImageUrl,
       width: 1280,
@@ -205,23 +220,25 @@ describe('queries: resolveReference', () => {
     });
 
     //try again and make sure it returns the cached result. Nock will error if it makes another request
-    result = await server.executeOperation({
-      query: CACHED_IMAGE_REFERENCE_RESOLVER_METADATA,
-      variables: {
-        representations: [
-          {
-            __typename: 'Image',
-            url: url,
-          },
-        ],
-      },
-    });
+    res = await request(app)
+      .post(url)
+      .send({
+        query: CACHED_IMAGE_REFERENCE_RESOLVER_METADATA,
+        variables: {
+          representations: [
+            {
+              __typename: 'Image',
+              url: testUrl,
+            },
+          ],
+        },
+      });
 
-    expect(result.errors).to.be.undefined;
-    expect(result.data).to.not.be.null;
-    expect(result.data?._entities).to.have.lengthOf(1);
-    expect(result.data?._entities[0].url).to.equal(url);
-    expect(result.data?._entities[0].cachedImages[0]).to.deep.equal({
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data).not.toBeNull();
+    expect(res.body.data?._entities).toHaveLength(1);
+    expect(res.body.data?._entities[0].url).toBe(testUrl);
+    expect(res.body.data?._entities[0].cachedImages[0]).toEqual({
       id: 'requested-image-1',
       url: cachedImageUrl,
       width: 1280,

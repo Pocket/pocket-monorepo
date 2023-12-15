@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from 'fs';
-import { gql } from 'apollo-server';
+import { gql } from 'graphql-tag';
 
 export const getSchemaFile = () => {
   return fs
