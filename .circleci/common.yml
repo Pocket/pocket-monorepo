@@ -392,7 +392,7 @@ jobs:
         description: The environment variable name of the apollo key to user
 
     docker:
-      - image: cimg/base:2022.07
+      - image: *base_image
         auth:
           username: $DOCKER_LOGIN
           password: $DOCKER_PASSWORD

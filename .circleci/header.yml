@@ -4,6 +4,7 @@
 
 node_image: &node_image cimg/node:20.10
 node_version: &node_version 20.10
+base_image: &base_image cimg/base:2023.12
 
 not_main: &not_main
   filters:
