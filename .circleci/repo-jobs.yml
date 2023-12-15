@@ -1,7 +1,7 @@
 jobs:
   lint:
     docker:
-      - image: cimg/node:20.10
+      - image: *node_image
     steps:
       - checkout
       - install_pnpm
@@ -11,7 +11,7 @@ jobs:
             pnpm run lint
   test:
     docker:
-      - image: cimg/node:20.10
+      - image: *node_image
     steps:
       - checkout
       - install_pnpm
