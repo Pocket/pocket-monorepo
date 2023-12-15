@@ -313,7 +313,7 @@ class ImageAPI extends TerraformStack {
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },
       autoscalingConfig: {
-        targetMinCapacity: 2,
+        targetMinCapacity: config.isDev ? 1 : 2,
         targetMaxCapacity: 10,
       },
       alarms: {
