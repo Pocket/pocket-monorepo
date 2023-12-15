@@ -1,4 +1,4 @@
-import { gql } from 'apollo-server';
+import { gql } from 'graphql-tag';
 
 export const BASE_IMAGE_REFERENCE_RESOLVER = gql`
   query ($representations: [_Any!]!) {

@@ -18,4 +18,8 @@ export default {
     release: process.env.GIT_SHA || '',
     environment: process.env.NODE_ENV || 'development',
   },
+  tracing: {
+    host: process.env.OTLP_COLLECTOR_HOST || 'otlpcollector',
+    serviceName: 'image-api',
+  },
 };

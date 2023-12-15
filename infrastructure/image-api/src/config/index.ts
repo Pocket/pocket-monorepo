@@ -41,4 +41,7 @@ export const config = {
     service: name,
     environment,
   },
+  tracing: {
+    host: 'localhost',
+  },
 };

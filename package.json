@@ -9,7 +9,7 @@
     "test": "dotenv -- turbo run test",
     "test-integrations": "dotenv -- turbo run test-integrations",
     "synth": "dotenv -- turbo run synth",
-    "clean": "rm -rf .turbo node_modules packages/**/.turbo packages/**/dist packages/**/node_modules servers/**/logs servers/**/.turbo servers/**/dist servers/**/node_modules infrastructure/**/dist infrastructure/**/node_modules infrastructure/**/.turbo"
+    "clean": "rm -rf .turbo node_modules packages/**/.turbo packages/**/dist packages/**/node_modules servers/**/logs servers/**/.turbo servers/**/dist servers/**/node_modules infrastructure/**/dist infrastructure/**/node_modules infrastructure/**/.turbo infrastructure/**/cdktf.out"
   },
   "dependencies": {
     "dotenv-cli": "latest"
@@ -20,6 +20,6 @@
   "packageManager": "pnpm@8.12.0",
   "name": "pocket-monorepo",
   "engines": {
-    "node": "^20"
+    "node": "^20.10"
   }
 }

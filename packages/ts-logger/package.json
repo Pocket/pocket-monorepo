@@ -12,7 +12,7 @@
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\"",
     "test": "jest",
-    "test:watch": "npm run test -- --watch",
+    "test:watch": "pnpm run test -- --watch",
     "clean": "rm -rf node_modules dist"
   },
   "repository": {
