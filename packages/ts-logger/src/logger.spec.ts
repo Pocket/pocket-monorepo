@@ -1,11 +1,10 @@
 import { createLogger, setLogger } from './logger';
-import sinon from 'sinon';
 
 const defaultEnvs = process.env;
 
 describe('createLogger', () => {
   const logger = createLogger();
-  const loggerInfoSpy = sinon.spy(logger, 'info');
+  const loggerInfoSpy = jest.spyOn(logger, 'info');
 
   beforeEach(() => {
     jest.resetModules();
@@ -13,8 +12,8 @@ describe('createLogger', () => {
   });
 
   afterEach(() => {
-    loggerInfoSpy.resetHistory();
     process.env = defaultEnvs;
+    jest.resetAllMocks();
   });
 
   it('Local environment writes to files only', async () => {
@@ -102,7 +101,7 @@ describe('createLogger', () => {
 
   it('Logger has release SHA when present, null otherwise', async () => {
     logger.info('test');
-    expect(loggerInfoSpy.calledOnce).toBeTruthy;
+    expect(loggerInfoSpy).toHaveBeenCalledTimes(1);
     expect(logger.defaultMeta).toHaveProperty('releaseSha');
     expect(logger.defaultMeta.releaseSha).toBeNull();
 
@@ -117,7 +116,7 @@ describe('createLogger', () => {
 
   it('has a null release sha when RELEASE_SHA is null', () => {
     logger.info('test');
-    expect(loggerInfoSpy.calledOnce).toBeTruthy;
+    expect(loggerInfoSpy).toHaveBeenCalledTimes(1);
     expect(logger.defaultMeta).toHaveProperty('releaseSha');
     expect(logger.defaultMeta.releaseSha).toBeNull();
   });
@@ -137,7 +136,6 @@ describe('createLogger', () => {
       extra: 'fields',
     };
     const testLogger = createLogger({ defaultMeta: moreMeta });
-    expect(loggerInfoSpy.calledOnce).toBeTruthy;
     expect(testLogger.defaultMeta).toHaveProperty('releaseSha');
     expect(testLogger.defaultMeta.releaseSha).toBeNull();
     expect(testLogger.defaultMeta).toHaveProperty('extra');
@@ -149,7 +147,6 @@ describe('createLogger', () => {
       extra: 'fields',
     };
     const testLogger = setLogger(moreMeta);
-    expect(loggerInfoSpy.calledOnce).toBeTruthy;
     expect(testLogger.defaultMeta).toHaveProperty('releaseSha');
     expect(testLogger.defaultMeta.releaseSha).toBeNull();
     expect(testLogger.defaultMeta).toHaveProperty('extra');

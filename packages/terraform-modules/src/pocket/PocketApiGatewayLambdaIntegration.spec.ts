@@ -1,5 +1,4 @@
 import { Testing } from 'cdktf';
-import sinon from 'sinon';
 import { LAMBDA_RUNTIMES } from '../base/ApplicationVersionedLambda';
 import {
   PocketApiGateway,
@@ -27,17 +26,16 @@ const config: PocketApiGatewayProps = {
 };
 
 describe('PocketApiGatewayLambdaIntegration', () => {
-  let clock;
   const now = 1637693316456;
 
   beforeAll(() => {
-    clock = sinon.useFakeTimers({
+    jest.useFakeTimers({
       now: now,
-      shouldAdvanceTime: false,
+      advanceTimers: false,
     });
   });
 
-  afterAll(() => clock.restore());
+  afterAll(() => jest.useRealTimers());
 
   it('renders an api gateway with a lambda integration', () => {
     const synthed = Testing.synthScope((stack) => {
