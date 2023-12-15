@@ -64,8 +64,6 @@ ARG SENTRY_AUTH_TOKEN
 ARG SENTRY_ORG
 ARG SENTRY_PROJECT
 
-ENV NODE_ENV=production
-
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
 RUN apk update
@@ -113,6 +111,8 @@ COPY --from=builder /app/node_modules/ ./node_modules/
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nodejs
 USER nodejs
+
+RUN chown -R nodejs:nodejs /app
 
 ENV NODE_ENV=production
 ENV PORT $PORT
