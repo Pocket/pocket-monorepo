@@ -157,7 +157,7 @@ describe('queries: resolveReference', () => {
     expect(res.body.data?._entities).toHaveLength(1);
     expect(res.body.data?._entities[0].url).toBe(testUrl);
     expect(res.body.data?._entities[0].cachedImages[0].url).toBe(
-      'https://endpoint.com/1800x300/filters:format(WEBP):quality(100):no_upscale():strip_exif()/https%3A%2F%2Fvia.placeholder.com%2F250'
+      'https://endpoint.com/1800x300/filters:format(WEBP):quality(100):no_upscale():strip_exif()/https%3A%2F%2Fvia.placeholder.com%2F250',
     );
   });
 

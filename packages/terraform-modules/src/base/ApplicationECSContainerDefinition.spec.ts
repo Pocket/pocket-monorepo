@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import {
   ApplicationECSContainerDefinitionProps,
   buildDefinitionJSON,
@@ -40,21 +39,21 @@ describe('ApplicationECSContainerDefinition', () => {
     it('builds JSON without env vars', () => {
       const result = buildDefinitionJSON(config);
 
-      expect(result).to.contain('"awslogs-group":"bowlingGroup"');
-      expect(result).to.contain('"awslogs-multiline-pattern":"^\\\\S.+"');
-      expect(result).to.contain(
+      expect(result).toContain('awslogs-group":"bowlingGroup"');
+      expect(result).toContain('"awslogs-multiline-pattern":"^\\\\S.+"');
+      expect(result).toContain(
         '"awslogs-datetime-format":"[%b %d, %Y %H:%M:%S]"',
       );
-      expect(result).to.contain('"hostPort":3000');
-      expect(result).to.contain('"containerPort":4000');
-      expect(result).to.contain('"image":"testImage"');
-      expect(result).to.contain('"name":"lebowski"');
-      expect(result).to.contain('"credentialsParameter":"someArn"');
-      expect(result).to.contain('"environment":[]');
-      expect(result).to.contain('"secrets":null');
-      expect(result).to.contain('"softLimit":2048');
-      expect(result).to.contain('"hardLimit":65535');
-      expect(result).not.to.contain('"command":');
+      expect(result).toContain('"hostPort":3000');
+      expect(result).toContain('"containerPort":4000');
+      expect(result).toContain('"image":"testImage"');
+      expect(result).toContain('"name":"lebowski"');
+      expect(result).toContain('"credentialsParameter":"someArn"');
+      expect(result).toContain('"environment":[]');
+      expect(result).toContain('"secrets":null');
+      expect(result).toContain('"softLimit":2048');
+      expect(result).toContain('"hardLimit":65535');
+      expect(result).not.toContain('"command":');
     });
 
     it('builds JSON with env vars', () => {
@@ -71,7 +70,7 @@ describe('ApplicationECSContainerDefinition', () => {
 
       const result = buildDefinitionJSON(config);
 
-      expect(result).to.contain(
+      expect(result).toContain(
         `"environment":${JSON.stringify(config.envVars)}`,
       );
     });
@@ -90,7 +89,7 @@ describe('ApplicationECSContainerDefinition', () => {
 
       const result = buildDefinitionJSON(config);
 
-      expect(result).to.contain(
+      expect(result).toContain(
         `"secrets":${JSON.stringify(config.secretEnvVars)}`,
       );
     });
@@ -100,7 +99,7 @@ describe('ApplicationECSContainerDefinition', () => {
 
       const result = buildDefinitionJSON(config);
 
-      expect(result).to.contain(`"command":["go to in-n-out","go bowling"]`);
+      expect(result).toContain(`"command":["go to in-n-out","go bowling"]`);
     });
 
     it('builds JSON with a healthcheck', () => {
@@ -117,7 +116,7 @@ describe('ApplicationECSContainerDefinition', () => {
 
       const result = buildDefinitionJSON(config);
 
-      expect(result).to.contain(
+      expect(result).toContain(
         `"healthCheck":{` +
           `"command":["CMD-SHELL","curl -f \\"http://127.0.0.1:8000/pulse\\" || exit 1"],` +
           `"interval":30,` +
@@ -132,7 +131,7 @@ describe('ApplicationECSContainerDefinition', () => {
 
       const result = buildDefinitionJSON(config);
 
-      expect(result).to.contain(`"repositoryCredentials":null,`);
+      expect(result).toContain(`"repositoryCredentials":null,`);
     });
 
     it('builds JSON with mountPoints', () => {
@@ -146,7 +145,7 @@ describe('ApplicationECSContainerDefinition', () => {
 
       const result = buildDefinitionJSON(config);
 
-      expect(result).to.contain(
+      expect(result).toContain(
         `"mountPoints":[{` +
           `"containerPath":"/\\"-\\".txt",` +
           `"readOnly":true,` +
@@ -159,7 +158,7 @@ describe('ApplicationECSContainerDefinition', () => {
 
       const result = buildDefinitionJSON(config);
 
-      expect(result).to.contain(`"entryPoint":["/bin/bash"]`);
+      expect(result).toContain(`"entryPoint":["/bin/bash"]`);
     });
 
     it('passes essential', () => {
@@ -167,13 +166,13 @@ describe('ApplicationECSContainerDefinition', () => {
 
       const result = buildDefinitionJSON(config);
 
-      expect(result).to.contain(`"essential":false`);
+      expect(result).toContain(`"essential":false`);
     });
 
     it('essential defaults to true', () => {
       const result = buildDefinitionJSON(config);
 
-      expect(result).to.contain(`"essential":true`);
+      expect(result).toContain(`"essential":true`);
     });
   });
 });
