@@ -20,6 +20,7 @@ import * as fs from 'fs';
 import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
 import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
 import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
+import { CloudwatchLogGroup } from '@cdktf/provider-aws/lib/cloudwatch-log-group';
 import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/data-aws-kms-alias';
 import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
 import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
@@ -207,6 +208,14 @@ class ImageAPI extends TerraformStack {
               name: 'REDIS_READER_ENDPOINT',
               value: readerEndpoint,
             },
+            {
+              name: 'OTLP_COLLECTOR_HOST',
+              value: config.tracing.host,
+            },
+            {
+              name: 'RELEASE_SHA',
+              value: process.env.CIRCLE_SHA1,
+            },
           ],
           secretEnvVars: [
             {
@@ -218,19 +227,33 @@ class ImageAPI extends TerraformStack {
               valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/SENTRY_DSN`,
             },
           ],
+          logGroup: this.createCustomLogGroup('app'),
+          logMultilinePattern: '^\\S.+',
         },
         {
-          name: 'xray-daemon',
-          containerImage: 'amazon/aws-xray-daemon',
+          name: 'aws-otel-collector',
+          containerImage: 'amazon/aws-otel-collector',
+          essential: true,
           repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
+          //Used default config as stated here:
+          // Available configs here: - https://github.com/aws-observability/aws-otel-collector/tree/main/config
+          command: [
+            '--config=/etc/ecs/ecs-xray.yaml',
+            //enable for debugging
+            //'--set=service.telemetry.logs.level=debug',
+          ],
           portMappings: [
             {
-              hostPort: 2000,
-              containerPort: 2000,
-              protocol: 'udp',
+              //default http port
+              hostPort: 4138,
+              containerPort: 4138,
+            },
+            {
+              //default grpc port
+              hostPort: 4137,
+              containerPort: 4137,
             },
           ],
-          command: ['--region', 'us-east-1', '--local-mode'],
         },
       ],
       codeDeploy: {
@@ -271,6 +294,11 @@ class ImageAPI extends TerraformStack {
         taskRolePolicyStatements: [
           {
             actions: [
+              'logs:PutLogEvents',
+              'logs:CreateLogGroup',
+              'logs:CreateLogStream',
+              'logs:DescribeLogStreams',
+              'logs:DescribeLogGroups',
               'xray:PutTraceSegments',
               'xray:PutTelemetryRecords',
               'xray:GetSamplingRules',
@@ -285,7 +313,7 @@ class ImageAPI extends TerraformStack {
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },
       autoscalingConfig: {
-        targetMinCapacity: 2,
+        targetMinCapacity: config.isDev ? 1 : 2,
         targetMaxCapacity: 10,
       },
       alarms: {
@@ -336,6 +364,26 @@ class ImageAPI extends TerraformStack {
       readerEndpoint:
         elasticache.elasticacheReplicationGroup.readerEndpointAddress,
     };
+  }
+
+  /**
+   * Create Custom log group for ECS to share across task revisions
+   * @param containerName
+   * @private
+   */
+  private createCustomLogGroup(containerName: string) {
+    const logGroup = new CloudwatchLogGroup(
+      this,
+      `${containerName}-log-group`,
+      {
+        name: `/Backend/${config.prefix}/ecs/${containerName}`,
+        retentionInDays: 90,
+        skipDestroy: true,
+        tags: config.tags,
+      },
+    );
+
+    return logGroup.name;
   }
 }
 const app = new App();

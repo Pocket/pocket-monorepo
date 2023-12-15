@@ -8,6 +8,8 @@ export * from './errorHandler/errorHandler';
 export * from './isoStringScalar/isoStringScalar';
 export * from './pagination/';
 export * from './plugins/sentryPlugin';
+export * from './utils';
+export * from './tracing';
 
 // export a generic object with all Pocket Custom Scalars
 import { isoStringScalar } from './isoStringScalar/isoStringScalar';

@@ -261,9 +261,11 @@ jobs:
           command: |
             export $(egrep -v '^#' .docker/local.env | xargs -0) && ./.circleci/scripts/setup.sh --hosts
       - run:
+          # Note there is a bug in turbo repo requiring a build https://github.com/vercel/turbo/issues/1609
           name: run tests
           command: |
             export $(egrep -v '^#' .docker/local.env | xargs -0)
+            pnpm run build
             pnpm run --filter=<< parameters.scope >>... test-integrations
 
   build_image:
