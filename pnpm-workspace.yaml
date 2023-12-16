@@ -2,3 +2,4 @@ packages:
   - "packages/*"
   - "servers/*"
   - "infrastructure/*"
+  - "lambdas/*"

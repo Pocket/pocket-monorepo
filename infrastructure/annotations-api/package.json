@@ -1,0 +1,22 @@
+{
+  "name": "annotations-api",
+  "version": "1.0.0",
+  "main": "dist/main.js",
+  "types": "dist/main.ts",
+  "license": "MPL-2.0",
+  "private": true,
+  "scripts": {
+    "build:dev": "rm -rf dist && NODE_ENV=development npm run synth",
+    "synth": "cdktf synth",
+    "compile": "tsc --pretty",
+    "watch": "tsc -w",
+    "test": "echo ok"
+  },
+  "dependencies": {
+    "@pocket-tools/terraform-modules": "4.17.0"
+  },
+  "devDependencies": {
+    "@pocket-tools/tsconfig": "2.0.1",
+    "@types/node": "^18.11.19"
+  }
+}
