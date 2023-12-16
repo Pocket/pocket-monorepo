@@ -1,5 +1,5 @@
 {
-  "name": "annotations-api-lambda",
+  "name": "annotations-api-events-lambda",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",

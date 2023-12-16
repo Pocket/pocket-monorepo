@@ -7,14 +7,13 @@
     "build": "rm -rf dist && tsc && npm run build-schema",
     "watch": "tsc -w & nodemon",
     "start": "node dist/main.js",
-    "start:dev": "npm run build && npm run watch",
+    "dev": "npm run build && npm run watch",
     "build-schema": "node dist/server/apollo/buildSchema.js",
-    "test-ci": "npm test",
     "test:watch": "npm test -- --watchAll",
     "test": "jest \"\\.spec\\.ts\"",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand --forceExit",
-    "lint-check": "eslint --fix-dry-run \"src/**/*.ts\"",
-    "lint-fix": "eslint --fix \"src/**/*.ts\""
+    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix \"src/**/*.ts\""
   },
   "repository": {
     "type": "git",
