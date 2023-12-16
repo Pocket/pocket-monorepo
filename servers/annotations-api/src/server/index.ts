@@ -19,8 +19,8 @@ import { schema } from './apollo';
 import config from '../config';
 import { getContext, IContext } from '../context';
 import queueDeleteRouter from './routes/queueDelete';
-import { setLogger, setMorgan } from '@pocket-tools/ts-logger';
-export const serverLogger = setLogger();
+import { Logger, setLogger, setMorgan } from '@pocket-tools/ts-logger';
+export const serverLogger: Logger = setLogger();
 
 export async function startServer(port: number): Promise<{
   app: Express.Application;
