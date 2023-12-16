@@ -14,6 +14,7 @@ repo_for_enum: &repo_for_enum
     type: enum
     enum: 
       - image_api
+      - annotations_api
 
 resource_class_enmum: &resource_class_enmum
   resource-class:
@@ -26,6 +27,9 @@ resource_class_enmum: &resource_class_enmum
 
 parameters:
   image_api:
+    type: boolean
+    default: false
+  annotations_api:
     type: boolean
     default: false
 

@@ -1,0 +1,159 @@
+
+workflows:
+  annotations-api:
+    jobs:
+
+      ######
+      # Every PR Jobs
+      ######
+      - apollo:
+          name: annotations-api_apollo
+          fed_graph_name: pocket-client-api
+          graph_name: annotations-api
+          schema_file_path: servers/annotations-api/schema.graphql
+          prod_graph_url: https://annotations-api.readitlater.com
+          dev_graph_url: https://annotations-api.getpocket.dev
+
+      - test_integrations:
+          <<: *not_dev_main
+          for: annotations_api
+          context: pocket
+          name: annotations-api_test_integrations
+          scope: annotations-api
+
+      # Try building the ECS docker image on each branch
+      - build_image:
+          <<: *not_dev_main
+          context: pocket
+          for: annotations_api
+          name: annotations-api_build_docker
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          repo-name: annotationsapi-dev-app
+          ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
+          push: false
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=annotations-api --build-arg APP_PATH=servers/annotations-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=annotations-api --build-arg PORT=4008 
+     
+      - infrastructure:
+          <<: *not_dev_main
+          context: pocket
+          for: annotations_api
+          name: annotations-api_infrastructure_plan_prod
+          scope: annotations-api-cdk
+          stack-output-path: infrastructure/annotations-api/cdktf.out/stacks/annotations-api
+          resource-class: pocket/default-prod
+          workspace: Prod
+          dev: false
+          apply: false
+
+      ######
+      # Dev Branch Deployment (Dev Environment)
+      ######
+
+      - infrastructure:
+          <<: *only_dev
+          context: pocket
+          for: annotations_api
+          name: annotations-api_infrastructure_apply_dev
+          scope: annotations-api-cdk
+          stack-output-path: infrastructure/annotations-api/cdktf.out/stacks/annotations-api
+          resource-class: pocket/default-dev
+          workspace: Dev
+          apply: true
+          dev: true
+
+      # Build & Deploy the Dev Docker Image
+      - build_image:
+          <<: *only_dev
+          context: pocket
+          for: annotations_api
+          name: annotations-api_build_docker_dev
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          repo-name: annotationsapi-dev-app
+          ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
+          push: true
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=annotations-api --build-arg APP_PATH=servers/annotations-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=annotations-api --build-arg PORT=4008
+          requires:
+            - annotations-api_infrastructure_apply_dev
+
+      - code_deploy_ecs:
+          <<: *only_dev
+          context: pocket
+          for: annotations_api
+          name: annotations-api_code_deploy_ecs_dev
+          resource-class: pocket/default-dev
+          codedeploy-app-name: AnnotationsAPI-Dev-ECS
+          codedeploy-group-name: AnnotationsAPI-Dev-ECS
+          requires:
+            - annotations-api_build_docker_dev
+
+      # Notify sentry of dev deployment
+      - sentry_release_notification:
+          <<: *only_dev
+          name: annotations-api_sentry-release-notification-dev
+          context: pocket
+          for: annotations_api
+          sentry_project_name: annotations-api
+          sentry_env: development
+          sentry_org: pocket
+          requires:
+            - annotations-api_code_deploy_ecs_dev
+
+      ######
+      # Main Branch Deployment (Prod Environment)
+      ######
+      - infrastructure:
+          <<: *only_main
+          context: pocket
+          for: annotations_api
+          name: annotations-api_infrastructure_apply_prod
+          scope: annotations-api-cdk
+          stack-output-path: infrastructure/annotations-api/cdktf.out/stacks/annotations-api
+          resource-class: pocket/default-prod
+          workspace: Prod
+          apply: true
+          dev: false
+
+      # Build & Deploy the Prod Docker Image
+      - build_image:
+          <<: *only_main
+          context: pocket
+          for: annotations_api
+          name: annotations-api_build_docker_prod
+          aws-access-key-id: Prod_AWS_ACCESS_KEY
+          aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
+          aws-region: Prod_AWS_DEFAULT_REGION
+          repo-name: annotationsapi-prod-app
+          ecr-url: 996905175585.dkr.ecr.us-east-1.amazonaws.com
+          push: true
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=annotations-api --build-arg APP_PATH=servers/annotations-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=annotations-api --build-arg PORT=4008
+          requires:
+            - annotations-api_infrastructure_apply_prod
+
+      - code_deploy_ecs:
+          <<: *only_main
+          context: pocket
+          for: annotations_api
+          name: annotations-api_code_deploy_ecs_prod
+          resource-class: pocket/default-prod
+          codedeploy-app-name: AnnotationsAPI-Prod-ECS
+          codedeploy-group-name: AnnotationsAPI-Prod-ECS
+          requires:
+            - annotations-api_build_docker_prod
+
+      # Notify sentry of main deployment
+      - sentry_release_notification:
+          <<: *only_main
+          name: annotations-api_sentry-release-notification-prod
+          context: pocket
+          for: annotations_api
+          sentry_project_name: annotations-api
+          sentry_env: production
+          sentry_org: pocket
+          requires:
+            - annotations-api_code_deploy_ecs_prod
+
+
