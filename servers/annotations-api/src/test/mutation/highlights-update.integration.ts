@@ -1,6 +1,5 @@
 import { ApolloServer } from '@apollo/server';
 import { startServer } from '../../server';
-import sinon from 'sinon';
 import request from 'supertest';
 import { print } from 'graphql';
 import { IContext } from '../../context';
@@ -39,9 +38,10 @@ describe('Highlights update', () => {
   });
   it('should update an existing highlight owned by the user', async () => {
     const updateDate = new Date(2022, 3, 3);
-    const clock = sinon.useFakeTimers({
+
+    jest.useFakeTimers({
       now: updateDate,
-      shouldAdvanceTime: false,
+      advanceTimers: false,
     });
 
     const input = {
@@ -78,7 +78,7 @@ describe('Highlights update', () => {
       mysqlTimeString(updateDate, config.database.tz),
     );
 
-    clock.restore();
+    jest.useRealTimers();
   });
   it('should throw a NOT_FOUND error if the annotation_id does not exist', async () => {
     const variables: { id: string; input: HighlightUpdateInput } = {

@@ -1,20 +1,19 @@
 import { Event, handlers } from './handlers';
 import { processor } from './index';
-import sinon from 'sinon';
 import { SQSEvent } from 'aws-lambda';
 import * as Sentry from '@sentry/serverless';
 
 describe('event handlers', () => {
-  let deleteStub: sinon.SinonStub;
-  let sentryStub: sinon.SinonStub;
+  let deleteStub: jest.SpyInstance;
+  let sentryStub: jest.SpyInstance;
   beforeEach(() => {
-    sinon.restore();
-    sentryStub = sinon.stub(Sentry, 'captureException');
+    jest.restoreAllMocks();
+    sentryStub = jest.spyOn(Sentry, 'captureException');
   });
-  afterAll(() => sinon.restore());
+  afterAll(() => jest.restoreAllMocks());
   describe('with no handler errors', () => {
     beforeEach(() => {
-      deleteStub = sinon.stub(handlers, Event.ACCOUNT_DELETION).resolves();
+      deleteStub = jest.spyOn(handlers, Event.ACCOUNT_DELETION).mockClear().mockResolvedValue();
     });
     it('routes to the correct handler function based on detail-type', async () => {
       const records = {
@@ -29,8 +28,8 @@ describe('event handlers', () => {
         ],
       };
       await processor(records as SQSEvent);
-      expect(deleteStub.callCount).toEqual(1);
-      expect(deleteStub.getCall(0).args).toEqual([records.Records[0]]);
+      expect(deleteStub).toHaveBeenCalledTimes(1);
+      expect(deleteStub.mock.calls[0]).toEqual([records.Records[0]]);
     });
     it('returns batchItemFailure and logs to Sentry if handler does not exist', async () => {
       const records = {
@@ -45,17 +44,15 @@ describe('event handlers', () => {
       };
       const res = await processor(records as SQSEvent);
       expect(res.batchItemFailures).toEqual([{ itemIdentifier: 'abc' }]);
-      expect(sentryStub.callCount).toEqual(1);
-      expect(sentryStub.getCall(0).args[0].message).toEqual(
+      expect(sentryStub).toHaveBeenCalledTimes(1);
+      expect(sentryStub.mock.calls[0][0].message).toEqual(
         `Unable to retrieve handler for detail-type='NOT_A_TYPE'`,
       );
     });
   });
   describe('with handler errors', () => {
     beforeEach(() => {
-      deleteStub = sinon
-        .stub(handlers, Event.ACCOUNT_DELETION)
-        .rejects(Error('got an error'));
+      deleteStub = jest.spyOn(handlers, Event.ACCOUNT_DELETION).mockRejectedValue(Error('got an error'));
     });
     it('returns batchItemFailure and logs to Sentry if handler throws error', async () => {
       const records = {
@@ -72,8 +69,8 @@ describe('event handlers', () => {
       };
       const res = await processor(records as SQSEvent);
       expect(res.batchItemFailures).toEqual([{ itemIdentifier: 'abc' }]);
-      expect(sentryStub.callCount).toEqual(1);
-      expect(sentryStub.getCall(0).args[0].message).toEqual('got an error');
+      expect(sentryStub).toHaveBeenCalledTimes(1);
+      expect(sentryStub.mock.calls[0][0].message).toEqual('got an error');
     });
   });
 });

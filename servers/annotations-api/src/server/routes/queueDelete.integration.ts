@@ -1,21 +1,15 @@
-import chai, { expect } from 'chai';
 import { readClient, writeClient } from '../../database/client';
-import deepEqualInAnyOrder from 'deep-equal-in-any-order';
-import shallowDeepEqual from 'chai-shallow-deep-equal';
-import sinon from 'sinon';
 import { SQS } from '@aws-sdk/client-sqs';
 import { enqueueAnnotationIds, SqsMessage } from './queueDelete';
 import { HighlightsDataService } from '../../dataservices/highlights';
 import config from '../../config';
 import * as Sentry from '@sentry/node';
 
-chai.use(deepEqualInAnyOrder);
-chai.use(shallowDeepEqual);
-
 describe('/queueDelete', () => {
-  let sentrySpy;
-  let breadSpy;
-  let sqsSendMock, queryLimit, itemIdChunkSize, sqsBatchSize;
+  let sentrySpy: jest.SpyInstance;
+  let breadSpy: jest.SpyInstance;
+  let sqsSendMock: jest.SpyInstance;
+  let queryLimit, itemIdChunkSize, sqsBatchSize;
 
   beforeAll(async () => {
     const db = writeClient();
@@ -36,8 +30,8 @@ describe('/queueDelete', () => {
       });
     }
     await db('user_annotations').insert(data);
-    sentrySpy = sinon.spy(Sentry, 'captureException');
-    breadSpy = sinon.spy(Sentry, 'addBreadcrumb');
+    sentrySpy = jest.spyOn(Sentry, 'captureException').mockClear();
+    breadSpy = jest.spyOn(Sentry, 'addBreadcrumb').mockClear();
   });
 
   beforeEach(() => {
@@ -50,18 +44,21 @@ describe('/queueDelete', () => {
     config.queueDelete.queryLimit = queryLimit;
     config.queueDelete.itemIdChunkSize = itemIdChunkSize;
     config.aws.sqs.batchSize = sqsBatchSize;
-    sentrySpy.resetHistory();
-    breadSpy.resetHistory();
+    sentrySpy.mockReset();
+    breadSpy.mockReset();
   });
 
   describe('enqueueAnnotationsId success', () => {
     beforeAll(() => {
-      sqsSendMock?.restore();
+      sqsSendMock?.mockRestore();
     });
     beforeEach(
-      () => (sqsSendMock = sinon.stub(SQS.prototype, 'send').resolves()),
+      () =>
+        (sqsSendMock = jest
+          .spyOn(SQS.prototype, 'send')
+          .mockImplementation(() => Promise.resolve())),
     );
-    afterEach(() => sqsSendMock.restore());
+    afterEach(() => sqsSendMock.mockRestore());
     it('sends batches of messages to sqs', async () => {
       config.queueDelete.queryLimit = 3;
       config.queueDelete.itemIdChunkSize = 3;
@@ -89,41 +86,41 @@ describe('/queueDelete', () => {
         '123',
       );
 
-      expect(sqsSendMock.callCount).to.equal(2);
+      expect(sqsSendMock).toHaveBeenCalledTimes(2);
       // No exceptions
-      expect(sentrySpy.callCount).to.equal(0);
+      expect(sentrySpy).toHaveBeenCalledTimes(0);
       const firstMessage = JSON.parse(
-        sqsSendMock.getCall(0).args[0].input.Entries[0].MessageBody,
+        sqsSendMock.mock.calls[0][0].input.Entries[0].MessageBody,
       );
       const secondMessage = JSON.parse(
-        sqsSendMock.getCall(1).args[0].input.Entries[0].MessageBody,
+        sqsSendMock.mock.calls[1][0].input.Entries[0].MessageBody,
       );
-      expect(firstMessage).to.shallowDeepEqual({
+      expect(firstMessage).toContainEqual({
         ...data,
         annotationIds: ['1', '2', '3'],
       });
-      expect(firstMessage.traceId).to.not.be.empty;
-      expect(secondMessage).to.shallowDeepEqual({
+      expect(firstMessage.traceId).toBeDefined();
+      expect(secondMessage).toContainEqual({
         ...data,
         annotationIds: ['4', '5', '6'],
       });
-      expect(secondMessage.traceId).to.not.be.empty;
+      expect(secondMessage.traceId).toBeDefined();
     });
   });
 
   describe('enqueueAnnotationIds failure', () => {
     beforeAll(() => {
-      sqsSendMock?.restore();
+      sqsSendMock?.mockRestore();
     });
     beforeEach(() => {
-      sqsSendMock = sinon
-        .stub(SQS.prototype, 'send')
-        .onFirstCall()
-        .rejects(new Error('no queue for you'))
-        .onSecondCall()
-        .resolves();
+      sqsSendMock = jest
+        .spyOn(SQS.prototype, 'send')
+        .mockImplementationOnce(() =>
+          Promise.reject(new Error('no queue for you')),
+        )
+        .mockImplementationOnce(() => Promise.resolve());
     });
-    afterEach(() => sqsSendMock.restore());
+    afterEach(() => sqsSendMock.mockRestore());
 
     it('reports errors to Sentry when a batch fails, even if some succeed', async () => {
       config.queueDelete.queryLimit = 3;
@@ -153,14 +150,13 @@ describe('/queueDelete', () => {
       );
 
       // Two calls made
-      expect(sqsSendMock.callCount).to.equal(2);
+      expect(sqsSendMock).toHaveBeenCalledTimes(2);
       // Only one fails
-      expect(sentrySpy.callCount).to.equal(1);
-      expect(sentrySpy.firstCall.args[0].message).to.equal('no queue for you');
-      expect(breadSpy.callCount).to.equal(1);
-      expect(breadSpy.firstCall.args[0].message)
-        .to.contain('QueueDelete: Error')
-        .and.to.contain('annotationIds');
+      expect(sentrySpy).toHaveBeenCalledTimes(1);
+      expect(sentrySpy.mock.calls[0][0].message).toEqual('no queue for you');
+      expect(breadSpy).toHaveBeenCalledTimes(1);
+      expect(breadSpy.mock.calls[0][0].message).toContain('QueueDelete: Error');
+      expect(breadSpy.mock.calls[0][0].message).toContain('annotationIds');
     });
   });
 });

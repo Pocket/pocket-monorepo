@@ -24,7 +24,8 @@
     "nock": "13.4.0",
     "nodemon": "3.0.2",
     "ts-jest": "29.1.1",
-    "supertest": "6.3.3"
+    "supertest": "6.3.3",
+    "jest-extended": "4.0.2"
   },
   "dependencies": {
     "@pocket-tools/apollo-utils": "workspace:*",

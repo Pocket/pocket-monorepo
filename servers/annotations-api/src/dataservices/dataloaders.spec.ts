@@ -1,4 +1,3 @@
-import sinon from 'sinon';
 import { NotesDataService } from '../dataservices/notes';
 import { dynamoClient } from '../database/client';
 import { createNotesLoader, orderAndMapNotes } from './dataloaders';
@@ -42,16 +41,16 @@ describe('dataloaders', () => {
     const dynamo = dynamoClient();
     beforeEach(() => {
       const notesService = new NotesDataService(dynamo, '1');
-      notesStub = sinon
-        .stub(NotesDataService.prototype, 'getMany')
-        .resolves(mockNotesResponse);
+      notesStub = jest
+        .spyOn(NotesDataService.prototype, 'getMany')
+        .mockReturnValue(Promise.resolve(mockNotesResponse));
       notesLoader = createNotesLoader(dynamo, {
         isPremium: true,
         notesService,
       } as IContext);
     });
     afterEach(() => {
-      notesStub.restore();
+      notesStub.mockRestore();
     });
     it('reorders data by highlightId', async () => {
       const result = await notesLoader.loadMany(['hij', 'def', 'abc', 'hij']);
@@ -63,7 +62,8 @@ describe('dataloaders', () => {
       ];
       expect(result).toStrictEqual(expected);
       // Should get subsequent duplicate keys from cache
-      expect(notesStub.calledOnceWith(['hij', 'def', 'abc'])).toBe(true);
+      expect(notesStub).toHaveBeenCalledWith(['hij', 'def', 'abc']);
+      expect(notesStub).toHaveBeenCalledTimes(1);
     });
     it('returns undefined object if data is missing for key', async () => {
       const result = await notesLoader.loadMany(['zzz', 'def', 'abc']);

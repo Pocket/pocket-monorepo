@@ -1,6 +1,5 @@
 import { ApolloServer } from '@apollo/server';
 import { startServer } from '../../server';
-import sinon from 'sinon';
 import request from 'supertest';
 import { print } from 'graphql';
 import { IContext } from '../../context';
@@ -192,9 +191,10 @@ describe('Highlights creation', () => {
 
     it('should mark the list item as updated and log the highlight mutation', async () => {
       const updateDate = new Date(2022, 3, 3);
-      const clock = sinon.useFakeTimers({
+
+      jest.useFakeTimers({
         now: updateDate,
-        shouldAdvanceTime: false,
+        advanceTimers: false,
       });
 
       const variables: { input: HighlightInput[] } = {
@@ -226,7 +226,7 @@ describe('Highlights creation', () => {
         mysqlTimeString(updateDate, config.database.tz),
       );
 
-      clock.restore();
+      jest.useRealTimers();
     });
   });
   describe('non-premium users', () => {

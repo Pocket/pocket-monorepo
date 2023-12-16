@@ -1,6 +1,5 @@
 import { ApolloServer } from '@apollo/server';
 import { startServer } from '../../server';
-import sinon from 'sinon';
 import request from 'supertest';
 import { print } from 'graphql';
 import { IContext } from '../../context';
@@ -45,9 +44,10 @@ describe('Highlights deletion', () => {
 
   it('should delete an existing highlight', async () => {
     const updateDate = new Date(2022, 3, 3);
-    const clock = sinon.useFakeTimers({
+
+    jest.useFakeTimers({
       now: updateDate,
-      shouldAdvanceTime: false,
+      advanceTimers: false,
     });
 
     const variables = { id: 'b3a95dd3-dd9b-49b0-bb72-dc6daabd809b' };
@@ -75,7 +75,7 @@ describe('Highlights deletion', () => {
       mysqlTimeString(updateDate, config.database.tz),
     );
 
-    clock.restore();
+    jest.useRealTimers();
   });
 
   it('should throw NOT_FOUND error if the highlight ID does not exist', async () => {

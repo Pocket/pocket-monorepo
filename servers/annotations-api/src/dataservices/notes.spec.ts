@@ -1,11 +1,10 @@
-import sinon from 'sinon';
 import { NotesDataService } from './notes';
 import { BatchGetCommandOutput } from '@aws-sdk/lib-dynamodb';
 import config from '../config';
 import { dynamoClient } from '../database/client';
 
 describe('Notes data service', () => {
-  let dynamoSendStub: sinon.stub;
+  let dynamoSendStub;
   const service = new NotesDataService(dynamoClient(), '1');
 
   const dynamoFirstResult: BatchGetCommandOutput = {
@@ -31,15 +30,13 @@ describe('Notes data service', () => {
     $metadata: {},
   };
   beforeEach(() => {
-    dynamoSendStub = sinon
-      .stub(service.dynamo, 'send')
-      .onFirstCall()
-      .resolves(dynamoFirstResult)
-      .onSecondCall()
-      .resolves(dynamoSecondResult);
+    dynamoSendStub = jest
+      .spyOn(service.dynamo, 'send')
+      .mockImplementationOnce((_) => dynamoFirstResult)
+      .mockImplementation((_) => dynamoSecondResult);
   });
   afterEach(() => {
-    dynamoSendStub.restore();
+    dynamoSendStub.mockRestore();
   });
   it('retries unprocessed keys and concatenates results', async () => {
     const result = await service.getMany(['1', '2', '3']);
@@ -54,6 +51,6 @@ describe('Notes data service', () => {
     const textResult = result?.map((_) => _.text);
     expect(textResult).toStrictEqual(expectedText);
     // Should have called `send` twice to finish the batch
-    expect(dynamoSendStub.callCount).toEqual(2);
+    expect(dynamoSendStub).toHaveBeenCalledTimes(2);
   });
 });
