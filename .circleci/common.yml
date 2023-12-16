@@ -54,6 +54,7 @@ commands:
             fi
           environment:
             image_api: << pipeline.parameters.image_api >>
+            annotations_api: << pipeline.parameters.annotations_api >>
 
   install_pnpm:
     steps:
