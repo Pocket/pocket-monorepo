@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@pocket-tools/eslint-config": "2.1.7",
-    "@pocket-tools/tsconfig": "2.0.1",
+    "tsconfig": "workspace:*",
     "@sentry/types": "7.64.0",
     "@types/chai": "4.3.5",
     "@types/chance": "1.1.3",

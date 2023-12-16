@@ -1,10 +1,8 @@
 {
+  "extends": "tsconfig/lambda.json",
   "compilerOptions": {
-    "target": "es2017",
-    "module": "commonjs",
     "outDir": "dist",
-    "sourceMap": true,
-    "esModuleInterop": true
+    "rootDir": "src"
   },
   "exclude": [
     "node_modules",
@@ -13,5 +11,7 @@
     "jest.config.js",
     "jest.setup.js"
   ],
-  "include": ["./**/*.ts", "./config"]
+  "include": [
+    "src/**/*.ts", 
+  ]
 }
