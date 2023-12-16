@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "tsconfig": "workspace:*",
+    "eslint-config-custom": "workspace:*",
     "@types/aws-lambda": "8.10.119",
     "@types/jest": "29.5.3",
     "@types/node-fetch": "2.6.4",
