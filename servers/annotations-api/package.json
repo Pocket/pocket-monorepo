@@ -24,7 +24,7 @@
     "@aws-sdk/client-sqs": "3.391.0",
     "@aws-sdk/lib-dynamodb": "3.391.0",
     "@pocket-tools/apollo-utils": "3.4.0",
-    "@pocket-tools/ts-logger": "1.2.4",
+    "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "7.64.0",
     "@sentry/tracing": "7.64.0",
     "apollo-server-cache-redis": "3.3.1",
