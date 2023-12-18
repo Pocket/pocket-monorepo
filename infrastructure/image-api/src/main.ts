@@ -11,7 +11,6 @@ import { config } from './config';
 import {
   ApplicationRedis,
   PocketALBApplication,
-  PocketECSCodePipeline,
   PocketPagerDuty,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';

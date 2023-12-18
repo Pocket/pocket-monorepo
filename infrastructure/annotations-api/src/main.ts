@@ -23,7 +23,6 @@ import {
   ApplicationSQSQueue,
   PocketALBApplication,
   PocketAwsSyntheticChecks,
-  PocketECSCodePipeline,
   PocketPagerDuty,
   PocketVPC,
   ApplicationSqsSnsTopicSubscription,
