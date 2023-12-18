@@ -249,13 +249,26 @@ jobs:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
         environment:
-          NODE_ENV: test
           AWS_XRAY_LOG_LEVEL: silent
           AWS_XRAY_CONTEXT_MISSING: LOG_ERROR
       - image: redis:latest
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
+      - image: mysql:8
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+        environment:
+          - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+          - TZ=UTC
+        command: --default_authentication_plugin=mysql_native_password --sql-mode="NO_ENGINE_SUBSTITUTION" --character-set-server=UTF8MB3 --collation-server=utf8_unicode_ci
+      - image: localstack/localstack:3.0.2
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+        environment:
+          SERVICES: s3,kinesis,sqs,dynamodb,sts,events,firehose
     steps:
       - exit-early-if-irrelevant:
           for: << parameters.for >>
@@ -264,7 +277,7 @@ jobs:
       - run:
           name: run setup.sh
           command: |
-            export $(egrep -v '^#' .docker/local.env | xargs -0) && ./.circleci/scripts/setup.sh --hosts
+            export $(egrep -v '^#' .docker/local.env | xargs -0) && ./.circleci/scripts/setup.sh --db --aws
       - run:
           # Note there is a bug in turbo repo requiring a build https://github.com/vercel/turbo/issues/1609
           name: run tests

@@ -50,8 +50,8 @@ services:
     image: mysql:8
     working_dir: /image
     volumes:
-      - ./.docker/shared-8-dbs/schema:/docker-entrypoint-initdb.d:delegated
-      - ./.docker/shared-8-dbs/conf:/etc/mysql/conf.d:delegated
+      - ./.docker/mysql-8-resources/schema:/docker-entrypoint-initdb.d:delegated
+      - ./.docker/mysql-8-resources/conf:/etc/mysql/conf.d:delegated
     healthcheck:
       # We use a command here because a mysqladmin ping will give a false positive before mysql is accepting connections
       # https://chrisguitarguy.com/2023/03/06/waiting-for-mysql-to-be-ready-in-docker-compose/
