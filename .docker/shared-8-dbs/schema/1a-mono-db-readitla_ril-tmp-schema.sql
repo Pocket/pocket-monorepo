@@ -2,6 +2,8 @@ CREATE DATABASE IF NOT EXISTS `readitla_ril-tmp`;
 
 USE `readitla_ril-tmp`;
 
+SET GLOBAL explicit_defaults_for_timestamp = 0;
+
 create table ab_test_assign
 (
     user_key          bigint unsigned   not null,

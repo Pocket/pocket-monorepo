@@ -3,7 +3,7 @@ import { startServer } from '../../server';
 import request from 'supertest';
 import { print } from 'graphql';
 import { IContext } from '../../context';
-import { readClient } from '../../database/client';
+import { readClient, writeClient } from '../../database/client';
 import { seedData } from '../query/highlights-fixtures';
 import { UPDATE_HIGHLIGHT } from './highlights-mutations';
 import { HighlightEntity, HighlightUpdateInput } from '../../types';
@@ -16,15 +16,18 @@ describe('Highlights update', () => {
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
   const headers = { userId: '1', premium: 'false' };
-  const db = readClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const now = new Date();
   const testData = seedData(now);
   const truncateAndSeed = async () => {
     await Promise.all(
-      Object.keys(testData).map((table) => db(table).truncate()),
+      Object.keys(testData).map((table) => writeDb(table).truncate()),
     );
     await Promise.all(
-      Object.entries(testData).map(([table, data]) => db(table).insert(data)),
+      Object.entries(testData).map(([table, data]) =>
+        writeDb(table).insert(data),
+      ),
     );
   };
   beforeAll(async () => {
@@ -32,6 +35,8 @@ describe('Highlights update', () => {
   });
   afterAll(async () => {
     await server.stop();
+    await readDb.destroy();
+    await writeDb.destroy();
   });
   beforeEach(async () => {
     await truncateAndSeed();
@@ -41,7 +46,7 @@ describe('Highlights update', () => {
 
     jest.useFakeTimers({
       now: updateDate,
-      advanceTimers: false,
+      advanceTimers: true,
     });
 
     const input = {
@@ -59,10 +64,10 @@ describe('Highlights update', () => {
       .post(graphQLUrl)
       .set(headers)
       .send({ query: print(UPDATE_HIGHLIGHT), variables });
-    const usersMetaRecord = await db('users_meta')
+    const usersMetaRecord = await writeDb('users_meta')
       .where({ user_id: '1', property: UsersMeta.propertiesMap.account })
       .pluck('value');
-    const listRecord = await db('list')
+    const listRecord = await writeDb('list')
       .where({ user_id: '1', item_id: '1' })
       .pluck('time_updated');
 
@@ -101,7 +106,7 @@ describe('Highlights update', () => {
     expect(res.body.errors?.[0]?.extensions?.code).toEqual('NOT_FOUND');
   });
   it('should throw a NOT_FOUND error if the annotation_id is not owned by the user, and not update', async () => {
-    await db('user_annotations').insert({
+    await writeDb('user_annotations').insert({
       annotation_id: '05347f61-8fee-4e54-8cd6-618b02c39c73',
       user_id: 2,
       item_id: 2,
@@ -125,7 +130,7 @@ describe('Highlights update', () => {
       .post(graphQLUrl)
       .set(headers)
       .send({ query: print(UPDATE_HIGHLIGHT), variables });
-    const dbRow = await db<HighlightEntity>('user_annotations')
+    const dbRow = await writeDb<HighlightEntity>('user_annotations')
       .select()
       .where('annotation_id', variables.id);
 

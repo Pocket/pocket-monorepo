@@ -3,7 +3,7 @@ import { startServer } from '../../server';
 import request from 'supertest';
 import { print } from 'graphql';
 import { IContext } from '../../context';
-import { readClient } from '../../database/client';
+import { readClient, writeClient } from '../../database/client';
 import { GET_HIGHLIGHTS, seedData } from './highlights-fixtures';
 
 describe('Highlights on a SavedItem', () => {
@@ -12,21 +12,26 @@ describe('Highlights on a SavedItem', () => {
   let graphQLUrl: string;
 
   const headers = { userId: '1', premium: 'false' };
-  const db = readClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const now = new Date();
   const testData = seedData(now);
 
   beforeAll(async () => {
     await Promise.all(
-      Object.keys(testData).map((table) => db(table).truncate()),
+      Object.keys(testData).map((table) => writeDb(table).truncate()),
     );
     await Promise.all(
-      Object.entries(testData).map(([table, data]) => db(table).insert(data)),
+      Object.entries(testData).map(([table, data]) =>
+        writeDb(table).insert(data),
+      ),
     );
     ({ app, server, url: graphQLUrl } = await startServer(0));
   });
   afterAll(async () => {
     await server.stop();
+    await writeDb.destroy();
+    await readDb.destroy();
   });
   it('should return singleton Highlights array when a SavedItem has one highlight', async () => {
     const variables = { itemId: 1 };

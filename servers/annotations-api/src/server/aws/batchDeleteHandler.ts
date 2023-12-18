@@ -15,6 +15,7 @@ import { setTimeout } from 'timers/promises';
 import { failCallback } from '../routes/helper';
 import { serverLogger } from '../';
 import { SeverityLevel } from '@sentry/types';
+import { sqs } from './sqs';
 
 export type BatchDeleteMessage = {
   traceId: string;
@@ -46,11 +47,7 @@ export class BatchDeleteHandler {
     public readonly emitter: EventEmitter,
     pollOnInit = true,
   ) {
-    this.sqsClient = new SQSClient({
-      region: config.aws.region,
-      endpoint: config.aws.endpoint,
-      maxAttempts: 3,
-    });
+    this.sqsClient = sqs;
     emitter.on(
       BatchDeleteHandler.eventName,
       async () => await this.pollQueue(),

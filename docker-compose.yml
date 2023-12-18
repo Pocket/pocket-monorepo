@@ -47,12 +47,11 @@ services:
       - '6379:6379'
 
   mysql:
-    image: mysql:5.7
-    platform: linux/amd64 #5.7 only supports amd64
+    image: mysql:8
     working_dir: /image
     volumes:
-      - ./.docker/shared-57-dbs/schema:/docker-entrypoint-initdb.d:delegated
-      - ./.docker/shared-57-dbs/conf:/etc/mysql/conf.d:delegated
+      - ./.docker/shared-8-dbs/schema:/docker-entrypoint-initdb.d:delegated
+      - ./.docker/shared-8-dbs/conf:/etc/mysql/conf.d:delegated
     healthcheck:
       # We use a command here because a mysqladmin ping will give a false positive before mysql is accepting connections
       # https://chrisguitarguy.com/2023/03/06/waiting-for-mysql-to-be-ready-in-docker-compose/
@@ -61,6 +60,7 @@ services:
       timeout: 20s
       start_period: 60s
       retries: 30
+    command: --default_authentication_plugin=mysql_native_password --sql-mode="NO_ENGINE_SUBSTITUTION" --character-set-server=UTF8MB3 --collation-server=utf8_unicode_ci
     ports:
       - '3306:3306'
     environment:
@@ -84,23 +84,16 @@ services:
       start_period: 80s
 
   localstack:
-    image: localstack/localstack:1.2
+    image: localstack/localstack:3.0.2
     ports:
-      - '4567-4584:4567-4584'
+      - '4566:4566'
     volumes:
-      - ./.docker/aws-resources:/docker-entrypoint-initaws.d
+      - ./.docker/aws-resources:/etc/localstack/init/ready.d
     environment:
-      LOCALSTACK_API_KEY: ${LOCALSTACK_API_KEY}
-      DEBUG: 1
-      SERVICES: s3,kinesis,sqs,xray,dynamodb,sts,events,firehose
+      SERVICES: s3,kinesis,sqs,dynamodb,sts,events,firehose
       DATA_DIR: /tmp/localstack/data
       DOCKER_HOST: unix:///var/run/docker.sock
-      ORT_WEB_UI: 8080
-      EXTRA_CORS_ALLOWED_HEADERS: Content-Disposition, Content-Type, x-amz-acl
-      EXTRA_CORS_EXPOSE_HEADERS: ETag
-      HOSTNAME_EXTERNAL: localstack
       LOCALSTACK_HOST: localstack
-      LS_LOG: warn
     healthcheck:
       test:
         - CMD
@@ -110,10 +103,6 @@ services:
       interval: 5s
       timeout: 10s
       start_period: 10s
-    networks:
-      default:
-        aliases:
-          - sqs.us-east-1.localhost.localstack.cloud
 
   snowplow:
     image: pocket/snowplow-micro:dev

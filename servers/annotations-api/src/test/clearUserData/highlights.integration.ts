@@ -1,5 +1,5 @@
 import { seedData } from '../query/highlights-fixtures';
-import { readClient } from '../../database/client';
+import { writeClient } from '../../database/client';
 import { HighlightsDataService } from '../../dataservices/highlights';
 import config from '../../config';
 
@@ -7,7 +7,7 @@ describe('clearUserData for Highlights data', () => {
   // Stubs/mocks
   // Variables/data
   const userId = 1;
-  const db = readClient();
+  const db = writeClient();
   const now = new Date();
   const testData = seedData(now);
   let batchDeleteDelay;
@@ -23,9 +23,10 @@ describe('clearUserData for Highlights data', () => {
     );
   });
 
-  afterAll(() => {
+  afterAll(async () => {
     //rest config variables
     config.batchDelete.deleteDelayInMilliSec = batchDeleteDelay;
+    await db.destroy();
   });
   it('deletes all records for a user id', async () => {
     const highlightService = new HighlightsDataService({

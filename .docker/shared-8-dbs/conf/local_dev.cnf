@@ -3,3 +3,6 @@
 max_connections=200 
 # bumping packet size for collections api
 max_allowed_packet=134217728
+
+# Set to only mysql errors
+log_error_verbosity=1

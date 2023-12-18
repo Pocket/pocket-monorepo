@@ -3,7 +3,7 @@ import { startServer } from '../../server';
 import request from 'supertest';
 import { print } from 'graphql';
 import { IContext } from '../../context';
-import { readClient } from '../../database/client';
+import { readClient, writeClient } from '../../database/client';
 import { seedData } from '../query/highlights-fixtures';
 import { DELETE_HIGHLIGHT } from './highlights-mutations';
 import { HighlightEntity } from '../../types';
@@ -17,15 +17,18 @@ describe('Highlights deletion', () => {
   let graphQLUrl: string;
 
   const headers = { userId: '1', premium: 'false' };
-  const db = readClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const now = new Date();
   const testData = seedData(now);
   const truncateAndSeed = async () => {
     await Promise.all(
-      Object.keys(testData).map((table) => db(table).truncate()),
+      Object.keys(testData).map((table) => writeDb(table).truncate()),
     );
     await Promise.all(
-      Object.entries(testData).map(([table, data]) => db(table).insert(data)),
+      Object.entries(testData).map(([table, data]) =>
+        writeDb(table).insert(data),
+      ),
     );
   };
 
@@ -36,6 +39,8 @@ describe('Highlights deletion', () => {
 
   afterAll(async () => {
     await server.stop();
+    await readDb.destroy();
+    await writeDb.destroy();
   });
 
   beforeEach(async () => {
@@ -47,7 +52,7 @@ describe('Highlights deletion', () => {
 
     jest.useFakeTimers({
       now: updateDate,
-      advanceTimers: false,
+      advanceTimers: true,
     });
 
     const variables = { id: 'b3a95dd3-dd9b-49b0-bb72-dc6daabd809b' };
@@ -55,13 +60,13 @@ describe('Highlights deletion', () => {
       .post(graphQLUrl)
       .set(headers)
       .send({ query: print(DELETE_HIGHLIGHT), variables });
-    const annotationRecord = await db<HighlightEntity>('user_annotations')
+    const annotationRecord = await writeDb<HighlightEntity>('user_annotations')
       .select()
       .where('annotation_id', variables.id);
-    const usersMetaRecord = await db('users_meta')
+    const usersMetaRecord = await writeDb('users_meta')
       .where({ user_id: '1', property: UsersMeta.propertiesMap.account })
       .pluck('value');
-    const listRecord = await db('list')
+    const listRecord = await writeDb('list')
       .where({ user_id: '1', item_id: '1' })
       .pluck('time_updated');
 

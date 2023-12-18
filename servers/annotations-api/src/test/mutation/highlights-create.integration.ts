@@ -3,7 +3,7 @@ import { startServer } from '../../server';
 import request from 'supertest';
 import { print } from 'graphql';
 import { IContext } from '../../context';
-import { readClient } from '../../database/client';
+import { readClient, writeClient } from '../../database/client';
 import { seedData } from '../query/highlights-fixtures';
 import {
   CREATE_HIGHLIGHTS,
@@ -21,15 +21,18 @@ describe('Highlights creation', () => {
   let graphQLUrl: string;
   // Variables/data
   const baseHeaders = { userId: '1', premium: 'false' };
-  const db = readClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const now = new Date();
   const testData = seedData(now);
   const truncateAndSeed = async () => {
     await Promise.all(
-      Object.keys(testData).map((table) => db(table).truncate()),
+      Object.keys(testData).map((table) => writeDb(table).truncate()),
     );
     await Promise.all(
-      Object.entries(testData).map(([table, data]) => db(table).insert(data)),
+      Object.entries(testData).map(([table, data]) =>
+        writeDb(table).insert(data),
+      ),
     );
   };
   beforeAll(async () => {
@@ -38,8 +41,14 @@ describe('Highlights creation', () => {
   });
   afterAll(async () => {
     await server.stop();
-    await db.destroy();
+    await writeDb.destroy();
+    await readDb.destroy();
   });
+
+  afterEach(async () => {
+    jest.useRealTimers();
+  });
+
   describe('any user', () => {
     const headers = baseHeaders;
     beforeEach(async () => {
@@ -194,7 +203,7 @@ describe('Highlights creation', () => {
 
       jest.useFakeTimers({
         now: updateDate,
-        advanceTimers: false,
+        advanceTimers: true,
       });
 
       const variables: { input: HighlightInput[] } = {
@@ -211,11 +220,11 @@ describe('Highlights creation', () => {
         .post(graphQLUrl)
         .set(headers)
         .send({ query: print(CREATE_HIGHLIGHTS), variables });
-      const usersMetaRecord = await db('users_meta')
+      const usersMetaRecord = await writeDb('users_meta')
         .where({ user_id: '1', property: UsersMeta.propertiesMap.account })
         .pluck('value');
 
-      const listRecord = await db('list')
+      const listRecord = await writeDb('list')
         .where({ user_id: '1', item_id: '3' })
         .pluck('time_updated');
 
@@ -225,8 +234,6 @@ describe('Highlights creation', () => {
       expect(usersMetaRecord[0]).toEqual(
         mysqlTimeString(updateDate, config.database.tz),
       );
-
-      jest.useRealTimers();
     });
   });
   describe('non-premium users', () => {

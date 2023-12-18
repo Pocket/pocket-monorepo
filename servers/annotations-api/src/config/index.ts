@@ -30,7 +30,7 @@ export default {
     endpoint:
       process.env.NODE_ENV != 'production' &&
       process.env.NODE_ENV != 'development'
-        ? process.env.AWS_ENDPOINT || 'http://localstack:4566'
+        ? process.env.AWS_ENDPOINT || 'http://localhost:4566'
         : undefined,
     maxBackoff: 3000, // in ms, max amount of backoff time allowed for multiple requests
   },
@@ -51,17 +51,17 @@ export default {
     read: {
       host: process.env.DATABASE_READ_HOST || 'localhost',
       port: process.env.DATABASE_READ_PORT || '3306',
-      user: process.env.DATABASE_READ_USER || 'root',
+      user: process.env.DATABASE_READ_USER || 'pkt_annotapi_r',
       password: process.env.DATABASE_READ_PASSWORD || '',
     },
     write: {
       host: process.env.DATABASE_WRITE_HOST || 'localhost',
       port: process.env.DATABASE_WRITE_PORT || '3306',
-      user: process.env.DATABASE_WRITE_USER || 'root',
+      user: process.env.DATABASE_WRITE_USER || 'pkt_annotapi_w',
       password: process.env.DATABASE_WRITE_PASSWORD || '',
     },
     dbName: process.env.DATABASE || 'readitla_ril-tmp',
-    tz: process.env.DATABASE_TZ || 'US/Central',
+    tz: process.env.DATABASE_TZ || 'UTC',
   },
   queueDelete: {
     queryLimit: 500,

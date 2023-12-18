@@ -4,15 +4,16 @@ import { enqueueAnnotationIds, SqsMessage } from './queueDelete';
 import { HighlightsDataService } from '../../dataservices/highlights';
 import config from '../../config';
 import * as Sentry from '@sentry/node';
+import { Knex } from 'knex';
 
 describe('/queueDelete', () => {
   let sentrySpy: jest.SpyInstance;
   let breadSpy: jest.SpyInstance;
   let sqsSendMock: jest.SpyInstance;
   let queryLimit, itemIdChunkSize, sqsBatchSize;
-
+  let db: Knex;
   beforeAll(async () => {
-    const db = writeClient();
+    db = writeClient();
 
     await db('user_annotations').truncate();
     const data = [];
@@ -32,6 +33,10 @@ describe('/queueDelete', () => {
     await db('user_annotations').insert(data);
     sentrySpy = jest.spyOn(Sentry, 'captureException').mockClear();
     breadSpy = jest.spyOn(Sentry, 'addBreadcrumb').mockClear();
+  });
+
+  afterAll(async () => {
+    await db.destroy();
   });
 
   beforeEach(() => {
@@ -95,16 +100,18 @@ describe('/queueDelete', () => {
       const secondMessage = JSON.parse(
         sqsSendMock.mock.calls[1][0].input.Entries[0].MessageBody,
       );
-      expect(firstMessage).toContainEqual({
+      expect(firstMessage.traceId).toBeDefined();
+      expect(firstMessage).toEqual({
         ...data,
+        traceId: firstMessage.traceId, // no easy way to do a shallow equal, so we cheat.
         annotationIds: ['1', '2', '3'],
       });
-      expect(firstMessage.traceId).toBeDefined();
-      expect(secondMessage).toContainEqual({
+      expect(secondMessage.traceId).toBeDefined();
+      expect(secondMessage).toEqual({
         ...data,
+        traceId: secondMessage.traceId, // no easy way to do a shallow equal, so we cheat.
         annotationIds: ['4', '5', '6'],
       });
-      expect(secondMessage.traceId).toBeDefined();
     });
   });
 

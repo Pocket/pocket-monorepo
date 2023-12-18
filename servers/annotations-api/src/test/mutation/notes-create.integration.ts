@@ -3,7 +3,7 @@ import { startServer } from '../../server';
 import request from 'supertest';
 import { print } from 'graphql';
 import { IContext } from '../../context';
-import { readClient } from '../../database/client';
+import { readClient, writeClient } from '../../database/client';
 import { seedData } from '../query/highlights-fixtures';
 import { CREATE_NOTE } from './notes-mutations';
 import { NoteInput } from '../../types';
@@ -14,15 +14,18 @@ describe('Notes creation', () => {
   let graphQLUrl: string;
   // Variables/data
   const baseHeaders = { userId: '1', premium: 'false' };
-  const db = readClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const now = new Date();
   const testData = seedData(now);
   const truncateAndSeed = async () => {
     await Promise.all(
-      Object.keys(testData).map((table) => db(table).truncate()),
+      Object.keys(testData).map((table) => writeDb(table).truncate()),
     );
     await Promise.all(
-      Object.entries(testData).map(([table, data]) => db(table).insert(data)),
+      Object.entries(testData).map(([table, data]) =>
+        writeDb(table).insert(data),
+      ),
     );
   };
   beforeAll(async () => {
@@ -31,6 +34,8 @@ describe('Notes creation', () => {
 
   afterAll(async () => {
     await server.stop();
+    await readDb.destroy();
+    await writeDb.destroy();
   });
 
   beforeEach(async () => {

@@ -3,7 +3,7 @@ import { startServer } from '../../server';
 import request from 'supertest';
 import { print } from 'graphql';
 import { IContext } from '../../context';
-import { readClient } from '../../database/client';
+import { readClient, writeClient } from '../../database/client';
 import { seedData } from './highlights-fixtures';
 import { noteSeedCommand, GET_NOTES } from './notes-fixtures';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
@@ -17,7 +17,8 @@ describe('Notes on a Highlight', () => {
   let graphQLUrl: string;
 
   const headers = { userId: '1', premium: 'true' };
-  const db = readClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const now = new Date();
   const testData = seedData(now);
   const client = new DynamoDBClient({
@@ -28,10 +29,12 @@ describe('Notes on a Highlight', () => {
 
   beforeAll(async () => {
     await Promise.all(
-      Object.keys(testData).map((table) => db(table).truncate()),
+      Object.keys(testData).map((table) => writeDb(table).truncate()),
     );
     await Promise.all(
-      Object.entries(testData).map(([table, data]) => db(table).insert(data)),
+      Object.entries(testData).map(([table, data]) =>
+        writeDb(table).insert(data),
+      ),
     );
     await truncateTable(config.dynamoDb.notesTable.name, client);
     await dynamodb.send(noteSeedCommand(now));
@@ -40,6 +43,8 @@ describe('Notes on a Highlight', () => {
   afterAll(async () => {
     await server.stop();
     client.destroy();
+    await readDb.destroy();
+    await writeDb.destroy();
   });
   it('should return a highlight with note when available', async () => {
     const variables = { itemId: 1 };
