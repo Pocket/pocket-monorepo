@@ -85,7 +85,7 @@ class AnnotationsAPI extends TerraformStack {
 
     const annotationsApiPagerduty = this.createPagerDuty();
 
-    const pocketApp = this.createPocketAlbApplication({
+    this.createPocketAlbApplication({
       pagerDuty: annotationsApiPagerduty,
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
@@ -94,8 +94,6 @@ class AnnotationsAPI extends TerraformStack {
       cache,
       dynamodb,
     });
-
-    this.createApplicationCodePipeline(pocketApp);
 
     const getAnnotationsQuery = `{"query": "query { _entities(representations: { id: \\"1\\", __typename: \\"SavedItem\\" }) { ... on SavedItem { annotations { highlights { id } } } } }"}`;
 
@@ -185,22 +183,6 @@ class AnnotationsAPI extends TerraformStack {
   private getSecretsManagerKmsAlias() {
     return new DataAwsKmsAlias(this, 'kms_alias', {
       name: 'alias/aws/secretsmanager',
-    });
-  }
-
-  /**
-   * Create CodePipeline to build and deploy terraform and ecs
-   * @param app
-   * @private
-   */
-  private createApplicationCodePipeline(app: PocketALBApplication) {
-    new PocketECSCodePipeline(this, 'code-pipeline', {
-      prefix: config.prefix,
-      source: {
-        codeStarConnectionArn: config.codePipeline.githubConnectionArn,
-        repository: config.codePipeline.repository,
-        branchName: config.codePipeline.branch,
-      },
     });
   }
 
@@ -371,7 +353,7 @@ class AnnotationsAPI extends TerraformStack {
       ],
       codeDeploy: {
         useCodeDeploy: true,
-        useCodePipeline: true,
+        useCodePipeline: false,
         snsNotificationTopicArn: snsTopic.arn,
         notifications: {
           //only notify on failed deploys
@@ -382,7 +364,7 @@ class AnnotationsAPI extends TerraformStack {
       },
       exposedContainer: {
         name: 'app',
-        port: 4008,
+        port: config.port,
         healthCheckPath: '/.well-known/apollo/server-health',
       },
       ecsIamConfig: {
