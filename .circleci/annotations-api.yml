@@ -10,9 +10,10 @@ workflows:
           name: annotations-api_apollo
           fed_graph_name: pocket-client-api
           graph_name: annotations-api
-          schema_file_path: servers/annotations-api/schema.graphql
+          schema_file_path: servers/annotations-api/dist/schema-generated.graphql
           prod_graph_url: https://annotations-api.readitlater.com
           dev_graph_url: https://annotations-api.getpocket.dev
+          build_command: pnpm run --filter=annotations-api... build
 
       - test_integrations:
           <<: *not_dev_main

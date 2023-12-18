@@ -397,9 +397,13 @@ jobs:
         type: env_var_name
         default: APOLLO_KEY
         description: The environment variable name of the apollo key to user
+      build_command:
+        description: 'build command to use if we need to'
+        type: string
+        default: ""
 
     docker:
-      - image: *base_image
+      - image: *node_image
         auth:
           username: $DOCKER_LOGIN
           password: $DOCKER_PASSWORD
@@ -414,6 +418,14 @@ jobs:
 
             # This allows the PATH changes to persist to the next `run` step
             echo "export PATH=$HOME/.rover/bin:$PATH" >> "$BASH_ENV"
+      - when:
+          condition: << parameters.build_command >>
+          steps:
+            - install_pnpm
+            - run:
+                name: build schema
+                command: |
+                  << parameters.build_command >>
       - run:
           name: check service
           command: |
