@@ -227,10 +227,10 @@ jobs:
           command: |
             . /home/circleci/.codebuild_shims_wrapper.sh
 
-            currentDeployment=$(aws deploy list-deployments --application-name "<< parameters.codedeploy-app-name >>" --deployment-group-name "<< parameters.codedeploy-group-name >>" --query "deployments[?status=='InProgress'].deploymentId" --output text)
+            currentDeployment=$(aws deploy list-deployments --application-name "<< parameters.codedeploy-app-name >>" --deployment-group-name "<< parameters.codedeploy-group-name >>" --query "deployments[?status=='InProgress'].deploymentId" --output text --no-cli-pager)
             if [ -n "$currentDeployment" ]; then
               echo "There is already a deployment in progress with ID: $currentDeployment" waiting for it to finish
-              aws deploy wait deployment-successful --deployment-id "$deploymentId" || {
+              aws deploy wait deployment-successful --deployment-id "$deploymentId" --no-cli-pager || {
                 echo "Deployment failed or timed out."
                 exit 1
               }
@@ -281,7 +281,8 @@ jobs:
           name: Deploy Lambda
           command: |
             . /home/circleci/.codebuild_shims_wrapper.sh
-            aws lambda wait function-updated --function-name '<< parameters.function-name >>' --no-cli-pager
+            export AWS_PAGER=""
+            aws lambda wait function-updated --function-name '<< parameters.function-name >>'
 
             s3Key="<< parameters.s3-key >>"
             if [[ -z $s3Key ]]; then
@@ -292,7 +293,6 @@ jobs:
                 --function-name '<< parameters.function-name >>' \
                 --s3-bucket '<< parameters.s3-bucket >>' \
                 --s3-key "$s3Key"
-                --no-cli-pager
 
             aws lambda wait function-updated --function-name '<< parameters.function-name >>'
 
@@ -308,14 +308,13 @@ jobs:
             app_spec_content_sha256=$(echo -n "$app_spec_content_string" | shasum -a 256 | sed 's/ .*$//')
             revision="revisionType=AppSpecContent,appSpecContent={content=\"$app_spec_content_string\",sha256=$app_spec_content_sha256}"
 
-            aws lambda wait function-updated --function-name '<< parameters.function-name >>' --no-cli-pager
+            aws lambda wait function-updated --function-name '<< parameters.function-name >>'
 
             aws deploy create-deployment \
               --application-name="<< parameters.codedeploy-app-name >>" \
               --deployment-group-name="<< parameters.codedeploy-group-name >>" \
               --description="Triggered build $CIRCLE_SHA1 from CircleCI" \
               --revision="$revision"
-              --no-cli-pager
 
   test_integrations:
     description: Run integration tests against external services, e.g. MySQL
