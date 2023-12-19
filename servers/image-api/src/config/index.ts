@@ -19,7 +19,7 @@ export default {
     environment: process.env.NODE_ENV || 'development',
   },
   tracing: {
-    host: process.env.OTLP_COLLECTOR_HOST || 'otlpcollector',
+    host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
     serviceName: 'image-api',
   },
 };

@@ -1,11 +1,10 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local", "packages/tsconfig/**"],
-  "globalDotEnv": [".env"],
+  "globalDotEnv": [".env", ".env.example"],
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "dotEnv": [".env.production.local", ".env.local", ".env.production", ".env"],
       "outputs": ["dist/**"]
     },
     "synth": {
@@ -23,8 +22,7 @@
     },
     "dev": {
       "cache": false,
-      "persistent": true,
-      "dotEnv": [".env.production.local", ".env.local", ".env.production", ".env"]
+      "persistent": true
     }
   }
 }

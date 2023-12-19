@@ -1,0 +1,12 @@
+query GetAnnotations($itemId: ID) {
+  _entities(representations: { id: $itemId, __typename: "SavedItem" }) {
+    ... on SavedItem {
+      annotations {
+        highlights {
+          id
+          quote
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,1 @@
+process.env.ANNOTATIONS_API_URI = 'http://localhost:4008';

@@ -4,6 +4,7 @@ orbs:
   aws-cli: circleci/aws-cli@2.0.6
   aws-ecr: circleci/aws-ecr@7.3.0
   aws-code-deploy: circleci/aws-code-deploy@3.0.0
+  jq: circleci/jq@2.2.0
 
 # This is an enum that is used within all our jobs and our exit early job.
 # As a new "service/deployment" is added you should add to the enum.
@@ -14,6 +15,7 @@ repo_for_enum: &repo_for_enum
     type: enum
     enum: 
       - image_api
+      - annotations_api
 
 resource_class_enmum: &resource_class_enmum
   resource-class:
@@ -26,6 +28,9 @@ resource_class_enmum: &resource_class_enmum
 
 parameters:
   image_api:
+    type: boolean
+    default: false
+  annotations_api:
     type: boolean
     default: false
 
@@ -50,6 +55,7 @@ commands:
             fi
           environment:
             image_api: << pipeline.parameters.image_api >>
+            annotations_api: << pipeline.parameters.annotations_api >>
 
   install_pnpm:
     steps:
@@ -129,7 +135,7 @@ jobs:
       - run:
           name: Install tfcmt
           command: |
-            curl -L https://github.com/suzuki-shunsuke/tfcmt/releases/download/v4.7.2/tfcmt_linux_amd64.tar.gz | tar xvzf - tfcmt
+            curl -L https://github.com/suzuki-shunsuke/tfcmt/releases/download/v4.7.3/tfcmt_linux_amd64.tar.gz | tar xvzf - tfcmt
             mv tfcmt /home/circleci/tfcmt
             chmod a+x /home/circleci/tfcmt
       - install_infrastructure_pnpm
@@ -174,7 +180,7 @@ jobs:
                 command: |
                   . /home/circleci/.codebuild_shims_wrapper.sh
                   cd << parameters.stack-output-path >>
-                  /home/circleci/tfcmt apply -- terraform apply -auto-approve
+                  /home/circleci/tfcmt --var target:<< parameters.scope >><<#parameters.dev>>-dev<</parameters.dev>> apply -- terraform apply -auto-approve
                   cp appspec.json /tmp/workspace/
             - persist_to_workspace:
                 root: /tmp/workspace
@@ -188,8 +194,7 @@ jobs:
                 command: |
                   . /home/circleci/.codebuild_shims_wrapper.sh
                   cd << parameters.stack-output-path >>
-                  /home/circleci/tfcmt plan --skip-no-changes --patch -- terraform plan
-
+                  /home/circleci/tfcmt --var target:<< parameters.scope >><<#parameters.dev>>-dev<</parameters.dev>> plan --skip-no-changes --patch -- terraform plan
       - save_cache:
           key: tfenv-v2
           paths:
@@ -221,6 +226,16 @@ jobs:
           name: CodeDeploy
           command: |
             . /home/circleci/.codebuild_shims_wrapper.sh
+            export AWS_PAGER=""
+            currentDeployment=$(aws deploy list-deployments --application-name "<< parameters.codedeploy-app-name >>" --deployment-group-name "<< parameters.codedeploy-group-name >>" --query "deployments[?status=='InProgress'].deploymentId" --output text --no-cli-pager)
+            if [ -n "$currentDeployment" ]; then
+              echo "There is already a deployment in progress with ID: $currentDeployment" waiting for it to finish
+              aws deploy wait deployment-successful --deployment-id "$deploymentId" --no-cli-pager || {
+                echo "Deployment failed or timed out."
+                exit 1
+              }
+            fi
+
             export appspec=$(cat '<< parameters.workspace >>/appspec.json')
             export REVISION="revisionType=AppSpecContent,appSpecContent={content='$appspec'}"
             aws deploy \
@@ -230,6 +245,76 @@ jobs:
             --description="Triggered from CircleCI" \
             --revision="$REVISION" \
             --no-cli-pager
+
+  code_deploy_lambda:
+    parameters:
+      codedeploy-app-name:
+        description: CodeDeploy app name
+        type: string
+      codedeploy-group-name:
+        description: CodeDeploy group name
+        type: string
+      function-name:
+        description: >
+          The name of the Lambda Function to deploy to
+        type: string
+      s3-bucket:
+        type: string
+        description: The name of the bucket to deploy from
+      s3-key:
+        type: string
+        description: The name of the s3 key that contains the code to deploy
+        default: ""
+      function-alias:
+        type: string
+        description: The name of the lambda alias to use
+        default: DEPLOYED
+      <<: [*repo_for_enum, *resource_class_enmum]
+    # Our self hosted runners dont support docker images, cause its not deployed in kubernetes, so we have some special steps
+    machine: true
+    resource_class: << parameters.resource-class >>
+    steps:
+      - exit-early-if-irrelevant:
+          for: << parameters.for >>
+      - jq/install
+      - run:
+          name: Deploy Lambda
+          command: |
+            . /home/circleci/.codebuild_shims_wrapper.sh
+            export AWS_PAGER=""
+            aws lambda wait function-updated --function-name '<< parameters.function-name >>'
+
+            s3Key="<< parameters.s3-key >>"
+            if [[ -z $s3Key ]]; then
+                s3Key="$CIRCLE_SHA1.zip"
+            fi
+
+            aws lambda update-function-code \
+                --function-name '<< parameters.function-name >>' \
+                --s3-bucket '<< parameters.s3-bucket >>' \
+                --s3-key "$s3Key"
+
+            aws lambda wait function-updated --function-name '<< parameters.function-name >>'
+
+            versionId=$(aws lambda publish-version \
+                --function-name '<< parameters.function-name >>' | jq -r .Version)
+
+            currentVersion=$(aws lambda get-alias \
+                --function-name '<< parameters.function-name >>' \
+                --name DEPLOYED | jq -r .FunctionVersion)
+
+            app_spec_content_string="{'version':0.0,'Resources':[{'<< parameters.function-name >>':{'Type':'AWS::Lambda::Function','Properties':{'Name':'<< parameters.function-name >>','Alias':'<< parameters.function-alias >>','TargetVersion':'$versionId', 'CurrentVersion': '$currentVersion'}}}]}"
+            echo "$app_spec_content_string"
+            app_spec_content_sha256=$(echo -n "$app_spec_content_string" | shasum -a 256 | sed 's/ .*$//')
+            revision="revisionType=AppSpecContent,appSpecContent={content=\"$app_spec_content_string\",sha256=$app_spec_content_sha256}"
+
+            aws lambda wait function-updated --function-name '<< parameters.function-name >>'
+
+            aws deploy create-deployment \
+              --application-name="<< parameters.codedeploy-app-name >>" \
+              --deployment-group-name="<< parameters.codedeploy-group-name >>" \
+              --description="Triggered build $CIRCLE_SHA1 from CircleCI" \
+              --revision="$revision"
 
   test_integrations:
     description: Run integration tests against external services, e.g. MySQL
@@ -244,13 +329,26 @@ jobs:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
         environment:
-          NODE_ENV: test
           AWS_XRAY_LOG_LEVEL: silent
           AWS_XRAY_CONTEXT_MISSING: LOG_ERROR
       - image: redis:latest
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
+      - image: mysql:8
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+        environment:
+          - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+          - TZ=UTC
+        command: --default_authentication_plugin=mysql_native_password --sql-mode="NO_ENGINE_SUBSTITUTION" --character-set-server=UTF8MB3 --collation-server=utf8_unicode_ci
+      - image: localstack/localstack:3.0.2
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+        environment:
+          SERVICES: s3,kinesis,sqs,dynamodb,sts,events,firehose
     steps:
       - exit-early-if-irrelevant:
           for: << parameters.for >>
@@ -259,17 +357,17 @@ jobs:
       - run:
           name: run setup.sh
           command: |
-            export $(egrep -v '^#' .docker/local.env | xargs -0) && ./.circleci/scripts/setup.sh --hosts
+            export $(egrep -v '^#' .docker/local.env | xargs -0) && ./.circleci/scripts/setup.sh --db --aws
       - run:
           # Note there is a bug in turbo repo requiring a build https://github.com/vercel/turbo/issues/1609
           name: run tests
           command: |
             export $(egrep -v '^#' .docker/local.env | xargs -0)
-            pnpm run build
+            pnpm run --filter=<< parameters.scope >>... build
             pnpm run --filter=<< parameters.scope >>... test-integrations
 
   build_image:
-    description: Build and/or push docker image to ECR. Runs codebuild if specified ECR does not exist to create it
+    description: Build and/or push docker image to ECR.
 
     parameters:
       aws-access-key-id:
@@ -281,14 +379,6 @@ jobs:
       aws-secret-access-key:
         description: 'AWS secret access key environment variable'
         type: string
-      codebuild-project-name:
-        description: 'The CodeBuild project name'
-        type: string
-        default: ''
-      codebuild-project-branch:
-        description: 'The git branch to build'
-        type: string
-        default: ''
       ecr-url:
         description: 'The ecr url'
         type: string
@@ -324,8 +414,6 @@ jobs:
             { \
               echo 'export AWS_ECR_ACCOUNT_URL="<< parameters.ecr-url >>"'; \
               echo 'export REPO_NAME="<< parameters.repo-name >>"'; \
-              echo 'export CODEBUILD_PROJECT_NAME="<< parameters.codebuild-project-name >>"'; \
-              echo 'export CODEBUILD_PROJECT_BRANCH="<< parameters.codebuild-project-branch >>"'; \
             } >> "$BASH_ENV"
       - when:
           condition: <<parameters.push>>
@@ -348,6 +436,104 @@ jobs:
                 repo: << parameters.repo-name >>
                 tag: << parameters.tag >>
                 extra-build-args: << parameters.extra-build-args >>
+
+  build_lambda:
+    description: Build and/or push lambda function.
+    parameters:
+      aws-access-key-id:
+        description: 'AWS access key id environment variable'
+        type: string
+      aws-region:
+        description: 'AWS region value'
+        type: string
+      aws-secret-access-key:
+        description: 'AWS secret access key environment variable'
+        type: string
+      s3-bucket:
+        description: 'The s3 bucket name'
+        type: string
+        default: ""
+      scope:
+        description: The pnpm scope to build for
+        type: string
+      sentry_project_name:
+        type: string
+        description: the Sentry project name
+        default: ""
+      sentry_env:
+        type: string
+        default: Prod
+        description: Which environment the release is going to
+      sentry_org:
+        type: string
+        description: The sentry org to upload source maps to
+      <<: *repo_for_enum
+    docker:
+      - image: *node_image
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - exit-early-if-irrelevant:
+          for: << parameters.for >>
+      - run:
+          name: Setup Environment variables
+          command: |
+            echo "export SENTRY_AUTH_TOKEN="$SENTRY_BEARER"" >> "$BASH_ENV"
+      - checkout
+      - install_pnpm
+      - run:
+          # Theres a really annoying bug in PNPM deploy command that will try and create a folder at /home/pruned which we are not allowed to do, 
+          # so we move it under 1 directory to let it do its thing.
+          # https://github.com/pnpm/pnpm/issues/5086
+          name: Build lambda
+          command: |
+            pnpm install --filter=<< parameters.scope >>... --frozen-lockfile
+            pnpm run --filter=<< parameters.scope >>... build
+            mkdir -p ~/bug/project
+            cp -R . ~/bug/project/
+            cd ~/bug/project/
+            pnpm --filter=<< parameters.scope >> --prod deploy pruned
+      - when:
+          condition: << parameters.sentry_project_name >>
+          steps:
+            - run:
+                name: Inject Sentry & Upload Sourcemaps
+                command: |
+                  cd ~/bug/project/
+                  pnpx @sentry/cli sourcemaps inject pruned/dist
+                  pnpx @sentry/cli sourcemaps upload pruned/dist --release ${CIRCLE_SHA1} --auth-token ${SENTRY_AUTH_TOKEN} --org << parameters.sentry_org >> --project << parameters.sentry_project_name >>
+      - run:
+          name: Package Lambda
+          command: |
+            cd ~/bug/project/pruned
+            cp -r package.json dist/
+            cp -r node_modules/ dist/node_modules/
+
+            cd dist
+            zip -r9 ~/project/${CIRCLE_SHA1}.zip .
+            mkdir /tmp/artifacts
+            cp ~/project/${CIRCLE_SHA1}.zip /tmp/artifacts/
+            cd ..
+            maxFileSize=256000 # Get the size of the directory in kilobytes
+            export dirSize=$(du -s dist | cut -f1) 
+            echo "Size is: $dirSize"
+            if ((dirSize > maxFileSize)); then
+              echo "Directory size is equal to or larger than $maxFileSize KB. which is the lambda limit"
+              exit 1
+            fi 
+      - when:
+          condition: << parameters.s3-bucket >>
+          steps:
+            - aws-cli/setup:
+                aws-access-key-id: << parameters.aws-access-key-id >>
+                aws-secret-access-key: << parameters.aws-secret-access-key >>
+                aws-region: << parameters.aws-region >>
+            - run:
+                name: Upload Package
+                command: aws s3 cp ${CIRCLE_SHA1}.zip s3://<< parameters.s3-bucket >>/ 
+      - store_artifacts:
+          path: /tmp/artifacts
 
   apollo:
     description: >
@@ -392,9 +578,13 @@ jobs:
         type: env_var_name
         default: APOLLO_KEY
         description: The environment variable name of the apollo key to user
+      build_command:
+        description: 'build command to use if we need to'
+        type: string
+        default: ""
 
     docker:
-      - image: *base_image
+      - image: *node_image
         auth:
           username: $DOCKER_LOGIN
           password: $DOCKER_PASSWORD
@@ -409,6 +599,14 @@ jobs:
 
             # This allows the PATH changes to persist to the next `run` step
             echo "export PATH=$HOME/.rover/bin:$PATH" >> "$BASH_ENV"
+      - when:
+          condition: << parameters.build_command >>
+          steps:
+            - install_pnpm
+            - run:
+                name: build schema
+                command: |
+                  << parameters.build_command >>
       - run:
           name: check service
           command: |
@@ -474,3 +672,38 @@ jobs:
           command: |
             source "$BASH_ENV"
             sentry-cli releases deploys "$CIRCLE_SHA1" new -e "<< parameters.sentry_env >>"
+
+  setup_deploy_params:
+    description: Sets up the CircleCI variables in AWS using the service name and env that is passed
+    parameters:
+      service_name:
+        description: Service Name
+        type: string
+      env:
+        description: Environment of the service
+        type: string
+      aws_access_key_id:
+        type: env_var_name
+        default: AWS_ACCESS_KEY_ID
+        description: AWS access key id for IAM role
+      aws_secret_access_key:
+        type: env_var_name
+        default: AWS_SECRET_ACCESS_KEY
+        description: AWS secret key for IAM role
+    docker:
+      - image: amazon/aws-cli:latest
+        auth:
+          username: $DOCKER_LOGIN
+          password: $DOCKER_PASSWORD
+        environment:
+          TERM: xterm
+
+    steps:
+      - run:
+          name: Put SSM Parameters
+          command: |
+            export AWS_ACCESS_KEY_ID="${<< parameters.aws_access_key_id >>}"
+            export AWS_SECRET_ACCESS_KEY="${<< parameters.aws_secret_access_key >>}"
+            aws ssm put-parameter --name "/<< parameters.service_name >>/CircleCI/<< parameters.env >>/BUILD_BRANCH" --type "SecureString" --value "${CIRCLE_BRANCH}" --overwrite
+            aws ssm put-parameter --name "/<< parameters.service_name >>/CircleCI/<< parameters.env >>/SERVICE_VERSION" --type "SecureString" --value "${CIRCLE_BUILD_NUM}" --overwrite
+            aws ssm put-parameter --name "/<< parameters.service_name >>/CircleCI/<< parameters.env >>/SERVICE_HASH" --type "SecureString" --value "${CIRCLE_SHA1}" --overwrite
