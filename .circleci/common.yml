@@ -502,6 +502,8 @@ jobs:
             cp -r node_modules/ dist/node_modules/
             cd dist
             zip -r9 ~/project/${CIRCLE_SHA1}.zip .
+            mkdir /tmp/artifacts
+            cp ~/project/${CIRCLE_SHA1}.zip /tmp/artifacts/
       - when:
           condition: << parameters.s3-bucket >>
           steps:
@@ -513,8 +515,7 @@ jobs:
                 name: Upload Package
                 command: aws s3 cp ${CIRCLE_SHA1}.zip s3://<< parameters.s3-bucket >>/ 
       - store_artifacts:
-          path: ~/project/${CIRCLE_SHA1}.zip
-          destination: << parameters.scope >>
+          path: /tmp/artifacts
 
   apollo:
     description: >
