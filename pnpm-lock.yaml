@@ -53,6 +53,9 @@ importers:
       node-fetch:
         specifier: ^2.6.7
         version: 2.7.0
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
     devDependencies:
       '@types/aws-lambda':
         specifier: 8.10.130
