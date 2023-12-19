@@ -180,7 +180,7 @@ jobs:
                 command: |
                   . /home/circleci/.codebuild_shims_wrapper.sh
                   cd << parameters.stack-output-path >>
-                  /home/circleci/tfcmt --var target:<< parameters.scope >> apply -- terraform apply -auto-approve
+                  /home/circleci/tfcmt --var target:<< parameters.scope >><<#parameters.dev>>-dev<</parameters.dev>> apply -- terraform apply -auto-approve
                   cp appspec.json /tmp/workspace/
             - persist_to_workspace:
                 root: /tmp/workspace
@@ -194,8 +194,7 @@ jobs:
                 command: |
                   . /home/circleci/.codebuild_shims_wrapper.sh
                   cd << parameters.stack-output-path >>
-                  /home/circleci/tfcmt --var target:<< parameters.scope >> plan --skip-no-changes --patch -- terraform plan
-
+                  /home/circleci/tfcmt --var target:<< parameters.scope >><<#parameters.dev>>-dev<</parameters.dev>> plan --skip-no-changes --patch -- terraform plan
       - save_cache:
           key: tfenv-v2
           paths:
