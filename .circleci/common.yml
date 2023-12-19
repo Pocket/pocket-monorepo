@@ -517,8 +517,9 @@ jobs:
             cp ~/project/${CIRCLE_SHA1}.zip /tmp/artifacts/
             cd ..
             maxFileSize=256000 # Get the size of the directory in kilobytes
-            dirSize=$(du -s "dist" | cut -f1)
-            if ((dirSize < maxFileSize)); then
+            export dirSize=$(du -s dist | cut -f1) 
+            echo "Size is: $dirSize"
+            if ((dirSize > maxFileSize)); then
               echo "Directory size is equal to or larger than $maxFileSize KB. which is the lambda limit"
               exit 1
             fi 

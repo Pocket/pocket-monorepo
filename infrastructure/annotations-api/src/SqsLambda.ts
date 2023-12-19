@@ -1,4 +1,3 @@
-import { Resource } from 'cdktf';
 import { Construct } from 'constructs';
 import { config } from './config';
 import {
@@ -10,7 +9,7 @@ import {
 import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
 import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
 
-export class SqsLambda extends Resource {
+export class SqsLambda extends Construct {
   public readonly lambda: PocketSQSWithLambdaTarget;
 
   constructor(
@@ -33,7 +32,7 @@ export class SqsLambda extends Resource {
         visibilityTimeoutSeconds: 300,
       },
       lambda: {
-        runtime: LAMBDA_RUNTIMES.NODEJS14,
+        runtime: LAMBDA_RUNTIMES.NODEJS18,
         handler: 'index.handler',
         timeout: 120,
         reservedConcurrencyLimit: config.reservedConcurrencyLimit,
