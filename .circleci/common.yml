@@ -226,6 +226,16 @@ jobs:
           name: CodeDeploy
           command: |
             . /home/circleci/.codebuild_shims_wrapper.sh
+
+            currentDeployment=$(aws deploy list-deployments --application-name "<< parameters.codedeploy-app-name >>" --deployment-group-name "<< parameters.codedeploy-group-name >>" --query "deployments[?status=='InProgress'].deploymentId" --output text)
+            if [ -n "$currentDeployment" ]; then
+              echo "There is already a deployment in progress with ID: $currentDeployment" waiting for it to finish
+              aws deploy wait deployment-successful --deployment-id "$deploymentId" || {
+                echo "Deployment failed or timed out."
+                exit 1
+              }
+            fi
+
             export appspec=$(cat '<< parameters.workspace >>/appspec.json')
             export REVISION="revisionType=AppSpecContent,appSpecContent={content='$appspec'}"
             aws deploy \
@@ -500,17 +510,18 @@ jobs:
             cd ~/bug/project/pruned
             cp -r package.json dist/
             cp -r node_modules/ dist/node_modules/
-            maxFileSize=256000
-            # Get the size of the directory in kilobytes
-            dirSize=$(du -s "~/bug/project/pruned/dist" | cut -f1)
-            if ((dirSize < maxFileSize)); then
-              echo "Directory size is equal to or larger than $maxFileSize KB. which is the lambda limit"
-              exit 1
-            fi 
+
             cd dist
             zip -r9 ~/project/${CIRCLE_SHA1}.zip .
             mkdir /tmp/artifacts
             cp ~/project/${CIRCLE_SHA1}.zip /tmp/artifacts/
+            cd ..
+            maxFileSize=256000 # Get the size of the directory in kilobytes
+            dirSize=$(du -s "dist" | cut -f1)
+            if ((dirSize < maxFileSize)); then
+              echo "Directory size is equal to or larger than $maxFileSize KB. which is the lambda limit"
+              exit 1
+            fi 
       - when:
           condition: << parameters.s3-bucket >>
           steps:
