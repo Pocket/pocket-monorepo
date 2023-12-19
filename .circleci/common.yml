@@ -500,6 +500,13 @@ jobs:
             cd ~/bug/project/pruned
             cp -r package.json dist/
             cp -r node_modules/ dist/node_modules/
+            maxFileSize=256000
+            # Get the size of the directory in kilobytes
+            dirSize=$(du -s "~/bug/project/pruned/dist" | cut -f1)
+            if ((dirSize < maxFileSize)); then
+              echo "Directory size is equal to or larger than $maxFileSize KB. which is the lambda limit"
+              exit 1
+            fi 
             cd dist
             zip -r9 ~/project/${CIRCLE_SHA1}.zip .
             mkdir /tmp/artifacts

@@ -144,6 +144,7 @@ workflows:
           sentry_org: pocket
           requires:
             - annotations-api_code_deploy_ecs_dev
+            - annotations-api_events_code_deploy_lambda_dev
 
       ######
       # Main Branch Deployment (Prod Environment)
@@ -227,5 +228,6 @@ workflows:
           sentry_org: pocket
           requires:
             - annotations-api_code_deploy_ecs_prod
+            - annotations-api_events_code_deploy_lambda_prod
 
 
