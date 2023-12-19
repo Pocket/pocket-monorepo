@@ -35,7 +35,20 @@ workflows:
           ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
           push: false
           extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=annotations-api --build-arg APP_PATH=servers/annotations-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=annotations-api --build-arg PORT=4008 
-     
+
+      - build_lambda:
+          <<: *not_dev_main
+          context: pocket
+          for: annotations_api
+          name: annotations-api_build_lambda
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          scope: annotations-api-events-lambda
+          sentry_project_name: annotations-api
+          sentry_env: development
+          sentry_org: pocket
+
       - infrastructure:
           <<: *not_dev_main
           context: pocket
@@ -90,6 +103,22 @@ workflows:
           codedeploy-group-name: AnnotationsAPI-Dev-ECS
           requires:
             - annotations-api_build_docker_dev
+
+      - build_lambda:
+          <<: *only_dev
+          context: pocket
+          for: annotations_api
+          name: annotations-api_build_lambda_dev
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          scope: annotations-api-events-lambda
+          sentry_project_name: annotations-api
+          sentry_env: development
+          sentry_org: pocket
+          s3-bucket: pocket-annotationsapi-dev-sqs-event-consumer
+          requires:
+            - annotations-api_infrastructure_apply_dev
 
       # Notify sentry of dev deployment
       - sentry_release_notification:
