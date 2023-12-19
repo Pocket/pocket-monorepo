@@ -1,14 +1,11 @@
 import { Event, handlers } from './handlers';
 import { processor } from './index';
 import { SQSEvent } from 'aws-lambda';
-import * as Sentry from '@sentry/serverless';
 
 describe('event handlers', () => {
   let deleteStub: jest.SpyInstance;
-  let sentryStub: jest.SpyInstance;
   beforeEach(() => {
     jest.restoreAllMocks();
-    sentryStub = jest.spyOn(Sentry, 'captureException');
   });
   afterAll(() => jest.restoreAllMocks());
   describe('with no handler errors', () => {
@@ -44,10 +41,6 @@ describe('event handlers', () => {
       };
       const res = await processor(records as SQSEvent);
       expect(res.batchItemFailures).toEqual([{ itemIdentifier: 'abc' }]);
-      expect(sentryStub).toHaveBeenCalledTimes(1);
-      expect(sentryStub.mock.calls[0][0].message).toEqual(
-        `Unable to retrieve handler for detail-type='NOT_A_TYPE'`,
-      );
     });
   });
   describe('with handler errors', () => {
@@ -69,8 +62,6 @@ describe('event handlers', () => {
       };
       const res = await processor(records as SQSEvent);
       expect(res.batchItemFailures).toEqual([{ itemIdentifier: 'abc' }]);
-      expect(sentryStub).toHaveBeenCalledTimes(1);
-      expect(sentryStub.mock.calls[0][0].message).toEqual('got an error');
     });
   });
 });

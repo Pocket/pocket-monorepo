@@ -47,9 +47,6 @@ importers:
       '@aws-sdk/client-lambda':
         specifier: 3.391.0
         version: 3.391.0
-      '@sentry/serverless':
-        specifier: 7.64.0
-        version: 7.64.0
       aws-lambda:
         specifier: ^1.0.7
         version: 1.0.7
@@ -3282,21 +3279,6 @@ packages:
       - supports-color
     dev: false
 
-  /@sentry/serverless@7.64.0:
-    resolution: {integrity: sha512-8lXcHW52xAO1YRgM5T9+xrl5wd6u0TNGRk338I+sGkyZwVQ/1sqxtvftyl13NrMa86wmAU5a91Yzge2YUAxGYQ==}
-    engines: {node: '>=10'}
-    dependencies:
-      '@sentry/core': 7.64.0
-      '@sentry/node': 7.64.0
-      '@sentry/types': 7.64.0
-      '@sentry/utils': 7.64.0
-      '@types/aws-lambda': 8.10.119
-      '@types/express': 4.17.21
-      tslib: 2.6.2
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
   /@sentry/tracing@7.64.0:
     resolution: {integrity: sha512-Php0XnnJolfxkFdgLlgwgRz3bgHmu/7gDRQaGQHJeDgCCjrmNHI+sHi8zmkWCWSO0Z1mi111n2ZUr9B9YLPBTg==}
     engines: {node: '>=8'}
@@ -3776,6 +3758,7 @@ packages:
 
   /@types/aws-lambda@8.10.119:
     resolution: {integrity: sha512-Vqm22aZrCvCd6I5g1SvpW151jfqwTzEZ7XJ3yZ6xaZG31nUEOEyzzVImjRcsN8Wi/QyPxId/x8GTtgIbsy8kEw==}
+    dev: true
 
   /@types/babel__core@7.20.5:
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -5925,7 +5908,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.4.0-dev.20231218
+      typescript: 5.4.0-dev.20231219
     dev: false
 
   /eastasianwidth@0.2.0:
@@ -11184,8 +11167,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.4.0-dev.20231218:
-    resolution: {integrity: sha512-huxh8lRM0KCQBEOrTZEGb/B/3FE7XQzoGuNnaRG3kpJoj4xZ+TuJNCIJYDSXHvd5754pfOLxz51Jhkvc/ZCr3w==}
+  /typescript@5.4.0-dev.20231219:
+    resolution: {integrity: sha512-pWOp0d2qj5T4llRnhb3BVkx2jN2yglMVTc96xs9dRY4I64EG/uFfyO3aoHm/1H0LAPmilJsJGDtXASxGM+GIVg==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: false
