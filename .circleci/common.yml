@@ -4,6 +4,7 @@ orbs:
   aws-cli: circleci/aws-cli@2.0.6
   aws-ecr: circleci/aws-ecr@7.3.0
   aws-code-deploy: circleci/aws-code-deploy@3.0.0
+  jq: circleci/jq@2.2.0
 
 # This is an enum that is used within all our jobs and our exit early job.
 # As a new "service/deployment" is added you should add to the enum.
@@ -235,6 +236,77 @@ jobs:
             --description="Triggered from CircleCI" \
             --revision="$REVISION" \
             --no-cli-pager
+
+  code_deploy_lambda:
+    parameters:
+      codedeploy-app-name:
+        description: CodeDeploy app name
+        type: string
+      codedeploy-group-name:
+        description: CodeDeploy group name
+        type: string
+      function-name:
+        description: >
+          The name of the Lambda Function to deploy to
+        type: string
+      s3-bucket:
+        type: string
+        description: The name of the bucket to deploy from
+      s3-key:
+        type: string
+        description: The name of the s3 key that contains the code to deploy
+        default: ""
+      function-alias:
+        type: string
+        description: The name of the lambda alias to use
+        default: DEPLOYED
+      <<: [*repo_for_enum, *resource_class_enmum]
+    # Our self hosted runners dont support docker images, cause its not deployed in kubernetes, so we have some special steps
+    machine: true
+    resource_class: << parameters.resource-class >>
+    steps:
+      - exit-early-if-irrelevant:
+          for: << parameters.for >>
+      - jq/install
+      - run:
+          name: Deploy Lambda
+          command: |
+            . /home/circleci/.codebuild_shims_wrapper.sh
+            aws lambda wait function-updated --function-name '<< parameters.function-name >>' --no-cli-pager
+
+            s3Key="<< parameters.s3-key >>"
+            if [[ -z $s3Key ]]; then
+                s3Key="$CIRCLE_SHA1.zip"
+            fi
+
+            aws lambda update-function-code \
+                --function-name '<< parameters.function-name >>' \
+                --s3-bucket '<< parameters.s3-bucket >>' \
+                --s3-key "$s3Key"
+                --no-cli-pager
+
+            aws lambda wait function-updated --function-name '<< parameters.function-name >>'
+
+            versionId=$(aws lambda publish-version \
+                --function-name '<< parameters.function-name >>' | jq -r .Version)
+
+            currentVersion=$(aws lambda get-alias \
+                --function-name '<< parameters.function-name >>' \
+                --name DEPLOYED | jq -r .FunctionVersion)
+
+            app_spec_content_string="{'version':0.0,'Resources':[{'<< parameters.function-name >>':{'Type':'AWS::Lambda::Function','Properties':{'Name':'<< parameters.function-name >>','Alias':'<< parameters.function-alias >>','TargetVersion':'$versionId', 'CurrentVersion': '$currentVersion'}}}]}"
+            echo "$app_spec_content_string"
+            app_spec_content_sha256=$(echo -n "$app_spec_content_string" | shasum -a 256 | sed 's/ .*$//')
+            revision="revisionType=AppSpecContent,appSpecContent={content=\"$app_spec_content_string\",sha256=$app_spec_content_sha256}"
+
+            aws lambda wait function-updated --function-name '<< parameters.function-name >>' --no-cli-pager
+
+            aws deploy create-deployment \
+              --application-name="<< parameters.codedeploy-app-name >>" \
+              --deployment-group-name="<< parameters.codedeploy-group-name >>" \
+              --description="Triggered build $CIRCLE_SHA1 from CircleCI" \
+              --revision="$revision"
+              --no-cli-pager
 
   test_integrations:
     description: Run integration tests against external services, e.g. MySQL
