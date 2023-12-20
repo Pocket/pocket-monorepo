@@ -34,7 +34,9 @@ export class PinpointController {
       ApplicationId: config.pinpoint.applicationId,
       UserId: this.userId,
     });
-    Sentry.addBreadcrumb({ message: 'Deleting user endpoints from Pinpoint' });
+    Sentry.addBreadcrumb({
+      message: 'Deleting user endpoints from Pinpoint',
+    });
     return await this.client.send(command);
   }
 
@@ -51,7 +53,9 @@ export class PinpointController {
       EndpointId: this.emailEndpointId,
       EndpointRequest: { Address: email },
     });
-    Sentry.addBreadcrumb({ message: 'Updating user endpoints from Pinpoint' });
+    Sentry.addBreadcrumb({
+      message: 'Updating user endpoints from Pinpoint',
+    });
     return await this.client.send(command);
   }
 }

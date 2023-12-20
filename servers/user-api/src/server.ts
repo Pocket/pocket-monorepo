@@ -30,10 +30,14 @@ export function getServer(httpServer: Server) {
   > = {
     test: [ApolloServerPluginInlineTraceDisabled()],
     development: [
-      ApolloServerPluginInlineTrace({ includeErrors: { unmodified: true } }),
+      ApolloServerPluginInlineTrace({
+        includeErrors: { unmodified: true },
+      }),
     ],
     production: [
-      ApolloServerPluginInlineTrace({ includeErrors: { unmodified: true } }),
+      ApolloServerPluginInlineTrace({
+        includeErrors: { unmodified: true },
+      }),
     ],
   };
 

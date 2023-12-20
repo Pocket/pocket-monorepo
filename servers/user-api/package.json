@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "8.3.1",
-    "@pocket-tools/eslint-config": "2.1.7",
+    "eslint-config-custom": "workspace:*",
     "@pocket-tools/tsconfig": "2.0.1",
     "@types/chai": "4.3.10",
     "@types/chai-datetime": "0.0.39",

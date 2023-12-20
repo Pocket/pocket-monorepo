@@ -10,9 +10,13 @@ import { serverLogger } from '../apollo';
 const blockedUsersFromDeletion = ['8008162'];
 
 export async function deleteUser(_, args, context: IContext): Promise<string> {
-  serverLogger.info('requested deletion for user', { userId: context.userId });
+  serverLogger.info('requested deletion for user', {
+    userId: context.userId,
+  });
   if (blockedUsersFromDeletion.includes(context.models.user.id)) {
-    serverLogger.info('Stopped deletion of user', { userId: context.userId });
+    serverLogger.info('Stopped deletion of user', {
+      userId: context.userId,
+    });
     return context.userId;
   }
   return context.models.user.delete();

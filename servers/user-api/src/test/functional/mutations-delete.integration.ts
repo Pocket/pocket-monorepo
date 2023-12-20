@@ -114,7 +114,9 @@ describe('Delete user mutations', () => {
     it('should delete all PII data for user with apple auth', async () => {
       // Set up data
       const authUserId = (await db('readitla_auth.users').insert({}))[0];
-      await db('readitla_auth.user_providers').insert({ user_id: authUserId });
+      await db('readitla_auth.user_providers').insert({
+        user_id: authUserId,
+      });
       await db('users')
         .update({ auth_user_id: authUserId })
         .where({ user_id: 1 });

@@ -18,7 +18,12 @@ export async function seedEmailMutation(
   const inputData = {
     users: UserSeed({ user_id: userId, email: email }),
     newsletter_subscribers: { user_id: userId, email: email },
-    users_tokens: { user_id: userId, status: 1, token: email, service_id: 3 },
+    users_tokens: {
+      user_id: userId,
+      status: 1,
+      token: email,
+      service_id: 3,
+    },
     users_meta: UsersMetaSeed({
       user_id: userId,
       property: 38,

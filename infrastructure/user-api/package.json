@@ -11,12 +11,15 @@
     "synth": "cdktf synth",
     "compile": "tsc --pretty",
     "watch": "tsc -w",
-    "test": "echo ok"
+    "test": "echo ok",
+    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix \"src/**/*.ts\""
   },
   "dependencies": {
     "@pocket-tools/terraform-modules": "4.17.0"
   },
   "devDependencies": {
+    "eslint-config-custom": "workspace:*",
     "@pocket-tools/tsconfig": "2.0.1",
     "@types/node": "^18.16.18"
   }

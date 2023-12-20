@@ -68,7 +68,9 @@ export class UserDataService {
     db: Knex,
     fxaId: string,
   ): Promise<string | null> {
-    Sentry.addBreadcrumb({ message: 'Retrieving Pocket userId from FxA ID' });
+    Sentry.addBreadcrumb({
+      message: 'Retrieving Pocket userId from FxA ID',
+    });
     const userResult = await db('user_firefox_account')
       .select('user_id')
       .where({ firefox_uid: fxaId });
@@ -96,7 +98,9 @@ export class UserDataService {
    * @param accessToken
    */
   public async validateAccessToken(accessToken: string): Promise<boolean> {
-    Sentry.addBreadcrumb({ message: 'Validating oauth access token for user' });
+    Sentry.addBreadcrumb({
+      message: 'Validating oauth access token for user',
+    });
     const userAccessResult = await this.readDb('oauth_user_access')
       .select('user_id')
       .where({ access_token: accessToken });
@@ -209,7 +213,10 @@ export class UserDataService {
    */
   private async isEmailUnique(email: string): Promise<boolean> {
     const aliasCount = await this.readDb('users_services')
-      .where({ service_id: constants.usersServicesIdEmail, username: email })
+      .where({
+        service_id: constants.usersServicesIdEmail,
+        username: email,
+      })
       .limit(1)
       .pluck('username')
       .then((_) => _.length);

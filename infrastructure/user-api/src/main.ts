@@ -103,7 +103,7 @@ class UserAPI extends TerraformStack {
         workspaces: {
           name: 'incident-management',
         },
-      }
+      },
     );
 
     return new PocketPagerDuty(this, 'pagerduty', {
@@ -131,7 +131,6 @@ class UserAPI extends TerraformStack {
 
     const databaseSecretsArn = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/READITLA_DB`;
     const intMaskSecretArn = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/IntMask`;
-
 
     return new PocketALBApplication(this, 'application', {
       internal: true,
@@ -404,7 +403,7 @@ class UserAPI extends TerraformStack {
         retentionInDays: 90,
         skipDestroy: true,
         tags: config.tags,
-      }
+      },
     );
 
     return logGroup.name;

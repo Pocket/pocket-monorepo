@@ -1,3 +1,3 @@
 module.exports = {
-  extends: ['@pocket-tools/eslint-config'],
+  extends: ['custom/graphql'],
 };
