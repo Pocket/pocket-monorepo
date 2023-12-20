@@ -84,11 +84,51 @@ export default {
   },
   secrets: {
     contactHash: process.env.CONTACT_HASH || 'abcdefghijklmnop',
-    characterMap: process.env.CHARACTER_MAP ? JSON.parse(process.env.CHARACTER_MAP) : [[2,7],[4,1]],
-    positionMap: process.env.POSITION_MAP ? JSON.parse(process.env.POSITION_MAP) : [['a',0],['m',0],['l',0]],
-    md5Randomizer: process.env.MD5_RANDOMIZER ? JSON.parse(process.env.MD5_RANDOMIZER) : [["0",["g"]],["1",["g"]],["2",["h"]],["3",["a"]],["4",["a"]],["5",["3"]],["6",["1"]],["7",["1"]],["8",["7"]],["9",["k"]],["a",["v",]],["b",["X",]],["c",["i",]],["d",["f","T","q",]],["e",["o",]],["f",["O","h","b"]]],
-    letterIndex: process.env.LETTER_INDEX ? JSON.parse(process.env.LETTER_INDEX) :[['h',0],['a',1],['j',2],['a',3],['j',4],['k',5],['l',6]],
+    characterMap: process.env.CHARACTER_MAP
+      ? JSON.parse(process.env.CHARACTER_MAP)
+      : [
+        [2, 7],
+        [4, 1],
+      ],
+    positionMap: process.env.POSITION_MAP
+      ? JSON.parse(process.env.POSITION_MAP)
+      : [
+        ['a', 0],
+        ['m', 0],
+        ['l', 0],
+      ],
+    md5Randomizer: process.env.MD5_RANDOMIZER
+      ? JSON.parse(process.env.MD5_RANDOMIZER)
+      : [
+        ['0', ['g']],
+        ['1', ['g']],
+        ['2', ['h']],
+        ['3', ['a']],
+        ['4', ['a']],
+        ['5', ['3']],
+        ['6', ['1']],
+        ['7', ['1']],
+        ['8', ['7']],
+        ['9', ['k']],
+        ['a', ['v']],
+        ['b', ['X']],
+        ['c', ['i']],
+        ['d', ['f', 'T', 'q']],
+        ['e', ['o']],
+        ['f', ['O', 'h', 'b']],
+      ],
+    letterIndex: process.env.LETTER_INDEX
+      ? JSON.parse(process.env.LETTER_INDEX)
+      : [
+        ['h', 0],
+        ['a', 1],
+        ['j', 2],
+        ['a', 3],
+        ['j', 4],
+        ['k', 5],
+        ['l', 6],
+      ],
     salt1: process.env.SALT_1 || 'asbsd-4',
-    salt2: process.env.SALT_2 || 'jhsdf-8'
-  }
+    salt2: process.env.SALT_2 || 'jhsdf-8',
+  },
 };

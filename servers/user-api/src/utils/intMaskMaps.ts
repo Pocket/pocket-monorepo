@@ -1,4 +1,4 @@
-import config from "../config";
+import config from '../config';
 
 // Key: Encoded position; value: decoded position.
 const positionMap = new Map(config.secrets.positionMap);
