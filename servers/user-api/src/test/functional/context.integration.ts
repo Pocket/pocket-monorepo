@@ -1,5 +1,5 @@
 import { gql } from 'graphql-tag';
-import { readClient } from '../../database/client';
+import { readClient, writeClient } from '../../database/client';
 import sinon from 'sinon';
 import { UserDataService } from '../../dataService/userDataService';
 import { startServer } from '../../apollo';
@@ -8,7 +8,8 @@ import request from 'supertest';
 import { UserFirefoxAccountSeed, UserProfileSeed, UserSeed } from './seeds';
 
 describe('Context manager', () => {
-  const db = readClient();
+  const readDb = readClient();
+  const writeDb = writeClient();
   let server;
   let app;
   let url;
@@ -24,23 +25,25 @@ describe('Context manager', () => {
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
     await Promise.all([
-      db('user_firefox_account').truncate(),
-      db('users').truncate(),
-      db('user_profile').truncate(),
+      writeDb('user_firefox_account').truncate(),
+      writeDb('users').truncate(),
+      writeDb('user_profile').truncate(),
     ]);
     await Promise.all([
-      db('user_firefox_account').insert(
+      writeDb('user_firefox_account').insert(
         UserFirefoxAccountSeed({ user_id: 1, firefox_uid: '123' }),
       ),
-      db('users').insert(UserSeed({ user_id: 1 })),
-      db('user_profile').insert(
+      writeDb('users').insert(UserSeed({ user_id: 1 })),
+      writeDb('user_profile').insert(
         UserProfileSeed({ user_id: 1, username: 'dracula' }),
       ),
     ]);
   });
   afterEach(() => fetchUserIdSpy.resetHistory());
-  afterAll(() => {
+  afterAll(async () => {
     fetchUserIdSpy.restore();
+    await writeDb.destroy();
+    await readDb.destroy();
     server.stop();
   });
   it('pulls userId from database if fxaId is passed to request', async () => {

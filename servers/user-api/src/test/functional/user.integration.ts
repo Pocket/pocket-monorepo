@@ -1,4 +1,4 @@
-import { readClient } from '../../database/client';
+import { readClient, writeClient } from '../../database/client';
 import { gql } from 'graphql-tag';
 import { expect } from 'chai';
 import sinon from 'sinon';
@@ -16,7 +16,8 @@ import {
 describe('User', () => {
   const getUserDataSpy = sinon.spy(UserDataService.prototype, 'getUserData');
 
-  const db = readClient();
+  const readDb = readClient();
+  const writeDb = writeClient();
   let server;
   let app;
   let url;
@@ -74,8 +75,9 @@ describe('User', () => {
     avatar_url: 's3://my-avatar-2',
   };
 
-  afterAll(() => {
-    db.destroy();
+  afterAll(async () => {
+    await readDb.destroy();
+    await writeDb.destroy();
     server.stop();
   });
   afterEach(() => getUserDataSpy.resetHistory());
@@ -83,21 +85,23 @@ describe('User', () => {
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
 
-    await db('readitla_ril-tmp.user_firefox_account').truncate();
-    await db('readitla_ril-tmp.user_firefox_account').insert(
+    await writeDb('readitla_ril-tmp.user_firefox_account').truncate();
+    await writeDb('readitla_ril-tmp.user_firefox_account').insert(
       UserFirefoxAccountSeed({
         user_id: 1,
         firefox_uid: 'abc1',
       }),
     );
-    await db('users').truncate();
-    await db('users').insert([user1, user2].map((input) => UserSeed(input)));
-    await db('user_profile').truncate();
-    await db('user_profile').insert(
+    await writeDb('users').truncate();
+    await writeDb('users').insert(
+      [user1, user2].map((input) => UserSeed(input)),
+    );
+    await writeDb('user_profile').truncate();
+    await writeDb('user_profile').insert(
       [user1Profile, user2Profile].map((input) => UserProfileSeed(input)),
     );
-    await db('oauth_user_access').truncate();
-    await db('oauth_user_access').insert(
+    await writeDb('oauth_user_access').truncate();
+    await writeDb('oauth_user_access').insert(
       [
         {
           user_id: 1,
@@ -144,7 +148,7 @@ describe('User', () => {
         });
 
       expect(res.body.data?.user.id).to.equal(
-        'f98THA96g85b4p8886d58bzd64plgby0x61gd4pf09Ta03TR0GT51AvodUpyA6d8',
+        'fX792e6e9163ec630a71a9X08497c36eT3e25a4cd0ba5b1056fv989d5',
       );
       expect(res.body.data?.user.username).to.equal('username');
       expect(res.body.data?.user.name).to.equal('Pocket User');
@@ -218,7 +222,7 @@ describe('User', () => {
         });
 
       expect(res.body.data?.user.id).to.equal(
-        'f98THA96g85b4p8886d58bzd64plgby0x61gd4pf09Ta03TR0GT51AvodUpyA6d8',
+        'fX792e6e9163ec630a71a9X08497c36eT3e25a4cd0ba5b1056fv989d5',
       );
       expect(res.body.data?.user.isPremium).to.be.false;
       expect(getUserDataSpy.callCount).to.equal(0);
@@ -245,7 +249,7 @@ describe('User', () => {
         });
 
       expect(res.body.data?.user.id).to.equal(
-        'f98THA96g85b4p8886d58bzd64plgby0x61gd4pf09Ta03TR0GT51AvodUpyA6d8',
+        'fX792e6e9163ec630a71a9X08497c36eT3e25a4cd0ba5b1056fv989d5',
       );
       expect(res.body.data?.user.isPremium).to.be.false;
       expect(getUserDataSpy.callCount).to.equal(1);

@@ -1,5 +1,5 @@
 import * as setup from './setup';
-import { readClient } from '../../database/client';
+import { readClient, writeClient } from '../../database/client';
 import { gql } from 'graphql-tag';
 import IntMask from '../../utils/intMask';
 import { PinpointController } from '../../aws/pinpointController';
@@ -11,7 +11,8 @@ import { print } from 'graphql';
 import * as utils from '../../utils/email';
 
 describe('updateUserEmailByFxaId Mutation test', () => {
-  const db = readClient();
+  const readDb = readClient();
+  const writeDb = writeClient();
   let server;
   let app;
   let url;
@@ -20,7 +21,8 @@ describe('updateUserEmailByFxaId Mutation test', () => {
     headers: { token: 'access_token', apiid: '1', fxauserid: 'abc123' },
   };
   afterAll(async () => {
-    await db.destroy();
+    await readDb.destroy();
+    await writeDb.destroy();
     server.stop();
   });
   beforeAll(async () => {
@@ -49,16 +51,16 @@ describe('updateUserEmailByFxaId Mutation test', () => {
       'updateUserEmail',
     );
     beforeAll(async () => {
-      await setup.truncateEmailMutation(db);
+      await setup.truncateEmailMutation(writeDb);
     });
     beforeEach(async () => {
-      await setup.seedEmailMutation(userId, fxaId, seedEmail, db);
+      await setup.seedEmailMutation(userId, fxaId, seedEmail, writeDb);
       pinpointStub.resetBehavior();
       pinpointStub.resetHistory();
       updateEmailSpy.resetHistory();
     });
     afterEach(async () => {
-      await setup.truncateEmailMutation(db);
+      await setup.truncateEmailMutation(writeDb);
     });
     it('should successfully update db and pinpoint', async () => {
       const variables = { id: fxaId, email: email };
@@ -79,7 +81,7 @@ describe('updateUserEmailByFxaId Mutation test', () => {
       );
       // Email is updated in a transaction, so if this succeeds them they all did
       expect(
-        (await db('users').where('user_id', userId).first()).email,
+        (await readDb('users').where('user_id', userId).first()).email,
       ).toEqual('def@456.com');
       expect(pinpointStub.callCount).toEqual(1);
     });
@@ -104,7 +106,7 @@ describe('updateUserEmailByFxaId Mutation test', () => {
     });
 
     it('should fail if UserId does not exist for given FxA id', async () => {
-      await db('user_firefox_account').where('user_id', userId).del();
+      await writeDb('user_firefox_account').where('user_id', userId).del();
       const variables = { id: fxaId, email: email };
 
       const result = await request(app)
@@ -150,7 +152,7 @@ describe('updateUserEmailByFxaId Mutation test', () => {
       expect(updateEmailSpy.callCount).toEqual(1);
       // Email is updated in a transaction, so if this failed to set them they all did
       expect(
-        (await db('users').where('user_id', userId).first()).email,
+        (await readDb('users').where('user_id', userId).first()).email,
       ).toEqual(seedEmail);
       contactHashStub.restore();
     });

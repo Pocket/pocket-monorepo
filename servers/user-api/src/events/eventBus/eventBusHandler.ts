@@ -2,6 +2,7 @@ import EventEmitter from 'events';
 import * as Sentry from '@sentry/node';
 import {
   EventBridgeClient,
+  EventBridgeClientConfig,
   PutEventsCommand,
   PutEventsCommandOutput,
 } from '@aws-sdk/client-eventbridge';
@@ -18,9 +19,16 @@ export class EventBusHandler implements EventHandlerInterface {
   private client: EventBridgeClient;
 
   init(emitter: EventEmitter, eventHandlerMap?: EventHandlerCallbackMap) {
-    this.client = new EventBridgeClient({
+    const awsConfig: EventBridgeClientConfig = {
       region: config.aws.region,
-    });
+    };
+
+    // Set endpoint for local client, otherwise provider default
+    if (config.aws.endpoint != null) {
+      awsConfig.endpoint = config.aws.endpoint;
+    }
+
+    this.client = new EventBridgeClient(awsConfig);
 
     const handlerMap = eventHandlerMap ?? eventMap;
 

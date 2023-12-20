@@ -1,4 +1,4 @@
-import { readClient } from '../../database/client';
+import { readClient, writeClient } from '../../database/client';
 import { gql } from 'graphql-tag';
 import { expect } from 'chai';
 import { PinpointController } from '../../aws/pinpointController';
@@ -17,7 +17,8 @@ describe('Delete user mutations', () => {
     ([_, tables]) => tables,
   );
   const userId = 1;
-  const db = readClient();
+  const readDb = readClient();
+  const writeDb = writeClient();
   let server;
   let app;
   let url;
@@ -29,7 +30,8 @@ describe('Delete user mutations', () => {
     await truncatePiiTables();
   });
   afterAll(async () => {
-    await db.destroy();
+    await readDb.destroy();
+    await writeDb.destroy();
     server.stop();
   });
   afterEach(() => jest.clearAllMocks());
@@ -39,8 +41,8 @@ describe('Delete user mutations', () => {
       eventObj = eventData;
     });
 
-    await db('readitla_auth.users').truncate();
-    await db('readitla_auth.user_providers').truncate();
+    await writeDb('readitla_auth.users').truncate();
+    await writeDb('readitla_auth.user_providers').truncate();
     await PiiTableSeed(userId, '1');
 
     deleteUserEndpointsMock = PinpointController.prototype.deleteUserEndpoints =
@@ -60,7 +62,7 @@ describe('Delete user mutations', () => {
 
     it('should be able to delete historical user', async () => {
       //historical users will not have user profile table
-      await db('user_profile').truncate();
+      await writeDb('user_profile').truncate();
 
       const DELETE_USER = gql`
         mutation deleteUser {
@@ -80,7 +82,7 @@ describe('Delete user mutations', () => {
 
       expect(res.body.data.deleteUser).equals('1');
       for (const tableName of allTablesPlusAuth) {
-        expect((await db(tableName).select()).length).equals(0);
+        expect((await readDb(tableName).select()).length).equals(0);
       }
       expect(deleteUserEndpointsMock.mock.calls.length).to.equal(1);
       expect(eventObj.user.id).equal(`1`);
@@ -105,7 +107,7 @@ describe('Delete user mutations', () => {
 
       expect(res.body.data.deleteUser).equals('1');
       for (const tableName of allTablesPlusAuth) {
-        expect((await db(tableName).select()).length).equals(0);
+        expect((await readDb(tableName).select()).length).equals(0);
       }
       expect(deleteUserEndpointsMock.mock.calls.length).to.equal(1);
       expect(eventObj.user.id).equal(`1`);
@@ -113,11 +115,11 @@ describe('Delete user mutations', () => {
 
     it('should delete all PII data for user with apple auth', async () => {
       // Set up data
-      const authUserId = (await db('readitla_auth.users').insert({}))[0];
-      await db('readitla_auth.user_providers').insert({
+      const authUserId = (await writeDb('readitla_auth.users').insert({}))[0];
+      await writeDb('readitla_auth.user_providers').insert({
         user_id: authUserId,
       });
-      await db('users')
+      await writeDb('users')
         .update({ auth_user_id: authUserId })
         .where({ user_id: 1 });
 
@@ -140,7 +142,7 @@ describe('Delete user mutations', () => {
 
       expect(res.body.data.deleteUser).equals('1');
       for (const tableName of allTablesPlusAuth) {
-        expect((await db(tableName).select()).length).equals(0);
+        expect((await readDb(tableName).select()).length).equals(0);
       }
       expect(deleteUserEndpointsMock.mock.calls.length).to.equal(1);
       expect(eventObj.user.id).equal(`1`);
@@ -173,7 +175,7 @@ describe('Delete user mutations', () => {
 
       expect(res.body.data.deleteUserByFxaId).equals('1');
       for (const tableName of allTables) {
-        expect((await db(tableName).select()).length).equals(0);
+        expect((await readDb(tableName).select()).length).equals(0);
       }
       expect(deleteUserEndpointsMock.mock.calls.length).to.equal(1);
       expect(eventObj.user.id).equal(`1`);
@@ -207,7 +209,7 @@ describe('Delete user mutations', () => {
         `FxA user id mismatch in deletion`,
       );
       for (const tableName of allTables) {
-        expect((await db(tableName).select()).length).equals(1);
+        expect((await readDb(tableName).select()).length).equals(1);
       }
     });
   });

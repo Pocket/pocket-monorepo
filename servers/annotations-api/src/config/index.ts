@@ -61,7 +61,7 @@ export default {
       password: process.env.DATABASE_WRITE_PASSWORD || '',
     },
     dbName: process.env.DATABASE || 'readitla_ril-tmp',
-    tz: process.env.DATABASE_TZ || 'UTC',
+    tz: process.env.DATABASE_TZ || 'US/Central',
   },
   queueDelete: {
     queryLimit: 500,

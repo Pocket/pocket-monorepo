@@ -1,4 +1,4 @@
-import { readClient } from '../../database/client';
+import { readClient, writeClient } from '../../database/client';
 import { ExpireUserWebSessionReason } from '../../types';
 import { gql } from 'graphql-tag';
 import { expect } from 'chai';
@@ -10,7 +10,8 @@ import { UserFirefoxAccountSeed } from './seeds';
 jest.mock('../../aws/pinpointController');
 
 describe('Expire user web session tokens mutation', () => {
-  const db = readClient();
+  const readDb = readClient();
+  const writeDb = writeClient();
   let server;
   let app;
   let url;
@@ -37,16 +38,17 @@ describe('Expire user web session tokens mutation', () => {
     ({ app, server, url } = await startServer(0));
   });
   afterAll(async () => {
-    await db.destroy();
+    await readDb.destroy();
+    await writeDb.destroy();
     server.stop();
   });
   afterEach(() => jest.clearAllMocks());
 
   beforeEach(async () => {
-    await db('readitla_ril-tmp.user_web_session_tokens').truncate();
-    await db('readitla_ril-tmp.user_firefox_account').truncate();
+    await writeDb('readitla_ril-tmp.user_web_session_tokens').truncate();
+    await writeDb('readitla_ril-tmp.user_firefox_account').truncate();
 
-    await db('readitla_ril-tmp.user_firefox_account').insert(
+    await writeDb('readitla_ril-tmp.user_firefox_account').insert(
       [
         {
           user_id: 1234,
@@ -59,7 +61,7 @@ describe('Expire user web session tokens mutation', () => {
       ].map((input) => UserFirefoxAccountSeed(input)),
     );
 
-    await db('readitla_ril-tmp.user_web_session_tokens').insert([
+    await writeDb('readitla_ril-tmp.user_web_session_tokens').insert([
       {
         token_id: 9875362,
         user_id: 1234,
@@ -103,7 +105,7 @@ describe('Expire user web session tokens mutation', () => {
         });
       expect(res.body.data.expireUserWebSessionByFxaId).to.equal('1234');
       // lets make sure status === 0 and time_expired was set
-      const dbRes = await db('readitla_ril-tmp.user_web_session_tokens')
+      const dbRes = await readDb('readitla_ril-tmp.user_web_session_tokens')
         .select('status', 'time_expired')
         .where('user_id', 1234);
       expect(dbRes[0].status).to.equal(0);

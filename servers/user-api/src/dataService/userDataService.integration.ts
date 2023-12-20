@@ -1,15 +1,17 @@
 import { NotFoundError } from '@pocket-tools/apollo-utils';
 import { IContext } from '../context';
-import { readClient } from '../database/client';
+import { readClient, writeClient } from '../database/client';
 import { UserDataService } from './userDataService';
 import { UserFirefoxAccountSeed } from '../test/functional/seeds';
 
 describe('userDataService', () => {
-  const db = readClient();
+  const readDb = readClient();
+  const writeDb = writeClient();
+
   describe('getPocketIdByFxaId', () => {
     beforeAll(async () => {
-      await db('user_firefox_account').truncate();
-      await db('user_firefox_account').insert(
+      await writeDb('user_firefox_account').truncate();
+      await writeDb('user_firefox_account').insert(
         UserFirefoxAccountSeed({
           user_id: 777,
           firefox_uid: '1234',
@@ -17,12 +19,13 @@ describe('userDataService', () => {
       );
     });
     afterAll(async () => {
-      await db('user_firefox_account').truncate();
-      await db.destroy();
+      await writeDb('user_firefox_account').truncate();
+      await writeDb.destroy();
+      await readDb.destroy();
     });
     it('returns a string id', async () => {
       const userDataService = await UserDataService.fromFxaId(
-        { db: { readClient: db } } as unknown as IContext, // just need that prop
+        { db: { readClient: readDb } } as unknown as IContext, // just need that prop
         '1234',
       );
       expect(userDataService.userId === '777').toBe(true);
@@ -30,7 +33,7 @@ describe('userDataService', () => {
     it('Throws an error if the id does not exist', async () => {
       await expect(
         UserDataService.fromFxaId(
-          { db: { readClient: db } } as unknown as IContext, // just need that prop
+          { db: { readClient: readDb } } as unknown as IContext, // just need that prop
           '9999',
         ),
       ).rejects.toEqual(

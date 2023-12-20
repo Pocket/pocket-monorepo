@@ -6,6 +6,7 @@ import {
   DeleteUserEndpointsCommandOutput,
   UpdateEndpointCommand,
   UpdateEndpointCommandOutput,
+  PinpointClientConfig,
 } from '@aws-sdk/client-pinpoint';
 import crypto from 'crypto';
 
@@ -26,7 +27,16 @@ export class PinpointController {
       .createHash('sha256')
       .update(userId)
       .digest('hex');
-    this.client = new PinpointClient({ maxAttempts: 3 });
+
+    const awsConfig: PinpointClientConfig = {
+      maxAttempts: 3,
+      region: config.aws.region,
+    };
+    if (config.aws.endpoint != null) {
+      awsConfig.endpoint = config.aws.endpoint;
+    }
+
+    this.client = new PinpointClient(awsConfig);
   }
 
   public async deleteUserEndpoints(): Promise<DeleteUserEndpointsCommandOutput> {
