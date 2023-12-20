@@ -1,0 +1,135 @@
+extend schema
+  @link(
+    url: "https://specs.apollo.dev/federation/v2.0"
+    import: ["@key", "@shareable", "@requires", "@external", "@inaccessible"]
+  )
+
+"""
+ISOString scalar - all datetimes fields are Typescript Date objects on this server &
+returned as ISO-8601 encoded date strings (e.g. ISOString scalars) to GraphQL clients.
+See Section 5.6 of the RFC 3339 profile of the ISO 8601 standard: https://www.ietf.org/rfc/rfc3339.txt.
+"""
+scalar ISOString
+
+type User @key(fields: "id") {
+  """
+  User id, provided by the user service.
+  """
+  id: ID! @inaccessible
+
+  """
+  The public avatar url for the user
+  """
+  avatarUrl: String
+
+  """
+  The public username for the user
+  """
+  username: String
+
+  """
+  The users first name
+  """
+  firstName: String
+
+  """
+  The users last name
+  """
+  lastName: String
+
+  """
+  The users first name and last name combined
+  """
+  name: String
+
+  """
+  A users bio for their profile
+  """
+  description: String
+
+  """
+  The user's premium status
+  """
+  isPremium: Boolean
+
+  """
+  Timestamp of the date when account was created
+  """
+  accountCreationDate: ISOString
+
+  """
+  Email address associated with the account.
+  """
+  email: String
+
+  """
+  Indicates if a user is FxA or not
+  """
+  isFxa: Boolean
+}
+
+"""
+The reason a user web session is being expired.
+"""
+enum ExpireUserWebSessionReason {
+  """
+  Expire web session on account password change.
+  """
+  PASSWORD_CHANGED
+  """
+  Expire web session upon logging out.
+  """
+  LOGOUT
+}
+
+"""
+Default root level query type. All authorization checks are done in these queries.
+TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
+"""
+type Query {
+  """
+  Get a user entity for an authenticated client
+  """
+  user: User
+}
+
+"""
+Default Mutation Type
+"""
+type Mutation {
+  """
+  update the email of the user for the given pocket userId. Request is made by
+  an authenticated user, and the userID is inferred from the request headers `userid`.
+  """
+  updateUserEmail(email: String!): User!
+  """
+  Deletes user information and their pocket data for the given pocket userId. Returns pocket userId.
+  """
+  deleteUser: ID!
+  """
+  update the email of the user for the given firefox account ID. Request
+  is made by a backend service. The `userid` in the headers should match
+  the FxA ID or else an authentication error will be thrown.
+  """
+  updateUserEmailByFxaId(id: ID!, email: String!): User!
+  """
+  Deletes user information and their pocket data for the given firefox account ID.
+  Returns firefox account ID sent as the query parameter with the request.
+  """
+  deleteUserByFxaId(id: ID!): ID!
+
+  """
+  temporary mutation for apple user migration.
+  called by fxa-webhook proxy to update the fxaId and email of the user.
+  Returns the pocket userId on success
+  Note: requires `transfersub` to be set in the header.
+  """
+  migrateAppleUser(fxaId: ID!, email: String!): ID!
+
+  """
+  Expires a user's web session tokens by firefox account ID.
+  Called by fxa-webhook proxy. Need to supply a reason why to expire user web session.
+  Returns the user ID.
+  """
+  expireUserWebSessionByFxaId(id: ID!, reason: ExpireUserWebSessionReason!): ID!
+}
