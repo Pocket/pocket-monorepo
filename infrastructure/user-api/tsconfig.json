@@ -1,5 +1,5 @@
 {
-  "extends": "@pocket-tools/tsconfig",
+  "extends": "tsconfig/cdktf.json",
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src"
