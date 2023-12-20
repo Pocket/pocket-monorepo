@@ -45,15 +45,13 @@ class UserAPI extends TerraformStack {
     const region = new DataAwsRegion(this, 'region');
     const caller = new DataAwsCallerIdentity(this, 'caller');
 
-    const pocketApp = this.createPocketAlbApplication({
+    this.createPocketAlbApplication({
       pagerDuty: this.createPagerDuty(),
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
       region,
       caller,
     });
-
-    this.createApplicationCodePipeline(pocketApp);
 
     // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
     // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
@@ -281,7 +279,8 @@ class UserAPI extends TerraformStack {
       ],
       codeDeploy: {
         useCodeDeploy: true,
-        useCodePipeline: true,
+        useCodePipeline: false,
+        useTerraformBasedCodeDeploy: false,
         snsNotificationTopicArn: snsTopic.arn,
         notifications: {
           //only notify on failed deploys
