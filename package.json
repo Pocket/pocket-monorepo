@@ -9,12 +9,16 @@
     "test": "dotenv -- turbo run test",
     "test-integrations": "dotenv -- turbo run test-integrations",
     "synth": "dotenv -- turbo run synth",
-    "clean": "rm -rf .turbo node_modules packages/**/.turbo packages/**/dist packages/**/node_modules servers/**/logs servers/**/.turbo servers/**/dist servers/**/node_modules lambdas/**/logs lambdas/**/.turbo lambdas/**/dist lambdas/**/node_modules infrastructure/**/dist infrastructure/**/node_modules infrastructure/**/.turbo infrastructure/**/cdktf.out"
+    "clean": "rm -rf .turbo node_modules packages/**/.turbo packages/**/dist packages/**/node_modules servers/**/logs servers/**/.turbo servers/**/dist servers/**/node_modules lambdas/**/logs lambdas/**/.turbo lambdas/**/dist lambdas/**/node_modules infrastructure/**/dist infrastructure/**/node_modules infrastructure/**/.turbo infrastructure/**/cdktf.out",
+    "list-packages": "syncpack list",
+    "list-mismatches": "syncpack list-mismatches",
+    "fix-mismatches": "syncpack fix-mismatches && pnpm install"
   },
   "dependencies": {
     "dotenv-cli": "latest"
   },
   "devDependencies": {
+    "syncpack": "^11.2.1",
     "turbo": "latest"
   },
   "packageManager": "pnpm@8.12.0",
