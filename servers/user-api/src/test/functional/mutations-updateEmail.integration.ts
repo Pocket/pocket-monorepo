@@ -3,7 +3,6 @@ import { readClient, writeClient } from '../../database/client';
 import { gql } from 'graphql-tag';
 import IntMask from '../../utils/intMask';
 import { PinpointController } from '../../aws/pinpointController';
-import sinon from 'sinon';
 import { UserDataService } from '../../dataService/userDataService';
 import { startServer } from '../../apollo';
 import request from 'supertest';
@@ -21,12 +20,16 @@ describe('updateUserEmailByFxaId Mutation test', () => {
     headers: { token: 'access_token', apiid: '1', fxauserid: 'abc123' },
   };
   afterAll(async () => {
+    server.stop();
     await readDb.destroy();
     await writeDb.destroy();
-    server.stop();
   });
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
   describe('updateEmailByFxAId', () => {
@@ -42,22 +45,19 @@ describe('updateUserEmailByFxaId Mutation test', () => {
         }
       }
     `;
-    const pinpointStub = sinon.stub(
-      PinpointController.prototype,
-      'updateUserEndpointEmail',
-    );
-    const updateEmailSpy = sinon.spy(
+    const pinpointStub: jest.SpyInstance = jest
+      .spyOn(PinpointController.prototype, 'updateUserEndpointEmail')
+      .mockImplementation();
+    const updateEmailSpy: jest.SpyInstance = jest.spyOn(
       UserDataService.prototype,
       'updateUserEmail',
     );
+    const contactHashStub: jest.SpyInstance = jest.spyOn(utils, 'contactHash');
     beforeAll(async () => {
       await setup.truncateEmailMutation(writeDb);
     });
     beforeEach(async () => {
       await setup.seedEmailMutation(userId, fxaId, seedEmail, writeDb);
-      pinpointStub.resetBehavior();
-      pinpointStub.resetHistory();
-      updateEmailSpy.resetHistory();
     });
     afterEach(async () => {
       await setup.truncateEmailMutation(writeDb);
@@ -83,7 +83,7 @@ describe('updateUserEmailByFxaId Mutation test', () => {
       expect(
         (await readDb('users').where('user_id', userId).first()).email,
       ).toEqual('def@456.com');
-      expect(pinpointStub.callCount).toEqual(1);
+      expect(pinpointStub).toHaveBeenCalledTimes(1);
     });
     it('should fail if email is invalid', async () => {
       const variables = { id: fxaId, email: 'lala' };
@@ -101,8 +101,8 @@ describe('updateUserEmailByFxaId Mutation test', () => {
       );
       expect(result.body.errors[0].extensions.code).toEqual('BAD_USER_INPUT');
       expect(result.body.data).toBeNull();
-      expect(pinpointStub.callCount).toEqual(0);
-      expect(updateEmailSpy.callCount).toEqual(0);
+      expect(pinpointStub).toHaveBeenCalledTimes(0);
+      expect(updateEmailSpy).toHaveBeenCalledTimes(0);
     });
 
     it('should fail if UserId does not exist for given FxA id', async () => {
@@ -118,11 +118,11 @@ describe('updateUserEmailByFxaId Mutation test', () => {
         });
 
       expect(result.body.errors[0].extensions.code).toEqual('NOT_FOUND');
-      expect(pinpointStub.callCount).toEqual(0);
-      expect(updateEmailSpy.callCount).toEqual(0);
+      expect(pinpointStub).toHaveBeenCalledTimes(0);
+      expect(updateEmailSpy).toHaveBeenCalledTimes(0);
     });
     it('should not update db if Pinpoint call fails', async () => {
-      pinpointStub.rejects();
+      pinpointStub.mockImplementationOnce(() => Promise.reject());
       const variables = { id: fxaId, email: email };
       const result = await request(app)
         .post(url)
@@ -133,11 +133,16 @@ describe('updateUserEmailByFxaId Mutation test', () => {
         });
       expect(result.body.errors.length).toEqual(1);
       expect(result.body.data).toBeNull();
-      expect(pinpointStub.callCount).toEqual(1);
-      expect(updateEmailSpy.callCount).toEqual(0);
+      expect(pinpointStub).toHaveBeenCalledTimes(1);
+      expect(updateEmailSpy).toHaveBeenCalledTimes(0);
     });
     it('should rollback DB', async () => {
-      const contactHashStub = sinon.stub(utils, 'contactHash').throws();
+      contactHashStub.mockImplementation(
+        (contact: string, contactType: number) => {
+          console.log('asd');
+          throw new Error();
+        },
+      );
       const variables = { id: fxaId, email: email };
       await request(app)
         .post(url)
@@ -148,13 +153,12 @@ describe('updateUserEmailByFxaId Mutation test', () => {
         });
       // Blank email will fail when computing hashed contact,
       // but need to override validation
-      expect(contactHashStub.callCount).toEqual(1);
-      expect(updateEmailSpy.callCount).toEqual(1);
+      expect(contactHashStub).toHaveBeenCalledTimes(1);
+      expect(updateEmailSpy).toHaveBeenCalledTimes(1);
       // Email is updated in a transaction, so if this failed to set them they all did
       expect(
         (await readDb('users').where('user_id', userId).first()).email,
       ).toEqual(seedEmail);
-      contactHashStub.restore();
     });
   });
 });

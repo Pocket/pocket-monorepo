@@ -1,4 +1,3 @@
-import sinon from 'sinon';
 import * as Sentry from '@sentry/node';
 import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
 import config from '../../config';
@@ -18,33 +17,37 @@ const userEventData = {
 };
 
 describe('EventBusHandler', () => {
-  const sandbox = sinon.createSandbox();
-  const clientStub = sandbox
-    .stub(EventBridgeClient.prototype, 'send')
-    .resolves({ FailedEntryCount: 0 });
-  const sentryStub = sandbox.stub(Sentry, 'captureException').resolves();
-  const crumbStub = sandbox.stub(Sentry, 'addBreadcrumb').resolves();
-  const consoleSpy = sandbox.spy(console, 'log');
+  const clientStub: jest.SpyInstance = jest
+    .spyOn(EventBridgeClient.prototype, 'send')
+    .mockImplementation(() => Promise.resolve({ FailedEntryCount: 0 }));
+  const sentryStub: jest.SpyInstance = jest
+    .spyOn(Sentry, 'captureException')
+    .mockImplementation(() => '');
+  const crumbStub: jest.SpyInstance = jest
+    .spyOn(Sentry, 'addBreadcrumb')
+    .mockImplementation(() => Promise.resolve());
+  const consoleSpy: jest.SpyInstance = jest
+    .spyOn(console, 'log')
+    .mockImplementation(() => Promise.resolve());
   const emitter = new EventEmitter();
   new EventBusHandler().init(emitter);
   const now = new Date('2022-01-01 00:00:00');
-  let clock;
 
   beforeAll(() => {
-    clock = sinon.useFakeTimers({
+    jest.useFakeTimers({
       now: now,
-      shouldAdvanceTime: false,
+      advanceTimers: true,
     });
   });
 
-  afterEach(() => sandbox.resetHistory());
+  afterEach(() => jest.clearAllMocks());
   afterAll(() => {
-    sandbox.restore();
-    clock.restore();
+    jest.restoreAllMocks();
+    jest.useRealTimers();
   });
 
   it('registers listeners on all events in the config map', () => {
-    const fake = sinon.stub().returns({ eventType: 'fake' });
+    const fake = jest.fn().mockReturnValue({ eventType: 'fake' });
     const testEmitter = new EventEmitter();
     const mapping = {
       [EventType.ACCOUNT_DELETE]: () => fake(),
@@ -52,7 +55,7 @@ describe('EventBusHandler', () => {
     new EventBusHandler().init(testEmitter, mapping);
     expect(testEmitter.listeners('ACCOUNT_DELETE').length).toBe(1);
     testEmitter.emit('ACCOUNT_DELETE');
-    expect(fake.callCount).toBe(1);
+    expect(fake).toHaveBeenCalledTimes(1);
   });
 
   describe('user account delete event', () => {
@@ -83,15 +86,15 @@ describe('EventBusHandler', () => {
       };
       // Wait just a tad in case promise needs time to resolve
       await setTimeout(100);
-      expect(sentryStub.callCount).toBe(0);
-      expect(consoleSpy.callCount).toBe(0);
+      expect(sentryStub).toHaveBeenCalledTimes(0);
+      expect(consoleSpy).toHaveBeenCalledTimes(0);
       // Listener was registered on event
       expect(emitter.listeners(emittedEvent).length).toBe(1);
       // Event was sent to Event Bus
-      expect(clientStub.callCount).toBe(1);
+      expect(clientStub).toHaveBeenCalledTimes(1);
       // Check that the payload is correct; since it's JSON, we need to decode the data
       // otherwise it also does ordering check
-      const sendCommand = clientStub.getCall(0).args[0].input as any;
+      const sendCommand = clientStub.mock.calls[0][0].input as any;
       expect(sendCommand).toHaveProperty('Entries');
       expect(sendCommand.Entries[0]).toMatchObject({
         Source: config.aws.eventBus.eventBridge.source,
@@ -132,15 +135,15 @@ describe('EventBusHandler', () => {
       };
       // Wait just a tad in case promise needs time to resolve
       await setTimeout(100);
-      expect(sentryStub.callCount).toBe(0);
-      expect(consoleSpy.callCount).toBe(0);
+      expect(sentryStub).toHaveBeenCalledTimes(0);
+      expect(consoleSpy).toHaveBeenCalledTimes(0);
       // Listener was registered on event
       expect(emitter.listeners(emittedEvent).length).toBe(1);
       // Event was sent to Event Bus
-      expect(clientStub.callCount).toBe(1);
+      expect(clientStub).toHaveBeenCalledTimes(1);
       // Check that the payload is correct; since it's JSON, we need to decode the data
       // otherwise it also does ordering check
-      const sendCommand = clientStub.getCall(0).args[0].input as any;
+      const sendCommand = clientStub.mock.calls[0][0].input as any;
       expect(sendCommand).toHaveProperty('Entries');
       expect(sendCommand.Entries[0]).toMatchObject({
         Source: config.aws.eventBus.eventBridge.source,
@@ -154,10 +157,10 @@ describe('EventBusHandler', () => {
   });
 
   it('should log error if any events fail to send', async () => {
-    clientStub.restore();
-    sandbox
-      .stub(EventBridgeClient.prototype, 'send')
-      .resolves({ FailedEntryCount: 1 });
+    clientStub.mockRestore();
+    jest
+      .spyOn(EventBridgeClient.prototype, 'send')
+      .mockImplementationOnce(() => Promise.resolve({ FailedEntryCount: 1 }));
     emitter.emit(EventType.ACCOUNT_DELETE, {
       user: {
         ...userEventData,
@@ -169,20 +172,20 @@ describe('EventBusHandler', () => {
     });
     // Wait just a tad in case promise needs time to resolve
     await setTimeout(100);
-    expect(sentryStub.callCount).toBe(1);
-    expect(sentryStub.getCall(0).firstArg.message).toContain(
+    expect(sentryStub).toHaveBeenCalledTimes(1);
+    expect(sentryStub.mock.calls[0][0].message).toContain(
       `Failed to send event 'account-deletion' to event bus`,
     );
-    expect(consoleSpy.callCount).toBe(1);
-    expect(consoleSpy.getCall(0).firstArg.message).toContain(
+    expect(consoleSpy).toHaveBeenCalledTimes(1);
+    expect(consoleSpy.mock.calls[0][0].message).toContain(
       `Failed to send event 'account-deletion' to event bus`,
     );
   });
   it('should log error if send call throws error', async () => {
-    clientStub.restore();
-    sandbox
-      .stub(EventBridgeClient.prototype, 'send')
-      .rejects(new Error('boo!'));
+    clientStub.mockRestore();
+    jest
+      .spyOn(EventBridgeClient.prototype, 'send')
+      .mockImplementationOnce(() => Promise.reject(new Error('boo!')));
     emitter.emit(EventType.ACCOUNT_DELETE, {
       user: {
         ...userEventData,
@@ -194,14 +197,14 @@ describe('EventBusHandler', () => {
     });
     // Wait just a tad in case promise needs time to resolve
     await setTimeout(100);
-    expect(sentryStub.callCount).toBe(1);
-    expect(sentryStub.getCall(0).firstArg.message).toContain('boo!');
-    expect(crumbStub.callCount).toBe(1);
-    expect(crumbStub.getCall(0).firstArg.message).toContain(
+    expect(sentryStub).toHaveBeenCalledTimes(1);
+    expect(sentryStub.mock.calls[0][0].message).toContain('boo!');
+    expect(crumbStub).toHaveBeenCalledTimes(1);
+    expect(crumbStub.mock.calls[0][0].message).toContain(
       `Failed to send event 'account-deletion' to event bus`,
     );
-    expect(consoleSpy.callCount).toBe(2);
-    expect(consoleSpy.getCall(0).firstArg.message).toContain(
+    expect(consoleSpy).toHaveBeenCalledTimes(2);
+    expect(consoleSpy.mock.calls[0][0].message).toContain(
       `Failed to send event 'account-deletion' to event bus`,
     );
   });

@@ -1,7 +1,5 @@
 import { readClient, writeClient } from '../../database/client';
 import { gql } from 'graphql-tag';
-import { expect } from 'chai';
-import sinon from 'sinon';
 import { UserDataService } from '../../dataService/userDataService';
 import request from 'supertest';
 import { print } from 'graphql';
@@ -14,7 +12,10 @@ import {
 } from './seeds';
 
 describe('User', () => {
-  const getUserDataSpy = sinon.spy(UserDataService.prototype, 'getUserData');
+  const getUserDataSpy: jest.SpyInstance = jest.spyOn(
+    UserDataService.prototype,
+    'getUserData',
+  );
 
   const readDb = readClient();
   const writeDb = writeClient();
@@ -80,7 +81,7 @@ describe('User', () => {
     await writeDb.destroy();
     server.stop();
   });
-  afterEach(() => getUserDataSpy.resetHistory());
+  afterEach(() => jest.clearAllMocks());
 
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
@@ -147,19 +148,19 @@ describe('User', () => {
           variables,
         });
 
-      expect(res.body.data?.user.id).to.equal(
+      expect(res.body.data?.user.id).toBe(
         'fX792e6e9163ec630a71a9X08497c36eT3e25a4cd0ba5b1056fv989d5',
       );
-      expect(res.body.data?.user.username).to.equal('username');
-      expect(res.body.data?.user.name).to.equal('Pocket User');
-      expect(res.body.data?.user.avatarUrl).to.equal('s3://my-avatar');
-      expect(res.body.data?.user.description).to.equal('my bio');
-      expect(res.body.data?.user.accountCreationDate).to.equal(
+      expect(res.body.data?.user.username).toBe('username');
+      expect(res.body.data?.user.name).toBe('Pocket User');
+      expect(res.body.data?.user.avatarUrl).toBe('s3://my-avatar');
+      expect(res.body.data?.user.description).toBe('my bio');
+      expect(res.body.data?.user.accountCreationDate).toBe(
         accountBirthUser1.toISOString(),
       );
       // user1 is also FxA so should be true
-      expect(res.body.data?.user.isFxa).to.equal(true);
-      expect(getUserDataSpy.callCount).to.equal(1);
+      expect(res.body.data?.user.isFxa).toBe(true);
+      expect(getUserDataSpy).toHaveBeenCalledTimes(1);
     });
 
     it('isFxa should return false if user is not FxA', async () => {
@@ -191,12 +192,12 @@ describe('User', () => {
           variables,
         });
 
-      expect(res.body.data?.user.name).to.equal('Second Pocket User');
-      expect(res.body.data?.user.avatarUrl).to.equal('s3://my-avatar-2');
-      expect(res.body.data?.user.description).to.equal('my bio');
+      expect(res.body.data?.user.name).toBe('Second Pocket User');
+      expect(res.body.data?.user.avatarUrl).toBe('s3://my-avatar-2');
+      expect(res.body.data?.user.description).toBe('my bio');
       // user2 is not FxA so should be false
-      expect(res.body.data?.user.isFxa).to.equal(false);
-      expect(getUserDataSpy.callCount).to.equal(1);
+      expect(res.body.data?.user.isFxa).toBe(false);
+      expect(getUserDataSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should not load data if data is provided from headers', async () => {
@@ -221,11 +222,11 @@ describe('User', () => {
           variables,
         });
 
-      expect(res.body.data?.user.id).to.equal(
+      expect(res.body.data?.user.id).toBe(
         'fX792e6e9163ec630a71a9X08497c36eT3e25a4cd0ba5b1056fv989d5',
       );
-      expect(res.body.data?.user.isPremium).to.be.false;
-      expect(getUserDataSpy.callCount).to.equal(0);
+      expect(res.body.data?.user.isPremium).toBe(false);
+      expect(getUserDataSpy).toHaveBeenCalledTimes(0);
     });
     it('should load data if not provided by headers', async () => {
       const variables = {
@@ -248,11 +249,11 @@ describe('User', () => {
           variables,
         });
 
-      expect(res.body.data?.user.id).to.equal(
+      expect(res.body.data?.user.id).toBe(
         'fX792e6e9163ec630a71a9X08497c36eT3e25a4cd0ba5b1056fv989d5',
       );
-      expect(res.body.data?.user.isPremium).to.be.false;
-      expect(getUserDataSpy.callCount).to.equal(1);
+      expect(res.body.data?.user.isPremium).toBe(false);
+      expect(getUserDataSpy).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -298,32 +299,32 @@ describe('User', () => {
           },
         });
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].name',
         user2Profile.name,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].firstName',
         user2.first_name,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].lastName',
         user2.last_name,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].username',
         user2Profile.username,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].avatarUrl',
         user2Profile.avatar_url,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].accountCreationDate',
         accountBirthUser2.toISOString(),
       );
@@ -343,31 +344,31 @@ describe('User', () => {
           },
         });
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].name',
         user2Profile.name,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].firstName',
         user2.first_name,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].lastName',
         user2.last_name,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].username',
         user2Profile.username,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].avatarUrl',
         user2Profile.avatar_url,
       );
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].accountCreationDate',
         accountBirthUser2.toISOString(),
       );
@@ -384,38 +385,38 @@ describe('User', () => {
           },
         });
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].name',
         user2Profile.name,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].firstName',
         user2.first_name,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].lastName',
         user2.last_name,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].username',
         user2Profile.username,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].avatarUrl',
         user2Profile.avatar_url,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].accountCreationDate',
         accountBirthUser2.toISOString(),
       );
 
-      expect(res.body.errors.length).to.equal(1);
-      expect(res.body.errors[0].message).equals(
+      expect(res.body.errors.length).toBe(1);
+      expect(res.body.errors[0].message).toBe(
         'You are not authorized to access this property',
       );
     });
@@ -431,37 +432,37 @@ describe('User', () => {
           },
         });
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].name',
         user1Profile.name,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].firstName',
         user1.first_name,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].lastName',
         user1.last_name,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].username',
         user1Profile.username,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].avatarUrl',
         user1Profile.avatar_url,
       );
 
-      expect(res.body).to.have.nested.property(
-        'data._entities[0].isPremium',
-        !!user1.premium_status, // convert 1/0 to true/false
+      expect(res.body).toHaveProperty(
+        'data._entities[0].isPremium', // convert 1/0 to true/false
+        !!user1.premium_status,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].accountCreationDate',
         accountBirthUser1.toISOString(),
       );
@@ -481,38 +482,38 @@ describe('User', () => {
           },
         });
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].name',
         user2Profile.name,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].accountCreationDate',
         accountBirthUser2.toISOString(),
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].firstName',
         user2.first_name,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].lastName',
         user2.last_name,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].username',
         user2Profile.username,
       );
 
-      expect(res.body).to.have.nested.property(
+      expect(res.body).toHaveProperty(
         'data._entities[0].avatarUrl',
         user2Profile.avatar_url,
       );
 
-      expect(res.body.errors.length).to.equal(1);
-      expect(res.body.errors[0].message).equals(
+      expect(res.body.errors.length).toBe(1);
+      expect(res.body.errors[0].message).toBe(
         'You are not authorized to access this property',
       );
     });
@@ -533,8 +534,8 @@ describe('User', () => {
           .send({
             query: print(GET_USER),
           });
-        expect(res.body.data?.user.email).to.equal('email@email.com');
-        expect(res.body.errors).to.be.undefined;
+        expect(res.body.data?.user.email).toBe('email@email.com');
+        expect(res.body.errors).toBeUndefined();
       });
     });
   });

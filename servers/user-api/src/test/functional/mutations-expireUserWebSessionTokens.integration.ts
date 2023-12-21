@@ -1,7 +1,6 @@
 import { readClient, writeClient } from '../../database/client';
 import { ExpireUserWebSessionReason } from '../../types';
 import { gql } from 'graphql-tag';
-import { expect } from 'chai';
 import { startServer } from '../../apollo';
 import request from 'supertest';
 import { print } from 'graphql';
@@ -85,7 +84,7 @@ describe('Expire user web session tokens mutation', () => {
           query: print(EXPIRE_USER_WEB_SESSION),
           variables,
         });
-      expect(res.body.errors[0].message).equals(
+      expect(res.body.errors[0].message).toBe(
         `FxA user id mismatch in expiring web session tokens`,
       );
     });
@@ -103,13 +102,13 @@ describe('Expire user web session tokens mutation', () => {
           query: print(EXPIRE_USER_WEB_SESSION),
           variables,
         });
-      expect(res.body.data.expireUserWebSessionByFxaId).to.equal('1234');
+      expect(res.body.data.expireUserWebSessionByFxaId).toBe('1234');
       // lets make sure status === 0 and time_expired was set
       const dbRes = await readDb('readitla_ril-tmp.user_web_session_tokens')
         .select('status', 'time_expired')
         .where('user_id', 1234);
-      expect(dbRes[0].status).to.equal(0);
-      expect(dbRes[0].time_expired).not.to.be.null;
+      expect(dbRes[0].status).toBe(0);
+      expect(dbRes[0].time_expired).not.toBeNull();
     });
     it('should return success response if fxaId is valid but no entry in web session table for user', async () => {
       const variables = {
@@ -125,7 +124,7 @@ describe('Expire user web session tokens mutation', () => {
           query: print(EXPIRE_USER_WEB_SESSION),
           variables,
         });
-      expect(res.body.data.expireUserWebSessionByFxaId).to.equal('4321');
+      expect(res.body.data.expireUserWebSessionByFxaId).toBe('4321');
     });
   });
 });

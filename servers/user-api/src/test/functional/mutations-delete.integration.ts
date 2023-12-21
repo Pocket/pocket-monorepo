@@ -1,6 +1,5 @@
 import { readClient, writeClient } from '../../database/client';
 import { gql } from 'graphql-tag';
-import { expect } from 'chai';
 import { PinpointController } from '../../aws/pinpointController';
 import { userEventEmitter } from '../../events/init';
 import { EventType } from '../../events/eventType';
@@ -80,12 +79,12 @@ describe('Delete user mutations', () => {
           query: print(DELETE_USER),
         });
 
-      expect(res.body.data.deleteUser).equals('1');
+      expect(res.body.data.deleteUser).toBe('1');
       for (const tableName of allTablesPlusAuth) {
-        expect((await readDb(tableName).select()).length).equals(0);
+        expect((await readDb(tableName).select()).length).toBe(0);
       }
-      expect(deleteUserEndpointsMock.mock.calls.length).to.equal(1);
-      expect(eventObj.user.id).equal(`1`);
+      expect(deleteUserEndpointsMock.mock.calls.length).toBe(1);
+      expect(eventObj.user.id).toBe(`1`);
     });
 
     it('should delete all PII data for user without apple auth', async () => {
@@ -105,12 +104,12 @@ describe('Delete user mutations', () => {
           query: print(DELETE_USER),
         });
 
-      expect(res.body.data.deleteUser).equals('1');
+      expect(res.body.data.deleteUser).toBe('1');
       for (const tableName of allTablesPlusAuth) {
-        expect((await readDb(tableName).select()).length).equals(0);
+        expect((await readDb(tableName).select()).length).toBe(0);
       }
-      expect(deleteUserEndpointsMock.mock.calls.length).to.equal(1);
-      expect(eventObj.user.id).equal(`1`);
+      expect(deleteUserEndpointsMock.mock.calls.length).toBe(1);
+      expect(eventObj.user.id).toBe(`1`);
     });
 
     it('should delete all PII data for user with apple auth', async () => {
@@ -140,12 +139,12 @@ describe('Delete user mutations', () => {
           query: print(DELETE_USER),
         });
 
-      expect(res.body.data.deleteUser).equals('1');
+      expect(res.body.data.deleteUser).toBe('1');
       for (const tableName of allTablesPlusAuth) {
-        expect((await readDb(tableName).select()).length).equals(0);
+        expect((await readDb(tableName).select()).length).toBe(0);
       }
-      expect(deleteUserEndpointsMock.mock.calls.length).to.equal(1);
-      expect(eventObj.user.id).equal(`1`);
+      expect(deleteUserEndpointsMock.mock.calls.length).toBe(1);
+      expect(eventObj.user.id).toBe(`1`);
     });
   });
 
@@ -173,12 +172,12 @@ describe('Delete user mutations', () => {
           variables,
         });
 
-      expect(res.body.data.deleteUserByFxaId).equals('1');
+      expect(res.body.data.deleteUserByFxaId).toBe('1');
       for (const tableName of allTables) {
-        expect((await readDb(tableName).select()).length).equals(0);
+        expect((await readDb(tableName).select()).length).toBe(0);
       }
-      expect(deleteUserEndpointsMock.mock.calls.length).to.equal(1);
-      expect(eventObj.user.id).equal(`1`);
+      expect(deleteUserEndpointsMock.mock.calls.length).toBe(1);
+      expect(eventObj.user.id).toBe(`1`);
     });
 
     it('should throw forbidden error for fxaId mismatch', async () => {
@@ -205,11 +204,11 @@ describe('Delete user mutations', () => {
           variables,
         });
 
-      expect(res.body.errors[0].message).equals(
+      expect(res.body.errors[0].message).toBe(
         `FxA user id mismatch in deletion`,
       );
       for (const tableName of allTables) {
-        expect((await readDb(tableName).select()).length).equals(1);
+        expect((await readDb(tableName).select()).length).toBe(1);
       }
     });
   });

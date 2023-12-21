@@ -1,6 +1,5 @@
 import { gql } from 'graphql-tag';
 import { readClient, writeClient } from '../../database/client';
-import sinon from 'sinon';
 import { UserDataService } from '../../dataService/userDataService';
 import { startServer } from '../../apollo';
 import { print } from 'graphql';
@@ -20,7 +19,7 @@ describe('Context manager', () => {
       }
     }
   `;
-  const fetchUserIdSpy = sinon.spy(UserDataService, 'fromFxaId');
+  const fetchUserIdSpy = jest.spyOn(UserDataService, 'fromFxaId');
 
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
@@ -39,9 +38,9 @@ describe('Context manager', () => {
       ),
     ]);
   });
-  afterEach(() => fetchUserIdSpy.resetHistory());
+  afterEach(() => jest.clearAllMocks());
   afterAll(async () => {
-    fetchUserIdSpy.restore();
+    fetchUserIdSpy.mockRestore();
     await writeDb.destroy();
     await readDb.destroy();
     server.stop();
@@ -55,8 +54,8 @@ describe('Context manager', () => {
       });
 
     // Check that the method to pull userId from FxaID was called
-    expect(fetchUserIdSpy.callCount).toEqual(1);
-    expect(fetchUserIdSpy.getCall(0).args[1]).toEqual('123');
+    expect(fetchUserIdSpy).toHaveBeenCalledTimes(1);
+    expect(fetchUserIdSpy.mock.calls[0][1]).toEqual('123');
     // Can only have retrieved user data if userId was added to context
     expect(res.body.data?.user.username).toEqual('dracula');
   });
@@ -69,7 +68,7 @@ describe('Context manager', () => {
       });
 
     // Check that the method to pull userId from FxaID was not called
-    expect(fetchUserIdSpy.callCount).toEqual(0);
+    expect(fetchUserIdSpy).toHaveBeenCalledTimes(0);
     expect(res.body.data?.user.username).toEqual('dracula');
   });
   it('(legacy) resets userId if both fxaId and userId are passed to request', async () => {
@@ -81,9 +80,9 @@ describe('Context manager', () => {
       });
 
     // Check that the method to pull userId from FxaID was called
-    expect(fetchUserIdSpy.callCount).toEqual(1);
-    expect(fetchUserIdSpy.getCall(0).args[1]).toEqual('123');
-    expect(res.body.data.errors).toBeFalsy();
+    expect(fetchUserIdSpy).toHaveBeenCalledTimes(1);
+    expect(fetchUserIdSpy.mock.calls[0][1]).toEqual('123');
+    expect(res.body.data.errors).toBeUndefined();
     // Can only have retrieved user data if userId was updated on context
     expect(res.body.data?.user.username).toEqual('dracula');
   });

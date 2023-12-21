@@ -10,7 +10,6 @@ import config from '../../config';
 import { eventMap } from './config';
 import { EventHandlerInterface } from '../interfaces';
 import { EventHandlerCallbackMap } from './types';
-import { serverLogger } from '../../logger';
 
 /**
  * This class MUST be initialized using the EventBusHandler.init() method.
@@ -43,13 +42,15 @@ export class EventBusHandler implements EventHandlerInterface {
           // In the unlikely event that the payload generator throws an error,
           // log to Sentry and Cloudwatch but don't halt program
           const failedEventError = new Error(
-            `Failed to generate event '${eventPayload.eventType}' for event bus.`,
+            `Failed to send event '${
+              eventPayload.eventType
+            }' to event bus. Event Body:\n ${JSON.stringify(eventPayload)}`,
           );
-          Sentry.addBreadcrumb(eventPayload);
           // Don't halt program, but capture the failure in Sentry and Cloudwatch
+          Sentry.addBreadcrumb(failedEventError);
           Sentry.captureException(error);
-          serverLogger.error(failedEventError);
-          serverLogger.error(error);
+          console.log(failedEventError);
+          console.log(error);
         }
       });
     });
@@ -80,12 +81,13 @@ export class EventBusHandler implements EventHandlerInterface {
     );
     if (output.FailedEntryCount) {
       const failedEventError = new Error(
-        `Failed to send event '${eventPayload.eventType}' to event bus.`,
+        `Failed to send event '${
+          eventPayload.eventType
+        }' to event bus. Event Body:\n ${JSON.stringify(eventPayload)}`,
       );
-      Sentry.addBreadcrumb(eventPayload);
       // Don't halt program, but capture the failure in Sentry and Cloudwatch
       Sentry.captureException(failedEventError);
-      serverLogger.error('Failed event sending to eventbridge', eventPayload);
+      console.log(failedEventError);
     }
   }
 }
