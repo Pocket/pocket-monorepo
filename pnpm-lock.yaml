@@ -353,11 +353,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.64.0
-        version: 7.64.0
+        specifier: 7.80.1
+        version: 7.80.1
       '@sentry/tracing':
-        specifier: 7.64.0
-        version: 7.64.0
+        specifier: 7.80.1
+        version: 7.80.1
       cors:
         specifier: 2.8.5
         version: 2.8.5
@@ -377,8 +377,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0(mysql2@3.6.5)
       luxon:
-        specifier: 3.3.0
-        version: 3.3.0
+        specifier: 3.4.4
+        version: 3.4.4
       mysql2:
         specifier: 3.6.5
         version: 3.6.5
@@ -387,8 +387,8 @@ importers:
         version: 3.3.6
     devDependencies:
       '@sentry/types':
-        specifier: 7.64.0
-        version: 7.64.0
+        specifier: 7.80.1
+        version: 7.80.1
       '@types/chance':
         specifier: 1.1.3
         version: 1.1.3
@@ -411,8 +411,8 @@ importers:
         specifier: 29.7.0
         version: 29.7.0(@types/node@18.19.3)
       nock:
-        specifier: 13.3.2
-        version: 13.3.2
+        specifier: 13.3.8
+        version: 13.3.8
       nodemon:
         specifier: 3.0.1
         version: 3.0.1
@@ -510,9 +510,6 @@ importers:
       express:
         specifier: 4.18.2
         version: 4.18.2
-      graphql:
-        specifier: 16.8.1
-        version: 16.8.1
       knex:
         specifier: 3.1.0
         version: 3.1.0(mysql2@3.6.5)
@@ -532,6 +529,9 @@ importers:
       '@faker-js/faker':
         specifier: 8.3.1
         version: 8.3.1
+      '@sentry/types':
+        specifier: 7.80.1
+        version: 7.80.1
       '@types/chai':
         specifier: 4.3.10
         version: 4.3.10
@@ -3781,16 +3781,6 @@ packages:
     resolution: {integrity: sha512-UY+FGM/2jjMkzQLn8pxcHGMaVLh9aEitG3zY2CiY7XHdLiz3bZOwa6oDxNqEMv7zZkV+cj5DOdz0cQ1BP5Hjgw==}
     dev: true
 
-  /@sentry-internal/tracing@7.64.0:
-    resolution: {integrity: sha512-1XE8W6ki7hHyBvX9hfirnGkKDBKNq3bDJyXS86E0bYVDl94nvbRM9BD9DHsCFetqYkVm1yDGEK+6aUVs4CztoQ==}
-    engines: {node: '>=8'}
-    dependencies:
-      '@sentry/core': 7.64.0
-      '@sentry/types': 7.64.0
-      '@sentry/utils': 7.64.0
-      tslib: 2.6.2
-    dev: false
-
   /@sentry-internal/tracing@7.80.1:
     resolution: {integrity: sha512-5gZ4LPIj2vpQl2/dHBM4uXMi9OI5E0VlOhJQt0foiuN6JJeiOjdpJFcfVqJk69wrc0deVENTtgKKktxqMwVeWQ==}
     engines: {node: '>=8'}
@@ -3809,15 +3799,6 @@ packages:
       '@sentry/utils': 7.88.0
     dev: false
 
-  /@sentry/core@7.64.0:
-    resolution: {integrity: sha512-IzmEyl5sNG7NyEFiyFHEHC+sizsZp9MEw1+RJRLX6U5RITvcsEgcajSkHQFafaBPzRrcxZMdm47Cwhl212LXcw==}
-    engines: {node: '>=8'}
-    dependencies:
-      '@sentry/types': 7.64.0
-      '@sentry/utils': 7.64.0
-      tslib: 2.6.2
-    dev: false
-
   /@sentry/core@7.80.1:
     resolution: {integrity: sha512-3Yh+O9Q86MxwIuJFYtuSSoUCpdx99P1xDAqL0FIPTJ+ekaVMiUJq9NmyaNh9uN2myPSmxvEXW6q3z37zta9ZHg==}
     engines: {node: '>=8'}
@@ -3832,22 +3813,6 @@ packages:
     dependencies:
       '@sentry/types': 7.88.0
       '@sentry/utils': 7.88.0
-    dev: false
-
-  /@sentry/node@7.64.0:
-    resolution: {integrity: sha512-wRi0uTnp1WSa83X2yLD49tV9QPzGh5e42IKdIDBiQ7lV9JhLILlyb34BZY1pq6p4dp35yDasDrP3C7ubn7wo6A==}
-    engines: {node: '>=8'}
-    dependencies:
-      '@sentry-internal/tracing': 7.64.0
-      '@sentry/core': 7.64.0
-      '@sentry/types': 7.64.0
-      '@sentry/utils': 7.64.0
-      cookie: 0.4.2
-      https-proxy-agent: 5.0.1
-      lru_map: 0.3.3
-      tslib: 2.6.2
-    transitivePeerDependencies:
-      - supports-color
     dev: false
 
   /@sentry/node@7.80.1:
@@ -3890,13 +3855,6 @@ packages:
       - supports-color
     dev: false
 
-  /@sentry/tracing@7.64.0:
-    resolution: {integrity: sha512-Php0XnnJolfxkFdgLlgwgRz3bgHmu/7gDRQaGQHJeDgCCjrmNHI+sHi8zmkWCWSO0Z1mi111n2ZUr9B9YLPBTg==}
-    engines: {node: '>=8'}
-    dependencies:
-      '@sentry-internal/tracing': 7.64.0
-    dev: false
-
   /@sentry/tracing@7.80.1:
     resolution: {integrity: sha512-sFkcxCBtLNVa3EyeCafZqhJHZ714f2+ryPWTBckAmxAsON4yjh/YLs2X1FJ2n6Rnv16TP6gWGt4SnhFT03WStA==}
     engines: {node: '>=8'}
@@ -3911,26 +3869,13 @@ packages:
       '@sentry-internal/tracing': 7.88.0
     dev: false
 
-  /@sentry/types@7.64.0:
-    resolution: {integrity: sha512-LqjQprWXjUFRmzIlUjyA+KL+38elgIYmAeoDrdyNVh8MK5IC1W2Lh1Q87b4yOiZeMiIhIVNBd7Ecoh2rodGrGA==}
-    engines: {node: '>=8'}
-
   /@sentry/types@7.80.1:
     resolution: {integrity: sha512-CVu4uPVTOI3U9kYiOdA085R7jX5H1oVODbs9y+A8opJ0dtJTMueCXgZyE8oXQ0NjGVs6HEeaLkOuiV0mj8X3yw==}
     engines: {node: '>=8'}
-    dev: false
 
   /@sentry/types@7.88.0:
     resolution: {integrity: sha512-FvwvmX1pWAZKicPj4EpKyho8Wm+C4+r5LiepbbBF8oKwSPJdD2QV1fo/LWxsrzNxWOllFIVIXF5Ed3nPYQWpTw==}
     engines: {node: '>=8'}
-    dev: false
-
-  /@sentry/utils@7.64.0:
-    resolution: {integrity: sha512-HRlM1INzK66Gt+F4vCItiwGKAng4gqzCR4C5marsL3qv6SrKH98dQnCGYgXluSWaaa56h97FRQu7TxCk6jkSvQ==}
-    engines: {node: '>=8'}
-    dependencies:
-      '@sentry/types': 7.64.0
-      tslib: 2.6.2
     dev: false
 
   /@sentry/utils@7.80.1:
@@ -6214,11 +6159,6 @@ packages:
 
   /cookie-signature@1.0.6:
     resolution: {integrity: sha512-QADzlaHc8icV8I7vbaJXJwod9HWYp8uCqf1xa4OfNu1T7JVxQIrUgOWtHdNDtPiywmFbiS12VjotIXLrKM3orQ==}
-    dev: false
-
-  /cookie@0.4.2:
-    resolution: {integrity: sha512-aSWTXFzaKWkvHO1Ny/s+ePFpvKsPnjc551iI41v3ny/ow6tBG5Vd+FuqGNhh1LxOmVzOlGUriIlOaokOvhaStA==}
-    engines: {node: '>= 0.6'}
     dev: false
 
   /cookie@0.5.0:
@@ -9586,15 +9526,6 @@ packages:
   /lru-cache@8.0.5:
     resolution: {integrity: sha512-MhWWlVnuab1RG5/zMRRcVGXZLCXrZTgfwMikgzCegsPnG62yDQo5JnqKkrK4jO5iKqDAZGItAqN5CtKBCBWRUA==}
     engines: {node: '>=16.14'}
-    dev: false
-
-  /lru_map@0.3.3:
-    resolution: {integrity: sha512-Pn9cox5CsMYngeDbmChANltQl+5pi6XmTrraMSzhPmMBbmgcxmqWry0U3PGapCU1yB4/LqCcom7qhHZiF/jGfQ==}
-    dev: false
-
-  /luxon@3.3.0:
-    resolution: {integrity: sha512-An0UCfG/rSiqtAIiBPO0Y9/zAnHUZxAMiCpTd5h2smgsj7GGmcenvrvww2cqNA8/4A5ZrD1gJpHN2mIHZQF+Mg==}
-    engines: {node: '>=12'}
     dev: false
 
   /luxon@3.4.4:
