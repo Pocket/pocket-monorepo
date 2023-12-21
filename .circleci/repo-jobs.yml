@@ -11,6 +11,18 @@ jobs:
           command: |
             pnpm run build
             pnpm run lint
+
+  mismatched_versions:
+    docker:
+      - image: *node_image
+    steps:
+      - checkout
+      - install_pnpm
+      - run:
+          name: Check for Mismatch
+          command: |
+            pnpm list-mismatches
+
   test:
     docker:
       - image: *node_image
@@ -29,5 +41,8 @@ workflows:
           <<: *not_dev_main
           context: pocket
       - test:
+          <<: *not_dev_main
+          context: pocket
+      - mismatched_versions:
           <<: *not_dev_main
           context: pocket
