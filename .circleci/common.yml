@@ -16,6 +16,7 @@ repo_for_enum: &repo_for_enum
     enum: 
       - image_api
       - annotations_api
+      - transactional_emails
 
 resource_class_enmum: &resource_class_enmum
   resource-class:
@@ -31,6 +32,9 @@ parameters:
     type: boolean
     default: false
   annotations_api:
+    type: boolean
+    default: false
+  transactional_emails:
     type: boolean
     default: false
 
@@ -56,6 +60,7 @@ commands:
           environment:
             image_api: << pipeline.parameters.image_api >>
             annotations_api: << pipeline.parameters.annotations_api >>
+            transactional_emails: << pipeline.parameters.transactional_emails >>
 
   install_pnpm:
     steps:
