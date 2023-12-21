@@ -22,7 +22,7 @@
     "isomorphic-fetch": "^3.0.0"
   },
   "devDependencies": {
-    "@pocket-tools/eslint-config": "2.1.7",
+    "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",
     "@types/aws-lambda": "8.10.119",
     "@types/chai": "4.3.5",
