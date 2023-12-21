@@ -15,7 +15,7 @@
     "format": "eslint --fix \"src/**/*.ts\""
   },
   "dependencies": {
-    "@pocket-tools/terraform-modules": "4.1.2"
+    "@pocket-tools/terraform-modules": "workspace:*"
   },
   "devDependencies": {
     "tsconfig": "workspace:*",

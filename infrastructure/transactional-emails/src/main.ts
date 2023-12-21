@@ -4,14 +4,22 @@ import {
   DataTerraformRemoteState,
   RemoteBackend,
   TerraformStack,
+  Aspects,
+  MigrateIds,
 } from 'cdktf';
-import { AwsProvider, sns, sqs, datasources, iam } from '@cdktf/provider-aws';
+import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
+import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
+import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
+import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
+import { SqsQueuePolicy } from '@cdktf/provider-aws/lib/sqs-queue-policy';
+import { SnsTopicSubscription } from '@cdktf/provider-aws/lib/sns-topic-subscription';
+import { DataAwsIamPolicyDocument } from '@cdktf/provider-aws/lib/data-aws-iam-policy-document';
+import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
+import { NullProvider } from '@cdktf/provider-null/lib/provider';
+import { LocalProvider } from '@cdktf/provider-local/lib/provider';
+import { ArchiveProvider } from '@cdktf/provider-archive/lib/provider';
 import { config } from './config';
 import { PocketPagerDuty, PocketVPC } from '@pocket-tools/terraform-modules';
-import { PagerdutyProvider } from '@cdktf/provider-pagerduty';
-import { LocalProvider } from '@cdktf/provider-local';
-import { NullProvider } from '@cdktf/provider-null';
-import { ArchiveProvider } from '@cdktf/provider-archive';
 import * as fs from 'fs';
 import { TransactionalEmailSQSLambda } from './transactionalEmailSQSLambda';
 
@@ -31,8 +39,8 @@ class TransactionalEmails extends TerraformStack {
       workspaces: [{ prefix: `${config.name}-` }],
     });
 
-    const region = new datasources.DataAwsRegion(this, 'region');
-    const caller = new datasources.DataAwsCallerIdentity(this, 'caller');
+    const region = new DataAwsRegion(this, 'region');
+    const caller = new DataAwsCallerIdentity(this, 'caller');
     const pocketVpc = new PocketVPC(this, 'pocket-vpc');
 
     const sqsLambda = new TransactionalEmailSQSLambda(
@@ -43,7 +51,7 @@ class TransactionalEmails extends TerraformStack {
     );
 
     //dlq for sqs-sns subscription
-    const snsTopicDlq = new sqs.SqsQueue(this, 'sns-topic-dlq', {
+    const snsTopicDlq = new SqsQueue(this, 'sns-topic-dlq', {
       name: `${config.prefix}-SNS-Topics-DLQ`,
       tags: config.tags,
     });
@@ -82,6 +90,10 @@ class TransactionalEmails extends TerraformStack {
       snsTopicDlq,
       SNSTopicsSubscriptionList,
     );
+
+    // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
+    // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
+    Aspects.of(this).add(new MigrateIds());
   }
 
   /**
@@ -129,12 +141,12 @@ class TransactionalEmails extends TerraformStack {
    */
   private subscribeSqsToSnsTopic(
     sqsLambda: TransactionalEmailSQSLambda,
-    snsTopicDlq: sqs.SqsQueue,
+    snsTopicDlq: SqsQueue,
     snsTopicArn: string,
     topicName: string,
   ) {
     // This Topic already exists and is managed elsewhere
-    return new sns.SnsTopicSubscription(this, `${topicName}-sns-subscription`, {
+    return new SnsTopicSubscription(this, `${topicName}-sns-subscription`, {
       topicArn: snsTopicArn,
       protocol: 'sqs',
       endpoint: sqsLambda.construct.applicationSqsQueue.sqsQueue.arn,
@@ -152,15 +164,15 @@ class TransactionalEmails extends TerraformStack {
    * @private
    */
   private createPoliciesForTransactionalEmailSQSQueue(
-    snsTopicQueue: sqs.SqsQueue,
-    snsTopicDlq: sqs.SqsQueue,
+    snsTopicQueue: SqsQueue,
+    snsTopicDlq: SqsQueue,
     snsTopicArns: string[],
   ): void {
     [
       { name: 'transactional-email-sns-sqs', resource: snsTopicQueue },
       { name: 'transactional-email-sns-dlq', resource: snsTopicDlq },
     ].forEach((queue) => {
-      const policy = new iam.DataAwsIamPolicyDocument(
+      const policy = new DataAwsIamPolicyDocument(
         this,
         `${queue.name}-policy-document`,
         {
@@ -189,7 +201,7 @@ class TransactionalEmails extends TerraformStack {
         },
       ).json;
 
-      new sqs.SqsQueuePolicy(this, `${queue.name}-policy`, {
+      new SqsQueuePolicy(this, `${queue.name}-policy`, {
         queueUrl: queue.resource.url,
         policy: policy,
       });

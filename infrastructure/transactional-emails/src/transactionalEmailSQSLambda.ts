@@ -1,13 +1,14 @@
-import { Resource } from 'cdktf';
 import { Construct } from 'constructs';
 import { config } from './config';
-import { PocketVPC } from '@pocket-tools/terraform-modules';
-import { PocketSQSWithLambdaTarget } from '@pocket-tools/terraform-modules';
-import { LAMBDA_RUNTIMES } from '@pocket-tools/terraform-modules';
-import { ssm } from '@cdktf/provider-aws';
-import { PocketPagerDuty } from '@pocket-tools/terraform-modules';
+import { DataAwsSsmParameter } from '@cdktf/provider-aws/lib/data-aws-ssm-parameter';
+import {
+  PocketVPC,
+  PocketSQSWithLambdaTarget,
+  PocketPagerDuty,
+  LAMBDA_RUNTIMES,
+} from '@pocket-tools/terraform-modules';
 
-export class TransactionalEmailSQSLambda extends Resource {
+export class TransactionalEmailSQSLambda extends Construct {
   public readonly construct: PocketSQSWithLambdaTarget;
   constructor(
     scope: Construct,
@@ -79,11 +80,11 @@ export class TransactionalEmailSQSLambda extends Resource {
   }
 
   private getEnvVariableValues() {
-    const sentryDsn = new ssm.DataAwsSsmParameter(this, 'sentry-dsn', {
+    const sentryDsn = new DataAwsSsmParameter(this, 'sentry-dsn', {
       name: `/${config.name}/${config.environment}/SENTRY_DSN`,
     });
 
-    const serviceHash = new ssm.DataAwsSsmParameter(this, 'service-hash', {
+    const serviceHash = new DataAwsSsmParameter(this, 'service-hash', {
       name: `${config.circleCIPrefix}/SERVICE_HASH`,
     });
 
