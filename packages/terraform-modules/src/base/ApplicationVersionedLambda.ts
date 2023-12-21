@@ -2,10 +2,6 @@ import {
   DataArchiveFile,
   DataArchiveFileSource,
 } from '@cdktf/provider-archive/lib/data-archive-file';
-import {
-  s3BucketOwnershipControls,
-  s3BucketPublicAccessBlock,
-} from '@cdktf/provider-aws';
 import { CloudwatchLogGroup } from '@cdktf/provider-aws/lib/cloudwatch-log-group';
 import {
   DataAwsIamPolicyDocumentStatement,
