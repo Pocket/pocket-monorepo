@@ -1,19 +1,18 @@
 {
-  "name": "acme-cdk",
+  "name": "transactional-emails-cdk",
   "version": "1.0.0",
   "main": "dist/main.js",
   "types": "dist/main.ts",
   "license": "MPL-2.0",
   "private": true,
   "scripts": {
-    "build:dev": "rm -rf dist && NODE_ENV=development npm run synth",
+    "build": "rm -rf dist && tsc",
     "synth": "cdktf synth",
     "compile": "tsc --pretty",
     "watch": "tsc -w",
-    "test": "echo ok"
-  },
-  "engines": {
-    "node": ">=14"
+    "test": "echo ok",
+    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix \"src/**/*.ts\""
   },
   "dependencies": {
     "@pocket-tools/terraform-modules": "4.1.2"
