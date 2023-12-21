@@ -1,0 +1,25 @@
+{
+  "name": "acme-cdk",
+  "version": "1.0.0",
+  "main": "dist/main.js",
+  "types": "dist/main.ts",
+  "license": "MPL-2.0",
+  "private": true,
+  "scripts": {
+    "build:dev": "rm -rf dist && NODE_ENV=development npm run synth",
+    "synth": "cdktf synth",
+    "compile": "tsc --pretty",
+    "watch": "tsc -w",
+    "test": "echo ok"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "dependencies": {
+    "@pocket-tools/terraform-modules": "4.1.2"
+  },
+  "devDependencies": {
+    "@types/node": "18.17.5",
+    "@pocket-tools/tsconfig": "2.0.1"
+  }
+}
