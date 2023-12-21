@@ -7,8 +7,8 @@ import { ContextFactory } from './context';
 import { readClient, writeClient } from './database/client';
 import { userEventEmitter } from './events/init';
 import http from 'http';
-import { setLogger, setMorgan } from '@pocket-tools/ts-logger';
-export const serverLogger = setLogger();
+import { setMorgan } from '@pocket-tools/ts-logger';
+import { serverLogger } from './logger';
 
 export async function startServer(port: number) {
   // initialize express with exposed httpServer so that it may be

@@ -10,7 +10,7 @@ import IntMask from './utils/intMask';
 import { UserDataService } from './dataService/userDataService';
 import { UserModel } from './models/User';
 import { NotFoundError } from '@pocket-tools/apollo-utils';
-import { serverLogger } from './apollo';
+import { serverLogger } from './logger';
 import * as Sentry from '@sentry/node';
 
 export interface IContext {

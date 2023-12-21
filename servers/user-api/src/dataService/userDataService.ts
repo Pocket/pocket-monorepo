@@ -6,7 +6,7 @@ import { NotFoundError } from '@pocket-tools/apollo-utils';
 import { normalizeEmail, contactHash } from '../utils/email';
 import { getUnixTimestamp } from '../utils/unixTimestamp';
 import { DateTime } from 'luxon';
-import { serverLogger } from '../apollo';
+import { serverLogger } from '../logger';
 import config from '../config';
 
 /** Database constants for some lookups; inferred from web repo */
