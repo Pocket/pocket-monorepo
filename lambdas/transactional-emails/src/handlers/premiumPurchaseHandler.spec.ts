@@ -1,6 +1,5 @@
 import * as ssm from '../ssm';
 import nock from 'nock';
-import sinon from 'sinon';
 import { config } from '../config';
 import { premiumPurchaseHandler } from './premiumPurchaseHandler';
 import { SQSRecord } from 'aws-lambda';
@@ -40,12 +39,14 @@ describe('premium purchase handler', () => {
   const record = generateRecord(testPremiumPurchaseEvent);
 
   beforeEach(() => {
-    sinon.stub(ssm, 'getBrazeApiKey').returns('api-key');
+    jest
+      .spyOn(ssm, 'getBrazeApiKey')
+      .mockImplementation(() => Promise.resolve('api-key'));
   });
 
   afterEach(() => {
     nock.cleanAll();
-    sinon.restore();
+    jest.restoreAllMocks();
   });
 
   it('should send braze event and not throw error', async () => {

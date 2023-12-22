@@ -1,6 +1,5 @@
 import * as ssm from '../ssm';
 import nock from 'nock';
-import sinon from 'sinon';
 import { config } from '../config';
 import { SQSRecord } from 'aws-lambda';
 import { UserRegistrationEvent } from '../schemas/userRegistrationEvent';
@@ -33,12 +32,14 @@ describe('user registration event handler', () => {
   const record = generateRecord(testPayload);
 
   beforeEach(() => {
-    sinon.stub(ssm, 'getBrazeApiKey').returns('api-key');
+    jest
+      .spyOn(ssm, 'getBrazeApiKey')
+      .mockImplementation(() => Promise.resolve('api-key'));
   });
 
   afterEach(() => {
     nock.cleanAll();
-    sinon.restore();
+    jest.restoreAllMocks();
   });
 
   it('should send braze event and not throw error', async () => {

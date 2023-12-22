@@ -1,7 +1,6 @@
 import nock from 'nock';
 import { accountDeleteHandler } from './accountDelete';
 import { SQSRecord } from 'aws-lambda';
-import sinon from 'sinon';
 import { config } from '../config';
 import * as ssm from '../ssm';
 import { sendAccountDeletionEmail } from '../braze';
@@ -20,12 +19,14 @@ describe('accountDelete handler', () => {
   };
 
   beforeEach(() => {
-    sinon.stub(ssm, 'getBrazeApiKey').returns('api-key');
+    jest
+      .spyOn(ssm, 'getBrazeApiKey')
+      .mockImplementation(() => Promise.resolve('api-key'));
   });
 
   afterEach(() => {
     nock.cleanAll();
-    sinon.restore();
+    jest.restoreAllMocks();
   });
 
   it('throw an error if accountDelete event payload is missing email', async () => {

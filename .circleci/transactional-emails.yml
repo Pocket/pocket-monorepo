@@ -6,13 +6,6 @@ workflows:
       ######
       # Every PR Jobs
       ######
-      - test_integrations:
-          <<: *not_dev_main
-          for: transactional_emails
-          context: pocket
-          name: transactional-emails_test_integrations
-          scope: transactional-emails
-
       - build_lambda:
           <<: *not_dev_main
           context: pocket
