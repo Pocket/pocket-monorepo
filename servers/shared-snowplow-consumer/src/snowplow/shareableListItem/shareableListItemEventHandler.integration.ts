@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { ObjectUpdate, EventType, shareableListItemEventSchema } from './types';
 import { ShareableListItemEventHandler } from './shareableListItemEventHandler';
 import {
@@ -20,16 +19,14 @@ function assertValidSnowplowObjectUpdateEvents(
     .map(parseSnowplowData)
     .map((parsedEvent) => parsedEvent.data);
 
-  expect(parsedEvents).to.include.deep.members(
-    triggers.map((trigger) => ({
-      schema: shareableListItemEventSchema.objectUpdate,
-      data: { trigger: trigger, object: 'shareable_list_item' },
-    })),
-  );
+  expect(parsedEvents).toEqual(triggers.map((trigger) => ({
+    schema: shareableListItemEventSchema.objectUpdate,
+    data: { trigger: trigger, object: 'shareable_list_item' },
+  })));
 }
 
 function assertShareableListItemSchema(eventContext) {
-  expect(eventContext.data).to.include.deep.members([
+  expect(eventContext.data).toEqual(expect.arrayContaining([
     {
       schema: shareableListItemEventSchema.shareable_list_item,
       data: {
@@ -49,11 +46,11 @@ function assertShareableListItemSchema(eventContext) {
         updated_at: testShareableListItemData.updated_at,
       },
     },
-  ]);
+  ]));
 }
 
 function assertPartialShareableListItemSchema(eventContext) {
-  expect(eventContext.data).to.include.deep.members([
+  expect(eventContext.data).toEqual(expect.arrayContaining([
     {
       schema: shareableListItemEventSchema.shareable_list_item,
       data: {
@@ -66,7 +63,7 @@ function assertPartialShareableListItemSchema(eventContext) {
         created_at: testPartialShareableListItemData.created_at,
       },
     },
-  ]);
+  ]));
 }
 
 const testEventData = {
@@ -97,9 +94,9 @@ describe('ShareableListItemEventHandler', () => {
 
     // make sure we only have good events
     const allEvents = await getAllSnowplowEvents();
-    expect(allEvents.total).to.equal(1);
-    expect(allEvents.good).to.equal(1);
-    expect(allEvents.bad).to.equal(0);
+    expect(allEvents.total).toBe(1);
+    expect(allEvents.good).toBe(1);
+    expect(allEvents.bad).toBe(0);
 
     const goodEvents = await getGoodSnowplowEvents();
 
@@ -126,9 +123,9 @@ describe('ShareableListItemEventHandler', () => {
 
     // make sure we only have good events
     const allEvents = await getAllSnowplowEvents();
-    expect(allEvents.total).to.equal(1);
-    expect(allEvents.good).to.equal(1);
-    expect(allEvents.bad).to.equal(0);
+    expect(allEvents.total).toBe(1);
+    expect(allEvents.good).toBe(1);
+    expect(allEvents.bad).toBe(0);
 
     const goodEvents = await getGoodSnowplowEvents();
 
@@ -155,9 +152,9 @@ describe('ShareableListItemEventHandler', () => {
 
     // make sure we only have good events
     const allEvents = await getAllSnowplowEvents();
-    expect(allEvents.total).to.equal(1);
-    expect(allEvents.good).to.equal(1);
-    expect(allEvents.bad).to.equal(0);
+    expect(allEvents.total).toBe(1);
+    expect(allEvents.good).toBe(1);
+    expect(allEvents.bad).toBe(0);
 
     const goodEvents = await getGoodSnowplowEvents();
 
@@ -184,9 +181,9 @@ describe('ShareableListItemEventHandler', () => {
 
     // make sure we only have good events
     const allEvents = await getAllSnowplowEvents();
-    expect(allEvents.total).to.equal(1);
-    expect(allEvents.good).to.equal(1);
-    expect(allEvents.bad).to.equal(0);
+    expect(allEvents.total).toBe(1);
+    expect(allEvents.good).toBe(1);
+    expect(allEvents.bad).toBe(0);
 
     const goodEvents = await getGoodSnowplowEvents();
 

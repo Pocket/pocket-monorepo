@@ -1,4 +1,3 @@
-import sinon from 'sinon';
 import { EventEmitter } from 'events';
 import {
   DeleteMessageCommand,
@@ -34,58 +33,70 @@ describe('sqsConsumer', () => {
       'https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:410318598490:PocketEventBridge-Dev-ProspectEventTopic:ee0ddf8a-ace7-4a9b-9b30-391eb601edc7',
   };
 
-  let scheduleStub: sinon.SinonStub;
-  let sentryStub: sinon.SinonStub;
-  let consoleStub: sinon.SinonStub;
-  let userEventConsumerStub: sinon.SinonStub;
+  let scheduleStub: jest.SpyInstance;
+  let sentryStub: jest.SpyInstance;
+  let consoleStub: jest.SpyInstance;
+  let userEventConsumerStub: jest.SpyInstance;
 
   beforeEach(() => {
-    sinon.restore();
-    scheduleStub = sinon.stub(sqsConsumer, 'scheduleNextPoll').resolves();
+    scheduleStub = jest
+      .spyOn(sqsConsumer, 'scheduleNextPoll')
+      .mockImplementation(() => Promise.resolve());
 
-    sentryStub = sinon.stub(Sentry, 'captureException');
-    consoleStub = sinon.stub(console, 'error');
-    userEventConsumerStub = sinon
-      .stub(Consumer, 'userEventConsumer')
-      .resolves();
+    sentryStub = jest.spyOn(Sentry, 'captureException').mockImplementation();
+    consoleStub = jest.spyOn(console, 'error').mockImplementation();
+    userEventConsumerStub = jest
+      .spyOn(Consumer, 'userEventConsumer')
+      .mockImplementation(() => Promise.resolve());
   });
 
   afterEach(() => {
     //require this to clear `spyOn` counts between tests
     jest.clearAllMocks();
-    sinon.restore();
+    jest.restoreAllMocks();
   });
 
   it('sends an event when the class is initialized', () => {
-    const eventSpy = sinon.spy(emitter, 'emit');
-    sinon.stub(SqsConsumer.prototype, 'pollMessage').resolves();
+    const eventSpy = jest.spyOn(emitter, 'emit').mockClear();
+    jest
+      .spyOn(SqsConsumer.prototype, 'pollMessage')
+      .mockImplementation(() => Promise.resolve());
     new SqsConsumer(emitter);
-    expect(eventSpy.calledOnceWithExactly('pollSnowplowSqsQueue')).toBe(true);
+    // .calledOnceWithExactly('pollSnowplowSqsQueue')
+    expect(eventSpy).toHaveBeenCalledTimes(1);
+    expect(eventSpy).toHaveBeenCalledWith('pollSnowplowSqsQueue');
   });
 
   it('invokes listener when pollSnowplowSqsQueue event is emitted', async () => {
-    const listenerStub = sinon.stub(sqsConsumer, 'pollMessage').resolves();
+    const listenerStub = jest
+      .spyOn(sqsConsumer, 'pollMessage')
+      .mockImplementation(() => Promise.resolve());
     emitter.emit('pollSnowplowSqsQueue');
-    expect(listenerStub.callCount).toEqual(1);
+    expect(listenerStub).toHaveBeenCalledTimes(1);
   });
   it('schedules a poll event after some time if no messages returned', async () => {
-    sinon.stub(SQSClient.prototype, 'send').resolves({ Messages: [] });
+    jest
+      .spyOn(SQSClient.prototype, 'send')
+      .mockImplementation(() => Promise.resolve({ Messages: [] }));
     await sqsConsumer.pollMessage();
-    expect(scheduleStub.calledOnceWithExactly(300000)).toBe(true);
+    expect(scheduleStub).toHaveBeenCalledTimes(1);
+    expect(scheduleStub).toHaveBeenCalledWith(300000);
   });
 
   it('logs critical error if could not receive messages, and reschedules', async () => {
     const error = new Error(`You got Q'd`);
-    sinon.stub(SQSClient.prototype, 'send').rejects(error);
+    jest
+      .spyOn(SQSClient.prototype, 'send')
+      .mockImplementation(() => Promise.reject(error));
     await sqsConsumer.pollMessage();
-    expect(
-      sentryStub.calledOnceWithExactly(error, {
-        level: Sentry.Severity.Critical,
-      }),
-    ).toBe(true);
-    expect(consoleStub.callCount).toEqual(1);
+    expect(sentryStub).toHaveBeenCalledTimes(1);
+    expect(sentryStub).toHaveBeenCalledWith(error, {
+      level: Sentry.Severity.Critical,
+    });
+    expect(consoleStub).toHaveBeenCalledTimes(1);
     //assert to reschedule after 5 mins
-    expect(scheduleStub.calledOnceWithExactly(300000)).toBe(true);
+    expect(scheduleStub).toHaveBeenCalledTimes(1);
+    expect(scheduleStub).toHaveBeenCalledWith(300000);
   });
 
   describe('With a message', () => {
@@ -95,7 +106,9 @@ describe('sqsConsumer', () => {
           Messages: [{ Body: JSON.stringify(fakeMessageBody) }],
         };
 
-        sinon.stub(SQSClient.prototype, 'send').resolves(testMessages);
+        jest
+          .spyOn(SQSClient.prototype, 'send')
+          .mockImplementation(() => Promise.resolve(testMessages));
         await sqsConsumer.pollMessage();
         expect(userEventConsumerStub).toBeTruthy();
       });
@@ -106,25 +119,33 @@ describe('sqsConsumer', () => {
     const sqsMessage = {
       Messages: [{ Body: JSON.stringify(fakeMessageBody) }],
     };
-    sinon.stub(SQSClient.prototype, 'send').resolves(sqsMessage);
-    sinon.stub(sqsConsumer, 'processMessage').resolves(true);
+    jest
+      .spyOn(SQSClient.prototype, 'send')
+      .mockImplementation(() => Promise.resolve(sqsMessage));
+    jest
+      .spyOn(sqsConsumer, 'processMessage')
+      .mockImplementation(() => Promise.resolve(true));
     await sqsConsumer.pollMessage();
-    expect(scheduleStub.calledOnceWithExactly(100)).toBe(true);
+    expect(scheduleStub).toHaveBeenCalledTimes(1);
+    expect(scheduleStub).toHaveBeenCalledWith(100);
   });
 
   it('sends a delete if message was successfully processed', async () => {
-    sinon.stub(sqsConsumer, 'processMessage').resolves(true);
-    const sqsStub = sinon
-      .stub(SQSClient.prototype, 'send')
-      .onFirstCall()
-      .resolves({
-        Messages: [{ Body: JSON.stringify(fakeMessageBody) }],
-      })
-      .onSecondCall()
-      .resolves();
+    jest
+      .spyOn(sqsConsumer, 'processMessage')
+      .mockImplementation(() => Promise.resolve(true));
+    const sqsStub = jest
+      .spyOn(SQSClient.prototype, 'send')
+      .mockClear()
+      .mockImplementationOnce(() =>
+        Promise.resolve({
+          Messages: [{ Body: JSON.stringify(fakeMessageBody) }],
+        }),
+      )
+      .mockImplementation(() => Promise.resolve());
     await sqsConsumer.pollMessage();
-    expect(sqsStub.callCount).toEqual(2);
-    expect(sqsStub.secondCall.args[0].input).toEqual(
+    expect(sqsStub).toHaveBeenCalledTimes(2);
+    expect(sqsStub.mock.calls[1][0].input).toEqual(
       new DeleteMessageCommand({
         QueueUrl: config.aws.sqs.sharedSnowplowQueue.url,
         ReceiptHandle: undefined,
@@ -136,24 +157,22 @@ describe('sqsConsumer', () => {
     const testVal = {
       Messages: [{ Body: JSON.stringify(fakeMessageBody) }],
     };
-    sinon.stub(sqsConsumer, 'processMessage').resolves(false);
-    const sqsStub = sinon
-      .stub(SQSClient.prototype, 'send')
-      .onFirstCall()
-      .resolves(testVal)
-      .onSecondCall()
-      .resolves()
-      .onThirdCall()
-      .resolves();
+    jest
+      .spyOn(sqsConsumer, 'processMessage')
+      .mockImplementation(() => Promise.resolve(false));
+    const sqsStub = jest
+      .spyOn(SQSClient.prototype, 'send')
+      .mockImplementationOnce(() => Promise.resolve(testVal))
+      .mockImplementation(() => Promise.resolve());
     await sqsConsumer.pollMessage();
-    expect(sqsStub.callCount).toEqual(3);
-    expect(sqsStub.secondCall.args[0].input).toEqual(
+    expect(sqsStub).toHaveBeenCalledTimes(3);
+    expect(sqsStub.mock.calls[1][0].input).toEqual(
       new SendMessageCommand({
         QueueUrl: config.aws.sqs.sharedSnowplowQueue.dlqUrl,
         MessageBody: testVal.Messages[0].Body,
       }).input,
     );
-    expect(sqsStub.thirdCall.args[0].input).toEqual(
+    expect(sqsStub.mock.calls[2][0].input).toEqual(
       new DeleteMessageCommand({
         QueueUrl: config.aws.sqs.sharedSnowplowQueue.url,
         ReceiptHandle: undefined,

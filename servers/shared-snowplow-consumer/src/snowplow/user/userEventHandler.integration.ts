@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { ObjectUpdate, EventType, userEventsSchema } from './types';
 import { UserEventHandler } from './userEventHandler';
 import {
@@ -16,16 +15,14 @@ function assertValidSnowplowObjectUpdateEvents(
     .map(parseSnowplowData)
     .map((parsedEvent) => parsedEvent.data);
 
-  expect(parsedEvents).to.include.deep.members(
-    triggers.map((trigger) => ({
-      schema: userEventsSchema.objectUpdate,
-      data: { trigger: trigger, object: 'account' },
-    })),
-  );
+  expect(parsedEvents).toEqual(triggers.map((trigger) => ({
+    schema: userEventsSchema.objectUpdate,
+    data: { trigger: trigger, object: 'account' },
+  })));
 }
 
 function assertAccountDeleteSchema(eventContext) {
-  expect(eventContext.data).to.include.deep.members([
+  expect(eventContext.data).toEqual(expect.arrayContaining([
     {
       schema: userEventsSchema.account,
       data: {
@@ -33,11 +30,11 @@ function assertAccountDeleteSchema(eventContext) {
         user_id: parseInt(testAccountData.id),
       },
     },
-  ]);
+  ]));
 }
 
 function assertAccountSchema(eventContext) {
-  expect(eventContext.data).to.include.deep.members([
+  expect(eventContext.data).toEqual(expect.arrayContaining([
     {
       schema: userEventsSchema.account,
       data: {
@@ -46,11 +43,11 @@ function assertAccountSchema(eventContext) {
         emails: [testAccountData.email],
       },
     },
-  ]);
+  ]));
 }
 
 function assertApiAndUserSchema(eventContext: { [p: string]: any }) {
-  expect(eventContext.data).to.include.deep.members([
+  expect(eventContext.data).toEqual(expect.arrayContaining([
     {
       schema: userEventsSchema.user,
       data: {
@@ -63,7 +60,7 @@ function assertApiAndUserSchema(eventContext: { [p: string]: any }) {
       schema: userEventsSchema.apiUser,
       data: { api_id: parseInt(testEventData.apiUser.apiId) },
     },
-  ]);
+  ]));
 }
 
 const testAccountData = {
@@ -96,9 +93,9 @@ describe('UserEventHandler', () => {
 
     // make sure we only have good events
     const allEvents = await getAllSnowplowEvents();
-    expect(allEvents.total).to.equal(1);
-    expect(allEvents.good).to.equal(1);
-    expect(allEvents.bad).to.equal(0);
+    expect(allEvents.total).toBe(1);
+    expect(allEvents.good).toBe(1);
+    expect(allEvents.bad).toBe(0);
 
     const goodEvents = await getGoodSnowplowEvents();
     const eventContext = parseSnowplowData(
@@ -123,9 +120,9 @@ describe('UserEventHandler', () => {
 
     // make sure we only have good events
     const allEvents = await getAllSnowplowEvents();
-    expect(allEvents.total).to.equal(1);
-    expect(allEvents.good).to.equal(1);
-    expect(allEvents.bad).to.equal(0);
+    expect(allEvents.total).toBe(1);
+    expect(allEvents.good).toBe(1);
+    expect(allEvents.bad).toBe(0);
 
     const goodEvents = await getGoodSnowplowEvents();
     const eventContext = parseSnowplowData(
@@ -150,9 +147,9 @@ describe('UserEventHandler', () => {
 
     // make sure we only have good events
     const allEvents = await getAllSnowplowEvents();
-    expect(allEvents.total).to.equal(1);
-    expect(allEvents.good).to.equal(1);
-    expect(allEvents.bad).to.equal(0);
+    expect(allEvents.total).toBe(1);
+    expect(allEvents.good).toBe(1);
+    expect(allEvents.bad).toBe(0);
 
     const goodEvents = await getGoodSnowplowEvents();
     const eventContext = parseSnowplowData(

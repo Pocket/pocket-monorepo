@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { ObjectUpdate, EventType, prospectEventSchema } from './types';
 import { ProspectEventHandler } from './prospectEventHandler';
 import { testProspectData } from './testData';
@@ -17,16 +16,14 @@ function assertValidSnowplowObjectUpdateEvents(
     .map(parseSnowplowData)
     .map((parsedEvent) => parsedEvent.data);
 
-  expect(parsedEvents).to.include.deep.members(
-    triggers.map((trigger) => ({
-      schema: prospectEventSchema.objectUpdate,
-      data: { trigger: trigger, object: 'prospect' },
-    })),
-  );
+  expect(parsedEvents).toEqual(triggers.map((trigger) => ({
+    schema: prospectEventSchema.objectUpdate,
+    data: { trigger: trigger, object: 'prospect' },
+  })));
 }
 
 function assertProspectSchema(eventContext) {
-  expect(eventContext.data).to.include.deep.members([
+  expect(eventContext.data).toEqual(expect.arrayContaining([
     {
       schema: prospectEventSchema.prospect,
       data: {
@@ -51,7 +48,7 @@ function assertProspectSchema(eventContext) {
         prospect_review_status: testProspectData.prospectReviewStatus,
       },
     },
-  ]);
+  ]));
 }
 
 const testEventData = {
@@ -77,9 +74,9 @@ describe('ProspectEventHandler', () => {
 
     // make sure we only have good events
     const allEvents = await getAllSnowplowEvents();
-    expect(allEvents.total).to.equal(1);
-    expect(allEvents.good).to.equal(1);
-    expect(allEvents.bad).to.equal(0);
+    expect(allEvents.total).toBe(1);
+    expect(allEvents.good).toBe(1);
+    expect(allEvents.bad).toBe(0);
 
     const goodEvents = await getGoodSnowplowEvents();
     const eventContext = parseSnowplowData(
