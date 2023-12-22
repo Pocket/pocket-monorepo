@@ -354,6 +354,10 @@ jobs:
           password: $DOCKERHUB_PASSWORD
         environment:
           SERVICES: s3,kinesis,sqs,dynamodb,sts,events,firehose
+      - image: pocket/snowplow-micro:prod
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
     steps:
       - exit-early-if-irrelevant:
           for: << parameters.for >>
