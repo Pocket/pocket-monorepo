@@ -33,6 +33,9 @@ parameters:
   annotations_api:
     type: boolean
     default: false
+  shared_snowplow_consumer:
+    type: boolean
+    default: false
 
 commands:
   # Refrenced from https://github.com/kelvintaywl-cci/dynamic-config-showcase/blob/main/.circleci/next.yml
@@ -56,8 +59,9 @@ commands:
           environment:
             image_api: << pipeline.parameters.image_api >>
             annotations_api: << pipeline.parameters.annotations_api >>
+            shared_snowplow_consumer: << pipeline.parameters.shared_snowplow_consumer >>
 
-  install_pnpm:
+  install_pnpm:  
     steps:
       - run:
           name: Install pnpm package manager
