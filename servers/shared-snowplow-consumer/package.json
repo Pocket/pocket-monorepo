@@ -7,13 +7,12 @@
     "build": "rm -rf dist && tsc",
     "watch": "tsc -w & nodemon",
     "start": "node dist/main.js",
-    "start:dev": "npm run build && npm run watch",
-    "test-ci": "npm test",
+    "dev": "npm run build && npm run watch",
     "test:watch": "npm test -- --watchAll",
     "test": "jest \"\\.spec\\.ts\"",
     "test-integrations": "jest \"\\.integration\\.ts\" --forceExit --runInBand",
-    "lint-check": "eslint --fix-dry-run \"src/**/*.ts\"",
-    "lint-fix": "eslint --fix \"src/**/*.ts\""
+    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix \"src/**/*.ts\""
   },
   "author": "",
   "license": "ISC",
