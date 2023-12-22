@@ -9,6 +9,8 @@ import {
   Message,
   ReceiveMessageCommandOutput,
   SendMessageCommand,
+  ReceiveMessageCommandInput,
+  QueueAttributeName,
 } from '@aws-sdk/client-sqs';
 import { setTimeout } from 'timers/promises';
 
@@ -50,8 +52,8 @@ export class SqsConsumer {
    * the message from actual queue, to prevent queue flooding
    */
   async pollMessage() {
-    const params = {
-      AttributeNames: ['SentTimestamp'],
+    const params: ReceiveMessageCommandInput = {
+      AttributeNames: [QueueAttributeName.CreatedTimestamp],
       MaxNumberOfMessages: config.aws.sqs.sharedSnowplowQueue.maxMessages,
       MessageAttributeNames: ['All'],
       QueueUrl: config.aws.sqs.sharedSnowplowQueue.url,
