@@ -30,11 +30,10 @@
   "devDependencies": {
     "@faker-js/faker": "7.6.0",
     "@pocket-tools/eslint-config": "2.0.0",
-    "@pocket-tools/tsconfig": "2.0.1",
+    "tsconfig": "workspace:*",
     "@types/chai": "4.3.5",
     "@types/chai-datetime": "0.0.37",
     "@types/jest": "26.0.24",
-    "@types/node": "18.16.0",
     "@types/sinon": "10.0.15",
     "chai": "4.3.7",
     "chai-datetime": "1.8.0",
@@ -42,7 +41,6 @@
     "nock": "13.3.1",
     "nodemon": "2.0.22",
     "sinon": "15.1.0",
-    "ts-jest": "26.5.6",
-    "ts-node": "10.9.1"
+    "ts-jest": "26.5.6"
   }
 }
