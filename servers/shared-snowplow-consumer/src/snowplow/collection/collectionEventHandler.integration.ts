@@ -11,7 +11,7 @@ import {
 
 function assertValidSnowplowObjectUpdateEvents(
   events,
-  triggers: ObjectUpdate['trigger'][]
+  triggers: ObjectUpdate['trigger'][],
 ) {
   const parsedEvents = events
     .map(parseSnowplowData)
@@ -21,7 +21,7 @@ function assertValidSnowplowObjectUpdateEvents(
     triggers.map((trigger) => ({
       schema: collectionEventSchema.objectUpdate,
       data: { trigger: trigger, object: 'collection' },
-    }))
+    })),
   );
 }
 
@@ -84,14 +84,14 @@ describe('CollectionEventHandler', () => {
     const goodEvents = await getGoodSnowplowEvents();
 
     const eventContext = parseSnowplowData(
-      goodEvents[0].rawEvent.parameters.cx
+      goodEvents[0].rawEvent.parameters.cx,
     );
 
     assertCollectionSchema(eventContext);
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      ['collection_created']
+      ['collection_created'],
     );
   });
 
@@ -112,14 +112,14 @@ describe('CollectionEventHandler', () => {
 
     const goodEvents = await getGoodSnowplowEvents();
     const eventContext = parseSnowplowData(
-      goodEvents[0].rawEvent.parameters.cx
+      goodEvents[0].rawEvent.parameters.cx,
     );
 
     assertCollectionSchema(eventContext);
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      ['collection_updated']
+      ['collection_updated'],
     );
   });
 });

@@ -14,7 +14,7 @@ import {
 
 function assertValidSnowplowObjectUpdateEvents(
   events,
-  triggers: ObjectUpdate['data']['trigger'][]
+  triggers: ObjectUpdate['data']['trigger'][],
 ) {
   const parsedEvents = events
     .map(parseSnowplowData)
@@ -24,7 +24,7 @@ function assertValidSnowplowObjectUpdateEvents(
     triggers.map((trigger) => ({
       schema: shareableListEventSchema.objectUpdate,
       data: { trigger: trigger, object: 'shareable_list' },
-    }))
+    })),
   );
 }
 
@@ -108,14 +108,14 @@ describe('ShareableListEventHandler', () => {
     const goodEvents = await getGoodSnowplowEvents();
 
     const eventContext = parseSnowplowData(
-      goodEvents[0].rawEvent.parameters.cx
+      goodEvents[0].rawEvent.parameters.cx,
     );
 
     assertShareableListSchema(eventContext);
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [EventType.SHAREABLE_LIST_CREATED]
+      [EventType.SHAREABLE_LIST_CREATED],
     );
   });
 
@@ -137,14 +137,14 @@ describe('ShareableListEventHandler', () => {
     const goodEvents = await getGoodSnowplowEvents();
 
     const eventContext = parseSnowplowData(
-      goodEvents[0].rawEvent.parameters.cx
+      goodEvents[0].rawEvent.parameters.cx,
     );
 
     assertShareableListSchema(eventContext);
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [EventType.SHAREABLE_LIST_UPDATED]
+      [EventType.SHAREABLE_LIST_UPDATED],
     );
   });
 
@@ -166,14 +166,14 @@ describe('ShareableListEventHandler', () => {
     const goodEvents = await getGoodSnowplowEvents();
 
     const eventContext = parseSnowplowData(
-      goodEvents[0].rawEvent.parameters.cx
+      goodEvents[0].rawEvent.parameters.cx,
     );
 
     assertShareableListSchema(eventContext);
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [EventType.SHAREABLE_LIST_DELETED]
+      [EventType.SHAREABLE_LIST_DELETED],
     );
   });
 
@@ -195,14 +195,14 @@ describe('ShareableListEventHandler', () => {
     const goodEvents = await getGoodSnowplowEvents();
 
     const eventContext = parseSnowplowData(
-      goodEvents[0].rawEvent.parameters.cx
+      goodEvents[0].rawEvent.parameters.cx,
     );
 
     assertShareableListSchema(eventContext);
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [EventType.SHAREABLE_LIST_PUBLISHED]
+      [EventType.SHAREABLE_LIST_PUBLISHED],
     );
   });
 
@@ -224,14 +224,14 @@ describe('ShareableListEventHandler', () => {
     const goodEvents = await getGoodSnowplowEvents();
 
     const eventContext = parseSnowplowData(
-      goodEvents[0].rawEvent.parameters.cx
+      goodEvents[0].rawEvent.parameters.cx,
     );
 
     assertShareableListSchema(eventContext);
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [EventType.SHAREABLE_LIST_UNPUBLISHED]
+      [EventType.SHAREABLE_LIST_UNPUBLISHED],
     );
   });
 
@@ -253,14 +253,14 @@ describe('ShareableListEventHandler', () => {
     const goodEvents = await getGoodSnowplowEvents();
 
     const eventContext = parseSnowplowData(
-      goodEvents[0].rawEvent.parameters.cx
+      goodEvents[0].rawEvent.parameters.cx,
     );
 
     assertShareableListSchema(eventContext);
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [EventType.SHAREABLE_LIST_HIDDEN]
+      [EventType.SHAREABLE_LIST_HIDDEN],
     );
   });
 
@@ -282,14 +282,14 @@ describe('ShareableListEventHandler', () => {
     const goodEvents = await getGoodSnowplowEvents();
 
     const eventContext = parseSnowplowData(
-      goodEvents[0].rawEvent.parameters.cx
+      goodEvents[0].rawEvent.parameters.cx,
     );
 
     assertShareableListSchema(eventContext);
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [EventType.SHAREABLE_LIST_UNHIDDEN]
+      [EventType.SHAREABLE_LIST_UNHIDDEN],
     );
   });
 
@@ -311,14 +311,14 @@ describe('ShareableListEventHandler', () => {
     const goodEvents = await getGoodSnowplowEvents();
 
     const eventContext = parseSnowplowData(
-      goodEvents[0].rawEvent.parameters.cx
+      goodEvents[0].rawEvent.parameters.cx,
     );
 
     assertPartialShareableListSchema(eventContext);
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [EventType.SHAREABLE_LIST_CREATED]
+      [EventType.SHAREABLE_LIST_CREATED],
     );
   });
 });

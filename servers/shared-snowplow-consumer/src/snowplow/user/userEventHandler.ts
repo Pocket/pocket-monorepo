@@ -54,7 +54,7 @@ export class UserEventHandler extends EventHandler {
    * @private
    */
   private static generateAccountUpdateEvent(
-    data: UserEventPayloadSnowplow
+    data: UserEventPayloadSnowplow,
   ): ObjectUpdateEvent {
     return {
       schema: userEventsSchema.objectUpdate,
@@ -69,7 +69,7 @@ export class UserEventHandler extends EventHandler {
    * @private to build event context for ACCOUNT_DELETE event.
    */
   private static generateDeleteEventAccountContext(
-    data: UserEventPayloadSnowplow
+    data: UserEventPayloadSnowplow,
   ): AccountContext {
     return {
       schema: userEventsSchema.account,
@@ -81,7 +81,7 @@ export class UserEventHandler extends EventHandler {
   }
 
   private static generateAccountContext(
-    data: UserEventPayloadSnowplow
+    data: UserEventPayloadSnowplow,
   ): AccountContext {
     return {
       schema: userEventsSchema.account,
@@ -94,7 +94,7 @@ export class UserEventHandler extends EventHandler {
   }
 
   private static generateEventContext(
-    data: UserEventPayloadSnowplow
+    data: UserEventPayloadSnowplow,
   ): SelfDescribingJson[] {
     const context = [
       UserEventHandler.generateUserContext(data),
@@ -108,7 +108,7 @@ export class UserEventHandler extends EventHandler {
   }
 
   private static generateUserContext(
-    data: UserEventPayloadSnowplow
+    data: UserEventPayloadSnowplow,
   ): UserContext {
     const userDataWithoutGuid = {
       email: data.user.email,
@@ -131,7 +131,7 @@ export class UserEventHandler extends EventHandler {
   }
 
   private static generateApiUserContext(
-    data: UserEventPayloadSnowplow
+    data: UserEventPayloadSnowplow,
   ): ApiUserContext {
     return {
       schema: userEventsSchema.apiUser,

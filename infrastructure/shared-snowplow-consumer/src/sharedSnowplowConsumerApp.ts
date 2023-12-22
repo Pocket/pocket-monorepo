@@ -25,7 +25,7 @@ export class SharedSnowplowConsumerApp extends Construct {
   constructor(
     scope: Construct,
     private name: string,
-    private config: SharedSnowplowConsumerProps
+    private config: SharedSnowplowConsumerProps,
   ) {
     super(scope, name.toLowerCase());
     const app = this.createPocketAlbApplication();

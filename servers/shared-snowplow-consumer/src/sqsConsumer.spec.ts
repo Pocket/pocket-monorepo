@@ -81,7 +81,7 @@ describe('sqsConsumer', () => {
     expect(
       sentryStub.calledOnceWithExactly(error, {
         level: Sentry.Severity.Critical,
-      })
+      }),
     ).toBe(true);
     expect(consoleStub.callCount).toEqual(1);
     //assert to reschedule after 5 mins
@@ -128,7 +128,7 @@ describe('sqsConsumer', () => {
       new DeleteMessageCommand({
         QueueUrl: config.aws.sqs.sharedSnowplowQueue.url,
         ReceiptHandle: undefined,
-      }).input
+      }).input,
     );
   });
 
@@ -151,13 +151,13 @@ describe('sqsConsumer', () => {
       new SendMessageCommand({
         QueueUrl: config.aws.sqs.sharedSnowplowQueue.dlqUrl,
         MessageBody: testVal.Messages[0].Body,
-      }).input
+      }).input,
     );
     expect(sqsStub.thirdCall.args[0].input).toEqual(
       new DeleteMessageCommand({
         QueueUrl: config.aws.sqs.sharedSnowplowQueue.url,
         ReceiptHandle: undefined,
-      }).input
+      }).input,
     );
   });
 });

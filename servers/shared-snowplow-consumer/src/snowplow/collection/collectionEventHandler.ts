@@ -75,7 +75,7 @@ export class CollectionEventHandler extends EventHandler {
    * Two possible trigger values are: collection_created and collection_updated
    */
   private static generateCollectionEvent(
-    data: CollectionEventPayloadSnowplow
+    data: CollectionEventPayloadSnowplow,
   ): ObjectUpdateEvent {
     return {
       schema: collectionEventSchema.objectUpdate,
@@ -87,7 +87,7 @@ export class CollectionEventHandler extends EventHandler {
   }
 
   private static generateEventContext(
-    data: CollectionEventPayloadSnowplow
+    data: CollectionEventPayloadSnowplow,
   ): SelfDescribingJson[] {
     return [CollectionEventHandler.generateSnowplowCollectionEvent(data)];
   }
@@ -96,7 +96,7 @@ export class CollectionEventHandler extends EventHandler {
    * Static method to generate an object that maps properties received in the event payload object to the snowplow collection object schema.
    */
   private static generateSnowplowCollectionEvent(
-    data: CollectionEventPayloadSnowplow
+    data: CollectionEventPayloadSnowplow,
   ): CollectionContext {
     const snowplowEvent = {
       schema: collectionEventSchema.collection,

@@ -29,7 +29,10 @@ import {
 } from 'cdktf';
 
 class SnowplowSharedConsumerStack extends TerraformStack {
-  constructor(scope: Construct, private name: string) {
+  constructor(
+    scope: Construct,
+    private name: string,
+  ) {
     super(scope, name);
 
     new AwsProvider(this, 'aws', { region: 'us-east-1' });
@@ -65,7 +68,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
     this.createDeadLetterQueueAlarm(
       pagerDuty,
       snsTopicDlq.name,
-      `${config.prefix}-Dlq-Alarm`
+      `${config.prefix}-Dlq-Alarm`,
     );
 
     // Consumer Queue should be able to listen to user events.
@@ -74,7 +77,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
       sqsConsumeQueue,
       snsTopicDlq,
       userEventTopicArn,
-      config.eventBridge.userTopic
+      config.eventBridge.userTopic,
     );
 
     // Consumer Queue should be able to listen to dismiss-prospect events from prospect-api.
@@ -83,7 +86,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
       sqsConsumeQueue,
       snsTopicDlq,
       prospectEventTopicArn,
-      config.eventBridge.prospectEventTopic
+      config.eventBridge.prospectEventTopic,
     );
 
     // Consumer Queue should be able to listen to shareable-list (create, update, delete, hide) events from shareable-lists-api.
@@ -92,7 +95,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
       sqsConsumeQueue,
       snsTopicDlq,
       shareableListEventTopicArn,
-      config.eventBridge.shareableListEventTopic
+      config.eventBridge.shareableListEventTopic,
     );
 
     // Consumer Queue should be able to listen to shareable-list-item (create, delete) from shareable-lists-api.
@@ -101,7 +104,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
       sqsConsumeQueue,
       snsTopicDlq,
       shareableListItemEventTopicArn,
-      config.eventBridge.shareableListItemEventTopic
+      config.eventBridge.shareableListItemEventTopic,
     );
 
     // Consumer Queue should be able to listen to collection-created and collection-updated events from collection-api.
@@ -110,7 +113,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
       sqsConsumeQueue,
       snsTopicDlq,
       collectionEventTopicArn,
-      config.eventBridge.collectionEventTopic
+      config.eventBridge.collectionEventTopic,
     );
 
     // Add additional event subscriptions here.
@@ -127,7 +130,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
     this.createPoliciesForAccountDeletionMonitoringSqs(
       sqsConsumeQueue,
       snsTopicDlq,
-      SNSTopicsSubscriptionList
+      SNSTopicsSubscriptionList,
     );
 
     // ECS app creation.
@@ -144,7 +147,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
     new SharedSnowplowConsumerApp(
       this,
       'shared-snowplow-consumer-app',
-      appProps
+      appProps,
     );
   }
 
@@ -180,7 +183,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
     sqsConsumeQueue: SqsQueue,
     snsTopicDlq: SqsQueue,
     snsTopicArn: string,
-    topicName: string
+    topicName: string,
   ) {
     // This Topic already exists and is managed elsewhere
     return new SnsTopicSubscription(this, `${topicName}-sns-subscription`, {
@@ -206,7 +209,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
         workspaces: {
           name: 'incident-management',
         },
-      }
+      },
     );
 
     return new PocketPagerDuty(this, 'pagerduty', {
@@ -236,7 +239,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
   private createPoliciesForAccountDeletionMonitoringSqs(
     snsTopicQueue: SqsQueue,
     snsTopicDlq: SqsQueue,
-    snsTopicArns: string[]
+    snsTopicArns: string[],
   ): void {
     [
       { name: 'shared-snowplow-consumer-sns-sqs', resource: snsTopicQueue },
@@ -268,7 +271,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
             },
             // add any other subscription policy for this SQS
           ],
-        }
+        },
       ).json;
 
       new SqsQueuePolicy(this, `${queue.name}-policy`, {
@@ -297,7 +300,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
     alarmName: string,
     evaluationPeriods = 2,
     periodInSeconds = 900,
-    threshold = 15
+    threshold = 15,
   ) {
     new CloudwatchMetricAlarm(this, alarmName.toLowerCase(), {
       alarmActions: config.isDev

@@ -11,7 +11,7 @@ import {
 
 function assertValidSnowplowObjectUpdateEvents(
   events,
-  triggers: ObjectUpdate['trigger'][]
+  triggers: ObjectUpdate['trigger'][],
 ) {
   const parsedEvents = events
     .map(parseSnowplowData)
@@ -21,7 +21,7 @@ function assertValidSnowplowObjectUpdateEvents(
     triggers.map((trigger) => ({
       schema: prospectEventSchema.objectUpdate,
       data: { trigger: trigger, object: 'prospect' },
-    }))
+    })),
   );
 }
 
@@ -83,14 +83,14 @@ describe('ProspectEventHandler', () => {
 
     const goodEvents = await getGoodSnowplowEvents();
     const eventContext = parseSnowplowData(
-      goodEvents[0].rawEvent.parameters.cx
+      goodEvents[0].rawEvent.parameters.cx,
     );
 
     assertProspectSchema(eventContext);
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      ['prospect_reviewed']
+      ['prospect_reviewed'],
     );
   });
 });

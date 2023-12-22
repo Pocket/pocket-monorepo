@@ -23,7 +23,10 @@ import { setTimeout } from 'timers/promises';
 export class SqsConsumer {
   readonly sqsClient: SQSClient;
   static readonly eventName = 'pollSnowplowSqsQueue';
-  constructor(public readonly emitter: EventEmitter, pollOnInit = true) {
+  constructor(
+    public readonly emitter: EventEmitter,
+    pollOnInit = true,
+  ) {
     console.log(`retrieving queue`);
     this.sqsClient = new SQSClient({
       region: config.aws.region,
@@ -70,7 +73,7 @@ export class SqsConsumer {
       }
     } catch (error) {
       const receiveError = `Error receiving messages from queue ${JSON.stringify(
-        data?.Messages[0].Body
+        data?.Messages[0].Body,
       )}`;
       console.error(receiveError, error);
       Sentry.addBreadcrumb({ message: receiveError });
@@ -91,12 +94,12 @@ export class SqsConsumer {
       // Schedule next message poll
       await this.scheduleNextPoll(
         config.aws.sqs.sharedSnowplowQueue.afterMessagePollIntervalSeconds *
-          1000
+          1000,
       );
     } else {
       // If no messages were found, schedule another poll after 5 mins
       await this.scheduleNextPoll(
-        config.aws.sqs.sharedSnowplowQueue.defaultPollIntervalSeconds * 1000
+        config.aws.sqs.sharedSnowplowQueue.defaultPollIntervalSeconds * 1000,
       );
     }
   }
@@ -113,7 +116,7 @@ export class SqsConsumer {
 
       if (eventConsumer[detailType] == null) {
         throw new Error(
-          `Unable to retrieve handler for detailType='${detailType}'`
+          `Unable to retrieve handler for detailType='${detailType}'`,
         );
       }
 

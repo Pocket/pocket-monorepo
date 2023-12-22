@@ -25,7 +25,7 @@ export function collectionEventConsumer(requestBody: any) {
  * @param eventObj event bridge event format
  */
 export function getCollectionEventPayload(
-  eventObj: any
+  eventObj: any,
 ): CollectionEventPayloadSnowplow {
   const eventPayload: CollectionEventBusPayload = eventObj['detail'];
   const detailType = eventObj['detail-type'];

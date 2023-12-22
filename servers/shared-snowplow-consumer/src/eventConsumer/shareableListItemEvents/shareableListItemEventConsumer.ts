@@ -3,7 +3,7 @@ import { ShareableListItemEventHandler } from '../../snowplow/shareableListItem/
 
 export function shareableListItemEventConsumer(requestBody: any) {
   new ShareableListItemEventHandler().process(
-    getShareableListItemEventPayload(requestBody)
+    getShareableListItemEventPayload(requestBody),
   );
 }
 
@@ -13,7 +13,7 @@ export function shareableListItemEventConsumer(requestBody: any) {
  * @param eventObj event bridge event format
  */
 export function getShareableListItemEventPayload(
-  eventObj: any
+  eventObj: any,
 ): ShareableListItemEventPayloadSnowplow {
   const eventPayload = eventObj['detail'];
   const detailType = eventObj['detail-type'];

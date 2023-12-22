@@ -25,7 +25,7 @@ export function prospectEventConsumer(requestBody: any) {
  * @param eventObj event bridge event format
  */
 export function getProspectEventPayload(
-  eventObj: any
+  eventObj: any,
 ): ProspectEventPayloadSnowplow {
   const eventPayload: ProspectEventBusPayload = eventObj['detail'];
   const detailType = eventObj['detail-type'];

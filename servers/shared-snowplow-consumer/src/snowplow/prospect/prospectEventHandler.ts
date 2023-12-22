@@ -65,7 +65,7 @@ export class ProspectEventHandler extends EventHandler {
    * @private
    */
   private static generateProspectUpdateEvent(
-    data: ProspectEventPayloadSnowplow
+    data: ProspectEventPayloadSnowplow,
   ): ObjectUpdateEvent {
     return {
       schema: prospectEventSchema.objectUpdate,
@@ -80,7 +80,7 @@ export class ProspectEventHandler extends EventHandler {
    * @private to build event context for PROSPECT_REVIEWED event.
    */
   private static generateReviewedEventAccountContext(
-    data: ProspectEventPayloadSnowplow
+    data: ProspectEventPayloadSnowplow,
   ): ProspectContext {
     return {
       schema: prospectEventSchema.prospect,
@@ -109,7 +109,7 @@ export class ProspectEventHandler extends EventHandler {
   }
 
   private static generateEventContext(
-    data: ProspectEventPayloadSnowplow
+    data: ProspectEventPayloadSnowplow,
   ): SelfDescribingJson[] {
     return [ProspectEventHandler.generateReviewedEventAccountContext(data)];
   }

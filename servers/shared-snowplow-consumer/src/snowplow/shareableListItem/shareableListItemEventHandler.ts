@@ -37,7 +37,7 @@ export class ShareableListItemEventHandler extends EventHandler {
    * Builds the Snowplow object_update event object. Extracts the event trigger type from the received payload.
    */
   private static generateShareableListItemEvent(
-    data: ShareableListItemEventPayloadSnowplow
+    data: ShareableListItemEventPayloadSnowplow,
   ): ObjectUpdate {
     return {
       schema: shareableListItemEventSchema.objectUpdate,
@@ -49,11 +49,11 @@ export class ShareableListItemEventHandler extends EventHandler {
   }
 
   private static generateEventContext(
-    data: ShareableListItemEventPayloadSnowplow
+    data: ShareableListItemEventPayloadSnowplow,
   ): SelfDescribingJson[] {
     return [
       ShareableListItemEventHandler.generateSnowplowShareableListItemEvent(
-        data
+        data,
       ),
     ];
   }
@@ -62,7 +62,7 @@ export class ShareableListItemEventHandler extends EventHandler {
    * Static method to generate an object that maps properties received in the event payload object to the snowplow shareable_list_item object schema.
    */
   private static generateSnowplowShareableListItemEvent(
-    data: ShareableListItemEventPayloadSnowplow
+    data: ShareableListItemEventPayloadSnowplow,
   ): ShareableListItem {
     const snowplowEvent = {
       schema: shareableListItemEventSchema.shareable_list_item,

@@ -10,7 +10,7 @@ import {
 
 function assertValidSnowplowObjectUpdateEvents(
   events,
-  triggers: ObjectUpdate['trigger'][]
+  triggers: ObjectUpdate['trigger'][],
 ) {
   const parsedEvents = events
     .map(parseSnowplowData)
@@ -20,7 +20,7 @@ function assertValidSnowplowObjectUpdateEvents(
     triggers.map((trigger) => ({
       schema: userEventsSchema.objectUpdate,
       data: { trigger: trigger, object: 'account' },
-    }))
+    })),
   );
 }
 
@@ -102,13 +102,13 @@ describe('UserEventHandler', () => {
 
     const goodEvents = await getGoodSnowplowEvents();
     const eventContext = parseSnowplowData(
-      goodEvents[0].rawEvent.parameters.cx
+      goodEvents[0].rawEvent.parameters.cx,
     );
     assertAccountDeleteSchema(eventContext);
     assertApiAndUserSchema(eventContext);
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      ['account_delete']
+      ['account_delete'],
     );
   });
 
@@ -129,13 +129,13 @@ describe('UserEventHandler', () => {
 
     const goodEvents = await getGoodSnowplowEvents();
     const eventContext = parseSnowplowData(
-      goodEvents[0].rawEvent.parameters.cx
+      goodEvents[0].rawEvent.parameters.cx,
     );
     assertApiAndUserSchema(eventContext);
     assertAccountSchema(eventContext);
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      ['account_email_updated']
+      ['account_email_updated'],
     );
   });
 
@@ -156,13 +156,13 @@ describe('UserEventHandler', () => {
 
     const goodEvents = await getGoodSnowplowEvents();
     const eventContext = parseSnowplowData(
-      goodEvents[0].rawEvent.parameters.cx
+      goodEvents[0].rawEvent.parameters.cx,
     );
     assertApiAndUserSchema(eventContext);
     assertAccountSchema(eventContext);
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      ['account_password_changed']
+      ['account_password_changed'],
     );
   });
 });

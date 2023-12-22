@@ -15,7 +15,7 @@ export class EventHandler {
    */
   protected addToTrackerQueue(
     event: PayloadBuilder,
-    context: SelfDescribingJson[]
+    context: SelfDescribingJson[],
   ): void {
     try {
       // Note: the track method provided by the @snowplow/node-tracker package
@@ -28,8 +28,8 @@ export class EventHandler {
       this.tracker.track(event, context);
       console.log(
         `queueing snowplow event to be tracked ->${JSON.stringify(
-          event.getJson()
-        )} with context -> ${JSON.stringify(context)}`
+          event.getJson(),
+        )} with context -> ${JSON.stringify(context)}`,
       );
     } catch (ex) {
       const message = `Failed to queue event to snowplow.\n event: ${event}\n context: ${context}`;
