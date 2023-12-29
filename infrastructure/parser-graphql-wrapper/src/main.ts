@@ -14,7 +14,6 @@ import {
   ApplicationRedis,
   ApplicationRDSCluster,
   PocketALBApplication,
-  PocketECSCodePipeline,
   PocketPagerDuty,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
@@ -49,7 +48,7 @@ class ParserGraphQLWrapper extends TerraformStack {
       vpc,
     );
 
-    const pocketApp = this.createPocketAlbApplication({
+    this.createPocketAlbApplication({
       pagerDuty: this.createPagerDuty(),
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
@@ -59,8 +58,6 @@ class ParserGraphQLWrapper extends TerraformStack {
       caller,
       vpc,
     });
-
-    this.createApplicationCodePipeline(pocketApp);
 
     // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
     // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
@@ -84,22 +81,6 @@ class ParserGraphQLWrapper extends TerraformStack {
   private getSecretsManagerKmsAlias() {
     return new DataAwsKmsAlias(this, 'kms_alias', {
       name: 'alias/aws/secretsmanager',
-    });
-  }
-
-  /**
-   * Create CodePipeline to build and deploy terraform and ecs
-   * @param app
-   * @private
-   */
-  private createApplicationCodePipeline(app: PocketALBApplication) {
-    new PocketECSCodePipeline(this, 'code-pipeline', {
-      prefix: config.prefix,
-      source: {
-        codeStarConnectionArn: config.codePipeline.githubConnectionArn,
-        repository: config.codePipeline.repository,
-        branchName: config.codePipeline.branch,
-      },
     });
   }
 
@@ -277,7 +258,8 @@ class ParserGraphQLWrapper extends TerraformStack {
       ],
       codeDeploy: {
         useCodeDeploy: true,
-        useCodePipeline: true,
+        useCodePipeline: false,
+        useTerraformBasedCodeDeploy: false,
         snsNotificationTopicArn: snsTopic.arn,
         notifications: {
           //only notify on failed deploys
