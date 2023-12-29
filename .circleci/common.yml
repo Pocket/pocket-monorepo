@@ -16,6 +16,7 @@ repo_for_enum: &repo_for_enum
     enum: 
       - image_api
       - annotations_api
+      - parser_graphql_wrapper
 
 resource_class_enmum: &resource_class_enmum
   resource-class:
