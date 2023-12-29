@@ -6,11 +6,13 @@ export default {
     samplingRatio: 0.2,
     grpcDefaultPort: 4317,
     httpDefaultPort: 4318,
+    serviceName: 'parser-graphql-wrapper',
     host: process.env.OTLP_COLLECTOR_HOST || 'otlpcollector',
   },
   app: {
     environment: process.env.NODE_ENV || 'development',
     defaultMaxAge: 86400,
+    serverPort: 4001,
   },
   redis: {
     primaryEndpoint: process.env.REDIS_PRIMARY_ENDPOINT || 'localhost',
@@ -30,8 +32,7 @@ export default {
     //https://github.com/Pocket/Web/blob/16a0b582dfbd443d18f96f0f54163a9d50f3f6ab/symfony_config/.env#L160
     short_prefix: process.env.SHORT_PREFIX || 'local.co/b',
     short_prefix_secure: process.env.SHORT_PREFIX_SECURE || 'local.co/a',
-    shortCodeChars:
-      'abcdefghijklmnnopqrstuvwxyz',
+    shortCodeChars: 'abcdefghijklmnnopqrstuvwxyz',
     collectionUrl:
       process.env.COLLECTIONS_URL || 'https://getpocket.com/collections',
   },
@@ -47,7 +48,6 @@ export default {
     username: process.env.POCKET_SHARES_DATABASE_WRITE_USER || 'root',
     password: process.env.POCKET_SHARES_DATABASE_WRITE_PASSWORD || '',
   },
-  parserEndpoint:
-    process.env.PARSER_URL || 'http://example-parser.com/',
+  parserEndpoint: process.env.PARSER_URL || 'http://example-parser.com/',
   parserRetries: 3,
 };

@@ -1,9 +1,18 @@
 //this must run before all imports and server start
 //so open-telemetry can patch all libraries that we use
-import { nodeSDKBuilder } from './tracing';
-import { startServer, serverLogger } from './server';
+import { nodeSDKBuilder } from '@pocket-tools/apollo-utils';
+import config from './config';
 
-nodeSDKBuilder().then(async () => {
-  await startServer(4001);
-  serverLogger.info(`🚀 Server ready at http://localhost:4001`);
+nodeSDKBuilder({
+  host: config.tracing.host,
+  serviceName: config.tracing.serviceName,
+  release: config.sentry.release,
+}).then(async () => {
+  await startServer(config.app.serverPort);
+  serverLogger.info(
+    `🚀 Public server ready at http://localhost:${config.app.serverPort}`,
+  );
 });
+
+import { startServer } from './server';
+import { serverLogger } from './logger';

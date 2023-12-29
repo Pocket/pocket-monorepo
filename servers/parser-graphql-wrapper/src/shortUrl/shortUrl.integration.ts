@@ -74,9 +74,7 @@ describe('ShortUrl', () => {
       .post(graphQLUrl)
       .send({ query: print(GET_ITEM_BY_URL), variables });
     expect(res).not.toBeNull();
-    expect(res.body.data.getItemByUrl.shortUrl).toBe(
-      'https://local.co/ab',
-    );
+    expect(res.body.data.getItemByUrl.shortUrl).toBe('https://local.co/ab');
   });
 
   it('should return shortUrl for a givenUrl for itemByUrl', async () => {
@@ -115,9 +113,7 @@ describe('ShortUrl', () => {
       .post(graphQLUrl)
       .send({ query: print(corpus_item_query_) });
     expect(res.body).not.toBeNull();
-    expect(res.body.data._entities[0].shortUrl).toBe(
-      'https://local.co/ab',
-    );
+    expect(res.body.data._entities[0].shortUrl).toBe('https://local.co/ab');
   });
 
   it('should fetch shortUrl for Collection ', async () => {
@@ -159,9 +155,7 @@ describe('ShortUrl', () => {
       .post(graphQLUrl)
       .send({ query: print(collections_query) });
     expect(res.body).not.toBeNull();
-    expect(res.body.data._entities[0].shortUrl).toBe(
-      'https://local.co/ab',
-    );
+    expect(res.body.data._entities[0].shortUrl).toBe('https://local.co/ab');
   });
 
   it('should make a single db record for an existing given_url', async () => {

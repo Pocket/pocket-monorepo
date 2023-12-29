@@ -40,11 +40,7 @@ describe('timeToRead', () => {
   it('should return timeToRead for a CorpusItem when parser item has time_to_read property', async () => {
     // mock the Parser call to return a parser item with `time_to_read` as 5
     nock(`http://example-parser.com`)
-      .get(
-        `/?url=${encodeURIComponent(
-          testUrl,
-        )}&getItem=1&output=regular`,
-      )
+      .get(`/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular`)
       .reply(200, {
         item: parserItem,
       });
@@ -77,11 +73,7 @@ describe('timeToRead', () => {
 
     // mock the Parser call to return a parser item with `time_to_read` as null
     nock(`http://example-parser.com`)
-      .get(
-        `/?url=${encodeURIComponent(
-          testUrl,
-        )}&getItem=1&output=regular`,
-      )
+      .get(`/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular`)
       .reply(200, {
         item: parserItem,
       });

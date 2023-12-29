@@ -1,7 +1,7 @@
 import fetch, { Response } from 'node-fetch';
 import * as Sentry from '@sentry/node';
 import { HTTPResponseErrorFactory } from './HTTPResponseError';
-import { serverLogger } from '../server';
+import { serverLogger } from '../logger';
 
 type FetchOptions = {
   timeout?: number;

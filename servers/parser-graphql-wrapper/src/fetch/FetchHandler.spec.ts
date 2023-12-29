@@ -1,7 +1,7 @@
 import { FetchHandler } from './FetchHandler';
 import nock from 'nock';
 import sinon from 'sinon';
-import { serverLogger } from '../server';
+import { serverLogger } from '../logger';
 
 describe('FetchHandler', () => {
   const serverLoggerErrorSpy = sinon.spy(serverLogger, 'error');

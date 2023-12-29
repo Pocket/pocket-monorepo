@@ -4,7 +4,7 @@ import { batchCacheFn, LoaderCacheInterface } from '@pocket-tools/apollo-utils';
 import config from '../config';
 import { getElasticacheRedis } from '../cache';
 import { FetchHandler } from '../fetch';
-import { serverLogger } from '../server';
+import { serverLogger } from '../logger';
 
 export type ParserArticle = {
   article: string;

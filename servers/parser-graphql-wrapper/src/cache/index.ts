@@ -2,9 +2,9 @@ import Keyv from 'keyv';
 import { KeyvAdapter } from '@apollo/utils.keyvadapter';
 import { ErrorsAreMissesCache } from '@apollo/utils.keyvaluecache';
 import config from '../config';
-import { serverLogger } from '../server';
 import { ElasticacheRedis } from '@pocket-tools/apollo-utils';
 import { Redis } from 'ioredis';
+import { serverLogger } from '../logger';
 
 let cache: ErrorsAreMissesCache = undefined;
 let redis: Keyv = undefined;

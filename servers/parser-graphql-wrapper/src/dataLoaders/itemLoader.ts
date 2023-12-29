@@ -17,7 +17,7 @@ import config from '../config';
 import { getElasticacheRedis } from '../cache';
 import { batchCacheFn, CacheInterface } from '@pocket-tools/apollo-utils';
 import { FetchHandler } from '../fetch';
-import { serverLogger } from '../server';
+import { serverLogger } from '../logger';
 
 /**
  * Gets an item by its id by using the Item Resolvers table
