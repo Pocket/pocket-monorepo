@@ -62,7 +62,7 @@
     "keyv": "4.5.4"
   },
   "devDependencies": {
-    "@pocket-tools/eslint-config": "2.1.7",
+    "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",
     "@types/chai": "4.3.11",
     "@types/jest": "29.5.10",

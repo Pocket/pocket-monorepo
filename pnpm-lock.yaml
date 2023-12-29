@@ -48,6 +48,9 @@ importers:
         specifier: 4.17.0
         version: 4.17.0(ink@3.2.0)(react@17.0.2)
     devDependencies:
+      eslint-config-custom:
+        specifier: workspace:*
+        version: link:../../packages/eslint-config-custom
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -616,9 +619,6 @@ importers:
         specifier: 3.11.0
         version: 3.11.0
     devDependencies:
-      '@pocket-tools/eslint-config':
-        specifier: 2.1.7
-        version: 2.1.7(typescript@5.3.3)
       '@types/chai':
         specifier: 4.3.11
         version: 4.3.11
@@ -640,6 +640,9 @@ importers:
       deep-equal-in-any-order:
         specifier: 2.0.6
         version: 2.0.6
+      eslint-config-custom:
+        specifier: workspace:*
+        version: link:../../packages/eslint-config-custom
       jest:
         specifier: 29.7.0
         version: 29.7.0(@types/node@20.10.0)
@@ -2480,6 +2483,7 @@ packages:
     dependencies:
       eslint: 8.45.0
       eslint-visitor-keys: 3.4.3
+    dev: false
 
   /@eslint-community/eslint-utils@4.4.0(eslint@8.56.0):
     resolution: {integrity: sha512-1/sA4dwrzBAyeUoQ6oxahHKmrZvsnLCg4RfxW3ZFGGmQkSNQPFNLV9CUEFQP1x9EYXHTo5p6xdhZM1Ne9p/AfA==}
@@ -2514,6 +2518,7 @@ packages:
   /@eslint/js@8.44.0:
     resolution: {integrity: sha512-Ag+9YM4ocKQx9AarydN0KY2j0ErMHNIocPDrVo8zAE44xLTjEtz81OdR68/cydGtk6m6jDb5Za3r2useMzYmSw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    dev: false
 
   /@eslint/js@8.56.0:
     resolution: {integrity: sha512-gMsVel9D7f2HLkBma9VbtzZRehRogVRfbr++f06nL2vnCGCNlzOD+/MUov/F4p8myyAHspEhVobgjpX64q5m6A==}
@@ -3719,6 +3724,7 @@ packages:
       - '@types/eslint'
       - supports-color
       - typescript
+    dev: false
 
   /@pocket-tools/terraform-modules@4.17.0(ink@3.2.0)(react@17.0.2):
     resolution: {integrity: sha512-fZvRWqLo7khQq16Ndt25ojE8vsrMpxXkga5YMdCDnovwMUuvuBKPx/K5oLpNmNTIuWJ6jpaUwXihZbB1TQUa6w==}
@@ -4988,6 +4994,7 @@ packages:
       typescript: 5.3.3
     transitivePeerDependencies:
       - supports-color
+    dev: false
 
   /@typescript-eslint/eslint-plugin@6.1.0(@typescript-eslint/parser@6.1.0)(eslint@8.56.0)(typescript@5.3.3):
     resolution: {integrity: sha512-qg7Bm5TyP/I7iilGyp6DRqqkt8na00lI6HbjWZObgk3FFSzH5ypRwAHXJhJkwiRtTcfn+xYQIMOR5kJgpo6upw==}
@@ -5067,6 +5074,7 @@ packages:
       typescript: 5.3.3
     transitivePeerDependencies:
       - supports-color
+    dev: false
 
   /@typescript-eslint/parser@6.1.0(eslint@8.56.0)(typescript@5.3.3):
     resolution: {integrity: sha512-hIzCPvX4vDs4qL07SYzyomamcs2/tQYXg5DtdAfj35AyJ5PIUqhsLf4YrEIFzZcND7R2E8tpQIZKayxg8/6Wbw==}
@@ -5151,6 +5159,7 @@ packages:
       typescript: 5.3.3
     transitivePeerDependencies:
       - supports-color
+    dev: false
 
   /@typescript-eslint/type-utils@6.1.0(eslint@8.56.0)(typescript@5.3.3):
     resolution: {integrity: sha512-kFXBx6QWS1ZZ5Ni89TyT1X9Ag6RXVIVhqDs0vZE/jUeWlBv/ixq2diua6G7ece6+fXw3TvNRxP77/5mOMusx2w==}
@@ -5305,6 +5314,7 @@ packages:
     transitivePeerDependencies:
       - supports-color
       - typescript
+    dev: false
 
   /@typescript-eslint/utils@6.1.0(eslint@8.56.0)(typescript@5.3.3):
     resolution: {integrity: sha512-wp652EogZlKmQoMS5hAvWqRKplXvkuOnNzZSE0PVvsKjpexd/XznRVHAtrfHFYmqaJz0DFkjlDsGYC9OXw+OhQ==}
@@ -7449,6 +7459,7 @@ packages:
       eslint: '>=7.0.0'
     dependencies:
       eslint: 8.45.0
+    dev: false
 
   /eslint-config-prettier@8.8.0(eslint@8.56.0):
     resolution: {integrity: sha512-wLbQiFre3tdGgpDv67NQKnJuTlcUVYHas3k+DZCc2U2BadthoEY4B7hLPvAxaqdyOGCzuLfii2fqGph10va7oA==}
@@ -7702,6 +7713,7 @@ packages:
       prettier: 3.0.0
       prettier-linter-helpers: 1.0.0
       synckit: 0.8.6
+    dev: false
 
   /eslint-plugin-prettier@5.0.0(eslint-config-prettier@8.8.0)(eslint@8.56.0)(prettier@3.0.0):
     resolution: {integrity: sha512-AgaZCVuYDXHUGxj/ZGu1u8H8CYgDY3iG6w5kUFw4AzMVXzB7VvbKgYR4nATIN+OvUrghMbiDLeimVjVY5ilq3w==}
@@ -7879,6 +7891,7 @@ packages:
       text-table: 0.2.0
     transitivePeerDependencies:
       - supports-color
+    dev: false
 
   /eslint@8.56.0:
     resolution: {integrity: sha512-Go19xM6T9puCOWntie1/P997aXxFsOi37JIHRWI514Hc6ZnaHGKY9xFhrU65RT6CcBEzZoGG1e6Nq+DT04ZtZQ==}
