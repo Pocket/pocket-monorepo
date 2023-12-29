@@ -1,0 +1,24 @@
+{
+  "name": "parser-graphql-wrapper-cdk",
+  "version": "1.0.0",
+  "main": "dist/main.js",
+  "types": "src/main.ts",
+  "license": "MPL-2.0",
+  "private": true,
+  "scripts": {
+    "get": "cdktf get",
+    "build:dev": "npm run build && NODE_ENV=development npm run synth",
+    "build": "rm -rf dist && tsc",
+    "synth": "cdktf synth",
+    "compile": "tsc --pretty",
+    "lint-check": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "lint-fix": "eslint --fix \"src/**/*.ts\""
+  },
+  "dependencies": {
+    "@pocket-tools/terraform-modules": "4.17.0"
+  },
+  "devDependencies": {
+    "@types/node": "18.17.5",
+    "typescript": "5.1.6"
+  }
+}
