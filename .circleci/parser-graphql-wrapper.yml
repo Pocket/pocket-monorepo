@@ -9,7 +9,7 @@ workflows:
       - apollo:
           name: parser-graphql-wrapper_apollo
           fed_graph_name: pocket-client-api
-          graph_name: parser-graphql-wrapper
+          graph_name: parser
           schema_file_path: servers/parser-graphql-wrapper/schema.graphql
           prod_graph_url: https://parser-graphql-wrapper.readitlater.com
           dev_graph_url: https://parser-graphql-wrapper.getpocket.dev
@@ -18,7 +18,7 @@ workflows:
           name: parser-graphql-wrapper_apollo_admin
           fed_graph_name: pocket-admin-api
           schema_file_path: servers/parser-graphql-wrapper/schema.graphql
-          graph_name: parser-graphql-wrapper
+          graph_name: parser
           prod_graph_url: https://parser-graphql-wrapper.readitlater.com
           dev_graph_url: https://parser-graphql-wrapper.getpocket.dev
           apollo_key_env: APOLLO_ADMIN_KEY
