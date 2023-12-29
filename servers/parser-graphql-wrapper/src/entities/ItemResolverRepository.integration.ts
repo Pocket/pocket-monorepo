@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { ItemResolver } from './ItemResolver';
 import { getConnection, getItemResolverRepository } from '../database/mysql';
 import { DataSource } from 'typeorm';
@@ -38,7 +37,7 @@ describe('ItemResolver Resolver Repository', () => {
     const retrievedItem = await (
       await itemResolverRepo
     ).getResolvedItemById(`1234`);
-    expect(retrievedItem).to.eql(item);
+    expect(retrievedItem).toEqual(item);
   });
 
   it('assigns time zones properly', async () => {
@@ -46,6 +45,6 @@ describe('ItemResolver Resolver Repository', () => {
     // But as we are hoping to make our app's operation independent of our database hosting (which it was not before),
     // we need to make sure that the time zones will be displayed and sent in the US/Central time zone.
     const time_zone = await dataSource.query('SELECT @@SESSION.time_zone');
-    expect(time_zone).to.eql([{ '@@SESSION.time_zone': 'US/Central' }]);
+    expect(time_zone).toEqual([{ '@@SESSION.time_zone': 'US/Central' }]);
   });
 });

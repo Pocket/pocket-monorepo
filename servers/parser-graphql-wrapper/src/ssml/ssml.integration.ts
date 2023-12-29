@@ -1,5 +1,3 @@
-import chai, { expect } from 'chai';
-import deepEqualInAnyOrder from 'deep-equal-in-any-order';
 import nock from 'nock';
 import { getElasticacheRedis } from '../cache';
 import { startServer } from '../server';
@@ -9,8 +7,6 @@ import request from 'supertest';
 import { print } from 'graphql';
 import { gql } from 'graphql-tag';
 import { IContext } from '../context';
-
-chai.use(deepEqualInAnyOrder);
 
 function makeResponseForParserTextEndpoint(testUrl: string, html: string) {
   const { query } = ParserAPI.buildQueryString({
@@ -119,9 +115,9 @@ describe('SSML integration ', () => {
       .post(graphQLUrl)
       .send({ query: print(GET_ITEMS_BY_URL), variables });
 
-    expect(res.body.data).is.not.undefined;
+    expect(res.body.data).not.toBeUndefined();
     const ssml = res.body.data.getItemByUrl.ssml;
-    expect(ssml).to.equal(
+    expect(ssml).toBe(
       "<speak><prosody rate='medium' volume='medium'>The cool article, published by domain, on <say-as interpret-as='date' format='m/d/y'>3/3/2023</say-as></prosody><prosody rate='medium' volume='medium'> A paragraph with an  image  Another paragraph with some  em  text </prosody></speak>",
     );
   });

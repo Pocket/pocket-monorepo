@@ -1,29 +1,28 @@
-import { expect } from 'chai';
 import { extractDomainMeta, normalizeDate } from './parserApiUtils';
 
 describe('normalizeDate', () => {
   it('catches 0000 empty date', () => {
-    expect(normalizeDate('0000-00-00 00:00:00')).to.be.equal(null);
+    expect(normalizeDate('0000-00-00 00:00:00')).toBe(null);
   });
 
   it('catches whitespace empty date', () => {
-    expect(normalizeDate('  ')).to.be.equal(null);
+    expect(normalizeDate('  ')).toBe(null);
   });
 
   it('passes non-empty potentially legit date through', () => {
-    expect(normalizeDate('good faith')).to.be.equal('good faith');
+    expect(normalizeDate('good faith')).toBe('good faith');
   });
 });
 
 describe('extractDomainMeta', () => {
   it('gets an empty domainMeta object', () => {
-    expect(extractDomainMeta({})).to.deep.equal({});
+    expect(extractDomainMeta({})).toEqual({});
   });
 
   it('infers domain from normalized url', () => {
     expect(
       extractDomainMeta({ normal_url: 'http://getpocket.com' }),
-    ).to.include({
+    ).toMatchObject({
       name: 'getpocket.com',
     });
   });
@@ -31,6 +30,6 @@ describe('extractDomainMeta', () => {
   it('passes through existing domain metadata', () => {
     expect(
       extractDomainMeta({ domain_metadata: { name: 'domain', logo: 'http' } }),
-    ).to.include({ name: 'domain', logo: 'http' });
+    ).toMatchObject({ name: 'domain', logo: 'http' });
   });
 });

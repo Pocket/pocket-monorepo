@@ -1,5 +1,4 @@
 import nock from 'nock';
-import { expect } from 'chai';
 import {
   batchGetArticleTextByUrl,
   getArticleByUrl,
@@ -26,7 +25,7 @@ describe('article loader', () => {
 
   it('gets a single article body', async () => {
     const response: ParserArticle = await getArticleByUrl(urlToParse1);
-    expect(response).to.deep.equal({
+    expect(response).toEqual({
       article: articleBody1,
       givenUrl: urlToParse1,
       images: null,
@@ -39,14 +38,14 @@ describe('article loader', () => {
       urlToParse1,
       urlToParse2,
     ]);
-    expect(response.length).to.be.equal(2);
-    expect(response).to.deep.include({
+    expect(response.length).toBe(2);
+    expect(response).toContainEqual({
       article: articleBody1,
       givenUrl: urlToParse1,
       images: null,
       videos: null,
     });
-    expect(response).to.deep.include({
+    expect(response).toContainEqual({
       article: articleBody2,
       givenUrl: urlToParse2,
       images: null,

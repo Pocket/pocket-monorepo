@@ -1,6 +1,5 @@
 import domino from 'domino';
 import { countAncestors } from './utils';
-import { expect } from 'chai';
 
 /**
  * Make a chain of nodes with linear parentage, helper function
@@ -30,19 +29,19 @@ describe('Marticle utils', () => {
   describe('countAncestors', () => {
     it('should return 0 if no matching ancestors', () => {
       const child = ancestryChain(['ul', 'li']);
-      expect(countAncestors(child, 'li')).to.equal(0);
+      expect(countAncestors(child, 'li')).toBe(0);
     });
     it('should return the number of ancestors', () => {
       const child = ancestryChain(['ul', 'ul', 'li']);
-      expect(countAncestors(child, 'ul')).to.equal(2);
+      expect(countAncestors(child, 'ul')).toBe(2);
     });
     it('should return the correct number of ancestors with generation gaps', () => {
       const child = ancestryChain(['ul', 'li', 'ul', 'li']);
-      expect(countAncestors(child, 'ul')).to.equal(2);
+      expect(countAncestors(child, 'ul')).toBe(2);
     });
     it('should return 0 if node has no parents', () => {
       const root = ancestryChain(['p']);
-      expect(countAncestors(root, 'p')).to.equal(0);
+      expect(countAncestors(root, 'p')).toBe(0);
     });
   });
 });

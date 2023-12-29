@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { resolvers } from './resolvers';
 import nock from 'nock';
 import { ItemResolverRepository } from './database/mysql';
@@ -37,7 +36,7 @@ describe('Resolvers', () => {
       url: urlToParse,
     });
 
-    expect(response.normalUrl).to.be.equal(urlToParse);
+    expect(response.normalUrl).toBe(urlToParse);
   });
 
   it('resolves byUrl Query', async () => {
@@ -45,7 +44,7 @@ describe('Resolvers', () => {
       url: urlToParse,
     });
 
-    expect(response.normalUrl).to.be.equal(urlToParse);
+    expect(response.normalUrl).toBe(urlToParse);
   });
 
   it('resolves getByItemId', async () => {
@@ -70,7 +69,7 @@ describe('Resolvers', () => {
       context,
     );
 
-    expect(response.normalUrl).to.be.equal(urlToParse);
+    expect(response.normalUrl).toBe(urlToParse);
   });
 
   it('resolves byItemId', async () => {
@@ -95,6 +94,6 @@ describe('Resolvers', () => {
       context,
     );
 
-    expect(response.normalUrl).to.be.equal(urlToParse);
+    expect(response.normalUrl).toBe(urlToParse);
   });
 });

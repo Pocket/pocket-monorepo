@@ -1,5 +1,4 @@
 import * as marticleParser from './marticleParser';
-import { expect } from 'chai';
 import { VideoType } from '../model';
 import { MarticleComponent } from './marticleTypes';
 
@@ -50,7 +49,9 @@ describe('MarticleParser', () => {
     ];
     // TODO: Fix https://www.chaijs.com/plugins/chai-include-ordered-with-gaps/
     // or make own plugin, to test ordering
-    expect(res).to.deep.include.members(expected);
+    expected.forEach(function (value) {
+      expect(res).toContainEqual(value);
+    });
   });
 
   it('should parse text only html', () => {
@@ -64,7 +65,9 @@ describe('MarticleParser', () => {
         content: 'Another top-level paragraph. _No_ special components',
       },
     ];
-    expect(res).to.deep.equal(expected);
+    expected.forEach(function (value) {
+      expect(res).toContainEqual(value);
+    });
   });
 
   it('should parse headings', () => {
@@ -101,10 +104,12 @@ describe('MarticleParser', () => {
         level: 3,
       },
     ];
-    expect(res.length).to.equal(7);
-    expect(res[1].__typeName).to.equal('MarticleText');
+    expect(res.length).toBe(7);
+    expect(res[1].__typeName).toBe('MarticleText');
     // TODO: Test ordering
-    expect(res).to.deep.include.members(expected);
+    expected.forEach(function (value) {
+      expect(res).toContainEqual(value);
+    });
   });
 
   it('should parse horizontal rules/content dividers', () => {
@@ -124,7 +129,7 @@ describe('MarticleParser', () => {
       },
       { __typeName: 'MarticleDivider', content: '---' },
     ];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
 
   it('should parse tables', () => {
@@ -132,7 +137,7 @@ describe('MarticleParser', () => {
       '<table><thead><tr><th>a</th><th>b</th></tr></thead><tbody><tr><td>c</td><td>d</td></tr></tbody></table>';
     const res = marticleParser.parseArticle(getTestArticle(input));
     const expected = [{ __typeName: 'MarticleTable', html: input }];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
 
   it('should parse codeblocks with a code tag', () => {
@@ -145,7 +150,7 @@ describe('MarticleParser', () => {
         text: 'p { color: red; }\nbody { background-color: #eee; }\n',
       },
     ];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
 
   it('should parse unordered list', () => {
@@ -189,7 +194,7 @@ describe('MarticleParser', () => {
         ],
       },
     ];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should parse with correct indices if there are newlines between list elements, and remove the newlines', () => {
     const input = `<ol nodeIndex="11"><li nodeIndex="10">Compiler warnings are bad.</li>\n<li nodeIndex="12">Having lots of them is demoralizing.</li>\n<li nodeIndex="13">If we had prevented them from ever occurring we wouldn't be in this mess.</li>\n</ol>`;
@@ -216,7 +221,7 @@ describe('MarticleParser', () => {
         ],
       },
     ];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should parse ordered list indices correctly if there is an intervening element', () => {
     const input =
@@ -269,7 +274,7 @@ describe('MarticleParser', () => {
         ],
       },
     ];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
 
   it('should parse ordered list', () => {
@@ -318,7 +323,7 @@ describe('MarticleParser', () => {
         ],
       },
     ];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should parse nested ordered list', () => {
     const input =
@@ -373,7 +378,7 @@ describe('MarticleParser', () => {
         ],
       },
     ];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should parse nested unordered lists', () => {
     const input =
@@ -429,7 +434,7 @@ describe('MarticleParser', () => {
         ],
       },
     ];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should parse multiple levels of nesting lists', () => {
     const input =
@@ -494,7 +499,7 @@ describe('MarticleParser', () => {
         ],
       },
     ];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should parse lists with a marticle component inside', () => {
     const input =
@@ -543,7 +548,7 @@ describe('MarticleParser', () => {
         ],
       },
     ];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should parse videos', () => {
     const input =
@@ -611,7 +616,7 @@ describe('MarticleParser', () => {
         video_id: '2',
       },
     ];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
 
   it('should parse images', () => {
@@ -677,7 +682,7 @@ describe('MarticleParser', () => {
         targetUrl: null,
       },
     ];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should process a blockquote with text only', () => {
     const input = '<blockquote>this is an insightful quote</blockquote>';
@@ -688,7 +693,7 @@ describe('MarticleParser', () => {
       },
     ];
     const res = marticleParser.parse(input);
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should process a blockquote with multiple paragraphs', () => {
     const input =
@@ -704,7 +709,7 @@ describe('MarticleParser', () => {
       },
     ];
     const res = marticleParser.parse(input);
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should process a blockquote with paragraphs and text nodes', () => {
     const input =
@@ -724,7 +729,7 @@ describe('MarticleParser', () => {
         content: 'and **naked** text',
       },
     ];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should process a blockquote with other paragraphs', () => {
     const input =
@@ -748,7 +753,7 @@ describe('MarticleParser', () => {
       },
     ];
     const res = marticleParser.parse(input);
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should separate a blockquote containing immediate component', () => {
     const input = '<blockquote>bq 1<hr>bq 2 <b>some text</b></blockquote>';
@@ -767,7 +772,7 @@ describe('MarticleParser', () => {
       },
     ];
     const res = marticleParser.parse(input);
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should parse text in <div> tags without a <p> tag, with a rightmost sibling eventual component', () => {
     const input =
@@ -784,7 +789,7 @@ describe('MarticleParser', () => {
         content: 'something',
       },
     ];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should parse text nodes in div, with a leftmost sibling eventual component', () => {
     const input =
@@ -801,7 +806,7 @@ describe('MarticleParser', () => {
           'The new October issue of Science #Immunology is out! More to come: https://t.co/dvNsyTHvAs',
       },
     ];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should parse text in <div> tags with no additional components', () => {
     const input =
@@ -814,7 +819,7 @@ describe('MarticleParser', () => {
           'The new October issue of Science #Immunology is out! More to come: https://t.co/dv\\_Ns\\_yTHvAs',
       },
     ];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should parse text in div tags with immediate components', () => {
     const input =
@@ -828,7 +833,7 @@ describe('MarticleParser', () => {
       },
       { __typeName: 'MarticleHeading', content: '# title', level: 1 },
     ];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
 
   it('should parse text in <div> tags with multiple eventual components', () => {
@@ -845,7 +850,7 @@ describe('MarticleParser', () => {
         content: 'to come: https://t.co/dvNsyTHvAs',
       },
     ];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should handle divs in divs', () => {
     const input =
@@ -861,7 +866,7 @@ describe('MarticleParser', () => {
       { __typeName: 'MarticleBlockquote', content: 'and blockquote' },
       { __typeName: 'MarticleText', content: 'and more text' },
     ];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should handle images in links', () => {
     const input =
@@ -899,60 +904,60 @@ describe('MarticleParser', () => {
       },
       { __typeName: 'MarticleText', content: 'whatever more' },
     ];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should return UnMarseable for audio elements', () => {
     const input =
       '<audio controls="" src="/media/cc0-audio/t-rex-roar.mp3">Your browser does not support the <code>audio</code> element.</audio>';
     const res = marticleParser.parse(input);
     const expected = [{ __typeName: 'UnMarseable', html: input }];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should return UnMarseable for iframe elements', () => {
     const input =
       '<iframe id="inlineFrameExample" width="300" height="200" src="https://getpocket.com"></iframe>';
     const res = marticleParser.parse(input);
     const expected = [{ __typeName: 'UnMarseable', html: input }];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should return UnMarseable for definition lists', () => {
     const input =
       '<dl><dt>Beast of Bodmin</dt><dd>A large feline inhabiting Bodmin Moor.</dd></dl>';
     const res = marticleParser.parse(input);
     const expected = [{ __typeName: 'UnMarseable', html: input }];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should return UnMarseable for script elements', () => {
     const input = '<script>alert("Hello World!");</script>';
     const res = marticleParser.parse(input);
     const expected = [{ __typeName: 'UnMarseable', html: input }];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should return UnMarseable for math elements', () => {
     const input = '<math><mrow><msup><mi>a</mi><mn>2</mn></msup></mrow></math>';
     const res = marticleParser.parse(input);
     const expected = [{ __typeName: 'UnMarseable', html: input }];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should return UnMarseable for details elements', () => {
     const input =
       '<details><summary>Details</summary>Something small enough to escape casual notice.</details>';
     const res = marticleParser.parse(input);
     const expected = [{ __typeName: 'UnMarseable', html: input }];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should return UnMarseable for dialog elements', () => {
     const input = '<dialog open=""><p>Greetings, one and all!</p></dialog>';
     const res = marticleParser.parse(input);
     const expected = [{ __typeName: 'UnMarseable', html: input }];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should return UnMarseable for menu elements', () => {
     const input =
       '<menu><button id="updateDetails">Update details</button></menu>';
     const res = marticleParser.parse(input);
     const expected = [{ __typeName: 'UnMarseable', html: input }];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should return UnMarseable for Videos without a valid src (empty/null/undefined/malformed)', () => {
     const input =
@@ -1022,7 +1027,7 @@ describe('MarticleParser', () => {
         html: '<div><p>This video could not be shown.</p></div>',
       },
     ];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
   it('should return UnMarseable for Images without a valid src (empty/null/undefined/malformed)', () => {
     const input =
@@ -1089,6 +1094,6 @@ describe('MarticleParser', () => {
         html: '<div><p>This image could not be shown.</p></div>',
       },
     ];
-    expect(res).to.deep.equal(expected);
+    expect(res).toEqual(expected);
   });
 });
