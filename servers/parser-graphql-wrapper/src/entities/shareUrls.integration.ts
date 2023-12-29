@@ -8,6 +8,8 @@ describe('SharedUrls', () => {
 
   beforeAll(async () => {
     sharedRepo = await getSharedUrlsResolverRepo();
+    await sharedRepo.clear();
+    await sharedRepo.query('ALTER TABLE share_urls AUTO_INCREMENT = 1');
   });
 
   afterAll(async () => {
