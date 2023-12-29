@@ -9,7 +9,7 @@
     "start": "node dist/main.js",
     "dev": "npm run build && npm run watch",
     "test": "jest \"\\.spec\\.ts\" --runInBand",
-    "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",
+    "test-integrations": "jest \"\\.integration\\.ts\" --runInBand --force-exit",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\""
   },
