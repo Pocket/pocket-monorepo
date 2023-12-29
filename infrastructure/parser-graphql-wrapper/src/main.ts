@@ -127,7 +127,8 @@ class ParserGraphQLWrapper extends TerraformStack {
       vpc,
     } = dependencies;
 
-    const PocketSharesSecretPrefix = `ParserWrapperApi/${config.environment}/POCKET_SHARES`;
+    const PocketSharesSecretPrefix = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:ParserWrapperApi/${config.environment}/POCKET_SHARES`;
+    const PocketSecretsPrefix = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:ParserWrapperApi/${config.environment}/SECRETS`;
 
     const secretResources = [
       `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared`,
@@ -135,8 +136,10 @@ class ParserGraphQLWrapper extends TerraformStack {
       secretsManagerKmsAlias.targetKeyArn,
       `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}`,
       `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/*`,
-      `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${PocketSharesSecretPrefix}*`,
-      `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${PocketSharesSecretPrefix}/*`,
+      `${PocketSharesSecretPrefix}*`,
+      `${PocketSharesSecretPrefix}/*`,
+      `${PocketSecretsPrefix}*`,
+      `${PocketSecretsPrefix}/*`,
     ];
 
     let rdsCluster: ApplicationRDSCluster;
@@ -224,15 +227,31 @@ class ParserGraphQLWrapper extends TerraformStack {
             },
             {
               name: 'POCKET_SHARES_DATABASE_WRITE_HOST',
-              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${PocketSharesSecretPrefix}:host::`,
+              valueFrom: `${PocketSharesSecretPrefix}:host::`,
             },
             {
               name: 'POCKET_SHARES_DATABASE_WRITE_USER',
-              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${PocketSharesSecretPrefix}:username::`,
+              valueFrom: `${PocketSharesSecretPrefix}:username::`,
             },
             {
               name: 'POCKET_SHARES_DATABASE_WRITE_PASSWORD',
-              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${PocketSharesSecretPrefix}:password::`,
+              valueFrom: `${PocketSharesSecretPrefix}:password::`,
+            },
+            {
+              name: 'PARSER_URL',
+              valueFrom: `${PocketSharesSecretPrefix}:parser_endpoint::`,
+            },
+            {
+              name: 'SHORT_PREFIX',
+              valueFrom: `${PocketSharesSecretPrefix}:short_prefix::`,
+            },
+            {
+              name: 'SHORT_PREFIX_SECURE',
+              valueFrom: `${PocketSharesSecretPrefix}:short_prefix_secure::`,
+            },
+            {
+              name: 'SHORT_CODE_CHARS',
+              valueFrom: `${PocketSharesSecretPrefix}:short_code_chars::`,
             },
           ],
         },

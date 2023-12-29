@@ -32,7 +32,8 @@ export default {
     //https://github.com/Pocket/Web/blob/16a0b582dfbd443d18f96f0f54163a9d50f3f6ab/symfony_config/.env#L160
     short_prefix: process.env.SHORT_PREFIX || 'local.co/b',
     short_prefix_secure: process.env.SHORT_PREFIX_SECURE || 'local.co/a',
-    shortCodeChars: 'abcdefghijklmnnopqrstuvwxyz',
+    shortCodeChars:
+      process.env.SHORT_CODE_CHARS || 'abcdefghijklmnnopqrstuvwxyz',
     collectionUrl:
       process.env.COLLECTIONS_URL || 'https://getpocket.com/collections',
   },
