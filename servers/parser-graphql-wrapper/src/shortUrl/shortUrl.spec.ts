@@ -14,7 +14,7 @@ describe('ShortUrl', () => {
   });
 
   it('getShortCodeForId', () => {
-    expect(getShortCodeForId(123)).toBe('Mo');
+    expect(getShortCodeForId(123)).toBe('eo');
   });
 
   it('shortUrl returns short url for given http url', async () => {
@@ -24,7 +24,7 @@ describe('ShortUrl', () => {
       'http://www.google.com',
       sharedRepo,
     );
-    expect(shortUrl).toBe(`https://${config.shortUrl.short_prefix}Mo`);
+    expect(shortUrl).toBe(`https://${config.shortUrl.short_prefix}eo`);
   });
 
   it('shortUrl returns short url for given https url', async () => {
@@ -34,6 +34,6 @@ describe('ShortUrl', () => {
       'https://www.google.com',
       sharedRepo,
     );
-    expect(shortUrl).toBe(`https://${config.shortUrl.short_prefix_secure}Mo`);
+    expect(shortUrl).toBe(`https://${config.shortUrl.short_prefix_secure}eo`);
   });
 });
