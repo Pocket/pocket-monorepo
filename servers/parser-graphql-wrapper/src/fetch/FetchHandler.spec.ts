@@ -1,19 +1,19 @@
 import { FetchHandler } from './FetchHandler';
 import nock from 'nock';
-import sinon from 'sinon';
 import { serverLogger } from '../logger';
 
 describe('FetchHandler', () => {
-  const serverLoggerErrorSpy = sinon.spy(serverLogger, 'error');
-  // TODO
-  // const sentryExceptionStub = sinon.stub(Sentry, 'captureException');
-  // const sentryBreadcrumbStub = sinon.stub(Sentry, 'addBreadcrumb');
+  const serverLoggerErrorSpy = jest.spyOn(serverLogger, 'error');
+
+  beforeAll(() => {
+    jest.useRealTimers();
+  });
 
   afterEach(() => {
-    sinon.resetHistory();
+    jest.clearAllMocks();
   });
   afterAll(() => {
-    sinon.restore();
+    jest.restoreAllMocks();
   });
 
   it('throws error if response is not ok', async () => {
@@ -35,36 +35,37 @@ describe('FetchHandler', () => {
     expect(res).toStrictEqual(expected);
   });
   describe('with abort controller', () => {
-    const clock = sinon.useFakeTimers();
     afterEach(() => nock.cleanAll());
     afterAll(() => {
-      clock.runAll();
-      clock.restore();
+      jest.runAllTimers();
+      jest.useRealTimers();
     });
 
     it('does not throw abort error, but logs', async () => {
-      expect.assertions(2);
+      expect.assertions(4);
+      jest.useFakeTimers();
 
       const expected = { key: 'value', anotherKey: 'anotherValue' };
       nock('https://get.com/json').get('/example').reply(200, expected);
       const res = new FetchHandler().fetchJSON('https://get.com/json/example');
-      await clock.tickAsync(5100);
+      jest.advanceTimersByTime(5100);
       const data = await res;
       expect(data).toBeNull();
-      expect(() =>
-        sinon.assert.calledOnceWithMatch(serverLoggerErrorSpy, {
-          data: { url: 'https://get.com/json/example' },
-          error: { message: 'The user aborted a request.', type: 'aborted' },
-          level: 'error',
-          message: 'invokeFetch: Fetch Request Aborted',
-        }),
-      ).not.toThrow();
+
+      expect(serverLoggerErrorSpy).toHaveBeenCalledTimes(1);
+      expect(serverLoggerErrorSpy.mock.calls[0][0]).toMatchObject({
+        data: { url: 'https://get.com/json/example' },
+        error: { message: 'The user aborted a request.', type: 'aborted' },
+        level: 'error',
+        message: 'invokeFetch: Fetch Request Aborted',
+      });
+      expect(serverLoggerErrorSpy).not.toThrow();
     });
+    it.todo(
+      'logs breadcrumb to Sentry and Logger if error encountered on fetch call ',
+    );
+    it.todo(
+      'logs breadcrumb to Sentry and Logger if error encountered on JSON request',
+    );
   });
-  it.todo(
-    'logs breadcrumb to Sentry and Logger if error encountered on fetch call ',
-  );
-  it.todo(
-    'logs breadcrumb to Sentry and Logger if error encountered on JSON request',
-  );
 });

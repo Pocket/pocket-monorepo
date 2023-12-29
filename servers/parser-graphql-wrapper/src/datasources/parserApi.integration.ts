@@ -7,7 +7,6 @@ import nock from 'nock';
 import { getRedis } from '../cache';
 import { MediaTypeParam, ParserAPI } from './parserApi';
 import { setTimeout } from 'timers/promises';
-import sinon from 'sinon';
 import { IContext } from '../context';
 import Keyv from 'keyv';
 
@@ -135,7 +134,7 @@ describe('ParserAPI DataSource', () => {
   let graphQLUrl: string;
   let cache: Keyv;
   const url = 'https://botnik.org/content/harry-potter.html';
-  const getArticleSpy = sinon.spy(ParserAPI.prototype, 'getArticleByUrl');
+  const getArticleSpy = jest.spyOn(ParserAPI.prototype, 'getArticleByUrl');
 
   beforeAll(async () => {
     cache = getRedis();
@@ -143,7 +142,7 @@ describe('ParserAPI DataSource', () => {
     ({ app, server, url: graphQLUrl } = await startServer(0));
   });
   beforeEach(async () => {
-    getArticleSpy.resetHistory();
+    getArticleSpy.mockClear();
     await cache.clear();
   });
   afterEach(() => {
@@ -240,7 +239,7 @@ describe('ParserAPI DataSource', () => {
     expect(cachedResult).toEqual(newFakeArticle.article); // should have updated cache
     // Should have made 2 calls to fetch; While we wish it was 1 to reuse `article`, field from parent resolver
     // we can't because MArticle makes a different request.
-    expect(getArticleSpy.callCount).toEqual(2);
+    expect(getArticleSpy).toHaveBeenCalledTimes(2);
   });
   it('should load multiple requests to resolve article text in same application tick only once', async () => {
     // testing the dataloader is working properly
@@ -253,7 +252,7 @@ describe('ParserAPI DataSource', () => {
     expect(getItemMock.isDone()).toEqual(true);
     // Should have only made 2 calls to the API due to dataloader batching
     // While we wish it was 1 we can't because MArticle makes a different request.
-    expect(getArticleSpy.callCount).toEqual(2);
+    expect(getArticleSpy).toHaveBeenCalledTimes(2);
     expect(result.body.data.getItemByUrl.article).toEqual(
       newFakeArticle.article,
     );
