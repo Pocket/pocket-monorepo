@@ -33,7 +33,8 @@ export default {
     short_prefix: process.env.SHORT_PREFIX || 'local.co/b',
     short_prefix_secure: process.env.SHORT_PREFIX_SECURE || 'local.co/a',
     shortCodeChars:
-      process.env.SHORT_CODE_CHARS || 'abcdefghijklmnnopqrstuvwxyz',
+      process.env.SHORT_CODE_CHARS ||
+      'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ123456789_',
     collectionUrl:
       process.env.COLLECTIONS_URL || 'https://getpocket.com/collections',
   },
