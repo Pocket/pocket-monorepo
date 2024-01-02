@@ -1,4 +1,3 @@
-import { SQSRecord } from 'aws-lambda';
 import { UserRegistrationEvent } from '../schemas/userRegistrationEvent';
 import {
   generateSubscriptionPayloadForEmail,
@@ -10,6 +9,7 @@ import {
 } from '../braze';
 import { config } from '../config';
 import * as Sentry from '@sentry/node';
+import { SQSRecord } from 'aws-lambda';
 
 export type AttributeForUserRegistration = {
   external_id: string;
