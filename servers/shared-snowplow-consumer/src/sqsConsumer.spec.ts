@@ -91,7 +91,7 @@ describe('sqsConsumer', () => {
     await sqsConsumer.pollMessage();
     expect(sentryStub).toHaveBeenCalledTimes(1);
     expect(sentryStub).toHaveBeenCalledWith(error, {
-      level: Sentry.Severity.Critical,
+      level: 'fatal',
     });
     expect(consoleStub).toHaveBeenCalledTimes(1);
     //assert to reschedule after 5 mins
