@@ -16,6 +16,7 @@ repo_for_enum: &repo_for_enum
     enum: 
       - image_api
       - annotations_api
+      - shared_snowplow_consumer
       - transactional_emails
 
 resource_class_enmum: &resource_class_enmum
@@ -32,6 +33,9 @@ parameters:
     type: boolean
     default: false
   annotations_api:
+    type: boolean
+    default: false
+  shared_snowplow_consumer:
     type: boolean
     default: false
   transactional_emails:
@@ -60,9 +64,10 @@ commands:
           environment:
             image_api: << pipeline.parameters.image_api >>
             annotations_api: << pipeline.parameters.annotations_api >>
+            shared_snowplow_consumer: << pipeline.parameters.shared_snowplow_consumer >>
             transactional_emails: << pipeline.parameters.transactional_emails >>
 
-  install_pnpm:
+  install_pnpm:  
     steps:
       - run:
           name: Install pnpm package manager
@@ -175,6 +180,10 @@ jobs:
             tfenv use
             echo 'export TF_WORKSPACE="<< parameters.workspace >>"' >> "$BASH_ENV"
             terraform init
+      - restore_cache:
+          name: Restore AppSpec Cache
+          keys:
+            - appspec-<< parameters.for >>
       - when:
           condition: <<parameters.apply>>
           steps:
@@ -205,11 +214,14 @@ jobs:
           paths:
             - /home/circleci/.tfenv/versions/*
             - /home/circleci/.tfenv/bin/terraform-*
-
+      - save_cache:
+          key: appspec-<< parameters.for >>
+          paths:
+            - << parameters.stack-output-path >>/appspec.json
   code_deploy_ecs:
     parameters:
       workspace:
-        description: Workspace where the appspec.json and task.json are at
+        description: Workspace where the appspec.json are at
         type: string
         default: /tmp/workspace
       codedeploy-app-name:
@@ -354,6 +366,10 @@ jobs:
           password: $DOCKERHUB_PASSWORD
         environment:
           SERVICES: s3,kinesis,sqs,dynamodb,sts,events,firehose
+      - image: pocket/snowplow-micro:prod
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
     steps:
       - exit-early-if-irrelevant:
           for: << parameters.for >>

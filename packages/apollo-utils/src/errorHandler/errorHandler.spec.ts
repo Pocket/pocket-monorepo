@@ -3,13 +3,11 @@ import { gql } from 'graphql-tag';
 import { buildSubgraphSchema } from '@apollo/subgraph';
 import { ApolloServerErrorCode } from '@apollo/server/errors';
 import assert from 'assert';
-import { sentryPlugin } from '../plugins/sentryPlugin';
-import { errorHandler } from './errorHandler';
-import { NotFoundError } from './errorHandler';
+import { sentryPlugin, defaultLogger } from '../plugins/sentryPlugin';
+import { errorHandler, NotFoundError } from './errorHandler';
 import * as Sentry from '@sentry/node';
 import { ApolloServerPluginUsageReportingDisabled } from '@apollo/server/plugin/disabled';
 import { GraphQLError } from 'graphql';
-import { defaultLogger } from '../plugins/sentryPlugin';
 
 // Fake resolvers that throw errors
 async function badSql() {

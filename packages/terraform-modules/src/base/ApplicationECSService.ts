@@ -13,6 +13,7 @@ import {
   TerraformResource,
   TerraformIterator,
   TerraformMetaArguments,
+  Fn,
 } from 'cdktf';
 import { truncateString } from '../utilities';
 import { File } from '@cdktf/provider-local/lib/file';
@@ -296,26 +297,29 @@ export class ApplicationECSService extends Construct {
     taskDef: EcsTaskDefinition,
     config: ApplicationECSServiceProps,
   ) {
-    const nullCreateTaskDef = new Resource(
-      this,
-      'create-task-definition-file',
-      {
-        triggers: {
-          // Sets this null resorce to be triggered on every terraform apply
-          alwaysRun: '${timestamp()}',
+    if (config.useCodePipeline) {
+      const nullCreateTaskDef = new Resource(
+        this,
+        'create-task-definition-file',
+        {
+          triggers: {
+            // Sets this null resorce to be triggered on every terraform apply
+            alwaysRun: Fn.timestamp(),
+          },
+          dependsOn: [taskDef],
         },
-        dependsOn: [taskDef],
-      },
-    );
-    // There is no way to pull the task def from the output of the terraform resource.
-    // Instead of trying to build a task def ourselves we use a null resource to access the recent version
-    // in AWS AFTER we have created our new one.
-    // It is also incredibly silly that AWS Codepipeline requires a task definition because it is already getting the
-    // Task definition ARN in the app spec file. But you know. Amazon is amazon and we must obey the law.
-    nullCreateTaskDef.addOverride(
-      'provisioner.local-exec.command',
-      `aws --region ${this.config.region} ecs describe-task-definition --task-definition ${taskDef.family} --query 'taskDefinition' >> taskdef.json`,
-    );
+      );
+
+      // There is no way to pull the task def from the output of the terraform resource.
+      // Instead of trying to build a task def ourselves we use a null resource to access the recent version
+      // in AWS AFTER we have created our new one.
+      // It is also incredibly silly that AWS Codepipeline requires a task definition because it is already getting the
+      // Task definition ARN in the app spec file. But you know. Amazon is amazon and we must obey the law.
+      nullCreateTaskDef.addOverride(
+        'provisioner.local-exec.command',
+        `aws --region ${this.config.region} ecs describe-task-definition --task-definition ${taskDef.family} --query 'taskDefinition' >> taskdef.json`,
+      );
+    }
 
     new File(this, 'appspec', {
       content: JSON.stringify({
