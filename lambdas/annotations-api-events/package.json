@@ -20,10 +20,10 @@
     "tsconfig": "workspace:*",
     "eslint-config-custom": "workspace:*",
     "@types/aws-lambda": "8.10.130",
-    "@types/jest": "29.5.3",
+    "@types/jest": "29.5.11",
     "@types/node-fetch": "2.6.4",
-    "jest": "29.6.2",
-    "nock": "13.3.2",
+    "jest": "29.7.0",
+    "nock": "13.4.0",
     "ts-jest": "29.1.1"
   },
   "files": [
