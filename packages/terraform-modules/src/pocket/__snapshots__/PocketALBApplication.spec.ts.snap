@@ -1954,19 +1954,6 @@ exports[`PocketALBApplication renders an Pocket App with code deploy 1`] = `
       }
     },
     "null_resource": {
-      "testPocketApp_ecs_service_create-task-definition-file_5769615D": {
-        "depends_on": [
-          "aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45"
-        ],
-        "provisioner": {
-          "local-exec": {
-            "command": "aws --region us-east-1 ecs describe-task-definition --task-definition \${aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45.family} --query 'taskDefinition' >> taskdef.json"
-          }
-        },
-        "triggers": {
-          "alwaysRun": "\${timestamp()}"
-        }
-      },
       "testPocketApp_ecs_service_update-task-definition_23CCF5D1": {
         "depends_on": [
           "aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45",
@@ -3379,19 +3366,6 @@ exports[`PocketALBApplication renders an Pocket App with code deploy notificatio
       }
     },
     "null_resource": {
-      "testPocketApp_ecs_service_create-task-definition-file_5769615D": {
-        "depends_on": [
-          "aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45"
-        ],
-        "provisioner": {
-          "local-exec": {
-            "command": "aws --region us-east-1 ecs describe-task-definition --task-definition \${aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45.family} --query 'taskDefinition' >> taskdef.json"
-          }
-        },
-        "triggers": {
-          "alwaysRun": "\${timestamp()}"
-        }
-      },
       "testPocketApp_ecs_service_update-task-definition_23CCF5D1": {
         "depends_on": [
           "aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45",
