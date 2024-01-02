@@ -115,9 +115,8 @@ export class NotesDataService {
       if (tries > 0) {
         await backoff(tries, config.aws.maxBackoff);
       }
-      const response: BatchGetCommandOutput = await this.dynamo.send(
-        batchItemCommand,
-      );
+      const response: BatchGetCommandOutput =
+        await this.dynamo.send(batchItemCommand);
       if (response.Responses) {
         itemResults.push(
           ...(response.Responses?.[this.table.name] as HighlightNoteEntity[]),
@@ -199,9 +198,8 @@ export class NotesDataService {
       if (tries > 0) {
         await backoff(tries, config.aws.maxBackoff);
       }
-      const response: BatchWriteCommandOutput = await this.dynamo.send(
-        batchWriteCommand,
-      );
+      const response: BatchWriteCommandOutput =
+        await this.dynamo.send(batchWriteCommand);
       // Increment tries for backoff, and reset unprocessed writes list
       tries += 1;
       // Might get an empty object which is truthy in JS
@@ -245,9 +243,8 @@ export class NotesDataService {
       TableName: this.table.name,
     });
 
-    const response: DeleteCommandOutput = await this.dynamo.send(
-      deleteItemCommand,
-    );
+    const response: DeleteCommandOutput =
+      await this.dynamo.send(deleteItemCommand);
     if (response.Attributes == null) {
       throw new NotFoundError('Note does not exist on highlight');
     }

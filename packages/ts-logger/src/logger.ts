@@ -1,4 +1,8 @@
-import winston from 'winston';
+import {
+  format as winstonFormat,
+  transports as winstonTransports,
+  createLogger as winstonCreateLogger,
+} from 'winston';
 
 import type { Logger, LoggerOptions } from 'winston';
 export type { Logger, LoggerOptions };
@@ -21,18 +25,18 @@ const envDefaultLogLevel = () => {
   return isDevelopment || isLocal ? 'debug' : 'info';
 };
 
-const format = winston.format.combine(
-  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
-  winston.format.json(),
+const format = winstonFormat.combine(
+  winstonFormat.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
+  winstonFormat.json(),
 );
 
 // write logs to file, for local development
 const fileLoggingTransports = [
-  new winston.transports.File({
+  new winstonTransports.File({
     filename: 'logs/error.log',
     level: 'error',
   }),
-  new winston.transports.File({ filename: 'logs/all.log' }),
+  new winstonTransports.File({ filename: 'logs/all.log' }),
 ];
 
 const transports = [
@@ -40,7 +44,7 @@ const transports = [
   // otherwise, log to the console
   ...(isLocal || isTest
     ? fileLoggingTransports
-    : [new winston.transports.Console()]),
+    : [new winstonTransports.Console()]),
 ];
 
 /**
@@ -71,7 +75,7 @@ export function createLogger(options: LoggerOptions | undefined = {}): Logger {
     ...options.defaultMeta,
   };
 
-  const baseLogger = winston.createLogger({
+  const baseLogger = winstonCreateLogger({
     ...defaults,
     ...options,
     defaultMeta: enchancedDefaultMeta,

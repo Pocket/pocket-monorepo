@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/node';
-import express from 'express';
+import express, { json } from 'express';
 import http from 'http';
 import cors from 'cors';
 import { ApolloServer } from '@apollo/server';
@@ -44,7 +44,7 @@ export async function startServer(port: number): Promise<{
 
   app.use(
     // JSON parser to enable POST body with JSON
-    express.json(),
+    json(),
     // JSON parser to enable POST body with JSON
     setMorgan(serverLogger),
   );

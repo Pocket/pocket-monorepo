@@ -16,6 +16,7 @@ repo_for_enum: &repo_for_enum
     enum: 
       - image_api
       - annotations_api
+      - shared_snowplow_consumer
       - parser_graphql_wrapper
 
 resource_class_enmum: &resource_class_enmum
@@ -34,10 +35,12 @@ parameters:
   annotations_api:
     type: boolean
     default: false
+  shared_snowplow_consumer:
+    type: boolean
+    default: false
   parser_graphql_wrapper:
     type: boolean
     default: false
-
 
 commands:
   # Refrenced from https://github.com/kelvintaywl-cci/dynamic-config-showcase/blob/main/.circleci/next.yml
@@ -61,9 +64,10 @@ commands:
           environment:
             image_api: << pipeline.parameters.image_api >>
             annotations_api: << pipeline.parameters.annotations_api >>
+            shared_snowplow_consumer: << pipeline.parameters.shared_snowplow_consumer >>
             parser_graphql_wrapper: << pipeline.parameters.parser_graphql_wrapper >>
 
-  install_pnpm:
+  install_pnpm:  
     steps:
       - run:
           name: Install pnpm package manager
@@ -362,6 +366,10 @@ jobs:
           password: $DOCKERHUB_PASSWORD
         environment:
           SERVICES: s3,kinesis,sqs,dynamodb,sts,events,firehose
+      - image: pocket/snowplow-micro:prod
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
     steps:
       - exit-early-if-irrelevant:
           for: << parameters.for >>

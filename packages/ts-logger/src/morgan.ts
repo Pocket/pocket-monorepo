@@ -1,14 +1,14 @@
 import type { Logger } from 'winston';
-import { setLogger } from './logger';
-import morgan from 'morgan';
+import { createLogger } from './logger';
+import morgan, { token } from 'morgan';
 import type { StreamOptions } from 'morgan';
 
 // preferably pass through Logger with more context
 // to setMorgan function below.
-const defaultLogger: Logger = setLogger();
+const defaultLogger: Logger = createLogger();
 
 // if userid header used, inject it into HTTP request logs
-morgan.token('req-userid', function (req, _res) {
+token('req-userid', function (req, _res) {
   const userid: string | string[] = req.headers.userid || null;
   if (userid === null) {
     return null;
@@ -17,7 +17,7 @@ morgan.token('req-userid', function (req, _res) {
 });
 
 // if graph requestId header used, inject it into HTTP request logs
-morgan.token('req-requestId', function (req, _res) {
+token('req-requestId', function (req, _res) {
   const requestId: string | string[] =
     req.headers['x-graph-request-id'] || null;
   if (requestId === null) {
@@ -27,7 +27,7 @@ morgan.token('req-requestId', function (req, _res) {
 });
 
 // if traceId header used, inject it into HTTP request logs
-morgan.token('req-traceId', function (req, _res) {
+token('req-traceId', function (req, _res) {
   const traceId: string | string[] = req.headers['x-amzn-trace'] || null;
   if (traceId === null) {
     return null;
