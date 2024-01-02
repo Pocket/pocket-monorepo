@@ -3,7 +3,7 @@ import { ItemResolver } from '../entities/ItemResolver';
 import { Connection } from 'typeorm';
 import * as itemLoader from './itemLoader';
 import { getRedis } from '../cache';
-import nock from 'nock';
+import nock, { cleanAll } from 'nock';
 
 const urlToParse = 'https://test.com';
 
@@ -89,7 +89,7 @@ describe('itemLoader - integration', () => {
   });
 
   it('should retry up to 3 times', async () => {
-    nock.cleanAll();
+    cleanAll();
 
     nock('http://example-parser.com')
       .get('/')

@@ -1,5 +1,5 @@
 import { FetchHandler } from './FetchHandler';
-import nock from 'nock';
+import nock, { cleanAll } from 'nock';
 import { serverLogger } from '../logger';
 
 describe('FetchHandler', () => {
@@ -35,7 +35,7 @@ describe('FetchHandler', () => {
     expect(res).toStrictEqual(expected);
   });
   describe('with abort controller', () => {
-    afterEach(() => nock.cleanAll());
+    afterEach(() => cleanAll());
     afterAll(() => {
       jest.runAllTimers();
       jest.useRealTimers();

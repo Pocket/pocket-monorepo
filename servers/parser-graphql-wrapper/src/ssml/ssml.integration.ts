@@ -1,4 +1,4 @@
-import nock from 'nock';
+import nock, { cleanAll } from 'nock';
 import { getElasticacheRedis } from '../cache';
 import { startServer } from '../server';
 import { MediaTypeParam, ParserAPI } from '../datasources/parserApi';
@@ -91,7 +91,7 @@ describe('SSML integration ', () => {
 
   afterAll(async () => {
     await server.stop();
-    nock.cleanAll();
+    cleanAll();
   });
 
   it('should return ssml text for the given url', async () => {

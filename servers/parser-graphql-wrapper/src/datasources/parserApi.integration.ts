@@ -3,7 +3,7 @@ import { ApolloServer } from '@apollo/server';
 import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 import request from 'supertest';
-import nock from 'nock';
+import nock, { cleanAll } from 'nock';
 import { getRedis } from '../cache';
 import { MediaTypeParam, ParserAPI } from './parserApi';
 import { setTimeout } from 'timers/promises';
@@ -146,7 +146,7 @@ describe('ParserAPI DataSource', () => {
     await cache.clear();
   });
   afterEach(() => {
-    nock.cleanAll();
+    cleanAll();
   });
   afterAll(async () => {
     await cache.disconnect();
