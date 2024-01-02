@@ -175,6 +175,10 @@ jobs:
             tfenv use
             echo 'export TF_WORKSPACE="<< parameters.workspace >>"' >> "$BASH_ENV"
             terraform init
+      - restore_cache:
+          name: Restore AppSpec Cache
+          keys:
+            - appspec-<< parameters.for >>
       - when:
           condition: <<parameters.apply>>
           steps:
@@ -205,11 +209,14 @@ jobs:
           paths:
             - /home/circleci/.tfenv/versions/*
             - /home/circleci/.tfenv/bin/terraform-*
-
+      - save_cache:
+          key: appspec-<< parameters.for >>
+          paths:
+            - << parameters.stack-output-path >>/appspec.json
   code_deploy_ecs:
     parameters:
       workspace:
-        description: Workspace where the appspec.json and task.json are at
+        description: Workspace where the appspec.json are at
         type: string
         default: /tmp/workspace
       codedeploy-app-name:

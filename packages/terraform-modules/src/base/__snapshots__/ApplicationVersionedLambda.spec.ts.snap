@@ -124,9 +124,25 @@ exports[`ApplicationVersionedLambda renders a lambda with a node v14 runtime 1`]
     },
     "aws_s3_bucket": {
       "test-versioned-lambda_code-bucket_C658EE92": {
-        "acl": "private",
         "bucket": "test-bucket",
         "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-versioned-lambda_code-bucket-acl_3407F3AC": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19": {
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
       }
     },
     "aws_s3_bucket_public_access_block": {
@@ -264,9 +280,25 @@ exports[`ApplicationVersionedLambda renders a versioned lambda 1`] = `
     },
     "aws_s3_bucket": {
       "test-versioned-lambda_code-bucket_C658EE92": {
-        "acl": "private",
         "bucket": "test-bucket",
         "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-versioned-lambda_code-bucket-acl_3407F3AC": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19": {
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
       }
     },
     "aws_s3_bucket_public_access_block": {
@@ -404,9 +436,25 @@ exports[`ApplicationVersionedLambda renders a versioned lambda with description 
     },
     "aws_s3_bucket": {
       "test-versioned-lambda_code-bucket_C658EE92": {
-        "acl": "private",
         "bucket": "test-bucket",
         "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-versioned-lambda_code-bucket-acl_3407F3AC": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19": {
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
       }
     },
     "aws_s3_bucket_public_access_block": {
@@ -550,9 +598,25 @@ exports[`ApplicationVersionedLambda renders a versioned lambda with environment 
     },
     "aws_s3_bucket": {
       "test-versioned-lambda_code-bucket_C658EE92": {
-        "acl": "private",
         "bucket": "test-bucket",
         "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-versioned-lambda_code-bucket-acl_3407F3AC": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19": {
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
       }
     },
     "aws_s3_bucket_public_access_block": {
@@ -699,9 +763,25 @@ exports[`ApplicationVersionedLambda renders a versioned lambda with execution po
     },
     "aws_s3_bucket": {
       "test-versioned-lambda_code-bucket_C658EE92": {
-        "acl": "private",
         "bucket": "test-bucket",
         "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-versioned-lambda_code-bucket-acl_3407F3AC": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19": {
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
       }
     },
     "aws_s3_bucket_public_access_block": {
@@ -839,9 +919,25 @@ exports[`ApplicationVersionedLambda renders a versioned lambda with log retentio
     },
     "aws_s3_bucket": {
       "test-versioned-lambda_code-bucket_C658EE92": {
-        "acl": "private",
         "bucket": "test-bucket",
         "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-versioned-lambda_code-bucket-acl_3407F3AC": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19": {
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
       }
     },
     "aws_s3_bucket_public_access_block": {
@@ -980,9 +1076,25 @@ exports[`ApplicationVersionedLambda renders a versioned lambda with publish igno
     },
     "aws_s3_bucket": {
       "test-versioned-lambda_code-bucket_C658EE92": {
-        "acl": "private",
         "bucket": "test-bucket",
         "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-versioned-lambda_code-bucket-acl_3407F3AC": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19": {
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
       }
     },
     "aws_s3_bucket_public_access_block": {
@@ -1120,9 +1232,25 @@ exports[`ApplicationVersionedLambda renders a versioned lambda with s3 bucket 1`
     },
     "aws_s3_bucket": {
       "test-versioned-lambda_code-bucket_C658EE92": {
-        "acl": "private",
         "bucket": "test-bucket",
         "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-versioned-lambda_code-bucket-acl_3407F3AC": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19": {
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
       }
     },
     "aws_s3_bucket_public_access_block": {
@@ -1276,12 +1404,28 @@ exports[`ApplicationVersionedLambda renders a versioned lambda with tags 1`] = `
     },
     "aws_s3_bucket": {
       "test-versioned-lambda_code-bucket_C658EE92": {
-        "acl": "private",
         "bucket": "test-bucket",
         "force_destroy": true,
         "tags": {
           "for": "test",
           "my": "tag"
+        }
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-versioned-lambda_code-bucket-acl_3407F3AC": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19": {
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
         }
       }
     },
@@ -1420,9 +1564,25 @@ exports[`ApplicationVersionedLambda renders a versioned lambda with timeout 1`] 
     },
     "aws_s3_bucket": {
       "test-versioned-lambda_code-bucket_C658EE92": {
-        "acl": "private",
         "bucket": "test-bucket",
         "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-versioned-lambda_code-bucket-acl_3407F3AC": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19": {
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
       }
     },
     "aws_s3_bucket_public_access_block": {
@@ -1583,9 +1743,25 @@ exports[`ApplicationVersionedLambda renders a versioned lambda with vpc 1`] = `
     },
     "aws_s3_bucket": {
       "test-versioned-lambda_code-bucket_C658EE92": {
-        "acl": "private",
         "bucket": "test-bucket",
         "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-versioned-lambda_code-bucket-acl_3407F3AC": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19": {
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
       }
     },
     "aws_s3_bucket_public_access_block": {

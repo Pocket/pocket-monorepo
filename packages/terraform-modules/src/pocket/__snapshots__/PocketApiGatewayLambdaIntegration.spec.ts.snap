@@ -270,9 +270,25 @@ exports[`PocketApiGatewayLambdaIntegration renders an api gateway with a lambda 
     },
     "aws_s3_bucket": {
       "test-api-lambda_endpoint-lambda_code-bucket_8153D419": {
-        "acl": "private",
         "bucket": "pocket-lambda-endpoint",
         "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-api-lambda_endpoint-lambda_code-bucket-acl_769F2274": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-api-lambda_endpoint-lambda_code-bucket_8153D419.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-api-lambda_endpoint-lambda_code-bucket-ownership-controls_C5FD8140"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-api-lambda_endpoint-lambda_code-bucket-ownership-controls_C5FD8140": {
+        "bucket": "\${aws_s3_bucket.test-api-lambda_endpoint-lambda_code-bucket_8153D419.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
       }
     },
     "aws_s3_bucket_public_access_block": {
