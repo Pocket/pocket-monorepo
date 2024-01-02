@@ -15,52 +15,60 @@ function assertValidSnowplowObjectUpdateEvents(
     .map(parseSnowplowData)
     .map((parsedEvent) => parsedEvent.data);
 
-  expect(parsedEvents).toEqual(triggers.map((trigger) => ({
-    schema: userEventsSchema.objectUpdate,
-    data: { trigger: trigger, object: 'account' },
-  })));
+  expect(parsedEvents).toEqual(
+    triggers.map((trigger) => ({
+      schema: userEventsSchema.objectUpdate,
+      data: { trigger: trigger, object: 'account' },
+    })),
+  );
 }
 
 function assertAccountDeleteSchema(eventContext) {
-  expect(eventContext.data).toEqual(expect.arrayContaining([
-    {
-      schema: userEventsSchema.account,
-      data: {
-        object_version: 'new',
-        user_id: parseInt(testAccountData.id),
+  expect(eventContext.data).toEqual(
+    expect.arrayContaining([
+      {
+        schema: userEventsSchema.account,
+        data: {
+          object_version: 'new',
+          user_id: parseInt(testAccountData.id),
+        },
       },
-    },
-  ]));
+    ]),
+  );
 }
 
 function assertAccountSchema(eventContext) {
-  expect(eventContext.data).toEqual(expect.arrayContaining([
-    {
-      schema: userEventsSchema.account,
-      data: {
-        object_version: 'new',
-        user_id: parseInt(testAccountData.id),
-        emails: [testAccountData.email],
+  expect(eventContext.data).toEqual(
+    expect.arrayContaining([
+      {
+        schema: userEventsSchema.account,
+        data: {
+          object_version: 'new',
+          user_id: parseInt(testAccountData.id),
+          emails: [testAccountData.email],
+        },
       },
-    },
-  ]));
+    ]),
+  );
 }
 
 function assertApiAndUserSchema(eventContext: { [p: string]: any }) {
-  expect(eventContext.data).toEqual(expect.arrayContaining([
-    {
-      schema: userEventsSchema.user,
-      data: {
-        user_id: parseInt(testEventData.user.id),
-        hashed_user_id: testAccountData.hashedId,
-        email: testAccountData.email,
+  expect(eventContext.data).toEqual(
+    expect.arrayContaining([
+      {
+        schema: userEventsSchema.user,
+        data: {
+          user_id: parseInt(testEventData.user.id),
+          hashed_user_id: testAccountData.hashedId,
+          email: testAccountData.email,
+        },
       },
-    },
-    {
-      schema: userEventsSchema.apiUser,
-      data: { api_id: parseInt(testEventData.apiUser.apiId) },
-    },
-  ]));
+      {
+        schema: userEventsSchema.apiUser,
+        data: { api_id: parseInt(testEventData.apiUser.apiId) },
+      },
+    ]),
+  );
 }
 
 const testAccountData = {

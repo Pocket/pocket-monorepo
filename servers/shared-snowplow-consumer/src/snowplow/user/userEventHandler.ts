@@ -5,8 +5,11 @@ import {
   SnowplowEventMap,
   UserEventPayloadSnowplow,
   userEventsSchema,
+  Account,
+  ApiUser,
+  ObjectUpdate,
+  User,
 } from './types';
-import { Account, ApiUser, ObjectUpdate, User } from './types';
 import { config } from '../../config';
 import { EventHandler } from '../EventHandler';
 import { getTracker } from '../tracker';

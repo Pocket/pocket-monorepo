@@ -1,7 +1,6 @@
 import { config } from './config';
 import {
   PocketALBApplication,
-  PocketECSCodePipeline,
   PocketPagerDuty,
 } from '@pocket-tools/terraform-modules';
 import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
@@ -28,8 +27,7 @@ export class SharedSnowplowConsumerApp extends Construct {
     private config: SharedSnowplowConsumerProps,
   ) {
     super(scope, name.toLowerCase());
-    const app = this.createPocketAlbApplication();
-    this.createApplicationCodePipeline(app);
+    this.createPocketAlbApplication();
   }
 
   private createPocketAlbApplication(): PocketALBApplication {
@@ -184,22 +182,6 @@ export class SharedSnowplowConsumerApp extends Construct {
           period: 300, //5 mins each
           actions: [pagerDuty.snsNonCriticalAlarmTopic.arn],
         },
-      },
-    });
-  }
-
-  /**
-   * Create CodePipeline to build and deploy terraform and ecs
-   * @param app
-   * @private
-   */
-  private createApplicationCodePipeline(app: PocketALBApplication) {
-    new PocketECSCodePipeline(this, 'code-pipeline', {
-      prefix: config.prefix,
-      source: {
-        codeStarConnectionArn: config.codePipeline.githubConnectionArn,
-        repository: config.codePipeline.repository,
-        branchName: config.codePipeline.branch,
       },
     });
   }

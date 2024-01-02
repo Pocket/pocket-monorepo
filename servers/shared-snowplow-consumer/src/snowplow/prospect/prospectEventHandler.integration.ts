@@ -16,39 +16,43 @@ function assertValidSnowplowObjectUpdateEvents(
     .map(parseSnowplowData)
     .map((parsedEvent) => parsedEvent.data);
 
-  expect(parsedEvents).toEqual(triggers.map((trigger) => ({
-    schema: prospectEventSchema.objectUpdate,
-    data: { trigger: trigger, object: 'prospect' },
-  })));
+  expect(parsedEvents).toEqual(
+    triggers.map((trigger) => ({
+      schema: prospectEventSchema.objectUpdate,
+      data: { trigger: trigger, object: 'prospect' },
+    })),
+  );
 }
 
 function assertProspectSchema(eventContext) {
-  expect(eventContext.data).toEqual(expect.arrayContaining([
-    {
-      schema: prospectEventSchema.prospect,
-      data: {
-        object_version: 'new',
-        prospect_id: testProspectData.prospectId,
-        url: testProspectData.url,
-        title: testProspectData.title,
-        excerpt: testProspectData.excerpt,
-        image_url: testProspectData.imageUrl,
-        language: testProspectData.language,
-        topic: testProspectData.topic,
-        is_collection: testProspectData.isCollection,
-        is_syndicated: testProspectData.isSyndicated,
-        authors: testProspectData.authors.split(','),
-        publisher: testProspectData.publisher,
-        domain: testProspectData.domain,
-        prospect_source: testProspectData.prospectType,
-        scheduled_surface_id: testProspectData.scheduledSurfaceGuid,
-        created_at: testProspectData.createdAt,
-        reviewed_by: testProspectData.reviewedBy,
-        reviewed_at: testProspectData.reviewedAt,
-        prospect_review_status: testProspectData.prospectReviewStatus,
+  expect(eventContext.data).toEqual(
+    expect.arrayContaining([
+      {
+        schema: prospectEventSchema.prospect,
+        data: {
+          object_version: 'new',
+          prospect_id: testProspectData.prospectId,
+          url: testProspectData.url,
+          title: testProspectData.title,
+          excerpt: testProspectData.excerpt,
+          image_url: testProspectData.imageUrl,
+          language: testProspectData.language,
+          topic: testProspectData.topic,
+          is_collection: testProspectData.isCollection,
+          is_syndicated: testProspectData.isSyndicated,
+          authors: testProspectData.authors.split(','),
+          publisher: testProspectData.publisher,
+          domain: testProspectData.domain,
+          prospect_source: testProspectData.prospectType,
+          scheduled_surface_id: testProspectData.scheduledSurfaceGuid,
+          created_at: testProspectData.createdAt,
+          reviewed_by: testProspectData.reviewedBy,
+          reviewed_at: testProspectData.reviewedAt,
+          prospect_review_status: testProspectData.prospectReviewStatus,
+        },
       },
-    },
-  ]));
+    ]),
+  );
 }
 
 const testEventData = {

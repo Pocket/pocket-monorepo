@@ -19,51 +19,57 @@ function assertValidSnowplowObjectUpdateEvents(
     .map(parseSnowplowData)
     .map((parsedEvent) => parsedEvent.data);
 
-  expect(parsedEvents).toEqual(triggers.map((trigger) => ({
-    schema: shareableListItemEventSchema.objectUpdate,
-    data: { trigger: trigger, object: 'shareable_list_item' },
-  })));
+  expect(parsedEvents).toEqual(
+    triggers.map((trigger) => ({
+      schema: shareableListItemEventSchema.objectUpdate,
+      data: { trigger: trigger, object: 'shareable_list_item' },
+    })),
+  );
 }
 
 function assertShareableListItemSchema(eventContext) {
-  expect(eventContext.data).toEqual(expect.arrayContaining([
-    {
-      schema: shareableListItemEventSchema.shareable_list_item,
-      data: {
-        shareable_list_item_external_id:
-          testShareableListItemData.shareable_list_item_external_id,
-        shareable_list_external_id:
-          testShareableListItemData.shareable_list_external_id,
-        given_url: testShareableListItemData.given_url,
-        title: testShareableListItemData.title,
-        excerpt: testShareableListItemData.excerpt,
-        image_url: testShareableListItemData.image_url,
-        authors: testShareableListItemData.authors,
-        publisher: testShareableListItemData.publisher,
-        note: testShareableListItemData.note,
-        sort_order: testShareableListItemData.sort_order,
-        created_at: testShareableListItemData.created_at,
-        updated_at: testShareableListItemData.updated_at,
+  expect(eventContext.data).toEqual(
+    expect.arrayContaining([
+      {
+        schema: shareableListItemEventSchema.shareable_list_item,
+        data: {
+          shareable_list_item_external_id:
+            testShareableListItemData.shareable_list_item_external_id,
+          shareable_list_external_id:
+            testShareableListItemData.shareable_list_external_id,
+          given_url: testShareableListItemData.given_url,
+          title: testShareableListItemData.title,
+          excerpt: testShareableListItemData.excerpt,
+          image_url: testShareableListItemData.image_url,
+          authors: testShareableListItemData.authors,
+          publisher: testShareableListItemData.publisher,
+          note: testShareableListItemData.note,
+          sort_order: testShareableListItemData.sort_order,
+          created_at: testShareableListItemData.created_at,
+          updated_at: testShareableListItemData.updated_at,
+        },
       },
-    },
-  ]));
+    ]),
+  );
 }
 
 function assertPartialShareableListItemSchema(eventContext) {
-  expect(eventContext.data).toEqual(expect.arrayContaining([
-    {
-      schema: shareableListItemEventSchema.shareable_list_item,
-      data: {
-        shareable_list_item_external_id:
-          testPartialShareableListItemData.shareable_list_item_external_id,
-        shareable_list_external_id:
-          testPartialShareableListItemData.shareable_list_external_id,
-        given_url: testPartialShareableListItemData.given_url,
-        sort_order: testPartialShareableListItemData.sort_order,
-        created_at: testPartialShareableListItemData.created_at,
+  expect(eventContext.data).toEqual(
+    expect.arrayContaining([
+      {
+        schema: shareableListItemEventSchema.shareable_list_item,
+        data: {
+          shareable_list_item_external_id:
+            testPartialShareableListItemData.shareable_list_item_external_id,
+          shareable_list_external_id:
+            testPartialShareableListItemData.shareable_list_external_id,
+          given_url: testPartialShareableListItemData.given_url,
+          sort_order: testPartialShareableListItemData.sort_order,
+          created_at: testPartialShareableListItemData.created_at,
+        },
       },
-    },
-  ]));
+    ]),
+  );
 }
 
 const testEventData = {

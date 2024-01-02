@@ -19,55 +19,61 @@ function assertValidSnowplowObjectUpdateEvents(
     .map(parseSnowplowData)
     .map((parsedEvent) => parsedEvent.data);
 
-  expect(parsedEvents).toEqual(triggers.map((trigger) => ({
-    schema: shareableListEventSchema.objectUpdate,
-    data: { trigger: trigger, object: 'shareable_list' },
-  })));
+  expect(parsedEvents).toEqual(
+    triggers.map((trigger) => ({
+      schema: shareableListEventSchema.objectUpdate,
+      data: { trigger: trigger, object: 'shareable_list' },
+    })),
+  );
 }
 
 function assertShareableListSchema(eventContext) {
-  expect(eventContext.data).toEqual(expect.arrayContaining([
-    {
-      schema: shareableListEventSchema.shareable_list,
-      data: {
-        shareable_list_external_id:
-          testShareableListData.shareable_list_external_id,
-        user_id: testShareableListData.user_id,
-        slug: testShareableListData.slug,
-        title: testShareableListData.title,
-        description: testShareableListData.description,
-        status: testShareableListData.status,
-        list_item_note_visibility:
-          testShareableListData.list_item_note_visibility,
-        moderation_status: testShareableListData.moderation_status,
-        moderated_by: testShareableListData.moderated_by,
-        moderation_reason: testShareableListData.moderation_reason,
-        moderation_details: testShareableListData.moderation_details,
-        restoration_reason: testShareableListData.restoration_reason,
-        created_at: testShareableListData.created_at,
-        updated_at: testShareableListData.updated_at,
+  expect(eventContext.data).toEqual(
+    expect.arrayContaining([
+      {
+        schema: shareableListEventSchema.shareable_list,
+        data: {
+          shareable_list_external_id:
+            testShareableListData.shareable_list_external_id,
+          user_id: testShareableListData.user_id,
+          slug: testShareableListData.slug,
+          title: testShareableListData.title,
+          description: testShareableListData.description,
+          status: testShareableListData.status,
+          list_item_note_visibility:
+            testShareableListData.list_item_note_visibility,
+          moderation_status: testShareableListData.moderation_status,
+          moderated_by: testShareableListData.moderated_by,
+          moderation_reason: testShareableListData.moderation_reason,
+          moderation_details: testShareableListData.moderation_details,
+          restoration_reason: testShareableListData.restoration_reason,
+          created_at: testShareableListData.created_at,
+          updated_at: testShareableListData.updated_at,
+        },
       },
-    },
-  ]));
+    ]),
+  );
 }
 
 function assertPartialShareableListSchema(eventContext) {
-  expect(eventContext.data).toEqual(expect.arrayContaining([
-    {
-      schema: shareableListEventSchema.shareable_list,
-      data: {
-        shareable_list_external_id:
-          testPartialShareableListData.shareable_list_external_id,
-        user_id: testPartialShareableListData.user_id,
-        title: testPartialShareableListData.title,
-        status: testPartialShareableListData.status,
-        list_item_note_visibility:
-          testPartialShareableListData.list_item_note_visibility,
-        moderation_status: testPartialShareableListData.moderation_status,
-        created_at: testPartialShareableListData.created_at,
+  expect(eventContext.data).toEqual(
+    expect.arrayContaining([
+      {
+        schema: shareableListEventSchema.shareable_list,
+        data: {
+          shareable_list_external_id:
+            testPartialShareableListData.shareable_list_external_id,
+          user_id: testPartialShareableListData.user_id,
+          title: testPartialShareableListData.title,
+          status: testPartialShareableListData.status,
+          list_item_note_visibility:
+            testPartialShareableListData.list_item_note_visibility,
+          moderation_status: testPartialShareableListData.moderation_status,
+          created_at: testPartialShareableListData.created_at,
+        },
       },
-    },
-  ]));
+    ]),
+  );
 }
 
 const testEventData = {
