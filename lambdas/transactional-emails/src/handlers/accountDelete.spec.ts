@@ -1,4 +1,4 @@
-import nock from 'nock';
+import nock, { cleanAll } from 'nock';
 import { accountDeleteHandler } from './accountDelete';
 import { SQSRecord } from 'aws-lambda';
 import { config } from '../config';
@@ -25,7 +25,7 @@ describe('accountDelete handler', () => {
   });
 
   afterEach(() => {
-    nock.cleanAll();
+    cleanAll();
     jest.restoreAllMocks();
   });
 

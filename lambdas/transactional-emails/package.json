@@ -18,7 +18,8 @@
     "@sentry/serverless": "7.88.0",
     "aws-lambda": "^1.0.7",
     "fetch-retry": "^5.0.2",
-    "isomorphic-fetch": "^3.0.0"
+    "isomorphic-fetch": "^3.0.0",
+    "tslib": "2.6.2"
   },
   "devDependencies": {
     "eslint-config-custom": "workspace:*",

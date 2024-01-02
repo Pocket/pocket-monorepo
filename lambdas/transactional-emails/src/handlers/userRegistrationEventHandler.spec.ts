@@ -1,5 +1,5 @@
 import * as ssm from '../ssm';
-import nock from 'nock';
+import nock, { cleanAll } from 'nock';
 import { config } from '../config';
 import { SQSRecord } from 'aws-lambda';
 import { UserRegistrationEvent } from '../schemas/userRegistrationEvent';
@@ -38,7 +38,7 @@ describe('user registration event handler', () => {
   });
 
   afterEach(() => {
-    nock.cleanAll();
+    cleanAll();
     jest.restoreAllMocks();
   });
 

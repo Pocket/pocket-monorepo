@@ -1,0 +1,24 @@
+{
+  "name": "parser-graphql-wrapper-cdk",
+  "version": "1.0.0",
+  "main": "dist/main.js",
+  "types": "src/main.ts",
+  "license": "MPL-2.0",
+  "private": true,
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "synth": "cdktf synth",
+    "compile": "tsc --pretty",
+    "watch": "tsc -w",
+    "test": "echo ok",
+    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix \"src/**/*.ts\""
+  },
+  "dependencies": {
+    "@pocket-tools/terraform-modules": "workspace:*"
+  },
+  "devDependencies": {
+    "tsconfig": "workspace:*",
+    "eslint-config-custom": "workspace:*"
+  }
+}

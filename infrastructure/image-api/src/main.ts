@@ -193,10 +193,6 @@ class ImageAPI extends TerraformStack {
               name: 'OTLP_COLLECTOR_HOST',
               value: config.tracing.host,
             },
-            {
-              name: 'RELEASE_SHA',
-              value: process.env.CIRCLE_SHA1,
-            },
           ],
           secretEnvVars: [
             {
