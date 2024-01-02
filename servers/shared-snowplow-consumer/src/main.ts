@@ -1,9 +1,9 @@
 import https from 'https';
 import { config } from './config';
-import AWSXRay from 'aws-xray-sdk-core';
-import xrayExpress from 'aws-xray-sdk-express';
+import * as AWSXRay from 'aws-xray-sdk-core';
+import * as xrayExpress from 'aws-xray-sdk-express';
 import * as Sentry from '@sentry/node';
-import express from 'express';
+import express, { json } from 'express';
 import { EventEmitter } from 'events';
 import { SqsConsumer } from './SqsConsumer';
 
@@ -28,7 +28,7 @@ Sentry.init({
 const app = express();
 
 // JSON parser to enable POST body with JSON
-app.use(express.json());
+app.use(json());
 
 app.get('/health', (req, res) => {
   res.status(200).send('ok');
