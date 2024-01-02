@@ -18,15 +18,15 @@
     "upgrade:next": "npm i cdktf@next cdktf-cli@next"
   },
   "dependencies": {
-    "@cdktf/provider-archive": "9.0.0",
-    "@cdktf/provider-aws": "18.1.0",
+    "@cdktf/provider-archive": "9.0.1",
+    "@cdktf/provider-aws": "18.2.0",
     "@cdktf/provider-local": "9.0.1",
-    "@cdktf/provider-newrelic": "11.0.4",
+    "@cdktf/provider-newrelic": "11.0.5",
     "@cdktf/provider-null": "9.0.1",
     "@cdktf/provider-pagerduty": "12.1.1",
     "@cdktf/provider-time": "9.0.2",
-    "cdktf": "0.20.0-pre.58",
-    "cdktf-cli": "0.20.0-pre.58",
+    "cdktf": "0.20.0-pre.68",
+    "cdktf-cli": "0.20.0-pre.68",
     "constructs": "10.3.0",
     "parse-domain": "5.0.0"
   },

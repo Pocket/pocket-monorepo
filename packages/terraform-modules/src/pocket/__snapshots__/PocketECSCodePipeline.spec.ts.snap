@@ -209,9 +209,25 @@ exports[`renders a Pocket ECS Codepipeline template 1`] = `
     },
     "aws_s3_bucket": {
       "test-codepipeline_codepipeline-bucket_D4671464": {
-        "acl": "private",
         "bucket": "pocket-codepipeline-e7e6d80d49c8787d2f7a7aca123082dd",
         "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-codepipeline_code-bucket-acl_52349EA5": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-codepipeline_codepipeline-bucket_D4671464.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-codepipeline_code-bucket-ownership-controls_737E4D7F"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-codepipeline_code-bucket-ownership-controls_737E4D7F": {
+        "bucket": "\${aws_s3_bucket.test-codepipeline_codepipeline-bucket_D4671464.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
       }
     }
   }
@@ -460,9 +476,25 @@ exports[`renders a Pocket ECS Codepipeline template with custom steps 1`] = `
     },
     "aws_s3_bucket": {
       "test-codepipeline_codepipeline-bucket_D4671464": {
-        "acl": "private",
         "bucket": "pocket-codepipeline-e7e6d80d49c8787d2f7a7aca123082dd",
         "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-codepipeline_code-bucket-acl_52349EA5": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-codepipeline_codepipeline-bucket_D4671464.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-codepipeline_code-bucket-ownership-controls_737E4D7F"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-codepipeline_code-bucket-ownership-controls_737E4D7F": {
+        "bucket": "\${aws_s3_bucket.test-codepipeline_codepipeline-bucket_D4671464.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
       }
     }
   }
@@ -681,11 +713,27 @@ exports[`renders a Pocket ECS Codepipeline template with tags 1`] = `
     },
     "aws_s3_bucket": {
       "test-codepipeline_codepipeline-bucket_D4671464": {
-        "acl": "private",
         "bucket": "pocket-codepipeline-e7e6d80d49c8787d2f7a7aca123082dd",
         "force_destroy": true,
         "tags": {
           "yup": "a tag"
+        }
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-codepipeline_code-bucket-acl_52349EA5": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-codepipeline_codepipeline-bucket_D4671464.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-codepipeline_code-bucket-ownership-controls_737E4D7F"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-codepipeline_code-bucket-ownership-controls_737E4D7F": {
+        "bucket": "\${aws_s3_bucket.test-codepipeline_codepipeline-bucket_D4671464.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
         }
       }
     }
@@ -902,9 +950,25 @@ exports[`renders a Pocket ECS Codepipeline template with the provided CodeDeploy
     },
     "aws_s3_bucket": {
       "test-codepipeline_codepipeline-bucket_D4671464": {
-        "acl": "private",
         "bucket": "pocket-codepipeline-e7e6d80d49c8787d2f7a7aca123082dd",
         "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-codepipeline_code-bucket-acl_52349EA5": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-codepipeline_codepipeline-bucket_D4671464.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-codepipeline_code-bucket-ownership-controls_737E4D7F"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-codepipeline_code-bucket-ownership-controls_737E4D7F": {
+        "bucket": "\${aws_s3_bucket.test-codepipeline_codepipeline-bucket_D4671464.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
       }
     }
   }
@@ -1120,9 +1184,25 @@ exports[`renders a Pocket ECS Codepipeline template with the provided CodeDeploy
     },
     "aws_s3_bucket": {
       "test-codepipeline_codepipeline-bucket_D4671464": {
-        "acl": "private",
         "bucket": "pocket-codepipeline-e7e6d80d49c8787d2f7a7aca123082dd",
         "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-codepipeline_code-bucket-acl_52349EA5": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-codepipeline_codepipeline-bucket_D4671464.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-codepipeline_code-bucket-ownership-controls_737E4D7F"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-codepipeline_code-bucket-ownership-controls_737E4D7F": {
+        "bucket": "\${aws_s3_bucket.test-codepipeline_codepipeline-bucket_D4671464.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
       }
     }
   }
@@ -1338,9 +1418,25 @@ exports[`renders a Pocket ECS Codepipeline template with the provided appspec pa
     },
     "aws_s3_bucket": {
       "test-codepipeline_codepipeline-bucket_D4671464": {
-        "acl": "private",
         "bucket": "pocket-codepipeline-e7e6d80d49c8787d2f7a7aca123082dd",
         "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-codepipeline_code-bucket-acl_52349EA5": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-codepipeline_codepipeline-bucket_D4671464.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-codepipeline_code-bucket-ownership-controls_737E4D7F"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-codepipeline_code-bucket-ownership-controls_737E4D7F": {
+        "bucket": "\${aws_s3_bucket.test-codepipeline_codepipeline-bucket_D4671464.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
       }
     }
   }
@@ -1556,9 +1652,25 @@ exports[`renders a Pocket ECS Codepipeline template with the provided artifact b
     },
     "aws_s3_bucket": {
       "test-codepipeline_codepipeline-bucket_D4671464": {
-        "acl": "private",
         "bucket": "my-codepipeline-e7e6d80d49c8787d2f7a7aca123082dd",
         "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-codepipeline_code-bucket-acl_52349EA5": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-codepipeline_codepipeline-bucket_D4671464.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-codepipeline_code-bucket-ownership-controls_737E4D7F"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-codepipeline_code-bucket-ownership-controls_737E4D7F": {
+        "bucket": "\${aws_s3_bucket.test-codepipeline_codepipeline-bucket_D4671464.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
       }
     }
   }
@@ -1774,9 +1886,25 @@ exports[`renders a Pocket ECS Codepipeline template with the provided code build
     },
     "aws_s3_bucket": {
       "test-codepipeline_codepipeline-bucket_D4671464": {
-        "acl": "private",
         "bucket": "pocket-codepipeline-e7e6d80d49c8787d2f7a7aca123082dd",
         "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-codepipeline_code-bucket-acl_52349EA5": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-codepipeline_codepipeline-bucket_D4671464.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-codepipeline_code-bucket-ownership-controls_737E4D7F"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-codepipeline_code-bucket-ownership-controls_737E4D7F": {
+        "bucket": "\${aws_s3_bucket.test-codepipeline_codepipeline-bucket_D4671464.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
       }
     }
   }
@@ -1992,9 +2120,25 @@ exports[`renders a Pocket ECS Codepipeline template with the provided taskdef pa
     },
     "aws_s3_bucket": {
       "test-codepipeline_codepipeline-bucket_D4671464": {
-        "acl": "private",
         "bucket": "pocket-codepipeline-e7e6d80d49c8787d2f7a7aca123082dd",
         "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-codepipeline_code-bucket-acl_52349EA5": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-codepipeline_codepipeline-bucket_D4671464.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-codepipeline_code-bucket-ownership-controls_737E4D7F"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-codepipeline_code-bucket-ownership-controls_737E4D7F": {
+        "bucket": "\${aws_s3_bucket.test-codepipeline_codepipeline-bucket_D4671464.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
       }
     }
   }

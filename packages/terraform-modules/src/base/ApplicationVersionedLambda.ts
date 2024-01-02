@@ -17,6 +17,8 @@ import {
   LambdaFunctionConfig,
 } from '@cdktf/provider-aws/lib/lambda-function';
 import { S3Bucket } from '@cdktf/provider-aws/lib/s3-bucket';
+import { S3BucketAcl } from '@cdktf/provider-aws/lib/s3-bucket-acl';
+import { S3BucketOwnershipControls } from '@cdktf/provider-aws/lib/s3-bucket-ownership-controls';
 import { S3BucketPublicAccessBlock } from '@cdktf/provider-aws/lib/s3-bucket-public-access-block';
 import { Fn, TerraformMetaArguments } from 'cdktf';
 import { Construct } from 'constructs';
@@ -246,10 +248,26 @@ export class ApplicationVersionedLambda extends Construct {
   private createCodeBucket() {
     const codeBucket = new S3Bucket(this, 'code-bucket', {
       bucket: this.config.s3Bucket,
-      acl: 'private',
       tags: this.config.tags,
       forceDestroy: true,
       provider: this.config.provider,
+    });
+
+    const ownership = new S3BucketOwnershipControls(
+      this,
+      'code-bucket-ownership-controls',
+      {
+        bucket: codeBucket.id,
+        rule: {
+          objectOwnership: 'BucketOwnerPreferred',
+        },
+      },
+    );
+
+    new S3BucketAcl(this, 'code-bucket-acl', {
+      bucket: codeBucket.id,
+      acl: 'private',
+      dependsOn: [ownership],
     });
 
     new S3BucketPublicAccessBlock(this, `code-bucket-public-access-block`, {
