@@ -1,5 +1,4 @@
-import { Request, Response } from 'express';
-import { Router } from 'express';
+import { Request, Response, Router } from 'express';
 import { checkSchema, Schema } from 'express-validator';
 import { dynamoClient, readClient, writeClient } from '../../database/client';
 import config from '../../config';

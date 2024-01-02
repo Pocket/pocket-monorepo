@@ -16,6 +16,7 @@ repo_for_enum: &repo_for_enum
     enum: 
       - image_api
       - annotations_api
+      - shared_snowplow_consumer
 
 resource_class_enmum: &resource_class_enmum
   resource-class:
@@ -31,6 +32,9 @@ parameters:
     type: boolean
     default: false
   annotations_api:
+    type: boolean
+    default: false
+  shared_snowplow_consumer:
     type: boolean
     default: false
 
@@ -56,8 +60,9 @@ commands:
           environment:
             image_api: << pipeline.parameters.image_api >>
             annotations_api: << pipeline.parameters.annotations_api >>
+            shared_snowplow_consumer: << pipeline.parameters.shared_snowplow_consumer >>
 
-  install_pnpm:
+  install_pnpm:  
     steps:
       - run:
           name: Install pnpm package manager
@@ -356,6 +361,10 @@ jobs:
           password: $DOCKERHUB_PASSWORD
         environment:
           SERVICES: s3,kinesis,sqs,dynamodb,sts,events,firehose
+      - image: pocket/snowplow-micro:prod
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
     steps:
       - exit-early-if-irrelevant:
           for: << parameters.for >>
