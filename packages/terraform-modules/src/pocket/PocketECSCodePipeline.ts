@@ -8,6 +8,8 @@ import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/data-aws-kms-alias';
 import { IamRole } from '@cdktf/provider-aws/lib/iam-role';
 import { IamRolePolicy } from '@cdktf/provider-aws/lib/iam-role-policy';
 import { S3Bucket } from '@cdktf/provider-aws/lib/s3-bucket';
+import { S3BucketAcl } from '@cdktf/provider-aws/lib/s3-bucket-acl';
+import { S3BucketOwnershipControls } from '@cdktf/provider-aws/lib/s3-bucket-ownership-controls';
 import { TerraformMetaArguments } from 'cdktf';
 import { Construct } from 'constructs';
 import crypto from 'crypto';
@@ -139,13 +141,31 @@ export class PocketECSCodePipeline extends Construct {
       .update(this.config.prefix)
       .digest('hex');
 
-    return new S3Bucket(this, 'codepipeline-bucket', {
+    const s3Bucket = new S3Bucket(this, 'codepipeline-bucket', {
       bucket: `${this.getArtifactBucketPrefix()}-${prefixHash}`,
-      acl: 'private',
       forceDestroy: true,
       tags: this.config.tags,
       provider: this.config.provider,
     });
+
+    const ownership = new S3BucketOwnershipControls(
+      this,
+      'code-bucket-ownership-controls',
+      {
+        bucket: s3Bucket.id,
+        rule: {
+          objectOwnership: 'BucketOwnerPreferred',
+        },
+      },
+    );
+
+    new S3BucketAcl(this, 'code-bucket-acl', {
+      bucket: s3Bucket.id,
+      acl: 'private',
+      dependsOn: [ownership],
+    });
+
+    return s3Bucket;
   }
 
   /**
