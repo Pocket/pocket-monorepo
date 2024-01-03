@@ -151,7 +151,7 @@ workflows:
       # Main Branch Deployment (Prod Environment)
       ######
       - infrastructure:
-          <<: *only_prod
+          <<: *only_main
           context: pocket
           for: fxa_webhook_proxy
           name: fxa-webhook-proxy_infrastructure_apply_prod
@@ -160,11 +160,11 @@ workflows:
           resource-class: pocket/default-prod
           workspace: Prod
           apply: true
-          prod: true
+          dev: false
           save_app_spec: false
 
       - build_lambda:
-          <<: *only_prod
+          <<: *only_main
           context: pocket
           for: fxa_webhook_proxy
           name: fxa-webhook-proxy_events_build_gateway_lambda_prod
@@ -180,7 +180,7 @@ workflows:
             - fxa-webhook-proxy_infrastructure_apply_prod
 
       - code_deploy_lambda:
-          <<: *only_prod
+          <<: *only_main
           context: pocket
           for: fxa_webhook_proxy
           name: fxa-webhook-proxy_gateway_code_deploy_lambda_prod
@@ -193,7 +193,7 @@ workflows:
             - fxa-webhook-proxy_events_build_gateway_lambda_prod
 
       - build_lambda:
-          <<: *only_prod
+          <<: *only_main
           context: pocket
           for: fxa_webhook_proxy
           name: fxa-webhook-proxy_events_build_sqs_lambda_prod
@@ -209,7 +209,7 @@ workflows:
             - fxa-webhook-proxy_infrastructure_apply_prod
 
       - code_deploy_lambda:
-          <<: *only_prod
+          <<: *only_main
           context: pocket
           for: fxa_webhook_proxy
           name: fxa-webhook-proxy_sqs_code_deploy_lambda_prod
@@ -224,7 +224,7 @@ workflows:
 
       # Notify sentry of prod deployment
       - sentry_release_notification:
-          <<: *only_prod
+          <<: *only_main
           name: fxa-webhook-proxy_sentry-release-notification-prod
           context: pocket
           for: fxa_webhook_proxy
@@ -237,7 +237,7 @@ workflows:
 
       # Setup params we may use in Lambdas
       - setup_deploy_params:
-          <<: *only_prod
+          <<: *only_main
           name: fxa-webhook-proxy_deploy-params-prod
           aws_access_key_id: Prod_AWS_ACCESS_KEY
           aws_secret_access_key: Prod_AWS_SECRET_ACCESS_KEY
