@@ -1,7 +1,7 @@
 import { generateJwt } from './jwt';
-import jwt from 'jsonwebtoken';
-import jwkToPem from 'jwk-to-pem';
-import sinon from 'sinon';
+import * as jwt from 'jsonwebtoken';
+import * as jwkToPem from 'jwk-to-pem';
+import * as sinon from 'sinon';
 
 describe('jwt test', function () {
   const testPrivateKey = {
@@ -47,7 +47,7 @@ describe('jwt test', function () {
     const result = jwt.verify(token, jwkToPem(testPublicKey), {
       complete: true,
     }) as jwt.Jwt;
-    const payload = result.payload;
+    const payload = result.payload as jwt.JwtPayload;
     expect(payload.sub).toEqual('1');
     expect(payload.iss).toEqual('https://getpocket.com');
     expect(payload.aud).toEqual('https://client-api.getpocket.com/');

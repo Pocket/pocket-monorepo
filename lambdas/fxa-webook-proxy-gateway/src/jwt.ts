@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken';
-import jwksClient from 'jwks-rsa';
+import * as jwt from 'jsonwebtoken';
+import * as jwksClient from 'jwks-rsa';
 import fetch from 'node-fetch';
 import config from './config';
 import { FxaPayload, FxaOpenIdConfigPayload } from './types';
@@ -21,7 +21,8 @@ export class FxaJwt {
    * Get public JWK from the auth server
    */
   public async getPublicJwk() {
-    if (!this.isValidIssuer(this.token.payload.iss)) {
+    let payload: jwt.JwtPayload = this.token.payload as jwt.JwtPayload;
+    if (!this.isValidIssuer(payload.iss)) {
       throw new Error('Invalid token: No token issuer or incorrect issuer.');
     }
     if (!this.token.header.kid) {

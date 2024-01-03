@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken';
-import jwkToPem from 'jwk-to-pem';
+import * as jwt from 'jsonwebtoken';
+import * as jwkToPem from 'jwk-to-pem';
 import config from './config';
 
 type JwtPayload = {
