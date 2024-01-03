@@ -18,13 +18,13 @@ describe('Expire user web session tokens mutation', () => {
   const headers = {
     fxaUserId: 'abc1234',
     email: 'fake-email-user@gmail.com',
-    premium: true,
+    premium: 'true',
   };
 
   const headers2 = {
     fxaUserId: 'abc4321',
     email: 'fake-email-user2@gmail.com',
-    premium: false,
+    premium: 'false',
   };
 
   const EXPIRE_USER_WEB_SESSION = gql`

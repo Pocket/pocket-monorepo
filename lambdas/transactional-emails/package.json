@@ -1,0 +1,38 @@
+{
+  "name": "transactional-emails",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "dev": "tsc -w",
+    "test:watch": "npm test -- --watchAll",
+    "test": "jest \"\\.spec\\.ts\"",
+    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix \"src/**/*.ts\""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-ssm": "^3.112.0",
+    "@sentry/serverless": "7.91.0",
+    "fetch-retry": "^5.0.2",
+    "isomorphic-fetch": "^3.0.0",
+    "tslib": "2.6.2"
+  },
+  "devDependencies": {
+    "eslint-config-custom": "workspace:*",
+    "tsconfig": "workspace:*",
+    "@types/aws-lambda": "8.10.130",
+    "@types/isomorphic-fetch": "0.0.36",
+    "@types/jest": "29.5.11",
+    "jest": "29.7.0",
+    "nock": "13.4.0",
+    "nodemon": "3.0.2",
+    "ts-jest": "29.1.1"
+  },
+  "files": [
+    "dist",
+    "package.json"
+  ]
+}

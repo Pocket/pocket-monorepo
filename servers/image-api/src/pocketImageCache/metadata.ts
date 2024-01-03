@@ -1,5 +1,5 @@
 import axios from 'axios';
-import axiosRetry from 'axios-retry';
+import axiosRetry, { exponentialDelay } from 'axios-retry';
 import config from '../config';
 import { Image } from '../types';
 import { getEncodedImageUrl } from './index';
@@ -8,7 +8,7 @@ import { getEncodedImageUrl } from './index';
 axiosRetry(axios, { retries: 3 });
 
 // Exponential back-off retry delay between requests
-axiosRetry(axios, { retryDelay: axiosRetry.exponentialDelay });
+axiosRetry(axios, { retryDelay: exponentialDelay });
 
 /**
  * Returns the image object by using the meta endpoint of the Pocket Image Cache

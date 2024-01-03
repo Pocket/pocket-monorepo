@@ -4,8 +4,18 @@ module.exports = {
         'plugin:@typescript-eslint/eslint-recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:prettier/recommended',
+        'plugin:import/recommended',
+        'plugin:import/typescript'
     ],
-    plugins: [],
+    plugins: ['import'],
+    settings: {
+        'import/resolver': {
+            typescript: {
+                "alwaysTryTypes": true,
+            },
+            node: true,
+        }
+    },
     rules: {
         'prettier/prettier': [
             'error',

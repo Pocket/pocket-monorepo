@@ -1,0 +1,172 @@
+
+workflows:
+  transactional-emails:
+    jobs:
+
+      ######
+      # Every PR Jobs
+      ######
+      - build_lambda:
+          <<: *not_dev_main
+          context: pocket
+          for: transactional_emails
+          name: transactional-emails_build_lambda
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          scope: transactional-emails
+          sentry_project_name: transactional-emails
+          sentry_env: development
+          sentry_org: pocket
+
+      - infrastructure:
+          <<: *not_dev_main
+          context: pocket
+          for: transactional_emails
+          name: transactional-emails_infrastructure_plan_prod
+          scope: transactional-emails-cdk
+          stack-output-path: infrastructure/transactional-emails/cdktf.out/stacks/transactional-emails
+          resource-class: pocket/default-prod
+          workspace: Prod
+          dev: false
+          apply: false
+          save_app_spec: false
+
+      ######
+      # Dev Branch Deployment (Dev Environment)
+      ######
+
+      - infrastructure:
+          <<: *only_dev
+          context: pocket
+          for: transactional_emails
+          name: transactional-emails_infrastructure_apply_dev
+          scope: transactional-emails-cdk
+          stack-output-path: infrastructure/transactional-emails/cdktf.out/stacks/transactional-emails
+          resource-class: pocket/default-dev
+          workspace: Dev
+          apply: true
+          dev: true
+          save_app_spec: false
+
+      - build_lambda:
+          <<: *only_dev
+          context: pocket
+          for: transactional_emails
+          name: transactional-emails_events_build_lambda_dev
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          scope: transactional-emails
+          sentry_project_name: transactional-emails
+          sentry_env: development
+          sentry_org: pocket
+          s3-bucket: pocket-transactionalemails-dev-sqs-event-consumer
+          requires:
+            - transactional-emails_infrastructure_apply_dev
+
+      - code_deploy_lambda:
+          <<: *only_dev
+          context: pocket
+          for: transactional_emails
+          name: transactional-emails_events_code_deploy_lambda_dev
+          resource-class: pocket/default-dev
+          codedeploy-app-name: TransactionalEmails-Dev-Sqs-Event-Consumer-Lambda
+          codedeploy-group-name: TransactionalEmails-Dev-Sqs-Event-Consumer-Lambda
+          function-name: TransactionalEmails-Dev-Sqs-Event-Consumer-Function
+          s3-bucket: pocket-transactionalemails-dev-sqs-event-consumer
+          requires:
+            - transactional-emails_events_build_lambda_dev
+
+      # Notify sentry of dev deployment
+      - sentry_release_notification:
+          <<: *only_dev
+          name: transactional-emails_sentry-release-notification-dev
+          context: pocket
+          for: transactional_emails
+          sentry_project_name: transactional-emails
+          sentry_env: development
+          sentry_org: pocket
+          requires:
+            - transactional-emails_events_code_deploy_lambda_dev
+
+      # Setup params we may use in Lambdas
+      - setup_deploy_params:
+          <<: *only_dev
+          name: transactional-emails_deploy-params-dev
+          aws_access_key_id: Dev_AWS_ACCESS_KEY
+          aws_secret_access_key: Dev_AWS_SECRET_ACCESS_KEY
+          context: pocket
+          env: Dev
+          service_name: TransactionalEmails
+          requires:
+            - transactional-emails_events_code_deploy_lambda_dev
+
+      ######
+      # Main Branch Deployment (Prod Environment)
+      ######
+      - infrastructure:
+          <<: *only_main
+          context: pocket
+          for: transactional_emails
+          name: transactional-emails_infrastructure_apply_prod
+          scope: transactional-emails-cdk
+          stack-output-path: infrastructure/transactional-emails/cdktf.out/stacks/transactional-emails
+          resource-class: pocket/default-prod
+          workspace: Prod
+          apply: true
+          dev: false
+          save_app_spec: false
+
+      - build_lambda:
+          <<: *only_main
+          context: pocket
+          for: transactional_emails
+          name: transactional-emails_events_build_lambda_prod
+          aws-access-key-id: Prod_AWS_ACCESS_KEY
+          aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
+          aws-region: Prod_AWS_DEFAULT_REGION
+          scope: transactional-emails
+          sentry_project_name: transactional-emails
+          sentry_env: production
+          sentry_org: pocket
+          s3-bucket: pocket-transactionalemails-prod-sqs-event-consumer
+          requires:
+            - transactional-emails_infrastructure_apply_prod
+
+      - code_deploy_lambda:
+          <<: *only_main
+          context: pocket
+          for: transactional_emails
+          name: transactional-emails_events_code_deploy_lambda_prod
+          resource-class: pocket/default-prod
+          codedeploy-app-name: TransactionalEmails-Prod-Sqs-Event-Consumer-Lambda
+          codedeploy-group-name: TransactionalEmails-Prod-Sqs-Event-Consumer-Lambda
+          function-name: TransactionalEmails-Prod-Sqs-Event-Consumer-Function
+          s3-bucket: pocket-transactionalemails-prod-sqs-event-consumer
+          requires:
+            - transactional-emails_events_build_lambda_prod
+
+      # Notify sentry of main deployment
+      - sentry_release_notification:
+          <<: *only_main
+          name: transactional-emails_sentry-release-notification-prod
+          context: pocket
+          for: transactional_emails
+          sentry_project_name: transactional-emails
+          sentry_env: production
+          sentry_org: pocket
+          requires:
+            - transactional-emails_events_code_deploy_lambda_prod
+
+      # Setup params we may use in Lambdas
+      - setup_deploy_params:
+          <<: *only_main
+          name: transactional-emails_deploy-params-prod
+          aws_access_key_id: Prod_AWS_ACCESS_KEY
+          aws_secret_access_key: Prod_AWS_SECRET_ACCESS_KEY
+          context: pocket
+          env: Prod
+          service_name: TransactionalEmails
+          requires:
+            - transactional-emails_events_code_deploy_lambda_prod

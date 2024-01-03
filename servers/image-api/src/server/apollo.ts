@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/node';
-import express from 'express';
+import express, { json } from 'express';
 import http from 'http';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServer, ApolloServerPlugin } from '@apollo/server';
@@ -124,7 +124,7 @@ export async function startServer(port: number): Promise<{
   app.use(
     url,
     // JSON parser to enable POST body with JSON
-    express.json(),
+    json(),
     setMorgan(serverLogger),
     expressMiddleware(server, {
       context: async ({ req }) => contextFactory(req),

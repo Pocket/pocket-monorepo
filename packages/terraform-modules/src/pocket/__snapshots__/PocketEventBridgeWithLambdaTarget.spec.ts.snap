@@ -160,9 +160,25 @@ exports[`renders an event bridge and lambda target with event bus name 1`] = `
     },
     "aws_s3_bucket": {
       "test-event-bridge-lambda_code-bucket_3703E73B": {
-        "acl": "private",
         "bucket": "pocket-test-event-bridge-lambda",
         "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-event-bridge-lambda_code-bucket-acl_052113EC": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-event-bridge-lambda_code-bucket_3703E73B.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-event-bridge-lambda_code-bucket-ownership-controls_88B8181A"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-event-bridge-lambda_code-bucket-ownership-controls_88B8181A": {
+        "bucket": "\${aws_s3_bucket.test-event-bridge-lambda_code-bucket_3703E73B.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
       }
     },
     "aws_s3_bucket_public_access_block": {
@@ -337,9 +353,25 @@ exports[`renders an event bridge and lambda target with rule description 1`] = `
     },
     "aws_s3_bucket": {
       "test-event-bridge-lambda_code-bucket_3703E73B": {
-        "acl": "private",
         "bucket": "pocket-test-event-bridge-lambda",
         "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-event-bridge-lambda_code-bucket-acl_052113EC": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-event-bridge-lambda_code-bucket_3703E73B.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-event-bridge-lambda_code-bucket-ownership-controls_88B8181A"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-event-bridge-lambda_code-bucket-ownership-controls_88B8181A": {
+        "bucket": "\${aws_s3_bucket.test-event-bridge-lambda_code-bucket_3703E73B.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
       }
     },
     "aws_s3_bucket_public_access_block": {

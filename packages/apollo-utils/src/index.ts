@@ -8,6 +8,7 @@ export * from './errorHandler/errorHandler';
 export * from './isoStringScalar/isoStringScalar';
 export * from './pagination/';
 export * from './plugins/sentryPlugin';
+export * from './express/sentryMiddleware';
 export * from './utils';
 export * from './tracing';
 
