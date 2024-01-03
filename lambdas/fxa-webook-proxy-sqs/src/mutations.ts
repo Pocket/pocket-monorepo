@@ -23,11 +23,11 @@ enum ExpireUserWebSessionReason {
 export function handleMutationErrors(
   record: SQSRecord,
   fxaEvent: FxaEvent,
-  res?: any
+  res?: any,
 ) {
   if (res?.errors) {
     const hasNotFoundError = res.errors.filter(
-      (error) => error.extensions?.code === 'NOT_FOUND'
+      (error) => error.extensions?.code === 'NOT_FOUND',
     );
     if (hasNotFoundError.length) {
       console.info('FxA User not found', {
@@ -36,7 +36,7 @@ export function handleMutationErrors(
       });
     } else {
       throw new Error(
-        `Error processing ${record.body}: \n${JSON.stringify(res?.errors)}`
+        `Error processing ${record.body}: \n${JSON.stringify(res?.errors)}`,
       );
     }
   }
@@ -75,7 +75,7 @@ export async function submitDeleteMutation(id: string): Promise<any> {
 export async function migrateAppleUserMutation(
   id: string,
   email: string,
-  transferSub: string
+  transferSub: string,
 ): Promise<any> {
   const privateKey = await getFxaPrivateKey();
 
@@ -105,7 +105,7 @@ export async function migrateAppleUserMutation(
  */
 export async function submitEmailUpdatedMutation(
   id: string,
-  email: string
+  email: string,
 ): Promise<any> {
   const privateKey = await getFxaPrivateKey();
 

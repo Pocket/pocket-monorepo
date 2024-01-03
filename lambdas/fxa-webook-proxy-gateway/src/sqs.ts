@@ -16,7 +16,7 @@ export const sqsClient = new SQSClient({
  * @param data
  */
 export async function sendMessage(
-  data: object
+  data: object,
 ): Promise<SendMessageCommandOutput> {
   const command = new SendMessageCommand({
     MessageBody: JSON.stringify(data),

@@ -17,7 +17,7 @@ export class ApiGateway extends Construct {
     private name: string,
     private vpc: PocketVPC,
     private sqsQueue: SqsQueue,
-    pagerDuty?: PocketPagerDuty
+    pagerDuty?: PocketPagerDuty,
   ) {
     super(scope, name);
     const { sentryDsn, gitSha } = getEnvVariableValues(this);
@@ -78,7 +78,7 @@ export class ApiGateway extends Construct {
     new PocketApiGateway(
       this,
       'fxa-events-apigateway-lambda',
-      pocketApiGatewayProps
+      pocketApiGatewayProps,
     );
   }
 }

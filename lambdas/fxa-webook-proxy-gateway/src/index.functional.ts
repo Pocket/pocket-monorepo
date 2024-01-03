@@ -98,7 +98,7 @@ describe('API Gateway successful event handler', () => {
 
   beforeEach(async () => {
     await sqsClient.send(
-      new PurgeQueueCommand({ QueueUrl: config.aws.sqs.fxaEventsQueue.url })
+      new PurgeQueueCommand({ QueueUrl: config.aws.sqs.fxaEventsQueue.url }),
     );
 
     // Set up spies 👀
@@ -120,7 +120,7 @@ describe('API Gateway successful event handler', () => {
       const actual = await eventHandler(sampleApiGatewayEvent);
 
       expect(actual).to.deep.equal(
-        formatResponse(400, 'Missing authorization header', true)
+        formatResponse(400, 'Missing authorization header', true),
       );
     });
 
@@ -131,7 +131,7 @@ describe('API Gateway successful event handler', () => {
       });
 
       expect(actual).to.deep.equal(
-        formatResponse(401, 'Invalid auth type', true)
+        formatResponse(401, 'Invalid auth type', true),
       );
     });
 
@@ -142,7 +142,7 @@ describe('API Gateway successful event handler', () => {
       });
 
       expect(actual).to.deep.equal(
-        formatResponse(401, 'Token could not be decoded.', true)
+        formatResponse(401, 'Token could not be decoded.', true),
       );
     });
   });
@@ -195,7 +195,7 @@ describe('API Gateway successful event handler', () => {
       });
 
       expect(handlerResponse).to.deep.equal(
-        formatResponse(200, 'Successfully sent 2 out of 2 events to SQS.')
+        formatResponse(200, 'Successfully sent 2 out of 2 events to SQS.'),
       );
     });
 
@@ -222,7 +222,7 @@ describe('API Gateway successful event handler', () => {
       });
 
       expect(handlerResponse).to.deep.equal(
-        formatResponse(200, 'Successfully sent 1 out of 1 events to SQS.')
+        formatResponse(200, 'Successfully sent 1 out of 1 events to SQS.'),
       );
     });
 
@@ -241,7 +241,7 @@ describe('API Gateway successful event handler', () => {
 
       expect(messages).to.be.undefined;
       expect(handlerResponse).to.deep.equal(
-        formatResponse(200, 'No valid events')
+        formatResponse(200, 'No valid events'),
       );
     });
 
@@ -269,7 +269,7 @@ describe('API Gateway successful event handler', () => {
       expect(consoleSpy.mock.calls[0][0]).to.contain('error: no send');
       expect(sentrySpy.mock.calls[0][0].message).to.equal('no send');
       expect(JSON.parse(handlerResponse.body).message).to.contain(
-        'Successfully sent 1 out of 2 events to SQS'
+        'Successfully sent 1 out of 2 events to SQS',
       );
     });
   });

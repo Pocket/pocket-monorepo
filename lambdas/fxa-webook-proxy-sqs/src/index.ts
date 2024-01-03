@@ -36,7 +36,7 @@ function isInvalidFxaEvent(fxaEvent: FxaEvent): boolean {
 }
 
 function isEmailUpdatedEvent(
-  fxaEvent: FxaEvent
+  fxaEvent: FxaEvent,
 ): fxaEvent is EmailUpdatedEvent {
   return !!(fxaEvent.user_email && fxaEvent.event === EVENT.PROFILE_UPDATE);
 }
@@ -56,8 +56,8 @@ export async function handlerFn(event: SQSEvent) {
       if (isInvalidFxaEvent(fxaEvent)) {
         throw new Error(
           `Malformed event - missing either 'event' or 'user_id': \n${JSON.stringify(
-            fxaEvent
-          )}`
+            fxaEvent,
+          )}`,
         );
       }
 
@@ -65,20 +65,20 @@ export async function handlerFn(event: SQSEvent) {
         case EVENT.APPLE_MIGRATION:
           if (!fxaEvent.user_email) {
             throw new Error(
-              `Error processing ${record.body}: missing user_email`
+              `Error processing ${record.body}: missing user_email`,
             );
           }
 
           if (!fxaEvent.transfer_sub) {
             throw new Error(
-              `Error processing ${record.body}: missing transfer_sub`
+              `Error processing ${record.body}: missing transfer_sub`,
             );
           }
 
           res = await migrateAppleUserMutation(
             fxaEvent.user_id,
             fxaEvent.user_email,
-            fxaEvent.transfer_sub
+            fxaEvent.transfer_sub,
           );
 
           break;
@@ -95,7 +95,7 @@ export async function handlerFn(event: SQSEvent) {
 
           res = await submitEmailUpdatedMutation(
             fxaEvent.user_id,
-            fxaEvent.user_email
+            fxaEvent.user_email,
           );
 
           break;
@@ -110,7 +110,7 @@ export async function handlerFn(event: SQSEvent) {
       if (res !== 'UNSET') {
         handleMutationErrors(record, fxaEvent, res);
       }
-    })
+    }),
   );
 
   return {};

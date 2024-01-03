@@ -22,7 +22,7 @@ Sentry.AWSLambda.init({
 export function formatResponse(
   statusCode,
   message: string,
-  isError?: boolean
+  isError?: boolean,
 ): APIGatewayProxyResult {
   return {
     statusCode,
@@ -65,7 +65,7 @@ export function generateEvents(data: FxaPayload): SqsEvent[] {
  */
 export function createSuccessResponseMessage(
   totalEvents: number,
-  failedEvents: number
+  failedEvents: number,
 ): string {
   const numberOfSuccessfulEvents = totalEvents - failedEvents;
   let message = `Successfully sent ${numberOfSuccessfulEvents} out of ${totalEvents} events to SQS.`;
@@ -83,7 +83,7 @@ export function createSuccessResponseMessage(
  * @param event
  */
 export async function eventHandler(
-  event: APIGatewayEvent
+  event: APIGatewayEvent,
 ): Promise<APIGatewayProxyResult> {
   // Get the authorization header
   const authHeader =
@@ -129,7 +129,7 @@ export async function eventHandler(
       console.log(
         `Failed to send event with data: ${JSON.stringify(event)} with error: ${
           error.message
-        }`
+        }`,
       );
       Sentry.captureException(error);
     }
@@ -138,7 +138,7 @@ export async function eventHandler(
   // Response
   return formatResponse(
     200,
-    createSuccessResponseMessage(totalEvents, failedEventCount)
+    createSuccessResponseMessage(totalEvents, failedEventCount),
   );
 }
 

@@ -1,7 +1,6 @@
 import { Construct } from 'constructs';
 import { config } from './config';
 import {
-  ApplicationSQSQueue,
   LAMBDA_RUNTIMES,
   PocketPagerDuty,
   PocketSQSWithLambdaTarget,
@@ -16,7 +15,7 @@ export class SqsLambda extends Construct {
     private name: string,
     private vpc: PocketVPC,
     private sqsQueue: SqsQueue,
-    pagerDuty?: PocketPagerDuty
+    pagerDuty?: PocketPagerDuty,
   ) {
     super(scope, name);
 

@@ -173,7 +173,7 @@ describe('Handler functions', () => {
     it('should create a successful response message with failed event info', () => {
       const actual = createSuccessResponseMessage(2, 1);
       expect(actual).to.equal(
-        `Successfully sent 1 out of 2 events to SQS. Review cloudwatch and sentry logs for information about failed events.`
+        `Successfully sent 1 out of 2 events to SQS. Review cloudwatch and sentry logs for information about failed events.`,
       );
     });
   });

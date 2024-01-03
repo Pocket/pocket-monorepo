@@ -12,7 +12,7 @@ export async function getFxaPrivateKey() {
     const secret = await client.send(
       new GetSecretValueCommand({
         SecretId: config.jwt.key,
-      })
+      }),
     );
 
     const privateKey = secret.SecretString as string;

@@ -16,7 +16,7 @@ describe('jwt', () => {
     __dirname + '/test/private-other.key',
     {
       encoding: 'ascii',
-    }
+    },
   ) as string;
 
   describe('validate method', () => {

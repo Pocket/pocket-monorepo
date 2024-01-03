@@ -123,7 +123,7 @@ describe('SQS Event Handler', () => {
           Records: [{ body: JSON.stringify(record) }],
         } as any);
       }).rejects.toThrow(
-        `Error processing ${JSON.stringify(record)}: missing transfer_sub`
+        `Error processing ${JSON.stringify(record)}: missing transfer_sub`,
       );
 
       // should never make it to a client-api request
@@ -142,7 +142,7 @@ describe('SQS Event Handler', () => {
           Records: [{ body: JSON.stringify(record) }],
         } as any);
       }).rejects.toThrow(
-        `Error processing ${JSON.stringify(record)}: missing user_email`
+        `Error processing ${JSON.stringify(record)}: missing user_email`,
       );
 
       // should never make it to a client-api request
@@ -170,8 +170,8 @@ describe('SQS Event Handler', () => {
         } as any);
       }).rejects.toThrow(
         `Error processing ${JSON.stringify(record)}: \n${JSON.stringify(
-          replyData.errors
-        )}`
+          replyData.errors,
+        )}`,
       );
 
       // Nock marks as done if a request was successfully intercepted
@@ -226,8 +226,8 @@ describe('SQS Event Handler', () => {
         } as any);
       }).rejects.toThrow(
         `Error processing ${JSON.stringify(record)}: \n${JSON.stringify(
-          replyData.errors
-        )}`
+          replyData.errors,
+        )}`,
       );
 
       // Nock marks as done if a request was successfully intercepted
@@ -315,8 +315,8 @@ describe('SQS Event Handler', () => {
         } as any);
       }).rejects.toThrow(
         `Error processing ${JSON.stringify(record)}: \n${JSON.stringify(
-          replyData.errors
-        )}`
+          replyData.errors,
+        )}`,
       );
 
       // Nock marks as done if a request was successfully intercepted
@@ -401,8 +401,8 @@ describe('SQS Event Handler', () => {
         } as any);
       }).rejects.toThrow(
         `Error processing ${JSON.stringify(record)}: \n${JSON.stringify(
-          replyData.errors
-        )}`
+          replyData.errors,
+        )}`,
       );
 
       // Nock marks as done if a request was successfully intercepted
