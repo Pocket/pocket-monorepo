@@ -21,7 +21,7 @@
     "syncpack": "^11.2.1",
     "turbo": "latest"
   },
-  "packageManager": "pnpm@8.12.0",
+  "packageManager": "pnpm@8.13.1",
   "name": "pocket-monorepo",
   "engines": {
     "node": "^20.10"
