@@ -5,6 +5,13 @@
   "main": "dist/index.js",
   "author": "",
   "license": "ISC",
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "test": "jest \"\\.spec\\.ts\"",
+    "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",
+    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix \"src/**/*.ts\""
+  },
   "devDependencies": {
     "@types/jsonwebtoken": "^8.5.6",
     "sinon": "^12.0.1",

@@ -6,15 +6,13 @@
   "license": "MPL-2.0",
   "private": true,
   "scripts": {
-    "get": "cdktf get",
-    "build:dev": "npm run build && NODE_ENV=development npm run synth",
     "build": "rm -rf dist && tsc",
     "synth": "cdktf synth",
     "compile": "tsc --pretty",
     "watch": "tsc -w",
     "test": "echo ok",
-    "lint-check": "eslint --fix-dry-run \"src/**/*.ts\"",
-    "lint-fix": "eslint --fix \"src/**/*.ts\""
+    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix \"src/**/*.ts\""
   },
   "engines": {
     "node": ">=16"
