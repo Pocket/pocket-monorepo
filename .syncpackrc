@@ -1,0 +1,4 @@
+{
+    "$schema": "https://unpkg.com/syncpack@12.3.0/dist/schema.json",
+    "dependencyTypes": ["dev", "peer", "prod"]
+}

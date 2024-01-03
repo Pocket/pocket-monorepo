@@ -32,7 +32,7 @@
     "@sentry/types": "7.91.0",
     "@faker-js/faker": "8.3.1",
     "@types/jest": "29.5.11",
-    "@types/supertest": "^2.0.16",
+    "@types/supertest": "^6.0.2",
     "jest": "29.7.0",
     "jest-mock-req-res": "1.0.2",
     "nock": "13.4.0",

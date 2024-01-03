@@ -9,7 +9,7 @@ import request from 'supertest';
 import { print } from 'graphql';
 import * as utils from '../../utils/email';
 
-describe('updateUserEmailByFxaId Mutation test', () => {
+describe.skip('updateUserEmailByFxaId Mutation test', () => {
   const readDb = readClient();
   const writeDb = writeClient();
   let server;

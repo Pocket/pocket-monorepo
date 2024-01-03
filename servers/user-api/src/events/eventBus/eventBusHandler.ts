@@ -26,6 +26,7 @@ export class EventBusHandler implements EventHandlerInterface {
     // Set endpoint for local client, otherwise provider default
     if (config.aws.endpoint != null) {
       awsConfig.endpoint = config.aws.endpoint;
+      awsConfig.credentials = { accessKeyId: 'asd', secretAccessKey: 'asd' };
     }
 
     this.client = new EventBridgeClient(awsConfig);
