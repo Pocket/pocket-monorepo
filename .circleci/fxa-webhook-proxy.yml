@@ -14,7 +14,7 @@ workflows:
           aws-access-key-id: Dev_AWS_ACCESS_KEY
           aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
           aws-region: Dev_AWS_DEFAULT_REGION
-          scope: fxa-webhook-sqs-proxy
+          scope: fxa-webhook-proxy-sqs
           sentry_project_name: fxa-webhook-proxy
           sentry_env: development
           sentry_org: pocket
@@ -27,7 +27,7 @@ workflows:
           aws-access-key-id: Dev_AWS_ACCESS_KEY
           aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
           aws-region: Dev_AWS_DEFAULT_REGION
-          scope: fxa-webhook-gateway-proxy
+          scope: fxa-webhook-proxy-gateway
           sentry_project_name: fxa-webhook-proxy
           sentry_env: development
           sentry_org: pocket

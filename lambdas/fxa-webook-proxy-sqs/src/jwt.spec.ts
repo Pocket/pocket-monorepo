@@ -1,7 +1,7 @@
 import { generateJwt } from './jwt';
-import * as jwt from 'jsonwebtoken';
-import * as jwkToPem from 'jwk-to-pem';
-import * as sinon from 'sinon';
+import jwt from 'jsonwebtoken';
+import jwkToPem from 'jwk-to-pem';
+import sinon from 'sinon';
 
 describe('jwt test', function () {
   const testPrivateKey = {
@@ -44,7 +44,7 @@ describe('jwt test', function () {
   it('should generate jwt from given private key', () => {
     const token = generateJwt(testPrivateKey, '1');
     console.log(token);
-    const result = jwt.verify(token, jwkToPem(testPublicKey), {
+    const result = jwt.verify(token, jwkToPem(testPublicKey as jwkToPem.RSA), {
       complete: true,
     }) as jwt.Jwt;
     const payload = result.payload as jwt.JwtPayload;

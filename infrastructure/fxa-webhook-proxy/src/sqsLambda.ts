@@ -5,8 +5,6 @@ import {
   PocketPagerDuty,
   PocketSQSWithLambdaTarget,
   PocketVPC,
-  MigrateIds,
-  Aspects,
 } from '@pocket-tools/terraform-modules';
 import { getEnvVariableValues } from './utilities';
 import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
