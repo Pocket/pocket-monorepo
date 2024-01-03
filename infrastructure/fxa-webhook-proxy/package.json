@@ -14,17 +14,12 @@
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\""
   },
-  "engines": {
-    "node": ">=16"
-  },
   "dependencies": {
     "@pocket-tools/terraform-modules": "4.17.1"
   },
   "devDependencies": {
     "@pocket-tools/eslint-config": "2.1.4",
-    "@pocket-tools/tsconfig": "^2.0.1",
-    "@types/node": "16.18.11",
-    "eslint": "8.45.0",
-    "typescript": "4.9.5"
+    "tsconfig": "workspace:*",
+    "eslint": "8.45.0"
   }
 }
