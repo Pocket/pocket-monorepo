@@ -13,7 +13,7 @@ importers:
         version: 7.3.0
     devDependencies:
       syncpack:
-        specifier: ^12.3.0
+        specifier: ^12.0.0
         version: 12.3.0
       turbo:
         specifier: latest
@@ -779,8 +779,8 @@ importers:
         specifier: 29.5.11
         version: 29.5.11
       '@types/supertest':
-        specifier: ^6.0.2
-        version: 6.0.2
+        specifier: ^2.0.16
+        version: 2.0.16
       eslint-config-custom:
         specifier: workspace:*
         version: link:../../packages/eslint-config-custom
@@ -5306,10 +5306,9 @@ packages:
       '@types/node': 20.10.6
     dev: true
 
-  /@types/supertest@6.0.2:
-    resolution: {integrity: sha512-137ypx2lk/wTQbW6An6safu9hXmajAifU/s7szAHLN/FeIm5w7yR0Wkl9fdJMRSHwOn4HLAI0DaB2TOORuhPDg==}
+  /@types/supertest@2.0.16:
+    resolution: {integrity: sha512-6c2ogktZ06tr2ENoZivgm7YnprnhYE4ZoXGMY+oA7IuAf17M8FWvujXZGmxLv8y0PTyts4x5A+erSwVUFA8XSg==}
     dependencies:
-      '@types/methods': 1.1.4
       '@types/superagent': 8.1.1
     dev: true
 
