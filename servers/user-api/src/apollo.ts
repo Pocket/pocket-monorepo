@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/node';
 import config from './config';
-import express from 'express';
+import express, { json } from 'express';
 import { getServer } from './server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ContextFactory } from './context';
@@ -47,7 +47,7 @@ export async function startServer(port: number) {
 
   app.use(
     url,
-    express.json(),
+    json(),
     setMorgan(serverLogger),
     expressMiddleware(server, {
       context: async ({ req }) =>

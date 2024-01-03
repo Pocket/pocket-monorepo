@@ -75,7 +75,7 @@ describe('Expire user web session tokens mutation', () => {
         id: 'fakeFxaUserId',
         reason: ExpireUserWebSessionReason.PASSWORD_CHANGED,
       };
-      const res = await request(app)
+      await request(app)
         .post(url)
         .set({
           fxaUserId: 'abc1234',

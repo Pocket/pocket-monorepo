@@ -1,6 +1,8 @@
-import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
+import {
+  PocketDefaultScalars,
+  ForbiddenError,
+} from '@pocket-tools/apollo-utils';
 import { IContext } from '../context';
-import { ForbiddenError } from '@pocket-tools/apollo-utils';
 import {
   deleteUser,
   deleteUserByFxaId,

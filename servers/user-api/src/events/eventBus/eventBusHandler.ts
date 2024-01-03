@@ -76,9 +76,8 @@ export class EventBusHandler implements EventHandlerInterface {
         },
       ],
     });
-    const output: PutEventsCommandOutput = await this.client.send(
-      putEventCommand,
-    );
+    const output: PutEventsCommandOutput =
+      await this.client.send(putEventCommand);
     if (output.FailedEntryCount) {
       const failedEventError = new Error(
         `Failed to send event '${

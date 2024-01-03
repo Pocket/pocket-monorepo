@@ -191,7 +191,7 @@ describe('Delete user mutations', () => {
         }
       `;
 
-      const res = await request(app)
+      await request(app)
         .post(url)
         .set({
           token: 'access_token',
