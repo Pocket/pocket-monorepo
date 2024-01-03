@@ -1,0 +1,9 @@
+{
+  "extends": "@pocket-tools/tsconfig",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDirs": ["gateway_lambda", "sqs_lambda"]
+  },
+  "exclude": ["node_modules"],
+  "include": ["gateway_lambda/**/*.ts", "sqs_lambda/**/*.ts"]
+}

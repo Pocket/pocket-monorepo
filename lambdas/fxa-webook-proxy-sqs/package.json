@@ -1,0 +1,36 @@
+{
+  "name": "fxa-webhook-proxy-sqs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jsonwebtoken": "^8.5.6",
+    "sinon": "^12.0.1",
+    "@pocket-tools/eslint-config": "2.0.0",
+    "@pocket-tools/tsconfig": "^2.0.1",
+    "@types/aws-lambda": "^8.10.119",
+    "@types/chai": "^4.3.3",
+    "@types/chai-as-promised": "^7.1.5",
+    "@types/jest": "^27.5.0",
+    "@types/node": "^14.17.20",
+    "chai": "^4.3.6",
+    "chai-as-promised": "^7.1.1",
+    "jest": "^27.5.1",
+    "nock": "^13.3.1",
+    "nodemon": "^2.0.22",
+    "prettier": "^2.8.8",
+    "ts-jest": "^27.1.4",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.42.0",
+    "@aws-sdk/client-sqs": "^3.41.0",
+    "@sentry/serverless": "^6.15.0",
+    "jsonwebtoken": "^8.5.1",
+    "jwk-to-pem": "^2.0.5",
+    "node-fetch": "^2.6.6"
+  }
+}
