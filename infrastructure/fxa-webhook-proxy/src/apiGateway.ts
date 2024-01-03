@@ -34,7 +34,7 @@ export class ApiGateway extends Construct {
               effect: 'Allow',
             },
           ],
-          runtime: LAMBDA_RUNTIMES.NODEJS14,
+          runtime: LAMBDA_RUNTIMES.NODEJS18,
           handler: 'index.handler',
           timeout: 120,
           environment: {

@@ -8,7 +8,7 @@ type JwtPayload = {
   iat: number; //timestamp
   exp: number;
   sub: string;
-  apiId?: string;
+  api_id?: string;
 };
 
 /**
@@ -26,7 +26,7 @@ export function generateJwt(privateKey, fxaId: string) {
     iat: now,
     exp: now + 60 * 10, //expires in 10 mins
     sub: fxaId,
-    apiId: config.app.apiId,
+    api_id: config.app.apiId,
   };
 
   return jwt.sign(payload, jwkToPem(privateKey, { private: true }), {
