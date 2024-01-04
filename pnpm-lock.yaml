@@ -807,8 +807,8 @@ importers:
         specifier: 7.91.0
         version: 7.91.0
       '@snowplow/node-tracker':
-        specifier: 3.12.1
-        version: 3.12.1
+        specifier: 3.19.0
+        version: 3.19.0
       aws-xray-sdk-express:
         specifier: 3.5.3
         version: 3.5.3(aws-xray-sdk-core@3.5.3)
@@ -5699,16 +5699,16 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@snowplow/node-tracker@3.12.1:
-    resolution: {integrity: sha512-HdfEAPYOZeOlqELPs3LFJqK5XPt6FudUOTXVPwdYg0eGCaTZFEfCbhZIor1KzieLLONtwKRqQHntPqjtHYoU+g==}
+  /@snowplow/node-tracker@3.19.0:
+    resolution: {integrity: sha512-fsMI4SRY/E8KkDZ/hqw0I/g8gGwy+7GU1N14taxyC3OtpuiPhfGp3OFuwLdsfc4Av9UpVnv7zvhfuAB7+51Uhg==}
     dependencies:
-      '@snowplow/tracker-core': 3.12.1
+      '@snowplow/tracker-core': 3.19.0
       got: 11.8.6
       tslib: 2.6.2
     dev: false
 
-  /@snowplow/tracker-core@3.12.1:
-    resolution: {integrity: sha512-7rGG+tAG9neWlLnUF7EqiU4h4PbNVPKKBkObNI/5O9W5ikMfTL3RKvw8scnVnpRvmRPgOxCum74kmh3+MAPwqQ==}
+  /@snowplow/tracker-core@3.19.0:
+    resolution: {integrity: sha512-DYxSm22QeeHg56kG8qziE/0EJIqkyOO8DM6rAjwUo5Etm2KQuKdxpPd8FyXVwOF1RtVzlq1uEkcBG8GGGjT4Aw==}
     dependencies:
       tslib: 2.6.2
       uuid: 3.4.0
@@ -5802,7 +5802,7 @@ packages:
   /@types/connect@3.4.38:
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
     dependencies:
-      '@types/node': 14.18.63
+      '@types/node': 20.10.6
     dev: false
 
   /@types/cookiejar@2.1.5:
