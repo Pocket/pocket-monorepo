@@ -36,25 +36,6 @@ module.exports = {
         // disables case checks for properties
         '@typescript-eslint/camelcase': 0,
         // allows 'any' typehint
-        '@typescript-eslint/no-explicit-any': 0,
-        // enforces 2 spaces indent
-        indent: [
-            'error',
-            2,
-            {
-                SwitchCase: 1,
-                VariableDeclarator: { var: 2, let: 2, const: 3 },
-                outerIIFEBody: 1,
-                MemberExpression: 1,
-                FunctionDeclaration: { parameters: 1, body: 1 },
-                FunctionExpression: { parameters: 1, body: 1 },
-                CallExpression: { arguments: 1 },
-                ArrayExpression: 1,
-                ObjectExpression: 1,
-                ImportDeclaration: 1,
-                flatTernaryExpressions: false,
-                ignoreComments: false,
-            },
-        ],
+        '@typescript-eslint/no-explicit-any': 0
     },
 };

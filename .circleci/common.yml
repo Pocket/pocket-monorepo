@@ -20,6 +20,7 @@ repo_for_enum: &repo_for_enum
       - parser_graphql_wrapper
       - transactional_emails
       - fxa_webhook_proxy
+      - user_api
 
 resource_class_enmum: &resource_class_enmum
   resource-class:
@@ -49,6 +50,9 @@ parameters:
   fxa_webhook_proxy:
     type: boolean
     default: false
+  user_api:
+    type: boolean
+    default: false
 
 commands:
   # Refrenced from https://github.com/kelvintaywl-cci/dynamic-config-showcase/blob/main/.circleci/next.yml
@@ -76,6 +80,8 @@ commands:
             parser_graphql_wrapper: << pipeline.parameters.parser_graphql_wrapper >>
             transactional_emails: << pipeline.parameters.transactional_emails >>
             fxa_webhook_proxy: << pipeline.parameters.fxa_webhook_proxy >>
+            user_api: << pipeline.parameters.user_api >>
+
 
   install_pnpm:  
     steps:

@@ -3,7 +3,6 @@ import {
   GraphQLFormattedError,
   GraphQLErrorOptions,
 } from 'graphql';
-import { unwrapResolverError } from '@apollo/server/errors';
 
 /**
  * Internally managed error codes.  If a new error is added here,
@@ -28,9 +27,18 @@ export function errorHandler(
   formattedError: GraphQLFormattedError,
   error: unknown,
 ): GraphQLFormattedError {
-  if (unwrapResolverError(error) instanceof GraphQLError) {
-    // Keep GraphQL errors intact
-    // e.g. failed parsing, bad input
+  // Return the original error if it's wrapped (e.g. by a resolver)
+  // Not using the unwrapResolverError method provided by apollo because
+  // it checks for truthiness on the `path` property, which is undefined
+  // if the error is thrown during context creation.
+  // This little snippet just removes the `path` property check.
+  const unwrapError = (error: unknown) => {
+    if (error instanceof GraphQLError && error.originalError) {
+      return error.originalError;
+    }
+    return error;
+  };
+  if (unwrapError(error) instanceof GraphQLError) {
     return formattedError;
   } else {
     // Mask other kinds of errors

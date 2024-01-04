@@ -1,0 +1,182 @@
+
+workflows:
+  user-api:
+    jobs:
+
+      ######
+      # Every PR Jobs
+      ######
+      - apollo:
+          name: user-api_apollo
+          fed_graph_name: pocket-client-api
+          graph_name: user
+          schema_file_path: servers/user-api/schema.graphql
+          prod_graph_url: https://user-api.readitlater.com
+          dev_graph_url: https://user-api.getpocket.dev
+
+      - test_integrations:
+          <<: *not_dev_main
+          for: user_api
+          context: pocket
+          name: user-api_test_integrations
+          scope: user-api
+
+      # Try building the ECS docker image on each branch
+      - build_image:
+          <<: *not_dev_main
+          context: pocket
+          for: user_api
+          name: user-api_build_docker
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          repo-name: userapi-dev-app
+          ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
+          push: false
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=user-api --build-arg APP_PATH=servers/user-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=user-api --build-arg PORT=4006 
+     
+      - infrastructure:
+          <<: *not_dev_main
+          context: pocket
+          for: user_api
+          name: user-api_infrastructure_plan_prod
+          scope: user-api-cdk
+          stack-output-path: infrastructure/user-api/cdktf.out/stacks/user-api
+          resource-class: pocket/default-prod
+          workspace: Prod
+          dev: false
+          apply: false
+
+      ######
+      # Dev Branch Deployment (Dev Environment)
+      ######
+
+      - infrastructure:
+          <<: *only_dev
+          context: pocket
+          for: user_api
+          name: user-api_infrastructure_apply_dev
+          scope: user-api-cdk
+          stack-output-path: infrastructure/user-api/cdktf.out/stacks/user-api
+          resource-class: pocket/default-dev
+          workspace: Dev
+          apply: true
+          dev: true
+
+      # Build & Deploy the Dev Docker Image
+      - build_image:
+          <<: *only_dev
+          context: pocket
+          for: user_api
+          name: user-api_build_docker_dev
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          repo-name: userapi-dev-app
+          ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
+          push: true
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=user-api --build-arg APP_PATH=servers/user-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=user-api --build-arg PORT=4006
+          requires:
+            - user-api_infrastructure_apply_dev
+
+      - code_deploy_ecs:
+          <<: *only_dev
+          context: pocket
+          for: user_api
+          name: user-api_code_deploy_ecs_dev
+          resource-class: pocket/default-dev
+          codedeploy-app-name: UserAPI-Dev-ECS
+          codedeploy-group-name: UserAPI-Dev-ECS
+          requires:
+            - user-api_build_docker_dev
+
+      # Notify sentry of dev deployment
+      - sentry_release_notification:
+          <<: *only_dev
+          name: user-api_sentry-release-notification-dev
+          context: pocket
+          for: user_api
+          sentry_project_name: user-api
+          sentry_env: development
+          sentry_org: pocket
+          requires:
+            - user-api_code_deploy_ecs_dev
+     
+      # Setup params we may use in Lambdas
+      - setup_deploy_params:
+          <<: *only_dev
+          name: user-api_deploy-params-dev
+          aws_access_key_id: Dev_AWS_ACCESS_KEY
+          aws_secret_access_key: Dev_AWS_SECRET_ACCESS_KEY
+          context: pocket
+          env: Dev
+          service_name: UserAPI
+          requires:
+            - user-api_code_deploy_ecs_dev
+
+
+      ######
+      # Main Branch Deployment (Prod Environment)
+      ######
+      - infrastructure:
+          <<: *only_main
+          context: pocket
+          for: user_api
+          name: user-api_infrastructure_apply_prod
+          scope: user-api-cdk
+          stack-output-path: infrastructure/user-api/cdktf.out/stacks/user-api
+          resource-class: pocket/default-prod
+          workspace: Prod
+          apply: true
+          dev: false
+
+      # Build & Deploy the Prod Docker Image
+      - build_image:
+          <<: *only_main
+          context: pocket
+          for: user_api
+          name: user-api_build_docker_prod
+          aws-access-key-id: Prod_AWS_ACCESS_KEY
+          aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
+          aws-region: Prod_AWS_DEFAULT_REGION
+          repo-name: userapi-prod-app
+          ecr-url: 996905175585.dkr.ecr.us-east-1.amazonaws.com
+          push: true
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=user-api --build-arg APP_PATH=servers/user-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=user-api --build-arg PORT=4006
+          requires:
+            - user-api_infrastructure_apply_prod
+
+      - code_deploy_ecs:
+          <<: *only_main
+          context: pocket
+          for: user_api
+          name: user-api_code_deploy_ecs_prod
+          resource-class: pocket/default-prod
+          codedeploy-app-name: UserAPI-Prod-ECS
+          codedeploy-group-name: UserAPI-Prod-ECS
+          requires:
+            - user-api_build_docker_prod
+
+      # Notify sentry of main deployment
+      - sentry_release_notification:
+          <<: *only_main
+          name: user-api_sentry-release-notification-prod
+          context: pocket
+          for: user_api
+          sentry_project_name: user-api
+          sentry_env: production
+          sentry_org: pocket
+          requires:
+            - user-api_code_deploy_ecs_prod
+
+      # Setup params we may use in Lambdas
+      - setup_deploy_params:
+          <<: *only_main
+          name: user-api_deploy-params-prod
+          aws_access_key_id: Prod_AWS_ACCESS_KEY
+          aws_secret_access_key: Prod_AWS_SECRET_ACCESS_KEY
+          context: pocket
+          env: Prod
+          service_name: UserAPI
+          requires:
+            - user-api_code_deploy_ecs_prod
