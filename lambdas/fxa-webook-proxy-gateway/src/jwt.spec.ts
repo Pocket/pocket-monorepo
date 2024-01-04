@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import { FxaJwt } from './jwt';
-import sinon, { SinonStub } from 'sinon';
 
 describe('jwt', () => {
   const publicKey = fs.readFileSync(__dirname + '/../test/jwtRS256.key.pub', {
@@ -23,12 +22,13 @@ describe('jwt', () => {
     let getPublicJwkStub;
 
     beforeAll(() => {
-      getPublicJwkStub = sinon.stub(FxaJwt.prototype, 'getPublicJwk');
-      getPublicJwkStub.resolves(publicKey);
+      getPublicJwkStub = jest
+        .spyOn(FxaJwt.prototype, 'getPublicJwk')
+        .mockResolvedValue(publicKey);
     });
 
     afterAll(() => {
-      getPublicJwkStub.restore();
+      getPublicJwkStub.mockRestore();
     });
 
     it('should throw an error if jwt could not be decoded', async () => {
@@ -85,19 +85,19 @@ describe('jwt', () => {
   });
 
   describe('getPublicJwk method', () => {
-    let jwtDecodeStub: SinonStub;
+    let jwtDecodeStub: jest.SpyInstance;
 
     beforeAll(() => {
       // stubbing the jwt.decode function in the constructor
-      jwtDecodeStub = sinon.stub(jwt, 'decode');
+      jwtDecodeStub = jest.spyOn(jwt, 'decode').mockImplementation();
     });
 
     afterEach(() => {
-      jwtDecodeStub.reset();
+      jwtDecodeStub.mockClear();
     });
 
     afterAll(() => {
-      jwtDecodeStub.restore();
+      jwtDecodeStub.mockRestore();
     });
 
     it('should throw an error if the token payload does not have the iss property', async () => {
@@ -110,7 +110,7 @@ describe('jwt', () => {
       };
 
       // making the stub return the incorrect token payload object which the class variable 'token' is set to
-      jwtDecodeStub.returns(invalidTokenPayload);
+      jwtDecodeStub.mockReturnValue(invalidTokenPayload);
 
       await expect(async () => {
         await new FxaJwt('test-token').getPublicJwk();
@@ -127,7 +127,7 @@ describe('jwt', () => {
       };
 
       // making the stubbing return the incorrect token payload object which the class variable 'token' is set to
-      jwtDecodeStub.returns(invalidTokenPayload);
+      jwtDecodeStub.mockReturnValue(invalidTokenPayload);
 
       await expect(async () => {
         await new FxaJwt('test-token').getPublicJwk();

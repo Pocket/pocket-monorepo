@@ -1,7 +1,6 @@
 import { generateJwt } from './jwt';
 import jwt from 'jsonwebtoken';
 import jwkToPem from 'jwk-to-pem';
-import sinon from 'sinon';
 
 describe('jwt test', function () {
   const testPrivateKey = {
@@ -28,18 +27,17 @@ describe('jwt test', function () {
     n: 'm6XkeQIGIK44RK44g__-UwzW2cApDNy1H2dCnisrYmJj8QuyEBcFQs9y8PZtYTV3u1fm9awVs-E_SNqy62I6IaTaDwABetjQSNV1-q0NgwpBjcvwldNc2gyt9NNvxE5Yto5RKolZejkAU4GcPgNXah3fgoGZ59IJLVLDl9y9dnYtQwhHZ08k0RqsWTtQTUU9DFN6N7c9d0mOMCet8HbvcTYpT7zcRjAwplpvmo2TAN3iiNRlalyGrxNx2NECewsrDz7oiCutppWUWSa0oIJc0xRGegx4zOMEyPd72Z2Q6-JcxCKjcAIRknOhGyp3pMZZT3lTuoSYK0kbDDFlv90JsQ',
   };
 
-  let clock;
   const now = new Date('2021-01-01 10:20:30');
   const exp = new Date('2021-01-01 10:30:30');
 
   beforeAll(() => {
-    clock = sinon.useFakeTimers({
+    jest.useFakeTimers({
       now: now,
-      shouldAdvanceTime: false,
+      advanceTimers: false,
     });
   });
 
-  afterAll(() => clock.restore());
+  afterAll(() => jest.useRealTimers());
 
   it('should generate jwt from given private key', () => {
     const token = generateJwt(testPrivateKey, '1');

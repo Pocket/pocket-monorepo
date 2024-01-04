@@ -25,7 +25,6 @@
     "tsconfig": "workspace:*",
     "eslint-config-custom": "workspace:*",
     "@types/jsonwebtoken": "^9.0.5",
-    "sinon": "^17.0.1",
     "@types/aws-lambda": "8.10.130",
     "@types/chai": "^4.3.11",
     "@types/chai-as-promised": "^7.1.8",

@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import sinon from 'sinon';
 import {
   createSuccessResponseMessage,
   formatResponse,
@@ -35,17 +34,13 @@ describe('Handler functions', () => {
   });
 
   describe('Generating SQS events data', () => {
-    let clock;
     const now = Date.now();
 
     beforeAll(() => {
-      clock = sinon.useFakeTimers({
-        now: now,
-        shouldAdvanceTime: true,
-      });
+      jest.useFakeTimers({ now, advanceTimers: true });
     });
 
-    afterAll(() => clock.restore());
+    afterAll(() => jest.useRealTimers());
 
     it('should generate SQS event data for FxA apple migration event', () => {
       const testEventPayload = {

@@ -1,6 +1,5 @@
 import { FxaJwt } from './jwt';
 import { expect } from 'chai';
-import sinon from 'sinon';
 import * as Sentry from '@sentry/serverless';
 import { eventHandler, formatResponse } from './index';
 import config from './config';
@@ -83,14 +82,13 @@ async function getSqsMessages(): Promise<any[]> {
 }
 
 describe('API Gateway successful event handler', () => {
-  let clock;
   const now = Date.now();
   let sqsSpy: any;
   let consoleSpy: any;
   let sentrySpy: any;
 
   beforeAll(() => {
-    clock = sinon.useFakeTimers({
+    jest.useFakeTimers().setSystemTime({
       now: now,
       shouldAdvanceTime: false,
     });
@@ -108,7 +106,7 @@ describe('API Gateway successful event handler', () => {
   });
 
   afterAll(async () => {
-    clock.restore();
+    jest.useRealTimers();
   });
 
   afterEach(() => {
@@ -150,10 +148,10 @@ describe('API Gateway successful event handler', () => {
   describe('API Gateway good events', () => {
     let jwtSpy;
     beforeEach(() => {
-      jwtSpy = sinon.stub(FxaJwt.prototype, 'validate');
+      jwtSpy = jest.spyOn(FxaJwt.prototype, 'validate').mockClear().mockImplementation();
     });
     afterEach(() => {
-      jwtSpy.restore();
+      jwtSpy.mockRestore();
     });
     const validEvent = {
       ...sampleApiGatewayEvent,
