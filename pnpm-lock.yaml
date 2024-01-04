@@ -323,8 +323,8 @@ importers:
         specifier: 1.2.1
         version: 1.2.1(@opentelemetry/api@1.7.0)
       '@opentelemetry/instrumentation-aws-sdk':
-        specifier: 0.37.0
-        version: 0.37.0(@opentelemetry/api@1.7.0)
+        specifier: 0.37.1
+        version: 0.37.1(@opentelemetry/api@1.7.0)
       '@opentelemetry/instrumentation-dataloader':
         specifier: 0.5.3
         version: 0.5.3(@opentelemetry/api@1.7.0)
@@ -3820,8 +3820,8 @@ packages:
       '@opentelemetry/core': 1.19.0(@opentelemetry/api@1.7.0)
     dev: false
 
-  /@opentelemetry/instrumentation-aws-sdk@0.37.0(@opentelemetry/api@1.7.0):
-    resolution: {integrity: sha512-xtu7RKk4sYqJVe0PAhIC2m/ag9JO2XyZKjV2P1iOT029ZYOfDQ1RPMFHtm9z73uC9WggPS0eqQYVKP25E5ocwA==}
+  /@opentelemetry/instrumentation-aws-sdk@0.37.1(@opentelemetry/api@1.7.0):
+    resolution: {integrity: sha512-vIvA9LpxLMHx0sraBF+qyiGuiqeeLz2CKQPoV4bAlzd+Zlcwk3Yg/NHHjMvP7aCy1VB6cGS8UkMG5lNM1a1NmQ==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': ^1.3.0
