@@ -1,0 +1,14 @@
+{
+  "extends": "@pocket-tools/tsconfig",
+  "esModuleInterop": true,
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDirs": ["src", "lambda"],
+    "esModuleInterop": true,
+    "noEmitHelpers": true,
+    "importHelpers": true
+  },
+  "exclude": ["node_modules"],
+  "include": ["src/**/*.ts", "src/config"],
+  "files": ["node_modules/jest-extended/types/index.d.ts"]
+}
