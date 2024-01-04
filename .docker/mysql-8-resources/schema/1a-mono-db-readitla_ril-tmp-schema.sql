@@ -6301,3 +6301,13 @@ create index start_time
 create index user_id
     on view_segment (user_id);
 
+-- fxa apple migration temporary table
+-- delete me after the table is removed post migration period
+CREATE TABLE `apple_migration` (
+  `user_id` int(11) unsigned NOT NULL,
+  `transfer_sub` varchar(50) NOT NULL,
+  `migrated` tinyint(1) NOT NULL,
+  PRIMARY KEY (`user_id`),
+  KEY `idx_transfer_sub` (`transfer_sub`),
+  KEY `idx_migrated` (`migrated`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
