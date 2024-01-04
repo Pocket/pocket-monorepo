@@ -1,14 +1,14 @@
 {
-  "extends": "@pocket-tools/tsconfig",
-  "esModuleInterop": true,
+  "extends": "tsconfig/graphql.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDirs": ["src", "lambda"],
-    "esModuleInterop": true,
-    "noEmitHelpers": true,
-    "importHelpers": true
+    "rootDir": "src"
   },
-  "exclude": ["node_modules"],
-  "include": ["src/**/*.ts", "src/config"],
-  "files": ["node_modules/jest-extended/types/index.d.ts"]
+  "exclude": [
+    "node_modules/",
+    "dist/"
+  ],
+  "include": [
+    "src/**/*.ts", 
+  ]
 }
