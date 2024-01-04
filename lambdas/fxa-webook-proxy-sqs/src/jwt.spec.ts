@@ -47,7 +47,7 @@ describe('jwt test', function () {
     }) as jwt.Jwt;
     const payload = result.payload as jwt.JwtPayload;
     expect(payload.sub).toEqual('1');
-    expect(payload.iss).toEqual('https://getpocket.com');
+    expect(payload.iss).toEqual('fxa-webhook-proxy');
     expect(payload.aud).toEqual('https://client-api.getpocket.com/');
     expect(payload.iat).toEqual(now.getTime() / 1000);
     expect(payload.exp).toEqual(exp.getTime() / 1000);
