@@ -33,7 +33,7 @@
     "@sentry/node": "7.91.0",
     "@sentry/tracing": "7.91.0",
     "aws-xray-sdk-express": "3.5.3",
-    "axios": "1.6.2",
+    "axios": "1.6.3",
     "axios-retry": "4.0.0",
     "dataloader": "2.2.2",
     "parse-url": "8.1.0"
