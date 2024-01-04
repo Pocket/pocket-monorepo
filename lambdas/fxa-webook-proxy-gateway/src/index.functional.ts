@@ -1,5 +1,4 @@
 import { FxaJwt } from './jwt';
-import { expect } from 'chai';
 import * as Sentry from '@sentry/serverless';
 import { eventHandler, formatResponse } from './index';
 import config from './config';
@@ -88,9 +87,9 @@ describe('API Gateway successful event handler', () => {
   let sentrySpy: any;
 
   beforeAll(() => {
-    jest.useFakeTimers().setSystemTime({
+    jest.useFakeTimers({
       now: now,
-      shouldAdvanceTime: false,
+      advanceTimers: false,
     });
   });
 
@@ -117,7 +116,7 @@ describe('API Gateway successful event handler', () => {
     it('should return an error if the authorization header is missing', async () => {
       const actual = await eventHandler(sampleApiGatewayEvent);
 
-      expect(actual).to.deep.equal(
+      expect(actual).toEqual(
         formatResponse(400, 'Missing authorization header', true),
       );
     });
@@ -128,9 +127,7 @@ describe('API Gateway successful event handler', () => {
         headers: { authorization: 'Noop noway' },
       });
 
-      expect(actual).to.deep.equal(
-        formatResponse(401, 'Invalid auth type', true),
-      );
+      expect(actual).toEqual(formatResponse(401, 'Invalid auth type', true));
     });
 
     it('should return an error if the authorization token is wrong', async () => {
@@ -139,7 +136,7 @@ describe('API Gateway successful event handler', () => {
         headers: { authorization: 'Bearer noway' },
       });
 
-      expect(actual).to.deep.equal(
+      expect(actual).toEqual(
         formatResponse(401, 'Token could not be decoded.', true),
       );
     });
@@ -148,7 +145,10 @@ describe('API Gateway successful event handler', () => {
   describe('API Gateway good events', () => {
     let jwtSpy;
     beforeEach(() => {
-      jwtSpy = jest.spyOn(FxaJwt.prototype, 'validate').mockClear().mockImplementation();
+      jwtSpy = jest
+        .spyOn(FxaJwt.prototype, 'validate')
+        .mockClear()
+        .mockImplementation();
     });
     afterEach(() => {
       jwtSpy.mockRestore();
@@ -184,7 +184,7 @@ describe('API Gateway successful event handler', () => {
 
       // Check both events exist in the queue
       [EVENT.PROFILE_UPDATE, EVENT.USER_DELETE].forEach((event, index) => {
-        expect(JSON.parse(messages[index].Body)).to.deep.equal({
+        expect(JSON.parse(messages[index].Body)).toEqual({
           user_id: 'FXA_USER_ID',
           event,
           timestamp: Math.round(now / 1000),
@@ -192,7 +192,7 @@ describe('API Gateway successful event handler', () => {
         });
       });
 
-      expect(handlerResponse).to.deep.equal(
+      expect(handlerResponse).toEqual(
         formatResponse(200, 'Successfully sent 2 out of 2 events to SQS.'),
       );
     });
@@ -211,7 +211,7 @@ describe('API Gateway successful event handler', () => {
 
       const messages = await getSqsMessages();
 
-      expect(JSON.parse(messages[0].Body)).to.deep.equal({
+      expect(JSON.parse(messages[0].Body)).toEqual({
         user_id: 'FXA_USER_ID',
         event: EVENT.PROFILE_UPDATE,
         timestamp: Math.round(now / 1000),
@@ -219,7 +219,7 @@ describe('API Gateway successful event handler', () => {
         transfer_sub: null,
       });
 
-      expect(handlerResponse).to.deep.equal(
+      expect(handlerResponse).toEqual(
         formatResponse(200, 'Successfully sent 1 out of 1 events to SQS.'),
       );
     });
@@ -237,10 +237,8 @@ describe('API Gateway successful event handler', () => {
 
       const messages = await getSqsMessages();
 
-      expect(messages).to.be.undefined;
-      expect(handlerResponse).to.deep.equal(
-        formatResponse(200, 'No valid events'),
-      );
+      expect(messages).toBeUndefined();
+      expect(handlerResponse).toEqual(formatResponse(200, 'No valid events'));
     });
 
     it('should send partial events and log failed SQS send to cloudwatch and sentry', async () => {
@@ -258,16 +256,18 @@ describe('API Gateway successful event handler', () => {
 
       const messages = await getSqsMessages();
 
-      expect(JSON.parse(messages[0].Body)).to.deep.equal({
+      expect(JSON.parse(messages[0].Body)).toEqual({
         user_id: 'FXA_USER_ID',
         event: EVENT.USER_DELETE,
         timestamp: Math.round(now / 1000),
         transfer_sub: null,
       });
-      expect(consoleSpy.mock.calls[0][0]).to.contain('error: no send');
-      expect(sentrySpy.mock.calls[0][0].message).to.equal('no send');
-      expect(JSON.parse(handlerResponse.body).message).to.contain(
-        'Successfully sent 1 out of 2 events to SQS',
+      expect(consoleSpy.mock.calls[0][0]).toEqual(
+        expect.arrayContaining(['error: no send']),
+      );
+      expect(sentrySpy.mock.calls[0][0].message).toBe('no send');
+      expect(JSON.parse(handlerResponse.body).message).toEqual(
+        expect.arrayContaining(['Successfully sent 1 out of 2 events to SQS']),
       );
     });
   });

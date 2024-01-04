@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import {
   createSuccessResponseMessage,
   formatResponse,
@@ -11,7 +10,7 @@ describe('Handler functions', () => {
     it('should format a successful response in a standard way', () => {
       const statusCode = 200;
       const actual = formatResponse(statusCode, 'Hello');
-      expect(actual).to.deep.equal({
+      expect(actual).toEqual({
         statusCode,
         headers: {
           'Content-Type': 'application/json',
@@ -23,7 +22,7 @@ describe('Handler functions', () => {
     it('should format an unsuccessful response in a standard way', () => {
       const statusCode = 400;
       const actual = formatResponse(statusCode, 'Bad request', true);
-      expect(actual).to.deep.equal({
+      expect(actual).toEqual({
         statusCode,
         headers: {
           'Content-Type': 'application/json',
@@ -61,7 +60,7 @@ describe('Handler functions', () => {
       };
 
       const actual: SqsEvent[] = generateEvents(data);
-      expect(actual[0]).to.deep.equal({
+      expect(actual[0]).toEqual({
         user_id: testEventPayload.uid,
         event: EVENT.APPLE_MIGRATION,
         timestamp: Math.round(now / 1000),
@@ -79,7 +78,7 @@ describe('Handler functions', () => {
       };
 
       const actual: SqsEvent[] = generateEvents(data);
-      expect(actual[0]).to.deep.equal({
+      expect(actual[0]).toEqual({
         user_id: 'FXA_USER_ID',
         event: EVENT.PROFILE_UPDATE,
         timestamp: Math.round(now / 1000),
@@ -97,7 +96,7 @@ describe('Handler functions', () => {
       };
 
       const actual: SqsEvent[] = generateEvents(data);
-      expect(actual[0]).to.deep.equal({
+      expect(actual[0]).toEqual({
         user_id: 'FXA_USER_ID',
         event: EVENT.USER_DELETE,
         timestamp: Math.round(now / 1000),
@@ -117,7 +116,7 @@ describe('Handler functions', () => {
 
       const actual: SqsEvent[] = generateEvents(data);
       const timestamp = Math.round(now / 1000);
-      expect(actual).to.deep.equal([
+      expect(actual).toEqual([
         {
           user_id: 'FXA_USER_ID',
           event: EVENT.USER_DELETE,
@@ -149,7 +148,7 @@ describe('Handler functions', () => {
 
       const fxAEvent: string = Object.keys(data.events)[0];
 
-      expect(actual[0]).to.deep.equal({
+      expect(actual[0]).toEqual({
         user_id: 'FXA_USER_ID',
         event: EVENT.PROFILE_UPDATE,
         timestamp: Math.round(now / 1000),
@@ -162,13 +161,13 @@ describe('Handler functions', () => {
   describe('Successful response message', () => {
     it('should create a successful response message', () => {
       const actual = createSuccessResponseMessage(1, 0);
-      expect(actual).to.equal(`Successfully sent 1 out of 1 events to SQS.`);
+      expect(actual).toBe(`Successfully sent 1 out of 1 events to SQS.`);
     });
 
     it('should create a successful response message with failed event info', () => {
       const actual = createSuccessResponseMessage(2, 1);
-      expect(actual).to.equal(
-        `Successfully sent 1 out of 2 events to SQS. Review cloudwatch and sentry logs for information about failed events.`,
+      expect(actual).toBe(
+        `Successfully sent 1 out of 2 events to SQS. Review cloudwatch and sentry logs for information about failed events.`
       );
     });
   });
