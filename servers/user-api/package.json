@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@pocket-tools/apollo-utils": "workspace:*",
-    "@aws-sdk/client-eventbridge": "3.451.0",
+    "@aws-sdk/client-eventbridge": "3.458.0",
     "@aws-sdk/client-pinpoint": "3.451.0",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "7.91.0",

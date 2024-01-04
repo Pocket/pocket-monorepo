@@ -146,9 +146,8 @@ describe('context', () => {
     afterEach(() => jest.clearAllMocks());
 
     it('creates a data loader for saved items on initialization', async () => {
-      const savedItems = await context.dataLoaders.savedItemsByUrl.load(
-        'dont-care.com',
-      );
+      const savedItems =
+        await context.dataLoaders.savedItemsByUrl.load('dont-care.com');
 
       expect(context.dataLoaders.savedItemsByUrl).toBeInstanceOf(DataLoader);
       expect(context.dataLoaders.savedItemsByUrl).toBeInstanceOf(DataLoader);
@@ -175,9 +174,8 @@ describe('context', () => {
     });
     it('savedItemById dataloader should fill cache of savedItemByUrl dataloader', async () => {
       await context.dataLoaders.savedItemsById.load('1');
-      const loadedItem = await context.dataLoaders.savedItemsByUrl.load(
-        'dont-care.com',
-      );
+      const loadedItem =
+        await context.dataLoaders.savedItemsByUrl.load('dont-care.com');
       expect(
         Array.from(
           (context.dataLoaders.savedItemsById as any)._cacheMap.keys(),

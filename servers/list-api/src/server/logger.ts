@@ -1,2 +1,2 @@
-import { setLogger } from '@pocket-tools/ts-logger';
-export const serverLogger = setLogger();
+import { Logger, setLogger } from '@pocket-tools/ts-logger';
+export const serverLogger: Logger = setLogger();
