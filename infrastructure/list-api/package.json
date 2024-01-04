@@ -5,17 +5,13 @@
   "types": "src/main.ts",
   "private": true,
   "scripts": {
-    "build:dev": "npm run build && NODE_ENV=development npm run synth",
     "build": "rm -rf dist && tsc",
     "synth": "cdktf synth",
     "compile": "tsc --pretty",
     "watch": "tsc -w",
     "test": "echo ok",
-    "upgrade": "npm i cdktf@latest cdktf-cli@latest",
-    "upgrade:next": "npm i cdktf@next cdktf-cli@next"
-  },
-  "engines": {
-    "node": "=20.10.0"
+    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix \"src/**/*.ts\""
   },
   "dependencies": {
     "@pocket-tools/terraform-modules": "4.17.0"

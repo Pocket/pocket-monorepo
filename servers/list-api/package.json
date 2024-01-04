@@ -4,14 +4,14 @@
   "scripts": {
     "build": "rm -rf dist && tsc && npm run build-schema",
     "watch": "tsc -w & nodemon",
-    "start": "node dist/server/main.js",
-    "start:dev": "npm run build && npm run watch",
+    "start": "node dist/main.js",
+    "dev": "npm run build && npm run watch",
     "build-schema": "node dist/server/buildSchema.js",
-    "test-ci": "npm test",
+    "test:watch": "npm test -- --watchAll",
     "test": "jest \"\\.spec\\.ts\"",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",
-    "lint-check": "eslint --fix-dry-run \"src/**/*.ts\"",
-    "lint-fix": "eslint --fix \"src/**/*.ts\""
+    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix \"src/**/*.ts\""
   },
   "dependencies": {
     "@apollo/server": "4.9.5",
@@ -88,5 +88,10 @@
     "ts-jest": "29.1.1",
     "ts-node": "10.9.1",
     "tslib": "2.6.2"
-  }
+  },
+  "files": [
+    "dist",
+    "schema.graphql",
+    "package.json"
+  ]
 }
