@@ -1,0 +1,249 @@
+
+workflows:
+  fxa-webhook-proxy:
+    jobs:
+
+      ######
+      # Every PR Jobs
+      ######
+      - build_lambda:
+          <<: *not_dev_main
+          context: pocket
+          for: fxa_webhook_proxy
+          name: fxa-webhook-proxy_build_sqs_lambda
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          scope: fxa-webhook-proxy-sqs
+          sentry_project_name: fxa-webhook-proxy
+          sentry_env: development
+          sentry_org: pocket
+
+      - build_lambda:
+          <<: *not_dev_main
+          context: pocket
+          for: fxa_webhook_proxy
+          name: fxa-webhook-proxy_build_gateway_lambda
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          scope: fxa-webhook-proxy-gateway
+          sentry_project_name: fxa-webhook-proxy
+          sentry_env: development
+          sentry_org: pocket
+
+      - infrastructure:
+          <<: *not_dev_main
+          context: pocket
+          for: fxa_webhook_proxy
+          name: fxa-webhook-proxy_infrastructure_plan_prod
+          scope: fxa-webhook-proxy-cdk
+          stack-output-path: infrastructure/fxa-webhook-proxy/cdktf.out/stacks/fxa-webhook-proxy
+          resource-class: pocket/default-prod
+          workspace: Prod
+          dev: false
+          apply: false
+          save_app_spec: false
+
+      ######
+      # Dev Branch Deployment (Dev Environment)
+      ######
+
+      - infrastructure:
+          <<: *only_dev
+          context: pocket
+          for: fxa_webhook_proxy
+          name: fxa-webhook-proxy_infrastructure_apply_dev
+          scope: fxa-webhook-proxy-cdk
+          stack-output-path: infrastructure/fxa-webhook-proxy/cdktf.out/stacks/fxa-webhook-proxy
+          resource-class: pocket/default-dev
+          workspace: Dev
+          apply: true
+          dev: true
+          save_app_spec: false
+
+      - build_lambda:
+          <<: *only_dev
+          context: pocket
+          for: fxa_webhook_proxy
+          name: fxa-webhook-proxy_events_build_gateway_lambda_dev
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          scope: fxa-webhook-proxy-gateway
+          sentry_project_name: fxa-webhook-proxy
+          sentry_env: development
+          sentry_org: pocket
+          s3-bucket: pocket-fxawebhookproxy-dev-apigateway-fxa-events
+          requires:
+            - fxa-webhook-proxy_infrastructure_apply_dev
+
+      - code_deploy_lambda:
+          <<: *only_dev
+          context: pocket
+          for: fxa_webhook_proxy
+          name: fxa-webhook-proxy_gateway_code_deploy_lambda_dev
+          resource-class: pocket/default-dev
+          codedeploy-app-name: FxAWebhookProxy-Dev-ApiGateway-FxA-Events-Lambda
+          codedeploy-group-name: FxAWebhookProxy-Dev-ApiGateway-FxA-Events-Lambda
+          function-name: FxAWebhookProxy-Dev-ApiGateway-FxA-Events-Function
+          s3-bucket: pocket-fxawebhookproxy-dev-apigateway-fxa-events
+          requires:
+            - fxa-webhook-proxy_events_build_gateway_lambda_dev
+
+      - build_lambda:
+          <<: *only_dev
+          context: pocket
+          for: fxa_webhook_proxy
+          name: fxa-webhook-proxy_events_build_sqs_lambda_dev
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          scope: fxa-webhook-proxy-sqs
+          sentry_project_name: fxa-webhook-proxy
+          sentry_env: development
+          sentry_org: pocket
+          s3-bucket: pocket-fxawebhookproxy-dev-sqs-fxa-events
+          requires:
+            - fxa-webhook-proxy_infrastructure_apply_dev
+
+      - code_deploy_lambda:
+          <<: *only_dev
+          context: pocket
+          for: fxa_webhook_proxy
+          name: fxa-webhook-proxy_sqs_code_deploy_lambda_dev
+          resource-class: pocket/default-dev
+          codedeploy-app-name: FxAWebhookProxy-Dev-Sqs-FxA-Events-Lambda
+          codedeploy-group-name: FxAWebhookProxy-Dev-Sqs-FxA-Events-Lambda
+          function-name: FxAWebhookProxy-Dev-Sqs-FxA-Events-Function
+          s3-bucket: pocket-fxawebhookproxy-dev-sqs-fxa-events
+          requires:
+            - fxa-webhook-proxy_events_build_sqs_lambda_dev
+
+
+      # Notify sentry of dev deployment
+      - sentry_release_notification:
+          <<: *only_dev
+          name: fxa-webhook-proxy_sentry-release-notification-dev
+          context: pocket
+          for: fxa_webhook_proxy
+          sentry_project_name: fxa-webhook-proxy
+          sentry_env: development
+          sentry_org: pocket
+          requires:
+            - fxa-webhook-proxy_sqs_code_deploy_lambda_dev
+            - fxa-webhook-proxy_gateway_code_deploy_lambda_dev
+
+      # Setup params we may use in Lambdas
+      - setup_deploy_params:
+          <<: *only_dev
+          name: fxa-webhook-proxy_deploy-params-dev
+          aws_access_key_id: Dev_AWS_ACCESS_KEY
+          aws_secret_access_key: Dev_AWS_SECRET_ACCESS_KEY
+          context: pocket
+          env: Dev
+          service_name: FxAWebhookProxy
+          requires:
+            - fxa-webhook-proxy_sqs_code_deploy_lambda_dev
+            - fxa-webhook-proxy_gateway_code_deploy_lambda_dev
+
+      ######
+      # Main Branch Deployment (Prod Environment)
+      ######
+      - infrastructure:
+          <<: *only_main
+          context: pocket
+          for: fxa_webhook_proxy
+          name: fxa-webhook-proxy_infrastructure_apply_prod
+          scope: fxa-webhook-proxy-cdk
+          stack-output-path: infrastructure/fxa-webhook-proxy/cdktf.out/stacks/fxa-webhook-proxy
+          resource-class: pocket/default-prod
+          workspace: Prod
+          apply: true
+          dev: false
+          save_app_spec: false
+
+      - build_lambda:
+          <<: *only_main
+          context: pocket
+          for: fxa_webhook_proxy
+          name: fxa-webhook-proxy_events_build_gateway_lambda_prod
+          aws-access-key-id: Prod_AWS_ACCESS_KEY
+          aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
+          aws-region: Prod_AWS_DEFAULT_REGION
+          scope: fxa-webhook-proxy-gateway
+          sentry_project_name: fxa-webhook-proxy
+          sentry_env: prodelopment
+          sentry_org: pocket
+          s3-bucket: pocket-fxawebhookproxy-prod-apigateway-fxa-events
+          requires:
+            - fxa-webhook-proxy_infrastructure_apply_prod
+
+      - code_deploy_lambda:
+          <<: *only_main
+          context: pocket
+          for: fxa_webhook_proxy
+          name: fxa-webhook-proxy_gateway_code_deploy_lambda_prod
+          resource-class: pocket/default-prod
+          codedeploy-app-name: FxAWebhookProxy-Prod-ApiGateway-FxA-Events-Lambda
+          codedeploy-group-name: FxAWebhookProxy-Prod-ApiGateway-FxA-Events-Lambda
+          function-name: FxAWebhookProxy-Prod-ApiGateway-FxA-Events-Function
+          s3-bucket: pocket-fxawebhookproxy-prod-apigateway-fxa-events
+          requires:
+            - fxa-webhook-proxy_events_build_gateway_lambda_prod
+
+      - build_lambda:
+          <<: *only_main
+          context: pocket
+          for: fxa_webhook_proxy
+          name: fxa-webhook-proxy_events_build_sqs_lambda_prod
+          aws-access-key-id: Prod_AWS_ACCESS_KEY
+          aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
+          aws-region: Prod_AWS_DEFAULT_REGION
+          scope: fxa-webhook-proxy-sqs
+          sentry_project_name: fxa-webhook-proxy
+          sentry_env: prodelopment
+          sentry_org: pocket
+          s3-bucket: pocket-fxawebhookproxy-prod-sqs-fxa-events
+          requires:
+            - fxa-webhook-proxy_infrastructure_apply_prod
+
+      - code_deploy_lambda:
+          <<: *only_main
+          context: pocket
+          for: fxa_webhook_proxy
+          name: fxa-webhook-proxy_sqs_code_deploy_lambda_prod
+          resource-class: pocket/default-prod
+          codedeploy-app-name: FxAWebhookProxy-Prod-Sqs-FxA-Events-Lambda
+          codedeploy-group-name: FxAWebhookProxy-Prod-Sqs-FxA-Events-Lambda
+          function-name: FxAWebhookProxy-Prod-Sqs-FxA-Events-Function
+          s3-bucket: pocket-fxawebhookproxy-prod-sqs-fxa-events
+          requires:
+            - fxa-webhook-proxy_events_build_sqs_lambda_prod
+
+
+      # Notify sentry of prod deployment
+      - sentry_release_notification:
+          <<: *only_main
+          name: fxa-webhook-proxy_sentry-release-notification-prod
+          context: pocket
+          for: fxa_webhook_proxy
+          sentry_project_name: fxa-webhook-proxy
+          sentry_env: prodelopment
+          sentry_org: pocket
+          requires:
+            - fxa-webhook-proxy_sqs_code_deploy_lambda_prod
+            - fxa-webhook-proxy_gateway_code_deploy_lambda_prod
+
+      # Setup params we may use in Lambdas
+      - setup_deploy_params:
+          <<: *only_main
+          name: fxa-webhook-proxy_deploy-params-prod
+          aws_access_key_id: Prod_AWS_ACCESS_KEY
+          aws_secret_access_key: Prod_AWS_SECRET_ACCESS_KEY
+          context: pocket
+          env: Prod
+          service_name: FxAWebhookProxy
+          requires:
+            - fxa-webhook-proxy_sqs_code_deploy_lambda_prod
+            - fxa-webhook-proxy_gateway_code_deploy_lambda_prod

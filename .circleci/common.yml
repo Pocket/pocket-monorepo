@@ -19,6 +19,7 @@ repo_for_enum: &repo_for_enum
       - shared_snowplow_consumer
       - parser_graphql_wrapper
       - transactional_emails
+      - fxa_webhook_proxy
 
 resource_class_enmum: &resource_class_enmum
   resource-class:
@@ -43,6 +44,9 @@ parameters:
     type: boolean
     default: false
   transactional_emails:
+    type: boolean
+    default: false
+  fxa_webhook_proxy:
     type: boolean
     default: false
 
@@ -71,6 +75,7 @@ commands:
             shared_snowplow_consumer: << pipeline.parameters.shared_snowplow_consumer >>
             parser_graphql_wrapper: << pipeline.parameters.parser_graphql_wrapper >>
             transactional_emails: << pipeline.parameters.transactional_emails >>
+            fxa_webhook_proxy: << pipeline.parameters.fxa_webhook_proxy >>
 
   install_pnpm:  
     steps:

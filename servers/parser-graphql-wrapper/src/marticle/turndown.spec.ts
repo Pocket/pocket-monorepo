@@ -37,7 +37,9 @@ describe('markdown conversion: ', () => {
   it('removes empty links', () => {
     const input =
       '<p>a paragraph with an empty link <a href=/url><b></b></a></p>';
-    expect(turndownService.turndown(input)).toBe('a paragraph with an empty link');
+    expect(turndownService.turndown(input)).toBe(
+      'a paragraph with an empty link',
+    );
   });
   it('parses non-empty links', () => {
     const input =
