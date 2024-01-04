@@ -11,7 +11,6 @@ import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
 import {
   ApplicationRDSCluster,
   PocketALBApplication,
-  PocketECSCodePipeline,
   PocketPagerDuty,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
@@ -21,6 +20,8 @@ import {
   DataTerraformRemoteState,
   RemoteBackend,
   TerraformStack,
+  Aspects,
+  MigrateIds,
 } from 'cdktf';
 import { config } from './config';
 
@@ -43,7 +44,7 @@ class ListAPI extends TerraformStack {
     const pocketVPC = new PocketVPC(this, 'pocket-vpc');
     const region = new DataAwsRegion(this, 'region');
     const caller = new DataAwsCallerIdentity(this, 'caller');
-    const pocketApp = this.createPocketAlbApplication({
+    this.createPocketAlbApplication({
       pagerDuty: this.createPagerDuty(),
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
@@ -52,7 +53,9 @@ class ListAPI extends TerraformStack {
       vpc: pocketVPC,
     });
 
-    this.createApplicationCodePipeline(pocketApp);
+    // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
+    // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
+    Aspects.of(this).add(new MigrateIds());
   }
 
   /**
@@ -72,22 +75,6 @@ class ListAPI extends TerraformStack {
   private getSecretsManagerKmsAlias() {
     return new DataAwsKmsAlias(this, 'kms_alias', {
       name: 'alias/aws/secretsmanager',
-    });
-  }
-
-  /**
-   * Create CodePipeline to build and deploy terraform and ecs
-   * @param app
-   * @private
-   */
-  private createApplicationCodePipeline(app: PocketALBApplication) {
-    new PocketECSCodePipeline(this, 'code-pipeline', {
-      prefix: config.prefix,
-      source: {
-        codeStarConnectionArn: config.codePipeline.githubConnectionArn,
-        repository: config.codePipeline.repository,
-        branchName: config.codePipeline.branch,
-      },
     });
   }
 
