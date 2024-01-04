@@ -1,7 +1,7 @@
 import { writeClient } from '../../../database/client';
 import chai, { expect } from 'chai';
 import chaiDateTime from 'chai-datetime';
-import nock from 'nock';
+import nock, { cleanAll } from 'nock';
 import config from '../../../config';
 import {
   EventType,
@@ -83,7 +83,7 @@ describe('UpsertSavedItem Mutation', () => {
     await db.destroy();
     clock.restore();
     sinon.restore();
-    nock.cleanAll();
+    cleanAll();
     await server.stop();
   });
 
