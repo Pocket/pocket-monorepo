@@ -18,7 +18,7 @@ const config = {
   },
   jwt: {
     key: process.env.JWT_KEY || 'FxAWebhookProxy/Dev/PrivateKey',
-    iss: process.env.JWT_ISS || 'https://getpocket.com',
+    iss: process.env.JWT_ISS || 'fxa-webhook-proxy',
     aud: process.env.JWT_AUD || 'https://client-api.getpocket.com/',
   },
   clientApiUri: isDev
