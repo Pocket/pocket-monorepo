@@ -2,14 +2,12 @@ import {
   EventType,
   ItemEventPayload,
   ItemsEventEmitter,
+  initItemEventHandlers,
+  eventBridgeEventHandler,
 } from '../../businessEvents';
 import sinon from 'sinon';
 import { SavedItem } from '../../types';
 import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
-import {
-  initItemEventHandlers,
-  eventBridgeEventHandler,
-} from '../../businessEvents';
 import config from '../../config';
 
 const testSavedItem: SavedItem = {

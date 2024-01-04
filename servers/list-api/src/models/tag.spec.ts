@@ -1,11 +1,10 @@
 import chai, { expect } from 'chai';
-import { TagSaveAssociation } from '../types';
+import { TagSaveAssociation, PocketSave, Tag } from '../types';
 import deepEqualInAnyOrder from 'deep-equal-in-any-order';
 import * as tagModel from './tag';
 import { strings } from 'locutus/php';
 import { ContextManager, IContext } from '../server/context';
 import { Knex } from 'knex';
-import { PocketSave, Tag } from '../types';
 import { TagDataService } from '../dataService';
 
 const tagServiceResp: Tag[] = [

@@ -91,7 +91,7 @@ class ListAPI extends TerraformStack {
         workspaces: {
           name: 'incident-management',
         },
-      }
+      },
     );
 
     return new PocketPagerDuty(this, 'pagerduty', {
@@ -462,7 +462,7 @@ class ListAPI extends TerraformStack {
         retentionInDays: 90,
         skipDestroy: true,
         tags: config.tags,
-      }
+      },
     );
 
     return logGroup.name;
