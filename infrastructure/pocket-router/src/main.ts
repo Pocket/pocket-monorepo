@@ -35,7 +35,7 @@ class PocketRoute extends TerraformStack {
     new S3Backend(this, {
       bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
       key: 'pocket-router',
-      region: region.name,
+      region: 'us-east-1',
     });
 
     const pocketRouterPagerduty = this.createPagerDuty();
