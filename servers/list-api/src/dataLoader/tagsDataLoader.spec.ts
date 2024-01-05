@@ -1,4 +1,3 @@
-import sinon from 'sinon';
 import { batchGetTagsByItemIds } from './tagsDataLoader';
 import { writeClient } from '../database/client';
 import { SavedItemDataService, TagDataService } from '../dataService';
@@ -26,11 +25,11 @@ describe('tags dataloader', function () {
   };
 
   afterAll(() => {
-    sinon.restore();
+    jest.restoreAllMocks();
   });
 
   beforeAll(() => {
-    sinon.restore();
+    jest.restoreAllMocks();
   });
 
   it('batchGetTagsByItemIds should return empty array of Tags for non-existant Items', async () => {
@@ -45,7 +44,10 @@ describe('tags dataloader', function () {
     });
     const savedItemService = new SavedItemDataService(context);
     const service = new TagDataService(context, savedItemService);
-    sinon.stub(service, 'batchGetTagsByUserItems').returns(promiseTags);
+    jest
+      .spyOn(service, 'batchGetTagsByUserItems')
+      .mockClear()
+      .mockReturnValue(promiseTags);
     const tags = await batchGetTagsByItemIds(service, ['3', '5']);
 
     // dataloader wants an array that is the same length
@@ -70,7 +72,10 @@ describe('tags dataloader', function () {
     });
     const savedItemService = new SavedItemDataService(context);
     const service = new TagDataService(context, savedItemService);
-    sinon.stub(service, 'batchGetTagsByUserItems').returns(promiseTags);
+    jest
+      .spyOn(service, 'batchGetTagsByUserItems')
+      .mockClear()
+      .mockReturnValue(promiseTags);
     const tags = await batchGetTagsByItemIds(service, ['1', '3']);
 
     // dataloader wants an array that is the same length
@@ -103,7 +108,10 @@ describe('tags dataloader', function () {
     });
     const savedItemService = new SavedItemDataService(context);
     const service = new TagDataService(context, savedItemService);
-    sinon.stub(service, 'batchGetTagsByUserItems').returns(promiseTags);
+    jest
+      .spyOn(service, 'batchGetTagsByUserItems')
+      .mockClear()
+      .mockReturnValue(promiseTags);
     const badItemIdsArray: any[] = [1, '3'];
     const tags = await batchGetTagsByItemIds(service, badItemIdsArray);
 

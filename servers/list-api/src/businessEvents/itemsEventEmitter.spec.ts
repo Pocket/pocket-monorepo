@@ -1,7 +1,6 @@
 import { ItemsEventEmitter } from './itemsEventEmitter';
 import { BasicItemEventPayloadWithContext, EventType } from './types';
 import config from '../config';
-import sinon from 'sinon';
 import { SavedItem } from '../types';
 import { getUnixTimestamp } from '../utils';
 
@@ -9,8 +8,7 @@ describe('ItemsEventEmitter', () => {
   const emitter = new ItemsEventEmitter();
   const date = new Date(2022, 9, 4, 15, 30);
   const unixDate = getUnixTimestamp(date);
-  let clock;
-  const handler = sinon.fake();
+  const handler = jest.fn();
   Object.values(EventType).forEach((event: string) =>
     emitter.on(event, handler),
   );
@@ -32,19 +30,19 @@ describe('ItemsEventEmitter', () => {
   };
 
   afterAll(() => {
-    clock.restore();
+    jest.useRealTimers();
   });
 
   beforeAll(() => {
     // Mock Date.now() to get a consistent date for inserting data
-    clock = sinon.useFakeTimers({
+    jest.useFakeTimers({
       now: date,
-      shouldAdvanceTime: false,
+      advanceTimers: false,
     });
   });
 
   afterEach(() => {
-    handler.resetHistory();
+    handler.mockReset();
   });
 
   it('should emit an add item event with expected data', () => {
@@ -57,8 +55,8 @@ describe('ItemsEventEmitter', () => {
       source: config.events.source,
       version: config.events.version,
     };
-    expect(handler.callCount).toBe(1);
-    expect(handler.getCall(0).args[0]).toEqual(expectedData);
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(handler.mock.calls[0][0]).toEqual(expectedData);
   });
   it('should emit an archive item event with expected data', () => {
     // Event is emitted synchronously so don't need to wait
@@ -70,8 +68,8 @@ describe('ItemsEventEmitter', () => {
       source: config.events.source,
       version: config.events.version,
     };
-    expect(handler.callCount).toBe(1);
-    expect(handler.getCall(0).args[0]).toEqual(expectedData);
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(handler.mock.calls[0][0]).toEqual(expectedData);
   });
   it('should emit an unarchive item event with expected data', () => {
     // Event is emitted synchronously so don't need to wait
@@ -83,8 +81,8 @@ describe('ItemsEventEmitter', () => {
       source: config.events.source,
       version: config.events.version,
     };
-    expect(handler.callCount).toBe(1);
-    expect(handler.getCall(0).args[0]).toEqual(expectedData);
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(handler.mock.calls[0][0]).toEqual(expectedData);
   });
   it('should emit an favorite item event with expected data', () => {
     // Event is emitted synchronously so don't need to wait
@@ -96,8 +94,8 @@ describe('ItemsEventEmitter', () => {
       source: config.events.source,
       version: config.events.version,
     };
-    expect(handler.callCount).toBe(1);
-    expect(handler.getCall(0).args[0]).toEqual(expectedData);
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(handler.mock.calls[0][0]).toEqual(expectedData);
   });
   it('should emit an unfavorite item event with expected data', () => {
     // Event is emitted synchronously so don't need to wait
@@ -109,8 +107,8 @@ describe('ItemsEventEmitter', () => {
       source: config.events.source,
       version: config.events.version,
     };
-    expect(handler.callCount).toBe(1);
-    expect(handler.getCall(0).args[0]).toEqual(expectedData);
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(handler.mock.calls[0][0]).toEqual(expectedData);
   });
   it('should emit a delete item event with expected data', () => {
     // Event is emitted synchronously so don't need to wait
@@ -122,7 +120,7 @@ describe('ItemsEventEmitter', () => {
       source: config.events.source,
       version: config.events.version,
     };
-    expect(handler.callCount).toBe(1);
-    expect(handler.getCall(0).args[0]).toEqual(expectedData);
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(handler.mock.calls[0][0]).toEqual(expectedData);
   });
 });

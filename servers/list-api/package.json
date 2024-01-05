@@ -51,7 +51,6 @@
     "@types/locutus": "0.0.8",
     "@types/lodash": "4.14.202",
     "@types/luxon": "3.3.5",
-    "@types/sinon": "17.0.2",
     "@types/supertest": "^2.0.16",
     "@pocket-tools/backend-benchmarking": "workspace:*",
     "chai": "4.3.10",
@@ -63,7 +62,6 @@
     "jest-extended": "4.0.2",
     "nock": "13.4.0",
     "nodemon": "3.0.2",
-    "sinon": "17.0.1",
     "supertest": "6.3.3",
     "ts-jest": "29.1.1"
   },

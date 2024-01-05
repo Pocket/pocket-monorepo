@@ -1,4 +1,3 @@
-import sinon from 'sinon';
 import { SqsListener } from './sqsListener';
 import { ItemsEventEmitter } from '../itemsEventEmitter';
 import { SavedItem } from '../../types';
@@ -14,12 +13,15 @@ describe('SqsListener spec test', function () {
 
   let stub = null;
   afterAll(() => {
-    stub.reset();
+    stub.mockReset();
   });
 
   it('should log error when sqs send fails', async () => {
     const eventEmitter = new ItemsEventEmitter();
-    stub = sinon.stub(sqs, 'send').callsFake(fakeSendError);
+    stub = jest
+      .spyOn(sqs, 'send')
+      .mockClear()
+      .mockImplementation(fakeSendError);
     const sqsListener = new SqsListener(eventEmitter, [
       {
         transformer: async (data) => data,

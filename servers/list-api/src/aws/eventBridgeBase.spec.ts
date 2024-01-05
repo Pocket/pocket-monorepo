@@ -2,7 +2,6 @@ import {
   EventBridgeClient,
   PutEventsCommand,
 } from '@aws-sdk/client-eventbridge';
-import sinon from 'sinon';
 import * as Sentry from '@sentry/node';
 import { EventBridgeBase } from './eventBridgeBase';
 import { eventBridgeClient } from './eventBridgeClient';
@@ -13,43 +12,45 @@ describe('EventBridgeBase.putEvent', () => {
   const command: PutEventsCommand = new PutEventsCommand({
     Entries: [{ Detail: 'oui' }],
   });
-  let consoleSpy: sinon.SinonSpy;
-  let sentryStub: sinon.SinonStub;
+  let consoleSpy: jest.SpyInstance;
+  let sentryStub: jest.SpyInstance;
   beforeEach(() => {
-    consoleSpy = sinon.spy(serverLogger, 'error');
-    sentryStub = sinon.stub(Sentry, 'captureException');
+    consoleSpy = jest.spyOn(serverLogger, 'error').mockClear();
+    sentryStub = jest.spyOn(Sentry, 'captureException').mockImplementation();
   });
-  afterEach(() => sinon.restore());
+  afterEach(() => jest.restoreAllMocks());
 
   it('should log error if any events fail to send', async () => {
-    sinon
-      .stub(EventBridgeClient.prototype, 'send')
-      .resolves({ FailedEntryCount: 1 });
+    jest
+      .spyOn(EventBridgeClient.prototype, 'send')
+      .mockImplementation(() => Promise.resolve({ FailedEntryCount: 1 }));
     await client.putEvents(command);
-    expect(sentryStub.callCount).toBe(1);
-    expect(sentryStub.getCall(0).firstArg.message).toContain(
+    expect(sentryStub).toHaveBeenCalledTimes(1);
+    expect(sentryStub.mock.calls[0][0].message).toContain(
       `Failed to send event to event bus`,
     );
-    expect(consoleSpy.callCount).toBe(1);
-    expect(consoleSpy.getCall(0).firstArg.message).toContain(
+    expect(consoleSpy).toHaveBeenCalledTimes(1);
+    expect(consoleSpy.mock.calls[0][0].message).toContain(
       `Failed to send event to event bus`,
     );
   });
 
   it('should log error if send call throws error', async () => {
-    sinon.stub(EventBridgeClient.prototype, 'send').rejects(new Error('boo!'));
+    jest.spyOn(EventBridgeClient.prototype, 'send').mockImplementation(() => {
+      throw new Error('boo!');
+    });
     await client.putEvents(command);
-    expect(sentryStub.callCount).toBe(1);
-    expect(sentryStub.getCall(0).firstArg.message).toContain(
+    expect(sentryStub).toHaveBeenCalledTimes(1);
+    expect(sentryStub.mock.calls[0][0].message).toContain(
       `Failed to send event to event bus`,
     );
-    expect(sentryStub.getCall(0).args[1]).toMatchObject({
+    expect(sentryStub.mock.calls[0][1]).toMatchObject({
       extra: { originalError: 'boo!' },
     });
-    expect(consoleSpy.callCount).toBe(1);
-    expect(consoleSpy.getCall(0).firstArg).toContain(
+    expect(consoleSpy).toHaveBeenCalledTimes(1);
+    expect(consoleSpy.mock.calls[0][0]).toContain(
       `Failed to send event to event bus`,
     );
-    expect(consoleSpy.getCall(0).firstArg).toContain(`boo!`);
+    expect(consoleSpy.mock.calls[0][0]).toContain(`boo!`);
   });
 });

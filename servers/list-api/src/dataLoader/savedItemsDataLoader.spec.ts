@@ -1,5 +1,4 @@
 import { SavedItem } from '../types';
-import sinon from 'sinon';
 import { SavedItemDataService } from '../dataService';
 import {
   batchGetSavedItemsByIds,
@@ -35,11 +34,11 @@ describe('savedItem data loader', function () {
   ];
 
   afterAll(() => {
-    sinon.restore();
+    jest.restoreAllMocks();
   });
 
   beforeAll(() => {
-    sinon.restore();
+    jest.restoreAllMocks();
   });
 
   it('batchGetSavedItemsByIds should return undefined for non-existent items', async () => {
@@ -51,9 +50,10 @@ describe('savedItem data loader', function () {
       apiId: 'backend',
       unleash: getClient(),
     });
-    sinon
-      .stub(service, 'batchGetSavedItemsByGivenIds')
-      .returns(promiseSavedItem);
+    jest
+      .spyOn(service, 'batchGetSavedItemsByGivenIds')
+      .mockClear()
+      .mockReturnValue(promiseSavedItem);
 
     const items = await batchGetSavedItemsByIds(service, ['3', '1']);
     expect(items.length).toEqual(2);
@@ -70,9 +70,10 @@ describe('savedItem data loader', function () {
       apiId: 'backend',
       unleash: getClient(),
     });
-    sinon
-      .stub(service, 'batchGetSavedItemsByGivenUrls')
-      .returns(promiseSavedItem);
+    jest
+      .spyOn(service, 'batchGetSavedItemsByGivenUrls')
+      .mockClear()
+      .mockReturnValue(promiseSavedItem);
 
     const items = await batchGetSavedItemsByUrls(service, [
       'notFound.com',
