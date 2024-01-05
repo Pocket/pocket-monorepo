@@ -51,27 +51,23 @@ headers:
           named: 'X-Amzn-Trace-Id'
       - propagate:
           named: 'transfersub'
-# telemetry:
-#   exporters:
-#     metrics:
-#       otlp:
-#         # Enable the OpenTelemetry exporter
-#         enabled: true
-#         # Optional endpoint, either 'default' or a URL (Defaults to http://127.0.0.1:4317 for gRPC and http://127.0.0.1:4318 for HTTP)
-#         endpoint: http://otlp-collector:4317
-#         # Optional protocol
-#         protocol: grpc
-#           # Optional gRPC configuration
-#         grpc:
-#           metadata:
-#             foo: bar
-#         # Optional batch_processor configuration
-#         batch_processor:
-#           scheduled_delay: 100ms
-#           max_concurrent_exports: 1000
-#           max_export_batch_size: 10000
-#           max_export_timeout: 100s
-#           max_queue_size: 10000
+telemetry:
+  exporters:
+    tracing:
+      otlp:
+        enabled: true
+        endpoint: 'http://otlpcollector:4317'
+      common:
+        resource:
+          "environment.name": "{env.APP_ENVIRONMENT}"
+        service_name: "pocket-router" 
+        sampler: always_on # (default) all requests are sampled (always_on|always_off|<0.0-1.0>)
+        parent_based_sampler: false 
+      propagation:
+        aws_xray: true
+      experimental_response_trace_id:
+        enabled: true
+        header_name: "pocket-trace-id"
 apq:
   router:
     cache:

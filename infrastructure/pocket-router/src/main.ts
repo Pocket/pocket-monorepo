@@ -158,6 +158,10 @@ class PocketRouter extends TerraformStack {
               value: `${config.envVars.graph.graphId}@${config.envVars.graph.graphVariant}`,
             },
             {
+              name: 'APP_ENVIRONMENT',
+              value: config.isProd ? 'production' : 'development',
+            },
+            {
               name: 'RELEASE_SHA',
               value:
                 process.env.CODEBUILD_RESOLVED_SOURCE_VERSION ??
@@ -224,7 +228,19 @@ class PocketRouter extends TerraformStack {
             effect: 'Allow',
           },
         ],
-        taskRolePolicyStatements: [],
+        taskRolePolicyStatements: [
+          {
+            actions: [
+              'xray:PutTraceSegments',
+              'xray:PutTelemetryRecords',
+              'xray:GetSamplingRules',
+              'xray:GetSamplingTargets',
+              'xray:GetSamplingStatisticSummaries',
+            ],
+            resources: ['*'],
+            effect: 'Allow',
+          },
+        ],
         taskExecutionDefaultAttachmentArn:
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },
