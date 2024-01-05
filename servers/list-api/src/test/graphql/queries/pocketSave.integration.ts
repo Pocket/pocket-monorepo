@@ -1,6 +1,6 @@
 import { ApolloServer } from '@apollo/server';
 import { ContextManager } from '../../../server/context';
-import { readClient } from '../../../database/client';
+import { readClient, writeClient } from '../../../database/client';
 import { startServer } from '../../../server/apollo';
 import { Express } from 'express';
 import { gql } from 'graphql-tag';
@@ -8,7 +8,8 @@ import { print } from 'graphql';
 import request from 'supertest';
 
 describe('getPocketSaveByItemId', () => {
-  const db = readClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const headers = { userid: '1' };
   const date1 = new Date('2008-10-21 13:57:01');
   const date2 = new Date('0000-00-00 00:00:00');
@@ -51,14 +52,15 @@ describe('getPocketSaveByItemId', () => {
   `;
 
   afterAll(async () => {
-    await db.destroy();
+    await writeDb.destroy();
+    await readDb.destroy();
     await server.stop();
   });
 
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
-    await db('list').truncate();
-    await db('list').insert([
+    await writeDb('list').truncate();
+    await writeDb('list').insert([
       {
         api_id: '012',
         api_id_updated: '012',

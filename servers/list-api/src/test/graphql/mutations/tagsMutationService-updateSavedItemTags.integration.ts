@@ -1,4 +1,4 @@
-import { writeClient } from '../../../database/client';
+import { readClient, writeClient } from '../../../database/client';
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
 import { UsersMetaService } from '../../../dataService';
@@ -17,7 +17,8 @@ chai.use(deepEqualInAnyOrder);
 chai.use(chaiDateTime);
 
 describe('tags mutation update: ', () => {
-  const db = writeClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const eventSpy = sinon.spy(ContextManager.prototype, 'emitItemEvent');
   const headers = { userid: '1' };
   const date = new Date('2020-10-03 10:20:30'); // Consistent date for seeding
@@ -42,7 +43,8 @@ describe('tags mutation update: ', () => {
   });
 
   afterAll(async () => {
-    await db.destroy();
+    await writeDb.destroy();
+    await readDb.destroy();
     sinon.restore();
     clock.restore();
     await server.stop();
@@ -51,8 +53,8 @@ describe('tags mutation update: ', () => {
   afterEach(() => sinon.resetHistory());
 
   beforeEach(async () => {
-    await db('item_tags').truncate();
-    await db('item_tags').insert([
+    await writeDb('item_tags').truncate();
+    await writeDb('item_tags').insert([
       {
         user_id: 1,
         item_id: 1,
@@ -95,7 +97,7 @@ describe('tags mutation update: ', () => {
       },
     ]);
 
-    await db('list').truncate();
+    await writeDb('list').truncate();
     const inputData = [
       { item_id: 0, status: 1, favorite: 0 },
       { item_id: 1, status: 1, favorite: 0 },
@@ -114,7 +116,7 @@ describe('tags mutation update: ', () => {
         api_id_updated: 'apiid',
       };
     });
-    await db('list').insert(inputData);
+    await writeDb('list').insert(inputData);
   });
 
   const updateSavedItemTags = `
@@ -250,7 +252,7 @@ describe('tags mutation update: ', () => {
       variables,
     });
 
-    const res = await db('users_meta')
+    const res = await readDb('users_meta')
       .where({ user_id: '1', property: 18 })
       .pluck('value');
 
@@ -258,9 +260,9 @@ describe('tags mutation update: ', () => {
   });
 
   it('updateSavedItemTags : should roll back if encounter an error during transaction', async () => {
-    const listStateQuery = db('list').select();
-    const tagStateQuery = db('item_tags').select();
-    const metaStateQuery = db('users_meta').select();
+    const listStateQuery = readDb('list').select();
+    const tagStateQuery = readDb('item_tags').select();
+    const metaStateQuery = readDb('users_meta').select();
 
     // Get the current db state
     const listState = await listStateQuery;
@@ -334,7 +336,7 @@ describe('tags mutation update: ', () => {
       variables,
     });
 
-    const res = await db('users_meta')
+    const res = await readDb('users_meta')
       .where({ user_id: '1', property: 18 })
       .pluck('value');
     expect(res[0]).to.equal(mysqlTimeString(updateDate, config.database.tz));
@@ -364,9 +366,9 @@ describe('tags mutation update: ', () => {
   });
 
   it('updateSavedItemRemoveTags : should roll back if encounter an error during transaction', async () => {
-    const listStateQuery = db('list').select();
-    const tagStateQuery = db('item_tags').select();
-    const metaStateQuery = db('users_meta').select();
+    const listStateQuery = readDb('list').select();
+    const tagStateQuery = readDb('item_tags').select();
+    const metaStateQuery = readDb('users_meta').select();
 
     // Get the current db state
     const listState = await listStateQuery;

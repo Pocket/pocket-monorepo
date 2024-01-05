@@ -9,7 +9,8 @@ import config from '../../config';
 chai.use(chaiDateTime);
 
 describe('UsersMetaService ', () => {
-  const db = readClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const context = new ContextManager({
     request: {
       headers: {
@@ -17,32 +18,32 @@ describe('UsersMetaService ', () => {
         apiid: '0',
       },
     },
-    dbClient: readClient(),
+    dbClient: readDb,
     eventEmitter: null,
   });
   const currentTime = new Date();
   const usersMetaService = new UsersMetaService(context);
 
   beforeEach(async () => {
-    await db('users_meta').truncate();
+    await writeDb('users_meta').truncate();
   });
 
   afterAll(async () => {
-    await readClient().destroy();
-    await writeClient().destroy();
+    await readDb.destroy();
+    await writeDb.destroy();
   });
 
   it('inserts a record for tags and deletes old record', async () => {
-    await db('users_meta').insert({
+    await writeDb('users_meta').insert({
       user_id: 1,
       property: 18,
       value: '2019-02-02 00:00:00',
       time_updated: '2019-02-02 00:00:00',
     });
-    await db.transaction(async (trx) => {
+    await writeDb.transaction(async (trx) => {
       await usersMetaService.logTagMutation(currentTime, trx);
     });
-    const res = await db('users_meta')
+    const res = await readDb('users_meta')
       .select()
       .where({ user_id: 1, property: 18 });
     expect(res.length).to.equal(1);

@@ -106,7 +106,8 @@ async function setUpSavedItem(db: Knex, date: Date) {
 
 describe('Delete/Undelete SavedItem: ', () => {
   //using write client as mutation will use write client to read as well.
-  const db = writeClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const eventSpy = sinon.spy(ContextManager.prototype, 'emitItemEvent');
   const userId = '1';
   const headers = {
@@ -122,8 +123,8 @@ describe('Delete/Undelete SavedItem: ', () => {
   let url: string;
 
   afterAll(async () => {
-    await writeClient().destroy();
-    await readClient().destroy();
+    await writeDb.destroy();
+    await readDb.destroy();
     clock.restore();
     sinon.restore();
     config.batchDelete.deleteDelayInMilliSec = batchDeleteDelay;
@@ -144,16 +145,16 @@ describe('Delete/Undelete SavedItem: ', () => {
   });
 
   beforeEach(async () => {
-    await db('list').truncate();
-    await db('item_tags').truncate();
-    await db('item_attribution').truncate();
-    await db('items_scroll').truncate();
+    await writeDb('list').truncate();
+    await writeDb('item_tags').truncate();
+    await writeDb('item_attribution').truncate();
+    await writeDb('items_scroll').truncate();
   });
 
   afterEach(() => sinon.resetHistory());
 
   it('should delete a saved item', async () => {
-    await setUpSavedItem(db, date);
+    await setUpSavedItem(writeDb, date);
     const itemId = '1';
 
     const variables = {
@@ -192,7 +193,10 @@ describe('Delete/Undelete SavedItem: ', () => {
     const itemRes = roundtrip.body.data?._entities[0].savedItemById;
 
     const query = async (tableName) =>
-      await db(tableName).select().where({ user_id: 1, item_id: 1 }).first();
+      await readDb(tableName)
+        .select()
+        .where({ user_id: 1, item_id: 1 })
+        .first();
 
     expect(res.body.errors).to.be.undefined;
     expect(res.body.data?.deleteSavedItem).to.equal('1');
@@ -209,7 +213,7 @@ describe('Delete/Undelete SavedItem: ', () => {
   });
 
   it('should undelete a deleted saved item and set status to unread if not previously archived', async () => {
-    await upsertSavedItem(db, 2, date);
+    await upsertSavedItem(writeDb, 2, date);
 
     const variables = { itemId: '1' };
     const updateSavedItemUnDelete = `
@@ -232,7 +236,7 @@ describe('Delete/Undelete SavedItem: ', () => {
   });
 
   it('should undelete a deleted saved item and set status to archived if previously archived', async () => {
-    await upsertSavedItem(db, 2, date, true);
+    await upsertSavedItem(writeDb, 2, date, true);
 
     const variables = { itemId: '1' };
     const updateSavedItemUnDelete = `

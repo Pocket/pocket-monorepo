@@ -1,4 +1,4 @@
-import { readClient } from '../../../database/client';
+import { readClient, writeClient } from '../../../database/client';
 import chai, { expect } from 'chai';
 import chaiDateTime from 'chai-datetime';
 import deepEqualInAnyOrder from 'deep-equal-in-any-order';
@@ -13,7 +13,8 @@ chai.use(chaiDateTime);
 chai.use(deepEqualInAnyOrder);
 
 describe('getSavedItems filter', () => {
-  const db = readClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const headers = { userid: '1' };
   // TODO: What date is the server running in? Web repo does central...
   // should this do UTC, this changes pagination cursors.
@@ -61,15 +62,16 @@ describe('getSavedItems filter', () => {
   `;
 
   afterAll(async () => {
-    await db.destroy();
+    await writeDb.destroy();
+    await readDb.destroy();
     await server.stop();
   });
 
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
 
-    await db('list').truncate();
-    await db('list').insert([
+    await writeDb('list').truncate();
+    await writeDb('list').insert([
       {
         user_id: 1,
         item_id: 1,
@@ -162,8 +164,8 @@ describe('getSavedItems filter', () => {
       },
     ]);
 
-    await db('item_tags').truncate();
-    await db('item_tags').insert([
+    await writeDb('item_tags').truncate();
+    await writeDb('item_tags').insert([
       {
         user_id: 1,
         item_id: 1,
@@ -186,8 +188,8 @@ describe('getSavedItems filter', () => {
         time_updated: date1,
       },
     ]);
-    await db('user_annotations').truncate();
-    await db('user_annotations').insert([
+    await writeDb('user_annotations').truncate();
+    await writeDb('user_annotations').insert([
       {
         user_id: 1,
         item_id: 1,
@@ -207,8 +209,8 @@ describe('getSavedItems filter', () => {
         status: 0, // deleted highlight
       },
     ]);
-    await db.raw('TRUNCATE TABLE readitla_b.items_extended');
-    await db
+    await writeDb.raw('TRUNCATE TABLE readitla_b.items_extended');
+    await writeDb
       .insert([
         {
           extended_item_id: 1,

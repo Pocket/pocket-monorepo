@@ -1,4 +1,4 @@
-import { readClient } from '../../../database/client';
+import { readClient, writeClient } from '../../../database/client';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
 import { Express } from 'express';
@@ -47,15 +47,16 @@ describe('item', () => {
       }
     }
   `;
-  const db = readClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const headers = { userid: '1' };
   const date = new Date('2020-10-03 10:20:30'); // Consistent date for seeding
   const date1 = new Date('2020-10-03 10:30:30'); // Consistent date for seeding
 
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
-    await db('list').truncate();
-    await db('list').insert([
+    await writeDb('list').truncate();
+    await writeDb('list').insert([
       {
         // a valid item_url
         user_id: 1,
@@ -107,7 +108,8 @@ describe('item', () => {
     ]);
   });
   afterAll(async () => {
-    await db.destroy();
+    await writeDb.destroy();
+    await readDb.destroy();
     await server.stop();
   });
   it('resolves more than one savedItem from multiple entities', async () => {

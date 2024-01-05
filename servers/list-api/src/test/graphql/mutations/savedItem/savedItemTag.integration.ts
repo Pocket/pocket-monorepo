@@ -1,6 +1,6 @@
 import { ApolloServer } from '@apollo/server';
 import { ContextManager } from '../../../../server/context';
-import { readClient } from '../../../../database/client';
+import { readClient, writeClient } from '../../../../database/client';
 import { startServer } from '../../../../server/apollo';
 import { mockParserGetItemIdRequest } from '../../../utils/parserMocks';
 import { Express } from 'express';
@@ -11,7 +11,8 @@ import sinon from 'sinon';
 import { EventType } from '../../../../businessEvents';
 
 describe('savedItemTag mutation', () => {
-  const db = readClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const headers = { userid: '1' };
   const date = new Date('2020-10-03T10:20:30.000Z');
   let app: Express;
@@ -39,8 +40,8 @@ describe('savedItemTag mutation', () => {
   });
   beforeEach(async () => {
     sinon.resetHistory();
-    await db('list').truncate();
-    await db('item_tags').truncate();
+    await writeDb('list').truncate();
+    await writeDb('item_tags').truncate();
     const listDataBase = {
       user_id: 1,
       title: 'mytitle',
@@ -61,7 +62,7 @@ describe('savedItemTag mutation', () => {
       api_id: 'apiid',
       api_id_updated: 'apiid',
     };
-    await db('list').insert([
+    await writeDb('list').insert([
       {
         ...listDataBase,
         item_id: 1,
@@ -75,7 +76,7 @@ describe('savedItemTag mutation', () => {
         given_url: 'http://def',
       },
     ]);
-    await db('item_tags').insert([
+    await writeDb('item_tags').insert([
       {
         ...tagsDataBase,
         item_id: 1,
@@ -89,8 +90,9 @@ describe('savedItemTag mutation', () => {
     ]);
   });
   afterAll(async () => {
-    await db.destroy();
     await server.stop();
+    await writeDb.destroy();
+    await readDb.destroy();
   });
   it('should add tags to a SavedItem with no tags', async () => {
     const givenUrl = 'http://def';

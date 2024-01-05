@@ -1,4 +1,4 @@
-import { writeClient } from '../../../database/client';
+import { readClient, writeClient } from '../../../database/client';
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
 import { EventType } from '../../../businessEvents';
@@ -16,7 +16,8 @@ chai.use(deepEqualInAnyOrder);
 chai.use(chaiDateTime);
 
 describe('tags mutation: replace savedItem tags', () => {
-  const db = writeClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const eventSpy = sinon.spy(ContextManager.prototype, 'emitItemEvent');
 
   const headers = { userid: '1' };
@@ -43,15 +44,16 @@ describe('tags mutation: replace savedItem tags', () => {
   afterEach(() => sinon.resetHistory());
 
   afterAll(async () => {
-    await db.destroy();
+    await writeDb.destroy();
+    await readDb.destroy();
     sinon.restore();
     clock.restore();
     await server.stop();
   });
 
   beforeEach(async () => {
-    await db('item_tags').truncate();
-    await db('item_tags').insert([
+    await writeDb('item_tags').truncate();
+    await writeDb('item_tags').insert([
       {
         user_id: 1,
         item_id: 1,
@@ -104,7 +106,7 @@ describe('tags mutation: replace savedItem tags', () => {
       },
     ]);
 
-    await db('list').truncate();
+    await writeDb('list').truncate();
     const inputData = [
       { item_id: 0, status: 1, favorite: 0 },
       { item_id: 1, status: 1, favorite: 0 },
@@ -123,7 +125,7 @@ describe('tags mutation: replace savedItem tags', () => {
         api_id_updated: 'apiid',
       };
     });
-    await db('list').insert(inputData);
+    await writeDb('list').insert(inputData);
   });
 
   const replaceSavedItemTags = `
@@ -254,9 +256,9 @@ describe('tags mutation: replace savedItem tags', () => {
     ]);
   });
   it('replaceSavedItemTags should roll back if encounter an error during transaction', async () => {
-    const listStateQuery = db('list').select();
-    const tagStateQuery = db('item_tags').select();
-    const metaStateQuery = db('users_meta').select();
+    const listStateQuery = readDb('list').select();
+    const tagStateQuery = readDb('item_tags').select();
+    const metaStateQuery = readDb('users_meta').select();
 
     // Get the current db state
     const listState = await listStateQuery;

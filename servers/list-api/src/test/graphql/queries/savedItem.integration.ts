@@ -1,4 +1,4 @@
-import { readClient } from '../../../database/client';
+import { readClient, writeClient } from '../../../database/client';
 import chai, { expect } from 'chai';
 import chaiDateTime from 'chai-datetime';
 import { getUnixTimestamp } from '../../../utils';
@@ -10,7 +10,8 @@ import request from 'supertest';
 chai.use(chaiDateTime);
 
 describe('getSavedItemByItemId', () => {
-  const db = readClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const headers = { userid: '1' };
   const date = new Date('2020-10-03 10:20:30'); // Consistent date for seeding
   const unixDate = getUnixTimestamp(date); // unix timestamp
@@ -42,14 +43,15 @@ describe('getSavedItemByItemId', () => {
   `;
 
   afterAll(async () => {
-    await db.destroy();
+    await writeDb.destroy();
+    await readDb.destroy();
     await server.stop();
   });
 
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
-    await db('list').truncate();
-    await db('list').insert([
+    await writeDb('list').truncate();
+    await writeDb('list').insert([
       {
         user_id: 1,
         item_id: 1,

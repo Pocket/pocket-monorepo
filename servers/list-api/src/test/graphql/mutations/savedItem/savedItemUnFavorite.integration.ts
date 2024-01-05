@@ -1,4 +1,4 @@
-import { writeClient } from '../../../../database/client';
+import { readClient, writeClient } from '../../../../database/client';
 import sinon from 'sinon';
 import { ContextManager } from '../../../../server/context';
 import { startServer } from '../../../../server/apollo';
@@ -10,7 +10,8 @@ import request from 'supertest';
 import { mockParserGetItemIdRequest } from '../../../utils/parserMocks';
 
 describe('savedItemUnFavorite mutation', function () {
-  const db = writeClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const eventSpy = sinon.spy(ContextManager.prototype, 'emitItemEvent');
   const headers = { userid: '1' };
   const date = new Date('2020-10-03T10:20:30.000Z'); // Consistent date for seeding
@@ -32,7 +33,7 @@ describe('savedItemUnFavorite mutation', function () {
   `;
 
   beforeEach(async () => {
-    await db('list').truncate();
+    await writeDb('list').truncate();
     const inputData = [
       { item_id: 0, status: 0, favorite: 0 },
       { item_id: 1, status: 0, favorite: 0 },
@@ -53,7 +54,7 @@ describe('savedItemUnFavorite mutation', function () {
         api_id_updated: 'apiid',
       };
     });
-    await db('list').insert(inputData);
+    await writeDb('list').insert(inputData);
   });
 
   beforeAll(async () => {
@@ -61,9 +62,10 @@ describe('savedItemUnFavorite mutation', function () {
   });
 
   afterAll(async () => {
-    await db.destroy();
-    sinon.restore();
     await server.stop();
+    await writeDb.destroy();
+    await readDb.destroy();
+    sinon.restore();
   });
 
   afterEach(() => sinon.resetHistory());

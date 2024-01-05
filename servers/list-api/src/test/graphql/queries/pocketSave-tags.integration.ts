@@ -1,4 +1,4 @@
-import { readClient } from '../../../database/client';
+import { readClient, writeClient } from '../../../database/client';
 import { startServer } from '../../../server/apollo';
 import { ContextManager } from '../../../server/context';
 import { ApolloServer } from '@apollo/server';
@@ -15,7 +15,8 @@ describe('pocketSave.tags', () => {
     TagDataService.prototype,
     'batchGetTagsByUserItems',
   );
-  const db = readClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const headers = { userid: '1' };
   const date = new Date('2020-10-03 10:20:30');
   let app: Express;
@@ -42,8 +43,8 @@ describe('pocketSave.tags', () => {
 
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
-    await db('list').truncate();
-    await db('item_tags').truncate();
+    await writeDb('list').truncate();
+    await writeDb('item_tags').truncate();
     const listDatabase = {
       user_id: 1,
       title: 'mytitle',
@@ -64,7 +65,7 @@ describe('pocketSave.tags', () => {
       api_id: 'apiid',
       api_id_updated: 'apiid',
     };
-    await db('list').insert([
+    await writeDb('list').insert([
       {
         ...listDatabase,
         item_id: 1,
@@ -78,7 +79,7 @@ describe('pocketSave.tags', () => {
         given_url: 'http://def',
       },
     ]);
-    await db('item_tags').insert([
+    await writeDb('item_tags').insert([
       {
         ...tagsDatabase,
         item_id: 1,
@@ -93,7 +94,8 @@ describe('pocketSave.tags', () => {
   });
 
   afterAll(async () => {
-    await db.destroy();
+    await writeDb.destroy();
+    await readDb.destroy();
     sinon.restore();
     await server.stop();
   });

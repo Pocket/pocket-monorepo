@@ -1,4 +1,4 @@
-import { writeClient } from '../../../database/client';
+import { readClient, writeClient } from '../../../database/client';
 import chai, { expect } from 'chai';
 import sinon from 'sinon';
 import { SavedItemDataService, UsersMetaService } from '../../../dataService';
@@ -17,7 +17,8 @@ chai.use(deepEqualInAnyOrder);
 chai.use(chaiDateTime);
 
 describe('updateTag Mutation: ', () => {
-  const db = writeClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const headers = { userid: '1' };
   const date = new Date('2020-10-03 10:20:30'); // Consistent date for seeding
   const date1 = new Date('2020-10-03 10:30:30'); // Consistent date for seeding
@@ -38,7 +39,8 @@ describe('updateTag Mutation: ', () => {
   });
 
   afterAll(async () => {
-    await db.destroy();
+    await writeDb.destroy();
+    await readDb.destroy();
     clock.restore();
     sinon.restore();
     await server.stop();
@@ -52,8 +54,8 @@ describe('updateTag Mutation: ', () => {
       api_id: 'apiid',
       api_id_updated: 'updated_api_id',
     };
-    await db('item_tags').truncate();
-    await db('item_tags').insert([
+    await writeDb('item_tags').truncate();
+    await writeDb('item_tags').insert([
       {
         ...baseTag,
         item_id: 0,
@@ -86,7 +88,7 @@ describe('updateTag Mutation: ', () => {
     ]);
     // Add a tag on every item to test batching
     [0, 1, 2].map(async (itemId) => {
-      await db('item_tags').insert({
+      await writeDb('item_tags').insert({
         ...baseTag,
         item_id: itemId,
         time_added: date,
@@ -94,7 +96,7 @@ describe('updateTag Mutation: ', () => {
         tag: 'everything-everywhere',
       });
     });
-    await db('list').truncate();
+    await writeDb('list').truncate();
     const inputData = [
       { item_id: 0, status: 1, favorite: 0 },
       { item_id: 1, status: 1, favorite: 0 },
@@ -114,7 +116,7 @@ describe('updateTag Mutation: ', () => {
         api_id_updated: 'apiid',
       };
     });
-    await db('list').insert(inputData);
+    await writeDb('list').insert(inputData);
   });
 
   const updateTagsMutation = `
@@ -220,7 +222,9 @@ describe('updateTag Mutation: ', () => {
       },
     ];
 
-    const QueryOldTags = await db('item_tags').select().where({ tag: 'zebra' });
+    const QueryOldTags = await readDb('item_tags')
+      .select()
+      .where({ tag: 'zebra' });
 
     expect(res).is.not.undefined;
     expect(res.body.data.updateTag.name).equals('existing_tag');
@@ -254,7 +258,7 @@ describe('updateTag Mutation: ', () => {
       query: updateTagsMutation,
       variables,
     });
-    const res = await db('users_meta')
+    const res = await readDb('users_meta')
       .where({ user_id: '1', property: 18 })
       .pluck('value');
     expect(res[0]).to.equal(mysqlTimeString(updateDate, config.database.tz));
@@ -276,9 +280,9 @@ describe('updateTag Mutation: ', () => {
   });
 
   it('should roll back if encounter an error during transaction', async () => {
-    const listStateQuery = db('list').select();
-    const tagStateQuery = db('item_tags').select();
-    const metaStateQuery = db('users_meta').select();
+    const listStateQuery = readDb('list').select();
+    const tagStateQuery = readDb('item_tags').select();
+    const metaStateQuery = readDb('users_meta').select();
 
     // Get the current db state
     const listState = await listStateQuery;

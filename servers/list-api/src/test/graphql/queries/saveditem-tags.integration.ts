@@ -1,4 +1,4 @@
-import { readClient } from '../../../database/client';
+import { readClient, writeClient } from '../../../database/client';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
 import { Express } from 'express';
@@ -12,7 +12,8 @@ const range = (n: number) => Array.from({ length: n }, (_, index) => index);
 
 describe('tags on saved items', () => {
   const chance = new Chance();
-  const db = readClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const userid = '1';
   const headers = { userid };
   const count = 5000;
@@ -48,8 +49,8 @@ describe('tags on saved items', () => {
       api_id: '0',
       api_id_updated: '0',
     }));
-    await db.batchInsert('list', listData);
-    await db.batchInsert('item_tags', tagData);
+    await writeDb.batchInsert('list', listData);
+    await writeDb.batchInsert('item_tags', tagData);
   };
 
   const GET_SAVES = gql`
@@ -67,14 +68,15 @@ describe('tags on saved items', () => {
   `;
 
   beforeAll(async () => {
-    await db('list').truncate();
-    await db('item_tags').truncate();
+    await writeDb('list').truncate();
+    await writeDb('item_tags').truncate();
     ({ app, server, url } = await startServer(0));
     await seedSavesAndTag('recipe');
   });
 
   afterAll(async () => {
-    await db.destroy();
+    await writeDb.destroy();
+    await readDb.destroy();
     await server.stop();
   });
   it('appears on saves with a high item_id, even if applied to > 1k saves', async () => {
@@ -107,7 +109,7 @@ describe('tags on saved items', () => {
   describe('for multiple tags on a save', () => {
     const savedItemByIdId = count + startId - 1;
     beforeAll(async () => {
-      await db('item_tags').insert({
+      await writeDb('item_tags').insert({
         user_id: userid,
         item_id: savedItemByIdId,
         tag: 'tofu',

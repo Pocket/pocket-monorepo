@@ -1,6 +1,6 @@
 import { ApolloServer } from '@apollo/server';
 import { ContextManager } from '../../../server/context';
-import { readClient } from '../../../database/client';
+import { readClient, writeClient } from '../../../database/client';
 import { startServer } from '../../../server/apollo';
 import { Express } from 'express';
 import { gql } from 'graphql-tag';
@@ -9,7 +9,8 @@ import request from 'supertest';
 import { TagModel } from '../../../models';
 
 describe('saveBatchUpdateTags', () => {
-  const db = readClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const headers = { userid: '1' };
   const date = new Date('2020-10-03T10:20:30.000Z');
   let app: Express;
@@ -58,8 +59,8 @@ describe('saveBatchUpdateTags', () => {
     ({ app, server, url } = await startServer(0));
   });
   beforeEach(async () => {
-    await db('list').truncate();
-    await db('item_tags').truncate();
+    await writeDb('list').truncate();
+    await writeDb('item_tags').truncate();
     const listDataBase = {
       user_id: 1,
       title: 'mytitle',
@@ -80,7 +81,7 @@ describe('saveBatchUpdateTags', () => {
       api_id: 'apiid',
       api_id_updated: 'apiid',
     };
-    await db('list').insert([
+    await writeDb('list').insert([
       {
         ...listDataBase,
         item_id: 1,
@@ -94,7 +95,7 @@ describe('saveBatchUpdateTags', () => {
         given_url: 'http://def',
       },
     ]);
-    await db('item_tags').insert([
+    await writeDb('item_tags').insert([
       {
         ...tagsDataBase,
         item_id: 1,
@@ -108,7 +109,8 @@ describe('saveBatchUpdateTags', () => {
     ]);
   });
   afterAll(async () => {
-    await db.destroy();
+    await writeDb.destroy();
+    await readDb.destroy();
     await server.stop();
   });
   it('adds one or more tags to a save that already has tags', async () => {
@@ -402,7 +404,7 @@ describe('saveBatchUpdateTags', () => {
     expect(res.body.data.saveBatchUpdateTags.save[0].tags).toIncludeSameMembers(
       expectedTags,
     );
-    const dbResult = await db('item_tags')
+    const dbResult = await readDb('item_tags')
       .select('tag', 'time_added', 'time_updated')
       .where({ user_id: 1, item_id: 1 });
     const expected = [
@@ -439,7 +441,7 @@ describe('saveBatchUpdateTags', () => {
     expect(res.body.data.saveBatchUpdateTags.save[0].tags).toIncludeSameMembers(
       expectedTags,
     );
-    const dbResult = await db('item_tags')
+    const dbResult = await readDb('item_tags')
       .select('tag', 'time_added', 'time_updated')
       .where({ user_id: 1, item_id: 1 });
     const expected = [

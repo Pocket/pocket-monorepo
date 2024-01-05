@@ -1,4 +1,4 @@
-import { readClient } from '../../../database/client';
+import { readClient, writeClient } from '../../../database/client';
 import sinon from 'sinon';
 import config from '../../../config';
 import { ContextManager } from '../../../server/context';
@@ -18,7 +18,8 @@ describe('tags query tests - happy path', () => {
     TagDataService.prototype,
     'batchGetTagsByUserItems',
   );
-  const db = readClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const headers = { userid: '1', premium: 'true' };
   const date = new Date('2020-10-03T10:20:30.000Z');
   const date1 = new Date('2021-10-03T10:20:30.000Z');
@@ -56,7 +57,8 @@ describe('tags query tests - happy path', () => {
   `;
 
   afterAll(async () => {
-    await db.destroy();
+    await writeDb.destroy();
+    await readDb.destroy();
     sinon.restore();
     await server.stop();
   });
@@ -66,12 +68,12 @@ describe('tags query tests - happy path', () => {
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
 
-    await db('list').truncate();
-    await db('item_tags').truncate();
-    await db('readitla_b.item_grouping').truncate();
-    await db('readitla_b.grouping').truncate();
+    await writeDb('list').truncate();
+    await writeDb('item_tags').truncate();
+    await writeDb('readitla_b.item_grouping').truncate();
+    await writeDb('readitla_b.grouping').truncate();
 
-    await db('list').insert([
+    await writeDb('list').insert([
       {
         user_id: 1,
         item_id: 1,
@@ -270,7 +272,7 @@ describe('tags query tests - happy path', () => {
       },
     ];
 
-    await db('item_tags').insert(tagInserts);
+    await writeDb('item_tags').insert(tagInserts);
   });
 
   const GET_TAGS_FOR_SAVED_ITEM = gql`

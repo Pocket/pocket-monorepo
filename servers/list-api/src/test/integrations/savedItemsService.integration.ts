@@ -42,6 +42,11 @@ describe('SavedItemsService', () => {
     ]);
   });
 
+  afterAll(async () => {
+    await db.destroy();
+    await readClient().destroy();
+  });
+
   it('fetches saved items for multiple urls for the same user', async () => {
     const context = new ContextManager({
       request: {

@@ -1,4 +1,4 @@
-import { writeClient } from '../../../database/client';
+import { readClient, writeClient } from '../../../database/client';
 import chai, { expect } from 'chai';
 import chaiDateTime from 'chai-datetime';
 import sinon from 'sinon';
@@ -14,7 +14,8 @@ chai.use(chaiDateTime);
 
 describe('Update Mutation for SavedItem: ', () => {
   //using write client as mutation will use write client to read as well.
-  const db = writeClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const eventSpy = sinon.spy(ContextManager.prototype, 'emitItemEvent');
   const date = new Date('2020-10-03 10:20:30'); // Consistent date for seeding
   const date1 = new Date('2020-10-03 10:30:30'); // Consistent date for seeding
@@ -28,7 +29,8 @@ describe('Update Mutation for SavedItem: ', () => {
   };
 
   afterAll(async () => {
-    await db.destroy();
+    await writeDb.destroy();
+    await readDb.destroy();
     clock.restore();
     sinon.restore();
     await server.stop();
@@ -43,7 +45,7 @@ describe('Update Mutation for SavedItem: ', () => {
       shouldClearNativeTimers: true,
     });
 
-    await db('list').truncate();
+    await writeDb('list').truncate();
     const inputData = [
       { item_id: 0, status: 0, favorite: 0 },
       { item_id: 1, status: 1, favorite: 0 },
@@ -64,7 +66,7 @@ describe('Update Mutation for SavedItem: ', () => {
         api_id_updated: 'apiid',
       };
     });
-    await db('list').insert(inputData);
+    await writeDb('list').insert(inputData);
   });
   describe('updatedSavedItemArchive', () => {
     const variables = {

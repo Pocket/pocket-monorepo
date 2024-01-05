@@ -1,5 +1,5 @@
 import { timeIt, seeds } from '@pocket-tools/backend-benchmarking';
-import { readClient } from '../../../database/client';
+import { readClient, writeClient } from '../../../database/client';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
 import { Express } from 'express';
@@ -34,7 +34,8 @@ const GET_SAVED_ITEMS = `
   }
 `;
 describe.skip('temp table with new list pagination - benchmarking', () => {
-  const db = readClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const headers = { userid: '1' };
   const variables = {
     id: '1',
@@ -50,21 +51,24 @@ describe.skip('temp table with new list pagination - benchmarking', () => {
     ({ app, server, url } = await startServer(0));
 
     await Promise.all([
-      db('list').truncate(),
-      db('readitla_b.items_extended').truncate(),
+      writeDb('list').truncate(),
+      writeDb('readitla_b.items_extended').truncate(),
     ]);
     const seeder = seeds.mockList('1', { count: 50000, batchSize: 5000 });
     let batch = seeder.next();
     while (!batch.done) {
       await Promise.all([
-        db('list').insert(batch.value['list']),
-        db('readitla_b.items_extended').insert(batch.value['items_extended']),
+        writeDb('list').insert(batch.value['list']),
+        writeDb('readitla_b.items_extended').insert(
+          batch.value['items_extended'],
+        ),
       ]);
       batch = seeder.next();
     }
   });
   afterAll(async () => {
-    await db.destroy();
+    await writeDb.destroy();
+    await readDb.destroy();
     await server.stop();
   });
   it('first', async () => {

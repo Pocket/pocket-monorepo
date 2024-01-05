@@ -29,8 +29,7 @@ export default {
       interval: 1000, // ms (approx) between processing batches
     },
     eventBus: {
-      name:
-        process.env.EVENT_BUS_NAME || 'PocketEventBridge-Dev-Shared-Event-Bus',
+      name: process.env.EVENT_BUS_NAME || 'PocketEventBridge-Shared-Event-Bus',
       accountDeletionEvent: { source: 'user-events' },
     },
     sqs: {
@@ -84,14 +83,14 @@ export default {
     // contains tables for user, list, tags, annotations, etc.
     read: {
       host: process.env.DATABASE_READ_HOST || 'localhost',
-      port: process.env.DATABASE_READ_PORT || '3309',
-      user: process.env.DATABASE_READ_USER || 'root',
+      port: process.env.DATABASE_READ_PORT || '3306',
+      user: process.env.DATABASE_READ_USER || 'pkt_listapi_r',
       password: process.env.DATABASE_READ_PASSWORD || '',
     },
     write: {
       host: process.env.DATABASE_WRITE_HOST || 'localhost',
-      port: process.env.DATABASE_WRITE_PORT || '3309',
-      user: process.env.DATABASE_WRITE_USER || 'root',
+      port: process.env.DATABASE_WRITE_PORT || '3306',
+      user: process.env.DATABASE_WRITE_USER || 'pkt_listapi_w',
       password: process.env.DATABASE_WRITE_PASSWORD || '',
     },
     dbName: process.env.DATABASE || 'readitla_ril-tmp',

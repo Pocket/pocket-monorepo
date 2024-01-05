@@ -1,4 +1,4 @@
-import { writeClient } from '../../../database/client';
+import { readClient, writeClient } from '../../../database/client';
 import sinon from 'sinon';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
@@ -9,7 +9,8 @@ import { print } from 'graphql';
 import request from 'supertest';
 
 describe('saveArchive mutation', function () {
-  const db = writeClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const eventSpy = sinon.spy(ContextManager.prototype, 'emitItemEvent');
   const headers = { userid: '1' };
   const date = new Date('2020-10-03T10:20:30.000Z'); // Consistent date for seeding
@@ -39,7 +40,7 @@ describe('saveArchive mutation', function () {
   `;
 
   beforeEach(async () => {
-    await db('list').truncate();
+    await writeDb('list').truncate();
     const inputData = [
       { item_id: 0, status: 0, favorite: 0 },
       { item_id: 1, status: 0, favorite: 0 },
@@ -60,7 +61,7 @@ describe('saveArchive mutation', function () {
         api_id_updated: 'apiid',
       };
     });
-    await db('list').insert(inputData);
+    await writeDb('list').insert(inputData);
   });
 
   beforeAll(async () => {
@@ -68,7 +69,8 @@ describe('saveArchive mutation', function () {
   });
 
   afterAll(async () => {
-    await db.destroy();
+    await writeDb.destroy();
+    await readDb.destroy();
     sinon.restore();
     await server.stop();
   });

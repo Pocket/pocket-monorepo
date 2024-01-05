@@ -1,4 +1,4 @@
-import { readClient } from '../../../database/client';
+import { readClient, writeClient } from '../../../database/client';
 import { expect } from 'chai';
 import { seeds } from '@pocket-tools/backend-benchmarking';
 import { ListPaginationService } from '../../../dataService/listPaginationService';
@@ -10,7 +10,8 @@ import request from 'supertest';
 
 // Note -- additional pagination-related tests are included in savedItems* test files
 describe('getSavedItems pagination', () => {
-  const db = readClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const headers = { userid: '1' };
 
   const baseVariables = {
@@ -51,7 +52,8 @@ describe('getSavedItems pagination', () => {
   beforeAll(async () => ({ app, server, url } = await startServer(0)));
 
   afterAll(async () => {
-    await db.destroy();
+    await writeDb.destroy();
+    await readDb.destroy();
     await server.stop();
   });
 
@@ -66,9 +68,9 @@ describe('getSavedItems pagination', () => {
     const batch = seeder.next(); // This gets the whole batch
 
     beforeAll(async () => {
-      await db('list').truncate();
-      await Promise.all([db('list').insert(batch.value['list'])]);
-      const actualRows = await db('list').where({ user_id: 1 }).select();
+      await writeDb('list').truncate();
+      await Promise.all([writeDb('list').insert(batch.value['list'])]);
+      const actualRows = await readDb('list').where({ user_id: 1 }).select();
       rowsById = actualRows.reduce((acc, row) => {
         acc[row.item_id] = row;
         return acc;
@@ -125,8 +127,8 @@ describe('getSavedItems pagination', () => {
     const batch = seeder.next(); // This gets the whole batch
 
     beforeAll(async () => {
-      await db('list').truncate();
-      await Promise.all([db('list').insert(batch.value['list'])]);
+      await writeDb('list').truncate();
+      await Promise.all([writeDb('list').insert(batch.value['list'])]);
     });
     test.each([
       {

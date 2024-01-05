@@ -1,4 +1,4 @@
-import { writeClient } from '../../../database/client';
+import { readClient, writeClient } from '../../../database/client';
 import chai, { expect } from 'chai';
 import chaiDateTime from 'chai-datetime';
 import nock, { cleanAll } from 'nock';
@@ -56,7 +56,8 @@ async function getSqsMessages(
 }
 
 describe('UpsertSavedItem Mutation', () => {
-  const db = writeClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const itemsEventEmitter = new ItemsEventEmitter();
   const eventSpy = sinon.spy(ContextManager.prototype, 'emitItemEvent');
   new SqsListener(itemsEventEmitter, transformers);
@@ -80,7 +81,8 @@ describe('UpsertSavedItem Mutation', () => {
   });
 
   afterAll(async () => {
-    await db.destroy();
+    await writeDb.destroy();
+    await readDb.destroy();
     clock.restore();
     sinon.restore();
     cleanAll();
@@ -92,9 +94,9 @@ describe('UpsertSavedItem Mutation', () => {
   beforeEach(async () => {
     await sqs.purgeQueue({ QueueUrl: config.aws.sqs.publisherQueue.url });
     await sqs.purgeQueue({ QueueUrl: config.aws.sqs.permLibItemMainQueue.url });
-    await db('item_tags').truncate();
-    await db('list').truncate();
-    await db('item_tags').insert([
+    await writeDb('item_tags').truncate();
+    await writeDb('list').truncate();
+    await writeDb('item_tags').insert([
       {
         user_id: 1,
         item_id: 8,
@@ -498,8 +500,8 @@ describe('UpsertSavedItem Mutation', () => {
       `;
 
       beforeEach(async () => {
-        await db('list').truncate();
-        await db('list').insert({
+        await writeDb('list').truncate();
+        await writeDb('list').insert({
           item_id: 11,
           status: 1,
           favorite: 0,
@@ -636,7 +638,7 @@ describe('UpsertSavedItem Mutation', () => {
       });
 
       it('should not emit unarchive event if item was not archived', async () => {
-        await db('list')
+        await writeDb('list')
           .update({ status: 0 })
           .where({ item_id: 11, user_id: 1 });
         const variables = {

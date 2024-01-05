@@ -1,4 +1,4 @@
-import { readClient } from '../../../database/client';
+import { readClient, writeClient } from '../../../database/client';
 import chai, { expect } from 'chai';
 import chaiDateTime from 'chai-datetime';
 import { ContextManager } from '../../../server/context';
@@ -10,7 +10,8 @@ import request from 'supertest';
 chai.use(chaiDateTime);
 
 describe('tags query tests - happy path', () => {
-  const db = readClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   const headers = { userid: '1', premium: 'true' };
   const date = new Date('2020-10-03T10:20:30.000Z');
   const date1 = new Date('2021-10-03T10:20:30.000Z');
@@ -24,17 +25,18 @@ describe('tags query tests - happy path', () => {
   beforeAll(async () => ({ app, server, url } = await startServer(0)));
 
   afterAll(async () => {
-    await db.destroy();
+    await writeDb.destroy();
+    await readDb.destroy();
     await server.stop();
   });
 
   beforeEach(async () => {
-    await db('list').truncate();
-    await db('item_tags').truncate();
-    await db('readitla_b.item_grouping').truncate();
-    await db('readitla_b.grouping').truncate();
+    await writeDb('list').truncate();
+    await writeDb('item_tags').truncate();
+    await writeDb('readitla_b.item_grouping').truncate();
+    await writeDb('readitla_b.grouping').truncate();
 
-    await db('list').insert([
+    await writeDb('list').insert([
       {
         user_id: 1,
         item_id: 1,
@@ -52,7 +54,7 @@ describe('tags query tests - happy path', () => {
       },
     ]);
 
-    await db('item_tags').insert([
+    await writeDb('item_tags').insert([
       {
         user_id: 1,
         item_id: 2,
@@ -130,7 +132,7 @@ describe('tags query tests - happy path', () => {
       expect(tags[2].name).to.equal('thriller');
     });
     it('should return 3 tags even if the most recent contained duplicates', async () => {
-      await db('item_tags').insert({
+      await writeDb('item_tags').insert({
         user_id: 1,
         item_id: 3,
         tag: 'adventure',
@@ -152,7 +154,7 @@ describe('tags query tests - happy path', () => {
       expect(tags[2].name).to.equal('thriller');
     });
     it('returns empty array if no tags', async () => {
-      await db('item_tags').truncate();
+      await writeDb('item_tags').truncate();
       const res = await request(app).post(url).set(headers).send({
         query: GET_SUGGESTED_TAGS,
         variables,
@@ -162,8 +164,8 @@ describe('tags query tests - happy path', () => {
     });
 
     it('returns fewer than 3 tags if fewer than 3 are available', async () => {
-      await db('item_tags').truncate();
-      await db('item_tags').insert([
+      await writeDb('item_tags').truncate();
+      await writeDb('item_tags').insert([
         {
           user_id: 1,
           item_id: 2,
@@ -184,7 +186,7 @@ describe('tags query tests - happy path', () => {
       expect(tags[0].name).to.equal('romance');
     });
     it('should exclude any tags on the SavedItem getting suggested tags for', async () => {
-      await db('item_tags').insert({
+      await writeDb('item_tags').insert({
         user_id: 1,
         item_id: 1,
         tag: 'adventure',
@@ -206,9 +208,9 @@ describe('tags query tests - happy path', () => {
     });
 
     it('should get time_updated from list table if item_tags time_updated is null', async () => {
-      await db('item_tags').truncate();
+      await writeDb('item_tags').truncate();
       //add items in list tables so we can join on null time_updated
-      await db('list').insert([
+      await writeDb('list').insert([
         {
           user_id: 1,
           item_id: 10,
@@ -226,7 +228,7 @@ describe('tags query tests - happy path', () => {
         },
       ]);
 
-      await db('item_tags').insert([
+      await writeDb('item_tags').insert([
         {
           user_id: 1,
           item_id: 11,

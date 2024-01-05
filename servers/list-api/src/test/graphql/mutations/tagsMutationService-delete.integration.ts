@@ -1,4 +1,4 @@
-import { writeClient } from '../../../database/client';
+import { readClient, writeClient } from '../../../database/client';
 import chai, { expect } from 'chai';
 import deepEqualInAnyOrder from 'deep-equal-in-any-order';
 import sinon from 'sinon';
@@ -15,13 +15,14 @@ chai.use(deepEqualInAnyOrder);
 chai.use(chaiDateTime);
 
 describe('Mutation for Tag deletions: ', () => {
-  const db = writeClient();
+  const writeDb = writeClient();
+  const readDb = readClient();
   let eventSpy = sinon.spy(ContextManager.prototype, 'emitItemEvent');
-  const dbTagsQuery = db('item_tags').select('tag').pluck('tag');
-  const listUpdatedQuery = db('list').select('time_updated');
-  const listStateQuery = db('list').select();
-  const tagStateQuery = db('item_tags').select();
-  const metaStateQuery = db('users_meta').select();
+  const dbTagsQuery = writeDb('item_tags').select('tag').pluck('tag');
+  const listUpdatedQuery = readDb('list').select('time_updated');
+  const listStateQuery = readDb('list').select();
+  const tagStateQuery = readDb('item_tags').select();
+  const metaStateQuery = readDb('users_meta').select();
 
   const headers = { userid: '1' };
   const date = new Date('2020-10-03 10:20:30'); // Consistent date for seeding
@@ -32,7 +33,8 @@ describe('Mutation for Tag deletions: ', () => {
   let url: string;
 
   afterAll(async () => {
-    await db.destroy();
+    await writeDb.destroy();
+    await readDb.destroy();
     sinon.restore();
     await server.stop();
   });
@@ -48,7 +50,7 @@ describe('Mutation for Tag deletions: ', () => {
 
   beforeEach(async () => {
     // Shared list data
-    await db('list').truncate();
+    await writeDb('list').truncate();
     const listData = [
       { item_id: 0, status: 0, favorite: 0 },
       { item_id: 1, status: 1, favorite: 0 },
@@ -67,7 +69,7 @@ describe('Mutation for Tag deletions: ', () => {
         api_id_updated: 'apiid',
       };
     });
-    await db('list').insert(listData);
+    await writeDb('list').insert(listData);
   });
 
   describe('deleteSavedItemTags: ', () => {
@@ -84,7 +86,7 @@ describe('Mutation for Tag deletions: ', () => {
 
     beforeEach(async () => {
       // Shared data for describe case
-      await db('item_tags').truncate();
+      await writeDb('item_tags').truncate();
       const tagData = [
         { item_id: 0, tag: 'nandor' },
         { item_id: 0, tag: 'nadja' },
@@ -105,7 +107,7 @@ describe('Mutation for Tag deletions: ', () => {
           api_id_updated: 'updated_api_id',
         };
       });
-      await db('item_tags').insert(tagData);
+      await writeDb('item_tags').insert(tagData);
     });
 
     it('should delete a tag from a savedItem', async () => {
@@ -290,12 +292,12 @@ describe('Mutation for Tag deletions: ', () => {
     `;
     const viago = Buffer.from('viago').toString('base64');
     const nick = Buffer.from('nick').toString('base64');
-    const tagQueryStub = db('item_tags').count();
+    const tagQueryStub = readDb('item_tags').count();
     const tagLogSpy = sinon.spy(UsersMetaService.prototype, 'logTagMutation');
 
     beforeEach(async () => {
       // Shared data for describe case
-      await db('item_tags').truncate();
+      await writeDb('item_tags').truncate();
       const tagData = [
         { item_id: 1, tag: 'viago' },
         { item_id: 0, tag: 'viago' },
@@ -313,7 +315,7 @@ describe('Mutation for Tag deletions: ', () => {
           api_id_updated: 'updated_api_id',
         };
       });
-      await db('item_tags').insert(tagData);
+      await writeDb('item_tags').insert(tagData);
     });
 
     afterEach(() => {
