@@ -1,5 +1,4 @@
 import { readClient, writeClient } from '../../../database/client';
-import sinon from 'sinon';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
 import { Express } from 'express';
@@ -69,11 +68,11 @@ describe('saveUnArchive mutation', function () {
   afterAll(async () => {
     await writeDb.destroy();
     await readDb.destroy();
-    sinon.restore();
+    jest.restoreAllMocks();
     await server.stop();
   });
 
-  afterEach(() => sinon.resetHistory());
+  afterEach(() => jest.clearAllMocks());
 
   it('should unarchive one save', async () => {
     const testTimestamp = '2023-10-05T14:48:00.000Z';

@@ -6,12 +6,11 @@ import { Express } from 'express';
 import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 import request from 'supertest';
-import sinon from 'sinon';
 import { TagDataService } from '../../../dataService';
 
 describe('pocketSave.tags', () => {
   // proxy for testing we're using dataloader => batch queries
-  const dbBatchSpy = sinon.spy(
+  const dbBatchSpy = jest.spyOn(
     TagDataService.prototype,
     'batchGetTagsByUserItems',
   );
@@ -96,11 +95,11 @@ describe('pocketSave.tags', () => {
   afterAll(async () => {
     await writeDb.destroy();
     await readDb.destroy();
-    sinon.restore();
+    jest.restoreAllMocks();
     await server.stop();
   });
 
-  afterEach(() => sinon.resetHistory());
+  afterEach(() => jest.clearAllMocks());
 
   it('resolves one or more tags on a save', async () => {
     const variables = {
@@ -114,7 +113,7 @@ describe('pocketSave.tags', () => {
         query: print(GET_POCKET_SAVE_TAGS),
         variables,
       });
-    expect(dbBatchSpy.callCount).toEqual(1);
+    expect(dbBatchSpy).toHaveBeenCalledTimes(1);
     expect(res.body.errors).toBeUndefined();
     const tags = res.body.data?._entities[0].saveById[0].tags;
     const expectedTags = [
@@ -142,7 +141,7 @@ describe('pocketSave.tags', () => {
         query: print(GET_POCKET_SAVE_TAGS),
         variables,
       });
-    expect(dbBatchSpy.callCount).toEqual(1);
+    expect(dbBatchSpy).toHaveBeenCalledTimes(1);
     expect(res.body.errors).toBeUndefined();
     const tags = res.body.data?._entities[0].saveById[0].tags;
     expect(tags).not.toBeUndefined();

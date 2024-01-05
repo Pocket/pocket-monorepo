@@ -1,5 +1,4 @@
 import { readClient, writeClient } from '../../../../database/client';
-import sinon from 'sinon';
 import { ContextManager } from '../../../../server/context';
 import { startServer } from '../../../../server/apollo';
 import { Express } from 'express';
@@ -12,7 +11,7 @@ import { mockParserGetItemIdRequest } from '../../../utils/parserMocks';
 describe('savedItemUnFavorite mutation', function () {
   const writeDb = writeClient();
   const readDb = readClient();
-  const eventSpy = sinon.spy(ContextManager.prototype, 'emitItemEvent');
+  const eventSpy = jest.spyOn(ContextManager.prototype, 'emitItemEvent');
   const headers = { userid: '1' };
   const date = new Date('2020-10-03T10:20:30.000Z'); // Consistent date for seeding
   const date1 = new Date('2020-10-03T10:30:30.000Z'); // Consistent date for seeding
@@ -65,10 +64,10 @@ describe('savedItemUnFavorite mutation', function () {
     await server.stop();
     await writeDb.destroy();
     await readDb.destroy();
-    sinon.restore();
+    jest.restoreAllMocks();
   });
 
-  afterEach(() => sinon.resetHistory());
+  afterEach(() => jest.clearAllMocks());
 
   it('should unfavorite a favorited savedItem', async () => {
     const givenUrl = 'http://2';
@@ -125,7 +124,7 @@ describe('savedItemUnFavorite mutation', function () {
       .post(url)
       .set(headers)
       .send({ query: print(UNFAVORITE_MUTATION), variables });
-    expect(eventSpy.callCount).toEqual(0);
+    expect(eventSpy).toHaveBeenCalledTimes(0);
   });
   it('throws NotFound error and does not emit event if the savedItem does not exist in the pocket user saves', async () => {
     const givenUrl = 'http://999';
@@ -145,7 +144,7 @@ describe('savedItemUnFavorite mutation', function () {
         message: expect.stringContaining('SavedItem does not exist'),
       }),
     );
-    expect(eventSpy.callCount).toEqual(0);
+    expect(eventSpy).toHaveBeenCalledTimes(0);
   });
   it('should emit an unfavorite event when a savedItem is unfavorited', async () => {
     const givenUrl = 'http://2';
@@ -159,8 +158,8 @@ describe('savedItemUnFavorite mutation', function () {
       .post(url)
       .set(headers)
       .send({ query: print(UNFAVORITE_MUTATION), variables });
-    expect(eventSpy.callCount).toEqual(1);
-    expect(eventSpy.firstCall.args).toStrictEqual([
+    expect(eventSpy).toHaveBeenCalledTimes(1);
+    expect(eventSpy.mock.calls[0]).toStrictEqual([
       'UNFAVORITE_ITEM',
       expect.objectContaining({
         url: givenUrl,
@@ -193,8 +192,8 @@ describe('savedItemUnFavorite mutation', function () {
       favoritedAt: null,
       _updatedAt: testEpoch,
     });
-    expect(eventSpy.callCount).toEqual(1);
-    expect(eventSpy.firstCall.args).toStrictEqual([
+    expect(eventSpy).toHaveBeenCalledTimes(1);
+    expect(eventSpy.mock.calls[0]).toStrictEqual([
       'UNFAVORITE_ITEM',
       expect.objectContaining({
         url: givenUrl,

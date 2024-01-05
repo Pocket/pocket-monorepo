@@ -1,11 +1,7 @@
 import { readClient, writeClient } from '../../../database/client';
-import chai, { expect } from 'chai';
-import sinon from 'sinon';
 import { UsersMetaService } from '../../../dataService';
 import { mysqlTimeString } from '../../../dataService/utils';
 import config from '../../../config';
-import deepEqualInAnyOrder from 'deep-equal-in-any-order';
-import chaiDateTime from 'chai-datetime';
 import { EventType } from '../../../businessEvents';
 import { getUnixTimestamp } from '../../../utils';
 import { ContextManager } from '../../../server/context';
@@ -13,46 +9,41 @@ import { startServer } from '../../../server/apollo';
 import { Express } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
-chai.use(deepEqualInAnyOrder);
-chai.use(chaiDateTime);
 
 describe('tags mutation update: ', () => {
   const writeDb = writeClient();
   const readDb = readClient();
-  const eventSpy = sinon.spy(ContextManager.prototype, 'emitItemEvent');
+  const eventSpy = jest.spyOn(ContextManager.prototype, 'emitItemEvent');
   const headers = { userid: '1' };
   const date = new Date('2020-10-03 10:20:30'); // Consistent date for seeding
   const unixDate = getUnixTimestamp(date);
   const date1 = new Date('2020-10-03 10:30:30'); // Consistent date for seeding
   const updateDate = new Date(2021, 1, 1, 0, 0); // mock date for insert
-  let clock;
-  let logTagSpy;
+  let logTagSpy: jest.SpyInstance;
   let app: Express;
   let server: ApolloServer<ContextManager>;
   let url: string;
 
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
-
-    // Mock Date.now() to get a consistent date for inserting body.data
-    clock = sinon.useFakeTimers({
-      now: updateDate,
-      shouldAdvanceTime: false,
-      shouldClearNativeTimers: true,
-    });
   });
 
   afterAll(async () => {
     await writeDb.destroy();
     await readDb.destroy();
-    sinon.restore();
-    clock.restore();
+    jest.restoreAllMocks();
+    jest.useRealTimers();
     await server.stop();
   });
 
-  afterEach(() => sinon.resetHistory());
+  afterEach(() => jest.clearAllMocks());
 
   beforeEach(async () => {
+    // Mock Date.now() to get a consistent date for inserting body.data
+    jest.useFakeTimers({
+      now: updateDate,
+      advanceTimers: true,
+    });
     await writeDb('item_tags').truncate();
     await writeDb('item_tags').insert([
       {
@@ -177,13 +168,13 @@ describe('tags mutation update: ', () => {
       },
     ];
 
-    expect(res).is.not.undefined;
-    expect(res.body.data.updateSavedItemTags.url).equals('http://1');
-    expect(res.body.data.updateSavedItemTags._createdAt).equals(unixDate);
-    expect(res.body.data.updateSavedItemTags._updatedAt).equals(
+    expect(res).not.toBeUndefined();
+    expect(res.body.data.updateSavedItemTags.url).toEqual('http://1');
+    expect(res.body.data.updateSavedItemTags._createdAt).toEqual(unixDate);
+    expect(res.body.data.updateSavedItemTags._updatedAt).toEqual(
       getUnixTimestamp(updateDate),
     );
-    expect(res.body.data.updateSavedItemTags.tags).to.deep.equalInAnyOrder(
+    expect(res.body.data.updateSavedItemTags.tags).toContainAllValues(
       expectedTags,
     );
   });
@@ -199,13 +190,13 @@ describe('tags mutation update: ', () => {
       query: updateSavedItemTags,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
+    expect(res.body.errors).toBeUndefined();
 
-    expect(eventSpy.callCount).to.equal(1);
-    const eventData = eventSpy.getCall(0).args;
-    expect(eventData[0]).to.equal(EventType.REPLACE_TAGS);
-    expect(eventData[1].id).equals(1);
-    expect(eventData[2]).to.deep.equalInAnyOrder(['tofino', 'victoria']);
+    expect(eventSpy).toHaveBeenCalledTimes(1);
+    const eventData = eventSpy.mock.calls[0];
+    expect(eventData[0]).toEqual(EventType.REPLACE_TAGS);
+    expect(eventData[1].id).toEqual(1);
+    expect(eventData[2]).toContainAllValues(['tofino', 'victoria']);
   });
 
   it('updateSavedItemTags should throw NOT_FOUND error if itemId doesnt exist', async () => {
@@ -218,11 +209,11 @@ describe('tags mutation update: ', () => {
       variables,
     });
 
-    expect(res).is.not.undefined;
-    expect(res.body.errors[0].message).contains(
+    expect(res).not.toBeUndefined();
+    expect(res.body.errors[0].message).toContain(
       `SavedItem ID ${variables.input.savedItemId} does not exist`,
     );
-    expect(res.body.errors[0].extensions.code).equals('NOT_FOUND');
+    expect(res.body.errors[0].extensions.code).toEqual('NOT_FOUND');
   });
 
   it('updateSavedItemTags should throw error when tagIds are empty', async () => {
@@ -235,11 +226,11 @@ describe('tags mutation update: ', () => {
       variables,
     });
 
-    expect(res).is.not.undefined;
-    expect(res.body.errors[0].message).contains(
+    expect(res).not.toBeUndefined();
+    expect(res.body.errors[0].message).toContain(
       'Must provide 1 or more values for tag mutations',
     );
-    expect(res.body.errors[0].extensions.code).equals('BAD_USER_INPUT');
+    expect(res.body.errors[0].extensions.code).toEqual('BAD_USER_INPUT');
   });
 
   it('updateSavedItemTags : should log the tag mutation', async () => {
@@ -256,7 +247,7 @@ describe('tags mutation update: ', () => {
       .where({ user_id: '1', property: 18 })
       .pluck('value');
 
-    expect(res[0]).to.equal(mysqlTimeString(updateDate, config.database.tz));
+    expect(res[0]).toEqual(mysqlTimeString(updateDate, config.database.tz));
   });
 
   it('updateSavedItemTags : should roll back if encounter an error during transaction', async () => {
@@ -269,9 +260,11 @@ describe('tags mutation update: ', () => {
     const tagState = await tagStateQuery;
     const metaState = await metaStateQuery;
 
-    logTagSpy = await sinon
-      .stub(UsersMetaService.prototype, 'logTagMutation')
-      .rejects(Error('server error'));
+    logTagSpy = jest
+      .spyOn(UsersMetaService.prototype, 'logTagMutation')
+      .mockImplementation(() => {
+        throw new Error('server error');
+      });
 
     const variables = {
       input: { savedItemId: '1', tagIds: ['helloWorld'] },
@@ -282,12 +275,12 @@ describe('tags mutation update: ', () => {
       variables,
     });
 
-    expect(res.body.errors.length).to.equal(1);
-    expect(res.body.errors[0].extensions.code).equals(`INTERNAL_SERVER_ERROR`);
-    expect(await listStateQuery).to.deep.equalInAnyOrder(listState);
-    expect(await tagStateQuery).to.deep.equalInAnyOrder(tagState);
-    expect(await metaStateQuery).to.deep.equalInAnyOrder(metaState);
-    logTagSpy.restore();
+    expect(res.body.errors.length).toEqual(1);
+    expect(res.body.errors[0].extensions.code).toEqual(`INTERNAL_SERVER_ERROR`);
+    expect(await listStateQuery).toContainAllValues(listState);
+    expect(await tagStateQuery).toContainAllValues(tagState);
+    expect(await metaStateQuery).toContainAllValues(metaState);
+    logTagSpy.mockRestore();
   });
 
   it('updateSavedItemRemoveTags: should remove all tags for a given savedItemId', async () => {
@@ -300,13 +293,15 @@ describe('tags mutation update: ', () => {
       variables,
     });
 
-    expect(res).is.not.undefined;
-    expect(res.body.data.updateSavedItemRemoveTags.url).equals('http://1');
-    expect(res.body.data.updateSavedItemRemoveTags._createdAt).equals(unixDate);
-    expect(res.body.data.updateSavedItemRemoveTags._updatedAt).equals(
+    expect(res).not.toBeUndefined();
+    expect(res.body.data.updateSavedItemRemoveTags.url).toEqual('http://1');
+    expect(res.body.data.updateSavedItemRemoveTags._createdAt).toEqual(
+      unixDate,
+    );
+    expect(res.body.data.updateSavedItemRemoveTags._updatedAt).toEqual(
       getUnixTimestamp(updateDate),
     );
-    expect(res.body.data.updateSavedItemRemoveTags.tags).is.empty;
+    expect(res.body.data.updateSavedItemRemoveTags.tags).toBeEmpty();
   });
 
   it('updateSavedItemRemoveTags : should throw not found error if savedItemId doesnt exist', async () => {
@@ -319,11 +314,11 @@ describe('tags mutation update: ', () => {
       variables,
     });
 
-    expect(res.body.errors).is.not.undefined;
-    expect(res.body.errors[0].message).contains(
+    expect(res.body.errors).not.toBeUndefined();
+    expect(res.body.errors[0].message).toContain(
       `SavedItem Id ${variables.savedItemId} does not exist`,
     );
-    expect(res.body.errors[0].extensions.code).equals('NOT_FOUND');
+    expect(res.body.errors[0].extensions.code).toEqual('NOT_FOUND');
   });
 
   it('updateSavedItemRemoveTags : should log the tag mutation', async () => {
@@ -339,7 +334,7 @@ describe('tags mutation update: ', () => {
     const res = await readDb('users_meta')
       .where({ user_id: '1', property: 18 })
       .pluck('value');
-    expect(res[0]).to.equal(mysqlTimeString(updateDate, config.database.tz));
+    expect(res[0]).toEqual(mysqlTimeString(updateDate, config.database.tz));
   });
 
   it(' updateSavedItemRemoveTags: should emit clear_tag event on success', async () => {
@@ -352,13 +347,13 @@ describe('tags mutation update: ', () => {
       variables,
     });
 
-    expect(res.body.errors).to.be.undefined;
+    expect(res.body.errors).toBeUndefined();
 
-    expect(eventSpy.callCount).to.equal(1);
-    const eventData = eventSpy.getCall(0).args;
-    expect(eventData[0]).to.equal(EventType.CLEAR_TAGS);
-    expect(eventData[1].id).equals(1);
-    expect(eventData[2]).to.deep.equalInAnyOrder([
+    expect(eventSpy).toHaveBeenCalledTimes(1);
+    const eventData = eventSpy.mock.calls[0];
+    expect(eventData[0]).toEqual(EventType.CLEAR_TAGS);
+    expect(eventData[1].id).toEqual(1);
+    expect(eventData[2]).toContainAllValues([
       'summer',
       'zebra',
       'existing_tag',
@@ -375,9 +370,12 @@ describe('tags mutation update: ', () => {
     const tagState = await tagStateQuery;
     const metaState = await metaStateQuery;
 
-    logTagSpy = await sinon
-      .stub(UsersMetaService.prototype, 'logTagMutation')
-      .rejects(Error('server error'));
+    logTagSpy = jest
+      .spyOn(UsersMetaService.prototype, 'logTagMutation')
+      .mockClear()
+      .mockImplementation(() => {
+        throw new Error('server error');
+      });
 
     const variables = {
       savedItemId: '1',
@@ -388,11 +386,11 @@ describe('tags mutation update: ', () => {
       variables,
     });
 
-    expect(res.body.errors.length).to.equal(1);
-    expect(res.body.errors[0].extensions.code).equals('INTERNAL_SERVER_ERROR');
-    expect(await listStateQuery).to.deep.equalInAnyOrder(listState);
-    expect(await tagStateQuery).to.deep.equalInAnyOrder(tagState);
-    expect(await metaStateQuery).to.deep.equalInAnyOrder(metaState);
-    logTagSpy.restore();
+    expect(res.body.errors.length).toEqual(1);
+    expect(res.body.errors[0].extensions.code).toEqual('INTERNAL_SERVER_ERROR');
+    expect(await listStateQuery).toContainAllValues(listState);
+    expect(await tagStateQuery).toContainAllValues(tagState);
+    expect(await metaStateQuery).toContainAllValues(metaState);
+    logTagSpy.mockRestore();
   });
 });

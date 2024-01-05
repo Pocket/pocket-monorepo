@@ -1,5 +1,4 @@
 import { readClient, writeClient } from '../../../../database/client';
-import sinon from 'sinon';
 import { ContextManager } from '../../../../server/context';
 import { startServer } from '../../../../server/apollo';
 import { Express } from 'express';
@@ -12,7 +11,7 @@ import { mockParserGetItemIdRequest } from '../../../utils/parserMocks';
 describe('savedItemDelete mutation', function () {
   const writeDb = writeClient();
   const readDb = readClient();
-  const eventSpy = sinon.spy(ContextManager.prototype, 'emitItemEvent');
+  const eventSpy = jest.spyOn(ContextManager.prototype, 'emitItemEvent');
   const headers = { userid: '1' };
   const date = new Date('2020-10-03T10:20:30.000Z'); // Consistent date for seeding
   const date1 = new Date('2020-10-03T10:30:30.000Z'); // Consistent date for seeding
@@ -102,10 +101,10 @@ describe('savedItemDelete mutation', function () {
     await server.stop();
     await writeDb.destroy();
     await readDb.destroy();
-    sinon.restore();
+    jest.restoreAllMocks();
   });
 
-  afterEach(() => sinon.resetHistory());
+  afterEach(() => jest.clearAllMocks());
 
   it('should "soft-delete" an "unread" savedItem', async () => {
     const givenUrl = 'http://0';
@@ -198,7 +197,7 @@ describe('savedItemDelete mutation', function () {
       .post(url)
       .set(headers)
       .send({ query: print(DELETE_MUTATION), variables });
-    expect(eventSpy.callCount).toEqual(0);
+    expect(eventSpy).toHaveBeenCalledTimes(0);
   });
   it('throws NotFound error and does not emit event if the savedItem is not in the user saves', async () => {
     const givenUrl = 'http://999';
@@ -218,7 +217,7 @@ describe('savedItemDelete mutation', function () {
         message: expect.stringContaining('SavedItem does not exist'),
       }),
     );
-    expect(eventSpy.callCount).toEqual(0);
+    expect(eventSpy).toHaveBeenCalledTimes(0);
   });
   it('should emit a delete event when a savedItem is deleted', async () => {
     const givenUrl = 'http://1';
@@ -232,8 +231,8 @@ describe('savedItemDelete mutation', function () {
       .post(url)
       .set(headers)
       .send({ query: print(DELETE_MUTATION), variables });
-    expect(eventSpy.callCount).toEqual(1);
-    expect(eventSpy.firstCall.args).toStrictEqual([
+    expect(eventSpy).toHaveBeenCalledTimes(1);
+    expect(eventSpy.mock.calls[0]).toStrictEqual([
       'DELETE_ITEM',
       expect.objectContaining({
         url: givenUrl,
@@ -272,8 +271,8 @@ describe('savedItemDelete mutation', function () {
     });
     expect(res.body.errors).toBeUndefined();
     expect(res.body.data.savedItemDelete).toStrictEqual(givenUrl);
-    expect(eventSpy.callCount).toEqual(1);
-    expect(eventSpy.firstCall.args).toStrictEqual([
+    expect(eventSpy).toHaveBeenCalledTimes(1);
+    expect(eventSpy.mock.calls[0]).toStrictEqual([
       'DELETE_ITEM',
       expect.objectContaining({
         url: givenUrl,

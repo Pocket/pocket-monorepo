@@ -1,10 +1,6 @@
 import { readClient, writeClient } from '../../../database/client';
 import { EventType } from '../../../businessEvents';
-import sinon from 'sinon';
 import { getUnixTimestamp } from '../../../utils';
-import chai, { expect } from 'chai';
-import deepEqualInAnyOrder from 'deep-equal-in-any-order';
-import chaiDateTime from 'chai-datetime';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
 import { Express } from 'express';
@@ -12,18 +8,14 @@ import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import * as Client from '../../../database/client';
 
-chai.use(deepEqualInAnyOrder);
-chai.use(chaiDateTime);
-
 describe('createSavedItemTags mutation', function () {
   const writeDb = writeClient();
   const readDb = readClient();
-  const eventSpy = sinon.spy(ContextManager.prototype, 'emitItemEvent');
+  const eventSpy = jest.spyOn(ContextManager.prototype, 'emitItemEvent');
   const headers = { userid: '1' };
   const date = new Date('2020-10-03 10:20:30'); // Consistent date for seeding
   const date1 = new Date('2020-10-03 10:30:30'); // Consistent date for seeding
   const updateDate = new Date(2021, 1, 1, 0, 0); // mock date for insert
-  let clock;
   let app: Express;
   let server: ApolloServer<ContextManager>;
   let url: string;
@@ -32,22 +24,21 @@ describe('createSavedItemTags mutation', function () {
     ({ app, server, url } = await startServer(0));
 
     // Mock Date.now() to get a consistent date for inserting data
-    clock = sinon.useFakeTimers({
+    jest.useFakeTimers({
       now: updateDate,
-      shouldAdvanceTime: false,
-      shouldClearNativeTimers: true,
+      advanceTimers: true,
     });
   });
 
   afterAll(async () => {
     await writeDb.destroy();
     await readDb.destroy();
-    clock.restore();
-    sinon.restore();
+    jest.useRealTimers();
+    jest.restoreAllMocks();
     await server.stop();
   });
 
-  afterEach(() => sinon.resetHistory());
+  afterEach(() => jest.clearAllMocks());
 
   beforeEach(async () => {
     await writeDb('item_tags').truncate();
@@ -173,19 +164,16 @@ describe('createSavedItemTags mutation', function () {
         },
       ];
 
-      expect(res).is.not.undefined;
+      expect(res).not.toBeUndefined();
       const data = res.body.data.createSavedItemTags;
-      expect(data[0].url).equals('http://0');
-      expect(data[0]._updatedAt).equals(getUnixTimestamp(updateDate));
-      expect(data[0].tags.length).to.equal(4);
-      expect(data[0].tags).to.deep.equalInAnyOrder(
-        expectedTagsForSavedItemZero,
-      );
-
-      expect(data[1].url).equals('http://1');
-      expect(data[1]._updatedAt).equals(getUnixTimestamp(updateDate));
-      expect(data[1].tags.length).to.equal(4);
-      expect(data[1].tags).to.deep.equalInAnyOrder(expectedTagsForSavedItemOne);
+      expect(data[0].url).toBe('http://0');
+      expect(data[0]._updatedAt).toBe(getUnixTimestamp(updateDate));
+      expect(data[0].tags.length).toBe(4);
+      expect(data[0].tags).toContainAllValues(expectedTagsForSavedItemZero);
+      expect(data[1].url).toBe('http://1');
+      expect(data[1]._updatedAt).toBe(getUnixTimestamp(updateDate));
+      expect(data[1].tags.length).toBe(4);
+      expect(data[1].tags).toContainAllValues(expectedTagsForSavedItemOne);
     },
   );
 
@@ -199,12 +187,12 @@ describe('createSavedItemTags mutation', function () {
       .set(headers)
       .send({ query: createSavedItemTags, variables });
 
-    expect(res.body.errors).to.be.undefined;
-    expect(eventSpy.callCount).to.equal(1);
-    const eventData = eventSpy.getCall(0).args;
-    expect(eventData[0]).to.equal(EventType.ADD_TAGS);
-    expect(eventData[1].id).equals(1);
-    expect(eventData[2]).to.deep.equalInAnyOrder(['tofino', 'victoria']);
+    expect(res.body.errors).toBeUndefined();
+    expect(eventSpy).toHaveBeenCalledTimes(1);
+    const eventData = eventSpy.mock.calls[0];
+    expect(eventData[0]).toBe(EventType.ADD_TAGS);
+    expect(eventData[1].id).toBe(1);
+    expect(eventData[2]).toContainAllValues(['tofino', 'victoria']);
   });
 
   it('mutations resolver chains should call only writeClient()', async () => {
@@ -212,15 +200,15 @@ describe('createSavedItemTags mutation', function () {
       input: [{ savedItemId: '1', tags: ['tag', 'added'] }],
     };
 
-    const readClientSpy = sinon.spy(Client, 'readClient');
-    const writeClientSpy = sinon.spy(Client, 'writeClient');
+    const readClientSpy = jest.spyOn(Client, 'readClient').mockClear();
+    const writeClientSpy = jest.spyOn(Client, 'writeClient').mockClear();
     const res = await request(app)
       .post(url)
       .set(headers)
       .send({ query: createSavedItemTags, variables });
 
-    expect(res.body.errors).to.be.undefined;
-    expect(readClientSpy.callCount).to.equal(0);
-    expect(writeClientSpy.callCount).to.equal(1);
+    expect(res.body.errors).toBeUndefined();
+    expect(readClientSpy).toHaveBeenCalledTimes(0);
+    expect(writeClientSpy).toHaveBeenCalledTimes(1);
   });
 });

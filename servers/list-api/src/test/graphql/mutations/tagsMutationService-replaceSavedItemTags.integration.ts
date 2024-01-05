@@ -1,10 +1,6 @@
 import { readClient, writeClient } from '../../../database/client';
-import chai, { expect } from 'chai';
-import sinon from 'sinon';
 import { EventType } from '../../../businessEvents';
 import { UsersMetaService } from '../../../dataService';
-import deepEqualInAnyOrder from 'deep-equal-in-any-order';
-import chaiDateTime from 'chai-datetime';
 import { getUnixTimestamp } from '../../../utils';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
@@ -12,20 +8,16 @@ import { Express } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 
-chai.use(deepEqualInAnyOrder);
-chai.use(chaiDateTime);
-
 describe('tags mutation: replace savedItem tags', () => {
   const writeDb = writeClient();
   const readDb = readClient();
-  const eventSpy = sinon.spy(ContextManager.prototype, 'emitItemEvent');
+  const eventSpy = jest.spyOn(ContextManager.prototype, 'emitItemEvent');
 
   const headers = { userid: '1' };
   const date = new Date('2020-10-03 10:20:30'); // Consistent date for seeding
   const date1 = new Date('2020-10-03 10:30:30'); // Consistent date for seeding
   const updateDate = new Date(2021, 1, 1, 0, 0); // mock date for insert
-  let clock;
-  let logTagSpy;
+  let logTagSpy: jest.SpyInstance;
   let app: Express;
   let server: ApolloServer<ContextManager>;
   let url: string;
@@ -34,20 +26,19 @@ describe('tags mutation: replace savedItem tags', () => {
     ({ app, server, url } = await startServer(0));
 
     // Mock Date.now() to get a consistent date for inserting data
-    clock = sinon.useFakeTimers({
+    jest.useFakeTimers({
       now: updateDate,
-      shouldAdvanceTime: false,
-      shouldClearNativeTimers: true,
+      advanceTimers: true,
     });
   });
 
-  afterEach(() => sinon.resetHistory());
+  afterEach(() => jest.clearAllMocks());
 
   afterAll(async () => {
     await writeDb.destroy();
     await readDb.destroy();
-    sinon.restore();
-    clock.restore();
+    jest.restoreAllMocks();
+    jest.useRealTimers();
     await server.stop();
   });
 
@@ -164,12 +155,12 @@ describe('tags mutation: replace savedItem tags', () => {
       },
     ];
 
-    expect(res).is.not.undefined;
+    expect(res).not.toBeUndefined();
     const data = res.body.data.replaceSavedItemTags;
-    expect(data[0].url).equals('http://1');
-    expect(data[0]._updatedAt).equals(getUnixTimestamp(updateDate));
-    expect(data[0].tags.length).to.equal(2);
-    expect(data[0].tags).to.deep.equalInAnyOrder(expectedTags);
+    expect(data[0].url).toEqual('http://1');
+    expect(data[0]._updatedAt).toEqual(getUnixTimestamp(updateDate));
+    expect(data[0].tags.length).toEqual(2);
+    expect(data[0].tags).toContainAllValues(expectedTags);
   });
 
   it('replacesSavedItemTags should replace tags for multiple savedItems', async () => {
@@ -194,9 +185,9 @@ describe('tags mutation: replace savedItem tags', () => {
       },
     ];
 
-    expect(res).is.not.undefined;
-    expect(res.body.data.replaceSavedItemTags.length).to.equal(2);
-    expect(res.body.data.replaceSavedItemTags).to.deep.equalInAnyOrder([
+    expect(res).not.toBeUndefined();
+    expect(res.body.data.replaceSavedItemTags.length).toEqual(2);
+    expect(res.body.data.replaceSavedItemTags).toContainAllValues([
       {
         url: 'http://1',
         _updatedAt: getUnixTimestamp(updateDate),
@@ -220,12 +211,12 @@ describe('tags mutation: replace savedItem tags', () => {
       variables,
     });
 
-    expect(res.body.errors).to.be.undefined;
-    expect(eventSpy.callCount).to.equal(1);
-    const eventData = eventSpy.getCall(0).args;
-    expect(eventData[0]).to.equal(EventType.REPLACE_TAGS);
-    expect(eventData[1].id).equals(1);
-    expect(eventData[2]).to.deep.equalInAnyOrder(['tofino', 'victoria']);
+    expect(res.body.errors).toBeUndefined();
+    expect(eventSpy).toHaveBeenCalledTimes(1);
+    const eventData = eventSpy.mock.calls[0];
+    expect(eventData[0]).toEqual(EventType.REPLACE_TAGS);
+    expect(eventData[1].id).toEqual(1);
+    expect(eventData[2]).toContainAllValues(['tofino', 'victoria']);
   });
 
   it('should be able to re-add tags along with new tags', async () => {
@@ -242,14 +233,14 @@ describe('tags mutation: replace savedItem tags', () => {
       query: replaceSavedItemTags,
       variables,
     });
-    expect(res).is.not.undefined;
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data.replaceSavedItemTags.length).to.equal(1);
+    expect(res).not.toBeUndefined();
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data.replaceSavedItemTags.length).toEqual(1);
     const tagsAdded = [];
     res.body.data.replaceSavedItemTags[0].tags.forEach((tag) =>
       tagsAdded.push(tag.name),
     );
-    expect(tagsAdded).to.deep.equalInAnyOrder([
+    expect(tagsAdded).toContainAllValues([
       'existing_tag',
       'existing_tag_1',
       'new_tag',
@@ -265,9 +256,11 @@ describe('tags mutation: replace savedItem tags', () => {
     const tagState = await tagStateQuery;
     const metaState = await metaStateQuery;
 
-    logTagSpy = await sinon
-      .stub(UsersMetaService.prototype, 'logTagMutation')
-      .rejects(Error('server error'));
+    logTagSpy = jest
+      .spyOn(UsersMetaService.prototype, 'logTagMutation')
+      .mockImplementation(() => {
+        throw new Error('server error');
+      });
 
     const variables = {
       input: { savedItemId: '1', tags: ['helloWorld'] },
@@ -278,12 +271,12 @@ describe('tags mutation: replace savedItem tags', () => {
       variables,
     });
 
-    expect(res.body.errors.length).to.equal(1);
-    expect(res.body.errors[0].extensions.code).equals('INTERNAL_SERVER_ERROR');
-    expect(await listStateQuery).to.deep.equalInAnyOrder(listState);
-    expect(await tagStateQuery).to.deep.equalInAnyOrder(tagState);
-    expect(await metaStateQuery).to.deep.equalInAnyOrder(metaState);
-    logTagSpy.restore();
+    expect(res.body.errors.length).toEqual(1);
+    expect(res.body.errors[0].extensions.code).toEqual('INTERNAL_SERVER_ERROR');
+    expect(await listStateQuery).toContainAllValues(listState);
+    expect(await tagStateQuery).toContainAllValues(tagState);
+    expect(await metaStateQuery).toContainAllValues(metaState);
+    logTagSpy.mockRestore();
   });
   it('should not allow an empty tag', async () => {
     const variables = {
@@ -293,10 +286,10 @@ describe('tags mutation: replace savedItem tags', () => {
       query: replaceSavedItemTags,
       variables,
     });
-    expect(res.body.errors.length).to.equal(1);
-    expect(res.body.errors[0].message).contains(
+    expect(res.body.errors.length).toEqual(1);
+    expect(res.body.errors[0].message).toContain(
       'Tag name must have at least 1 non-whitespace character.',
     );
-    expect(res.body.errors[0].extensions?.code).to.equal('BAD_USER_INPUT');
+    expect(res.body.errors[0].extensions?.code).toEqual('BAD_USER_INPUT');
   });
 });

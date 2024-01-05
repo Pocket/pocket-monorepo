@@ -1,5 +1,4 @@
 import { readClient, writeClient } from '../../../database/client';
-import sinon from 'sinon';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
 import { Express } from 'express';
@@ -11,7 +10,7 @@ import request from 'supertest';
 describe('saveArchive mutation', function () {
   const writeDb = writeClient();
   const readDb = readClient();
-  const eventSpy = sinon.spy(ContextManager.prototype, 'emitItemEvent');
+  const eventSpy = jest.spyOn(ContextManager.prototype, 'emitItemEvent');
   const headers = { userid: '1' };
   const date = new Date('2020-10-03T10:20:30.000Z'); // Consistent date for seeding
   const date1 = new Date('2020-10-03T10:30:30.000Z'); // Consistent date for seeding
@@ -71,11 +70,11 @@ describe('saveArchive mutation', function () {
   afterAll(async () => {
     await writeDb.destroy();
     await readDb.destroy();
-    sinon.restore();
+    jest.restoreAllMocks();
     await server.stop();
   });
 
-  afterEach(() => sinon.resetHistory());
+  afterEach(() => jest.clearAllMocks());
 
   it('should archive one save', async () => {
     const testTimestamp = '2023-10-05T14:48:00.000Z';
@@ -191,7 +190,7 @@ describe('saveArchive mutation', function () {
       .post(url)
       .set(headers)
       .send({ query: print(ARCHIVE_MUTATION), variables });
-    expect(eventSpy.callCount).toEqual(2);
+    expect(eventSpy).toHaveBeenCalledTimes(2);
   });
   // TODO: Unskip when archive events are implemented
   it.skip('should not emit an archive event if the save is already archived', async () => {
@@ -204,7 +203,7 @@ describe('saveArchive mutation', function () {
       .post(url)
       .set(headers)
       .send({ query: print(ARCHIVE_MUTATION), variables });
-    expect(eventSpy.callCount).toEqual(0);
+    expect(eventSpy).toHaveBeenCalledTimes(0);
   });
   // TODO: When @constraint annotations are added to schema
   it.todo('should not accept more than 30 input ids');

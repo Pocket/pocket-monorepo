@@ -1,6 +1,4 @@
 import { readClient, writeClient } from '../../../database/client';
-import chai, { expect } from 'chai';
-import chaiDateTime from 'chai-datetime';
 import nock, { cleanAll } from 'nock';
 import config from '../../../config';
 import {
@@ -16,7 +14,6 @@ import {
   ReceiveMessageCommandOutput,
 } from '@aws-sdk/client-sqs';
 import { sqs } from '../../../aws/sqs';
-import sinon from 'sinon';
 import { getUnixTimestamp } from '../../../utils';
 import { transformers } from '../../../businessEvents/sqs/transformers';
 import { ContextManager } from '../../../server/context';
@@ -24,8 +21,7 @@ import { startServer } from '../../../server/apollo';
 import { Express } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
-
-chai.use(chaiDateTime);
+import type { Knex } from 'knex';
 
 function mockParserGetItemRequest(urlToParse: string, data: any) {
   nock(config.parserDomain)
@@ -59,37 +55,31 @@ describe('UpsertSavedItem Mutation', () => {
   const writeDb = writeClient();
   const readDb = readClient();
   const itemsEventEmitter = new ItemsEventEmitter();
-  const eventSpy = sinon.spy(ContextManager.prototype, 'emitItemEvent');
+  const eventSpy = jest.spyOn(ContextManager.prototype, 'emitItemEvent');
   new SqsListener(itemsEventEmitter, transformers);
   const date = new Date('2020-10-03 10:20:30'); // Consistent date for seeding
   const unixDate = getUnixTimestamp(date);
   const dateNow = new Date('2021-10-06 03:22:00');
   const headers = { userid: '1' };
-  let clock;
   let app: Express;
   let server: ApolloServer<ContextManager>;
   let url: string;
 
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
-
-    clock = sinon.useFakeTimers({
-      now: dateNow,
-      shouldAdvanceTime: false,
-      shouldClearNativeTimers: true,
-    });
+    jest.useFakeTimers({ advanceTimers: true, now: dateNow });
   });
 
   afterAll(async () => {
     await writeDb.destroy();
     await readDb.destroy();
-    clock.restore();
-    sinon.restore();
+    jest.useRealTimers();
+    jest.restoreAllMocks();
     cleanAll();
     await server.stop();
   });
 
-  afterEach(() => eventSpy.resetHistory());
+  afterEach(() => eventSpy.mockClear());
 
   beforeEach(async () => {
     await sqs.purgeQueue({ QueueUrl: config.aws.sqs.publisherQueue.url });
@@ -184,19 +174,19 @@ describe('UpsertSavedItem Mutation', () => {
         query: ADD_AN_ITEM,
         variables,
       });
-      expect(mutationResult).is.not.null;
+      expect(mutationResult).not.toBeNull();
       const data = mutationResult.body.data?.upsertSavedItem;
-      expect(data.id).to.equal('8');
-      expect(data.title).to.equal(variables.url);
-      expect(data.url).to.equal(variables.url);
-      expect(data.isFavorite).is.false;
-      expect(data.isArchived).is.false;
-      expect(data._deletedAt).is.null;
-      expect(data._version).is.null;
-      expect(data.item.givenUrl).equals(variables.url);
-      expect(data.tags[0].name).equals('zebra');
-      expect(data.archivedAt).is.null;
-      expect(data.favoritedAt).is.null;
+      expect(data.id).toEqual('8');
+      expect(data.title).toEqual(variables.url);
+      expect(data.url).toEqual(variables.url);
+      expect(data.isFavorite).toBeFalse();
+      expect(data.isArchived).toBeFalse();
+      expect(data._deletedAt).toBeNull();
+      expect(data._version).toBeNull();
+      expect(data.item.givenUrl).toEqual(variables.url);
+      expect(data.tags[0].name).toEqual('zebra');
+      expect(data.archivedAt).toBeNull();
+      expect(data.favoritedAt).toBeNull();
     });
 
     it('should return user provided title on the returned savedItem', async () => {
@@ -217,9 +207,9 @@ describe('UpsertSavedItem Mutation', () => {
         query: ADD_AN_ITEM,
         variables,
       });
-      expect(mutationResult).is.not.null;
+      expect(mutationResult).not.toBeNull();
       const data = mutationResult.body.data?.upsertSavedItem;
-      expect(data.title).to.equal(variables.title);
+      expect(data.title).toEqual(variables.title);
     });
 
     it('should add an item to the list even if the parser has not yet resolved or cannot resolve it', async () => {
@@ -257,13 +247,13 @@ describe('UpsertSavedItem Mutation', () => {
         query: ADD_AN_ITEM,
         variables,
       });
-      expect(mutationResult).is.not.null;
+      expect(mutationResult).not.toBeNull();
       const data = mutationResult.body.data?.upsertSavedItem;
-      expect(data.id).to.equal('1');
-      expect(data.item.givenUrl).is.undefined;
-      expect(data.item.url).to.equal(givenUrl);
-      expect(data.item.itemId).to.equal('1');
-      expect(data.item.__typename).to.equal('PendingItem');
+      expect(data.id).toEqual('1');
+      expect(data.item.givenUrl).toBeUndefined();
+      expect(data.item.url).toEqual(givenUrl);
+      expect(data.item.itemId).toEqual('1');
+      expect(data.item.__typename).toEqual('PendingItem');
     });
 
     it('should updated time favourite and time updated if provided in input', async () => {
@@ -300,16 +290,16 @@ describe('UpsertSavedItem Mutation', () => {
         query: ADD_AN_ITEM,
         variables,
       });
-      expect(mutationResult).is.not.null;
+      expect(mutationResult).not.toBeNull();
       const data = mutationResult.body.data?.upsertSavedItem;
 
-      expect(data.id).to.equal('11');
-      expect(data.url).to.equal(variables.url);
-      expect(data.isFavorite).is.true;
-      expect(data.isArchived).is.false;
-      expect(data.archivedAt).is.null;
-      expect(data._createdAt).to.equal(unixDate);
-      expect(data.favoritedAt).to.equal(unixDate);
+      expect(data.id).toEqual('11');
+      expect(data.url).toEqual(variables.url);
+      expect(data.isFavorite).toBeTrue();
+      expect(data.isArchived).toBeFalse();
+      expect(data.archivedAt).toBeNull();
+      expect(data._createdAt).toEqual(unixDate);
+      expect(data.favoritedAt).toEqual(unixDate);
     });
 
     it('should set time favorite to current time if isFav is set', async () => {
@@ -335,9 +325,9 @@ describe('UpsertSavedItem Mutation', () => {
       });
       const data = mutationResult.body.data?.upsertSavedItem;
 
-      expect(data.url).equals('http://favorite.com');
-      expect(data.isFavorite).is.true;
-      expect(data.favoritedAt).to.not.equal(
+      expect(data.url).toEqual('http://favorite.com');
+      expect(data.isFavorite).toBeTrue();
+      expect(data.favoritedAt).not.toEqual(
         getUnixTimestamp(new Date('0000-00-00 00:00:00')),
       );
     });
@@ -361,11 +351,11 @@ describe('UpsertSavedItem Mutation', () => {
         variables,
       });
 
-      expect(eventSpy.calledOnce).to.be.true;
-      const eventData = eventSpy.getCall(0).args;
-      expect(eventData[0]).to.equal(EventType.ADD_ITEM);
-      expect(eventData[1].url).to.equal(variables.url);
-      expect(mutationResult.body.data?.upsertSavedItem.url).to.equal(
+      expect(eventSpy).toHaveBeenCalledTimes(1);
+      const eventData = eventSpy.mock.calls[0];
+      expect(eventData[0]).toEqual(EventType.ADD_ITEM);
+      expect(eventData[1].url).toEqual(variables.url);
+      expect(mutationResult.body.data?.upsertSavedItem.url).toEqual(
         variables.url,
       );
     });
@@ -388,13 +378,13 @@ describe('UpsertSavedItem Mutation', () => {
         .set(headers)
         .send({ query: ADD_AN_ITEM, variables });
       // Duplicate insert and reset event tracking
-      eventSpy.resetHistory();
+      eventSpy.mockClear();
       const mutationResult = await request(app).post(url).set(headers).send({
         query: ADD_AN_ITEM,
         variables,
       });
-      expect(eventSpy.callCount).to.equal(0);
-      expect(mutationResult.body.data?.upsertSavedItem.url).to.equal(
+      expect(eventSpy).toHaveBeenCalledTimes(0);
+      expect(mutationResult.body.data?.upsertSavedItem.url).toEqual(
         variables.url,
       );
     });
@@ -417,30 +407,31 @@ describe('UpsertSavedItem Mutation', () => {
         query: ADD_AN_ITEM,
         variables,
       });
-      expect(mutationResult.body.data?.upsertSavedItem.url).to.equal(
+      expect(mutationResult.body.data?.upsertSavedItem.url).toEqual(
         variables.url,
       );
 
       const publisherQueueMessages = await getSqsMessages(
         config.aws.sqs.publisherQueue.url,
       );
-      expect(publisherQueueMessages?.Messages[0]?.Body).is.not.null;
+      expect(publisherQueueMessages?.Messages[0]?.Body).not.toBeNull();
       const publisherQueueMessageBody = JSON.parse(
         publisherQueueMessages?.Messages[0]?.Body,
       );
-      expect(publisherQueueMessageBody.action).equals(SQSEvents.ADD_ITEM);
-      expect(publisherQueueMessageBody.user_id).equals(1);
-      expect(publisherQueueMessageBody.item_id).equals(25);
-      expect(publisherQueueMessageBody.api_id).equals(0);
+      expect(publisherQueueMessageBody.action).toEqual(SQSEvents.ADD_ITEM);
+      expect(publisherQueueMessageBody.user_id).toEqual(1);
+      expect(publisherQueueMessageBody.item_id).toEqual(25);
+      expect(publisherQueueMessageBody.api_id).toEqual(0);
 
       const permLibQueueData = await getSqsMessages(
         config.aws.sqs.permLibItemMainQueue.url,
       );
       // Should not send for non-premium users
-      expect(permLibQueueData?.Messages).is.empty;
+      expect(permLibQueueData?.Messages).toBeEmpty();
     });
 
     it('should push addItem event to perm lib queue for premium users', async () => {
+      jest.useFakeTimers({ advanceTimers: true, now: dateNow });
       const variables = {
         url: 'http://addingtoqueue.com',
       };
@@ -461,20 +452,20 @@ describe('UpsertSavedItem Mutation', () => {
           query: ADD_AN_ITEM,
           variables,
         });
-      expect(mutationResult.body.data?.upsertSavedItem.url).to.equal(
+      expect(mutationResult.body.data?.upsertSavedItem.url).toEqual(
         variables.url,
       );
 
       const permLibQueueData = await getSqsMessages(
         config.aws.sqs.permLibItemMainQueue.url,
       );
-      expect(permLibQueueData?.Messages[0]?.Body).is.not.null;
+      expect(permLibQueueData?.Messages[0]?.Body).not.toBeNull();
       const permLibQueueBody = JSON.parse(permLibQueueData?.Messages[0]?.Body);
-      expect(permLibQueueBody.userId).equals(1);
-      expect(permLibQueueBody.itemId).equals(25);
-      expect(permLibQueueBody.givenUrl).equals(variables.url);
-      expect(permLibQueueBody.timeAdded).equals('2021-10-06 03:22:00');
-      expect(permLibQueueBody.resolvedId).equals(25);
+      expect(permLibQueueBody.userId).toEqual(1);
+      expect(permLibQueueBody.itemId).toEqual(25);
+      expect(permLibQueueBody.givenUrl).toEqual(variables.url);
+      expect(permLibQueueBody.timeAdded).toEqual('2021-10-06 03:22:00');
+      expect(permLibQueueBody.resolvedId).toEqual(25);
     });
     describe(' - on existing savedItem: ', () => {
       const ADD_AN_ITEM = `
@@ -519,6 +510,7 @@ describe('UpsertSavedItem Mutation', () => {
       });
 
       it(`should update an item already in a user's list`, async () => {
+        jest.useFakeTimers({ advanceTimers: true, now: dateNow });
         const variables = {
           url: 'http://google.com',
           isFavorite: true,
@@ -528,18 +520,17 @@ describe('UpsertSavedItem Mutation', () => {
           query: ADD_AN_ITEM,
           variables,
         });
-        expect(mutationResult.body.errors).to.be.undefined;
+        expect(mutationResult.body.errors).toBeUndefined();
         const data = mutationResult.body.data.upsertSavedItem;
-        expect(data._createdAt)
-          .to.equal(getUnixTimestamp(dateNow))
-          .and.to.equal(data._updatedAt)
-          .and.to.equal(data.favoritedAt);
-        expect(data.status).to.equal('UNREAD');
-        expect(data.isFavorite).to.be.true;
-        expect(data.isArchived).to.be.false;
-        expect(data.archivedAt).to.be.null;
-        expect(data.url).to.equal('http://google.com');
-        expect(data.id).to.equal('11');
+        expect(data._createdAt).toEqual(getUnixTimestamp(dateNow));
+        expect(data._createdAt).toEqual(data._updatedAt);
+        expect(data._createdAt).toEqual(data.favoritedAt);
+        expect(data.status).toEqual('UNREAD');
+        expect(data.isFavorite).toBeTrue();
+        expect(data.isArchived).toBeFalse();
+        expect(data.archivedAt).toBeNull();
+        expect(data.url).toEqual('http://google.com');
+        expect(data.id).toEqual('11');
       });
       it('should not emit an add item event', async () => {
         const variables = {
@@ -551,9 +542,9 @@ describe('UpsertSavedItem Mutation', () => {
           query: ADD_AN_ITEM,
           variables,
         });
-        expect(eventSpy.callCount).to.be.greaterThan(0);
-        const events = eventSpy.getCalls().map((call) => call.args[0]);
-        expect(events).not.to.contain(EventType.ADD_ITEM);
+        expect(eventSpy.mock.calls.length).toBeGreaterThan(0);
+        const events = eventSpy.mock.calls.map((call) => call[0]);
+        expect(events).not.toContain(EventType.ADD_ITEM);
       });
       it('should emit favorite event if item is favorited', async () => {
         const variables = {
@@ -565,9 +556,9 @@ describe('UpsertSavedItem Mutation', () => {
           query: ADD_AN_ITEM,
           variables,
         });
-        expect(eventSpy.callCount).to.be.greaterThan(0);
-        const events = eventSpy.getCalls().map((call) => call.args[0]);
-        expect(events).to.contain(EventType.FAVORITE_ITEM);
+        expect(eventSpy.mock.calls.length).toBeGreaterThan(0);
+        const events = eventSpy.mock.calls.map((call) => call[0]);
+        expect(events).toContain(EventType.FAVORITE_ITEM);
       });
       it('should not unfavorite a previously favorited item, and should not send favorite event', async () => {
         const faveVariables = {
@@ -586,15 +577,15 @@ describe('UpsertSavedItem Mutation', () => {
           variables: faveVariables,
         });
         // Start listening for events after initial insert
-        eventSpy.resetHistory();
+        eventSpy.mockClear();
         // re-add it
         const res = await request(app).post(url).set(headers).send({
           query: ADD_AN_ITEM,
           variables: unFaveVariables,
         });
-        expect(res.body.errors).to.be.undefined;
-        expect(res.body.data.upsertSavedItem.isFavorite).to.be.true;
-        expect(eventSpy.callCount).to.equal(0);
+        expect(res.body.errors).toBeUndefined();
+        expect(res.body.data.upsertSavedItem.isFavorite).toBeTrue();
+        expect(eventSpy).toHaveBeenCalledTimes(0);
       });
       it('should send not favorite event if item was previously favorited', async () => {
         const faveVariables = {
@@ -613,15 +604,15 @@ describe('UpsertSavedItem Mutation', () => {
           variables: faveVariables,
         });
         // Start listening for events after initial insert
-        eventSpy.resetHistory();
+        eventSpy.mockClear();
         // re-add it
         const res = await request(app).post(url).set(headers).send({
           query: ADD_AN_ITEM,
           variables: reFaveVariables,
         });
-        expect(res.body.errors).to.be.undefined;
-        expect(res.body.data.upsertSavedItem.isFavorite).to.be.true;
-        expect(eventSpy.callCount).to.equal(0);
+        expect(res.body.errors).toBeUndefined();
+        expect(res.body.data.upsertSavedItem.isFavorite).toBeTrue();
+        expect(eventSpy).toHaveBeenCalledTimes(0);
       });
       it('should emit unarchive event if item was previously archived', async () => {
         const variables = {
@@ -633,8 +624,8 @@ describe('UpsertSavedItem Mutation', () => {
           query: ADD_AN_ITEM,
           variables,
         });
-        const events = eventSpy.getCalls().map((call) => call.args[0]);
-        expect(events).to.contain(EventType.UNARCHIVE_ITEM);
+        const events = eventSpy.mock.calls.map((call) => call[0]);
+        expect(events).toContain(EventType.UNARCHIVE_ITEM);
       });
 
       it('should not emit unarchive event if item was not archived', async () => {
@@ -650,8 +641,8 @@ describe('UpsertSavedItem Mutation', () => {
           query: ADD_AN_ITEM,
           variables,
         });
-        const events = eventSpy.getCalls().map((call) => call.args[0]);
-        expect(events).not.to.contain(EventType.UNARCHIVE_ITEM);
+        const events = eventSpy.mock.calls.map((call) => call[0]);
+        expect(events).not.toContain(EventType.UNARCHIVE_ITEM);
       });
     });
   });
@@ -683,7 +674,7 @@ describe('UpsertSavedItem Mutation', () => {
         query: ADD_AN_ITEM,
         variables,
       });
-      expect(mutationResult.body.errors[0].message).equals(
+      expect(mutationResult.body.errors[0].message).toEqual(
         `unable to add item with url: ${variables.url}`,
       );
     });
@@ -695,9 +686,13 @@ describe('UpsertSavedItem Mutation', () => {
         },
       });
 
-      const contextStub = sinon
-        .stub(ContextManager.prototype, 'dbClient')
-        .returns(undefined);
+      const contextStub = jest
+        // @ts-expect-error ts(2345)
+        .spyOn(ContextManager.prototype, 'dbClient', 'get')
+        // @ts-expect-error ts(2339)
+        .mockImplementation(() => {
+          return (() => undefined) as Knex;
+        });
 
       const variables = {
         url: 'http://databasetest.com',
@@ -719,8 +714,8 @@ describe('UpsertSavedItem Mutation', () => {
         query: ADD_AN_ITEM,
         variables,
       });
-      contextStub.restore();
-      expect(mutationResult.body.errors[0].message).equals(
+      contextStub.mockRestore();
+      expect(mutationResult.body.errors[0].message).toEqual(
         `unable to add item with url: ${variables.url}`,
       );
     });

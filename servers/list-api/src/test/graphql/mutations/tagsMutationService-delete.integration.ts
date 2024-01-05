@@ -1,9 +1,5 @@
 import { readClient, writeClient } from '../../../database/client';
-import chai, { expect } from 'chai';
-import deepEqualInAnyOrder from 'deep-equal-in-any-order';
-import sinon from 'sinon';
 import { UsersMetaService } from '../../../dataService';
-import chaiDateTime from 'chai-datetime';
 import { EventType } from '../../../businessEvents';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
@@ -11,13 +7,10 @@ import { Express } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 
-chai.use(deepEqualInAnyOrder);
-chai.use(chaiDateTime);
-
 describe('Mutation for Tag deletions: ', () => {
   const writeDb = writeClient();
   const readDb = readClient();
-  let eventSpy = sinon.spy(ContextManager.prototype, 'emitItemEvent');
+  let eventSpy = jest.spyOn(ContextManager.prototype, 'emitItemEvent');
   const dbTagsQuery = writeDb('item_tags').select('tag').pluck('tag');
   const listUpdatedQuery = readDb('list').select('time_updated');
   const listStateQuery = readDb('list').select();
@@ -35,13 +28,12 @@ describe('Mutation for Tag deletions: ', () => {
   afterAll(async () => {
     await writeDb.destroy();
     await readDb.destroy();
-    sinon.restore();
+    jest.restoreAllMocks();
     await server.stop();
   });
 
   afterEach(() => {
-    sinon.restore();
-    eventSpy = sinon.spy(ContextManager.prototype, 'emitItemEvent');
+    jest.restoreAllMocks();
   });
 
   beforeAll(async () => {
@@ -49,6 +41,7 @@ describe('Mutation for Tag deletions: ', () => {
   });
 
   beforeEach(async () => {
+    eventSpy = jest.spyOn(ContextManager.prototype, 'emitItemEvent');
     // Shared list data
     await writeDb('list').truncate();
     const listData = [
@@ -125,18 +118,16 @@ describe('Mutation for Tag deletions: ', () => {
         .clone()
         .where('item_id', 0)
         .first();
-      expect(res.body.errors).to.be.undefined;
-      expect(res.body.data.deleteSavedItemTags.length).to.equal(1);
-      expect(res.body.data.deleteSavedItemTags[0].id).to.equal('0');
-      expect(res.body.data.deleteSavedItemTags[0].tags).to.deep.equalInAnyOrder(
-        [
-          { name: 'nandor' },
-          { name: 'nadja' },
-          { name: 'guillermo' },
-          { name: 'laszlo' },
-        ],
-      );
-      expect(dbTags).to.deep.equalInAnyOrder([
+      expect(res.body.errors).toBeUndefined();
+      expect(res.body.data.deleteSavedItemTags.length).toEqual(1);
+      expect(res.body.data.deleteSavedItemTags[0].id).toEqual('0');
+      expect(res.body.data.deleteSavedItemTags[0].tags).toContainAllValues([
+        { name: 'nandor' },
+        { name: 'nadja' },
+        { name: 'guillermo' },
+        { name: 'laszlo' },
+      ]);
+      expect(dbTags).toContainAllValues([
         'nandor',
         'nadja',
         'guillermo',
@@ -144,7 +135,10 @@ describe('Mutation for Tag deletions: ', () => {
       ]);
       // Also check that it updates the list item(s)
       // Getting knex.fn.now to stub in the service is a struggle, so use closeToTime
-      expect(listItem.time_updated).to.be.closeToTime(now, 5);
+      expect(listItem.time_updated).toBeBetween(
+        new Date(now.getTime() - 5 * 1000),
+        new Date(now.getTime() + 5 * 1000),
+      );
     });
 
     it(' deleteSavedItemTags should emit remove_tags event on success', async () => {
@@ -162,15 +156,15 @@ describe('Mutation for Tag deletions: ', () => {
         query: deleteSavedItemTagsMutation,
         variables,
       });
-      expect(res.body.errors).to.be.undefined;
-      expect(eventSpy.calledTwice).to.be.true;
-      const eventData = eventSpy.getCalls().map((_) => _.args);
-      expect(eventData[0][0]).to.equal(EventType.REMOVE_TAGS);
-      expect(eventData[0][1].id).equals(0);
-      expect(eventData[0][2]).to.deep.equalInAnyOrder(['colin', 'nadja']);
-      expect(eventData[1][0]).to.equal(EventType.REMOVE_TAGS);
-      expect(eventData[1][1].id).equals(1);
-      expect(eventData[1][2]).to.deep.equalInAnyOrder(['deacon']);
+      expect(res.body.errors).toBeUndefined();
+      expect(eventSpy).toHaveBeenCalledTimes(2);
+      const eventData = eventSpy.mock.calls.map((_) => _);
+      expect(eventData[0][0]).toEqual(EventType.REMOVE_TAGS);
+      expect(eventData[0][1].id).toEqual(0);
+      expect(eventData[0][2]).toContainAllValues(['colin', 'nadja']);
+      expect(eventData[1][0]).toEqual(EventType.REMOVE_TAGS);
+      expect(eventData[1][1].id).toEqual(1);
+      expect(eventData[1][2]).toContainAllValues(['deacon']);
     });
 
     it('should delete multiple tags from a savedItem', async () => {
@@ -191,14 +185,17 @@ describe('Mutation for Tag deletions: ', () => {
         .clone()
         .where('item_id', 0)
         .first();
-      expect(res.body.errors).to.be.undefined;
-      expect(res.body.data.deleteSavedItemTags[0].id).to.equal('0');
-      expect(res.body.data.deleteSavedItemTags[0].tags).to.deep.equal([
+      expect(res.body.errors).toBeUndefined();
+      expect(res.body.data.deleteSavedItemTags[0].id).toEqual('0');
+      expect(res.body.data.deleteSavedItemTags[0].tags).toContainAllValues([
         { name: 'guillermo' },
       ]);
-      expect(dbTags.length).to.equal(1);
-      expect(dbTags[0]).to.equal('guillermo');
-      expect(listItem.time_updated).to.be.closeToTime(now, 5);
+      expect(dbTags.length).toEqual(1);
+      expect(dbTags[0]).toEqual('guillermo');
+      expect(listItem.time_updated).toBeBetween(
+        new Date(now.getTime() - 5 * 1000),
+        new Date(now.getTime() + 5 * 1000),
+      );
     });
 
     it('should delete tags from multiple savedItems', async () => {
@@ -229,8 +226,8 @@ describe('Mutation for Tag deletions: ', () => {
         .where('item_id', 0)
         .orWhere('item_id', 1)
         .pluck('time_updated');
-      expect(res.body.errors).to.be.undefined;
-      expect(res.body.data.deleteSavedItemTags.length).to.equal(2);
+      expect(res.body.errors).toBeUndefined();
+      expect(res.body.data.deleteSavedItemTags.length).toEqual(2);
       const expectedSavedItems = [
         {
           id: '0',
@@ -245,14 +242,17 @@ describe('Mutation for Tag deletions: ', () => {
           tags: [],
         },
       ];
-      expect(res.body.data.deleteSavedItemTags).to.deep.equalInAnyOrder(
+      expect(res.body.data.deleteSavedItemTags).toContainAllValues(
         expectedSavedItems,
       );
       updates.forEach((update) => {
-        expect(update).to.be.closeToTime(now, 5);
+        expect(update).toBeBetween(
+          new Date(now.getTime() - 5 * 1000),
+          new Date(now.getTime() + 5 * 1000),
+        );
       });
-      expect(dbTags.length).to.equal(1);
-      expect(dbTags[0]).to.equal('guillermo');
+      expect(dbTags.length).toEqual(1);
+      expect(dbTags[0]).toEqual('guillermo');
     });
 
     it('should roll back if encounter an error during transaction', async () => {
@@ -261,10 +261,12 @@ describe('Mutation for Tag deletions: ', () => {
       const tagState = await tagStateQuery;
       const metaState = await metaStateQuery;
 
-      sinon.restore();
-      sinon
-        .stub(UsersMetaService.prototype, 'logTagMutation')
-        .rejects(Error('server error'));
+      jest.restoreAllMocks();
+      jest
+        .spyOn(UsersMetaService.prototype, 'logTagMutation')
+        .mockImplementation(() => {
+          throw new Error('server error');
+        });
       const variables = {
         input: [
           { savedItemId: 0, tagIds: [Buffer.from('colin').toString('base64')] },
@@ -274,14 +276,14 @@ describe('Mutation for Tag deletions: ', () => {
         query: deleteSavedItemTagsMutation,
         variables,
       });
-      expect(res.body.errors.length).to.equal(1);
-      expect(res.body.errors[0].extensions.code).to.equal(
+      expect(res.body.errors.length).toEqual(1);
+      expect(res.body.errors[0].extensions.code).toEqual(
         'INTERNAL_SERVER_ERROR',
       );
       // Check that all the lists are still in the pre-operation state
-      expect(await listStateQuery).to.deep.equalInAnyOrder(listState);
-      expect(await tagStateQuery).to.deep.equalInAnyOrder(tagState);
-      expect(await metaStateQuery).to.deep.equalInAnyOrder(metaState);
+      expect(await listStateQuery).toContainAllValues(listState);
+      expect(await tagStateQuery).toContainAllValues(tagState);
+      expect(await metaStateQuery).toContainAllValues(metaState);
     });
   });
   describe('deleteTag: ', () => {
@@ -293,7 +295,9 @@ describe('Mutation for Tag deletions: ', () => {
     const viago = Buffer.from('viago').toString('base64');
     const nick = Buffer.from('nick').toString('base64');
     const tagQueryStub = readDb('item_tags').count();
-    const tagLogSpy = sinon.spy(UsersMetaService.prototype, 'logTagMutation');
+    const tagLogSpy = jest
+      .spyOn(UsersMetaService.prototype, 'logTagMutation')
+      .mockClear();
 
     beforeEach(async () => {
       // Shared data for describe case
@@ -319,7 +323,7 @@ describe('Mutation for Tag deletions: ', () => {
     });
 
     afterEach(() => {
-      tagLogSpy.resetHistory();
+      tagLogSpy.mockReset();
     });
     it('should completely remove an existing tag from all associated items', async () => {
       const variables = { id: viago };
@@ -328,10 +332,10 @@ describe('Mutation for Tag deletions: ', () => {
         variables,
       });
       const viagoCount = await tagQueryStub.where('tag', 'viago').first();
-      expect(res.body.errors).to.be.undefined;
-      expect(tagLogSpy.callCount).to.equal(1);
-      expect(res.body.data.deleteTag).to.equal(viago);
-      expect(viagoCount['count(*)']).to.equal(0);
+      expect(res.body.errors).toBeUndefined();
+      expect(tagLogSpy).toHaveBeenCalledTimes(1);
+      expect(res.body.data.deleteTag).toEqual(viago);
+      expect(viagoCount['count(*)']).toEqual(0);
     });
     it('should do nothing if the tag does not exist, and not return an error', async () => {
       const listState = await listStateQuery;
@@ -343,13 +347,13 @@ describe('Mutation for Tag deletions: ', () => {
         query: deleteTagMutation,
         variables,
       });
-      expect(res.body.errors).to.be.undefined;
-      expect(res.body.data.deleteTag).to.equal(nick);
-      expect(tagLogSpy.callCount).to.equal(0);
+      expect(res.body.errors).toBeUndefined();
+      expect(res.body.data.deleteTag).toEqual(nick);
+      expect(tagLogSpy).toHaveBeenCalledTimes(0);
       // Ensure no db changes occurred
-      expect(await listStateQuery).to.deep.equalInAnyOrder(listState);
-      expect(await tagStateQuery).to.deep.equalInAnyOrder(tagState);
-      expect(await metaStateQuery).to.deep.equalInAnyOrder(metaState);
+      expect(await listStateQuery).toContainAllValues(listState);
+      expect(await tagStateQuery).toContainAllValues(tagState);
+      expect(await metaStateQuery).toContainAllValues(metaState);
     });
   });
 });

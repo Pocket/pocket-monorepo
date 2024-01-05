@@ -1,7 +1,4 @@
 import { readClient, writeClient } from '../../../database/client';
-import chai, { expect } from 'chai';
-import chaiDateTime from 'chai-datetime';
-import sinon from 'sinon';
 import { EventType } from '../../../businessEvents';
 import { getUnixTimestamp } from '../../../utils';
 import { ContextManager } from '../../../server/context';
@@ -10,17 +7,14 @@ import { Express } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 
-chai.use(chaiDateTime);
-
 describe('Update Mutation for SavedItem: ', () => {
   //using write client as mutation will use write client to read as well.
   const writeDb = writeClient();
   const readDb = readClient();
-  const eventSpy = sinon.spy(ContextManager.prototype, 'emitItemEvent');
+  const eventSpy = jest.spyOn(ContextManager.prototype, 'emitItemEvent');
   const date = new Date('2020-10-03 10:20:30'); // Consistent date for seeding
   const date1 = new Date('2020-10-03 10:30:30'); // Consistent date for seeding
   const updateDate = new Date(2021, 1, 1, 0, 0); // mock date for insert
-  let clock;
   let app: Express;
   let server: ApolloServer<ContextManager>;
   let url: string;
@@ -31,18 +25,17 @@ describe('Update Mutation for SavedItem: ', () => {
   afterAll(async () => {
     await writeDb.destroy();
     await readDb.destroy();
-    clock.restore();
-    sinon.restore();
+    jest.useRealTimers();
+    jest.restoreAllMocks();
     await server.stop();
   });
 
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
     // Mock Date.now() to get a consistent date for inserting data
-    clock = sinon.useFakeTimers({
+    jest.useFakeTimers({
       now: updateDate,
-      shouldAdvanceTime: true,
-      shouldClearNativeTimers: true,
+      advanceTimers: true,
     });
 
     await writeDb('list').truncate();
@@ -86,7 +79,7 @@ describe('Update Mutation for SavedItem: ', () => {
     let res: request.Response;
 
     beforeAll(async () => {
-      eventSpy.resetHistory();
+      eventSpy.mockReset();
       res = await request(app).post(url).set(headers).send({
         query: archiveItemMutation,
         variables,
@@ -94,19 +87,18 @@ describe('Update Mutation for SavedItem: ', () => {
     });
 
     it('should archive an item', async () => {
-      expect(res.body.errors).to.be.undefined;
+      expect(res.body.errors).toBeUndefined();
       const itemRes = res.body.data?.updateSavedItemArchive;
-      expect(itemRes.status).to.equal('ARCHIVED');
-      expect(itemRes.isArchived).to.equal(true);
-      expect(itemRes._updatedAt)
-        .to.equal(itemRes.archivedAt)
-        .and.to.equal(getUnixTimestamp(updateDate));
+      expect(itemRes.status).toBe('ARCHIVED');
+      expect(itemRes.isArchived).toBe(true);
+      expect(itemRes._updatedAt).toBe(itemRes.archivedAt);
+      expect(itemRes._updatedAt).toBe(getUnixTimestamp(updateDate));
     });
     it('should emit an archive event', async () => {
-      expect(eventSpy.calledOnce).to.be.true;
-      const eventData = eventSpy.getCall(0).args;
-      expect(eventData[0]).to.equal(EventType.ARCHIVE_ITEM);
-      expect(eventData[1].id).to.equal(parseInt(variables.itemId));
+      expect(eventSpy).toHaveBeenCalledTimes(1);
+      const eventData = eventSpy.mock.calls[0];
+      expect(eventData[0]).toBe(EventType.ARCHIVE_ITEM);
+      expect(eventData[1].id).toBe(parseInt(variables.itemId));
     });
   });
   describe('updatedSavedItemUnArchive', () => {
@@ -127,7 +119,7 @@ describe('Update Mutation for SavedItem: ', () => {
     let res: request.Response;
 
     beforeAll(async () => {
-      eventSpy.resetHistory();
+      eventSpy.mockReset();
       res = await request(app).post(url).set(headers).send({
         query: unArchiveItemMutation,
         variables,
@@ -135,18 +127,18 @@ describe('Update Mutation for SavedItem: ', () => {
     });
 
     it('should unarchive an item', async () => {
-      expect(res.body.errors).to.be.undefined;
+      expect(res.body.errors).toBeUndefined();
       const itemRes = res.body.data?.updateSavedItemUnArchive;
-      expect(itemRes.status).to.equal('UNREAD');
-      expect(itemRes.isArchived).to.equal(false);
-      expect(itemRes._updatedAt).to.equal(getUnixTimestamp(updateDate));
-      expect(itemRes.archivedAt).to.be.null;
+      expect(itemRes.status).toBe('UNREAD');
+      expect(itemRes.isArchived).toBe(false);
+      expect(itemRes._updatedAt).toBe(getUnixTimestamp(updateDate));
+      expect(itemRes.archivedAt).toBeNull();
     });
     it('should emit an unarchive event', async () => {
-      expect(eventSpy.calledOnce).to.be.true;
-      const eventData = eventSpy.getCall(0).args;
-      expect(eventData[0]).to.equal(EventType.UNARCHIVE_ITEM);
-      expect(eventData[1].id).to.equal(parseInt(variables.itemId));
+      expect(eventSpy).toHaveBeenCalledTimes(1);
+      const eventData = eventSpy.mock.calls[0];
+      expect(eventData[0]).toBe(EventType.UNARCHIVE_ITEM);
+      expect(eventData[1].id).toBe(parseInt(variables.itemId));
     });
   });
   describe('updatedSavedItemFavorite', () => {
@@ -166,7 +158,7 @@ describe('Update Mutation for SavedItem: ', () => {
     `;
 
     beforeAll(async () => {
-      eventSpy.resetHistory();
+      eventSpy.mockReset();
       res = await request(app).post(url).set(headers).send({
         query: savedItemFavoriteMutation,
         variables,
@@ -174,18 +166,17 @@ describe('Update Mutation for SavedItem: ', () => {
     });
 
     it('should favorite an item', async () => {
-      expect(res.body.errors).to.be.undefined;
+      expect(res.body.errors).toBeUndefined();
       const itemRes = res.body.data?.updateSavedItemFavorite;
-      expect(itemRes.isFavorite).to.equal(true);
-      expect(itemRes._updatedAt)
-        .to.equal(itemRes.favoritedAt)
-        .and.to.equal(getUnixTimestamp(updateDate));
+      expect(itemRes.isFavorite).toBe(true);
+      expect(itemRes._updatedAt).toBe(itemRes.favoritedAt);
+      expect(itemRes._updatedAt).toBe(getUnixTimestamp(updateDate));
     });
     it('should emit a favorite event', async () => {
-      expect(eventSpy.calledOnce).to.be.true;
-      const eventData = eventSpy.getCall(0).args;
-      expect(eventData[0]).to.equal(EventType.FAVORITE_ITEM);
-      expect(eventData[1].id).to.equal(parseInt(variables.itemId));
+      expect(eventSpy).toHaveBeenCalledTimes(1);
+      const eventData = eventSpy.mock.calls[0];
+      expect(eventData[0]).toBe(EventType.FAVORITE_ITEM);
+      expect(eventData[1].id).toBe(parseInt(variables.itemId));
     });
   });
   describe('updatedSavedItemUnFavorite', () => {
@@ -205,25 +196,25 @@ describe('Update Mutation for SavedItem: ', () => {
     `;
 
     beforeAll(async () => {
-      eventSpy.resetHistory();
+      eventSpy.mockReset();
       res = await request(app).post(url).set(headers).send({
         query: savedItemUnFavoriteMutation,
         variables,
       });
     });
     it('should unfavorite an item', async () => {
-      expect(res.body.errors).to.be.undefined;
+      expect(res.body.errors).toBeUndefined();
       const itemRes = res.body.data?.updateSavedItemUnFavorite;
-      expect(itemRes.isFavorite).to.equal(false);
-      expect(itemRes._updatedAt).to.equal(getUnixTimestamp(updateDate));
-      expect(itemRes.favoritedAt).to.be.null;
+      expect(itemRes.isFavorite).toBe(false);
+      expect(itemRes._updatedAt).toBe(getUnixTimestamp(updateDate));
+      expect(itemRes.favoritedAt).toBeNull();
     });
 
     it('should emit an unfavorite event', async () => {
-      expect(eventSpy.calledOnce).to.be.true;
-      const eventData = eventSpy.getCall(0).args;
-      expect(eventData[0]).to.equal(EventType.UNFAVORITE_ITEM);
-      expect(eventData[1].id).to.equal(parseInt(variables.itemId));
+      expect(eventSpy).toHaveBeenCalledTimes(1);
+      const eventData = eventSpy.mock.calls[0];
+      expect(eventData[0]).toBe(EventType.UNFAVORITE_ITEM);
+      expect(eventData[1].id).toBe(parseInt(variables.itemId));
     });
   });
 });

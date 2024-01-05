@@ -5,7 +5,6 @@ import {
   initItemEventHandlers,
   eventBridgeEventHandler,
 } from '../../businessEvents';
-import sinon from 'sinon';
 import { SavedItem } from '../../types';
 import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
 import config from '../../config';
@@ -34,15 +33,15 @@ const eventData: Omit<ItemEventPayload, 'eventType'> = {
 };
 
 describe('EventBridgeHandler', () => {
-  const clientSpy = sinon.spy(EventBridgeClient.prototype, 'send');
+  const clientSpy = jest.spyOn(EventBridgeClient.prototype, 'send');
   const emitter = new ItemsEventEmitter();
   beforeAll(() => {
     initItemEventHandlers(emitter, [eventBridgeEventHandler]);
   });
   beforeEach(() => {
-    clientSpy.resetHistory();
+    clientSpy.mockClear();
   });
-  afterAll(() => sinon.restore());
+  afterAll(() => jest.restoreAllMocks());
 
   it('should emit events to event bridge successfully', async () => {
     const addEvent: ItemEventPayload = {
@@ -50,7 +49,7 @@ describe('EventBridgeHandler', () => {
       eventType: EventType.ADD_ITEM,
     };
     emitter.emit(EventType.ADD_ITEM, addEvent);
-    const res = await Promise.resolve(clientSpy.returnValues[0]);
+    const res = await clientSpy.mock.results[0].value;
     const expected = {
       $metadata: expect.objectContaining({
         httpStatusCode: 200,
@@ -67,7 +66,7 @@ describe('EventBridgeHandler', () => {
         ]),
       FailedEntryCount: 0,
     };
-    expect(clientSpy.callCount).toEqual(1);
+    expect(clientSpy).toHaveBeenCalledTimes(1);
     expect(res).toMatchObject(expected);
   });
   it('should contain the proper payload', async () => {
@@ -82,8 +81,8 @@ describe('EventBridgeHandler', () => {
       Source: config.serviceName,
       DetailType: EventType.ADD_ITEM,
     };
-    expect(clientSpy.callCount).toEqual(1);
-    expect(clientSpy.getCall(0).args[0].input['Entries']).toIncludeSameMembers([
+    expect(clientSpy).toHaveBeenCalledTimes(1);
+    expect(clientSpy.mock.calls[0][0].input['Entries']).toIncludeSameMembers([
       expected,
     ]);
   });
@@ -102,7 +101,7 @@ describe('EventBridgeHandler', () => {
     eventTypes.forEach((eventType) => {
       emitter.emit(EventType[eventType], eventBuilder(eventType));
       callCount += 1;
-      expect(clientSpy.callCount).toEqual(callCount);
+      expect(clientSpy).toHaveBeenCalledTimes(callCount);
     });
   });
 });

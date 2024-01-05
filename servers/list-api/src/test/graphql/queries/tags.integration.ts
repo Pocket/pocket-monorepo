@@ -1,5 +1,4 @@
 import { readClient, writeClient } from '../../../database/client';
-import sinon from 'sinon';
 import config from '../../../config';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
@@ -14,10 +13,9 @@ const toBeStringOfLengthGreaterThanOne = () => expect.stringMatching(/.+/);
 
 describe('tags query tests - happy path', () => {
   // proxy for testing we're using dataloader => batch queries
-  const dbBatchSpy = sinon.spy(
-    TagDataService.prototype,
-    'batchGetTagsByUserItems',
-  );
+  const dbBatchSpy = jest
+    .spyOn(TagDataService.prototype, 'batchGetTagsByUserItems')
+    .mockClear();
   const writeDb = writeClient();
   const readDb = readClient();
   const headers = { userid: '1', premium: 'true' };
@@ -59,11 +57,11 @@ describe('tags query tests - happy path', () => {
   afterAll(async () => {
     await writeDb.destroy();
     await readDb.destroy();
-    sinon.restore();
+    jest.restoreAllMocks();
     await server.stop();
   });
 
-  afterEach(() => sinon.resetHistory());
+  afterEach(() => jest.clearAllMocks());
 
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
@@ -427,7 +425,7 @@ describe('tags query tests - happy path', () => {
     };
     expect(res.body.data.errors).toBeUndefined();
     expect(res.body.data?._entities[0].savedItemById).toMatchObject(expected);
-    expect(dbBatchSpy.callCount).toEqual(1);
+    expect(dbBatchSpy).toHaveBeenCalledTimes(1);
   });
 
   describe('should not allow before/after pagination', () => {
@@ -470,7 +468,7 @@ describe('tags query tests - happy path', () => {
       expect(res.body.errors[0].message).toBe(
         'Cannot specify a cursor on a nested paginated field.',
       );
-      expect(dbBatchSpy.callCount).toEqual(1);
+      expect(dbBatchSpy).toHaveBeenCalledTimes(1);
     });
 
     it('under paginated Tags', async () => {
@@ -493,7 +491,7 @@ describe('tags query tests - happy path', () => {
       );
       // dataloader (and dependent DB functions)
       // shouldn't be called upon error at client level
-      expect(dbBatchSpy.callCount).toEqual(0);
+      expect(dbBatchSpy).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -557,7 +555,7 @@ describe('tags query tests - happy path', () => {
     expect(res.body.data.errors).toBeUndefined();
     expect(res.body.data?._entities[0].tags).toMatchObject(expected);
     // tags (paginated) on a User parent hasn't been setup with dataloaders yet
-    expect(dbBatchSpy.callCount).toEqual(0);
+    expect(dbBatchSpy).toHaveBeenCalledTimes(0);
   });
 
   it('return paginated SavedItems, when filtered by archived', async () => {
@@ -614,7 +612,7 @@ describe('tags query tests - happy path', () => {
     expect(res.body.data.errors).toBeUndefined();
     expect(res.body.data?._entities[0]).toMatchObject(expected);
     // tags (paginated) on a User parent hasn't been setup with dataloaders yet
-    expect(dbBatchSpy.callCount).toEqual(0);
+    expect(dbBatchSpy).toHaveBeenCalledTimes(0);
   });
 
   it('should return list of Tags for User for the first n values', async () => {
@@ -657,7 +655,7 @@ describe('tags query tests - happy path', () => {
     expect(res.body.data?._entities[0].tags).toMatchObject(expectedConnection);
     expect(res.body.data?._entities[0].tags.edges).toStrictEqual(edges);
     // tags (paginated) on a User parent hasn't been setup with dataloaders yet
-    expect(dbBatchSpy.callCount).toEqual(0);
+    expect(dbBatchSpy).toHaveBeenCalledTimes(0);
   });
 
   it('should return list of Tags for User for last n values', async () => {
@@ -700,7 +698,7 @@ describe('tags query tests - happy path', () => {
     expect(res.body.data?._entities[0].tags).toMatchObject(expectedConnection);
     expect(res.body.data?._entities[0].tags.edges).toStrictEqual(edges);
     // tags (paginated) on a User parent hasn't been setup with dataloaders yet
-    expect(dbBatchSpy.callCount).toEqual(0);
+    expect(dbBatchSpy).toHaveBeenCalledTimes(0);
   });
 
   it('should return list of Tags for first n values after the given cursor', async () => {
@@ -743,7 +741,7 @@ describe('tags query tests - happy path', () => {
     expect(res.body.data?._entities[0].tags).toMatchObject(expectedConnection);
     expect(res.body.data?._entities[0].tags.edges).toStrictEqual(edges);
     // tags (paginated) on a User parent hasn't been setup with dataloaders yet
-    expect(dbBatchSpy.callCount).toEqual(0);
+    expect(dbBatchSpy).toHaveBeenCalledTimes(0);
   });
 
   it('should return list of Tags for User for last n values before the given cursor', async () => {
@@ -786,7 +784,7 @@ describe('tags query tests - happy path', () => {
     expect(res.body.data?._entities[0].tags).toMatchObject(expectedConnection);
     expect(res.body.data?._entities[0].tags.edges).toStrictEqual(edges);
     // tags (paginated) on a User parent hasn't been setup with dataloaders yet
-    expect(dbBatchSpy.callCount).toEqual(0);
+    expect(dbBatchSpy).toHaveBeenCalledTimes(0);
   });
 
   it('should not overflow when first is greater than available item', async () => {
@@ -822,7 +820,7 @@ describe('tags query tests - happy path', () => {
     expect(res.body.data?._entities[0].tags).toMatchObject(expectedConnection);
     expect(res.body.data?._entities[0].tags.edges).toStrictEqual(edges);
     // tags (paginated) on a User parent hasn't been setup with dataloaders yet
-    expect(dbBatchSpy.callCount).toEqual(0);
+    expect(dbBatchSpy).toHaveBeenCalledTimes(0);
   });
 
   it('should resolve tag fields from the parent if provided', async () => {
@@ -838,7 +836,7 @@ describe('tags query tests - happy path', () => {
         variables,
       });
     // tags (paginated) on a User parent hasn't been setup with dataloaders yet
-    expect(dbBatchSpy.callCount).toEqual(0);
+    expect(dbBatchSpy).toHaveBeenCalledTimes(0);
   });
 
   it('should allow returning empty tags', async () => {
@@ -866,6 +864,6 @@ describe('tags query tests - happy path', () => {
     };
     expect(res.body.data.errors).toBeUndefined();
     expect(res.body.data?._entities[0]).toMatchObject(expected);
-    expect(dbBatchSpy.callCount).toEqual(1);
+    expect(dbBatchSpy).toHaveBeenCalledTimes(1);
   });
 });

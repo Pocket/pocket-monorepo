@@ -7,7 +7,6 @@ import { Express } from 'express';
 import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 import request from 'supertest';
-import sinon from 'sinon';
 import { EventType } from '../../../../businessEvents';
 
 describe('savedItemTag mutation', () => {
@@ -18,7 +17,7 @@ describe('savedItemTag mutation', () => {
   let app: Express;
   let server: ApolloServer<ContextManager>;
   let url: string;
-  const eventSpy = sinon.spy(ContextManager.prototype, 'emitItemEvent');
+  const eventSpy = jest.spyOn(ContextManager.prototype, 'emitItemEvent');
 
   const SAVEDITEM_TAGS_CREATE = gql`
     mutation saveBatchUpdateTags(
@@ -39,7 +38,7 @@ describe('savedItemTag mutation', () => {
     ({ app, server, url } = await startServer(0));
   });
   beforeEach(async () => {
-    sinon.resetHistory();
+    jest.resetAllMocks();
     await writeDb('list').truncate();
     await writeDb('item_tags').truncate();
     const listDataBase = {
@@ -93,6 +92,7 @@ describe('savedItemTag mutation', () => {
     await server.stop();
     await writeDb.destroy();
     await readDb.destroy();
+    jest.restoreAllMocks();
   });
   it('should add tags to a SavedItem with no tags', async () => {
     const givenUrl = 'http://def';
@@ -272,8 +272,8 @@ describe('savedItemTag mutation', () => {
         variables,
       });
     expect(res.body.errors).toBeUndefined();
-    expect(eventSpy.callCount).toEqual(1);
-    const eventData = eventSpy.getCall(0).args;
+    expect(eventSpy).toHaveBeenCalledTimes(1);
+    const eventData = eventSpy.mock.calls[0];
     const expectedEventCall = [
       EventType.ADD_TAGS,
       expect.objectContaining({ id: 1, url: 'http://abc' }),

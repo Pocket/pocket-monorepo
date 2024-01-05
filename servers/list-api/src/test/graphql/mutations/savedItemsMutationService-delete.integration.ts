@@ -1,7 +1,4 @@
 import { readClient, writeClient } from '../../../database/client';
-import chai, { expect } from 'chai';
-import chaiDateTime from 'chai-datetime';
-import sinon from 'sinon';
 import { Knex } from 'knex';
 import { EventType } from '../../../businessEvents';
 import { getUnixTimestamp } from '../../../utils';
@@ -11,8 +8,6 @@ import { startServer } from '../../../server/apollo';
 import request from 'supertest';
 import { Express } from 'express';
 import { ApolloServer } from '@apollo/server';
-
-chai.use(chaiDateTime);
 
 async function upsertSavedItem(
   db: Knex,
@@ -108,7 +103,7 @@ describe('Delete/Undelete SavedItem: ', () => {
   //using write client as mutation will use write client to read as well.
   const writeDb = writeClient();
   const readDb = readClient();
-  const eventSpy = sinon.spy(ContextManager.prototype, 'emitItemEvent');
+  const eventSpy = jest.spyOn(ContextManager.prototype, 'emitItemEvent');
   const userId = '1';
   const headers = {
     userid: userId,
@@ -116,7 +111,6 @@ describe('Delete/Undelete SavedItem: ', () => {
 
   const date = new Date('2020-10-03 10:20:30');
   const updateDate = new Date(2021, 1, 1, 0, 0); // mock date for insert
-  let clock;
   let batchDeleteDelay;
   let app: Express;
   let server: ApolloServer<ContextManager>;
@@ -125,8 +119,8 @@ describe('Delete/Undelete SavedItem: ', () => {
   afterAll(async () => {
     await writeDb.destroy();
     await readDb.destroy();
-    clock.restore();
-    sinon.restore();
+    jest.useRealTimers();
+    jest.restoreAllMocks();
     config.batchDelete.deleteDelayInMilliSec = batchDeleteDelay;
     await server.stop();
   });
@@ -137,10 +131,9 @@ describe('Delete/Undelete SavedItem: ', () => {
     batchDeleteDelay = config.batchDelete.deleteDelayInMilliSec;
     config.batchDelete.deleteDelayInMilliSec = 1;
     // Mock Date.now() to get a consistent date for inserting data
-    clock = sinon.useFakeTimers({
+    jest.useFakeTimers({
       now: updateDate,
-      shouldAdvanceTime: false,
-      shouldClearNativeTimers: true,
+      advanceTimers: true,
     });
   });
 
@@ -151,7 +144,7 @@ describe('Delete/Undelete SavedItem: ', () => {
     await writeDb('items_scroll').truncate();
   });
 
-  afterEach(() => sinon.resetHistory());
+  afterEach(() => jest.clearAllMocks());
 
   it('should delete a saved item', async () => {
     await setUpSavedItem(writeDb, date);
@@ -198,18 +191,18 @@ describe('Delete/Undelete SavedItem: ', () => {
         .where({ user_id: 1, item_id: 1 })
         .first();
 
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data?.deleteSavedItem).to.equal('1');
-    expect(itemRes.status).to.equal('DELETED');
-    expect(itemRes._deletedAt).to.equal(getUnixTimestamp(updateDate));
-    expect(await query('item_tags')).to.be.undefined;
-    expect(await query('item_attribution')).to.be.undefined;
-    expect(await query('items_scroll')).to.be.undefined;
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?.deleteSavedItem).toBe('1');
+    expect(itemRes.status).toBe('DELETED');
+    expect(itemRes._deletedAt).toBe(getUnixTimestamp(updateDate));
+    expect(await query('item_tags')).toBeUndefined();
+    expect(await query('item_attribution')).toBeUndefined();
+    expect(await query('items_scroll')).toBeUndefined();
     // Check for delete event
-    expect(eventSpy.callCount).to.equal(1);
-    const eventData = eventSpy.getCall(0).args;
-    expect(eventData[0]).to.equal(EventType.DELETE_ITEM);
-    expect(eventData[1].id).to.equal(1);
+    expect(eventSpy).toHaveBeenCalledTimes(1);
+    const eventData = eventSpy.mock.calls[0];
+    expect(eventData[0]).toBe(EventType.DELETE_ITEM);
+    expect(eventData[1].id).toBe(1);
   });
 
   it('should undelete a deleted saved item and set status to unread if not previously archived', async () => {
@@ -229,10 +222,10 @@ describe('Delete/Undelete SavedItem: ', () => {
       variables,
     });
 
-    expect(res.body.errors).to.be.undefined;
+    expect(res.body.errors).toBeUndefined();
     const itemRes = res.body.data?.updateSavedItemUnDelete;
-    expect(itemRes.status).to.equal('UNREAD');
-    expect(itemRes._updatedAt).to.equal(getUnixTimestamp(updateDate));
+    expect(itemRes.status).toBe('UNREAD');
+    expect(itemRes._updatedAt).toBe(getUnixTimestamp(updateDate));
   });
 
   it('should undelete a deleted saved item and set status to archived if previously archived', async () => {
@@ -252,9 +245,9 @@ describe('Delete/Undelete SavedItem: ', () => {
       variables,
     });
 
-    expect(res.body.errors).to.be.undefined;
+    expect(res.body.errors).toBeUndefined();
     const itemRes = res.body.data?.updateSavedItemUnDelete;
-    expect(itemRes.status).to.equal('ARCHIVED');
-    expect(itemRes._updatedAt).to.equal(getUnixTimestamp(updateDate));
+    expect(itemRes.status).toBe('ARCHIVED');
+    expect(itemRes._updatedAt).toBe(getUnixTimestamp(updateDate));
   });
 });
