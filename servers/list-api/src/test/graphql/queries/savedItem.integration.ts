@@ -1,13 +1,10 @@
 import { readClient, writeClient } from '../../../database/client';
-import chai, { expect } from 'chai';
-import chaiDateTime from 'chai-datetime';
 import { getUnixTimestamp } from '../../../utils';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
 import { Express } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
-chai.use(chaiDateTime);
 
 describe('getSavedItemByItemId', () => {
   const writeDb = writeClient();
@@ -110,22 +107,14 @@ describe('getSavedItemByItemId', () => {
       query: GET_SAVED_ITEM,
       variables,
     });
-    expect(res.body.data?._entities[0].savedItemById.url).to.equal(
-      'http://abc',
-    );
-    expect(res.body.data?._entities[0].savedItemById.id).to.equal('1');
-    expect(res.body.data?._entities[0].savedItemById.favoritedAt).to.equal(
-      unixDate,
-    );
-    expect(res.body.data?._entities[0].savedItemById.isFavorite).to.equal(true);
-    expect(res.body.data?._entities[0].savedItemById.status).to.equal('UNREAD');
-    expect(res.body.data?._entities[0].savedItemById._createdAt).to.equal(
-      unixDate,
-    );
-    expect(res.body.data?._entities[0].savedItemById._updatedAt).to.equal(
-      unixDate1,
-    );
-    expect(res.body.data?._entities[0].savedItemById._deletedAt).to.be.null;
+    expect(res.body.data?._entities[0].savedItemById.url).toBe('http://abc');
+    expect(res.body.data?._entities[0].savedItemById.id).toBe('1');
+    expect(res.body.data?._entities[0].savedItemById.favoritedAt).toBe(unixDate);
+    expect(res.body.data?._entities[0].savedItemById.isFavorite).toBe(true);
+    expect(res.body.data?._entities[0].savedItemById.status).toBe('UNREAD');
+    expect(res.body.data?._entities[0].savedItemById._createdAt).toBe(unixDate);
+    expect(res.body.data?._entities[0].savedItemById._updatedAt).toBe(unixDate1);
+    expect(res.body.data?._entities[0].savedItemById._deletedAt).toBeNull();
   });
 
   it('should return null if no item is found for the user', async () => {
@@ -137,7 +126,7 @@ describe('getSavedItemByItemId', () => {
       query: GET_SAVED_ITEM,
       variables,
     });
-    expect(res.body.data?._entities[0].savedItemById).to.be.null;
+    expect(res.body.data?._entities[0].savedItemById).toBeNull();
   });
   it('should resolve item url', async () => {
     const variables = {
@@ -167,9 +156,7 @@ describe('getSavedItemByItemId', () => {
       query: GET_SAVED_ITEM_ITEM,
       variables,
     });
-    expect(res.body.data?._entities[0].savedItemById.item.givenUrl).to.equal(
-      'http://abc',
-    );
+    expect(res.body.data?._entities[0].savedItemById.item.givenUrl).toBe('http://abc');
   });
 
   it('should have _deletedAt field if item is deleted', async () => {
@@ -181,9 +168,7 @@ describe('getSavedItemByItemId', () => {
       query: GET_SAVED_ITEM,
       variables,
     });
-    expect(res.body.data?._entities[0].savedItemById._deletedAt).to.equal(
-      unixDate1,
-    );
+    expect(res.body.data?._entities[0].savedItemById._deletedAt).toBe(unixDate1);
   });
 
   it('should resolve isArchived properly', async () => {
@@ -205,14 +190,13 @@ describe('getSavedItemByItemId', () => {
     });
     expect(
       archivedRes.body.data?._entities[0].savedItemById.isArchived,
-    ).to.equal(true);
+    ).toBe(true);
     expect(
       archivedRes.body.data?._entities[0].savedItemById.archivedAt,
-    ).to.equal(getUnixTimestamp(date));
+    ).toBe(getUnixTimestamp(date));
     expect(
       nonArchivedRes.body.data?._entities[0].savedItemById.isArchived,
-    ).to.equal(false);
-    expect(nonArchivedRes.body.data?._entities[0].savedItemById.archivedAt).to
-      .be.null;
+    ).toBe(false);
+    expect(nonArchivedRes.body.data?._entities[0].savedItemById.archivedAt).toBeNull();
   });
 });

@@ -1,15 +1,9 @@
 import { readClient, writeClient } from '../../../database/client';
-import chai, { expect } from 'chai';
-import chaiDateTime from 'chai-datetime';
-import deepEqualInAnyOrder from 'deep-equal-in-any-order';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
 import { Express } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
-
-chai.use(chaiDateTime);
-chai.use(deepEqualInAnyOrder);
 
 describe('getSavedItemsOnCuratedItem', () => {
   const writeDb = writeClient();
@@ -121,10 +115,10 @@ describe('getSavedItemsOnCuratedItem', () => {
       variables,
     });
 
-    expect(res.body.data._entities[0].savedItem.url).to.equal('http://abc');
-    expect(res.body.data._entities[0].savedItem.id).to.equal('1');
-    expect(res.body.data._entities[1].savedItem.url).to.equal('http://def');
-    expect(res.body.data._entities[1].savedItem.id).to.equal('2');
-    expect(res.body.data._entities[2].savedItem).to.be.null;
+    expect(res.body.data._entities[0].savedItem.url).toBe('http://abc');
+    expect(res.body.data._entities[0].savedItem.id).toBe('1');
+    expect(res.body.data._entities[1].savedItem.url).toBe('http://def');
+    expect(res.body.data._entities[1].savedItem.id).toBe('2');
+    expect(res.body.data._entities[2].savedItem).toBeNull();
   });
 });

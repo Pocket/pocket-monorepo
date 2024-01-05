@@ -41,7 +41,6 @@
     "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",
     "@types/chance": "1.1.6",
-    "@types/deep-equal-in-any-order": "1.0.3",
     "@types/graphql-depth-limit": "1.1.6",
     "@types/graphql-upload": "16.0.5",
     "@types/jest": "29.5.11",

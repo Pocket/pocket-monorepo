@@ -1,5 +1,4 @@
 import fetch from 'node-fetch';
-import { expect } from 'chai';
 import {
   EventType,
   ItemsEventEmitter,
@@ -9,6 +8,7 @@ import { tracker } from '../../snowplow/tracker';
 import config from '../../config';
 import { ListItemUpdate } from '../../snowplow/schema';
 import { SavedItem } from '../../types';
+import { forEach } from 'lodash';
 
 async function snowplowRequest(path: string, post = false): Promise<any> {
   const response = await fetch(`http://${config.snowplow.endpoint}${path}`, {
@@ -41,45 +41,50 @@ function assertValidSnowplowListItemUpdateEvents(
     .map(parseSnowplowData)
     .map((parsedEvent) => parsedEvent.data);
 
-  expect(parsedEvents).to.include.deep.members(
+  forEach(
     triggers.map((trigger) => ({
       schema: config.snowplow.schemas.listItemUpdate,
       data: { trigger: trigger },
     })),
+    (e) => {
+      expect(parsedEvents).toContainValue(e);
+    },
   );
 }
 
 function assertValidSnowplowEventContext(data) {
   const eventContext = parseSnowplowData(data);
-  expect(eventContext.data).to.include.deep.members([
-    {
-      schema: config.snowplow.schemas.listItem,
-      data: {
-        object_version: 'new',
-        url: testSavedItem.url,
-        item_id: parseInt(testSavedItem.id),
-        status: 'unread',
-        is_favorited: testSavedItem.isFavorite,
-        tags: ['this', 'not', 'that'],
-        created_at: testSavedItem._createdAt,
+  expect(eventContext.data).toEqual(
+    expect.arrayContaining([
+      {
+        schema: config.snowplow.schemas.listItem,
+        data: {
+          object_version: 'new',
+          url: testSavedItem.url,
+          item_id: parseInt(testSavedItem.id),
+          status: 'unread',
+          is_favorited: testSavedItem.isFavorite,
+          tags: ['this', 'not', 'that'],
+          created_at: testSavedItem._createdAt,
+        },
       },
-    },
-    {
-      schema: config.snowplow.schemas.content,
-      data: {
-        url: testSavedItem.url,
-        item_id: parseInt(testSavedItem.id),
+      {
+        schema: config.snowplow.schemas.content,
+        data: {
+          url: testSavedItem.url,
+          item_id: parseInt(testSavedItem.id),
+        },
       },
-    },
-    {
-      schema: config.snowplow.schemas.user,
-      data: { user_id: parseInt(eventData.user.id) },
-    },
-    {
-      schema: config.snowplow.schemas.apiUser,
-      data: { api_id: parseInt(eventData.apiUser.apiId) },
-    },
-  ]);
+      {
+        schema: config.snowplow.schemas.user,
+        data: { user_id: parseInt(eventData.user.id) },
+      },
+      {
+        schema: config.snowplow.schemas.apiUser,
+        data: { api_id: parseInt(eventData.apiUser.apiId) },
+      },
+    ]),
+  );
 }
 const testSavedItem: SavedItem = {
   id: '2',
@@ -126,9 +131,9 @@ describe('SnowplowHandler', () => {
 
     // make sure we only have good events
     const allEvents = await getAllSnowplowEvents();
-    expect(allEvents.total).to.equal(2);
-    expect(allEvents.good).to.equal(2);
-    expect(allEvents.bad).to.equal(0);
+    expect(allEvents.total).toBe(2);
+    expect(allEvents.good).toBe(2);
+    expect(allEvents.bad).toBe(0);
 
     const goodEvents = await getGoodSnowplowEvents();
 
@@ -170,9 +175,9 @@ describe('SnowplowHandler', () => {
 
     // make sure we only have good events
     const allEvents = await getAllSnowplowEvents();
-    expect(allEvents.total).to.equal(4);
-    expect(allEvents.good).to.equal(4);
-    expect(allEvents.bad).to.equal(0);
+    expect(allEvents.total).toBe(4);
+    expect(allEvents.good).toBe(4);
+    expect(allEvents.bad).toBe(0);
 
     const goodEvents = await getGoodSnowplowEvents();
 

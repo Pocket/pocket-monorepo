@@ -1,12 +1,8 @@
 import { readClient, writeClient } from '../../database/client';
-import chai, { expect } from 'chai';
 import { UsersMetaService } from '../../dataService';
 import { ContextManager } from '../../server/context';
-import chaiDateTime from 'chai-datetime';
 import { mysqlTimeString } from '../../dataService/utils';
 import config from '../../config';
-
-chai.use(chaiDateTime);
 
 describe('UsersMetaService ', () => {
   const writeDb = writeClient();
@@ -46,11 +42,12 @@ describe('UsersMetaService ', () => {
     const res = await readDb('users_meta')
       .select()
       .where({ user_id: 1, property: 18 });
-    expect(res.length).to.equal(1);
-    expect(res[0].property).to.equal(18);
-    expect(res[0].value).to.equal(
-      mysqlTimeString(currentTime, config.database.tz),
-    );
-    expect(res[0].time_updated).to.be.closeToTime(currentTime, 1); // mySQL isn't storing milliseconds
+    expect(res.length).toBe(1);
+    expect(res[0].property).toBe(18);
+    expect(res[0].value).toBe(mysqlTimeString(currentTime, config.database.tz));
+    expect(res[0].time_updated).toBeBetween(
+      new Date(currentTime.getTime() - 1000),
+      new Date(currentTime.getTime() + 1000),
+    ); // mySQL isn't storing milliseconds
   });
 });

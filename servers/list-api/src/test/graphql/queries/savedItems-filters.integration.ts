@@ -1,16 +1,10 @@
 import { readClient, writeClient } from '../../../database/client';
-import chai, { expect } from 'chai';
-import chaiDateTime from 'chai-datetime';
-import deepEqualInAnyOrder from 'deep-equal-in-any-order';
 import { getUnixTimestamp } from '../../../utils';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
 import { Express } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
-
-chai.use(chaiDateTime);
-chai.use(deepEqualInAnyOrder);
 
 describe('getSavedItems filter', () => {
   const writeDb = writeClient();
@@ -261,15 +255,15 @@ describe('getSavedItems filter', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data._entities[0].savedItems.edges.length).to.equal(4);
-    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).to.equal(
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data._entities[0].savedItems.edges.length).toBe(4);
+    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).toBe(
       'http://ijk',
     );
     expect(
       res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem.tags
         .length,
-    ).to.equal(0);
+    ).toBe(0);
   });
 
   it('should return items with a specific tag', async () => {
@@ -282,18 +276,18 @@ describe('getSavedItems filter', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data._entities[0].savedItems.edges.length).to.equal(1);
-    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).to.equal(
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data._entities[0].savedItems.edges.length).toBe(1);
+    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).toBe(
       'http://abc',
     );
     expect(
       res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem.tags
         .length,
-    ).to.equal(2);
+    ).toBe(2);
     expect(
       res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem.tags,
-    ).to.deep.equalInAnyOrder(tags);
+    ).toContainAllValues(tags);
   });
 
   it('should return items with a list of specified tags', async () => {
@@ -305,12 +299,12 @@ describe('getSavedItems filter', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data._entities[0].savedItems.edges.length).to.equal(2);
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data._entities[0].savedItems.edges.length).toBe(2);
     const actualTags = res.body.data._entities[0].savedItems.edges.map(
       (edge) => edge.node.item.savedItem.tags,
     );
-    expect(actualTags).to.deep.equalInAnyOrder([
+    expect(actualTags).toContainAllValues([
       [{ name: 'tofu' }, { name: 'recipe' }],
       [{ name: 'recipe' }],
     ]);
@@ -325,11 +319,11 @@ describe('getSavedItems filter', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data._entities[0].savedItems.edges.length).to.equal(1);
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data._entities[0].savedItems.edges.length).toBe(1);
     expect(
       res.body.data._entities[0].savedItems.edges[0].node.item.savedItem.status,
-    ).to.equal('ARCHIVED');
+    ).toBe('ARCHIVED');
   });
   it('should return non-archived items', async () => {
     const variables = {
@@ -340,10 +334,10 @@ describe('getSavedItems filter', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data?._entities[0].savedItems.edges.length).to.equal(5);
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(5);
     res.body.data?._entities[0].savedItems.edges.forEach((edge) => {
-      expect(edge.node.item.savedItem.status).to.not.equal('ARCHIVED');
+      expect(edge.node.item.savedItem.status).not.toBe('ARCHIVED');
     });
   });
 
@@ -356,9 +350,9 @@ describe('getSavedItems filter', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data?._entities[0].savedItems.edges.length).to.equal(1);
-    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).to.equal(
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(1);
+    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).toBe(
       'http://ijk',
     );
   });
@@ -372,10 +366,10 @@ describe('getSavedItems filter', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data?._entities[0].savedItems.edges.length).to.equal(2);
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(2);
     res.body.data?._entities[0].savedItems.edges.forEach((edge) => {
-      expect(edge.node.item.savedItem.isFavorite).to.equal(true);
+      expect(edge.node.item.savedItem.isFavorite).toBe(true);
     });
   });
 
@@ -388,12 +382,12 @@ describe('getSavedItems filter', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data?._entities[0].savedItems.edges.length).to.equal(4);
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(4);
     expect(
       res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem
         .isFavorite,
-    ).to.equal(false);
+    ).toBe(false);
   });
 
   it('should not throw an error if no items match the filters', async () => {
@@ -410,10 +404,10 @@ describe('getSavedItems filter', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data?._entities[0].savedItems.edges).to.deep.equal([]);
-    expect(res.body.data?._entities[0].savedItems.totalCount).to.equal(0);
-    expect(res.body.data?._entities[0].savedItems.pageInfo).to.deep.equal({
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?._entities[0].savedItems.edges).toEqual([]);
+    expect(res.body.data?._entities[0].savedItems.totalCount).toBe(0);
+    expect(res.body.data?._entities[0].savedItems.pageInfo).toEqual({
       startCursor: null,
       endCursor: null,
       hasNextPage: false,
@@ -430,9 +424,9 @@ describe('getSavedItems filter', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data?._entities[0].savedItems.edges.length).to.equal(1);
-    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).to.equal(
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(1);
+    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).toBe(
       'http://abc',
     );
   });
@@ -446,10 +440,10 @@ describe('getSavedItems filter', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data?._entities[0].savedItems.edges.length).to.equal(5);
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(5);
     res.body.data?._entities[0].savedItems.edges.forEach((edge) => {
-      expect(edge.node.url).to.be.oneOf([
+      expect(edge.node.url).toBeOneOf([
         'http://ijk',
         'http://def',
         'http://lmn',
@@ -468,11 +462,11 @@ describe('getSavedItems filter', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
+    expect(res.body.errors).toBeUndefined();
     const edges = res.body.data?._entities[0].savedItems.edges;
-    expect(edges.length).to.equal(2);
+    expect(edges.length).toBe(2);
     const actualIds = edges.map((edge) => edge.node.item.savedItem.id);
-    expect(actualIds).to.deep.equalInAnyOrder(['2', '3']);
+    expect(actualIds).toContainAllValues(['2', '3']);
   });
   it('should return articles that can be opened in article view', async () => {
     const variables = {
@@ -483,11 +477,11 @@ describe('getSavedItems filter', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
+    expect(res.body.errors).toBeUndefined();
     const edges = res.body.data?._entities[0].savedItems.edges;
-    expect(edges.length).to.equal(2);
+    expect(edges.length).toBe(2);
     const actualIds = edges.map((edge) => edge.node.item.savedItem.id);
-    expect(actualIds).to.deep.equalInAnyOrder(['2', '3']);
+    expect(actualIds).toContainAllValues(['2', '3']);
   });
   it('should return articles with videos (deprecated)', async () => {
     const variables = {
@@ -498,11 +492,11 @@ describe('getSavedItems filter', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data?._entities[0].savedItems.edges.length).to.equal(1);
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(1);
     expect(
       res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem.id,
-    ).to.equal('1');
+    ).toBe('1');
   });
   it('should return articles with videos', async () => {
     const variables = {
@@ -513,11 +507,11 @@ describe('getSavedItems filter', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data?._entities[0].savedItems.edges.length).to.equal(1);
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(1);
     expect(
       res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem.id,
-    ).to.equal('1');
+    ).toBe('1');
   });
   it('should return videos', async () => {
     const variables = {
@@ -528,11 +522,11 @@ describe('getSavedItems filter', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data?._entities[0].savedItems.edges.length).to.equal(1);
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(1);
     expect(
       res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem.id,
-    ).to.equal('5');
+    ).toBe('5');
   });
   it('should return images', async () => {
     const variables = {
@@ -543,11 +537,11 @@ describe('getSavedItems filter', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data?._entities[0].savedItems.edges.length).to.equal(1);
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(1);
     expect(
       res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem.id,
-    ).to.equal('6');
+    ).toBe('6');
   });
   it('should return articles that are un-parsable and will be opened externally', async () => {
     const variables = {
@@ -558,10 +552,10 @@ describe('getSavedItems filter', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data?._entities[0].savedItems.edges.length).to.equal(2);
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(2);
     res.body.data?._entities[0].savedItems.edges.forEach((edge) => {
-      expect(edge.node.url).to.be.oneOf(['http://abc', 'http://lmn']);
+      expect(edge.node.url).toBeOneOf(['http://abc', 'http://lmn']);
     });
   });
 
@@ -574,11 +568,11 @@ describe('getSavedItems filter', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data?._entities[0].savedItems.edges.length).to.equal(1);
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(1);
     expect(
       res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem.id,
-    ).to.equal('2');
+    ).toBe('2');
   });
   it('should use statuses to return multiple statuses', async () => {
     const variables = {
@@ -589,13 +583,13 @@ describe('getSavedItems filter', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data?._entities[0].savedItems.edges.length).to.equal(5);
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(5);
     expect(
       res.body.data?._entities[0].savedItems.edges.map(
         (edge) => edge.node.item.savedItem.id,
       ),
-    ).to.deep.equalInAnyOrder(['1', '2', '4', '5', '6']); // Don't care about sort for this test
+    ).toContainAllValues(['1', '2', '4', '5', '6']); // Don't care about sort for this test
   });
 
   it('should be combined with other filters properly', async () => {
@@ -613,17 +607,17 @@ describe('getSavedItems filter', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
-    expect(res.body.data?._entities[0].savedItems.edges.length).to.equal(1);
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(1);
     expect(
       res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem
         .isFavorite,
-    ).to.equal(true);
+    ).toBe(true);
     expect(
       res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem
         .status,
-    ).to.not.equal('ARCHIVED');
-    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).to.equal(
+    ).not.toBe('ARCHIVED');
+    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).toBe(
       'http://abc',
     );
   });

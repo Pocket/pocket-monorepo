@@ -1,15 +1,9 @@
 import { readClient, writeClient } from '../../../database/client';
-import chai, { expect } from 'chai';
-import chaiDateTime from 'chai-datetime';
-import deepEqualInAnyOrder from 'deep-equal-in-any-order';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
 import { Express } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
-
-chai.use(chaiDateTime);
-chai.use(deepEqualInAnyOrder);
 
 describe('getSavedItems', () => {
   const writeDb = writeClient();
@@ -146,10 +140,10 @@ describe('getSavedItems', () => {
       query: SAVED_ITEMS_FIELD,
       variables,
     });
-    expect(res.body.errors).to.be.undefined;
-    expect(
-      res.body.data?._entities[0].savedItems.edges[0].node.status,
-    ).to.equal('UNREAD');
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?._entities[0].savedItems.edges[0].node.status).toBe(
+      'UNREAD',
+    );
   });
 
   it('should return a paginated list of most recently added items, with more next pages and all expected properties', async () => {
@@ -161,24 +155,26 @@ describe('getSavedItems', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.data?._entities[0].savedItems.totalCount).to.equal(3);
-    expect(res.body.data?._entities[0].savedItems.edges.length).to.equal(2);
-    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).to.equal(
+    expect(res.body.data?._entities[0].savedItems.totalCount).toBe(3);
+    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(2);
+    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).toBe(
       'http://ijk',
     );
     expect(
       res.body.data?._entities[0].savedItems.edges[0].node.item.givenUrl,
-    ).to.equal('http://ijk');
-    expect(res.body.data?._entities[0].savedItems.edges[1].node.url).to.equal(
+    ).toBe('http://ijk');
+    expect(res.body.data?._entities[0].savedItems.edges[1].node.url).toBe(
       'http://def',
     );
     expect(
       res.body.data?._entities[0].savedItems.edges[1].node.item.givenUrl,
-    ).to.equal('http://def');
-    expect(res.body.data?._entities[0].savedItems.pageInfo.hasNextPage).to.be
-      .true;
-    expect(res.body.data?._entities[0].savedItems.pageInfo.hasPreviousPage).to
-      .be.false;
+    ).toBe('http://def');
+    expect(res.body.data?._entities[0].savedItems.pageInfo.hasNextPage).toBe(
+      true,
+    );
+    expect(
+      res.body.data?._entities[0].savedItems.pageInfo.hasPreviousPage,
+    ).toBe(false);
   });
   it('should finish the forward pagination from previous cursor, without overfetching', async () => {
     const variables = {
@@ -192,21 +188,25 @@ describe('getSavedItems', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.data?._entities[0].savedItems.edges.length).to.equal(1);
-    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).to.equal(
+    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(1);
+    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).toBe(
       'http://abc',
     );
     expect(
       res.body.data?._entities[0].savedItems.edges[0].node.item.givenUrl,
-    ).to.equal('http://abc');
-    expect(res.body.data?._entities[0].savedItems.pageInfo.hasNextPage).to.be
-      .false;
-    expect(res.body.data?._entities[0].savedItems.pageInfo.hasPreviousPage).to
-      .be.true;
-    expect(res.body.data?._entities[0].savedItems.pageInfo.startCursor).to.be
-      .not.undefined;
-    expect(res.body.data?._entities[0].savedItems.pageInfo.endCursor).to.be.not
-      .undefined;
+    ).toBe('http://abc');
+    expect(res.body.data?._entities[0].savedItems.pageInfo.hasNextPage).toBe(
+      false,
+    );
+    expect(
+      res.body.data?._entities[0].savedItems.pageInfo.hasPreviousPage,
+    ).toBe(true);
+    expect(
+      res.body.data?._entities[0].savedItems.pageInfo.startCursor,
+    ).toBeDefined();
+    expect(
+      res.body.data?._entities[0].savedItems.pageInfo.endCursor,
+    ).toBeDefined();
   });
 
   it('should paginate backwards, returning the least recently added items', async () => {
@@ -222,15 +222,17 @@ describe('getSavedItems', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.data?._entities[0].savedItems.edges.length).to.equal(2);
-    expect(res.body.data?._entities[0].savedItems.pageInfo.hasNextPage).to.be
-      .false;
-    expect(res.body.data?._entities[0].savedItems.pageInfo.hasPreviousPage).to
-      .be.true;
-    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).to.equal(
+    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(2);
+    expect(res.body.data?._entities[0].savedItems.pageInfo.hasNextPage).toBe(
+      false,
+    );
+    expect(
+      res.body.data?._entities[0].savedItems.pageInfo.hasPreviousPage,
+    ).toBe(true);
+    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).toBe(
       'http://def',
     );
-    expect(res.body.data?._entities[0].savedItems.edges[1].node.url).to.equal(
+    expect(res.body.data?._entities[0].savedItems.edges[1].node.url).toBe(
       'http://abc',
     );
   });
@@ -248,14 +250,16 @@ describe('getSavedItems', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.data?._entities[0].savedItems.edges.length).to.equal(1);
+    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(1);
     expect(
       res.body.data?._entities[0].savedItems.edges[0].node.item.givenUrl,
-    ).to.equal('http://ijk');
-    expect(res.body.data?._entities[0].savedItems.pageInfo.hasPreviousPage).to
-      .be.false;
-    expect(res.body.data?._entities[0].savedItems.pageInfo.hasNextPage).to.be
-      .true;
+    ).toBe('http://ijk');
+    expect(
+      res.body.data?._entities[0].savedItems.pageInfo.hasPreviousPage,
+    ).toBe(false);
+    expect(res.body.data?._entities[0].savedItems.pageInfo.hasNextPage).toBe(
+      true,
+    );
   });
 
   it('can resolve a entity query for a SavedItem by Id', async () => {
@@ -287,8 +291,8 @@ describe('getSavedItems', () => {
       variables,
     });
 
-    expect(res.body.data._entities[0].id).to.equal('1');
-    expect(res.body.data._entities[1].id).to.equal('2');
+    expect(res.body.data._entities[0].id).toBe('1');
+    expect(res.body.data._entities[1].id).toBe('2');
   });
 
   it(`call succeeds with returning null value when Id is not found`, async () => {
@@ -320,9 +324,9 @@ describe('getSavedItems', () => {
       variables,
     });
 
-    expect(res.body.data._entities[0]).is.null;
-    expect(res.body.data._entities[1].id).to.equal('1');
-    expect(res.body.data._entities.length).to.equal(2);
+    expect(res.body.data._entities[0]).toBeNull();
+    expect(res.body.data._entities[1].id).toBe('1');
+    expect(res.body.data._entities.length).toBe(2);
   });
 
   it('call succeeds with returning null value when Url is not found', async () => {
@@ -354,9 +358,9 @@ describe('getSavedItems', () => {
       variables,
     });
 
-    expect(res.body.data._entities[0]).is.null;
-    expect(res.body.data._entities[1].url).to.equal('http://abc');
-    expect(res.body.data._entities.length).to.equal(2);
+    expect(res.body.data._entities[0]).toBeNull();
+    expect(res.body.data._entities[1].url).toBe('http://abc');
+    expect(res.body.data._entities.length).toBe(2);
   });
 
   it('can resolve a entity query for a SavedItem by Url', async () => {
@@ -388,8 +392,8 @@ describe('getSavedItems', () => {
       variables,
     });
 
-    expect(res.body.data._entities[0].url).to.equal('http://abc');
-    expect(res.body.data._entities[1].url).to.equal('http://def');
+    expect(res.body.data._entities[0].url).toBe('http://abc');
+    expect(res.body.data._entities[1].url).toBe('http://def');
   });
 
   describe('sort', () => {
@@ -442,25 +446,22 @@ describe('getSavedItems', () => {
         query: GET_SAVED_ITEMS_SORT,
         variables: compareVars,
       });
-      expect(res.body.errors).to.be.undefined;
-      expect(res.body.data).to.be.not.undefined;
-      expect(res.body.data?._entities[0].savedItems.edges.length)
-        .to.equal(2)
-        .and.to.equal(
-          compareRes.body.data?._entities[0].savedItems.edges.length,
-        );
-      expect(res.body.data?._entities[0].savedItems.edges[0]).to.deep.equal(
+      expect(res.body.errors).toBeUndefined();
+      expect(res.body.data).toBeDefined();
+      expect(res.body.data?._entities[0].savedItems.edges.length).toBe(2);
+      expect(res.body.data?._entities[0].savedItems.edges.length).toBe(
+        compareRes.body.data?._entities[0].savedItems.edges.length,
+      );
+      expect(res.body.data?._entities[0].savedItems.edges[0]).toEqual(
         compareRes.body.data?._entities[0].savedItems.edges[1],
       );
-      expect(res.body.data?._entities[0].savedItems.edges[1]).to.deep.equal(
+      expect(res.body.data?._entities[0].savedItems.edges[1]).toEqual(
         compareRes.body.data?._entities[0].savedItems.edges[0],
       );
-      expect(
-        res.body.data._entities[0].savedItems.pageInfo.startCursor,
-      ).to.equal(
+      expect(res.body.data._entities[0].savedItems.pageInfo.startCursor).toBe(
         compareRes.body.data._entities[0].savedItems.pageInfo.endCursor,
       );
-      expect(res.body.data._entities[0].savedItems.pageInfo.endCursor).to.equal(
+      expect(res.body.data._entities[0].savedItems.pageInfo.endCursor).toBe(
         compareRes.body.data._entities[0].savedItems.pageInfo.startCursor,
       );
     });
@@ -518,11 +519,11 @@ describe('getSavedItems', () => {
           query: GET_SAVED_ITEMS_SORT,
           variables,
         });
-        expect(res.body.errors).to.be.undefined;
+        expect(res.body.errors).toBeUndefined();
         const urls = res.body.data?._entities[0].savedItems.edges.map(
           (edge) => edge.node.item.givenUrl,
         );
-        expect(expectedUrls).to.deep.equal(urls);
+        expect(expectedUrls).toEqual(urls);
       },
     );
   });
@@ -538,7 +539,7 @@ describe('getSavedItems', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors?.length).to.be.above(0);
-    expect(res.body.errors[0].message).to.equal('Cursor not found.');
+    expect(res.body.errors?.length).toBeGreaterThan(0);
+    expect(res.body.errors[0].message).toBe('Cursor not found.');
   });
 });

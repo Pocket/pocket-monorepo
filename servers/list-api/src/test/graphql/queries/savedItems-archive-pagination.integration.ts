@@ -1,5 +1,4 @@
 import { readClient, writeClient } from '../../../database/client';
-import { expect } from 'chai';
 import { seeds } from '@pocket-tools/backend-benchmarking';
 import { ListPaginationService } from '../../../dataService/listPaginationService';
 import { ContextManager } from '../../../server/context';
@@ -110,8 +109,8 @@ describe('getSavedItems pagination', () => {
         const [actualId, actualTimestamp] = ListPaginationService.decodeCursor(
           edge.cursor,
         );
-        expect(actualId).to.equal(edge.node.id);
-        expect(parseInt(actualTimestamp)).to.equal(
+        expect(actualId).toBe(edge.node.id);
+        expect(parseInt(actualTimestamp)).toBe(
           new Date(rowsById[actualId][sortField]).getTime() / 1000,
         );
       });
@@ -154,8 +153,8 @@ describe('getSavedItems pagination', () => {
         const [actualId, actualTimestamp] = ListPaginationService.decodeCursor(
           edge.cursor,
         );
-        expect(actualId).to.equal(edge.node.id);
-        expect(actualTimestamp).to.be.null;
+        expect(actualId).toBe(edge.node.id);
+        expect(actualTimestamp).toBeNull();
       });
     });
   });
