@@ -1,5 +1,3 @@
-import chai, { expect } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 import { ParserCaller } from './parserCaller';
 import nock from 'nock';
 import config from '../config';
@@ -7,8 +5,6 @@ import {
   mockParserGetItemRequest,
   mockParserGetItemIdRequest,
 } from '../test/utils/parserMocks';
-
-chai.use(chaiAsPromised);
 
 describe('ParserCallerTest', function () {
   const urlToParse = 'https://igiveyou.a.test';
@@ -24,17 +20,17 @@ describe('ParserCallerTest', function () {
     });
 
     const res = await ParserCaller.getOrCreateItem(urlToParse);
-    expect(res.itemId).equals(8);
-    expect(res.title).equals('The Not Evil Search Engine');
-    expect(res.resolvedId).equals(9);
+    expect(res.itemId).toBe(8);
+    expect(res.title).toBe('The Not Evil Search Engine');
+    expect(res.resolvedId).toBe(9);
   });
 
   it('should throw error when there is no item in the response', async () => {
     mockParserGetItemRequest(urlToParse, {});
 
     const res = ParserCaller.getOrCreateItem(urlToParse, 1);
-    await expect(res).to.be.rejectedWith(
-      `Unable to parse and generate item for ${urlToParse}`,
+    await expect(res).rejects.toEqual(
+      new Error(`Unable to parse and generate item for ${urlToParse}`),
     );
   });
 
@@ -47,8 +43,8 @@ describe('ParserCallerTest', function () {
     });
 
     const res = ParserCaller.getOrCreateItem(urlToParse, 1);
-    await expect(res).to.be.rejectedWith(
-      `Unable to parse and generate item for ${urlToParse}`,
+    await expect(res).rejects.toEqual(
+      new Error(`Unable to parse and generate item for ${urlToParse}`),
     );
   });
 
@@ -61,8 +57,8 @@ describe('ParserCallerTest', function () {
     });
 
     const res = ParserCaller.getOrCreateItem(urlToParse, 1);
-    await expect(res).to.be.rejectedWith(
-      `Unable to parse and generate item for ${urlToParse}`,
+    await expect(res).rejects.toEqual(
+      new Error(`Unable to parse and generate item for ${urlToParse}`),
     );
   });
 
@@ -86,18 +82,18 @@ describe('ParserCallerTest', function () {
       });
 
     const res = await ParserCaller.getOrCreateItem(urlToParse);
-    expect(res.itemId).equals(8);
-    expect(res.title).equals('The Not Evil Search Engine');
-    expect(res.resolvedId).equals(9);
+    expect(res.itemId).toBe(8);
+    expect(res.title).toBe('The Not Evil Search Engine');
+    expect(res.resolvedId).toBe(9);
   });
   it('should retrieve item id from parser service', async () => {
     mockParserGetItemIdRequest(urlToParse, '22');
     const itemId = await ParserCaller.getItemIdFromUrl(urlToParse);
-    expect(itemId).equals('22');
+    expect(itemId).toBe('22');
   });
   it('should return null if item does not exist', async () => {
     mockParserGetItemIdRequest(urlToParse, null);
     const itemId = await ParserCaller.getItemIdFromUrl(urlToParse);
-    expect(itemId).to.be.null;
+    expect(itemId).toBeNull();
   });
 });

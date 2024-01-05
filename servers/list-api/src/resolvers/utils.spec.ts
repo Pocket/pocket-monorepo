@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { SavedItemTagsInput, Tag } from '../types';
 import { getSavedItemMapFromTags, getSavedItemTagsMap } from './utils';
 
@@ -10,7 +9,7 @@ describe('getSavedItemMapFromTags', () => {
 
     const expected = { '1': [tagA, tagB], '2': [tagA], '3': [tagB] };
     const actual = getSavedItemMapFromTags(input);
-    expect(actual).to.deep.equal(expected);
+    expect(actual).toEqual(expected);
   });
 });
 
@@ -36,7 +35,7 @@ describe('getSavedItemTagsMap', () => {
     ];
 
     const map = getSavedItemTagsMap(savedItemTagsInput);
-    expect(map['1']).to.deep.equal(['tagA', 'tagB', 'tagC', 'tagD']);
-    expect(map['2']).to.deep.equal(['tagC', 'tagD']);
+    expect(map['1']).toEqual(['tagA', 'tagB', 'tagC', 'tagD']);
+    expect(map['2']).toEqual(['tagC', 'tagD']);
   });
 });
