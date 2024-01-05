@@ -51,6 +51,27 @@ headers:
           named: 'X-Amzn-Trace-Id'
       - propagate:
           named: 'transfersub'
+# telemetry:
+#   exporters:
+#     metrics:
+#       otlp:
+#         # Enable the OpenTelemetry exporter
+#         enabled: true
+#         # Optional endpoint, either 'default' or a URL (Defaults to http://127.0.0.1:4317 for gRPC and http://127.0.0.1:4318 for HTTP)
+#         endpoint: http://otlp-collector:4317
+#         # Optional protocol
+#         protocol: grpc
+#           # Optional gRPC configuration
+#         grpc:
+#           metadata:
+#             foo: bar
+#         # Optional batch_processor configuration
+#         batch_processor:
+#           scheduled_delay: 100ms
+#           max_concurrent_exports: 1000
+#           max_export_batch_size: 10000
+#           max_export_timeout: 100s
+#           max_queue_size: 10000
 apq:
   router:
     cache:
