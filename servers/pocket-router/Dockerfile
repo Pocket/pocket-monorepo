@@ -3,7 +3,7 @@ FROM ghcr.io/apollographql/router:v1.37.0
 # Need root to install curl
 USER root
 
-RUN apt-get install -y debian-archive-keyring && \
+RUN apt-get install -y --reinstall debian-archive-keyring && \
     apt-get update && \
    apt-get install -y curl
 
