@@ -70,8 +70,8 @@ workflows:
           for: pocket_router
           name: pocket-router_code_deploy_ecs_dev
           resource-class: pocket/default-dev
-          codedeploy-app-name: pocketrouter-Dev-ECS
-          codedeploy-group-name: pocketrouter-Dev-ECS
+          codedeploy-app-name: PocketRouter-Dev-ECS
+          codedeploy-group-name: PocketRouter-Dev-ECS
           requires:
             - pocket-router_build_docker_dev
 
@@ -114,8 +114,7 @@ workflows:
           for: pocket_router
           name: pocket-router_code_deploy_ecs_prod
           resource-class: pocket/default-prod
-          codedeploy-app-name: pocketrouter-Prod-ECS
-          codedeploy-group-name: pocketrouter-Prod-ECS
+          codedeploy-app-name: PocketRouter-Prod-ECS
+          codedeploy-group-name: PocketRouter-Prod-ECS
           requires:
             - pocket-router_build_docker_prod
-
