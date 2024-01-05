@@ -468,9 +468,6 @@ jobs:
       - exit-early-if-irrelevant:
           for: << parameters.for >>
       - checkout
-      - run:
-          name: 'Move to app path'
-          command: cd << parameters.app_path >>
       - aws-cli/setup:
           aws-access-key-id: << parameters.aws-access-key-id >>
           aws-secret-access-key: << parameters.aws-secret-access-key >>
@@ -488,6 +485,7 @@ jobs:
             - aws-ecr/build-and-push-image:
                 checkout: false
                 repo: << parameters.repo-name >>
+                path: << parameters.app_path >>
                 setup-remote-docker: true
                 remote-docker-layer-caching: true
                 aws-access-key-id: << parameters.aws-access-key-id >>
@@ -502,6 +500,7 @@ jobs:
             - aws-ecr/build-image:
                 repo: << parameters.repo-name >>
                 tag: << parameters.tag >>
+                path: << parameters.app_path >>
                 extra-build-args: << parameters.extra-build-args >>
 
   build_lambda:
