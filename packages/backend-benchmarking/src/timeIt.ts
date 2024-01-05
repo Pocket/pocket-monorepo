@@ -36,7 +36,7 @@ interface TimeItOptions {
  */
 export function timeIt(
   callback: AsyncFunction<any>,
-  options: TimeItOptions
+  options: TimeItOptions,
 ): AsyncFunction<undefined | number[]> {
   return async function wrapper(...args: any[]) {
     const {
@@ -67,7 +67,7 @@ export function timeIt(
       timeRecords.reduce((total, curr) => total + curr, 0) / times;
     if (printToConsole) {
       console.log(
-        `${name}: average ${average} ms over ${times} trials (min: ${min}, max: ${max})`
+        `${name}: average ${average} ms over ${times} trials (min: ${min}, max: ${max})`,
       );
     }
     if (returnValues) {

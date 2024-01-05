@@ -43,7 +43,7 @@ describe('mockList', () => {
     function flatMapKeys<T>(
       objects: T[],
       keys: (keyof T)[],
-      callback: (obj: any) => any
+      callback: (obj: any) => any,
     ): T[keyof T][] {
       return objects.reduce((acc, obj) => {
         acc.push(...keys.map((key) => callback(obj[key])));
@@ -59,8 +59,8 @@ describe('mockList', () => {
         ...flatMapKeys(
           batch.value['list'],
           ['time_read', 'time_favorited', 'time_added', 'time_updated'],
-          (date: Date) => date?.getTime()
-        )
+          (date: Date) => date?.getTime(),
+        ),
       );
       batch = mockListGenerator.next();
     }

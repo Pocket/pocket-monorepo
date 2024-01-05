@@ -74,7 +74,7 @@ interface ListDataResponse {
  */
 export function* mockList(
   userId: string,
-  options?: ListDataOptions
+  options?: ListDataOptions,
 ): Generator<ListDataResponse> {
   // Set defaults
   const {
