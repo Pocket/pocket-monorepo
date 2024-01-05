@@ -461,6 +461,10 @@ jobs:
         description: 'The path needed for building the Docker image'
         type: string
         default: '.'
+      layer_caching:
+        description: 'Whether to use docker layer caching'
+        type: boolean
+        default: true
       <<: *repo_for_enum
     executor: aws-cli/default
 
@@ -487,7 +491,7 @@ jobs:
                 repo: << parameters.repo-name >>
                 path: << parameters.app_path >>
                 setup-remote-docker: true
-                remote-docker-layer-caching: true
+                remote-docker-layer-caching: << parameters.layer_caching >>
                 aws-access-key-id: << parameters.aws-access-key-id >>
                 aws-secret-access-key: << parameters.aws-secret-access-key >>
                 tag: << parameters.tag >>
@@ -496,7 +500,7 @@ jobs:
           condition: <<parameters.push>>
           steps:
             - setup_remote_docker:
-                docker-layer-caching: true
+                docker-layer-caching: << parameters.layer_caching >>
             - aws-ecr/build-image:
                 repo: << parameters.repo-name >>
                 tag: << parameters.tag >>
