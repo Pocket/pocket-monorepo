@@ -10,7 +10,7 @@ supergraph:
 include_subgraph_errors:
   all: true # Propagate errors from all subgraphs
 health_check:
-  listen: 127.0.0.1:${env.PORT}
+  listen: 0.0.0.0:${env.PORT}
   enabled: true
   path: /.well-known/apollo/server-health
 limits:

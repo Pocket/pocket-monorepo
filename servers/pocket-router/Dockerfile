@@ -1,4 +1,13 @@
-FROM ghcr.io/apollographql/router:v1.36.0
+FROM ghcr.io/apollographql/router:v1.37.0
+
+# Need root to install curl
+USER root
+
+RUN apt-get update && \
+   apt-get install -y curl
+
+# Switch back to the router user
+USER router
 
 COPY ./config/router.yaml /config/router.yaml
 

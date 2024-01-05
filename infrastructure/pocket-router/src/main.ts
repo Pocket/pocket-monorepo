@@ -20,7 +20,7 @@ import { App, S3Backend, TerraformStack } from 'cdktf';
 import { Construct } from 'constructs';
 import * as fs from 'fs';
 
-class PocketRoute extends TerraformStack {
+class PocketRouter extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
@@ -175,7 +175,7 @@ class PocketRoute extends TerraformStack {
           healthCheck: {
             command: [
               'CMD-SHELL',
-              'curl -f http://127.0.0.1:4000/.well-known/apollo/server-health || exit 1',
+              'curl -f http://localhost:4000/.well-known/apollo/server-health || exit 1',
             ],
             interval: 15,
             retries: 3,
@@ -224,19 +224,7 @@ class PocketRoute extends TerraformStack {
             effect: 'Allow',
           },
         ],
-        taskRolePolicyStatements: [
-          {
-            actions: [
-              'xray:PutTraceSegments',
-              'xray:PutTelemetryRecords',
-              'xray:GetSamplingRules',
-              'xray:GetSamplingTargets',
-              'xray:GetSamplingStatisticSummaries',
-            ],
-            resources: ['*'],
-            effect: 'Allow',
-          },
-        ],
+        taskRolePolicyStatements: [],
         taskExecutionDefaultAttachmentArn:
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },
@@ -295,7 +283,7 @@ class PocketRoute extends TerraformStack {
 }
 
 const app = new App();
-const stack = new PocketRoute(app, 'pocket-router');
+const stack = new PocketRouter(app, 'pocket-router');
 const tfEnvVersion = fs.readFileSync('.terraform-version', 'utf8');
 stack.addOverride('terraform.required_version', tfEnvVersion);
 app.synth();
