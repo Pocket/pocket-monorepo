@@ -495,11 +495,13 @@ jobs:
                 aws-access-key-id: << parameters.aws-access-key-id >>
                 aws-secret-access-key: << parameters.aws-secret-access-key >>
                 tag: << parameters.tag >>
+                remote-docker-version: default
                 extra-build-args: << parameters.extra-build-args >>
       - unless:
           condition: <<parameters.push>>
           steps:
             - setup_remote_docker:
+                version: default
                 docker-layer-caching: << parameters.layer_caching >>
             - aws-ecr/build-image:
                 repo: << parameters.repo-name >>
