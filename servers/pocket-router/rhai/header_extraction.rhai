@@ -7,8 +7,6 @@ fn extract(header) {
 fn process_request(request) {
     const header_map = #{
         "x-forwarded-for": "origin-client-ip",
-        "X-Amzn-Trace-Id": "X-Amzn-Trace-Id",
-        "transfersub": "transfersub",
     };
     // Reassign to local variable, as 'contains' can't modify the request
     let headers = request.headers;

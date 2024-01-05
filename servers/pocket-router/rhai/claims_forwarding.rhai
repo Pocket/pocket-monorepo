@@ -1,10 +1,5 @@
 fn process_request(request) {
     let claims = request.context[Router.APOLLO_AUTHENTICATION_JWT_CLAIMS];
-    if claims ==() {
-      throw #{
-        status: 401
-      };
-    }
     // Add claims from JWT, renaming to appropriate header value per contract
     // Note that that claims that are not present in the JWT will be added as empty strings.
     // These end up being case-insensitive but are camelCased for readability

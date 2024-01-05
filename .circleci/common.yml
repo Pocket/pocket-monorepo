@@ -21,6 +21,7 @@ repo_for_enum: &repo_for_enum
       - transactional_emails
       - fxa_webhook_proxy
       - user_api
+      - pocket_router
 
 resource_class_enmum: &resource_class_enmum
   resource-class:
@@ -53,6 +54,10 @@ parameters:
   user_api:
     type: boolean
     default: false
+  pocket_router:
+    type: boolean
+    default: false
+
 
 commands:
   # Refrenced from https://github.com/kelvintaywl-cci/dynamic-config-showcase/blob/main/.circleci/next.yml
@@ -81,7 +86,7 @@ commands:
             transactional_emails: << pipeline.parameters.transactional_emails >>
             fxa_webhook_proxy: << pipeline.parameters.fxa_webhook_proxy >>
             user_api: << pipeline.parameters.user_api >>
-
+            pocket_router: << pipeline.parameters.pocket_router >>
 
   install_pnpm:  
     steps:
@@ -452,6 +457,10 @@ jobs:
         description: 'The docker tag name'
         type: string
         default: latest,$CIRCLE_SHA1
+      app_path:
+        description: 'The path needed for building the Docker image'
+        type: string
+        default: '.'
       <<: *repo_for_enum
     executor: aws-cli/default
 
@@ -459,6 +468,9 @@ jobs:
       - exit-early-if-irrelevant:
           for: << parameters.for >>
       - checkout
+      - run:
+          name: 'Move to app path'
+          command: cd << parameters.app_path >>
       - aws-cli/setup:
           aws-access-key-id: << parameters.aws-access-key-id >>
           aws-secret-access-key: << parameters.aws-secret-access-key >>

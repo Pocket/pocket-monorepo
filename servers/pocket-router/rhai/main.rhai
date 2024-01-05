@@ -4,7 +4,6 @@ import "header_extraction" as header_extraction;
 fn process_request(request) {
   header_extraction::process_request(request);
   claims_forwarding::process_request(request);
-  print(request.subgraph.headers)
 }
 
 // Additional header forwarding logic to the subgraphs

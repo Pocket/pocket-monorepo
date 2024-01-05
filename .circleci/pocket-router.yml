@@ -1,0 +1,118 @@
+
+workflows:
+  pocket-router:
+    jobs:
+      # Try building the ECS docker image on each branch
+      - build_image:
+          <<: *not_dev_main
+          context: pocket
+          for: pocket_router
+          name: pocket-router_build_docker
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          repo-name: pocketrouter-dev-app
+          ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
+          push: false
+          app_path: 'servers/pocket-router'
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1}
+     
+      - infrastructure:
+          <<: *not_dev_main
+          context: pocket
+          for: pocket_router
+          name: pocket-router_infrastructure_plan_prod
+          scope: pocket-router-cdk
+          stack-output-path: infrastructure/pocket-router/cdktf.out/stacks/pocket-router
+          resource-class: pocket/default-prod
+          workspace: Prod
+          dev: false
+          apply: false
+
+      ######
+      # Dev Branch Deployment (Dev Environment)
+      ######
+
+      - infrastructure:
+          <<: *only_dev
+          context: pocket
+          for: pocket_router
+          name: pocket-router_infrastructure_apply_dev
+          scope: pocket-router-cdk
+          stack-output-path: infrastructure/pocket-router/cdktf.out/stacks/pocket-router
+          resource-class: pocket/default-dev
+          workspace: Dev
+          apply: true
+          dev: true
+
+      # Build & Deploy the Dev Docker Image
+      - build_image:
+          <<: *only_dev
+          context: pocket
+          for: pocket_router
+          name: pocket-router_build_docker_dev
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          repo-name: pocketrouter-dev-app
+          ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
+          push: true
+          app_path: 'servers/pocket-router'
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1}
+          requires:
+            - pocket-router_infrastructure_apply_dev
+
+      - code_deploy_ecs:
+          <<: *only_dev
+          context: pocket
+          for: pocket_router
+          name: pocket-router_code_deploy_ecs_dev
+          resource-class: pocket/default-dev
+          codedeploy-app-name: pocketrouter-Dev-ECS
+          codedeploy-group-name: pocketrouter-Dev-ECS
+          requires:
+            - pocket-router_build_docker_dev
+
+      ######
+      # Main Branch Deployment (Prod Environment)
+      ######
+      - infrastructure:
+          <<: *only_main
+          context: pocket
+          for: pocket_router
+          name: pocket-router_infrastructure_apply_prod
+          scope: pocket-router-cdk
+          stack-output-path: infrastructure/pocket-router/cdktf.out/stacks/pocket-router
+          resource-class: pocket/default-prod
+          workspace: Prod
+          apply: true
+          dev: false
+
+      # Build & Deploy the Prod Docker Image
+      - build_image:
+          <<: *only_main
+          context: pocket
+          for: pocket_router
+          name: pocket-router_build_docker_prod
+          aws-access-key-id: Prod_AWS_ACCESS_KEY
+          aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
+          aws-region: Prod_AWS_DEFAULT_REGION
+          repo-name: pocketrouter-prod-app
+          ecr-url: 996905175585.dkr.ecr.us-east-1.amazonaws.com
+          push: true
+          app_path: 'servers/pocket-router'
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1}
+          requires:
+            - pocket-router_infrastructure_apply_prod
+
+      - code_deploy_ecs:
+          <<: *only_main
+          context: pocket
+          for: pocket_router
+          name: pocket-router_code_deploy_ecs_prod
+          resource-class: pocket/default-prod
+          codedeploy-app-name: pocketrouter-Prod-ECS
+          codedeploy-group-name: pocketrouter-Prod-ECS
+          requires:
+            - pocket-router_build_docker_prod
+

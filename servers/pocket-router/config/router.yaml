@@ -1,5 +1,5 @@
 sandbox:
-  enabled: true
+  enabled: false
 supergraph:
   introspection: true
   listen: 0.0.0.0:${env.PORT:-4000}
@@ -7,10 +7,12 @@ supergraph:
     experimental_cache:
       in_memory:
         limit: 512 #This is the default value
-homepage:
-  enabled: false
 include_subgraph_errors:
-  all: true
+  all: true # Propagate errors from all subgraphs
+health_check:
+  listen: 127.0.0.1:${env.PORT}
+  enabled: true
+  path: /.well-known/apollo/server-health
 limits:
   parser_max_tokens: 15000 # This is the default value.
   parser_max_recursion: 4096 # This is the default value.
@@ -24,7 +26,7 @@ authentication:
       jwks:
         - url: https://getpocket.com/.well-known/jwk
 authorization:
-  require_authentication: true
+  require_authentication: false
 rhai:
   scripts: './rhai'
   main: 'main.rhai'
@@ -45,8 +47,12 @@ headers:
       - propagate:
           named: 'web-request-user-agent'
           rename: 'gatwayUserAgent'
-# apq:
-#   router:
-#     cache:
-#       in_memory:
-#         limit: 512 # This is the default value
+      - propagate:
+          named: 'X-Amzn-Trace-Id'
+      - propagate:
+          named: 'transfersub'
+apq:
+  router:
+    cache:
+      in_memory:
+        limit: 512 # This is the default value
