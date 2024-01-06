@@ -39,7 +39,7 @@ class FeatureFlags extends TerraformStack {
     const region = new DataAwsRegion(this, 'region');
     const caller = new DataAwsCallerIdentity(this, 'caller');
 
-    const pocketApp = this.createPocketAlbApplication({
+    this.createPocketAlbApplication({
       rds: this.createRds(pocketVpc),
       pagerDuty: this.createPagerDuty(),
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
@@ -47,8 +47,6 @@ class FeatureFlags extends TerraformStack {
       region,
       caller,
     });
-
-    this.createApplicationCodePipeline(pocketApp);
   }
 
   /**
@@ -95,22 +93,6 @@ class FeatureFlags extends TerraformStack {
       },
 
       tags: config.tags,
-    });
-  }
-
-  /**
-   * Create CodePipeline to build and deploy terraform and ecs
-   * @param app
-   * @private
-   */
-  private createApplicationCodePipeline(app: PocketALBApplication) {
-    new PocketECSCodePipeline(this, 'code-pipeline', {
-      prefix: config.prefix,
-      source: {
-        codeStarConnectionArn: config.codePipeline.githubConnectionArn,
-        repository: config.codePipeline.repository,
-        branchName: config.codePipeline.branch,
-      },
     });
   }
 
@@ -260,7 +242,8 @@ class FeatureFlags extends TerraformStack {
       ],
       codeDeploy: {
         useCodeDeploy: true,
-        useCodePipeline: true,
+        useCodePipeline: false,
+        useTerraformBasedCodeDeploy: false,
         snsNotificationTopicArn: snsTopic.arn,
         notifications: {
           //only notify on failed deploys
