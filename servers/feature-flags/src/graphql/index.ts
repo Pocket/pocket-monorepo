@@ -1,8 +1,8 @@
 import { buildSubgraphSchema } from '@apollo/subgraph';
 import { ExpressContextFunctionArgument } from '@apollo/server/express4';
 import { ApolloServer } from '@apollo/server';
-import { ApolloServerPluginLandingPageGraphQLPlayground } from '@apollo/server-plugin-landing-page-graphql-playground';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import {
   ApolloServerPluginLandingPageDisabled,
   ApolloServerPluginInlineTraceDisabled,
@@ -65,7 +65,7 @@ export const getApolloServer = async (
     ApolloServerPluginInlineTrace(),
   ];
   const nonProdPlugins = [
-    ApolloServerPluginLandingPageGraphQLPlayground(),
+    ApolloServerPluginLandingPageLocalDefault(),
     ApolloServerPluginInlineTraceDisabled(),
     ApolloServerPluginUsageReportingDisabled(),
   ];
@@ -79,6 +79,7 @@ export const getApolloServer = async (
     schema: buildSubgraphSchema({ typeDefs, resolvers }),
     plugins,
     formatError: config.app.environment !== 'test' ? errorHandler : undefined,
+    introspection: true,
   });
   await server.start();
   return server;
