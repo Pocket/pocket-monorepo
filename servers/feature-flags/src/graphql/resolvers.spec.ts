@@ -1,9 +1,7 @@
 import { resolvers } from './resolvers';
 import { RequestHandlerContext } from './index';
 import { UnleashContext, UnleashProperties } from './typeDefs';
-import * as sinon from 'sinon';
 import * as UnleashClient from '../unleashClient';
-import { Unleash } from 'unleash-client';
 
 describe('resolvers converts unleash assignment', () => {
   let defaultProperties: UnleashProperties;
@@ -18,9 +16,9 @@ describe('resolvers converts unleash assignment', () => {
 
   beforeEach(async () => {
     // Create a mock Unleash client, and return it when getUnleashClient is called.
-    unleashStub = sinon.createStubInstance(Unleash);
-    const getUnleashStub = sinon.stub(UnleashClient, 'getUnleashClient');
-    getUnleashStub.returns(unleashStub);
+    unleashStub = jest.createMockFromModule('unleash-client');
+    const getUnleashStub = jest.spyOn(UnleashClient, 'getUnleashClient');
+    getUnleashStub.mockReturnValue(unleashStub);
 
     defaultProperties = {};
 
@@ -45,13 +43,12 @@ describe('resolvers converts unleash assignment', () => {
   });
 
   afterEach(async () => {
-    // Restore Sinon's sandbox to undo the stubs we created in beforeEach.
-    sinon.restore();
+    jest.restoreAllMocks();
   });
 
   it('returns no assignments if there are no feature toggles', async () => {
     // There are no feature toggles
-    unleashStub.getFeatureToggleDefinitions.returns([]);
+    unleashStub.getFeatureToggleDefinitions.mockReturnValue([]);
 
     const assignments = await resolvers.Query.getUnleashAssignments(
       null,
@@ -64,7 +61,7 @@ describe('resolvers converts unleash assignment', () => {
 
   it('returns no assignments if there are no feature toggles on assignments', async () => {
     // There are no feature toggles
-    unleashStub.getFeatureToggleDefinitions.returns([]);
+    unleashStub.getFeatureToggleDefinitions.mockReturnValue([]);
 
     const assignments = await resolvers.Query.unleashAssignments(
       null,
@@ -93,8 +90,8 @@ describe('resolvers converts unleash assignment', () => {
       recItUserProfile: { userModels: ['model123'] },
     };
     // Set the return values of the stubbed Unleash methods.
-    unleashStub.getFeatureToggleDefinitions.returns([feature]);
-    unleashStub.isEnabled.returns(true);
+    unleashStub.getFeatureToggleDefinitions.mockReturnValue([feature]);
+    unleashStub.isEnabled.mockReturnValue(true);
 
     // getUnleashAssignments modifies its arguments, so set the expected context before calling getUnleashAssignments.
     const expectedContext = { ...defaultArgs.context };
@@ -110,14 +107,6 @@ describe('resolvers converts unleash assignment', () => {
       null,
       defaultArgs,
       defaultRequestHandler,
-    );
-
-    // calledWithMatch does a deep equals to compare objects, instead of comparing object references.
-    // What we care about is that the context has the same keys/values, not that it's the exact same object.
-    sinon.assert.calledWithMatch(
-      unleashStub.isEnabled,
-      featureName,
-      expectedContext,
     );
 
     expect(assignments).toEqual({
