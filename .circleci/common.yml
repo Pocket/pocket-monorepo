@@ -21,6 +21,7 @@ repo_for_enum: &repo_for_enum
       - transactional_emails
       - fxa_webhook_proxy
       - user_api
+      - feature_flags
 
 resource_class_enmum: &resource_class_enmum
   resource-class:
@@ -53,6 +54,9 @@ parameters:
   user_api:
     type: boolean
     default: false
+  feature_flags:
+    type: boolean
+    default: false
 
 commands:
   # Refrenced from https://github.com/kelvintaywl-cci/dynamic-config-showcase/blob/main/.circleci/next.yml
@@ -81,6 +85,7 @@ commands:
             transactional_emails: << pipeline.parameters.transactional_emails >>
             fxa_webhook_proxy: << pipeline.parameters.fxa_webhook_proxy >>
             user_api: << pipeline.parameters.user_api >>
+            feature_flags: << pipeline.parameters.feature_flags >>
 
 
   install_pnpm:  
