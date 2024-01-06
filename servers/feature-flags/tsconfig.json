@@ -1,0 +1,10 @@
+{
+  "extends": "@pocket-tools/tsconfig",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "skipLibCheck": true,
+  },
+  "exclude": ["node_modules"],
+  "include": ["src/**/*.ts", "src/config"]
+}

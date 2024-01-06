@@ -1,0 +1,22 @@
+{
+  "name": "feature-flags-cdk",
+  "version": "1.0.0",
+  "main": "dist/main.js",
+  "types": "src/main.ts",
+  "private": true,
+  "scripts": {
+    "build:dev": "npm run build && NODE_ENV=development npm run synth",
+    "build": "rm -rf dist && tsc",
+    "synth": "cdktf synth",
+    "compile": "tsc --pretty",
+    "watch": "tsc -w",
+    "test": "echo ok"
+  },
+  "dependencies": {
+    "@pocket-tools/terraform-modules": "5.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "20.10.0",
+    "typescript": "^5.2"
+  }
+}
