@@ -35,8 +35,8 @@ importers:
   infrastructure/feature-flags:
     dependencies:
       '@pocket-tools/terraform-modules':
-        specifier: 5.2.1
-        version: 5.2.1(ink@3.2.0)(react@17.0.2)
+        specifier: workspace:*
+        version: link:../../packages/terraform-modules
     devDependencies:
       eslint-config-custom:
         specifier: workspace:*
@@ -3404,66 +3404,6 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@cdktf/cli-core@0.17.2(react@17.0.2):
-    resolution: {integrity: sha512-yYgYM11FiaZpDAiGubMCjwGTWjHYDPER+Hi9pCHSW4aze5U1R6oalHEZQ3N0pM904M8MqMOkfybTWZCvH8g68g==}
-    dependencies:
-      '@cdktf/commons': 0.17.2
-      '@cdktf/hcl2cdk': 0.17.2
-      '@cdktf/hcl2json': 0.17.2
-      '@cdktf/node-pty-prebuilt-multiarch': 0.10.1-pre.10
-      '@sentry/node': 6.19.7
-      archiver: 5.3.2
-      cdktf: 0.17.2(constructs@10.3.0)
-      chalk: 4.1.2
-      chokidar: 3.5.3
-      cli-spinners: 2.7.0
-      codemaker: 1.93.0
-      constructs: 10.3.0
-      cross-fetch: 3.1.8
-      cross-spawn: 7.0.3
-      detect-port: 1.5.1
-      execa: 5.1.1
-      extract-zip: 2.0.1
-      follow-redirects: 1.15.3
-      fs-extra: 8.1.0
-      https-proxy-agent: 5.0.1
-      indent-string: 4.0.0
-      ink: 3.2.0(react@17.0.2)
-      ink-select-input: 4.2.2(ink@3.2.0)(react@17.0.2)
-      ink-spinner: 4.0.3(ink@3.2.0)(react@17.0.2)
-      ink-testing-library: 2.1.0
-      ink-use-stdout-dimensions: 1.0.5(ink@3.2.0)(react@17.0.2)
-      jsii: 5.3.0
-      jsii-pacmak: 1.93.0
-      jsii-srcmak: 0.1.999
-      lodash.isequal: 4.5.0
-      log4js: 6.9.1
-      minimatch: 5.1.6
-      node-fetch: 2.7.0
-      open: 7.4.2
-      parse-gitignore: 1.0.1
-      pkg-up: 3.1.0
-      semver: 7.5.4
-      sscaff: 1.2.274
-      stream-buffers: 3.0.2
-      strip-ansi: 6.0.1
-      tunnel-agent: 0.6.0
-      uuid: 8.3.2
-      xml-js: 1.6.11
-      xstate: 4.38.3
-      yargs: 17.7.2
-      yoga-layout-prebuilt: 1.10.0
-      zod: 1.11.17
-    transitivePeerDependencies:
-      - '@types/react'
-      - bufferutil
-      - debug
-      - encoding
-      - react
-      - supports-color
-      - utf-8-validate
-    dev: false
-
   /@cdktf/cli-core@0.20.0-pre.70(react@17.0.2):
     resolution: {integrity: sha512-oK/agnl4Kd1zAbhwrSi8lhcqzm10wsxz06iqBgpcAEmGluTeJqf+Uso57AHDu/sJfSZdiKvApJ1liExZiJ+h6A==}
     dependencies:
@@ -3525,25 +3465,6 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@cdktf/commons@0.17.2:
-    resolution: {integrity: sha512-5PKZZME6bE+imimsSZCQ0zgRfWzhXiXs5U0hx5/zQjUkUWaEGGw+KvLEVYQgswV3605LNa4HJo1ZjLKAx1j66w==}
-    dependencies:
-      '@npmcli/ci-detect': 1.4.0
-      '@sentry/node': 6.19.7
-      cdktf: 0.17.2(constructs@10.3.0)
-      codemaker: 1.93.0
-      constructs: 10.3.0
-      cross-spawn: 7.0.3
-      follow-redirects: 1.15.3
-      fs-extra: 8.1.0
-      is-valid-domain: 0.1.6
-      log4js: 6.9.1
-      uuid: 8.3.2
-    transitivePeerDependencies:
-      - debug
-      - supports-color
-    dev: false
-
   /@cdktf/commons@0.20.0-pre.70(constructs@10.3.0):
     resolution: {integrity: sha512-5D5PvnmBUyJN1oN3D75oaIaOCH5o1Qkq376PPFuiCDzFPsMdjP9KMuOVJwWDcpX+LxbqcFZG1KFIeEgSeHQ+MA==}
     dependencies:
@@ -3560,29 +3481,6 @@ packages:
       uuid: 9.0.1
     transitivePeerDependencies:
       - constructs
-      - debug
-      - supports-color
-    dev: false
-
-  /@cdktf/hcl2cdk@0.17.2:
-    resolution: {integrity: sha512-/ixxaVsIkAx0j9bmbuwyKFAgkRdaWWUGo0FAYEBFvh+bG37ZbppdMfhSrTnCUKAgbio8EW/mxxxozrnGaFPXDQ==}
-    dependencies:
-      '@babel/generator': 7.23.6
-      '@babel/template': 7.22.15
-      '@babel/types': 7.23.6
-      '@cdktf/commons': 0.17.2
-      '@cdktf/hcl2json': 0.17.2
-      '@cdktf/provider-generator': 0.17.2
-      camelcase: 6.3.0
-      deep-equal: 2.2.3
-      glob: 10.3.10
-      graphology: 0.25.4(graphology-types@0.24.7)
-      graphology-types: 0.24.7
-      jsii-rosetta: 5.3.0
-      prettier: 2.8.8
-      reserved-words: 0.1.2
-      zod: 3.22.4
-    transitivePeerDependencies:
       - debug
       - supports-color
     dev: false
@@ -3614,24 +3512,10 @@ packages:
       - supports-color
     dev: false
 
-  /@cdktf/hcl2json@0.17.2:
-    resolution: {integrity: sha512-m0soZckmIz0yiMb4nul8MTDl9nE1xfowBOtuYCe9IbjfCEzX1XvD5MsL+w2PHWGAZ0FbFvQP1FIPOCR5TeeKHw==}
-    dependencies:
-      fs-extra: 11.2.0
-    dev: false
-
   /@cdktf/hcl2json@0.20.0-pre.70:
     resolution: {integrity: sha512-lSK4i+cm2TbTeIs86ga08HcTPNkk8ixMnlrjcqUOsWhrG87hHZG/kwpaepfDZ9su7sCXHMEEOStSKOb7Ve+foQ==}
     dependencies:
       fs-extra: 11.2.0
-    dev: false
-
-  /@cdktf/node-pty-prebuilt-multiarch@0.10.1-pre.10:
-    resolution: {integrity: sha512-5ysQrHJvqYLYg407KvaDNu+xx68ZGaqeF0SohXe5e4yNqJhPFPUQ536rkReQcPc2yZiF5PDmmvf5T9MOacHpSQ==}
-    requiresBuild: true
-    dependencies:
-      nan: 2.18.0
-      prebuild-install: 7.1.1
     dev: false
 
   /@cdktf/node-pty-prebuilt-multiarch@0.10.1-pre.11:
@@ -3640,17 +3524,6 @@ packages:
     dependencies:
       nan: 2.18.0
       prebuild-install: 7.1.1
-    dev: false
-
-  /@cdktf/provider-archive@7.0.0(cdktf@0.17.2)(constructs@10.2.69):
-    resolution: {integrity: sha512-nu8UY3t8htCNNUgRou2cxW5d+CVQQB7Gt0H2177ocxjSiUv94Xy+peLVCyR4GfE+uVxTCrPY5DH1PSMtSRHGiA==}
-    engines: {node: '>= 16.14.0'}
-    peerDependencies:
-      cdktf: ^0.17.0
-      constructs: ^10.0.0
-    dependencies:
-      cdktf: 0.17.2(constructs@10.2.69)
-      constructs: 10.2.69
     dev: false
 
   /@cdktf/provider-archive@9.0.1(cdktf@0.20.0-pre.70)(constructs@10.3.0):
@@ -3664,17 +3537,6 @@ packages:
       constructs: 10.3.0
     dev: false
 
-  /@cdktf/provider-aws@16.0.4(cdktf@0.17.2)(constructs@10.2.69):
-    resolution: {integrity: sha512-Jh3WFHHkNOceukG4DtBJFHAG1WtOWydbQXjywXG4irXQ+jqwpDBep1HSaAQTF/bnSbg9MYmTCX+bKnEwAYea0w==}
-    engines: {node: '>= 16.14.0'}
-    peerDependencies:
-      cdktf: ^0.17.0
-      constructs: ^10.0.0
-    dependencies:
-      cdktf: 0.17.2(constructs@10.2.69)
-      constructs: 10.2.69
-    dev: false
-
   /@cdktf/provider-aws@18.2.0(cdktf@0.20.0-pre.70)(constructs@10.3.0):
     resolution: {integrity: sha512-Dm+ORqd9ttGH8PqdDe4q72QHoHO0BfgBEMDasagcP4b0lhYV3oiYxJtHsqdOJEKiv6EvHZT3/iftXwU2uOjnlA==}
     engines: {node: '>= 18.12.0'}
@@ -3684,21 +3546,6 @@ packages:
     dependencies:
       cdktf: 0.20.0-pre.70(constructs@10.3.0)
       constructs: 10.3.0
-    dev: false
-
-  /@cdktf/provider-generator@0.17.2:
-    resolution: {integrity: sha512-asMWah2kXjNICJd3IlX0QV0loCt8hRPm+e0YNLLBmhxmqbuy8wh8MdoPBbHA83vtLEA8IZiPTPuQHUMTe7lNEQ==}
-    dependencies:
-      '@cdktf/commons': 0.17.2
-      '@cdktf/hcl2json': 0.17.2
-      '@types/node': 16.18.23
-      codemaker: 1.93.0
-      deepmerge: 4.3.1
-      fs-extra: 8.1.0
-      jsii-srcmak: 0.1.999
-    transitivePeerDependencies:
-      - debug
-      - supports-color
     dev: false
 
   /@cdktf/provider-generator@0.20.0-pre.70(constructs@10.3.0):
@@ -3715,17 +3562,6 @@ packages:
       - constructs
       - debug
       - supports-color
-    dev: false
-
-  /@cdktf/provider-local@7.0.0(cdktf@0.17.2)(constructs@10.2.69):
-    resolution: {integrity: sha512-WblWcRafPomUy/9muqamtlKYpjTOUftMJ65Svt7Vqxsuassw8KGWj2OtyRVAZSi3+hk69BEUWIrPmgr/VvZ6fQ==}
-    engines: {node: '>= 16.14.0'}
-    peerDependencies:
-      cdktf: ^0.17.0
-      constructs: ^10.0.0
-    dependencies:
-      cdktf: 0.17.2(constructs@10.2.69)
-      constructs: 10.2.69
     dev: false
 
   /@cdktf/provider-local@9.0.1(cdktf@0.20.0-pre.70)(constructs@10.3.0):
@@ -3751,29 +3587,6 @@ packages:
       constructs: 10.3.0
     dev: false
 
-  /@cdktf/provider-newrelic@9.0.1(cdktf@0.17.2)(constructs@10.2.69):
-    resolution: {integrity: sha512-A9rShr5eVOVqiEGba2CxkugqFjMclclyrdGnR9pv47oXEaAtCVLYro4lVolJMT1ojqSbJX0Vc+K+W/GUrHug6w==}
-    engines: {node: '>= 16.14.0'}
-    deprecated: See https://cdk.tf/imports for details on how to continue to use the newrelic provider in your CDK for Terraform (CDKTF) projects by generating the bindings locally.
-    peerDependencies:
-      cdktf: ^0.17.0
-      constructs: ^10.0.0
-    dependencies:
-      cdktf: 0.17.2(constructs@10.2.69)
-      constructs: 10.2.69
-    dev: false
-
-  /@cdktf/provider-null@7.0.0(cdktf@0.17.2)(constructs@10.2.69):
-    resolution: {integrity: sha512-uofD/gN3yXdXo/7xCo6O9HBmKlY/LV6nvVKRTuSuhBjlNIyAKP0v/FpZ7iAJb8VWJlC1yAPUU2QXW7VpejdXCA==}
-    engines: {node: '>= 16.14.0'}
-    peerDependencies:
-      cdktf: ^0.17.0
-      constructs: ^10.0.0
-    dependencies:
-      cdktf: 0.17.2(constructs@10.2.69)
-      constructs: 10.2.69
-    dev: false
-
   /@cdktf/provider-null@9.0.1(cdktf@0.20.0-pre.70)(constructs@10.3.0):
     resolution: {integrity: sha512-unmz1i944Y0gIavZTYl54jZBXQh95i21SStCRqRfiFyrsc88aw665HJt1G69uQXK3VtPuwjFSSVsG9UMRmZh6A==}
     engines: {node: '>= 18.12.0'}
@@ -3797,18 +3610,6 @@ packages:
       constructs: 10.3.0
     dev: false
 
-  /@cdktf/provider-pagerduty@9.0.1(cdktf@0.17.2)(constructs@10.2.69):
-    resolution: {integrity: sha512-yAxBtJIQrcAHqD8i5Mo7JCdIyUuUfXHSQVhUFeg4SdsBt5oOxtnA7sULVzRs2p5Z5GiSF1Ab5Rxs7jgh3n4qSA==}
-    engines: {node: '>= 16.14.0'}
-    deprecated: See https://cdk.tf/imports for details on how to continue to use the pagerduty provider in your CDK for Terraform (CDKTF) projects by generating the bindings locally.
-    peerDependencies:
-      cdktf: ^0.17.0
-      constructs: ^10.0.0
-    dependencies:
-      cdktf: 0.17.2(constructs@10.2.69)
-      constructs: 10.2.69
-    dev: false
-
   /@cdktf/provider-schema@0.20.0-pre.70(constructs@10.3.0):
     resolution: {integrity: sha512-in1XqvD0MxJMVFL8bUeA1OPpQXlhEP2sLMKXTXrossZcCxDCpfdSJOyB0b/Ybr/cET+hcJVdBDlEoSHYIdJLDQ==}
     dependencies:
@@ -3820,17 +3621,6 @@ packages:
       - constructs
       - debug
       - supports-color
-    dev: false
-
-  /@cdktf/provider-time@7.0.0(cdktf@0.17.2)(constructs@10.2.69):
-    resolution: {integrity: sha512-0ZMVSBURFsr45ulRc7NqTElI/NZfsNFJc+LvYCIYK8GSBPj6FCE42hML3F3Vw67ZR8yzhUYgjsrXmWVbzH4keQ==}
-    engines: {node: '>= 16.14.0'}
-    peerDependencies:
-      cdktf: ^0.17.0
-      constructs: ^10.0.0
-    dependencies:
-      cdktf: 0.17.2(constructs@10.2.69)
-      constructs: 10.2.69
     dev: false
 
   /@cdktf/provider-time@9.0.2(cdktf@0.20.0-pre.70)(constructs@10.3.0):
@@ -4694,11 +4484,6 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.16.0
 
-  /@npmcli/ci-detect@1.4.0:
-    resolution: {integrity: sha512-3BGrt6FLjqM6br5AhWRKTr3u5GIVkjRYeAFrMp3HjnfICrg4xOrVRwFavKT6tsp++bq5dluL5t8ME/Nha/6c1Q==}
-    deprecated: this package has been deprecated, use `ci-info` instead
-    dev: false
-
   /@npmcli/fs@2.1.2:
     resolution: {integrity: sha512-yOJKRvohFOaLqipNtwYB9WugyZKhC/DZC4VYPmpaCzDBrA8YpK3qHZ8/HGscMnE4GqbkLNuVcCnxkeQEdGt6LQ==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
@@ -5199,33 +4984,6 @@ packages:
       - supports-color
     dev: false
 
-  /@pocket-tools/terraform-modules@5.2.1(ink@3.2.0)(react@17.0.2):
-    resolution: {integrity: sha512-l4OJvvTFeLkJCe/5uyzqCWw1pDIMPF4tupdU8p8VLRLvuLM0FqNuqAFYlSktB6dE7R7b13NvHevHUbkCPMFmwA==}
-    engines: {node: '>=16.20'}
-    dependencies:
-      '@cdktf/provider-archive': 7.0.0(cdktf@0.17.2)(constructs@10.2.69)
-      '@cdktf/provider-aws': 16.0.4(cdktf@0.17.2)(constructs@10.2.69)
-      '@cdktf/provider-local': 7.0.0(cdktf@0.17.2)(constructs@10.2.69)
-      '@cdktf/provider-newrelic': 9.0.1(cdktf@0.17.2)(constructs@10.2.69)
-      '@cdktf/provider-null': 7.0.0(cdktf@0.17.2)(constructs@10.2.69)
-      '@cdktf/provider-pagerduty': 9.0.1(cdktf@0.17.2)(constructs@10.2.69)
-      '@cdktf/provider-time': 7.0.0(cdktf@0.17.2)(constructs@10.2.69)
-      '@sinonjs/commons': 3.0.0
-      cdktf: 0.17.2(constructs@10.2.69)
-      cdktf-cli: 0.17.2(ink@3.2.0)(react@17.0.2)
-      constructs: 10.2.69
-      parse-domain: 5.0.0
-    transitivePeerDependencies:
-      - '@types/react'
-      - bufferutil
-      - debug
-      - encoding
-      - ink
-      - react
-      - supports-color
-      - utf-8-validate
-    dev: false
-
   /@protobufjs/aspromise@1.1.2:
     resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
     dev: false
@@ -5382,17 +5140,6 @@ packages:
       '@sentry/utils': 7.92.0
     dev: false
 
-  /@sentry/core@6.19.7:
-    resolution: {integrity: sha512-tOfZ/umqB2AcHPGbIrsFLcvApdTm9ggpi/kQZFkej7kMphjT+SGBiQfYtjyg9jcRW+ilAR4JXC9BGKsdEQ+8Vw==}
-    engines: {node: '>=6'}
-    dependencies:
-      '@sentry/hub': 6.19.7
-      '@sentry/minimal': 6.19.7
-      '@sentry/types': 6.19.7
-      '@sentry/utils': 6.19.7
-      tslib: 1.14.1
-    dev: false
-
   /@sentry/core@7.36.0:
     resolution: {integrity: sha512-lq1MlcMhvm7QIwUOknFeufkg4M6QREY3s61y6pm1o+o3vSqB7Hz0D19xlyEpP62qMn8OyuttVKOVK1UfGc2EyQ==}
     engines: {node: '>=8'}
@@ -5408,40 +5155,6 @@ packages:
     dependencies:
       '@sentry/types': 7.92.0
       '@sentry/utils': 7.92.0
-    dev: false
-
-  /@sentry/hub@6.19.7:
-    resolution: {integrity: sha512-y3OtbYFAqKHCWezF0EGGr5lcyI2KbaXW2Ik7Xp8Mu9TxbSTuwTe4rTntwg8ngPjUQU3SUHzgjqVB8qjiGqFXCA==}
-    engines: {node: '>=6'}
-    dependencies:
-      '@sentry/types': 6.19.7
-      '@sentry/utils': 6.19.7
-      tslib: 1.14.1
-    dev: false
-
-  /@sentry/minimal@6.19.7:
-    resolution: {integrity: sha512-wcYmSJOdvk6VAPx8IcmZgN08XTXRwRtB1aOLZm+MVHjIZIhHoBGZJYTVQS/BWjldsamj2cX3YGbGXNunaCfYJQ==}
-    engines: {node: '>=6'}
-    dependencies:
-      '@sentry/hub': 6.19.7
-      '@sentry/types': 6.19.7
-      tslib: 1.14.1
-    dev: false
-
-  /@sentry/node@6.19.7:
-    resolution: {integrity: sha512-gtmRC4dAXKODMpHXKfrkfvyBL3cI8y64vEi3fDD046uqYcrWdgoQsffuBbxMAizc6Ez1ia+f0Flue6p15Qaltg==}
-    engines: {node: '>=6'}
-    dependencies:
-      '@sentry/core': 6.19.7
-      '@sentry/hub': 6.19.7
-      '@sentry/types': 6.19.7
-      '@sentry/utils': 6.19.7
-      cookie: 0.4.2
-      https-proxy-agent: 5.0.1
-      lru_map: 0.3.3
-      tslib: 1.14.1
-    transitivePeerDependencies:
-      - supports-color
     dev: false
 
   /@sentry/node@7.36.0:
@@ -5493,11 +5206,6 @@ packages:
       '@sentry-internal/tracing': 7.92.0
     dev: false
 
-  /@sentry/types@6.19.7:
-    resolution: {integrity: sha512-jH84pDYE+hHIbVnab3Hr+ZXr1v8QABfhx39KknxqKWr2l0oEItzepV0URvbEhB446lk/S/59230dlUUIBGsXbg==}
-    engines: {node: '>=6'}
-    dev: false
-
   /@sentry/types@7.36.0:
     resolution: {integrity: sha512-uvfwUn3okAWSZ948D/xqBrkc3Sn6TeHUgi3+p/dTTNGAXXskzavgfgQ4rSW7f3YD4LL+boZojpoIARVLodMGuA==}
     engines: {node: '>=8'}
@@ -5506,14 +5214,6 @@ packages:
   /@sentry/types@7.92.0:
     resolution: {integrity: sha512-APmSOuZuoRGpbPpPeYIbMSplPjiWNLZRQa73QiXuTflW4Tu/ItDlU8hOa2+A6JKVkJCuD2EN6yUrxDGSMyNXeg==}
     engines: {node: '>=8'}
-
-  /@sentry/utils@6.19.7:
-    resolution: {integrity: sha512-z95ECmE3i9pbWoXQrD/7PgkBAzJYR+iXtPuTkpBjDKs86O3mT+PXOT3BAn79w2wkn7/i3vOGD2xVr1uiMl26dA==}
-    engines: {node: '>=6'}
-    dependencies:
-      '@sentry/types': 6.19.7
-      tslib: 1.14.1
-    dev: false
 
   /@sentry/utils@7.36.0:
     resolution: {integrity: sha512-mgDi5X5Bm0sydCzXpnyKD/sD98yc2qnKXyRdNX4HRRwruhC/P53LT0hGhZXsyqsB/l8OAMl0zWXJLg0xONQsEw==}
@@ -6617,10 +6317,6 @@ packages:
     resolution: {integrity: sha512-fAtCfv4jJg+ExtXhvCkCqUKZ+4ok/JQk01qDKhL5BDDoS3AxKXhV5/MAVUZyQnSEd2GT92fkgZl0pz0Q0AzcIQ==}
     dev: false
 
-  /@types/node@16.18.23:
-    resolution: {integrity: sha512-XAMpaw1s1+6zM+jn2tmw8MyaRDIJfXxqmIQIS0HfoGYPuf7dUWeiUKopwq13KFX9lEp1+THGtlaaYx39Nxr58g==}
-    dev: false
-
   /@types/node@18.19.4:
     resolution: {integrity: sha512-xNzlUhzoHotIsnFoXmJB+yWmBvFZgKCI9TtPIEdYIMM1KWfwuY8zh7wvc1u1OAXlC7dlf6mZVx/s+Y5KfFz19A==}
     dependencies:
@@ -7144,19 +6840,6 @@ packages:
       lodash.union: 4.6.0
       normalize-path: 3.0.0
       readable-stream: 3.6.2
-    dev: false
-
-  /archiver@5.3.1:
-    resolution: {integrity: sha512-8KyabkmbYrH+9ibcTScQ1xCJC/CGcugdVIwB+53f5sZziXgwUh3iXlAlANMxcZyDEfTHMe6+Z5FofV8nopXP7w==}
-    engines: {node: '>= 10'}
-    dependencies:
-      archiver-utils: 2.1.0
-      async: 3.2.5
-      buffer-crc32: 0.2.13
-      readable-stream: 3.6.2
-      readdir-glob: 1.1.3
-      tar-stream: 2.2.0
-      zip-stream: 4.1.1
     dev: false
 
   /archiver@5.3.2:
@@ -7776,45 +7459,6 @@ packages:
     resolution: {integrity: sha512-4tYFyifaFfGacoiObjJegolkwSU4xQNGbVgUiNYVUxbQ2x2lUsFvY4hVgVzGiIe6WLOPqycWXA40l+PWsxthUw==}
     dev: false
 
-  /cdktf-cli@0.17.2(ink@3.2.0)(react@17.0.2):
-    resolution: {integrity: sha512-7U2ow0vFqmKbCVABcXwCtIidtAXuvuLnea3Q06GA1km/GsoyEiqveOhHXkdIaAuf8SrHY8Ul+r0ALOiRLI/lWg==}
-    hasBin: true
-    dependencies:
-      '@cdktf/cli-core': 0.17.2(react@17.0.2)
-      '@cdktf/commons': 0.17.2
-      '@cdktf/hcl2cdk': 0.17.2
-      '@cdktf/hcl2json': 0.17.2
-      '@inquirer/prompts': 2.3.1
-      '@sentry/node': 6.19.7
-      cdktf: 0.17.2(constructs@10.3.0)
-      codemaker: 1.93.0
-      constructs: 10.3.0
-      cross-spawn: 7.0.3
-      https-proxy-agent: 5.0.1
-      ink-select-input: 4.2.2(ink@3.2.0)(react@17.0.2)
-      ink-table: 3.1.0(ink@3.2.0)(react@17.0.2)
-      jsii: 5.3.0
-      jsii-pacmak: 1.93.0
-      minimatch: 5.1.6
-      node-fetch: 2.7.0
-      pidtree: 0.6.0
-      pidusage: 3.0.2
-      tunnel-agent: 0.6.0
-      xml-js: 1.6.11
-      yargs: 17.7.2
-      yoga-layout-prebuilt: 1.10.0
-      zod: 1.11.17
-    transitivePeerDependencies:
-      - '@types/react'
-      - bufferutil
-      - debug
-      - encoding
-      - ink
-      - react
-      - supports-color
-      - utf-8-validate
-    dev: false
-
   /cdktf-cli@0.20.0-pre.70(ink@3.2.0)(react@17.0.2):
     resolution: {integrity: sha512-fH215jUamX8djZGQeuECldkZqsfCcpmmfhL6Zuaf6tKIzGeWWISGPvqO8g4zIrYl7uVcLHDz80U9+DDXNxsmQQ==}
     hasBin: true
@@ -7854,36 +7498,6 @@ packages:
       - supports-color
       - utf-8-validate
     dev: false
-
-  /cdktf@0.17.2(constructs@10.2.69):
-    resolution: {integrity: sha512-nP/QDpysmj7En/u9mdN8ODJa69auTByFx3mgCJjhfAPX83I3fpGuH4WXuLFhJsYCZqZiG7eOp45hJcNbpJO1Kw==}
-    peerDependencies:
-      constructs: ^10.0.25
-    dependencies:
-      archiver: 5.3.1
-      constructs: 10.2.69
-      json-stable-stringify: 1.1.0
-      semver: 7.5.4
-    dev: false
-    bundledDependencies:
-      - archiver
-      - json-stable-stringify
-      - semver
-
-  /cdktf@0.17.2(constructs@10.3.0):
-    resolution: {integrity: sha512-nP/QDpysmj7En/u9mdN8ODJa69auTByFx3mgCJjhfAPX83I3fpGuH4WXuLFhJsYCZqZiG7eOp45hJcNbpJO1Kw==}
-    peerDependencies:
-      constructs: ^10.0.25
-    dependencies:
-      archiver: 5.3.1
-      constructs: 10.3.0
-      json-stable-stringify: 1.1.0
-      semver: 7.5.4
-    dev: false
-    bundledDependencies:
-      - archiver
-      - json-stable-stringify
-      - semver
 
   /cdktf@0.20.0-pre.70(constructs@10.3.0):
     resolution: {integrity: sha512-oWIkBwdIaOT9fipTUwf2+hth0zC61SAOOV9+8jdcU0rwZGWuU22d8c7YJW2rN9e5t+/x07k9uy45oktQdhoAiw==}
@@ -7993,11 +7607,6 @@ packages:
       parse5: 5.1.1
       parse5-htmlparser2-tree-adapter: 6.0.1
       yargs: 16.2.0
-    dev: false
-
-  /cli-spinners@2.7.0:
-    resolution: {integrity: sha512-qu3pN8Y3qHNgE2AFweciB1IfMnmZ/fsNTEE+NOFjmGB2F/7rLhnhzppvpCnN4FovtP26k8lHyy9ptEbNwWFLzw==}
-    engines: {node: '>=6'}
     dev: false
 
   /cli-spinners@2.9.1:
@@ -8266,11 +7875,6 @@ packages:
       - pg-native
       - supports-color
       - tedious
-    dev: false
-
-  /constructs@10.2.69:
-    resolution: {integrity: sha512-0AiM/uQe5Uk6JVe/62oolmSN2MjbFQkOlYrM3fFGZLKuT+g7xlAI10EebFhyCcZwI2JAcWuWCmmCAyCothxjuw==}
-    engines: {node: '>= 16.14.0'}
     dev: false
 
   /constructs@10.3.0:
@@ -15838,10 +15442,6 @@ packages:
       archiver-utils: 3.0.4
       compress-commons: 4.1.2
       readable-stream: 3.6.2
-    dev: false
-
-  /zod@1.11.17:
-    resolution: {integrity: sha512-UzIwO92D0dSFwIRyyqAfRXICITLjF0IP8tRbEK/un7adirMssWZx8xF/1hZNE7t61knWZ+lhEuUvxlu2MO8qqA==}
     dev: false
 
   /zod@3.22.4:
