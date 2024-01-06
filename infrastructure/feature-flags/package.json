@@ -17,7 +17,6 @@
     "@pocket-tools/terraform-modules": "5.2.1"
   },
   "devDependencies": {
-    "@types/node": "20.10.0",
-    "typescript": "^5.2"
+    "tsconfig": "workspace:*"
   }
 }
