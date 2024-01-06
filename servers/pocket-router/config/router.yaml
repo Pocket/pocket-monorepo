@@ -56,7 +56,7 @@ telemetry:
     tracing:
       otlp:
         enabled: true
-        endpoint: 'http://otlpcollector:4317'
+        endpoint: 'http://{env.OTLP_COLLECTOR_HOST}:4317'
       common:
         resource:
           "environment.name": "{env.APP_ENVIRONMENT}"

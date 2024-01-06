@@ -162,6 +162,10 @@ class PocketRouter extends TerraformStack {
               value: config.isProd ? 'production' : 'development',
             },
             {
+              name: 'OTLP_COLLECTOR_HOST',
+              value: config.tracing.host,
+            },
+            {
               name: 'RELEASE_SHA',
               value:
                 process.env.CODEBUILD_RESOLVED_SOURCE_VERSION ??
@@ -186,6 +190,33 @@ class PocketRouter extends TerraformStack {
             timeout: 5,
             startPeriod: 0,
           },
+        },
+        {
+          name: 'aws-otel-collector',
+          containerImage: 'amazon/aws-otel-collector',
+          essential: true,
+          repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
+          //Used default config as stated here:
+          // Available configs here: - https://github.com/aws-observability/aws-otel-collector/tree/main/config
+          command: [
+            '--config=/etc/ecs/ecs-xray.yaml',
+            //enable for debugging
+            //'--set=service.telemetry.logs.level=debug',
+          ],
+          logGroup: this.createCustomLogGroup('aws-otel-collector'),
+          logMultilinePattern: '^\\S.+',
+          portMappings: [
+            {
+              //default http port
+              hostPort: 4138,
+              containerPort: 4138,
+            },
+            {
+              //default grpc port
+              hostPort: 4137,
+              containerPort: 4137,
+            },
+          ],
         },
       ],
       codeDeploy: {

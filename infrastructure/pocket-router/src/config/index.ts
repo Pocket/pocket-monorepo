@@ -39,4 +39,7 @@ export const config = {
       graphVariant: graphqlVariant,
     },
   },
+  tracing: {
+    host: 'localhost',
+  },
 };
