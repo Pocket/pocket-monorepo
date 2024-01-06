@@ -43,12 +43,14 @@
   },
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "watch": "tsc -w & nodemon -r dotenv/config",
-    "start": "node dist/main.js",
-    "start:dev": "NODE_ENV=local npm run build && NODE_ENV=local npm run watch",
-    "test": "jest",
-    "lint-check": "eslint --fix-dry-run src/**/*.ts src/*.ts",
-    "lint-fix": "eslint --fix src/**/*.ts src/*.ts"
+    "watch": "tsc -w & nodemon",
+    "start": "node dist/index.js",
+    "dev": "npm run build && npm run watch",
+    "test:watch": "npm test -- --watchAll",
+    "test": "jest \"\\.spec\\.ts\"",
+    "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",
+    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix \"src/**/*.ts\""
   },
   "author": "",
   "license": "ISC"

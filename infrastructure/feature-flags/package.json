@@ -5,12 +5,13 @@
   "types": "src/main.ts",
   "private": true,
   "scripts": {
-    "build:dev": "npm run build && NODE_ENV=development npm run synth",
     "build": "rm -rf dist && tsc",
     "synth": "cdktf synth",
     "compile": "tsc --pretty",
     "watch": "tsc -w",
-    "test": "echo ok"
+    "test": "echo ok",
+    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix \"src/**/*.ts\""
   },
   "dependencies": {
     "@pocket-tools/terraform-modules": "5.2.1"
