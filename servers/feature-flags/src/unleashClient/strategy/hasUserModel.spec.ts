@@ -33,7 +33,7 @@ describe('Strategy: hasUserModel', () => {
   it('assigns users when a userModel parameter matches', async () => {
     const activation = new HasUserModel().isEnabled(
       { ...params, userModel: 'ABC123' },
-      createContextWithUserModels(['ABC123', 'DEF456'])
+      createContextWithUserModels(['ABC123', 'DEF456']),
     );
     expect(activation).toBeTruthy();
   });
@@ -41,7 +41,7 @@ describe('Strategy: hasUserModel', () => {
   it('should not assign users that send no user profile', async () => {
     const activation = new HasUserModel().isEnabled(
       { ...params, userModel: 'ABC123' },
-      defaultContext
+      defaultContext,
     );
     expect(activation).toBeFalsy();
   });
@@ -49,7 +49,7 @@ describe('Strategy: hasUserModel', () => {
   it('should not assign users when the user has no user models', async () => {
     const activation = new HasUserModel().isEnabled(
       { ...params, userModel: 'XYZ' },
-      createContextWithUserModels([])
+      createContextWithUserModels([]),
     );
     expect(activation).toBeFalsy();
   });
@@ -57,7 +57,7 @@ describe('Strategy: hasUserModel', () => {
   it('should not assign users when the userModel parameter does not match', async () => {
     const activation = new HasUserModel().isEnabled(
       { ...params, userModel: 'XYZ' },
-      createContextWithUserModels(['ABC123', 'DEF456'])
+      createContextWithUserModels(['ABC123', 'DEF456']),
     );
     expect(activation).toBeFalsy();
   });
@@ -75,7 +75,7 @@ describe('Strategy: hasUserModel', () => {
   it('should not assign users when rollout is 0', async () => {
     const activation = new HasUserModel().isEnabled(
       { ...params, rollout: 0 },
-      createContextWithUserModels(['ABC123', 'DEF456'])
+      createContextWithUserModels(['ABC123', 'DEF456']),
     );
     expect(activation).toBeFalsy();
   });
@@ -83,7 +83,7 @@ describe('Strategy: hasUserModel', () => {
   it('should not assign user when userModel parameter is missing', async () => {
     const activation = new HasUserModel().isEnabled(
       params,
-      createContextWithUserModels(['ABC123'])
+      createContextWithUserModels(['ABC123']),
     );
     expect(activation).toBeFalsy();
   });

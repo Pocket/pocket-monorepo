@@ -2,8 +2,7 @@ import { Strategy } from 'unleash-client';
 import { UnleashContext } from '../../graphql/typeDefs';
 import normalizedValue from 'unleash-client/lib/strategy/util';
 import { pocketSupportedLocales } from '../../utils/pocketSupportedLocales';
-import { StartDateError } from '../../utils/customErrors';
-import { SessionIdError } from '../../utils/customErrors';
+import { StartDateError, SessionIdError } from '../../utils/customErrors';
 import * as Sentry from '@sentry/node';
 
 export class NewUserInLocaleStrategy extends Strategy {

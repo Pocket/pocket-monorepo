@@ -1,6 +1,6 @@
 import express from 'express';
 import * as Sentry from '@sentry/node';
-import unleash from 'unleash-server';
+import { create } from 'unleash-server';
 import { setUnleash } from './unleashClient';
 import { ApolloServer } from '@apollo/server';
 import config from './config';
@@ -10,8 +10,11 @@ import http from 'http';
 import cors from 'cors';
 import { json } from 'body-parser';
 import { expressMiddleware } from '@apollo/server/express4';
-import { RequestHandlerContext, buildContext } from './graphql';
-import { getApolloServer } from './graphql';
+import {
+  RequestHandlerContext,
+  buildContext,
+  getApolloServer,
+} from './graphql';
 
 export interface ServerOptions {
   port?: number;
@@ -47,24 +50,23 @@ export async function start(port: number): Promise<{
 
   const app = express();
   const httpServer = http.createServer(app);
-  const instance = await unleash
-    //Start a default unleash server based on the docs: https://docs.getunleash.io/docs/getting_started
-    .create({
-      db: {
-        user: config.postgres.username,
-        password: config.postgres.password,
-        host: config.postgres.host,
-        port: config.postgres.port as number,
-        database: config.postgres.dbname,
-        ssl: false,
-        driver: 'postgres',
-      },
-      authentication: authOptions,
-      ui: {
-        environment: process.env.NODE_ENV,
-        slogan: 'Pocket Toggles',
-      },
-    });
+  //Start a default unleash server based on the docs: https://docs.getunleash.io/docs/getting_started
+  const instance = await create({
+    db: {
+      user: config.postgres.username,
+      password: config.postgres.password,
+      host: config.postgres.host,
+      port: config.postgres.port as number,
+      database: config.postgres.dbname,
+      ssl: false,
+      driver: 'postgres',
+    },
+    authentication: authOptions,
+    ui: {
+      environment: process.env.NODE_ENV,
+      slogan: 'Pocket Toggles',
+    },
+  });
 
   //Set unleash to a global context so we can use it in our resolvers
   setUnleash(opts);
@@ -78,7 +80,7 @@ export async function start(port: number): Promise<{
     url,
     cors<cors.CorsRequest>(),
     json(),
-    expressMiddleware<RequestHandlerContext>(server, { context: buildContext })
+    expressMiddleware<RequestHandlerContext>(server, { context: buildContext }),
   );
 
   // Expose health check url

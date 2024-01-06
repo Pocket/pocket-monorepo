@@ -56,7 +56,7 @@ describe('resolvers converts unleash assignment', () => {
     const assignments = await resolvers.Query.getUnleashAssignments(
       null,
       defaultArgs,
-      defaultRequestHandler
+      defaultRequestHandler,
     );
 
     expect(assignments).toEqual({ assignments: [] });
@@ -69,7 +69,7 @@ describe('resolvers converts unleash assignment', () => {
     const assignments = await resolvers.Query.unleashAssignments(
       null,
       defaultArgs,
-      defaultRequestHandler
+      defaultRequestHandler,
     );
 
     expect(assignments).toEqual({ assignments: [] });
@@ -101,7 +101,7 @@ describe('resolvers converts unleash assignment', () => {
     expectedContext.properties = {
       ...expectedContext.properties,
       recItUserProfile: JSON.stringify(
-        defaultArgs.context.properties.recItUserProfile
+        defaultArgs.context.properties.recItUserProfile,
       ),
     };
 
@@ -109,7 +109,7 @@ describe('resolvers converts unleash assignment', () => {
     const assignments = await resolvers.Query.getUnleashAssignments(
       null,
       defaultArgs,
-      defaultRequestHandler
+      defaultRequestHandler,
     );
 
     // calledWithMatch does a deep equals to compare objects, instead of comparing object references.
@@ -117,7 +117,7 @@ describe('resolvers converts unleash assignment', () => {
     sinon.assert.calledWithMatch(
       unleashStub.isEnabled,
       featureName,
-      expectedContext
+      expectedContext,
     );
 
     expect(assignments).toEqual({

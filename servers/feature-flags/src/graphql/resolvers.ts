@@ -16,7 +16,7 @@ import { FeatureInterface } from 'unleash-client/lib/feature';
  */
 const getAssignments = async (
   input: UnleashContext,
-  requestHandlerContext: RequestHandlerContext
+  requestHandlerContext: RequestHandlerContext,
 ) => {
   // honor explicit remoteAddress, otherwise use in the following order:
   // * IP forwarded from the web repo
@@ -42,7 +42,7 @@ const getAssignments = async (
   const assignments = convertToUnleashAssignment(
     unleashClient,
     unleashClient.getFeatureToggleDefinitions(),
-    input
+    input,
   );
   return assignments;
 };
@@ -57,7 +57,7 @@ const getAssignments = async (
 const convertToUnleashAssignment = (
   instance: Unleash,
   toggles: FeatureInterface[],
-  context: UnleashContext
+  context: UnleashContext,
 ): UnleashAssignment[] => {
   return toggles.map((toggle: FeatureInterface) => {
     // Unleash in a recent update returns null or an empty array for variants in the API response
@@ -74,7 +74,7 @@ const convertToUnleashAssignment = (
 
     const { enabled, name, payload } = instance.getVariant(
       toggle.name,
-      context
+      context,
     );
 
     return {
@@ -96,7 +96,7 @@ export const resolvers = {
       // we ignore the any types here because we do not know the graphql resolver types
       parent: any, // eslint-disable-line
       args: any, // eslint-disable-line
-      context: RequestHandlerContext
+      context: RequestHandlerContext,
     ): Promise<UnleashAssignmentList> => {
       return {
         //Pull out the user inputted data from the args
@@ -107,7 +107,7 @@ export const resolvers = {
       // we ignore the any types here because we do not know the graphql resolver types
       parent: any, // eslint-disable-line
       args: any, // eslint-disable-line
-      context: RequestHandlerContext
+      context: RequestHandlerContext,
     ): Promise<UnleashAssignmentList> => {
       return {
         //Pull out the user inputted data from the args

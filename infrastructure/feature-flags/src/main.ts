@@ -14,12 +14,7 @@ import {
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
 import { Construct } from 'constructs';
-import {
-  App,
-  DataTerraformRemoteState,
-  RemoteBackend,
-  TerraformStack,
-} from 'cdktf';
+import { App, RemoteBackend, TerraformStack } from 'cdktf';
 import fs from 'fs';
 import { config } from './config';
 
@@ -124,9 +119,8 @@ class FeatureFlags extends TerraformStack {
    * @private
    */
   private createPagerDuty(): PocketPagerDuty | undefined {
-
-      // Don't create pagerduty services for a dev service.
-      return null;
+    // Don't create pagerduty services for a dev service.
+    return null;
 
     // const incidentManagement = new DataTerraformRemoteState(
     //   this,

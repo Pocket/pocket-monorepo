@@ -31,7 +31,7 @@ export interface RequestHandlerContext {
  * @param params
  */
 export async function buildContext(
-  params: ExpressContextFunctionArgument
+  params: ExpressContextFunctionArgument,
 ): Promise<RequestHandlerContext> {
   const { req } = params;
   // Prefer the x-forwarded-for value from gateway ('origin-client-ip'),
@@ -54,7 +54,7 @@ export async function buildContext(
  * This is where we can do any apollo server configuration
  */
 export const getApolloServer = async (
-  httpServer: http.Server
+  httpServer: http.Server,
 ): Promise<ApolloServer<RequestHandlerContext>> => {
   const basePlugins = [
     sentryPlugin,

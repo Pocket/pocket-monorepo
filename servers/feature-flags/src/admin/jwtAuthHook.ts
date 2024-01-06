@@ -14,7 +14,7 @@ import { Strategy as OidcStrategy } from '@techpass/passport-openidconnect';
 export const enableJwtAuth = (
   app: Application,
   config: IUnleashConfig,
-  services: IUnleashServices
+  services: IUnleashServices,
 ): void => {
   const { userService } = services;
 
@@ -40,7 +40,7 @@ export const enableJwtAuth = (
         refreshToken,
         idToken,
         params,
-        done
+        done,
       ) => {
         const email = jwtClaims.email;
 
@@ -48,7 +48,7 @@ export const enableJwtAuth = (
         const isInMozillaIAMGroup =
           jwtClaims['custom:groups'] !== undefined &&
           JSON.parse(jwtClaims['custom:groups']).indexOf(
-            appConfig.mozillaIAMAccessGroup
+            appConfig.mozillaIAMAccessGroup,
           ) > 0;
         if (isInMozillaIAMGroup) {
           // TODO: once we start wanting to use new Unleash 4 RBAC we should get more specific and
@@ -63,8 +63,8 @@ export const enableJwtAuth = (
         } else {
           done(null, false);
         }
-      }
-    )
+      },
+    ),
   );
 
   app.use(passport.initialize());
@@ -75,7 +75,7 @@ export const enableJwtAuth = (
   //Setup a route that can display an error message if JWT auth fails.
   app.get(
     '/api/admin/login',
-    passport.authenticate('openidconnect', { scope: ['email', 'profile'] })
+    passport.authenticate('openidconnect', { scope: ['email', 'profile'] }),
   );
 
   app.get(
@@ -83,7 +83,7 @@ export const enableJwtAuth = (
     passport.authenticate('openidconnect'),
     (req, res) => {
       res.redirect(`/`);
-    }
+    },
   );
 
   app.use('/api/admin/', (req, res, next) => {
@@ -98,7 +98,7 @@ export const enableJwtAuth = (
           path: `/api/admin/login`,
           type: 'custom',
           message: `You do not currently have access to Pocket Feature Flags. Please ask a Product or Engineering Manager to add you to https://people.mozilla.org/a/pocket_featureflags/`,
-        })
+        }),
       )
       .end();
   });

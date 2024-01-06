@@ -1,9 +1,11 @@
 import { Strategy } from 'unleash-client';
 import { UnleashContext } from '../../graphql/typeDefs';
 import normalizedValue from 'unleash-client/lib/strategy/util';
-import { StartDateError } from '../../utils/customErrors';
-import { AccountAgeError } from '../../utils/customErrors';
-import { SessionIdError } from '../../utils/customErrors';
+import {
+  StartDateError,
+  AccountAgeError,
+  SessionIdError,
+} from '../../utils/customErrors';
 import * as Sentry from '@sentry/node';
 
 const DAY_IN_MILLISECONDS = 86400000;

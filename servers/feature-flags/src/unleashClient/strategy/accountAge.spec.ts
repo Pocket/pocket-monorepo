@@ -5,7 +5,7 @@ import { AccountAgeStrategy } from './accountAge';
 // TODO: It would be nice if there were tests around this helper, especially if we start using it more.
 const getDatePartsMap = (
   date: Date,
-  timeZone: string
+  timeZone: string,
 ): { [key: string]: string } => {
   // Intl.DateTimeFormat allows us to specify a custom date format and timezone.
   // @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat

@@ -64,7 +64,7 @@ describe('Strategy: accountAgeAtStart', () => {
     const knifeThrowing = true;
     const watchesRealityTVNonStop = false;
     expect(
-      needlePoint && knifeThrowing && !watchesRealityTVNonStop
+      needlePoint && knifeThrowing && !watchesRealityTVNonStop,
     ).toBeTruthy();
   });
 

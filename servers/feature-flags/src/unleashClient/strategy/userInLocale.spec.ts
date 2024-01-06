@@ -78,7 +78,7 @@ describe('Strategy: userInLocale', () => {
 
     const activation = strategy.isEnabled(
       { ...params, rollout: 0 },
-      defaultContext
+      defaultContext,
     );
     expect(activation).toBeFalsy();
   });
