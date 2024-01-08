@@ -1,0 +1,4 @@
+*
+!.gitignore
+!jsonSchemas.xml
+!graphql-settings.xml

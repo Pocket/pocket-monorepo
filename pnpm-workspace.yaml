@@ -1,5 +1,5 @@
 packages:
-  - "packages/*"
-  - "servers/*"
-  - "infrastructure/*"
-  - "lambdas/*"
+  - 'packages/*'
+  - 'servers/*'
+  - 'infrastructure/*'
+  - 'lambdas/*'
