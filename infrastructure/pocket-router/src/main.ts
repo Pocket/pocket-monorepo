@@ -1,74 +1,70 @@
-import { Construct } from 'constructs';
-import {
-  App,
-  DataTerraformRemoteState,
-  RemoteBackend,
-  TerraformStack,
-  MigrateIds,
-  Aspects,
-} from 'cdktf';
 import { config } from './config';
-import {
-  ApplicationRedis,
-  PocketALBApplication,
-  PocketPagerDuty,
-  PocketVPC,
-} from '@pocket-tools/terraform-modules';
-import * as fs from 'fs';
 
 import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
-import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
-import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
 import { CloudwatchLogGroup } from '@cdktf/provider-aws/lib/cloudwatch-log-group';
+import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
 import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/data-aws-kms-alias';
+import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
 import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
-import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
-import { NullProvider } from '@cdktf/provider-null/lib/provider';
 import { LocalProvider } from '@cdktf/provider-local/lib/provider';
-import { ArchiveProvider } from '@cdktf/provider-archive/lib/provider';
+import { NullProvider } from '@cdktf/provider-null/lib/provider';
+import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
+import { DataPagerdutyEscalationPolicy } from '@cdktf/provider-pagerduty/lib/data-pagerduty-escalation-policy';
+import {
+  PocketALBApplication,
+  PocketPagerDuty,
+  PocketAwsSyntheticChecks,
+} from '@pocket-tools/terraform-modules';
 
-class ImageAPI extends TerraformStack {
+import { App, S3Backend, TerraformStack } from 'cdktf';
+import { Construct } from 'constructs';
+import * as fs from 'fs';
+
+class PocketRouter extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
     new AwsProvider(this, 'aws', { region: 'us-east-1' });
+    new LocalProvider(this, 'local_provider');
+    new NullProvider(this, 'null_provider');
     new PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
-    new NullProvider(this, 'null-provider');
-    new LocalProvider(this, 'local-provider');
-    new ArchiveProvider(this, 'archive-provider');
 
-    new RemoteBackend(this, {
-      hostname: 'app.terraform.io',
-      organization: 'Pocket',
-      workspaces: [
-        {
-          name: `${config.name}-${config.environment}`,
-        },
-      ],
+    const caller = new DataAwsCallerIdentity(this, 'caller');
+    const region = new DataAwsRegion(this, 'region');
+
+    new S3Backend(this, {
+      bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
+      key: 'pocket-router',
+      region: 'us-east-1',
     });
 
-    const pocketVPC = new PocketVPC(this, 'pocket-vpc');
-    const region = new DataAwsRegion(this, 'region');
-    const caller = new DataAwsCallerIdentity(this, 'caller');
-
-    const { primaryEndpoint, readerEndpoint } = this.createElasticache(
-      this,
-      pocketVPC,
-    );
-
+    const pocketRouterPagerduty = this.createPagerDuty();
     this.createPocketAlbApplication({
-      pagerDuty: this.createPagerDuty(),
+      pagerDuty: pocketRouterPagerduty,
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
-      primaryEndpoint,
-      readerEndpoint,
       region,
       caller,
     });
 
-    // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
-    // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
-    Aspects.of(this).add(new MigrateIds());
+    new PocketAwsSyntheticChecks(this, 'synthetics', {
+      // alarmTopicArn:
+      //   config.environment === 'Prod'
+      //     ? pocketRouterPagerduty.snsCriticalAlarmTopic.arn // Tier 1
+      //     : '',
+      environment: config.environment,
+      prefix: config.prefix,
+      query: [],
+      shortName: config.shortName,
+      tags: config.tags,
+      uptime: [
+        {
+          response: 'ok',
+          // TODO: Do I need the port?
+          url: `${config.domain}/.well-known/apollo/server-health`,
+        },
+      ],
+    });
   }
 
   /**
@@ -97,119 +93,103 @@ class ImageAPI extends TerraformStack {
    */
   private createPagerDuty(): PocketPagerDuty | undefined {
     if (config.isDev) {
-      return;
+      //Dont create pagerduty services for a dev service.
+      return null;
     }
 
-    const incidentManagement = new DataTerraformRemoteState(
+    const mozillaEscalation = new DataPagerdutyEscalationPolicy(
       this,
-      'incident_management',
+      'mozilla_sre_escalation_policy',
       {
-        organization: 'Pocket',
-        workspaces: {
-          name: 'incident-management',
-        },
+        name: 'IT SRE: Escalation Policy',
       },
     );
 
     return new PocketPagerDuty(this, 'pagerduty', {
       prefix: config.prefix,
       service: {
-        // This is a Tier 2 service and as such only raises non-critical alarms.
-        criticalEscalationPolicyId: incidentManagement
-          .get('policy_default_non_critical_id')
-          .toString(),
-        nonCriticalEscalationPolicyId: incidentManagement
-          .get('policy_default_non_critical_id')
-          .toString(),
+        criticalEscalationPolicyId: mozillaEscalation.id,
+        nonCriticalEscalationPolicyId: mozillaEscalation.id,
       },
     });
   }
 
   private createPocketAlbApplication(dependencies: {
-    pagerDuty: PocketPagerDuty;
+    pagerDuty?: PocketPagerDuty;
     region: DataAwsRegion;
     caller: DataAwsCallerIdentity;
     secretsManagerKmsAlias: DataAwsKmsAlias;
     snsTopic: DataAwsSnsTopic;
-    primaryEndpoint: string;
-    readerEndpoint: string;
   }): PocketALBApplication {
-    const {
-      pagerDuty,
-      region,
-      caller,
-      secretsManagerKmsAlias,
-      snsTopic,
-      primaryEndpoint,
-      readerEndpoint,
-    } = dependencies;
-
-    const secretResources = [
-      `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared`,
-      `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/*`,
-      secretsManagerKmsAlias.targetKeyArn,
-      `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}`,
-      `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/*`,
-      `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.prefix}`,
-      `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.prefix}/*`,
-    ];
+    const { pagerDuty, region, caller, secretsManagerKmsAlias, snsTopic } =
+      dependencies;
 
     return new PocketALBApplication(this, 'application', {
-      internal: true,
+      internal: false,
       prefix: config.prefix,
       alb6CharacterPrefix: config.shortName,
       tags: config.tags,
-      cdn: false,
+      cdn: true,
       domain: config.domain,
+      taskSize: {
+        cpu: 1024,
+        memory: 2048,
+      },
+      accessLogs: {
+        existingBucket: config.s3LogsBucket,
+      },
       containerConfigs: [
         {
           name: 'app',
           portMappings: [
             {
-              hostPort: config.appPort,
-              containerPort: config.appPort,
+              hostPort: 4000,
+              containerPort: 4000,
+              protocol: 'tcp',
+            },
+          ],
+          envVars: [
+            {
+              name: 'PORT',
+              value: '4000',
+            },
+            {
+              name: 'APOLLO_GRAPH_REF',
+              value: `${config.envVars.graph.graphId}@${config.envVars.graph.graphVariant}`,
+            },
+            {
+              name: 'APP_ENVIRONMENT',
+              value: config.isProd ? 'production' : 'development',
+            },
+            {
+              name: 'OTLP_COLLECTOR_HOST',
+              value: config.tracing.host,
+            },
+            {
+              name: 'RELEASE_SHA',
+              value:
+                process.env.CODEBUILD_RESOLVED_SOURCE_VERSION ??
+                process.env.CIRCLE_SHA1,
+            },
+          ],
+          logGroup: this.createCustomLogGroup('app'),
+          logMultilinePattern: '^\\S.+',
+          secretEnvVars: [
+            {
+              name: 'APOLLO_KEY',
+              valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/APOLLO_KEY`,
             },
           ],
           healthCheck: {
             command: [
               'CMD-SHELL',
-              `curl -f http://localhost:${config.appPort}/.well-known/apollo/server-health || exit 1`,
+              'curl -f http://localhost:4000/.well-known/apollo/server-health || exit 1',
             ],
             interval: 15,
             retries: 3,
             timeout: 5,
             startPeriod: 0,
           },
-          envVars: [
-            {
-              name: 'NODE_ENV',
-              value: process.env.NODE_ENV,
-            },
-            {
-              name: 'REDIS_PRIMARY_ENDPOINT',
-              value: primaryEndpoint,
-            },
-            {
-              name: 'REDIS_READER_ENDPOINT',
-              value: readerEndpoint,
-            },
-            {
-              name: 'OTLP_COLLECTOR_HOST',
-              value: config.tracing.host,
-            },
-          ],
-          secretEnvVars: [
-            {
-              name: 'IMAGE_CACHE_ENDPOINT',
-              valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/IMAGE_CACHE_ENDPOINT`,
-            },
-            {
-              name: 'SENTRY_DSN',
-              valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/SENTRY_DSN`,
-            },
-          ],
-          logGroup: this.createCustomLogGroup('app'),
-          logMultilinePattern: '^\\S.+',
         },
         {
           name: 'aws-otel-collector',
@@ -223,6 +203,8 @@ class ImageAPI extends TerraformStack {
             //enable for debugging
             //'--set=service.telemetry.logs.level=debug',
           ],
+          logGroup: this.createCustomLogGroup('aws-otel-collector'),
+          logMultilinePattern: '^\\S.+',
           portMappings: [
             {
               //default http port
@@ -241,16 +223,17 @@ class ImageAPI extends TerraformStack {
         useCodeDeploy: true,
         useCodePipeline: false,
         useTerraformBasedCodeDeploy: false,
+        snsNotificationTopicArn: snsTopic.arn,
         notifications: {
+          //only notify on failed deploys
           notifyOnFailed: true,
           notifyOnStarted: false,
           notifyOnSucceeded: false,
         },
-        snsNotificationTopicArn: snsTopic.arn,
       },
       exposedContainer: {
         name: 'app',
-        port: config.appPort,
+        port: 4000,
         healthCheckPath: '/.well-known/apollo/server-health',
       },
       ecsIamConfig: {
@@ -259,7 +242,11 @@ class ImageAPI extends TerraformStack {
           //This policy could probably go in the shared module in the future.
           {
             actions: ['secretsmanager:GetSecretValue', 'kms:Decrypt'],
-            resources: secretResources,
+            resources: [
+              `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared`,
+              `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/*`,
+              secretsManagerKmsAlias.targetKeyArn,
+            ],
             effect: 'Allow',
           },
           //This policy could probably go in the shared module in the future.
@@ -275,11 +262,6 @@ class ImageAPI extends TerraformStack {
         taskRolePolicyStatements: [
           {
             actions: [
-              'logs:PutLogEvents',
-              'logs:CreateLogGroup',
-              'logs:CreateLogStream',
-              'logs:DescribeLogStreams',
-              'logs:DescribeLogGroups',
               'xray:PutTraceSegments',
               'xray:PutTelemetryRecords',
               'xray:GetSamplingRules',
@@ -294,57 +276,36 @@ class ImageAPI extends TerraformStack {
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },
       autoscalingConfig: {
-        targetMinCapacity: config.isDev ? 1 : 2,
-        targetMaxCapacity: 10,
+        targetMinCapacity: config.isProd ? 4 : 2,
+        targetMaxCapacity: config.isProd ? 20 : 10,
       },
       alarms: {
         http5xxErrorPercentage: {
-          threshold: 25,
+          //Triggers critical alert if 50% of request throws 5xx for
+          // 4 continuous evaluation period for 20 mins (5 mins per period)
+          threshold: 50,
           evaluationPeriods: 4,
-          period: 300,
+          period: 300, //in seconds, 5 mins per period
+          actions: config.isProd ? [pagerDuty.snsCriticalAlarmTopic.arn] : [],
+          // TODO: Dead link
+          alarmDescription:
+            'Runbook: https://getpocket.atlassian.net/l/c/khqp5x57',
+        },
+        httpLatency: {
+          //Triggers non-critical alert if latency is above 500ms
+          // for 4 continuous evaluation period for 1 hour (15 mins per period)
+          evaluationPeriods: 4,
+          threshold: 500,
+          period: 900, //in seconds, 15 mins per period
           actions: config.isProd
             ? [pagerDuty.snsNonCriticalAlarmTopic.arn]
             : [],
+          alarmDescription:
+            // TODO: Dead link
+            'Runbook: https://getpocket.atlassian.net/l/c/YnDN190b',
         },
       },
     });
-  }
-
-  /**
-   * Creates the elasticache and returns the node address list
-   * @param scope
-   * @private
-   */
-  private createElasticache(
-    scope: Construct,
-    pocketVPC: PocketVPC,
-  ): {
-    primaryEndpoint: string;
-    readerEndpoint: string;
-  } {
-    const elasticache = new ApplicationRedis(scope, 'redis', {
-      //Usually we would set the security group ids of the service that needs to hit this.
-      //However we don't have the necessary security group because it gets created in PocketALBApplication
-      //So instead we set it to null and allow anything within the vpc to access it.
-      //This is not ideal..
-      //Ideally we need to be able to add security groups to the ALB application.
-      allowedIngressSecurityGroupIds: undefined,
-      node: {
-        count: config.cacheNodes,
-        size: config.cacheSize,
-      },
-      subnetIds: pocketVPC.privateSubnetIds,
-      tags: config.tags,
-      vpcId: pocketVPC.vpc.id,
-      prefix: config.prefix,
-    });
-
-    return {
-      primaryEndpoint:
-        elasticache.elasticacheReplicationGroup.primaryEndpointAddress,
-      readerEndpoint:
-        elasticache.elasticacheReplicationGroup.readerEndpointAddress,
-    };
   }
 
   /**
@@ -367,8 +328,9 @@ class ImageAPI extends TerraformStack {
     return logGroup.name;
   }
 }
+
 const app = new App();
-const stack = new ImageAPI(app, 'image-api');
+const stack = new PocketRouter(app, 'pocket-router');
 const tfEnvVersion = fs.readFileSync('.terraform-version', 'utf8');
 stack.addOverride('terraform.required_version', tfEnvVersion);
 app.synth();

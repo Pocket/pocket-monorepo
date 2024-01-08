@@ -35,7 +35,7 @@ class ParserGraphQLWrapper extends TerraformStack {
       organization: 'Pocket',
       workspaces: [
         {
-          prefix: `${config.name}-`,
+          name: `${config.name}-${config.environment}`,
         },
       ],
     });

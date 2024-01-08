@@ -21,6 +21,7 @@ repo_for_enum: &repo_for_enum
       - transactional_emails
       - fxa_webhook_proxy
       - user_api
+      - pocket_router
       - list_api
 
 resource_class_enmum: &resource_class_enmum
@@ -54,6 +55,9 @@ parameters:
   user_api:
     type: boolean
     default: false
+  pocket_router:
+    type: boolean
+    default: false
   list_api:
     type: boolean
     default: false
@@ -85,8 +89,8 @@ commands:
             transactional_emails: << pipeline.parameters.transactional_emails >>
             fxa_webhook_proxy: << pipeline.parameters.fxa_webhook_proxy >>
             user_api: << pipeline.parameters.user_api >>
+            pocket_router: << pipeline.parameters.pocket_router >>
             list_api: << pipeline.parameters.list_api >>
-
 
   install_pnpm:  
     steps:
@@ -203,7 +207,6 @@ jobs:
             . /home/circleci/.codebuild_shims_wrapper.sh
             cd << parameters.stack-output-path >>
             tfenv use
-            echo 'export TF_WORKSPACE="<< parameters.workspace >>"' >> "$BASH_ENV"
             terraform init
       - when:
           condition: <<parameters.save_app_spec>>
@@ -457,6 +460,14 @@ jobs:
         description: 'The docker tag name'
         type: string
         default: latest,$CIRCLE_SHA1
+      app_path:
+        description: 'The path needed for building the Docker image'
+        type: string
+        default: '.'
+      layer_caching:
+        description: 'Whether to use docker layer caching'
+        type: boolean
+        default: true
       <<: *repo_for_enum
     executor: aws-cli/default
 
@@ -481,20 +492,24 @@ jobs:
             - aws-ecr/build-and-push-image:
                 checkout: false
                 repo: << parameters.repo-name >>
+                path: << parameters.app_path >>
                 setup-remote-docker: true
-                remote-docker-layer-caching: true
+                remote-docker-layer-caching: << parameters.layer_caching >>
                 aws-access-key-id: << parameters.aws-access-key-id >>
                 aws-secret-access-key: << parameters.aws-secret-access-key >>
                 tag: << parameters.tag >>
+                remote-docker-version: default
                 extra-build-args: << parameters.extra-build-args >>
       - unless:
           condition: <<parameters.push>>
           steps:
             - setup_remote_docker:
-                docker-layer-caching: true
+                version: default
+                docker-layer-caching: << parameters.layer_caching >>
             - aws-ecr/build-image:
                 repo: << parameters.repo-name >>
                 tag: << parameters.tag >>
+                path: << parameters.app_path >>
                 extra-build-args: << parameters.extra-build-args >>
 
   build_lambda:
