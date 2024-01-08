@@ -61,7 +61,7 @@ class PocketRouter extends TerraformStack {
         {
           response: 'ok',
           // TODO: Do I need the port?
-          url: `${config.domain}:4000/.well-known/apollo/server-health`,
+          url: `${config.domain}/.well-known/apollo/server-health`,
         },
       ],
     });

@@ -203,7 +203,6 @@ jobs:
             . /home/circleci/.codebuild_shims_wrapper.sh
             cd << parameters.stack-output-path >>
             tfenv use
-            echo 'export TF_WORKSPACE="<< parameters.workspace >>"' >> "$BASH_ENV"
             terraform init
       - when:
           condition: <<parameters.save_app_spec>>

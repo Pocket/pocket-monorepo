@@ -46,7 +46,11 @@ class SnowplowSharedConsumerStack extends TerraformStack {
     new RemoteBackend(this, {
       hostname: 'app.terraform.io',
       organization: 'Pocket',
-      workspaces: [{ prefix: `${config.name}-` }],
+      workspaces: [
+        {
+          name: `${config.name}-${config.environment}`,
+        },
+      ],
     });
 
     const region = new DataAwsRegion(this, 'region');
