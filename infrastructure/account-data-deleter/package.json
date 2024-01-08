@@ -1,0 +1,22 @@
+{
+  "name": "account-data-deleter-cdk",
+  "version": "1.0.0",
+  "main": "dist/main.js",
+  "types": "dist/main.ts",
+  "license": "MPL-2.0",
+  "private": true,
+  "scripts": {
+    "build:dev": "rm -rf dist && NODE_ENV=development npm run synth",
+    "synth": "cdktf synth",
+    "compile": "tsc --pretty",
+    "lint-check": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "lint-fix": "eslint --fix \"src/**/*.ts\""
+  },
+  "dependencies": {
+    "@pocket-tools/terraform-modules": "4.14.0"
+  },
+  "devDependencies": {
+    "@types/node": "18.17.12",
+    "typescript": "5.2.2"
+  }
+}

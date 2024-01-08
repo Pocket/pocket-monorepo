@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "lib": ["es2020","dom"],
+    "module": "commonjs",
+    "outDir": "dist",
+    "sourceMap": true,
+    "esModuleInterop": true,
+  },
+  "exclude": ["node_modules", "**/*.spec.ts", "**/*.integration.ts",  "jest.config.js", "jest.setup.js"],
+  "include": ["./**/*.ts", "./config"]
+}
