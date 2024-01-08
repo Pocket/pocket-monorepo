@@ -30,8 +30,8 @@
   "dependencies": {
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "7.91.0",
-    "@sentry/tracing": "7.91.0",
+    "@sentry/node": "7.92.0",
+    "@sentry/tracing": "7.92.0",
     "aws-xray-sdk-express": "3.5.3",
     "axios": "1.6.3",
     "axios-retry": "4.0.0",
