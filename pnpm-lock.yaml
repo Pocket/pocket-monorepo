@@ -129,8 +129,8 @@ importers:
         specifier: 3.391.0
         version: 3.391.0
       '@sentry/serverless':
-        specifier: 7.91.0
-        version: 7.91.0
+        specifier: 7.92.0
+        version: 7.92.0
       node-fetch:
         specifier: 2.7.0
         version: 2.7.0
@@ -169,8 +169,8 @@ importers:
         specifier: 3.458.0
         version: 3.458.0
       '@sentry/serverless':
-        specifier: 7.91.0
-        version: 7.91.0
+        specifier: 7.92.0
+        version: 7.92.0
       jsonwebtoken:
         specifier: ^9.0.0
         version: 9.0.2
@@ -227,8 +227,8 @@ importers:
         specifier: 3.458.0
         version: 3.458.0
       '@sentry/serverless':
-        specifier: 7.91.0
-        version: 7.91.0
+        specifier: 7.92.0
+        version: 7.92.0
       jsonwebtoken:
         specifier: ^9.0.0
         version: 9.0.2
@@ -276,8 +276,8 @@ importers:
         specifier: ^3.112.0
         version: 3.478.0
       '@sentry/serverless':
-        specifier: 7.91.0
-        version: 7.91.0
+        specifier: 7.92.0
+        version: 7.92.0
       fetch-retry:
         specifier: ^5.0.2
         version: 5.0.6
@@ -388,8 +388,8 @@ importers:
         specifier: workspace:*
         version: link:../ts-logger
       '@sentry/node':
-        specifier: 7.91.0
-        version: 7.91.0
+        specifier: 7.92.0
+        version: 7.92.0
       apollo-server-cache-redis:
         specifier: 3.3.1
         version: 3.3.1
@@ -602,11 +602,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.91.0
-        version: 7.91.0
+        specifier: 7.92.0
+        version: 7.92.0
       '@sentry/tracing':
-        specifier: 7.91.0
-        version: 7.91.0
+        specifier: 7.92.0
+        version: 7.92.0
       cors:
         specifier: 2.8.5
         version: 2.8.5
@@ -636,8 +636,8 @@ importers:
         version: 3.3.7
     devDependencies:
       '@sentry/types':
-        specifier: 7.91.0
-        version: 7.91.0
+        specifier: 7.92.0
+        version: 7.92.0
       '@types/chance':
         specifier: 1.1.6
         version: 1.1.6
@@ -681,11 +681,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.91.0
-        version: 7.91.0
+        specifier: 7.92.0
+        version: 7.92.0
       '@sentry/tracing':
-        specifier: 7.91.0
-        version: 7.91.0
+        specifier: 7.92.0
+        version: 7.92.0
       aws-xray-sdk-express:
         specifier: 3.5.3
         version: 3.5.3(aws-xray-sdk-core@3.5.3)
@@ -866,11 +866,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.91.0
-        version: 7.91.0
+        specifier: 7.92.0
+        version: 7.92.0
       '@sentry/tracing':
-        specifier: 7.91.0
-        version: 7.91.0
+        specifier: 7.92.0
+        version: 7.92.0
       apollo-datasource:
         specifier: 3.3.2
         version: 3.3.2
@@ -960,11 +960,11 @@ importers:
         specifier: 3.458.0
         version: 3.458.0
       '@sentry/node':
-        specifier: 7.91.0
-        version: 7.91.0
+        specifier: 7.92.0
+        version: 7.92.0
       '@sentry/tracing':
-        specifier: 7.91.0
-        version: 7.91.0
+        specifier: 7.92.0
+        version: 7.92.0
       '@snowplow/node-tracker':
         specifier: 3.19.0
         version: 3.19.0
@@ -1021,11 +1021,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.91.0
-        version: 7.91.0
+        specifier: 7.92.0
+        version: 7.92.0
       '@sentry/tracing':
-        specifier: 7.91.0
-        version: 7.91.0
+        specifier: 7.92.0
+        version: 7.92.0
       dataloader:
         specifier: 2.2.2
         version: 2.2.2
@@ -1052,8 +1052,8 @@ importers:
         specifier: 8.3.1
         version: 8.3.1
       '@sentry/types':
-        specifier: 7.91.0
-        version: 7.91.0
+        specifier: 7.92.0
+        version: 7.92.0
       '@types/jest':
         specifier: 29.5.11
         version: 29.5.11
@@ -3570,7 +3570,7 @@ packages:
       '@cdktf/hcl2json': 0.20.0-pre.70
       '@cdktf/node-pty-prebuilt-multiarch': 0.10.1-pre.11
       '@cdktf/provider-schema': 0.20.0-pre.70(constructs@10.3.0)
-      '@sentry/node': 7.91.0
+      '@sentry/node': 7.92.0
       archiver: 5.3.2
       cdktf: 0.20.0-pre.70(constructs@10.3.0)
       chalk: 4.1.2
@@ -3626,7 +3626,7 @@ packages:
   /@cdktf/commons@0.20.0-pre.70(constructs@10.3.0):
     resolution: {integrity: sha512-5D5PvnmBUyJN1oN3D75oaIaOCH5o1Qkq376PPFuiCDzFPsMdjP9KMuOVJwWDcpX+LxbqcFZG1KFIeEgSeHQ+MA==}
     dependencies:
-      '@sentry/node': 7.91.0
+      '@sentry/node': 7.92.0
       cdktf: 0.20.0-pre.70(constructs@10.3.0)
       ci-info: 3.9.0
       codemaker: 1.93.0
@@ -5262,12 +5262,29 @@ packages:
       '@sentry/utils': 7.91.0
     dev: false
 
+  /@sentry-internal/tracing@7.92.0:
+    resolution: {integrity: sha512-ur55vPcUUUWFUX4eVLNP71ohswK7ZZpleNZw9Y1GfLqyI+0ILQUwjtzqItJrdClvVsdRZJMRmDV40Hp9Lbb9mA==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@sentry/core': 7.92.0
+      '@sentry/types': 7.92.0
+      '@sentry/utils': 7.92.0
+    dev: false
+
   /@sentry/core@7.91.0:
     resolution: {integrity: sha512-tu+gYq4JrTdrR+YSh5IVHF0fJi/Pi9y0HZ5H9HnYy+UMcXIotxf6hIEaC6ZKGeLWkGXffz2gKpQLe/g6vy/lPA==}
     engines: {node: '>=8'}
     dependencies:
       '@sentry/types': 7.91.0
       '@sentry/utils': 7.91.0
+    dev: false
+
+  /@sentry/core@7.92.0:
+    resolution: {integrity: sha512-1Tly7YB2I1byI5xb0Cwrxs56Rhww+6mQ7m9P7rTmdC3/ijOzbEoohtYIUPwcooCEarpbEJe/tAayRx6BrH2UbQ==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@sentry/types': 7.92.0
+      '@sentry/utils': 7.92.0
     dev: false
 
   /@sentry/node@7.91.0:
@@ -5283,14 +5300,27 @@ packages:
       - supports-color
     dev: false
 
-  /@sentry/serverless@7.91.0:
-    resolution: {integrity: sha512-h2SM2qxOqHb1IQR6WSa6SQUWPxZ86cxYRk17abFadh7xI3H1Lh0oajYr6Tgw321xLspNH6hG3SHgz8MqmGm1Tg==}
+  /@sentry/node@7.92.0:
+    resolution: {integrity: sha512-LZeQL1r6kikEoOzA9K61OmMl32/lK/6PzmFNDH6z7UYwQopCZgVA6IP+CZuln8K2ys5c9hCyF7ICQMysXfpNJA==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@sentry-internal/tracing': 7.92.0
+      '@sentry/core': 7.92.0
+      '@sentry/types': 7.92.0
+      '@sentry/utils': 7.92.0
+      https-proxy-agent: 5.0.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /@sentry/serverless@7.92.0:
+    resolution: {integrity: sha512-Up70PgH2OBqq4XdBEsnkEVpVfbR3N0sr0x/PhqDLtka/URgqFJmyb9CKc8f4jfVq7kI69jvNOJsjajswd/esbw==}
     engines: {node: '>=10'}
     dependencies:
-      '@sentry/core': 7.91.0
-      '@sentry/node': 7.91.0
-      '@sentry/types': 7.91.0
-      '@sentry/utils': 7.91.0
+      '@sentry/core': 7.92.0
+      '@sentry/node': 7.92.0
+      '@sentry/types': 7.92.0
+      '@sentry/utils': 7.92.0
       '@types/aws-lambda': 8.10.130
       '@types/express': 4.17.21
     transitivePeerDependencies:
@@ -5304,8 +5334,20 @@ packages:
       '@sentry-internal/tracing': 7.91.0
     dev: false
 
+  /@sentry/tracing@7.92.0:
+    resolution: {integrity: sha512-1+TFFPVEdax4dNi68gin6MENiyGe9mOuNXfjulrP5eCzUEByus5HAxeDI/LLQ1hArfn048AzwSwKUsS2fO5sbg==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@sentry-internal/tracing': 7.92.0
+    dev: false
+
   /@sentry/types@7.91.0:
     resolution: {integrity: sha512-bcQnb7J3P3equbCUc+sPuHog2Y47yGD2sCkzmnZBjvBT0Z1B4f36fI/5WjyZhTjLSiOdg3F2otwvikbMjmBDew==}
+    engines: {node: '>=8'}
+    dev: false
+
+  /@sentry/types@7.92.0:
+    resolution: {integrity: sha512-APmSOuZuoRGpbPpPeYIbMSplPjiWNLZRQa73QiXuTflW4Tu/ItDlU8hOa2+A6JKVkJCuD2EN6yUrxDGSMyNXeg==}
     engines: {node: '>=8'}
 
   /@sentry/utils@7.91.0:
@@ -5313,6 +5355,13 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       '@sentry/types': 7.91.0
+    dev: false
+
+  /@sentry/utils@7.92.0:
+    resolution: {integrity: sha512-3nEfrQ1z28b/2zgFGANPh5yMVtgwXmrasZxTvKbrAj+KWJpjrJHrIR84r9W277J44NMeZ5RhRW2uoDmuBslPnA==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@sentry/types': 7.92.0
     dev: false
 
   /@sinclair/typebox@0.27.8:
@@ -6231,7 +6280,7 @@ packages:
   /@types/cls-hooked@4.3.8:
     resolution: {integrity: sha512-tf/7H883gFA6MPlWI15EQtfNZ+oPL0gLKkOlx9UHFrun1fC/FkuyNBpTKq1B5E3T4fbvjId6WifHUdSGsMMuPg==}
     dependencies:
-      '@types/node': 20.10.6
+      '@types/node': 20.10.7
     dev: false
 
   /@types/connect@3.4.38:
@@ -6308,7 +6357,7 @@ packages:
   /@types/ioredis-mock@8.2.5:
     resolution: {integrity: sha512-cZyuwC9LGtg7s5G9/w6rpy3IOZ6F/hFR0pQlWYZESMo1xQUYbDpa6haqB4grTePjsGzcB/YLBFCjqRunK5wieg==}
     dependencies:
-      '@types/node': 20.10.6
+      '@types/node': 20.10.7
       ioredis: 5.3.2
     transitivePeerDependencies:
       - supports-color
@@ -6468,6 +6517,11 @@ packages:
 
   /@types/node@20.10.6:
     resolution: {integrity: sha512-Vac8H+NlRNNlAmDfGUP7b5h/KA+AtWIzuXy0E6OyP8f1tCLYAtPvKRRDJjAPqhpCb0t6U2j7/xqAuLEebW2kiw==}
+    dependencies:
+      undici-types: 5.26.5
+
+  /@types/node@20.10.7:
+    resolution: {integrity: sha512-fRbIKb8C/Y2lXxB5eVMj4IU7xpdox0Lh8bUPEdtLysaylsml1hOOx1+STloRs/B9nf7C6kPRmmg/V7aQW7usNg==}
     dependencies:
       undici-types: 5.26.5
 
@@ -7464,7 +7518,7 @@ packages:
       '@cdktf/hcl2cdk': 0.20.0-pre.70(constructs@10.3.0)
       '@cdktf/hcl2json': 0.20.0-pre.70
       '@inquirer/prompts': 2.3.1
-      '@sentry/node': 7.91.0
+      '@sentry/node': 7.92.0
       cdktf: 0.20.0-pre.70(constructs@10.3.0)
       ci-info: 3.9.0
       codemaker: 1.93.0
@@ -8205,7 +8259,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.4.0-dev.20240105
+      typescript: 5.4.0-dev.20240108
     dev: false
 
   /eastasianwidth@0.2.0:
@@ -13537,8 +13591,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.4.0-dev.20240105:
-    resolution: {integrity: sha512-EShumrhMWO0vjg0BpYtIOOWicTRcWnku+fJfLxnjo4P4h3/Zkz9jkmAbtWqb1c6SPNNrL1zGgVNX38dYZlMinQ==}
+  /typescript@5.4.0-dev.20240108:
+    resolution: {integrity: sha512-flXeU+FYwW3mL6zcOz1lNX0juSolUIeIRs4nO8j77jB+N/3lrqWNOSz05dzRC4eYJcjFIIOvv5y9u8MQ5nTtzg==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: false
