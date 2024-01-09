@@ -109,11 +109,15 @@ describe('getSavedItemByItemId', () => {
     });
     expect(res.body.data?._entities[0].savedItemById.url).toBe('http://abc');
     expect(res.body.data?._entities[0].savedItemById.id).toBe('1');
-    expect(res.body.data?._entities[0].savedItemById.favoritedAt).toBe(unixDate);
+    expect(res.body.data?._entities[0].savedItemById.favoritedAt).toBe(
+      unixDate,
+    );
     expect(res.body.data?._entities[0].savedItemById.isFavorite).toBe(true);
     expect(res.body.data?._entities[0].savedItemById.status).toBe('UNREAD');
     expect(res.body.data?._entities[0].savedItemById._createdAt).toBe(unixDate);
-    expect(res.body.data?._entities[0].savedItemById._updatedAt).toBe(unixDate1);
+    expect(res.body.data?._entities[0].savedItemById._updatedAt).toBe(
+      unixDate1,
+    );
     expect(res.body.data?._entities[0].savedItemById._deletedAt).toBeNull();
   });
 
@@ -156,7 +160,9 @@ describe('getSavedItemByItemId', () => {
       query: GET_SAVED_ITEM_ITEM,
       variables,
     });
-    expect(res.body.data?._entities[0].savedItemById.item.givenUrl).toBe('http://abc');
+    expect(res.body.data?._entities[0].savedItemById.item.givenUrl).toBe(
+      'http://abc',
+    );
   });
 
   it('should have _deletedAt field if item is deleted', async () => {
@@ -168,7 +174,9 @@ describe('getSavedItemByItemId', () => {
       query: GET_SAVED_ITEM,
       variables,
     });
-    expect(res.body.data?._entities[0].savedItemById._deletedAt).toBe(unixDate1);
+    expect(res.body.data?._entities[0].savedItemById._deletedAt).toBe(
+      unixDate1,
+    );
   });
 
   it('should resolve isArchived properly', async () => {
@@ -188,15 +196,17 @@ describe('getSavedItemByItemId', () => {
       query: GET_SAVED_ITEM,
       variables: nonArchivedVars,
     });
-    expect(
-      archivedRes.body.data?._entities[0].savedItemById.isArchived,
-    ).toBe(true);
-    expect(
-      archivedRes.body.data?._entities[0].savedItemById.archivedAt,
-    ).toBe(getUnixTimestamp(date));
+    expect(archivedRes.body.data?._entities[0].savedItemById.isArchived).toBe(
+      true,
+    );
+    expect(archivedRes.body.data?._entities[0].savedItemById.archivedAt).toBe(
+      getUnixTimestamp(date),
+    );
     expect(
       nonArchivedRes.body.data?._entities[0].savedItemById.isArchived,
     ).toBe(false);
-    expect(nonArchivedRes.body.data?._entities[0].savedItemById.archivedAt).toBeNull();
+    expect(
+      nonArchivedRes.body.data?._entities[0].savedItemById.archivedAt,
+    ).toBeNull();
   });
 });

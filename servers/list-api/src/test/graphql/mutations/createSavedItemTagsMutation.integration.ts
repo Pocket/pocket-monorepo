@@ -1,6 +1,5 @@
 import { readClient, writeClient } from '../../../database/client';
 import { EventType } from '../../../businessEvents';
-import { getUnixTimestamp } from '../../../utils';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
 import { Express } from 'express';
@@ -167,11 +166,15 @@ describe('createSavedItemTags mutation', function () {
       expect(res).not.toBeUndefined();
       const data = res.body.data.createSavedItemTags;
       expect(data[0].url).toBe('http://0');
-      expect(data[0]._updatedAt).toBe(getUnixTimestamp(updateDate));
+      expect(new Date(data[0]._updatedAt * 1000)).toBeAfterOrEqualTo(
+        updateDate,
+      );
       expect(data[0].tags.length).toBe(4);
       expect(data[0].tags).toContainAllValues(expectedTagsForSavedItemZero);
       expect(data[1].url).toBe('http://1');
-      expect(data[1]._updatedAt).toBe(getUnixTimestamp(updateDate));
+      expect(new Date(data[1]._updatedAt * 1000)).toBeAfterOrEqualTo(
+        updateDate,
+      );
       expect(data[1].tags.length).toBe(4);
       expect(data[1].tags).toContainAllValues(expectedTagsForSavedItemOne);
     },

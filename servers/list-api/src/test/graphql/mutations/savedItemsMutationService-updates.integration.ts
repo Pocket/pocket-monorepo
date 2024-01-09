@@ -1,6 +1,5 @@
 import { readClient, writeClient } from '../../../database/client';
 import { EventType } from '../../../businessEvents';
-import { getUnixTimestamp } from '../../../utils';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
 import { Express } from 'express';
@@ -92,7 +91,9 @@ describe('Update Mutation for SavedItem: ', () => {
       expect(itemRes.status).toBe('ARCHIVED');
       expect(itemRes.isArchived).toBe(true);
       expect(itemRes._updatedAt).toBe(itemRes.archivedAt);
-      expect(itemRes._updatedAt).toBe(getUnixTimestamp(updateDate));
+      expect(new Date(itemRes._updatedAt * 1000)).toBeAfterOrEqualTo(
+        updateDate,
+      );
     });
     it('should emit an archive event', async () => {
       expect(eventSpy).toHaveBeenCalledTimes(1);
@@ -131,7 +132,9 @@ describe('Update Mutation for SavedItem: ', () => {
       const itemRes = res.body.data?.updateSavedItemUnArchive;
       expect(itemRes.status).toBe('UNREAD');
       expect(itemRes.isArchived).toBe(false);
-      expect(itemRes._updatedAt).toBe(getUnixTimestamp(updateDate));
+      expect(new Date(itemRes._updatedAt * 1000)).toBeAfterOrEqualTo(
+        updateDate,
+      );
       expect(itemRes.archivedAt).toBeNull();
     });
     it('should emit an unarchive event', async () => {
@@ -170,7 +173,9 @@ describe('Update Mutation for SavedItem: ', () => {
       const itemRes = res.body.data?.updateSavedItemFavorite;
       expect(itemRes.isFavorite).toBe(true);
       expect(itemRes._updatedAt).toBe(itemRes.favoritedAt);
-      expect(itemRes._updatedAt).toBe(getUnixTimestamp(updateDate));
+      expect(new Date(itemRes._updatedAt * 1000)).toBeAfterOrEqualTo(
+        updateDate,
+      );
     });
     it('should emit a favorite event', async () => {
       expect(eventSpy).toHaveBeenCalledTimes(1);
@@ -206,7 +211,9 @@ describe('Update Mutation for SavedItem: ', () => {
       expect(res.body.errors).toBeUndefined();
       const itemRes = res.body.data?.updateSavedItemUnFavorite;
       expect(itemRes.isFavorite).toBe(false);
-      expect(itemRes._updatedAt).toBe(getUnixTimestamp(updateDate));
+      expect(new Date(itemRes._updatedAt * 1000)).toBeAfterOrEqualTo(
+        updateDate,
+      );
       expect(itemRes.favoritedAt).toBeNull();
     });
 

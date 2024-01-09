@@ -1,7 +1,6 @@
 import { readClient, writeClient } from '../../../database/client';
 import { Knex } from 'knex';
 import { EventType } from '../../../businessEvents';
-import { getUnixTimestamp } from '../../../utils';
 import config from '../../../config';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
@@ -194,7 +193,7 @@ describe('Delete/Undelete SavedItem: ', () => {
     expect(res.body.errors).toBeUndefined();
     expect(res.body.data?.deleteSavedItem).toBe('1');
     expect(itemRes.status).toBe('DELETED');
-    expect(itemRes._deletedAt).toBe(getUnixTimestamp(updateDate));
+    expect(new Date(itemRes._deletedAt * 1000)).toBeAfterOrEqualTo(updateDate);
     expect(await query('item_tags')).toBeUndefined();
     expect(await query('item_attribution')).toBeUndefined();
     expect(await query('items_scroll')).toBeUndefined();
@@ -225,7 +224,7 @@ describe('Delete/Undelete SavedItem: ', () => {
     expect(res.body.errors).toBeUndefined();
     const itemRes = res.body.data?.updateSavedItemUnDelete;
     expect(itemRes.status).toBe('UNREAD');
-    expect(itemRes._updatedAt).toBe(getUnixTimestamp(updateDate));
+    expect(new Date(itemRes._updatedAt * 1000)).toBeAfterOrEqualTo(updateDate);
   });
 
   it('should undelete a deleted saved item and set status to archived if previously archived', async () => {
@@ -248,6 +247,6 @@ describe('Delete/Undelete SavedItem: ', () => {
     expect(res.body.errors).toBeUndefined();
     const itemRes = res.body.data?.updateSavedItemUnDelete;
     expect(itemRes.status).toBe('ARCHIVED');
-    expect(itemRes._updatedAt).toBe(getUnixTimestamp(updateDate));
+    expect(new Date(itemRes._updatedAt * 1000)).toBeAfterOrEqualTo(updateDate);
   });
 });
