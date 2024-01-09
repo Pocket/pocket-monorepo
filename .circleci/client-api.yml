@@ -78,43 +78,43 @@ workflows:
       ######
       # Main Branch Deployment (Prod Environment)
       ######
-      - infrastructure:
-          <<: *only_main
-          context: pocket
-          for: client_api
-          name: client-api_infrastructure_apply_prod
-          scope: client-api-cdk
-          stack-output-path: infrastructure/client-api/cdktf.out/stacks/client-api
-          resource-class: pocket/default-prod
-          workspace: Prod
-          apply: true
-          dev: false
+      # - infrastructure:
+      #     <<: *only_main
+      #     context: pocket
+      #     for: client_api
+      #     name: client-api_infrastructure_apply_prod
+      #     scope: client-api-cdk
+      #     stack-output-path: infrastructure/client-api/cdktf.out/stacks/client-api
+      #     resource-class: pocket/default-prod
+      #     workspace: Prod
+      #     apply: true
+      #     dev: false
 
-      # Build & Deploy the Prod Docker Image
-      - build_image:
-          <<: *only_main
-          context: pocket
-          for: client_api
-          name: client-api_build_docker_prod
-          aws-access-key-id: Prod_AWS_ACCESS_KEY
-          aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
-          aws-region: Prod_AWS_DEFAULT_REGION
-          repo-name: clientapi-prod-app
-          ecr-url: 996905175585.dkr.ecr.us-east-1.amazonaws.com
-          push: true
-          app_path: 'servers/client-api'
-          layer_caching: false
-          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1}
-          requires:
-            - client-api_infrastructure_apply_prod
+      # # Build & Deploy the Prod Docker Image
+      # - build_image:
+      #     <<: *only_main
+      #     context: pocket
+      #     for: client_api
+      #     name: client-api_build_docker_prod
+      #     aws-access-key-id: Prod_AWS_ACCESS_KEY
+      #     aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
+      #     aws-region: Prod_AWS_DEFAULT_REGION
+      #     repo-name: clientapi-prod-app
+      #     ecr-url: 996905175585.dkr.ecr.us-east-1.amazonaws.com
+      #     push: true
+      #     app_path: 'servers/client-api'
+      #     layer_caching: false
+      #     extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1}
+      #     requires:
+      #       - client-api_infrastructure_apply_prod
 
-      - code_deploy_ecs:
-          <<: *only_main
-          context: pocket
-          for: client_api
-          name: client-api_code_deploy_ecs_prod
-          resource-class: pocket/default-prod
-          codedeploy-app-name: ClientAPI-Prod-ECS
-          codedeploy-group-name: ClientAPI-Prod-ECS
-          requires:
-            - client-api_build_docker_prod
+      # - code_deploy_ecs:
+      #     <<: *only_main
+      #     context: pocket
+      #     for: client_api
+      #     name: client-api_code_deploy_ecs_prod
+      #     resource-class: pocket/default-prod
+      #     codedeploy-app-name: ClientAPI-Prod-ECS
+      #     codedeploy-group-name: ClientAPI-Prod-ECS
+      #     requires:
+      #       - client-api_build_docker_prod
