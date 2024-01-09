@@ -18,7 +18,7 @@ import {
   PocketAwsSyntheticChecks,
 } from '@pocket-tools/terraform-modules';
 
-import { App, RemoteBackend, TerraformStack } from 'cdktf';
+import { App, RemoteBackend, TerraformStack, MigrateIds, Aspects } from 'cdktf';
 import { Construct } from 'constructs';
 import fs from 'fs';
 
@@ -66,6 +66,10 @@ class ClientAPI extends TerraformStack {
         },
       ],
     });
+
+    // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
+    // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
+    Aspects.of(this).add(new MigrateIds());
   }
 
   /**
