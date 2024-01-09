@@ -40,7 +40,7 @@ class ClientAPI extends TerraformStack {
     const region = new DataAwsRegion(this, 'region');
 
     const clientApiPagerduty = this.createPagerDuty();
-    const pocketApp = this.createPocketAlbApplication({
+    this.createPocketAlbApplication({
       pagerDuty: clientApiPagerduty,
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
@@ -127,14 +127,8 @@ class ClientAPI extends TerraformStack {
     snsTopic: DataAwsSnsTopic;
     nodeList: string[];
   }): PocketALBApplication {
-    const {
-      pagerDuty,
-      region,
-      caller,
-      secretsManagerKmsAlias,
-      snsTopic,
-      nodeList,
-    } = dependencies;
+    const { pagerDuty, region, caller, secretsManagerKmsAlias, snsTopic } =
+      dependencies;
 
     return new PocketALBApplication(this, 'application', {
       internal: false,
@@ -240,6 +234,8 @@ class ClientAPI extends TerraformStack {
         useCodePipeline: false,
         useTerraformBasedCodeDeploy: false,
         snsNotificationTopicArn: snsTopic.arn,
+        // TODO: Turn this back to 5 after initial deployment
+        successTerminationWaitTimeInMinutes: 60,
         notifications: {
           //only notify on failed deploys
           notifyOnFailed: true,
