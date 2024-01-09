@@ -5,6 +5,8 @@ import {
   DeleteMessageCommand,
   Message,
   ReceiveMessageCommandOutput,
+  ReceiveMessageCommandInput,
+  QueueAttributeName,
 } from '@aws-sdk/client-sqs';
 import * as Sentry from '@sentry/node';
 import config from '../../config';
@@ -130,8 +132,8 @@ export class BatchDeleteHandler {
    */
   async pollQueue() {
     serverLogger.info('emitter on');
-    const params = {
-      AttributeNames: ['SentTimestamp'],
+    const params: ReceiveMessageCommandInput = {
+      AttributeNames: [QueueAttributeName.CreatedTimestamp],
       MaxNumberOfMessages: config.aws.sqs.annotationsDeleteQueue.maxMessages,
       MessageAttributeNames: ['All'],
       QueueUrl: config.aws.sqs.annotationsDeleteQueue.url,

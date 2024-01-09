@@ -33,7 +33,7 @@ export default class IntMask {
     const result = _.toArray(mask);
 
     // Inject encoded characters at specific points of the mask.
-    intMaskMaps.positionMap.forEach(function (decodedIndex, encodedIndex) {
+    intMaskMaps.positionMap.forEach(function (decodedIndex, encodedIndex: any) {
       result[encodedIndex] = encodedString.charAt(decodedIndex);
     });
 
@@ -52,7 +52,7 @@ export default class IntMask {
     const charSeed = parseInt(this.getMask().match(/[0-9]/)[0] || '1');
 
     return _.chain(str)
-      .toArray(str)
+      .toArray()
       .map(function (val, i) {
         const outIndex = Math.floor((charSeed + i + 1) % 5); // always 0->5
         const optAry = intMaskMaps.intMap.get(parseInt(val));

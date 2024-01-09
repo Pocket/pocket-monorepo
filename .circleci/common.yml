@@ -22,6 +22,7 @@ repo_for_enum: &repo_for_enum
       - fxa_webhook_proxy
       - user_api
       - pocket_router
+      - list_api
 
 resource_class_enmum: &resource_class_enmum
   resource-class:
@@ -57,7 +58,9 @@ parameters:
   pocket_router:
     type: boolean
     default: false
-
+  list_api:
+    type: boolean
+    default: false
 
 commands:
   # Refrenced from https://github.com/kelvintaywl-cci/dynamic-config-showcase/blob/main/.circleci/next.yml
@@ -87,6 +90,7 @@ commands:
             fxa_webhook_proxy: << pipeline.parameters.fxa_webhook_proxy >>
             user_api: << pipeline.parameters.user_api >>
             pocket_router: << pipeline.parameters.pocket_router >>
+            list_api: << pipeline.parameters.list_api >>
 
   install_pnpm:  
     steps:
