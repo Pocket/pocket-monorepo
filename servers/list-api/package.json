@@ -4,7 +4,7 @@
   "scripts": {
     "build": "rm -rf dist && tsc && npm run build-schema",
     "watch": "tsc -w & nodemon",
-    "start": "node dist/main.js",
+    "start": "node dist/server/main.js",
     "dev": "npm run build && npm run watch",
     "build-schema": "node dist/server/buildSchema.js",
     "test:watch": "npm test -- --watchAll",
