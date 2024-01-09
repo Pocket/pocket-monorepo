@@ -21,8 +21,8 @@ repo_for_enum: &repo_for_enum
       - transactional_emails
       - fxa_webhook_proxy
       - user_api
-      - pocket_router
       - list_api
+      - client_api
 
 resource_class_enmum: &resource_class_enmum
   resource-class:
@@ -55,7 +55,7 @@ parameters:
   user_api:
     type: boolean
     default: false
-  pocket_router:
+  client_api:
     type: boolean
     default: false
   list_api:
@@ -89,8 +89,8 @@ commands:
             transactional_emails: << pipeline.parameters.transactional_emails >>
             fxa_webhook_proxy: << pipeline.parameters.fxa_webhook_proxy >>
             user_api: << pipeline.parameters.user_api >>
-            pocket_router: << pipeline.parameters.pocket_router >>
             list_api: << pipeline.parameters.list_api >>
+            client_api: << pipeline.parameters.client_api >>
 
   install_pnpm:  
     steps:

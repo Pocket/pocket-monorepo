@@ -11,16 +11,18 @@ import { NullProvider } from '@cdktf/provider-null/lib/provider';
 import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
 import { DataPagerdutyEscalationPolicy } from '@cdktf/provider-pagerduty/lib/data-pagerduty-escalation-policy';
 import {
+  ApplicationMemcache,
   PocketALBApplication,
+  PocketVPC,
   PocketPagerDuty,
   PocketAwsSyntheticChecks,
 } from '@pocket-tools/terraform-modules';
 
-import { App, S3Backend, TerraformStack } from 'cdktf';
+import { App, RemoteBackend, TerraformStack, MigrateIds, Aspects } from 'cdktf';
 import { Construct } from 'constructs';
-import * as fs from 'fs';
+import fs from 'fs';
 
-class PocketRouter extends TerraformStack {
+class ClientAPI extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
@@ -28,21 +30,21 @@ class PocketRouter extends TerraformStack {
     new LocalProvider(this, 'local_provider');
     new NullProvider(this, 'null_provider');
     new PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
+    new RemoteBackend(this, {
+      hostname: 'app.terraform.io',
+      organization: 'Pocket',
+      workspaces: [{ name: `${config.name}-${config.environment}` }],
+    });
 
     const caller = new DataAwsCallerIdentity(this, 'caller');
     const region = new DataAwsRegion(this, 'region');
 
-    new S3Backend(this, {
-      bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
-      key: 'pocket-router',
-      region: 'us-east-1',
-    });
-
-    const pocketRouterPagerduty = this.createPagerDuty();
+    const clientApiPagerduty = this.createPagerDuty();
     this.createPocketAlbApplication({
-      pagerDuty: pocketRouterPagerduty,
+      pagerDuty: clientApiPagerduty,
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
+      nodeList: this.createElasticache(),
       region,
       caller,
     });
@@ -50,7 +52,7 @@ class PocketRouter extends TerraformStack {
     new PocketAwsSyntheticChecks(this, 'synthetics', {
       // alarmTopicArn:
       //   config.environment === 'Prod'
-      //     ? pocketRouterPagerduty.snsCriticalAlarmTopic.arn // Tier 1
+      //     ? clientApiPagerduty.snsCriticalAlarmTopic.arn // Tier 1
       //     : '',
       environment: config.environment,
       prefix: config.prefix,
@@ -60,11 +62,14 @@ class PocketRouter extends TerraformStack {
       uptime: [
         {
           response: 'ok',
-          // TODO: Do I need the port?
           url: `${config.domain}/.well-known/apollo/server-health`,
         },
       ],
     });
+
+    // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
+    // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
+    Aspects.of(this).add(new MigrateIds());
   }
 
   /**
@@ -120,6 +125,7 @@ class PocketRouter extends TerraformStack {
     caller: DataAwsCallerIdentity;
     secretsManagerKmsAlias: DataAwsKmsAlias;
     snsTopic: DataAwsSnsTopic;
+    nodeList: string[];
   }): PocketALBApplication {
     const { pagerDuty, region, caller, secretsManagerKmsAlias, snsTopic } =
       dependencies;
@@ -143,15 +149,15 @@ class PocketRouter extends TerraformStack {
           name: 'app',
           portMappings: [
             {
-              hostPort: 4000,
-              containerPort: 4000,
+              hostPort: 4001,
+              containerPort: 4001,
               protocol: 'tcp',
             },
           ],
           envVars: [
             {
               name: 'PORT',
-              value: '4000',
+              value: '4001',
             },
             {
               name: 'APOLLO_GRAPH_REF',
@@ -163,7 +169,7 @@ class PocketRouter extends TerraformStack {
             },
             {
               name: 'OTLP_COLLECTOR_HOST',
-              value: config.tracing.host,
+              value: `${config.tracing.host}`,
             },
             {
               name: 'RELEASE_SHA',
@@ -176,6 +182,10 @@ class PocketRouter extends TerraformStack {
           logMultilinePattern: '^\\S.+',
           secretEnvVars: [
             {
+              name: 'SENTRY_DSN',
+              valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/SENTRY_DSN`,
+            },
+            {
               name: 'APOLLO_KEY',
               valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/APOLLO_KEY`,
             },
@@ -183,7 +193,7 @@ class PocketRouter extends TerraformStack {
           healthCheck: {
             command: [
               'CMD-SHELL',
-              'curl -f http://localhost:4000/.well-known/apollo/server-health || exit 1',
+              'curl -f http://localhost:4001/.well-known/apollo/server-health || exit 1',
             ],
             interval: 15,
             retries: 3,
@@ -224,6 +234,8 @@ class PocketRouter extends TerraformStack {
         useCodePipeline: false,
         useTerraformBasedCodeDeploy: false,
         snsNotificationTopicArn: snsTopic.arn,
+        // TODO: Turn this back to 5 after initial deployment
+        successTerminationWaitTimeInMinutes: 60,
         notifications: {
           //only notify on failed deploys
           notifyOnFailed: true,
@@ -233,7 +245,7 @@ class PocketRouter extends TerraformStack {
       },
       exposedContainer: {
         name: 'app',
-        port: 4000,
+        port: 4001,
         healthCheckPath: '/.well-known/apollo/server-health',
       },
       ecsIamConfig: {
@@ -309,6 +321,47 @@ class PocketRouter extends TerraformStack {
   }
 
   /**
+   * Creates the elasticache and returns the node address list
+   * @param scope
+   * @private
+   */
+  private createElasticache(): string[] {
+    const pocketVPC = new PocketVPC(this, 'pocket-vpc');
+
+    // TODO (@kschelonka): Change this to redis and configure router.yaml
+    // https://mozilla-hub.atlassian.net/browse/POCKET-9467
+    // https://www.apollographql.com/docs/router/configuration/distributed-caching/
+    const elasticache = new ApplicationMemcache(this, 'memcached', {
+      //Usually we would set the security group ids of the service that needs to hit this.
+      //However we don't have the necessary security group because it gets created in PocketALBApplication
+      //So instead we set it to null and allow anything within the vpc to access it.
+      //This is not ideal..
+      //Ideally we need to be able to add security groups to the ALB application.
+      allowedIngressSecurityGroupIds: undefined,
+      node: {
+        count: config.cacheNodes,
+        size: config.cacheSize,
+      },
+      subnetIds: pocketVPC.privateSubnetIds,
+      tags: config.tags,
+      vpcId: pocketVPC.vpc.id,
+      prefix: config.prefix,
+    });
+
+    // eslint-disable-next-line prefer-const
+    let nodeList: string[] = [];
+    for (let i = 0; i < config.cacheNodes; i++) {
+      // ${elasticache.elasticacheClister.cacheNodes(i.toString()).port} has a bug and is not rendering the proper terraform address
+      // its rendering -1.8881545897087503e+289 for some weird reason...
+      // For now we just hardcode to 11211 which is the default memcache port.
+      nodeList.push(
+        `${elasticache.elasticacheCluster.cacheNodes.get(i).address}:11211`,
+      );
+    }
+    return nodeList;
+  }
+
+  /**
    * Create Custom log group for ECS to share across task revisions
    * @param containerName
    * @private
@@ -330,7 +383,7 @@ class PocketRouter extends TerraformStack {
 }
 
 const app = new App();
-const stack = new PocketRouter(app, 'pocket-router');
+const stack = new ClientAPI(app, 'client-api');
 const tfEnvVersion = fs.readFileSync('.terraform-version', 'utf8');
 stack.addOverride('terraform.required_version', tfEnvVersion);
 app.synth();

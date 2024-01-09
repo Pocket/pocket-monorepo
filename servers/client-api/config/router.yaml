@@ -2,7 +2,7 @@ sandbox:
   enabled: false
 supergraph:
   introspection: true
-  listen: 0.0.0.0:${env.PORT:-4000}
+  listen: 0.0.0.0:${env.PORT:-4001}
   query_planning:
     experimental_cache:
       in_memory:
@@ -59,15 +59,15 @@ telemetry:
         endpoint: 'http://${env.OTLP_COLLECTOR_HOST}:4317'
       common:
         resource:
-          "environment.name": "{env.APP_ENVIRONMENT}"
-        service_name: "pocket-router" 
+          'environment.name': '{env.APP_ENVIRONMENT}'
+        service_name: 'client-api'
         sampler: always_on # (default) all requests are sampled (always_on|always_off|<0.0-1.0>)
-        parent_based_sampler: false 
+        parent_based_sampler: false
       propagation:
         aws_xray: true
       experimental_response_trace_id:
         enabled: true
-        header_name: "pocket-trace-id"
+        header_name: 'pocket-trace-id'
 apq:
   router:
     cache:
