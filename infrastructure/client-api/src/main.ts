@@ -155,15 +155,15 @@ class ClientAPI extends TerraformStack {
           name: 'app',
           portMappings: [
             {
-              hostPort: 4000,
-              containerPort: 4000,
+              hostPort: 4001,
+              containerPort: 4001,
               protocol: 'tcp',
             },
           ],
           envVars: [
             {
               name: 'PORT',
-              value: '4000',
+              value: '4001',
             },
             {
               name: 'APOLLO_GRAPH_REF',
@@ -199,7 +199,7 @@ class ClientAPI extends TerraformStack {
           healthCheck: {
             command: [
               'CMD-SHELL',
-              'curl -f http://localhost:4000/.well-known/apollo/server-health || exit 1',
+              'curl -f http://localhost:4001/.well-known/apollo/server-health || exit 1',
             ],
             interval: 15,
             retries: 3,
@@ -249,7 +249,7 @@ class ClientAPI extends TerraformStack {
       },
       exposedContainer: {
         name: 'app',
-        port: 4000,
+        port: 4001,
         healthCheckPath: '/.well-known/apollo/server-health',
       },
       ecsIamConfig: {

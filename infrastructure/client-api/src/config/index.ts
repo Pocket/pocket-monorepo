@@ -44,7 +44,7 @@ export const config = {
   healthCheck: {
     command: [
       'CMD-SHELL',
-      'curl -f http://localhost:4000/.well-known/apollo/server-health || exit 1',
+      'curl -f http://localhost:4001/.well-known/apollo/server-health || exit 1',
     ],
     interval: 15,
     retries: 3,

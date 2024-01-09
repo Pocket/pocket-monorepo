@@ -2,7 +2,7 @@ sandbox:
   enabled: false
 supergraph:
   introspection: true
-  listen: 0.0.0.0:${env.PORT:-4000}
+  listen: 0.0.0.0:${env.PORT:-4001}
   query_planning:
     experimental_cache:
       in_memory:
