@@ -1,6 +1,6 @@
 import { Strategy } from 'unleash-client';
 import { UnleashContext } from '../../graphql/typeDefs';
-import normalizedValue from 'unleash-client/lib/strategy/util';
+import { normalizedStrategyValue } from 'unleash-client/lib/strategy/util';
 import { StartDateError, SessionIdError } from '../../utils/customErrors';
 import * as Sentry from '@sentry/node';
 
@@ -35,7 +35,7 @@ export class NewUserStrategy extends Strategy {
       const isEligible = accountCreatedAt > startDate;
       if (!isEligible) return false;
 
-      const normalizedUserId = normalizedValue(stickinessId, groupId);
+      const normalizedUserId = normalizedStrategyValue(stickinessId, groupId);
       return percentage > 0 && normalizedUserId <= percentage;
     } catch (err) {
       Sentry.withScope((scope) => {

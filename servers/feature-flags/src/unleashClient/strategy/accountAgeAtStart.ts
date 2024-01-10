@@ -1,6 +1,6 @@
 import { Strategy } from 'unleash-client';
 import { UnleashContext } from '../../graphql/typeDefs';
-import normalizedValue from 'unleash-client/lib/strategy/util';
+import { normalizedStrategyValue } from 'unleash-client/lib/strategy/util';
 import {
   StartDateError,
   AccountAgeError,
@@ -50,7 +50,7 @@ export class AccountAgeAtStartStrategy extends Strategy {
       const isEligible = acceptableAge >= accountCreatedAt;
       if (!isEligible) return false;
 
-      const normalizedUserId = normalizedValue(stickinessId, groupId);
+      const normalizedUserId = normalizedStrategyValue(stickinessId, groupId);
       return percentage > 0 && normalizedUserId <= percentage;
     } catch (err) {
       Sentry.withScope((scope) => {

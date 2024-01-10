@@ -1,6 +1,6 @@
 import { Strategy } from 'unleash-client';
 import { UnleashContext, RecItUserProfile } from '../../graphql/typeDefs';
-import normalizedValue from 'unleash-client/lib/strategy/util';
+import { normalizedStrategyValue } from 'unleash-client/lib/strategy/util';
 import { SessionIdError } from '../../utils/customErrors';
 import * as Sentry from '@sentry/node';
 
@@ -30,7 +30,7 @@ export class HasUserModel extends Strategy {
       // userProfile.userModels needs to contain parameters.userModel, the user model that we specify in the admin tool.
       if (!userProfile.userModels.includes(parameters.userModel)) return false;
 
-      const normalizedUserId = normalizedValue(stickinessId, groupId);
+      const normalizedUserId = normalizedStrategyValue(stickinessId, groupId);
       return percentage > 0 && normalizedUserId <= percentage;
     } catch (err) {
       Sentry.withScope((scope) => {
