@@ -5,8 +5,9 @@ supergraph:
   listen: 0.0.0.0:${env.PORT:-4001}
   query_planning:
     cache:
-      in_memory:
-        limit: 512 #This is the default value
+      redis:
+        urls: ['redis://${env.REDIS_ENDPOINT}']
+        ttl: 48h # optional, by default no expiration
 include_subgraph_errors:
   all: true # Propagate errors from all subgraphs
 health_check:
@@ -77,6 +78,8 @@ telemetry:
         header_name: 'pocket-trace-id'
 apq:
   router:
-    cache:
-      in_memory:
-        limit: 512 # This is the default value
+    redis:
+      urls:
+      redis:
+        urls: ['redis://${env.REDIS_ENDPOINT}']
+        ttl: 24h # optional, by default no expiration
