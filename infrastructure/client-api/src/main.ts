@@ -61,7 +61,7 @@ class ClientAPI extends TerraformStack {
       tags: config.tags,
       uptime: [
         {
-          response: 'ok',
+          response: '{"status":"UP"}',
           url: `${config.domain}/.well-known/apollo/server-health`,
         },
       ],
