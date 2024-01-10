@@ -1,5 +1,3 @@
-import { expect } from 'chai';
-import 'mocha';
 import { chunkArray } from './util';
 
 describe('util', () => {
@@ -16,7 +14,7 @@ describe('util', () => {
         current = generator.next();
       }
 
-      expect(results.length).to.equal(4);
+      expect(results.length).toEqual(4);
     });
   });
 });

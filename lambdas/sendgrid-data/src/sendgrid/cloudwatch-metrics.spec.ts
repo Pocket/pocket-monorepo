@@ -1,4 +1,3 @@
-import AWSMock from 'aws-sdk-mock';
 import { Event, EventType } from './event';
 import {
   decorateEvent,
@@ -8,11 +7,8 @@ import {
   mapEventToMetricName,
   getMetricWithDimensions,
 } from './cloudwatch-metrics';
-import { expect } from 'chai';
-import 'mocha';
 import config from '../config';
-import sinon, { SinonSpyStatic } from 'sinon';
-import { MetricDatum } from 'aws-sdk/clients/cloudwatch';
+import { CloudWatchClient, MetricDatum } from '@aws-sdk/client-cloudwatch';
 
 /**
  * Note: without done(), the tests fail with this error:
@@ -22,7 +18,7 @@ import { MetricDatum } from 'aws-sdk/clients/cloudwatch';
  * Unclear how to resolve the promise with mocks (or how the firehose tests don't need the explicit done() call)
  */
 
-describe('cloudwatch metrics', async (): Promise<any> => {
+describe('cloudwatch metrics', () => {
   const metricsPerEvent = 1 + config.aws.cloudwatch.metricDimensions.length;
 
   describe('generate metric data', () => {
@@ -45,7 +41,7 @@ describe('cloudwatch metrics', async (): Promise<any> => {
 
     it('correctly maps event properties to dimensions', () => {
       const metric = getMetricWithDimensions(event, baseMetric, dimMap[1]);
-      expect(metric).to.deep.include({
+      expect(metric).toStrictEqual({
         MetricName: 'metric',
         Dimensions: [
           {
@@ -62,13 +58,13 @@ describe('cloudwatch metrics', async (): Promise<any> => {
 
     it('correctly generates expected number of metrics', () => {
       const metrics = eventToMetrics(event, dimMap);
-      expect(metrics.length).to.equal(1 + dimMap.length);
+      expect(metrics.length).toEqual(1 + dimMap.length);
     });
 
     it('correctly injects whitelisted parameters into the event data', () => {
       const evt = decorateEvent(event, { accountId: 5, userId: 6 });
-      expect(evt.accountId).to.equal(5);
-      expect(evt.userId).to.equal(undefined);
+      expect(evt.accountId).toEqual(5);
+      expect(evt.userId).toBeUndefined();
     });
 
     it('maps EventType.bounce (sendgrid.event.type=blocked) to EventType.bounced', () => {
@@ -78,13 +74,12 @@ describe('cloudwatch metrics', async (): Promise<any> => {
         type: 'blocked',
       };
       const eventName = mapEventToMetricName(blockEvent);
-      expect(eventName).to.equal('blocked');
+      expect(eventName).toEqual('blocked');
     });
   });
 
-  describe('put metric data', async (): Promise<any> => {
-    const sandbox = sinon.createSandbox();
-    let spy: SinonSpyStatic | any;
+  describe('put metric data', () => {
+     let spy: jest.SpyInstance;
 
     const EVENTS: Event[] = [
       {
@@ -108,50 +103,40 @@ describe('cloudwatch metrics', async (): Promise<any> => {
     }
 
     beforeEach(() => {
-      spy = sandbox.spy();
-      AWSMock.mock('CloudWatch', 'putMetricData', spy);
+      spy = jest.spyOn(CloudWatchClient.prototype, 'send')
+      spy.mockResolvedValueOnce(() => { Promise.resolve() })
     });
 
     afterEach(() => {
-      sandbox.restore();
-      AWSMock.restore();
+      jest.restoreAllMocks();
     });
 
-    it('sends a single request per campaign when metrics <= 20', async (done: any): Promise<
-      any
-    > => {
-      deliver(EVENTS);
-      expect(spy.callCount).to.equal(1);
-      done();
+    it('sends a single request per campaign when metrics <= 20', async () => {
+      await deliver(EVENTS);
+      expect(spy).toHaveBeenCalledTimes(1);
     });
 
-    it('delivers expected number of events', async (done: any): Promise<
-      any
-    > => {
-      deliver(EVENTS);
-      const payload = spy.getCall(0).args[0];
-      expect(payload.MetricData.length).to.equal(
+    it('delivers expected number of events', async () => {
+      await deliver(EVENTS);
+      const payload = spy.mock.calls[0];
+      expect(payload[0].input.MetricData.length).toEqual(
         EVENTS.length * metricsPerEvent
       );
-      done();
     });
 
-    it('aggregates events of the same type to create metrics and send a single request', async (done: any): Promise<
-      any
-    > => {
-      deliver(EVENTS_OVER_20);
-      expect(spy.callCount).to.equal(1);
-      done();
+    it('aggregates events of the same type to create metrics and send a single request', async () => {
+      await deliver(EVENTS_OVER_20);
+      expect(spy).toHaveBeenCalledTimes(1);
     });
 
     it('has the necessary metric dimensions configured', () => {
-      expect(config.aws.cloudwatch.metricDimensions).to.have.deep.members([
+      expect(config.aws.cloudwatch.metricDimensions).toEqual([
         { accountId: 'AccountId' },
         { accountId: 'AccountId', computedCampaignName: 'Campaign' },
       ]);
     });
 
-    it('aggregates events per campaign', () => {
+    it('aggregates events per campaign', async () => {
       const events: any = [];
       const eventsToGenerate: any = {
         test1: { delivered: 1000, open: 250, click: 100, processed: 1000 }, // 12
@@ -176,9 +161,9 @@ describe('cloudwatch metrics', async (): Promise<any> => {
         });
       });
 
-      deliver(events as any, { accountId: 'testAccountId' });
+      await deliver(events as any, { accountId: 'testAccountId' });
 
-      expect(spy.callCount).to.equal(2);
+      expect(spy).toHaveBeenCalledTimes(2);
     });
   });
 });

@@ -1,22 +1,20 @@
-import AWS from 'aws-sdk';
+import { FirehoseClient, PutRecordBatchCommand, _Record } from '@aws-sdk/client-firehose';
 import config from '../config';
 import { chunkArray } from './util';
 
-AWS.config.update({ region: config.aws.region });
-
 export const encodeRecord = (event: {
   [key: string]: any;
-}): AWS.Firehose.Types.Record => {
+}): _Record => {
   return {
-    Data: JSON.stringify(event) + '\n',
+    Data: new TextEncoder().encode(JSON.stringify(event) + '\n'),
   };
 };
 
 export const createRecords = (
   events: any[],
   accountId: string
-): AWS.Firehose.Types.PutRecordBatchRequestEntryList => {
-  const records: any[] = [];
+): _Record[] => {
+  const records: _Record[] = [];
 
   events.forEach((event) => {
     records.push(encodeRecord({ ...event, accountId }));
@@ -31,7 +29,7 @@ export const deliver = async (
   parameters: any,
   batchSize = 500
 ): Promise<boolean> => {
-  const firehoseClient = new AWS.Firehose();
+  const firehoseClient = new FirehoseClient();
   const generator = chunkArray(events, batchSize);
   const promises = [];
   const { accountId } = parameters;
@@ -43,12 +41,12 @@ export const deliver = async (
   while (!current.done) {
     encodedRecords = createRecords(current.value, accountId);
 
-    request = firehoseClient.putRecordBatch({
+    request = firehoseClient.send(new PutRecordBatchCommand({
       DeliveryStreamName: config.aws.firehose.deliveryStreamName,
       Records: encodedRecords,
-    });
+    }));
 
-    promises.push(request.promise());
+    promises.push(request);
     current = generator.next();
   }
 

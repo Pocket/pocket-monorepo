@@ -1,8 +1,4 @@
-import { expect } from 'chai';
-import 'mocha';
-import sinon from 'sinon';
-import AWSMock from 'aws-sdk-mock';
-
+import { FirehoseClient, PutRecordBatchCommand } from '@aws-sdk/client-firehose';
 import config from '../config';
 import { deliver, createRecords, encodeRecord } from './firehose';
 
@@ -18,33 +14,27 @@ describe('firehose', () => {
 
     const parameters = {accountId: 'test-account'};
 
-    const sandbox = sinon.createSandbox();
-    let spy: any;
+    let spy: jest.SpyInstance;
 
     beforeEach(() => {
-      spy = sandbox.spy();
-      AWSMock.mock('Firehose', 'putRecordBatch', spy);
+      spy = jest.spyOn(FirehoseClient.prototype, 'send')
+      spy.mockResolvedValueOnce(() => { Promise.resolve() })
     });
 
     afterEach(() => {
-      sandbox.restore();
-      AWSMock.restore();
+      jest.restoreAllMocks();
     });
 
-    it('should deliver the correct number of batches', () => {
-      deliver(events, parameters, 3);
-      expect(spy.callCount).to.equal(2);
+    it('should deliver the correct number of batches', async () => {
+      await deliver(events, parameters, 3);
+      expect(spy).toHaveBeenCalledTimes(2);
     });
 
-    it('should call putRecordBatch with the correct arguments', () => {
-      deliver(events, 5);
+    it('should call putRecordBatch with the correct arguments', async () => {
+      await deliver(events, 5);
 
-      const expectedArgs = {
-        DeliveryStreamName: config.aws.firehose.deliveryStreamName,
-        Records: sinon.match.array,
-      };
-
-      sinon.assert.calledWith(spy, expectedArgs);
+      expect(spy.mock.calls[0][0].input.DeliveryStreamName).toEqual(config.aws.firehose.deliveryStreamName)
+      expect(spy.mock.calls[0][0].input.Records.length).toEqual(5)
     });
   });
 
@@ -60,7 +50,7 @@ describe('firehose', () => {
       };
 
       const result = encodeRecord(event);
-      expect(result.Data).to.equal(JSON.stringify(event) + '\n');
+      expect(result.Data).toEqual(new TextEncoder().encode(JSON.stringify(event) + '\n'));
     });
   });
 
@@ -70,8 +60,8 @@ describe('firehose', () => {
       const accountId = 'test-account';
 
       const result = createRecords(events, accountId);
-      expect(result.length).to.equal(3);
-      expect(result[0].Data).to.equal(JSON.stringify({id: 1234, accountId}) + '\n');
+      expect(result.length).toEqual(3);
+      expect(result[0].Data).toEqual(new TextEncoder().encode((JSON.stringify({id: 1234, accountId}) + '\n') ));
     });
   });
 });

@@ -1,14 +1,8 @@
-import AWS from 'aws-sdk';
+import {MetricDatum, Dimension, CloudWatchClient, PutMetricDataCommand, PutMetricDataCommandOutput } from '@aws-sdk/client-cloudwatch';
 import config from '../config';
 import { Event } from './event';
-import { MetricDatum, Dimensions } from 'aws-sdk/clients/cloudwatch';
 import { chunkArray } from './util';
 import { addBreadcrumbs, captureException } from '../sentry';
-
-AWS.config.update({
-  region: config.aws.region,
-  maxRetries: config.aws.maxRetries,
-});
 
 export type DimensionMapping = {
   [key: string]: any;
@@ -46,7 +40,7 @@ export const getMetricWithDimensions = (
   baseMetric: MetricDatum,
   dimensionMap: DimensionMapping
 ): MetricDatum => {
-  const dims: Dimensions = [];
+  const dims: Dimension[] = [];
   for (const eventKey in dimensionMap) {
     // we need to coerce properties to string
     const dimension = dimensionMap[eventKey];
@@ -97,7 +91,7 @@ export const eventToMetrics = (
  * @param metrics
  */
 const putMetrics = (
-  cloudwatch: AWS.CloudWatch,
+  cloudwatch: CloudWatchClient,
   metrics: MetricDatum[]
 ): Promise<any> => {
   // timestamp each breadcrumb so that we can properly tie it back to a specific error
@@ -108,12 +102,10 @@ const putMetrics = (
     data: { metrics },
   });
 
-  return cloudwatch
-    .putMetricData({
-      Namespace: config.aws.cloudwatch.metricNamespace,
-      MetricData: metrics,
-    })
-    .promise()
+  return cloudwatch.send(new PutMetricDataCommand({
+    Namespace: config.aws.cloudwatch.metricNamespace,
+    MetricData: metrics,
+  }))
     .catch((err: any) => {
       captureException(err, {
         type: `cloudwatch-metrics:deliver/request/${reqTimestamp}/error`,
@@ -153,7 +145,7 @@ const aggregateEvents = (aggregatedEvents: any, event: any): Array<any> => {
  * @param aggregatedEvents
  */
 const createRequests = (
-  cloudwatch: AWS.CloudWatch,
+  cloudwatch: CloudWatchClient,
   aggregatedEvents: any
 ): Array<Promise<any>> => {
   const dimensionMappings: DimensionMapping[] =
@@ -200,7 +192,7 @@ export const deliver = async (
   parameters?: { [key: string]: any }
 ): Promise<boolean> => {
   const params = parameters ?? {};
-  const cloudwatch = new AWS.CloudWatch();
+  const cloudwatch = new CloudWatchClient({maxAttempts: config.aws.maxRetries});
   const eventChunks = chunkArray(events, 500);
   let eventChunk = eventChunks.next();
   let aggregatedEvents: any = {};

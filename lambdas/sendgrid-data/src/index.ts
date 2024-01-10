@@ -1,5 +1,12 @@
+import config from './config';
 import { deliverEvents, logEventsError, logEventsReceived } from './sendgrid';
-import { captureException, initSentry } from './sentry';
+import * as Sentry from '@sentry/serverless';
+
+Sentry.AWSLambda.init({
+  dsn: config.sentry.dsn,
+  release: config.sentry.release,
+});
+
 
 /**
  * Note: if a handler method returns null, you need to assign a sentinel value otherwise TS doesn't like it.
@@ -19,24 +26,16 @@ import { captureException, initSentry } from './sentry';
  * @param event
  * @param context
  */
-export const handler = async (event: any, context: any): Promise<boolean> => {
-  // Note: since lamba actually has its own error handling wrapped around invocations, we need to try/catch and manually send to sentry
-  // see https://gist.github.com/SarasArya/8626a311186a39572421b3eb6a9434ba
-  initSentry();
-
+const eventHandler = async (event: any, context: any): Promise<boolean> => {
   try {
     logEventsReceived(event.events);
     return await deliverEvents(event.events, event.queryParams);
   } catch (err) {
-    // unless we have a requirement to return a specific error response, just throw the exception after sentry is handled
+    // unless we have a requirement to return a specific error response, just throw the exception after logging
     logEventsError(event.events);
-    await captureException(err, {
-      type: 'sendgridDataRequest',
-      data: JSON.stringify({
-        err,
-        context,
-      }),
-    });
     throw err;
   }
 };
+
+
+export const handler = Sentry.AWSLambda.wrapHandler(eventHandler);
