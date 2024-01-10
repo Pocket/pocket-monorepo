@@ -16,7 +16,7 @@
     "jwks-rsa": "3.0.1",
     "passport": "0.6.0",
     "passport-jwt": "4.0.1",
-    "unleash-client": "3.16.1",
+    "unleash-client": "5.3.0",
     "unleash-server": "4.11.2"
   },
   "devDependencies": {
