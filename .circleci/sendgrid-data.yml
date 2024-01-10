@@ -73,7 +73,7 @@ workflows:
           resource-class: pocket/default-dev
           codedeploy-app-name: SendGridData-Dev-ApiGateway-Lambda
           codedeploy-group-name: SendGridData-Dev-ApiGateway-Lambda
-          function-name: SendGridData-Dev-ApiGateway-Lambda-Function
+          function-name: SendGridData-Dev-ApiGateway-Function
           s3-bucket: pocket-sendgriddata-dev-apigateway
           requires:
             - sendgrid-data_build_lambda_dev
@@ -142,7 +142,7 @@ workflows:
           resource-class: pocket/default-prod
           codedeploy-app-name: SendGridData-Prod-ApiGateway-Lambda
           codedeploy-group-name: SendGridData-Prod-ApiGateway-Lambda
-          function-name: SendGridData-Prod-ApiGateway-Lambda-Function
+          function-name: SendGridData-Prod-ApiGateway-Function
           s3-bucket: pocket-sendgriddata-prod-apigateway
           requires:
             - sendgrid-data_build_lambda_prod
