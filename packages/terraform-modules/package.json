@@ -25,8 +25,8 @@
     "@cdktf/provider-null": "10.0.0",
     "@cdktf/provider-pagerduty": "13.0.0",
     "@cdktf/provider-time": "10.0.0",
-    "cdktf": "0.20.0-pre.70",
-    "cdktf-cli": "0.20.0-pre.70",
+    "cdktf": "0.20.0",
+    "cdktf-cli": "0.20.0",
     "constructs": "10.3.0",
     "parse-domain": "5.0.0"
   },
