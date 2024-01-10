@@ -234,8 +234,7 @@ class ClientAPI extends TerraformStack {
         useCodePipeline: false,
         useTerraformBasedCodeDeploy: false,
         snsNotificationTopicArn: snsTopic.arn,
-        // TODO: Turn this back to 5 after initial deployment
-        successTerminationWaitTimeInMinutes: 60,
+        successTerminationWaitTimeInMinutes: 5,
         notifications: {
           //only notify on failed deploys
           notifyOnFailed: true,
