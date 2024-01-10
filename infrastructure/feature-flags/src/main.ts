@@ -9,7 +9,6 @@ import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
 import {
   ApplicationRDSCluster,
   PocketALBApplication,
-  PocketECSCodePipeline,
   PocketPagerDuty,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
