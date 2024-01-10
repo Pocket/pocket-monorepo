@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "dependencies": {
     "@pocket-tools/apollo-utils": "workspace:*",
-    "@sentry/node": "7.92.0",
+    "@sentry/node": "7.93.0",
     "@techpass/passport-openidconnect": "0.3.3",
     "aws-sdk": "2.1308.0",
     "cors": "2.8.5",
