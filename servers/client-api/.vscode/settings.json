@@ -1,0 +1,6 @@
+{
+    "yaml.schemas": {
+        ".apollo/router_config_schema.json": "router.yaml",
+        ".apollo/supergraph_config_schema.json": "supergraph.yaml"
+    }
+}

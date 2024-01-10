@@ -10,7 +10,7 @@ jobs:
           # Need to build first, so the linter picks up all needed imports
           command: |
             pnpm run build
-            pnpm run lint --concurrency=2
+            pnpm run lint --concurrency=1
 
   mismatched_versions:
     docker:
@@ -26,6 +26,7 @@ jobs:
   test:
     docker:
       - image: *node_image
+    resource_class: xlarge
     steps:
       - checkout
       - install_pnpm

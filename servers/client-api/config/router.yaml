@@ -1,0 +1,75 @@
+sandbox:
+  enabled: false
+supergraph:
+  introspection: true
+  listen: 0.0.0.0:${env.PORT:-4001}
+  query_planning:
+    experimental_cache:
+      in_memory:
+        limit: 512 #This is the default value
+include_subgraph_errors:
+  all: true # Propagate errors from all subgraphs
+health_check:
+  listen: 0.0.0.0:${env.PORT}
+  enabled: true
+  path: /.well-known/apollo/server-health
+limits:
+  parser_max_tokens: 15000 # This is the default value.
+  parser_max_recursion: 4096 # This is the default value.
+  max_depth: 100 # Must be 15 or larger to support standard introspection query
+  max_height: 200
+  max_aliases: 30
+  max_root_fields: 20
+authentication:
+  router:
+    jwt:
+      jwks:
+        - url: https://getpocket.com/.well-known/jwk
+authorization:
+  require_authentication: false
+rhai:
+  scripts: './rhai'
+  main: 'main.rhai'
+headers:
+  all:
+    request:
+      # Note: Additional JWT headers and headers which need special processing
+      # are handled in Rhai scripts
+      - propagate:
+          named: 'web-request-langugage'
+          rename: 'gatewayLanguage'
+      - propagate:
+          named: 'web-request-ip-address'
+          rename: 'gatewayIpAddress'
+      - propagate:
+          named: 'web-request-snowplow-domain-user-id'
+          rename: 'gatewaySnowplowDomainUserId'
+      - propagate:
+          named: 'web-request-user-agent'
+          rename: 'gatwayUserAgent'
+      - propagate:
+          named: 'X-Amzn-Trace-Id'
+      - propagate:
+          named: 'transfersub'
+telemetry:
+  exporters:
+    tracing:
+      otlp:
+        enabled: true
+        endpoint: 'http://${env.OTLP_COLLECTOR_HOST}:4317'
+      common:
+        resource:
+          'environment.name': '{env.APP_ENVIRONMENT}'
+        service_name: 'client-api'
+        sampler: always_on # (default) all requests are sampled (always_on|always_off|<0.0-1.0>)
+        parent_based_sampler: false
+      propagation:
+        aws_xray: true
+      experimental_response_trace_id:
+        enabled: true
+        header_name: 'pocket-trace-id'
+apq:
+  router:
+    cache:
+      in_memory:
+        limit: 512 # This is the default value

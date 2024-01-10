@@ -14,7 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "node-fetch": "2.7.0",
-    "@aws-sdk/client-lambda": "3.391.0",
+    "@aws-sdk/client-lambda": "3.485.0",
     "@sentry/serverless": "7.92.0",
     "tslib": "2.6.2"
   },

@@ -34,7 +34,11 @@ class FxAWebhookProxy extends TerraformStack {
     new RemoteBackend(this, {
       hostname: 'app.terraform.io',
       organization: 'Pocket',
-      workspaces: [{ prefix: `${config.name}-` }],
+      workspaces: [
+        {
+          name: `${config.name}-${config.environment}`,
+        },
+      ],
     });
 
     const vpc = new PocketVPC(this, 'pocket-shared-vpc');

@@ -40,7 +40,11 @@ class ImageAPI extends TerraformStack {
     new RemoteBackend(this, {
       hostname: 'app.terraform.io',
       organization: 'Pocket',
-      workspaces: [{ prefix: `${config.name}-` }],
+      workspaces: [
+        {
+          name: `${config.name}-${config.environment}`,
+        },
+      ],
     });
 
     const pocketVPC = new PocketVPC(this, 'pocket-vpc');
