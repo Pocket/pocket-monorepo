@@ -171,7 +171,7 @@ importers:
         version: 13.4.0
       ts-jest:
         specifier: 29.1.1
-        version: 29.1.1(@babel/core@7.23.7)(jest@29.7.0)(typescript@5.3.3)
+        version: 29.1.1(@babel/core@7.23.6)(jest@29.7.0)(typescript@5.3.3)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -502,26 +502,26 @@ importers:
   packages/terraform-modules:
     dependencies:
       '@cdktf/provider-archive':
-        specifier: 9.0.1
-        version: 9.0.1(cdktf@0.20.0-pre.70)(constructs@10.3.0)
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.0-pre.70)(constructs@10.3.0)
       '@cdktf/provider-aws':
-        specifier: 18.2.0
-        version: 18.2.0(cdktf@0.20.0-pre.70)(constructs@10.3.0)
+        specifier: 19.0.0
+        version: 19.0.0(cdktf@0.20.0-pre.70)(constructs@10.3.0)
       '@cdktf/provider-local':
-        specifier: 9.0.1
-        version: 9.0.1(cdktf@0.20.0-pre.70)(constructs@10.3.0)
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.0-pre.70)(constructs@10.3.0)
       '@cdktf/provider-newrelic':
-        specifier: 11.0.5
-        version: 11.0.5(cdktf@0.20.0-pre.70)(constructs@10.3.0)
+        specifier: 12.0.0
+        version: 12.0.0(cdktf@0.20.0-pre.70)(constructs@10.3.0)
       '@cdktf/provider-null':
-        specifier: 9.0.1
-        version: 9.0.1(cdktf@0.20.0-pre.70)(constructs@10.3.0)
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.0-pre.70)(constructs@10.3.0)
       '@cdktf/provider-pagerduty':
-        specifier: 12.2.0
-        version: 12.2.0(cdktf@0.20.0-pre.70)(constructs@10.3.0)
+        specifier: 13.0.0
+        version: 13.0.0(cdktf@0.20.0-pre.70)(constructs@10.3.0)
       '@cdktf/provider-time':
-        specifier: 9.0.2
-        version: 9.0.2(cdktf@0.20.0-pre.70)(constructs@10.3.0)
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.0-pre.70)(constructs@10.3.0)
       cdktf:
         specifier: 0.20.0-pre.70
         version: 0.20.0-pre.70(constructs@10.3.0)
@@ -2897,22 +2897,22 @@ packages:
       prebuild-install: 7.1.1
     dev: false
 
-  /@cdktf/provider-archive@9.0.1(cdktf@0.20.0-pre.70)(constructs@10.3.0):
-    resolution: {integrity: sha512-NEFw9c6PE3VDptYFCoaCY9aVL3841NpT0kBGc4XRsU6wACvqnPxqLL/xUzFYZz4PtBagpGPVQTCIdUdalsEb7g==}
+  /@cdktf/provider-archive@10.0.0(cdktf@0.20.0-pre.70)(constructs@10.3.0):
+    resolution: {integrity: sha512-z6ifOhsXP2bsaQBOKEJ0t93PneW9z3BYcXOHxUtxKm55PY2JPqKFSPww4NllHVVFCMUG2HLsXdaZ/iNpyLCYoQ==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
-      cdktf: ^0.19.0
+      cdktf: ^0.20.0
       constructs: ^10.3.0
     dependencies:
       cdktf: 0.20.0-pre.70(constructs@10.3.0)
       constructs: 10.3.0
     dev: false
 
-  /@cdktf/provider-aws@18.2.0(cdktf@0.20.0-pre.70)(constructs@10.3.0):
-    resolution: {integrity: sha512-Dm+ORqd9ttGH8PqdDe4q72QHoHO0BfgBEMDasagcP4b0lhYV3oiYxJtHsqdOJEKiv6EvHZT3/iftXwU2uOjnlA==}
+  /@cdktf/provider-aws@19.0.0(cdktf@0.20.0-pre.70)(constructs@10.3.0):
+    resolution: {integrity: sha512-6z+rweCWMHgxbGC2a8wpUM4uHzPowbhOPZHQl3pPF7fHnDhJkhoFwSLZyC4XDTjpeX92222ens91DmQHB5+xLg==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
-      cdktf: ^0.19.0
+      cdktf: ^0.20.0
       constructs: ^10.3.0
     dependencies:
       cdktf: 0.20.0-pre.70(constructs@10.3.0)
@@ -2935,46 +2935,44 @@ packages:
       - supports-color
     dev: false
 
-  /@cdktf/provider-local@9.0.1(cdktf@0.20.0-pre.70)(constructs@10.3.0):
-    resolution: {integrity: sha512-8CEbPmTfqXYLOVbTMqPtniWlKe+VyeuTsVEXvdHVUmn/WREs2wsYwrQ2DEeekGwrkgI2CL9n17HFI6CyZdMtiQ==}
+  /@cdktf/provider-local@10.0.0(cdktf@0.20.0-pre.70)(constructs@10.3.0):
+    resolution: {integrity: sha512-FrVQtKiv9YaxZmige/uBH/7tjyxFujTm4wM4QhL2FnUhUQABDgEPE3LSZs6vjgMJErpvAjaY977OVSOLw5Nr+w==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
-      cdktf: ^0.19.0
+      cdktf: ^0.20.0
       constructs: ^10.3.0
     dependencies:
       cdktf: 0.20.0-pre.70(constructs@10.3.0)
       constructs: 10.3.0
     dev: false
 
-  /@cdktf/provider-newrelic@11.0.5(cdktf@0.20.0-pre.70)(constructs@10.3.0):
-    resolution: {integrity: sha512-DXTzR6bjqnA777YhzQ1ZRUKCMPxxVArZAQTWtiaAKOrDwiKqhoj15y+Yn5V5nMZUrgcqub7vCK01hXyKqT2DKA==}
+  /@cdktf/provider-newrelic@12.0.0(cdktf@0.20.0-pre.70)(constructs@10.3.0):
+    resolution: {integrity: sha512-rdXj6K3gaDMPE1pCdy8zR3jmlt8be2of+FsZfju84CUwINYfwzpnGi8bEU0SusFjxlLVURNFOYDdKfuBmoyFqw==}
     engines: {node: '>= 18.12.0'}
-    deprecated: See https://cdk.tf/imports for details on how to continue to use the newrelic provider in your CDK for Terraform (CDKTF) projects by generating the bindings locally.
     peerDependencies:
-      cdktf: ^0.19.0
+      cdktf: ^0.20.0
       constructs: ^10.3.0
     dependencies:
       cdktf: 0.20.0-pre.70(constructs@10.3.0)
       constructs: 10.3.0
     dev: false
 
-  /@cdktf/provider-null@9.0.1(cdktf@0.20.0-pre.70)(constructs@10.3.0):
-    resolution: {integrity: sha512-unmz1i944Y0gIavZTYl54jZBXQh95i21SStCRqRfiFyrsc88aw665HJt1G69uQXK3VtPuwjFSSVsG9UMRmZh6A==}
+  /@cdktf/provider-null@10.0.0(cdktf@0.20.0-pre.70)(constructs@10.3.0):
+    resolution: {integrity: sha512-r/2z3N4Z1ADjh4hu3BOyKRcXr0OE1f/b5kh+IdC2BF2dhHVaXGHw2Cvogd+R73PjgBNBv/pZa+wOY16tlgNpaQ==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
-      cdktf: ^0.19.0
-      constructs: ^10.0.0
+      cdktf: ^0.20.0
+      constructs: ^10.3.0
     dependencies:
       cdktf: 0.20.0-pre.70(constructs@10.3.0)
       constructs: 10.3.0
     dev: false
 
-  /@cdktf/provider-pagerduty@12.2.0(cdktf@0.20.0-pre.70)(constructs@10.3.0):
-    resolution: {integrity: sha512-/jTC4OdtaBRG4fTiA8kMlmYcw/t6VMeaC1CsJjNWZgSoEVfZBwP+RDFpq+mjQ1YCWEcCES93zB9L23ql+XIUPg==}
+  /@cdktf/provider-pagerduty@13.0.0(cdktf@0.20.0-pre.70)(constructs@10.3.0):
+    resolution: {integrity: sha512-rJZSgxKVNt5PpJSOEFw+z0h+WkoHEA6E1t7aP6YrpE0ufPyV/o/33F43Hr19XmRD2fB6F1XJ4YdnmHl2A+quJQ==}
     engines: {node: '>= 18.12.0'}
-    deprecated: See https://cdk.tf/imports for details on how to continue to use the pagerduty provider in your CDK for Terraform (CDKTF) projects by generating the bindings locally.
     peerDependencies:
-      cdktf: ^0.19.0
+      cdktf: ^0.20.0
       constructs: ^10.3.0
     dependencies:
       cdktf: 0.20.0-pre.70(constructs@10.3.0)
@@ -2994,11 +2992,11 @@ packages:
       - supports-color
     dev: false
 
-  /@cdktf/provider-time@9.0.2(cdktf@0.20.0-pre.70)(constructs@10.3.0):
-    resolution: {integrity: sha512-I0BS+/Gs/2fWXqGcmDsUvWqiCXDYcYH0OKvVvUf1RrGc8678uCeyqVqnwdy+UkIwjUGwk3L9pfJKX3dsun8OUQ==}
+  /@cdktf/provider-time@10.0.0(cdktf@0.20.0-pre.70)(constructs@10.3.0):
+    resolution: {integrity: sha512-TaYURjFJFHzR+43IxJDtFvQAyLwr7ub5U13D1lS6S/9n+JeoGjNyBU/I18nbC/hcEuPL5eJ95p8V+NMjeaMpTA==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
-      cdktf: ^0.19.0
+      cdktf: ^0.20.0
       constructs: ^10.3.0
     dependencies:
       cdktf: 0.20.0-pre.70(constructs@10.3.0)
@@ -7129,7 +7127,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.4.0-dev.20240109
+      typescript: 5.4.0-dev.20240110
     dev: false
 
   /eastasianwidth@0.2.0:
@@ -12044,6 +12042,40 @@ packages:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
     dev: false
 
+  /ts-jest@29.1.1(@babel/core@7.23.6)(jest@29.7.0)(typescript@5.3.3):
+    resolution: {integrity: sha512-D6xjnnbP17cC85nliwGiL+tpoKN0StpgE0TeOjXQTU6MVCfsB4v7aW05CgQ/1OywGb0x/oy9hHFnN+sczTiRaA==}
+    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
+    hasBin: true
+    peerDependencies:
+      '@babel/core': '>=7.0.0-beta.0 <8'
+      '@jest/types': ^29.0.0
+      babel-jest: ^29.0.0
+      esbuild: '*'
+      jest: ^29.0.0
+      typescript: '>=4.3 <6'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      '@jest/types':
+        optional: true
+      babel-jest:
+        optional: true
+      esbuild:
+        optional: true
+    dependencies:
+      '@babel/core': 7.23.6
+      bs-logger: 0.2.6
+      fast-json-stable-stringify: 2.1.0
+      jest: 29.7.0(@types/node@20.10.6)
+      jest-util: 29.7.0
+      json5: 2.2.3
+      lodash.memoize: 4.1.2
+      make-error: 1.3.6
+      semver: 7.5.4
+      typescript: 5.3.3
+      yargs-parser: 21.1.1
+    dev: true
+
   /ts-jest@29.1.1(@babel/core@7.23.7)(jest@29.7.0)(typescript@5.3.3):
     resolution: {integrity: sha512-D6xjnnbP17cC85nliwGiL+tpoKN0StpgE0TeOjXQTU6MVCfsB4v7aW05CgQ/1OywGb0x/oy9hHFnN+sczTiRaA==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -12407,8 +12439,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.4.0-dev.20240109:
-    resolution: {integrity: sha512-pKDkvh+RizbUm4BEmfvmG74qycZsHw4oFB6jY9D+oKoxPzoZr/edCTks/t50kvU2RdiDn0UKSzZB4YVzrC9WTQ==}
+  /typescript@5.4.0-dev.20240110:
+    resolution: {integrity: sha512-OEtXRprxdta9A5qLObqsgCrFjAWxGuTj8T4W+GBWqDhxIT//BevP5MROHX8Zi18RlvTZSu5G76xJaQT1CK1YpQ==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: false
