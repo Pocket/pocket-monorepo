@@ -155,8 +155,8 @@ importers:
         specifier: 3.485.0
         version: 3.485.0
       '@sentry/serverless':
-        specifier: 7.92.0
-        version: 7.92.0
+        specifier: 7.93.0
+        version: 7.93.0
       node-fetch:
         specifier: 2.7.0
         version: 2.7.0
@@ -195,8 +195,8 @@ importers:
         specifier: 3.485.0
         version: 3.485.0
       '@sentry/serverless':
-        specifier: 7.92.0
-        version: 7.92.0
+        specifier: 7.93.0
+        version: 7.93.0
       jsonwebtoken:
         specifier: ^9.0.0
         version: 9.0.2
@@ -253,8 +253,8 @@ importers:
         specifier: 3.485.0
         version: 3.485.0
       '@sentry/serverless':
-        specifier: 7.92.0
-        version: 7.92.0
+        specifier: 7.93.0
+        version: 7.93.0
       jsonwebtoken:
         specifier: ^9.0.0
         version: 9.0.2
@@ -302,8 +302,8 @@ importers:
         specifier: ^3.112.0
         version: 3.485.0
       '@sentry/serverless':
-        specifier: 7.92.0
-        version: 7.92.0
+        specifier: 7.93.0
+        version: 7.93.0
       fetch-retry:
         specifier: ^5.0.2
         version: 5.0.6
@@ -414,8 +414,8 @@ importers:
         specifier: workspace:*
         version: link:../ts-logger
       '@sentry/node':
-        specifier: 7.92.0
-        version: 7.92.0
+        specifier: 7.93.0
+        version: 7.93.0
       apollo-server-cache-redis:
         specifier: 3.3.1
         version: 3.3.1
@@ -628,11 +628,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.92.0
-        version: 7.92.0
+        specifier: 7.93.0
+        version: 7.93.0
       '@sentry/tracing':
-        specifier: 7.92.0
-        version: 7.92.0
+        specifier: 7.93.0
+        version: 7.93.0
       cors:
         specifier: 2.8.5
         version: 2.8.5
@@ -662,8 +662,8 @@ importers:
         version: 3.3.7
     devDependencies:
       '@sentry/types':
-        specifier: 7.92.0
-        version: 7.92.0
+        specifier: 7.93.0
+        version: 7.93.0
       '@types/chance':
         specifier: 1.1.6
         version: 1.1.6
@@ -704,8 +704,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/apollo-utils
       '@sentry/node':
-        specifier: 7.92.0
-        version: 7.92.0
+        specifier: 7.93.0
+        version: 7.93.0
       '@techpass/passport-openidconnect':
         specifier: 0.3.3
         version: 0.3.3
@@ -792,11 +792,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.92.0
-        version: 7.92.0
+        specifier: 7.93.0
+        version: 7.93.0
       '@sentry/tracing':
-        specifier: 7.92.0
-        version: 7.92.0
+        specifier: 7.93.0
+        version: 7.93.0
       aws-xray-sdk-express:
         specifier: 3.5.3
         version: 3.5.3(aws-xray-sdk-core@3.5.3)
@@ -862,11 +862,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.92.0
-        version: 7.92.0
+        specifier: 7.93.0
+        version: 7.93.0
       '@sentry/tracing':
-        specifier: 7.92.0
-        version: 7.92.0
+        specifier: 7.93.0
+        version: 7.93.0
       '@snowplow/node-tracker':
         specifier: 3.19.0
         version: 3.19.0
@@ -977,11 +977,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.92.0
-        version: 7.92.0
+        specifier: 7.93.0
+        version: 7.93.0
       '@sentry/tracing':
-        specifier: 7.92.0
-        version: 7.92.0
+        specifier: 7.93.0
+        version: 7.93.0
       apollo-datasource:
         specifier: 3.3.2
         version: 3.3.2
@@ -1071,11 +1071,11 @@ importers:
         specifier: 3.485.0
         version: 3.485.0
       '@sentry/node':
-        specifier: 7.92.0
-        version: 7.92.0
+        specifier: 7.93.0
+        version: 7.93.0
       '@sentry/tracing':
-        specifier: 7.92.0
-        version: 7.92.0
+        specifier: 7.93.0
+        version: 7.93.0
       '@snowplow/node-tracker':
         specifier: 3.19.0
         version: 3.19.0
@@ -1132,11 +1132,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.92.0
-        version: 7.92.0
+        specifier: 7.93.0
+        version: 7.93.0
       '@sentry/tracing':
-        specifier: 7.92.0
-        version: 7.92.0
+        specifier: 7.93.0
+        version: 7.93.0
       dataloader:
         specifier: 2.2.2
         version: 2.2.2
@@ -1163,8 +1163,8 @@ importers:
         specifier: 8.3.1
         version: 8.3.1
       '@sentry/types':
-        specifier: 7.92.0
-        version: 7.92.0
+        specifier: 7.93.0
+        version: 7.93.0
       '@types/jest':
         specifier: 29.5.11
         version: 29.5.11
@@ -4504,6 +4504,15 @@ packages:
       '@sentry/utils': 7.92.0
     dev: false
 
+  /@sentry-internal/tracing@7.93.0:
+    resolution: {integrity: sha512-DjuhmQNywPp+8fxC9dvhGrqgsUb6wI/HQp25lS2Re7VxL1swCasvpkg8EOYP4iBniVQ86QK0uITkOIRc5tdY1w==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@sentry/core': 7.93.0
+      '@sentry/types': 7.93.0
+      '@sentry/utils': 7.93.0
+    dev: false
+
   /@sentry/core@7.64.0:
     resolution: {integrity: sha512-IzmEyl5sNG7NyEFiyFHEHC+sizsZp9MEw1+RJRLX6U5RITvcsEgcajSkHQFafaBPzRrcxZMdm47Cwhl212LXcw==}
     engines: {node: '>=8'}
@@ -4527,6 +4536,14 @@ packages:
     dependencies:
       '@sentry/types': 7.92.0
       '@sentry/utils': 7.92.0
+    dev: false
+
+  /@sentry/core@7.93.0:
+    resolution: {integrity: sha512-vZQSUiDn73n+yu2fEcH+Wpm4GbRmtxmnXnYCPgM6IjnXqkVm3awWAkzrheADblx3kmxrRiOlTXYHw9NTWs56fg==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@sentry/types': 7.93.0
+      '@sentry/utils': 7.93.0
     dev: false
 
   /@sentry/node@7.64.0:
@@ -4571,25 +4588,38 @@ packages:
       - supports-color
     dev: false
 
-  /@sentry/serverless@7.92.0:
-    resolution: {integrity: sha512-Up70PgH2OBqq4XdBEsnkEVpVfbR3N0sr0x/PhqDLtka/URgqFJmyb9CKc8f4jfVq7kI69jvNOJsjajswd/esbw==}
-    engines: {node: '>=10'}
+  /@sentry/node@7.93.0:
+    resolution: {integrity: sha512-nUXPCZQm5Y9Ipv7iWXLNp5dbuyi1VvbJ3RtlwD7utgsNkRYB4ixtKE9w2QU8DZZAjaEF6w2X94OkYH6C932FWw==}
+    engines: {node: '>=8'}
     dependencies:
-      '@sentry/core': 7.92.0
-      '@sentry/node': 7.92.0
-      '@sentry/types': 7.92.0
-      '@sentry/utils': 7.92.0
-      '@types/aws-lambda': 8.10.130
-      '@types/express': 4.17.21
+      '@sentry-internal/tracing': 7.93.0
+      '@sentry/core': 7.93.0
+      '@sentry/types': 7.93.0
+      '@sentry/utils': 7.93.0
+      https-proxy-agent: 5.0.1
     transitivePeerDependencies:
       - supports-color
     dev: false
 
-  /@sentry/tracing@7.92.0:
-    resolution: {integrity: sha512-1+TFFPVEdax4dNi68gin6MENiyGe9mOuNXfjulrP5eCzUEByus5HAxeDI/LLQ1hArfn048AzwSwKUsS2fO5sbg==}
+  /@sentry/serverless@7.93.0:
+    resolution: {integrity: sha512-YZNiH8X0kddvFfIwi7R3Oh4/X/rf87qb+f1kcqGsZ2IemRyBFSdFQekNIV00uS/VgxK94+TJfrvEVKsKp8sAAQ==}
+    engines: {node: '>=10'}
+    dependencies:
+      '@sentry/core': 7.93.0
+      '@sentry/node': 7.93.0
+      '@sentry/types': 7.93.0
+      '@sentry/utils': 7.93.0
+      '@types/aws-lambda': 8.10.130
+      '@types/express': 4.17.16
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /@sentry/tracing@7.93.0:
+    resolution: {integrity: sha512-n4XbAQ7e098Jzv4ZvpXAsFgM+XFfjhKci18r7s3UfDMnrB4FTCwhHZoeiygO8PZhB944mEFbNXNFhHkb8nTDbA==}
     engines: {node: '>=8'}
     dependencies:
-      '@sentry-internal/tracing': 7.92.0
+      '@sentry-internal/tracing': 7.93.0
     dev: false
 
   /@sentry/types@7.64.0:
@@ -4604,6 +4634,11 @@ packages:
 
   /@sentry/types@7.92.0:
     resolution: {integrity: sha512-APmSOuZuoRGpbPpPeYIbMSplPjiWNLZRQa73QiXuTflW4Tu/ItDlU8hOa2+A6JKVkJCuD2EN6yUrxDGSMyNXeg==}
+    engines: {node: '>=8'}
+    dev: false
+
+  /@sentry/types@7.93.0:
+    resolution: {integrity: sha512-UnzUccNakhFRA/esWBWP+0v7cjNg+RilFBQC03Mv9OEMaZaS29zSbcOGtRzuFOXXLBdbr44BWADqpz3VW0XaNw==}
     engines: {node: '>=8'}
 
   /@sentry/utils@7.64.0:
@@ -4626,6 +4661,13 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       '@sentry/types': 7.92.0
+    dev: false
+
+  /@sentry/utils@7.93.0:
+    resolution: {integrity: sha512-Iovj7tUnbgSkh/WrAaMrd5UuYjW7AzyzZlFDIUrwidsyIdUficjCG2OIxYzh76H6nYIx9SxewW0R54Q6XoB4uA==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@sentry/types': 7.93.0
     dev: false
 
   /@sideway/address@4.1.4:
@@ -5240,7 +5282,7 @@ packages:
     resolution: {integrity: sha512-hmUCjAk2fwZVPPkkPBcI7jGLIR5mg4OVoNMBwU6aVsMm/iNPY7z9/R+x2fSwLt/ZXoGua6C5Zy2k5xOo9jUyhQ==}
     dependencies:
       '@types/connect': 3.4.38
-      '@types/express': 4.17.21
+      '@types/express': 4.17.16
       '@types/keygrip': 1.0.6
       '@types/node': 20.10.8
     dev: true
@@ -5249,7 +5291,7 @@ packages:
     resolution: {integrity: sha512-OaJ7XLaelTgrvlZD8/aa0vvvxZdUmlCn6MtWeB7TkiKW70BQLc9XEPpDLPdbo52ZhXUCrznlWdCHWxJWtdyajA==}
     dependencies:
       '@types/node': 20.10.8
-      '@types/qs': 6.9.10
+      '@types/qs': 6.9.11
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
 
@@ -5266,7 +5308,6 @@ packages:
       '@types/express-serve-static-core': 4.17.41
       '@types/qs': 6.9.11
       '@types/serve-static': 1.15.5
-    dev: true
 
   /@types/express@4.17.21:
     resolution: {integrity: sha512-ejlPM315qwLpaQlQDTjPdsUFSc6ZsP4AN6AlWnogPjQ7CVi7PYF3YVz+CY3jE2pwYf7E/7HlDAN0rV2GxTG0HQ==}
@@ -5497,7 +5538,6 @@ packages:
 
   /@types/qs@6.9.11:
     resolution: {integrity: sha512-oGk0gmhnEJK4Yyk+oI7EfXsLayXatCWPHary1MtcmbAifkobT9cM9yutG/hZKIseOU0MqbIwQ/u2nn/Gb+ltuQ==}
-    dev: true
 
   /@types/range-parser@1.2.7:
     resolution: {integrity: sha512-hKormJbkJqzQGhziax5PItDUTMAM9uE2XXQmM37dyd4hVM+5aVl7oVxMVUiVQn2oCQFN/LKCZdvSM0pFRqbSmQ==}
