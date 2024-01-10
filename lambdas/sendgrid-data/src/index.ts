@@ -1,6 +1,7 @@
 import config from './config';
 import { deliverEvents, logEventsError, logEventsReceived } from './sendgrid';
 import * as Sentry from '@sentry/serverless';
+import { captureException } from './sentry';
 
 Sentry.AWSLambda.init({
   dsn: config.sentry.dsn,
@@ -30,8 +31,9 @@ const eventHandler = async (event: any, context: any): Promise<boolean> => {
     logEventsReceived(event.events);
     return await deliverEvents(event.events, event.queryParams);
   } catch (err) {
+    captureException(err);
     // unless we have a requirement to return a specific error response, just throw the exception after logging
-    logEventsError(event.events);
+    logEventsError(event);
     throw err;
   }
 };
