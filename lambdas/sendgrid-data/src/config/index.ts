@@ -1,5 +1,8 @@
 // TODO: verify defaults below
+const environment = process.env.ENVIRONMENT || 'development';
+
 export default {
+  environment,
   aws: {
     region: process.env.AWS_REGION || 'us-east-1',
     maxRetries: 12,

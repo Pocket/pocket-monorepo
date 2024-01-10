@@ -6,6 +6,7 @@ import { captureException } from './sentry';
 Sentry.AWSLambda.init({
   dsn: config.sentry.dsn,
   release: config.sentry.release,
+  environment: config.environment,
 });
 
 /**

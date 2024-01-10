@@ -4,7 +4,7 @@ const environment = isDev ? 'Dev' : 'Prod';
 const domainPrefix = 'sendgrid-data';
 const domain = `${domainPrefix}.${isDev ? 'getpocket.dev' : 'getpocket.com'}`;
 const firehoseStream = isDev
-  ? 'dev-sendgrid-events-to-braveheart'
+  ? 'sendgrid-events'
   : `prod-sendgrid-events-to-braveheart`;
 
 export const config = {
