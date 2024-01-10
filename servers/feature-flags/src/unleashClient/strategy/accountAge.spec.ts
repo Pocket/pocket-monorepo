@@ -81,7 +81,7 @@ describe('Strategy: newUser', () => {
 
   it('should not assign users with new accounts', async () => {
     const strategy = await new AccountAgeStrategy();
-    const properties = { accountCreatedAt: daysSinceTodayInCentralTime(29) };
+    const properties = { accountCreatedAt: daysSinceTodayInCentralTime(25) };
     const context = { ...defaultContext, properties };
     const activation = strategy.isEnabled(params, context);
     expect(activation).toBeFalsy();
