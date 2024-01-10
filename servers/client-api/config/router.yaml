@@ -6,7 +6,7 @@ supergraph:
   query_planning:
     cache:
       redis:
-        urls: ['redis://${env.REDIS_ENDPOINT}']
+        urls: ['redis-cluster://${env.REDIS_ENDPOINT}']
         ttl: 48h # optional, by default no expiration
 include_subgraph_errors:
   all: true # Propagate errors from all subgraphs
@@ -67,7 +67,7 @@ telemetry:
         endpoint: 'http://${env.OTLP_COLLECTOR_HOST}:4317'
       common:
         resource:
-          'environment.name': '{env.APP_ENVIRONMENT}'
+          'environment.name': '${env.APP_ENVIRONMENT}'
         service_name: 'client-api'
         sampler: always_on # (default) all requests are sampled (always_on|always_off|<0.0-1.0>)
         parent_based_sampler: false
@@ -78,8 +78,7 @@ telemetry:
         header_name: 'pocket-trace-id'
 apq:
   router:
-    redis:
-      urls:
+    cache:
       redis:
-        urls: ['redis://${env.REDIS_ENDPOINT}']
+        urls: ['redis-cluster://${env.REDIS_ENDPOINT}']
         ttl: 24h # optional, by default no expiration
