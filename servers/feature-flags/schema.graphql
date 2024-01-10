@@ -1,0 +1,134 @@
+extend type Query {
+  """
+  Returns a list of unleash toggles that are enabled for a given context.
+
+  For more details on this check out https://docs.google.com/document/d/1dYS81h-DbQEWNLtK-ajLTylw454S32llPXUyBmDd5mU/edit# and https://getpocket.atlassian.net/wiki/spaces/PE/pages/1191444582/Feature+Flags+-+Unleash
+
+  ~ For each of the enabled unleash toggles (via https://featureflags.readitlater.com/api/client/features or an unleash sdk)
+  ~ Check if the toggle is assigned/enabled for the provided {.context}
+  ~ Add an {UnleashAssignment} representing it to this list
+  ~ If no toggles are found, return an empty list
+  """
+  getUnleashAssignments(context: UnleashContext!): UnleashAssignmentList
+    @deprecated(reason: "use unleashAssignments instead")
+
+  """
+  Returns a list of unleash toggles that are enabled for a given context.
+
+  For more details on this check out https://docs.google.com/document/d/1dYS81h-DbQEWNLtK-ajLTylw454S32llPXUyBmDd5mU/edit# and https://getpocket.atlassian.net/wiki/spaces/PE/pages/1191444582/Feature+Flags+-+Unleash
+
+  ~ For each of the enabled unleash toggles (via https://featureflags.readitlater.com/api/client/features or an unleash sdk)
+  ~ Check if the toggle is assigned/enabled for the provided {.context}
+  ~ Add an {UnleashAssignment} representing it to this list
+  ~ If no toggles are found, return an empty list
+  """
+  unleashAssignments(context: UnleashContext!): UnleashAssignmentList
+}
+
+"""
+Information about the user and device. Based on https://unleash.github.io/docs/unleash_context
+
+Used to calculate assignment values.
+"""
+input UnleashContext {
+  """
+  A unique name for one of our apps. Can be any string, but here are some known/expected values:
+
+  - `android`
+  - `ios`
+  - `web-discover`
+  - `web-app`
+  """
+  appName: String
+
+  """
+  The environment the device is running in:
+  - `prod`
+  - `beta`
+  - `alpha`
+  """
+  environment: UnleashEnvironment
+  """
+  If logged in, the user's encoded user id (uid). The {Account.user_id}.
+  """
+  userId: String
+  """
+  A device specific identifier that will be consistent across sessions, typically the encoded {guid} or some session token.
+  """
+  sessionId: String
+  """
+  The device's IP address. If omitted, inferred from either request header `x-forwarded-for` or the origin IP of the request.
+  """
+  remoteAddress: String
+  properties: UnleashProperties
+}
+
+"""
+Extended properties that Unleash can use to assign users through a toggle's strategies.
+"""
+input UnleashProperties {
+  """
+  If omitted, inferred from request header `accept-langauge`.
+  """
+  locale: String
+  """
+  Only required on activation strategies that are based on account age
+  """
+  accountCreatedAt: String
+  """
+  Only required on activation strategies that are based whether a user model exists
+  """
+  recItUserProfile: RecItUserProfile
+}
+
+input RecItUserProfile {
+  userModels: [String!]!
+}
+
+"""
+Details on the variant/status of this toggle for a given user/context
+"""
+type UnleashAssignment {
+  """
+  The unleash toggle name, the same name as it appears in the admin interface and feature api
+  """
+  name: String!
+  """
+  Whether or not the provided context is assigned
+  """
+  assigned: Boolean!
+  """
+  If the toggle has variants, the variant name it is assigned to
+  """
+  variant: String
+  """
+  If the variant has a payload, its payload value
+  """
+  payload: String
+}
+
+"""
+Contains a list of all toggles.
+"""
+type UnleashAssignmentList {
+  assignments: [UnleashAssignment]!
+}
+
+enum UnleashEnvironment {
+  """
+  User facing, production builds
+  """
+  prod
+  """
+  User facing, beta level builds
+  """
+  beta
+  """
+  Internal team builds
+  """
+  alpha
+}
+
+schema {
+  query: Query
+}

@@ -23,6 +23,7 @@ repo_for_enum: &repo_for_enum
       - user_api
       - list_api
       - client_api
+      - feature_flags
 
 resource_class_enmum: &resource_class_enmum
   resource-class:
@@ -61,6 +62,9 @@ parameters:
   list_api:
     type: boolean
     default: false
+  feature_flags:
+    type: boolean
+    default: false
 
 commands:
   # Refrenced from https://github.com/kelvintaywl-cci/dynamic-config-showcase/blob/main/.circleci/next.yml
@@ -91,6 +95,7 @@ commands:
             user_api: << pipeline.parameters.user_api >>
             list_api: << pipeline.parameters.list_api >>
             client_api: << pipeline.parameters.client_api >>
+            feature_flags: << pipeline.parameters.feature_flags >>
 
   install_pnpm:  
     steps:
