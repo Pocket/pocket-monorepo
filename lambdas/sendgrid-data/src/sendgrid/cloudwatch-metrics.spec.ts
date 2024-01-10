@@ -79,7 +79,7 @@ describe('cloudwatch metrics', () => {
   });
 
   describe('put metric data', () => {
-     let spy: jest.SpyInstance;
+    let spy: jest.SpyInstance;
 
     const EVENTS: Event[] = [
       {
@@ -103,8 +103,10 @@ describe('cloudwatch metrics', () => {
     }
 
     beforeEach(() => {
-      spy = jest.spyOn(CloudWatchClient.prototype, 'send')
-      spy.mockResolvedValueOnce(() => { Promise.resolve() })
+      spy = jest.spyOn(CloudWatchClient.prototype, 'send');
+      spy.mockResolvedValueOnce(() => {
+        Promise.resolve();
+      });
     });
 
     afterEach(() => {
@@ -120,7 +122,7 @@ describe('cloudwatch metrics', () => {
       await deliver(EVENTS);
       const payload = spy.mock.calls[0];
       expect(payload[0].input.MetricData.length).toEqual(
-        EVENTS.length * metricsPerEvent
+        EVENTS.length * metricsPerEvent,
       );
     });
 

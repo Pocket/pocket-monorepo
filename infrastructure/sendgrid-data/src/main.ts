@@ -73,5 +73,5 @@ class SendgridData extends TerraformStack {
 }
 
 const app = new App();
-new SendgridData(app, 'fxa-webhook-proxy');
+new SendgridData(app, 'sendgrid-data');
 app.synth();

@@ -8,7 +8,7 @@ export const logEventsReceived = (events: any) => {
   }
 
   console.log(
-    `sendgridData: received ${_ev.length} events; 0.id = ${_ev[0].sg_event_id}`
+    `sendgridData: received ${_ev.length} events; 0.id = ${_ev[0].sg_event_id}`,
   );
 };
 
@@ -23,7 +23,7 @@ export const logEventsError = (events: any) => {
 
 export const deliverEvents = async (
   events: any,
-  queryParams: { [key: string]: any }
+  queryParams: { [key: string]: any },
 ): Promise<boolean> => {
   const firehosePromise = deliverFirehose(events, queryParams);
   const metricsPromise = deliverMetrics(events, queryParams);

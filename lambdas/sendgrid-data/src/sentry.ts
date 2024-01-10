@@ -1,7 +1,5 @@
 import * as Sentry from '@sentry/serverless';
 
-
-
 interface Map {
   [key: string]: Map | any;
 }
@@ -9,7 +7,7 @@ interface Map {
 const SCRUB_KEYS: Map = {
   '*': (val: any): any => val,
   email: (email: string): string => {
-    let [local, domain] = (email || '').split('@', 2);
+    const [local, domain] = (email || '').split('@', 2);
     return local.substr(0, 2) + '***********@' + domain;
   },
 };
@@ -17,18 +15,18 @@ const SCRUB_KEYS: Map = {
 export const scrubData = (data: Map): Map => {
   const scrubbed: Map = {};
 
-  for (let key in data) {
+  for (const key in data) {
     let val: any = data[key];
 
     if (typeof val === 'object') {
       scrubbed[key] = scrubData(val);
     } else {
       const scrubber = SCRUB_KEYS[key] || SCRUB_KEYS['*'];
-        if (val instanceof Date) {
-          val = (<Date>val).toISOString();
-        }
+      if (val instanceof Date) {
+        val = (<Date>val).toISOString();
+      }
 
-        scrubbed[key] = scrubber(val);
+      scrubbed[key] = scrubber(val);
     }
   }
 

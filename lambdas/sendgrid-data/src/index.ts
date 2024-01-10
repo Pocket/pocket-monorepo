@@ -7,7 +7,6 @@ Sentry.AWSLambda.init({
   release: config.sentry.release,
 });
 
-
 /**
  * Note: if a handler method returns null, you need to assign a sentinel value otherwise TS doesn't like it.
  *
@@ -36,6 +35,5 @@ const eventHandler = async (event: any, context: any): Promise<boolean> => {
     throw err;
   }
 };
-
 
 export const handler = Sentry.AWSLambda.wrapHandler(eventHandler);

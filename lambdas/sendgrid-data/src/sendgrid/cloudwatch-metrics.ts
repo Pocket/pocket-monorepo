@@ -1,4 +1,9 @@
-import {MetricDatum, Dimension, CloudWatchClient, PutMetricDataCommand, PutMetricDataCommandOutput } from '@aws-sdk/client-cloudwatch';
+import {
+  MetricDatum,
+  Dimension,
+  CloudWatchClient,
+  PutMetricDataCommand,
+} from '@aws-sdk/client-cloudwatch';
 import config from '../config';
 import { Event } from './event';
 import { chunkArray } from './util';
@@ -38,7 +43,7 @@ const MISSING_DIMENSION_VALUE = 'none';
 export const getMetricWithDimensions = (
   event: Event,
   baseMetric: MetricDatum,
-  dimensionMap: DimensionMapping
+  dimensionMap: DimensionMapping,
 ): MetricDatum => {
   const dims: Dimension[] = [];
   for (const eventKey in dimensionMap) {
@@ -66,7 +71,7 @@ export const mapEventToMetricName = (event: Event): string => {
  */
 export const eventToMetrics = (
   event: Event,
-  dimensions?: DimensionMapping[]
+  dimensions?: DimensionMapping[],
 ): MetricDatum[] => {
   const dims = dimensions ?? [];
   const metrics: MetricDatum[] = [];
@@ -92,7 +97,7 @@ export const eventToMetrics = (
  */
 const putMetrics = (
   cloudwatch: CloudWatchClient,
-  metrics: MetricDatum[]
+  metrics: MetricDatum[],
 ): Promise<any> => {
   // timestamp each breadcrumb so that we can properly tie it back to a specific error
   const reqTimestamp = new Date().getTime();
@@ -102,10 +107,13 @@ const putMetrics = (
     data: { metrics },
   });
 
-  return cloudwatch.send(new PutMetricDataCommand({
-    Namespace: config.aws.cloudwatch.metricNamespace,
-    MetricData: metrics,
-  }))
+  return cloudwatch
+    .send(
+      new PutMetricDataCommand({
+        Namespace: config.aws.cloudwatch.metricNamespace,
+        MetricData: metrics,
+      }),
+    )
     .catch((err: any) => {
       captureException(err, {
         type: `cloudwatch-metrics:deliver/request/${reqTimestamp}/error`,
@@ -146,7 +154,7 @@ const aggregateEvents = (aggregatedEvents: any, event: any): Array<any> => {
  */
 const createRequests = (
   cloudwatch: CloudWatchClient,
-  aggregatedEvents: any
+  aggregatedEvents: any,
 ): Array<Promise<any>> => {
   const dimensionMappings: DimensionMapping[] =
     config.aws.cloudwatch.metricDimensions;
@@ -160,7 +168,7 @@ const createRequests = (
     Object.keys(aggregatedEvent).forEach((eventName: any) => {
       const event = aggregatedEvent[eventName];
       eventToMetrics(event, dimensionMappings).forEach((metric: MetricDatum) =>
-        metrics.push(metric)
+        metrics.push(metric),
       );
     });
   });
@@ -170,9 +178,9 @@ const createRequests = (
     start < metrics.length;
     start += cloudwatchMetricsPerRequest
   ) {
-    let chunkedMetrics = metrics.slice(
+    const chunkedMetrics = metrics.slice(
       start,
-      start + cloudwatchMetricsPerRequest
+      start + cloudwatchMetricsPerRequest,
     );
     promises.push(putMetrics(cloudwatch, chunkedMetrics));
   }
@@ -189,10 +197,12 @@ const createRequests = (
  */
 export const deliver = async (
   events: Event[],
-  parameters?: { [key: string]: any }
+  parameters?: { [key: string]: any },
 ): Promise<boolean> => {
   const params = parameters ?? {};
-  const cloudwatch = new CloudWatchClient({maxAttempts: config.aws.maxRetries});
+  const cloudwatch = new CloudWatchClient({
+    maxAttempts: config.aws.maxRetries,
+  });
   const eventChunks = chunkArray(events, 500);
   let eventChunk = eventChunks.next();
   let aggregatedEvents: any = {};

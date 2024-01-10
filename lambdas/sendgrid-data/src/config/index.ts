@@ -4,8 +4,7 @@ export default {
     region: process.env.AWS_REGION || 'us-east-1',
     maxRetries: 12,
     firehose: {
-      deliveryStreamName:
-        process.env.AWS_FIREHOSE_DELIVERY_STREAM_NAME || '',
+      deliveryStreamName: process.env.AWS_FIREHOSE_DELIVERY_STREAM_NAME || '',
     },
     cloudwatch: {
       metricNamespace: process.env.AWS_CLOUDWATCH_METRIC_NAMESPACE || '',

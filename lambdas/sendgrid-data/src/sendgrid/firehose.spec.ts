@@ -1,4 +1,4 @@
-import { FirehoseClient, PutRecordBatchCommand } from '@aws-sdk/client-firehose';
+import { FirehoseClient } from '@aws-sdk/client-firehose';
 import config from '../config';
 import { deliver, createRecords, encodeRecord } from './firehose';
 
@@ -12,13 +12,15 @@ describe('firehose', () => {
       { id: '5', body: 'testing...' },
     ];
 
-    const parameters = {accountId: 'test-account'};
+    const parameters = { accountId: 'test-account' };
 
     let spy: jest.SpyInstance;
 
     beforeEach(() => {
-      spy = jest.spyOn(FirehoseClient.prototype, 'send')
-      spy.mockResolvedValueOnce(() => { Promise.resolve() })
+      spy = jest.spyOn(FirehoseClient.prototype, 'send');
+      spy.mockResolvedValueOnce(() => {
+        Promise.resolve();
+      });
     });
 
     afterEach(() => {
@@ -33,8 +35,10 @@ describe('firehose', () => {
     it('should call putRecordBatch with the correct arguments', async () => {
       await deliver(events, 5);
 
-      expect(spy.mock.calls[0][0].input.DeliveryStreamName).toEqual(config.aws.firehose.deliveryStreamName)
-      expect(spy.mock.calls[0][0].input.Records.length).toEqual(5)
+      expect(spy.mock.calls[0][0].input.DeliveryStreamName).toEqual(
+        config.aws.firehose.deliveryStreamName,
+      );
+      expect(spy.mock.calls[0][0].input.Records.length).toEqual(5);
     });
   });
 
@@ -50,7 +54,9 @@ describe('firehose', () => {
       };
 
       const result = encodeRecord(event);
-      expect(result.Data).toEqual(new TextEncoder().encode(JSON.stringify(event) + '\n'));
+      expect(result.Data).toEqual(
+        new TextEncoder().encode(JSON.stringify(event) + '\n'),
+      );
     });
   });
 
@@ -61,7 +67,11 @@ describe('firehose', () => {
 
       const result = createRecords(events, accountId);
       expect(result.length).toEqual(3);
-      expect(result[0].Data).toEqual(new TextEncoder().encode((JSON.stringify({id: 1234, accountId}) + '\n') ));
+      expect(result[0].Data).toEqual(
+        new TextEncoder().encode(
+          JSON.stringify({ id: 1234, accountId }) + '\n',
+        ),
+      );
     });
   });
 });
