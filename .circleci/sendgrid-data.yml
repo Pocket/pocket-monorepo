@@ -61,7 +61,7 @@ workflows:
           sentry_project_name: sendgrid-data
           sentry_env: development
           sentry_org: pocket
-          s3-bucket: pocket-sendgriddata-dev
+          s3-bucket: pocket-sendgriddata-dev-apigateway
           requires:
             - sendgrid-data_infrastructure_apply_dev
 
@@ -74,7 +74,7 @@ workflows:
           codedeploy-app-name: SendGridData-Dev-ApiGateway-Lambda
           codedeploy-group-name: SendGridData-Dev-ApiGateway-Lambda
           function-name: SendGridData-Dev-ApiGateway-Lambda-Function
-          s3-bucket: pocket-sendgriddata-de
+          s3-bucket: pocket-sendgriddata-dev-apigateway
           requires:
             - sendgrid-data_build_lambda_dev
 
@@ -99,7 +99,7 @@ workflows:
           aws_secret_access_key: Dev_AWS_SECRET_ACCESS_KEY
           context: pocket
           env: Dev
-          service_name: FxAWebhookProxy
+          service_name: SendGridData
           requires:
             - sendgrid-data_code_deploy_lambda_dev
 
@@ -130,7 +130,7 @@ workflows:
           sentry_project_name: sendgrid-data
           sentry_env: prodelopment
           sentry_org: pocket
-          s3-bucket: pocket-sendgriddata-prod
+          s3-bucket: pocket-sendgriddata-prod-apigateway
           requires:
             - sendgrid-data_infrastructure_apply_prod
 
@@ -143,7 +143,7 @@ workflows:
           codedeploy-app-name: SendGridData-Prod-ApiGateway-Lambda
           codedeploy-group-name: SendGridData-Prod-ApiGateway-Lambda
           function-name: SendGridData-Prod-ApiGateway-Lambda-Function
-          s3-bucket: pocket-sendgriddata-de
+          s3-bucket: pocket-sendgriddata-prod-apigateway
           requires:
             - sendgrid-data_build_lambda_prod
 
@@ -168,6 +168,6 @@ workflows:
           aws_secret_access_key: Prod_AWS_SECRET_ACCESS_KEY
           context: pocket
           env: Prod
-          service_name: FxAWebhookProxy
+          service_name: SendGridData
           requires:
             - sendgrid-data_code_deploy_lambda_prod
