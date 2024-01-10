@@ -225,7 +225,7 @@ jobs:
                 command: |
                   . /home/circleci/.codebuild_shims_wrapper.sh
                   cd << parameters.stack-output-path >>
-                  /home/circleci/tfcmt --var target:<< parameters.scope >><<#parameters.dev>>-dev<</parameters.dev>> apply -- terraform apply -auto-approve
+                  /home/circleci/tfcmt --var target:<< parameters.scope >><<#parameters.dev>>-dev<</parameters.dev>> apply -- terraform apply -auto-approve -lock-timeout=10m
             - when:
                 condition: <<parameters.save_app_spec>>
                 steps:
@@ -247,7 +247,7 @@ jobs:
                 command: |
                   . /home/circleci/.codebuild_shims_wrapper.sh
                   cd << parameters.stack-output-path >>
-                  /home/circleci/tfcmt --var target:<< parameters.scope >><<#parameters.dev>>-dev<</parameters.dev>> plan --skip-no-changes --patch -- terraform plan
+                  /home/circleci/tfcmt --var target:<< parameters.scope >><<#parameters.dev>>-dev<</parameters.dev>> plan --skip-no-changes --patch -- terraform plan -lock-timeout=10m
       - save_cache:
           key: tfenv-v2
           paths:
