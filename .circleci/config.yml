@@ -17,7 +17,7 @@ jobs:
           name: Generate List of Configs to Merge
           command: |
             # Generate a list of all the circleci configs we want to run
-            file_list=(".circleci/common.yml" ".circleci/repo-jobs.yml" ".circleci/image-api.yml" ".circleci/annotations-api.yml" ".circleci/shared-snowplow-consumer.yml" ".circleci/parser-graphql-wrapper.yml" ".circleci/transactional-emails.yml" ".circleci/fxa-webhook-proxy.yml" ".circleci/user-api.yml" ".circleci/client-api.yml" ".circleci/list-api.yml")       
+            file_list=(".circleci/common.yml" ".circleci/repo-jobs.yml" ".circleci/image-api.yml" ".circleci/annotations-api.yml" ".circleci/shared-snowplow-consumer.yml" ".circleci/parser-graphql-wrapper.yml" ".circleci/transactional-emails.yml" ".circleci/fxa-webhook-proxy.yml" ".circleci/user-api.yml" ".circleci/client-api.yml" ".circleci/list-api.yml" ".circleci/sendgrid-data.yml")       
             touch /tmp/configs.txt
 
             # Add file header to each file and dump it to the config list
@@ -56,6 +56,7 @@ jobs:
             ((servers|infrastructure)/user-api/.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) user_api true
             ((servers|infrastructure)/list-api/.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) list_api true
             ((servers|infrastructure)/client-api/.*) client_api true
+            ((lambdas|infrastructure)/sendgrid-data/.*) sendgrid_data true
 
       - continuation/continue:
           configuration_path: /tmp/generated-config.yml
