@@ -38,7 +38,7 @@
     "@apollo/utils.keyvadapter": "3.1.0",
     "@apollo/cache-control-types": "1.0.3",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "7.92.0",
+    "@sentry/node": "7.93.0",
     "apollo-server-cache-redis": "3.3.1",
     "@apollo/server-plugin-response-cache": "4.0.0",
     "graphql-tag": "2.12.6",
