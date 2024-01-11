@@ -1,0 +1,26 @@
+{
+  "name": "sendgrid-data",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@sendgrid/client": "^7.4.3",
+    "@sentry/serverless": "7.93.0",
+    "@aws-sdk/client-firehose": "3.485.0",
+    "@aws-sdk/client-cloudwatch": "3.485.0",
+    "tslib": "2.6.2"
+  },
+  "devDependencies": {
+    "tsconfig": "workspace:*",
+    "eslint-config-custom": "workspace:*",
+    "jest": "29.7.0",
+    "ts-jest": "29.1.1",
+    "@types/aws-lambda": "8.10.130"
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "test": "jest \"\\.spec\\.ts\"",
+    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix \"src/**/*.ts\""
+  }
+}

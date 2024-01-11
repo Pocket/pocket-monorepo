@@ -1,0 +1,84 @@
+[
+  {
+    "ip": "208.117.60.193",
+    "response": "250 <PiTW8mnaScijbwBAIYPf0Q@ismtpd0002p1iad1.sendgrid.net> Queued mail for delivery ",
+    "sg_event_id": "YKWj0oaiRvipyGE3GH2gjQ",
+    "sg_message_id": "PiTW8mnaScijbwBAIYPf0Q.filter0924p1mdw1.4487.57D85A1A41.6",
+    "tls": 1,
+    "event": "delivered",
+    "email": "surabhijoshi1991@outlook.com",
+    "timestamp": 1473796636,
+    "smtp-id": "<PiTW8mnaScijbwBAIYPf0Q@ismtpd0002p1iad1.sendgrid.net>",
+    "campaign": "Pocket Hits Email - start 2016-09-13 - 1473775705"
+  },
+  {
+    "ip": "103.227.97.87",
+    "sg_event_id": "NzI0ZDA2OGYtNGE0ZC00ZDMxLWJhNDktZDU3ZGFiNzExOWI2",
+    "sg_message_id": "ewt75skNSh2gyv79j4AYqg.filter0491p1mdw1.24508.57D8373042.56",
+    "useragent": "Dalvik/2.1.0 (Linux; U; Android 5.1.1; Redmi Note 3 MIUI/V7.5.3.0.LHOMIDE)",
+    "event": "click",
+    "email": "mathewnjohnson@gmail.com",
+    "url_offset": {
+      "index": 2,
+      "type": "html"
+    },
+    "timestamp": 1473796643,
+    "campaign": "Pocket Hits Email - start 2016-09-13 - 1473775705",
+    "url": "https://pocket.co/sMUy4r?cta=1"
+  },
+  {
+    "email": "owen.self@gmail.com",
+    "smtp-id": "<BJ6MBSl8QcqsNFmFHn44vQ@ismtpd0001p1iad1.sendgrid.net>",
+    "timestamp": 1473796631,
+    "campaign": "Pocket Hits Email - start 2016-09-13 - 1473775705",
+    "sg_event_id": "vQ5f6pAXRMOEXYHKZCOENQ",
+    "sg_message_id": "BJ6MBSl8QcqsNFmFHn44vQ.filter0508p1mdw1.10906.57D85A0F8.90",
+    "event": "processed"
+  },
+  {
+    "ip": "208.117.60.193",
+    "response": "250 2.0.0 OK 1473796640 c67si8668331oia.128 - gsmtp ",
+    "sg_event_id": "wOEsdo_HSuCYU_VbyvmqJA",
+    "sg_message_id": "WP0eJZPqRGeT-8SSP5F29Q.filter0626p1mdw1.6920.57D85A198.62",
+    "tls": 1,
+    "event": "delivered",
+    "email": "cecilia.crum@gmail.com",
+    "timestamp": 1473796640,
+    "smtp-id": "<WP0eJZPqRGeT-8SSP5F29Q@ismtpd0001p1iad1.sendgrid.net>",
+    "campaign": "Pocket Hits Email - start 2016-09-13 - 1473775705"
+  },
+  {
+    "ip": "208.117.60.193",
+    "response": "250 2.0.0 OK 1473796638 u44si15491250otu.102 - gsmtp ",
+    "sg_event_id": "DolaAbBYRJiITsbhtX30Ww",
+    "sg_message_id": "4Q21P09ITIuPZX260ZlSuw.filter0923p1mdw1.28702.57D85A1DB.3",
+    "tls": 1,
+    "event": "delivered",
+    "email": "ankurkhetan@gmail.com",
+    "timestamp": 1473796638,
+    "smtp-id": "<4Q21P09ITIuPZX260ZlSuw@ismtpd0003p1iad1.sendgrid.net>",
+    "campaign": "Pocket Hits Email - start 2016-09-13 - 1473775705"
+  },
+  {
+    "ip": "208.117.60.98",
+    "response": "250 2.0.0 OK 1473796618 g10si15462575oif.141 - gsmtp ",
+    "sg_event_id": "v6oavEPGRVqS-CJhKkVo3A",
+    "sg_message_id": "BTOJxd_JT0uzxq-yG8sP_A.filter0492p1mdw1.18018.57D85A052.15",
+    "tls": 1,
+    "event": "delivered",
+    "email": "morlavinay222@gmail.com",
+    "timestamp": 1473796618,
+    "smtp-id": "<BTOJxd_JT0uzxq-yG8sP_A@ismtpd0006p1iad1.sendgrid.net>",
+    "campaign": "Pocket Hits Email - start 2016-09-13 - 1473775705"
+  },
+  {
+    "email": "stornello@gmail.com",
+    "timestamp": 1473796633,
+    "ip": "66.102.6.134",
+    "campaign": "Pocket Hits Email - start 2016-09-13 - 1473775705",
+    "sg_event_id": "OGM5NDJiZDktMWU1OS00ZDQ0LWE5NTMtZDc3NzgzMzFlY2Qy",
+    "sg_message_id": "1i6tK3VdTVy9qFAKe3Cpmg.filter0947p1mdw1.27056.57D84CCCD.83",
+    "useragent": "Mozilla/5.0 (Windows NT 5.1; rv:11.0) Gecko Firefox/11.0 (via ggpht.com GoogleImageProxy)",
+    "event": "open"
+  }
+]
