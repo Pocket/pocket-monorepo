@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@sendgrid/client": "^7.4.3",
-    "@sentry/serverless": "7.92.0",
+    "@sentry/serverless": "7.93.0",
     "@aws-sdk/client-firehose": "3.485.0",
     "@aws-sdk/client-cloudwatch": "3.485.0",
     "tslib": "2.6.2"

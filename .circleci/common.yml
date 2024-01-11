@@ -23,6 +23,7 @@ repo_for_enum: &repo_for_enum
       - user_api
       - list_api
       - client_api
+      - feature_flags
       - sendgrid_data
 
 resource_class_enmum: &resource_class_enmum
@@ -62,6 +63,9 @@ parameters:
   list_api:
     type: boolean
     default: false
+  feature_flags:
+    type: boolean
+    default: false
   sendgrid_data:
     type: boolean
     default: false
@@ -95,6 +99,7 @@ commands:
             user_api: << pipeline.parameters.user_api >>
             list_api: << pipeline.parameters.list_api >>
             client_api: << pipeline.parameters.client_api >>
+            feature_flags: << pipeline.parameters.feature_flags >>
             sendgrid_data: << pipeline.parameters.sendgrid_data >>
 
   install_pnpm:  
@@ -230,7 +235,7 @@ jobs:
                 command: |
                   . /home/circleci/.codebuild_shims_wrapper.sh
                   cd << parameters.stack-output-path >>
-                  /home/circleci/tfcmt --var target:<< parameters.scope >><<#parameters.dev>>-dev<</parameters.dev>> apply -- terraform apply -auto-approve
+                  /home/circleci/tfcmt --var target:<< parameters.scope >><<#parameters.dev>>-dev<</parameters.dev>> apply -- terraform apply -auto-approve -lock-timeout=10m
             - when:
                 condition: <<parameters.save_app_spec>>
                 steps:
@@ -252,7 +257,7 @@ jobs:
                 command: |
                   . /home/circleci/.codebuild_shims_wrapper.sh
                   cd << parameters.stack-output-path >>
-                  /home/circleci/tfcmt --var target:<< parameters.scope >><<#parameters.dev>>-dev<</parameters.dev>> plan --skip-no-changes --patch -- terraform plan
+                  /home/circleci/tfcmt --var target:<< parameters.scope >><<#parameters.dev>>-dev<</parameters.dev>> plan --skip-no-changes --patch -- terraform plan -lock-timeout=10m
       - save_cache:
           key: tfenv-v2
           paths:
