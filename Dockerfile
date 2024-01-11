@@ -5,7 +5,7 @@
 # Docker build step that creates our 
 # base image used in all steps
 #----------------------------------------
-FROM node:20.10-alpine AS base
+FROM node:20.11-alpine@sha256:8e6a472eb9742f4f486ca9ef13321b7fc2e54f2f60814f339eeda2aff3037573 AS base
 
 ARG SCOPE
 ARG APP_PATH
