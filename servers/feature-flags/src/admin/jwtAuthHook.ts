@@ -1,11 +1,20 @@
 import passport from 'passport';
-import AuthenticationRequired from 'unleash-server/dist/lib/types/authentication-required';
 import { Application } from 'express';
-import { IUnleashServices } from 'unleash-server/dist/lib/types/services';
-import { IUnleashConfig } from 'unleash-server/dist/lib/types/option';
+import {
+  type IUnleashServices,
+  type IUnleashConfig,
+  RoleName,
+  AuthenticationRequired,
+} from 'unleash-server';
 import appConfig from '../config';
-import { RoleName } from 'unleash-server';
-import { Strategy as OidcStrategy } from '@techpass/passport-openidconnect';
+import {
+  Strategy as OidcStrategy,
+  MergedProfile,
+  Profile,
+  AuthContext,
+  VerifyCallback,
+} from '@govtechsg/passport-openidconnect';
+import { decode } from 'jsonwebtoken';
 
 /**
  * Adds admin authentication to our admin application. Concepts taken from https://github.com/Unleash/unleash-examples/blob/main/v4/securing-google-auth/google-auth-hook.js
@@ -32,17 +41,17 @@ export const enableJwtAuth = (
         pkce: 'S256',
       },
       async (
-        issuer,
-        sub,
-        profile,
-        jwtClaims,
-        accessToken,
-        refreshToken,
-        idToken,
-        params,
-        done,
+        issuer: string,
+        uiProfile: MergedProfile,
+        idProfile: Profile,
+        context: AuthContext,
+        idToken: string,
+        accessToken: string,
+        refreshToken: string,
+        params: any,
+        done: VerifyCallback,
       ) => {
-        const email = jwtClaims.email;
+        const jwtClaims = decode(params.id_token);
 
         //Custom claim attributes are in the OIDC payload, not in our jwtAccessTokenPayload.
         const isInMozillaIAMGroup =
@@ -54,8 +63,8 @@ export const enableJwtAuth = (
           // TODO: once we start wanting to use new Unleash 4 RBAC we should get more specific and
           // map cognito user groups to Unleash roles and persist it back with the userService.
           const user = await userService.loginUserSSO({
-            email: email,
-            name: `${jwtClaims.given_name} ${jwtClaims.family_name}`,
+            email: idProfile.emails[0].value,
+            name: uiProfile.displayName,
             rootRole: RoleName.ADMIN,
             autoCreate: true,
           });
