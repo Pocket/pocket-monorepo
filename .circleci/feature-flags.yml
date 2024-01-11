@@ -9,10 +9,10 @@ workflows:
       - apollo:
           name: feature-flags_apollo
           fed_graph_name: pocket-client-api
-          graph_name: feature-flags
+          graph_name: featureflags
           schema_file_path: servers/feature-flags/schema.graphql
-          prod_graph_url: https://featureflags.readitlater.com
-          dev_graph_url: https://featureflags.getpocket.devhel
+          prod_graph_url: https://featureflags.readitlater.com/graphql
+          dev_graph_url: https://featureflags.getpocket.dev/graphql
 
       # Try building the ECS docker image on each branch
       - build_image:

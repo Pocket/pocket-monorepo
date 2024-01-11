@@ -2,7 +2,7 @@
   "name": "feature-flags",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/main.js",
   "dependencies": {
     "@pocket-tools/apollo-utils": "workspace:*",
     "@sentry/node": "7.93.0",
@@ -45,5 +45,10 @@
     "format": "eslint --fix \"src/**/*.ts\""
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "files": [
+    "dist",
+    "schema.graphql",
+    "package.json"
+  ]
 }
