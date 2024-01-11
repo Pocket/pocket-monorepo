@@ -71,6 +71,8 @@ services:
     image: postgres:latest
     ports:
       - '5432:5432'
+    volumes:
+      - ./.docker/postgres-resources:/docker-entrypoint-initdb.d:delegated
     environment:
       POSTGRES_PASSWORD: password
       PGUSER: pocket
