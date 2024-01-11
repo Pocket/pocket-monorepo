@@ -1,11 +1,13 @@
 import passport from 'passport';
-import AuthenticationRequired from 'unleash-server/dist/lib/types/authentication-required';
 import { Application } from 'express';
-import { IUnleashServices } from 'unleash-server/dist/lib/types/services';
-import { IUnleashConfig } from 'unleash-server/dist/lib/types/option';
+import {
+  type IUnleashServices,
+  type IUnleashConfig,
+  RoleName,
+  AuthenticationRequired,
+} from 'unleash-server';
 import appConfig from '../config';
-import { RoleName } from 'unleash-server';
-import { Strategy as OidcStrategy } from '@techpass/passport-openidconnect';
+import { Strategy as OidcStrategy } from '@govtechsg/passport-openidconnect';
 
 /**
  * Adds admin authentication to our admin application. Concepts taken from https://github.com/Unleash/unleash-examples/blob/main/v4/securing-google-auth/google-auth-hook.js

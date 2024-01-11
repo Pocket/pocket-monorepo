@@ -2,7 +2,10 @@
   "extends": "tsconfig/graphql.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    // Disable lib check because unleash has a ton of type errors in its declation files.
+    // Turn off once https://github.com/Unleash/unleash/pull/5847 is merged and released.
+    "skipLibCheck": true,
   },
   "exclude": [
     "node_modules/",
