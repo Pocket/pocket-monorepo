@@ -37,7 +37,7 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "watch": "tsc -w & nodemon",
-    "start": "node dist/index.js",
+    "start": "node dist/main.js",
     "dev": "npm run build && npm run watch",
     "test:watch": "npm test -- --watchAll",
     "test": "jest \"\\.spec\\.ts\"",
