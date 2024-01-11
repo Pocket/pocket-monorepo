@@ -56,6 +56,7 @@ const eventHandler = async (
   event: APIGatewayEvent,
 ): Promise<APIGatewayProxyResult> => {
   try {
+    console.log(JSON.stringify(event));
     const events = JSON.stringify(event.body);
     logEventsReceived(events);
     await deliverEvents(events, event.queryStringParameters);
