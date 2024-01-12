@@ -669,6 +669,9 @@ importers:
       jest:
         specifier: 29.7.0
         version: 29.7.0(@types/node@20.10.6)
+      jest-extended:
+        specifier: 4.0.2
+        version: 4.0.2(jest@29.7.0)
       nock:
         specifier: 13.4.0
         version: 13.4.0
@@ -7079,7 +7082,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.4.0-dev.20240109
+      typescript: 5.4.0-dev.20240111
     dev: false
 
   /eastasianwidth@0.2.0:
@@ -12445,8 +12448,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.4.0-dev.20240109:
-    resolution: {integrity: sha512-pKDkvh+RizbUm4BEmfvmG74qycZsHw4oFB6jY9D+oKoxPzoZr/edCTks/t50kvU2RdiDn0UKSzZB4YVzrC9WTQ==}
+  /typescript@5.4.0-dev.20240111:
+    resolution: {integrity: sha512-97UgxVdlXJau9HbNNYghxWHaauDT+50ioh3mepeOfOec6Eq2Hsc4ivTg+N4o4sfVF4MNBJ7rYrejqDvhhrE6aw==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: false

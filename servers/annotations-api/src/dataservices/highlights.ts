@@ -1,6 +1,7 @@
 import { Knex } from 'knex';
 import { IContext } from '../context';
 import {
+  BatchWriteHighlightsResult,
   Highlight,
   HighlightEntity,
   HighlightInput,
@@ -121,52 +122,72 @@ export class HighlightsDataService {
    * this is reasonable to assume from the way the client generates
    * the API request.
    * @param highlightInput
+   * @param trx Optionally, a transaction object.
+   * Can be used to chain multiple operations.
+   * If one is not given, a new transaction will be opened.
    * @returns The Highlights created
    */
-  public async create(highlightInput: HighlightInput[]): Promise<Highlight[]> {
+  public async create(
+    highlightInput: HighlightInput[],
+    trx?: Knex.Transaction,
+  ): Promise<Highlight[]> {
     // Ensure non-premium users don't exceed highlight limits
     // Will throw error here if validation fails
     if (!this.context.isPremium) {
       await this.checkHighlightLimit(highlightInput);
     }
+    const transaction = trx ?? (await this.writeDb.transaction());
 
+    try {
+      const rows = await this._create(highlightInput, transaction);
+      transaction.commit();
+      return rows.map(this.toGraphql);
+    } catch (error) {
+      // Just in case, roll back if not already done
+      if (!transaction.isCompleted()) {
+        transaction.rollback();
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * The transaction/query logic for highlights creation.
+   * The calling function MUST handle committing the transaction.
+   * The transaction will be automatically rolled back if the database
+   * encounters errors.
+   * @param highlightInput
+   * @param trx
+   * @returns
+   */
+  private async _create(
+    highlightInput: HighlightInput[],
+    trx: Knex.Transaction,
+  ) {
     const formattedHighlights = highlightInput.map((highlight) =>
       this.toDbEntity(highlight),
     );
+    // Insert into the db
+    await trx<HighlightEntity>('user_annotations').insert(formattedHighlights);
 
-    const rows = await this.writeDb.transaction(
-      async (trx: Knex.Transaction) => {
-        // Insert into the db
-        await trx<HighlightEntity>('user_annotations').insert(
-          formattedHighlights,
-        );
-
-        const updateDate = new Date();
-        // Mark saved item(s) as updated
-        // There could be more than one, update all respective saved items
-        await Promise.all(
-          highlightInput.map(async (input) => {
-            await this.savedItemService.markUpdate(
-              input.itemId,
-              updateDate,
-              trx,
-            );
-          }),
-        );
-        // Update users_meta table
-        await this.usersMetaService.logAnnotationMutation(updateDate, trx);
-
-        // Query back the inserted rows
-        return trx<HighlightEntity>('user_annotations')
-          .select()
-          .whereIn(
-            'annotation_id',
-            formattedHighlights.map((highlight) => highlight.annotation_id),
-          );
-      },
+    const updateDate = new Date();
+    // Mark saved item(s) as updated
+    // There could be more than one, update all respective saved items
+    await Promise.all(
+      highlightInput.map(async (input) => {
+        await this.savedItemService.markUpdate(input.itemId, updateDate, trx);
+      }),
     );
+    // Update users_meta table
+    await this.usersMetaService.logAnnotationMutation(updateDate, trx);
 
-    return rows.map(this.toGraphql);
+    // Query back the inserted rows
+    return trx<HighlightEntity>('user_annotations')
+      .select()
+      .whereIn(
+        'annotation_id',
+        formattedHighlights.map((highlight) => highlight.annotation_id),
+      );
   }
 
   /**
@@ -225,36 +246,57 @@ export class HighlightsDataService {
     if (!row) {
       throw new NotFoundError('No annotation found for the given ID');
     }
-
     return row;
   }
 
   /**
    * Delete highlight for a given ID
    * @param highlightId
+   * @param trx Optionally, a transaction object.
+   * Can be used to chain multiple operations.
+   * If one is not given, a new transaction will be opened.
    */
-  public async delete(highlightId: string): Promise<string> {
+  public async delete(
+    highlightId: string,
+    trx?: Knex.Transaction,
+  ): Promise<string> {
     const annotation = await this.getHighlightByIdQuery(highlightId);
+    const transaction = trx ?? (await this.writeDb.transaction());
+    try {
+      const result = await this._delete(highlightId, annotation, transaction);
+      transaction.commit();
+      return result;
+    } catch (error) {
+      // Just in case, roll back if not already done
+      if (!transaction.isCompleted()) {
+        transaction.rollback();
+      }
+      throw error;
+    }
+  }
 
-    return await this.writeDb.transaction(async (trx: Knex.Transaction) => {
-      // This will throw and error if it doesn't like you
-      await this.writeDb<HighlightEntity>('user_annotations')
-        .update({ status: 0 })
-        .where('user_id', this.userId)
-        .andWhere('annotation_id', highlightId);
+  private async _delete(
+    highlightId: string,
+    annotation: HighlightEntity,
+    trx: Knex.Transaction,
+  ) {
+    // This will throw and error if it doesn't like you
+    await this.writeDb<HighlightEntity>('user_annotations')
+      .update({ status: 0 })
+      .where('user_id', this.userId)
+      .andWhere('annotation_id', highlightId);
 
-      const updateDate = new Date();
-      // Mark saved item as updated
-      await this.savedItemService.markUpdate(
-        annotation.item_id.toString(),
-        updateDate,
-        trx,
-      );
-      // Update users_meta table
-      await this.usersMetaService.logAnnotationMutation(updateDate, trx);
+    const updateDate = new Date();
+    // Mark saved item as updated
+    await this.savedItemService.markUpdate(
+      annotation.item_id.toString(),
+      updateDate,
+      trx,
+    );
+    // Update users_meta table
+    await this.usersMetaService.logAnnotationMutation(updateDate, trx);
 
-      return highlightId;
-    });
+    return highlightId;
   }
 
   /**
@@ -291,6 +333,52 @@ export class HighlightsDataService {
           id,
         );
       }
+    }
+  }
+
+  /**
+   * Function for creating and deleting highlights in a batch.
+   * The batch is executed in one transaction, so it is atomic --
+   * either all deletes/creates succeed or fail.
+   * The exception is attempting to delete a non-existant highlight.
+   * This is a no-op and will just return as though it was successful.
+   * @param deletes
+   * @param creates
+   * @returns
+   */
+  public async batchWrite(
+    deletes: string[],
+    creates: HighlightInput[],
+  ): Promise<BatchWriteHighlightsResult> {
+    const trx = await this.writeDb.transaction();
+    try {
+      await Promise.all(
+        deletes.map(async (deleteId) => {
+          try {
+            const annotation = await this.getHighlightByIdQuery(deleteId);
+            await this._delete(deleteId, annotation, trx);
+            // If the highlight doesn't exist, deleting is a no-op (don't return error)
+          } catch (error) {
+            if (error instanceof NotFoundError) {
+              return;
+            } else {
+              throw error;
+            }
+          }
+        }),
+      );
+      const created = creates.length
+        ? (await this._create(creates, trx)).map((highlight) =>
+            this.toGraphql(highlight),
+          )
+        : [];
+      trx.commit();
+      return { deleted: deletes, created };
+    } catch (error) {
+      if (!trx.isCompleted()) {
+        trx.rollback();
+      }
+      throw error;
     }
   }
 
