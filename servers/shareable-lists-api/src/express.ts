@@ -15,8 +15,7 @@ import { getAdminContext, IAdminContext } from './admin/context';
 import { startAdminServer } from './admin/server';
 import { startPublicServer } from './public/server';
 
-export const serverLogger = setLogger();
-
+import { serverLogger } from './logger';
 /**
  * Initialize an express server.
  *
@@ -43,7 +42,7 @@ export async function startServer(port: number): Promise<{
     // JSON parser to enable POST body with JSON
     express.json(),
     // JSON parser to enable POST body with JSON
-    setMorgan(serverLogger)
+    setMorgan(serverLogger),
   );
 
   // Add route to delete user data
@@ -71,7 +70,7 @@ export async function startServer(port: number): Promise<{
     cors<cors.CorsRequest>(),
     expressMiddleware<IAdminContext>(adminServer, {
       context: getAdminContext,
-    })
+    }),
   );
 
   // set up the public server
@@ -83,7 +82,7 @@ export async function startServer(port: number): Promise<{
     cors<cors.CorsRequest>(),
     expressMiddleware<IPublicContext>(publicServer, {
       context: getPublicContext,
-    })
+    }),
   );
 
   await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));

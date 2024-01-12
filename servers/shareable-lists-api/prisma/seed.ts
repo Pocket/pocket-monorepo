@@ -6,9 +6,7 @@ import {
 } from '../src/test/helpers';
 import { faker } from '@faker-js/faker';
 import { updateShareableList } from '../src/database/mutations';
-import { setLogger } from '@pocket-tools/ts-logger';
-
-const prismaSeedLogger = setLogger();
+import { serverLoger } from '../src/logger';
 const prisma = new PrismaClient();
 
 async function main() {
@@ -47,7 +45,7 @@ async function main() {
       await updateShareableList(
         prisma,
         { externalId: list.externalId, status: Visibility.PUBLIC },
-        randomUser.userId
+        randomUser.userId,
       );
     }
 
@@ -56,7 +54,7 @@ async function main() {
 
     for (let i = 0; i <= numberOfStories; i++) {
       await createShareableListItemHelper(prisma, { list }).catch(
-        prismaSeedLogger.error
+        prismaSeedLogger.error,
       );
     }
   }

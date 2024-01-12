@@ -21,7 +21,6 @@ describe('/deleteUserData express endpoint', () => {
   let server: ApolloServer<IPublicContext>;
   let graphQLUrl: string;
   let db: PrismaClient;
-  let sentryStub;
   let list1;
   let list2;
   let list3;
@@ -51,11 +50,14 @@ describe('/deleteUserData express endpoint', () => {
   });
 
   afterEach(() => {
-    sentryStub.mockRestore();
+    jest.restoreAllMocks();
   });
 
   beforeEach(async () => {
-    sentryStub = jest.spyOn(Sentry, 'captureException').mockClear().mockImplementation().resolves();
+    jest
+      .spyOn(Sentry, 'captureException')
+      .mockClear()
+      .mockImplementation(() => 'captured');
     await clearDb(db);
 
     // Create a few Lists
@@ -94,7 +96,9 @@ describe('/deleteUserData express endpoint', () => {
         .send({ userId: '12345' });
       expect(result.body.status).toBe('OK');
       expect(result.body.message).toEqual(
-        expect.arrayContaining([`No shareable list data to delete for User ID: 12345`])
+        expect.arrayContaining([
+          `No shareable list data to delete for User ID: 12345`,
+        ]),
       );
     });
 
@@ -114,7 +118,9 @@ describe('/deleteUserData express endpoint', () => {
         .send({ userId: headers.userId });
       expect(result.body.status).toBe('OK');
       expect(result.body.message).toEqual(
-        expect.arrayContaining([`Deleting shareable lists data for User ID: ${headers.userId}`])
+        expect.arrayContaining([
+          `Deleting shareable lists data for User ID: ${headers.userId}`,
+        ]),
       );
       // lets manually call getAllShareableListIdsForUser to check there are no lists for this user
       const ids = await getAllShareableListIdsForUser(parseInt(headers.userId));

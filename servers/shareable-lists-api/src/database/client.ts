@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { serverLogger } from '../express';
+import { serverLogger } from '../logger';
 
 let prisma;
 

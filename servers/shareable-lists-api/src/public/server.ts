@@ -1,11 +1,11 @@
 import { errorHandler, sentryPlugin } from '@pocket-tools/apollo-utils';
 import { ApolloServer, ApolloServerPlugin } from '@apollo/server';
-import { ApolloServerPluginLandingPageGraphQLPlayground } from '@apollo/server-plugin-landing-page-graphql-playground';
 import {
   ApolloServerPluginLandingPageDisabled,
   ApolloServerPluginInlineTraceDisabled,
   ApolloServerPluginUsageReportingDisabled,
 } from '@apollo/server/plugin/disabled';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { ApolloServerPluginInlineTrace } from '@apollo/server/plugin/inlineTrace';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl';
@@ -19,7 +19,7 @@ import { getRedisCache } from '../cache';
 import { schema } from './schema';
 
 export function getPublicServer(
-  httpServer: Server
+  httpServer: Server,
 ): ApolloServer<IPublicContext> {
   const cache = getRedisCache();
 
@@ -47,7 +47,7 @@ export function getPublicServer(
   > = {
     test: [ApolloServerPluginInlineTraceDisabled()],
     development: [
-      ApolloServerPluginLandingPageGraphQLPlayground(),
+      ApolloServerPluginLandingPageLocalDefault(),
       ApolloServerPluginInlineTrace({ includeErrors: { unmodified: true } }),
     ],
     production: [
@@ -59,7 +59,7 @@ export function getPublicServer(
   // combine default plugins with environment specific plugins for this server
   // instance
   const plugins = defaultPlugins.concat(
-    environmentPlugins[process.env.NODE_ENV] ?? []
+    environmentPlugins[process.env.NODE_ENV] ?? [],
   );
 
   return new ApolloServer<IPublicContext>({
@@ -71,7 +71,7 @@ export function getPublicServer(
 }
 
 export async function startPublicServer(
-  httpServer: Server
+  httpServer: Server,
 ): Promise<ApolloServer<IPublicContext>> {
   const server = getPublicServer(httpServer);
   await server.start();

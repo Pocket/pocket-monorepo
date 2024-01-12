@@ -42,7 +42,6 @@ describe('public mutations: ShareableList', () => {
   let server: ApolloServer<IPublicContext>;
   let graphQLUrl: string;
   let db: PrismaClient;
-  let eventBridgeClientStub: jest.Mock;
   // let pilotUser2: PilotUser;
 
   // this user will be put into the pilot
@@ -65,12 +64,14 @@ describe('public mutations: ShareableList', () => {
     } = await startServer(0));
     db = client();
     // we mock the send method on EventBridgeClient
-    eventBridgeClientStub = jest.spyOn(EventBridgeClient.prototype, 'send').mockClear().mockImplementation()
-      .resolves({ FailedEntryCount: 0 });
+    jest
+      .spyOn(EventBridgeClient.prototype, 'send')
+      .mockClear()
+      .mockImplementation(() => Promise.resolve({ FailedEntryCount: 0 }));
   });
 
   afterAll(async () => {
-    eventBridgeClientStub.mockRestore();
+    jest.restoreAllMocks();
     await db.$disconnect();
     await server.stop();
   });
@@ -150,9 +151,13 @@ describe('public mutations: ShareableList', () => {
           variables: { listData: data },
         });
 
-      expect(result.body.data.createShareableList.title).toBe('My list to share&lt;script&gt;alert("Hello World!")&lt;/script&gt;');
+      expect(result.body.data.createShareableList.title).toBe(
+        'My list to share&lt;script&gt;alert("Hello World!")&lt;/script&gt;',
+      );
 
-      expect(result.body.data.createShareableList.description).toBe('A description to share&lt;script&gt;alert("Hello World!")&lt;/script&gt;');
+      expect(result.body.data.createShareableList.description).toBe(
+        'A description to share&lt;script&gt;alert("Hello World!")&lt;/script&gt;',
+      );
     });
 
     it('should create a new List with default visibilities', async () => {
@@ -219,7 +224,9 @@ describe('public mutations: ShareableList', () => {
 
       expect(errors.length).toBe(1);
       expect(errors[0].extensions.code).toBe('BAD_USER_INPUT');
-      expect(errors[0].message).toBe(`${listItemData.itemId} is an invalid itemId`);
+      expect(errors[0].message).toBe(
+        `${listItemData.itemId} is an invalid itemId`,
+      );
     });
 
     it('should create a new List with a ListItem', async () => {
@@ -291,7 +298,9 @@ describe('public mutations: ShareableList', () => {
       expect(result.body.data.createShareableList).toBeFalsy();
       expect(result.body.errors.length).toBe(1);
       expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
-      expect(result.body.errors[0].message).toBe(`A list with the title "Katerina's List" already exists`);
+      expect(result.body.errors[0].message).toBe(
+        `A list with the title "Katerina's List" already exists`,
+      );
     });
 
     it('should not create List with a title of more than 100 chars', async () => {
@@ -311,7 +320,9 @@ describe('public mutations: ShareableList', () => {
       expect(result.body.errors.length).toBe(1);
       expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
       expect(result.body.errors[0].message).toEqual(
-        expect.arrayContaining([`Must be no more than ${LIST_TITLE_MAX_CHARS} characters in length`])
+        expect.arrayContaining([
+          `Must be no more than ${LIST_TITLE_MAX_CHARS} characters in length`,
+        ]),
       );
     });
 
@@ -330,9 +341,11 @@ describe('public mutations: ShareableList', () => {
       expect(result.body.data).toBeFalsy();
       expect(result.body.errors.length).toBe(1);
       expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
-      expect(result.body.errors[0].message).toEqual(expect.arrayContaining(
-        [`Must be no more than ${LIST_DESCRIPTION_MAX_CHARS} characters in length`]
-      ));
+      expect(result.body.errors[0].message).toEqual(
+        expect.arrayContaining([
+          `Must be no more than ${LIST_DESCRIPTION_MAX_CHARS} characters in length`,
+        ]),
+      );
     });
 
     it('should create List with existing title in db but for different userId', async () => {
@@ -395,9 +408,9 @@ describe('public mutations: ShareableList', () => {
           variables: { listData: data },
         });
 
-      expect(
-        result.body.data.createShareableList.listItemNoteVisibility
-      ).toBe(data.listItemNoteVisibility);
+      expect(result.body.data.createShareableList.listItemNoteVisibility).toBe(
+        data.listItemNoteVisibility,
+      );
     });
   });
 
@@ -607,9 +620,9 @@ describe('public mutations: ShareableList', () => {
 
     it('should update a list and return all props', async () => {
       // stub the clock so we can directly check updatedAt
-      jest.useFakeTimers().setSystemTime({
+      jest.useFakeTimers({
         now: arbitraryTimestamp,
-        shouldAdvanceTime: false,
+        advanceTimers: false,
       });
 
       // advance the clock one day
@@ -645,7 +658,9 @@ describe('public mutations: ShareableList', () => {
       expect(updatedList.title).toBe(data.title);
       expect(updatedList.description).toBe(data.description);
       expect(updatedList.status).toBe(data.status);
-      expect(updatedList.listItemNoteVisibility).toBe(data.listItemNoteVisibility);
+      expect(updatedList.listItemNoteVisibility).toBe(
+        data.listItemNoteVisibility,
+      );
 
       // Check that props that shouldn't have changed stayed the same
       expect(updatedList.slug).toBe(pilotUserList.slug);
@@ -655,7 +670,9 @@ describe('public mutations: ShareableList', () => {
       expect(updatedList.user).toEqual({ id: pilotUserHeaders.userId });
 
       // The `updatedAt` timestamp should change
-      expect(Date.parse(updatedList.updatedAt)).toBe(arbitraryTimestamp + oneDay);
+      expect(Date.parse(updatedList.updatedAt)).toBe(
+        arbitraryTimestamp + oneDay,
+      );
 
       jest.useRealTimers();
     });
@@ -1224,7 +1241,11 @@ describe('public mutations: ShareableList', () => {
       // And a "Bad user input" error
       expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
       expect(result.body.errors[0].extensions.field).toBe('data.title');
-      expect(result.body.errors[0].message).toEqual(expect.arrayContaining(['Must be no more than 100 characters in length']));
+      expect(result.body.errors[0].message).toEqual(
+        expect.arrayContaining([
+          'Must be no more than 100 characters in length',
+        ]),
+      );
     });
 
     it('should not update List with a description of more than 200 chars', async () => {
@@ -1247,7 +1268,11 @@ describe('public mutations: ShareableList', () => {
       // And a "Bad user input" error
       expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
       expect(result.body.errors[0].extensions.field).toBe('data.description');
-      expect(result.body.errors[0].message).toEqual(expect.arrayContaining(['Must be no more than 200 characters in length']));
+      expect(result.body.errors[0].message).toEqual(
+        expect.arrayContaining([
+          'Must be no more than 200 characters in length',
+        ]),
+      );
     });
   });
 });

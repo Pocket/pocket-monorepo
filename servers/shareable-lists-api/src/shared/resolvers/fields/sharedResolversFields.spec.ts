@@ -2,10 +2,13 @@ import * as Sentry from '@sentry/node';
 import { parseFieldToInt } from '../../../shared/resolvers/fields/PrismaBigInt';
 
 describe('Shared Resolver Helpers', () => {
-  let sentryStub;
+  let sentryStub: jest.SpyInstance<string>;
 
   beforeEach(() => {
-    sentryStub = jest.spyOn(Sentry, 'captureException').mockClear().mockImplementation().resolves();
+    sentryStub = jest
+      .spyOn(Sentry, 'captureException')
+      .mockClear()
+      .mockImplementation(() => 'captured');
   });
 
   afterEach(() => {

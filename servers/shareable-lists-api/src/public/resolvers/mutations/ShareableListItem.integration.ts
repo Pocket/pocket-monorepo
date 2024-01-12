@@ -34,7 +34,6 @@ describe('public mutations: ShareableListItem', () => {
   let server: ApolloServer<IPublicContext>;
   let graphQLUrl: string;
   let db: PrismaClient;
-  let eventBridgeClientStub: jest.Mock;
 
   // for strong checks on createdAt and updatedAt values
   const arbitraryTimestamp = 1664400000000;
@@ -65,12 +64,14 @@ describe('public mutations: ShareableListItem', () => {
     db = client();
 
     // we mock the send method on EventBridgeClient
-    eventBridgeClientStub = jest.spyOn(EventBridgeClient.prototype, 'send').mockClear().mockImplementation()
-      .resolves({ FailedEntryCount: 0 });
+    jest
+      .spyOn(EventBridgeClient.prototype, 'send')
+      .mockClear()
+      .mockImplementation(() => Promise.resolve({ FailedEntryCount: 0 }));
   });
 
   afterAll(async () => {
-    eventBridgeClientStub.mockRestore();
+    jest.restoreAllMocks();
     await db.$disconnect();
     await server.stop();
   });
@@ -194,7 +195,9 @@ describe('public mutations: ShareableListItem', () => {
 
       // And a "Not found" error
       expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
-      expect(result.body.errors[0].message).toBe(`${data.itemId} is an invalid itemId`);
+      expect(result.body.errors[0].message).toBe(
+        `${data.itemId} is an invalid itemId`,
+      );
     });
 
     it('should not create a new list item with note longer than 300 characters', async () => {
@@ -221,7 +224,9 @@ describe('public mutations: ShareableListItem', () => {
 
       expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
       expect(result.body.errors[0].message).toEqual(
-        expect.arrayContaining([`Must be no more than ${LIST_ITEM_NOTE_MAX_CHARS} characters in length`])
+        expect.arrayContaining([
+          `Must be no more than ${LIST_ITEM_NOTE_MAX_CHARS} characters in length`,
+        ]),
       );
     });
 
@@ -258,7 +263,9 @@ describe('public mutations: ShareableListItem', () => {
       expect(listItem.itemId).toBe(data.itemId);
       expect(listItem.url).toBe(data.url);
       expect(listItem.title).toBe(data.title);
-      expect(listItem.excerpt).toBe('&lt;blink&gt;The best story ever told&lt;/blink&gt;');
+      expect(listItem.excerpt).toBe(
+        '&lt;blink&gt;The best story ever told&lt;/blink&gt;',
+      );
       expect(listItem.note).toBeNull();
       expect(listItem.imageUrl).toBe(data.imageUrl);
       expect(listItem.publisher).toBe(data.publisher);
@@ -306,9 +313,11 @@ describe('public mutations: ShareableListItem', () => {
       expect(listItem.itemId).toBe(data.itemId);
       expect(listItem.url).toBe(data.url);
       expect(listItem.title).toBe(data.title);
-      expect(listItem.excerpt).toBe('&lt;blink&gt;The best story ever told&lt;/blink&gt;');
+      expect(listItem.excerpt).toBe(
+        '&lt;blink&gt;The best story ever told&lt;/blink&gt;',
+      );
       expect(listItem.note).toBe(
-        '&lt;div&gt;here is what &lt;strong&gt;i&lt;/strong&gt; think about this article...&lt;/div&gt;'
+        '&lt;div&gt;here is what &lt;strong&gt;i&lt;/strong&gt; think about this article...&lt;/div&gt;',
       );
       expect(listItem.imageUrl).toBe(data.imageUrl);
       expect(listItem.publisher).toBe(data.publisher);
@@ -534,7 +543,7 @@ describe('public mutations: ShareableListItem', () => {
         });
 
       expect(
-        Date.parse(result.body.data.updateShareableListItem.updatedAt)
+        Date.parse(result.body.data.updateShareableListItem.updatedAt),
       ).toBe(arbitraryTimestamp + oneDay);
 
       const list = await db.list.findFirst({
@@ -565,7 +574,9 @@ describe('public mutations: ShareableListItem', () => {
 
       expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
       expect(result.body.errors[0].message).toEqual(
-        expect.arrayContaining([`Must be no more than ${LIST_ITEM_NOTE_MAX_CHARS} characters in length`])
+        expect.arrayContaining([
+          `Must be no more than ${LIST_ITEM_NOTE_MAX_CHARS} characters in length`,
+        ]),
       );
     });
 
@@ -587,7 +598,9 @@ describe('public mutations: ShareableListItem', () => {
 
       expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
       expect(result.body.errors[0].message).toEqual(
-        expect.arrayContaining(['Error - Not Found: A list item by that ID could not be found'])
+        expect.arrayContaining([
+          'Error - Not Found: A list item by that ID could not be found',
+        ]),
       );
     });
 
@@ -611,7 +624,9 @@ describe('public mutations: ShareableListItem', () => {
 
       expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
       expect(result.body.errors[0].message).toEqual(
-        expect.arrayContaining(['Error - Not Found: A list item by that ID could not be found'])
+        expect.arrayContaining([
+          'Error - Not Found: A list item by that ID could not be found',
+        ]),
       );
     });
 
@@ -817,9 +832,13 @@ describe('public mutations: ShareableListItem', () => {
 
       const listItems = result.body.data.updateShareableListItems;
 
-      expect(Date.parse(listItems[0].updatedAt)).toBe(arbitraryTimestamp + oneDay);
+      expect(Date.parse(listItems[0].updatedAt)).toBe(
+        arbitraryTimestamp + oneDay,
+      );
 
-      expect(Date.parse(listItems[1].updatedAt)).toBe(arbitraryTimestamp + oneDay);
+      expect(Date.parse(listItems[1].updatedAt)).toBe(
+        arbitraryTimestamp + oneDay,
+      );
 
       jest.useRealTimers();
     });
@@ -877,9 +896,13 @@ describe('public mutations: ShareableListItem', () => {
         },
       });
 
-      expect(updatedLists[0].updatedAt.getTime()).toBe(arbitraryTimestamp + oneDay);
+      expect(updatedLists[0].updatedAt.getTime()).toBe(
+        arbitraryTimestamp + oneDay,
+      );
 
-      expect(updatedLists[1].updatedAt.getTime()).toBe(arbitraryTimestamp + oneDay);
+      expect(updatedLists[1].updatedAt.getTime()).toBe(
+        arbitraryTimestamp + oneDay,
+      );
 
       jest.useRealTimers();
     });
@@ -906,7 +929,9 @@ describe('public mutations: ShareableListItem', () => {
 
       expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
       expect(result.body.errors[0].message).toEqual(
-        expect.arrayContaining(['Error - Not Found: A list item by that ID could not be found'])
+        expect.arrayContaining([
+          'Error - Not Found: A list item by that ID could not be found',
+        ]),
       );
       // lets make sure the valid list item was not updated
       const validListItem = await db.listItem.findFirst({
@@ -950,7 +975,9 @@ describe('public mutations: ShareableListItem', () => {
 
       expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
       expect(result.body.errors[0].message).toEqual(
-        expect.arrayContaining([`Variable "$data" at "data" must be no more than 30 in length`])
+        expect.arrayContaining([
+          `Variable "$data" at "data" must be no more than 30 in length`,
+        ]),
       );
     });
 
@@ -976,7 +1003,9 @@ describe('public mutations: ShareableListItem', () => {
 
       expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
       expect(result.body.errors[0].message).toEqual(
-        expect.arrayContaining(['Error - Not Found: A list item by that ID could not be found'])
+        expect.arrayContaining([
+          'Error - Not Found: A list item by that ID could not be found',
+        ]),
       );
     });
   });
@@ -1022,7 +1051,9 @@ describe('public mutations: ShareableListItem', () => {
       expect(result.body.data).toBeFalsy();
       expect(result.body.errors.length).toBe(1);
       expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
-      expect(result.body.errors[0].message).toBe('Error - Not Found: A list item by that ID could not be found');
+      expect(result.body.errors[0].message).toBe(
+        'Error - Not Found: A list item by that ID could not be found',
+      );
     });
 
     it('should not delete a list item without userId in header', async () => {
@@ -1051,7 +1082,9 @@ describe('public mutations: ShareableListItem', () => {
       expect(result.body.data).toBeFalsy();
       expect(result.body.errors.length).toBe(1);
       expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
-      expect(result.body.errors[0].message).toBe('Error - Not Found: A list item by that ID could not be found');
+      expect(result.body.errors[0].message).toBe(
+        'Error - Not Found: A list item by that ID could not be found',
+      );
     });
 
     it('should not delete a list item if parent list is hidden', async () => {
@@ -1078,7 +1111,9 @@ describe('public mutations: ShareableListItem', () => {
       expect(result.body.data).toBeFalsy();
       expect(result.body.errors.length).toBe(1);
       expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
-      expect(result.body.errors[0].message).toBe('Error - Not Found: A list item by that ID could not be found');
+      expect(result.body.errors[0].message).toBe(
+        'Error - Not Found: A list item by that ID could not be found',
+      );
     });
 
     it('should successfully delete a list item', async () => {
@@ -1093,7 +1128,9 @@ describe('public mutations: ShareableListItem', () => {
       // This mutation should not be cached, expect headers.cache-control = no-store
       expect(result.headers['cache-control']).toBe('no-store');
       expect(result.body.data.deleteShareableListItem).toBeDefined();
-      expect(result.body.data.deleteShareableListItem.title).toBe(listItem1.title);
+      expect(result.body.data.deleteShareableListItem.title).toBe(
+        listItem1.title,
+      );
       // Assert that the item is not present in the db anymore
       // by trying to delete the same item
       const result2 = await request(app)
@@ -1106,7 +1143,9 @@ describe('public mutations: ShareableListItem', () => {
       expect(result2.body.data).toBeFalsy();
       expect(result2.body.errors.length).toBe(1);
       expect(result2.body.errors[0].extensions.code).toBe('NOT_FOUND');
-      expect(result2.body.errors[0].message).toBe('Error - Not Found: A list item by that ID could not be found');
+      expect(result2.body.errors[0].message).toBe(
+        'Error - Not Found: A list item by that ID could not be found',
+      );
     });
 
     it('should update the parent list updatedAt value when deleting a list item', async () => {

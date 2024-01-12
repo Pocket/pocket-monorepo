@@ -1,7 +1,7 @@
 import { ApolloServer } from '@apollo/server';
 import { Server } from 'http';
 import { errorHandler, sentryPlugin } from '@pocket-tools/apollo-utils';
-import { ApolloServerPluginLandingPageGraphQLPlayground } from '@apollo/server-plugin-landing-page-graphql-playground';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import {
   ApolloServerPluginLandingPageDisabled,
   ApolloServerPluginInlineTraceDisabled,
@@ -20,7 +20,7 @@ import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive
  * @returns ApolloServer
  */
 export function getAdminServer(
-  httpServer: Server
+  httpServer: Server,
 ): ApolloServer<IAdminContext> {
   const defaultPlugins = [
     sentryPlugin,
@@ -34,7 +34,7 @@ export function getAdminServer(
     ApolloServerPluginInlineTrace(),
   ];
   const nonProdPlugins = [
-    ApolloServerPluginLandingPageGraphQLPlayground(),
+    ApolloServerPluginLandingPageLocalDefault(),
     ApolloServerPluginInlineTraceDisabled(),
     // Usage reporting is enabled by default if you have APOLLO_KEY in your environment
     ApolloServerPluginUsageReportingDisabled(),
@@ -59,7 +59,7 @@ export function getAdminServer(
  * before applying middleware.
  */
 export async function startAdminServer(
-  httpServer: Server
+  httpServer: Server,
 ): Promise<ApolloServer<IAdminContext>> {
   const server = getAdminServer(httpServer);
   await server.start();

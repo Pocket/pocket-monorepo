@@ -30,20 +30,21 @@ describe('admin mutations: ShareableList', () => {
   let server: ApolloServer<IAdminContext>;
   let graphQLUrl: string;
   let db: PrismaClient;
-  let eventBridgeClientStub: jest.Mock;
 
   beforeAll(async () => {
     mockRedisServer();
     ({ app, adminServer: server, adminUrl: graphQLUrl } = await startServer(0));
     db = client();
     // we mock the send method on EventBridgeClient
-    eventBridgeClientStub = jest.spyOn(EventBridgeClient.prototype, 'send').mockClear().mockImplementation()
-      .resolves({ FailedEntryCount: 0 });
+    jest
+      .spyOn(EventBridgeClient.prototype, 'send')
+      .mockClear()
+      .mockImplementation(() => Promise.resolve({ FailedEntryCount: 0 }));
     await clearDb(db);
   });
 
   afterAll(async () => {
-    eventBridgeClientStub.mockRestore();
+    jest.restoreAllMocks();
     await db.$disconnect();
     await server.stop();
   });

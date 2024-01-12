@@ -14,14 +14,14 @@ import {
   ShareableListEventBusPayload,
   ShareableListItemEventBusPayload,
 } from './types';
-import { serverLogger } from '../express';
+import { serverLogger } from '../logger';
 
 /**
  * This function takes in the API Shareable List object and transforms it into a Snowplow Shareable List object
  * @param shareableList
  */
 function transformAPIShareableListToSnowplowShareableList(
-  shareableList: ShareableListComplete
+  shareableList: ShareableListComplete,
 ): SnowplowShareableList {
   // userId should always be present, but if for some reason it cannot be parsed,
   // return undefined as userId is not required in Snowplow schema. Log to Sentry.
@@ -71,7 +71,7 @@ function transformAPIShareableListToSnowplowShareableList(
 function transformAPIShareableListItemToSnowplowShareableListItem(
   shareableListItem: ShareableListItem,
   externalId: string,
-  listExternalId: string
+  listExternalId: string,
 ): SnowplowShareableListItem {
   return {
     shareable_list_item_external_id: externalId,
@@ -105,7 +105,7 @@ function transformAPIShareableListItemToSnowplowShareableListItem(
  */
 export function generateShareableListEventBridgePayload(
   eventType: EventBridgeEventType,
-  shareableList: ShareableListComplete
+  shareableList: ShareableListComplete,
 ): ShareableListEventBusPayload {
   return {
     shareableList:
@@ -126,13 +126,13 @@ export function generateShareableListItemEventBridgePayload(
   eventType: EventBridgeEventType,
   shareableListItem: ShareableListItem,
   externalId: string,
-  listExternalId: string
+  listExternalId: string,
 ): ShareableListItemEventBusPayload {
   return {
     shareableListItem: transformAPIShareableListItemToSnowplowShareableListItem(
       shareableListItem,
       externalId,
-      listExternalId
+      listExternalId,
     ),
     eventType: eventType,
   };
@@ -146,13 +146,13 @@ export function generateShareableListItemEventBridgePayload(
  */
 export async function sendEventHelper(
   eventType: EventBridgeEventType,
-  options: EventBridgeEventOptions
+  options: EventBridgeEventOptions,
 ) {
   let payload;
   if (options.shareableList) {
     payload = generateShareableListEventBridgePayload(
       eventType,
-      options.shareableList
+      options.shareableList,
     );
   }
 
@@ -161,7 +161,7 @@ export async function sendEventHelper(
       eventType,
       options.shareableListItem,
       options.shareableListItemExternalId,
-      options.listExternalId
+      options.listExternalId,
     );
   }
   // Send payload to Event Bridge.
@@ -169,7 +169,7 @@ export async function sendEventHelper(
     await sendEvent(
       payload,
       options.isShareableListEventType,
-      options.isShareableListItemEventType
+      options.isShareableListItemEventType,
     );
   } catch (error) {
     // In the unlikely event that the payload generator throws an error,
@@ -177,7 +177,7 @@ export async function sendEventHelper(
     const failedEventError = new Error(
       `Failed to send event '${
         payload.eventType
-      }' to event bus. Event Body:\n ${JSON.stringify(payload)}`
+      }' to event bus. Event Body:\n ${JSON.stringify(payload)}`,
     );
     // Don't halt program, but capture the failure in Sentry and Cloudwatch
     Sentry.addBreadcrumb(failedEventError);
@@ -204,7 +204,7 @@ export async function sendEventHelper(
 export async function sendEvent(
   eventPayload: any,
   isShareableListEventType: boolean,
-  isShareableListItemEventType: boolean
+  isShareableListItemEventType: boolean,
 ) {
   let eventBridgeSource;
   if (isShareableListEventType) {
@@ -225,15 +225,14 @@ export async function sendEvent(
     ],
   });
 
-  const output: PutEventsCommandOutput = await eventBridgeClient.send(
-    putEventCommand
-  );
+  const output: PutEventsCommandOutput =
+    await eventBridgeClient.send(putEventCommand);
 
   if (output.FailedEntryCount) {
     const failedEventError = new Error(
       `Failed to send event '${
         eventPayload.eventType
-      }' to event bus. Event Body:\n ${JSON.stringify(eventPayload)}`
+      }' to event bus. Event Body:\n ${JSON.stringify(eventPayload)}`,
     );
 
     // Don't halt program, but capture the failure in Sentry and Cloudwatch
