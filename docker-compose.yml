@@ -3,7 +3,7 @@ services:
   ## Start Common Processes Config
   # Note this is not the collector we use in Prod, but works for local testing
   otlpcollector:
-    image: otel/opentelemetry-collector-contrib
+    image: otel/opentelemetry-collector-contrib@sha256:d33611f64de5e6c5eee8a0b9d4e40917b791120ffdb970ef0c9f0e260661e2ce
     command:
       [
         '--config',
@@ -23,7 +23,7 @@ services:
       - 55679:55679 # zpages extension
 
   memcached:
-    image: memcached:latest
+    image: memcached:latest@sha256:e21fc725e821bd8af4bc994690f6429b82d343e02375b0aee1d72ab6d6ad40c9
     ports:
       - 11212:11211
       - 11211:11211
@@ -36,7 +36,7 @@ services:
       retries: 15
 
   redis:
-    image: redis:7
+    image: redis:7@sha256:cc8b0b85fe6917a401334fd285f9a8d66fae231abcf13aadfd02975bf3924a47
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       interval: 5s
@@ -47,7 +47,7 @@ services:
       - '6379:6379'
 
   mysql:
-    image: mysql:8
+    image: mysql:8@sha256:4ef30b2c11a3366d7bb9ad95c70c0782ae435df52d046553ed931621ea36ffa5
     working_dir: /image
     volumes:
       - ./.docker/mysql-8-resources/schema:/docker-entrypoint-initdb.d:delegated
@@ -68,7 +68,7 @@ services:
       - TZ=UTC
 
   postgres:
-    image: postgres:latest
+    image: postgres:latest@sha256:b09f2562ab14fcae750cfc5ae457cd97e90c37679f520bc4a84180913de90261
     ports:
       - '5432:5432'
     volumes:
@@ -86,7 +86,7 @@ services:
       start_period: 80s
 
   localstack:
-    image: localstack/localstack:3.0.2
+    image: localstack/localstack:3.0.2@sha256:e606c4421419030b12d63a59f1211f57f5b0fbf7e9ce769e6250ee62ff4f9293
     ports:
       - '4566:4566'
     volumes:
