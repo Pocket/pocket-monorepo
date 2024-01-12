@@ -20,7 +20,11 @@ export interface SqsLambdaProps {
 export class SqsLambda extends Construct {
   public readonly lambda: PocketSQSWithLambdaTarget;
 
-  constructor(scope: Construct, private name: string, config: SqsLambdaProps) {
+  constructor(
+    scope: Construct,
+    private name: string,
+    config: SqsLambdaProps,
+  ) {
     super(scope, name.toLowerCase());
 
     const { sentryDsn, gitSha } = this.getEnvVariableValues();

@@ -9,7 +9,6 @@ import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
 
 import {
   PocketALBApplication,
-  PocketECSCodePipeline,
   PocketPagerDuty,
 } from '@pocket-tools/terraform-modules';
 
@@ -29,11 +28,10 @@ export class DataDeleterApp extends Construct {
   constructor(
     scope: Construct,
     private name: string,
-    private config: DataDeleterAppConfig
+    private config: DataDeleterAppConfig,
   ) {
     super(scope, name.toLowerCase());
-    const app = this.createPocketAlbApplication();
-    this.createApplicationCodePipeline(app);
+    this.createPocketAlbApplication();
   }
 
   private createPocketAlbApplication(): PocketALBApplication {
@@ -72,8 +70,8 @@ export class DataDeleterApp extends Construct {
       },
       alb6CharacterPrefix: config.shortName,
       autoscalingConfig: {
-        targetMinCapacity: 2,
-        targetMaxCapacity: 3,
+        targetMinCapacity: config.isProd ? 2 : 1,
+        targetMaxCapacity: config.isProd ? 3 : 1,
       },
       cdn: false,
       codeDeploy: {
@@ -84,7 +82,8 @@ export class DataDeleterApp extends Construct {
         },
         snsNotificationTopicArn: snsTopic.arn,
         useCodeDeploy: true,
-        useCodePipeline: true,
+        useCodePipeline: false,
+        useTerraformBasedCodeDeploy: false,
       },
       containerConfigs: [
         {
@@ -243,33 +242,21 @@ export class DataDeleterApp extends Construct {
   }
 
   /**
-   * Create CodePipeline to build and deploy terraform and ecs
-   * @param app
-   * @private
-   */
-  private createApplicationCodePipeline(app: PocketALBApplication) {
-    new PocketECSCodePipeline(this, 'code-pipeline', {
-      prefix: config.prefix,
-      source: {
-        codeStarConnectionArn: config.codePipeline.githubConnectionArn,
-        repository: config.codePipeline.repository,
-        branchName: config.codePipeline.branch,
-      },
-    });
-  }
-
-  /**
    * Create Custom log group for ECS to share across task revisions
    * @param containerName
    * @private
    */
   private createCustomLogGroup(containerName: string) {
-    const logGroup = new CloudwatchLogGroup(this, `${containerName}-log-group`, {
-      name: `/Backend/${config.prefix}/ecs/${containerName}`,
-      retentionInDays: 90,
-      skipDestroy: true,
-      tags: config.tags,
-    });
+    const logGroup = new CloudwatchLogGroup(
+      this,
+      `${containerName}-log-group`,
+      {
+        name: `/Backend/${config.prefix}/ecs/${containerName}`,
+        retentionInDays: 90,
+        skipDestroy: true,
+        tags: config.tags,
+      },
+    );
 
     return logGroup.name;
   }

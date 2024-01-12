@@ -10,7 +10,7 @@ export class EventLambda extends Construct {
   constructor(
     scope: Construct,
     private name: string,
-    config: Pick<SqsLambdaProps, 'vpc'>
+    config: Pick<SqsLambdaProps, 'vpc'>,
   ) {
     super(scope, name.toLowerCase());
 
@@ -29,7 +29,7 @@ export class EventLambda extends Construct {
         sqsQueue: lambda.sqsQueueResource,
         tags: stackConfig.tags,
         dependsOn: [lambda.sqsQueueResource as SqsQueue],
-      }
+      },
     );
   }
 }

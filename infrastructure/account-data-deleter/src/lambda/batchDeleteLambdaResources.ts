@@ -22,7 +22,11 @@ export class BatchDeleteLambdaResources extends Construct {
   public readonly historicalDeletedUsers: ApplicationDynamoDBTable;
   public readonly processedDeletedUsers: ApplicationDynamoDBTable;
   public readonly batchDeleteLambda: PocketVersionedLambda;
-  constructor(scope: Construct, private name: string, private vpc: PocketVPC) {
+  constructor(
+    scope: Construct,
+    private name: string,
+    private vpc: PocketVPC,
+  ) {
     super(scope, name.toLowerCase());
 
     const { sentryDsn, gitSha } = this.getEnvVariableValues();
@@ -65,7 +69,7 @@ export class BatchDeleteLambdaResources extends Construct {
           alarms: {},
         },
         tags: stackConfig.tags,
-      }
+      },
     );
 
     this.addDynamoPermissions(
@@ -75,7 +79,7 @@ export class BatchDeleteLambdaResources extends Construct {
         this.historicalDeletedUsers.dynamodb,
         this.processedDeletedUsers.dynamodb,
       ],
-      ['dynamodb:*']
+      ['dynamodb:*'],
     );
 
     if (!config.isDev) {
@@ -107,7 +111,7 @@ export class BatchDeleteLambdaResources extends Construct {
             targetId: `${config.prefix}-BatchDeleteLambda-Rule-Target`,
           },
         ],
-      }
+      },
     );
 
     //permission for scheduledEvent to invoke the batchDeleteLambda
@@ -195,7 +199,7 @@ export class BatchDeleteLambdaResources extends Construct {
     name: string,
     lambdaExecutionRole: IamRole,
     dynamoTables: DynamodbTable[],
-    actions: string[]
+    actions: string[],
   ) {
     const resources = dynamoTables.map((_) => _.arn);
     const policy = new IamPolicy(this, `${name}-lambda-dynamo-policy`, {
@@ -211,7 +215,7 @@ export class BatchDeleteLambdaResources extends Construct {
               resources,
             },
           ],
-        }
+        },
       ).json,
       dependsOn: [lambdaExecutionRole],
     });
@@ -222,7 +226,7 @@ export class BatchDeleteLambdaResources extends Construct {
         role: lambdaExecutionRole.name,
         policyArn: policy.arn,
         dependsOn: [lambdaExecutionRole, policy],
-      }
+      },
     );
   }
 }

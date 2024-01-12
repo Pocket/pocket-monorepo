@@ -23,6 +23,8 @@ import {
   DataTerraformRemoteState,
   RemoteBackend,
   TerraformStack,
+  Aspects,
+  MigrateIds,
 } from 'cdktf';
 import { Construct } from 'constructs';
 
@@ -39,7 +41,7 @@ class AccountDataDeleter extends TerraformStack {
     new RemoteBackend(this, {
       hostname: 'app.terraform.io',
       organization: 'Pocket',
-      workspaces: [{ prefix: `${config.name}-` }],
+      workspaces: [{ name: `${config.name}-${config.environment}` }],
     });
 
     const caller = new DataAwsCallerIdentity(this, 'caller');
@@ -57,7 +59,7 @@ class AccountDataDeleter extends TerraformStack {
         messageRetentionSeconds: 1209600, //14 days
         //need to set maxReceiveCount to enable DLQ
         maxReceiveCount: 3,
-      }
+      },
     );
 
     const dataDeleterAppConfig: DataDeleterAppConfig = {
@@ -76,6 +78,10 @@ class AccountDataDeleter extends TerraformStack {
 
     // some other lambda stack
     new EventLambda(this, 'event-consumer', { vpc: pocketVpc });
+
+    // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
+    // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
+    Aspects.of(this).add(new MigrateIds());
   }
 
   /**
@@ -111,7 +117,7 @@ class AccountDataDeleter extends TerraformStack {
         workspaces: {
           name: 'incident-management',
         },
-      }
+      },
     );
 
     return new PocketPagerDuty(this, 'pagerduty', {
