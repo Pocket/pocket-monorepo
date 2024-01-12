@@ -53,7 +53,7 @@ export class SqsLambda extends Construct {
         },
         handler: 'index.handler',
         reservedConcurrencyLimit: config.reservedConcurrencyLimit,
-        runtime: LAMBDA_RUNTIMES.NODEJS16,
+        runtime: LAMBDA_RUNTIMES.NODEJS18,
         timeout: 120,
         vpcConfig: {
           securityGroupIds: config.vpc.defaultSecurityGroups.ids,
