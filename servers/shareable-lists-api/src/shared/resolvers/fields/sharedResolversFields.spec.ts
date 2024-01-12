@@ -21,7 +21,7 @@ describe('Shared Resolver Helpers', () => {
       expect(resolvedValue).toBeNull();
       // Expect Sentry to get invoked and assert message
       expect(sentryStub).toHaveBeenCalledTimes(1);
-      expect(sentryStub.mock.calls[0].firstArg).toBe('Failed to parse itemId');
+      expect(sentryStub.mock.calls[0][0]).toBe('Failed to parse itemId');
     });
     it('should return null if field is null', async () => {
       const itemId = null;
@@ -29,7 +29,7 @@ describe('Shared Resolver Helpers', () => {
       expect(resolvedValue).toBeNull();
       // Expect Sentry to get invoked and assert message
       expect(sentryStub).toHaveBeenCalledTimes(1);
-      expect(sentryStub.mock.calls[0].firstArg).toBe('Failed to parse itemId');
+      expect(sentryStub.mock.calls[0][0]).toBe('Failed to parse itemId');
     });
     it('should return null if field is undefined', async () => {
       const itemId = undefined;
@@ -37,7 +37,7 @@ describe('Shared Resolver Helpers', () => {
       expect(resolvedValue).toBeNull();
       // Expect Sentry to get invoked and assert message
       expect(sentryStub).toHaveBeenCalledTimes(1);
-      expect(sentryStub.mock.calls[0].firstArg).toBe('Failed to parse itemId');
+      expect(sentryStub.mock.calls[0][0]).toBe('Failed to parse itemId');
     });
     it('should return null if field is empty string', async () => {
       const itemId = '';
@@ -45,7 +45,7 @@ describe('Shared Resolver Helpers', () => {
       expect(resolvedValue).toBeNull();
       // Expect Sentry to get invoked and assert message
       expect(sentryStub).toHaveBeenCalledTimes(1);
-      expect(sentryStub.mock.calls[0].firstArg).toBe('Failed to parse itemId');
+      expect(sentryStub.mock.calls[0][0]).toBe('Failed to parse itemId');
     });
     it('should successfully resolve value to int', async () => {
       // db returns BigInts in 1234n format

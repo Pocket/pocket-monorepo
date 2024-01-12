@@ -1,5 +1,5 @@
 {
-  "name": "shareable-lists-api",
+  "name": "shareable-lists-cdk",
   "version": "1.0.0",
   "main": "dist/main.js",
   "types": "dist/main.ts",
