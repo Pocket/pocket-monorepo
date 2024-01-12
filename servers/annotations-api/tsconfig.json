@@ -4,11 +4,7 @@
     "outDir": "dist",
     "rootDir": "src"
   },
-  "exclude": [
-    "node_modules/",
-    "dist/"
-  ],
-  "include": [
-    "src/**/*.ts", 
-  ]
+  "exclude": ["node_modules/", "dist/"],
+  "include": ["src/**/*.ts"],
+  "files": ["node_modules/jest-extended/types/index.d.ts"]
 }
