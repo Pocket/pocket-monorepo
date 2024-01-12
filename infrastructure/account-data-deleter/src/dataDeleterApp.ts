@@ -170,20 +170,6 @@ export class DataDeleterApp extends Construct {
             },
           ],
         },
-        {
-          name: 'xray-daemon',
-          command: ['--region', 'us-east-1', '--local-mode'],
-          containerImage: 'amazon/aws-xray-daemon',
-          logGroup: this.createCustomLogGroup('xray-daemon'),
-          portMappings: [
-            {
-              hostPort: 2000,
-              containerPort: 2000,
-              protocol: 'udp',
-            },
-          ],
-          repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
-        },
       ],
       domain: config.domain,
       ecsIamConfig: {
