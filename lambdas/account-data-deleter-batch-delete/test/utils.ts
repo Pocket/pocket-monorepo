@@ -8,7 +8,7 @@ import {
 } from '@aws-sdk/lib-dynamodb';
 
 import { chunk } from 'lodash';
-import { config } from '../config';
+import { config } from '../src/config';
 
 /**
  * Seed data of consecutive stringified integers, hash key only
