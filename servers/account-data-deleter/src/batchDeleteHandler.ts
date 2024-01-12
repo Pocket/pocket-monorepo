@@ -1,0 +1,233 @@
+import { EventEmitter } from 'events';
+import {
+  SQSClient,
+  ReceiveMessageCommand,
+  DeleteMessageCommand,
+  Message,
+  ReceiveMessageCommandOutput,
+} from '@aws-sdk/client-sqs';
+import * as Sentry from '@sentry/node';
+import { config } from './config';
+import { SqsMessage } from './routes/queueDelete';
+import { nanoid } from 'nanoid';
+import { writeClient } from './dataService/clients';
+import { AccountDeleteDataService } from './dataService/accountDeleteDataService';
+import { setTimeout } from 'timers/promises';
+import Logger from './logger';
+import { SeverityLevel } from '@sentry/types';
+
+export class BatchDeleteHandler {
+  readonly sqsClient: SQSClient;
+  static readonly eventName = 'pollBatchDelete';
+
+  /**
+   * Class for deleting records in batches from the database,
+   * when a user deletes their account. Consumes messages from
+   * the BatchDelete SQS queue in a synchronous, blocking way;
+   * only picks up a new message when the previous one has been
+   * completed (or had error), after a delay. If not actively
+   * processing messages, polls the queue on a schedule to discover
+   * messages.
+   * Queue polling starts by deafult
+   * once the class is instantiated and continues
+   * on a schedule.
+   * @param emitter The EventEmitter used by the class for scheduling
+   * poll events
+   * @param pollOnInit whether to start polling when the class is
+   * instantiated, primarily for testing (default=true);
+   */
+  constructor(
+    public readonly emitter: EventEmitter,
+    pollOnInit = true,
+  ) {
+    this.sqsClient = new SQSClient({
+      region: config.aws.region,
+      endpoint: config.aws.endpoint,
+      maxAttempts: 3,
+    });
+    emitter.on(
+      BatchDeleteHandler.eventName,
+      async () => await this.pollQueue(),
+    );
+    // Start the polling by emitting an initial event
+    if (pollOnInit) {
+      emitter.emit(BatchDeleteHandler.eventName);
+    }
+  }
+
+  /**
+   * Delete a message that has been handled from the
+   * BatchDelete queue
+   * @param message SQS Message recieved from BatchDelete queue
+   */
+  async deleteMessage(message: Message) {
+    const deleteParams = {
+      QueueUrl: config.aws.sqs.accountDeleteQueue.url,
+      ReceiptHandle: message.ReceiptHandle,
+    };
+    try {
+      await this.sqsClient.send(new DeleteMessageCommand(deleteParams));
+    } catch (error) {
+      const errorMessage = 'deleteMessage: Error deleting message from queue';
+      Logger.error({ message: errorMessage, error: error, data: message });
+      Sentry.addBreadcrumb({ message: errorMessage, data: message });
+      Sentry.captureException(error);
+    }
+  }
+
+  /**
+   * Handle messages from the batchDelete queue. Calls
+   * AccountDeleteDataService and forwards any errors to
+   * Cloudwatch and Sentry.
+   * @param body the body of the SQS message in the BatchDelete queue
+   * @returns whether or not the message was successfully handled
+   * (underlying call to AccountDeleteDataService completed without error)
+   */
+  async handleMessage(body: SqsMessage): Promise<boolean> {
+    const traceId = body.traceId ?? nanoid();
+    const limitOverridesConfig = config.queueDelete.limitOverrides;
+
+    // Kick off promises for deletes, but don't block response
+    try {
+      Logger.info({
+        message: 'handleMessage: Starting deletes.',
+        data: {
+          traceId: traceId,
+          body: body,
+        },
+      });
+      await new AccountDeleteDataService(
+        body.userId,
+        writeClient(),
+      ).batchDeleteUserInformation(
+        body.tableName,
+        {
+          primaryKeyNames: body.primaryKeyNames,
+          primaryKeyValues: body.primaryKeyValues,
+        },
+        traceId,
+        limitOverridesConfig,
+      );
+
+      await this.handleSpecialDeletes(body, traceId);
+    } catch (error) {
+      const errorMessage =
+        'handleMessage: Error occurred during batch delete query';
+      Logger.error({ message: errorMessage, error: error, data: body });
+      Sentry.addBreadcrumb({
+        message: errorMessage,
+        data: body,
+      });
+      Sentry.captureException(error);
+      return false;
+    }
+    return true;
+  }
+
+  /***
+   * handles table specific delete logic
+   * @param body
+   * @param traceId
+   */
+  async handleSpecialDeletes(body: SqsMessage, traceId: string) {
+    const limitOverridesConfig = config.queueDelete.limitOverrides;
+
+    try {
+      if (body.tableName == 'readitla_ril-tmp.campaign_target') {
+        //`id`s are same for both tables.
+        //select * from `readitla_ril-tmp`.campaign_target_vars ctv
+        //join `readitla_ril-tmp`.campaign_target ct
+        // on ctv.id = ct.id limit 100;
+        //https://github.com/Pocket/Web/blob/6c36eade3f367b616da3d3099fee5d422ac86404/classes/NotificationQueue.php#L322
+        await new AccountDeleteDataService(
+          body.userId,
+          writeClient(),
+        ).batchDeleteUserInformation(
+          'readitla_ril-tmp.campaign_target_vars',
+          {
+            primaryKeyNames: body.primaryKeyNames,
+            primaryKeyValues: body.primaryKeyValues,
+          },
+          traceId,
+          limitOverridesConfig,
+        );
+      }
+    } catch (error) {
+      const errorMessage =
+        'handleSpecialDeletes: Error occurred during batch delete query';
+      Logger.error({ message: errorMessage, error: error, data: body });
+      Sentry.addBreadcrumb({
+        message: errorMessage,
+        data: body,
+      });
+      Sentry.captureException(error);
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Set a timeout to emit another poll event which will be handled
+   * by the listener.
+   * @param timeout time to wait, in ms, before sending event
+   */
+  async scheduleNextPoll(timeout: number) {
+    if (timeout > 0) {
+      Logger.info(`Set next poll timeout at ${timeout}`);
+      await setTimeout(timeout);
+    }
+    this.emitter.emit(BatchDeleteHandler.eventName);
+  }
+
+  /**
+   * Event-driven polling of SQS queue (listener on event emitter).
+   * If a message is received from the queue, process it and schedule
+   * the next poll event. Does not throw -- any errors that occur
+   * are logged to Sentry and Cloudwatch.
+   * Ensures messages are processed in a synchronous, blocking way,
+   * to minimize database load.
+   */
+  async pollQueue() {
+    const params = {
+      // https://github.com/aws/aws-sdk/issues/233
+      AttributeNames: ['SentTimestamp'] as any, // see issue above - bug in the SDK
+      MaxNumberOfMessages: config.aws.sqs.accountDeleteQueue.maxMessages,
+      MessageAttributeNames: ['All'],
+      QueueUrl: config.aws.sqs.accountDeleteQueue.url,
+      VisibilityTimeout: config.aws.sqs.accountDeleteQueue.visibilityTimeout,
+      WaitTimeSeconds: config.aws.sqs.accountDeleteQueue.waitTimeSeconds,
+    };
+
+    let data: ReceiveMessageCommandOutput;
+    let body: SqsMessage;
+
+    try {
+      data = await this.sqsClient.send(new ReceiveMessageCommand(params));
+      if (data.Messages && data.Messages.length > 0) {
+        body = JSON.parse(data.Messages[0].Body);
+      }
+    } catch (error) {
+      const receiveError = 'PollQueue: Error receiving messages from queue';
+      Logger.error({ message: receiveError, error: error });
+      Sentry.addBreadcrumb({ message: receiveError });
+      Sentry.captureException(error, { level: 'fatal' as SeverityLevel });
+    }
+    // Process any messages received and schedule next poll
+    if (body != null) {
+      const wasSuccess = await this.handleMessage(body);
+      if (wasSuccess) {
+        await this.deleteMessage(data.Messages[0]);
+      }
+      // Schedule next message poll
+      await this.scheduleNextPoll(
+        config.aws.sqs.accountDeleteQueue.afterMessagePollIntervalSeconds *
+          1000,
+      );
+    } else {
+      // If no messages were found, schedule another poll after a short time
+      await this.scheduleNextPoll(
+        config.aws.sqs.accountDeleteQueue.defaultPollIntervalSeconds * 1000,
+      );
+    }
+  }
+}
