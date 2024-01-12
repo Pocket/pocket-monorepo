@@ -1,6 +1,7 @@
 const name = 'AnnotationsAPI';
 const domainPrefix = 'annotations-api';
 const isDev = process.env.NODE_ENV === 'development';
+const isProd = process.env.NODE_ENV === 'production';
 const environment = isDev ? 'Dev' : 'Prod';
 const domain = isDev
   ? `${domainPrefix}.getpocket.dev`
@@ -19,6 +20,7 @@ const s3LogsBucket = isDev ? 'pocket-data-items-dev' : 'pocket-data-items';
 export const config = {
   name,
   isDev,
+  isProd,
   prefix: `${name}-${environment}`,
   circleCIPrefix: `/${name}/CircleCI/${environment}`,
   shortName: 'ANNOT',

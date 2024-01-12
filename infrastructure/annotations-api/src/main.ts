@@ -428,12 +428,9 @@ class AnnotationsAPI extends TerraformStack {
         taskExecutionDefaultAttachmentArn:
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },
-      //changes done for deletion testing only
-      //todo: we need to scale it back up, or immediately prioritize to move
-      //deletion handler as a separate thread
       autoscalingConfig: {
-        targetMinCapacity: 1,
-        targetMaxCapacity: 1,
+        targetMinCapacity: config.isProd ? 2 : 1,
+        targetMaxCapacity: config.isProd ? 10 : 1,
       },
       alarms: {
         //TODO: When you start using the service add the pagerduty arns as an action `pagerDuty.snsNonCriticalAlarmTopic.arn`
