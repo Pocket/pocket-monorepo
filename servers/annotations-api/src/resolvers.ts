@@ -6,6 +6,8 @@ import {
   Highlight,
   HighlightNote,
   HighlightUpdateInput,
+  BatchWriteHighlightsResult,
+  BatchWriteHighlightsInput,
 } from './types';
 import { HighlightsDataService } from './dataservices/highlights';
 
@@ -114,9 +116,20 @@ export const resolvers = {
       args,
       context: IContext,
     ): Promise<string> => {
-      const dataService = await new HighlightsDataService(context);
+      const dataService = new HighlightsDataService(context);
       await dataService.delete(args.id);
       return context.notesService.delete(args.id);
+    },
+    batchWriteHighlights: async (
+      _,
+      args: { input: BatchWriteHighlightsInput },
+      context: IContext,
+    ): Promise<BatchWriteHighlightsResult> => {
+      const dataService = new HighlightsDataService(context);
+      return await dataService.batchWrite(
+        args.input.delete ?? [],
+        args.input.create ?? [],
+      );
     },
   },
 };

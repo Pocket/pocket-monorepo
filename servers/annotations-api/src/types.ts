@@ -62,3 +62,13 @@ export type NoteInput = {
   id: string;
   input: string;
 };
+
+export type BatchWriteHighlightsInput = {
+  delete?: string[];
+  create?: HighlightInput[];
+};
+
+export type BatchWriteHighlightsResult = {
+  deleted: string[];
+  created: Highlight[];
+};

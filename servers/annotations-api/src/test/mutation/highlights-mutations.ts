@@ -56,3 +56,19 @@ export const DELETE_HIGHLIGHT = gql`
     deleteSavedItemHighlight(id: $id)
   }
 `;
+
+export const BATCH_WRITE_HIGHLIGHTS = gql`
+  mutation batchWriteHighlights($input: BatchWriteHighlightsInput) {
+    batchWriteHighlights(input: $input) {
+      deleted
+      created {
+        id
+        patch
+        version
+        quote
+        _createdAt
+        _updatedAt
+      }
+    }
+  }
+`;

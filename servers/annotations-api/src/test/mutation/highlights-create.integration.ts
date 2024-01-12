@@ -45,15 +45,16 @@ describe('Highlights creation', () => {
     await readDb.destroy();
   });
 
+  beforeEach(async () => {
+    await truncateAndSeed();
+  });
+
   afterEach(async () => {
     jest.useRealTimers();
   });
 
   describe('any user', () => {
     const headers = baseHeaders;
-    beforeEach(async () => {
-      await truncateAndSeed();
-    });
     it('should create a highlight on a SavedItem without any existing highlights', async () => {
       const variables: { input: HighlightInput[] } = {
         input: [
@@ -238,9 +239,6 @@ describe('Highlights creation', () => {
   });
   describe('non-premium users', () => {
     const headers = baseHeaders;
-    beforeEach(async () => {
-      await truncateAndSeed();
-    });
     it('should not allow non-premium users to create more than three highlights at once', async () => {
       const variables: { input: HighlightInput[] } = {
         input: [
@@ -327,9 +325,6 @@ describe('Highlights creation', () => {
   });
   describe('premium users', () => {
     const headers = { ...baseHeaders, premium: 'true' };
-    beforeEach(async () => {
-      await truncateAndSeed();
-    });
     it('should be able to create a note at the same time as a highlight', async () => {
       const variables: { input: HighlightInput[] } = {
         input: [
