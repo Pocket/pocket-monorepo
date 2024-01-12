@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import sinon from 'sinon';
 import { print } from 'graphql';
 import request from 'supertest';
 import { ApolloServer } from '@apollo/server';
@@ -44,7 +43,7 @@ describe('public mutations: ShareableList', () => {
   let server: ApolloServer<IPublicContext>;
   let graphQLUrl: string;
   let db: PrismaClient;
-  let eventBridgeClientStub: sinon.SinonStub;
+  let eventBridgeClientStub: jest.Mock;
   // let pilotUser2: PilotUser;
 
   // this user will be put into the pilot
@@ -67,13 +66,12 @@ describe('public mutations: ShareableList', () => {
     } = await startServer(0));
     db = client();
     // we mock the send method on EventBridgeClient
-    eventBridgeClientStub = sinon
-      .stub(EventBridgeClient.prototype, 'send')
+    eventBridgeClientStub = jest.spyOn(EventBridgeClient.prototype, 'send').mockClear().mockImplementation()
       .resolves({ FailedEntryCount: 0 });
   });
 
   afterAll(async () => {
-    eventBridgeClientStub.restore();
+    eventBridgeClientStub.mockRestore();
     await db.$disconnect();
     await server.stop();
   });
@@ -509,8 +507,6 @@ describe('public mutations: ShareableList', () => {
     let nonPilotUserList: List;
     let publicList: List;
 
-    let clock;
-
     // for strong checks on createdAt and updatedAt values
     const arbitraryTimestamp = 1664400000000;
     const oneDay = 86400000;
@@ -620,13 +616,13 @@ describe('public mutations: ShareableList', () => {
 
     it('should update a list and return all props', async () => {
       // stub the clock so we can directly check updatedAt
-      clock = sinon.useFakeTimers({
+      jest.useFakeTimers().setSystemTime({
         now: arbitraryTimestamp,
         shouldAdvanceTime: false,
       });
 
       // advance the clock one day
-      clock.tick(oneDay);
+      jest.advanceTimersByTime(oneDay);
 
       const data: UpdateShareableListInput = {
         externalId: pilotUserList.externalId,
@@ -678,7 +674,7 @@ describe('public mutations: ShareableList', () => {
         arbitraryTimestamp + oneDay
       );
 
-      clock.restore();
+      jest.useRealTimers();
     });
 
     it('should update a list (PUBLIC status -> PUBLIC status)', async () => {

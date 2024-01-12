@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import sinon from 'sinon';
 import request from 'supertest';
 import { ApolloServer } from '@apollo/server';
 import * as Sentry from '@sentry/node';
@@ -53,11 +52,11 @@ describe('/deleteUserData express endpoint', () => {
   });
 
   afterEach(() => {
-    sentryStub.restore();
+    sentryStub.mockRestore();
   });
 
   beforeEach(async () => {
-    sentryStub = sinon.stub(Sentry, 'captureException').resolves();
+    sentryStub = jest.spyOn(Sentry, 'captureException').mockClear().mockImplementation().resolves();
     await clearDb(db);
 
     // Create a few Lists

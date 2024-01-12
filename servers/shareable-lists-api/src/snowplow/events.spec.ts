@@ -1,4 +1,3 @@
-import sinon from 'sinon';
 import { expect } from 'chai';
 import * as Sentry from '@sentry/node';
 import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
@@ -19,7 +18,7 @@ import { faker } from '@faker-js/faker';
 import { serverLogger } from '../express';
 
 describe('Snowplow event helpers', () => {
-  let eventBridgeClientStub: sinon.SinonStub;
+  let eventBridgeClientStub: jest.Mock;
   let sentryStub;
   let crumbStub;
   let loggerErrorSpy;
@@ -60,19 +59,18 @@ describe('Snowplow event helpers', () => {
 
   beforeEach(() => {
     // we mock the send method on EventBridgeClient
-    eventBridgeClientStub = sinon
-      .stub(EventBridgeClient.prototype, 'send')
+    eventBridgeClientStub = jest.spyOn(EventBridgeClient.prototype, 'send').mockClear().mockImplementation()
       .resolves({ FailedEntryCount: 0 });
-    sentryStub = sinon.stub(Sentry, 'captureException').resolves();
-    loggerErrorSpy = sinon.spy(serverLogger, 'error');
-    crumbStub = sinon.stub(Sentry, 'addBreadcrumb').resolves();
+    sentryStub = jest.spyOn(Sentry, 'captureException').mockClear().mockImplementation().resolves();
+    loggerErrorSpy = jest.spyOn(serverLogger, 'error').mockClear();
+    crumbStub = jest.spyOn(Sentry, 'addBreadcrumb').mockClear().mockImplementation().resolves();
   });
 
   afterEach(() => {
-    eventBridgeClientStub.restore();
-    sentryStub.restore();
-    loggerErrorSpy.restore();
-    crumbStub.restore();
+    eventBridgeClientStub.mockRestore();
+    sentryStub.mockRestore();
+    loggerErrorSpy.mockRestore();
+    crumbStub.mockRestore();
   });
 
   it('generateShareableListEventBridgePayload function', async () => {
@@ -307,8 +305,8 @@ describe('Snowplow event helpers', () => {
     // userId -> user_id should be undefined
     expect(payload.shareableList.user_id).to.equal(undefined);
     // Expect message to get logged in Sentry
-    expect(sentryStub.callCount).to.equal(1);
-    expect(sentryStub.getCall(0).firstArg).to.equal(
+    expect(sentryStub).toHaveBeenCalledTimes(1);
+    expect(sentryStub.mock.calls[0].firstArg).to.equal(
       'Snowplow: Failed to parse userId'
     );
     // set the userId back to a good one
@@ -410,9 +408,8 @@ describe('Snowplow event helpers', () => {
   });
   describe('sendEventHelper function', () => {
     it('should log error if send call throws error for shareable-list event', async () => {
-      eventBridgeClientStub.restore();
-      eventBridgeClientStub = sinon
-        .stub(EventBridgeClient.prototype, 'send')
+      eventBridgeClientStub.mockRestore();
+      eventBridgeClientStub = jest.spyOn(EventBridgeClient.prototype, 'send').mockClear().mockImplementation()
         .rejects(new Error('boo!'));
 
       // pass shareable-list event as example
@@ -425,21 +422,20 @@ describe('Snowplow event helpers', () => {
       await setTimeout(() => {
         // nothing to see here
       }, 100);
-      expect(sentryStub.callCount).to.equal(1);
-      expect(sentryStub.getCall(0).firstArg.message).to.contain('boo!');
-      expect(crumbStub.callCount).to.equal(1);
-      expect(crumbStub.getCall(0).firstArg.message).to.contain(
+      expect(sentryStub).toHaveBeenCalledTimes(1);
+      expect(sentryStub.mock.calls[0].firstArg.message).to.contain('boo!');
+      expect(crumbStub).toHaveBeenCalledTimes(1);
+      expect(crumbStub.mock.calls[0].firstArg.message).to.contain(
         `Failed to send event 'shareable_list_created' to event bus`
       );
-      expect(loggerErrorSpy.callCount).to.equal(1);
-      expect(loggerErrorSpy.getCall(0).firstArg.message).to.contain(
+      expect(loggerErrorSpy).toHaveBeenCalledTimes(1);
+      expect(loggerErrorSpy.mock.calls[0].firstArg.message).to.contain(
         `Failed to send event 'shareable_list_created' to event bus`
       );
     });
     it('should log error if send call throws error for shareable-list-item event', async () => {
-      eventBridgeClientStub.restore();
-      eventBridgeClientStub = sinon
-        .stub(EventBridgeClient.prototype, 'send')
+      eventBridgeClientStub.mockRestore();
+      eventBridgeClientStub = jest.spyOn(EventBridgeClient.prototype, 'send').mockClear().mockImplementation()
         .rejects(new Error('boo!'));
 
       await sendEventHelper(EventBridgeEventType.SHAREABLE_LIST_ITEM_CREATED, {
@@ -453,14 +449,14 @@ describe('Snowplow event helpers', () => {
       await setTimeout(() => {
         // nothing to see here
       }, 100);
-      expect(sentryStub.callCount).to.equal(1);
-      expect(sentryStub.getCall(0).firstArg.message).to.contain('boo!');
-      expect(crumbStub.callCount).to.equal(1);
-      expect(crumbStub.getCall(0).firstArg.message).to.contain(
+      expect(sentryStub).toHaveBeenCalledTimes(1);
+      expect(sentryStub.mock.calls[0].firstArg.message).to.contain('boo!');
+      expect(crumbStub).toHaveBeenCalledTimes(1);
+      expect(crumbStub.mock.calls[0].firstArg.message).to.contain(
         `Failed to send event 'shareable_list_item_created' to event bus`
       );
-      expect(loggerErrorSpy.callCount).to.equal(1);
-      expect(loggerErrorSpy.getCall(0).firstArg.message).to.contain(
+      expect(loggerErrorSpy).toHaveBeenCalledTimes(1);
+      expect(loggerErrorSpy.mock.calls[0].firstArg.message).to.contain(
         `Failed to send event 'shareable_list_item_created' to event bus`
       );
     });
@@ -481,8 +477,8 @@ describe('Snowplow event helpers', () => {
       await setTimeout(() => {
         // nothing to see here
       }, 100);
-      expect(sentryStub.callCount).to.equal(0);
-      expect(loggerErrorSpy.callCount).to.equal(0);
+      expect(sentryStub).toHaveBeenCalledTimes(0);
+      expect(loggerErrorSpy).toHaveBeenCalledTimes(0);
     });
     it('should send shareable-list-item event to event bus with proper event data', async () => {
       // let's first generate a payload to send to the event bridge
@@ -501,13 +497,12 @@ describe('Snowplow event helpers', () => {
       await setTimeout(() => {
         // nothing to see here
       }, 100);
-      expect(sentryStub.callCount).to.equal(0);
-      expect(loggerErrorSpy.callCount).to.equal(0);
+      expect(sentryStub).toHaveBeenCalledTimes(0);
+      expect(loggerErrorSpy).toHaveBeenCalledTimes(0);
     });
     it('should log error if send call throws error for shareable-list event', async () => {
-      eventBridgeClientStub.restore();
-      eventBridgeClientStub = sinon
-        .stub(EventBridgeClient.prototype, 'send')
+      eventBridgeClientStub.mockRestore();
+      eventBridgeClientStub = jest.spyOn(EventBridgeClient.prototype, 'send').mockClear().mockImplementation()
         .resolves({ FailedEntryCount: 1 });
 
       // let's first generate a payload to send to the event bridge
@@ -524,19 +519,18 @@ describe('Snowplow event helpers', () => {
       await setTimeout(() => {
         // nothing to see here
       }, 100);
-      expect(sentryStub.callCount).to.equal(1);
-      expect(sentryStub.getCall(0).firstArg.message).to.contain(
+      expect(sentryStub).toHaveBeenCalledTimes(1);
+      expect(sentryStub.mock.calls[0].firstArg.message).to.contain(
         `Failed to send event 'shareable_list_created' to event bus`
       );
-      expect(loggerErrorSpy.callCount).to.equal(1);
-      expect(loggerErrorSpy.getCall(0).firstArg.message).to.contain(
+      expect(loggerErrorSpy).toHaveBeenCalledTimes(1);
+      expect(loggerErrorSpy.mock.calls[0].firstArg.message).to.contain(
         `Failed to send event 'shareable_list_created' to event bus`
       );
     });
     it('should log error if send call throws error for shareable-list-item event', async () => {
-      eventBridgeClientStub.restore();
-      eventBridgeClientStub = sinon
-        .stub(EventBridgeClient.prototype, 'send')
+      eventBridgeClientStub.mockRestore();
+      eventBridgeClientStub = jest.spyOn(EventBridgeClient.prototype, 'send').mockClear().mockImplementation()
         .resolves({ FailedEntryCount: 1 });
 
       // let's first generate a payload to send to the event bridge
@@ -555,12 +549,12 @@ describe('Snowplow event helpers', () => {
       await setTimeout(() => {
         // nothing to see here
       }, 100);
-      expect(sentryStub.callCount).to.equal(1);
-      expect(sentryStub.getCall(0).firstArg.message).to.contain(
+      expect(sentryStub).toHaveBeenCalledTimes(1);
+      expect(sentryStub.mock.calls[0].firstArg.message).to.contain(
         `Failed to send event 'shareable_list_item_created' to event bus`
       );
-      expect(loggerErrorSpy.callCount).to.equal(1);
-      expect(loggerErrorSpy.getCall(0).firstArg.message).to.contain(
+      expect(loggerErrorSpy).toHaveBeenCalledTimes(1);
+      expect(loggerErrorSpy.mock.calls[0].firstArg.message).to.contain(
         `Failed to send event 'shareable_list_item_created' to event bus`
       );
     });

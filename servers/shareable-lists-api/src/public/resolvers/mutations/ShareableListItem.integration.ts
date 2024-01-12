@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import sinon from 'sinon';
 import { faker } from '@faker-js/faker';
 import { print } from 'graphql';
 import request from 'supertest';
@@ -36,9 +35,7 @@ describe('public mutations: ShareableListItem', () => {
   let server: ApolloServer<IPublicContext>;
   let graphQLUrl: string;
   let db: PrismaClient;
-  let eventBridgeClientStub: sinon.SinonStub;
-
-  let clock;
+  let eventBridgeClientStub: jest.Mock;
 
   // for strong checks on createdAt and updatedAt values
   const arbitraryTimestamp = 1664400000000;
@@ -69,13 +66,12 @@ describe('public mutations: ShareableListItem', () => {
     db = client();
 
     // we mock the send method on EventBridgeClient
-    eventBridgeClientStub = sinon
-      .stub(EventBridgeClient.prototype, 'send')
+    eventBridgeClientStub = jest.spyOn(EventBridgeClient.prototype, 'send').mockClear().mockImplementation()
       .resolves({ FailedEntryCount: 0 });
   });
 
   afterAll(async () => {
-    eventBridgeClientStub.restore();
+    eventBridgeClientStub.mockRestore();
     await db.$disconnect();
     await server.stop();
   });
@@ -419,13 +415,13 @@ describe('public mutations: ShareableListItem', () => {
 
     it('should update the updatedAt value of the parent list', async () => {
       // stub the clock so we can directly check updatedAt
-      clock = sinon.useFakeTimers({
+      jest.useFakeTimers().setSystemTime({
         now: arbitraryTimestamp,
         shouldAdvanceTime: false,
       });
 
       // advance the clock one day
-      clock.tick(oneDay);
+      jest.advanceTimersByTime(oneDay);
 
       const data: CreateShareableListItemInput = {
         listExternalId: list.externalId,
@@ -457,7 +453,7 @@ describe('public mutations: ShareableListItem', () => {
         arbitraryTimestamp + oneDay
       );
 
-      clock.restore();
+      jest.useRealTimers();
     });
   });
 
@@ -523,13 +519,13 @@ describe('public mutations: ShareableListItem', () => {
 
     it('should update the updatedAt value of the item and the parent list', async () => {
       // stub the clock so we can directly check createdAt and updatedAt
-      clock = sinon.useFakeTimers({
+      jest.useFakeTimers().setSystemTime({
         now: arbitraryTimestamp,
         shouldAdvanceTime: false,
       });
 
       // advance the clock one day to mimic an update made a day after create
-      clock.tick(oneDay);
+      jest.advanceTimersByTime(oneDay);
 
       const data: UpdateShareableListItemInput = {
         externalId: listItem1.externalId,
@@ -558,7 +554,7 @@ describe('public mutations: ShareableListItem', () => {
 
       expect(list.updatedAt.getTime()).to.equal(arbitraryTimestamp + oneDay);
 
-      clock.restore();
+      jest.useRealTimers();
     });
 
     it('should not update a shareable list item with a note greater than 300 characters', async () => {
@@ -795,13 +791,13 @@ describe('public mutations: ShareableListItem', () => {
 
     it('should update the updatedAt value for each shareable list item', async () => {
       // stub the clock so we can directly check updatedAt
-      clock = sinon.useFakeTimers({
+      jest.useFakeTimers().setSystemTime({
         now: arbitraryTimestamp,
         shouldAdvanceTime: false,
       });
 
       // advance the clock one day to mimic an update made a day after create
-      clock.tick(oneDay);
+      jest.advanceTimersByTime(oneDay);
 
       const data: UpdateShareableListItemsInput[] = [
         {
@@ -838,18 +834,18 @@ describe('public mutations: ShareableListItem', () => {
         arbitraryTimestamp + oneDay
       );
 
-      clock.restore();
+      jest.useRealTimers();
     });
 
     it('should update the updatedAt value for each parent list', async () => {
       // stub the clock so we can directly check createdAt and updatedAt
-      clock = sinon.useFakeTimers({
+      jest.useFakeTimers().setSystemTime({
         now: arbitraryTimestamp,
         shouldAdvanceTime: false,
       });
 
       // advance the clock one day to mimic an update made a day after create
-      clock.tick(oneDay);
+      jest.advanceTimersByTime(oneDay);
 
       const data: UpdateShareableListItemsInput[] = [
         {
@@ -902,7 +898,7 @@ describe('public mutations: ShareableListItem', () => {
         arbitraryTimestamp + oneDay
       );
 
-      clock.restore();
+      jest.useRealTimers();
     });
 
     it('should fail the entire update call if one of the externalIds is invalid', async () => {
@@ -1144,13 +1140,13 @@ describe('public mutations: ShareableListItem', () => {
 
     it('should update the parent list updatedAt value when deleting a list item', async () => {
       // stub the clock so we can directly check updatedAt
-      clock = sinon.useFakeTimers({
+      jest.useFakeTimers().setSystemTime({
         now: arbitraryTimestamp,
         shouldAdvanceTime: false,
       });
 
       // advance the clock one day to mimic an update made a day after create
-      clock.tick(oneDay);
+      jest.advanceTimersByTime(oneDay);
 
       // run the mutation
       await request(app)
@@ -1170,7 +1166,7 @@ describe('public mutations: ShareableListItem', () => {
 
       expect(list.updatedAt.getTime()).to.equal(arbitraryTimestamp + oneDay);
 
-      clock.restore();
+      jest.useRealTimers();
     });
   });
 });
