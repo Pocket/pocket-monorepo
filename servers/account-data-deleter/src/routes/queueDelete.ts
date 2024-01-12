@@ -1,5 +1,4 @@
-import { Request, Response } from 'express';
-import { Router } from 'express';
+import { Request, Response, Router } from 'express';
 import { checkSchema } from 'express-validator';
 import { validate } from './validator';
 import * as Sentry from '@sentry/node';

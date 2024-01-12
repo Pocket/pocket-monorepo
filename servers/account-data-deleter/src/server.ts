@@ -1,14 +1,16 @@
 import https from 'https';
 import { config } from './config';
+// eslint-disable-next-line import/default
 import AWSXRay from 'aws-xray-sdk-core';
+// eslint-disable-next-line import/default
 import xrayExpress from 'aws-xray-sdk-express';
 import * as Sentry from '@sentry/node';
-import express from 'express';
+import express, { json } from 'express';
 import { queueDeleteRouter, stripeDeleteRouter } from './routes';
 import { EventEmitter } from 'events';
 import { BatchDeleteHandler } from './batchDeleteHandler';
 import Logger from './logger';
-import morganMiddleware from './morgan';
+import { setMorgan } from '@pocket-tools/ts-logger';
 
 // XRay (distributed tracing) Setup
 AWSXRay.config([AWSXRay.plugins.ECSPlugin]);
@@ -24,9 +26,9 @@ Sentry.init({
 const app = express();
 app.use(
   // JSON parser to enable POST body with JSON
-  express.json(),
+  json(),
   // Logging Setup, Express app-specific
-  morganMiddleware,
+  setMorgan(Logger),
 );
 
 // Endpoints
