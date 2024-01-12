@@ -1,0 +1,236 @@
+"""
+A user-created list of Pocket saves that can be shared publicly.
+"""
+type ShareableList {
+  """
+  A unique string identifier in UUID format.
+  """
+  externalId: ID!
+  """
+  The user who created this shareable list.
+  """
+  user: User!
+  """
+  A URL-ready identifier of the list. Generated from the title
+  of the list when it's first made public. Unique per user.
+  """
+  slug: String
+  """
+  The title of the list. Provided by the Pocket user.
+  """
+  title: String!
+  """
+  Optional text description of a Shareable List. Provided by the Pocket user.
+  """
+  description: String
+  """
+  The status of the list. Defaults to PRIVATE.
+  """
+  status: ShareableListVisibility!
+  """
+  The moderation status of the list. Defaults to VISIBLE.
+  """
+  moderationStatus: ShareableListModerationStatus!
+  """
+  The timestamp of when the list was created by its owner.
+  """
+  createdAt: ISOString!
+  """
+  The timestamp of when the list was last updated by its owner
+  or a member of the moderation team.
+  """
+  updatedAt: ISOString!
+  """
+  Pocket Saves that have been added to this list by the Pocket user.
+  """
+  listItems: [ShareableListItem!]!
+  """
+  The visibility of notes added to list items for this list.
+  """
+  listItemNoteVisibility: ShareableListVisibility!
+}
+
+"""
+A list that has been already shared publicly.
+This type is needed as it needs to be cached.
+"""
+type ShareableListPublic @cacheControl(maxAge: 60, scope: PUBLIC) {
+  """
+  A unique string identifier in UUID format.
+  """
+  externalId: ID!
+  """
+  The user who created this shareable list.
+  """
+  user: User! @cacheControl(maxAge: 60, scope: PUBLIC)
+  """
+  A URL-ready identifier of the list. Generated from the title
+  of the list when it's first made public. Unique per user.
+  """
+  slug: String
+  """
+  The title of the list. Provided by the Pocket user.
+  """
+  title: String!
+  """
+  Optional text description of a Shareable List. Provided by the Pocket user.
+  """
+  description: String
+  """
+  The status of the list. Defaults to PRIVATE.
+  """
+  status: ShareableListVisibility!
+  """
+  The moderation status of the list. Defaults to VISIBLE.
+  """
+  moderationStatus: ShareableListModerationStatus!
+  """
+  The timestamp of when the list was created by its owner.
+  """
+  createdAt: ISOString!
+  """
+  The timestamp of when the list was last updated by its owner
+  or a member of the moderation team.
+  """
+  updatedAt: ISOString!
+  """
+  Pocket Saves that have been added to this list by the Pocket user.
+  """
+  listItems: [ShareableListItem!]! @cacheControl(maxAge: 60, scope: PUBLIC)
+  """
+  The visibility of notes added to list items for this list.
+  """
+  listItemNoteVisibility: ShareableListVisibility!
+}
+
+"""
+Input data for creating a Shareable List.
+"""
+input CreateShareableListInput {
+  title: String! @constraint(maxLength: 100)
+  description: String @constraint(maxLength: 200)
+  listItemNoteVisibility: ShareableListVisibility
+}
+
+"""
+Input data for updating a Shareable List.
+"""
+input UpdateShareableListInput {
+  externalId: ID!
+  title: String @constraint(maxLength: 100)
+  description: String @constraint(maxLength: 200)
+  status: ShareableListVisibility
+  listItemNoteVisibility: ShareableListVisibility
+}
+
+"""
+Input data for creating a Shareable List Item.
+"""
+input CreateShareableListItemInput {
+  listExternalId: ID!
+  itemId: ID!
+  url: Url!
+  title: String
+  excerpt: String
+  note: String @constraint(maxLength: 300)
+  imageUrl: Url
+  publisher: String
+  authors: String
+  sortOrder: Int!
+}
+
+"""
+Input data for creating a Shareable List Item during Shareable List creation.
+"""
+input CreateShareableListItemWithList {
+  itemId: ID!
+  url: Url!
+  title: String
+  excerpt: String
+  note: String @constraint(maxLength: 300)
+  imageUrl: Url
+  publisher: String
+  authors: String
+  sortOrder: Int!
+}
+
+"""
+Input data for updating a single Shareable List Item.
+"""
+input UpdateShareableListItemInput {
+  externalId: ID!
+  note: String @constraint(maxLength: 300)
+  sortOrder: Int
+}
+
+"""
+Input data for updating an array of Shareable List Items, targeting sortOrder.
+"""
+input UpdateShareableListItemsInput {
+  externalId: ID!
+  sortOrder: Int!
+}
+
+type Query {
+  """
+  Looks up and returns a Shareable List with a given external ID for a given user.
+  (the user ID will be coming through with the headers)
+  """
+  shareableList(externalId: ID!): ShareableList
+  """
+  Returns a publicly-shared Shareable List. Note: this query does not require user authentication.
+  """
+  shareableListPublic(externalId: ID!, slug: String!): ShareableListPublic
+  """
+  Looks up and returns an array of Shareable Lists for a given user ID for a given user.
+  (the user ID will be coming through with the headers)
+  """
+  shareableLists: [ShareableList!]!
+
+  """
+  Determines if the userid passed in the headers has access to the pilot program.
+  """
+  shareableListsPilotUser: Boolean!
+}
+
+type Mutation {
+  """
+  Creates a Shareable List. Takes in an optional listItemData parameter to create a ShareableListItem
+  along with a ShareableList.
+  """
+  createShareableList(
+    listData: CreateShareableListInput!
+    listItemData: CreateShareableListItemWithList
+  ): ShareableList
+  """
+  Deletes a Shareable List.
+  """
+  deleteShareableList(externalId: ID!): ShareableList!
+  """
+  Updates a Shareable List. Cannot make a list public.
+  """
+  updateShareableList(data: UpdateShareableListInput!): ShareableList!
+  """
+  Creates a Shareable List Item.
+  """
+  createShareableListItem(
+    data: CreateShareableListItemInput!
+  ): ShareableListItem
+  """
+  Updates a single Shareable List Item.
+  """
+  updateShareableListItem(
+    data: UpdateShareableListItemInput!
+  ): ShareableListItem!
+  """
+  Updates an array of Shareable List Items (sortOrder).
+  """
+  updateShareableListItems(
+    data: [UpdateShareableListItemsInput!]!
+      @constraint(minItems: 1, maxItems: 30)
+  ): [ShareableListItem!]!
+  """
+  Deletes a Shareable List Item. HIDDEN Lists cannot have their items deleted.
+  """
+  deleteShareableListItem(externalId: ID!): ShareableListItem!
+}

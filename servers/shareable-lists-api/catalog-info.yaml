@@ -1,0 +1,29 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name:
+  description: 'The API that manages the ability to create and share lists of related content.'
+  annotations:
+    github.com/project-slug: pocket/
+    github.com/team-slug: 'backend'
+    circleci.com/project-slug: github/pocket/
+    sentry.io/project-slug: 'shareable-lists-api'
+spec:
+  type: service
+  owner: backend
+  lifecycle: production
+  providesApis:
+    - shareable-lists-api
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name:
+  description: 'The API that manages the ability to create and share lists of related content.'
+spec:
+  type: graphql
+  owner: backend
+  definition: |
+    query {}
+  lifecycle: production

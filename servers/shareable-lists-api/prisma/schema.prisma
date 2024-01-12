@@ -1,0 +1,90 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
+  previewFeatures = ["interactiveTransactions"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Visibility {
+  PRIVATE
+  PUBLIC
+}
+
+enum ModerationStatus {
+  VISIBLE
+  HIDDEN
+}
+
+model List {
+  // *** Table fields ***
+  // Prisma needs an integer ID to make relationships between tables
+  id                      BigInt           @id @default(autoincrement())
+  // This is our public-facing ID for use in Admin Tools and Snowplow event reporting
+  externalId              String           @default(uuid()) @db.VarChar(255)
+  // This is the Pocket ID. Sourced externally from a mutation input
+  userId                  BigInt
+  slug                    String?          @db.VarChar(300)
+  title                   String           @db.VarChar(300)
+  description             String?          @db.Text
+  status                  Visibility       @default(PRIVATE)
+  moderationStatus        ModerationStatus @default(VISIBLE)
+  moderatedBy             String?          @db.VarChar(255)
+  moderationReason        String?          @db.Text
+  moderationDetails       String?          @db.Text
+  restorationReason       String?          @db.Text
+  listItemNoteVisibility  Visibility       @default(PRIVATE)
+  createdAt               DateTime         @default(now()) @db.DateTime(0)
+  updatedAt               DateTime         @updatedAt
+
+  // *** Associated models ***
+  listItems ListItem[]
+
+  // *** Additional indexes and constraints ***
+  @@unique([externalId])
+  @@unique([userId, slug])
+  @@index([userId, moderationStatus, updatedAt])
+}
+
+model ListItem {
+  // *** Table fields ***
+  // Prisma needs an integer ID to make relationships between tables
+  id         BigInt   @id @default(autoincrement())
+  // This is our public-facing ID for use in Admin Tools and Snowplow event reporting
+  externalId String   @default(uuid()) @db.VarChar(255)
+  // The link to the parent List
+  listId     BigInt
+  // Required ID of Parser Item and Item props outside of this subgraph's control
+  itemId     BigInt
+  url        String?  @db.VarChar(1000)
+  title      String?  @db.VarChar(300)
+  excerpt    String?  @db.Text
+  // Optional user-supplied note to accompany the item. Length of 300 enforced at graph level
+  note       String?  @db.VarChar(1000)
+  imageUrl   String?  @db.VarChar(1000)
+  publisher  String?  @db.VarChar(300)
+  authors    String?  @db.VarChar(1000)
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now()) @db.DateTime(0)
+  updatedAt  DateTime @updatedAt
+
+  // *** Associated models ***
+  list List @relation(fields: [listId], references: [id])
+
+  // *** Additional indexes and constraints ***
+  @@unique([externalId])
+}
+
+model PilotUser {
+  userId          BigInt    @id
+  // is the user a mozilla employee?
+  mozillaEmployee Boolean   @default(false)
+  // who added this user?
+  createdBy       String?
+  // any notes we want to capture about the pilot user?
+  notes           String?   @db.VarChar(1000)
+  createdAt       DateTime  @default(now()) @db.DateTime(0)
+}

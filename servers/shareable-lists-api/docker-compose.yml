@@ -1,0 +1,79 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:5.7@sha256:f57eef421000aaf8332a91ab0b6c96b3c83ed2a981c29e6528b21ce10197cd16
+    env_file:
+      - ./.docker/local.env
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - TZ=UTC
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      timeout: 20s
+      retries: 10
+    platform: linux/amd64
+    ports:
+      - '3306:3306'
+
+  redis:
+    image: redis:7@sha256:f9724694a0b97288d2255ff2b69642dfba7f34c8e41aaf0a59d33d10d8a42687
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+    ports:
+      - '6379:6379'
+
+  localstack:
+    # from `docker image inspect` CLI:
+    # LOCALSTACK_BUILD_VERSION=2.1.1.dev
+    # (fwiw localstack/localstack:latest also lists the above as "2.1.1.dev",
+    # so it doesn't appear that means it's a "dev" build)
+    # if you change the SHA below, please update build version comment above 😅
+    image: localstack/localstack@sha256:16ffdd3c4ae5669ddb10f113f0527024723333b5a8e41ff43a2130e22d95e8d6
+    env_file:
+      - .docker/local.env
+    environment:
+      - LOCALSTACK_API_KEY=${LOCALSTACK_API_KEY}
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - PORT_WEB_UI=8080
+      - EXTRA_CORS_ALLOWED_HEADERS=Content-Disposition, Content-Type, x-amz-acl
+      - EXTRA_CORS_EXPOSE_HEADERS=ETag
+      - HOSTNAME_EXTERNAL=localstack
+    healthcheck:
+      test:
+        - CMD
+        - bash
+        - -c
+        - curl --write-out '%{http_code}' --silent --output /dev/null http://localhost:4566/_localstack/health
+      interval: 5s
+      timeout: 10s
+      start_period: 10s
+    platform: linux/amd64
+    ports:
+      - '4566:4566'
+      - '8080:8080'
+    volumes:
+      - ./.docker/localstack:/docker-entrypoint-initaws.d
+
+  app:
+    # Debian GNU/Linux 11 (bullseye)
+    image: node:18-slim@sha256:b175cd7f3358c399f7bcee9b1032b86b71b1afa4cfb4dd0db55d66f871475a3e
+    command: "bash -c 'cd /app && npm i && npm run start:dev'"
+    depends_on:
+      localstack:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - .docker/local.env
+    environment:
+      - NODE_ENV=local
+    platform: linux/amd64
+    ports:
+      - '4029:4029'
+    volumes:
+      - ./:/app
+    working_dir: /app
