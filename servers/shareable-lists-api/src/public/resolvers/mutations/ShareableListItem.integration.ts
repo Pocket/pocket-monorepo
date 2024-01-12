@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { faker } from '@faker-js/faker';
 import { print } from 'graphql';
 import request from 'supertest';
@@ -112,10 +111,10 @@ describe('public mutations: ShareableListItem', () => {
         });
 
       // There should be nothing in results
-      expect(result.body.data.createShareableListItem).to.be.null;
+      expect(result.body.data.createShareableListItem).toBeNull();
 
       // And a "Not found" error
-      expect(result.body.errors[0].extensions.code).to.equal('NOT_FOUND');
+      expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
     });
 
     it('should not create a new item for a list that has been taken down', async () => {
@@ -141,10 +140,10 @@ describe('public mutations: ShareableListItem', () => {
         });
 
       // There should be nothing in results
-      expect(result.body.data.createShareableListItem).to.be.null;
+      expect(result.body.data.createShareableListItem).toBeNull();
 
       // And a "Not found" error
-      expect(result.body.errors[0].extensions.code).to.equal('NOT_FOUND');
+      expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
     });
 
     it('should not create a list item in a list that belongs to another user', async () => {
@@ -164,12 +163,12 @@ describe('public mutations: ShareableListItem', () => {
           variables: { data },
         });
       // This mutation should not be cached, expect headers.cache-control = no-store
-      expect(result.headers['cache-control']).to.equal('no-store');
+      expect(result.headers['cache-control']).toBe('no-store');
       // There should be nothing in results
-      expect(result.body.data.createShareableListItem).to.be.null;
+      expect(result.body.data.createShareableListItem).toBeNull();
 
       // And a "Not found" error
-      expect(result.body.errors[0].extensions.code).to.equal('NOT_FOUND');
+      expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
     });
 
     it('should not create a new list item with an invalid itemId', async () => {
@@ -194,10 +193,8 @@ describe('public mutations: ShareableListItem', () => {
         });
 
       // And a "Not found" error
-      expect(result.body.errors[0].extensions.code).to.equal('BAD_USER_INPUT');
-      expect(result.body.errors[0].message).to.equal(
-        `${data.itemId} is an invalid itemId`
-      );
+      expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
+      expect(result.body.errors[0].message).toBe(`${data.itemId} is an invalid itemId`);
     });
 
     it('should not create a new list item with note longer than 300 characters', async () => {
@@ -222,9 +219,9 @@ describe('public mutations: ShareableListItem', () => {
           variables: { data },
         });
 
-      expect(result.body.errors[0].extensions.code).to.equal('BAD_USER_INPUT');
-      expect(result.body.errors[0].message).to.contain(
-        `Must be no more than ${LIST_ITEM_NOTE_MAX_CHARS} characters in length`
+      expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
+      expect(result.body.errors[0].message).toEqual(
+        expect.arrayContaining([`Must be no more than ${LIST_ITEM_NOTE_MAX_CHARS} characters in length`])
       );
     });
 
@@ -250,27 +247,25 @@ describe('public mutations: ShareableListItem', () => {
         });
 
       // There should be no errors
-      expect(result.body.errors).to.be.undefined;
+      expect(result.body.errors).toBeUndefined();
 
       // A result should be returned
-      expect(result.body.data.createShareableListItem).not.to.be.null;
+      expect(result.body.data.createShareableListItem).not.toBeNull();
 
       // Assert that all props are returned
       const listItem = result.body.data.createShareableListItem;
-      expect(listItem.externalId).not.to.be.empty;
-      expect(listItem.itemId).to.equal(data.itemId);
-      expect(listItem.url).to.equal(data.url);
-      expect(listItem.title).to.equal(data.title);
-      expect(listItem.excerpt).to.equal(
-        '&lt;blink&gt;The best story ever told&lt;/blink&gt;'
-      );
-      expect(listItem.note).to.be.null;
-      expect(listItem.imageUrl).to.equal(data.imageUrl);
-      expect(listItem.publisher).to.equal(data.publisher);
-      expect(listItem.authors).to.equal(data.authors);
-      expect(listItem.sortOrder).to.equal(data.sortOrder);
-      expect(listItem.createdAt).not.to.be.empty;
-      expect(listItem.updatedAt).not.to.be.empty;
+      expect(listItem.externalId).not.toHaveLength(0);
+      expect(listItem.itemId).toBe(data.itemId);
+      expect(listItem.url).toBe(data.url);
+      expect(listItem.title).toBe(data.title);
+      expect(listItem.excerpt).toBe('&lt;blink&gt;The best story ever told&lt;/blink&gt;');
+      expect(listItem.note).toBeNull();
+      expect(listItem.imageUrl).toBe(data.imageUrl);
+      expect(listItem.publisher).toBe(data.publisher);
+      expect(listItem.authors).toBe(data.authors);
+      expect(listItem.sortOrder).toBe(data.sortOrder);
+      expect(listItem.createdAt).not.toHaveLength(0);
+      expect(listItem.updatedAt).not.toHaveLength(0);
     });
 
     it('should create a new list item with all properties', async () => {
@@ -296,33 +291,31 @@ describe('public mutations: ShareableListItem', () => {
         });
 
       // This mutation should not be cached, expect headers.cache-control = no-store
-      expect(result.headers['cache-control']).to.equal('no-store');
+      expect(result.headers['cache-control']).toBe('no-store');
 
       // There should be no errors
-      expect(result.body.errors).to.be.undefined;
+      expect(result.body.errors).toBeUndefined();
 
       // A result should be returned
-      expect(result.body.data.createShareableListItem).not.to.be.null;
+      expect(result.body.data.createShareableListItem).not.toBeNull();
 
       // Assert that all props are returned
       const listItem = result.body.data.createShareableListItem;
 
-      expect(listItem.externalId).not.to.be.empty;
-      expect(listItem.itemId).to.equal(data.itemId);
-      expect(listItem.url).to.equal(data.url);
-      expect(listItem.title).to.equal(data.title);
-      expect(listItem.excerpt).to.equal(
-        '&lt;blink&gt;The best story ever told&lt;/blink&gt;'
-      );
-      expect(listItem.note).to.equal(
+      expect(listItem.externalId).not.toHaveLength(0);
+      expect(listItem.itemId).toBe(data.itemId);
+      expect(listItem.url).toBe(data.url);
+      expect(listItem.title).toBe(data.title);
+      expect(listItem.excerpt).toBe('&lt;blink&gt;The best story ever told&lt;/blink&gt;');
+      expect(listItem.note).toBe(
         '&lt;div&gt;here is what &lt;strong&gt;i&lt;/strong&gt; think about this article...&lt;/div&gt;'
       );
-      expect(listItem.imageUrl).to.equal(data.imageUrl);
-      expect(listItem.publisher).to.equal(data.publisher);
-      expect(listItem.authors).to.equal(data.authors);
-      expect(listItem.sortOrder).to.equal(data.sortOrder);
-      expect(listItem.createdAt).not.to.be.empty;
-      expect(listItem.updatedAt).not.to.be.empty;
+      expect(listItem.imageUrl).toBe(data.imageUrl);
+      expect(listItem.publisher).toBe(data.publisher);
+      expect(listItem.authors).toBe(data.authors);
+      expect(listItem.sortOrder).toBe(data.sortOrder);
+      expect(listItem.createdAt).not.toHaveLength(0);
+      expect(listItem.updatedAt).not.toHaveLength(0);
     });
 
     it('should not create a list item with the same URL in the same list', async () => {
@@ -349,10 +342,10 @@ describe('public mutations: ShareableListItem', () => {
         });
 
       // There should be nothing in results
-      expect(result.body.data.createShareableListItem).to.be.null;
+      expect(result.body.data.createShareableListItem).toBeNull();
 
       // And a "Bad user input" error
-      expect(result.body.errors[0].extensions.code).to.equal('BAD_USER_INPUT');
+      expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
     });
 
     it('should create a list item with the same URL in a different list', async () => {
@@ -390,27 +383,27 @@ describe('public mutations: ShareableListItem', () => {
           variables: { data },
         });
       // This mutation should not be cached, expect headers.cache-control = no-store
-      expect(result.headers['cache-control']).to.equal('no-store');
+      expect(result.headers['cache-control']).toBe('no-store');
       // There should be no errors
-      expect(result.body.errors).to.be.undefined;
+      expect(result.body.errors).toBeUndefined();
 
       // A result should be returned
-      expect(result.body.data.createShareableListItem).not.to.be.null;
+      expect(result.body.data.createShareableListItem).not.toBeNull();
 
       // Assert that all props are returned
       const listItem = result.body.data.createShareableListItem;
-      expect(listItem.externalId).not.to.be.empty;
-      expect(listItem.itemId).to.equal(data.itemId);
-      expect(listItem.url).to.equal(data.url);
-      expect(listItem.title).to.equal(data.title);
-      expect(listItem.excerpt).to.equal(data.excerpt);
-      expect(listItem.note).to.equal(data.note);
-      expect(listItem.imageUrl).to.equal(data.imageUrl);
-      expect(listItem.publisher).to.equal(data.publisher);
-      expect(listItem.authors).to.equal(data.authors);
-      expect(listItem.sortOrder).to.equal(data.sortOrder);
-      expect(listItem.createdAt).not.to.be.empty;
-      expect(listItem.updatedAt).not.to.be.empty;
+      expect(listItem.externalId).not.toHaveLength(0);
+      expect(listItem.itemId).toBe(data.itemId);
+      expect(listItem.url).toBe(data.url);
+      expect(listItem.title).toBe(data.title);
+      expect(listItem.excerpt).toBe(data.excerpt);
+      expect(listItem.note).toBe(data.note);
+      expect(listItem.imageUrl).toBe(data.imageUrl);
+      expect(listItem.publisher).toBe(data.publisher);
+      expect(listItem.authors).toBe(data.authors);
+      expect(listItem.sortOrder).toBe(data.sortOrder);
+      expect(listItem.createdAt).not.toHaveLength(0);
+      expect(listItem.updatedAt).not.toHaveLength(0);
     });
 
     it('should update the updatedAt value of the parent list', async () => {
@@ -449,9 +442,7 @@ describe('public mutations: ShareableListItem', () => {
         },
       });
 
-      expect(updatedList.updatedAt.getTime()).to.equal(
-        arbitraryTimestamp + oneDay
-      );
+      expect(updatedList.updatedAt.getTime()).toBe(arbitraryTimestamp + oneDay);
 
       jest.useRealTimers();
     });
@@ -505,16 +496,16 @@ describe('public mutations: ShareableListItem', () => {
         });
 
       // There should be no errors
-      expect(result.body.errors).to.be.undefined;
+      expect(result.body.errors).toBeUndefined();
 
       // A result should be returned
-      expect(result.body.data.updateShareableListItem).not.to.be.null;
+      expect(result.body.data.updateShareableListItem).not.toBeNull();
 
       const listItem = result.body.data.updateShareableListItem;
 
       // the properties should be updated
-      expect(listItem.note).to.equal('&lt;strong&gt;new&lt;/strong&gt; note!');
-      expect(listItem.sortOrder).to.equal(data.sortOrder);
+      expect(listItem.note).toBe('&lt;strong&gt;new&lt;/strong&gt; note!');
+      expect(listItem.sortOrder).toBe(data.sortOrder);
     });
 
     it('should update the updatedAt value of the item and the parent list', async () => {
@@ -544,7 +535,7 @@ describe('public mutations: ShareableListItem', () => {
 
       expect(
         Date.parse(result.body.data.updateShareableListItem.updatedAt)
-      ).to.equal(arbitraryTimestamp + oneDay);
+      ).toBe(arbitraryTimestamp + oneDay);
 
       const list = await db.list.findFirst({
         where: {
@@ -552,7 +543,7 @@ describe('public mutations: ShareableListItem', () => {
         },
       });
 
-      expect(list.updatedAt.getTime()).to.equal(arbitraryTimestamp + oneDay);
+      expect(list.updatedAt.getTime()).toBe(arbitraryTimestamp + oneDay);
 
       jest.useRealTimers();
     });
@@ -572,9 +563,9 @@ describe('public mutations: ShareableListItem', () => {
           variables: { data },
         });
 
-      expect(result.body.errors[0].extensions.code).to.equal('BAD_USER_INPUT');
-      expect(result.body.errors[0].message).to.contain(
-        `Must be no more than ${LIST_ITEM_NOTE_MAX_CHARS} characters in length`
+      expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
+      expect(result.body.errors[0].message).toEqual(
+        expect.arrayContaining([`Must be no more than ${LIST_ITEM_NOTE_MAX_CHARS} characters in length`])
       );
     });
 
@@ -594,9 +585,9 @@ describe('public mutations: ShareableListItem', () => {
           variables: { data },
         });
 
-      expect(result.body.errors[0].extensions.code).to.equal('NOT_FOUND');
-      expect(result.body.errors[0].message).to.contain(
-        'Error - Not Found: A list item by that ID could not be found'
+      expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
+      expect(result.body.errors[0].message).toEqual(
+        expect.arrayContaining(['Error - Not Found: A list item by that ID could not be found'])
       );
     });
 
@@ -618,9 +609,9 @@ describe('public mutations: ShareableListItem', () => {
           variables: { data },
         });
 
-      expect(result.body.errors[0].extensions.code).to.equal('NOT_FOUND');
-      expect(result.body.errors[0].message).to.contain(
-        'Error - Not Found: A list item by that ID could not be found'
+      expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
+      expect(result.body.errors[0].message).toEqual(
+        expect.arrayContaining(['Error - Not Found: A list item by that ID could not be found'])
       );
     });
 
@@ -639,18 +630,18 @@ describe('public mutations: ShareableListItem', () => {
         });
 
       // There should be no errors
-      expect(result.body.errors).to.be.undefined;
+      expect(result.body.errors).toBeUndefined();
 
       // A result should be returned
-      expect(result.body.data.updateShareableListItem).not.to.be.null;
+      expect(result.body.data.updateShareableListItem).not.toBeNull();
 
       const listItem = result.body.data.updateShareableListItem;
 
       // note should be gone
-      expect(listItem.note).to.be.null;
+      expect(listItem.note).toBeNull();
 
       // sort order should be unchanged
-      expect(listItem.sortOrder).to.equal(listItem1.sortOrder);
+      expect(listItem.sortOrder).toBe(listItem1.sortOrder);
     });
 
     it('should update a shareable list item sort order', async () => {
@@ -668,18 +659,18 @@ describe('public mutations: ShareableListItem', () => {
         });
 
       // There should be no errors
-      expect(result.body.errors).to.be.undefined;
+      expect(result.body.errors).toBeUndefined();
 
       // A result should be returned
-      expect(result.body.data.updateShareableListItem).not.to.be.null;
+      expect(result.body.data.updateShareableListItem).not.toBeNull();
 
       const listItem = result.body.data.updateShareableListItem;
 
       // sort order should be updated
-      expect(listItem.sortOrder).to.equal(data.sortOrder);
+      expect(listItem.sortOrder).toBe(data.sortOrder);
 
       // note should be retained
-      expect(listItem.note).to.equal(listItem2.note);
+      expect(listItem.note).toBe(listItem2.note);
     });
 
     it('should disregard a sort order of null', async () => {
@@ -697,15 +688,15 @@ describe('public mutations: ShareableListItem', () => {
         });
 
       // There should be no errors
-      expect(result.body.errors).to.be.undefined;
+      expect(result.body.errors).toBeUndefined();
 
       // A result should be returned
-      expect(result.body.data.updateShareableListItem).not.to.be.null;
+      expect(result.body.data.updateShareableListItem).not.toBeNull();
 
       const listItem = result.body.data.updateShareableListItem;
 
       // sort order should be updated
-      expect(listItem.sortOrder).to.equal(listItem1.sortOrder);
+      expect(listItem.sortOrder).toBe(listItem1.sortOrder);
     });
   });
 
@@ -778,15 +769,15 @@ describe('public mutations: ShareableListItem', () => {
         });
 
       // There should be no errors
-      expect(result.body.errors).to.be.undefined;
+      expect(result.body.errors).toBeUndefined();
 
       // A result should be returned
-      expect(result.body.data.updateShareableListItems).not.to.be.null;
+      expect(result.body.data.updateShareableListItems).not.toBeNull();
 
       const listItems = result.body.data.updateShareableListItems;
       // the sortOrders should be updated
-      expect(listItems[0].sortOrder).to.equal(data[0].sortOrder);
-      expect(listItems[1].sortOrder).to.equal(data[1].sortOrder);
+      expect(listItems[0].sortOrder).toBe(data[0].sortOrder);
+      expect(listItems[1].sortOrder).toBe(data[1].sortOrder);
     });
 
     it('should update the updatedAt value for each shareable list item', async () => {
@@ -819,20 +810,16 @@ describe('public mutations: ShareableListItem', () => {
         });
 
       // There should be no errors
-      expect(result.body.errors).to.be.undefined;
+      expect(result.body.errors).toBeUndefined();
 
       // A result should be returned
-      expect(result.body.data.updateShareableListItems).not.to.be.null;
+      expect(result.body.data.updateShareableListItems).not.toBeNull();
 
       const listItems = result.body.data.updateShareableListItems;
 
-      expect(Date.parse(listItems[0].updatedAt)).to.equal(
-        arbitraryTimestamp + oneDay
-      );
+      expect(Date.parse(listItems[0].updatedAt)).toBe(arbitraryTimestamp + oneDay);
 
-      expect(Date.parse(listItems[1].updatedAt)).to.equal(
-        arbitraryTimestamp + oneDay
-      );
+      expect(Date.parse(listItems[1].updatedAt)).toBe(arbitraryTimestamp + oneDay);
 
       jest.useRealTimers();
     });
@@ -873,10 +860,10 @@ describe('public mutations: ShareableListItem', () => {
         });
 
       // There should be no errors
-      expect(result.body.errors).to.be.undefined;
+      expect(result.body.errors).toBeUndefined();
 
       // A result should be returned
-      expect(result.body.data.updateShareableListItems).not.to.be.null;
+      expect(result.body.data.updateShareableListItems).not.toBeNull();
 
       // retrieve the paret lists that should have been updated
       const updatedLists = await db.list.findMany({
@@ -890,13 +877,9 @@ describe('public mutations: ShareableListItem', () => {
         },
       });
 
-      expect(updatedLists[0].updatedAt.getTime()).to.equal(
-        arbitraryTimestamp + oneDay
-      );
+      expect(updatedLists[0].updatedAt.getTime()).toBe(arbitraryTimestamp + oneDay);
 
-      expect(updatedLists[1].updatedAt.getTime()).to.equal(
-        arbitraryTimestamp + oneDay
-      );
+      expect(updatedLists[1].updatedAt.getTime()).toBe(arbitraryTimestamp + oneDay);
 
       jest.useRealTimers();
     });
@@ -921,20 +904,18 @@ describe('public mutations: ShareableListItem', () => {
           variables: { data },
         });
 
-      expect(result.body.errors[0].extensions.code).to.equal('NOT_FOUND');
-      expect(result.body.errors[0].message).to.contain(
-        'Error - Not Found: A list item by that ID could not be found'
+      expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
+      expect(result.body.errors[0].message).toEqual(
+        expect.arrayContaining(['Error - Not Found: A list item by that ID could not be found'])
       );
       // lets make sure the valid list item was not updated
       const validListItem = await db.listItem.findFirst({
         where: { externalId: shareableList1User1_item1.externalId },
       });
       // expect the list item sortOrder not be updated to 1
-      expect(validListItem.sortOrder).not.to.equal(1);
+      expect(validListItem.sortOrder).not.toBe(1);
       // double check sortOrder is original value
-      expect(validListItem.sortOrder).to.equal(
-        shareableList1User1_item1.sortOrder
-      );
+      expect(validListItem.sortOrder).toBe(shareableList1User1_item1.sortOrder);
     });
 
     it('should fail if more than 30 list items are provided as input', async () => {
@@ -967,9 +948,9 @@ describe('public mutations: ShareableListItem', () => {
           variables: { data },
         });
 
-      expect(result.body.errors[0].extensions.code).to.equal('BAD_USER_INPUT');
-      expect(result.body.errors[0].message).to.contain(
-        `Variable "$data" at "data" must be no more than 30 in length`
+      expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
+      expect(result.body.errors[0].message).toEqual(
+        expect.arrayContaining([`Variable "$data" at "data" must be no more than 30 in length`])
       );
     });
 
@@ -993,9 +974,9 @@ describe('public mutations: ShareableListItem', () => {
           variables: { data },
         });
 
-      expect(result.body.errors[0].extensions.code).to.equal('NOT_FOUND');
-      expect(result.body.errors[0].message).to.contain(
-        'Error - Not Found: A list item by that ID could not be found'
+      expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
+      expect(result.body.errors[0].message).toEqual(
+        expect.arrayContaining(['Error - Not Found: A list item by that ID could not be found'])
       );
     });
   });
@@ -1038,12 +1019,10 @@ describe('public mutations: ShareableListItem', () => {
           query: print(DELETE_SHAREABLE_LIST_ITEM),
           variables: { externalId: listItem.externalId },
         });
-      expect(result.body.data).not.to.exist;
-      expect(result.body.errors.length).to.equal(1);
-      expect(result.body.errors[0].extensions.code).to.equal('NOT_FOUND');
-      expect(result.body.errors[0].message).to.equal(
-        'Error - Not Found: A list item by that ID could not be found'
-      );
+      expect(result.body.data).toBeFalsy();
+      expect(result.body.errors.length).toBe(1);
+      expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
+      expect(result.body.errors[0].message).toBe('Error - Not Found: A list item by that ID could not be found');
     });
 
     it('should not delete a list item without userId in header', async () => {
@@ -1054,10 +1033,10 @@ describe('public mutations: ShareableListItem', () => {
           query: print(DELETE_SHAREABLE_LIST_ITEM),
           variables: { externalId: listItem1.externalId },
         });
-      expect(result.body.data).not.to.exist;
-      expect(result.body.errors.length).to.equal(1);
-      expect(result.body.errors[0].extensions.code).to.equal('FORBIDDEN');
-      expect(result.body.errors[0].message).to.equal(ACCESS_DENIED_ERROR);
+      expect(result.body.data).toBeFalsy();
+      expect(result.body.errors.length).toBe(1);
+      expect(result.body.errors[0].extensions.code).toBe('FORBIDDEN');
+      expect(result.body.errors[0].message).toBe(ACCESS_DENIED_ERROR);
     });
 
     it('should not delete a list item if no list item was found', async () => {
@@ -1069,12 +1048,10 @@ describe('public mutations: ShareableListItem', () => {
           query: print(DELETE_SHAREABLE_LIST_ITEM),
           variables: { externalId: 'non-existing-uuid' },
         });
-      expect(result.body.data).not.to.exist;
-      expect(result.body.errors.length).to.equal(1);
-      expect(result.body.errors[0].extensions.code).to.equal('NOT_FOUND');
-      expect(result.body.errors[0].message).to.equal(
-        'Error - Not Found: A list item by that ID could not be found'
-      );
+      expect(result.body.data).toBeFalsy();
+      expect(result.body.errors.length).toBe(1);
+      expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
+      expect(result.body.errors[0].message).toBe('Error - Not Found: A list item by that ID could not be found');
     });
 
     it('should not delete a list item if parent list is hidden', async () => {
@@ -1098,12 +1075,10 @@ describe('public mutations: ShareableListItem', () => {
           query: print(DELETE_SHAREABLE_LIST_ITEM),
           variables: { externalId: listItem3.externalId },
         });
-      expect(result.body.data).not.to.exist;
-      expect(result.body.errors.length).to.equal(1);
-      expect(result.body.errors[0].extensions.code).to.equal('NOT_FOUND');
-      expect(result.body.errors[0].message).to.equal(
-        'Error - Not Found: A list item by that ID could not be found'
-      );
+      expect(result.body.data).toBeFalsy();
+      expect(result.body.errors.length).toBe(1);
+      expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
+      expect(result.body.errors[0].message).toBe('Error - Not Found: A list item by that ID could not be found');
     });
 
     it('should successfully delete a list item', async () => {
@@ -1116,11 +1091,9 @@ describe('public mutations: ShareableListItem', () => {
           variables: { externalId: listItem1.externalId },
         });
       // This mutation should not be cached, expect headers.cache-control = no-store
-      expect(result.headers['cache-control']).to.equal('no-store');
-      expect(result.body.data.deleteShareableListItem).to.exist;
-      expect(result.body.data.deleteShareableListItem.title).to.equal(
-        listItem1.title
-      );
+      expect(result.headers['cache-control']).toBe('no-store');
+      expect(result.body.data.deleteShareableListItem).toBeDefined();
+      expect(result.body.data.deleteShareableListItem.title).toBe(listItem1.title);
       // Assert that the item is not present in the db anymore
       // by trying to delete the same item
       const result2 = await request(app)
@@ -1130,12 +1103,10 @@ describe('public mutations: ShareableListItem', () => {
           query: print(DELETE_SHAREABLE_LIST_ITEM),
           variables: { externalId: listItem1.externalId },
         });
-      expect(result2.body.data).not.to.exist;
-      expect(result2.body.errors.length).to.equal(1);
-      expect(result2.body.errors[0].extensions.code).to.equal('NOT_FOUND');
-      expect(result2.body.errors[0].message).to.equal(
-        'Error - Not Found: A list item by that ID could not be found'
-      );
+      expect(result2.body.data).toBeFalsy();
+      expect(result2.body.errors.length).toBe(1);
+      expect(result2.body.errors[0].extensions.code).toBe('NOT_FOUND');
+      expect(result2.body.errors[0].message).toBe('Error - Not Found: A list item by that ID could not be found');
     });
 
     it('should update the parent list updatedAt value when deleting a list item', async () => {
@@ -1164,7 +1135,7 @@ describe('public mutations: ShareableListItem', () => {
         },
       });
 
-      expect(list.updatedAt.getTime()).to.equal(arbitraryTimestamp + oneDay);
+      expect(list.updatedAt.getTime()).toBe(arbitraryTimestamp + oneDay);
 
       jest.useRealTimers();
     });

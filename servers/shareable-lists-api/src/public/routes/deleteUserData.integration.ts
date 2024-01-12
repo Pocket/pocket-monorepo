@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import request from 'supertest';
 import { ApolloServer } from '@apollo/server';
 import * as Sentry from '@sentry/node';
@@ -93,9 +92,9 @@ describe('/deleteUserData express endpoint', () => {
         .post(graphQLUrl + 'deleteUserData')
         .set('Content-Type', 'application/json')
         .send({ userId: '12345' });
-      expect(result.body.status).to.equal('OK');
-      expect(result.body.message).to.contain(
-        `No shareable list data to delete for User ID: 12345`
+      expect(result.body.status).toBe('OK');
+      expect(result.body.message).toEqual(
+        expect.arrayContaining([`No shareable list data to delete for User ID: 12345`])
       );
     });
 
@@ -104,8 +103,8 @@ describe('/deleteUserData express endpoint', () => {
         .post(graphQLUrl + 'deleteUserData')
         .set('Content-Type', 'application/json')
         .send({ userId: 'abc-12345' });
-      expect(result.body.errors.length).to.equal(1);
-      expect(result.body.errors[0].msg).to.equal('Must provide valid userId');
+      expect(result.body.errors.length).toBe(1);
+      expect(result.body.errors[0].msg).toBe('Must provide valid userId');
     });
 
     it('should successfully deleteUserData for a userId', async () => {
@@ -113,33 +112,33 @@ describe('/deleteUserData express endpoint', () => {
         .post(graphQLUrl + 'deleteUserData')
         .set('Content-Type', 'application/json')
         .send({ userId: headers.userId });
-      expect(result.body.status).to.equal('OK');
-      expect(result.body.message).to.contain(
-        `Deleting shareable lists data for User ID: ${headers.userId}`
+      expect(result.body.status).toBe('OK');
+      expect(result.body.message).toEqual(
+        expect.arrayContaining([`Deleting shareable lists data for User ID: ${headers.userId}`])
       );
       // lets manually call getAllShareableListIdsForUser to check there are no lists for this user
       const ids = await getAllShareableListIdsForUser(parseInt(headers.userId));
-      expect(ids.length).to.equal(0);
+      expect(ids.length).toBe(0);
     });
   });
 
   describe('getAllShareableListIdsForUser', () => {
     it('should return empty array for userId with no lists in db', async () => {
       const ids = await getAllShareableListIdsForUser(234567);
-      expect(ids.length).to.equal(0);
+      expect(ids.length).toBe(0);
     });
     it('should return appropriate list ids for user', async () => {
       let ids = await getAllShareableListIdsForUser(parseInt(headers.userId));
-      expect(ids.length).to.equal(2);
+      expect(ids.length).toBe(2);
       // check the returned ids are what we expect
-      expect(ids[0]).to.equal(parseInt(list1.id as unknown as string));
-      expect(ids[1]).to.equal(parseInt(list2.id as unknown as string));
+      expect(ids[0]).toBe(parseInt(list1.id as unknown as string));
+      expect(ids[1]).toBe(parseInt(list2.id as unknown as string));
 
       // get listIds for another user
       ids = await getAllShareableListIdsForUser(parseInt(headers2.userId));
-      expect(ids.length).to.equal(1);
+      expect(ids.length).toBe(1);
       // check the returned ids are what we expect
-      expect(ids[0]).to.equal(parseInt(list3.id as unknown as string));
+      expect(ids[0]).toBe(parseInt(list3.id as unknown as string));
     });
   });
 
@@ -150,7 +149,7 @@ describe('/deleteUserData express endpoint', () => {
         parseInt(list3.id as unknown as string),
       ]);
       // there should be no list items found for list 3
-      expect(count).to.equal(0);
+      expect(count).toBe(0);
     });
     it('should return correct count of deleted list items for user with list items', async () => {
       // pilotUser 1 has two lists (list1, list2) and 5 list items per list
@@ -159,7 +158,7 @@ describe('/deleteUserData express endpoint', () => {
         parseInt(list2.id as unknown as string),
       ]);
       // there should be 10 total list items deleted
-      expect(count).to.equal(10);
+      expect(count).toBe(10);
     });
   });
 });

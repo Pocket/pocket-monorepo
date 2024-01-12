@@ -11,7 +11,6 @@ import {
   createShareableListHelper,
   mockRedisServer,
 } from '../../../test/helpers';
-import { expect } from 'chai';
 import {
   ACCESS_DENIED_ERROR,
   FULLACCESS,
@@ -71,9 +70,9 @@ describe('admin mutations: ShareableList', () => {
             data: data,
           },
         });
-      expect(result.body.data.moderateShareableList).to.be.null;
-      expect(result.body.errors[0].message).to.equal(ACCESS_DENIED_ERROR);
-      expect(result.body.errors[0].extensions.code).to.equal('FORBIDDEN');
+      expect(result.body.data.moderateShareableList).toBeNull();
+      expect(result.body.errors[0].message).toBe(ACCESS_DENIED_ERROR);
+      expect(result.body.errors[0].extensions.code).toBe('FORBIDDEN');
     });
     it('must 404 if the list does not exist', async () => {
       const data = {
@@ -90,8 +89,8 @@ describe('admin mutations: ShareableList', () => {
             data: data,
           },
         });
-      expect(result.body.data.moderateShareableList).to.be.null;
-      expect(result.body.errors[0].extensions.code).to.equal('NOT_FOUND');
+      expect(result.body.data.moderateShareableList).toBeNull();
+      expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
     });
     it('will fail to hide list if moderationReason is not passed', async () => {
       const theList = await createShareableListHelper(db, {
@@ -99,7 +98,7 @@ describe('admin mutations: ShareableList', () => {
         title: 'Moderate this list',
         moderationStatus: 'VISIBLE',
       });
-      expect(theList.moderationStatus).to.equal('VISIBLE');
+      expect(theList.moderationStatus).toBe('VISIBLE');
       const data = {
         externalId: theList.externalId,
         moderationStatus: 'HIDDEN',
@@ -113,8 +112,8 @@ describe('admin mutations: ShareableList', () => {
             data: data,
           },
         });
-      expect(result.body.data.moderateShareableList).to.be.null;
-      expect(result.body.errors[0].extensions.code).to.equal('BAD_USER_INPUT');
+      expect(result.body.data.moderateShareableList).toBeNull();
+      expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
     });
     it('can make a visible list hidden', async () => {
       const theList = await createShareableListHelper(db, {
@@ -122,7 +121,7 @@ describe('admin mutations: ShareableList', () => {
         title: 'Moderate this list',
         moderationStatus: 'VISIBLE',
       });
-      expect(theList.moderationStatus).to.equal('VISIBLE');
+      expect(theList.moderationStatus).toBe('VISIBLE');
       const data = {
         externalId: theList.externalId,
         moderationStatus: 'HIDDEN',
@@ -139,11 +138,11 @@ describe('admin mutations: ShareableList', () => {
           },
         });
       const moderatedList = result.body.data.moderateShareableList;
-      expect(moderatedList).to.not.be.null;
-      expect(moderatedList.externalId).to.equal(theList.externalId);
-      expect(moderatedList.moderationStatus).to.equal(data.moderationStatus);
-      expect(moderatedList.moderationReason).to.equal(data.moderationReason);
-      expect(moderatedList.moderationDetails).to.equal(data.moderationDetails);
+      expect(moderatedList).not.toBeNull();
+      expect(moderatedList.externalId).toBe(theList.externalId);
+      expect(moderatedList.moderationStatus).toBe(data.moderationStatus);
+      expect(moderatedList.moderationReason).toBe(data.moderationReason);
+      expect(moderatedList.moderationDetails).toBe(data.moderationDetails);
     });
     it('will fail to restore list if restorationReason is not passed', async () => {
       const theList = await createShareableListHelper(db, {
@@ -151,7 +150,7 @@ describe('admin mutations: ShareableList', () => {
         title: 'Moderate this list',
         moderationStatus: 'HIDDEN',
       });
-      expect(theList.moderationStatus).to.equal('HIDDEN');
+      expect(theList.moderationStatus).toBe('HIDDEN');
       const data = {
         externalId: theList.externalId,
         moderationStatus: 'VISIBLE',
@@ -166,8 +165,8 @@ describe('admin mutations: ShareableList', () => {
             data: data,
           },
         });
-      expect(result.body.data.moderateShareableList).to.be.null;
-      expect(result.body.errors[0].extensions.code).to.equal('BAD_USER_INPUT');
+      expect(result.body.data.moderateShareableList).toBeNull();
+      expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
     });
     it('can make a hidden list visible', async () => {
       const theList = await createShareableListHelper(db, {
@@ -175,7 +174,7 @@ describe('admin mutations: ShareableList', () => {
         title: 'Moderate this list',
         moderationStatus: 'HIDDEN',
       });
-      expect(theList.moderationStatus).to.equal('HIDDEN');
+      expect(theList.moderationStatus).toBe('HIDDEN');
       const data = {
         externalId: theList.externalId,
         moderationStatus: 'VISIBLE',
@@ -191,10 +190,10 @@ describe('admin mutations: ShareableList', () => {
           },
         });
       const moderatedList = result.body.data.moderateShareableList;
-      expect(moderatedList).to.not.be.null;
-      expect(moderatedList.externalId).to.equal(theList.externalId);
-      expect(moderatedList.moderationStatus).to.equal(data.moderationStatus);
-      expect(moderatedList.restorationReason).to.equal(data.restorationReason);
+      expect(moderatedList).not.toBeNull();
+      expect(moderatedList.externalId).toBe(theList.externalId);
+      expect(moderatedList.moderationStatus).toBe(data.moderationStatus);
+      expect(moderatedList.restorationReason).toBe(data.restorationReason);
     });
     it('moderationDetails is optional', async () => {
       const theList = await createShareableListHelper(db, {
@@ -217,11 +216,11 @@ describe('admin mutations: ShareableList', () => {
           },
         });
       const moderatedList = result.body.data.moderateShareableList;
-      expect(moderatedList).to.not.be.null;
-      expect(moderatedList.externalId).to.equal(theList.externalId);
-      expect(moderatedList.moderationStatus).to.equal(data.moderationStatus);
-      expect(moderatedList.moderationReason).to.equal(data.moderationReason);
-      expect(moderatedList.moderationDetails).to.be.null;
+      expect(moderatedList).not.toBeNull();
+      expect(moderatedList.externalId).toBe(theList.externalId);
+      expect(moderatedList.moderationStatus).toBe(data.moderationStatus);
+      expect(moderatedList.moderationReason).toBe(data.moderationReason);
+      expect(moderatedList.moderationDetails).toBeNull();
     });
   });
 });

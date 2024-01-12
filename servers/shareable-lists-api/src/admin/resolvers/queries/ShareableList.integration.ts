@@ -20,7 +20,6 @@ import {
 } from '../../../test/helpers';
 import { SEARCH_SHAREABLE_LIST } from './sample-queries.gql';
 import { FULLACCESS } from '../../../shared/constants';
-import { expect } from 'chai';
 import config from '../../../config';
 import slugify from 'slugify';
 
@@ -83,13 +82,10 @@ describe('admin queries: ShareableList', () => {
         });
 
       // There should be nothing in results
-      expect(result.body.data.searchShareableList).to.be.null;
+      expect(result.body.data.searchShareableList).toBeNull();
 
       // And a "Not found" error
-      expect(result.body).to.have.nested.property(
-        'errors[0].extensions.code',
-        'NOT_FOUND'
-      );
+      expect(result.body).toHaveProperty('errors[0].extensions.code', 'NOT_FOUND');
     });
 
     it('should return a list with all props if it exists', async () => {
@@ -111,46 +107,46 @@ describe('admin queries: ShareableList', () => {
         });
 
       // A result should be returned
-      expect(result.body.data.searchShareableList).not.to.be.null;
+      expect(result.body.data.searchShareableList).not.toBeNull();
 
       // There should be no errors
-      expect(result.body.errors).to.be.undefined;
+      expect(result.body.errors).toBeUndefined();
 
       // Now onto verifying individual list props
       const list = result.body.data.searchShareableList;
 
       // Values we know as we've assigned them manually
-      expect(list.title).to.equal(shareableList.title);
-      expect(list.description).to.equal(shareableList.description);
+      expect(list.title).toBe(shareableList.title);
+      expect(list.description).toBe(shareableList.description);
 
       // Default status values
-      expect(list.status).to.equal(Visibility.PUBLIC);
-      expect(list.moderationStatus).to.equal(ModerationStatus.VISIBLE);
+      expect(list.status).toBe(Visibility.PUBLIC);
+      expect(list.moderationStatus).toBe(ModerationStatus.VISIBLE);
 
       // Variable values that just need to be non-null - we know Prisma
       // returns them in a compatible format
-      expect(list.createdAt).not.to.be.empty;
-      expect(list.updatedAt).not.to.be.empty;
-      expect(list.externalId).not.to.be.empty;
+      expect(list.createdAt).not.toHaveLength(0);
+      expect(list.updatedAt).not.toHaveLength(0);
+      expect(list.externalId).not.toHaveLength(0);
 
       // Make sure slug is not empty
-      expect(list.slug).not.to.be.empty;
+      expect(list.slug).not.toHaveLength(0);
 
       // Assert that all props are returned
       const listItem = list.listItems[0];
 
-      expect(listItem.externalId).not.to.be.empty;
-      expect(listItem.itemId).to.equal('3834701731');
-      expect(listItem.url).to.equal(shareableListItem.url);
-      expect(listItem.title).to.equal(shareableListItem.title);
-      expect(listItem.excerpt).to.equal(shareableListItem.excerpt);
-      expect(listItem.note).to.equal(shareableListItem.note);
-      expect(listItem.imageUrl).to.equal(shareableListItem.imageUrl);
-      expect(listItem.publisher).to.equal(shareableListItem.publisher);
-      expect(listItem.authors).to.equal(shareableListItem.authors);
-      expect(listItem.sortOrder).to.equal(1);
-      expect(listItem.createdAt).not.to.be.empty;
-      expect(listItem.updatedAt).not.to.be.empty;
+      expect(listItem.externalId).not.toHaveLength(0);
+      expect(listItem.itemId).toBe('3834701731');
+      expect(listItem.url).toBe(shareableListItem.url);
+      expect(listItem.title).toBe(shareableListItem.title);
+      expect(listItem.excerpt).toBe(shareableListItem.excerpt);
+      expect(listItem.note).toBe(shareableListItem.note);
+      expect(listItem.imageUrl).toBe(shareableListItem.imageUrl);
+      expect(listItem.publisher).toBe(shareableListItem.publisher);
+      expect(listItem.authors).toBe(shareableListItem.authors);
+      expect(listItem.sortOrder).toBe(1);
+      expect(listItem.createdAt).not.toHaveLength(0);
+      expect(listItem.updatedAt).not.toHaveLength(0);
     });
   });
 });

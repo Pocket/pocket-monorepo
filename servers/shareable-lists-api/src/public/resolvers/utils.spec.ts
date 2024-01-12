@@ -1,5 +1,3 @@
-import { expect } from 'chai';
-
 import { UserInputError } from '@pocket-tools/apollo-utils';
 
 import {
@@ -13,39 +11,39 @@ describe('utility functions', () => {
     it('does throw an error for a missing or empty itemId', () => {
       expect(() => {
         validateItemId(null);
-      }).to.throw(UserInputError);
+      }).toThrow(UserInputError);
 
       expect(() => {
         validateItemId(undefined);
-      }).to.throw(UserInputError);
+      }).toThrow(UserInputError);
 
       expect(() => {
         validateItemId('');
-      }).to.throw(UserInputError);
+      }).toThrow(UserInputError);
     });
 
     it('throws an error for a non-numeric itemId', () => {
       expect(() => {
         validateItemId('1234asdf5678');
-      }).to.throw(UserInputError);
+      }).toThrow(UserInputError);
 
       expect(() => {
         validateItemId('asdf12345678');
-      }).to.throw(UserInputError);
+      }).toThrow(UserInputError);
 
       expect(() => {
         validateItemId('12345678asdf');
-      }).to.throw(UserInputError);
+      }).toThrow(UserInputError);
 
       expect(() => {
         validateItemId('asdf');
-      }).to.throw(UserInputError);
+      }).toThrow(UserInputError);
     });
 
     it('does not throw for a numeric itemId', () => {
       expect(() => {
         validateItemId('123456789');
-      }).not.to.throw();
+      }).not.toThrow();
     });
   });
   describe('sanitizeMutationInput', () => {
@@ -58,8 +56,8 @@ describe('utility functions', () => {
 
       const safeInput = sanitizeMutationInput(input);
 
-      expect(safeInput.title).to.equal(`John's &lt;div&gt; list &lt;/div&gt;`);
-      expect(safeInput.description).to.equal(
+      expect(safeInput.title).toBe(`John's &lt;div&gt; list &lt;/div&gt;`);
+      expect(safeInput.description).toBe(
         'Trying out this new Pocket feature&lt;script&gt;alert("!!!");&lt;/script&gt;'
       );
     });
@@ -80,13 +78,11 @@ describe('utility functions', () => {
       const safeInput = sanitizeMutationInput(input);
 
       // dodgy strings are still escaped
-      expect(safeInput.imageUrl).to.equal(
-        'https://www.test.com/&lt;script&gt;alert("hello world");&lt;/script&gt;'
-      );
+      expect(safeInput.imageUrl).toBe('https://www.test.com/&lt;script&gt;alert("hello world");&lt;/script&gt;');
 
       // numeric inputs go through as-is
-      expect(safeInput.itemId).to.equal(input.itemId);
-      expect(safeInput.sortOrder).to.equal(input.sortOrder);
+      expect(safeInput.itemId).toBe(input.itemId);
+      expect(safeInput.sortOrder).toBe(input.sortOrder);
     });
 
     it('sanitises strings', () => {
@@ -94,7 +90,7 @@ describe('utility functions', () => {
 
       const safeInput = sanitizeMutationInput(externalId);
 
-      expect(safeInput).to.equal('uuid-something-1234&lt;script&gt;');
+      expect(safeInput).toBe('uuid-something-1234&lt;script&gt;');
     });
 
     it('returns numeric values as-is', () => {
@@ -102,7 +98,7 @@ describe('utility functions', () => {
 
       const safeInput = sanitizeMutationInput(sortOrder);
 
-      expect(safeInput).to.equal(sortOrder);
+      expect(safeInput).toBe(sortOrder);
     });
   });
 });

@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { print } from 'graphql';
 import request from 'supertest';
 
@@ -98,10 +97,10 @@ describe('public queries: ShareableList', () => {
         });
 
       // There should be nothing in results
-      expect(result.body.data.shareableList).to.be.null;
+      expect(result.body.data.shareableList).toBeNull();
 
       // And a "Not found" error
-      expect(result.body.errors[0].extensions.code).to.equal('NOT_FOUND');
+      expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
     });
     it('should return a "Not Found" error if no list exists', async () => {
       // Run the query we're testing
@@ -116,10 +115,10 @@ describe('public queries: ShareableList', () => {
         });
 
       // There should be nothing in results
-      expect(result.body.data.shareableList).to.be.null;
+      expect(result.body.data.shareableList).toBeNull();
 
       // And a "Not found" error
-      expect(result.body.errors[0].extensions.code).to.equal('NOT_FOUND');
+      expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
     });
 
     it('should return a list with all props if it exists', async () => {
@@ -135,42 +134,42 @@ describe('public queries: ShareableList', () => {
         });
 
       // This query should not be cached, expect headers.cache-control = no-store
-      expect(result.headers['cache-control']).to.equal('no-store');
+      expect(result.headers['cache-control']).toBe('no-store');
 
       // A result should be returned
-      expect(result.body.data.shareableList).not.to.be.null;
+      expect(result.body.data.shareableList).not.toBeNull();
 
       // There should be no errors
-      expect(result.body.errors).to.be.undefined;
+      expect(result.body.errors).toBeUndefined();
 
       // Now onto verifying individual list props
       const list = result.body.data.shareableList;
 
       // Values we know as we've assigned them manually
-      expect(list.title).to.equal(shareableList.title);
-      expect(list.description).to.equal(shareableList.description);
+      expect(list.title).toBe(shareableList.title);
+      expect(list.description).toBe(shareableList.description);
 
       // Default status values
-      expect(list.status).to.equal(Visibility.PRIVATE);
-      expect(list.moderationStatus).to.equal(ModerationStatus.VISIBLE);
+      expect(list.status).toBe(Visibility.PRIVATE);
+      expect(list.moderationStatus).toBe(ModerationStatus.VISIBLE);
 
       // Variable values that just need to be non-null - we know Prisma
       // returns them in a compatible format
-      expect(list.createdAt).not.to.be.empty;
-      expect(list.updatedAt).not.to.be.empty;
-      expect(list.externalId).not.to.be.empty;
+      expect(list.createdAt).not.toHaveLength(0);
+      expect(list.updatedAt).not.toHaveLength(0);
+      expect(list.externalId).not.toHaveLength(0);
 
       // Empty slug - it's not generated on creation
-      expect(list.slug).to.be.null;
+      expect(list.slug).toBeNull();
 
       // the user entity should be present with the id of the creator
-      expect(list.user).to.deep.equal({ id: publicUserHeaders.userId });
+      expect(list.user).toEqual({ id: publicUserHeaders.userId });
 
       // Empty list items array
-      expect(list.listItems).to.have.lengthOf(0);
+      expect(list.listItems).toHaveLength(0);
 
       // default list item note visibility (not set explicitly upon creation)
-      expect(list.listItemNoteVisibility).to.equal(Visibility.PRIVATE);
+      expect(list.listItemNoteVisibility).toBe(Visibility.PRIVATE);
     });
 
     it('should return a list with sorted list items', async () => {
@@ -207,45 +206,45 @@ describe('public queries: ShareableList', () => {
         });
 
       // This query should not be cached, expect headers.cache-control = no-store
-      expect(result.headers['cache-control']).to.equal('no-store');
+      expect(result.headers['cache-control']).toBe('no-store');
 
       // A result should be returned
-      expect(result.body.data.shareableList).not.to.be.null;
+      expect(result.body.data.shareableList).not.toBeNull();
 
       // There should be no errors
-      expect(result.body.errors).to.be.undefined;
+      expect(result.body.errors).toBeUndefined();
 
       // There should be two list items
-      expect(result.body.data.shareableList.listItems).to.have.lengthOf(4);
+      expect(result.body.data.shareableList.listItems).toHaveLength(4);
 
       const listItems = result.body.data.shareableList.listItems;
 
       // Let's run through the visible props of each item
       // to make sure they're all there
       listItems.forEach((listItem) => {
-        expect(listItem.itemId).not.to.be.empty;
-        expect(listItem.url).not.to.be.empty;
-        expect(listItem.title).not.to.be.empty;
-        expect(listItem.excerpt).not.to.be.empty;
-        expect(listItem.note).not.to.be.empty;
-        expect(listItem.imageUrl).not.to.be.empty;
-        expect(listItem.publisher).not.to.be.empty;
-        expect(listItem.authors).not.to.be.empty;
-        expect(listItem.sortOrder).to.be.a('number');
-        expect(listItem.createdAt).not.to.be.empty;
-        expect(listItem.updatedAt).not.to.be.empty;
+        expect(listItem.itemId).not.toHaveLength(0);
+        expect(listItem.url).not.toHaveLength(0);
+        expect(listItem.title).not.toHaveLength(0);
+        expect(listItem.excerpt).not.toHaveLength(0);
+        expect(listItem.note).not.toHaveLength(0);
+        expect(listItem.imageUrl).not.toHaveLength(0);
+        expect(listItem.publisher).not.toHaveLength(0);
+        expect(listItem.authors).not.toHaveLength(0);
+        expect(listItem.sortOrder).toBeInstanceOf(Number);
+        expect(listItem.createdAt).not.toHaveLength(0);
+        expect(listItem.updatedAt).not.toHaveLength(0);
       });
 
       // make sure list items are sorted in ascending order
       // items with the same sortOrder should be returned by createdAt asc
-      expect(listItems[0].sortOrder).to.equal(0);
+      expect(listItems[0].sortOrder).toBe(0);
       // 12345 was created first
-      expect(listItems[0].itemId).to.equal('12345');
-      expect(listItems[1].sortOrder).to.equal(0);
+      expect(listItems[0].itemId).toBe('12345');
+      expect(listItems[1].sortOrder).toBe(0);
       // 67890 was created second
-      expect(listItems[1].itemId).to.equal('67890');
-      expect(listItems[2].sortOrder).to.equal(1);
-      expect(listItems[3].sortOrder).to.equal(2);
+      expect(listItems[1].itemId).toBe('67890');
+      expect(listItems[2].sortOrder).toBe(1);
+      expect(listItems[3].sortOrder).toBe(2);
     });
   });
 
@@ -262,10 +261,10 @@ describe('public queries: ShareableList', () => {
           },
         });
       // There should be nothing in results
-      expect(result.body.data.shareableListPublic).to.be.null;
+      expect(result.body.data.shareableListPublic).toBeNull();
 
       // And a "Not found" error
-      expect(result.body.errors[0].extensions.code).to.equal('NOT_FOUND');
+      expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
     });
 
     it('should return a 403 error if list has been taken down', async () => {
@@ -291,11 +290,11 @@ describe('public queries: ShareableList', () => {
         });
 
       // There should be nothing in results
-      expect(result.body.data.shareableListPublic).to.be.null;
+      expect(result.body.data.shareableListPublic).toBeNull();
 
       // And a "Forbidden" error
-      expect(result.body.errors[0].extensions.code).to.equal('FORBIDDEN');
-      expect(result.body.errors[0].message).to.equal(ACCESS_DENIED_ERROR);
+      expect(result.body.errors[0].extensions.code).toBe('FORBIDDEN');
+      expect(result.body.errors[0].message).toBe(ACCESS_DENIED_ERROR);
     });
 
     it('should return a NotFound error if list is Private', async () => {
@@ -319,13 +318,11 @@ describe('public queries: ShareableList', () => {
         });
 
       // There should be nothing in results
-      expect(result.body.data.shareableListPublic).to.be.null;
+      expect(result.body.data.shareableListPublic).toBeNull();
 
       // And a "Forbidden" error
-      expect(result.body.errors[0].extensions.code).to.equal('NOT_FOUND');
-      expect(result.body.errors[0].message).to.equal(
-        'Error - Not Found: A list by that URL could not be found'
-      );
+      expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
+      expect(result.body.errors[0].message).toBe('Error - Not Found: A list by that URL could not be found');
     });
 
     it('should return a NotFound error if externalId is valid but slug is invalid', async () => {
@@ -349,13 +346,11 @@ describe('public queries: ShareableList', () => {
         });
 
       // There should be nothing in results
-      expect(result.body.data.shareableListPublic).to.be.null;
+      expect(result.body.data.shareableListPublic).toBeNull();
 
       // And a "Forbidden" error
-      expect(result.body.errors[0].extensions.code).to.equal('NOT_FOUND');
-      expect(result.body.errors[0].message).to.equal(
-        'Error - Not Found: A list by that URL could not be found'
-      );
+      expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
+      expect(result.body.errors[0].message).toBe('Error - Not Found: A list by that URL could not be found');
     });
 
     it('should return a list with all props if it is accessible', async () => {
@@ -379,41 +374,41 @@ describe('public queries: ShareableList', () => {
         });
 
       /// This query should be cached, expect headers.cache-control = max-age=60, public
-      expect(result.headers['cache-control']).to.equal('max-age=60, public');
+      expect(result.headers['cache-control']).toBe('max-age=60, public');
 
       // A result should be returned
-      expect(result.body.data.shareableList).not.to.be.null;
+      expect(result.body.data.shareableList).not.toBeNull();
 
       // There should be no errors
-      expect(result.body.errors).to.be.undefined;
+      expect(result.body.errors).toBeUndefined();
 
       // Now onto verifying individual list props
       const list = result.body.data.shareableListPublic;
       // Values we know as we've assigned them manually
-      expect(list.title).to.equal(newList.title);
-      expect(list.description).to.equal(newList.description);
+      expect(list.title).toBe(newList.title);
+      expect(list.description).toBe(newList.description);
 
       // Default status values
-      expect(list.status).to.equal(Visibility.PUBLIC);
-      expect(list.moderationStatus).to.equal(ModerationStatus.VISIBLE);
+      expect(list.status).toBe(Visibility.PUBLIC);
+      expect(list.moderationStatus).toBe(ModerationStatus.VISIBLE);
 
       // Variable values that just need to be non-null - we know Prisma
       // returns them in a compatible format
-      expect(list.createdAt).not.to.be.empty;
-      expect(list.updatedAt).not.to.be.empty;
-      expect(list.externalId).not.to.be.empty;
+      expect(list.createdAt).not.toHaveLength(0);
+      expect(list.updatedAt).not.toHaveLength(0);
+      expect(list.externalId).not.toHaveLength(0);
 
       // Empty slug - it's not generated on creation
-      expect(list.slug).to.not.be.empty;
+      expect(list.slug).not.toHaveLength(0);
 
       // the user should match the id of the creator
-      expect(list.user).to.deep.equal({ id: newList.userId.toString() });
+      expect(list.user).toEqual({ id: newList.userId.toString() });
 
       // Empty list items array
-      expect(list.listItems).to.have.lengthOf(0);
+      expect(list.listItems).toHaveLength(0);
 
       // default PRIVATE listItemNoteVisibility
-      expect(list.listItemNoteVisibility).to.equal(Visibility.PRIVATE);
+      expect(list.listItemNoteVisibility).toBe(Visibility.PRIVATE);
     });
 
     it('should return a list with sorted list items', async () => {
@@ -446,46 +441,46 @@ describe('public queries: ShareableList', () => {
         });
 
       // This query should be cached, expect headers.cache-control = max-age=60, public
-      expect(result.headers['cache-control']).to.equal('max-age=60, public');
+      expect(result.headers['cache-control']).toBe('max-age=60, public');
 
       // A result should be returned
-      expect(result.body.data.shareableListPublic).not.to.be.null;
+      expect(result.body.data.shareableListPublic).not.toBeNull();
 
       // There should be no errors
-      expect(result.body.errors).to.be.undefined;
+      expect(result.body.errors).toBeUndefined();
 
       const listItems = result.body.data.shareableListPublic.listItems;
 
       // There should be two list items
-      expect(listItems).to.have.lengthOf(4);
+      expect(listItems).toHaveLength(4);
 
       // Let's run through the visible props of each item
       // to make sure they're all there
       listItems.forEach((listItem) => {
-        expect(listItem.itemId).not.to.be.empty;
-        expect(listItem.url).not.to.be.empty;
-        expect(listItem.title).not.to.be.empty;
-        expect(listItem.excerpt).not.to.be.empty;
+        expect(listItem.itemId).not.toHaveLength(0);
+        expect(listItem.url).not.toHaveLength(0);
+        expect(listItem.title).not.toHaveLength(0);
+        expect(listItem.excerpt).not.toHaveLength(0);
         // note should be empty because the visibility on the list is PRIVATE
-        expect(listItem.note).to.be.null;
-        expect(listItem.imageUrl).not.to.be.empty;
-        expect(listItem.publisher).not.to.be.empty;
-        expect(listItem.authors).not.to.be.empty;
-        expect(listItem.sortOrder).to.be.a('number');
-        expect(listItem.createdAt).not.to.be.empty;
-        expect(listItem.updatedAt).not.to.be.empty;
+        expect(listItem.note).toBeNull();
+        expect(listItem.imageUrl).not.toHaveLength(0);
+        expect(listItem.publisher).not.toHaveLength(0);
+        expect(listItem.authors).not.toHaveLength(0);
+        expect(listItem.sortOrder).toBeInstanceOf(Number);
+        expect(listItem.createdAt).not.toHaveLength(0);
+        expect(listItem.updatedAt).not.toHaveLength(0);
       });
 
       // make sure list items are sorted in ascending order
       // items with the same sortOrder should be returned by createdAt asc
-      expect(listItems[0].sortOrder).to.equal(0);
+      expect(listItems[0].sortOrder).toBe(0);
       // 12345 was created first
-      expect(listItems[0].itemId).to.equal('12345');
-      expect(listItems[1].sortOrder).to.equal(0);
+      expect(listItems[0].itemId).toBe('12345');
+      expect(listItems[1].sortOrder).toBe(0);
       // 67890 was created second
-      expect(listItems[1].itemId).to.equal('67890');
-      expect(listItems[2].sortOrder).to.equal(1);
-      expect(listItems[3].sortOrder).to.equal(2);
+      expect(listItems[1].itemId).toBe('67890');
+      expect(listItems[2].sortOrder).toBe(1);
+      expect(listItems[3].sortOrder).toBe(2);
     });
 
     it('should return a list with list items and public notes', async () => {
@@ -514,39 +509,37 @@ describe('public queries: ShareableList', () => {
         });
 
       // This query should be cached, expect headers.cache-control = max-age=60, public
-      expect(result.headers['cache-control']).to.equal('max-age=60, public');
+      expect(result.headers['cache-control']).toBe('max-age=60, public');
 
       // A result should be returned
-      expect(result.body.data.shareableListPublic).not.to.be.null;
+      expect(result.body.data.shareableListPublic).not.toBeNull();
 
       // There should be no errors
-      expect(result.body.errors).to.be.undefined;
+      expect(result.body.errors).toBeUndefined();
 
       // There should be two list items
-      expect(result.body.data.shareableListPublic.listItems).to.have.lengthOf(
-        2
-      );
+      expect(result.body.data.shareableListPublic.listItems).toHaveLength(2);
 
       // listItemNoteVisibility is PUBLIC in this scenario
       expect(
         result.body.data.shareableListPublic.listItemNoteVisibility
-      ).to.equal(Visibility.PUBLIC);
+      ).toBe(Visibility.PUBLIC);
 
       // Let's run through the visible props of each item
       // to make sure they're all there
       result.body.data.shareableListPublic.listItems.forEach((listItem) => {
-        expect(listItem.itemId).not.to.be.empty;
-        expect(listItem.url).not.to.be.empty;
-        expect(listItem.title).not.to.be.empty;
-        expect(listItem.excerpt).not.to.be.empty;
+        expect(listItem.itemId).not.toHaveLength(0);
+        expect(listItem.url).not.toHaveLength(0);
+        expect(listItem.title).not.toHaveLength(0);
+        expect(listItem.excerpt).not.toHaveLength(0);
         // note should not be empty because the visibility on the list is PUBLIC
-        expect(listItem.note).not.to.be.empty;
-        expect(listItem.imageUrl).not.to.be.empty;
-        expect(listItem.publisher).not.to.be.empty;
-        expect(listItem.authors).not.to.be.empty;
-        expect(listItem.sortOrder).to.be.a('number');
-        expect(listItem.createdAt).not.to.be.empty;
-        expect(listItem.updatedAt).not.to.be.empty;
+        expect(listItem.note).not.toHaveLength(0);
+        expect(listItem.imageUrl).not.toHaveLength(0);
+        expect(listItem.publisher).not.toHaveLength(0);
+        expect(listItem.authors).not.toHaveLength(0);
+        expect(listItem.sortOrder).toBeInstanceOf(Number);
+        expect(listItem.createdAt).not.toHaveLength(0);
+        expect(listItem.updatedAt).not.toHaveLength(0);
       });
     });
   });
@@ -564,10 +557,10 @@ describe('public queries: ShareableList', () => {
         });
 
       // This query should not be cached, expect headers.cache-control = no-store
-      expect(result.headers['cache-control']).to.equal('no-store');
+      expect(result.headers['cache-control']).toBe('no-store');
 
       // The returned shareableLists array should be empty
-      expect(result.body.data.shareableLists.length).to.equal(0);
+      expect(result.body.data.shareableLists.length).toBe(0);
     });
 
     it('should return an array of lists with all props if it exists for a given userId', async () => {
@@ -580,16 +573,16 @@ describe('public queries: ShareableList', () => {
         });
 
       // This query should not be cached, expect headers.cache-control = no-store
-      expect(result.headers['cache-control']).to.equal('no-store');
+      expect(result.headers['cache-control']).toBe('no-store');
 
       // A result should be returned
-      expect(result.body.data.shareableList).not.to.be.null;
+      expect(result.body.data.shareableList).not.toBeNull();
 
       // There should be no errors
-      expect(result.body.errors).to.be.undefined;
+      expect(result.body.errors).toBeUndefined();
 
       // Expect the array length to contain 2 lists
-      expect(result.body.data.shareableLists.length).to.equal(2);
+      expect(result.body.data.shareableLists.length).toBe(2);
 
       // We also want to assert that the first list returned in the array is the most recently created
       const listArray = [shareableList2, shareableList];
@@ -600,19 +593,17 @@ describe('public queries: ShareableList', () => {
       for (let i = 0; i < listArray.length; i++) {
         list = result.body.data.shareableLists[i];
 
-        expect(list.title).to.equal(listArray[i].title);
-        expect(list.slug).to.equal(listArray[i].slug);
-        expect(list.description).to.equal(listArray[i].description);
-        expect(list.status).to.equal(Visibility.PRIVATE);
-        expect(list.moderationStatus).to.equal(ModerationStatus.VISIBLE);
-        expect(list.createdAt).not.to.be.empty;
-        expect(list.updatedAt).not.to.be.empty;
-        expect(list.externalId).not.to.be.empty;
+        expect(list.title).toBe(listArray[i].title);
+        expect(list.slug).toBe(listArray[i].slug);
+        expect(list.description).toBe(listArray[i].description);
+        expect(list.status).toBe(Visibility.PRIVATE);
+        expect(list.moderationStatus).toBe(ModerationStatus.VISIBLE);
+        expect(list.createdAt).not.toHaveLength(0);
+        expect(list.updatedAt).not.toHaveLength(0);
+        expect(list.externalId).not.toHaveLength(0);
         // Empty list items array
-        expect(list.listItems).to.have.lengthOf(0);
-        expect(list.listItemNoteVisibility).to.equal(
-          listArray[i].listItemNoteVisibility
-        );
+        expect(list.listItems).toHaveLength(0);
+        expect(list.listItemNoteVisibility).toBe(listArray[i].listItemNoteVisibility);
       }
     });
 
@@ -655,31 +646,27 @@ describe('public queries: ShareableList', () => {
         });
 
       // This query should not be cached, expect headers.cache-control = no-store
-      expect(result.headers['cache-control']).to.equal('no-store');
+      expect(result.headers['cache-control']).toBe('no-store');
 
       // A result should be returned
-      expect(result.body.data.shareableLists).not.to.be.null;
+      expect(result.body.data.shareableLists).not.toBeNull();
 
       // There should be no errors
-      expect(result.body.errors).to.be.undefined;
+      expect(result.body.errors).toBeUndefined();
 
       // There should be two list items for the first List in the array
-      expect(result.body.data.shareableLists[0].listItems).to.have.lengthOf(2);
+      expect(result.body.data.shareableLists[0].listItems).toHaveLength(2);
       // There should be four list items for the second List in the array
-      expect(result.body.data.shareableLists[1].listItems).to.have.lengthOf(4);
+      expect(result.body.data.shareableLists[1].listItems).toHaveLength(4);
 
       // Let's double-check the returned array is ordered correctly
-      expect(result.body.data.shareableLists[0].title).to.equal(
-        shareableList2.title
-      );
-      expect(result.body.data.shareableLists[1].title).to.equal(
-        shareableList.title
-      );
+      expect(result.body.data.shareableLists[0].title).toBe(shareableList2.title);
+      expect(result.body.data.shareableLists[1].title).toBe(shareableList.title);
 
-      expect(result.body.data.shareableLists[0].user).to.deep.equal({
+      expect(result.body.data.shareableLists[0].user).toEqual({
         id: publicUserHeaders.userId,
       });
-      expect(result.body.data.shareableLists[1].user).to.deep.equal({
+      expect(result.body.data.shareableLists[1].user).toEqual({
         id: publicUserHeaders.userId,
       });
 
@@ -688,48 +675,48 @@ describe('public queries: ShareableList', () => {
       // Let's run through the visible props of each item
       // to make sure they're all there for the first List
       listItems.forEach((listItem) => {
-        expect(listItem.itemId).not.to.be.empty;
-        expect(listItem.url).not.to.be.empty;
-        expect(listItem.title).not.to.be.empty;
-        expect(listItem.excerpt).not.to.be.empty;
-        expect(listItem.imageUrl).not.to.be.empty;
-        expect(listItem.publisher).not.to.be.empty;
-        expect(listItem.authors).not.to.be.empty;
-        expect(listItem.sortOrder).to.be.a('number');
-        expect(listItem.createdAt).not.to.be.empty;
-        expect(listItem.updatedAt).not.to.be.empty;
+        expect(listItem.itemId).not.toHaveLength(0);
+        expect(listItem.url).not.toHaveLength(0);
+        expect(listItem.title).not.toHaveLength(0);
+        expect(listItem.excerpt).not.toHaveLength(0);
+        expect(listItem.imageUrl).not.toHaveLength(0);
+        expect(listItem.publisher).not.toHaveLength(0);
+        expect(listItem.authors).not.toHaveLength(0);
+        expect(listItem.sortOrder).toBeInstanceOf(Number);
+        expect(listItem.createdAt).not.toHaveLength(0);
+        expect(listItem.updatedAt).not.toHaveLength(0);
       });
 
       // make sure list items are sorted in ascending order
-      expect(listItems[0].sortOrder).to.equal(2);
-      expect(listItems[1].sortOrder).to.equal(6);
+      expect(listItems[0].sortOrder).toBe(2);
+      expect(listItems[1].sortOrder).toBe(6);
 
       listItems = result.body.data.shareableLists[1].listItems;
 
       // Let's run through the visible props of each item
       // to make sure they're all there for the second List
       listItems.forEach((listItem) => {
-        expect(listItem.itemId).not.to.be.empty;
-        expect(listItem.url).not.to.be.empty;
-        expect(listItem.title).not.to.be.empty;
-        expect(listItem.excerpt).not.to.be.empty;
-        expect(listItem.note).not.to.be.empty;
-        expect(listItem.imageUrl).not.to.be.empty;
-        expect(listItem.publisher).not.to.be.empty;
-        expect(listItem.authors).not.to.be.empty;
-        expect(listItem.sortOrder).to.be.a('number');
-        expect(listItem.createdAt).not.to.be.empty;
-        expect(listItem.updatedAt).not.to.be.empty;
+        expect(listItem.itemId).not.toHaveLength(0);
+        expect(listItem.url).not.toHaveLength(0);
+        expect(listItem.title).not.toHaveLength(0);
+        expect(listItem.excerpt).not.toHaveLength(0);
+        expect(listItem.note).not.toHaveLength(0);
+        expect(listItem.imageUrl).not.toHaveLength(0);
+        expect(listItem.publisher).not.toHaveLength(0);
+        expect(listItem.authors).not.toHaveLength(0);
+        expect(listItem.sortOrder).toBeInstanceOf(Number);
+        expect(listItem.createdAt).not.toHaveLength(0);
+        expect(listItem.updatedAt).not.toHaveLength(0);
       });
 
       // make sure list items are sorted in ascending order
-      expect(listItems[0].sortOrder).to.equal(0);
-      expect(listItems[0].itemId).to.equal('12345');
-      expect(listItems[1].sortOrder).to.equal(0);
-      expect(listItems[1].itemId).to.equal('67890');
+      expect(listItems[0].sortOrder).toBe(0);
+      expect(listItems[0].itemId).toBe('12345');
+      expect(listItems[1].sortOrder).toBe(0);
+      expect(listItems[1].itemId).toBe('67890');
 
-      expect(listItems[2].sortOrder).to.equal(1);
-      expect(listItems[3].sortOrder).to.equal(2);
+      expect(listItems[2].sortOrder).toBe(1);
+      expect(listItems[3].sortOrder).toBe(2);
     });
   });
 });

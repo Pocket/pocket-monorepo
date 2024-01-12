@@ -12,7 +12,6 @@ import {
   FULLACCESS,
   READONLY,
 } from '../../../shared/constants';
-import { expect } from 'chai';
 
 describe('auth: ShareableList', () => {
   let app: Express.Application;
@@ -52,9 +51,9 @@ describe('auth: ShareableList', () => {
         });
 
       // There should be nothing in results
-      expect(result.body.data.searchShareableList).to.be.null;
-      expect(result.body.errors[0].message).to.equal(ACCESS_DENIED_ERROR);
-      expect(result.body.errors[0].extensions.code).to.equal('FORBIDDEN');
+      expect(result.body.data.searchShareableList).toBeNull();
+      expect(result.body.errors[0].message).toBe(ACCESS_DENIED_ERROR);
+      expect(result.body.errors[0].extensions.code).toBe('FORBIDDEN');
     });
 
     it('should fail if user does not have access', async () => {
@@ -76,9 +75,9 @@ describe('auth: ShareableList', () => {
         });
 
       // There should be nothing in results
-      expect(result.body.data.searchShareableList).to.be.null;
-      expect(result.body.errors[0].message).to.equal(ACCESS_DENIED_ERROR);
-      expect(result.body.errors[0].extensions.code).to.equal('FORBIDDEN');
+      expect(result.body.data.searchShareableList).toBeNull();
+      expect(result.body.errors[0].message).toBe(ACCESS_DENIED_ERROR);
+      expect(result.body.errors[0].extensions.code).toBe('FORBIDDEN');
     });
 
     it('should succeed if user has read only access', async () => {
@@ -99,8 +98,8 @@ describe('auth: ShareableList', () => {
         });
 
       // We should get a not found error instead of a forbidden error
-      expect(result.body.errors.length).to.equal(1);
-      expect(result.body.errors[0].extensions.code).to.equal('NOT_FOUND');
+      expect(result.body.errors.length).toBe(1);
+      expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
     });
 
     it('should succeed if user has full access', async () => {
@@ -116,8 +115,8 @@ describe('auth: ShareableList', () => {
         });
 
       // We should get a not found error instead of a forbidden error
-      expect(result.body.errors.length).to.equal(1);
-      expect(result.body.errors[0].extensions.code).to.equal('NOT_FOUND');
+      expect(result.body.errors.length).toBe(1);
+      expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
     });
   });
 });

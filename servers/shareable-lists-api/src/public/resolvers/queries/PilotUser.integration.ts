@@ -11,7 +11,6 @@ import {
   mockRedisServer,
 } from '../../../test/helpers';
 import { SHAREABLE_LISTS_PILOT_USER } from './sample-queries.gql';
-import { expect } from 'chai';
 
 describe('public queries: PilotUser', () => {
   let app: Express.Application;
@@ -60,9 +59,9 @@ describe('public queries: PilotUser', () => {
         });
 
       // This query should not be cached, expect headers.cache-control = no-store
-      expect(result.headers['cache-control']).to.equal('no-store');
+      expect(result.headers['cache-control']).toBe('no-store');
 
-      expect(result.body.data.shareableListsPilotUser).to.be.true;
+      expect(result.body.data.shareableListsPilotUser).toBe(true);
     });
 
     it('should return false if user is not in the pilot', async () => {
@@ -77,9 +76,9 @@ describe('public queries: PilotUser', () => {
         });
 
       // This query should not be cached, expect headers.cache-control = no-store
-      expect(result.headers['cache-control']).to.equal('no-store');
+      expect(result.headers['cache-control']).toBe('no-store');
 
-      expect(result.body.data.shareableListsPilotUser).to.be.false;
+      expect(result.body.data.shareableListsPilotUser).toBe(false);
     });
 
     it('should return false if userId is empty', async () => {
@@ -94,9 +93,9 @@ describe('public queries: PilotUser', () => {
         });
 
       // This query should not be cached, expect headers.cache-control = no-store
-      expect(result.headers['cache-control']).to.equal('no-store');
+      expect(result.headers['cache-control']).toBe('no-store');
 
-      expect(result.body.data.shareableListsPilotUser).to.be.false;
+      expect(result.body.data.shareableListsPilotUser).toBe(false);
     });
   });
 });
