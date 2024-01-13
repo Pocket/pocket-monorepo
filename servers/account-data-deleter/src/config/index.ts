@@ -22,7 +22,7 @@ export const config = {
       accountDeleteQueue: {
         url:
           process.env.SQS_BATCH_DELETE_QUEUE_URL ||
-          'http://localhost:4566/queue/pocket-account-data-delete-queue',
+          'http://localhost:4566/000000000000/pocket-account-data-delete-queue',
         visibilityTimeout: 10000,
         maxMessages: 1,
         waitTimeSeconds: 0,
@@ -46,14 +46,14 @@ export const config = {
     // contains tables for user, list, tags, annotations, etc.
     read: {
       host: process.env.DATABASE_READ_HOST || 'localhost',
-      port: process.env.DATABASE_READ_PORT || '3309',
-      user: process.env.DATABASE_READ_USER || 'root',
+      port: process.env.DATABASE_READ_PORT || '3306',
+      user: process.env.DATABASE_READ_USER || 'pkt_accdelapi_r',
       password: process.env.DATABASE_READ_PASSWORD || '',
     },
     write: {
       host: process.env.DATABASE_WRITE_HOST || 'localhost',
-      port: process.env.DATABASE_WRITE_PORT || '3309',
-      user: process.env.DATABASE_WRITE_USER || 'root',
+      port: process.env.DATABASE_WRITE_PORT || '3306',
+      user: process.env.DATABASE_WRITE_USER || 'pkt_accdelapi_w',
       password: process.env.DATABASE_WRITE_PASSWORD || '',
     },
     dbName: process.env.DATABASE || 'readitla_ril-tmp',
@@ -73,7 +73,7 @@ export const config = {
     accountDeleteQueue: {
       url:
         process.env.SQS_BATCH_DELETE_QUEUE_URL ||
-        'http://localhost:4566/queue/pocket-list-delete-queue',
+        'http://localhost:4566/000000000000/pocket-list-delete-queue',
     },
   },
 };
