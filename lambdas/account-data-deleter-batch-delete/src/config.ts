@@ -1,5 +1,11 @@
 const shortName = 'ADD';
 
+const awsEnvironments = ['production', 'development'];
+let localAwsEndpoint = undefined;
+if (!awsEnvironments.includes(process.env.NODE_ENV)) {
+  localAwsEndpoint = process.env.AWS_ENDPOINT || 'http://localhost:4566';
+}
+
 export const config = {
   app: {
     name: 'batchDelete',
@@ -7,7 +13,7 @@ export const config = {
   },
   aws: {
     region: process.env.AWS_REGION || 'us-east-1',
-    endpoint: process.env.AWS_ENDPOINT || undefined,
+    endpoint: localAwsEndpoint,
   },
   dynamo: {
     pendingUsers: {

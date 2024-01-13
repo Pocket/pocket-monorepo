@@ -10,6 +10,13 @@ workflows:
           name: account-data-deleter_test_integrations
           scope: account-data-deleter
 
+      - test_integrations:
+          <<: *not_dev_main
+          for: account_data_deleter
+          context: pocket
+          name: account-data-deleter_batch-delete_test_integrations
+          scope: account-data-deleter-batch-delete
+
       ######
       # Every PR Jobs
       ######
