@@ -1,7 +1,6 @@
 import { readClient, writeClient } from '../../../database/client';
 import { Knex } from 'knex';
 import { EventType } from '../../../businessEvents';
-import config from '../../../config';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
 import request from 'supertest';
@@ -110,7 +109,6 @@ describe('Delete/Undelete SavedItem: ', () => {
 
   const date = new Date('2020-10-03 10:20:30');
   const updateDate = new Date(2021, 1, 1, 0, 0); // mock date for insert
-  let batchDeleteDelay;
   let app: Express;
   let server: ApolloServer<ContextManager>;
   let url: string;
@@ -120,15 +118,12 @@ describe('Delete/Undelete SavedItem: ', () => {
     await readDb.destroy();
     jest.useRealTimers();
     jest.restoreAllMocks();
-    config.batchDelete.deleteDelayInMilliSec = batchDeleteDelay;
     await server.stop();
   });
 
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
 
-    batchDeleteDelay = config.batchDelete.deleteDelayInMilliSec;
-    config.batchDelete.deleteDelayInMilliSec = 1;
     // Mock Date.now() to get a consistent date for inserting data
     jest.useFakeTimers({
       now: updateDate,

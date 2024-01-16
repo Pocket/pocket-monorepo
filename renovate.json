@@ -1,11 +1,12 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "local>Pocket/renovate-config"
+    "local>Pocket/renovate-config",
+    "group:monorepos"
   ],
   "packageRules": [{
     "managers": ["docker-compose"],
-    "updateTypes": ["digest"],
+    "updateTypes": ["digest", "pinDigest"],
     "enabled": false
   }]
 }

@@ -340,6 +340,7 @@ class ListAPI extends TerraformStack {
       codeDeploy: {
         useCodeDeploy: true,
         useCodePipeline: true,
+        useTerraformBasedCodeDeploy: false,
         notifications: {
           notifyOnFailed: true,
           notifyOnStarted: false,
