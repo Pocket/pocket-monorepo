@@ -1,16 +1,16 @@
 {
-    "TableName": "ADD-HistoricalDeletedUsers-Pending",
-    "BillingMode": "PAY_PER_REQUEST",
-    "KeySchema": [
-      {
-        "AttributeName": "userId",
-        "KeyType": "HASH"
-      }
-    ],
-    "AttributeDefinitions": [
-        {
-          "AttributeName": "userId",
-          "AttributeType": "N"
-        }
-      ]
-  }
+  "TableName": "ADD-HistoricalDeletedUsers-Processed",
+  "BillingMode": "PAY_PER_REQUEST",
+  "KeySchema": [
+    {
+      "AttributeName": "userId",
+      "KeyType": "HASH"
+    }
+  ],
+  "AttributeDefinitions": [
+    {
+      "AttributeName": "userId",
+      "AttributeType": "N"
+    }
+  ]
+}
