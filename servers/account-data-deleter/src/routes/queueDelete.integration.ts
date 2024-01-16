@@ -11,7 +11,7 @@ describe('enqueueTablesForDeletion', () => {
   beforeEach(() => {
     queryLimit = config.queueDelete.queryLimit;
     sqsBatchSize = config.aws.sqs.batchSize;
-    sqsSendMock = jest.spyOn(SQS.prototype, 'send').mockImplementation();
+    sqsSendMock = jest.spyOn(SQS.prototype, 'send');
   });
 
   afterEach(() => {
@@ -22,6 +22,7 @@ describe('enqueueTablesForDeletion', () => {
 
   afterAll(async () => {
     await db.destroy();
+    await readClient().destroy();
   });
 
   describe('enqueueRowIdForDeletion - userId tables', () => {
