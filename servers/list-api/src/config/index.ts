@@ -54,7 +54,7 @@ export default {
         events: [EventType.ADD_ITEM],
         url:
           process.env.SQS_PERMLIB_ITEMMAIN_QUEUE_URL ||
-          'http://localhost:4566/000000000000/PermLib-Local-ItemMain',
+          'http://localhost:4566/000000000000/PermLib-ItemMain',
       },
       waitTimeSeconds: 20,
       batchSize: 10,
