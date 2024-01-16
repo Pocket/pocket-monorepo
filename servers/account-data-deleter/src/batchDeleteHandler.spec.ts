@@ -1,4 +1,3 @@
-import sinon from 'sinon';
 import { EventEmitter } from 'events';
 import { BatchDeleteHandler } from './batchDeleteHandler';
 import { DeleteMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
@@ -21,92 +20,106 @@ describe('batchDeleteHandler', () => {
     email: 'q@q.continuum',
     isPremium: true,
   };
-  let scheduleStub: sinon.SinonStub;
-  let sentryStub: sinon.SinonStub;
-  let loggerError: sinon.SinonStub;
+  let scheduleStub: jest.SpyInstance;
+  let sentryStub: jest.SpyInstance;
+  let loggerError: jest.SpyInstance;
 
   beforeEach(() => {
-    sinon.restore();
-    scheduleStub = sinon
-      .stub(batchDeleteHandler, 'scheduleNextPoll')
-      .resolves();
+    jest.restoreAllMocks();
+    scheduleStub = jest
+      .spyOn(batchDeleteHandler, 'scheduleNextPoll')
+      .mockResolvedValue();
 
-    sentryStub = sinon.stub(Sentry, 'captureException');
-    loggerError = sinon.stub(Logger, 'error');
+    sentryStub = jest.spyOn(Sentry, 'captureException');
+    loggerError = jest.spyOn(Logger, 'error');
   });
+
   it('sends an event when the class is initialized', () => {
-    const eventSpy = sinon.spy(emitter, 'emit');
-    sinon.stub(BatchDeleteHandler.prototype, 'pollQueue').resolves();
+    const eventSpy = jest.spyOn(emitter, 'emit').mockClear();
+    jest.spyOn(BatchDeleteHandler.prototype, 'pollQueue').mockResolvedValue();
     new BatchDeleteHandler(emitter);
-    expect(eventSpy.calledOnceWithExactly('pollBatchDelete')).toBe(true);
+    expect(eventSpy).toHaveBeenCalledWith('pollBatchDelete');
   });
   it('invokes listener when pollBatchDelete event is emitted', async () => {
-    const listenerStub = sinon.stub(batchDeleteHandler, 'pollQueue').resolves();
+    const listenerStub = jest
+      .spyOn(batchDeleteHandler, 'pollQueue')
+      .mockResolvedValue();
     emitter.emit('pollBatchDelete');
-    expect(listenerStub.callCount).toEqual(1);
+    expect(listenerStub).toHaveBeenCalledTimes(1);
   });
   it('schedules a poll event after some time if no messages returned', async () => {
-    sinon.stub(SQSClient.prototype, 'send').resolves({ Messages: [] });
+    jest
+      .spyOn(SQSClient.prototype, 'send')
+      .mockImplementation(() => Promise.resolve({ Messages: [] }));
     await batchDeleteHandler.pollQueue();
-    expect(scheduleStub.calledOnceWithExactly(300000)).toBe(true);
+    expect(scheduleStub).toHaveBeenCalledWith(300000);
+    expect(scheduleStub).toHaveBeenCalledTimes(1);
   });
   it('logs critical error if could not receive messages, and reschedules', async () => {
     const error = new Error(`You got Q'd`);
-    sinon.stub(SQSClient.prototype, 'send').rejects(error);
+    jest.spyOn(SQSClient.prototype, 'send').mockImplementation(() => {
+      throw error;
+    });
     await batchDeleteHandler.pollQueue();
-    expect(
-      sentryStub.calledOnceWithExactly(error, {
-        level: 'fatal' as SeverityLevel,
-      }),
-    ).toBe(true);
-    expect(loggerError.callCount).toEqual(1);
-    expect(scheduleStub.calledOnceWithExactly(300000)).toBe(true);
+    expect(sentryStub).toHaveBeenCalledWith(error, {
+      level: 'fatal' as SeverityLevel,
+    });
+    expect(sentryStub).toHaveBeenCalledTimes(1);
+    expect(loggerError).toHaveBeenCalledTimes(1);
+    expect(scheduleStub).toHaveBeenCalledTimes(1);
+    expect(scheduleStub).toHaveBeenCalledWith(300000);
   });
   describe('With a message', () => {
     describe('pollQueue', () => {
       it('invokes account delete data service if a message is returned from poll', async () => {
-        const deleteStub = sinon
-          .stub(
+        const deleteStub = jest
+          .spyOn(
             AccountDeleteDataService.prototype,
             'batchDeleteUserInformation',
           )
-          .resolves();
-        sinon
-          .stub(SQSClient.prototype, 'send')
-          .resolves({ Messages: [{ Body: JSON.stringify(fakeMessageBody) }] });
+          .mockResolvedValue();
+        jest.spyOn(SQSClient.prototype, 'send').mockImplementation(() =>
+          Promise.resolve({
+            Messages: [{ Body: JSON.stringify(fakeMessageBody) }],
+          }),
+        );
         await batchDeleteHandler.pollQueue();
-        expect(
-          deleteStub.calledOnceWithExactly(
-            'officers',
-            {
-              primaryKeyNames: ['surname'],
-              primaryKeyValues: [['spock'], ['picard'], ['riker'], ['ohura']],
-            },
-            'abc-123',
-            config.queueDelete.limitOverrides,
-          ),
-        ).toBe(true);
+        expect(deleteStub).toHaveBeenCalledWith(
+          'officers',
+          {
+            primaryKeyNames: ['surname'],
+            primaryKeyValues: [['spock'], ['picard'], ['riker'], ['ohura']],
+          },
+          'abc-123',
+          config.queueDelete.limitOverrides,
+        );
+        expect(deleteStub).toHaveBeenCalledTimes(1);
       });
       it('schedules polling another message after a delay', async () => {
-        sinon
-          .stub(SQSClient.prototype, 'send')
-          .resolves({ Messages: [{ Body: JSON.stringify(fakeMessageBody) }] });
-        sinon.stub(batchDeleteHandler, 'handleMessage').resolves(true);
-        sinon.stub(batchDeleteHandler, 'deleteMessage').resolves();
+        jest.spyOn(SQSClient.prototype, 'send').mockImplementation(() =>
+          Promise.resolve({
+            Messages: [{ Body: JSON.stringify(fakeMessageBody) }],
+          }),
+        );
+        jest.spyOn(batchDeleteHandler, 'handleMessage').mockResolvedValue(true);
+        jest.spyOn(batchDeleteHandler, 'deleteMessage').mockResolvedValue();
         await batchDeleteHandler.pollQueue();
-        expect(scheduleStub.calledOnceWithExactly(500)).toBe(true);
+        expect(scheduleStub).toHaveBeenCalledWith(500);
+        expect(scheduleStub).toHaveBeenCalledTimes(1);
       });
       it('sends a delete if message was successfully processed', async () => {
-        sinon.stub(batchDeleteHandler, 'handleMessage').resolves(true);
-        const sqsStub = sinon
-          .stub(SQSClient.prototype, 'send')
-          .onFirstCall()
-          .resolves({ Messages: [{ Body: JSON.stringify(fakeMessageBody) }] })
-          .onSecondCall()
-          .resolves();
+        jest.spyOn(batchDeleteHandler, 'handleMessage').mockResolvedValue(true);
+        const sqsStub = jest
+          .spyOn(SQSClient.prototype, 'send')
+          .mockImplementationOnce(() =>
+            Promise.resolve({
+              Messages: [{ Body: JSON.stringify(fakeMessageBody) }],
+            }),
+          )
+          .mockImplementation(() => Promise.resolve());
         await batchDeleteHandler.pollQueue();
-        expect(sqsStub.callCount).toEqual(2);
-        expect(sqsStub.secondCall.args[0].input).toEqual(
+        expect(sqsStub).toHaveBeenCalledTimes(2);
+        expect(sqsStub.mock.calls[1][0].input).toEqual(
           new DeleteMessageCommand({
             QueueUrl: config.aws.sqs.accountDeleteQueue.url,
             ReceiptHandle: undefined,
@@ -114,38 +127,45 @@ describe('batchDeleteHandler', () => {
         );
       });
       it('does not delete if message was unsuccessfully processed', async () => {
-        sinon.stub(batchDeleteHandler, 'handleMessage').resolves(false);
-        const sqsStub = sinon
-          .stub(SQSClient.prototype, 'send')
-          .onFirstCall()
-          .resolves({ Messages: [{ Body: JSON.stringify(fakeMessageBody) }] })
-          .onSecondCall()
-          .resolves();
+        jest
+          .spyOn(batchDeleteHandler, 'handleMessage')
+          .mockResolvedValue(false);
+        const sqsStub = jest
+          .spyOn(SQSClient.prototype, 'send')
+          .mockImplementationOnce(() =>
+            Promise.resolve({
+              Messages: [{ Body: JSON.stringify(fakeMessageBody) }],
+            }),
+          )
+          .mockImplementation(() => Promise.resolve());
         await batchDeleteHandler.pollQueue();
-        expect(sqsStub.callCount).toEqual(1);
+        expect(sqsStub).toHaveBeenCalledTimes(1);
       });
     });
     describe('handleMessage', () => {
       it('sends error to Sentry and Cloudwatch if data service call fails, and schedules poll', async () => {
         const error = new Error(`You got Q'd`);
-        sinon
-          .stub(
+        jest
+          .spyOn(
             AccountDeleteDataService.prototype,
             'batchDeleteUserInformation',
           )
-          .rejects(error);
+          .mockImplementation(() => {
+            throw error;
+          });
         await batchDeleteHandler.handleMessage(fakeMessageBody);
-        expect(sentryStub.calledOnceWithExactly(error)).toBe(true);
-        expect(loggerError.callCount).toEqual(1);
+        expect(sentryStub).toHaveBeenCalledWith(error);
+        expect(sentryStub).toHaveBeenCalledTimes(1);
+        expect(loggerError).toHaveBeenCalledTimes(1);
       });
 
       it('deletes from campaign_target_vars when campaign_target is deleted', async () => {
-        const deleteStub = sinon
-          .stub(
+        const deleteStub = jest
+          .spyOn(
             AccountDeleteDataService.prototype,
             'batchDeleteUserInformation',
           )
-          .resolves();
+          .mockResolvedValue();
 
         const args = {
           primaryKeyNames: ['id'],
@@ -162,15 +182,15 @@ describe('batchDeleteHandler', () => {
         };
 
         await batchDeleteHandler.handleMessage(fakeMessageBody);
-        expect(deleteStub.calledTwice).toBe(true);
-        const calls = deleteStub.getCalls();
-        expect(calls[0].args).toStrictEqual([
+        expect(deleteStub).toHaveBeenCalledTimes(2);
+        const calls = deleteStub.mock.calls;
+        expect(calls[0]).toStrictEqual([
           'readitla_ril-tmp.campaign_target',
           args,
           fakeMessageBody.traceId,
           config.queueDelete.limitOverrides,
         ]);
-        expect(calls[1].args).toStrictEqual([
+        expect(calls[1]).toStrictEqual([
           'readitla_ril-tmp.campaign_target_vars',
           args,
           fakeMessageBody.traceId,

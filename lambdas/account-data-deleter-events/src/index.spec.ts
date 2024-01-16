@@ -1,20 +1,19 @@
 import { Event, handlers } from './handlers';
 import { handlerFn } from './index';
-import sinon from 'sinon';
 import { SQSEvent } from 'aws-lambda';
 import * as Sentry from '@sentry/serverless';
 
 describe('event handlers', () => {
-  let deleteStub: sinon.SinonStub;
-  let sentryStub: sinon.SinonStub;
+  let deleteStub: jest.SpyInstance;
+  let sentryStub: jest.SpyInstance;
   beforeEach(() => {
-    sinon.restore();
-    sentryStub = sinon.stub(Sentry, 'captureException');
+    jest.restoreAllMocks();
+    sentryStub = jest.spyOn(Sentry, 'captureException');
   });
-  afterAll(() => sinon.restore());
+  afterAll(() => jest.restoreAllMocks());
   describe('with no handler errors', () => {
     beforeEach(() => {
-      deleteStub = sinon.stub(handlers, Event.ACCOUNT_DELETION).resolves();
+      deleteStub = jest.spyOn(handlers, Event.ACCOUNT_DELETION).mockResolvedValue();
     });
     it('routes to the correct handler function based on detail-type', async () => {
       const records = {
@@ -29,8 +28,8 @@ describe('event handlers', () => {
         ],
       };
       await handlerFn(records as SQSEvent);
-      expect(deleteStub.callCount).toEqual(1);
-      expect(deleteStub.getCall(0).args).toEqual([records.Records[0]]);
+      expect(deleteStub).toHaveBeenCalledTimes(1);
+      expect(deleteStub).toHaveBeenCalledWith(records.Records[0]);
     });
     it('ignore the message if handler does not exist', async () => {
       const records = {
@@ -52,14 +51,13 @@ describe('event handlers', () => {
         ],
       };
       await handlerFn(records as SQSEvent);
-      expect(sentryStub.callCount).toEqual(0);
+      expect(sentryStub).toHaveBeenCalledTimes(0);
     });
   });
   describe('with handler errors', () => {
     beforeEach(() => {
-      deleteStub = sinon
-        .stub(handlers, Event.ACCOUNT_DELETION)
-        .rejects(Error('got an error'));
+      deleteStub = jest.spyOn(handlers, Event.ACCOUNT_DELETION)
+        .mockRejectedValue(new Error('got an error'));
     });
     it('returns batchItemFailure and logs to Sentry if handler throws error', async () => {
       const records = {
@@ -76,8 +74,8 @@ describe('event handlers', () => {
       };
       const res = await handlerFn(records as SQSEvent);
       expect(res.batchItemFailures).toEqual([{ itemIdentifier: 'abc' }]);
-      expect(sentryStub.callCount).toEqual(1);
-      expect(sentryStub.getCall(0).args[0].message).toEqual('got an error');
+      expect(sentryStub).toHaveBeenCalledTimes(1);
+      expect(sentryStub).toHaveBeenCalledWith(new Error('got an error'));
     });
   });
 });

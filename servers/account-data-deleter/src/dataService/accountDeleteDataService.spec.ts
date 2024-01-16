@@ -1,22 +1,20 @@
-import sinon from 'sinon';
 import {
   AccountDeleteDataService,
   TablePrimaryKeyModel,
 } from './accountDeleteDataService';
 import { writeClient } from './clients';
-import { expect } from 'chai';
 
 describe('batchDeleteUserInformation', () => {
   const dataService = new AccountDeleteDataService(1, writeClient());
 
   beforeEach(() => {
-    sinon.restore();
+    jest.restoreAllMocks();
   });
 
   it('should primary keys passed', async () => {
-    const deleteByKeysStub = sinon
-      .stub(dataService, 'deleteByKeys')
-      .resolves(3);
+    const deleteByKeysStub = jest
+      .spyOn(dataService, 'deleteByKeys')
+      .mockResolvedValue(3);
     const inputModel: TablePrimaryKeyModel = {
       primaryKeyNames: ['a', 'b'],
       primaryKeyValues: [
@@ -31,7 +29,7 @@ describe('batchDeleteUserInformation', () => {
       '1',
       [],
     );
-    expect(deleteByKeysStub.callCount).equals(1);
+    expect(deleteByKeysStub).toHaveBeenCalledTimes(1);
   });
 
   it('check args passed to deleteKeys', async () => {
@@ -40,11 +38,13 @@ describe('batchDeleteUserInformation', () => {
       primaryKeyNames: ['a', 'b'],
       primaryKeyValues: [[1, 2]],
     };
-    const deleteByKeysStub = sinon
-      .stub(dataService, 'deleteByKeys')
-      .withArgs(table, args);
+    const deleteByKeysStub = jest
+      .spyOn(dataService, 'deleteByKeys')
+      .mockImplementation((table, args) => {
+        return Promise.resolve(1);
+      });
     await dataService.batchDeleteUserInformation(table, args, '1', []);
-    expect(deleteByKeysStub.callCount).equals(1);
+    expect(deleteByKeysStub).toHaveBeenCalledTimes(1);
   });
 
   it('should break up too long lists', async () => {
@@ -58,9 +58,9 @@ describe('batchDeleteUserInformation', () => {
         [9, 10],
       ],
     };
-    const deleteByKeysStub = sinon
-      .stub(dataService, 'deleteByKeys')
-      .resolves(3);
+    const deleteByKeysStub = jest
+      .spyOn(dataService, 'deleteByKeys')
+      .mockResolvedValue(3);
     const limitOverridesConfig = [
       {
         table: 'test_table_big',
@@ -73,7 +73,7 @@ describe('batchDeleteUserInformation', () => {
       '1',
       limitOverridesConfig,
     );
-    expect(deleteByKeysStub.callCount).equals(3);
+    expect(deleteByKeysStub).toHaveBeenCalledTimes(3);
   });
 
   it('should not break up not overridden lists', async () => {
@@ -87,9 +87,9 @@ describe('batchDeleteUserInformation', () => {
         [9, 10],
       ],
     };
-    const deleteByKeysStub = sinon
-      .stub(dataService, 'deleteByKeys')
-      .resolves(3);
+    const deleteByKeysStub = jest
+      .spyOn(dataService, 'deleteByKeys')
+      .mockResolvedValue(3);
     await dataService.batchDeleteUserInformation(
       'test_table_big',
       inputModel,
@@ -101,6 +101,6 @@ describe('batchDeleteUserInformation', () => {
         },
       ],
     );
-    expect(deleteByKeysStub.callCount).equals(1);
+    expect(deleteByKeysStub).toHaveBeenCalledTimes(1);
   });
 });

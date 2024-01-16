@@ -3,7 +3,6 @@ import nock from 'nock';
 import { accountDeleteHandler } from './';
 import { callQueueDeleteEndpoint } from './postRequest';
 import { SQSRecord } from 'aws-lambda';
-import sinon from 'sinon';
 
 describe('accountDelete handler', () => {
   const record = {
@@ -20,7 +19,7 @@ describe('accountDelete handler', () => {
 
   afterEach(() => {
     nock.cleanAll();
-    sinon.restore();
+    jest.restoreAllMocks();
   });
 
   it('throw an error if accountDelete event payload has undefined fields', async () => {

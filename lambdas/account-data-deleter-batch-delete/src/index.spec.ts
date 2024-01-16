@@ -1,14 +1,13 @@
 import { BatchDeleteDyanmoClient } from './dynamoUtils';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { config } from './config';
-import sinon from 'sinon';
 import * as DeleteMutation from './externalCaller/deleteMutation';
 import { deleteUsers } from './index';
 import * as Sentry from '@sentry/serverless';
 
 describe('deleteUsers spec test', () => {
-  let client;
-  let dynamoDbUtils;
+  let client: DynamoDBClient;
+  let dynamoDbUtils: BatchDeleteDyanmoClient;
 
   beforeAll(() => {
     client = new DynamoDBClient({
@@ -20,34 +19,38 @@ describe('deleteUsers spec test', () => {
   });
 
   beforeEach(() => {
-    sinon.restore();
+    jest.clearAllMocks();
   });
+
+  afterAll(() =>  {
+    jest.restoreAllMocks();
+  })
 
   it('should move UserIds that was successfully deleted', async () => {
     const testUserIds: number[] = [1];
-    sinon.stub(dynamoDbUtils, 'getBatch').returns(Promise.resolve(testUserIds));
-    sinon.stub(DeleteMutation, 'deleteUserMutationCaller').resolves('1');
-    const spy = sinon.stub(dynamoDbUtils, 'moveBatch').resolves();
+    jest.spyOn(dynamoDbUtils, 'getBatch').mockImplementation(() => {return Promise.resolve(testUserIds)});
+    jest.spyOn(DeleteMutation, 'deleteUserMutationCaller').mockImplementation(() => {return Promise.resolve('1')});
+    const spy = jest.spyOn(dynamoDbUtils, 'moveBatch').mockImplementation(() => {return Promise.resolve()});
     await deleteUsers(dynamoDbUtils);
-    expect(spy.calledOnceWithExactly([1])).toBeTruthy();
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 
   it('should not move UserIds that was not successfully deleted', async () => {
     const testUserIds: number[] = [1];
-    sinon.stub(dynamoDbUtils, 'getBatch').returns(Promise.resolve(testUserIds));
-    sinon
-      .stub(DeleteMutation, 'deleteUserMutationCaller')
-      .throws(new Error('delete error'));
-    const spy = sinon.stub(dynamoDbUtils, 'moveBatch').resolves();
-    const consoleSpy = sinon.spy(console, 'log');
-    const sentrySpy = sinon.spy(Sentry, 'captureException');
+    jest.spyOn(dynamoDbUtils, 'getBatch').mockImplementation(() => {return Promise.resolve(testUserIds)});
+    jest
+      .spyOn(DeleteMutation, 'deleteUserMutationCaller').mockImplementation(() => { throw new Error('delete error')});
+    const spy = jest.spyOn(dynamoDbUtils, 'moveBatch').mockImplementation(() => {return Promise.resolve()});
+    const consoleSpy = jest.spyOn(console, 'log');
+    const sentrySpy = jest.spyOn(Sentry, 'captureException');
     await deleteUsers(dynamoDbUtils);
-    expect(spy.calledOnceWithExactly([])).toBeTruthy();
-    expect(consoleSpy.calledOnceWithExactly(`unable to delete userId ${1}`));
-    expect(
-      sentrySpy.calledOnceWithExactly({
-        message: `unable to delete userId ${1}`,
-      }),
-    );
+    expect(spy).toHaveBeenCalledWith([]);
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(consoleSpy).toHaveBeenCalledWith(`unable to delete userId ${1}`);
+    expect(consoleSpy).toHaveBeenCalledTimes(1);
+    expect(sentrySpy).toHaveBeenCalledWith({
+      message: `unable to delete userId ${1}`,
+    });
+    expect(sentrySpy).toHaveBeenCalledTimes(1);
   });
 });

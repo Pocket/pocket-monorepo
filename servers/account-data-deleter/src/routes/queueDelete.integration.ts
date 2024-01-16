@@ -1,5 +1,4 @@
 import { readClient, writeClient } from '../dataService/clients';
-import sinon from 'sinon';
 import { SQS } from '@aws-sdk/client-sqs';
 import { enqueueTablesForDeletion } from './queueDelete';
 import { AccountDeleteDataService } from '../dataService/accountDeleteDataService';
@@ -8,17 +7,17 @@ import { config } from '../config';
 describe('enqueueTablesForDeletion', () => {
   const db = writeClient();
 
-  let sqsSendMock, queryLimit, sqsBatchSize;
+  let sqsSendMock: jest.SpyInstance, queryLimit, sqsBatchSize;
   beforeEach(() => {
     queryLimit = config.queueDelete.queryLimit;
     sqsBatchSize = config.aws.sqs.batchSize;
-    sqsSendMock = sinon.stub(SQS.prototype, 'send');
+    sqsSendMock = jest.spyOn(SQS.prototype, 'send').mockImplementation();
   });
 
   afterEach(() => {
     config.queueDelete.queryLimit = queryLimit;
     config.aws.sqs.batchSize = sqsBatchSize;
-    sinon.restore();
+    jest.restoreAllMocks();
   });
 
   afterAll(async () => {
@@ -137,9 +136,9 @@ describe('enqueueTablesForDeletion', () => {
         tableNames,
       );
 
-      expect(sqsSendMock.callCount).toEqual(expectedMessages.length);
-      const actualMessages = sqsSendMock.getCalls().map((call) => {
-        return JSON.parse(call.args[0].input.Entries[0].MessageBody);
+      expect(sqsSendMock).toHaveBeenCalledTimes(expectedMessages.length);
+      const actualMessages = sqsSendMock.mock.calls.map((call) => {
+        return JSON.parse(call[0].input.Entries[0].MessageBody);
       });
       for (let i = 0; i < expectedMessages.length; i++) {
         expect(actualMessages[i]).toMatchObject(expectedMessages[i]);
@@ -223,9 +222,9 @@ describe('enqueueTablesForDeletion', () => {
         tableNames,
       );
 
-      expect(sqsSendMock.callCount).toEqual(expectedMessages.length);
-      const actualMessages = sqsSendMock.getCalls().map((call) => {
-        return JSON.parse(call.args[0].input.Entries[0].MessageBody);
+      expect(sqsSendMock).toHaveBeenCalledTimes(expectedMessages.length);
+      const actualMessages = sqsSendMock.mock.calls.map((call) => {
+        return JSON.parse(call[0].input.Entries[0].MessageBody);
       });
       for (let i = 0; i < expectedMessages.length; i++) {
         expect(actualMessages[i]).toMatchObject(expectedMessages[i]);
@@ -362,9 +361,9 @@ describe('enqueueTablesForDeletion', () => {
         tableNames,
       );
 
-      expect(sqsSendMock.callCount).toEqual(expectedMessages.length);
-      const actualMessages = sqsSendMock.getCalls().map((call) => {
-        return JSON.parse(call.args[0].input.Entries[0].MessageBody);
+      expect(sqsSendMock).toHaveBeenCalledTimes(expectedMessages.length);
+      const actualMessages = sqsSendMock.mock.calls.map((call) => {
+        return JSON.parse(call[0].input.Entries[0].MessageBody);
       });
       for (let i = 0; i < expectedMessages.length; i++) {
         // Stupid timezone
