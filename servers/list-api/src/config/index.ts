@@ -39,17 +39,6 @@ export default {
           process.env.SQS_PUBLISHER_DATA_QUEUE_URL ||
           'http://localhost:4566/000000000000/pocket-publisher-data-queue',
       },
-      listDeleteQueue: {
-        url:
-          process.env.SQS_BATCH_DELETE_QUEUE_URL ||
-          'http://localhost:4566/000000000000/pocket-list-delete-queue',
-        visibilityTimeout: 10000,
-        messageRetentionSeconds: 1209600,
-        maxMessages: 1,
-        waitTimeSeconds: 0,
-        defaultPollIntervalSeconds: 300,
-        afterMessagePollIntervalSeconds: 1,
-      },
       permLibItemMainQueue: {
         events: [EventType.ADD_ITEM],
         url:
@@ -61,19 +50,6 @@ export default {
     },
   },
   awsEnvironments,
-  batchDelete: {
-    deleteDelayInMilliSec: 500,
-    tablesWithPii: ['item_tags', 'list', 'item_attribution'],
-    tablesWithUserIdAlone: [
-      'list_meta',
-      'items_scroll',
-      'item_ads',
-      'item_time_spent',
-      'item_currently_reading',
-      'list_extras',
-      'list_shares',
-    ],
-  },
   data: {
     // A suffix that ensures the tag ID is never an empty string,
     // because there are empty tag strings in the DB
