@@ -115,7 +115,7 @@ workflows:
           sentry_project_name: account-data-deleter
           sentry_env: development
           sentry_org: pocket
-          s3-bucket: pocket-accountdatadeleter-dev-events
+          s3-bucket: 	pocket-accountdatadeleter-dev-sqs-event-consumer
           requires:
             - account-data-deleter_infrastructure_apply_dev
 
@@ -128,7 +128,7 @@ workflows:
           codedeploy-app-name: AccountDataDeleter-Dev-Sqs-Event-Consumer-Lambda
           codedeploy-group-name: AccountDataDeleter-Dev-Sqs-Event-Consumer-Lambda
           function-name: AccountDataDeleter-Dev-Sqs-Event-Consumer-Function
-          s3-bucket: pocket-accountdatadeleter-dev-events
+          s3-bucket: 	pocket-accountdatadeleter-dev-sqs-event-consumer
           requires:
             - account-data-deleter_events_build_dev
 
@@ -144,7 +144,7 @@ workflows:
           sentry_project_name: account-data-deleter
           sentry_env: development
           sentry_org: pocket
-          s3-bucket: pocket-accountdatadeleter-dev-batch-delete
+          s3-bucket: 	pocket-accountdatadeleter-dev-batchdeletelambda
           requires:
             - account-data-deleter_infrastructure_apply_dev
 
@@ -157,7 +157,7 @@ workflows:
           codedeploy-app-name: AccountDataDeleter-Prod-BatchDeleteLambda-Lambda
           codedeploy-group-name: AccountDataDeleter-Prod-BatchDeleteLambda-Lambda
           function-name: AccountDataDeleter-Prod-BatchDeleteLambda-Function
-          s3-bucket: pocket-accountdatadeleter-dev-batch-delete
+          s3-bucket: 	pocket-accountdatadeleter-dev-batchdeletelambda
           requires:
             - account-data-deleter_batch-delete_build_dev
 
@@ -245,7 +245,7 @@ workflows:
           sentry_project_name: account-data-deleter
           sentry_env: development
           sentry_org: pocket
-          s3-bucket: pocket-accountdatadeleter-prod-events
+          s3-bucket: 	pocket-accountdatadeleter-prod-sqs-event-consumer
           requires:
             - account-data-deleter_infrastructure_apply_prod
 
@@ -258,7 +258,7 @@ workflows:
           codedeploy-app-name: AccountDataDeleter-Prod-Sqs-Event-Consumer-Lambda
           codedeploy-group-name: AccountDataDeleter-Prod-Sqs-Event-Consumer-Lambda
           function-name: AccountDataDeleter-Prod-Sqs-Event-Consumer-Function
-          s3-bucket: pocket-accountdatadeleter-prod-events
+          s3-bucket: 	pocket-accountdatadeleter-prod-sqs-event-consumer
           requires:
             - account-data-deleter_events_build_prod
 
@@ -274,7 +274,7 @@ workflows:
           sentry_project_name: account-data-deleter
           sentry_env: prodelopment
           sentry_org: pocket
-          s3-bucket: pocket-accountdatadeleter-prod-batch-delete
+          s3-bucket: 	pocket-accountdatadeleter-prod-batchdeletelambda
           requires:
             - account-data-deleter_infrastructure_apply_prod
 
@@ -287,7 +287,7 @@ workflows:
           codedeploy-app-name: AccountDataDeleter-Prod-BatchDeleteLambda-Lambda
           codedeploy-group-name: AccountDataDeleter-Prod-BatchDeleteLambda-Lambda
           function-name: AccountDataDeleter-Prod-BatchDeleteLambda-Function
-          s3-bucket: pocket-accountdatadeleter-prod-batch-delete
+          s3-bucket: 	pocket-accountdatadeleter-prod-batchdeletelambda
           requires:
             - account-data-deleter_batch-delete_build_prod
 
