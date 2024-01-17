@@ -57,7 +57,6 @@ workflows:
           workspace: Prod
           dev: false
           apply: false
-          save_app_spec: false
 
       ######
       # Dev Branch Deployment (Dev Environment)
@@ -74,7 +73,6 @@ workflows:
           workspace: Dev
           apply: true
           dev: true
-          save_app_spec: false
 
       # Build & Deploy the Dev Docker Image
       - build_image:
@@ -174,7 +172,7 @@ workflows:
           requires:
             - account-data-deleter_events_code_deploy_dev
             - account-data-deleter_batch-delete_code_deploy_dev
-            - account-data-deleter_code_deploy_ecs_prod
+            - account-data-deleter_code_deploy_ecs_dev
 
       # Setup params we may use in Lambdas
       - setup_deploy_params:
@@ -204,7 +202,6 @@ workflows:
           workspace: Prod
           apply: true
           dev: false
-          save_app_spec: false
 
       # Build & Deploy the Prod Docker Image
       - build_image:

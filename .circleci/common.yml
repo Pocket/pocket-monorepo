@@ -248,7 +248,7 @@ jobs:
                      command: |
                        . /home/circleci/.codebuild_shims_wrapper.sh
                        cd << parameters.stack-output-path >>
-                       mkdir /tmp/workspace/<< parameters.for >>
+                       mkdir -p /tmp/workspace/<< parameters.for >>
                        cp appspec.json /tmp/workspace/<< parameters.for >>/
                  - persist_to_workspace:
                     root: /tmp/workspace
