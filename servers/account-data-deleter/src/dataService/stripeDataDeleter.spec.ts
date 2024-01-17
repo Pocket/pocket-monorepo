@@ -20,12 +20,10 @@ describe.skip('StripeDataDeleter', () => {
       beforeAll(() => {
         subscriptionStub = jest.fn().mockResolvedValue({ customer: 'abc-xyz' });
         customerStub = jest.fn().mockResolvedValue({ id: 'abc-xyz' });
-        stripeClient = jest
-          .spyOn(conn, 'stripeClient')
-          .mockReturnValue({
-            customers: { del: () => customerStub },
-            subscriptions: { retrieve: () => subscriptionStub },
-          } as any);
+        stripeClient = jest.spyOn(conn, 'stripeClient').mockReturnValue({
+          customers: { del: () => customerStub },
+          subscriptions: { retrieve: () => subscriptionStub },
+        } as any);
       });
       afterAll(() => stripeClient?.mockRestore());
       it('returns a single successfuly deleted id', async () => {
@@ -43,12 +41,12 @@ describe.skip('StripeDataDeleter', () => {
     });
     describe('with not found id', () => {
       beforeAll(() => {
-        subscriptionStub = jest.fn().mockRejectedValue({ code: 'resource_missing' });
-        stripeClient = jest
-          .spyOn(conn, 'stripeClient')
-          .mockReturnValue({
-            subscription: { retrieve: subscriptionStub },
-          } as any);
+        subscriptionStub = jest
+          .fn()
+          .mockRejectedValue({ code: 'resource_missing' });
+        stripeClient = jest.spyOn(conn, 'stripeClient').mockReturnValue({
+          subscription: { retrieve: subscriptionStub },
+        } as any);
       });
       afterAll(() => stripeClient?.mockRestore());
       it('returns as success', async () => {

@@ -154,9 +154,9 @@ workflows:
           for: account_data_deleter
           name: account-data-deleter_batch-delete_code_deploy_dev
           resource-class: pocket/default-dev
-          codedeploy-app-name: AccountDataDeleter-Prod-BatchDeleteLambda-Lambda
-          codedeploy-group-name: AccountDataDeleter-Prod-BatchDeleteLambda-Lambda
-          function-name: AccountDataDeleter-Prod-BatchDeleteLambda-Function
+          codedeploy-app-name: AccountDataDeleter-Dev-BatchDeleteLambda-Lambda
+          codedeploy-group-name: AccountDataDeleter-Dev-BatchDeleteLambda-Lambda
+          function-name: AccountDataDeleter-Dev-BatchDeleteLambda-Function
           s3-bucket: 	pocket-accountdatadeleter-dev-batchdeletelambda
           requires:
             - account-data-deleter_batch-delete_build_dev
