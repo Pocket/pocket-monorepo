@@ -52,6 +52,13 @@ headers:
       - propagate:
           named: 'transfersub'
 telemetry:
+  apollo:
+    send_variable_values:
+      only:
+        - filters # getCollections
+        - page # getCollections
+        - perPage # getCollections
+        - slug # collectionBySlug
   exporters:
     tracing:
       otlp:
