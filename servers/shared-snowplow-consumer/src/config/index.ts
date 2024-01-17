@@ -27,10 +27,10 @@ export const config = {
       sharedSnowplowQueue: {
         url:
           process.env.SNOWPLOW_EVENTS_SQS_QUEUE ||
-          'http://localhost:4566/queue/SharedSnowplowConsumer-Prod-SharedEventConsumer-Queue',
+          'http://localhost:4566/000000000000/SharedSnowplowConsumer-Prod-SharedEventConsumer-Queue',
         dlqUrl:
           process.env.SNOWPLOW_EVENTS_DLQ_URL ||
-          'http://localhost:4566/queue/SharedSnowplowConsumer-Prod-SharedEventConsumer-Queue-Deadletter',
+          'http://localhost:4566/000000000000/SharedSnowplowConsumer-Prod-SharedEventConsumer-Queue-Deadletter',
         visibilityTimeout: 10000,
         maxMessages: 1,
         waitTimeSeconds: 0,
