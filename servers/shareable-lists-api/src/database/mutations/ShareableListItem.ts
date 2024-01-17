@@ -23,7 +23,7 @@ import { EventBridgeEventType } from '../../snowplow/types';
 export async function createShareableListItem(
   db: PrismaClient,
   data: CreateShareableListItemInput,
-  userId: number | bigint
+  userId: number | bigint,
 ): Promise<ShareableListItem> {
   // make sure the itemId is valid
   // this is required as itemId must be a string at the API level, but is
@@ -46,7 +46,7 @@ export async function createShareableListItem(
 
   if (!list) {
     throw new NotFoundError(
-      `A list with the ID of "${data.listExternalId}" does not exist`
+      `A list with the ID of "${data.listExternalId}" does not exist`,
     );
   }
 
@@ -57,7 +57,7 @@ export async function createShareableListItem(
 
   if (itemExists) {
     throw new UserInputError(
-      `An item with the URL "${data.url}" already exists in this list`
+      `An item with the URL "${data.url}" already exists in this list`,
     );
   }
 
@@ -75,26 +75,23 @@ export async function createShareableListItem(
     listId: list.id,
   };
 
-  let listItem;
+  const listItemUpdate = db.listItem.create({
+    data: input,
+    select: shareableListItemSelectFields,
+  });
+
+  const listUpdate = db.list.update({
+    data: {
+      updatedAt: new Date().toISOString(),
+    },
+    where: {
+      externalId: list.externalId,
+    },
+  });
 
   // execute the create and parent list updatedAt update in a single
   // transaction
-  await db.$transaction(async (db) => {
-    listItem = await db.listItem.create({
-      data: input,
-      select: shareableListItemSelectFields,
-    });
-
-    // update the `updatedAt` field on the parent list
-    await db.list.update({
-      data: {
-        updatedAt: new Date().toISOString(),
-      },
-      where: {
-        externalId: list.externalId,
-      },
-    });
-  });
+  const [listItem] = await db.$transaction([listItemUpdate, listUpdate]);
 
   //send event bridge event for shareable-list-item-created event type
   sendEvent(EventBridgeEventType.SHAREABLE_LIST_ITEM_CREATED, {
@@ -117,7 +114,7 @@ export async function createShareableListItem(
 export async function updateShareableListItem(
   db: PrismaClient,
   data: UpdateShareableListItemInput,
-  userId: number | bigint
+  userId: number | bigint,
 ): Promise<ShareableListItem> {
   // Retrieve the current record, pre-update
   const listItem = await db.listItem.findFirst({
@@ -181,7 +178,7 @@ export async function updateShareableListItem(
 export async function updateShareableListItems(
   db: PrismaClient,
   data: UpdateShareableListItemsInput[],
-  userId: number | bigint
+  userId: number | bigint,
 ): Promise<ShareableListItem[]> {
   // store the updated shareable list items result here
   const updatedShareableListItems = [];
@@ -274,7 +271,7 @@ export async function updateShareableListItems(
 export async function deleteShareableListItem(
   db: PrismaClient,
   externalId: string,
-  userId: number | bigint
+  userId: number | bigint,
 ): Promise<ShareableListItem> {
   // retrieve the existing ListItem before it is deleted
   const listItem = await db.listItem.findUnique({
@@ -347,7 +344,7 @@ export async function deleteShareableListItem(
  */
 export async function deleteAllListItemsForList(
   db: PrismaClient,
-  listId: bigint
+  listId: bigint,
 ): Promise<number> {
   const batchResult = await db.listItem.deleteMany({
     where: { listId: listId },

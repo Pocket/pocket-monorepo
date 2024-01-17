@@ -72,6 +72,7 @@ describe('public mutations: ShareableListItem', () => {
 
   afterAll(async () => {
     jest.restoreAllMocks();
+    jest.useRealTimers();
     await db.$disconnect();
     await server.stop();
   });
@@ -223,10 +224,8 @@ describe('public mutations: ShareableListItem', () => {
         });
 
       expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
-      expect(result.body.errors[0].message).toEqual(
-        expect.arrayContaining([
-          `Must be no more than ${LIST_ITEM_NOTE_MAX_CHARS} characters in length`,
-        ]),
+      expect(result.body.errors[0].message).toContain(
+        `Must be no more than ${LIST_ITEM_NOTE_MAX_CHARS} characters in length`,
       );
     });
 
@@ -417,13 +416,12 @@ describe('public mutations: ShareableListItem', () => {
 
     it('should update the updatedAt value of the parent list', async () => {
       // stub the clock so we can directly check updatedAt
-      jest.useFakeTimers().setSystemTime({
-        now: arbitraryTimestamp,
-        shouldAdvanceTime: false,
+      jest.useFakeTimers({
+        now: arbitraryTimestamp + oneDay,
+        advanceTimers: false,
+        // If these are faked, prisma transactions hang
+        doNotFake: ['nextTick', 'setImmediate'],
       });
-
-      // advance the clock one day
-      jest.advanceTimersByTime(oneDay);
 
       const data: CreateShareableListItemInput = {
         listExternalId: list.externalId,
@@ -519,20 +517,16 @@ describe('public mutations: ShareableListItem', () => {
 
     it('should update the updatedAt value of the item and the parent list', async () => {
       // stub the clock so we can directly check createdAt and updatedAt
-      jest.useFakeTimers().setSystemTime({
-        now: arbitraryTimestamp,
-        shouldAdvanceTime: false,
+      jest.useFakeTimers({
+        now: arbitraryTimestamp + oneDay,
+        advanceTimers: false,
+        doNotFake: ['nextTick', 'setImmediate'],
       });
-
-      // advance the clock one day to mimic an update made a day after create
-      jest.advanceTimersByTime(oneDay);
 
       const data: UpdateShareableListItemInput = {
         externalId: listItem1.externalId,
         sortOrder: 3,
       };
-
-      // do some kind of sleep
 
       const result = await request(app)
         .post(graphQLUrl)
@@ -573,10 +567,8 @@ describe('public mutations: ShareableListItem', () => {
         });
 
       expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
-      expect(result.body.errors[0].message).toEqual(
-        expect.arrayContaining([
-          `Must be no more than ${LIST_ITEM_NOTE_MAX_CHARS} characters in length`,
-        ]),
+      expect(result.body.errors[0].message).toContain(
+        `Must be no more than ${LIST_ITEM_NOTE_MAX_CHARS} characters in length`,
       );
     });
 
@@ -597,10 +589,8 @@ describe('public mutations: ShareableListItem', () => {
         });
 
       expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
-      expect(result.body.errors[0].message).toEqual(
-        expect.arrayContaining([
-          'Error - Not Found: A list item by that ID could not be found',
-        ]),
+      expect(result.body.errors[0].message).toContain(
+        'Error - Not Found: A list item by that ID could not be found',
       );
     });
 
@@ -623,10 +613,8 @@ describe('public mutations: ShareableListItem', () => {
         });
 
       expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
-      expect(result.body.errors[0].message).toEqual(
-        expect.arrayContaining([
-          'Error - Not Found: A list item by that ID could not be found',
-        ]),
+      expect(result.body.errors[0].message).toContain(
+        'Error - Not Found: A list item by that ID could not be found',
       );
     });
 
@@ -797,13 +785,11 @@ describe('public mutations: ShareableListItem', () => {
 
     it('should update the updatedAt value for each shareable list item', async () => {
       // stub the clock so we can directly check updatedAt
-      jest.useFakeTimers().setSystemTime({
-        now: arbitraryTimestamp,
-        shouldAdvanceTime: false,
+      jest.useFakeTimers({
+        now: arbitraryTimestamp + oneDay,
+        advanceTimers: false,
+        doNotFake: ['nextTick', 'setImmediate'],
       });
-
-      // advance the clock one day to mimic an update made a day after create
-      jest.advanceTimersByTime(oneDay);
 
       const data: UpdateShareableListItemsInput[] = [
         {
@@ -845,13 +831,11 @@ describe('public mutations: ShareableListItem', () => {
 
     it('should update the updatedAt value for each parent list', async () => {
       // stub the clock so we can directly check createdAt and updatedAt
-      jest.useFakeTimers().setSystemTime({
-        now: arbitraryTimestamp,
-        shouldAdvanceTime: false,
+      jest.useFakeTimers({
+        now: arbitraryTimestamp + oneDay,
+        advanceTimers: false,
+        doNotFake: ['nextTick', 'setImmediate'],
       });
-
-      // advance the clock one day to mimic an update made a day after create
-      jest.advanceTimersByTime(oneDay);
 
       const data: UpdateShareableListItemsInput[] = [
         {
@@ -928,10 +912,8 @@ describe('public mutations: ShareableListItem', () => {
         });
 
       expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
-      expect(result.body.errors[0].message).toEqual(
-        expect.arrayContaining([
-          'Error - Not Found: A list item by that ID could not be found',
-        ]),
+      expect(result.body.errors[0].message).toContain(
+        'Error - Not Found: A list item by that ID could not be found',
       );
       // lets make sure the valid list item was not updated
       const validListItem = await db.listItem.findFirst({
@@ -974,10 +956,8 @@ describe('public mutations: ShareableListItem', () => {
         });
 
       expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
-      expect(result.body.errors[0].message).toEqual(
-        expect.arrayContaining([
-          `Variable "$data" at "data" must be no more than 30 in length`,
-        ]),
+      expect(result.body.errors[0].message).toContain(
+        `Variable "$data" at "data" must be no more than 30 in length`,
       );
     });
 
@@ -1002,10 +982,8 @@ describe('public mutations: ShareableListItem', () => {
         });
 
       expect(result.body.errors[0].extensions.code).toBe('NOT_FOUND');
-      expect(result.body.errors[0].message).toEqual(
-        expect.arrayContaining([
-          'Error - Not Found: A list item by that ID could not be found',
-        ]),
+      expect(result.body.errors[0].message).toContain(
+        'Error - Not Found: A list item by that ID could not be found',
       );
     });
   });
@@ -1150,13 +1128,11 @@ describe('public mutations: ShareableListItem', () => {
 
     it('should update the parent list updatedAt value when deleting a list item', async () => {
       // stub the clock so we can directly check updatedAt
-      jest.useFakeTimers().setSystemTime({
-        now: arbitraryTimestamp,
-        shouldAdvanceTime: false,
+      jest.useFakeTimers({
+        now: arbitraryTimestamp + oneDay,
+        advanceTimers: false,
+        doNotFake: ['nextTick', 'setImmediate'],
       });
-
-      // advance the clock one day to mimic an update made a day after create
-      jest.advanceTimersByTime(oneDay);
 
       // run the mutation
       await request(app)

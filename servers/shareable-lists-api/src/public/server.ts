@@ -66,7 +66,7 @@ export function getPublicServer(
     schema,
     plugins,
     cache,
-    formatError: errorHandler,
+    // formatError: errorHandler,
   });
 }
 

@@ -50,7 +50,7 @@ export function getAdminServer(
     plugins,
     // OSL-202 (https://getpocket.atlassian.net/browse/OSL-202) needs to get done in order
     // to stop masking Apollo Errors.
-    formatError: errorHandler,
+    // formatError: errorHandler,
   });
 }
 

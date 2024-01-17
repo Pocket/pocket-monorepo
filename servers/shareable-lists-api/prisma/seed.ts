@@ -6,7 +6,9 @@ import {
 } from '../src/test/helpers';
 import { faker } from '@faker-js/faker';
 import { updateShareableList } from '../src/database/mutations';
-import { serverLoger } from '../src/logger';
+import { setLogger } from '@pocket-tools/ts-logger';
+
+const prismaSeedLogger = setLogger();
 const prisma = new PrismaClient();
 
 async function main() {

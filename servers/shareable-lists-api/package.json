@@ -17,7 +17,8 @@
     "build-schema-admin": "node dist/admin/buildSchema.js",
     "build-schema-public": "node dist/public/buildSchema.js",
     "db:generate-client": "prisma generate",
-    "migrate:dev": "prisma migrate dev",
+    "export-env": "export $(egrep -v '^#' .env | xargs -0)",
+    "migrate:dev": "npm run export-env && prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",
     "migrate:reset": "prisma migrate reset"
   },
@@ -50,7 +51,8 @@
     "nodemon": "2.0.22",
     "prisma": "^4.12.0",
     "supertest": "6.3.3",
-    "ts-jest": "29.1.0"
+    "ts-jest": "29.1.0",
+    "jest-extended": "4.0.2"
   },
   "files": [
     "dist",

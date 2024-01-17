@@ -4,4 +4,5 @@ module.exports = {
   testMatch: ['**/?(*.)+(spec|integration).[jt]s?(x)'],
   testPathIgnorePatterns: ['/dist/'],
   setupFiles: ['./jest.setup.js'],
+  setupFilesAfterEnv: ['jest-extended/all'],
 };

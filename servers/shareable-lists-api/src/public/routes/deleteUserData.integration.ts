@@ -96,9 +96,7 @@ describe('/deleteUserData express endpoint', () => {
         .send({ userId: '12345' });
       expect(result.body.status).toBe('OK');
       expect(result.body.message).toEqual(
-        expect.arrayContaining([
-          `No shareable list data to delete for User ID: 12345`,
-        ]),
+        `No shareable list data to delete for User ID: 12345`,
       );
     });
 
@@ -118,9 +116,7 @@ describe('/deleteUserData express endpoint', () => {
         .send({ userId: headers.userId });
       expect(result.body.status).toBe('OK');
       expect(result.body.message).toEqual(
-        expect.arrayContaining([
-          `Deleting shareable lists data for User ID: ${headers.userId}`,
-        ]),
+        `Deleting shareable lists data for User ID: ${headers.userId}`,
       );
       // lets manually call getAllShareableListIdsForUser to check there are no lists for this user
       const ids = await getAllShareableListIdsForUser(parseInt(headers.userId));

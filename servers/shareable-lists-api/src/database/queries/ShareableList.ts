@@ -15,7 +15,7 @@ import { ACCESS_DENIED_ERROR } from '../../shared/constants';
 export function getShareableList(
   db: PrismaClient,
   userId: number | bigint,
-  externalId: string
+  externalId: string,
 ): Promise<ShareableList> {
   // externalId is unique, but the generated type for `findUnique` here doesn't
   // include `moderationStatus`, so using `findFirst` instead
@@ -34,6 +34,10 @@ export function getShareableList(
           {
             createdAt: 'asc',
           },
+          {
+            // Temporary tiebreaker sort for deterministic response
+            itemId: 'asc',
+          },
         ],
       },
     },
@@ -51,7 +55,7 @@ export function getShareableList(
 export async function getShareableListPublic(
   db: PrismaClient,
   externalId: string,
-  slug: string
+  slug: string,
 ): Promise<ShareableList> {
   // externalId is unique, but the generated type for `findUnique` here doesn't
   // include `status`, so using `findFirst` instead
@@ -69,6 +73,10 @@ export async function getShareableListPublic(
           },
           {
             createdAt: 'asc',
+          },
+          {
+            // Temporary tiebreaker sort for deterministic response
+            itemId: 'asc',
           },
         ],
       },
@@ -106,7 +114,7 @@ export async function getShareableListPublic(
  */
 export function getShareableLists(
   db: PrismaClient,
-  userId: number | bigint
+  userId: number | bigint,
 ): Promise<ShareableList[]> {
   return db.list.findMany({
     where: {
@@ -123,6 +131,10 @@ export function getShareableLists(
           {
             createdAt: 'asc',
           },
+          {
+            // Temporary tiebreaker sort for deterministic response
+            itemId: 'asc',
+          },
         ],
       },
     },
@@ -138,7 +150,7 @@ export function getShareableLists(
  */
 export function searchShareableList(
   db: PrismaClient,
-  externalId: string
+  externalId: string,
 ): Promise<ShareableListComplete> {
   return db.list.findUnique({
     where: {
@@ -152,6 +164,10 @@ export function searchShareableList(
           },
           {
             createdAt: 'asc',
+          },
+          {
+            // Temporary tiebreaker sort for deterministic response
+            itemId: 'asc',
           },
         ],
       },

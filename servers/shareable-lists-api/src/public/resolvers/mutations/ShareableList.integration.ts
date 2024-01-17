@@ -83,10 +83,6 @@ describe('public mutations: ShareableList', () => {
     await createPilotUserHelper(db, {
       userId: parseInt(pilotUserHeaders.userId),
     });
-
-    // pilotUser2 = await createPilotUserHelper(db, {
-    //   userId: 7732025862,
-    // });
   });
 
   describe('createShareableList', () => {
@@ -319,10 +315,8 @@ describe('public mutations: ShareableList', () => {
 
       expect(result.body.errors.length).toBe(1);
       expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
-      expect(result.body.errors[0].message).toEqual(
-        expect.arrayContaining([
-          `Must be no more than ${LIST_TITLE_MAX_CHARS} characters in length`,
-        ]),
+      expect(result.body.errors[0].message).toContain(
+        `Must be no more than ${LIST_TITLE_MAX_CHARS} characters in length`,
       );
     });
 
@@ -341,10 +335,8 @@ describe('public mutations: ShareableList', () => {
       expect(result.body.data).toBeFalsy();
       expect(result.body.errors.length).toBe(1);
       expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
-      expect(result.body.errors[0].message).toEqual(
-        expect.arrayContaining([
-          `Must be no more than ${LIST_DESCRIPTION_MAX_CHARS} characters in length`,
-        ]),
+      expect(result.body.errors[0].message).toContain(
+        `Must be no more than ${LIST_DESCRIPTION_MAX_CHARS} characters in length`,
       );
     });
 
@@ -1241,10 +1233,8 @@ describe('public mutations: ShareableList', () => {
       // And a "Bad user input" error
       expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
       expect(result.body.errors[0].extensions.field).toBe('data.title');
-      expect(result.body.errors[0].message).toEqual(
-        expect.arrayContaining([
-          'Must be no more than 100 characters in length',
-        ]),
+      expect(result.body.errors[0].message).toContain(
+        'Must be no more than 100 characters in length',
       );
     });
 
@@ -1268,10 +1258,8 @@ describe('public mutations: ShareableList', () => {
       // And a "Bad user input" error
       expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
       expect(result.body.errors[0].extensions.field).toBe('data.description');
-      expect(result.body.errors[0].message).toEqual(
-        expect.arrayContaining([
-          'Must be no more than 200 characters in length',
-        ]),
+      expect(result.body.errors[0].message).toContain(
+        'Must be no more than 200 characters in length',
       );
     });
   });

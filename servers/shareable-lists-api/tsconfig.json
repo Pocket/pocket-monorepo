@@ -5,5 +5,6 @@
     "rootDir": "src"
   },
   "exclude": ["node_modules/", "dist/"],
-  "include": ["src/**/*.ts", "src/config"]
+  "include": ["src/**/*.ts", "src/config"],
+  "files": ["node_modules/jest-extended/types/index.d.ts"]
 }
