@@ -28,7 +28,7 @@ export function validate(req: Request, res: Response, next: NextFunction) {
 export async function getShareableListItemUrlsForUser(
   userId: number | bigint,
   url: string,
-  db: PrismaClient
+  db: PrismaClient,
 ): Promise<string[] | null> {
   const listItems = await db.listItem.findMany({
     where: {

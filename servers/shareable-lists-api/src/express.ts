@@ -1,10 +1,10 @@
 import cors from 'cors';
-import express from 'express';
+import express, { json, Express } from 'express';
 import http from 'http';
 
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
-import { setLogger, setMorgan } from '@pocket-tools/ts-logger';
+import { setMorgan } from '@pocket-tools/ts-logger';
 import * as Sentry from '@sentry/node';
 
 import config from './config';
@@ -40,7 +40,7 @@ export async function startServer(port: number): Promise<{
 
   app.use(
     // JSON parser to enable POST body with JSON
-    express.json(),
+    json(),
     // JSON parser to enable POST body with JSON
     setMorgan(serverLogger),
   );

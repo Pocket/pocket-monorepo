@@ -58,7 +58,7 @@ describe('utility functions', () => {
 
       expect(safeInput.title).toBe(`John's &lt;div&gt; list &lt;/div&gt;`);
       expect(safeInput.description).toBe(
-        'Trying out this new Pocket feature&lt;script&gt;alert("!!!");&lt;/script&gt;'
+        'Trying out this new Pocket feature&lt;script&gt;alert("!!!");&lt;/script&gt;',
       );
     });
 
@@ -78,7 +78,9 @@ describe('utility functions', () => {
       const safeInput = sanitizeMutationInput(input);
 
       // dodgy strings are still escaped
-      expect(safeInput.imageUrl).toBe('https://www.test.com/&lt;script&gt;alert("hello world");&lt;/script&gt;');
+      expect(safeInput.imageUrl).toBe(
+        'https://www.test.com/&lt;script&gt;alert("hello world");&lt;/script&gt;',
+      );
 
       // numeric inputs go through as-is
       expect(safeInput.itemId).toBe(input.itemId);

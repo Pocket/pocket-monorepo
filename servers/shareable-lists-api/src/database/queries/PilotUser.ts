@@ -8,7 +8,7 @@ import { PrismaClient } from '@prisma/client';
  */
 export function isPilotUser(
   db: PrismaClient,
-  userId: number | bigint
+  userId: number | bigint,
 ): Promise<number> {
   // we could probably use redis here as an extra cache layer
   return db.pilotUser.count({

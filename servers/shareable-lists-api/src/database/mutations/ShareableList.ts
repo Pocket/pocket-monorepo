@@ -40,7 +40,7 @@ import { EventBridgeEventType } from '../../snowplow/types';
 export async function createShareableList(
   db: PrismaClient,
   listData: CreateShareableListInput,
-  userId: number | bigint
+  userId: number | bigint,
 ): Promise<ShareableList> {
   let listItemData;
 
@@ -64,7 +64,7 @@ export async function createShareableList(
 
   if (titleExists) {
     throw new UserInputError(
-      `A list with the title "${listData.title}" already exists`
+      `A list with the title "${listData.title}" already exists`,
     );
   }
 
@@ -84,7 +84,7 @@ export async function createShareableList(
     const createdListItem = await createShareableListItem(
       db,
       listItemData,
-      userId
+      userId,
     );
     // add the created ShareableListItem to the created ShareableList
     list.listItems = [createdListItem];
@@ -111,7 +111,7 @@ export async function createShareableList(
 export async function updateShareableList(
   db: PrismaClient,
   data: UpdateShareableListInput,
-  userId: number | bigint
+  userId: number | bigint,
 ): Promise<ShareableList> {
   // Retrieve the current record, pre-update
   const list = await getShareableList(db, userId, data.externalId);
@@ -150,7 +150,7 @@ export async function updateShareableList(
 
     if (titleExists) {
       throw new UserInputError(
-        `A list with the title "${data.title}" already exists`
+        `A list with the title "${data.title}" already exists`,
       );
     }
   }
@@ -223,7 +223,7 @@ export async function updateShareableList(
  */
 export async function moderateShareableList(
   db: PrismaClient,
-  data: ModerateShareableListInput
+  data: ModerateShareableListInput,
 ): Promise<ShareableListComplete> {
   const exists = await db.list.count({
     where: { externalId: data.externalId },
@@ -284,7 +284,7 @@ export async function moderateShareableList(
 export async function deleteShareableList(
   db: PrismaClient,
   externalId: string,
-  userId: number | bigint
+  userId: number | bigint,
 ): Promise<ShareableList> {
   // Note for PR : input is unsanitized
   const deleteList = await db.list.findUnique({
@@ -356,7 +356,7 @@ export async function deleteShareableList(
 function updateShareableListBridgeEventHelper(
   data: UpdateShareableListInput,
   updatedList: ShareableListComplete,
-  list: ShareableList
+  list: ShareableList,
 ) {
   // check if list status was updated
   if (data.status !== list.status) {

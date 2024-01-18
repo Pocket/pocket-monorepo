@@ -15,7 +15,7 @@ interface PilotUserInput {
  */
 export async function createPilotUserHelper(
   prisma: PrismaClient,
-  data: PilotUserInput
+  data: PilotUserInput,
 ): Promise<PilotUser> {
   return await prisma.pilotUser.create({
     data,

@@ -16,7 +16,7 @@ export class PublicContextManager implements IPublicContext {
     private config: {
       db: PrismaClient;
       request: any;
-    }
+    },
   ) {}
 
   get db(): IPublicContext['db'] {

@@ -17,7 +17,7 @@ import {
 export async function executeMutation<T, U>(
   context: IPublicContext,
   data: T,
-  callback: (db, data: T, userId?: number | bigint) => Promise<U>
+  callback: (db, data: T, userId?: number | bigint) => Promise<U>,
 ): Promise<U> {
   const { db, userId } = context;
 
@@ -35,7 +35,7 @@ export async function executeMutation<T, U>(
 function replaceCharsInStr(
   str: string,
   charsToFindArr: string[],
-  replaceWithCharsArr: string[]
+  replaceWithCharsArr: string[],
 ): string {
   for (let i = 0; i < charsToFindArr.length; i++) {
     const regex = new RegExp(charsToFindArr[i], 'g');
@@ -81,7 +81,7 @@ export function sanitizeMutationInput<InputType>(input: InputType): InputType {
  */
 export async function validateUserId(
   db: PrismaClient,
-  userId: number | bigint
+  userId: number | bigint,
 ): Promise<number | bigint> {
   // We need this check for nearly every query and mutation on the public graph
   if (!userId) {

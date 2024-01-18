@@ -1,5 +1,4 @@
-import { Request, Response } from 'express';
-import { Router } from 'express';
+import { Request, Response, Router } from 'express';
 import { checkSchema, Schema } from 'express-validator';
 import * as Sentry from '@sentry/node';
 import { client } from '../../database/client';
@@ -22,7 +21,7 @@ const deleteUserDataSchema: Schema = {
  * @param userId
  */
 export async function getAllShareableListIdsForUser(
-  userId: number | bigint
+  userId: number | bigint,
 ): Promise<number[] | bigint[]> {
   const shareableLists = await db.list.findMany({
     where: {
@@ -43,7 +42,7 @@ export async function getAllShareableListIdsForUser(
  * @param listIds
  */
 export async function deleteShareableListItemsForUser(
-  listIds: number[] | bigint[]
+  listIds: number[] | bigint[],
 ): Promise<number> {
   const batchResult = await db.listItem.deleteMany({
     where: { listId: { in: listIds } },
@@ -57,7 +56,7 @@ export async function deleteShareableListItemsForUser(
  * @param userId
  */
 async function deleteShareableListUserData(
-  userId: number | bigint
+  userId: number | bigint,
 ): Promise<string> {
   const shareableListIds = await getAllShareableListIdsForUser(userId);
   // if there are no lists found for a userId, lets not make unecessary calls
@@ -103,7 +102,7 @@ router.post(
           message: e,
         });
       });
-  }
+  },
 );
 
 export default router;

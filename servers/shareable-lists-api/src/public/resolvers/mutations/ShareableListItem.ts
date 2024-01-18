@@ -21,12 +21,12 @@ import { executeMutation } from '../utils';
 export async function createShareableListItem(
   parent,
   { data },
-  context: IPublicContext
+  context: IPublicContext,
 ): Promise<ShareableListItem> {
   return await executeMutation<CreateShareableListItemInput, ShareableListItem>(
     context,
     data,
-    dbCreateShareableListItem
+    dbCreateShareableListItem,
   );
 }
 
@@ -38,12 +38,12 @@ export async function createShareableListItem(
 export async function updateShareableListItem(
   parent,
   { data },
-  context: IPublicContext
+  context: IPublicContext,
 ): Promise<ShareableListItem> {
   return await executeMutation<UpdateShareableListItemInput, ShareableListItem>(
     context,
     data,
-    dbUpdateShareableListItem
+    dbUpdateShareableListItem,
   );
 }
 
@@ -55,7 +55,7 @@ export async function updateShareableListItem(
 export async function updateShareableListItems(
   parent,
   { data },
-  context: IPublicContext
+  context: IPublicContext,
 ): Promise<ShareableListItem[]> {
   return await executeMutation<
     UpdateShareableListItemsInput[],
@@ -71,11 +71,11 @@ export async function updateShareableListItems(
 export async function deleteShareableListItem(
   parent,
   { externalId },
-  context: IPublicContext
+  context: IPublicContext,
 ): Promise<ShareableListItem> {
   return await executeMutation<string, ShareableListItem>(
     context,
     externalId,
-    dbDeleteShareableListItem
+    dbDeleteShareableListItem,
   );
 }

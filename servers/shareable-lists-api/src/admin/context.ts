@@ -26,7 +26,7 @@ export class AdminContextManager implements IAdminContext {
     private config: {
       request: Express.Request;
       db: PrismaClient;
-    }
+    },
   ) {}
 
   get db(): IAdminContext['db'] {

@@ -24,7 +24,7 @@ interface ListHelperInput {
  */
 export async function createShareableListHelper(
   prisma: PrismaClient,
-  data: ListHelperInput
+  data: ListHelperInput,
 ): Promise<List> {
   const listTitle = data.title ?? faker.lorem.words(2);
 

@@ -1,6 +1,6 @@
 import { ApolloServer } from '@apollo/server';
 import { Server } from 'http';
-import { errorHandler, sentryPlugin } from '@pocket-tools/apollo-utils';
+import { sentryPlugin } from '@pocket-tools/apollo-utils';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import {
   ApolloServerPluginLandingPageDisabled,

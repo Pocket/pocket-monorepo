@@ -85,7 +85,10 @@ describe('admin queries: ShareableList', () => {
       expect(result.body.data.searchShareableList).toBeNull();
 
       // And a "Not found" error
-      expect(result.body).toHaveProperty('errors[0].extensions.code', 'NOT_FOUND');
+      expect(result.body).toHaveProperty(
+        'errors[0].extensions.code',
+        'NOT_FOUND',
+      );
     });
 
     it('should return a list with all props if it exists', async () => {

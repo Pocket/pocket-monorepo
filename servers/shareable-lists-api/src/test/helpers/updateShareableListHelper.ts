@@ -15,7 +15,7 @@ interface UpdateListHelperInput {
 export async function updateShareableListHelper(
   prisma: PrismaClient,
   externalId: string,
-  data: UpdateListHelperInput
+  data: UpdateListHelperInput,
 ): Promise<List> {
   const input: UpdateListHelperInput = {
     status: data.status,

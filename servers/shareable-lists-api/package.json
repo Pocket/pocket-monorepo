@@ -11,7 +11,7 @@
     "start:dev": "npm run migrate:deploy && npm run build && npm run watch",
     "test": "jest \"\\.spec\\.ts\"",
     "test:watch": "npm test -- --watchAll",
-    "test-integrations": "DATABASE_URL=mysql://root:@mysql:3306/shareablelists npm migrate:reset -- --skip-seed --force && jest \"\\.integration\\.ts\" --runInBand",
+    "test-integrations": "DATABASE_URL=mysql://root:@mysql:3306/shareablelists npm run migrate:reset -- --skip-seed --force && jest \"\\.integration\\.ts\" --runInBand",
     "test-integrations:local": "jest \"\\.integration\\.ts\" --runInBand",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\"",

@@ -20,7 +20,7 @@ import { IAdminContext } from '../../context';
 export async function moderateShareableList(
   parent,
   { data },
-  context: IAdminContext
+  context: IAdminContext,
 ): Promise<ShareableListComplete> {
   const { db, authenticatedUser } = context;
   if (!authenticatedUser.hasFullAccess) {

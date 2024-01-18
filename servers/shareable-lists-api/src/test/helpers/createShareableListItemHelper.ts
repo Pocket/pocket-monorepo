@@ -24,7 +24,7 @@ interface ListItemHelperInput {
  */
 export async function createShareableListItemHelper(
   prisma: PrismaClient,
-  data: ListItemHelperInput
+  data: ListItemHelperInput,
 ): Promise<ListItem> {
   const input = {
     listId: data.list.id,

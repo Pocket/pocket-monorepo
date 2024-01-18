@@ -19,7 +19,7 @@ import { executeMutation } from '../utils';
 export async function createShareableList(
   parent,
   { listData, listItemData },
-  context: IPublicContext
+  context: IPublicContext,
 ): Promise<ShareableList> {
   if (listItemData) {
     listData['listItem'] = listItemData;
@@ -27,7 +27,7 @@ export async function createShareableList(
   return await executeMutation<CreateShareableListInput, ShareableList>(
     context,
     listData,
-    dbCreateShareableList
+    dbCreateShareableList,
   );
 }
 
@@ -42,12 +42,12 @@ export async function createShareableList(
 export async function updateShareableList(
   parent,
   { data },
-  context: IPublicContext
+  context: IPublicContext,
 ): Promise<ShareableList> {
   return await executeMutation<UpdateShareableListInput, ShareableList>(
     context,
     data,
-    dbUpdateShareableList
+    dbUpdateShareableList,
   );
 }
 
@@ -59,11 +59,11 @@ export async function updateShareableList(
 export async function deleteShareableList(
   parent,
   { externalId },
-  context: IPublicContext
+  context: IPublicContext,
 ): Promise<ShareableList> {
   return await executeMutation<string, ShareableList>(
     context,
     externalId,
-    dbDeleteShareableList
+    dbDeleteShareableList,
   );
 }

@@ -14,7 +14,7 @@ import { ACCESS_DENIED_ERROR } from '../../../shared/constants';
 export async function searchShareableList(
   parent,
   { externalId },
-  { authenticatedUser, db }
+  { authenticatedUser, db },
 ): Promise<ShareableListComplete> {
   // access denied if a user cannot access this admin tool
   if (!authenticatedUser.canRead) {

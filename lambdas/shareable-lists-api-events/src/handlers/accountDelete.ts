@@ -30,7 +30,7 @@ export async function accountDeleteHandler(record: SQSRecord) {
   if (!res.ok) {
     const data = (await res.json()) as any;
     throw new Error(
-      `accountDeleteHandler: ${res.status}\n${JSON.stringify(data.errors)}`
+      `accountDeleteHandler: ${res.status}\n${JSON.stringify(data.errors)}`,
     );
   }
 }

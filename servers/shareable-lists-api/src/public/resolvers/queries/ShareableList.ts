@@ -18,12 +18,12 @@ import { validateUserId } from '../utils';
 export async function getShareableList(
   parent,
   { externalId },
-  { userId, db }
+  { userId, db },
 ): Promise<ShareableList> {
   const list = await dbGetShareableList(
     db,
     await validateUserId(db, userId),
-    externalId
+    externalId,
   );
 
   if (!list) {
@@ -43,7 +43,7 @@ export async function getShareableList(
 export async function getShareableListPublic(
   parent,
   { externalId, slug },
-  { db }
+  { db },
 ): Promise<ShareableList> {
   const list = await dbGetShareableListPublic(db, externalId, slug);
 
@@ -64,7 +64,7 @@ export async function getShareableListPublic(
 export async function getShareableLists(
   parent,
   _,
-  { userId, db }
+  { userId, db },
 ): Promise<ShareableList[]> {
   return await dbGetShareableLists(db, await validateUserId(db, userId));
 }
