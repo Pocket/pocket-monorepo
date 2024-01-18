@@ -1,0 +1,22 @@
+{
+  "name": "account-delete-monitor-cdk",
+  "version": "1.0.0",
+  "main": "dist/main.js",
+  "types": "dist/main.ts",
+  "license": "MPL-2.0",
+  "private": true,
+  "scripts": {
+    "build:dev": "rm -rf dist && NODE_ENV=development npm run synth",
+    "compile": "tsc --pretty",
+    "lint-fix": "eslint --fix \"src/**/*.ts\"",
+    "synth": "cdktf synth"
+  },
+  "dependencies": {
+    "@pocket-tools/terraform-modules": "^4.16.1"
+  },
+  "devDependencies": {
+    "@pocket-tools/tsconfig": "2.0.1",
+    "@types/node": "16.18.38",
+    "typescript": "4.7.4"
+  }
+}
