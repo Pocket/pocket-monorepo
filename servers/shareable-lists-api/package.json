@@ -5,13 +5,13 @@
     "seed": "ts-node --emit=false prisma/seed.ts"
   },
   "scripts": {
-    "build": "rm -rf dist && tsc && npm run build-schema-admin && npm run build-schema-public",
+    "build": "npm run export-local-env && rm -rf dist && npm run generate && tsc && npm run build-schema-admin && npm run build-schema-public",
     "watch": "tsc -w & nodemon",
     "start": "npm run migrate:deploy && node dist/main.js",
     "start:dev": "npm run migrate:deploy && npm run build && npm run watch",
     "test": "jest \"\\.spec\\.ts\"",
     "test:watch": "npm test -- --watchAll",
-    "test-integrations": "DATABASE_URL=mysql://root:@mysql:3306/shareablelists npm run migrate:reset -- --skip-seed --force && jest \"\\.integration\\.ts\" --runInBand",
+    "test-integrations": "npm run export-local-env && npm run migrate:reset -- --skip-seed --force && jest \"\\.integration\\.ts\" --runInBand",
     "test-integrations:local": "jest \"\\.integration\\.ts\" --runInBand",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\"",
@@ -19,9 +19,11 @@
     "build-schema-public": "node dist/public/buildSchema.js",
     "db:generate-client": "prisma generate",
     "export-env": "export $(egrep -v '^#' .env | xargs -0)",
+    "export-local-env": "export $(egrep -v '^#' .env.local | xargs -0)",
     "migrate:dev": "npm run export-env && prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",
-    "migrate:reset": "prisma migrate reset"
+    "migrate:reset": "prisma migrate reset",
+    "generate": "prisma generate"
   },
   "dependencies": {
     "@pocket-tools/apollo-utils": "workspace:*",
