@@ -48,6 +48,8 @@ export class SqsLambda extends Construct {
           ACCOUNT_DATA_DELETER_API_URI: `https://${stackConfig.domain}`,
           ENVIRONMENT:
             stackConfig.environment === 'Prod' ? 'production' : 'development',
+          NODE_ENV:
+            stackConfig.environment === 'Prod' ? 'production' : 'development',
           GIT_SHA: gitSha,
           SENTRY_DSN: sentryDsn,
         },

@@ -58,7 +58,7 @@ jobs:
             ((servers|infrastructure)/client-api/.*) client_api true
             ((servers|infrastructure)/feature-flags/.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) feature_flags true
             ((lambdas|infrastructure)/sendgrid-data/.*) sendgrid_data true
-            ((lambdas|infrastructure|servers)/account-data-deleter.*)|(packages/.*)|(pnpm-lock\.yaml) account_data_deleter true
+            ((lambdas|infrastructure|servers)/account-data-deleter.*)|(packages/.*)|(pnpm-lock\.yaml)|(.circleci/account-data-deleter.yml) account_data_deleter true
 
       - continuation/continue:
           configuration_path: /tmp/generated-config.yml
