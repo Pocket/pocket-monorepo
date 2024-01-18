@@ -201,11 +201,8 @@ describe('Highlights creation', () => {
 
     it('should mark the list item as updated and log the highlight mutation', async () => {
       const updateDate = new Date(2022, 3, 3);
-
-      jest.useFakeTimers({
-        now: updateDate,
-        advanceTimers: true,
-      });
+      jest.useFakeTimers({advanceTimers: true});
+      jest.setSystemTime(updateDate);
 
       const variables: { input: HighlightInput[] } = {
         input: [
@@ -221,11 +218,11 @@ describe('Highlights creation', () => {
         .post(graphQLUrl)
         .set(headers)
         .send({ query: print(CREATE_HIGHLIGHTS), variables });
-      const usersMetaRecord = await writeDb('users_meta')
+      const usersMetaRecord = await readDb('users_meta')
         .where({ user_id: '1', property: UsersMeta.propertiesMap.account })
         .pluck('value');
 
-      const listRecord = await writeDb('list')
+      const listRecord = await readDb('list')
         .where({ user_id: '1', item_id: '3' })
         .pluck('time_updated');
 

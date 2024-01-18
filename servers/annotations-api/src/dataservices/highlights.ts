@@ -163,6 +163,7 @@ export class HighlightsDataService {
   private async _create(
     highlightInput: HighlightInput[],
     trx: Knex.Transaction,
+    fromBatch: boolean = false
   ) {
     const formattedHighlights = highlightInput.map((highlight) =>
       this.toDbEntity(highlight),
@@ -178,8 +179,11 @@ export class HighlightsDataService {
         await this.savedItemService.markUpdate(input.itemId, updateDate, trx);
       }),
     );
-    // Update users_meta table
-    await this.usersMetaService.logAnnotationMutation(updateDate, trx);
+
+    if (!fromBatch) {
+      // Update users_meta table
+      await this.usersMetaService.logAnnotationMutation(updateDate, trx);
+    }
 
     // Query back the inserted rows
     return trx<HighlightEntity>('user_annotations')
@@ -279,6 +283,7 @@ export class HighlightsDataService {
     highlightId: string,
     annotation: HighlightEntity,
     trx: Knex.Transaction,
+    fromBatch: boolean = false
   ) {
     // This will throw and error if it doesn't like you
     await this.writeDb<HighlightEntity>('user_annotations')
@@ -294,7 +299,9 @@ export class HighlightsDataService {
       trx,
     );
     // Update users_meta table
-    await this.usersMetaService.logAnnotationMutation(updateDate, trx);
+    if (!fromBatch) {
+      await this.usersMetaService.logAnnotationMutation(updateDate, trx);
+    }
 
     return highlightId;
   }
@@ -351,12 +358,14 @@ export class HighlightsDataService {
     creates: HighlightInput[],
   ): Promise<BatchWriteHighlightsResult> {
     const trx = await this.writeDb.transaction();
+    const updateDate = new Date();
+
     try {
       await Promise.all(
         deletes.map(async (deleteId) => {
           try {
             const annotation = await this.getHighlightByIdQuery(deleteId);
-            await this._delete(deleteId, annotation, trx);
+            await this._delete(deleteId, annotation, trx, true);
             // If the highlight doesn't exist, deleting is a no-op (don't return error)
           } catch (error) {
             if (error instanceof NotFoundError) {
@@ -368,10 +377,11 @@ export class HighlightsDataService {
         }),
       );
       const created = creates.length
-        ? (await this._create(creates, trx)).map((highlight) =>
+        ? (await this._create(creates, trx, true)).map((highlight) =>
             this.toGraphql(highlight),
           )
         : [];
+      await this.usersMetaService.logAnnotationMutation(updateDate, trx);
       trx.commit();
       return { deleted: deletes, created };
     } catch (error) {

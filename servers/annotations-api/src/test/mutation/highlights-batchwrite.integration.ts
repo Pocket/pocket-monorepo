@@ -284,6 +284,7 @@ describe('Highlights batchWrite', () => {
         .set(headers)
         .send({ query: print(BATCH_WRITE_HIGHLIGHTS), variables });
       const result = res.body.data?.batchWriteHighlights;
+      expect(res.body.errors).toBeUndefined();
 
       const matchers = {
         id: expect.toBeString(),
