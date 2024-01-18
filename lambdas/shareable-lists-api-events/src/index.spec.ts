@@ -1,25 +1,30 @@
 import { Event, handlers } from './handlers';
 import { processor } from './index';
-import sinon from 'sinon';
-import { SQSEvent } from 'aws-lambda';
+import { SQSEvent, SQSRecord } from 'aws-lambda';
 import * as Sentry from '@sentry/serverless';
 
 describe('event handlers', () => {
-  let accountDeleteStub: sinon.SinonStub;
-  let sentryStub: sinon.SinonStub;
+  let accountDeleteStub: jest.SpyInstance<
+    Promise<void>,
+    [message: SQSRecord],
+    any
+  >;
+  let sentryStub: jest.SpyInstance<string, [exception: any, hint?: any], any>;
 
   beforeEach(() => {
-    sinon.restore();
-    sentryStub = sinon.stub(Sentry, 'captureException');
+    jest.restoreAllMocks();
+    sentryStub = jest
+      .spyOn(Sentry, 'captureException')
+      .mockImplementation(() => 'ok');
   });
 
-  afterAll(() => sinon.restore());
+  afterAll(() => jest.restoreAllMocks());
 
   describe('with no handler errors', () => {
     beforeEach(() => {
-      accountDeleteStub = sinon
-        .stub(handlers, Event.ACCOUNT_DELETION)
-        .resolves();
+      accountDeleteStub = jest
+        .spyOn(handlers, Event.ACCOUNT_DELETION)
+        .mockResolvedValue();
     });
 
     it('routes to the correct handler function based on detail-type', async () => {
@@ -36,8 +41,8 @@ describe('event handlers', () => {
       };
 
       await processor(records as SQSEvent);
-      expect(accountDeleteStub.callCount).toEqual(1);
-      expect(accountDeleteStub.getCall(0).args).toEqual([records.Records[0]]);
+      expect(accountDeleteStub).toHaveBeenCalledTimes(1);
+      expect(accountDeleteStub).toHaveBeenNthCalledWith(1, records.Records[0]);
     });
 
     it('is a NOOP if a handler does not exist', async () => {
@@ -58,17 +63,17 @@ describe('event handlers', () => {
 
       // no failures/errors
       expect(res.batchItemFailures).toEqual([]);
-      expect(sentryStub.callCount).toEqual(0);
+      expect(sentryStub).not.toHaveBeenCalled();
 
       // no handlers were called
-      expect(accountDeleteStub.callCount).toEqual(0);
+      expect(accountDeleteStub).not.toHaveBeenCalled();
     });
   });
   describe('with handler errors', () => {
     beforeEach(() => {
-      accountDeleteStub = sinon
-        .stub(handlers, Event.ACCOUNT_DELETION)
-        .rejects(Error('got an error'));
+      accountDeleteStub = jest
+        .spyOn(handlers, Event.ACCOUNT_DELETION)
+        .mockRejectedValue(Error('got an error'));
     });
     it('returns batchItemFailure and logs to Sentry if handler throws error', async () => {
       const records = {
@@ -85,8 +90,8 @@ describe('event handlers', () => {
       };
       const res = await processor(records as SQSEvent);
       expect(res.batchItemFailures).toEqual([{ itemIdentifier: 'abc' }]);
-      expect(sentryStub.callCount).toEqual(1);
-      expect(sentryStub.getCall(0).args[0].message).toEqual('got an error');
+      expect(sentryStub).toHaveBeenCalledTimes(1);
+      expect(sentryStub.mock.calls[0][0].message).toEqual('got an error');
     });
   });
 });
