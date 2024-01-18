@@ -30,7 +30,7 @@ describe('Account merge handler', () => {
       new GetCommand({
         TableName: config.trackingTable.name,
         Key: { id: '456_merged' },
-      })
+      }),
     );
     expect(res.Item).toEqual(expectedItem);
   });
@@ -58,7 +58,7 @@ describe('Account merge handler', () => {
           id: '456_merged',
           sourceIds: new Set(['123']),
         },
-      })
+      }),
     );
     await accountMergeHandler(record);
     // Roundtrip
@@ -66,7 +66,7 @@ describe('Account merge handler', () => {
       new GetCommand({
         TableName: config.trackingTable.name,
         Key: { id: '456_merged' },
-      })
+      }),
     );
     expect(res.Item).toEqual(expectedItem);
   });

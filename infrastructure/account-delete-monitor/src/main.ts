@@ -23,11 +23,16 @@ import {
   DataTerraformRemoteState,
   RemoteBackend,
   TerraformStack,
+  Aspects,
+  MigrateIds,
 } from 'cdktf';
 import { Construct } from 'constructs';
 
 class AccountDeleteMonitor extends TerraformStack {
-  constructor(scope: Construct, private name: string) {
+  constructor(
+    scope: Construct,
+    private name: string,
+  ) {
     super(scope, name);
 
     new ArchiveProvider(this, 'archive_provider');
@@ -39,7 +44,7 @@ class AccountDeleteMonitor extends TerraformStack {
     new RemoteBackend(this, {
       hostname: 'app.terraform.io',
       organization: 'Pocket',
-      workspaces: [{ prefix: `${config.name}-` }],
+      workspaces: [{ name: `${config.name}-${config.environment}` }],
     });
 
     const caller = new DataAwsCallerIdentity(this, 'caller');
@@ -62,7 +67,7 @@ class AccountDeleteMonitor extends TerraformStack {
       'EventTracker',
       sqsEventLambda.construct.lambda.lambdaExecutionRole,
       dynamo.deleteEventTable.dynamodb,
-      ['dynamodb:*']
+      ['dynamodb:*'],
     );
 
     //dlq for sqs-sns subscription
@@ -77,7 +82,7 @@ class AccountDeleteMonitor extends TerraformStack {
       sqsEventLambda,
       snsTopicDlq,
       userMergeTopicArn,
-      config.eventBridge.userMergeTopic
+      config.eventBridge.userMergeTopic,
     );
 
     //subscribe to user-events sns topic
@@ -86,7 +91,7 @@ class AccountDeleteMonitor extends TerraformStack {
       sqsEventLambda,
       snsTopicDlq,
       userEventTopicArn,
-      config.eventBridge.userTopic
+      config.eventBridge.userTopic,
     );
 
     //assign inline access policy for all the sns topics to publish to this ADM queue and dlq
@@ -95,8 +100,12 @@ class AccountDeleteMonitor extends TerraformStack {
       sqsEventLambda.construct.applicationSqsQueue.sqsQueue,
       snsTopicDlq,
       userEventTopicArn,
-      userMergeTopicArn
+      userMergeTopicArn,
     );
+
+    // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
+    // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
+    Aspects.of(this).add(new MigrateIds());
   }
 
   /**
@@ -108,7 +117,7 @@ class AccountDeleteMonitor extends TerraformStack {
     name: string,
     lambdaExecutionRole: IamRole,
     dynamoTable: DynamodbTable,
-    actions: string[]
+    actions: string[],
   ) {
     const policy = new IamPolicy(this, `${name}-lambda-dynamo-policy`, {
       name: `${this.name}-${name}-DynamoLambdaPolicy`,
@@ -123,7 +132,7 @@ class AccountDeleteMonitor extends TerraformStack {
               resources: [dynamoTable.arn],
             },
           ],
-        }
+        },
       ).json,
       dependsOn: [lambdaExecutionRole],
     });
@@ -134,7 +143,7 @@ class AccountDeleteMonitor extends TerraformStack {
         role: lambdaExecutionRole.name,
         policyArn: policy.arn,
         dependsOn: [lambdaExecutionRole, policy],
-      }
+      },
     );
   }
 
@@ -150,7 +159,7 @@ class AccountDeleteMonitor extends TerraformStack {
     sqsLambda: SQSEventLambda,
     snsTopicDlq: SqsQueue,
     snsTopicArn: string,
-    topicName: string
+    topicName: string,
   ) {
     return new SnsTopicSubscription(this, `${topicName}-sns-subscription`, {
       topicArn: snsTopicArn,
@@ -175,7 +184,7 @@ class AccountDeleteMonitor extends TerraformStack {
         workspaces: {
           name: 'incident-management',
         },
-      }
+      },
     );
 
     return new PocketPagerDuty(this, 'pagerduty', {
@@ -201,7 +210,7 @@ class AccountDeleteMonitor extends TerraformStack {
     snsTopicQueue: SqsQueue,
     snsTopicDlq: SqsQueue,
     userEventTopicArn: string,
-    userMergeEventTopicArn: string
+    userMergeEventTopicArn: string,
   ): void {
     [
       { name: 'adm-sns-sqs', resource: snsTopicQueue },
@@ -234,7 +243,7 @@ class AccountDeleteMonitor extends TerraformStack {
             },
             //todo: add any other policy here e.g scheduled cloudwatch event
           ],
-        }
+        },
       ).json;
 
       new SqsQueuePolicy(this, `${queue.name}-policy`, {

@@ -26,7 +26,7 @@ describe('Account delete handler', () => {
       },
     } as SQSRecord;
     await expect(accountDeleteHandler(record)).rejects.toEqual(
-      new Error('https://www.youtube.com/watch?v=RfiQYRn7fBg')
+      new Error('https://www.youtube.com/watch?v=RfiQYRn7fBg'),
     );
   });
 });

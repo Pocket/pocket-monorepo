@@ -12,7 +12,7 @@ import { UserMergeEvent } from '../types';
  */
 export async function accountMergeHandler(record: SQSRecord) {
   const { destinationUserId, sourceUserId } = JSON.parse(
-    JSON.parse(record.body).Message
+    JSON.parse(record.body).Message,
   )['detail'] as UserMergeEvent;
   const putItemCommand = new UpdateCommand({
     Key: { id: `${destinationUserId}_merged` },

@@ -56,7 +56,7 @@ export async function getOldUserIds(userId: string): Promise<string[]> {
     new GetCommand({
       TableName: config.trackingTable.name,
       Key: { id: `${userId}_merged` },
-    })
+    }),
   );
 
   return res.Item ? Array.from(res.Item['sourceIds']) : [];

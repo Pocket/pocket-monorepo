@@ -22,7 +22,7 @@ describe('Account merge handler', () => {
       }),
     } as SQSRecord;
     await expect(accountMergeHandler(record)).rejects.toEqual(
-      new Error('https://www.youtube.com/watch?v=RfiQYRn7fBg')
+      new Error('https://www.youtube.com/watch?v=RfiQYRn7fBg'),
     );
   });
 });

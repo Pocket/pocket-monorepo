@@ -9,7 +9,10 @@ import { Construct } from 'constructs';
 export class DynamoDB extends Construct {
   public readonly deleteEventTable: ApplicationDynamoDBTable;
 
-  constructor(scope: Construct, private name: string) {
+  constructor(
+    scope: Construct,
+    private name: string,
+  ) {
     super(scope, name);
     this.deleteEventTable = this.setupDeleteEventTable();
   }

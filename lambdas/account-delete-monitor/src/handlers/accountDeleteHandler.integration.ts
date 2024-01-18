@@ -39,7 +39,7 @@ describe('Account delete handler', () => {
       new GetCommand({
         TableName: config.trackingTable.name,
         Key: { id: '123_request' },
-      })
+      }),
     );
     expect(res.Item).toEqual(expectedItem);
   });
@@ -57,7 +57,7 @@ describe('Account delete handler', () => {
           id: '123_merged',
           sourceIds: new Set(['100', '50']),
         },
-      })
+      }),
     );
 
     await accountDeleteHandler(record);

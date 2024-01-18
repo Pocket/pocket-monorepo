@@ -11,7 +11,7 @@ import { config } from '../config';
  * @returns userId Id for which the PII delete was successfully initiated
  */
 export async function deleteUserMutationCaller(
-  userId: string
+  userId: string,
 ): Promise<string> {
   const backOffOptions = {
     numOfAttempts: 3,
@@ -19,13 +19,13 @@ export async function deleteUserMutationCaller(
 
   const res = await backOff(
     () => userApiCalls.deleteUserMutation(userId),
-    backOffOptions
+    backOffOptions,
   );
   if (res.errors != null) {
     throw new Error(
       `Error calling deleteUser mutation.\n GraphQL Errors: ${JSON.stringify(
-        res.errors
-      )}`
+        res.errors,
+      )}`,
     );
   }
 

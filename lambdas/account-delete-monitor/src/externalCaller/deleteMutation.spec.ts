@@ -34,7 +34,7 @@ describe('deleteUser mutation test', () => {
     const userApiCaller = jest.spyOn(userApiCalls, 'deleteUserMutation');
 
     await expect(deleteUserMutationCaller(testUserId)).rejects.toThrowError(
-      testError
+      testError,
     );
     expect(userApiCaller).toBeCalledTimes(3);
   });
@@ -47,8 +47,8 @@ describe('deleteUser mutation test', () => {
 
     await expect(deleteUserMutationCaller(testUserId)).rejects.toThrowError(
       `Error calling deleteUser mutation.\n GraphQL Errors: ${JSON.stringify(
-        testError
-      )}`
+        testError,
+      )}`,
     );
   });
 });

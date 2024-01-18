@@ -14,22 +14,25 @@ export async function truncateTable(table: string, client: DynamoDBClient) {
   };
   const paginator = paginateScan(
     { client: dynamolib, pageSize: 20 },
-    scanInput
+    scanInput,
   );
   const tableInfo = await client.send(
-    new DescribeTableCommand({ TableName: table })
+    new DescribeTableCommand({ TableName: table }),
   );
   const keyAttributes = tableInfo.Table.KeySchema.map(
-    (key) => key.AttributeName
+    (key) => key.AttributeName,
   );
   for await (const res of paginator) {
     if (res.Count === 0) return;
 
     const deleteRequests = res.Items.map((item) => {
-      const itemKeys = keyAttributes.reduce((keyMap, key) => {
-        keyMap[key] = item[key];
-        return keyMap;
-      }, {} as { [key: string]: any });
+      const itemKeys = keyAttributes.reduce(
+        (keyMap, key) => {
+          keyMap[key] = item[key];
+          return keyMap;
+        },
+        {} as { [key: string]: any },
+      );
       return {
         DeleteRequest: {
           Key: itemKeys,

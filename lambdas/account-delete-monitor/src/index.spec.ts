@@ -50,14 +50,14 @@ describe('event handlers', () => {
       const res = await processor(records as SQSEvent);
       expect(consoleInfoStub.callCount).toEqual(2);
       expect(consoleInfoStub.getCall(0).args[0].message).toEqual(
-        'Received event records.'
+        'Received event records.',
       );
       expect(consoleInfoStub.getCall(1).args[0].message).toEqual(
-        'Received record.'
+        'Received record.',
       );
       expect(consoleErrorStub.callCount).toEqual(1);
       expect(consoleErrorStub.getCall(0).args[0].message).toEqual(
-        'Missing handler.'
+        'Missing handler.',
       );
       expect(res.batchItemFailures).toEqual([]);
     });
