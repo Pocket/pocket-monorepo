@@ -4,7 +4,6 @@ import { client, dynamo } from '../dynamodb';
 import { GetCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
 import { config } from '../config';
 import * as deleteMutation from '../externalCaller/deleteMutation';
-import sinon from 'sinon';
 import { truncateTable } from '../test/utils';
 
 describe('Account delete handler', () => {
@@ -27,6 +26,8 @@ describe('Account delete handler', () => {
     await truncateTable(config.trackingTable.name, dynamo);
   });
 
+  afterAll(() => jest.restoreAllMocks());
+
   it('puts request record into DynamoDB', async () => {
     const expectedItem = {
       id: '123_request',
@@ -45,9 +46,9 @@ describe('Account delete handler', () => {
   });
 
   it('should trigger deleteMutation for old records', async () => {
-    const userApiCaller = sinon
-      .stub(deleteMutation, 'deleteUserMutationCaller')
-      .resolves();
+    const userApiCaller = jest
+      .spyOn(deleteMutation, 'deleteUserMutationCaller')
+      .mockResolvedValue('');
 
     //seed old accounts
     await client.send(
@@ -62,8 +63,7 @@ describe('Account delete handler', () => {
 
     await accountDeleteHandler(record);
 
-    const calls = userApiCaller.getCalls();
-    expect(calls[0].args[0]).toEqual('100');
-    expect(calls[1].args[0]).toEqual('50');
+    expect(userApiCaller).toHaveBeenNthCalledWith(1, '100');
+    expect(userApiCaller).toHaveBeenNthCalledWith(2, '50');
   });
 });

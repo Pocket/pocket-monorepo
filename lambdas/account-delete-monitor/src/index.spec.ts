@@ -1,24 +1,25 @@
 import { Event, handlers } from './handlers';
 import { processor } from './index';
-import sinon from 'sinon';
-import { SQSEvent } from 'aws-lambda';
+import { type SQSEvent } from 'aws-lambda';
 import * as Sentry from '@sentry/serverless';
 
 describe('event handlers', () => {
-  let consoleErrorStub: sinon.SinonStub;
-  let consoleInfoStub: sinon.SinonStub;
-  let deleteStub: sinon.SinonStub;
-  let sentryStub: sinon.SinonStub;
+  let consoleErrorStub: jest.SpyInstance;
+  let consoleInfoStub: jest.SpyInstance;
+  let deleteStub: jest.SpyInstance;
+  let sentryStub: jest.SpyInstance;
   beforeEach(() => {
-    sinon.restore();
-    consoleErrorStub = sinon.stub(console, 'error');
-    consoleInfoStub = sinon.stub(console, 'log');
-    sentryStub = sinon.stub(Sentry, 'captureException');
+    jest.clearAllMocks();
+    consoleErrorStub = jest.spyOn(console, 'error');
+    consoleInfoStub = jest.spyOn(console, 'log');
+    sentryStub = jest.spyOn(Sentry, 'captureException');
   });
-  afterAll(() => sinon.restore());
+  afterAll(() => jest.restoreAllMocks());
   describe('with no handler errors', () => {
     beforeEach(() => {
-      deleteStub = sinon.stub(handlers, Event.ACCOUNT_DELETION).resolves();
+      deleteStub = jest
+        .spyOn(handlers, Event.ACCOUNT_DELETION)
+        .mockResolvedValue();
     });
     it('routes to the correct handler function based on detail-type', async () => {
       const records = {
@@ -33,8 +34,8 @@ describe('event handlers', () => {
         ],
       };
       await processor(records as SQSEvent);
-      expect(deleteStub.callCount).toEqual(1);
-      expect(deleteStub.getCall(0).args).toEqual([records.Records[0]]);
+      expect(deleteStub).toHaveBeenCalledTimes(1);
+      expect(deleteStub).toHaveBeenCalledWith(records.Records[0]);
     });
     it('returns empty array and logs if handler does not exist', async () => {
       const records = {
@@ -48,15 +49,16 @@ describe('event handlers', () => {
         ],
       };
       const res = await processor(records as SQSEvent);
-      expect(consoleInfoStub.callCount).toEqual(2);
-      expect(consoleInfoStub.getCall(0).args[0].message).toEqual(
+      expect(consoleInfoStub).toHaveBeenCalledTimes(2);
+      expect(consoleInfoStub.mock.calls[0][0].message).toEqual(
         'Received event records.',
       );
-      expect(consoleInfoStub.getCall(1).args[0].message).toEqual(
+      expect(consoleInfoStub.mock.calls[1][0].message).toEqual(
         'Received record.',
       );
-      expect(consoleErrorStub.callCount).toEqual(1);
-      expect(consoleErrorStub.getCall(0).args[0].message).toEqual(
+
+      expect(consoleErrorStub).toHaveBeenCalledTimes(1);
+      expect(consoleErrorStub.mock.calls[0][0].message).toEqual(
         'Missing handler.',
       );
       expect(res.batchItemFailures).toEqual([]);
@@ -64,9 +66,9 @@ describe('event handlers', () => {
   });
   describe('with handler errors', () => {
     beforeEach(() => {
-      deleteStub = sinon
-        .stub(handlers, Event.ACCOUNT_DELETION)
-        .rejects(Error('got an error'));
+      deleteStub = jest
+        .spyOn(handlers, Event.ACCOUNT_DELETION)
+        .mockImplementation(() => Promise.reject(new Error('got an error')));
     });
     it('returns batchItemFailure and logs to Sentry if handler throws error', async () => {
       const records = {
@@ -83,8 +85,8 @@ describe('event handlers', () => {
       };
       const res = await processor(records as SQSEvent);
       expect(res.batchItemFailures).toEqual([{ itemIdentifier: 'abc' }]);
-      expect(sentryStub.callCount).toEqual(1);
-      expect(sentryStub.getCall(0).args[0].message).toEqual('got an error');
+      expect(sentryStub).toHaveBeenCalledTimes(1);
+      expect(sentryStub.mock.calls[0][0].message).toEqual('got an error');
     });
   });
 });

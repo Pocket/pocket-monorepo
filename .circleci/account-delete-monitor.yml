@@ -60,7 +60,7 @@ workflows:
           <<: *only_dev
           context: pocket
           for: account_delete_monitor
-          name: account-delete-monitor_events_build_lambda_dev
+          name: account-delete-monitor_build_lambda_dev
           aws-access-key-id: Dev_AWS_ACCESS_KEY
           aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
           aws-region: Dev_AWS_DEFAULT_REGION
@@ -68,7 +68,7 @@ workflows:
           sentry_project_name: account-delete-monitor
           sentry_env: development
           sentry_org: pocket
-          s3-bucket: pocket-accountdeletemonitor-dev-sqs-event-consumer
+          s3-bucket: pocket-accountdeletemonitor-dev-eventtracker
           requires:
             - account-delete-monitor_infrastructure_apply_dev
 
@@ -76,14 +76,14 @@ workflows:
           <<: *only_dev
           context: pocket
           for: account_delete_monitor
-          name: account-delete-monitor_events_code_deploy_lambda_dev
+          name: account-delete-monitor_code_deploy_lambda_dev
           resource-class: pocket/default-dev
           codedeploy-app-name: AccountDeleteMonitor-Dev-Sqs-Event-Consumer-Lambda
           codedeploy-group-name: AccountDeleteMonitor-Dev-Sqs-Event-Consumer-Lambda
           function-name: AccountDeleteMonitor-Dev-Sqs-Event-Consumer-Function
-          s3-bucket: pocket-accountdeletemonitor-dev-sqs-event-consumer
+          s3-bucket: pocket-accountdeletemonitor-dev-eventtracker
           requires:
-            - account-delete-monitor_events_build_lambda_dev
+            - account-delete-monitor_build_lambda_dev
 
       # Notify sentry of dev deployment
       - sentry_release_notification:
@@ -95,7 +95,7 @@ workflows:
           sentry_env: development
           sentry_org: pocket
           requires:
-            - account-delete-monitor_events_code_deploy_lambda_dev
+            - account-delete-monitor_code_deploy_lambda_dev
 
       # Setup params we may use in Lambdas
       - setup_deploy_params:
@@ -107,7 +107,7 @@ workflows:
           env: Dev
           service_name: AccountDeleteMonitor
           requires:
-            - account-delete-monitor_events_code_deploy_lambda_dev
+            - account-delete-monitor_code_deploy_lambda_dev
 
       ######
       # Main Branch Deployment (Prod Environment)
@@ -129,7 +129,7 @@ workflows:
           <<: *only_main
           context: pocket
           for: account_delete_monitor
-          name: account-delete-monitor_events_build_lambda_prod
+          name: account-delete-monitor_build_lambda_prod
           aws-access-key-id: Prod_AWS_ACCESS_KEY
           aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
           aws-region: Prod_AWS_DEFAULT_REGION
@@ -137,7 +137,7 @@ workflows:
           sentry_project_name: account-delete-monitor
           sentry_env: production
           sentry_org: pocket
-          s3-bucket: pocket-accountdeletemonitor-prod-sqs-event-consumer
+          s3-bucket: pocket-accountdeletemonitor-prod-eventtracker
           requires:
             - account-delete-monitor_infrastructure_apply_prod
 
@@ -145,14 +145,14 @@ workflows:
           <<: *only_main
           context: pocket
           for: account_delete_monitor
-          name: account-delete-monitor_events_code_deploy_lambda_prod
+          name: account-delete-monitor_code_deploy_lambda_prod
           resource-class: pocket/default-prod
           codedeploy-app-name: AccountDeleteMonitor-Prod-Sqs-Event-Consumer-Lambda
           codedeploy-group-name: AccountDeleteMonitor-Prod-Sqs-Event-Consumer-Lambda
           function-name: AccountDeleteMonitor-Prod-Sqs-Event-Consumer-Function
-          s3-bucket: pocket-accountdeletemonitor-prod-sqs-event-consumer
+          s3-bucket: pocket-accountdeletemonitor-prod-eventtracker
           requires:
-            - account-delete-monitor_events_build_lambda_prod
+            - account-delete-monitor_build_lambda_prod
 
       # Notify sentry of main deployment
       - sentry_release_notification:
@@ -164,7 +164,7 @@ workflows:
           sentry_env: production
           sentry_org: pocket
           requires:
-            - account-delete-monitor_events_code_deploy_lambda_prod
+            - account-delete-monitor_code_deploy_lambda_prod
 
       # Setup params we may use in Lambdas
       - setup_deploy_params:
@@ -176,4 +176,4 @@ workflows:
           env: Prod
           service_name: AccountDeleteMonitor
           requires:
-            - account-delete-monitor_events_code_deploy_lambda_prod
+            - account-delete-monitor_code_deploy_lambda_prod
