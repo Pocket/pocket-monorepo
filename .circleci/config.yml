@@ -17,7 +17,7 @@ jobs:
           name: Generate List of Configs to Merge
           command: |
             # Generate a list of all the circleci configs we want to run
-            file_list=(".circleci/common.yml" ".circleci/repo-jobs.yml" ".circleci/image-api.yml" ".circleci/annotations-api.yml" ".circleci/shared-snowplow-consumer.yml" ".circleci/parser-graphql-wrapper.yml" ".circleci/transactional-emails.yml" ".circleci/fxa-webhook-proxy.yml" ".circleci/user-api.yml" ".circleci/client-api.yml" ".circleci/list-api.yml" ".circleci/feature-flags.yml" ".circleci/sendgrid-data.yml" ".circleci/account-data-deleter.yml")       
+            file_list=(".circleci/common.yml" ".circleci/repo-jobs.yml" ".circleci/image-api.yml" ".circleci/annotations-api.yml" ".circleci/shared-snowplow-consumer.yml" ".circleci/parser-graphql-wrapper.yml" ".circleci/transactional-emails.yml" ".circleci/fxa-webhook-proxy.yml" ".circleci/user-api.yml" ".circleci/client-api.yml" ".circleci/list-api.yml" ".circleci/feature-flags.yml" ".circleci/sendgrid-data.yml" ".circleci/account-data-deleter.yml" ".circleci/account-delete-monitor.yml")       
             touch /tmp/configs.txt
 
             # Add file header to each file and dump it to the config list
@@ -59,6 +59,7 @@ jobs:
             ((servers|infrastructure)/feature-flags/.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) feature_flags true
             ((lambdas|infrastructure)/sendgrid-data/.*) sendgrid_data true
             ((lambdas|infrastructure|servers)/account-data-deleter.*)|(packages/.*)|(pnpm-lock\.yaml)|(.circleci/account-data-deleter.yml) account_data_deleter true
+            ((lambdas|infrastructure)/account-delete-monitor.*)|(packages/.*)|(pnpm-lock\.yaml)|(.circleci/account-delete-monitor.yml) account_delete_monitor true
 
       - continuation/continue:
           configuration_path: /tmp/generated-config.yml
