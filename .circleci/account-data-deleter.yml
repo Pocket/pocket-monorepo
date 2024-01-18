@@ -23,7 +23,7 @@ workflows:
           <<: *not_dev_main
           context: pocket
           for: account_data_deleter
-          name: account_data_deleter_build_docker
+          name: account-data-deleter_build_docker
           aws-access-key-id: Dev_AWS_ACCESS_KEY
           aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
           aws-region: Dev_AWS_DEFAULT_REGION

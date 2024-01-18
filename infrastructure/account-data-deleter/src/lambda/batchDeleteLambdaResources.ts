@@ -56,6 +56,8 @@ export class BatchDeleteLambdaResources extends Construct {
             GIT_SHA: gitSha,
             ENVIRONMENT:
               stackConfig.environment === 'Prod' ? 'production' : 'development',
+            NODE_ENV:
+              stackConfig.environment === 'Prod' ? 'production' : 'development',
             USER_API: `https://${stackConfig.userApiDomain}`,
           },
           vpcConfig: {
