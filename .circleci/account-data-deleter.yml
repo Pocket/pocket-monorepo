@@ -213,7 +213,7 @@ workflows:
           aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
           aws-region: Prod_AWS_DEFAULT_REGION
           repo-name: accountdatadeleter-prod-app
-          ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
+          ecr-url: 996905175585.dkr.ecr.us-east-1.amazonaws.com
           push: true
           extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=account-data-deleter --build-arg APP_PATH=servers/account-data-deleter --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=annotations-api --build-arg PORT=4015
           requires:
