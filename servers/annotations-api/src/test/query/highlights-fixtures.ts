@@ -1,4 +1,6 @@
 import { gql } from 'graphql-tag';
+import { mysqlTimeString } from '../../dataservices/utils';
+import config from '../../config';
 
 export const GET_HIGHLIGHTS = gql`
   query GetHighlights($itemId: ID) {
@@ -19,6 +21,13 @@ export const GET_HIGHLIGHTS = gql`
   }
 `;
 export const seedData = (now) => ({
+  users_meta: [{
+    user_id: 1,
+    property: 41,
+    value: mysqlTimeString(now, config.database.tz),
+    time_updated: now, // Web repo uses NOW() instead of server timestamp
+  }
+  ],
   user_annotations: [
     {
       // One highlight on an item
