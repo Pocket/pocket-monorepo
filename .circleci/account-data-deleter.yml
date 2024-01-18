@@ -17,6 +17,21 @@ workflows:
           name: account-data-deleter_batch-delete_test_integrations
           scope: account-data-deleter-batch-delete
 
+
+      # Try building the ECS docker image on each branch
+      - build_image:
+          <<: *not_dev_main
+          context: pocket
+          for: account_data_deleter
+          name: account_data_deleter_build_docker
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          repo-name: accountdatadeleter-dev-app
+          ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
+          push: false
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=account-data-deleter --build-arg APP_PATH=servers/account-data-deleter --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=account-data-deleter --build-arg PORT=4015
+     
       ######
       # Every PR Jobs
       ######
@@ -86,7 +101,7 @@ workflows:
           repo-name: accountdatadeleter-dev-app
           ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
           push: true
-          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=account-data-deleter --build-arg APP_PATH=servers/account-data-deleter --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=annotations-api --build-arg PORT=4015
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=account-data-deleter --build-arg APP_PATH=servers/account-data-deleter --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=account-data-deleter --build-arg PORT=4015
           requires:
             - account-data-deleter_infrastructure_apply_dev
 
@@ -215,7 +230,7 @@ workflows:
           repo-name: accountdatadeleter-prod-app
           ecr-url: 996905175585.dkr.ecr.us-east-1.amazonaws.com
           push: true
-          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=account-data-deleter --build-arg APP_PATH=servers/account-data-deleter --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=annotations-api --build-arg PORT=4015
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=account-data-deleter --build-arg APP_PATH=servers/account-data-deleter --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=account-data-deleter --build-arg PORT=4015
           requires:
             - account-data-deleter_infrastructure_apply_prod
 
