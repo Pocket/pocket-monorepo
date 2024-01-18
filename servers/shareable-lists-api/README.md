@@ -131,12 +131,14 @@ If tests rely on MySQL and AWS (which is mocked by a [localstack](https://github
 
 ```bash
 docker compose exec app npm run test-integrations
+# save time with `test-integrations:local` if prisma migration is already applied
 ```
 
 If tests don't rely on other services:
 
-```
+```bash
 npm run test-integrations
+# save time with `test-integrations:local`` if prisma migration is already applied
 ```
 
 ### Snowplow Events
