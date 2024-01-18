@@ -30,7 +30,7 @@ app.use('/queueDelete', queueDeleteRouter);
 app.use('/stripeDelete', stripeDeleteRouter);
 
 // Start batch delete event handler
-new BatchDeleteHandler(new EventEmitter());
+// new BatchDeleteHandler(new EventEmitter());
 
 // Start Express app
 app
