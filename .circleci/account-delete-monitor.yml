@@ -6,6 +6,13 @@ workflows:
       ######
       # Every PR Jobs
       ######
+      - test_integrations:
+          <<: *not_dev_main
+          for: account_delete_monitor
+          context: pocket
+          name: account-delete-monitor_test_integrations
+          scope: account-delete-monitor
+
       - build_lambda:
           <<: *not_dev_main
           context: pocket

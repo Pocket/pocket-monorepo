@@ -3,6 +3,6 @@ module.exports = {
   testEnvironment: 'node',
   testMatch: ['**/?(*.)+(spec|integration).ts'],
   testPathIgnorePatterns: ['/dist/'],
-  displayName: 'lambda-events',
+  displayName: 'account-delete-monitor',
   setupFiles: ['./jest.setup.js'],
 };
