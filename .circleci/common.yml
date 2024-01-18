@@ -27,6 +27,7 @@ repo_for_enum: &repo_for_enum
       - sendgrid_data
       - account_data_deleter
       - account_delete_monitor
+      - shareable_lists_api
 
 resource_class_enmum: &resource_class_enmum
   resource-class:
@@ -77,7 +78,10 @@ parameters:
   account_delete_monitor:
    type: boolean
    default: false
- 
+  shareable_lists_api:
+    type: boolean
+    default: false
+
 commands:
   # Refrenced from https://github.com/kelvintaywl-cci/dynamic-config-showcase/blob/main/.circleci/next.yml
   exit-early-if-irrelevant:
@@ -111,6 +115,7 @@ commands:
             sendgrid_data: << pipeline.parameters.sendgrid_data >>
             account_data_deleter: << pipeline.parameters.account_data_deleter >>
             account_delete_monitor: << pipeline.parameters.account_delete_monitor >>
+            shareable_lists_api: << pipeline.parameters.shareable_lists_api >>
 
   install_pnpm:  
     steps:

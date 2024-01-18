@@ -1,4 +1,3 @@
-import { Resource } from 'cdktf';
 import { Construct } from 'constructs';
 import { config } from './config';
 import {
@@ -10,7 +9,7 @@ import {
 import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
 import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
 
-export class SQSLambda extends Resource {
+export class SQSLambda extends Construct {
   public readonly lambda: PocketSQSWithLambdaTarget;
 
   constructor(
@@ -19,7 +18,7 @@ export class SQSLambda extends Resource {
     vpc: PocketVPC,
     region: DataAwsRegion,
     caller: DataAwsCallerIdentity,
-    pagerDuty?: PocketPagerDuty
+    pagerDuty?: PocketPagerDuty,
   ) {
     super(scope, name);
 

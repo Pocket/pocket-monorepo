@@ -16,7 +16,6 @@ import {
   ApplicationSqsSnsTopicSubscription,
   PocketALBApplication,
   PocketAwsSyntheticChecks,
-  PocketECSCodePipeline,
   PocketPagerDuty,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
@@ -26,6 +25,8 @@ import {
   DataTerraformRemoteState,
   RemoteBackend,
   TerraformStack,
+  Aspects,
+  MigrateIds,
 } from 'cdktf';
 import * as fs from 'fs';
 import { SQSLambda } from './SQSLambda';
@@ -42,7 +43,7 @@ class ShareableListsAPI extends TerraformStack {
     new RemoteBackend(this, {
       hostname: 'app.terraform.io',
       organization: 'Pocket',
-      workspaces: [{ prefix: `${config.name}-` }],
+      workspaces: [{ name: `${config.name}-${config.environment}` }],
     });
 
     const caller = new DataAwsCallerIdentity(this, 'caller');
@@ -55,7 +56,7 @@ class ShareableListsAPI extends TerraformStack {
       'sqs-event-consumer',
       pocketVpc,
       region,
-      caller
+      caller,
     );
     const lambda = sqsLambda.lambda;
 
@@ -70,7 +71,7 @@ class ShareableListsAPI extends TerraformStack {
         sqsQueue: lambda.sqsQueueResource,
         tags: config.tags,
         dependsOn: [lambda.sqsQueueResource as SqsQueue],
-      }
+      },
     );
 
     const shareableListPagerduty = this.createPagerDuty();
@@ -84,8 +85,6 @@ class ShareableListsAPI extends TerraformStack {
       caller,
       cache,
     });
-
-    this.createApplicationCodePipeline(pocketApp);
 
     new PocketAwsSyntheticChecks(this, 'synthetics', {
       alarmTopicArn:
@@ -113,6 +112,10 @@ class ShareableListsAPI extends TerraformStack {
         },
       ],
     });
+
+    // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
+    // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
+    Aspects.of(this).add(new MigrateIds());
   }
 
   /**
@@ -123,7 +126,7 @@ class ShareableListsAPI extends TerraformStack {
    */
   private static createElasticache(
     scope: Construct,
-    pocketVpc: PocketVPC
+    pocketVpc: PocketVPC,
   ): {
     primaryEndpoint: string;
     readerEndpoint: string;
@@ -200,22 +203,6 @@ class ShareableListsAPI extends TerraformStack {
   }
 
   /**
-   * Create CodePipeline to build and deploy terraform and ecs
-   * @param app
-   * @private
-   */
-  private createApplicationCodePipeline(app: PocketALBApplication) {
-    new PocketECSCodePipeline(this, 'code-pipeline', {
-      prefix: config.prefix,
-      source: {
-        codeStarConnectionArn: config.codePipeline.githubConnectionArn,
-        repository: config.codePipeline.repository,
-        branchName: config.codePipeline.branch,
-      },
-    });
-  }
-
-  /**
    * Create PagerDuty service for alerts
    * @private
    */
@@ -233,7 +220,7 @@ class ShareableListsAPI extends TerraformStack {
         workspaces: {
           name: 'incident-management',
         },
-      }
+      },
     );
 
     return new PocketPagerDuty(this, 'pagerduty', {
@@ -332,7 +319,8 @@ class ShareableListsAPI extends TerraformStack {
       ],
       codeDeploy: {
         useCodeDeploy: true,
-        useCodePipeline: true,
+        useCodePipeline: false,
+        useTerraformBasedCodeDeploy: false,
         notifications: {
           notifyOnFailed: true,
           notifyOnStarted: false,
@@ -395,8 +383,8 @@ class ShareableListsAPI extends TerraformStack {
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },
       autoscalingConfig: {
-        targetMinCapacity: 2,
-        targetMaxCapacity: 10,
+        targetMinCapacity: config.isProd ? 2 : 1,
+        targetMaxCapacity: config.isProd ? 5 : 1,
       },
       alarms: {},
     });
@@ -416,7 +404,7 @@ class ShareableListsAPI extends TerraformStack {
         retentionInDays: 90,
         skipDestroy: true,
         tags: config.tags,
-      }
+      },
     );
 
     return logGroup.name;
