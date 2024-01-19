@@ -26,6 +26,7 @@ repo_for_enum: &repo_for_enum
       - feature_flags
       - sendgrid_data
       - account_data_deleter
+      - account_delete_monitor
 
 resource_class_enmum: &resource_class_enmum
   resource-class:
@@ -73,7 +74,10 @@ parameters:
   account_data_deleter:
     type: boolean
     default: false
-  
+  account_delete_monitor:
+   type: boolean
+   default: false
+ 
 commands:
   # Refrenced from https://github.com/kelvintaywl-cci/dynamic-config-showcase/blob/main/.circleci/next.yml
   exit-early-if-irrelevant:
@@ -106,6 +110,7 @@ commands:
             feature_flags: << pipeline.parameters.feature_flags >>
             sendgrid_data: << pipeline.parameters.sendgrid_data >>
             account_data_deleter: << pipeline.parameters.account_data_deleter >>
+            account_delete_monitor: << pipeline.parameters.account_delete_monitor >>
 
   install_pnpm:  
     steps:

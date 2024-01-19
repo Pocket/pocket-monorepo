@@ -22,5 +22,9 @@
     "test": "jest \"\\.spec\\.ts\"",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\""
-  }
+  },
+  "files": [
+    "dist",
+    "package.json"
+  ]
 }
