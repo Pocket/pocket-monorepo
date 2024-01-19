@@ -535,7 +535,7 @@ importers:
         specifier: 3.489.0
         version: 3.489.0
       '@sentry/serverless':
-        specifier: ^7.93.0
+        specifier: 7.93.0
         version: 7.93.0
       aws-lambda:
         specifier: ^1.0.7
@@ -551,10 +551,10 @@ importers:
         version: 2.6.2
     devDependencies:
       '@types/aws-lambda':
-        specifier: ^8.10.130
+        specifier: 8.10.130
         version: 8.10.130
       '@types/jest':
-        specifier: ^29.5.11
+        specifier: 29.5.11
         version: 29.5.11
       eslint-config-custom:
         specifier: workspace:*
@@ -1439,7 +1439,7 @@ importers:
         specifier: 8.3.1
         version: 8.3.1
       '@types/jest':
-        specifier: ^29.5.11
+        specifier: 29.5.11
         version: 29.5.11
       '@types/node':
         specifier: ^20.11
