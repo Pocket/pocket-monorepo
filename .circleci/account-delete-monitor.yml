@@ -78,9 +78,9 @@ workflows:
           for: account_delete_monitor
           name: account-delete-monitor_code_deploy_lambda_dev
           resource-class: pocket/default-dev
-          codedeploy-app-name: AccountDeleteMonitor-Dev-Sqs-Event-Consumer-Lambda
-          codedeploy-group-name: AccountDeleteMonitor-Dev-Sqs-Event-Consumer-Lambda
-          function-name: AccountDeleteMonitor-Dev-Sqs-Event-Consumer-Function
+          codedeploy-app-name: AccountDeleteMonitor-Dev-EventTracker-Lambda
+          codedeploy-group-name: AccountDeleteMonitor-Dev-EventTracker-Lambda
+          function-name: AccountDeleteMonitor-Dev-EventTracker-Function
           s3-bucket: pocket-accountdeletemonitor-dev-eventtracker
           requires:
             - account-delete-monitor_build_lambda_dev
@@ -147,9 +147,9 @@ workflows:
           for: account_delete_monitor
           name: account-delete-monitor_code_deploy_lambda_prod
           resource-class: pocket/default-prod
-          codedeploy-app-name: AccountDeleteMonitor-Prod-Sqs-Event-Consumer-Lambda
-          codedeploy-group-name: AccountDeleteMonitor-Prod-Sqs-Event-Consumer-Lambda
-          function-name: AccountDeleteMonitor-Prod-Sqs-Event-Consumer-Function
+          codedeploy-app-name: AccountDeleteMonitor-Prod-EventTracker-Lambda
+          codedeploy-group-name: AccountDeleteMonitor-Prod-EventTracker-Lambda
+          function-name: AccountDeleteMonitor-Prod-EventTracker-Function
           s3-bucket: pocket-accountdeletemonitor-prod-eventtracker
           requires:
             - account-delete-monitor_build_lambda_prod
