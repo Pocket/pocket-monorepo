@@ -1404,6 +1404,9 @@ importers:
 
   servers/shareable-lists-api:
     dependencies:
+      '@aws-sdk/client-eventbridge':
+        specifier: 3.489.0
+        version: 3.489.0
       '@pocket-tools/apollo-utils':
         specifier: workspace:*
         version: link:../../packages/apollo-utils

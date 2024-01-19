@@ -1,5 +1,5 @@
 {
-  "name": "shareable-lists-api-lambda",
+  "name": "shareable-lists-api-events-lambda",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
