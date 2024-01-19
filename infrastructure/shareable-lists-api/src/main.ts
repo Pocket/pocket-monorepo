@@ -76,7 +76,7 @@ class ShareableListsAPI extends TerraformStack {
 
     const shareableListPagerduty = this.createPagerDuty();
 
-    const pocketApp = this.createPocketAlbApplication({
+    this.createPocketAlbApplication({
       rds: this.createRds(pocketVpc),
       pagerDuty: shareableListPagerduty,
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),

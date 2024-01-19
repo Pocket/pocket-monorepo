@@ -11,7 +11,6 @@ const rds = {
   minCapacity: 1,
   maxCapacity: isDev ? 1 : undefined,
 };
-const branch = isDev ? 'dev' : 'main';
 const eventBusName = `PocketEventBridge-${environment}-Shared-Event-Bus`;
 
 const cacheNodes = isDev ? 2 : 2;

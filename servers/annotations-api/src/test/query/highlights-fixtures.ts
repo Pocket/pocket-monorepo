@@ -21,12 +21,13 @@ export const GET_HIGHLIGHTS = gql`
   }
 `;
 export const seedData = (now) => ({
-  users_meta: [{
-    user_id: 1,
-    property: 41,
-    value: mysqlTimeString(now, config.database.tz),
-    time_updated: now, // Web repo uses NOW() instead of server timestamp
-  }
+  users_meta: [
+    {
+      user_id: 1,
+      property: 41,
+      value: mysqlTimeString(now, config.database.tz),
+      time_updated: now, // Web repo uses NOW() instead of server timestamp
+    },
   ],
   user_annotations: [
     {

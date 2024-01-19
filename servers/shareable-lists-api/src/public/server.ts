@@ -1,4 +1,4 @@
-import { errorHandler, sentryPlugin } from '@pocket-tools/apollo-utils';
+import { sentryPlugin } from '@pocket-tools/apollo-utils';
 import { ApolloServer, ApolloServerPlugin } from '@apollo/server';
 import {
   ApolloServerPluginLandingPageDisabled,
