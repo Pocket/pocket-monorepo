@@ -87,7 +87,12 @@ describe('enqueueTablesForDeletion', () => {
       };
       const suggTagsData = {
         ...base,
-        primaryKeyNames: ['user_id', 'grouping_id', 'tag'],
+        // Ordering of the primary key columns doens't matter
+        primaryKeyNames: expect.toIncludeSameMembers([
+        'user_id',
+        'grouping_id',
+        'tag',
+      ]),
         tableName: 'readitla_ril-tmp.suggested_tags_user_grouping_tags',
       };
       const userRecData = {
@@ -115,17 +120,19 @@ describe('enqueueTablesForDeletion', () => {
         {
           ...suggTagsData,
           primaryKeyValues: [
-            [1, 1, '1'],
-            [1, 2, '2'],
-            [1, 3, '3'],
+            // The 'distinct' ordering is not deterministic,
+            // and we just care about inclusion of all the expected keys
+            expect.toIncludeSameMembers([1, 1, '1']),
+            expect.toIncludeSameMembers([1, 2, '2']),
+            expect.toIncludeSameMembers([1, 3, '3']),
           ],
         },
         {
           ...suggTagsData,
           primaryKeyValues: [
-            [1, 4, '4'],
-            [1, 5, '5'],
-            [1, 6, '6'],
+            expect.toIncludeSameMembers([1, 4, '4']),
+            expect.toIncludeSameMembers([1, 5, '5']),
+            expect.toIncludeSameMembers([1, 6, '6']),
           ],
         },
       ];
