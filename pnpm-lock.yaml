@@ -298,11 +298,11 @@ importers:
   lambdas/account-delete-monitor:
     dependencies:
       '@aws-sdk/client-dynamodb':
-        specifier: 3.489.0
-        version: 3.489.0
+        specifier: 3.494.0
+        version: 3.494.0
       '@aws-sdk/lib-dynamodb':
-        specifier: 3.489.0
-        version: 3.489.0(@aws-sdk/client-dynamodb@3.489.0)
+        specifier: 3.494.0
+        version: 3.494.0(@aws-sdk/client-dynamodb@3.494.0)
       '@sentry/serverless':
         specifier: 7.93.0
         version: 7.93.0
@@ -1777,7 +1777,7 @@ packages:
     resolution: {integrity: sha512-IzSgsrxUcsrejQbPVilIKy16kAT52EwB6zSaI+M3xxIhKh5+aldEyvI+z6erM7TCLB2BJsFrtHjp6/4/sr+3dA==}
     dependencies:
       '@aws-crypto/util': 3.0.0
-      '@aws-sdk/types': 3.489.0
+      '@aws-sdk/types': 3.495.0
       tslib: 1.14.1
     dev: false
 
@@ -2350,7 +2350,7 @@ packages:
       '@smithy/node-http-handler': 2.2.2
       '@smithy/protocol-http': 3.0.12
       '@smithy/smithy-client': 2.2.1
-      '@smithy/types': 2.8.0
+      '@smithy/types': 2.9.0
       '@smithy/url-parser': 2.0.16
       '@smithy/util-base64': 2.0.1
       '@smithy/util-body-length-browser': 2.0.1
@@ -2395,7 +2395,7 @@ packages:
       '@smithy/node-http-handler': 2.2.2
       '@smithy/protocol-http': 3.0.12
       '@smithy/smithy-client': 2.2.1
-      '@smithy/types': 2.8.0
+      '@smithy/types': 2.9.0
       '@smithy/url-parser': 2.0.16
       '@smithy/util-base64': 2.0.1
       '@smithy/util-body-length-browser': 2.0.1
@@ -2670,7 +2670,7 @@ packages:
       '@aws-sdk/types': 3.489.0
       '@smithy/property-provider': 2.0.17
       '@smithy/shared-ini-file-loader': 2.2.8
-      '@smithy/types': 2.8.0
+      '@smithy/types': 2.9.0
       tslib: 2.6.2
     transitivePeerDependencies:
       - aws-crt
@@ -2763,7 +2763,7 @@ packages:
     engines: {node: '>=14.0.0'}
     dependencies:
       '@aws-sdk/types': 3.489.0
-      '@smithy/types': 2.8.0
+      '@smithy/types': 2.9.0
       tslib: 2.6.2
     dev: false
 
@@ -2797,7 +2797,7 @@ packages:
       '@smithy/protocol-http': 3.0.12
       '@smithy/signature-v4': 2.0.19
       '@smithy/smithy-client': 2.2.1
-      '@smithy/types': 2.8.0
+      '@smithy/types': 2.9.0
       '@smithy/util-config-provider': 2.1.0
       tslib: 2.6.2
     dev: false
@@ -2878,7 +2878,7 @@ packages:
     dependencies:
       '@aws-sdk/types': 3.489.0
       '@smithy/node-config-provider': 2.1.9
-      '@smithy/types': 2.8.0
+      '@smithy/types': 2.9.0
       '@smithy/util-config-provider': 2.1.0
       '@smithy/util-middleware': 2.0.9
       tslib: 2.6.2
@@ -2926,7 +2926,7 @@ packages:
       '@smithy/protocol-http': 3.0.12
       '@smithy/shared-ini-file-loader': 2.2.8
       '@smithy/smithy-client': 2.2.1
-      '@smithy/types': 2.8.0
+      '@smithy/types': 2.9.0
       '@smithy/url-parser': 2.0.16
       '@smithy/util-base64': 2.0.1
       '@smithy/util-body-length-browser': 2.0.1
@@ -2971,7 +2971,7 @@ packages:
       '@smithy/protocol-http': 3.0.12
       '@smithy/shared-ini-file-loader': 2.2.8
       '@smithy/smithy-client': 2.2.1
-      '@smithy/types': 2.8.0
+      '@smithy/types': 2.9.0
       '@smithy/url-parser': 2.0.16
       '@smithy/util-base64': 2.0.1
       '@smithy/util-body-length-browser': 2.0.1
@@ -3066,7 +3066,7 @@ packages:
     resolution: {integrity: sha512-85B9KMsuMpAZauzWQ16r52ZBAHYnznW6BVitnBglsibN7oJKn10Hggt4QGuRhvQFCxQ8YhvBl7r+vQGFO4hxIw==}
     dependencies:
       '@aws-sdk/types': 3.489.0
-      '@smithy/types': 2.8.0
+      '@smithy/types': 2.9.0
       bowser: 2.11.0
       tslib: 2.6.2
     dev: false
@@ -3097,7 +3097,7 @@ packages:
     dependencies:
       '@aws-sdk/types': 3.489.0
       '@smithy/node-config-provider': 2.1.9
-      '@smithy/types': 2.8.0
+      '@smithy/types': 2.9.0
       tslib: 2.6.2
     dev: false
 
@@ -5754,7 +5754,7 @@ packages:
     resolution: {integrity: sha512-umYh5pdCE9GHgiMAH49zu9wXWZKNHHdKPm/lK22WYISTjqu29SepmpWNmPiBLy/yUu4HFEGJHIFrDWhbDlApaw==}
     dependencies:
       '@aws-crypto/crc32': 3.0.0
-      '@smithy/types': 2.8.0
+      '@smithy/types': 2.9.0
       '@smithy/util-hex-encoding': 2.0.0
       tslib: 2.6.2
     dev: false
@@ -5950,11 +5950,11 @@ packages:
       '@smithy/types': 2.8.0
     dev: false
 
-  /@smithy/service-error-classification@2.1.0:
-    resolution: {integrity: sha512-yBMJk4IfYqUxsPmc8P0YtWHd/Kbd0PP+kU0dgFksH6eiE2ZQJl7478xNtkUKp2QJLcooYEbA3gBFUza6ukXMiA==}
+  /@smithy/service-error-classification@2.1.1:
+    resolution: {integrity: sha512-txEdZxPUgM1PwGvDvHzqhXisrc5LlRWYCf2yyHfvITWioAKat7srQvpjMAvgzf0t6t7j8yHrryXU9xt7RZqFpw==}
     engines: {node: '>=14.0.0'}
     dependencies:
-      '@smithy/types': 2.9.0
+      '@smithy/types': 2.9.1
     dev: false
 
   /@smithy/shared-ini-file-loader@2.2.8:
@@ -5971,7 +5971,7 @@ packages:
     dependencies:
       '@smithy/eventstream-codec': 2.0.16
       '@smithy/is-array-buffer': 2.0.0
-      '@smithy/types': 2.8.0
+      '@smithy/types': 2.9.0
       '@smithy/util-hex-encoding': 2.0.0
       '@smithy/util-middleware': 2.0.9
       '@smithy/util-uri-escape': 2.0.0
@@ -6000,6 +6000,13 @@ packages:
 
   /@smithy/types@2.9.0:
     resolution: {integrity: sha512-ST1M87Lf2cLHRI+irEFRIHXGY08HHTAUbiRFYkmFyJdTMg3VDxkcm7DwW9/EgV3X8M6wDPrbIkx/RXONyttrQg==}
+    engines: {node: '>=14.0.0'}
+    dependencies:
+      tslib: 2.6.2
+    dev: false
+
+  /@smithy/types@2.9.1:
+    resolution: {integrity: sha512-vjXlKNXyprDYDuJ7UW5iobdmyDm6g8dDG+BFUncAg/3XJaN45Gy5RWWWUVgrzIK7S4R1KWgIX5LeJcfvSI24bw==}
     engines: {node: '>=14.0.0'}
     dependencies:
       tslib: 2.6.2
@@ -7222,7 +7229,7 @@ packages:
     engines: {node: '>= 14.x'}
     dependencies:
       '@aws-sdk/types': 3.495.0
-      '@smithy/service-error-classification': 2.1.0
+      '@smithy/service-error-classification': 2.1.1
       '@types/cls-hooked': 4.3.8
       atomic-batcher: 1.0.2
       cls-hooked: 4.2.2
@@ -8638,7 +8645,7 @@ packages:
     hasBin: true
     dependencies:
       cross-spawn: 7.0.3
-      dotenv: 16.3.1
+      dotenv: 16.3.2
       dotenv-expand: 10.0.0
       minimist: 1.2.8
     dev: false
@@ -8655,6 +8662,11 @@ packages:
 
   /dotenv@16.3.1:
     resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
+    engines: {node: '>=12'}
+    dev: false
+
+  /dotenv@16.3.2:
+    resolution: {integrity: sha512-HTlk5nmhkm8F6JcdXvHIzaorzCoziNQT9mGxLPVXW8wJF1TiGSL60ZGB4gHWabHOaMmWmhvk2/lPHfnBiT78AQ==}
     engines: {node: '>=12'}
     dev: false
 
