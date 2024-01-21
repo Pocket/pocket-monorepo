@@ -1025,7 +1025,7 @@ importers:
         version: 5.3.0
       unleash-server:
         specifier: 5.8.1
-        version: 5.8.1(core-js@3.35.0)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8)
+        version: 5.8.1(core-js@3.35.1)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8)
     devDependencies:
       '@types/cors':
         specifier: ^2.8.17
@@ -1351,6 +1351,12 @@ importers:
       '@aws-sdk/client-sqs':
         specifier: 3.490.0
         version: 3.490.0
+      '@pocket-tools/apollo-utils':
+        specifier: workspace:*
+        version: link:../../packages/apollo-utils
+      '@pocket-tools/ts-logger':
+        specifier: workspace:*
+        version: link:../../packages/ts-logger
       '@sentry/node':
         specifier: 7.93.0
         version: 7.93.0
@@ -1360,9 +1366,6 @@ importers:
       '@snowplow/node-tracker':
         specifier: 3.19.0
         version: 3.19.0
-      aws-xray-sdk-express:
-        specifier: 3.5.3
-        version: 3.5.3(aws-xray-sdk-core@3.5.3)
       express:
         specifier: 4.18.2
         version: 4.18.2
@@ -3007,6 +3010,14 @@ packages:
     engines: {node: '>=14.0.0'}
     dependencies:
       '@smithy/types': 2.9.0
+      tslib: 2.6.2
+    dev: false
+
+  /@aws-sdk/types@3.496.0:
+    resolution: {integrity: sha512-umkGadK4QuNQaMoDICMm7NKRI/mYSXiyPjcn3d53BhsuArYU/52CebGQKdt4At7SwwsiVJZw9RNBHyN5Mm0HVw==}
+    engines: {node: '>=14.0.0'}
+    dependencies:
+      '@smithy/types': 2.9.1
       tslib: 2.6.2
     dev: false
 
@@ -6775,7 +6786,7 @@ packages:
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
     dev: true
 
-  /@wesleytodd/openapi@0.3.0(core-js@3.35.0)(mobx@6.12.0)(openapi-types@12.1.3)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8):
+  /@wesleytodd/openapi@0.3.0(core-js@3.35.1)(mobx@6.12.0)(openapi-types@12.1.3)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8):
     resolution: {integrity: sha512-7vjiRFY4yW5aYTZzH4EINYpoClBZTahXWGbpaIl6SsL2XcikuvkgoHCA3t/Hu+3QibBT49W3BPXW3Bl8tr7Ddg==}
     dependencies:
       ajv: 8.12.0
@@ -6783,7 +6794,7 @@ packages:
       http-errors: 2.0.0
       merge-deep: 3.0.3
       path-to-regexp: 6.2.1
-      redoc: 2.1.3(core-js@3.35.0)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8)
+      redoc: 2.1.3(core-js@3.35.1)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8)
       router: 1.3.8
       serve-static: 1.15.0
       swagger-parser: 10.0.3(openapi-types@12.1.3)
@@ -7228,7 +7239,7 @@ packages:
     resolution: {integrity: sha512-FxDRVvIHqf3bzj76M+LSyh/1V5cYuhn+YLRS+u6Xs6WindPMDn9j03v2PNskPgvUi7pMqU40aVhQphRX/YWTfQ==}
     engines: {node: '>= 14.x'}
     dependencies:
-      '@aws-sdk/types': 3.495.0
+      '@aws-sdk/types': 3.496.0
       '@smithy/service-error-classification': 2.1.1
       '@types/cls-hooked': 4.3.8
       atomic-batcher: 1.0.2
@@ -8199,8 +8210,8 @@ packages:
       keygrip: 1.1.0
     dev: false
 
-  /core-js@3.35.0:
-    resolution: {integrity: sha512-ntakECeqg81KqMueeGJ79Q5ZgQNR+6eaE8sxGCx62zMbAIj65q+uYvatToew3m6eAGdU4gNZwpZ34NMe4GYswg==}
+  /core-js@3.35.1:
+    resolution: {integrity: sha512-IgdsbxNyMskrTFxa9lWHyMwAJU5gXOPP+1yO+K59d50VLVAIDAbs7gIv705KzALModfK3ZrSZTPNpC0PQgIZuw==}
     requiresBuild: true
     dev: false
 
@@ -8681,7 +8692,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.4.0-dev.20240119
+      typescript: 5.4.0-dev.20240121
     dev: false
 
   /eastasianwidth@0.2.0:
@@ -13780,7 +13791,7 @@ packages:
     dependencies:
       redis-errors: 1.2.0
 
-  /redoc@2.1.3(core-js@3.35.0)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8):
+  /redoc@2.1.3(core-js@3.35.1)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8):
     resolution: {integrity: sha512-d7F9qLLxaiFW4GC03VkwlX9wuRIpx9aiIIf3o6mzMnqPfhxrn2IRKGndrkJeVdItgCfmg9jXZiFEowm60f1meQ==}
     engines: {node: '>=6.9', npm: '>=3.0.0'}
     peerDependencies:
@@ -13792,7 +13803,7 @@ packages:
     dependencies:
       '@redocly/openapi-core': 1.6.0
       classnames: 2.5.1
-      core-js: 3.35.0
+      core-js: 3.35.1
       decko: 1.2.0
       dompurify: 2.4.7
       eventemitter3: 4.0.7
@@ -15409,8 +15420,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.4.0-dev.20240119:
-    resolution: {integrity: sha512-I+Uge2+WNFs91q42WVrqTwxmq3NQwQlrL0MLora9zXhizbsKIGApE7LGcEJIbG+0yk6gpDilGaDH1pU4VUAKzw==}
+  /typescript@5.4.0-dev.20240121:
+    resolution: {integrity: sha512-mRsxgYHpW6gRWM72xK9BqjCOiAAady4aJJg3JjQW1/ZkIlT+AGgJobFJYDHvQ2eexz7uaGA3zVftM4UNC5KkRw==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: false
@@ -15509,12 +15520,12 @@ packages:
       - supports-color
     dev: false
 
-  /unleash-server@5.8.1(core-js@3.35.0)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8):
+  /unleash-server@5.8.1(core-js@3.35.1)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8):
     resolution: {integrity: sha512-kyAnUjZEcmcmGim7MaHnJEZKG5P1WfzEWR4rbB/VXywXSQr8eHdfEKB9yB3Gx71BcjIX+/GuUO3nSnAqARegoQ==}
     engines: {node: '>=18 <21'}
     dependencies:
       '@slack/web-api': 6.11.2
-      '@wesleytodd/openapi': 0.3.0(core-js@3.35.0)(mobx@6.12.0)(openapi-types@12.1.3)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8)
+      '@wesleytodd/openapi': 0.3.0(core-js@3.35.1)(mobx@6.12.0)(openapi-types@12.1.3)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8)
       ajv: 8.12.0
       ajv-formats: 2.1.1(ajv@8.12.0)
       async: 3.2.5

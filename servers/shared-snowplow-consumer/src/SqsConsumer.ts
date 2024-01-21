@@ -13,6 +13,7 @@ import {
   QueueAttributeName,
 } from '@aws-sdk/client-sqs';
 import { setTimeout } from 'timers/promises';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 /**
  * class to poll the SQS message from the snowplow event queue,
@@ -29,7 +30,7 @@ export class SqsConsumer {
     public readonly emitter: EventEmitter,
     pollOnInit = true,
   ) {
-    console.log(`retrieving queue`);
+    serverLogger.info(`retrieving queue`);
     this.sqsClient = new SQSClient({
       region: config.aws.region,
       endpoint: config.aws.endpoint,
@@ -40,7 +41,7 @@ export class SqsConsumer {
 
     // Start the polling by emitting an initial event
     if (pollOnInit) {
-      console.log(`emitting sqsConsumer event`);
+      serverLogger.info(`emitting sqsConsumer event`);
       emitter.emit(SqsConsumer.eventName);
     }
   }

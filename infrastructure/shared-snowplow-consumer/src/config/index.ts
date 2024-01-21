@@ -27,6 +27,9 @@ export const config = {
   graphqlVariant,
   cacheNodes,
   cacheSize,
+  tracing: {
+    host: 'localhost',
+  },
   healthCheck: {
     command: [
       'CMD-SHELL',

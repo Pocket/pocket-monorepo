@@ -14,10 +14,18 @@ if (!awsEnvironments.includes(process.env.NODE_ENV)) {
 // Environment variables below are set in .aws/src/main.ts
 export const config = {
   app: {
-    name: 'Account Data Deletion',
+    name: 'Shared Snowplow Consumer',
     environment: process.env.NODE_ENV || 'development',
     defaultMaxAge: 86400,
     port: 4015,
+  },
+  tracing: {
+    graphQLDepth: 8, // very permissive limit on depth tracing
+    samplingRatio: 0.2,
+    grpcDefaultPort: 4317,
+    httpDefaultPort: 4318,
+    serviceName: 'shared-snowplow-consumer',
+    host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
   },
   aws: {
     region: process.env.AWS_REGION || 'us-east-1',
