@@ -2,11 +2,13 @@
 //so open-telemetry can patch all libraries that we use
 import { nodeSDKBuilder } from '@pocket-tools/apollo-utils';
 import config from './config';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 nodeSDKBuilder({
   host: config.tracing.host,
   serviceName: config.tracing.serviceName,
   release: config.sentry.release,
+  logger: serverLogger,
 }).then(async () => {
   const { url } = await startServer(config.app.port);
   serverLogger.info(
@@ -15,4 +17,3 @@ nodeSDKBuilder({
 });
 
 import { startServer } from './apollo';
-import { serverLogger } from './logger';
