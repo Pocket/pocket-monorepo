@@ -1,4 +1,11 @@
 // Environment variables below are set in .aws/src/main.ts
+
+const awsEnvironments = ['production', 'development'];
+let localAwsEndpoint: string = undefined;
+if (!awsEnvironments.includes(process.env.NODE_ENV)) {
+  localAwsEndpoint = process.env.AWS_ENDPOINT || 'http://localhost:4566';
+}
+
 export default {
   app: {
     environment: process.env.NODE_ENV || 'development',
@@ -18,7 +25,7 @@ export default {
       annotationsDeleteQueue: {
         url:
           process.env.SQS_BATCH_DELETE_QUEUE_URL ||
-          'http://localhost:4566/queue/pocket-annotations-delete-queue',
+          'http://localhost:4566/000000000000/pocket-annotations-delete-queue',
         visibilityTimeout: 300,
         maxMessages: 1,
         waitTimeSeconds: 0,
@@ -27,11 +34,7 @@ export default {
       },
     },
     region: process.env.AWS_REGION || 'us-east-1',
-    endpoint:
-      process.env.NODE_ENV != 'production' &&
-      process.env.NODE_ENV != 'development'
-        ? process.env.AWS_ENDPOINT || 'http://localhost:4566'
-        : undefined,
+    endpoint: localAwsEndpoint,
     maxBackoff: 3000, // in ms, max amount of backoff time allowed for multiple requests
   },
   dynamoDb: {

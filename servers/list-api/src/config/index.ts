@@ -102,7 +102,7 @@ export default {
   },
   unleash: {
     clientKey: process.env.UNLEASH_KEY || 'unleash-key-fake',
-    endpoint: process.env.UNLEASH_ENDPOINT || 'https://unleash-client.com/api',
+    endpoint: process.env.UNLEASH_ENDPOINT || 'http://localhost:4242/api',
     flags: {
       mirrorWrites: {
         name: 'temp.backend.list_table_mirror_writes_enabled',
@@ -128,7 +128,7 @@ export default {
     },
   },
   tracing: {
-    host: process.env.OTLP_COLLECTOR_HOST || 'otlpcollector',
+    host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
     graphQLDepth: 8,
     samplingRatio: 0.2,
     grpcDefaultPort: 4317,
