@@ -1,13 +1,18 @@
 import process from 'process';
 import { NodeSDK } from '@opentelemetry/sdk-node';
+import { GraphQLInstrumentation } from '@opentelemetry/instrumentation-graphql';
 import { AwsInstrumentation } from '@opentelemetry/instrumentation-aws-sdk';
 import { AWSXRayIdGenerator } from '@opentelemetry/id-generator-aws-xray';
 import { AWSXRayPropagator } from '@opentelemetry/propagator-aws-xray';
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { DataloaderInstrumentation } from '@opentelemetry/instrumentation-dataloader';
-import { DiagConsoleLogger, DiagLogLevel, diag } from '@opentelemetry/api';
+import {
+  DiagConsoleLogger,
+  DiagLogLevel,
+  DiagLogger,
+  diag,
+} from '@opentelemetry/api';
 import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
-import { GraphQLInstrumentation } from '@opentelemetry/instrumentation-graphql';
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 import { KnexInstrumentation } from '@opentelemetry/instrumentation-knex';
 import { MySQL2Instrumentation } from '@opentelemetry/instrumentation-mysql2';
@@ -31,6 +36,7 @@ export type TracingConfig = {
   grpcDefaultPort?: number;
   httpDefaultPort?: number;
   host?: string;
+  logger?: DiagLogger;
 };
 
 const tracingDefaults: TracingConfig = {
@@ -41,16 +47,9 @@ const tracingDefaults: TracingConfig = {
   grpcDefaultPort: 4317,
   httpDefaultPort: 4318,
   host: 'otlpcollector',
+  logger: new DiagConsoleLogger(),
 };
 
-/**
- * documentation:https://aws-otel.github.io/docs/getting-started/js-sdk/trace-manual-instr#instrumenting-the-aws-sdk
- * and https://github.com/open-telemetry/opentelemetry-js
- * sample apps: https://github.com/aws-observability/aws-otel-community/blob/master/sample-apps/javascript-sample-app/nodeSDK.js
- */
-
-//tracing level set for open-telemetry
-diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.WARN);
 /**
  * function to setup open-telemetry tracing config
  * Note: this function has to run before initial
@@ -58,6 +57,14 @@ diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.WARN);
  */
 export async function nodeSDKBuilder(config: TracingConfig) {
   config = { ...tracingDefaults, ...config };
+  /**
+   * documentation:https://aws-otel.github.io/docs/getting-started/js-sdk/trace-manual-instr#instrumenting-the-aws-sdk
+   * and https://github.com/open-telemetry/opentelemetry-js
+   * sample apps: https://github.com/aws-observability/aws-otel-community/blob/master/sample-apps/javascript-sample-app/nodeSDK.js
+   */
+
+  //tracing level set for open-telemetry
+  diag.setLogger(config.logger, DiagLogLevel.WARN);
 
   const _resource = Resource.default().merge(
     new Resource({
