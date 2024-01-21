@@ -5,7 +5,7 @@
   "main": "dist/main.js",
   "scripts": {
     "build": "rm -rf dist && tsc && npm run build-schema",
-    "watch": "tsc -w & nodemon",
+    "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json",
     "start": "node dist/main.js",
     "dev": "npm run build && npm run watch",
     "build-schema": "node dist/server/apollo/buildSchema.js",

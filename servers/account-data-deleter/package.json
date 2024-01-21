@@ -9,7 +9,7 @@
     "format": "eslint --fix \"src/**/*.ts\"",
     "start": "node dist/server.js",
     "start:dev": "npm run build && npm run watch",
-    "watch": "tsc -w & nodemon",
+    "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json",
     "test": "jest \"\\.spec\\.ts\"",
     "test-integrations": "jest \"\\.integration\\.ts\" --forceExit",
     "test:watch": "npm test -- --watchAll"

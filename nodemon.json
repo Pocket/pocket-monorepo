@@ -1,0 +1,5 @@
+{
+    "$schema": "https://json.schemastore.org/nodemon.json",
+    "ignore": ["*.integration.ts", "*.spec.ts"],
+    "delay": 2500
+}

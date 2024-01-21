@@ -3,7 +3,7 @@
   "main": "dist/main.js",
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "watch": "tsc -w & nodemon",
+    "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json",
     "start": "node dist/main.js",
     "dev": "npm run build && NODE_ENV=development npm run watch",
     "test": "jest \"\\.spec\\.ts\"",
