@@ -27,8 +27,7 @@ import { getRedisCache } from './cache';
 import { ParserAPI } from './datasources/parserApi';
 import { LegacyDataSourcesPlugin } from './datasources/legacyDataSourcesPlugin';
 import { ContextManager, IContext } from './context';
-import { serverLogger } from './logger';
-import { setMorgan } from '@pocket-tools/ts-logger';
+import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 
 export async function startServer(port: number): Promise<{
   app: Express.Application;

@@ -8,7 +8,7 @@ import { CacheScope } from '@apollo/cache-control-types';
 import { getShortUrl } from './shortUrl/shortUrl';
 import { IContext } from './context';
 import { generateSSML } from './ssml/ssml';
-import { serverLogger } from './logger';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export const resolvers = {
   Item: {
