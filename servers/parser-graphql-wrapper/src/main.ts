@@ -1,6 +1,6 @@
 //this must run before all imports and server start
 //so open-telemetry can patch all libraries that we use
-import { nodeSDKBuilder } from '@pocket-tools/apollo-utils';
+import { nodeSDKBuilder } from '@pocket-tools/tracing';
 import config from './config';
 import { serverLogger } from '@pocket-tools/ts-logger';
 

@@ -20,8 +20,7 @@ import {
   isSubgraphIntrospection,
   isIntrospection,
 } from '@pocket-tools/apollo-utils';
-import { setMorgan } from '@pocket-tools/ts-logger';
-import { serverLogger } from './logger';
+import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 import config from '../config';
 
 /**

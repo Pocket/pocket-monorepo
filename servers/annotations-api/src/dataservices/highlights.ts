@@ -15,7 +15,7 @@ import { UsersMeta } from './usersMeta';
 import { SavedItem } from './savedItem';
 import { failCallback } from '../server/routes/helper';
 import { setTimeout } from 'timers/promises';
-import { serverLogger } from '../server';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export class HighlightsDataService {
   public readonly userId: string;

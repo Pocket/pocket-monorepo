@@ -14,7 +14,7 @@ import * as Sentry from '@sentry/node';
 import { EventType } from '../businessEvents';
 import { getSavedItemTagsMap } from './utils';
 import { TagModel } from '../models';
-import { serverLogger } from '../server/logger';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 /**
  * Create or re-add a saved item in a user's list.

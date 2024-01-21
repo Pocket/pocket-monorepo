@@ -15,7 +15,7 @@ import { readClient, writeClient } from '../../database/client';
 import { HighlightsDataService } from '../../dataservices/highlights';
 import { setTimeout } from 'timers/promises';
 import { failCallback } from '../routes/helper';
-import { serverLogger } from '../';
+import { serverLogger } from '@pocket-tools/ts-logger';
 import { SeverityLevel } from '@sentry/types';
 import { sqs } from './sqs';
 

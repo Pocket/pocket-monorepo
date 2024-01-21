@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/node';
-import { serverLogger } from '../';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export const successCallback = (
   dataType: string,

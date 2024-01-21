@@ -62,13 +62,13 @@ To run a specific server, run the following:
 cp .env.example .env
 cd pocket-monorepo
 docker compose up --wait
-pnpm dev --filter=...annotations-api
+pnpm dev --filter=annotations-api...
 ```
 
 Where annotations-api is the server name from package.json you want to run. `...` prefixed informs turborepo to include all dependent workspace packages.
 
 You can expand this to run multiple specific servers as well like:
-```pnpm run dev --filter=...list-api --filter=...feature-flags```
+```pnpm run dev --filter=list-api... --filter=feature-flags...```
 
 ### Testing
 

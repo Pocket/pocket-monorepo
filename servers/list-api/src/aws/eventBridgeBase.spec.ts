@@ -5,7 +5,7 @@ import {
 import * as Sentry from '@sentry/node';
 import { EventBridgeBase } from './eventBridgeBase';
 import { eventBridgeClient } from './eventBridgeClient';
-import { serverLogger } from '../server/logger';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 describe('EventBridgeBase.putEvent', () => {
   const client = new EventBridgeBase(eventBridgeClient);

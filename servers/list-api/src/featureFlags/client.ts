@@ -1,6 +1,6 @@
 import { initialize, Unleash } from 'unleash-client';
 import config from '../config';
-import { serverLogger } from '../server/logger';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 /**
  * Create and return an Unleash client instance (global).

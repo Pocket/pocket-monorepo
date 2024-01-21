@@ -25,7 +25,8 @@
     "express-validator": "^7.0.1",
     "node-fetch": "2.7.0",
     "@pocket-tools/apollo-utils": "workspace:*",
-    "@pocket-tools/ts-logger": "workspace:*"
+    "@pocket-tools/ts-logger": "workspace:*",
+    "@pocket-tools/tracing": "workspace:*"
   },
   "devDependencies": {
     "eslint-config-custom": "workspace:*",

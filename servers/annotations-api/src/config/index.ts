@@ -73,4 +73,8 @@ export default {
   batchDelete: {
     deleteDelayInMilliSec: 20000,
   },
+  tracing: {
+    host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
+    serviceName: 'annotations-api',
+  },
 };

@@ -9,7 +9,7 @@ import {
   UnifiedEventMap,
   UnifiedEventPayload,
 } from './types';
-import { serverLogger } from '../server/logger';
+import { serverLogger } from '@pocket-tools/ts-logger';
 import { ItemsEventEmitter } from './itemsEventEmitter';
 
 export class UnifiedEventKinesisHandler {

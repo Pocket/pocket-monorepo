@@ -4,7 +4,7 @@ import { SavedItem } from '../../types';
 import { EventType } from '../types';
 import config from '../../config';
 import { sqs } from '../../aws/sqs';
-import { serverLogger } from '../../server/logger';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 describe('SqsListener spec test', function () {
   function fakeSendError() {

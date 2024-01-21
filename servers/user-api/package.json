@@ -16,6 +16,7 @@
     "@aws-sdk/client-eventbridge": "3.490.0",
     "@aws-sdk/client-pinpoint": "3.490.0",
     "@pocket-tools/ts-logger": "workspace:*",
+    "@pocket-tools/tracing": "workspace:*",
     "@sentry/node": "7.93.0",
     "@sentry/tracing": "7.93.0",
     "dataloader": "2.2.2",

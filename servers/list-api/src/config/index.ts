@@ -15,6 +15,7 @@ export default {
   app: {
     environment: process.env.NODE_ENV || 'development',
     depthLimit: 8,
+    port: 4005,
   },
   aws: {
     region: process.env.AWS_REGION || 'us-east-1',
@@ -129,6 +130,7 @@ export default {
   },
   tracing: {
     host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
+    serviceName: 'list-api',
     graphQLDepth: 8,
     samplingRatio: 0.2,
     grpcDefaultPort: 4317,

@@ -5,7 +5,7 @@ import { HighlightsDataService } from '../../dataservices/highlights';
 import * as Sentry from '@sentry/node';
 import { SeverityLevel } from '@sentry/types';
 import config from '../../config';
-import { serverLogger } from '../';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 describe('batchDeleteHandler', () => {
   const emitter = new EventEmitter();

@@ -2,7 +2,7 @@ import Keyv from 'keyv';
 import { KeyvAdapter } from '@apollo/utils.keyvadapter';
 import { ErrorsAreMissesCache } from '@apollo/utils.keyvaluecache';
 import config from '../config';
-import { serverLogger } from '../server/logger';
+import { serverLogger } from '@pocket-tools/ts-logger';
 import { ElasticacheRedis } from '@pocket-tools/apollo-utils';
 import { Redis } from 'ioredis';
 
