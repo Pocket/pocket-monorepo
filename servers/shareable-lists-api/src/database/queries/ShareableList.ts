@@ -1,4 +1,4 @@
-import { Visibility, ModerationStatus, PrismaClient } from '@prisma/client';
+import { Visibility, ModerationStatus, PrismaClient } from '.prisma/client';
 import { ShareableList, ShareableListComplete } from '../types';
 import { ForbiddenError, NotFoundError } from '@pocket-tools/apollo-utils';
 import { ACCESS_DENIED_ERROR } from '../../shared/constants';

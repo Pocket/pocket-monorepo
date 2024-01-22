@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { ApolloServer } from '@apollo/server';
 import * as Sentry from '@sentry/node';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '.prisma/client';
 import { startServer } from '../../express';
 import { IPublicContext } from '../context';
 import { client } from '../../database/client';

@@ -1,4 +1,4 @@
-import { Visibility, PilotUser, PrismaClient } from '@prisma/client';
+import { Visibility, PilotUser, PrismaClient } from '.prisma/client';
 import {
   createPilotUserHelper,
   createShareableListHelper,

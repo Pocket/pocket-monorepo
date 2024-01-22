@@ -5,7 +5,7 @@ import {
   Visibility,
   ModerationStatus,
   PrismaClient,
-} from '@prisma/client';
+} from '.prisma/client';
 import { print } from 'graphql';
 import request from 'supertest';
 import { IAdminContext } from '../../context';

@@ -1,5 +1,5 @@
 import { ForbiddenError, UserInputError } from '@pocket-tools/apollo-utils';
-import { ModerationStatus } from '@prisma/client';
+import { ModerationStatus } from '.prisma/client';
 import { ACCESS_DENIED_ERROR } from '../../../shared/constants';
 import { ShareableListComplete } from '../../../database/types';
 import { moderateShareableList as dbModerateShareableList } from '../../../database/mutations';

@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/node';
 import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
-import { Visibility, ModerationStatus } from '@prisma/client';
+import { Visibility, ModerationStatus } from '.prisma/client';
 import {
   ShareableListModerationReason,
   ShareableListComplete,

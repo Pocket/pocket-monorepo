@@ -1,4 +1,4 @@
-import { List, Visibility, PrismaClient } from '@prisma/client';
+import { List, Visibility, PrismaClient } from '.prisma/client';
 
 interface UpdateListHelperInput {
   status: Visibility;

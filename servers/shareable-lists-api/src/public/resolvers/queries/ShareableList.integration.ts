@@ -7,7 +7,7 @@ import {
   Visibility,
   ModerationStatus,
   PrismaClient,
-} from '@prisma/client';
+} from '.prisma/client';
 
 import { IPublicContext } from '../../context';
 import { startServer } from '../../../express';

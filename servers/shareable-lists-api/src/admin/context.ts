@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '.prisma/client';
 import Express from 'express';
 import { client } from '../database/client';
 import { FULLACCESS, READONLY } from '../shared/constants';

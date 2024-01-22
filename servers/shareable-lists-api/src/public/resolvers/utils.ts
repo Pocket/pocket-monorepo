@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '.prisma/client';
 import { ForbiddenError, UserInputError } from '@pocket-tools/apollo-utils';
 
 import { IPublicContext } from '../context';
