@@ -2,8 +2,6 @@
   "main": "dist/server/main.js",
   "name": "list-api",
   "scripts": {
-    "prebuild": "echo ok",
-    "pretest": "echo ok",
     "build": "rm -rf dist && tsc && npm run build-schema",
     "watch": "tsc -w & nodemon",
     "start": "node dist/server/main.js",

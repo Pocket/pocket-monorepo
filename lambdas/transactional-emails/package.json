@@ -4,8 +4,6 @@
   "description": "",
   "main": "dist/main.js",
   "scripts": {
-    "prebuild": "echo ok",
-    "pretest": "echo ok",
     "build": "rm -rf dist && tsc",
     "dev": "tsc -w",
     "test:watch": "npm test -- --watchAll",

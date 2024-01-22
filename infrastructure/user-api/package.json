@@ -5,8 +5,6 @@
   "types": "src/main.ts",
   "private": true,
   "scripts": {
-    "prebuild": "echo ok",
-    "pretest": "echo ok",
     "build": "rm -rf dist && tsc",
     "synth": "cdktf synth",
     "compile": "tsc --pretty",

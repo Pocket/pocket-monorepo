@@ -18,8 +18,6 @@
     "@types/aws-lambda": "8.10.130"
   },
   "scripts": {
-    "prebuild": "echo ok",
-    "pretest": "echo ok",
     "build": "rm -rf dist && tsc",
     "test": "jest \"\\.spec\\.ts\"",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",

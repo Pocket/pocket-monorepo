@@ -6,8 +6,6 @@
   "module": "dist/index.mjs",
   "license": "MPL-2.0",
   "scripts": {
-    "prebuild": "echo ok",
-    "pretest": "echo ok",
     "build:dev": "rm -rf dist && NODE_ENV=development npm run synth",
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "synth": "cdktf synth",

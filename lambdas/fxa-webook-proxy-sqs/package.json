@@ -6,8 +6,6 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "prebuild": "echo ok",
-    "pretest": "echo ok",
     "build": "rm -rf dist && tsc",
     "test": "jest \"\\.spec\\.ts\"",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",

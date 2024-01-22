@@ -4,8 +4,6 @@
   "description": "",
   "main": "dist/main.js",
   "scripts": {
-    "prebuild": "echo ok",
-    "pretest": "echo ok",
     "build": "rm -rf dist && tsc && npm run build-schema",
     "watch": "tsc -w & nodemon",
     "start": "node dist/main.js",
