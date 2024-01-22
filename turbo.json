@@ -14,7 +14,7 @@
     "lint": {},
     "format": {},
     "test": {
-      "dependsOn": ["^build", "build", "pretest"]
+      "dependsOn": ["^build", "build"]
     },
     "test-integrations": {
       "dependsOn": ["^build", "build", "pretest"],
