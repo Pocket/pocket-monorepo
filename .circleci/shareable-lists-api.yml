@@ -196,7 +196,7 @@ workflows:
           repo-name: shareablelistsapi-prod-app
           ecr-url: 996905175585.dkr.ecr.us-east-1.amazonaws.com
           push: true
-          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=shareable-lists-api --build-arg APP_PATH=servers/shareable-lists-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=shareable-lists-api --build-arg PORT=4008
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=shareable-lists-api --build-arg APP_PATH=servers/shareable-lists-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=shareable-lists-api --build-arg PORT=4029
           requires:
             - shareable-lists-api_infrastructure_apply_prod
 
