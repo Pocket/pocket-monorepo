@@ -15,6 +15,7 @@ This Repo includes the following packages/servers:
 - `packages/tsconfig`: `tsconfig.json`s used throughout the monorepo
 - `packages/apollo-utils`: holds helpers for all services that boot up graphql. It also includes tracing libraries and hoists apollo in node-modules so that we do not have to keep defining apollo in all services.
 - `packages/ts-logger`: helper library to add json structured logging to all our services.
+- `packages/tracing`: helper library to add tracing to all our services.
 - `packags/terraform-modules`: a set of modules built for Pocket based on the Terraform CDK, used to deploy our infrastructure.
 - `.docker/aws-resources`: all aws resources that are used by the monorepo, if something is used here, but owned by a service not in this repository, it resides in the legacy files, otherwise each service will have its own script or prefixed resources.
 - `.docker/mysql-8-resources`: all mysql resources, prefixed with a number letter system so that docker executes database creation in a specific order. All services share a single docker server, but have their own databases unless they read from our legacy (mono) database.
