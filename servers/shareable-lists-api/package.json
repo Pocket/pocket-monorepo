@@ -10,7 +10,7 @@
     "build": "rm -rf dist && tsc && npm run build-schema-admin && npm run build-schema-public",
     "watch": "tsc -w & nodemon",
     "start": "npm run migrate:deploy && node dist/main.js",
-    "start:dev": "npm run migrate:deploy && npm run build && npm run watch",
+    "dev": "dotenv -e .env.ci -- npm run migrate:deploy && npm run build && npm run watch",
     "test": "jest \"\\.spec\\.ts\"",
     "test:watch": "npm test -- --watchAll",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",
