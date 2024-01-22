@@ -4,7 +4,7 @@
   "globalDotEnv": [".env", ".env.example"],
   "pipeline": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^prebuild", "^build"],
       "outputs": ["dist/**"]
     },
     "synth": {
@@ -14,15 +14,21 @@
     "lint": {},
     "format": {},
     "test": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build", "^pretest"]
     },
     "test-integrations": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "^pretest"],
       "cache": false
     },
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "prebuild": {
+      "cache": false
+    },
+    "pretest": {
+      "cache": false
     }
   }
 }

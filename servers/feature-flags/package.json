@@ -33,6 +33,8 @@
     "tsconfig": "workspace:*"
   },
   "scripts": {
+    "prebuild": "echo ok",
+    "pretest": "echo ok",
     "build": "rm -rf dist && tsc",
     "watch": "tsc -w & nodemon",
     "start": "node dist/main.js",

@@ -6,6 +6,8 @@
   "license": "MPL-2.0",
   "private": true,
   "scripts": {
+    "prebuild": "echo ok",
+    "pretest": "echo ok",
     "build": "rm -rf dist && tsc",
     "watch": "tsc -w",
     "test": "echo ok",

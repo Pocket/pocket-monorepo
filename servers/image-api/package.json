@@ -4,6 +4,8 @@
   "description": "",
   "main": "dist/server/main.js",
   "scripts": {
+    "prebuild": "echo ok",
+    "pretest": "echo ok",
     "build": "rm -rf dist && tsc",
     "watch": "tsc -w & nodemon -r dotenv/config",
     "start": "node dist/server/main.js",
