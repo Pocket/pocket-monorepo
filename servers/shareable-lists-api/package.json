@@ -6,7 +6,7 @@
   },
   "scripts": {
     "prebuild": "dotenv -e .env.ci -- prisma generate",
-    "pretest": "npm run prebuild && dotenv -e .env.ci -- prisma migrate reset --skip-seed --force",
+    "pretest": "dotenv -e .env.ci -- prisma migrate reset --skip-seed --force",
     "build": "rm -rf dist && tsc && npm run build-schema-admin && npm run build-schema-public",
     "watch": "tsc -w & nodemon",
     "start": "npm run migrate:deploy && node dist/main.js",

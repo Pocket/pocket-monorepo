@@ -212,8 +212,7 @@ jobs:
                   . /home/circleci/.codebuild_shims_wrapper.sh
                   nvm use
                   export NODE_ENV=development
-                  pnpm run --filter=<< parameters.scope >>... build
-                  pnpm run --filter=<< parameters.scope >> synth
+                  pnpm run synth --filter=<< parameters.scope >>...
       - unless:
           condition: <<parameters.dev>>
           steps:
@@ -223,8 +222,7 @@ jobs:
                   . /home/circleci/.codebuild_shims_wrapper.sh
                   nvm use
                   export NODE_ENV=production
-                  pnpm run --filter=<< parameters.scope >>... build
-                  pnpm run --filter=<< parameters.scope >> synth
+                  pnpm run synth --filter=<< parameters.scope >>...
       - run:
           name: Setup terraform
           command: |
@@ -451,8 +449,7 @@ jobs:
           name: run tests
           command: |
             export $(egrep -v '^#' .docker/local.env | xargs -0)
-            pnpm run --filter=<< parameters.scope >>... build
-            pnpm run --filter=<< parameters.scope >>... test-integrations
+            pnpm run test-integrations --filter=<< parameters.scope >>...
 
   build_image:
     description: Build and/or push docker image to ECR.
@@ -590,7 +587,7 @@ jobs:
           name: Build lambda
           command: |
             pnpm install --filter=<< parameters.scope >>... --frozen-lockfile
-            pnpm run --filter=<< parameters.scope >>... build
+            pnpm run build --filter=<< parameters.scope >>...
             mkdir -p ~/bug/project
             cp -R . ~/bug/project/
             cd ~/bug/project/

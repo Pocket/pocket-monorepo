@@ -8,16 +8,16 @@
       "outputs": ["dist/**"]
     },
     "synth": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "build"],
       "outputs": ["cdktf.out/**"]
     },
     "lint": {},
     "format": {},
     "test": {
-      "dependsOn": ["^build", "pretest"]
+      "dependsOn": ["^build", "build", "pretest"]
     },
     "test-integrations": {
-      "dependsOn": ["^build", "pretest"],
+      "dependsOn": ["^build", "build", "pretest"],
       "cache": false
     },
     "dev": {

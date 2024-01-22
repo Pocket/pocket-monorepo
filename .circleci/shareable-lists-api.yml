@@ -13,7 +13,7 @@ workflows:
           schema_file_path: servers/shareable-lists-api/schema-client-api.graphql
           prod_graph_url: https://shareablelistsapi.readitlater.com
           dev_graph_url: https://shareablelistsapi.getpocket.dev
-          build_command: pnpm run --filter=shareable-lists-api... build
+          build_command: pnpm run build --filter=shareable-lists-api...
 
       - apollo:
           name: shareable-lists-api_apollo_admin
@@ -22,7 +22,7 @@ workflows:
           schema_file_path: servers/shareable-lists-api/schema-admin-api.graphql
           prod_graph_url: https://shareablelistsapi.readitlater.com
           dev_graph_url: https://shareablelistsapi.getpocket.dev
-          build_command: pnpm run --filter=shareable-lists-api... build
+          build_command: pnpm run build --filter=shareable-lists-api...
           apollo_key_env: APOLLO_ADMIN_KEY
 
       - test_integrations:
