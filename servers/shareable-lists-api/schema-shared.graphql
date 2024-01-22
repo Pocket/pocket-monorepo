@@ -1,0 +1,142 @@
+extend schema
+  @link(url: "https://specs.apollo.dev/link/v1.0")
+  @link(
+    url: "https://specs.apollo.dev/federation/v2.3"
+    import: ["@key", "@composeDirective"]
+  )
+  # The link directive is required to federate @constraint
+  # It doesn't actually have to be a real spec, but it would be good
+  # to write one and replace this.
+  @link(url: "https://myspecs.dev/myDirective/v1.0", import: ["@constraint"])
+  @composeDirective(name: "@constraint")
+
+"""
+ISOString scalar - all datetime fields are Typescript Date objects on this server &
+returned as ISO-8601 encoded date strings (e.g. ISOString scalars) to GraphQL clients.
+See Section 5.6 of the RFC 3339 profile of the ISO 8601 standard: https://www.ietf.org/rfc/rfc3339.txt.
+"""
+scalar ISOString
+
+"""
+A URL to a web page or image.
+"""
+scalar Url
+
+"""
+The visibility levels used (e.g. list, list item note) in the Shareable List API. Defaults to PRIVATE - visible only to its owner.
+"""
+enum ShareableListVisibility {
+  """
+  Only visible to its owner - the Pocket user who created it.
+  """
+  PRIVATE
+  """
+  Can be viewed by anyone in the world.
+  """
+  PUBLIC
+}
+
+"""
+The moderation status of a Shareable List. Defaults to VISIBLE.
+"""
+enum ShareableListModerationStatus {
+  """
+  The list and its contents abide by the Pocket content moderation policy.
+  """
+  VISIBLE
+  """
+  The list and its contents have been removed from view and further editing
+  by its owner as it violated the Pocket content moderation policy.
+  """
+  HIDDEN
+}
+
+"""
+Resolve by reference the User entity in this graph to provide user data with public lists.
+"""
+type User @key(fields: "id", resolvable: false) {
+  id: ID!
+}
+
+"""
+A Pocket Save (story) that has been added to a Shareable List.
+"""
+type ShareableListItem {
+  """
+  A unique string identifier in UUID format.
+  """
+  externalId: ID!
+  """
+  The Parser Item ID.
+  """
+  itemId: ID!
+  """
+  The URL of the story saved to a list.
+  """
+  url: Url!
+  """
+  The title of the story. Supplied by the Parser.
+  May not be available for URLs that cannot be resolved.
+  Not editable by the Pocket user, as are all the other
+  Parser-supplied story properties below.
+  """
+  title: String
+  """
+  The excerpt of the story. Supplied by the Parser.
+  """
+  excerpt: String
+  """
+  User generated note to accompany this list item.
+  """
+  note: String
+  """
+  The URL of the thumbnail image illustrating the story. Supplied by the Parser.
+  """
+  imageUrl: Url
+  """
+  The name of the publisher for this story. Supplied by the Parser.
+  """
+  publisher: String
+  """
+  A comma-separated list of story authors. Supplied by the Parser.
+  """
+  authors: String
+  """
+  The custom sort order of stories within a list. Defaults to 1.
+  """
+  sortOrder: Int!
+  """
+  The timestamp of when this story was added to the list by its owner.
+  """
+  createdAt: ISOString!
+  """
+  The timestamp of when the story was last updated. Not used for the MVP.
+  """
+  updatedAt: ISOString!
+}
+
+"""
+Apollo Server @cacheControl directive caching behavior either for a single field, or for all fields that
+return a particular type
+"""
+enum CacheControlScope {
+  PUBLIC
+
+  PRIVATE
+}
+
+directive @cacheControl(
+  """
+  The maximum amount of time the field's cached value is valid, in seconds.
+  """
+  maxAge: Int
+  """
+  If PRIVATE, the field's value is specific to a single user. The default value is PUBLIC
+  """
+  scope: CacheControlScope
+  """
+  If true, this field inherits the maxAge of its parent field instead of using the default
+  maxAge. Do not provide maxAge if you provide this argument.
+  """
+  inheritMaxAge: Boolean
+) on FIELD_DEFINITION | OBJECT | INTERFACE | UNION

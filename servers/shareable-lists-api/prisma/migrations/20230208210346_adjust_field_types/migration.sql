@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE `ListItem` MODIFY `url` VARCHAR(1000) NULL,
+    MODIFY `imageUrl` VARCHAR(1000) NULL,
+    MODIFY `authors` VARCHAR(1000) NULL;

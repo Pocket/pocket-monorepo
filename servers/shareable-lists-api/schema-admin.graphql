@@ -1,0 +1,115 @@
+enum ShareableListModerationReason {
+  ABUSIVE_BEHAVIOR
+  POSTING_PRIVATE_INFORMATION
+  HATE_SPEECH
+  MISLEADING_INFORMATION
+  ADULT_SEXUAL_CONTENT
+  CSAM_IMAGES
+  CSAM_SOLICITATION
+  ILLEGAL_GOODS_AND_SERVICES
+  VIOLENCE_AND_GORE
+  INSTRUCTIONS_FOR_VIOLENCE
+  INCITEMENT_TO_VIOLENCE
+  SELF_HARM
+  TERRORISM
+  COPYRIGHT
+  TRADEMARK
+  COUNTERFEIT
+  SPAM
+  FRAUD
+  MALWARE
+  PHISHING
+}
+
+type ShareableListComplete {
+  """
+  A unique string identifier in UUID format.
+  """
+  externalId: ID!
+  """
+  The user who created this shareable list.
+  """
+  user: User!
+  """
+  A URL-ready identifier of the list. Generated from the title
+  of the list when it's first made public. Unique per user.
+  """
+  slug: String
+  """
+  The title of the list. Provided by the Pocket user.
+  """
+  title: String!
+  """
+  Optional text description of a Shareable List. Provided by the Pocket user.
+  """
+  description: String
+  """
+  The status of the list. Defaults to PRIVATE.
+  """
+  status: ShareableListVisibility!
+  """
+  The moderation status of the list. Defaults to VISIBLE.
+  """
+  moderationStatus: ShareableListModerationStatus!
+  """
+  The timestamp of when the list was created by its owner.
+  """
+  createdAt: ISOString!
+  """
+  The timestamp of when the list was last updated by its owner
+  or a member of the moderation team.
+  """
+  updatedAt: ISOString!
+  """
+  Pocket Saves that have been added to this list by the Pocket user.
+  """
+  listItems: [ShareableListItem!]!
+  """
+  The visibility of notes added to list items for this list.
+  """
+  listItemNoteVisibility: ShareableListVisibility!
+  """
+  The LDAP username of the moderator who took down a list
+  that violates the Pocket content moderation policy.
+  """
+  moderatedBy: String
+  """
+  The reason why the moderator took down the list.
+  """
+  moderationReason: ShareableListModerationReason
+  """
+  The optional details why the list was moderated.
+  """
+  moderationDetails: String
+  """
+  The reason why a list was restored (set from hidden to visible).
+  """
+  restorationReason: String
+}
+
+type Query {
+  """
+  Looks up and returns a Shareable List with a given external ID for any user.
+  """
+  searchShareableList(externalId: ID!): ShareableListComplete
+}
+
+"""
+Input data for removing (moderating) a ShareableList
+"""
+input ModerateShareableListInput {
+  externalId: ID!
+  moderationStatus: ShareableListModerationStatus!
+  moderationReason: ShareableListModerationReason
+  moderationDetails: String
+  restorationReason: String
+}
+
+type Mutation {
+  """
+  Removes (moderates) a Shareable List.
+  """
+  moderateShareableList(
+    data: ModerateShareableListInput!
+  ): ShareableListComplete
+}

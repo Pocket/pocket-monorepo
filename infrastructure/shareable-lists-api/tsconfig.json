@@ -1,0 +1,14 @@
+{
+  "extends": "tsconfig/cdktf.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "exclude": ["node_modules"],
+  "include": [
+    "src/**/*.ts",
+    "src/config",
+    "src/files/nodejs/node_modules/jmespath/*.js",
+    "src/files/nodejs/node_modules/synthetic/*.ts"
+  ]
+}

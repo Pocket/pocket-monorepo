@@ -1,0 +1,16 @@
+{
+  "extends": "tsconfig/graphql.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/.pnpm/*",
+    "src/**/*.integration.ts",
+    "src/**/*.spec.ts"
+  ],
+  "include": ["src/**/*.ts", "src/config"],
+  "files": ["node_modules/jest-extended/types/index.d.ts"]
+}

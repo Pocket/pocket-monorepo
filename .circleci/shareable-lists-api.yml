@@ -1,0 +1,267 @@
+
+workflows:
+  shareable-lists-api:
+    jobs:
+
+      ######
+      # Every PR Jobs
+      ######
+      - apollo:
+          name: shareable-lists-api_apollo
+          fed_graph_name: pocket-client-api
+          graph_name: shareable-lists-api
+          schema_file_path: servers/shareable-lists-api/schema-client-api.graphql
+          prod_graph_url: https://shareablelistsapi.readitlater.com
+          dev_graph_url: https://shareablelistsapi.getpocket.dev
+          build_command: pnpm run --filter=shareable-lists-api... build
+
+      - apollo:
+          name: shareable-lists-api_apollo_admin
+          fed_graph_name: pocket-admin-api
+          graph_name: shareable-lists-api
+          schema_file_path: servers/shareable-lists-api/schema-admin-api.graphql
+          prod_graph_url: https://shareablelistsapi.readitlater.com
+          dev_graph_url: https://shareablelistsapi.getpocket.dev
+          build_command: pnpm run --filter=shareable-lists-api... build
+          apollo_key_env: APOLLO_ADMIN_KEY
+
+      - test_integrations:
+          <<: *not_dev_main
+          for: shareable_lists_api
+          context: pocket
+          name: shareable-lists-api_test_integrations
+          scope: shareable-lists-api
+
+      # Try building the ECS docker image on each branch
+      - build_image:
+          <<: *not_dev_main
+          context: pocket
+          for: shareable_lists_api
+          name: shareable-lists-api_build_docker
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          repo-name: shareablelistsapi-dev-app
+          ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
+          push: false
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=shareable-lists-api --build-arg APP_PATH=servers/shareable-lists-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=shareable-lists-api --build-arg PORT=4029 
+
+      - build_lambda:
+          <<: *not_dev_main
+          context: pocket
+          for: shareable_lists_api
+          name: shareable-lists-api_build_lambda
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          scope: shareable-lists-api-events-lambda
+          sentry_project_name: shareable-lists-api
+          sentry_env: development
+          sentry_org: pocket
+
+      - infrastructure:
+          <<: *not_dev_main
+          context: pocket
+          for: shareable_lists_api
+          name: shareable-lists-api_infrastructure_plan_prod
+          scope: shareable-lists-api-cdk
+          stack-output-path: infrastructure/shareable-lists-api/cdktf.out/stacks/shareable-lists-api
+          resource-class: pocket/default-prod
+          workspace: Prod
+          dev: false
+          apply: false
+
+      ######
+      # Dev Branch Deployment (Dev Environment)
+      ######
+
+      - infrastructure:
+          <<: *only_dev
+          context: pocket
+          for: shareable_lists_api
+          name: shareable-lists-api_infrastructure_apply_dev
+          scope: shareable-lists-api-cdk
+          stack-output-path: infrastructure/shareable-lists-api/cdktf.out/stacks/shareable-lists-api
+          resource-class: pocket/default-dev
+          workspace: Dev
+          apply: true
+          dev: true
+
+      # Build & Deploy the Dev Docker Image
+      - build_image:
+          <<: *only_dev
+          context: pocket
+          for: shareable_lists_api
+          name: shareable-lists-api_build_docker_dev
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          repo-name: shareablelistsapi-dev-app
+          ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
+          push: true
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=shareable-lists-api --build-arg APP_PATH=servers/shareable-lists-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=shareable-lists-api --build-arg PORT=4029
+          requires:
+            - shareable-lists-api_infrastructure_apply_dev
+
+      - code_deploy_ecs:
+          <<: *only_dev
+          context: pocket
+          for: shareable_lists_api
+          name: shareable-lists-api_code_deploy_ecs_dev
+          resource-class: pocket/default-dev
+          codedeploy-app-name: ShareableListsApi-Dev-ECS
+          codedeploy-group-name: ShareableListsApi-Dev-ECS
+          requires:
+            - shareable-lists-api_build_docker_dev
+
+      - build_lambda:
+          <<: *only_dev
+          context: pocket
+          for: shareable_lists_api
+          name: shareable-lists-api_events_build_lambda_dev
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          scope: shareable-lists-api-events-lambda
+          sentry_project_name: shareable-lists-api
+          sentry_env: development
+          sentry_org: pocket
+          s3-bucket: pocket-shareablelistsapi-dev-sqs-event-consumer
+          requires:
+            - shareable-lists-api_infrastructure_apply_dev
+
+      - code_deploy_lambda:
+          <<: *only_dev
+          context: pocket
+          for: shareable_lists_api
+          name: shareable-lists-api_events_code_deploy_lambda_dev
+          resource-class: pocket/default-dev
+          codedeploy-app-name: ShareableListsApi-Dev-Sqs-Event-Consumer-Lambda
+          codedeploy-group-name: ShareableListsApi-Dev-Sqs-Event-Consumer-Lambda
+          function-name: ShareableListsApi-Dev-Sqs-Event-Consumer-Function
+          s3-bucket: pocket-shareablelistsapi-dev-sqs-event-consumer
+          requires:
+            - shareable-lists-api_events_build_lambda_dev
+
+      # Notify sentry of dev deployment
+      - sentry_release_notification:
+          <<: *only_dev
+          name: shareable-lists-api_sentry-release-notification-dev
+          context: pocket
+          for: shareable_lists_api
+          sentry_project_name: shareable-lists-api
+          sentry_env: development
+          sentry_org: pocket
+          requires:
+            - shareable-lists-api_code_deploy_ecs_dev
+            - shareable-lists-api_events_code_deploy_lambda_dev
+
+      # Setup params we may use in Lambdas
+      - setup_deploy_params:
+          <<: *only_dev
+          name: shareable-lists-api_deploy-params-dev
+          aws_access_key_id: Dev_AWS_ACCESS_KEY
+          aws_secret_access_key: Dev_AWS_SECRET_ACCESS_KEY
+          context: pocket
+          env: Dev
+          service_name: ShareableListsApi
+          requires:
+            - shareable-lists-api_code_deploy_ecs_dev
+            - shareable-lists-api_events_code_deploy_lambda_dev
+
+      ######
+      # Main Branch Deployment (Prod Environment)
+      ######
+      - infrastructure:
+          <<: *only_main
+          context: pocket
+          for: shareable_lists_api
+          name: shareable-lists-api_infrastructure_apply_prod
+          scope: shareable-lists-api-cdk
+          stack-output-path: infrastructure/shareable-lists-api/cdktf.out/stacks/shareable-lists-api
+          resource-class: pocket/default-prod
+          workspace: Prod
+          apply: true
+          dev: false
+
+      # Build & Deploy the Prod Docker Image
+      - build_image:
+          <<: *only_main
+          context: pocket
+          for: shareable_lists_api
+          name: shareable-lists-api_build_docker_prod
+          aws-access-key-id: Prod_AWS_ACCESS_KEY
+          aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
+          aws-region: Prod_AWS_DEFAULT_REGION
+          repo-name: shareablelistsapi-prod-app
+          ecr-url: 996905175585.dkr.ecr.us-east-1.amazonaws.com
+          push: true
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=shareable-lists-api --build-arg APP_PATH=servers/shareable-lists-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=shareable-lists-api --build-arg PORT=4029
+          requires:
+            - shareable-lists-api_infrastructure_apply_prod
+
+      - code_deploy_ecs:
+          <<: *only_main
+          context: pocket
+          for: shareable_lists_api
+          name: shareable-lists-api_code_deploy_ecs_prod
+          resource-class: pocket/default-prod
+          codedeploy-app-name: ShareableListsApi-Prod-ECS
+          codedeploy-group-name: ShareableListsApi-Prod-ECS
+          requires:
+            - shareable-lists-api_build_docker_prod
+
+      - build_lambda:
+          <<: *only_main
+          context: pocket
+          for: shareable_lists_api
+          name: shareable-lists-api_events_build_lambda_prod
+          aws-access-key-id: Prod_AWS_ACCESS_KEY
+          aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
+          aws-region: Prod_AWS_DEFAULT_REGION
+          scope: shareable-lists-api-events-lambda
+          sentry_project_name: shareable-lists-api
+          sentry_env: production
+          sentry_org: pocket
+          s3-bucket: pocket-shareablelistsapi-prod-sqs-event-consumer
+          requires:
+            - shareable-lists-api_infrastructure_apply_prod
+
+      - code_deploy_lambda:
+          <<: *only_main
+          context: pocket
+          for: shareable_lists_api
+          name: shareable-lists-api_events_code_deploy_lambda_prod
+          resource-class: pocket/default-prod
+          codedeploy-app-name: ShareableListsApi-Prod-Sqs-Event-Consumer-Lambda
+          codedeploy-group-name: ShareableListsApi-Prod-Sqs-Event-Consumer-Lambda
+          function-name: ShareableListsApi-Prod-Sqs-Event-Consumer-Function
+          s3-bucket: pocket-shareablelistsapi-prod-sqs-event-consumer
+          requires:
+            - shareable-lists-api_events_build_lambda_prod
+
+      # Notify sentry of main deployment
+      - sentry_release_notification:
+          <<: *only_main
+          name: shareable-lists-api_sentry-release-notification-prod
+          context: pocket
+          for: shareable_lists_api
+          sentry_project_name: shareable-lists-api
+          sentry_env: production
+          sentry_org: pocket
+          requires:
+            - shareable-lists-api_code_deploy_ecs_prod
+            - shareable-lists-api_events_code_deploy_lambda_prod
+
+      # Setup params we may use in Lambdas
+      - setup_deploy_params:
+          <<: *only_main
+          name: shareable-lists-api_deploy-params-prod
+          aws_access_key_id: Prod_AWS_ACCESS_KEY
+          aws_secret_access_key: Prod_AWS_SECRET_ACCESS_KEY
+          context: pocket
+          env: Prod
+          service_name: ShareableListsApi
+          requires:
+            - shareable-lists-api_code_deploy_ecs_prod
+            - shareable-lists-api_events_code_deploy_lambda_prod
