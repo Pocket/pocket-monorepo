@@ -6,8 +6,8 @@
   "dependencies": {
     "@sendgrid/client": "^7.4.3",
     "@sentry/serverless": "7.94.1",
-    "@aws-sdk/client-firehose": "3.490.0",
-    "@aws-sdk/client-cloudwatch": "3.490.0",
+    "@aws-sdk/client-firehose": "3.496.0",
+    "@aws-sdk/client-cloudwatch": "3.496.0",
     "tslib": "2.6.2"
   },
   "devDependencies": {
