@@ -17,7 +17,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-sqs": "3.490.0",
+    "@aws-sdk/client-sqs": "3.496.0",
     "@sentry/node": "7.94.1",
     "@sentry/tracing": "7.94.1",
     "@snowplow/node-tracker": "3.19.0",

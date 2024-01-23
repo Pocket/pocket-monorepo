@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-lambda": "3.490.0",
+    "@aws-sdk/client-lambda": "3.496.0",
     "@sentry/serverless": "7.94.1",
     "fetch-retry": "^5.0.2",
     "isomorphic-fetch": "^3.0.0",
