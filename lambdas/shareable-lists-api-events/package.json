@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@sentry/serverless": "7.93.0",
+    "@sentry/serverless": "7.94.1",
     "fetch-retry": "^5.0.2",
     "isomorphic-fetch": "^3.0.0",
     "tslib": "2.6.2"

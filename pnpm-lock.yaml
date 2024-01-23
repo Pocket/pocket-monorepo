@@ -213,8 +213,8 @@ importers:
         specifier: 3.494.0
         version: 3.494.0(@aws-sdk/client-dynamodb@3.494.0)
       '@sentry/serverless':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       exponential-backoff:
         specifier: ^3.1.0
         version: 3.1.0
@@ -262,8 +262,8 @@ importers:
         specifier: 3.490.0
         version: 3.490.0
       '@sentry/serverless':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       fetch-retry:
         specifier: ^5.0.2
         version: 5.0.4
@@ -317,8 +317,8 @@ importers:
         specifier: 3.494.0
         version: 3.494.0(@aws-sdk/client-dynamodb@3.494.0)
       '@sentry/serverless':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       exponential-backoff:
         specifier: ^3.1.0
         version: 3.1.0
@@ -354,8 +354,8 @@ importers:
         specifier: 3.490.0
         version: 3.490.0
       '@sentry/serverless':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       node-fetch:
         specifier: 2.7.0
         version: 2.7.0
@@ -394,8 +394,8 @@ importers:
         specifier: 3.490.0
         version: 3.490.0
       '@sentry/serverless':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       jsonwebtoken:
         specifier: ^9.0.0
         version: 9.0.2
@@ -452,8 +452,8 @@ importers:
         specifier: 3.490.0
         version: 3.490.0
       '@sentry/serverless':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       jsonwebtoken:
         specifier: ^9.0.0
         version: 9.0.2
@@ -507,8 +507,8 @@ importers:
         specifier: ^7.4.3
         version: 7.7.0
       '@sentry/serverless':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       tslib:
         specifier: 2.6.2
         version: 2.6.2
@@ -532,8 +532,8 @@ importers:
   lambdas/shareable-lists-api-events:
     dependencies:
       '@sentry/serverless':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       fetch-retry:
         specifier: ^5.0.2
         version: 5.0.6
@@ -578,8 +578,8 @@ importers:
         specifier: ^3.112.0
         version: 3.485.0
       '@sentry/serverless':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       fetch-retry:
         specifier: ^5.0.2
         version: 5.0.6
@@ -642,8 +642,8 @@ importers:
         specifier: workspace:*
         version: link:../ts-logger
       '@sentry/node':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       apollo-server-cache-redis:
         specifier: 3.3.1
         version: 3.3.1
@@ -917,11 +917,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       '@sentry/tracing':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       express:
         specifier: 4.18.2
         version: 4.18.2
@@ -942,8 +942,8 @@ importers:
         version: 9.8.0
     devDependencies:
       '@sentry/types':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       '@types/jest':
         specifier: 29.5.11
         version: 29.5.11
@@ -996,11 +996,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       '@sentry/tracing':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       cors:
         specifier: 2.8.5
         version: 2.8.5
@@ -1030,8 +1030,8 @@ importers:
         version: 3.3.7
     devDependencies:
       '@sentry/types':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       '@types/chance':
         specifier: 1.1.6
         version: 1.1.6
@@ -1078,8 +1078,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/apollo-utils
       '@sentry/node':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       cors:
         specifier: 2.8.5
         version: 2.8.5
@@ -1160,11 +1160,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       '@sentry/tracing':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       axios:
         specifier: 1.6.5
         version: 1.6.5
@@ -1230,11 +1230,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       '@sentry/tracing':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       '@snowplow/node-tracker':
         specifier: 3.19.0
         version: 3.19.0
@@ -1348,11 +1348,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       '@sentry/tracing':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       apollo-datasource:
         specifier: 3.3.2
         version: 3.3.2
@@ -1451,8 +1451,8 @@ importers:
         specifier: 4.12.0
         version: 4.12.0(prisma@4.16.2)
       '@sentry/node':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       cors:
         specifier: 2.8.5
         version: 2.8.5
@@ -1524,11 +1524,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       '@sentry/tracing':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       '@snowplow/node-tracker':
         specifier: 3.19.0
         version: 3.19.0
@@ -1585,11 +1585,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       '@sentry/tracing':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       dataloader:
         specifier: 2.2.2
         version: 2.2.2
@@ -1616,8 +1616,8 @@ importers:
         specifier: 8.3.1
         version: 8.3.1
       '@sentry/types':
-        specifier: 7.93.0
-        version: 7.93.0
+        specifier: 7.94.1
+        version: 7.94.1
       '@types/jest':
         specifier: 29.5.11
         version: 29.5.11
@@ -4261,7 +4261,7 @@ packages:
     dependencies:
       '@inquirer/type': 1.1.5
       '@types/mute-stream': 0.0.1
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
       '@types/wrap-ansi': 3.0.0
       ansi-escapes: 4.3.2
       chalk: 4.1.2
@@ -4281,7 +4281,7 @@ packages:
     dependencies:
       '@inquirer/type': 1.1.5
       '@types/mute-stream': 0.0.4
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
       '@types/wrap-ansi': 3.0.0
       ansi-escapes: 4.3.2
       chalk: 4.1.2
@@ -4414,7 +4414,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
       chalk: 4.1.2
       jest-message-util: 29.7.0
       jest-util: 29.7.0
@@ -4435,14 +4435,14 @@ packages:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       ci-info: 3.9.0
       exit: 0.1.2
       graceful-fs: 4.2.11
       jest-changed-files: 29.7.0
-      jest-config: 29.7.0(@types/node@20.11.0)(ts-node@10.9.2)
+      jest-config: 29.7.0(@types/node@20.11.5)(ts-node@10.9.2)
       jest-haste-map: 29.7.0
       jest-message-util: 29.7.0
       jest-regex-util: 29.6.3
@@ -4530,7 +4530,7 @@ packages:
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
       '@jridgewell/trace-mapping': 0.3.20
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
       chalk: 4.1.2
       collect-v8-coverage: 1.0.2
       exit: 0.1.2
@@ -4618,7 +4618,7 @@ packages:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
       '@types/yargs': 17.0.32
       chalk: 4.1.2
     dev: true
@@ -5474,13 +5474,13 @@ packages:
       '@sentry/utils': 7.92.0
     dev: false
 
-  /@sentry-internal/tracing@7.93.0:
-    resolution: {integrity: sha512-DjuhmQNywPp+8fxC9dvhGrqgsUb6wI/HQp25lS2Re7VxL1swCasvpkg8EOYP4iBniVQ86QK0uITkOIRc5tdY1w==}
+  /@sentry-internal/tracing@7.94.1:
+    resolution: {integrity: sha512-znxCdrz7tPXm9Bwoe46PW72Zr0Iv7bXT6+b2LNg5fxWiCQVBbQFrMuVvtXEmHxeRRJVEgTh/4TdulB7wrtQIUQ==}
     engines: {node: '>=8'}
     dependencies:
-      '@sentry/core': 7.93.0
-      '@sentry/types': 7.93.0
-      '@sentry/utils': 7.93.0
+      '@sentry/core': 7.94.1
+      '@sentry/types': 7.94.1
+      '@sentry/utils': 7.94.1
     dev: false
 
   /@sentry/core@7.64.0:
@@ -5508,12 +5508,12 @@ packages:
       '@sentry/utils': 7.92.0
     dev: false
 
-  /@sentry/core@7.93.0:
-    resolution: {integrity: sha512-vZQSUiDn73n+yu2fEcH+Wpm4GbRmtxmnXnYCPgM6IjnXqkVm3awWAkzrheADblx3kmxrRiOlTXYHw9NTWs56fg==}
+  /@sentry/core@7.94.1:
+    resolution: {integrity: sha512-4sjiMnkbGpv9O98YHVZe7fHNwwdYl+zLoCOoEOadtrJ1EYYvnK/MSixN2HJF7g/0s22xd4xY958QyNIRVR+Iiw==}
     engines: {node: '>=8'}
     dependencies:
-      '@sentry/types': 7.93.0
-      '@sentry/utils': 7.93.0
+      '@sentry/types': 7.94.1
+      '@sentry/utils': 7.94.1
     dev: false
 
   /@sentry/node@7.64.0:
@@ -5558,38 +5558,33 @@ packages:
       - supports-color
     dev: false
 
-  /@sentry/node@7.93.0:
-    resolution: {integrity: sha512-nUXPCZQm5Y9Ipv7iWXLNp5dbuyi1VvbJ3RtlwD7utgsNkRYB4ixtKE9w2QU8DZZAjaEF6w2X94OkYH6C932FWw==}
+  /@sentry/node@7.94.1:
+    resolution: {integrity: sha512-30nyrfVbY1vNoWg5ptGW+soykU532VvKLuXiKty3SKEXjp5bv23JrCcVtuwp9KrW4josHOJbxZUqeNni85YplQ==}
     engines: {node: '>=8'}
     dependencies:
-      '@sentry-internal/tracing': 7.93.0
-      '@sentry/core': 7.93.0
-      '@sentry/types': 7.93.0
-      '@sentry/utils': 7.93.0
-      https-proxy-agent: 5.0.1
-    transitivePeerDependencies:
-      - supports-color
+      '@sentry-internal/tracing': 7.94.1
+      '@sentry/core': 7.94.1
+      '@sentry/types': 7.94.1
+      '@sentry/utils': 7.94.1
     dev: false
 
-  /@sentry/serverless@7.93.0:
-    resolution: {integrity: sha512-YZNiH8X0kddvFfIwi7R3Oh4/X/rf87qb+f1kcqGsZ2IemRyBFSdFQekNIV00uS/VgxK94+TJfrvEVKsKp8sAAQ==}
+  /@sentry/serverless@7.94.1:
+    resolution: {integrity: sha512-9Z3tcEy4gNiuVKtBG26O1uteRgeCmMxzHmI3xqsGPoXwGjsU/X84vVUxhwPu8d4L/WivljfplkRpR1qqGorFSg==}
     engines: {node: '>=10'}
     dependencies:
-      '@sentry/core': 7.93.0
-      '@sentry/node': 7.93.0
-      '@sentry/types': 7.93.0
-      '@sentry/utils': 7.93.0
+      '@sentry/core': 7.94.1
+      '@sentry/node': 7.94.1
+      '@sentry/types': 7.94.1
+      '@sentry/utils': 7.94.1
       '@types/aws-lambda': 8.10.130
       '@types/express': 4.17.16
-    transitivePeerDependencies:
-      - supports-color
     dev: false
 
-  /@sentry/tracing@7.93.0:
-    resolution: {integrity: sha512-n4XbAQ7e098Jzv4ZvpXAsFgM+XFfjhKci18r7s3UfDMnrB4FTCwhHZoeiygO8PZhB944mEFbNXNFhHkb8nTDbA==}
+  /@sentry/tracing@7.94.1:
+    resolution: {integrity: sha512-/mkIZNanqqtQt9+vmuIYMiT7/XAhkkMUgAJ68kFt640QxwgHbTvV7f7gsQRXtZKv3zZCd+nmNfXPNeF6PIek7Q==}
     engines: {node: '>=8'}
     dependencies:
-      '@sentry-internal/tracing': 7.93.0
+      '@sentry-internal/tracing': 7.94.1
     dev: false
 
   /@sentry/types@7.64.0:
@@ -5607,8 +5602,8 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
-  /@sentry/types@7.93.0:
-    resolution: {integrity: sha512-UnzUccNakhFRA/esWBWP+0v7cjNg+RilFBQC03Mv9OEMaZaS29zSbcOGtRzuFOXXLBdbr44BWADqpz3VW0XaNw==}
+  /@sentry/types@7.94.1:
+    resolution: {integrity: sha512-A7CdEXFSgGyWv2BT2p9cAvJfb+dypvOtsY8ZvZvdPLUa7kqCV7ndhURUqKjvMBzsL2GParHn3ehDTl2eVc7pvA==}
     engines: {node: '>=8'}
 
   /@sentry/utils@7.64.0:
@@ -5633,11 +5628,11 @@ packages:
       '@sentry/types': 7.92.0
     dev: false
 
-  /@sentry/utils@7.93.0:
-    resolution: {integrity: sha512-Iovj7tUnbgSkh/WrAaMrd5UuYjW7AzyzZlFDIUrwidsyIdUficjCG2OIxYzh76H6nYIx9SxewW0R54Q6XoB4uA==}
+  /@sentry/utils@7.94.1:
+    resolution: {integrity: sha512-gQ2EaMpUU1gGH3S+iqpog9gkXbCo8tlhGYA9a5FUtEtER3D3OAlp8dGFwClwzWDAwzjdLT1+X55zmEptU1cP/A==}
     engines: {node: '>=8'}
     dependencies:
-      '@sentry/types': 7.93.0
+      '@sentry/types': 7.94.1
     dev: false
 
   /@sideway/address@4.1.4:
@@ -5679,7 +5674,7 @@ packages:
     resolution: {integrity: sha512-DTuBFbqu4gGfajREEMrkq5jBhcnskinhr4+AnfJEk48zhVeEv3XnUKGIX98B74kxhYsIMfApGGySTn7V3b5yBA==}
     engines: {node: '>= 12.13.0', npm: '>= 6.12.0'}
     dependencies:
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
     dev: false
 
   /@slack/types@2.11.0:
@@ -5694,7 +5689,7 @@ packages:
       '@slack/logger': 3.0.0
       '@slack/types': 2.11.0
       '@types/is-stream': 1.1.0
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
       axios: 1.6.5
       eventemitter3: 3.1.2
       form-data: 2.5.1
@@ -6139,7 +6134,7 @@ packages:
   /@types/accepts@1.3.7:
     resolution: {integrity: sha512-Pay9fq2lM2wXPWbteBsRAGiWH2hig4ZE2asK+mm7kUzlxRTfL961rj89I6zV/E3PcIkDqyuBEcMxFT7rccugeQ==}
     dependencies:
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
     dev: true
 
   /@types/aws-lambda@8.10.130:
@@ -6178,14 +6173,14 @@ packages:
     resolution: {integrity: sha512-fB3Zu92ucau0iQ0JMCFQE7b/dv8Ot07NI3KaZIkIUNXq82k4eBAqUaneXfleGY9JWskeS9y+u0nXMyspcuQrCg==}
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
 
   /@types/cacheable-request@6.0.3:
     resolution: {integrity: sha512-IQ3EbTzGxIigb1I3qPZc1rWJnH0BmSKv5QYTalEwweFvyBDLSAe24zP0le/hyi7ecGfZVlIVAg4BZqb8WBwKqw==}
     dependencies:
       '@types/http-cache-semantics': 4.0.4
       '@types/keyv': 3.1.4
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
       '@types/responselike': 1.0.3
     dev: false
 
@@ -6196,7 +6191,7 @@ packages:
   /@types/connect@3.4.38:
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
     dependencies:
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
 
   /@types/content-disposition@0.5.8:
     resolution: {integrity: sha512-QVSSvno3dE0MgO76pJhmv4Qyi/j0Yk9pBp0Y7TJ2Tlj+KCgJWY6qX7nnxCOLkZ3VYRSIk1WTxCvwUSdx6CCLdg==}
@@ -6212,7 +6207,7 @@ packages:
       '@types/connect': 3.4.38
       '@types/express': 4.17.16
       '@types/keygrip': 1.0.6
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
     dev: true
 
   /@types/cors@2.8.17:
@@ -6224,8 +6219,8 @@ packages:
   /@types/express-serve-static-core@4.17.41:
     resolution: {integrity: sha512-OaJ7XLaelTgrvlZD8/aa0vvvxZdUmlCn6MtWeB7TkiKW70BQLc9XEPpDLPdbo52ZhXUCrznlWdCHWxJWtdyajA==}
     dependencies:
-      '@types/node': 20.11.0
-      '@types/qs': 6.9.10
+      '@types/node': 20.11.5
+      '@types/qs': 6.9.11
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
 
@@ -6255,7 +6250,7 @@ packages:
   /@types/graceful-fs@4.1.9:
     resolution: {integrity: sha512-olP3sd1qOEe5dXTSaFvQG+02VdRXcdytWLAZsAq1PecU8uqQAhkrnbli7DagjtXKW/Bl7YJbUsa8MPcuc8LHEQ==}
     dependencies:
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
     dev: true
 
   /@types/graphql-depth-limit@1.1.6:
@@ -6297,7 +6292,7 @@ packages:
   /@types/is-stream@1.1.0:
     resolution: {integrity: sha512-jkZatu4QVbR60mpIzjINmtS1ZF4a/FqdTUTBeQDVOQ2PYyidtwFKr0B5G6ERukKwliq+7mIXvxyppwzG5EgRYg==}
     dependencies:
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
     dev: false
 
   /@types/isomorphic-fetch@0.0.36:
@@ -6350,7 +6345,7 @@ packages:
   /@types/keyv@3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
     dev: false
 
   /@types/koa-compose@3.2.8:
@@ -6411,13 +6406,13 @@ packages:
   /@types/mute-stream@0.0.1:
     resolution: {integrity: sha512-0yQLzYhCqGz7CQPE3iDmYjhb7KMBFOP+tBkyw+/Y2YyDI5wpS7itXXxneN1zSsUwWx3Ji6YiVYrhAnpQGS/vkw==}
     dependencies:
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
     dev: false
 
   /@types/mute-stream@0.0.4:
     resolution: {integrity: sha512-CPM9nzrCPPJHQNA9keH9CVkVI+WR5kMa+7XEs5jcGQ0VoAGnLv242w8lIVgwAEfmE4oufJRaTc9PNLQl0ioAow==}
     dependencies:
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
     dev: false
 
   /@types/node-fetch@2.6.4:
@@ -6448,7 +6443,6 @@ packages:
     resolution: {integrity: sha512-g557vgQjUUfN76MZAN/dt1z3dzcUsimuysco0KeluHgrPdJXkP/XdAURgyO2W9fZWHRtRBiVKzKn8vyOAwlG+w==}
     dependencies:
       undici-types: 5.26.5
-    dev: true
 
   /@types/passport-jwt@4.0.0:
     resolution: {integrity: sha512-m32144UaQENieShQDWVQ8w+CVAzCV/pDahICUlQvmqLOePGglQaMRQ28I7fKnRMFLNwVP4eWssOtcQ0kLe1vww==}
@@ -6470,9 +6464,6 @@ packages:
       '@types/express': 4.17.16
     dev: true
 
-  /@types/qs@6.9.10:
-    resolution: {integrity: sha512-3Gnx08Ns1sEoCrWssEgTSJs/rsT2vhGP+Ja9cnnk9k4ALxinORlQneLXFeFKOTJMOeZUFD1s7w+w2AphTpvzZw==}
-
   /@types/qs@6.9.11:
     resolution: {integrity: sha512-oGk0gmhnEJK4Yyk+oI7EfXsLayXatCWPHary1MtcmbAifkobT9cM9yutG/hZKIseOU0MqbIwQ/u2nn/Gb+ltuQ==}
 
@@ -6482,7 +6473,7 @@ packages:
   /@types/responselike@1.0.3:
     resolution: {integrity: sha512-H/+L+UkTV33uf49PH5pCAUBVPNj2nDBXTN+qS1dOwyyg24l3CcicicCA7ca+HMvJBZcFgl5r8e+RR6elsb4Lyw==}
     dependencies:
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
     dev: false
 
   /@types/retry@0.12.0:
@@ -6497,14 +6488,14 @@ packages:
     resolution: {integrity: sha512-x2EM6TJOybec7c52BX0ZspPodMsQUd5L6PRwOunVyVUhXiBSKf3AezDL8Dgvgt5o0UfKNfuA0eMLr2wLT4AiBA==}
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
 
   /@types/serve-static@1.15.5:
     resolution: {integrity: sha512-PDRk21MnK70hja/YF8AHfC7yIsiQHn1rcXx7ijCFBX/k+XQJhQT/gw3xekXKJvx+5SXaMMS8oqQy09Mzvz2TuQ==}
     dependencies:
       '@types/http-errors': 2.0.4
       '@types/mime': 3.0.4
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
 
   /@types/shimmer@1.0.5:
     resolution: {integrity: sha512-9Hp0ObzwwO57DpLFF0InUjUm/II8GmKAvzbefxQTihCb7KI6yc9yzf0nLc4mVdby5N4DRCgQM2wCup9KTieeww==}
@@ -6566,7 +6557,7 @@ packages:
     resolution: {integrity: sha512-oJoftv0LSuaDZE3Le4DbKX+KS9G36NzOeSap90UIK0yMA/NhKJhqlSGtNDORNRaIbQfzjXDrQa0ytJ6mNRGz/Q==}
     requiresBuild: true
     dependencies:
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
     dev: false
     optional: true
 
@@ -8178,7 +8169,7 @@ packages:
       chalk: 4.1.2
       exit: 0.1.2
       graceful-fs: 4.2.11
-      jest-config: 29.7.0(@types/node@20.11.0)(ts-node@10.9.2)
+      jest-config: 29.7.0(@types/node@20.11.0)
       jest-util: 29.7.0
       prompts: 2.4.2
     transitivePeerDependencies:
@@ -10771,7 +10762,7 @@ packages:
       '@jest/expect': 29.7.0
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
       chalk: 4.1.2
       co: 4.6.0
       dedent: 1.5.1
@@ -10837,7 +10828,7 @@ packages:
       create-jest: 29.7.0(@types/node@20.11.0)
       exit: 0.1.2
       import-local: 3.1.0
-      jest-config: 29.7.0(@types/node@20.11.0)(ts-node@10.9.2)
+      jest-config: 29.7.0(@types/node@20.11.0)
       jest-util: 29.7.0
       jest-validate: 29.7.0
       yargs: 17.7.2
@@ -10876,7 +10867,7 @@ packages:
       - ts-node
     dev: true
 
-  /jest-config@29.7.0(@types/node@20.11.0)(ts-node@10.9.2):
+  /jest-config@29.7.0(@types/node@20.11.0):
     resolution: {integrity: sha512-uXbpfeQ7R6TZBqI3/TxCU4q4ttk3u0PJeC+E0zbfSoSjq6bJ7buBPxzQPL0ifrkY4DNu4JUdk0ImlBUYi840eQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     peerDependencies:
@@ -10911,7 +10902,6 @@ packages:
       pretty-format: 29.7.0
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.9.2(@types/node@20.11.5)(typescript@5.3.3)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -10993,7 +10983,7 @@ packages:
       '@jest/environment': 29.7.0
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
       jest-mock: 29.7.0
       jest-util: 29.7.0
     dev: true
@@ -11023,7 +11013,7 @@ packages:
     dependencies:
       '@jest/types': 29.6.3
       '@types/graceful-fs': 4.1.9
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
@@ -11137,7 +11127,7 @@ packages:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
       chalk: 4.1.2
       emittery: 0.13.1
       graceful-fs: 4.2.11
@@ -11168,7 +11158,7 @@ packages:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
       chalk: 4.1.2
       cjs-module-lexer: 1.2.3
       collect-v8-coverage: 1.0.2
@@ -11245,7 +11235,7 @@ packages:
     dependencies:
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.13.1
@@ -11257,7 +11247,7 @@ packages:
     resolution: {integrity: sha512-eIz2msL/EzL9UFTFFx7jBTkeZfku0yUAyZZZmJ93H2TYEiroIx2PQjEXcwYtYl8zXCxb+PAmA2hLIt/6ZEkPHw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      '@types/node': 20.11.0
+      '@types/node': 20.11.5
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
