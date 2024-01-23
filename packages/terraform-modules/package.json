@@ -8,7 +8,7 @@
   "scripts": {
     "build:dev": "rm -rf dist && NODE_ENV=development npm run synth",
     "build": "tsup src/index.ts --format cjs,esm --dts",
-    "synth": "cdktf synth",
+    "example:synth": "cdktf synth",
     "compile": "tsc --pretty",
     "test:watch": "npm test -- --watch --watch-extensions ts -R min --watch-files src",
     "test": "jest --ci --maxWorkers=4 --logHeapUsage",
