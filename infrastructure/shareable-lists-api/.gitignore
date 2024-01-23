@@ -1,0 +1,4 @@
+.terraform/
+cdktf.out/
+.gen/
+node_modules/*

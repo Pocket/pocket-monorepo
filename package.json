@@ -1,6 +1,8 @@
 {
   "private": true,
   "scripts": {
+    "prebuild": "dotenv -- turbo run prebuild",
+    "pretest": "dotenv -- turbo run pretest",
     "preinstall": "npx only-allow pnpm",
     "build": "dotenv -- turbo run build",
     "dev": "dotenv -- turbo run dev --concurrency 50",

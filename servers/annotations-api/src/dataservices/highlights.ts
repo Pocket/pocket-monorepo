@@ -163,7 +163,7 @@ export class HighlightsDataService {
   private async _create(
     highlightInput: HighlightInput[],
     trx: Knex.Transaction,
-    fromBatch: boolean = false
+    fromBatch: boolean = false,
   ) {
     const formattedHighlights = highlightInput.map((highlight) =>
       this.toDbEntity(highlight),
@@ -283,7 +283,7 @@ export class HighlightsDataService {
     highlightId: string,
     annotation: HighlightEntity,
     trx: Knex.Transaction,
-    fromBatch: boolean = false
+    fromBatch: boolean = false,
   ) {
     // This will throw and error if it doesn't like you
     await this.writeDb<HighlightEntity>('user_annotations')

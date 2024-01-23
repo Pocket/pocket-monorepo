@@ -4,25 +4,31 @@
   "globalDotEnv": [".env", ".env.example"],
   "pipeline": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["prebuild", "^build"],
       "outputs": ["dist/**"]
     },
     "synth": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "build"],
       "outputs": ["cdktf.out/**"]
     },
     "lint": {},
     "format": {},
     "test": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build", "build"]
     },
     "test-integrations": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "build", "pretest"],
       "cache": false
     },
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "prebuild": {
+      "cache": false
+    },
+    "pretest": {
+      "cache": false
     }
   }
 }

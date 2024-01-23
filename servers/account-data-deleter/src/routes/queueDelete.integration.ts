@@ -89,10 +89,10 @@ describe('enqueueTablesForDeletion', () => {
         ...base,
         // Ordering of the primary key columns doens't matter
         primaryKeyNames: expect.toIncludeSameMembers([
-        'user_id',
-        'grouping_id',
-        'tag',
-      ]),
+          'user_id',
+          'grouping_id',
+          'tag',
+        ]),
         tableName: 'readitla_ril-tmp.suggested_tags_user_grouping_tags',
       };
       const userRecData = {
