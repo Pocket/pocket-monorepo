@@ -3,7 +3,7 @@ import { print } from 'graphql';
 import request from 'supertest';
 import { ApolloServer } from '@apollo/server';
 import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
-import { List, ListItem, ModerationStatus, PrismaClient } from '@prisma/client';
+import { List, ListItem, ModerationStatus, PrismaClient } from '.prisma/client';
 import { startServer } from '../../../express';
 import { IPublicContext } from '../../context';
 import { client } from '../../../database/client';

@@ -1,4 +1,4 @@
-import { Visibility, ModerationStatus, Prisma } from '@prisma/client';
+import { Visibility, ModerationStatus, Prisma } from '.prisma/client';
 
 /**
  * Source of truth: https://getpocket.atlassian.net/wiki/spaces/PE/pages/2584150049/Pocket+Shared+Data

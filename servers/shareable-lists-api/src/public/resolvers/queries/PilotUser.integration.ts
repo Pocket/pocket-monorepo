@@ -1,5 +1,5 @@
 import { ApolloServer } from '@apollo/server';
-import { PilotUser, PrismaClient } from '@prisma/client';
+import { PilotUser, PrismaClient } from '.prisma/client';
 import { print } from 'graphql';
 import request from 'supertest';
 import { IPublicContext } from '../../context';

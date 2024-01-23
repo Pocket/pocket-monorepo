@@ -83,12 +83,16 @@ COPY --from=setup /app/out/full/ ./
 COPY turbo.json turbo.json
 RUN pnpm run build --filter=${SCOPE}...
 
+# Special handling for prisma node_modules
+# This is a temporary hack, hopefully
+RUN cp -r ${APP_PATH}/node_modules/.prisma ./.prisma.tmp | true
 ## Installing only the dev dependencies after we used them to build
 RUN rm -rf node_modules/ && pnpm install --prod --filter=${SCOPE} --frozen-lockfile
 
 # Inject sentry source maps
 RUN pnpm --filter=$SCOPE --prod deploy pruned
 RUN pnpx @sentry/cli sourcemaps inject pruned/dist
+RUN mv ./.prisma.tmp pruned/node_modules/.prisma | true
 
 # If sentry project was passed, upload the source maps
 RUN if [ -n "$SENTRY_PROJECT" ] ; then pnpx @sentry/cli sourcemaps upload pruned/dist --release ${GIT_SHA} --auth-token ${SENTRY_AUTH_TOKEN} --org ${SENTRY_ORG} --project ${SENTRY_PROJECT} ; fi

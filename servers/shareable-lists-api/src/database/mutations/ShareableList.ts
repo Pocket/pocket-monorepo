@@ -3,7 +3,7 @@ import {
   NotFoundError,
   UserInputError,
 } from '@pocket-tools/apollo-utils';
-import { Visibility, ModerationStatus, PrismaClient } from '@prisma/client';
+import { Visibility, ModerationStatus, PrismaClient } from '.prisma/client';
 // import slugify from 'slugify';
 import {
   CreateShareableListInput,

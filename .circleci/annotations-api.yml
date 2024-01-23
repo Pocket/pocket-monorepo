@@ -13,7 +13,7 @@ workflows:
           schema_file_path: servers/annotations-api/dist/schema-generated.graphql
           prod_graph_url: https://annotations-api.readitlater.com
           dev_graph_url: https://annotations-api.getpocket.dev
-          build_command: pnpm run --filter=annotations-api... build
+          build_command: pnpm run build --filter=annotations-api...
 
       - test_integrations:
           <<: *not_dev_main

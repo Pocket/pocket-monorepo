@@ -1,5 +1,5 @@
 import { NotFoundError, UserInputError } from '@pocket-tools/apollo-utils';
-import { ModerationStatus, PrismaClient } from '@prisma/client';
+import { ModerationStatus, PrismaClient } from '.prisma/client';
 import {
   CreateShareableListItemInput,
   ShareableListItem,

@@ -1,7 +1,8 @@
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "debian-openssl-1.1.x"]
-  previewFeatures = ["interactiveTransactions"]
+  provider        = "prisma-client-js"
+  binaryTargets   = ["native", "debian-openssl-1.1.x"]
+  previewFeatures = []
+  output          = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -22,23 +23,23 @@ enum ModerationStatus {
 model List {
   // *** Table fields ***
   // Prisma needs an integer ID to make relationships between tables
-  id                      BigInt           @id @default(autoincrement())
+  id                     BigInt           @id @default(autoincrement())
   // This is our public-facing ID for use in Admin Tools and Snowplow event reporting
-  externalId              String           @default(uuid()) @db.VarChar(255)
+  externalId             String           @default(uuid()) @db.VarChar(255)
   // This is the Pocket ID. Sourced externally from a mutation input
-  userId                  BigInt
-  slug                    String?          @db.VarChar(300)
-  title                   String           @db.VarChar(300)
-  description             String?          @db.Text
-  status                  Visibility       @default(PRIVATE)
-  moderationStatus        ModerationStatus @default(VISIBLE)
-  moderatedBy             String?          @db.VarChar(255)
-  moderationReason        String?          @db.Text
-  moderationDetails       String?          @db.Text
-  restorationReason       String?          @db.Text
-  listItemNoteVisibility  Visibility       @default(PRIVATE)
-  createdAt               DateTime         @default(now()) @db.DateTime(0)
-  updatedAt               DateTime         @updatedAt
+  userId                 BigInt
+  slug                   String?          @db.VarChar(300)
+  title                  String           @db.VarChar(300)
+  description            String?          @db.Text
+  status                 Visibility       @default(PRIVATE)
+  moderationStatus       ModerationStatus @default(VISIBLE)
+  moderatedBy            String?          @db.VarChar(255)
+  moderationReason       String?          @db.Text
+  moderationDetails      String?          @db.Text
+  restorationReason      String?          @db.Text
+  listItemNoteVisibility Visibility       @default(PRIVATE)
+  createdAt              DateTime         @default(now()) @db.DateTime(0)
+  updatedAt              DateTime         @updatedAt
 
   // *** Associated models ***
   listItems ListItem[]
@@ -79,12 +80,12 @@ model ListItem {
 }
 
 model PilotUser {
-  userId          BigInt    @id
+  userId          BigInt   @id
   // is the user a mozilla employee?
-  mozillaEmployee Boolean   @default(false)
+  mozillaEmployee Boolean  @default(false)
   // who added this user?
   createdBy       String?
   // any notes we want to capture about the pilot user?
-  notes           String?   @db.VarChar(1000)
-  createdAt       DateTime  @default(now()) @db.DateTime(0)
+  notes           String?  @db.VarChar(1000)
+  createdAt       DateTime @default(now()) @db.DateTime(0)
 }

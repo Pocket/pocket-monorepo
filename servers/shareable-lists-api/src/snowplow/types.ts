@@ -1,4 +1,4 @@
-import { Visibility, ModerationStatus } from '@prisma/client';
+import { Visibility, ModerationStatus } from '.prisma/client';
 import { ShareableListComplete, ShareableListItem } from '../database/types';
 
 export type ShareableListEventBusPayload = {

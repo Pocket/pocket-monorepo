@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '.prisma/client';
 
 /**
  * A helper method that wipes all data from the database.

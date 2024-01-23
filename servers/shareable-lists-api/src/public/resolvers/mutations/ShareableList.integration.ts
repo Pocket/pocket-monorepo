@@ -7,7 +7,7 @@ import {
   ModerationStatus,
   // PilotUser,
   PrismaClient,
-} from '@prisma/client';
+} from '.prisma/client';
 import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
 import { faker } from '@faker-js/faker';
 // import slugify from 'slugify';
