@@ -84,10 +84,11 @@ COPY turbo.json turbo.json
 RUN pnpm run build --filter=${SCOPE}...
 
 # Special handling for prisma node_modules
-RUN cp node_modules/.prisma .prisma.tmp | true
+# This is a temporary hack, hopefully
+RUN cp -r ${APP_PATH}/node_modules/.prisma ./.prisma.tmp | true
 ## Installing only the dev dependencies after we used them to build
 RUN rm -rf node_modules/ && pnpm install --prod --filter=${SCOPE} --frozen-lockfile
-RUN mv prisma.tmp node_modules/.prisma | true
+RUN mv ./.prisma.tmp ${APP_PATH}/node_modules/.prisma | true
 
 # Inject sentry source maps
 RUN pnpm --filter=$SCOPE --prod deploy pruned
