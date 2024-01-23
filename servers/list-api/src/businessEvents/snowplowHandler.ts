@@ -16,7 +16,7 @@ import {
 import { ItemsEventEmitter } from './itemsEventEmitter';
 import config from '../config';
 import { SavedItem } from '../types';
-import { serverLogger } from '../server/logger';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 type ListItemUpdateEvent = Omit<SelfDescribingJson, 'data'> & {
   data: ListItemUpdate;

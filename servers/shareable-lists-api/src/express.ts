@@ -4,7 +4,7 @@ import http from 'http';
 
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
-import { setMorgan } from '@pocket-tools/ts-logger';
+import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 import * as Sentry from '@sentry/node';
 
 import config from './config';
@@ -15,7 +15,6 @@ import { getAdminContext, IAdminContext } from './admin/context';
 import { startAdminServer } from './admin/server';
 import { startPublicServer } from './public/server';
 
-import { serverLogger } from './logger';
 /**
  * Initialize an express server.
  *

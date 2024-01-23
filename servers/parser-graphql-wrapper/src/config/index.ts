@@ -7,7 +7,7 @@ export default {
     grpcDefaultPort: 4317,
     httpDefaultPort: 4318,
     serviceName: 'parser-graphql-wrapper',
-    host: process.env.OTLP_COLLECTOR_HOST || 'otlpcollector',
+    host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
   },
   app: {
     environment: process.env.NODE_ENV || 'development',

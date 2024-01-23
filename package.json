@@ -5,7 +5,7 @@
     "pretest": "dotenv -- turbo run pretest",
     "preinstall": "npx only-allow pnpm",
     "build": "dotenv -- turbo run build",
-    "dev": "dotenv -- turbo run dev",
+    "dev": "dotenv -- turbo run dev --concurrency 50",
     "lint": "turbo run lint",
     "format": "turbo run format",
     "test": "dotenv -- turbo run test",

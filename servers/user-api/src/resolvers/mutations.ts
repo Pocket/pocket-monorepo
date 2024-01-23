@@ -5,7 +5,7 @@ import { UserDataService } from '../dataService/userDataService';
 import { ExpireUserWebSessionReason } from '../types';
 import { PinpointController } from '../aws/pinpointController';
 import { EventType } from '../events/eventType';
-import { serverLogger } from '../logger';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 const blockedUsersFromDeletion = ['8008162'];
 

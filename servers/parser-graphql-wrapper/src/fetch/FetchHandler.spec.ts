@@ -1,6 +1,6 @@
 import { FetchHandler } from './FetchHandler';
 import nock, { cleanAll } from 'nock';
-import { serverLogger } from '../logger';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 describe('FetchHandler', () => {
   const serverLoggerErrorSpy = jest.spyOn(serverLogger, 'error');

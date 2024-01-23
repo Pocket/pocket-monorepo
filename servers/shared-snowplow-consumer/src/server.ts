@@ -1,19 +1,17 @@
 import * as Sentry from '@sentry/node';
-import config from './config';
 import express, { json } from 'express';
-import { getServer } from './server';
-import { expressMiddleware } from '@apollo/server/express4';
-import { ContextFactory } from './context';
-import { readClient, writeClient } from './database/client';
-import { userEventEmitter } from './events/init';
 import http from 'http';
+import { config } from './config';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 
-export async function startServer(port: number) {
-  // initialize express with exposed httpServer so that it may be
-  // provided to drain plugin for graceful shutdown.
+import { EventEmitter } from 'events';
+import { SqsConsumer } from './SqsConsumer';
+
+export async function startServer(port: number): Promise<{
+  app: express.Express;
+  url: string;
+}> {
   const app = express();
-  const httpServer = http.createServer(app);
 
   Sentry.init({
     ...config.sentry,
@@ -29,41 +27,35 @@ export async function startServer(port: number) {
     ],
   });
 
-  const server = getServer(httpServer);
-  const url = '/';
+  // Start polling for messages from snowplow event queue
+  new SqsConsumer(new EventEmitter());
 
-  //Apply the GraphQL middleware into the express app
-  await server.start();
+  // Our httpServer handles incoming requests to our Express app.
+  // Below, we tell Apollo Server to "drain" this httpServer,
+  // enabling our servers to shut down gracefully.
+  const httpServer = http.createServer(app);
+
+  // Expose health check url
+  app.get('/health', (req, res) => {
+    res.status(200).send('ok');
+  });
 
   // RequestHandler creates a separate execution context, so that all
   // transactions/spans/breadcrumbs are isolated across requests
   app.use(Sentry.Handlers.requestHandler() as express.RequestHandler);
 
-  // expose a health check url
-  app.get('/.well-known/apollo/server-health', (req, res) => {
-    res.status(200).send('ok');
-  });
+  // Apply to root
+  const url = '/';
 
   app.use(
-    url,
+    // JSON parser to enable POST body with JSON
     json(),
     setMorgan(serverLogger),
-    expressMiddleware(server, {
-      context: async ({ req }) =>
-        ContextFactory({
-          request: req,
-          db: {
-            readClient: readClient(),
-            writeClient: writeClient(),
-          },
-          eventEmitter: userEventEmitter,
-        }),
-    }),
   );
 
   // The error handler must be before any other error middleware and after all controllers
   app.use(Sentry.Handlers.errorHandler() as express.ErrorRequestHandler);
 
   await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
-  return { server, app, url };
+  return { app, url };
 }

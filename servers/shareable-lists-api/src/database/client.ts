@@ -1,5 +1,5 @@
 import { PrismaClient } from '.prisma/client';
-import { serverLogger } from '../logger';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 let prisma;
 

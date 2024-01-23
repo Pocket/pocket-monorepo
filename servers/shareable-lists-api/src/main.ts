@@ -1,5 +1,5 @@
 import { startServer } from './express';
-import { serverLogger } from './logger';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 (async () => {
   const { adminUrl, publicUrl } = await startServer(4029);

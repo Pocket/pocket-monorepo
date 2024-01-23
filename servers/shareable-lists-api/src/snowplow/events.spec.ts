@@ -14,7 +14,7 @@ import {
 } from './events';
 import { EventBridgeEventType } from './types';
 import { faker } from '@faker-js/faker';
-import { serverLogger } from '../logger';
+import { serverLogger } from '@pocket-tools/ts-logger';
 import winston from 'winston';
 
 describe('Snowplow event helpers', () => {

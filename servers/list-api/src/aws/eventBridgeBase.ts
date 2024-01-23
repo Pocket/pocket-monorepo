@@ -4,7 +4,7 @@ import {
   PutEventsCommandOutput,
 } from '@aws-sdk/client-eventbridge';
 import * as Sentry from '@sentry/node';
-import { serverLogger } from '../server/logger';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 /**
  * Shared class for wrapping put event command in EventBridge client

@@ -14,7 +14,7 @@ import {
   ShareableListEventBusPayload,
   ShareableListItemEventBusPayload,
 } from './types';
-import { serverLogger } from '../logger';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 /**
  * This function takes in the API Shareable List object and transforms it into a Snowplow Shareable List object

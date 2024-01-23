@@ -13,7 +13,7 @@ import { validate } from './validator';
 import { HighlightsDataService } from '../../dataservices/highlights';
 import { NotesDataService } from '../../dataservices/notes';
 import { failCallback, successCallback } from './helper';
-import { serverLogger } from '../';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export type SqsMessage = {
   userId: number;

@@ -261,6 +261,8 @@ class UserAPI extends TerraformStack {
           //Used default config as stated here:
           // Available configs here: - https://github.com/aws-observability/aws-otel-collector/tree/main/config
           command: ['--config=/etc/ecs/ecs-xray.yaml'],
+          logGroup: this.createCustomLogGroup('aws-otel-collector'),
+          logMultilinePattern: '^\\S.+',
           portMappings: [
             {
               //default http port

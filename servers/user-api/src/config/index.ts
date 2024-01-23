@@ -31,6 +31,12 @@ const tables = {
   ],
 };
 
+const awsEnvironments = ['production', 'development'];
+let localAwsEndpoint: string = undefined;
+if (!awsEnvironments.includes(process.env.NODE_ENV)) {
+  localAwsEndpoint = process.env.AWS_ENDPOINT || 'http://localhost:4566';
+}
+
 export default {
   app: {
     environment: process.env.NODE_ENV || 'development',
@@ -43,11 +49,7 @@ export default {
       name: process.env.EVENT_BUS_NAME || 'PocketEventBridge-Shared-Event-Bus',
       eventBridge: { source: 'user-events' },
     },
-    endpoint:
-      process.env.NODE_ENV != 'production' &&
-      process.env.NODE_ENV != 'development'
-        ? process.env.AWS_ENDPOINT || 'http://localhost:4566'
-        : undefined,
+    endpoint: localAwsEndpoint,
   },
   database: {
     read: {

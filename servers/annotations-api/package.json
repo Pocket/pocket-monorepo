@@ -5,7 +5,7 @@
   "main": "dist/main.js",
   "scripts": {
     "build": "rm -rf dist && tsc && npm run build-schema",
-    "watch": "tsc -w & nodemon",
+    "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json",
     "start": "node dist/main.js",
     "dev": "npm run build && npm run watch",
     "build-schema": "node dist/server/apollo/buildSchema.js",
@@ -23,6 +23,7 @@
     "@aws-sdk/lib-dynamodb": "3.494.0",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
+    "@pocket-tools/tracing": "workspace:*",
     "@sentry/node": "7.93.0",
     "@sentry/tracing": "7.93.0",
     "cors": "2.8.5",

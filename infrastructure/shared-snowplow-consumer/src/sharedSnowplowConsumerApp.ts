@@ -9,6 +9,7 @@ import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
 import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
 import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
 import { Construct } from 'constructs';
+import { CloudwatchLogGroup } from '@cdktf/provider-aws/lib/cloudwatch-log-group';
 
 export type SharedSnowplowConsumerProps = {
   caller: DataAwsCallerIdentity;
@@ -54,6 +55,8 @@ export class SharedSnowplowConsumerApp extends Construct {
       containerConfigs: [
         {
           name: 'app',
+          logMultilinePattern: '^\\S.+',
+          logGroup: this.createCustomLogGroup('app'),
           portMappings: [
             {
               hostPort: 4015,
@@ -88,6 +91,10 @@ export class SharedSnowplowConsumerApp extends Construct {
               name: 'SNOWPLOW_EVENTS_DLQ_URL',
               value: this.config.sqsDLQ.url,
             },
+            {
+              name: 'OTLP_COLLECTOR_HOST',
+              value: config.tracing.host,
+            },
           ],
           secretEnvVars: [
             {
@@ -97,17 +104,23 @@ export class SharedSnowplowConsumerApp extends Construct {
           ],
         },
         {
-          name: 'xray-daemon',
-          containerImage: 'amazon/aws-xray-daemon',
-          repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
+          name: 'aws-otel-collector',
+          command: ['--config=/etc/ecs/ecs-xray.yaml'],
+          containerImage: 'amazon/aws-otel-collector',
+          essential: true,
+          logMultilinePattern: '^\\S.+',
+          logGroup: this.createCustomLogGroup('aws-otel-collector'),
           portMappings: [
             {
-              hostPort: 2000,
-              containerPort: 2000,
-              protocol: 'udp',
+              hostPort: 4138,
+              containerPort: 4138,
+            },
+            {
+              hostPort: 4137,
+              containerPort: 4137,
             },
           ],
-          command: ['--region', 'us-east-1', '--local-mode'],
+          repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
         },
       ],
       codeDeploy: {
@@ -184,5 +197,25 @@ export class SharedSnowplowConsumerApp extends Construct {
         },
       },
     });
+  }
+
+  /**
+   * Create Custom log group for ECS to share across task revisions
+   * @param containerName
+   * @private
+   */
+  private createCustomLogGroup(containerName: string) {
+    const logGroup = new CloudwatchLogGroup(
+      this,
+      `${containerName}-log-group`,
+      {
+        name: `/Backend/${config.prefix}/ecs/${containerName}`,
+        retentionInDays: 90,
+        skipDestroy: true,
+        tags: config.tags,
+      },
+    );
+
+    return logGroup.name;
   }
 }

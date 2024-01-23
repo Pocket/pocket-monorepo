@@ -5,7 +5,7 @@
   "main": "dist/server/main.js",
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "watch": "tsc -w & nodemon -r dotenv/config",
+    "watch": "tsc -w --preserveWatchOutput & nodemon -r dotenv/config --config ../../nodemon.json",
     "start": "node dist/server/main.js",
     "dev": "npm run build && npm run watch",
     "test-ci": "npm test",
@@ -30,9 +30,9 @@
   "dependencies": {
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
+    "@pocket-tools/tracing": "workspace:*",
     "@sentry/node": "7.93.0",
     "@sentry/tracing": "7.93.0",
-    "aws-xray-sdk-express": "3.5.3",
     "axios": "1.6.5",
     "axios-retry": "4.0.0",
     "dataloader": "2.2.2",

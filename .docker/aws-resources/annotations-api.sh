@@ -2,7 +2,7 @@
 set -x
 
 SQS=(
-pocket-account-data-delete-queue
+pocket-annotations-delete-queue
 )
 
 for sqs_queue in "${SQS[@]}"; do
