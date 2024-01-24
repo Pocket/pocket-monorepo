@@ -7,13 +7,15 @@ import request from 'supertest';
 import { print } from 'graphql';
 import { UserEventEmitter } from '../../events/userEventEmitter';
 import config from '../../config';
+import { IContext } from '../../context';
+import { ApolloServer } from '@apollo/server';
 
 describe('Apple Migration', () => {
   const readDb = readClient();
   const writeDb = writeClient();
-  let server;
-  let app;
-  let url;
+  let server: ApolloServer<IContext>;
+  let app: Express.Application;
+  let url: string;
   const userId = 1;
   const fxaId = 'abc123';
   const seedEmail = 'abc@123.com';
@@ -39,7 +41,7 @@ describe('Apple Migration', () => {
     .mockImplementation();
 
   afterAll(async () => {
-    server.stop();
+    await server.stop();
     await readDb.destroy();
     await writeDb.destroy();
   });

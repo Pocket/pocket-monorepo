@@ -8,13 +8,18 @@ import { startServer } from '../../apollo';
 import request from 'supertest';
 import { print } from 'graphql';
 import * as utils from '../../utils/email';
+import { IContext } from '../../context';
+import { ApolloServer } from '@apollo/server';
+import { EventType } from '../../events/eventType';
+import { userEventEmitter } from '../../events/init';
 
-describe.skip('updateUserEmailByFxaId Mutation test', () => {
+describe('updateUserEmailByFxaId Mutation test', () => {
   const readDb = readClient();
   const writeDb = writeClient();
-  let server;
-  let app;
-  let url;
+  let server: ApolloServer<IContext>;
+  let app: Express.Application;
+  let url: string;
+  let eventObj = null;
 
   const req = {
     headers: { token: 'access_token', apiid: '1', fxauserid: 'abc123' },
@@ -30,6 +35,13 @@ describe.skip('updateUserEmailByFxaId Mutation test', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    userEventEmitter.on(EventType.ACCOUNT_EMAIL_UPDATED, (eventData: any) => {
+      eventObj = eventData;
+    });
+  });
+
+  afterEach(async () => {
+    eventObj = null;
   });
 
   describe('updateEmailByFxAId', () => {
@@ -84,6 +96,10 @@ describe.skip('updateUserEmailByFxaId Mutation test', () => {
         (await readDb('users').where('user_id', userId).first()).email,
       ).toEqual('def@456.com');
       expect(pinpointStub).toHaveBeenCalledTimes(1);
+      expect(eventObj.user.hashedId).toBe(
+        `fX792e6e9163ec630a71a9X08497c36eT3e25a4cd0ba5b1056fv989d5`,
+      );
+      expect(eventObj.user.email).toBe(`def@456.com`);
     });
     it('should fail if email is invalid', async () => {
       const variables = { id: fxaId, email: 'lala' };

@@ -9,6 +9,7 @@ describe('getUserEventPayload', () => {
         email: 'test@gmail.com',
         isPremium: false,
         hashedGuid: 'abcd123',
+        hashedId: 'asdasdasdasdasdads',
       },
       apiUser: {
         apiId: '123abc',
@@ -36,6 +37,7 @@ describe('getUserEventPayload', () => {
         language: 'en',
         ipAddress: '127.0.0.1',
         hashedGuid: 'abcd123',
+        hashedId: 'asdasdasdasdasdads',
       },
     };
 

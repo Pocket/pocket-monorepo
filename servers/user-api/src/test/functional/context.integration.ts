@@ -86,4 +86,16 @@ describe('Context manager', () => {
     // Can only have retrieved user data if userId was updated on context
     expect(res.body.data?.user.username).toEqual('dracula');
   });
+
+  it('errors if anonymous is passed to context', async () => {
+    const res = await request(app)
+      .post(url)
+      .set({ userid: 'anonymous' })
+      .send({
+        query: print(GET_USER),
+      });
+
+    expect(res.body.data?.user).toBeNull();
+    expect(res.body.errors.length).toBe(1);
+  });
 });

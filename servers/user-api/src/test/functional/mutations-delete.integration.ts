@@ -8,6 +8,8 @@ import { startServer } from '../../apollo';
 import request from 'supertest';
 import { print } from 'graphql';
 import { PiiTableSeed, truncatePiiTables } from './seeds';
+import { IContext } from '../../context';
+import { ApolloServer } from '@apollo/server';
 
 jest.mock('../../aws/pinpointController');
 
@@ -18,10 +20,10 @@ describe('Delete user mutations', () => {
   const userId = 1;
   const readDb = readClient();
   const writeDb = writeClient();
-  let server;
-  let app;
-  let url;
-  let deleteUserEndpointsMock;
+  let server: ApolloServer<IContext>;
+  let app: Express.Application;
+  let url: string;
+  let deleteUserEndpointsMock: jest.Mock<any, any, any>;
   let eventObj = null;
 
   beforeAll(async () => {
@@ -31,7 +33,7 @@ describe('Delete user mutations', () => {
   afterAll(async () => {
     await readDb.destroy();
     await writeDb.destroy();
-    server.stop();
+    await server.stop();
   });
   afterEach(() => jest.clearAllMocks());
 
@@ -110,6 +112,9 @@ describe('Delete user mutations', () => {
       }
       expect(deleteUserEndpointsMock.mock.calls.length).toBe(1);
       expect(eventObj.user.id).toBe(`1`);
+      expect(eventObj.user.hashedId).toBe(
+        `fX792e6e9163ec630a71a9X08497c36eT3e25a4cd0ba5b1056fv989d5`,
+      );
     });
 
     it('should delete all PII data for user with apple auth', async () => {
@@ -178,6 +183,9 @@ describe('Delete user mutations', () => {
       }
       expect(deleteUserEndpointsMock.mock.calls.length).toBe(1);
       expect(eventObj.user.id).toBe(`1`);
+      expect(eventObj.user.hashedId).toBe(
+        `fX792e6e9163ec630a71a9X08497c36eT3e25a4cd0ba5b1056fv989d5`,
+      );
     });
 
     it('should throw forbidden error for fxaId mismatch', async () => {
