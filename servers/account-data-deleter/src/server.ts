@@ -2,8 +2,8 @@ import { config } from './config';
 import * as Sentry from '@sentry/node';
 import express, { json } from 'express';
 import { queueDeleteRouter, stripeDeleteRouter } from './routes';
-// import { EventEmitter } from 'events';
-// import { BatchDeleteHandler } from './batchDeleteHandler';
+import { EventEmitter } from 'events';
+import { BatchDeleteHandler } from './batchDeleteHandler';
 import Logger from './logger';
 import { setMorgan } from '@pocket-tools/ts-logger';
 
@@ -30,8 +30,7 @@ app.use('/queueDelete', queueDeleteRouter);
 app.use('/stripeDelete', stripeDeleteRouter);
 
 // Start batch delete event handler
-// Turning off for now for database migrations
-// new BatchDeleteHandler(new EventEmitter());
+new BatchDeleteHandler(new EventEmitter());
 
 // Start Express app
 app
