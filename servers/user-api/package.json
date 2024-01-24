@@ -12,11 +12,11 @@
     "format": "eslint --fix \"src/**/*.ts\""
   },
   "dependencies": {
-    "@pocket-tools/apollo-utils": "workspace:*",
     "@aws-sdk/client-eventbridge": "3.496.0",
     "@aws-sdk/client-pinpoint": "3.496.0",
-    "@pocket-tools/ts-logger": "workspace:*",
+    "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
+    "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "7.94.1",
     "@sentry/tracing": "7.94.1",
     "dataloader": "2.2.2",
@@ -28,18 +28,18 @@
     "underscore.string": "3.3.6"
   },
   "devDependencies": {
-    "eslint-config-custom": "workspace:*",
-    "tsconfig": "workspace:*",
-    "@sentry/types": "7.94.1",
     "@faker-js/faker": "8.3.1",
+    "@sentry/types": "7.94.1",
     "@types/jest": "29.5.11",
-    "@types/supertest": "^2.0.16",
+    "@types/supertest": "^6.0.2",
+    "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
     "jest-mock-req-res": "1.0.2",
-    "nock": "13.4.0",
-    "nodemon": "3.0.2",
-    "supertest": "6.3.3",
-    "ts-jest": "29.1.1"
+    "nock": "13.5.0",
+    "nodemon": "3.0.3",
+    "supertest": "6.3.4",
+    "ts-jest": "29.1.2",
+    "tsconfig": "workspace:*"
   },
   "files": [
     "dist",
