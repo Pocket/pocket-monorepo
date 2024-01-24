@@ -1,5 +1,5 @@
 import cors from 'cors';
-import express, { json, Express } from 'express';
+import express, { json } from 'express';
 import http from 'http';
 
 import { ApolloServer } from '@apollo/server';

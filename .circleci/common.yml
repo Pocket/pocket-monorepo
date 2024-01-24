@@ -28,6 +28,7 @@ repo_for_enum: &repo_for_enum
       - account_data_deleter
       - account_delete_monitor
       - shareable_lists_api
+      - pocket_event_bridge
 
 resource_class_enmum: &resource_class_enmum
   resource-class:
@@ -81,6 +82,9 @@ parameters:
   shareable_lists_api:
     type: boolean
     default: false
+  pocket_event_bridge:
+    type: boolean
+    default: false
 
 commands:
   # Refrenced from https://github.com/kelvintaywl-cci/dynamic-config-showcase/blob/main/.circleci/next.yml
@@ -116,6 +120,7 @@ commands:
             account_data_deleter: << pipeline.parameters.account_data_deleter >>
             account_delete_monitor: << pipeline.parameters.account_delete_monitor >>
             shareable_lists_api: << pipeline.parameters.shareable_lists_api >>
+            pocket_event_bridge: << pipeline.parameters.pocket_event_bridge >>
 
   install_pnpm:  
     steps:

@@ -1,0 +1,52 @@
+
+workflows:
+  pocket-event-bridge:
+    jobs:
+
+      ######
+      # Every PR Jobs
+      ######
+
+      - infrastructure:
+          <<: *not_dev_main
+          context: pocket
+          for: annotations_api
+          name: pocket-event-bridge_infrastructure_plan_prod
+          scope: pocket-event-bridge-cdk
+          stack-output-path: infrastructure/pocket-event-bridge/cdktf.out/stacks/pocket-event-bridge
+          resource-class: pocket/default-prod
+          workspace: Prod
+          dev: false
+          apply: false
+
+      ######
+      # Dev Branch Deployment (Dev Environment)
+      ######
+
+      - infrastructure:
+          <<: *only_dev
+          context: pocket
+          for: annotations_api
+          name: pocket-event-bridge_infrastructure_apply_dev
+          scope: pocket-event-bridge-cdk
+          stack-output-path: infrastructure/pocket-event-bridge/cdktf.out/stacks/pocket-event-bridge
+          resource-class: pocket/default-dev
+          workspace: Dev
+          apply: true
+          dev: true
+
+
+      ######
+      # Main Branch Deployment (Prod Environment)
+      ######
+      - infrastructure:
+          <<: *only_main
+          context: pocket
+          for: annotations_api
+          name: pocket-event-bridge_infrastructure_apply_prod
+          scope: pocket-event-bridge-cdk
+          stack-output-path: infrastructure/pocket-event-bridge/cdktf.out/stacks/pocket-event-bridge
+          resource-class: pocket/default-prod
+          workspace: Prod
+          apply: true
+          dev: false
