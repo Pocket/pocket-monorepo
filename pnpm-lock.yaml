@@ -643,8 +643,8 @@ importers:
         specifier: 4.1.3
         version: 4.1.3(@apollo/server@4.10.0)(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.6.2
-        version: 2.6.2(graphql@16.8.1)
+        specifier: 2.7.0
+        version: 2.7.0(graphql@16.8.1)
       '@apollo/utils.keyvadapter':
         specifier: 3.1.0
         version: 3.1.0
@@ -1717,17 +1717,17 @@ packages:
       graphql: 16.8.1
     dev: false
 
-  /@apollo/federation-internals@2.6.2(graphql@16.8.1):
-    resolution: {integrity: sha512-L5Ppl+FQ2+ETpJ8NCa7T8ifAjAX8K/4NW8N08d6TRUJu0M/8rvIL0CgX033Jno/+FVIFhNBbVN2kGoSKDl1YPQ==}
+  /@apollo/federation-internals@2.7.0(graphql@16.8.1):
+    resolution: {integrity: sha512-NiTYMJQ3XnEH8HJxv3rEUGOdGrUr0ZUJcVOyzc3YJ5M9Lxx/AGgQe7mCsaFQOfofYyy9hoh2sHUDhB7ngsnh3Q==}
     engines: {node: '>=14.15.0'}
     peerDependencies:
       graphql: ^16.5.0
     dependencies:
-      '@types/uuid': 9.0.7
+      '@types/uuid': 9.0.2
       chalk: 4.1.2
       graphql: 16.8.1
       js-levenshtein: 1.1.6
-      uuid: 9.0.0
+      uuid: 9.0.1
     dev: false
 
   /@apollo/protobufjs@1.2.7:
@@ -1811,14 +1811,14 @@ packages:
       - supports-color
     dev: false
 
-  /@apollo/subgraph@2.6.2(graphql@16.8.1):
-    resolution: {integrity: sha512-TZXCq//fYv++gx8Tsngfa85fH6UGvpyz2xqGh9YIg2e3akeikRW77FRg0tfFXL9CwVmWLukav1hJGsipOklM1g==}
+  /@apollo/subgraph@2.7.0(graphql@16.8.1):
+    resolution: {integrity: sha512-6u/bDF7gorXdNNRIi03B5JlTZqP1lOerQ8F1WJ2af/Tydf80GXOBDyo841kmJWyGveYYdLqC0GMwaiuSy/Hubw==}
     engines: {node: '>=14.15.0'}
     peerDependencies:
       graphql: ^16.5.0
     dependencies:
       '@apollo/cache-control-types': 1.0.3(graphql@16.8.1)
-      '@apollo/federation-internals': 2.6.2(graphql@16.8.1)
+      '@apollo/federation-internals': 2.7.0(graphql@16.8.1)
       graphql: 16.8.1
     dev: false
 
@@ -6919,11 +6919,6 @@ packages:
 
   /@types/uuid@9.0.2:
     resolution: {integrity: sha512-kNnC1GFBLuhImSnV7w4njQkUiJi0ZXUycu1rUaouPqiKlXkh77JKgdRnTAp1x5eBwcIwbtI+3otwzuIDEuDoxQ==}
-    dev: true
-
-  /@types/uuid@9.0.7:
-    resolution: {integrity: sha512-WUtIVRUZ9i5dYXefDEAI7sh9/O7jGvHg7Df/5O/gtH3Yabe5odI3UWopVR1qbPXQtvOxWu3mM4XxlYeZtMWF4g==}
-    dev: false
 
   /@types/wrap-ansi@3.0.0:
     resolution: {integrity: sha512-ltIpx+kM7g/MLRZfkbL7EsCEjfzCcScLpkg37eXEtx5kmrAKBkTJwd1GIAjDSL8wTpM6Hzn5YO4pSb91BEwu1g==}
@@ -8991,7 +8986,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.4.0-dev.20240123
+      typescript: 5.4.0-dev.20240124
     dev: false
 
   /eastasianwidth@0.2.0:
@@ -15911,8 +15906,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.4.0-dev.20240123:
-    resolution: {integrity: sha512-CXf3I7gkmbVHhSuQdZn+/Xe+k3yBtYR8BwrYLOT44eUKuWH9lEuOzcR4zQcJP54dxekMIQPXxvCX3/VIG8zSKA==}
+  /typescript@5.4.0-dev.20240124:
+    resolution: {integrity: sha512-OAWV1z3s7OoZR1tKuVK8UokiDmv5J8EEjKJu7BtU7veEXBA9cLGQ6LEw4Jt83BidP8lWytDetVuOxmF/VtLQPg==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: false
