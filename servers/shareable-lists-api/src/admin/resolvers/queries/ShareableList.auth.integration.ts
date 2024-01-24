@@ -12,6 +12,7 @@ import {
   FULLACCESS,
   READONLY,
 } from '../../../shared/constants';
+import { Application } from 'express';
 
 describe('auth: ShareableList', () => {
   let app: Application;

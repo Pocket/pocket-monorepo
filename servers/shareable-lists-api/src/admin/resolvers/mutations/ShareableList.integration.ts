@@ -18,6 +18,7 @@ import {
 } from '../../../shared/constants';
 import { MODERATE_SHAREABLE_LIST } from './sample-mutations.gql';
 import { ShareableListModerationReason } from '../../../database/types';
+import { Application } from 'express';
 
 const validHeaders = {
   name: 'Lee Moderator',
