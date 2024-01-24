@@ -26,7 +26,7 @@ const validHeaders = {
 };
 
 describe('admin mutations: ShareableList', () => {
-  let app: Express.Application;
+  let app: Application;
   let server: ApolloServer<IAdminContext>;
   let graphQLUrl: string;
   let db: PrismaClient;

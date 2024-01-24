@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/node';
-import express, { json } from 'express';
+import express, { Application, json } from 'express';
 import http from 'http';
 import cors from 'cors';
 import { ApolloServer } from '@apollo/server';
@@ -30,7 +30,7 @@ import { ContextManager, IContext } from './context';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 
 export async function startServer(port: number): Promise<{
-  app: Express.Application;
+  app: Application;
   server: ApolloServer<IContext>;
   url: string;
 }> {

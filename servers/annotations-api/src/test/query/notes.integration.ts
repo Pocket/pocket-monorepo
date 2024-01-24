@@ -10,9 +10,10 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import config from '../../config';
 import { truncateTable } from '../utils';
+import { Application } from 'express';
 
 describe('Notes on a Highlight', () => {
-  let app: Express.Application;
+  let app: Application;
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
 

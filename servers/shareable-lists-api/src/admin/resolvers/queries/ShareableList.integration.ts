@@ -24,7 +24,7 @@ import config from '../../../config';
 import slugify from 'slugify';
 
 describe('admin queries: ShareableList', () => {
-  let app: Express.Application;
+  let app: Application;
   let server: ApolloServer<IAdminContext>;
   let graphQLUrl: string;
   let db: PrismaClient;

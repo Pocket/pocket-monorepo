@@ -13,9 +13,10 @@ import config from '../../config';
 import { noteSeedCommand } from '../query/notes-fixtures';
 import { NotesDataService } from '../../dataservices/notes';
 import { truncateTable } from '../utils';
+import { Application } from 'express';
 
 describe('Notes update', () => {
-  let app: Express.Application;
+  let app: Application;
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
   // Variables/data

@@ -7,9 +7,10 @@ import { readClient, writeClient } from '../../database/client';
 import { seedData } from '../query/highlights-fixtures';
 import { CREATE_NOTE } from './notes-mutations';
 import { NoteInput } from '../../types';
+import { Application } from 'express';
 
 describe('Notes creation', () => {
-  let app: Express.Application;
+  let app: Application;
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
   // Variables/data

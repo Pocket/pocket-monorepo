@@ -16,6 +16,7 @@ import request from 'supertest';
 import { print } from 'graphql';
 import { gql } from 'graphql-tag';
 import { IContext } from '../context';
+import { Application } from 'express';
 
 function makeResponseForParserTextEndpoint(options: {
   url: string;
@@ -66,7 +67,7 @@ function makeResponseForParserTextEndpoint(options: {
 
 describe('Marticle integration ', () => {
   const testUrl = 'https://someurl.com';
-  let app: Express.Application;
+  let app: Application;
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
 

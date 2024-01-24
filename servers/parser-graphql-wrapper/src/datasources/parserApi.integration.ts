@@ -9,6 +9,7 @@ import { MediaTypeParam, ParserAPI } from './parserApi';
 import { setTimeout } from 'timers/promises';
 import { IContext } from '../context';
 import Keyv from 'keyv';
+import { Application } from 'express';
 
 const GET_ARTICLE = gql`
   query getArticle($url: String!) {
@@ -129,7 +130,7 @@ const newFakeArticle = {
 };
 
 describe('ParserAPI DataSource', () => {
-  let app: Express.Application;
+  let app: Application;
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
   let cache: Keyv;

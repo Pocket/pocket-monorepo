@@ -13,6 +13,7 @@ import {
   getSharedUrlsResolverRepo,
 } from '../database/mysql';
 import config from '../config';
+import { Application } from 'express';
 
 describe('ShortUrl', () => {
   const testUrl = 'https://someurl.com';
@@ -20,7 +21,7 @@ describe('ShortUrl', () => {
     url: testUrl,
   };
 
-  let app: Express.Application;
+  let app: Application;
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
   let sharedRepo: SharedUrlsResolverRepository;
