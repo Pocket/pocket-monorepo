@@ -289,12 +289,6 @@ class ShareableListsAPI extends TerraformStack {
               value: process.env.NODE_ENV,
             },
             {
-              name: 'RELEASE_SHA',
-              value:
-                process.env.CODEBUILD_RESOLVED_SOURCE_VERSION ??
-                process.env.CIRCLE_SHA1,
-            },
-            {
               name: 'REDIS_PRIMARY_ENDPOINT',
               value: cache.primaryEndpoint,
             },
