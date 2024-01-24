@@ -14,9 +14,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-ssm": "^3.112.0",
-    "@sentry/serverless": "7.94.1",
-    "fetch-retry": "^5.0.2",
+    "@aws-sdk/client-ssm": "^3.499.0",
+    "@sentry/serverless": "7.95.0",
+    "fetch-retry": "^5.0.6",
     "isomorphic-fetch": "^3.0.0",
     "tslib": "2.6.2"
   },
