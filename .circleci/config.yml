@@ -61,7 +61,7 @@ jobs:
             ((lambdas|infrastructure|servers)/account-data-deleter/.*)|(packages/.*)|(pnpm-lock\.yaml)|(.circleci/account-data-deleter.yml) account_data_deleter true
             ((lambdas|infrastructure)/account-delete-monitor/.*)|(packages/.*)|(pnpm-lock\.yaml)|(.circleci/account-delete-monitor.yml) account_delete_monitor true
             ((servers|infrastructure|lambdas)/shareable-lists-api/.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) shareable_lists_api true
-            ((infrastructure)/pocket-event-bridge/.*)|(packages/.*)|(pnpm-lock\.yaml) pocket_event_bridge true
+            ((infrastructure)/pocket-event-bridge/.*)|(packages/.*)|(pnpm-lock\.yaml)|(.circleci/pocket-event-bridge.yml) pocket_event_bridge true
 
       - continuation/continue:
           configuration_path: /tmp/generated-config.yml
