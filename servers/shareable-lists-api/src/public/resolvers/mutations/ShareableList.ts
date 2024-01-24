@@ -2,12 +2,15 @@ import {
   CreateShareableListInput,
   ShareableList,
   UpdateShareableListInput,
+  CreateShareableListItemInput,
+  AddItemInput,
 } from '../../../database/types';
 import {
   createShareableList as dbCreateShareableList,
   deleteShareableList as dbDeleteShareableList,
   updateShareableList as dbUpdateShareableList,
-} from '../../../database/mutations';
+  addToShareableList as dbAddToShareableList,
+} from '../../../database';
 import { IPublicContext } from '../../context';
 import { executeMutation } from '../utils';
 
@@ -66,4 +69,24 @@ export async function deleteShareableList(
     externalId,
     dbDeleteShareableList,
   );
+}
+
+/**
+ *
+ * @param args
+ * @param context
+ * @returns
+ */
+export async function addToShareableList(
+  _,
+  args: { listId: string; items: AddItemInput[] },
+  context: IPublicContext,
+): Promise<ShareableList> {
+  return await executeMutation<
+    {
+      listId: string;
+      items: AddItemInput[];
+    },
+    ShareableList
+  >(context, args, dbAddToShareableList);
 }

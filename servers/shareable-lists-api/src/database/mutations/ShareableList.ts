@@ -24,7 +24,7 @@ import {
 import {
   getShareableList,
   // isPilotUser
-} from '../queries';
+} from '..';
 // import config from '../../config';
 import { validateItemId } from '../../public/resolvers/utils';
 import { sendEventHelper } from '../../snowplow/events';

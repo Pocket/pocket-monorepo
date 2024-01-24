@@ -1,5 +1,5 @@
 import { ForbiddenError, NotFoundError } from '@pocket-tools/apollo-utils';
-import { searchShareableList as dbSearchShareableList } from '../../../database/queries';
+import { searchShareableList as dbSearchShareableList } from '../../../database';
 import { ShareableListComplete } from '../../../database/types';
 import { ACCESS_DENIED_ERROR } from '../../../shared/constants';
 

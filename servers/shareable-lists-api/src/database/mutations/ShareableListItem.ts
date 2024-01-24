@@ -1,5 +1,5 @@
 import { NotFoundError, UserInputError } from '@pocket-tools/apollo-utils';
-import { ModerationStatus, PrismaClient } from '.prisma/client';
+import { ModerationStatus, PrismaClient, Prisma } from '.prisma/client';
 import {
   CreateShareableListItemInput,
   ShareableListItem,
@@ -51,6 +51,7 @@ export async function createShareableListItem(
   }
 
   // check if an item with this URL already exists in this list
+  // TODO (@kschelonka): consider uniqeuness constraint over listId and url
   const itemExists = list.listItems.find((item) => {
     return item.url === data.url;
   });
@@ -102,6 +103,119 @@ export async function createShareableListItem(
   });
 
   return listItem;
+}
+
+/**
+ * This mutation creates a shareable list item.
+ *
+ * @param db
+ * @param listId
+ * @param data
+ * @param userId
+ */
+export async function addToShareableList(
+  db: PrismaClient,
+  { listId, items }: { listId: string; items: CreateShareableListItemInput[] },
+  userId: number | bigint,
+): Promise<any> {
+  // // Promise<ShareableList> {
+  // // make sure the itemId is valid
+  // // this is required as itemId must be a string at the API level, but is
+  // // actually a number in the db (legacy problems)
+  // items.forEach((item) => validateItemId(item.itemId));
+  // // This is inefficient, but prisma doesn't support
+  // // IGNORE statements (would need to add relevant unique constraint)
+  // // and writing raw SQL for a bunch of inserts just seems
+  // // so wrong in this heavyweight ORM
+  // const conditionalItemInsert = async (
+  //   item: Prisma.ListItemCreateInput,
+  //   list,
+  //   trx,
+  // ): Promise<ShareableListItem | undefined> => {
+  //   const itemExists = list.listItems.find((row) => {
+  //     return row.url === item.url;
+  //   });
+  //   if (!itemExists) {
+  //     return await trx.listItem.create({
+  //       data: item,
+  //       select: shareableListItemSelectFields,
+  //     });
+  //   } else {
+  //     return Promise.resolve(undefined);
+  //   }
+  // };
+  // const { inserts, updatedList } = await db.$transaction(async (trx) => {
+  //   // Retrieve the list this item should be added to.
+  //   // Note: no new items should be added to lists that have been taken down
+  //   // by the moderators.
+  //   // TODO (@kschelonka): revisit this with UX changes
+  //   const list = await trx.list.findFirst({
+  //     where: {
+  //       externalId: listId,
+  //       userId,
+  //       moderationStatus: ModerationStatus.VISIBLE,
+  //     },
+  //     include: {
+  //       listItems: true,
+  //     },
+  //   });
+  //   if (!list) {
+  //     throw new NotFoundError(
+  //       `A list with the ID of "${listId}" does not exist`,
+  //     );
+  //   }
+  //   const inputs: Prisma.ListItemCreateInput[] = items.map((item, index) => ({
+  //     // coerce itemId to a number to conform to db schema
+  //     itemId: parseInt(item.itemId),
+  //     url: item.url,
+  //     title: item.title ?? undefined,
+  //     excerpt: item.excerpt ?? undefined,
+  //     note: item.note ?? undefined,
+  //     imageUrl: item.imageUrl ?? undefined,
+  //     publisher: item.publisher ?? undefined,
+  //     authors: item.authors ?? undefined,
+  //     sortOrder: item.sortOrder ?? index,
+  //     list: {
+  //       connect: {
+  //         id: list.id,
+  //       },
+  //     },
+  //   }));
+  //   const inserts = [];
+  //   // Wait for it sequentially vs. Promise.all
+  //   const insertPromises = inputs.map((item) =>
+  //     conditionalItemInsert(item, list, trx),
+  //   );
+  //   for await (const insert of insertPromises) {
+  //     if (insert != null) {
+  //       inserts.push(insert);
+  //     }
+  //   }
+  //   const updatedList = await trx.list.update({
+  //     data: {
+  //       updatedAt: new Date().toISOString(),
+  //     },
+  //     where: {
+  //       externalId: list.externalId,
+  //     },
+  //     include: {
+  //       listItems: { select: shareableListItemSelectFields },
+  //     },
+  //   });
+  //   return { inserts, updatedList };
+  // });
+  // //send event bridge event for shareable-list-item-created event type
+  // inserts.forEach((item) => {
+  //   if (item != null) {
+  //     sendEvent(EventBridgeEventType.SHAREABLE_LIST_ITEM_CREATED, {
+  //       shareableListItem: item,
+  //       shareableListItemExternalId: item.externalId,
+  //       listExternalId: updatedList.externalId,
+  //       isShareableListItemEventType: true,
+  //     });
+  //   }
+  // });
+  // return updatedList;
 }
 
 /**

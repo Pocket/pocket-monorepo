@@ -8,6 +8,7 @@ import {
 } from './queries/ShareableList';
 import { isPilotUser } from './queries/PilotUser';
 import {
+  addToShareableList,
   createShareableList,
   deleteShareableList,
   updateShareableList,
@@ -38,6 +39,7 @@ export const resolvers = {
     updateShareableListItem,
     updateShareableListItems,
     deleteShareableListItem,
+    addToShareableList,
   },
   Query: {
     shareableList: getShareableList,

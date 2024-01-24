@@ -8,6 +8,7 @@ import { startServer } from '../../../express';
 import { IPublicContext } from '../../context';
 import { client } from '../../../database/client';
 import {
+  AddItemInput,
   CreateShareableListItemInput,
   UpdateShareableListItemInput,
   UpdateShareableListItemsInput,
@@ -17,6 +18,7 @@ import {
   UPDATE_SHAREABLE_LIST_ITEM,
   UPDATE_SHAREABLE_LIST_ITEMS,
   DELETE_SHAREABLE_LIST_ITEM,
+  ADD_TO_SHAREABLE_LIST,
 } from './sample-mutations.gql';
 import {
   clearDb,
@@ -76,6 +78,144 @@ describe('public mutations: ShareableListItem', () => {
     jest.useRealTimers();
     await db.$disconnect();
     await server.stop();
+  });
+
+  describe('addToShareableList', () => {
+    let pilotList: List;
+    let list: List;
+
+    const itemBase = {
+      title: 'A story is a story',
+      excerpt: '<blink>The best story ever told</blink>',
+      imageUrl: 'https://www.test.com/thumbnail.jpg',
+      publisher: 'The London Times',
+      authors: 'Charles Dickens, Mark Twain',
+    };
+
+    beforeAll(() => {
+      jest.useFakeTimers({
+        now: arbitraryTimestamp,
+        advanceTimers: false,
+        // If these are faked, prisma transactions hang
+        doNotFake: ['nextTick', 'setImmediate'],
+      });
+    });
+
+    afterAll(() => jest.useRealTimers());
+
+    beforeEach(async () => {
+      await clearDb(db);
+
+      // Create a parent Shareable List for pilot & public users
+      pilotList = await createShareableListHelper(db, {
+        userId: parseInt(pilotUserHeaders.userId),
+        title: 'This List Will Have Lots of Stories',
+      });
+
+      list = await createShareableListHelper(db, {
+        userId: parseInt(publicUserHeaders.userId),
+        title: 'This List Will Have Lots of Stories',
+      });
+    });
+
+    it('adds one item to a shareable list', async () => {
+      const variables: { listId: string; items: AddItemInput[] } = {
+        listId: list.externalId,
+        items: [
+          {
+            ...itemBase,
+            itemId: '3834701731',
+            url: 'https://www.test.com/this-is-a-story',
+          },
+        ],
+      };
+
+      const expected = {
+        addToShareableList: expect.objectContaining({
+          updatedAt: new Date(arbitraryTimestamp).toISOString(),
+          externalId: list.externalId,
+          // updatedAt: datestring,
+          listItems: expect.toIncludeSameMembers([
+            expect.objectContaining(variables.items[0]),
+          ]),
+        }),
+      };
+      const res = await request(app)
+        .post(graphQLUrl)
+        .set(publicUserHeaders)
+        .send({
+          query: print(ADD_TO_SHAREABLE_LIST),
+          variables,
+        });
+      expect(res.body.errors).toBeUndefined();
+      expect(res.body.data).toEqual(expected);
+    });
+    it('adds more than one item to a shareable list', async () => {
+      const variables: { listId: string; items: AddItemInput[] } = {
+        listId: list.externalId,
+        items: [
+          {
+            ...itemBase,
+            itemId: '3834701731',
+            url: 'https://www.test.com/this-is-a-story',
+          },
+          {
+            ...itemBase,
+            itemId: '12345',
+            url: 'https://www.test.com/another-story',
+          },
+        ],
+      };
+
+      const expected = {
+        addToShareableList: expect.objectContaining({
+          updatedAt: new Date(arbitraryTimestamp).toISOString(),
+          externalId: list.externalId,
+          // updatedAt: datestring,
+          listItems: expect.toIncludeSameMembers([
+            expect.objectContaining(variables.items[0]),
+            expect.objectContaining(variables.items[1]),
+          ]),
+        }),
+      };
+      const res = await request(app)
+        .post(graphQLUrl)
+        .set(publicUserHeaders)
+        .send({
+          query: print(ADD_TO_SHAREABLE_LIST),
+          variables,
+        });
+      expect(res.body.errors).toBeUndefined();
+      expect(res.body.data).toEqual(expected);
+    });
+    it('fails the entire batch if one fails', async () => {
+      const variables: { listId: string; items: AddItemInput[] } = {
+        listId: list.externalId,
+        items: [
+          {
+            ...itemBase,
+            itemId: '3834701731',
+            url: 'https://www.test.com/this-is-a-story',
+          },
+          {
+            ...itemBase,
+            itemId: '12345',
+            url: 12345 as any,
+          },
+        ],
+      };
+      const res = await request(app)
+        .post(graphQLUrl)
+        .set(publicUserHeaders)
+        .send({
+          query: print(ADD_TO_SHAREABLE_LIST),
+          variables,
+        });
+      expect(res.body.errors).not.toBeUndefined();
+    });
+    it('sends events for each update', async () => {});
+    it('throws NotFoundError if the list does not exist', async () => {});
+    it('does nothing with duplicated items (already in list)', async () => {});
   });
 
   describe('createShareableListItem', () => {

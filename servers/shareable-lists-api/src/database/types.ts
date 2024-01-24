@@ -168,6 +168,11 @@ export type CreateShareableListItemInput = {
   sortOrder: number;
 };
 
+export type AddItemInput = Omit<
+  CreateShareableListItemInput,
+  'listExternalId' | 'sortOrder'
+> & { sortOrder?: number };
+
 /**
  * Input for updating a single shareable list item
  */
