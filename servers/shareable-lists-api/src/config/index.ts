@@ -20,8 +20,8 @@ export default {
     region: process.env.AWS_DEFAULT_REGION || 'us-east-1',
   },
   redis: {
-    primaryEndpoint: process.env.REDIS_PRIMARY_ENDPOINT || 'redis',
-    readerEndpoint: process.env.REDIS_READER_ENDPOINT || 'redis',
+    primaryEndpoint: process.env.REDIS_PRIMARY_ENDPOINT || 'localhost',
+    readerEndpoint: process.env.REDIS_READER_ENDPOINT || 'localhost',
     port: process.env.REDIS_PORT ?? 6379,
   },
   sentry: {
