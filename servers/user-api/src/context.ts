@@ -9,7 +9,7 @@ import {
 import IntMask from './utils/intMask';
 import { UserDataService } from './dataService/userDataService';
 import { UserModel } from './models/User';
-import { AuthenticationError, NotFoundError } from '@pocket-tools/apollo-utils';
+import { NotFoundError } from '@pocket-tools/apollo-utils';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import * as Sentry from '@sentry/node';
 
