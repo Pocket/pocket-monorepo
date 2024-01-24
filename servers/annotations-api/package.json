@@ -22,8 +22,8 @@
     "@aws-sdk/client-sqs": "3.496.0",
     "@aws-sdk/lib-dynamodb": "3.496.0",
     "@pocket-tools/apollo-utils": "workspace:*",
-    "@pocket-tools/ts-logger": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
+    "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "7.94.1",
     "@sentry/tracing": "7.94.1",
     "cors": "2.8.5",
@@ -37,19 +37,19 @@
     "nanoid": "3.3.7"
   },
   "devDependencies": {
-    "eslint-config-custom": "workspace:*",
-    "tsconfig": "workspace:*",
     "@sentry/types": "7.94.1",
     "@types/chance": "1.1.6",
     "@types/jest": "29.5.11",
-    "@types/uuid": "9.0.2",
+    "@types/uuid": "9.0.7",
     "chance": "1.1.11",
+    "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
-    "nock": "13.4.0",
-    "nodemon": "3.0.2",
-    "supertest": "6.3.3",
-    "ts-jest": "29.1.1",
-    "jest-extended": "4.0.2"
+    "jest-extended": "4.0.2",
+    "nock": "13.5.0",
+    "nodemon": "3.0.3",
+    "supertest": "6.3.4",
+    "ts-jest": "29.1.2",
+    "tsconfig": "workspace:*"
   },
   "files": [
     "dist",

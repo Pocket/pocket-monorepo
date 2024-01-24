@@ -14,9 +14,10 @@ import { UsersMeta } from '../../dataservices/usersMeta';
 import { mysqlTimeString } from '../../dataservices/utils';
 import config from '../../config';
 import { v4 as uuid } from 'uuid';
+import { Application } from 'express';
 
 describe('Highlights batchWrite', () => {
-  let app: Express.Application;
+  let app: Application;
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
   // Variables/data

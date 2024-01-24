@@ -18,6 +18,7 @@ import {
 } from '../../../shared/constants';
 import { MODERATE_SHAREABLE_LIST } from './sample-mutations.gql';
 import { ShareableListModerationReason } from '../../../database/types';
+import { Application } from 'express';
 
 const validHeaders = {
   name: 'Lee Moderator',
@@ -26,7 +27,7 @@ const validHeaders = {
 };
 
 describe('admin mutations: ShareableList', () => {
-  let app: Express.Application;
+  let app: Application;
   let server: ApolloServer<IAdminContext>;
   let graphQLUrl: string;
   let db: PrismaClient;

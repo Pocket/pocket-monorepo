@@ -21,15 +21,15 @@
     "tslib": "2.6.2"
   },
   "devDependencies": {
-    "eslint-config-custom": "workspace:*",
-    "tsconfig": "workspace:*",
-    "@types/aws-lambda": "8.10.130",
-    "@types/isomorphic-fetch": "0.0.36",
+    "@types/aws-lambda": "8.10.131",
+    "@types/isomorphic-fetch": "0.0.39",
     "@types/jest": "29.5.11",
+    "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
-    "nock": "13.4.0",
-    "nodemon": "3.0.2",
-    "ts-jest": "29.1.1"
+    "nock": "13.5.0",
+    "nodemon": "3.0.3",
+    "ts-jest": "29.1.2",
+    "tsconfig": "workspace:*"
   },
   "files": [
     "dist",

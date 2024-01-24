@@ -5,11 +5,12 @@ import nock from 'nock';
 import { print } from 'graphql/index';
 import { gql } from 'graphql-tag';
 import request from 'supertest';
+import { Application } from 'express';
 
 describe('timeToRead', () => {
   const testUrl = 'https://someurl.com';
 
-  let app: Express.Application;
+  let app: Application;
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
 

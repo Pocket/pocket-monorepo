@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Application } from 'express';
 import * as Sentry from '@sentry/node';
 import { create } from 'unleash-server';
 import { setUnleash } from './unleashClient';
@@ -22,7 +22,7 @@ export interface ServerOptions {
 }
 
 export async function start(port: number): Promise<{
-  app: Express.Application;
+  app: Application;
   server: ApolloServer<RequestHandlerContext>;
   graphqlUrl: string;
 }> {

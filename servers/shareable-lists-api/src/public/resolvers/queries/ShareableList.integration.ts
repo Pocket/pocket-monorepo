@@ -25,12 +25,13 @@ import {
   GET_SHAREABLE_LISTS,
 } from './sample-queries.gql';
 import { ACCESS_DENIED_ERROR } from '../../../shared/constants';
+import { Application } from 'express';
 
 const toBeNonEmptyString = (s: unknown) =>
   (typeof s === 'string' || s instanceof String) && s.length > 0;
 
 describe('public queries: ShareableList', () => {
-  let app: Express.Application;
+  let app: Application;
   let server: ApolloServer<IPublicContext>;
   let graphQLUrl: string;
   let db: PrismaClient;

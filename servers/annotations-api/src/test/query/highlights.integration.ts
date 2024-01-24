@@ -5,9 +5,10 @@ import { print } from 'graphql';
 import { IContext } from '../../context';
 import { readClient, writeClient } from '../../database/client';
 import { GET_HIGHLIGHTS, seedData } from './highlights-fixtures';
+import { Application } from 'express';
 
 describe('Highlights on a SavedItem', () => {
-  let app: Express.Application;
+  let app: Application;
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
 

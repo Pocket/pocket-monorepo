@@ -11,9 +11,10 @@ import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import config from '../../config';
 import { noteSeedCommand } from '../query/notes-fixtures';
 import { NotesDataService } from '../../dataservices/notes';
+import { Application } from 'express';
 
 describe('Notes delete', () => {
-  let app: Express.Application;
+  let app: Application;
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
   // Variables/data

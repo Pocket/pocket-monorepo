@@ -28,9 +28,10 @@ import {
   ACCESS_DENIED_ERROR,
   LIST_ITEM_NOTE_MAX_CHARS,
 } from '../../../shared/constants';
+import { Application } from 'express';
 
 describe('public mutations: ShareableListItem', () => {
-  let app: Express.Application;
+  let app: Application;
   let server: ApolloServer<IPublicContext>;
   let graphQLUrl: string;
   let db: PrismaClient;

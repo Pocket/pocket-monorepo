@@ -10,9 +10,10 @@ import { HighlightEntity } from '../../types';
 import { UsersMeta } from '../../dataservices/usersMeta';
 import { mysqlTimeString } from '../../dataservices/utils';
 import config from '../../config';
+import { Application } from 'express';
 
 describe('Highlights deletion', () => {
-  let app: Express.Application;
+  let app: Application;
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
 

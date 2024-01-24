@@ -11,9 +11,10 @@ import {
   mockRedisServer,
 } from '../../../test/helpers';
 import { SHAREABLE_LISTS_PILOT_USER } from './sample-queries.gql';
+import { Application } from 'express';
 
 describe('public queries: PilotUser', () => {
-  let app: Express.Application;
+  let app: Application;
   let server: ApolloServer<IPublicContext>;
   let graphQLUrl: string;
   let db: PrismaClient;

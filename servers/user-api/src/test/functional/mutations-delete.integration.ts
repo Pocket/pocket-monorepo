@@ -10,6 +10,7 @@ import { print } from 'graphql';
 import { PiiTableSeed, truncatePiiTables } from './seeds';
 import { IContext } from '../../context';
 import { ApolloServer } from '@apollo/server';
+import { Application } from 'express';
 
 jest.mock('../../aws/pinpointController');
 
@@ -21,7 +22,7 @@ describe('Delete user mutations', () => {
   const readDb = readClient();
   const writeDb = writeClient();
   let server: ApolloServer<IContext>;
-  let app: Express.Application;
+  let app: Application;
   let url: string;
   let deleteUserEndpointsMock: jest.Mock<any, any, any>;
   let eventObj = null;

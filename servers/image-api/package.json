@@ -17,20 +17,20 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "tsconfig": "workspace:*",
-    "eslint-config-custom": "workspace:*",
     "@types/jest": "29.5.11",
+    "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
-    "nock": "13.4.0",
-    "nodemon": "3.0.2",
-    "ts-jest": "29.1.1",
-    "supertest": "6.3.3",
-    "jest-extended": "4.0.2"
+    "jest-extended": "4.0.2",
+    "nock": "13.5.0",
+    "nodemon": "3.0.3",
+    "supertest": "6.3.4",
+    "ts-jest": "29.1.2",
+    "tsconfig": "workspace:*"
   },
   "dependencies": {
     "@pocket-tools/apollo-utils": "workspace:*",
-    "@pocket-tools/ts-logger": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
+    "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "7.94.1",
     "@sentry/tracing": "7.94.1",
     "axios": "1.6.5",
