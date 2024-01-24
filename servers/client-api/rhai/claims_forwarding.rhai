@@ -27,8 +27,9 @@ fn process_request(request) {
         claim = claim.reduce(|concat, v|
           if concat == () { v.to_string() } else { concat + `,${v}`});
       }
-      claim = if claim == () {""} else {claim};
-      request.subgraph.headers[claim_names_map[claim_name]] = claim.to_string();
+      if (claim != ()) { 
+        request.subgraph.headers[claim_names_map[claim_name]] = claim.to_string() 
+      };
     }
     // Indicate if the subject is a Mozilla account ID (formerly Firefox Account)
     if (claims["iss"] == "fxa-webhook-proxy") {
