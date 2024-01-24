@@ -136,7 +136,8 @@ class ContextManager implements IContext {
     }
 
     // This shouldn't need to be in a if block, but it is possible to have a null userId at this point if the the userid header was empty.
-    if (this._userId != null) {
+    // Also some service is passing through anonymous to user-api, however this service always should have a user...
+    if (this._userId != null && this._userId != 'anonymous') {
       // If we have a user, lets identify them and the error
       // We encode the error because we identifiy users in sentry with encoded user ids across all the clients and services
       Sentry.configureScope((scope) => {

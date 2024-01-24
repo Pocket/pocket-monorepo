@@ -9,6 +9,7 @@ type JwtPayload = {
   exp: number;
   sub: string;
   api_id?: string;
+  application_name?: string;
 };
 
 /**
@@ -27,6 +28,7 @@ export function generateJwt(privateKey, fxaId: string) {
     exp: now + 60 * 10, //expires in 10 mins
     sub: fxaId,
     api_id: config.app.apiId,
+    application_name: config.app.applicationName,
   };
 
   return jwt.sign(payload, jwkToPem(privateKey, { private: true }), {
