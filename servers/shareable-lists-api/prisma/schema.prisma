@@ -77,12 +77,6 @@ model ListItem {
 
   // *** Additional indexes and constraints ***
   @@unique([externalId])
-  // Ideally this would be listId and url,
-  // but we can't do generated columns with Prisma
-  // (e.g. making a hash column from url),
-  // and the url column has too many bytes to be used
-  // in a uniquenes constraint.
-  @@unique([listId, itemId])
 }
 
 model PilotUser {
