@@ -20,5 +20,5 @@ export {
   deleteShareableListItem,
   updateShareableListItem,
   updateShareableListItems,
-  addToShareableList
+  addToShareableList,
 } from './mutations/ShareableListItem';

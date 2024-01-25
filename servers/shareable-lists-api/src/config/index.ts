@@ -35,4 +35,11 @@ export default {
     remove: /[*+~.()'"!:@]/g,
     strict: true,
   },
+  database: {
+    host: process.env.DATABASE_HOST || 'localhost',
+    username: process.env.DATABASE_USER || 'root',
+    password: process.env.DATABASE_PASSWORD || '',
+    dbname: process.env.DATABASE_NAME || 'shareablelists',
+    port: parseInt(process.env.DATABASE_PORT) || 3306,
+  },
 };

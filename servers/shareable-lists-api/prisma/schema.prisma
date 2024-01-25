@@ -5,6 +5,12 @@ generator client {
   output          = "../node_modules/.prisma/client"
 }
 
+generator kysely {
+    provider = "prisma-kysely"
+    output = "../node_Modules/.kysely/client"
+    fileName = "types.ts"
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
