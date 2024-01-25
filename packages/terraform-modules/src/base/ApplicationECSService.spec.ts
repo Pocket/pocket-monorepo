@@ -155,6 +155,45 @@ describe('ApplicationECSService', () => {
     expect(synthed).toMatchSnapshot();
   });
 
+  it('renders an ECS service without an image container definition props and with a sha specified', () => {
+    BASE_CONFIG.launchType = 'ROCKET';
+    BASE_CONFIG.deploymentMaximumPercent = 400;
+    BASE_CONFIG.deploymentMinimumHealthyPercent = 80;
+    BASE_CONFIG.desiredCount = 4;
+    BASE_CONFIG.lifecycleIgnoreChanges = ['bowling', 'donnie', 'autobahn'];
+    BASE_CONFIG.containerConfigs = [
+      {
+        portMappings: [
+          {
+            containerPort: 3002,
+            hostPort: 3001,
+          },
+        ],
+        logGroup: 'test/log/group',
+        name: 'lebowski',
+        imageSha: '123asdasdasd24432',
+        repositoryCredentialsParam: 'someArn',
+        envVars: [
+          {
+            name: 'rug',
+            value: 'tiedtheroomtogether',
+          },
+        ],
+        secretEnvVars: [
+          {
+            name: 'donnie',
+            valueFrom: 'throwinrockstonight',
+          },
+        ],
+      },
+    ];
+
+    const synthed = Testing.synthScope((stack) => {
+      new ApplicationECSService(stack, 'testECSService', BASE_CONFIG);
+    });
+    expect(synthed).toMatchSnapshot();
+  });
+
   it('renders an ECS service with full container definition props and ALB security group config', () => {
     BASE_CONFIG.containerConfigs = [
       {
