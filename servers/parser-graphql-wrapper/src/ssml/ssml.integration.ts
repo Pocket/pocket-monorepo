@@ -7,6 +7,7 @@ import request from 'supertest';
 import { print } from 'graphql';
 import { gql } from 'graphql-tag';
 import { IContext } from '../context';
+import { Application } from 'express';
 
 function makeResponseForParserTextEndpoint(testUrl: string, html: string) {
   const { query } = ParserAPI.buildQueryString({
@@ -52,7 +53,7 @@ function makeResponseForParserTextEndpoint(testUrl: string, html: string) {
 
 describe('SSML integration ', () => {
   const testUrl = 'https://someurl.com';
-  let app: Express.Application;
+  let app: Application;
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
 

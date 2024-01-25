@@ -25,7 +25,7 @@ model List {
   // Prisma needs an integer ID to make relationships between tables
   id                     BigInt           @id @default(autoincrement())
   // This is our public-facing ID for use in Admin Tools and Snowplow event reporting
-  externalId             String           @default(dbgenerated("(UUID())")) @db.VarChar(36)
+  externalId             String           @default(uuid()) @db.VarChar(255)
   // This is the Pocket ID. Sourced externally from a mutation input
   userId                 BigInt
   slug                   String?          @db.VarChar(300)
@@ -55,7 +55,7 @@ model ListItem {
   // Prisma needs an integer ID to make relationships between tables
   id         BigInt   @id @default(autoincrement())
   // This is our public-facing ID for use in Admin Tools and Snowplow event reporting
-  externalId String   @default(dbgenerated("(UUID())")) @db.VarChar(36)
+  externalId String   @default(uuid()) @db.VarChar(255)
   // The link to the parent List
   listId     BigInt
   // Required ID of Parser Item and Item props outside of this subgraph's control
@@ -77,12 +77,6 @@ model ListItem {
 
   // *** Additional indexes and constraints ***
   @@unique([externalId])
-  // Ideally this would be listId and url,
-  // but we can't do generated columns with Prisma
-  // (e.g. making a hash column from url),
-  // and the url column has too many bytes to be used
-  // in a uniquenes constraint.
-  @@unique([listId, itemId])
 }
 
 model PilotUser {

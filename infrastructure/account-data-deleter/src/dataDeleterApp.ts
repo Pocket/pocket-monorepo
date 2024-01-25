@@ -88,6 +88,7 @@ export class DataDeleterApp extends Construct {
       containerConfigs: [
         {
           name: 'app',
+          imageSha: config.releaseSha,
           envVars: [
             {
               name: 'AWS_XRAY_CONTEXT_MISSING',

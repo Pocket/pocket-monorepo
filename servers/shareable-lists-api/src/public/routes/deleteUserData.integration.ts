@@ -15,9 +15,10 @@ import {
   getAllShareableListIdsForUser,
   deleteShareableListItemsForUser,
 } from './deleteUserData';
+import { Application } from 'express';
 
 describe('/deleteUserData express endpoint', () => {
-  let app: Express.Application;
+  let app: Application;
   let server: ApolloServer<IPublicContext>;
   let graphQLUrl: string;
   let db: PrismaClient;

@@ -13,20 +13,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "node-fetch": "2.7.0",
-    "@aws-sdk/client-lambda": "3.496.0",
+    "@aws-sdk/client-lambda": "3.499.0",
     "@sentry/serverless": "7.94.1",
+    "node-fetch": "2.7.0",
     "tslib": "2.6.2"
   },
   "devDependencies": {
-    "tsconfig": "workspace:*",
-    "eslint-config-custom": "workspace:*",
-    "@types/aws-lambda": "8.10.130",
+    "@types/aws-lambda": "8.10.131",
     "@types/jest": "29.5.11",
-    "@types/node-fetch": "2.6.4",
+    "@types/node-fetch": "2.6.11",
+    "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
-    "nock": "13.4.0",
-    "ts-jest": "29.1.1"
+    "nock": "13.5.0",
+    "ts-jest": "29.1.2",
+    "tsconfig": "workspace:*"
   },
   "files": [
     "dist",

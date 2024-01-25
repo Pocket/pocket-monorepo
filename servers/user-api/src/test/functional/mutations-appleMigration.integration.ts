@@ -9,12 +9,13 @@ import { UserEventEmitter } from '../../events/userEventEmitter';
 import config from '../../config';
 import { IContext } from '../../context';
 import { ApolloServer } from '@apollo/server';
+import { Application } from 'express';
 
 describe('Apple Migration', () => {
   const readDb = readClient();
   const writeDb = writeClient();
   let server: ApolloServer<IContext>;
-  let app: Express.Application;
+  let app: Application;
   let url: string;
   const userId = 1;
   const fxaId = 'abc123';

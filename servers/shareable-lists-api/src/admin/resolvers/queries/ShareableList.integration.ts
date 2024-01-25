@@ -22,9 +22,10 @@ import { SEARCH_SHAREABLE_LIST } from './sample-queries.gql';
 import { FULLACCESS } from '../../../shared/constants';
 import config from '../../../config';
 import slugify from 'slugify';
+import { Application } from 'express';
 
 describe('admin queries: ShareableList', () => {
-  let app: Express.Application;
+  let app: Application;
   let server: ApolloServer<IAdminContext>;
   let graphQLUrl: string;
   let db: PrismaClient;

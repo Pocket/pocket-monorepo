@@ -435,6 +435,7 @@ exports[`PocketALBApplication renders a Pocket App with attached persistent stor
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testPocketApp_ecs_service_ecs-iam_ecs-task-role_7DB93963.arn}",
         "volume": [
           {
@@ -1094,6 +1095,7 @@ exports[`PocketALBApplication renders a Pocket App with attached waf 1`] = `
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testPocketApp_ecs_service_ecs-iam_ecs-task-role_7DB93963.arn}",
         "volume": [
         ]
@@ -1771,6 +1773,7 @@ exports[`PocketALBApplication renders an Pocket App with code deploy 1`] = `
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testPocketApp_ecs_service_ecs-iam_ecs-task-role_7DB93963.arn}",
         "volume": [
         ]
@@ -2478,6 +2481,7 @@ exports[`PocketALBApplication renders an Pocket App with code deploy and creates
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testPocketApp_ecs_service_ecs-iam_ecs-task-role_7DB93963.arn}",
         "volume": [
         ]
@@ -3183,6 +3187,7 @@ exports[`PocketALBApplication renders an Pocket App with code deploy notificatio
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testPocketApp_ecs_service_ecs-iam_ecs-task-role_7DB93963.arn}",
         "volume": [
         ]
@@ -3865,6 +3870,7 @@ exports[`PocketALBApplication renders an Pocket App with custom Alarm Descriptio
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testPocketApp_ecs_service_ecs-iam_ecs-task-role_7DB93963.arn}",
         "volume": [
         ]
@@ -4442,6 +4448,7 @@ exports[`PocketALBApplication renders an Pocket App with logs and dashboard in a
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testPocketApp_ecs_service_ecs-iam_ecs-task-role_7DB93963.arn}",
         "volume": [
         ]
@@ -5042,6 +5049,7 @@ exports[`PocketALBApplication renders an application alarms 1`] = `
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testPocketApp_ecs_service_ecs-iam_ecs-task-role_7DB93963.arn}",
         "volume": [
         ]
@@ -5632,6 +5640,7 @@ exports[`PocketALBApplication renders an application custom default alarms 1`] =
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testPocketApp_ecs_service_ecs-iam_ecs-task-role_7DB93963.arn}",
         "volume": [
         ]
@@ -6247,6 +6256,7 @@ exports[`PocketALBApplication renders an application with autoscaling group and 
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "tags": {
           "hobby": "bowling",
           "name": "thedude"
@@ -6846,6 +6856,7 @@ exports[`PocketALBApplication renders an application with custom task sizes 1`] 
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testPocketApp_ecs_service_ecs-iam_ecs-task-role_7DB93963.arn}",
         "volume": [
         ]
@@ -7461,6 +7472,7 @@ exports[`PocketALBApplication renders an application with default autoscaling gr
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "tags": {
           "hobby": "bowling",
           "name": "thedude"
@@ -8060,6 +8072,7 @@ exports[`PocketALBApplication renders an application with minimal config 1`] = `
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testPocketApp_ecs_service_ecs-iam_ecs-task-role_7DB93963.arn}",
         "volume": [
         ]
@@ -8662,6 +8675,7 @@ exports[`PocketALBApplication renders an application with modified container def
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testPocketApp_ecs_service_ecs-iam_ecs-task-role_7DB93963.arn}",
         "volume": [
         ]
@@ -9324,6 +9338,7 @@ exports[`PocketALBApplication renders an external application 1`] = `
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testPocketApp_ecs_service_ecs-iam_ecs-task-role_7DB93963.arn}",
         "volume": [
         ]
@@ -9932,6 +9947,7 @@ exports[`PocketALBApplication renders an internal application 1`] = `
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testPocketApp_ecs_service_ecs-iam_ecs-task-role_7DB93963.arn}",
         "volume": [
         ]
@@ -10547,6 +10563,7 @@ exports[`PocketALBApplication renders an internal application with tags 1`] = `
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "tags": {
           "hobby": "bowling",
           "name": "thedude"

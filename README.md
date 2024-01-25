@@ -73,6 +73,24 @@ You can expand this to run multiple specific servers as well like:
 
 ### Testing
 
+### Updating Packages
+
+To update packages this repository uses Renovate on a pr by pr basis and you can initiate that [here](https://github.com/Pocket/pocket-monorepo/issues/7)
+
+In some cases it may be easier to update packages locally, like updating all development depencies at once.
+
+To select and update *development* dependencices, interactively you can use the following command ran at the root of the repository.
+
+```bash
+pnpm update -iDLr
+```
+
+To select and update *production* and *optional* dependencices, interactively you can use the following command ran at the root of the repository.
+
+```bash
+pnpm update -iPLr
+```
+
 ## Useful Links
 
 Learn more about the power of Turborepo:

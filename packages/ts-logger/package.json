@@ -29,7 +29,7 @@
     "@types/morgan": "1.9.9",
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
-    "ts-jest": "29.1.1",
+    "ts-jest": "29.1.2",
     "tsconfig": "workspace:*"
   }
 }

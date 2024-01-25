@@ -55,6 +55,7 @@ export class SharedSnowplowConsumerApp extends Construct {
       containerConfigs: [
         {
           name: 'app',
+          imageSha: config.releaseSha,
           logMultilinePattern: '^\\S.+',
           logGroup: this.createCustomLogGroup('app'),
           portMappings: [

@@ -1,5 +1,5 @@
 import cors from 'cors';
-import express, { json } from 'express';
+import express, { Application, json } from 'express';
 import http from 'http';
 
 import { ApolloServer } from '@apollo/server';
@@ -21,7 +21,7 @@ import { startPublicServer } from './public/server';
  * @param port number
  */
 export async function startServer(port: number): Promise<{
-  app: Express.Application;
+  app: Application;
   adminServer: ApolloServer<IAdminContext>;
   adminUrl: string;
   publicServer: ApolloServer<IPublicContext>;

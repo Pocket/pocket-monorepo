@@ -98,6 +98,7 @@ exports[`ApplicationECSService attaches persistent (efs) storage to a ECS task 1
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
         "volume": [
           {
@@ -303,6 +304,7 @@ exports[`ApplicationECSService renders an ECS service with code deploy 1`] = `
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
         "volume": [
         ]
@@ -432,6 +434,7 @@ exports[`ApplicationECSService renders an ECS service with code deploy and exclu
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
         "volume": [
         ]
@@ -561,6 +564,7 @@ exports[`ApplicationECSService renders an ECS service with code deploy notificat
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
         "volume": [
         ]
@@ -690,6 +694,7 @@ exports[`ApplicationECSService renders an ECS service with full container defini
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
         "volume": [
         ]
@@ -871,6 +876,7 @@ exports[`ApplicationECSService renders an ECS service with full container defini
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
         "volume": [
         ]
@@ -1015,6 +1021,7 @@ exports[`ApplicationECSService renders an ECS service with minimal config 1`] = 
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
         "volume": [
         ]
@@ -1206,6 +1213,7 @@ exports[`ApplicationECSService renders an ECS service with mountPoints deduplica
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
         "volume": [
           {
@@ -1350,6 +1358,7 @@ exports[`ApplicationECSService renders an ECS service without a log group contai
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
         "volume": [
         ]
@@ -1498,6 +1507,156 @@ exports[`ApplicationECSService renders an ECS service without an image container
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
+        "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
+        "volume": [
+        ]
+      }
+    },
+    "aws_iam_role": {
+      "testECSService_ecs-iam_ecs-execution-role_88EFEECE": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-iam_ecs-task-assume_97906D9E.json}",
+        "name": "abides-dev-TaskExecutionRole"
+      },
+      "testECSService_ecs-iam_ecs-task-role_83E10144": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testECSService_ecs-iam_ecs-task-assume_97906D9E.json}",
+        "name": "abides-dev-TaskRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "testECSService_ecs-iam_ecs-task-execution-default-attachment_7AC36BF7": {
+        "policy_arn": "someArn",
+        "role": "\${aws_iam_role.testECSService_ecs-iam_ecs-execution-role_88EFEECE.id}"
+      }
+    },
+    "aws_security_group": {
+      "testECSService_ecs_security_group_67979722": {
+        "description": "Internal ECS Security Group (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "abides-dev-ECSSecurityGroup",
+        "vpc_id": "myhouse"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationECSService renders an ECS service without an image container definition props and with a sha specified 1`] = `
+"{
+  "data": {
+    "aws_iam_policy_document": {
+      "testECSService_ecs-iam_ecs-task-assume_97906D9E": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "ecs-tasks.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "resource": {
+    "aws_ecr_lifecycle_policy": {
+      "testECSService_ecr-lebowski_ecr-repo-lifecyclepolicy_19C9732F": {
+        "depends_on": [
+          "aws_ecr_repository.testECSService_ecr-lebowski_ecr-repo_6D07DF86"
+        ],
+        "policy": "{\\"rules\\":[{\\"rulePriority\\":1,\\"description\\":\\"expire old images\\",\\"selection\\":{\\"tagStatus\\":\\"any\\",\\"countType\\":\\"imageCountMoreThan\\",\\"countNumber\\":800},\\"action\\":{\\"type\\":\\"expire\\"}}]}",
+        "repository": "\${aws_ecr_repository.testECSService_ecr-lebowski_ecr-repo_6D07DF86.name}"
+      }
+    },
+    "aws_ecr_repository": {
+      "testECSService_ecr-lebowski_ecr-repo_6D07DF86": {
+        "image_scanning_configuration": {
+          "scan_on_push": true
+        },
+        "name": "abides-dev-lebowski"
+      }
+    },
+    "aws_ecs_service": {
+      "testECSService_ecs-service_33F309B3": {
+        "cluster": "gorp",
+        "depends_on": [
+          "aws_ecr_repository.testECSService_ecr-lebowski_ecr-repo_6D07DF86"
+        ],
+        "deployment_controller": {
+          "type": "ECS"
+        },
+        "deployment_maximum_percent": 400,
+        "deployment_minimum_healthy_percent": 80,
+        "desired_count": 4,
+        "launch_type": "ROCKET",
+        "lifecycle": {
+          "ignore_changes": [
+            "bowling",
+            "donnie",
+            "autobahn"
+          ]
+        },
+        "load_balancer": [
+        ],
+        "name": "abides-dev",
+        "network_configuration": {
+          "security_groups": [
+            "\${aws_security_group.testECSService_ecs_security_group_67979722.id}"
+          ],
+          "subnets": [
+            "1.1.1.1",
+            "2.2.2.2"
+          ]
+        },
+        "propagate_tags": "SERVICE",
+        "task_definition": "\${aws_ecs_task_definition.testECSService_ecs-task_A268C927.arn}"
+      }
+    },
+    "aws_ecs_task_definition": {
+      "testECSService_ecs-task_A268C927": {
+        "container_definitions": "[{\\"dnsSearchDomains\\":null,\\"environmentFiles\\":null,\\"logConfiguration\\":{\\"logDriver\\":\\"awslogs\\",\\"secretOptions\\":[],\\"options\\":{\\"awslogs-group\\":\\"test/log/group\\",\\"awslogs-region\\":\\"us-east-1\\",\\"awslogs-stream-prefix\\":\\"ecs\\"}},\\"entryPoint\\":null,\\"portMappings\\":[{\\"containerPort\\":3002,\\"hostPort\\":3001}],\\"linuxParameters\\":null,\\"cpu\\":0,\\"environment\\":[{\\"name\\":\\"rug\\",\\"value\\":\\"tiedtheroomtogether\\"}],\\"resourceRequirements\\":null,\\"ulimits\\":null,\\"repositoryCredentials\\":{\\"credentialsParameter\\":\\"someArn\\"},\\"dnsServers\\":null,\\"mountPoints\\":[],\\"workingDirectory\\":null,\\"secrets\\":[{\\"name\\":\\"donnie\\",\\"valueFrom\\":\\"throwinrockstonight\\"}],\\"dockerSecurityOptions\\":null,\\"memory\\":null,\\"memoryReservation\\":null,\\"volumesFrom\\":[],\\"stopTimeout\\":null,\\"image\\":\\"\${aws_ecr_repository.testECSService_ecr-lebowski_ecr-repo_6D07DF86.repository_url}:123asdasdasd24432\\",\\"startTimeout\\":null,\\"firelensConfiguration\\":null,\\"dependsOn\\":null,\\"disableNetworking\\":null,\\"interactive\\":null,\\"healthCheck\\":null,\\"essential\\":true,\\"links\\":null,\\"hostname\\":null,\\"extraHosts\\":null,\\"pseudoTerminal\\":null,\\"user\\":null,\\"readonlyRootFilesystem\\":false,\\"dockerLabels\\":null,\\"systemControls\\":null,\\"privileged\\":null,\\"name\\":\\"lebowski\\"}]",
+        "cpu": "512",
+        "depends_on": [
+          "aws_ecr_repository.testECSService_ecr-lebowski_ecr-repo_6D07DF86"
+        ],
+        "execution_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-execution-role_88EFEECE.arn}",
+        "family": "abides-dev",
+        "memory": "2048",
+        "network_mode": "awsvpc",
+        "requires_compatibilities": [
+          "FARGATE"
+        ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
         "volume": [
         ]

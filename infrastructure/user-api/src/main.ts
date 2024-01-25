@@ -16,7 +16,6 @@ import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
 import { config } from './config';
 import {
   PocketALBApplication,
-  PocketECSCodePipeline,
   PocketPagerDuty,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
@@ -83,22 +82,6 @@ class UserAPI extends TerraformStack {
   }
 
   /**
-   * Create CodePipeline to build and deploy terraform and ecs
-   * @param app
-   * @private
-   */
-  private createApplicationCodePipeline(app: PocketALBApplication) {
-    new PocketECSCodePipeline(this, 'code-pipeline', {
-      prefix: config.prefix,
-      source: {
-        codeStarConnectionArn: config.codePipeline.githubConnectionArn,
-        repository: config.codePipeline.repository,
-        branchName: config.codePipeline.branch,
-      },
-    });
-  }
-
-  /**
    * Create PagerDuty service for alerts
    * @private
    */
@@ -150,6 +133,7 @@ class UserAPI extends TerraformStack {
       containerConfigs: [
         {
           name: 'app',
+          imageSha: config.releaseSha,
           portMappings: [
             {
               hostPort: 4006,

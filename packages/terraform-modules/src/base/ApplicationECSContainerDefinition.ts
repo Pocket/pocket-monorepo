@@ -41,6 +41,7 @@ interface Ulimit {
 
 export interface ApplicationECSContainerDefinitionProps {
   containerImage?: string;
+  imageSha?: string;
   logDatetimeFormat?: string;
   logGroup?: string;
   logGroupRegion?: string;
