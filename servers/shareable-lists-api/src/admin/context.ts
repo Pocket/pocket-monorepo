@@ -4,6 +4,7 @@ import { Kysely } from 'kysely';
 import { DB } from '.kysely/client/types';
 import { client, db } from '../database/client';
 import { FULLACCESS, READONLY } from '../shared/constants';
+import { BaseContext } from '../shared/types';
 
 /**
  * Context components specifically for the admin graph.
@@ -18,7 +19,7 @@ export interface AdminAPIUser {
   canRead: boolean;
 }
 
-export interface IAdminContext {
+export interface IAdminContext extends BaseContext {
   db: PrismaClient;
   conn: Kysely<DB>;
   authenticatedUser: AdminAPIUser;

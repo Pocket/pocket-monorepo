@@ -7,7 +7,7 @@ generator client {
 
 generator kysely {
     provider = "prisma-kysely"
-    output = "../node_Modules/.kysely/client"
+    output = "../node_modules/.kysely/client"
     fileName = "types.ts"
 }
 

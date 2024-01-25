@@ -2,12 +2,13 @@ import { PrismaClient } from '.prisma/client';
 import { client, db } from '../database/client';
 import { Kysely } from 'kysely';
 import { DB } from '.kysely/client/types';
+import { BaseContext } from '../shared/types';
 
 /**
  * Context components specifically for the public graph.
  */
 
-export interface IPublicContext {
+export interface IPublicContext extends BaseContext {
   db: PrismaClient;
   conn: Kysely<DB>;
   // Pocket userId coming in from the http headers

@@ -19,14 +19,17 @@ import {
   updateShareableListItem,
   updateShareableListItems,
 } from './mutations/ShareableListItem';
+import { ListItemsResolver } from '../../shared/resolvers/fields/ShareableList';
 
 export const resolvers = {
   ...PocketDefaultScalars,
   ShareableList: {
     user: UserResolver,
+    listItems: ListItemsResolver,
   },
   ShareableListPublic: {
     user: UserResolver,
+    listItems: ListItemsResolver,
   },
   ShareableListItem: {
     itemId: PrismaBigIntResolver,

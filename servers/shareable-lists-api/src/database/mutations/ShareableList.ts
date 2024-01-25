@@ -29,19 +29,22 @@ import {
 import { validateItemId } from '../../public/resolvers/utils';
 import { sendEventHelper } from '../../snowplow/events';
 import { EventBridgeEventType } from '../../snowplow/types';
+import { IPublicContext } from '../../public/context';
+import { BaseContext } from '../../shared/types';
 
 /**
  * This mutation creates a shareable list, and _only_ a shareable list
  *
- * @param db
+ * @param context
  * @param listData
  * @param userId
  */
 export async function createShareableList(
-  db: PrismaClient,
+  context: BaseContext,
   listData: CreateShareableListInput,
   userId: number | bigint,
 ): Promise<ShareableList> {
+  const { db } = context;
   let listItemData;
 
   // check if listItem data is passed
@@ -82,7 +85,7 @@ export async function createShareableList(
     listItemData['listExternalId'] = list.externalId;
     // create the ShareableListItem
     const createdListItem = await createShareableListItem(
-      db,
+      context,
       listItemData,
       userId,
     );
@@ -104,15 +107,16 @@ export async function createShareableList(
  * Some of the blocks of code are commented out due to removing ability to make lists public.
  * See ticket: https://getpocket.atlassian.net/browse/OSL-577
  *
- * @param db
+ * @param context
  * @param data
  * @param userId
  */
 export async function updateShareableList(
-  db: PrismaClient,
+  context: BaseContext,
   data: UpdateShareableListInput,
   userId: number | bigint,
 ): Promise<ShareableList> {
+  const { db } = context;
   // Retrieve the current record, pre-update
   const list = await getShareableList(db, userId, data.externalId);
 
@@ -217,14 +221,15 @@ export async function updateShareableList(
 /**
  * Apply moderation to a ShareableList.
  *
- * @param db
+ * @param context
  * @param data
  * @throws { NotFoundError } if the list does not exist
  */
 export async function moderateShareableList(
-  db: PrismaClient,
+  context: BaseContext,
   data: ModerateShareableListInput,
 ): Promise<ShareableListComplete> {
+  const { db } = context;
   const exists = await db.list.count({
     where: { externalId: data.externalId },
   });
@@ -277,15 +282,16 @@ export async function moderateShareableList(
  * This method deletes a shareable list, if the owner of the list
  * represented by externalId matches the owner of the list.
  *
- * @param db
+ * @param context
  * @param externalId
  * @param userId
  */
 export async function deleteShareableList(
-  db: PrismaClient,
+  context: BaseContext,
   externalId: string,
   userId: number | bigint,
 ): Promise<ShareableList> {
+  const { db } = context;
   // Note for PR : input is unsanitized
   const deleteList = await db.list.findUnique({
     where: { externalId: externalId },
@@ -314,7 +320,7 @@ export async function deleteShareableList(
   // For these and similar reasons foreign keys are typically not used in environments
   // running at high scale (e.g. Etsy, etc.)
   // Leaving this in now, so we can discuss and circle back and keep moving :)
-  await deleteAllListItemsForList(db, deleteList.id);
+  await deleteAllListItemsForList(context, deleteList.id);
 
   // Now that we've checked that we can delete the list, let's delete it.
   // We'll catch the case where the list has been deleted under us, to

@@ -39,7 +39,8 @@
     "keyv": "4.5.4",
     "kysely": "0.27.2",
     "mysql2": "3.6.5",
-    "slugify": "1.6.6"
+    "slugify": "1.6.6",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@faker-js/faker": "8.3.1",

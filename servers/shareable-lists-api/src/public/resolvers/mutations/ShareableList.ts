@@ -2,8 +2,8 @@ import {
   CreateShareableListInput,
   ShareableList,
   UpdateShareableListInput,
-  CreateShareableListItemInput,
   AddItemInput,
+  ListResponse,
 } from '../../../database/types';
 import {
   createShareableList as dbCreateShareableList,
@@ -81,12 +81,13 @@ export async function addToShareableList(
   _,
   args: { listId: string; items: AddItemInput[] },
   context: IPublicContext,
-): Promise<ShareableList> {
-  return await executeMutation<
+): Promise<ListResponse> {
+  const res = await executeMutation<
     {
       listId: string;
       items: AddItemInput[];
     },
-    ShareableList
+    ListResponse
   >(context, args, dbAddToShareableList);
+  return res;
 }

@@ -22,7 +22,7 @@ export async function moderateShareableList(
   { data },
   context: IAdminContext,
 ): Promise<ShareableListComplete> {
-  const { db, authenticatedUser } = context;
+  const { authenticatedUser } = context;
   if (!authenticatedUser.hasFullAccess) {
     throw new ForbiddenError(ACCESS_DENIED_ERROR);
   }
@@ -46,5 +46,5 @@ export async function moderateShareableList(
     }
     data.restorationReason = data.restorationReason.trim();
   }
-  return await dbModerateShareableList(db, data);
+  return await dbModerateShareableList(context, data);
 }
