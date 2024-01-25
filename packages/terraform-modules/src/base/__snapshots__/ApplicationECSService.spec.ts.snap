@@ -98,6 +98,7 @@ exports[`ApplicationECSService attaches persistent (efs) storage to a ECS task 1
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
         "volume": [
           {
@@ -303,6 +304,7 @@ exports[`ApplicationECSService renders an ECS service with code deploy 1`] = `
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
         "volume": [
         ]
@@ -432,6 +434,7 @@ exports[`ApplicationECSService renders an ECS service with code deploy and exclu
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
         "volume": [
         ]
@@ -561,6 +564,7 @@ exports[`ApplicationECSService renders an ECS service with code deploy notificat
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
         "volume": [
         ]
@@ -690,6 +694,7 @@ exports[`ApplicationECSService renders an ECS service with full container defini
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
         "volume": [
         ]
@@ -871,6 +876,7 @@ exports[`ApplicationECSService renders an ECS service with full container defini
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
         "volume": [
         ]
@@ -1015,6 +1021,7 @@ exports[`ApplicationECSService renders an ECS service with minimal config 1`] = 
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
         "volume": [
         ]
@@ -1206,6 +1213,7 @@ exports[`ApplicationECSService renders an ECS service with mountPoints deduplica
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
         "volume": [
           {
@@ -1350,6 +1358,7 @@ exports[`ApplicationECSService renders an ECS service without a log group contai
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
         "volume": [
         ]
@@ -1498,6 +1507,7 @@ exports[`ApplicationECSService renders an ECS service without an image container
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
         "volume": [
         ]
@@ -1646,6 +1656,7 @@ exports[`ApplicationECSService renders an ECS service without an image container
         "requires_compatibilities": [
           "FARGATE"
         ],
+        "skip_destroy": true,
         "task_role_arn": "\${aws_iam_role.testECSService_ecs-iam_ecs-task-role_83E10144.arn}",
         "volume": [
         ]

@@ -489,6 +489,7 @@ export class ApplicationECSService extends Construct {
       tags: this.config.tags,
       dependsOn: ecrRepos,
       provider: this.config.provider,
+      skipDestroy: true,
     });
 
     if (this.config.efsConfig) {
