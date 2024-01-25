@@ -7,6 +7,7 @@ const domain = isDev
   ? `${domainPrefix}.getpocket.dev`
   : `${domainPrefix}.readitlater.com`;
 const graphqlVariant = isDev ? 'development' : 'current';
+const releaseSha = process.env.CIRCLE_SHA1;
 
 const cacheNodes = 2;
 const cacheSize = isDev ? 'cache.t3.micro' : 'cache.m6g.large';
@@ -19,6 +20,7 @@ export const config = {
   graphqlVariant,
   isDev,
   isProd,
+  releaseSha,
   environment,
   domain,
   cacheNodes,

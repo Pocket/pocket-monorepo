@@ -8,6 +8,7 @@ const domain = isDev
 const graphqlVariant = isDev ? 'development' : 'current';
 const isProd = process.env.NODE_ENV === 'production';
 const s3LogsBucket = isDev ? 'pocket-data-items-dev' : 'pocket-data-items';
+const releaseSha = process.env.CIRCLE_SHA1;
 
 //Arbitrary size and count for cache. No logic was used in deciding this.
 /*
@@ -37,6 +38,7 @@ export const config = {
   cacheSize,
   s3LogsBucket,
   isDev,
+  releaseSha,
   tags: {
     service: name,
     environment,

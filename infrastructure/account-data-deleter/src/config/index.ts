@@ -8,10 +8,10 @@ const domainPrefix = 'account-data-deleter-api';
 const domain = isDev
   ? `${domainPrefix}.getpocket.dev`
   : `${domainPrefix}.readitlater.com`;
-
 const userApiDomain = isDev
   ? `user-api.getpocket.dev`
   : `user-api.readitlater.com`;
+const releaseSha = process.env.CIRCLE_SHA1;
 
 export const config = {
   name,
@@ -20,6 +20,7 @@ export const config = {
   circleCIPrefix: `/${name}/CircleCI/${environment}`,
   constructName,
   domain,
+  releaseSha,
   dynamodb: {
     historicalDeletedUsers: {
       tableName: 'HistoricalDeletedUsers-Pending',

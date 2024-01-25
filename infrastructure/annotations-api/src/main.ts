@@ -257,6 +257,7 @@ class AnnotationsAPI extends TerraformStack {
       containerConfigs: [
         {
           name: 'app',
+          imageSha: config.releaseSha,
           portMappings: [
             {
               hostPort: config.port,
