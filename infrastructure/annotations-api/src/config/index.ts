@@ -11,6 +11,7 @@ const cacheNodes = isDev ? 2 : 2;
 const cacheSize = isDev ? 'cache.t3.micro' : 'cache.t3.micro';
 const appPort = 4008;
 const s3LogsBucket = isDev ? 'pocket-data-items-dev' : 'pocket-data-items';
+const releaseSha = process.env.CIRCLE_SHA1;
 
 export const config = {
   name,
@@ -27,6 +28,7 @@ export const config = {
   s3LogsBucket,
   reservedConcurrencyLimit: 1,
   cacheSize,
+  releaseSha,
   healthCheck: {
     command: [
       'CMD-SHELL',

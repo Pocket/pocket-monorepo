@@ -5,7 +5,7 @@ const environment = isDev ? 'Dev' : 'Prod';
 const domain = isDev
   ? `${domainPrefix}.getpocket.dev`
   : `${domainPrefix}.readitlater.com`;
-const graphqlVariant = isDev ? 'development' : 'current';
+const releaseSha = process.env.CIRCLE_SHA1;
 
 //Arbitrary size and count for cache. No logic was used in deciding this.
 const cacheNodes = isDev ? 2 : 2;
@@ -22,9 +22,9 @@ export const config = {
   prefix: `${name}-${environment}`,
   circleCIPrefix: `/${name}/CircleCI/${environment}`,
   shortName: 'SSPC', //change to your service name, limit to 6 characters, match shared-infrastructure short name
+  releaseSha,
   environment,
   domain,
-  graphqlVariant,
   cacheNodes,
   cacheSize,
   tracing: {

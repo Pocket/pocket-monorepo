@@ -12,6 +12,7 @@ const rds = {
   maxCapacity: isDev ? 1 : undefined,
 };
 const eventBusName = `PocketEventBridge-${environment}-Shared-Event-Bus`;
+const releaseSha = process.env.CIRCLE_SHA1;
 
 const cacheNodes = isDev ? 2 : 2;
 const cacheSize = isDev ? 'cache.t3.micro' : 'cache.t3.micro';
@@ -23,6 +24,7 @@ export const config = {
   prefix: `${name}-${environment}`,
   circleCIPrefix: `/${name}/CircleCI/${environment}`,
   shortName: 'SLAPI',
+  releaseSha,
   environment,
   domain,
   graphqlVariant,

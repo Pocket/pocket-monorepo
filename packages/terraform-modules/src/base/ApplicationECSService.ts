@@ -405,6 +405,10 @@ export class ApplicationECSService extends Construct {
     // figure out if we need to create an ECR for each container definition
     // also build a container definition JSON for each container
     this.config.containerConfigs.forEach((def) => {
+      if (def.imageSha && def.containerImage) {
+        throw new Error('Only one of imageSha or containerImage can be userd');
+      }
+
       // if an image has been given, it must already live somewhere, so an ECR isn't needed
       if (!def.containerImage) {
         const ecrConfig: ECRProps = {
@@ -415,7 +419,7 @@ export class ApplicationECSService extends Construct {
 
         const ecr = new ApplicationECR(this, `ecr-${def.name}`, ecrConfig);
         //Set the image to the latest one for now
-        def.containerImage = `${ecr.repo.repositoryUrl}:latest`;
+        def.containerImage = `${ecr.repo.repositoryUrl}:${def.imageSha ?? 'latest'}`;
         //The task and service need to depend on the repository existing.
         ecrRepos.push(ecr.repo);
       }
@@ -485,6 +489,7 @@ export class ApplicationECSService extends Construct {
       tags: this.config.tags,
       dependsOn: ecrRepos,
       provider: this.config.provider,
+      skipDestroy: true,
     });
 
     if (this.config.efsConfig) {

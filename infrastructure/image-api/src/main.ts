@@ -164,6 +164,7 @@ class ImageAPI extends TerraformStack {
       containerConfigs: [
         {
           name: 'app',
+          imageSha: config.releaseSha,
           portMappings: [
             {
               hostPort: config.appPort,
