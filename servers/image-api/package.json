@@ -33,7 +33,7 @@
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "7.95.0",
     "@sentry/tracing": "7.95.0",
-    "axios": "1.6.5",
+    "axios": "1.6.6",
     "axios-retry": "4.0.0",
     "dataloader": "2.2.2",
     "parse-url": "8.1.0"
