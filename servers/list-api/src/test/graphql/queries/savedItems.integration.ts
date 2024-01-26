@@ -33,6 +33,7 @@ describe('getSavedItems', () => {
               cursor
               node {
                 url
+                title
                 item {
                   ... on Item {
                     givenUrl
@@ -160,11 +161,17 @@ describe('getSavedItems', () => {
     expect(res.body.data?._entities[0].savedItems.edges[0].node.url).toBe(
       'http://ijk',
     );
+    expect(res.body.data?._entities[0].savedItems.edges[0].node.title).toBe(
+      'mytitle',
+    );
     expect(
       res.body.data?._entities[0].savedItems.edges[0].node.item.givenUrl,
     ).toBe('http://ijk');
     expect(res.body.data?._entities[0].savedItems.edges[1].node.url).toBe(
       'http://def',
+    );
+    expect(res.body.data?._entities[0].savedItems.edges[1].node.title).toBe(
+      'title2',
     );
     expect(
       res.body.data?._entities[0].savedItems.edges[1].node.item.givenUrl,
