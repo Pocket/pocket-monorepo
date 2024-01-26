@@ -271,6 +271,28 @@ const resolvers = {
         args.timestamp,
       );
     },
+    savedItemUpdateTitle: async (
+      _,
+      args: { givenUrl: string; timestamp: Date; title: string },
+      context: IContext,
+    ): Promise<SavedItem | null> => {
+      return await context.models.savedItem.updateTitleByUrl(
+        args.givenUrl,
+        args.timestamp,
+        args.title,
+      );
+    },
+    updateSavedItemTitle: async (
+      _,
+      args: { id: string; timestamp: Date; title: string },
+      context: IContext,
+    ): Promise<SavedItem | null> => {
+      return await context.models.savedItem.updateTitleById(
+        args.id,
+        args.timestamp,
+        args.title,
+      );
+    },
   },
 };
 
