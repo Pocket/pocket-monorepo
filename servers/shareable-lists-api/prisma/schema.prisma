@@ -5,6 +5,12 @@ generator client {
   output          = "../node_modules/.prisma/client"
 }
 
+generator kysely {
+    provider = "prisma-kysely"
+    output = "../node_modules/.kysely/client"
+    fileName = "types.ts"
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
@@ -38,8 +44,8 @@ model List {
   moderationDetails      String?          @db.Text
   restorationReason      String?          @db.Text
   listItemNoteVisibility Visibility       @default(PRIVATE)
-  createdAt              DateTime         @default(now()) @db.DateTime(0)
-  updatedAt              DateTime         @updatedAt
+  createdAt              DateTime         @default(dbgenerated("now()")) @db.DateTime(0)
+  updatedAt              DateTime         @default(dbgenerated("now()")) @db.DateTime(0)
 
   // *** Associated models ***
   listItems ListItem[]
@@ -69,8 +75,8 @@ model ListItem {
   publisher  String?  @db.VarChar(300)
   authors    String?  @db.VarChar(1000)
   sortOrder  Int      @default(0)
-  createdAt  DateTime @default(now()) @db.DateTime(0)
-  updatedAt  DateTime @updatedAt
+  createdAt  DateTime @default(dbgenerated("now()")) @db.DateTime(0)
+  updatedAt  DateTime @default(dbgenerated("now()")) @db.DateTime(0)
 
   // *** Associated models ***
   list List @relation(fields: [listId], references: [id])
