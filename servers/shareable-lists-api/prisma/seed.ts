@@ -1,11 +1,10 @@
-import { Visibility, PilotUser, PrismaClient } from '.prisma/client';
+import { PilotUser, PrismaClient } from '.prisma/client';
 import {
   createPilotUserHelper,
   createShareableListHelper,
   createShareableListItemHelper,
 } from '../src/test/helpers';
 import { faker } from '@faker-js/faker';
-import { updateShareableList } from '../src/database/mutations';
 import { setLogger } from '@pocket-tools/ts-logger';
 
 const prismaSeedLogger = setLogger();
@@ -41,15 +40,16 @@ async function main() {
       userId: randomUser.userId,
     });
 
-    // Turn some lists public so that the status changes and a slug is generated.
-    // This seed data is created for the benefit of testing the admin tools after all.
-    if (Math.random() > 0.5) {
-      await updateShareableList(
-        prisma,
-        { externalId: list.externalId, status: Visibility.PUBLIC },
-        randomUser.userId,
-      );
-    }
+    // The code paths this seeder uses were commented out
+    // // Turn some lists public so that the status changes and a slug is generated.
+    // // This seed data is created for the benefit of testing the admin tools after all.
+    // if (Math.random() > 0.5) {
+    //   await updateShareableList(
+    //     prisma,
+    //     { externalId: list.externalId, status: Visibility.PUBLIC },
+    //     randomUser.userId,
+    //   );
+    // }
 
     // add between 5 and 10 Pocket stories to this list
     const numberOfStories = Math.floor(Math.random() * 5) + 5;
