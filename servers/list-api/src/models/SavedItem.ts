@@ -260,6 +260,33 @@ export class SavedItemModel {
   }
 
   /**
+   * U
+   * @param id
+   * @param timestamp
+   * @param title
+   * @returns
+   */
+  public async updateTitleById(
+    id: string,
+    timestamp: Date,
+    title: string,
+  ): Promise<SavedItem | null> {
+    const savedItem = await this.saveService.updateTitle(id, timestamp, title);
+    if (savedItem == null) {
+      throw new NotFoundError(this.defaultNotFoundMessage);
+    } else {
+      this.context.emitItemEvent(EventType.UPDATE_TITLE, savedItem);
+    }
+    return savedItem;
+  }
+
+  public async updateTitleByUrl(url: string, timestamp: Date, title: string) {
+    const id = await this.fetchIdFromUrl(url);
+    // Will throw if fails or returns null
+    return this.updateTitleById(id, timestamp, title);
+  }
+
+  /**
    * Given a URL, fetch the itemId associated with it from the Parser
    * service. This is part of the primary key to identify the savedItem
    * (combined with userId).

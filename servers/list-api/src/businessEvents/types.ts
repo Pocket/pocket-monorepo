@@ -14,6 +14,7 @@ export enum EventType {
   REMOVE_TAGS = 'REMOVE_TAGS',
   RENAME_TAG = 'RENAME_TAG',
   DELETE_TAG = 'DELETE_TAG',
+  UPDATE_TITLE = 'UPDATE_TITLE',
 }
 
 // Data fields required for all events
@@ -83,7 +84,7 @@ export type UnifiedEventType =
 export type EventTypeString = keyof typeof EventType;
 export type RequiredEvents = Exclude<
   EventTypeString,
-  'DELETE_TAG' | 'RENAME_TAG'
+  'DELETE_TAG' | 'RENAME_TAG' | 'UPDATE_TITLE'
 >;
 export const UnifiedEventMap: Record<RequiredEvents, UnifiedEventType> = {
   ADD_ITEM: 'user-list-item-created',
@@ -115,10 +116,11 @@ export type SnowplowEventType =
   | 'unarchive'
   | 'favorite'
   | 'unfavorite'
-  | 'tags_update';
+  | 'tags_update'
+  | 'title_update';
 
 export const SnowplowEventMap: Record<
-  Exclude<RequiredEvents, 'DELETE_TAG' | 'RENAME_TAG'>,
+  RequiredEvents & 'UPDATE_TITLE',
   SnowplowEventType
 > = {
   ADD_ITEM: 'save',
@@ -131,6 +133,7 @@ export const SnowplowEventMap: Record<
   REPLACE_TAGS: 'tags_update',
   REMOVE_TAGS: 'tags_update',
   CLEAR_TAGS: 'tags_update',
+  UPDATE_TITLE: 'title_update',
 };
 
 export type SavedItemTypeString = keyof typeof SavedItemStatus;

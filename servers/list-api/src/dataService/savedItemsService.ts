@@ -413,6 +413,39 @@ export class SavedItemDataService {
   }
 
   /**
+   * Update the title of a user's Save.
+   * This does not affect the Parser metadata associated
+   * with the Item itself, and is localized just to a User-Save.
+   * Primary intent is as a manual fallback for the parser, so that
+   * the user doesn't have a bunch of meaningless/uninformative
+   * titles for items in their saves.
+   * @param itemdId the item ID associated with the saved resource
+   * @param timestamp timestamp for marking the update
+   * @param title the new title for the Save
+   * @returns the SavedItem, or null if it does not exist
+   */
+  public async updateTitle(
+    itemId: string,
+    timestamp: Date,
+    title: string,
+  ): Promise<SavedItem | null> {
+    await this.db.transaction(async (trx) => {
+      await trx('list')
+        .update({
+          title: title,
+          time_updated: timestamp,
+          api_id_updated: this.apiId,
+        })
+        .where({ item_id: itemId, user_id: this.userId });
+      const row = await this.getSavedItemByIdRaw(itemId, trx);
+      if (row != null && this.flags.mirrorWrites) {
+        await SavedItemDataService.syncShadowTable(row, trx);
+      }
+    });
+    return await this.getSavedItemById(itemId);
+  }
+
+  /**
    * @param item
    * @param savedItemUpsertInput
    * @returns savedItem
