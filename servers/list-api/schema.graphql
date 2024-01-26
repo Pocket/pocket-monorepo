@@ -664,12 +664,15 @@ type Mutation {
 
   """
   Update the title display of a Saved Item, retrieved by ID.
-  This is user-save specific (does not update the metadata saved by the parser)
+  This is user-save specific (does not update the metadata saved by the parser).
+  Clients should ensure the input fits in the utf8mb3 character set (BMP only,
+  which means no emoji) to avoid being rejected by the database.
+  In the future this will be more permissive.
   """
   updateSavedItemTitle(
     id: ID!
     timestamp: ISOString!
-    title: String! @constraint(minLength: 1, maxLength: 80)
+    title: String! @constraint(minLength: 1, maxLength: 75)
   ): SavedItem
 
   """
@@ -817,11 +820,14 @@ type Mutation {
   """
   Update the title display of a Saved Item, retrieved by URL.
   This is user-save specific (does not update the metadata saved by the parser)
+  Clients should ensure the input fits in the utf8mb3 character set (BMP only,
+  which means no emoji) to avoid being rejected by the database.
+  In the future this will be more permissive.
   """
   savedItemUpdateTitle(
     givenUrl: Url!
     timestamp: ISOString!
-    title: String! @constraint(minLength: 1, maxLength: 80)
+    title: String! @constraint(minLength: 1, maxLength: 75)
   ): SavedItem
 }
 
