@@ -1,6 +1,7 @@
 #!/bin/bash
-set -x
+set -xe
 # Script to convert a serverless v1 mysql to serverless v2
+# Steps from https://aws.amazon.com/blogs/database/upgrade-from-amazon-aurora-serverless-v1-to-v2-with-minimal-downtime/
 
 DATABASE_IDENTIFIER=
 ACCOUNT_ID=
@@ -9,17 +10,17 @@ REGION=us-east-1
 # Set AWS_PAGER to an empty string to disable the pager
 export AWS_PAGER=""
 
-echo 'creating new binlog param groups'
-aws rds create-db-cluster-parameter-group \
- --db-cluster-parameter-group-name aurora-mysql-with-binlogging \
- --description 'Aurora MySQL 5.7 With Binlog Enabled' \
- --db-parameter-group-family aurora-mysql5.7 \
- --no-paginate
+# echo 'creating new binlog param groups'
+# aws rds create-db-cluster-parameter-group \
+#  --db-cluster-parameter-group-name aurora-mysql-with-binlogging \
+#  --description 'Aurora MySQL 5.7 With Binlog Enabled' \
+#  --db-parameter-group-family aurora-mysql5.7 \
+#  --no-paginate
 
-aws rds modify-db-cluster-parameter-group \
- --db-cluster-parameter-group-name aurora-mysql-with-binlogging \
- --parameters 'ParameterName=binlog_format,ParameterValue=MIXED,ApplyMethod=pending-reboot' \
- --no-paginate
+# aws rds modify-db-cluster-parameter-group \
+#  --db-cluster-parameter-group-name aurora-mysql-with-binlogging \
+#  --parameters 'ParameterName=binlog_format,ParameterValue=MIXED,ApplyMethod=pending-reboot' \
+#  --no-paginate
 
 echo 'attaching new param group'
 
@@ -28,6 +29,9 @@ aws rds modify-db-cluster \
  --db-cluster-parameter-group-name aurora-mysql-with-binlogging \
  --apply-immediately \
  --no-paginate
+
+echo "According to Amazon there needs to be a more then 10 minute delay between these too operations, so we wait 15 minutes now to be safe."
+sleep 900
 
 echo 'mopdifiying to provisioned'
 aws rds modify-db-cluster \
@@ -55,25 +59,25 @@ deployment_output=$(aws rds create-blue-green-deployment \
   --no-paginate)
 
 # Extract the DB cluster identifier from the output
-green_cluster_id=$(echo $deployment_output | jq -r '.dbCluster.dbClusterIdentifier')
+blue_green_deployment_id=$(echo $deployment_output | jq -r '.BlueGreenDeployment.BlueGreenDeploymentIdentifier')
 
-# Extract the DB cluster ARN from the output
-db_cluster_arn=$(echo $deployment_output | jq -r '.dbCluster.dbClusterArn')
+# Function to check the status of the blue-green deployment
+check_green_deployment_status() {
+    blue_green_check=$(aws rds describe-blue-green-deployments --filters Name=blue-green-deployment-identifier,Values=$blue_green_deployment_id)
+    status=$(echo $blue_green_check | jq -r '.BlueGreenDeployments[0].Status')
+    echo "Deployment Status: $status"
+}
 
-# Get the list of instances in the DB cluster
-instances=$(aws rds describe-db-instances --db-cluster-identifier $db_cluster_arn | jq -r '.DBInstances')
-
-# Extract the instance ID of the first instance
-non_serverless_instance=$(echo $instances | jq -r '.[0].DBInstanceIdentifier')
-
-
-aws rds wait db-cluster-available \
- --db-cluster-identifier $green_cluster_id \
- --no-paginate
-
-aws rds wait db-instance-available \
- --db-instance-identifier $first_instance_id \
- --no-paginate
+# Wait for the blue-green deployment to be in a desired state (e.g., "available")
+while true; do
+    check_green_deployment_status
+    if [ "$status" == "AVAILABLE" ]; then
+        echo "Blue-Green Deployment Complete!"
+        green_cluster_id=$(echo $blue_green_check | jq -r '.BlueGreenDeployments[0].Target' | sed "s/arn:aws:rds:$REGION:$ACCOUNT_ID:cluster://g")
+        break
+    fi
+    sleep 30  # Adjust the sleep duration as needed
+done
 
 echo 'enabling v2 scaling'
 aws rds modify-db-cluster \
@@ -103,9 +107,5 @@ aws rds wait db-cluster-available \
  --db-cluster-identifier $green_cluster_id \
  --no-paginate
 
-echo 'removing first instance'
-aws rds delete-db-instance \
- --db-instance-identifier $non_serverless_instance \
- --no-paginate
-
+echo 'Go ahead and remove the first instance'
 echo 'Ready! switch over in the console!'
