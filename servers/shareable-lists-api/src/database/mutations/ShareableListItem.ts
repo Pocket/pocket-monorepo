@@ -212,7 +212,7 @@ export async function addToShareableList(
       await trx
         .updateTable('List')
         .set({
-          updatedAt: new Date().toISOString(),
+          updatedAt: new Date(),
         })
         .where('externalId', '=', listId)
         .execute();
@@ -237,8 +237,6 @@ export async function addToShareableList(
       });
     }
   });
-  console.log('transaction complete');
-  console.log(JSON.stringify(updatedList, null, 2));
   return updatedList;
 }
 

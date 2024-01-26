@@ -14,5 +14,6 @@ export const eventConfig = {
     'REMOVE_TAGS',
     'RENAME_TAG',
     'DELETE_TAG',
+    'UPDATE_TITLE',
   ],
 };

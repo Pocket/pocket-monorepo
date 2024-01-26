@@ -2,7 +2,7 @@ import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
 import { searchShareableList } from './queries/ShareableList';
 import { moderateShareableList } from './mutations/ShareableList';
 import { UserResolver } from '../../shared/resolvers/fields/User';
-import { PrismaBigIntResolver } from '../../shared/resolvers/fields/PrismaBigInt';
+import { ShareableListItem } from '../../database/types';
 
 export const resolvers = {
   ...PocketDefaultScalars,
@@ -10,7 +10,7 @@ export const resolvers = {
     user: UserResolver,
   },
   ShareableListItem: {
-    itemId: PrismaBigIntResolver,
+    itemId: (parent: ShareableListItem) => parent.itemId.toString(),
   },
   Query: { searchShareableList },
   Mutation: { moderateShareableList },
