@@ -1,5 +1,5 @@
 import { PrismaClient } from '.prisma/client';
-import { client, db } from '../database/client';
+import { client, conn } from '../database/client';
 import { Kysely } from 'kysely';
 import { DB } from '.kysely/client/types';
 import { BaseContext } from '../shared/types';
@@ -51,7 +51,7 @@ export async function getPublicContext({
 }): Promise<PublicContextManager> {
   return new PublicContextManager({
     db: client(),
-    conn: db(),
+    conn: conn(),
     request: req,
   });
 }

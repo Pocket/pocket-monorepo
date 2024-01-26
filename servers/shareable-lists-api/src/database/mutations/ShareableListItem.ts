@@ -72,7 +72,8 @@ export async function createShareableListItem(
   }
 
   // check if an item with this URL already exists in this list
-  // TODO (@kschelonka): consider uniqeuness constraint over listId and url
+  // TODO (@kschelonka): consider uniqeuness constraint over listId and url,
+  // via a generated hashed_url column
   const itemExists = list.listItems.find((item) => {
     return item.url === data.url;
   });

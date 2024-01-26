@@ -11,7 +11,7 @@ let kysely: Kysely<DB>;
  * Kysely query builder for more control
  * @returns Kysely query builder
  */
-export function db(): Kysely<DB> {
+export function conn(): Kysely<DB> {
   if (kysely) return kysely;
   const dialect = new MysqlDialect({
     pool: createPool({

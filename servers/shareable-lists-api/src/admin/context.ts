@@ -2,7 +2,7 @@ import { PrismaClient } from '.prisma/client';
 import Express from 'express';
 import { Kysely } from 'kysely';
 import { DB } from '.kysely/client/types';
-import { client, db } from '../database/client';
+import { client, conn } from '../database/client';
 import { FULLACCESS, READONLY } from '../shared/constants';
 import { BaseContext } from '../shared/types';
 
@@ -75,6 +75,6 @@ export async function getAdminContext({
   return new AdminContextManager({
     request: req,
     db: client(),
-    conn: db(),
+    conn: conn(),
   });
 }

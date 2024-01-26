@@ -6,11 +6,11 @@ import {
 } from '../src/test/helpers';
 import { faker } from '@faker-js/faker';
 import { setLogger } from '@pocket-tools/ts-logger';
-import { db } from '../src/database/client';
+import { conn } from '../src/database/client';
 
 const prismaSeedLogger = setLogger();
 const prisma = new PrismaClient();
-const context = { db: prisma, conn: db() };
+const context = { db: prisma, conn: conn() };
 
 async function main() {
   // This seed script creates a number of shareable lists so that
