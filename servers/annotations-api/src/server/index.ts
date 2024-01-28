@@ -1,10 +1,15 @@
 import * as Sentry from '@sentry/node';
 import express, { Application, json } from 'express';
-import http from 'http';
+import { Server, createServer } from 'http';
 import cors from 'cors';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
-import { errorHandler, defaultPlugins } from '@pocket-tools/apollo-utils';
+import {
+  errorHandler,
+  defaultPlugins,
+  initSentry,
+  sentryPocketMiddleware,
+} from '@pocket-tools/apollo-utils';
 import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4';
 
 import { schema } from './apollo';
@@ -18,15 +23,21 @@ export async function startServer(port: number): Promise<{
   server: ApolloServer<IContext>;
   url: string;
 }> {
-  Sentry.init({
+  // initialize express with exposed httpServer so that it may be
+  // provided to drain plugin for graceful shutdown.
+  const app: Application = express();
+  const httpServer: Server = createServer(app);
+
+  initSentry(app, {
     ...config.sentry,
     debug: config.sentry.environment == 'development',
   });
 
-  // initialize express with exposed httpServer so that it may be
-  // provided to drain plugin for graceful shutdown.
-  const app = express();
-  const httpServer = http.createServer(app);
+  // RequestHandler creates a separate execution context, so that all
+  // transactions/spans/breadcrumbs are isolated across requests
+  app.use(Sentry.Handlers.requestHandler() as express.RequestHandler);
+  // TracingHandler creates a trace for every incoming request
+  app.use(Sentry.Handlers.tracingHandler());
 
   // expose a health check url
   app.get('/.well-known/apollo/server-health', (req, res) => {
@@ -58,10 +69,14 @@ export async function startServer(port: number): Promise<{
   app.use(
     url,
     cors<cors.CorsRequest>(),
+    sentryPocketMiddleware,
     expressMiddleware<IContext>(server, {
       context: getContext,
     }),
   );
+
+  // The error handler must be before any other error middleware and after all controllers
+  app.use(Sentry.Handlers.errorHandler() as express.ErrorRequestHandler);
 
   await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
   return { app, server, url };

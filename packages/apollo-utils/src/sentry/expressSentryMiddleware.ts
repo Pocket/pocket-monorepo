@@ -14,14 +14,13 @@ export const sentryPocketMiddleware = (
   _: http.ServerResponse,
   next: (error?: any) => void,
 ) => {
+  const scope = Sentry.getCurrentScope();
   // Set tracking data for Sentry
-  Sentry.configureScope((scope) => {
-    scope.setTag('pocket-api-id', (req.headers.apiid || '0') as string);
-    scope.setUser({
-      id: (req.headers.encodedid as string) || undefined,
-      // Use the gateway ip address because this is behind a non-standard proxy
-      ip_address: (req.headers.gatewayipaddress as string) || undefined,
-    });
+  scope.setUser({
+    id: (req.headers.encodedid as string) || undefined,
+    // Use the gateway ip address because this is behind a non-standard proxy
+    ip_address: (req.headers.gatewayipaddress as string) || undefined,
   });
+  scope.setTag('pocket-api-id', (req.headers.apiid || '0') as string);
   next();
 };

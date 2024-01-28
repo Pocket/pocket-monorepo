@@ -64,11 +64,7 @@ export const sentryPlugin: ApolloServerPlugin<BaseContext> = {
           const requestEncodedId = ctx.request.http?.headers.get('encodedId');
           const gatewayIpAddress =
             ctx.request.http?.headers.get('gatewayIpAddress');
-
-          const user: Sentry.User = {
-            id: requestEncodedId,
-            ip_address: gatewayIpAddress,
-          };
+          const apiId = ctx.request.http?.headers.get('apiid');
 
           const errorData = {
             context: ctx, // contains most of the following, but move some fields up for easier filtering
@@ -87,32 +83,38 @@ export const sentryPlugin: ApolloServerPlugin<BaseContext> = {
             stack: err.stack, // parity with Sentry setup
           });
 
-          Sentry.withScope((scope) => {
-            // kind of operation == query/mutation/subscription
-            scope.setTag('kind', operationKind);
-            scope.setExtra('query', operationQuery);
-            scope.setExtra('variables', operationVariablesJson);
+          const scope = Sentry.getCurrentScope();
+          // kind of operation == query/mutation/subscription
+          scope.setTag('kind', operationKind);
+          scope.setExtra('query', operationQuery);
+          scope.setExtra('variables', operationVariablesJson);
 
-            if (requestId !== undefined) {
-              scope.setTag('graphRequestId', requestId);
-            }
-            if (requestTraceId !== undefined) {
-              scope.setTag('traceId', requestTraceId);
-            }
+          if (requestId !== undefined) {
+            scope.setTag('graphRequestId', requestId);
+          }
+          if (requestTraceId !== undefined) {
+            scope.setTag('traceId', requestTraceId);
+          }
 
-            if (err.path) {
-              scope.addBreadcrumb({
-                category: 'query-path',
-                message: err.path.join(' > '),
-                level: 'debug',
-              });
-            }
+          if (err.path) {
+            scope.addBreadcrumb({
+              category: 'query-path',
+              message: err.path.join(' > '),
+              level: 'debug',
+            });
+          }
 
-            scope.setUser(user);
+          if (apiId !== undefined) {
+            scope.setTag('pocket-api-id', apiId);
+          }
 
-            // report error
-            Sentry.captureException(err);
+          scope.setUser({
+            id: (requestEncodedId as string) || undefined,
+            ip_address: (gatewayIpAddress as string) || undefined,
           });
+
+          // report error
+          Sentry.captureException(err);
         }
       },
     };
