@@ -7,7 +7,7 @@
  */
 
 import nock, { cleanAll } from 'nock';
-import { getElasticacheRedis } from '../cache';
+import { getRedis } from '../cache';
 import { VideoType } from '../model';
 import { startServer } from '../server';
 import { ParserAPI } from '../datasources/parserApi';
@@ -78,7 +78,7 @@ describe('Marticle integration ', () => {
 
   beforeEach(() => {
     // Flush the redis cache before each test
-    getElasticacheRedis().flush();
+    getRedis().clear();
 
     //first call for getItemByUrl.
     nock('http://example-parser.com')
@@ -103,6 +103,7 @@ describe('Marticle integration ', () => {
 
   afterAll(async () => {
     await server.stop();
+    await getRedis().disconnect();
     cleanAll();
   });
 

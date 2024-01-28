@@ -1,16 +1,27 @@
+import {
+  DataLoaderCacheInterface,
+  KeyValueCacheSetOptions,
+} from './cache/interface';
 import * as dataloader from './dataloader';
 
-class FakeCache implements dataloader.LoaderCacheInterface {
+class FakeCache implements DataLoaderCacheInterface {
+  get(key: string): Promise<string | undefined> {
+    return Promise.resolve(undefined);
+  }
+  set(
+    key: string,
+    value: string,
+    options?: KeyValueCacheSetOptions | undefined,
+  ): Promise<void> {
+    return Promise.resolve(undefined);
+  }
+
+  delete(key: string): Promise<boolean | void> {
+    return Promise.resolve();
+  }
+
   getKey(key: string): string {
     return '';
-  }
-
-  mget(keys: string[]): Promise<string[]> {
-    return Promise.resolve(undefined);
-  }
-
-  mset(keyValues, ttl: number): Promise<void> {
-    return Promise.resolve(undefined);
   }
 }
 
@@ -18,8 +29,8 @@ const dataValues = [{ val: '1' }, { val: '2' }];
 
 describe('dataloader', () => {
   let getKey;
-  let mget;
-  let mset;
+  let get;
+  let set;
   let batchFnProps: dataloader.BatchFnProps<{ val: string }, { val: string }>;
 
   beforeEach(async () => {
@@ -27,7 +38,7 @@ describe('dataloader', () => {
       .fn()
       .mockImplementation((key) => key);
 
-    mset = FakeCache.prototype.mset = jest.fn();
+    set = FakeCache.prototype.set = jest.fn();
 
     batchFnProps = {
       values: dataValues,
@@ -45,16 +56,15 @@ describe('dataloader', () => {
   });
 
   it('can get multiple values from the cache', async () => {
-    mget = FakeCache.prototype.mget = jest
+    get = FakeCache.prototype.get = jest
       .fn()
-      .mockResolvedValue(
-        batchFnProps.values.map((value) => JSON.stringify(value)),
-      );
+      .mockResolvedValueOnce(JSON.stringify(batchFnProps.values[0]))
+      .mockResolvedValueOnce(JSON.stringify(batchFnProps.values[1]));
 
     const result = await dataloader.multiGetCachedValues(batchFnProps);
 
     expect(getKey).toHaveBeenCalledTimes(2);
-    expect(mget).toHaveBeenCalledTimes(1);
+    expect(get).toHaveBeenCalledTimes(2);
     expect(result).toEqual(batchFnProps.values);
   });
 
@@ -62,15 +72,18 @@ describe('dataloader', () => {
     await dataloader.multiSetCacheValues(dataValues, batchFnProps);
 
     expect(getKey).toHaveBeenCalledTimes(2);
-    expect(mset).toHaveBeenCalledTimes(1);
-    expect(mset).toHaveBeenCalledWith(
-      batchFnProps.values.reduce((acc, value) => {
-        return {
-          ...acc,
-          [batchFnProps.cacheKeyPrefix + value.val]: JSON.stringify(value),
-        };
-      }, {}),
-      batchFnProps.maxAge,
+    expect(set).toHaveBeenCalledTimes(2);
+    expect(set).toHaveBeenNthCalledWith(
+      1,
+      batchFnProps.cacheKeyPrefix + batchFnProps.values[0].val,
+      JSON.stringify(batchFnProps.values[0]),
+      { ttl: batchFnProps.maxAge },
+    );
+    expect(set).toHaveBeenNthCalledWith(
+      2,
+      batchFnProps.cacheKeyPrefix + batchFnProps.values[1].val,
+      JSON.stringify(batchFnProps.values[1]),
+      { ttl: batchFnProps.maxAge },
     );
   });
 

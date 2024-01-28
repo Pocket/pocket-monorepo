@@ -5,7 +5,7 @@ import {
   CACHED_IMAGE_REFERENCE_RESOLVER_METADATA,
 } from './sample-queries';
 import nock, { cleanAll, pendingMocks } from 'nock';
-import { getElasticacheRedis } from '../cache';
+import { getRedis, getRedisCache } from '../cache';
 import { startServer } from '../server/apollo';
 import request from 'supertest';
 import { ContextManager } from '../server/context';
@@ -14,13 +14,13 @@ import { ApolloServer } from '@apollo/server';
 import { expect } from '@jest/globals';
 
 describe('queries: resolveReference', () => {
-  const cache = getElasticacheRedis();
+  const cache = getRedis();
   let app: Express;
   let server: ApolloServer<ContextManager>;
   let url: string;
 
   const getCacheKey = (url: string): string => {
-    return cache.getKey(`image-data-${url}`);
+    return getRedisCache().getKey(`image-data-${url}`);
   };
   const hasCacheValue = async (url: string) => {
     return (await cache.get(getCacheKey(url))) !== undefined;
@@ -35,6 +35,7 @@ describe('queries: resolveReference', () => {
 
   afterAll(async () => {
     await server.stop();
+    await cache.disconnect();
     cleanAll();
   });
 
