@@ -3,7 +3,7 @@ import { seeds } from '@pocket-tools/backend-benchmarking';
 import { ListPaginationService } from '../../../dataService/listPaginationService';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
-import { Express } from 'express';
+import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 
@@ -16,7 +16,7 @@ describe('getSavedItems pagination', () => {
   const baseVariables = {
     id: '1',
   };
-  let app: Express;
+  let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;
 

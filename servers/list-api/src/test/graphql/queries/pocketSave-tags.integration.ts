@@ -2,7 +2,7 @@ import { readClient, writeClient } from '../../../database/client';
 import { startServer } from '../../../server/apollo';
 import { ContextManager } from '../../../server/context';
 import { ApolloServer } from '@apollo/server';
-import { Express } from 'express';
+import { Application } from 'express';
 import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 import request from 'supertest';
@@ -18,7 +18,7 @@ describe('pocketSave.tags', () => {
   const readDb = readClient();
   const headers = { userid: '1' };
   const date = new Date('2020-10-03 10:20:30');
-  let app: Express;
+  let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;
 

@@ -2,7 +2,7 @@ import { readClient, writeClient } from '../../../database/client';
 import config from '../../../config';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
-import { Express } from 'express';
+import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import { gql } from 'graphql-tag';
@@ -23,7 +23,7 @@ describe('tags query tests - happy path', () => {
   const date1 = new Date('2021-10-03T10:20:30.000Z');
   const date2 = new Date('2022-10-03T10:20:30.000Z');
   const date3 = new Date('2023-10-03T10:20:30.000Z');
-  let app: Express;
+  let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;
 
