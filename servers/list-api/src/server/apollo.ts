@@ -2,15 +2,8 @@ import * as Sentry from '@sentry/node';
 import express, { json } from 'express';
 import http from 'http';
 import { expressMiddleware } from '@apollo/server/express4';
-import { ApolloServer, ApolloServerPlugin } from '@apollo/server';
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-import {
-  ApolloServerPluginInlineTraceDisabled,
-  ApolloServerPluginUsageReportingDisabled,
-} from '@apollo/server/plugin/disabled';
-import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
-import { ApolloServerPluginInlineTrace } from '@apollo/server/plugin/inlineTrace';
-import { sentryPlugin, errorHandler } from '@pocket-tools/apollo-utils';
+import { ApolloServer } from '@apollo/server';
+import { defaultPlugins, errorHandler } from '@pocket-tools/apollo-utils';
 import config from '../config';
 import { ContextManager } from './context';
 import { readClient, writeClient } from '../database/client';
@@ -127,39 +120,12 @@ export async function startServer(port: number): Promise<{
     });
   };
 
-  // Set up plugins depending on environment
-  // Default plugins regardless
-  const defaultPlugins = [
-    sentryPlugin,
-    ApolloServerPluginUsageReportingDisabled(),
-    ApolloServerPluginDrainHttpServer({ httpServer }),
-    createApollo4QueryValidationPlugin({ schema }),
-    ApolloServerPluginLandingPageLocalDefault({ footer: false }),
-  ];
-  // Environment-specific plugins map
-  const pluginsConfig: Record<
-    'test' | 'production' | 'development',
-    ApolloServerPlugin[]
-  > = {
-    test: [ApolloServerPluginInlineTraceDisabled()],
-    development: [
-      ApolloServerPluginInlineTrace({ includeErrors: { unmodified: true } }),
-    ],
-    production: [
-      ApolloServerPluginInlineTrace({
-        includeErrors: { unmodified: true },
-      }),
-    ],
-  };
-
-  const plugins = [
-    ...defaultPlugins,
-    ...(pluginsConfig[process.env.NODE_ENV] ?? []),
-  ];
-
   const server = new ApolloServer<ContextManager>({
     schema,
-    plugins,
+    plugins: [
+      ...defaultPlugins(httpServer),
+      createApollo4QueryValidationPlugin({ schema }),
+    ],
     formatError: process.env.NODE_ENV !== 'test' ? errorHandler : undefined,
     introspection: true,
   });

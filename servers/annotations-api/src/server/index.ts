@@ -4,15 +4,7 @@ import http from 'http';
 import cors from 'cors';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
-import { errorHandler, sentryPlugin } from '@pocket-tools/apollo-utils';
-import {
-  ApolloServerPluginLandingPageDisabled,
-  ApolloServerPluginInlineTraceDisabled,
-  ApolloServerPluginUsageReportingDisabled,
-} from '@apollo/server/plugin/disabled';
-import { ApolloServerPluginInlineTrace } from '@apollo/server/plugin/inlineTrace';
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import { errorHandler, defaultPlugins } from '@pocket-tools/apollo-utils';
 import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4';
 
 import { schema } from './apollo';
@@ -49,28 +41,12 @@ export async function startServer(port: number): Promise<{
   );
   app.use('/queueDelete', queueDeleteRouter);
 
-  const basePlugins = [
-    sentryPlugin,
-    ApolloServerPluginDrainHttpServer({ httpServer }),
-    createApollo4QueryValidationPlugin({ schema }),
-  ];
-  const prodPlugins = [
-    ApolloServerPluginLandingPageDisabled(),
-    ApolloServerPluginInlineTrace(),
-  ];
-  const nonProdPlugins = [
-    ApolloServerPluginLandingPageLocalDefault(),
-    ApolloServerPluginInlineTraceDisabled(),
-    ApolloServerPluginUsageReportingDisabled(),
-  ];
-  const plugins =
-    config.app.environment === 'production'
-      ? basePlugins.concat(prodPlugins)
-      : basePlugins.concat(nonProdPlugins);
-
   const server = new ApolloServer<IContext>({
     schema,
-    plugins,
+    plugins: [
+      ...defaultPlugins(httpServer),
+      createApollo4QueryValidationPlugin({ schema }),
+    ],
     formatError: config.app.environment !== 'test' ? errorHandler : undefined,
   });
 

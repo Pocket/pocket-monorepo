@@ -61,7 +61,14 @@ export const sentryPlugin: ApolloServerPlugin<BaseContext> = {
           const operationVariablesJson = JSON.stringify(ctx.request.variables);
           const requestId = ctx.request.http?.headers.get('x-graph-request-id');
           const requestTraceId = ctx.request.http?.headers.get('x-amzn-trace');
-          const requestUserId = ctx.request.http?.headers.get('userid');
+          const requestEncodedId = ctx.request.http?.headers.get('encodedId');
+          const gatewayIpAddress =
+            ctx.request.http?.headers.get('gatewayIpAddress');
+
+          const user: Sentry.User = {
+            id: requestEncodedId,
+            ip_address: gatewayIpAddress,
+          };
 
           const errorData = {
             context: ctx, // contains most of the following, but move some fields up for easier filtering
@@ -70,7 +77,6 @@ export const sentryPlugin: ApolloServerPlugin<BaseContext> = {
             operationVariables: operationVariablesJson,
             requestId,
             traceId: requestTraceId,
-            userId: requestUserId,
           };
 
           // log error
@@ -93,9 +99,7 @@ export const sentryPlugin: ApolloServerPlugin<BaseContext> = {
             if (requestTraceId !== undefined) {
               scope.setTag('traceId', requestTraceId);
             }
-            if (requestUserId !== undefined) {
-              scope.setTag('userId', requestUserId);
-            }
+
             if (err.path) {
               scope.addBreadcrumb({
                 category: 'query-path',
@@ -103,6 +107,8 @@ export const sentryPlugin: ApolloServerPlugin<BaseContext> = {
                 level: 'debug',
               });
             }
+
+            scope.setUser(user);
 
             // report error
             Sentry.captureException(err);

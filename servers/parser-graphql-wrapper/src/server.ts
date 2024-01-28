@@ -6,20 +6,11 @@ import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { buildSubgraphSchema } from '@apollo/subgraph';
 import {
+  defaultPlugins,
   errorHandler,
-  sentryPlugin,
   sentryPocketMiddleware,
 } from '@pocket-tools/apollo-utils';
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl';
-import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
-import {
-  ApolloServerPluginLandingPageDisabled,
-  ApolloServerPluginInlineTraceDisabled,
-  ApolloServerPluginUsageReportingDisabled,
-} from '@apollo/server/plugin/disabled';
-import { ApolloServerPluginInlineTrace } from '@apollo/server/plugin/inlineTrace';
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-
 import { typeDefs } from './typeDefs';
 import { resolvers } from './resolvers';
 import config from './config';
@@ -67,45 +58,6 @@ export async function startServer(port: number): Promise<{
     res.status(200).send('ok');
   });
 
-  const defaultPlugins = [
-    // Set a default cache control of 0 seconds so it respects the individual set cache controls on the schema
-    // With this set to 0 it will not cache by default
-    ApolloServerPluginCacheControl({
-      defaultMaxAge: 0,
-    }),
-    ApolloServerPluginDrainHttpServer({ httpServer }),
-    // TODO: remove once dataSources has been migrated to context
-    LegacyDataSourcesPlugin({
-      dataSources: () => {
-        return {
-          parserAPI: new ParserAPI(),
-        };
-      },
-    }),
-    ApolloServerPluginUsageReportingDisabled(),
-  ];
-  const localPlugins = [
-    ApolloServerPluginLandingPageLocalDefault({ footer: false }),
-    ApolloServerPluginInlineTraceDisabled(),
-  ];
-  const nonProdPlugins = [
-    ApolloServerPluginLandingPageLocalDefault({ footer: false }),
-    ApolloServerPluginInlineTrace({ includeErrors: { unmodified: true } }),
-  ];
-  const prodPlugins = [
-    ApolloServerPluginLandingPageDisabled(),
-    ApolloServerPluginInlineTrace({ includeErrors: { unmodified: true } }),
-    sentryPlugin,
-  ];
-  const plugins = [
-    ...defaultPlugins,
-    ...(process.env.NODE_ENV === 'production' ? prodPlugins : []),
-    ...(process.env.NODE_ENV === 'development' ? nonProdPlugins : []),
-    ...(process.env.NODE_ENV === 'local' || process.env.NODE_ENV === 'test'
-      ? localPlugins
-      : []),
-  ];
-
   const server = new ApolloServer<IContext>({
     schema: buildSubgraphSchema([{ typeDefs, resolvers }]),
     persistedQueries: {
@@ -114,7 +66,22 @@ export async function startServer(port: number): Promise<{
     },
     introspection: true,
     cache,
-    plugins,
+    plugins: [
+      ...defaultPlugins(httpServer),
+      // TODO: remove once dataSources has been migrated to context
+      LegacyDataSourcesPlugin({
+        dataSources: () => {
+          return {
+            parserAPI: new ParserAPI(),
+          };
+        },
+      }),
+      // Set a default cache control of 0 seconds so it respects the individual set cache controls on the schema
+      // With this set to 0 it will not cache by default
+      ApolloServerPluginCacheControl({
+        defaultMaxAge: 0,
+      }),
+    ],
     formatError: process.env.NODE_ENV !== 'test' ? errorHandler : undefined,
   });
 

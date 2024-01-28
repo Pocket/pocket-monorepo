@@ -2,23 +2,16 @@ import * as Sentry from '@sentry/node';
 import express, { json } from 'express';
 import http from 'http';
 import { expressMiddleware } from '@apollo/server/express4';
-import { ApolloServer, ApolloServerPlugin } from '@apollo/server';
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-import {
-  ApolloServerPluginInlineTraceDisabled,
-  ApolloServerPluginUsageReportingDisabled,
-} from '@apollo/server/plugin/disabled';
-import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
-import { ApolloServerPluginInlineTrace } from '@apollo/server/plugin/inlineTrace';
+import { ApolloServer } from '@apollo/server';
 import { buildSubgraphSchema } from '@apollo/subgraph';
 import { typeDefs } from './typeDefs';
 import { resolvers } from '../resolvers';
 import { ContextManager } from './context';
 import {
-  sentryPlugin,
   errorHandler,
   isSubgraphIntrospection,
   isIntrospection,
+  defaultPlugins,
 } from '@pocket-tools/apollo-utils';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 import config from '../config';
@@ -75,38 +68,9 @@ export async function startServer(port: number): Promise<{
     res.status(200).send('ok');
   });
 
-  // Set up plugins depending on environment
-  // Default plugins regardless
-  const defaultPlugins = [
-    sentryPlugin,
-    ApolloServerPluginUsageReportingDisabled(),
-    ApolloServerPluginDrainHttpServer({ httpServer }),
-    ApolloServerPluginLandingPageLocalDefault({ footer: false }),
-  ];
-  // Environment-specific plugins map
-  const pluginsConfig: Record<
-    'test' | 'production' | 'development',
-    ApolloServerPlugin[]
-  > = {
-    test: [ApolloServerPluginInlineTraceDisabled()],
-    development: [
-      ApolloServerPluginInlineTrace({ includeErrors: { unmodified: true } }),
-    ],
-    production: [
-      ApolloServerPluginInlineTrace({
-        includeErrors: { unmodified: true },
-      }),
-    ],
-  };
-
-  const plugins = [
-    ...defaultPlugins,
-    ...(pluginsConfig[process.env.NODE_ENV] ?? []),
-  ];
-
   const server = new ApolloServer<ContextManager>({
     schema: buildSubgraphSchema({ typeDefs, resolvers }),
-    plugins,
+    plugins: defaultPlugins(httpServer),
     formatError: process.env.NODE_ENV !== 'test' ? errorHandler : undefined,
     introspection: true,
   });
