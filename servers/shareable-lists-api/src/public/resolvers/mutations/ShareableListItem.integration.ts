@@ -81,7 +81,6 @@ describe('public mutations: ShareableListItem', () => {
   });
 
   describe('addToShareableList', () => {
-    let pilotList: List;
     let list: List;
 
     const itemBase = {
@@ -92,24 +91,15 @@ describe('public mutations: ShareableListItem', () => {
       authors: 'Charles Dickens, Mark Twain',
     };
 
-    beforeAll(() => {
+    afterAll(() => jest.useRealTimers());
+
+    beforeEach(async () => {
+      await clearDb(db);
       jest.useFakeTimers({
         now: arbitraryTimestamp,
         advanceTimers: false,
         // If these are faked, prisma transactions hang
         doNotFake: ['nextTick', 'setImmediate'],
-      });
-    });
-
-    afterAll(() => jest.useRealTimers());
-
-    beforeEach(async () => {
-      await clearDb(db);
-
-      // Create a parent Shareable List for pilot & public users
-      pilotList = await createShareableListHelper(db, {
-        userId: parseInt(pilotUserHeaders.userId),
-        title: 'This List Will Have Lots of Stories',
       });
 
       list = await createShareableListHelper(db, {
@@ -232,6 +222,8 @@ describe('public mutations: ShareableListItem', () => {
       expect(res.body.errors).not.toBeUndefined();
     });
     it('does nothing with duplicated items (already in list)', async () => {
+      const withinNSecondsOf = (date: Date, n: number) => (ts: string) =>
+        Math.abs(new Date(ts).getTime() / 1000 - date.getTime() / 1000) <= n;
       jest.useRealTimers();
       const now = new Date();
       const past = new Date(1394104654000);
@@ -258,19 +250,23 @@ describe('public mutations: ShareableListItem', () => {
           },
         ],
       };
-      // const expected = {
-      //   addToShareableList: expect.objectContaining({
-      //     externalId: list.externalId,
-      //     listItems: [
-      //       expect.objectContaining({
-      //         ...variables.items[0],
-      //       }),
-      //       expect.objectContaining({
-      //         ...variables.items[1],
-      //       }),
-      //     ],
-      //   }),
-      // };
+      const expected = {
+        addToShareableList: expect.objectContaining({
+          externalId: list.externalId,
+          listItems: [
+            expect.objectContaining({
+              itemId: '12345',
+              createdAt: past.toISOString(),
+              updatedAt: past.toISOString(),
+            }),
+            expect.objectContaining({
+              itemId: '3834701731',
+              createdAt: expect.toSatisfy(withinNSecondsOf(now, 1)),
+              updatedAt: expect.toSatisfy(withinNSecondsOf(now, 1)),
+            }),
+          ],
+        }),
+      };
       const res = await request(app)
         .post(graphQLUrl)
         .set(publicUserHeaders)
@@ -279,10 +275,7 @@ describe('public mutations: ShareableListItem', () => {
           variables,
         });
       expect(res.body.errors).toBeUndefined();
-      // expect(res.body.data).toEqual(expected);
-      expect(res.body.data.addToShareableList.listItems[0].createdAt).toEqual(
-        past.toISOString(),
-      );
+      expect(res.body.data).toEqual(expected);
     });
     it('sets sort order as the order of the input array, for empty list', async () => {
       const variables: { listId: string; items: AddItemInput[] } = {
@@ -326,7 +319,7 @@ describe('public mutations: ShareableListItem', () => {
       expect(res.body.errors).toBeUndefined();
       expect(res.body.data).toEqual(expected);
     });
-    it('starts the sort order based on the highest extant sort order', async () => {
+    it('starts the sort order based on the highest extant sort order, for list containing items', async () => {
       await createShareableListItemHelper(db, {
         list,
         itemId: 999,
@@ -354,15 +347,14 @@ describe('public mutations: ShareableListItem', () => {
           },
         ],
       };
-
       const expected = {
         addToShareableList: expect.objectContaining({
           updatedAt: new Date(arbitraryTimestamp).toISOString(),
           externalId: list.externalId,
-          listItems: [
+          listItems: expect.toIncludeAllMembers([
             expect.objectContaining({ ...variables.items[0], sortOrder: 91 }),
             expect.objectContaining({ ...variables.items[1], sortOrder: 92 }),
-          ],
+          ]),
         }),
       };
       const res = await request(app)

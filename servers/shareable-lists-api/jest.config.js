@@ -4,5 +4,6 @@ module.exports = {
   testMatch: ['**/?(*.)+(spec|integration).[jt]s?(x)'],
   testPathIgnorePatterns: ['/dist/'],
   setupFiles: ['./jest.setup.js'],
+  displayName: 'shareable-lists-api',
   setupFilesAfterEnv: ['jest-extended/all'],
 };

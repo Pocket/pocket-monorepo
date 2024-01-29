@@ -186,15 +186,14 @@ export async function addToShareableList(
   const { inserts, updatedList } = await conn
     .transaction()
     .execute(async (trx) => {
-      // Get the highest sort index - we'll add after
-      const sortStart =
-        (
-          await trx
-            .selectFrom('ListItem')
-            .select((eb) => eb.fn.max('sortOrder').as('sortOrder'))
-            .where('listId', '=', list.id as unknown as number) // prisma bigint...
-            .executeTakeFirstOrThrow()
-        ).sortOrder + 1;
+      const highestSortOrder = (
+        await trx
+          .selectFrom('ListItem')
+          .select((eb) => eb.fn.max('sortOrder').as('sortOrder'))
+          .where('listId', '=', list.id as unknown as number) // prisma bigint...
+          .executeTakeFirst()
+      ).sortOrder;
+      const sortStart = highestSortOrder != null ? highestSortOrder + 1 : 0;
       // Closure for iterative conditional inserts of List Items
       const conditionalItemInsert = async (
         item: CreateListItemInput,

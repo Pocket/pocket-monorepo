@@ -21,6 +21,7 @@ export function conn(): Kysely<DB> {
       password: config.database.password,
       port: config.database.port,
       connectionLimit: 10,
+      timezone: '+00:00',
     }),
   });
   return new Kysely<DB>({
