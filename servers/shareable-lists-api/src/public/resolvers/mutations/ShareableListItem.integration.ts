@@ -211,8 +211,170 @@ describe('public mutations: ShareableListItem', () => {
       expect(res.body.errors).not.toBeUndefined();
     });
     it('sends events for each update', async () => {});
-    it('throws NotFoundError if the list does not exist', async () => {});
-    it('does nothing with duplicated items (already in list)', async () => {});
+    it('throws NotFoundError if the list does not exist', async () => {
+      const variables: { listId: string; items: AddItemInput[] } = {
+        listId: 'this-fake-uuid-is-unconvincing',
+        items: [
+          {
+            ...itemBase,
+            itemId: '3834701731',
+            url: 'https://www.test.com/this-is-a-story',
+          },
+        ],
+      };
+      const res = await request(app)
+        .post(graphQLUrl)
+        .set(publicUserHeaders)
+        .send({
+          query: print(ADD_TO_SHAREABLE_LIST),
+          variables,
+        });
+      expect(res.body.errors).not.toBeUndefined();
+    });
+    it('does nothing with duplicated items (already in list)', async () => {
+      jest.useRealTimers();
+      const now = new Date();
+      const past = new Date(1394104654000);
+      await createShareableListItemHelper(db, {
+        list,
+        itemId: 12345,
+        url: 'https://www.test.com/another-story',
+        sortOrder: 19,
+        createdAt: past,
+        updatedAt: past,
+      });
+      const variables: { listId: string; items: AddItemInput[] } = {
+        listId: list.externalId,
+        items: [
+          {
+            ...itemBase,
+            itemId: '3834701731',
+            url: 'https://www.test.com/this-is-a-story',
+          },
+          {
+            ...itemBase,
+            itemId: '12345',
+            url: 'https://www.test.com/another-story',
+          },
+        ],
+      };
+      // const expected = {
+      //   addToShareableList: expect.objectContaining({
+      //     externalId: list.externalId,
+      //     listItems: [
+      //       expect.objectContaining({
+      //         ...variables.items[0],
+      //       }),
+      //       expect.objectContaining({
+      //         ...variables.items[1],
+      //       }),
+      //     ],
+      //   }),
+      // };
+      const res = await request(app)
+        .post(graphQLUrl)
+        .set(publicUserHeaders)
+        .send({
+          query: print(ADD_TO_SHAREABLE_LIST),
+          variables,
+        });
+      expect(res.body.errors).toBeUndefined();
+      // expect(res.body.data).toEqual(expected);
+      expect(res.body.data.addToShareableList.listItems[0].createdAt).toEqual(
+        past.toISOString(),
+      );
+    });
+    it('sets sort order as the order of the input array, for empty list', async () => {
+      const variables: { listId: string; items: AddItemInput[] } = {
+        listId: list.externalId,
+        items: [
+          {
+            ...itemBase,
+            itemId: '3834701731',
+            url: 'https://www.test.com/this-is-a-story',
+          },
+          {
+            ...itemBase,
+            itemId: '12345',
+            url: 'https://www.test.com/another-story',
+          },
+          {
+            ...itemBase,
+            itemId: '5678',
+            url: 'https://www.test.com/one-more-story',
+          },
+        ],
+      };
+
+      const expected = {
+        addToShareableList: expect.objectContaining({
+          externalId: list.externalId,
+          listItems: [
+            expect.objectContaining({ ...variables.items[0], sortOrder: 0 }),
+            expect.objectContaining({ ...variables.items[1], sortOrder: 1 }),
+            expect.objectContaining({ ...variables.items[2], sortOrder: 2 }),
+          ],
+        }),
+      };
+      const res = await request(app)
+        .post(graphQLUrl)
+        .set(publicUserHeaders)
+        .send({
+          query: print(ADD_TO_SHAREABLE_LIST),
+          variables,
+        });
+      expect(res.body.errors).toBeUndefined();
+      expect(res.body.data).toEqual(expected);
+    });
+    it('starts the sort order based on the highest extant sort order', async () => {
+      await createShareableListItemHelper(db, {
+        list,
+        itemId: 999,
+        url: 'http://some-url.com/that',
+        sortOrder: 23,
+      });
+      await createShareableListItemHelper(db, {
+        list,
+        itemId: 777,
+        url: 'http://another-url.com/this',
+        sortOrder: 90,
+      });
+      const variables: { listId: string; items: AddItemInput[] } = {
+        listId: list.externalId,
+        items: [
+          {
+            ...itemBase,
+            itemId: '3834701731',
+            url: 'https://www.test.com/this-is-a-story',
+          },
+          {
+            ...itemBase,
+            itemId: '12345',
+            url: 'https://www.test.com/another-story',
+          },
+        ],
+      };
+
+      const expected = {
+        addToShareableList: expect.objectContaining({
+          updatedAt: new Date(arbitraryTimestamp).toISOString(),
+          externalId: list.externalId,
+          listItems: [
+            expect.objectContaining({ ...variables.items[0], sortOrder: 91 }),
+            expect.objectContaining({ ...variables.items[1], sortOrder: 92 }),
+          ],
+        }),
+      };
+      const res = await request(app)
+        .post(graphQLUrl)
+        .set(publicUserHeaders)
+        .send({
+          query: print(ADD_TO_SHAREABLE_LIST),
+          variables,
+        });
+      expect(res.body.errors).toBeUndefined();
+      expect(res.body.data).toEqual(expected);
+    });
   });
 
   describe('createShareableListItem', () => {

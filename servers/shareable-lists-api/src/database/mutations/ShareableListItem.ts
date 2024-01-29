@@ -1,6 +1,7 @@
 import { NotFoundError, UserInputError } from '@pocket-tools/apollo-utils';
 import { ModerationStatus } from '.prisma/client';
 import {
+  AddItemInput,
   CreateShareableListItemInput,
   ListItemResponse,
   ListItemSelect,
@@ -22,7 +23,10 @@ import { BaseContext } from '../../shared/types';
 /**
  * What can actually go into the database vs. client-provided type
  */
-type CreateListItemInput = Omit<CreateShareableListItemInput, 'itemId'> & {
+type CreateListItemInput = Omit<
+  CreateShareableListItemInput,
+  'itemId' | 'listExternalId'
+> & {
   itemId: number;
   // Pre mysql 8, prisma MUST rely on JS layer vs. database to create
   // uuid; if we don't use prisma and we haven't yet updated the schema
@@ -31,6 +35,7 @@ type CreateListItemInput = Omit<CreateShareableListItemInput, 'itemId'> & {
   // support RETURNING statement, and this is the most performant way to query back
   // an inserted row.
   externalId: string;
+  listId: number;
 };
 
 /**
@@ -131,13 +136,13 @@ export async function createShareableListItem(
  * This mutation creates a shareable list item.
  *
  * @param context
- * @param listId
+ * @param listId The "externalId" list identifier
  * @param data
  * @param userId
  */
 export async function addToShareableList(
   context: BaseContext,
-  { listId, items }: { listId: string; items: CreateShareableListItemInput[] },
+  { listId, items }: { listId: string; items: AddItemInput[] },
   userId: number | bigint,
 ): Promise<ListResponse> {
   const { db, conn } = context;
@@ -158,6 +163,7 @@ export async function addToShareableList(
   if (!list) {
     throw new NotFoundError(`A list with the ID of "${listId}" does not exist`);
   }
+  // TODO: Kat - fix this input type, it's not the same as graphql schema
   const input: CreateListItemInput[] = items.map((item, index) => {
     // Ensure itemId is a valid number
     validateItemId(item.itemId);
@@ -169,8 +175,8 @@ export async function addToShareableList(
       // If sort order isn't applied, take the order of the input array.
       // Alternatively, could change the sort fallback so that it uses the
       // internal auto-increment ID.
-      sortOrder: item.sortOrder ?? index,
-      listId: list.id,
+      sortOrder: index,
+      listId: list.id as unknown as number, // bigint issues
       // In the future this could optionally be provided by clients
       // (would require additional updates in other methods)
       externalId: uuid(),
@@ -180,6 +186,15 @@ export async function addToShareableList(
   const { inserts, updatedList } = await conn
     .transaction()
     .execute(async (trx) => {
+      // Get the highest sort index - we'll add after
+      const sortStart =
+        (
+          await trx
+            .selectFrom('ListItem')
+            .select((eb) => eb.fn.max('sortOrder').as('sortOrder'))
+            .where('listId', '=', list.id as unknown as number) // prisma bigint...
+            .executeTakeFirstOrThrow()
+        ).sortOrder + 1;
       // Closure for iterative conditional inserts of List Items
       const conditionalItemInsert = async (
         item: CreateListItemInput,
@@ -187,10 +202,14 @@ export async function addToShareableList(
         const itemExists = await trx
           .selectFrom('ListItem')
           .where('url', '=', item.url)
+          .where('listId', '=', item.listId)
           .select('id')
           .executeTakeFirst();
         if (itemExists == null) {
-          await trx.insertInto('ListItem').values(item).execute();
+          await trx
+            .insertInto('ListItem')
+            .values({ ...item, sortOrder: item.sortOrder + sortStart })
+            .execute();
           // We don't have RETURNING statement so we have to query back
           return await trx
             .selectFrom('ListItem')
@@ -213,7 +232,10 @@ export async function addToShareableList(
       await trx
         .updateTable('List')
         .set({
-          updatedAt: new Date(),
+          // I would think that the driver converts to the correct timezone,
+          // rendering this unncessary...
+          // but this stays consistent with the rest of the app code.
+          updatedAt: new Date().toISOString(),
         })
         .where('externalId', '=', listId)
         .execute();

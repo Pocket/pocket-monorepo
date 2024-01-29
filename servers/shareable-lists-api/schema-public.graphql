@@ -154,7 +154,6 @@ input AddItemInput {
   authors: String
 }
 
-
 """
 Input data for creating a Shareable List Item during Shareable List creation.
 """
@@ -254,8 +253,7 @@ type Mutation {
   Add a batch of items to an existing shareable list.
   """
   addToShareableList(
-    listId: ID!,
-    items: [AddItemInput!]!
-      @constraint(minItems: 1, maxItems: 30)
+    listId: ID!
+    items: [AddItemInput!]! @constraint(minItems: 1, maxItems: 30)
   ): ShareableList!
 }
