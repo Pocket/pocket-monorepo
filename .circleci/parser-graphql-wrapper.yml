@@ -52,7 +52,6 @@ workflows:
           scope: parser-graphql-wrapper-cdk
           stack-output-path: infrastructure/parser-graphql-wrapper/cdktf.out/stacks/parser-graphql-wrapper
           resource-class: pocket/default-prod
-          workspace: Prod
           dev: false
           apply: false
 
@@ -68,7 +67,6 @@ workflows:
           scope: parser-graphql-wrapper-cdk
           stack-output-path: infrastructure/parser-graphql-wrapper/cdktf.out/stacks/parser-graphql-wrapper
           resource-class: pocket/default-dev
-          workspace: Dev
           apply: true
           dev: true
 
@@ -135,7 +133,6 @@ workflows:
           scope: parser-graphql-wrapper-cdk
           stack-output-path: infrastructure/parser-graphql-wrapper/cdktf.out/stacks/parser-graphql-wrapper
           resource-class: pocket/default-prod
-          workspace: Prod
           apply: true
           dev: false
 

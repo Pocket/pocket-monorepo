@@ -26,7 +26,6 @@ workflows:
           scope: client-api-cdk
           stack-output-path: infrastructure/client-api/cdktf.out/stacks/client-api
           resource-class: pocket/default-prod
-          workspace: Prod
           dev: false
           apply: false
 
@@ -42,7 +41,6 @@ workflows:
           scope: client-api-cdk
           stack-output-path: infrastructure/client-api/cdktf.out/stacks/client-api
           resource-class: pocket/default-dev
-          workspace: Dev
           apply: true
           dev: true
 
@@ -86,7 +84,6 @@ workflows:
           scope: client-api-cdk
           stack-output-path: infrastructure/client-api/cdktf.out/stacks/client-api
           resource-class: pocket/default-prod
-          workspace: Prod
           apply: true
           dev: false
 

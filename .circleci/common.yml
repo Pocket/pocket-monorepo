@@ -181,9 +181,6 @@ jobs:
         description: Whether or not its a dev build
         type: boolean
         default: false
-      workspace:
-        description: The terraform workspace
-        type: string
       save_app_spec:
         description: Whether or not we should save off the app spec file for later use
         type: boolean
