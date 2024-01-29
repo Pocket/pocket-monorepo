@@ -14,7 +14,7 @@
     "format": "eslint --fix \"src/**/*.ts\""
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "3.499.0",
+    "@aws-sdk/client-sqs": "3.501.0",
     "@sentry/serverless": "7.98.0",
     "jsonwebtoken": "^9.0.0",
     "jwk-to-pem": "^2.0.5",
