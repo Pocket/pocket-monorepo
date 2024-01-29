@@ -109,8 +109,8 @@ describe('public mutations: ShareableListItem', () => {
     });
 
     it('adds one item to a shareable list', async () => {
-      const variables: { listId: string; items: AddItemInput[] } = {
-        listId: list.externalId,
+      const variables: { listExternalId: string; items: AddItemInput[] } = {
+        listExternalId: list.externalId,
         items: [
           {
             ...itemBase,
@@ -138,8 +138,8 @@ describe('public mutations: ShareableListItem', () => {
       expect(res.body.data).toEqual(expected);
     });
     it('adds more than one item to a shareable list', async () => {
-      const variables: { listId: string; items: AddItemInput[] } = {
-        listId: list.externalId,
+      const variables: { listExternalId: string; items: AddItemInput[] } = {
+        listExternalId: list.externalId,
         items: [
           {
             ...itemBase,
@@ -176,8 +176,8 @@ describe('public mutations: ShareableListItem', () => {
     });
     // I can't get this to fail just with bad data -- probably we need strict SQL mode
     it.skip('fails the entire batch if one fails', async () => {
-      const variables: { listId: string; items: AddItemInput[] } = {
-        listId: list.externalId,
+      const variables: { listExternalId: string; items: AddItemInput[] } = {
+        listExternalId: list.externalId,
         items: [
           {
             ...itemBase,
@@ -202,8 +202,8 @@ describe('public mutations: ShareableListItem', () => {
     });
     it('sends events for each update', async () => {});
     it('throws NotFoundError if the list does not exist', async () => {
-      const variables: { listId: string; items: AddItemInput[] } = {
-        listId: 'this-fake-uuid-is-unconvincing',
+      const variables: { listExternalId: string; items: AddItemInput[] } = {
+        listExternalId: 'this-fake-uuid-is-unconvincing',
         items: [
           {
             ...itemBase,
@@ -235,8 +235,8 @@ describe('public mutations: ShareableListItem', () => {
         createdAt: past,
         updatedAt: past,
       });
-      const variables: { listId: string; items: AddItemInput[] } = {
-        listId: list.externalId,
+      const variables: { listExternalId: string; items: AddItemInput[] } = {
+        listExternalId: list.externalId,
         items: [
           {
             ...itemBase,
@@ -278,8 +278,8 @@ describe('public mutations: ShareableListItem', () => {
       expect(res.body.data).toEqual(expected);
     });
     it('sets sort order as the order of the input array, for empty list', async () => {
-      const variables: { listId: string; items: AddItemInput[] } = {
-        listId: list.externalId,
+      const variables: { listExternalId: string; items: AddItemInput[] } = {
+        listExternalId: list.externalId,
         items: [
           {
             ...itemBase,
@@ -332,8 +332,8 @@ describe('public mutations: ShareableListItem', () => {
         url: 'http://another-url.com/this',
         sortOrder: 90,
       });
-      const variables: { listId: string; items: AddItemInput[] } = {
-        listId: list.externalId,
+      const variables: { listExternalId: string; items: AddItemInput[] } = {
+        listExternalId: list.externalId,
         items: [
           {
             ...itemBase,

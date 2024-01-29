@@ -35,8 +35,8 @@ export const CREATE_SHAREABLE_LIST_ITEM = gql`
 `;
 
 export const ADD_TO_SHAREABLE_LIST = gql`
-  mutation addToShareableList($listId: ID!, $items: [AddItemInput!]!) {
-    addToShareableList(listId: $listId, items: $items) {
+  mutation addToShareableList($listExternalId: ID!, $items: [AddItemInput!]!) {
+    addToShareableList(listExternalId: $listExternalId, items: $items) {
       ...ShareableListPublicProps
     }
   }
