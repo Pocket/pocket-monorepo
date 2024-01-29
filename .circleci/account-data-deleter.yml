@@ -69,7 +69,6 @@ workflows:
           scope: account-data-deleter-cdk
           stack-output-path: infrastructure/account-data-deleter/cdktf.out/stacks/account-data-deleter
           resource-class: pocket/default-prod
-          workspace: Prod
           dev: false
           apply: false
 
@@ -85,7 +84,6 @@ workflows:
           scope: account-data-deleter-cdk
           stack-output-path: infrastructure/account-data-deleter/cdktf.out/stacks/account-data-deleter
           resource-class: pocket/default-dev
-          workspace: Dev
           apply: true
           dev: true
 
@@ -214,7 +212,6 @@ workflows:
           scope: account-data-deleter-cdk
           stack-output-path: infrastructure/account-data-deleter/cdktf.out/stacks/account-data-deleter
           resource-class: pocket/default-prod
-          workspace: Prod
           apply: true
           dev: false
 

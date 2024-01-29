@@ -36,7 +36,6 @@ workflows:
           scope: feature-flags-cdk
           stack-output-path: infrastructure/feature-flags/cdktf.out/stacks/feature-flags
           resource-class: pocket/default-prod
-          workspace: Prod
           dev: false
           apply: false
 
@@ -52,7 +51,6 @@ workflows:
           scope: feature-flags-cdk
           stack-output-path: infrastructure/feature-flags/cdktf.out/stacks/feature-flags
           resource-class: pocket/default-dev
-          workspace: Dev
           apply: true
           dev: true
 
@@ -119,7 +117,6 @@ workflows:
           scope: feature-flags-cdk
           stack-output-path: infrastructure/feature-flags/cdktf.out/stacks/feature-flags
           resource-class: pocket/default-prod
-          workspace: Prod
           apply: true
           dev: false
 

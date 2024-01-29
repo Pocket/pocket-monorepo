@@ -40,7 +40,6 @@ workflows:
           scope: fxa-webhook-proxy-cdk
           stack-output-path: infrastructure/fxa-webhook-proxy/cdktf.out/stacks/fxa-webhook-proxy
           resource-class: pocket/default-prod
-          workspace: Prod
           dev: false
           apply: false
           save_app_spec: false
@@ -57,7 +56,6 @@ workflows:
           scope: fxa-webhook-proxy-cdk
           stack-output-path: infrastructure/fxa-webhook-proxy/cdktf.out/stacks/fxa-webhook-proxy
           resource-class: pocket/default-dev
-          workspace: Dev
           apply: true
           dev: true
           save_app_spec: false
@@ -158,7 +156,6 @@ workflows:
           scope: fxa-webhook-proxy-cdk
           stack-output-path: infrastructure/fxa-webhook-proxy/cdktf.out/stacks/fxa-webhook-proxy
           resource-class: pocket/default-prod
-          workspace: Prod
           apply: true
           dev: false
           save_app_spec: false

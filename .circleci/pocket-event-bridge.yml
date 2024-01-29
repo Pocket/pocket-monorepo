@@ -15,7 +15,6 @@ workflows:
           scope: pocket-event-bridge-cdk
           stack-output-path: infrastructure/pocket-event-bridge/cdktf.out/stacks/pocket-event-bridge
           resource-class: pocket/default-prod
-          workspace: Prod
           dev: false
           apply: false
           save_app_spec: false
@@ -32,7 +31,6 @@ workflows:
           scope: pocket-event-bridge-cdk
           stack-output-path: infrastructure/pocket-event-bridge/cdktf.out/stacks/pocket-event-bridge
           resource-class: pocket/default-dev
-          workspace: Dev
           apply: true
           dev: true
           save_app_spec: false
@@ -49,7 +47,6 @@ workflows:
           scope: pocket-event-bridge-cdk
           stack-output-path: infrastructure/pocket-event-bridge/cdktf.out/stacks/pocket-event-bridge
           resource-class: pocket/default-prod
-          workspace: Prod
           apply: true
           dev: false
           save_app_spec: false

@@ -43,7 +43,6 @@ workflows:
           scope: user-api-cdk
           stack-output-path: infrastructure/user-api/cdktf.out/stacks/user-api
           resource-class: pocket/default-prod
-          workspace: Prod
           dev: false
           apply: false
 
@@ -59,7 +58,6 @@ workflows:
           scope: user-api-cdk
           stack-output-path: infrastructure/user-api/cdktf.out/stacks/user-api
           resource-class: pocket/default-dev
-          workspace: Dev
           apply: true
           dev: true
 
@@ -126,7 +124,6 @@ workflows:
           scope: user-api-cdk
           stack-output-path: infrastructure/user-api/cdktf.out/stacks/user-api
           resource-class: pocket/default-prod
-          workspace: Prod
           apply: true
           dev: false
 
