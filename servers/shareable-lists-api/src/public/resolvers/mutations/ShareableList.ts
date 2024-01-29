@@ -79,12 +79,12 @@ export async function deleteShareableList(
  */
 export async function addToShareableList(
   _,
-  args: { listId: string; items: AddItemInput[] },
+  args: { listExternalId: string; items: AddItemInput[] },
   context: IPublicContext,
 ): Promise<ListResponse> {
   const res = await executeMutation<
     {
-      listId: string;
+      listExternalId: string;
       items: AddItemInput[];
     },
     ListResponse

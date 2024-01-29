@@ -1,5 +1,5 @@
 import { PrismaClient } from '.prisma/client';
-import Express from 'express';
+import { Request } from 'express';
 import { Kysely } from 'kysely';
 import { DB } from '.kysely/client/types';
 import { client, conn } from '../database/client';
@@ -28,7 +28,7 @@ export interface IAdminContext extends BaseContext {
 export class AdminContextManager implements IAdminContext {
   constructor(
     private config: {
-      request: Express.Request;
+      request: Request;
       db: PrismaClient;
       conn: Kysely<DB>;
     },
@@ -70,7 +70,7 @@ export class AdminContextManager implements IAdminContext {
 export async function getAdminContext({
   req,
 }: {
-  req: Express.Request;
+  req: Request;
 }): Promise<AdminContextManager> {
   return new AdminContextManager({
     request: req,

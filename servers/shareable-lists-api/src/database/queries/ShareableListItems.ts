@@ -1,6 +1,9 @@
 import { BaseContext } from '../../shared/types';
 import { ListItemResponse, ListItemSelect } from '../types';
 
+/**
+ * Resolve Shareable List items by internal listId.
+ */
 export async function getShareableListItems(
   context: BaseContext,
   listId: number,

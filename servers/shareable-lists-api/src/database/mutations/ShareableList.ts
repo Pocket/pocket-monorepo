@@ -3,7 +3,7 @@ import {
   NotFoundError,
   UserInputError,
 } from '@pocket-tools/apollo-utils';
-import { Visibility, ModerationStatus, PrismaClient } from '.prisma/client';
+import { Visibility, ModerationStatus } from '.prisma/client';
 // import slugify from 'slugify';
 import {
   CreateShareableListInput,
@@ -29,7 +29,6 @@ import {
 import { validateItemId } from '../../public/resolvers/utils';
 import { sendEventHelper } from '../../snowplow/events';
 import { EventBridgeEventType } from '../../snowplow/types';
-import { IPublicContext } from '../../public/context';
 import { BaseContext } from '../../shared/types';
 
 /**

@@ -23,11 +23,7 @@ import { BaseContext } from '../../shared/types';
 /**
  * What can actually go into the database vs. client-provided type
  */
-type CreateListItemInput = Omit<
-  CreateShareableListItemInput,
-  'itemId' | 'listExternalId'
-> & {
-  itemId: number;
+type CreateListItemDb = Omit<AddItemInput, 'itemId'> & {
   // Pre mysql 8, prisma MUST rely on JS layer vs. database to create
   // uuid; if we don't use prisma and we haven't yet updated the schema
   // to mysql 8 with default uuid generation, we MUST populate this value ourselves.
@@ -36,6 +32,8 @@ type CreateListItemInput = Omit<
   // an inserted row.
   externalId: string;
   listId: number;
+  itemId: number;
+  sortOrder: number;
 };
 
 /**
@@ -133,7 +131,9 @@ export async function createShareableListItem(
 }
 
 /**
- * This mutation creates a shareable list item.
+ * Mutation to bulk add items to an extant shareable list.
+ * Behaves like an 'append' action, ignoring any inputs that
+ * already exist in the list.
  *
  * @param context
  * @param listId The "externalId" list identifier
@@ -142,7 +142,7 @@ export async function createShareableListItem(
  */
 export async function addToShareableList(
   context: BaseContext,
-  { listId, items }: { listId: string; items: AddItemInput[] },
+  { listExternalId, items }: { listExternalId: string; items: AddItemInput[] },
   userId: number | bigint,
 ): Promise<ListResponse> {
   const { db, conn } = context;
@@ -155,16 +155,18 @@ export async function addToShareableList(
   // but since the externalId isn't the FK we can't rely on that
   const list = await db.list.findFirst({
     where: {
-      externalId: listId,
+      externalId: listExternalId,
       userId,
       moderationStatus: ModerationStatus.VISIBLE,
     },
   });
   if (!list) {
-    throw new NotFoundError(`A list with the ID of "${listId}" does not exist`);
+    throw new NotFoundError(
+      `A list with the ID of "${listExternalId}" does not exist`,
+    );
   }
   // TODO: Kat - fix this input type, it's not the same as graphql schema
-  const input: CreateListItemInput[] = items.map((item, index) => {
+  const input: CreateListItemDb[] = items.map((item, index) => {
     // Ensure itemId is a valid number
     validateItemId(item.itemId);
     return {
@@ -196,7 +198,7 @@ export async function addToShareableList(
       const sortStart = highestSortOrder != null ? highestSortOrder + 1 : 0;
       // Closure for iterative conditional inserts of List Items
       const conditionalItemInsert = async (
-        item: CreateListItemInput,
+        item: CreateListItemDb,
       ): Promise<ListItemResponse | undefined> => {
         const itemExists = await trx
           .selectFrom('ListItem')
@@ -236,11 +238,11 @@ export async function addToShareableList(
           // but this stays consistent with the rest of the app code.
           updatedAt: new Date().toISOString(),
         })
-        .where('externalId', '=', listId)
+        .where('externalId', '=', listExternalId)
         .execute();
       const updatedList = await trx
         .selectFrom('List')
-        .where('externalId', '=', listId)
+        .where('externalId', '=', listExternalId)
         .select(ShareableListSelect)
         .executeTakeFirstOrThrow();
       return { inserts, updatedList };
