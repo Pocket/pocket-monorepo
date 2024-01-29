@@ -6,7 +6,7 @@ import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
 import { List, ListItem, ModerationStatus, PrismaClient } from '.prisma/client';
 import { startServer } from '../../../express';
 import { IPublicContext } from '../../context';
-import { client } from '../../../database/client';
+import { client, conn } from '../../../database/client';
 import {
   AddItemInput,
   CreateShareableListItemInput,
@@ -31,12 +31,17 @@ import {
   LIST_ITEM_NOTE_MAX_CHARS,
 } from '../../../shared/constants';
 import { Application } from 'express';
+import { IAdminContext } from '../../../admin/context';
+import { Kysely } from 'kysely';
+import { DB } from '.kysely/client/types';
 
 describe('public mutations: ShareableListItem', () => {
   let app: Application;
   let server: ApolloServer<IPublicContext>;
+  let adminServer: ApolloServer<IAdminContext>;
   let graphQLUrl: string;
   let db: PrismaClient;
+  let con: Kysely<DB>;
 
   // for strong checks on createdAt and updatedAt values
   const arbitraryTimestamp = 1664400000000;
@@ -61,10 +66,12 @@ describe('public mutations: ShareableListItem', () => {
     ({
       app,
       publicServer: server,
+      adminServer: adminServer,
       publicUrl: graphQLUrl,
     } = await startServer(0));
 
     db = client();
+    con = conn();
 
     // we mock the send method on EventBridgeClient
     jest
@@ -78,6 +85,8 @@ describe('public mutations: ShareableListItem', () => {
     jest.useRealTimers();
     await db.$disconnect();
     await server.stop();
+    await adminServer.stop();
+    await con.destroy();
   });
 
   describe('addToShareableList', () => {

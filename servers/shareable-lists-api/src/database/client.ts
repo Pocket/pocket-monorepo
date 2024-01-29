@@ -24,9 +24,10 @@ export function conn(): Kysely<DB> {
       timezone: '+00:00',
     }),
   });
-  return new Kysely<DB>({
+  kysely = new Kysely<DB>({
     dialect,
   });
+  return kysely;
 }
 
 let prisma;
