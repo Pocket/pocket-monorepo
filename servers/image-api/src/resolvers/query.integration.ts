@@ -9,13 +9,13 @@ import { getRedis, getRedisCache } from '../cache';
 import { startServer } from '../server/apollo';
 import request from 'supertest';
 import { ContextManager } from '../server/context';
-import { Express } from 'express';
+import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import { expect } from '@jest/globals';
 
 describe('queries: resolveReference', () => {
   const cache = getRedis();
-  let app: Express;
+  let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;
 

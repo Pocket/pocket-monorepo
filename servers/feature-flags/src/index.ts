@@ -6,7 +6,7 @@ import { ApolloServer } from '@apollo/server';
 import config from './config';
 import { IAuthOption, IAuthType } from 'unleash-server/dist/lib/types/option';
 import { enableJwtAuth } from './admin/jwtAuthHook';
-import http from 'http';
+import { Server, createServer } from 'http';
 import cors from 'cors';
 import { json } from 'body-parser';
 import { expressMiddleware } from '@apollo/server/express4';
@@ -15,6 +15,7 @@ import {
   buildContext,
   getApolloServer,
 } from './graphql';
+import { initSentry, sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
 
 export interface ServerOptions {
   port?: number;
@@ -26,11 +27,20 @@ export async function start(port: number): Promise<{
   server: ApolloServer<RequestHandlerContext>;
   graphqlUrl: string;
 }> {
+  const app: Application = express();
+  const httpServer: Server = createServer(app);
+
   // Initialize sentry
-  Sentry.init({
+  initSentry(app, {
     ...config.sentry,
     debug: config.sentry.environment == 'development',
   });
+
+  // RequestHandler creates a separate execution context, so that all
+  // transactions/spans/breadcrumbs are isolated across requests
+  app.use(Sentry.Handlers.requestHandler() as express.RequestHandler);
+  // TracingHandler creates a trace for every incoming request
+  app.use(Sentry.Handlers.tracingHandler());
 
   const authOptions: Partial<IAuthOption> = {
     type: IAuthType.CUSTOM,
@@ -48,8 +58,6 @@ export async function start(port: number): Promise<{
 
   const opts: ServerOptions = { port };
 
-  const app = express();
-  const httpServer = http.createServer(app);
   //Start a default unleash server based on the docs: https://docs.getunleash.io/docs/getting_started
   const instance = await create({
     db: {
@@ -80,6 +88,7 @@ export async function start(port: number): Promise<{
     url,
     cors<cors.CorsRequest>(),
     json(),
+    sentryPocketMiddleware,
     expressMiddleware<RequestHandlerContext>(server, { context: buildContext }),
   );
 
@@ -90,6 +99,9 @@ export async function start(port: number): Promise<{
 
   //Then setup everything about the unleash server that we can pass to other requests
   app.use(instance.app);
+
+  // The error handler must be before any other error middleware and after all controllers
+  app.use(Sentry.Handlers.errorHandler() as express.ErrorRequestHandler);
 
   await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
   return { app, server, graphqlUrl: url };

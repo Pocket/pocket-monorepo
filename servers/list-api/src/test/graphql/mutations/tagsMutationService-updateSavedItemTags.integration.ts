@@ -6,7 +6,7 @@ import { EventType } from '../../../businessEvents';
 import { getUnixTimestamp } from '../../../utils';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
-import { Express } from 'express';
+import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 
@@ -20,7 +20,7 @@ describe('tags mutation update: ', () => {
   const date1 = new Date('2020-10-03 10:30:30'); // Consistent date for seeding
   const updateDate = new Date(2021, 1, 1, 0, 0); // mock date for insert
   let logTagSpy: jest.SpyInstance;
-  let app: Express;
+  let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;
 

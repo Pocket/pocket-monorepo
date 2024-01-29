@@ -2,7 +2,7 @@ import { timeIt, seeds } from '@pocket-tools/backend-benchmarking';
 import { readClient, writeClient } from '../../../database/client';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
-import { Express } from 'express';
+import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 
@@ -43,7 +43,7 @@ describe.skip('temp table with new list pagination - benchmarking', () => {
     sort: { sortBy: 'CREATED_AT', sortOrder: 'DESC' },
     pagination: { first: 30 },
   };
-  let app: Express;
+  let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;
 

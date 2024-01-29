@@ -1,15 +1,7 @@
 import { buildSubgraphSchema } from '@apollo/subgraph';
 import { ExpressContextFunctionArgument } from '@apollo/server/express4';
 import { ApolloServer } from '@apollo/server';
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
-import {
-  ApolloServerPluginLandingPageDisabled,
-  ApolloServerPluginInlineTraceDisabled,
-  ApolloServerPluginUsageReportingDisabled,
-} from '@apollo/server/plugin/disabled';
-import { errorHandler, sentryPlugin } from '@pocket-tools/apollo-utils';
-import { ApolloServerPluginInlineTrace } from '@apollo/server/plugin/inlineTrace';
+import { defaultPlugins, errorHandler } from '@pocket-tools/apollo-utils';
 import { typeDefs } from './typeDefs';
 import { resolvers } from './resolvers';
 import http from 'http';
@@ -56,28 +48,10 @@ export async function buildContext(
 export const getApolloServer = async (
   httpServer: http.Server,
 ): Promise<ApolloServer<RequestHandlerContext>> => {
-  const basePlugins = [
-    sentryPlugin,
-    ApolloServerPluginDrainHttpServer({ httpServer }),
-  ];
-  const prodPlugins = [
-    ApolloServerPluginLandingPageDisabled(),
-    ApolloServerPluginInlineTrace(),
-  ];
-  const nonProdPlugins = [
-    ApolloServerPluginLandingPageLocalDefault(),
-    ApolloServerPluginInlineTraceDisabled(),
-    ApolloServerPluginUsageReportingDisabled(),
-  ];
-  const plugins =
-    config.app.environment === 'production'
-      ? basePlugins.concat(prodPlugins)
-      : basePlugins.concat(nonProdPlugins);
-
   // Provide resolver functions for your schema fields
   const server = new ApolloServer<RequestHandlerContext>({
     schema: buildSubgraphSchema({ typeDefs, resolvers }),
-    plugins,
+    plugins: defaultPlugins(httpServer),
     formatError: config.app.environment !== 'test' ? errorHandler : undefined,
     introspection: true,
   });

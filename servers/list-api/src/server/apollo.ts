@@ -1,16 +1,16 @@
 import * as Sentry from '@sentry/node';
-import express, { json } from 'express';
-import http from 'http';
+import express, { Application, json } from 'express';
+import { Server, createServer } from 'http';
 import { expressMiddleware } from '@apollo/server/express4';
-import { ApolloServer, ApolloServerPlugin } from '@apollo/server';
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { ApolloServer } from '@apollo/server';
 import {
-  ApolloServerPluginInlineTraceDisabled,
-  ApolloServerPluginUsageReportingDisabled,
-} from '@apollo/server/plugin/disabled';
-import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
-import { ApolloServerPluginInlineTrace } from '@apollo/server/plugin/inlineTrace';
-import { sentryPlugin, errorHandler } from '@pocket-tools/apollo-utils';
+  defaultPlugins,
+  errorHandler,
+  initSentry,
+  isIntrospection,
+  isSubgraphIntrospection,
+  sentryPocketMiddleware,
+} from '@pocket-tools/apollo-utils';
 import config from '../config';
 import { ContextManager } from './context';
 import { readClient, writeClient } from '../database/client';
@@ -27,24 +27,6 @@ import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive
 import { schema } from './schema';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 import * as unleash from '../featureFlags';
-
-/**
- * Used to determine if a query is an introspection query so
- * that it can bypass our authentication checks and return the schema.
- * @param query
- * @returns
- */
-export const isIntrospection = (query: string): boolean => {
-  //Ref: https://github.com/anvilco/apollo-server-plugin-introspection-metadata/blob/main/src/index.js#L25
-  const isIntrospectionRegex = /\b(__schema|__type)\b/;
-  return typeof query === 'string' && isIntrospectionRegex.test(query);
-};
-
-export const isSubgraphIntrospection = (query: string): boolean => {
-  //Ref: https://github.com/anvilco/apollo-server-plugin-introspection-metadata/blob/main/src/index.js#L25
-  const isSubgraphIntrospectionRegex = /\b(_service)\b/;
-  return typeof query === 'string' && isSubgraphIntrospectionRegex.test(query);
-};
 
 /**
  * Stopgap method to set global db connection in context,
@@ -67,31 +49,25 @@ export const contextConnection = (query: string): Knex => {
 };
 
 export async function startServer(port: number): Promise<{
-  app: express.Express;
+  app: Application;
   server: ApolloServer<ContextManager>;
   url: string;
 }> {
-  const app = express();
+  // initialize express with exposed httpServer so that it may be
+  // provided to drain plugin for graceful shutdown.
+  const app: Application = express();
+  const httpServer: Server = createServer(app);
 
-  Sentry.init({
+  initSentry(app, {
     ...config.sentry,
     debug: config.sentry.environment == 'development',
-    integrations: [
-      // enable HTTP calls tracing
-      new Sentry.Integrations.Http({ tracing: true }),
-      new Sentry.Integrations.Apollo(),
-      // enable Express.js middleware tracing
-      new Sentry.Integrations.Express({
-        // to trace all requests to the default router
-        app,
-      }),
-    ],
   });
 
-  // Our httpServer handles incoming requests to our Express app.
-  // Below, we tell Apollo Server to "drain" this httpServer,
-  // enabling our servers to shut down gracefully.
-  const httpServer = http.createServer(app);
+  // RequestHandler creates a separate execution context, so that all
+  // transactions/spans/breadcrumbs are isolated across requests
+  app.use(Sentry.Handlers.requestHandler() as express.RequestHandler);
+  // TracingHandler creates a trace for every incoming request
+  app.use(Sentry.Handlers.tracingHandler());
 
   // Expose health check url
   app.get('/.well-known/apollo/server-health', (req, res) => {
@@ -127,48 +103,17 @@ export async function startServer(port: number): Promise<{
     });
   };
 
-  // Set up plugins depending on environment
-  // Default plugins regardless
-  const defaultPlugins = [
-    sentryPlugin,
-    ApolloServerPluginUsageReportingDisabled(),
-    ApolloServerPluginDrainHttpServer({ httpServer }),
-    createApollo4QueryValidationPlugin({ schema }),
-    ApolloServerPluginLandingPageLocalDefault({ footer: false }),
-  ];
-  // Environment-specific plugins map
-  const pluginsConfig: Record<
-    'test' | 'production' | 'development',
-    ApolloServerPlugin[]
-  > = {
-    test: [ApolloServerPluginInlineTraceDisabled()],
-    development: [
-      ApolloServerPluginInlineTrace({ includeErrors: { unmodified: true } }),
-    ],
-    production: [
-      ApolloServerPluginInlineTrace({
-        includeErrors: { unmodified: true },
-      }),
-    ],
-  };
-
-  const plugins = [
-    ...defaultPlugins,
-    ...(pluginsConfig[process.env.NODE_ENV] ?? []),
-  ];
-
   const server = new ApolloServer<ContextManager>({
     schema,
-    plugins,
+    plugins: [
+      ...defaultPlugins(httpServer),
+      createApollo4QueryValidationPlugin({ schema }),
+    ],
     formatError: process.env.NODE_ENV !== 'test' ? errorHandler : undefined,
     introspection: true,
   });
 
   await server.start();
-
-  // RequestHandler creates a separate execution context, so that all
-  // transactions/spans/breadcrumbs are isolated across requests
-  app.use(Sentry.Handlers.requestHandler() as express.RequestHandler);
 
   // Apply to root
   const url = '/';
@@ -177,6 +122,7 @@ export async function startServer(port: number): Promise<{
     url,
     // JSON parser to enable POST body with JSON
     json(),
+    sentryPocketMiddleware,
     setMorgan(serverLogger),
     expressMiddleware(server, {
       context: async ({ req }) => contextFactory(req),

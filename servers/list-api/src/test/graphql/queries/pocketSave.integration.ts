@@ -2,7 +2,7 @@ import { ApolloServer } from '@apollo/server';
 import { ContextManager } from '../../../server/context';
 import { readClient, writeClient } from '../../../database/client';
 import { startServer } from '../../../server/apollo';
-import { Express } from 'express';
+import { Application } from 'express';
 import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 import request from 'supertest';
@@ -16,7 +16,7 @@ describe('getPocketSaveByItemId', () => {
   const date3 = new Date('2008-10-21 14:00:01');
   const date4 = new Date('2012-08-13 15:32:05');
   const date5 = new Date('2008-11-03 08:51:01');
-  let app: Express;
+  let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;
 

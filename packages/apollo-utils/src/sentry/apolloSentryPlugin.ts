@@ -61,7 +61,12 @@ export const sentryPlugin: ApolloServerPlugin<BaseContext> = {
           const operationVariablesJson = JSON.stringify(ctx.request.variables);
           const requestId = ctx.request.http?.headers.get('x-graph-request-id');
           const requestTraceId = ctx.request.http?.headers.get('x-amzn-trace');
-          const requestUserId = ctx.request.http?.headers.get('userid');
+          const requestEncodedId = ctx.request.http?.headers.get('encodedId');
+          const gatewayIpAddress =
+            ctx.request.http?.headers.get('gatewayIpAddress');
+          const originClientIp =
+            ctx.request.http?.headers.get('origin-client-ip');
+          const apiId = ctx.request.http?.headers.get('apiid');
 
           const errorData = {
             context: ctx, // contains most of the following, but move some fields up for easier filtering
@@ -70,7 +75,6 @@ export const sentryPlugin: ApolloServerPlugin<BaseContext> = {
             operationVariables: operationVariablesJson,
             requestId,
             traceId: requestTraceId,
-            userId: requestUserId,
           };
 
           // log error
@@ -81,32 +85,41 @@ export const sentryPlugin: ApolloServerPlugin<BaseContext> = {
             stack: err.stack, // parity with Sentry setup
           });
 
-          Sentry.withScope((scope) => {
-            // kind of operation == query/mutation/subscription
-            scope.setTag('kind', operationKind);
-            scope.setExtra('query', operationQuery);
-            scope.setExtra('variables', operationVariablesJson);
+          const scope = Sentry.getCurrentScope();
+          // kind of operation == query/mutation/subscription
+          scope.setTag('kind', operationKind);
+          scope.setExtra('query', operationQuery);
+          scope.setExtra('variables', operationVariablesJson);
 
-            if (requestId !== undefined) {
-              scope.setTag('graphRequestId', requestId);
-            }
-            if (requestTraceId !== undefined) {
-              scope.setTag('traceId', requestTraceId);
-            }
-            if (requestUserId !== undefined) {
-              scope.setTag('userId', requestUserId);
-            }
-            if (err.path) {
-              scope.addBreadcrumb({
-                category: 'query-path',
-                message: err.path.join(' > '),
-                level: 'debug',
-              });
-            }
+          if (requestId !== undefined) {
+            scope.setTag('graphRequestId', requestId);
+          }
+          if (requestTraceId !== undefined) {
+            scope.setTag('traceId', requestTraceId);
+          }
 
-            // report error
-            Sentry.captureException(err);
+          if (err.path) {
+            scope.addBreadcrumb({
+              category: 'query-path',
+              message: err.path.join(' > '),
+              level: 'debug',
+            });
+          }
+
+          if (apiId !== undefined) {
+            scope.setTag('pocket-api-id', apiId);
+          }
+
+          scope.setUser({
+            id: (requestEncodedId as string) || undefined,
+            ip_address:
+              (gatewayIpAddress as string) ||
+              (originClientIp as string) ||
+              undefined,
           });
+
+          // report error
+          Sentry.captureException(err);
         }
       },
     };

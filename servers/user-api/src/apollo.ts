@@ -1,32 +1,24 @@
 import * as Sentry from '@sentry/node';
 import config from './config';
-import express, { json } from 'express';
+import express, { Application, json } from 'express';
 import { getServer } from './server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ContextFactory } from './context';
 import { readClient, writeClient } from './database/client';
 import { userEventEmitter } from './events/init';
-import http from 'http';
+import { Server, createServer } from 'http';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
+import { initSentry, sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
 
 export async function startServer(port: number) {
   // initialize express with exposed httpServer so that it may be
   // provided to drain plugin for graceful shutdown.
-  const app = express();
-  const httpServer = http.createServer(app);
+  const app: Application = express();
+  const httpServer: Server = createServer(app);
 
-  Sentry.init({
+  initSentry(app, {
     ...config.sentry,
     debug: config.sentry.environment == 'development',
-    integrations: [
-      // enable HTTP calls tracing
-      new Sentry.Integrations.Http({ tracing: true }),
-      // enable Express.js middleware tracing
-      new Sentry.Integrations.Express({
-        // to trace all requests to the default router
-        app,
-      }),
-    ],
   });
 
   const server = getServer(httpServer);
@@ -38,6 +30,8 @@ export async function startServer(port: number) {
   // RequestHandler creates a separate execution context, so that all
   // transactions/spans/breadcrumbs are isolated across requests
   app.use(Sentry.Handlers.requestHandler() as express.RequestHandler);
+  // TracingHandler creates a trace for every incoming request
+  app.use(Sentry.Handlers.tracingHandler());
 
   // expose a health check url
   app.get('/.well-known/apollo/server-health', (req, res) => {
@@ -48,6 +42,7 @@ export async function startServer(port: number) {
     url,
     json(),
     setMorgan(serverLogger),
+    sentryPocketMiddleware,
     expressMiddleware(server, {
       context: async ({ req }) =>
         ContextFactory({

@@ -1,7 +1,7 @@
 import { readClient, writeClient } from '../../../database/client';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
-import { Express } from 'express';
+import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import { gql } from 'graphql-tag';
@@ -19,7 +19,7 @@ describe('tags on saved items', () => {
   const count = 5000;
   const startId = 39505005;
 
-  let app: Express;
+  let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;
 
