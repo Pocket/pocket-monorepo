@@ -19,7 +19,10 @@ export const sentryPocketMiddleware = (
   scope.setUser({
     id: (req.headers.encodedid as string) || undefined,
     // Use the gateway ip address because this is behind a non-standard proxy
-    ip_address: (req.headers.gatewayipaddress as string) || undefined,
+    ip_address:
+      (req.headers.gatewayipaddress as string) ||
+      (req.headers['origin-client-ip'] as string) ||
+      undefined,
   });
   scope.setTag('pocket-api-id', (req.headers.apiid || '0') as string);
   next();

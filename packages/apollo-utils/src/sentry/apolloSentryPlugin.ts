@@ -64,6 +64,8 @@ export const sentryPlugin: ApolloServerPlugin<BaseContext> = {
           const requestEncodedId = ctx.request.http?.headers.get('encodedId');
           const gatewayIpAddress =
             ctx.request.http?.headers.get('gatewayIpAddress');
+          const originClientIp =
+            ctx.request.http?.headers.get('origin-client-ip');
           const apiId = ctx.request.http?.headers.get('apiid');
 
           const errorData = {
@@ -110,7 +112,7 @@ export const sentryPlugin: ApolloServerPlugin<BaseContext> = {
 
           scope.setUser({
             id: (requestEncodedId as string) || undefined,
-            ip_address: (gatewayIpAddress as string) || undefined,
+            ip_address: (gatewayIpAddress as string) || (originClientIp as string) || undefined,
           });
 
           // report error
