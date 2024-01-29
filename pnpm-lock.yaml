@@ -1124,8 +1124,8 @@ importers:
         specifier: 5.3.0
         version: 5.3.0
       unleash-server:
-        specifier: 5.8.1
-        version: 5.8.1(core-js@3.35.1)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8)
+        specifier: 5.8.2
+        version: 5.8.2(core-js@3.35.1)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8)
     devDependencies:
       '@types/cors':
         specifier: ^2.8.17
@@ -14996,8 +14996,8 @@ packages:
       - supports-color
     dev: false
 
-  /unleash-server@5.8.1(core-js@3.35.1)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8):
-    resolution: {integrity: sha512-kyAnUjZEcmcmGim7MaHnJEZKG5P1WfzEWR4rbB/VXywXSQr8eHdfEKB9yB3Gx71BcjIX+/GuUO3nSnAqARegoQ==}
+  /unleash-server@5.8.2(core-js@3.35.1)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8):
+    resolution: {integrity: sha512-5IPmRWVBrJJ248SBOeKVOAmzPipRN9wc0gFYBRdJLlSH6gYYHsfm9r0cYh7me3Z9W4h2E0PPKzAW621H6cpK4g==}
     engines: {node: '>=18 <21'}
     dependencies:
       '@slack/web-api': 6.11.2
@@ -15058,7 +15058,7 @@ packages:
       ts-toolbelt: 9.6.0
       type-is: 1.6.18
       unleash-client: 5.0.0
-      uuid: 9.0.0
+      uuid: 9.0.1
     transitivePeerDependencies:
       - better-sqlite3
       - bluebird
