@@ -1,22 +1,31 @@
 import { config } from './config';
 import * as Sentry from '@sentry/node';
-import express, { json } from 'express';
+import express, { Application, json } from 'express';
 import { queueDeleteRouter, stripeDeleteRouter } from './routes';
 import { EventEmitter } from 'events';
 import { BatchDeleteHandler } from './batchDeleteHandler';
 import Logger from './logger';
 import { setMorgan } from '@pocket-tools/ts-logger';
+import { initSentry, sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
+
+const app: Application = express();
 
 // Sentry Setup
-Sentry.init({
+initSentry(app, {
   ...config.sentry,
   debug: config.sentry.environment == 'development',
 });
 
-const app = express();
+// RequestHandler creates a separate execution context, so that all
+// transactions/spans/breadcrumbs are isolated across requests
+app.use(Sentry.Handlers.requestHandler() as express.RequestHandler);
+// TracingHandler creates a trace for every incoming request
+app.use(Sentry.Handlers.tracingHandler());
+
 app.use(
   // JSON parser to enable POST body with JSON
   json(),
+  sentryPocketMiddleware,
   // Logging Setup, Express app-specific
   setMorgan(Logger),
 );
@@ -28,6 +37,9 @@ app.get('/health', (req, res) => {
 });
 app.use('/queueDelete', queueDeleteRouter);
 app.use('/stripeDelete', stripeDeleteRouter);
+
+// The error handler must be before any other error middleware and after all controllers
+app.use(Sentry.Handlers.errorHandler() as express.ErrorRequestHandler);
 
 // Start batch delete event handler
 new BatchDeleteHandler(new EventEmitter());

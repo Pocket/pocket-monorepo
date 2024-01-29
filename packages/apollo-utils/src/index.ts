@@ -6,8 +6,9 @@ export * from './dataloader';
 export * from './errorHandler/errorHandler';
 export * from './isoStringScalar/isoStringScalar';
 export * from './pagination/';
-export * from './plugins/sentryPlugin';
-export * from './express/sentryMiddleware';
+export * from './plugins/defaultPlugin';
+export * from './sentry/expressSentryMiddleware';
+export * from './sentry/initSentry';
 export * from './utils';
 
 // export a generic object with all Pocket Custom Scalars

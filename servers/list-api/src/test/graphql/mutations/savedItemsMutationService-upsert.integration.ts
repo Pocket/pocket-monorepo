@@ -18,7 +18,7 @@ import { getUnixTimestamp } from '../../../utils';
 import { transformers } from '../../../businessEvents/sqs/transformers';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
-import { Express } from 'express';
+import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import type { Knex } from 'knex';
@@ -61,7 +61,7 @@ describe('UpsertSavedItem Mutation', () => {
   const unixDate = getUnixTimestamp(date);
   const dateNow = new Date('2021-10-06 03:22:00');
   const headers = { userid: '1' };
-  let app: Express;
+  let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;
 

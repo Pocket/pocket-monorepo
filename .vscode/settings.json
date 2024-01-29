@@ -3,5 +3,46 @@
     {
       "mode": "auto"
     }
-  ]
+  ],
+  "hidefiles.configurationType": "local",
+  "hidefiles.globalConfig": {
+    "profiles": [
+      {
+        "name": "Default",
+        "detail": "",
+        "description": "Test",
+        "hidden": [
+          ".vscode/",
+          "*/**/.turbo/",
+          "*/**/dist/",
+          "*/**/logs/",
+          "*/**/node_modules/",
+          "node_modules/",
+          ".turbo/",
+        ]
+      },
+      {
+        "name": "Strict",
+        "detail": "Hide everything not immediately required",
+        "hidden": [
+          "$Default"
+        ]
+      }
+    ]
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    ".vscode/": true,
+    "*/**/.turbo/": true,
+    "*/**/dist/": true,
+    "*/**/logs/": true,
+    "*/**/node_modules/": true,
+    "node_modules/": true,
+    ".turbo/": true
+  },
+  "hidefiles.selectedProfile": "Default"
 }
