@@ -23,7 +23,6 @@
     "@sentry/node": "7.98.0",
     "@sentry/tracing": "7.98.0",
     "apollo-datasource": "3.3.2",
-    "apollo-server-caching": "3.3.0",
     "cors": "2.8.5",
     "dataloader": "2.2.2",
     "express": "4.18.2",

@@ -1,7 +1,7 @@
 import { ApolloServer } from '@apollo/server';
 import { IContext } from '../context';
 import { startServer } from '../server';
-import { getElasticacheRedis } from '../cache';
+import { getRedis } from '../cache';
 import nock from 'nock';
 import { print } from 'graphql/index';
 import { gql } from 'graphql-tag';
@@ -30,7 +30,7 @@ describe('ShortUrl', () => {
     await server.stop();
     await (await getConnection()).destroy();
     await (await getSharedUrlsConnection()).destroy();
-    await getElasticacheRedis().close();
+    await getRedis().disconnect();
   });
 
   beforeAll(async () => {
@@ -43,8 +43,7 @@ describe('ShortUrl', () => {
 
   beforeEach(async () => {
     // Flush the redis cache before each test
-    await getElasticacheRedis().clear();
-    await getElasticacheRedis().flush();
+    await getRedis().clear();
     await sharedRepo.clear();
     //first call for getItemByUrl.
     nock(`http://example-parser.com`)

@@ -14,10 +14,13 @@ import {
   normalizeDate,
 } from '../parserApiUtils';
 import config from '../config';
-import { getElasticacheRedis } from '../cache';
-import { batchCacheFn, CacheInterface } from '@pocket-tools/apollo-utils';
+import {
+  DataLoaderCacheInterface,
+  batchCacheFn,
+} from '@pocket-tools/apollo-utils';
 import { FetchHandler } from '../fetch';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { getRedisCache } from '../cache';
 
 /**
  * Gets an item by its id by using the Item Resolvers table
@@ -281,7 +284,7 @@ export const batchGetItems = async (
   params: {
     key: 'itemId' | 'givenUrl';
     getValueFn: (item: Item) => string;
-    cache: CacheInterface;
+    cache: DataLoaderCacheInterface;
   },
 ): Promise<Item[]> => {
   let callback;
@@ -317,7 +320,7 @@ export const batchGetItemsByIds: any = async (
     {
       key: 'itemId',
       getValueFn: (item) => item.itemId,
-      cache: getElasticacheRedis(),
+      cache: getRedisCache(),
     },
   );
 };
@@ -334,7 +337,7 @@ export const batchGetItemsByUrls = async (
     {
       key: 'givenUrl',
       getValueFn: (item) => item.givenUrl,
-      cache: getElasticacheRedis(),
+      cache: getRedisCache(),
     },
   );
 };

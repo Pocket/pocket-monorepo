@@ -112,7 +112,10 @@ export const sentryPlugin: ApolloServerPlugin<BaseContext> = {
 
           scope.setUser({
             id: (requestEncodedId as string) || undefined,
-            ip_address: (gatewayIpAddress as string) || (originClientIp as string) || undefined,
+            ip_address:
+              (gatewayIpAddress as string) ||
+              (originClientIp as string) ||
+              undefined,
           });
 
           // report error

@@ -4,6 +4,7 @@ import { Connection } from 'typeorm';
 import * as itemLoader from './itemLoader';
 import { getRedis } from '../cache';
 import nock, { cleanAll } from 'nock';
+import config from '../config';
 
 const urlToParse = 'https://test.com';
 
@@ -63,6 +64,7 @@ describe('itemLoader - integration', () => {
   });
 
   afterAll(async () => {
+    await getRedis().disconnect();
     await connection.close();
   });
 
@@ -77,6 +79,12 @@ describe('itemLoader - integration', () => {
   });
 
   it('should batch resolve item urls', async () => {
+    const batchItems = await itemLoader.batchGetItemsByUrls([item.normalUrl]);
+    expect(batchItems[0].givenUrl).toEqual(item.normalUrl);
+  });
+
+  it('should batch resolve item urls when error', async () => {
+    config.redis.port = '123123';
     const batchItems = await itemLoader.batchGetItemsByUrls([item.normalUrl]);
     expect(batchItems[0].givenUrl).toEqual(item.normalUrl);
   });
