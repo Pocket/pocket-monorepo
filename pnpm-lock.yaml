@@ -1121,8 +1121,8 @@ importers:
         specifier: 4.0.1
         version: 4.0.1
       unleash-client:
-        specifier: 5.3.0
-        version: 5.3.0
+        specifier: 5.3.2
+        version: 5.3.2
       unleash-server:
         specifier: 5.8.2
         version: 5.8.2(core-js@3.35.1)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8)
@@ -1294,8 +1294,8 @@ importers:
         specifier: 3.9.0
         version: 3.9.0
       unleash-client:
-        specifier: 5.3.0
-        version: 5.3.0
+        specifier: 5.3.2
+        version: 5.3.2
     devDependencies:
       '@pocket-tools/backend-benchmarking':
         specifier: workspace:*
@@ -14983,8 +14983,8 @@ packages:
       - supports-color
     dev: false
 
-  /unleash-client@5.3.0:
-    resolution: {integrity: sha512-wjxaokbojFtOawh6X1wRo8X4dVZdW6oXdOFUY6rvFeMV/z4wRoer3ZZK762ygS6JEbQDuMSlZkvkOZ2AfweDnA==}
+  /unleash-client@5.3.2:
+    resolution: {integrity: sha512-0iR0bzvWoJSuLPr9VKQhu1qr2jV3UeXcnMJylTzeeZWNhD6dxQSYS1bVl1wGhTRo/ucXnk5Lx66zmreIqojp8Q==}
     engines: {node: '>=16'}
     dependencies:
       ip: 1.1.8
