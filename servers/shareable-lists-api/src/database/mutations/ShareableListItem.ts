@@ -23,7 +23,7 @@ import { BaseContext } from '../../shared/types';
 /**
  * What can actually go into the database vs. client-provided type
  */
-type CreateListItemDb = Omit<AddItemInput, 'itemId'> & {
+export type CreateListItemDb = Omit<AddItemInput, 'itemId'> & {
   // Pre mysql 8, prisma MUST rely on JS layer vs. database to create
   // uuid; if we don't use prisma and we haven't yet updated the schema
   // to mysql 8 with default uuid generation, we MUST populate this value ourselves.

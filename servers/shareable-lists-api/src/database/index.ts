@@ -14,6 +14,7 @@ export {
   deleteShareableList,
   moderateShareableList,
   updateShareableList,
+  createAndAddToShareableList,
 } from './mutations/ShareableList';
 export {
   createShareableListItem,

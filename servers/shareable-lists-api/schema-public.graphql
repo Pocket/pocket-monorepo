@@ -256,4 +256,11 @@ type Mutation {
     listExternalId: ID!
     items: [AddItemInput!]! @constraint(minItems: 1, maxItems: 30)
   ): ShareableList!
+  """
+  Add a batch of items to an existing shareable list.
+  """
+  createAndAddToShareableList(
+    listData: CreateShareableListInput!
+    itemData: [AddItemInput!]! @constraint(minItems: 1, maxItems: 30)
+  ): ShareableList
 }

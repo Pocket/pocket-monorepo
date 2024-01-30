@@ -15,6 +15,7 @@ import { startServer } from '../../../express';
 import { IPublicContext } from '../../context';
 import { client, conn } from '../../../database/client';
 import {
+  CreateAndAddToShareableListInput,
   CreateShareableListInput,
   UpdateShareableListInput,
 } from '../../../database/types';
@@ -22,6 +23,7 @@ import {
   CREATE_SHAREABLE_LIST,
   DELETE_SHAREABLE_LIST,
   UPDATE_SHAREABLE_LIST,
+  CREATE_AND_ADD_TO_SHAREABLE_LIST,
 } from './sample-mutations.gql';
 import {
   clearDb,
@@ -1272,6 +1274,167 @@ describe('public mutations: ShareableList', () => {
       expect(result.body.errors[0].message).toContain(
         'Must be no more than 200 characters in length',
       );
+    });
+  });
+  describe('createAndAddToShareableList', () => {
+    it('creates a new shareable list with one item', async () => {
+      const listData: CreateShareableListInput = {
+        title: faker.lorem.words(4),
+        description: faker.lorem.sentences(2),
+      };
+
+      const itemData: CreateAndAddToShareableListInput['itemData'] = [
+        {
+          itemId: '3789538749',
+          url: 'https://www.test.com/this-is-a-story',
+          title: 'A story is a story',
+          excerpt: '<blink>The best story ever told</blink>',
+          imageUrl: 'https://www.test.com/thumbnail.jpg',
+          publisher: 'The London Times',
+          authors: 'Charles Dickens, Mark Twain',
+        },
+      ];
+
+      const result = await request(app)
+        .post(graphQLUrl)
+        .set(publicUserHeaders)
+        .send({
+          query: print(CREATE_AND_ADD_TO_SHAREABLE_LIST),
+          variables: { listData, itemData },
+        });
+
+      expect(result.body.errors).not.toBeDefined();
+      const expected = {
+        createAndAddToShareableList: expect.objectContaining({
+          ...listData,
+          listItems: [
+            expect.objectContaining({ ...itemData[0], sortOrder: 0 }),
+          ],
+        }),
+      };
+      expect(result.body.data).toEqual(expected);
+    });
+    it('creates a new shareable list with 1+ items', async () => {
+      const listData: CreateShareableListInput = {
+        title: faker.lorem.words(4),
+        description: faker.lorem.sentences(2),
+      };
+
+      const itemBase = {
+        title: 'A story is a story',
+        excerpt: '<blink>The best story ever told</blink>',
+        imageUrl: 'https://www.test.com/thumbnail.jpg',
+        publisher: 'The London Times',
+        authors: 'Charles Dickens, Mark Twain',
+      };
+
+      const itemData: CreateAndAddToShareableListInput['itemData'] = [
+        {
+          itemId: '3789538749',
+          url: 'https://www.test.com/this-is-a-story',
+          ...itemBase,
+        },
+        {
+          itemId: '12345',
+          url: 'https://www.domain.com/another-story',
+        },
+        {
+          itemId: '999999',
+          url: 'https://www.another.com/more-story',
+        },
+      ];
+
+      const result = await request(app)
+        .post(graphQLUrl)
+        .set(publicUserHeaders)
+        .send({
+          query: print(CREATE_AND_ADD_TO_SHAREABLE_LIST),
+          variables: { listData, itemData },
+        });
+
+      expect(result.body.errors).not.toBeDefined();
+      const expected = {
+        createAndAddToShareableList: expect.objectContaining({
+          ...listData,
+          listItems: [
+            expect.objectContaining({ ...itemData[0], sortOrder: 0 }),
+            expect.objectContaining({ ...itemData[1], sortOrder: 1 }),
+            expect.objectContaining({ ...itemData[2], sortOrder: 2 }),
+          ],
+        }),
+      };
+      expect(result.body.data).toEqual(expected);
+    });
+    it('does not make a new shareable list if one with the same title exists already', async () => {
+      const list1 = await createShareableListHelper(db, {
+        title: `Baldur's Gate 3 Companion Guides`,
+        userId: parseInt(publicUserHeaders.userId),
+      });
+      const itemData: CreateAndAddToShareableListInput['itemData'] = [
+        {
+          itemId: '3789538749',
+          url: 'https://www.test.com/this-is-a-story',
+          title: 'A story is a story',
+          excerpt: '<blink>The best story ever told</blink>',
+          imageUrl: 'https://www.test.com/thumbnail.jpg',
+          publisher: 'The London Times',
+          authors: 'Charles Dickens, Mark Twain',
+        },
+      ];
+      const title1 = list1.title;
+      // create new List with title1 value for the same user
+      const data: CreateShareableListInput = {
+        title: title1,
+        description: faker.lorem.sentences(2),
+      };
+      const result = await request(app)
+        .post(graphQLUrl)
+        .set(publicUserHeaders)
+        .send({
+          query: print(CREATE_AND_ADD_TO_SHAREABLE_LIST),
+          variables: { listData: data, itemData },
+        });
+      expect(result.body.data.createShareableList).toBeFalsy();
+      expect(result.body.errors.length).toBe(1);
+      expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
+      expect(result.body.errors[0].message).toBe(
+        `A list with the title "Baldur's Gate 3 Companion Guides" already exists`,
+      );
+    });
+    it('does not make a new shareable list if the items do not validate', async () => {
+      const itemData: CreateAndAddToShareableListInput['itemData'] = [
+        {
+          itemId: 'abcdef',
+          url: 'https://www.test.com/this-is-a-story',
+          title: 'A story is a story',
+          excerpt: '<blink>The best story ever told</blink>',
+          imageUrl: 'https://www.test.com/thumbnail.jpg',
+          publisher: 'The London Times',
+          authors: 'Charles Dickens, Mark Twain',
+        },
+      ];
+      // create new List with title1 value for the same user
+      const data: CreateShareableListInput = {
+        title: faker.lorem.words(4),
+        description: faker.lorem.sentences(2),
+      };
+      const result = await request(app)
+        .post(graphQLUrl)
+        .set(publicUserHeaders)
+        .send({
+          query: print(CREATE_AND_ADD_TO_SHAREABLE_LIST),
+          variables: { listData: data, itemData },
+        });
+      expect(result.body.data.createShareableList).toBeFalsy();
+      expect(result.body.errors.length).toBe(1);
+      expect(result.body.errors[0].extensions.code).toBe('BAD_USER_INPUT');
+      expect(result.body.errors[0].message).toBe('abcdef is an invalid itemId');
+      const dbResult = await db.list.findFirst({
+        where: {
+          title: data.title,
+        },
+      });
+      expect(dbResult).toBeNull();
     });
   });
 });
