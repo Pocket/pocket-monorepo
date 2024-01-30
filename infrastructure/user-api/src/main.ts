@@ -4,8 +4,6 @@ import {
   DataTerraformRemoteState,
   S3Backend,
   TerraformStack,
-  Aspects,
-  MigrateIds,
 } from 'cdktf';
 import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
 import { CloudwatchLogGroup } from '@cdktf/provider-aws/lib/cloudwatch-log-group';
@@ -52,10 +50,6 @@ class UserAPI extends TerraformStack {
       region,
       caller,
     });
-
-    // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
-    // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
-    Aspects.of(this).add(new MigrateIds());
   }
 
   /**

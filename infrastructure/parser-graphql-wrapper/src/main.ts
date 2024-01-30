@@ -18,7 +18,7 @@ import {
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
 import { Construct } from 'constructs';
-import { App, S3Backend, TerraformStack, Aspects, MigrateIds } from 'cdktf';
+import { App, S3Backend, TerraformStack } from 'cdktf';
 import * as fs from 'fs';
 class ParserGraphQLWrapper extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -55,10 +55,6 @@ class ParserGraphQLWrapper extends TerraformStack {
       caller,
       vpc,
     });
-
-    // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
-    // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
-    Aspects.of(this).add(new MigrateIds());
   }
 
   /**

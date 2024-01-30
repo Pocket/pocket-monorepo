@@ -23,8 +23,6 @@ import {
   DataTerraformRemoteState,
   S3Backend,
   TerraformStack,
-  Aspects,
-  MigrateIds,
 } from 'cdktf';
 import { Construct } from 'constructs';
 
@@ -103,10 +101,6 @@ class AccountDeleteMonitor extends TerraformStack {
       userEventTopicArn,
       userMergeTopicArn,
     );
-
-    // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
-    // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
-    Aspects.of(this).add(new MigrateIds());
   }
 
   /**

@@ -4,8 +4,6 @@ import {
   DataTerraformRemoteState,
   S3Backend,
   TerraformStack,
-  Aspects,
-  MigrateIds,
 } from 'cdktf';
 import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
 import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
@@ -91,10 +89,6 @@ class TransactionalEmails extends TerraformStack {
       snsTopicDlq,
       SNSTopicsSubscriptionList,
     );
-
-    // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
-    // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
-    Aspects.of(this).add(new MigrateIds());
   }
 
   /**
