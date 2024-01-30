@@ -18,7 +18,7 @@ import {
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
 import { Construct } from 'constructs';
-import { App, RemoteBackend, TerraformStack, Aspects, MigrateIds } from 'cdktf';
+import { App, S3Backend, TerraformStack, Aspects, MigrateIds } from 'cdktf';
 import * as fs from 'fs';
 class ParserGraphQLWrapper extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -30,14 +30,11 @@ class ParserGraphQLWrapper extends TerraformStack {
     new NullProvider(this, 'null_provider');
     new PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
 
-    new RemoteBackend(this, {
-      hostname: 'app.terraform.io',
-      organization: 'Pocket',
-      workspaces: [
-        {
-          name: `${config.name}-${config.environment}`,
-        },
-      ],
+    new S3Backend(this, {
+      bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
+      dynamodbTable: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
+      key: config.name,
+      region: 'us-east-1',
     });
 
     const region = new DataAwsRegion(this, 'region');

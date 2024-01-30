@@ -18,7 +18,7 @@ import { Construct } from 'constructs';
 import {
   App,
   DataTerraformRemoteState,
-  RemoteBackend,
+  S3Backend,
   TerraformStack,
   Aspects,
   MigrateIds,
@@ -35,10 +35,11 @@ class ListAPI extends TerraformStack {
     new LocalProvider(this, 'local-provider');
     new ArchiveProvider(this, 'archive-provider');
 
-    new RemoteBackend(this, {
-      hostname: 'app.terraform.io',
-      organization: 'Pocket',
-      workspaces: [{ name: `${config.name}-${config.environment}` }],
+    new S3Backend(this, {
+      bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
+      dynamodbTable: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
+      key: config.name,
+      region: 'us-east-1',
     });
 
     const pocketVPC = new PocketVPC(this, 'pocket-vpc');

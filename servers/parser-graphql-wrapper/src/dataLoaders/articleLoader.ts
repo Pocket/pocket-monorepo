@@ -1,10 +1,13 @@
 import * as Sentry from '@sentry/node';
 import DataLoader from 'dataloader';
-import { batchCacheFn, LoaderCacheInterface } from '@pocket-tools/apollo-utils';
+import {
+  DataLoaderCacheInterface,
+  batchCacheFn,
+} from '@pocket-tools/apollo-utils';
 import config from '../config';
-import { getElasticacheRedis } from '../cache';
 import { FetchHandler } from '../fetch';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { getRedisCache } from '../cache';
 
 export type ParserArticle = {
   article: string;
@@ -85,7 +88,7 @@ export const batchGetArticleTextByUrl = async (
  */
 export const batchLoadArticleTextByUrl = async (
   urls: string[],
-  cache: LoaderCacheInterface,
+  cache: DataLoaderCacheInterface,
 ): Promise<ParserArticle[]> => {
   return batchCacheFn<string, ParserArticle>({
     values: urls,
@@ -102,7 +105,7 @@ export const batchLoadArticleTextByUrl = async (
  * Loader to batch requests
  */
 export const articleLoader = new DataLoader(
-  (urls: string[]) => batchLoadArticleTextByUrl(urls, getElasticacheRedis()),
+  (urls: string[]) => batchLoadArticleTextByUrl(urls, getRedisCache()),
   {
     cache: false,
   },

@@ -2,7 +2,7 @@ import { readClient, writeClient } from '../../../database/client';
 import { getUnixTimestamp } from '../../../utils';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
-import { Express } from 'express';
+import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 
@@ -16,7 +16,7 @@ describe('getSavedItems filter', () => {
   const date2 = new Date('2020-10-03 10:22:30'); // Consistent date for seeding
   const date2Unix = getUnixTimestamp(date2); // Consistent date for seeding
   const date3 = new Date('2020-10-03 10:25:30'); // Consistent date for seeding
-  let app: Express;
+  let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;
 

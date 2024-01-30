@@ -1,23 +1,4 @@
-export interface LoaderCacheInterface {
-  /**
-   * Get cache key
-   * @param key
-   */
-  getKey(key: string): string;
-
-  /**
-   * Multi sets values to cache
-   * @param keyValues
-   * @param ttl
-   */
-  mset(keyValues: { [key: string]: string }, ttl: number): Promise<void>;
-
-  /**
-   * Multi gets values from cache
-   * @param keys
-   */
-  mget(keys: string[]): Promise<string[]>;
-}
+import { DataLoaderCacheInterface } from './cache/interface';
 
 export type BatchFnProps<T, U> = {
   /**
@@ -39,7 +20,7 @@ export type BatchFnProps<T, U> = {
   /**
    * Cache instance used for memoization
    */
-  cache: LoaderCacheInterface;
+  cache: DataLoaderCacheInterface;
   /**
    * Maximum expiration time in seconds for the cache
    */
@@ -67,7 +48,13 @@ export const multiGetCachedValues = async <T, U>(
   const keys = props.values.map(
     (value) => props.cacheKeyPrefix + props.valueKeyFn(value),
   );
-  const cacheValues = await props.cache.mget(keys.map(props.cache.getKey));
+
+  const cacheValues = (
+    await Promise.all(
+      keys.map((value) => props.cache.get(props.cache.getKey(value))),
+    )
+  ).map((value) => (value !== undefined ? value : null)); // filter the undefined values to null to mimic the old mget behavior from redis;
+
   return cacheValues.map((value) => JSON.parse(value)).filter(Boolean);
 };
 
@@ -97,7 +84,15 @@ export const multiSetCacheValues = async <U>(
     Object.keys(cacheValues).length !== 0 &&
     cacheValues.constructor === Object
   ) {
-    await props.cache.mset(cacheValues, props.maxAge);
+    const promises: Promise<void>[] = [];
+
+    for (const [key, value] of Object.entries(cacheValues)) {
+      promises.push(
+        props.cache.set(key, value as string, { ttl: props.maxAge }),
+      );
+    }
+
+    await Promise.all(promises);
   }
 };
 

@@ -31,9 +31,9 @@
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "7.94.1",
-    "@sentry/tracing": "7.94.1",
-    "axios": "1.6.5",
+    "@sentry/node": "7.98.0",
+    "@sentry/tracing": "7.98.0",
+    "axios": "1.6.7",
     "axios-retry": "4.0.0",
     "dataloader": "2.2.2",
     "parse-url": "8.1.0"

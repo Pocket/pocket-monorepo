@@ -1,13 +1,5 @@
-import { sentryPlugin } from '@pocket-tools/apollo-utils';
-import { ApolloServer, ApolloServerPlugin } from '@apollo/server';
-import {
-  ApolloServerPluginLandingPageDisabled,
-  ApolloServerPluginInlineTraceDisabled,
-  ApolloServerPluginUsageReportingDisabled,
-} from '@apollo/server/plugin/disabled';
-import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
-import { ApolloServerPluginInlineTrace } from '@apollo/server/plugin/inlineTrace';
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { defaultPlugins } from '@pocket-tools/apollo-utils';
+import { ApolloServer } from '@apollo/server';
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl';
 import responseCachePlugin from '@apollo/server-plugin-response-cache';
 import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4';
@@ -23,48 +15,20 @@ export function getPublicServer(
 ): ApolloServer<IPublicContext> {
   const cache = getRedisCache();
 
-  const defaultPlugins = [
-    // On initialization, this plugin automatically begins caching responses according to field settings
-    // see shareableListPublic cache control settings
-    responseCachePlugin(),
-    sentryPlugin,
-    ApolloServerPluginDrainHttpServer({ httpServer }),
-    ApolloServerPluginCacheControl({
-      // Let's set the default max age to 0 so that no query responses get cached by default
-      // and we will specify the max age for specific queries on the schema and resolver level
-      defaultMaxAge: config.app.defaultMaxAge,
-    }),
-    ApolloServerPluginUsageReportingDisabled(),
-    createApollo4QueryValidationPlugin({
-      schema,
-    }),
-  ];
-
-  // map of plugins for each node environment
-  const environmentPlugins: Record<
-    'test' | 'development' | 'production',
-    ApolloServerPlugin[]
-  > = {
-    test: [ApolloServerPluginInlineTraceDisabled()],
-    development: [
-      ApolloServerPluginLandingPageLocalDefault(),
-      ApolloServerPluginInlineTrace({ includeErrors: { unmodified: true } }),
-    ],
-    production: [
-      ApolloServerPluginLandingPageDisabled(),
-      ApolloServerPluginInlineTrace({ includeErrors: { unmodified: true } }),
-    ],
-  };
-
-  // combine default plugins with environment specific plugins for this server
-  // instance
-  const plugins = defaultPlugins.concat(
-    environmentPlugins[process.env.NODE_ENV] ?? [],
-  );
-
   return new ApolloServer<IPublicContext>({
     schema,
-    plugins,
+    plugins: [
+      ...defaultPlugins(httpServer),
+      ApolloServerPluginCacheControl({
+        // Let's set the default max age to 0 so that no query responses get cached by default
+        // and we will specify the max age for specific queries on the schema and resolver level
+        defaultMaxAge: config.app.defaultMaxAge,
+      }),
+      createApollo4QueryValidationPlugin({
+        schema,
+      }),
+      responseCachePlugin(),
+    ],
     cache,
     // formatError: errorHandler,
   });

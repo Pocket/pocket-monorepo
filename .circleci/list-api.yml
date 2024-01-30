@@ -45,7 +45,6 @@ workflows:
           scope: list-api-cdk
           stack-output-path: infrastructure/list-api/cdktf.out/stacks/list-api
           resource-class: pocket/default-prod
-          workspace: Prod
           dev: false
           apply: false
 
@@ -61,7 +60,6 @@ workflows:
           scope: list-api-cdk
           stack-output-path: infrastructure/list-api/cdktf.out/stacks/list-api
           resource-class: pocket/default-dev
-          workspace: Dev
           apply: true
           dev: true
 
@@ -128,7 +126,6 @@ workflows:
           scope: list-api-cdk
           stack-output-path: infrastructure/list-api/cdktf.out/stacks/list-api
           resource-class: pocket/default-prod
-          workspace: Prod
           apply: true
           dev: false
 

@@ -152,11 +152,8 @@ type SavedItem implements RemoteEntity @key(fields: "id") @key(fields: "url") {
   url: String!
   """
   The title for user saved item. Set by the user and if not, set by the parser.
-  For third party clients use-case only.
   """
   title: String
-    @deprecated(reason: "internal clients must use item.title")
-    @tag(name: "alpha")
   """
   Helper property to indicate if the SavedItem is favorited
   """
@@ -666,6 +663,19 @@ type Mutation {
   updateSavedItemUnFavorite(id: ID!): SavedItem!
 
   """
+  Update the title display of a Saved Item, retrieved by ID.
+  This is user-save specific (does not update the metadata saved by the parser).
+  Clients should ensure the input fits in the utf8mb3 character set (BMP only,
+  which means no emoji) to avoid being rejected by the database.
+  In the future this will be more permissive.
+  """
+  updateSavedItemTitle(
+    id: ID!
+    timestamp: ISOString!
+    title: String! @constraint(minLength: 1, maxLength: 75)
+  ): SavedItem
+
+  """
   Set the Tags that are associated with a SavedItem.
   Will replace any existing Tag associations on the SavedItem.
   To remove all Tags from a SavedItem, use `updateSavedItemRemoveTags`.
@@ -806,6 +816,19 @@ type Mutation {
   'hard-deleted' (record removed from the database entirely).
   """
   savedItemUnDelete(givenUrl: Url!, timestamp: ISOString!): SavedItem
+
+  """
+  Update the title display of a Saved Item, retrieved by URL.
+  This is user-save specific (does not update the metadata saved by the parser)
+  Clients should ensure the input fits in the utf8mb3 character set (BMP only,
+  which means no emoji) to avoid being rejected by the database.
+  In the future this will be more permissive.
+  """
+  savedItemUpdateTitle(
+    givenUrl: Url!
+    timestamp: ISOString!
+    title: String! @constraint(minLength: 1, maxLength: 75)
+  ): SavedItem
 }
 
 # """

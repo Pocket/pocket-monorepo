@@ -1,14 +1,6 @@
 import { ApolloServer } from '@apollo/server';
 import { Server } from 'http';
-import { sentryPlugin } from '@pocket-tools/apollo-utils';
-import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
-import {
-  ApolloServerPluginLandingPageDisabled,
-  ApolloServerPluginInlineTraceDisabled,
-  ApolloServerPluginUsageReportingDisabled,
-} from '@apollo/server/plugin/disabled';
-import { ApolloServerPluginInlineTrace } from '@apollo/server/plugin/inlineTrace';
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { defaultPlugins } from '@pocket-tools/apollo-utils';
 import { IAdminContext } from './context';
 import { schema } from './schema';
 import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4';
@@ -22,32 +14,14 @@ import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive
 export function getAdminServer(
   httpServer: Server,
 ): ApolloServer<IAdminContext> {
-  const defaultPlugins = [
-    sentryPlugin,
-    ApolloServerPluginDrainHttpServer({ httpServer }),
-    createApollo4QueryValidationPlugin({
-      schema,
-    }),
-  ];
-  const prodPlugins = [
-    ApolloServerPluginLandingPageDisabled(),
-    ApolloServerPluginInlineTrace(),
-  ];
-  const nonProdPlugins = [
-    ApolloServerPluginLandingPageLocalDefault(),
-    ApolloServerPluginInlineTraceDisabled(),
-    // Usage reporting is enabled by default if you have APOLLO_KEY in your environment
-    ApolloServerPluginUsageReportingDisabled(),
-  ];
-
-  const plugins =
-    process.env.NODE_ENV === 'production'
-      ? defaultPlugins.concat(prodPlugins)
-      : defaultPlugins.concat(nonProdPlugins);
-
   return new ApolloServer<IAdminContext>({
     schema,
-    plugins,
+    plugins: [
+      ...defaultPlugins(httpServer),
+      createApollo4QueryValidationPlugin({
+        schema,
+      }),
+    ],
     // OSL-202 (https://getpocket.atlassian.net/browse/OSL-202) needs to get done in order
     // to stop masking Apollo Errors.
     // formatError: errorHandler,

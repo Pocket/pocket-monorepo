@@ -3,7 +3,7 @@ import { gql } from 'graphql-tag';
 import { buildSubgraphSchema } from '@apollo/subgraph';
 import { ApolloServerErrorCode } from '@apollo/server/errors';
 import assert from 'assert';
-import { sentryPlugin, defaultLogger } from '../plugins/sentryPlugin';
+import { sentryPlugin, defaultLogger } from '../sentry/apolloSentryPlugin';
 import { errorHandler, NotFoundError } from './errorHandler';
 import * as Sentry from '@sentry/node';
 import { ApolloServerPluginUsageReportingDisabled } from '@apollo/server/plugin/disabled';

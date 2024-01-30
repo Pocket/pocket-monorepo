@@ -2,7 +2,7 @@ import DataLoader from 'dataloader';
 import { IContext } from '../server/context';
 import { Image } from '../types';
 import { batchCacheFn } from '@pocket-tools/apollo-utils';
-import { getElasticacheRedis } from '../cache';
+import { getRedisCache } from '../cache';
 import config from '../config';
 import { getImageMetadata } from '../pocketImageCache/metadata';
 
@@ -18,7 +18,7 @@ export const batchFetchURLs = async (urls: string[]): Promise<Image[]> => {
       const promises = values.map((url: string) => getImageMetadata(url));
       return Promise.all(promises);
     },
-    cache: getElasticacheRedis(), // primary and reader
+    cache: getRedisCache(), // primary and reader
     cacheKeyPrefix: 'image-data-', // optional
     returnTypeKeyFn: (image: Image) => image.url, // same return value as valueFn
     maxAge: config.app.dataloaderCacheAge,

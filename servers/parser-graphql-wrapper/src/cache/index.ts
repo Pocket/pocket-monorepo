@@ -1,28 +1,25 @@
 import Keyv from 'keyv';
 import { KeyvAdapter } from '@apollo/utils.keyvadapter';
-import { ErrorsAreMissesCache } from '@apollo/utils.keyvaluecache';
 import config from '../config';
-import { ElasticacheRedis } from '@pocket-tools/apollo-utils';
-import { Redis } from 'ioredis';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import {
+  DataLoaderCacheInterface,
+  DataloaderKeyValueCache,
+} from '@pocket-tools/apollo-utils';
 
-let cache: ErrorsAreMissesCache = undefined;
+let cache: DataloaderKeyValueCache = undefined;
 let redis: Keyv = undefined;
-let elasticacheRedis: ElasticacheRedis = undefined;
-
-// Note this file contains 3 cache defintions all connecting to the same redis.
-// This is because Apollo updated their cache interface and we need to go back and refactor our other interfaces.
-// Leaving this for future us to settle on a pattern.
 
 /**
  * Sets up the connection to the Redis cluster. ErrorsAreMissesCache wrapper provides error tolerance for cache backends.
  * If the cache is unavailable and the request throws an error, ErrorsAreMissesCache treats that error as a cache miss.
+ * (Note, dataLoaderkeyvalue cache extends errors are misses cache)
  */
-export function getRedisCache(): ErrorsAreMissesCache {
+export function getRedisCache(): DataLoaderCacheInterface {
   if (cache) {
     return cache;
   }
-  cache = new ErrorsAreMissesCache(new KeyvAdapter(getRedis()));
+  cache = new DataloaderKeyValueCache(new KeyvAdapter(getRedis()));
   return cache;
 }
 
@@ -40,22 +37,4 @@ export function getRedis(): Keyv {
     });
   });
   return redis;
-}
-
-export function getElasticacheRedis(): ElasticacheRedis {
-  if (elasticacheRedis) {
-    return elasticacheRedis;
-  }
-
-  elasticacheRedis = new ElasticacheRedis(
-    new Redis({
-      host: config.redis.primaryEndpoint.split(':')[0],
-      port: parseInt(config.redis.port),
-    }),
-    new Redis({
-      host: config.redis.readerEndpoint.split(':')[0],
-      port: parseInt(config.redis.port),
-    }),
-  );
-  return elasticacheRedis;
 }

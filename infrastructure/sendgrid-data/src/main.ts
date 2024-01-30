@@ -26,6 +26,7 @@ class SendgridData extends TerraformStack {
 
     new S3Backend(this, {
       bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
+      dynamodbTable: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
       key: 'sendgrid-data',
       region: 'us-east-1',
     });

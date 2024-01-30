@@ -34,3 +34,7 @@ yarn-error.log*
 dist
 logs
 cdktf.out
+
+#Local development
+scripts/states
+scripts/main.tf

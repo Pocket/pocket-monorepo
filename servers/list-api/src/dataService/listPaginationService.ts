@@ -113,6 +113,7 @@ export class ListPaginationService {
       url: entity.given_url,
       id: entity.item_id.toString(),
       resolvedId: entity.resolved_id.toString(),
+      title: entity.title,
       isFavorite: entity.favorite,
       favoritedAt: entity.time_favorited > 0 ? entity.time_favorited : null,
       status: statusMap[entity.status],
@@ -145,7 +146,7 @@ export class ListPaginationService {
            * temporary tables do not support BLOB/TEXT
            */
           '`given_url` varchar(5000) COLLATE utf8_unicode_ci NOT NULL, ' +
-          '`given_title` varchar(75) COLLATE utf8_unicode_ci NOT NULL, ' +
+          '`title` varchar(75) COLLATE utf8_unicode_ci NOT NULL, ' +
           '`favorite` tinyint(3) unsigned NOT NULL, ' +
           '`status` tinyint(3) unsigned NOT NULL, ' +
           '`time_added` int(10), ' +
@@ -229,7 +230,7 @@ export class ListPaginationService {
       dbClient.raw('UNIX_TIMESTAMP(list.time_favorited) AS time_favorited'),
     );
     // needs to be same order as above
-    const insertStatement = `INSERT INTO \`${ListPaginationService.LIST_TEMP_TABLE}\` (item_id, resolved_id, given_url, given_title, favorite, status, time_added, time_updated, time_read, time_favorited) `;
+    const insertStatement = `INSERT INTO \`${ListPaginationService.LIST_TEMP_TABLE}\` (item_id, resolved_id, given_url, title, favorite, status, time_added, time_updated, time_read, time_favorited) `;
     const cursor = pagination.after ?? pagination.before ?? null;
     if (cursor) {
       return this.pageAfterorBefore(

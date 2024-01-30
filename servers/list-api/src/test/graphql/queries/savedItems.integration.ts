@@ -1,7 +1,7 @@
 import { readClient, writeClient } from '../../../database/client';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
-import { Express } from 'express';
+import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 
@@ -16,7 +16,7 @@ describe('getSavedItems', () => {
   const date2 = new Date('2020-10-03 10:22:30'); // Consistent date for seeding
   const date3 = new Date('2020-10-03 10:25:30'); // Consistent date for seeding
   const nullDate = new Date('0000-00-00 00:00:00');
-  let app: Express;
+  let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;
 
@@ -33,6 +33,7 @@ describe('getSavedItems', () => {
               cursor
               node {
                 url
+                title
                 item {
                   ... on Item {
                     givenUrl
@@ -160,11 +161,17 @@ describe('getSavedItems', () => {
     expect(res.body.data?._entities[0].savedItems.edges[0].node.url).toBe(
       'http://ijk',
     );
+    expect(res.body.data?._entities[0].savedItems.edges[0].node.title).toBe(
+      'mytitle',
+    );
     expect(
       res.body.data?._entities[0].savedItems.edges[0].node.item.givenUrl,
     ).toBe('http://ijk');
     expect(res.body.data?._entities[0].savedItems.edges[1].node.url).toBe(
       'http://def',
+    );
+    expect(res.body.data?._entities[0].savedItems.edges[1].node.title).toBe(
+      'title2',
     );
     expect(
       res.body.data?._entities[0].savedItems.edges[1].node.item.givenUrl,

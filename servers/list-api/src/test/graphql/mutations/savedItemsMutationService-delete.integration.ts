@@ -4,7 +4,7 @@ import { EventType } from '../../../businessEvents';
 import { ContextManager } from '../../../server/context';
 import { startServer } from '../../../server/apollo';
 import request from 'supertest';
-import { Express } from 'express';
+import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 
 async function upsertSavedItem(
@@ -109,7 +109,7 @@ describe('Delete/Undelete SavedItem: ', () => {
 
   const date = new Date('2020-10-03 10:20:30');
   const updateDate = new Date(2021, 1, 1, 0, 0); // mock date for insert
-  let app: Express;
+  let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;
 

@@ -18,7 +18,7 @@ import {
   PocketAwsSyntheticChecks,
 } from '@pocket-tools/terraform-modules';
 
-import { App, RemoteBackend, TerraformStack, MigrateIds, Aspects } from 'cdktf';
+import { App, S3Backend, TerraformStack, MigrateIds, Aspects } from 'cdktf';
 import { Construct } from 'constructs';
 import fs from 'fs';
 
@@ -30,10 +30,11 @@ class ClientAPI extends TerraformStack {
     new LocalProvider(this, 'local_provider');
     new NullProvider(this, 'null_provider');
     new PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
-    new RemoteBackend(this, {
-      hostname: 'app.terraform.io',
-      organization: 'Pocket',
-      workspaces: [{ name: `${config.name}-${config.environment}` }],
+    new S3Backend(this, {
+      bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
+      dynamodbTable: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
+      key: config.name,
+      region: 'us-east-1',
     });
 
     const caller = new DataAwsCallerIdentity(this, 'caller');

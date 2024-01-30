@@ -2,7 +2,7 @@ import { ApolloServer } from '@apollo/server';
 import { ContextManager } from '../../../server/context';
 import { readClient, writeClient } from '../../../database/client';
 import { startServer } from '../../../server/apollo';
-import { Express } from 'express';
+import { Application } from 'express';
 import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 import request from 'supertest';
@@ -13,7 +13,7 @@ describe('saveBatchUpdateTags', () => {
   const readDb = readClient();
   const headers = { userid: '1' };
   const date = new Date('2020-10-03T10:20:30.000Z');
-  let app: Express;
+  let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;
 
