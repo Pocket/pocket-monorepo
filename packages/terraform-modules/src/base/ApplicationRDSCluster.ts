@@ -4,6 +4,7 @@ import {
   RdsClusterConfig,
   RdsCluster,
 } from '@cdktf/provider-aws/lib/rds-cluster';
+import { RdsClusterInstance } from '@cdktf/provider-aws/lib/rds-cluster-instance';
 import { SecretsmanagerSecret } from '@cdktf/provider-aws/lib/secretsmanager-secret';
 import { SecretsmanagerSecretVersion } from '@cdktf/provider-aws/lib/secretsmanager-secret-version';
 import { SecurityGroup } from '@cdktf/provider-aws/lib/security-group';
@@ -25,6 +26,7 @@ export type ApplicationRDSClusterConfig = Omit<
   masterUsername: string;
   masterPassword?: string;
   engine?: 'aurora' | 'aurora-mysql' | 'aurora-postgresql';
+  createServerlessV2Instance?: boolean;
 };
 
 export interface ApplicationRDSClusterProps extends TerraformMetaArguments {
@@ -50,6 +52,7 @@ const defaults = {
  */
 export class ApplicationRDSCluster extends Construct {
   public readonly rds: RdsCluster;
+  public readonly rdsInstance?: RdsClusterInstance;
   public readonly secretARN?: string;
 
   constructor(
@@ -118,8 +121,14 @@ export class ApplicationRDSCluster extends Construct {
       tags: config.tags,
     });
 
-    this.rds = new RdsCluster(this, 'rds_cluster', {
+    const configCopy: ApplicationRDSClusterConfig = {
       ...config.rdsConfig,
+    };
+    // Remove non standard rds params for passing through.
+    delete configCopy.createServerlessV2Instance;
+
+    this.rds = new RdsCluster(this, 'rds_cluster', {
+      ...configCopy,
       clusterIdentifierPrefix: config.useName
         ? config.prefix.toLowerCase()
         : undefined,
@@ -135,6 +144,15 @@ export class ApplicationRDSCluster extends Construct {
       },
       provider: config.provider,
     });
+
+    if (config.rdsConfig.createServerlessV2Instance) {
+      this.rdsInstance = new RdsClusterInstance(this, 'rds-instance', {
+        clusterIdentifier: this.rds.id,
+        instanceClass: 'db.serverless',
+        engine: this.rds.engine,
+        engineVersion: this.rds.engineVersion,
+      });
+    }
 
     // Create secrets manager resource for the RDS
     // This value should be changed after initial creation
