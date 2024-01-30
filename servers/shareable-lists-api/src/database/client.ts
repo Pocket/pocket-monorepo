@@ -1,5 +1,34 @@
 import { PrismaClient } from '.prisma/client';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { createPool } from 'mysql2';
+import { Kysely, MysqlDialect } from 'kysely';
+import { DB } from '.kysely/client/types';
+import config from '../config';
+
+let kysely: Kysely<DB>;
+
+/**
+ * Kysely query builder for more control
+ * @returns Kysely query builder
+ */
+export function conn(): Kysely<DB> {
+  if (kysely) return kysely;
+  const dialect = new MysqlDialect({
+    pool: createPool({
+      database: config.database.dbname,
+      host: config.database.host,
+      user: config.database.username,
+      password: config.database.password,
+      port: config.database.port,
+      connectionLimit: 10,
+      timezone: '+00:00',
+    }),
+  });
+  kysely = new Kysely<DB>({
+    dialect,
+  });
+  return kysely;
+}
 
 let prisma;
 

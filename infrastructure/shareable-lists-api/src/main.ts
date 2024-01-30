@@ -310,6 +310,26 @@ class ShareableListsAPI extends TerraformStack {
               name: 'DATABASE_URL',
               valueFrom: `${rds.secretARN}:database_url::`,
             },
+            {
+              name: 'DATABASE_HOST',
+              valueFrom: `${rds.secretARN}:host::`,
+            },
+            {
+              name: 'DATABASE_USER',
+              valueFrom: `${rds.secretARN}:username::`,
+            },
+            {
+              name: 'DATABASE_PASSWORD',
+              valueFrom: `${rds.secretARN}:password::`,
+            },
+            {
+              name: 'DATABASE_NAME',
+              valueFrom: `${rds.secretARN}:dbname::`,
+            },
+            {
+              name: 'DATABASE_PORT',
+              valueFrom: `${rds.secretARN}:port::`,
+            },
           ],
         },
       ],

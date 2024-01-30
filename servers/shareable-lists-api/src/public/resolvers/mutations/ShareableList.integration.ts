@@ -13,7 +13,7 @@ import { faker } from '@faker-js/faker';
 // import slugify from 'slugify';
 import { startServer } from '../../../express';
 import { IPublicContext } from '../../context';
-import { client } from '../../../database/client';
+import { client, conn } from '../../../database/client';
 import {
   CreateShareableListInput,
   UpdateShareableListInput,
@@ -37,12 +37,18 @@ import {
   LIST_DESCRIPTION_MAX_CHARS,
 } from '../../../shared/constants';
 import { Application } from 'express';
+import { IAdminContext } from '../../../admin/context';
+import { Kysely } from 'kysely';
+import { DB } from '.kysely/client/types';
 
 describe('public mutations: ShareableList', () => {
   let app: Application;
   let server: ApolloServer<IPublicContext>;
+  let adminServer: ApolloServer<IAdminContext>;
   let graphQLUrl: string;
   let db: PrismaClient;
+  let con: Kysely<DB>;
+
   // let pilotUser2: PilotUser;
 
   // this user will be put into the pilot
@@ -61,9 +67,11 @@ describe('public mutations: ShareableList', () => {
     ({
       app,
       publicServer: server,
+      adminServer: adminServer,
       publicUrl: graphQLUrl,
     } = await startServer(0));
     db = client();
+    con = conn();
     // we mock the send method on EventBridgeClient
     jest
       .spyOn(EventBridgeClient.prototype, 'send')
@@ -74,7 +82,9 @@ describe('public mutations: ShareableList', () => {
   afterAll(async () => {
     jest.restoreAllMocks();
     await db.$disconnect();
+    await con.destroy();
     await server.stop();
+    await adminServer.stop();
   });
 
   beforeEach(async () => {

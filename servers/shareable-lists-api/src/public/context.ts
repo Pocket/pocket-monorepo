@@ -1,12 +1,16 @@
 import { PrismaClient } from '.prisma/client';
-import { client } from '../database/client';
+import { client, conn } from '../database/client';
+import { Kysely } from 'kysely';
+import { DB } from '.kysely/client/types';
+import { BaseContext } from '../shared/types';
 
 /**
  * Context components specifically for the public graph.
  */
 
-export interface IPublicContext {
+export interface IPublicContext extends BaseContext {
   db: PrismaClient;
+  conn: Kysely<DB>;
   // Pocket userId coming in from the http headers
   userId: number | bigint;
 }
@@ -15,9 +19,13 @@ export class PublicContextManager implements IPublicContext {
   constructor(
     private config: {
       db: PrismaClient;
+      conn: Kysely<DB>;
       request: any;
     },
   ) {}
+  get conn(): IPublicContext['conn'] {
+    return this.config.conn;
+  }
 
   get db(): IPublicContext['db'] {
     return this.config.db;
@@ -43,6 +51,7 @@ export async function getPublicContext({
 }): Promise<PublicContextManager> {
   return new PublicContextManager({
     db: client(),
+    conn: conn(),
     request: req,
   });
 }

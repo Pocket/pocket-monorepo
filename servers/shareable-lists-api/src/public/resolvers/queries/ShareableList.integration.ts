@@ -26,6 +26,7 @@ import {
 } from './sample-queries.gql';
 import { ACCESS_DENIED_ERROR } from '../../../shared/constants';
 import { Application } from 'express';
+import { faker } from '@faker-js/faker';
 
 const toBeNonEmptyString = (s: unknown) =>
   (typeof s === 'string' || s instanceof String) && s.length > 0;
@@ -89,6 +90,7 @@ describe('public queries: ShareableList', () => {
     shareableList = await createShareableListHelper(db, {
       userId: parseInt(publicUserHeaders.userId),
       title: 'This is a test list',
+      updatedAt: faker.date.past(),
     });
     // create another list
     shareableList2 = await createShareableListHelper(db, {
@@ -96,6 +98,7 @@ describe('public queries: ShareableList', () => {
       title: 'This is a second test list',
       // set list item notes public
       listItemNoteVisibility: Visibility.PUBLIC,
+      updatedAt: new Date(),
     });
   });
 

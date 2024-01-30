@@ -1,7 +1,10 @@
 import { PrismaClient } from '.prisma/client';
-import Express from 'express';
-import { client } from '../database/client';
+import { Request } from 'express';
+import { Kysely } from 'kysely';
+import { DB } from '.kysely/client/types';
+import { client, conn } from '../database/client';
 import { FULLACCESS, READONLY } from '../shared/constants';
+import { BaseContext } from '../shared/types';
 
 /**
  * Context components specifically for the admin graph.
@@ -16,21 +19,27 @@ export interface AdminAPIUser {
   canRead: boolean;
 }
 
-export interface IAdminContext {
+export interface IAdminContext extends BaseContext {
   db: PrismaClient;
+  conn: Kysely<DB>;
   authenticatedUser: AdminAPIUser;
 }
 
 export class AdminContextManager implements IAdminContext {
   constructor(
     private config: {
-      request: Express.Request;
+      request: Request;
       db: PrismaClient;
+      conn: Kysely<DB>;
     },
   ) {}
 
   get db(): IAdminContext['db'] {
     return this.config.db;
+  }
+
+  get conn(): IAdminContext['conn'] {
+    return this.config.conn;
   }
 
   get authenticatedUser(): AdminAPIUser {
@@ -61,10 +70,11 @@ export class AdminContextManager implements IAdminContext {
 export async function getAdminContext({
   req,
 }: {
-  req: Express.Request;
+  req: Request;
 }): Promise<AdminContextManager> {
   return new AdminContextManager({
     request: req,
     db: client(),
+    conn: conn(),
   });
 }

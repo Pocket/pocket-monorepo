@@ -2,7 +2,7 @@ import { ForbiddenError, UserInputError } from '@pocket-tools/apollo-utils';
 import { ModerationStatus } from '.prisma/client';
 import { ACCESS_DENIED_ERROR } from '../../../shared/constants';
 import { ShareableListComplete } from '../../../database/types';
-import { moderateShareableList as dbModerateShareableList } from '../../../database/mutations';
+import { moderateShareableList as dbModerateShareableList } from '../../../database';
 import { IAdminContext } from '../../context';
 
 /**
@@ -22,7 +22,7 @@ export async function moderateShareableList(
   { data },
   context: IAdminContext,
 ): Promise<ShareableListComplete> {
-  const { db, authenticatedUser } = context;
+  const { authenticatedUser } = context;
   if (!authenticatedUser.hasFullAccess) {
     throw new ForbiddenError(ACCESS_DENIED_ERROR);
   }
@@ -46,5 +46,5 @@ export async function moderateShareableList(
     }
     data.restorationReason = data.restorationReason.trim();
   }
-  return await dbModerateShareableList(db, data);
+  return await dbModerateShareableList(context, data);
 }
