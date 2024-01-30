@@ -181,6 +181,15 @@ export type CreateShareableListInput = {
   listItemNoteVisibility?: Visibility;
 };
 
+export type CreateAndAddToShareableListInput = Omit<
+  CreateShareableListInput,
+  'listItem'
+> & {
+  itemData: Array<
+    Omit<CreateShareableListItemInput, 'sortOrder' | 'listExternalId'>
+  >;
+};
+
 export type UpdateShareableListInput = {
   externalId: string;
   title?: string;

@@ -4,12 +4,14 @@ import {
   UpdateShareableListInput,
   AddItemInput,
   ListResponse,
+  CreateAndAddToShareableListInput,
 } from '../../../database/types';
 import {
   createShareableList as dbCreateShareableList,
   deleteShareableList as dbDeleteShareableList,
   updateShareableList as dbUpdateShareableList,
   addToShareableList as dbAddToShareableList,
+  createAndAddToShareableList as dbCreateAndAddToShareableList,
 } from '../../../database';
 import { IPublicContext } from '../../context';
 import { executeMutation } from '../utils';
@@ -34,6 +36,22 @@ export async function createShareableList(
   );
 }
 
+/**
+ * @param parent
+ * @param data
+ * @param context
+ */
+export async function createAndAddToShareableList(
+  parent,
+  { listData, itemData },
+  context: IPublicContext,
+): Promise<ShareableList> {
+  return await executeMutation<CreateAndAddToShareableListInput, ShareableList>(
+    context,
+    { ...listData, itemData },
+    dbCreateAndAddToShareableList,
+  );
+}
 /**
  * The update list mutation. Handles everything, including toggling the list
  * between PRIVATE and PUBLIC.

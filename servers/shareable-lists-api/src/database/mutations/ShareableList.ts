@@ -7,15 +7,19 @@ import { Visibility, ModerationStatus } from '.prisma/client';
 // import slugify from 'slugify';
 import {
   CreateShareableListInput,
+  CreateAndAddToShareableListInput,
   ModerateShareableListInput,
   ShareableList,
   ShareableListComplete,
   shareableListItemSelectFields,
   UpdateShareableListInput,
+  ListItemSelect,
+  ShareableListSelect,
 } from '../types';
 import {
   createShareableListItem,
   deleteAllListItemsForList,
+  CreateListItemDb,
 } from './ShareableListItem';
 import {
   ACCESS_DENIED_ERROR,
@@ -30,6 +34,7 @@ import { validateItemId } from '../../public/resolvers/utils';
 import { sendEventHelper } from '../../snowplow/events';
 import { EventBridgeEventType } from '../../snowplow/types';
 import { BaseContext } from '../../shared/types';
+import { v4 as uuid } from 'uuid';
 
 /**
  * This mutation creates a shareable list, and _only_ a shareable list
@@ -44,19 +49,15 @@ export async function createShareableList(
   userId: number | bigint,
 ): Promise<ShareableList> {
   const { db } = context;
-  let listItemData;
+  const { listItem, ...listInput } = listData;
 
   // check if listItem data is passed
-  if (listData.listItem) {
+  if (listItem) {
     // make sure the itemId is valid - if not, fail the entire operation early
     //
     // this is required as itemId must be a string at the API level, but is
     // actually a number in the db (legacy problems)
-    validateItemId(listData.listItem.itemId);
-
-    listItemData = listData.listItem;
-    //remove it from listData so that we can create the ShareableList first
-    delete listData.listItem;
+    validateItemId(listItem.itemId);
   }
 
   // check if the title already exists for this user
@@ -72,20 +73,20 @@ export async function createShareableList(
 
   // create ShareableList in db
   const list: ShareableList = await db.list.create({
-    data: { ...listData, userId },
+    data: { ...listInput, userId },
     include: {
       listItems: { select: shareableListItemSelectFields },
     },
   });
 
   // if ShareableListItem was passed in the request, create it in the db
-  if (listItemData) {
+  if (listItem) {
     // first set the list external id
-    listItemData['listExternalId'] = list.externalId;
+    listItem['listExternalId'] = list.externalId;
     // create the ShareableListItem
     const createdListItem = await createShareableListItem(
       context,
-      listItemData,
+      listItem,
       userId,
     );
     // add the created ShareableListItem to the created ShareableList
@@ -99,6 +100,100 @@ export async function createShareableList(
   });
 
   return list;
+}
+
+/**
+ * Create a new List and add one or more items to it at the same time.
+ * @param context
+ * @param data
+ * @param userId
+ * @returns
+ */
+export async function createAndAddToShareableList(
+  context: BaseContext,
+  data: CreateAndAddToShareableListInput,
+  userId: number | bigint,
+): Promise<ShareableList> {
+  const { db, conn } = context;
+  const { itemData, ...listData } = data;
+  const listInput = {
+    ...listData,
+    // again, prisma's bigint making type safety hard...
+    userId: userId as any,
+    externalId: uuid(),
+  };
+  // check if the title already exists for this user
+  // TODO (@kschelonka): add this as a constraint using generated hash column
+  // For future modeling, if we really want to be parsimonious we can use that
+  // hash as the "externalId"
+  const titleExists = await db.list.count({
+    where: { title: listData.title, userId: userId },
+  });
+
+  if (titleExists) {
+    throw new UserInputError(
+      `A list with the title "${listData.title}" already exists`,
+    );
+  }
+  // The relational link depends on an auto-generated listId, so that will be
+  // pouplated inside the transaction
+  const itemInput: Array<Omit<CreateListItemDb, 'listId'>> = itemData.map(
+    (item, index) => {
+      validateItemId(item.itemId);
+      return {
+        ...item,
+        itemId: parseInt(item.itemId),
+        sortOrder: index,
+        externalId: uuid(),
+      };
+    },
+  );
+  // Create a list and populate it with items in one transaction
+  // If the item insertion fails, then the list will not be created.
+  const { items, list } = await conn.transaction().execute(async (trx) => {
+    await trx.insertInto('List').values(listInput).execute();
+    const list = await trx
+      .selectFrom('List')
+      .where('externalId', '=', listInput.externalId)
+      .select(ShareableListSelect)
+      .executeTakeFirstOrThrow();
+    const itemInserts: CreateListItemDb[] = itemInput.map((item) => ({
+      ...item,
+      listId: list.id,
+    }));
+    await trx.insertInto('ListItem').values(itemInserts).execute();
+    const items = await trx
+      .selectFrom('ListItem')
+      .where('listId', '=', list.id)
+      .select(ListItemSelect)
+      .orderBy('sortOrder', 'asc')
+      .execute();
+    return { items, list };
+  });
+  const completeList: ShareableList = {
+    ...list,
+    // bigint causes issues again...
+    userId: list.userId as unknown as bigint,
+    listItems: items as any, // nested bigints
+  };
+  //send event bridge event for shareable-list-created event type
+  sendEventHelper(EventBridgeEventType.SHAREABLE_LIST_CREATED, {
+    shareableList: completeList as ShareableListComplete,
+    isShareableListEventType: true,
+  });
+  //send event bridge event for shareable-list-item-created event type
+  items.forEach((item) => {
+    sendEventHelper(EventBridgeEventType.SHAREABLE_LIST_ITEM_CREATED, {
+      // "bigint" headaches
+      // https://github.com/prisma/prisma/issues/7570
+      // Dealing with this properly is more work than the type safety is worth
+      shareableListItem: item as any,
+      shareableListItemExternalId: item.externalId,
+      listExternalId: list.externalId,
+      isShareableListItemEventType: true,
+    });
+  });
+  return completeList;
 }
 
 /**

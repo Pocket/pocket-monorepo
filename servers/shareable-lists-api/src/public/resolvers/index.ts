@@ -11,6 +11,7 @@ import {
   createShareableList,
   deleteShareableList,
   updateShareableList,
+  createAndAddToShareableList,
 } from './mutations/ShareableList';
 import {
   createShareableListItem,
@@ -43,6 +44,7 @@ export const resolvers = {
     updateShareableListItems,
     deleteShareableListItem,
     addToShareableList,
+    createAndAddToShareableList,
   },
   Query: {
     shareableList: getShareableList,

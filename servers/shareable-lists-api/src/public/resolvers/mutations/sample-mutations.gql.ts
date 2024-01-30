@@ -78,3 +78,15 @@ export const DELETE_SHAREABLE_LIST_ITEM = gql`
   }
   ${ShareableListItemPublicProps}
 `;
+
+export const CREATE_AND_ADD_TO_SHAREABLE_LIST = gql`
+  mutation createAndAddToShareableList(
+    $listData: CreateShareableListInput!
+    $itemData: [AddItemInput!]!
+  ) {
+    createAndAddToShareableList(listData: $listData, itemData: $itemData) {
+      ...ShareableListPublicProps
+    }
+  }
+  ${ShareableListPublicProps}
+`;
