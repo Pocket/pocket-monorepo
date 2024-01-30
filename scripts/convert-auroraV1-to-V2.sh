@@ -10,17 +10,17 @@ REGION=us-east-1
 # Set AWS_PAGER to an empty string to disable the pager
 export AWS_PAGER=""
 
-# echo 'creating new binlog param groups'
-# aws rds create-db-cluster-parameter-group \
-#  --db-cluster-parameter-group-name aurora-mysql-with-binlogging \
-#  --description 'Aurora MySQL 5.7 With Binlog Enabled' \
-#  --db-parameter-group-family aurora-mysql5.7 \
-#  --no-paginate
+echo 'creating new binlog param groups'
+aws rds create-db-cluster-parameter-group \
+ --db-cluster-parameter-group-name aurora-mysql-with-binlogging \
+ --description 'Aurora MySQL 5.7 With Binlog Enabled' \
+ --db-parameter-group-family aurora-mysql5.7 \
+ --no-paginate
 
-# aws rds modify-db-cluster-parameter-group \
-#  --db-cluster-parameter-group-name aurora-mysql-with-binlogging \
-#  --parameters 'ParameterName=binlog_format,ParameterValue=MIXED,ApplyMethod=pending-reboot' \
-#  --no-paginate
+aws rds modify-db-cluster-parameter-group \
+ --db-cluster-parameter-group-name aurora-mysql-with-binlogging \
+ --parameters 'ParameterName=binlog_format,ParameterValue=MIXED,ApplyMethod=pending-reboot' \
+ --no-paginate
 
 echo 'attaching new param group'
 
@@ -87,20 +87,20 @@ aws rds modify-db-cluster \
 
 echo 'creating v2 instance'
  aws rds create-db-instance \
- --db-instance-identifier $DATABASE_IDENTIFIER-serverless-instance \
+ --db-instance-identifier $DATABASE_IDENTIFIER-serverless \
  --db-instance-class db.serverless \
  --engine aurora-mysql \
  --db-cluster-identifier $green_cluster_id \
  --no-paginate
 
 aws rds wait db-instance-available \
- --db-instance-identifier $DATABASE_IDENTIFIER-serverless-instance \
+ --db-instance-identifier $DATABASE_IDENTIFIER-serverless \
  --no-paginate
 
 echo 'failing green database over' 
 aws rds failover-db-cluster \
  --db-cluster-identifier $green_cluster_id \
- --target-db-instance-identifier $DATABASE_IDENTIFIER-serverless-instance \
+ --target-db-instance-identifier $DATABASE_IDENTIFIER-serverless \
  --no-paginate
 
 aws rds wait db-cluster-available \
