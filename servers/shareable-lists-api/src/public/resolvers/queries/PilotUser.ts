@@ -1,4 +1,4 @@
-import { isPilotUser as dbIsPilotUser } from '../../../database/queries';
+import { isPilotUser as dbIsPilotUser } from '../../../database';
 
 /**
  * Resolver for the public `isPilotUser` query.

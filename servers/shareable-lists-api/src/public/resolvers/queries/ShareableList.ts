@@ -3,7 +3,7 @@ import {
   getShareableList as dbGetShareableList,
   getShareableListPublic as dbGetShareableListPublic,
   getShareableLists as dbGetShareableLists,
-} from '../../../database/queries';
+} from '../../../database';
 import { ShareableList } from '../../../database/types';
 import { validateUserId } from '../utils';
 

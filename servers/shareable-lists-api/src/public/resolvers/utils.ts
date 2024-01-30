@@ -23,7 +23,7 @@ export async function executeMutation<T, U>(
 
   const validatedUserId = await validateUserId(db, userId);
 
-  return await callback(db, sanitizeMutationInput(data), validatedUserId);
+  return await callback(context, sanitizeMutationInput(data), validatedUserId);
 }
 
 /**
