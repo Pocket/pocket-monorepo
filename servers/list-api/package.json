@@ -36,7 +36,7 @@
     "lodash": "4.17.21",
     "luxon": "3.4.4",
     "mysql2": "3.9.0",
-    "unleash-client": "5.3.0"
+    "unleash-client": "5.3.2"
   },
   "devDependencies": {
     "@pocket-tools/backend-benchmarking": "workspace:*",
