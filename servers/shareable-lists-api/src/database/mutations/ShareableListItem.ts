@@ -165,7 +165,6 @@ export async function addToShareableList(
       `A list with the ID of "${listExternalId}" does not exist`,
     );
   }
-  // TODO: Kat - fix this input type, it's not the same as graphql schema
   const input: CreateListItemDb[] = items.map((item, index) => {
     // Ensure itemId is a valid number
     validateItemId(item.itemId);
