@@ -14,9 +14,9 @@
     "format": "eslint --fix \"src/**/*.ts\""
   },
   "dependencies": {
-    "@aws-sdk/client-eventbridge": "3.501.0",
-    "@aws-sdk/client-kinesis": "3.501.0",
-    "@aws-sdk/client-sqs": "3.501.0",
+    "@aws-sdk/client-eventbridge": "3.502.0",
+    "@aws-sdk/client-kinesis": "3.502.0",
+    "@aws-sdk/client-sqs": "3.502.0",
     "@pocket-tools/apollo-cursor-pagination": "1.0.3",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
