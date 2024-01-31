@@ -1,0 +1,11 @@
+{
+  "extends": "@pocket-tools/tsconfig",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "target": ["es2020"],
+  "exclude": ["node_modules", "services"],
+  "include": ["./src/**/*.ts", "./src/config"],
+  "files": ["node_modules/jest-extended/types/index.d.ts"]
+}
