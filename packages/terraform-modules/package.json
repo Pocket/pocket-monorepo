@@ -14,7 +14,7 @@
     "test": "jest --ci --maxWorkers=4 --logHeapUsage",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\"",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release --dry-run"
   },
   "dependencies": {
     "@cdktf/provider-archive": "10.0.1",
@@ -30,13 +30,7 @@
     "parse-domain": "5.0.0"
   },
   "devDependencies": {
-    "@semantic-release/changelog": "6.0.3",
-    "@semantic-release/commit-analyzer": "11.1.0",
-    "@semantic-release/exec": "6.0.3",
-    "@semantic-release/git": "10.0.1",
-    "@semantic-release/github": "9.2.6",
-    "@semantic-release/npm": "11.0.2",
-    "@semantic-release/release-notes-generator": "12.1.0",
+    "semantic-release": "23.0.0",
     "@types/jest": "29.5.11",
     "conventional-changelog-conventionalcommits": "7.0.2",
     "eslint-config-custom": "workspace:*",
@@ -91,28 +85,8 @@
           }
         }
       ],
-      [
-        "@semantic-release/changelog",
-        {
-          "changelogFile": "CHANGELOG.md"
-        }
-      ],
-      [
-        "@semantic-release/git",
-        {
-          "assets": [
-            "CHANGELOG.md"
-          ]
-        }
-      ],
       "@semantic-release/npm",
-      "@semantic-release/github",
-      [
-        "@semantic-release/exec",
-        {
-          "prepareCmd": "echo ${nextRelease.version} > .version"
-        }
-      ]
+      "@semantic-release/github"
     ]
   }
 }
