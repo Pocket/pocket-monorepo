@@ -14,7 +14,7 @@
     "lint": {},
     "format": {},
     "semantic-release": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build", "build"]
     },
     "test": {
       "dependsOn": ["^build", "build"]
