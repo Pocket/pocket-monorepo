@@ -1,4 +1,16 @@
 import { Visibility, ModerationStatus, Prisma } from '.prisma/client';
+import { ListItem, List } from '.kysely/client/types';
+import { ColumnType } from 'kysely';
+
+// For db-generated columns in Kysely-Prisma types, we get a type error in
+// the response if we try to typehint with the entity.
+// e.g. "number cannot be assigned to Column<number, number, number>"
+// This is a small utility to remove the Generated type and infer
+// based on the first type in the Generated column hint
+// e.g. type ListItemResponse = DbResponse<ListItem>;
+export type DbResponse<T> = {
+  [K in keyof T]-?: T[K] extends ColumnType<infer S> ? S : T[K];
+};
 
 /**
  * Source of truth: https://getpocket.atlassian.net/wiki/spaces/PE/pages/2584150049/Pocket+Shared+Data
@@ -57,6 +69,25 @@ const shareableListItem = Prisma.validator<Prisma.ListItemArgs>()({
 export type ShareableListItem = Prisma.ListItemGetPayload<
   typeof shareableListItem
 >;
+export const ListItemSelect: Array<keyof ShareableListItem> = [
+  'externalId',
+  'itemId',
+  'url',
+  'title',
+  'excerpt',
+  'note',
+  'imageUrl',
+  'publisher',
+  'authors',
+  'sortOrder',
+  'createdAt',
+  'updatedAt',
+];
+
+export type ListItemResponse = Pick<
+  DbResponse<ListItem>,
+  keyof ShareableListItem
+>;
 
 /**
  * Setting up the temp shareable list item type without Parser metadata.
@@ -100,10 +131,30 @@ const shareableListSelectFields = {
   listItems: { select: shareableListItemSelectFields },
   listItemNoteVisibility: true,
 };
+
 const shareableList = Prisma.validator<Prisma.ListArgs>()({
   select: shareableListSelectFields,
 });
 export type ShareableList = Prisma.ListGetPayload<typeof shareableList>;
+
+type ShareableListEntity = Omit<ShareableList, 'listItems'> & {
+  id: List['id'];
+};
+export const ShareableListSelect: Array<keyof ShareableListEntity> = [
+  'id',
+  'externalId',
+  'userId',
+  'slug',
+  'title',
+  'description',
+  'status',
+  'moderationStatus',
+  'createdAt',
+  'updatedAt',
+  'listItemNoteVisibility',
+];
+// List without the ListItem relation
+export type ListResponse = Pick<DbResponse<List>, keyof ShareableListEntity>;
 
 /**
  * This is the shape of a shareable list object on the Admin Pocket Graph:
@@ -128,6 +179,15 @@ export type CreateShareableListInput = {
   description?: string;
   listItem?: CreateShareableListItemInput;
   listItemNoteVisibility?: Visibility;
+};
+
+export type CreateAndAddToShareableListInput = Omit<
+  CreateShareableListInput,
+  'listItem'
+> & {
+  itemData: Array<
+    Omit<CreateShareableListItemInput, 'sortOrder' | 'listExternalId'>
+  >;
 };
 
 export type UpdateShareableListInput = {
@@ -167,6 +227,11 @@ export type CreateShareableListItemInput = {
   authors?: string;
   sortOrder: number;
 };
+
+export type AddItemInput = Omit<
+  CreateShareableListItemInput,
+  'listExternalId' | 'sortOrder'
+>;
 
 /**
  * Input for updating a single shareable list item

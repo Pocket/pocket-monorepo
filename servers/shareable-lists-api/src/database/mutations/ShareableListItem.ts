@@ -1,30 +1,54 @@
 import { NotFoundError, UserInputError } from '@pocket-tools/apollo-utils';
-import { ModerationStatus, PrismaClient } from '.prisma/client';
+import { ModerationStatus } from '.prisma/client';
 import {
+  AddItemInput,
   CreateShareableListItemInput,
+  ListItemResponse,
+  ListItemSelect,
+  ListResponse,
   ShareableListItem,
   shareableListItemSelectFields,
+  ShareableListSelect,
   UpdateShareableListItemInput,
   UpdateShareableListItemsInput,
 } from '../types';
 import { PRISMA_RECORD_NOT_FOUND } from '../../shared/constants';
 import { validateItemId } from '../../public/resolvers/utils';
+import { v4 as uuid } from 'uuid';
 
 import { sendEventHelper as sendEvent } from '../../snowplow/events';
 import { EventBridgeEventType } from '../../snowplow/types';
+import { BaseContext } from '../../shared/types';
+
+/**
+ * What can actually go into the database vs. client-provided type
+ */
+export type CreateListItemDb = Omit<AddItemInput, 'itemId'> & {
+  // Pre mysql 8, prisma MUST rely on JS layer vs. database to create
+  // uuid; if we don't use prisma and we haven't yet updated the schema
+  // to mysql 8 with default uuid generation, we MUST populate this value ourselves.
+  // We want to know the externalId before insert anyway because MySQL doesn't
+  // support RETURNING statement, and this is the most performant way to query back
+  // an inserted row.
+  externalId: string;
+  listId: number;
+  itemId: number;
+  sortOrder: number;
+};
 
 /**
  * This mutation creates a shareable list item.
  *
- * @param db
+ * @param context
  * @param data
  * @param userId
  */
 export async function createShareableListItem(
-  db: PrismaClient,
+  context: BaseContext,
   data: CreateShareableListItemInput,
   userId: number | bigint,
 ): Promise<ShareableListItem> {
+  const { db } = context;
   // make sure the itemId is valid
   // this is required as itemId must be a string at the API level, but is
   // actually a number in the db (legacy problems)
@@ -51,6 +75,8 @@ export async function createShareableListItem(
   }
 
   // check if an item with this URL already exists in this list
+  // TODO (@kschelonka): consider uniqeuness constraint over listId and url,
+  // via a generated hashed_url column
   const itemExists = list.listItems.find((item) => {
     return item.url === data.url;
   });
@@ -105,17 +131,151 @@ export async function createShareableListItem(
 }
 
 /**
+ * Mutation to bulk add items to an extant shareable list.
+ * Behaves like an 'append' action, ignoring any inputs that
+ * already exist in the list.
+ *
+ * @param context
+ * @param listId The "externalId" list identifier
+ * @param data
+ * @param userId
+ */
+export async function addToShareableList(
+  context: BaseContext,
+  { listExternalId, items }: { listExternalId: string; items: AddItemInput[] },
+  userId: number | bigint,
+): Promise<ListResponse> {
+  const { db, conn } = context;
+
+  // Retrieve the list this item should be added to.
+  // Note: no new items should be added to lists that have been taken down
+  // by the moderators.
+  // TODO (@kschelonka): revisit this visibility requirement with UX changes
+  // If the list doesn't exist it should fail from a FK constraint,
+  // but since the externalId isn't the FK we can't rely on that
+  const list = await db.list.findFirst({
+    where: {
+      externalId: listExternalId,
+      userId,
+      moderationStatus: ModerationStatus.VISIBLE,
+    },
+  });
+  if (!list) {
+    throw new NotFoundError(
+      `A list with the ID of "${listExternalId}" does not exist`,
+    );
+  }
+  const input: CreateListItemDb[] = items.map((item, index) => {
+    // Ensure itemId is a valid number
+    validateItemId(item.itemId);
+    return {
+      ...item,
+      itemId: parseInt(item.itemId),
+      // All these will have the same createdAt value, which means
+      // that we can't rely on that for a default sort order.
+      // If sort order isn't applied, take the order of the input array.
+      // Alternatively, could change the sort fallback so that it uses the
+      // internal auto-increment ID.
+      sortOrder: index,
+      listId: list.id as unknown as number, // bigint issues
+      // In the future this could optionally be provided by clients
+      // (would require additional updates in other methods)
+      externalId: uuid(),
+    };
+  });
+
+  const { inserts, updatedList } = await conn
+    .transaction()
+    .execute(async (trx) => {
+      const highestSortOrder = (
+        await trx
+          .selectFrom('ListItem')
+          .select((eb) => eb.fn.max('sortOrder').as('sortOrder'))
+          .where('listId', '=', list.id as unknown as number) // prisma bigint...
+          .executeTakeFirst()
+      ).sortOrder;
+      const sortStart = highestSortOrder != null ? highestSortOrder + 1 : 0;
+      // Closure for iterative conditional inserts of List Items
+      const conditionalItemInsert = async (
+        item: CreateListItemDb,
+      ): Promise<ListItemResponse | undefined> => {
+        const itemExists = await trx
+          .selectFrom('ListItem')
+          .where('url', '=', item.url)
+          .where('listId', '=', item.listId)
+          .select('id')
+          .executeTakeFirst();
+        if (itemExists == null) {
+          await trx
+            .insertInto('ListItem')
+            .values({ ...item, sortOrder: item.sortOrder + sortStart })
+            .execute();
+          // We don't have RETURNING statement so we have to query back
+          return await trx
+            .selectFrom('ListItem')
+            .where('externalId', '=', item.externalId)
+            .select(ListItemSelect)
+            .executeTakeFirstOrThrow();
+        } else {
+          return Promise.resolve(undefined);
+        }
+      };
+      // Iterate vs. Promise.all to avoid potential concurrency issues
+      const inputPromises = input.map((item) => conditionalItemInsert(item));
+      const inserts: ListItemResponse[] = [];
+      for await (const item of inputPromises) {
+        if (item != null) {
+          inserts.push(item);
+        }
+      }
+      // Finally, update the parent list `updatedAt`
+      await trx
+        .updateTable('List')
+        .set({
+          // I would think that the driver converts to the correct timezone,
+          // rendering this unncessary...
+          // but this stays consistent with the rest of the app code.
+          updatedAt: new Date().toISOString(),
+        })
+        .where('externalId', '=', listExternalId)
+        .execute();
+      const updatedList = await trx
+        .selectFrom('List')
+        .where('externalId', '=', listExternalId)
+        .select(ShareableListSelect)
+        .executeTakeFirstOrThrow();
+      return { inserts, updatedList };
+    });
+  //send event bridge event for shareable-list-item-created event type
+  inserts.forEach((item) => {
+    if (item != null) {
+      sendEvent(EventBridgeEventType.SHAREABLE_LIST_ITEM_CREATED, {
+        // "bigint" headaches
+        // https://github.com/prisma/prisma/issues/7570
+        // Dealing with this properly is more work than the type safety is worth
+        shareableListItem: item as any,
+        shareableListItemExternalId: item.externalId,
+        listExternalId: updatedList.externalId,
+        isShareableListItemEventType: true,
+      });
+    }
+  });
+  return updatedList;
+}
+
+/**
  * This mutation updates a single shareable list item.
  *
- * @param db
+ * @param context
  * @param data
  * @param userId
  */
 export async function updateShareableListItem(
-  db: PrismaClient,
+  context: BaseContext,
   data: UpdateShareableListItemInput,
   userId: number | bigint,
 ): Promise<ShareableListItem> {
+  const { db } = context;
   // Retrieve the current record, pre-update
   const listItem = await db.listItem.findFirst({
     where: {
@@ -171,15 +331,16 @@ export async function updateShareableListItem(
 /**
  * This mutation updates an array of shareable list items, targeting sortOrder.
  *
- * @param db
+ * @param context
  * @param data
  * @param userId
  */
 export async function updateShareableListItems(
-  db: PrismaClient,
+  context: BaseContext,
   data: UpdateShareableListItemsInput[],
   userId: number | bigint,
 ): Promise<ShareableListItem[]> {
+  const { db } = context;
   // store the updated shareable list items result here
   const updatedShareableListItems = [];
 
@@ -264,15 +425,16 @@ export async function updateShareableListItems(
 /**
  * This mutation deletes a shareable list item. Lists that are HIDDEN cannot have their items deleted.
  *
- * @param db
+ * @param context
  * @param externalId
  * @param userId
  */
 export async function deleteShareableListItem(
-  db: PrismaClient,
+  context: BaseContext,
   externalId: string,
   userId: number | bigint,
 ): Promise<ShareableListItem> {
+  const { db } = context;
   // retrieve the existing ListItem before it is deleted
   const listItem = await db.listItem.findUnique({
     where: {
@@ -338,14 +500,15 @@ export async function deleteShareableListItem(
 /**
  * Deletes all list items for a list.
  * NB: userId is not checked here, as this method is called
- * @param db
+ * @param context
  * @param listId
  * @returns
  */
 export async function deleteAllListItemsForList(
-  db: PrismaClient,
+  context: BaseContext,
   listId: bigint,
 ): Promise<number> {
+  const { db } = context;
   const batchResult = await db.listItem.deleteMany({
     where: { listId: listId },
   });

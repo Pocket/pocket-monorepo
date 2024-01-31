@@ -12,8 +12,8 @@
     "format": "eslint --fix \"src/**/*.ts\""
   },
   "dependencies": {
-    "@aws-sdk/client-eventbridge": "3.501.0",
-    "@aws-sdk/client-pinpoint": "3.501.0",
+    "@aws-sdk/client-eventbridge": "3.502.0",
+    "@aws-sdk/client-pinpoint": "3.502.0",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
@@ -24,7 +24,7 @@
     "knex": "3.1.0",
     "lodash": "4.17.21",
     "luxon": "3.4.4",
-    "mysql2": "3.9.0",
+    "mysql2": "3.9.1",
     "underscore.string": "3.3.6"
   },
   "devDependencies": {

@@ -14,9 +14,9 @@
     "format": "eslint --fix \"src/**/*.ts\""
   },
   "dependencies": {
-    "@aws-sdk/client-eventbridge": "3.501.0",
-    "@aws-sdk/client-kinesis": "3.501.0",
-    "@aws-sdk/client-sqs": "3.501.0",
+    "@aws-sdk/client-eventbridge": "3.502.0",
+    "@aws-sdk/client-kinesis": "3.502.0",
+    "@aws-sdk/client-sqs": "3.502.0",
     "@pocket-tools/apollo-cursor-pagination": "1.0.3",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
@@ -35,7 +35,7 @@
     "locutus": "2.0.16",
     "lodash": "4.17.21",
     "luxon": "3.4.4",
-    "mysql2": "3.9.0",
+    "mysql2": "3.9.1",
     "unleash-client": "5.3.2"
   },
   "devDependencies": {

@@ -9,7 +9,7 @@ const domain = isDev
 const graphqlVariant = isDev ? 'development' : 'current';
 const rds = {
   minCapacity: 1,
-  maxCapacity: isDev ? 1 : undefined,
+  maxCapacity: isDev ? 1 : 16,
 };
 const eventBusName = `PocketEventBridge-${environment}-Shared-Event-Bus`;
 const releaseSha = process.env.CIRCLE_SHA1;

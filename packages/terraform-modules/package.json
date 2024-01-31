@@ -14,27 +14,79 @@
     "test": "jest --ci --maxWorkers=4 --logHeapUsage",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\"",
-    "upgrade": "npm i cdktf@latest cdktf-cli@latest",
-    "upgrade:next": "npm i cdktf@next cdktf-cli@next"
+    "semantic-release": "semantic-release"
   },
   "dependencies": {
     "@cdktf/provider-archive": "10.0.1",
-    "@cdktf/provider-aws": "19.2.0",
+    "@cdktf/provider-aws": "19.3.0",
     "@cdktf/provider-local": "10.0.0",
     "@cdktf/provider-newrelic": "12.0.1",
     "@cdktf/provider-null": "10.0.0",
-    "@cdktf/provider-pagerduty": "13.0.1",
+    "@cdktf/provider-pagerduty": "13.2.0",
     "@cdktf/provider-time": "10.0.0",
-    "cdktf": "0.20.2",
-    "cdktf-cli": "0.20.2",
+    "cdktf": "0.20.3",
+    "cdktf-cli": "0.20.3",
     "constructs": "10.3.0",
     "parse-domain": "5.0.0"
   },
   "devDependencies": {
+    "semantic-release": "23.0.0",
     "@types/jest": "29.5.11",
+    "conventional-changelog-conventionalcommits": "7.0.2",
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
+    "semantic-release-monorepo": "8.0.1",
     "ts-jest": "29.1.2",
     "tsconfig": "workspace:*"
+  },
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pocket/pocket-monorepo.git"
+  },
+  "release": {
+    "extends": "semantic-release-monorepo",
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "conventionalcommits",
+          "parserOpts": {
+            "noteKeywords": [
+              "BREAKING CHANGE",
+              "BREAKING CHANGES",
+              "BREAKING"
+            ]
+          }
+        }
+      ],
+      [
+        "@semantic-release/release-notes-generator",
+        {
+          "preset": "conventionalcommits",
+          "parserOpts": {
+            "noteKeywords": [
+              "BREAKING CHANGE",
+              "BREAKING CHANGES",
+              "BREAKING"
+            ]
+          },
+          "writerOpts": {
+            "commitsSort": [
+              "subject",
+              "scope"
+            ]
+          }
+        }
+      ],
+      "@semantic-release/npm",
+      "@semantic-release/github"
+    ]
   }
 }

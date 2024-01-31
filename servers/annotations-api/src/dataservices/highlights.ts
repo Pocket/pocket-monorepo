@@ -140,12 +140,12 @@ export class HighlightsDataService {
 
     try {
       const rows = await this._create(highlightInput, transaction);
-      transaction.commit();
+      await transaction.commit();
       return rows.map(this.toGraphql);
     } catch (error) {
       // Just in case, roll back if not already done
       if (!transaction.isCompleted()) {
-        transaction.rollback();
+        await transaction.rollback();
       }
       throw error;
     }
@@ -268,12 +268,12 @@ export class HighlightsDataService {
     const transaction = trx ?? (await this.writeDb.transaction());
     try {
       const result = await this._delete(highlightId, annotation, transaction);
-      transaction.commit();
+      await transaction.commit();
       return result;
     } catch (error) {
       // Just in case, roll back if not already done
       if (!transaction.isCompleted()) {
-        transaction.rollback();
+        await transaction.rollback();
       }
       throw error;
     }
@@ -382,11 +382,11 @@ export class HighlightsDataService {
           )
         : [];
       await this.usersMetaService.logAnnotationMutation(updateDate, trx);
-      trx.commit();
+      await trx.commit();
       return { deleted: deletes, created };
     } catch (error) {
       if (!trx.isCompleted()) {
-        trx.rollback();
+        await trx.rollback();
       }
       throw error;
     }

@@ -185,14 +185,14 @@ class ShareableListsAPI extends TerraformStack {
         databaseName: 'shareablelists',
         masterUsername: 'pkt_slists',
         engine: 'aurora-mysql',
-        engineMode: 'serverless',
-        scalingConfiguration: {
+        engineMode: 'provisioned',
+        engineVersion: '8.0.mysql_aurora.3.05.1',
+        serverlessv2ScalingConfiguration: {
           minCapacity: config.rds.minCapacity,
           maxCapacity: config.rds.maxCapacity,
-          autoPause: false,
         },
+        createServerlessV2Instance: true,
       },
-
       tags: config.tags,
     });
   }
@@ -303,6 +303,26 @@ class ShareableListsAPI extends TerraformStack {
             {
               name: 'DATABASE_URL',
               valueFrom: `${rds.secretARN}:database_url::`,
+            },
+            {
+              name: 'DATABASE_HOST',
+              valueFrom: `${rds.secretARN}:host::`,
+            },
+            {
+              name: 'DATABASE_USER',
+              valueFrom: `${rds.secretARN}:username::`,
+            },
+            {
+              name: 'DATABASE_PASSWORD',
+              valueFrom: `${rds.secretARN}:password::`,
+            },
+            {
+              name: 'DATABASE_NAME',
+              valueFrom: `${rds.secretARN}:dbname::`,
+            },
+            {
+              name: 'DATABASE_PORT',
+              valueFrom: `${rds.secretARN}:port::`,
             },
           ],
         },

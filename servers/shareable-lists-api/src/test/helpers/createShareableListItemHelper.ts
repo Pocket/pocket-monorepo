@@ -13,6 +13,8 @@ interface ListItemHelperInput {
   publisher?: string;
   authors?: string;
   sortOrder?: number;
+  updatedAt?: Date;
+  createdAt?: Date;
 }
 
 /**
@@ -39,6 +41,8 @@ export async function createShareableListItemHelper(
     authors: data.authors ?? faker.person.fullName(),
     // allow sortOrder to fall back to db default if no specific order given
     sortOrder: data.sortOrder ?? undefined,
+    createdAt: data.createdAt?.toISOString(),
+    updatedAt: data.updatedAt?.toISOString(),
   };
 
   return await prisma.listItem.create({

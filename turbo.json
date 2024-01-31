@@ -13,6 +13,9 @@
     },
     "lint": {},
     "format": {},
+    "semantic-release": {
+      "dependsOn": ["^build", "build"]
+    },
     "test": {
       "dependsOn": ["^build", "build"]
     },

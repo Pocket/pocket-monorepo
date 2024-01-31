@@ -10,7 +10,7 @@ import {
   deleteShareableListItem as dbDeleteShareableListItem,
   updateShareableListItem as dbUpdateShareableListItem,
   updateShareableListItems as dbUpdateShareableListItems,
-} from '../../../database/mutations';
+} from '../../../database';
 import { executeMutation } from '../utils';
 
 /**

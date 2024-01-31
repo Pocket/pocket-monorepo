@@ -140,6 +140,21 @@ input CreateShareableListItemInput {
 }
 
 """
+Input data for adding multiple items to a list.
+Appends to the end of the list.
+"""
+input AddItemInput {
+  itemId: ID!
+  url: Url!
+  title: String
+  excerpt: String
+  note: String @constraint(maxLength: 300)
+  imageUrl: Url
+  publisher: String
+  authors: String
+}
+
+"""
 Input data for creating a Shareable List Item during Shareable List creation.
 """
 input CreateShareableListItemWithList {
@@ -233,4 +248,19 @@ type Mutation {
   Deletes a Shareable List Item. HIDDEN Lists cannot have their items deleted.
   """
   deleteShareableListItem(externalId: ID!): ShareableListItem!
+
+  """
+  Add a batch of items to an existing shareable list.
+  """
+  addToShareableList(
+    listExternalId: ID!
+    items: [AddItemInput!]! @constraint(minItems: 1, maxItems: 30)
+  ): ShareableList!
+  """
+  Add a batch of items to an existing shareable list.
+  """
+  createAndAddToShareableList(
+    listData: CreateShareableListInput!
+    itemData: [AddItemInput!]! @constraint(minItems: 1, maxItems: 30)
+  ): ShareableList
 }
