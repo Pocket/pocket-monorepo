@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "@aws-sdk/client-cloudwatch": "3.501.0",
-    "@aws-sdk/client-firehose": "3.501.0",
+    "@aws-sdk/client-cloudwatch": "3.502.0",
+    "@aws-sdk/client-firehose": "3.502.0",
     "@sendgrid/client": "^7.4.3",
     "@sentry/serverless": "7.98.0",
     "tslib": "2.6.2"
