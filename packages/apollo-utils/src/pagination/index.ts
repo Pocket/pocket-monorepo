@@ -1,2 +1,2 @@
-export { PaginationInput } from './types';
+export { PaginationInput, ValidatedPagination } from './types';
 export { validatePagination } from './validatePagination';

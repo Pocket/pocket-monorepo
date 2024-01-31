@@ -1,15 +1,15 @@
 import { UserInputError } from '../errorHandler/errorHandler';
-import { PaginationInput } from './types';
+import { PaginationInput, ValidatedPagination } from './types';
 
 export function validatePagination(
-  pagination: PaginationInput,
+  pagination: PaginationInput | null | undefined,
   defaultPageSize = 30,
   maxPageSize = 100,
-): PaginationInput {
+  validateCursor = true,
+): ValidatedPagination {
   if (pagination == null) {
     return { first: defaultPageSize };
   }
-
   if (
     (pagination.before && pagination.after) ||
     (pagination.before && pagination.first) ||
@@ -21,45 +21,33 @@ export function validatePagination(
     );
   }
 
-  if (pagination.before) {
-    const before = parseInt(
-      Buffer.from(pagination.before, 'base64').toString(),
-    );
-    if (before < 0) {
+  // Constrain to less than maxPageSize, and if zero, set default
+  const constrain = (n: number | undefined): number => {
+    if (n == null || n <= 0) {
+      return defaultPageSize;
+    }
+    return Math.min(n, maxPageSize);
+  };
+  // Validate cursor integer
+  const validateCursorFn = (cursor: string) => {
+    const cursorInt = parseInt(Buffer.from(cursor, 'base64').toString());
+    if (cursorInt < 0) {
       throw new UserInputError('Invalid before cursor');
     }
-
-    if (!pagination.last) {
-      pagination.last = defaultPageSize;
+  };
+  if (pagination.before) {
+    if (validateCursor) {
+      validateCursorFn(pagination.before);
     }
-  }
-
-  if (pagination.after) {
-    const after = parseInt(Buffer.from(pagination.after, 'base64').toString());
-    if (after < 0) {
-      throw new UserInputError('Invalid after cursor');
+    return { before: pagination.before, last: constrain(pagination.last) };
+  } else if (pagination.after) {
+    if (validateCursor) {
+      validateCursorFn(pagination.after);
     }
-
-    if (!pagination.first) {
-      pagination.first = defaultPageSize;
-    }
+    return { after: pagination.after, first: constrain(pagination.first) };
+  } else if (pagination.first) {
+    return { first: constrain(pagination.first) };
+  } else if (pagination.last) {
+    return { last: constrain(pagination.last) };
   }
-
-  if (pagination.first <= 0) {
-    pagination.first = defaultPageSize;
-  }
-
-  if (pagination.last <= 0) {
-    pagination.last = defaultPageSize;
-  }
-
-  if (pagination.first > maxPageSize) {
-    pagination.first = maxPageSize;
-  }
-
-  if (pagination.last > maxPageSize) {
-    pagination.last = maxPageSize;
-  }
-
-  return pagination;
 }
