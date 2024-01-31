@@ -61,6 +61,7 @@ export interface ApplicationECSContainerDefinitionProps {
   entryPoint?: string[];
   essential?: boolean;
   ulimits?: Ulimit[];
+  stopTimeout?: number;
 }
 
 export function buildDefinitionJSON(
@@ -109,7 +110,7 @@ export function buildDefinitionJSON(
     memory: null,
     memoryReservation: config.memoryReservation ?? null,
     volumesFrom: [],
-    stopTimeout: null,
+    stopTimeout: config.stopTimeout ?? null,
     image: config.containerImage,
     startTimeout: null,
     firelensConfiguration: null,
