@@ -697,6 +697,12 @@ importers:
       jest-extended:
         specifier: 4.0.2
         version: 4.0.2(jest@29.7.0)
+      semantic-release:
+        specifier: 23.0.0
+        version: 23.0.0(typescript@5.3.3)
+      semantic-release-monorepo:
+        specifier: 8.0.1
+        version: 8.0.1(semantic-release@23.0.0)
       ts-jest:
         specifier: 29.1.2
         version: 29.1.2(@babel/core@7.23.7)(jest@29.7.0)(typescript@5.3.3)
