@@ -47,21 +47,21 @@ jobs:
           config-path: /tmp/generated-config.yml
           output-path: /tmp/pipeline-parameters.json
           mapping: |
-            ((servers|infrastructure)/image-api/.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) image_api true
-            ((servers|infrastructure|lambdas)/annotations-api.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) annotations_api true
-            ((servers|infrastructure)/shared-snowplow-consumer/.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) shared_snowplow_consumer true
-            ((servers|infrastructure)/image-api/.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) parser_graphql_wrapper true
-            ((lambdas|infrastructure)/transactional-emails.*)|(packages/.*)|(pnpm-lock\.yaml) transactional_emails true
-            ((lambdas|infrastructure)/fxa-webhook-proxy-.*)|(packages/.*)|(pnpm-lock\.yaml) fxa_webhook_proxy true
-            ((servers|infrastructure)/user-api/.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) user_api true
-            ((servers|infrastructure)/list-api/.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) list_api true
+            ((servers|infrastructure)/image-api/.*)|(packages/**/src/.*)|(pnpm-lock\.yaml)|(Dockerfile) image_api true
+            ((servers|infrastructure|lambdas)/annotations-api.*)|(packages/**/src/.*)|(pnpm-lock\.yaml)|(Dockerfile) annotations_api true
+            ((servers|infrastructure)/shared-snowplow-consumer/.*)|(packages/**/src/.*)|(pnpm-lock\.yaml)|(Dockerfile) shared_snowplow_consumer true
+            ((servers|infrastructure)/image-api/.*)|(packages/**/src/.*)|(pnpm-lock\.yaml)|(Dockerfile) parser_graphql_wrapper true
+            ((lambdas|infrastructure)/transactional-emails.*)|(packages/**/src/.*)|(pnpm-lock\.yaml) transactional_emails true
+            ((lambdas|infrastructure)/fxa-webhook-proxy-.*)|(packages/**/src/.*)|(pnpm-lock\.yaml) fxa_webhook_proxy true
+            ((servers|infrastructure)/user-api/.*)|(packages/**/src/.*)|(pnpm-lock\.yaml)|(Dockerfile) user_api true
+            ((servers|infrastructure)/list-api/.*)|(packages/**/src/.*)|(pnpm-lock\.yaml)|(Dockerfile) list_api true
             ((servers|infrastructure)/client-api/.*) client_api true
-            ((servers|infrastructure)/feature-flags/.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) feature_flags true
-            ((lambdas|infrastructure)/sendgrid-data/.*) sendgrid_data true
-            ((lambdas|infrastructure|servers)/account-data-deleter/.*)|(packages/.*)|(pnpm-lock\.yaml)|(.circleci/account-data-deleter.yml) account_data_deleter true
-            ((lambdas|infrastructure)/account-delete-monitor/.*)|(packages/.*)|(pnpm-lock\.yaml)|(.circleci/account-delete-monitor.yml) account_delete_monitor true
-            ((servers|infrastructure|lambdas)/shareable-lists-api/.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) shareable_lists_api true
-            ((infrastructure)/pocket-event-bridge/.*)|(packages/.*)|(pnpm-lock\.yaml)|(.circleci/pocket-event-bridge.yml) pocket_event_bridge true
+            ((servers|infrastructure)/feature-flags/.*)|(packages/**/src/.*)|(pnpm-lock\.yaml)|(Dockerfile) feature_flags true
+            ((lambdas|infrastructure)/sendgrid-data/.*)|(packages/**/src/.*) sendgrid_data true
+            ((lambdas|infrastructure|servers)/account-data-deleter/.*)|(packages/**/src/.*)|(pnpm-lock\.yaml)|(.circleci/account-data-deleter.yml) account_data_deleter true
+            ((lambdas|infrastructure)/account-delete-monitor/.*)|(packages/**/src/.*)|(pnpm-lock\.yaml)|(.circleci/account-delete-monitor.yml) account_delete_monitor true
+            ((servers|infrastructure|lambdas)/shareable-lists-api/.*)|(packages/**/src/.*)|(pnpm-lock\.yaml)|(Dockerfile) shareable_lists_api true
+            ((infrastructure)/pocket-event-bridge/.*)|(packages/**/src/.*)|(pnpm-lock\.yaml)|(.circleci/pocket-event-bridge.yml) pocket_event_bridge true
 
       - continuation/continue:
           configuration_path: /tmp/generated-config.yml
