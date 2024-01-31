@@ -14,7 +14,7 @@
     "test": "jest --ci --maxWorkers=4 --logHeapUsage",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\"",
-    "semantic-release": "semantic-release --dry-run"
+    "semantic-release": "semantic-release"
   },
   "dependencies": {
     "@cdktf/provider-archive": "10.0.1",
