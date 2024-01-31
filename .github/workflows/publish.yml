@@ -1,0 +1,51 @@
+name: Node.js Package 
+on:
+    push:
+      branches: ["main"]  
+    pull_request:
+      branches: ["main"]  
+jobs:
+  ##
+  # Runs semantic release in a regular
+  ##
+  release:
+    name: Semantic Release
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+
+    # https://github.com/semantic-release/npm
+    permissions:
+        contents: write # to be able to publish a GitHub release
+        issues: write # to be able to comment on released issues
+        pull-requests: write # to be able to comment on released pull requests
+        id-token: write # to enable use of OIDC for npm provenance
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+      
+      - name: PNPM Setup
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      
+      - name: Install dependencies
+        run: pnpm i
+    # Need to update sendgrid to enable this
+    #   - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
+    #     run: pnpm audit signatures
+      - name: Semantic Release
+        run: pnpm run semantic-release 
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+            # Need to update sendgrid to enable this
+            #        NPM_CONFIG_PROVENANCE: true
