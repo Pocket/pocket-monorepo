@@ -4,8 +4,6 @@ import {
   S3Backend,
   TerraformStack,
   DataTerraformRemoteState,
-  Aspects,
-  MigrateIds,
 } from 'cdktf';
 import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
 import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
@@ -124,10 +122,6 @@ class PocketEventBus extends TerraformStack {
       'forgot-password-request-event-schema',
     );
     new UserRegistrationEventSchema(this, `user-registration-event-schema`);
-
-    // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
-    // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
-    Aspects.of(this).add(new MigrateIds());
   }
 
   /**

@@ -20,8 +20,6 @@ import {
   DataTerraformRemoteState,
   S3Backend,
   TerraformStack,
-  Aspects,
-  MigrateIds,
 } from 'cdktf';
 import { config } from './config';
 
@@ -53,10 +51,6 @@ class ListAPI extends TerraformStack {
       caller,
       vpc: pocketVPC,
     });
-
-    // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
-    // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
-    Aspects.of(this).add(new MigrateIds());
   }
 
   /**

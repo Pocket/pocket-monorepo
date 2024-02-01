@@ -4,8 +4,6 @@ import {
   DataTerraformRemoteState,
   S3Backend,
   TerraformStack,
-  Aspects,
-  MigrateIds,
 } from 'cdktf';
 import { config } from './config';
 import {
@@ -50,10 +48,6 @@ class FxAWebhookProxy extends TerraformStack {
 
     new SqsLambda(this, 'proxy-lambda', vpc, sqs.sqsQueue, pagerDuty);
     new ApiGateway(this, 'apigateway-lambda', vpc, sqs.sqsQueue, pagerDuty);
-
-    // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
-    // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
-    Aspects.of(this).add(new MigrateIds());
   }
 
   /**

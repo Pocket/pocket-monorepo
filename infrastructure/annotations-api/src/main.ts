@@ -4,8 +4,6 @@ import {
   DataTerraformRemoteState,
   S3Backend,
   TerraformStack,
-  MigrateIds,
-  Aspects,
 } from 'cdktf';
 import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
 import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
@@ -123,10 +121,6 @@ class AnnotationsAPI extends TerraformStack {
         },
       ],
     });
-
-    // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
-    // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
-    Aspects.of(this).add(new MigrateIds());
   }
 
   /**
