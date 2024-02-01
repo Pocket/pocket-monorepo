@@ -41,11 +41,12 @@ done
 # if we have a healthy cluster, create the index
 if [ $health == "green" ]
 then
-  curl -vX PUT "http://localhost:4566/user-list-search/list" --header "Content-Type: application/json" -d @"./elasticsearch/esindex.json"
+  curl -vX PUT "http://localhost:4566/user-list-search/list" --header "Content-Type: application/json" -d @"$(dirname ${BASH_SOURCE[0]})/elasticsearch/esindex.json"
 
   echo "elasticsearch index created!"
+  sleep 
 
-  curl -vX PUT "http://localhost:4566/user-list-search/list/_settings" -H "Content-Type: application/json" -d @"./elasticsearch/slow-query-log-thresholds.json"
+  curl -vX PUT "http://localhost:4566/user-list-search/list/_settings" -H "Content-Type: application/json" -d @"$(dirname ${BASH_SOURCE[0]})/elasticsearch/slow-query-log-thresholds.json"
 
   echo "elasticsearch slow log thresholds set!"
 else
