@@ -1,25 +1,17 @@
-import express from 'express';
+import express, { json } from 'express';
 import http from 'http';
 import { config } from '../config';
 import { expressMiddleware } from '@apollo/server/express4';
-import { ApolloServer, ApolloServerPlugin } from '@apollo/server';
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { ApolloServer } from '@apollo/server';
 import { buildSubgraphSchema } from '@apollo/subgraph';
 import { typeDefs } from './typeDefs';
 import { resolvers } from '../resolvers';
-import {
-  ApolloServerPluginInlineTraceDisabled,
-  ApolloServerPluginUsageReportingDisabled,
-} from '@apollo/server/plugin/disabled';
-import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
-import { ApolloServerPluginInlineTrace } from '@apollo/server/plugin/inlineTrace';
 import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4';
 import { schema } from './schema';
 import { ContextManager, getContextFactory } from './context';
-import { sentryPlugin, errorHandler } from '@pocket-tools/apollo-utils';
+import { defaultPlugins, errorHandler } from '@pocket-tools/apollo-utils';
 import * as Sentry from '@sentry/node';
-import { setMorgan } from '@pocket-tools/ts-logger';
-import { serverLogger } from './logger';
+import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 import batchDeleteRouter from '../server/routes/batchDelete';
 import { knexDbClient } from '../datasource/clients/knexClient';
 
@@ -55,39 +47,13 @@ export async function startServer(port: number): Promise<{
   app.get('/.well-known/apollo/server-health', (req, res) => {
     res.status(200).send('ok');
   });
-  // Set up plugins depending on environment
-  // Default plugins regardless
-  const defaultPlugins = [
-    sentryPlugin,
-    ApolloServerPluginUsageReportingDisabled(),
-    ApolloServerPluginDrainHttpServer({ httpServer }),
-    createApollo4QueryValidationPlugin({ schema }),
-    ApolloServerPluginLandingPageLocalDefault({ footer: false }),
-    createApollo4QueryValidationPlugin({ schema }),
-  ];
-  // Environment-specific plugins map
-  const pluginsConfig: Record<
-    'test' | 'production' | 'development',
-    ApolloServerPlugin[]
-  > = {
-    test: [ApolloServerPluginInlineTraceDisabled()],
-    development: [
-      ApolloServerPluginInlineTrace({ includeErrors: { unmodified: true } }),
-    ],
-    production: [
-      ApolloServerPluginInlineTrace({
-        includeErrors: { unmodified: true },
-      }),
-    ],
-  };
-  const plugins = [
-    ...defaultPlugins,
-    ...(pluginsConfig[config.environment] ?? []),
-  ];
 
   const server = new ApolloServer<any>({
     schema: buildSubgraphSchema({ typeDefs, resolvers }),
-    plugins,
+    plugins: [
+      ...defaultPlugins(httpServer),
+      createApollo4QueryValidationPlugin({ schema }),
+    ],
     formatError: process.env.NODE_ENV !== 'test' ? errorHandler : undefined,
     introspection: true,
   });
@@ -106,13 +72,13 @@ export async function startServer(port: number): Promise<{
   app.use(
     url,
     // JSON parser to enable POST body with JSON
-    express.json(),
+    json(),
     setMorgan(serverLogger),
     expressMiddleware(server, {
       context: async ({ req }) => getContextFactory(req, dbClient),
-    })
+    }),
   );
-  app.use(express.json());
+  app.use(json());
   // Batch delete route
   app.use('/batchDelete', batchDeleteRouter);
 

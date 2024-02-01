@@ -40,7 +40,7 @@ export const poolFactory = (config: PoolOptions): Pool => {
             throw e;
           }
           return result;
-        }
+        },
       );
     },
   };
@@ -48,7 +48,7 @@ export const poolFactory = (config: PoolOptions): Pool => {
 
 // TODO: When we move to dependency injection we will no longer require this.
 export const poolFromConfigFactory = (
-  configPath: string
+  configPath: string,
 ): (() => Promise<Pool>) => {
   let pool: Pool;
 
@@ -58,7 +58,7 @@ export const poolFromConfigFactory = (
 
       const cfg = await config();
       pool = poolFactory({
-        ...get(cfg, configPath),
+        ...(get(cfg, configPath) as object),
         waitForConnections: true,
       });
     }

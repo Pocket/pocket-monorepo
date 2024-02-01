@@ -6,9 +6,9 @@ generator client {
 }
 
 generator kysely {
-    provider = "prisma-kysely"
-    output = "../node_modules/.kysely/client"
-    fileName = "types.ts"
+  provider = "prisma-kysely"
+  output   = "../node_modules/.kysely/client"
+  fileName = "types.ts"
 }
 
 datasource db {

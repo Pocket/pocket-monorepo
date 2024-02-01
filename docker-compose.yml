@@ -91,7 +91,7 @@ services:
     volumes:
       - ./.docker/aws-resources:/etc/localstack/init/ready.d
     environment:
-      SERVICES: s3,kinesis,sqs,dynamodb,sts,events,firehose
+      SERVICES: s3,kinesis,sqs,dynamodb,sts,events,firehose,es
       DATA_DIR: /tmp/localstack/data
       DOCKER_HOST: unix:///var/run/docker.sock
       LOCALSTACK_HOST: localstack

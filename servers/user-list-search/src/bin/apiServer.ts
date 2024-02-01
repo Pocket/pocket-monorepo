@@ -4,7 +4,7 @@ import https from 'https';
 import * as Sentry from '@sentry/node';
 import { config } from '../config';
 import { startServer } from '../server/serverUtils';
-import { serverLogger } from '../server/logger';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 //Set XRAY to just log if the context is missing instead of a runtime error
 AWSXRay.setContextMissingStrategy('LOG_ERROR');

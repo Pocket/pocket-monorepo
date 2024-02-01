@@ -1,9 +1,15 @@
 import { GetSecretValueResponse } from 'aws-sdk/clients/secretsmanager';
 import AWS from 'aws-sdk';
 
+const awsEnvironments = ['production', 'development'];
+let localAwsEndpoint: string = undefined;
+if (!awsEnvironments.includes(process.env.NODE_ENV)) {
+  localAwsEndpoint = process.env.AWS_ENDPOINT || 'http://localhost:4566';
+}
+
 export const config = {
   ecsMySqlConfig: {
-    readitla: process.env.READITLA_DB,
+    readitla: process.env.READITLA_DB || '{"password":"","dbname":"readitla_ril-tmp","engine":"mysql","port":"3306","host":"localhost","username":"root"}',
   },
   mysql: {
     readitla: {
@@ -17,11 +23,11 @@ export const config = {
     timezone: process.env.DATABASE_TZ || 'US/Central',
   },
   aws: {
-    region: process.env.AWS_REGION,
+    region: process.env.AWS_REGION || 'us-east-1',
     elasticsearch: {
-      host: process.env.ELASTICSEARCH_HOST || 'testing.domain',
+      host: process.env.ELASTICSEARCH_HOST || 'http://localhost:4566',
       apiVersion: '7.1',
-      domain: process.env.ELASTICSEARCH_DOMAIN,
+      domain: process.env.ELASTICSEARCH_DOMAIN || 'user-list-search',
       index: process.env.ELASTICSEARCH_INDEX || 'list',
       type: process.env.ELASTICSEARCH_TYPE || '_doc',
       defaultQueryScore: process.env.ELASTICSEARCH_DEFAULT_QUERY_SCORE || 1,
@@ -32,10 +38,10 @@ export const config = {
     },
     sqs: {
       waitTimeSeconds: 20,
-      endpoint: process.env.AWS_SQS_ENDPOINT,
-      userItemsUpdateUrl: process.env.SQS_USER_ITEMS_UPDATE_URL,
-      userItemsDeleteUrl: process.env.SQS_USER_ITEMS_DELETE_URL,
-      userListImportUrl: process.env.SQS_USER_LIST_IMPORT_URL,
+      endpoint: localAwsEndpoint,
+      userItemsUpdateUrl: process.env.SQS_USER_ITEMS_UPDATE_URL || 'http://localhost:4566/000000000000/UserListSearch-Dev-UserItemsUpdate',
+      userItemsDeleteUrl: process.env.SQS_USER_ITEMS_DELETE_URL || 'http://localhost:4566/000000000000/UserListSearch-Dev-UserItemsDelete',
+      userListImportUrl: process.env.SQS_USER_LIST_IMPORT_URL || 'http://localhost:4566/000000000000/UserListSearch-Dev-UserListImport',
     },
   },
   sentry: {
@@ -103,12 +109,22 @@ export default async (): Promise<Record<string, unknown>> => {
       getMysqlConfigFromSecretsManager(
         process.env.READITLA_DB_SECRET_PATH ||
           'UserListSearch/Prod/DatabaseCredentials'
-      ),
+      ) ?? {
+        database: 'readitla_ril-tmp',
+        password: '',
+        user: 'root',
+        host: 'localhost'
+      }, // fall back to local test environment
     getMysqlConfigFromEnv('CONTENT_AURORA_DB') ??
       getMysqlConfigFromSecretsManager(
         process.env.PARSER_AURORA_DB_SECRET_PATH ||
           'UserListSearch/Prod/ParserAuroraDbCredentials'
-      ),
+      ) ?? {
+        database: 'content',
+        password: '',
+        user: 'root',
+        host: 'localhost'
+      }, // fall back to local test environment,
   ]);
   const cfg = { ...config };
   cfg.mysql.readitla = { ...readitla, ...cfg.mysql.readitla };
