@@ -20,11 +20,11 @@ describe('search', () => {
           userId: undefined,
           userIsPremium: false,
           knexDbClient: null,
-        }
+        },
       );
     };
     return expect(badSearch()).to.be.rejectedWith(
-      'Must be logged in to perform search'
+      'Must be logged in to perform search',
     );
   });
 });
