@@ -159,7 +159,7 @@ describe('Elasticsearch Search Query', () => {
     );
     // Default sort order is relevance; url should be on top and should be in highlight field
     expect(response.edges).to.not.be.null;
-    expect(response.edges.length).to.be.greaterThanOrEqual(1);
+    expect(response.edges.length).to.be.greaterThan(1);
     expect(response.edges[0].node.searchHighlights.url.length).to.equal(1);
     expect(response.edges[0].node.searchHighlights.url[0]).to.contain('test3');
   });

@@ -1,7 +1,10 @@
 import { config } from '../../config';
-import SQS from 'aws-sdk/clients/sqs';
 import { getHandler } from './handler';
+import { SQSClient } from '@aws-sdk/client-sqs';
 
-export const client = new SQS();
+export const client = new SQSClient({
+    endpoint: config.aws.sqs.endpoint,
+    region: config.aws.region
+});
 
 export const handler = getHandler(client, config.aws.sqs);

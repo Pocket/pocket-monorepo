@@ -5,6 +5,7 @@ SQS=(
 UserListSearch-Dev-UserListImport
 UserListSearch-Dev-UserItemsUpdate
 UserListSearch-Dev-UserItemsDelete
+UserListSearch-Dev-UserListImportBackfill
 )
 
 for sqs_queue in "${SQS[@]}"; do

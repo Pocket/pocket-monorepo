@@ -1,6 +1,7 @@
 import { DataSourceInterface } from '../datasource/DataSourceInterface';
 import { sendMessage } from '../sqs';
 import { UserListImportSqsMessage } from '../shared';
+import { config } from '../config';
 
 const USERS_CHUNK_SIZE = 500;
 
@@ -10,7 +11,7 @@ const USERS_CHUNK_SIZE = 500;
  * @param itemIds
  */
 export const createUserListImportQueueMessage = (
-  userIds: number[]
+  userIds: number[],
 ): UserListImportSqsMessage => {
   return {
     users: userIds.map((userId) => {
@@ -27,7 +28,7 @@ export const createUserListImportQueueMessage = (
  */
 export const queueUserIds = async (
   userIds: number[],
-  batchSize: number = USERS_CHUNK_SIZE
+  batchSize: number = USERS_CHUNK_SIZE,
 ): Promise<void> => {
   let usersChunk: number[];
   let message: UserListImportSqsMessage;
@@ -38,7 +39,7 @@ export const queueUserIds = async (
 
     // cutting-edge logging technology
     console.log(
-      `sending ${usersChunk.length} premium users into the backfill queue! ids in this chunk in the next log:`
+      `sending ${usersChunk.length} premium users into the backfill queue! ids in this chunk in the next log:`,
     );
 
     console.log(usersChunk);
@@ -46,11 +47,7 @@ export const queueUserIds = async (
     // create a message with a max of 500 userids
     message = createUserListImportQueueMessage(usersChunk);
 
-    //TODO: param this
-    await sendMessage(
-      'https://sqs.us-east-1.amazonaws.com/996905175585/UserListSearch-Prod-UserListImportBackfill',
-      message
-    );
+    await sendMessage(config.aws.sqs.userListImportBackfillUrl, message);
   }
 };
 

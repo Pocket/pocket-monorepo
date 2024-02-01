@@ -1,6 +1,10 @@
 import { Writable } from 'stream';
 import { generateId, SQSBatchSendError } from './utils';
-import SQS from 'aws-sdk/clients/sqs';
+import {
+  SendMessageBatchCommand,
+  SendMessageBatchRequestEntry,
+  SQS,
+} from '@aws-sdk/client-sqs';
 
 type SQSWritableStreamOptions = {
   sqsClient: SQS;
@@ -21,14 +25,14 @@ export default class SqsWritable extends Writable {
     this.sqsBatchSize = options.sqsBatchSize || 10;
   }
 
-  async send(entries): Promise<void> {
+  async send(entries: SendMessageBatchRequestEntry[]): Promise<void> {
     try {
-      const result = await this.sqsClient
-        .sendMessageBatch({
+      const result = await this.sqsClient.send(
+        new SendMessageBatchCommand({
           Entries: entries,
           QueueUrl: this.queueUrl,
-        })
-        .promise();
+        }),
+      );
       if (result.Failed && result.Failed.length) {
         throw new SQSBatchSendError('SQS Batch Send Error', result.Failed);
       }
@@ -36,7 +40,7 @@ export default class SqsWritable extends Writable {
       this.emit('failedEntries', entries);
       const failedIds = entries.map((e) => e.Id);
       this.buffer = this.buffer.filter(
-        (entry) => failedIds.indexOf(entry.Id) === -1
+        (entry) => failedIds.indexOf(entry.Id) === -1,
       );
       throw error;
     }

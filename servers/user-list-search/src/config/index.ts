@@ -1,5 +1,4 @@
-import { GetSecretValueResponse } from 'aws-sdk/clients/secretsmanager';
-import AWS from 'aws-sdk';
+import { GetSecretValueCommand, GetSecretValueResponse, SecretsManagerClient } from '@aws-sdk/client-secrets-manager';
 
 const awsEnvironments = ['production', 'development'];
 let localAwsEndpoint: string = undefined;
@@ -51,6 +50,9 @@ export const config = {
       userListImportUrl:
         process.env.SQS_USER_LIST_IMPORT_URL ||
         'http://localhost:4566/000000000000/UserListSearch-Dev-UserListImport',
+      userListImportBackfillUrl:
+        process.env.SQS_USER_LIST_IMPORT_BACKFILL_URL ||
+        'http://localhost:4566/000000000000/UserListSearch-Dev-UserListImportBackfill',
     },
   },
   sentry: {
@@ -81,11 +83,8 @@ export type MySqlConfig = {
 };
 
 export const getSecret = async (secretName: string): Promise<string> => {
-  const options: AWS.SecretsManager.ClientConfiguration = {};
-  const secretsManager = new AWS.SecretsManager(options);
-  const data: GetSecretValueResponse = await secretsManager
-    .getSecretValue({ SecretId: secretName })
-    .promise();
+  const secretsManager = new  SecretsManagerClient();
+  const data: GetSecretValueResponse = await secretsManager.send(new GetSecretValueCommand({ SecretId: secretName }));
   return data.SecretString as string;
 };
 
@@ -103,39 +102,48 @@ export const getMysqlConfigFromString = (str: string): MySqlConfig => {
 const getMysqlConfigFromEnv = (name: string): MySqlConfig => {
   const str = process.env[name];
 
-  return str ? getMysqlConfigFromString(str) : null;
+  return (str != undefined && str) ? getMysqlConfigFromString(str) : null;
 };
 
 const getMysqlConfigFromSecretsManager = async (
   path: string,
 ): Promise<MySqlConfig> => {
-  return getMysqlConfigFromString(await getSecret(path));
+  try {
+  return getMysqlConfigFromString(await getSecret(path))
+  } catch {
+    return null;
+  }
 };
 
-export default async (): Promise<Record<string, unknown>> => {
-  const [readitla, contentAuroraDb] = await Promise.all([
+export default async (): Promise<typeof config> => {
+  let [readitla, contentAuroraDb] = await Promise.all([
     getMysqlConfigFromEnv('READITLA_DB') ??
       getMysqlConfigFromSecretsManager(
         process.env.READITLA_DB_SECRET_PATH ||
           'UserListSearch/Prod/DatabaseCredentials',
-      ) ?? {
-        database: 'readitla_ril-tmp',
-        password: '',
-        user: 'pkt_listserch_r',
-        host: 'localhost',
-      }, // fall back to local test environment
+      ),
     getMysqlConfigFromEnv('CONTENT_AURORA_DB') ??
       getMysqlConfigFromSecretsManager(
         process.env.PARSER_AURORA_DB_SECRET_PATH ||
           'UserListSearch/Prod/ParserAuroraDbCredentials',
-      ) ?? {
-        database: 'content',
-        password: '',
-        user: 'pkt_listserch_r',
-        host: 'localhost',
-      }, // fall back to local test environment,
+      )
   ]);
   const cfg = { ...config };
+
+  readitla = readitla ?? {
+    database: 'readitla_ril-tmp',
+    password: '',
+    user: 'pkt_listserch_r',
+    host: 'localhost',
+  }, // fall back to local test environment
+
+  contentAuroraDb = contentAuroraDb ?? {
+    database: 'content',
+    password: '',
+    user: 'pkt_listserch_r',
+    host: 'localhost',
+  }, // fall back to local test environment,
+
   cfg.mysql.readitla = { ...readitla, ...cfg.mysql.readitla };
   cfg.mysql.contentAuroraDb = {
     ...contentAuroraDb,

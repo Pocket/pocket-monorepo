@@ -8,4 +8,4 @@ GRANT SELECT ON `content`.`content` TO pkt_listserch_r@'%';
 
 # Granted only for testing.
 GRANT INSERT, DROP ON content_cache.* TO pkt_listserch_r@'%';
-
+GRANT INSERT, DROP ON content.* TO pkt_listserch_r@'%';

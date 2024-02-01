@@ -4,9 +4,9 @@ import {
   UserListImportSqsMessage,
 } from '../../shared';
 import SqsWritable from '../../sqs/writeable';
-import SQS from 'aws-sdk/clients/sqs';
 import _ from 'highland';
 import { initSentry } from '../../sentry';
+import { SQS } from '@aws-sdk/client-sqs';
 
 const MAX_JOBS_PER_MESSAGE = 1000;
 
@@ -93,7 +93,7 @@ export const getMessageFromPayload = (payload: string): PipelineMessage => {
 };
 
 const getMessagesFromRecords = (
-  records: KinesisRecord[]
+  records: KinesisRecord[],
 ): PipelineMessage[] => {
   return records.map((record: KinesisRecord) => {
     const payload = getPayloadFromRecord(record);
@@ -102,7 +102,7 @@ const getMessagesFromRecords = (
 };
 
 const getUserListImportSqsMessage = (
-  msgs: PremiumSubscriptionCreatedEvent[]
+  msgs: PremiumSubscriptionCreatedEvent[],
 ): UserListImportSqsMessage => {
   return {
     users: msgs.map((m) => {
@@ -114,7 +114,7 @@ const getUserListImportSqsMessage = (
 };
 
 const getUserItemsUpdateSqsMessage = (
-  msgs: (UserItemEvent | UserItemTagsEvent)[]
+  msgs: (UserItemEvent | UserItemTagsEvent)[],
 ): UserItemsSqsMessage => {
   console.log('Processing messages', {
     messages: JSON.stringify(msgs),
@@ -140,7 +140,7 @@ export const getHandler: any = (
     userListImportUrl: string;
     userItemsUpdateUrl: string;
     userItemsDeleteUrl: string;
-  }
+  },
 ) => {
   initSentry();
 
@@ -155,11 +155,13 @@ export const getHandler: any = (
           new SqsWritable({
             sqsClient,
             queueUrl: opts.queueUrl,
-          })
+          }),
         )
         .on('finish', () => resolve(true))
-        .on('error', () =>
-          reject(`createPipelinePromise ${opts.msgType} failed to process`)
+        .on('error', (error) =>
+          reject(
+            `createPipelinePromise ${opts.msgType} failed to process: ${error}`,
+          ),
         );
     });
   };

@@ -14,6 +14,8 @@ resource "aws_lambda_function" "item_delete_sqs_processor" {
   environment {
     variables = local.app_env
   }
+
+  
   tags    = local.tags
   publish = true # We need to publish an initial version
   lifecycle {

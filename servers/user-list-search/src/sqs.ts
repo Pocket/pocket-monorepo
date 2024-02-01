@@ -1,13 +1,19 @@
-import { SQS } from 'aws-sdk';
 import {
+  DeleteMessageCommand,
+  DeleteMessageCommandOutput,
+  PurgeQueueCommand,
+  PurgeQueueCommandOutput,
+  ReceiveMessageCommand,
   ReceiveMessageRequest,
   ReceiveMessageResult,
+  SQSClient,
+  SendMessageCommand,
   SendMessageRequest,
   SendMessageResult,
-} from 'aws-sdk/clients/sqs';
+} from '@aws-sdk/client-sqs';
 import { config } from './config';
 
-const sqs = new SQS({
+const sqs = new SQSClient({
   region: config.aws.region,
   endpoint: config.aws.sqs.endpoint,
 });
@@ -23,17 +29,13 @@ export const sendMessage = (
   message: Record<string, unknown>,
   params?: SendMessageRequest,
 ): Promise<SendMessageResult> => {
-  return sqs
-    .sendMessage(
-      Object.assign(
-        {
-          QueueUrl: queueUrl,
-          MessageBody: JSON.stringify(message),
-        },
-        params,
-      ),
-    )
-    .promise();
+  return sqs.send(new SendMessageCommand(Object.assign(
+    {
+      QueueUrl: queueUrl,
+      MessageBody: JSON.stringify(message),
+    },
+    params,
+  ),))
 };
 
 /**
@@ -45,18 +47,14 @@ export const receiveMessage = (
   queueUrl: string,
   params?: ReceiveMessageRequest,
 ): Promise<ReceiveMessageResult> => {
-  return sqs
-    .receiveMessage(
-      Object.assign(
-        {
-          QueueUrl: queueUrl,
-          WaitTimeSeconds: config.aws.sqs.waitTimeSeconds,
-          MaxNumberOfMessages: 10,
-        },
-        params,
-      ),
-    )
-    .promise();
+  return sqs.send(new ReceiveMessageCommand(Object.assign(
+    {
+      QueueUrl: queueUrl,
+      WaitTimeSeconds: config.aws.sqs.waitTimeSeconds,
+      MaxNumberOfMessages: 10,
+    },
+    params,
+  )))
 };
 
 /**
@@ -65,8 +63,8 @@ export const receiveMessage = (
  */
 export const purgeQueue = (
   queueUrl: string,
-): Promise<Record<string, unknown>> => {
-  return sqs.purgeQueue({ QueueUrl: queueUrl }).promise();
+): Promise<PurgeQueueCommandOutput> => {
+  return sqs.send(new PurgeQueueCommand({ QueueUrl: queueUrl }));
 };
 
 /**
@@ -77,8 +75,10 @@ export const purgeQueue = (
 export const deleteMessage = (
   queueUrl: string,
   receiptHandle: string,
-): Promise<Record<string, unknown>> => {
-  return sqs
-    .deleteMessage({ QueueUrl: queueUrl, ReceiptHandle: receiptHandle })
-    .promise();
+): Promise<DeleteMessageCommandOutput> => {
+  return sqs.send(new DeleteMessageCommand({ 
+    QueueUrl: queueUrl,
+    ReceiptHandle: receiptHandle, 
+  }));
+
 };

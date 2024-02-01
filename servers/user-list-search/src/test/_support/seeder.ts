@@ -71,7 +71,7 @@ const seedItemContent = async (
   truncate = true
 ): Promise<any> => {
   if (truncate) {
-    await primaryPool.query('TRUNCATE content.content');
+    await primaryPool.query('TRUNCATE TABLE content.content');
   }
 
   for (let i = 0; i < itemIds.length; i++) {
@@ -94,7 +94,7 @@ const seedTags = async (
   truncate = true
 ): Promise<void> => {
   if (truncate) {
-    await primaryPool.query('TRUNCATE item_tags');
+    await primaryPool.query('TRUNCATE TABLE item_tags');
   }
 
   const [users] = await primaryPool.query<RowDataPacket[]>(
@@ -127,8 +127,8 @@ const seedUsers = async (
   truncate = true
 ): Promise<void> => {
   if (truncate) {
-    await primaryPool.query('TRUNCATE users');
-    await primaryPool.query('TRUNCATE user_recent_search');
+    await primaryPool.query('TRUNCATE TABLE users');
+    await primaryPool.query('TRUNCATE TABLE user_recent_search');
   }
 
   for (let i = 1; i <= count; i++) {
@@ -172,7 +172,7 @@ const seedList = async (
   truncate = true
 ): Promise<void> => {
   if (truncate) {
-    await primaryPool.query('TRUNCATE list');
+    await primaryPool.query('TRUNCATE TABLE list');
   }
 
   const [users] = await primaryPool.query<RowDataPacket[]>(

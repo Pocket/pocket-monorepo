@@ -20,9 +20,9 @@ describe('queueAllPremiumUsers', () => {
 
       // get the messages off the queue
       const backfillMessages = await receiveMessage(
-        config.aws.sqs.userListImportUrl,
+        config.aws.sqs.userListImportBackfillUrl,
         {
-          QueueUrl: config.aws.sqs.userListImportUrl,
+          QueueUrl: config.aws.sqs.userListImportBackfillUrl,
           MaxNumberOfMessages: 4,
         },
       );

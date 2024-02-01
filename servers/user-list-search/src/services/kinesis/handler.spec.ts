@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import { getHandler, KinesisEvent } from './handler';
-import AWSMock from 'aws-sdk-mock';
-import AWS from 'aws-sdk';
+import { SendMessageBatchCommandOutput, SQS, SQSClient } from '@aws-sdk/client-sqs';
 
 const createEvent = (msg: Record<string, unknown>): KinesisEvent => {
   const data = Buffer.from(JSON.stringify(msg)).toString('base64');
@@ -17,23 +16,22 @@ const createEvent = (msg: Record<string, unknown>): KinesisEvent => {
   };
 };
 
-const sendMessageBatchSuccess = { Failed: [] };
+const sendMessageBatchSuccess: SendMessageBatchCommandOutput = {
+  Failed: [],
+  Successful: [],
+  $metadata: undefined,
+};
 
 describe('kinesis', () => {
   describe('handler', () => {
     let handler: any;
 
     beforeEach(async () => {
-      AWSMock.setSDKInstance(AWS);
-      AWSMock.mock(
-        'SQS',
-        'sendMessageBatch',
-        (params: any, callback: (param1: any, param2: any) => void) => {
-          callback(null, sendMessageBatchSuccess);
-        }
-      );
+      jest
+        .spyOn(SQSClient.prototype, 'send')
+        .mockImplementation(() => Promise.resolve(sendMessageBatchSuccess));
 
-      handler = await getHandler(new AWS.SQS(), {
+      handler = await getHandler(new SQSClient(), {
         userListImportUrl: 'userListImportUrl',
         userItemsUpdateUrl: 'userItemsUpdateUrl',
         userItemsDeleteUrl: 'userItemsDeleteUrl',
@@ -41,7 +39,7 @@ describe('kinesis', () => {
     });
 
     afterEach(() => {
-      AWSMock.restore('SQS');
+      jest.restoreAllMocks();
     });
 
     it('handles premium subscription events', async () => {
@@ -53,7 +51,7 @@ describe('kinesis', () => {
       });
 
       expect(
-        await handler(premiumSubscriptionCreatedEvent)
+        await handler(premiumSubscriptionCreatedEvent),
       ).to.have.all.members([
         true,
         true,
