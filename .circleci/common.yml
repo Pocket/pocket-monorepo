@@ -437,7 +437,7 @@ jobs:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
         environment:
-          SERVICES: s3,kinesis,sqs,dynamodb,sts,events,firehose
+          SERVICES: s3,kinesis,sqs,dynamodb,sts,events,firehose,es
       - image: pocket/snowplow-micro:prod
         auth:
           username: $DOCKERHUB_USERNAME
