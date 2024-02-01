@@ -18,8 +18,8 @@ export const getArrayOfIds = (count: number, offset = 1): number[] => {
 
 const seedItems = async (itemIds: number[], truncate = true): Promise<any> => {
   if (truncate) {
-    await primaryPool.query('TRUNCATE readitla_b.items_extended');
-    await primaryPool.query('TRUNCATE readitla_b.items_resolver');
+    await primaryPool.query('TRUNCATE TABLE readitla_b.items_extended');
+    await primaryPool.query('TRUNCATE TABLE readitla_b.items_resolver');
   }
 
   for (let i = 0; i < itemIds.length; i++) {
@@ -211,7 +211,7 @@ export const seedItemWithDifferentResolvedId = async (
   truncate = true
 ): Promise<void> => {
   if (truncate) {
-    await primaryPool.query('TRUNCATE readitla_b.items_resolver');
+    await primaryPool.query('TRUNCATE TABLE readitla_b.items_resolver');
   }
   await primaryPool.query('INSERT INTO readitla_b.items_resolver SET ?', {
     item_id: itemId,
