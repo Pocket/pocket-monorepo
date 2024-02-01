@@ -17,7 +17,7 @@ jobs:
           name: Generate List of Configs to Merge
           command: |
             # Generate a list of all the circleci configs we want to run
-            file_list=(".circleci/common.yml" ".circleci/repo-jobs.yml" ".circleci/image-api.yml" ".circleci/annotations-api.yml" ".circleci/shared-snowplow-consumer.yml" ".circleci/parser-graphql-wrapper.yml" ".circleci/transactional-emails.yml" ".circleci/fxa-webhook-proxy.yml" ".circleci/user-api.yml" ".circleci/client-api.yml" ".circleci/list-api.yml" ".circleci/feature-flags.yml" ".circleci/sendgrid-data.yml" ".circleci/account-data-deleter.yml" ".circleci/account-delete-monitor.yml" ".circleci/shareable-lists-api.yml" ".circleci/pocket-event-bridge.yml")       
+            file_list=(".circleci/common.yml" ".circleci/repo-jobs.yml" ".circleci/image-api.yml" ".circleci/annotations-api.yml" ".circleci/shared-snowplow-consumer.yml" ".circleci/parser-graphql-wrapper.yml" ".circleci/transactional-emails.yml" ".circleci/fxa-webhook-proxy.yml" ".circleci/user-api.yml" ".circleci/client-api.yml" ".circleci/list-api.yml" ".circleci/feature-flags.yml" ".circleci/sendgrid-data.yml" ".circleci/account-data-deleter.yml" ".circleci/account-delete-monitor.yml" ".circleci/shareable-lists-api.yml" ".circleci/pocket-event-bridge.yml" ".circleci/user-list-search.yml")       
             touch /tmp/configs.txt
 
             # Add file header to each file and dump it to the config list
@@ -62,6 +62,7 @@ jobs:
             ((lambdas|infrastructure)/account-delete-monitor/.*)|(packages/.*)|(pnpm-lock\.yaml)|(.circleci/account-delete-monitor.yml) account_delete_monitor true
             ((servers|infrastructure|lambdas)/shareable-lists-api/.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) shareable_lists_api true
             ((infrastructure)/pocket-event-bridge/.*)|(packages/.*)|(pnpm-lock\.yaml)|(.circleci/pocket-event-bridge.yml) pocket_event_bridge true
+            ((servers|infrastructure|lambdas)/user-list-search.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) user_list_search true
 
       - continuation/continue:
           configuration_path: /tmp/generated-config.yml
