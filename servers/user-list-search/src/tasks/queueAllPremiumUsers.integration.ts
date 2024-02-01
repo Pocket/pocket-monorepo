@@ -8,7 +8,7 @@ import {
 
 describe('queueAllPremiumUsers', () => {
   describe('queueUserIds', () => {
-    it.skip('should send the expected sqs messages', async () => {
+    it('should send the expected sqs messages', async () => {
       const userIds = [1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
       const userIdsCopy = [1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
 
@@ -24,7 +24,7 @@ describe('queueAllPremiumUsers', () => {
         {
           QueueUrl: config.aws.sqs.userListImportUrl,
           MaxNumberOfMessages: 4,
-        }
+        },
       );
 
       expect(JSON.parse(backfillMessages.Messages[0].Body)).to.deep.equal({

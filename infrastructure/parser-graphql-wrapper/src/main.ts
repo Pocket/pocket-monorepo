@@ -160,14 +160,6 @@ class ParserGraphQLWrapper extends TerraformStack {
           imageSha: config.releaseSha,
           envVars: [
             {
-              name: 'AWS_XRAY_CONTEXT_MISSING',
-              value: 'IGNORE_ERROR',
-            },
-            {
-              name: 'AWS_XRAY_LOG_LEVEL',
-              value: 'silent',
-            },
-            {
               name: 'ENVIRONMENT',
               value: process.env.NODE_ENV,
             },

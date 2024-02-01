@@ -235,6 +235,8 @@ describe('premium search functional test', () => {
 
   afterAll(async () => {
     await server.stop();
+    await db.destroy();
+    testEsClient.close();
   });
 
   it('should search for Items under User entity', async () => {

@@ -118,6 +118,7 @@ describe('free search test', () => {
     await server.stop();
     await db('readitla_ril-tmp.list').truncate();
     await db('readitla_b.items_extended').truncate();
+    await db.destroy();
     clock.restore();
   });
 

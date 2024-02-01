@@ -1,4 +1,3 @@
-import AWSXRay from 'aws-xray-sdk-core';
 import { SQS } from 'aws-sdk';
 import {
   ReceiveMessageRequest,
@@ -8,11 +7,10 @@ import {
 } from 'aws-sdk/clients/sqs';
 import { config } from './config';
 
-const sqs = AWSXRay.captureAWSClient(
-  new SQS({
-    endpoint: config.aws.sqs.endpoint,
-  })
-);
+const sqs = new SQS({
+  region: config.aws.region,
+  endpoint: config.aws.sqs.endpoint,
+});
 
 /**
  * Sends messages to the SQS queue
@@ -23,7 +21,7 @@ const sqs = AWSXRay.captureAWSClient(
 export const sendMessage = (
   queueUrl: string,
   message: Record<string, unknown>,
-  params?: SendMessageRequest
+  params?: SendMessageRequest,
 ): Promise<SendMessageResult> => {
   return sqs
     .sendMessage(
@@ -32,8 +30,8 @@ export const sendMessage = (
           QueueUrl: queueUrl,
           MessageBody: JSON.stringify(message),
         },
-        params
-      )
+        params,
+      ),
     )
     .promise();
 };
@@ -45,7 +43,7 @@ export const sendMessage = (
  */
 export const receiveMessage = (
   queueUrl: string,
-  params?: ReceiveMessageRequest
+  params?: ReceiveMessageRequest,
 ): Promise<ReceiveMessageResult> => {
   return sqs
     .receiveMessage(
@@ -55,8 +53,8 @@ export const receiveMessage = (
           WaitTimeSeconds: config.aws.sqs.waitTimeSeconds,
           MaxNumberOfMessages: 10,
         },
-        params
-      )
+        params,
+      ),
     )
     .promise();
 };
@@ -66,7 +64,7 @@ export const receiveMessage = (
  * @param queueUrl
  */
 export const purgeQueue = (
-  queueUrl: string
+  queueUrl: string,
 ): Promise<Record<string, unknown>> => {
   return sqs.purgeQueue({ QueueUrl: queueUrl }).promise();
 };
@@ -78,7 +76,7 @@ export const purgeQueue = (
  */
 export const deleteMessage = (
   queueUrl: string,
-  receiptHandle: string
+  receiptHandle: string,
 ): Promise<Record<string, unknown>> => {
   return sqs
     .deleteMessage({ QueueUrl: queueUrl, ReceiptHandle: receiptHandle })

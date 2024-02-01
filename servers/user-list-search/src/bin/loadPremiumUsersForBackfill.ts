@@ -2,9 +2,6 @@ import { DataSourceInterface } from '../datasource/DataSourceInterface';
 import { MysqlDataSource } from '../datasource/MysqlDataSource';
 import { run } from '../tasks/queueAllPremiumUsers';
 import { initSentry } from '../sentry';
-import AWSXRay from 'aws-xray-sdk-core';
-
-AWSXRay.setContextMissingStrategy('LOG_ERROR');
 
 /**
  * Initialize Sentry
