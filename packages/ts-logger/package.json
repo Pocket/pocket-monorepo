@@ -1,6 +1,6 @@
 {
   "name": "@pocket-tools/ts-logger",
-  "version": "1.2.5",
+  "version": "0.0.0-development",
   "description": "Basic Typescript Logger",
   "author": "",
   "main": "dist/index.js",
@@ -15,10 +15,6 @@
     "test:watch": "pnpm run test -- --watch",
     "clean": "rm -rf node_modules dist"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/Pocket/ts-logger.git"
-  },
   "license": "Apache-2.0",
   "dependencies": {
     "morgan": "^1.10.0",
@@ -30,6 +26,58 @@
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
     "ts-jest": "29.1.2",
-    "tsconfig": "workspace:*"
+    "tsconfig": "workspace:*",
+    "semantic-release": "23.0.0",
+    "semantic-release-monorepo": "8.0.1"
+  },
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pocket/pocket-monorepo.git"
+  },
+  "release": {
+    "extends": "semantic-release-monorepo",
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "conventionalcommits",
+          "parserOpts": {
+            "noteKeywords": [
+              "BREAKING CHANGE",
+              "BREAKING CHANGES",
+              "BREAKING"
+            ]
+          }
+        }
+      ],
+      [
+        "@semantic-release/release-notes-generator",
+        {
+          "preset": "conventionalcommits",
+          "parserOpts": {
+            "noteKeywords": [
+              "BREAKING CHANGE",
+              "BREAKING CHANGES",
+              "BREAKING"
+            ]
+          },
+          "writerOpts": {
+            "commitsSort": [
+              "subject",
+              "scope"
+            ]
+          }
+        }
+      ],
+      "@semantic-release/npm",
+      "@semantic-release/github"
+    ]
   }
 }
