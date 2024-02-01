@@ -23,6 +23,7 @@ describe('Snowplow event helpers', () => {
   let loggerErrorSpy: jest.SpyInstance<winston.Logger>;
 
   const shareableList: ShareableListComplete = {
+    id: BigInt(99999),
     externalId: faker.string.uuid(),
     userId: BigInt(12345),
     slug: null,

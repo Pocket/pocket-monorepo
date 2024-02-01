@@ -42,4 +42,8 @@ export default {
     dbname: process.env.DATABASE_NAME || 'shareablelists',
     port: parseInt(process.env.DATABASE_PORT) || 3306,
   },
+  pagination: {
+    defaultPageSize: 30,
+    maxPageSize: 30,
+  },
 };

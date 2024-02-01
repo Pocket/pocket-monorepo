@@ -119,6 +119,7 @@ export type ListItemResponse = Pick<
  * for the types to match.
  */
 const shareableListSelectFields = {
+  id: true, // Not returned to the client; used to resolve listItems
   externalId: true,
   userId: true,
   slug: true,

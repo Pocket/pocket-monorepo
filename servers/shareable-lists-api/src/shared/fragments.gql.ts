@@ -22,6 +22,28 @@ export const ShareableListItemPublicProps = gql`
 `;
 
 /**
+ * This GraphQL fragment contains all the properties on a ListItemConnection.
+ */
+export const ListItemConnectionProps = gql`
+  fragment ListItemConnectionProps on ListItemConnection {
+    edges {
+      cursor
+      node {
+        ...ShareableListItemPublicProps
+      }
+    }
+    pageInfo {
+      endCursor
+      startCursor
+      hasNextPage
+      hasPreviousPage
+    }
+    totalCount
+  }
+  ${ShareableListItemPublicProps}
+`;
+
+/**
  * This GraphQL fragment contains all the properties that must be available
  * in the Public Pocket Graph for a Shareable List.
  */

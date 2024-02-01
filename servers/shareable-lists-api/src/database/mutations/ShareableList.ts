@@ -173,6 +173,7 @@ export async function createAndAddToShareableList(
   const completeList: ShareableList = {
     ...list,
     // bigint causes issues again...
+    id: list.id as unknown as bigint,
     userId: list.userId as unknown as bigint,
     listItems: items as any, // nested bigints
   };
