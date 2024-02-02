@@ -16,7 +16,7 @@ export type ResolvedIdToItemIdHash = {
  * @param itemIdResolvedIdPairs
  */
 export const generateResolvedIdToItemIdMap = (
-  itemIdResolvedIdPairs: ItemIdResolvedIdPair[]
+  itemIdResolvedIdPairs: ItemIdResolvedIdPair[],
 ): ResolvedIdToItemIdHash => {
   const hash = {};
 
@@ -37,10 +37,10 @@ export const generateResolvedIdToItemIdMap = (
  */
 export const getItemIdFromResolvedId = (
   resolvedId: number,
-  resolvedIdToItemIdHash: ResolvedIdToItemIdHash
+  resolvedIdToItemIdHash: ResolvedIdToItemIdHash,
 ): number | null => {
   const key = Object.keys(resolvedIdToItemIdHash).find(
-    (key) => Number(key) === resolvedId
+    (key) => Number(key) === resolvedId,
   );
 
   return resolvedIdToItemIdHash[key] || null;

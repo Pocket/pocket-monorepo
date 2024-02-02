@@ -1,4 +1,4 @@
-import elasticsearch from 'elasticsearch';
+import { Client } from 'elasticsearch';
 import { config } from '../../config';
 
 const getHost = (host: string): string => {
@@ -11,7 +11,7 @@ const getHost = (host: string): string => {
 /**
  * Elasticsearch client
  */
-export const client = new elasticsearch.Client({
+export const client = new Client({
   host: getHost(config.aws.elasticsearch.host),
   log: 'info',
   apiVersion: config.aws.elasticsearch.apiVersion,

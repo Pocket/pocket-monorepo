@@ -34,7 +34,7 @@ export class ContextManager implements IContext {
     const userId = request.headers.userid;
     if (!userId) {
       throw new AuthenticationError(
-        'You must be logged in to use this service'
+        'You must be logged in to use this service',
       );
     }
     this.userId = userId;
@@ -45,7 +45,7 @@ export class ContextManager implements IContext {
 
 export const getContextFactory: ContextFactory = (
   req,
-  dbClient: Knex
+  dbClient: Knex,
 ): ContextManager | null => {
   if (
     isIntrospection(req.body.query) ||

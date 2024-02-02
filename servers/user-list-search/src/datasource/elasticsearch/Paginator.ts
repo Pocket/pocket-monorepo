@@ -18,14 +18,14 @@ export class Paginator {
   private static cursorSeparator = '__+__';
   public static encodeCursor(sortValues: string[]): string {
     return Buffer.from(sortValues.join(Paginator.cursorSeparator)).toString(
-      'base64'
+      'base64',
     );
   }
   public static decodeCursor(cursor: string): string[] {
     return Buffer.from(cursor, 'base64').toString().split(this.cursorSeparator);
   }
   public static resultToConnection(
-    input: SearchResponse<ElasticSearchSavedItem>
+    input: SearchResponse<ElasticSearchSavedItem>,
   ): SavedItemSearchResultConnection {
     const edges: SearchSavedItemEdge[] = input.hits.hits.map((item) => ({
       cursor: Paginator.encodeCursor(item.sort),

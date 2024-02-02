@@ -3,7 +3,7 @@ import { bulkDocument } from './datasource/elasticsearch/elasticsearchBulk';
 import { client } from './datasource/elasticsearch';
 import { startServer } from './server/serverUtils';
 import { ContextManager } from './server/context';
-import { Application, Express } from 'express';
+import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import { knexDbClient } from './datasource/clients/knexClient';

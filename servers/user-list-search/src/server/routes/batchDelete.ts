@@ -1,5 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
-import { Router } from 'express';
+import { Request, Response, NextFunction, Router } from 'express';
 import { checkSchema, Schema, validationResult } from 'express-validator';
 import { nanoid } from 'nanoid';
 import * as Sentry from '@sentry/node';
@@ -25,7 +24,7 @@ const batchDeleteSchema: Schema = {
 export function validate(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Response {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -57,7 +56,7 @@ router.post(
       status: 'OK',
       message: `BatchDelete: Deleting search index for User ID: ${userId} (requestId='${requestId}')`,
     });
-  }
+  },
 );
 
 export default router;

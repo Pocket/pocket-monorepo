@@ -33,7 +33,7 @@ const seedItems = async (itemIds: number[], truncate = true): Promise<any> => {
     };
     await primaryPool.query(
       `INSERT INTO readitla_b.items_resolver SET ?`,
-      resolver
+      resolver,
     );
 
     const item = {
@@ -61,14 +61,14 @@ const seedItems = async (itemIds: number[], truncate = true): Promise<any> => {
     };
     await primaryPool.query(
       `INSERT INTO readitla_b.items_extended SET ?`,
-      item
+      item,
     );
   }
 };
 
 const seedItemContent = async (
   itemIds: number[],
-  truncate = true
+  truncate = true,
 ): Promise<any> => {
   if (truncate) {
     await primaryPool.query('TRUNCATE TABLE content.content');
@@ -79,7 +79,7 @@ const seedItemContent = async (
     const item = {
       item_id: itemId,
       content: zlib.deflateSync(
-        Buffer.from('string:' + faker.lorem.paragraphs(10))
+        Buffer.from('string:' + faker.lorem.paragraphs(10)),
       ),
     };
 
@@ -91,14 +91,14 @@ const seedItemContent = async (
 const seedTags = async (
   count: number,
   itemIds: number[],
-  truncate = true
+  truncate = true,
 ): Promise<void> => {
   if (truncate) {
     await primaryPool.query('TRUNCATE TABLE item_tags');
   }
 
   const [users] = await primaryPool.query<RowDataPacket[]>(
-    'SELECT user_id FROM users'
+    'SELECT user_id FROM users',
   );
 
   if (users.length) {
@@ -124,7 +124,7 @@ const seedTags = async (
 const seedUsers = async (
   count: number,
   forcePremium = false,
-  truncate = true
+  truncate = true,
 ): Promise<void> => {
   if (truncate) {
     await primaryPool.query('TRUNCATE TABLE users');
@@ -169,14 +169,14 @@ const seedUsers = async (
 const seedList = async (
   count: number,
   itemIds: number[],
-  truncate = true
+  truncate = true,
 ): Promise<void> => {
   if (truncate) {
     await primaryPool.query('TRUNCATE TABLE list');
   }
 
   const [users] = await primaryPool.query<RowDataPacket[]>(
-    'SELECT user_id FROM users'
+    'SELECT user_id FROM users',
   );
 
   if (users.length) {
@@ -208,7 +208,7 @@ const seedList = async (
 export const seedItemWithDifferentResolvedId = async (
   itemId: number,
   resolvedId: number,
-  truncate = true
+  truncate = true,
 ): Promise<void> => {
   if (truncate) {
     await primaryPool.query('TRUNCATE TABLE readitla_b.items_resolver');
@@ -226,7 +226,7 @@ export const seedItemWithDifferentResolvedId = async (
 export const seedDb = async (opts: SeedConfig): Promise<any> => {
   if (config.isProduction) {
     console.error(
-      'Woah. This is production. Bailing out before you cause damage.'
+      'Woah. This is production. Bailing out before you cause damage.',
     );
     return;
   }

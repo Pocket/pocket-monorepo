@@ -46,7 +46,7 @@ const getTestIndexDocuments = (): IndexDocument[] => {
           user_id: userItem.userId,
           item_id: itemId,
         };
-      })
+      }),
     );
   });
 

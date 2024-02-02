@@ -7,6 +7,6 @@ const sdl = printSubgraphSchema(schema);
 const filePath = path.resolve(
   __dirname,
   'dist/../..',
-  'schema-generated.graphql'
+  'schema-generated.graphql',
 );
 fs.writeFileSync(filePath, sdl);

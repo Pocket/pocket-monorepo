@@ -3,9 +3,10 @@ import {
   AdvancedSearchParams,
   SavedItemContentType,
   SearchFilterStatus,
+  SearchItemsSortBy,
+  SortDirection,
 } from '../../types';
 import { SearchQueryBuilder } from './searchQueryBuilder';
-import { SearchItemsSortBy, SortDirection } from '../../types';
 
 describe('SearchQueryBuilder', () => {
   const query = new SearchQueryBuilder();
@@ -164,7 +165,7 @@ describe('SearchQueryBuilder', () => {
       ({ filter, expected }) => {
         const actual = query.parse({ filter }, userId);
         expect((actual.query as any).bool).toMatchObject(expected);
-      }
+      },
     );
   });
   describe('query string', () => {

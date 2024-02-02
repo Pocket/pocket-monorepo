@@ -40,7 +40,7 @@ const functionalBoostValue = new GraphQLScalarType({
         return ast.value;
       default:
         throw new Error(
-          `FunctionalBoostValue cannot represent non boolean/non string value`
+          `FunctionalBoostValue cannot represent non boolean/non string value`,
         );
     }
   },
@@ -55,7 +55,7 @@ const functionalBoostValue = new GraphQLScalarType({
 function elasticSearch(
   _,
   { params }: { params: SearchParams },
-  context: IContext
+  context: IContext,
 ): Promise<PocketSearchResponse> {
   if (context.userId == null) {
     throw new AuthenticationError('Must be logged in to perform search');
@@ -78,19 +78,19 @@ export const resolvers = {
     advancedSearch: async (
       _,
       params: AdvancedSearchParams,
-      context: IContext
+      context: IContext,
     ): Promise<SavedItemSearchResultConnection> => {
       if (params.pagination?.before || params.pagination?.last) {
         throw new UserInputError(
           'Pagination by "before"/"last" are not supported. ' +
-            'Use "first"/"after" instead.'
+            'Use "first"/"after" instead.',
         );
       }
       // Premium search
       if (context.userIsPremium) {
         if (!params.filter && !params.queryString) {
           throw new UserInputError(
-            'Must provide either filters or query string to search'
+            'Must provide either filters or query string to search',
           );
         }
         return advancedSearch(params, context.userId);
@@ -112,7 +112,7 @@ export const resolvers = {
     searchSavedItems: async (
       parent,
       params,
-      context: IContext
+      context: IContext,
     ): Promise<SavedItemSearchResultConnection> => {
       // If the user is premium, and they did not select onlyTitleAndURL
       // send them down the premium search path

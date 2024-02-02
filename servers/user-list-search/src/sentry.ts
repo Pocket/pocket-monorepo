@@ -56,7 +56,7 @@ export const addBreadcrumbs = (breadcrumbs: Sentry.Breadcrumb): void => {
 
 export const captureException = async (
   exception: any,
-  breadcrumbs?: Sentry.Breadcrumb
+  breadcrumbs?: Sentry.Breadcrumb,
 ): Promise<any> => {
   console.log(exception, breadcrumbs);
 

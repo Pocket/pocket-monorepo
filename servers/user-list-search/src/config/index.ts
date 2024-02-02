@@ -1,4 +1,8 @@
-import { GetSecretValueCommand, GetSecretValueResponse, SecretsManagerClient } from '@aws-sdk/client-secrets-manager';
+import {
+  GetSecretValueCommand,
+  GetSecretValueResponse,
+  SecretsManagerClient,
+} from '@aws-sdk/client-secrets-manager';
 
 const awsEnvironments = ['production', 'development'];
 let localAwsEndpoint: string = undefined;
@@ -83,8 +87,10 @@ export type MySqlConfig = {
 };
 
 export const getSecret = async (secretName: string): Promise<string> => {
-  const secretsManager = new  SecretsManagerClient();
-  const data: GetSecretValueResponse = await secretsManager.send(new GetSecretValueCommand({ SecretId: secretName }));
+  const secretsManager = new SecretsManagerClient();
+  const data: GetSecretValueResponse = await secretsManager.send(
+    new GetSecretValueCommand({ SecretId: secretName }),
+  );
   return data.SecretString as string;
 };
 
@@ -102,14 +108,14 @@ export const getMysqlConfigFromString = (str: string): MySqlConfig => {
 const getMysqlConfigFromEnv = (name: string): MySqlConfig => {
   const str = process.env[name];
 
-  return (str != undefined && str) ? getMysqlConfigFromString(str) : null;
+  return str != undefined && str ? getMysqlConfigFromString(str) : null;
 };
 
 const getMysqlConfigFromSecretsManager = async (
   path: string,
 ): Promise<MySqlConfig> => {
   try {
-  return getMysqlConfigFromString(await getSecret(path))
+    return getMysqlConfigFromString(await getSecret(path));
   } catch {
     return null;
   }
@@ -126,25 +132,23 @@ export default async (): Promise<typeof config> => {
       getMysqlConfigFromSecretsManager(
         process.env.PARSER_AURORA_DB_SECRET_PATH ||
           'UserListSearch/Prod/ParserAuroraDbCredentials',
-      )
+      ),
   ]);
   const cfg = { ...config };
 
-  readitla = readitla ?? {
+  (readitla = readitla ?? {
     database: 'readitla_ril-tmp',
     password: '',
     user: 'pkt_listserch_r',
     host: 'localhost',
-  }, // fall back to local test environment
-
-  contentAuroraDb = contentAuroraDb ?? {
-    database: 'content',
-    password: '',
-    user: 'pkt_listserch_r',
-    host: 'localhost',
-  }, // fall back to local test environment,
-
-  cfg.mysql.readitla = { ...readitla, ...cfg.mysql.readitla };
+  }), // fall back to local test environment
+    (contentAuroraDb = contentAuroraDb ?? {
+      database: 'content',
+      password: '',
+      user: 'pkt_listserch_r',
+      host: 'localhost',
+    }), // fall back to local test environment,
+    (cfg.mysql.readitla = { ...readitla, ...cfg.mysql.readitla });
   cfg.mysql.contentAuroraDb = {
     ...contentAuroraDb,
     ...cfg.mysql.contentAuroraDb,

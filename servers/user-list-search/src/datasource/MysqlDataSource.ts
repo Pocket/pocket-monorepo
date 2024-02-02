@@ -89,7 +89,7 @@ export class MysqlDataSource implements DataSourceInterface {
    */
   async getUserListItems(
     userId: number,
-    itemIds: number[]
+    itemIds: number[],
   ): Promise<ListItem[]> {
     const rows = await this.query(
       `SELECT
@@ -105,7 +105,7 @@ export class MysqlDataSource implements DataSourceInterface {
         item_tags it ON (l.user_id = it.user_id AND l.item_id = it.item_id)
       WHERE
         l.user_id = ? AND l.item_id IN (?) AND l.status < 2`,
-      [userId, itemIds]
+      [userId, itemIds],
     );
 
     const userItems = {};
@@ -167,7 +167,7 @@ export class MysqlDataSource implements DataSourceInterface {
       GROUP BY
         u.user_id
       ORDER BY
-        srch.time_added DESC`
+        srch.time_added DESC`,
     );
 
     // mash the mysql rerturned rows into an array of numbers
@@ -210,7 +210,7 @@ export class MysqlDataSource implements DataSourceInterface {
         readitla_b.items_resolver ir ON ir.resolved_id = ie.extended_item_id
       WHERE
         ir.item_id IN (?)`,
-      [itemIds]
+      [itemIds],
     );
 
     const items = {};
@@ -242,7 +242,7 @@ export class MysqlDataSource implements DataSourceInterface {
    * @param itemIds
    */
   private async getItemIdResolvedIdPairs(
-    itemIds: number[]
+    itemIds: number[],
   ): Promise<ItemIdResolvedIdPair[]> {
     const rows = await this.query(
       `SELECT
@@ -252,7 +252,7 @@ export class MysqlDataSource implements DataSourceInterface {
         readitla_b.items_resolver ir
       WHERE
         ir.item_id IN (?)`,
-      [itemIds]
+      [itemIds],
     );
 
     return rows.map((row) => {
@@ -266,7 +266,7 @@ export class MysqlDataSource implements DataSourceInterface {
   }
 
   private async getItemAuthors(
-    resolvedIdsToItemIdsHash: ResolvedIdToItemIdHash
+    resolvedIdsToItemIdsHash: ResolvedIdToItemIdHash,
   ): Promise<ItemAuthor[]> {
     const resolvedIds = Object.keys(resolvedIdsToItemIdsHash);
 
@@ -284,7 +284,7 @@ export class MysqlDataSource implements DataSourceInterface {
         readitla_b.items_authors ia ON a.author_id = ia.author_id
       WHERE
         ia.item_id IN (?)`,
-      [resolvedIds]
+      [resolvedIds],
     );
 
     const result = [];
@@ -292,7 +292,7 @@ export class MysqlDataSource implements DataSourceInterface {
     rows.forEach((row: any) => {
       const itemId = getItemIdFromResolvedId(
         row.resolved_id,
-        resolvedIdsToItemIdsHash
+        resolvedIdsToItemIdsHash,
       );
 
       // the item should *always* be found by resolved id (as we had to get
@@ -313,7 +313,7 @@ export class MysqlDataSource implements DataSourceInterface {
    * @param resolvedIdsToItemIdsHash
    */
   private async getItemContent(
-    resolvedIdsToItemIdsHash: ResolvedIdToItemIdHash
+    resolvedIdsToItemIdsHash: ResolvedIdToItemIdHash,
   ): Promise<ContentItemMap> {
     const resolvedIds = Object.keys(resolvedIdsToItemIdsHash);
     const result = {};
@@ -340,7 +340,7 @@ export class MysqlDataSource implements DataSourceInterface {
     rows.forEach((row: any) => {
       const itemId = getItemIdFromResolvedId(
         row.resolved_id,
-        resolvedIdsToItemIdsHash
+        resolvedIdsToItemIdsHash,
       );
 
       // the item should *always* be found by resolved id (as we had to get

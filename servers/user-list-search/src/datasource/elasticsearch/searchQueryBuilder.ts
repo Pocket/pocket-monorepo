@@ -44,7 +44,7 @@ export class SearchQueryBuilder {
     input: Omit<AdvancedSearchParams, 'pagination'> & {
       pagination?: ValidPagination;
     },
-    userId: string
+    userId: string,
   ) {
     const filters = this.buildFilters(input.filter, userId);
     const query = this.queryString(input);
@@ -114,7 +114,7 @@ export class SearchQueryBuilder {
       status: this.status,
     };
     const validFilters = Object.keys(filter).map((key) =>
-      builders[key](filter[key])
+      builders[key](filter[key]),
     );
     validFilters.push(userFilter);
     return {

@@ -60,7 +60,7 @@ export const processMessages = async (): Promise<void> => {
   } catch (error) {
     captureProcessException(
       'Error processing user search deletion messages',
-      error
+      error,
     );
   }
 };

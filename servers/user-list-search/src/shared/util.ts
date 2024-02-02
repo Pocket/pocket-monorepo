@@ -2,7 +2,7 @@ import { captureException } from '../sentry';
 import striptags from 'striptags';
 
 export const normalizeFullText = (
-  html: string | undefined | null
+  html: string | undefined | null,
 ): string | null => {
   if (!html) {
     return null;
@@ -40,7 +40,7 @@ export const normalizeDate = (date: Date): string | null => {
  */
 export const captureProcessException = (
   exception: any,
-  message?: string
+  message?: string,
 ): void => {
   exception = JSON.stringify(exception);
 

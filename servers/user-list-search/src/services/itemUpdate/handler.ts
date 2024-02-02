@@ -12,7 +12,7 @@ export const handler = async (event: SQSEvent): Promise<boolean[]> => {
     return await Promise.all(
       event.Records.map((record: SQSRecord) => {
         return processBody(record.body, mysql);
-      })
+      }),
     );
   } catch (err) {
     // unless we have a requirement to return a specific error response, just throw the exception after sentry is handled

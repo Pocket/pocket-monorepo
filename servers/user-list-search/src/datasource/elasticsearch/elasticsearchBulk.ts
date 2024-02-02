@@ -37,14 +37,14 @@ export type BulkEntry = IndexDocument | BulkIndexEntry | BulkDeleteEntry;
  * ]
  */
 type BulkDocumentConverter = (
-  docs: (BaseDocument | IndexDocument)[]
+  docs: (BaseDocument | IndexDocument)[],
 ) => BulkEntry[];
 
 /**
  * Given a set of documents index them
  */
 type BulkDocumentProcessor = (
-  docs: (BaseDocument | IndexDocument)[]
+  docs: (BaseDocument | IndexDocument)[],
 ) => Promise<any>;
 
 /**
@@ -52,7 +52,7 @@ type BulkDocumentProcessor = (
  * @param docs
  */
 export const defaultDocConverter: BulkDocumentConverter = (
-  docs: (DeleteDocument | IndexDocument)[]
+  docs: (DeleteDocument | IndexDocument)[],
 ): BulkEntry[] => {
   return docs.flatMap((doc): BulkEntry[] => {
     if (doc.action == 'index') {
@@ -75,7 +75,7 @@ export const defaultDocConverter: BulkDocumentConverter = (
  * The default elasticsearch indexing converter
  */
 export const defaultDocProcessor: BulkDocumentProcessor = async (
-  docs: IndexDocument[]
+  docs: IndexDocument[],
 ) => {
   return client.bulk({ body: defaultDocConverter(docs), index, type });
 };
@@ -100,7 +100,7 @@ export const setBulkChain = (processors: BulkDocumentProcessor[]): void => {
  * @param body
  */
 export const bulkDocument = async (
-  body: (IndexDocument | DeleteDocument)[]
+  body: (IndexDocument | DeleteDocument)[],
 ): Promise<any[]> => {
   return await Promise.all(bulkChain.map((fn) => fn(body)));
 };

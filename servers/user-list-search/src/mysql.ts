@@ -1,4 +1,4 @@
-import config from './config';
+import configFn from './config';
 import { get } from 'lodash';
 import { FieldPacket, PoolOptions, RowDataPacket } from 'mysql2';
 import mysqlPromise from 'mysql2/promise';
@@ -22,7 +22,7 @@ export const poolFromConfigFactory = (
     if (!pool) {
       console.log(`creating new connection pool ${configPath}`);
 
-      const cfg = await config();
+      const cfg = await configFn();
       pool = poolFactory({
         ...(get(cfg, configPath) as object),
         waitForConnections: true,

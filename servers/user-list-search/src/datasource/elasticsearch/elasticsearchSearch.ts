@@ -137,7 +137,7 @@ export const getDocument = async (id: string): Promise<GetResponse<any>> => {
  */
 export const getTerms = (
   field: string,
-  values: Array<number | string | boolean>
+  values: Array<number | string | boolean>,
 ): Term[] => {
   if (!values) return [];
   return values.map((value: number | string | boolean): Term => {
@@ -148,7 +148,7 @@ export const getTerms = (
 };
 
 export const getSearchHighlightFields = (
-  highlightFields: SearchParams['highlightFields']
+  highlightFields: SearchParams['highlightFields'],
 ): SearchHighlightFields => {
   const searchHighlightFields = {};
 
@@ -195,7 +195,7 @@ export const formatFilterValues = (key: string, values: any): Array<any> => {
  * @param filters
  */
 export const getFilterTerms = (
-  filters: ElasticSearchParams['filters']
+  filters: ElasticSearchParams['filters'],
 ): Record<string, unknown> => {
   const filterTerms = [];
 
@@ -266,7 +266,7 @@ export type ScriptScoreFunction = {
  */
 const getScriptScoreFunctions = (
   functionalBoosts: SearchParams['functionalBoosts'],
-  queryScore: number
+  queryScore: number,
 ): ScriptScoreFunction[] => {
   return functionalBoosts.map<ScriptScoreFunction>((functionalBoost) => {
     const transOperation =
@@ -293,7 +293,7 @@ const getScriptScoreFunctions = (
 export const applyFunctionalBoosts = (
   body: any,
   functionalBoosts: ElasticSearchParams['functionalBoosts'],
-  queryScore = 1
+  queryScore = 1,
 ): FunctionScoreQuery => {
   return {
     query: {
@@ -339,7 +339,7 @@ export const buildSearchBody = ({
       filters,
       highlightFields,
       functionalBoosts,
-    })
+    }),
   );
 
   term = term.trim();
@@ -370,7 +370,7 @@ export const buildSearchBody = ({
     body = applyFunctionalBoosts(
       body,
       functionalBoosts,
-      defaultQueryScore as number
+      defaultQueryScore as number,
     );
   }
 
@@ -401,7 +401,7 @@ export function cleanSearchTerm(searchTerm: string): string {
   // https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html#_reserved_characters
   const delimited = searchTerm.replace(
     /[+\-=!(){}[\]^"~*?:\\/]|&{2}|\|{2}/g,
-    '\\$&'
+    '\\$&',
   );
   // < and > can't be escaped; remove them
   // note: whitespace is not considered an operator
@@ -457,7 +457,7 @@ export function calculateOffset(pagination: Pagination, size: number): number {
   pagination = validatePagination(
     pagination,
     config.pagination.defaultPageSize,
-    config.pagination.maxPageSize
+    config.pagination.maxPageSize,
   );
 
   if (pagination?.after) {
@@ -473,7 +473,7 @@ export function calculateOffset(pagination: Pagination, size: number): number {
   if (pagination?.last && !pagination?.before) {
     throw new UserInputError(
       "premium search doesn't support pagination by last alone." +
-        'Please use first or first/after or before/last combination'
+        'Please use first or first/after or before/last combination',
     );
   }
 
@@ -489,13 +489,13 @@ export function calculateOffset(pagination: Pagination, size: number): number {
 export function calculateSize(pagination: Pagination, size: number): number {
   if (pagination?.after && pagination?.before) {
     throw new Error(
-      'please set only before or after field in pagination input'
+      'please set only before or after field in pagination input',
     );
   }
 
   if (pagination?.before) {
     const offset = parseInt(
-      Buffer.from(pagination.before, 'base64').toString()
+      Buffer.from(pagination.before, 'base64').toString(),
     );
     //to avoid returning item mentioned in `before`
     //as offset is indexed from 0, we return offset (otherwise offset-1)
@@ -530,7 +530,7 @@ export function getCleanedupDomainName(domain: string): string {
 
 export function generateSearchSavedItemsParams(
   params: SearchSavedItemParameters,
-  userId: string
+  userId: string,
 ): ElasticSearchParams {
   const searchValues = extractSearchValues(params.term);
   const fields = [
@@ -582,7 +582,7 @@ export function generateSearchSavedItemsParams(
 
 export async function advancedSearch(
   params: AdvancedSearchParams,
-  userId: string
+  userId: string,
 ): Promise<SavedItemSearchResultConnection> {
   const body = new SearchQueryBuilder().parse(params, userId);
   body['highlight'] = {
@@ -609,7 +609,7 @@ export async function advancedSearch(
  */
 export async function searchSavedItems(
   params: SearchSavedItemParameters,
-  userId: string
+  userId: string,
 ): Promise<SavedItemSearchResultConnection> {
   const searchParams = generateSearchSavedItemsParams(params, userId);
   const body = buildSearchBody(searchParams);
@@ -635,10 +635,10 @@ export async function searchSavedItems(
       };
       cursor++;
       return response;
-    }
+    },
   );
   const endCursor = Buffer.from(
-    (searchParams.from + searchResultsEdges.length - 1).toString()
+    (searchParams.from + searchResultsEdges.length - 1).toString(),
   ).toString('base64');
   const response = {
     edges: searchResultsEdges,
@@ -662,7 +662,7 @@ export async function searchSavedItems(
  * @param params
  */
 export const search = async (
-  params: ElasticSearchParams
+  params: ElasticSearchParams,
 ): Promise<PocketSearchResponse> => {
   const body = buildSearchBody(params);
   console.log('elasticsearch.search.body', JSON.stringify(body));

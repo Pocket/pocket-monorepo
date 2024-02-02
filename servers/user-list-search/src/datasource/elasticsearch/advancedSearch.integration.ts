@@ -280,7 +280,7 @@ describe('Elasticsearch Search Query', () => {
       {
         filter,
       },
-      '1'
+      '1',
     );
     expect(document).toMatchObject(expected);
   });
@@ -295,7 +295,7 @@ describe('Elasticsearch Search Query', () => {
         filter,
         pagination: { first: 1 },
       },
-      '1'
+      '1',
     );
     const after = document.pageInfo.endCursor;
     const nextDoc = await advancedSearch(
@@ -303,7 +303,7 @@ describe('Elasticsearch Search Query', () => {
         filter,
         pagination: { first: 1, after },
       },
-      '1'
+      '1',
     );
     expect(document.edges.length).toBe(1);
     expect(document.edges[0].node.savedItem.id).toBe('3');
@@ -321,7 +321,7 @@ describe('Elasticsearch Search Query', () => {
         filter,
         pagination: { first: 5 },
       },
-      '1'
+      '1',
     );
     const after = document.pageInfo.endCursor;
     const nextDoc = await advancedSearch(
@@ -329,7 +329,7 @@ describe('Elasticsearch Search Query', () => {
         filter,
         pagination: { first: 1, after },
       },
-      '1'
+      '1',
     );
     expect(document.edges.length).toBe(2);
     expect(document.edges[0].node.savedItem.id).toBe('3');
@@ -358,10 +358,10 @@ describe('Elasticsearch Search Query', () => {
           filter: { tags: ['exalted'] },
           sort,
         },
-        '1'
+        '1',
       );
       const actualIds = document.edges.map((edge) => edge.node.savedItem.id);
       expect(actualIds).toEqual(expectedIds);
-    }
+    },
   );
 });

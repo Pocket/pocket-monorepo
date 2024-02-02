@@ -13,7 +13,7 @@ const ITEMS_CHUNK_SIZE = 1000;
  */
 export const createUserItemsUpdateQueueMessage = (
   userId: number,
-  itemIds: number[]
+  itemIds: number[],
 ): UserItemsSqsMessage => {
   return {
     userItems: [{ userId, itemIds }],
@@ -27,16 +27,16 @@ export const createUserItemsUpdateQueueMessage = (
  */
 export const processItemIds = async (
   userId: number,
-  itemIds: number[]
+  itemIds: number[],
 ): Promise<void> => {
   const userItemsUpdateQueueMessage = createUserItemsUpdateQueueMessage(
     userId,
-    itemIds
+    itemIds,
   );
 
   await sendMessage(
     config.aws.sqs.userItemsUpdateUrl,
-    userItemsUpdateQueueMessage
+    userItemsUpdateQueueMessage,
   );
 };
 
@@ -47,7 +47,7 @@ export const processItemIds = async (
  */
 export const processBody = async (
   body: string,
-  dataSource: DataSourceInterface
+  dataSource: DataSourceInterface,
 ): Promise<boolean> => {
   // TODO: How to handle errors with corerupted messages?
   const messageBody: UserListImportSqsMessage = JSON.parse(body);
@@ -87,7 +87,7 @@ export const processBody = async (
  * @param dataSource
  */
 export const processMessages = async (
-  dataSource: DataSourceInterface
+  dataSource: DataSourceInterface,
 ): Promise<void> => {
   try {
     const userListImportUrl = config.aws.sqs.userListImportUrl;

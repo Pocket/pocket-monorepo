@@ -29,13 +29,17 @@ export const sendMessage = (
   message: Record<string, unknown>,
   params?: SendMessageRequest,
 ): Promise<SendMessageResult> => {
-  return sqs.send(new SendMessageCommand(Object.assign(
-    {
-      QueueUrl: queueUrl,
-      MessageBody: JSON.stringify(message),
-    },
-    params,
-  ),))
+  return sqs.send(
+    new SendMessageCommand(
+      Object.assign(
+        {
+          QueueUrl: queueUrl,
+          MessageBody: JSON.stringify(message),
+        },
+        params,
+      ),
+    ),
+  );
 };
 
 /**
@@ -47,14 +51,18 @@ export const receiveMessage = (
   queueUrl: string,
   params?: ReceiveMessageRequest,
 ): Promise<ReceiveMessageResult> => {
-  return sqs.send(new ReceiveMessageCommand(Object.assign(
-    {
-      QueueUrl: queueUrl,
-      WaitTimeSeconds: config.aws.sqs.waitTimeSeconds,
-      MaxNumberOfMessages: 10,
-    },
-    params,
-  )))
+  return sqs.send(
+    new ReceiveMessageCommand(
+      Object.assign(
+        {
+          QueueUrl: queueUrl,
+          WaitTimeSeconds: config.aws.sqs.waitTimeSeconds,
+          MaxNumberOfMessages: 10,
+        },
+        params,
+      ),
+    ),
+  );
 };
 
 /**
@@ -76,9 +84,10 @@ export const deleteMessage = (
   queueUrl: string,
   receiptHandle: string,
 ): Promise<DeleteMessageCommandOutput> => {
-  return sqs.send(new DeleteMessageCommand({ 
-    QueueUrl: queueUrl,
-    ReceiptHandle: receiptHandle, 
-  }));
-
+  return sqs.send(
+    new DeleteMessageCommand({
+      QueueUrl: queueUrl,
+      ReceiptHandle: receiptHandle,
+    }),
+  );
 };

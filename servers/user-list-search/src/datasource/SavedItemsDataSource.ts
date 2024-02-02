@@ -31,7 +31,7 @@ export class SavedItemDataService {
     return externalValidatePagination(
       pagination,
       config.pagination.defaultPageSize,
-      config.pagination.maxPageSize
+      config.pagination.maxPageSize,
     );
   }
 
@@ -45,7 +45,7 @@ export class SavedItemDataService {
    */
   private static buildFilterQuery(
     baseQuery: Knex,
-    filter: SavedItemsFilter
+    filter: SavedItemsFilter,
   ): Knex {
     if (filter.isFavorite != null) {
       baseQuery.andWhere('readitla_ril-tmp.list.favorite', filter.isFavorite);
@@ -54,7 +54,7 @@ export class SavedItemDataService {
     if (filter.status != null) {
       baseQuery.andWhere(
         'readitla_ril-tmp.list.status',
-        SavedItemStatus[filter.status]
+        SavedItemStatus[filter.status],
       );
     }
 
@@ -67,7 +67,7 @@ export class SavedItemDataService {
 
   private static contentTypeFilter(
     baseQuery: Knex,
-    contentType: SavedItemContentType
+    contentType: SavedItemContentType,
   ): Knex {
     if (contentType == 'VIDEO') {
       baseQuery.where('readitla_b.items_extended.video', 1);
@@ -99,12 +99,12 @@ export class SavedItemDataService {
         'readitla_ril-tmp.list.item_id AS id',
         'readitla_ril-tmp.list.time_updated', // for pagination sort
         'readitla_b.items_extended.lang',
-        'readitla_b.items_extended.word_count AS word_count'
+        'readitla_b.items_extended.word_count AS word_count',
       )
       .join(
         `readitla_b.items_extended`,
         'readitla_ril-tmp.list.resolved_id',
-        'readitla_b.items_extended.extended_item_id'
+        'readitla_b.items_extended.extended_item_id',
       )
       .whereNot('readitla_ril-tmp.list.status', SavedItemStatus.DELETED)
       .where((builder) => {
@@ -114,7 +114,7 @@ export class SavedItemDataService {
           .orWhere(
             'readitla_b.items_extended.resolved_url',
             'like',
-            `%${term}%`
+            `%${term}%`,
           )
           .orWhere('readitla_b.items_extended.title', 'like', `%${term}%`);
       });
@@ -128,10 +128,10 @@ export class SavedItemDataService {
    * @param pagination: instructions for how to paginate the data
    */
   public async searchSavedItems(
-    params: SearchSavedItemParameters
+    params: SearchSavedItemParameters,
   ): Promise<SavedItemSearchResultConnection> {
     params.pagination = SavedItemDataService.validatePagination(
-      params.pagination
+      params.pagination,
     );
 
     const sortOrder = params.sort ? params.sort.sortOrder : 'DESC';
@@ -139,13 +139,13 @@ export class SavedItemDataService {
       params.sort?.sortBy == `TIME_TO_READ` ? `word_count` : 'time_added';
     let baseQuery = this.buildQuery(params.term).andWhere(
       'readitla_ril-tmp.list.user_id',
-      this.userId
+      this.userId,
     );
 
     if (params.filter != null) {
       baseQuery = SavedItemDataService.buildFilterQuery(
         baseQuery,
-        params.filter
+        params.filter,
       );
     }
 
@@ -175,7 +175,7 @@ export class SavedItemDataService {
             },
           },
         }),
-      }
+      },
     );
   }
 }

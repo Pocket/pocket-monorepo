@@ -72,7 +72,7 @@ export const getContentType = (item: ParserItem): string[] => {
  * @param listItem
  */
 export const createDocument = (
-  listItem: ListItemEnriched
+  listItem: ListItemEnriched,
 ): IndexDocument | null => {
   const tags = listItem.tags ?? [];
   const item = listItem.item;
@@ -122,7 +122,7 @@ export const createDocument = (
  * @param listItems
  */
 export const indexInElasticSearch = async (
-  listItems: ListItemEnriched[]
+  listItems: ListItemEnriched[],
 ): Promise<any> => {
   const chunkedListItems = chunk(listItems, 100);
   await Promise.all(
@@ -134,7 +134,7 @@ export const indexInElasticSearch = async (
 
         if (body.length) return bulkDocument(body);
       })
-      .filter((bulkRequest) => !!bulkRequest)
+      .filter((bulkRequest) => !!bulkRequest),
   );
 };
 
@@ -143,7 +143,7 @@ export const indexInElasticSearch = async (
  * @param listItems
  */
 export const deleteFromElasticSearch = async (
-  listItems: BaseListItem[]
+  listItems: BaseListItem[],
 ): Promise<any> => {
   const chunkedListItems = chunk(listItems, 100);
   await Promise.all(
@@ -157,7 +157,7 @@ export const deleteFromElasticSearch = async (
       });
 
       return bulkDocument(body);
-    })
+    }),
   );
 };
 
@@ -168,7 +168,7 @@ export const deleteFromElasticSearch = async (
  */
 export async function deleteSearchIndexByUserId(
   userId: string,
-  waitForCompletion = false
+  waitForCompletion = false,
 ): Promise<DeleteDocumentByQueryResponse | void> {
   const { index, maxRetries, deleteConfig } = config.aws.elasticsearch;
   return client.deleteByQuery({

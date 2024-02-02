@@ -5,7 +5,7 @@ export enum ListItemStatus {
 }
 
 export const listItemStatusToString = (
-  listItemStatus: ListItemStatus
+  listItemStatus: ListItemStatus,
 ): string => {
   switch (listItemStatus) {
     case ListItemStatus.QUEUED:

@@ -17,7 +17,7 @@ import { captureProcessException } from '../shared/util';
 const getUserItems = async (
   dataSource: DataSourceInterface,
   userId: number,
-  itemIds: number[]
+  itemIds: number[],
 ): Promise<ListItemEnriched[]> => {
   const [listItems, items] = await Promise.all([
     dataSource.getUserListItems(userId, itemIds),
@@ -40,7 +40,7 @@ const getUserItems = async (
  */
 export const processBody = async (
   body: string,
-  dataSource: DataSourceInterface
+  dataSource: DataSourceInterface,
 ): Promise<boolean> => {
   const messageBody: UserItemsSqsMessage = JSON.parse(body);
 
@@ -85,7 +85,7 @@ export const processBody = async (
  * @param dataSource
  */
 export const processMessages = async (
-  dataSource: DataSourceInterface
+  dataSource: DataSourceInterface,
 ): Promise<boolean> => {
   try {
     const queueUrl = config.aws.sqs.userItemsUpdateUrl;
