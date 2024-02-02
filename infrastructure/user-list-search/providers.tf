@@ -7,3 +7,5 @@ provider "null" {}
 provider "pagerduty" {
   token = data.aws_ssm_parameter.pagerduty_token.value
 }
+
+provider "null_resource" {}

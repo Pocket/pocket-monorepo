@@ -37,7 +37,7 @@ resource "aws_rds_cluster" "mysql" {
   db_subnet_group_name        = aws_db_subnet_group.mysql_subnet[0].name
   engine                      = "aurora-mysql"
   engine_mode                 = "serverless"
-  engine_version              = "5.7.mysql_aurora.2.08.3"
+  engine_version              = "5.7.mysql_aurora.2.11.4"
   allow_major_version_upgrade = true
   apply_immediately           = true
 }
