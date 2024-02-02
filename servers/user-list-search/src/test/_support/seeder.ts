@@ -149,20 +149,23 @@ const seedUsers = async (
     await primaryPool.query(`INSERT INTO users SET ?`, user);
     const timeOpts = { min: 12846124, max: new Date().getTime() / 1000 };
 
-    // create 2 entries for each user -- this allows our tests to ensure premium backfill query selects the most recent login for each user
-    const userSearch = {
-      user_id: i,
-      search: faker.lorem.word(),
-      context_key: '',
-      context_value: '',
-      search_hash: i + '1',
-      time_added: faker.number.int(timeOpts),
-    };
-    await primaryPool.query(`INSERT INTO user_recent_search SET ?`, userSearch);
+    if (user.premium_status == true) {
+      // Only premium users can have recent searches
+      // create 2 entries for each user -- this allows our tests to ensure premium backfill query selects the most recent login for each user
+      const userSearch = {
+        user_id: i,
+        search: faker.lorem.word(),
+        context_key: '',
+        context_value: '',
+        search_hash: i + '1',
+        time_added: faker.number.int(timeOpts),
+      };
+      await primaryPool.query(`INSERT INTO user_recent_search SET ?`, userSearch);
 
-    userSearch.search_hash = i + '2';
-    userSearch.time_added = faker.number.int(timeOpts);
-    await primaryPool.query(`INSERT INTO user_recent_search SET ?`, userSearch);
+      userSearch.search_hash = i + '2';
+      userSearch.time_added = faker.number.int(timeOpts);
+      await primaryPool.query(`INSERT INTO user_recent_search SET ?`, userSearch);
+    }
   }
 };
 
