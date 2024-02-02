@@ -165,17 +165,9 @@ locals {
   }
 }
 
-resource "null_resource" "generate_appspec" {
-  triggers = {
-    task_definition_arn = aws_ecs_task_definition.apollo.arn
-    alb_container_name  = local.container_name
-    alb_container_port  = local.container_port
-  }
-
-  provisioner "file" {
-    content  = jsonencode(local.appspec_content)
-    destination = "appspec.json"
-  }
+resource "local_file" "appspec" {
+  content  = jsonencode(local.appspec_content)
+  filename = "appspec.json"
 }
 
 /**
