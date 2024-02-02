@@ -591,6 +591,10 @@ jobs:
       sentry_org:
         type: string
         description: The sentry org to upload source maps to
+      s3-key:
+        type: string
+        description: The name of the s3 key that contains the code to deploy
+        default: ""
       <<: *repo_for_enum
     docker:
       - image: *node_image
@@ -656,7 +660,12 @@ jobs:
                 aws-region: << parameters.aws-region >>
             - run:
                 name: Upload Package
-                command: aws s3 cp ${CIRCLE_SHA1}.zip s3://<< parameters.s3-bucket >>/ 
+                command: |
+                  s3Key="<< parameters.s3-key >>"
+                  if [[ -z $s3Key ]]; then
+                      s3Key="$CIRCLE_SHA1.zip"
+                  fi
+                  aws s3 cp $CIRCLE_SHA1.zip s3://<< parameters.s3-bucket >>/${s3Key}
       - store_artifacts:
           path: /tmp/artifacts
 
