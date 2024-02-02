@@ -41,6 +41,8 @@ describe('ListItems on a List', () => {
       publicUrl: graphQLUrl,
     } = await startServer(0));
     db = client();
+    kysely = conn();
+
     await clearDb(db);
     largeList = await createShareableListHelper(db, {
       userId: parseInt(publicUserHeaders.userId),
@@ -64,16 +66,6 @@ describe('ListItems on a List', () => {
         }),
       ),
     );
-
-    mockRedisServer();
-    // port 0 tells express to dynamically assign an available port
-    ({
-      app,
-      publicServer: server,
-      publicUrl: graphQLUrl,
-    } = await startServer(0));
-    db = client();
-    kysely = conn();
   });
 
   afterAll(async () => {
