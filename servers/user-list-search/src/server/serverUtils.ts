@@ -1,4 +1,4 @@
-import express, { json } from 'express';
+import express, { Application, json } from 'express';
 import http from 'http';
 import { config } from '../config';
 import { expressMiddleware } from '@apollo/server/express4';
@@ -19,7 +19,7 @@ import { knexDbClient } from '../datasource/clients/knexClient';
  * Create and start the apollo server.
  */
 export async function startServer(port: number): Promise<{
-  app: express.Express;
+  app: Application;
   server: ApolloServer<ContextManager>;
   url: string;
 }> {

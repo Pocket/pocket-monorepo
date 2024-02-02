@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { client } from './datasource/elasticsearch';
 import { config } from './config';
 import { bulkDocument } from './datasource/elasticsearch/elasticsearchBulk';
@@ -27,6 +26,9 @@ describe('Elasticsearch - Integration', () => {
         },
       },
     });
+
+    // Wait for delete to finish
+    await client.indices.refresh({ index: config.aws.elasticsearch.index });
 
     await bulkDocument([
       {
@@ -91,8 +93,8 @@ describe('Elasticsearch - Integration', () => {
       },
     ]);
 
-    // wait for 1 second to ensure documents have been indexed
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Wait for index to finish
+    await client.indices.refresh({ index: config.aws.elasticsearch.index });
   });
 
   it('deletes all documents for a given user_id', async () => {
@@ -110,15 +112,17 @@ describe('Elasticsearch - Integration', () => {
       });
 
     const baseRes = await search('1');
-    expect(baseRes.hits.total['value']).to.equal(3);
+    expect(baseRes.hits.total['value']).toBe(3);
 
     await deleteSearchIndexByUserId('1');
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // give it a sec
+
+    // Wait for delete to finish
+    await client.indices.refresh({ index: config.aws.elasticsearch.index });
 
     const resUser1 = await search('1');
     const resUser2 = await search('2');
 
-    expect(resUser1.hits.total['value']).to.equal(0);
-    expect(resUser2.hits.total['value']).to.equal(1);
+    expect(resUser1.hits.total['value']).toBe(0);
+    expect(resUser2.hits.total['value']).toBe(1);
   });
 });

@@ -1,7 +1,4 @@
-import chai, { expect } from 'chai';
 import { resolvers } from './resolvers';
-import chaiAsPromised from 'chai-as-promised';
-chai.use(chaiAsPromised);
 
 describe('search', () => {
   it('should throw AuthenticationError if userId is not in context', async () => {
@@ -23,7 +20,7 @@ describe('search', () => {
         },
       );
     };
-    return expect(badSearch()).to.be.rejectedWith(
+    return expect(badSearch()).rejects.toThrow(
       'Must be logged in to perform search',
     );
   });

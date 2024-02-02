@@ -1,8 +1,5 @@
-import { expect } from 'chai';
 import { config } from '../../config';
 import { client } from './index';
-import chaiAsPromised from 'chai-as-promised';
-import chai from 'chai';
 
 import { bulkDocument } from './elasticsearchBulk';
 import { getDocument } from './elasticsearchSearch';
@@ -22,8 +19,6 @@ const defaultDocProps = {
 
 //Set this here so the client instantiates outside of the before block that has a timeout.
 const esClient = client;
-
-chai.use(chaiAsPromised);
 
 describe('Elasticsearch Bulk', () => {
   beforeAll(async () => {
@@ -56,8 +51,8 @@ describe('Elasticsearch Bulk', () => {
 
   it('can bulk index a document', async () => {
     const document = (await getDocument('1-12345')) as any;
-    expect(document).to.not.be.null;
-    expect(document._source.title).to.eq('A super fun article');
+    expect(document).not.toBeNull();
+    expect(document._source.title).toBe('A super fun article');
   }, 10000);
 
   it('can bulk delete a document', async () => {
@@ -68,7 +63,7 @@ describe('Elasticsearch Bulk', () => {
         item_id: 12345,
       },
     ]);
-    expect(getDocument('1-12345')).eventually.to.be.rejectedWith('Not Found');
+    expect(getDocument('1-12345')).rejects.toThrow();
   }, 10000);
 
   it('will ignore a document not existing', async () => {
@@ -85,6 +80,6 @@ describe('Elasticsearch Bulk', () => {
       },
     ]);
 
-    expect(result.errors).to.be.false;
+    expect(result.errors).toBeFalse();
   }, 10000);
 });

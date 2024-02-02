@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { config } from '../config';
 import { receiveMessage, purgeQueue } from '../sqs';
 import {
@@ -27,7 +26,7 @@ describe('queueAllPremiumUsers', () => {
         },
       );
 
-      expect(JSON.parse(backfillMessages.Messages[0].Body)).to.deep.equal({
+      expect(JSON.parse(backfillMessages.Messages[0].Body)).toStrictEqual({
         users: [
           { userId: userIds[0] },
           { userId: userIds[1] },
@@ -35,7 +34,7 @@ describe('queueAllPremiumUsers', () => {
         ],
       });
 
-      expect(JSON.parse(backfillMessages.Messages[1].Body)).to.deep.equal({
+      expect(JSON.parse(backfillMessages.Messages[1].Body)).toStrictEqual({
         users: [
           { userId: userIds[3] },
           { userId: userIds[4] },
@@ -43,7 +42,7 @@ describe('queueAllPremiumUsers', () => {
         ],
       });
 
-      expect(JSON.parse(backfillMessages.Messages[2].Body)).to.deep.equal({
+      expect(JSON.parse(backfillMessages.Messages[2].Body)).toStrictEqual({
         users: [
           { userId: userIds[6] },
           { userId: userIds[7] },
@@ -51,7 +50,7 @@ describe('queueAllPremiumUsers', () => {
         ],
       });
 
-      expect(JSON.parse(backfillMessages.Messages[3].Body)).to.deep.equal({
+      expect(JSON.parse(backfillMessages.Messages[3].Body)).toStrictEqual({
         users: [{ userId: userIds[9] }],
       });
     });
@@ -82,7 +81,7 @@ describe('queueAllPremiumUsers', () => {
 
       const message = createUserListImportQueueMessage(userIds);
 
-      expect(message).to.deep.equal(expected);
+      expect(message).toStrictEqual(expected);
     });
   });
 });

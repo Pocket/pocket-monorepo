@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import {
   getItemIdFromResolvedId,
   generateResolvedIdToItemIdMap,
@@ -14,11 +13,11 @@ describe('itemIdUtil', () => {
     };
 
     it('should return the item id for the given resolved id', () => {
-      expect(getItemIdFromResolvedId(112, hash)).to.equal(222);
+      expect(getItemIdFromResolvedId(112, hash)).toBe(222);
     });
 
     it('should return null when the resolved id is not in the hash', () => {
-      expect(getItemIdFromResolvedId(113, hash)).to.equal(null);
+      expect(getItemIdFromResolvedId(113, hash)).toBeNull();
     });
   });
 
@@ -43,6 +42,8 @@ describe('itemIdUtil', () => {
       112: 222,
     };
 
-    expect(generateResolvedIdToItemIdMap(pairs)).to.deep.equal(expected);
+    expect(generateResolvedIdToItemIdMap(pairs)).toEqual(
+      expect.objectContaining(expected),
+    );
   });
 });

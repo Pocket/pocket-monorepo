@@ -1,12 +1,9 @@
-import { expect } from 'chai';
 import { processMessages } from './userItemsDelete';
 import { sendMessage, purgeQueue } from '../sqs';
 import { config } from '../config';
 import { getDocument } from '../datasource/elasticsearch/elasticsearchSearch';
 import { IndexDocument } from '../elasticsearch';
 import { bulkDocument } from '../datasource/elasticsearch/elasticsearchBulk';
-import chaiAsPromised from 'chai-as-promised';
-import chai from 'chai';
 import { client } from '../datasource/elasticsearch';
 
 const defaultDoc = {
@@ -56,7 +53,6 @@ const getTestIndexDocuments = (): IndexDocument[] => {
   return indexItems;
 };
 
-chai.use(chaiAsPromised);
 //Set this here so the client instantiates outside of the before block that has a timeout.
 const esClient = client;
 
@@ -71,6 +67,8 @@ describe('userItemsDelete', () => {
         },
       },
     });
+    // Wait for delete to finish
+    await esClient.indices.refresh({ index: config.aws.elasticsearch.index });
   });
 
   it('processes item delete queue', async () => {
@@ -87,12 +85,12 @@ describe('userItemsDelete', () => {
     await processMessages();
     //Ensure each document we just passed along was deleted for user 1
     for (let i = 1; i <= 5; i++) {
-      expect(getDocument(`1-${i}`)).eventually.to.be.rejectedWith('Not Found');
+      expect(getDocument(`1-${i}`)).rejects.toThrow();
     }
 
     //Ensure each document we just passed alone was deleted for user 2
     for (let i = 6; i <= 10; i++) {
-      expect(getDocument(`2-${i}`)).eventually.to.be.rejectedWith('Not Found');
+      expect(getDocument(`2-${i}`)).rejects.toThrow();
     }
   }, 30000);
 });

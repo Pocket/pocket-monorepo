@@ -3,7 +3,7 @@ import { bulkDocument } from './datasource/elasticsearch/elasticsearchBulk';
 import { client } from './datasource/elasticsearch';
 import { startServer } from './server/serverUtils';
 import { ContextManager } from './server/context';
-import { Express } from 'express';
+import { Application, Express } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import { knexDbClient } from './datasource/clients/knexClient';
@@ -39,7 +39,7 @@ async function loadUserItem(
     word_count: number;
     content_type?: string[];
   },
-  db: Knex
+  db: Knex,
 ) {
   const merged = {
     ...defaultDocProps,
@@ -56,14 +56,14 @@ async function loadUserItem(
       : SavedItemStatus.ARCHIVED,
     merged.title,
     merged.url,
-    new Date(merged.date_added)
+    new Date(merged.date_added),
   );
   await loadItemExtended(
     db,
     merged.item_id,
     merged.url,
     merged.title,
-    merged.word_count
+    merged.word_count,
   );
 
   return await bulkDocument([
@@ -76,7 +76,7 @@ async function loadUserItem(
 
 describe('premium search functional test', () => {
   const testEsClient = client;
-  let app: Express;
+  let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;
   const db = knexDbClient();
@@ -138,6 +138,11 @@ describe('premium search functional test', () => {
       },
     });
 
+    // Wait for delete to finish
+    await testEsClient.indices.refresh({
+      index: config.aws.elasticsearch.index,
+    });
+
     await db('readitla_ril-tmp.list').truncate();
     await db('readitla_b.items_extended').truncate();
 
@@ -156,7 +161,7 @@ describe('premium search functional test', () => {
           word_count: 10,
           content_type: ['article'],
         },
-        db
+        db,
       ),
       loadUserItem(
         {
@@ -173,7 +178,7 @@ describe('premium search functional test', () => {
           word_count: 50,
           content_type: ['article'],
         },
-        db
+        db,
       ),
       loadUserItem(
         {
@@ -190,7 +195,7 @@ describe('premium search functional test', () => {
           word_count: 100,
           content_type: ['article'],
         },
-        db
+        db,
       ),
       loadUserItem(
         {
@@ -207,7 +212,7 @@ describe('premium search functional test', () => {
           full_text: 'winter sports article',
           word_count: 500,
         },
-        db
+        db,
       ),
       loadUserItem(
         {
@@ -223,14 +228,16 @@ describe('premium search functional test', () => {
           full_text: 'Bigfoot band gets foothold in stomp scene',
           word_count: 500,
         },
-        db
+        db,
       ),
     ];
 
     await Promise.all(items);
 
     // Takes a hot sec for the data to be available, otherwise test flakes
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await testEsClient.indices.refresh({
+      index: config.aws.elasticsearch.index,
+    });
   });
 
   afterAll(async () => {
@@ -292,7 +299,7 @@ describe('premium search functional test', () => {
     ];
     expect(res.body.errors).toBeUndefined();
     expect(res.body.data?._entities[0].search.results).toIncludeSameMembers(
-      expected
+      expected,
     );
   });
   it('should handle response that returns hits with no highlights object', async () => {
@@ -634,7 +641,7 @@ describe('premium search functional test', () => {
           }),
         ]);
         expect(response).toEqual(expected);
-      }
+      },
     );
   });
 });

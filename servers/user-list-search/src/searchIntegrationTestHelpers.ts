@@ -9,7 +9,7 @@ export async function loadItemExtended(
   isArticle = 1,
   isImage = 0,
   isVideo = 0,
-  lang = `en`
+  lang = `en`,
 ) {
   await db('readitla_b.items_extended').insert({
     extended_item_id: itemId,
@@ -42,7 +42,7 @@ export async function loadList(
   status: number,
   title: string,
   url: string,
-  date: Date
+  date: Date,
 ) {
   await db('readitla_ril-tmp.list').insert({
     item_id: itemId,

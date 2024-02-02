@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { faker } from '@faker-js/faker';
 import { IndexDocument, createDocument, getContentType } from './elasticsearch';
 import {
@@ -9,8 +8,8 @@ import {
 import { normalizeDate, normalizeFullText } from './shared/util';
 
 describe('elasticsearch', () => {
-  let dateCreated;
-  let datePublished;
+  let dateCreated: Date;
+  let datePublished: Date;
   let item: ParserItem;
 
   beforeEach(() => {
@@ -35,13 +34,13 @@ describe('elasticsearch', () => {
 
   describe('getContentType', () => {
     it('should handle no content types', () => {
-      expect(getContentType(item)).to.deep.equal([]);
+      expect(getContentType(item)).toStrictEqual([]);
     });
 
     it('should handle isArticle', () => {
       item.isArticle = true;
 
-      expect(getContentType(item)).to.deep.equal([
+      expect(getContentType(item)).toStrictEqual([
         'article',
         'articles',
         'web',
@@ -51,13 +50,13 @@ describe('elasticsearch', () => {
     it('should handle hasVideo', () => {
       item.hasVideo = true;
 
-      expect(getContentType(item)).to.deep.equal(['video', 'videos', 'web']);
+      expect(getContentType(item)).toStrictEqual(['video', 'videos', 'web']);
     });
 
     it('should handle hasImage', () => {
       item.hasImage = true;
 
-      expect(getContentType(item)).to.deep.equal(['image', 'images', 'web']);
+      expect(getContentType(item)).toStrictEqual(['image', 'images', 'web']);
     });
   });
 
@@ -88,7 +87,7 @@ describe('elasticsearch', () => {
         full_text: normalizeFullText(null),
         excerpt: normalizeFullText(
           // these normalize functions are tested elsewhere - no need to repeat here
-          'weird deconstructist art that made the internet cool'
+          'weird deconstructist art that made the internet cool',
         ),
         date_published: normalizeDate(datePublished),
         date_added: normalizeDate(dateCreated),
@@ -102,7 +101,7 @@ describe('elasticsearch', () => {
     });
 
     it('should return a SearchDocument without tags, authors, or content', () => {
-      expect(createDocument(lie)).to.deep.equal(expected);
+      expect(createDocument(lie)).toStrictEqual(expected);
     });
 
     it('should return a SearchDocument with tags, authors, and content', () => {
@@ -118,7 +117,7 @@ describe('elasticsearch', () => {
       expected.authors = authors;
       expected.full_text = normalizeFullText(content);
 
-      expect(createDocument(lie)).to.deep.equal(expected);
+      expect(createDocument(lie)).toStrictEqual(expected);
     });
   });
 });

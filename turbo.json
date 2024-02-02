@@ -11,8 +11,12 @@
       "dependsOn": ["^build", "build"],
       "outputs": ["cdktf.out/**"]
     },
-    "lint": {},
-    "format": {},
+    "lint": {
+      "dependsOn": ["^build"]
+    },
+    "format": {
+      "dependsOn": ["^build"]
+    },
     "semantic-release": {
       "dependsOn": ["^build", "build"]
     },

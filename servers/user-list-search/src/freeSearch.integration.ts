@@ -1,17 +1,12 @@
-import chai, { expect } from 'chai';
-import deepEqualInAnyOrder from 'deep-equal-in-any-order';
 import { startServer } from './server/serverUtils';
 import { ContextManager } from './server/context';
-import { Express } from 'express';
+import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import { knexDbClient } from './datasource/clients/knexClient';
-import sinon from 'sinon';
 import { Knex } from 'knex';
 import { SavedItemStatus } from './types';
 import { loadItemExtended, loadList } from './searchIntegrationTestHelpers';
-
-chai.use(deepEqualInAnyOrder);
 
 async function loadDb(db: Knex) {
   const favorite = 1;
@@ -24,14 +19,14 @@ async function loadDb(db: Knex) {
     SavedItemStatus.ARCHIVED,
     'super fun article',
     'http://test1.com',
-    new Date('2020-10-03 10:20:30')
+    new Date('2020-10-03 10:20:30'),
   );
   await loadItemExtended(
     db,
     12345,
     'http://test1.com',
     'super fun article',
-    10
+    10,
   );
   await loadList(
     db,
@@ -40,14 +35,14 @@ async function loadDb(db: Knex) {
     SavedItemStatus.UNREAD,
     'another fun article',
     'http://test2.com',
-    new Date('2021-10-03 10:20:30')
+    new Date('2021-10-03 10:20:30'),
   );
   await loadItemExtended(
     db,
     123,
     'http://test2.com',
     'another fun article',
-    50
+    50,
   );
 
   await loadList(
@@ -57,7 +52,7 @@ async function loadDb(db: Knex) {
     SavedItemStatus.UNREAD,
     'winter sports fun',
     'http://test3.com',
-    new Date('2021-5-03 10:20:30')
+    new Date('2021-5-03 10:20:30'),
   );
   await loadItemExtended(
     db,
@@ -67,7 +62,7 @@ async function loadDb(db: Knex) {
     100,
     0,
     0,
-    1
+    1,
   );
   await loadList(
     db,
@@ -76,22 +71,21 @@ async function loadDb(db: Knex) {
     SavedItemStatus.DELETED,
     'deleted article',
     'http://deleted.com',
-    new Date('2020-10-03 10:20:30')
+    new Date('2020-10-03 10:20:30'),
   );
   await loadItemExtended(
     db,
     101010,
     'http://deleted.com',
     'deleted article',
-    10
+    10,
   );
 }
 
 describe('free search test', () => {
-  let app: Express;
+  let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;
-  let clock;
   const db = knexDbClient();
   const headers = {
     userid: '1',
@@ -108,10 +102,7 @@ describe('free search test', () => {
   });
 
   beforeEach(async () => {
-    clock = sinon.useFakeTimers({
-      now: updateDate,
-      shouldAdvanceTime: true,
-    });
+    jest.useFakeTimers({ now: updateDate, advanceTimers: true });
   });
 
   afterAll(async () => {
@@ -119,7 +110,7 @@ describe('free search test', () => {
     await db('readitla_ril-tmp.list').truncate();
     await db('readitla_b.items_extended').truncate();
     await db.destroy();
-    clock.restore();
+    jest.useRealTimers();
   });
 
   const query = ` edges
@@ -174,12 +165,12 @@ describe('free search test', () => {
       variables,
     });
     const response = res.body.data?._entities[0].searchSavedItems;
-    expect(response).to.not.be.null;
-    expect(response.totalCount).equals(3);
-    expect(response.pageInfo.hasNextPage).false;
-    expect(response.pageInfo.hasPreviousPage).true;
-    expect(response.edges[0].node.savedItem.id).equals('456');
-    expect(response.edges[1].node.savedItem.id).equals('12345');
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toBe(3);
+    expect(response.pageInfo.hasNextPage).toBeFalse();
+    expect(response.pageInfo.hasPreviousPage).toBeTrue();
+    expect(response.edges[0].node.savedItem.id).toBe('456');
+    expect(response.edges[1].node.savedItem.id).toBe('12345');
   });
 
   it('should not return deleted articles', async () => {
@@ -211,11 +202,11 @@ describe('free search test', () => {
       variables,
     });
     const response = res.body.data?._entities[0].searchSavedItems;
-    expect(response).to.not.be.null;
-    expect(response.totalCount).equals(2);
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toBe(2);
     const ids = response.edges.map((edge) => edge.node.savedItem.id);
     ids.forEach((id) => {
-      expect(id).not.equals('101010');
+      expect(id).not.toBe('101010');
     });
   });
 
@@ -247,11 +238,11 @@ describe('free search test', () => {
       variables,
     });
     const response = res.body.data?._entities[0].searchSavedItems;
-    expect(response).to.not.be.null;
-    expect(response.totalCount).equals(1);
-    expect(response.pageInfo.hasNextPage).false;
-    expect(response.pageInfo.hasPreviousPage).false;
-    expect(response.edges[0].node.savedItem.id).equals('123');
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toBe(1);
+    expect(response.pageInfo.hasNextPage).toBeFalse();
+    expect(response.pageInfo.hasPreviousPage).toBeFalse();
+    expect(response.edges[0].node.savedItem.id).toBe('123');
   });
 
   it('should return empty search result when term not found', async () => {
@@ -282,11 +273,11 @@ describe('free search test', () => {
       variables,
     });
     const response = res.body.data?._entities[0].searchSavedItems;
-    expect(response).to.not.be.null;
-    expect(response.totalCount).equals(0);
-    expect(response.pageInfo.hasNextPage).false;
-    expect(response.pageInfo.hasPreviousPage).false;
-    expect(response.edges.length).equals(0);
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toBe(0);
+    expect(response.pageInfo.hasNextPage).toBeFalse();
+    expect(response.pageInfo.hasPreviousPage).toBeFalse();
+    expect(response.edges.length).toBe(0);
   });
 
   it('should search paginated search with before and last', async () => {
@@ -319,12 +310,12 @@ describe('free search test', () => {
       variables,
     });
     const response = res.body.data?._entities[0].searchSavedItems;
-    expect(response).to.not.be.null;
-    expect(response.totalCount).equals(3);
-    expect(response.pageInfo.hasNextPage).true;
-    expect(response.pageInfo.hasPreviousPage).false;
-    expect(response.edges[0].node.savedItem.id).equals('123');
-    expect(response.edges[1].node.savedItem.id).equals('456');
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toBe(3);
+    expect(response.pageInfo.hasNextPage).toBeTrue();
+    expect(response.pageInfo.hasPreviousPage).toBeFalse();
+    expect(response.edges[0].node.savedItem.id).toBe('123');
+    expect(response.edges[1].node.savedItem.id).toBe('456');
   });
   it('should search favorited item only with content type as article', async () => {
     const SEARCH_SAVED_ITEM_QUERY = `
@@ -359,12 +350,12 @@ describe('free search test', () => {
       variables,
     });
     const response = res.body.data?._entities[0].searchSavedItems;
-    expect(response).to.not.be.null;
-    expect(response.totalCount).equals(2);
-    expect(response.pageInfo.hasNextPage).false;
-    expect(response.pageInfo.hasPreviousPage).false;
-    expect(response.edges[0].node.savedItem.id).equals('123');
-    expect(response.edges[1].node.savedItem.id).equals('12345');
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toBe(2);
+    expect(response.pageInfo.hasNextPage).toBeFalse();
+    expect(response.pageInfo.hasPreviousPage).toBeFalse();
+    expect(response.edges[0].node.savedItem.id).toBe('123');
+    expect(response.edges[1].node.savedItem.id).toBe('12345');
   });
 
   it('should search only unread videos', async () => {
@@ -400,11 +391,11 @@ describe('free search test', () => {
       variables,
     });
     const response = res.body.data?._entities[0].searchSavedItems;
-    expect(response).to.not.be.null;
-    expect(response.totalCount).equals(1);
-    expect(response.pageInfo.hasNextPage).false;
-    expect(response.pageInfo.hasPreviousPage).false;
-    expect(response.edges[0].node.savedItem.id).equals('456');
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toBe(1);
+    expect(response.pageInfo.hasNextPage).toBeFalse();
+    expect(response.pageInfo.hasPreviousPage).toBeFalse();
+    expect(response.edges[0].node.savedItem.id).toBe('456');
   });
   it('should sort search result by time to read and asc', async () => {
     const SEARCH_SAVED_ITEM_QUERY = `
@@ -435,13 +426,13 @@ describe('free search test', () => {
       variables,
     });
     const response = res.body.data?._entities[0].searchSavedItems;
-    expect(response).to.not.be.null;
-    expect(response.totalCount).equals(3);
-    expect(response.pageInfo.hasNextPage).false;
-    expect(response.pageInfo.hasPreviousPage).false;
-    expect(response.edges[0].node.savedItem.id).equals('12345');
-    expect(response.edges[1].node.savedItem.id).equals('123');
-    expect(response.edges[2].node.savedItem.id).equals('456');
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toBe(3);
+    expect(response.pageInfo.hasNextPage).toBeFalse();
+    expect(response.pageInfo.hasPreviousPage).toBeFalse();
+    expect(response.edges[0].node.savedItem.id).toBe('12345');
+    expect(response.edges[1].node.savedItem.id).toBe('123');
+    expect(response.edges[2].node.savedItem.id).toBe('456');
   });
   it('should sort search result by time created and asc', async () => {
     const SEARCH_SAVED_ITEM_QUERY = `
@@ -472,13 +463,13 @@ describe('free search test', () => {
       variables,
     });
     const response = res.body.data?._entities[0].searchSavedItems;
-    expect(response).to.not.be.null;
-    expect(response.totalCount).equals(3);
-    expect(response.pageInfo.hasNextPage).false;
-    expect(response.pageInfo.hasPreviousPage).false;
-    expect(response.edges[0].node.savedItem.id).equals('12345');
-    expect(response.edges[1].node.savedItem.id).equals('456');
-    expect(response.edges[2].node.savedItem.id).equals('123');
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toBe(3);
+    expect(response.pageInfo.hasNextPage).toBeFalse();
+    expect(response.pageInfo.hasPreviousPage).toBeFalse();
+    expect(response.edges[0].node.savedItem.id).toBe('12345');
+    expect(response.edges[1].node.savedItem.id).toBe('456');
+    expect(response.edges[2].node.savedItem.id).toBe('123');
   });
   it('advancedSearch should return free search for non premium', async () => {
     // Copy of another test, with the advancedSearch base query
@@ -511,11 +502,11 @@ describe('free search test', () => {
       variables,
     });
     const response = res.body.data?._entities[0].advancedSearch;
-    expect(response).to.not.be.null;
-    expect(response.totalCount).equals(3);
-    expect(response.pageInfo.hasNextPage).false;
-    expect(response.pageInfo.hasPreviousPage).true;
-    expect(response.edges[0].node.savedItem.id).equals('456');
-    expect(response.edges[1].node.savedItem.id).equals('12345');
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toBe(3);
+    expect(response.pageInfo.hasNextPage).toBeFalse();
+    expect(response.pageInfo.hasPreviousPage).toBeTrue();
+    expect(response.edges[0].node.savedItem.id).toBe('456');
+    expect(response.edges[1].node.savedItem.id).toBe('12345');
   });
 });

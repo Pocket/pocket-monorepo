@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import {
   createUserItemsUpdateQueueMessage,
   processMessages,
@@ -38,32 +37,32 @@ describe('Backfill User Search Processor', () => {
       {
         QueueUrl: config.aws.sqs.userItemsUpdateUrl,
         MaxNumberOfMessages: 6,
-      }
+      },
     );
 
     //Verify each message has the expected results.
 
-    expect(JSON.parse(backfillMessages.Messages[0].Body)).to.deep.equal({
+    expect(JSON.parse(backfillMessages.Messages[0].Body)).toStrictEqual({
       userItems: [{ userId: 1, itemIds: getArrayOfIds(1000) }],
     });
 
-    expect(JSON.parse(backfillMessages.Messages[1].Body)).to.deep.equal({
+    expect(JSON.parse(backfillMessages.Messages[1].Body)).toStrictEqual({
       userItems: [{ userId: 1, itemIds: getArrayOfIds(1000, 1001) }],
     });
 
-    expect(JSON.parse(backfillMessages.Messages[2].Body)).to.deep.equal({
+    expect(JSON.parse(backfillMessages.Messages[2].Body)).toStrictEqual({
       userItems: [{ userId: 1, itemIds: getArrayOfIds(1, 2001) }],
     });
 
-    expect(JSON.parse(backfillMessages.Messages[3].Body)).to.deep.equal({
+    expect(JSON.parse(backfillMessages.Messages[3].Body)).toStrictEqual({
       userItems: [{ userId: 2, itemIds: getArrayOfIds(1000) }],
     });
 
-    expect(JSON.parse(backfillMessages.Messages[4].Body)).to.deep.equal({
+    expect(JSON.parse(backfillMessages.Messages[4].Body)).toStrictEqual({
       userItems: [{ userId: 2, itemIds: getArrayOfIds(1000, 1001) }],
     });
 
-    expect(JSON.parse(backfillMessages.Messages[5].Body)).to.deep.equal({
+    expect(JSON.parse(backfillMessages.Messages[5].Body)).toStrictEqual({
       userItems: [{ userId: 2, itemIds: getArrayOfIds(1, 2001) }],
     });
   }, 20000);
@@ -71,7 +70,7 @@ describe('Backfill User Search Processor', () => {
   it('creates an update user search queue message', () => {
     const itemIds = [1, 2, 3];
     const message = createUserItemsUpdateQueueMessage(1, itemIds);
-    expect(message).to.deep.equal({
+    expect(message).toStrictEqual({
       userItems: [{ userId: 1, itemIds }],
     });
   });

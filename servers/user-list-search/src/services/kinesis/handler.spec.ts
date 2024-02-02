@@ -1,6 +1,5 @@
-import { expect } from 'chai';
 import { getHandler, KinesisEvent } from './handler';
-import { SendMessageBatchCommandOutput, SQS, SQSClient } from '@aws-sdk/client-sqs';
+import { SendMessageBatchCommandOutput, SQSClient } from '@aws-sdk/client-sqs';
 
 const createEvent = (msg: Record<string, unknown>): KinesisEvent => {
   const data = Buffer.from(JSON.stringify(msg)).toString('base64');
@@ -50,20 +49,9 @@ describe('kinesis', () => {
         },
       });
 
-      expect(
-        await handler(premiumSubscriptionCreatedEvent),
-      ).to.have.all.members([
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-      ]);
+      expect(await handler(premiumSubscriptionCreatedEvent)).toContainAllValues(
+        [true, true, true, true, true, true, true, true, true, true],
+      );
     });
 
     it('handles user list item created events', async () => {
@@ -75,7 +63,7 @@ describe('kinesis', () => {
         },
       });
 
-      expect(await handler(userListItemCreatedEvent)).to.have.all.members([
+      expect(await handler(userListItemCreatedEvent)).toContainAllValues([
         true,
         true,
         true,
@@ -99,7 +87,7 @@ describe('kinesis', () => {
         },
       });
 
-      expect(await handler(userItemTagsAddedEvent)).to.have.all.members([
+      expect(await handler(userItemTagsAddedEvent)).toContainAllValues([
         true,
         true,
         true,
@@ -123,7 +111,7 @@ describe('kinesis', () => {
         },
       });
 
-      expect(await handler(userItemTagsRemovedEvent)).to.have.all.members([
+      expect(await handler(userItemTagsRemovedEvent)).toContainAllValues([
         true,
         true,
         true,
@@ -147,7 +135,7 @@ describe('kinesis', () => {
         },
       });
 
-      expect(await handler(userItemTagsReplacedEvent)).to.have.all.members([
+      expect(await handler(userItemTagsReplacedEvent)).toContainAllValues([
         true,
         true,
         true,
@@ -170,7 +158,7 @@ describe('kinesis', () => {
         },
       });
 
-      expect(await handler(userItemArchivedEvent)).to.have.all.members([
+      expect(await handler(userItemArchivedEvent)).toContainAllValues([
         true,
         true,
         true,
@@ -193,7 +181,7 @@ describe('kinesis', () => {
         },
       });
 
-      expect(await handler(userItemDeletedEvent)).to.have.all.members([
+      expect(await handler(userItemDeletedEvent)).toContainAllValues([
         true,
         true,
         true,
@@ -215,7 +203,7 @@ describe('kinesis', () => {
         },
       });
 
-      expect(await handler(userItemUnarchivedEvent)).to.have.all.members([
+      expect(await handler(userItemUnarchivedEvent)).toContainAllValues([
         true,
         true,
         true,
@@ -238,7 +226,7 @@ describe('kinesis', () => {
         },
       });
 
-      expect(await handler(userItemFavoritedEvent)).to.have.all.members([
+      expect(await handler(userItemFavoritedEvent)).toContainAllValues([
         true,
         true,
         true,
@@ -261,7 +249,7 @@ describe('kinesis', () => {
         },
       });
 
-      expect(await handler(userItemUnfavoritedEvent)).to.have.all.members([
+      expect(await handler(userItemUnfavoritedEvent)).toContainAllValues([
         true,
         true,
         true,

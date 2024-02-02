@@ -1,6 +1,3 @@
-import chai, { expect } from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-
 import { search, searchSavedItems } from './elasticsearchSearch';
 import { bulkDocument } from './elasticsearchBulk';
 import {
@@ -24,8 +21,6 @@ const defaultDocProps = {
   lang: 'en',
 };
 
-chai.use(chaiAsPromised);
-
 describe('Elasticsearch Search Query', () => {
   beforeEach(async () => {
     await client.deleteByQuery({
@@ -37,6 +32,9 @@ describe('Elasticsearch Search Query', () => {
         },
       },
     });
+
+    // Wait for delete to finish
+    await client.indices.refresh({ index: config.aws.elasticsearch.index });
 
     await bulkDocument([
       {
@@ -147,21 +145,21 @@ describe('Elasticsearch Search Query', () => {
       term: 'A super fun article',
       fields: ['title'],
     });
-    expect(document.results).to.not.be.null;
-    expect(document.results[0].itemId).to.equal(12345);
+    expect(document.results).not.toBeNull();
+    expect(document.results[0].itemId).toBe(12345);
   }, 10000);
   it('handles query strings with reserved characters', async () => {
     const response = await searchSavedItems(
       {
         term: 'http://test3.com',
       },
-      '1'
+      '1',
     );
     // Default sort order is relevance; url should be on top and should be in highlight field
-    expect(response.edges).to.not.be.null;
-    expect(response.edges.length).to.be.greaterThan(1);
-    expect(response.edges[0].node.searchHighlights.url.length).to.equal(1);
-    expect(response.edges[0].node.searchHighlights.url[0]).to.contain('test3');
+    expect(response.edges).not.toBeNull();
+    expect(response.edges.length).toBeGreaterThan(1);
+    expect(response.edges[0].node.searchHighlights.url.length).toBe(1);
+    expect(response.edges[0].node.searchHighlights.url[0]).toContain('test3');
   });
 
   it('should return only search items matching with filters', async () => {
@@ -176,18 +174,18 @@ describe('Elasticsearch Search Query', () => {
         sort: null,
         pagination: { first: 10 },
       },
-      `1`
+      `1`,
     );
-    expect(response).to.not.be.null;
-    expect(response.totalCount).equals(1);
-    expect(response.pageInfo.hasNextPage).is.false;
-    expect(response.pageInfo.hasPreviousPage).is.false;
-    expect(response.edges.length).equals(1);
-    expect(response.edges[0].node.savedItem.id).equals(789);
-    expect(response.edges[0].node.searchHighlights['fullText']).deep.equals([
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toBe(1);
+    expect(response.pageInfo.hasNextPage).toBeFalse();
+    expect(response.pageInfo.hasPreviousPage).toBeFalse();
+    expect(response.edges.length).toBe(1);
+    expect(response.edges[0].node.savedItem.id).toBe(789);
+    expect(response.edges[0].node.searchHighlights['fullText']).toStrictEqual([
       `winter sports <em>article</em>`,
     ]);
-    expect(response.edges[0].node.searchHighlights['tags']).deep.equals([
+    expect(response.edges[0].node.searchHighlights['tags']).toStrictEqual([
       `<em>fun</em>`,
     ]);
   }, 10000);
@@ -202,15 +200,15 @@ describe('Elasticsearch Search Query', () => {
         },
         pagination: { first: 2 },
       },
-      `1`
+      `1`,
     );
-    expect(response).to.not.be.null;
-    expect(response.totalCount).equals(4);
-    expect(response.pageInfo.hasNextPage).is.true;
-    expect(response.pageInfo.hasPreviousPage).is.not.true;
-    expect(response.edges.length).equals(2);
-    expect(response.edges[0].node.savedItem.id).equals(123);
-    expect(response.edges[1].node.savedItem.id).equals(456);
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toBe(4);
+    expect(response.pageInfo.hasNextPage).toBeTrue();
+    expect(response.pageInfo.hasPreviousPage).toBeFalse();
+    expect(response.edges.length).toBe(2);
+    expect(response.edges[0].node.savedItem.id).toBe(123);
+    expect(response.edges[1].node.savedItem.id).toBe(456);
   }, 10000);
 
   it('should sort search result on date_added in ascending order  ', async () => {
@@ -223,15 +221,15 @@ describe('Elasticsearch Search Query', () => {
         },
         pagination: { first: 2 },
       },
-      `1`
+      `1`,
     );
-    expect(response).to.not.be.null;
-    expect(response.totalCount).equals(4);
-    expect(response.pageInfo.hasNextPage).is.true;
-    expect(response.pageInfo.hasPreviousPage).is.not.true;
-    expect(response.edges.length).equals(2);
-    expect(response.edges[0].node.savedItem.id).equals(12345);
-    expect(response.edges[1].node.savedItem.id).equals(789);
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toBe(4);
+    expect(response.pageInfo.hasNextPage).toBeTrue();
+    expect(response.pageInfo.hasPreviousPage).toBeFalse();
+    expect(response.edges.length).toBe(2);
+    expect(response.edges[0].node.savedItem.id).toBe(12345);
+    expect(response.edges[1].node.savedItem.id).toBe(789);
   }, 10000);
 
   it('should sort by time_to_read in ascending order ', async () => {
@@ -243,16 +241,16 @@ describe('Elasticsearch Search Query', () => {
         },
         pagination: { first: 2 },
       },
-      `1`
+      `1`,
     );
-    expect(response).to.not.be.null;
-    expect(response.totalCount).equals(4);
-    expect(response.pageInfo.hasNextPage).is.true;
-    expect(response.pageInfo.hasPreviousPage).is.not.true;
-    expect(response.edges.length).equals(2);
-    expect(response.edges[0].cursor).equal('MA==');
-    expect(response.edges[0].node.savedItem.id).equals(12345);
-    expect(response.edges[1].node.savedItem.id).equals(123);
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toBe(4);
+    expect(response.pageInfo.hasNextPage).toBeTrue();
+    expect(response.pageInfo.hasPreviousPage).toBeFalse();
+    expect(response.edges.length).toBe(2);
+    expect(response.edges[0].cursor).toBe('MA==');
+    expect(response.edges[0].node.savedItem.id).toBe(12345);
+    expect(response.edges[1].node.savedItem.id).toBe(123);
   }, 10000);
 
   it('should sort by time_to_read in descending order ', async () => {
@@ -265,16 +263,16 @@ describe('Elasticsearch Search Query', () => {
         },
         pagination: { first: 2 },
       },
-      `1`
+      `1`,
     );
-    expect(response).to.not.be.null;
-    expect(response.totalCount).equals(4);
-    expect(response.pageInfo.hasNextPage).is.true;
-    expect(response.pageInfo.hasPreviousPage).is.not.true;
-    expect(response.edges.length).equals(2);
-    expect(response.edges[0].cursor).equal('MA==');
-    expect(response.edges[0].node.savedItem.id).equals(789);
-    expect(response.edges[1].node.savedItem.id).equals(456);
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toBe(4);
+    expect(response.pageInfo.hasNextPage).toBeTrue();
+    expect(response.pageInfo.hasPreviousPage).toBeFalse();
+    expect(response.edges.length).toBe(2);
+    expect(response.edges[0].cursor).toBe('MA==');
+    expect(response.edges[0].node.savedItem.id).toBe(789);
+    expect(response.edges[1].node.savedItem.id).toBe(456);
   }, 10000);
 
   it('should sort by relevance in descending order ', async () => {
@@ -287,13 +285,13 @@ describe('Elasticsearch Search Query', () => {
         },
         pagination: { first: 2 },
       },
-      `1`
+      `1`,
     );
-    expect(response).to.not.be.null;
-    expect(response.totalCount).equals(2);
-    expect(response.edges.length).equals(2);
-    expect(response.edges[0].node.savedItem.id).equals(333);
-    expect(response.edges[1].node.savedItem.id).equals(777);
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toBe(2);
+    expect(response.edges.length).toBe(2);
+    expect(response.edges[0].node.savedItem.id).toBe(333);
+    expect(response.edges[1].node.savedItem.id).toBe(777);
   }, 10000);
 
   it('should sort by relevance in ascending order ', async () => {
@@ -307,13 +305,13 @@ describe('Elasticsearch Search Query', () => {
         },
         pagination: { first: 2 },
       },
-      `1`
+      `1`,
     );
-    expect(response).to.not.be.null;
-    expect(response.totalCount).equals(2);
-    expect(response.edges.length).equals(2);
-    expect(response.edges[0].node.savedItem.id).equals(777);
-    expect(response.edges[1].node.savedItem.id).equals(333);
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toBe(2);
+    expect(response.edges.length).toBe(2);
+    expect(response.edges[0].node.savedItem.id).toBe(777);
+    expect(response.edges[1].node.savedItem.id).toBe(333);
   }, 10000);
 
   it('should return search response with paginated fields first', async () => {
@@ -322,31 +320,31 @@ describe('Elasticsearch Search Query', () => {
         term: 'fun article',
         pagination: { first: 2 },
       },
-      `1`
+      `1`,
     );
-    expect(response).to.not.be.null;
-    expect(response.totalCount).equals(4);
-    expect(response.pageInfo.hasNextPage).is.true;
-    expect(response.pageInfo.hasPreviousPage).is.false;
-    expect(response.edges.length).equals(2);
-    expect(response.edges[0].cursor).equals('MA==');
-    expect(response.edges[0].node.savedItem.id).equals(456);
-    expect(response.edges[0].node.searchHighlights['fullText']).is.null;
-    expect(response.edges[0].node.searchHighlights['tags']).deep.equals([
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toBe(4);
+    expect(response.pageInfo.hasNextPage).toBeTrue();
+    expect(response.pageInfo.hasPreviousPage).toBeFalse();
+    expect(response.edges.length).toBe(2);
+    expect(response.edges[0].cursor).toBe('MA==');
+    expect(response.edges[0].node.savedItem.id).toBe(456);
+    expect(response.edges[0].node.searchHighlights['fullText']).toBeNull();
+    expect(response.edges[0].node.searchHighlights['tags']).toStrictEqual([
       `<em>article</em>`,
     ]);
-    expect(response.edges[0].node.searchHighlights['title']).deep.equals([
+    expect(response.edges[0].node.searchHighlights['title']).toStrictEqual([
       `snowboarding <em>fun</em> <em>article</em>`,
     ]);
-    expect(response.edges[1].cursor).equals('MQ==');
-    expect(response.edges[1].node.savedItem.id).equals(123);
-    expect(response.edges[1].node.searchHighlights['fullText']).deep.equals([
+    expect(response.edges[1].cursor).toBe('MQ==');
+    expect(response.edges[1].node.savedItem.id).toBe(123);
+    expect(response.edges[1].node.searchHighlights['fullText']).toStrictEqual([
       `some text that can be used for <em>article</em> highlights`,
     ]);
-    expect(response.edges[1].node.searchHighlights['tags']).deep.equals([
+    expect(response.edges[1].node.searchHighlights['tags']).toStrictEqual([
       `<em>fun</em>`,
     ]);
-    expect(response.edges[1].node.searchHighlights['title']).deep.equals([
+    expect(response.edges[1].node.searchHighlights['title']).toStrictEqual([
       `Another <em>fun</em> <em>article</em>`,
     ]);
   }, 10000);
@@ -357,19 +355,19 @@ describe('Elasticsearch Search Query', () => {
         term: 'fun',
         pagination: { before: 'Mw==', last: 4 },
       },
-      `1`
+      `1`,
     );
-    expect(response).to.not.be.null;
-    expect(response.totalCount).equals(4);
-    expect(response.pageInfo.hasNextPage).is.true;
-    expect(response.pageInfo.hasPreviousPage).is.false;
-    expect(response.pageInfo.startCursor).equals('MA==');
-    expect(response.pageInfo.endCursor).equals('Mg==');
-    expect(response.edges.length).equals(3);
-    expect(response.edges[0].cursor).equal('MA==');
-    expect(response.edges[2].cursor).equal('Mg==');
-    expect(response.edges[0].node.savedItem.id).equals(123);
-    expect(response.edges[1].node.savedItem.id).equals(789);
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toBe(4);
+    expect(response.pageInfo.hasNextPage).toBeTrue();
+    expect(response.pageInfo.hasPreviousPage).toBeFalse();
+    expect(response.pageInfo.startCursor).toBe('MA==');
+    expect(response.pageInfo.endCursor).toBe('Mg==');
+    expect(response.edges.length).toBe(3);
+    expect(response.edges[0].cursor).toBe('MA==');
+    expect(response.edges[2].cursor).toBe('Mg==');
+    expect(response.edges[0].node.savedItem.id).toBe(123);
+    expect(response.edges[1].node.savedItem.id).toBe(789);
   }, 10000);
 
   it('should return paginated items with after and first set ', async () => {
@@ -378,20 +376,20 @@ describe('Elasticsearch Search Query', () => {
         term: 'fun',
         pagination: { after: 'MA==', first: 10 },
       },
-      `1`
+      `1`,
     );
-    expect(response).to.not.be.null;
-    expect(response.totalCount).equals(4);
-    expect(response.pageInfo.hasNextPage).is.false;
-    expect(response.pageInfo.hasPreviousPage).is.true;
-    expect(response.pageInfo.startCursor).equals('MQ==');
-    expect(response.pageInfo.endCursor).equals('Mw==');
-    expect(response.edges.length).equals(3);
-    expect(response.edges[0].cursor).equal('MQ==');
-    expect(response.edges[2].cursor).equal('Mw==');
-    expect(response.edges[0].node.savedItem.id).equals(789);
-    expect(response.edges[1].node.savedItem.id).equals(456);
-    expect(response.edges[2].node.savedItem.id).equals(12345);
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toBe(4);
+    expect(response.pageInfo.hasNextPage).toBeFalse();
+    expect(response.pageInfo.hasPreviousPage).toBeTrue();
+    expect(response.pageInfo.startCursor).toBe('MQ==');
+    expect(response.pageInfo.endCursor).toBe('Mw==');
+    expect(response.edges.length).toBe(3);
+    expect(response.edges[0].cursor).toBe('MQ==');
+    expect(response.edges[2].cursor).toBe('Mw==');
+    expect(response.edges[0].node.savedItem.id).toBe(789);
+    expect(response.edges[1].node.savedItem.id).toBe(456);
+    expect(response.edges[2].node.savedItem.id).toBe(12345);
   }, 10000);
 
   it('should return total count with 0 if text doesnt match ', async () => {
@@ -400,14 +398,14 @@ describe('Elasticsearch Search Query', () => {
         term: 'panda',
         pagination: { before: 'Mw==', last: 4 },
       },
-      `1`
+      `1`,
     );
-    expect(response).to.not.be.null;
-    expect(response.totalCount).equals(0);
-    expect(response.pageInfo.hasNextPage).is.false;
-    expect(response.pageInfo.hasPreviousPage).is.false;
-    expect(response.pageInfo.startCursor).is.null;
-    expect(response.pageInfo.endCursor).is.null;
-    expect(response.edges.length).equals(0);
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toBe(0);
+    expect(response.pageInfo.hasNextPage).toBeFalse();
+    expect(response.pageInfo.hasPreviousPage).toBeFalse();
+    expect(response.pageInfo.startCursor).toBeNull();
+    expect(response.pageInfo.endCursor).toBeNull();
+    expect(response.edges.length).toBe(0);
   }, 10000);
 });

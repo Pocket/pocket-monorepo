@@ -1,4 +1,3 @@
-import chai, { expect } from 'chai';
 import {
   applyFunctionalBoosts,
   buildSearchBody,
@@ -19,24 +18,21 @@ import {
   getCleanedupDomainName,
 } from './elasticsearchSearch';
 import { Pagination, SearchSavedItemParameters } from '../../types';
-import deepEqualInAnyOrder from 'deep-equal-in-any-order';
-
-chai.use(deepEqualInAnyOrder);
 
 describe('Elasticsearch', () => {
   describe('term cleaner', () => {
     it('should remove <>', () => {
       const res = cleanSearchTerm('<hi><>?');
-      expect(res).to.equal(' hi   \\?');
+      expect(res).toBe(' hi   \\?');
     });
     it('should escape reserved characters', () => {
       const res = cleanSearchTerm('=hello&&wel~come+you*!(shy?)');
-      expect(res).to.equal('\\=hello\\&&wel\\~come\\+you\\*\\!\\(shy\\?\\)');
+      expect(res).toBe('\\=hello\\&&wel\\~come\\+you\\*\\!\\(shy\\?\\)');
     });
   });
   describe('getTerms', () => {
     it('should return an empty array if no values are passed', () => {
-      expect(getTerms('bowling', [])).to.deep.equal([]);
+      expect(getTerms('bowling', [])).toStrictEqual([]);
     });
 
     it('should return an array of terms based on a single value', () => {
@@ -50,7 +46,7 @@ describe('Elasticsearch', () => {
         },
       ];
 
-      expect(getTerms(field, values)).to.deep.equal(expected);
+      expect(getTerms(field, values)).toStrictEqual(expected);
     });
 
     it('should return an array of terms based on values provided', () => {
@@ -80,7 +76,7 @@ describe('Elasticsearch', () => {
         },
       ];
 
-      expect(getTerms(field, values)).to.deep.equal(expected);
+      expect(getTerms(field, values)).toStrictEqual(expected);
     });
   });
 
@@ -106,39 +102,39 @@ describe('Elasticsearch', () => {
         },
       };
 
-      expect(getSearchHighlightFields(inputParams)).to.deep.equal(expected);
+      expect(getSearchHighlightFields(inputParams)).toStrictEqual(expected);
     });
   });
 
   describe('formatFilterKey', () => {
     it('should re-format the `tags` key', () => {
-      expect(formatFilterKey('tags')).to.equal('tags.keyword');
+      expect(formatFilterKey('tags')).toBe('tags.keyword');
     });
 
     it('should rename any key in the provided map', () => {
-      expect(formatFilterKey('contentType')).to.equal('content_type');
+      expect(formatFilterKey('contentType')).toBe('content_type');
     });
 
     it('should not change the key if not `tag` or in the provided map', () => {
-      expect(formatFilterKey('bowling')).to.equal('bowling');
+      expect(formatFilterKey('bowling')).toBe('bowling');
     });
   });
 
   describe('formatFilterValues', () => {
     it('should convert a single value into an array', () => {
-      expect(formatFilterValues('thedude', 'Bowling')).to.deep.equal([
+      expect(formatFilterValues('thedude', 'Bowling')).toStrictEqual([
         'Bowling',
       ]);
     });
 
     it('should lowercase status values', () => {
-      expect(formatFilterValues('status', ['ARCHIVED'])).to.deep.equal([
+      expect(formatFilterValues('status', ['ARCHIVED'])).toStrictEqual([
         'archived',
       ]);
     });
 
     it('should handle falsy status values', () => {
-      expect(formatFilterValues('status', ['ARCHIVED', false])).to.deep.equal([
+      expect(formatFilterValues('status', ['ARCHIVED', false])).toStrictEqual([
         'archived',
         null,
       ]);
@@ -174,7 +170,7 @@ describe('Elasticsearch', () => {
         },
       ];
 
-      expect(getFilterTerms(input)).to.deep.equal(expectedFilter);
+      expect(getFilterTerms(input)).toStrictEqual(expectedFilter);
     });
 
     it('should collect all terms into a single array', () => {
@@ -215,7 +211,7 @@ describe('Elasticsearch', () => {
         },
       ];
 
-      expect(getFilterTerms(input)).to.deep.equal(expectedFilter);
+      expect(getFilterTerms(input)).toStrictEqual(expectedFilter);
     });
   });
 
@@ -240,10 +236,10 @@ describe('Elasticsearch', () => {
           factor: 2,
         },
       ],
-      2
+      2,
     );
 
-    expect(body).to.deep.equal({
+    expect(body).toStrictEqual({
       query: {
         function_score: {
           query: { match_all: {} },
@@ -290,8 +286,8 @@ describe('Elasticsearch', () => {
         before: Buffer.from(`5`).toString('base64'),
         after: Buffer.from(`5`).toString('base64'),
       };
-      expect(() => calculateOffset(testPagination, testSize)).to.throw(
-        'Please set either {after and first} or {before and last}'
+      expect(() => calculateOffset(testPagination, testSize)).toThrow(
+        'Please set either {after and first} or {before and last}',
       );
     });
 
@@ -300,7 +296,7 @@ describe('Elasticsearch', () => {
         after: Buffer.from(`5`).toString('base64'),
       };
       const from: number = calculateOffset(testPagination, testSize);
-      expect(from).to.equals(6);
+      expect(from).toBe(6);
     });
 
     it('should return `from` if before is set', () => {
@@ -308,7 +304,7 @@ describe('Elasticsearch', () => {
         before: Buffer.from(`5`).toString('base64'),
       };
       const from: number = calculateOffset(testPagination, 2);
-      expect(from).to.equals(3);
+      expect(from).toBe(3);
     });
 
     it('should return `from` to 0 if size greater than before', () => {
@@ -316,16 +312,16 @@ describe('Elasticsearch', () => {
         before: Buffer.from(`5`).toString('base64'),
       };
       const from: number = calculateOffset(testPagination, testSize);
-      expect(from).to.equals(0);
+      expect(from).toBe(0);
     });
 
     it('should throw error when last alone is set', () => {
       const testPagination: Pagination = {
         last: 10,
       };
-      expect(() => calculateOffset(testPagination, testSize)).to.throw(
+      expect(() => calculateOffset(testPagination, testSize)).toThrow(
         "premium search doesn't support pagination by last alone." +
-          'Please use first or first/after or before/last combination'
+          'Please use first or first/after or before/last combination',
       );
     });
   });
@@ -336,7 +332,7 @@ describe('Elasticsearch', () => {
         after: Buffer.from(`2`).toString('base64'),
       };
       const from: number = calculateSize(testPagination, 10);
-      expect(from).to.equals(10);
+      expect(from).toBe(10);
     });
 
     it('should return input size as size if its lesser than offset', () => {
@@ -344,7 +340,7 @@ describe('Elasticsearch', () => {
         before: Buffer.from(`5`).toString('base64'),
       };
       const from: number = calculateSize(testPagination, 3);
-      expect(from).to.equals(3);
+      expect(from).toBe(3);
     });
 
     it('should return input size as offset-1 if its equal to offset', () => {
@@ -352,7 +348,7 @@ describe('Elasticsearch', () => {
         before: Buffer.from(`5`).toString('base64'),
       };
       const from: number = calculateSize(testPagination, 5);
-      expect(from).to.equals(5);
+      expect(from).toBe(5);
     });
 
     it('should return input size as offset-1 if its greater than offset', () => {
@@ -360,7 +356,7 @@ describe('Elasticsearch', () => {
         before: Buffer.from(`5`).toString('base64'),
       };
       const from: number = calculateSize(testPagination, 10);
-      expect(from).to.equals(5);
+      expect(from).toBe(5);
     });
   });
 
@@ -388,8 +384,8 @@ describe('Elasticsearch', () => {
     it(`regex test for input`, function () {
       runs.forEach(function (run) {
         const searchValues = extractSearchValues(run[0]);
-        expect(searchValues['tags']).to.deep.equal(run.splice(1));
-        expect(searchValues['search']).to.equal('yes this is right');
+        expect(searchValues['tags']).toStrictEqual(run.splice(1));
+        expect(searchValues['search']).toBe('yes this is right');
       });
     });
   });
@@ -404,10 +400,12 @@ describe('Elasticsearch', () => {
         size: 20,
       });
 
-      expect(searchBody).to.deep.include({
-        from: 10,
-        size: 20,
-      });
+      expect(searchBody).toEqual(
+        expect.objectContaining({
+          from: 10,
+          size: 20,
+        }),
+      );
     });
 
     it('uses from and size parameters for pagination when "from" equals 0', () => {
@@ -419,10 +417,12 @@ describe('Elasticsearch', () => {
         size: 20,
       });
 
-      expect(searchBody).to.deep.include({
-        from: 0,
-        size: 20,
-      });
+      expect(searchBody).toEqual(
+        expect.objectContaining({
+          from: 0,
+          size: 20,
+        }),
+      );
     });
     it('builds search body with tag filters', () => {
       const searchBody = buildSearchBody({
@@ -450,23 +450,25 @@ describe('Elasticsearch', () => {
           },
         ],
       };
-      expect(searchBody.query['bool']['filter']).to.not.be.undefined;
-      expect(searchBody.query['bool']).to.deep.include(expectedFilter);
+      expect(searchBody.query['bool']['filter']).not.toBeUndefined();
+      expect(searchBody.query['bool']).toEqual(
+        expect.objectContaining(expectedFilter),
+      );
     });
 
     it('gives domain only from domain url', () => {
       const domain = getCleanedupDomainName('http://www.admin.getpocket.com');
-      expect(domain).equals('admin.getpocket.com');
+      expect(domain).toBe('admin.getpocket.com');
     });
 
     it('gives domain only from domain url', () => {
       const domain = getCleanedupDomainName('admin.getpocket.com');
-      expect(domain).equals('admin.getpocket.com');
+      expect(domain).toBe('admin.getpocket.com');
     });
 
     it('gives domain only from domain url', () => {
       const domain = getCleanedupDomainName('non_url_string');
-      expect(domain).equals('non_url_string');
+      expect(domain).toBe('non_url_string');
     });
 
     it('builds search body with domain filters', () => {
@@ -500,8 +502,10 @@ describe('Elasticsearch', () => {
           },
         ],
       };
-      expect(searchBody.query['bool']['filter']).to.not.be.undefined;
-      expect(searchBody.query['bool']).to.deep.include(expectedFilter);
+      expect(searchBody.query['bool']['filter']).not.toBeUndefined();
+      expect(searchBody.query['bool']).toEqual(
+        expect.objectContaining(expectedFilter),
+      );
     });
   });
   describe('generateSearchSavedItemsParams', () => {
@@ -510,12 +514,12 @@ describe('Elasticsearch', () => {
         term: 'tag:"book reviews" #"short story" vampire',
       };
       const searchParams = generateSearchSavedItemsParams(params, '1');
-      expect(searchParams.filters).to.not.be.undefined;
-      expect(searchParams.filters.tags).to.deep.equalInAnyOrder([
+      expect(searchParams.filters).not.toBeUndefined();
+      expect(searchParams.filters.tags).toContainAllValues([
         'book reviews',
         'short story',
       ]);
-      expect(searchParams.term).to.equal('vampire');
+      expect(searchParams.term).toBe('vampire');
     });
   });
 });

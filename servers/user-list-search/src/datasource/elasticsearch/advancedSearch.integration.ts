@@ -35,6 +35,9 @@ describe('Elasticsearch Search Query', () => {
       },
     });
 
+    // Wait for delete to finish
+    await client.indices.refresh({ index: config.aws.elasticsearch.index });
+
     await bulkDocument([
       {
         ...defaultDocProps,

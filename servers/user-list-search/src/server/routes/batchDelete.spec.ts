@@ -1,10 +1,13 @@
 import request from 'supertest';
 import { startServer } from '../serverUtils';
 import * as es from '../../elasticsearch';
+import { Application } from 'express';
+import { ContextManager } from '../context';
+import { ApolloServer } from '@apollo/server';
 
 describe('batchDelete', () => {
-  let server;
-  let app;
+  let server: ApolloServer<ContextManager>;
+  let app: Application;
   const deleteStub = jest
     .spyOn(es, 'deleteSearchIndexByUserId')
     .mockImplementation(() => Promise.resolve());
