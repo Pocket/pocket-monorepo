@@ -50,7 +50,7 @@ jobs:
             ((servers|infrastructure)/image-api/.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) image_api true
             ((servers|infrastructure|lambdas)/annotations-api.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) annotations_api true
             ((servers|infrastructure)/shared-snowplow-consumer/.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) shared_snowplow_consumer true
-            ((servers|infrastructure)/image-api/.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) parser_graphql_wrapper true
+            ((servers|infrastructure)/parser-graphql-wrapper/.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) parser_graphql_wrapper true
             ((lambdas|infrastructure)/transactional-emails.*)|(packages/.*)|(pnpm-lock\.yaml) transactional_emails true
             ((lambdas|infrastructure)/fxa-webhook-proxy-.*)|(packages/.*)|(pnpm-lock\.yaml) fxa_webhook_proxy true
             ((servers|infrastructure)/user-api/.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) user_api true

@@ -342,6 +342,31 @@ export const batchGetItemsByUrls = async (
   );
 };
 
+export const clear = (options: {
+  itemId?: string;
+  givenUrl?: string;
+  resolvedItemId?: string;
+  resolvedUrl?: string;
+}) => {
+  const cache = getRedisCache();
+
+  if (options.itemId) {
+    cache.delete(cache.getKey(options.itemId));
+  }
+
+  if (options.resolvedItemId) {
+    cache.delete(cache.getKey(options.resolvedItemId));
+  }
+
+  if (options.givenUrl) {
+    cache.delete(cache.getKey(options.givenUrl));
+  }
+
+  if (options.resolvedItemId) {
+    cache.delete(cache.getKey(options.resolvedItemId));
+  }
+};
+
 /**
  * Create a data loader to batch requests
  * @param batchLoadFn
