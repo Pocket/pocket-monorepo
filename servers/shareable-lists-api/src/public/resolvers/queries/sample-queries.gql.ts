@@ -1,5 +1,6 @@
 import { gql } from 'graphql-tag';
 import {
+  ListItemConnectionProps,
   ShareableListPublicProps,
   ShareableListPublicQueryProps,
 } from '../../../shared/fragments.gql';
@@ -35,4 +36,16 @@ export const SHAREABLE_LISTS_PILOT_USER = gql`
   query shareableListsPilotUser {
     shareableListsPilotUser
   }
+`;
+
+export const GET_SHAREABLE_LIST_PAGINATED_ITEMS = gql`
+  query shareableList($externalId: ID!, $pagination: PaginationInput) {
+    shareableList(externalId: $externalId) {
+      externalId
+      items(pagination: $pagination) {
+        ...ListItemConnectionProps
+      }
+    }
+  }
+  ${ListItemConnectionProps}
 `;

@@ -19,7 +19,10 @@ import {
   updateShareableListItem,
   updateShareableListItems,
 } from './mutations/ShareableListItem';
-import { ListItemsResolver } from '../../shared/resolvers/fields/ShareableList';
+import {
+  ListItemsResolver,
+  ListItemsConnectionResolver,
+} from '../../shared/resolvers/fields/ShareableList';
 import { ShareableListItem } from '../../database/types';
 
 export const resolvers = {
@@ -27,10 +30,12 @@ export const resolvers = {
   ShareableList: {
     user: UserResolver,
     listItems: ListItemsResolver,
+    items: ListItemsConnectionResolver,
   },
   ShareableListPublic: {
     user: UserResolver,
     listItems: ListItemsResolver,
+    items: ListItemsConnectionResolver,
   },
   ShareableListItem: {
     itemId: (parent: ShareableListItem) => parent.itemId.toString(),

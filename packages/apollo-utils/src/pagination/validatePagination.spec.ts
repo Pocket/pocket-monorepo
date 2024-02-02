@@ -32,7 +32,27 @@ describe('pagination validation', () => {
       validatePagination(pagination, defaultPageSize, maxPageSize),
     ).toThrow('Invalid before cursor');
   });
-
+  it.each([
+    {
+      name: 'before/last',
+      pagination: { before: Buffer.from('-1').toString('base64'), last: 10 },
+    },
+    {
+      name: 'first/after',
+      pagination: { after: Buffer.from('-1').toString('base64'), first: 10 },
+    },
+  ])(
+    'should not throw error for cursor value if validateCursor is false - $name',
+    ({ pagination }) => {
+      const actual = validatePagination(
+        pagination,
+        defaultPageSize,
+        maxPageSize,
+        false,
+      );
+      expect(actual).toEqual(pagination);
+    },
+  );
   it('should set last to default pagination size if before is set', () => {
     const before = Buffer.from('10').toString('base64');
     const actual = validatePagination(

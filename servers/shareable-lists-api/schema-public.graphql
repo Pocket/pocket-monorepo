@@ -43,7 +43,11 @@ type ShareableList {
   """
   Pocket Saves that have been added to this list by the Pocket user.
   """
-  listItems: [ShareableListItem!]!
+  listItems: [ShareableListItem!]! @deprecated(reason: "use items")
+  """
+  Pocket Saves that have been added to this list by the Pocket user.
+  """
+  items(pagination: PaginationInput): ListItemConnection!
   """
   The visibility of notes added to list items for this list.
   """

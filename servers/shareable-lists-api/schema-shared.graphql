@@ -2,7 +2,7 @@ extend schema
   @link(url: "https://specs.apollo.dev/link/v1.0")
   @link(
     url: "https://specs.apollo.dev/federation/v2.3"
-    import: ["@key", "@composeDirective"]
+    import: ["@key", "@composeDirective", "@shareable"]
   )
   # The link directive is required to federate @constraint
   # It doesn't actually have to be a real spec, but it would be good
@@ -116,6 +116,26 @@ type ShareableListItem {
 }
 
 """
+The Connection type for ListItem
+"""
+type ListItemConnection {
+  """
+  A list of edges.
+  """
+  edges: [ListItemEdge!]
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+
+  """
+  Identifies the total count of SavedItems in the connection.
+  """
+  totalCount: Int!
+}
+
+"""
 Apollo Server @cacheControl directive caching behavior either for a single field, or for all fields that
 return a particular type
 """
@@ -140,3 +160,68 @@ directive @cacheControl(
   """
   inheritMaxAge: Boolean
 ) on FIELD_DEFINITION | OBJECT | INTERFACE | UNION
+
+"""
+Information about pagination in a connection.
+"""
+type PageInfo @shareable {
+  """
+  When paginating forwards, the cursor to continue.
+  """
+  endCursor: String
+  """
+  When paginating forwards, are there more items?
+  """
+  hasNextPage: Boolean!
+  """
+  When paginating backwards, are there more items?
+  """
+  hasPreviousPage: Boolean!
+  """
+  When paginating backwards, the cursor to continue.
+  """
+  startCursor: String
+}
+
+"""
+An Edge in a Connection
+"""
+type ListItemEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+  """
+  The ListItem at the end of the edge.
+  """
+  node: ShareableListItem!
+}
+
+"""
+Pagination request. To determine which edges to return, the connection
+evaluates the `before` and `after` cursors (if given) to filter the
+edges, then evaluates `first`/`last` to slice the edges (only include a
+value for either `first` or `last`, not both).
+"""
+input PaginationInput {
+  """
+  Returns the elements in the list that come after the specified cursor.
+  The specified cursor is not included in the result.
+  """
+  after: String
+  """
+  Returns the elements in the list that come before the specified cursor.
+  The specified cursor is not included in the result.
+  """
+  before: String
+  """
+  Returns the first _n_ elements from the list. Must be a non-negative integer.
+  If `first` contains a value, `last` should be null/omitted in the input.
+  """
+  first: Int @constraint(min: 0, max: 30)
+  """
+  Returns the last _n_ elements from the list. Must be a non-negative integer.
+  If `last` contains a value, `first` should be null/omitted in the input.
+  """
+  last: Int @constraint(min: 0, max: 30)
+}
