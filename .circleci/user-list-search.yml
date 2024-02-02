@@ -23,19 +23,19 @@ workflows:
           name: user-list-search_test_integrations
           scope: user-list-search
 
-      # # Try building the ECS docker image on each branch
-      # - build_image:
-      #     <<: *not_dev_main
-      #     context: pocket
-      #     for: parser_graphql_wrapper
-      #     name: parser-graphql-wrapper_build_docker
-      #     aws-access-key-id: Dev_AWS_ACCESS_KEY
-      #     aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
-      #     aws-region: Dev_AWS_DEFAULT_REGION
-      #     repo-name: parsergraphqlwrapper-dev-app
-      #     ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
-      #     push: false
-      #     extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=parser-graphql-wrapper --build-arg APP_PATH=servers/parser-graphql-wrapper --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=parser-graphql-wrapper --build-arg PORT=4001 
+      # Try building the ECS docker image on each branch
+      - build_image:
+          <<: *not_dev_main
+          context: pocket
+          for: user_list_search
+          name: user-list-search_build_docker
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          repo-name: userlistsearch-dev
+          ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
+          push: false
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=user-list-search --build-arg APP_PATH=servers/user-list-search --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=user-list-search --build-arg PORT=4000 
      
       # - infrastructure:
       #     <<: *not_dev_main
@@ -63,65 +63,65 @@ workflows:
       #     apply: true
       #     dev: true
 
-      # # Build & Deploy the Dev Docker Image
-      # - build_image:
-      #     <<: *only_dev
-      #     context: pocket
-      #     for: parser_graphql_wrapper
-      #     name: parser-graphql-wrapper_build_docker_dev
-      #     aws-access-key-id: Dev_AWS_ACCESS_KEY
-      #     aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
-      #     aws-region: Dev_AWS_DEFAULT_REGION
-      #     repo-name: parsergraphqlwrapper-dev-app
-      #     ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
-      #     push: true
-      #     extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=parser-graphql-wrapper --build-arg APP_PATH=servers/parser-graphql-wrapper --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=parser-graphql-wrapper --build-arg PORT=4001
-      #     requires:
-      #       - parser-graphql-wrapper_infrastructure_apply_dev
+      # Build & Deploy the Dev Docker Image
+      - build_image:
+          <<: *only_dev
+          context: pocket
+          for: user_list_search
+          name: user-list-search_build_docker_dev
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          repo-name: userlistsearch-dev
+          ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
+          push: true
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=user-list-search --build-arg APP_PATH=servers/user-list-search --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=user-list-search --build-arg PORT=4000 
+          requires:
+            - user-list-search_infrastructure_apply_dev
 
-      # - code_deploy_ecs:
-      #     <<: *only_dev
-      #     context: pocket
-      #     for: parser_graphql_wrapper
-      #     name: parser-graphql-wrapper_code_deploy_ecs_dev
-      #     resource-class: pocket/default-dev
-      #     codedeploy-app-name: ParserGraphQLWrapper-Dev-ECS
-      #     codedeploy-group-name: ParserGraphQLWrapper-Dev-ECS
-      #     requires:
-      #       - parser-graphql-wrapper_build_docker_dev
+      - code_deploy_ecs:
+          <<: *only_dev
+          context: pocket
+          for: user_list_search
+          name: user-list-search_code_deploy_ecs_dev
+          resource-class: pocket/default-dev
+          codedeploy-app-name: UserListSearch-Dev
+          codedeploy-group-name: UserListSearch-Dev-Apollo
+          requires:
+            - user-list-search_build_docker_dev
 
-      # # Notify sentry of dev deployment
-      # - sentry_release_notification:
-      #     <<: *only_dev
-      #     name: parser-graphql-wrapper_sentry-release-notification-dev
-      #     context: pocket
-      #     for: parser_graphql_wrapper
-      #     sentry_project_name: parser-graphql-wrapper
-      #     sentry_env: development
-      #     sentry_org: pocket
-      #     requires:
-      #       - parser-graphql-wrapper_code_deploy_ecs_dev
+      # Notify sentry of dev deployment
+      - sentry_release_notification:
+          <<: *only_dev
+          name: user-list-search_sentry-release-notification-dev
+          context: pocket
+          for: user_list_search
+          sentry_project_name: user-list-search
+          sentry_env: development
+          sentry_org: pocket
+          requires:
+            - user-list-search_code_deploy_ecs_dev
      
-      # # Setup params we may use in Lambdas
-      # - setup_deploy_params:
-      #     <<: *only_dev
-      #     name: parser-graphql-wrapper_deploy-params-dev
-      #     aws_access_key_id: Dev_AWS_ACCESS_KEY
-      #     aws_secret_access_key: Dev_AWS_SECRET_ACCESS_KEY
-      #     context: pocket
-      #     env: Dev
-      #     service_name: ParserGraphQLWrapper
-      #     requires:
-      #       - parser-graphql-wrapper_code_deploy_ecs_dev
+      # Setup params we may use in Lambdas
+      - setup_deploy_params:
+          <<: *only_dev
+          name: user-list-search_deploy-params-dev
+          aws_access_key_id: Dev_AWS_ACCESS_KEY
+          aws_secret_access_key: Dev_AWS_SECRET_ACCESS_KEY
+          context: pocket
+          env: Dev
+          service_name: UserListSearch
+          requires:
+            - user-list-search_code_deploy_ecs_dev
 
 
-      # ######
-      # # Main Branch Deployment (Prod Environment)
-      # ######
+      ######
+      # Main Branch Deployment (Prod Environment)
+      ######
       # - infrastructure:
       #     <<: *only_main
       #     context: pocket
-      #     for: parser_graphql_wrapper
+      #     for: user_list_search
       #     name: parser-graphql-wrapper_infrastructure_apply_prod
       #     scope: parser-graphql-wrapper-cdk
       #     stack-output-path: infrastructure/parser-graphql-wrapper/cdktf.out/stacks/parser-graphql-wrapper
@@ -129,53 +129,53 @@ workflows:
       #     apply: true
       #     dev: false
 
-      # # Build & Deploy the Prod Docker Image
-      # - build_image:
-      #     <<: *only_main
-      #     context: pocket
-      #     for: parser_graphql_wrapper
-      #     name: parser-graphql-wrapper_build_docker_prod
-      #     aws-access-key-id: Prod_AWS_ACCESS_KEY
-      #     aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
-      #     aws-region: Prod_AWS_DEFAULT_REGION
-      #     repo-name: parsergraphqlwrapper-prod-app
-      #     ecr-url: 996905175585.dkr.ecr.us-east-1.amazonaws.com
-      #     push: true
-      #     extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=parser-graphql-wrapper --build-arg APP_PATH=servers/parser-graphql-wrapper --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=parser-graphql-wrapper --build-arg PORT=4001
-      #     requires:
-      #       - parser-graphql-wrapper_infrastructure_apply_prod
+      # Build & Deploy the Prod Docker Image
+      - build_image:
+          <<: *only_main
+          context: pocket
+          for: user_list_search
+          name: user-list-search_build_docker_prod
+          aws-access-key-id: Prod_AWS_ACCESS_KEY
+          aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
+          aws-region: Prod_AWS_DEFAULT_REGION
+          repo-name: parsergraphqlwrapper-prod-app
+          ecr-url: 996905175585.dkr.ecr.us-east-1.amazonaws.com
+          push: true
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=user-list-search --build-arg APP_PATH=servers/user-list-search --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=user-list-search --build-arg PORT=4000
+          requires:
+            - user-list-search_infrastructure_apply_prod
 
-      # - code_deploy_ecs:
-      #     <<: *only_main
-      #     context: pocket
-      #     for: parser_graphql_wrapper
-      #     name: parser-graphql-wrapper_code_deploy_ecs_prod
-      #     resource-class: pocket/default-prod
-      #     codedeploy-app-name: ParserGraphQLWrapper-Prod-ECS
-      #     codedeploy-group-name: ParserGraphQLWrapper-Prod-ECS
-      #     requires:
-      #       - parser-graphql-wrapper_build_docker_prod
+      - code_deploy_ecs:
+          <<: *only_main
+          context: pocket
+          for: user_list_search
+          name: user-list-search_code_deploy_ecs_prod
+          resource-class: pocket/default-prod
+          codedeploy-app-name: UserListSearch-Prod
+          codedeploy-group-name: UserListSearch-Prod-Apollo
+          requires:
+            - user-list-search_build_docker_prod
 
-      # # Notify sentry of main deployment
-      # - sentry_release_notification:
-      #     <<: *only_main
-      #     name: parser-graphql-wrapper_sentry-release-notification-prod
-      #     context: pocket
-      #     for: parser_graphql_wrapper
-      #     sentry_project_name: parser-graphql-wrapper
-      #     sentry_env: production
-      #     sentry_org: pocket
-      #     requires:
-      #       - parser-graphql-wrapper_code_deploy_ecs_prod
+      # Notify sentry of main deployment
+      - sentry_release_notification:
+          <<: *only_main
+          name: user-list-search_sentry-release-notification-prod
+          context: pocket
+          for: user_list_search
+          sentry_project_name: user-list-search
+          sentry_env: production
+          sentry_org: pocket
+          requires:
+            - user-list-search_code_deploy_ecs_prod
 
-      # # Setup params we may use in Lambdas
-      # - setup_deploy_params:
-      #     <<: *only_main
-      #     name: parser-graphql-wrapper_deploy-params-prod
-      #     aws_access_key_id: Prod_AWS_ACCESS_KEY
-      #     aws_secret_access_key: Prod_AWS_SECRET_ACCESS_KEY
-      #     context: pocket
-      #     env: Prod
-      #     service_name: ParserGraphQLWrapper
-      #     requires:
-      #       - parser-graphql-wrapper_code_deploy_ecs_prod
+      # Setup params we may use in Lambdas
+      - setup_deploy_params:
+          <<: *only_main
+          name: user-list-search_deploy-params-prod
+          aws_access_key_id: Prod_AWS_ACCESS_KEY
+          aws_secret_access_key: Prod_AWS_SECRET_ACCESS_KEY
+          context: pocket
+          env: Prod
+          service_name: UserListSearch
+          requires:
+            - user-list-search_code_deploy_ecs_prod

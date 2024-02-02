@@ -19,7 +19,7 @@ module "queue_users" {
     }
   ]
 
-  command = ["npm", "run", "task:queue-all-premium-users-for-backfill"]
+  command = ["pnpm", "run", "task:queue-all-premium-users-for-backfill"]
 
   log_configuration = {
     logDriver     = "awslogs"
