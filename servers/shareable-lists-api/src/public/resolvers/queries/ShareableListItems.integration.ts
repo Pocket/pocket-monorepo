@@ -6,7 +6,7 @@ import { List, Visibility, PrismaClient } from '.prisma/client';
 
 import { IPublicContext } from '../../context';
 import { startServer } from '../../../express';
-import { client } from '../../../database/client';
+import { client, conn } from '../../../database/client';
 import {
   clearDb,
   createShareableListHelper,
@@ -15,11 +15,15 @@ import {
 } from '../../../test/helpers';
 import { GET_SHAREABLE_LIST_PAGINATED_ITEMS } from './sample-queries.gql';
 import { Application } from 'express';
+import { Kysely } from 'kysely';
+import { DB } from '.kysely/client/types';
+
 describe('ListItems on a List', () => {
   let app: Application;
   let server: ApolloServer<IPublicContext>;
   let graphQLUrl: string;
   let db: PrismaClient;
+  let kysely: Kysely<DB>;
   let largeList: List;
   let emptyList: List;
 
@@ -69,10 +73,12 @@ describe('ListItems on a List', () => {
       publicUrl: graphQLUrl,
     } = await startServer(0));
     db = client();
+    kysely = conn();
   });
 
   afterAll(async () => {
     await db.$disconnect();
+    await kysely.destroy();
     await server.stop();
   });
 
