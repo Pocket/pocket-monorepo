@@ -12,7 +12,7 @@ data "pagerduty_vendor" "cloudwatch" {
 }
 
 module "emergency_response" {
-  source      = "./modules/emergency-response"
+  source      = "./emergency-response"
   name_prefix = local.prefix
   tags        = local.tags
 

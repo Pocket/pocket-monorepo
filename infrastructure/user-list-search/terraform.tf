@@ -1,11 +1,6 @@
 terraform {
-  backend "remote" {
+  cloud {
     organization = "Pocket"
-    hostname     = "app.terraform.io"
-
-    workspaces {
-      prefix = "UserListSearch-"
-    }
   }
 
   required_providers {

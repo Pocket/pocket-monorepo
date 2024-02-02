@@ -175,6 +175,7 @@ jobs:
       scope:
         description: The pnpm scope to build for
         type: string
+        default: ''
       stack-output-path:
         description: The pnpm output path
         type: string
@@ -190,6 +191,14 @@ jobs:
         description: Whether or not we should save off the app spec file for later use
         type: boolean
         default: true
+      uses_raw_hcl:
+        description: Signals that we do not need to compile the app code
+        type: boolean
+        default: false
+      workspace_name:
+        description: When using raw hcl we need to pass a workspace name
+        type: string
+        default: ""
       <<: [*repo_for_enum, *resource_class_enmum]
     # Our self hosted runners dont support docker images, cause its not deployed in kubernetes, so we have some special steps
     machine: true
@@ -208,35 +217,46 @@ jobs:
             curl -L https://github.com/suzuki-shunsuke/tfcmt/releases/download/v4.7.3/tfcmt_linux_amd64.tar.gz | tar xvzf - tfcmt
             mv tfcmt /home/circleci/tfcmt
             chmod a+x /home/circleci/tfcmt
-      - install_infrastructure_pnpm
       - install_codebuild_secrets
-      - when:
-          condition: <<parameters.dev>>
-          steps:
-            - run:
-                name: Build Dev Infra
-                command: |
-                  . /home/circleci/.codebuild_shims_wrapper.sh
-                  nvm use
-                  export NODE_ENV=development
-                  pnpm run synth --filter=<< parameters.scope >>...
       - unless:
-          condition: <<parameters.dev>>
+          # Only compile if we do not use raw hcl
+          condition: <<parameters.uses_raw_hcl>>
           steps:
-            - run:
-                name: Build Prod Infra
-                command: |
-                  . /home/circleci/.codebuild_shims_wrapper.sh
-                  nvm use
-                  export NODE_ENV=production
-                  pnpm run synth --filter=<< parameters.scope >>...
+            - install_infrastructure_pnpm
+            - when:
+                condition: <<parameters.dev>>
+                steps:
+                  - run:
+                      name: Build Dev Infra
+                      command: |
+                        . /home/circleci/.codebuild_shims_wrapper.sh
+                        nvm use
+                        export NODE_ENV=development
+                        pnpm run synth --filter=<< parameters.scope >>...
+            - unless:
+                condition: <<parameters.dev>>
+                steps:
+                  - run:
+                      name: Build Prod Infra
+                      command: |
+                        . /home/circleci/.codebuild_shims_wrapper.sh
+                        nvm use
+                        export NODE_ENV=production
+                        pnpm run synth --filter=<< parameters.scope >>...
       - run:
           name: Setup terraform
           command: |
             . /home/circleci/.codebuild_shims_wrapper.sh
             cd << parameters.stack-output-path >>
             tfenv use
-            terraform init
+            if [ -n "<< parameters.workspace_name >>" ]; then
+              export TF_WORKSPACE='<< parameters.workspace_name >>'
+              echo 'export TF_WORKSPACE="<< parameters.workspace_name >>"' >> "$BASH_ENV"
+              terraform init
+            else
+              terraform init
+            fi
+            
       - when:
           condition: <<parameters.save_app_spec>>
           steps:

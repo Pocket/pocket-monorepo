@@ -52,7 +52,7 @@ locals {
       region = "us-east-1"
     }
 
-    Dev = {
+    UserListSearch-Dev = {
       domain                  = "user-list-search.getpocket.dev"
       environment             = "Dev"
       es_cluster_enable       = true
@@ -66,7 +66,7 @@ locals {
       userApiUri              = "https://user-list-search.getpocket.dev"
     }
 
-    Prod = {
+    UserListSearch-Prod = {
       domain                  = "user-list-search.readitlater.com"
       environment             = "Prod"
       es_cluster_enable       = true

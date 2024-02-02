@@ -6,7 +6,7 @@ resource "aws_cloudwatch_log_group" "queue_users_ecs" {
 
 module "queue_users" {
   source  = "cloudposse/ecs-container-definition/aws"
-  version = "0.56.0"
+  version = "0.61.1"
 
   essential       = true
   container_name  = local.container_name

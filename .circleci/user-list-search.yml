@@ -37,31 +37,35 @@ workflows:
           push: false
           extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=user-list-search --build-arg APP_PATH=servers/user-list-search --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=user-list-search --build-arg PORT=4000 
      
-      # - infrastructure:
-      #     <<: *not_dev_main
-      #     context: pocket
-      #     for: parser_graphql_wrapper
-      #     name: parser-graphql-wrapper_infrastructure_plan_prod
-      #     scope: parser-graphql-wrapper-cdk
-      #     stack-output-path: infrastructure/parser-graphql-wrapper/cdktf.out/stacks/parser-graphql-wrapper
-      #     resource-class: pocket/default-prod
-      #     dev: false
-      #     apply: false
+      - infrastructure:
+          <<: *not_dev_main
+          context: pocket
+          for: user_list_search
+          name: user-list-search_infrastructure_plan_prod
+          stack-output-path: infrastructure/user-list-search
+          resource-class: pocket/default-prod
+          dev: false
+          apply: false
+          uses_raw_hcl: true
+          workspace_name: UserListSearch-Prod
+          save_app_spec: false # todo update terraform to save this
 
       # ######
       # # Dev Branch Deployment (Dev Environment)
       # ######
 
-      # - infrastructure:
-      #     <<: *only_dev
-      #     context: pocket
-      #     for: parser_graphql_wrapper
-      #     name: parser-graphql-wrapper_infrastructure_apply_dev
-      #     scope: parser-graphql-wrapper-cdk
-      #     stack-output-path: infrastructure/parser-graphql-wrapper/cdktf.out/stacks/parser-graphql-wrapper
-      #     resource-class: pocket/default-dev
-      #     apply: true
-      #     dev: true
+      - infrastructure:
+          <<: *only_dev
+          context: pocket
+          for: user_list_search
+          name: user-list-search_infrastructure_apply_dev
+          stack-output-path: infrastructure/user-list-search
+          resource-class: pocket/default-dev
+          apply: true
+          dev: true
+          uses_raw_hcl: true
+          workspace_name: UserListSearch-Dev
+          save_app_spec: false # todo update terraform to save this
 
       # Build & Deploy the Dev Docker Image
       - build_image:
@@ -118,16 +122,18 @@ workflows:
       ######
       # Main Branch Deployment (Prod Environment)
       ######
-      # - infrastructure:
-      #     <<: *only_main
-      #     context: pocket
-      #     for: user_list_search
-      #     name: parser-graphql-wrapper_infrastructure_apply_prod
-      #     scope: parser-graphql-wrapper-cdk
-      #     stack-output-path: infrastructure/parser-graphql-wrapper/cdktf.out/stacks/parser-graphql-wrapper
-      #     resource-class: pocket/default-prod
-      #     apply: true
-      #     dev: false
+      - infrastructure:
+          <<: *only_main
+          context: pocket
+          for: user_list_search
+          name: user-list-search_infrastructure_apply_prod
+          stack-output-path: infrastructure/user-list-search
+          resource-class: pocket/default-prod
+          apply: true
+          dev: false
+          uses_raw_hcl: true
+          workspace_name: UserListSearch-Prod
+          save_app_spec: false # todo update terraform to save this
 
       # Build & Deploy the Prod Docker Image
       - build_image:

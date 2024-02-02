@@ -92,7 +92,7 @@ resource "aws_cloudwatch_log_group" "xray" {
 
 module "xray" {
   source  = "cloudposse/ecs-container-definition/aws"
-  version = "0.56.0"
+  version = "0.61.1"
 
   essential       = true
   container_name  = "xray"
