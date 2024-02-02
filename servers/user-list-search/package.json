@@ -10,7 +10,7 @@
     "start": "node dist/bin/apiServer.js",
     "dev": "NODE_ENV=development npm run build && NODE_ENV=development npm run watch",
     "build-schema": "node dist/server/buildSchema.js",
-    "test": "jest \"\\.spec\\.ts\" --runInBand --forceExit",
+    "test": "jest \"\\.spec\\.ts\" --runInBand ",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand --forceExit",
     "test:watch": "npm test -- --watch --watch-extensions ts -R min --watch-files src",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
