@@ -43,12 +43,13 @@ workflows:
           for: user_list_search
           name: user-list-search_infrastructure_plan_prod
           stack-output-path: infrastructure/user-list-search
+          scope: user-list-search-cdk
           resource-class: pocket/default-prod
           dev: false
           apply: false
           uses_raw_hcl: true
           workspace_name: UserListSearch-Prod
-          save_app_spec: false # todo update terraform to save this
+          save_app_spec: true
 
       # ######
       # # Dev Branch Deployment (Dev Environment)
@@ -60,12 +61,13 @@ workflows:
           for: user_list_search
           name: user-list-search_infrastructure_apply_dev
           stack-output-path: infrastructure/user-list-search
+          scope: user-list-search-cdk
           resource-class: pocket/default-dev
           apply: true
           dev: true
           uses_raw_hcl: true
           workspace_name: UserListSearch-Dev
-          save_app_spec: false # todo update terraform to save this
+          save_app_spec: true
 
       # Build & Deploy the Dev Docker Image
       - build_image:
@@ -127,13 +129,14 @@ workflows:
           context: pocket
           for: user_list_search
           name: user-list-search_infrastructure_apply_prod
+          scope: user-list-search-cdk
           stack-output-path: infrastructure/user-list-search
           resource-class: pocket/default-prod
           apply: true
           dev: false
           uses_raw_hcl: true
           workspace_name: UserListSearch-Prod
-          save_app_spec: false # todo update terraform to save this
+          save_app_spec: true
 
       # Build & Deploy the Prod Docker Image
       - build_image:

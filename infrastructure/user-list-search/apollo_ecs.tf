@@ -145,6 +145,38 @@ resource "aws_ecs_service" "apollo" {
   ]
 }
 
+locals {
+  appspec_content = {
+    version = 1,
+    Resources = [
+      {
+        TargetService = {
+          Type       = "AWS::ECS::Service",
+          Properties = {
+            TaskDefinition = aws_ecs_task_definition.apollo.arn,
+            LoadBalancerInfo = {
+              ContainerName = local.container_name,
+              ContainerPort = local.container_port,
+            },
+          },
+        },
+      },
+    ],
+  }
+}
+
+resource "null_resource" "generate_appspec" {
+  triggers = {
+    task_definition_arn = aws_ecs_task_definition.apollo.arn
+    alb_container_name  = local.container_name
+    alb_container_port  = local.container_port
+  }
+
+  provisioner "file" {
+    content  = jsonencode(local.appspec_content)
+    destination = "appspec.json"
+  }
+}
 
 /**
  * If you make any changes to the Task Definition this must be called since we ignore changes to it.
