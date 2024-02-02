@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/node';
 import { Item } from './model';
-import { getItemById, getItemByUrl } from './dataLoaders/itemLoader';
+import { clear, getItemById, getItemByUrl } from './dataLoaders/itemLoader';
 import config from './config';
 import { MediaTypeParam, ParserAPI } from './datasources/parserApi';
 import { MarticleElement, parseArticle } from './marticle/marticleParser';
@@ -64,7 +64,7 @@ export const resolvers = {
       parent,
       args,
       { dataSources },
-      info
+      info,
     ): Promise<MarticleElement[]> => {
       // Note: When the Web & Android teams switch to MArticle, make all the parser article call use
       // MediaTypeParam.AS_COMMENTS and add back this optimization:
@@ -115,7 +115,7 @@ export const resolvers = {
         parent.itemId,
         parent.resolvedId,
         parent.givenUrl,
-        repo
+        repo,
       );
     },
   },
@@ -135,7 +135,7 @@ export const resolvers = {
     getItemByItemId: async (
       _source,
       { id },
-      { repositories }
+      { repositories },
     ): Promise<Item> => {
       return getItemById(id, await repositories.itemResolver);
     },
@@ -155,13 +155,13 @@ export const resolvers = {
         parseInt(item.itemId),
         parseInt(item.resolvedId),
         item.givenUrl,
-        repo
+        repo,
       );
     },
     timeToRead: async (
       { url },
       args,
-      context: IContext
+      context: IContext,
     ): Promise<number | undefined | null> => {
       // timeToRead is not a guaranteed field on CorpusItem - we shouldn't
       // return underlying parser errors to clients if this call fails
@@ -176,14 +176,14 @@ export const resolvers = {
   Collection: {
     shortUrl: async ({ slug }, args, context: IContext): Promise<string> => {
       const item: Item = await getItemByUrl(
-        `${config.shortUrl.collectionUrl}/${slug}`
+        `${config.shortUrl.collectionUrl}/${slug}`,
       );
       const repo = await context.repositories.sharedUrlsResolver;
       return await getShortUrl(
         parseInt(item.itemId),
         parseInt(item.resolvedId),
         item.givenUrl,
-        repo
+        repo,
       );
     },
   },
@@ -192,7 +192,7 @@ export const resolvers = {
       _source,
       { url }: { url: string },
       { dataSources },
-      info
+      info,
     ): Promise<Item> => {
       // Article loader will always return a cache miss for `refresh`=true
       // so no need to use it
@@ -205,6 +205,15 @@ export const resolvers = {
         maxAge: info.cacheControl.cacheHint.maxAge,
       });
       const item = await getItemByUrl(url);
+
+      // Clear our dataloader cache
+      clear({
+        itemId: item.itemId,
+        givenUrl: item.givenUrl,
+        resolvedUrl: item.resolvedUrl,
+        resolvedItemId: item.resolvedId,
+      });
+
       return {
         ...item,
         article: articleData.article,
