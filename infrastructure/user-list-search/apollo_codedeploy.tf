@@ -55,8 +55,6 @@ resource "aws_codestarnotifications_notification_rule" "apollo_notifications" {
   detail_type = "BASIC"
   event_type_ids = [
     "codedeploy-application-deployment-failed",
-    "codedeploy-application-deployment-succeeded",
-    "codedeploy-application-deployment-started"
   ]
 
   name     = "${aws_codedeploy_app.ecs_codedeploy_app.name}-Apollo"
