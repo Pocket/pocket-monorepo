@@ -1,0 +1,369 @@
+extend schema
+  @link(
+    url: "https://specs.apollo.dev/federation/v2.0"
+    import: ["@key", "@shareable"]
+  )
+
+scalar Url
+scalar FunctionalBoostValue
+
+"""
+An index item can be in one of these states
+QUEUED implies an item that has not been archived
+"""
+enum SearchStatus {
+  QUEUED
+  ARCHIVED
+}
+
+"""
+Sort direction of the returned items.
+"""
+enum SearchSortDirection {
+  ASC
+  DESC
+}
+
+"""
+Used to detemermine whether to add or multiply a document's score by the
+functional boost factor
+"""
+enum SearchFunctionalBoostOperation {
+  ADD
+  MULTIPLY
+}
+
+"""
+Input field for sorting items
+"""
+input SearchSort {
+  "Field in elasticsearch to sort by"
+  field: String!
+  "Direction of the sort (ASC/DESC)"
+  direction: SearchSortDirection!
+}
+
+"""
+Input filed for filtering items
+"""
+input SearchFilter {
+  "Optional fitler to get item with specific tags"
+  tags: [String]
+  "Optional filter to get items in a specific state"
+  status: SearchStatus
+  "Optional filter to get items that are favorited"
+  favorite: Boolean
+  "Optional filter to items of a specific content type"
+  contentType: String
+  """
+  Optional filter to get items that matches the domain
+  domain should be in the url format, e.g getpocket.com (or) list.getpocket.com
+  """
+  domain: String
+}
+
+"""
+Input field to get elasticsearch highlights of keywords
+"""
+input SearchHighlightField {
+  "Field to highlight"
+  field: String!
+  "The number of characters to return in addition to the keyword"
+  size: Int!
+}
+
+"""
+Input field to boost the score of an elasticsearch document based on a specific field and value
+"""
+input FunctionalBoostField {
+  "Field to evaluate for boosting"
+  field: String!
+  "Field value to evaluate"
+  value: FunctionalBoostValue!
+  "A float number to boost the score by"
+  factor: Float!
+  "The mathematical operation to use for boosting"
+  operation: SearchFunctionalBoostOperation!
+}
+
+"""
+Input field for search
+"""
+input SearchParams {
+  "The keyword to search for"
+  term: String!
+  "Filters to be applied to the search"
+  filters: SearchFilter
+  "Sorting for the search"
+  sort: SearchSort
+  "Offset for pagination"
+  from: Int
+  "Number of items to return"
+  size: Int
+  "Fields to search for the keyword in"
+  fields: [String]!
+  "Fields that should be highlighted if keywords are found within them"
+  highlightFields: [SearchHighlightField]
+  "Operation to boost the score of a document based"
+  functionalBoosts: [FunctionalBoostField]
+}
+
+"""
+Elasticsearch highlights
+"""
+type ItemHighlights {
+  full_text: [String]
+  url: [String]
+  tags: [String]
+  title: [String]
+}
+
+type Item @key(fields: "itemId") {
+  "key field to identify the Item entity in the Parser service"
+  itemId: String!
+  "Keyword highlights from search"
+  highlights: ItemHighlights
+}
+
+"""
+The return type for the search query
+"""
+type SearchResult {
+  "Number of items found"
+  totalResults: Int!
+  "Items found"
+  results: [Item]
+  page: Int @deprecated(reason: "Not required by implementing clients")
+  perPage: Int @deprecated(reason: "Not required by implementing client")
+}
+
+type User @key(fields: "id") {
+  "key field to identify the User entity in the UserAPI service"
+  id: ID!
+  "Premium search query. Name will be updated after client input"
+  search(params: SearchParams!): SearchResult!
+    @deprecated(reason: "Use searchSavedItems")
+  """
+  Get a paginated list of user items that match a given term
+  """
+  searchSavedItems(
+    term: String!
+    filter: SearchFilterInput
+    sort: SearchSortInput
+    pagination: PaginationInput
+  ): SavedItemSearchResultConnection
+
+  advancedSearch(
+    queryString: String
+    filter: AdvancedSearchFilters
+    sort: SearchSortInput
+    pagination: PaginationInput
+  ): SavedItemSearchResultConnection
+}
+
+"""
+An edge in a connection.
+"""
+type SavedItemSearchResultEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+  """
+  The item at the end of the edge.
+  """
+  node: SavedItemSearchResult!
+}
+
+"""
+The connection type for SavedItem.
+"""
+type SavedItemSearchResultConnection {
+  """
+  A list of edges.
+  """
+  edges: [SavedItemSearchResultEdge!]!
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+
+"""
+Information about pagination in a connection.
+"""
+type PageInfo @shareable {
+  """
+  When paginating forwards, the cursor to continue.
+  """
+  endCursor: String
+  """
+  When paginating forwards, are there more items?
+  """
+  hasNextPage: Boolean!
+  """
+  When paginating backwards, are there more items?
+  """
+  hasPreviousPage: Boolean!
+  """
+  When paginating backwards, the cursor to continue.
+  """
+  startCursor: String
+}
+
+"""
+Pagination request. To determine which edges to return, the connection
+evaluates the `before` and `after` cursors (if given) to filter the
+edges, then evaluates `first`/`last` to slice the edges (only include a
+value for either `first` or `last`, not both). If all fields are null,
+by default will return a page with the first 30 elements.
+"""
+input PaginationInput {
+  """
+  Returns the elements in the list that come after the specified cursor.
+  The specified cursor is not included in the result.
+  """
+  after: String
+  """
+  Returns the elements in the list that come before the specified cursor.
+  The specified cursor is not included in the result.
+  """
+  before: String
+  """
+  Returns the first _n_ elements from the list. Must be a non-negative integer.
+  If `first` contains a value, `last` should be null/omitted in the input.
+  """
+  first: Int
+  """
+  Returns the last _n_ elements from the list. Must be a non-negative integer.
+  If `last` contains a value, `first` should be null/omitted in the input.
+  Note: For premium search, setting `last` alone is not currently supported and
+  this has to set with before/last combination.
+  """
+  last: Int
+}
+
+"""
+Valid statuses a client may use to filter
+"""
+enum SearchItemsStatusFilter {
+  UNREAD
+  ARCHIVED
+}
+
+"""
+A SavedItem can be one of these content types
+"""
+enum SearchItemsContentType {
+  VIDEO
+  ARTICLE
+}
+
+input SearchFilterInput {
+  """
+  Optional, filter to get user items that have been favorited
+  """
+  isFavorite: Boolean
+  """
+  Optional, filter to get user items only based on title and url, ie Free Search
+  Note, though that if this is selected and the user is premium, they will not get search highligthing.
+  """
+  onlyTitleAndURL: Boolean
+  """
+  Optional, filter to get SavedItems based on content type
+  """
+  contentType: SearchItemsContentType
+  """
+  Optional, filter to get user items based on status.
+  """
+  status: SearchItemsStatusFilter
+  """
+  Optional filter to get items that matches the domain
+  domain should be in the url format, e.g getpocket.com (or) list.getpocket.com
+  """
+  domain: String
+}
+
+input AdvancedSearchFilters {
+  isFavorite: Boolean
+  contentType: SearchItemsContentType
+  status: SearchItemsStatusFilter
+  domain: String
+  title: String
+  """
+  Include only items with the following tags (exact)
+  in search results (OR combination)
+  """
+  tags: [String!] # @constraint(minLength: 1)
+}
+
+"""
+Enum to specify the sort order of user items fetched
+"""
+enum SearchItemsSortOrder {
+  ASC
+  DESC
+}
+
+"""
+Enum to specify the sort by field (these are the current options, we could add more in the future)
+"""
+enum SearchItemsSortBy {
+  """
+  Indicates when a SavedItem was created
+  """
+  CREATED_AT
+  """
+  Estimated time to read a SavedItem
+  """
+  TIME_TO_READ
+  """
+  Sort SavedItems based on a relevance score
+  This is a feature of elasticsearch and current only available for premium search
+  """
+  RELEVANCE
+}
+
+input SearchSortInput {
+  """
+  The field by which to sort user items
+  """
+  sortBy: SearchItemsSortBy!
+  """
+  The order in which to sort user items
+  """
+  sortOrder: SearchItemsSortOrder
+}
+
+"""
+Elasticsearch highlights.
+Highlighted snippets from the following fields in the search results
+so clients can show users where the query matches are.
+Each field, if available, contains an array of html text snippets
+that contain a match to the search term.
+The matching text is wrapped in `<em>` tags, e.g. ["Hiss at <em>vacuum</em> cleaner if it fits i sits"]
+"""
+type SaveItemSearchHighlights {
+  fullText: [String]
+  url: [String]
+  tags: [String]
+  title: [String]
+}
+
+type SavedItemSearchResult {
+  savedItem: SavedItem!
+  """
+  Highlighted snippets from fields in the search results
+  searchHighlights is a premium user feature. Not available for free search.
+  """
+  searchHighlights: SaveItemSearchHighlights
+}
+
+type SavedItem @key(fields: "id") {
+  "key field to identify the SavedItem entity in the ListAPI service"
+  id: ID!
+}

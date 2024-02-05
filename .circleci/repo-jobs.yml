@@ -9,7 +9,6 @@ jobs:
           name: Lint
           # Need to build first, so the linter picks up all needed imports
           command: |
-            pnpm run build
             pnpm run lint --concurrency=1
 
   mismatched_versions:

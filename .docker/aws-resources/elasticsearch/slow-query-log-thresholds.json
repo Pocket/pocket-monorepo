@@ -1,0 +1,11 @@
+{
+  "index.search.slowlog.threshold.query.warn": "1000ms",
+  "index.search.slowlog.threshold.query.info": "900ms",
+  "index.search.slowlog.threshold.query.debug": "600ms",
+  "index.search.slowlog.threshold.query.trace": "200ms",
+  "index.search.slowlog.threshold.fetch.warn": "900ms",
+  "index.search.slowlog.threshold.fetch.info": "800ms",
+  "index.search.slowlog.threshold.fetch.debug": "500ms",
+  "index.search.slowlog.threshold.fetch.trace": "100ms",
+  "index.search.slowlog.level": "warn"
+}
