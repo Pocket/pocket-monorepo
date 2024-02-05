@@ -1,0 +1,37 @@
+{
+  "name": "@pocket-tools/feature-flags-client",
+  "version": "0.0.0-development",
+  "description": "Basic Unleash client for feature flags",
+  "author": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.mjs",
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "pnpm run build -- --watch",
+    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix \"src/**/*.ts\"",
+    "test": "jest",
+    "test:watch": "pnpm run test -- --watch",
+    "clean": "rm -rf node_modules dist"
+  },
+  "dependencies": {
+    "@pocket-tools/ts-logger": "workspace:*",
+    "unleash-client": "5.3.2"
+  },
+  "devDependencies": {
+    "@types/jest": "29.5.11",
+    "eslint-config-custom": "workspace:*",
+    "jest": "29.7.0",
+    "ts-jest": "29.1.2",
+    "tsconfig": "workspace:*"
+  },
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pocket/pocket-monorepo.git"
+  }
+}
