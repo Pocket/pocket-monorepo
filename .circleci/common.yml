@@ -195,10 +195,6 @@ jobs:
         description: Signals that we do not need to compile the app code
         type: boolean
         default: false
-      workspace_name:
-        description: When using raw hcl we need to pass a workspace name
-        type: string
-        default: ""
       <<: [*repo_for_enum, *resource_class_enmum]
     # Our self hosted runners dont support docker images, cause its not deployed in kubernetes, so we have some special steps
     machine: true
@@ -243,20 +239,32 @@ jobs:
                         nvm use
                         export NODE_ENV=production
                         pnpm run synth --filter=<< parameters.scope >>...
+      - when:
+          condition: <<parameters.uses_raw_hcl>>
+          steps:
+          - when:
+              condition: <<parameters.dev>>
+              steps:
+                - run:
+                    name: Copy Dev tfvars
+                    command: |
+                      cd << parameters.stack-output-path >>
+                      cp dev_backend.tfvars backend.tf
+          - unless:
+              condition: <<parameters.dev>>
+              steps:
+                - run:
+                    name: Copy Prod tfvars
+                    command: |
+                      cd << parameters.stack-output-path >>
+                      cp prod_backend.tfvars backend.tf         
       - run:
           name: Setup terraform
           command: |
             . /home/circleci/.codebuild_shims_wrapper.sh
             cd << parameters.stack-output-path >>
             tfenv use
-            if [ -n "<< parameters.workspace_name >>" ]; then
-              export TF_WORKSPACE='<< parameters.workspace_name >>'
-              echo 'export TF_WORKSPACE="<< parameters.workspace_name >>"' >> "$BASH_ENV"
-              terraform init
-            else
-              terraform init
-            fi
-            
+            terraform init
       - when:
           condition: <<parameters.save_app_spec>>
           steps:

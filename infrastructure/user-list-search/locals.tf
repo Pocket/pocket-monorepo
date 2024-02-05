@@ -81,7 +81,7 @@ locals {
     }
   }
 
-  workspace = merge(local.envs["defaults"], local.envs[terraform.workspace])
+  workspace = merge(local.envs["defaults"], local.envs[locals.old_workspace])
 }
 
 output "workspace" {

@@ -73,7 +73,6 @@ workflows:
           dev: false
           apply: false
           uses_raw_hcl: true
-          workspace_name: UserListSearch-Prod
           save_app_spec: true
 
       # ######
@@ -91,7 +90,6 @@ workflows:
           apply: true
           dev: true
           uses_raw_hcl: true
-          workspace_name: UserListSearch-Dev
           save_app_spec: true
 
       # Build & Deploy the Dev Docker Image
@@ -307,7 +305,6 @@ workflows:
           apply: true
           dev: false
           uses_raw_hcl: true
-          workspace_name: UserListSearch-Prod
           save_app_spec: true
 
       # Build & Deploy the Prod Docker Image
