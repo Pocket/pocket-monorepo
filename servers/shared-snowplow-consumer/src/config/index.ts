@@ -1,5 +1,3 @@
-import { EventType } from '../snowplow/user/types';
-
 const awsEnvironments = ['production', 'development'];
 let localAwsEndpoint;
 if (!awsEnvironments.includes(process.env.NODE_ENV)) {
@@ -59,7 +57,6 @@ export const config = {
     bufferSize: 1,
     retries: 3,
     appId: 'pocket-snowplow-consumer',
-    events: EventType,
     appIds: {
       //todo: make the event bridge event to send this
       //or convert from event bridge's source

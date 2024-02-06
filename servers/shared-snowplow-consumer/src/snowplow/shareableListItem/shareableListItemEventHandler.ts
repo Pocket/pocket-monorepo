@@ -1,14 +1,13 @@
-import { buildSelfDescribingEvent } from '@snowplow/node-tracker';
 import { SelfDescribingJson } from '@snowplow/tracker-core';
-import {
-  ShareableListItem,
-  ShareableListItemEventPayloadSnowplow,
-  ObjectUpdate,
-  shareableListItemEventSchema,
-} from './types';
 import { config } from '../../config';
 import { EventHandler } from '../EventHandler';
 import { getTracker } from '../tracker';
+import {
+  ObjectUpdate,
+  ShareableListItem,
+  createShareableListItem,
+} from '../../snowtype/snowplow';
+import { ShareableListItemEventBridgePayload } from '../../eventConsumer/shareableListItemEvents/types';
 
 /**
  * class to send `shareable-list-item-event` to snowplow
@@ -24,37 +23,37 @@ export class ShareableListItemEventHandler extends EventHandler {
    * method to create and process event data
    * @param data
    */
-  process(data: ShareableListItemEventPayloadSnowplow): void {
-    const event = buildSelfDescribingEvent({
-      event: ShareableListItemEventHandler.generateShareableListItemEvent(data),
-    });
+  process(data: ShareableListItemEventBridgePayload): void {
     const context: SelfDescribingJson[] =
       ShareableListItemEventHandler.generateEventContext(data);
-    super.addToTrackerQueue(event, context);
+
+    this.trackObjectUpdate(this.tracker, {
+      ...ShareableListItemEventHandler.generateShareableListItemEvent(data),
+      context,
+    });
   }
 
   /**
    * Builds the Snowplow object_update event object. Extracts the event trigger type from the received payload.
    */
   private static generateShareableListItemEvent(
-    data: ShareableListItemEventPayloadSnowplow,
+    data: ShareableListItemEventBridgePayload,
   ): ObjectUpdate {
     return {
-      schema: shareableListItemEventSchema.objectUpdate,
-      data: {
-        trigger: data.eventType,
-        object: 'shareable_list_item',
-      },
+      trigger: data['detail-type'],
+      object: 'shareable_list_item',
     };
   }
 
   private static generateEventContext(
-    data: ShareableListItemEventPayloadSnowplow,
+    data: ShareableListItemEventBridgePayload,
   ): SelfDescribingJson[] {
     return [
-      ShareableListItemEventHandler.generateSnowplowShareableListItemEvent(
-        data,
-      ),
+      createShareableListItem(
+        ShareableListItemEventHandler.generateSnowplowShareableListItemEvent(
+          data.detail.shareableListItem,
+        ),
+      ) as unknown as SelfDescribingJson,
     ];
   }
 
@@ -62,41 +61,21 @@ export class ShareableListItemEventHandler extends EventHandler {
    * Static method to generate an object that maps properties received in the event payload object to the snowplow shareable_list_item object schema.
    */
   private static generateSnowplowShareableListItemEvent(
-    data: ShareableListItemEventPayloadSnowplow,
+    data: ShareableListItemEventBridgePayload['detail']['shareableListItem'],
   ): ShareableListItem {
-    const snowplowEvent = {
-      schema: shareableListItemEventSchema.shareable_list_item,
-      data: {
-        shareable_list_item_external_id:
-          data.shareable_list_item.shareable_list_item_external_id,
-        shareable_list_external_id:
-          data.shareable_list_item.shareable_list_external_id,
-        given_url: data.shareable_list_item.given_url,
-        title: data.shareable_list_item.title
-          ? data.shareable_list_item.title
-          : undefined,
-        excerpt: data.shareable_list_item.excerpt
-          ? data.shareable_list_item.excerpt
-          : undefined,
-        image_url: data.shareable_list_item.image_url
-          ? data.shareable_list_item.image_url
-          : undefined,
-        authors: data.shareable_list_item.authors
-          ? data.shareable_list_item.authors
-          : undefined,
-        publisher: data.shareable_list_item.publisher
-          ? data.shareable_list_item.publisher
-          : undefined,
-        note: data.shareable_list_item.note
-          ? data.shareable_list_item.note
-          : undefined,
-        sort_order: data.shareable_list_item.sort_order,
-        created_at: data.shareable_list_item.created_at,
-        updated_at: data.shareable_list_item.updated_at
-          ? data.shareable_list_item.updated_at
-          : undefined,
-      },
+    return {
+      shareable_list_item_external_id: data.shareable_list_item_external_id,
+      shareable_list_external_id: data.shareable_list_external_id,
+      given_url: data.given_url,
+      title: data.title ?? undefined,
+      excerpt: data.excerpt ?? undefined,
+      image_url: data.image_url ?? undefined,
+      authors: data.authors ?? undefined,
+      publisher: data.publisher ?? undefined,
+      note: data.note ?? undefined,
+      sort_order: data.sort_order,
+      created_at: data.created_at,
+      updated_at: data.updated_at ?? undefined,
     };
-    return snowplowEvent;
   }
 }

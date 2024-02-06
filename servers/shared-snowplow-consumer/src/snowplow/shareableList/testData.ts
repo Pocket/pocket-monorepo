@@ -1,6 +1,10 @@
-import { ShareableList, Visibility, ModerationStatus } from './types';
+import {
+  ModerationStatus,
+  ShareableList,
+  Visibility,
+} from '../../eventConsumer/shareableListEvents/types';
 
-export const testShareableListData: ShareableList['data'] = {
+export const testShareableListData: ShareableList = {
   shareable_list_external_id: 'test-shareable-list-external-id',
   user_id: 12345,
   slug: 'test-shareable-list-slug',
@@ -18,7 +22,7 @@ export const testShareableListData: ShareableList['data'] = {
 };
 
 // data with missing non-required fields
-export const testPartialShareableListData: ShareableList['data'] = {
+export const testPartialShareableListData: ShareableList = {
   shareable_list_external_id: 'test-shareable-list-external-id',
   user_id: 12345,
   title: 'Test Shareable List Title',

@@ -8,10 +8,11 @@ import * as Sentry from '@sentry/node';
 import { config } from './config';
 import { SqsConsumer } from './SqsConsumer';
 import * as Consumer from './eventConsumer/userEvents/userEventConsumer';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 describe('sqsConsumer', () => {
-  const emitter = new EventEmitter();
-  const sqsConsumer = new SqsConsumer(emitter, false);
+  let emitter: EventEmitter;
+  let sqsConsumer: SqsConsumer;
 
   //fake Message mimicing SQS Body
   //note: the message contains SNS payload
@@ -39,12 +40,14 @@ describe('sqsConsumer', () => {
   let userEventConsumerStub: jest.SpyInstance;
 
   beforeEach(() => {
+    emitter = new EventEmitter();
+    sqsConsumer = new SqsConsumer(emitter, false);
     scheduleStub = jest
       .spyOn(sqsConsumer, 'scheduleNextPoll')
       .mockImplementation(() => Promise.resolve());
 
     sentryStub = jest.spyOn(Sentry, 'captureException').mockImplementation();
-    consoleStub = jest.spyOn(console, 'error').mockImplementation();
+    consoleStub = jest.spyOn(serverLogger, 'error').mockImplementation();
     userEventConsumerStub = jest
       .spyOn(Consumer, 'userEventConsumer')
       .mockImplementation(() => Promise.resolve());
@@ -54,6 +57,8 @@ describe('sqsConsumer', () => {
     //require this to clear `spyOn` counts between tests
     jest.clearAllMocks();
     jest.restoreAllMocks();
+    jest.clearAllTimers();
+    emitter.removeAllListeners();
   });
 
   it('sends an event when the class is initialized', () => {
@@ -62,7 +67,6 @@ describe('sqsConsumer', () => {
       .spyOn(SqsConsumer.prototype, 'pollMessage')
       .mockImplementation(() => Promise.resolve());
     new SqsConsumer(emitter);
-    // .calledOnceWithExactly('pollSnowplowSqsQueue')
     expect(eventSpy).toHaveBeenCalledTimes(1);
     expect(eventSpy).toHaveBeenCalledWith('pollSnowplowSqsQueue');
   });
