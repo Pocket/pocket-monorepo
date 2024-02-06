@@ -1,6 +1,9 @@
-import { ProspectReviewStatus } from './types';
+import {
+  Prospect,
+  ProspectReviewStatus,
+} from '../../eventConsumer/prospectEvents/types';
 
-export const testProspectData = {
+export const testProspectData: Prospect = {
   // a GUID we generate prior to inserting into dynamo
   id: '123-abc',
   // the prospect ID supplied by ML

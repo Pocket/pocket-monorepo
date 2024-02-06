@@ -1,3 +1,11 @@
+export type ProspectEventBridgePayload = {
+  detail: Prospect;
+  source: 'prospect-events' | string;
+  'detail-type': EventType;
+};
+
+export type EventType = 'prospect-dismiss';
+
 export type Prospect = {
   // a GUID we generate prior to inserting into dynamo
   id: string;
@@ -31,34 +39,6 @@ export type Prospect = {
   reviewedAt?: number;
 };
 
-export type BasicProspectEventPayloadWithContext = {
-  object_version: string;
-  prospect: Prospect;
-};
-
-export type EventTypeString = keyof typeof EventType;
-
-export type ProspectEventPayloadSnowplow =
-  BasicProspectEventPayloadWithContext & {
-    eventType: EventTypeString;
-  };
-
-export type SnowplowEventType = 'prospect_reviewed';
-
-export const SnowplowEventMap: Record<EventTypeString, SnowplowEventType> = {
-  PROSPECT_REVIEWED: 'prospect_reviewed',
-};
-
-export type ObjectUpdate = {
-  trigger: SnowplowEventType;
-  object: 'prospect';
-};
-
-//snowplow event type
-export enum EventType {
-  PROSPECT_REVIEWED = 'PROSPECT_REVIEWED',
-}
-
 export enum ProspectReviewStatus {
   Created = 'created',
   Recommendation = 'recommendation',
@@ -66,8 +46,3 @@ export enum ProspectReviewStatus {
   Rejected = 'rejected',
   Dismissed = 'dismissed',
 }
-
-export const prospectEventSchema = {
-  objectUpdate: 'iglu:com.pocket/object_update/jsonschema/1-0-9',
-  prospect: 'iglu:com.pocket/prospect/jsonschema/1-0-0',
-};

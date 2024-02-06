@@ -1,50 +1,21 @@
-import { buildSelfDescribingEvent } from '@snowplow/node-tracker';
 import { SelfDescribingJson } from '@snowplow/tracker-core';
-import {
-  CollectionEventPayloadSnowplow,
-  CollectionStatus,
-  CollectionLanguage,
-  ObjectUpdate,
-  SnowplowEventMap,
-  CollectionAuthor,
-  CollectionPartnership,
-  CollectionStory,
-  CurationCategory,
-  IABChildCategory,
-  IABParentCategory,
-  Label,
-  collectionEventSchema,
-} from './types';
 import { config } from '../../config';
 import { EventHandler } from '../EventHandler';
 import { getTracker } from '../tracker';
+import {
+  Collection,
+  ObjectUpdate,
+  ObjectUpdateTrigger,
+  createCollection,
+} from '../../snowtype/snowplow';
+import {
+  CollectionEventBridgePayload,
+  EventType,
+} from '../../eventConsumer/collectionEvents/types';
 
-type ObjectUpdateEvent = Omit<SelfDescribingJson, 'data'> & {
-  data: ObjectUpdate;
-};
-
-type CollectionContext = Omit<SelfDescribingJson, 'data'> & {
-  data: {
-    object_version: string;
-    collection_id: string;
-    slug: string;
-    status: CollectionStatus;
-    title: string;
-    excerpt: string;
-    labels: Label[];
-    intro: string;
-    image_url: string;
-    authors: CollectionAuthor[];
-    iab_parent_category: IABParentCategory;
-    language: CollectionLanguage;
-    curation_category: CurationCategory;
-    partnership: CollectionPartnership;
-    stories: CollectionStory[];
-    published_at: number;
-    created_at: number;
-    updated_at: number;
-    iab_child_category: IABChildCategory;
-  };
+export const SnowplowEventMap: Record<EventType, ObjectUpdateTrigger> = {
+  'collection-created': 'collection_created',
+  'collection-updated': 'collection_updated',
 };
 
 /**
@@ -61,13 +32,14 @@ export class CollectionEventHandler extends EventHandler {
    * method to create and process event data
    * @param data
    */
-  process(data: CollectionEventPayloadSnowplow): void {
-    const event = buildSelfDescribingEvent({
-      event: CollectionEventHandler.generateCollectionEvent(data),
-    });
+  process(data: CollectionEventBridgePayload): void {
     const context: SelfDescribingJson[] =
       CollectionEventHandler.generateEventContext(data);
-    super.addToTrackerQueue(event, context);
+
+    this.trackObjectUpdate(this.tracker, {
+      ...CollectionEventHandler.generateCollectionEvent(data),
+      context,
+    });
   }
 
   /**
@@ -75,53 +47,52 @@ export class CollectionEventHandler extends EventHandler {
    * Two possible trigger values are: collection_created and collection_updated
    */
   private static generateCollectionEvent(
-    data: CollectionEventPayloadSnowplow,
-  ): ObjectUpdateEvent {
+    data: CollectionEventBridgePayload,
+  ): ObjectUpdate {
     return {
-      schema: collectionEventSchema.objectUpdate,
-      data: {
-        trigger: SnowplowEventMap[data.eventType],
-        object: 'collection',
-      },
+      trigger: SnowplowEventMap[data['detail-type']],
+      object: 'collection',
     };
   }
 
   private static generateEventContext(
-    data: CollectionEventPayloadSnowplow,
+    data: CollectionEventBridgePayload,
   ): SelfDescribingJson[] {
-    return [CollectionEventHandler.generateSnowplowCollectionEvent(data)];
+    return [
+      createCollection(
+        CollectionEventHandler.generateSnowplowCollectionEvent(
+          data.detail.collection,
+        ),
+      ) as unknown as SelfDescribingJson,
+    ];
   }
 
   /**
    * Static method to generate an object that maps properties received in the event payload object to the snowplow collection object schema.
    */
   private static generateSnowplowCollectionEvent(
-    data: CollectionEventPayloadSnowplow,
-  ): CollectionContext {
-    const snowplowEvent = {
-      schema: collectionEventSchema.collection,
-      data: {
-        object_version: 'new',
-        collection_id: data.collection.externalId,
-        slug: data.collection.slug,
-        status: data.collection.status,
-        title: data.collection.title,
-        excerpt: data.collection.excerpt,
-        labels: data.collection.labels,
-        intro: data.collection.intro,
-        image_url: data.collection.imageUrl,
-        authors: data.collection.authors,
-        iab_parent_category: data.collection.IABParentCategory,
-        language: data.collection.language,
-        curation_category: data.collection.curationCategory,
-        partnership: data.collection.partnership,
-        stories: data.collection.stories,
-        published_at: data.collection.publishedAt,
-        created_at: data.collection.createdAt,
-        updated_at: data.collection.updatedAt,
-        iab_child_category: data.collection.IABChildCategory,
-      },
+    data: CollectionEventBridgePayload['detail']['collection'],
+  ): Collection {
+    return {
+      object_version: 'new',
+      collection_id: data.externalId,
+      slug: data.slug,
+      status: data.status,
+      title: data.title,
+      excerpt: data.excerpt,
+      labels: data.labels,
+      intro: data.intro,
+      image_url: data.imageUrl,
+      authors: data.authors,
+      iab_parent_category: data.IABParentCategory,
+      language: data.language,
+      curation_category: data.curationCategory,
+      partnership: data.partnership,
+      stories: data.stories,
+      published_at: data.publishedAt,
+      created_at: data.createdAt,
+      updated_at: data.updatedAt,
+      iab_child_category: data.IABChildCategory,
     };
-    return snowplowEvent;
   }
 }
