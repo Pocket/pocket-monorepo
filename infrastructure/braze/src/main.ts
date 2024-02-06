@@ -1,5 +1,5 @@
 import { Construct } from 'constructs';
-import { App, RemoteBackend, TerraformStack, Aspects, MigrateIds } from 'cdktf';
+import { App, S3Backend, TerraformStack, Aspects, MigrateIds } from 'cdktf';
 import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
 import { config } from './config';
 import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
@@ -19,10 +19,11 @@ class Braze extends TerraformStack {
     new LocalProvider(this, 'local_provider');
     new NullProvider(this, 'null_provider');
 
-    new RemoteBackend(this, {
-      hostname: 'app.terraform.io',
-      organization: 'Pocket',
-      workspaces: [{ prefix: `${config.name}-` }],
+    new S3Backend(this, {
+      bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
+      dynamodbTable: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
+      key: config.name,
+      region: 'us-east-1',
     });
 
     //The domain that we send transactional email from.
