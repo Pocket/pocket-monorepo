@@ -30,6 +30,7 @@ repo_for_enum: &repo_for_enum
       - shareable_lists_api
       - pocket_event_bridge
       - user_list_search
+      - braze
 
 resource_class_enmum: &resource_class_enmum
   resource-class:
@@ -89,6 +90,9 @@ parameters:
   user_list_search:
     type: boolean
     default: false
+  braze:
+    type: boolean
+    default: false
 
 commands:
   # Refrenced from https://github.com/kelvintaywl-cci/dynamic-config-showcase/blob/main/.circleci/next.yml
@@ -126,6 +130,7 @@ commands:
             shareable_lists_api: << pipeline.parameters.shareable_lists_api >>
             pocket_event_bridge: << pipeline.parameters.pocket_event_bridge >>
             user_list_search: << pipeline.parameters.user_list_search >>
+            braze: << pipeline.parameters.braze >>
 
   install_pnpm:  
     steps:
