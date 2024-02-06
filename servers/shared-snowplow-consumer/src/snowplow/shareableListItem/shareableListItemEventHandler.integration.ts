@@ -1,4 +1,4 @@
-import { ObjectUpdate, EventType, shareableListItemEventSchema } from './types';
+import { EventType, SnowplowEventMap } from './types';
 import { ShareableListItemEventHandler } from './shareableListItemEventHandler';
 import {
   testShareableListItemData,
@@ -10,10 +10,16 @@ import {
   getGoodSnowplowEvents,
   parseSnowplowData,
 } from '../testUtils';
+import { ObjectUpdate } from '../../snowtype/snowplow';
+
+export const shareableListItemEventSchema = {
+  objectUpdate: 'iglu:com.pocket/object_update/jsonschema/1-0-16',
+  shareable_list_item: 'iglu:com.pocket/shareable_list_item/jsonschema/1-0-5',
+};
 
 function assertValidSnowplowObjectUpdateEvents(
   events,
-  triggers: ObjectUpdate['data']['trigger'][],
+  triggers: ObjectUpdate['trigger'][],
 ) {
   const parsedEvents = events
     .map(parseSnowplowData)
@@ -73,12 +79,14 @@ function assertPartialShareableListItemSchema(eventContext) {
 }
 
 const testEventData = {
+  object_version: 'new',
   shareable_list_item: {
     ...testShareableListItemData,
   },
 };
 
 const testPartialEventData = {
+  object_version: 'new',
   shareable_list_item: {
     ...testPartialShareableListItemData,
   },
@@ -114,7 +122,7 @@ describe('ShareableListItemEventHandler', () => {
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [EventType.SHAREABLE_LIST_ITEM_CREATED],
+      [SnowplowEventMap[EventType.SHAREABLE_LIST_ITEM_CREATED]],
     );
   });
 
@@ -143,7 +151,7 @@ describe('ShareableListItemEventHandler', () => {
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [EventType.SHAREABLE_LIST_ITEM_DELETED],
+      [SnowplowEventMap[EventType.SHAREABLE_LIST_ITEM_DELETED]],
     );
   });
 
@@ -172,7 +180,7 @@ describe('ShareableListItemEventHandler', () => {
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [EventType.SHAREABLE_LIST_ITEM_UPDATED],
+      [SnowplowEventMap[EventType.SHAREABLE_LIST_ITEM_UPDATED]],
     );
   });
 
@@ -201,7 +209,7 @@ describe('ShareableListItemEventHandler', () => {
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [EventType.SHAREABLE_LIST_ITEM_DELETED],
+      [SnowplowEventMap[EventType.SHAREABLE_LIST_ITEM_DELETED]],
     );
   });
 });
