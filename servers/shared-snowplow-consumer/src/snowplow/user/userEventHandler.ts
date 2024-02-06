@@ -96,22 +96,12 @@ export class UserEventHandler extends EventHandler {
   private static generateUserContext(
     data: UserEventBridgePaylod['detail'],
   ): SelfDescribingJson {
-    const userDataWithoutGuid = {
+    return createUser({
       email: data.email,
       hashed_guid: data.hashedGuid,
       user_id: parseInt(data.userId),
       hashed_user_id: data.hashedId,
-    };
-
-    if (data.guid) {
-      return createUser({
-        ...userDataWithoutGuid,
-        guid: data.guid,
-      }) as unknown as SelfDescribingJson;
-    }
-
-    return createUser({
-      ...userDataWithoutGuid,
+      guid: data.guid ?? undefined,
     }) as unknown as SelfDescribingJson;
   }
 

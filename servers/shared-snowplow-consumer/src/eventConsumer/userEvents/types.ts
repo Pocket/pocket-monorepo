@@ -26,9 +26,3 @@ export type User = {
   ipAddress?: string;
   userAgent?: string;
 };
-
-//   export const SnowplowEventMap: Record<EventTypeString, SnowplowEventType> = {
-//     ACCOUNT_DELETE: 'account_delete',
-//     ACCOUNT_EMAIL_UPDATED: 'account_email_updated',
-//     ACCOUNT_PASSWORD_CHANGED: 'account_password_changed',
-//   };

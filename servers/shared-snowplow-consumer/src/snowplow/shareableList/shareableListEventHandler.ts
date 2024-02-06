@@ -65,25 +65,19 @@ export class ShareableListEventHandler extends EventHandler {
   ): ShareableList {
     return {
       shareable_list_external_id: data.shareable_list_external_id,
-      user_id: data.user_id ? data.user_id : undefined,
+      user_id: data.user_id ?? undefined,
       slug: data.slug,
       title: data.title,
-      description: data.description ? data.description : undefined,
+      description: data.description ?? undefined,
       status: data.status,
       list_item_note_visibility: data.list_item_note_visibility,
       moderation_status: data.moderation_status,
-      moderated_by: data.moderated_by ? data.moderated_by : undefined,
-      moderation_reason: data.moderation_reason
-        ? data.moderation_reason
-        : undefined,
-      moderation_details: data.moderation_details
-        ? data.moderation_details
-        : undefined,
-      restoration_reason: data.restoration_reason
-        ? data.restoration_reason
-        : undefined,
+      moderated_by: data.moderated_by ?? undefined,
+      moderation_reason: data.moderation_reason ?? undefined,
+      moderation_details: data.moderation_details ?? undefined,
+      restoration_reason: data.restoration_reason ?? undefined,
       created_at: data.created_at,
-      updated_at: data.updated_at ? data.updated_at : undefined,
+      updated_at: data.updated_at ?? undefined,
     };
   }
 }
