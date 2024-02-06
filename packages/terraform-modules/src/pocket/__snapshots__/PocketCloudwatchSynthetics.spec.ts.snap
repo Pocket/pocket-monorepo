@@ -204,7 +204,7 @@ exports[`Pocket Cloudwatch Synthetics adds optional Alarms & Alarm Actions to Sy
           },
           "timeout_in_seconds": 180
         },
-        "runtime_version": "syn-nodejs-puppeteer-4.0",
+        "runtime_version": "syn-nodejs-puppeteer-6.2",
         "s3_bucket": "pocket-syntheticchecks-dev",
         "s3_key": "aws-synthetic-dev.zip",
         "schedule": {
@@ -224,7 +224,7 @@ exports[`Pocket Cloudwatch Synthetics adds optional Alarms & Alarm Actions to Sy
           },
           "timeout_in_seconds": 180
         },
-        "runtime_version": "syn-nodejs-puppeteer-4.0",
+        "runtime_version": "syn-nodejs-puppeteer-6.2",
         "s3_bucket": "pocket-syntheticchecks-dev",
         "s3_key": "aws-synthetic-dev.zip",
         "schedule": {
@@ -435,7 +435,7 @@ exports[`Pocket Cloudwatch Synthetics renders desired AWS Synthetic Checks 1`] =
           },
           "timeout_in_seconds": 180
         },
-        "runtime_version": "syn-nodejs-puppeteer-4.0",
+        "runtime_version": "syn-nodejs-puppeteer-6.2",
         "s3_bucket": "pocket-syntheticchecks-dev",
         "s3_key": "aws-synthetic-dev.zip",
         "schedule": {
@@ -455,7 +455,7 @@ exports[`Pocket Cloudwatch Synthetics renders desired AWS Synthetic Checks 1`] =
           },
           "timeout_in_seconds": 180
         },
-        "runtime_version": "syn-nodejs-puppeteer-4.0",
+        "runtime_version": "syn-nodejs-puppeteer-6.2",
         "s3_bucket": "pocket-syntheticchecks-dev",
         "s3_key": "aws-synthetic-dev.zip",
         "schedule": {
