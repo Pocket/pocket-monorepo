@@ -1338,8 +1338,8 @@ importers:
         specifier: 7.99.0
         version: 7.99.0
       '@snowplow/node-tracker':
-        specifier: 3.20.0
-        version: 3.20.0
+        specifier: 3.21.0
+        version: 3.21.0
       dataloader:
         specifier: 2.2.2
         version: 2.2.2
@@ -7178,14 +7178,6 @@ packages:
       '@smithy/types': 2.9.1
       tslib: 2.6.2
 
-  /@snowplow/node-tracker@3.20.0:
-    resolution: {integrity: sha512-9Gi+IycU4Rw54fthG9VMXwPBS1txkMwY+0Mdntw06jaAmvi8S99pRwffWWSR6u0mDuvv+8Zd5HIbO1FiXxFnIg==}
-    dependencies:
-      '@snowplow/tracker-core': 3.20.0
-      got: 11.8.6
-      tslib: 2.6.2
-    dev: false
-
   /@snowplow/node-tracker@3.21.0:
     resolution: {integrity: sha512-xfBaYdPJO6YbIsgSj2cahR0OE862pHOiTumeffBr6KI8XxO/Hy1nNFa2zcde3wowIjro2EHpZtAyIAtv2Lh6+Q==}
     dependencies:
@@ -7224,13 +7216,6 @@ packages:
       - commander
       - encoding
     dev: true
-
-  /@snowplow/tracker-core@3.20.0:
-    resolution: {integrity: sha512-ey5dghIfnL9/FRhgADZnp4ASA85ZavfeX9Lz/oCYFhHNLO7l20eTMq4DilDgzdPzutA4LmCQxXLtXRx5hpR9QQ==}
-    dependencies:
-      tslib: 2.6.2
-      uuid: 3.4.0
-    dev: false
 
   /@snowplow/tracker-core@3.21.0:
     resolution: {integrity: sha512-zNxEZgibTofk29vklbasPv0GP2R7URPyhB+Vd3q5d5gPPTwjZXQ6X/EDHHCK9YFC9u0I+NAcgDm7GEGMm6ib4A==}
@@ -9995,7 +9980,7 @@ packages:
     dependencies:
       semver: 7.5.4
       shelljs: 0.8.5
-      typescript: 5.4.0-dev.20240205
+      typescript: 5.4.0-dev.20240206
     dev: false
 
   /duplexer2@0.1.4:
@@ -17877,8 +17862,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.4.0-dev.20240205:
-    resolution: {integrity: sha512-waxaX9QSNlTxyhaeS398h73fWzOr0DOq2rV6ZQSDywcabZjxeiCv18hYDIZXRk4dT0Q0DxhbNAL/THzjKjtDlQ==}
+  /typescript@5.4.0-dev.20240206:
+    resolution: {integrity: sha512-8P1XYxDbG/AyGE5tB8+JpeiQfS5ye1BTvIVDZaHhoK9nJuCn4nkB0L66lvfwYB+46hA4rLo3vE3WkIToSYtqQA==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: false
