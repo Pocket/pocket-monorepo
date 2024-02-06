@@ -1,27 +1,18 @@
 import { SQSEvent, SQSRecord } from 'aws-lambda';
 import { processBody } from '../../tasks/userItemsDelete';
-import { initSentry, captureException } from '../../sentry';
+import * as Sentry from '@sentry/serverless';
+import { config } from '../../config';
 
-export const handler = async (event: SQSEvent): Promise<boolean[]> => {
-  initSentry();
+Sentry.AWSLambda.init({
+  ...config.sentry,
+});
 
-  try {
-    return await Promise.all(
-      event.Records.map((record: SQSRecord) => {
-        return processBody(record.body);
-      }),
-    );
-  } catch (err) {
-    // unless we have a requirement to return a specific error response, just throw the exception after sentry is handled
-    console.log('UserListSearch: error in lambda handler itemDelete', err);
-    await captureException(err, {
-      type: 'userListSearchItemDeleteHandler',
-      data: {
-        err,
-        event,
-      },
-    });
-
-    throw err;
-  }
+export const processor = async (event: SQSEvent): Promise<boolean[]> => {
+  return await Promise.all(
+    event.Records.map((record: SQSRecord) => {
+      return processBody(record.body);
+    }),
+  );
 };
+
+export const handler = Sentry.AWSLambda.wrapHandler(processor);

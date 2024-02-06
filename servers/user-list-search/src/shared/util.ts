@@ -1,5 +1,5 @@
-import { captureException } from '../sentry';
 import striptags from 'striptags';
+import * as Sentry from '@sentry/node';
 
 export const normalizeFullText = (
   html: string | undefined | null,
@@ -26,7 +26,7 @@ export const normalizeDate = (date: Date): string | null => {
   try {
     return date.toISOString();
   } catch (err) {
-    captureException('normalizeDate failed', {
+    Sentry.captureException('normalizeDate failed', {
       data: { date },
     });
     return null;
@@ -49,8 +49,7 @@ export const captureProcessException = (
   } else {
     console.error(exception);
   }
-
-  captureException(exception);
+  Sentry.captureException(exception);
 };
 
 /**

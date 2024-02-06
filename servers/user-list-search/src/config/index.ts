@@ -16,6 +16,14 @@ export const config = {
       process.env.READITLA_DB ||
       '{"password":"","dbname":"readitla_ril-tmp","engine":"mysql","port":"3306","host":"localhost","username":"pkt_listserch_r"}',
   },
+  tracing: {
+    host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
+    serviceName: 'user-list-search',
+  },
+  app: {
+    environment: process.env.NODE_ENV || 'development',
+    port: 4000,
+  },
   mysql: {
     readitla: {
       connectionLimit: 10,

@@ -1822,6 +1822,9 @@ importers:
       '@pocket-tools/apollo-utils':
         specifier: workspace:*
         version: link:../../packages/apollo-utils
+      '@pocket-tools/tracing':
+        specifier: workspace:*
+        version: link:../../packages/tracing
       '@pocket-tools/ts-logger':
         specifier: workspace:*
         version: link:../../packages/ts-logger

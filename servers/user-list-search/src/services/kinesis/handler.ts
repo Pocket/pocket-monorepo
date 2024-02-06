@@ -5,7 +5,6 @@ import {
 } from '../../shared';
 import SqsWritable from '../../sqs/writeable';
 import _ from 'highland';
-import { initSentry } from '../../sentry';
 import { SQS } from '@aws-sdk/client-sqs';
 
 const MAX_JOBS_PER_MESSAGE = 1000;
@@ -142,8 +141,6 @@ export const getHandler: any = (
     userItemsDeleteUrl: string;
   },
 ) => {
-  initSentry();
-
   const createPipelinePromise = (opts: PipelineOptions): Promise<boolean> => {
     return new Promise((resolve, reject) => {
       _(opts.events)

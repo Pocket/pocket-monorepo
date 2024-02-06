@@ -2,7 +2,6 @@ import { DataSourceInterface } from '../datasource/DataSourceInterface';
 import { config } from '../config';
 import { deleteMessage, receiveMessage, sendMessage } from '../sqs';
 import { UserItemsSqsMessage, UserListImportSqsMessage } from '../shared';
-import { captureException } from '../sentry';
 
 const ITEMS_CHUNK_SIZE = 1000;
 
@@ -102,7 +101,6 @@ export const processMessages = async (
       await deleteMessage(userListImportUrl, message.ReceiptHandle);
     }
   } catch (error) {
-    captureException(error);
     console.error('Error processing backfill user search index', error);
   }
 };
