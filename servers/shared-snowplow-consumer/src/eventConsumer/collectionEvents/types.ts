@@ -1,31 +1,10 @@
-export type BasicCollectionEventPayloadWithContext = {
-  object_version: string;
-  collection: Collection;
+export type CollectionEventBridgePayload = {
+  detail: { collection: Collection };
+  source: 'collection-updated' | 'collection-created' | string;
+  'detail-type': EventType;
 };
 
-export type EventTypeString = keyof typeof EventType;
-
-export type CollectionEventPayloadSnowplow =
-  BasicCollectionEventPayloadWithContext & {
-    eventType: EventTypeString;
-  };
-
-export type SnowplowEventType = 'collection_created' | 'collection_updated';
-
-export const SnowplowEventMap: Record<EventTypeString, SnowplowEventType> = {
-  COLLECTION_CREATED: 'collection_created',
-  COLLECTION_UPDATED: 'collection_updated',
-};
-
-export type ObjectUpdate = {
-  trigger: SnowplowEventType;
-  object: 'collection';
-};
-
-export enum EventType {
-  COLLECTION_CREATED = 'COLLECTION_CREATED',
-  COLLECTION_UPDATED = 'COLLECTION_UPDATED',
-}
+export type EventType = 'collection-created' | 'collection-updated';
 
 /**
  * This Collection type aligns with what we have in collection-api i.e the object keys are the same as the Collection type.
@@ -66,12 +45,7 @@ export enum CollectionPartnershipType {
   SPONSORED = 'SPONSORED',
 }
 
-export enum CollectionStatus {
-  DRAFT = 'draft',
-  REVIEW = 'review',
-  PUBLISHED = 'published',
-  ARCHIVED = 'archived',
-}
+export type CollectionStatus = 'draft' | 'review' | 'published' | 'archived';
 
 export type CollectionStoryAuthor = { name: string; sort_order: number };
 
@@ -124,8 +98,3 @@ export type IABChildCategory = {
 };
 
 export type Label = { collection_label_id: string; name: string };
-
-export const collectionEventSchema = {
-  objectUpdate: 'iglu:com.pocket/object_update/jsonschema/1-0-13',
-  collection: 'iglu:com.pocket/collection/jsonschema/1-0-3',
-};

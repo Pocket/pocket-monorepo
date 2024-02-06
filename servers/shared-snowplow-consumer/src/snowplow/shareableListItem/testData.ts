@@ -1,6 +1,6 @@
-import { ShareableListItem } from './types';
+import { ShareableListItem } from '../../eventConsumer/shareableListItemEvents/types';
 
-export const testShareableListItemData: ShareableListItem['data'] = {
+export const testShareableListItemData: ShareableListItem = {
   shareable_list_item_external_id: 'test-shareable-list-item-external-id',
   shareable_list_external_id: 'test-shareable-list-external-id',
   given_url: 'https://test-shareable-list-item-given-url.com',
@@ -16,7 +16,7 @@ export const testShareableListItemData: ShareableListItem['data'] = {
 };
 
 // data with missing non-required fields
-export const testPartialShareableListItemData: ShareableListItem['data'] = {
+export const testPartialShareableListItemData: ShareableListItem = {
   shareable_list_item_external_id: 'test-shareable-list-item-external-id',
   shareable_list_external_id: 'test-shareable-list-external-id',
   given_url: 'https://test-shareable-list-item-given-url.com',

@@ -1,4 +1,3 @@
-import { ObjectUpdate, EventType, prospectEventSchema } from './types';
 import { ProspectEventHandler } from './prospectEventHandler';
 import { testProspectData } from './testData';
 import {
@@ -7,6 +6,13 @@ import {
   getGoodSnowplowEvents,
   parseSnowplowData,
 } from '../testUtils';
+import { ObjectUpdate } from '../../snowtype/snowplow';
+import { ProspectEventBridgePayload } from '../../eventConsumer/prospectEvents/types';
+
+export const prospectEventSchema = {
+  objectUpdate: 'iglu:com.pocket/object_update/jsonschema/1-0-16',
+  prospect: 'iglu:com.pocket/prospect/jsonschema/1-0-1',
+};
 
 function assertValidSnowplowObjectUpdateEvents(
   events,
@@ -55,11 +61,12 @@ function assertProspectSchema(eventContext) {
   );
 }
 
-const testEventData = {
-  object_version: 'new',
-  prospect: {
+const testEventData: ProspectEventBridgePayload = {
+  source: 'prospect-events',
+  detail: {
     ...testProspectData,
   },
+  'detail-type': 'prospect-dismiss',
 };
 
 describe('ProspectEventHandler', () => {
@@ -70,7 +77,6 @@ describe('ProspectEventHandler', () => {
   it('should send prospectEvent to snowplow ', async () => {
     new ProspectEventHandler().process({
       ...testEventData,
-      eventType: EventType.PROSPECT_REVIEWED,
     });
 
     // wait a sec * 3

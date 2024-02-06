@@ -1,17 +1,16 @@
 import {
-  Collection,
   CollectionAuthor,
-  CollectionLanguage,
-  CollectionStatus,
-  CollectionStory,
   CollectionStoryAuthor,
-  CollectionPartnership,
-  CollectionPartnershipType,
-  CurationCategory,
-  IABParentCategory,
-  IABChildCategory,
+  CollectionStory,
   Label,
-} from './types';
+  CurationCategory,
+  CollectionPartnershipType,
+  CollectionPartnership,
+  IABParentCategory,
+  Collection,
+  CollectionLanguage,
+  IABChildCategory,
+} from '../../eventConsumer/collectionEvents/types';
 
 const testAuthor: CollectionAuthor = {
   active: true,
@@ -75,7 +74,7 @@ export const testCollectionData: Collection = {
   externalId: 'test-collection-id',
   slug: 'test-collection-slug',
   title: 'test-collection-title',
-  status: CollectionStatus.PUBLISHED,
+  status: 'published',
   language: CollectionLanguage.EN,
   authors: [testAuthor],
   stories: [testStory],

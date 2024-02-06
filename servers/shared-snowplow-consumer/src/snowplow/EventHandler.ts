@@ -1,22 +1,21 @@
-import { PayloadBuilder, SelfDescribingJson } from '@snowplow/tracker-core';
 import * as Sentry from '@sentry/node';
 import { Tracker } from '@snowplow/node-tracker';
+import {
+  CommonEventProperties,
+  ObjectUpdate,
+  trackObjectUpdate as baseTrackObjectUpdate,
+} from '../snowtype/snowplow';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export class EventHandler {
   constructor(protected tracker: Tracker) {
     this.tracker = tracker;
   }
 
-  /**
-   * Queue snowplow event to be tracked
-   * @param event
-   * @param context
-   * @private
-   */
-  protected addToTrackerQueue(
-    event: PayloadBuilder,
-    context: SelfDescribingJson[],
-  ): void {
+  public trackObjectUpdate<T = any>(
+    tracker: Tracker,
+    objectUpdate: ObjectUpdate & CommonEventProperties<T>,
+  ) {
     try {
       // Note: the track method provided by the @snowplow/node-tracker package
       // only queues the event to be tracked. The package has internal logic
@@ -25,15 +24,17 @@ export class EventHandler {
       //
       // Snowplow has an open issue to make this library async:
       // https://github.com/snowplow/snowplow-javascript-tracker/issues/1087
-      this.tracker.track(event, context);
-      console.log(
+      baseTrackObjectUpdate(tracker, objectUpdate);
+      serverLogger.info(
         `queueing snowplow event to be tracked ->${JSON.stringify(
-          event.getJson(),
-        )} with context -> ${JSON.stringify(context)}`,
+          objectUpdate,
+        )}`,
       );
     } catch (ex) {
-      const message = `Failed to queue event to snowplow.\n event: ${event}\n context: ${context}`;
-      console.log(message);
+      const message = `Failed to queue event to snowplow.\n event: ${JSON.stringify(
+        objectUpdate,
+      )}\n`;
+      serverLogger.error(message);
       Sentry.addBreadcrumb({ message });
       Sentry.captureException(ex);
     }

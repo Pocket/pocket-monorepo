@@ -160,11 +160,17 @@ const seedUsers = async (
         search_hash: i + '1',
         time_added: faker.number.int(timeOpts),
       };
-      await primaryPool.query(`INSERT INTO user_recent_search SET ?`, userSearch);
+      await primaryPool.query(
+        `INSERT INTO user_recent_search SET ?`,
+        userSearch,
+      );
 
       userSearch.search_hash = i + '2';
       userSearch.time_added = faker.number.int(timeOpts);
-      await primaryPool.query(`INSERT INTO user_recent_search SET ?`, userSearch);
+      await primaryPool.query(
+        `INSERT INTO user_recent_search SET ?`,
+        userSearch,
+      );
     }
   }
 };
