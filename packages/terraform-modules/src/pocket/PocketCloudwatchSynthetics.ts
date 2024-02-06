@@ -219,7 +219,7 @@ export class PocketAwsSyntheticChecks extends Construct {
             },
             timeoutInSeconds: 180, // 3 minute timeout
           },
-          runtimeVersion: 'syn-nodejs-puppeteer-4.0',
+          runtimeVersion: 'syn-nodejs-puppeteer-6.2',
           s3Bucket: `pocket-syntheticchecks-${this.config.environment.toLowerCase()}`,
           s3Key: `aws-synthetic-${this.config.environment.toLowerCase()}.zip`,
           schedule: {
@@ -284,7 +284,7 @@ export class PocketAwsSyntheticChecks extends Construct {
             },
             timeoutInSeconds: 180, // 3 minute timeout
           },
-          runtimeVersion: 'syn-nodejs-puppeteer-4.0',
+          runtimeVersion: 'syn-nodejs-puppeteer-6.2',
           s3Bucket: `pocket-syntheticchecks-${this.config.environment.toLowerCase()}`,
           s3Key: `aws-synthetic-${this.config.environment.toLowerCase()}.zip`,
           schedule: {
