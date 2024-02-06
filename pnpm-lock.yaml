@@ -1831,6 +1831,9 @@ importers:
       '@sentry/node':
         specifier: 7.99.0
         version: 7.99.0
+      '@sentry/serverless':
+        specifier: 7.99.0
+        version: 7.99.0
       '@sentry/tracing':
         specifier: 7.99.0
         version: 7.99.0

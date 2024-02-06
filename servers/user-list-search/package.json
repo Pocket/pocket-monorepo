@@ -47,6 +47,7 @@
     "@pocket-tools/tracing": "workspace:*",
     "@sentry/node": "7.99.0",
     "@sentry/tracing": "7.99.0",
+    "@sentry/serverless": "7.99.0",
     "@aws-sdk/client-sqs": "3.507.0",
     "@aws-sdk/client-secrets-manager": "3.507.0",
     "elasticsearch": "^16.7.2",
