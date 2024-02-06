@@ -53,13 +53,12 @@ export class ContextManager implements IContext {
   get userId(): string {
     const userId = this.config.request.headers.userid;
 
-    if (!userId) {
+    if (!userId || userId === 'anonymous') {
       throw new AuthenticationError(
         'You must be logged in to use this service',
       );
     }
-
-    return userId instanceof Array ? userId[0] : userId;
+    return userId as string;
   }
 
   get apiId(): string {
