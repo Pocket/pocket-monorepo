@@ -1,25 +1,10 @@
-import { ObjectUpdateTrigger } from '../../snowtype/snowplow';
-
-export type BasicCollectionEventPayloadWithContext = {
-  object_version: string;
-  collection: Collection;
+export type CollectionEventBridgePayload = {
+  detail: { collection: Collection };
+  source: 'collection-updated' | 'collection-created' | string;
+  'detail-type': EventType;
 };
 
-export type EventTypeString = keyof typeof EventType;
-
-export type CollectionEventPayloadSnowplow =
-  BasicCollectionEventPayloadWithContext & {
-    eventType: EventTypeString;
-  };
-export const SnowplowEventMap: Record<EventTypeString, ObjectUpdateTrigger> = {
-  COLLECTION_CREATED: 'collection_created',
-  COLLECTION_UPDATED: 'collection_updated',
-};
-
-export enum EventType {
-  COLLECTION_CREATED = 'COLLECTION_CREATED',
-  COLLECTION_UPDATED = 'COLLECTION_UPDATED',
-}
+export type EventType = 'collection-created' | 'collection-updated';
 
 /**
  * This Collection type aligns with what we have in collection-api i.e the object keys are the same as the Collection type.

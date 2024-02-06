@@ -1,8 +1,4 @@
 import { SelfDescribingJson } from '@snowplow/tracker-core';
-import {
-  ShareableListItemEventPayloadSnowplow,
-  SnowplowEventMap,
-} from './types';
 import { config } from '../../config';
 import { EventHandler } from '../EventHandler';
 import { getTracker } from '../tracker';
@@ -12,6 +8,7 @@ import {
   ShareableListItem,
   createShareableListItem,
 } from '../../snowtype/snowplow';
+import { ShareableListItemEventBridgePayload } from '../../eventConsumer/shareableListItemEvents/types';
 
 /**
  * class to send `shareable-list-item-event` to snowplow
@@ -27,7 +24,7 @@ export class ShareableListItemEventHandler extends EventHandler {
    * method to create and process event data
    * @param data
    */
-  process(data: ShareableListItemEventPayloadSnowplow): void {
+  process(data: ShareableListItemEventBridgePayload): void {
     const context: SelfDescribingJson[] =
       ShareableListItemEventHandler.generateEventContext(data);
 
@@ -41,21 +38,21 @@ export class ShareableListItemEventHandler extends EventHandler {
    * Builds the Snowplow object_update event object. Extracts the event trigger type from the received payload.
    */
   private static generateShareableListItemEvent(
-    data: ShareableListItemEventPayloadSnowplow,
+    data: ShareableListItemEventBridgePayload,
   ): ObjectUpdate {
     return {
-      trigger: SnowplowEventMap[data.eventType],
+      trigger: data['detail-type'],
       object: 'shareable_list_item',
     };
   }
 
   private static generateEventContext(
-    data: ShareableListItemEventPayloadSnowplow,
+    data: ShareableListItemEventBridgePayload,
   ): SelfDescribingJson[] {
     return [
       createShareableListItem(
         ShareableListItemEventHandler.generateSnowplowShareableListItemEvent(
-          data,
+          data.detail.shareableListItem,
         ),
       ) as unknown as SelfDescribingJson,
     ];
@@ -65,37 +62,21 @@ export class ShareableListItemEventHandler extends EventHandler {
    * Static method to generate an object that maps properties received in the event payload object to the snowplow shareable_list_item object schema.
    */
   private static generateSnowplowShareableListItemEvent(
-    data: ShareableListItemEventPayloadSnowplow,
+    data: ShareableListItemEventBridgePayload['detail']['shareableListItem'],
   ): ShareableListItem {
     return {
-      shareable_list_item_external_id:
-        data.shareable_list_item.shareable_list_item_external_id,
-      shareable_list_external_id:
-        data.shareable_list_item.shareable_list_external_id,
-      given_url: data.shareable_list_item.given_url,
-      title: data.shareable_list_item.title
-        ? data.shareable_list_item.title
-        : undefined,
-      excerpt: data.shareable_list_item.excerpt
-        ? data.shareable_list_item.excerpt
-        : undefined,
-      image_url: data.shareable_list_item.image_url
-        ? data.shareable_list_item.image_url
-        : undefined,
-      authors: data.shareable_list_item.authors
-        ? data.shareable_list_item.authors
-        : undefined,
-      publisher: data.shareable_list_item.publisher
-        ? data.shareable_list_item.publisher
-        : undefined,
-      note: data.shareable_list_item.note
-        ? data.shareable_list_item.note
-        : undefined,
-      sort_order: data.shareable_list_item.sort_order,
-      created_at: data.shareable_list_item.created_at,
-      updated_at: data.shareable_list_item.updated_at
-        ? data.shareable_list_item.updated_at
-        : undefined,
+      shareable_list_item_external_id: data.shareable_list_item_external_id,
+      shareable_list_external_id: data.shareable_list_external_id,
+      given_url: data.given_url,
+      title: data.title ? data.title : undefined,
+      excerpt: data.excerpt ? data.excerpt : undefined,
+      image_url: data.image_url ? data.image_url : undefined,
+      authors: data.authors ? data.authors : undefined,
+      publisher: data.publisher ? data.publisher : undefined,
+      note: data.note ? data.note : undefined,
+      sort_order: data.sort_order,
+      created_at: data.created_at,
+      updated_at: data.updated_at ? data.updated_at : undefined,
     };
   }
 }

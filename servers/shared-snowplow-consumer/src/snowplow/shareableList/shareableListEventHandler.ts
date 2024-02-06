@@ -8,7 +8,7 @@ import {
   ShareableList,
   createShareableList,
 } from '../../snowtype/snowplow';
-import { ShareableListEventPayloadSnowplow, SnowplowEventMap } from './types';
+import { ShareableListEventBridgePayload } from '../../eventConsumer/shareableListEvents/types';
 
 /**
  * class to send `shareable-list-event` to snowplow
@@ -24,7 +24,7 @@ export class ShareableListEventHandler extends EventHandler {
    * method to create and process event data
    * @param data
    */
-  process(data: ShareableListEventPayloadSnowplow): void {
+  process(data: ShareableListEventBridgePayload): void {
     const context: SelfDescribingJson[] =
       ShareableListEventHandler.generateEventContext(data);
 
@@ -38,20 +38,22 @@ export class ShareableListEventHandler extends EventHandler {
    * Builds the Snowplow object_update event object. Extracts the event trigger type from the received payload.
    */
   private static generateShareableListEvent(
-    data: ShareableListEventPayloadSnowplow,
+    data: ShareableListEventBridgePayload,
   ): ObjectUpdate {
     return {
-      trigger: SnowplowEventMap[data.eventType],
+      trigger: data['detail-type'],
       object: 'shareable_list',
     };
   }
 
   private static generateEventContext(
-    data: ShareableListEventPayloadSnowplow,
+    data: ShareableListEventBridgePayload,
   ): SelfDescribingJson[] {
     return [
       createShareableList(
-        ShareableListEventHandler.generateSnowplowShareableListEvent(data),
+        ShareableListEventHandler.generateSnowplowShareableListEvent(
+          data.detail.shareableList,
+        ),
       ) as unknown as SelfDescribingJson,
     ];
   }
@@ -60,38 +62,29 @@ export class ShareableListEventHandler extends EventHandler {
    * Static method to generate an object that maps properties received in the event payload object to the snowplow shareable_list object schema.
    */
   private static generateSnowplowShareableListEvent(
-    data: ShareableListEventPayloadSnowplow,
+    data: ShareableListEventBridgePayload['detail']['shareableList'],
   ): ShareableList {
     return {
-      shareable_list_external_id:
-        data.shareable_list.shareable_list_external_id,
-      user_id: data.shareable_list.user_id
-        ? data.shareable_list.user_id
+      shareable_list_external_id: data.shareable_list_external_id,
+      user_id: data.user_id ? data.user_id : undefined,
+      slug: data.slug,
+      title: data.title,
+      description: data.description ? data.description : undefined,
+      status: data.status,
+      list_item_note_visibility: data.list_item_note_visibility,
+      moderation_status: data.moderation_status,
+      moderated_by: data.moderated_by ? data.moderated_by : undefined,
+      moderation_reason: data.moderation_reason
+        ? data.moderation_reason
         : undefined,
-      slug: data.shareable_list.slug,
-      title: data.shareable_list.title,
-      description: data.shareable_list.description
-        ? data.shareable_list.description
+      moderation_details: data.moderation_details
+        ? data.moderation_details
         : undefined,
-      status: data.shareable_list.status,
-      list_item_note_visibility: data.shareable_list.list_item_note_visibility,
-      moderation_status: data.shareable_list.moderation_status,
-      moderated_by: data.shareable_list.moderated_by
-        ? data.shareable_list.moderated_by
+      restoration_reason: data.restoration_reason
+        ? data.restoration_reason
         : undefined,
-      moderation_reason: data.shareable_list.moderation_reason
-        ? data.shareable_list.moderation_reason
-        : undefined,
-      moderation_details: data.shareable_list.moderation_details
-        ? data.shareable_list.moderation_details
-        : undefined,
-      restoration_reason: data.shareable_list.restoration_reason
-        ? data.shareable_list.restoration_reason
-        : undefined,
-      created_at: data.shareable_list.created_at,
-      updated_at: data.shareable_list.updated_at
-        ? data.shareable_list.updated_at
-        : undefined,
+      created_at: data.created_at,
+      updated_at: data.updated_at ? data.updated_at : undefined,
     };
   }
 }

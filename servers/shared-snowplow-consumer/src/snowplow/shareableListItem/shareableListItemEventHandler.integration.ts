@@ -79,14 +79,12 @@ function assertPartialShareableListItemSchema(eventContext) {
 }
 
 const testEventData = {
-  object_version: 'new',
   shareable_list_item: {
     ...testShareableListItemData,
   },
 };
 
 const testPartialEventData = {
-  object_version: 'new',
   shareable_list_item: {
     ...testPartialShareableListItemData,
   },

@@ -1,14 +1,23 @@
 import { SelfDescribingJson } from '@snowplow/tracker-core';
-import { CollectionEventPayloadSnowplow, SnowplowEventMap } from './types';
 import { config } from '../../config';
 import { EventHandler } from '../EventHandler';
 import { getTracker } from '../tracker';
 import {
   Collection,
   ObjectUpdate,
+  ObjectUpdateTrigger,
   createCollection,
   trackObjectUpdate,
 } from '../../snowtype/snowplow';
+import {
+  CollectionEventBridgePayload,
+  EventType,
+} from '../../eventConsumer/collectionEvents/types';
+
+export const SnowplowEventMap: Record<EventType, ObjectUpdateTrigger> = {
+  'collection-created': 'collection_created',
+  'collection-updated': 'collection_updated',
+};
 
 /**
  * class to send `collection-event` to snowplow
@@ -24,7 +33,7 @@ export class CollectionEventHandler extends EventHandler {
    * method to create and process event data
    * @param data
    */
-  process(data: CollectionEventPayloadSnowplow): void {
+  process(data: CollectionEventBridgePayload): void {
     const context: SelfDescribingJson[] =
       CollectionEventHandler.generateEventContext(data);
 
@@ -39,20 +48,22 @@ export class CollectionEventHandler extends EventHandler {
    * Two possible trigger values are: collection_created and collection_updated
    */
   private static generateCollectionEvent(
-    data: CollectionEventPayloadSnowplow,
+    data: CollectionEventBridgePayload,
   ): ObjectUpdate {
     return {
-      trigger: SnowplowEventMap[data.eventType],
+      trigger: SnowplowEventMap[data['detail-type']],
       object: 'collection',
     };
   }
 
   private static generateEventContext(
-    data: CollectionEventPayloadSnowplow,
+    data: CollectionEventBridgePayload,
   ): SelfDescribingJson[] {
     return [
       createCollection(
-        CollectionEventHandler.generateSnowplowCollectionEvent(data),
+        CollectionEventHandler.generateSnowplowCollectionEvent(
+          data.detail.collection,
+        ),
       ) as unknown as SelfDescribingJson,
     ];
   }
@@ -61,28 +72,28 @@ export class CollectionEventHandler extends EventHandler {
    * Static method to generate an object that maps properties received in the event payload object to the snowplow collection object schema.
    */
   private static generateSnowplowCollectionEvent(
-    data: CollectionEventPayloadSnowplow,
+    data: CollectionEventBridgePayload['detail']['collection'],
   ): Collection {
     return {
       object_version: 'new',
-      collection_id: data.collection.externalId,
-      slug: data.collection.slug,
-      status: data.collection.status,
-      title: data.collection.title,
-      excerpt: data.collection.excerpt,
-      labels: data.collection.labels,
-      intro: data.collection.intro,
-      image_url: data.collection.imageUrl,
-      authors: data.collection.authors,
-      iab_parent_category: data.collection.IABParentCategory,
-      language: data.collection.language,
-      curation_category: data.collection.curationCategory,
-      partnership: data.collection.partnership,
-      stories: data.collection.stories,
-      published_at: data.collection.publishedAt,
-      created_at: data.collection.createdAt,
-      updated_at: data.collection.updatedAt,
-      iab_child_category: data.collection.IABChildCategory,
+      collection_id: data.externalId,
+      slug: data.slug,
+      status: data.status,
+      title: data.title,
+      excerpt: data.excerpt,
+      labels: data.labels,
+      intro: data.intro,
+      image_url: data.imageUrl,
+      authors: data.authors,
+      iab_parent_category: data.IABParentCategory,
+      language: data.language,
+      curation_category: data.curationCategory,
+      partnership: data.partnership,
+      stories: data.stories,
+      published_at: data.publishedAt,
+      created_at: data.createdAt,
+      updated_at: data.updatedAt,
+      iab_child_category: data.IABChildCategory,
     };
   }
 }

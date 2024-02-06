@@ -1,16 +1,16 @@
 import {
-  Collection,
   CollectionAuthor,
-  CollectionLanguage,
-  CollectionStory,
   CollectionStoryAuthor,
-  CollectionPartnership,
-  CollectionPartnershipType,
-  CurationCategory,
-  IABParentCategory,
-  IABChildCategory,
+  CollectionStory,
   Label,
-} from './types';
+  CurationCategory,
+  CollectionPartnershipType,
+  CollectionPartnership,
+  IABParentCategory,
+  Collection,
+  CollectionLanguage,
+  IABChildCategory,
+} from '../../eventConsumer/collectionEvents/types';
 
 const testAuthor: CollectionAuthor = {
   active: true,

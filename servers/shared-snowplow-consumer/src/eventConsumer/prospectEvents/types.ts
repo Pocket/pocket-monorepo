@@ -1,4 +1,10 @@
-import { ObjectUpdateTrigger } from '../../snowtype/snowplow';
+export type ProspectEventBridgePayload = {
+  detail: Prospect;
+  source: 'prospect-events' | string;
+  'detail-type': EventType;
+};
+
+export type EventType = 'prospect-dismiss';
 
 export type Prospect = {
   // a GUID we generate prior to inserting into dynamo
@@ -32,27 +38,6 @@ export type Prospect = {
   // The Unix timestamp in seconds.
   reviewedAt?: number;
 };
-
-export type BasicProspectEventPayloadWithContext = {
-  object_version: string;
-  prospect: Prospect;
-};
-
-export type EventTypeString = keyof typeof EventType;
-
-export type ProspectEventPayloadSnowplow =
-  BasicProspectEventPayloadWithContext & {
-    eventType: EventTypeString;
-  };
-
-export const SnowplowEventMap: Record<EventTypeString, ObjectUpdateTrigger> = {
-  PROSPECT_REVIEWED: 'prospect_reviewed',
-};
-
-//snowplow event type
-export enum EventType {
-  PROSPECT_REVIEWED = 'PROSPECT_REVIEWED',
-}
 
 export enum ProspectReviewStatus {
   Created = 'created',

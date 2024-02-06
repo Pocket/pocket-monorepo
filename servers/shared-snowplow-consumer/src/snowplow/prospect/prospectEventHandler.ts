@@ -1,5 +1,4 @@
 import { SelfDescribingJson } from '@snowplow/tracker-core';
-import { ProspectEventPayloadSnowplow, SnowplowEventMap } from './types';
 import { config } from '../../config';
 import { EventHandler } from '../EventHandler';
 import { getTracker } from '../tracker';
@@ -8,7 +7,16 @@ import {
   ObjectUpdate,
   createProspect,
   Prospect,
+  ObjectUpdateTrigger,
 } from '../../snowtype/snowplow';
+import {
+  EventType,
+  ProspectEventBridgePayload,
+} from '../../eventConsumer/prospectEvents/types';
+
+export const SnowplowEventMap: Record<EventType, ObjectUpdateTrigger> = {
+  'prospect-dismiss': 'prospect_reviewed',
+};
 
 /**
  * class to send `prospect-event` to snowplow
@@ -24,7 +32,7 @@ export class ProspectEventHandler extends EventHandler {
    * method to create and process event data
    * @param data
    */
-  process(data: ProspectEventPayloadSnowplow): void {
+  process(data: ProspectEventBridgePayload): void {
     const context: SelfDescribingJson[] =
       ProspectEventHandler.generateEventContext(data);
 
@@ -38,10 +46,10 @@ export class ProspectEventHandler extends EventHandler {
    * @private
    */
   private static generateProspectUpdateEvent(
-    data: ProspectEventPayloadSnowplow,
+    data: ProspectEventBridgePayload,
   ): ObjectUpdate {
     return {
-      trigger: SnowplowEventMap[data.eventType],
+      trigger: SnowplowEventMap[data['detail-type']],
       object: 'prospect',
     };
   }
@@ -50,37 +58,37 @@ export class ProspectEventHandler extends EventHandler {
    * @private to build event context for PROSPECT_REVIEWED event.
    */
   private static generateReviewedEventAccountContext(
-    data: ProspectEventPayloadSnowplow,
+    data: ProspectEventBridgePayload['detail'],
   ): Prospect {
     return {
       object_version: 'new',
-      prospect_id: data.prospect.prospectId,
-      url: data.prospect.url,
-      title: data.prospect.title,
-      excerpt: data.prospect.excerpt,
-      image_url: data.prospect.imageUrl,
-      language: data.prospect.language,
-      topic: data.prospect.topic,
-      is_collection: data.prospect.isCollection,
-      is_syndicated: data.prospect.isSyndicated,
-      authors: data.prospect.authors.split(','),
-      publisher: data.prospect.publisher,
-      domain: data.prospect.domain,
-      prospect_source: data.prospect.prospectType,
-      scheduled_surface_id: data.prospect.scheduledSurfaceGuid,
-      created_at: data.prospect.createdAt,
-      prospect_review_status: data.prospect.prospectReviewStatus,
-      reviewed_by: data.prospect.reviewedBy,
-      reviewed_at: data.prospect.reviewedAt,
+      prospect_id: data.prospectId,
+      url: data.url,
+      title: data.title,
+      excerpt: data.excerpt,
+      image_url: data.imageUrl,
+      language: data.language,
+      topic: data.topic,
+      is_collection: data.isCollection,
+      is_syndicated: data.isSyndicated,
+      authors: data.authors.split(','),
+      publisher: data.publisher,
+      domain: data.domain,
+      prospect_source: data.prospectType,
+      scheduled_surface_id: data.scheduledSurfaceGuid,
+      created_at: data.createdAt,
+      prospect_review_status: data.prospectReviewStatus,
+      reviewed_by: data.reviewedBy,
+      reviewed_at: data.reviewedAt,
     };
   }
 
   private static generateEventContext(
-    data: ProspectEventPayloadSnowplow,
+    data: ProspectEventBridgePayload,
   ): SelfDescribingJson[] {
     return [
       createProspect(
-        ProspectEventHandler.generateReviewedEventAccountContext(data),
+        ProspectEventHandler.generateReviewedEventAccountContext(data.detail),
       ) as unknown as SelfDescribingJson,
     ];
   }
