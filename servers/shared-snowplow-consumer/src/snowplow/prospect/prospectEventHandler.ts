@@ -3,7 +3,6 @@ import { config } from '../../config';
 import { EventHandler } from '../EventHandler';
 import { getTracker } from '../tracker';
 import {
-  trackObjectUpdate,
   ObjectUpdate,
   createProspect,
   Prospect,
@@ -36,7 +35,7 @@ export class ProspectEventHandler extends EventHandler {
     const context: SelfDescribingJson[] =
       ProspectEventHandler.generateEventContext(data);
 
-    trackObjectUpdate(this.tracker, {
+    this.trackObjectUpdate(this.tracker, {
       ...ProspectEventHandler.generateProspectUpdateEvent(data),
       context,
     });

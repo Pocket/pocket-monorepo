@@ -1,4 +1,3 @@
-import { EventType, SnowplowEventMap } from './types';
 import { ShareableListItemEventHandler } from './shareableListItemEventHandler';
 import {
   testShareableListItemData,
@@ -79,13 +78,13 @@ function assertPartialShareableListItemSchema(eventContext) {
 }
 
 const testEventData = {
-  shareable_list_item: {
+  shareableListItem: {
     ...testShareableListItemData,
   },
 };
 
 const testPartialEventData = {
-  shareable_list_item: {
+  shareableListItem: {
     ...testPartialShareableListItemData,
   },
 };
@@ -97,8 +96,11 @@ describe('ShareableListItemEventHandler', () => {
 
   it('should send shareable_list_item_created event to snowplow', async () => {
     new ShareableListItemEventHandler().process({
-      ...testEventData,
-      eventType: EventType.SHAREABLE_LIST_ITEM_CREATED,
+      detail: {
+        ...testEventData,
+      },
+      source: 'shareable-list-item-events',
+      'detail-type': 'shareable_list_item_created',
     });
 
     // wait a sec * 3
@@ -120,14 +122,17 @@ describe('ShareableListItemEventHandler', () => {
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [SnowplowEventMap[EventType.SHAREABLE_LIST_ITEM_CREATED]],
+      ['shareable_list_item_created'],
     );
   });
 
   it('should send shareable_list_item_deleted event to snowplow', async () => {
     new ShareableListItemEventHandler().process({
-      ...testEventData,
-      eventType: EventType.SHAREABLE_LIST_ITEM_DELETED,
+      detail: {
+        ...testEventData,
+      },
+      source: 'shareable-list-item-events',
+      'detail-type': 'shareable_list_item_deleted',
     });
 
     // wait a sec * 3
@@ -149,14 +154,17 @@ describe('ShareableListItemEventHandler', () => {
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [SnowplowEventMap[EventType.SHAREABLE_LIST_ITEM_DELETED]],
+      ['shareable_list_item_deleted'],
     );
   });
 
   it('should send shareable_list_item_updated event to snowplow', async () => {
     new ShareableListItemEventHandler().process({
-      ...testEventData,
-      eventType: EventType.SHAREABLE_LIST_ITEM_UPDATED,
+      detail: {
+        ...testEventData,
+      },
+      source: 'shareable-list-item-events',
+      'detail-type': 'shareable_list_item_updated',
     });
 
     // wait a sec * 3
@@ -178,14 +186,17 @@ describe('ShareableListItemEventHandler', () => {
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [SnowplowEventMap[EventType.SHAREABLE_LIST_ITEM_UPDATED]],
+      ['shareable_list_item_updated'],
     );
   });
 
   it('should send shareable_list_item_deleted event with missing non-required fields to snowplow', async () => {
     new ShareableListItemEventHandler().process({
-      ...testPartialEventData,
-      eventType: EventType.SHAREABLE_LIST_ITEM_DELETED,
+      detail: {
+        ...testPartialEventData,
+      },
+      source: 'shareable-list-item-events',
+      'detail-type': 'shareable_list_item_deleted',
     });
 
     // wait a sec * 3
@@ -207,7 +218,7 @@ describe('ShareableListItemEventHandler', () => {
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [SnowplowEventMap[EventType.SHAREABLE_LIST_ITEM_DELETED]],
+      ['shareable_list_item_deleted'],
     );
   });
 });

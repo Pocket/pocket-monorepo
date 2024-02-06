@@ -7,7 +7,6 @@ import {
   ObjectUpdate,
   ObjectUpdateTrigger,
   createCollection,
-  trackObjectUpdate,
 } from '../../snowtype/snowplow';
 import {
   CollectionEventBridgePayload,
@@ -37,7 +36,7 @@ export class CollectionEventHandler extends EventHandler {
     const context: SelfDescribingJson[] =
       CollectionEventHandler.generateEventContext(data);
 
-    trackObjectUpdate(this.tracker, {
+    this.trackObjectUpdate(this.tracker, {
       ...CollectionEventHandler.generateCollectionEvent(data),
       context,
     });

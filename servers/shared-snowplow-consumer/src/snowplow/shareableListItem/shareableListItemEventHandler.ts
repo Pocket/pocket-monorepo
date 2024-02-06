@@ -3,7 +3,6 @@ import { config } from '../../config';
 import { EventHandler } from '../EventHandler';
 import { getTracker } from '../tracker';
 import {
-  trackObjectUpdate,
   ObjectUpdate,
   ShareableListItem,
   createShareableListItem,
@@ -28,7 +27,7 @@ export class ShareableListItemEventHandler extends EventHandler {
     const context: SelfDescribingJson[] =
       ShareableListItemEventHandler.generateEventContext(data);
 
-    trackObjectUpdate(this.tracker, {
+    this.trackObjectUpdate(this.tracker, {
       ...ShareableListItemEventHandler.generateShareableListItemEvent(data),
       context,
     });

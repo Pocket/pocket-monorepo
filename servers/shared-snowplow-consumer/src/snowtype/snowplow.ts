@@ -728,7 +728,9 @@ export type ProspectReviewStatus = "created" | "recommendation" | "corpus" | "re
 
 import { buildSelfDescribingEvent, SelfDescribingJson, Timestamp, Tracker } from '@snowplow/node-tracker';
 
-interface CommonEventProperties<T = Record<string, unknown>> {
+// WARNING!
+// NOTE POCKET DEV - OUT OF BOUND CHANGE TO EXPORT THIS. IF YOU REGENERATE TYPES, RE-EXPORT THIS
+export interface CommonEventProperties<T = Record<string, unknown>> {
     /** Add context to an event by setting an Array of Self Describing JSON */
     context?: Array<SelfDescribingJson<T>> | null;
     /** Set the true timestamp or overwrite the device sent timestamp on an event */

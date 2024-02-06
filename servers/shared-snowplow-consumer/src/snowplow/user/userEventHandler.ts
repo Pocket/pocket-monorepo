@@ -1,33 +1,23 @@
-import { buildSelfDescribingEvent } from '@snowplow/node-tracker';
 import { SelfDescribingJson } from '@snowplow/tracker-core';
-import {
-  EventType,
-  SnowplowEventMap,
-  UserEventPayloadSnowplow,
-  userEventsSchema,
-  Account,
-  ApiUser,
-  ObjectUpdate,
-  User,
-} from './types';
 import { config } from '../../config';
 import { EventHandler } from '../EventHandler';
 import { getTracker } from '../tracker';
+import {
+  EventType,
+  UserEventBridgePaylod,
+} from '../../eventConsumer/userEvents/types';
+import {
+  ObjectUpdate,
+  ObjectUpdateTrigger,
+  createAPIUser,
+  createAccount,
+  createUser,
+} from '../../snowtype/snowplow';
 
-type ObjectUpdateEvent = Omit<SelfDescribingJson, 'data'> & {
-  data: ObjectUpdate;
-};
-
-type AccountContext = Omit<SelfDescribingJson, 'data'> & {
-  data: Account;
-};
-
-type UserContext = Omit<SelfDescribingJson, 'data'> & {
-  data: User;
-};
-
-type ApiUserContext = Omit<SelfDescribingJson, 'data'> & {
-  data: ApiUser;
+export const SnowplowEventMap: Record<EventType, ObjectUpdateTrigger> = {
+  'account-deletion': 'account_delete',
+  'account-email-updated': 'account_email_updated',
+  'account-password-changed': 'account_password_changed',
 };
 
 /**
@@ -44,27 +34,24 @@ export class UserEventHandler extends EventHandler {
    * method to create and process event data
    * @param data
    */
-  process(data: UserEventPayloadSnowplow): void {
-    this.addRequestInfoToTracker(data);
-    const event = buildSelfDescribingEvent({
-      event: UserEventHandler.generateAccountUpdateEvent(data),
-    });
+  process(data: UserEventBridgePaylod): void {
+    this.addRequestInfoToTracker(data.detail);
     const context = UserEventHandler.generateEventContext(data);
-    super.addToTrackerQueue(event, context);
+    this.trackObjectUpdate(this.tracker, {
+      ...UserEventHandler.generateAccountUpdateEvent(data),
+      context,
+    });
   }
 
   /**
    * @private
    */
   private static generateAccountUpdateEvent(
-    data: UserEventPayloadSnowplow,
-  ): ObjectUpdateEvent {
+    data: UserEventBridgePaylod,
+  ): ObjectUpdate {
     return {
-      schema: userEventsSchema.objectUpdate,
-      data: {
-        trigger: SnowplowEventMap[data.eventType],
-        object: 'account',
-      },
+      trigger: SnowplowEventMap[data['detail-type']],
+      object: 'account',
     };
   }
 
@@ -72,90 +59,82 @@ export class UserEventHandler extends EventHandler {
    * @private to build event context for ACCOUNT_DELETE event.
    */
   private static generateDeleteEventAccountContext(
-    data: UserEventPayloadSnowplow,
-  ): AccountContext {
-    return {
-      schema: userEventsSchema.account,
-      data: {
-        object_version: 'new',
-        user_id: parseInt(data.user.id),
-      },
-    };
+    data: UserEventBridgePaylod['detail'],
+  ): SelfDescribingJson {
+    return createAccount({
+      object_version: 'new',
+      user_id: parseInt(data.userId),
+    }) as unknown as SelfDescribingJson;
   }
 
   private static generateAccountContext(
-    data: UserEventPayloadSnowplow,
-  ): AccountContext {
-    return {
-      schema: userEventsSchema.account,
-      data: {
-        object_version: 'new',
-        user_id: parseInt(data.user.id),
-        emails: [data.user.email],
-      },
-    };
+    data: UserEventBridgePaylod['detail'],
+  ): SelfDescribingJson {
+    return createAccount({
+      object_version: 'new',
+      user_id: parseInt(data.userId),
+      emails: [data.email],
+    }) as unknown as SelfDescribingJson;
   }
 
   private static generateEventContext(
-    data: UserEventPayloadSnowplow,
+    data: UserEventBridgePaylod,
   ): SelfDescribingJson[] {
     const context = [
-      UserEventHandler.generateUserContext(data),
-      UserEventHandler.generateApiUserContext(data),
+      UserEventHandler.generateUserContext(data.detail),
+      UserEventHandler.generateApiUserContext(data.detail),
     ];
 
-    data.eventType == EventType.ACCOUNT_DELETE
-      ? context.push(UserEventHandler.generateDeleteEventAccountContext(data))
-      : context.push(UserEventHandler.generateAccountContext(data));
+    data['detail-type'] == 'account-deletion'
+      ? context.push(
+          UserEventHandler.generateDeleteEventAccountContext(data.detail),
+        )
+      : context.push(UserEventHandler.generateAccountContext(data.detail));
     return context;
   }
 
   private static generateUserContext(
-    data: UserEventPayloadSnowplow,
-  ): UserContext {
+    data: UserEventBridgePaylod['detail'],
+  ): SelfDescribingJson {
     const userDataWithoutGuid = {
-      email: data.user.email,
-      hashed_guid: data.user.hashedGuid,
-      user_id: parseInt(data.user.id),
-      hashed_user_id: data.user.hashedId,
+      email: data.email,
+      hashed_guid: data.hashedGuid,
+      user_id: parseInt(data.userId),
+      hashed_user_id: data.hashedId,
     };
 
-    if (data.user.guid) {
-      return {
-        schema: userEventsSchema.user,
-        data: { ...userDataWithoutGuid, guid: data.user.guid },
-      };
+    if (data.guid) {
+      return createUser({
+        ...userDataWithoutGuid,
+        guid: data.guid,
+      }) as unknown as SelfDescribingJson;
     }
 
-    return {
-      schema: userEventsSchema.user,
-      data: { ...userDataWithoutGuid },
-    };
+    return createUser({
+      ...userDataWithoutGuid,
+    }) as unknown as SelfDescribingJson;
   }
 
   private static generateApiUserContext(
-    data: UserEventPayloadSnowplow,
-  ): ApiUserContext {
-    return {
-      schema: userEventsSchema.apiUser,
-      data: {
-        api_id: parseInt(data.apiUser.apiId),
-        name: data.apiUser.name,
-        is_native: data.apiUser.isNative,
-        is_trusted: data.apiUser.isTrusted,
-        client_version: data.apiUser.clientVersion,
-      },
-    };
+    data: UserEventBridgePaylod['detail'],
+  ): SelfDescribingJson {
+    return createAPIUser({
+      api_id: parseInt(data.apiId),
+      name: data.name,
+      is_native: data.isNative,
+      is_trusted: data.isTrusted,
+      client_version: data.clientVersion,
+    }) as unknown as SelfDescribingJson;
   }
 
   /**
    * Updates tracker with request information
    * @private
    */
-  private addRequestInfoToTracker(data: UserEventPayloadSnowplow) {
-    this.tracker.setLang(data.request?.language);
-    this.tracker.setDomainUserId(data.request?.snowplowDomainUserId); // possibly grab from cookie else grab from context
-    this.tracker.setIpAddress(data.request?.ipAddress); // get the remote address from teh x-forwarded-for header
-    this.tracker.setUseragent(data.request?.userAgent);
+  private addRequestInfoToTracker(data: UserEventBridgePaylod['detail']) {
+    this.tracker.setLang(data.language);
+    this.tracker.setDomainUserId(data.snowplowDomainUserId); // possibly grab from cookie else grab from context
+    this.tracker.setIpAddress(data.ipAddress); // get the remote address from teh x-forwarded-for header
+    this.tracker.setUseragent(data.userAgent);
   }
 }
