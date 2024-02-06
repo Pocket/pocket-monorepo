@@ -52,7 +52,7 @@ export class CollectionEventHandler extends EventHandler {
   ): SelfDescribingJson[] {
     return [
       createCollection(
-        CollectionEventHandler.generateSnowplowCollectionEvent(data)
+        CollectionEventHandler.generateSnowplowCollectionEvent(data),
       ) as unknown as SelfDescribingJson,
     ];
   }

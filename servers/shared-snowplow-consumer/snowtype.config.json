@@ -9,7 +9,8 @@
     "iglu:com.pocket/account/jsonschema/1-0-3",
     "iglu:com.pocket/list_item_update/jsonschema/1-0-1",
     "iglu:com.pocket/list_item/jsonschema/1-0-1",
-    "iglu:com.pocket/collection/jsonschema/1-0-3"
+    "iglu:com.pocket/collection/jsonschema/1-0-3",
+    "iglu:com.pocket/prospect/jsonschema/1-0-1"
   ],
   "eventSpecificationIds": [],
   "dataProductIds": [],

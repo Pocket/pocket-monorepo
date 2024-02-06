@@ -628,6 +628,104 @@ export interface StoryAuthor {
     [property: string]: any;
 }
 
+/**
+ * Candidate corpus item awaiting review
+ */
+export interface Prospect {
+    /**
+     * The list of authors of the candidate corpus item.
+     */
+    authors?: string[];
+    /**
+     * The UTC unix timestamp (in seconds) for when the candidate corpus item was created.
+     */
+    created_at: number;
+    /**
+     * The name of the online publication that published this story.
+     */
+    domain?: string;
+    /**
+     * The excerpt for the candidate corpus item.
+     */
+    excerpt?: string;
+    /**
+     * The url of the main image of the candidate corpus item.
+     */
+    image_url?: string;
+    /**
+     * Indicates whether the candidate corpus item is a collection.
+     */
+    is_collection?: boolean;
+    /**
+     * Indicates whether the candidate corpus item is a syndicated article.
+     */
+    is_syndicated?: boolean;
+    /**
+     * The language of the candidate corpus item.
+     */
+    language?: string;
+    /**
+     * Indication of whether the version of the entity is before or after the modifications were
+     * made.
+     */
+    object_version: ObjectVersion;
+    /**
+     * The identifier for the curation prospect, used to join with the dataset that describes
+     * the prospect.
+     */
+    prospect_id: string;
+    /**
+     * The decision by the curator on the item’s validity for the curated corpus.
+     */
+    prospect_review_status: ProspectReviewStatus;
+    /**
+     * Source of Prospect candidate sets
+     */
+    prospect_source: string;
+    /**
+     * The name of the online publication that published this story.
+     */
+    publisher?: string;
+    /**
+     * The UTC unix timestamp (in seconds) for when the candidate corpus item was created.
+     */
+    reviewed_at?: number;
+    /**
+     * The curator who created the candidate corpus item.
+     */
+    reviewed_by?: string;
+    /**
+     * A guid that identifies the scheduled surface.
+     */
+    scheduled_surface_id: string;
+    /**
+     * An optional text field for the curator to provide more information about a change in
+     * status.
+     */
+    status_reason_comment?: string;
+    /**
+     * The list of reasons why the curator set the current status for the candidate corpus item.
+     */
+    status_reasons?: string[];
+    /**
+     * The title of the candidate corpus item.
+     */
+    title?: string;
+    /**
+     * The topic of the candidate corpus item.
+     */
+    topic?: string;
+    /**
+     * The url of the candidate corpus item.
+     */
+    url?: string;
+}
+
+/**
+ * The decision by the curator on the item’s validity for the curated corpus.
+ */
+export type ProspectReviewStatus = "created" | "recommendation" | "corpus" | "rejected" | "dismissed";
+
 import { buildSelfDescribingEvent, SelfDescribingJson, Timestamp, Tracker } from '@snowplow/node-tracker';
 
 interface CommonEventProperties<T = Record<string, unknown>> {
@@ -842,6 +940,29 @@ export function createCollection(collection: Collection){
     return {
         schema: 'iglu:com.pocket/collection/jsonschema/1-0-3',
         data: collection
+    }
+}
+/**
+ * Track a Snowplow event for Prospect.
+ * Candidate corpus item awaiting review
+ */
+export function trackProspect<T extends {} = any>(tracker: Tracker, prospect: Prospect & CommonEventProperties<T>){
+    const { context, timestamp, ...data } = prospect;
+    tracker.track(buildSelfDescribingEvent({
+        event: {
+            schema: 'iglu:com.pocket/prospect/jsonschema/1-0-1',
+            data
+        }
+    }), context, timestamp);
+}
+
+/**
+ * Creates a Snowplow Prospect entity.
+ */
+export function createProspect(prospect: Prospect){
+    return {
+        schema: 'iglu:com.pocket/prospect/jsonschema/1-0-1',
+        data: prospect
     }
 }
 

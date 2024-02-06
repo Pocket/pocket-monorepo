@@ -1,4 +1,4 @@
-import { ObjectUpdate, EventType, collectionEventSchema } from './types';
+import { EventType } from './types';
 import { CollectionEventHandler } from './collectionEventHandler';
 import { testCollectionData } from './testData';
 import {
@@ -7,6 +7,7 @@ import {
   getGoodSnowplowEvents,
   parseSnowplowData,
 } from '../testUtils';
+import { ObjectUpdate } from '../../snowtype/snowplow';
 
 function assertValidSnowplowObjectUpdateEvents(
   events,
@@ -18,7 +19,7 @@ function assertValidSnowplowObjectUpdateEvents(
 
   expect(parsedEvents).toEqual(
     triggers.map((trigger) => ({
-      schema: collectionEventSchema.objectUpdate,
+      schema: 'iglu:com.pocket/object_update/jsonschema/1-0-16',
       data: { trigger: trigger, object: 'collection' },
     })),
   );
@@ -28,7 +29,7 @@ function assertCollectionSchema(eventContext) {
   expect(eventContext.data).toEqual(
     expect.arrayContaining([
       {
-        schema: collectionEventSchema.collection,
+        schema: 'iglu:com.pocket/collection/jsonschema/1-0-3',
         data: {
           object_version: 'new',
           collection_id: testCollectionData.externalId,

@@ -1,4 +1,4 @@
-import { ObjectUpdate, EventType, prospectEventSchema } from './types';
+import { ObjectUpdate, EventType } from './types';
 import { ProspectEventHandler } from './prospectEventHandler';
 import { testProspectData } from './testData';
 import {
@@ -18,7 +18,7 @@ function assertValidSnowplowObjectUpdateEvents(
 
   expect(parsedEvents).toEqual(
     triggers.map((trigger) => ({
-      schema: prospectEventSchema.objectUpdate,
+      schema: 'iglu:com.pocket/object_update/jsonschema/1-0-16',
       data: { trigger: trigger, object: 'prospect' },
     })),
   );
@@ -28,7 +28,7 @@ function assertProspectSchema(eventContext) {
   expect(eventContext.data).toEqual(
     expect.arrayContaining([
       {
-        schema: prospectEventSchema.prospect,
+        schema: 'iglu:com.pocket/prospect/jsonschema/1-0-1',
         data: {
           object_version: 'new',
           prospect_id: testProspectData.prospectId,

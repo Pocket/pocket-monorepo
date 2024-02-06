@@ -1,3 +1,5 @@
+import { ObjectUpdateTrigger } from '../../snowtype/snowplow';
+
 export type Prospect = {
   // a GUID we generate prior to inserting into dynamo
   id: string;
@@ -45,13 +47,8 @@ export type ProspectEventPayloadSnowplow =
 
 export type SnowplowEventType = 'prospect_reviewed';
 
-export const SnowplowEventMap: Record<EventTypeString, SnowplowEventType> = {
+export const SnowplowEventMap: Record<EventTypeString, ObjectUpdateTrigger> = {
   PROSPECT_REVIEWED: 'prospect_reviewed',
-};
-
-export type ObjectUpdate = {
-  trigger: SnowplowEventType;
-  object: 'prospect';
 };
 
 //snowplow event type
@@ -66,8 +63,3 @@ export enum ProspectReviewStatus {
   Rejected = 'rejected',
   Dismissed = 'dismissed',
 }
-
-export const prospectEventSchema = {
-  objectUpdate: 'iglu:com.pocket/object_update/jsonschema/1-0-9',
-  prospect: 'iglu:com.pocket/prospect/jsonschema/1-0-0',
-};
