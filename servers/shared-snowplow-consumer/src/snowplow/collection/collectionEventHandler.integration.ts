@@ -1,4 +1,3 @@
-import { ObjectUpdate, EventType, collectionEventSchema } from './types';
 import { CollectionEventHandler } from './collectionEventHandler';
 import { testCollectionData } from './testData';
 import {
@@ -7,6 +6,13 @@ import {
   getGoodSnowplowEvents,
   parseSnowplowData,
 } from '../testUtils';
+import { ObjectUpdate } from '../../snowtype/snowplow';
+import { CollectionEventBridgePayload } from '../../eventConsumer/collectionEvents/types';
+
+export const collectionEventSchema = {
+  objectUpdate: 'iglu:com.pocket/object_update/jsonschema/1-0-16',
+  collection: 'iglu:com.pocket/collection/jsonschema/1-0-3',
+};
 
 function assertValidSnowplowObjectUpdateEvents(
   events,
@@ -55,11 +61,14 @@ function assertCollectionSchema(eventContext) {
   );
 }
 
-const testEventData = {
-  object_version: 'new',
-  collection: {
-    ...testCollectionData,
+const testEventData: CollectionEventBridgePayload = {
+  detail: {
+    collection: {
+      ...testCollectionData,
+    },
   },
+  source: 'collection-created',
+  'detail-type': 'collection-created',
 };
 
 describe('CollectionEventHandler', () => {
@@ -70,7 +79,7 @@ describe('CollectionEventHandler', () => {
   it('should send collection created event to snowplow ', async () => {
     new CollectionEventHandler().process({
       ...testEventData,
-      eventType: EventType.COLLECTION_CREATED,
+      'detail-type': 'collection-created',
     });
 
     // wait a sec * 3
@@ -99,7 +108,7 @@ describe('CollectionEventHandler', () => {
   it('should send collection updated event to snowplow ', async () => {
     new CollectionEventHandler().process({
       ...testEventData,
-      eventType: EventType.COLLECTION_UPDATED,
+      'detail-type': 'collection-updated',
     });
 
     // wait a sec * 3

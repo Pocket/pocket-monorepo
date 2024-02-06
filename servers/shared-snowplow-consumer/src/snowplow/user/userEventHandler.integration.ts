@@ -1,4 +1,3 @@
-import { ObjectUpdate, EventType, userEventsSchema } from './types';
 import { UserEventHandler } from './userEventHandler';
 import {
   resetSnowplowEvents,
@@ -6,6 +5,14 @@ import {
   getGoodSnowplowEvents,
   parseSnowplowData,
 } from '../testUtils';
+import { ObjectUpdate } from '../../snowtype/snowplow';
+
+export const userEventsSchema = {
+  account: 'iglu:com.pocket/account/jsonschema/1-0-3',
+  objectUpdate: 'iglu:com.pocket/object_update/jsonschema/1-0-16',
+  user: 'iglu:com.pocket/user/jsonschema/1-0-1',
+  apiUser: 'iglu:com.pocket/api_user/jsonschema/1-0-2',
+};
 
 function assertValidSnowplowObjectUpdateEvents(
   events,
@@ -30,7 +37,7 @@ function assertAccountDeleteSchema(eventContext) {
         schema: userEventsSchema.account,
         data: {
           object_version: 'new',
-          user_id: parseInt(testAccountData.id),
+          user_id: parseInt(testEventData.detail.userId),
         },
       },
     ]),
@@ -44,8 +51,8 @@ function assertAccountSchema(eventContext) {
         schema: userEventsSchema.account,
         data: {
           object_version: 'new',
-          user_id: parseInt(testAccountData.id),
-          emails: [testAccountData.email],
+          user_id: parseInt(testEventData.detail.userId),
+          emails: [testEventData.detail.email],
         },
       },
     ]),
@@ -58,31 +65,27 @@ function assertApiAndUserSchema(eventContext: { [p: string]: any }) {
       {
         schema: userEventsSchema.user,
         data: {
-          user_id: parseInt(testEventData.user.id),
-          hashed_user_id: testAccountData.hashedId,
-          email: testAccountData.email,
+          user_id: parseInt(testEventData.detail.userId),
+          hashed_user_id: testEventData.detail.hashedId,
+          email: testEventData.detail.email,
         },
       },
       {
         schema: userEventsSchema.apiUser,
-        data: { api_id: parseInt(testEventData.apiUser.apiId) },
+        data: { api_id: parseInt(testEventData.detail.apiId) },
       },
     ]),
   );
 }
 
-const testAccountData = {
-  id: '1',
-  hashedId: 'test_hashed_user_id',
-  email: 'test@pocket.com',
-  isPremium: true,
-};
-
 const testEventData = {
-  user: {
-    ...testAccountData,
+  detail: {
+    userId: '1',
+    hashedId: 'test_hashed_user_id',
+    email: 'test@pocket.com',
+    isPremium: true,
+    apiId: '1',
   },
-  apiUser: { apiId: '1' },
 };
 
 describe('UserEventHandler', () => {
@@ -93,7 +96,8 @@ describe('UserEventHandler', () => {
   it('should send account delete event to snowplow', async () => {
     new UserEventHandler().process({
       ...testEventData,
-      eventType: EventType.ACCOUNT_DELETE,
+      source: 'user-events',
+      'detail-type': 'account-deletion',
     });
 
     // wait a sec * 3
@@ -120,7 +124,8 @@ describe('UserEventHandler', () => {
   it('should send update email event to snowplow', async () => {
     new UserEventHandler().process({
       ...testEventData,
-      eventType: EventType.ACCOUNT_EMAIL_UPDATED,
+      source: 'user-events',
+      'detail-type': 'account-email-updated',
     });
 
     // wait a sec * 3
@@ -147,7 +152,8 @@ describe('UserEventHandler', () => {
   it('should send account password changed event to snowplow', async () => {
     new UserEventHandler().process({
       ...testEventData,
-      eventType: EventType.ACCOUNT_PASSWORD_CHANGED,
+      source: 'user-events',
+      'detail-type': 'account-password-changed',
     });
 
     // wait a sec * 3
