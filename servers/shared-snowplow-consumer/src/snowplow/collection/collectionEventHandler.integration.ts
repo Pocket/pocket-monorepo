@@ -9,6 +9,11 @@ import {
 } from '../testUtils';
 import { ObjectUpdate } from '../../snowtype/snowplow';
 
+export const collectionEventSchema = {
+  objectUpdate: 'iglu:com.pocket/object_update/jsonschema/1-0-16',
+  collection: 'iglu:com.pocket/collection/jsonschema/1-0-3',
+};
+
 function assertValidSnowplowObjectUpdateEvents(
   events,
   triggers: ObjectUpdate['trigger'][],
@@ -19,7 +24,7 @@ function assertValidSnowplowObjectUpdateEvents(
 
   expect(parsedEvents).toEqual(
     triggers.map((trigger) => ({
-      schema: 'iglu:com.pocket/object_update/jsonschema/1-0-16',
+      schema: collectionEventSchema.objectUpdate,
       data: { trigger: trigger, object: 'collection' },
     })),
   );
@@ -29,7 +34,7 @@ function assertCollectionSchema(eventContext) {
   expect(eventContext.data).toEqual(
     expect.arrayContaining([
       {
-        schema: 'iglu:com.pocket/collection/jsonschema/1-0-3',
+        schema: collectionEventSchema.collection,
         data: {
           object_version: 'new',
           collection_id: testCollectionData.externalId,

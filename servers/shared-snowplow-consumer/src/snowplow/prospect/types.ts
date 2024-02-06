@@ -45,8 +45,6 @@ export type ProspectEventPayloadSnowplow =
     eventType: EventTypeString;
   };
 
-export type SnowplowEventType = 'prospect_reviewed';
-
 export const SnowplowEventMap: Record<EventTypeString, ObjectUpdateTrigger> = {
   PROSPECT_REVIEWED: 'prospect_reviewed',
 };

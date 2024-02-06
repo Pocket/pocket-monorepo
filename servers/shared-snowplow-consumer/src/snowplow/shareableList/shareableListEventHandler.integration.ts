@@ -1,4 +1,4 @@
-import { ObjectUpdate, EventType, shareableListEventSchema } from './types';
+import { EventType, SnowplowEventMap } from './types';
 import { ShareableListEventHandler } from './shareableListEventHandler';
 import {
   testShareableListData,
@@ -10,10 +10,16 @@ import {
   getGoodSnowplowEvents,
   parseSnowplowData,
 } from '../testUtils';
+import { ObjectUpdate } from '../../snowtype/snowplow';
+
+export const shareableListEventSchema = {
+  objectUpdate: 'iglu:com.pocket/object_update/jsonschema/1-0-16',
+  shareable_list: 'iglu:com.pocket/shareable_list/jsonschema/1-0-6',
+};
 
 function assertValidSnowplowObjectUpdateEvents(
   events,
-  triggers: ObjectUpdate['data']['trigger'][],
+  triggers: ObjectUpdate['trigger'][],
 ) {
   const parsedEvents = events
     .map(parseSnowplowData)
@@ -77,12 +83,14 @@ function assertPartialShareableListSchema(eventContext) {
 }
 
 const testEventData = {
+  object_version: 'new',
   shareable_list: {
     ...testShareableListData,
   },
 };
 
 const testPartialEventData = {
+  object_version: 'new',
   shareable_list: {
     ...testPartialShareableListData,
   },
@@ -118,7 +126,7 @@ describe('ShareableListEventHandler', () => {
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [EventType.SHAREABLE_LIST_CREATED],
+      [SnowplowEventMap[EventType.SHAREABLE_LIST_CREATED]],
     );
   });
 
@@ -147,7 +155,7 @@ describe('ShareableListEventHandler', () => {
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [EventType.SHAREABLE_LIST_UPDATED],
+      [SnowplowEventMap[EventType.SHAREABLE_LIST_UPDATED]],
     );
   });
 
@@ -176,7 +184,7 @@ describe('ShareableListEventHandler', () => {
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [EventType.SHAREABLE_LIST_DELETED],
+      [SnowplowEventMap[EventType.SHAREABLE_LIST_DELETED]],
     );
   });
 
@@ -205,7 +213,7 @@ describe('ShareableListEventHandler', () => {
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [EventType.SHAREABLE_LIST_PUBLISHED],
+      [SnowplowEventMap[EventType.SHAREABLE_LIST_PUBLISHED]],
     );
   });
 
@@ -234,7 +242,7 @@ describe('ShareableListEventHandler', () => {
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [EventType.SHAREABLE_LIST_UNPUBLISHED],
+      [SnowplowEventMap[EventType.SHAREABLE_LIST_UNPUBLISHED]],
     );
   });
 
@@ -263,7 +271,7 @@ describe('ShareableListEventHandler', () => {
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [EventType.SHAREABLE_LIST_HIDDEN],
+      [SnowplowEventMap[EventType.SHAREABLE_LIST_HIDDEN]],
     );
   });
 
@@ -292,7 +300,7 @@ describe('ShareableListEventHandler', () => {
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [EventType.SHAREABLE_LIST_UNHIDDEN],
+      [SnowplowEventMap[EventType.SHAREABLE_LIST_UNHIDDEN]],
     );
   });
 
@@ -321,7 +329,7 @@ describe('ShareableListEventHandler', () => {
 
     assertValidSnowplowObjectUpdateEvents(
       goodEvents.map((goodEvent) => goodEvent.rawEvent.parameters.ue_px),
-      [EventType.SHAREABLE_LIST_CREATED],
+      [SnowplowEventMap[EventType.SHAREABLE_LIST_CREATED]],
     );
   });
 });
