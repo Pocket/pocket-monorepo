@@ -72,13 +72,13 @@ export class SqsConsumer {
         const body = JSON.parse(data.Messages[0].Body);
         //get the eventBridge content from SNS.Message
         eventBridgeContent = JSON.parse(body.Message);
-        console.log(`SQS body -> ` + JSON.stringify(body));
+        serverLogger.info(`SQS body`, JSON.stringify(body));
       }
     } catch (error) {
       const receiveError = `Error receiving messages from queue ${JSON.stringify(
         data?.Messages[0].Body,
       )}`;
-      console.error(receiveError, error);
+      serverLogger.error(receiveError, error);
       Sentry.addBreadcrumb({ message: receiveError });
       Sentry.captureException(error, { level: 'fatal' });
     }
@@ -87,7 +87,7 @@ export class SqsConsumer {
       const status = await this.processMessage(eventBridgeContent);
 
       if (!status) {
-        console.log(`adding to DLQ -> ${JSON.stringify(data.Messages[0])}`);
+        serverLogger.info(`adding to DLQ`, JSON.stringify(data.Messages[0]));
         await this.insertToDLQ(data.Messages[0]);
       }
 
@@ -127,8 +127,7 @@ export class SqsConsumer {
       return true;
     } catch (error) {
       const errorMessage = 'Error processing message from queue';
-      console.error(errorMessage, error);
-      console.error(JSON.stringify(event));
+      serverLogger.error(errorMessage, error);
       Sentry.addBreadcrumb({ message: errorMessage, data: event });
       Sentry.captureException(error);
       return false;
@@ -152,7 +151,7 @@ export class SqsConsumer {
    * @param message processed SQS message
    */
   private async deleteMessage(message: Message) {
-    console.log(`deleting SQS message -> ` + JSON.stringify(message));
+    serverLogger.info(`deleting SQS message`, JSON.stringify(message));
 
     const deleteParams = {
       QueueUrl: config.aws.sqs.sharedSnowplowQueue.url,
@@ -162,8 +161,7 @@ export class SqsConsumer {
       await this.sqsClient.send(new DeleteMessageCommand(deleteParams));
     } catch (error) {
       const errorMessage = 'Error deleting message from queue';
-      console.error(errorMessage, error);
-      console.error(JSON.stringify(message));
+      serverLogger.error(errorMessage, error);
       Sentry.addBreadcrumb({ message: errorMessage, data: message });
       Sentry.captureException(error);
     }
@@ -178,8 +176,7 @@ export class SqsConsumer {
       await this.sqsClient.send(new SendMessageCommand(insertParams));
     } catch (error) {
       const errorMessage = 'Error inserting message from queue';
-      console.error(errorMessage, error);
-      console.error(JSON.stringify(message));
+      serverLogger.error(errorMessage, error);
       Sentry.addBreadcrumb({ message: errorMessage, data: message });
       Sentry.captureException(error);
     }
