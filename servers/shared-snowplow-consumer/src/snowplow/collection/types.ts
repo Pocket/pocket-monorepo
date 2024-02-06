@@ -1,3 +1,5 @@
+import { ObjectUpdateTrigger } from '../../snowtype/snowplow';
+
 export type BasicCollectionEventPayloadWithContext = {
   object_version: string;
   collection: Collection;
@@ -9,17 +11,9 @@ export type CollectionEventPayloadSnowplow =
   BasicCollectionEventPayloadWithContext & {
     eventType: EventTypeString;
   };
-
-export type SnowplowEventType = 'collection_created' | 'collection_updated';
-
-export const SnowplowEventMap: Record<EventTypeString, SnowplowEventType> = {
+export const SnowplowEventMap: Record<EventTypeString, ObjectUpdateTrigger> = {
   COLLECTION_CREATED: 'collection_created',
   COLLECTION_UPDATED: 'collection_updated',
-};
-
-export type ObjectUpdate = {
-  trigger: SnowplowEventType;
-  object: 'collection';
 };
 
 export enum EventType {
@@ -66,12 +60,7 @@ export enum CollectionPartnershipType {
   SPONSORED = 'SPONSORED',
 }
 
-export enum CollectionStatus {
-  DRAFT = 'draft',
-  REVIEW = 'review',
-  PUBLISHED = 'published',
-  ARCHIVED = 'archived',
-}
+export type CollectionStatus = 'draft' | 'review' | 'published' | 'archived';
 
 export type CollectionStoryAuthor = { name: string; sort_order: number };
 
@@ -124,8 +113,3 @@ export type IABChildCategory = {
 };
 
 export type Label = { collection_label_id: string; name: string };
-
-export const collectionEventSchema = {
-  objectUpdate: 'iglu:com.pocket/object_update/jsonschema/1-0-13',
-  collection: 'iglu:com.pocket/collection/jsonschema/1-0-3',
-};

@@ -1,51 +1,14 @@
-import { buildSelfDescribingEvent } from '@snowplow/node-tracker';
 import { SelfDescribingJson } from '@snowplow/tracker-core';
-import {
-  CollectionEventPayloadSnowplow,
-  CollectionStatus,
-  CollectionLanguage,
-  ObjectUpdate,
-  SnowplowEventMap,
-  CollectionAuthor,
-  CollectionPartnership,
-  CollectionStory,
-  CurationCategory,
-  IABChildCategory,
-  IABParentCategory,
-  Label,
-  collectionEventSchema,
-} from './types';
+import { CollectionEventPayloadSnowplow, SnowplowEventMap } from './types';
 import { config } from '../../config';
 import { EventHandler } from '../EventHandler';
 import { getTracker } from '../tracker';
-
-type ObjectUpdateEvent = Omit<SelfDescribingJson, 'data'> & {
-  data: ObjectUpdate;
-};
-
-type CollectionContext = Omit<SelfDescribingJson, 'data'> & {
-  data: {
-    object_version: string;
-    collection_id: string;
-    slug: string;
-    status: CollectionStatus;
-    title: string;
-    excerpt: string;
-    labels: Label[];
-    intro: string;
-    image_url: string;
-    authors: CollectionAuthor[];
-    iab_parent_category: IABParentCategory;
-    language: CollectionLanguage;
-    curation_category: CurationCategory;
-    partnership: CollectionPartnership;
-    stories: CollectionStory[];
-    published_at: number;
-    created_at: number;
-    updated_at: number;
-    iab_child_category: IABChildCategory;
-  };
-};
+import {
+  Collection,
+  ObjectUpdate,
+  createCollection,
+  trackObjectUpdate,
+} from '../../snowtype/snowplow';
 
 /**
  * class to send `collection-event` to snowplow
@@ -62,12 +25,13 @@ export class CollectionEventHandler extends EventHandler {
    * @param data
    */
   process(data: CollectionEventPayloadSnowplow): void {
-    const event = buildSelfDescribingEvent({
-      event: CollectionEventHandler.generateCollectionEvent(data),
-    });
     const context: SelfDescribingJson[] =
       CollectionEventHandler.generateEventContext(data);
-    super.addToTrackerQueue(event, context);
+
+    trackObjectUpdate(this.tracker, {
+      ...CollectionEventHandler.generateCollectionEvent(data),
+      context,
+    });
   }
 
   /**
@@ -76,20 +40,21 @@ export class CollectionEventHandler extends EventHandler {
    */
   private static generateCollectionEvent(
     data: CollectionEventPayloadSnowplow,
-  ): ObjectUpdateEvent {
+  ): ObjectUpdate {
     return {
-      schema: collectionEventSchema.objectUpdate,
-      data: {
-        trigger: SnowplowEventMap[data.eventType],
-        object: 'collection',
-      },
+      trigger: SnowplowEventMap[data.eventType],
+      object: 'collection',
     };
   }
 
   private static generateEventContext(
     data: CollectionEventPayloadSnowplow,
   ): SelfDescribingJson[] {
-    return [CollectionEventHandler.generateSnowplowCollectionEvent(data)];
+    return [
+      createCollection(
+        CollectionEventHandler.generateSnowplowCollectionEvent(data)
+      ) as unknown as SelfDescribingJson,
+    ];
   }
 
   /**
@@ -97,31 +62,27 @@ export class CollectionEventHandler extends EventHandler {
    */
   private static generateSnowplowCollectionEvent(
     data: CollectionEventPayloadSnowplow,
-  ): CollectionContext {
-    const snowplowEvent = {
-      schema: collectionEventSchema.collection,
-      data: {
-        object_version: 'new',
-        collection_id: data.collection.externalId,
-        slug: data.collection.slug,
-        status: data.collection.status,
-        title: data.collection.title,
-        excerpt: data.collection.excerpt,
-        labels: data.collection.labels,
-        intro: data.collection.intro,
-        image_url: data.collection.imageUrl,
-        authors: data.collection.authors,
-        iab_parent_category: data.collection.IABParentCategory,
-        language: data.collection.language,
-        curation_category: data.collection.curationCategory,
-        partnership: data.collection.partnership,
-        stories: data.collection.stories,
-        published_at: data.collection.publishedAt,
-        created_at: data.collection.createdAt,
-        updated_at: data.collection.updatedAt,
-        iab_child_category: data.collection.IABChildCategory,
-      },
+  ): Collection {
+    return {
+      object_version: 'new',
+      collection_id: data.collection.externalId,
+      slug: data.collection.slug,
+      status: data.collection.status,
+      title: data.collection.title,
+      excerpt: data.collection.excerpt,
+      labels: data.collection.labels,
+      intro: data.collection.intro,
+      image_url: data.collection.imageUrl,
+      authors: data.collection.authors,
+      iab_parent_category: data.collection.IABParentCategory,
+      language: data.collection.language,
+      curation_category: data.collection.curationCategory,
+      partnership: data.collection.partnership,
+      stories: data.collection.stories,
+      published_at: data.collection.publishedAt,
+      created_at: data.collection.createdAt,
+      updated_at: data.collection.updatedAt,
+      iab_child_category: data.collection.IABChildCategory,
     };
-    return snowplowEvent;
   }
 }

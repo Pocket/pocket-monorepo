@@ -12,7 +12,8 @@
     "test": "jest \"\\.spec\\.ts\"",
     "test-integrations": "jest \"\\.integration\\.ts\" --forceExit --runInBand",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
-    "format": "eslint --fix \"src/**/*.ts\""
+    "format": "eslint --fix \"src/**/*.ts\"",
+    "snowplow:generate": "snowtype generate"
   },
   "author": "",
   "license": "ISC",
@@ -23,13 +24,14 @@
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "7.99.0",
     "@sentry/tracing": "7.99.0",
-    "@snowplow/node-tracker": "3.20.0",
+    "@snowplow/node-tracker": "3.21.0",
     "express": "4.18.2",
     "express-validator": "^7.0.1",
     "node-fetch": "2.7.0"
   },
   "devDependencies": {
     "@faker-js/faker": "8.3.1",
+    "@snowplow/snowtype": "^0.2.0",
     "@types/jest": "29.5.11",
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
