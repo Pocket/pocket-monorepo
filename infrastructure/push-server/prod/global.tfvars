@@ -1,5 +1,0 @@
-ecr_repository_name = "push-notifications"
-iam_stack           = "PushProdIAM"
-sqs_queue_name      = "pocket-push-queue"
-environment         = "Prod"
-region              = "us-east-1"
