@@ -38,7 +38,7 @@ export class SQSEventLambda extends Construct {
       },
       functionResponseTypes: ['ReportBatchItemFailures'],
       lambda: {
-        runtime: LAMBDA_RUNTIMES.NODEJS18,
+        runtime: LAMBDA_RUNTIMES.NODEJS20,
         handler: 'index.handler',
         timeout: 300,
         reservedConcurrencyLimit: 10,
