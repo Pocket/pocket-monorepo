@@ -52,19 +52,24 @@ export function mockUnleash(
     getToggle(name: string): FeatureInterface {
       return this.toggleData[name];
     }
+    setToggle(name: string, toggleData: FeatureInterface): FeatureInterface {
+      this.toggleData[name] = toggleData;
+      const dataIndex = this.data.findIndex((toggle) => toggle.name === name);
+      if (dataIndex > -1) {
+        this.data.splice(dataIndex, 1);
+      }
+      this.data.push(toggleData);
+      return toggleData;
+    }
   }
   const repo = new LocalRepo(bootstrap);
 
   const unleash = initialize({
     appName: config?.appName ?? 'mock-unleash',
-    url: 'not-needed',
     refreshInterval: 0,
-    disableMetrics: true,
+    url: 'not-needed',
     repository: repo,
-    bootstrap: undefined,
-    bootstrapOverride: undefined,
-    storageProvider: undefined,
-    strategies: undefined,
+    disableMetrics: true,
   });
   // Notify that it's ready (does not connect to anything)
   // If this isn't done, any fallbacks provided to `isEnabled`
