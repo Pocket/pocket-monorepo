@@ -1,0 +1,171 @@
+
+workflows:
+  push-server:
+    jobs:
+
+      ######
+      # Every PR Jobs
+      ######
+      - test_integrations:
+          <<: *not_dev_main
+          for: push_server
+          context: pocket
+          name: push-server_test_integrations
+          scope: push-server
+
+      # Try building the ECS docker image on each branch
+      - build_image:
+          <<: *not_dev_main
+          context: pocket
+          for: push_server
+          name: push-server_build_docker
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          repo-name: pushserver-dev-app
+          ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
+          push: false
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=push-server --build-arg APP_PATH=servers/push-server --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=push-server --build-arg PORT=4867 
+     
+      # - infrastructure:
+      #     <<: *not_dev_main
+      #     context: pocket
+      #     for: push_server
+      #     name: push-server_infrastructure_plan_prod
+      #     scope: push-server-cdk
+      #     stack-output-path: infrastructure/push-server/cdktf.out/stacks/push-server
+      #     resource-class: pocket/default-prod
+      #     dev: false
+      #     apply: false
+
+      # ######
+      # # Dev Branch Deployment (Dev Environment)
+      # ######
+
+      # - infrastructure:
+      #     <<: *only_dev
+      #     context: pocket
+      #     for: push_server
+      #     name: push-server_infrastructure_apply_dev
+      #     scope: push-server-cdk
+      #     stack-output-path: infrastructure/push-server/cdktf.out/stacks/push-server
+      #     resource-class: pocket/default-dev
+      #     apply: true
+      #     dev: true
+
+      # # Build & Deploy the Dev Docker Image
+      # - build_image:
+      #     <<: *only_dev
+      #     context: pocket
+      #     for: push_server
+      #     name: push-server_build_docker_dev
+      #     aws-access-key-id: Dev_AWS_ACCESS_KEY
+      #     aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+      #     aws-region: Dev_AWS_DEFAULT_REGION
+      #     repo-name: pushserver-dev-app
+      #     ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
+      #     push: true
+      #     extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=push-server --build-arg APP_PATH=servers/push-server --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=push-server --build-arg PORT=4867
+      #     requires:
+      #       - push-server_infrastructure_apply_dev
+
+      # - code_deploy_ecs:
+      #     <<: *only_dev
+      #     context: pocket
+      #     for: push_server
+      #     name: push-server_code_deploy_ecs_dev
+      #     resource-class: pocket/default-dev
+      #     codedeploy-app-name: ImageAPI-Dev-ECS
+      #     codedeploy-group-name: ImageAPI-Dev-ECS
+      #     requires:
+      #       - push-server_build_docker_dev
+
+      # # Notify sentry of dev deployment
+      # - sentry_release_notification:
+      #     <<: *only_dev
+      #     name: push-server_sentry-release-notification-dev
+      #     context: pocket
+      #     for: push_server
+      #     sentry_project_name: push-server
+      #     sentry_env: development
+      #     sentry_org: pocket
+      #     requires:
+      #       - push-server_code_deploy_ecs_dev
+     
+      # # Setup params we may use in Lambdas
+      # - setup_deploy_params:
+      #     <<: *only_dev
+      #     name: push-server_deploy-params-dev
+      #     aws_access_key_id: Dev_AWS_ACCESS_KEY
+      #     aws_secret_access_key: Dev_AWS_SECRET_ACCESS_KEY
+      #     context: pocket
+      #     env: Dev
+      #     service_name: ImageAPI
+      #     requires:
+      #       - push-server_code_deploy_ecs_dev
+
+
+      # ######
+      # # Main Branch Deployment (Prod Environment)
+      # ######
+      # - infrastructure:
+      #     <<: *only_main
+      #     context: pocket
+      #     for: push_server
+      #     name: push-server_infrastructure_apply_prod
+      #     scope: push-server-cdk
+      #     stack-output-path: infrastructure/push-server/cdktf.out/stacks/push-server
+      #     resource-class: pocket/default-prod
+      #     apply: true
+      #     dev: false
+
+      # # Build & Deploy the Prod Docker Image
+      # - build_image:
+      #     <<: *only_main
+      #     context: pocket
+      #     for: push_server
+      #     name: push-server_build_docker_prod
+      #     aws-access-key-id: Prod_AWS_ACCESS_KEY
+      #     aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
+      #     aws-region: Prod_AWS_DEFAULT_REGION
+      #     repo-name: pushserver-prod-app
+      #     ecr-url: 996905175585.dkr.ecr.us-east-1.amazonaws.com
+      #     push: true
+      #     extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=push-server --build-arg APP_PATH=servers/push-server --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=push-server --build-arg PORT=4867
+      #     requires:
+      #       - push-server_infrastructure_apply_prod
+
+      # - code_deploy_ecs:
+      #     <<: *only_main
+      #     context: pocket
+      #     for: push_server
+      #     name: push-server_code_deploy_ecs_prod
+      #     resource-class: pocket/default-prod
+      #     codedeploy-app-name: ImageAPI-Prod-ECS
+      #     codedeploy-group-name: ImageAPI-Prod-ECS
+      #     requires:
+      #       - push-server_build_docker_prod
+
+      # # Notify sentry of main deployment
+      # - sentry_release_notification:
+      #     <<: *only_main
+      #     name: push-server_sentry-release-notification-prod
+      #     context: pocket
+      #     for: push_server
+      #     sentry_project_name: push-server
+      #     sentry_env: production
+      #     sentry_org: pocket
+      #     requires:
+      #       - push-server_code_deploy_ecs_prod
+
+      # # Setup params we may use in Lambdas
+      # - setup_deploy_params:
+      #     <<: *only_main
+      #     name: push-server_deploy-params-prod
+      #     aws_access_key_id: Prod_AWS_ACCESS_KEY
+      #     aws_secret_access_key: Prod_AWS_SECRET_ACCESS_KEY
+      #     context: pocket
+      #     env: Prod
+      #     service_name: ImageAPI
+      #     requires:
+      #       - push-server_code_deploy_ecs_prod

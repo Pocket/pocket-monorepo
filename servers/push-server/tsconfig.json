@@ -1,17 +1,9 @@
 {
-  "extends": "@pocket-tools/tsconfig",
-  "esModuleInterop": true,
+  "extends": "tsconfig/graphql.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDirs": ["src",],
-    "esModuleInterop": true,
-    "noEmitHelpers": true,
-    "importHelpers": true
+    "rootDirs": ["src"]
   },
-  "exclude": [
-    "node_modules"
-  ],
-  "include": [
-    "src/**/*.ts",
-  ]
+  "exclude": ["node_modules"],
+  "include": ["src/**/*.ts"]
 }

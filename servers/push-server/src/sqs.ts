@@ -1,45 +1,71 @@
-import AWS from 'aws-sdk'
-import { Message, SendMessageResult } from 'aws-sdk/clients/sqs'
+import {
+  DeleteMessageCommand,
+  DeleteMessageCommandOutput,
+  Message,
+  ReceiveMessageCommand,
+  SQSClient,
+  SendMessageCommand,
+  SendMessageCommandOutput,
+} from '@aws-sdk/client-sqs';
 
-const config = {
-  jobQueueUrl: process.env.JOB_QUEUE_URL || '',
-  tokenQueueUrl: process.env.TOKEN_QUEUE_URL || '',
-  region: process.env.AWS_REGION || '',
-  sqsEndpoint: process.env.SQS_ENDPOINT || '',
+const awsEnvironments = ['production', 'development'];
+let localAwsEndpoint: string = process.env.SQS_ENDPOINT;
+if (!awsEnvironments.includes(process.env.NODE_ENV)) {
+  localAwsEndpoint = process.env.AWS_ENDPOINT || 'http://localhost:4566';
 }
 
+export const config = {
+  jobQueueUrl:
+    process.env.JOB_QUEUE_URL ||
+    'http://localhost:4566/000000000000/pocket-push-queue',
+  tokenQueueUrl:
+    process.env.TOKEN_QUEUE_URL ||
+    'http://localhost:4566/000000000000/pocket-push-feedback-queue',
+  region: process.env.AWS_REGION || 'us-east-1',
+  sqsEndpoint: localAwsEndpoint,
+};
+
 // Create an SQS service object
-const client = new AWS.SQS({
-  apiVersion: '2012-11-05',
+const client = new SQSClient({
   endpoint: config.sqsEndpoint,
   region: config.region,
-})
+});
 
 export const sqs = {
   getMessages: async (): Promise<Message[]> => {
-    const {Messages} = await client.receiveMessage({
-      QueueUrl: config.jobQueueUrl,
-      MaxNumberOfMessages: 10,
-      WaitTimeSeconds: 20,
-    }).promise()
-
-    return (Messages || [])
-  },
-  deleteMessage: (message: Message): Promise<any> => {
-    return client.deleteMessage({
-      QueueUrl: config.jobQueueUrl,
-      ReceiptHandle: message.ReceiptHandle || '',
-    }).promise()
-  },
-  destroyToken: (tokenType: number, token: string): Promise<SendMessageResult> => {
-    console.log('Invalidating device token', token)
-    return client.sendMessage({
-      QueueUrl: config.tokenQueueUrl,
-      MessageBody: JSON.stringify({
-        action: 'invalidate',
-        notificationType: tokenType,
-        token: token,
+    const { Messages } = await client.send(
+      new ReceiveMessageCommand({
+        QueueUrl: config.jobQueueUrl,
+        MaxNumberOfMessages: 10,
+        WaitTimeSeconds: 20,
       }),
-    }).promise()
+    );
+
+    return Messages || [];
   },
-}
+  deleteMessage: (message: Message): Promise<DeleteMessageCommandOutput> => {
+    return client.send(
+      new DeleteMessageCommand({
+        QueueUrl: config.jobQueueUrl,
+        ReceiptHandle: message.ReceiptHandle || '',
+      }),
+    );
+  },
+  destroyToken: (
+    tokenType: number,
+    token: string,
+  ): Promise<SendMessageCommandOutput> => {
+    console.log('Invalidating device token', token);
+
+    return client.send(
+      new SendMessageCommand({
+        QueueUrl: config.tokenQueueUrl,
+        MessageBody: JSON.stringify({
+          action: 'invalidate',
+          notificationType: tokenType,
+          token: token,
+        }),
+      }),
+    );
+  },
+};

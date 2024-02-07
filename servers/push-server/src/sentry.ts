@@ -1,7 +1,6 @@
-import * as Sentry from '@sentry/node'
-import {sentryDsn} from './config'
+import * as Sentry from '@sentry/node';
+import { sentryDsn } from './config';
 
-Sentry.init({dsn: sentryDsn})
+Sentry.init({ dsn: sentryDsn });
 
-export default Sentry
-
+export default Sentry;
