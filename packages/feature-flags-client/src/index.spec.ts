@@ -1,10 +1,10 @@
-import { getClient, mockClient } from '.';
+import { getUnleash, mockUnleash } from '.';
 import { Unleash, destroy } from 'unleash-client';
 
 describe('feature flags client', () => {
   afterEach(() => destroy());
   it('returns an unleash client instance', () => {
-    const client = getClient({
+    const client = getUnleash({
       appName: 'test-app',
       url: 'http://localhost:4949',
       refreshInterval: 0,
@@ -12,7 +12,7 @@ describe('feature flags client', () => {
     expect(client).toBeInstanceOf(Unleash);
   });
   it('creates a mock instance if mock options are provided', () => {
-    const { unleash: client } = mockClient([], {
+    const { unleash: client } = mockUnleash([], {
       appName: 'test-app',
     });
     expect(client).toBeInstanceOf(Unleash);
@@ -29,7 +29,7 @@ describe('feature flags client', () => {
       strategies: [],
       impressionData: false,
     };
-    const { unleash: client } = mockClient([testFeatureToggle], {
+    const { unleash: client } = mockUnleash([testFeatureToggle], {
       appName: 'test-app',
     });
     expect(client).toBeInstanceOf(Unleash);
@@ -48,7 +48,7 @@ describe('feature flags client', () => {
       strategies: [],
       impressionData: false,
     };
-    const { unleash: client } = mockClient([testFeatureToggle], {
+    const { unleash: client } = mockUnleash([testFeatureToggle], {
       appName: 'test-app',
       url: 'http://localhost:4949',
     });
@@ -66,7 +66,7 @@ describe('feature flags client', () => {
       strategies: [],
       impressionData: false,
     };
-    const { unleash: client, repo } = mockClient([testFeatureToggle], {
+    const { unleash: client, repo } = mockUnleash([testFeatureToggle], {
       appName: 'test-app',
       url: 'http://localhost:4949',
     });

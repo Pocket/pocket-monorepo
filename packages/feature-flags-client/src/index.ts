@@ -17,13 +17,12 @@ export { mockUnleash } from './mockClient';
  * connect to a real server instance.
  * @returns Unleash client instance (globally set)
  */
-export function getUnleash(config: UnleashConfig) {
+export function getUnleash(config: UnleashConfig): Unleash {
   // The actual unleash client. Note that this is not a blocking
   // call, so it's possible that the application uses stale toggles
   // on startup (defaults to any fallback values provided to `isEnabled`,
   // etc. until client is marked as ready).
-  let unleash: Unleash;
-  unleash = initialize(config);
+  const unleash = initialize(config);
   unleash.on('error', (err) =>
     serverLogger.error('Unleash errror', { data: err }),
   );
