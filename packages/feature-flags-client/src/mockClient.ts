@@ -1,4 +1,9 @@
-import { Unleash, UnleashEvents, UnleashConfig } from 'unleash-client';
+import {
+  initialize,
+  Unleash,
+  UnleashEvents,
+  UnleashConfig,
+} from 'unleash-client';
 import { RepositoryInterface } from 'unleash-client/lib/repository';
 import { EventEmitter } from 'events';
 import { FeatureInterface } from 'unleash-client/lib/feature';
@@ -18,7 +23,11 @@ import { Segment } from 'unleash-client/lib/strategy/strategy';
  *
  * @param bootstrap Feature flags toggles (used for testing)
  */
-const client = (config: UnleashConfig, bootstrap?: FeatureInterface[]) => {
+
+export function mockClient(
+  bootstrap: FeatureInterface[],
+  config?: Partial<Pick<UnleashConfig, 'appName' | 'url'>>,
+) {
   // Have to construct a custom repository and
   // emit the UnleashEvents.Ready event from it;
   // If using bootstrap data alone and not connecting
@@ -48,24 +57,28 @@ const client = (config: UnleashConfig, bootstrap?: FeatureInterface[]) => {
     getToggle(name: string): FeatureInterface {
       return this.toggleData[name];
     }
+    setToggle(name: string, toggleData: FeatureInterface): FeatureInterface {
+      this.toggleData[name] = toggleData;
+      const dataIndex = this.data.findIndex((toggle) => toggle.name === name);
+      if (dataIndex > -1) {
+        this.data.splice(dataIndex, 1);
+      }
+      this.data.push(toggleData);
+      return toggleData;
+    }
   }
   const repo = new LocalRepo(bootstrap);
 
-  const unleash = new Unleash({
-    ...config,
+  const unleash = initialize({
+    appName: config.appName,
     refreshInterval: 0,
-    disableMetrics: true,
+    url: 'not-needed',
     repository: repo,
-    bootstrap: undefined,
-    bootstrapOverride: undefined,
-    storageProvider: undefined,
-    strategies: undefined,
+    disableMetrics: true,
   });
   // Notify that it's ready (does not connect to anything)
   // If this isn't done, any fallbacks provided to `isEnabled`
   // or similar will override the passed data.
   repo.emit(UnleashEvents.Ready);
-  return unleash;
-};
-
-export default client;
+  return { unleash, repo };
+}
