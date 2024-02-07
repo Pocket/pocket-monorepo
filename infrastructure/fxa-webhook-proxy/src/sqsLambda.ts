@@ -30,7 +30,7 @@ export class SqsLambda extends Construct {
         name: sqsQueue.name,
       },
       lambda: {
-        runtime: LAMBDA_RUNTIMES.NODEJS18,
+        runtime: LAMBDA_RUNTIMES.NODEJS20,
         handler: 'index.handler',
         timeout: 120,
         environment: {

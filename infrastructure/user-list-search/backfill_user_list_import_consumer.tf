@@ -6,7 +6,7 @@ resource "aws_lambda_function" "user_list_import_backfill_sqs_processor" {
   function_name    = local.ulib_function_name
   filename         = data.archive_file.lambda_zip.output_path #Dummy lambda that just logs the event.
   role             = aws_iam_role.user_list_import_backfill_lambda_role.arn
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs20.x"
   handler          = "lambda.listImportHandler"
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256 #Dummy lambda that just logs the event.
   # depends_on       = [aws_cloudwatch_log_group.item_update_sqs_processor]

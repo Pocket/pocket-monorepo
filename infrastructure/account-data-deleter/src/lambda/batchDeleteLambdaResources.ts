@@ -46,7 +46,7 @@ export class BatchDeleteLambdaResources extends Construct {
         lambda: {
           description:
             'batch delete lambda that gets id from dynamoDb and calls deleteMutation',
-          runtime: LAMBDA_RUNTIMES.NODEJS18,
+          runtime: LAMBDA_RUNTIMES.NODEJS20,
           handler: 'index.handler',
           reservedConcurrencyLimit:
             stackConfig.lambda.batchDeleteLambda.reservedConcurrencyLimit,
