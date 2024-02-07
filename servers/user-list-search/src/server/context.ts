@@ -32,7 +32,7 @@ export class ContextManager implements IContext {
   public readonly knexDbClient: Knex<any, any[]>;
   constructor(request, dbClient: Knex) {
     const userId = request.headers.userid;
-    if (!userId) {
+    if (!userId || userId === 'anonymous') {
       throw new AuthenticationError(
         'You must be logged in to use this service',
       );

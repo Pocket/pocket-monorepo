@@ -104,7 +104,7 @@ export class ContextManager implements IContext {
   get userId(): string {
     const userId = this.headers.userid;
 
-    if (!userId) {
+    if (!userId || userId === 'anonymous') {
       throw new AuthenticationError(
         'You must be logged in to use this service',
       );

@@ -16,8 +16,7 @@ fn process_request(request) {
       encoded_id: "encodedId",
       guid: "guid",
       premium: "premium",
-      "roles": "roles",
-      "sub": "userId"
+      roles: "roles",
     };
     for claim_name in claim_names_map.keys() {
       let claim = claims[claim_name];
@@ -29,6 +28,11 @@ fn process_request(request) {
       if (claim != ()) { 
         request.subgraph.headers[claim_names_map[claim_name]] = claim.to_string() 
       };
+    }
+    // Do not forward the 'sub' claim as userId if it's 'anonymous'
+    let sub_claim = claims["sub"];
+    if (sub_claim != () && sub_claim != "anonymous") {
+      request.subgraph.headers["userId"] = sub_claim;
     }
     // Indicate if the subject is a Mozilla account ID (formerly Firefox Account)
     if (claims["iss"] == "fxa-webhook-proxy") {
