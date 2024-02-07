@@ -7,7 +7,7 @@ import { BatchDeleteHandler } from './batchDeleteHandler';
 import Logger from './logger';
 import { setMorgan } from '@pocket-tools/ts-logger';
 import { initSentry, sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
-
+import { unleash } from './unleash';
 const app: Application = express();
 
 // Sentry Setup
@@ -15,6 +15,9 @@ initSentry(app, {
   ...config.sentry,
   debug: config.sentry.environment == 'development',
 });
+
+// Initialize unleash client
+unleash();
 
 // RequestHandler creates a separate execution context, so that all
 // transactions/spans/breadcrumbs are isolated across requests

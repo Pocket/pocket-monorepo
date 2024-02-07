@@ -1,29 +1,18 @@
-import { getClient } from '.';
+import { getUnleash, mockUnleash } from '.';
 import { Unleash, destroy } from 'unleash-client';
 
 describe('feature flags client', () => {
   afterEach(() => destroy());
   it('returns an unleash client instance', () => {
-    const client = getClient({
-      config: {
-        appName: 'test-app',
-        url: 'http://localhost:4949',
-        refreshInterval: 0,
-      },
+    const client = getUnleash({
+      appName: 'test-app',
+      url: 'http://localhost:4949',
+      refreshInterval: 0,
     });
     expect(client).toBeInstanceOf(Unleash);
   });
   it('creates a mock instance if mock options are provided', () => {
-    const client = getClient({
-      config: {
-        appName: 'test-app',
-        url: 'http://localhost:4949',
-        refreshInterval: 0,
-      },
-      mockOptions: {
-        shouldMock: true,
-      },
-    });
+    const { unleash: client } = mockUnleash([]);
     expect(client).toBeInstanceOf(Unleash);
     expect(client.getFeatureToggleDefinitions()).toEqual([]);
   });
@@ -38,16 +27,9 @@ describe('feature flags client', () => {
       strategies: [],
       impressionData: false,
     };
-    const client = getClient({
-      config: {
-        appName: 'test-app',
-        url: 'http://localhost:4949',
-        refreshInterval: 0,
-      },
-      mockOptions: {
-        shouldMock: true,
-        bootstrap: [testFeatureToggle],
-      },
+    const { unleash: client } = mockUnleash([testFeatureToggle], {
+      appName: 'test-app',
+      url: 'http://localhost:4949',
     });
     expect(client).toBeInstanceOf(Unleash);
     expect(client.getFeatureToggleDefinition('test-toggle')).toEqual(
