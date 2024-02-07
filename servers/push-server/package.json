@@ -1,0 +1,35 @@
+{
+  "name": "push-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Push notification server",
+  "main": "src/index.ts",
+  "repository": "https://github.com/Pocket/PushServer.git",
+  "author": "",
+  "license": "BSD",
+  "dependencies": {
+    "@sentry/node": "^7.86.0",
+    "apn": "node-apn/node-apn#3.0.0",
+    "aws-sdk": "^2.521.0",
+    "dotenv": "^16.3.1",
+    "firebase-admin": "^12.0.0",
+    "lodash": "^4.17.15",
+    "uuid": "^9.0.1"
+  },
+  "scripts": {
+    "start": "node --trace-warnings -r dotenv/config dist/index.js",
+    "startDev": "tsc && node --trace-warnings -r dotenv/config dist/index.js",
+    "build": "rm -rf dist && tsc",
+    "test": "jest src",
+    "setupEnv": "node dist/setupEnv.js"
+  },
+  "devDependencies": {
+    "@pocket-tools/tsconfig": "^2.0.2",
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.10.0",
+    "@types/node-gcm": "^1.0.5",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "tslib": "^2.6.2"
+  }
+}
