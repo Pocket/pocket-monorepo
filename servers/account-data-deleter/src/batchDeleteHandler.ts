@@ -15,10 +15,13 @@ import { AccountDeleteDataService } from './dataService/accountDeleteDataService
 import { setTimeout } from 'timers/promises';
 import Logger from './logger';
 import { SeverityLevel } from '@sentry/types';
+import { unleash } from './unleash';
+import { Unleash } from 'unleash-client';
 
 export class BatchDeleteHandler {
   readonly sqsClient: SQSClient;
   static readonly eventName = 'pollBatchDelete';
+  private unleashClient: Unleash;
 
   /**
    * Class for deleting records in batches from the database,
@@ -35,10 +38,15 @@ export class BatchDeleteHandler {
    * poll events
    * @param pollOnInit whether to start polling when the class is
    * instantiated, primarily for testing (default=true);
+   * @param unleashClient optional unleash client, intended
+   * to use mock for testing. Otherwise will pull in the globally
+   * initialized unleash instance. Can consider DI here and elsewhere
+   * in the future.
    */
   constructor(
     public readonly emitter: EventEmitter,
     pollOnInit = true,
+    unleashClient?: Unleash,
   ) {
     this.sqsClient = new SQSClient({
       region: config.aws.region,
@@ -53,6 +61,7 @@ export class BatchDeleteHandler {
     if (pollOnInit) {
       emitter.emit(BatchDeleteHandler.eventName);
     }
+    this.unleashClient = unleashClient ?? unleash();
   }
 
   /**
@@ -201,6 +210,25 @@ export class BatchDeleteHandler {
     let data: ReceiveMessageCommandOutput;
     let body: SqsMessage;
 
+    // Short-circuit if killswitch is on
+    // The unleash client is configured to check for new
+    // values every handful of seconds, so if this value
+    // is changed subsequent polls of the queue will pick it up
+    if (
+      this.unleashClient.isEnabled(
+        config.unleash.flags.deletesDisabled.name,
+        undefined,
+        config.unleash.flags.deletesDisabled.fallback,
+      )
+    ) {
+      // Schedule next poll and do nothing else
+      await this.scheduleNextPoll(
+        config.aws.sqs.accountDeleteQueue.defaultPollIntervalSeconds * 1000,
+      );
+      return;
+    }
+
+    // If short-circuit isn't triggered, check for messages and process them
     try {
       data = await this.sqsClient.send(new ReceiveMessageCommand(params));
       if (data.Messages && data.Messages.length > 0) {

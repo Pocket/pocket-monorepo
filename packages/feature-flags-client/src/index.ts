@@ -1,6 +1,6 @@
 import { initialize, Unleash, UnleashConfig } from 'unleash-client';
 import { serverLogger } from '@pocket-tools/ts-logger';
-export { mockClient } from './mockClient';
+export { mockUnleash } from './mockClient';
 
 /*
  * Create and return an Unleash client instance (global).
@@ -17,7 +17,7 @@ export { mockClient } from './mockClient';
  * connect to a real server instance.
  * @returns Unleash client instance (globally set)
  */
-export function getClient(config: UnleashConfig) {
+export function getUnleash(config: UnleashConfig) {
   // The actual unleash client. Note that this is not a blocking
   // call, so it's possible that the application uses stale toggles
   // on startup (defaults to any fallback values provided to `isEnabled`,
