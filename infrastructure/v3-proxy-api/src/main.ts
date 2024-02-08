@@ -1,0 +1,256 @@
+import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
+import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
+import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
+import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/data-aws-kms-alias';
+import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
+import { LocalProvider } from '@cdktf/provider-local/lib/provider';
+import { NullProvider } from '@cdktf/provider-null/lib/provider';
+import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
+import { CloudwatchLogGroup } from '@cdktf/provider-aws/lib/cloudwatch-log-group';
+import {
+  PocketALBApplication,
+  PocketPagerDuty,
+} from '@pocket-tools/terraform-modules';
+import { Construct } from 'constructs';
+import { App, S3Backend, TerraformStack, Aspects, MigrateIds } from 'cdktf';
+import fs from 'fs';
+import { config } from './config';
+
+class Stack extends TerraformStack {
+  constructor(scope: Construct, name: string) {
+    super(scope, name);
+
+    new AwsProvider(this, 'aws', { region: 'us-east-1' });
+    new PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
+    new LocalProvider(this, 'local_provider');
+    new NullProvider(this, 'null_provider');
+
+    new S3Backend(this, {
+      bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
+      dynamodbTable: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
+      key: config.name,
+      region: 'us-east-1',
+    });
+
+    const region = new DataAwsRegion(this, 'region');
+    const caller = new DataAwsCallerIdentity(this, 'caller');
+
+    this.createPocketAlbApplication({
+      pagerDuty: this.createPagerDuty(),
+      secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
+      snsTopic: this.getCodeDeploySnsTopic(),
+      region,
+      caller,
+    });
+
+    Aspects.of(this).add(new MigrateIds());
+  }
+
+  /**
+   * Get the sns topic for code deploy
+   * @private
+   */
+  private getCodeDeploySnsTopic() {
+    return new DataAwsSnsTopic(this, 'backend_notifications', {
+      name: `Backend-${config.environment}-ChatBot`,
+    });
+  }
+
+  /**
+   * Get secrets manager kms alias
+   * @private
+   */
+  private getSecretsManagerKmsAlias() {
+    return new DataAwsKmsAlias(this, 'kms_alias', {
+      name: 'alias/aws/secretsmanager',
+    });
+  }
+
+  /**
+   * Create PagerDuty service for alerts
+   * @private
+   */
+  private createPagerDuty() {
+    // don't create any pagerduty resources for now
+    return undefined;
+  }
+
+  /**
+   * method to set up ALB, ECS cluster, relevant IAM permissions,
+   * and inject environment variables for ecs
+   * @param dependencies
+   * @private
+   */
+  private createPocketAlbApplication(dependencies: {
+    pagerDuty: PocketPagerDuty;
+    region: DataAwsRegion;
+    caller: DataAwsCallerIdentity;
+    secretsManagerKmsAlias: DataAwsKmsAlias;
+    snsTopic: DataAwsSnsTopic;
+  }): PocketALBApplication {
+    const {
+      //  pagerDuty, // enable if necessary
+      region,
+      caller,
+      secretsManagerKmsAlias,
+      snsTopic,
+    } = dependencies;
+
+    return new PocketALBApplication(this, 'application', {
+      // TODO: "internal: true" deploys service behind VPN, set false or remove this comment
+      internal: true,
+      prefix: config.prefix,
+      alb6CharacterPrefix: config.shortName,
+      tags: config.tags,
+      cdn: false,
+      domain: config.domain,
+      containerConfigs: [
+        {
+          name: 'app',
+          portMappings: [
+            {
+              hostPort: config.port,
+              containerPort: config.port,
+            },
+          ],
+          healthCheck: config.healthCheck,
+          logMultilinePattern: '^\\S.+',
+          logGroup: this.createCustomLogGroup('app'),
+          envVars: [
+            {
+              name: 'NODE_ENV',
+              value: process.env.NODE_ENV,
+            },
+            {
+              name: 'ENVIRONMENT',
+              value: process.env.NODE_ENV, // this gives us a nice lowercase production and development
+            },
+          ],
+          secretEnvVars: [
+            {
+              name: 'SENTRY_DSN',
+              valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/SENTRY_DSN`,
+            },
+          ],
+        },
+        {
+          name: 'aws-otel-collector',
+          command: ['--config=/etc/ecs/ecs-xray.yaml'],
+          containerImage: 'amazon/aws-otel-collector',
+          essential: true,
+          logMultilinePattern: '^\\S.+',
+          logGroup: this.createCustomLogGroup('aws-otel-collector'),
+          portMappings: [
+            {
+              hostPort: 4138,
+              containerPort: 4138,
+            },
+            {
+              hostPort: 4137,
+              containerPort: 4137,
+            },
+          ],
+          repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
+        },
+      ],
+      codeDeploy: {
+        useCodeDeploy: true,
+        useCodePipeline: false,
+        useTerraformBasedCodeDeploy: false,
+        notifications: {
+          notifyOnFailed: true,
+          notifyOnStarted: false,
+          notifyOnSucceeded: false,
+        },
+        snsNotificationTopicArn: snsTopic.arn,
+      },
+      exposedContainer: {
+        name: 'app',
+        port: config.port,
+        healthCheckPath: '/.well-known/server-health',
+      },
+      ecsIamConfig: {
+        prefix: config.prefix,
+        taskExecutionRolePolicyStatements: [
+          //This policy could probably go in the shared module in the future.
+          {
+            actions: ['secretsmanager:GetSecretValue', 'kms:Decrypt'],
+            resources: [
+              `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared`,
+              `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/*`,
+              secretsManagerKmsAlias.targetKeyArn,
+              `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}`,
+              `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/*`,
+              `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.prefix}`,
+              `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.prefix}/*`,
+            ],
+            effect: 'Allow',
+          },
+          //This policy could probably go in the shared module in the future.
+          {
+            actions: ['ssm:GetParameter*'],
+            resources: [
+              `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}`,
+              `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/*`,
+            ],
+            effect: 'Allow',
+          },
+        ],
+        taskRolePolicyStatements: [
+          {
+            actions: [
+              'xray:PutTraceSegments',
+              'xray:PutTelemetryRecords',
+              'xray:GetSamplingRules',
+              'xray:GetSamplingTargets',
+              'xray:GetSamplingStatisticSummaries',
+            ],
+            resources: ['*'],
+            effect: 'Allow',
+          },
+        ],
+        taskExecutionDefaultAttachmentArn:
+          'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
+      },
+      autoscalingConfig: {
+        targetMinCapacity: config.isDev ? 1 : 2,
+        targetMaxCapacity: 10,
+      },
+      alarms: {
+        //TODO: When you start using the service add the pagerduty arns as an action `pagerDuty.snsNonCriticalAlarmTopic.arn`
+        http5xxErrorPercentage: {
+          threshold: 25,
+          evaluationPeriods: 4,
+          period: 300,
+          actions: config.isDev ? [] : [],
+        },
+      },
+    });
+  }
+
+  /**
+   * Create Custom log group for ECS to share across task revisions
+   * @param containerName
+   * @private
+   */
+  private createCustomLogGroup(containerName: string) {
+    const logGroup = new CloudwatchLogGroup(
+      this,
+      `${containerName}-log-group`,
+      {
+        name: `/Backend/${config.prefix}/ecs/${containerName}`,
+        retentionInDays: 90,
+        skipDestroy: true,
+        tags: config.tags,
+      },
+    );
+
+    return logGroup.name;
+  }
+}
+
+const app = new App();
+const stack = new Stack(app, `${config.domainPrefix}`);
+const tfEnvVersion = fs.readFileSync('.terraform-version', 'utf8');
+stack.addOverride('terraform.required_version', tfEnvVersion);
+app.synth();

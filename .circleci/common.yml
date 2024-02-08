@@ -31,6 +31,7 @@ repo_for_enum: &repo_for_enum
       - pocket_event_bridge
       - user_list_search
       - braze
+      - v3_proxy_api
 
 resource_class_enmum: &resource_class_enmum
   resource-class:
@@ -93,6 +94,9 @@ parameters:
   braze:
     type: boolean
     default: false
+  v3_proxy_api:
+    type: boolean
+    default: false
 
 commands:
   # Refrenced from https://github.com/kelvintaywl-cci/dynamic-config-showcase/blob/main/.circleci/next.yml
@@ -131,6 +135,7 @@ commands:
             pocket_event_bridge: << pipeline.parameters.pocket_event_bridge >>
             user_list_search: << pipeline.parameters.user_list_search >>
             braze: << pipeline.parameters.braze >>
+            v3_proxy_api: << pipeline.parameters.v3_proxy_api >>
 
   install_pnpm:  
     steps:
