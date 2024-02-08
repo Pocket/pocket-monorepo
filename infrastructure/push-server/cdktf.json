@@ -1,4 +1,5 @@
 {
   "language": "typescript",
-  "app": "npm run --silent compile && node dist/main.js"
+  "app": "npm run --silent compile && node dist/main.js",
+  "projectId": "2d3f63d9-d2c8-4275-b378-d5b3ec934976"
 }
