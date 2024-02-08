@@ -1,8 +1,8 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  testMatch: ['**/src/**/?(*.)+(spec|integration|test).[jt]s?(x)'],
+  testMatch: ['**/?(*.)+(spec|integration).ts'],
   testPathIgnorePatterns: ['/dist/'],
-  testTimeout: 10000,
+  setupFiles: ['./jest.setup.js'],
   displayName: 'push-server',
 };
