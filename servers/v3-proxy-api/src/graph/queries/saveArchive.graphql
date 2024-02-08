@@ -1,0 +1,17 @@
+mutation saveArchive($id: [ID!]!, $timestamp: ISOString!) {
+    saveArchive(id: $id, timestamp: $timestamp) {
+        save {
+            id
+            favorite
+            favoritedAt
+            updatedAt
+        }
+        errors {
+            __typename
+            ... on BaseError {
+                path
+                message
+            }
+        }
+    }
+}

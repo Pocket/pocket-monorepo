@@ -1,0 +1,51 @@
+{
+  "name": "v3-proxy-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "watch": "tsc -w & nodemon",
+    "start": "node dist/main.js",
+    "start:dev": "npm run build && npm run watch",
+    "test-ci": "npm test",
+    "test:watch": "npm test -- --watchAll",
+    "test": "jest \"\\.spec\\.ts\"",
+    "test-integrations": "jest \"\\.integration\\.ts\" --forceExit --runInBand",
+    "lint-check": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "lint-fix": "eslint --fix \"src/**/*.ts\"",
+    "codegen": "graphql-codegen"
+  },
+  "dependencies": {
+    "@apollo/subgraph": "2.0.5",
+    "@pocket-tools/apollo-utils": "^2.2.0",
+    "@sentry/node": "7.7.0",
+    "@sentry/tracing": "7.7.0",
+    "express": "^4.18.2",
+    "graphql": "^16.6.0",
+    "graphql-request": "^5.1.0",
+    "graphql-tag": "^2.12.6"
+  },
+  "devDependencies": {
+    "@graphql-codegen/add": "^4.0.1",
+    "@graphql-codegen/cli": "^3.1.0",
+    "@graphql-codegen/typed-document-node": "^3.0.1",
+    "@graphql-codegen/typescript": "^3.0.1",
+    "@graphql-codegen/typescript-operations": "^3.0.1",
+    "@pocket-tools/eslint-config": "2.0.0",
+    "@pocket-tools/tsconfig": "2.0.1",
+    "@types/chai": "4.3.1",
+    "@types/express": "^4.17.14",
+    "@types/jest": "27.4.1",
+    "@types/node": "^18.11.9",
+    "@types/supertest": "2.0.12",
+    "chai": "4.3.6",
+    "jest": "27.5.1",
+    "nock": "13.2.4",
+    "nodemon": "2.0.16",
+    "sinon": "^11.1.2",
+    "supertest": "6.2.3",
+    "ts-jest": "27.1.4",
+    "ts-node": "10.5.0"
+  }
+}
