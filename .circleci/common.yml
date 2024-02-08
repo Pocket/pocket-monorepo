@@ -31,7 +31,7 @@ repo_for_enum: &repo_for_enum
       - pocket_event_bridge
       - user_list_search
       - braze
-      - v3_api_proxy
+      - v3_proxy_api
 
 resource_class_enmum: &resource_class_enmum
   resource-class:
