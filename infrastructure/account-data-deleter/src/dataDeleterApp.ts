@@ -171,7 +171,7 @@ export class DataDeleterApp extends Construct {
             },
             {
               name: 'UNLEASH_ENDPOINT',
-              valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/UNLEASH_ENDPOINT`,
+              valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Shared/${config.environment}/UNLEASH_ENDPOINT`,
             },
             {
               name: 'UNLEASH_KEY',
