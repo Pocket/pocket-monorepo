@@ -25,7 +25,7 @@ workflows:
           repo-name: push-dev-app
           ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
           push: false
-          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=push-server --build-arg APP_PATH=servers/push-server --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=push-server --build-arg PORT=4867 
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=push-server --build-arg APP_PATH=servers/push-server --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=push-server
      
       - infrastructure:
           <<: *not_dev_main
@@ -65,20 +65,9 @@ workflows:
           repo-name: push-dev-app
           ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
           push: true
-          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=push-server --build-arg APP_PATH=servers/push-server --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=push-server --build-arg PORT=4867
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=push-server --build-arg APP_PATH=servers/push-server --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=push-server
           requires:
             - push-server_infrastructure_apply_dev
-
-      - code_deploy_ecs:
-          <<: *only_dev
-          context: pocket
-          for: push_server
-          name: push-server_code_deploy_ecs_dev
-          resource-class: pocket/default-dev
-          codedeploy-app-name: Push-Dev-ECS
-          codedeploy-group-name: Push-Dev-ECS
-          requires:
-            - push-server_build_docker_dev
 
       # Notify sentry of dev deployment
       - sentry_release_notification:
@@ -90,7 +79,7 @@ workflows:
           sentry_env: development
           sentry_org: pocket
           requires:
-            - push-server_code_deploy_ecs_dev
+            - push-server_infrastructure_apply_dev
      
       # Setup params we may use in Lambdas
       - setup_deploy_params:
@@ -102,7 +91,7 @@ workflows:
           env: Dev
           service_name: Push
           requires:
-            - push-server_code_deploy_ecs_dev
+            - push-server_infrastructure_apply_dev
 
 
       ######
@@ -131,20 +120,9 @@ workflows:
           repo-name: push-prod-app
           ecr-url: 996905175585.dkr.ecr.us-east-1.amazonaws.com
           push: true
-          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=push-server --build-arg APP_PATH=servers/push-server --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=push-server --build-arg PORT=4867
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=push-server --build-arg APP_PATH=servers/push-server --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=push-server
           requires:
             - push-server_infrastructure_apply_prod
-
-      - code_deploy_ecs:
-          <<: *only_main
-          context: pocket
-          for: push_server
-          name: push-server_code_deploy_ecs_prod
-          resource-class: pocket/default-prod
-          codedeploy-app-name: Push-Prod-ECS
-          codedeploy-group-name: Push-Prod-ECS
-          requires:
-            - push-server_build_docker_prod
 
       # Notify sentry of main deployment
       - sentry_release_notification:
@@ -156,7 +134,7 @@ workflows:
           sentry_env: production
           sentry_org: pocket
           requires:
-            - push-server_code_deploy_ecs_prod
+            - push-server_infrastructure_apply_prod
 
       # Setup params we may use in Lambdas
       - setup_deploy_params:
@@ -168,4 +146,4 @@ workflows:
           env: Prod
           service_name: Push
           requires:
-            - push-server_code_deploy_ecs_prod
+            - push-server_infrastructure_apply_prod

@@ -1610,9 +1610,6 @@ importers:
       lodash:
         specifier: 4.17.21
         version: 4.17.21
-      tslib:
-        specifier: 2.6.2
-        version: 2.6.2
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
@@ -1620,9 +1617,6 @@ importers:
       '@types/jest':
         specifier: 29.5.11
         version: 29.5.11
-      '@types/node':
-        specifier: ^20.11.6
-        version: 20.11.16
       '@types/node-gcm':
         specifier: ^1.0.5
         version: 1.0.5

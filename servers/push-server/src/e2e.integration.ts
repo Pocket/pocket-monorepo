@@ -6,6 +6,7 @@ describe('e2e test', () => {
   it('Receives message from queue and sends it', async () => {
     // Create an SQS service object
     const sqs = new SQSClient({
+      region: config.region,
       endpoint: config.sqsEndpoint,
     });
 

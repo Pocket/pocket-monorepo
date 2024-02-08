@@ -45,7 +45,6 @@ class PushServer extends TerraformStack {
     const region = new DataAwsRegion(this, 'region');
     const caller = new DataAwsCallerIdentity(this, 'caller');
 
-
     //NOTE: THis service uses CPU based autoscaling, this should move to SQS based autoscaling based on the Job queue in the future.
     // https://mozilla-hub.atlassian.net/browse/POCKET-9583
     this.createPocketECSApplication({
@@ -53,11 +52,14 @@ class PushServer extends TerraformStack {
       region,
       caller,
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
-      jobQueue: new DataAwsSqsQueue(this, 'job-queue', {name: config.jobQueueName}),
-      tokenQueue: new DataAwsSqsQueue(this, 'token-queue', {name: config.tokenQueueName}),
-      snsTopic: this.getCodeDeploySnsTopic()
-    })
-
+      jobQueue: new DataAwsSqsQueue(this, 'job-queue', {
+        name: config.jobQueueName,
+      }),
+      tokenQueue: new DataAwsSqsQueue(this, 'token-queue', {
+        name: config.tokenQueueName,
+      }),
+      snsTopic: this.getCodeDeploySnsTopic(),
+    });
   }
 
   /**
@@ -94,11 +96,11 @@ class PushServer extends TerraformStack {
     });
   }
 
-   /**
+  /**
    * Get the sns topic for code deploy
    * @private
    */
-   private getCodeDeploySnsTopic() {
+  private getCodeDeploySnsTopic() {
     return new DataAwsSnsTopic(this, 'backend_notifications', {
       name: `Backend-${config.environment}-ChatBot`,
     });
@@ -123,15 +125,8 @@ class PushServer extends TerraformStack {
     tokenQueue: DataAwsSqsQueue;
     snsTopic: DataAwsSnsTopic;
   }): PocketECSApplication {
-    const {
-      pagerDuty,
-      region,
-      caller,
-      secretsManagerKmsAlias,
-      jobQueue,
-      tokenQueue,
-      snsTopic
-    } = dependencies;
+    const { region, caller, secretsManagerKmsAlias, jobQueue, tokenQueue } =
+      dependencies;
 
     const secretResources = [
       `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared`,
@@ -164,7 +159,7 @@ class PushServer extends TerraformStack {
             },
             {
               name: 'TOKEN_QUEUE_URL',
-              value: tokenQueue.url
+              value: tokenQueue.url,
             },
           ],
           secretEnvVars: [
@@ -270,10 +265,7 @@ class PushServer extends TerraformStack {
               'sqs:SendMessage',
               'sqs:SendMessageBatch',
             ],
-            resources: [
-              tokenQueue.arn,
-              jobQueue.arn,
-            ],
+            resources: [tokenQueue.arn, jobQueue.arn],
           },
         ],
         taskExecutionDefaultAttachmentArn:
@@ -305,7 +297,6 @@ class PushServer extends TerraformStack {
 
     return logGroup.name;
   }
-
 }
 const app = new App();
 const stack = new PushServer(app, 'push-server');
