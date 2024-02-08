@@ -1,0 +1,43 @@
+{
+  "name": "push-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Push notification server",
+  "main": "dist/index.js",
+  "repository": "https://github.com/Pocket/PushServer.git",
+  "author": "",
+  "license": "BSD",
+  "dependencies": {
+    "@sentry/node": "7.99.0",
+    "apn": "node-apn/node-apn#3.0.0",
+    "dotenv": "16.4.1",
+    "@aws-sdk/client-sqs": "3.507.0",
+    "firebase-admin": "^12.0.0",
+    "lodash": "4.17.21",
+    "uuid": "^9.0.1"
+  },
+  "scripts": {
+    "start": "node -r dotenv/config dist/index.js",
+    "build": "rm -rf dist && tsc",
+    "test": "echo ok",
+    "dev": "npm run build && npm run watch",
+    "test-integrations": "jest \"\\.integration\\.ts\" --runInBand --forceExit",
+    "test:watch": "npm test -- --watchAll",
+    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix \"src/**/*.ts\"",
+    "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json"
+  },
+  "devDependencies": {
+    "eslint-config-custom": "workspace:*",
+    "tsconfig": "workspace:*",
+    "@types/jest": "29.5.11",
+    "@types/node-gcm": "^1.0.5",
+    "jest": "29.7.0",
+    "ts-jest": "29.1.2",
+    "nodemon": "3.0.3"
+  },
+  "files": [
+    "dist",
+    "package.json"
+  ]
+}

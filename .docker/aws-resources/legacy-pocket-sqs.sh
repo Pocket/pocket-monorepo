@@ -2,9 +2,7 @@
 set -x
 
 SQS=(
-pocket-push-queue
 pocket-notification-queue
-pocket-push-feedback-queue
 pocket-items-to-resolve
 pocket-items-to-resolve-backfill
 pocket-publisher-data-queue
