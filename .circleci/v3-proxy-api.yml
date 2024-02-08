@@ -75,8 +75,8 @@ workflows:
           for: v3_proxy_api
           name: v3-proxy-api_code_deploy_ecs_dev
           resource-class: pocket/default-dev
-          codedeploy-app-name: V3ProxyAPI-Dev-ECS
-          codedeploy-group-name: V3ProxyAPI-Dev-ECS
+          codedeploy-app-name: V3ProxyApi-Dev-ECS
+          codedeploy-group-name: V3ProxyApi-Dev-ECS
           requires:
             - v3-proxy-api_build_docker_dev
 
@@ -100,7 +100,7 @@ workflows:
           aws_secret_access_key: Dev_AWS_SECRET_ACCESS_KEY
           context: pocket
           env: Dev
-          service_name: V3ProxyAPI
+          service_name: V3ProxyApi
           requires:
             - v3-proxy-api_code_deploy_ecs_dev
 
@@ -141,8 +141,8 @@ workflows:
           for: v3_proxy_api
           name: v3-proxy-api_code_deploy_ecs_prod
           resource-class: pocket/default-prod
-          codedeploy-app-name: V3ProxyAPI-Prod-ECS
-          codedeploy-group-name: V3ProxyAPI-Prod-ECS
+          codedeploy-app-name: V3ProxyApi-Prod-ECS
+          codedeploy-group-name: V3ProxyApi-Prod-ECS
           requires:
             - v3-proxy-api_build_docker_prod
 
@@ -166,6 +166,6 @@ workflows:
           aws_secret_access_key: Prod_AWS_SECRET_ACCESS_KEY
           context: pocket
           env: Prod
-          service_name: V3ProxyAPI
+          service_name: V3ProxyApi
           requires:
             - v3-proxy-api_code_deploy_ecs_prod
