@@ -410,6 +410,22 @@ class AnnotationsAPI extends TerraformStack {
         taskRolePolicyStatements: [
           {
             actions: [
+              'logs:PutLogEvents',
+              'logs:CreateLogGroup',
+              'logs:CreateLogStream',
+              'logs:DescribeLogStreams',
+              'logs:DescribeLogGroups',
+              'xray:PutTraceSegments',
+              'xray:PutTelemetryRecords',
+              'xray:GetSamplingRules',
+              'xray:GetSamplingTargets',
+              'xray:GetSamplingStatisticSummaries',
+            ],
+            resources: ['*'],
+            effect: 'Allow',
+          },
+          {
+            actions: [
               'dynamodb:BatchGet*',
               'dynamodb:DescribeTable',
               'dynamodb:Get*',
