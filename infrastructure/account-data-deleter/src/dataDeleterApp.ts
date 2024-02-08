@@ -169,6 +169,14 @@ export class DataDeleterApp extends Construct {
               name: 'STRIPE_KEY',
               valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/STRIPE_KEY`,
             },
+            {
+              name: 'UNLEASH_ENDPOINT',
+              valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Shared/${config.environment}/UNLEASH_ENDPOINT`,
+            },
+            {
+              name: 'UNLEASH_KEY',
+              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/UNLEASH_KEY`,
+            },
           ],
         },
       ],

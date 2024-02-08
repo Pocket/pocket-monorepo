@@ -10,6 +10,7 @@ if (!awsEnvironments.includes(process.env.NODE_ENV)) {
 export const config = {
   app: {
     name: 'Account Data Deletion',
+    serviceName: 'Account-Data-Deleter',
     environment: process.env.NODE_ENV || 'development',
     defaultMaxAge: 86400,
     port: 4015,
@@ -74,6 +75,19 @@ export const config = {
       url:
         process.env.SQS_BATCH_DELETE_QUEUE_URL ||
         'http://localhost:4566/000000000000/pocket-list-delete-queue',
+    },
+  },
+  unleash: {
+    clientKey: process.env.UNLEASH_KEY || 'unleash-key-fake',
+    endpoint: process.env.UNLEASH_ENDPOINT || 'http://localhost:4242/api',
+    refreshInterval: 60 * 1000, // ms
+    timeout: 2 * 1000, // ms
+    namePrefix: 'temp.backend',
+    flags: {
+      deletesDisabled: {
+        name: 'temp.backend.account_delete_disabled',
+        fallback: true,
+      },
     },
   },
 };
