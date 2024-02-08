@@ -1,3 +1,3 @@
 # Docs
 
-<https://getpocket.atlassian.net/wiki/spaces/PE/pages/1118699711/Push+Notifications>
+https://mozilla-hub.atlassian.net/wiki/spaces/PE/pages/390629672/Push+Notifications
