@@ -227,19 +227,6 @@ importers:
         specifier: workspace:*
         version: link:../../packages/tsconfig
 
-  infrastructure/v3-api-proxy:
-    dependencies:
-      '@pocket-tools/terraform-modules':
-        specifier: workspace:*
-        version: link:../../packages/terraform-modules
-    devDependencies:
-      eslint-config-custom:
-        specifier: workspace:*
-        version: link:../../packages/eslint-config-custom
-      tsconfig:
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-
   infrastructure/v3-proxy-api:
     dependencies:
       '@pocket-tools/terraform-modules':
