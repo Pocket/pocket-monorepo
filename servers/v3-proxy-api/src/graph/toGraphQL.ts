@@ -9,7 +9,7 @@ import {
 } from '../generated/graphql/types';
 
 export function setSaveInputsFromGetCall(
-  requestParams: any
+  requestParams: any,
 ): UserSavedItemsArgs {
   //todo: stubbed for skeleton
   //to be replaced by actual mapping in following tickets

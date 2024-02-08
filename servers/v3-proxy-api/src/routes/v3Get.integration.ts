@@ -30,7 +30,7 @@ describe('v3Get', () => {
     //expect(consoleStub.callCount).toBe(1);
     expect(sentryStub.callCount).toBe(1);
     expect(response.headers['x-error-code']).toBe(
-      expectedHeaders['X-Error-Code']
+      expectedHeaders['X-Error-Code'],
     );
     expect(response.body).toEqual({ error: 'GET: v3/get: Error: test error' });
   });
@@ -46,7 +46,7 @@ describe('v3Get', () => {
     expect(consoleStub.callCount).toBe(1);
     expect(sentryStub.callCount).toBe(1);
     expect(response.headers['x-error-code']).toBe(
-      expectedHeaders['X-Error-Code']
+      expectedHeaders['X-Error-Code'],
     );
     expect(response.body).toEqual({ error: 'POST: v3/get: Error: test error' });
   });

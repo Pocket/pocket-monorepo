@@ -71,7 +71,7 @@ export const mockItemFragment: ItemFragment = {
  * @param mockInput mock saved item fragment
  */
 export const testSavedItemFragment = (
-  mockInput: SavedItemFragment = mockSavedItemFragment
+  mockInput: SavedItemFragment = mockSavedItemFragment,
 ): SavedItemFragment => {
   return mockInput;
 };
@@ -105,7 +105,7 @@ type MockListItemObject = Omit<ListItemObject, 'item_id' | 'resolved_id'> & {
 export const testV3GetResponse = (
   mockInputs: MockListItemObject = {
     ...seedDataRest,
-  }
+  },
 ): RestResponse => {
   const map: { [key: string]: ListItemObject } = {};
 

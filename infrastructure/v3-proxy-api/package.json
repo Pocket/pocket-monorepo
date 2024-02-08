@@ -6,21 +6,19 @@
   "license": "MPL-2.0",
   "private": true,
   "scripts": {
-    "build:dev": "rm -rf dist && NODE_ENV=development npm run synth",
+    "build": "rm -rf dist && tsc",
     "synth": "cdktf synth",
     "compile": "tsc --pretty",
     "watch": "tsc -w",
     "test": "echo ok",
-    "lint-fix": "eslint --fix \"src/**/*.ts\""
-  },
-  "engines": {
-    "node": "=18"
+    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix \"src/**/*.ts\""
   },
   "dependencies": {
-    "@pocket-tools/terraform-modules": "4.0.5",
-    "@pocket-tools/tsconfig": "^2.0.1"
+    "@pocket-tools/terraform-modules": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "16.11.35"
+    "tsconfig": "workspace:*",
+    "eslint-config-custom": "workspace:*"
   }
 }

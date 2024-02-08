@@ -57,7 +57,7 @@ describe('convertSavedItemsToRestResponse', () => {
       testV3GetResponse({
         ...seedDataRest,
         ids: ['id1', 'id2'],
-      })
+      }),
     );
   });
 
@@ -89,7 +89,7 @@ describe('convertSavedItemsToRestResponse', () => {
       list: {},
     };
     expect(convertSavedItemsToRestResponse(graphResponse)).toEqual(
-      restResponse
+      restResponse,
     );
   });
 });

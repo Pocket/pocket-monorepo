@@ -17,7 +17,7 @@ router.get('/', async (req: Request, res: Response) => {
     const accessToken = (req.query.access_token as string) ?? null;
     const consumerKey = (req.query.consumer_key as string) ?? null;
     return res.json(
-      await processV3call(accessToken, consumerKey, headers, variables)
+      await processV3call(accessToken, consumerKey, headers, variables),
     );
   } catch (err) {
     const errMessage = `GET: v3/get: ${err}`;
@@ -39,7 +39,7 @@ router.post('/', async (req: Request, res: Response) => {
     const consumerKey = (req.body.consumer_key as string) ?? null;
 
     return res.json(
-      await processV3call(accessToken, consumerKey, headers, variables)
+      await processV3call(accessToken, consumerKey, headers, variables),
     );
   } catch (err) {
     const errMessage = `POST: v3/get: ${err}`;
@@ -64,13 +64,13 @@ export async function processV3call(
   accessToken: string,
   consumerKey: string,
   headers: any,
-  variables: UserSavedItemsArgs
+  variables: UserSavedItemsArgs,
 ) {
   const response = await callSavedItems(
     accessToken,
     consumerKey,
     headers,
-    variables
+    variables,
   );
   return convertSavedItemsToRestResponse(response);
 }

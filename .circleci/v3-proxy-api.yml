@@ -1,0 +1,171 @@
+
+workflows:
+  v3-proxy-api:
+    jobs:
+
+      ######
+      # Every PR Jobs
+      ######
+      - test_integrations:
+          <<: *not_dev_main
+          for: v3_proxy_api
+          context: pocket
+          name: v3-proxy-api_test_integrations
+          scope: v3-proxy-api
+
+      # Try building the ECS docker image on each branch
+      - build_image:
+          <<: *not_dev_main
+          context: pocket
+          for: v3_proxy_api
+          name: v3-proxy-api_build_docker
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          repo-name: v3proxyapi-dev-app
+          ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
+          push: false
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=v3-proxy-api --build-arg APP_PATH=servers/v3-proxy-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=v3-proxy-api --build-arg PORT=4029 
+     
+      - infrastructure:
+          <<: *not_dev_main
+          context: pocket
+          for: v3_proxy_api
+          name: v3-proxy-api_infrastructure_plan_prod
+          scope: v3-proxy-api-cdk
+          stack-output-path: infrastructure/v3-proxy-api/cdktf.out/stacks/v3-proxy-api
+          resource-class: pocket/default-prod
+          dev: false
+          apply: false
+
+      ######
+      # Dev Branch Deployment (Dev Environment)
+      ######
+
+      - infrastructure:
+          <<: *only_dev
+          context: pocket
+          for: v3_proxy_api
+          name: v3-proxy-api_infrastructure_apply_dev
+          scope: v3-proxy-api-cdk
+          stack-output-path: infrastructure/v3-proxy-api/cdktf.out/stacks/v3-proxy-api
+          resource-class: pocket/default-dev
+          apply: true
+          dev: true
+
+      # Build & Deploy the Dev Docker Image
+      - build_image:
+          <<: *only_dev
+          context: pocket
+          for: v3_proxy_api
+          name: v3-proxy-api_build_docker_dev
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          repo-name: v3proxyapi-dev-app
+          ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
+          push: true
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=v3-proxy-api --build-arg APP_PATH=servers/v3-proxy-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=v3-proxy-api --build-arg PORT=4029
+          requires:
+            - v3-proxy-api_infrastructure_apply_dev
+
+      - code_deploy_ecs:
+          <<: *only_dev
+          context: pocket
+          for: v3_proxy_api
+          name: v3-proxy-api_code_deploy_ecs_dev
+          resource-class: pocket/default-dev
+          codedeploy-app-name: V3ProxyAPI-Dev-ECS
+          codedeploy-group-name: V3ProxyAPI-Dev-ECS
+          requires:
+            - v3-proxy-api_build_docker_dev
+
+      # Notify sentry of dev deployment
+      - sentry_release_notification:
+          <<: *only_dev
+          name: v3-proxy-api_sentry-release-notification-dev
+          context: pocket
+          for: v3_proxy_api
+          sentry_project_name: v3-proxy-api
+          sentry_env: development
+          sentry_org: pocket
+          requires:
+            - v3-proxy-api_code_deploy_ecs_dev
+     
+      # Setup params we may use in Lambdas
+      - setup_deploy_params:
+          <<: *only_dev
+          name: v3-proxy-api_deploy-params-dev
+          aws_access_key_id: Dev_AWS_ACCESS_KEY
+          aws_secret_access_key: Dev_AWS_SECRET_ACCESS_KEY
+          context: pocket
+          env: Dev
+          service_name: V3ProxyAPI
+          requires:
+            - v3-proxy-api_code_deploy_ecs_dev
+
+
+      ######
+      # Main Branch Deployment (Prod Environment)
+      ######
+      - infrastructure:
+          <<: *only_main
+          context: pocket
+          for: v3_proxy_api
+          name: v3-proxy-api_infrastructure_apply_prod
+          scope: v3-proxy-api-cdk
+          stack-output-path: infrastructure/v3-proxy-api/cdktf.out/stacks/v3-proxy-api
+          resource-class: pocket/default-prod
+          apply: true
+          dev: false
+
+      # Build & Deploy the Prod Docker Image
+      - build_image:
+          <<: *only_main
+          context: pocket
+          for: v3_proxy_api
+          name: v3-proxy-api_build_docker_prod
+          aws-access-key-id: Prod_AWS_ACCESS_KEY
+          aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
+          aws-region: Prod_AWS_DEFAULT_REGION
+          repo-name: v3proxyapi-prod-app
+          ecr-url: 996905175585.dkr.ecr.us-east-1.amazonaws.com
+          push: true
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=v3-proxy-api --build-arg APP_PATH=servers/v3-proxy-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=v3-proxy-api --build-arg PORT=4029
+          requires:
+            - v3-proxy-api_infrastructure_apply_prod
+
+      - code_deploy_ecs:
+          <<: *only_main
+          context: pocket
+          for: v3_proxy_api
+          name: v3-proxy-api_code_deploy_ecs_prod
+          resource-class: pocket/default-prod
+          codedeploy-app-name: V3ProxyAPI-Prod-ECS
+          codedeploy-group-name: V3ProxyAPI-Prod-ECS
+          requires:
+            - v3-proxy-api_build_docker_prod
+
+      # Notify sentry of main deployment
+      - sentry_release_notification:
+          <<: *only_main
+          name: v3-proxy-api_sentry-release-notification-prod
+          context: pocket
+          for: v3_proxy_api
+          sentry_project_name: v3-proxy-api
+          sentry_env: production
+          sentry_org: pocket
+          requires:
+            - v3-proxy-api_code_deploy_ecs_prod
+
+      # Setup params we may use in Lambdas
+      - setup_deploy_params:
+          <<: *only_main
+          name: v3-proxy-api_deploy-params-prod
+          aws_access_key_id: Prod_AWS_ACCESS_KEY
+          aws_secret_access_key: Prod_AWS_SECRET_ACCESS_KEY
+          context: pocket
+          env: Prod
+          service_name: V3ProxyAPI
+          requires:
+            - v3-proxy-api_code_deploy_ecs_prod

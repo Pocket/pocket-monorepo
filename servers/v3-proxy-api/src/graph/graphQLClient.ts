@@ -9,8 +9,8 @@ import {
   SaveFavoriteDocument,
   SaveFavoriteMutation,
   SaveFavoriteMutationVariables,
+  SaveArchiveMutationVariables,
 } from '../generated/graphql/types';
-import { SaveArchiveMutationVariables } from '../generated/graphql/types';
 import config from '../config';
 import * as Sentry from '@sentry/node';
 
@@ -25,7 +25,7 @@ import * as Sentry from '@sentry/node';
 export function getClient(
   accessToken: string,
   consumerKey: string,
-  headers: any
+  headers: any,
 ) {
   //these headers are not compatible with GraphQLClient's fetch.
   //they throw an error instead, so ignoring them
@@ -73,12 +73,12 @@ export async function callSaveArchive(
   accessToken: string,
   consumerKey: string,
   headers: any,
-  variables: SaveArchiveMutationVariables
+  variables: SaveArchiveMutationVariables,
 ): Promise<SaveArchiveMutation> {
   const client = getClient(accessToken, consumerKey, headers);
   return client.request<SaveArchiveMutation, SaveArchiveMutationVariables>(
     SaveArchiveDocument,
-    variables
+    variables,
   );
 }
 
@@ -94,12 +94,12 @@ export async function callSaveFavorite(
   accessToken: string,
   consumerKey: string,
   headers: any,
-  variables: SaveFavoriteMutationVariables
+  variables: SaveFavoriteMutationVariables,
 ): Promise<SaveFavoriteMutation> {
   const client = getClient(accessToken, consumerKey, headers);
   return client.request<SaveFavoriteMutation, SaveFavoriteMutationVariables>(
     SaveFavoriteDocument,
-    variables
+    variables,
   );
 }
 
@@ -115,13 +115,13 @@ export async function callSavedItems(
   accessToken: string,
   consumerKey: string,
   headers: any,
-  variables: GetSavedItemsQueryVariables
+  variables: GetSavedItemsQueryVariables,
 ): Promise<GetSavedItemsQuery> {
   try {
     const client = getClient(accessToken, consumerKey, headers);
     return client.request<GetSavedItemsQuery, GetSavedItemsQueryVariables>(
       GetSavedItemsDocument,
-      variables
+      variables,
     );
   } catch (e) {
     Sentry.addBreadcrumb({ message: `callSavedItem failed:` });

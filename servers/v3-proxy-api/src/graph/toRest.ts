@@ -70,7 +70,7 @@ const reduceItem = (savedItemEdge: GraphSavedItemEdge): ListItemObject => {
   }
 };
 export function convertGraphSavedItemToListObject(
-  savedItem: GraphSavedItem
+  savedItem: GraphSavedItem,
 ): ListItemObject {
   const nestedItem: GraphItem = savedItem.item as GraphItem;
   return {
@@ -106,14 +106,14 @@ export function convertGraphSavedItemToListObject(
  * @param response
  */
 export function convertSavedItemsToRestResponse(
-  response: GetSavedItemsQuery
+  response: GetSavedItemsQuery,
 ): RestResponse {
   return {
     // todo: map top level fields
     cacheType: 'db',
     list: listToMap(
       response.user.savedItems.edges.map(reduceItem).filter((s) => s !== null),
-      'item_id'
+      'item_id',
     ),
   };
 }

@@ -1,21 +1,20 @@
-import { Construct } from 'constructs';
-import {
-  App,
-  DataTerraformRemoteState,
-  RemoteBackend,
-  TerraformStack,
-} from 'cdktf';
-import { AwsProvider, kms, datasources, sns } from '@cdktf/provider-aws';
-import { config } from './config';
+import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
+import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
+import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
+import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/data-aws-kms-alias';
+import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
+import { LocalProvider } from '@cdktf/provider-local/lib/provider';
+import { NullProvider } from '@cdktf/provider-null/lib/provider';
+import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
+import { CloudwatchLogGroup } from '@cdktf/provider-aws/lib/cloudwatch-log-group';
 import {
   PocketALBApplication,
-  PocketECSCodePipeline,
   PocketPagerDuty,
 } from '@pocket-tools/terraform-modules';
-import { PagerdutyProvider } from '@cdktf/provider-pagerduty';
-import { LocalProvider } from '@cdktf/provider-local';
-import { NullProvider } from '@cdktf/provider-null';
-import * as fs from 'fs';
+import { Construct } from 'constructs';
+import { App, S3Backend, TerraformStack, Aspects, MigrateIds } from 'cdktf';
+import fs from 'fs';
+import { config } from './config';
 
 class Stack extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -26,16 +25,17 @@ class Stack extends TerraformStack {
     new LocalProvider(this, 'local_provider');
     new NullProvider(this, 'null_provider');
 
-    new RemoteBackend(this, {
-      hostname: 'app.terraform.io',
-      organization: 'Pocket',
-      workspaces: [{ prefix: `${config.name}-` }],
+    new S3Backend(this, {
+      bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
+      dynamodbTable: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
+      key: config.name,
+      region: 'us-east-1',
     });
 
-    const region = new datasources.DataAwsRegion(this, 'region');
-    const caller = new datasources.DataAwsCallerIdentity(this, 'caller');
+    const region = new DataAwsRegion(this, 'region');
+    const caller = new DataAwsCallerIdentity(this, 'caller');
 
-    const pocketApp = this.createPocketAlbApplication({
+    this.createPocketAlbApplication({
       pagerDuty: this.createPagerDuty(),
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
@@ -43,7 +43,7 @@ class Stack extends TerraformStack {
       caller,
     });
 
-    this.createApplicationCodePipeline(pocketApp);
+    Aspects.of(this).add(new MigrateIds());
   }
 
   /**
@@ -51,7 +51,7 @@ class Stack extends TerraformStack {
    * @private
    */
   private getCodeDeploySnsTopic() {
-    return new sns.DataAwsSnsTopic(this, 'backend_notifications', {
+    return new DataAwsSnsTopic(this, 'backend_notifications', {
       name: `Backend-${config.environment}-ChatBot`,
     });
   }
@@ -61,24 +61,8 @@ class Stack extends TerraformStack {
    * @private
    */
   private getSecretsManagerKmsAlias() {
-    return new kms.DataAwsKmsAlias(this, 'kms_alias', {
+    return new DataAwsKmsAlias(this, 'kms_alias', {
       name: 'alias/aws/secretsmanager',
-    });
-  }
-
-  /**
-   * Create CodePipeline to build and deploy terraform and ecs
-   * @param app
-   * @private
-   */
-  private createApplicationCodePipeline(app: PocketALBApplication) {
-    new PocketECSCodePipeline(this, 'code-pipeline', {
-      prefix: config.prefix,
-      source: {
-        codeStarConnectionArn: config.codePipeline.githubConnectionArn,
-        repository: config.codePipeline.repository,
-        branchName: config.codePipeline.branch,
-      },
     });
   }
 
@@ -87,33 +71,8 @@ class Stack extends TerraformStack {
    * @private
    */
   private createPagerDuty() {
-    // don't create any pagerduty resources if in dev
-    if (config.isDev) {
-      return undefined;
-    }
-
-    const incidentManagement = new DataTerraformRemoteState(
-      this,
-      'incident_management',
-      {
-        organization: 'Pocket',
-        workspaces: {
-          name: 'incident-management',
-        },
-      }
-    );
-
-    return new PocketPagerDuty(this, 'pagerduty', {
-      prefix: config.prefix,
-      service: {
-        criticalEscalationPolicyId: incidentManagement
-          .get('policy_default_critical_id')
-          .toString(),
-        nonCriticalEscalationPolicyId: incidentManagement
-          .get('policy_default_non_critical_id')
-          .toString(),
-      },
-    });
+    // don't create any pagerduty resources for now
+    return undefined;
   }
 
   /**
@@ -124,10 +83,10 @@ class Stack extends TerraformStack {
    */
   private createPocketAlbApplication(dependencies: {
     pagerDuty: PocketPagerDuty;
-    region: datasources.DataAwsRegion;
-    caller: datasources.DataAwsCallerIdentity;
-    secretsManagerKmsAlias: kms.DataAwsKmsAlias;
-    snsTopic: sns.DataAwsSnsTopic;
+    region: DataAwsRegion;
+    caller: DataAwsCallerIdentity;
+    secretsManagerKmsAlias: DataAwsKmsAlias;
+    snsTopic: DataAwsSnsTopic;
   }): PocketALBApplication {
     const {
       //  pagerDuty, // enable if necessary
@@ -155,6 +114,8 @@ class Stack extends TerraformStack {
             },
           ],
           healthCheck: config.healthCheck,
+          logMultilinePattern: '^\\S.+',
+          logGroup: this.createCustomLogGroup('app'),
           envVars: [
             {
               name: 'NODE_ENV',
@@ -173,22 +134,29 @@ class Stack extends TerraformStack {
           ],
         },
         {
-          //todo: change to opentelemetry in followup PR
-          name: 'xray-daemon',
-          containerImage: 'public.ecr.aws/xray/aws-xray-daemon:latest',
+          name: 'aws-otel-collector',
+          command: ['--config=/etc/ecs/ecs-xray.yaml'],
+          containerImage: 'amazon/aws-otel-collector',
+          essential: true,
+          logMultilinePattern: '^\\S.+',
+          logGroup: this.createCustomLogGroup('aws-otel-collector'),
           portMappings: [
             {
-              hostPort: 2000,
-              containerPort: 2000,
-              protocol: 'udp',
+              hostPort: 4138,
+              containerPort: 4138,
+            },
+            {
+              hostPort: 4137,
+              containerPort: 4137,
             },
           ],
-          command: ['--region', 'us-east-1', '--local-mode'],
+          repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
         },
       ],
       codeDeploy: {
         useCodeDeploy: true,
-        useCodePipeline: true,
+        useCodePipeline: false,
+        useTerraformBasedCodeDeploy: false,
         notifications: {
           notifyOnFailed: true,
           notifyOnStarted: false,
@@ -245,7 +213,7 @@ class Stack extends TerraformStack {
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },
       autoscalingConfig: {
-        targetMinCapacity: 2,
+        targetMinCapacity: config.isDev ? 1 : 2,
         targetMaxCapacity: 10,
       },
       alarms: {
@@ -258,6 +226,26 @@ class Stack extends TerraformStack {
         },
       },
     });
+  }
+
+  /**
+   * Create Custom log group for ECS to share across task revisions
+   * @param containerName
+   * @private
+   */
+  private createCustomLogGroup(containerName: string) {
+    const logGroup = new CloudwatchLogGroup(
+      this,
+      `${containerName}-log-group`,
+      {
+        name: `/Backend/${config.prefix}/ecs/${containerName}`,
+        retentionInDays: 90,
+        skipDestroy: true,
+        tags: config.tags,
+      },
+    );
+
+    return logGroup.name;
   }
 }
 

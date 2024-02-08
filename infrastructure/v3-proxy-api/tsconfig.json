@@ -1,8 +1,8 @@
 {
-  "extends": "@pocket-tools/tsconfig",
+  "extends": "tsconfig/cdktf.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDirs": ["src"]
+    "rootDir": "src"
   },
   "exclude": ["node_modules"],
   "include": ["src/**/*.ts", "src/config"]
