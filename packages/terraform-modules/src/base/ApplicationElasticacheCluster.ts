@@ -109,66 +109,68 @@ export abstract class ApplicationElasticacheCluster extends Construct {
   }
 
   /**
-   * Create a security group and a subnet group for Elasticache
+   * Create a subnet group for Elasticache
    * @param scope
    * @param config
    * @param appVpc
    * @param port
    * @protected
    */
-  protected static createSecurityGroupAndSubnet(
+  protected static createSubnet(
+    scope: Construct,
+    config: ApplicationElasticacheClusterProps,
+  ): ElasticacheSubnetGroup {
+    return new ElasticacheSubnetGroup(scope, 'elasticache_subnet_group', {
+      name: `${config.prefix.toLowerCase()}-ElasticacheSubnetGroup`,
+      subnetIds: config.subnetIds,
+      provider: config.provider,
+      tags: config.tags,
+    });
+  }
+
+  /**
+   * Create a security group for Elasticache
+   * @param scope
+   * @param config
+   * @param appVpc
+   * @param port
+   * @protected
+   */
+  protected static createSecurityGroup(
     scope: Construct,
     config: ApplicationElasticacheClusterProps,
     appVpc: DataAwsVpc,
     port: number,
-  ): {
-    securityGroup: SecurityGroup;
-    subnetGroup: ElasticacheSubnetGroup;
-  } {
-    const securityGroup = new SecurityGroup(
-      scope,
-      'elasticache_security_group',
-      {
-        namePrefix: config.prefix,
-        description: 'Managed by Terraform',
-        vpcId: appVpc.id,
-        ingress: [
-          {
-            fromPort: port,
-            toPort: port,
-            protocol: 'tcp',
+  ): SecurityGroup {
+    return new SecurityGroup(scope, 'elasticache_security_group', {
+      namePrefix: config.prefix,
+      description: 'Managed by Terraform',
+      vpcId: appVpc.id,
+      ingress: [
+        {
+          fromPort: port,
+          toPort: port,
+          protocol: 'tcp',
 
-            //If we have a ingress security group it takes precedence
-            securityGroups: config.allowedIngressSecurityGroupIds
-              ? config.allowedIngressSecurityGroupIds
-              : null,
+          //If we have a ingress security group it takes precedence
+          securityGroups: config.allowedIngressSecurityGroupIds
+            ? config.allowedIngressSecurityGroupIds
+            : null,
 
-            //IF we do not have a ingress security group lets all the whole vpc access
-            cidrBlocks: config.allowedIngressSecurityGroupIds
-              ? null
-              : [appVpc.cidrBlock],
+          //IF we do not have a ingress security group lets all the whole vpc access
+          cidrBlocks: config.allowedIngressSecurityGroupIds
+            ? null
+            : [appVpc.cidrBlock],
 
-            // the following are included due to a bug
-            // https://github.com/hashicorp/terraform-cdk/issues/223
-            description: null,
-            ipv6CidrBlocks: null,
-            prefixListIds: null,
-          },
-        ],
-        tags: config.tags,
-        provider: config.provider,
-      },
-    );
-    const subnetGroup = new ElasticacheSubnetGroup(
-      scope,
-      'elasticache_subnet_group',
-      {
-        name: `${config.prefix.toLowerCase()}-ElasticacheSubnetGroup`,
-        subnetIds: config.subnetIds,
-        provider: config.provider,
-        tags: config.tags,
-      },
-    );
-    return { securityGroup, subnetGroup };
+          // the following are included due to a bug
+          // https://github.com/hashicorp/terraform-cdk/issues/223
+          description: null,
+          ipv6CidrBlocks: null,
+          prefixListIds: null,
+        },
+      ],
+      tags: config.tags,
+      provider: config.provider,
+    });
   }
 }
