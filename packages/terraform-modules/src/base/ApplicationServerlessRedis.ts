@@ -4,7 +4,7 @@ import {
   ApplicationElasticacheEngine,
 } from './ApplicationElasticacheCluster';
 import { Construct } from 'constructs';
-import { Fn, TerraformIterator, Token } from 'cdktf';
+import { Fn } from 'cdktf';
 import { DataAwsVpc } from '@cdktf/provider-aws/lib/data-aws-vpc';
 import { ElasticacheServerlessCache } from '@cdktf/provider-aws/lib/elasticache-serverless-cache';
 
