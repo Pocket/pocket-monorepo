@@ -51,6 +51,23 @@ export function getShortCodeForId(id: number): string {
 }
 
 /**
+ * Reconstruct ID from the short code
+ * @param code
+ * @returns
+ */
+export function getIdFromShortCode(code: string): number {
+  const chars = config.shortUrl.shortCodeChars;
+  const base = chars.length;
+  let id = 0;
+  while (code.length) {
+    id += chars.indexOf(code[0]);
+    id *= code.length > 1 ? base : 1;
+    code = code.slice(1);
+  }
+  return id;
+}
+
+/**
  * generates shortUrl using shortCode
  * in the format of pocket.co/x<shortCode> for secure givenUrl
  * in the format of pocket.co/s<shortCode> for non-secure givenUrl
@@ -93,3 +110,45 @@ export const shareUrl = {
     return id;
   },
 };
+
+/**
+ * Retrieve the item_id associated to a given share code
+ */
+export async function itemIdFromShareCode(
+  code: string,
+  sharedUrlRepo: SharedUrlsResolverRepository,
+): Promise<string> {
+  const id = getIdFromShortCode(code);
+  const record = await sharedUrlRepo.fetchByShareId(id);
+  return record.itemId.toString();
+}
+
+/**
+ * Extract the short code from a URL. If the URL is a valid pocket short
+ * share URL, return the code which identifies the share. Otherwise return
+ * undefined (e.g. if the URL is not a pocket share URL).
+ * @param url the url to attempt to extract the short code from
+ * @returns undefined if there is no short code (e.g. the url is not a pocket
+ * short share url), or the code if it is
+ */
+export function extractCodeFromShortUrl(url: string): string | undefined {
+  const prefixes = [
+    config.shortUrl.short_prefix,
+    config.shortUrl.short_prefix_secure,
+  ].map((prefix) => escapeRegExp(prefix));
+  const regex = `(${prefixes.join('|')})([${config.shortUrl.shortCodeChars}]+)$`;
+  const codeMatch = [...url.matchAll(new RegExp(regex, 'g'))][0];
+  // A valid URL will have 3 results, and the last is the capture group with the ID
+  // - full url
+  // - first capture group (the hostname and prefix)
+  // - second capture group (the share id code)
+  return codeMatch?.length === 3 ? codeMatch[2] : undefined;
+}
+
+/**
+ * Regex escape function, provided by MDN docs
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions
+ **/
+function escapeRegExp(str: string) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}

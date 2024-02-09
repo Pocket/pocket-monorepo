@@ -7,8 +7,10 @@ import { print } from 'graphql/index';
 import { gql } from 'graphql-tag';
 import request from 'supertest';
 import {
+  ItemResolverRepository,
   SharedUrlsResolverRepository,
   getConnection,
+  getItemResolverRepository,
   getSharedUrlsConnection,
   getSharedUrlsResolverRepo,
 } from '../database/mysql';
@@ -25,6 +27,7 @@ describe('ShortUrl', () => {
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
   let sharedRepo: SharedUrlsResolverRepository;
+  let itemRepo: ItemResolverRepository;
 
   afterAll(async () => {
     await server.stop();
@@ -35,6 +38,7 @@ describe('ShortUrl', () => {
 
   beforeAll(async () => {
     sharedRepo = await getSharedUrlsResolverRepo();
+    itemRepo = await getItemResolverRepository();
     await sharedRepo.clear();
     await sharedRepo.query('ALTER TABLE share_urls AUTO_INCREMENT = 1');
     // port 0 tells express to dynamically assign an available port
@@ -44,6 +48,7 @@ describe('ShortUrl', () => {
   beforeEach(async () => {
     // Flush the redis cache before each test
     await getRedis().clear();
+    await itemRepo.clear();
     await sharedRepo.clear();
     //first call for getItemByUrl.
     nock(`http://example-parser.com`)
@@ -65,7 +70,7 @@ describe('ShortUrl', () => {
       });
   });
 
-  it('should return shortUrl for a givenUrl for getItemByUrl', async () => {
+  it('should return shortUrl for a givenUrl (that is not a shortUrl) for getItemByUrl', async () => {
     const GET_ITEM_BY_URL = gql`
       query getItemByUrl($url: String!) {
         getItemByUrl(url: $url) {
@@ -81,7 +86,7 @@ describe('ShortUrl', () => {
     expect(res.body.data.getItemByUrl.shortUrl).toBe('https://local.co/ab');
   });
 
-  it('should return shortUrl for a givenUrl for itemByUrl', async () => {
+  it('should return shortUrl for a givenUrl (that is not a shortUrl) for itemByUrl', async () => {
     const item_by_url = gql`
       query itemByUrl($url: String!) {
         itemByUrl(url: $url) {
@@ -119,7 +124,6 @@ describe('ShortUrl', () => {
     expect(res.body).not.toBeNull();
     expect(res.body.data._entities[0].shortUrl).toBe('https://local.co/ab');
   });
-
   it('should fetch shortUrl for Collection ', async () => {
     const testSlug = `test-slug`;
     nock(`http://example-parser.com`)
@@ -203,5 +207,68 @@ describe('ShortUrl', () => {
 
     const db = await sharedRepo.batchGetShareUrlsById([1, 1]);
     expect(db.length).toBe(1);
+  });
+  describe('resolving from short url', () => {
+    beforeEach(async () => {
+      // Seed some data not needed by the other tests
+      await sharedRepo.insert({
+        shareUrlId: 1,
+        itemId: 12345,
+        resolvedId: 12345,
+      });
+      await itemRepo.insert({ itemId: 12345, normalUrl: testUrl });
+    });
+    it('should resolve the item from the short url', async () => {
+      const url = 'https://local.co/ab';
+
+      const item_by_url = gql`
+        query itemByUrl($url: String!) {
+          itemByUrl(url: $url) {
+            shortUrl
+            normalUrl
+          }
+        }
+      `;
+      const res = await request(app)
+        .post(graphQLUrl)
+        .send({
+          query: print(item_by_url),
+          variables: { url },
+        });
+      expect(res).not.toBeNull();
+      const expected = {
+        itemByUrl: {
+          shortUrl: url,
+          normalUrl: testUrl,
+        },
+      };
+      expect(res.body.data).toEqual(expected);
+      expect(res.body.errors).toBeUndefined();
+    });
+    it('errors if the short url is invalid/does not exist', async () => {
+      const url = 'https://local.co/bbaaaaa';
+      const item_by_url = gql`
+        query itemByUrl($url: String!) {
+          itemByUrl(url: $url) {
+            shortUrl
+            normalUrl
+          }
+        }
+      `;
+      const res = await request(app)
+        .post(graphQLUrl)
+        .send({
+          query: print(item_by_url),
+          variables: { url },
+        });
+      expect(res).not.toBeNull();
+      const expected = {
+        itemByUrl: null,
+      };
+      expect(res.body.data).toEqual(expected);
+      // TODO: @kschelonka - make this NOT_FOUND for clients
+      // and add more specific assertions
+      expect(res.body.errors).not.toBeUndefined();
+    });
   });
 });
