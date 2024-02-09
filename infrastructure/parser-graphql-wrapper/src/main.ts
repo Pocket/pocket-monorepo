@@ -6,6 +6,7 @@ import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-i
 import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/data-aws-kms-alias';
 import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
 import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
+import { DataAwsSubnets } from '@cdktf/provider-aws/lib/data-aws-subnets';
 import { DataPagerdutyEscalationPolicy } from '@cdktf/provider-pagerduty/lib/data-pagerduty-escalation-policy';
 import { LocalProvider } from '@cdktf/provider-local/lib/provider';
 import { NullProvider } from '@cdktf/provider-null/lib/provider';
@@ -366,6 +367,23 @@ class ParserGraphQLWrapper extends TerraformStack {
     primaryEndpoint: string;
     readerEndpoint: string;
   } {
+    // Serverless elasticache doesn't support the `e` availablity zone in us-east-1... so we need to filter it out..
+    const privateSubnets = new DataAwsSubnets(
+      this,
+      `cache_private_subnet_ids`,
+      {
+        filter: [
+          {
+            name: 'subnet-id',
+            values: pocketVPC.privateSubnetIds,
+          },
+          {
+            name: 'availability-zone',
+            values: ['us-east-1a', 'us-east-1c', 'us-east-1d'],
+          },
+        ],
+      },
+    );
     const elasticache = new ApplicationServerlessRedis(
       scope,
       'serverless_redis',
@@ -376,7 +394,7 @@ class ParserGraphQLWrapper extends TerraformStack {
         //This is not ideal..
         //Ideally we need to be able to add security groups to the ALB application.
         allowedIngressSecurityGroupIds: undefined,
-        subnetIds: pocketVPC.privateSubnetIds,
+        subnetIds: privateSubnets.ids,
         tags: config.tags,
         vpcId: pocketVPC.vpc.id,
         // add on a serverless to the name, because our previous elasticache will still exist at the old name
