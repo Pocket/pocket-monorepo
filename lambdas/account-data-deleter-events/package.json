@@ -12,7 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-lambda": "3.507.0",
-    "@sentry/serverless": "7.99.0",
+    "@sentry/serverless": "7.100.1",
     "fetch-retry": "^5.0.6",
     "isomorphic-fetch": "^3.0.0",
     "knex": "3.1.0",
