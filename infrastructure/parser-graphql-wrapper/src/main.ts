@@ -16,6 +16,7 @@ import {
   PocketALBApplication,
   PocketPagerDuty,
   PocketVPC,
+  ApplicationServerlessRedis,
 } from '@pocket-tools/terraform-modules';
 import { Construct } from 'constructs';
 import { App, S3Backend, TerraformStack } from 'cdktf';
@@ -44,6 +45,9 @@ class ParserGraphQLWrapper extends TerraformStack {
       this,
       vpc,
     );
+
+    //TOOD: Remove after new serverless cache is live
+    this.createOldElasticache(this, vpc);
 
     this.createPocketAlbApplication({
       pagerDuty: this.createPagerDuty(),
@@ -356,6 +360,44 @@ class ParserGraphQLWrapper extends TerraformStack {
    * @private
    */
   private createElasticache(
+    scope: Construct,
+    pocketVPC: PocketVPC,
+  ): {
+    primaryEndpoint: string;
+    readerEndpoint: string;
+  } {
+    const elasticache = new ApplicationServerlessRedis(
+      scope,
+      'serverless_redis',
+      {
+        //Usually we would set the security group ids of the service that needs to hit this.
+        //However we don't have the necessary security group because it gets created in PocketALBApplication
+        //So instead we set it to null and allow anything within the vpc to access it.
+        //This is not ideal..
+        //Ideally we need to be able to add security groups to the ALB application.
+        allowedIngressSecurityGroupIds: undefined,
+        subnetIds: pocketVPC.privateSubnetIds,
+        tags: config.tags,
+        vpcId: pocketVPC.vpc.id,
+        // add on a serverless to the name, because our previous elasticache will still exist at the old name
+        prefix: `${config.prefix}-serverless`,
+      },
+    );
+
+    return {
+      primaryEndpoint: elasticache.elasticache.endpoint.get(0).address,
+      readerEndpoint: elasticache.elasticache.readerEndpoint.get(0).address,
+    };
+  }
+
+  /**
+   * THIS IS HERE SO THAT TASKS CYCLE, REMOVE AFTER THIS CODE HAS RUN ON MAIN ONCE.
+   *
+   * Creates the elasticache and returns the node address list
+   * @param scope
+   * @private
+   */
+  private createOldElasticache(
     scope: Construct,
     pocketVPC: PocketVPC,
   ): {
