@@ -90,17 +90,15 @@ resource "aws_cloudwatch_log_group" "xray" {
   retention_in_days = 30
 }
 
-module "xray" {
+module "otel" {
   source  = "cloudposse/ecs-container-definition/aws"
   version = "0.61.1"
 
   essential       = true
-  container_name  = "xray"
-  container_image = "amazon/aws-xray-daemon"
+  container_name  = "aws-otel-collector"
+  container_image = "amazon/aws-otel-collector"
   command = [
-    "--region",
-    "us-east-1",
-    "--local-mode"
+    "--config=/etc/ecs/ecs-xray.yaml",
   ]
 
   repository_credentials = {
@@ -119,9 +117,12 @@ module "xray" {
 
   port_mappings = [
     {
-      containerPort = 2000
-      hostPort      = 2000
-      protocol      = "udp"
+      containerPort = 4138
+      hostPort      = 4138
+    },
+    {
+      containerPort = 4137
+      hostPort      = 4137
     }
   ]
   container_cpu                = null

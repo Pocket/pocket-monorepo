@@ -1,12 +1,6 @@
 import { DataSourceInterface } from '../datasource/DataSourceInterface';
 import { MysqlDataSource } from '../datasource/MysqlDataSource';
 import { processMessages } from '../tasks/userItemsUpdate';
-import { initSentry } from '../sentry';
-
-/**
- * Initialize Sentry
- */
-initSentry();
 
 /**
  * Kicks off the polling process to continuously receive messages from the sqs queue

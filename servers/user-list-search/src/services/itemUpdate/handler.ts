@@ -1,30 +1,21 @@
 import { SQSEvent, SQSRecord } from 'aws-lambda';
 import { processBody } from '../../tasks/userItemsUpdate';
 import { MysqlDataSource } from '../../datasource/MysqlDataSource';
-import { initSentry, captureException } from '../../sentry';
+import * as Sentry from '@sentry/serverless';
+import { config } from '../../config';
+
+Sentry.AWSLambda.init({
+  ...config.sentry,
+});
 
 const mysql = new MysqlDataSource();
 
-export const handler = async (event: SQSEvent): Promise<boolean[]> => {
-  initSentry();
-
-  try {
-    return await Promise.all(
-      event.Records.map((record: SQSRecord) => {
-        return processBody(record.body, mysql);
-      }),
-    );
-  } catch (err) {
-    // unless we have a requirement to return a specific error response, just throw the exception after sentry is handled
-    console.log('UserListSearch: error in lambda handler itemUpdate', err);
-    await captureException(err, {
-      type: 'userListSearchItemUpdateHandler',
-      data: {
-        err,
-        event,
-      },
-    });
-
-    throw err;
-  }
+export const processor = async (event: SQSEvent): Promise<boolean[]> => {
+  return await Promise.all(
+    event.Records.map((record: SQSRecord) => {
+      return processBody(record.body, mysql);
+    }),
+  );
 };
+
+export const handler = Sentry.AWSLambda.wrapHandler(processor);

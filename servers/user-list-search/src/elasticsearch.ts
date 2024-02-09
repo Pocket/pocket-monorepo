@@ -7,11 +7,11 @@ import {
 } from './datasource/DataSourceInterface';
 import { normalizeDate, normalizeFullText, normalizeUrl } from './shared/util';
 import { chunk } from 'lodash';
-import { addBreadcrumbs } from './sentry';
 import { captureMessage } from '@sentry/node';
 import { DeleteDocumentByQueryResponse } from 'elasticsearch';
 import { config } from './config';
 import { client } from './datasource/elasticsearch';
+import * as Sentry from '@sentry/node';
 
 export const getId = (doc: BaseDocument): string =>
   `${doc.user_id}-${doc.item_id}`;
@@ -78,7 +78,7 @@ export const createDocument = (
   const item = listItem.item;
 
   if (!item) {
-    addBreadcrumbs({
+    Sentry.addBreadcrumb({
       message: 'elasticsearch document',
       data: {
         itemId: listItem.itemId,

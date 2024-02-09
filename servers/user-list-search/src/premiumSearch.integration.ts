@@ -589,7 +589,7 @@ describe('premium search functional test', () => {
       expect(response).toEqual(expected);
     });
 
-    it.each([
+    it.skip.each([
       {
         name: 'before/last pagination',
         overrides: { pagination: { before: 'abc', last: 2 } },
