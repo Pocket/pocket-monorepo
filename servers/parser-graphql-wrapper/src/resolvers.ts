@@ -5,7 +5,11 @@ import config from './config';
 import { MediaTypeParam, ParserAPI } from './datasources/parserApi';
 import { MarticleElement, parseArticle } from './marticle/marticleParser';
 import { CacheScope } from '@apollo/cache-control-types';
-import { getShortUrl } from './shortUrl/shortUrl';
+import {
+  getShortUrl,
+  extractCodeFromShortUrl,
+  itemIdFromShareCode,
+} from './shortUrl/shortUrl';
 import { IContext } from './context';
 import { generateSSML } from './ssml/ssml';
 import { serverLogger } from '@pocket-tools/ts-logger';
@@ -111,6 +115,11 @@ export const resolvers = {
     },
     shortUrl: async (parent, args, context: IContext): Promise<string> => {
       const repo = await context.repositories.sharedUrlsResolver;
+      // If the givenUrl is already a short share url, return the same value
+      // to avoid another db trip
+      if (extractCodeFromShortUrl(parent.givenUrl) != null) {
+        return parent.givenUrl;
+      }
       return await getShortUrl(
         parent.itemId,
         parent.resolvedId,
@@ -128,8 +137,19 @@ export const resolvers = {
   },
   Query: {
     //deprecated
-    getItemByUrl: async (_source, { url }): Promise<Item> => {
-      return getItemByUrl(url);
+    getItemByUrl: async (_source, { url }, { repositories }): Promise<Item> => {
+      // If it's a special short share URL, use alternative resolution path
+      const shortCode = extractCodeFromShortUrl(url);
+      if (shortCode != null) {
+        const itemId = await itemIdFromShareCode(
+          shortCode,
+          await repositories.sharedUrlsResolver,
+        );
+        return getItemById(itemId, await repositories.itemResolver);
+      } else {
+        // Regular URL resolution
+        return getItemByUrl(url);
+      }
     },
     //deprecated
     getItemByItemId: async (
@@ -139,8 +159,19 @@ export const resolvers = {
     ): Promise<Item> => {
       return getItemById(id, await repositories.itemResolver);
     },
-    itemByUrl: async (_source, { url }): Promise<Item> => {
-      return getItemByUrl(url);
+    itemByUrl: async (_source, { url }, { repositories }): Promise<Item> => {
+      // If it's a special short share URL, use alternative resolution path
+      const shortCode = extractCodeFromShortUrl(url);
+      if (shortCode != null) {
+        const itemId = await itemIdFromShareCode(
+          shortCode,
+          await repositories.sharedUrlsResolver,
+        );
+        return getItemById(itemId, await repositories.itemResolver);
+      } else {
+        // Regular URL resolution
+        return getItemByUrl(url);
+      }
     },
     itemByItemId: async (_source, { id }, { repositories }): Promise<Item> => {
       return getItemById(id, await repositories.itemResolver);
