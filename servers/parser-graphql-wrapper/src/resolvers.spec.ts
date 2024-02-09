@@ -5,6 +5,7 @@ import { ItemResolverRepository } from './database/mysql';
 const urlToParse = 'https://example.com/article-slug';
 const itemId = '3';
 const articleBody = '<div  lang=\\"en\\"><p>a cool article</p></div>';
+let itemRepo: ItemResolverRepository;
 
 describe('Resolvers', () => {
   beforeEach(() => {
@@ -32,17 +33,25 @@ describe('Resolvers', () => {
   });
 
   it('resolves getByUrl Query', async () => {
-    const response: any = await resolvers.Query.getItemByUrl(null, {
-      url: urlToParse,
-    });
+    const response: any = await resolvers.Query.getItemByUrl(
+      null,
+      {
+        url: urlToParse,
+      },
+      { repositories: itemRepo },
+    );
 
     expect(response.normalUrl).toBe(urlToParse);
   });
 
   it('resolves byUrl Query', async () => {
-    const response: any = await resolvers.Query.itemByUrl(null, {
-      url: urlToParse,
-    });
+    const response: any = await resolvers.Query.itemByUrl(
+      null,
+      {
+        url: urlToParse,
+      },
+      { repositories: itemRepo },
+    );
 
     expect(response.normalUrl).toBe(urlToParse);
   });

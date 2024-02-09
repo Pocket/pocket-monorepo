@@ -93,6 +93,7 @@ export type SharedUrlsResolverRepository = Repository<ShareUrls> & {
   ): Promise<number>;
   getShareUrls(itemId: number): Promise<ShareUrls>;
   batchGetShareUrlsById(itemIds: number[]): Promise<ShareUrls[]>;
+  fetchByShareId(shareId: number): Promise<ShareUrls>;
 };
 
 /**
@@ -140,6 +141,13 @@ export const getSharedUrlsResolverRepo = async () => {
         { itemIds: itemIds },
       );
       return query.getMany();
+    },
+    async fetchByShareId(id: number): Promise<ShareUrls> {
+      const query = this.createQueryBuilder('sharedUrls').where(
+        'sharedUrls.shareUrlId = :id',
+        { id },
+      );
+      return query.getOneOrFail();
     },
   });
 };
