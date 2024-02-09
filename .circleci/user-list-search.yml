@@ -316,7 +316,7 @@ workflows:
           aws-access-key-id: Prod_AWS_ACCESS_KEY
           aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
           aws-region: Prod_AWS_DEFAULT_REGION
-          repo-name: parsergraphqlwrapper-prod-app
+          repo-name: userlistsearch-prod
           ecr-url: 996905175585.dkr.ecr.us-east-1.amazonaws.com
           push: true
           extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=user-list-search --build-arg APP_PATH=servers/user-list-search --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=user-list-search --build-arg PORT=4000

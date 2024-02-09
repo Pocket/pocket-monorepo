@@ -62,7 +62,7 @@ jobs:
             ((lambdas|infrastructure)/account-delete-monitor/.*)|(packages/.*)|(pnpm-lock\.yaml)|(.circleci/account-delete-monitor.yml) account_delete_monitor true
             ((servers|infrastructure|lambdas)/shareable-lists-api/.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) shareable_lists_api true
             ((infrastructure)/pocket-event-bridge/.*)|(packages/.*)|(pnpm-lock\.yaml)|(.circleci/pocket-event-bridge.yml) pocket_event_bridge true
-            ((servers|infrastructure|lambdas)/user-list-search.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile) user_list_search true
+            ((servers|infrastructure|lambdas)/user-list-search.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile)|(.circleci/user-list-search.yml) user_list_search true
             ((infrastructure)/braze/.*)|(packages/.*)|(pnpm-lock\.yaml)|(.circleci/braze.yml) braze true
             ((servers|infrastructure)/v3-proxy-api/.*)|(packages/.*)|(pnpm-lock\.yaml)|(.circleci/v3-proxy-api.yml) v3_proxy_api true
             ((servers|infrastructure)/push-server/.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile)|(.circleci/push-server.yml) push_server true
