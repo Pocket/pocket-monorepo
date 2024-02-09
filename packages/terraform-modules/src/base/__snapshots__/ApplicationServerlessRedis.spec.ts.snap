@@ -1,8 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ApplicationRedis renders redis with minimal config 1`] = `
+exports[`ApplicationRedis renders redis using data aws subnet 1`] = `
 "{
   "data": {
+    "aws_subnets": {
+      "subnets": {
+      }
+    },
     "aws_vpc": {
       "testRedis_vpc_442CAD26": {
         "filter": [
@@ -25,11 +29,7 @@ exports[`ApplicationRedis renders redis with minimal config 1`] = `
         "security_group_ids": [
           "\${aws_security_group.testRedis_elasticache_security_group_36C6CB6D.id}"
         ],
-        "subnet_ids": [
-          "subnet-1",
-          "subnet-2",
-          "subnet-3"
-        ]
+        "subnet_ids": "\${slice(data.aws_subnets.subnets.ids, 0, 3)}"
       }
     },
     "aws_security_group": {
@@ -57,7 +57,7 @@ exports[`ApplicationRedis renders redis with minimal config 1`] = `
 }"
 `;
 
-exports[`ApplicationRedis renders redis with more then 3 subnets 1`] = `
+exports[`ApplicationRedis renders redis with minimal config 1`] = `
 "{
   "data": {
     "aws_vpc": {
@@ -82,11 +82,7 @@ exports[`ApplicationRedis renders redis with more then 3 subnets 1`] = `
         "security_group_ids": [
           "\${aws_security_group.testRedis_elasticache_security_group_36C6CB6D.id}"
         ],
-        "subnet_ids": [
-          "subnet-1",
-          "subnet-2",
-          "subnet-3"
-        ]
+        "subnet_ids": "\${slice([\\"subnet-1\\", \\"subnet-2\\", \\"subnet-3\\"], 0, 3)}"
       }
     },
     "aws_security_group": {
@@ -139,11 +135,7 @@ exports[`ApplicationRedis renders redis with tags 1`] = `
         "security_group_ids": [
           "\${aws_security_group.testRedis_elasticache_security_group_36C6CB6D.id}"
         ],
-        "subnet_ids": [
-          "subnet-1",
-          "subnet-2",
-          "subnet-3"
-        ],
+        "subnet_ids": "\${slice([\\"subnet-1\\", \\"subnet-2\\", \\"subnet-3\\"], 0, 3)}",
         "tags": {
           "donnie": "throwinrockstonight",
           "letsgo": "bowling"

@@ -4,6 +4,7 @@ import {
   ApplicationServerlessRedis,
   ApplicationServerlessRedisProps,
 } from './ApplicationServerlessRedis';
+import { DataAwsSubnets } from '@cdktf/provider-aws/lib/data-aws-subnets';
 
 const BASE_CONFIG: ApplicationServerlessRedisProps = {
   allowedIngressSecurityGroupIds: [],
@@ -34,27 +35,18 @@ describe('ApplicationRedis', () => {
     expect(synthed).toMatchSnapshot();
   });
 
-  it('renders redis with more then 3 subnets', () => {
+  it('renders redis using data aws subnet', () => {
     const config: ApplicationServerlessRedisProps = {
       ...BASE_CONFIG,
-      subnetIds: ['subnet-1', 'subnet-2', 'subnet-3', 'subnet-4'],
     };
     const synthed = Testing.synthScope((stack) => {
-      new ApplicationServerlessRedis(stack, 'testRedis', config);
+      const subnets = new DataAwsSubnets(stack, 'subnets', {});
+
+      new ApplicationServerlessRedis(stack, 'testRedis', {
+        ...config,
+        subnetIds: subnets.ids,
+      });
     });
     expect(synthed).toMatchSnapshot();
-  });
-
-  it('errors redis with less then 2 subnets', () => {
-    const config: ApplicationServerlessRedisProps = {
-      ...BASE_CONFIG,
-      subnetIds: ['subnet-1'],
-    };
-
-    Testing.synthScope((stack) => {
-      expect(() => {
-        new ApplicationServerlessRedis(stack, 'testRedis', config);
-      }).toThrow('Elasticache serverless requires at least 2 subnets');
-    });
   });
 });

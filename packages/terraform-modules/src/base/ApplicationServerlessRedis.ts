@@ -4,6 +4,7 @@ import {
   ApplicationElasticacheEngine,
 } from './ApplicationElasticacheCluster';
 import { Construct } from 'constructs';
+import { Fn, TerraformIterator, Token } from 'cdktf';
 import { DataAwsVpc } from '@cdktf/provider-aws/lib/data-aws-vpc';
 import { ElasticacheServerlessCache } from '@cdktf/provider-aws/lib/elasticache-serverless-cache';
 
@@ -52,25 +53,16 @@ export class ApplicationServerlessRedis extends ApplicationElasticacheCluster {
       port,
     );
 
-    let subnetIds = config.subnetIds;
-    if (subnetIds.length > 3) {
-      console.warn(
-        'More then 3 subnetIds were passed to elasticache and it only supports up to 3 will only use the first 3.',
-      );
-      subnetIds = config.subnetIds.slice(0, 3);
-    }
-
-    if (subnetIds.length < 2) {
-      throw new Error('Elasticache serverless requires at least 2 subnets');
-    }
-
     return new ElasticacheServerlessCache(scope, 'elasticache_serverless', {
       engine: engine,
       name: config.prefix,
       description: `Redis for ${config.prefix}`,
       provider: config.provider,
       securityGroupIds: [securityGroup.id],
-      subnetIds: subnetIds,
+      // SubnetIds comes usually from PocketVPC, it is declared as a string[] but in reality its a special terraform value determined at runtime.
+      // So we need to use a terraform function to splice the array, because Serverless redis only lets us use 2-3 subnets.
+      // In the future we should see if there is a way to fix the CDKTF type in terrraform modules so that developers are not tricked by string[] on subnetIds on pocketvpc.
+      subnetIds: Fn.slice(config.subnetIds, 0, 3),
       tags: config.tags,
     });
   }
