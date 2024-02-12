@@ -17,6 +17,7 @@ import {
 } from '@pocket-tools/apollo-utils';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 import config from '../config';
+import { getRedis } from '../cache';
 
 /**
  * Context factory function. Creates a new context upon
@@ -60,7 +61,16 @@ export async function startServer(port: number): Promise<{
   app.use(Sentry.Handlers.tracingHandler());
 
   // Expose health check url
-  app.get('/.well-known/apollo/server-health', (req, res) => {
+  app.get('/.well-known/apollo/server-health', async (req, res) => {
+    // Check redis can connect
+    try {
+      const redis = getRedis();
+      await redis.set('test', true, 1);
+    } catch (error) {
+      res.status(500).send('cache error');
+      serverLogger.error(error);
+      return;
+    }
     res.status(200).send('ok');
   });
 

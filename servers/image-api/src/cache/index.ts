@@ -1,4 +1,5 @@
 import Keyv from 'keyv';
+import KeyvRedis from '@keyv/redis';
 import { KeyvAdapter } from '@apollo/utils.keyvadapter';
 import config from '../config';
 import { serverLogger } from '@pocket-tools/ts-logger';
@@ -28,9 +29,16 @@ export function getRedis(): Keyv {
   if (redis) {
     return redis;
   }
-  redis = new Keyv(
-    `redis://${config.redis.primaryEndpoint}:${config.redis.port}`,
-  ).on('error', function (message) {
+
+  const keyvRedis = new KeyvRedis(
+    `rediss://${config.redis.primaryEndpoint}:${config.redis.port}`,
+    { isCluster: true, useRedisSets: false },
+  );
+  redis = new Keyv({
+    store: keyvRedis,
+    isCluster: true,
+    maxRetriesPerRequest: 2,
+  }).on('error', function (message) {
     serverLogger.error({
       data: {},
       error: message,
