@@ -55,13 +55,14 @@ export class ApplicationRedis extends ApplicationElasticacheCluster {
     const engine = ApplicationElasticacheEngine.REDIS;
     const port = ApplicationElasticacheCluster.getPortForEngine(engine);
 
-    const { securityGroup, subnetGroup } =
-      ApplicationRedis.createSecurityGroupAndSubnet(
-        scope,
-        config,
-        appVpc,
-        port,
-      );
+    const securityGroup = ApplicationRedis.createSecurityGroup(
+      scope,
+      config,
+      appVpc,
+      port,
+    );
+
+    const subnetGroup = ApplicationRedis.createSubnet(scope, config);
 
     return new ElasticacheReplicationGroup(
       scope,

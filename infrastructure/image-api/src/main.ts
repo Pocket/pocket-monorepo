@@ -8,6 +8,7 @@ import {
 import { config } from './config';
 import {
   ApplicationRedis,
+  ApplicationServerlessRedis,
   PocketALBApplication,
   PocketPagerDuty,
   PocketVPC,
@@ -20,6 +21,7 @@ import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-i
 import { CloudwatchLogGroup } from '@cdktf/provider-aws/lib/cloudwatch-log-group';
 import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/data-aws-kms-alias';
 import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
+import { DataAwsSubnets } from '@cdktf/provider-aws/lib/data-aws-subnets';
 import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
 import { NullProvider } from '@cdktf/provider-null/lib/provider';
 import { LocalProvider } from '@cdktf/provider-local/lib/provider';
@@ -50,6 +52,9 @@ class ImageAPI extends TerraformStack {
       this,
       pocketVPC,
     );
+
+    //TOOD: Remove after new serverless cache is live
+    this.createOldElasticache(this, pocketVPC);
 
     this.createPocketAlbApplication({
       pagerDuty: this.createPagerDuty(),
@@ -308,6 +313,61 @@ class ImageAPI extends TerraformStack {
    * @private
    */
   private createElasticache(
+    scope: Construct,
+    pocketVPC: PocketVPC,
+  ): {
+    primaryEndpoint: string;
+    readerEndpoint: string;
+  } {
+    // Serverless elasticache doesn't support the `e` availablity zone in us-east-1... so we need to filter it out..
+    const privateSubnets = new DataAwsSubnets(
+      this,
+      `cache_private_subnet_ids`,
+      {
+        filter: [
+          {
+            name: 'subnet-id',
+            values: pocketVPC.privateSubnetIds,
+          },
+          {
+            name: 'availability-zone',
+            values: ['us-east-1a', 'us-east-1c', 'us-east-1d'],
+          },
+        ],
+      },
+    );
+    const elasticache = new ApplicationServerlessRedis(
+      scope,
+      'serverless_redis',
+      {
+        //Usually we would set the security group ids of the service that needs to hit this.
+        //However we don't have the necessary security group because it gets created in PocketALBApplication
+        //So instead we set it to null and allow anything within the vpc to access it.
+        //This is not ideal..
+        //Ideally we need to be able to add security groups to the ALB application.
+        allowedIngressSecurityGroupIds: undefined,
+        subnetIds: privateSubnets.ids,
+        tags: config.tags,
+        vpcId: pocketVPC.vpc.id,
+        // add on a serverless to the name, because our previous elasticache will still exist at the old name
+        prefix: `${config.prefix}-serverless`,
+      },
+    );
+
+    return {
+      primaryEndpoint: elasticache.elasticache.endpoint.get(0).address,
+      readerEndpoint: elasticache.elasticache.readerEndpoint.get(0).address,
+    };
+  }
+
+  /**
+   * THIS IS HERE SO THAT TASKS CYCLE, REMOVE AFTER THIS CODE HAS RUN ON MAIN ONCE.
+   *
+   * Creates the elasticache and returns the node address list
+   * @param scope
+   * @private
+   */
+  private createOldElasticache(
     scope: Construct,
     pocketVPC: PocketVPC,
   ): {

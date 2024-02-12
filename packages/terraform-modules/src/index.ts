@@ -30,6 +30,7 @@ export * from './base/ApplicationLoadBalancer';
 export * from './base/ApplicationMemcache';
 export * from './base/ApplicationRDSCluster';
 export * from './base/ApplicationRedis';
+export * from './base/ApplicationServerlessRedis';
 export * from './base/ApplicationSQSQueue';
 export * from './base/ApplicationSqsSnsTopicSubscription';
 export * from './base/ApplicationTargetGroup';
