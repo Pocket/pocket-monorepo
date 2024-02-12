@@ -30,12 +30,12 @@ export function getRedis(): Keyv {
   }
 
   const keyvRedis = new KeyvRedis(
-    `rediss://${config.redis.primaryEndpoint}:${config.redis.port}`,
-    { isCluster: true, useRedisSets: false },
+    `${config.redis.isTLS ? 'rediss' : 'redis'}://${config.redis.primaryEndpoint}:${config.redis.port}`,
+    { isCluster: config.redis.isCluster, useRedisSets: false },
   );
   redis = new Keyv({
     store: keyvRedis,
-    isCluster: true,
+    isCluster: config.redis.isCluster,
   }).on('error', function (message) {
     serverLogger.error({
       data: {},

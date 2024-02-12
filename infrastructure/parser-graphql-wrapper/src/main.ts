@@ -180,6 +180,14 @@ class ParserGraphQLWrapper extends TerraformStack {
               name: 'REDIS_READER_ENDPOINT',
               value: readerEndpoint,
             },
+            {
+              name: 'REDIS_IS_CLUSTER',
+              value: 'true',
+            },
+            {
+              name: 'REDIS_IS_TLS',
+              value: 'true',
+            },
           ],
           healthCheck: {
             command: [

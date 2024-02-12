@@ -194,6 +194,14 @@ class ImageAPI extends TerraformStack {
               name: 'OTLP_COLLECTOR_HOST',
               value: config.tracing.host,
             },
+            {
+              name: 'REDIS_IS_CLUSTER',
+              value: 'true',
+            },
+            {
+              name: 'REDIS_IS_TLS',
+              value: 'true',
+            },
           ],
           secretEnvVars: [
             {
