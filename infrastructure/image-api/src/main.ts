@@ -48,13 +48,13 @@ class ImageAPI extends TerraformStack {
     const region = new DataAwsRegion(this, 'region');
     const caller = new DataAwsCallerIdentity(this, 'caller');
 
-    const { primaryEndpoint, readerEndpoint } = this.createElasticache(
+    this.createElasticache(this, pocketVPC);
+
+    //TOOD: Remove after new serverless cache is live
+    const { primaryEndpoint, readerEndpoint } = this.createOldElasticache(
       this,
       pocketVPC,
     );
-
-    //TOOD: Remove after new serverless cache is live
-    this.createOldElasticache(this, pocketVPC);
 
     this.createPocketAlbApplication({
       pagerDuty: this.createPagerDuty(),

@@ -42,13 +42,13 @@ class ParserGraphQLWrapper extends TerraformStack {
     const region = new DataAwsRegion(this, 'region');
     const caller = new DataAwsCallerIdentity(this, 'caller');
     const vpc = new PocketVPC(this, 'pocket-vpc');
-    const { primaryEndpoint, readerEndpoint } = this.createElasticache(
+    this.createElasticache(this, vpc);
+
+    //TOOD: Remove after new serverless cache is live
+    const { primaryEndpoint, readerEndpoint } = this.createOldElasticache(
       this,
       vpc,
     );
-
-    //TOOD: Remove after new serverless cache is live
-    this.createOldElasticache(this, vpc);
 
     this.createPocketAlbApplication({
       pagerDuty: this.createPagerDuty(),
