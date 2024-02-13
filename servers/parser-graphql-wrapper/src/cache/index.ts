@@ -6,6 +6,7 @@ import {
   DataLoaderCacheInterface,
   DataloaderKeyValueCache,
 } from '@pocket-tools/apollo-utils';
+import KeyvRedis from '@keyv/redis';
 
 let cache: DataloaderKeyValueCache = undefined;
 let redis: Keyv = undefined;
@@ -27,9 +28,15 @@ export function getRedis(): Keyv {
   if (redis) {
     return redis;
   }
-  redis = new Keyv(
-    `redis://${config.redis.primaryEndpoint}:${config.redis.port}`,
-  ).on('error', function (message) {
+
+  const keyvRedis = new KeyvRedis(
+    `${config.redis.isTLS ? 'rediss' : 'redis'}://${config.redis.primaryEndpoint}:${config.redis.port}`,
+    { isCluster: config.redis.isCluster, useRedisSets: false },
+  );
+  redis = new Keyv({
+    store: keyvRedis,
+    isCluster: config.redis.isCluster,
+  }).on('error', function (message) {
     serverLogger.error({
       data: {},
       error: message,

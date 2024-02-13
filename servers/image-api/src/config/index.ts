@@ -12,6 +12,12 @@ export default {
     primaryEndpoint: process.env.REDIS_PRIMARY_ENDPOINT || 'localhost',
     readerEndpoint: process.env.REDIS_READER_ENDPOINT || 'localhost',
     port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
+    isCluster: process.env.REDIS_IS_CLUSTER
+      ? JSON.parse(process.env.REDIS_IS_CLUSTER)
+      : false,
+    isTLS: process.env.REDIS_IS_TLS
+      ? JSON.parse(process.env.REDIS_IS_TLS)
+      : false,
   },
   sentry: {
     dsn: process.env.SENTRY_DSN || '',

@@ -54,12 +54,14 @@ export class ApplicationMemcache extends ApplicationElasticacheCluster {
     const engine = ApplicationElasticacheEngine.MEMCACHED;
     const port = ApplicationElasticacheCluster.getPortForEngine(engine);
 
-    const { securityGroup, subnetGroup } = this.createSecurityGroupAndSubnet(
+    const securityGroup = ApplicationMemcache.createSecurityGroup(
       scope,
       config,
       appVpc,
       port,
     );
+
+    const subnetGroup = ApplicationMemcache.createSubnet(scope, config);
 
     return new ElasticacheCluster(scope, `elasticache_cluster`, {
       clusterId: config.prefix.toLowerCase(),
