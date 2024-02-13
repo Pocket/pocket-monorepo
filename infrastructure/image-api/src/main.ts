@@ -48,13 +48,13 @@ class ImageAPI extends TerraformStack {
     const region = new DataAwsRegion(this, 'region');
     const caller = new DataAwsCallerIdentity(this, 'caller');
 
-    this.createElasticache(this, pocketVPC);
-
-    //TOOD: Remove after new serverless cache is live
-    const { primaryEndpoint, readerEndpoint } = this.createOldElasticache(
+    const { primaryEndpoint, readerEndpoint } = this.createElasticache(
       this,
       pocketVPC,
     );
+
+    //TOOD: Remove after new serverless cache is live
+    this.createOldElasticache(this, pocketVPC);
 
     this.createPocketAlbApplication({
       pagerDuty: this.createPagerDuty(),
@@ -193,6 +193,14 @@ class ImageAPI extends TerraformStack {
             {
               name: 'OTLP_COLLECTOR_HOST',
               value: config.tracing.host,
+            },
+            {
+              name: 'REDIS_IS_CLUSTER',
+              value: 'true',
+            },
+            {
+              name: 'REDIS_IS_TLS',
+              value: 'true',
             },
           ],
           secretEnvVars: [
