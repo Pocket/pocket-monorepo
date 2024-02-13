@@ -55,7 +55,7 @@ export class ApplicationServerlessRedis extends ApplicationElasticacheCluster {
 
     return new ElasticacheServerlessCache(scope, 'elasticache_serverless', {
       engine: engine,
-      name: config.prefix,
+      name: config.prefix.toLowerCase(),
       description: `Redis for ${config.prefix}`,
       provider: config.provider,
       securityGroupIds: [securityGroup.id],
