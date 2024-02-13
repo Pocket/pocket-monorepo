@@ -32,13 +32,23 @@ export function errorHandler(
   // it checks for truthiness on the `path` property, which is undefined
   // if the error is thrown during context creation.
   // This little snippet just removes the `path` property check.
-  const unwrapError = (error: unknown) => {
-    if (error instanceof GraphQLError && error.originalError) {
+  // Additionally, don't rely on JUST the prototype chain to check for if
+  // an error is a "GraphQLError", as the chain is potentially broken
+  // in the request lifecycle. Also check for the 'name' property of the
+  // error constructor or error itself, if it's set to "GraphQLError".
+  const isGraphQLError = (error: any) =>
+    error.constructor?.name === 'GraphQLError' ||
+    error.name === 'GraphQLError' ||
+    error instanceof GraphQLError
+      ? true
+      : false;
+  const unwrapError = (error: any) => {
+    if (isGraphQLError(error) && error.originalError) {
       return error.originalError;
     }
     return error;
   };
-  if (unwrapError(error) instanceof GraphQLError) {
+  if (isGraphQLError(unwrapError(error))) {
     return formattedError;
   } else {
     // Mask other kinds of errors
@@ -55,43 +65,17 @@ export function errorHandler(
   }
 }
 
-/**
- * CustomGraphQLError exists for providing common extensions for all
- * custom internal errors. Otherwise, all implementation is just relying
- * on GraphQLError
- *
- * This really shouldn't be used directly, but is exported so that other
- * packages or consumers can extend this same interface (though they really
- * should implement here to prevent duplicate implementations!). Still, exported
- * because there could be a subgraph that we never intend to federate or
- * similar use cases in the future.
- *
- * To extend this, create a unique error code for your new error, and add
- * it to the InternalErrorCode enum above, add the error code to NO_REPORT_ERRORS
- * in `sentryPlugin.ts`, and implement an error extension class below.
- */
-export class CustomGraphQLError extends GraphQLError implements Error {
-  constructor(message: string, options?: GraphQLErrorOptions) {
-    super(message, options);
-
-    // this should be overwritten by extension, setting just in case
-    Object.defineProperty(this, 'name', { value: 'CustomGraphQLError' });
-  }
-}
-
-export class NotFoundError extends CustomGraphQLError {
+export class NotFoundError extends GraphQLError {
   static errorPrefix = `Error - Not Found`;
   constructor(message: string, options?: GraphQLErrorOptions) {
     super(`${NotFoundError.errorPrefix}: ${message}`, {
       ...options,
       extensions: { ...options?.extensions, code: InternalErrorCode.NOT_FOUND },
     });
-
-    Object.defineProperty(this, 'name', { value: 'NotFoundError' });
   }
 }
 
-export class InternalServerError extends CustomGraphQLError {
+export class InternalServerError extends GraphQLError {
   constructor(message: string, options?: GraphQLErrorOptions) {
     super(message ?? 'Internal server error', {
       ...options,
@@ -100,26 +84,22 @@ export class InternalServerError extends CustomGraphQLError {
         code: InternalErrorCode.INTERNAL_SERVER_ERROR,
       },
     });
-
-    Object.defineProperty(this, 'name', { value: 'InternalServerError' });
   }
 }
 
 /**
  * @deprecated - use NotFoundError from this same package
  */
-export class GraphQLNotFoundError extends CustomGraphQLError {
+export class GraphQLNotFoundError extends GraphQLError {
   constructor(message: string, options?: GraphQLErrorOptions) {
     super(message, {
       ...options,
       extensions: { ...options?.extensions, code: InternalErrorCode.NOT_FOUND },
     });
-
-    Object.defineProperty(this, 'name', { value: 'NotFoundError' });
   }
 }
 
-export class UserInputError extends CustomGraphQLError {
+export class UserInputError extends GraphQLError {
   constructor(message: string, options?: GraphQLErrorOptions) {
     super(message, {
       ...options,
@@ -128,12 +108,10 @@ export class UserInputError extends CustomGraphQLError {
         code: InternalErrorCode.BAD_USER_INPUT,
       },
     });
-
-    Object.defineProperty(this, 'name', { value: 'UserInputError' });
   }
 }
 
-export class AuthenticationError extends CustomGraphQLError {
+export class AuthenticationError extends GraphQLError {
   constructor(message: string, options?: GraphQLErrorOptions) {
     super(message, {
       ...options,
@@ -142,12 +120,10 @@ export class AuthenticationError extends CustomGraphQLError {
         code: InternalErrorCode.UNAUTHENTICATED,
       },
     });
-
-    Object.defineProperty(this, 'name', { value: 'AuthenticationError' });
   }
 }
 
-export class ForbiddenError extends CustomGraphQLError {
+export class ForbiddenError extends GraphQLError {
   constructor(message: string, options?: GraphQLErrorOptions) {
     super(message, {
       ...options,
@@ -156,7 +132,5 @@ export class ForbiddenError extends CustomGraphQLError {
         code: InternalErrorCode.FORBIDDEN,
       },
     });
-
-    Object.defineProperty(this, 'name', { value: 'ForbiddenError' });
   }
 }

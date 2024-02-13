@@ -589,7 +589,7 @@ describe('premium search functional test', () => {
       expect(response).toEqual(expected);
     });
 
-    it.skip.each([
+    it.each([
       {
         name: 'before/last pagination',
         overrides: { pagination: { before: 'abc', last: 2 } },
@@ -613,7 +613,7 @@ describe('premium search functional test', () => {
           'Must provide either filters or query string to search',
       },
     ])(
-      'should throw user input error if: $name',
+      'should throw user input error if',
       async ({ overrides, expectedMessage }) => {
         const basicVars = {
           id: '1',
@@ -635,9 +635,9 @@ describe('premium search functional test', () => {
         const expected = expect.toIncludeSameMembers([
           expect.objectContaining({
             message: expect.toInclude(expectedMessage),
-            extensions: {
+            extensions: expect.objectContaining({
               code: 'BAD_USER_INPUT',
-            },
+            }),
           }),
         ]);
         expect(response).toEqual(expected);
