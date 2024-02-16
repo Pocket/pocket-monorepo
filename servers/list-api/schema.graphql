@@ -118,6 +118,16 @@ input PaginationInput {
   last: Int
 }
 
+"""
+Input for offset-pagination (internal backend use only).
+"""
+input OffsetPaginationInput {
+  """ Defaults to 0 """
+  offset: Int @constraint(min: 0)
+  """ Defaults to 30 """
+  limit: Int @constraint(exclusiveMin: 0, max: 5000)
+}
+
 input SaveUpdateTagsInput {
   saveId: ID!
   """
@@ -546,6 +556,16 @@ type SavedItemTagAssociation {
   tagId: ID!
 }
 
+"""
+A page of SavedItems, retrieved by offset-based pagination.
+"""
+type SavedItemsPage @tag(name: "internal") {
+  entries: [SavedItem!]!
+  totalCount: Int!
+  offset: Int!
+  limit: Int!
+}
+
 type User @key(fields: "id") {
   #Note more properties exist here but are defined in another service.
 
@@ -562,6 +582,15 @@ type User @key(fields: "id") {
     sort: SavedItemsSort
     pagination: PaginationInput
   ): SavedItemConnection
+
+  """
+  Fetch SavedItems with offset pagination. Internal backend use only.
+  """
+  savedItemsByOffset(
+    filter: SavedItemsFilter
+    sort: SavedItemsSort
+    pagination: OffsetPaginationInput
+  ): SavedItemsPage @tag(name: "internal")
 
   """
   Get a paginated listing of all a user's Tags

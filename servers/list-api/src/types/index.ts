@@ -10,6 +10,16 @@ export type PageInfo = {
   hasPreviousPage: boolean;
   startCursor?: string;
 };
+export type SavedItemResult = Omit<SavedItem, 'item' | 'tags'>;
+
+export type OffsetPaginationInput = { limit: number; offset: number };
+
+export type SavedItemsPage = {
+  entries: SavedItemResult[];
+  totalCount: number;
+  limit: number;
+  offset: number;
+};
 
 export type SavedItemConnection = {
   edges: SavedItemEdge[];

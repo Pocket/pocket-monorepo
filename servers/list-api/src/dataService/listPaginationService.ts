@@ -8,6 +8,9 @@ import {
   SavedItemsContentType,
   Pagination,
   SavedItemConnection,
+  OffsetPaginationInput,
+  SavedItemsPage,
+  SavedItemResult,
 } from '../types';
 import * as tag from '../models/tag';
 import { mysqlTimeString } from './utils';
@@ -34,8 +37,6 @@ const statusMap = {
   [SavedItemStatus.DELETED]: 'DELETED',
   [SavedItemStatus.HIDDEN]: 'HIDDEN',
 };
-
-type SavedItemResult = Omit<SavedItem, 'item' | 'tags'>;
 
 class Sort {
   public readonly order;
@@ -252,6 +253,52 @@ export class ListPaginationService {
         connection,
       );
     }
+  }
+
+  /**
+   * Handle limit/offset pagination
+   */
+  private async pageOffsetLimit(
+    dbClient: Knex,
+    query: Knex.QueryBuilder,
+    sort: SavedItemsSort,
+    pagination: OffsetPaginationInput,
+    connection: any,
+  ) {
+    const queryBuilder = query.select(
+      'list.item_id',
+      'list.resolved_id',
+      'list.given_url',
+      'list.title',
+      'list.favorite',
+      'list.status',
+      dbClient.raw('UNIX_TIMESTAMP(list.time_added) as time_added'),
+      dbClient.raw('UNIX_TIMESTAMP(list.time_updated) AS time_updated'),
+      dbClient.raw('UNIX_TIMESTAMP(list.time_read) AS time_read'),
+      dbClient.raw('UNIX_TIMESTAMP(list.time_favorited) AS time_favorited'),
+    );
+    // needs to be same order as above
+    const insertStatement = `INSERT INTO \`${ListPaginationService.LIST_TEMP_TABLE}\` (item_id, resolved_id, given_url, title, favorite, status, time_added, time_updated, time_read, time_favorited) `;
+    const pageSize = pagination.limit ?? config.pagination.defaultPageSize;
+    const offset = pagination.offset ?? 0;
+    const sortOrder = new Sort(sort);
+    const sortColumn = this.dbSortByMap[sortOrder.column];
+    const queryString = queryBuilder
+      .clone()
+      .orderBy([
+        { column: `list.${sortColumn}`, order: sortOrder.order },
+        { column: 'list.item_id' },
+      ])
+      .limit(pageSize + 1)
+      .offset(offset)
+      .toString();
+    await dbClient
+      .raw(`${insertStatement} ${queryString}`)
+      .connection(connection);
+    const returnQuery = dbClient(
+      `${ListPaginationService.LIST_TEMP_TABLE}`,
+    ).select();
+    return returnQuery.connection(connection);
   }
 
   /**
@@ -618,6 +665,72 @@ export class ListPaginationService {
     }
 
     return baseQuery;
+  }
+
+  /**
+   * Retrieve a page of SavedItems with offset pagination.
+   * For internal backend use only.
+   * @param filter
+   * @param sort
+   * @param pagination
+   * @returns
+   */
+  public async getSavedItemsPage(
+    filter: SavedItemsFilter,
+    sort: SavedItemsSort,
+    pagination?: OffsetPaginationInput,
+  ): Promise<SavedItemsPage> {
+    const defaultPagination = {
+      offset: 0,
+      limit: config.pagination.defaultPageSize,
+    };
+    const pageInput = {
+      ...defaultPagination,
+      ...(pagination ?? {}),
+    };
+
+    const connection = await this.context.dbClient.client.acquireConnection();
+    //Define these outside the try statement to be used later
+    let totalCount: number;
+    let pageResult: ListEntity[];
+    try {
+      // Drop temp tables if exists.
+      await this.dropTempTables(this.context.dbClient, connection);
+
+      await this.listTempTableQuery(this.context.dbClient, connection);
+      const baseQuery = this.context
+        .dbClient('list')
+        .where('list.user_id', this.context.userId);
+      if (filter != null) {
+        await this.buildFilterQuery(
+          baseQuery,
+          this.context.dbClient,
+          filter,
+          connection,
+        );
+      }
+      totalCount = (await this.context.dbClient
+        .count('* as count')
+        .from(baseQuery.clone().select('list.*').limit(5000).as('countQuery'))
+        .first()
+        .connection(connection)
+        .then((_) => _?.count ?? 0)) as number;
+      pageResult = await this.pageOffsetLimit(
+        this.context.dbClient,
+        baseQuery as any,
+        sort,
+        pageInput,
+        connection,
+      );
+    } finally {
+      //ensure we always release the connection back to the rest of the pool to play with its friends
+      await this.context.dbClient.client.releaseConnection(connection);
+    }
+    return {
+      entries: ListPaginationService.toGraphql(pageResult),
+      totalCount: totalCount,
+      ...pageInput,
+    };
   }
 
   /**

@@ -20,7 +20,7 @@ describe('getSavedItems', () => {
   let server: ApolloServer<ContextManager>;
   let url: string;
 
-  const GET_SAVED_ITEMS = `
+  const GET_SAVED_ITEMS_CURSOR = `
     query getSavedItem(
       $id: ID!
       $pagination: PaginationInput
@@ -47,6 +47,27 @@ describe('getSavedItems', () => {
               hasNextPage
               hasPreviousPage
             }
+            totalCount
+          }
+        }
+      }
+    }
+  `;
+
+  const GET_SAVED_ITEMS_OFFSET = `
+    query getSavedItem(
+      $id: ID!
+      $pagination: OffsetPaginationInput
+      $sort: SavedItemsSort
+    ) {
+      _entities(representations: { id: $id, __typename: "User" }) {
+        ... on User {
+          savedItemsByOffset(pagination: $pagination, sort: $sort) {
+            entries {
+              url
+            }
+            offset
+            limit
             totalCount
           }
         }
@@ -153,7 +174,7 @@ describe('getSavedItems', () => {
       pagination: { first: 2 },
     };
     const res = await request(app).post(url).set(headers).send({
-      query: GET_SAVED_ITEMS,
+      query: GET_SAVED_ITEMS_CURSOR,
       variables,
     });
     expect(res.body.data?._entities[0].savedItems.totalCount).toBe(3);
@@ -192,7 +213,7 @@ describe('getSavedItems', () => {
       },
     };
     const res = await request(app).post(url).set(headers).send({
-      query: GET_SAVED_ITEMS,
+      query: GET_SAVED_ITEMS_CURSOR,
       variables,
     });
     expect(res.body.data?._entities[0].savedItems.edges.length).toBe(1);
@@ -226,7 +247,7 @@ describe('getSavedItems', () => {
       },
     };
     const res = await request(app).post(url).set(headers).send({
-      query: GET_SAVED_ITEMS,
+      query: GET_SAVED_ITEMS_CURSOR,
       variables,
     });
     expect(res.body.data?._entities[0].savedItems.edges.length).toBe(2);
@@ -254,7 +275,7 @@ describe('getSavedItems', () => {
       },
     };
     const res = await request(app).post(url).set(headers).send({
-      query: GET_SAVED_ITEMS,
+      query: GET_SAVED_ITEMS_CURSOR,
       variables,
     });
     expect(res.body.data?._entities[0].savedItems.edges.length).toBe(1);
@@ -543,10 +564,84 @@ describe('getSavedItems', () => {
       },
     };
     const res = await request(app).post(url).set(headers).send({
-      query: GET_SAVED_ITEMS,
+      query: GET_SAVED_ITEMS_CURSOR,
       variables,
     });
     expect(res.body.errors?.length).toBeGreaterThan(0);
     expect(res.body.errors[0].message).toBe('Cursor not found.');
+  });
+  describe('offset pagination', () => {
+    it('returns the first `limit` items after offset with default sort (newest first)', async () => {
+      const variables = {
+        id: '1',
+        pagination: { offset: 1, limit: 2 },
+      };
+      const res = await request(app).post(url).set(headers).send({
+        query: GET_SAVED_ITEMS_OFFSET,
+        variables,
+      });
+      const expected = {
+        offset: 1,
+        limit: 2,
+        totalCount: 3,
+        entries: [
+          {
+            url: 'http://def',
+            title: 'title2',
+          },
+          {
+            url: 'http://abc',
+            title: 'mytitle',
+          },
+        ],
+      };
+      expect(res.body.data._entities[0].savedItemsByOffset).toEqual(expected);
+      expect(res.body.errors).toBeUndefined();
+    });
+    it('returns empty array if there are no more items to retrieve', async () => {
+      const variables = {
+        id: '1',
+        pagination: { offset: 100, limit: 2 },
+      };
+      const res = await request(app).post(url).set(headers).send({
+        query: GET_SAVED_ITEMS_OFFSET,
+        variables,
+      });
+      const expected = {
+        offset: 100,
+        limit: 2,
+        totalCount: 3,
+        entries: [],
+      };
+      expect(res.body.data._entities[0].savedItemsByOffset).toEqual(expected);
+      expect(res.body.errors).toBeUndefined();
+    });
+    it('sets limit and offset to default values if missing', async () => {
+      const variables = {
+        id: '1',
+      };
+      const res = await request(app).post(url).set(headers).send({
+        query: GET_SAVED_ITEMS_OFFSET,
+        variables,
+      });
+      const expected = {
+        offset: 0,
+        limit: 30,
+        totalCount: 3,
+        entries: [
+          {
+            url: 'http://ijk',
+          },
+          {
+            url: 'http://def',
+          },
+          {
+            url: 'http://abc',
+          },
+        ],
+      };
+      expect(res.body.data._entities[0].savedItemsByOffset).toEqual(expected);
+      expect(res.body.errors).toBeUndefined();
+    });
   });
 });
