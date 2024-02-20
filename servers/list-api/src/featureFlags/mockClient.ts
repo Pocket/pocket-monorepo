@@ -1,7 +1,10 @@
 import { Unleash, UnleashEvents } from 'unleash-client';
 import { RepositoryInterface } from 'unleash-client/lib/repository';
 import { EventEmitter } from 'events';
-import { FeatureInterface } from 'unleash-client/lib/feature';
+import {
+  EnhancedFeatureInterface,
+  FeatureInterface,
+} from 'unleash-client/lib/feature';
 import { Segment } from 'unleash-client/lib/strategy/strategy';
 
 /**
@@ -38,6 +41,9 @@ const client = (bootstrap?: FeatureInterface[]) => {
     }
     getToggle(name: string): FeatureInterface {
       return this.toggleData[name];
+    }
+    getTogglesWithSegmentData(): EnhancedFeatureInterface[] {
+      return [];
     }
   }
   const repo = new LocalRepo(bootstrap);

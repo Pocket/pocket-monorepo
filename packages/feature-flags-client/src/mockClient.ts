@@ -1,7 +1,10 @@
 import { initialize, UnleashEvents, UnleashConfig } from 'unleash-client';
 import { RepositoryInterface } from 'unleash-client/lib/repository';
 import { EventEmitter } from 'events';
-import { FeatureInterface } from 'unleash-client/lib/feature';
+import {
+  EnhancedFeatureInterface,
+  FeatureInterface,
+} from 'unleash-client/lib/feature';
 import { Segment } from 'unleash-client/lib/strategy/strategy';
 
 /**
@@ -60,6 +63,9 @@ export function mockUnleash(
       }
       this.data.push(toggleData);
       return toggleData;
+    }
+    getTogglesWithSegmentData(): EnhancedFeatureInterface[] {
+      return [];
     }
   }
   const repo = new LocalRepo(bootstrap);
