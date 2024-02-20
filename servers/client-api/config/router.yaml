@@ -4,7 +4,7 @@ supergraph:
   introspection: true
   listen: 0.0.0.0:${env.PORT:-4001}
   query_planning:
-    experimental_cache:
+    cache:
       in_memory:
         limit: 512 #This is the default value
 include_subgraph_errors:
