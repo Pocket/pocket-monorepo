@@ -6,7 +6,7 @@ import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 
-describe('getSavedItems filter', () => {
+describe('getSavedItemsByOffset filter', () => {
   const writeDb = writeClient();
   const readDb = readClient();
   const headers = { userid: '1' };
@@ -236,14 +236,16 @@ describe('getSavedItems filter', () => {
       variables,
     });
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data._entities[0].savedItems.edges.length).toBe(4);
-    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).toBe(
-      'http://ijk',
-    );
-    expect(
-      res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem.tags
-        .length,
-    ).toBe(0);
+    const expected = {
+      totalCount: 4,
+      entries: [
+        { url: 'http://ijk' },
+        { url: 'http://lmn' },
+        { url: 'http://opq' },
+        { url: 'http://rst' },
+      ],
+    };
+    expect(res.body.data._entities[0].savedItemsByOffset).toEqual(expected);
   });
 
   it('should return items with a specific tag', async () => {
@@ -251,23 +253,16 @@ describe('getSavedItems filter', () => {
       id: '1',
       filter: { tagNames: ['tofu'] },
     };
-    const tags = [{ name: 'tofu' }, { name: 'recipe' }];
     const res = await request(app).post(url).set(headers).send({
       query: GET_SAVED_ITEMS,
       variables,
     });
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data._entities[0].savedItems.edges.length).toBe(1);
-    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).toBe(
-      'http://abc',
-    );
-    expect(
-      res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem.tags
-        .length,
-    ).toBe(2);
-    expect(
-      res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem.tags,
-    ).toContainAllValues(tags);
+    const expected = {
+      totalCount: 1,
+      entries: [{ url: 'http://abc' }],
+    };
+    expect(res.body.data._entities[0].savedItemsByOffset).toEqual(expected);
   });
 
   it('should return items with a list of specified tags', async () => {
@@ -280,14 +275,11 @@ describe('getSavedItems filter', () => {
       variables,
     });
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data._entities[0].savedItems.edges.length).toBe(2);
-    const actualTags = res.body.data._entities[0].savedItems.edges.map(
-      (edge) => edge.node.item.savedItem.tags,
-    );
-    expect(actualTags).toContainAllValues([
-      [{ name: 'tofu' }, { name: 'recipe' }],
-      [{ name: 'recipe' }],
-    ]);
+    const expected = {
+      totalCount: 2,
+      entries: [{ url: 'http://def' }, { url: 'http://abc' }],
+    };
+    expect(res.body.data._entities[0].savedItemsByOffset).toEqual(expected);
   });
 
   it('should return archived items', async () => {
@@ -300,10 +292,11 @@ describe('getSavedItems filter', () => {
       variables,
     });
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data._entities[0].savedItems.edges.length).toBe(1);
-    expect(
-      res.body.data._entities[0].savedItems.edges[0].node.item.savedItem.status,
-    ).toBe('ARCHIVED');
+    const expected = {
+      totalCount: 1,
+      entries: [{ url: 'http://def' }],
+    };
+    expect(res.body.data._entities[0].savedItemsByOffset).toEqual(expected);
   });
   it('should return non-archived items', async () => {
     const variables = {
@@ -315,10 +308,17 @@ describe('getSavedItems filter', () => {
       variables,
     });
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(5);
-    res.body.data?._entities[0].savedItems.edges.forEach((edge) => {
-      expect(edge.node.item.savedItem.status).not.toBe('ARCHIVED');
-    });
+    const expected = {
+      totalCount: 5,
+      entries: [
+        { url: 'http://ijk' },
+        { url: 'http://abc' },
+        { url: 'http://lmn' },
+        { url: 'http://opq' },
+        { url: 'http://rst' },
+      ],
+    };
+    expect(res.body.data?._entities[0].savedItemsByOffset).toEqual(expected);
   });
 
   it('should return items updated since a specific time', async () => {
@@ -331,10 +331,11 @@ describe('getSavedItems filter', () => {
       variables,
     });
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(1);
-    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).toBe(
-      'http://ijk',
-    );
+    const expected = {
+      totalCount: 1,
+      entries: [{ url: 'http://ijk' }],
+    };
+    expect(res.body.data?._entities[0].savedItemsByOffset).toEqual(expected);
   });
 
   it('should return favorited items', async () => {
@@ -347,10 +348,11 @@ describe('getSavedItems filter', () => {
       variables,
     });
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(2);
-    res.body.data?._entities[0].savedItems.edges.forEach((edge) => {
-      expect(edge.node.item.savedItem.isFavorite).toBe(true);
-    });
+    const expected = {
+      totalCount: 2,
+      entries: [{ url: 'http://def' }, { url: 'http://abc' }],
+    };
+    expect(res.body.data?._entities[0].savedItemsByOffset).toEqual(expected);
   });
 
   it('should return non-favorited items', async () => {
@@ -363,11 +365,16 @@ describe('getSavedItems filter', () => {
       variables,
     });
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(4);
-    expect(
-      res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem
-        .isFavorite,
-    ).toBe(false);
+    const expected = {
+      totalCount: 4,
+      entries: [
+        { url: 'http://ijk' },
+        { url: 'http://lmn' },
+        { url: 'http://opq' },
+        { url: 'http://rst' },
+      ],
+    };
+    expect(res.body.data?._entities[0].savedItemsByOffset).toEqual(expected);
   });
 
   it('should not throw an error if no items match the filters', async () => {
@@ -384,15 +391,12 @@ describe('getSavedItems filter', () => {
       query: GET_SAVED_ITEMS,
       variables,
     });
+    const expected = {
+      totalCount: 0,
+      entries: [],
+    };
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data?._entities[0].savedItems.edges).toEqual([]);
-    expect(res.body.data?._entities[0].savedItems.totalCount).toBe(0);
-    expect(res.body.data?._entities[0].savedItems.pageInfo).toEqual({
-      startCursor: null,
-      endCursor: null,
-      hasNextPage: false,
-      hasPreviousPage: false,
-    });
+    expect(res.body.data?._entities[0].savedItemsByOffset).toEqual(expected);
   });
 
   it('should return highlighted items with active (non-deleted) highlights only', async () => {
@@ -405,10 +409,11 @@ describe('getSavedItems filter', () => {
       variables,
     });
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(1);
-    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).toBe(
-      'http://abc',
-    );
+    const expected = {
+      totalCount: 1,
+      entries: [{ url: 'http://abc' }],
+    };
+    expect(res.body.data?._entities[0].savedItemsByOffset).toEqual(expected);
   });
 
   it('should return non-highlighted items (or items with only deleted highlights)', async () => {
@@ -421,16 +426,17 @@ describe('getSavedItems filter', () => {
       variables,
     });
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(5);
-    res.body.data?._entities[0].savedItems.edges.forEach((edge) => {
-      expect(edge.node.url).toBeOneOf([
-        'http://ijk',
-        'http://def',
-        'http://lmn',
-        'http://opq',
-        'http://rst',
-      ]);
-    });
+    const expected = {
+      totalCount: 5,
+      entries: [
+        { url: 'http://ijk' },
+        { url: 'http://def' },
+        { url: 'http://lmn' },
+        { url: 'http://opq' },
+        { url: 'http://rst' },
+      ],
+    };
+    expect(res.body.data?._entities[0].savedItemsByOffset).toEqual(expected);
   });
 
   it('should return articles that can be opened in article view (deprecated)', async () => {
@@ -443,10 +449,11 @@ describe('getSavedItems filter', () => {
       variables,
     });
     expect(res.body.errors).toBeUndefined();
-    const edges = res.body.data?._entities[0].savedItems.edges;
-    expect(edges.length).toBe(2);
-    const actualIds = edges.map((edge) => edge.node.item.savedItem.id);
-    expect(actualIds).toContainAllValues(['2', '3']);
+    const expected = {
+      totalCount: 2,
+      entries: [{ url: 'http://ijk' }, { url: 'http://def' }],
+    };
+    expect(res.body.data?._entities[0].savedItemsByOffset).toEqual(expected);
   });
   it('should return articles that can be opened in article view', async () => {
     const variables = {
@@ -458,10 +465,11 @@ describe('getSavedItems filter', () => {
       variables,
     });
     expect(res.body.errors).toBeUndefined();
-    const edges = res.body.data?._entities[0].savedItems.edges;
-    expect(edges.length).toBe(2);
-    const actualIds = edges.map((edge) => edge.node.item.savedItem.id);
-    expect(actualIds).toContainAllValues(['2', '3']);
+    const expected = {
+      totalCount: 2,
+      entries: [{ url: 'http://ijk' }, { url: 'http://def' }],
+    };
+    expect(res.body.data?._entities[0].savedItemsByOffset).toEqual(expected);
   });
   it('should return articles with videos (deprecated)', async () => {
     const variables = {
@@ -473,10 +481,8 @@ describe('getSavedItems filter', () => {
       variables,
     });
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(1);
-    expect(
-      res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem.id,
-    ).toBe('1');
+    const expected = { totalCount: 1, entries: [{ url: 'http://abc' }] };
+    expect(res.body.data?._entities[0].savedItemsByOffset).toEqual(expected);
   });
   it('should return articles with videos', async () => {
     const variables = {
@@ -488,10 +494,8 @@ describe('getSavedItems filter', () => {
       variables,
     });
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(1);
-    expect(
-      res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem.id,
-    ).toBe('1');
+    const expected = { totalCount: 1, entries: [{ url: 'http://abc' }] };
+    expect(res.body.data?._entities[0].savedItemsByOffset).toEqual(expected);
   });
   it('should return videos', async () => {
     const variables = {
@@ -503,10 +507,11 @@ describe('getSavedItems filter', () => {
       variables,
     });
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(1);
-    expect(
-      res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem.id,
-    ).toBe('5');
+    const expected = {
+      totalCount: 1,
+      entries: [{ url: 'http://opq' }],
+    };
+    expect(res.body.data?._entities[0].savedItemsByOffset).toEqual(expected);
   });
   it('should return images', async () => {
     const variables = {
@@ -518,10 +523,11 @@ describe('getSavedItems filter', () => {
       variables,
     });
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(1);
-    expect(
-      res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem.id,
-    ).toBe('6');
+    const expected = {
+      totalCount: 1,
+      entries: [{ url: 'http://rst' }],
+    };
+    expect(res.body.data?._entities[0].savedItemsByOffset).toEqual(expected);
   });
   it('should return articles that are un-parsable and will be opened externally', async () => {
     const variables = {
@@ -533,10 +539,11 @@ describe('getSavedItems filter', () => {
       variables,
     });
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(2);
-    res.body.data?._entities[0].savedItems.edges.forEach((edge) => {
-      expect(edge.node.url).toBeOneOf(['http://abc', 'http://lmn']);
-    });
+    const expected = {
+      totalCount: 2,
+      entries: [{ url: 'http://abc' }, { url: 'http://lmn' }],
+    };
+    expect(res.body.data?._entities[0].savedItemsByOffset).toEqual(expected);
   });
 
   it('should return items by status', async () => {
@@ -549,10 +556,11 @@ describe('getSavedItems filter', () => {
       variables,
     });
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(1);
-    expect(
-      res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem.id,
-    ).toBe('2');
+    const expected = {
+      toatlCount: 1,
+      entries: [{ url: 'http://def' }],
+    };
+    expect(res.body.data?._entities[0].savedItemsByOffset).toEqual(expected);
   });
   it('should use statuses to return multiple statuses', async () => {
     const variables = {
@@ -564,12 +572,17 @@ describe('getSavedItems filter', () => {
       variables,
     });
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(5);
-    expect(
-      res.body.data?._entities[0].savedItems.edges.map(
-        (edge) => edge.node.item.savedItem.id,
-      ),
-    ).toContainAllValues(['1', '2', '4', '5', '6']); // Don't care about sort for this test
+    const expected = {
+      totalCount: 5,
+      entries: [
+        { url: 'http://def' },
+        { url: 'http://abc' },
+        { url: 'http://lmn' },
+        { url: 'http://opq' },
+        { url: 'http://rst' },
+      ],
+    };
+    expect(res.body.data?._entities[0].savedItemsByOffset).toEqual(expected);
   });
 
   it('should be combined with other filters properly', async () => {
@@ -588,17 +601,10 @@ describe('getSavedItems filter', () => {
       variables,
     });
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(1);
-    expect(
-      res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem
-        .isFavorite,
-    ).toBe(true);
-    expect(
-      res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem
-        .status,
-    ).not.toBe('ARCHIVED');
-    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).toBe(
-      'http://abc',
-    );
+    const expected = {
+      totalCount: 1,
+      entries: [{ url: 'http://abc' }],
+    };
+    expect(res.body.data?._entities[0].savedItemsByOffset).toEqual(expected);
   });
 });
