@@ -289,7 +289,7 @@ export class ListPaginationService {
         { column: `list.${sortColumn}`, order: sortOrder.order },
         { column: 'list.item_id' },
       ])
-      .limit(pageSize + 1)
+      .limit(pageSize)
       .offset(offset)
       .toString();
     await dbClient

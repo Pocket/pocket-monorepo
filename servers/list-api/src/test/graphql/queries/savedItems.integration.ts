@@ -587,11 +587,31 @@ describe('getSavedItems', () => {
         entries: [
           {
             url: 'http://def',
-            title: 'title2',
           },
           {
             url: 'http://abc',
-            title: 'mytitle',
+          },
+        ],
+      };
+      expect(res.body.data._entities[0].savedItemsByOffset).toEqual(expected);
+      expect(res.body.errors).toBeUndefined();
+    });
+    it('fetches a subset of results', async () => {
+      const variables = {
+        id: '1',
+        pagination: { offset: 0, limit: 1 },
+      };
+      const res = await request(app).post(url).set(headers).send({
+        query: GET_SAVED_ITEMS_OFFSET,
+        variables,
+      });
+      const expected = {
+        offset: 0,
+        limit: 1,
+        totalCount: 3,
+        entries: [
+          {
+            url: 'http://ijk',
           },
         ],
       };
@@ -643,5 +663,66 @@ describe('getSavedItems', () => {
       expect(res.body.data._entities[0].savedItemsByOffset).toEqual(expected);
       expect(res.body.errors).toBeUndefined();
     });
+    test.each([
+      {
+        sortBy: 'CREATED_AT',
+        sortOrder: 'DESC',
+        expectedUrls: ['http://ijk', 'http://def'],
+      },
+      {
+        sortBy: 'CREATED_AT',
+        sortOrder: 'ASC',
+        expectedUrls: ['http://abc', 'http://def'],
+      },
+      {
+        sortBy: 'UPDATED_AT',
+        sortOrder: 'DESC',
+        expectedUrls: ['http://def', 'http://abc'],
+      },
+      {
+        sortBy: 'UPDATED_AT',
+        sortOrder: 'ASC',
+        expectedUrls: ['http://ijk', 'http://abc'],
+      },
+      {
+        sortBy: 'FAVORITED_AT',
+        sortOrder: 'DESC',
+        expectedUrls: ['http://def', 'http://ijk'],
+      },
+      {
+        sortBy: 'FAVORITED_AT',
+        // Note that this will put non-favorite items first (since they are set to time 0)
+        sortOrder: 'ASC',
+        expectedUrls: ['http://abc', 'http://ijk'],
+      },
+      {
+        sortBy: 'ARCHIVED_AT',
+        sortOrder: 'DESC',
+        expectedUrls: ['http://ijk', 'http://def'],
+      },
+      {
+        sortBy: 'ARCHIVED_AT',
+        sortOrder: 'ASC',
+        expectedUrls: ['http://abc', 'http://def'],
+      },
+    ])(
+      ' offset by $sortBy, $sortOrder works',
+      async ({ sortBy, sortOrder, expectedUrls }) => {
+        const variables = {
+          id: '1',
+          pagination: { offset: 0, limit: 2 },
+          sort: { sortBy: sortBy, sortOrder: sortOrder },
+        };
+        const res = await request(app).post(url).set(headers).send({
+          query: GET_SAVED_ITEMS_OFFSET,
+          variables,
+        });
+        expect(res.body.errors).toBeUndefined();
+        const urls = res.body.data?._entities[0].savedItemsByOffset.entries.map(
+          (entry) => entry.url,
+        );
+        expect(expectedUrls).toEqual(urls);
+      },
+    );
   });
 });
