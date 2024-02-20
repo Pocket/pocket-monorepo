@@ -24,7 +24,7 @@ describe('getSavedItems filter', () => {
     query getSavedItems($id: ID!, $filter: SavedItemsFilter) {
       _entities(representations: { id: $id, __typename: "User" }) {
         ... on User {
-          savedItemsOffset(filter: $filter) {
+          savedItemsByOffset(filter: $filter) {
             totalCount
             entries {
               url
