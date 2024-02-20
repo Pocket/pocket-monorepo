@@ -1252,8 +1252,8 @@ importers:
         specifier: 5.3.2
         version: 5.3.2
       unleash-server:
-        specifier: 5.8.2
-        version: 5.8.2(core-js@3.35.1)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8)
+        specifier: 5.9.5
+        version: 5.9.5(core-js@3.35.1)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8)
     devDependencies:
       '@types/cors':
         specifier: ^2.8.17
@@ -5674,7 +5674,7 @@ packages:
       '@whatwg-node/fetch': 0.9.16
       chalk: 4.1.2
       debug: 4.3.4(supports-color@5.5.0)
-      dotenv: 16.4.3
+      dotenv: 16.4.1
       graphql: 16.8.1
       graphql-request: 6.1.0(graphql@16.8.1)
       http-proxy-agent: 7.0.0
@@ -8573,7 +8573,7 @@ packages:
     dependencies:
       '@types/cookiejar': 2.1.5
       '@types/methods': 1.1.4
-      '@types/node': 20.11.16
+      '@types/node': 20.11.17
     dev: true
 
   /@types/supertest@6.0.2:
@@ -11120,6 +11120,7 @@ packages:
   /dotenv@16.4.3:
     resolution: {integrity: sha512-II98GFrje5psQTSve0E7bnwMFybNLqT8Vu8JIFWRjsE3khyNUm/loZupuy5DVzG2IXf/ysxvrixYOQnM6mjD3A==}
     engines: {node: '>=12'}
+    dev: false
 
   /dotenv@5.0.1:
     resolution: {integrity: sha512-4As8uPrjfwb7VXC+WnLCbXK7y+Ueb2B3zgNCePYfhxS1PYeaO1YTeplffTEcbfLhvFNGLAz90VvJs9yomG7bow==}
@@ -13390,8 +13391,8 @@ packages:
   /ip@1.1.8:
     resolution: {integrity: sha512-PuExPYUiu6qMBQb4l06ecm6T6ujzhmh+MeJcW9wa89PoAz5pvd4zPgN5WJV104mb6S2T1AwNIAaB70JNrLQWhg==}
 
-  /ip@2.0.0:
-    resolution: {integrity: sha512-WKa+XuLG1A1R0UWhl2+1XQSi+fZWMsYKffMZTTYsiZaUD8k2yDAj5atimTUD2TZkyCkNEeYE5NhFZmupOGtjYQ==}
+  /ip@2.0.1:
+    resolution: {integrity: sha512-lJUL9imLTNi1ZfXT+DU6rBBdbiKGBuay9B6xGSPVjUeQwaH1RIGqef8RZkUtHioLmSNpPR5M4HVKJGm1j8FWVQ==}
 
   /ipaddr.js@1.9.1:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
@@ -14732,8 +14733,8 @@ packages:
     dependencies:
       foreach: 2.0.6
 
-  /json-schema-to-ts@2.9.2:
-    resolution: {integrity: sha512-h9WqLkTVpBbiaPb5OmeUpz/FBLS/kvIJw4oRCPiEisIu2WjMh+aai0QIY2LoOhRFx5r92taGLcerIrzxKBAP6g==}
+  /json-schema-to-ts@2.12.0:
+    resolution: {integrity: sha512-uTde38yBm5lzJSRPWRaasxZo72pb+JGE4iUksNdNfAkFaLhV4N9akeBxPPUpZy5onINt9Zo0oTLrAoEXyZESiQ==}
     engines: {node: '>=16'}
     dependencies:
       '@babel/runtime': 7.23.9
@@ -18421,7 +18422,7 @@ packages:
     resolution: {integrity: sha512-7maUZy1N7uo6+WVEX6psASxtNlKaNVMlGQKkG/63nEDdLOWNbiUMoLK7X4uYoLhQstau72mLgfEWcXcwsaHbYQ==}
     engines: {node: '>= 10.13.0', npm: '>= 3.0.0'}
     dependencies:
-      ip: 2.0.0
+      ip: 2.0.1
       smart-buffer: 4.2.0
 
   /sort-json@2.0.1:
@@ -19832,19 +19833,6 @@ packages:
       normalize-path: 2.1.1
     dev: true
 
-  /unleash-client@5.0.0:
-    resolution: {integrity: sha512-9x3SOpHTnMDY0CosKwy/0Hi9gIjw65+i2fsC76bvYaUIVTlqDoPdCfosBokNIZ/IjCF0TjEgSZefSWNGY5SC9A==}
-    engines: {node: '>=16'}
-    dependencies:
-      ip: 1.1.8
-      make-fetch-happen: 10.2.1
-      murmurhash3js: 3.0.1
-      semver: 7.6.0
-    transitivePeerDependencies:
-      - bluebird
-      - supports-color
-    dev: false
-
   /unleash-client@5.3.2:
     resolution: {integrity: sha512-0iR0bzvWoJSuLPr9VKQhu1qr2jV3UeXcnMJylTzeeZWNhD6dxQSYS1bVl1wGhTRo/ucXnk5Lx66zmreIqojp8Q==}
     engines: {node: '>=16'}
@@ -19857,8 +19845,8 @@ packages:
       - bluebird
       - supports-color
 
-  /unleash-server@5.8.2(core-js@3.35.1)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8):
-    resolution: {integrity: sha512-5IPmRWVBrJJ248SBOeKVOAmzPipRN9wc0gFYBRdJLlSH6gYYHsfm9r0cYh7me3Z9W4h2E0PPKzAW621H6cpK4g==}
+  /unleash-server@5.9.5(core-js@3.35.1)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8):
+    resolution: {integrity: sha512-EvaAeofu0sW2/u1sqUOLap1P98eNgzXMdAU84Q+lLHW3t97/loMncxlBiWRfwolusl+DXASSCSiNYDu7Rrxl/g==}
     engines: {node: '>=18 <21'}
     dependencies:
       '@slack/web-api': 6.12.0
@@ -19886,11 +19874,11 @@ packages:
       hash-sum: 2.0.0
       helmet: 6.2.0
       http-errors: 2.0.0
-      ip: 1.1.8
+      ip: 2.0.1
       joi: 17.12.1
       js-sha256: 0.10.1
       js-yaml: 4.1.0
-      json-schema-to-ts: 2.9.2
+      json-schema-to-ts: 2.12.0
       json2csv: 5.0.7
       knex: 2.5.1(pg@8.11.3)
       lodash.get: 4.4.2
@@ -19918,7 +19906,7 @@ packages:
       stoppable: 1.1.0
       ts-toolbelt: 9.6.0
       type-is: 1.6.18
-      unleash-client: 5.0.0
+      unleash-client: 5.3.2
       uuid: 9.0.1
     transitivePeerDependencies:
       - better-sqlite3
