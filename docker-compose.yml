@@ -36,7 +36,7 @@ services:
       retries: 15
 
   redis:
-    image: redis:7
+    image: redis:7.1 # match aws elasticache
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       interval: 5s
@@ -47,7 +47,7 @@ services:
       - '6379:6379'
 
   mysql:
-    image: mysql:8.0.36
+    image: mysql:8.0.36 # use same version as aws aurora
     working_dir: /image
     volumes:
       - ./.docker/mysql-8-resources/schema:/docker-entrypoint-initdb.d:delegated

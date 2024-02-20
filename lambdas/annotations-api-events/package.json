@@ -13,8 +13,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-lambda": "3.507.0",
-    "@sentry/serverless": "7.100.1",
+    "@aws-sdk/client-lambda": "3.511.0",
+    "@sentry/serverless": "7.101.1",
     "node-fetch": "2.7.0",
     "tslib": "2.6.2"
   },
