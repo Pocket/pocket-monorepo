@@ -12,8 +12,8 @@
     "format": "eslint --fix \"src/**/*.ts\""
   },
   "dependencies": {
-    "@aws-sdk/client-eventbridge": "3.511.0",
-    "@aws-sdk/client-pinpoint": "3.511.0",
+    "@aws-sdk/client-eventbridge": "3.515.0",
+    "@aws-sdk/client-pinpoint": "3.515.0",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
