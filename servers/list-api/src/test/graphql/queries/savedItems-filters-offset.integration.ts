@@ -557,7 +557,7 @@ describe('getSavedItemsByOffset filter', () => {
     });
     expect(res.body.errors).toBeUndefined();
     const expected = {
-      toatlCount: 1,
+      totalCount: 1,
       entries: [{ url: 'http://def' }],
     };
     expect(res.body.data?._entities[0].savedItemsByOffset).toEqual(expected);
