@@ -5,6 +5,7 @@ import { convertSavedItemsToRestResponse } from '../graph/toRest';
 import { UserSavedItemsByOffsetArgs } from '../generated/graphql/types';
 import * as Sentry from '@sentry/node';
 import { ErrorCodes, getErrorHeaders } from './errorMapper';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 const router: Router = Router();
 //v3 in web repo can support both POST and GET request.
@@ -21,7 +22,7 @@ router.get('/', async (req: Request, res: Response) => {
     );
   } catch (err) {
     const errMessage = `GET: v3/get: ${err}`;
-    console.log(errMessage);
+    serverLogger.error(errMessage);
     Sentry.addBreadcrumb({ message: errMessage });
     Sentry.captureException(err);
     return res
@@ -43,7 +44,7 @@ router.post('/', async (req: Request, res: Response) => {
     );
   } catch (err) {
     const errMessage = `POST: v3/get: ${err}`;
-    console.log(errMessage);
+    serverLogger.error(errMessage);
     Sentry.addBreadcrumb({ message: errMessage });
     Sentry.captureException(err);
     return res

@@ -15,7 +15,7 @@ import {
 } from '../generated/graphql/types';
 import config from '../config';
 import * as Sentry from '@sentry/node';
-
+import { serverLogger } from '@pocket-tools/ts-logger';
 /**
  * gives a graphQLClient for pocket-graph url
  *
@@ -59,7 +59,7 @@ export function getClient(
   } catch (e) {
     Sentry.addBreadcrumb({ message: `graphQLClient creation failed:` });
     Sentry.captureException(e);
-    console.log(e);
+    serverLogger.error(e);
     throw e;
   }
 }
@@ -128,7 +128,7 @@ export async function callSavedItems(
   } catch (e) {
     Sentry.addBreadcrumb({ message: `callSavedItem failed:` });
     Sentry.captureException(e);
-    console.log(e);
+    serverLogger.error(e);
     throw e;
   }
 }
@@ -156,7 +156,7 @@ export async function callSavedItemsByOffset(
   } catch (e) {
     Sentry.addBreadcrumb({ message: `callSavedItemsByOffset failed:` });
     Sentry.captureException(e);
-    console.log(e);
+    serverLogger.error(e);
     throw e;
   }
 }
