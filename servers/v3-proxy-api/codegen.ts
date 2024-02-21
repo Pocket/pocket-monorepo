@@ -1,10 +1,11 @@
 import { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
-  schema: 'https://client-api.getpocket.com',
+  schema: 'schema.graphql',
   documents: ['src/**/*.graphql'],
   generates: {
     './src/generated/graphql/types.ts': {
+      config: { federation: true },
       plugins: [
         //generated types do not conform to ts/lint rules, disable them for these files
         {

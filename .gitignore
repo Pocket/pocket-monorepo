@@ -38,3 +38,5 @@ cdktf.out
 #Local development
 scripts/states
 scripts/main.tf
+
+servers/v3-proxy-api/schema.graphql
