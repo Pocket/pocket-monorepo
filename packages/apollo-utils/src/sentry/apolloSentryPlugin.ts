@@ -6,9 +6,6 @@ import {
 } from '@apollo/server';
 import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { InternalErrorCode } from '../errorHandler/errorHandler';
-import { setLogger, Logger } from '@pocket-tools/ts-logger';
-
-export const defaultLogger: Logger = setLogger();
 
 /**
  * This is a list of error codes to not report in the sentry
@@ -67,23 +64,6 @@ export const sentryPlugin: ApolloServerPlugin<BaseContext> = {
           const originClientIp =
             ctx.request.http?.headers.get('origin-client-ip');
           const apiId = ctx.request.http?.headers.get('apiid');
-
-          const errorData = {
-            context: ctx, // contains most of the following, but move some fields up for easier filtering
-            operationKind,
-            operationQuery,
-            operationVariables: operationVariablesJson,
-            requestId,
-            traceId: requestTraceId,
-          };
-
-          // log error
-          defaultLogger.error({
-            data: errorData,
-            error: err,
-            message: err.message,
-            stack: err.stack, // parity with Sentry setup
-          });
 
           const scope = Sentry.getCurrentScope();
           // kind of operation == query/mutation/subscription

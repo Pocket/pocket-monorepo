@@ -3,7 +3,7 @@ import { gql } from 'graphql-tag';
 import { buildSubgraphSchema } from '@apollo/subgraph';
 import { ApolloServerErrorCode } from '@apollo/server/errors';
 import assert from 'assert';
-import { sentryPlugin, defaultLogger } from '../sentry/apolloSentryPlugin';
+import { sentryPlugin } from '../sentry/apolloSentryPlugin';
 import { errorHandler, NotFoundError } from './errorHandler';
 import * as Sentry from '@sentry/node';
 import { ApolloServerPluginUsageReportingDisabled } from '@apollo/server/plugin/disabled';
@@ -60,11 +60,9 @@ const server = new ApolloServer({
 });
 
 describe('Server error handling: ', () => {
-  const logErrorSpy = jest.spyOn(defaultLogger, 'error');
   const sentrySpy = jest.spyOn(Sentry, 'captureException');
 
   afterEach(() => {
-    logErrorSpy.mockReset();
     sentrySpy.mockReset();
   });
 
@@ -88,12 +86,11 @@ describe('Server error handling: ', () => {
     expect(error.path).toBeDefined();
     expect(error.locations).toBeDefined();
     // Check the error got logged & reported to Sentry
-    [logErrorSpy, sentrySpy].forEach((spy) => {
+    [sentrySpy].forEach((spy) => {
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy.mock.calls[0][0].message).toEqual(
         "Cannot read properties of null (reading 'data')",
       );
-      expect(logErrorSpy.mock.calls[0][0]).toBeDefined();
     });
   });
 
@@ -117,7 +114,7 @@ describe('Server error handling: ', () => {
     expect(error.path).toBeDefined();
     expect(error.locations).toBeDefined();
     //not logging not-found errors
-    [logErrorSpy, sentrySpy].forEach((spy) => {
+    [sentrySpy].forEach((spy) => {
       expect(spy).toHaveBeenCalledTimes(0);
     });
   });
@@ -171,7 +168,7 @@ describe('Server error handling: ', () => {
     expect(res.errors[0].message).toEqual(
       'Cannot query field "invalidField" on type "Book".',
     );
-    [logErrorSpy, sentrySpy].forEach((spy) => {
+    [sentrySpy].forEach((spy) => {
       expect(spy).toHaveBeenCalledTimes(0);
     });
   });
@@ -191,7 +188,7 @@ describe('Server error handling: ', () => {
     expect(res.errors[0].message).toEqual(
       'Syntax Error: Expected Name, found "}".',
     );
-    [logErrorSpy, sentrySpy].forEach((spy) => {
+    [sentrySpy].forEach((spy) => {
       expect(spy).toHaveBeenCalledTimes(0);
     });
   });
@@ -210,7 +207,7 @@ describe('Server error handling: ', () => {
     expect(res.errors.length).toBe(1);
     expect(res.errors[0].message).toEqual('graphql error');
     // user error - shouldn't be logged
-    [logErrorSpy, sentrySpy].forEach((spy) => {
+    [sentrySpy].forEach((spy) => {
       expect(spy).toHaveBeenCalledTimes(0);
     });
   });
