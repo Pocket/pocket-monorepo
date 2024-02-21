@@ -17,7 +17,6 @@ import { ArchiveProvider } from '@cdktf/provider-archive/lib/provider';
 import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
 import { config } from './config';
 import {
-  ApplicationRedis,
   ApplicationSQSQueue,
   PocketALBApplication,
   PocketAwsSyntheticChecks,
@@ -184,13 +183,8 @@ class AnnotationsAPI extends TerraformStack {
     snsTopic: DataAwsSnsTopic;
     dynamodb: DynamoDB;
   }): PocketALBApplication {
-    const {
-      region,
-      caller,
-      secretsManagerKmsAlias,
-      snsTopic,
-      dynamodb,
-    } = dependencies;
+    const { region, caller, secretsManagerKmsAlias, snsTopic, dynamodb } =
+      dependencies;
 
     const databaseSecretsArn = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/READITLA_DB`;
 
