@@ -3,6 +3,7 @@
  */
 
 import {
+  GetSavedItemsByOffsetQuery,
   GetSavedItemsQuery,
   Imageness,
   Videoness,
@@ -10,7 +11,6 @@ import {
 import {
   GraphItem,
   GraphSavedItem,
-  GraphSavedItemEdge,
   ListItemObject,
   RestResponse,
 } from './types';
@@ -59,12 +59,13 @@ function listToMap<T>(input: T[], key: string): { [key: string]: T } {
 /**
  * converts saves.Items to REST response.
  * sets the listItem as null for PendingItem
- * @param savedItemEdge savedItem edge from the graph
+ * @param savedItem from the graph (e.g. as a node on a SavedItemConnection
+ * or an entry in a page)
  */
-const reduceItem = (savedItemEdge: GraphSavedItemEdge): ListItemObject => {
-  switch (savedItemEdge.node.item.__typename) {
+const reduceItem = (savedItem: GraphSavedItem): ListItemObject => {
+  switch (savedItem.item.__typename) {
     case 'Item':
-      return convertGraphSavedItemToListObject(savedItemEdge.node);
+      return convertGraphSavedItemToListObject(savedItem);
     case 'PendingItem':
       return null;
   }
@@ -112,7 +113,29 @@ export function convertSavedItemsToRestResponse(
     // todo: map top level fields
     cacheType: 'db',
     list: listToMap(
-      response.user.savedItems.edges.map(reduceItem).filter((s) => s !== null),
+      response.user.savedItems.edges
+        .map((edge) => reduceItem(edge.node))
+        .filter((s) => s !== null),
+      'item_id',
+    ),
+  };
+}
+
+/**
+ * converts graphql response to rest response
+ * todo: map top level fields as a part of v3/get implementation ticket
+ * @param response
+ */
+export function convertSavedItemsByOffsetToRestResponse(
+  response: GetSavedItemsByOffsetQuery,
+): RestResponse {
+  return {
+    // todo: map top level fields
+    cacheType: 'db',
+    list: listToMap(
+      response.user.savedItemsByOffset.entries
+        .map(reduceItem)
+        .filter((s) => s !== null),
       'item_id',
     ),
   };

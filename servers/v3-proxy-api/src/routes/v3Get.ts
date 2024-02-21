@@ -1,8 +1,8 @@
 import { Request, Response, Router } from 'express';
 import { setSaveInputsFromGetCall } from '../graph/toGraphQL';
-import { callSavedItems } from '../graph/graphQLClient';
+import { callSavedItemsByOffset } from '../graph/graphQLClient';
 import { convertSavedItemsToRestResponse } from '../graph/toRest';
-import { UserSavedItemsArgs } from '../generated/graphql/types';
+import { UserSavedItemsByOffsetArgs } from '../generated/graphql/types';
 import * as Sentry from '@sentry/node';
 import { ErrorCodes, getErrorHeaders } from './errorMapper';
 
@@ -64,9 +64,9 @@ export async function processV3call(
   accessToken: string,
   consumerKey: string,
   headers: any,
-  variables: UserSavedItemsArgs,
+  variables: UserSavedItemsByOffsetArgs,
 ) {
-  const response = await callSavedItems(
+  const response = await callSavedItemsByOffset(
     accessToken,
     consumerKey,
     headers,

@@ -1,0 +1,40 @@
+query getSavedItemsByOffset($pagination: OffsetPaginationInput, $filters: SavedItemsFilter, $sort: SavedItemsSort) {
+    user {    
+        savedItemsByOffset(pagination: $pagination, filter: $filters sort: $sort) {
+            entries {
+                id
+                status
+                url
+                isFavorite
+                isArchived
+                _updatedAt
+                _createdAt
+                favoritedAt
+                archivedAt
+                item {
+                    __typename
+                    ... on Item {
+                        itemId
+                        resolvedId
+                        wordCount
+                        topImage {
+                            url
+                        }
+                        title
+                        timeToRead
+                        resolvedUrl
+                        givenUrl
+                        excerpt
+                        domain
+                        isArticle
+                        isIndex
+                        hasVideo
+                        hasImage
+                        language
+                        ampUrl
+                    }
+                }
+            }
+        }
+    }
+}

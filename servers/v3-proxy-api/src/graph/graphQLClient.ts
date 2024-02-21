@@ -4,6 +4,8 @@ import {
   GetSavedItemsDocument,
   GetSavedItemsQuery,
   GetSavedItemsQueryVariables,
+  GetSavedItemsByOffsetQuery,
+  GetSavedItemsByOffsetQueryVariables,
   SaveArchiveDocument,
   SaveArchiveMutation,
   SaveFavoriteDocument,
@@ -125,6 +127,34 @@ export async function callSavedItems(
     );
   } catch (e) {
     Sentry.addBreadcrumb({ message: `callSavedItem failed:` });
+    Sentry.captureException(e);
+    console.log(e);
+    throw e;
+  }
+}
+
+/**
+ * function call to get saves
+ *
+ * @param accessToken accessToken of the user
+ * @param consumerKey consumerKey associated with the user
+ * @param headers any headers received by proxy is just pass through to web graphQL proxy.
+ * @param variables input variables required for the query
+ */
+export async function callSavedItemsByOffset(
+  accessToken: string,
+  consumerKey: string,
+  headers: any,
+  variables: GetSavedItemsByOffsetQueryVariables,
+): Promise<GetSavedItemsQuery> {
+  try {
+    const client = getClient(accessToken, consumerKey, headers);
+    return client.request<
+      GetSavedItemsByOffsetQuery,
+      GetSavedItemsByOffsetQueryVariables
+    >(GetSavedItemsDocument, variables);
+  } catch (e) {
+    Sentry.addBreadcrumb({ message: `callSavedItemsByOffset failed:` });
     Sentry.captureException(e);
     console.log(e);
     throw e;
