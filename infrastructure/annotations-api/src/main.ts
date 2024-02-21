@@ -49,7 +49,6 @@ class AnnotationsAPI extends TerraformStack {
     const region = new DataAwsRegion(this, 'region');
     const caller = new DataAwsCallerIdentity(this, 'caller');
     const pocketVPC = new PocketVPC(this, 'pocket-vpc');
-    const cache = AnnotationsAPI.createElasticache(this, pocketVPC);
     const dynamodb = new DynamoDB(this, 'dynamodb');
 
     const sqsLambda = new SqsLambda(
@@ -89,7 +88,6 @@ class AnnotationsAPI extends TerraformStack {
       snsTopic: this.getCodeDeploySnsTopic(),
       region,
       caller,
-      cache,
       dynamodb,
     });
 
@@ -121,43 +119,6 @@ class AnnotationsAPI extends TerraformStack {
         },
       ],
     });
-  }
-
-  /**
-   * Creates the elasticache and returns the node address list
-   * @param scope
-   * @private
-   */
-  private static createElasticache(
-    scope: Construct,
-    vpc: PocketVPC,
-  ): {
-    primaryEndpoint: string;
-    readerEndpoint: string;
-  } {
-    const elasticache = new ApplicationRedis(scope, 'redis', {
-      //Usually we would set the security group ids of the service that needs to hit this.
-      //However we don't have the necessary security group because it gets created in PocketALBApplication
-      //So instead we set it to null and allow anything within the vpc to access it.
-      //This is not ideal..
-      //Ideally we need to be able to add security groups to the ALB application.
-      allowedIngressSecurityGroupIds: undefined,
-      node: {
-        count: config.cacheNodes,
-        size: config.cacheSize,
-      },
-      subnetIds: vpc.privateSubnetIds,
-      tags: config.tags,
-      vpcId: vpc.vpc.id,
-      prefix: config.prefix,
-    });
-
-    return {
-      primaryEndpoint:
-        elasticache.elasticacheReplicationGroup.primaryEndpointAddress,
-      readerEndpoint:
-        elasticache.elasticacheReplicationGroup.readerEndpointAddress,
-    };
   }
 
   /**
@@ -221,7 +182,6 @@ class AnnotationsAPI extends TerraformStack {
     caller: DataAwsCallerIdentity;
     secretsManagerKmsAlias: DataAwsKmsAlias;
     snsTopic: DataAwsSnsTopic;
-    cache: { primaryEndpoint: string; readerEndpoint: string };
     dynamodb: DynamoDB;
   }): PocketALBApplication {
     const {
@@ -229,7 +189,6 @@ class AnnotationsAPI extends TerraformStack {
       caller,
       secretsManagerKmsAlias,
       snsTopic,
-      cache,
       dynamodb,
     } = dependencies;
 
@@ -264,14 +223,6 @@ class AnnotationsAPI extends TerraformStack {
             {
               name: 'ENVIRONMENT',
               value: process.env.NODE_ENV, // this gives us a nice lowercase production and development
-            },
-            {
-              name: 'REDIS_PRIMARY_ENDPOINT',
-              value: cache.primaryEndpoint,
-            },
-            {
-              name: 'REDIS_READER_ENDPOINT',
-              value: cache.readerEndpoint,
             },
             {
               name: 'DATABASE_READ_PORT',
