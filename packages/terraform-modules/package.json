@@ -18,11 +18,11 @@
   },
   "dependencies": {
     "@cdktf/provider-archive": "10.0.1",
-    "@cdktf/provider-aws": "19.3.0",
+    "@cdktf/provider-aws": "19.6.0",
     "@cdktf/provider-local": "10.0.0",
-    "@cdktf/provider-newrelic": "12.0.1",
+    "@cdktf/provider-newrelic": "12.2.0",
     "@cdktf/provider-null": "10.0.0",
-    "@cdktf/provider-pagerduty": "13.2.0",
+    "@cdktf/provider-pagerduty": "13.4.0",
     "@cdktf/provider-time": "10.0.0",
     "cdktf": "0.20.3",
     "cdktf-cli": "0.20.3",
@@ -30,12 +30,12 @@
     "parse-domain": "5.0.0"
   },
   "devDependencies": {
-    "semantic-release": "23.0.0",
-    "@types/jest": "29.5.11",
+    "@types/jest": "29.5.12",
     "conventional-changelog-conventionalcommits": "7.0.2",
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
-    "semantic-release-monorepo": "8.0.1",
+    "semantic-release": "23.0.2",
+    "semantic-release-monorepo": "8.0.2",
     "ts-jest": "29.1.2",
     "tsconfig": "workspace:*"
   },
