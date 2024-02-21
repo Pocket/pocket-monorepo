@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-sqs": "3.515.0",
-    "@sentry/serverless": "7.101.1",
+    "@sentry/serverless": "7.102.0",
     "jsonwebtoken": "^9.0.0",
     "jwk-to-pem": "^2.0.5",
     "jwks-rsa": "3.0.1",
@@ -23,13 +23,13 @@
     "tslib": "2.6.2"
   },
   "devDependencies": {
-    "@types/aws-lambda": "8.10.131",
-    "@types/jest": "29.5.11",
+    "@types/aws-lambda": "8.10.134",
+    "@types/jest": "29.5.12",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/jwk-to-pem": "^2.0.1",
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
-    "nock": "13.5.0",
+    "nock": "13.5.3",
     "nodemon": "3.0.3",
     "ts-jest": "29.1.2",
     "tsconfig": "workspace:*"
