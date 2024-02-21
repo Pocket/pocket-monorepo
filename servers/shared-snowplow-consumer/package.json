@@ -30,12 +30,12 @@
     "node-fetch": "2.7.0"
   },
   "devDependencies": {
-    "@faker-js/faker": "8.3.1",
-    "@snowplow/snowtype": "^0.2.0",
-    "@types/jest": "29.5.11",
+    "@faker-js/faker": "8.4.1",
+    "@snowplow/snowtype": "^0.2.1",
+    "@types/jest": "29.5.12",
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
-    "nock": "13.5.0",
+    "nock": "13.5.3",
     "nodemon": "3.0.3",
     "ts-jest": "29.1.2",
     "tsconfig": "workspace:*"
