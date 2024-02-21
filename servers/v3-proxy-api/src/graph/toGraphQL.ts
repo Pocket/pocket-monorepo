@@ -5,17 +5,18 @@ import {
   SavedItemsSortBy,
   SavedItemsSortOrder,
   SavedItemStatusFilter,
-  UserSavedItemsArgs,
+  UserSavedItemsByOffsetArgs,
 } from '../generated/graphql/types';
 
 export function setSaveInputsFromGetCall(
   requestParams: any,
-): UserSavedItemsArgs {
+): UserSavedItemsByOffsetArgs {
   //todo: stubbed for skeleton
   //to be replaced by actual mapping in following tickets
   return {
     pagination: {
-      first: 10,
+      limit: parseInt(requestParams.count ?? '30'),
+      offset: parseInt(requestParams.offset ?? '0'),
     },
     sort: {
       sortBy: SavedItemsSortBy.UpdatedAt,

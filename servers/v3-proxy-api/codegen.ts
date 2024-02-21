@@ -5,6 +5,7 @@ const config: CodegenConfig = {
   documents: ['src/**/*.graphql'],
   generates: {
     './src/generated/graphql/types.ts': {
+      config: { federation: true },
       plugins: [
         //generated types do not conform to ts/lint rules, disable them for these files
         {

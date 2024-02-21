@@ -9,27 +9,71 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
-  Date: any;
-  DateString: any;
-  FunctionalBoostValue: any;
-  ISOString: any;
-  Markdown: any;
-  NonNegativeInt: any;
-  Timestamp: any;
-  Url: any;
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
+  /** A date in the YYYY-MM-DD format. */
+  Date: { input: any; output: any; }
+  /** A String representing a date in the format of `yyyy-MM-dd HH:mm:ss` */
+  DateString: { input: any; output: any; }
+  /** FunctionalBoostValue custom scalar type */
+  FunctionalBoostValue: { input: any; output: any; }
+  /** ISOString custom scalar type */
+  ISOString: { input: any; output: any; }
+  /**
+   * A string formatted with CommonMark markdown,
+   * plus the strikethrough extension from GFM.
+   * This Scalar is for documentation purposes; otherwise
+   * not treated differently from String in the API.
+   */
+  Markdown: { input: any; output: any; }
+  /** A positive integer number. */
+  NonNegativeInt: { input: any; output: any; }
+  /** Integer based represention of a unix timestamp */
+  Timestamp: { input: any; output: any; }
+  /** A String in the format of a url. */
+  Url: { input: any; output: any; }
+  _FieldSet: { input: any; output: any; }
+};
+
+/**
+ * Input data for adding multiple items to a list.
+ * Appends to the end of the list.
+ */
+export type AddItemInput = {
+  authors?: InputMaybe<Scalars['String']['input']>;
+  excerpt?: InputMaybe<Scalars['String']['input']>;
+  imageUrl?: InputMaybe<Scalars['Url']['input']>;
+  itemId: Scalars['ID']['input'];
+  note?: InputMaybe<Scalars['String']['input']>;
+  publisher?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  url: Scalars['Url']['input'];
+};
+
+export type AdvancedSearchFilters = {
+  contentType?: InputMaybe<SearchItemsContentType>;
+  domain?: InputMaybe<Scalars['String']['input']>;
+  isFavorite?: InputMaybe<Scalars['Boolean']['input']>;
+  status?: InputMaybe<SearchItemsStatusFilter>;
+  /**
+   * Include only items with the following tags (exact)
+   * in search results (OR combination)
+   */
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  title?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type ArticleMarkdown = {
   __typename?: 'ArticleMarkdown';
   images?: Maybe<Array<MarkdownImagePosition>>;
-  text: Scalars['String'];
+  text: Scalars['String']['output'];
 };
 
 /**
@@ -47,27 +91,51 @@ export enum ArticleStatus {
 export type Author = {
   __typename?: 'Author';
   /** Unique id for that Author */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   /** Display name */
-  name?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']['output']>;
   /** A url to that Author's site */
-  url?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']['output']>;
 };
 
 export type BaseError = {
-  message: Scalars['String'];
-  path: Scalars['String'];
+  message: Scalars['String']['output'];
+  path: Scalars['String']['output'];
+};
+
+/** Input object for creating and deleting highlights using bulk mutation. */
+export type BatchWriteHighlightsInput = {
+  create?: InputMaybe<Array<CreateHighlightInput>>;
+  delete?: InputMaybe<Array<Scalars['ID']['input']>>;
+};
+
+/**
+ * Result object for bulk create/delete highlights mutation.
+ * Mutation is atomic -- if there is a response, all operations
+ * were successful.
+ *
+ * The corresponding result array will be empty, but present, if there
+ * were no requests for created/deleted.
+ */
+export type BatchWriteHighlightsResult = {
+  __typename?: 'BatchWriteHighlightsResult';
+  created: Array<Highlight>;
+  deleted: Array<Scalars['ID']['output']>;
 };
 
 /** Row in a bulleted (unordered list) */
 export type BulletedListElement = ListElement & {
   __typename?: 'BulletedListElement';
   /** Row in a list. */
-  content: Scalars['Markdown'];
+  content: Scalars['Markdown']['output'];
   /** Zero-indexed level, for handling nested lists. */
-  level: Scalars['Int'];
+  level: Scalars['Int']['output'];
 };
 
+/**
+ * Apollo Server @cacheControl directive caching behavior either for a single field, or for all fields that
+ * return a particular type
+ */
 export enum CacheControlScope {
   Private = 'PRIVATE',
   Public = 'PUBLIC'
@@ -77,13 +145,13 @@ export enum CacheControlScope {
 export type CachedImage = {
   __typename?: 'CachedImage';
   /** Height of the cached image */
-  height?: Maybe<Scalars['Int']>;
+  height?: Maybe<Scalars['Int']['output']>;
   /** Id of the image that matches the ID from the requested options */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   /** URL of the cached image */
-  url?: Maybe<Scalars['Url']>;
+  url?: Maybe<Scalars['Url']['output']>;
   /** Width of the cached image */
-  width?: Maybe<Scalars['Int']>;
+  width?: Maybe<Scalars['Int']['output']>;
 };
 
 /** Set of parameters that will be used to change an image */
@@ -91,13 +159,13 @@ export type CachedImageInput = {
   /** File type of the requested image */
   fileType?: InputMaybe<ImageFileType>;
   /** Height of the image */
-  height?: InputMaybe<Scalars['Int']>;
+  height?: InputMaybe<Scalars['Int']['input']>;
   /** Id of the image in the returned result set */
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
   /** Quality of the image in whole percentage, 100 = full, quality 50 = half quality */
-  qualityPercentage?: InputMaybe<Scalars['Int']>;
+  qualityPercentage?: InputMaybe<Scalars['Int']['input']>;
   /** Width of the image */
-  width?: InputMaybe<Scalars['Int']>;
+  width?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type Collection = {
@@ -110,10 +178,10 @@ export type Collection = {
   IABParentCategory?: Maybe<IabCategory>;
   authors: Array<CollectionAuthor>;
   curationCategory?: Maybe<CurationCategory>;
-  excerpt?: Maybe<Scalars['Markdown']>;
-  externalId: Scalars['ID'];
-  imageUrl?: Maybe<Scalars['Url']>;
-  intro?: Maybe<Scalars['Markdown']>;
+  excerpt?: Maybe<Scalars['Markdown']['output']>;
+  externalId: Scalars['ID']['output'];
+  imageUrl?: Maybe<Scalars['Url']['output']>;
+  intro?: Maybe<Scalars['Markdown']['output']>;
   labels?: Maybe<Array<Maybe<Label>>>;
   /**
    * note that language is *not* being used as locale - only to specify the
@@ -121,21 +189,26 @@ export type Collection = {
    */
   language: CollectionLanguage;
   partnership?: Maybe<CollectionPartnership>;
-  publishedAt?: Maybe<Scalars['DateString']>;
-  slug: Scalars['String'];
+  publishedAt?: Maybe<Scalars['DateString']['output']>;
+  /**
+   * Provides short url for the given_url in the format: https://pocket.co/<identifier>.
+   * marked as beta because it's not ready yet for large client request.
+   */
+  shortUrl?: Maybe<Scalars['Url']['output']>;
+  slug: Scalars['String']['output'];
   status: CollectionStatus;
   stories: Array<CollectionStory>;
-  title: Scalars['String'];
+  title: Scalars['String']['output'];
 };
 
 export type CollectionAuthor = {
   __typename?: 'CollectionAuthor';
-  active: Scalars['Boolean'];
-  bio?: Maybe<Scalars['Markdown']>;
-  externalId: Scalars['ID'];
-  imageUrl?: Maybe<Scalars['Url']>;
-  name: Scalars['String'];
-  slug?: Maybe<Scalars['String']>;
+  active: Scalars['Boolean']['output'];
+  bio?: Maybe<Scalars['Markdown']['output']>;
+  externalId: Scalars['ID']['output'];
+  imageUrl?: Maybe<Scalars['Url']['output']>;
+  name: Scalars['String']['output'];
+  slug?: Maybe<Scalars['String']['output']>;
 };
 
 /** valid language codes for collections */
@@ -152,12 +225,12 @@ export enum CollectionLanguage {
  */
 export type CollectionPartnership = {
   __typename?: 'CollectionPartnership';
-  blurb: Scalars['Markdown'];
-  externalId: Scalars['String'];
-  imageUrl: Scalars['Url'];
-  name: Scalars['String'];
+  blurb: Scalars['Markdown']['output'];
+  externalId: Scalars['String']['output'];
+  imageUrl: Scalars['Url']['output'];
+  name: Scalars['String']['output'];
   type: CollectionPartnershipType;
-  url: Scalars['Url'];
+  url: Scalars['Url']['output'];
 };
 
 /** Type and enums related to Collections made in partnership with a company. */
@@ -176,29 +249,29 @@ export enum CollectionStatus {
 export type CollectionStory = {
   __typename?: 'CollectionStory';
   authors: Array<CollectionStoryAuthor>;
-  excerpt: Scalars['Markdown'];
-  externalId: Scalars['ID'];
+  excerpt: Scalars['Markdown']['output'];
+  externalId: Scalars['ID']['output'];
   /** if True, the story is provided by a partner and should be displayed as such */
-  fromPartner: Scalars['Boolean'];
-  imageUrl?: Maybe<Scalars['Url']>;
+  fromPartner: Scalars['Boolean']['output'];
+  imageUrl?: Maybe<Scalars['Url']['output']>;
   item?: Maybe<Item>;
-  publisher?: Maybe<Scalars['String']>;
-  sortOrder?: Maybe<Scalars['Int']>;
-  title: Scalars['String'];
-  url: Scalars['Url'];
+  publisher?: Maybe<Scalars['String']['output']>;
+  sortOrder?: Maybe<Scalars['Int']['output']>;
+  title: Scalars['String']['output'];
+  url: Scalars['Url']['output'];
 };
 
 export type CollectionStoryAuthor = {
   __typename?: 'CollectionStoryAuthor';
-  name: Scalars['String'];
-  sortOrder: Scalars['Int'];
+  name: Scalars['String']['output'];
+  sortOrder: Scalars['Int']['output'];
 };
 
 export type CollectionsFiltersInput = {
   /** If provided, will return all collections that match at least one of the labels. */
-  labels?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  labels?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   /** If not provided, or if an unsupported language is requested, defaults to `en` */
-  language?: InputMaybe<Scalars['String']>;
+  language?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CollectionsResult = {
@@ -216,34 +289,41 @@ export type CorpusItem = {
   /** The author names and sort orders associated with this CorpusItem. */
   authors: Array<CorpusItemAuthor>;
   /** The excerpt of the Approved Item. */
-  excerpt: Scalars['String'];
+  excerpt: Scalars['String']['output'];
   /** The GUID that is stored on an approved corpus item */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   /** The image for this item's accompanying picture. */
   image: Image;
   /** The image URL for this item's accompanying picture. */
-  imageUrl: Scalars['Url'];
+  imageUrl: Scalars['Url']['output'];
   /** What language this item is in. This is a two-letter code, for example, 'EN' for English. */
   language: CorpusLanguage;
   /** The name of the online publication that published this story. */
-  publisher: Scalars['String'];
+  publisher: Scalars['String']['output'];
   /** The user's saved item, from the Corpus Item, if the corpus item was saved to the user's saves */
   savedItem?: Maybe<SavedItem>;
+  /**
+   * Provides short url for the given_url in the format: https://pocket.co/<identifier>.
+   * marked as beta because it's not ready yet for large client request.
+   */
+  shortUrl?: Maybe<Scalars['Url']['output']>;
   /** If the Corpus Item is pocket owned with a specific type, this is the associated object (Collection or SyndicatedArticle). */
   target?: Maybe<CorpusTarget>;
+  /** Time to read in minutes. Is nullable. */
+  timeToRead?: Maybe<Scalars['Int']['output']>;
   /** The title of the Approved Item. */
-  title: Scalars['String'];
+  title: Scalars['String']['output'];
   /** The topic associated with the Approved Item. */
-  topic?: Maybe<Scalars['String']>;
+  topic?: Maybe<Scalars['String']['output']>;
   /** The URL of the Approved Item. */
-  url: Scalars['Url'];
+  url: Scalars['Url']['output'];
 };
 
 /** An author associated with a CorpusItem. */
 export type CorpusItemAuthor = {
   __typename?: 'CorpusItemAuthor';
-  name: Scalars['String'];
-  sortOrder: Scalars['Int'];
+  name: Scalars['String']['output'];
+  sortOrder: Scalars['Int']['output'];
 };
 
 /** Valid language codes for curated corpus items. */
@@ -251,7 +331,13 @@ export enum CorpusLanguage {
   /** German */
   De = 'DE',
   /** English */
-  En = 'EN'
+  En = 'EN',
+  /** Spanish */
+  Es = 'ES',
+  /** French */
+  Fr = 'FR',
+  /** Italian */
+  It = 'IT'
 }
 
 export type CorpusRecommendation = {
@@ -259,18 +345,23 @@ export type CorpusRecommendation = {
   /** Content meta data. */
   corpusItem: CorpusItem;
   /** Clients should include this id in the `corpus_recommendation` Snowplow entity for impression, content_open, and engagement events related to this recommendation. This id is different across users, across requests, and across corpus items. The recommendation-api service associates metadata with this id to join and aggregate recommendations in our data warehouse. */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   /** Reason why this CorpusItem is recommended to the user, or null if no reason is available. */
   reason?: Maybe<RecommendationReason>;
+  /**
+   * Firefox clients require an integer id. Other clients should use `id` instead of this field. tileId uniquely identifies the ScheduledSurface, CorpusItem, and scheduled_date. tileId is greater than 0 and less than 2^53 to fit in a Javascript number (64-bit IEEE 754 float). The field type is a Float because a GraphQL Int is limited to 32 bit.
+   * @deprecated Only to be used by Firefox. Other clients should use `id`. We plan to also migrate Firefox New Tab to use CorpusRecommendation.id instead of tileId to track recommendation telemetry.
+   */
+  tileId: Scalars['Float']['output'];
 };
 
 /** This is the same as Slate but in this type all recommendations are backed by CorpusItems. This means that the editorial team has editorial control over the items served by this endpoint. */
 export type CorpusSlate = {
   __typename?: 'CorpusSlate';
   /** The display headline for the slate. Surface context may be required to render determine what to display. This will depend on if we connect the copy to the Surface, SlateExperiment, or Slate. */
-  headline: Scalars['String'];
+  headline: Scalars['String']['output'];
   /** UUID */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   /** Link to a page where the user can explore more recommendations similar to this slate, or null if no link is provided. */
   moreLink?: Maybe<Link>;
   /** Indicates the main type of reason why recommendations are included in this slate, or null if none is available. */
@@ -278,20 +369,22 @@ export type CorpusSlate = {
   /** Recommendations for the current request context. */
   recommendations: Array<CorpusRecommendation>;
   /** A smaller, secondary headline that can be displayed to provide additional context on the slate. */
-  subheadline?: Maybe<Scalars['String']>;
+  subheadline?: Maybe<Scalars['String']['output']>;
+  /** utm_source value that can be set on the url by the caller to attribute the recommendations. */
+  utmSource?: Maybe<Scalars['String']['output']>;
 };
 
 
 /** This is the same as Slate but in this type all recommendations are backed by CorpusItems. This means that the editorial team has editorial control over the items served by this endpoint. */
 export type CorpusSlateRecommendationsArgs = {
-  count?: InputMaybe<Scalars['Int']>;
+  count?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** A collection of slates. */
 export type CorpusSlateLineup = {
   __typename?: 'CorpusSlateLineup';
   /** UUID */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   /** Slates. */
   slates: Array<CorpusSlate>;
 };
@@ -299,7 +392,7 @@ export type CorpusSlateLineup = {
 
 /** A collection of slates. */
 export type CorpusSlateLineupSlatesArgs = {
-  count?: InputMaybe<Scalars['Int']>;
+  count?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /**
@@ -310,10 +403,17 @@ export type CorpusTarget = Collection | SyndicatedArticle;
 
 /** Input for creating a new User-highlighted passage on a SavedItem. */
 export type CreateHighlightInput = {
+  /**
+   * Optionally, a client-generated UUID to identify the highlight.
+   * If one is not passed, it will be created. Must be in UUID format,
+   * or will fail generation. Will not overwrite existing data if there
+   * is an ID collision.
+   */
+  id?: InputMaybe<Scalars['String']['input']>;
   /** The ID of the Item that should be annotated in the User's list */
-  itemId: Scalars['ID'];
+  itemId: Scalars['ID']['input'];
   /** Optional note generated by User */
-  note?: InputMaybe<Scalars['String']>;
+  note?: InputMaybe<Scalars['String']['input']>;
   /**
    * Patch string generated by 'DiffMatchPatch' library, serialized
    * into text via `patch_toText` method.
@@ -323,103 +423,114 @@ export type CreateHighlightInput = {
    * sentinel tags: '<pkt_tag_annotation></pkt_tag_annotation>'
    * Reference: https://github.com/google/diff-match-patch
    */
-  patch: Scalars['String'];
+  patch: Scalars['String']['input'];
   /**
    * The full text of the highlighted passage. Used as a fallback for
    * rendering highlight if the patch fails.
    */
-  quote: Scalars['String'];
+  quote: Scalars['String']['input'];
   /** Annotation data version */
-  version: Scalars['Int'];
+  version: Scalars['Int']['input'];
 };
 
 /** Input data for creating a Shareable List. */
 export type CreateShareableListInput = {
-  description?: InputMaybe<Scalars['String']>;
-  title: Scalars['String'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  listItemNoteVisibility?: InputMaybe<ShareableListVisibility>;
+  title: Scalars['String']['input'];
 };
 
 /** Input data for creating a Shareable List Item. */
 export type CreateShareableListItemInput = {
-  authors?: InputMaybe<Scalars['String']>;
-  excerpt?: InputMaybe<Scalars['String']>;
-  imageUrl?: InputMaybe<Scalars['Url']>;
-  itemId?: InputMaybe<Scalars['Float']>;
-  listExternalId: Scalars['ID'];
-  publisher?: InputMaybe<Scalars['String']>;
-  sortOrder: Scalars['Int'];
-  title?: InputMaybe<Scalars['String']>;
-  url: Scalars['Url'];
+  authors?: InputMaybe<Scalars['String']['input']>;
+  excerpt?: InputMaybe<Scalars['String']['input']>;
+  imageUrl?: InputMaybe<Scalars['Url']['input']>;
+  itemId: Scalars['ID']['input'];
+  listExternalId: Scalars['ID']['input'];
+  note?: InputMaybe<Scalars['String']['input']>;
+  publisher?: InputMaybe<Scalars['String']['input']>;
+  sortOrder: Scalars['Int']['input'];
+  title?: InputMaybe<Scalars['String']['input']>;
+  url: Scalars['Url']['input'];
 };
 
 /** Input data for creating a Shareable List Item during Shareable List creation. */
 export type CreateShareableListItemWithList = {
-  authors?: InputMaybe<Scalars['String']>;
-  excerpt?: InputMaybe<Scalars['String']>;
-  imageUrl?: InputMaybe<Scalars['Url']>;
-  itemId?: InputMaybe<Scalars['Float']>;
-  publisher?: InputMaybe<Scalars['String']>;
-  sortOrder: Scalars['Int'];
-  title?: InputMaybe<Scalars['String']>;
-  url: Scalars['Url'];
+  authors?: InputMaybe<Scalars['String']['input']>;
+  excerpt?: InputMaybe<Scalars['String']['input']>;
+  imageUrl?: InputMaybe<Scalars['Url']['input']>;
+  itemId: Scalars['ID']['input'];
+  note?: InputMaybe<Scalars['String']['input']>;
+  publisher?: InputMaybe<Scalars['String']['input']>;
+  sortOrder: Scalars['Int']['input'];
+  title?: InputMaybe<Scalars['String']['input']>;
+  url: Scalars['Url']['input'];
 };
 
 /** This type represents the information we need on a curated item. */
 export type CuratedInfo = {
   __typename?: 'CuratedInfo';
-  excerpt?: Maybe<Scalars['String']>;
+  excerpt?: Maybe<Scalars['String']['output']>;
   /** The image for this item's accompanying picture. */
   image?: Maybe<Image>;
-  imageSrc?: Maybe<Scalars['Url']>;
-  title?: Maybe<Scalars['String']>;
+  imageSrc?: Maybe<Scalars['Url']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
 };
 
 export type CurationCategory = {
   __typename?: 'CurationCategory';
-  externalId: Scalars['ID'];
-  name: Scalars['String'];
-  slug: Scalars['String'];
+  externalId: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  slug: Scalars['String']['output'];
 };
 
 export type DeleteSavedItemTagsInput = {
   /** The id of the SavedItem from which to delete a Tag association */
-  savedItemId: Scalars['ID'];
+  savedItemId: Scalars['ID']['input'];
   /** The ids of the Tag to disassociate from the SavedItem */
-  tagIds: Array<Scalars['ID']>;
+  tagIds: Array<Scalars['ID']['input']>;
 };
 
 /** Metadata from a domain, originally populated from ClearBit */
 export type DomainMetadata = {
   __typename?: 'DomainMetadata';
   /** Url for the logo image */
-  logo?: Maybe<Scalars['Url']>;
+  logo?: Maybe<Scalars['Url']['output']>;
   /** Url for the greyscale logo image */
-  logoGreyscale?: Maybe<Scalars['Url']>;
+  logoGreyscale?: Maybe<Scalars['Url']['output']>;
   /** The name of the domain (e.g., The New York Times) */
-  name?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']['output']>;
 };
+
+/** The reason a user web session is being expired. */
+export enum ExpireUserWebSessionReason {
+  /** Expire web session upon logging out. */
+  Logout = 'LOGOUT',
+  /** Expire web session on account password change. */
+  PasswordChanged = 'PASSWORD_CHANGED'
+}
 
 /** Input field to boost the score of an elasticsearch document based on a specific field and value */
 export type FunctionalBoostField = {
   /** A float number to boost the score by */
-  factor: Scalars['Float'];
+  factor: Scalars['Float']['input'];
   /** Field to evaluate for boosting */
-  field: Scalars['String'];
+  field: Scalars['String']['input'];
   /** The mathematical operation to use for boosting */
   operation: SearchFunctionalBoostOperation;
   /** Field value to evaluate */
-  value: Scalars['FunctionalBoostValue'];
+  value: Scalars['FunctionalBoostValue']['input'];
 };
 
 /** A User-highlighted passage on a SavedItem */
 export type Highlight = {
   __typename?: 'Highlight';
   /** When the Highlight was created */
-  _createdAt: Scalars['Timestamp'];
+  _createdAt: Scalars['Timestamp']['output'];
   /** When the highlight was last updated */
-  _updatedAt: Scalars['Timestamp'];
+  _updatedAt: Scalars['Timestamp']['output'];
   /** The ID for this Highlight annotation */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   /** Highlight Note associated with this Highlight */
   note?: Maybe<HighlightNote>;
   /**
@@ -432,40 +543,40 @@ export type Highlight = {
    * sentinel tags: '<pkt_tag_annotation></pkt_tag_annotation>'
    * Reference: https://github.com/google/diff-match-patch
    */
-  patch: Scalars['String'];
+  patch: Scalars['String']['output'];
   /**
    * The full text of the highlighted passage. Used as a fallback for
    * rendering highlight if the patch fails.
    */
-  quote: Scalars['String'];
+  quote: Scalars['String']['output'];
   /** Version number for highlight data specification */
-  version: Scalars['Int'];
+  version: Scalars['Int']['output'];
 };
 
 export type HighlightNote = {
   __typename?: 'HighlightNote';
   /** When the HighlightNote was created */
-  _createdAt: Scalars['Timestamp'];
+  _createdAt: Scalars['Timestamp']['output'];
   /** When the HighlightNote was last updated */
-  _updatedAt: Scalars['Timestamp'];
+  _updatedAt: Scalars['Timestamp']['output'];
   /** User entered text */
-  text: Scalars['String'];
+  text: Scalars['String']['output'];
 };
 
 /** Interactive Advertising Bureau Category - these are used on clients to serve relevant ads */
 export type IabCategory = {
   __typename?: 'IABCategory';
-  externalId: Scalars['String'];
-  name: Scalars['String'];
-  slug: Scalars['String'];
+  externalId: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  slug: Scalars['String']['output'];
 };
 
 export type IabParentCategory = {
   __typename?: 'IABParentCategory';
   children: Array<IabCategory>;
-  externalId: Scalars['String'];
-  name: Scalars['String'];
-  slug: Scalars['String'];
+  externalId: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  slug: Scalars['String']['output'];
 };
 
 /** An image that is keyed on URL */
@@ -474,24 +585,24 @@ export type Image = {
   /** Query to get a cached and modified set of images based on the image from the original url, images will be matched by the client assigned id value */
   cachedImages?: Maybe<Array<Maybe<CachedImage>>>;
   /** A caption or description of the image */
-  caption?: Maybe<Scalars['String']>;
+  caption?: Maybe<Scalars['String']['output']>;
   /** A credit for the image, typically who the image belongs to / created by */
-  credit?: Maybe<Scalars['String']>;
+  credit?: Maybe<Scalars['String']['output']>;
   /** The determined height of the image at the url */
-  height?: Maybe<Scalars['Int']>;
-  /** The id for placing within an Article View. {articleView.article} will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view. */
-  imageId: Scalars['Int'];
+  height?: Maybe<Scalars['Int']['output']>;
+  /** The id for placing within an Article View. Item.article will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view. */
+  imageId: Scalars['Int']['output'];
   /**
    * Absolute url to the image
    * @deprecated use url property moving forward
    */
-  src: Scalars['String'];
+  src: Scalars['String']['output'];
   /** If the image is also a link, the destination url */
-  targetUrl?: Maybe<Scalars['String']>;
+  targetUrl?: Maybe<Scalars['String']['output']>;
   /** The url of the image */
-  url: Scalars['Url'];
+  url: Scalars['Url']['output'];
   /** The determined width of the image at the url */
-  width?: Maybe<Scalars['Int']>;
+  width?: Maybe<Scalars['Int']['output']>;
 };
 
 
@@ -523,14 +634,14 @@ export enum Imageness {
 export type Item = {
   __typename?: 'Item';
   /** If available, the url to an AMP version of this article */
-  ampUrl?: Maybe<Scalars['Url']>;
+  ampUrl?: Maybe<Scalars['Url']['output']>;
   /**
    * The pocket HTML string of the article.
    * Note: Web and Android as of 3/4/2022 use the Article field, any improvements made
    * within MArticle for parsing will not be reflected in the article field.
    * When that happens, the clients will work to move to MArticle.
    */
-  article?: Maybe<Scalars['String']>;
+  article?: Maybe<Scalars['String']['output']>;
   /** List of Authors involved with this article */
   authors?: Maybe<Array<Maybe<Author>>>;
   /** If the item is a collection allow them to get the collection information */
@@ -539,33 +650,33 @@ export type Item = {
    * The length in bytes of the content
    * @deprecated Clients should not use this
    */
-  contentLength?: Maybe<Scalars['Int']>;
+  contentLength?: Maybe<Scalars['Int']['output']>;
   /** The date the article was published */
-  datePublished?: Maybe<Scalars['DateString']>;
+  datePublished?: Maybe<Scalars['DateString']['output']>;
   /** The date the parser resolved this item */
-  dateResolved?: Maybe<Scalars['DateString']>;
-  /** The domain, such as 'getpocket.com' of the {.resolved_url} */
-  domain?: Maybe<Scalars['String']>;
+  dateResolved?: Maybe<Scalars['DateString']['output']>;
+  /** The domain, such as 'getpocket.com' of the resolved_url */
+  domain?: Maybe<Scalars['String']['output']>;
   /**
    * The primary database id of the domain this article is from
    * @deprecated Use a domain as the identifier instead
    */
-  domainId?: Maybe<Scalars['String']>;
+  domainId?: Maybe<Scalars['String']['output']>;
   /** Additional information about the item domain, when present, use this for displaying the domain name */
   domainMetadata?: Maybe<DomainMetadata>;
   /** The string encoding code of this item's web page */
-  encoding?: Maybe<Scalars['String']>;
+  encoding?: Maybe<Scalars['String']['output']>;
   /** A snippet of text from the article */
-  excerpt?: Maybe<Scalars['String']>;
+  excerpt?: Maybe<Scalars['String']['output']>;
   /** key field to identify the Item entity in the Parser service */
-  givenUrl: Scalars['Url'];
+  givenUrl: Scalars['Url']['output'];
   /** 0=no images, 1=contains images, 2=is an image */
   hasImage?: Maybe<Imageness>;
   /**
    * Indicates that the item was stored via a different search_hash (using the old method), we'll need to look up a different id
    * @deprecated Most new items use a new hash
    */
-  hasOldDupes?: Maybe<Scalars['Boolean']>;
+  hasOldDupes?: Maybe<Scalars['Boolean']['output']>;
   /** 0=no videos, 1=contains video, 2=is a video */
   hasVideo?: Maybe<Videoness>;
   /** Keyword highlights from search */
@@ -576,28 +687,28 @@ export type Item = {
    * Indicates if the text of the url is a redirect to another url
    * @deprecated Clients should not use this
    */
-  innerDomainRedirect?: Maybe<Scalars['Boolean']>;
+  innerDomainRedirect?: Maybe<Scalars['Boolean']['output']>;
   /** true if the item is an article */
-  isArticle?: Maybe<Scalars['Boolean']>;
+  isArticle?: Maybe<Scalars['Boolean']['output']>;
   /** true if the item is an index / home page, rather than a specific single piece of content */
-  isIndex?: Maybe<Scalars['Boolean']>;
+  isIndex?: Maybe<Scalars['Boolean']['output']>;
   /**
    * The Item entity is owned by the Parser service.
    * We only extend it in this service to make this service's schema valid.
    * The key for this entity is the 'itemId'
    */
-  itemId: Scalars['String'];
+  itemId: Scalars['String']['output'];
   /** The detected language of the article */
-  language?: Maybe<Scalars['String']>;
+  language?: Maybe<Scalars['String']['output']>;
   /**
    * Indicates if the url requires a login
    * @deprecated Clients should not use this
    */
-  loginRequired?: Maybe<Scalars['Boolean']>;
+  loginRequired?: Maybe<Scalars['Boolean']['output']>;
   /** The Marticle format of the article, used by clients for native article view. */
   marticle?: Maybe<Array<MarticleComponent>>;
   /** The mime type of this item's web page */
-  mimeType?: Maybe<Scalars['String']>;
+  mimeType?: Maybe<Scalars['String']['output']>;
   /**
    * A normalized value of the givenUrl.
    * It will look like a url but is not guaranteed to be a valid url, just a unique string that is used to eliminate common duplicates.
@@ -606,59 +717,66 @@ export type Item = {
    * However, for the clients to use this, they would all have to ship an implementation of the normalization function that the backend has exactly.
    * And even if it did that, some items, some of the earliest saves, use a legacy normalize function and the client would have no way to know when to use which normalizing function.
    */
-  normalUrl: Scalars['String'];
+  normalUrl: Scalars['String']['output'];
   /**
    * If a the domainId is a subdomain this is the primary domain id
    * @deprecated Use a domain as the identifier instead
    */
-  originDomainId?: Maybe<Scalars['String']>;
+  originDomainId?: Maybe<Scalars['String']['output']>;
   /** Recommend similar articles to show in the bottom of an article. */
   relatedAfterArticle: Array<CorpusRecommendation>;
   /** Recommend similar articles after saving. */
   relatedAfterCreate: Array<CorpusRecommendation>;
   /** The item id of the resolved_url */
-  resolvedId?: Maybe<Scalars['String']>;
+  resolvedId?: Maybe<Scalars['String']['output']>;
   /**
    * The resolved url, but ran through the normalized function
    * @deprecated Use the resolved url instead
    */
-  resolvedNormalUrl?: Maybe<Scalars['Url']>;
+  resolvedNormalUrl?: Maybe<Scalars['Url']['output']>;
   /** If the givenUrl redirects (once or many times), this is the final url. Otherwise, same as givenUrl */
-  resolvedUrl?: Maybe<Scalars['Url']>;
+  resolvedUrl?: Maybe<Scalars['Url']['output']>;
   /**
    * The http response code of the given url
    * @deprecated Clients should not use this
    */
-  responseCode?: Maybe<Scalars['Int']>;
+  responseCode?: Maybe<Scalars['Int']['output']>;
   /** Helper property to identify if the given item is in the user's list */
   savedItem?: Maybe<SavedItem>;
+  /**
+   * Provides short url for the given_url in the format: https://pocket.co/<identifier>.
+   * marked as beta because it's not ready yet for large client request.
+   */
+  shortUrl?: Maybe<Scalars['Url']['output']>;
+  /** If the url is an Article, the text in SSML format for speaking, i.e. Listen */
+  ssml?: Maybe<Scalars['String']['output']>;
   /** If the item has a syndicated counterpart the syndication information */
   syndicatedArticle?: Maybe<SyndicatedArticle>;
   /**
    * Date this item was first parsed in Pocket
    * @deprecated Clients should not use this
    */
-  timeFirstParsed?: Maybe<Scalars['DateString']>;
+  timeFirstParsed?: Maybe<Scalars['DateString']['output']>;
   /** How long it will take to read the article (TODO in what time unit? and by what calculation?) */
-  timeToRead?: Maybe<Scalars['Int']>;
+  timeToRead?: Maybe<Scalars['Int']['output']>;
   /** The title as determined by the parser. */
-  title?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']['output']>;
   /** The page's / publisher's preferred thumbnail image */
   topImage?: Maybe<Image>;
   /**
    * The page's / publisher's preferred thumbnail image
    * @deprecated use the topImage object
    */
-  topImageUrl?: Maybe<Scalars['Url']>;
+  topImageUrl?: Maybe<Scalars['Url']['output']>;
   /**
    * Indicates if the parser used fallback methods
    * @deprecated Clients should not use this
    */
-  usedFallback?: Maybe<Scalars['Int']>;
+  usedFallback?: Maybe<Scalars['Int']['output']>;
   /** Array of videos within the item If the item is a video, this will likely just contain one video */
   videos?: Maybe<Array<Maybe<Video>>>;
   /** Number of words in the article */
-  wordCount?: Maybe<Scalars['Int']>;
+  wordCount?: Maybe<Scalars['Int']['output']>;
 };
 
 
@@ -667,7 +785,7 @@ export type Item = {
  * A url and meta data related to it.
  */
 export type ItemRelatedAfterArticleArgs = {
-  count?: InputMaybe<Scalars['Int']>;
+  count?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -676,16 +794,16 @@ export type ItemRelatedAfterArticleArgs = {
  * A url and meta data related to it.
  */
 export type ItemRelatedAfterCreateArgs = {
-  count?: InputMaybe<Scalars['Int']>;
+  count?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** Elasticsearch highlights */
 export type ItemHighlights = {
   __typename?: 'ItemHighlights';
-  full_text?: Maybe<Array<Maybe<Scalars['String']>>>;
-  tags?: Maybe<Array<Maybe<Scalars['String']>>>;
-  title?: Maybe<Array<Maybe<Scalars['String']>>>;
-  url?: Maybe<Array<Maybe<Scalars['String']>>>;
+  full_text?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  tags?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  title?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  url?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
 };
 
 /** Union type for items that may or may not be processed */
@@ -694,39 +812,59 @@ export type ItemResult = Item | PendingItem;
 /** A label used to mark and categorize an Entity (e.g. Collection). */
 export type Label = {
   __typename?: 'Label';
-  externalId: Scalars['ID'];
-  name: Scalars['String'];
+  externalId: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
 };
 
 /** Web link */
 export type Link = {
   __typename?: 'Link';
   /** The link text displayed to the user. */
-  text: Scalars['String'];
+  text: Scalars['String']['output'];
   /** The URL to send the user to when clicking on the link. */
-  url: Scalars['Url'];
+  url: Scalars['Url']['output'];
 };
 
 export type ListElement = {
   /** Row in a list. */
-  content: Scalars['Markdown'];
+  content: Scalars['Markdown']['output'];
   /** Zero-indexed level, for handling nested lists. */
-  level: Scalars['Int'];
+  level: Scalars['Int']['output'];
+};
+
+/** The Connection type for ListItem */
+export type ListItemConnection = {
+  __typename?: 'ListItemConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<ListItemEdge>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of SavedItems in the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+/** An Edge in a Connection */
+export type ListItemEdge = {
+  __typename?: 'ListItemEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The ListItem at the end of the edge. */
+  node: ShareableListItem;
 };
 
 export type MarkdownImagePosition = {
   __typename?: 'MarkdownImagePosition';
-  index: Scalars['Int'];
-  position: Scalars['Int'];
+  index: Scalars['Int']['output'];
+  position: Scalars['Int']['output'];
   /** Fallback is to use the images field in the Item entity */
-  src?: Maybe<Scalars['String']>;
+  src?: Maybe<Scalars['String']['output']>;
 };
 
 /** Content of a blockquote */
 export type MarticleBlockquote = {
   __typename?: 'MarticleBlockquote';
   /** Markdown text content. */
-  content: Scalars['Markdown'];
+  content: Scalars['Markdown']['output'];
 };
 
 /** Content in a bulleted (unordered) list. */
@@ -739,9 +877,9 @@ export type MarticleBulletedList = {
 export type MarticleCodeBlock = {
   __typename?: 'MarticleCodeBlock';
   /** Assuming the codeblock was a programming language, this field is used to identify it. */
-  language?: Maybe<Scalars['Int']>;
+  language?: Maybe<Scalars['Int']['output']>;
   /** Content of a pre tag */
-  text: Scalars['String'];
+  text: Scalars['String']['output'];
 };
 
 export type MarticleComponent = Image | MarticleBlockquote | MarticleBulletedList | MarticleCodeBlock | MarticleDivider | MarticleHeading | MarticleNumberedList | MarticleTable | MarticleText | UnMarseable | Video;
@@ -749,16 +887,16 @@ export type MarticleComponent = Image | MarticleBlockquote | MarticleBulletedLis
 export type MarticleDivider = {
   __typename?: 'MarticleDivider';
   /** Always '---'; provided for convenience if building a markdown string */
-  content: Scalars['Markdown'];
+  content: Scalars['Markdown']['output'];
 };
 
 /** A heading in an article, with markdown formatting. */
 export type MarticleHeading = {
   __typename?: 'MarticleHeading';
   /** Heading text, in markdown. */
-  content: Scalars['Markdown'];
+  content: Scalars['Markdown']['output'];
   /** Heading level. Restricted to values 1-6. */
-  level: Scalars['Int'];
+  level: Scalars['Int']['output'];
 };
 
 /** Content in a bulleted (unordered) list. */
@@ -771,7 +909,7 @@ export type MarticleNumberedList = {
 export type MarticleTable = {
   __typename?: 'MarticleTable';
   /** Raw HTML representation of the table. */
-  html: Scalars['String'];
+  html: Scalars['String']['output'];
 };
 
 /**
@@ -781,12 +919,21 @@ export type MarticleTable = {
 export type MarticleText = {
   __typename?: 'MarticleText';
   /** Markdown text content. Typically, a paragraph. */
-  content: Scalars['Markdown'];
+  content: Scalars['Markdown']['output'];
 };
 
 /** Default Mutation Type */
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Add a batch of items to an existing shareable list. */
+  addToShareableList: ShareableList;
+  /**
+   * Make requests to create and delete highlights in a single batch.
+   * Mutation is atomic -- if there is a response, all operations were successful.
+   */
+  batchWriteHighlights: BatchWriteHighlightsResult;
+  /** Add a batch of items to an existing shareable list. */
+  createAndAddToShareableList?: Maybe<ShareableList>;
   /** Create new highlight note. Returns the data for the created Highlight note. */
   createSavedItemHighlightNote?: Maybe<HighlightNote>;
   /** Create new highlight annotation(s). Returns the data for the created Highlight object(s). */
@@ -808,11 +955,11 @@ export type Mutation = {
    * Deletes a SavedItem from the users list. Returns ID of the
    * deleted SavedItem
    */
-  deleteSavedItem: Scalars['ID'];
+  deleteSavedItem: Scalars['ID']['output'];
   /** Delete a highlight by its ID. */
-  deleteSavedItemHighlight: Scalars['ID'];
+  deleteSavedItemHighlight: Scalars['ID']['output'];
   /** Delete a highlight note by the Highlight ID. */
-  deleteSavedItemHighlightNote: Scalars['ID'];
+  deleteSavedItemHighlightNote: Scalars['ID']['output'];
   /**
    * Delete one or more tags from one or more SavedItems.
    * Note that if this operation results in a Tag having no associations
@@ -827,15 +974,28 @@ export type Mutation = {
    * Deletes a Tag object. This is deletes the Tag and all SavedItem associations
    * (removes the Tag from all SavedItems). Returns ID of the deleted Tag.
    */
-  deleteTag: Scalars['ID'];
+  deleteTag: Scalars['ID']['output'];
   /** Deletes user information and their pocket data for the given pocket userId. Returns pocket userId. */
-  deleteUser: Scalars['ID'];
+  deleteUser: Scalars['ID']['output'];
   /**
    * Deletes user information and their pocket data for the given firefox account ID.
    * Returns firefox account ID sent as the query parameter with the request.
    */
-  deleteUserByFxaId: Scalars['ID'];
-  /** Refresh an {Item}'s article content. */
+  deleteUserByFxaId: Scalars['ID']['output'];
+  /**
+   * Expires a user's web session tokens by firefox account ID.
+   * Called by fxa-webhook proxy. Need to supply a reason why to expire user web session.
+   * Returns the user ID.
+   */
+  expireUserWebSessionByFxaId: Scalars['ID']['output'];
+  /**
+   * temporary mutation for apple user migration.
+   * called by fxa-webhook proxy to update the fxaId and email of the user.
+   * Returns the pocket userId on success
+   * Note: requires `transfersub` to be set in the header.
+   */
+  migrateAppleUser: Scalars['ID']['output'];
+  /** Refresh an Item's article content. */
   refreshItemArticle: Item;
   /**
    * Replaces the old tags associated with the savedItem to the new tag list
@@ -867,6 +1027,44 @@ export type Mutation = {
    * Accepts a list of PocketSave Ids that we want to unfavorite.
    */
   saveUnFavorite?: Maybe<SaveWriteMutationPayload>;
+  /**
+   * Creates a new Save; if the Save already exists (either in List or Archive), "re-add" it.
+   * "Re-adding" unarchives and undeletes the Save as applicable, and refreshes the "createdAt"
+   * timestamp.
+   */
+  saveUpsert: SaveWriteMutationPayload;
+  /** Archive a SavedItem (identified by URL) */
+  savedItemArchive?: Maybe<SavedItem>;
+  /** 'Soft-delete' a SavedItem (identified by URL) */
+  savedItemDelete?: Maybe<Scalars['Url']['output']>;
+  /** Favorite a SavedItem (identified by URL) */
+  savedItemFavorite?: Maybe<SavedItem>;
+  /** Associate Tag(s) with a Save */
+  savedItemTag?: Maybe<SavedItem>;
+  /** Unarchive a SavedItem (identified by URL) */
+  savedItemUnArchive?: Maybe<SavedItem>;
+  /**
+   * Undo the 'soft-delete' operation on a SavedItem (identified by URL).
+   * Does not restore tags. Does not restore SavedItems that have been
+   * 'hard-deleted' (record removed from the database entirely).
+   */
+  savedItemUnDelete?: Maybe<SavedItem>;
+  /** 'Unfavorite' a 'favorite' SavedItem (identified by URL) */
+  savedItemUnFavorite?: Maybe<SavedItem>;
+  /**
+   * Update the title display of a Saved Item, retrieved by URL.
+   * This is user-save specific (does not update the metadata saved by the parser)
+   * Clients should ensure the input fits in the utf8mb3 character set (BMP only,
+   * which means no emoji) to avoid being rejected by the database.
+   * In the future this will be more permissive.
+   */
+  savedItemUpdateTitle?: Maybe<SavedItem>;
+  /**
+   * Update an existing highlight annotation, by its ID.
+   * If the given highlight ID does not exist, will return error data
+   * and the highlight will not be created.
+   */
+  updateHighlight: Highlight;
   /** Archives a SavedItem */
   updateSavedItemArchive: SavedItem;
   /** Favorites a SavedItem */
@@ -875,6 +1073,9 @@ export type Mutation = {
    * Update an existing highlight annotation, by its ID.
    * If the given highlight ID does not exist, will return error data
    * and the highlight will not be created.
+   * Note that if an ID is passed to the optional ID field in CreateHighlightInput,
+   * it will be ignored, as this mutation does not allow updating the ID.
+   * @deprecated use updateHighlight
    */
   updateSavedItemHighlight: Highlight;
   /**
@@ -898,14 +1099,26 @@ export type Mutation = {
    * @deprecated use saveBatchUpdateTags
    */
   updateSavedItemTags: SavedItem;
+  /**
+   * Update the title display of a Saved Item, retrieved by ID.
+   * This is user-save specific (does not update the metadata saved by the parser).
+   * Clients should ensure the input fits in the utf8mb3 character set (BMP only,
+   * which means no emoji) to avoid being rejected by the database.
+   * In the future this will be more permissive.
+   */
+  updateSavedItemTitle?: Maybe<SavedItem>;
   /** Unarchives a SavedItem */
   updateSavedItemUnArchive: SavedItem;
   /** Undo the delete operation for a SavedItem */
   updateSavedItemUnDelete: SavedItem;
   /** Unfavorites a SavedItem */
   updateSavedItemUnFavorite: SavedItem;
-  /** Updates a Shareable List. This includes making it public. */
+  /** Updates a Shareable List. Cannot make a list public. */
   updateShareableList: ShareableList;
+  /** Updates a single Shareable List Item. */
+  updateShareableListItem: ShareableListItem;
+  /** Updates an array of Shareable List Items (sortOrder). */
+  updateShareableListItems: Array<ShareableListItem>;
   /**
    * Updates a Tag (renames the tag), and returns the updated Tag.
    * If a Tag with the updated name already exists in the database, will
@@ -935,9 +1148,29 @@ export type Mutation = {
 
 
 /** Default Mutation Type */
+export type MutationAddToShareableListArgs = {
+  items: Array<AddItemInput>;
+  listExternalId: Scalars['ID']['input'];
+};
+
+
+/** Default Mutation Type */
+export type MutationBatchWriteHighlightsArgs = {
+  input?: InputMaybe<BatchWriteHighlightsInput>;
+};
+
+
+/** Default Mutation Type */
+export type MutationCreateAndAddToShareableListArgs = {
+  itemData: Array<AddItemInput>;
+  listData: CreateShareableListInput;
+};
+
+
+/** Default Mutation Type */
 export type MutationCreateSavedItemHighlightNoteArgs = {
-  id: Scalars['ID'];
-  input: Scalars['String'];
+  id: Scalars['ID']['input'];
+  input: Scalars['String']['input'];
 };
 
 
@@ -968,19 +1201,19 @@ export type MutationCreateShareableListItemArgs = {
 
 /** Default Mutation Type */
 export type MutationDeleteSavedItemArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 /** Default Mutation Type */
 export type MutationDeleteSavedItemHighlightArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 /** Default Mutation Type */
 export type MutationDeleteSavedItemHighlightNoteArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -992,31 +1225,45 @@ export type MutationDeleteSavedItemTagsArgs = {
 
 /** Default Mutation Type */
 export type MutationDeleteShareableListArgs = {
-  externalId: Scalars['ID'];
+  externalId: Scalars['ID']['input'];
 };
 
 
 /** Default Mutation Type */
 export type MutationDeleteShareableListItemArgs = {
-  externalId: Scalars['ID'];
+  externalId: Scalars['ID']['input'];
 };
 
 
 /** Default Mutation Type */
 export type MutationDeleteTagArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 /** Default Mutation Type */
 export type MutationDeleteUserByFxaIdArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
+};
+
+
+/** Default Mutation Type */
+export type MutationExpireUserWebSessionByFxaIdArgs = {
+  id: Scalars['ID']['input'];
+  reason: ExpireUserWebSessionReason;
+};
+
+
+/** Default Mutation Type */
+export type MutationMigrateAppleUserArgs = {
+  email: Scalars['String']['input'];
+  fxaId: Scalars['ID']['input'];
 };
 
 
 /** Default Mutation Type */
 export type MutationRefreshItemArticleArgs = {
-  url: Scalars['String'];
+  url: Scalars['String']['input'];
 };
 
 
@@ -1028,68 +1275,139 @@ export type MutationReplaceSavedItemTagsArgs = {
 
 /** Default Mutation Type */
 export type MutationSaveArchiveArgs = {
-  id: Array<Scalars['ID']>;
-  timestamp: Scalars['ISOString'];
+  id: Array<Scalars['ID']['input']>;
+  timestamp: Scalars['ISOString']['input'];
 };
 
 
 /** Default Mutation Type */
 export type MutationSaveBatchUpdateTagsArgs = {
   input: Array<SaveUpdateTagsInput>;
-  timestamp: Scalars['ISOString'];
+  timestamp: Scalars['ISOString']['input'];
 };
 
 
 /** Default Mutation Type */
 export type MutationSaveFavoriteArgs = {
-  id: Array<Scalars['ID']>;
-  timestamp: Scalars['ISOString'];
+  id: Array<Scalars['ID']['input']>;
+  timestamp: Scalars['ISOString']['input'];
 };
 
 
 /** Default Mutation Type */
 export type MutationSaveUnArchiveArgs = {
-  id: Array<Scalars['ID']>;
-  timestamp: Scalars['ISOString'];
+  id: Array<Scalars['ID']['input']>;
+  timestamp: Scalars['ISOString']['input'];
 };
 
 
 /** Default Mutation Type */
 export type MutationSaveUnFavoriteArgs = {
-  id: Array<Scalars['ID']>;
-  timestamp: Scalars['ISOString'];
+  id: Array<Scalars['ID']['input']>;
+  timestamp: Scalars['ISOString']['input'];
+};
+
+
+/** Default Mutation Type */
+export type MutationSaveUpsertArgs = {
+  input: Array<SaveUpsertInput>;
+  timestamp: Scalars['ISOString']['input'];
+};
+
+
+/** Default Mutation Type */
+export type MutationSavedItemArchiveArgs = {
+  givenUrl: Scalars['Url']['input'];
+  timestamp: Scalars['ISOString']['input'];
+};
+
+
+/** Default Mutation Type */
+export type MutationSavedItemDeleteArgs = {
+  givenUrl: Scalars['Url']['input'];
+  timestamp: Scalars['ISOString']['input'];
+};
+
+
+/** Default Mutation Type */
+export type MutationSavedItemFavoriteArgs = {
+  givenUrl: Scalars['Url']['input'];
+  timestamp: Scalars['ISOString']['input'];
+};
+
+
+/** Default Mutation Type */
+export type MutationSavedItemTagArgs = {
+  input: SavedItemTagInput;
+  timestamp: Scalars['ISOString']['input'];
+};
+
+
+/** Default Mutation Type */
+export type MutationSavedItemUnArchiveArgs = {
+  givenUrl: Scalars['Url']['input'];
+  timestamp: Scalars['ISOString']['input'];
+};
+
+
+/** Default Mutation Type */
+export type MutationSavedItemUnDeleteArgs = {
+  givenUrl: Scalars['Url']['input'];
+  timestamp: Scalars['ISOString']['input'];
+};
+
+
+/** Default Mutation Type */
+export type MutationSavedItemUnFavoriteArgs = {
+  givenUrl: Scalars['Url']['input'];
+  timestamp: Scalars['ISOString']['input'];
+};
+
+
+/** Default Mutation Type */
+export type MutationSavedItemUpdateTitleArgs = {
+  givenUrl: Scalars['Url']['input'];
+  timestamp: Scalars['ISOString']['input'];
+  title: Scalars['String']['input'];
+};
+
+
+/** Default Mutation Type */
+export type MutationUpdateHighlightArgs = {
+  id: Scalars['ID']['input'];
+  input: UpdateHighlightInput;
 };
 
 
 /** Default Mutation Type */
 export type MutationUpdateSavedItemArchiveArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 /** Default Mutation Type */
 export type MutationUpdateSavedItemFavoriteArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 /** Default Mutation Type */
 export type MutationUpdateSavedItemHighlightArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
   input: CreateHighlightInput;
 };
 
 
 /** Default Mutation Type */
 export type MutationUpdateSavedItemHighlightNoteArgs = {
-  id: Scalars['ID'];
-  input: Scalars['String'];
+  id: Scalars['ID']['input'];
+  input: Scalars['String']['input'];
 };
 
 
 /** Default Mutation Type */
 export type MutationUpdateSavedItemRemoveTagsArgs = {
-  savedItemId?: InputMaybe<Scalars['ID']>;
+  savedItemId?: InputMaybe<Scalars['ID']['input']>;
 };
 
 
@@ -1100,26 +1418,46 @@ export type MutationUpdateSavedItemTagsArgs = {
 
 
 /** Default Mutation Type */
+export type MutationUpdateSavedItemTitleArgs = {
+  id: Scalars['ID']['input'];
+  timestamp: Scalars['ISOString']['input'];
+  title: Scalars['String']['input'];
+};
+
+
+/** Default Mutation Type */
 export type MutationUpdateSavedItemUnArchiveArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 /** Default Mutation Type */
 export type MutationUpdateSavedItemUnDeleteArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 /** Default Mutation Type */
 export type MutationUpdateSavedItemUnFavoriteArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
 /** Default Mutation Type */
 export type MutationUpdateShareableListArgs = {
   data: UpdateShareableListInput;
+};
+
+
+/** Default Mutation Type */
+export type MutationUpdateShareableListItemArgs = {
+  data: UpdateShareableListItemInput;
+};
+
+
+/** Default Mutation Type */
+export type MutationUpdateShareableListItemsArgs = {
+  data: Array<UpdateShareableListItemsInput>;
 };
 
 
@@ -1131,14 +1469,14 @@ export type MutationUpdateTagArgs = {
 
 /** Default Mutation Type */
 export type MutationUpdateUserEmailArgs = {
-  email: Scalars['String'];
+  email: Scalars['String']['input'];
 };
 
 
 /** Default Mutation Type */
 export type MutationUpdateUserEmailByFxaIdArgs = {
-  email: Scalars['String'];
-  id: Scalars['ID'];
+  email: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1155,31 +1493,41 @@ export type MutationUpsertSavedItemArgs = {
 
 export type NotFound = BaseError & {
   __typename?: 'NotFound';
-  message: Scalars['String'];
-  path: Scalars['String'];
+  key?: Maybe<Scalars['String']['output']>;
+  message: Scalars['String']['output'];
+  path: Scalars['String']['output'];
+  value?: Maybe<Scalars['String']['output']>;
 };
 
 export type NumberedListElement = ListElement & {
   __typename?: 'NumberedListElement';
   /** Row in a list */
-  content: Scalars['Markdown'];
+  content: Scalars['Markdown']['output'];
   /** Numeric index. If a nested item, the index is zero-indexed from the first child. */
-  index: Scalars['Int'];
+  index: Scalars['Int']['output'];
   /** Zero-indexed level, for handling nested lists. */
-  level: Scalars['Int'];
+  level: Scalars['Int']['output'];
+};
+
+/** Input for offset-pagination (internal backend use only). */
+export type OffsetPaginationInput = {
+  /**  Defaults to 30  */
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  /**  Defaults to 0  */
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** Information about pagination in a connection. */
 export type PageInfo = {
   __typename?: 'PageInfo';
   /** When paginating forwards, the cursor to continue. */
-  endCursor?: Maybe<Scalars['String']>;
+  endCursor?: Maybe<Scalars['String']['output']>;
   /** When paginating forwards, are there more items? */
-  hasNextPage: Scalars['Boolean'];
+  hasNextPage: Scalars['Boolean']['output'];
   /** When paginating backwards, are there more items? */
-  hasPreviousPage: Scalars['Boolean'];
+  hasPreviousPage: Scalars['Boolean']['output'];
   /** When paginating backwards, the cursor to continue. */
-  startCursor?: Maybe<Scalars['String']>;
+  startCursor?: Maybe<Scalars['String']['output']>;
 };
 
 /**
@@ -1193,10 +1541,10 @@ export enum PageType {
 
 export type Pagination = {
   __typename?: 'Pagination';
-  currentPage: Scalars['Int'];
-  perPage: Scalars['Int'];
-  totalPages: Scalars['Int'];
-  totalResults: Scalars['Int'];
+  currentPage: Scalars['Int']['output'];
+  perPage: Scalars['Int']['output'];
+  totalPages: Scalars['Int']['output'];
+  totalResults: Scalars['Int']['output'];
 };
 
 /**
@@ -1211,22 +1559,22 @@ export type PaginationInput = {
    * Returns the elements in the list that come after the specified cursor.
    * The specified cursor is not included in the result.
    */
-  after?: InputMaybe<Scalars['String']>;
+  after?: InputMaybe<Scalars['String']['input']>;
   /**
    * Returns the elements in the list that come before the specified cursor.
    * The specified cursor is not included in the result.
    */
-  before?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']['input']>;
   /**
    * Returns the first _n_ elements from the list. Must be a non-negative integer.
    * If `first` contains a value, `last` should be null/omitted in the input.
    */
-  first?: InputMaybe<Scalars['Int']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
   /**
    * Returns the last _n_ elements from the list. Must be a non-negative integer.
    * If `last` contains a value, `first` should be null/omitted in the input.
    */
-  last?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type PendingItem = {
@@ -1235,9 +1583,9 @@ export type PendingItem = {
    * URL of the item that the user gave for the SavedItem
    * that is pending processing by parser
    */
-  itemId: Scalars['String'];
+  itemId: Scalars['String']['output'];
   status?: Maybe<PendingItemStatus>;
-  url: Scalars['Url'];
+  url: Scalars['Url']['output'];
 };
 
 export enum PendingItemStatus {
@@ -1254,21 +1602,21 @@ export enum PendingItemStatus {
 export type PocketSave = {
   __typename?: 'PocketSave';
   /** Indicates if the PocketSave is archived. */
-  archived: Scalars['Boolean'];
+  archived: Scalars['Boolean']['output'];
   /** Timestamp that the PocketSave became archived, null if not archived. */
-  archivedAt?: Maybe<Scalars['ISOString']>;
+  archivedAt?: Maybe<Scalars['ISOString']['output']>;
   /** Unix timestamp of when the PocketSave was created. */
-  createdAt: Scalars['ISOString'];
+  createdAt: Scalars['ISOString']['output'];
   /** Unix timestamp of when the entity was deleted. */
-  deletedAt?: Maybe<Scalars['ISOString']>;
+  deletedAt?: Maybe<Scalars['ISOString']['output']>;
   /** Indicates if the PocketSave is favorited. */
-  favorite: Scalars['Boolean'];
+  favorite: Scalars['Boolean']['output'];
   /** Timestamp that the PocketSave became favorited, null if not favorited. */
-  favoritedAt?: Maybe<Scalars['ISOString']>;
+  favoritedAt?: Maybe<Scalars['ISOString']['output']>;
   /** The url the user gave (as opposed to normalized URLs). */
-  givenUrl: Scalars['String'];
+  givenUrl: Scalars['String']['output'];
   /** Surrogate primary key. */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   /**
    * Link to the underlying Pocket Item for the URL.
    * Temporary until resource field is added. Will hopefully
@@ -1283,9 +1631,9 @@ export type PocketSave = {
   /** The Tags associated with this PocketSave. */
   tags?: Maybe<Array<Tag>>;
   /** The title of the Resource; defaults to the URL. */
-  title: Scalars['String'];
+  title: Scalars['String']['output'];
   /** Unix timestamp of when the PocketSave was last updated, if any property on the PocketSave is modified this timestamp is set to the modified time. */
-  updatedAt?: Maybe<Scalars['ISOString']>;
+  updatedAt?: Maybe<Scalars['ISOString']['output']>;
 };
 
 /** Enum to specify the PocketSave Status (mapped to integers in data store). */
@@ -1300,29 +1648,29 @@ export enum PocketSaveStatus {
 export type Publisher = {
   __typename?: 'Publisher';
   /** Whether or not to show the article appeared on domain */
-  appearedOnDomain: Scalars['Boolean'];
+  appearedOnDomain: Scalars['Boolean']['output'];
   /** The article call to action to show if selected */
   articleCta?: Maybe<PublisherArticleCta>;
   /** Whether or not to attribute the publisher to the article */
-  attributeCanonicalToPublisher: Scalars['Boolean'];
+  attributeCanonicalToPublisher: Scalars['Boolean']['output'];
   /** Square logo to use for the publisher */
-  logo?: Maybe<Scalars['String']>;
+  logo?: Maybe<Scalars['String']['output']>;
   /** Wide logo to use for the publisher */
-  logoWide?: Maybe<Scalars['String']>;
+  logoWide?: Maybe<Scalars['String']['output']>;
   /** Black wide based logo to use for the publisher */
-  logoWideBlack?: Maybe<Scalars['String']>;
+  logoWideBlack?: Maybe<Scalars['String']['output']>;
   /** Name of the publisher of the article */
-  name?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']['output']>;
   /** The name to show to the article in recommendations */
-  recommendationName?: Maybe<Scalars['String']>;
+  recommendationName?: Maybe<Scalars['String']['output']>;
   /** Whether or not to show an article call to action */
-  showArticleCta: Scalars['Boolean'];
+  showArticleCta: Scalars['Boolean']['output'];
   /** Whether or not to show the authors of the article */
-  showAuthors: Scalars['Boolean'];
+  showAuthors: Scalars['Boolean']['output'];
   /** Whether or not to show publisher recomendations */
-  showPublisherRecommendations?: Maybe<Scalars['Boolean']>;
+  showPublisherRecommendations?: Maybe<Scalars['Boolean']['output']>;
   /** Url of the publisher */
-  url?: Maybe<Scalars['Url']>;
+  url?: Maybe<Scalars['Url']['output']>;
 };
 
 /**
@@ -1333,11 +1681,11 @@ export type Publisher = {
 export type PublisherArticleCta = {
   __typename?: 'PublisherArticleCta';
   /** The lead in text to show */
-  leadIn?: Maybe<Scalars['String']>;
+  leadIn?: Maybe<Scalars['String']['output']>;
   /** The text to show */
-  text?: Maybe<Scalars['String']>;
+  text?: Maybe<Scalars['String']['output']>;
   /** The url to link to */
-  url?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']['output']>;
 };
 
 /**
@@ -1356,12 +1704,7 @@ export type Query = {
   /** Retrieves a paged set of published Collections. */
   getCollections: CollectionsResult;
   /**
-   * Look up {Item} info by ID.
-   * @deprecated Use itemById instead
-   */
-  getItemByItemId?: Maybe<Item>;
-  /**
-   * Look up {Item} info by a url.
+   * Look up Item info by a url.
    * @deprecated Use itemByUrl instead
    */
   getItemByUrl?: Maybe<Item>;
@@ -1392,17 +1735,17 @@ export type Query = {
    * @deprecated use unleashAssignments instead
    */
   getUnleashAssignments?: Maybe<UnleashAssignmentList>;
-  /** Get ranked corpus slates and recommendations to deliver a unified Home experience. The locale argument determines the UI and recommendation content language. */
+  /** Get ranked corpus slates and recommendations to deliver a unified Home experience.  */
   homeSlateLineup: CorpusSlateLineup;
-  /** Look up {Item} info by ID. */
-  itemByItemId?: Maybe<Item>;
-  /** Look up {Item} info by a url. */
+  /** Look up Item info by a url. */
   itemByUrl?: Maybe<Item>;
   /**
    * List all available topics that we have recommendations for.
    * @deprecated Use `getSlateLineup` with a specific SlateLineup instead.
    */
   listTopics: Array<Topic>;
+  /** Get a slate of ranked recommendations for the Firefox New Tab. Currently supports the Italy, France, and Spain markets. */
+  newTabSlate: CorpusSlate;
   /** List all topics that the user can express a preference for. */
   recommendationPreferenceTopics: Array<Topic>;
   scheduledSurface: ScheduledSurface;
@@ -1412,14 +1755,14 @@ export type Query = {
    */
   shareableList?: Maybe<ShareableList>;
   /** Returns a publicly-shared Shareable List. Note: this query does not require user authentication. */
-  shareableListPublic?: Maybe<ShareableList>;
+  shareableListPublic?: Maybe<ShareableListPublic>;
   /**
    * Looks up and returns an array of Shareable Lists for a given user ID for a given user.
    * (the user ID will be coming through with the headers)
    */
   shareableLists: Array<ShareableList>;
   /** Determines if the userid passed in the headers has access to the pilot program. */
-  shareableListsPilotUser: Scalars['Boolean'];
+  shareableListsPilotUser: Scalars['Boolean']['output'];
   /** This is a future improvement, not needed now. */
   surface: Surface;
   /** Look up the SyndicatedArticle by a slug */
@@ -1437,10 +1780,6 @@ export type Query = {
   unleashAssignments?: Maybe<UnleashAssignmentList>;
   /** Get a user entity for an authenticated client */
   user?: Maybe<User>;
-  /** Gets a user for a given ID, only admin/internal service credentials will be allowed to do this for IDs other then their own. */
-  userById?: Maybe<User>;
-  /** Gets a user entity for a given access token */
-  userByToken?: Maybe<User>;
 };
 
 
@@ -1449,7 +1788,7 @@ export type Query = {
  * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
  */
 export type QueryCollectionBySlugArgs = {
-  slug: Scalars['String'];
+  slug: Scalars['String']['input'];
 };
 
 
@@ -1458,7 +1797,7 @@ export type QueryCollectionBySlugArgs = {
  * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
  */
 export type QueryGetCollectionBySlugArgs = {
-  slug: Scalars['String'];
+  slug: Scalars['String']['input'];
 };
 
 
@@ -1468,17 +1807,8 @@ export type QueryGetCollectionBySlugArgs = {
  */
 export type QueryGetCollectionsArgs = {
   filters?: InputMaybe<CollectionsFiltersInput>;
-  page?: InputMaybe<Scalars['Int']>;
-  perPage?: InputMaybe<Scalars['Int']>;
-};
-
-
-/**
- * Default root level query type. All authorization checks are done in these queries.
- * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
- */
-export type QueryGetItemByItemIdArgs = {
-  id: Scalars['ID'];
+  page?: InputMaybe<Scalars['Int']['input']>;
+  perPage?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -1487,7 +1817,7 @@ export type QueryGetItemByItemIdArgs = {
  * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
  */
 export type QueryGetItemByUrlArgs = {
-  url: Scalars['String'];
+  url: Scalars['String']['input'];
 };
 
 
@@ -1496,8 +1826,8 @@ export type QueryGetItemByUrlArgs = {
  * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
  */
 export type QueryGetSlateArgs = {
-  recommendationCount?: InputMaybe<Scalars['Int']>;
-  slateId: Scalars['String'];
+  recommendationCount?: InputMaybe<Scalars['Int']['input']>;
+  slateId: Scalars['String']['input'];
 };
 
 
@@ -1506,9 +1836,9 @@ export type QueryGetSlateArgs = {
  * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
  */
 export type QueryGetSlateLineupArgs = {
-  recommendationCount?: InputMaybe<Scalars['Int']>;
-  slateCount?: InputMaybe<Scalars['Int']>;
-  slateLineupId: Scalars['String'];
+  recommendationCount?: InputMaybe<Scalars['Int']['input']>;
+  slateCount?: InputMaybe<Scalars['Int']['input']>;
+  slateLineupId: Scalars['String']['input'];
 };
 
 
@@ -1517,7 +1847,7 @@ export type QueryGetSlateLineupArgs = {
  * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
  */
 export type QueryGetSyndicatedArticleBySlugArgs = {
-  slug: Scalars['String'];
+  slug: Scalars['String']['input'];
 };
 
 
@@ -1535,16 +1865,7 @@ export type QueryGetUnleashAssignmentsArgs = {
  * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
  */
 export type QueryHomeSlateLineupArgs = {
-  locale?: Scalars['String'];
-};
-
-
-/**
- * Default root level query type. All authorization checks are done in these queries.
- * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
- */
-export type QueryItemByItemIdArgs = {
-  id: Scalars['ID'];
+  locale?: Scalars['String']['input'];
 };
 
 
@@ -1553,7 +1874,17 @@ export type QueryItemByItemIdArgs = {
  * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
  */
 export type QueryItemByUrlArgs = {
-  url: Scalars['String'];
+  url: Scalars['String']['input'];
+};
+
+
+/**
+ * Default root level query type. All authorization checks are done in these queries.
+ * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
+ */
+export type QueryNewTabSlateArgs = {
+  locale: Scalars['String']['input'];
+  region?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -1562,7 +1893,7 @@ export type QueryItemByUrlArgs = {
  * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
  */
 export type QueryScheduledSurfaceArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1571,7 +1902,7 @@ export type QueryScheduledSurfaceArgs = {
  * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
  */
 export type QueryShareableListArgs = {
-  externalId: Scalars['ID'];
+  externalId: Scalars['ID']['input'];
 };
 
 
@@ -1580,7 +1911,8 @@ export type QueryShareableListArgs = {
  * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
  */
 export type QueryShareableListPublicArgs = {
-  externalId: Scalars['ID'];
+  externalId: Scalars['ID']['input'];
+  slug: Scalars['String']['input'];
 };
 
 
@@ -1589,7 +1921,7 @@ export type QueryShareableListPublicArgs = {
  * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
  */
 export type QuerySurfaceArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
@@ -1598,7 +1930,7 @@ export type QuerySurfaceArgs = {
  * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
  */
 export type QuerySyndicatedArticleBySlugArgs = {
-  slug: Scalars['String'];
+  slug: Scalars['String']['input'];
 };
 
 
@@ -1610,26 +1942,8 @@ export type QueryUnleashAssignmentsArgs = {
   context: UnleashContext;
 };
 
-
-/**
- * Default root level query type. All authorization checks are done in these queries.
- * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
- */
-export type QueryUserByIdArgs = {
-  id: Scalars['ID'];
-};
-
-
-/**
- * Default root level query type. All authorization checks are done in these queries.
- * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
- */
-export type QueryUserByTokenArgs = {
-  token: Scalars['String'];
-};
-
 export type RecItUserProfile = {
-  userModels: Array<Scalars['String']>;
+  userModels: Array<Scalars['String']['input']>;
 };
 
 /** Represents a Recommendation from Pocket */
@@ -1637,14 +1951,14 @@ export type Recommendation = {
   __typename?: 'Recommendation';
   curatedInfo?: Maybe<CuratedInfo>;
   /** The feed id from mysql that this item was curated from (if it was curated) */
-  feedId?: Maybe<Scalars['Int']>;
+  feedId?: Maybe<Scalars['Int']['output']>;
   /**
    * A generated id from the Data and Learning team that represents the Recommendation - Deprecated
    * @deprecated Use `id`
    */
-  feedItemId?: Maybe<Scalars['ID']>;
+  feedItemId?: Maybe<Scalars['ID']['output']>;
   /** A generated id from the Data and Learning team that represents the Recommendation */
-  id?: Maybe<Scalars['ID']>;
+  id: Scalars['ID']['output'];
   /**
    * The Recommendation entity is owned by the Recommendation API service.
    * We extend it in this service to add an extra field ('curationInfo') to the Recommendation entity.
@@ -1655,23 +1969,25 @@ export type Recommendation = {
    * The ID of the item this recommendation represents
    * TODO: Use apollo federation to turn this into an Item type.
    */
-  itemId: Scalars['ID'];
+  itemId: Scalars['ID']['output'];
   /** The publisher of the item */
-  publisher?: Maybe<Scalars['String']>;
+  publisher?: Maybe<Scalars['String']['output']>;
   /** The source of the recommendation */
-  recSrc: Scalars['String'];
+  recSrc: Scalars['String']['output'];
 };
 
 export type RecommendationReason = {
   __typename?: 'RecommendationReason';
   /** A succinct name for the recommendation reason that can be displayed to the user. */
-  name: Scalars['String'];
+  name: Scalars['String']['output'];
   /** The type of reason for why the recommendation is made. */
   type: RecommendationReasonType;
 };
 
 /** Reasons why recommendations are made. Focuses on client needs and is not exhaustive. */
 export enum RecommendationReasonType {
+  /** Recommendations based on hybrid collaborative filtering. */
+  HybridCfRecommender = 'HYBRID_CF_RECOMMENDER',
   /** Recommendations are sourced from the Pocket Hits newsletter. */
   PocketHits = 'POCKET_HITS',
   /** Recommendations that match the user's topic preferences are ranked higher. */
@@ -1681,27 +1997,30 @@ export enum RecommendationReasonType {
 /** Interface that all state based entities must implement */
 export type RemoteEntity = {
   /** Unix timestamp of when the entity was created */
-  _createdAt?: Maybe<Scalars['Int']>;
+  _createdAt?: Maybe<Scalars['Int']['output']>;
   /** Unix timestamp of when the entity was deleted, 30 days after this date this entity will be HARD deleted from the database and no longer exist */
-  _deletedAt?: Maybe<Scalars['Int']>;
+  _deletedAt?: Maybe<Scalars['Int']['output']>;
   /** Unix timestamp of when the entity was last updated, if any property on the entity is modified this timestamp is set to the modified time */
-  _updatedAt?: Maybe<Scalars['Int']>;
+  _updatedAt?: Maybe<Scalars['Int']['output']>;
   /** Version of the entity, this will increment with each modification of the entity's field */
-  _version?: Maybe<Scalars['Int']>;
+  _version?: Maybe<Scalars['Int']['output']>;
   /**
    * For tags entity, id denotes the unique tag Id.
    * For savedItems, id denotes the itemId.
    * Along with the userId provided in the header, we will use id to fetch savedItems/tags for the user.
    */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
 };
+
+/** Union type for saveById - retrieving either PocketSaves or NotFound errors */
+export type SaveByIdResult = NotFound | PocketSave;
 
 /** Payload for mutations that delete Saves */
 export type SaveDeleteMutationPayload = {
   __typename?: 'SaveDeleteMutationPayload';
   /** Any errors associated with the mutation. Empty if the mutation was succesful. */
   errors: Array<SaveMutationError>;
-  success: Scalars['Boolean'];
+  success: Scalars['Boolean']['output'];
 };
 
 /**
@@ -1714,10 +2033,10 @@ export type SaveDeleteMutationPayload = {
  */
 export type SaveItemSearchHighlights = {
   __typename?: 'SaveItemSearchHighlights';
-  fullText?: Maybe<Array<Maybe<Scalars['String']>>>;
-  tags?: Maybe<Array<Maybe<Scalars['String']>>>;
-  title?: Maybe<Array<Maybe<Scalars['String']>>>;
-  url?: Maybe<Array<Maybe<Scalars['String']>>>;
+  fullText?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  tags?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  title?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  url?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
 };
 
 /** All types in this union should implement BaseError, for client fallback */
@@ -1729,10 +2048,20 @@ export type SaveUpdateTagsInput = {
    * with the given name does not exist,
    * one will be created.
    */
-  addTagNames: Array<Scalars['String']>;
+  addTagNames: Array<Scalars['String']['input']>;
   /** Tags to remove, by ID */
-  removeTagIds: Array<Scalars['ID']>;
-  saveId: Scalars['ID'];
+  removeTagIds: Array<Scalars['ID']['input']>;
+  saveId: Scalars['ID']['input'];
+};
+
+/** Input field for upserting a Save. Used by saveUpsert mutation */
+export type SaveUpsertInput = {
+  /** Optional, create/update the SavedItem as a favorited item */
+  isFavorite?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Optional, title of the SavedItem */
+  title?: InputMaybe<Scalars['String']['input']>;
+  /** The url to create/update the SavedItem with. (the url to save to the list) */
+  url: Scalars['String']['input'];
 };
 
 /** Payload for mutations that create or update Saves */
@@ -1751,27 +2080,27 @@ export type SaveWriteMutationPayload = {
 export type SavedItem = RemoteEntity & {
   __typename?: 'SavedItem';
   /** Unix timestamp of when the entity was created */
-  _createdAt: Scalars['Int'];
+  _createdAt: Scalars['Int']['output'];
   /** Unix timestamp of when the entity was deleted, 30 days after this date this entity will be HARD deleted from the database and no longer exist */
-  _deletedAt?: Maybe<Scalars['Int']>;
+  _deletedAt?: Maybe<Scalars['Int']['output']>;
   /** Unix timestamp of when the entity was last updated, if any property on the entity is modified this timestamp is set to the modified time */
-  _updatedAt?: Maybe<Scalars['Int']>;
+  _updatedAt?: Maybe<Scalars['Int']['output']>;
   /** Version of the entity, this will increment with each modification of the entity's field */
-  _version?: Maybe<Scalars['Int']>;
+  _version?: Maybe<Scalars['Int']['output']>;
   /** Annotations associated to this SavedItem */
   annotations?: Maybe<SavedItemAnnotations>;
   /** Timestamp that the SavedItem became archied, null if not archived */
-  archivedAt?: Maybe<Scalars['Int']>;
+  archivedAt?: Maybe<Scalars['Int']['output']>;
   /** If the item is in corpus allow the saved item to reference it.  Exposing curated info for consistent UX */
   corpusItem?: Maybe<CorpusItem>;
   /** Timestamp that the SavedItem became favorited, null if not favorited */
-  favoritedAt?: Maybe<Scalars['Int']>;
+  favoritedAt?: Maybe<Scalars['Int']['output']>;
   /** Surrogate primary key. This is usually generated by clients, but will be generated by the server if not passed through creation */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   /** Helper property to indicate if the SavedItem is archived */
-  isArchived: Scalars['Boolean'];
+  isArchived: Scalars['Boolean']['output'];
   /** Helper property to indicate if the SavedItem is favorited */
-  isFavorite: Scalars['Boolean'];
+  isFavorite: Scalars['Boolean']['output'];
   /** Link to the underlying Pocket Item for the URL */
   item: ItemResult;
   /** The status of this SavedItem */
@@ -1780,8 +2109,10 @@ export type SavedItem = RemoteEntity & {
   suggestedTags?: Maybe<Array<Tag>>;
   /** The Tags associated with this SavedItem */
   tags?: Maybe<Array<Tag>>;
+  /** The title for user saved item. Set by the user and if not, set by the parser. */
+  title?: Maybe<Scalars['String']['output']>;
   /** The url the user saved to their list */
-  url: Scalars['String'];
+  url: Scalars['String']['output'];
 };
 
 /**
@@ -1802,17 +2133,28 @@ export type SavedItemConnection = {
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** Identifies the total count of SavedItems in the connection. */
-  totalCount: Scalars['Int'];
+  totalCount: Scalars['Int']['output'];
+};
+
+/** Payload for mutations that delete Saves */
+export type SavedItemDeleteMutationPayload = {
+  __typename?: 'SavedItemDeleteMutationPayload';
+  /** Any errors associated with the mutation. Empty if the mutation was succesful. */
+  errors: Array<SavedItemMutationError>;
+  success: Scalars['Boolean']['output'];
 };
 
 /** An edge in a connection. */
 export type SavedItemEdge = {
   __typename?: 'SavedItemEdge';
   /** A cursor for use in pagination. */
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   /** The SavedItem at the end of the edge. */
   node?: Maybe<SavedItem>;
 };
+
+/** All types in this union should implement BaseError, for client fallback */
+export type SavedItemMutationError = NotFound | SyncConflict;
 
 export type SavedItemSearchResult = {
   __typename?: 'SavedItemSearchResult';
@@ -1832,14 +2174,14 @@ export type SavedItemSearchResultConnection = {
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** Identifies the total count of items in the connection. */
-  totalCount: Scalars['Int'];
+  totalCount: Scalars['Int']['output'];
 };
 
 /** An edge in a connection. */
 export type SavedItemSearchResultEdge = {
   __typename?: 'SavedItemSearchResultEdge';
   /** A cursor for use in pagination. */
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   /** The item at the end of the edge. */
   node: SavedItemSearchResult;
 };
@@ -1861,35 +2203,52 @@ export enum SavedItemStatusFilter {
 export type SavedItemTagAssociation = {
   __typename?: 'SavedItemTagAssociation';
   /** The ID of the SavedItem associated with the Tag */
-  savedItemId: Scalars['ID'];
+  savedItemId: Scalars['ID']['output'];
   /** The ID of the Tag associated with the SavedItem */
-  tagId: Scalars['ID'];
+  tagId: Scalars['ID']['output'];
+};
+
+/** Input field for adding Tag Associations to a SavedItem, by givenUrl */
+export type SavedItemTagInput = {
+  givenUrl: Scalars['Url']['input'];
+  tagNames: Array<Scalars['String']['input']>;
 };
 
 /** Input field for setting all Tag associations on a SavedItem. */
 export type SavedItemTagUpdateInput = {
   /** The SavedItem ID to associate Tags to */
-  savedItemId: Scalars['ID'];
+  savedItemId: Scalars['ID']['input'];
   /** The set of Tag IDs to associate to the SavedItem */
-  tagIds: Array<Scalars['ID']>;
+  tagIds: Array<Scalars['ID']['input']>;
 };
 
 /** Input field for setting all Tag associations on a SavedItem. */
 export type SavedItemTagsInput = {
   /** The SavedItem ID to associate Tags to */
-  savedItemId: Scalars['ID'];
+  savedItemId: Scalars['ID']['input'];
   /** The set of Tag names to associate to the SavedItem */
-  tags: Array<Scalars['String']>;
+  tags: Array<Scalars['String']['input']>;
 };
 
 /** Input field for upserting a SavedItem */
 export type SavedItemUpsertInput = {
   /** Optional, create/update the SavedItem as a favorited item */
-  isFavorite?: InputMaybe<Scalars['Boolean']>;
+  isFavorite?: InputMaybe<Scalars['Boolean']['input']>;
   /** Optional, time that request was submitted by client epoch/unix time */
-  timestamp?: InputMaybe<Scalars['Int']>;
+  timestamp?: InputMaybe<Scalars['Int']['input']>;
+  /** Optional, title of the SavedItem */
+  title?: InputMaybe<Scalars['String']['input']>;
   /** The url to create/update the SavedItem with. (the url to save to the list) */
-  url: Scalars['String'];
+  url: Scalars['String']['input'];
+};
+
+/** Payload for mutations that create or update SavedItems */
+export type SavedItemWriteMutationPayload = {
+  __typename?: 'SavedItemWriteMutationPayload';
+  /** Any errors associated with the mutation. Empty if the mutation was succesful. */
+  errors: Array<SavedItemMutationError>;
+  /** The mutated SavedItem objects; empty if the mutation did not succeed. */
+  savedItem: Array<SavedItem>;
 };
 
 /** A SavedItem can be one of these content types */
@@ -1926,24 +2285,33 @@ export type SavedItemsFilter = {
    * TODO: Add deprecate tag once input field deprecation is enabled.
    * Ref: https://github.com/apollographql/federation/issues/912
    */
-  isArchived?: InputMaybe<Scalars['Boolean']>;
+  isArchived?: InputMaybe<Scalars['Boolean']['input']>;
   /** Optional, filter to get SavedItems that have been favorited */
-  isFavorite?: InputMaybe<Scalars['Boolean']>;
+  isFavorite?: InputMaybe<Scalars['Boolean']['input']>;
   /** Optional, filter to get SavedItems with highlights */
-  isHighlighted?: InputMaybe<Scalars['Boolean']>;
+  isHighlighted?: InputMaybe<Scalars['Boolean']['input']>;
   /** Optional, filter to get user items based on status. Deprecated: use statuses instead. */
   status?: InputMaybe<SavedItemStatusFilter>;
   /** Optional, filters to get user items based on multiple statuses (OR operator) */
   statuses?: InputMaybe<Array<InputMaybe<SavedItemStatusFilter>>>;
   /** Optional, filter to get SavedItems associated to the specified Tag. */
-  tagIds?: InputMaybe<Array<Scalars['ID']>>;
+  tagIds?: InputMaybe<Array<Scalars['ID']['input']>>;
   /**
    * Optional, filter to get SavedItems associated to the specified Tag name.
    * To get untagged items, include the string '_untagged_'.
    */
-  tagNames?: InputMaybe<Array<Scalars['String']>>;
+  tagNames?: InputMaybe<Array<Scalars['String']['input']>>;
   /** Optional, filter to get SavedItems updated since a unix timestamp */
-  updatedSince?: InputMaybe<Scalars['Int']>;
+  updatedSince?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** A page of SavedItems, retrieved by offset-based pagination. */
+export type SavedItemsPage = {
+  __typename?: 'SavedItemsPage';
+  entries: Array<SavedItem>;
+  limit: Scalars['Int']['output'];
+  offset: Scalars['Int']['output'];
+  totalCount: Scalars['Int']['output'];
 };
 
 /** Input to sort fetched SavedItems. If unspecified, defaults to CREATED_AT, ASC. */
@@ -1972,17 +2340,17 @@ export enum SavedItemsSortOrder {
 export type ScheduledSurface = {
   __typename?: 'ScheduledSurface';
   /** Agreed on GUID that is from our shared data pocket confluence */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   /** Subquery to get the ScheduledSurfaceItems to display to a user for a given date */
   items: Array<ScheduledSurfaceItem>;
   /** Internal name of the surface */
-  name: Scalars['String'];
+  name: Scalars['String']['output'];
 };
 
 
 /** Represents a surface that has scheduled items by day */
 export type ScheduledSurfaceItemsArgs = {
-  date: Scalars['Date'];
+  date: Scalars['Date']['input'];
 };
 
 /**
@@ -1994,28 +2362,28 @@ export type ScheduledSurfaceItem = {
   /** The curated item that should run */
   corpusItem: CorpusItem;
   /** A backend GUID that represents this scheduled run */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   /** The date the item should run at */
-  scheduledDate: Scalars['Date'];
+  scheduledDate: Scalars['Date']['output'];
   /** Agreed on GUID that is from our shared data pocket confluence */
-  surfaceId: Scalars['ID'];
+  surfaceId: Scalars['ID']['output'];
 };
 
 /** Input filed for filtering items */
 export type SearchFilter = {
   /** Optional filter to items of a specific content type */
-  contentType?: InputMaybe<Scalars['String']>;
+  contentType?: InputMaybe<Scalars['String']['input']>;
   /**
    * Optional filter to get items that matches the domain
    * domain should be in the url format, e.g getpocket.com (or) list.getpocket.com
    */
-  domain?: InputMaybe<Scalars['String']>;
+  domain?: InputMaybe<Scalars['String']['input']>;
   /** Optional filter to get items that are favorited */
-  favorite?: InputMaybe<Scalars['Boolean']>;
+  favorite?: InputMaybe<Scalars['Boolean']['input']>;
   /** Optional filter to get items in a specific state */
   status?: InputMaybe<SearchStatus>;
   /** Optional fitler to get item with specific tags */
-  tags?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
 export type SearchFilterInput = {
@@ -2025,9 +2393,14 @@ export type SearchFilterInput = {
    * Optional filter to get items that matches the domain
    * domain should be in the url format, e.g getpocket.com (or) list.getpocket.com
    */
-  domain?: InputMaybe<Scalars['String']>;
+  domain?: InputMaybe<Scalars['String']['input']>;
   /** Optional, filter to get user items that have been favorited */
-  isFavorite?: InputMaybe<Scalars['Boolean']>;
+  isFavorite?: InputMaybe<Scalars['Boolean']['input']>;
+  /**
+   * Optional, filter to get user items only based on title and url, ie Free Search
+   * Note, though that if this is selected and the user is premium, they will not get search highligthing.
+   */
+  onlyTitleAndURL?: InputMaybe<Scalars['Boolean']['input']>;
   /** Optional, filter to get user items based on status. */
   status?: InputMaybe<SearchItemsStatusFilter>;
 };
@@ -2044,9 +2417,9 @@ export enum SearchFunctionalBoostOperation {
 /** Input field to get elasticsearch highlights of keywords */
 export type SearchHighlightField = {
   /** Field to highlight */
-  field: Scalars['String'];
+  field: Scalars['String']['input'];
   /** The number of characters to return in addition to the keyword */
-  size: Scalars['Int'];
+  size: Scalars['Int']['input'];
 };
 
 /** A SavedItem can be one of these content types */
@@ -2083,34 +2456,34 @@ export enum SearchItemsStatusFilter {
 /** Input field for search */
 export type SearchParams = {
   /** Fields to search for the keyword in */
-  fields: Array<InputMaybe<Scalars['String']>>;
+  fields: Array<InputMaybe<Scalars['String']['input']>>;
   /** Filters to be applied to the search */
   filters?: InputMaybe<SearchFilter>;
   /** Offset for pagination */
-  from?: InputMaybe<Scalars['Int']>;
+  from?: InputMaybe<Scalars['Int']['input']>;
   /** Operation to boost the score of a document based */
   functionalBoosts?: InputMaybe<Array<InputMaybe<FunctionalBoostField>>>;
   /** Fields that should be highlighted if keywords are found within them */
   highlightFields?: InputMaybe<Array<InputMaybe<SearchHighlightField>>>;
   /** Number of items to return */
-  size?: InputMaybe<Scalars['Int']>;
+  size?: InputMaybe<Scalars['Int']['input']>;
   /** Sorting for the search */
   sort?: InputMaybe<SearchSort>;
   /** The keyword to search for */
-  term: Scalars['String'];
+  term: Scalars['String']['input'];
 };
 
 /** The return type for the search query */
 export type SearchResult = {
   __typename?: 'SearchResult';
   /** @deprecated Not required by implementing clients */
-  page?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']['output']>;
   /** @deprecated Not required by implementing client */
-  perPage?: Maybe<Scalars['Int']>;
+  perPage?: Maybe<Scalars['Int']['output']>;
   /** Items found */
   results?: Maybe<Array<Maybe<Item>>>;
   /** Number of items found */
-  totalResults: Scalars['Int'];
+  totalResults: Scalars['Int']['output'];
 };
 
 /** Input field for sorting items */
@@ -2118,7 +2491,7 @@ export type SearchSort = {
   /** Direction of the sort (ASC/DESC) */
   direction: SearchSortDirection;
   /** Field in elasticsearch to sort by */
-  field: Scalars['String'];
+  field: Scalars['String']['input'];
 };
 
 /** Sort direction of the returned items. */
@@ -2147,12 +2520,19 @@ export enum SearchStatus {
 export type ShareableList = {
   __typename?: 'ShareableList';
   /** The timestamp of when the list was created by its owner. */
-  createdAt: Scalars['ISOString'];
+  createdAt: Scalars['ISOString']['output'];
   /** Optional text description of a Shareable List. Provided by the Pocket user. */
-  description?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']['output']>;
   /** A unique string identifier in UUID format. */
-  externalId: Scalars['ID'];
+  externalId: Scalars['ID']['output'];
   /** Pocket Saves that have been added to this list by the Pocket user. */
+  items: ListItemConnection;
+  /** The visibility of notes added to list items for this list. */
+  listItemNoteVisibility: ShareableListVisibility;
+  /**
+   * Pocket Saves that have been added to this list by the Pocket user.
+   * @deprecated use items
+   */
   listItems: Array<ShareableListItem>;
   /** The moderation status of the list. Defaults to VISIBLE. */
   moderationStatus: ShareableListModerationStatus;
@@ -2160,55 +2540,58 @@ export type ShareableList = {
    * A URL-ready identifier of the list. Generated from the title
    * of the list when it's first made public. Unique per user.
    */
-  slug?: Maybe<Scalars['String']>;
+  slug?: Maybe<Scalars['String']['output']>;
   /** The status of the list. Defaults to PRIVATE. */
-  status: ShareableListStatus;
+  status: ShareableListVisibility;
   /** The title of the list. Provided by the Pocket user. */
-  title: Scalars['String'];
+  title: Scalars['String']['output'];
   /**
    * The timestamp of when the list was last updated by its owner
    * or a member of the moderation team.
    */
-  updatedAt: Scalars['ISOString'];
-  /**
-   * Pocket User ID.
-   * UserId is of Float type as GraphQL does not support BigInt.
-   * This will ensure that all large integer values are handled
-   * and will be interpreted as Number type.
-   */
-  userId: Scalars['Float'];
+  updatedAt: Scalars['ISOString']['output'];
+  /** The user who created this shareable list. */
+  user: User;
+};
+
+
+/** A user-created list of Pocket saves that can be shared publicly. */
+export type ShareableListItemsArgs = {
+  pagination?: InputMaybe<PaginationInput>;
 };
 
 /** A Pocket Save (story) that has been added to a Shareable List. */
 export type ShareableListItem = {
   __typename?: 'ShareableListItem';
   /** A comma-separated list of story authors. Supplied by the Parser. */
-  authors?: Maybe<Scalars['String']>;
+  authors?: Maybe<Scalars['String']['output']>;
   /** The timestamp of when this story was added to the list by its owner. */
-  createdAt: Scalars['ISOString'];
+  createdAt: Scalars['ISOString']['output'];
   /** The excerpt of the story. Supplied by the Parser. */
-  excerpt?: Maybe<Scalars['String']>;
+  excerpt?: Maybe<Scalars['String']['output']>;
   /** A unique string identifier in UUID format. */
-  externalId: Scalars['ID'];
+  externalId: Scalars['ID']['output'];
   /** The URL of the thumbnail image illustrating the story. Supplied by the Parser. */
-  imageUrl?: Maybe<Scalars['Url']>;
+  imageUrl?: Maybe<Scalars['Url']['output']>;
   /** The Parser Item ID. */
-  itemId?: Maybe<Scalars['Float']>;
+  itemId: Scalars['ID']['output'];
+  /** User generated note to accompany this list item. */
+  note?: Maybe<Scalars['String']['output']>;
   /** The name of the publisher for this story. Supplied by the Parser. */
-  publisher?: Maybe<Scalars['String']>;
+  publisher?: Maybe<Scalars['String']['output']>;
   /** The custom sort order of stories within a list. Defaults to 1. */
-  sortOrder: Scalars['Int'];
+  sortOrder: Scalars['Int']['output'];
   /**
    * The title of the story. Supplied by the Parser.
    * May not be available for URLs that cannot be resolved.
    * Not editable by the Pocket user, as are all the other
    * Parser-supplied story properties below.
    */
-  title?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']['output']>;
   /** The timestamp of when the story was last updated. Not used for the MVP. */
-  updatedAt: Scalars['ISOString'];
+  updatedAt: Scalars['ISOString']['output'];
   /** The URL of the story saved to a list. */
-  url: Scalars['Url'];
+  url: Scalars['Url']['output'];
 };
 
 /** The moderation status of a Shareable List. Defaults to VISIBLE. */
@@ -2222,11 +2605,47 @@ export enum ShareableListModerationStatus {
   Visible = 'VISIBLE'
 }
 
-/** The status of a Shareable List. Defaults to PRIVATE - visible only to its owner. */
-export enum ShareableListStatus {
-  /** The list is only visible to its owner - the Pocket user who created it. */
+/**
+ * A list that has been already shared publicly.
+ * This type is needed as it needs to be cached.
+ */
+export type ShareableListPublic = {
+  __typename?: 'ShareableListPublic';
+  /** The timestamp of when the list was created by its owner. */
+  createdAt: Scalars['ISOString']['output'];
+  /** Optional text description of a Shareable List. Provided by the Pocket user. */
+  description?: Maybe<Scalars['String']['output']>;
+  /** A unique string identifier in UUID format. */
+  externalId: Scalars['ID']['output'];
+  /** The visibility of notes added to list items for this list. */
+  listItemNoteVisibility: ShareableListVisibility;
+  /** Pocket Saves that have been added to this list by the Pocket user. */
+  listItems: Array<ShareableListItem>;
+  /** The moderation status of the list. Defaults to VISIBLE. */
+  moderationStatus: ShareableListModerationStatus;
+  /**
+   * A URL-ready identifier of the list. Generated from the title
+   * of the list when it's first made public. Unique per user.
+   */
+  slug?: Maybe<Scalars['String']['output']>;
+  /** The status of the list. Defaults to PRIVATE. */
+  status: ShareableListVisibility;
+  /** The title of the list. Provided by the Pocket user. */
+  title: Scalars['String']['output'];
+  /**
+   * The timestamp of when the list was last updated by its owner
+   * or a member of the moderation team.
+   */
+  updatedAt: Scalars['ISOString']['output'];
+  /** The user who created this shareable list. */
+  user: User;
+};
+
+/** The visibility levels used (e.g. list, list item note) in the Shareable List API. Defaults to PRIVATE - visible only to its owner. */
+export enum ShareableListVisibility {
+  /** Only visible to its owner - the Pocket user who created it. */
   Private = 'PRIVATE',
-  /** The list has been shared and can be viewed by anyone in the world. */
+  /** Can be viewed by anyone in the world. */
   Public = 'PUBLIC'
 }
 
@@ -2234,26 +2653,26 @@ export enum ShareableListStatus {
 export type Slate = {
   __typename?: 'Slate';
   /** The description of the the slate */
-  description?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']['output']>;
   /** The name to show to the user for this set of recommendations */
-  displayName?: Maybe<Scalars['String']>;
+  displayName?: Maybe<Scalars['String']['output']>;
   /** A unique guid/slug, provided by the Data & Learning team that can identify a specific experiment. Production apps typically won't request a specific one, but can for QA or during a/b testing. */
-  experimentId: Scalars['ID'];
-  id: Scalars['String'];
+  experimentId: Scalars['ID']['output'];
+  id: Scalars['String']['output'];
   /** An ordered list of the recommendations to show to the user */
   recommendations: Array<Recommendation>;
   /** A guid that is unique to every API request that returned slates, such as `getSlateLineup` or `getSlate`. The API will provide a new request id every time apps hit the API. */
-  requestId: Scalars['ID'];
+  requestId: Scalars['ID']['output'];
 };
 
 export type SlateLineup = {
   __typename?: 'SlateLineup';
   /** A unique guid/slug, provided by the Data & Learning team that can identify a specific experiment. Production apps typically won't request a specific one, but can for QA or during a/b testing. */
-  experimentId: Scalars['ID'];
+  experimentId: Scalars['ID']['output'];
   /** A unique slug/id that describes a SlateLineup. The Data & Learning team will provide apps what id to use here for specific cases. */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   /** A guid that is unique to every API request that returned slates, such as `getRecommendationSlateLineup` or `getSlate`. The API will provide a new request id every time apps hit the API. */
-  requestId: Scalars['ID'];
+  requestId: Scalars['ID']['output'];
   /** An ordered list of slates for the client to display */
   slates: Array<Slate>;
 };
@@ -2266,53 +2685,53 @@ export type Surface = ScheduledSurface;
 
 export type SyncConflict = BaseError & {
   __typename?: 'SyncConflict';
-  message: Scalars['String'];
-  path: Scalars['String'];
+  message: Scalars['String']['output'];
+  path: Scalars['String']['output'];
 };
 
 /** An article that Pocket has syndicated and we also host on our own site */
 export type SyndicatedArticle = {
   __typename?: 'SyndicatedArticle';
   /** Array of author names in string format */
-  authorNames: Array<Maybe<Scalars['String']>>;
+  authorNames: Array<Maybe<Scalars['String']['output']>>;
   /** Content for the syndicated article */
-  content?: Maybe<Scalars['String']>;
+  content?: Maybe<Scalars['String']['output']>;
   /**
    * The pocket curation category of the Article, maps to the Pocket Curation Topic lists
    * @deprecated use topic instead
    */
-  curationCategory?: Maybe<Scalars['String']>;
+  curationCategory?: Maybe<Scalars['String']['output']>;
   /** Excerpt  */
-  excerpt?: Maybe<Scalars['String']>;
+  excerpt?: Maybe<Scalars['String']['output']>;
   /** When does the contract for syndication expire */
-  expiresAt?: Maybe<Scalars['String']>;
+  expiresAt?: Maybe<Scalars['String']['output']>;
   /** The Sub IAB category of the article defined at https://support.aerserv.com/hc/en-us/articles/207148516-List-of-IAB-Categories */
-  iabSubCategory?: Maybe<Scalars['String']>;
+  iabSubCategory?: Maybe<Scalars['String']['output']>;
   /** The Main IAB category of the article defined at https://support.aerserv.com/hc/en-us/articles/207148516-List-of-IAB-Categories */
-  iabTopCategory?: Maybe<Scalars['String']>;
+  iabTopCategory?: Maybe<Scalars['String']['output']>;
   /** The item id of this Syndicated Article */
-  itemId?: Maybe<Scalars['ID']>;
+  itemId?: Maybe<Scalars['ID']['output']>;
   /** The locale country of the article */
-  localeCountry?: Maybe<Scalars['String']>;
+  localeCountry?: Maybe<Scalars['String']['output']>;
   /** The language of the article */
-  localeLanguage?: Maybe<Scalars['String']>;
+  localeLanguage?: Maybe<Scalars['String']['output']>;
   /** Primary image to use in surfacing this content */
-  mainImage?: Maybe<Scalars['String']>;
+  mainImage?: Maybe<Scalars['String']['output']>;
   /** The item id of the article we cloned */
-  originalItemId: Scalars['ID'];
+  originalItemId: Scalars['ID']['output'];
   /** AWSDateTime — Format: YYYY-MM-DDThh:mm:ss.sssZ */
-  publishedAt: Scalars['String'];
+  publishedAt: Scalars['String']['output'];
   /** The manually set publisher information for this article */
   publisher?: Maybe<Publisher>;
-  publisherUrl: Scalars['String'];
+  publisherUrl: Scalars['String']['output'];
   /** Recommend similar syndicated articles. */
   relatedEndOfArticle: Array<CorpusRecommendation>;
   /** Recommend similar articles from the same publisher. */
   relatedRightRail: Array<CorpusRecommendation>;
   /** Should ads be shown on this article or not */
-  showAds: Scalars['Boolean'];
+  showAds: Scalars['Boolean']['output'];
   /** Slug that pocket uses for this article in the url */
-  slug?: Maybe<Scalars['String']>;
+  slug?: Maybe<Scalars['String']['output']>;
   /**
    * DRAFT — Article is not meant to be available to the public
    * EXPIRED — Article contract is up and should be redirected to original article
@@ -2320,34 +2739,34 @@ export type SyndicatedArticle = {
    */
   status: ArticleStatus;
   /** Title of syndicated article */
-  title: Scalars['String'];
+  title: Scalars['String']['output'];
   /** The pocket topic of the Article, maps to the Pocket Curation Topic lists */
-  topic?: Maybe<Scalars['String']>;
+  topic?: Maybe<Scalars['String']['output']>;
 };
 
 
 /** An article that Pocket has syndicated and we also host on our own site */
 export type SyndicatedArticleRelatedEndOfArticleArgs = {
-  count?: InputMaybe<Scalars['Int']>;
+  count?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
 /** An article that Pocket has syndicated and we also host on our own site */
 export type SyndicatedArticleRelatedRightRailArgs = {
-  count?: InputMaybe<Scalars['Int']>;
+  count?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** Represents a Tag that a User has created for their list */
 export type Tag = {
   __typename?: 'Tag';
   /** Unix timestamp of when the entity was deleted, 30 days after this date this entity will be HARD deleted from the database and no longer exist */
-  _deletedAt?: Maybe<Scalars['Int']>;
+  _deletedAt?: Maybe<Scalars['Int']['output']>;
   /** Version of the entity, this will increment with each modification of the entity's field */
-  _version?: Maybe<Scalars['Int']>;
+  _version?: Maybe<Scalars['Int']['output']>;
   /** Surrogate primary key. This is usually generated by clients, but will be generated by the server if not passed through creation */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   /** The actual tag string the user created for their list */
-  name: Scalars['String'];
+  name: Scalars['String']['output'];
   /** paginated listing of all SavedItems associated with this Tag for the user */
   savedItems?: Maybe<SavedItemConnection>;
 };
@@ -2368,15 +2787,15 @@ export type TagConnection = {
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** Identifies the total count of Tags in the connection. */
-  totalCount: Scalars['Int'];
+  totalCount: Scalars['Int']['output'];
 };
 
 /** Input field for creating a Tag */
 export type TagCreateInput = {
   /** The user provided tag string */
-  name: Scalars['String'];
+  name: Scalars['String']['input'];
   /** ID of the SavedItem to associate with this Tag */
-  savedItemId: Scalars['ID'];
+  savedItemId: Scalars['ID']['input'];
 };
 
 /** Payload for mutations that delete Tags */
@@ -2384,14 +2803,14 @@ export type TagDeleteMutationPayload = {
   __typename?: 'TagDeleteMutationPayload';
   /** Any errors associated with the mutation. Empty if the mutation was succesful. */
   errors: Array<TagMutationError>;
-  success: Scalars['Boolean'];
+  success: Scalars['Boolean']['output'];
 };
 
 /** An edge in a connection. */
 export type TagEdge = {
   __typename?: 'TagEdge';
   /** A cursor for use in pagination. */
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   /** The Tag at the end of the edge. */
   node?: Maybe<Tag>;
 };
@@ -2402,9 +2821,9 @@ export type TagMutationError = NotFound | SyncConflict;
 /** Input field for updating a Tag */
 export type TagUpdateInput = {
   /** Tag ID */
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
   /** The updated tag string */
-  name: Scalars['String'];
+  name: Scalars['String']['input'];
 };
 
 /** Payload for mutations that create or update Tags */
@@ -2423,61 +2842,61 @@ export type TagWriteMutationPayload = {
 export type Topic = {
   __typename?: 'Topic';
   /** The label the curator uses internally to get items onto this topic */
-  curatorLabel: Scalars['String'];
+  curatorLabel: Scalars['String']['output'];
   /** The internal feed id that this topic will pull from if set */
-  customFeedId?: Maybe<Scalars['ID']>;
+  customFeedId?: Maybe<Scalars['ID']['output']>;
   /**
    * The name of the topic to show to the user
    * @deprecated displayName is deprecated. Use name instead.
    */
-  displayName: Scalars['String'];
+  displayName: Scalars['String']['output'];
   /** If returned a note to show to the user about the topic */
-  displayNote?: Maybe<Scalars['String']>;
+  displayNote?: Maybe<Scalars['String']['output']>;
   /** The id of the topic */
-  id: Scalars['ID'];
+  id: Scalars['ID']['output'];
   /** Whether or not clients should show this topic ot users */
-  isDisplayed: Scalars['Boolean'];
+  isDisplayed: Scalars['Boolean']['output'];
   /** Whether or not this topic should be visiblly promoted (prominent on the page) */
-  isPromoted: Scalars['Boolean'];
+  isPromoted: Scalars['Boolean']['output'];
   /** The name of the topic to show to the user */
-  name: Scalars['String'];
+  name: Scalars['String']['output'];
   /** The type of page this topic represents used in  generation */
   pageType: PageType;
   /** The query that was used internally for elasticsearch to find items */
-  query: Scalars['String'];
+  query: Scalars['String']['output'];
   /** The slug that should be used in the url to represent the topic */
-  slug: Scalars['String'];
+  slug: Scalars['String']['output'];
   /** The description to use in the HTML markup for SEO and social media sharing */
-  socialDescription?: Maybe<Scalars['String']>;
+  socialDescription?: Maybe<Scalars['String']['output']>;
   /** The image to use in the HTML markup for SEO and social media sharing */
-  socialImage?: Maybe<Scalars['String']>;
+  socialImage?: Maybe<Scalars['String']['output']>;
   /** The title to use in the HTML markup for SEO and social media sharing */
-  socialTitle?: Maybe<Scalars['String']>;
+  socialTitle?: Maybe<Scalars['String']['output']>;
 };
 
 export type TopicInput = {
   /** The id of the topic */
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 /** Represents content that could not be parsed into a valid Marticle* component. */
 export type UnMarseable = {
   __typename?: 'UnMarseable';
   /** The html that could not be parsed into a Marticle* component. */
-  html: Scalars['String'];
+  html: Scalars['String']['output'];
 };
 
 /** Details on the variant/status of this toggle for a given user/context */
 export type UnleashAssignment = {
   __typename?: 'UnleashAssignment';
   /** Whether or not the provided context is assigned */
-  assigned: Scalars['Boolean'];
+  assigned: Scalars['Boolean']['output'];
   /** The unleash toggle name, the same name as it appears in the admin interface and feature api */
-  name: Scalars['String'];
+  name: Scalars['String']['output'];
   /** If the variant has a payload, its payload value */
-  payload?: Maybe<Scalars['String']>;
+  payload?: Maybe<Scalars['String']['output']>;
   /** If the toggle has variants, the variant name it is assigned to */
-  variant?: Maybe<Scalars['String']>;
+  variant?: Maybe<Scalars['String']['output']>;
 };
 
 /** Contains a list of all toggles. */
@@ -2500,7 +2919,7 @@ export type UnleashContext = {
    * - `web-discover`
    * - `web-app`
    */
-  appName?: InputMaybe<Scalars['String']>;
+  appName?: InputMaybe<Scalars['String']['input']>;
   /**
    * The environment the device is running in:
    * - `prod`
@@ -2510,11 +2929,11 @@ export type UnleashContext = {
   environment?: InputMaybe<UnleashEnvironment>;
   properties?: InputMaybe<UnleashProperties>;
   /** The device's IP address. If omitted, inferred from either request header `x-forwarded-for` or the origin IP of the request. */
-  remoteAddress?: InputMaybe<Scalars['String']>;
+  remoteAddress?: InputMaybe<Scalars['String']['input']>;
   /** A device specific identifier that will be consistent across sessions, typically the encoded {guid} or some session token. */
-  sessionId?: InputMaybe<Scalars['String']>;
+  sessionId?: InputMaybe<Scalars['String']['input']>;
   /** If logged in, the user's encoded user id (uid). The {Account.user_id}. */
-  userId?: InputMaybe<Scalars['String']>;
+  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export enum UnleashEnvironment {
@@ -2529,19 +2948,57 @@ export enum UnleashEnvironment {
 /** Extended properties that Unleash can use to assign users through a toggle's strategies. */
 export type UnleashProperties = {
   /** Only required on activation strategies that are based on account age */
-  accountCreatedAt?: InputMaybe<Scalars['String']>;
+  accountCreatedAt?: InputMaybe<Scalars['String']['input']>;
   /** If omitted, inferred from request header `accept-langauge`. */
-  locale?: InputMaybe<Scalars['String']>;
+  locale?: InputMaybe<Scalars['String']['input']>;
   /** Only required on activation strategies that are based whether a user model exists */
   recItUserProfile?: InputMaybe<RecItUserProfile>;
 };
 
+export type UpdateHighlightInput = {
+  /** The ID of the Item that should be annotated in the User's list */
+  itemId: Scalars['ID']['input'];
+  /** Optional note generated by User */
+  note?: InputMaybe<Scalars['String']['input']>;
+  /**
+   * Patch string generated by 'DiffMatchPatch' library, serialized
+   * into text via `patch_toText` method.
+   * Format is similar to UniDiff but is character-based.
+   * The patched text depends on version. For example, the version 2
+   * patch surrounds the highlighted text portion with a pair of
+   * sentinel tags: '<pkt_tag_annotation></pkt_tag_annotation>'
+   * Reference: https://github.com/google/diff-match-patch
+   */
+  patch: Scalars['String']['input'];
+  /**
+   * The full text of the highlighted passage. Used as a fallback for
+   * rendering highlight if the patch fails.
+   */
+  quote: Scalars['String']['input'];
+  /** Annotation data version */
+  version: Scalars['Int']['input'];
+};
+
 /** Input data for updating a Shareable List. */
 export type UpdateShareableListInput = {
-  description?: InputMaybe<Scalars['String']>;
-  externalId: Scalars['ID'];
-  status?: InputMaybe<ShareableListStatus>;
-  title?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  externalId: Scalars['ID']['input'];
+  listItemNoteVisibility?: InputMaybe<ShareableListVisibility>;
+  status?: InputMaybe<ShareableListVisibility>;
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Input data for updating a single Shareable List Item. */
+export type UpdateShareableListItemInput = {
+  externalId: Scalars['ID']['input'];
+  note?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** Input data for updating an array of Shareable List Items, targeting sortOrder. */
+export type UpdateShareableListItemsInput = {
+  externalId: Scalars['ID']['input'];
+  sortOrder: Scalars['Int']['input'];
 };
 
 export type UpdateUserRecommendationPreferencesInput = {
@@ -2549,26 +3006,41 @@ export type UpdateUserRecommendationPreferencesInput = {
   preferredTopics: Array<TopicInput>;
 };
 
+/** Resolve by reference the User entity in this graph to provide user data with public lists. */
 export type User = {
   __typename?: 'User';
+  /** Timestamp of the date when account was created */
+  accountCreationDate?: Maybe<Scalars['ISOString']['output']>;
+  advancedSearch?: Maybe<SavedItemSearchResultConnection>;
   /** The public avatar url for the user */
-  avatarUrl?: Maybe<Scalars['String']>;
+  avatarUrl?: Maybe<Scalars['String']['output']>;
   /** A users bio for their profile */
-  description?: Maybe<Scalars['String']>;
-  /** User id, provided by the user service. */
-  id: Scalars['ID'];
+  description?: Maybe<Scalars['String']['output']>;
+  /** Email address associated with the account. */
+  email?: Maybe<Scalars['String']['output']>;
+  /** The users first name */
+  firstName?: Maybe<Scalars['String']['output']>;
+  /** Indicates if a user is FxA or not */
+  isFxa?: Maybe<Scalars['Boolean']['output']>;
   /** The user's premium status */
-  isPremium?: Maybe<Scalars['Boolean']>;
+  isPremium?: Maybe<Scalars['Boolean']['output']>;
+  /** The users last name */
+  lastName?: Maybe<Scalars['String']['output']>;
   /** The users first name and last name combined */
-  name?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']['output']>;
   /** Preferences for recommendations that the user has explicitly set. */
   recommendationPreferences?: Maybe<UserRecommendationPreferences>;
-  /** Get a PocketSave by its id */
-  saveById?: Maybe<PocketSave>;
-  /** Get a SavedItem by its id */
+  /** Get a PocketSave(s) by its id(s) */
+  saveById: Array<SaveByIdResult>;
+  /**
+   * Get a SavedItem by its id
+   * @deprecated Use saveById instead
+   */
   savedItemById?: Maybe<SavedItem>;
   /** Get a general paginated listing of all SavedItems for the user */
   savedItems?: Maybe<SavedItemConnection>;
+  /** Fetch SavedItems with offset pagination. Internal backend use only. */
+  savedItemsByOffset?: Maybe<SavedItemsPage>;
   /**
    * Premium search query. Name will be updated after client input
    * @deprecated Use searchSavedItems
@@ -2579,20 +3051,32 @@ export type User = {
   /** Get a paginated listing of all a user's Tags */
   tags?: Maybe<TagConnection>;
   /** The public username for the user */
-  username?: Maybe<Scalars['String']>;
+  username?: Maybe<Scalars['String']['output']>;
 };
 
 
+/** Resolve by reference the User entity in this graph to provide user data with public lists. */
+export type UserAdvancedSearchArgs = {
+  filter?: InputMaybe<AdvancedSearchFilters>;
+  pagination?: InputMaybe<PaginationInput>;
+  queryString?: InputMaybe<Scalars['String']['input']>;
+  sort?: InputMaybe<SearchSortInput>;
+};
+
+
+/** Resolve by reference the User entity in this graph to provide user data with public lists. */
 export type UserSaveByIdArgs = {
-  id: Scalars['ID'];
+  ids: Array<Scalars['ID']['input']>;
 };
 
 
+/** Resolve by reference the User entity in this graph to provide user data with public lists. */
 export type UserSavedItemByIdArgs = {
-  id: Scalars['ID'];
+  id: Scalars['ID']['input'];
 };
 
 
+/** Resolve by reference the User entity in this graph to provide user data with public lists. */
 export type UserSavedItemsArgs = {
   filter?: InputMaybe<SavedItemsFilter>;
   pagination?: InputMaybe<PaginationInput>;
@@ -2600,19 +3084,30 @@ export type UserSavedItemsArgs = {
 };
 
 
+/** Resolve by reference the User entity in this graph to provide user data with public lists. */
+export type UserSavedItemsByOffsetArgs = {
+  filter?: InputMaybe<SavedItemsFilter>;
+  pagination?: InputMaybe<OffsetPaginationInput>;
+  sort?: InputMaybe<SavedItemsSort>;
+};
+
+
+/** Resolve by reference the User entity in this graph to provide user data with public lists. */
 export type UserSearchArgs = {
   params: SearchParams;
 };
 
 
+/** Resolve by reference the User entity in this graph to provide user data with public lists. */
 export type UserSearchSavedItemsArgs = {
   filter?: InputMaybe<SearchFilterInput>;
   pagination?: InputMaybe<PaginationInput>;
   sort?: InputMaybe<SearchSortInput>;
-  term: Scalars['String'];
+  term: Scalars['String']['input'];
 };
 
 
+/** Resolve by reference the User entity in this graph to provide user data with public lists. */
 export type UserTagsArgs = {
   pagination?: InputMaybe<PaginationInput>;
 };
@@ -2623,23 +3118,23 @@ export type UserRecommendationPreferences = {
   preferredTopics?: Maybe<Array<Topic>>;
 };
 
-/** A Video, typically within an Article View of an {Item} or if the Item is a video itself. */
+/** A Video, typically within an Article View of an Item or if the Item is a video itself. */
 export type Video = {
   __typename?: 'Video';
   /** If known, the height of the video in px */
-  height?: Maybe<Scalars['Int']>;
+  height?: Maybe<Scalars['Int']['output']>;
   /** If known, the length of the video in seconds */
-  length?: Maybe<Scalars['Int']>;
+  length?: Maybe<Scalars['Int']['output']>;
   /** Absolute url to the video */
-  src: Scalars['String'];
+  src: Scalars['String']['output'];
   /** The type of video */
   type: VideoType;
   /** The video's id within the service defined by type */
-  vid?: Maybe<Scalars['String']>;
-  /** The id of the video within Article View. {articleView.article} will have placeholders of <div id='RIL_VID_X' /> where X is this id. Apps can download those images as needed and populate them in their article view. */
-  videoId: Scalars['Int'];
+  vid?: Maybe<Scalars['String']['output']>;
+  /** The id of the video within Article View. Item.article will have placeholders of <div id='RIL_VID_X' /> where X is this id. Apps can download those images as needed and populate them in their article view. */
+  videoId: Scalars['Int']['output'];
   /** If known, the width of the video in px */
-  width?: Maybe<Scalars['Int']>;
+  width?: Maybe<Scalars['Int']['output']>;
 };
 
 export enum VideoType {
@@ -2671,16 +3166,16 @@ export enum Videoness {
 }
 
 export type SaveArchiveMutationVariables = Exact<{
-  id: Array<Scalars['ID']> | Scalars['ID'];
-  timestamp: Scalars['ISOString'];
+  id: Array<Scalars['ID']['input']> | Scalars['ID']['input'];
+  timestamp: Scalars['ISOString']['input'];
 }>;
 
 
 export type SaveArchiveMutation = { __typename?: 'Mutation', saveArchive?: { __typename?: 'SaveWriteMutationPayload', save: Array<{ __typename?: 'PocketSave', id: string, favorite: boolean, favoritedAt?: any | null, updatedAt?: any | null }>, errors: Array<{ __typename: 'NotFound', path: string, message: string } | { __typename: 'SyncConflict', path: string, message: string }> } | null };
 
 export type SaveFavoriteMutationVariables = Exact<{
-  id: Array<Scalars['ID']> | Scalars['ID'];
-  timestamp: Scalars['ISOString'];
+  id: Array<Scalars['ID']['input']> | Scalars['ID']['input'];
+  timestamp: Scalars['ISOString']['input'];
 }>;
 
 
@@ -2695,7 +3190,17 @@ export type GetSavedItemsQueryVariables = Exact<{
 
 export type GetSavedItemsQuery = { __typename?: 'Query', user?: { __typename?: 'User', savedItems?: { __typename?: 'SavedItemConnection', edges?: Array<{ __typename?: 'SavedItemEdge', cursor: string, node?: { __typename?: 'SavedItem', id: string, status?: SavedItemStatus | null, url: string, isFavorite: boolean, isArchived: boolean, _updatedAt?: number | null, _createdAt: number, favoritedAt?: number | null, archivedAt?: number | null, item: { __typename: 'Item', itemId: string, resolvedId?: string | null, wordCount?: number | null, title?: string | null, timeToRead?: number | null, resolvedUrl?: any | null, givenUrl: any, excerpt?: string | null, domain?: string | null, isArticle?: boolean | null, isIndex?: boolean | null, hasVideo?: Videoness | null, hasImage?: Imageness | null, language?: string | null, ampUrl?: any | null, topImage?: { __typename?: 'Image', url: any } | null } | { __typename: 'PendingItem' } } | null } | null> | null } | null } | null };
 
+export type GetSavedItemsByOffsetQueryVariables = Exact<{
+  pagination?: InputMaybe<OffsetPaginationInput>;
+  filters?: InputMaybe<SavedItemsFilter>;
+  sort?: InputMaybe<SavedItemsSort>;
+}>;
+
+
+export type GetSavedItemsByOffsetQuery = { __typename?: 'Query', user?: { __typename?: 'User', savedItemsByOffset?: { __typename?: 'SavedItemsPage', entries: Array<{ __typename?: 'SavedItem', id: string, status?: SavedItemStatus | null, url: string, isFavorite: boolean, isArchived: boolean, _updatedAt?: number | null, _createdAt: number, favoritedAt?: number | null, archivedAt?: number | null, item: { __typename: 'Item', itemId: string, resolvedId?: string | null, wordCount?: number | null, title?: string | null, timeToRead?: number | null, resolvedUrl?: any | null, givenUrl: any, excerpt?: string | null, domain?: string | null, isArticle?: boolean | null, isIndex?: boolean | null, hasVideo?: Videoness | null, hasImage?: Imageness | null, language?: string | null, ampUrl?: any | null, topImage?: { __typename?: 'Image', url: any } | null } | { __typename: 'PendingItem' } }> } | null } | null };
+
 
 export const SaveArchiveDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"saveArchive"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"timestamp"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ISOString"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"saveArchive"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"timestamp"},"value":{"kind":"Variable","name":{"kind":"Name","value":"timestamp"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"save"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"favorite"}},{"kind":"Field","name":{"kind":"Name","value":"favoritedAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"BaseError"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"path"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]}}]} as unknown as DocumentNode<SaveArchiveMutation, SaveArchiveMutationVariables>;
 export const SaveFavoriteDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"saveFavorite"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"timestamp"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ISOString"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"saveFavorite"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"timestamp"},"value":{"kind":"Variable","name":{"kind":"Name","value":"timestamp"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"save"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"favorite"}},{"kind":"Field","name":{"kind":"Name","value":"favoritedAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"BaseError"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"path"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]}}]} as unknown as DocumentNode<SaveFavoriteMutation, SaveFavoriteMutationVariables>;
 export const GetSavedItemsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getSavedItems"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"PaginationInput"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filters"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"SavedItemsFilter"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"sort"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"SavedItemsSort"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"savedItems"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}}},{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filters"}}},{"kind":"Argument","name":{"kind":"Name","value":"sort"},"value":{"kind":"Variable","name":{"kind":"Name","value":"sort"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"isFavorite"}},{"kind":"Field","name":{"kind":"Name","value":"isArchived"}},{"kind":"Field","name":{"kind":"Name","value":"_updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"_createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"favoritedAt"}},{"kind":"Field","name":{"kind":"Name","value":"archivedAt"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Item"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"itemId"}},{"kind":"Field","name":{"kind":"Name","value":"resolvedId"}},{"kind":"Field","name":{"kind":"Name","value":"wordCount"}},{"kind":"Field","name":{"kind":"Name","value":"topImage"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"timeToRead"}},{"kind":"Field","name":{"kind":"Name","value":"resolvedUrl"}},{"kind":"Field","name":{"kind":"Name","value":"givenUrl"}},{"kind":"Field","name":{"kind":"Name","value":"excerpt"}},{"kind":"Field","name":{"kind":"Name","value":"domain"}},{"kind":"Field","name":{"kind":"Name","value":"isArticle"}},{"kind":"Field","name":{"kind":"Name","value":"isIndex"}},{"kind":"Field","name":{"kind":"Name","value":"hasVideo"}},{"kind":"Field","name":{"kind":"Name","value":"hasImage"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"ampUrl"}}]}}]}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetSavedItemsQuery, GetSavedItemsQueryVariables>;
+export const GetSavedItemsByOffsetDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getSavedItemsByOffset"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"OffsetPaginationInput"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filters"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"SavedItemsFilter"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"sort"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"SavedItemsSort"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"savedItemsByOffset"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}}},{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filters"}}},{"kind":"Argument","name":{"kind":"Name","value":"sort"},"value":{"kind":"Variable","name":{"kind":"Name","value":"sort"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"entries"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"isFavorite"}},{"kind":"Field","name":{"kind":"Name","value":"isArchived"}},{"kind":"Field","name":{"kind":"Name","value":"_updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"_createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"favoritedAt"}},{"kind":"Field","name":{"kind":"Name","value":"archivedAt"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Item"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"itemId"}},{"kind":"Field","name":{"kind":"Name","value":"resolvedId"}},{"kind":"Field","name":{"kind":"Name","value":"wordCount"}},{"kind":"Field","name":{"kind":"Name","value":"topImage"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"timeToRead"}},{"kind":"Field","name":{"kind":"Name","value":"resolvedUrl"}},{"kind":"Field","name":{"kind":"Name","value":"givenUrl"}},{"kind":"Field","name":{"kind":"Name","value":"excerpt"}},{"kind":"Field","name":{"kind":"Name","value":"domain"}},{"kind":"Field","name":{"kind":"Name","value":"isArticle"}},{"kind":"Field","name":{"kind":"Name","value":"isIndex"}},{"kind":"Field","name":{"kind":"Name","value":"hasVideo"}},{"kind":"Field","name":{"kind":"Name","value":"hasImage"}},{"kind":"Field","name":{"kind":"Name","value":"language"}},{"kind":"Field","name":{"kind":"Name","value":"ampUrl"}}]}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetSavedItemsByOffsetQuery, GetSavedItemsByOffsetQueryVariables>;

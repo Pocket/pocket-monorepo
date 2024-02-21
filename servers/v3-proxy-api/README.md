@@ -32,9 +32,10 @@ pnpm test-integrations --filter=v3-proxy-api...
 ### To pull latest graphQL types
 
 Our graphQL types are generated from the pocket graph v1 schema.
-To pull the latest types, run:
 
-From the root directory.
+First you'll have to make sure that rover is set up appropriately, which will require creating or requesting an API key for the Pocket Graph. Once you have it, see instructions for configuring Rover on Apollo's [docs](https://www.apollographql.com/docs/rover/configuring/).
+
+Then to pull the latest types run the command below from the root directory.
 
 ```bash
 pnpm prebuild --filter=v3-proxy-api...

@@ -12,10 +12,11 @@
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand --force-exit",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\"",
-    "prebuild": "echo 'renable this once we can depth limit... graphql-codegen --max-depth 3'"
+    "prebuild": "graphql-codegen"
   },
   "dependencies": {
     "@pocket-tools/apollo-utils": "workspace:*",
+    "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "7.102.0",
     "@sentry/tracing": "7.102.0",
     "express": "4.18.2",

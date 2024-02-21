@@ -2,6 +2,7 @@ import request from 'supertest';
 import { app, server } from '../main';
 import * as Sentry from '@sentry/node';
 import * as GraphQLCalls from '../graph/graphQLClient';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 describe('v3Get', () => {
   afterEach(async () => {
@@ -20,9 +21,11 @@ describe('v3Get', () => {
   it('GET should log to Sentry and throw 5xx for unknown errors', async () => {
     //const consoleStub = sinon.stub(console, 'log');
     const sentrySpy = jest.spyOn(Sentry, 'captureException');
-    jest.spyOn(GraphQLCalls, 'callSavedItems').mockImplementation(() => {
-      throw new Error('test error');
-    });
+    jest
+      .spyOn(GraphQLCalls, 'callSavedItemsByOffset')
+      .mockImplementation(() => {
+        throw new Error('test error');
+      });
     const response = await request(app)
       .get('/v3/get')
       .send({ consumer_key: 'test', access_token: 'test' });
@@ -37,11 +40,13 @@ describe('v3Get', () => {
   });
 
   it('POST should log to Sentry and throw 5xx for unknown errors', async () => {
-    const consoleSpy = jest.spyOn(console, 'log');
+    const consoleSpy = jest.spyOn(serverLogger, 'error');
     const sentrySpy = jest.spyOn(Sentry, 'captureException');
-    jest.spyOn(GraphQLCalls, 'callSavedItems').mockImplementation(() => {
-      throw new Error('test error');
-    });
+    jest
+      .spyOn(GraphQLCalls, 'callSavedItemsByOffset')
+      .mockImplementation(() => {
+        throw new Error('test error');
+      });
     const response = await request(app)
       .post('/v3/get')
       .send({ consumer_key: 'test', access_token: 'test' });

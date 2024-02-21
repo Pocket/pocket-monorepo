@@ -11,7 +11,8 @@ describe('toGraphQL', () => {
   it('should map saves input', () => {
     const expected = {
       pagination: {
-        first: 10,
+        limit: 30,
+        offset: 0,
       },
       sort: {
         sortBy: SavedItemsSortBy.UpdatedAt,
