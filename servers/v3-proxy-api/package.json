@@ -12,7 +12,7 @@
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand --force-exit",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\"",
-    "prebuild": "rover graph introspect https://client-api.getpocket.com > schema.graphql && graphql-codegen"
+    "prebuild": "graphql-codegen"
   },
   "dependencies": {
     "@pocket-tools/apollo-utils": "workspace:*",
