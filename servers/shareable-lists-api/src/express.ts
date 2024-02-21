@@ -15,6 +15,7 @@ import { getAdminContext, IAdminContext } from './admin/context';
 import { startAdminServer } from './admin/server';
 import { startPublicServer } from './public/server';
 import { initSentry, sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
+import { getRedis } from './cache';
 
 /**
  * Initialize an express server.
@@ -56,16 +57,28 @@ export async function startServer(port: number): Promise<{
   app.use('/deleteUserData', deleteUserDataRouter);
 
   // expose a health check url that makes sure the express app is up and the db
-  // is reachable
+  // and the cache is reachable
   app.get('/.well-known/apollo/server-health', async (req, res) => {
+    // Check redis can connect
+    try {
+      const redis = getRedis();
+      await redis.set('test', true, 1);
+    } catch (error) {
+      res.status(500).send('cache error');
+      serverLogger.error(error);
+      return;
+    }
+
     try {
       const db = client();
       await db.$queryRaw`SELECT 1`;
-      res.status(200).send('ok');
+    } catch (error) {
+      res.status(500).send('db fail');
+      serverLogger.error(error);
       return;
-    } catch (e) {
-      res.status(500).send('fail');
     }
+
+    res.status(200).send('ok');
   });
 
   // set up the admin server

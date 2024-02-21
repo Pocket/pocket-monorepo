@@ -6,6 +6,7 @@ import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-i
 import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/data-aws-kms-alias';
 import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
 import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
+import { DataAwsSubnets } from '@cdktf/provider-aws/lib/data-aws-subnets';
 import { LocalProvider } from '@cdktf/provider-local/lib/provider';
 import { ArchiveProvider } from '@cdktf/provider-archive/lib/provider';
 import { NullProvider } from '@cdktf/provider-null/lib/provider';
@@ -18,6 +19,7 @@ import {
   PocketAwsSyntheticChecks,
   PocketPagerDuty,
   PocketVPC,
+  ApplicationServerlessRedis,
 } from '@pocket-tools/terraform-modules';
 import { Construct } from 'constructs';
 import {
@@ -49,7 +51,8 @@ class ShareableListsAPI extends TerraformStack {
     const pocketVpc = new PocketVPC(this, 'pocket-vpc');
     const region = new DataAwsRegion(this, 'region');
 
-    const cache = ShareableListsAPI.createElasticache(this, pocketVpc);
+    ShareableListsAPI.createOldElasticache(this, pocketVpc);
+    const cache = this.createElasticache(this, pocketVpc);
     const sqsLambda = new SQSLambda(
       this,
       'sqs-event-consumer',
@@ -116,10 +119,63 @@ class ShareableListsAPI extends TerraformStack {
   /**
    * Creates the elasticache and returns the node address list
    * @param scope
+   * @private
+   */
+  private createElasticache(
+    scope: Construct,
+    pocketVPC: PocketVPC,
+  ): {
+    primaryEndpoint: string;
+    readerEndpoint: string;
+  } {
+    // Serverless elasticache doesn't support the `e` availablity zone in us-east-1... so we need to filter it out..
+    const privateSubnets = new DataAwsSubnets(
+      this,
+      `cache_private_subnet_ids`,
+      {
+        filter: [
+          {
+            name: 'subnet-id',
+            values: pocketVPC.privateSubnetIds,
+          },
+          {
+            name: 'availability-zone',
+            values: ['us-east-1a', 'us-east-1c', 'us-east-1d'],
+          },
+        ],
+      },
+    );
+    const elasticache = new ApplicationServerlessRedis(
+      scope,
+      'serverless_redis',
+      {
+        //Usually we would set the security group ids of the service that needs to hit this.
+        //However we don't have the necessary security group because it gets created in PocketALBApplication
+        //So instead we set it to null and allow anything within the vpc to access it.
+        //This is not ideal..
+        //Ideally we need to be able to add security groups to the ALB application.
+        allowedIngressSecurityGroupIds: undefined,
+        subnetIds: privateSubnets.ids,
+        tags: config.tags,
+        vpcId: pocketVPC.vpc.id,
+        // add on a serverless to the name, because our previous elasticache will still exist at the old name
+        prefix: `${config.prefix}-serverless`,
+      },
+    );
+
+    return {
+      primaryEndpoint: elasticache.elasticache.endpoint.get(0).address,
+      readerEndpoint: elasticache.elasticache.readerEndpoint.get(0).address,
+    };
+  }
+
+  /**
+   * Creates the elasticache and returns the node address list
+   * @param scope
    * @param pocketVpc
    * @private
    */
-  private static createElasticache(
+  private static createOldElasticache(
     scope: Construct,
     pocketVpc: PocketVPC,
   ): {
@@ -291,6 +347,14 @@ class ShareableListsAPI extends TerraformStack {
             {
               name: 'REDIS_READER_ENDPOINT',
               value: cache.readerEndpoint,
+            },
+            {
+              name: 'REDIS_IS_CLUSTER',
+              value: 'true',
+            },
+            {
+              name: 'REDIS_IS_TLS',
+              value: 'true',
             },
           ],
           logGroup: this.createCustomLogGroup('app'),
