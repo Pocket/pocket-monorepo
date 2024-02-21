@@ -5,7 +5,9 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "test": "jest \"\\.spec\\.ts\" --runInBand --forceExit"
+    "test": "jest \"\\.spec\\.ts\" --runInBand --forceExit",
+    "lint": "eslint --fix-dry-run \"./**/*.ts\"",
+    "format": "eslint --fix \"./**/*.ts\""
   },
   "dependencies": {
     "@sentry/serverless": "7.102.1",
