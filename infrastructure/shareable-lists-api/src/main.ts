@@ -12,7 +12,6 @@ import { ArchiveProvider } from '@cdktf/provider-archive/lib/provider';
 import { NullProvider } from '@cdktf/provider-null/lib/provider';
 import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
 import {
-  ApplicationRedis,
   ApplicationRDSCluster,
   ApplicationSqsSnsTopicSubscription,
   PocketALBApplication,
@@ -51,7 +50,6 @@ class ShareableListsAPI extends TerraformStack {
     const pocketVpc = new PocketVPC(this, 'pocket-vpc');
     const region = new DataAwsRegion(this, 'region');
 
-    ShareableListsAPI.createOldElasticache(this, pocketVpc);
     const cache = this.createElasticache(this, pocketVpc);
     const sqsLambda = new SQSLambda(
       this,
@@ -166,44 +164,6 @@ class ShareableListsAPI extends TerraformStack {
     return {
       primaryEndpoint: elasticache.elasticache.endpoint.get(0).address,
       readerEndpoint: elasticache.elasticache.readerEndpoint.get(0).address,
-    };
-  }
-
-  /**
-   * Creates the elasticache and returns the node address list
-   * @param scope
-   * @param pocketVpc
-   * @private
-   */
-  private static createOldElasticache(
-    scope: Construct,
-    pocketVpc: PocketVPC,
-  ): {
-    primaryEndpoint: string;
-    readerEndpoint: string;
-  } {
-    const elasticache = new ApplicationRedis(scope, 'redis', {
-      //Usually we would set the security group ids of the service that needs to hit this.
-      //However, we don't have the necessary security group because it gets created in PocketALBApplication
-      //So instead we set it to null and allow anything within the vpc to access it.
-      //This is not ideal...
-      //Ideally we need to be able to add security groups to the ALB application.
-      allowedIngressSecurityGroupIds: undefined,
-      node: {
-        count: config.cacheNodes,
-        size: config.cacheSize,
-      },
-      subnetIds: pocketVpc.privateSubnetIds,
-      tags: config.tags,
-      vpcId: pocketVpc.vpc.id,
-      prefix: config.prefix,
-    });
-
-    return {
-      primaryEndpoint:
-        elasticache.elasticacheReplicationGroup.primaryEndpointAddress,
-      readerEndpoint:
-        elasticache.elasticacheReplicationGroup.readerEndpointAddress,
     };
   }
 

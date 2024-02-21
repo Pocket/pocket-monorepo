@@ -11,9 +11,7 @@ import { NullProvider } from '@cdktf/provider-null/lib/provider';
 import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
 import { DataPagerdutyEscalationPolicy } from '@cdktf/provider-pagerduty/lib/data-pagerduty-escalation-policy';
 import {
-  ApplicationMemcache,
   PocketALBApplication,
-  PocketVPC,
   PocketPagerDuty,
   PocketAwsSyntheticChecks,
 } from '@pocket-tools/terraform-modules';
@@ -45,7 +43,6 @@ class ClientAPI extends TerraformStack {
       pagerDuty: clientApiPagerduty,
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
-      nodeList: this.createElasticache(),
       region,
       caller,
     });
@@ -122,7 +119,6 @@ class ClientAPI extends TerraformStack {
     caller: DataAwsCallerIdentity;
     secretsManagerKmsAlias: DataAwsKmsAlias;
     snsTopic: DataAwsSnsTopic;
-    nodeList: string[];
   }): PocketALBApplication {
     const { pagerDuty, region, caller, secretsManagerKmsAlias, snsTopic } =
       dependencies;
@@ -315,47 +311,6 @@ class ClientAPI extends TerraformStack {
         },
       },
     });
-  }
-
-  /**
-   * Creates the elasticache and returns the node address list
-   * @param scope
-   * @private
-   */
-  private createElasticache(): string[] {
-    const pocketVPC = new PocketVPC(this, 'pocket-vpc');
-
-    // TODO (@kschelonka): Change this to redis and configure router.yaml
-    // https://mozilla-hub.atlassian.net/browse/POCKET-9467
-    // https://www.apollographql.com/docs/router/configuration/distributed-caching/
-    const elasticache = new ApplicationMemcache(this, 'memcached', {
-      //Usually we would set the security group ids of the service that needs to hit this.
-      //However we don't have the necessary security group because it gets created in PocketALBApplication
-      //So instead we set it to null and allow anything within the vpc to access it.
-      //This is not ideal..
-      //Ideally we need to be able to add security groups to the ALB application.
-      allowedIngressSecurityGroupIds: undefined,
-      node: {
-        count: config.cacheNodes,
-        size: config.cacheSize,
-      },
-      subnetIds: pocketVPC.privateSubnetIds,
-      tags: config.tags,
-      vpcId: pocketVPC.vpc.id,
-      prefix: config.prefix,
-    });
-
-    // eslint-disable-next-line prefer-const
-    let nodeList: string[] = [];
-    for (let i = 0; i < config.cacheNodes; i++) {
-      // ${elasticache.elasticacheClister.cacheNodes(i.toString()).port} has a bug and is not rendering the proper terraform address
-      // its rendering -1.8881545897087503e+289 for some weird reason...
-      // For now we just hardcode to 11211 which is the default memcache port.
-      nodeList.push(
-        `${elasticache.elasticacheCluster.cacheNodes.get(i).address}:11211`,
-      );
-    }
-    return nodeList;
   }
 
   /**
