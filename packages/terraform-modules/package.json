@@ -22,7 +22,7 @@
     "@cdktf/provider-local": "10.0.0",
     "@cdktf/provider-newrelic": "12.2.0",
     "@cdktf/provider-null": "10.0.0",
-    "@cdktf/provider-pagerduty": "13.4.0",
+    "@cdktf/provider-pagerduty": "13.4.1",
     "@cdktf/provider-time": "10.0.0",
     "cdktf": "0.20.3",
     "cdktf-cli": "0.20.3",
