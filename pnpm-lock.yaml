@@ -1252,8 +1252,8 @@ importers:
         specifier: 5.5.1
         version: 5.5.1
       unleash-server:
-        specifier: 5.9.5
-        version: 5.9.5(core-js@3.36.0)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8)
+        specifier: 5.9.6
+        version: 5.9.6(core-js@3.36.0)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8)
     devDependencies:
       '@types/cors':
         specifier: ^2.8.17
@@ -12213,13 +12213,8 @@ packages:
       rimraf: 3.0.2
     dev: true
 
-  /flatted@3.2.9:
-    resolution: {integrity: sha512-36yxDn5H7OFZQla0/jFJmbIKTdZAQHngCedGxiMmpNfEZM0sdEeT+WczLQrjK6D7o2aiyLYDnkw0R3JK0Qv1RQ==}
-    dev: false
-
   /flatted@3.3.1:
     resolution: {integrity: sha512-X8cqMLLie7KsNUDSdzeN8FYK9rEt4Dt67OsG/DNGnYTSDBG4uFAJFBnUeiV+zCVAvwFy56IjM9sH51jVaEhNxw==}
-    dev: true
 
   /fn.name@1.1.0:
     resolution: {integrity: sha512-GRnmB5gPyJpAhTQdSZTSp9uaPSvl09KoYcMQtsB9rQoOmzs9dH6ffeccH+Z+cv6P68Hu5bC6JjRh4Ah/mHSNRw==}
@@ -15218,7 +15213,7 @@ packages:
     dependencies:
       date-format: 4.0.14
       debug: 4.3.4(supports-color@5.5.0)
-      flatted: 3.2.9
+      flatted: 3.3.1
       rfdc: 1.3.1
       streamroller: 3.1.5
     transitivePeerDependencies:
@@ -19708,8 +19703,8 @@ packages:
       murmurhash3js: 3.0.1
       semver: 7.6.0
 
-  /unleash-server@5.9.5(core-js@3.36.0)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8):
-    resolution: {integrity: sha512-EvaAeofu0sW2/u1sqUOLap1P98eNgzXMdAU84Q+lLHW3t97/loMncxlBiWRfwolusl+DXASSCSiNYDu7Rrxl/g==}
+  /unleash-server@5.9.6(core-js@3.36.0)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8):
+    resolution: {integrity: sha512-6J8be//iQa/bxYrYRDMWI12swTT4k54OScfIBVwAeATh6gkvmWLl6gUOeFg2tnTb12nfPH8+iuycz99mj7PAgA==}
     engines: {node: '>=18 <21'}
     dependencies:
       '@slack/web-api': 6.12.0
