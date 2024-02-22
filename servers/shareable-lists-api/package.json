@@ -52,7 +52,7 @@
     "jest-extended": "4.0.2",
     "nodemon": "3.0.3",
     "prisma": "5.8.1",
-    "prisma-kysely": "1.7.1",
+    "prisma-kysely": "1.8.0",
     "supertest": "6.3.4",
     "ts-jest": "29.1.2",
     "tsconfig": "workspace:*"
