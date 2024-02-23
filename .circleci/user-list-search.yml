@@ -47,6 +47,19 @@ workflows:
           sentry_project_name: user-list-search
           sentry_env: development
           sentry_org: pocket
+      
+      - build_lambda:
+          <<: *not_dev_main
+          context: pocket
+          for: user_list_search
+          name: user-list-search_kinesis_to_sqs_build_lambda
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          scope: user-list-search-kinesis-to-sqs
+          sentry_project_name: user-list-search
+          sentry_env: development
+          sentry_org: pocket
 
       # Try building the ECS docker image on each branch
       - build_image:
@@ -142,6 +155,23 @@ workflows:
           requires:
             - user-list-search_infrastructure_apply_dev
 
+      - build_lambda:
+          <<: *only_dev
+          context: pocket
+          for: user_list_search
+          name: user-list-search_kinesis_build_lambda_dev
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          scope: user-list-search-kinesis-to-sqs
+          sentry_project_name: user-list-search
+          sentry_env: development
+          sentry_org: pocket
+          s3-bucket: pocket-userlistsearch-dev-kinesis-consumer
+          s3-key: kinesis-$CIRCLE_SHA1.zip
+          requires:
+            - user-list-search_infrastructure_apply_dev
+
       - code_deploy_ecs:
           <<: *only_dev
           context: pocket
@@ -177,9 +207,9 @@ workflows:
           codedeploy-group-name: UserListSearch-Dev-UnifiedEventsConsumer
           function-name: UserListSearch-Dev-UnifiedEventsConsumer
           s3-bucket: pocket-userlistsearch-dev-kinesis-consumer
-          s3-key: embedded-$CIRCLE_SHA1.zip
+          s3-key: kinesis-$CIRCLE_SHA1.zip
           requires:
-            - user-list-search_embedded_build_lambda_dev
+            - user-list-search_kinesis_build_lambda_dev
 
       - code_deploy_lambda:
           <<: *only_dev
@@ -333,7 +363,7 @@ workflows:
           aws-region: Prod_AWS_DEFAULT_REGION
           scope: user-list-search-events
           sentry_project_name: user-list-search
-          sentry_env: prodelopment
+          sentry_env: production
           sentry_org: pocket
           s3-bucket: pocket-userlistsearch-prod-kinesis-consumer
           s3-key: events-$CIRCLE_SHA1.zip
@@ -350,10 +380,27 @@ workflows:
           aws-region: Prod_AWS_DEFAULT_REGION
           scope: user-list-search
           sentry_project_name: user-list-search
-          sentry_env: prodelopment
+          sentry_env: production
           sentry_org: pocket
           s3-bucket: pocket-userlistsearch-prod-kinesis-consumer
           s3-key: embedded-$CIRCLE_SHA1.zip
+          requires:
+            - user-list-search_infrastructure_apply_prod
+
+      - build_lambda:
+          <<: *only_main
+          context: pocket
+          for: user_list_search
+          name: user-list-search_kinesis_build_lambda_prod
+          aws-access-key-id: Prod_AWS_ACCESS_KEY
+          aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
+          aws-region: Prod_AWS_DEFAULT_REGION
+          scope: user-list-search-kinesis-to-sqs
+          sentry_project_name: user-list-search
+          sentry_env: production
+          sentry_org: pocket
+          s3-bucket: pocket-userlistsearch-prod-kinesis-consumer
+          s3-key: kinesis-$CIRCLE_SHA1.zip
           requires:
             - user-list-search_infrastructure_apply_prod
 
@@ -392,9 +439,9 @@ workflows:
           codedeploy-group-name: UserListSearch-Prod-UnifiedEventsConsumer
           function-name: UserListSearch-Prod-UnifiedEventsConsumer
           s3-bucket: pocket-userlistsearch-prod-kinesis-consumer
-          s3-key: embedded-$CIRCLE_SHA1.zip
+          s3-key: kinesis-$CIRCLE_SHA1.zip
           requires:
-            - user-list-search_embedded_build_lambda_prod
+            - user-list-search_kinesis_build_lambda_prod
 
       - code_deploy_lambda:
           <<: *only_main
