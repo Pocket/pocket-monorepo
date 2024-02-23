@@ -24,8 +24,9 @@ import {
   ListItemObject,
   ListItemObjectComplete,
   ListItemObjectAdditional,
+  RestResponseSimple,
+  RestResponseComplete,
 } from './types';
-import { RestResponseSimple, RestResponseComplete } from './types';
 
 /**
  * Convert tag response array into a map keyed by tag name
@@ -214,6 +215,7 @@ function ListItemTransformer(
     listen_duration_estimate: 0,
     sort_id: index,
   };
+  const conditionalFields = {};
   switch (savedItem.item.__typename) {
     case 'PendingItem':
       // This case shouldn't happen, but we set values to defaults
@@ -235,7 +237,6 @@ function ListItemTransformer(
         time_to_read: 0,
       };
     case 'Item':
-      const conditionalFields = {};
       savedItem.item.topImage?.url &&
         (conditionalFields['top_image_url'] = savedItem.item.topImage.url);
       return {

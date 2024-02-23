@@ -52,11 +52,6 @@ describe('GraphQL <> Rest convesion', () => {
         },
       };
 
-      const res = savedItemsSimpleToRest(graphResponse);
-      const expected = testV3GetResponse({
-        ...seedDataRest,
-        ids: ['id1', 'id2'],
-      });
       expect(savedItemsSimpleToRest(graphResponse)).toEqual(
         testV3GetResponse({
           ...seedDataRest,
