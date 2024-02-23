@@ -26,7 +26,7 @@ export async function accountDeleteHandler(record: SQSRecord): Promise<void> {
   if (!res.ok) {
     const data = (await res.json()) as any;
     throw new Error(
-      `batchDelete - ${res.status}\n${JSON.stringify(data.errors)}`
+      `batchDelete - ${res.status}\n${JSON.stringify(data.errors)}`,
     );
   }
 }
