@@ -8,7 +8,7 @@ terraform {
     }
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.35.0"
+      version = "~> 5.38.0"
     }
     null = {
       source  = "hashicorp/null"
@@ -16,7 +16,7 @@ terraform {
     }
     pagerduty = {
       source  = "pagerduty/pagerduty"
-      version = "~> 3.7.1"
+      version = "~> 3.8.0"
     }
   }
 
