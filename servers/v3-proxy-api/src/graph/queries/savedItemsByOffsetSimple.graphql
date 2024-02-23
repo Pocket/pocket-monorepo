@@ -9,6 +9,7 @@ query getSavedItemsByOffsetSimple($pagination: OffsetPaginationInput, $filters: 
 }
 
 fragment ItemSimple on Item {
+    __typename
     itemId
     resolvedId
     wordCount

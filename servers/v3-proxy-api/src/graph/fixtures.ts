@@ -2,8 +2,12 @@ import {
   Imageness,
   SavedItemStatus,
   Videoness,
+  SavedItemSimpleFragment,
+  ItemSimpleFragment,
+  SavedItemCompleteFragment,
+  ItemCompleteFragment,
 } from '../generated/graphql/types';
-import { GraphSavedItemEdge, ListItemObject, RestResponse } from './types';
+import { ListItemObject, RestResponseSimple } from './types';
 export const seedDataRest: MockListItemObject = Object.freeze({
   ids: ['1', '2'],
   given_url: 'https://test.com',
@@ -27,9 +31,12 @@ export const seedDataRest: MockListItemObject = Object.freeze({
   time_to_read: 10,
   amp_url: 'https://test.com',
   top_image_url: 'https://test.com/image.jpg',
+  normal_url: 'test.com',
+  sort_id: 1,
+  listen_duration_estimate: 0,
 });
 
-export type SavedItemFragment = Omit<GraphSavedItemEdge['node'], 'item'>;
+export type SavedItemFragment = Omit<SavedItemSimpleFragment, 'item'>;
 export const mockSavedItemFragment: SavedItemFragment = {
   __typename: 'SavedItem',
   id: '1',
@@ -42,8 +49,13 @@ export const mockSavedItemFragment: SavedItemFragment = {
   favoritedAt: parseInt(seedDataRest.time_favorited),
   archivedAt: parseInt(seedDataRest.time_read),
 };
-export type ItemFragment = GraphSavedItemEdge['node']['item'];
-export const mockItemFragment: ItemFragment = {
+export const mockSavedItemCompleteFragment: Omit<
+  SavedItemCompleteFragment,
+  'item'
+> = {
+  ...mockSavedItemFragment,
+};
+export const mockItemFragment: ItemSimpleFragment = {
   __typename: 'Item',
   itemId: `item-${seedDataRest.ids[0]}`,
   resolvedId: `resolved-${seedDataRest.ids[0]}`,
@@ -65,6 +77,10 @@ export const mockItemFragment: ItemFragment = {
   },
 };
 
+export const mockItemCompleteFragment: ItemCompleteFragment = {
+  ...mockItemFragment,
+  authors: [{ id: '1ab' }],
+};
 /**
  * function to return saved item fragment
  * used default mockSavedItemFragment if values are not added explicitly
@@ -85,7 +101,7 @@ export const testSavedItemFragment = (
 export const testItemFragment = (mockInput: {
   itemId: string;
   __typename: 'PendingItem' | 'Item';
-}): ItemFragment => {
+}): ItemSimpleFragment => {
   return {
     ...mockItemFragment,
     itemId: mockInput.itemId,
@@ -106,10 +122,10 @@ export const testV3GetResponse = (
   mockInputs: MockListItemObject = {
     ...seedDataRest,
   },
-): RestResponse => {
+): RestResponseSimple => {
   const map: { [key: string]: ListItemObject } = {};
 
-  mockInputs.ids.forEach((id) => {
+  mockInputs.ids.forEach((id, index) => {
     map[id] = {
       item_id: id,
       resolved_id: `resolved-${id}`,
@@ -134,6 +150,8 @@ export const testV3GetResponse = (
       time_to_read: mockInputs.time_to_read,
       amp_url: mockInputs.amp_url,
       top_image_url: mockInputs.top_image_url,
+      listen_duration_estimate: 0,
+      sort_id: index,
     };
   });
 

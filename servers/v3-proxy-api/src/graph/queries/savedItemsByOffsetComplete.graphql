@@ -24,8 +24,14 @@ fragment SavedItemComplete on SavedItem {
 fragment ItemComplete on Item {
     ...ItemSimple,
     authors {
+        id
         name
         url
+    }
+    domainMetadata {
+        logo
+        logoGreyscale
+        name
     }
     images {
         imageId

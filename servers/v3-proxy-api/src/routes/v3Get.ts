@@ -1,7 +1,13 @@
 import { Request, Response, Router } from 'express';
 import { setSaveInputsFromGetCall } from '../graph/toGraphQL';
-import { callSavedItemsByOffset } from '../graph/graphQLClient';
-import { convertSavedItemsToRestResponse } from '../graph/toRest';
+import {
+  callSavedItemsByOffsetSimple,
+  callSavedItemsByOffsetComplete,
+} from '../graph/graphQLClient';
+import {
+  savedItemsSimpleToRest,
+  savedItemsCompleteToRest,
+} from '../graph/toRest';
 import { UserSavedItemsByOffsetArgs } from '../generated/graphql/types';
 import * as Sentry from '@sentry/node';
 import { ErrorCodes, getErrorHeaders } from './errorMapper';
@@ -17,8 +23,10 @@ router.get('/', async (req: Request, res: Response) => {
     const headers = req.headers;
     const accessToken = (req.query.access_token as string) ?? null;
     const consumerKey = (req.query.consumer_key as string) ?? null;
+    const type = req.query.detailType === 'complete' ? 'complete' : 'simple';
+
     return res.json(
-      await processV3call(accessToken, consumerKey, headers, variables),
+      await processV3call(accessToken, consumerKey, headers, variables, type),
     );
   } catch (err) {
     const errMessage = `GET: v3/get: ${err}`;
@@ -38,9 +46,10 @@ router.post('/', async (req: Request, res: Response) => {
     const headers = req.headers;
     const accessToken = (req.body.access_token as string) ?? null;
     const consumerKey = (req.body.consumer_key as string) ?? null;
+    const type = req.query.detailType === 'complete' ? 'complete' : 'simple';
 
     return res.json(
-      await processV3call(accessToken, consumerKey, headers, variables),
+      await processV3call(accessToken, consumerKey, headers, variables, type),
     );
   } catch (err) {
     const errMessage = `POST: v3/get: ${err}`;
@@ -66,14 +75,24 @@ export async function processV3call(
   consumerKey: string,
   headers: any,
   variables: UserSavedItemsByOffsetArgs,
+  type: 'simple' | 'complete',
 ) {
-  const response = await callSavedItemsByOffset(
+  if (type === 'complete') {
+    const response = await callSavedItemsByOffsetComplete(
+      accessToken,
+      consumerKey,
+      headers,
+      variables,
+    );
+    return savedItemsCompleteToRest(response);
+  }
+  const response = await callSavedItemsByOffsetSimple(
     accessToken,
     consumerKey,
     headers,
     variables,
   );
-  return convertSavedItemsToRestResponse(response);
+  return savedItemsSimpleToRest(response);
 }
 
 export default router;
