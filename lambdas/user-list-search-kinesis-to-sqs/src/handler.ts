@@ -1,11 +1,11 @@
+import SqsWritable from './sqs/writeable';
+import _ from 'highland';
+import { SQS } from '@aws-sdk/client-sqs';
 import {
   SqsMessage,
   UserItemsSqsMessage,
   UserListImportSqsMessage,
-} from '../../shared';
-import SqsWritable from '../../sqs/writeable';
-import _ from 'highland';
-import { SQS } from '@aws-sdk/client-sqs';
+} from './sqs/types';
 
 const MAX_JOBS_PER_MESSAGE = 1000;
 

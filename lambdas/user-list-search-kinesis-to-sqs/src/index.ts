@@ -1,4 +1,4 @@
-import { config } from '../../config';
+import { config } from './config';
 import { getHandler } from './handler';
 import { SQSClient } from '@aws-sdk/client-sqs';
 import * as Sentry from '@sentry/serverless';

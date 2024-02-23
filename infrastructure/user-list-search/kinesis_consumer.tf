@@ -7,7 +7,7 @@ resource "aws_lambda_function" "unified_events_consumer" {
   filename         = data.archive_file.lambda_zip.output_path #Dummy lambda that just logs the event.
   role             = aws_iam_role.lambda_role.arn
   runtime          = "nodejs20.x"
-  handler          = "lambda.streamHandler"
+  handler          = "index.handler"
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256 #Dummy lambda that just logs the event.
   # depends_on       = [aws_cloudwatch_log_group.unified_events_consumer]
   timeout = 300
