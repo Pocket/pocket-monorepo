@@ -27,7 +27,6 @@ fragment ItemSimple on Item {
     hasVideo
     hasImage
     language
-    ampUrl
 }
 
 fragment SavedItemSimple on SavedItem {

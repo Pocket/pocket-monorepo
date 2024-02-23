@@ -21,7 +21,6 @@ describe('v3Get', () => {
 
   describe('type: simple', () => {
     it('GET should log to Sentry and throw 5xx for unknown errors', async () => {
-      //const consoleStub = sinon.stub(console, 'log');
       const sentrySpy = jest.spyOn(Sentry, 'captureException');
       jest
         .spyOn(GraphQLCalls, 'callSavedItemsByOffsetSimple')
@@ -32,8 +31,6 @@ describe('v3Get', () => {
         .get('/v3/get')
         .query({ consumer_key: 'test', access_token: 'test' });
       expect(response.status).toBe(500);
-      //console log for some reason shows twice for the first test
-      //expect(consoleStub.callCount).toBe(1);
       expect(sentrySpy).toHaveBeenCalledTimes(1);
       expect(response.headers['x-error-code']).toBe(
         expectedHeaders['X-Error-Code'],
@@ -67,7 +64,6 @@ describe('v3Get', () => {
   });
   describe('type: complete', () => {
     it('GET should log to Sentry and throw 5xx for unknown errors', async () => {
-      //const consoleStub = sinon.stub(console, 'log');
       const sentrySpy = jest.spyOn(Sentry, 'captureException');
       jest
         .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
@@ -80,8 +76,6 @@ describe('v3Get', () => {
         detailType: 'complete',
       });
       expect(response.status).toBe(500);
-      //console log for some reason shows twice for the first test
-      //expect(consoleStub.callCount).toBe(1);
       expect(sentrySpy).toHaveBeenCalledTimes(1);
       expect(response.headers['x-error-code']).toBe(
         expectedHeaders['X-Error-Code'],

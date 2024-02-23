@@ -1,8 +1,5 @@
-import {
-  GetSavedItemsByOffsetSimpleQuery,
-  GetSavedItemsByOffsetCompleteQuery,
-} from '../generated/graphql/types';
-import { savedItemsSimpleToRest } from './toRest';
+import { GetSavedItemsByOffsetSimpleQuery } from '../generated/graphql/types';
+import { savedItemsCompleteToRest, savedItemsSimpleToRest } from './toRest';
 import { RestResponseSimple } from './types';
 import {
   testV3GetResponse,
@@ -11,11 +8,15 @@ import {
   mockSavedItemFragment,
   seedDataRest,
   mockItemFragment,
-} from './fixtures';
+  mockGraphGetComplete,
+  expectedGetComplete,
+} from '../test/fixtures';
 
 describe('GraphQL <> Rest convesion', () => {
   describe('convertSavedItemsSimple', () => {
     it('should transform graphql savedItemsByOffset response to rest response', () => {
+      // TODO: Remove these function layers and use explicit data to
+      // avoid bugs due to expected data referencing fixture directly
       const graphResponse: GetSavedItemsByOffsetSimpleQuery = {
         user: {
           savedItemsByOffset: {
@@ -51,6 +52,11 @@ describe('GraphQL <> Rest convesion', () => {
         },
       };
 
+      const res = savedItemsSimpleToRest(graphResponse);
+      const expected = testV3GetResponse({
+        ...seedDataRest,
+        ids: ['id1', 'id2'],
+      });
       expect(savedItemsSimpleToRest(graphResponse)).toEqual(
         testV3GetResponse({
           ...seedDataRest,
@@ -96,7 +102,6 @@ describe('GraphQL <> Rest convesion', () => {
             time_read,
             time_updated,
             status,
-            amp_url: '',
             excerpt: '',
             given_title: '',
             given_url: '',
@@ -112,8 +117,6 @@ describe('GraphQL <> Rest convesion', () => {
             resolved_title: '',
             resolved_url: '',
             sort_id: 0,
-            title: '',
-            top_image_url: '',
             word_count: '0',
           },
         },
@@ -122,46 +125,9 @@ describe('GraphQL <> Rest convesion', () => {
     });
   });
   describe('convertSavedItemsComplete', () => {
-    const graphResponse: GetSavedItemsByOffsetCompleteQuery = {
-      user: {
-        savedItemsByOffset: {
-          entries: [
-            {
-              __typename: 'SavedItem',
-              ...testSavedItemFragment({
-                ...mockSavedItemFragment,
-                id: `id1`,
-              }),
-              item: {
-                ...testItemFragment({
-                  ...mockItemFragment,
-                  itemId: `id1`,
-                }),
-              },
-            },
-            {
-              __typename: 'SavedItem',
-              ...testSavedItemFragment({
-                ...mockSavedItemFragment,
-                id: `id2`,
-              }),
-              item: {
-                ...testItemFragment({
-                  ...mockItemFragment,
-                  itemId: `id2`,
-                }),
-              },
-            },
-          ],
-        },
-      },
-    };
-
-    expect(savedItemsSimpleToRest(graphResponse)).toEqual(
-      testV3GetResponse({
-        ...seedDataRest,
-        ids: ['id1', 'id2'],
-      }),
-    );
+    it('should transform graphql savedItemsByOffset response to rest response', () => {
+      const res = savedItemsCompleteToRest(mockGraphGetComplete);
+      expect(res).toEqual(expectedGetComplete);
+    });
   });
 });

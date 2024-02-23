@@ -12,6 +12,7 @@ import {
   GetSavedItemsByOffsetSimpleQuery,
   Imageness,
   Videoness,
+  ItemCompleteFragment,
 } from '../generated/graphql/types';
 import {
   TagsItemObject,
@@ -26,7 +27,10 @@ import {
 } from './types';
 import { RestResponseSimple, RestResponseComplete } from './types';
 
-export function TagsReducer(
+/**
+ * Convert tag response array into a map keyed by tag name
+ */
+function TagsReducer(
   tags: Array<Pick<Tag, 'name'>> | undefined,
   itemId: string,
 ): TagsItemObject | undefined {
@@ -42,11 +46,14 @@ export function TagsReducer(
   }, {} as TagsItemObject);
 }
 
-export function AuthorsReducer(
+/**
+ * Convert authors response array into a map keyed by author id
+ */
+function AuthorsReducer(
   authors: Author[] | undefined,
   itemId: string,
 ): AuthorsItemObject | undefined {
-  if (authors == null) {
+  if (authors == null || authors.length === 0) {
     return undefined;
   }
   return authors.reduce((authorsObj, author) => {
@@ -60,7 +67,10 @@ export function AuthorsReducer(
   }, {} as AuthorsItemObject);
 }
 
-export function ImagesReducer(
+/**
+ * Convert images array into a map keyed by image id
+ */
+function ImagesReducer(
   images: Array<Omit<Image, 'src'>> | undefined,
   itemId: string,
 ): ImagesItemObject | undefined {
@@ -72,8 +82,8 @@ export function ImagesReducer(
       item_id: itemId,
       image_id: image.imageId.toString(),
       src: image.url,
-      width: image.width.toString() ?? '0',
-      height: image.height.toString() ?? '0',
+      width: (image.width ?? 0).toString(),
+      height: (image.height ?? 0).toString(),
       credit: image.credit ?? '',
       caption: image.caption ?? '',
     };
@@ -81,7 +91,24 @@ export function ImagesReducer(
   }, {} as ImagesItemObject);
 }
 
-export function VideosReducer(
+function DisplayImageTransformer(
+  images: ItemCompleteFragment['images'] | undefined,
+  itemId: string,
+):
+  | Pick<ImagesItemObject[string], 'item_id' | 'src' | 'width' | 'height'>
+  | undefined {
+  if (images == null || images.length === 0) {
+    return undefined;
+  }
+  return {
+    item_id: itemId,
+    src: images[0].url,
+    width: (images[0].width ?? 0).toString(),
+    height: (images[0].height ?? 0).toString(),
+  };
+}
+
+function VideosReducer(
   videos: Video[] | undefined,
   itemId: string,
 ): VideosItemObject | undefined {
@@ -103,14 +130,19 @@ export function VideosReducer(
   }, {} as VideosItemObject);
 }
 
-export function DomainMetadataTransformer(
+/**
+ * Transform domain metadata response into format
+ * that complies with v3 api
+ */
+function DomainMetadataTransformer(
   metadata: DomainMetadata | undefined,
 ): DomainMetadataItemObject {
-  return {
-    name: metadata.name,
-    logo: metadata.logo,
-    greyscale_logo: metadata.logoGreyscale,
-  };
+  const metadataResponse = {} as DomainMetadataItemObject;
+  metadata.name && (metadataResponse['name'] = metadata.name);
+  metadata.logo && (metadataResponse['logo'] = metadata.logo);
+  metadata.logoGreyscale &&
+    (metadataResponse['greyscale_logo'] = metadata.logoGreyscale);
+  return metadataResponse;
 }
 
 type SavedItemSimple =
@@ -119,12 +151,20 @@ type SavedItemSimple =
 type SavedItemComplete =
   GetSavedItemsByOffsetCompleteQuery['user']['savedItemsByOffset']['entries'][number];
 
+/**
+ * Transform a SavedItem entity  (only 'simple'
+ * fields requested) to v3 API format.
+ */
 export function ListItemTransformerSimple(
   savedItem: SavedItemSimple,
   index: number,
 ): ListItemObject {
   return ListItemTransformer(savedItem, index);
 }
+/**
+ * Transform a SavedItem entity (additional
+ * 'complete' fields requested) to v3 API format.
+ */
 export function ListItemTransformerComplete(
   savedItem: SavedItemComplete,
   index: number,
@@ -139,6 +179,7 @@ export function ListItemTransformerComplete(
     images: ImagesReducer(savedItem.item.images, savedItem.id),
     tags: TagsReducer(savedItem.tags, savedItem.id),
     videos: VideosReducer(savedItem.item.videos, savedItem.id),
+    image: DisplayImageTransformer(savedItem.item.images, savedItem.id),
   };
   const complete = Object.entries(completeFieldMap).reduce(
     (complete, [k, v]) => {
@@ -151,19 +192,25 @@ export function ListItemTransformerComplete(
   );
   return { ...simple, ...complete };
 }
-export function ListItemTransformer(
+
+/**
+ * Shared transformer function for 'simple' and 'complete'
+ * SavedItem entities. Set default values for unsupported types
+ * (e.g. PendingItem) and missing values in GraphQL response.
+ */
+function ListItemTransformer(
   savedItem: SavedItemSimple | SavedItemComplete,
   index: number,
 ): ListItemObject | ListItemObjectComplete {
   const baseFields = {
     item_id: savedItem.id,
     favorite: savedItem.isFavorite ? ('1' as const) : ('0' as const),
-    status: savedItem.isArchived ? ('0' as const) : ('1' as const),
+    status: savedItem.isArchived ? ('1' as const) : ('0' as const),
     time_added: savedItem._createdAt?.toString(),
     time_updated: savedItem._updatedAt?.toString(),
-    time_read: savedItem.archivedAt?.toString(),
-    time_favorited: savedItem.favoritedAt?.toString(),
-    // TODO @kschelonka
+    time_read: (savedItem.archivedAt ?? '0').toString(),
+    time_favorited: (savedItem.favoritedAt ?? '0').toString(),
+    // TODO POCKET-9657
     listen_duration_estimate: 0,
     sort_id: index,
   };
@@ -178,7 +225,6 @@ export function ListItemTransformer(
         given_title: '',
         resolved_title: '',
         resolved_url: '',
-        title: '',
         excerpt: '',
         is_article: '0' as const,
         is_index: '0' as const,
@@ -187,12 +233,14 @@ export function ListItemTransformer(
         word_count: '0',
         lang: '',
         time_to_read: 0,
-        amp_url: '',
-        top_image_url: '',
       };
     case 'Item':
+      const conditionalFields = {};
+      savedItem.item.topImage?.url &&
+        (conditionalFields['top_image_url'] = savedItem.item.topImage.url);
       return {
         ...baseFields,
+        ...conditionalFields,
         // Most of these that default to empty strings should never
         // be undefined in practice, but we will provide defaults to
         // properly conform to expected type
@@ -201,7 +249,6 @@ export function ListItemTransformer(
         given_title: savedItem.item.title ?? '',
         resolved_title: savedItem.item.title ?? '',
         resolved_url: savedItem.item.resolvedUrl ?? '',
-        title: savedItem.item.title ?? '',
         excerpt: savedItem.item.excerpt ?? '',
         is_article: savedItem.item.isArticle ? ('1' as const) : ('0' as const),
         is_index: savedItem.item.isIndex ? ('1' as const) : ('0' as const),
@@ -210,8 +257,6 @@ export function ListItemTransformer(
         word_count: (savedItem.item.wordCount ?? 0).toString(),
         lang: savedItem.item.language ?? '',
         time_to_read: savedItem.item.timeToRead ?? 0,
-        amp_url: savedItem.item.ampUrl ?? '',
-        top_image_url: savedItem.item.topImage?.url ?? '',
       };
   }
 }

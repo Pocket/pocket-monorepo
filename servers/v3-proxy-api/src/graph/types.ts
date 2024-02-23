@@ -24,8 +24,10 @@ export type RestResponseSimple = {
   cacheType: string;
 };
 export type RestResponseComplete = {
-  //todo: add top level fields and sortId
+  //todo: add top level fields
   //e.g status, complete - as they are not mapped by developer portal docs
+  // note that complete returns 1 for detailType=simple and
+  // detailType=complete when querying v3 API directly
   list: { [key: string]: ListItemObjectComplete };
   cacheType: string;
 };
@@ -50,9 +52,9 @@ export type ImagesItemObject = {
     width: string;
     // Number as string
     height: string;
-    // Can be empty
+    // Can be empty string
     credit: string;
-    // Can be empty
+    // Can be empty string
     caption: string;
   };
 };
@@ -96,9 +98,10 @@ export type AuthorsItemObject = {
 };
 
 export type DomainMetadataItemObject = {
-  name: string;
-  logo: string;
-  greyscale_logo: string;
+  // Fields exist if data is non-null
+  name?: string;
+  logo?: string;
+  greyscale_logo?: string;
 };
 
 export type ListItemObject = {
@@ -116,7 +119,6 @@ export type ListItemObject = {
   time_updated: string;
   time_read: string;
   time_favorited: string;
-  title: string;
   excerpt: string;
   is_article: '0' | '1';
   is_index: '0' | '1';
@@ -126,8 +128,8 @@ export type ListItemObject = {
   // Empty if unavailable, 2-letter lang code
   lang: string;
   time_to_read: number;
-  amp_url: string;
-  top_image_url: string;
+  // Not present if null
+  top_image_url?: string;
   // Zero if estimate is unavailable
   listen_duration_estimate: number;
 };
