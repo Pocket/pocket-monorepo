@@ -1,0 +1,53 @@
+query getSavedItemsByOffsetComplete($pagination: OffsetPaginationInput, $filters: SavedItemsFilter, $sort: SavedItemsSort) {
+    user {    
+        savedItemsByOffset(pagination: $pagination, filter: $filters sort: $sort) {
+            entries {
+                ...SavedItemComplete
+            }
+        }
+    }
+}
+
+
+fragment SavedItemComplete on SavedItem {
+    ...SavedItemSimple,
+    tags {
+        name
+    }
+    item {
+        ... on Item {
+            ...ItemComplete
+        }
+    }
+}
+
+fragment ItemComplete on Item {
+    ...ItemSimple,
+    authors {
+        id
+        name
+        url
+    }
+    domainMetadata {
+        logo
+        logoGreyscale
+        name
+    }
+    images {
+        imageId
+        url
+        height
+        width
+        credit
+        caption
+    }
+    videos {
+        videoId
+        src
+        width
+        type
+        vid
+        length
+        height
+    }
+}

@@ -1,17 +1,18 @@
 import { GraphQLClient } from 'graphql-request';
 
 import {
-  GetSavedItemsDocument,
-  GetSavedItemsQuery,
-  GetSavedItemsQueryVariables,
-  GetSavedItemsByOffsetQuery,
-  GetSavedItemsByOffsetQueryVariables,
+  GetSavedItemsByOffsetSimpleQuery,
+  GetSavedItemsByOffsetSimpleQueryVariables,
   SaveArchiveDocument,
   SaveArchiveMutation,
   SaveFavoriteDocument,
   SaveFavoriteMutation,
   SaveFavoriteMutationVariables,
   SaveArchiveMutationVariables,
+  GetSavedItemsByOffsetSimpleDocument,
+  GetSavedItemsByOffsetCompleteDocument,
+  GetSavedItemsByOffsetCompleteQuery,
+  GetSavedItemsByOffsetCompleteQueryVariables,
 } from '../generated/graphql/types';
 import config from '../config';
 import * as Sentry from '@sentry/node';
@@ -106,27 +107,27 @@ export async function callSaveFavorite(
 }
 
 /**
- * function call to get saves
+ * function call to get saves (detailType=simple)
  *
  * @param accessToken accessToken of the user
  * @param consumerKey consumerKey associated with the user
  * @param headers any headers received by proxy is just pass through to web graphQL proxy.
  * @param variables input variables required for the query
  */
-export async function callSavedItems(
+export async function callSavedItemsByOffsetSimple(
   accessToken: string,
   consumerKey: string,
   headers: any,
-  variables: GetSavedItemsQueryVariables,
-): Promise<GetSavedItemsQuery> {
+  variables: GetSavedItemsByOffsetSimpleQueryVariables,
+): Promise<GetSavedItemsByOffsetSimpleQuery> {
   try {
     const client = getClient(accessToken, consumerKey, headers);
-    return client.request<GetSavedItemsQuery, GetSavedItemsQueryVariables>(
-      GetSavedItemsDocument,
-      variables,
-    );
+    return client.request<
+      GetSavedItemsByOffsetSimpleQuery,
+      GetSavedItemsByOffsetSimpleQueryVariables
+    >(GetSavedItemsByOffsetSimpleDocument, variables);
   } catch (e) {
-    Sentry.addBreadcrumb({ message: `callSavedItem failed:` });
+    Sentry.addBreadcrumb({ message: `callSavedItemsByOffsetSimple failed:` });
     Sentry.captureException(e);
     serverLogger.error(e);
     throw e;
@@ -134,27 +135,22 @@ export async function callSavedItems(
 }
 
 /**
- * function call to get saves
- *
- * @param accessToken accessToken of the user
- * @param consumerKey consumerKey associated with the user
- * @param headers any headers received by proxy is just pass through to web graphQL proxy.
- * @param variables input variables required for the query
+ * Call API to retrieve saves (detailType=complete)
  */
-export async function callSavedItemsByOffset(
+export async function callSavedItemsByOffsetComplete(
   accessToken: string,
   consumerKey: string,
   headers: any,
-  variables: GetSavedItemsByOffsetQueryVariables,
-): Promise<GetSavedItemsQuery> {
+  variables: GetSavedItemsByOffsetCompleteQueryVariables,
+): Promise<GetSavedItemsByOffsetCompleteQuery> {
   try {
     const client = getClient(accessToken, consumerKey, headers);
     return client.request<
-      GetSavedItemsByOffsetQuery,
-      GetSavedItemsByOffsetQueryVariables
-    >(GetSavedItemsDocument, variables);
+      GetSavedItemsByOffsetCompleteQuery,
+      GetSavedItemsByOffsetCompleteQueryVariables
+    >(GetSavedItemsByOffsetCompleteDocument, variables);
   } catch (e) {
-    Sentry.addBreadcrumb({ message: `callSavedItemsByOffset failed:` });
+    Sentry.addBreadcrumb({ message: `callSavedItemsByOffsetComplete failed:` });
     Sentry.captureException(e);
     serverLogger.error(e);
     throw e;

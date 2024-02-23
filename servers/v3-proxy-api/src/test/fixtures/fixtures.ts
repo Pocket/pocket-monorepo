@@ -2,21 +2,23 @@ import {
   Imageness,
   SavedItemStatus,
   Videoness,
-} from '../generated/graphql/types';
-import { GraphSavedItemEdge, ListItemObject, RestResponse } from './types';
+  SavedItemSimpleFragment,
+  ItemSimpleFragment,
+} from '../../generated/graphql/types';
+import { ListItemObject, RestResponseSimple } from '../../graph/types';
+
 export const seedDataRest: MockListItemObject = Object.freeze({
   ids: ['1', '2'],
   given_url: 'https://test.com',
   given_title: 'title',
   favorite: '1',
-  status: '0',
+  status: '1',
   time_added: '1677818995',
   time_updated: '1677818995',
   time_read: '1677818995',
   time_favorited: '1677818995',
   resolved_title: 'title',
   resolved_url: 'https://test.com',
-  title: 'title',
   excerpt: 'excerpt',
   is_article: '1',
   is_index: '1',
@@ -25,30 +27,32 @@ export const seedDataRest: MockListItemObject = Object.freeze({
   word_count: '100',
   lang: 'en',
   time_to_read: 10,
-  amp_url: 'https://test.com',
   top_image_url: 'https://test.com/image.jpg',
+  normal_url: 'test.com',
+  sort_id: 1,
+  listen_duration_estimate: 0,
 });
 
-export type SavedItemFragment = Omit<GraphSavedItemEdge['node'], 'item'>;
+export type SavedItemFragment = Omit<SavedItemSimpleFragment, 'item'>;
 export const mockSavedItemFragment: SavedItemFragment = {
   __typename: 'SavedItem',
   id: '1',
-  status: SavedItemStatus.Unread,
+  status: SavedItemStatus.Archived,
   url: seedDataRest.given_url,
   isFavorite: seedDataRest.favorite === '1',
-  isArchived: true, //todo: map status to archived
+  isArchived: true,
   _createdAt: parseInt(seedDataRest.time_added),
   _updatedAt: parseInt(seedDataRest.time_updated),
   favoritedAt: parseInt(seedDataRest.time_favorited),
   archivedAt: parseInt(seedDataRest.time_read),
 };
-export type ItemFragment = GraphSavedItemEdge['node']['item'];
-export const mockItemFragment: ItemFragment = {
+
+export const mockItemFragment: ItemSimpleFragment = {
   __typename: 'Item',
   itemId: `item-${seedDataRest.ids[0]}`,
+  title: 'title',
   resolvedId: `resolved-${seedDataRest.ids[0]}`,
   wordCount: parseInt(seedDataRest.word_count),
-  title: seedDataRest.title,
   timeToRead: seedDataRest.time_to_read,
   resolvedUrl: seedDataRest.resolved_url,
   givenUrl: seedDataRest.given_url,
@@ -59,7 +63,6 @@ export const mockItemFragment: ItemFragment = {
   hasVideo: Videoness.HasVideos,
   hasImage: Imageness.HasImages,
   language: seedDataRest.lang,
-  ampUrl: seedDataRest.amp_url,
   topImage: {
     url: seedDataRest.top_image_url,
   },
@@ -85,7 +88,7 @@ export const testSavedItemFragment = (
 export const testItemFragment = (mockInput: {
   itemId: string;
   __typename: 'PendingItem' | 'Item';
-}): ItemFragment => {
+}): ItemSimpleFragment => {
   return {
     ...mockItemFragment,
     itemId: mockInput.itemId,
@@ -106,14 +109,13 @@ export const testV3GetResponse = (
   mockInputs: MockListItemObject = {
     ...seedDataRest,
   },
-): RestResponse => {
+): RestResponseSimple => {
   const map: { [key: string]: ListItemObject } = {};
 
-  mockInputs.ids.forEach((id) => {
+  mockInputs.ids.forEach((id, index) => {
     map[id] = {
       item_id: id,
       resolved_id: `resolved-${id}`,
-      title: mockInputs.title,
       given_title: mockInputs.given_title,
       given_url: mockInputs.given_url,
       favorite: mockInputs.favorite,
@@ -132,8 +134,9 @@ export const testV3GetResponse = (
       word_count: mockInputs.word_count,
       lang: mockInputs.lang,
       time_to_read: mockInputs.time_to_read,
-      amp_url: mockInputs.amp_url,
       top_image_url: mockInputs.top_image_url,
+      listen_duration_estimate: 0,
+      sort_id: index,
     };
   });
 

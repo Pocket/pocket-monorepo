@@ -1,0 +1,48 @@
+query getSavedItemsByOffsetSimple($pagination: OffsetPaginationInput, $filters: SavedItemsFilter, $sort: SavedItemsSort) {
+    user {    
+        savedItemsByOffset(pagination: $pagination, filter: $filters sort: $sort) {
+            entries {
+                ...SavedItemSimple
+            }
+        }
+    }
+}
+
+fragment ItemSimple on Item {
+    __typename
+    itemId
+    resolvedId
+    wordCount
+    topImage {
+        url
+    }
+    title
+    timeToRead
+    resolvedUrl
+    givenUrl
+    excerpt
+    domain
+    isArticle
+    isIndex
+    hasVideo
+    hasImage
+    language
+}
+
+fragment SavedItemSimple on SavedItem {
+    id
+    status
+    url
+    isFavorite
+    isArchived
+    _updatedAt
+    _createdAt
+    favoritedAt
+    archivedAt
+    item {
+        __typename
+        ... on Item {
+            ...ItemSimple
+        }
+    }
+}

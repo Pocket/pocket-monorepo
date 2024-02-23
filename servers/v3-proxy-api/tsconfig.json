@@ -4,6 +4,6 @@
     "outDir": "dist",
     "rootDir": "src",
   },
-  "exclude": ["node_modules", "dist", "**/.pnpm/*"],
+  "exclude": ["node_modules", "dist", "**/.pnpm/*", "src/test"],
   "include": ["src/**/*.ts", "src/config"]
 }
