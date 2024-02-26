@@ -26,7 +26,7 @@
     "migrate:reset": "prisma migrate reset"
   },
   "dependencies": {
-    "@aws-sdk/client-eventbridge": "3.515.0",
+    "@aws-sdk/client-eventbridge": "3.521.0",
     "@keyv/redis": "2.8.4",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
