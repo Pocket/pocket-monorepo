@@ -1,5 +1,5 @@
 import { SQSEvent, SQSRecord } from 'aws-lambda';
-import { processBody } from '../../tasks/userItemsDelete';
+import { processBody } from './userItemsDelete';
 import * as Sentry from '@sentry/serverless';
 import { config } from '../../config';
 
