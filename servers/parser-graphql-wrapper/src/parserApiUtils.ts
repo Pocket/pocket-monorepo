@@ -99,7 +99,7 @@ export const extractDomainMeta = (rawItem): any => {
 };
 
 /**
- * Takes dates that can be returned from the parser and makes somse sense of them.
+ * Takes dates that can be returned from the parser and makes some sense of them.
  * @param date
  */
 

@@ -189,6 +189,20 @@ export const resolvers = {
         repo,
       );
     },
+    datePublished: async (
+      { url },
+      args,
+      context: IContext,
+    ): Promise<string | undefined | null> => {
+      // datePublished is not a guaranteed field on CorpusItem - we shouldn't
+      // return underlying parser errors to clients if this call fails
+      // (as some clients will fail outright if any graph errors are present)
+      try {
+        return (await getItemByUrl(url)).datePublished;
+      } catch (e) {
+        return null;
+      }
+    },
     timeToRead: async (
       { url },
       args,

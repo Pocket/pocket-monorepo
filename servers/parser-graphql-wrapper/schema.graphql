@@ -416,6 +416,10 @@ extend type CorpusItem @key(fields: "url") {
   shortUrl: Url @tag(name: "beta")
   url: Url! @external
   """
+  The date the article was published.
+  """
+  datePublished: DateString
+  """
   Time to read in minutes. Is nullable.
   """
   timeToRead: Int
