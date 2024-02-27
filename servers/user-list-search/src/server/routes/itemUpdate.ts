@@ -13,7 +13,7 @@ import { legacyMysqlInterface } from '../../datasource/MysqlDataSource';
 
 export const router = Router();
 
-const userItemsDeleteSchema: Schema = {
+const itemUpdateSchema: Schema = {
   traceId: {
     in: ['body'],
     optional: true,
@@ -59,7 +59,7 @@ export function validate(
 
 router.post(
   '/',
-  checkSchema(userItemsDeleteSchema),
+  checkSchema(itemUpdateSchema),
   validate,
   async (req: Request, res: Response) => {
     const requestId = req.body.traceId ?? nanoid();
@@ -89,13 +89,15 @@ router.post(
     const listItems = await getUserItems(db, userId, itemIds);
 
     if (listItems.length > 0) {
-      indexInElasticSearch(listItems).catch((error) => {
+      try {
+        await indexInElasticSearch(listItems);
+      } catch (error) {
         const message = `itemUpdate: Error - Failed to update items User ID: ${userId} items: ${listItems} (requestId='${requestId}')`;
         Sentry.addBreadcrumb({ message });
         Sentry.captureException(error);
         console.log(message);
         console.error(error);
-      });
+      }
     }
 
     return res.send({

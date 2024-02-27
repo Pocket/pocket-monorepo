@@ -43,12 +43,9 @@ export const config = {
       userItemsUpdateUrl:
         process.env.SQS_USER_ITEMS_UPDATE_URL ||
         'http://localhost:4566/000000000000/UserListSearch-Dev-UserItemsUpdate',
-      userItemsDeleteUrl:
-        process.env.SQS_USER_ITEMS_DELETE_URL ||
-        'http://localhost:4566/000000000000/UserListSearch-Dev-UserItemsDelete',
-      userListImportUrl:
-        process.env.SQS_USER_LIST_IMPORT_URL ||
-        'http://localhost:4566/000000000000/UserListSearch-Dev-UserListImport',
+      userItemsUpdateBackfillUrl:
+        process.env.SQS_USER_ITEMS_UPDATE_BACKFILL_URL ||
+        'http://localhost:4566/000000000000/UserListSearch-Dev-UserItemsUpdateBackfill',
       userListImportBackfillUrl:
         process.env.SQS_USER_LIST_IMPORT_BACKFILL_URL ||
         'http://localhost:4566/000000000000/UserListSearch-Dev-UserListImportBackfill',

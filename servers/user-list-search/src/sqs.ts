@@ -1,6 +1,4 @@
 import {
-  DeleteMessageCommand,
-  DeleteMessageCommandOutput,
   PurgeQueueCommand,
   PurgeQueueCommandOutput,
   ReceiveMessageCommand,
@@ -30,15 +28,11 @@ export const sendMessage = (
   params?: SendMessageRequest,
 ): Promise<SendMessageResult> => {
   return sqs.send(
-    new SendMessageCommand(
-      Object.assign(
-        {
-          QueueUrl: queueUrl,
-          MessageBody: JSON.stringify(message),
-        },
-        params,
-      ),
-    ),
+    new SendMessageCommand({
+      QueueUrl: queueUrl,
+      MessageBody: JSON.stringify(message),
+      ...params,
+    }),
   );
 };
 
@@ -52,16 +46,12 @@ export const receiveMessage = (
   params?: ReceiveMessageRequest,
 ): Promise<ReceiveMessageResult> => {
   return sqs.send(
-    new ReceiveMessageCommand(
-      Object.assign(
-        {
-          QueueUrl: queueUrl,
-          WaitTimeSeconds: config.aws.sqs.waitTimeSeconds,
-          MaxNumberOfMessages: 10,
-        },
-        params,
-      ),
-    ),
+    new ReceiveMessageCommand({
+      QueueUrl: queueUrl,
+      WaitTimeSeconds: config.aws.sqs.waitTimeSeconds,
+      MaxNumberOfMessages: 10,
+      ...params,
+    }),
   );
 };
 
@@ -73,21 +63,4 @@ export const purgeQueue = (
   queueUrl: string,
 ): Promise<PurgeQueueCommandOutput> => {
   return sqs.send(new PurgeQueueCommand({ QueueUrl: queueUrl }));
-};
-
-/**
- * Deletes messages from the SQS queue
- * @param queueUrl
- * @param receiptHandle
- */
-export const deleteMessage = (
-  queueUrl: string,
-  receiptHandle: string,
-): Promise<DeleteMessageCommandOutput> => {
-  return sqs.send(
-    new DeleteMessageCommand({
-      QueueUrl: queueUrl,
-      ReceiptHandle: receiptHandle,
-    }),
-  );
 };

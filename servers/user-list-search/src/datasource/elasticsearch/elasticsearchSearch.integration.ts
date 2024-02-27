@@ -132,9 +132,8 @@ describe('Elasticsearch Search Query', () => {
       },
     ]);
 
-    // wait for 1 second. I noticed test wasn't passing if run took quickly after inserting. There may be more to do
-    // here to make sure this does not become brittle.
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Wait for index to finish
+    await client.indices.refresh({ index: config.aws.elasticsearch.index });
   });
 
   // For now this gives us confidence that basic search is not

@@ -1987,6 +1987,9 @@ importers:
       lodash:
         specifier: 4.17.21
         version: 4.17.21
+      mysql2:
+        specifier: 3.9.1
+        version: 3.9.1
       nanoid:
         specifier: 3.3.7
         version: 3.3.7
@@ -2003,9 +2006,6 @@ importers:
       '@faker-js/faker':
         specifier: 8.4.1
         version: 8.4.1
-      '@types/aws-lambda':
-        specifier: 8.10.134
-        version: 8.10.134
       '@types/elasticsearch':
         specifier: ^5.0.37
         version: 5.0.43
@@ -9445,7 +9445,7 @@ packages:
   /builtins@5.0.1:
     resolution: {integrity: sha512-qwVpFEHNfhYJIzNRBvd2C1kyo6jz3ZSMPyyuR47OPdiKWlbYnZNyDWuyR175qDnAJLiCo5fBBqPb3RiXgWlkOQ==}
     dependencies:
-      semver: 7.6.0
+      semver: 7.5.4
     dev: true
 
   /bundle-require@4.0.2(esbuild@0.19.12):
@@ -10855,7 +10855,7 @@ packages:
     dependencies:
       semver: 7.6.0
       shelljs: 0.8.5
-      typescript: 5.5.0-dev.20240226
+      typescript: 5.5.0-dev.20240227
     dev: false
 
   /dset@3.1.3:
@@ -14253,7 +14253,7 @@ packages:
       downlevel-dts: 0.11.0
       fast-deep-equal: 3.1.3
       log4js: 6.9.1
-      semver: 7.6.0
+      semver: 7.5.4
       semver-intersect: 1.5.0
       sort-json: 2.0.1
       spdx-license-list: 6.9.0
@@ -14319,7 +14319,7 @@ packages:
       downlevel-dts: 0.11.0
       fast-deep-equal: 3.1.3
       log4js: 6.9.1
-      semver: 7.6.0
+      semver: 7.5.4
       semver-intersect: 1.5.0
       sort-json: 2.0.1
       spdx-license-list: 6.9.0
@@ -15690,7 +15690,7 @@ packages:
     resolution: {integrity: sha512-uPEjtyh2tFEvWYt4Jw7McOD5FPcHkcxm/tHZc5PWaDB3JYq0rGFUbgaAK+CT5pYpQddBfsZVWI08OwoRfdfbcQ==}
     engines: {node: '>=10'}
     dependencies:
-      semver: 7.6.0
+      semver: 7.5.4
     dev: false
 
   /node-abort-controller@3.1.1:
@@ -19295,8 +19295,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.5.0-dev.20240226:
-    resolution: {integrity: sha512-mLY9/pjzSCr7JLkMKHS3KQUKX+LPO9WWjiR+mRcWKcskSdMBZ0j1TPhk/zUyuBklOf3YX4orkvamNiZWZEK0CQ==}
+  /typescript@5.5.0-dev.20240227:
+    resolution: {integrity: sha512-cPljzopUqWPey1Yh7KAE78JSTjoOZUqm8csCGLiu+Hl12xZxGUZFLQRS74IwoDvM+lzoOBwnM528UbYITO9ouA==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: false

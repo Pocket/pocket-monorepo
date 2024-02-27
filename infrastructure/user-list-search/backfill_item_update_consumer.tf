@@ -12,10 +12,8 @@ resource "aws_lambda_function" "item_update_backfill_sqs_processor" {
   # depends_on       = [aws_cloudwatch_log_group.item_update_sqs_processor]
   timeout = 300
   environment {
-    variables = merge(local.app_env, {
-      SQS_USER_ITEMS_UPDATE_URL = aws_sqs_queue.user_items_update_backfill.id
-      SQS_USER_LIST_IMPORT_URL  = aws_sqs_queue.user_list_import_backfill.id
-      PARSER_DB_SECRET_PATH     = "${local.aws_path_prefix}ParserDbCredentials"
+    variables = merge(local.lambda_env, {
+      BACKFILL     = "true"
     })
   }
   tags    = local.tags

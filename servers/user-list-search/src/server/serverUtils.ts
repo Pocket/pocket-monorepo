@@ -20,6 +20,7 @@ import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 import { router as batchDeleteRouter } from '../server/routes/batchDelete';
 import { router as itemDeleteRouter } from './routes/itemDelete';
 import { router as itemUpdateRouter } from './routes/itemUpdate';
+import { router as userListImportRouter } from './routes/userListImport';
 
 import { knexDbClient } from '../datasource/clients/knexClient';
 
@@ -86,6 +87,9 @@ export async function startServer(port: number): Promise<{
 
   // User items update route
   app.use('/itemUpdate', itemUpdateRouter);
+
+  // User items update route
+  app.use('/userListImport', userListImportRouter);
 
   // The error handler must be before any other error middleware and after all controllers
   app.use(Sentry.Handlers.errorHandler() as express.ErrorRequestHandler);

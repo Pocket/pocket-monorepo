@@ -17,8 +17,8 @@ export const getArrayOfIds = (count: number, offset = 1): number[] => {
 
 const seedItems = async (itemIds: number[], truncate = true): Promise<any> => {
   if (truncate) {
-    await knexDbClient().raw('TRUNCATE TABLE readitla_b.items_extended');
-    await knexDbClient().raw('TRUNCATE TABLE readitla_b.items_resolver');
+    await knexDbClient().table('readitla_b.items_extended').truncate();
+    await knexDbClient().table('readitla_b.items_resolver').truncate();
   }
 
   for (let i = 0; i < itemIds.length; i++) {
@@ -64,7 +64,7 @@ const seedItemContent = async (
   truncate = true,
 ): Promise<any> => {
   if (truncate) {
-    await contentDb().raw('TRUNCATE TABLE content.content');
+    await contentDb().table('content.content').truncate();
   }
 
   for (let i = 0; i < itemIds.length; i++) {
@@ -87,7 +87,7 @@ const seedTags = async (
   truncate = true,
 ): Promise<void> => {
   if (truncate) {
-    await knexDbClient().raw('TRUNCATE TABLE item_tags');
+    await knexDbClient().table('item_tags').truncate();
   }
 
   const userIds = await knexDbClient().select('user_id').from('users');
@@ -118,8 +118,8 @@ const seedUsers = async (
   truncate = true,
 ): Promise<void> => {
   if (truncate) {
-    await knexDbClient().raw('TRUNCATE TABLE users');
-    await knexDbClient().raw('TRUNCATE TABLE user_recent_search');
+    await knexDbClient().table('users').truncate();
+    await knexDbClient().table('user_recent_search').truncate();
   }
 
   for (let i = 1; i <= count; i++) {
@@ -166,7 +166,7 @@ const seedList = async (
   truncate = true,
 ): Promise<void> => {
   if (truncate) {
-    await knexDbClient().raw('TRUNCATE TABLE list');
+    await knexDbClient().table('list').truncate();
   }
 
   const userIds = await knexDbClient().select('user_id').from('users');
@@ -203,7 +203,7 @@ export const seedItemWithDifferentResolvedId = async (
   truncate = true,
 ): Promise<void> => {
   if (truncate) {
-    await knexDbClient().raw('TRUNCATE TABLE readitla_b.items_resolver');
+    await knexDbClient().table('readitla_b.items_resolver').truncate();
   }
   await knexDbClient().table('readitla_b.items_resolver').insert({
     item_id: itemId,

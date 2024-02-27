@@ -12,7 +12,7 @@ resource "aws_lambda_function" "item_delete_sqs_processor" {
   # depends_on       = [aws_cloudwatch_log_group.item_delete_sqs_processor]
   timeout = 300
   environment {
-    variables = local.app_env
+    variables = local.lambda_env
   }
 
   

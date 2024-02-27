@@ -12,7 +12,7 @@ resource "aws_lambda_function" "item_update_sqs_processor" {
   # depends_on       = [aws_cloudwatch_log_group.item_update_sqs_processor]
   timeout = 900
   environment {
-    variables = local.app_env
+    variables = local.lambda_env
   }
   tags    = local.tags
   publish = true # We need to publish an initial version
