@@ -4,12 +4,17 @@ import * as Sentry from '@sentry/node';
 import * as GraphQLCalls from '../graph/graphQLClient';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { setTimeout } from 'timers/promises';
+import { expectedGetComplete, mockGraphGetComplete } from '../test/fixtures';
+import * as get from './v3Get';
 
 describe('v3Get', () => {
   const expectedHeaders = {
     'X-Error-Code': '198',
     'X-Error': 'Internal Server Error',
   };
+  beforeAll(() => {
+    jest.clearAllMocks();
+  });
   afterAll(async () => {
     server.close();
     // Make sure it closes
@@ -108,5 +113,71 @@ describe('v3Get', () => {
         error: 'POST: v3/get: Error: test error',
       });
     });
+  });
+  describe('schema validation', () => {
+    it.each([
+      { consumer_key: 'test', access_token: 'test', detailType: 'complete' },
+      {
+        detailType: 'complete',
+        contentType: 'article',
+        count: '10',
+        offset: '10',
+        state: 'read',
+        favorite: '0',
+        tag: 'tag',
+        sort: 'newest',
+        since: '12345',
+      },
+    ])('should work with valid query parameters', async (params) => {
+      jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).get('/v3/get').query(params);
+      expect(response.status).toBe(200);
+    });
+    it.each([
+      {
+        query: {
+          consumer_key: '',
+          detailType: 'simple',
+        },
+        errorCount: 1,
+      },
+      {
+        query: {
+          detailType: 'complete',
+          count: '10',
+          offset: '10',
+          state: 'not-realstate',
+          favorite: '0',
+          tag: 'tag',
+        },
+        errorCount: 1,
+      },
+      {
+        query: {
+          detailType: 'ultra-hd',
+          count: '100000',
+          offset: '-10',
+          state: 'not-realstate',
+          since: '2022-02-23',
+          tag: '',
+          favorite: 'true',
+          contentType: 'unsupported-pod',
+          sort: 'gravity',
+        },
+        errorCount: 9,
+      },
+    ])(
+      'should work with invalid query parameters',
+      async ({ query, errorCount }) => {
+        jest
+          .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+          .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+        const response = await request(app).get('/v3/get').query(query);
+        expect(response.status).toBe(400);
+        expect(response.body.errors.length).toEqual(errorCount);
+      },
+    );
   });
 });
