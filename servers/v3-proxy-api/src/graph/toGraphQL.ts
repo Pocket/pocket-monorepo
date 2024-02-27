@@ -32,7 +32,7 @@ export class Sort<T extends V3GetParams> {
     // Web repo logic:
     //   If since is populated, don't sort favorited/archived items by favoritedAt/archivedAt
     //   If both favorite and archived are populated, default to favorite
-    //   (from a UI perspective this screen does not exist - favorite + archive)
+    //   (from a UI perspective this screen does not exist on web - favorite + archive)
     let sortBy = SavedItemsSortBy.CreatedAt; // default
     if (params.since == null) {
       if (params.favorite != null) {
