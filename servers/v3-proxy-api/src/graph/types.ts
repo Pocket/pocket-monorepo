@@ -43,20 +43,23 @@ export type TagsItemObject = {
 export type TagItem = TagsItemObject[string];
 
 export type ImagesItemObject = {
-  [imageId: string]: {
+  [imageId: string]: BaseImageData & {
     // Same as top-level ID
     image_id: string;
-    item_id: string;
-    src: string;
-    // Number as string
-    width: string;
-    // Number as string
-    height: string;
     // Can be empty string
     credit: string;
     // Can be empty string
     caption: string;
   };
+};
+
+export type BaseImageData = {
+  item_id: string;
+  src: string;
+  // Number as string
+  width: string;
+  // Number as string
+  height: string;
 };
 
 export const VideoTypeMap = {
@@ -143,4 +146,5 @@ export type ListItemObjectAdditional = {
   tags?: TagsItemObject;
   videos?: VideosItemObject;
   domain_metadata?: DomainMetadataItemObject;
+  image?: BaseImageData;
 };

@@ -4,6 +4,7 @@ import {
   VideoType,
   Videoness,
 } from '../../generated/graphql/types';
+import { RestResponseComplete } from '../../graph/types';
 
 export const mockGraphGetComplete = {
   user: {
@@ -141,7 +142,7 @@ export const mockGraphGetComplete = {
   },
 };
 
-export const expectedGetComplete = {
+export const expectedGetComplete: RestResponseComplete = {
   // TODO: Update additional top-level fields when implemented
   cacheType: 'db',
   list: {

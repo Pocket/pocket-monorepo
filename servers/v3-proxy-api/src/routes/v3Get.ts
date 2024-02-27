@@ -12,56 +12,53 @@ import { UserSavedItemsByOffsetArgs } from '../generated/graphql/types';
 import * as Sentry from '@sentry/node';
 import { ErrorCodes, getErrorHeaders } from './errorMapper';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { checkSchema, validationResult, matchedData } from 'express-validator';
+import { V3GetParams, V3GetSchema } from './validations';
 
 const router: Router = Router();
-//v3 in web repo can support both POST and GET request.
-//proxy need to be backward compatible with both of them
 
-router.get('/', async (req: Request, res: Response) => {
-  try {
-    const variables = setSaveInputsFromGetCall(req.query);
-    const headers = req.headers;
-    const accessToken = (req.query.access_token as string) ?? null;
-    const consumerKey = (req.query.consumer_key as string) ?? null;
-    const type = req.query.detailType === 'complete' ? 'complete' : 'simple';
+/**
+ * Shared controller logic for POST and GET for /v3/get endpoint
+ * The Web repo supports both to this route, so we must be backwards compatible.
+ * @param methodName Whether it's a POST or GET method -- just affects error
+ * message prefix.
+ */
+const v3GetController =
+  (methodName: 'GET' | 'POST') => async (req: Request, res: Response) => {
+    const result = validationResult(req);
+    const data = matchedData(req, { includeOptionals: true }) as V3GetParams;
+    if (!result.isEmpty()) {
+      return res.status(400).send({ errors: result.array() });
+    }
+    try {
+      const variables = setSaveInputsFromGetCall(data);
+      const headers = req.headers;
+      const accessToken = (data.access_token as string) ?? null;
+      const consumerKey = (data.consumer_key as string) ?? null;
 
-    return res.json(
-      await processV3call(accessToken, consumerKey, headers, variables, type),
-    );
-  } catch (err) {
-    const errMessage = `GET: v3/get: ${err}`;
-    serverLogger.error(errMessage);
-    Sentry.addBreadcrumb({ message: errMessage });
-    Sentry.captureException(err);
-    return res
-      .status(500)
-      .header(getErrorHeaders(ErrorCodes.INTERNAL_SERVER_ERROR))
-      .send({ error: errMessage });
-  }
-});
+      return res.json(
+        await processV3call(
+          accessToken,
+          consumerKey,
+          headers,
+          variables,
+          data.detailType,
+        ),
+      );
+    } catch (err) {
+      const errMessage = `${methodName}: v3/get: ${err}`;
+      serverLogger.error(errMessage);
+      Sentry.addBreadcrumb({ message: errMessage });
+      Sentry.captureException(err);
+      return res
+        .status(500)
+        .header(getErrorHeaders(ErrorCodes.INTERNAL_SERVER_ERROR))
+        .send({ error: errMessage });
+    }
+  };
 
-router.post('/', async (req: Request, res: Response) => {
-  try {
-    const variables = setSaveInputsFromGetCall(req.body);
-    const headers = req.headers;
-    const accessToken = (req.body.access_token as string) ?? null;
-    const consumerKey = (req.body.consumer_key as string) ?? null;
-    const type = req.query.detailType === 'complete' ? 'complete' : 'simple';
-
-    return res.json(
-      await processV3call(accessToken, consumerKey, headers, variables, type),
-    );
-  } catch (err) {
-    const errMessage = `POST: v3/get: ${err}`;
-    serverLogger.error(errMessage);
-    Sentry.addBreadcrumb({ message: errMessage });
-    Sentry.captureException(err);
-    return res
-      .status(500)
-      .header(getErrorHeaders(ErrorCodes.INTERNAL_SERVER_ERROR))
-      .send({ error: errMessage });
-  }
-});
+router.get('/', checkSchema(V3GetSchema, ['query']), v3GetController('GET'));
+router.post('/', checkSchema(V3GetSchema, ['body']), v3GetController('POST'));
 
 /**
  * function call to get saves from graphQL and convert it to v3 Get response
@@ -77,6 +74,10 @@ export async function processV3call(
   variables: UserSavedItemsByOffsetArgs,
   type: 'simple' | 'complete',
 ) {
+  // Documenting additional parameters which change the shape of the response,
+  // that have not been used in the past year (not including in proxy):
+  //   - includeOpenUrl
+  //   - extended
   if (type === 'complete') {
     const response = await callSavedItemsByOffsetComplete(
       accessToken,
