@@ -4,6 +4,7 @@ import * as Sentry from '@sentry/node';
 import * as GraphQLCalls from '../graph/graphQLClient';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { setTimeout } from 'timers/promises';
+import { mockGraphGetComplete } from '../test/fixtures';
 
 describe('v3Get', () => {
   const expectedHeaders = {
@@ -50,7 +51,7 @@ describe('v3Get', () => {
         });
       const response = await request(app)
         .post('/v3/get')
-        .query({ consumer_key: 'test', access_token: 'test' });
+        .send({ consumer_key: 'test', access_token: 'test' });
       expect(response.status).toBe(500);
       expect(consoleSpy).toHaveBeenCalledTimes(1);
       expect(sentrySpy).toHaveBeenCalledTimes(1);
@@ -93,7 +94,7 @@ describe('v3Get', () => {
         .mockImplementation(() => {
           throw new Error('test error');
         });
-      const response = await request(app).post('/v3/get').query({
+      const response = await request(app).post('/v3/get').send({
         consumer_key: 'test',
         access_token: 'test',
         detailType: 'complete',
@@ -108,5 +109,98 @@ describe('v3Get', () => {
         error: 'POST: v3/get: Error: test error',
       });
     });
+  });
+  describe('schema validation', () => {
+    it.each([
+      { consumer_key: 'test', access_token: 'test', detailType: 'complete' },
+      {
+        detailType: 'complete',
+        contentType: 'article',
+        count: '10',
+        offset: '10',
+        state: 'read',
+        favorite: '0',
+        tag: 'tag',
+        sort: 'newest',
+        since: '12345',
+      },
+    ])('should work with valid query parameters (GET)', async (params) => {
+      jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).get('/v3/get').query(params);
+      expect(response.status).toBe(200);
+    });
+    it.each([
+      { consumer_key: 'test', access_token: 'test', detailType: 'complete' },
+      {
+        detailType: 'complete',
+        contentType: 'article',
+        count: '10',
+        offset: '10',
+        state: 'read',
+        favorite: '0',
+        tag: 'tag',
+        sort: 'newest',
+        since: '12345',
+      },
+    ])('should work with valid body parameters (POST)', async (params) => {
+      jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).post('/v3/get').send(params);
+      expect(response.status).toBe(200);
+    });
+    it.each([
+      {
+        query: {
+          consumer_key: '',
+          detailType: 'simple',
+        },
+        errorCount: 1,
+      },
+      {
+        query: {
+          detailType: 'complete',
+          count: '10',
+          offset: '10',
+          state: 'not-realstate',
+          favorite: '0',
+          tag: 'tag',
+        },
+        errorCount: 1,
+      },
+      {
+        query: {
+          detailType: 'ultra-hd',
+          count: '100000',
+          offset: '-10',
+          state: 'not-realstate',
+          since: '2022-02-23',
+          tag: '',
+          favorite: 'true',
+          contentType: 'unsupported-pod',
+          sort: 'gravity',
+        },
+        errorCount: 9,
+      },
+      // Duplicate query param case
+      {
+        query: {
+          tag: ['abc', '123'],
+        },
+        errorCount: 1,
+      },
+    ])(
+      'should work with invalid query parameters',
+      async ({ query, errorCount }) => {
+        jest
+          .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+          .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+        const response = await request(app).get('/v3/get').query(query);
+        expect(response.status).toBe(400);
+        expect(response.body.errors.length).toEqual(errorCount);
+      },
+    );
   });
 });
