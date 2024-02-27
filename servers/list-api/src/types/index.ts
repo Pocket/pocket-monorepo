@@ -101,6 +101,7 @@ export enum SavedItemsContentType {
   HAS_VIDEO = 'HAS_VIDEO',
   IS_READABLE = 'IS_READABLE',
   IS_EXTERNAL = 'IS_EXTERNAL',
+  HAS_VIDEO_INCLUSIVE = 'HAS_VIDEO_INCLUSIVE',
 }
 
 export type SavedItemsFilter = {

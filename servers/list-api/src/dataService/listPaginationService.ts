@@ -656,6 +656,9 @@ export class ListPaginationService {
       case 'HAS_VIDEO':
         baseQuery.where('readitla_b.items_extended.video', 1);
         break;
+      case 'HAS_VIDEO_INCLUSIVE':
+        baseQuery.where('readitla_b.items_extended.video', '!=', 0);
+        break;
       case 'IS_IMAGE':
         baseQuery.where('readitla_b.items_extended.image', 2);
         break;

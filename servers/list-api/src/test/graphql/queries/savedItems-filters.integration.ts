@@ -528,6 +528,22 @@ describe('getSavedItems filter', () => {
       res.body.data?._entities[0].savedItems.edges[0].node.item.savedItem.id,
     ).toBe('5');
   });
+  it('should return items that contain videos or are videos', async () => {
+    const variables = {
+      id: '1',
+      filter: { contentType: 'HAS_VIDEO_INCLUSIVE' },
+    };
+    const res = await request(app).post(url).set(headers).send({
+      query: GET_SAVED_ITEMS,
+      variables,
+    });
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(2);
+    const ids = res.body.data?._entities[0].savedItems.edges.map(
+      (edge) => edge.node.item.savedItem.id,
+    );
+    expect(ids).toIncludeSameMembers(['5', '1']);
+  });
   it('should return images', async () => {
     const variables = {
       id: '1',
