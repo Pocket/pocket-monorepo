@@ -22,8 +22,6 @@ describe('toGraphQL', () => {
     expect(setSaveInputsFromGetCall(defaultQuery)).toEqual(expected);
   });
   describe('filter object', () => {
-    // Need to see how Express handles this
-    it.todo('handles duplicate query parameters');
     it.each([
       {
         params: { since: 123456 },

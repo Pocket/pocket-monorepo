@@ -184,6 +184,13 @@ describe('v3Get', () => {
         },
         errorCount: 9,
       },
+      // Duplicate query param case
+      {
+        query: {
+          tag: ['abc', '123'],
+        },
+        errorCount: 1,
+      },
     ])(
       'should work with invalid query parameters',
       async ({ query, errorCount }) => {
