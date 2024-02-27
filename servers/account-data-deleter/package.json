@@ -17,7 +17,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-sqs": "3.515.0",
+    "@aws-sdk/client-sqs": "3.521.0",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/feature-flags-client": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
