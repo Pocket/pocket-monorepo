@@ -513,6 +513,25 @@ describe('getSavedItemsByOffset filter', () => {
     };
     expect(res.body.data?._entities[0].savedItemsByOffset).toEqual(expected);
   });
+  it('should return articles that are videos or contain videos', async () => {
+    const variables = {
+      id: '1',
+      filter: { contentType: 'HAS_VIDEO_INCLUSIVE' },
+    };
+    const res = await request(app).post(url).set(headers).send({
+      query: GET_SAVED_ITEMS,
+      variables,
+    });
+    expect(res.body.errors).toBeUndefined();
+    const expected = {
+      totalCount: 2,
+      entries: expect.toIncludeSameMembers([
+        { url: 'http://opq' },
+        { url: 'http://abc' },
+      ]),
+    };
+    expect(res.body.data?._entities[0].savedItemsByOffset).toEqual(expected);
+  });
   it('should return images', async () => {
     const variables = {
       id: '1',

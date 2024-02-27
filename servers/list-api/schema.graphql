@@ -318,6 +318,10 @@ enum SavedItemsContentType {
   """
   HAS_VIDEO
   """
+  Item is a video or a parsed article that contains videos
+  """
+  HAS_VIDEO_INCLUSIVE
+  """
   Item is a parsed page can be opened in reader view
   """
   IS_READABLE
