@@ -1,11 +1,13 @@
-import { config } from '../config';
+import { config } from './config';
 import nock from 'nock';
-import { processBody } from './itemDelete';
+import { processBody } from './itemHelper';
 
 import { SQSRecord } from 'aws-lambda';
-import { UserItemsSqsMessage } from '../types';
+import { UserItemsSqsMessage } from './types';
 
-describe('userItem Delete functions', () => {
+describe('Item Caller functions', () => {
+  const endpoint = config.search.endpoint + config.search.itemDelete;
+
   it('throws an error if response is not ok', async () => {
     nock(config.search.endpoint)
       .post(config.search.itemDelete)
@@ -20,9 +22,9 @@ describe('userItem Delete functions', () => {
       body: JSON.stringify(body),
     };
     try {
-      await processBody(record as SQSRecord);
+      await processBody(record as SQSRecord, endpoint);
     } catch (e) {
-      expect(e.message).toContain('userItemDelete - 400');
+      expect(e.message).toContain('400');
       expect(e.message).toContain('this is an error');
     }
   });
@@ -37,6 +39,6 @@ describe('userItem Delete functions', () => {
     const record = {
       body: JSON.stringify(body),
     };
-    await processBody(record as SQSRecord);
+    await processBody(record as SQSRecord, endpoint);
   });
 });

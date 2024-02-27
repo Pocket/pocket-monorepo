@@ -59,7 +59,7 @@ const getTestIndexDocuments = (): IndexDocument[] => {
 //Set this here so the client instantiates outside of the before block that has a timeout.
 const esClient = client;
 
-describe('userItemsDelete', () => {
+describe('itemDelete', () => {
   let server: ApolloServer<ContextManager>;
   let app: Application;
 
@@ -88,9 +88,12 @@ describe('userItemsDelete', () => {
     await bulkDocument(getTestIndexDocuments());
 
     for (const testObject of testItems) {
-      const res = await request(app).post('/userItemsDelete').send(testObject);
+      const res = await request(app).post('/itemDelete').send(testObject);
       expect(res.status).toBe(200);
     }
+
+    // Wait for background indexing to finish
+    await esClient.indices.refresh({ index: config.aws.elasticsearch.index });
 
     //Ensure each document we just passed along was deleted for user 1
     for (let i = 1; i <= 5; i++) {

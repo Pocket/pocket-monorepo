@@ -265,9 +265,9 @@ workflows:
           codedeploy-group-name: UserListSearch-Dev-ItemDelete
           function-name: UserListSearch-Dev-ItemDelete
           s3-bucket: pocket-userlistsearch-dev-kinesis-consumer
-          s3-key: embedded-$CIRCLE_SHA1.zip
+          s3-key: indexing-$CIRCLE_SHA1.zip
           requires:
-            - user-list-search_embedded_build_lambda_dev
+            - user-list-search_indexing_build_lambda_dev
 
       - code_deploy_lambda:
           <<: *only_dev
@@ -279,9 +279,9 @@ workflows:
           codedeploy-group-name: UserListSearch-Dev-ItemUpdateBackfill
           function-name: UserListSearch-Dev-ItemUpdateBackfill
           s3-bucket: pocket-userlistsearch-dev-kinesis-consumer
-          s3-key: embedded-$CIRCLE_SHA1.zip
+          s3-key: indexing-$CIRCLE_SHA1.zip
           requires:
-            - user-list-search_embedded_build_lambda_dev
+            - user-list-search_indexing_build_lambda_dev
 
       - code_deploy_lambda:
           <<: *only_dev
@@ -514,9 +514,9 @@ workflows:
           codedeploy-group-name: UserListSearch-Prod-ItemDelete
           function-name: UserListSearch-Prod-ItemDelete
           s3-bucket: pocket-userlistsearch-prod-kinesis-consumer
-          s3-key: embedded-$CIRCLE_SHA1.zip
+          s3-key: indexing-$CIRCLE_SHA1.zip
           requires:
-            - user-list-search_embedded_build_lambda_prod
+            - user-list-search_indexing_build_lambda_prod
 
       - code_deploy_lambda:
           <<: *only_main
@@ -528,9 +528,9 @@ workflows:
           codedeploy-group-name: UserListSearch-Prod-ItemUpdateBackfill
           function-name: UserListSearch-Prod-ItemUpdateBackfill
           s3-bucket: pocket-userlistsearch-prod-kinesis-consumer
-          s3-key: embedded-$CIRCLE_SHA1.zip
+          s3-key: indexing-$CIRCLE_SHA1.zip
           requires:
-            - user-list-search_embedded_build_lambda_prod
+            - user-list-search_indexing_build_lambda_prod
 
       - code_deploy_lambda:
           <<: *only_main

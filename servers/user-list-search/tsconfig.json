@@ -9,7 +9,7 @@
     "dist/"
   ],
   "include": [
-    "src/**/*.ts", 
+    "src/**/*.ts", "../../lambdas/user-list-search-indexing/src/itemUpdate/handler.ts", 
   ],
   "files": ["node_modules/jest-extended/types/index.d.ts"]
 }

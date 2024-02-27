@@ -57,6 +57,11 @@ export const captureProcessException = (
  * @param timestamp
  */
 export const mysqlTimeStampToDate = (timestamp: string): Date | null => {
+  if ((timestamp as any) instanceof Date) {
+    // old code returned Mysql timestamps as string, so lets do a quick runtime check..
+    // New next code returns as a date object.
+    return timestamp as unknown as Date;
+  }
   timestamp = timestamp ?? '';
 
   if (!timestamp.trim()) {

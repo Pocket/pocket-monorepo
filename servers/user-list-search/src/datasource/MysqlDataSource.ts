@@ -1,5 +1,3 @@
-import { RowDataPacket } from 'mysql2/promise';
-import { Pool, poolFromConfigFactory } from '../mysql';
 import {
   DataSourceInterface,
   ItemMap,
@@ -14,6 +12,8 @@ import {
   ResolvedIdToItemIdHash,
 } from '../shared/itemIdUtil';
 import zlib from 'zlib';
+import { contentDb, knexDbClient } from './clients/knexClient';
+import knex from 'knex';
 
 type ParserContent = {
   itemId: number;
@@ -29,13 +29,24 @@ type ItemAuthor = {
   author: string;
 };
 
+let mysqlDb: MysqlDataSource;
+
+export const legacyMysqlInterface = () => {
+  if (mysqlDb) {
+    return mysqlDb;
+  }
+
+  mysqlDb = new MysqlDataSource();
+  return mysqlDb;
+};
+
 export class MysqlDataSource implements DataSourceInterface {
-  private readitlaPool: () => Promise<Pool>;
-  private contentAuroraDbPool: () => Promise<Pool>;
+  readitla: knex.Knex<any, any[]>;
+  content: knex.Knex<any, any[]>;
 
   constructor() {
-    this.readitlaPool = poolFromConfigFactory('mysql.readitla');
-    this.contentAuroraDbPool = poolFromConfigFactory('mysql.contentAuroraDb');
+    this.readitla = knexDbClient();
+    this.content = contentDb();
   }
 
   /**
@@ -324,17 +335,15 @@ export class MysqlDataSource implements DataSourceInterface {
       return result;
     }
 
-    const contentAuroraDbPool = await this.contentAuroraDbPool();
-
     const getSql = (tableName) =>
       `SELECT i.item_id as resolved_id, i.content FROM ${tableName} i WHERE i.item_id IN (?)`;
 
     const rows = (
       await Promise.all([
-        contentAuroraDbPool.query(getSql(`content.content`), [resolvedIds]),
+        contentDb().raw(getSql(`content.content`), [resolvedIds]),
       ])
     )
-      .map((result): RowDataPacket[] => result[0])
+      .map((result): any[] => result[0])
       .reduce((accumulator, currentValue) => accumulator.concat(currentValue));
 
     rows.forEach((row: any) => {
@@ -362,9 +371,8 @@ export class MysqlDataSource implements DataSourceInterface {
     return result;
   }
 
-  private async query(sql: string, params?: any[]): Promise<RowDataPacket[]> {
-    const pool = await this.readitlaPool();
-    const [result] = await pool.query(sql, params);
+  private async query(sql: string, params?: any[]): Promise<any[]> {
+    const [result] = await knexDbClient().raw(sql, params);
 
     return result;
   }

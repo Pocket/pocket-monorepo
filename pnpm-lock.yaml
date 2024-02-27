@@ -1939,9 +1939,6 @@ importers:
 
   servers/user-list-search:
     dependencies:
-      '@aws-sdk/client-secrets-manager':
-        specifier: 3.521.0
-        version: 3.521.0
       '@aws-sdk/client-sqs':
         specifier: 3.521.0
         version: 3.521.0
@@ -1990,9 +1987,6 @@ importers:
       lodash:
         specifier: 4.17.21
         version: 4.17.21
-      mysql2:
-        specifier: 3.9.1
-        version: 3.9.1
       nanoid:
         specifier: 3.3.7
         version: 3.3.7

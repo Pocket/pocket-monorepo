@@ -8,7 +8,7 @@ import { serverLogger } from '@pocket-tools/ts-logger';
 
 export const router = Router();
 
-const userItemsDeleteSchema: Schema = {
+const itemDeleteSchema: Schema = {
   traceId: {
     in: ['body'],
     optional: true,
@@ -54,7 +54,7 @@ export function validate(
 
 router.post(
   '/',
-  checkSchema(userItemsDeleteSchema),
+  checkSchema(itemDeleteSchema),
   validate,
   async (req: Request, res: Response) => {
     const requestId = req.body.traceId ?? nanoid();
@@ -73,7 +73,7 @@ router.post(
 
     if (listItems.length > 0) {
       deleteFromElasticSearch(listItems).catch((error) => {
-        const message = `usetItemsDelete: Error - Failed to delete user items User ID: ${userId} items: ${listItems} (requestId='${requestId}')`;
+        const message = `itemDelete: Error - Failed to delete user items User ID: ${userId} items: ${listItems} (requestId='${requestId}')`;
         Sentry.addBreadcrumb({ message });
         Sentry.captureException(error);
         console.log(message);
@@ -83,7 +83,7 @@ router.post(
 
     return res.send({
       status: 'OK',
-      message: `usetItemsDelete: Deleting items for User ID: ${userId} Item Ids: ${itemIds} (requestId='${requestId}')`,
+      message: `itemDelete: Deleting items for User ID: ${userId} Item Ids: ${itemIds} (requestId='${requestId}')`,
     });
   },
 );

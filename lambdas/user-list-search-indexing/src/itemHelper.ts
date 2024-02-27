@@ -1,5 +1,5 @@
-import { config } from '../config';
-import { UserItemsSqsMessage } from '../types';
+import { config } from './config';
+import { UserItemsSqsMessage } from './types';
 import { nanoid } from 'nanoid';
 import { SQSRecord } from 'aws-lambda';
 import fetch from 'node-fetch';
@@ -8,7 +8,10 @@ import fetch from 'node-fetch';
  *
  * @param body
  */
-export const processBody = async (record: SQSRecord): Promise<boolean> => {
+export const processBody = async (
+  record: SQSRecord,
+  endpoint: string,
+): Promise<boolean> => {
   const messageBody: UserItemsSqsMessage = JSON.parse(record.body);
   const traceId = nanoid();
 
@@ -37,9 +40,7 @@ export const processBody = async (record: SQSRecord): Promise<boolean> => {
     });
     if (!res.ok) {
       const data = (await res.json()) as any;
-      throw new Error(
-        `userItemDelete - ${res.status}\n${JSON.stringify(data.errors)}`,
-      );
+      throw new Error(`${res.status}\n${JSON.stringify(data.errors)}`);
     }
 
     console.log(`Completed processing items`, {

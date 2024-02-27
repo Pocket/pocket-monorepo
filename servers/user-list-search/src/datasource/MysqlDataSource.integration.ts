@@ -4,10 +4,14 @@ import {
   seedItemWithDifferentResolvedId,
 } from '../test/_support/seeder';
 import { MysqlDataSource } from './MysqlDataSource';
-import { primaryPool } from '../test/_support/mysql';
-import { RowDataPacket } from 'mysql2';
+import { contentDb, knexDbClient } from './clients/knexClient';
 
 describe('MysqlDataSource', () => {
+  afterAll(async () => {
+    await knexDbClient().destroy();
+    await contentDb().destroy();
+  });
+
   describe('getPremiumUserIds', () => {
     // Daniel: skipping this test because it is only used to load users for a backfill and for somereason it keeps returning non-deterministic results.
     it.skip('should return all premium user id and no non-premium user ids', async () => {
@@ -19,17 +23,17 @@ describe('MysqlDataSource', () => {
       });
 
       // get total users
-      const [total] = await primaryPool.query(
+      const [total] = await knexDbClient().raw(
         'SELECT COUNT(user_id) AS total FROM users',
       );
 
       // get premium users
-      const [premium] = await primaryPool.query(
+      const [premium] = await knexDbClient().raw(
         'SELECT COUNT(user_id) AS total FROM users WHERE premium_status = 1',
       );
 
       // get non-premium users
-      const [nonPremium] = await primaryPool.query(
+      const [nonPremium] = await knexDbClient().raw(
         'SELECT COUNT(user_id) AS total FROM users WHERE premium_status = 0',
       );
 
@@ -46,7 +50,7 @@ describe('MysqlDataSource', () => {
 
       // verify order of user_ids from newest activity to oldest
       const usersMostRecent: { [key: string]: number } = {};
-      const [mostRecentActivityLog] = await primaryPool.query<RowDataPacket[]>(
+      const [mostRecentActivityLog] = await knexDbClient().raw(
         'SELECT user_id, time_added FROM user_recent_search GROUP BY user_id ORDER BY time_added DESC',
       );
       for (const userActivity of mostRecentActivityLog) {
