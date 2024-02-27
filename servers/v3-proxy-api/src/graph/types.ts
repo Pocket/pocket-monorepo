@@ -43,7 +43,7 @@ export type TagsItemObject = {
 export type TagItem = TagsItemObject[string];
 
 export type ImagesItemObject = {
-  [imageId: string]: ImageDataBase & {
+  [imageId: string]: BaseImageData & {
     // Same as top-level ID
     image_id: string;
     // Can be empty string
@@ -53,7 +53,7 @@ export type ImagesItemObject = {
   };
 };
 
-export type ImageDataBase = {
+export type BaseImageData = {
   item_id: string;
   src: string;
   // Number as string
@@ -146,5 +146,5 @@ export type ListItemObjectAdditional = {
   tags?: TagsItemObject;
   videos?: VideosItemObject;
   domain_metadata?: DomainMetadataItemObject;
-  image?: ImageDataBase;
+  image?: BaseImageData;
 };

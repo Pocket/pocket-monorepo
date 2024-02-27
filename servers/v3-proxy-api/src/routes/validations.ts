@@ -1,32 +1,44 @@
 import { Schema } from 'express-validator';
 
-export type V3GetQuery = {
+/**
+ * Note: this type is manually documented, since the
+ * Schema validator doesn't infer types.
+ */
+export type V3GetParams = {
   access_token?: string;
   consumer_key?: string;
   contentType?: 'article' | 'image';
   count: number;
+  detailType: 'simple' | 'complete';
   favorite?: boolean;
   offset: number;
   since?: number;
   sort: 'newest' | 'oldest'; //| 'relevance';
-  state?: 'unread' | 'read' | 'archive' | 'queue';
+  state?: 'unread' | 'read' | 'archive' | 'queue' | 'all';
   tag?: string;
-  type: 'simple' | 'complete';
 };
 
-export const getQuerySchema: Schema = {
+/**
+ * Schema for valid V3 GET/POST requests.
+ * Depending on the method, checkSchema looks
+ * for the data in the query or the body.
+ *
+ * This gives us some safety from bad user input values
+ * and limits the cases we have to handle downstream.
+ */
+export const V3GetSchema: Schema = {
   access_token: {
     optional: true,
     isString: true,
     notEmpty: {
-      errorMessage: 'access_token cannot be empty string',
+      errorMessage: '`access_token` cannot be empty',
     },
   },
   consumer_key: {
     optional: true,
     isString: true,
     notEmpty: {
-      errorMessage: 'consumer_key cannot be empty string',
+      errorMessage: '`consumer_key` cannot be empty',
     },
   },
   detailType: {
@@ -52,8 +64,7 @@ export const getQuerySchema: Schema = {
       //   - hasdomainmetadata
       //   - hasvideos
       //   - pending
-      options: [['unread', 'queue', 'archive', 'read']],
-      errorMessage: 'invalid value for state',
+      options: [['unread', 'queue', 'archive', 'read', 'all']],
     },
   },
   offset: {
@@ -64,7 +75,7 @@ export const getQuerySchema: Schema = {
       options: {
         min: 0,
       },
-      errorMessage: 'offset cannot be negative',
+      errorMessage: '`offset` cannot be negative',
     },
   },
   count: {
@@ -76,7 +87,6 @@ export const getQuerySchema: Schema = {
         min: 1,
         max: 5000,
       },
-      errorMessage: 'invalid value for count',
     },
   },
   tag: {

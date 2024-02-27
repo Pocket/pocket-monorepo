@@ -4,17 +4,13 @@ import * as Sentry from '@sentry/node';
 import * as GraphQLCalls from '../graph/graphQLClient';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { setTimeout } from 'timers/promises';
-import { expectedGetComplete, mockGraphGetComplete } from '../test/fixtures';
-import * as get from './v3Get';
+import { mockGraphGetComplete } from '../test/fixtures';
 
 describe('v3Get', () => {
   const expectedHeaders = {
     'X-Error-Code': '198',
     'X-Error': 'Internal Server Error',
   };
-  beforeAll(() => {
-    jest.clearAllMocks();
-  });
   afterAll(async () => {
     server.close();
     // Make sure it closes
@@ -55,7 +51,7 @@ describe('v3Get', () => {
         });
       const response = await request(app)
         .post('/v3/get')
-        .query({ consumer_key: 'test', access_token: 'test' });
+        .send({ consumer_key: 'test', access_token: 'test' });
       expect(response.status).toBe(500);
       expect(consoleSpy).toHaveBeenCalledTimes(1);
       expect(sentrySpy).toHaveBeenCalledTimes(1);
@@ -98,7 +94,7 @@ describe('v3Get', () => {
         .mockImplementation(() => {
           throw new Error('test error');
         });
-      const response = await request(app).post('/v3/get').query({
+      const response = await request(app).post('/v3/get').send({
         consumer_key: 'test',
         access_token: 'test',
         detailType: 'complete',
@@ -128,11 +124,31 @@ describe('v3Get', () => {
         sort: 'newest',
         since: '12345',
       },
-    ])('should work with valid query parameters', async (params) => {
+    ])('should work with valid query parameters (GET)', async (params) => {
       jest
         .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
         .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
       const response = await request(app).get('/v3/get').query(params);
+      expect(response.status).toBe(200);
+    });
+    it.each([
+      { consumer_key: 'test', access_token: 'test', detailType: 'complete' },
+      {
+        detailType: 'complete',
+        contentType: 'article',
+        count: '10',
+        offset: '10',
+        state: 'read',
+        favorite: '0',
+        tag: 'tag',
+        sort: 'newest',
+        since: '12345',
+      },
+    ])('should work with valid body parameters (POST)', async (params) => {
+      jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).post('/v3/get').send(params);
       expect(response.status).toBe(200);
     });
     it.each([

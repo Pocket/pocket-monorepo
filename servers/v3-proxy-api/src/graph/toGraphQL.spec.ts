@@ -1,10 +1,8 @@
 //add unit test for input type mapping
 import { setSaveInputsFromGetCall } from './toGraphQL';
 import {
-  SavedItemsContentType,
   SavedItemsSortBy,
   SavedItemsSortOrder,
-  SavedItemStatusFilter,
 } from '../generated/graphql/types';
 import { defaultQuery } from '../test/fixtures';
 
@@ -30,6 +28,10 @@ describe('toGraphQL', () => {
       {
         params: { since: 123456 },
         expected: { filter: { updatedSince: 123456 } },
+      },
+      {
+        params: { state: 'all' as const },
+        expected: { filter: {} },
       },
       {
         params: { favorite: true, tag: 'recipe' },

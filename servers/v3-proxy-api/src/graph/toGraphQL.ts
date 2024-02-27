@@ -10,9 +10,13 @@ import {
   SavedItemStatusFilter,
   UserSavedItemsByOffsetArgs,
 } from '../generated/graphql/types';
-import { V3GetQuery } from '../routes/validations';
+import { V3GetParams } from '../routes/validations';
 
-export class Sort<T extends V3GetQuery> {
+/**
+ * Build GraphQL SavedItemsSortInput values from
+ * /v3/get query parameters.
+ */
+export class Sort<T extends V3GetParams> {
   // relevance is only a valid sort if search term is included
   // removed legacy sorts (<100 requests over the past year):
   //    - title
@@ -25,10 +29,10 @@ export class Sort<T extends V3GetQuery> {
   };
 
   constructor(params: T) {
-    // Web repo logic
-    // if since is populated, don't sort favorited/archived items by favoritedAt/archivedAt
-    // if both favorite and archived are populated, default to favorite
-    //    (from a UI perspective this screen does not exist - favorite + archive)
+    // Web repo logic:
+    //   If since is populated, don't sort favorited/archived items by favoritedAt/archivedAt
+    //   If both favorite and archived are populated, default to favorite
+    //   (from a UI perspective this screen does not exist - favorite + archive)
     let sortBy = SavedItemsSortBy.CreatedAt; // default
     if (params.since == null) {
       if (params.favorite != null) {
@@ -51,7 +55,7 @@ export class Sort<T extends V3GetQuery> {
 }
 
 /**
- * Build graphql filter object from REST query parameters
+ * Build SavedItemsFilterInput from v3/get query parameters
  * Does not include the following legacy filters
  * (0-1 requests in past year as of 2024-02-23)
  *    - updatedBefore
@@ -91,7 +95,8 @@ export class Filter {
         queue: { status: SavedItemStatusFilter.Unread },
         archive: { status: SavedItemStatusFilter.Archived },
         read: { status: SavedItemStatusFilter.Archived },
-        // 'all; is implicit here as an absence of status filter
+        // "all" is implicit -- the absence of a filter value
+        all: undefined,
       };
       return stateMap[val];
     },
@@ -108,7 +113,10 @@ export class Filter {
   constructor(params: any) {
     this.filter = Object.entries(params).reduce((filter, [key, value]) => {
       if (Filter.transformers[key] != null) {
-        Object.assign(filter, Filter.transformers[key](value));
+        const result = Filter.transformers[key](value);
+        if (result != null) {
+          Object.assign(filter, result);
+        }
       }
       return filter;
     }, {} as SavedItemsFilter);
@@ -118,12 +126,11 @@ export class Filter {
   }
 }
 
-export function setSaveInputsFromGetCall<T extends V3GetQuery>(
+export function setSaveInputsFromGetCall<T extends V3GetParams>(
   requestParams: T,
 ): UserSavedItemsByOffsetArgs {
   const filter = new Filter(requestParams).toObject();
   const sort = new Sort(requestParams).toObject();
-  //to be replaced by actual mapping in following tickets
   return {
     pagination: {
       limit: requestParams.count,

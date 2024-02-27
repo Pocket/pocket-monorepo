@@ -1,8 +1,8 @@
-import { V3GetQuery } from '../../routes/validations';
+import { V3GetParams } from '../../routes/validations';
 
-export const defaultQuery: V3GetQuery = {
+export const defaultQuery: V3GetParams = {
   count: 30,
   offset: 0,
   sort: 'newest',
-  type: 'simple',
+  detailType: 'simple',
 };
