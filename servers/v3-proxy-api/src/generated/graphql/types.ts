@@ -2260,6 +2260,8 @@ export enum SavedItemsContentType {
   Article = 'ARTICLE',
   /** Item is a parsed article that contains videos */
   HasVideo = 'HAS_VIDEO',
+  /** Item is a video or a parsed article that contains videos */
+  HasVideoInclusive = 'HAS_VIDEO_INCLUSIVE',
   /** Item is an un-parsable page and will be opened externally */
   IsExternal = 'IS_EXTERNAL',
   /** Item is an image */

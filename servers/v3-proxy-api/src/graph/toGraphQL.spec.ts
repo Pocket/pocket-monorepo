@@ -36,6 +36,14 @@ describe('toGraphQL', () => {
         expected: { filter: { isFavorite: true, tagNames: ['recipe'] } },
       },
       {
+        params: { contentType: 'video' as const },
+        expected: {
+          filter: {
+            contentType: 'HAS_VIDEO_INCLUSIVE',
+          },
+        },
+      },
+      {
         params: {
           state: 'read' as const,
           unused: 'hello',
@@ -52,7 +60,6 @@ describe('toGraphQL', () => {
       'maps filters appropriately, including combos',
       ({ params, expected }) => {
         const actual = setSaveInputsFromGetCall({ ...defaultQuery, ...params });
-        console.log(JSON.stringify(actual, null, 2));
         expect(actual).toMatchObject(expected);
       },
     );
