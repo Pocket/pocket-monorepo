@@ -17,7 +17,9 @@ import {
 } from '@pocket-tools/apollo-utils';
 import * as Sentry from '@sentry/node';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
-import batchDeleteRouter from '../server/routes/batchDelete';
+import { router as batchDeleteRouter } from '../server/routes/batchDelete';
+import { router as userItemsDeleteRouter } from '../server/routes/userItemsDelete';
+
 import { knexDbClient } from '../datasource/clients/knexClient';
 
 /**
@@ -77,6 +79,9 @@ export async function startServer(port: number): Promise<{
   app.use(json());
   // Batch delete route
   app.use('/batchDelete', batchDeleteRouter);
+
+  // User items delete route
+  app.use('/userItemsDelete', userItemsDeleteRouter);
 
   // The error handler must be before any other error middleware and after all controllers
   app.use(Sentry.Handlers.errorHandler() as express.ErrorRequestHandler);

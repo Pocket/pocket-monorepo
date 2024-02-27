@@ -1,7 +1,7 @@
 import { SQSEvent, SQSRecord } from 'aws-lambda';
-import { processBody } from './userItemsDelete';
+import { processBody } from './itemDelete';
 import * as Sentry from '@sentry/serverless';
-import { config } from '../../config';
+import { config } from '../config';
 
 Sentry.AWSLambda.init({
   ...config.sentry,
@@ -10,7 +10,7 @@ Sentry.AWSLambda.init({
 export const processor = async (event: SQSEvent): Promise<boolean[]> => {
   return await Promise.all(
     event.Records.map((record: SQSRecord) => {
-      return processBody(record.body);
+      return processBody(record);
     }),
   );
 };

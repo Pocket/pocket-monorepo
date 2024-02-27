@@ -36,7 +36,7 @@ services:
       retries: 15
 
   redis:
-    image: redis:7.1 # match aws elasticache
+    image: redis:7 # we use 7.1 on aws, but redis pulled that tag....
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       interval: 5s
