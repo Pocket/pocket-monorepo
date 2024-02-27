@@ -80,7 +80,7 @@ export class Filter {
     favorite: (val: string) => ({ isFavorite: val }),
     contentType: (val: string) => {
       const contentMap = {
-        // video contentType TODO: Pocket-9660
+        video: { contentType: SavedItemsContentType.HasVideoInclusive },
         article: { contentType: SavedItemsContentType.IsReadable },
         image: { contentType: SavedItemsContentType.IsImage },
       };
