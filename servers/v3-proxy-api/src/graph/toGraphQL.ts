@@ -75,12 +75,9 @@ export class Sort<T extends V3GetParams> {
  *    - pending
  */
 export class Filter {
+  // Mappings of V3 key/value pairs to SavedItemFilterInput
   static transformers = {
-    favorite: (val: string) => {
-      return {
-        isFavorite: val,
-      };
-    },
+    favorite: (val: string) => ({ isFavorite: val }),
     contentType: (val: string) => {
       const contentMap = {
         // video contentType TODO: Pocket-9660
@@ -100,21 +97,20 @@ export class Filter {
       };
       return stateMap[val];
     },
-    since: (val: number) => {
-      return { updatedSince: val };
-    },
-    tag: (val: string) => {
-      return { tagNames: [val] };
-    },
+    since: (val: number) => ({ updatedSince: val }),
+    tag: (val: string) => ({ tagNames: [val] }),
   };
 
   private filter: SavedItemsFilter;
 
   constructor(params: any) {
     this.filter = Object.entries(params).reduce((filter, [key, value]) => {
+      // If the parameter key has a transformer (aka is a valid filter),
+      // add it to the filter object
       if (Filter.transformers[key] != null) {
         const result = Filter.transformers[key](value);
         if (result != null) {
+          // ... as long as the value is not null/undefined
           Object.assign(filter, result);
         }
       }
