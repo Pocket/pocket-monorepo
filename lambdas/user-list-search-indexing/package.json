@@ -12,11 +12,13 @@
     "dependencies": {
       "@sentry/serverless": "7.102.1",
       "nanoid": "3.3.7",
+      "node-fetch": "2.7.0",
       "tslib": "2.6.2"
     },
     "devDependencies": {
       "@types/aws-lambda": "8.10.134",
       "@types/jest": "29.5.12",
+      "@types/node-fetch": "2.6.11",
       "eslint-config-custom": "workspace:*",
       "jest": "29.7.0",
       "nock": "13.5.3",
