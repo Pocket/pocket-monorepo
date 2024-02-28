@@ -2,7 +2,7 @@ import { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
   schema: 'https://client-api.getpocket.com',
-  documents: ['src/**/*.graphql'],
+  documents: ['src/graphql/**/*.graphql'],
   generates: {
     './src/generated/graphql/types.ts': {
       config: { federation: true },

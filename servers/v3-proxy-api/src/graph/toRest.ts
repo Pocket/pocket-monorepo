@@ -25,7 +25,9 @@ import {
   ListItemObjectComplete,
   ListItemObjectAdditional,
   RestResponseSimple,
+  RestResponseSimpleTotal,
   RestResponseComplete,
+  RestResponseCompleteTotal,
 } from './types';
 
 /**
@@ -339,5 +341,31 @@ export function savedItemsCompleteToRest(
         .filter((s) => s !== null),
       'item_id',
     ),
+  };
+}
+
+/**
+ * Convert GraphQL response for detailType=complete to v3 API format,
+ * adding the top-level 'total' field.
+ */
+export function savedItemsCompleteTotalToRest(
+  response: GetSavedItemsByOffsetCompleteQuery,
+): RestResponseCompleteTotal {
+  return {
+    total: response.user.savedItemsByOffset.totalCount.toString(),
+    ...savedItemsCompleteToRest(response),
+  };
+}
+
+/**
+ * Convert GraphQL response for detailType=complete to v3 API format,
+ * adding the top-level 'total' field.
+ */
+export function savedItemsSimpleTotalToRest(
+  response: GetSavedItemsByOffsetSimpleQuery,
+): RestResponseSimpleTotal {
+  return {
+    total: response.user.savedItemsByOffset.totalCount.toString(),
+    ...savedItemsSimpleToRest(response),
   };
 }

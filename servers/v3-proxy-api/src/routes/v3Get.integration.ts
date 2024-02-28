@@ -4,7 +4,7 @@ import * as Sentry from '@sentry/node';
 import * as GraphQLCalls from '../graph/graphQLClient';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { setTimeout } from 'timers/promises';
-import { mockGraphGetComplete } from '../test/fixtures';
+import { mockGraphGetComplete, mockGraphGetSimple } from '../test/fixtures';
 import { ClientError } from 'graphql-request';
 import { GraphQLError } from 'graphql-request/build/esm/types';
 
@@ -290,5 +290,66 @@ describe('v3Get', () => {
         expect(response.status).toBe(400);
       },
     );
+    it.each([
+      {
+        params: {
+          detailType: 'complete',
+          consumer_key: 'test',
+        },
+        hasTotal: false,
+      },
+      {
+        params: {
+          detailType: 'complete',
+          consumer_key: 'test',
+          total: '1',
+        },
+        hasTotal: true,
+      },
+      {
+        params: {
+          detailType: 'complete',
+          consumer_key: 'test',
+          total: '0',
+        },
+        hasTotal: false,
+      },
+      {
+        params: {
+          detailType: 'simple',
+          consumer_key: 'test',
+        },
+        hasTotal: false,
+      },
+      {
+        params: {
+          detailType: 'simple',
+          consumer_key: 'test',
+          total: '1',
+        },
+        hasTotal: true,
+      },
+      {
+        params: {
+          detailType: 'simple',
+          consumer_key: 'test',
+          total: '0',
+        },
+        hasTotal: false,
+      },
+    ])('appropriately returns total field', async ({ params, hasTotal }) => {
+      jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetSimple')
+        .mockImplementation(() => Promise.resolve(mockGraphGetSimple));
+      const response = await request(app).get('/v3/get').query(params);
+      if (hasTotal) {
+        expect(response.body).toHaveProperty('total');
+      } else {
+        expect(response.body).not.toHaveProperty('total');
+      }
+    });
   });
 });

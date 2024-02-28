@@ -7,6 +7,7 @@ import {
 import {
   savedItemsSimpleToRest,
   savedItemsCompleteToRest,
+  savedItemsSimpleTotalToRest,
 } from '../graph/toRest';
 import { UserSavedItemsByOffsetArgs } from '../generated/graphql/types';
 import { checkSchema, validationResult, matchedData } from 'express-validator';
@@ -45,6 +46,7 @@ const v3GetController = async (
       headers,
       variables,
       data.detailType,
+      data.total,
     );
     return res.json(graphResponse);
   } catch (err) {
@@ -70,6 +72,7 @@ export async function processV3call(
   headers: any,
   variables: UserSavedItemsByOffsetArgs,
   type: 'simple' | 'complete',
+  includeTotal = false,
 ) {
   // Documenting additional parameters which change the shape of the response,
   // that have not been used in the past year (not including in proxy):
@@ -82,7 +85,11 @@ export async function processV3call(
       headers,
       variables,
     );
-    return savedItemsCompleteToRest(response);
+    if (includeTotal) {
+      return savedItemsSimpleTotalToRest(response);
+    } else {
+      return savedItemsCompleteToRest(response);
+    }
   }
   const response = await callSavedItemsByOffsetSimple(
     accessToken,
@@ -90,7 +97,11 @@ export async function processV3call(
     headers,
     variables,
   );
-  return savedItemsSimpleToRest(response);
+  if (includeTotal) {
+    return savedItemsSimpleTotalToRest(response);
+  } else {
+    return savedItemsSimpleToRest(response);
+  }
 }
 
 export default router;

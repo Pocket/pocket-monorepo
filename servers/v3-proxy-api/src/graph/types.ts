@@ -31,6 +31,10 @@ export type RestResponseComplete = {
   list: { [key: string]: ListItemObjectComplete };
   cacheType: string;
 };
+export type RestResponseSimpleTotal = RestResponseSimple & { total: string };
+export type RestResponseCompleteTotal = RestResponseComplete & {
+  total: string;
+};
 
 export type TagsItemObject = {
   [tag: string]: {

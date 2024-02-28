@@ -1,0 +1,10 @@
+query getSavedItemsByOffsetSimple($pagination: OffsetPaginationInput, $filters: SavedItemsFilter, $sort: SavedItemsSort) {
+    user {    
+        savedItemsByOffset(pagination: $pagination, filter: $filters sort: $sort) {
+            entries {
+                ...SavedItemSimple
+            }
+            totalCount
+        }
+    }
+}
