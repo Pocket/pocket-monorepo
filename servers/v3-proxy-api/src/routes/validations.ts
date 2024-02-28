@@ -35,7 +35,6 @@ export const V3GetSchema: Schema = {
     },
   },
   consumer_key: {
-    optional: true,
     isString: true,
     notEmpty: {
       errorMessage: '`consumer_key` cannot be empty',
@@ -77,6 +76,9 @@ export const V3GetSchema: Schema = {
       },
       errorMessage: '`offset` cannot be negative',
     },
+    customSanitizer: {
+      options: (value) => (typeof value === 'string' ? parseInt(value) : value),
+    },
   },
   count: {
     default: {
@@ -87,6 +89,9 @@ export const V3GetSchema: Schema = {
         min: 1,
         max: 5000,
       },
+    },
+    customSanitizer: {
+      options: (value) => (typeof value === 'string' ? parseInt(value) : value),
     },
   },
   tag: {
