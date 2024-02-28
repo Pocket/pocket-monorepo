@@ -1,5 +1,10 @@
 import { GetSavedItemsByOffsetSimpleQuery } from '../generated/graphql/types';
-import { savedItemsCompleteToRest, savedItemsSimpleToRest } from './toRest';
+import {
+  savedItemsCompleteToRest,
+  savedItemsCompleteTotalToRest,
+  savedItemsSimpleToRest,
+  savedItemsSimpleTotalToRest,
+} from './toRest';
 import { RestResponseSimple } from './types';
 import {
   testV3GetResponse,
@@ -10,6 +15,9 @@ import {
   mockItemFragment,
   mockGraphGetComplete,
   expectedGetComplete,
+  expectedGetCompleteTotal,
+  mockGraphGetSimple,
+  expectedGetSimpleTotal,
 } from '../test/fixtures';
 
 describe('GraphQL <> Rest convesion', () => {
@@ -20,6 +28,7 @@ describe('GraphQL <> Rest convesion', () => {
       const graphResponse: GetSavedItemsByOffsetSimpleQuery = {
         user: {
           savedItemsByOffset: {
+            totalCount: 10,
             entries: [
               {
                 __typename: 'SavedItem',
@@ -64,6 +73,7 @@ describe('GraphQL <> Rest convesion', () => {
       const graphResponse: GetSavedItemsByOffsetSimpleQuery = {
         user: {
           savedItemsByOffset: {
+            totalCount: 10,
             entries: [
               {
                 __typename: 'SavedItem',
@@ -118,11 +128,19 @@ describe('GraphQL <> Rest convesion', () => {
       };
       expect(savedItemsSimpleToRest(graphResponse)).toEqual(restResponse);
     });
+    it('works for adding the "total" field', () => {
+      const res = savedItemsSimpleTotalToRest(mockGraphGetSimple);
+      expect(res).toEqual(expectedGetSimpleTotal);
+    });
   });
   describe('convertSavedItemsComplete', () => {
     it('should transform graphql savedItemsByOffset response to rest response', () => {
       const res = savedItemsCompleteToRest(mockGraphGetComplete);
       expect(res).toEqual(expectedGetComplete);
+    });
+    it('works for adding the "total" field', () => {
+      const res = savedItemsCompleteTotalToRest(mockGraphGetComplete);
+      expect(res).toEqual(expectedGetCompleteTotal);
     });
   });
 });

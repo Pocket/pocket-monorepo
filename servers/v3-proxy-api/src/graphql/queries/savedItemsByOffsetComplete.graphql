@@ -4,6 +4,7 @@ query getSavedItemsByOffsetComplete($pagination: OffsetPaginationInput, $filters
             entries {
                 ...SavedItemComplete
             }
+            totalCount
         }
     }
 }

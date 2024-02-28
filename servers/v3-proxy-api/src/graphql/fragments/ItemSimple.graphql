@@ -18,4 +18,3 @@ fragment ItemSimple on Item {
     hasImage
     language
 }
-
