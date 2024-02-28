@@ -3,6 +3,13 @@ import { nanoid } from 'nanoid';
 import fetch from 'node-fetch';
 import { config } from './config';
 
+/**
+ * Processes messages from the itemDelete queue or the itemUpdate queues.
+ * This will call the user search api with a set of userId : itemIds to be indexed/or deleted depending on the endpoint called
+ * @param body
+ * @param endpoint
+ * @returns
+ */
 export const processUserImport = async (
   body: UserListImportSqsMessage,
   endpoint: string,
@@ -38,6 +45,14 @@ export const processUserImport = async (
   return true;
 };
 
+/**
+ * Processes messages from the list import queues. This queue contains messages of userIds to go through a full search indexing.
+ * This will call the user search api with a user id to begin indexing. user search will then queue up all the items for the user into the itemUpdate queue (above). 
+ * Depending on if this method was called from a backfill lambda (ie if we ever need to reprocess all users) it will also tell the api that which will send the itemIds into a lower or higher priority queue respectively.
+ * @param body
+ * @param endpoint
+ * @returns
+ */
 export const processUserItem = async (
   body: UserItemsSqsMessage,
   endpoint: string,
