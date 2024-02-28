@@ -1,0 +1,30 @@
+fragment ItemComplete on Item {
+    ...ItemSimple,
+    authors {
+        id
+        name
+        url
+    }
+    domainMetadata {
+        logo
+        logoGreyscale
+        name
+    }
+    images {
+        imageId
+        url
+        height
+        width
+        credit
+        caption
+    }
+    videos {
+        videoId
+        src
+        width
+        type
+        vid
+        length
+        height
+    }
+}

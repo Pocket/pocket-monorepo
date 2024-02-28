@@ -1,0 +1,17 @@
+fragment SavedItemSimple on SavedItem {
+    id
+    status
+    url
+    isFavorite
+    isArchived
+    _updatedAt
+    _createdAt
+    favoritedAt
+    archivedAt
+    item {
+        __typename
+        ... on Item {
+            ...ItemSimple
+        }
+    }
+}
