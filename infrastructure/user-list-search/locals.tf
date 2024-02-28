@@ -20,23 +20,11 @@ locals {
   secret_path        = "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${local.name}/${local.env}/"
   ssm_path           = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${local.name}/${local.env}/"
 
-  app_env = {
-    # TODO: Move SENTRY_DSN creation to terraform stack
-    AWS_SQS_ENDPOINT             = local.sqsEndpoint
-    AWS_APP_PREFIX               = local.prefix
-    ELASTICSEARCH_DOMAIN         = local.elastic.domain_name
-    ELASTICSEARCH_HOST           = local.elastic.endpoint
-    ELASTICSEARCH_INDEX          = local.elastic_index
+  lambda_env = {
     NODE_ENV                     = local.workspace.nodeEnv
-    PARSER_DB_SECRET_PATH        = "${local.aws_path_prefix}MainParserDbCredentials"
-    PARSER_AURORA_DB_SECRET_PATH = "${local.aws_path_prefix}ParserAuroraDbCredentials"
-    READITLA_DB_SECRET_PATH      = "${local.aws_path_prefix}DatabaseCredentials"
     SENTRY_DSN                   = data.aws_ssm_parameter.sentry_dsn.value
-    SQS_USER_ITEMS_DELETE_URL    = aws_sqs_queue.user_items_delete.id
-    SQS_USER_ITEMS_UPDATE_URL    = aws_sqs_queue.user_items_update.id
-    SQS_USER_LIST_IMPORT_URL     = aws_sqs_queue.user_list_import.id
-    SQS_USER_LIST_IMPORT_BACKFILL_URL = aws_sqs_queue.user_list_import_backfill.id
     USER_LIST_SEARCH_URI         = local.workspace.userApiUri
+    BACKFILL                     = "false"
   }
   sqsEndpoint = "https://sqs.us-east-1.amazonaws.com"
   snsTopicName = {

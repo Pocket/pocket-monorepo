@@ -7,15 +7,13 @@ resource "aws_lambda_function" "user_list_import_backfill_sqs_processor" {
   filename         = data.archive_file.lambda_zip.output_path #Dummy lambda that just logs the event.
   role             = aws_iam_role.user_list_import_backfill_lambda_role.arn
   runtime          = "nodejs20.x"
-  handler          = "lambda.listImportHandler"
+  handler          = "index.userListImportHandler"
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256 #Dummy lambda that just logs the event.
   # depends_on       = [aws_cloudwatch_log_group.item_update_sqs_processor]
   timeout = 900
   environment {
-    variables = merge(local.app_env, {
-      SQS_USER_ITEMS_UPDATE_URL = aws_sqs_queue.user_items_update_backfill.id
-      SQS_USER_LIST_IMPORT_URL  = aws_sqs_queue.user_list_import_backfill.id
-      PARSER_DB_SECRET_PATH     = "${local.aws_path_prefix}ParserDbCredentials"
+    variables = merge(local.lambda_env, {      
+      BACKFILL     = "true"
     })
   }
   tags    = local.tags

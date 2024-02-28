@@ -1,10 +1,13 @@
-import { processMessages } from './userItemsDelete';
-import { sendMessage, purgeQueue } from '../sqs';
-import { config } from '../config';
-import { getDocument } from '../datasource/elasticsearch/elasticsearchSearch';
-import { IndexDocument } from '../elasticsearch';
-import { bulkDocument } from '../datasource/elasticsearch/elasticsearchBulk';
-import { client } from '../datasource/elasticsearch';
+import { config } from '../../config';
+import { getDocument } from '../../datasource/elasticsearch/elasticsearchSearch';
+import { IndexDocument } from '../../elasticsearch';
+import { bulkDocument } from '../../datasource/elasticsearch/elasticsearchBulk';
+import { client } from '../../datasource/elasticsearch';
+import { Application } from 'express';
+import { ContextManager } from '../context';
+import { ApolloServer } from '@apollo/server';
+import request from 'supertest';
+import { startServer } from '../serverUtils';
 
 const defaultDoc = {
   action: 'index',
@@ -56,7 +59,15 @@ const getTestIndexDocuments = (): IndexDocument[] => {
 //Set this here so the client instantiates outside of the before block that has a timeout.
 const esClient = client;
 
-describe('userItemsDelete', () => {
+describe('itemDelete', () => {
+  let server: ApolloServer<ContextManager>;
+  let app: Application;
+
+  afterAll(async () => {
+    await server.stop();
+    jest.resetAllMocks();
+  });
+
   beforeAll(async () => {
     await esClient.deleteByQuery({
       index: config.aws.elasticsearch.index,
@@ -69,20 +80,21 @@ describe('userItemsDelete', () => {
     });
     // Wait for delete to finish
     await esClient.indices.refresh({ index: config.aws.elasticsearch.index });
+
+    ({ app, server } = await startServer(0));
   });
 
-  it('processes item delete queue', async () => {
-    await Promise.all([purgeQueue(config.aws.sqs.userItemsDeleteUrl)]);
-
+  it('processes item delete call', async () => {
     await bulkDocument(getTestIndexDocuments());
 
-    //Populate the queue with users and item ids to delete
-    await sendMessage(config.aws.sqs.userItemsDeleteUrl, {
-      userItems: testItems,
-    });
+    for (const testObject of testItems) {
+      const res = await request(app).post('/itemDelete').send(testObject);
+      expect(res.status).toBe(200);
+    }
 
-    //Let the user item delete processor process the queue
-    await processMessages();
+    // Wait for background indexing to finish
+    await esClient.indices.refresh({ index: config.aws.elasticsearch.index });
+
     //Ensure each document we just passed along was deleted for user 1
     for (let i = 1; i <= 5; i++) {
       expect(getDocument(`1-${i}`)).rejects.toThrow();

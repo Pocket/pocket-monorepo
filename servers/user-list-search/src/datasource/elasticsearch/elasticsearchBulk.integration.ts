@@ -17,12 +17,9 @@ const defaultDocProps = {
   lang: 'en',
 };
 
-//Set this here so the client instantiates outside of the before block that has a timeout.
-const esClient = client;
-
 describe('Elasticsearch Bulk', () => {
   beforeAll(async () => {
-    await esClient.deleteByQuery({
+    await client.deleteByQuery({
       index: config.aws.elasticsearch.index,
       type: config.aws.elasticsearch.type,
       body: {
@@ -47,6 +44,8 @@ describe('Elasticsearch Bulk', () => {
         ...defaultDocProps,
       },
     ]);
+    // Wait for index to finish
+    await client.indices.refresh({ index: config.aws.elasticsearch.index });
   });
 
   it('can bulk index a document', async () => {

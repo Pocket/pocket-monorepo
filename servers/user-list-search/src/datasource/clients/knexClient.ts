@@ -2,16 +2,17 @@ import knex, { Knex } from 'knex';
 import { config } from '../../config';
 
 let db: Knex;
+let cDb: Knex;
 
 /**
  * Create a db client for reads from readitla_ril-tmp
  */
 export function knexDbClient(): Knex {
   if (db) return db;
-  const credentials = JSON.parse(config.ecsMySqlConfig.readitla);
+  const credentials = JSON.parse(config.mysql.readitla);
   const mysqlConfig = config.mysql as any;
 
-  return createConnection({
+  db = createConnection({
     host: credentials.host,
     port: credentials.port,
     user: credentials.username,
@@ -19,6 +20,26 @@ export function knexDbClient(): Knex {
     database: credentials.dbname,
     timezone: mysqlConfig.timezone,
   });
+  return db;
+}
+
+/**
+ * Create a db client for reads from readitla_ril-tmp
+ */
+export function contentDb(): Knex {
+  if (cDb) return cDb;
+  const credentials = JSON.parse(config.mysql.content);
+  const mysqlConfig = config.mysql as any;
+
+  cDb = createConnection({
+    host: credentials.host,
+    port: credentials.port,
+    user: credentials.username,
+    password: credentials.password,
+    database: credentials.dbname,
+    timezone: mysqlConfig.timezone,
+  });
+  return cDb;
 }
 
 /**

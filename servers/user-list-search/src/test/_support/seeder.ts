@@ -1,8 +1,7 @@
-import { primaryPool } from './mysql';
 import { faker } from '@faker-js/faker';
 import { config } from '../../config';
 import * as zlib from 'zlib';
-import { RowDataPacket } from 'mysql2';
+import { contentDb, knexDbClient } from '../../datasource/clients/knexClient';
 
 export interface SeedConfig {
   userCount: number;
@@ -18,8 +17,8 @@ export const getArrayOfIds = (count: number, offset = 1): number[] => {
 
 const seedItems = async (itemIds: number[], truncate = true): Promise<any> => {
   if (truncate) {
-    await primaryPool.query('TRUNCATE TABLE readitla_b.items_extended');
-    await primaryPool.query('TRUNCATE TABLE readitla_b.items_resolver');
+    await knexDbClient().table('readitla_b.items_extended').truncate();
+    await knexDbClient().table('readitla_b.items_resolver').truncate();
   }
 
   for (let i = 0; i < itemIds.length; i++) {
@@ -31,10 +30,7 @@ const seedItems = async (itemIds: number[], truncate = true): Promise<any> => {
       resolved_id: itemId,
       has_old_dupes: false,
     };
-    await primaryPool.query(
-      `INSERT INTO readitla_b.items_resolver SET ?`,
-      resolver,
-    );
+    await knexDbClient().table('readitla_b.items_resolver').insert(resolver);
 
     const item = {
       extended_item_id: itemId,
@@ -59,10 +55,7 @@ const seedItems = async (itemIds: number[], truncate = true): Promise<any> => {
       used_fallback: faker.datatype.boolean(),
       lang: faker.location.countryCode('alpha-2').toLowerCase(),
     };
-    await primaryPool.query(
-      `INSERT INTO readitla_b.items_extended SET ?`,
-      item,
-    );
+    await knexDbClient().table('readitla_b.items_extended').insert(item);
   }
 };
 
@@ -71,7 +64,7 @@ const seedItemContent = async (
   truncate = true,
 ): Promise<any> => {
   if (truncate) {
-    await primaryPool.query('TRUNCATE TABLE content.content');
+    await contentDb().table('content.content').truncate();
   }
 
   for (let i = 0; i < itemIds.length; i++) {
@@ -84,7 +77,7 @@ const seedItemContent = async (
     };
 
     // insert into the content db
-    await primaryPool.query(`INSERT INTO content.content SET ?`, item);
+    await contentDb().table('content.content').insert(item);
   }
 };
 
@@ -94,17 +87,15 @@ const seedTags = async (
   truncate = true,
 ): Promise<void> => {
   if (truncate) {
-    await primaryPool.query('TRUNCATE TABLE item_tags');
+    await knexDbClient().table('item_tags').truncate();
   }
 
-  const [users] = await primaryPool.query<RowDataPacket[]>(
-    'SELECT user_id FROM users',
-  );
+  const userIds = await knexDbClient().select('user_id').from('users');
 
-  if (users.length) {
+  if (userIds.length) {
     for (let i = 0; i < count; i++) {
       const tag = {
-        user_id: (faker.helpers.arrayElement(users) as any).user_id,
+        user_id: faker.helpers.arrayElement(userIds).user_id,
         item_id: faker.helpers.arrayElement(itemIds),
         tag: faker.lorem.word(),
         entered_by: faker.lorem.word(),
@@ -114,10 +105,10 @@ const seedTags = async (
         api_id_updated: faker.number.int(),
       };
 
-      await primaryPool.query(`INSERT INTO item_tags SET ?`, tag);
+      await knexDbClient().table('item_tags').insert(tag);
     }
   } else {
-    console.log('no users! cannot create items without users...');
+    console.log('no users! cannot create tags without users...');
   }
 };
 
@@ -127,8 +118,8 @@ const seedUsers = async (
   truncate = true,
 ): Promise<void> => {
   if (truncate) {
-    await primaryPool.query('TRUNCATE TABLE users');
-    await primaryPool.query('TRUNCATE TABLE user_recent_search');
+    await knexDbClient().table('users').truncate();
+    await knexDbClient().table('user_recent_search').truncate();
   }
 
   for (let i = 1; i <= count; i++) {
@@ -146,7 +137,7 @@ const seedUsers = async (
       premium_status: forcePremium ? true : faker.datatype.boolean(),
     };
 
-    await primaryPool.query(`INSERT INTO users SET ?`, user);
+    await knexDbClient().table('users').insert(user);
     const timeOpts = { min: 12846124, max: new Date().getTime() / 1000 };
 
     if (user.premium_status == true) {
@@ -160,17 +151,11 @@ const seedUsers = async (
         search_hash: i + '1',
         time_added: faker.number.int(timeOpts),
       };
-      await primaryPool.query(
-        `INSERT INTO user_recent_search SET ?`,
-        userSearch,
-      );
+      await knexDbClient().table('user_recent_search').insert(userSearch);
 
       userSearch.search_hash = i + '2';
       userSearch.time_added = faker.number.int(timeOpts);
-      await primaryPool.query(
-        `INSERT INTO user_recent_search SET ?`,
-        userSearch,
-      );
+      await knexDbClient().table('user_recent_search').insert(userSearch);
     }
   }
 };
@@ -181,18 +166,16 @@ const seedList = async (
   truncate = true,
 ): Promise<void> => {
   if (truncate) {
-    await primaryPool.query('TRUNCATE TABLE list');
+    await knexDbClient().table('list').truncate();
   }
 
-  const [users] = await primaryPool.query<RowDataPacket[]>(
-    'SELECT user_id FROM users',
-  );
+  const userIds = await knexDbClient().select('user_id').from('users');
 
-  if (users.length) {
-    for (let j = 0; j < users.length; j++) {
+  if (userIds.length) {
+    for (let j = 0; j < userIds.length; j++) {
       for (let i = 0; i < count; i++) {
         const list = {
-          user_id: users[j].user_id,
+          user_id: userIds[j].user_id,
           item_id: itemIds[i],
           resolved_id: faker.number.int(),
           given_url: faker.internet.url(),
@@ -206,11 +189,11 @@ const seedList = async (
           api_id_updated: faker.number.int(),
         };
 
-        await primaryPool.query(`INSERT INTO list SET ?`, list);
+        await knexDbClient().table('list').insert(list);
       }
     }
   } else {
-    console.log('no users! cannot create items without users...');
+    console.log('no users! cannot create lists without users...');
   }
 };
 
@@ -220,9 +203,9 @@ export const seedItemWithDifferentResolvedId = async (
   truncate = true,
 ): Promise<void> => {
   if (truncate) {
-    await primaryPool.query('TRUNCATE TABLE readitla_b.items_resolver');
+    await knexDbClient().table('readitla_b.items_resolver').truncate();
   }
-  await primaryPool.query('INSERT INTO readitla_b.items_resolver SET ?', {
+  await knexDbClient().table('readitla_b.items_resolver').insert({
     item_id: itemId,
     resolved_id: resolvedId,
     search_hash: '',

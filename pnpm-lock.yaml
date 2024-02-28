@@ -707,6 +707,43 @@ importers:
         specifier: workspace:*
         version: link:../../packages/tsconfig
 
+  lambdas/user-list-search-indexing:
+    dependencies:
+      '@sentry/serverless':
+        specifier: 7.102.1
+        version: 7.102.1
+      nanoid:
+        specifier: 3.3.7
+        version: 3.3.7
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
+    devDependencies:
+      '@types/aws-lambda':
+        specifier: 8.10.134
+        version: 8.10.134
+      '@types/jest':
+        specifier: 29.5.12
+        version: 29.5.12
+      eslint-config-custom:
+        specifier: workspace:*
+        version: link:../../packages/eslint-config-custom
+      jest:
+        specifier: 29.7.0
+        version: 29.7.0(@types/node@20.11.20)(ts-node@10.9.2)
+      jest-extended:
+        specifier: 4.0.2
+        version: 4.0.2(jest@29.7.0)
+      nock:
+        specifier: 13.5.3
+        version: 13.5.3
+      ts-jest:
+        specifier: 29.1.2
+        version: 29.1.2(@babel/core@7.23.9)(jest@29.7.0)(typescript@5.3.3)
+      tsconfig:
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
+
   lambdas/user-list-search-kinesis-to-sqs:
     dependencies:
       '@aws-sdk/client-sqs':
@@ -1902,9 +1939,6 @@ importers:
 
   servers/user-list-search:
     dependencies:
-      '@aws-sdk/client-secrets-manager':
-        specifier: 3.521.0
-        version: 3.521.0
       '@aws-sdk/client-sqs':
         specifier: 3.521.0
         version: 3.521.0
@@ -1972,9 +2006,6 @@ importers:
       '@faker-js/faker':
         specifier: 8.4.1
         version: 8.4.1
-      '@types/aws-lambda':
-        specifier: 8.10.134
-        version: 8.10.134
       '@types/elasticsearch':
         specifier: ^5.0.37
         version: 5.0.43
@@ -5809,7 +5840,7 @@ packages:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@jridgewell/trace-mapping': 0.3.22
+      '@jridgewell/trace-mapping': 0.3.23
       '@types/node': 20.11.20
       chalk: 4.1.2
       collect-v8-coverage: 1.0.2
@@ -5874,7 +5905,7 @@ packages:
     dependencies:
       '@babel/core': 7.23.9
       '@jest/types': 29.6.3
-      '@jridgewell/trace-mapping': 0.3.22
+      '@jridgewell/trace-mapping': 0.3.23
       babel-plugin-istanbul: 6.1.1
       chalk: 4.1.2
       convert-source-map: 2.0.0
@@ -5931,6 +5962,13 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
+
+  /@jridgewell/trace-mapping@0.3.23:
+    resolution: {integrity: sha512-9/4foRoUKp8s96tSkh8DlAAc5A0Ty8vLXld+l9gjKKY6ckwI8G15f0hskGmuLZu78ZlGa1vtsfOa+lnB4vG6Jg==}
+    dependencies:
+      '@jridgewell/resolve-uri': 3.1.2
+      '@jridgewell/sourcemap-codec': 1.4.15
+    dev: true
 
   /@jridgewell/trace-mapping@0.3.9:
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}

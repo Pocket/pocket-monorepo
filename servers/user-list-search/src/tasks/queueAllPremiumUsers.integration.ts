@@ -12,7 +12,7 @@ describe('queueAllPremiumUsers', () => {
       const userIdsCopy = [1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
 
       // clear the queue just in case
-      await purgeQueue(config.aws.sqs.userListImportUrl);
+      await purgeQueue(config.aws.sqs.userListImportBackfillUrl);
 
       // queue up the user ids
       await queueUserIds(userIdsCopy, 3);

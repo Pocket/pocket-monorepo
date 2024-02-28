@@ -12,7 +12,7 @@ resource "aws_lambda_function" "unified_events_consumer" {
   # depends_on       = [aws_cloudwatch_log_group.unified_events_consumer]
   timeout = 300
   environment {
-    variables = local.app_env
+    variables = local.lambda_env
   }
   tags        = local.tags
   publish     = true # We need to publish an initial version

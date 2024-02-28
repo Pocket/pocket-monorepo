@@ -68,8 +68,12 @@ module "apollo" {
       value = aws_sqs_queue.user_items_update.id
     },
     {
-      name  = "SQS_USER_LIST_IMPORT_URL"
-      value = aws_sqs_queue.user_list_import.id
+      name  = "SQS_USER_LIST_IMPORT_BACKFILL_URL"
+      value = aws_sqs_queue.user_list_import_backfill.id
+    },
+    {
+      name  = "SQS_USER_ITEMS_UPDATE_BACKFILL_URL"
+      value = aws_sqs_queue.user_items_update_backfill.id
     }
   ]
 }

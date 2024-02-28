@@ -15,14 +15,11 @@
     "test:watch": "npm test -- --watch --watch-extensions ts -R min --watch-files src",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\"",
-    "task:process-user-list-import-queue": "node dist/bin/processUserListImportQueue.js",
-    "task:process-user-items-update-queue": "node dist/bin/processUserItemsUpdateQueue.js",
     "task:es-create-index": "node dist/tasks/createESIndex.js",
     "task:queue-all-premium-users-for-backfill": "node dist/bin/loadPremiumUsersForBackfill.js"
   },
   "devDependencies": {
     "@faker-js/faker": "8.4.1",
-    "@types/aws-lambda": "8.10.134",
     "@types/elasticsearch": "^5.0.37",
     "@types/graphql": "^14.5.0",
     "@types/jest": "29.5.12",
@@ -40,7 +37,6 @@
     "unleash-client": "5.5.1"
   },
   "dependencies": {
-    "@aws-sdk/client-secrets-manager": "3.521.0",
     "@aws-sdk/client-sqs": "3.521.0",
     "@pocket-tools/apollo-cursor-pagination": "1.0.3",
     "@pocket-tools/apollo-utils": "workspace:*",
@@ -56,8 +52,8 @@
     "graphql-constraint-directive": "5.4.2",
     "graphql-tag": "2.12.6",
     "knex": "3.1.0",
-    "lodash": "4.17.21",
     "mysql2": "3.9.1",
+    "lodash": "4.17.21",
     "nanoid": "3.3.7",
     "node-fetch": "2.7.0",
     "striptags": "^3.1.1",

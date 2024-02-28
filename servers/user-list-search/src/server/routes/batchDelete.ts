@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid';
 import * as Sentry from '@sentry/node';
 import { deleteSearchIndexByUserId } from '../../elasticsearch';
 
-const router = Router();
+export const router = Router();
 
 const batchDeleteSchema: Schema = {
   traceId: {
@@ -58,5 +58,3 @@ router.post(
     });
   },
 );
-
-export default router;
