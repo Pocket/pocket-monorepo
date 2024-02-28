@@ -16,7 +16,6 @@ import {
 } from '../generated/graphql/types';
 import config from '../config';
 import * as Sentry from '@sentry/node';
-import { serverLogger } from '@pocket-tools/ts-logger';
 /**
  * gives a graphQLClient for pocket-graph url
  *
@@ -47,22 +46,15 @@ export function getClient(
   if (accessToken && consumerKey) {
     url = `${config.graphQLProxy}?consumer_key=${consumerKey}&access_token=${accessToken}`;
   } else {
-    url = `${config.graphQLProxy}/?consumer_key=${consumerKey}`;
+    url = `${config.graphQLProxy}?consumer_key=${consumerKey}`;
   }
-
-  try {
-    return new GraphQLClient(url, {
-      headers: headers,
-      //fetch implementation used by node version,
-      //can give custom fetch package
-      fetch,
-    });
-  } catch (e) {
-    Sentry.addBreadcrumb({ message: `graphQLClient creation failed:` });
-    Sentry.captureException(e);
-    serverLogger.error(e);
-    throw e;
-  }
+  Sentry.addBreadcrumb({ message: `creating GraphQL client` });
+  return new GraphQLClient(url, {
+    headers: headers,
+    //fetch implementation used by node version,
+    //can give custom fetch package
+    fetch,
+  });
 }
 /**
  * Calls saveArchive mutation
@@ -120,18 +112,12 @@ export async function callSavedItemsByOffsetSimple(
   headers: any,
   variables: GetSavedItemsByOffsetSimpleQueryVariables,
 ): Promise<GetSavedItemsByOffsetSimpleQuery> {
-  try {
-    const client = getClient(accessToken, consumerKey, headers);
-    return client.request<
-      GetSavedItemsByOffsetSimpleQuery,
-      GetSavedItemsByOffsetSimpleQueryVariables
-    >(GetSavedItemsByOffsetSimpleDocument, variables);
-  } catch (e) {
-    Sentry.addBreadcrumb({ message: `callSavedItemsByOffsetSimple failed:` });
-    Sentry.captureException(e);
-    serverLogger.error(e);
-    throw e;
-  }
+  Sentry.addBreadcrumb({ message: 'invoking callSavedItemsByOffsetSimple' });
+  const client = getClient(accessToken, consumerKey, headers);
+  return client.request<
+    GetSavedItemsByOffsetSimpleQuery,
+    GetSavedItemsByOffsetSimpleQueryVariables
+  >(GetSavedItemsByOffsetSimpleDocument, variables);
 }
 
 /**
@@ -143,16 +129,10 @@ export async function callSavedItemsByOffsetComplete(
   headers: any,
   variables: GetSavedItemsByOffsetCompleteQueryVariables,
 ): Promise<GetSavedItemsByOffsetCompleteQuery> {
-  try {
-    const client = getClient(accessToken, consumerKey, headers);
-    return client.request<
-      GetSavedItemsByOffsetCompleteQuery,
-      GetSavedItemsByOffsetCompleteQueryVariables
-    >(GetSavedItemsByOffsetCompleteDocument, variables);
-  } catch (e) {
-    Sentry.addBreadcrumb({ message: `callSavedItemsByOffsetComplete failed:` });
-    Sentry.captureException(e);
-    serverLogger.error(e);
-    throw e;
-  }
+  Sentry.addBreadcrumb({ message: 'invoking callSavedItemsByOffsetComplete' });
+  const client = getClient(accessToken, consumerKey, headers);
+  return client.request<
+    GetSavedItemsByOffsetCompleteQuery,
+    GetSavedItemsByOffsetCompleteQueryVariables
+  >(GetSavedItemsByOffsetCompleteDocument, variables);
 }

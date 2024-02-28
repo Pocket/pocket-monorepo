@@ -35,7 +35,6 @@ export const V3GetSchema: Schema = {
     },
   },
   consumer_key: {
-    optional: true,
     isString: true,
     notEmpty: {
       errorMessage: '`consumer_key` cannot be empty',

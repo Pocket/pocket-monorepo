@@ -1,4 +1,4 @@
-import { Request, Response, Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { setSaveInputsFromGetCall } from '../graph/toGraphQL';
 import {
   callSavedItemsByOffsetSimple,
@@ -9,11 +9,9 @@ import {
   savedItemsCompleteToRest,
 } from '../graph/toRest';
 import { UserSavedItemsByOffsetArgs } from '../generated/graphql/types';
-import * as Sentry from '@sentry/node';
-import { ErrorCodes, getErrorHeaders } from './errorMapper';
-import { serverLogger } from '@pocket-tools/ts-logger';
 import { checkSchema, validationResult, matchedData } from 'express-validator';
 import { V3GetParams, V3GetSchema } from './validations';
+import { InputValidationError } from '../errors/InputValidationError';
 
 const router: Router = Router();
 
@@ -23,42 +21,41 @@ const router: Router = Router();
  * @param methodName Whether it's a POST or GET method -- just affects error
  * message prefix.
  */
-const v3GetController =
-  (methodName: 'GET' | 'POST') => async (req: Request, res: Response) => {
-    const result = validationResult(req);
-    const data = matchedData(req, { includeOptionals: true }) as V3GetParams;
-    if (!result.isEmpty()) {
-      return res.status(400).send({ errors: result.array() });
-    }
-    try {
-      const variables = setSaveInputsFromGetCall(data);
-      const headers = req.headers;
-      const accessToken = (data.access_token as string) ?? null;
-      const consumerKey = (data.consumer_key as string) ?? null;
+const v3GetController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const result = validationResult(req);
+  const data = matchedData(req, { includeOptionals: false }) as V3GetParams;
+  if (!result.isEmpty()) {
+    // Send validation error to error handling middleware
+    return next(
+      new InputValidationError(result.array({ onlyFirstError: true })[0]),
+    );
+  }
+  try {
+    const variables = setSaveInputsFromGetCall(data);
+    const headers = req.headers;
+    const accessToken = (data.access_token as string) ?? null;
+    const consumerKey = (data.consumer_key as string) ?? null;
+    const graphResponse = await processV3call(
+      accessToken,
+      consumerKey,
+      headers,
+      variables,
+      data.detailType,
+    );
+    return res.json(graphResponse);
+  } catch (err) {
+    // Pass along to error handling middleware
+    // Has to be in a try/catch block due to async call
+    return next(err);
+  }
+};
 
-      return res.json(
-        await processV3call(
-          accessToken,
-          consumerKey,
-          headers,
-          variables,
-          data.detailType,
-        ),
-      );
-    } catch (err) {
-      const errMessage = `${methodName}: v3/get: ${err}`;
-      serverLogger.error(errMessage);
-      Sentry.addBreadcrumb({ message: errMessage });
-      Sentry.captureException(err);
-      return res
-        .status(500)
-        .header(getErrorHeaders(ErrorCodes.INTERNAL_SERVER_ERROR))
-        .send({ error: errMessage });
-    }
-  };
-
-router.get('/', checkSchema(V3GetSchema, ['query']), v3GetController('GET'));
-router.post('/', checkSchema(V3GetSchema, ['body']), v3GetController('POST'));
+router.get('/', checkSchema(V3GetSchema, ['query']), v3GetController);
+router.post('/', checkSchema(V3GetSchema, ['body']), v3GetController);
 
 /**
  * function call to get saves from graphQL and convert it to v3 Get response
