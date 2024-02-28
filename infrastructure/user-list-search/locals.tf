@@ -24,7 +24,10 @@ locals {
     NODE_ENV                     = local.workspace.nodeEnv
     SENTRY_DSN                   = data.aws_ssm_parameter.sentry_dsn.value
     USER_LIST_SEARCH_URI         = local.workspace.userApiUri
-    BACKFILL                     = "false"
+    SQS_USER_ITEMS_UPDATE_URL    = aws_sqs_queue.user_items_update.id
+    SQS_USER_LIST_IMPORT_URL     = aws_sqs_queue.user_list_import.id
+    SQS_USER_ITEMS_UPDATE_URL    = aws_sqs_queue.user_items_update.id
+    SQS_USER_ITEMS_DELETE_URL    = aws_sqs_queue.user_items_delete.id
   }
   sqsEndpoint = "https://sqs.us-east-1.amazonaws.com"
   snsTopicName = {
