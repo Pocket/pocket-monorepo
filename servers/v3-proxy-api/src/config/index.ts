@@ -4,7 +4,7 @@ export default {
     serviceName: 'v3-api-proxy',
     environment: process.env.NODE_ENV || 'development',
     defaultMaxAge: 86400,
-    port: 4029,
+    port: 4030,
   },
   sentry: {
     dsn: process.env.SENTRY_DSN || '',
