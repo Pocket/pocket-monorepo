@@ -11,30 +11,55 @@ export interface SeedConfig {
   forcePremium?: boolean;
 }
 
-export const getArrayOfIds = (count: number, offset = 1): number[] => {
-  return new Array(count).fill(null).map((e) => (e = offset++)) as number[];
+type ItemDict = {
+  itemId: number;
+  resolvedId: number;
 };
 
-const seedItems = async (itemIds: number[], truncate = true): Promise<any> => {
+export const getArrayOfIds = (count: number, offset = 1): ItemDict[] => {
+  return (
+    new Array(count).fill(null).map((e) => (e = offset++)) as number[]
+  ).map((itemId) => {
+    return { itemId, resolvedId: 10000 + itemId };
+  });
+};
+
+const seedItems = async (
+  itemIds: ItemDict[],
+  truncate = true,
+): Promise<any> => {
   if (truncate) {
     await knexDbClient().table('readitla_b.items_extended').truncate();
     await knexDbClient().table('readitla_b.items_resolver').truncate();
   }
 
   for (let i = 0; i < itemIds.length; i++) {
-    const itemId = itemIds[i];
+    const itemDict = itemIds[i];
+    const itemId = itemDict.itemId;
+    const resolvedId = itemDict.resolvedId;
     const resolver = {
       item_id: itemId,
       normal_url: faker.internet.url(),
       search_hash: faker.string.uuid(),
-      resolved_id: itemId,
+      resolved_id: resolvedId,
       has_old_dupes: false,
     };
     await knexDbClient().table('readitla_b.items_resolver').insert(resolver);
 
+    const resolvedItemResolver = {
+      item_id: resolvedId,
+      normal_url: faker.internet.url(),
+      search_hash: faker.string.uuid(),
+      resolved_id: resolvedId,
+      has_old_dupes: false,
+    };
+    await knexDbClient()
+      .table('readitla_b.items_resolver')
+      .insert(resolvedItemResolver);
+
     const item = {
-      extended_item_id: itemId,
-      resolved_url: resolver.normal_url,
+      extended_item_id: resolvedId,
+      resolved_url: resolvedItemResolver.normal_url,
       domain_id: faker.number.int(),
       origin_domain_id: faker.number.int(),
       response_code: 200,
@@ -60,7 +85,7 @@ const seedItems = async (itemIds: number[], truncate = true): Promise<any> => {
 };
 
 const seedItemContent = async (
-  itemIds: number[],
+  itemIds: ItemDict[],
   truncate = true,
 ): Promise<any> => {
   if (truncate) {
@@ -68,7 +93,7 @@ const seedItemContent = async (
   }
 
   for (let i = 0; i < itemIds.length; i++) {
-    const itemId = itemIds[i];
+    const itemId = itemIds[i].resolvedId;
     const item = {
       item_id: itemId,
       content: zlib.deflateSync(
@@ -83,7 +108,7 @@ const seedItemContent = async (
 
 const seedTags = async (
   count: number,
-  itemIds: number[],
+  itemIds: ItemDict[],
   truncate = true,
 ): Promise<void> => {
   if (truncate) {
@@ -96,7 +121,7 @@ const seedTags = async (
     for (let i = 0; i < count; i++) {
       const tag = {
         user_id: faker.helpers.arrayElement(userIds).user_id,
-        item_id: faker.helpers.arrayElement(itemIds),
+        item_id: faker.helpers.arrayElement(itemIds).itemId,
         tag: faker.lorem.word(),
         entered_by: faker.lorem.word(),
         time_added: faker.date.past(),
@@ -162,7 +187,7 @@ const seedUsers = async (
 
 const seedList = async (
   count: number,
-  itemIds: number[],
+  itemIds: ItemDict[],
   truncate = true,
 ): Promise<void> => {
   if (truncate) {
@@ -176,8 +201,8 @@ const seedList = async (
       for (let i = 0; i < count; i++) {
         const list = {
           user_id: userIds[j].user_id,
-          item_id: itemIds[i],
-          resolved_id: faker.number.int(),
+          item_id: itemIds[i].itemId,
+          resolved_id: itemIds[i].resolvedId,
           given_url: faker.internet.url(),
           title: faker.lorem.sentence().slice(0, 74),
           time_added: faker.date.past(),

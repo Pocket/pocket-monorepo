@@ -6,6 +6,7 @@ import {
 } from '../../elasticsearch';
 import { client } from './index';
 import { config } from '../../config';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 const index = config.aws.elasticsearch.index;
 const type = config.aws.elasticsearch.type;
@@ -65,7 +66,7 @@ export const defaultDocConverter: BulkDocumentConverter = (
       ];
     }
 
-    console.log('deleting', getId(doc));
+    serverLogger.info('deleting', getId(doc));
     //If its not index its a delete.
     return [{ delete: { _id: getId(doc), routing: doc.user_id.toString() } }];
   });

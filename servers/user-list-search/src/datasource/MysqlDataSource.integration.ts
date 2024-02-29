@@ -75,7 +75,9 @@ describe('MysqlDataSource', () => {
       });
 
       const dataSource = new MysqlDataSource();
-      const items = await dataSource.getItems(getArrayOfIds(20));
+      const items = await dataSource.getItems(
+        getArrayOfIds(20).map((item) => item.itemId),
+      );
 
       const itemValues = Object.values(items);
 
