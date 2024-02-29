@@ -472,7 +472,7 @@ importers:
         version: 29.5.12
       '@types/jsonwebtoken':
         specifier: ^9.0.5
-        version: 9.0.5
+        version: 9.0.6
       '@types/jwk-to-pem':
         specifier: ^2.0.1
         version: 2.0.3
@@ -527,7 +527,7 @@ importers:
         version: 29.5.12
       '@types/jsonwebtoken':
         specifier: ^9.0.5
-        version: 9.0.5
+        version: 9.0.6
       eslint-config-custom:
         specifier: workspace:*
         version: link:../../packages/eslint-config-custom
@@ -1355,7 +1355,7 @@ importers:
         version: 29.5.12
       '@types/jsonwebtoken':
         specifier: ^9.0.5
-        version: 9.0.5
+        version: 9.0.6
       '@types/passport':
         specifier: 1.0.16
         version: 1.0.16
@@ -5851,7 +5851,7 @@ packages:
     dependencies:
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.11.22
+      '@types/node': 20.11.24
       jest-mock: 29.7.0
     dev: true
 
@@ -5878,7 +5878,7 @@ packages:
     dependencies:
       '@jest/types': 29.6.3
       '@sinonjs/fake-timers': 10.3.0
-      '@types/node': 20.11.22
+      '@types/node': 20.11.24
       jest-message-util: 29.7.0
       jest-mock: 29.7.0
       jest-util: 29.7.0
@@ -7879,14 +7879,14 @@ packages:
     resolution: {integrity: sha512-fB3Zu92ucau0iQ0JMCFQE7b/dv8Ot07NI3KaZIkIUNXq82k4eBAqUaneXfleGY9JWskeS9y+u0nXMyspcuQrCg==}
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 20.11.22
+      '@types/node': 20.11.24
 
   /@types/cacheable-request@6.0.3:
     resolution: {integrity: sha512-IQ3EbTzGxIigb1I3qPZc1rWJnH0BmSKv5QYTalEwweFvyBDLSAe24zP0le/hyi7ecGfZVlIVAg4BZqb8WBwKqw==}
     dependencies:
       '@types/http-cache-semantics': 4.0.4
       '@types/keyv': 3.1.4
-      '@types/node': 20.11.22
+      '@types/node': 20.11.24
       '@types/responselike': 1.0.3
 
   /@types/caseless@0.12.5:
@@ -7902,7 +7902,7 @@ packages:
   /@types/connect@3.4.38:
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
     dependencies:
-      '@types/node': 20.11.22
+      '@types/node': 20.11.24
 
   /@types/content-disposition@0.5.8:
     resolution: {integrity: sha512-QVSSvno3dE0MgO76pJhmv4Qyi/j0Yk9pBp0Y7TJ2Tlj+KCgJWY6qX7nnxCOLkZ3VYRSIk1WTxCvwUSdx6CCLdg==}
@@ -8071,10 +8071,10 @@ packages:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
     dev: true
 
-  /@types/jsonwebtoken@9.0.5:
-    resolution: {integrity: sha512-VRLSGzik+Unrup6BsouBeHsf4d1hOEgYWTm/7Nmw1sXoN1+tRly/Gy/po3yeahnP4jfnQWWAhQAqcNfH7ngOkA==}
+  /@types/jsonwebtoken@9.0.6:
+    resolution: {integrity: sha512-/5hndP5dCjloafCXns6SZyESp3Ldq7YjH3zwzwczYnjxIT0Fqzk5ROSYVGfFyczIue7IUEj8hkvLbPoLQ18vQw==}
     dependencies:
-      '@types/node': 20.11.20
+      '@types/node': 20.11.24
 
   /@types/jwk-to-pem@2.0.3:
     resolution: {integrity: sha512-I/WFyFgk5GrNbkpmt14auGO3yFK1Wt4jXzkLuI+fDBNtO5ZI2rbymyGd6bKzfSBEuyRdM64ZUwxU1+eDcPSOEQ==}
@@ -8190,6 +8190,7 @@ packages:
     resolution: {integrity: sha512-/G+IxWxma6V3E+pqK1tSl2Fo1kl41pK1yeCyDsgkF9WlVAme4j5ISYM2zR11bgLFJGLN5sVK40T4RJNuiZbEjA==}
     dependencies:
       undici-types: 5.26.5
+    dev: true
 
   /@types/node@20.11.24:
     resolution: {integrity: sha512-Kza43ewS3xoLgCEpQrsT+xRo/EJej1y0kVYGiLFE1NEODXGzTfwiC6tXTLMQskn1X4/Rjlh0MQUvx9W+L9long==}
@@ -8203,7 +8204,7 @@ packages:
   /@types/passport-jwt@4.0.1:
     resolution: {integrity: sha512-Y0Ykz6nWP4jpxgEUYq8NoVZeCQPo1ZndJLfapI249g1jHChvRfZRO/LS3tqu26YgAS/laI1qx98sYGz0IalRXQ==}
     dependencies:
-      '@types/jsonwebtoken': 9.0.5
+      '@types/jsonwebtoken': 9.0.6
       '@types/passport-strategy': 0.2.38
     dev: true
 
@@ -8231,7 +8232,7 @@ packages:
     requiresBuild: true
     dependencies:
       '@types/caseless': 0.12.5
-      '@types/node': 20.11.22
+      '@types/node': 20.11.20
       '@types/tough-cookie': 4.0.5
       form-data: 2.5.1
     dev: false
@@ -8260,7 +8261,7 @@ packages:
     dependencies:
       '@types/http-errors': 2.0.4
       '@types/mime': 3.0.4
-      '@types/node': 20.11.22
+      '@types/node': 20.11.24
 
   /@types/shimmer@1.0.5:
     resolution: {integrity: sha512-9Hp0ObzwwO57DpLFF0InUjUm/II8GmKAvzbefxQTihCb7KI6yc9yzf0nLc4mVdby5N4DRCgQM2wCup9KTieeww==}
@@ -8279,7 +8280,7 @@ packages:
     dependencies:
       '@types/cookiejar': 2.1.5
       '@types/methods': 1.1.4
-      '@types/node': 20.11.22
+      '@types/node': 20.11.24
     dev: true
 
   /@types/supertest@6.0.2:
@@ -13878,7 +13879,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 20.11.22
+      '@types/node': 20.11.24
       jest-util: 29.7.0
     dev: true
 
@@ -14523,7 +14524,7 @@ packages:
     engines: {node: '>=14'}
     dependencies:
       '@types/express': 4.17.21
-      '@types/jsonwebtoken': 9.0.5
+      '@types/jsonwebtoken': 9.0.6
       debug: 4.3.4(supports-color@5.5.0)
       jose: 4.15.4
       limiter: 1.1.5
@@ -14537,7 +14538,7 @@ packages:
     engines: {node: '>=14'}
     dependencies:
       '@types/express': 4.17.21
-      '@types/jsonwebtoken': 9.0.5
+      '@types/jsonwebtoken': 9.0.6
       debug: 4.3.4(supports-color@5.5.0)
       jose: 4.15.4
       limiter: 1.1.5
@@ -16931,7 +16932,7 @@ packages:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 20.11.20
+      '@types/node': 20.11.24
       long: 5.2.3
     dev: false
 
