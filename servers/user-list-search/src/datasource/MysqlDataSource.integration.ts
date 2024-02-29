@@ -96,7 +96,7 @@ describe('MysqlDataSource', () => {
         truncate: true,
       });
 
-      await seedItemWithDifferentResolvedId(5, 1);
+      await seedItemWithDifferentResolvedId(5, 10001, false);
 
       const dataSource = new MysqlDataSource();
       const items = await dataSource.getItems([5]);

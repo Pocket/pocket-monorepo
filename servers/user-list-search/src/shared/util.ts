@@ -27,6 +27,12 @@ export const normalizeDate = (date: Date): string | null => {
     return date.toISOString();
   } catch (err) {
     // Date is likely '0000-00-00 00:00:00' because the database has invalid data.
+    if (date.toString() !== 'Invalid Date') {
+      Sentry.captureException('normalizeDate failed', {
+        data: { date },
+      });
+    }
+
     return null;
   }
 };
