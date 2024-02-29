@@ -24,7 +24,7 @@
     "@types/node-fetch": "2.6.11",
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
-    "nock": "13.5.3",
+    "nock": "13.5.4",
     "ts-jest": "29.1.2",
     "tsconfig": "workspace:*"
   },
