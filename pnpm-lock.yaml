@@ -1160,10 +1160,10 @@ importers:
         version: 7.0.1
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.9.1)
+        version: 3.1.0(mysql2@3.9.2)
       mysql2:
-        specifier: 3.9.1
-        version: 3.9.1
+        specifier: 3.9.2
+        version: 3.9.2
       nanoid:
         specifier: 3.3.7
         version: 3.3.7
@@ -1251,13 +1251,13 @@ importers:
         version: 5.4.2(graphql@16.8.1)
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.9.1)
+        version: 3.1.0(mysql2@3.9.2)
       luxon:
         specifier: 3.4.4
         version: 3.4.4
       mysql2:
-        specifier: 3.9.1
-        version: 3.9.1
+        specifier: 3.9.2
+        version: 3.9.2
       nanoid:
         specifier: 3.3.7
         version: 3.3.7
@@ -1497,7 +1497,7 @@ importers:
         version: 2.12.6(graphql@16.8.1)
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.9.1)
+        version: 3.1.0(mysql2@3.9.2)
       locutus:
         specifier: 2.0.16
         version: 2.0.16
@@ -1508,8 +1508,8 @@ importers:
         specifier: 3.4.4
         version: 3.4.4
       mysql2:
-        specifier: 3.9.1
-        version: 3.9.1
+        specifier: 3.9.2
+        version: 3.9.2
       unleash-client:
         specifier: 5.5.1
         version: 5.5.1
@@ -1617,8 +1617,8 @@ importers:
         specifier: ^1.10.0
         version: 1.10.0
       mysql2:
-        specifier: 3.9.1
-        version: 3.9.1
+        specifier: 3.9.2
+        version: 3.9.2
       node-fetch:
         specifier: 2.7.0
         version: 2.7.0
@@ -1633,7 +1633,7 @@ importers:
         version: 7.1.2
       typeorm:
         specifier: 0.3.20
-        version: 0.3.20(mysql2@3.9.1)
+        version: 0.3.20(mysql2@3.9.2)
       winston:
         specifier: 3.11.0
         version: 3.11.0
@@ -1751,8 +1751,8 @@ importers:
         specifier: 0.27.2
         version: 0.27.2
       mysql2:
-        specifier: 3.9.1
-        version: 3.9.1
+        specifier: 3.9.2
+        version: 3.9.2
       slugify:
         specifier: 1.6.6
         version: 1.6.6
@@ -1892,7 +1892,7 @@ importers:
         version: 4.18.2
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.9.1)
+        version: 3.1.0(mysql2@3.9.2)
       lodash:
         specifier: 4.17.21
         version: 4.17.21
@@ -1900,8 +1900,8 @@ importers:
         specifier: 3.4.4
         version: 3.4.4
       mysql2:
-        specifier: 3.9.1
-        version: 3.9.1
+        specifier: 3.9.2
+        version: 3.9.2
       underscore.string:
         specifier: 3.3.6
         version: 3.3.6
@@ -1989,13 +1989,13 @@ importers:
         version: 2.12.6(graphql@16.8.1)
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.9.1)
+        version: 3.1.0(mysql2@3.9.2)
       lodash:
         specifier: 4.17.21
         version: 4.17.21
       mysql2:
-        specifier: 3.9.1
-        version: 3.9.1
+        specifier: 3.9.2
+        version: 3.9.2
       nanoid:
         specifier: 3.3.7
         version: 3.3.7
@@ -14604,7 +14604,7 @@ packages:
       - supports-color
     dev: false
 
-  /knex@3.1.0(mysql2@3.9.1):
+  /knex@3.1.0(mysql2@3.9.2):
     resolution: {integrity: sha512-GLoII6hR0c4ti243gMs5/1Rb3B+AjwMOfjYm97pu0FOQa7JH56hgBxYf5WK2525ceSbBY1cjeZ9yk99GPMB6Kw==}
     engines: {node: '>=16'}
     hasBin: true
@@ -14641,7 +14641,7 @@ packages:
       getopts: 2.3.0
       interpret: 2.2.0
       lodash: 4.17.21
-      mysql2: 3.9.1
+      mysql2: 3.9.2
       pg-connection-string: 2.6.2
       rechoir: 0.8.0
       resolve-from: 5.0.0
@@ -15553,8 +15553,8 @@ packages:
     resolution: {integrity: sha512-avsJQhyd+680gKXyG/sQc0nXaC6rBkPOfyHYcFb9+hdkqQkR9bdnkJ0AMZhke0oesPqIO+mFFJ+IdBc7mst4IA==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  /mysql2@3.9.1:
-    resolution: {integrity: sha512-3njoWAAhGBYy0tWBabqUQcLtczZUxrmmtc2vszQUekg3kTJyZ5/IeLC3Fo04u6y6Iy5Sba7pIIa2P/gs8D3ZeQ==}
+  /mysql2@3.9.2:
+    resolution: {integrity: sha512-3Cwg/UuRkAv/wm6RhtPE5L7JlPB877vwSF6gfLAS68H+zhH+u5oa3AieqEd0D0/kC3W7qIhYbH419f7O9i/5nw==}
     engines: {node: '>= 8.0'}
     dependencies:
       denque: 2.1.0
@@ -19185,7 +19185,7 @@ packages:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
     dev: false
 
-  /typeorm@0.3.20(mysql2@3.9.1):
+  /typeorm@0.3.20(mysql2@3.9.2):
     resolution: {integrity: sha512-sJ0T08dV5eoZroaq9uPKBoNcGslHBR4E4y+EBHs//SiGbblGe7IeduP/IH4ddCcj0qp3PHwDwGnuvqEAnKlq/Q==}
     engines: {node: '>=16.13.0'}
     hasBin: true
@@ -19253,7 +19253,7 @@ packages:
       dotenv: 16.4.5
       glob: 10.3.10
       mkdirp: 2.1.6
-      mysql2: 3.9.1
+      mysql2: 3.9.2
       reflect-metadata: 0.2.1
       sha.js: 2.4.11
       tslib: 2.6.2
