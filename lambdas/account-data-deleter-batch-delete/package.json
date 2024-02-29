@@ -14,7 +14,7 @@
     "@aws-sdk/client-dynamodb": "3.523.0",
     "@aws-sdk/client-lambda": "3.523.0",
     "@aws-sdk/lib-dynamodb": "3.523.0",
-    "@sentry/serverless": "7.102.1",
+    "@sentry/serverless": "7.103.0",
     "exponential-backoff": "^3.1.1",
     "lodash": "4.17.21",
     "node-fetch": "2.7.0",
