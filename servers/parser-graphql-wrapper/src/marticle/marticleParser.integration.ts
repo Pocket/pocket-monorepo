@@ -181,6 +181,7 @@ describe('Marticle integration ', () => {
               height
               imageId
               src
+              url
               caption
               credit
             }
@@ -210,6 +211,7 @@ describe('Marticle integration ', () => {
         width: 200,
         height: 150,
         src: 'https://imagine.a-cool.image.jpg',
+        url: 'https://imagine.a-cool.image.jpg/',
         caption: 'I told you this is a cool image',
         credit: 'give it all to kelvin',
       },
