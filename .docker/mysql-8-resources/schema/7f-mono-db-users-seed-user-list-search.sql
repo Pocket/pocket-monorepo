@@ -11,7 +11,7 @@ GRANT SELECT ON `readitla_b`.`authors` TO pkt_listserch_r@'%';
 
 
 # Granted only for testing.
-GRANT DROP, INSERT ON `readitla_ril-tmp`.* TO 'pkt_listserch_r'@'%';
-GRANT DROP, INSERT ON readitla_b.* TO 'pkt_listserch_r'@'%';
-GRANT DROP, INSERT ON readitla_auth.* TO 'pkt_listserch_r'@'%';
-GRANT DROP, INSERT ON readitla_analytics.* TO 'pkt_listserch_r'@'%';
+GRANT DROP, INSERT, UPDATE ON `readitla_ril-tmp`.* TO 'pkt_listserch_r'@'%';
+GRANT DROP, INSERT, UPDATE ON readitla_b.* TO 'pkt_listserch_r'@'%';
+GRANT DROP, INSERT, UPDATE ON readitla_auth.* TO 'pkt_listserch_r'@'%';
+GRANT DROP, INSERT, UPDATE ON readitla_analytics.* TO 'pkt_listserch_r'@'%';

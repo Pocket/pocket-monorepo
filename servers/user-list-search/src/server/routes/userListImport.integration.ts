@@ -57,15 +57,27 @@ describe('User List Import User Search Processor', () => {
 
       //Verify each message has the expected results.
       expect(JSON.parse(backfillMessages.Messages[0].Body)).toStrictEqual({
-        userItems: [{ userId, itemIds: getArrayOfIds(1000) }],
+        userItems: [
+          { userId, itemIds: getArrayOfIds(1000).map((item) => item.itemId) },
+        ],
       });
 
       expect(JSON.parse(backfillMessages.Messages[1].Body)).toStrictEqual({
-        userItems: [{ userId, itemIds: getArrayOfIds(1000, 1001) }],
+        userItems: [
+          {
+            userId,
+            itemIds: getArrayOfIds(1000, 1001).map((item) => item.itemId),
+          },
+        ],
       });
 
       expect(JSON.parse(backfillMessages.Messages[2].Body)).toStrictEqual({
-        userItems: [{ userId, itemIds: getArrayOfIds(1, 2001) }],
+        userItems: [
+          {
+            userId,
+            itemIds: getArrayOfIds(1, 2001).map((item) => item.itemId),
+          },
+        ],
       });
 
       await purgeQueue(config.aws.sqs.userItemsUpdateUrl);
