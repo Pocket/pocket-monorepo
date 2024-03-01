@@ -12,7 +12,7 @@
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\"",
-    "dev": "pnpm run build -- --watch"
+    "dev": "pnpm run build --watch"
   },
   "author": "",
   "license": "Apache-2.0",
