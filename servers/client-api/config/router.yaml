@@ -5,8 +5,9 @@ supergraph:
   listen: 0.0.0.0:${env.PORT:-4001}
   query_planning:
     cache:
-      in_memory:
-        limit: 512 #This is the default value
+      redis:
+        urls: ['rediss-cluster://${env.REDIS_ENDPOINT}']
+        ttl: 48h # optional, by default no expiration
 include_subgraph_errors:
   all: true # Propagate errors from all subgraphs
 health_check:
@@ -66,7 +67,7 @@ telemetry:
         endpoint: 'http://${env.OTLP_COLLECTOR_HOST}:4317'
       common:
         resource:
-          'environment.name': '{env.APP_ENVIRONMENT}'
+          'environment.name': '${env.APP_ENVIRONMENT}'
         service_name: 'client-api'
         sampler: always_on # (default) all requests are sampled (always_on|always_off|<0.0-1.0>)
         parent_based_sampler: false
@@ -78,5 +79,6 @@ telemetry:
 apq:
   router:
     cache:
-      in_memory:
-        limit: 512 # This is the default value
+      redis:
+        urls: ['rediss-cluster://${env.REDIS_ENDPOINT}']
+        ttl: 24h # optional, by default no expiration

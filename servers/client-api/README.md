@@ -15,8 +15,7 @@
 - `rover dev --supergraph-config supergraph.yaml --router-config router.yaml` to run the Router locally without Docker (using [Rover]). You'll need to update the `supergraph.yaml` file to point at the local versions of your subgraphs. **Make sure to set the required environment variables ahead of time!**
 - `docker run -it --env APOLLO_KEY --env APOLLO_GRAPH_REF -p4000:4000 router` runs the same router image you'll run in production. You can now query the router at `http://localhost:4000`.
   - Make sure to set the env vars `APOLLO_KEY` and `APOLLO_GRAPH_REF` first
-  - You can alternatively create a file (e.g., `.env`) and run `docker run -it --env-file .env -p4000:4000 router`. **Make sure not to check this file into source control!**
+  - You can alternatively create a file (e.g., `.env`) and run `docker run -it --env-file .env -v $(pwd)/config/router.yaml:/config/router.yaml -v $(pwd)/rhai:/dist/rhai -p4050:4050 router --dev --config /config/router.yaml`. **Make sure not to check the `.env` file into source control!** This will enable hot reloading and dev mode but use the production schemas.
   - Your local router will need network access to the subgraphs
 
-[GraphOS Enterprise]: https://www.apollographql.com/docs/graphos/enterprise
 [Rover]: https://www.apollographql.com/docs/rover/commands/dev

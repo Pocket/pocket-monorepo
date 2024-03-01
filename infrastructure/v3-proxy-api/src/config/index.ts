@@ -5,7 +5,7 @@ const environment = isDev ? 'Dev' : 'Prod';
 const domain = isDev
   ? `${domainPrefix}.getpocket.dev`
   : `${domainPrefix}.readitlater.com`;
-const port = 4029;
+const port = 4030;
 
 export const config = {
   name,

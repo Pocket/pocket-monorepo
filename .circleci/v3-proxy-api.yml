@@ -25,7 +25,7 @@ workflows:
           repo-name: v3proxyapi-dev-app
           ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
           push: false
-          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=v3-proxy-api --build-arg APP_PATH=servers/v3-proxy-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=v3-proxy-api --build-arg PORT=4029 
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=v3-proxy-api --build-arg APP_PATH=servers/v3-proxy-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=v3-proxy-api --build-arg PORT=4030 
      
       - infrastructure:
           <<: *not_dev_main
@@ -65,7 +65,7 @@ workflows:
           repo-name: v3proxyapi-dev-app
           ecr-url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
           push: true
-          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=v3-proxy-api --build-arg APP_PATH=servers/v3-proxy-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=v3-proxy-api --build-arg PORT=4029
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=v3-proxy-api --build-arg APP_PATH=servers/v3-proxy-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=v3-proxy-api --build-arg PORT=4030
           requires:
             - v3-proxy-api_infrastructure_apply_dev
 
@@ -131,7 +131,7 @@ workflows:
           repo-name: v3proxyapi-prod-app
           ecr-url: 996905175585.dkr.ecr.us-east-1.amazonaws.com
           push: true
-          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=v3-proxy-api --build-arg APP_PATH=servers/v3-proxy-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=v3-proxy-api --build-arg PORT=4029
+          extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg SCOPE=v3-proxy-api --build-arg APP_PATH=servers/v3-proxy-api --build-arg SENTRY_AUTH_TOKEN=${SENTRY_BEARER} --build-arg SENTRY_ORG=pocket --build-arg SENTRY_PROJECT=v3-proxy-api --build-arg PORT=4030
           requires:
             - v3-proxy-api_infrastructure_apply_prod
 

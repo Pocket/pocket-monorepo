@@ -6,6 +6,7 @@ import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-i
 import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/data-aws-kms-alias';
 import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
 import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
+import { DataAwsSubnets } from '@cdktf/provider-aws/lib/data-aws-subnets';
 import { LocalProvider } from '@cdktf/provider-local/lib/provider';
 import { NullProvider } from '@cdktf/provider-null/lib/provider';
 import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
@@ -14,6 +15,8 @@ import {
   PocketALBApplication,
   PocketPagerDuty,
   PocketAwsSyntheticChecks,
+  ApplicationServerlessRedis,
+  PocketVPC,
 } from '@pocket-tools/terraform-modules';
 
 import { App, S3Backend, TerraformStack } from 'cdktf';
@@ -39,10 +42,14 @@ class ClientAPI extends TerraformStack {
     const region = new DataAwsRegion(this, 'region');
 
     const clientApiPagerduty = this.createPagerDuty();
+    const pocketVPC = new PocketVPC(this, 'pocket-vpc');
+    const cache = this.createElasticache(this, pocketVPC);
+
     this.createPocketAlbApplication({
       pagerDuty: clientApiPagerduty,
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
+      cache,
       region,
       caller,
     });
@@ -119,9 +126,16 @@ class ClientAPI extends TerraformStack {
     caller: DataAwsCallerIdentity;
     secretsManagerKmsAlias: DataAwsKmsAlias;
     snsTopic: DataAwsSnsTopic;
+    cache: string;
   }): PocketALBApplication {
-    const { pagerDuty, region, caller, secretsManagerKmsAlias, snsTopic } =
-      dependencies;
+    const {
+      pagerDuty,
+      region,
+      caller,
+      secretsManagerKmsAlias,
+      cache,
+      snsTopic,
+    } = dependencies;
 
     return new PocketALBApplication(this, 'application', {
       internal: false,
@@ -166,10 +180,8 @@ class ClientAPI extends TerraformStack {
               value: `${config.tracing.host}`,
             },
             {
-              name: 'RELEASE_SHA',
-              value:
-                process.env.CODEBUILD_RESOLVED_SOURCE_VERSION ??
-                process.env.CIRCLE_SHA1,
+              name: 'REDIS_ENDPOINT',
+              value: cache,
             },
           ],
           logGroup: this.createCustomLogGroup('app'),
@@ -311,6 +323,50 @@ class ClientAPI extends TerraformStack {
         },
       },
     });
+  }
+
+  /**
+   * Creates the elasticache and returns the endpoints
+   * @param scope
+   * @private
+   */
+  private createElasticache(scope: Construct, pocketVPC: PocketVPC): string {
+    // Serverless elasticache doesn't support the `e` availablity zone in us-east-1... so we need to filter it out..
+    const privateSubnets = new DataAwsSubnets(
+      this,
+      `cache_private_subnet_ids`,
+      {
+        filter: [
+          {
+            name: 'subnet-id',
+            values: pocketVPC.privateSubnetIds,
+          },
+          {
+            name: 'availability-zone',
+            values: ['us-east-1a', 'us-east-1c', 'us-east-1d'],
+          },
+        ],
+      },
+    );
+    const elasticache = new ApplicationServerlessRedis(
+      scope,
+      'serverless_redis',
+      {
+        //Usually we would set the security group ids of the service that needs to hit this.
+        //However we don't have the necessary security group because it gets created in PocketALBApplication
+        //So instead we set it to null and allow anything within the vpc to access it.
+        //This is not ideal..
+        //Ideally we need to be able to add security groups to the ALB application.
+        allowedIngressSecurityGroupIds: undefined,
+        subnetIds: privateSubnets.ids,
+        tags: config.tags,
+        vpcId: pocketVPC.vpc.id,
+        // add on a serverless to the name, because our previous elasticache will still exist at the old name
+        prefix: `${config.prefix}-serverless`,
+      },
+    );
+
+    return elasticache.elasticache.endpoint.get(0).address;
   }
 
   /**
