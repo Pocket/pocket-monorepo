@@ -9,7 +9,7 @@
   "license": "BSD",
   "dependencies": {
     "@aws-sdk/client-sqs": "3.525.0",
-    "@sentry/node": "7.103.0",
+    "@sentry/node": "7.104.0",
     "apn": "node-apn/node-apn#3.0.0",
     "dotenv": "16.4.5",
     "firebase-admin": "^12.0.0",
