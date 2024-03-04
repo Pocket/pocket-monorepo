@@ -202,7 +202,7 @@ class ShareableListsAPI extends TerraformStack {
         masterUsername: 'pkt_slists',
         engine: 'aurora-mysql',
         engineMode: 'provisioned',
-        engineVersion: '8.0.mysql_aurora.3.05.1',
+        engineVersion: '8.0.mysql_aurora.3.05.2',
         serverlessv2ScalingConfiguration: {
           minCapacity: config.rds.minCapacity,
           maxCapacity: config.rds.maxCapacity,
