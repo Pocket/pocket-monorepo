@@ -18,7 +18,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-sqs": "3.523.0",
+    "@aws-sdk/client-sqs": "3.525.0",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
@@ -36,7 +36,7 @@
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
     "nock": "13.5.4",
-    "nodemon": "3.0.3",
+    "nodemon": "3.1.0",
     "ts-jest": "29.1.2",
     "tsconfig": "workspace:*"
   },

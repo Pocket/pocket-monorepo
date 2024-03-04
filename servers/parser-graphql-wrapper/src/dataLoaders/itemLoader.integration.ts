@@ -125,4 +125,48 @@ describe('itemLoader - integration', () => {
     );
     expect(returnedItem.givenUrl).toEqual(item.normalUrl);
   });
+
+  it('should retry with a refresh when resolved_id is 0', async () => {
+    cleanAll();
+
+    const scope = nock('http://example-parser.com')
+      .get('/')
+      .query({ url: urlToParse, getItem: '1', output: 'regular' })
+      .reply(200, {
+        item: {
+          item_id: parserItemId,
+          given_url: urlToParse,
+          normal_url: urlToParse,
+          authors: null,
+          images: null,
+          videos: null,
+          resolved_id: '0',
+        },
+      })
+      .get('/')
+      .query({
+        url: urlToParse,
+        getItem: '1',
+        output: 'regular',
+        refresh: true,
+      })
+      .reply(200, {
+        item: {
+          item_id: parserItemId,
+          given_url: urlToParse,
+          normal_url: urlToParse,
+          authors: [],
+          images: [],
+          videos: [],
+          resolved_id: '16822',
+        },
+      });
+
+    const returnedItem = await itemLoader.getItemByUrl(
+      `    ${item.normalUrl}    `,
+    );
+    expect(scope.isDone()).toBeTruthy();
+    expect(returnedItem.givenUrl).toEqual(item.normalUrl);
+    expect(returnedItem.resolvedId).toEqual('16822');
+  });
 });

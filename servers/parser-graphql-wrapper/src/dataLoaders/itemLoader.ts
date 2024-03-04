@@ -53,11 +53,22 @@ const internalGetItemByUrl = async (
   const endpoint = `${config.parserEndpoint}?url=${encodeURIComponent(
     url,
   )}&getItem=1&output=regular`;
-  const data = await new FetchHandler().fetchJSON(endpoint);
+  let data = await new FetchHandler().fetchJSON(endpoint);
   // check if there's an item
   if (!data || (data && !data.item)) {
     throw new Error(`No item found for URL: ${url}`);
   }
+
+  // If the item resolves to 0, that means the item object is going to be empty and we need to refresh it cause of bad parser data..
+  // Ideally we could instead look at fixing this logic in the Parser, but it's resolving code sometimes relies on URL and sometimes itemId
+  if (data.item.resolved_id == '0') {
+    data = await new FetchHandler().fetchJSON(`${endpoint}&refresh=true`);
+    // check if there's an item
+    if (!data || (data && !data.item)) {
+      throw new Error(`No item found for URL: ${url}`);
+    }
+  }
+
   // get the item from the response
   const item = data.item;
 
@@ -72,7 +83,9 @@ const internalGetItemByUrl = async (
     return null;
   }
 
-  const authors: Author[] = getAuthors(item.authors);
+  const authors: Author[] = Object.keys(item.authors || {}).length
+    ? getAuthors(item.authors)
+    : null;
 
   const images: Image[] = Object.keys(item.images || {}).length
     ? getImages(item.images)

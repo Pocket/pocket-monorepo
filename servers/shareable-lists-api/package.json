@@ -26,7 +26,7 @@
     "migrate:reset": "prisma migrate reset"
   },
   "dependencies": {
-    "@aws-sdk/client-eventbridge": "3.523.0",
+    "@aws-sdk/client-eventbridge": "3.525.0",
     "@keyv/redis": "2.8.4",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
@@ -50,7 +50,7 @@
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
     "jest-extended": "4.0.2",
-    "nodemon": "3.0.3",
+    "nodemon": "3.1.0",
     "prisma": "5.8.1",
     "prisma-kysely": "1.8.0",
     "supertest": "6.3.4",

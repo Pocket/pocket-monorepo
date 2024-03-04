@@ -13,8 +13,8 @@
     "format": "eslint --fix \"src/**/*.ts\""
   },
   "dependencies": {
-    "@aws-sdk/client-secrets-manager": "3.523.0",
-    "@aws-sdk/client-sqs": "3.523.0",
+    "@aws-sdk/client-secrets-manager": "3.525.0",
+    "@aws-sdk/client-sqs": "3.525.0",
     "@sentry/serverless": "7.103.0",
     "jsonwebtoken": "^9.0.0",
     "jwk-to-pem": "^2.0.5",
@@ -28,7 +28,7 @@
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
     "nock": "13.5.4",
-    "nodemon": "3.0.3",
+    "nodemon": "3.1.0",
     "ts-jest": "29.1.2",
     "tsconfig": "workspace:*"
   },

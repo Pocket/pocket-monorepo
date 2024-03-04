@@ -12,8 +12,8 @@
     "format": "eslint --fix \"src/**/*.ts\""
   },
   "dependencies": {
-    "@aws-sdk/client-eventbridge": "3.523.0",
-    "@aws-sdk/client-pinpoint": "3.523.0",
+    "@aws-sdk/client-eventbridge": "3.525.0",
+    "@aws-sdk/client-pinpoint": "3.525.0",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
@@ -36,7 +36,7 @@
     "jest": "29.7.0",
     "jest-mock-req-res": "1.0.2",
     "nock": "13.5.4",
-    "nodemon": "3.0.3",
+    "nodemon": "3.1.0",
     "supertest": "6.3.4",
     "ts-jest": "29.1.2",
     "tsconfig": "workspace:*"

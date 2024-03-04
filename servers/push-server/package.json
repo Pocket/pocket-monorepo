@@ -8,7 +8,7 @@
   "author": "",
   "license": "BSD",
   "dependencies": {
-    "@aws-sdk/client-sqs": "3.523.0",
+    "@aws-sdk/client-sqs": "3.525.0",
     "@sentry/node": "7.103.0",
     "apn": "node-apn/node-apn#3.0.0",
     "dotenv": "16.4.5",
@@ -32,7 +32,7 @@
     "@types/node-gcm": "^1.0.5",
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
-    "nodemon": "3.0.3",
+    "nodemon": "3.1.0",
     "ts-jest": "29.1.2",
     "tsconfig": "workspace:*"
   },
