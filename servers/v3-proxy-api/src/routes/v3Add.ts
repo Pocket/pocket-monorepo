@@ -1,23 +1,11 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { setSaveInputsFromGetCall } from '../graph/get/toGraphQL';
-import {
-  callSavedItemsByOffsetSimple,
-  callSavedItemsByOffsetComplete,
-  addSavedItem,
-} from '../graph/graphQLClient';
-import {
-  savedItemsSimpleToRest,
-  savedItemsCompleteToRest,
-  ListItemTransformerComplete,
-} from '../graph/get/toRest';
+
+import { addSavedItem } from '../graph/graphQLClient';
+
 import {
   AddSavedItemBeforeTagMutationVariables,
-  AddSavedItemCompleteMutation,
   AddSavedItemCompleteMutationVariables,
-  AddTagsToSavedItemMutationVariables,
-  SavedItemCompleteFragment,
   SavedItemUpsertInput,
-  UserSavedItemsByOffsetArgs,
 } from '../generated/graphql/types';
 import { checkSchema, validationResult, matchedData } from 'express-validator';
 import { V3AddSchema, V3AddParams } from './validations/AddSchema';

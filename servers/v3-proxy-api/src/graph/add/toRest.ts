@@ -1,4 +1,3 @@
-import { AddSavedItemCompleteMutation } from '../../generated/graphql/types';
 import {
   AddResponse,
   PendingAddResponse,
@@ -9,42 +8,44 @@ import * as tx from '../shared/transforms';
 export function AddItemTransformer(
   savedItem: SavedItemWithParserMetadata,
 ): AddResponse | PendingAddResponse {
+  let item: AddResponse['item'];
+  let pendingItem: PendingAddResponse['item'];
+  const nullKeys: Array<keyof PendingAddResponse['item']> = [
+    'resolved_url',
+    'domain_id',
+    'origin_domain_id',
+    'response_code',
+    'mime_type',
+    'content_length',
+    'encoding',
+    'date_resolved',
+    'date_published',
+    'title',
+    'excerpt',
+    'word_count',
+    'innerdomain_redirect',
+    'login_required',
+    'has_image',
+    'has_video',
+    'is_index',
+    'is_article',
+    'used_fallback',
+    'lang',
+    'time_first_parsed',
+  ];
+  const base = nullKeys.reduce(
+    (obj, key) => {
+      obj[key] = null;
+      return obj;
+    },
+    {} as Omit<
+      PendingAddResponse['item'],
+      'item_id' | 'given_url' | 'normal_url' | 'resolved_id'
+    >,
+  );
   switch (savedItem.item.__typename) {
     case 'PendingItem':
-      const nullKeys: Array<keyof PendingAddResponse['item']> = [
-        'resolved_url',
-        'domain_id',
-        'origin_domain_id',
-        'response_code',
-        'mime_type',
-        'content_length',
-        'encoding',
-        'date_resolved',
-        'date_published',
-        'title',
-        'excerpt',
-        'word_count',
-        'innerdomain_redirect',
-        'login_required',
-        'has_image',
-        'has_video',
-        'is_index',
-        'is_article',
-        'used_fallback',
-        'lang',
-        'time_first_parsed',
-      ];
-      const base = nullKeys.reduce(
-        (obj, key) => {
-          obj[key] = null;
-          return obj;
-        },
-        {} as Omit<
-          PendingAddResponse['item'],
-          'item_id' | 'given_url' | 'normal_url' | 'resolved_id'
-        >,
-      );
-      const pendingItem: PendingAddResponse['item'] = {
+      pendingItem = {
         ...base,
         item_id: savedItem.id,
         given_url: savedItem.url,
@@ -53,7 +54,7 @@ export function AddItemTransformer(
       };
       return { item: pendingItem, status: 1 };
     case 'Item':
-      const item: AddResponse['item'] = {
+      item = {
         item_id: savedItem.id,
         normal_url: savedItem.item.normalUrl,
         resolved_id: savedItem.item.resolvedId,

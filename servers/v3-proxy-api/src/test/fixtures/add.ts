@@ -389,7 +389,6 @@ export const mockGraphAddResponsePending: SavedItemWithParserMetadata = {
   item: {
     __typename: 'PendingItem',
   },
-  tags: [],
 };
 
 export const mockGraphAddResponses: SavedItemWithParserMetadata[] = [
