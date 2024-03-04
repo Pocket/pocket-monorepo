@@ -49,4 +49,23 @@ describe('ApplicationRedis', () => {
     });
     expect(synthed).toMatchSnapshot();
   });
+
+  it('renders redis using cache limits', () => {
+    const config: ApplicationServerlessRedisProps = {
+      ...BASE_CONFIG,
+    };
+    const synthed = Testing.synthScope((stack) => {
+      const subnets = new DataAwsSubnets(stack, 'subnets', {});
+
+      new ApplicationServerlessRedis(stack, 'testRedis', {
+        ...config,
+        subnetIds: subnets.ids,
+        cacheUsageLimits: [
+          { dataStorage: [{ maximum: 10, unit: 'GB' }] },
+          { ecpuPerSecond: [{ maximum: 5 }] },
+        ],
+      });
+    });
+    expect(synthed).toMatchSnapshot();
+  });
 });
