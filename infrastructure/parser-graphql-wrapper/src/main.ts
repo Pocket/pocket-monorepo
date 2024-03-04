@@ -401,6 +401,11 @@ class ParserGraphQLWrapper extends TerraformStack {
         subnetIds: privateSubnets.ids,
         tags: config.tags,
         vpcId: pocketVPC.vpc.id,
+        // Starting with 100GB and will actively lower to ensure we do not break the parser graphql wrapper.
+        // Our original redis pre-serverless only had 7GB of data, but right now we are using 125Gb
+        // with a 50% cache hit rate, so lets limit it a bit to save $$.
+        // Not going to limit Ecpu atm berccuase that is charged per million ecpus and we are well under the first bill number.
+        cacheUsageLimits: [{ dataStorage: [{ maximum: 100, unit: 'GB' }] }],
         // add on a serverless to the name, because our previous elasticache will still exist at the old name
         prefix: `${config.prefix}-serverless`,
       },
