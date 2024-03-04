@@ -19,6 +19,7 @@ import TurndownService from 'turndown';
 import { ParserArticle } from '../datasources/parserApi';
 import { Image, Video, videoTypeMap } from '../model';
 import { config } from './config';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 type ParserMediaMap = {
   [key: string]: SrcRecord;
@@ -26,6 +27,7 @@ type ParserMediaMap = {
 interface SrcRecord {
   [key: string]: any;
   src: string;
+  url: string;
 }
 
 export type MarticleElement =
@@ -601,8 +603,13 @@ function getParserMediaFromComment(
     } else {
       // Only return if src is valid URL
       try {
-        new URL(mediaElement.src);
+        // set the url to the valid src
+        mediaElement.url = new URL(mediaElement.src).toString();
       } catch (err) {
+        serverLogger.error({
+          message: 'Not a valid image url for Marticle',
+          data: { ...err, src: mediaElement.src },
+        });
         return false;
       }
       return true;
