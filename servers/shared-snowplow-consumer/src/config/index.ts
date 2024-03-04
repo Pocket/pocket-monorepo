@@ -1,3 +1,5 @@
+import { RequiredRetryOptions } from 'got';
+
 const awsEnvironments = ['production', 'development'];
 let localAwsEndpoint;
 if (!awsEnvironments.includes(process.env.NODE_ENV)) {
@@ -8,6 +10,13 @@ let snowplowHttpProtocol = 'https';
 if (!awsEnvironments.includes(process.env.NODE_ENV)) {
   snowplowHttpProtocol = 'http';
 }
+
+// Snowplow uses Got. By default, Got does not retry POST, so we need to enable this explicitly.
+// https://github.com/sindresorhus/got/blob/main/documentation/7-retry.md#methods
+const snowplowRetries: Partial<RequiredRetryOptions> = {
+  limit: 3,
+  methods: ['GET', 'POST'],
+};
 
 // Environment variables below are set in .aws/src/main.ts
 export const config = {
@@ -55,10 +64,7 @@ export const config = {
     endpoint: process.env.SNOWPLOW_ENDPOINT || 'localhost:9090',
     httpProtocol: snowplowHttpProtocol,
     bufferSize: 1,
-    retries: {
-      limit: 3,
-      methods: ['GET', 'POST'],
-    },
+    retries: snowplowRetries,
     appId: 'pocket-snowplow-consumer',
     appIds: {
       //todo: make the event bridge event to send this
