@@ -28,7 +28,7 @@ export interface Item {
   datePublished?: string;
   hasOldDupes?: boolean;
   domainId?: string;
-  originDomainId?: boolean;
+  originDomainId?: string;
   responseCode?: number;
   contentLength?: number;
   innerDomainRedirect?: boolean;
