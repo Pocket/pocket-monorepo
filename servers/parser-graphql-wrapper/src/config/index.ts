@@ -11,7 +11,7 @@ export default {
   },
   app: {
     environment: process.env.NODE_ENV || 'development',
-    defaultMaxAge: 86400,
+    defaultMaxAge: 21100, // ~6 hours
     serverPort: 4001,
   },
   redis: {

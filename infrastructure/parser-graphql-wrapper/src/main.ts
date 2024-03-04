@@ -405,7 +405,9 @@ class ParserGraphQLWrapper extends TerraformStack {
         // Our original redis pre-serverless only had 7GB of data, but right now we are using 125Gb
         // with a 50% cache hit rate, so lets limit it a bit to save $$.
         // Not going to limit Ecpu atm berccuase that is charged per million ecpus and we are well under the first bill number.
-        cacheUsageLimits: [{ dataStorage: [{ maximum: 100, unit: 'GB' }] }],
+
+        // Add back once https://github.com/hashicorp/terraform-provider-aws/issues/35897 is fixed.
+        // cacheUsageLimits: [{ dataStorage: [{ maximum: 100, unit: 'GB' }] }],
         // add on a serverless to the name, because our previous elasticache will still exist at the old name
         prefix: `${config.prefix}-serverless`,
       },
