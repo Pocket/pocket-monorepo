@@ -1,5 +1,79 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ApplicationRedis renders redis using cache limits 1`] = `
+"{
+  "data": {
+    "aws_subnets": {
+      "subnets": {
+      }
+    },
+    "aws_vpc": {
+      "testRedis_vpc_442CAD26": {
+        "filter": [
+          {
+            "name": "vpc-id",
+            "values": [
+              "cool-vpc"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "resource": {
+    "aws_elasticache_serverless_cache": {
+      "testRedis_elasticache_serverless_E5B11082": {
+        "cache_usage_limits": [
+          {
+            "data_storage": [
+              {
+                "maximum": 10,
+                "unit": "GB"
+              }
+            ]
+          },
+          {
+            "ecpu_per_second": [
+              {
+                "maximum": 5
+              }
+            ]
+          }
+        ],
+        "description": "Redis for abides-dev",
+        "engine": "redis",
+        "name": "abides-dev",
+        "security_group_ids": [
+          "\${aws_security_group.testRedis_elasticache_security_group_36C6CB6D.id}"
+        ],
+        "subnet_ids": "\${slice(data.aws_subnets.subnets.ids, 0, 3)}"
+      }
+    },
+    "aws_security_group": {
+      "testRedis_elasticache_security_group_36C6CB6D": {
+        "description": "Managed by Terraform",
+        "ingress": [
+          {
+            "cidr_blocks": null,
+            "description": null,
+            "from_port": 6379,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "tcp",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 6379
+          }
+        ],
+        "name_prefix": "abides-dev",
+        "vpc_id": "\${data.aws_vpc.testRedis_vpc_442CAD26.id}"
+      }
+    }
+  }
+}"
+`;
+
 exports[`ApplicationRedis renders redis using data aws subnet 1`] = `
 "{
   "data": {
