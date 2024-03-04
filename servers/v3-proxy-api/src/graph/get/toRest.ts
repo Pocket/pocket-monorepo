@@ -4,149 +4,18 @@
 
 import {
   GetSavedItemsByOffsetCompleteQuery,
-  Tag,
-  Author,
-  DomainMetadata,
-  Image,
-  Video,
   GetSavedItemsByOffsetSimpleQuery,
-  Imageness,
-  Videoness,
-  ItemCompleteFragment,
-} from '../generated/graphql/types';
+} from '../../generated/graphql/types';
 import {
-  TagsItemObject,
-  AuthorsItemObject,
-  DomainMetadataItemObject,
-  ImagesItemObject,
-  VideosItemObject,
-  VideoTypeMap,
   ListItemObject,
   ListItemObjectComplete,
   ListItemObjectAdditional,
-  RestResponseSimple,
-  RestResponseSimpleTotal,
-  RestResponseComplete,
-  RestResponseCompleteTotal,
-} from './types';
-
-/**
- * Convert tag response array into a map keyed by tag name
- */
-function TagsReducer(
-  tags: Array<Pick<Tag, 'name'>> | undefined,
-  itemId: string,
-): TagsItemObject | undefined {
-  if (tags == null) {
-    return undefined;
-  }
-  return tags.reduce((tagsObj, tag) => {
-    tagsObj[tag.name] = {
-      tag: tag.name,
-      item_id: itemId,
-    };
-    return tagsObj;
-  }, {} as TagsItemObject);
-}
-
-/**
- * Convert authors response array into a map keyed by author id
- */
-function AuthorsReducer(
-  authors: Author[] | undefined,
-  itemId: string,
-): AuthorsItemObject | undefined {
-  if (authors == null || authors.length === 0) {
-    return undefined;
-  }
-  return authors.reduce((authorsObj, author) => {
-    authorsObj[author.id] = {
-      item_id: itemId,
-      author_id: author.id,
-      name: author.name,
-      url: author.url,
-    };
-    return authorsObj;
-  }, {} as AuthorsItemObject);
-}
-
-/**
- * Convert images array into a map keyed by image id
- */
-function ImagesReducer(
-  images: Array<Omit<Image, 'src'>> | undefined,
-  itemId: string,
-): ImagesItemObject | undefined {
-  if (images == null) {
-    return undefined;
-  }
-  return images.reduce((imagesObj, image) => {
-    imagesObj[image.imageId.toString()] = {
-      item_id: itemId,
-      image_id: image.imageId.toString(),
-      src: image.url,
-      width: (image.width ?? 0).toString(),
-      height: (image.height ?? 0).toString(),
-      credit: image.credit ?? '',
-      caption: image.caption ?? '',
-    };
-    return imagesObj;
-  }, {} as ImagesItemObject);
-}
-
-function DisplayImageTransformer(
-  images: ItemCompleteFragment['images'] | undefined,
-  itemId: string,
-):
-  | Pick<ImagesItemObject[string], 'item_id' | 'src' | 'width' | 'height'>
-  | undefined {
-  if (images == null || images.length === 0) {
-    return undefined;
-  }
-  return {
-    item_id: itemId,
-    src: images[0].url,
-    width: (images[0].width ?? 0).toString(),
-    height: (images[0].height ?? 0).toString(),
-  };
-}
-
-function VideosReducer(
-  videos: Video[] | undefined,
-  itemId: string,
-): VideosItemObject | undefined {
-  if (videos == null) {
-    return undefined;
-  }
-  return videos.reduce((videosObj, video) => {
-    videosObj[video.videoId.toString()] = {
-      item_id: itemId,
-      video_id: video.videoId.toString(),
-      src: video.src,
-      width: (video.width ?? 0).toString(),
-      height: (video.height ?? 0).toString(),
-      type: VideoTypeMap[video.type],
-      length: (video.length ?? 0).toString(),
-      vid: video.vid,
-    };
-    return videosObj;
-  }, {} as VideosItemObject);
-}
-
-/**
- * Transform domain metadata response into format
- * that complies with v3 api
- */
-function DomainMetadataTransformer(
-  metadata: DomainMetadata | undefined,
-): DomainMetadataItemObject {
-  const metadataResponse = {} as DomainMetadataItemObject;
-  metadata.name && (metadataResponse['name'] = metadata.name);
-  metadata.logo && (metadataResponse['logo'] = metadata.logo);
-  metadata.logoGreyscale &&
-    (metadataResponse['greyscale_logo'] = metadata.logoGreyscale);
-  return metadataResponse;
-}
+  GetResponseSimple,
+  GetResponseSimpleTotal,
+  GetResponseComplete,
+  GetResponseCompleteTotal,
+} from '../types';
+import * as tx from '../shared/transforms';
 
 type SavedItemSimple =
   GetSavedItemsByOffsetSimpleQuery['user']['savedItemsByOffset']['entries'][number];
@@ -177,12 +46,14 @@ export function ListItemTransformerComplete(
     return simple;
   }
   const completeFieldMap = {
-    authors: AuthorsReducer(savedItem.item.authors, savedItem.id),
-    domain_metadata: DomainMetadataTransformer(savedItem.item.domainMetadata),
-    images: ImagesReducer(savedItem.item.images, savedItem.id),
-    tags: TagsReducer(savedItem.tags, savedItem.id),
-    videos: VideosReducer(savedItem.item.videos, savedItem.id),
-    image: DisplayImageTransformer(savedItem.item.images, savedItem.id),
+    authors: tx.AuthorsReducer(savedItem.item.authors, savedItem.id),
+    domain_metadata: tx.DomainMetadataTransformer(
+      savedItem.item.domainMetadata,
+    ),
+    images: tx.ImagesReducer(savedItem.item.images, savedItem.id),
+    tags: tx.TagsReducer(savedItem.tags, savedItem.id),
+    videos: tx.VideosReducer(savedItem.item.videos, savedItem.id),
+    image: tx.DisplayImageTransformer(savedItem.item.images, savedItem.id),
   };
   const complete = Object.entries(completeFieldMap).reduce(
     (complete, [k, v]) => {
@@ -255,41 +126,12 @@ function ListItemTransformer(
         excerpt: savedItem.item.excerpt ?? '',
         is_article: savedItem.item.isArticle ? ('1' as const) : ('0' as const),
         is_index: savedItem.item.isIndex ? ('1' as const) : ('0' as const),
-        has_video: convertHasVideo(savedItem.item.hasVideo),
-        has_image: convertHasImage(savedItem.item.hasImage),
+        has_video: tx.convertHasVideo(savedItem.item.hasVideo),
+        has_image: tx.convertHasImage(savedItem.item.hasImage),
         word_count: (savedItem.item.wordCount ?? 0).toString(),
         lang: savedItem.item.language ?? '',
         time_to_read: savedItem.item.timeToRead ?? 0,
       };
-  }
-}
-
-/**
- * process if the item fields are populated. if its pendingItem, we just return null
- * @param savedItem
- */
-
-function convertHasImage(imageStatus: Imageness) {
-  switch (imageStatus) {
-    case Imageness.IsImage:
-    case Imageness.HasImages:
-      return '1' as const;
-    case Imageness.NoImages:
-      return '0' as const;
-    default:
-      return '0' as const;
-  }
-}
-
-function convertHasVideo(videoStatus: Videoness) {
-  switch (videoStatus) {
-    case Videoness.HasVideos:
-    case Videoness.IsVideo:
-      return '1' as const;
-    case Videoness.NoVideos:
-      return '0' as const;
-    default:
-      return '0' as const;
   }
 }
 
@@ -312,7 +154,7 @@ function listToMap<T>(input: T[], key: string): { [key: string]: T } {
  */
 export function savedItemsSimpleToRest(
   response: GetSavedItemsByOffsetSimpleQuery,
-): RestResponseSimple {
+): GetResponseSimple {
   return {
     // todo: map top level fields
     cacheType: 'db',
@@ -330,7 +172,7 @@ export function savedItemsSimpleToRest(
  */
 export function savedItemsCompleteToRest(
   response: GetSavedItemsByOffsetCompleteQuery,
-): RestResponseComplete {
+): GetResponseComplete {
   return {
     cacheType: 'db',
     list: listToMap(
@@ -350,7 +192,7 @@ export function savedItemsCompleteToRest(
  */
 export function savedItemsCompleteTotalToRest(
   response: GetSavedItemsByOffsetCompleteQuery,
-): RestResponseCompleteTotal {
+): GetResponseCompleteTotal {
   return {
     total: response.user.savedItemsByOffset.totalCount.toString(),
     ...savedItemsCompleteToRest(response),
@@ -363,7 +205,7 @@ export function savedItemsCompleteTotalToRest(
  */
 export function savedItemsSimpleTotalToRest(
   response: GetSavedItemsByOffsetSimpleQuery,
-): RestResponseSimpleTotal {
+): GetResponseSimpleTotal {
   return {
     total: response.user.savedItemsByOffset.totalCount.toString(),
     ...savedItemsSimpleToRest(response),

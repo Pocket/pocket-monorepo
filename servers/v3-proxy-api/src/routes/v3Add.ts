@@ -3,32 +3,41 @@ import { setSaveInputsFromGetCall } from '../graph/get/toGraphQL';
 import {
   callSavedItemsByOffsetSimple,
   callSavedItemsByOffsetComplete,
+  addSavedItem,
 } from '../graph/graphQLClient';
 import {
   savedItemsSimpleToRest,
   savedItemsCompleteToRest,
-  savedItemsSimpleTotalToRest,
+  ListItemTransformerComplete,
 } from '../graph/get/toRest';
-import { UserSavedItemsByOffsetArgs } from '../generated/graphql/types';
+import {
+  AddSavedItemBeforeTagMutationVariables,
+  AddSavedItemCompleteMutation,
+  AddSavedItemCompleteMutationVariables,
+  AddTagsToSavedItemMutationVariables,
+  SavedItemCompleteFragment,
+  SavedItemUpsertInput,
+  UserSavedItemsByOffsetArgs,
+} from '../generated/graphql/types';
 import { checkSchema, validationResult, matchedData } from 'express-validator';
-import { V3GetParams, V3GetSchema } from './validations/GetSchema';
+import { V3AddSchema, V3AddParams } from './validations/AddSchema';
 import { InputValidationError } from '../errors/InputValidationError';
+import { AddItemTransformer } from '../graph/add/toRest';
 
 const router: Router = Router();
 
 /**
- * Shared controller logic for POST and GET for /v3/get endpoint
+ * Shared controller logic for POST and GET for /v3/add endpoint
  * The Web repo supports both to this route, so we must be backwards compatible.
- * @param methodName Whether it's a POST or GET method -- just affects error
  * message prefix.
  */
-const v3GetController = async (
+const v3AddController = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   const result = validationResult(req);
-  const data = matchedData(req, { includeOptionals: false }) as V3GetParams;
+  const data = matchedData(req, { includeOptionals: false }) as V3AddParams;
   if (!result.isEmpty()) {
     // Send validation error to error handling middleware
     return next(
@@ -36,17 +45,16 @@ const v3GetController = async (
     );
   }
   try {
-    const variables = setSaveInputsFromGetCall(data);
+    const variables = buildVariables(data);
     const headers = req.headers;
     const accessToken = (data.access_token as string) ?? null;
     const consumerKey = (data.consumer_key as string) ?? null;
-    const graphResponse = await processV3call(
+    const graphResponse = await processV3Add(
       accessToken,
       consumerKey,
       headers,
       variables,
-      data.detailType,
-      data.total,
+      data.tags,
     );
     return res.json(graphResponse);
   } catch (err) {
@@ -56,8 +64,24 @@ const v3GetController = async (
   }
 };
 
-router.get('/', checkSchema(V3GetSchema, ['query']), v3GetController);
-router.post('/', checkSchema(V3GetSchema, ['body']), v3GetController);
+router.get('/', checkSchema(V3AddSchema, ['query']), v3AddController);
+router.post('/', checkSchema(V3AddSchema, ['body']), v3AddController);
+
+/**
+ * Set variables for the initial 'upsert' query
+ */
+function buildVariables(
+  data: V3AddParams,
+):
+  | AddSavedItemCompleteMutationVariables
+  | AddSavedItemBeforeTagMutationVariables {
+  const input: SavedItemUpsertInput = {
+    url: data.url,
+    timestamp: new Date().getTime() / 1000,
+  };
+  data.title && (input['title'] = data.title);
+  return { input };
+}
 
 /**
  * function call to get saves from graphQL and convert it to v3 Get response
@@ -66,41 +90,33 @@ router.post('/', checkSchema(V3GetSchema, ['body']), v3GetController);
  * @param variables input variables required for the graphql query
  * @param headers request headers. treated as blackbox pass through for proxy
  */
-export async function processV3call(
+export async function processV3Add(
   accessToken: string,
   consumerKey: string,
   headers: any,
-  variables: UserSavedItemsByOffsetArgs,
-  type: 'simple' | 'complete',
-  includeTotal = false,
+  variables:
+    | AddSavedItemCompleteMutationVariables // these are the same
+    | AddSavedItemBeforeTagMutationVariables,
+  tags?: string[],
 ) {
-  // Documenting additional parameters which change the shape of the response,
-  // that have not been used in the past year (not including in proxy):
-  //   - includeOpenUrl
-  //   - extended
-  if (type === 'complete') {
-    const response = await callSavedItemsByOffsetComplete(
+  if (tags) {
+    const result = await addSavedItem(
       accessToken,
       consumerKey,
       headers,
       variables,
     );
-    if (includeTotal) {
-      return savedItemsSimpleTotalToRest(response);
-    } else {
-      return savedItemsCompleteToRest(response);
-    }
-  }
-  const response = await callSavedItemsByOffsetSimple(
-    accessToken,
-    consumerKey,
-    headers,
-    variables,
-  );
-  if (includeTotal) {
-    return savedItemsSimpleTotalToRest(response);
+    return AddItemTransformer(result['upsertSavedItem']);
   } else {
-    return savedItemsSimpleToRest(response);
+    // Note that the  /v3/add response does not include tags (even if they were added)
+    const result = await addSavedItem(
+      accessToken,
+      consumerKey,
+      headers,
+      variables,
+      tags,
+    );
+    return AddItemTransformer(result['createSavedItemTags'][0]);
   }
 }
 

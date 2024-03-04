@@ -1,0 +1,20 @@
+fragment ItemParserMetadata on Item {
+    normalUrl
+    resolvedUrl
+    domainId
+    originDomainId
+    responseCode
+    mimeType
+    contentLength
+    encoding
+    dateResolved
+    datePublished
+    innerDomainRedirect
+    loginRequired
+    timeFirstParsed
+    topImage {
+        url 
+    }
+    resolvedNormalUrl
+    usedFallback
+}

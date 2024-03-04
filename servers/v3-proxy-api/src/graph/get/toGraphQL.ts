@@ -9,8 +9,8 @@ import {
   SavedItemsSortOrder,
   SavedItemStatusFilter,
   UserSavedItemsByOffsetArgs,
-} from '../generated/graphql/types';
-import { V3GetParams } from '../routes/validations';
+} from '../../generated/graphql/types';
+import { V3GetParams } from '../../routes/validations/GetSchema';
 
 /**
  * Build GraphQL SavedItemsSortInput values from

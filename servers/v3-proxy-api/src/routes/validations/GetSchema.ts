@@ -133,15 +133,4 @@ export const V3GetSchema: Schema = {
       options: [['newest', 'oldest']], //, 'relevance']],
     },
   },
-  total: {
-    default: {
-      options: '0',
-    },
-    isIn: {
-      options: [['0', '1']],
-    },
-    customSanitizer: {
-      options: (value) => (value === '1' ? true : false),
-    },
-  },
 };
