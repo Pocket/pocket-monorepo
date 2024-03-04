@@ -55,7 +55,10 @@ export const config = {
     endpoint: process.env.SNOWPLOW_ENDPOINT || 'localhost:9090',
     httpProtocol: snowplowHttpProtocol,
     bufferSize: 1,
-    retries: 3,
+    retries: {
+      limit: 3,
+      methods: ['GET', 'POST'],
+    },
     appId: 'pocket-snowplow-consumer',
     appIds: {
       //todo: make the event bridge event to send this
