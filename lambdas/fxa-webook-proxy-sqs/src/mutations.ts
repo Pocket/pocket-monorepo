@@ -61,6 +61,8 @@ export async function submitDeleteMutation(id: string): Promise<any> {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${generateJwt(privateKey, id)}`,
+      'apollographql-client-name': config.app.applicationName,
+      'apollographql-client-version': config.app.version,
     },
     body: JSON.stringify({ query: deleteMutation, variables }),
   }).then((response) => response.json());
@@ -92,6 +94,8 @@ export async function migrateAppleUserMutation(
       'Content-Type': 'application/json',
       Authorization: `Bearer ${generateJwt(privateKey, id)}`,
       transfersub: transferSub,
+      'apollographql-client-name': config.app.applicationName,
+      'apollographql-client-version': config.app.version,
     },
     body: JSON.stringify({ query: migrateAppleUser, variables }),
   }).then((response) => response.json());
@@ -121,6 +125,8 @@ export async function submitEmailUpdatedMutation(
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${generateJwt(privateKey, id)}`,
+      'apollographql-client-name': config.app.applicationName,
+      'apollographql-client-version': config.app.version,
     },
     body: JSON.stringify({ query: updateUserEmailMutation, variables }),
   }).then((response) => response.json());
@@ -149,6 +155,8 @@ export async function passwordChangeMutation(id: string): Promise<any> {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${generateJwt(privateKey, id)}`,
+      'apollographql-client-name': config.app.applicationName,
+      'apollographql-client-version': config.app.version,
     },
     body: JSON.stringify({ query: expireUserWebSessionByFxaId, variables }),
   }).then((response) => response.json());
