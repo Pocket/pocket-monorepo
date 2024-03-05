@@ -16,6 +16,7 @@
   "dependencies": {
     "@aws-sdk/client-ssm": "^3.499.0",
     "@sentry/serverless": "7.105.0",
+    "braze-api": "^2.6.0",
     "fetch-retry": "^5.0.6",
     "isomorphic-fetch": "^3.0.0",
     "tslib": "2.6.2"

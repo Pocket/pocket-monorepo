@@ -2,8 +2,12 @@ import isomorphicFetch from 'isomorphic-fetch';
 import fetchRetry from 'fetch-retry';
 import { config } from './config';
 import { getBrazeApiKey } from './ssm';
-import { AttributeForUserRegistration } from './handlers/userRegistrationEventHandler';
 import * as Sentry from '@sentry/node';
+import type {
+  UsersTrackObject,
+  UsersAliasObject,
+  V2SubscriptionStatusSetObject,
+} from 'braze-api';
 export const fetchWithBackoff = fetchRetry(isomorphicFetch);
 
 export async function sendAccountDeletionEmail(email: string) {
@@ -47,7 +51,7 @@ export async function sendAccountDeletionEmail(email: string) {
  * users/track docs: https://www.braze.com/docs/api/endpoints/user_data/post_user_track/#example-request
  * @param requestBody user track request body for creating user
  */
-export async function sendUserTrack<T>(requestBody: T) {
+export async function sendUserTrack(requestBody: UsersTrackObject) {
   const brazeApiKey = await getBrazeApiKey();
 
   return await fetchWithBackoff(
@@ -71,7 +75,7 @@ export async function sendUserTrack<T>(requestBody: T) {
  * @param requestBody request body to create user alias
  * @returns response from braze
  */
-export async function sendCreateUserAlias(requestBody: any) {
+export async function sendCreateUserAlias(requestBody: UsersAliasObject) {
   const brazeApiKey = await getBrazeApiKey();
   const response = await fetchWithBackoff(
     config.braze.endpoint + config.braze.userAliasPath,
@@ -95,20 +99,8 @@ export async function sendCreateUserAlias(requestBody: any) {
   return response;
 }
 
-//user track request body that we send to braze
-export type UserTrackBody = {
-  //add other event related attributes to this type
-  //as we onboard new events
-  attributes: AttributeForUserRegistration[];
-  events: {
-    external_id: string;
-    name: string;
-    time: Date;
-  }[];
-};
-
 export async function setSubscription(
-  requestBody: SetSubscriptionRequestBodyForEmail,
+  requestBody: V2SubscriptionStatusSetObject,
 ) {
   const brazeApiKey = await getBrazeApiKey();
   const response = await fetchWithBackoff(
@@ -142,14 +134,6 @@ export async function setSubscription(
   }
 }
 
-export type SetSubscriptionRequestBodyForEmail = {
-  subscription_groups: {
-    subscription_group_id: string;
-    subscription_state: string;
-    emails: string[];
-  }[];
-};
-
 /**
  * generates payload for set subscription by email in braze platform
  * @param subscriptionGroupId subscription group id
@@ -161,7 +145,7 @@ export function generateSubscriptionPayloadForEmail(
   subscriptionGroupId: string,
   isSubscribed: boolean,
   emails: string[],
-): SetSubscriptionRequestBodyForEmail {
+): V2SubscriptionStatusSetObject {
   return {
     subscription_groups: [
       {
