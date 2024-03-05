@@ -21,6 +21,9 @@ export const config = {
     userTrackPath: '/users/track',
     userAliasPath: '/users/alias/new',
     setSubscriptionPath: '/v2/subscription/status/set',
+    forgotPasswordCampaignId:
+      process.env.BRAZE_FORGOT_PASSWORD_CAMPAIGN_ID ||
+      'asdasd-asdasd-asdasd-asdasdasd-asdas',
     accountDeletionCampaignId:
       process.env.BRAZE_ACCOUNT_DELETION_CAMPAIGN_ID ||
       'asdasd-asdasd-asdasd-asdasdasd-asdas',

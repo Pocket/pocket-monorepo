@@ -7,11 +7,34 @@ import type {
   UsersTrackObject,
   UsersAliasObject,
   V2SubscriptionStatusSetObject,
+  CampaignsTriggerSendObject,
 } from 'braze-api';
 export const fetchWithBackoff = fetchRetry(isomorphicFetch);
 
-export async function sendAccountDeletionEmail(email: string) {
+export async function sendForgotPasswordEmail(forgotPasswordOptions: {
+  email: string;
+  resetTimeStamp: string;
+  resetPasswordUsername: string;
+  resetPasswordToken: string;
+}) {
   const brazeApiKey = await getBrazeApiKey();
+
+  const campaignData: CampaignsTriggerSendObject = {
+    campaign_id: config.braze.forgotPasswordCampaignId,
+    recipients: [
+      {
+        user_alias: {
+          alias_name: forgotPasswordOptions.email,
+          alias_label: 'email',
+        },
+        trigger_properties: {
+          reset_timestamp: forgotPasswordOptions.resetTimeStamp,
+          reset_password_username: forgotPasswordOptions.resetPasswordUsername,
+          reset_password_token: forgotPasswordOptions.resetPasswordToken,
+        },
+      },
+    ],
+  };
 
   const res = await fetchWithBackoff(
     config.braze.endpoint + config.braze.campaignTriggerPath,
@@ -24,17 +47,44 @@ export async function sendAccountDeletionEmail(email: string) {
         Authorization: `Bearer ${brazeApiKey}`,
       },
       // https://www.braze.com/docs/api/endpoints/messaging/send_messages/post_send_triggered_campaigns/
-      body: JSON.stringify({
-        campaign_id: config.braze.accountDeletionCampaignId,
-        recipients: [
-          {
-            user_alias: {
-              alias_name: email,
-              alias_label: 'email',
-            },
-          },
-        ],
-      }),
+      body: JSON.stringify(campaignData),
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error(`Error ${res.status}: Failed to send email`);
+  }
+
+  return res;
+}
+
+export async function sendAccountDeletionEmail(email: string) {
+  const brazeApiKey = await getBrazeApiKey();
+
+  const campaignData: CampaignsTriggerSendObject = {
+    campaign_id: config.braze.accountDeletionCampaignId,
+    recipients: [
+      {
+        user_alias: {
+          alias_name: email,
+          alias_label: 'email',
+        },
+      },
+    ],
+  };
+
+  const res = await fetchWithBackoff(
+    config.braze.endpoint + config.braze.campaignTriggerPath,
+    {
+      retryOn: [500, 502, 503],
+      retries: 3,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${brazeApiKey}`,
+      },
+      // https://www.braze.com/docs/api/endpoints/messaging/send_messages/post_send_triggered_campaigns/
+      body: JSON.stringify(campaignData),
     },
   );
 

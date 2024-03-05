@@ -19,6 +19,9 @@ export const config = {
       premiumPurchaseEvent: `PocketEventBridge-${environment}-PremiumPurchase-Topic`,
     },
     braze: {
+      forgotPasswordCampaignId: isDev
+        ? 'd73c69cd-438e-4f7d-af5f-ffc955abd5ed'
+        : '309d4141-2c47-4512-9df0-28921db49f98',
       //todo: read from ssm
       accountDeletionCampaignId: isDev
         ? '2e3050bb-da99-b1a3-e200-5939b8e07f8d'
