@@ -3,8 +3,8 @@ import { setSaveInputsFromGetCall } from './toGraphQL';
 import {
   SavedItemsSortBy,
   SavedItemsSortOrder,
-} from '../generated/graphql/types';
-import { defaultQuery } from '../test/fixtures';
+} from '../../generated/graphql/types';
+import { defaultQuery } from '../../test/fixtures';
 
 describe('toGraphQL', () => {
   it('should map saves input', () => {

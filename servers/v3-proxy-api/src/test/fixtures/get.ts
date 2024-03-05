@@ -7,10 +7,10 @@ import {
   Videoness,
 } from '../../generated/graphql/types';
 import {
-  RestResponseCompleteTotal,
-  RestResponseComplete,
-  RestResponseSimple,
-  RestResponseSimpleTotal,
+  GetResponseCompleteTotal,
+  GetResponseComplete,
+  GetResponseSimple,
+  GetResponseSimpleTotal,
 } from '../../graph/types';
 
 export const mockGraphGetComplete: GetSavedItemsByOffsetCompleteQuery = {
@@ -225,7 +225,7 @@ export const mockGraphGetSimple: GetSavedItemsByOffsetSimpleQuery = {
   },
 };
 
-export const expectedGetComplete: RestResponseComplete = {
+export const expectedGetComplete: GetResponseComplete = {
   // TODO: Update additional top-level fields when implemented
   cacheType: 'db',
   list: {
@@ -366,12 +366,12 @@ export const expectedGetComplete: RestResponseComplete = {
   },
 };
 
-export const expectedGetCompleteTotal: RestResponseCompleteTotal = {
+export const expectedGetCompleteTotal: GetResponseCompleteTotal = {
   total: '10',
   ...expectedGetComplete,
 };
 
-export const expectedGetSimple: RestResponseSimple = {
+export const expectedGetSimple: GetResponseSimple = {
   // TODO: Update additional top-level fields when implemented
   cacheType: 'db',
   list: {
@@ -437,7 +437,7 @@ export const expectedGetSimple: RestResponseSimple = {
   },
 };
 
-export const expectedGetSimpleTotal: RestResponseSimpleTotal = {
+export const expectedGetSimpleTotal: GetResponseSimpleTotal = {
   total: '10',
   ...expectedGetSimple,
 };

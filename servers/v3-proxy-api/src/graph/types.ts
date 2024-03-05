@@ -1,3 +1,5 @@
+import { AddSavedItemCompleteMutation } from '../generated/graphql/types';
+
 /**
  * Reusable types intended for use throughout the process go here.
  */
@@ -17,13 +19,13 @@ export type ToStringParams<T> = {
   [Property in keyof T]: string;
 };
 
-export type RestResponseSimple = {
+export type GetResponseSimple = {
   //todo: add top level fields and sortId
   //e.g status, complete - as they are not mapped by developer portal docs
   list: { [key: string]: ListItemObject };
   cacheType: string;
 };
-export type RestResponseComplete = {
+export type GetResponseComplete = {
   //todo: add top level fields
   //e.g status, complete - as they are not mapped by developer portal docs
   // note that complete returns 1 for detailType=simple and
@@ -31,14 +33,90 @@ export type RestResponseComplete = {
   list: { [key: string]: ListItemObjectComplete };
   cacheType: string;
 };
-export type RestResponseSimpleTotal = RestResponseSimple & { total: string };
-export type RestResponseCompleteTotal = RestResponseComplete & {
+export type GetResponseSimpleTotal = GetResponseSimple & { total: string };
+export type GetResponseCompleteTotal = GetResponseComplete & {
   total: string;
+};
+
+// The response type for an 'add' action which is pending
+// Separating because unless it's pending, some of these values
+// cannot be null but instead default to empty strings or other
+// default vaules (see AddResponse)
+export type PendingAddResponse = {
+  item: {
+    item_id: string;
+    normal_url: string;
+    resolved_id: string;
+    resolved_url: null;
+    domain_id: null;
+    origin_domain_id: null;
+    response_code: null;
+    mime_type: null;
+    content_length: null;
+    encoding: null;
+    date_resolved: null;
+    date_published: null;
+    title: null;
+    excerpt: null;
+    word_count: null;
+    innerdomain_redirect: null;
+    login_required: null;
+    has_image: null;
+    has_video: null;
+    is_index: null;
+    is_article: null;
+    used_fallback: null;
+    lang: null;
+    time_first_parsed: null;
+    given_url: string;
+  };
+  status: 1;
+};
+
+export type AddResponse = {
+  // There is some overlap with GetResponse but enough is different to warrant
+  // defining them without composition (the differences aren't along an obvious
+  // domain boundary)
+  item: {
+    item_id: string;
+    normal_url: string;
+    resolved_id: string;
+    resolved_url: string;
+    domain_id: string;
+    origin_domain_id: string;
+    response_code: string;
+    mime_type: string; // MIME_TYPES
+    content_length: string;
+    encoding: string;
+    date_resolved: string; // timestamp string without timezone
+    date_published: string; // not nullable (deafult='0000-00-00 00:00:00')
+    title: string;
+    excerpt: string; // not nullable (deafult='')
+    word_count: string; // stringified int; not nullable (default='0')
+    innerdomain_redirect: '0' | '1';
+    login_required: '0' | '1';
+    has_image: '0' | '1' | '2';
+    has_video: '0' | '1' | '2';
+    is_index: '0' | '1';
+    is_article: '0' | '1';
+    used_fallback: '0' | '1';
+    lang: string; // 2-letter lang code
+    time_first_parsed: string; // epoch time in seconds as string
+    authors: AddAuthorsObject | []; // non-nullable, non-optional (default=[])
+    images: ImagesItemObject | []; // non-nullable, non-optional (default=[])
+    videos: VideosItemObject | []; // non-nullable, non-optional (default=[])
+    top_image_url?: string;
+    resolved_normal_url: string;
+    domain_metadata?: DomainMetadataItemObject;
+    given_url: string;
+  };
+  // what does this mean
+  status: 1;
 };
 
 export type TagsItemObject = {
   [tag: string]: {
-    item_id: string;
+    item_id: string; // item.item_id
     // Same as top-level key
     tag: string;
   };
@@ -58,7 +136,7 @@ export type ImagesItemObject = {
 };
 
 export type BaseImageData = {
-  item_id: string;
+  item_id: string; // item.resolved_id
   src: string;
   // Number as string
   width: string;
@@ -81,7 +159,7 @@ export type VideosItemObject = {
   [videoId: string]: {
     // Same as top-level ID
     video_id: string;
-    item_id: string;
+    item_id: string; // item.resolved_id
     src: string;
     // Number as string
     width: string;
@@ -94,14 +172,20 @@ export type VideosItemObject = {
   };
 };
 
+export type AddAuthorsObject = {
+  [authorId: string]: Omit<AuthorData, 'item_id'>;
+};
+
+type AuthorData = {
+  item_id: string; // item.resolved_id
+  // Same as top-level key
+  author_id: string;
+  name: string;
+  url: string;
+};
+
 export type AuthorsItemObject = {
-  [authorId: string]: {
-    item_id: string;
-    // Same as top-level key
-    author_id: string;
-    name: string;
-    url: string;
-  };
+  [authorId: string]: AuthorData;
 };
 
 export type DomainMetadataItemObject = {
@@ -129,8 +213,8 @@ export type ListItemObject = {
   excerpt: string;
   is_article: '0' | '1';
   is_index: '0' | '1';
-  has_video: '0' | '1';
-  has_image: '0' | '1';
+  has_video: '0' | '1' | '2';
+  has_image: '0' | '1' | '2';
   word_count: string;
   // Empty if unavailable, 2-letter lang code
   lang: string;
@@ -152,3 +236,6 @@ export type ListItemObjectAdditional = {
   domain_metadata?: DomainMetadataItemObject;
   image?: BaseImageData;
 };
+
+export type SavedItemWithParserMetadata =
+  AddSavedItemCompleteMutation['upsertSavedItem'];

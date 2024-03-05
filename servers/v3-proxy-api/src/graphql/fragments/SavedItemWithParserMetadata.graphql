@@ -1,0 +1,12 @@
+fragment SavedItemWithParserMetadata on SavedItem {
+    ...SavedItemSimple,
+    item {
+        ... on Item {
+            ...ItemComplete
+            ...ItemParserMetadata
+        }
+        ... on PendingItem {
+            __typename
+        }
+    }
+}

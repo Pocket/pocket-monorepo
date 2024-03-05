@@ -5,7 +5,7 @@ import {
   SavedItemSimpleFragment,
   ItemSimpleFragment,
 } from '../../generated/graphql/types';
-import { ListItemObject, RestResponseSimple } from '../../graph/types';
+import { ListItemObject, GetResponseSimple } from '../../graph/types';
 
 export const seedDataRest: MockListItemObject = Object.freeze({
   ids: ['1', '2'],
@@ -109,7 +109,7 @@ export const testV3GetResponse = (
   mockInputs: MockListItemObject = {
     ...seedDataRest,
   },
-): RestResponseSimple => {
+): GetResponseSimple => {
   const map: { [key: string]: ListItemObject } = {};
 
   mockInputs.ids.forEach((id, index) => {

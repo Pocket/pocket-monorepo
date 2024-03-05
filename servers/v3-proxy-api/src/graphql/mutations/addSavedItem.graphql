@@ -1,0 +1,17 @@
+mutation addSavedItemComplete($input: SavedItemUpsertInput!) {
+  upsertSavedItem(input: $input) {
+    ...SavedItemWithParserMetadata
+  }
+}
+
+mutation addSavedItemBeforeTag($input: SavedItemUpsertInput!) {
+    upsertSavedItem(input: $input) {
+        id
+    }
+}
+
+mutation addTagsToSavedItem($tags: [SavedItemTagsInput!]!) {
+    createSavedItemTags(input: $tags) {
+        ...SavedItemWithParserMetadata
+    }
+}

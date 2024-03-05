@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { setSaveInputsFromGetCall } from '../graph/toGraphQL';
+import { setSaveInputsFromGetCall } from '../graph/get/toGraphQL';
 import {
   callSavedItemsByOffsetSimple,
   callSavedItemsByOffsetComplete,
@@ -8,10 +8,10 @@ import {
   savedItemsSimpleToRest,
   savedItemsCompleteToRest,
   savedItemsSimpleTotalToRest,
-} from '../graph/toRest';
+} from '../graph/get/toRest';
 import { UserSavedItemsByOffsetArgs } from '../generated/graphql/types';
 import { checkSchema, validationResult, matchedData } from 'express-validator';
-import { V3GetParams, V3GetSchema } from './validations';
+import { V3GetParams, V3GetSchema } from './validations/GetSchema';
 import { InputValidationError } from '../errors/InputValidationError';
 
 const router: Router = Router();

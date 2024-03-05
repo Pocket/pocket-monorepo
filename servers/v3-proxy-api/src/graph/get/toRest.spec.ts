@@ -1,11 +1,11 @@
-import { GetSavedItemsByOffsetSimpleQuery } from '../generated/graphql/types';
+import { GetSavedItemsByOffsetSimpleQuery } from '../../generated/graphql/types';
 import {
   savedItemsCompleteToRest,
   savedItemsCompleteTotalToRest,
   savedItemsSimpleToRest,
   savedItemsSimpleTotalToRest,
 } from './toRest';
-import { RestResponseSimple } from './types';
+import { GetResponseSimple } from '../types';
 import {
   testV3GetResponse,
   testItemFragment,
@@ -18,7 +18,7 @@ import {
   expectedGetCompleteTotal,
   mockGraphGetSimple,
   expectedGetSimpleTotal,
-} from '../test/fixtures';
+} from '../../test/fixtures';
 
 describe('GraphQL <> Rest convesion', () => {
   describe('convertSavedItemsSimple', () => {
@@ -97,7 +97,7 @@ describe('GraphQL <> Rest convesion', () => {
         time_updated,
         status,
       } = seedDataRest;
-      const restResponse: RestResponseSimple = {
+      const restResponse: GetResponseSimple = {
         cacheType: 'db',
         list: {
           id1: {

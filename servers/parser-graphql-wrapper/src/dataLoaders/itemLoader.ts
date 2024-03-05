@@ -148,7 +148,7 @@ const internalGetItemByUrl = async (
     datePublished: normalizeDate(item.date_published),
     hasOldDupes: !!parseInt(item.has_old_dupes),
     domainId: item.domain_id,
-    originDomainId: item.origin_domain_Id,
+    originDomainId: item.origin_domain_id,
     responseCode: parseInt(item.response_code),
     contentLength: parseInt(item.content_length),
     innerDomainRedirect: !!parseInt(item.innerdomain_redirect),
