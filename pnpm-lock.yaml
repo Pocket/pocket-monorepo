@@ -955,14 +955,14 @@ importers:
         specifier: 10.0.1
         version: 10.0.1(cdktf@0.20.4)(constructs@10.3.0)
       '@cdktf/provider-aws':
-        specifier: 19.7.0
-        version: 19.7.0(cdktf@0.20.4)(constructs@10.3.0)
+        specifier: 19.8.0
+        version: 19.8.0(cdktf@0.20.4)(constructs@10.3.0)
       '@cdktf/provider-local':
         specifier: 10.0.0
         version: 10.0.0(cdktf@0.20.4)(constructs@10.3.0)
       '@cdktf/provider-newrelic':
-        specifier: 12.2.0
-        version: 12.2.0(cdktf@0.20.4)(constructs@10.3.0)
+        specifier: 12.3.0
+        version: 12.3.0(cdktf@0.20.4)(constructs@10.3.0)
       '@cdktf/provider-null':
         specifier: 10.0.0
         version: 10.0.0(cdktf@0.20.4)(constructs@10.3.0)
@@ -4364,8 +4364,8 @@ packages:
       constructs: 10.3.0
     dev: false
 
-  /@cdktf/provider-aws@19.7.0(cdktf@0.20.4)(constructs@10.3.0):
-    resolution: {integrity: sha512-ckLAE1QvwPHia6f1kpMAYdrYS7EFrRYfHih83foouH+JWaO9SeRgVnhZwgmyl7Wj7Rbni0dMCUzdbvmkdl/AYA==}
+  /@cdktf/provider-aws@19.8.0(cdktf@0.20.4)(constructs@10.3.0):
+    resolution: {integrity: sha512-fwaCWNb683JmGUjTYaxoNJNo4uc2Fy4dTTbXchw85tBC0NBKmbovp21nGRqy7wmW+7eUQOSj6mvviglCdzJbeg==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
       cdktf: ^0.20.0
@@ -4402,8 +4402,8 @@ packages:
       constructs: 10.3.0
     dev: false
 
-  /@cdktf/provider-newrelic@12.2.0(cdktf@0.20.4)(constructs@10.3.0):
-    resolution: {integrity: sha512-lVJ/8uEeO+tV6gFJsDTLnVolrk2MWkXvAlfwhr//9GmE5jgaafW87yySO1C/GTZCVDT9V/0Gguvrfegbs6v9Kw==}
+  /@cdktf/provider-newrelic@12.3.0(cdktf@0.20.4)(constructs@10.3.0):
+    resolution: {integrity: sha512-F/3a6K9ofxwRXrXwV9S0HFtTFOwcbTXre3zZCOmhhyJpmM+shqqmDKpKaCMRJhsbXhGeOku+9H2TzluoWJAFtA==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
       cdktf: ^0.20.0
