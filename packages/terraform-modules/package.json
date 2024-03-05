@@ -18,9 +18,9 @@
   },
   "dependencies": {
     "@cdktf/provider-archive": "10.0.1",
-    "@cdktf/provider-aws": "19.7.0",
+    "@cdktf/provider-aws": "19.8.0",
     "@cdktf/provider-local": "10.0.0",
-    "@cdktf/provider-newrelic": "12.2.0",
+    "@cdktf/provider-newrelic": "12.3.0",
     "@cdktf/provider-null": "10.0.0",
     "@cdktf/provider-pagerduty": "13.5.0",
     "@cdktf/provider-time": "10.0.0",
