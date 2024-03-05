@@ -46,7 +46,7 @@ describe('ShortUrl', () => {
       'http://www.google.com',
       sharedRepo,
     );
-    expect(shortUrl).toBe(`https://${config.shortUrl.short_prefix}cb`);
+    expect(shortUrl).toBe(`http://${config.shortUrl.short_prefix}cb`);
   });
 
   it('shortUrl returns short url for given https url', async () => {

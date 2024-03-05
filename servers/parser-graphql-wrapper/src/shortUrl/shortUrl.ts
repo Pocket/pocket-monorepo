@@ -76,12 +76,10 @@ export function getIdFromShortCode(code: string): number {
  * @returns shortUrl
  */
 function generateShortUrl(url: string, shortCode: string): string {
-  const protocol = 'https://';
-  const domain = url.startsWith('https://')
-    ? config.shortUrl.short_prefix_secure
-    : config.shortUrl.short_prefix;
-
-  return protocol + domain + shortCode;
+  const urlPrefix = url.startsWith('https://')
+    ? `https://${config.shortUrl.short_prefix_secure}`
+    : `http://${config.shortUrl.short_prefix}`;
+  return urlPrefix + shortCode;
 }
 
 /**
