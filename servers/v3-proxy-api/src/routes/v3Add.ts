@@ -65,7 +65,7 @@ function buildVariables(
   | AddSavedItemBeforeTagMutationVariables {
   const input: SavedItemUpsertInput = {
     url: data.url,
-    timestamp: new Date().getTime() / 1000,
+    timestamp: Math.round(new Date().getTime() / 1000),
   };
   data.title && (input['title'] = data.title);
   return { input };
@@ -87,7 +87,7 @@ export async function processV3Add(
     | AddSavedItemBeforeTagMutationVariables,
   tags?: string[],
 ) {
-  if (tags) {
+  if (tags == null) {
     const result = await addSavedItem(
       accessToken,
       consumerKey,

@@ -65,8 +65,8 @@ export function AddItemTransformer(
         mime_type: savedItem.item.mimeType,
         content_length: savedItem.item.contentLength.toString(),
         encoding: savedItem.item.encoding ?? '',
-        date_resolved: savedItem.item.dateResolved, // todo: convert
-        date_published: savedItem.item.datePublished ?? '0000-00-00 00:00:00', // todo: convert
+        date_resolved: savedItem.item.dateResolved,
+        date_published: savedItem.item.datePublished ?? '0000-00-00 00:00:00',
         title: savedItem.item.title ?? '',
         excerpt: savedItem.item.excerpt ?? '',
         word_count: (savedItem.item.wordCount ?? 0).toString(),

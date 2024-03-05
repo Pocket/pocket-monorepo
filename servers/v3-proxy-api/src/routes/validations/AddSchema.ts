@@ -45,9 +45,7 @@ export const V3AddSchema: Schema = {
     optional: true,
     isString: true,
     customSanitizer: {
-      options: (tags) => {
-        ','.split(tags);
-      },
+      options: (tags) => tags.split(','),
     },
     custom: {
       options: (tags) =>

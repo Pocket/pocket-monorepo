@@ -190,12 +190,12 @@ export async function addSavedItem(
     const tagVariables = {
       tags: { savedItemId: addResult.upsertSavedItem.id, tags },
     };
-    return client.request<
+    return await client.request<
       AddTagsToSavedItemMutation,
       AddTagsToSavedItemMutationVariables
     >(AddTagsToSavedItemDocument, tagVariables);
   } else {
-    return client.request<
+    return await client.request<
       AddSavedItemCompleteMutation,
       AddSavedItemCompleteMutationVariables
     >(AddSavedItemCompleteDocument, variables);
