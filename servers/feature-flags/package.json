@@ -6,7 +6,7 @@
   "dependencies": {
     "@govtechsg/passport-openidconnect": "1.0.2",
     "@pocket-tools/apollo-utils": "workspace:*",
-    "@sentry/node": "7.104.0",
+    "@sentry/node": "7.105.0",
     "cors": "2.8.5",
     "express": "4.18.2",
     "jsonwebtoken": "^9.0.0",
