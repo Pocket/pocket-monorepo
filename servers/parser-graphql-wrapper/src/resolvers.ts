@@ -8,7 +8,7 @@ import { CacheScope } from '@apollo/cache-control-types';
 import {
   getShortUrl,
   extractCodeFromShortUrl,
-  itemIdFromShareCode,
+  givenUrlFromShareCode,
 } from './shortUrl/shortUrl';
 import { IContext } from './context';
 import { generateSSML } from './ssml/ssml';
@@ -115,8 +115,12 @@ export const resolvers = {
     },
     shortUrl: async (parent, args, context: IContext): Promise<string> => {
       const repo = await context.repositories.sharedUrlsResolver;
-      // If the givenUrl is already a short share url, return the same value
-      // to avoid another db trip
+      // If the givenUrl is already a short share url, or there is a
+      // short url key on the parent from a previous step, return the
+      // same value to avoid another db trip
+      if (parent.shortUrl) {
+        return parent.shortUrl;
+      }
       if (extractCodeFromShortUrl(parent.givenUrl) != null) {
         return parent.givenUrl;
       }
@@ -141,11 +145,13 @@ export const resolvers = {
       // If it's a special short share URL, use alternative resolution path
       const shortCode = extractCodeFromShortUrl(url);
       if (shortCode != null) {
-        const itemId = await itemIdFromShareCode(
+        const givenUrl = await givenUrlFromShareCode(
           shortCode,
           await repositories.sharedUrlsResolver,
         );
-        return getItemById(itemId, await repositories.itemResolver);
+        const item = getItemByUrl(givenUrl);
+        item['shortUrl'] = url;
+        return item;
       } else {
         // Regular URL resolution
         return getItemByUrl(url);
@@ -163,11 +169,13 @@ export const resolvers = {
       // If it's a special short share URL, use alternative resolution path
       const shortCode = extractCodeFromShortUrl(url);
       if (shortCode != null) {
-        const itemId = await itemIdFromShareCode(
+        const givenUrl = await givenUrlFromShareCode(
           shortCode,
           await repositories.sharedUrlsResolver,
         );
-        return getItemById(itemId, await repositories.itemResolver);
+        const item = await getItemByUrl(givenUrl);
+        item['shortUrl'] = url;
+        return item;
       } else {
         // Regular URL resolution
         return getItemByUrl(url);

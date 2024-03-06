@@ -123,6 +123,15 @@ export async function itemIdFromShareCode(
   return record.itemId.toString();
 }
 
+export async function givenUrlFromShareCode(
+  code: string,
+  sharedUrlRepo: SharedUrlsResolverRepository,
+): Promise<string> {
+  const id = getIdFromShortCode(code);
+  const record = await sharedUrlRepo.fetchByShareId(id);
+  return record.givenUrl;
+}
+
 /**
  * Extract the short code from a URL. If the URL is a valid pocket short
  * share URL, return the code which identifies the share. Otherwise return
