@@ -9,6 +9,7 @@ import {
   getShortUrl,
   extractCodeFromShortUrl,
   itemIdFromShareCode,
+  givenUrlFromShareCode,
 } from './shortUrl/shortUrl';
 import { IContext } from './context';
 import { generateSSML } from './ssml/ssml';
@@ -163,11 +164,11 @@ export const resolvers = {
       // If it's a special short share URL, use alternative resolution path
       const shortCode = extractCodeFromShortUrl(url);
       if (shortCode != null) {
-        const itemId = await itemIdFromShareCode(
+        const givenUrl = await givenUrlFromShareCode(
           shortCode,
           await repositories.sharedUrlsResolver,
         );
-        return getItemById(itemId, await repositories.itemResolver);
+        return getItemByUrl(givenUrl);
       } else {
         // Regular URL resolution
         return getItemByUrl(url);
