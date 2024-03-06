@@ -33,7 +33,7 @@
     "@prisma/client": "5.8.1",
     "@sentry/node": "7.105.0",
     "cors": "2.8.5",
-    "express": "4.18.2",
+    "express": "4.18.3",
     "express-validator": "^7.0.1",
     "graphql-constraint-directive": "5.4.2",
     "keyv": "4.5.4",

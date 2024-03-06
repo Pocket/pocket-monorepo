@@ -25,7 +25,7 @@
     "@sentry/tracing": "7.105.0",
     "@snowplow/node-tracker": "3.21.0",
     "dataloader": "2.2.2",
-    "express": "4.18.2",
+    "express": "4.18.3",
     "express-validator": "^7.0.1",
     "graphql": "16.8.1",
     "graphql-constraint-directive": "5.4.2",
