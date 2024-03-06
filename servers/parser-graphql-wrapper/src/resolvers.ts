@@ -8,7 +8,6 @@ import { CacheScope } from '@apollo/cache-control-types';
 import {
   getShortUrl,
   extractCodeFromShortUrl,
-  itemIdFromShareCode,
   givenUrlFromShareCode,
 } from './shortUrl/shortUrl';
 import { IContext } from './context';
