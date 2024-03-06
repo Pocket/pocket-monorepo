@@ -1,31 +1,42 @@
 import { SQSRecord } from 'aws-lambda';
-import { AccountDeleteEvent } from '../schemas/accountDeleteEvent';
-import { sendAccountDeletionEmail } from '../braze';
+import { sendForgotPasswordEmail } from '../braze';
+import { FogotPasswordResetEvent } from '../schemas/forgotPasswordResetEvent';
 
 /**
- * Validates that email is not null in the account delete event payload and
- * returns the email
- * @param message account delete event forwarded from event bridge
- * @returns email
+ * Validates that email is not null in the forgot password event payload and
+ * that we have valid reset information
+ * @param message forgot password reset event forwarded from event bridge
+ * @returns FogotPasswordResetEvent
  * @throws Error if email is missing in the event payload
  */
-export function validateEventPayload(message: AccountDeleteEvent): string {
-  if (message['email'] == null) {
-    throw new Error('email is required in event payload');
+export function validateEventPayload(
+  event: FogotPasswordResetEvent,
+): FogotPasswordResetEvent {
+  if (event.passwordResetInfo == null) {
+    throw new Error('passwordResetInfo is required in event payload');
   }
 
-  if (message['resetPasswordToken'] == null) {
+  if (event.passwordResetInfo.resetPasswordToken == null) {
     throw new Error('resetPasswordToken is required in event payload');
   }
 
-  if (message['resetPasswordUsername'] == null) {
+  if (event.passwordResetInfo.resetPasswordUsername == null) {
     throw new Error('resetPasswordUsername is required in event payload');
   }
 
-  if (message['timestamp'] == null) {
-    throw new Error('timestamp is required in event payload');
+  if (event.passwordResetInfo.timestamp == null) {
+    throw new Error('reset timestamp is required in event payload');
   }
-  return message['email'];
+
+  if (event.user == null) {
+    throw new Error('user is required in event payload');
+  }
+
+  if (event.user.email == null) {
+    throw new Error('email is required in event payload');
+  }
+
+  return event;
 }
 
 /**
@@ -37,7 +48,12 @@ export function validateEventPayload(message: AccountDeleteEvent): string {
 export async function forgotPasswordHandler(record: SQSRecord) {
   const message = JSON.parse(JSON.parse(record.body).Message)['detail'];
 
-  const email = validateEventPayload(message);
+  const event = validateEventPayload(message);
 
-  await sendAccountDeletionEmail(email);
+  await sendForgotPasswordEmail({
+    resetPasswordToken: event.passwordResetInfo.resetPasswordToken,
+    resetTimeStamp: event.passwordResetInfo.timestamp,
+    email: event.user.email,
+    resetPasswordUsername: event.passwordResetInfo.resetPasswordUsername,
+  });
 }
