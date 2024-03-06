@@ -25,7 +25,10 @@ class TransactionalEmails extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
-    new AwsProvider(this, 'aws', { region: 'us-east-1' });
+    new AwsProvider(this, 'aws', {
+      region: 'us-east-1',
+      defaultTags: [{ tags: config.tags }],
+    });
     new PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
     new LocalProvider(this, 'local_provider');
     new NullProvider(this, 'null_provider');
@@ -55,39 +58,17 @@ class TransactionalEmails extends TerraformStack {
       tags: config.tags,
     });
 
-    const userEventTopicArn = `arn:aws:sns:${region.name}:${caller.accountId}:${config.eventBridge.prefix}-${config.environment}-${config.eventBridge.userTopic}`;
-    this.subscribeSqsToSnsTopic(
-      sqsLambda,
-      snsTopicDlq,
-      userEventTopicArn,
-      config.eventBridge.userTopic,
-    );
+    const topicArns = [];
+    for (const topic of config.eventBridge.topics) {
+      const topicArn = `arn:aws:sns:${region.name}:${caller.accountId}:${config.eventBridge.prefix}-${config.environment}-${topic}`;
+      this.subscribeSqsToSnsTopic(sqsLambda, snsTopicDlq, topicArn, topic);
+      topicArns.push(topicArn);
+    }
 
-    const premiumPurchaseTopicArn = `arn:aws:sns:${region.name}:${caller.accountId}:${config.eventBridge.prefix}-${config.environment}-${config.eventBridge.premiumPurchaseTopic}`;
-    this.subscribeSqsToSnsTopic(
-      sqsLambda,
-      snsTopicDlq,
-      premiumPurchaseTopicArn,
-      config.eventBridge.premiumPurchaseTopic,
-    );
-
-    const userRegistrationTopicArn = `arn:aws:sns:${region.name}:${caller.accountId}:${config.eventBridge.prefix}-${config.environment}-${config.eventBridge.userRegistrationTopic}`;
-    this.subscribeSqsToSnsTopic(
-      sqsLambda,
-      snsTopicDlq,
-      userRegistrationTopicArn,
-      config.eventBridge.userRegistrationTopic,
-    );
-
-    const SNSTopicsSubscriptionList = [
-      userEventTopicArn,
-      premiumPurchaseTopicArn,
-      userRegistrationTopicArn,
-    ];
     this.createPoliciesForTransactionalEmailSQSQueue(
       sqsLambda.construct.applicationSqsQueue.sqsQueue,
       snsTopicDlq,
-      SNSTopicsSubscriptionList,
+      topicArns,
     );
   }
 

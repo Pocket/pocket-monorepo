@@ -37,7 +37,10 @@ class PocketEventBus extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
-    new AwsProvider(this, 'aws', { region: 'us-east-1' });
+    new AwsProvider(this, 'aws', {
+      region: 'us-east-1',
+      defaultTags: [{ tags: config.tags }],
+    });
     new PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
     new LocalProvider(this, 'local_provider');
     new NullProvider(this, 'null_provider');
@@ -52,7 +55,7 @@ class PocketEventBus extends TerraformStack {
 
     const eventBusProps: ApplicationEventBusProps = {
       name: `${config.prefix}-Shared-Event-Bus`,
-      tags: { service: config.prefix },
+      tags: config.tags,
     };
 
     const sharedPocketEventBus = new ApplicationEventBus(

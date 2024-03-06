@@ -34,8 +34,11 @@ export const config = {
   },
   eventBridge: {
     prefix: 'PocketEventBridge',
-    userTopic: 'UserEventTopic',
-    premiumPurchaseTopic: 'PremiumPurchase-Topic',
-    userRegistrationTopic: 'UserRegistrationTopic',
+    topics: [
+      'UserEventTopic',
+      'PremiumPurchase-Topic',
+      'UserRegistrationTopic',
+      'ForgotPassword-Topic',
+    ],
   },
 };
