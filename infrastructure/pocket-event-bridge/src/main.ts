@@ -32,6 +32,7 @@ import { PremiumPurchase } from './event-rules/premium-purchase';
 import { UserRegistrationEventRule } from './event-rules/user-registration/userRegistrationEventRule';
 import { UserRegistrationEventSchema } from './events-schema/userRegistrationEventSchema';
 import { AllEventsRule } from './event-rules/all-events/allEventRules';
+import { ForgotPassword } from './event-rules/forgot-password';
 
 class PocketEventBus extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -91,6 +92,9 @@ class PocketEventBus extends TerraformStack {
 
     // All events that have a detail type in the bus.
     new AllEventsRule(this, 'all-events', sharedPocketEventBus, pagerDuty);
+
+    //'Forgot Password Request' event, currently emitted by web-repo
+    new ForgotPassword(this, 'forgot-password', pagerDuty);
 
     new CollectionApiEvents(
       this,
