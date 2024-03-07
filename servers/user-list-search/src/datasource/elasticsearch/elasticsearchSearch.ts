@@ -16,7 +16,6 @@ import {
 import { UserInputError, validatePagination } from '@pocket-tools/apollo-utils';
 import { SearchQueryBuilder } from './searchQueryBuilder';
 import { Paginator } from './Paginator';
-import { result } from 'lodash';
 
 const { index, type, defaultQueryScore } = config.aws.elasticsearch;
 

@@ -278,8 +278,6 @@ describe('Elasticsearch', () => {
   });
 
   describe(`calculate offset test`, () => {
-    const testSize = 10;
-
     it('should throw error when before and after is set ', () => {
       const testPagination: Pagination = {
         before: Buffer.from(`5`).toString('base64'),

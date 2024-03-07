@@ -6,7 +6,6 @@ import {
   SavedItemSearchResultPage,
   SearchSavedItemEdge,
 } from '../../types';
-import { config } from '../../config';
 
 /**
  * Extract and format pagination information from elasticsearch
