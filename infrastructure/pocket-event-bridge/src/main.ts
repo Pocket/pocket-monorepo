@@ -32,7 +32,6 @@ import { PremiumPurchase } from './event-rules/premium-purchase';
 import { UserRegistrationEventRule } from './event-rules/user-registration/userRegistrationEventRule';
 import { UserRegistrationEventSchema } from './events-schema/userRegistrationEventSchema';
 import { AllEventsRule } from './event-rules/all-events/allEventRules';
-import { PocketEventBridegeMonitorLambda } from './monitorLambda';
 
 class PocketEventBus extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -88,19 +87,7 @@ class PocketEventBus extends TerraformStack {
     new UserRegistrationEventRule(this, 'user-registration', pagerDuty);
 
     // All events that have a detail type in the bus.
-    const allEventsRule = new AllEventsRule(
-      this,
-      'all-events',
-      sharedPocketEventBus,
-      pagerDuty,
-    );
-
-    new PocketEventBridegeMonitorLambda(
-      this,
-      'monitor-lamnda',
-      allEventsRule,
-      pagerDuty,
-    );
+    new AllEventsRule(this, 'all-events', sharedPocketEventBus, pagerDuty);
 
     new CollectionApiEvents(
       this,

@@ -6,17 +6,17 @@ import {
   PocketPagerDuty,
 } from '@pocket-tools/terraform-modules';
 import { config } from '../../config';
-import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
-import { SnsTopic } from '@cdktf/provider-aws/lib/sns-topic';
+import { CloudwatchLogGroup } from '@cdktf/provider-aws/lib/cloudwatch-log-group';
 import { DataAwsIamPolicyDocument } from '@cdktf/provider-aws/lib/data-aws-iam-policy-document';
-import { SnsTopicPolicy } from '@cdktf/provider-aws/lib/sns-topic-policy';
+import { CloudwatchLogResourcePolicy } from '@cdktf/provider-aws/lib/cloudwatch-log-resource-policy';
+import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
+import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
+
 import { Resource } from '@cdktf/provider-null/lib/resource';
-import { createDeadLetterQueueAlarm } from '../utils';
 import { eventConfig } from './eventConfig';
 
 export class AllEventsRule extends Construct {
-  public readonly snsTopic: SnsTopic;
-  public readonly snsTopicDlq: SqsQueue;
+  public readonly cloudwatchLogGroup: CloudwatchLogGroup;
 
   constructor(
     scope: Construct,
@@ -26,32 +26,9 @@ export class AllEventsRule extends Construct {
   ) {
     super(scope, name);
 
-    this.snsTopic = new SnsTopic(this, 'all-events-topic', {
-      name: `${config.prefix}-AllEventTopic`,
-      lifecycle: {
-        preventDestroy: true,
-      },
-    });
-
-    this.snsTopicDlq = new SqsQueue(this, 'sns-topic-dql', {
-      name: `${config.prefix}-SNS-${eventConfig.name}-Event-Rule-DLQ`,
-      tags: config.tags,
-    });
-
-    const allEvents = this.createAllEventRules();
-    this.createPolicyForEventBridgeToSns();
-
-    //get alerted if we get 10 messages in DLQ in 4 evaluation period of 5 minutes
-    createDeadLetterQueueAlarm(
-      this,
-      this.pagerDuty,
-      this.snsTopicDlq.name,
-      `${eventConfig.name}-Rule-dlq-alarm`,
-      true,
-      4,
-      300,
-      10,
-    );
+    this.cloudwatchLogGroup = this.createLogGroup();
+    this.createPolicyForEventBridgeToCloudwatch(this.cloudwatchLogGroup);
+    const allEvents = this.createAllEventRules(this.cloudwatchLogGroup);
 
     //place-holder resource used to make sure we are not
     //removing the event-rule or the SNS by mistake
@@ -60,7 +37,14 @@ export class AllEventsRule extends Construct {
     //e.g removing any of the dependsOn resource and running npm build would
     //throw error
     new Resource(this, 'null-resource', {
-      dependsOn: [allEvents.getEventBridge().rule, this.snsTopic],
+      dependsOn: [allEvents.getEventBridge().rule, this.cloudwatchLogGroup],
+    });
+  }
+
+  private createLogGroup() {
+    return new CloudwatchLogGroup(this, 'all-event-log-group', {
+      name: `/aws/events/${config.name}/AllEvents`,
+      retentionInDays: 14,
     });
   }
 
@@ -69,7 +53,7 @@ export class AllEventsRule extends Construct {
    * for collection-events
    * @private
    */
-  private createAllEventRules() {
+  private createAllEventRules(logGroup: CloudwatchLogGroup) {
     const allEventRuleProps: PocketEventBridgeProps = {
       eventRule: {
         name: `${config.prefix}-${eventConfig.name}-Rule`,
@@ -85,10 +69,9 @@ export class AllEventsRule extends Construct {
       },
       targets: [
         {
-          arn: this.snsTopic.arn,
-          deadLetterArn: this.snsTopicDlq.arn,
-          targetId: `${config.prefix}-All-Events-SNS-Target`,
-          terraformResource: this.snsTopic,
+          arn: logGroup.arn,
+          targetId: `${config.prefix}-All-Events-CloudWatch-Target`,
+          terraformResource: logGroup,
         },
       ],
     };
@@ -99,19 +82,24 @@ export class AllEventsRule extends Construct {
     );
   }
 
-  private createPolicyForEventBridgeToSns() {
-    const eventBridgeSnsPolicy = new DataAwsIamPolicyDocument(
+  private createPolicyForEventBridgeToCloudwatch(logGroup: CloudwatchLogGroup) {
+    const eventBridgeCloudwatchPolicy = new DataAwsIamPolicyDocument(
       this,
-      `${config.prefix}-EventBridge-SNS-Policy`,
+      `${config.prefix}-EventBridge-Cloudwatch-Policy`,
       {
         statement: [
           {
             effect: 'Allow',
-            actions: ['sns:Publish'],
-            resources: [this.snsTopic.arn],
+            actions: ['logs:CreateLogStream', 'logs:PutLogEvents'],
+            resources: [
+              `arn:aws:logs:${new DataAwsRegion(this, 'region').name}:${new DataAwsCallerIdentity(this, 'caller').accountId}:log-group:/aws/events/*:*`,
+            ],
             principals: [
               {
-                identifiers: ['events.amazonaws.com'],
+                identifiers: [
+                  'events.amazonaws.com',
+                  'delivery.logs.amazonaws.com',
+                ],
                 type: 'Service',
               },
             ],
@@ -120,9 +108,13 @@ export class AllEventsRule extends Construct {
       },
     ).json;
 
-    return new SnsTopicPolicy(this, 'all-events-sns-topic-policy', {
-      arn: this.snsTopic.arn,
-      policy: eventBridgeSnsPolicy,
-    });
+    return new CloudwatchLogResourcePolicy(
+      this,
+      'all-events-cloudwatch-policy',
+      {
+        policyName: `${config.prefix}-AllEvents-CloudwatchPolicy`,
+        policyDocument: eventBridgeCloudwatchPolicy,
+      },
+    );
   }
 }
