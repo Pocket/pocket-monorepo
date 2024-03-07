@@ -36,6 +36,18 @@ workflows:
       # Dev Branch Deployment (Dev Environment)
       ######
 
+      # Setup params we may use in Lambdas
+      - setup_deploy_params:
+          <<: *only_dev
+          name: pocket-event-bridge_deploy-params-dev
+          aws_access_key_id: Dev_AWS_ACCESS_KEY
+          aws_secret_access_key: Dev_AWS_SECRET_ACCESS_KEY
+          context: pocket
+          env: Dev
+          service_name: PocketEventBridge
+          requires:
+            - pocket-event-bridge_deploy-params-dev
+
       - infrastructure:
           <<: *only_dev
           context: pocket
@@ -60,7 +72,7 @@ workflows:
           sentry_project_name: pocket-event-bridge
           sentry_env: development
           sentry_org: pocket
-          s3-bucket: pocket-pocketeventbridgemonitor-dev
+          s3-bucket: pocket-pocketeventbridge-dev-monitor
           requires:
             - pocket-event-bridge_infrastructure_apply_dev
 
@@ -70,16 +82,27 @@ workflows:
           for: pocket_event_bridge
           name: pocket-event-bridge-monitor_code-deploy_dev
           resource-class: pocket/default-dev
-          codedeploy-app-name: PocketEventBridge-Monitor-Lambda
-          codedeploy-group-name: PocketEventBridge-Monitor-Lambda
-          function-name: PocketEventBridge-Monitor-Function
-          s3-bucket: pocket-pocketeventbridgemonitor-dev
+          codedeploy-app-name: PocketEventBridge-Dev-Monitor-Lambda
+          codedeploy-group-name: PocketEventBridge-Dev-Monitor-Lambda
+          function-name: PocketEventBridge-Dev-Monitor-Function
+          s3-bucket: pocket-pocketeventbridge-dev-monitor
           requires:
             - pocket-event-bridge-monitor_build_dev
 
       ######
       # Main Branch Deployment (Prod Environment)
       ######
+
+      # Setup params we may use in Lambdas
+      - setup_deploy_params:
+          <<: *only_main
+          name: pocket-event-bridge_deploy-params-prod
+          aws_access_key_id: Prod_AWS_ACCESS_KEY
+          aws_secret_access_key: Prod_AWS_SECRET_ACCESS_KEY
+          context: pocket
+          env: Prod
+          service_name: PocketEventBridge
+
       - infrastructure:
           <<: *only_main
           context: pocket
@@ -91,6 +114,8 @@ workflows:
           apply: true
           dev: false
           save_app_spec: false
+          requires:
+            - pocket-event-bridge_deploy-params-prod
 
       - build_lambda:
           <<: *only_main
@@ -104,7 +129,7 @@ workflows:
           sentry_project_name: pocket-event-bridge
           sentry_env: production
           sentry_org: pocket
-          s3-bucket: pocket-pocketeventbridgemonitor-prod
+          s3-bucket: pocket-pocketeventbridge-prod-monitor
           requires:
             - pocket-event-bridge_infrastructure_apply_prod
 
@@ -114,9 +139,9 @@ workflows:
           for: pocket_event_bridge
           name: pocket-event-bridge-monitor_code-deploy_prod
           resource-class: pocket/default-prod
-          codedeploy-app-name: PocketEventBridge-Monitor-Lambda
-          codedeploy-group-name: PocketEventBridge-Monitor-Lambda
-          function-name: PocketEventBridge-Monitor-Function
-          s3-bucket: pocket-pocketeventbridgemonitor-prod
+          codedeploy-app-name: PocketEventBridge-Prod-Monitor-Lambda
+          codedeploy-group-name: PocketEventBridge-Prod-Monitor-Lambda
+          function-name: PocketEventBridge-Prod-Monitor-Function
+          s3-bucket: pocket-pocketeventbridge-prod-monitor
           requires:
             - pocket-event-bridge-monitor_build_prod
