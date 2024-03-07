@@ -7,11 +7,11 @@
     "@aws-sdk/client-cloudwatch": "3.525.0",
     "@aws-sdk/client-firehose": "3.525.0",
     "@sendgrid/client": "^7.4.3",
-    "@sentry/serverless": "7.104.0",
+    "@sentry/serverless": "7.105.0",
     "tslib": "2.6.2"
   },
   "devDependencies": {
-    "@types/aws-lambda": "8.10.134",
+    "@types/aws-lambda": "8.10.136",
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
     "ts-jest": "29.1.2",

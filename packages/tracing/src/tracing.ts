@@ -76,7 +76,11 @@ export async function nodeSDKBuilder(config: TracingConfig) {
     //collector url
     url: `http://${config.host}:${config.grpcDefaultPort}`,
   });
-  const _spanProcessor = new BatchSpanProcessor(_traceExporter);
+  const _spanProcessor = new BatchSpanProcessor(_traceExporter, {
+    // only force 100ms between 2 batch exports.
+    // Default is 5000ms which is 5 seconds and causes us to lose spans
+    scheduledDelayMillis: 100,
+  });
   const _idGenerator = new AWSXRayIdGenerator();
 
   const sdk = new NodeSDK({

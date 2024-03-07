@@ -14,6 +14,7 @@ const config = {
     apiId: process.env.API_ID || '99841',
     applicationName:
       process.env.APPLICATION_NAME || 'FxA Webhook Proxy Service',
+    version: process.env.GIT_SHA || '',
   },
   aws: {
     region: process.env.REGION || 'us-east-1',

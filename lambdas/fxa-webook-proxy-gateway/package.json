@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-sqs": "3.525.0",
-    "@sentry/serverless": "7.104.0",
+    "@sentry/serverless": "7.105.0",
     "jsonwebtoken": "^9.0.0",
     "jwk-to-pem": "^2.0.5",
     "jwks-rsa": "3.1.0",
@@ -23,7 +23,7 @@
     "tslib": "2.6.2"
   },
   "devDependencies": {
-    "@types/aws-lambda": "8.10.134",
+    "@types/aws-lambda": "8.10.136",
     "@types/jest": "29.5.12",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/jwk-to-pem": "^2.0.1",

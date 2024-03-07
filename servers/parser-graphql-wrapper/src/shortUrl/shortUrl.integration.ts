@@ -215,10 +215,27 @@ describe('ShortUrl', () => {
         shareUrlId: 1,
         itemId: 12345,
         resolvedId: 12345,
+        givenUrl: testUrl,
       });
-      await itemRepo.insert({ itemId: 12345, normalUrl: testUrl });
     });
     it('should resolve the item from the short url', async () => {
+      nock(`http://example-parser.com`)
+        .get(`/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular`)
+        .reply(200, {
+          item: {
+            given_url: testUrl,
+            normal_url: testUrl,
+            item_id: '12345',
+            resolved_id: '12345',
+            domain_metadata: {
+              name: 'domain',
+              logo: 'logo',
+            },
+            authors: [],
+            images: [],
+            videos: [],
+          },
+        });
       const url = 'https://local.co/ab';
 
       const item_by_url = gql`

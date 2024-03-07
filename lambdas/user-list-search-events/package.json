@@ -10,12 +10,12 @@
     "format": "eslint --fix \"./**/*.ts\""
   },
   "dependencies": {
-    "@sentry/serverless": "7.104.0",
+    "@sentry/serverless": "7.105.0",
     "node-fetch": "2.7.0",
     "tslib": "2.6.2"
   },
   "devDependencies": {
-    "@types/aws-lambda": "8.10.134",
+    "@types/aws-lambda": "8.10.136",
     "@types/jest": "29.5.12",
     "@types/node-fetch": "2.6.11",
     "eslint-config-custom": "workspace:*",

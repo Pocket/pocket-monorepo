@@ -24,11 +24,11 @@
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "7.104.0",
-    "@sentry/tracing": "7.104.0",
+    "@sentry/node": "7.105.0",
+    "@sentry/tracing": "7.105.0",
     "cors": "2.8.5",
     "dataloader": "2.2.2",
-    "express": "4.18.2",
+    "express": "4.18.3",
     "express-validator": "^7.0.1",
     "graphql-constraint-directive": "5.4.2",
     "knex": "3.1.0",
@@ -37,7 +37,7 @@
     "nanoid": "3.3.7"
   },
   "devDependencies": {
-    "@sentry/types": "7.104.0",
+    "@sentry/types": "7.105.0",
     "@types/chance": "1.1.6",
     "@types/jest": "29.5.12",
     "@types/uuid": "9.0.8",

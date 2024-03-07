@@ -14,14 +14,14 @@
     "@aws-sdk/client-dynamodb": "3.525.0",
     "@aws-sdk/client-lambda": "3.525.0",
     "@aws-sdk/lib-dynamodb": "3.525.0",
-    "@sentry/serverless": "7.104.0",
+    "@sentry/serverless": "7.105.0",
     "exponential-backoff": "^3.1.1",
     "lodash": "4.17.21",
     "node-fetch": "2.7.0",
     "tslib": "2.6.2"
   },
   "devDependencies": {
-    "@types/aws-lambda": "8.10.134",
+    "@types/aws-lambda": "8.10.136",
     "@types/jest": "29.5.12",
     "@types/lodash": "4.14.202",
     "@types/node-fetch": "2.6.11",
