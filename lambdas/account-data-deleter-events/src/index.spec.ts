@@ -13,7 +13,9 @@ describe('event handlers', () => {
   afterAll(() => jest.restoreAllMocks());
   describe('with no handler errors', () => {
     beforeEach(() => {
-      deleteStub = jest.spyOn(handlers, Event.ACCOUNT_DELETION).mockResolvedValue();
+      deleteStub = jest
+        .spyOn(handlers, Event.ACCOUNT_DELETION)
+        .mockResolvedValue();
     });
     it('routes to the correct handler function based on detail-type', async () => {
       const records = {
@@ -56,7 +58,8 @@ describe('event handlers', () => {
   });
   describe('with handler errors', () => {
     beforeEach(() => {
-      deleteStub = jest.spyOn(handlers, Event.ACCOUNT_DELETION)
+      deleteStub = jest
+        .spyOn(handlers, Event.ACCOUNT_DELETION)
         .mockRejectedValue(new Error('got an error'));
     });
     it('returns batchItemFailure and logs to Sentry if handler throws error', async () => {
