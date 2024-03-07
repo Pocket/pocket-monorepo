@@ -107,6 +107,7 @@ describe('free search test', () => {
       hasNextPage
       hasPreviousPage
     }
+    searchType
     totalCount`;
 
   it('should search paginated search with after and first', async () => {
@@ -143,6 +144,7 @@ describe('free search test', () => {
     expect(response.totalCount).toBe(3);
     expect(response.pageInfo.hasNextPage).toBeFalse();
     expect(response.pageInfo.hasPreviousPage).toBeTrue();
+    expect(response.searchType).toBe('DATABASE');
     expect(response.edges[0].node.savedItem.id).toBe('456');
     expect(response.edges[1].node.savedItem.id).toBe('12345');
   });
@@ -480,6 +482,7 @@ describe('free search test', () => {
     expect(response.totalCount).toBe(3);
     expect(response.pageInfo.hasNextPage).toBeFalse();
     expect(response.pageInfo.hasPreviousPage).toBeTrue();
+    expect(response.searchType).toBe('DATABASE');
     expect(response.edges[0].node.savedItem.id).toBe('456');
     expect(response.edges[1].node.savedItem.id).toBe('12345');
   });

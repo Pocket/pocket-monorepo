@@ -1,5 +1,10 @@
 import { PaginationInput } from '@pocket-tools/apollo-utils';
 
+export enum SearchType {
+  ELASTICSEARCH = 'ELASTICSEARCH',
+  DATABASE = 'DATABASE',
+}
+
 export type User = {
   id: string;
 };
@@ -32,6 +37,7 @@ export type PageInfo = {
 
 export type SavedItemSearchResultConnection = {
   edges: SearchSavedItemEdge[];
+  searchType: SearchType;
   pageInfo: PageInfo;
   totalCount: number;
 };
@@ -40,6 +46,7 @@ export type SavedItemSearchResultPage = {
   entries: SavedItemSearchResult[];
   offset: number;
   limit: number;
+  searchType: SearchType;
   totalCount: number;
 };
 

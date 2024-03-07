@@ -106,6 +106,7 @@ describe('free-tier search (offset pagination)', () => {
     offset
     limit
     totalCount
+    searchType
   }`;
 
   it('should search paginated search with limit and offset', async () => {
@@ -147,6 +148,7 @@ describe('free-tier search (offset pagination)', () => {
       totalCount: 3,
       limit: 4,
       offset: 2,
+      searchType: 'DATABASE',
     };
     expect(response).toEqual(expected);
   });
@@ -220,6 +222,7 @@ describe('free-tier search (offset pagination)', () => {
       totalCount: 1,
       limit: 2,
       offset: 0,
+      searchType: 'DATABASE',
     };
     expect(response).toEqual(expected);
   });
@@ -258,6 +261,7 @@ describe('free-tier search (offset pagination)', () => {
       totalCount: 0,
       limit: 4,
       offset: 0,
+      searchType: 'DATABASE',
     };
     expect(response).toEqual(expected);
   });
@@ -300,6 +304,7 @@ describe('free-tier search (offset pagination)', () => {
       totalCount: 1,
       limit: 2,
       offset: 0,
+      searchType: 'DATABASE',
     };
     expect(response).toEqual(expected);
   });
@@ -423,6 +428,7 @@ describe('free-tier search (offset pagination)', () => {
       totalCount: 3,
       limit: 4,
       offset: 2,
+      searchType: 'DATABASE',
     };
     expect(response).toEqual(expected);
   });
