@@ -497,31 +497,6 @@ export function calculateSizeOffset(pagination: Pagination): {
   return { from: 0, size: cleanPagination.first };
 }
 
-/**
- *Calculates the `size` field when before is set in pagination input
- * @param pagination
- * @param size
- * @throws error if both before and after are set.
- */
-export function calculateSize(pagination: Pagination, size: number): number {
-  if (pagination?.after && pagination?.before) {
-    throw new Error(
-      'please set only before or after field in pagination input',
-    );
-  }
-
-  if (pagination?.before) {
-    const offset = parseInt(
-      Buffer.from(pagination.before, 'base64').toString(),
-    );
-    //to avoid returning item mentioned in `before`
-    //as offset is indexed from 0, we return offset (otherwise offset-1)
-    return Math.min(size, offset);
-  }
-
-  return size;
-}
-
 function mapSortFields(params: { sort?: SearchSavedItemParameters['sort'] }) {
   if (params.sort) {
     return {

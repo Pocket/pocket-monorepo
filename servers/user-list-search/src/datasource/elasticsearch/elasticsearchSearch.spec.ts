@@ -2,7 +2,6 @@ import {
   applyFunctionalBoosts,
   buildSearchBody,
   calculateSizeOffset,
-  calculateSize,
   ElasticSearchParams,
   extractSearchValues,
   formatFilterKey,
@@ -278,7 +277,7 @@ describe('Elasticsearch', () => {
     });
   });
 
-  describe(`calculateOffsetTest`, () => {
+  describe(`calculate offset test`, () => {
     const testSize = 10;
 
     it('should throw error when before and after is set ', () => {
@@ -286,7 +285,7 @@ describe('Elasticsearch', () => {
         before: Buffer.from(`5`).toString('base64'),
         after: Buffer.from(`5`).toString('base64'),
       };
-      expect(() => calculateSizeOffset(testPagination, testSize)).toThrow(
+      expect(() => calculateSizeOffset(testPagination)).toThrow(
         'Please set either {after and first} or {before and last}',
       );
     });
@@ -295,23 +294,25 @@ describe('Elasticsearch', () => {
       const testPagination: Pagination = {
         after: Buffer.from(`5`).toString('base64'),
       };
-      const from: number = calculateSizeOffset(testPagination, testSize);
+      const { from } = calculateSizeOffset(testPagination);
       expect(from).toBe(6);
     });
 
     it('should return `from` if before is set', () => {
       const testPagination: Pagination = {
         before: Buffer.from(`5`).toString('base64'),
+        last: 2,
       };
-      const from: number = calculateSizeOffset(testPagination, 2);
+      const { from } = calculateSizeOffset(testPagination);
       expect(from).toBe(3);
     });
 
     it('should return `from` to 0 if size greater than before', () => {
       const testPagination: Pagination = {
         before: Buffer.from(`5`).toString('base64'),
+        last: 30,
       };
-      const from: number = calculateSizeOffset(testPagination, testSize);
+      const { from } = calculateSizeOffset(testPagination);
       expect(from).toBe(0);
     });
 
@@ -319,44 +320,39 @@ describe('Elasticsearch', () => {
       const testPagination: Pagination = {
         last: 10,
       };
-      expect(() => calculateSizeOffset(testPagination, testSize)).toThrow(
+      expect(() => calculateSizeOffset(testPagination)).toThrow(
         "premium search doesn't support pagination by last alone." +
           'Please use first or first/after or before/last combination',
       );
     });
   });
 
-  describe(`calculateSizeTest`, () => {
-    it('should return `size` if after and input size are given', () => {
+  describe(`calculate size test`, () => {
+    it('should return `size` if after and first are given', () => {
       const testPagination: Pagination = {
         after: Buffer.from(`2`).toString('base64'),
+        first: 10,
       };
-      const from: number = calculateSize(testPagination, 10);
-      expect(from).toBe(10);
+      const { size } = calculateSizeOffset(testPagination);
+      expect(size).toBe(10);
     });
 
-    it('should return input size as size if its lesser than offset', () => {
+    it('should not exceed offset cursor when paginating backwards', () => {
       const testPagination: Pagination = {
         before: Buffer.from(`5`).toString('base64'),
+        last: 10,
       };
-      const from: number = calculateSize(testPagination, 3);
-      expect(from).toBe(3);
+      const { size } = calculateSizeOffset(testPagination);
+      expect(size).toBe(5);
     });
 
-    it('should return input size as offset-1 if its equal to offset', () => {
+    it('should return `last` value if does not exceed before cursor', () => {
       const testPagination: Pagination = {
         before: Buffer.from(`5`).toString('base64'),
+        last: 3,
       };
-      const from: number = calculateSize(testPagination, 5);
-      expect(from).toBe(5);
-    });
-
-    it('should return input size as offset-1 if its greater than offset', () => {
-      const testPagination: Pagination = {
-        before: Buffer.from(`5`).toString('base64'),
-      };
-      const from: number = calculateSize(testPagination, 10);
-      expect(from).toBe(5);
+      const { size } = calculateSizeOffset(testPagination);
+      expect(size).toBe(3);
     });
   });
 
