@@ -23,6 +23,17 @@ enum SearchStatus {
 }
 
 """
+What search method was used -- elasticsearch cluster (premium)
+or searching on the database directly (free tier).
+"""
+enum SearchType {
+  """Corresponds to premium search"""
+  ELASTICSEARCH
+  """Corresponds to free tier search"""
+  DATABASE
+}
+
+"""
 Sort direction of the returned items.
 """
 enum SearchSortDirection {
@@ -183,6 +194,7 @@ A page of SavedItemSearchResult, retrieved by offset-based pagination.
 """
 type SavedItemSearchResultPage @tag(name: "internal") {
   entries: [SavedItemSearchResult!]!
+  searchType: SearchType!
   totalCount: Int!
   offset: Int!
   limit: Int!
@@ -218,6 +230,10 @@ type SavedItemSearchResultConnection {
   Identifies the total count of items in the connection.
   """
   totalCount: Int!
+  """
+  What search method was used
+  """
+  searchType: SearchType!
 }
 
 """

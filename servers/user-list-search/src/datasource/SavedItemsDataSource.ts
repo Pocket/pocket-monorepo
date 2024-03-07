@@ -9,6 +9,7 @@ import {
   SearchSavedItemParameters,
   SavedItemSearchResultPage,
   SearchSavedItemOffsetParams,
+  SearchType,
 } from '../types';
 import { IContext } from '../server/context';
 import { validatePagination as externalValidatePagination } from '@pocket-tools/apollo-utils';
@@ -169,6 +170,7 @@ export class SavedItemDataService {
     return {
       entries,
       totalCount: totalcount,
+      searchType: SearchType.DATABASE,
       ...pageInput,
     };
   }
@@ -206,7 +208,7 @@ export class SavedItemDataService {
     // item_id sort is to resolve ties with stable sort (e.g. null sort field)
     baseQuery.orderBy(sortColumn, sortOrder.toLowerCase(), 'item_id', 'asc');
 
-    return paginate(
+    const searchResult = await paginate(
       // Need to use a subquery in order to order by derived fields ('archivedAt')
       this.db.select('*').from(baseQuery.as('page_query')),
       {
@@ -230,5 +232,7 @@ export class SavedItemDataService {
         }),
       },
     );
+    searchResult['searchType'] = SearchType.DATABASE;
+    return searchResult;
   }
 }

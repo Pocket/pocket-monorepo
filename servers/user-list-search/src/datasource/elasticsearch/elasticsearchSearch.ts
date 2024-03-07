@@ -12,6 +12,7 @@ import {
   SavedItemSearchResultPage,
   SavedItemSearchResult,
   AdvancedSearchByOffsetParams,
+  SearchType,
 } from '../../types';
 import { UserInputError, validatePagination } from '@pocket-tools/apollo-utils';
 import { SearchQueryBuilder } from './searchQueryBuilder';
@@ -622,6 +623,7 @@ export async function advancedSearchByOffset(
   const result = await advancedSearchBase(params, userId);
   const entries = Paginator.resultToPage(result);
   return {
+    searchType: SearchType.ELASTICSEARCH,
     ...entries,
     limit: params.pagination?.limit ?? config.pagination.defaultPageSize,
     offset: params.pagination?.offset ?? 0,
@@ -642,6 +644,7 @@ export async function searchSavedItemsByOffset(
   }));
   return {
     entries,
+    searchType: SearchType.ELASTICSEARCH,
     limit: searchParams.size,
     offset: searchParams.from,
     totalCount: result.hits.total['value'],
@@ -699,6 +702,7 @@ export async function searchSavedItems(
     (searchParams.from + searchResultsEdges.length - 1).toString(),
   ).toString('base64');
   const response = {
+    searchType: SearchType.ELASTICSEARCH,
     edges: searchResultsEdges,
     pageInfo: {
       endCursor: searchResultsEdges.length == 0 ? null : endCursor,
