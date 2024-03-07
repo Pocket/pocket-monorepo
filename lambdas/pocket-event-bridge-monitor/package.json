@@ -1,5 +1,5 @@
 {
-  "name": "account-data-deleter-events",
+  "name": "pocket-event-bridge-monitor",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
@@ -13,19 +13,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-lambda": "3.525.0",
     "@sentry/serverless": "7.105.0",
-    "fetch-retry": "^5.0.6",
-    "isomorphic-fetch": "^3.0.0",
-    "knex": "3.1.0",
-    "mysql": "2.18.1",
-    "stripe": "9.8.0",
+    "@pocket-tools/ts-logger": "workspace:*",
     "tslib": "2.6.2"
   },
   "devDependencies": {
-    "@types/aws-lambda": "8.10.136",
+    "@types/aws-lambda": "8.10.134",
     "@types/jest": "29.5.12",
-    "@types/node-fetch": "2.6.11",
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
     "nock": "13.5.4",

@@ -22,25 +22,44 @@ describe('deleteUsers spec test', () => {
     jest.clearAllMocks();
   });
 
-  afterAll(() =>  {
+  afterAll(() => {
     jest.restoreAllMocks();
-  })
+  });
 
   it('should move UserIds that was successfully deleted', async () => {
     const testUserIds: number[] = [1];
-    jest.spyOn(dynamoDbUtils, 'getBatch').mockImplementation(() => {return Promise.resolve(testUserIds)});
-    jest.spyOn(DeleteMutation, 'deleteUserMutationCaller').mockImplementation(() => {return Promise.resolve('1')});
-    const spy = jest.spyOn(dynamoDbUtils, 'moveBatch').mockImplementation(() => {return Promise.resolve()});
+    jest.spyOn(dynamoDbUtils, 'getBatch').mockImplementation(() => {
+      return Promise.resolve(testUserIds);
+    });
+    jest
+      .spyOn(DeleteMutation, 'deleteUserMutationCaller')
+      .mockImplementation(() => {
+        return Promise.resolve('1');
+      });
+    const spy = jest
+      .spyOn(dynamoDbUtils, 'moveBatch')
+      .mockImplementation(() => {
+        return Promise.resolve();
+      });
     await deleteUsers(dynamoDbUtils);
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
   it('should not move UserIds that was not successfully deleted', async () => {
     const testUserIds: number[] = [1];
-    jest.spyOn(dynamoDbUtils, 'getBatch').mockImplementation(() => {return Promise.resolve(testUserIds)});
+    jest.spyOn(dynamoDbUtils, 'getBatch').mockImplementation(() => {
+      return Promise.resolve(testUserIds);
+    });
     jest
-      .spyOn(DeleteMutation, 'deleteUserMutationCaller').mockImplementation(() => { throw new Error('delete error')});
-    const spy = jest.spyOn(dynamoDbUtils, 'moveBatch').mockImplementation(() => {return Promise.resolve()});
+      .spyOn(DeleteMutation, 'deleteUserMutationCaller')
+      .mockImplementation(() => {
+        throw new Error('delete error');
+      });
+    const spy = jest
+      .spyOn(dynamoDbUtils, 'moveBatch')
+      .mockImplementation(() => {
+        return Promise.resolve();
+      });
     const consoleSpy = jest.spyOn(console, 'log');
     const sentrySpy = jest.spyOn(Sentry, 'captureException');
     await deleteUsers(dynamoDbUtils);
