@@ -143,7 +143,7 @@ export const resolvers = {
       };
       // If the user is premium, and they did not select onlyTitleAndURL
       // send them down the premium search path
-      // Note that this will note return search highlights
+      // Note that this will not return search highlights
       if (context.userIsPremium && !params.filter?.onlyTitleAndURL) {
         return searchSavedItemsByOffset(params, context.userId);
       }
