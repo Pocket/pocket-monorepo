@@ -4,11 +4,23 @@ export type User = {
   id: string;
 };
 
-export type SearchSavedItemParameters = {
+type SearchSavedItemParametersBase = {
   term: string;
   filter?: SavedItemsFilter;
   sort?: SearchSortInput;
+};
+
+export type SearchSavedItemParameters = SearchSavedItemParametersBase & {
   pagination?: Pagination;
+};
+
+export type SearchSavedItemOffsetParams = SearchSavedItemParametersBase & {
+  pagination?: OffsetPagination;
+};
+
+export type OffsetPagination = {
+  limit: number;
+  offset: number;
 };
 
 export type PageInfo = {
@@ -21,6 +33,13 @@ export type PageInfo = {
 export type SavedItemSearchResultConnection = {
   edges: SearchSavedItemEdge[];
   pageInfo: PageInfo;
+  totalCount: number;
+};
+
+export type SavedItemSearchResultPage = {
+  entries: SavedItemSearchResult[];
+  offset: number;
+  limit: number;
   totalCount: number;
 };
 
@@ -126,13 +145,18 @@ export type SearchSortInput = {
   sortOrder?: SortDirection;
 };
 
-export type AdvancedSearchParams = Partial<{
+type AdvancedSearchParamsBase = Partial<{
   queryString: string;
   filter: AdvancedSearchFilters;
   sort: SearchSortInput;
-  pagination: Pagination;
 }>;
 
+export type AdvancedSearchParams = AdvancedSearchParamsBase & {
+  pagination?: Pagination;
+};
+export type AdvancedSearchByOffsetParams = AdvancedSearchParamsBase & {
+  pagination?: OffsetPagination;
+};
 /**
  * The schema of the saved item in elasticsearch
  */

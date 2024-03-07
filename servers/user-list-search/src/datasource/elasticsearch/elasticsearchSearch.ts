@@ -1,4 +1,4 @@
-import { GetResponse } from 'elasticsearch';
+import { GetResponse, SearchResponse } from 'elasticsearch';
 import { client } from './index';
 import { config } from '../../config';
 import {
@@ -8,6 +8,10 @@ import {
   AdvancedSearchParams,
   SearchSavedItemEdge,
   SearchSavedItemParameters,
+  SearchSavedItemOffsetParams,
+  SavedItemSearchResultPage,
+  SavedItemSearchResult,
+  AdvancedSearchByOffsetParams,
 } from '../../types';
 import { UserInputError, validatePagination } from '@pocket-tools/apollo-utils';
 import { SearchQueryBuilder } from './searchQueryBuilder';
@@ -448,64 +452,51 @@ export function extractSearchValues(searchTerm: string): ExtractedSearchTerms {
 }
 
 /**
- *Calculates the `from` field for elastic search.
+ *Calculates the `from` and `size` fields for elastic search.
  * @param pagination
  * @param size
  * @throws error if both before and after are set.
  */
-export function calculateOffset(pagination: Pagination, size: number): number {
-  pagination = validatePagination(
+export function calculateSizeOffset(pagination: Pagination): {
+  from: number;
+  size: number;
+} {
+  const cleanPagination = validatePagination(
     pagination,
     config.pagination.defaultPageSize,
     config.pagination.maxPageSize,
   );
 
-  if (pagination?.after) {
-    return parseInt(Buffer.from(pagination.after, 'base64').toString()) + 1;
+  if (cleanPagination.after) {
+    const from =
+      parseInt(Buffer.from(cleanPagination.after, 'base64').toString()) + 1;
+    return { from, size: cleanPagination.first };
   }
 
-  if (pagination?.before) {
-    let offset = parseInt(Buffer.from(pagination.before, 'base64').toString());
-    offset = offset - size;
-    return offset < 0 ? 0 : offset;
+  if (cleanPagination.before) {
+    // Compute 'from' by subtracting 'last' from cursor offset value, with a
+    // minimum value of 0
+    const offset = parseInt(
+      Buffer.from(cleanPagination.before, 'base64').toString(),
+    );
+    const from = Math.max(offset - cleanPagination.last, 0);
+    // Do not exceed original offset value for size (can happen if
+    // paging backwards and reach beginning of the set)
+    const size = Math.min(cleanPagination.last, offset);
+    return { from, size };
   }
 
-  if (pagination?.last && !pagination?.before) {
+  if (cleanPagination.last && !cleanPagination.before) {
     throw new UserInputError(
       "premium search doesn't support pagination by last alone." +
         'Please use first or first/after or before/last combination',
     );
   }
-
-  return 0;
+  // First alone
+  return { from: 0, size: cleanPagination.first };
 }
 
-/**
- *Calculates the `size` field when before is set in pagination input
- * @param pagination
- * @param size
- * @throws error if both before and after are set.
- */
-export function calculateSize(pagination: Pagination, size: number): number {
-  if (pagination?.after && pagination?.before) {
-    throw new Error(
-      'please set only before or after field in pagination input',
-    );
-  }
-
-  if (pagination?.before) {
-    const offset = parseInt(
-      Buffer.from(pagination.before, 'base64').toString(),
-    );
-    //to avoid returning item mentioned in `before`
-    //as offset is indexed from 0, we return offset (otherwise offset-1)
-    return Math.min(size, offset);
-  }
-
-  return size;
-}
-
-function mapSortFields(params: SearchSavedItemParameters) {
+function mapSortFields(params: { sort?: SearchSavedItemParameters['sort'] }) {
   if (params.sort) {
     return {
       field: ElasticSearchSortField[params.sort.sortBy],
@@ -529,7 +520,7 @@ export function getCleanedupDomainName(domain: string): string {
 }
 
 export function generateSearchSavedItemsParams(
-  params: SearchSavedItemParameters,
+  params: SearchSavedItemParameters | SearchSavedItemOffsetParams,
   userId: string,
 ): ElasticSearchParams {
   const searchValues = extractSearchValues(params.term);
@@ -542,12 +533,28 @@ export function generateSearchSavedItemsParams(
     'content_type^2',
   ];
 
-  const size = params.pagination?.first || params.pagination?.last || 30;
+  // Build pagination arguments. If not using limit/offset,
+  // compute it from the cursor data.
+  // Default value for pagination fields
+  let size = 30;
+  let from = 0;
+  // Override size if provided
+  if (params.pagination != null) {
+    if ('first' in params.pagination) {
+      ({ from, size } = calculateSizeOffset(params.pagination));
+    } else if ('last' in params.pagination) {
+      ({ from, size } = calculateSizeOffset(params.pagination));
+    } else if ('limit' in params.pagination) {
+      size = params.pagination.limit ?? 30;
+      from = params.pagination.offset ?? 0;
+    }
+  }
+
   const searchParams: ElasticSearchParams = {
     term: searchValues.search,
     fields: fields,
-    from: calculateOffset(params.pagination, size),
-    size: calculateSize(params.pagination, size),
+    from,
+    size,
     sort: mapSortFields(params),
     filters: {
       favorite: params.filter?.isFavorite,
@@ -580,10 +587,10 @@ export function generateSearchSavedItemsParams(
   return searchParams;
 }
 
-export async function advancedSearch(
-  params: AdvancedSearchParams,
+async function advancedSearchBase(
+  params: AdvancedSearchParams | AdvancedSearchByOffsetParams,
   userId: string,
-): Promise<SavedItemSearchResultConnection> {
+): Promise<SearchResponse<ElasticSearchSavedItem>> {
   const body = new SearchQueryBuilder().parse(params, userId);
   body['highlight'] = {
     fields: {
@@ -597,7 +604,66 @@ export async function advancedSearch(
     body,
     routing: userId,
   });
+  return result;
+}
+
+export async function advancedSearch(
+  params: AdvancedSearchParams,
+  userId: string,
+): Promise<SavedItemSearchResultConnection> {
+  const result = await advancedSearchBase(params, userId);
   return Paginator.resultToConnection(result);
+}
+
+export async function advancedSearchByOffset(
+  params: AdvancedSearchByOffsetParams,
+  userId: string,
+): Promise<SavedItemSearchResultPage> {
+  const result = await advancedSearchBase(params, userId);
+  const entries = Paginator.resultToPage(result);
+  return {
+    ...entries,
+    limit: params.pagination?.limit ?? config.pagination.defaultPageSize,
+    offset: params.pagination?.offset ?? 0,
+  };
+}
+
+export async function searchSavedItemsByOffset(
+  params: SearchSavedItemOffsetParams,
+  userId: string,
+): Promise<SavedItemSearchResultPage> {
+  const { result, searchParams } = await searchBase(params, userId);
+  const entries: SavedItemSearchResult[] = result.hits.hits.map((res: any) => ({
+    savedItem: { id: res._source.item_id },
+    searchHighlights: {
+      ...res.highlight,
+      fullText: res.highlight?.full_text ?? null,
+    },
+  }));
+  return {
+    entries,
+    limit: searchParams.size,
+    offset: searchParams.from,
+    totalCount: result.hits.total['value'],
+  };
+}
+
+async function searchBase(
+  params: SearchSavedItemParameters | SearchSavedItemOffsetParams,
+  userId: string,
+): Promise<{
+  result: SearchResponse<unknown>;
+  searchParams: ElasticSearchParams;
+}> {
+  const searchParams = generateSearchSavedItemsParams(params, userId);
+  const body = buildSearchBody(searchParams);
+
+  const result = await client.search({
+    index,
+    body,
+    routing: userId,
+  });
+  return { result, searchParams };
 }
 
 /**
@@ -611,15 +677,7 @@ export async function searchSavedItems(
   params: SearchSavedItemParameters,
   userId: string,
 ): Promise<SavedItemSearchResultConnection> {
-  const searchParams = generateSearchSavedItemsParams(params, userId);
-  const body = buildSearchBody(searchParams);
-
-  const result = await client.search({
-    index,
-    body,
-    routing: userId,
-  });
-
+  const { result, searchParams } = await searchBase(params, userId);
   let cursor: number = searchParams.from;
   const searchResultsEdges: SearchSavedItemEdge[] = result.hits.hits.map(
     (res: any) => {
