@@ -18,7 +18,7 @@
     "tslib": "2.6.2"
   },
   "devDependencies": {
-    "@types/aws-lambda": "8.10.134",
+    "@types/aws-lambda": "8.10.136",
     "@types/jest": "29.5.12",
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
