@@ -4,6 +4,7 @@ import {
   AdvancedSearchParams,
   SearchSortInput,
   ValidPagination,
+  OffsetPagination,
 } from '../../types';
 import {
   ElasticSearchSortField,
@@ -42,7 +43,7 @@ import { Paginator } from './Paginator';
 export class SearchQueryBuilder {
   parse(
     input: Omit<AdvancedSearchParams, 'pagination'> & {
-      pagination?: ValidPagination;
+      pagination?: ValidPagination | OffsetPagination;
     },
     userId: string,
   ) {
@@ -74,7 +75,9 @@ export class SearchQueryBuilder {
       };
     }
   }
-  private queryString(input: AdvancedSearchParams) {
+  private queryString(
+    input: Pick<AdvancedSearchParams, 'queryString' | 'filter'>,
+  ) {
     if (input.queryString == null) {
       return undefined;
     }
@@ -178,15 +181,18 @@ export class SearchQueryBuilder {
       ],
     };
   }
-  private paginate(input?: ValidPagination): {
+  private paginate(input?: ValidPagination | OffsetPagination): {
     size: number;
     search_after?: string[];
   } {
-    const size = input?.first ?? config.pagination.defaultPageSize;
+    const size =
+      input?.['limit'] ?? input?.['first'] ?? config.pagination.defaultPageSize;
     const pagination = { size };
-    if (input?.after) {
-      const cursor = Paginator.decodeCursor(input.after);
+    if (input?.['after']) {
+      const cursor = Paginator.decodeCursor(input['after']);
       pagination['search_after'] = cursor;
+    } else if (input?.['offset']) {
+      pagination['search_after'] = input['offset'];
     }
     return pagination;
   }

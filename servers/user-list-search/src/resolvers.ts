@@ -6,7 +6,9 @@ import {
   SearchParams,
   PocketSearchResponse,
   searchSavedItems,
+  searchSavedItemsByOffset,
   advancedSearch,
+  advancedSearchByOffset,
 } from './datasource/elasticsearch/elasticsearchSearch';
 import {
   AuthenticationError,
@@ -18,6 +20,9 @@ import {
   SavedItemSearchResultConnection,
   AdvancedSearchParams,
   SearchSavedItemParameters,
+  SavedItemSearchResultPage,
+  AdvancedSearchByOffsetParams,
+  SearchSavedItemOffsetParams,
 } from './types';
 
 /**
@@ -123,6 +128,61 @@ export const resolvers = {
 
       const searchDataService = new SavedItemDataService(context);
       return searchDataService.searchSavedItems(params);
+    },
+    searchSavedItemsByOffset: async (
+      parent,
+      params,
+      context: IContext,
+    ): Promise<SavedItemSearchResultPage> => {
+      // Set up default to ensure pagination fields are always present
+      params.pagination = {
+        limit: 30,
+        offset: 0,
+        ...(params.pagination ?? {}),
+      };
+      // If the user is premium, and they did not select onlyTitleAndURL
+      // send them down the premium search path
+      // Note that this will note return search highlights
+      if (context.userIsPremium && !params.filter?.onlyTitleAndURL) {
+        return searchSavedItemsByOffset(params, context.userId);
+      }
+
+      const searchDataService = new SavedItemDataService(context);
+      return searchDataService.searchSavedItemsByOffset(params);
+    },
+    advancedSearchByOffset: async (
+      _,
+      params: AdvancedSearchByOffsetParams,
+      context: IContext,
+    ): Promise<SavedItemSearchResultPage> => {
+      // Set up default to ensure pagination fields are always present
+      params.pagination = {
+        limit: 30,
+        offset: 0,
+        ...(params.pagination ?? {}),
+      };
+      // Premium search
+      if (context.userIsPremium) {
+        if (!params.filter && !params.queryString) {
+          throw new UserInputError(
+            'Must provide either filters or query string to search',
+          );
+        }
+        return advancedSearchByOffset(params, context.userId);
+      }
+      // Free search
+      const searchDataService = new SavedItemDataService(context);
+      const input: SearchSavedItemOffsetParams = {
+        term: params.queryString,
+        sort: params.sort,
+        pagination: params.pagination,
+      };
+      if (params.filter) {
+        // Only include valid filters for basic search
+        const { domain, isFavorite, contentType, status } = params.filter;
+        input['filter'] = { domain, isFavorite, contentType, status };
+      }
+      return searchDataService.searchSavedItemsByOffset(input);
     },
   },
 };

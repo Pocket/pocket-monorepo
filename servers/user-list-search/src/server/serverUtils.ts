@@ -3,9 +3,6 @@ import { Server, createServer } from 'http';
 import { config } from '../config';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServer } from '@apollo/server';
-import { buildSubgraphSchema } from '@apollo/subgraph';
-import { typeDefs } from './typeDefs';
-import { resolvers } from '../resolvers';
 import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4';
 import { schema } from './schema';
 import { ContextManager, getContextFactory } from './context';
@@ -41,7 +38,7 @@ export async function startServer(port: number): Promise<{
   });
 
   const server = new ApolloServer<any>({
-    schema: buildSubgraphSchema({ typeDefs, resolvers }),
+    schema,
     plugins: [
       ...defaultPlugins(httpServer),
       createApollo4QueryValidationPlugin({ schema }),

@@ -1,16 +1,28 @@
 import { Knex } from 'knex';
 
-export async function loadItemExtended(
-  db,
-  itemId,
-  url,
-  title,
-  wordCount,
-  isArticle = 1,
-  isImage = 0,
-  isVideo = 0,
-  lang = `en`,
-) {
+export type SeedData = {
+  favorite: number;
+  itemId: number;
+  status: number;
+  title: string;
+  url: string;
+  date: Date;
+  wordCount: number;
+  isArticle?: number;
+  isImage?: number;
+  isVideo?: number;
+};
+
+export async function loadItemExtended(db, seedData: SeedData) {
+  const optionalDefaults = {
+    lang: 'en',
+    isArticle: 1,
+    isImage: 0,
+    isVideo: 0,
+  };
+  const seedWithDefaults = { ...optionalDefaults, ...seedData };
+  const { itemId, url, title, wordCount, lang, isArticle, isImage, isVideo } =
+    seedWithDefaults;
   await db('readitla_b.items_extended').insert({
     extended_item_id: itemId,
     resolved_url: url,
@@ -35,15 +47,8 @@ export async function loadItemExtended(
     used_fallback: 0,
   });
 }
-export async function loadList(
-  db: Knex,
-  favorite: number,
-  itemId: number,
-  status: number,
-  title: string,
-  url: string,
-  date: Date,
-) {
+export async function loadList(db: Knex, seedData: SeedData) {
+  const { itemId, favorite, status, url, title, date } = seedData;
   await db('readitla_ril-tmp.list').insert({
     item_id: itemId,
     status: status,

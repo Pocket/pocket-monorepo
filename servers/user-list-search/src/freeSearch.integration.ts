@@ -8,77 +8,51 @@ import { Knex } from 'knex';
 import { SavedItemStatus } from './types';
 import { loadItemExtended, loadList } from './searchIntegrationTestHelpers';
 
-async function loadDb(db: Knex) {
-  const favorite = 1;
-  const nonFavorite = 0;
-
-  await loadList(
-    db,
-    favorite,
-    12345,
-    SavedItemStatus.ARCHIVED,
-    'super fun article',
-    'http://test1.com',
-    new Date('2020-10-03 10:20:30'),
-  );
-  await loadItemExtended(
-    db,
-    12345,
-    'http://test1.com',
-    'super fun article',
-    10,
-  );
-  await loadList(
-    db,
-    favorite,
-    123,
-    SavedItemStatus.UNREAD,
-    'another fun article',
-    'http://test2.com',
-    new Date('2021-10-03 10:20:30'),
-  );
-  await loadItemExtended(
-    db,
-    123,
-    'http://test2.com',
-    'another fun article',
-    50,
-  );
-
-  await loadList(
-    db,
-    nonFavorite,
-    456,
-    SavedItemStatus.UNREAD,
-    'winter sports fun',
-    'http://test3.com',
-    new Date('2021-5-03 10:20:30'),
-  );
-  await loadItemExtended(
-    db,
-    456,
-    'http://test3.com',
-    'winter sports fun video',
-    100,
-    0,
-    0,
-    1,
-  );
-  await loadList(
-    db,
-    favorite,
-    101010,
-    SavedItemStatus.DELETED,
-    'deleted article',
-    'http://deleted.com',
-    new Date('2020-10-03 10:20:30'),
-  );
-  await loadItemExtended(
-    db,
-    101010,
-    'http://deleted.com',
-    'deleted article',
-    10,
+async function seedDb(db: Knex) {
+  const data = [
+    {
+      favorite: 1,
+      itemId: 12345,
+      status: SavedItemStatus.ARCHIVED,
+      title: 'super fun article',
+      url: 'http://test1.com',
+      date: new Date('2020-10-03 10:20:30'),
+      wordCount: 10,
+    },
+    {
+      favorite: 1,
+      itemId: 123,
+      status: SavedItemStatus.UNREAD,
+      title: 'another fun article',
+      url: 'http://test2.com',
+      date: new Date('2021-10-03 10:20:30'),
+      wordCount: 50,
+    },
+    {
+      favorite: 0,
+      itemId: 456,
+      status: SavedItemStatus.UNREAD,
+      title: 'winter sports fun',
+      url: 'http://test3.com',
+      date: new Date('2021-5-03 10:20:30'),
+      wordCount: 100,
+      isVideo: 1,
+    },
+    {
+      favorite: 1,
+      itemId: 101010,
+      status: SavedItemStatus.DELETED,
+      title: 'deleted article',
+      url: 'http://deleted.com',
+      date: new Date('2020-10-03 10:20:30'),
+      wordCount: 10,
+    },
+  ];
+  await Promise.all(
+    data.flatMap((record) => [
+      loadItemExtended(db, record),
+      loadList(db, record),
+    ]),
   );
 }
 
@@ -98,7 +72,7 @@ describe('free search test', () => {
 
     await db('readitla_ril-tmp.list').truncate();
     await db('readitla_b.items_extended').truncate();
-    await loadDb(db);
+    await seedDb(db);
   });
 
   beforeEach(async () => {
