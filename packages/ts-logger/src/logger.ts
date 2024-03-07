@@ -31,19 +31,23 @@ const format = winstonFormat.combine(
 );
 
 // write logs to file, for local development
-const fileLoggingTransports = [
-  new winstonTransports.File({
-    filename: 'logs/error.log',
-    level: 'error',
-  }),
-  new winstonTransports.File({ filename: 'logs/all.log' }),
-];
+// Set to a function because when its not the code is executed,
+// and tries making a logs directory even if its not used
+const fileLoggingTransports = () => {
+  return [
+    new winstonTransports.File({
+      filename: 'logs/error.log',
+      level: 'error',
+    }),
+    new winstonTransports.File({ filename: 'logs/all.log' }),
+  ];
+};
 
 const transports = [
   // for local and test envs, log to files
   // otherwise, log to the console
   ...(isLocal || isTest
-    ? fileLoggingTransports
+    ? fileLoggingTransports()
     : [new winstonTransports.Console()]),
 ];
 

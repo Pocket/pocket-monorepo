@@ -45,8 +45,6 @@ workflows:
           context: pocket
           env: Dev
           service_name: PocketEventBridge
-          requires:
-            - pocket-event-bridge_deploy-params-dev
 
       - infrastructure:
           <<: *only_dev
@@ -59,6 +57,8 @@ workflows:
           apply: true
           dev: true
           save_app_spec: false
+          requires:
+            - pocket-event-bridge_deploy-params-dev
 
       - build_lambda:
           <<: *only_dev
