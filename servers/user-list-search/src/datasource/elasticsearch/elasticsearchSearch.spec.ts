@@ -1,7 +1,7 @@
 import {
   applyFunctionalBoosts,
   buildSearchBody,
-  calculateOffset,
+  calculateSizeOffset,
   calculateSize,
   ElasticSearchParams,
   extractSearchValues,
@@ -286,7 +286,7 @@ describe('Elasticsearch', () => {
         before: Buffer.from(`5`).toString('base64'),
         after: Buffer.from(`5`).toString('base64'),
       };
-      expect(() => calculateOffset(testPagination, testSize)).toThrow(
+      expect(() => calculateSizeOffset(testPagination, testSize)).toThrow(
         'Please set either {after and first} or {before and last}',
       );
     });
@@ -295,7 +295,7 @@ describe('Elasticsearch', () => {
       const testPagination: Pagination = {
         after: Buffer.from(`5`).toString('base64'),
       };
-      const from: number = calculateOffset(testPagination, testSize);
+      const from: number = calculateSizeOffset(testPagination, testSize);
       expect(from).toBe(6);
     });
 
@@ -303,7 +303,7 @@ describe('Elasticsearch', () => {
       const testPagination: Pagination = {
         before: Buffer.from(`5`).toString('base64'),
       };
-      const from: number = calculateOffset(testPagination, 2);
+      const from: number = calculateSizeOffset(testPagination, 2);
       expect(from).toBe(3);
     });
 
@@ -311,7 +311,7 @@ describe('Elasticsearch', () => {
       const testPagination: Pagination = {
         before: Buffer.from(`5`).toString('base64'),
       };
-      const from: number = calculateOffset(testPagination, testSize);
+      const from: number = calculateSizeOffset(testPagination, testSize);
       expect(from).toBe(0);
     });
 
@@ -319,7 +319,7 @@ describe('Elasticsearch', () => {
       const testPagination: Pagination = {
         last: 10,
       };
-      expect(() => calculateOffset(testPagination, testSize)).toThrow(
+      expect(() => calculateSizeOffset(testPagination, testSize)).toThrow(
         "premium search doesn't support pagination by last alone." +
           'Please use first or first/after or before/last combination',
       );

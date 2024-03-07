@@ -24,6 +24,7 @@ import {
   AdvancedSearchByOffsetParams,
   SearchSavedItemOffsetParams,
 } from './types';
+import { config } from './config';
 
 /**
  * Custom type for FunctionalBoostValue coming from client.
@@ -136,7 +137,7 @@ export const resolvers = {
     ): Promise<SavedItemSearchResultPage> => {
       // Set up default to ensure pagination fields are always present
       params.pagination = {
-        limit: 30,
+        limit: config.pagination.defaultPageSize,
         offset: 0,
         ...(params.pagination ?? {}),
       };
@@ -157,7 +158,7 @@ export const resolvers = {
     ): Promise<SavedItemSearchResultPage> => {
       // Set up default to ensure pagination fields are always present
       params.pagination = {
-        limit: 30,
+        limit: config.pagination.defaultPageSize,
         offset: 0,
         ...(params.pagination ?? {}),
       };

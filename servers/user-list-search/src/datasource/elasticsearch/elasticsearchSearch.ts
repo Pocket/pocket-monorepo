@@ -453,36 +453,48 @@ export function extractSearchValues(searchTerm: string): ExtractedSearchTerms {
 }
 
 /**
- *Calculates the `from` field for elastic search.
+ *Calculates the `from` and `size` fields for elastic search.
  * @param pagination
  * @param size
  * @throws error if both before and after are set.
  */
-export function calculateOffset(pagination: Pagination, size: number): number {
-  pagination = validatePagination(
+export function calculateSizeOffset(pagination: Pagination): {
+  from: number;
+  size: number;
+} {
+  const cleanPagination = validatePagination(
     pagination,
     config.pagination.defaultPageSize,
     config.pagination.maxPageSize,
   );
 
-  if (pagination?.after) {
-    return parseInt(Buffer.from(pagination.after, 'base64').toString()) + 1;
+  if (cleanPagination.after) {
+    const from =
+      parseInt(Buffer.from(cleanPagination.after, 'base64').toString()) + 1;
+    return { from, size: cleanPagination.first };
   }
 
-  if (pagination?.before) {
-    let offset = parseInt(Buffer.from(pagination.before, 'base64').toString());
-    offset = offset - size;
-    return offset < 0 ? 0 : offset;
+  if (cleanPagination.before) {
+    // Compute 'from' by subtracting 'last' from cursor offset value, with a
+    // minimum value of 0
+    const offset = parseInt(
+      Buffer.from(cleanPagination.before, 'base64').toString(),
+    );
+    const from = Math.max(offset - cleanPagination.last, 0);
+    // Do not exceed original offset value for size (can happen if
+    // paging backwards and reach beginning of the set)
+    const size = Math.min(cleanPagination.last, offset);
+    return { from, size };
   }
 
-  if (pagination?.last && !pagination?.before) {
+  if (cleanPagination.last && !cleanPagination.before) {
     throw new UserInputError(
       "premium search doesn't support pagination by last alone." +
         'Please use first or first/after or before/last combination',
     );
   }
-
-  return 0;
+  // First alone
+  return { from: 0, size: cleanPagination.first };
 }
 
 /**
@@ -555,11 +567,9 @@ export function generateSearchSavedItemsParams(
   // Override size if provided
   if (params.pagination != null) {
     if ('first' in params.pagination) {
-      size = params.pagination.first;
-      from = calculateOffset(params.pagination, size);
+      ({ from, size } = calculateSizeOffset(params.pagination));
     } else if ('last' in params.pagination) {
-      size = params.pagination.last;
-      from = calculateOffset(params.pagination, size);
+      ({ from, size } = calculateSizeOffset(params.pagination));
     } else if ('limit' in params.pagination) {
       size = params.pagination.limit ?? 30;
       from = params.pagination.offset ?? 0;
