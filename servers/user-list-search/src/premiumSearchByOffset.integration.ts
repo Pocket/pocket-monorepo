@@ -107,7 +107,6 @@ describe('premium search functional test (offset pagination)', () => {
                 title
               }
             }
-            searchType
             limit
             offset
             totalCount
@@ -287,7 +286,6 @@ describe('premium search functional test (offset pagination)', () => {
     const searchResult = res.body.data?._entities[0].searchSavedItemsByOffset;
     const expected = {
       entries: [],
-      searchType: 'ELASTICSEARCH',
       limit: 1,
       offset: 0,
       totalCount: 0,
@@ -332,7 +330,6 @@ describe('premium search functional test (offset pagination)', () => {
           }),
         },
       ],
-      searchType: 'ELASTICSEARCH',
       limit: 2,
       offset: 1,
       totalCount: 3,
@@ -368,7 +365,6 @@ describe('premium search functional test (offset pagination)', () => {
           }),
         },
       ],
-      searchType: 'ELASTICSEARCH',
       totalCount: 1,
       limit: 2,
       offset: 0,

@@ -114,7 +114,6 @@ describe('premium search functional test', () => {
               hasNextPage
               hasPreviousPage
             }
-            searchType
             totalCount
           }
         }
@@ -378,7 +377,6 @@ describe('premium search functional test', () => {
     const response = res.body.data?._entities[0].searchSavedItems;
     expect(response).not.toBeNull();
     expect(response.totalCount).toEqual(3);
-    expect(response.searchType).toEqual('ELASTICSEARCH');
     expect(response.edges.length).toEqual(2);
     expect(response.pageInfo.hasNextPage).toBeFalse();
     expect(response.pageInfo.hasPreviousPage).toBeTrue();
