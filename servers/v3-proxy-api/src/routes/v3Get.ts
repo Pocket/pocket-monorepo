@@ -1,15 +1,23 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { setSaveInputsFromGetCall } from '../graph/get/toGraphQL';
+import {
+  setSavedItemsVariables,
+  setSearchVariables,
+} from '../graph/get/toGraphQL';
 import {
   callSavedItemsByOffsetSimple,
   callSavedItemsByOffsetComplete,
+  callSearchByOffsetComplete,
+  callSearchByOffsetSimple,
 } from '../graph/graphQLClient';
 import {
   savedItemsSimpleToRest,
   savedItemsCompleteToRest,
   savedItemsSimpleTotalToRest,
+  searchSavedItemCompleteToRest,
+  searchSavedItemCompleteTotalToRest,
+  searchSavedItemSimpleTotalToRest,
+  searchSavedItemSimpleToRest,
 } from '../graph/get/toRest';
-import { UserSavedItemsByOffsetArgs } from '../generated/graphql/types';
 import { checkSchema, validationResult, matchedData } from 'express-validator';
 import { V3GetParams, V3GetSchema } from './validations/GetSchema';
 import { InputValidationError } from '../errors/InputValidationError';
@@ -36,7 +44,6 @@ const v3GetController = async (
     );
   }
   try {
-    const variables = setSaveInputsFromGetCall(data);
     const headers = req.headers;
     const accessToken = (data.access_token as string) ?? null;
     const consumerKey = (data.consumer_key as string) ?? null;
@@ -44,9 +51,7 @@ const v3GetController = async (
       accessToken,
       consumerKey,
       headers,
-      variables,
-      data.detailType,
-      data.total,
+      data,
     );
     return res.json(graphResponse);
   } catch (err) {
@@ -70,37 +75,67 @@ export async function processV3call(
   accessToken: string,
   consumerKey: string,
   headers: any,
-  variables: UserSavedItemsByOffsetArgs,
-  type: 'simple' | 'complete',
-  includeTotal = false,
+  data: V3GetParams,
 ) {
-  // Documenting additional parameters which change the shape of the response,
-  // that have not been used in the past year (not including in proxy):
-  //   - includeOpenUrl
-  //   - extended
-  if (type === 'complete') {
-    const response = await callSavedItemsByOffsetComplete(
+  // Search takes precedence -- if search term is passed, call search api
+  if (data.search) {
+    const variables = setSearchVariables(data);
+    if (data.detailType === 'complete') {
+      const response = await callSearchByOffsetComplete(
+        accessToken,
+        consumerKey,
+        headers,
+        variables,
+      );
+      if (data.total) {
+        return searchSavedItemCompleteTotalToRest(response);
+      } else {
+        return searchSavedItemCompleteToRest(response);
+      }
+    }
+    const response = await callSearchByOffsetSimple(
       accessToken,
       consumerKey,
       headers,
       variables,
     );
-    if (includeTotal) {
+    if (data.total) {
+      return searchSavedItemSimpleTotalToRest(response);
+    } else {
+      return searchSavedItemSimpleToRest(response);
+    }
+  } else {
+    // Otherwise call SavedItems list api
+    const variables = setSavedItemsVariables(data);
+    // Otherwise, request savedItems for the user
+    // Documenting additional parameters which change the shape of the response,
+    // that have not been used in the past year (not including in proxy):
+    //   - includeOpenUrl
+    //   - extended
+    if (data.detailType === 'complete') {
+      const response = await callSavedItemsByOffsetComplete(
+        accessToken,
+        consumerKey,
+        headers,
+        variables,
+      );
+      if (data.total) {
+        return savedItemsSimpleTotalToRest(response);
+      } else {
+        return savedItemsCompleteToRest(response);
+      }
+    }
+    const response = await callSavedItemsByOffsetSimple(
+      accessToken,
+      consumerKey,
+      headers,
+      variables,
+    );
+    if (data.total) {
       return savedItemsSimpleTotalToRest(response);
     } else {
-      return savedItemsCompleteToRest(response);
+      return savedItemsSimpleToRest(response);
     }
-  }
-  const response = await callSavedItemsByOffsetSimple(
-    accessToken,
-    consumerKey,
-    headers,
-    variables,
-  );
-  if (includeTotal) {
-    return savedItemsSimpleTotalToRest(response);
-  } else {
-    return savedItemsSimpleToRest(response);
   }
 }
 

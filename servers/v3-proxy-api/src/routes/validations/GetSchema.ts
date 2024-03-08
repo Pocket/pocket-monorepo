@@ -131,10 +131,16 @@ export const V3GetSchema: Schema = {
     notEmpty: true,
   },
   sort: {
-    default: {
-      options: 'newest',
-    },
     toLowerCase: true,
+    customSanitizer: {
+      options: (value, { req }) => {
+        if (value) return value;
+        if (req.body.search || req.query.search) {
+          return 'relevance';
+        }
+        return 'newest';
+      },
+    },
     isIn: {
       options: [['newest', 'oldest', 'relevance']],
     },

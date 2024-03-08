@@ -4,7 +4,12 @@ import * as Sentry from '@sentry/node';
 import * as GraphQLCalls from '../graph/graphQLClient';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { setTimeout } from 'timers/promises';
-import { mockGraphGetComplete, mockGraphGetSimple } from '../test/fixtures';
+import {
+  mockGraphGetComplete,
+  mockGraphGetSimple,
+  freeTierSearchGraphComplete,
+  freeTierSearchGraphSimple,
+} from '../test/fixtures';
 import { ClientError } from 'graphql-request';
 import { GraphQLError } from 'graphql-request/build/esm/types';
 
@@ -112,7 +117,36 @@ describe('v3Get', () => {
       });
     });
   });
-  describe('Ggraphql error handler', () => {
+  describe('search', () => {
+    it('calls search api if search term is included (simple)', async () => {
+      const searchApi = jest
+        .spyOn(GraphQLCalls, 'callSearchByOffsetSimple')
+        .mockImplementation(() => Promise.resolve(freeTierSearchGraphSimple));
+      await request(app).get('/v3/get').query({
+        consumer_key: 'test',
+        access_token: 'test',
+        search: 'abc',
+        sort: 'relevance',
+        detailType: 'simple',
+      });
+      expect(searchApi).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls search api if search term is included (complete)', async () => {
+      const searchApi = jest
+        .spyOn(GraphQLCalls, 'callSearchByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(freeTierSearchGraphComplete));
+      await request(app).get('/v3/get').query({
+        consumer_key: 'test',
+        access_token: 'test',
+        search: 'abc',
+        sort: 'relevance',
+        detailType: 'complete',
+      });
+      expect(searchApi).toHaveBeenCalledTimes(1);
+    });
+  });
+  describe('Graphql error handler', () => {
     it('Returns 400 status code, with logging and sentry, for bad input errors', async () => {
       const consoleSpy = jest.spyOn(serverLogger, 'error');
       const sentrySpy = jest.spyOn(Sentry, 'captureException');
@@ -344,6 +378,12 @@ describe('v3Get', () => {
       jest
         .spyOn(GraphQLCalls, 'callSavedItemsByOffsetSimple')
         .mockImplementation(() => Promise.resolve(mockGraphGetSimple));
+      jest
+        .spyOn(GraphQLCalls, 'callSearchByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(freeTierSearchGraphComplete));
+      jest
+        .spyOn(GraphQLCalls, 'callSearchByOffsetSimple')
+        .mockImplementation(() => Promise.resolve(freeTierSearchGraphSimple));
       const response = await request(app).get('/v3/get').query(params);
       if (hasTotal) {
         expect(response.body).toHaveProperty('total');
@@ -382,8 +422,8 @@ describe('v3Get', () => {
     });
     it('relevance is a valid input for search term', async () => {
       jest
-        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
-        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+        .spyOn(GraphQLCalls, 'callSearchByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(freeTierSearchGraphComplete));
       const response = await request(app).get('/v3/get').query({
         consumer_key: 'test',
         access_token: 'test',
@@ -392,6 +432,29 @@ describe('v3Get', () => {
         detailType: 'complete',
       });
       expect(response.status).toBe(200);
+    });
+    it('defaults to relevance sort for search', async () => {
+      const apiSpy = jest
+        .spyOn(GraphQLCalls, 'callSearchByOffsetSimple')
+        .mockImplementation(() => Promise.resolve(freeTierSearchGraphSimple));
+      await request(app).get('/v3/get').query({
+        consumer_key: 'test',
+        access_token: 'test',
+        search: 'abc',
+      });
+      expect(apiSpy.mock.lastCall[3].sort.sortBy).toEqual('RELEVANCE');
+      expect(apiSpy.mock.lastCall[3].sort.sortOrder).toEqual('DESC');
+    });
+    it('defaults to newest sort for non-search', async () => {
+      const apiSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetSimple')
+        .mockImplementation(() => Promise.resolve(mockGraphGetSimple));
+      await request(app).get('/v3/get').query({
+        consumer_key: 'test',
+        access_token: 'test',
+      });
+      expect(apiSpy.mock.lastCall[3].sort.sortBy).toEqual('CREATED_AT');
+      expect(apiSpy.mock.lastCall[3].sort.sortOrder).toEqual('DESC');
     });
   });
 });

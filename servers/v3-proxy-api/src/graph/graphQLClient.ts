@@ -22,6 +22,12 @@ import {
   AddTagsToSavedItemMutation,
   AddTagsToSavedItemMutationVariables,
   AddTagsToSavedItemDocument,
+  SearchSavedItemsByOffsetSimpleQueryVariables,
+  SearchSavedItemsByOffsetSimpleQuery,
+  SearchSavedItemsByOffsetSimpleDocument,
+  SearchSavedItemsByOffsetCompleteQueryVariables,
+  SearchSavedItemsByOffsetCompleteQuery,
+  SearchSavedItemsByOffsetCompleteDocument,
 } from '../generated/graphql/types';
 import config from '../config';
 import * as Sentry from '@sentry/node';
@@ -144,6 +150,45 @@ export async function callSavedItemsByOffsetComplete(
     GetSavedItemsByOffsetCompleteQuery,
     GetSavedItemsByOffsetCompleteQueryVariables
   >(GetSavedItemsByOffsetCompleteDocument, variables);
+}
+
+/**
+ * function call to search saves (detailType=simple)
+ *
+ * @param accessToken accessToken of the user
+ * @param consumerKey consumerKey associated with the user
+ * @param headers any headers received by proxy is just pass through to web graphQL proxy.
+ * @param variables input variables required for the query
+ */
+export async function callSearchByOffsetSimple(
+  accessToken: string,
+  consumerKey: string,
+  headers: any,
+  variables: SearchSavedItemsByOffsetSimpleQueryVariables,
+): Promise<SearchSavedItemsByOffsetSimpleQuery> {
+  Sentry.addBreadcrumb({ message: 'invoking callSearchByOffsetSimple' });
+  const client = getClient(accessToken, consumerKey, headers);
+  return client.request<
+    SearchSavedItemsByOffsetSimpleQuery,
+    SearchSavedItemsByOffsetSimpleQueryVariables
+  >(SearchSavedItemsByOffsetSimpleDocument, variables);
+}
+
+/**
+ * Call API to search saves (detailType=complete)
+ */
+export async function callSearchByOffsetComplete(
+  accessToken: string,
+  consumerKey: string,
+  headers: any,
+  variables: SearchSavedItemsByOffsetCompleteQueryVariables,
+): Promise<SearchSavedItemsByOffsetCompleteQuery> {
+  Sentry.addBreadcrumb({ message: 'invoking callSearchByOffsetComplete' });
+  const client = getClient(accessToken, consumerKey, headers);
+  return client.request<
+    SearchSavedItemsByOffsetCompleteQuery,
+    SearchSavedItemsByOffsetCompleteQueryVariables
+  >(SearchSavedItemsByOffsetCompleteDocument, variables);
 }
 
 /**

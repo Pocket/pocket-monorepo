@@ -22,7 +22,7 @@ export type ToStringParams<T> = {
 export type GetResponseSimple = {
   //todo: add top level fields
   //e.g status, complete - as they are not mapped by developer portal docs
-  list: { [key: string]: ListItemObject } | []; // Can also be an empty array
+  list: { [key: string]: ListItemObject };
   cachetype: string;
 };
 
