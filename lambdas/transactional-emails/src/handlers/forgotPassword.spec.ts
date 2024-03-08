@@ -2,7 +2,7 @@ import nock, { cleanAll } from 'nock';
 import { SQSRecord } from 'aws-lambda';
 import { config } from '../config';
 import * as ssm from '../ssm';
-// import { sendForgotPasswordEmail } from '../braze';
+import { sendForgotPasswordEmail } from '../braze';
 import { forgotPasswordHandler } from './forgotPassword';
 
 describe('forgotPassword handler', () => {
@@ -84,13 +84,13 @@ describe('forgotPassword handler', () => {
       .post(config.braze.campaignTriggerPath)
       .reply(200, { data: ['this is a data'] });
 
-    // const res = await sendForgotPasswordEmail({
-    //   email: 'test@email.com',
-    //   resetPasswordToken: 'token',
-    //   resetTimeStamp: '5:00pm',
-    //   resetPasswordUsername: 'spongebob',
-    // });
-    // const result = (await res.json()) as any;
-    // expect(result.data).toEqual(['this is a data']);
+    const res = await sendForgotPasswordEmail({
+      encodedId: 'encodedid',
+      resetPasswordToken: 'token',
+      resetTimeStamp: '5:00pm',
+      resetPasswordUsername: 'spongebob',
+    });
+    const result = (await res.json()) as any;
+    expect(result.data).toEqual(['this is a data']);
   });
 });

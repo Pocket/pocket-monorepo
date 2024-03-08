@@ -36,6 +36,10 @@ export function validateEventPayload(
     throw new Error('email is required in event payload');
   }
 
+  if (event.user.encodedId == null) {
+    throw new Error('encodedId is required in event payload');
+  }
+
   return event;
 }
 
@@ -53,7 +57,7 @@ export async function forgotPasswordHandler(record: SQSRecord) {
   await sendForgotPasswordEmail({
     resetPasswordToken: event.passwordResetInfo.resetPasswordToken,
     resetTimeStamp: event.passwordResetInfo.timestamp,
-    email: event.user.email,
+    encodedId: event.user.encodedId,
     resetPasswordUsername: event.passwordResetInfo.resetPasswordUsername,
   });
 }

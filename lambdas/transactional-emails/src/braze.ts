@@ -12,7 +12,7 @@ import type {
 export const fetchWithBackoff = fetchRetry(isomorphicFetch);
 
 export async function sendForgotPasswordEmail(forgotPasswordOptions: {
-  email: string;
+  encodedId: string;
   resetTimeStamp: string;
   resetPasswordUsername: string;
   resetPasswordToken: string;
@@ -23,10 +23,7 @@ export async function sendForgotPasswordEmail(forgotPasswordOptions: {
     campaign_id: config.braze.forgotPasswordCampaignId,
     recipients: [
       {
-        user_alias: {
-          alias_name: forgotPasswordOptions.email,
-          alias_label: 'email',
-        },
+        external_user_id: forgotPasswordOptions.encodedId,
         trigger_properties: {
           reset_timestamp: forgotPasswordOptions.resetTimeStamp,
           reset_password_username: forgotPasswordOptions.resetPasswordUsername,
@@ -36,7 +33,9 @@ export async function sendForgotPasswordEmail(forgotPasswordOptions: {
     ],
   };
 
-  console.log('Sending forgot password email', { campaignData });
+  console.info('Sending forgot password email', {
+    campaignData: JSON.stringify(campaignData),
+  });
 
   const res = await fetchWithBackoff(
     config.braze.endpoint + config.braze.campaignTriggerPath,
@@ -52,6 +51,10 @@ export async function sendForgotPasswordEmail(forgotPasswordOptions: {
       body: JSON.stringify(campaignData),
     },
   );
+
+  console.info('Forgot password email response', {
+    response: JSON.stringify(res),
+  });
 
   if (!res.ok) {
     throw new Error(`Error ${res.status}: Failed to send email`);

@@ -58,12 +58,11 @@ class TransactionalEmails extends TerraformStack {
       tags: config.tags,
     });
 
-    const topicArns = [];
-    for (const topic of config.eventBridge.topics) {
+    const topicArns = config.eventBridge.topics.map((topic) => {
       const topicArn = `arn:aws:sns:${region.name}:${caller.accountId}:${config.eventBridge.prefix}-${config.environment}-${topic}`;
       this.subscribeSqsToSnsTopic(sqsLambda, snsTopicDlq, topicArn, topic);
-      topicArns.push(topicArn);
-    }
+      return topicArn;
+    });
 
     this.createPoliciesForTransactionalEmailSQSQueue(
       sqsLambda.construct.applicationSqsQueue.sqsQueue,

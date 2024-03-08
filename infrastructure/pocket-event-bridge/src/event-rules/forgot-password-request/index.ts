@@ -37,7 +37,7 @@ export class ForgotPassword extends Construct {
       tags: config.tags,
     });
 
-    const forgotPasswordRule = this.createForgotPasswordRules();
+    const forgotPasswordRule = this.createForgotPasswordRequestRules();
     this.createPolicyForEventBridgeToSns();
 
     createDeadLetterQueueAlarm(
@@ -54,10 +54,10 @@ export class ForgotPassword extends Construct {
 
   /**
    * Rolls out event bridge rule and attaches them to sns target
-   * for premium-purchase event
+   * for Forgot Password Request event
    * @private
    */
-  private createForgotPasswordRules() {
+  private createForgotPasswordRequestRules() {
     const forgotPasswordRuleProps: PocketEventBridgeProps = {
       eventRule: {
         name: `${config.prefix}-${eventConfig.name}-Rule`,

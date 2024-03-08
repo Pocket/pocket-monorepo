@@ -34,7 +34,7 @@ export const config = {
       'UserEventTopic',
       'PremiumPurchase-Topic',
       'UserRegistrationTopic',
-      'ForgotPassword-Topic',
+      'ForgotPasswordRequest-Topic',
     ],
   },
 };
