@@ -13,10 +13,11 @@ export type V3GetParams = {
   favorite?: boolean;
   offset: number;
   since?: number;
-  sort: 'newest' | 'oldest'; //| 'relevance';
+  sort: 'newest' | 'oldest' | 'relevance';
   state?: 'unread' | 'read' | 'archive' | 'queue' | 'all';
   tag?: string;
   total?: boolean;
+  search?: string;
 };
 
 /**
@@ -124,13 +125,28 @@ export const V3GetSchema: Schema = {
       options: (value) => (value === '1' ? true : false),
     },
   },
+  search: {
+    optional: true,
+    isString: true,
+    notEmpty: true,
+  },
   sort: {
     default: {
       options: 'newest',
     },
     toLowerCase: true,
     isIn: {
-      options: [['newest', 'oldest']], //, 'relevance']],
+      options: [['newest', 'oldest', 'relevance']],
+    },
+    custom: {
+      options: (value, { req }) => {
+        // Relevance only valid for search query
+        if (value === 'relevance') {
+          return req.body.search || req.query.search ? true : false;
+        } else {
+          return true;
+        }
+      },
     },
   },
   total: {

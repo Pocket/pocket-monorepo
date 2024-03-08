@@ -227,7 +227,7 @@ export const mockGraphGetSimple: GetSavedItemsByOffsetSimpleQuery = {
 
 export const expectedGetComplete: GetResponseComplete = {
   // TODO: Update additional top-level fields when implemented
-  cacheType: 'db',
+  cachetype: 'db',
   list: {
     '11231399273': {
       item_id: '11231399273',
@@ -373,7 +373,7 @@ export const expectedGetCompleteTotal: GetResponseCompleteTotal = {
 
 export const expectedGetSimple: GetResponseSimple = {
   // TODO: Update additional top-level fields when implemented
-  cacheType: 'db',
+  cachetype: 'db',
   list: {
     '11231399273': {
       item_id: '11231399273',

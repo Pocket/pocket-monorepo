@@ -20,18 +20,59 @@ export type ToStringParams<T> = {
 };
 
 export type GetResponseSimple = {
-  //todo: add top level fields and sortId
+  //todo: add top level fields
   //e.g status, complete - as they are not mapped by developer portal docs
-  list: { [key: string]: ListItemObject };
-  cacheType: string;
+  list: { [key: string]: ListItemObject } | []; // Can also be an empty array
+  cachetype: string;
 };
+
+export type SearchMeta = {
+  search_meta: {
+    // Technicaly the free tier search does not include
+    // these fields, but I don't see any issue being additive
+    // since the data are available regardless
+    total_result_count: number;
+    count: number;
+    offset: number;
+    has_more: boolean;
+  };
+};
+
+export type SearchHighlights = {
+  highlights: {
+    fullText: string | null;
+    tags: string | null;
+    title: string | null;
+    url: string | null;
+  } | null;
+};
+
+export type ListItemWithSearchHighlights = ListItemObject & SearchHighlights;
+export type ListItemCompleteWithSearchHighlights = ListItemObjectComplete &
+  SearchHighlights;
+
+export type GetSearchResponseSimple = Omit<GetResponseSimple, 'list'> &
+  SearchMeta & {
+    list: { [key: string]: ListItemWithSearchHighlights } | never[];
+  };
+export type GetSearchResponseComplete = Omit<GetResponseComplete, 'list'> &
+  SearchMeta & {
+    list: { [key: string]: ListItemCompleteWithSearchHighlights } | never[];
+  };
+export type GetSearchResponseSimpleTotal = GetSearchResponseSimple & {
+  total: string;
+};
+export type GetSearchResponseCompleteTotal = GetSearchResponseComplete & {
+  total: string;
+};
+
 export type GetResponseComplete = {
   //todo: add top level fields
   //e.g status, complete - as they are not mapped by developer portal docs
   // note that complete returns 1 for detailType=simple and
   // detailType=complete when querying v3 API directly
   list: { [key: string]: ListItemObjectComplete };
-  cacheType: string;
+  cachetype: string;
 };
 export type GetResponseSimpleTotal = GetResponseSimple & { total: string };
 export type GetResponseCompleteTotal = GetResponseComplete & {

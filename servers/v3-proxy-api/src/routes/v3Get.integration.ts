@@ -351,5 +351,47 @@ describe('v3Get', () => {
         expect(response.body).not.toHaveProperty('total');
       }
     });
+    it('relevance sort is not allowed sort for non-search', async () => {
+      const callSpy = jest.spyOn(
+        GraphQLCalls,
+        'callSavedItemsByOffsetComplete',
+      );
+      const response = await request(app).get('/v3/get').query({
+        consumer_key: 'test',
+        access_token: 'test',
+        sort: 'relevance',
+        detailType: 'complete',
+      });
+      expect(callSpy).not.toHaveBeenCalled();
+      expect(response.status).toBe(400);
+    });
+    it('relevance sort is not allowed sort for invalid search term', async () => {
+      const callSpy = jest.spyOn(
+        GraphQLCalls,
+        'callSavedItemsByOffsetComplete',
+      );
+      const response = await request(app).get('/v3/get').query({
+        consumer_key: 'test',
+        access_token: 'test',
+        sort: 'relevance',
+        search: '',
+        detailType: 'complete',
+      });
+      expect(callSpy).not.toHaveBeenCalled();
+      expect(response.status).toBe(400);
+    });
+    it('relevance is a valid input for search term', async () => {
+      jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).get('/v3/get').query({
+        consumer_key: 'test',
+        access_token: 'test',
+        search: 'abc',
+        sort: 'relevance',
+        detailType: 'complete',
+      });
+      expect(response.status).toBe(200);
+    });
   });
 });

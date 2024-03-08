@@ -141,7 +141,7 @@ export const testV3GetResponse = (
   });
 
   return {
-    cacheType: 'db',
+    cachetype: 'db',
     list: map,
   };
 };
