@@ -17,8 +17,7 @@ export async function sendForgotPasswordEmail(forgotPasswordOptions: {
   resetPasswordUsername: string;
   resetPasswordToken: string;
 }) {
-  // TODO: Uncomment all the lines once we
-  // const brazeApiKey = await getBrazeApiKey();
+  const brazeApiKey = await getBrazeApiKey();
 
   const campaignData: CampaignsTriggerSendObject = {
     campaign_id: config.braze.forgotPasswordCampaignId,
@@ -39,26 +38,26 @@ export async function sendForgotPasswordEmail(forgotPasswordOptions: {
 
   console.log('Sending forgot password email', { campaignData });
 
-  // const res = await fetchWithBackoff(
-  //   config.braze.endpoint + config.braze.campaignTriggerPath,
-  //   {
-  //     retryOn: [500, 502, 503],
-  //     retries: 3,
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       Authorization: `Bearer ${brazeApiKey}`,
-  //     },
-  //     // https://www.braze.com/docs/api/endpoints/messaging/send_messages/post_send_triggered_campaigns/
-  //     body: JSON.stringify(campaignData),
-  //   },
-  // );
+  const res = await fetchWithBackoff(
+    config.braze.endpoint + config.braze.campaignTriggerPath,
+    {
+      retryOn: [500, 502, 503],
+      retries: 3,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${brazeApiKey}`,
+      },
+      // https://www.braze.com/docs/api/endpoints/messaging/send_messages/post_send_triggered_campaigns/
+      body: JSON.stringify(campaignData),
+    },
+  );
 
-  // if (!res.ok) {
-  //   throw new Error(`Error ${res.status}: Failed to send email`);
-  // }
+  if (!res.ok) {
+    throw new Error(`Error ${res.status}: Failed to send email`);
+  }
 
-  // return res;
+  return res;
 }
 
 export async function sendAccountDeletionEmail(email: string) {

@@ -14,13 +14,9 @@ export const config = {
     environment,
   },
   lambda: {
-    snsTopicName: {
-      userEvents: `PocketEventBridge-${environment}-UserEventTopic`,
-      premiumPurchaseEvent: `PocketEventBridge-${environment}-PremiumPurchase-Topic`,
-    },
     braze: {
       forgotPasswordCampaignId: isDev
-        ? 'd73c69cd-438e-4f7d-af5f-ffc955abd5ed'
+        ? 'e9c7ebd4-e81b-354a-673b-e0cd1b075d28'
         : '309d4141-2c47-4512-9df0-28921db49f98',
       //todo: read from ssm
       accountDeletionCampaignId: isDev
