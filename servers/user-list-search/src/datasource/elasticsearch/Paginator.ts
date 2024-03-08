@@ -5,7 +5,6 @@ import {
   SavedItemSearchResultConnection,
   SavedItemSearchResultPage,
   SearchSavedItemEdge,
-  SearchType,
 } from '../../types';
 
 /**
@@ -80,7 +79,6 @@ export class Paginator {
       ? input.hits.total
       : (input.hits.total as any).value;
     return {
-      searchType: SearchType.ELASTICSEARCH,
       edges,
       totalCount,
       pageInfo,
