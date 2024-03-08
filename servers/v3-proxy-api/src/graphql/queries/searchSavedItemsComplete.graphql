@@ -1,0 +1,15 @@
+query searchSavedItemsByOffsetComplete($term: String!, $pagination: OffsetPaginationInput, $filters: SearchFilterInput, $sort: SearchSortInput) {
+    user {    
+        searchSavedItemsByOffset(term: $term, pagination: $pagination, filter: $filters sort: $sort) {
+            entries {
+                savedItem {
+                    ...SavedItemComplete
+                }
+                ...SearchResultHighlights
+            }
+            offset
+            limit
+            totalCount
+        }
+    }
+}

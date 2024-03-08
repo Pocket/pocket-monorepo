@@ -4,6 +4,8 @@ import {
   savedItemsCompleteTotalToRest,
   savedItemsSimpleToRest,
   savedItemsSimpleTotalToRest,
+  searchSavedItemSimpleToRest,
+  searchSavedItemCompleteToRest,
 } from './toRest';
 import { GetResponseSimple } from '../types';
 import {
@@ -18,6 +20,16 @@ import {
   expectedGetCompleteTotal,
   mockGraphGetSimple,
   expectedGetSimpleTotal,
+  premiumSearchGraphSimple,
+  freeTierSearchGraphSimple,
+  expectedFreeTierResponseSimple,
+  freeTierSearchGraphComplete,
+  expectedFreeTierResponseComplete,
+  premiumSearchGraphComplete,
+  graphSearchNoResults,
+  expectedFreeTierSearchNoResults,
+  expectedPremiumTierResponseSimple,
+  expectedPremiumTierResponseComplete,
 } from '../../test/fixtures';
 
 describe('GraphQL <> Rest convesion', () => {
@@ -98,7 +110,7 @@ describe('GraphQL <> Rest convesion', () => {
         status,
       } = seedDataRest;
       const restResponse: GetResponseSimple = {
-        cacheType: 'db',
+        cachetype: 'db',
         list: {
           id1: {
             favorite,
@@ -141,6 +153,30 @@ describe('GraphQL <> Rest convesion', () => {
     it('works for adding the "total" field', () => {
       const res = savedItemsCompleteTotalToRest(mockGraphGetComplete);
       expect(res).toEqual(expectedGetCompleteTotal);
+    });
+  });
+  describe('convertSearchSavedItemSimple', () => {
+    it('works for search response with results (free tier, simple)', () => {
+      const res = searchSavedItemSimpleToRest(freeTierSearchGraphSimple);
+      expect(res).toEqual(expectedFreeTierResponseSimple);
+    });
+    it('works for search response with results (free tier, complete)', () => {
+      const res = searchSavedItemCompleteToRest(freeTierSearchGraphComplete);
+      expect(res).toEqual(expectedFreeTierResponseComplete);
+    });
+    it('works for search response with results (premium tier, simple)', () => {
+      const res = searchSavedItemSimpleToRest(premiumSearchGraphSimple);
+      expect(res).toEqual(expectedPremiumTierResponseSimple);
+    });
+    it('works for search response with results (premium tier, complete)', () => {
+      const res = searchSavedItemCompleteToRest(premiumSearchGraphComplete);
+      expect(res).toEqual(expectedPremiumTierResponseComplete);
+    });
+    it('works with no results in response', () => {
+      const resSimple = searchSavedItemSimpleToRest(graphSearchNoResults);
+      const resComplete = searchSavedItemCompleteToRest(graphSearchNoResults);
+      expect(resSimple).toEqual(expectedFreeTierSearchNoResults);
+      expect(resComplete).toEqual(expectedFreeTierSearchNoResults);
     });
   });
 });

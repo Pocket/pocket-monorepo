@@ -5,6 +5,8 @@
 import {
   GetSavedItemsByOffsetCompleteQuery,
   GetSavedItemsByOffsetSimpleQuery,
+  SearchSavedItemsByOffsetCompleteQuery,
+  SearchSavedItemsByOffsetSimpleQuery,
 } from '../../generated/graphql/types';
 import {
   ListItemObject,
@@ -14,6 +16,14 @@ import {
   GetResponseSimpleTotal,
   GetResponseComplete,
   GetResponseCompleteTotal,
+  SearchMeta,
+  GetSearchResponseSimpleTotal,
+  GetSearchResponseComplete,
+  GetSearchResponseSimple,
+  GetSearchResponseCompleteTotal,
+  ListItemWithSearchHighlights,
+  ListItemCompleteWithSearchHighlights,
+  SearchHighlights,
 } from '../types';
 import * as tx from '../shared/transforms';
 
@@ -22,6 +32,56 @@ type SavedItemSimple =
 
 type SavedItemComplete =
   GetSavedItemsByOffsetCompleteQuery['user']['savedItemsByOffset']['entries'][number];
+
+/**
+ * Extract search highlights from the graph search response.
+ * This is the search phrase that was matched, surrounded by
+ * <em> tags. The graph will return more than one match if there
+ * are multiple, but /v3/get only returns a string for the first
+ * matched result.
+ */
+function HighlightsTransformer(
+  highlights: SearchSavedItemsByOffsetSimpleQuery['user']['searchSavedItemsByOffset']['entries'][number]['searchHighlights'],
+): SearchHighlights {
+  if (highlights == null) {
+    return { highlights: null };
+  }
+  return {
+    highlights: {
+      fullText: highlights.fullText?.[0] ?? null,
+      tags: highlights.tags?.[0] ?? null,
+      title: highlights.title?.[0] ?? null,
+      url: highlights.url?.[0] ?? null,
+    },
+  };
+}
+
+/**
+ * Transform a SavedItemSearchResult into the appropriate
+ * REST response, detailType="simple" fields only.
+ */
+export function SearchResultTransformerSimple(
+  searchResult: SearchSavedItemsByOffsetSimpleQuery['user']['searchSavedItemsByOffset']['entries'][number],
+  index: number,
+): ListItemWithSearchHighlights {
+  return {
+    ...ListItemTransformerSimple(searchResult.savedItem, index),
+    ...HighlightsTransformer(searchResult.searchHighlights),
+  };
+}
+/**
+ * Transform a SavedItemSearchResult into the appropriate
+ * REST response, for detailType="complete" fields.
+ */
+export function SearchResultTransformerComplete(
+  searchResult: SearchSavedItemsByOffsetCompleteQuery['user']['searchSavedItemsByOffset']['entries'][number],
+  index: number,
+): ListItemCompleteWithSearchHighlights {
+  return {
+    ...ListItemTransformerComplete(searchResult.savedItem, index),
+    ...HighlightsTransformer(searchResult.searchHighlights),
+  };
+}
 
 /**
  * Transform a SavedItem entity  (only 'simple'
@@ -72,8 +132,8 @@ export function ListItemTransformerComplete(
  * SavedItem entities. Set default values for unsupported types
  * (e.g. PendingItem) and missing values in GraphQL response.
  */
-function ListItemTransformer(
-  savedItem: SavedItemSimple | SavedItemComplete,
+function ListItemTransformer<T extends SavedItemSimple>(
+  savedItem: T,
   index: number,
 ): ListItemObject | ListItemObjectComplete {
   const baseFields = {
@@ -147,6 +207,22 @@ function listToMap<T>(input: T[], key: string): { [key: string]: T } {
   }, {});
 }
 
+function searchMetaTransformer(
+  response:
+    | SearchSavedItemsByOffsetSimpleQuery
+    | SearchSavedItemsByOffsetCompleteQuery,
+): SearchMeta {
+  const data = response.user.searchSavedItemsByOffset;
+  return {
+    search_meta: {
+      total_result_count: data.totalCount,
+      count: data.limit,
+      offset: data.offset,
+      has_more: data.totalCount - data.limit > 0,
+    },
+  };
+}
+
 /**
  * converts graphql response to rest response
  * todo: map top level fields as a part of v3/get implementation ticket
@@ -157,7 +233,7 @@ export function savedItemsSimpleToRest(
 ): GetResponseSimple {
   return {
     // todo: map top level fields
-    cacheType: 'db',
+    cachetype: 'db',
     list: listToMap(
       response.user.savedItemsByOffset.entries
         .map((savedItem, index) => ListItemTransformerSimple(savedItem, index))
@@ -174,7 +250,7 @@ export function savedItemsCompleteToRest(
   response: GetSavedItemsByOffsetCompleteQuery,
 ): GetResponseComplete {
   return {
-    cacheType: 'db',
+    cachetype: 'db',
     list: listToMap(
       response.user.savedItemsByOffset.entries
         .map((savedItem, index) =>
@@ -209,5 +285,83 @@ export function savedItemsSimpleTotalToRest(
   return {
     total: response.user.savedItemsByOffset.totalCount.toString(),
     ...savedItemsSimpleToRest(response),
+  };
+}
+
+/**
+ * Convert GraphQL response for detailType=simple and search=<some term> to v3 API
+ * format.
+ */
+export function searchSavedItemSimpleToRest(
+  response: SearchSavedItemsByOffsetSimpleQuery,
+): GetSearchResponseSimple {
+  const list =
+    response.user.searchSavedItemsByOffset.entries.length === 0
+      ? ([] as never[])
+      : listToMap(
+          response.user.searchSavedItemsByOffset.entries
+            .map((searchResult, index) =>
+              SearchResultTransformerSimple(searchResult, index),
+            )
+            .filter((s) => s !== null),
+          'item_id',
+        );
+  return {
+    // todo: map top level fields
+    cachetype: 'db',
+    list,
+    ...searchMetaTransformer(response),
+  };
+}
+
+/**
+ * Convert GraphQL response for detailType=complete and search=<some term> to v3 API
+ * format.
+ */
+export function searchSavedItemCompleteToRest(
+  response: SearchSavedItemsByOffsetCompleteQuery,
+): GetSearchResponseComplete {
+  const list =
+    response.user.searchSavedItemsByOffset.entries.length === 0
+      ? ([] as never[])
+      : listToMap(
+          response.user.searchSavedItemsByOffset.entries
+            .map((searchResult, index) =>
+              SearchResultTransformerComplete(searchResult, index),
+            )
+            .filter((s) => s !== null),
+          'item_id',
+        );
+  return {
+    // todo: map top level fields
+    cachetype: 'db',
+    list,
+    ...searchMetaTransformer(response),
+  };
+}
+
+/**
+ * Convert GraphQL response for detailType=complete and search=<some term> to v3 API
+ * format, adding top-level total field.
+ */
+export function searchSavedItemSimpleTotalToRest(
+  response: SearchSavedItemsByOffsetSimpleQuery,
+): GetSearchResponseSimpleTotal {
+  return {
+    ...searchSavedItemSimpleToRest(response),
+    total: response.user.searchSavedItemsByOffset.totalCount.toString(),
+  };
+}
+
+/**
+ * Convert GraphQL response for detailType=complete and search=<some term> to v3 API
+ * format, adding top-level total field.
+ */
+export function searchSavedItemCompleteTotalToRest(
+  response: SearchSavedItemsByOffsetCompleteQuery,
+): GetSearchResponseCompleteTotal {
+  return {
+    ...searchSavedItemCompleteToRest(response),
+    total: response.user.searchSavedItemsByOffset.totalCount.toString(),
   };
 }
