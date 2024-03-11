@@ -5,6 +5,7 @@ import { clientErrorHandler, logAndCaptureErrors } from './middleware';
 
 import v3GetRouter from './routes/v3Get';
 import v3AddRouter from './routes/v3Add';
+import v3FetchRouter from './routes/v3Fetch';
 
 Sentry.init({
   ...config.sentry,
@@ -25,6 +26,7 @@ app.get('/.well-known/server-health', (req, res) => {
 // register public API routes
 app.use('/v3/get', v3GetRouter);
 app.use('/v3/add', v3AddRouter);
+app.use('/v3/fetch', v3FetchRouter);
 
 // Error handling middleware (must be defined last)
 app.use(logAndCaptureErrors);

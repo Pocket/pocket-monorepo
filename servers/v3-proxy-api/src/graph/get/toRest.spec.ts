@@ -6,6 +6,7 @@ import {
   savedItemsSimpleTotalToRest,
   searchSavedItemSimpleToRest,
   searchSavedItemCompleteToRest,
+  savedItemsFetchToRest,
 } from './toRest';
 import { GetResponseSimple } from '../types';
 import {
@@ -30,6 +31,7 @@ import {
   expectedFreeTierSearchNoResults,
   expectedPremiumTierResponseSimple,
   expectedPremiumTierResponseComplete,
+  expectedFetch,
 } from '../../test/fixtures';
 
 describe('GraphQL <> Rest convesion', () => {
@@ -177,6 +179,16 @@ describe('GraphQL <> Rest convesion', () => {
       const resComplete = searchSavedItemCompleteToRest(graphSearchNoResults);
       expect(resSimple).toEqual(expectedFreeTierSearchNoResults);
       expect(resComplete).toEqual(expectedFreeTierSearchNoResults);
+    });
+  });
+
+  describe('convertSavedItemsFetch', () => {
+    it('should transform graphql savedItemsByOffset response to rest response', () => {
+      const res = savedItemsFetchToRest(
+        { chunk: '1', fetchChunkSize: '250', firstChunkSize: '25' },
+        mockGraphGetComplete,
+      );
+      expect(res).toEqual(expectedFetch);
     });
   });
 });
