@@ -195,14 +195,18 @@ export function setSavedItemsVariables(
 ): UserSavedItemsByOffsetArgs {
   const filter = SavedItemsFilterFactory(requestParams);
   const sort = SavedItemsSortFactory(requestParams);
-  return {
+  const variables = {
     pagination: {
       limit: requestParams.count,
       offset: requestParams.offset,
     },
     sort,
-    filter,
   };
+  // Attach filter only if not empty
+  if (Object.keys(filter).length) {
+    variables['filter'] = filter;
+  }
+  return variables;
 }
 
 export function setSearchVariables(
@@ -210,13 +214,18 @@ export function setSearchVariables(
 ): UserSearchSavedItemsByOffsetArgs {
   const sort = SearchSortFactory(requestParams);
   const filter = SearchFilterFactory(requestParams);
-  return {
+
+  const variables = {
     term: requestParams.search,
     pagination: {
       limit: requestParams.count,
       offset: requestParams.offset,
     },
     sort,
-    filter,
   };
+  // Attach filter only if not empty
+  if (Object.keys(filter).length) {
+    variables['filter'] = filter;
+  }
+  return variables;
 }
