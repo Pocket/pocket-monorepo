@@ -44,6 +44,8 @@ export class TransactionalEmailSQSLambda extends Construct {
             config.lambda.braze.accountDeletionCampaignId,
           BRAZE_MARKETING_SUBSCRIPTION_ID:
             config.lambda.braze.marketingEmailSubscription,
+          BRAZE_FORGOT_PASSWORD_CAMPAIGN_ID:
+            config.lambda.braze.forgotPasswordCampaignId,
         },
         vpcConfig: {
           securityGroupIds: vpc.defaultSecurityGroups.ids,

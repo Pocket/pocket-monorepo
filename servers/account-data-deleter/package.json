@@ -21,8 +21,8 @@
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/feature-flags-client": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "7.105.0",
-    "@sentry/tracing": "7.105.0",
+    "@sentry/node": "7.106.0",
+    "@sentry/tracing": "7.106.0",
     "express": "4.18.3",
     "express-validator": "^7.0.1",
     "knex": "3.1.0",
@@ -31,7 +31,7 @@
     "stripe": "9.8.0"
   },
   "devDependencies": {
-    "@sentry/types": "7.105.0",
+    "@sentry/types": "7.106.0",
     "@types/jest": "29.5.12",
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",

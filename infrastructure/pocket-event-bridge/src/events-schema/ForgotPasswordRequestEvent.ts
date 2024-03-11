@@ -17,10 +17,10 @@ export class ForgotPasswordRequestEvent extends Construct {
     private name: string,
   ) {
     super(scope, name);
-    this.createPremiumRenewalUpcomingEvent();
+    this.createForgotPasswordRequestEvent();
   }
 
-  private createPremiumRenewalUpcomingEvent() {
+  private createForgotPasswordRequestEvent() {
     const schemaProps: SchemasSchemaConfig = {
       name: this.forgotPasswordRequest,
       description: `emitted when pocket user initiates a password recovery`,

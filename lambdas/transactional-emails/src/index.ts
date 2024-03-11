@@ -16,12 +16,11 @@ export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
     try {
       const message = JSON.parse(JSON.parse(record.body).Message);
       if (handlers[message['detail-type']] == null) {
-        const message = `Missing handler.`;
         const errorData = {
           'detail-type': message['detail-type'],
-          message: message,
+          source: message['source'],
         };
-        console.log({ message, data: errorData });
+        console.log(`Missing handler.`, { message, data: errorData });
         batchFailures.push({ itemIdentifier: record.messageId });
         continue;
       }
