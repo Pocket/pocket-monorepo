@@ -172,7 +172,7 @@ describe('v3Get', () => {
 
       const response = await request(app).get('/v3/get').query({
         consumer_key: 'test',
-        access_key: 'test',
+        access_token: 'test',
       });
       expect(response.status).toEqual(400);
       expect(response.body).toEqual({
@@ -219,7 +219,7 @@ describe('v3Get', () => {
 
         const response = await request(app).get('/v3/get').query({
           consumer_key: 'test',
-          access_key: 'test',
+          access_token: 'test',
         });
         expect(response.status).toEqual(errData.status);
         expect(response.body).toEqual(expected);

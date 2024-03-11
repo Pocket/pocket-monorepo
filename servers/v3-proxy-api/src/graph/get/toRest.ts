@@ -24,6 +24,8 @@ import {
   ListItemWithSearchHighlights,
   ListItemCompleteWithSearchHighlights,
   SearchHighlights,
+  FetchResponse,
+  PassthroughResponse,
 } from '../types';
 import * as tx from '../shared/transforms';
 
@@ -259,6 +261,20 @@ export function savedItemsCompleteToRest(
         .filter((s) => s !== null),
       'item_id',
     ),
+  };
+}
+
+/**
+ * Convert GraphQL response for /v3/fetch to v3 API format,
+ * adding the passthrough field for fetch
+ */
+export function savedItemsFetchToRest(
+  passthrough: PassthroughResponse,
+  response: GetSavedItemsByOffsetCompleteQuery,
+): FetchResponse {
+  return {
+    ...savedItemsCompleteTotalToRest(response),
+    passthrough,
   };
 }
 

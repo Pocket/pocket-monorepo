@@ -71,6 +71,10 @@ export type GetResponseComplete = {
   //e.g status, complete - as they are not mapped by developer portal docs
   // note that complete returns 1 for detailType=simple and
   // detailType=complete when querying v3 API directly
+  // since: number;
+  // maxActions: number;
+  // error: ?;
+  // search_meta: {search_type: "normal"}
   list: { [key: string]: ListItemObjectComplete };
   cachetype: string;
 };
@@ -78,6 +82,17 @@ export type GetResponseSimpleTotal = GetResponseSimple & { total: string };
 export type GetResponseCompleteTotal = GetResponseComplete & {
   total: string;
 };
+
+export type PassthroughResponse = {
+  firstChunkSize: string; // the count of the amount we just asked for
+  fetchChunkSize: string; // the count of how many the client should ask for next.
+  chunk: string;
+};
+
+export type FetchResponse = {
+  list: { [key: string]: ListItemObjectComplete };
+  passthrough: PassthroughResponse;
+} & GetResponseCompleteTotal;
 
 // The response type for an 'add' action which is pending
 // Separating because unless it's pending, some of these values
