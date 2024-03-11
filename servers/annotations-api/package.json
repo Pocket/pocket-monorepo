@@ -18,9 +18,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "3.525.0",
-    "@aws-sdk/client-sqs": "3.525.0",
-    "@aws-sdk/lib-dynamodb": "3.525.0",
+    "@aws-sdk/client-dynamodb": "3.529.1",
+    "@aws-sdk/client-sqs": "3.529.1",
+    "@aws-sdk/lib-dynamodb": "3.529.1",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
