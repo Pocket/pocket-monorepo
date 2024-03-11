@@ -15,6 +15,7 @@ import {
   savedItemsSimpleTotalToRest,
   searchSavedItemCompleteToRest,
   searchSavedItemCompleteTotalToRest,
+  savedItemsCompleteTotalToRest,
   searchSavedItemSimpleTotalToRest,
   searchSavedItemSimpleToRest,
 } from '../graph/get/toRest';
@@ -120,7 +121,7 @@ export async function processV3call(
         variables,
       );
       if (data.total) {
-        return savedItemsSimpleTotalToRest(response);
+        return savedItemsCompleteTotalToRest(response);
       } else {
         return savedItemsCompleteToRest(response);
       }

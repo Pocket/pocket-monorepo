@@ -19,7 +19,6 @@ describe('toGraphQL', () => {
           sortBy: SavedItemsSortBy.CreatedAt,
           sortOrder: SavedItemsSortOrder.Desc,
         },
-        filter: {},
       };
       expect(setSavedItemsVariables(defaultQuery)).toEqual(expected);
     });
@@ -31,7 +30,7 @@ describe('toGraphQL', () => {
         },
         {
           params: { state: 'all' as const },
-          expected: { filter: {} },
+          expected: {},
         },
         {
           params: { favorite: true, tag: 'recipe' },
@@ -146,7 +145,6 @@ describe('toGraphQL', () => {
           sortBy: SearchItemsSortBy.Relevance,
           sortOrder: SavedItemsSortOrder.Desc,
         },
-        filter: {},
         term: 'abc',
       };
       expect(setSearchVariables(defaultSearchQuery)).toEqual(expected);
@@ -229,7 +227,7 @@ describe('toGraphQL', () => {
         },
         {
           params: { state: 'all' as const },
-          expected: { filter: {} },
+          expected: {},
         },
       ])(
         'maps filter as expected, including combos and unused',
