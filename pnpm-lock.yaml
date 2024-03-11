@@ -632,6 +632,9 @@ importers:
       '@sentry/serverless':
         specifier: 7.105.0
         version: 7.105.0
+      braze-api:
+        specifier: ^2.6.0
+        version: 2.6.0
       fetch-retry:
         specifier: ^5.0.6
         version: 5.0.6
@@ -8222,6 +8225,13 @@ packages:
       '@types/node': 20.11.20
       form-data: 4.0.0
 
+  /@types/node-fetch@2.6.6:
+    resolution: {integrity: sha512-95X8guJYhfqiuVVhRFxVQcf4hW/2bCuoPwDasMf/531STFoNoWTT7YDnWdXHEZKqAGUigmpG31r2FE70LwnzJw==}
+    dependencies:
+      '@types/node': 20.11.24
+      form-data: 4.0.0
+    dev: false
+
   /@types/node-gcm@1.0.5:
     resolution: {integrity: sha512-ycFfDH1wiNi1DjgKsPhZ1o0mGL/MrZJgD4iTvb85CyadN+kDIaDjaSWcFeAA4UJgtlVjXBJPo55nn33g88Gyjw==}
     dev: true
@@ -9366,6 +9376,16 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       fill-range: 7.0.1
+
+  /braze-api@2.6.0:
+    resolution: {integrity: sha512-hgIt/pZcTj59ZNM5n79zBhbp1y+kvFhLxnkxGx7sQLiJDDK2tV0RWVCNLTWaFOyZVvGSeFz3DSTaBnRobpVtyw==}
+    engines: {node: '>=14'}
+    dependencies:
+      '@types/node-fetch': 2.6.6
+      node-fetch: 2.7.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
 
   /brorand@1.1.0:
     resolution: {integrity: sha512-cKV8tMCEpQs4hK/ik71d6LrPOnpkpGBR0wzxqr68g2m/LB2GxVYQroAjMJZRVM1Y4BCjCKc3vAamxSzOY2RP+w==}
