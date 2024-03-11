@@ -1,6 +1,6 @@
-query searchSavedItemsByOffsetComplete($term: String!, $pagination: OffsetPaginationInput, $filters: SearchFilterInput, $sort: SearchSortInput) {
+query searchSavedItemsByOffsetComplete($term: String!, $pagination: OffsetPaginationInput, $filter: SearchFilterInput, $sort: SearchSortInput) {
     user {    
-        searchSavedItemsByOffset(term: $term, pagination: $pagination, filter: $filters sort: $sort) {
+        searchSavedItemsByOffset(term: $term, pagination: $pagination, filter: $filter sort: $sort) {
             entries {
                 savedItem {
                     ...SavedItemComplete
