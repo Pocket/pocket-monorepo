@@ -8,6 +8,7 @@ fragment SavedItemSimple on SavedItem {
     _createdAt
     favoritedAt
     archivedAt
+    title
     item {
         __typename
         ... on Item {

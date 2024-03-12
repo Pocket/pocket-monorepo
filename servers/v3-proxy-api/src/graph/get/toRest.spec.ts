@@ -32,6 +32,8 @@ import {
   expectedPremiumTierResponseSimple,
   expectedPremiumTierResponseComplete,
   expectedFetch,
+  mockGraphGetSimpleTitle,
+  expectedGetSimpleTitle,
 } from '../../test/fixtures';
 
 describe('GraphQL <> Rest convesion', () => {
@@ -122,7 +124,7 @@ describe('GraphQL <> Rest convesion', () => {
             time_updated,
             status,
             excerpt: '',
-            given_title: '',
+            given_title: 'given title',
             given_url: '',
             has_image: '0',
             has_video: '0',
@@ -145,6 +147,10 @@ describe('GraphQL <> Rest convesion', () => {
     it('works for adding the "total" field', () => {
       const res = savedItemsSimpleTotalToRest(mockGraphGetSimple);
       expect(res).toEqual(expectedGetSimpleTotal);
+    });
+    it('uses user-provider title if provided, and falls back to parser-provided title if not', () => {
+      const res = savedItemsSimpleToRest(mockGraphGetSimpleTitle);
+      expect(res).toEqual(expectedGetSimpleTitle);
     });
   });
   describe('convertSavedItemsComplete', () => {

@@ -159,7 +159,7 @@ function ListItemTransformer<T extends SavedItemSimple>(
         ...baseFields,
         resolved_id: '',
         given_url: '',
-        given_title: '',
+        given_title: savedItem.title ?? '',
         resolved_title: '',
         resolved_url: '',
         excerpt: '',
@@ -182,7 +182,7 @@ function ListItemTransformer<T extends SavedItemSimple>(
         // properly conform to expected type
         resolved_id: savedItem.item.resolvedId ?? '',
         given_url: savedItem.item.givenUrl ?? '',
-        given_title: savedItem.item.title ?? '',
+        given_title: savedItem.title ?? savedItem.item.title ?? '', // fall back to resolved_title if not provided and null
         resolved_title: savedItem.item.title ?? '',
         resolved_url: savedItem.item.resolvedUrl ?? '',
         excerpt: savedItem.item.excerpt ?? '',

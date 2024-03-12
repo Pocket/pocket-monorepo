@@ -30,6 +30,8 @@ export const mockGraphGetComplete: GetSavedItemsByOffsetCompleteQuery = {
           _createdAt: 1706300602,
           favoritedAt: null,
           archivedAt: null,
+          title:
+            'Brains Are Not Required When It Comes to Thinking and Solving Problems—Simple Cells Can Do It',
           item: {
             __typename: 'Item' as const,
             itemId: '11231399273',
@@ -119,6 +121,7 @@ export const mockGraphGetComplete: GetSavedItemsByOffsetCompleteQuery = {
           _createdAt: 1706732546,
           favoritedAt: null,
           archivedAt: null,
+          title: 'Supergraph Architecture Framework',
           item: {
             __typename: 'Item' as const,
             itemId: '2344395952',
@@ -165,6 +168,8 @@ export const mockGraphGetSimple: GetSavedItemsByOffsetSimpleQuery = {
           _createdAt: 1706300602,
           favoritedAt: null,
           archivedAt: null,
+          title:
+            'Brains Are Not Required When It Comes to Thinking and Solving Problems—Simple Cells Can Do It',
           item: {
             __typename: 'Item' as const,
             itemId: '11231399273',
@@ -440,4 +445,41 @@ export const expectedGetSimple: GetResponseSimple = {
 export const expectedGetSimpleTotal: GetResponseSimpleTotal = {
   total: '10',
   ...expectedGetSimple,
+};
+
+export const mockGraphGetSimpleTitle: GetSavedItemsByOffsetSimpleQuery = {
+  // First one, no user-provided title and field is null
+  // Second, have a user-provided title
+  user: {
+    savedItemsByOffset: {
+      totalCount: 10,
+      entries: [
+        {
+          ...mockGraphGetSimple.user.savedItemsByOffset.entries[0],
+          title: null,
+        },
+        {
+          ...mockGraphGetSimple.user.savedItemsByOffset.entries[1],
+          title: 'Tutorial: Supergraph Architecture Framework (SAF)',
+        },
+      ],
+    },
+  },
+};
+
+export const expectedGetSimpleTitle: GetResponseSimple = {
+  // First one, title falls back to resolved_title
+  // Second one, have a title
+  cachetype: 'db',
+  list: {
+    '11231399273': {
+      ...expectedGetSimple.list['11231399273'],
+      given_title:
+        'Brains Are Not Required When It Comes to Thinking and Solving Problems—Simple Cells Can Do It',
+    },
+    '2344395952': {
+      ...expectedGetSimple.list['2344395952'],
+      given_title: 'Tutorial: Supergraph Architecture Framework (SAF)',
+    },
+  },
 };
