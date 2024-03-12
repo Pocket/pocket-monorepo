@@ -13,6 +13,7 @@ import {
 import { IContext } from '../server/context';
 import { validatePagination as externalValidatePagination } from '@pocket-tools/apollo-utils';
 import { config } from '../config';
+import { getCleanedupDomainName } from './elasticsearch/elasticsearchSearch';
 
 export class SavedItemDataService {
   private db: Knex;
@@ -63,7 +64,18 @@ export class SavedItemDataService {
     if (filter.contentType != null) {
       SavedItemDataService.contentTypeFilter(baseQuery, filter.contentType);
     }
-
+    if (filter.domain != null) {
+      const cleanDomain = getCleanedupDomainName(filter.domain);
+      baseQuery.andWhere((builder) => {
+        builder
+          .where('readitla_ril-tmp.list.given_url', 'LIKE', `%${cleanDomain}%`)
+          .orWhere(
+            'readitla_b.items_extended.resolved_url',
+            'LIKE',
+            `%${cleanDomain}%`,
+          );
+      });
+    }
     return baseQuery;
   }
 
