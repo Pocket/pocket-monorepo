@@ -12,8 +12,6 @@ import {
 } from '../../graph/types';
 
 export const expectedFreeTierResponseSimple: GetSearchResponseSimple = {
-  // status: 1,
-  // complete: 1,
   list: {
     '282381128': {
       item_id: '282381128',
@@ -74,20 +72,26 @@ export const expectedFreeTierResponseSimple: GetSearchResponseSimple = {
       highlights: null,
     },
   },
-  // error: null,
   search_meta: {
     total_result_count: 2,
     offset: 0,
     count: 30,
     has_more: false,
   },
+  complete: 1,
+  status: 1,
+  error: null,
+  since: 1709662321,
+  maxActions: 30,
   cachetype: 'db',
-  // maxActions: 30,
-  // since: 1709844782,
 };
 export const expectedFreeTierResponseComplete: GetSearchResponseComplete = {
-  // status: 1,
-  // complete: 1,
+  complete: 1,
+  status: 1,
+  error: null,
+  since: 1709662321,
+  maxActions: 30,
+  cachetype: 'db',
   list: {
     '282381128': {
       item_id: '282381128',
@@ -164,32 +168,28 @@ export const expectedFreeTierResponseComplete: GetSearchResponseComplete = {
       highlights: null,
     },
   },
-  // error: null,
   search_meta: {
     offset: 0,
     count: 30,
     total_result_count: 2,
     has_more: false,
   },
-  cachetype: 'db',
-  // maxActions: 30,
-  // since: 1709663533,
 };
 
 export const expectedFreeTierSearchNoResults: GetSearchResponseSimple = {
-  // status: 2,
-  // complete: 1,
+  complete: 1,
+  status: 2,
+  error: null,
+  since: 0,
+  maxActions: 30,
+  cachetype: 'db',
   list: [],
-  // error: null,
   search_meta: {
     offset: 0,
     count: 30,
     total_result_count: 0,
     has_more: false,
   },
-  cachetype: 'db',
-  // maxActions: 30,
-  // since: 1709844694,
 };
 
 export const graphSearchNoResults = {
@@ -386,8 +386,12 @@ export const freeTierSearchGraphComplete = {
 };
 
 export const expectedPremiumTierResponseSimple: GetSearchResponseSimple = {
-  // status: 1,
-  // complete: 1,
+  complete: 1,
+  status: 1,
+  error: null,
+  since: 1659049987,
+  maxActions: 30,
+  cachetype: 'db',
   list: {
     '3670270497': {
       item_id: '3670270497',
@@ -504,21 +508,21 @@ export const expectedPremiumTierResponseSimple: GetSearchResponseSimple = {
       listen_duration_estimate: 0, // 886,
     },
   },
-  // error: null,
   search_meta: {
     total_result_count: 22,
     count: 3,
     offset: 0,
     has_more: true,
   },
-  cachetype: 'db',
-  // maxActions: 30,
-  // since: 1709845037,
 };
 
 export const expectedPremiumTierResponseComplete: GetSearchResponseComplete = {
-  // status: 1,
-  // complete: 1,
+  complete: 1,
+  status: 1,
+  error: null,
+  since: 1659049987,
+  maxActions: 30,
+  cachetype: 'db',
   list: {
     '3670270497': {
       item_id: '3670270497',
@@ -853,16 +857,12 @@ export const expectedPremiumTierResponseComplete: GetSearchResponseComplete = {
       listen_duration_estimate: 0, // 886,
     },
   },
-  // error: null,
   search_meta: {
     total_result_count: 22,
     count: 3,
     offset: 0,
     has_more: true,
   },
-  cachetype: 'db',
-  // maxActions: 30,
-  // since: 1709845096,
 };
 
 export const premiumSearchGraphComplete: SearchSavedItemsByOffsetCompleteQuery =

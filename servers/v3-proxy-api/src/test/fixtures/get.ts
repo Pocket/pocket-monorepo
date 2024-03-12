@@ -231,7 +231,11 @@ export const mockGraphGetSimple: GetSavedItemsByOffsetSimpleQuery = {
 };
 
 export const expectedGetComplete: GetResponseComplete = {
-  // TODO: Update additional top-level fields when implemented
+  complete: 1,
+  status: 1,
+  error: null,
+  since: 1706732550,
+  maxActions: 30,
   cachetype: 'db',
   list: {
     '11231399273': {
@@ -377,7 +381,11 @@ export const expectedGetCompleteTotal: GetResponseCompleteTotal = {
 };
 
 export const expectedGetSimple: GetResponseSimple = {
-  // TODO: Update additional top-level fields when implemented
+  complete: 1,
+  status: 1,
+  error: null,
+  since: 1706732550,
+  maxActions: 30,
   cachetype: 'db',
   list: {
     '11231399273': {
@@ -468,9 +476,14 @@ export const mockGraphGetSimpleTitle: GetSavedItemsByOffsetSimpleQuery = {
 };
 
 export const expectedGetSimpleTitle: GetResponseSimple = {
+  complete: 1,
+  status: 1,
+  error: null,
+  since: 1706732550,
+  maxActions: 30,
+  cachetype: 'db',
   // First one, title falls back to resolved_title
   // Second one, have a title
-  cachetype: 'db',
   list: {
     '11231399273': {
       ...expectedGetSimple.list['11231399273'],

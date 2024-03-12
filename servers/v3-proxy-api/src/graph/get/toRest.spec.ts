@@ -7,6 +7,7 @@ import {
   searchSavedItemSimpleToRest,
   searchSavedItemCompleteToRest,
   savedItemsFetchToRest,
+  savedItemsFetchSharesToRest,
 } from './toRest';
 import { GetResponseSimple } from '../types';
 import {
@@ -34,6 +35,7 @@ import {
   expectedFetch,
   mockGraphGetSimpleTitle,
   expectedGetSimpleTitle,
+  expectedSharesFetch,
 } from '../../test/fixtures';
 
 describe('GraphQL <> Rest convesion', () => {
@@ -115,6 +117,11 @@ describe('GraphQL <> Rest convesion', () => {
       } = seedDataRest;
       const restResponse: GetResponseSimple = {
         cachetype: 'db',
+        maxActions: 30,
+        status: 1,
+        complete: 1,
+        since: 1677818995,
+        error: null,
         list: {
           id1: {
             favorite,
@@ -189,12 +196,20 @@ describe('GraphQL <> Rest convesion', () => {
   });
 
   describe('convertSavedItemsFetch', () => {
-    it('should transform graphql savedItemsByOffset response to rest response', () => {
+    it('should transform graphql savedItemsByOffset response to fetch response', () => {
       const res = savedItemsFetchToRest(
         { chunk: '1', fetchChunkSize: '250', firstChunkSize: '25' },
         mockGraphGetComplete,
       );
       expect(res).toEqual(expectedFetch);
+    });
+
+    it('should transform graphql savedItemsByOffset response to fetch shared response', () => {
+      const res = savedItemsFetchSharesToRest(
+        { chunk: '1', fetchChunkSize: '250', firstChunkSize: '25' },
+        mockGraphGetComplete,
+      );
+      expect(res).toEqual(expectedSharesFetch);
     });
   });
 });

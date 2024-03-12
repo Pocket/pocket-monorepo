@@ -102,8 +102,6 @@ type MockListItemObject = Omit<ListItemObject, 'item_id' | 'resolved_id'> & {
 };
 /**
  * return REST v3 GET response for given Ids
- * //todo: need to include tags, images, videoes etc
- * //todo: map top level fields and sort_id
  * @param ids
  */
 export const testV3GetResponse = (
@@ -142,6 +140,11 @@ export const testV3GetResponse = (
   });
 
   return {
+    complete: 1,
+    status: 1,
+    error: null,
+    since: 1677818995,
+    maxActions: 30,
     cachetype: 'db',
     list: map,
   };
