@@ -118,7 +118,9 @@ export class SavedItemDataService {
             'like',
             `%${term}%`,
           )
-          .orWhere('readitla_b.items_extended.title', 'like', `%${term}%`);
+          .orWhereRaw(`LOWER(readitla_b.items_extended.title) LIKE ?`, [
+            `%${term}%`,
+          ]);
       });
   }
 
@@ -145,7 +147,8 @@ export class SavedItemDataService {
     const sortOrder = params.sort ? params.sort.sortOrder : 'DESC';
     const sortColumn =
       params.sort?.sortBy == `TIME_TO_READ` ? `word_count` : 'time_added';
-    let baseQuery = this.buildQuery(params.term).andWhere(
+    const term = params.term.toLowerCase();
+    let baseQuery = this.buildQuery(term).andWhere(
       'readitla_ril-tmp.list.user_id',
       this.userId,
     );
@@ -190,7 +193,8 @@ export class SavedItemDataService {
     const sortOrder = params.sort ? params.sort.sortOrder : 'DESC';
     const sortColumn =
       params.sort?.sortBy == `TIME_TO_READ` ? `word_count` : 'time_added';
-    let baseQuery = this.buildQuery(params.term).andWhere(
+    const term = params.term.toLowerCase();
+    let baseQuery = this.buildQuery(term).andWhere(
       'readitla_ril-tmp.list.user_id',
       this.userId,
     );

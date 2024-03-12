@@ -58,6 +58,21 @@ async function seedDb(db: Knex) {
       loadList(db, record),
     ]),
   );
+  // Test for a real case where title is not populated
+  // on the case-insensitive list.title field, but populated
+  // on the case-sensitive items_extended field
+  const caseCase = {
+    favorite: 0,
+    itemId: 789,
+    status: SavedItemStatus.UNREAD,
+    title: 'I love WINTER',
+    url: 'http://test4.com',
+    date: new Date('2021-5-03 10:20:29'),
+    wordCount: 100,
+    isVideo: 0,
+  };
+  await loadItemExtended(db, caseCase);
+  await loadList(db, { ...caseCase, title: '' });
 }
 
 describe('free-tier search (offset pagination)', () => {
@@ -107,6 +122,47 @@ describe('free-tier search (offset pagination)', () => {
     limit
     totalCount
   }`;
+  it('should be case-insensitive', async () => {
+    const SEARCH_SAVED_ITEM_QUERY = `
+      ${searchResultFragment}
+      query searchSavedItem(
+        $id: ID!
+        $term: String!
+        $pagination: OffsetPaginationInput
+      ) {
+        _entities(representations: { id: $id, __typename: "User" }) {
+          ... on User {
+            searchSavedItemsByOffset(term: $term, pagination: $pagination) {
+                ...SearchPageFields
+            }
+          }
+        }
+      }
+    `;
+    const variables = {
+      id: '1',
+      term: 'wiNter',
+    };
+    const res = await request(app).post(url).set(headers).send({
+      query: SEARCH_SAVED_ITEM_QUERY,
+      variables,
+    });
+    const response = res.body.data?._entities[0].searchSavedItemsByOffset;
+    const expected = {
+      entries: [
+        expect.objectContaining({
+          savedItem: { id: '456' },
+        }),
+        expect.objectContaining({
+          savedItem: { id: '789' },
+        }),
+      ],
+      totalCount: 2,
+      limit: 30,
+      offset: 0,
+    };
+    expect(response).toEqual(expected);
+  });
 
   it('should search paginated search with limit and offset', async () => {
     const SEARCH_SAVED_ITEM_QUERY = `

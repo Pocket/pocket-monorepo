@@ -54,6 +54,21 @@ async function seedDb(db: Knex) {
       loadList(db, record),
     ]),
   );
+  // Test for a real case where title is not populated
+  // on the case-insensitive list.title field, but populated
+  // on the case-sensitive items_extended field
+  const caseCase = {
+    favorite: 0,
+    itemId: 789,
+    status: SavedItemStatus.UNREAD,
+    title: 'I love WINTER',
+    url: 'http://test4.com',
+    date: new Date('2021-5-03 10:20:29'),
+    wordCount: 100,
+    isVideo: 0,
+  };
+  await loadItemExtended(db, caseCase);
+  await loadList(db, { ...caseCase, title: '' });
 }
 
 describe('free search test', () => {
@@ -217,6 +232,36 @@ describe('free search test', () => {
     expect(response.pageInfo.hasNextPage).toBeFalse();
     expect(response.pageInfo.hasPreviousPage).toBeFalse();
     expect(response.edges[0].node.savedItem.id).toBe('123');
+  });
+
+  it('should be case-insensitive', async () => {
+    const SEARCH_SAVED_ITEM_QUERY = `
+      query searchSavedItem(
+        $id: ID!
+        $term: String!
+        $pagination: PaginationInput
+      ) {
+        _entities(representations: { id: $id, __typename: "User" }) {
+          ... on User {
+            searchSavedItems(term: $term, pagination: $pagination) {
+              ${query}
+            }
+          }
+        }
+      }
+    `;
+    const variables = {
+      id: '1',
+      term: 'wiNter',
+    };
+    const res = await request(app).post(url).set(headers).send({
+      query: SEARCH_SAVED_ITEM_QUERY,
+      variables,
+    });
+    const response = res.body.data?._entities[0].searchSavedItems;
+    expect(response.totalCount).toBe(2);
+    expect(response.edges[0].node.savedItem.id).toBe('456');
+    expect(response.edges[1].node.savedItem.id).toBe('789');
   });
 
   it('should return empty search result when term not found', async () => {
