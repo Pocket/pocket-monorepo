@@ -10,7 +10,7 @@ import { ListItemObject, GetResponseSimple } from '../../graph/types';
 export const seedDataRest: MockListItemObject = Object.freeze({
   ids: ['1', '2'],
   given_url: 'https://test.com',
-  given_title: 'title',
+  given_title: 'given title',
   favorite: '1',
   status: '1',
   time_added: '1677818995',
@@ -41,6 +41,7 @@ export const mockSavedItemFragment: SavedItemFragment = {
   url: seedDataRest.given_url,
   isFavorite: seedDataRest.favorite === '1',
   isArchived: true,
+  title: seedDataRest.given_title,
   _createdAt: parseInt(seedDataRest.time_added),
   _updatedAt: parseInt(seedDataRest.time_updated),
   favoritedAt: parseInt(seedDataRest.time_favorited),
