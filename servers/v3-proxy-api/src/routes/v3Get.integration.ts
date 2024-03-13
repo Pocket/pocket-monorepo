@@ -1,9 +1,7 @@
 import request from 'supertest';
-import { app, server } from '../server'';
 import * as Sentry from '@sentry/node';
 import * as GraphQLCalls from '../graph/graphQLClient';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { setTimeout } from 'timers/promises';
 import {
   mockGraphGetComplete,
   mockGraphGetSimple,
@@ -12,17 +10,23 @@ import {
 } from '../test/fixtures';
 import { ClientError } from 'graphql-request';
 import { GraphQLError } from 'graphql-request/build/esm/types';
+import { startServer } from '../server';
+import { Server } from 'http';
+import { Application } from 'express';
 
 describe('v3Get', () => {
+  let app: Application;
+  let server: Server;
   const expectedHeaders = {
     'X-Error-Code': '198',
     'X-Error': 'Internal Server Error',
     'X-Source': 'Pocket',
   };
+  beforeAll(async () => {
+    ({ app, server } = await startServer(0));
+  });
   afterAll(async () => {
     server.close();
-    // Make sure it closes
-    await setTimeout(100);
   });
   afterEach(() => {
     jest.restoreAllMocks();

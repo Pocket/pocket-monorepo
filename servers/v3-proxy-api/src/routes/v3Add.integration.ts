@@ -1,21 +1,24 @@
 import { GraphQLClient } from 'graphql-request';
 import request from 'supertest';
-import { app, server } from '../server'';
-import { setTimeout } from 'timers/promises';
 import { mockGraphAddResponses } from '../test/fixtures/add';
+import { Application } from 'express';
+import { Server } from 'http';
+import { startServer } from '../server';
 
 describe('v3Add', () => {
+  let app: Application;
+  let server: Server;
+
   const expectedHeaders = {
     'X-Source': 'Pocket',
   };
   const now = 1709600486000;
-  beforeAll(() => {
+  beforeAll(async () => {
     jest.spyOn(Date.prototype, 'getTime').mockImplementation(() => now);
+    ({ app, server } = await startServer(0));
   });
   afterAll(async () => {
     server.close();
-    // Make sure it closes
-    await setTimeout(100);
     jest.restoreAllMocks();
     jest.useRealTimers();
   });

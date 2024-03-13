@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node';
 import { initSentry } from '@pocket-tools/sentry';
 import express, { Application, json } from 'express';
 import config from './config';
@@ -6,41 +7,45 @@ import {
   logAndCaptureErrors,
   sourceHeaderHandler,
 } from './middleware';
+import { Server, createServer } from 'http';
 
 import v3GetRouter from './routes/v3Get';
 import v3AddRouter from './routes/v3Add';
 import v3FetchRouter from './routes/v3Fetch';
 
-//todo: set telemetry -
-// would it make sense to add them here or directly export/add to this package
+export async function startServer(port: number) {
+  const app: Application = express();
+  const httpServer: Server = createServer(app);
 
-export const app: Application = express();
+  // Sentry Setup
+  initSentry(app, {
+    ...config.sentry,
+    debug: config.sentry.environment == 'development',
+  });
 
-// Sentry Setup
-initSentry(app, {
-  ...config.sentry,
-  debug: config.sentry.environment == 'development',
-});
+  // RequestHandler creates a separate execution context, so that all
+  // transactions/spans/breadcrumbs are isolated across requests
+  app.use(Sentry.Handlers.requestHandler() as express.RequestHandler);
+  // TracingHandler creates a trace for every incoming request
+  app.use(Sentry.Handlers.tracingHandler());
 
-app.use(json());
-app.set('query parser', 'simple');
-app.get('/.well-known/server-health', (req, res) => {
-  res.status(200).send('ok');
-});
+  app.use(json());
+  app.set('query parser', 'simple');
+  app.get('/.well-known/server-health', (req, res) => {
+    res.status(200).send('ok');
+  });
 
-app.use(sourceHeaderHandler);
+  app.use(sourceHeaderHandler);
 
-// register public API routes
-app.use('/v3/get', v3GetRouter);
-app.use('/v3/add', v3AddRouter);
-app.use('/v3/fetch', v3FetchRouter);
+  // register public API routes
+  app.use('/v3/get', v3GetRouter);
+  app.use('/v3/add', v3AddRouter);
+  app.use('/v3/fetch', v3FetchRouter);
 
-// Error handling middleware (must be defined last)
-app.use(logAndCaptureErrors);
-app.use(clientErrorHandler);
+  // Error handling middleware (must be defined last)
+  app.use(logAndCaptureErrors);
+  app.use(clientErrorHandler);
 
-export const server = app.listen({ port: config.app.port }, () =>
-  console.log(
-    `🚀 v3 Proxy API is ready at http://localhost:${config.app.port}`,
-  ),
-);
+  await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
+  return { server: httpServer, app };
+}

@@ -6,6 +6,10 @@ export default {
     defaultMaxAge: 86400,
     port: 4030,
   },
+  tracing: {
+    host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
+    serviceName: 'v3-api-proxy',
+  },
   sentry: {
     dsn: process.env.SENTRY_DSN || '',
     release: process.env.GIT_SHA || '',

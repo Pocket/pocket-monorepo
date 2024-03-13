@@ -12,7 +12,7 @@ import {
   PocketPagerDuty,
 } from '@pocket-tools/terraform-modules';
 import { Construct } from 'constructs';
-import { App, S3Backend, TerraformStack, Aspects, MigrateIds } from 'cdktf';
+import { App, S3Backend, TerraformStack } from 'cdktf';
 import fs from 'fs';
 import { config } from './config';
 
@@ -42,8 +42,6 @@ class Stack extends TerraformStack {
       region,
       caller,
     });
-
-    Aspects.of(this).add(new MigrateIds());
   }
 
   /**
