@@ -2,7 +2,6 @@ import request from 'supertest';
 import * as Sentry from '@sentry/node';
 import * as GraphQLCalls from '../graph/graphQLClient';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { setTimeout } from 'timers/promises';
 import { mockGraphGetComplete } from '../test/fixtures';
 import { ClientError } from 'graphql-request';
 import { GraphQLError } from 'graphql-request/build/esm/types';
