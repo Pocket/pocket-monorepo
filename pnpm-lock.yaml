@@ -1341,8 +1341,8 @@ importers:
         specifier: 5.5.1
         version: 5.5.1
       unleash-server:
-        specifier: 5.10.0
-        version: 5.10.0(core-js@3.36.0)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8)
+        specifier: 5.10.1
+        version: 5.10.1(core-js@3.36.0)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8)
     devDependencies:
       '@types/cors':
         specifier: ^2.8.17
@@ -4351,7 +4351,7 @@ packages:
     resolution: {integrity: sha512-qvga/nzEtdCJMu/6jJfDqpzbRejvXtNhWFnbubfuYyN5nMNORNXX+POT4j+mQSDQar5bIQ1a812szw/zr47cfw==}
     requiresBuild: true
     dependencies:
-      nan: 2.18.0
+      nan: 2.19.0
       prebuild-install: 7.1.1
     dev: false
 
@@ -8649,7 +8649,7 @@ packages:
     dependencies:
       '@types/cookiejar': 2.1.5
       '@types/methods': 1.1.4
-      '@types/node': 20.11.24
+      '@types/node': 20.11.26
     dev: true
 
   /@types/supertest@6.0.2:
@@ -15924,15 +15924,10 @@ packages:
       lru-cache: 7.18.3
     dev: false
 
-  /nan@2.18.0:
-    resolution: {integrity: sha512-W7tfG7vMOGtD30sHoZSSc/JVYiyDPEyQVso/Zz+/uQd0B0L46gtC+pHha5FFMRpil6fm/AoEcRWyOVi4+E/f8w==}
-    dev: false
-
   /nan@2.19.0:
     resolution: {integrity: sha512-nO1xXxfh/RWNxfd/XPfbIfFk5vgLsAxUR9y5O0cHMJu/AW9U95JLXqthYHjEp+8gQ5p96K9jUp8nbVOxCdRbtw==}
     requiresBuild: true
     dev: false
-    optional: true
 
   /nanoid@3.3.7:
     resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
@@ -19774,8 +19769,8 @@ packages:
       murmurhash3js: 3.0.1
       semver: 7.6.0
 
-  /unleash-server@5.10.0(core-js@3.36.0)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8):
-    resolution: {integrity: sha512-F71I29Tqhlv3uYYbEJYV0wfJM0orfkmccPw9brsOM+jAo4kU/BdY+9CE5BhiU6i9TBJ/4M4Dzu3OcP50jPWtdQ==}
+  /unleash-server@5.10.1(core-js@3.36.0)(mobx@6.12.0)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8):
+    resolution: {integrity: sha512-WpXUm//LAO9nQR9n6qR7kaWfUmdf+k6AEzCFKGcyKTlaGntCwZ2ufbk22Lft810d6kHSsH7Sy0v+dh/n97fuIw==}
     engines: {node: '>=18 <21'}
     dependencies:
       '@slack/web-api': 6.12.0
