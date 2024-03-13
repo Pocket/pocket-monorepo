@@ -78,9 +78,7 @@ export const V3GetSchema: Schema = {
       },
       errorMessage: '`offset` cannot be negative',
     },
-    customSanitizer: {
-      options: (value) => (typeof value === 'string' ? parseInt(value) : value),
-    },
+    toInt: true,
   },
   count: {
     default: {
@@ -92,9 +90,7 @@ export const V3GetSchema: Schema = {
         max: 5000,
       },
     },
-    customSanitizer: {
-      options: (value) => (typeof value === 'string' ? parseInt(value) : value),
-    },
+    toInt: true,
   },
   tag: {
     optional: true,
@@ -108,6 +104,7 @@ export const V3GetSchema: Schema = {
         min: 0,
       },
     },
+    toInt: true,
   },
   contentType: {
     optional: true,
