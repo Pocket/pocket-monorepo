@@ -1,7 +1,11 @@
-import { FetchResponse } from '../../graph/types';
+import { FetchResponse, GetSharesResponse } from '../../graph/types';
 
 export const expectedFetch: FetchResponse = {
-  // TODO: Update additional top-level fields when implemented
+  complete: 1,
+  status: 1,
+  error: null,
+  since: 1706732550,
+  maxActions: 30,
   total: '10',
   passthrough: {
     chunk: '1',
@@ -145,4 +149,11 @@ export const expectedFetch: FetchResponse = {
       listen_duration_estimate: 0,
     },
   },
+};
+
+export const expectedSharesFetch: FetchResponse & GetSharesResponse = {
+  ...expectedFetch,
+  unconfirmed_shares: [],
+  recent_friends: [],
+  auto_complete_emails: [],
 };

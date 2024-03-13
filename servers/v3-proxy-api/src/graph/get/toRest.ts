@@ -26,6 +26,9 @@ import {
   SearchHighlights,
   FetchResponse,
   PassthroughResponse,
+  GetStaticResponse,
+  GetSharesResponse,
+  GetTopLevelDefaultResponse,
 } from '../types';
 import * as tx from '../shared/transforms';
 
@@ -34,6 +37,106 @@ type SavedItemSimple =
 
 type SavedItemComplete =
   GetSavedItemsByOffsetCompleteQuery['user']['savedItemsByOffset']['entries'][number];
+
+/**
+ * The default and static set of fields that are in all v3/get responses
+ * This should be expanded into all responses
+ */
+const staticV3ResponseDefaults: GetStaticResponse = {
+  maxActions: 30,
+  cachetype: 'db',
+};
+
+/**
+ * The default and static set of fields that are in all v3/get responses that request `shares` (or shares=1)
+ * This should be expanded into all share request responses
+ * (these are not used, but Android doesn't like when its not included)
+ */
+export const staticV3ShareResponseDefaults: GetSharesResponse = {
+  recent_friends: [],
+  auto_complete_emails: [],
+  unconfirmed_shares: [],
+};
+
+function getStatusResponse(
+  response:
+    | GetSavedItemsByOffsetCompleteQuery
+    | GetSavedItemsByOffsetSimpleQuery,
+): GetTopLevelDefaultResponse {
+  if (response.user.savedItemsByOffset === undefined) {
+    return {
+      status: 0,
+      error: 1,
+      complete: 1,
+      since: 0,
+    };
+  }
+
+  const latestItem = response.user.savedItemsByOffset.entries.reduce(
+    (maxObject, currentObject) => {
+      if (
+        maxObject === null ||
+        currentObject._updatedAt > maxObject._updatedAt
+      ) {
+        return currentObject;
+      } else {
+        return maxObject;
+      }
+    },
+    null,
+  );
+
+  return {
+    status: response.user.savedItemsByOffset.totalCount > 0 ? 1 : 2,
+    error: null,
+    complete: 1,
+    since:
+      latestItem === null || latestItem._updatedAt === null
+        ? 0
+        : latestItem._updatedAt,
+  };
+}
+
+function searchStatusResponse(
+  response:
+    | SearchSavedItemsByOffsetCompleteQuery
+    | SearchSavedItemsByOffsetSimpleQuery,
+): GetTopLevelDefaultResponse {
+  if (response.user.searchSavedItemsByOffset === undefined) {
+    return {
+      status: 0,
+      error: 1,
+      complete: 1,
+      since: 0,
+    };
+  }
+
+  const latestItem = response.user.searchSavedItemsByOffset.entries.reduce(
+    (maxObject, currentObject) => {
+      if (
+        maxObject === null ||
+        currentObject.savedItem._updatedAt > maxObject.savedItem._updatedAt
+      ) {
+        return currentObject;
+      } else {
+        return maxObject;
+      }
+    },
+    null,
+  );
+
+  return {
+    status: response.user.searchSavedItemsByOffset.totalCount > 0 ? 1 : 2,
+    error: null,
+    complete: 1,
+    since:
+      latestItem === null ||
+      latestItem.savedItem === null ||
+      latestItem.savedItem._updatedAt === null
+        ? 0
+        : latestItem.savedItem._updatedAt,
+  };
+}
 
 /**
  * Extract search highlights from the graph search response.
@@ -234,8 +337,8 @@ export function savedItemsSimpleToRest(
   response: GetSavedItemsByOffsetSimpleQuery,
 ): GetResponseSimple {
   return {
-    // todo: map top level fields
-    cachetype: 'db',
+    ...staticV3ResponseDefaults,
+    ...getStatusResponse(response),
     list: listToMap(
       response.user.savedItemsByOffset.entries
         .map((savedItem, index) => ListItemTransformerSimple(savedItem, index))
@@ -252,7 +355,8 @@ export function savedItemsCompleteToRest(
   response: GetSavedItemsByOffsetCompleteQuery,
 ): GetResponseComplete {
   return {
-    cachetype: 'db',
+    ...staticV3ResponseDefaults,
+    ...getStatusResponse(response),
     list: listToMap(
       response.user.savedItemsByOffset.entries
         .map((savedItem, index) =>
@@ -273,6 +377,21 @@ export function savedItemsFetchToRest(
   response: GetSavedItemsByOffsetCompleteQuery,
 ): FetchResponse {
   return {
+    ...savedItemsCompleteTotalToRest(response),
+    passthrough,
+  };
+}
+
+/**
+ * Convert GraphQL response for /v3/fetch to v3 API format,
+ * adding the passthrough field for fetch
+ */
+export function savedItemsFetchSharesToRest(
+  passthrough: PassthroughResponse,
+  response: GetSavedItemsByOffsetCompleteQuery,
+): FetchResponse & GetSharesResponse {
+  return {
+    ...staticV3ShareResponseDefaults,
     ...savedItemsCompleteTotalToRest(response),
     passthrough,
   };
@@ -323,8 +442,8 @@ export function searchSavedItemSimpleToRest(
           'item_id',
         );
   return {
-    // todo: map top level fields
-    cachetype: 'db',
+    ...staticV3ResponseDefaults,
+    ...searchStatusResponse(response),
     list,
     ...searchMetaTransformer(response),
   };
@@ -349,8 +468,8 @@ export function searchSavedItemCompleteToRest(
           'item_id',
         );
   return {
-    // todo: map top level fields
-    cachetype: 'db',
+    ...searchStatusResponse(response),
+    ...staticV3ResponseDefaults,
     list,
     ...searchMetaTransformer(response),
   };

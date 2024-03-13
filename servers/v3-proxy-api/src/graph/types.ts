@@ -23,8 +23,8 @@ export type GetResponseSimple = {
   //todo: add top level fields
   //e.g status, complete - as they are not mapped by developer portal docs
   list: { [key: string]: ListItemObject };
-  cachetype: string;
-};
+} & GetStaticResponse &
+  GetTopLevelDefaultResponse;
 
 export type SearchMeta = {
   search_meta: {
@@ -66,18 +66,41 @@ export type GetSearchResponseCompleteTotal = GetSearchResponseComplete & {
   total: string;
 };
 
-export type GetResponseComplete = {
-  //todo: add top level fields
-  //e.g status, complete - as they are not mapped by developer portal docs
-  // note that complete returns 1 for detailType=simple and
-  // detailType=complete when querying v3 API directly
-  // since: number;
-  // maxActions: number;
-  // error: ?;
-  // search_meta: {search_type: "normal"}
-  list: { [key: string]: ListItemObjectComplete };
+/**
+ * Represents a static response that we still need to return from Get with static
+ */
+export type GetStaticResponse = {
+  // Always return 30.
+  maxActions: number;
   cachetype: string;
 };
+
+/**
+ * Represents a static response that we still need to return from Get with empty values when a client requests `shares=1`
+ */
+export type GetSharesResponse = {
+  // empty data fields that used to have a use, but now are empty and Android will crash without.
+  recent_friends: [];
+  auto_complete_emails: [];
+  unconfirmed_shares: [];
+};
+
+/**
+ * Represents a set of fields that are always included in /v3/get responses
+ */
+export type GetTopLevelDefaultResponse = {
+  complete: number; // 0 if preg_match('/^[0-9]*$/', $since) && $since > 0, else 1
+  status: number; // 1 if no error & list > 0, 2 if no error & list == 0, 0 if error
+  since: number; // unix timestamp of the last updated at in the response of items
+  error: number; // maps to pocket error codes or null if no error
+};
+
+export type GetResponseComplete = {
+  // search_meta: { search_type: 'normal' };
+  list: { [key: string]: ListItemObjectComplete };
+} & GetStaticResponse &
+  GetTopLevelDefaultResponse;
+
 export type GetResponseSimpleTotal = GetResponseSimple & { total: string };
 export type GetResponseCompleteTotal = GetResponseComplete & {
   total: string;

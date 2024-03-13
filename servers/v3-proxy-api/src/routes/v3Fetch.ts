@@ -1,11 +1,15 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { setSavedItemsVariables } from '../graph/get/toGraphQL';
 import { callSavedItemsByOffsetComplete } from '../graph/graphQLClient';
-import { savedItemsFetchToRest } from '../graph/get/toRest';
+import {
+  savedItemsFetchSharesToRest,
+  savedItemsFetchToRest,
+} from '../graph/get/toRest';
 import { checkSchema, validationResult, matchedData } from 'express-validator';
 import { V3FetchParams, V3FetchSchema } from './validations/FetchSchema';
 import { InputValidationError } from '../errors/InputValidationError';
 import { V3GetParams } from './validations/GetSchema';
+import { FetchResponse, GetSharesResponse } from '../graph/types';
 
 const router: Router = Router();
 
@@ -61,7 +65,7 @@ export async function processV3call(
   consumerKey: string,
   headers: any,
   data: V3FetchParams,
-) {
+): Promise<FetchResponse | (FetchResponse & GetSharesResponse)> {
   if (data.offset == 0) {
     data.count = 25; // set the intial page size to a smaller value to allow the user to see something as quickly as possible
   }
@@ -88,6 +92,17 @@ export async function processV3call(
   );
 
   const nextChunkSize = '250'; // Every chunk after the first one is always 250. This informs the client how many to download next.
+
+  if (data.shares) {
+    return savedItemsFetchSharesToRest(
+      {
+        fetchChunkSize: nextChunkSize,
+        firstChunkSize: params.count.toFixed(),
+        chunk: data.chunk.toFixed(),
+      },
+      response,
+    );
+  }
 
   return savedItemsFetchToRest(
     {
