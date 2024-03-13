@@ -15,7 +15,8 @@ import {
   buildContext,
   getApolloServer,
 } from './graphql';
-import { initSentry, sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
+import { sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
+import { initSentry } from '@pocket-tools/sentry';
 
 export interface ServerOptions {
   port?: number;

@@ -8,7 +8,8 @@ import { readClient, writeClient } from './database/client';
 import { userEventEmitter } from './events/init';
 import { Server, createServer } from 'http';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
-import { initSentry, sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
+import { sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
+import { initSentry } from '@pocket-tools/sentry';
 
 export async function startServer(port: number) {
   // initialize express with exposed httpServer so that it may be

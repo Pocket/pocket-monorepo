@@ -7,9 +7,9 @@ import { expressMiddleware } from '@apollo/server/express4';
 import {
   errorHandler,
   defaultPlugins,
-  initSentry,
   sentryPocketMiddleware,
 } from '@pocket-tools/apollo-utils';
+import { initSentry } from '@pocket-tools/sentry';
 import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4';
 
 import { schema } from './apollo';

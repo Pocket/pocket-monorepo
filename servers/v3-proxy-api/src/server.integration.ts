@@ -1,7 +1,15 @@
+import { Application } from 'express';
 import request from 'supertest';
-import { app, server } from './main';
+import { startServer } from './server';
+import { Server } from 'http';
 
 describe('server is up!', () => {
+  let app: Application;
+  let server: Server;
+
+  beforeAll(async () => {
+    ({ app, server } = await startServer(0));
+  });
   afterAll(async () => {
     server.close();
   });

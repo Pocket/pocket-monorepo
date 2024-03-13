@@ -6,7 +6,8 @@ import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 
 import { EventEmitter } from 'events';
 import { SqsConsumer } from './SqsConsumer';
-import { initSentry, sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
+import { sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
+import { initSentry } from '@pocket-tools/sentry';
 
 export async function startServer(port: number): Promise<{
   app: Application;

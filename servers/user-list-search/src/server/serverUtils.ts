@@ -9,9 +9,9 @@ import { ContextManager, getContextFactory } from './context';
 import {
   defaultPlugins,
   errorHandler,
-  initSentry,
   sentryPocketMiddleware,
 } from '@pocket-tools/apollo-utils';
+import { initSentry } from '@pocket-tools/sentry';
 import * as Sentry from '@sentry/node';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 import { router as batchDeleteRouter } from '../server/routes/batchDelete';

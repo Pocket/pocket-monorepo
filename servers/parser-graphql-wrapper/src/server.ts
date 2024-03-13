@@ -8,9 +8,9 @@ import { buildSubgraphSchema } from '@apollo/subgraph';
 import {
   defaultPlugins,
   errorHandler,
-  initSentry,
   sentryPocketMiddleware,
 } from '@pocket-tools/apollo-utils';
+import { initSentry } from '@pocket-tools/sentry';
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl';
 import { typeDefs } from './typeDefs';
 import { resolvers } from './resolvers';
