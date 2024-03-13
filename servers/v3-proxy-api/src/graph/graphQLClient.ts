@@ -57,6 +57,9 @@ export function getClient(
 
   let url: string;
 
+  // add in that this is the proxy to the graphql call
+  headers['apollographql-client-name'] = config.app.serviceName;
+
   //to allow both access token/consumer key based auth or cookie based auth
   if (accessToken && consumerKey) {
     url = `${config.graphQLProxy}?consumer_key=${consumerKey}&access_token=${accessToken}`;
