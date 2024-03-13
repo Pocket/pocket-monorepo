@@ -1,6 +1,6 @@
 import { GraphQLClient } from 'graphql-request';
 import request from 'supertest';
-import { app, server } from '../main';
+import { app, server } from '../server'';
 import { setTimeout } from 'timers/promises';
 import { mockGraphAddResponses } from '../test/fixtures/add';
 

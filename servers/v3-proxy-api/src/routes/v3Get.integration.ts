@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { app, server } from '../main';
+import { app, server } from '../server'';
 import * as Sentry from '@sentry/node';
 import * as GraphQLCalls from '../graph/graphQLClient';
 import { serverLogger } from '@pocket-tools/ts-logger';

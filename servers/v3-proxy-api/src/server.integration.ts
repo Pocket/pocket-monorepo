@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { app, server } from './main';
+import { app, server } from './server'';
 
 describe('server is up!', () => {
   afterAll(async () => {
