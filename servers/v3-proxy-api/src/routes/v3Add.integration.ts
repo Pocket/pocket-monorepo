@@ -5,6 +5,9 @@ import { setTimeout } from 'timers/promises';
 import { mockGraphAddResponses } from '../test/fixtures/add';
 
 describe('v3Add', () => {
+  const expectedHeaders = {
+    'X-Source': 'Pocket',
+  };
   const now = 1709600486000;
   beforeAll(() => {
     jest.spyOn(Date.prototype, 'getTime').mockImplementation(() => now);
@@ -28,7 +31,7 @@ describe('v3Add', () => {
     });
     afterEach(() => tagRequestSpy.mockClear());
     it('includes tags if tags are in request', async () => {
-      await request(app).post('/v3/add').send({
+      const response = await request(app).post('/v3/add').send({
         consumer_key: 'test',
         access_token: 'test',
         url: 'https://isithalloween.com',
@@ -41,28 +44,31 @@ describe('v3Add', () => {
       expect((tagRequestSpy.mock.calls[1] as any)[1]).toEqual({
         tags: { savedItemId: '1234', tags: ['abc', '123'] },
       });
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
     it('throws error if tags array is empty', async () => {
-      const result = await request(app).post('/v3/add').send({
+      const response = await request(app).post('/v3/add').send({
         consumer_key: 'test',
         access_token: 'test',
         url: 'https://isithalloween.com',
         tags: '',
       });
-      expect(result.status).toEqual(400);
+      expect(response.status).toEqual(400);
       expect(tagRequestSpy).not.toHaveBeenCalled();
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
     it.each(['abc,', 'abc,,def', ',abc,123'])(
       'throws error if there is an empty tag string',
       async (tags) => {
-        const result = await request(app).post('/v3/add').send({
+        const response = await request(app).post('/v3/add').send({
           consumer_key: 'test',
           access_token: 'test',
           url: 'https://isithalloween.com',
           tags,
         });
-        expect(result.status).toEqual(400);
+        expect(response.status).toEqual(400);
         expect(tagRequestSpy).not.toHaveBeenCalled();
+        expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
       },
     );
   });
@@ -77,7 +83,7 @@ describe('v3Add', () => {
     });
     afterEach(() => requestSpy.mockClear());
     it('calls upsert once, without tags', async () => {
-      await request(app).post('/v3/add').send({
+      const response = await request(app).post('/v3/add').send({
         consumer_key: 'test',
         access_token: 'test',
         url: 'https://isithalloween.com',
@@ -89,9 +95,10 @@ describe('v3Add', () => {
       expect((requestSpy.mock.calls[0] as any)[1]).toEqual({
         input: { timestamp: now / 1000, url: 'https://isithalloween.com' },
       });
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
     it('includes title in the args, if passed', async () => {
-      await request(app).post('/v3/add').send({
+      const response = await request(app).post('/v3/add').send({
         consumer_key: 'test',
         access_token: 'test',
         url: 'https://isithalloween.com',
@@ -108,6 +115,7 @@ describe('v3Add', () => {
           title: 'is it halloween?',
         },
       });
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
   });
 });

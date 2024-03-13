@@ -1,7 +1,11 @@
 import * as Sentry from '@sentry/node';
 import express, { Application, json } from 'express';
 import config from './config';
-import { clientErrorHandler, logAndCaptureErrors } from './middleware';
+import {
+  clientErrorHandler,
+  logAndCaptureErrors,
+  sourceHeaderHandler,
+} from './middleware';
 
 import v3GetRouter from './routes/v3Get';
 import v3AddRouter from './routes/v3Add';
@@ -22,6 +26,8 @@ app.set('query parser', 'simple');
 app.get('/.well-known/server-health', (req, res) => {
   res.status(200).send('ok');
 });
+
+app.use(sourceHeaderHandler);
 
 // register public API routes
 app.use('/v3/get', v3GetRouter);

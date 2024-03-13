@@ -15,7 +15,7 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "3.529.1",
     "@aws-sdk/lib-dynamodb": "3.529.1",
-    "@sentry/serverless": "7.106.0",
+    "@sentry/serverless": "7.106.1",
     "exponential-backoff": "^3.1.1",
     "node-fetch": "2.7.0",
     "tslib": "2.6.2"
