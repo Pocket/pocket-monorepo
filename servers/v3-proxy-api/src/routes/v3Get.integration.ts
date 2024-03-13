@@ -272,6 +272,19 @@ describe('v3Get', () => {
       expect(consoleSpy).not.toHaveBeenCalled();
       expect(sentrySpy).not.toHaveBeenCalled();
     });
+    it('should convert since string to numeric', async () => {
+      const apiSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).get('/v3/get').query({
+        consumer_key: 'test',
+        access_token: 'test',
+        since: '123123',
+        detailType: 'complete',
+      });
+      expect(apiSpy.mock.lastCall[3].filter.updatedSince).toEqual(123123);
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+    });
     it.each([
       { consumer_key: 'test', access_token: 'test', detailType: 'complete' },
       {
