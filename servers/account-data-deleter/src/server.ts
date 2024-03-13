@@ -6,7 +6,8 @@ import { EventEmitter } from 'events';
 import { BatchDeleteHandler } from './batchDeleteHandler';
 import Logger from './logger';
 import { setMorgan } from '@pocket-tools/ts-logger';
-import { initSentry, sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
+import { sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
+import { initSentry } from '@pocket-tools/sentry';
 import { unleash } from './unleash';
 const app: Application = express();
 

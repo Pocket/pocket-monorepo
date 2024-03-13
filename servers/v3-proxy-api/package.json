@@ -17,8 +17,7 @@
   "dependencies": {
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "7.106.1",
-    "@sentry/tracing": "7.106.1",
+    "@pocket-tools/sentry": "workspace:*",
     "express": "4.18.3",
     "express-validator": "^7.0.1",
     "graphql": "16.8.1",

@@ -6,11 +6,11 @@ import { ApolloServer } from '@apollo/server';
 import {
   defaultPlugins,
   errorHandler,
-  initSentry,
   isIntrospection,
   isSubgraphIntrospection,
   sentryPocketMiddleware,
 } from '@pocket-tools/apollo-utils';
+import { initSentry } from '@pocket-tools/sentry';
 import config from '../config';
 import { ContextManager } from './context';
 import { readClient, writeClient } from '../database/client';

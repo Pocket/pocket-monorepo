@@ -1,0 +1,31 @@
+{
+  "name": "@pocket-tools/sentry",
+  "version": "0.0.0-development",
+  "description": "Utilities for sentry",
+  "keywords": [
+    "sentry"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.mjs",
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix \"src/**/*.ts\"",
+    "dev": "pnpm run build --watch"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@jest/globals": "29.7.0",
+    "@types/jest": "29.5.12",
+    "eslint-config-custom": "workspace:*",
+    "jest": "29.7.0",
+    "ts-jest": "29.1.2",
+    "tsconfig": "workspace:*"
+  },
+  "dependencies": {
+    "@sentry/node": "7.106.1",
+    "@sentry/tracing": "7.106.1"
+  }
+}
