@@ -12,6 +12,7 @@ describe('v3Fetch', () => {
   const expectedHeaders = {
     'X-Error-Code': '198',
     'X-Error': 'Internal Server Error',
+    'X-Source': 'Pocket',
   };
   afterAll(async () => {
     server.close();
@@ -39,6 +40,7 @@ describe('v3Fetch', () => {
       expect(response.headers['x-error-code']).toBe(
         expectedHeaders['X-Error-Code'],
       );
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
       expect(response.body).toEqual({
         error: 'test error',
       });
@@ -62,6 +64,7 @@ describe('v3Fetch', () => {
       expect(response.headers['x-error-code']).toBe(
         expectedHeaders['X-Error-Code'],
       );
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
       expect(response.body).toEqual({
         error: 'test error',
       });
@@ -100,6 +103,7 @@ describe('v3Fetch', () => {
       expect(response.body).toEqual({
         error: "invalid type for variable: 'pagination'",
       });
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
       expect(consoleSpy).toHaveBeenCalledTimes(1);
       expect(sentrySpy).toHaveBeenCalledTimes(1);
     });
@@ -145,6 +149,7 @@ describe('v3Fetch', () => {
         });
         expect(response.status).toEqual(errData.status);
         expect(response.body).toEqual(expected);
+        expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
         expect(consoleSpy).not.toHaveBeenCalled();
         expect(sentrySpy).not.toHaveBeenCalled();
       },
@@ -173,6 +178,7 @@ describe('v3Fetch', () => {
         count: '-10',
       });
       expect(response.status).toBe(400);
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
       expect(consoleSpy).not.toHaveBeenCalled();
       expect(sentrySpy).not.toHaveBeenCalled();
     });
@@ -195,6 +201,7 @@ describe('v3Fetch', () => {
         .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
         .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
       const response = await request(app).post('/v3/fetch').send(params);
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
       expect(callSpy).toHaveBeenCalledTimes(1);
       expect(response.status).toBe(200);
     });
@@ -226,6 +233,7 @@ describe('v3Fetch', () => {
           'callSavedItemsByOffsetComplete',
         );
         const response = await request(app).get('/v3/fetch').query(query);
+        expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
         expect(callSpy).not.toHaveBeenCalled();
         expect(response.status).toBe(400);
       },
