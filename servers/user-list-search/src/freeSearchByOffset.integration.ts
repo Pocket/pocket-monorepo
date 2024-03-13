@@ -51,6 +51,16 @@ async function seedDb(db: Knex) {
       date: new Date('2020-10-03 10:20:30'),
       wordCount: 10,
     },
+    {
+      favorite: 0,
+      itemId: 777,
+      status: SavedItemStatus.UNREAD,
+      title: 'sports ball',
+      url: 'http://differentdomain.com',
+      date: new Date('2021-5-03 10:20:30'),
+      wordCount: 100,
+      isVideo: 1,
+    },
   ];
   await Promise.all(
     data.flatMap((record) => [
@@ -313,6 +323,43 @@ describe('free-tier search (offset pagination)', () => {
       entries: [],
       totalCount: 0,
       limit: 4,
+      offset: 0,
+    };
+    expect(response).toEqual(expected);
+  });
+  it('should filter to a specific domain', async () => {
+    const SEARCH_SAVED_ITEM_QUERY = `
+    ${searchResultFragment}
+      query searchSavedItem(
+        $id: ID!
+        $term: String!
+        $filter: SearchFilterInput
+      ) {
+        _entities(representations: { id: $id, __typename: "User" }) {
+          ... on User {
+            searchSavedItemsByOffset(term: $term, filter: $filter) {
+              ...SearchPageFields
+            }
+          }
+        }
+      }
+    `;
+    const variables = {
+      id: '1',
+      term: 'sports',
+      filter: {
+        domain: 'www.differentdomain.com',
+      },
+    };
+    const res = await request(app).post(url).set(headers).send({
+      query: SEARCH_SAVED_ITEM_QUERY,
+      variables,
+    });
+    const response = res.body.data?._entities[0].searchSavedItemsByOffset;
+    const expected = {
+      entries: [expect.objectContaining({ savedItem: { id: '777' } })],
+      totalCount: 1,
+      limit: 30,
       offset: 0,
     };
     expect(response).toEqual(expected);
