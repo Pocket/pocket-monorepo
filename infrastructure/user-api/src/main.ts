@@ -155,10 +155,6 @@ class UserAPI extends TerraformStack {
               value: config.database.port,
             },
             {
-              name: 'PINPOINT_APPLICATION_ID',
-              value: config.envVars.pinpointApplicationId,
-            },
-            {
               name: 'EVENT_BUS_NAME',
               value: config.envVars.eventBusName,
             },
@@ -311,18 +307,6 @@ class UserAPI extends TerraformStack {
               'xray:GetSamplingStatisticSummaries',
             ],
             resources: ['*'],
-            effect: 'Allow',
-          },
-          // Pinpoint access specific to user subgraph
-          {
-            actions: [
-              'mobiletargeting:DeleteUserEndpoints',
-              'mobiletargeting:UpdateEndpoint*',
-            ],
-            resources: [
-              `arn:aws:mobiletargeting:${region.name}:${caller.accountId}:apps/${config.envVars.pinpointApplicationId}`,
-              `arn:aws:mobiletargeting:${region.name}:${caller.accountId}:apps/${config.envVars.pinpointApplicationId}/*`,
-            ],
             effect: 'Allow',
           },
           {

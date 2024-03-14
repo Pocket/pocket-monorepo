@@ -1,7 +1,6 @@
 import * as setup from './setup';
 import { readClient, writeClient } from '../../database/client';
 import { gql } from 'graphql-tag';
-import { PinpointController } from '../../aws/pinpointController';
 import { startServer } from '../../apollo';
 import request from 'supertest';
 import { print } from 'graphql';
@@ -32,11 +31,6 @@ describe('Apple Migration', () => {
     apiid: '1',
     transfersub: 'test-guid',
   };
-
-  const pinpointStub = jest
-    .spyOn(PinpointController.prototype, 'updateUserEndpointEmail')
-    .mockImplementation();
-
   const eventEmissionStub = jest
     .spyOn(UserEventEmitter.prototype, 'emitUserEvent')
     .mockImplementation();
@@ -61,7 +55,6 @@ describe('Apple Migration', () => {
       },
     ]);
     await setup.seedEmailMutation(userId, fxaId, seedEmail, writeDb);
-    pinpointStub.mockReset();
     eventEmissionStub.mockReset();
   });
 
@@ -80,7 +73,6 @@ describe('Apple Migration', () => {
         variables,
       });
     expect(res.body.data.migrateAppleUser).toEqual('1');
-    expect(pinpointStub).toHaveBeenCalledTimes(1);
     expect(eventEmissionStub).toHaveBeenCalledTimes(1);
     const emailResult = await readDb('users').where({ user_id: 1 });
     expect(emailResult[0].email).toEqual(inputTestEmail);
@@ -112,7 +104,6 @@ describe('Apple Migration', () => {
         variables,
       });
     expect(res.body.data.migrateAppleUser).toEqual('1');
-    expect(pinpointStub).toHaveBeenCalledTimes(1);
     expect(eventEmissionStub).toHaveBeenCalledTimes(1);
     const emailResult = await readDb('users').where({ user_id: 1 });
     expect(emailResult[0].email).toEqual(inputTestEmail);
@@ -147,7 +138,6 @@ describe('Apple Migration', () => {
       });
     expect(res.body.errors.length).toEqual(1);
     expect(res.body.data).toBeUndefined();
-    expect(pinpointStub).toHaveBeenCalledTimes(0);
     expect(eventEmissionStub).toHaveBeenCalledTimes(0);
     const result = await readDb('users').where({ user_id: 1 });
     expect(result[0].email).not.toEqual(inputTestEmail);
@@ -173,7 +163,6 @@ describe('Apple Migration', () => {
       });
     expect(res.body.errors.length).toEqual(1);
     expect(res.body.data).toBeNull();
-    expect(pinpointStub).toHaveBeenCalledTimes(0);
     expect(eventEmissionStub).toHaveBeenCalledTimes(0);
     const result = await readDb('users').where({ user_id: 1 });
     expect(result[0].email).not.toEqual(inputTestEmail);

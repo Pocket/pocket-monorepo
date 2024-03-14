@@ -6,8 +6,6 @@ import request from 'supertest';
 import { print } from 'graphql';
 import { UserFirefoxAccountSeed } from './seeds';
 
-jest.mock('../../aws/pinpointController');
-
 describe('Expire user web session tokens mutation', () => {
   const readDb = readClient();
   const writeDb = writeClient();

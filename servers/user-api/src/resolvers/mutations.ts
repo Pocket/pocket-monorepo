@@ -3,7 +3,6 @@ import { UserModel } from '../models/User';
 import { ForbiddenError } from '@pocket-tools/apollo-utils';
 import { UserDataService } from '../dataService/userDataService';
 import { ExpireUserWebSessionReason } from '../types';
-import { PinpointController } from '../aws/pinpointController';
 import { EventType } from '../events/eventType';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
@@ -108,9 +107,6 @@ export async function migrateAppleUser(
     //setting it as null as we don't know userId if we are using new fxaId
     const userDataService = new UserDataService(context, context.userId);
     const newEmail = await userDataService.validateEmail(args.email);
-    await new PinpointController(context.userId).updateUserEndpointEmail(
-      args.email,
-    );
     await userDataService.updateUserEmailByPocketId(
       args.email,
       context.userId,
