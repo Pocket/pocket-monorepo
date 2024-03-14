@@ -136,7 +136,7 @@ class ParserGraphQLWrapper extends TerraformStack {
       `${PocketSecretsPrefix}*`,
       `${PocketSecretsPrefix}/*`,
       `${intMaskSecretArn}*`,
-      `${intMaskSecretArn}/*`
+      `${intMaskSecretArn}/*`,
     ];
 
     let rdsCluster: ApplicationRDSCluster;
@@ -146,8 +146,6 @@ class ParserGraphQLWrapper extends TerraformStack {
       // Add Dev RDS-specific secrets if in Dev environment
       secretResources.push(rdsCluster.secretARN);
     }
-
-    
 
     return new PocketALBApplication(this, 'application', {
       internal: true,

@@ -124,7 +124,9 @@ describe('itemLoader - integration', () => {
       `    ${item.normalUrl}    `,
     );
     expect(returnedItem.givenUrl).toEqual(item.normalUrl);
-    expect(returnedItem.id).toEqual('16822');
+    expect(returnedItem.id).toEqual(
+      'fo562fkc52f1ee092fOXe3Z2a7907eb576688dccd6e6a7fh4754a0d22d',
+    );
   });
 
   it('should retry with a refresh when resolved_id is 0', async () => {
