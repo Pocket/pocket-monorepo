@@ -1,7 +1,7 @@
 import * as setup from './setup';
 import { readClient, writeClient } from '../../database/client';
 import { gql } from 'graphql-tag';
-import { IntMask } from '@pocket-tools/int-mask';
+import IntMask from '../../utils/intMask';
 import { PinpointController } from '../../aws/pinpointController';
 import { UserDataService } from '../../dataService/userDataService';
 import { startServer } from '../../apollo';
@@ -13,7 +13,6 @@ import { ApolloServer } from '@apollo/server';
 import { EventType } from '../../events/eventType';
 import { userEventEmitter } from '../../events/init';
 import { Application } from 'express';
-import config from '../../config';
 
 describe('updateUserEmailByFxaId Mutation test', () => {
   const readDb = readClient();
@@ -88,7 +87,7 @@ describe('updateUserEmailByFxaId Mutation test', () => {
 
       expect(result.body.errors).toBeUndefined();
       expect(result.body.data?.updateUserEmailByFxaId.id).toEqual(
-        IntMask.encode(userId, config.secrets.intMask),
+        IntMask.encode(userId),
       );
       expect(result.body.data?.updateUserEmailByFxaId.username).toEqual(
         'chicory',

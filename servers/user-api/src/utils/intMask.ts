@@ -1,42 +1,20 @@
 import _ from 'lodash';
 import s from 'underscore.string';
+import intMaskMaps from './intMaskMaps';
 import Mask from './mask';
 
 const maskSym = Symbol('Mask memoize');
 
-export type IntMaskOptions = {
-  characterMap: Map<string, number>;
-  positionMap: Map<number, number>;
-  md5Randomizer: Map<string, string[]>;
-  letterIndex: Map<string, number>;
-  salt1: string;
-  salt2: string;
-};
-
 // Convert integers into 64 character strings to obfuscate their true values.
-export class IntMask {
-  private options: IntMaskOptions;
-  private val;
+export default class IntMask {
+  private readonly val;
 
-  private intMap;
-
-  constructor(val, options: IntMaskOptions) {
+  constructor(val) {
     this.val = val;
-    this.options = options;
-    this.intMap = new Map();
-    this.buildMap();
   }
 
-  buildMap() {
-    this.options.characterMap.forEach((val, key) => {
-      const intVal = this.intMap.get(val) || [];
-      intVal.push(key);
-      this.intMap.set(val, intVal);
-    });
-  }
-
-  static encode(val, options: IntMaskOptions) {
-    return new this(val, options).encode();
+  static encode(val) {
+    return new this(val).encode();
   }
 
   // Primary logic flow:
@@ -55,10 +33,7 @@ export class IntMask {
     const result = _.toArray(mask);
 
     // Inject encoded characters at specific points of the mask.
-    this.options.positionMap.forEach(function (
-      decodedIndex,
-      encodedIndex: any,
-    ) {
+    intMaskMaps.positionMap.forEach(function (decodedIndex, encodedIndex: any) {
       result[encodedIndex] = encodedString.charAt(decodedIndex);
     });
 
@@ -78,9 +53,9 @@ export class IntMask {
 
     return _.chain(str)
       .toArray()
-      .map((val, i) => {
+      .map(function (val, i) {
         const outIndex = Math.floor((charSeed + i + 1) % 5); // always 0->5
-        const optAry = this.intMap.get(parseInt(val));
+        const optAry = intMaskMaps.intMap.get(parseInt(val));
         return optAry[outIndex];
       })
       .value()
@@ -89,16 +64,7 @@ export class IntMask {
 
   // Maps to PHP: IntMask#randomStringHash
   getMask() {
-    this[maskSym] =
-      this[maskSym] ||
-      Mask.create(this.val, {
-        salt1: this.options.salt1,
-        salt2: this.options.salt2,
-        letterRandomizerOptions: {
-          letterIndex: this.options.letterIndex,
-          md5Randomizer: this.options.md5Randomizer,
-        },
-      });
+    this[maskSym] = this[maskSym] || Mask.create(this.val);
 
     return this[maskSym];
   }

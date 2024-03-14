@@ -4,8 +4,7 @@ import { IContext } from '../context';
 import { PinpointController } from '../aws/pinpointController';
 import { EventType } from '../events/eventType';
 import { User, UserProfile, ExpireUserWebSessionReason } from '../types';
-import { IntMask } from '@pocket-tools/int-mask';
-import config from '../config';
+import IntMask from '../utils/intMask';
 
 // The Entity corresponding to GraphQL Schema
 interface UserEntity {
@@ -83,7 +82,7 @@ export class UserModel implements UserEntity {
   }
 
   get id(): UserProfile['id'] {
-    return IntMask.encode(this.context.userId, config.secrets.intMask);
+    return IntMask.encode(this.context.userId);
   }
   get isPremium(): Promise<User['isPremium']> {
     return this.lazyLoadAttribute('isPremium');
