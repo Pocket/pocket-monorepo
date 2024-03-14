@@ -2,6 +2,7 @@ import { ParserArticle } from './dataLoaders/articleLoader';
 
 export interface Item {
   itemId: string;
+  id: string;
   resolvedId: string;
   topImageUrl?: string;
   topImage?: Image;

@@ -123,6 +123,7 @@ class ParserGraphQLWrapper extends TerraformStack {
 
     const PocketSharesSecretPrefix = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:ParserWrapperApi/${config.environment}/POCKET_SHARES`;
     const PocketSecretsPrefix = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:ParserWrapperApi/${config.environment}/SECRETS`;
+    const intMaskSecretArn = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/IntMask`;
 
     const secretResources = [
       `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared`,
@@ -134,6 +135,8 @@ class ParserGraphQLWrapper extends TerraformStack {
       `${PocketSharesSecretPrefix}/*`,
       `${PocketSecretsPrefix}*`,
       `${PocketSecretsPrefix}/*`,
+      `${intMaskSecretArn}*`,
+      `${intMaskSecretArn}/*`,
     ];
 
     let rdsCluster: ApplicationRDSCluster;
@@ -247,6 +250,30 @@ class ParserGraphQLWrapper extends TerraformStack {
             {
               name: 'SHORT_CODE_CHARS',
               valueFrom: `${PocketSecretsPrefix}:short_code_chars::`,
+            },
+            {
+              name: 'CHARACTER_MAP',
+              valueFrom: `${intMaskSecretArn}:characterMap::`,
+            },
+            {
+              name: 'POSITION_MAP',
+              valueFrom: `${intMaskSecretArn}:positionMap::`,
+            },
+            {
+              name: 'MD5_RANDOMIZER',
+              valueFrom: `${intMaskSecretArn}:md5Randomizer::`,
+            },
+            {
+              name: 'LETTER_INDEX',
+              valueFrom: `${intMaskSecretArn}:letterIndex::`,
+            },
+            {
+              name: 'SALT_1',
+              valueFrom: `${intMaskSecretArn}:salt1::`,
+            },
+            {
+              name: 'SALT_2',
+              valueFrom: `${intMaskSecretArn}:salt2::`,
             },
           ],
         },
