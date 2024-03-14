@@ -21,6 +21,7 @@
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
+    "@pocket-tools/int-mask": "workspace:*",
     "apollo-datasource": "3.3.2",
     "cors": "2.8.5",
     "dataloader": "2.2.2",

@@ -124,6 +124,7 @@ describe('itemLoader - integration', () => {
       `    ${item.normalUrl}    `,
     );
     expect(returnedItem.givenUrl).toEqual(item.normalUrl);
+    expect(returnedItem.id).toEqual('16822');
   });
 
   it('should retry with a refresh when resolved_id is 0', async () => {
@@ -158,7 +159,7 @@ describe('itemLoader - integration', () => {
           authors: [],
           images: [],
           videos: [],
-          resolved_id: '16822',
+          resolved_id: '123',
         },
       });
 
@@ -167,6 +168,9 @@ describe('itemLoader - integration', () => {
     );
     expect(scope.isDone()).toBeTruthy();
     expect(returnedItem.givenUrl).toEqual(item.normalUrl);
-    expect(returnedItem.resolvedId).toEqual('16822');
+    expect(returnedItem.resolvedId).toEqual('123');
+    expect(returnedItem.id).toEqual(
+      'fo562fkc52f1ee092fOXe3Z2a7907eb576688dccd6e6a7fh4754a0d22d',
+    );
   });
 });
