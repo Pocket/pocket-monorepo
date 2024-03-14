@@ -39,6 +39,10 @@ export class IntMask {
     return new this(val, options).encode();
   }
 
+  static decode(val, options: IntMaskOptions) {
+    return new this(val, options).decode();
+  }
+
   // Primary logic flow:
   // 1. Encode the provided value.
   // 2. Construct a mask to hide the values within.
@@ -50,8 +54,18 @@ export class IntMask {
     return this.merge(encodedString, mask);
   }
 
+  // Primary logic flow:
+  // 1. Encode the provided value.
+  // 2. Construct a mask to hide the values within.
+  // 3. Merge the encoded values into specific positions in the map.
+  decode() {
+    const encodedString = this.decodeChars();
+
+    return this.unmerge(encodedString);
+  }
+
   // Inject encoded characters at specific positions in the mask.
-  merge(encodedString, mask) {
+  merge(encodedString, mask): string {
     const result = _.toArray(mask);
 
     // Inject encoded characters at specific points of the mask.
@@ -63,6 +77,19 @@ export class IntMask {
     });
 
     return result.join('');
+  }
+
+  unmerge(encodedString): number {
+    const result = [];
+
+    // Remove encoded at specific points of the mask.
+    this.options.positionMap.forEach((decodedIndex, encodedIndex: any) => {
+      result[decodedIndex] = encodedString.charAt(encodedIndex);
+    });
+
+    const result1 = result.join('').replace(/^0*/, '');
+
+    return parseInt(result1);
   }
 
   // Create a basic 16 charater string with value replacement to obfuscate the
@@ -82,6 +109,20 @@ export class IntMask {
         const outIndex = Math.floor((charSeed + i + 1) % 5); // always 0->5
         const optAry = this.intMap.get(parseInt(val));
         return optAry[outIndex];
+      })
+      .value()
+      .join('');
+  }
+
+  // Maps to PHP: IntMask#decodeChar execept this decodes all characters at
+  // once.
+  decodeChars() {
+    // Use the mask to produce a consistent output value for any given input
+    // value.
+    return _.chain(this.val)
+      .toArray()
+      .map((val, i) => {
+        return this.options.characterMap.get(val) ?? val;
       })
       .value()
       .join('');

@@ -94,7 +94,7 @@ describe('updateUserEmailByFxaId Mutation test', () => {
         (await readDb('users').where('user_id', userId).first()).email,
       ).toEqual('def@456.com');
       expect(eventObj.user.hashedId).toBe(
-        `fX792e6e9163ec630a71a9X08497c36eT3e25a4cd0ba5b1056fv989d5`,
+        `fX792e6e9DE6E3ecI3Ca7CaE49A08497Bc36eA3eD5A4cCd0Ba5b1056DfvB89d5`,
       );
       expect(eventObj.user.email).toBe(`def@456.com`);
     });
