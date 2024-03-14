@@ -41,7 +41,7 @@
     "ts-jest": "29.1.2",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "unleash-client": "5.5.1"
+    "unleash-client": "5.5.2"
   },
   "files": [
     "dist",

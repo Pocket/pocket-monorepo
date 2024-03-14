@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@pocket-tools/ts-logger": "workspace:*",
-    "unleash-client": "5.5.1"
+    "unleash-client": "5.5.2"
   },
   "devDependencies": {
     "@types/jest": "29.5.12",
