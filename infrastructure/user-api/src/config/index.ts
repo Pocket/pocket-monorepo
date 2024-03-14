@@ -6,9 +6,6 @@ const domain = isDev
   ? `${domainPrefix}.getpocket.dev`
   : `${domainPrefix}.readitlater.com`;
 const graphqlVariant = isDev ? 'development' : 'current';
-const pinpointApplicationId = isDev
-  ? '6458063ecdc74e4eac884ee18933cd6a'
-  : '5c59691a6a7b421c9eef4467fb61d499';
 const eventBusName = `PocketEventBridge-${environment}-Shared-Event-Bus`;
 const releaseSha = process.env.CIRCLE_SHA1;
 
@@ -25,7 +22,6 @@ export const config = {
     port: '3306',
   },
   envVars: {
-    pinpointApplicationId,
     eventBusName,
   },
   tags: {

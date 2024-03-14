@@ -72,9 +72,6 @@ export default {
       created_by_user_id: ['channels'],
     },
   },
-  pinpoint: {
-    applicationId: process.env.PINPOINT_APPLICATION_ID || 'not-a-real-id',
-  },
   sentry: {
     dsn: process.env.SENTRY_DSN || '',
     release: process.env.GIT_SHA || '',

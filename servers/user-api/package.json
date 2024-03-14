@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "@aws-sdk/client-eventbridge": "3.529.1",
-    "@aws-sdk/client-pinpoint": "3.529.1",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
