@@ -15,7 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-ssm": "^3.499.0",
-    "@sentry/serverless": "7.106.1",
+    "@sentry/serverless": "7.107.0",
     "braze-api": "^2.6.0",
     "fetch-retry": "^5.0.6",
     "isomorphic-fetch": "^3.0.0",

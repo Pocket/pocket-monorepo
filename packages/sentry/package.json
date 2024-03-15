@@ -25,7 +25,7 @@
     "tsconfig": "workspace:*"
   },
   "dependencies": {
-    "@sentry/node": "7.106.1",
-    "@sentry/tracing": "7.106.1"
+    "@sentry/node": "7.107.0",
+    "@sentry/tracing": "7.107.0"
   }
 }
