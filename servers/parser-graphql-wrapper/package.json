@@ -32,7 +32,7 @@
     "md5": "2.3.0",
     "morgan": "^1.10.0",
     "mysql2": "3.9.2",
-    "node-fetch": "2.7.0",
+    "node-fetch": "3.3.2",
     "qs": "6.12.0",
     "reflect-metadata": "0.2.1",
     "turndown": "7.1.3",
