@@ -683,6 +683,8 @@ export type Item = {
   hasVideo?: Maybe<Videoness>;
   /** Keyword highlights from search */
   highlights?: Maybe<ItemHighlights>;
+  /** A server generated unique id for this item based on itemId */
+  id: Scalars['ID']['output'];
   /** Array of images within an article */
   images?: Maybe<Array<Maybe<Image>>>;
   /**
