@@ -1,5 +1,4 @@
 import { IntMask } from './intMask';
-import { defaultOptions } from './defaults';
 
 describe('intMask', () => {
   it.each([
@@ -14,7 +13,7 @@ describe('intMask', () => {
         '07ao3c894BWaC4faV1K0dPeMbbD40624Oaf24X80Q1SeeAc4Ya7aa0dcBaiEe787',
     },
   ])('encodes', ({ input, expected }) => {
-    expect(IntMask.encode(input, defaultOptions)).toBe(expected);
+    expect(IntMask.encode(input)).toBe(expected);
   });
 
   it.each([
@@ -27,6 +26,6 @@ describe('intMask', () => {
       expected: 2342344234,
     },
   ])('decodes', ({ input, expected }) => {
-    expect(IntMask.decode(input, defaultOptions)).toBe(expected);
+    expect(IntMask.decode(input)).toBe(expected);
   });
 });

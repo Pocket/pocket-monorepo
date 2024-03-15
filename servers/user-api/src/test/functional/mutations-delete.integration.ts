@@ -105,7 +105,7 @@ describe('Delete user mutations', () => {
       }
       expect(eventObj.user.id).toBe(`1`);
       expect(eventObj.user.hashedId).toBe(
-        `fX792e6e9DE6E3ecI3Ca7CaE49A08497Bc36eA3eD5A4cCd0Ba5b1056DfvB89d5`,
+        `fb792e6e9DE6E3ecI3Ca1CaE49A08497Bc36eA3eD5AacCd0Ba3b1056DbaB89d5`,
       );
     });
 
@@ -174,7 +174,7 @@ describe('Delete user mutations', () => {
       }
       expect(eventObj.user.id).toBe(`1`);
       expect(eventObj.user.hashedId).toBe(
-        `fX792e6e9DE6E3ecI3Ca7CaE49A08497Bc36eA3eD5A4cCd0Ba5b1056DfvB89d5`,
+        `fb792e6e9DE6E3ecI3Ca1CaE49A08497Bc36eA3eD5AacCd0Ba3b1056DbaB89d5`,
       );
     });
 

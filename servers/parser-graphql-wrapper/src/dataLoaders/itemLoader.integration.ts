@@ -125,7 +125,7 @@ describe('itemLoader - integration', () => {
     );
     expect(returnedItem.givenUrl).toEqual(item.normalUrl);
     expect(returnedItem.id).toEqual(
-      'fo562fkc5BCfC1eeQ9AfOKeCacD2a790J7eb5D66B8DccAd6E6a7fh47B54E0d22',
+      'fe562f9c5BCfC1eeQ9AffKeCaiD2a190J7eb5D66B8DccAd6E6a1f247B54Egd22',
     );
   });
 
@@ -172,7 +172,7 @@ describe('itemLoader - integration', () => {
     expect(returnedItem.givenUrl).toEqual(item.normalUrl);
     expect(returnedItem.resolvedId).toEqual('123');
     expect(returnedItem.id).toEqual(
-      'fo562fkc5BCfC1eeQ9AfOKeCacD2a790J7eb5D66B8DccAd6E6a7fh47B54E0d22',
+      'fe562f9c5BCfC1eeQ9AffKeCaiD2a190J7eb5D66B8DccAd6E6a1f247B54Egd22',
     );
   });
 });

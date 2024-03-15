@@ -149,7 +149,7 @@ describe('User', () => {
         });
 
       expect(res.body.data?.user.id).toBe(
-        'fX792e6e9DE6E3ecI3Ca7CaE49A08497Bc36eA3eD5A4cCd0Ba5b1056DfvB89d5',
+        'fb792e6e9DE6E3ecI3Ca1CaE49A08497Bc36eA3eD5AacCd0Ba3b1056DbaB89d5',
       );
       expect(res.body.data?.user.username).toBe('username');
       expect(res.body.data?.user.name).toBe('Pocket User');
@@ -223,7 +223,7 @@ describe('User', () => {
         });
 
       expect(res.body.data?.user.id).toBe(
-        'fX792e6e9DE6E3ecI3Ca7CaE49A08497Bc36eA3eD5A4cCd0Ba5b1056DfvB89d5',
+        'fb792e6e9DE6E3ecI3Ca1CaE49A08497Bc36eA3eD5AacCd0Ba3b1056DbaB89d5',
       );
       expect(res.body.data?.user.isPremium).toBe(false);
       expect(getUserDataSpy).toHaveBeenCalledTimes(0);
@@ -250,7 +250,7 @@ describe('User', () => {
         });
 
       expect(res.body.data?.user.id).toBe(
-        'fX792e6e9DE6E3ecI3Ca7CaE49A08497Bc36eA3eD5A4cCd0Ba5b1056DfvB89d5',
+        'fb792e6e9DE6E3ecI3Ca1CaE49A08497Bc36eA3eD5AacCd0Ba3b1056DbaB89d5',
       );
       expect(res.body.data?.user.isPremium).toBe(false);
       expect(getUserDataSpy).toHaveBeenCalledTimes(1);

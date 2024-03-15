@@ -117,9 +117,7 @@ const internalGetItemByUrl = async (
 
   return {
     itemId: itemId ?? item.item_id.toString(),
-    id: itemId
-      ? IntMask.encode(itemId, config.intMask)
-      : IntMask.encode(item.item_id, config.intMask),
+    id: itemId ? IntMask.encode(itemId) : IntMask.encode(item.item_id),
     resolvedId: item.resolved_id.toString(),
     topImageUrl: item.top_image_url,
     topImage: item.top_image_url

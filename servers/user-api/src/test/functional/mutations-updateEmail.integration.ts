@@ -12,7 +12,6 @@ import { ApolloServer } from '@apollo/server';
 import { EventType } from '../../events/eventType';
 import { userEventEmitter } from '../../events/init';
 import { Application } from 'express';
-import config from '../../config';
 
 describe('updateUserEmailByFxaId Mutation test', () => {
   const readDb = readClient();
@@ -84,7 +83,7 @@ describe('updateUserEmailByFxaId Mutation test', () => {
 
       expect(result.body.errors).toBeUndefined();
       expect(result.body.data?.updateUserEmailByFxaId.id).toEqual(
-        IntMask.encode(userId, config.secrets.intMask),
+        IntMask.encode(userId),
       );
       expect(result.body.data?.updateUserEmailByFxaId.username).toEqual(
         'chicory',
@@ -94,7 +93,7 @@ describe('updateUserEmailByFxaId Mutation test', () => {
         (await readDb('users').where('user_id', userId).first()).email,
       ).toEqual('def@456.com');
       expect(eventObj.user.hashedId).toBe(
-        `fX792e6e9DE6E3ecI3Ca7CaE49A08497Bc36eA3eD5A4cCd0Ba5b1056DfvB89d5`,
+        `fb792e6e9DE6E3ecI3Ca1CaE49A08497Bc36eA3eD5AacCd0Ba3b1056DbaB89d5`,
       );
       expect(eventObj.user.email).toBe(`def@456.com`);
     });
