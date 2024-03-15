@@ -326,8 +326,8 @@ importers:
         specifier: 2.18.1
         version: 2.18.1
       stripe:
-        specifier: 9.8.0
-        version: 9.8.0
+        specifier: 14.20.0
+        version: 14.20.0
       tslib:
         specifier: 2.6.2
         version: 2.6.2
@@ -1212,8 +1212,8 @@ importers:
         specifier: 3.3.7
         version: 3.3.7
       stripe:
-        specifier: 9.8.0
-        version: 9.8.0
+        specifier: 14.20.0
+        version: 14.20.0
     devDependencies:
       '@sentry/types':
         specifier: 7.107.0
@@ -16956,13 +16956,6 @@ packages:
       side-channel: 1.0.6
     dev: false
 
-  /qs@6.11.2:
-    resolution: {integrity: sha512-tDNIz22aBzCDxLtVH++VnTfzxlfeK5CbqohpSqpJgj1Wg/cQbStNAz3NuqCs5vV+pjBsK4x4pN9HlVh7rcYRiA==}
-    engines: {node: '>=0.6'}
-    dependencies:
-      side-channel: 1.0.5
-    dev: false
-
   /qs@6.12.0:
     resolution: {integrity: sha512-trVZiI6RMOkO476zLGaBIzszOdFPnCCXHPG9kn0yuS1uz6xdVxPfZdB3vUig9pxPFDM9BRAgz/YUIVQ1/vuiUg==}
     engines: {node: '>=0.6'}
@@ -17883,16 +17876,6 @@ packages:
       should-util: 1.0.1
     dev: false
 
-  /side-channel@1.0.5:
-    resolution: {integrity: sha512-QcgiIWV4WV7qWExbN5llt6frQB/lBven9pqliLXfGPB+K9ZYXxDozp0wLkHS24kWCm+6YXH/f0HhnObZnZOBnQ==}
-    engines: {node: '>= 0.4'}
-    dependencies:
-      call-bind: 1.0.7
-      es-errors: 1.3.0
-      get-intrinsic: 1.2.4
-      object-inspect: 1.13.1
-    dev: false
-
   /side-channel@1.0.6:
     resolution: {integrity: sha512-fDW/EZ6Q9RiO8eFG8Hj+7u/oW+XrPTIChwCOM2+th2A6OblDtYYIpve9m+KvI9Z4C9qSEXlaGR6bTEYHReuglA==}
     engines: {node: '>= 0.4'}
@@ -18354,12 +18337,12 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /stripe@9.8.0:
-    resolution: {integrity: sha512-6trh3w4U2wRAvXdh2ilHxky/nWP7aFMGvQX0Ga2eCMAqQwYGOBkBT0ZxT3V+wWruOB1svpuOO6ixpMQif0bnIw==}
-    engines: {node: ^8.1 || >=10.*}
+  /stripe@14.20.0:
+    resolution: {integrity: sha512-+3EP8GSWnKVHNATChhDzwAKk3nqSJKQOf2Q+dMGdgEk2sQXWYoA8GXY0A1TjL0m6895FVNavgvno6+0+6lC+kw==}
+    engines: {node: '>=12.*'}
     dependencies:
-      '@types/node': 20.11.20
-      qs: 6.11.2
+      '@types/node': 20.11.28
+      qs: 6.12.0
     dev: false
 
   /striptags@3.2.0:
