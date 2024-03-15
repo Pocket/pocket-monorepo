@@ -40,7 +40,7 @@ export const config = {
   },
   stripe: {
     key: process.env.STRIPE_KEY || 'somefakestripekey',
-    apiVersion: '2020-08-27' as const,
+    apiVersion: '2023-10-16' as const,
     productId: 7,
   },
   database: {
