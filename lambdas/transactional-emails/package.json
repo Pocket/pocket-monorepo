@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-ssm": "^3.499.0",
+    "@aws-sdk/client-ssm": "^3.533.0",
     "@sentry/serverless": "7.107.0",
     "braze-api": "^2.6.0",
     "fetch-retry": "^5.0.6",

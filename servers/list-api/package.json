@@ -14,7 +14,7 @@
     "format": "eslint --fix \"src/**/*.ts\""
   },
   "dependencies": {
-    "@aws-sdk/client-eventbridge": "3.533.0",
+    "@aws-sdk/client-eventbridge": "3.534.0",
     "@aws-sdk/client-kinesis": "3.533.0",
     "@aws-sdk/client-sqs": "3.533.0",
     "@pocket-tools/apollo-cursor-pagination": "1.0.3",
@@ -22,7 +22,7 @@
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@snowplow/node-tracker": "3.21.0",
+    "@snowplow/node-tracker": "3.22.1",
     "dataloader": "2.2.2",
     "express": "4.18.3",
     "express-validator": "^7.0.1",
