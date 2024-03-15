@@ -1,4 +1,4 @@
-import { nanoid } from 'nanoid';
+import nanoid from 'nanoid';
 import config from '../../config';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
@@ -37,9 +37,9 @@ describe('clearUserData for Notes data', () => {
 
   const dynamodb = DynamoDBDocumentClient.from(client);
   // Annoying to clear dynamo data, so we'll rely on guid non-collision to isolate test data
-  const smallUser = nanoid();
-  const bigUser = nanoid();
-  const noUser = nanoid();
+  const smallUser = nanoid.nanoid();
+  const bigUser = nanoid.nanoid();
+  const noUser = nanoid.nanoid();
   beforeAll(async () => {
     await seedTable(4, smallUser);
     await seedTable(120, bigUser);

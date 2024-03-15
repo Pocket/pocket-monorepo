@@ -6,7 +6,7 @@ import { indexInElasticSearch } from '../../elasticsearch';
 
 import { Request, Response, NextFunction, Router } from 'express';
 import { checkSchema, Schema, validationResult } from 'express-validator';
-import { nanoid } from 'nanoid';
+import nanoid from 'nanoid';
 import * as Sentry from '@sentry/node';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { legacyMysqlInterface } from '../../datasource/MysqlDataSource';
@@ -62,7 +62,7 @@ router.post(
   checkSchema(itemUpdateSchema),
   validate,
   async (req: Request, res: Response) => {
-    const requestId = req.body.traceId ?? nanoid();
+    const requestId = req.body.traceId ?? nanoid.nanoid();
     const userId = req.body.userId;
     const itemIds = req.body.itemIds;
 

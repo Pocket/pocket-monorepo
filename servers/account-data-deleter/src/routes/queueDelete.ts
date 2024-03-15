@@ -13,7 +13,7 @@ import {
   AccountDeleteDataService,
   TablePrimaryKeyModel,
 } from '../dataService/accountDeleteDataService';
-import { nanoid } from 'nanoid';
+import nanoid from 'nanoid';
 import { readClient } from '../dataService/clients';
 import { accountDeleteSchema } from './schemas';
 import Logger from '../logger';
@@ -40,7 +40,7 @@ router.post(
   checkSchema(accountDeleteSchema),
   validate,
   (req: Request, res: Response) => {
-    const requestId = req.body.traceId ?? nanoid();
+    const requestId = req.body.traceId ?? nanoid.nanoid();
     enqueueTablesForDeletion(
       req.body,
       new AccountDeleteDataService(req.body.userId, readClient()),
@@ -134,7 +134,7 @@ export async function enqueueTablesForDeletion(
             primaryKeyValues: ids.primaryKeyValues,
             //traceId of the current SQS message, which
             //would be a new requestId for the POST /batchDelete endpoint
-            traceId: `${data.traceId}/${nanoid()}`,
+            traceId: `${data.traceId}/${nanoid.nanoid()}`,
           }),
         );
 
@@ -228,7 +228,7 @@ async function sqsSendBatch(
  */
 function convertToSqsEntry(message: SqsMessage): SendMessageBatchRequestEntry {
   return {
-    Id: nanoid(),
+    Id: nanoid.nanoid(),
     MessageBody: JSON.stringify(message),
   };
 }

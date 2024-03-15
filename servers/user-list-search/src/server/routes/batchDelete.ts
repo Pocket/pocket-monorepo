@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction, Router } from 'express';
 import { checkSchema, Schema, validationResult } from 'express-validator';
-import { nanoid } from 'nanoid';
+import nanoid from 'nanoid';
 import * as Sentry from '@sentry/node';
 import { deleteSearchIndexByUserId } from '../../elasticsearch';
 
@@ -41,7 +41,7 @@ router.post(
   checkSchema(batchDeleteSchema),
   validate,
   (req: Request, res: Response) => {
-    const requestId = req.body.traceId ?? nanoid();
+    const requestId = req.body.traceId ?? nanoid.nanoid();
     const userId = req.body.userId;
 
     deleteSearchIndexByUserId(userId.toString(), requestId).catch((error) => {

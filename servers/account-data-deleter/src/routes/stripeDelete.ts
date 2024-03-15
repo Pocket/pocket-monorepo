@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { checkSchema } from 'express-validator';
 import { validate } from './validator';
-import { nanoid } from 'nanoid';
+import nanoid from 'nanoid';
 import { accountDeleteSchema } from './schemas';
 import { StripeDataDeleter } from '../dataService/stripeDataDeleter';
 
@@ -17,7 +17,7 @@ router.post(
   checkSchema(accountDeleteSchema),
   validate,
   async (req: Request, res: Response) => {
-    const requestId = req.body.traceId ?? nanoid();
+    const requestId = req.body.traceId ?? nanoid.nanoid();
     new StripeDataDeleter(req.body.userId).removeCustomer();
     // Error handling and logging is done asynchronously; just respond OK
     // if we received the message and kicked off the work

@@ -10,7 +10,7 @@ import {
 } from '@aws-sdk/client-sqs';
 import * as Sentry from '@sentry/node';
 import config from '../../config';
-import { nanoid } from 'nanoid';
+import nanoid from 'nanoid';
 import { readClient, writeClient } from '../../database/client';
 import { HighlightsDataService } from '../../dataservices/highlights';
 import { setTimeout } from 'timers/promises';
@@ -91,7 +91,7 @@ export class BatchDeleteHandler {
    */
   async handleMessage(body: BatchDeleteMessage): Promise<boolean> {
     serverLogger.info(`handling message` + JSON.stringify(body));
-    const traceId = body.traceId ?? nanoid();
+    const traceId = body.traceId ?? nanoid.nanoid();
     const userId = body.userId.toString();
     try {
       await new HighlightsDataService({

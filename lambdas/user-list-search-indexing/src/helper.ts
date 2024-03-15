@@ -1,5 +1,5 @@
 import { UserItemsSqsMessage, UserListImportSqsMessage } from './types';
-import { nanoid } from 'nanoid';
+import nanoid from 'nanoid';
 import fetch from 'node-fetch';
 import { config } from './config';
 
@@ -14,7 +14,7 @@ export const processUserImport = async (
   body: UserListImportSqsMessage,
   endpoint: string,
 ): Promise<boolean> => {
-  const traceId = nanoid();
+  const traceId = nanoid.nanoid();
   for (const user of body.users) {
     const { userId } = user;
     const backfill = config.backfill;
@@ -57,7 +57,7 @@ export const processUserItem = async (
   body: UserItemsSqsMessage,
   endpoint: string,
 ): Promise<boolean> => {
-  const traceId = nanoid();
+  const traceId = nanoid.nanoid();
 
   for (const user of body.userItems) {
     const { userId, itemIds } = user;

@@ -4,7 +4,7 @@ import { UserItemsSqsMessage } from '../../shared';
 
 import { Request, Response, NextFunction, Router } from 'express';
 import { checkSchema, Schema, validationResult } from 'express-validator';
-import { nanoid } from 'nanoid';
+import nanoid from 'nanoid';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { legacyMysqlInterface } from '../../datasource/MysqlDataSource';
 
@@ -53,7 +53,7 @@ router.post(
   checkSchema(userListImportSchema),
   validate,
   async (req: Request, res: Response) => {
-    const requestId = req.body.traceId ?? nanoid();
+    const requestId = req.body.traceId ?? nanoid.nanoid();
     const userId = req.body.userId;
     const backfill = req.body.backfill;
     const db = legacyMysqlInterface();

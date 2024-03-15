@@ -9,7 +9,7 @@ import {
 import * as Sentry from '@sentry/node';
 import { config } from './config';
 import { SqsMessage } from './routes/queueDelete';
-import { nanoid } from 'nanoid';
+import nanoid from 'nanoid';
 import { writeClient } from './dataService/clients';
 import { AccountDeleteDataService } from './dataService/accountDeleteDataService';
 import { setTimeout } from 'timers/promises';
@@ -93,7 +93,7 @@ export class BatchDeleteHandler {
    * (underlying call to AccountDeleteDataService completed without error)
    */
   async handleMessage(body: SqsMessage): Promise<boolean> {
-    const traceId = body.traceId ?? nanoid();
+    const traceId = body.traceId ?? nanoid.nanoid();
     const limitOverridesConfig = config.queueDelete.limitOverrides;
 
     // Kick off promises for deletes, but don't block response

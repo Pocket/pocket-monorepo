@@ -7,7 +7,7 @@ import {
   SendMessageBatchCommand,
   SendMessageBatchRequestEntry,
 } from '@aws-sdk/client-sqs';
-import { nanoid } from 'nanoid';
+import nanoid from 'nanoid';
 import * as Sentry from '@sentry/node';
 import { validate } from './validator';
 import { HighlightsDataService } from '../../dataservices/highlights';
@@ -50,7 +50,7 @@ router.post(
   checkSchema(queueDeleteSchema),
   validate,
   (req: Request, res: Response) => {
-    const requestId = req.body.traceId ?? nanoid();
+    const requestId = req.body.traceId ?? nanoid.nanoid();
     const userId = req.body.userId;
     const isPremium = req.body.isPremium;
     new NotesDataService(dynamoClient(), userId.toString())
@@ -115,7 +115,7 @@ export async function enqueueAnnotationIds(
           email,
           isPremium,
           annotationIds: nextChunk.value,
-          traceId: nanoid(),
+          traceId: nanoid.nanoid(),
         }),
       );
 
@@ -171,7 +171,7 @@ function buildSqsCommand(
  */
 function convertToSqsEntry(message: SqsMessage): SendMessageBatchRequestEntry {
   return {
-    Id: nanoid(),
+    Id: nanoid.nanoid(),
     MessageBody: JSON.stringify(message),
   };
 }
