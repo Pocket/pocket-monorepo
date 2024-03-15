@@ -463,11 +463,11 @@ jobs:
         environment:
           AWS_XRAY_LOG_LEVEL: silent
           AWS_XRAY_CONTEXT_MISSING: LOG_ERROR
-      - image: redis:latest
+      - image: redis:latest@sha256:3134997edb04277814aa51a4175a588d45eb4299272f8eff2307bbf8b39e4d43
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
-      - image: mysql:8.0.36
+      - image: mysql:8.0.36@sha256:92923e99278839ae86ba3edde972cf46f620ada05b37f85db04398cf8d7fc2b1
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
@@ -475,7 +475,7 @@ jobs:
           - MYSQL_ALLOW_EMPTY_PASSWORD=yes
           - TZ=UTC
         command: --default_authentication_plugin=mysql_native_password --sql-mode="NO_ENGINE_SUBSTITUTION" --character-set-server=UTF8MB3 --collation-server=utf8_unicode_ci
-      - image: localstack/localstack:3.0.2
+      - image: localstack/localstack:3.0.2@sha256:e606c4421419030b12d63a59f1211f57f5b0fbf7e9ce769e6250ee62ff4f9293
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
@@ -804,7 +804,7 @@ jobs:
         description: The sentry org
       <<: *repo_for_enum
     docker:
-      - image: getsentry/sentry-cli
+      - image: getsentry/sentry-cli@sha256:6f67c389dd00c5fd44f99ba618a2f7d0490e8f40df2cc14c699afec3b7df61b2
         auth:
           username: $DOCKER_LOGIN
           password: $DOCKER_PASSWORD
@@ -848,7 +848,7 @@ jobs:
         default: AWS_SECRET_ACCESS_KEY
         description: AWS secret key for IAM role
     docker:
-      - image: amazon/aws-cli:latest
+      - image: amazon/aws-cli:latest@sha256:e55139d687402a5e601f3481035f3e5b8cf8884a69dc4859d48bfb3ff05c5520
         auth:
           username: $DOCKER_LOGIN
           password: $DOCKER_PASSWORD
