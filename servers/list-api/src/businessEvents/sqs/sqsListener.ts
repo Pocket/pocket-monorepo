@@ -42,8 +42,8 @@ export class SqsListener {
         queueUrl,
         error: err,
       });
-      Sentry.addBreadcrumb({ message: errorMessage, data: { error: err } });
-      Sentry.captureMessage(errorMessage);
+      Sentry.addBreadcrumb({ message: errorMessage });
+      Sentry.captureException(err);
     }
   }
 }

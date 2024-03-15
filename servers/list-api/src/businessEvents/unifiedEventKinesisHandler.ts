@@ -52,14 +52,9 @@ export class UnifiedEventKinesisHandler {
         error,
       });
       Sentry.addBreadcrumb({
-        message: `Failed Events: \n ${JSON.stringify(unifiedEvent)}`,
-        data: { error: error },
+        message: `Failed Unified Events: \n ${JSON.stringify(unifiedEvent)}`,
       });
-      Sentry.captureException(
-        new Error(
-          `Failed to send events to kinesis ${config.aws.kinesis.unifiedEvents.streamName}`,
-        ),
-      );
+      Sentry.captureException(error);
     }
   }
 }
