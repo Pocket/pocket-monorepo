@@ -707,8 +707,8 @@ importers:
         specifier: 7.107.0
         version: 7.107.0
       nanoid:
-        specifier: 3.3.7
-        version: 3.3.7
+        specifier: 5.0.6
+        version: 5.0.6
       node-fetch:
         specifier: 2.7.0
         version: 2.7.0
@@ -1209,8 +1209,8 @@ importers:
         specifier: 3.9.2
         version: 3.9.2
       nanoid:
-        specifier: 3.3.7
-        version: 3.3.7
+        specifier: 5.0.6
+        version: 5.0.6
       stripe:
         specifier: 9.8.0
         version: 9.8.0
@@ -1300,8 +1300,8 @@ importers:
         specifier: 3.9.2
         version: 3.9.2
       nanoid:
-        specifier: 3.3.7
-        version: 3.3.7
+        specifier: 5.0.6
+        version: 5.0.6
     devDependencies:
       '@sentry/types':
         specifier: 7.107.0
@@ -2014,8 +2014,8 @@ importers:
         specifier: 3.9.2
         version: 3.9.2
       nanoid:
-        specifier: 3.3.7
-        version: 3.3.7
+        specifier: 5.0.6
+        version: 5.0.6
       node-fetch:
         specifier: 2.7.0
         version: 2.7.0
@@ -15605,6 +15605,12 @@ packages:
   /nanoid@3.3.7:
     resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+    dev: false
+
+  /nanoid@5.0.6:
+    resolution: {integrity: sha512-rRq0eMHoGZxlvaFOUdK1Ev83Bd1IgzzR+WJ3IbDJ7QOSdAxYjlurSPqFs9s4lJg29RT6nPwizFtJhQS6V5xgiA==}
+    engines: {node: ^18 || >=20}
     hasBin: true
     dev: false
 
