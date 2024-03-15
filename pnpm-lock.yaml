@@ -326,8 +326,8 @@ importers:
         specifier: 2.18.1
         version: 2.18.1
       stripe:
-        specifier: 14.20.0
-        version: 14.20.0
+        specifier: 14.21.0
+        version: 14.21.0
       tslib:
         specifier: 2.6.2
         version: 2.6.2
@@ -1212,8 +1212,8 @@ importers:
         specifier: 3.3.7
         version: 3.3.7
       stripe:
-        specifier: 14.20.0
-        version: 14.20.0
+        specifier: 14.21.0
+        version: 14.21.0
     devDependencies:
       '@sentry/types':
         specifier: 7.107.0
@@ -18329,8 +18329,8 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /stripe@14.20.0:
-    resolution: {integrity: sha512-+3EP8GSWnKVHNATChhDzwAKk3nqSJKQOf2Q+dMGdgEk2sQXWYoA8GXY0A1TjL0m6895FVNavgvno6+0+6lC+kw==}
+  /stripe@14.21.0:
+    resolution: {integrity: sha512-PFmpl35Myn6UDdVLTHcuppdbkPVvlQfkMHOmgGZh5QOdSUxVmvz090Z4obLg8ta1MNs1PNpzr9i7E39iAIv07A==}
     engines: {node: '>=12.*'}
     dependencies:
       '@types/node': 20.11.28
