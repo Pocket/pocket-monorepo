@@ -1449,8 +1449,8 @@ importers:
         specifier: 2.2.2
         version: 2.2.2
       parse-url:
-        specifier: 8.1.0
-        version: 8.1.0
+        specifier: 9.0.1
+        version: 9.0.1
     devDependencies:
       '@types/jest':
         specifier: 29.5.12
@@ -8392,6 +8392,10 @@ packages:
   /@types/normalize-package-data@2.4.4:
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
     dev: true
+
+  /@types/parse-path@7.0.3:
+    resolution: {integrity: sha512-LriObC2+KYZD3FzCrgWGv/qufdUy4eXrxcLgQMfYXgPbLIecKIsVBaQgUPmxSSLcjmYbDTQbMgr6qr6l/eb7Bg==}
+    dev: false
 
   /@types/passport-jwt@4.0.1:
     resolution: {integrity: sha512-Y0Ykz6nWP4jpxgEUYq8NoVZeCQPo1ZndJLfapI249g1jHChvRfZRO/LS3tqu26YgAS/laI1qx98sYGz0IalRXQ==}
@@ -16375,9 +16379,11 @@ packages:
       protocols: 2.0.1
     dev: false
 
-  /parse-url@8.1.0:
-    resolution: {integrity: sha512-xDvOoLU5XRrcOZvnI6b8zA6n9O9ejNk/GExuz1yBuWUGn9KA97GI6HTs6u02wKara1CeVmZhH+0TZFdWScR89w==}
+  /parse-url@9.0.1:
+    resolution: {integrity: sha512-9BTx9oCKV8f+OhbAhU44KqRUCQrKf8tEbxRq0Ld7m2TSWgoqmy+iVt7xnjEixlz28J9V6sAjVBv/wZNv4+2Jsg==}
+    engines: {node: '>=14.13.0'}
     dependencies:
+      '@types/parse-path': 7.0.3
       parse-path: 7.0.0
     dev: false
 
