@@ -8,7 +8,7 @@
   "author": "",
   "license": "BSD",
   "dependencies": {
-    "@aws-sdk/client-sqs": "3.529.1",
+    "@aws-sdk/client-sqs": "3.533.0",
     "@sentry/node": "7.106.1",
     "apn": "node-apn/node-apn#3.0.0",
     "dotenv": "16.4.5",
