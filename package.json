@@ -28,5 +28,10 @@
   "name": "pocket-monorepo",
   "engines": {
     "node": "^20.11"
+  },
+  "pnpm": {
+    "overrides": {
+      "@smithy/util-endpoints": "1.1.2"
+    }
   }
 }

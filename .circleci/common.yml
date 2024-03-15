@@ -4,7 +4,6 @@ orbs:
   aws-cli: circleci/aws-cli@2.0.6
   aws-ecr: circleci/aws-ecr@7.3.0
   aws-code-deploy: circleci/aws-code-deploy@3.0.0
-  jq: circleci/jq@3.0.0
 
 # This is an enum that is used within all our jobs and our exit early job.
 # As a new "service/deployment" is added you should add to the enum.
@@ -408,7 +407,6 @@ jobs:
     steps:
       - exit-early-if-irrelevant:
           for: << parameters.for >>
-      - jq/install
       - run:
           name: Deploy Lambda
           command: |
