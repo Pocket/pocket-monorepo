@@ -27,7 +27,7 @@
     "cdktf": "0.20.4",
     "cdktf-cli": "0.20.4",
     "constructs": "10.3.0",
-    "parse-domain": "5.0.0"
+    "parse-domain": "8.0.2"
   },
   "devDependencies": {
     "@types/jest": "29.5.12",
