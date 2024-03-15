@@ -17,7 +17,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-sqs": "3.529.1",
+    "@aws-sdk/client-sqs": "3.533.0",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/feature-flags-client": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
@@ -30,7 +30,7 @@
     "stripe": "9.8.0"
   },
   "devDependencies": {
-    "@sentry/types": "7.106.1",
+    "@sentry/types": "7.107.0",
     "@types/jest": "29.5.12",
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",

@@ -12,7 +12,7 @@
     "format": "eslint --fix \"src/**/*.ts\""
   },
   "dependencies": {
-    "@aws-sdk/client-eventbridge": "3.529.1",
+    "@aws-sdk/client-eventbridge": "3.533.0",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "8.4.1",
-    "@sentry/types": "7.106.1",
+    "@sentry/types": "7.107.0",
     "@types/jest": "29.5.12",
     "@types/supertest": "^6.0.2",
     "eslint-config-custom": "workspace:*",

@@ -13,9 +13,9 @@
     "format": "eslint --fix \"src/**/*.ts\""
   },
   "dependencies": {
-    "@aws-sdk/client-secrets-manager": "3.529.1",
-    "@aws-sdk/client-sqs": "3.529.1",
-    "@sentry/serverless": "7.106.1",
+    "@aws-sdk/client-secrets-manager": "3.533.0",
+    "@aws-sdk/client-sqs": "3.533.0",
+    "@sentry/serverless": "7.107.0",
     "jsonwebtoken": "^9.0.0",
     "jwk-to-pem": "^2.0.5",
     "node-fetch": "2.7.0",
