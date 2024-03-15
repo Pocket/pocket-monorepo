@@ -408,7 +408,6 @@ jobs:
     steps:
       - exit-early-if-irrelevant:
           for: << parameters.for >>
-      - jq/install
       - run:
           name: Deploy Lambda
           command: |
