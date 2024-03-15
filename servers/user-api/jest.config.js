@@ -4,5 +4,6 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   testMatch: ['**/?(*.)+(spec|integration).[jt]s?(x)'],
+  setupFiles: ['./jest.setup.js'],
   testPathIgnorePatterns: ['/dist/'],
 };

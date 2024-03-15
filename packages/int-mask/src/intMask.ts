@@ -17,14 +17,50 @@ export type IntMaskOptions = {
 export class IntMask {
   private options: IntMaskOptions;
   private val;
-
   private intMap;
 
-  constructor(val, options: IntMaskOptions) {
+  constructor(val, options?: Partial<IntMaskOptions>) {
+    this.options = this.buildOptions(options || {});
     this.val = val;
-    this.options = options;
     this.intMap = new Map();
     this.buildMap();
+  }
+
+  buildOptions(options: Partial<IntMaskOptions>): IntMaskOptions {
+    return {
+      characterMap:
+        options?.characterMap ?? this.fetchMapFromEnv('CHARACTER_MAP'),
+      positionMap: options?.positionMap ?? this.fetchMapFromEnv('POSITION_MAP'),
+      md5Randomizer:
+        options?.md5Randomizer ?? this.fetchMapFromEnv('MD5_RANDOMIZER'),
+      letterIndex: options?.letterIndex ?? this.fetchMapFromEnv('LETTER_INDEX'),
+      salt1: options?.salt1 ?? this.fetchFromEnv('SALT_1'),
+      salt2: options?.salt2 ?? this.fetchFromEnv('SALT_2'),
+    };
+  }
+
+  /**
+   * Gets the value from the environment or errors
+   * @param key
+   * @returns
+   */
+  private fetchFromEnv(key: string): any {
+    const envValue = process.env[key];
+    if (!envValue) {
+      throw new Error(`Environment variable '${key}' not found.`);
+    }
+    return envValue;
+  }
+
+  /**
+   * Gets the value from the environment tries to make a Map or errors
+   * @param key
+   * @returns
+   */
+  private fetchMapFromEnv(key: string): Map<any, any> {
+    // Parse the environment variable based on your specific requirements
+    // For example, parse a JSON string into a Map
+    return new Map(JSON.parse(this.fetchFromEnv(key)));
   }
 
   buildMap() {
@@ -35,8 +71,28 @@ export class IntMask {
     });
   }
 
-  static encode(val, options: IntMaskOptions) {
+  /**
+   * Use to encode any integer value into a decodable string.
+   *
+   * Usage: IntMask.encode(12345)
+   * @param val
+   * @param options Optional object of configuration, otherwise pulled from the env.
+   * @returns
+   */
+  static encode(val, options?: Partial<IntMaskOptions>) {
     return new this(val, options).encode();
+  }
+
+  /**
+   * Use to decode any string value into an integer.
+   *
+   * Usage: IntMask.encode(12345)
+   * @param val
+   * @param options Optional object of configuration, otherwise pulled from the env.
+   * @returns
+   */
+  static decode(val, options?: Partial<IntMaskOptions>) {
+    return new this(val, options).decode();
   }
 
   // Primary logic flow:
@@ -50,8 +106,16 @@ export class IntMask {
     return this.merge(encodedString, mask);
   }
 
+  // Primary logic flow:
+  // 1. Decode the characters from the character map
+  // 2. Extract the indexes of the values we want from our position map
+  decode() {
+    const encodedString = this.decodeChars();
+    return this.unmerge(encodedString);
+  }
+
   // Inject encoded characters at specific positions in the mask.
-  merge(encodedString, mask) {
+  merge(encodedString, mask): string {
     const result = _.toArray(mask);
 
     // Inject encoded characters at specific points of the mask.
@@ -63,6 +127,19 @@ export class IntMask {
     });
 
     return result.join('');
+  }
+
+  unmerge(encodedString): number {
+    const result = [];
+
+    // Remove encoded at specific points of the mask.
+    this.options.positionMap.forEach((decodedIndex, encodedIndex: any) => {
+      result[decodedIndex] = encodedString.charAt(encodedIndex);
+    });
+
+    const result1 = result.join('').replace(/^0*/, '');
+
+    return parseInt(result1);
   }
 
   // Create a basic 16 charater string with value replacement to obfuscate the
@@ -82,6 +159,20 @@ export class IntMask {
         const outIndex = Math.floor((charSeed + i + 1) % 5); // always 0->5
         const optAry = this.intMap.get(parseInt(val));
         return optAry[outIndex];
+      })
+      .value()
+      .join('');
+  }
+
+  // Maps to PHP: IntMask#decodeChar execept this decodes all characters at
+  // once.
+  decodeChars() {
+    // Use the mask to produce a consistent output value for any given input
+    // value.
+    return _.chain(this.val)
+      .toArray()
+      .map((val, i) => {
+        return this.options.characterMap.get(val) ?? val;
       })
       .value()
       .join('');
