@@ -33,7 +33,7 @@ const v3SendController = async (
     return next(err);
   }
   try {
-    res.json({ body: 'hello world' });
+    res.json(actions);
   } catch (err) {
     // Pass along to error handling middleware
     // Has to be in a try/catch block due to async call

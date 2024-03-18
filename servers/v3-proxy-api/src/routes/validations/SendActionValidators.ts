@@ -68,7 +68,7 @@ type ActionNames =
 
 export type MaybeAction = { action: ActionNames; [key: string]: string };
 
-type Constructor<T = {}> = new (...args: any[]) => T;
+type Constructor<T> = new (...args: any[]) => T;
 type ActionSanitizable = Constructor<{
   input: MaybeAction;
 }>;
