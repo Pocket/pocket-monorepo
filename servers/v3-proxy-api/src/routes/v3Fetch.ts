@@ -8,7 +8,7 @@ import {
 import { checkSchema, validationResult, matchedData } from 'express-validator';
 import { V3FetchParams, V3FetchSchema } from './validations/FetchSchema';
 import { InputValidationError } from '../errors/InputValidationError';
-import { V3GetParams } from './validations/GetSchema';
+import { V3GetParams } from './validations';
 import { FetchResponse, GetSharesResponse } from '../graph/types';
 
 const router: Router = Router();

@@ -1,17 +1,16 @@
-import { FieldValidationError } from 'express-validator';
 import {
   ArrayFieldError,
   InputValidationError,
 } from '../../errors/InputValidationError';
 
-type ItemAction = {
+export type ItemAction = {
   action: ItemActionNames;
   itemId?: number;
   url?: string;
   time?: number;
 };
 
-type ItemAddAction = {
+export type ItemAddAction = {
   action: AddActionName;
   itemId?: number;
   tags?: string[];
@@ -20,7 +19,7 @@ type ItemAddAction = {
   url?: string;
 };
 
-type ItemTagAction = {
+export type ItemTagAction = {
   action: ItemTagActionNames;
   tags: string[];
   itemId?: number;
@@ -28,18 +27,25 @@ type ItemTagAction = {
   time?: number;
 };
 
-type TagRenameAction = {
+export type TagRenameAction = {
   action: TagRenameActionName;
   newTag: string;
   oldTag: string;
   time?: number;
 };
 
-type TagDeleteAction = {
+export type TagDeleteAction = {
   action: TagDeleteActionName;
   tag: string;
   time?: number;
 };
+
+export type SendAction =
+  | ItemAction
+  | ItemAddAction
+  | ItemTagAction
+  | TagDeleteAction
+  | TagRenameAction;
 
 type ItemActionNames =
   | 'archive'
@@ -60,7 +66,7 @@ type ActionNames =
   | TagDeleteActionName
   | ItemTagActionNames;
 
-type MaybeAction = { action: ActionNames; [key: string]: string };
+export type MaybeAction = { action: ActionNames; [key: string]: string };
 
 type Constructor<T = {}> = new (...args: any[]) => T;
 type ActionSanitizable = Constructor<{
@@ -599,3 +605,58 @@ export const TagDeleteActionSanitizer = SanitizedTagDelete(
 export const ItemAddActionSanitizer = SanitizedAddItem(
   HasItemIdOrUrl(MaybeHasTime(MaybeHasTags(MaybeHasTitle(NamedAction<'add'>)))),
 );
+
+/**
+ * Route input to a proper sanitizer based on action name.
+ * This is the main method that should be used from this file.
+ */
+export function ActionSanitizer(input: MaybeAction): SendAction {
+  // Is there a way I can use a map for this without the resulting function
+  // getting typecast to 'any' when I do a key-value lookup...?
+  switch (input.action) {
+    case 'archive':
+    case 'readd':
+    case 'favorite':
+    case 'unfavorite':
+    case 'delete':
+    case 'tags_clear':
+      return new ItemActionSanitizer({
+        ...input,
+        // Why does typescript infer the type correctly when you
+        // copy the input and set action explicitly from input,
+        // but not when you just pass through the input? I don't know...
+        action: input.action,
+      }).validate();
+    case 'tags_add':
+    case 'tags_remove':
+    case 'tags_replace':
+      return new ItemTagActionSanitizer({
+        ...input,
+        action: input.action,
+      }).validate();
+    case 'tag_delete':
+      return new TagDeleteActionSanitizer({
+        ...input,
+        action: input.action,
+      }).validate();
+    case 'tag_rename':
+      return new TagRenameActionSanitizer({
+        ...input,
+        action: input.action,
+      }).validate();
+    case 'add':
+      return new ItemAddActionSanitizer({
+        ...input,
+        action: input.action,
+      }).validate();
+    default:
+      // Should never reach this due to earlier validations
+      // but just in case...
+      throw new InputValidationError({
+        type: 'array_field',
+        path: 'action',
+        msg: `Invalid action`,
+        value: input.action,
+      });
+  }
+}

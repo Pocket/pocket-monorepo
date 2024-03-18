@@ -1,6 +1,11 @@
-const BasicActionSchema: Schema[string] = {};
-
 import { Schema } from 'express-validator';
+import { MaybeAction } from './SendActionValidators';
+
+export type V3SendParams = {
+  access_token: string;
+  consumer_key: string;
+  actions: MaybeAction[];
+};
 
 /**
  * Schema for valid V3 GET/POST requests.
@@ -23,12 +28,16 @@ export const V3SendSchema: Schema = {
       errorMessage: '`consumer_key` cannot be empty',
     },
   },
+  actions: {
+    isArray: true,
+    notEmpty: true,
+  },
   'actions[*].action': {
     isIn: {
       options: [
         [
           'add',
-          'readd',
+          // 'readd',
           // 'archive',
           // 'favorite',
           // 'unfavorite',
@@ -42,7 +51,7 @@ export const V3SendSchema: Schema = {
         ],
       ],
       bail: true,
-      errorMessage: `invalid action`,
+      errorMessage: `Invalid action`,
     },
   },
 };
