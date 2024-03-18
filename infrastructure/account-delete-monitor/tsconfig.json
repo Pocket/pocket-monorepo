@@ -1,5 +1,5 @@
 {
-  "extends": "tsconfig/cdktf.json",
+  "extends": "tsconfig/cdktf-esm.json",
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src"

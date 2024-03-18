@@ -1,17 +1,12 @@
-import { config } from './config';
-import { DataDeleterApp, DataDeleterAppConfig } from './dataDeleterApp';
-import { BatchDeleteLambdaResources } from './lambda/batchDeleteLambdaResources';
-import { EventLambda } from './lambda/eventLambda';
-
-import { ArchiveProvider } from '@cdktf/provider-archive/lib/provider';
-import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
-import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
-import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/data-aws-kms-alias';
-import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
-import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
-import { LocalProvider } from '@cdktf/provider-local/lib/provider';
-import { NullProvider } from '@cdktf/provider-null/lib/provider';
-import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
+import { config } from './config/index.js';
+import { DataDeleterApp, DataDeleterAppConfig } from './dataDeleterApp.js';
+import { BatchDeleteLambdaResources } from './lambda/batchDeleteLambdaResources.js';
+import { EventLambda } from './lambda/eventLambda.js';
+import { provider as archiveProvider } from '@cdktf/provider-archive';
+import { provider as awsProvider, dataAwsSnsTopic, dataAwsRegion, dataAwsKmsAlias, dataAwsCallerIdentity } from '@cdktf/provider-aws';
+import { provider as localProvider } from '@cdktf/provider-local';
+import { provider as nullProvider } from '@cdktf/provider-null';
+import { provider as pagerdutyProvider } from '@cdktf/provider-pagerduty';
 import {
   ApplicationSQSQueue,
   PocketPagerDuty,
@@ -30,11 +25,11 @@ class AccountDataDeleter extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
-    new ArchiveProvider(this, 'archive-provider');
-    new AwsProvider(this, 'aws', { region: 'us-east-1' });
-    new LocalProvider(this, 'local-provider');
-    new NullProvider(this, 'null-provider');
-    new PagerdutyProvider(this, 'pagerduty-provider', { token: undefined });
+    new archiveProvider.ArchiveProvider(this, 'archive-provider');
+    new awsProvider.AwsProvider(this, 'aws', { region: 'us-east-1' });
+    new localProvider.LocalProvider(this, 'local-provider');
+    new nullProvider.NullProvider(this, 'null-provider');
+    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty-provider', { token: undefined });
 
     new S3Backend(this, {
       bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
@@ -43,8 +38,8 @@ class AccountDataDeleter extends TerraformStack {
       region: 'us-east-1',
     });
 
-    const caller = new DataAwsCallerIdentity(this, 'caller');
-    const region = new DataAwsRegion(this, 'region');
+    const caller = new dataAwsCallerIdentity.DataAwsCallerIdentity(this, 'caller');
+    const region = new dataAwsRegion.DataAwsRegion(this, 'region');
     const pagerDuty = this.createPagerDuty();
     const pocketVpc = new PocketVPC(this, 'pocket-vpc');
 
@@ -84,7 +79,7 @@ class AccountDataDeleter extends TerraformStack {
    * @private
    */
   private getSecretsManagerKmsAlias() {
-    return new DataAwsKmsAlias(this, 'kms_alias', {
+    return new dataAwsKmsAlias.DataAwsKmsAlias(this, 'kms_alias', {
       name: 'alias/aws/secretsmanager',
     });
   }
@@ -94,7 +89,7 @@ class AccountDataDeleter extends TerraformStack {
    * @private
    */
   private getCodeDeploySnsTopic() {
-    return new DataAwsSnsTopic(this, 'backend_notifications', {
+    return new dataAwsSnsTopic.DataAwsSnsTopic(this, 'backend_notifications', {
       name: `Backend-${config.environment}-ChatBot`,
     });
   }

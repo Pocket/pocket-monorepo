@@ -1,8 +1,8 @@
-import { SqsLambda, SqsLambdaProps } from './base/sqsLambda';
-import { config as stackConfig } from '../config';
+import { SqsLambda, SqsLambdaProps } from './base/sqsLambda.js';
+import { config as stackConfig } from '../config/index.js';
 
-import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
-import { ApplicationSqsSnsTopicSubscription } from '@pocket-tools/terraform-modules/';
+import { sqsQueue } from '@cdktf/provider-aws';
+import { ApplicationSqsSnsTopicSubscription } from '@pocket-tools/terraform-modules';
 
 import { Construct } from 'constructs';
 
@@ -28,7 +28,7 @@ export class EventLambda extends Construct {
         snsTopicArn: `arn:aws:sns:${config.vpc.region}:${config.vpc.accountId}:${stackConfig.lambda.snsTopicName.userEvents}`,
         sqsQueue: lambda.sqsQueueResource,
         tags: stackConfig.tags,
-        dependsOn: [lambda.sqsQueueResource as SqsQueue],
+        dependsOn: [lambda.sqsQueueResource as sqsQueue.SqsQueue],
       },
     );
   }
