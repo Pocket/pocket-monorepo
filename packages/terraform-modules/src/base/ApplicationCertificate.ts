@@ -1,7 +1,9 @@
-import { AcmCertificate } from '@cdktf/provider-aws/lib/acm-certificate';
-import { AcmCertificateValidation } from '@cdktf/provider-aws/lib/acm-certificate-validation';
-import { DataAwsRoute53Zone } from '@cdktf/provider-aws/lib/data-aws-route53-zone';
-import { Route53Record } from '@cdktf/provider-aws/lib/route53-record';
+import {
+  route53Record,
+  dataAwsRoute53Zone,
+  acmCertificateValidation,
+  acmCertificate,
+} from '@cdktf/provider-aws';
 import { TerraformMetaArguments, TerraformProvider } from 'cdktf';
 import { Construct } from 'constructs';
 
@@ -22,7 +24,7 @@ export class ApplicationCertificate extends Construct {
   public readonly arn: string;
   // Use `certificateValidation` in `dependsOn` to block on the
   // complete certificate for any downstream dependencies
-  public readonly certificateValidation: AcmCertificateValidation;
+  public readonly certificateValidation: acmCertificateValidation.AcmCertificateValidation;
 
   constructor(
     scope: Construct,
@@ -32,10 +34,14 @@ export class ApplicationCertificate extends Construct {
     super(scope, name);
 
     if (!config.zoneId && config.zoneDomain) {
-      const route53Zone = new DataAwsRoute53Zone(this, `zone`, {
-        name: config.zoneDomain,
-        provider: config.provider,
-      });
+      const route53Zone = new dataAwsRoute53Zone.DataAwsRoute53Zone(
+        this,
+        `zone`,
+        {
+          name: config.zoneDomain,
+          provider: config.provider,
+        },
+      );
       config.zoneId = route53Zone.zoneId;
     } else if (!config.zoneId && !config.zoneDomain) {
       throw new Error('You need to pass either a zone id or a zone domain');
@@ -71,8 +77,8 @@ export class ApplicationCertificate extends Construct {
     domain: string,
     tags?: { [key: string]: string },
     provider?: TerraformProvider,
-  ): AcmCertificate {
-    return new AcmCertificate(scope, `certificate`, {
+  ): acmCertificate.AcmCertificate {
+    return new acmCertificate.AcmCertificate(scope, `certificate`, {
       domainName: domain,
       validationMethod: 'DNS',
       tags: tags,
@@ -86,33 +92,41 @@ export class ApplicationCertificate extends Construct {
   static generateRoute53Record(
     scope: Construct,
     zoneId: string,
-    cert: AcmCertificate,
+    cert: acmCertificate.AcmCertificate,
     provider?: TerraformProvider,
-  ): Route53Record {
-    const record = new Route53Record(scope, `certificate_record`, {
-      name: cert.domainValidationOptions.get(0).resourceRecordName,
-      type: cert.domainValidationOptions.get(0).resourceRecordType,
-      zoneId,
-      records: [cert.domainValidationOptions.get(0).resourceRecordValue],
-      ttl: 60,
-      dependsOn: [cert],
-      provider: provider,
-    });
+  ): route53Record.Route53Record {
+    const record = new route53Record.Route53Record(
+      scope,
+      `certificate_record`,
+      {
+        name: cert.domainValidationOptions.get(0).resourceRecordName,
+        type: cert.domainValidationOptions.get(0).resourceRecordType,
+        zoneId,
+        records: [cert.domainValidationOptions.get(0).resourceRecordValue],
+        ttl: 60,
+        dependsOn: [cert],
+        provider: provider,
+      },
+    );
 
     return record;
   }
 
   static generateAcmCertificateValidation(
     scope: Construct,
-    cert: AcmCertificate,
-    record: Route53Record,
+    cert: acmCertificate.AcmCertificate,
+    record: route53Record.Route53Record,
     provider?: TerraformProvider,
-  ): AcmCertificateValidation {
-    return new AcmCertificateValidation(scope, `certificate_validation`, {
-      certificateArn: cert.arn,
-      validationRecordFqdns: [record.fqdn],
-      dependsOn: [record, cert],
-      provider: provider,
-    });
+  ): acmCertificateValidation.AcmCertificateValidation {
+    return new acmCertificateValidation.AcmCertificateValidation(
+      scope,
+      `certificate_validation`,
+      {
+        certificateArn: cert.arn,
+        validationRecordFqdns: [record.fqdn],
+        dependsOn: [record, cert],
+        provider: provider,
+      },
+    );
   }
 }

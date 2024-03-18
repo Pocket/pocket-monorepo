@@ -1,5 +1,7 @@
-import { NrqlAlertCondition } from '@cdktf/provider-newrelic/lib/nrql-alert-condition';
-import { SyntheticsMonitor } from '@cdktf/provider-newrelic/lib/synthetics-monitor';
+import {
+  nrqlAlertCondition,
+  syntheticsMonitor,
+} from '@cdktf/provider-newrelic';
 import { Construct } from 'constructs';
 
 export interface PocketSyntheticProps {
@@ -47,7 +49,7 @@ export class PocketSyntheticCheck extends Construct {
       this.config.policyId = 1707149; // Pocket-Default-Policy
     }
 
-    const pocketMonitor = new SyntheticsMonitor(
+    const pocketMonitor = new syntheticsMonitor.SyntheticsMonitor(
       this,
       `${this.name}-synthetics-monitor`,
       {
@@ -83,7 +85,7 @@ export class PocketSyntheticCheck extends Construct {
       ...config.nrqlConfig,
     };
 
-    new NrqlAlertCondition(this, 'alert-condition', {
+    new nrqlAlertCondition.NrqlAlertCondition(this, 'alert-condition', {
       name: `${this.name}-nrql`,
       policyId: this.config.policyId,
       fillValue: 0,

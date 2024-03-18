@@ -4,7 +4,7 @@ import {
   ApplicationServerlessRedis,
   ApplicationServerlessRedisProps,
 } from './ApplicationServerlessRedis';
-import { DataAwsSubnets } from '@cdktf/provider-aws/lib/data-aws-subnets';
+import { dataAwsSubnets } from '@cdktf/provider-aws';
 
 const BASE_CONFIG: ApplicationServerlessRedisProps = {
   allowedIngressSecurityGroupIds: [],
@@ -40,7 +40,7 @@ describe('ApplicationRedis', () => {
       ...BASE_CONFIG,
     };
     const synthed = Testing.synthScope((stack) => {
-      const subnets = new DataAwsSubnets(stack, 'subnets', {});
+      const subnets = new dataAwsSubnets.DataAwsSubnets(stack, 'subnets', {});
 
       new ApplicationServerlessRedis(stack, 'testRedis', {
         ...config,
@@ -55,7 +55,7 @@ describe('ApplicationRedis', () => {
       ...BASE_CONFIG,
     };
     const synthed = Testing.synthScope((stack) => {
-      const subnets = new DataAwsSubnets(stack, 'subnets', {});
+      const subnets = new dataAwsSubnets.DataAwsSubnets(stack, 'subnets', {});
 
       new ApplicationServerlessRedis(stack, 'testRedis', {
         ...config,

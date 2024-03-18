@@ -1,11 +1,11 @@
 import { Construct } from 'constructs';
 import { App, TerraformStack } from 'cdktf';
-import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
+import { provider as awsProvider } from '@cdktf/provider-aws';
 import { PocketALBApplication } from './pocket/PocketALBApplication.js'
 import { ApplicationECSContainerDefinitionProps } from './base/ApplicationECSContainerDefinition.js'
-import { LocalProvider } from '@cdktf/provider-local/lib/provider';
-import { NullProvider } from '@cdktf/provider-null/lib/provider';
-import { TimeProvider } from '@cdktf/provider-time/lib/provider';
+import { provider as localProvider } from '@cdktf/provider-local';
+import { provider as nullProvider } from '@cdktf/provider-null';
+import { provider as timeProvider } from '@cdktf/provider-time';
 import { Wafv2WebAcl } from '@cdktf/provider-aws/lib/wafv2-web-acl';
 import { PocketAwsSyntheticChecks } from './pocket/PocketCloudwatchSynthetics.js'
 import { PocketVPC } from './pocket/PocketVPC.js'
@@ -14,12 +14,12 @@ class Example extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
-    new AwsProvider(this, 'aws', {
+    new awsProvider.AwsProvider(this, 'aws', {
       region: 'us-east-1',
     });
-    new LocalProvider(this, 'local', {});
-    new NullProvider(this, 'null', {});
-    new TimeProvider(this, 'timeProvider', {});
+    new localProvider.LocalProvider(this, 'local', {});
+    new nullProvider.NullProvider(this, 'null', {});
+    new timeProvider.TimeProvider(this, 'timeProvider', {});
 
     const pocketVpc = new PocketVPC(this, 'pocket-vpc');
 
