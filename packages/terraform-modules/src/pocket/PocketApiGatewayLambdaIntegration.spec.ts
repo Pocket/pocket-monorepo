@@ -1,5 +1,5 @@
 import { Testing } from 'cdktf';
-import { LAMBDA_RUNTIMES } from '../base/ApplicationVersionedLambda.js'
+import { LAMBDA_RUNTIMES } from '../base/ApplicationVersionedLambda';
 import {
   PocketApiGateway,
   PocketApiGatewayProps,

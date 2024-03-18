@@ -1,5 +1,5 @@
 import { Testing } from 'cdktf';
-import { PocketPagerDuty, PocketPagerDutyProps } from './PocketPagerDuty.js'
+import { PocketPagerDuty, PocketPagerDutyProps } from './PocketPagerDuty';
 
 const config: PocketPagerDutyProps = {
   prefix: 'Test-Env',

@@ -1,6 +1,6 @@
 import { Testing } from 'cdktf';
-import { TestResource } from '../testHelpers.js'
-import { ApplicationBaseDNS } from './ApplicationBaseDNS.js'
+import { TestResource } from '../testHelpers';
+import { ApplicationBaseDNS } from './ApplicationBaseDNS';
 
 describe('ApplicationBaseDNS', () => {
   const tags = {

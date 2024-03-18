@@ -7,7 +7,7 @@ import {
   ApplicationSQSQueue,
   ApplicationSQSQueueProps,
 } from '../base/ApplicationSQSQueue.js';
-import { ApplicationVersionedLambda } from '../base/ApplicationVersionedLambda.js'
+import { ApplicationVersionedLambda } from '../base/ApplicationVersionedLambda.js';
 import { DataAwsIamPolicyDocument } from '@cdktf/provider-aws/lib/data-aws-iam-policy-document';
 import {
   DataAwsSqsQueueConfig,

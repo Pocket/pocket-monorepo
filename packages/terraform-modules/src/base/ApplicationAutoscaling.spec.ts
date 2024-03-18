@@ -1,5 +1,5 @@
 import { Testing } from 'cdktf';
-import { TestResource } from '../testHelpers.js'
+import { TestResource } from '../testHelpers';
 import {
   ApplicationAutoscaling,
   ApplicationAutoscalingProps,

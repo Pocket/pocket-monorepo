@@ -1,6 +1,6 @@
 import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
 import { Testing } from 'cdktf';
-import { ApplicationSqsSnsTopicSubscription } from './ApplicationSqsSnsTopicSubscription.js'
+import { ApplicationSqsSnsTopicSubscription } from './ApplicationSqsSnsTopicSubscription';
 
 describe('ApplicationSqsSnsTopicSubscription', () => {
   const getConfig = (stack) => ({

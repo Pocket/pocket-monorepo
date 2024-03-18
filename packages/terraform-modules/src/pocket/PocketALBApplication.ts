@@ -21,8 +21,8 @@ import {
   ApplicationECSService,
   ApplicationECSServiceProps,
   ApplicationLoadBalancer,
-} from '../index.js';
-import { PocketVPC } from './PocketVPC.js'
+} from '..';
+import { PocketVPC } from './PocketVPC';
 
 export interface PocketALBApplicationAlarmProps extends TerraformMetaArguments {
   threshold?: number;

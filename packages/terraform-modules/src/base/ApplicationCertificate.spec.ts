@@ -1,6 +1,6 @@
 import { Testing, TerraformStack } from 'cdktf';
-import { TestResource } from '../testHelpers.js'
-import { ApplicationCertificate } from './ApplicationCertificate.js'
+import { TestResource } from '../testHelpers';
+import { ApplicationCertificate } from './ApplicationCertificate';
 
 describe('ApplicationCertificate', () => {
   const tags = {
