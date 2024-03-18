@@ -1,11 +1,10 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
+    "$schema": "https://json.schemastore.org/tsconfig",
     "compilerOptions": {
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true,
-      "target": "ESNext",
-      "module": "NodeNext",
-      "moduleResolution": "NodeNext",
+      "target": "es2019",
+      "module": "commonjs",
       "lib": [
         "dom",
         "es2019",
