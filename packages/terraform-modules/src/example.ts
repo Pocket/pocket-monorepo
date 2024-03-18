@@ -1,14 +1,14 @@
 import { Construct } from 'constructs';
 import { App, TerraformStack } from 'cdktf';
 import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
-import { PocketALBApplication } from './pocket/PocketALBApplication';
-import { ApplicationECSContainerDefinitionProps } from './base/ApplicationECSContainerDefinition';
+import { PocketALBApplication } from './pocket/PocketALBApplication.js'
+import { ApplicationECSContainerDefinitionProps } from './base/ApplicationECSContainerDefinition.js'
 import { LocalProvider } from '@cdktf/provider-local/lib/provider';
 import { NullProvider } from '@cdktf/provider-null/lib/provider';
 import { TimeProvider } from '@cdktf/provider-time/lib/provider';
 import { Wafv2WebAcl } from '@cdktf/provider-aws/lib/wafv2-web-acl';
-import { PocketAwsSyntheticChecks } from './pocket/PocketCloudwatchSynthetics';
-import { PocketVPC } from './pocket/PocketVPC';
+import { PocketAwsSyntheticChecks } from './pocket/PocketCloudwatchSynthetics.js'
+import { PocketVPC } from './pocket/PocketVPC.js'
 
 class Example extends TerraformStack {
   constructor(scope: Construct, name: string) {

@@ -3,7 +3,7 @@ import { Route53Record } from '@cdktf/provider-aws/lib/route53-record';
 import { Route53Zone } from '@cdktf/provider-aws/lib/route53-zone';
 import { TerraformMetaArguments, TerraformProvider } from 'cdktf';
 import { Construct } from 'constructs';
-import { getRootDomain } from '../utilities';
+import { getRootDomain } from '../utilities.js'
 
 export interface RootDNSProps extends TerraformMetaArguments {
   domain: string;

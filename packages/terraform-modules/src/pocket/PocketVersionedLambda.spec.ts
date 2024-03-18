@@ -3,7 +3,7 @@ import {
   PocketVersionedLambda,
   PocketVersionedLambdaProps,
 } from './PocketVersionedLambda';
-import { LAMBDA_RUNTIMES } from '../base/ApplicationVersionedLambda';
+import { LAMBDA_RUNTIMES } from '../base/ApplicationVersionedLambda.js'
 
 const config: PocketVersionedLambdaProps = {
   name: 'test-lambda',

@@ -2,12 +2,12 @@ import { Construct } from 'constructs';
 import {
   PocketVersionedLambda,
   PocketVersionedLambdaProps,
-} from './PocketVersionedLambda';
+} from './PocketVersionedLambda.js';
 import {
   ApplicationSQSQueue,
   ApplicationSQSQueueProps,
-} from '../base/ApplicationSQSQueue';
-import { ApplicationVersionedLambda } from '../base/ApplicationVersionedLambda';
+} from '../base/ApplicationSQSQueue.js';
+import { ApplicationVersionedLambda } from '../base/ApplicationVersionedLambda.js'
 import { DataAwsIamPolicyDocument } from '@cdktf/provider-aws/lib/data-aws-iam-policy-document';
 import {
   DataAwsSqsQueueConfig,

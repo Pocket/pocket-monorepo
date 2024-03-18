@@ -4,6 +4,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/index.mjs",
+  "type": "module",
   "license": "MPL-2.0",
   "scripts": {
     "build:dev": "rm -rf dist && NODE_ENV=development npm run synth",
