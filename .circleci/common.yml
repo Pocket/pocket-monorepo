@@ -4,7 +4,6 @@ orbs:
   aws-cli: circleci/aws-cli@2.0.6
   aws-ecr: circleci/aws-ecr@7.3.0
   aws-code-deploy: circleci/aws-code-deploy@3.0.0
-  jq: circleci/jq@3.0.0
 
 # This is an enum that is used within all our jobs and our exit early job.
 # As a new "service/deployment" is added you should add to the enum.
@@ -408,7 +407,6 @@ jobs:
     steps:
       - exit-early-if-irrelevant:
           for: << parameters.for >>
-      - jq/install
       - run:
           name: Deploy Lambda
           command: |
@@ -475,7 +473,7 @@ jobs:
           - MYSQL_ALLOW_EMPTY_PASSWORD=yes
           - TZ=UTC
         command: --default_authentication_plugin=mysql_native_password --sql-mode="NO_ENGINE_SUBSTITUTION" --character-set-server=UTF8MB3 --collation-server=utf8_unicode_ci
-      - image: localstack/localstack:3.0.2@sha256:e606c4421419030b12d63a59f1211f57f5b0fbf7e9ce769e6250ee62ff4f9293
+      - image: localstack/localstack:3.2.0@sha256:167eb023e07eef65f1e490d7a77cf45124e7a24395e4736dd2582e8ea0618ecb
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD

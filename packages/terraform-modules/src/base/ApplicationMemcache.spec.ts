@@ -1,7 +1,7 @@
 import { Testing } from 'cdktf';
-import { ApplicationElasticacheClusterProps } from './ApplicationElasticacheCluster';
+import { ApplicationElasticacheClusterProps } from './ApplicationElasticacheCluster.js'
 
-import { ApplicationMemcache } from './ApplicationMemcache';
+import { ApplicationMemcache } from './ApplicationMemcache.js'
 
 const BASE_CONFIG: ApplicationElasticacheClusterProps = {
   allowedIngressSecurityGroupIds: [],

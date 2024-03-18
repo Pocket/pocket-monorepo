@@ -2,7 +2,7 @@ import {
   ApplicationElasticacheCluster,
   ApplicationElasticacheClusterProps,
   ApplicationElasticacheEngine,
-} from './ApplicationElasticacheCluster';
+} from './ApplicationElasticacheCluster.js';
 import { Construct } from 'constructs';
 import { DataAwsVpc } from '@cdktf/provider-aws/lib/data-aws-vpc';
 import { ElasticacheCluster } from '@cdktf/provider-aws/lib/elasticache-cluster';

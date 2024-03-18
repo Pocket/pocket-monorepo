@@ -1,21 +1,24 @@
 import { Resource } from '@cdktf/provider-null/lib/resource';
 import { Sleep } from '@cdktf/provider-time/lib/sleep';
 import { Construct } from 'constructs';
-import { ApplicationECR, ECRProps } from './ApplicationECR';
-import { ApplicationECSIAM, ApplicationECSIAMProps } from './ApplicationECSIAM';
+import { ApplicationECR, ECRProps } from './ApplicationECR.js';
+import {
+  ApplicationECSIAM,
+  ApplicationECSIAMProps,
+} from './ApplicationECSIAM.js';
 import {
   ApplicationECSContainerDefinitionProps,
   buildDefinitionJSON,
-} from './ApplicationECSContainerDefinition';
-import { ApplicationTargetGroup } from './ApplicationTargetGroup';
-import { ApplicationECSAlbCodeDeploy } from './ApplicationECSAlbCodeDeploy';
+} from './ApplicationECSContainerDefinition.js';
+import { ApplicationTargetGroup } from './ApplicationTargetGroup.js';
+import { ApplicationECSAlbCodeDeploy } from './ApplicationECSAlbCodeDeploy.js';
 import {
   TerraformResource,
   TerraformIterator,
   TerraformMetaArguments,
   Fn,
 } from 'cdktf';
-import { truncateString } from '../utilities';
+import { truncateString } from '../utilities.js';
 import { File } from '@cdktf/provider-local/lib/file';
 import { AlbListenerRule } from '@cdktf/provider-aws/lib/alb-listener-rule';
 import { CloudwatchLogGroup } from '@cdktf/provider-aws/lib/cloudwatch-log-group';
