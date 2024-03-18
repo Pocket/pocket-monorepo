@@ -5,7 +5,7 @@ import {
   PocketVersionedLambdaProps,
   ApplicationBaseDNS,
   ApplicationCertificate,
-} from '..';
+} from '../index.js';
 import { Fn, TerraformMetaArguments } from 'cdktf';
 import { ApiGatewayBasePathMapping } from '@cdktf/provider-aws/lib/api-gateway-base-path-mapping';
 import {

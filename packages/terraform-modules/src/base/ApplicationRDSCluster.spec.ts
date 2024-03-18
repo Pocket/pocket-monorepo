@@ -1,5 +1,5 @@
 import { Testing } from 'cdktf';
-import { ApplicationRDSCluster } from './ApplicationRDSCluster';
+import { ApplicationRDSCluster } from './ApplicationRDSCluster.js'
 
 describe('ApplicationRDSCluster', () => {
   it('renders a RDS cluster', () => {

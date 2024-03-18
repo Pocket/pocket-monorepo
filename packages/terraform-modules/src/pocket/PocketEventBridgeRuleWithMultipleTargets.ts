@@ -4,7 +4,7 @@ import {
   ApplicationEventBridgeRule,
   ApplicationEventBridgeRuleProps,
   Target,
-} from '../base/ApplicationEventBridgeRule';
+} from '../base/ApplicationEventBridgeRule.js';
 
 export type PocketEventBridgeTargets = {
   targetId: string;

@@ -7,7 +7,7 @@ import {
   PocketVersionedLambda,
   PocketVersionedLambdaProps,
 } from './PocketVersionedLambda';
-import { LAMBDA_RUNTIMES } from '../base/ApplicationVersionedLambda';
+import { LAMBDA_RUNTIMES } from '../base/ApplicationVersionedLambda.js'
 import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
 
 describe('PocketEventBridgeRuleWithMultipleTargets', () => {
