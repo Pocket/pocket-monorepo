@@ -40,8 +40,10 @@ export class SqsListener {
       serverLogger.error('unable to add event to queue', {
         data: JSON.stringify(data),
         queueUrl,
+        error: err,
       });
-      Sentry.captureMessage(errorMessage);
+      Sentry.addBreadcrumb({ message: errorMessage });
+      Sentry.captureException(err);
     }
   }
 }

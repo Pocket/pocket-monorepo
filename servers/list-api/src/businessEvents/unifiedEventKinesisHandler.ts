@@ -45,19 +45,16 @@ export class UnifiedEventKinesisHandler {
 
     try {
       await this.kinesis.send(putCommand);
-    } catch {
+    } catch (error) {
       serverLogger.error('Failed to send event(s) to kinesis stream', {
         stream: config.aws.kinesis.unifiedEvents.streamName,
         event: JSON.stringify(unifiedEvent),
+        error,
       });
       Sentry.addBreadcrumb({
-        message: `Failed Events: \n ${JSON.stringify(unifiedEvent)}`,
+        message: `Failed Unified Events: \n ${JSON.stringify(unifiedEvent)}`,
       });
-      Sentry.captureException(
-        new Error(
-          `Failed to send events to kinesis ${config.aws.kinesis.unifiedEvents.streamName}`,
-        ),
-      );
+      Sentry.captureException(error);
     }
   }
 }
