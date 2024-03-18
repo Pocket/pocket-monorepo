@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@smithy/util-endpoints': 1.1.2
-
 importers:
 
   .:
@@ -2593,7 +2590,7 @@ packages:
       '@smithy/util-body-length-node': 2.3.0
       '@smithy/util-defaults-mode-browser': 2.2.0
       '@smithy/util-defaults-mode-node': 2.3.0
-      '@smithy/util-endpoints': 1.1.2
+      '@smithy/util-endpoints': 1.2.0
       '@smithy/util-middleware': 2.2.0
       '@smithy/util-retry': 2.2.0
       '@smithy/util-utf8': 2.3.0
@@ -2643,7 +2640,7 @@ packages:
       '@smithy/util-body-length-node': 2.3.0
       '@smithy/util-defaults-mode-browser': 2.2.0
       '@smithy/util-defaults-mode-node': 2.3.0
-      '@smithy/util-endpoints': 1.1.2
+      '@smithy/util-endpoints': 1.2.0
       '@smithy/util-middleware': 2.2.0
       '@smithy/util-retry': 2.2.0
       '@smithy/util-utf8': 2.3.0
@@ -2694,7 +2691,7 @@ packages:
       '@smithy/util-body-length-node': 2.3.0
       '@smithy/util-defaults-mode-browser': 2.2.0
       '@smithy/util-defaults-mode-node': 2.3.0
-      '@smithy/util-endpoints': 1.1.2
+      '@smithy/util-endpoints': 1.2.0
       '@smithy/util-retry': 2.2.0
       '@smithy/util-utf8': 2.3.0
       tslib: 2.6.2
@@ -2741,7 +2738,7 @@ packages:
       '@smithy/util-body-length-node': 2.3.0
       '@smithy/util-defaults-mode-browser': 2.2.0
       '@smithy/util-defaults-mode-node': 2.3.0
-      '@smithy/util-endpoints': 1.1.2
+      '@smithy/util-endpoints': 1.2.0
       '@smithy/util-middleware': 2.2.0
       '@smithy/util-retry': 2.2.0
       '@smithy/util-utf8': 2.3.0
@@ -2792,7 +2789,7 @@ packages:
       '@smithy/util-body-length-node': 2.3.0
       '@smithy/util-defaults-mode-browser': 2.2.0
       '@smithy/util-defaults-mode-node': 2.3.0
-      '@smithy/util-endpoints': 1.1.2
+      '@smithy/util-endpoints': 1.2.0
       '@smithy/util-middleware': 2.2.0
       '@smithy/util-retry': 2.2.0
       '@smithy/util-utf8': 2.3.0
@@ -2844,7 +2841,7 @@ packages:
       '@smithy/util-body-length-node': 2.3.0
       '@smithy/util-defaults-mode-browser': 2.2.0
       '@smithy/util-defaults-mode-node': 2.3.0
-      '@smithy/util-endpoints': 1.1.2
+      '@smithy/util-endpoints': 1.2.0
       '@smithy/util-middleware': 2.2.0
       '@smithy/util-retry': 2.2.0
       '@smithy/util-stream': 2.2.0
@@ -2894,7 +2891,7 @@ packages:
       '@smithy/util-body-length-node': 2.3.0
       '@smithy/util-defaults-mode-browser': 2.2.0
       '@smithy/util-defaults-mode-node': 2.3.0
-      '@smithy/util-endpoints': 1.1.2
+      '@smithy/util-endpoints': 1.2.0
       '@smithy/util-middleware': 2.2.0
       '@smithy/util-retry': 2.2.0
       '@smithy/util-utf8': 2.3.0
@@ -2945,7 +2942,7 @@ packages:
       '@smithy/util-body-length-node': 2.3.0
       '@smithy/util-defaults-mode-browser': 2.2.0
       '@smithy/util-defaults-mode-node': 2.3.0
-      '@smithy/util-endpoints': 1.1.2
+      '@smithy/util-endpoints': 1.2.0
       '@smithy/util-middleware': 2.2.0
       '@smithy/util-retry': 2.2.0
       '@smithy/util-utf8': 2.3.0
@@ -2993,7 +2990,7 @@ packages:
       '@smithy/util-body-length-node': 2.3.0
       '@smithy/util-defaults-mode-browser': 2.2.0
       '@smithy/util-defaults-mode-node': 2.3.0
-      '@smithy/util-endpoints': 1.1.2
+      '@smithy/util-endpoints': 1.2.0
       '@smithy/util-middleware': 2.2.0
       '@smithy/util-retry': 2.2.0
       '@smithy/util-utf8': 2.3.0
@@ -3045,7 +3042,7 @@ packages:
       '@smithy/util-body-length-node': 2.3.0
       '@smithy/util-defaults-mode-browser': 2.2.0
       '@smithy/util-defaults-mode-node': 2.3.0
-      '@smithy/util-endpoints': 1.1.2
+      '@smithy/util-endpoints': 1.2.0
       '@smithy/util-middleware': 2.2.0
       '@smithy/util-retry': 2.2.0
       '@smithy/util-utf8': 2.3.0
@@ -3091,7 +3088,7 @@ packages:
       '@smithy/util-body-length-node': 2.3.0
       '@smithy/util-defaults-mode-browser': 2.2.0
       '@smithy/util-defaults-mode-node': 2.3.0
-      '@smithy/util-endpoints': 1.1.2
+      '@smithy/util-endpoints': 1.2.0
       '@smithy/util-middleware': 2.2.0
       '@smithy/util-retry': 2.2.0
       '@smithy/util-utf8': 2.3.0
@@ -3140,7 +3137,7 @@ packages:
       '@smithy/util-body-length-node': 2.3.0
       '@smithy/util-defaults-mode-browser': 2.2.0
       '@smithy/util-defaults-mode-node': 2.3.0
-      '@smithy/util-endpoints': 1.1.2
+      '@smithy/util-endpoints': 1.2.0
       '@smithy/util-middleware': 2.2.0
       '@smithy/util-retry': 2.2.0
       '@smithy/util-utf8': 2.3.0
@@ -3451,7 +3448,7 @@ packages:
     dependencies:
       '@aws-sdk/types': 3.535.0
       '@smithy/types': 2.12.0
-      '@smithy/util-endpoints': 1.1.2
+      '@smithy/util-endpoints': 1.2.0
       tslib: 2.6.2
     dev: false
 
@@ -7764,8 +7761,8 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@smithy/util-endpoints@1.1.2:
-    resolution: {integrity: sha512-2/REfdcJ20y9iF+9kSBRBsaoGzjT5dZ3E6/TA45GHJuJAb/vZTj76VLTcrl2iN3fWXiDK1B8RxchaLGbr7RxxA==}
+  /@smithy/util-endpoints@1.2.0:
+    resolution: {integrity: sha512-BuDHv8zRjsE5zXd3PxFXFknzBG3owCpjq8G3FcsXW3CykYXuEqM3nTSsmLzw5q+T12ZYuDlVUZKBdpNbhVtlrQ==}
     engines: {node: '>= 14.0.0'}
     dependencies:
       '@smithy/node-config-provider': 2.3.0
