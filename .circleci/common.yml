@@ -473,7 +473,7 @@ jobs:
           - MYSQL_ALLOW_EMPTY_PASSWORD=yes
           - TZ=UTC
         command: --default_authentication_plugin=mysql_native_password --sql-mode="NO_ENGINE_SUBSTITUTION" --character-set-server=UTF8MB3 --collation-server=utf8_unicode_ci
-      - image: localstack/localstack:3.0.2@sha256:e606c4421419030b12d63a59f1211f57f5b0fbf7e9ce769e6250ee62ff4f9293
+      - image: localstack/localstack:3.2.0@sha256:167eb023e07eef65f1e490d7a77cf45124e7a24395e4736dd2582e8ea0618ecb
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
