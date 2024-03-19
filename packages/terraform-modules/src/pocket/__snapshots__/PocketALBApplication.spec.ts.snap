@@ -1417,6 +1417,20 @@ exports[`PocketALBApplication renders an Pocket App with code deploy 1`] = `
       }
     }
   },
+  "output": {
+    "ecs-task-arn": {
+      "description": "ECS Task Definition ARN",
+      "value": "\${aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45.arn}"
+    },
+    "ecs-task-containerName": {
+      "description": "ECS Task Container Name",
+      "value": "main_container"
+    },
+    "ecs-task-containerPort": {
+      "description": "ECS Task Container Port",
+      "value": 8675309
+    }
+  },
   "resource": {
     "aws_acm_certificate": {
       "testPocketApp_alb_certificate_417C14FF": {
@@ -2125,6 +2139,20 @@ exports[`PocketALBApplication renders an Pocket App with code deploy and creates
       }
     }
   },
+  "output": {
+    "ecs-task-arn": {
+      "description": "ECS Task Definition ARN",
+      "value": "\${aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45.arn}"
+    },
+    "ecs-task-containerName": {
+      "description": "ECS Task Container Name",
+      "value": "main_container"
+    },
+    "ecs-task-containerPort": {
+      "description": "ECS Task Container Port",
+      "value": 8675309
+    }
+  },
   "resource": {
     "aws_acm_certificate": {
       "testPocketApp_alb_certificate_417C14FF": {
@@ -2829,6 +2857,20 @@ exports[`PocketALBApplication renders an Pocket App with code deploy notificatio
           }
         ]
       }
+    }
+  },
+  "output": {
+    "ecs-task-arn": {
+      "description": "ECS Task Definition ARN",
+      "value": "\${aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45.arn}"
+    },
+    "ecs-task-containerName": {
+      "description": "ECS Task Container Name",
+      "value": "main_container"
+    },
+    "ecs-task-containerPort": {
+      "description": "ECS Task Container Port",
+      "value": 8675309
     }
   },
   "resource": {

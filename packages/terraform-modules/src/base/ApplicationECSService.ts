@@ -17,6 +17,7 @@ import {
   TerraformIterator,
   TerraformMetaArguments,
   Fn,
+  TerraformOutput,
 } from 'cdktf';
 import { truncateString } from '../utilities.js';
 import { File } from '@cdktf/provider-local/lib/file';
@@ -61,6 +62,7 @@ export interface ApplicationECSServiceProps extends TerraformMetaArguments {
   useCodeDeploy: boolean; //defaults to true
   useTerraformBasedCodeDeploy?: boolean; //defaults to true
   useCodePipeline?: boolean;
+  generateAppSpec?: boolean;
   successTerminationWaitTimeInMinutes?: number;
   codeDeployNotifications?: {
     notifyOnStarted?: boolean; //defaults to true
@@ -264,6 +266,7 @@ export class ApplicationECSService extends Construct {
     config.useCodeDeploy = config.useCodeDeploy ?? true;
     config.useTerraformBasedCodeDeploy =
       config.useTerraformBasedCodeDeploy ?? true;
+    config.generateAppSpec = config.generateAppSpec ?? true;
 
     config.lifecycleIgnoreChanges = config.lifecycleIgnoreChanges || [
       'desired_count',
@@ -319,25 +322,45 @@ export class ApplicationECSService extends Construct {
       );
     }
 
-    new File(this, 'appspec', {
-      content: JSON.stringify({
-        version: 1,
-        Resources: [
-          {
-            TargetService: {
-              Type: 'AWS::ECS::Service',
-              Properties: {
-                TaskDefinition: taskDef.arn,
-                LoadBalancerInfo: {
-                  ContainerName: config.albConfig.containerName,
-                  ContainerPort: config.albConfig.containerPort,
+    if (config.generateAppSpec) {
+      new File(this, 'appspec', {
+        content: JSON.stringify({
+          version: 1,
+          Resources: [
+            {
+              TargetService: {
+                Type: 'AWS::ECS::Service',
+                Properties: {
+                  TaskDefinition: taskDef.arn,
+                  LoadBalancerInfo: {
+                    ContainerName: config.albConfig.containerName,
+                    ContainerPort: config.albConfig.containerPort,
+                  },
                 },
               },
             },
-          },
-        ],
-      }),
-      filename: 'appspec.json',
+          ],
+        }),
+        filename: 'appspec.json',
+      });
+    }
+
+    new TerraformOutput(this, 'ecs-task-arn', {
+      description: 'ECS Task Definition ARN',
+      value: taskDef.arn,
+      staticId: true,
+    });
+
+    new TerraformOutput(this, 'ecs-task-containerName', {
+      description: 'ECS Task Container Name',
+      value: config.albConfig.containerName,
+      staticId: true,
+    });
+
+    new TerraformOutput(this, 'ecs-task-containerPort', {
+      description: 'ECS Task Container Port',
+      value: config.albConfig.containerPort,
+      staticId: true,
     });
   }
 
