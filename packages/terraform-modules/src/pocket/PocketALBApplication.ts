@@ -117,6 +117,10 @@ export interface PocketALBApplicationProps extends TerraformMetaArguments {
      */
     useTerraformBasedCodeDeploy?: boolean;
     /**
+     * Option to generate an app spec file with the task def arn
+     */
+    generateAppSpec?: boolean;
+    /**
      * Optional SNS topic for CodeDeploy notifications.
      */
     snsNotificationTopicArn?: string;
@@ -627,6 +631,7 @@ export class PocketALBApplication extends Construct {
       useCodePipeline: this.config.codeDeploy.useCodePipeline,
       useTerraformBasedCodeDeploy:
         this.config.codeDeploy.useTerraformBasedCodeDeploy,
+      generateAppSpec: this.config.codeDeploy.generateAppSpec,
       successTerminationWaitTimeInMinutes:
         this.config.codeDeploy.successTerminationWaitTimeInMinutes,
       codeDeploySnsNotificationTopicArn:

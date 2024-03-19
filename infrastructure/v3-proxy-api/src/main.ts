@@ -168,6 +168,7 @@ class Stack extends TerraformStack {
           notifyOnSucceeded: false,
         },
         snsNotificationTopicArn: snsTopic.arn,
+        generateAppSpec: false,
       },
       exposedContainer: {
         name: 'app',

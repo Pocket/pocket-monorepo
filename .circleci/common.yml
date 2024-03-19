@@ -4,6 +4,7 @@ orbs:
   aws-cli: circleci/aws-cli@2.0.6
   aws-ecr: circleci/aws-ecr@7.3.0
   aws-code-deploy: circleci/aws-code-deploy@3.0.0
+  aws-ecs: circleci/aws-ecs@4.0.0
 
 # This is an enum that is used within all our jobs and our exit early job.
 # As a new "service/deployment" is added you should add to the enum.
@@ -201,10 +202,6 @@ jobs:
         description: Whether or not its a dev build
         type: boolean
         default: false
-      save_app_spec:
-        description: Whether or not we should save off the app spec file for later use
-        type: boolean
-        default: true
       uses_raw_hcl:
         description: Signals that we do not need to compile the app code
         type: boolean
@@ -224,7 +221,7 @@ jobs:
       - run:
           name: Install tfcmt
           command: |
-            curl -L https://github.com/suzuki-shunsuke/tfcmt/releases/download/v4.7.3/tfcmt_linux_amd64.tar.gz | tar xvzf - tfcmt
+            curl -L https://github.com/suzuki-shunsuke/tfcmt/releases/download/v4.9.0/tfcmt_linux_amd64.tar.gz | tar xvzf - tfcmt
             mv tfcmt /home/circleci/tfcmt
             chmod a+x /home/circleci/tfcmt
       - install_codebuild_secrets
@@ -280,13 +277,6 @@ jobs:
             tfenv use
             terraform init
       - when:
-          condition: <<parameters.save_app_spec>>
-          steps:
-            - restore_cache:
-                name: Restore AppSpec Cache
-                keys:
-                  - appspec-<< parameters.for >>
-      - when:
           condition: <<parameters.apply>>
           steps:
             - attach_workspace:
@@ -297,20 +287,12 @@ jobs:
                   . /home/circleci/.codebuild_shims_wrapper.sh
                   cd << parameters.stack-output-path >>
                   /home/circleci/tfcmt --var target:<< parameters.scope >><<#parameters.dev>>-dev<</parameters.dev>> apply -- terraform apply -auto-approve -lock-timeout=10m
-            - when:
-                condition: <<parameters.save_app_spec>>
-                steps:
-                 - run:
-                     name: Copy App Spec
-                     command: |
-                       . /home/circleci/.codebuild_shims_wrapper.sh
-                       cd << parameters.stack-output-path >>
-                       mkdir -p /tmp/workspace/<< parameters.for >>
-                       cp appspec.json /tmp/workspace/<< parameters.for >>/
-                 - persist_to_workspace:
-                    root: /tmp/workspace
-                    paths:
-                      - '<< parameters.for >>/appspec.json'
+                  echo "TF_OUTPUT=$(terraform output -json)" >> $BASH_ENV
+            # Persist TF_OUTPUT using workspace
+            - persist_to_workspace:
+                root: .
+                paths:
+                  - $BASH_ENV
       - unless:
           condition: <<parameters.apply>>
           steps:
@@ -325,13 +307,7 @@ jobs:
           paths:
             - /home/circleci/.tfenv/versions/*
             - /home/circleci/.tfenv/bin/terraform-*
-      - when:
-          condition: <<parameters.save_app_spec>>
-          steps:
-            - save_cache:
-                key: appspec-<< parameters.for >>
-                paths:
-                  - << parameters.stack-output-path >>/appspec.json
+
   code_deploy_ecs:
     parameters:
       workspace:
@@ -351,31 +327,31 @@ jobs:
     steps:
       - exit-early-if-irrelevant:
           for: << parameters.for >>
+      # Restore TF_OUTPUT from workspace
       - attach_workspace:
-          at: << parameters.workspace >>
+          at: .
       - run:
-          name: CodeDeploy
+          # Pulls out the terraform params needed for CodeDeploy and then re-saves them to be used in the CodeDeploy ORB
+          name: CodeDeploy Load Env
           command: |
             . /home/circleci/.codebuild_shims_wrapper.sh
-            export AWS_PAGER=""
-            currentDeployment=$(aws deploy list-deployments --application-name "<< parameters.codedeploy-app-name >>" --deployment-group-name "<< parameters.codedeploy-group-name >>" --query "deployments[?status=='InProgress'].deploymentId" --output text --no-cli-pager)
-            if [ -n "$currentDeployment" ]; then
-              echo "There is already a deployment in progress with ID: $currentDeployment" waiting for it to finish
-              aws deploy wait deployment-successful --deployment-id "$deploymentId" --no-cli-pager || {
-                echo "Deployment failed or timed out."
-                exit 1
-              }
-            fi
+            source $BASH_ENV
+            ECS_TASK_ARN=$(echo $TF_OUTPUT | jq -r '.ecs-task-arn.value')
+            ECS_TASK_CONTAINER_NAME=$(echo $TF_OUTPUT | jq -r '.ecs-task-containerName.value')
+            ECS_TASK_CONTAINER_PORT=$(echo $TF_OUTPUT | jq -r '.ecs-task-containerPort.value')
 
-            export appspec=$(cat '<< parameters.workspace >>/<< parameters.for >>/appspec.json')
-            export REVISION="revisionType=AppSpecContent,appSpecContent={content='$appspec'}"
-            aws deploy \
-            create-deployment \
-            --application-name="<< parameters.codedeploy-app-name >>"  \
-            --deployment-group-name="<< parameters.codedeploy-group-name >>" \
-            --description="Triggered from CircleCI" \
-            --revision="$REVISION" \
-            --no-cli-pager
+            echo "export ECS_TASK_ARN=$ECS_TASK_ARN" >> $BASH_ENV
+            echo "export ECS_TASK_CONTAINER_NAME=$ECS_TASK_CONTAINER_NAME" >> $BASH_ENV
+            echo "export ECS_TASK_CONTAINER_PORT=$ECS_TASK_CONTAINER_PORT" >> $BASH_ENV
+      - aws-ecs/update_service:
+          name: Deploy ECS Service
+          codedeploy_application_name: << parameters.codedeploy-app-name >>
+          codedeploy_deployment_group_name: << parameters.codedeploy-group-name >>
+          codedeploy_load_balanced_container_name: $ECS_TASK_CONTAINER_NAME
+          codedeploy_load_balanced_container_port: $ECS_TASK_CONTAINER_PORT
+          container_image_name_updates: tag=$CIRCLECI_SHA1, container=$ECS_TASK_CONTAINER_NAME
+          deployment_controller: CODE_DEPLOY
+          verify_revision_is_deployed: true
 
   code_deploy_lambda:
     parameters:
