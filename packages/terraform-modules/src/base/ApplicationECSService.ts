@@ -362,6 +362,12 @@ export class ApplicationECSService extends Construct {
       value: config.albConfig.containerPort,
       staticId: true,
     });
+
+    new TerraformOutput(this, 'ecs-task-family', {
+      description: 'ECS Task Family',
+      value: taskDef.family,
+      staticId: true,
+    });
   }
 
   /**

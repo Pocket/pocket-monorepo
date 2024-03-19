@@ -1418,6 +1418,14 @@ exports[`PocketALBApplication renders an Pocket App with code deploy 1`] = `
     }
   },
   "output": {
+    "ecs-codedeploy-app": {
+      "description": "ECS Code Deploy App",
+      "value": "\${aws_codedeploy_app.testPocketApp_ecs_service_ecs_codedeploy_ecs_code_deploy_480D0565.name}"
+    },
+    "ecs-codedeploy-group": {
+      "description": "ECS Code Deploy Group",
+      "value": "\${aws_codedeploy_deployment_group.testPocketApp_ecs_service_ecs_codedeploy_ecs_codedeploy_deployment_group_44B006D1.deployment_group_name}"
+    },
     "ecs-task-arn": {
       "description": "ECS Task Definition ARN",
       "value": "\${aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45.arn}"
@@ -1429,6 +1437,10 @@ exports[`PocketALBApplication renders an Pocket App with code deploy 1`] = `
     "ecs-task-containerPort": {
       "description": "ECS Task Container Port",
       "value": 8675309
+    },
+    "ecs-task-family": {
+      "description": "ECS Task Family",
+      "value": "\${aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45.family}"
     }
   },
   "resource": {
@@ -2140,6 +2152,14 @@ exports[`PocketALBApplication renders an Pocket App with code deploy and creates
     }
   },
   "output": {
+    "ecs-codedeploy-app": {
+      "description": "ECS Code Deploy App",
+      "value": "\${aws_codedeploy_app.testPocketApp_ecs_service_ecs_codedeploy_ecs_code_deploy_480D0565.name}"
+    },
+    "ecs-codedeploy-group": {
+      "description": "ECS Code Deploy Group",
+      "value": "\${aws_codedeploy_deployment_group.testPocketApp_ecs_service_ecs_codedeploy_ecs_codedeploy_deployment_group_44B006D1.deployment_group_name}"
+    },
     "ecs-task-arn": {
       "description": "ECS Task Definition ARN",
       "value": "\${aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45.arn}"
@@ -2151,6 +2171,10 @@ exports[`PocketALBApplication renders an Pocket App with code deploy and creates
     "ecs-task-containerPort": {
       "description": "ECS Task Container Port",
       "value": 8675309
+    },
+    "ecs-task-family": {
+      "description": "ECS Task Family",
+      "value": "\${aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45.family}"
     }
   },
   "resource": {
@@ -2860,6 +2884,14 @@ exports[`PocketALBApplication renders an Pocket App with code deploy notificatio
     }
   },
   "output": {
+    "ecs-codedeploy-app": {
+      "description": "ECS Code Deploy App",
+      "value": "\${aws_codedeploy_app.testPocketApp_ecs_service_ecs_codedeploy_ecs_code_deploy_480D0565.name}"
+    },
+    "ecs-codedeploy-group": {
+      "description": "ECS Code Deploy Group",
+      "value": "\${aws_codedeploy_deployment_group.testPocketApp_ecs_service_ecs_codedeploy_ecs_codedeploy_deployment_group_44B006D1.deployment_group_name}"
+    },
     "ecs-task-arn": {
       "description": "ECS Task Definition ARN",
       "value": "\${aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45.arn}"
@@ -2871,6 +2903,10 @@ exports[`PocketALBApplication renders an Pocket App with code deploy notificatio
     "ecs-task-containerPort": {
       "description": "ECS Task Container Port",
       "value": 8675309
+    },
+    "ecs-task-family": {
+      "description": "ECS Task Family",
+      "value": "\${aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45.family}"
     }
   },
   "resource": {

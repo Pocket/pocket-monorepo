@@ -8,7 +8,11 @@ import {
   codedeployApp,
   codedeployDeploymentGroup,
 } from '@cdktf/provider-aws';
-import { TerraformMetaArguments, TerraformResource } from 'cdktf';
+import {
+  TerraformMetaArguments,
+  TerraformOutput,
+  TerraformResource,
+} from 'cdktf';
 import { Construct } from 'constructs';
 
 export interface ApplicationECSAlbCodeDeployProps
@@ -99,6 +103,18 @@ export class ApplicationECSAlbCodeDeploy extends Construct {
           provider: this.config.provider,
         },
       );
+
+    new TerraformOutput(this, 'ecs-codedeploy-app', {
+      description: 'ECS Code Deploy App',
+      value: this.codeDeployApp.name,
+      staticId: true,
+    });
+
+    new TerraformOutput(this, 'ecs-codedeploy-group', {
+      description: 'ECS Code Deploy Group',
+      value: this.codeDeployDeploymentGroup.deploymentGroupName,
+      staticId: true,
+    });
   }
 
   /**
