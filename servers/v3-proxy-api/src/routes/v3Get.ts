@@ -20,7 +20,7 @@ import {
   searchSavedItemSimpleToRest,
 } from '../graph/get/toRest';
 import { checkSchema, validationResult, matchedData } from 'express-validator';
-import { V3GetParams, V3GetSchema } from './validations/GetSchema';
+import { V3GetParams, V3GetSchema } from './validations';
 import { InputValidationError } from '../errors/InputValidationError';
 
 const router: Router = Router();
