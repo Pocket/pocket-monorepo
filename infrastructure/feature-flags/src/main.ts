@@ -1,11 +1,13 @@
-import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
-import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
-import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
-import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/data-aws-kms-alias';
-import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
-import { LocalProvider } from '@cdktf/provider-local/lib/provider';
-import { NullProvider } from '@cdktf/provider-null/lib/provider';
-import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
+import {
+  provider as awsProvider,
+  dataAwsCallerIdentity,
+  dataAwsRegion,
+  dataAwsKmsAlias,
+  dataAwsSnsTopic,
+} from '@cdktf/provider-aws';
+import { provider as localProvider } from '@cdktf/provider-local';
+import { provider as nullProvider } from '@cdktf/provider-null';
+import { provider as pagerdutyProvider } from '@cdktf/provider-pagerduty';
 import {
   ApplicationRDSCluster,
   PocketALBApplication,
@@ -21,12 +23,14 @@ class FeatureFlags extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
-    new AwsProvider(this, 'aws', { region: 'us-east-1' });
+    new awsProvider.AwsProvider(this, 'aws', { region: 'us-east-1' });
 
-    new PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
+    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
+      token: undefined,
+    });
 
-    new LocalProvider(this, 'local_provider');
-    new NullProvider(this, 'null_provider');
+    new localProvider.LocalProvider(this, 'local_provider');
+    new nullProvider.NullProvider(this, 'null_provider');
 
     new S3Backend(this, {
       bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
@@ -36,8 +40,11 @@ class FeatureFlags extends TerraformStack {
     });
 
     const pocketVpc = new PocketVPC(this, 'pocket-vpc');
-    const region = new DataAwsRegion(this, 'region');
-    const caller = new DataAwsCallerIdentity(this, 'caller');
+    const region = new dataAwsRegion.DataAwsRegion(this, 'region');
+    const caller = new dataAwsCallerIdentity.DataAwsCallerIdentity(
+      this,
+      'caller',
+    );
 
     this.createPocketAlbApplication({
       rds: this.createRds(pocketVpc),
@@ -54,7 +61,7 @@ class FeatureFlags extends TerraformStack {
    * @private
    */
   private getCodeDeploySnsTopic() {
-    return new DataAwsSnsTopic(this, 'backend_notifications', {
+    return new dataAwsSnsTopic.DataAwsSnsTopic(this, 'backend_notifications', {
       name: `Backend-${config.environment}-ChatBot`,
     });
   }
@@ -64,7 +71,7 @@ class FeatureFlags extends TerraformStack {
    * @private
    */
   private getSecretsManagerKmsAlias() {
-    return new DataAwsKmsAlias(this, 'kms_alias', {
+    return new dataAwsKmsAlias.DataAwsKmsAlias(this, 'kms_alias', {
       name: 'alias/aws/secretsmanager',
     });
   }
@@ -131,10 +138,10 @@ class FeatureFlags extends TerraformStack {
   private createPocketAlbApplication(dependencies: {
     rds: ApplicationRDSCluster;
     pagerDuty: PocketPagerDuty;
-    region: DataAwsRegion;
-    caller: DataAwsCallerIdentity;
-    secretsManagerKmsAlias: DataAwsKmsAlias;
-    snsTopic: DataAwsSnsTopic;
+    region: dataAwsRegion.DataAwsRegion;
+    caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
+    secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
+    snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
   }): PocketALBApplication {
     const { rds, region, caller, secretsManagerKmsAlias, snsTopic } =
       dependencies;

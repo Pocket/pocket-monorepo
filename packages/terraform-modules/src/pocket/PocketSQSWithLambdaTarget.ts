@@ -7,24 +7,23 @@ import {
   ApplicationSQSQueue,
   ApplicationSQSQueueProps,
 } from '../base/ApplicationSQSQueue.js';
-import { ApplicationVersionedLambda } from '../base/ApplicationVersionedLambda.js'
-import { DataAwsIamPolicyDocument } from '@cdktf/provider-aws/lib/data-aws-iam-policy-document';
+import { ApplicationVersionedLambda } from '../base/ApplicationVersionedLambda.js';
 import {
-  DataAwsSqsQueueConfig,
-  DataAwsSqsQueue,
-} from '@cdktf/provider-aws/lib/data-aws-sqs-queue';
-import { IamPolicy } from '@cdktf/provider-aws/lib/iam-policy';
-import { IamRole } from '@cdktf/provider-aws/lib/iam-role';
-import { IamRolePolicyAttachment } from '@cdktf/provider-aws/lib/iam-role-policy-attachment';
-import { LambdaEventSourceMapping } from '@cdktf/provider-aws/lib/lambda-event-source-mapping';
-import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
+  dataAwsIamPolicyDocument,
+  dataAwsSqsQueue,
+  iamPolicy,
+  iamRolePolicyAttachment,
+  iamRole,
+  lambdaEventSourceMapping,
+  sqsQueue,
+} from '@cdktf/provider-aws';
 
 export interface PocketSQSWithLambdaTargetProps
   extends PocketVersionedLambdaProps {
   /**
    * Set configFromPreexistingSqsQueue to use an existing SQS queue. If not provided, then a queue will be created.
    */
-  configFromPreexistingSqsQueue?: DataAwsSqsQueueConfig;
+  configFromPreexistingSqsQueue?: dataAwsSqsQueue.DataAwsSqsQueueConfig;
   /**
    * Configure a new SQS queue. Cannot be used in combination with configFromPreexistingSqsQueue.
    */
@@ -47,7 +46,9 @@ export interface PocketSQSProps {
  * Extends the base pocket versioned lambda class to add a sqs based trigger on top of the lambda
  */
 export class PocketSQSWithLambdaTarget extends PocketVersionedLambda {
-  public readonly sqsQueueResource: SqsQueue | DataAwsSqsQueue;
+  public readonly sqsQueueResource:
+    | sqsQueue.SqsQueue
+    | dataAwsSqsQueue.DataAwsSqsQueue;
   public readonly applicationSqsQueue: ApplicationSQSQueue;
 
   constructor(
@@ -96,9 +97,13 @@ export class PocketSQSWithLambdaTarget extends PocketVersionedLambda {
    * @private
    */
   private getExistingSqsQueue(
-    sqsQueueConfig: DataAwsSqsQueueConfig,
-  ): DataAwsSqsQueue {
-    return new DataAwsSqsQueue(this, 'lambda_sqs_queue', sqsQueueConfig);
+    sqsQueueConfig: dataAwsSqsQueue.DataAwsSqsQueueConfig,
+  ): dataAwsSqsQueue.DataAwsSqsQueue {
+    return new dataAwsSqsQueue.DataAwsSqsQueue(
+      this,
+      'lambda_sqs_queue',
+      sqsQueueConfig,
+    );
   }
 
   /**
@@ -136,17 +141,21 @@ export class PocketSQSWithLambdaTarget extends PocketVersionedLambda {
    */
   private createEventSourceMapping(
     lambda: ApplicationVersionedLambda,
-    sqsQueue: SqsQueue | DataAwsSqsQueue,
+    sqsQueue: sqsQueue.SqsQueue | dataAwsSqsQueue.DataAwsSqsQueue,
     config: PocketSQSWithLambdaTargetProps,
   ) {
-    return new LambdaEventSourceMapping(this, `lambda_event_source_mapping`, {
-      eventSourceArn: sqsQueue.arn,
-      functionName: lambda.versionedLambda.arn,
-      batchSize: config.batchSize,
-      maximumBatchingWindowInSeconds: config.batchWindow,
-      functionResponseTypes: config.functionResponseTypes,
-      provider: config.provider,
-    });
+    return new lambdaEventSourceMapping.LambdaEventSourceMapping(
+      this,
+      `lambda_event_source_mapping`,
+      {
+        eventSourceArn: sqsQueue.arn,
+        functionName: lambda.versionedLambda.arn,
+        batchSize: config.batchSize,
+        maximumBatchingWindowInSeconds: config.batchWindow,
+        functionResponseTypes: config.functionResponseTypes,
+        provider: config.provider,
+      },
+    );
   }
 
   /**
@@ -156,32 +165,36 @@ export class PocketSQSWithLambdaTarget extends PocketVersionedLambda {
    * @private
    */
   private createSQSExecutionPolicyOnLambda(
-    executionRole: IamRole,
-    sqsQueue: SqsQueue | DataAwsSqsQueue,
-  ): IamRolePolicyAttachment {
-    const lambdaSqsPolicy = new IamPolicy(this, 'sqs-policy', {
+    executionRole: iamRole.IamRole,
+    sqsQueue: sqsQueue.SqsQueue | dataAwsSqsQueue.DataAwsSqsQueue,
+  ): iamRolePolicyAttachment.IamRolePolicyAttachment {
+    const lambdaSqsPolicy = new iamPolicy.IamPolicy(this, 'sqs-policy', {
       name: `${this.config.name}-LambdaSQSPolicy`,
-      policy: new DataAwsIamPolicyDocument(this, `lambda_sqs_policy`, {
-        statement: [
-          {
-            effect: 'Allow',
-            actions: [
-              'sqs:SendMessage',
-              'sqs:ReceiveMessage',
-              'sqs:DeleteMessage',
-              'sqs:GetQueueAttributes',
-              'sqs:ChangeMessageVisibility',
-            ],
-            resources: [sqsQueue.arn],
-          },
-        ],
-      }).json,
+      policy: new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
+        this,
+        `lambda_sqs_policy`,
+        {
+          statement: [
+            {
+              effect: 'Allow',
+              actions: [
+                'sqs:SendMessage',
+                'sqs:ReceiveMessage',
+                'sqs:DeleteMessage',
+                'sqs:GetQueueAttributes',
+                'sqs:ChangeMessageVisibility',
+              ],
+              resources: [sqsQueue.arn],
+            },
+          ],
+        },
+      ).json,
       dependsOn: [executionRole],
       provider: this.config.provider,
       tags: this.config.tags,
     });
 
-    return new IamRolePolicyAttachment(
+    return new iamRolePolicyAttachment.IamRolePolicyAttachment(
       this,
       'execution-role-policy-attachment',
       {

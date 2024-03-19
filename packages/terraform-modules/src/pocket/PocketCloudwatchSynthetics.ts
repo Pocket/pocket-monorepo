@@ -1,12 +1,14 @@
 // Use this module over PocketSynthetics.ts when checks need to be inside a Pocket VPC.
-import { CloudwatchMetricAlarm } from '@cdktf/provider-aws/lib/cloudwatch-metric-alarm';
-import { DataAwsIamPolicyDocument } from '@cdktf/provider-aws/lib/data-aws-iam-policy-document';
-import { IamPolicy } from '@cdktf/provider-aws/lib/iam-policy';
-import { IamRole } from '@cdktf/provider-aws/lib/iam-role';
-import { IamRolePolicyAttachment } from '@cdktf/provider-aws/lib/iam-role-policy-attachment';
-import { S3Bucket } from '@cdktf/provider-aws/lib/s3-bucket';
-import { S3BucketLifecycleConfiguration } from '@cdktf/provider-aws/lib/s3-bucket-lifecycle-configuration';
-import { SyntheticsCanary } from '@cdktf/provider-aws/lib/synthetics-canary';
+import {
+  s3BucketLifecycleConfiguration,
+  s3Bucket,
+  iamRolePolicyAttachment,
+  iamRole,
+  iamPolicy,
+  dataAwsIamPolicyDocument,
+  cloudwatchMetricAlarm,
+  syntheticsCanary,
+} from '@cdktf/provider-aws';
 import { Construct } from 'constructs';
 
 /**
@@ -71,7 +73,7 @@ export class PocketAwsSyntheticChecks extends Construct {
     super(scope, name);
 
     // synthetic response artifacts are stored here
-    const syntheticArtifactsS3 = new S3Bucket(
+    const syntheticArtifactsS3 = new s3Bucket.S3Bucket(
       this,
       `${this.name}_synthetic_check_artifacts`,
       {
@@ -79,7 +81,7 @@ export class PocketAwsSyntheticChecks extends Construct {
       },
     );
 
-    new S3BucketLifecycleConfiguration(
+    new s3BucketLifecycleConfiguration.S3BucketLifecycleConfiguration(
       this,
       `${this.name}_synthetic_check_artifacts_lifecycle`,
       {
@@ -97,28 +99,29 @@ export class PocketAwsSyntheticChecks extends Construct {
     );
 
     // behind the scenes, Cloudwatch Synthetics are AWS-managed Lambdas
-    const dataSyntheticAssume = new DataAwsIamPolicyDocument(
-      this,
-      `${this.name}_synthetic_check_assume`,
-      {
-        version: '2012-10-17',
-        statement: [
-          {
-            effect: 'Allow',
-            actions: ['sts:AssumeRole'],
+    const dataSyntheticAssume =
+      new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
+        this,
+        `${this.name}_synthetic_check_assume`,
+        {
+          version: '2012-10-17',
+          statement: [
+            {
+              effect: 'Allow',
+              actions: ['sts:AssumeRole'],
 
-            principals: [
-              {
-                identifiers: ['lambda.amazonaws.com'],
-                type: 'Service',
-              },
-            ],
-          },
-        ],
-      },
-    );
+              principals: [
+                {
+                  identifiers: ['lambda.amazonaws.com'],
+                  type: 'Service',
+                },
+              ],
+            },
+          ],
+        },
+      );
 
-    const syntheticRole = new IamRole(this, 'synthetic_check_role', {
+    const syntheticRole = new iamRole.IamRole(this, 'synthetic_check_role', {
       name: `pocket-${this.config.prefix.toLowerCase()}-synthetic-check`,
 
       assumeRolePolicy: dataSyntheticAssume.json,
@@ -127,64 +130,65 @@ export class PocketAwsSyntheticChecks extends Construct {
 
     // puts artifacts into s3, stores logs, pushes metrics to Cloudwatch
     // also create networkinterfaces if synthetic check in VPC
-    const dataSyntheticAccess = new DataAwsIamPolicyDocument(
-      this,
-      `${this.name}_synthetic_check_access`,
-      {
-        version: '2012-10-17',
-        statement: [
-          {
-            effect: 'Allow',
-            actions: [
-              'logs:CreateLogGroup',
-              'logs:CreateLogStream',
-              'logs:PutLogEvents',
-            ],
-            resources: ['*'],
-          },
-          {
-            actions: ['s3:PutObject', 's3:GetObject'],
-            resources: [`${syntheticArtifactsS3.arn}/*`],
-          },
-          {
-            actions: ['s3:GetObject'],
-            resources: [
-              `arn:aws:s3:::pocket-syntheticchecks-${this.config.environment.toLowerCase()}/*`,
-            ],
-          },
-          {
-            actions: ['s3:GetBucketLocation'],
-            resources: [syntheticArtifactsS3.arn],
-          },
-          {
-            actions: ['s3:ListAllMyBuckets'],
-            resources: ['*'],
-          },
-          {
-            actions: ['cloudwatch:PutMetricData'],
-            resources: ['*'],
-            condition: [
-              {
-                test: 'StringEquals',
-                values: ['CloudWatchSynthetics'],
-                variable: 'cloudwatch:namespace',
-              },
-            ],
-          },
-          {
-            actions: [
-              'ec2:AttachNetworkInterface',
-              'ec2:CreateNetworkInterface',
-              'ec2:DeleteNetworkInterface',
-              'ec2:DescribeNetworkInterfaces',
-            ],
-            resources: ['*'],
-          },
-        ],
-      },
-    );
+    const dataSyntheticAccess =
+      new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
+        this,
+        `${this.name}_synthetic_check_access`,
+        {
+          version: '2012-10-17',
+          statement: [
+            {
+              effect: 'Allow',
+              actions: [
+                'logs:CreateLogGroup',
+                'logs:CreateLogStream',
+                'logs:PutLogEvents',
+              ],
+              resources: ['*'],
+            },
+            {
+              actions: ['s3:PutObject', 's3:GetObject'],
+              resources: [`${syntheticArtifactsS3.arn}/*`],
+            },
+            {
+              actions: ['s3:GetObject'],
+              resources: [
+                `arn:aws:s3:::pocket-syntheticchecks-${this.config.environment.toLowerCase()}/*`,
+              ],
+            },
+            {
+              actions: ['s3:GetBucketLocation'],
+              resources: [syntheticArtifactsS3.arn],
+            },
+            {
+              actions: ['s3:ListAllMyBuckets'],
+              resources: ['*'],
+            },
+            {
+              actions: ['cloudwatch:PutMetricData'],
+              resources: ['*'],
+              condition: [
+                {
+                  test: 'StringEquals',
+                  values: ['CloudWatchSynthetics'],
+                  variable: 'cloudwatch:namespace',
+                },
+              ],
+            },
+            {
+              actions: [
+                'ec2:AttachNetworkInterface',
+                'ec2:CreateNetworkInterface',
+                'ec2:DeleteNetworkInterface',
+                'ec2:DescribeNetworkInterfaces',
+              ],
+              resources: ['*'],
+            },
+          ],
+        },
+      );
 
-    const syntheticAccessPolicy = new IamPolicy(
+    const syntheticAccessPolicy = new iamPolicy.IamPolicy(
       this,
       `${this.name}_synthetic_check_access_policy`,
       {
@@ -193,7 +197,7 @@ export class PocketAwsSyntheticChecks extends Construct {
       },
     );
 
-    new IamRolePolicyAttachment(
+    new iamRolePolicyAttachment.IamRolePolicyAttachment(
       this,
       `${this.name}_synthetic_check_access_attach`,
       {
@@ -204,7 +208,7 @@ export class PocketAwsSyntheticChecks extends Construct {
 
     for (const uptimeConfig of this.config.uptime) {
       const count = this.config.uptime.indexOf(uptimeConfig);
-      const check = new SyntheticsCanary(
+      const check = new syntheticsCanary.SyntheticsCanary(
         this,
         `${this.name}_synthetic_check_uptime_${count}`,
         {
@@ -233,7 +237,7 @@ export class PocketAwsSyntheticChecks extends Construct {
         },
       );
 
-      new CloudwatchMetricAlarm(
+      new cloudwatchMetricAlarm.CloudwatchMetricAlarm(
         this,
         `${this.name}_synthetic_check_alarm_uptime_${count}`,
         {
@@ -266,7 +270,7 @@ export class PocketAwsSyntheticChecks extends Construct {
 
     for (const queryConfig of this.config.query) {
       const count = this.config.query.indexOf(queryConfig);
-      const check = new SyntheticsCanary(
+      const check = new syntheticsCanary.SyntheticsCanary(
         this,
         `${this.name}_synthetic_check_query_${count}`,
         {
@@ -298,7 +302,7 @@ export class PocketAwsSyntheticChecks extends Construct {
         },
       );
 
-      new CloudwatchMetricAlarm(
+      new cloudwatchMetricAlarm.CloudwatchMetricAlarm(
         this,
         `${this.name}_synthetic_check_alarm_query_${count}`,
         {

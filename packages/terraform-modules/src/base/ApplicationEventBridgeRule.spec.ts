@@ -1,4 +1,4 @@
-import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
+import { sqsQueue } from '@cdktf/provider-aws';
 import { Testing } from 'cdktf';
 import {
   ApplicationEventBridgeRule,
@@ -23,7 +23,7 @@ describe('AplicationEventBridgeRule', () => {
 
   it('renders an event bridge with sqs target', () => {
     const synthed = Testing.synthScope((stack) => {
-      const appSqs = new SqsQueue(stack, 'test-queue', {
+      const appSqs = new sqsQueue.SqsQueue(stack, 'test-queue', {
         name: 'Test-SQS-Queue',
       });
 
@@ -43,7 +43,7 @@ describe('AplicationEventBridgeRule', () => {
 
   it('renders an event bridge with pre-existing sqs target', () => {
     const synthed = Testing.synthScope((stack) => {
-      const appSqs = new SqsQueue(stack, 'test-queue', {
+      const appSqs = new sqsQueue.SqsQueue(stack, 'test-queue', {
         name: 'Test-SQS-Queue',
       });
 

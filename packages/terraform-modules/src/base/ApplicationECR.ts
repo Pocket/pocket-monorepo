@@ -1,11 +1,4 @@
-import {
-  EcrLifecyclePolicyConfig,
-  EcrLifecyclePolicy,
-} from '@cdktf/provider-aws/lib/ecr-lifecycle-policy';
-import {
-  EcrRepository,
-  EcrRepositoryConfig,
-} from '@cdktf/provider-aws/lib/ecr-repository';
+import { ecrRepository, ecrLifecyclePolicy } from '@cdktf/provider-aws';
 import { TerraformMetaArguments } from 'cdktf';
 import { Construct } from 'constructs';
 
@@ -15,12 +8,12 @@ export interface ECRProps extends TerraformMetaArguments {
 }
 
 export class ApplicationECR extends Construct {
-  public readonly repo: EcrRepository;
+  public readonly repo: ecrRepository.EcrRepository;
 
   constructor(scope: Construct, name: string, config: ECRProps) {
     super(scope, name);
 
-    const ecrConfig: EcrRepositoryConfig = {
+    const ecrConfig: ecrRepository.EcrRepositoryConfig = {
       name: config.name,
       tags: config.tags,
       imageScanningConfiguration: {
@@ -29,7 +22,7 @@ export class ApplicationECR extends Construct {
       provider: config.provider,
     };
 
-    this.repo = new EcrRepository(this, 'ecr-repo', ecrConfig);
+    this.repo = new ecrRepository.EcrRepository(this, 'ecr-repo', ecrConfig);
 
     // this is our default policy
     // perhaps this should be defined elsewhere? or allow to be overwritten?
@@ -51,13 +44,17 @@ export class ApplicationECR extends Construct {
       ],
     };
 
-    const ecrPolicyConfig: EcrLifecyclePolicyConfig = {
+    const ecrPolicyConfig: ecrLifecyclePolicy.EcrLifecyclePolicyConfig = {
       repository: this.repo.name,
       policy: JSON.stringify(policy),
       dependsOn: [this.repo],
       provider: config.provider,
     };
 
-    new EcrLifecyclePolicy(this, 'ecr-repo-lifecyclepolicy', ecrPolicyConfig);
+    new ecrLifecyclePolicy.EcrLifecyclePolicy(
+      this,
+      'ecr-repo-lifecyclepolicy',
+      ecrPolicyConfig,
+    );
   }
 }

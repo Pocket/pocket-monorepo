@@ -5,10 +5,7 @@
  */
 import { Fn } from 'cdktf';
 import { Construct } from 'constructs';
-import {
-  SchemasSchema,
-  SchemasSchemaConfig,
-} from '@cdktf/provider-aws/lib/schemas-schema';
+import { schemasSchema } from '@cdktf/provider-aws';
 import { SCHEMA_REGISTRY, SCHEMA_TYPE } from './types';
 import { config } from '../event-rules/account-delete-monitor/config';
 
@@ -22,14 +19,14 @@ export class QueueCheckDeleteSchema extends Construct {
   }
 
   private createQueueCheckDeleteSchema() {
-    const schemaProps: SchemasSchemaConfig = {
+    const schemaProps: schemasSchema.SchemasSchemaConfig = {
       name: config.queueCheckDelete.schema,
       description: `scheduled event to start "check delete" cascade, for determining if a user's data has been removed after deleting their account`,
       type: SCHEMA_TYPE,
       registryName: SCHEMA_REGISTRY,
       content: Fn.jsonencode(this.getScheduleCheckDeleteSchema()),
     };
-    const schema = new SchemasSchema(
+    const schema = new schemasSchema.SchemasSchema(
       this,
       `${config.queueCheckDelete.scheduleExpression}-schema`,
       schemaProps,

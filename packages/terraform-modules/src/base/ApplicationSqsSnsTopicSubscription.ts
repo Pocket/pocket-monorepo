@@ -1,11 +1,10 @@
-import { DataAwsIamPolicyDocument } from '@cdktf/provider-aws/lib/data-aws-iam-policy-document';
-import { DataAwsSqsQueue } from '@cdktf/provider-aws/lib/data-aws-sqs-queue';
 import {
-  SnsTopicSubscription,
-  SnsTopicSubscriptionConfig,
-} from '@cdktf/provider-aws/lib/sns-topic-subscription';
-import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
-import { SqsQueuePolicy } from '@cdktf/provider-aws/lib/sqs-queue-policy';
+  dataAwsIamPolicyDocument,
+  snsTopicSubscription,
+  sqsQueue,
+  sqsQueuePolicy,
+  dataAwsSqsQueue,
+} from '@cdktf/provider-aws';
 import { TerraformMetaArguments, TerraformResource } from 'cdktf';
 import { Construct } from 'constructs';
 
@@ -13,8 +12,8 @@ export interface ApplicationSqsSnsTopicSubscriptionProps
   extends TerraformMetaArguments {
   name: string;
   snsTopicArn: string;
-  sqsQueue: SqsQueue | DataAwsSqsQueue;
-  snsDlq?: SqsQueue;
+  sqsQueue: sqsQueue.SqsQueue | dataAwsSqsQueue.DataAwsSqsQueue;
+  snsDlq?: sqsQueue.SqsQueue;
   tags?: { [key: string]: string };
   dependsOn?: TerraformResource[];
 }
@@ -23,7 +22,7 @@ export interface ApplicationSqsSnsTopicSubscriptionProps
  * Creates an SNS to SQS subscription
  */
 export class ApplicationSqsSnsTopicSubscription extends Construct {
-  public readonly snsTopicSubscription: SnsTopicSubscription;
+  public readonly snsTopicSubscription: snsTopicSubscription.SnsTopicSubscription;
 
   constructor(
     scope: Construct,
@@ -41,8 +40,8 @@ export class ApplicationSqsSnsTopicSubscription extends Construct {
    * Create a dead-letter queue for failed SNS messages
    * @private
    */
-  private createSqsSubscriptionDlq(): SqsQueue {
-    return new SqsQueue(this, 'sns-topic-dql', {
+  private createSqsSubscriptionDlq(): sqsQueue.SqsQueue {
+    return new sqsQueue.SqsQueue(this, 'sns-topic-dql', {
       name: `${this.config.name}-SNS-Topic-DLQ`,
       tags: this.config.tags,
       provider: this.config.provider,
@@ -55,21 +54,25 @@ export class ApplicationSqsSnsTopicSubscription extends Construct {
    * @private
    */
   private createSnsTopicSubscription(
-    snsTopicDlq: SqsQueue,
-  ): SnsTopicSubscription {
-    return new SnsTopicSubscription(this, 'sns-subscription', {
-      topicArn: this.config.snsTopicArn,
-      protocol: 'sqs',
-      endpoint: this.config.sqsQueue.arn,
-      redrivePolicy: JSON.stringify({
-        deadLetterTargetArn: snsTopicDlq.arn,
-      }),
-      dependsOn: [
-        snsTopicDlq,
-        ...(this.config.dependsOn ? this.config.dependsOn : []),
-      ],
-      provider: this.config.provider,
-    } as SnsTopicSubscriptionConfig);
+    snsTopicDlq: sqsQueue.SqsQueue,
+  ): snsTopicSubscription.SnsTopicSubscription {
+    return new snsTopicSubscription.SnsTopicSubscription(
+      this,
+      'sns-subscription',
+      {
+        topicArn: this.config.snsTopicArn,
+        protocol: 'sqs',
+        endpoint: this.config.sqsQueue.arn,
+        redrivePolicy: JSON.stringify({
+          deadLetterTargetArn: snsTopicDlq.arn,
+        }),
+        dependsOn: [
+          snsTopicDlq,
+          ...(this.config.dependsOn ? this.config.dependsOn : []),
+        ],
+        provider: this.config.provider,
+      } as snsTopicSubscription.SnsTopicSubscriptionConfig,
+    );
   }
 
   /**
@@ -78,12 +81,12 @@ export class ApplicationSqsSnsTopicSubscription extends Construct {
    * @param snsTopicDlq
    * @private
    */
-  private createPoliciesForSnsToSQS(snsTopicDlq: SqsQueue): void {
+  private createPoliciesForSnsToSQS(snsTopicDlq: sqsQueue.SqsQueue): void {
     [
       { name: 'sns-sqs', resource: this.config.sqsQueue },
       { name: 'sns-dlq', resource: snsTopicDlq },
     ].forEach((queue) => {
-      const policy = new DataAwsIamPolicyDocument(
+      const policy = new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
         this,
         `${queue.name}-policy-document`,
         {
@@ -112,7 +115,7 @@ export class ApplicationSqsSnsTopicSubscription extends Construct {
         },
       ).json;
 
-      new SqsQueuePolicy(this, `${queue.name}-policy`, {
+      new sqsQueuePolicy.SqsQueuePolicy(this, `${queue.name}-policy`, {
         queueUrl: queue.resource.url,
         policy: policy,
         provider: this.config.provider,

@@ -20,25 +20,16 @@ import {
 } from 'cdktf';
 import { truncateString } from '../utilities.js';
 import { File } from '@cdktf/provider-local/lib/file';
-import { AlbListenerRule } from '@cdktf/provider-aws/lib/alb-listener-rule';
-import { CloudwatchLogGroup } from '@cdktf/provider-aws/lib/cloudwatch-log-group';
-import { EcrRepository } from '@cdktf/provider-aws/lib/ecr-repository';
 import {
-  EcsService,
-  EcsServiceNetworkConfiguration,
-  EcsServiceLoadBalancer,
-} from '@cdktf/provider-aws/lib/ecs-service';
-import {
-  EcsTaskDefinition,
-  EcsTaskDefinitionVolume,
-} from '@cdktf/provider-aws/lib/ecs-task-definition';
-import { EfsFileSystemPolicy } from '@cdktf/provider-aws/lib/efs-file-system-policy';
-import { EfsMountTarget } from '@cdktf/provider-aws/lib/efs-mount-target';
-import {
-  SecurityGroup,
-  SecurityGroupIngress,
-  SecurityGroupEgress,
-} from '@cdktf/provider-aws/lib/security-group';
+  ecrRepository,
+  albListenerRule,
+  cloudwatchLogGroup,
+  ecsService,
+  ecsTaskDefinition,
+  efsFileSystemPolicy,
+  efsMountTarget,
+  securityGroup,
+} from '@cdktf/provider-aws';
 
 const defaultRegion = 'us-east-1';
 
@@ -89,20 +80,20 @@ export interface EFSProps {
   arn: string;
 }
 interface ECSTaskDefinitionResponse {
-  taskDef: EcsTaskDefinition;
-  ecrRepos: EcrRepository[];
+  taskDef: ecsTaskDefinition.EcsTaskDefinition;
+  ecrRepos: ecrRepository.EcrRepository[];
 }
 
 /**
  * Generates an Application Certificate given a domain name and zoneId
  */
 export class ApplicationECSService extends Construct {
-  public readonly service: EcsService;
-  public readonly ecsSecurityGroup: SecurityGroup;
+  public readonly service: ecsService.EcsService;
+  public readonly ecsSecurityGroup: securityGroup.SecurityGroup;
   public readonly mainTargetGroup?: ApplicationTargetGroup;
   public readonly codeDeployApp?: ApplicationECSAlbCodeDeploy;
-  public readonly ecrRepos: EcrRepository[];
-  public readonly taskDefinition: EcsTaskDefinition;
+  public readonly ecrRepos: ecrRepository.EcrRepository[];
+  public readonly taskDefinition: ecsTaskDefinition.EcsTaskDefinition;
   public ecsIam: ApplicationECSIAM;
   private readonly config: ApplicationECSServiceProps;
 
@@ -127,12 +118,12 @@ export class ApplicationECSService extends Construct {
     //Setup an array of resources that the ecs service will need to depend on
     const ecsServiceDependsOn: TerraformResource[] = [...ecrRepos];
 
-    const ecsNetworkConfig: EcsServiceNetworkConfiguration = {
+    const ecsNetworkConfig: ecsService.EcsServiceNetworkConfiguration = {
       securityGroups: [this.ecsSecurityGroup.id],
       subnets: config.privateSubnetIds,
     };
 
-    const ecsLoadBalancerConfig: EcsServiceLoadBalancer[] = [];
+    const ecsLoadBalancerConfig: ecsService.EcsServiceLoadBalancer[] = [];
 
     const targetGroupNames: string[] = [];
 
@@ -141,26 +132,30 @@ export class ApplicationECSService extends Construct {
       this.mainTargetGroup = this.createTargetGroup('blue');
       ecsServiceDependsOn.push(this.mainTargetGroup.targetGroup);
       // Now that we have our service created, we append the alb listener rule to our HTTPS listener.
-      const listenerRule = new AlbListenerRule(this, 'listener_rule', {
-        listenerArn: this.config.albConfig.listenerArn,
-        priority: 1,
-        condition: [
-          {
-            pathPattern: { values: ['*'] },
+      const listenerRule = new albListenerRule.AlbListenerRule(
+        this,
+        'listener_rule',
+        {
+          listenerArn: this.config.albConfig.listenerArn,
+          priority: 1,
+          condition: [
+            {
+              pathPattern: { values: ['*'] },
+            },
+          ],
+          action: [
+            {
+              type: 'forward',
+              targetGroupArn: this.mainTargetGroup.targetGroup.arn,
+            },
+          ],
+          lifecycle: {
+            ignoreChanges: ['action'],
           },
-        ],
-        action: [
-          {
-            type: 'forward',
-            targetGroupArn: this.mainTargetGroup.targetGroup.arn,
-          },
-        ],
-        lifecycle: {
-          ignoreChanges: ['action'],
+          provider: config.provider,
+          tags: this.config.tags,
         },
-        provider: config.provider,
-        tags: this.config.tags,
-      });
+      );
       ecsServiceDependsOn.push(listenerRule);
       targetGroupNames.push(this.mainTargetGroup.targetGroup.name);
       ecsLoadBalancerConfig.push({
@@ -171,7 +166,7 @@ export class ApplicationECSService extends Construct {
     }
 
     //create ecs service
-    this.service = new EcsService(this, 'ecs-service', {
+    this.service = new ecsService.EcsService(this, 'ecs-service', {
       name: `${this.config.prefix}`,
       taskDefinition: taskDef.arn,
       deploymentController: this.config.useCodeDeploy
@@ -297,7 +292,7 @@ export class ApplicationECSService extends Construct {
    * @private
    */
   private generateAppSpecAndTaskDefFiles(
-    taskDef: EcsTaskDefinition,
+    taskDef: ecsTaskDefinition.EcsTaskDefinition,
     config: ApplicationECSServiceProps,
   ) {
     if (config.useCodePipeline) {
@@ -350,8 +345,8 @@ export class ApplicationECSService extends Construct {
    * Sets up the required ECS Security Groups
    * @private
    */
-  private setupECSSecurityGroups(): SecurityGroup {
-    let ingress: SecurityGroupIngress[] = [];
+  private setupECSSecurityGroups(): securityGroup.SecurityGroup {
+    let ingress: securityGroup.SecurityGroupIngress[] = [];
     if (this.config.albConfig) {
       ingress = [
         {
@@ -367,7 +362,7 @@ export class ApplicationECSService extends Construct {
       ];
     }
 
-    const egress: SecurityGroupEgress[] = [
+    const egress: securityGroup.SecurityGroupEgress[] = [
       {
         fromPort: 0,
         protocol: '-1',
@@ -380,7 +375,7 @@ export class ApplicationECSService extends Construct {
       },
     ];
 
-    return new SecurityGroup(this, `ecs_security_group`, {
+    return new securityGroup.SecurityGroup(this, `ecs_security_group`, {
       namePrefix: `${this.config.prefix}-ECSSecurityGroup`,
       description: 'Internal ECS Security Group (Managed by Terraform)',
       vpcId: this.config.vpcId,
@@ -399,11 +394,13 @@ export class ApplicationECSService extends Construct {
    * @private
    */
   private setupECSTaskDefinition(): ECSTaskDefinitionResponse {
-    const ecrRepos: EcrRepository[] = [];
+    const ecrRepos: ecrRepository.EcrRepository[] = [];
 
     const containerDefs = [];
     // Set of unique volumes by volume name
-    const volumes: { [key: string]: EcsTaskDefinitionVolume } = {};
+    const volumes: {
+      [key: string]: ecsTaskDefinition.EcsTaskDefinitionVolume;
+    } = {};
 
     // figure out if we need to create an ECR for each container definition
     // also build a container definition JSON for each container
@@ -429,18 +426,15 @@ export class ApplicationECSService extends Construct {
 
       // create log group if one not given
       if (!def.logGroup) {
-        const cloudwatchLogGroup = new CloudwatchLogGroup(
-          this,
-          `ecs-${def.name}`,
-          {
+        const cloudwatchLogGroupResource =
+          new cloudwatchLogGroup.CloudwatchLogGroup(this, `ecs-${def.name}`, {
             namePrefix: `/ecs/${this.config.prefix}/${def.name}`,
             retentionInDays: 30,
             tags: this.config.tags,
             provider: this.config.provider,
-          },
-        );
+          });
 
-        def.logGroup = cloudwatchLogGroup.name;
+        def.logGroup = cloudwatchLogGroupResource.name;
         def.logGroupRegion = this.config.region;
       }
 
@@ -478,7 +472,7 @@ export class ApplicationECSService extends Construct {
     });
 
     //Create task definition
-    const taskDef = new EcsTaskDefinition(this, 'ecs-task', {
+    const taskDef = new ecsTaskDefinition.EcsTaskDefinition(this, 'ecs-task', {
       // why are container definitions just JSON? can we get a real construct? sheesh.
       containerDefinitions: `[${containerDefs}]`,
       family: `${this.config.prefix}`,
@@ -521,7 +515,7 @@ export class ApplicationECSService extends Construct {
   }
 
   private createEfsMount(efsFs: EFSProps) {
-    const ingress: SecurityGroupIngress[] = [
+    const ingress: securityGroup.SecurityGroupIngress[] = [
       {
         // EFS port is not configurable in AWS
         fromPort: 2049,
@@ -535,7 +529,7 @@ export class ApplicationECSService extends Construct {
       },
     ];
 
-    const egress: SecurityGroupEgress[] = [
+    const egress: securityGroup.SecurityGroupEgress[] = [
       {
         fromPort: 0,
         protocol: '-1',
@@ -548,23 +542,27 @@ export class ApplicationECSService extends Construct {
       },
     ];
 
-    const mountSecurityGroup = new SecurityGroup(this, 'efs_mount_sg', {
-      namePrefix: `${this.config.prefix}-ECSSMountPoint`,
-      description: 'ECS EFS Mount (Managed by Terraform)',
-      vpcId: this.config.vpcId,
-      ingress,
-      egress,
-      tags: this.config.tags,
-      lifecycle: {
-        createBeforeDestroy: true,
+    const mountSecurityGroup = new securityGroup.SecurityGroup(
+      this,
+      'efs_mount_sg',
+      {
+        namePrefix: `${this.config.prefix}-ECSSMountPoint`,
+        description: 'ECS EFS Mount (Managed by Terraform)',
+        vpcId: this.config.vpcId,
+        ingress,
+        egress,
+        tags: this.config.tags,
+        lifecycle: {
+          createBeforeDestroy: true,
+        },
+        provider: this.config.provider,
       },
-      provider: this.config.provider,
-    });
+    );
 
     // https://developer.hashicorp.com/terraform/cdktf/concepts/iterators
     const iterator = TerraformIterator.fromList(this.config.privateSubnetIds);
 
-    new EfsMountTarget(this, 'efs_mount_target', {
+    new efsMountTarget.EfsMountTarget(this, 'efs_mount_target', {
       forEach: iterator,
       fileSystemId: efsFs.id,
       subnetId: iterator.value,
@@ -608,7 +606,7 @@ export class ApplicationECSService extends Construct {
       dependsOn: [this.ecsIam.taskRoleArn],
     });
 
-    new EfsFileSystemPolicy(this, 'efsFsPolicy', {
+    new efsFileSystemPolicy.EfsFileSystemPolicy(this, 'efsFsPolicy', {
       fileSystemId: efsFs.id,
       policy: JSON.stringify(FsPolicy),
       // https://github.com/hashicorp/terraform-provider-aws/pull/21734

@@ -1,4 +1,3 @@
-import { Resource } from 'cdktf';
 import { Construct } from 'constructs';
 import { config } from './config';
 import {
@@ -6,7 +5,7 @@ import {
   ApplicationDynamoDBTableCapacityMode,
 } from '@pocket-tools/terraform-modules';
 
-export class DynamoDB extends Resource {
+export class DynamoDB extends Construct {
   public readonly highlightNotesTable: ApplicationDynamoDBTable;
 
   constructor(scope: Construct, name: string) {

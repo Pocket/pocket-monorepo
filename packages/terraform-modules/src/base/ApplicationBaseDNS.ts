@@ -1,9 +1,11 @@
-import { DataAwsRoute53Zone } from '@cdktf/provider-aws/lib/data-aws-route53-zone';
-import { Route53Record } from '@cdktf/provider-aws/lib/route53-record';
-import { Route53Zone } from '@cdktf/provider-aws/lib/route53-zone';
+import {
+  route53Record,
+  route53Zone,
+  dataAwsRoute53Zone,
+} from '@cdktf/provider-aws';
 import { TerraformMetaArguments, TerraformProvider } from 'cdktf';
 import { Construct } from 'constructs';
-import { getRootDomain } from '../utilities.js'
+import { getRootDomain } from '../utilities.js';
 
 export interface RootDNSProps extends TerraformMetaArguments {
   domain: string;
@@ -46,11 +48,15 @@ export class ApplicationBaseDNS extends Construct {
     name: string,
     domain: string,
     provider?: TerraformProvider,
-  ): DataAwsRoute53Zone {
-    return new DataAwsRoute53Zone(scope, `${name}_main_hosted_zone`, {
-      name: getRootDomain(domain),
-      provider: provider,
-    });
+  ): dataAwsRoute53Zone.DataAwsRoute53Zone {
+    return new dataAwsRoute53Zone.DataAwsRoute53Zone(
+      scope,
+      `${name}_main_hosted_zone`,
+      {
+        name: getRootDomain(domain),
+        provider: provider,
+      },
+    );
   }
 
   static generateRoute53Zone(
@@ -58,8 +64,8 @@ export class ApplicationBaseDNS extends Construct {
     domain: string,
     tags?: { [key: string]: string },
     provider?: TerraformProvider,
-  ): Route53Zone {
-    return new Route53Zone(scope, `subhosted_zone`, {
+  ): route53Zone.Route53Zone {
+    return new route53Zone.Route53Zone(scope, `subhosted_zone`, {
       name: domain,
       tags: tags,
       provider: provider,
@@ -73,7 +79,7 @@ export class ApplicationBaseDNS extends Construct {
     records: string[],
     provider?: TerraformProvider,
   ): void {
-    new Route53Record(scope, `subhosted_zone_ns`, {
+    new route53Record.Route53Record(scope, `subhosted_zone_ns`, {
       name,
       type: 'NS',
       ttl: 86400,

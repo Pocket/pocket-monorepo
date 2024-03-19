@@ -6,17 +6,19 @@ import {
   PocketPagerDuty,
 } from '@pocket-tools/terraform-modules';
 import { config } from '../../config';
-import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
-import { SnsTopic } from '@cdktf/provider-aws/lib/sns-topic';
-import { DataAwsIamPolicyDocument } from '@cdktf/provider-aws/lib/data-aws-iam-policy-document';
-import { SnsTopicPolicy } from '@cdktf/provider-aws/lib/sns-topic-policy';
-import { Resource } from '@cdktf/provider-null/lib/resource';
+import {
+  sqsQueue,
+  snsTopic,
+  dataAwsIamPolicyDocument,
+  snsTopicPolicy,
+} from '@cdktf/provider-aws';
+import { resource } from '@cdktf/provider-null';
 import { eventConfig } from './eventConfig';
 import { createDeadLetterQueueAlarm } from '../utils';
 
 export class ShareableListItemEvents extends Construct {
-  public readonly snsTopic: SnsTopic;
-  public readonly snsTopicDlq: SqsQueue;
+  public readonly snsTopic: snsTopic.SnsTopic;
+  public readonly snsTopicDlq: sqsQueue.SqsQueue;
 
   constructor(
     scope: Construct,
@@ -26,14 +28,18 @@ export class ShareableListItemEvents extends Construct {
   ) {
     super(scope, name);
 
-    this.snsTopic = new SnsTopic(this, 'shareable-list-item-event-topic', {
-      name: `${config.prefix}-ShareableListItemEventTopic`,
-      lifecycle: {
-        preventDestroy: true,
+    this.snsTopic = new snsTopic.SnsTopic(
+      this,
+      'shareable-list-item-event-topic',
+      {
+        name: `${config.prefix}-ShareableListItemEventTopic`,
+        lifecycle: {
+          preventDestroy: true,
+        },
       },
-    });
+    );
 
-    this.snsTopicDlq = new SqsQueue(this, 'sns-topic-dql', {
+    this.snsTopicDlq = new sqsQueue.SqsQueue(this, 'sns-topic-dql', {
       name: `${config.prefix}-SNS-${eventConfig.shareableListItem.name}-Topic-DLQ`,
       tags: config.tags,
     });
@@ -59,7 +65,7 @@ export class ShareableListItemEvents extends Construct {
     //to prevent resource deletion in-addition to preventDestroy
     //e.g removing any of the dependsOn resource and running npm build would
     //throw error
-    new Resource(this, 'null-resource', {
+    new resource.Resource(this, 'null-resource', {
       dependsOn: [shareableListEvent.getEventBridge().rule, this.snsTopic],
     });
   }
@@ -97,27 +103,28 @@ export class ShareableListItemEvents extends Construct {
   }
 
   private createPolicyForEventBridgeToSns() {
-    const eventBridgeSnsPolicy = new DataAwsIamPolicyDocument(
-      this,
-      `${config.prefix}-EventBridge-SNS-Policy`,
-      {
-        statement: [
-          {
-            effect: 'Allow',
-            actions: ['sns:Publish'],
-            resources: [this.snsTopic.arn],
-            principals: [
-              {
-                identifiers: ['events.amazonaws.com'],
-                type: 'Service',
-              },
-            ],
-          },
-        ],
-      },
-    ).json;
+    const eventBridgeSnsPolicy =
+      new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
+        this,
+        `${config.prefix}-EventBridge-SNS-Policy`,
+        {
+          statement: [
+            {
+              effect: 'Allow',
+              actions: ['sns:Publish'],
+              resources: [this.snsTopic.arn],
+              principals: [
+                {
+                  identifiers: ['events.amazonaws.com'],
+                  type: 'Service',
+                },
+              ],
+            },
+          ],
+        },
+      ).json;
 
-    return new SnsTopicPolicy(
+    return new snsTopicPolicy.SnsTopicPolicy(
       this,
       'shareable-list-item-events-sns-topic-policy',
       {
