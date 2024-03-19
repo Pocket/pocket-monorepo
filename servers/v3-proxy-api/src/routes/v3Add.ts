@@ -8,7 +8,7 @@ import {
   SavedItemUpsertInput,
 } from '../generated/graphql/types';
 import { checkSchema, validationResult, matchedData } from 'express-validator';
-import { V3AddSchema, V3AddParams } from './validations/AddSchema';
+import { V3AddSchema, V3AddParams } from './validations';
 import { InputValidationError } from '../errors/InputValidationError';
 import { AddItemTransformer } from '../graph/add/toRest';
 
