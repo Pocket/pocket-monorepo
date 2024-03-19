@@ -6,8 +6,7 @@ import {
   PocketVPC,
   PocketSQSWithLambdaTarget,
 } from '@pocket-tools/terraform-modules';
-import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
-import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
+import { dataAwsRegion, dataAwsCallerIdentity } from '@cdktf/provider-aws';
 
 export class SQSLambda extends Construct {
   public readonly lambda: PocketSQSWithLambdaTarget;
@@ -16,8 +15,8 @@ export class SQSLambda extends Construct {
     scope: Construct,
     private name: string,
     vpc: PocketVPC,
-    region: DataAwsRegion,
-    caller: DataAwsCallerIdentity,
+    region: dataAwsRegion.DataAwsRegion,
+    caller: dataAwsCallerIdentity.DataAwsCallerIdentity,
     pagerDuty?: PocketPagerDuty,
   ) {
     super(scope, name);

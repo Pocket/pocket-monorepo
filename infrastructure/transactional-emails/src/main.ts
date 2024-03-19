@@ -5,17 +5,19 @@ import {
   S3Backend,
   TerraformStack,
 } from 'cdktf';
-import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
-import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
-import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
-import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
-import { SqsQueuePolicy } from '@cdktf/provider-aws/lib/sqs-queue-policy';
-import { SnsTopicSubscription } from '@cdktf/provider-aws/lib/sns-topic-subscription';
-import { DataAwsIamPolicyDocument } from '@cdktf/provider-aws/lib/data-aws-iam-policy-document';
-import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
-import { NullProvider } from '@cdktf/provider-null/lib/provider';
-import { LocalProvider } from '@cdktf/provider-local/lib/provider';
-import { ArchiveProvider } from '@cdktf/provider-archive/lib/provider';
+import {
+  provider as awsProvider,
+  dataAwsRegion,
+  dataAwsCallerIdentity,
+  sqsQueue,
+  sqsQueuePolicy,
+  snsTopicSubscription,
+  dataAwsIamPolicyDocument,
+} from '@cdktf/provider-aws';
+import { provider as pagerdutyProvider } from '@cdktf/provider-pagerduty';
+import { provider as nullProvider } from '@cdktf/provider-null';
+import { provider as localProvider } from '@cdktf/provider-local';
+import { provider as archiveProvider } from '@cdktf/provider-archive';
 import { config } from './config';
 import { PocketPagerDuty, PocketVPC } from '@pocket-tools/terraform-modules';
 import * as fs from 'fs';
@@ -25,14 +27,16 @@ class TransactionalEmails extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
-    new AwsProvider(this, 'aws', {
+    new awsProvider.AwsProvider(this, 'aws', {
       region: 'us-east-1',
       defaultTags: [{ tags: config.tags }],
     });
-    new PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
-    new LocalProvider(this, 'local_provider');
-    new NullProvider(this, 'null_provider');
-    new ArchiveProvider(this, 'archive_provider');
+    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
+      token: undefined,
+    });
+    new localProvider.LocalProvider(this, 'local_provider');
+    new nullProvider.NullProvider(this, 'null_provider');
+    new archiveProvider.ArchiveProvider(this, 'archive_provider');
 
     new S3Backend(this, {
       bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
@@ -41,8 +45,11 @@ class TransactionalEmails extends TerraformStack {
       region: 'us-east-1',
     });
 
-    const region = new DataAwsRegion(this, 'region');
-    const caller = new DataAwsCallerIdentity(this, 'caller');
+    const region = new dataAwsRegion.DataAwsRegion(this, 'region');
+    const caller = new dataAwsCallerIdentity.DataAwsCallerIdentity(
+      this,
+      'caller',
+    );
     const pocketVpc = new PocketVPC(this, 'pocket-vpc');
 
     const sqsLambda = new TransactionalEmailSQSLambda(
@@ -53,7 +60,7 @@ class TransactionalEmails extends TerraformStack {
     );
 
     //dlq for sqs-sns subscription
-    const snsTopicDlq = new SqsQueue(this, 'sns-topic-dlq', {
+    const snsTopicDlq = new sqsQueue.SqsQueue(this, 'sns-topic-dlq', {
       name: `${config.prefix}-SNS-Topics-DLQ`,
       tags: config.tags,
     });
@@ -116,19 +123,23 @@ class TransactionalEmails extends TerraformStack {
    */
   private subscribeSqsToSnsTopic(
     sqsLambda: TransactionalEmailSQSLambda,
-    snsTopicDlq: SqsQueue,
+    snsTopicDlq: sqsQueue.SqsQueue,
     snsTopicArn: string,
     topicName: string,
   ) {
     // This Topic already exists and is managed elsewhere
-    return new SnsTopicSubscription(this, `${topicName}-sns-subscription`, {
-      topicArn: snsTopicArn,
-      protocol: 'sqs',
-      endpoint: sqsLambda.construct.applicationSqsQueue.sqsQueue.arn,
-      redrivePolicy: JSON.stringify({
-        deadLetterTargetArn: snsTopicDlq.arn,
-      }),
-    });
+    return new snsTopicSubscription.SnsTopicSubscription(
+      this,
+      `${topicName}-sns-subscription`,
+      {
+        topicArn: snsTopicArn,
+        protocol: 'sqs',
+        endpoint: sqsLambda.construct.applicationSqsQueue.sqsQueue.arn,
+        redrivePolicy: JSON.stringify({
+          deadLetterTargetArn: snsTopicDlq.arn,
+        }),
+      },
+    );
   }
 
   /**
@@ -139,15 +150,15 @@ class TransactionalEmails extends TerraformStack {
    * @private
    */
   private createPoliciesForTransactionalEmailSQSQueue(
-    snsTopicQueue: SqsQueue,
-    snsTopicDlq: SqsQueue,
+    snsTopicQueue: sqsQueue.SqsQueue,
+    snsTopicDlq: sqsQueue.SqsQueue,
     snsTopicArns: string[],
   ): void {
     [
       { name: 'transactional-email-sns-sqs', resource: snsTopicQueue },
       { name: 'transactional-email-sns-dlq', resource: snsTopicDlq },
     ].forEach((queue) => {
-      const policy = new DataAwsIamPolicyDocument(
+      const policy = new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
         this,
         `${queue.name}-policy-document`,
         {
@@ -176,7 +187,7 @@ class TransactionalEmails extends TerraformStack {
         },
       ).json;
 
-      new SqsQueuePolicy(this, `${queue.name}-policy`, {
+      new sqsQueuePolicy.SqsQueuePolicy(this, `${queue.name}-policy`, {
         queueUrl: queue.resource.url,
         policy: policy,
       });

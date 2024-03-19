@@ -7,12 +7,14 @@ import {
   PocketPagerDuty,
 } from '@pocket-tools/terraform-modules';
 import { config } from '../../config';
-import { DataAwsSqsQueue } from '@cdktf/provider-aws/lib/data-aws-sqs-queue';
-import { SnsTopic } from '@cdktf/provider-aws/lib/sns-topic';
-import { DataAwsIamPolicyDocument } from '@cdktf/provider-aws/lib/data-aws-iam-policy-document';
-import { SnsTopicPolicy } from '@cdktf/provider-aws/lib/sns-topic-policy';
-import { SqsQueuePolicy } from '@cdktf/provider-aws/lib/sqs-queue-policy';
-import { Resource } from '@cdktf/provider-null/lib/resource';
+import {
+  dataAwsSqsQueue,
+  snsTopic,
+  dataAwsIamPolicyDocument,
+  snsTopicPolicy,
+  sqsQueuePolicy,
+} from '@cdktf/provider-aws';
+import { resource } from '@cdktf/provider-null';
 import { eventConfig } from './eventConfig';
 import { createDeadLetterQueueAlarm } from '../utils';
 
@@ -35,9 +37,9 @@ import { createDeadLetterQueueAlarm } from '../utils';
  * it was deployed!
  */
 export class ProspectEvents extends Construct {
-  public readonly snsTopic: SnsTopic;
-  public readonly sqs: DataAwsSqsQueue;
-  public readonly sqsDlq: DataAwsSqsQueue;
+  public readonly snsTopic: snsTopic.SnsTopic;
+  public readonly sqs: dataAwsSqsQueue.DataAwsSqsQueue;
+  public readonly sqsDlq: dataAwsSqsQueue.DataAwsSqsQueue;
 
   readonly sqsIdForProspectGenerationEvent = `prospect-${config.environment}-queue`;
   readonly sqsNameForProspectGenerationEvent = `ProspectAPI-${config.environment}-Sqs-Translation-Queue`;
@@ -97,7 +99,7 @@ export class ProspectEvents extends Construct {
       false, // temporarily disabled, see note above
     );
 
-    new Resource(this, 'null-resource', {
+    new resource.Resource(this, 'null-resource', {
       dependsOn: [
         prospectEventDismissRule.getEventBridge().rule,
         this.snsTopic,
@@ -116,8 +118,8 @@ export class ProspectEvents extends Construct {
   private createSqsForProspectEvents(
     id: string,
     name: string,
-  ): DataAwsSqsQueue {
-    return new DataAwsSqsQueue(this, id, {
+  ): dataAwsSqsQueue.DataAwsSqsQueue {
+    return new dataAwsSqsQueue.DataAwsSqsQueue(this, id, {
       name,
     });
   }
@@ -132,8 +134,8 @@ export class ProspectEvents extends Construct {
   private createSnsForProspectEvents(
     id = this.snsIdForProspectEvents,
     name = this.snsNameForProspectEvents,
-  ): SnsTopic {
-    return new SnsTopic(this, id, {
+  ): snsTopic.SnsTopic {
+    return new snsTopic.SnsTopic(this, id, {
       name,
       lifecycle: {
         preventDestroy: true,
@@ -231,57 +233,63 @@ export class ProspectEvents extends Construct {
    * Create IAM policy to allow EventBridge to publish to the SNS topic.
    */
   private createPolicyForEventBridgeToSns() {
-    const eventBridgeSnsPolicy = new DataAwsIamPolicyDocument(
-      this,
-      `${config.prefix}-EventBridge-SNS-Policy`,
-      {
-        statement: [
-          {
-            effect: 'Allow',
-            actions: ['sns:Publish'],
-            resources: [this.snsTopic.arn],
-            principals: [
-              {
-                identifiers: ['events.amazonaws.com'],
-                type: 'Service',
-              },
-            ],
-          },
-        ],
-      },
-    ).json;
+    const eventBridgeSnsPolicy =
+      new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
+        this,
+        `${config.prefix}-EventBridge-SNS-Policy`,
+        {
+          statement: [
+            {
+              effect: 'Allow',
+              actions: ['sns:Publish'],
+              resources: [this.snsTopic.arn],
+              principals: [
+                {
+                  identifiers: ['events.amazonaws.com'],
+                  type: 'Service',
+                },
+              ],
+            },
+          ],
+        },
+      ).json;
 
-    return new SnsTopicPolicy(this, 'prospect-events-sns-topic-policy', {
-      arn: this.snsTopic.arn,
-      policy: eventBridgeSnsPolicy,
-    });
+    return new snsTopicPolicy.SnsTopicPolicy(
+      this,
+      'prospect-events-sns-topic-policy',
+      {
+        arn: this.snsTopic.arn,
+        policy: eventBridgeSnsPolicy,
+      },
+    );
   }
 
   /**
    * Create IAM policy to allow EventBridge to send messages to SQS for prospect-generation events.
    */
   private createPolicyForEventBridgeToSqs() {
-    const eventBridgeSqsPolicy = new DataAwsIamPolicyDocument(
-      this,
-      `${config.prefix}-EventBridge-Prospect-Event-SQS-Policy`,
-      {
-        statement: [
-          {
-            effect: 'Allow',
-            actions: ['sqs:SendMessage'],
-            resources: [this.sqs.arn],
-            principals: [
-              {
-                identifiers: ['events.amazonaws.com'],
-                type: 'Service',
-              },
-            ],
-          },
-        ],
-      },
-    ).json;
+    const eventBridgeSqsPolicy =
+      new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
+        this,
+        `${config.prefix}-EventBridge-Prospect-Event-SQS-Policy`,
+        {
+          statement: [
+            {
+              effect: 'Allow',
+              actions: ['sqs:SendMessage'],
+              resources: [this.sqs.arn],
+              principals: [
+                {
+                  identifiers: ['events.amazonaws.com'],
+                  type: 'Service',
+                },
+              ],
+            },
+          ],
+        },
+      ).json;
 
-    new SqsQueuePolicy(this, 'prospect-events-sqs-policy', {
+    new sqsQueuePolicy.SqsQueuePolicy(this, 'prospect-events-sqs-policy', {
       policy: eventBridgeSqsPolicy,
       queueUrl: this.sqs.url,
     });

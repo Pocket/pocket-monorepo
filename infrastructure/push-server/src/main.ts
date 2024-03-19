@@ -12,28 +12,32 @@ import {
 } from '@pocket-tools/terraform-modules';
 import * as fs from 'fs';
 
-import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
-import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
-import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
-import { CloudwatchLogGroup } from '@cdktf/provider-aws/lib/cloudwatch-log-group';
-import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/data-aws-kms-alias';
-import { DataAwsSqsQueue } from '@cdktf/provider-aws/lib/data-aws-sqs-queue';
-import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
-import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
-import { NullProvider } from '@cdktf/provider-null/lib/provider';
-import { LocalProvider } from '@cdktf/provider-local/lib/provider';
-import { ArchiveProvider } from '@cdktf/provider-archive/lib/provider';
+import {
+  provider as awsProvider,
+  dataAwsRegion,
+  dataAwsCallerIdentity,
+  cloudwatchLogGroup,
+  dataAwsKmsAlias,
+  dataAwsSqsQueue,
+  dataAwsSnsTopic,
+} from '@cdktf/provider-aws';
+import { provider as pagerdutyProvider } from '@cdktf/provider-pagerduty';
+import { provider as nullProvider } from '@cdktf/provider-null';
+import { provider as localProvider } from '@cdktf/provider-local';
+import { provider as archiveProvider } from '@cdktf/provider-archive';
 
 class PushServer extends TerraformStack {
   config: any;
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
-    new AwsProvider(this, 'aws', { region: 'us-east-1' });
-    new PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
-    new NullProvider(this, 'null-provider');
-    new LocalProvider(this, 'local-provider');
-    new ArchiveProvider(this, 'archive-provider');
+    new awsProvider.AwsProvider(this, 'aws', { region: 'us-east-1' });
+    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
+      token: undefined,
+    });
+    new nullProvider.NullProvider(this, 'null-provider');
+    new localProvider.LocalProvider(this, 'local-provider');
+    new archiveProvider.ArchiveProvider(this, 'archive-provider');
 
     new S3Backend(this, {
       bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
@@ -42,8 +46,11 @@ class PushServer extends TerraformStack {
       region: 'us-east-1',
     });
 
-    const region = new DataAwsRegion(this, 'region');
-    const caller = new DataAwsCallerIdentity(this, 'caller');
+    const region = new dataAwsRegion.DataAwsRegion(this, 'region');
+    const caller = new dataAwsCallerIdentity.DataAwsCallerIdentity(
+      this,
+      'caller',
+    );
 
     //NOTE: THis service uses CPU based autoscaling, this should move to SQS based autoscaling based on the Job queue in the future.
     // https://mozilla-hub.atlassian.net/browse/POCKET-9583
@@ -52,10 +59,10 @@ class PushServer extends TerraformStack {
       region,
       caller,
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
-      jobQueue: new DataAwsSqsQueue(this, 'job-queue', {
+      jobQueue: new dataAwsSqsQueue.DataAwsSqsQueue(this, 'job-queue', {
         name: config.jobQueueName,
       }),
-      tokenQueue: new DataAwsSqsQueue(this, 'token-queue', {
+      tokenQueue: new dataAwsSqsQueue.DataAwsSqsQueue(this, 'token-queue', {
         name: config.tokenQueueName,
       }),
       snsTopic: this.getCodeDeploySnsTopic(),
@@ -101,7 +108,7 @@ class PushServer extends TerraformStack {
    * @private
    */
   private getCodeDeploySnsTopic() {
-    return new DataAwsSnsTopic(this, 'backend_notifications', {
+    return new dataAwsSnsTopic.DataAwsSnsTopic(this, 'backend_notifications', {
       name: `Backend-${config.environment}-ChatBot`,
     });
   }
@@ -111,19 +118,19 @@ class PushServer extends TerraformStack {
    * @private
    */
   private getSecretsManagerKmsAlias() {
-    return new DataAwsKmsAlias(this, 'kms_alias', {
+    return new dataAwsKmsAlias.DataAwsKmsAlias(this, 'kms_alias', {
       name: 'alias/aws/secretsmanager',
     });
   }
 
   private createPocketECSApplication(dependencies: {
     pagerDuty: PocketPagerDuty;
-    region: DataAwsRegion;
-    caller: DataAwsCallerIdentity;
-    secretsManagerKmsAlias: DataAwsKmsAlias;
-    jobQueue: DataAwsSqsQueue;
-    tokenQueue: DataAwsSqsQueue;
-    snsTopic: DataAwsSnsTopic;
+    region: dataAwsRegion.DataAwsRegion;
+    caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
+    secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
+    jobQueue: dataAwsSqsQueue.DataAwsSqsQueue;
+    tokenQueue: dataAwsSqsQueue.DataAwsSqsQueue;
+    snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
   }): PocketECSApplication {
     const { region, caller, secretsManagerKmsAlias, jobQueue, tokenQueue } =
       dependencies;
@@ -284,7 +291,7 @@ class PushServer extends TerraformStack {
    * @private
    */
   private createCustomLogGroup(containerName: string) {
-    const logGroup = new CloudwatchLogGroup(
+    const logGroup = new cloudwatchLogGroup.CloudwatchLogGroup(
       this,
       `${containerName}-log-group`,
       {

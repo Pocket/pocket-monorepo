@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import { config } from './config';
-import { DataAwsSsmParameter } from '@cdktf/provider-aws/lib/data-aws-ssm-parameter';
+import { dataAwsSsmParameter } from '@cdktf/provider-aws';
 import {
   PocketVPC,
   PocketSQSWithLambdaTarget,
@@ -82,11 +82,11 @@ export class TransactionalEmailSQSLambda extends Construct {
   }
 
   private getEnvVariableValues() {
-    const sentryDsn = new DataAwsSsmParameter(this, 'sentry-dsn', {
+    const sentryDsn = new dataAwsSsmParameter.DataAwsSsmParameter(this, 'sentry-dsn', {
       name: `/${config.name}/${config.environment}/SENTRY_DSN`,
     });
 
-    const serviceHash = new DataAwsSsmParameter(this, 'service-hash', {
+    const serviceHash = new dataAwsSsmParameter.DataAwsSsmParameter(this, 'service-hash', {
       name: `${config.circleCIPrefix}/SERVICE_HASH`,
     });
 

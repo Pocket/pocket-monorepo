@@ -1,10 +1,10 @@
 import { Construct } from 'constructs';
 import { App, S3Backend, TerraformStack, Aspects, MigrateIds } from 'cdktf';
-import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
+import { provider as awsProvider } from '@cdktf/provider-aws';
 import { config } from './config';
-import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
-import { LocalProvider } from '@cdktf/provider-local/lib/provider';
-import { NullProvider } from '@cdktf/provider-null/lib/provider';
+import { provider as pagerdutyProvider } from '@cdktf/provider-pagerduty';
+import { provider as localProvider } from '@cdktf/provider-local';
+import { provider as nullProvider } from '@cdktf/provider-null';
 import { EmailSendDomain } from './emailSendDomain';
 import * as fs from 'fs';
 import { ClickTrackingDomain } from './clickTrackingDomain';
@@ -14,10 +14,12 @@ class Braze extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
-    new AwsProvider(this, 'aws', { region: 'us-east-1' });
-    new PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
-    new LocalProvider(this, 'local_provider');
-    new NullProvider(this, 'null_provider');
+    new awsProvider.AwsProvider(this, 'aws', { region: 'us-east-1' });
+    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
+      token: undefined,
+    });
+    new localProvider.LocalProvider(this, 'local_provider');
+    new nullProvider.NullProvider(this, 'null_provider');
 
     new S3Backend(this, {
       bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,

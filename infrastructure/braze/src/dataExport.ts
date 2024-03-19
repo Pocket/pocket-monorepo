@@ -1,12 +1,14 @@
 import { Construct } from 'constructs';
-import { S3Bucket } from '@cdktf/provider-aws/lib/s3-bucket';
-import { S3BucketAcl } from '@cdktf/provider-aws/lib/s3-bucket-acl';
-import { S3BucketLifecycleConfiguration } from '@cdktf/provider-aws/lib/s3-bucket-lifecycle-configuration';
-import { S3BucketPublicAccessBlock } from '@cdktf/provider-aws/lib/s3-bucket-public-access-block';
-import { IamPolicy } from '@cdktf/provider-aws/lib/iam-policy';
-import { DataAwsIamPolicyDocument } from '@cdktf/provider-aws/lib/data-aws-iam-policy-document';
-import { IamRolePolicyAttachment } from '@cdktf/provider-aws/lib/iam-role-policy-attachment';
-import { IamRole } from '@cdktf/provider-aws/lib/iam-role';
+import {
+  s3Bucket,
+  s3BucketAcl,
+  s3BucketLifecycleConfiguration,
+  s3BucketPublicAccessBlock,
+  iamPolicy,
+  dataAwsIamPolicyDocument,
+  iamRolePolicyAttachment,
+  iamRole,
+} from '@cdktf/provider-aws';
 
 export interface DataExportBucketConfig {
   brazeExternalId: string;
@@ -33,39 +35,51 @@ export class DataExportBucket extends Construct {
   private createS3Bucket(
     scope: Construct,
     config: DataExportBucketConfig,
-  ): S3Bucket {
-    const s3Bucket = new S3Bucket(scope, 'data-export-bucket', {
-      bucket: config.bucket,
-      tags: config.tags,
-    });
+  ): s3Bucket.S3Bucket {
+    const s3BucketResource = new s3Bucket.S3Bucket(
+      scope,
+      'data-export-bucket',
+      {
+        bucket: config.bucket,
+        tags: config.tags,
+      },
+    );
 
-    new S3BucketAcl(scope, 'data-export-bucket-acl', {
+    new s3BucketAcl.S3BucketAcl(scope, 'data-export-bucket-acl', {
       acl: 'private',
-      bucket: s3Bucket.bucket,
+      bucket: s3BucketResource.bucket,
     });
 
-    new S3BucketLifecycleConfiguration(scope, 'data-export-bucket-lifecycle', {
-      bucket: s3Bucket.bucket,
-      rule: [
-        {
-          id: 'expiration-rule',
-          status: 'Enabled',
-          //expire any data after 90 days
-          expiration: {
-            days: 90,
+    new s3BucketLifecycleConfiguration.S3BucketLifecycleConfiguration(
+      scope,
+      'data-export-bucket-lifecycle',
+      {
+        bucket: s3BucketResource.bucket,
+        rule: [
+          {
+            id: 'expiration-rule',
+            status: 'Enabled',
+            //expire any data after 90 days
+            expiration: {
+              days: 90,
+            },
           },
-        },
-      ],
-    });
+        ],
+      },
+    );
 
-    new S3BucketPublicAccessBlock(scope, 'data-export-bucket-public-block', {
-      bucket: s3Bucket.id,
-      blockPublicPolicy: true,
-      ignorePublicAcls: true,
-      restrictPublicBuckets: true,
-    });
+    new s3BucketPublicAccessBlock.S3BucketPublicAccessBlock(
+      scope,
+      'data-export-bucket-public-block',
+      {
+        bucket: s3BucketResource.id,
+        blockPublicPolicy: true,
+        ignorePublicAcls: true,
+        restrictPublicBuckets: true,
+      },
+    );
 
-    return s3Bucket;
+    return s3BucketResource;
   }
 
   /**
@@ -76,24 +90,28 @@ export class DataExportBucket extends Construct {
    */
   private createBrazeIAMPolicy(
     scope: Construct,
-    s3Bucket: S3Bucket,
-  ): IamPolicy {
-    return new IamPolicy(scope, 'braze-s3-data-access-policy', {
+    s3Bucket: s3Bucket.S3Bucket,
+  ): iamPolicy.IamPolicy {
+    return new iamPolicy.IamPolicy(scope, 'braze-s3-data-access-policy', {
       namePrefix: 'braze-s3-data-export',
-      policy: new DataAwsIamPolicyDocument(scope, 'braze-s3-sdk', {
-        statement: [
-          {
-            actions: ['s3:ListBucket', 's3:GetBucketLocation'],
-            resources: [`arn:aws:s3:::${s3Bucket.bucket}`],
-            effect: 'Allow',
-          },
-          {
-            actions: ['s3:GetObject', 's3:PutObject', 's3:DeleteObject'],
-            resources: [`arn:aws:s3:::${s3Bucket.bucket}/*`],
-            effect: 'Allow',
-          },
-        ],
-      }).json,
+      policy: new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
+        scope,
+        'braze-s3-sdk',
+        {
+          statement: [
+            {
+              actions: ['s3:ListBucket', 's3:GetBucketLocation'],
+              resources: [`arn:aws:s3:::${s3Bucket.bucket}`],
+              effect: 'Allow',
+            },
+            {
+              actions: ['s3:GetObject', 's3:PutObject', 's3:DeleteObject'],
+              resources: [`arn:aws:s3:::${s3Bucket.bucket}/*`],
+              effect: 'Allow',
+            },
+          ],
+        },
+      ).json,
     });
   }
 
@@ -106,43 +124,51 @@ export class DataExportBucket extends Construct {
    */
   private createBrazeIAMRole(
     scope: Construct,
-    s3Bucket: S3Bucket,
-    brazeIAMPolicy: IamPolicy,
+    s3Bucket: s3Bucket.S3Bucket,
+    brazeIAMPolicy: iamPolicy.IamPolicy,
     config: DataExportBucketConfig,
   ) {
-    const brazeIAMRole = new IamRole(scope, 'braze-s3-data-access-role', {
-      namePrefix: `${config.prefix}`,
-      tags: config.tags,
+    const brazeIAMRole = new iamRole.IamRole(
+      scope,
+      'braze-s3-data-access-role',
+      {
+        namePrefix: `${config.prefix}`,
+        tags: config.tags,
 
-      assumeRolePolicy: new DataAwsIamPolicyDocument(
-        this,
-        'braze-s3-data-export-assume-role-policy',
-        {
-          statement: [
-            {
-              actions: ['sts:AssumeRole'],
-              principals: [
-                {
-                  type: 'AWS',
-                  identifiers: [config.brazeAccountId],
-                },
-              ],
-              condition: [
-                {
-                  variable: 'sts:ExternalId',
-                  test: 'StringEquals',
-                  values: [config.brazeExternalId],
-                },
-              ],
-            },
-          ],
-        },
-      ).json,
-    });
+        assumeRolePolicy: new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
+          this,
+          'braze-s3-data-export-assume-role-policy',
+          {
+            statement: [
+              {
+                actions: ['sts:AssumeRole'],
+                principals: [
+                  {
+                    type: 'AWS',
+                    identifiers: [config.brazeAccountId],
+                  },
+                ],
+                condition: [
+                  {
+                    variable: 'sts:ExternalId',
+                    test: 'StringEquals',
+                    values: [config.brazeExternalId],
+                  },
+                ],
+              },
+            ],
+          },
+        ).json,
+      },
+    );
 
-    new IamRolePolicyAttachment(scope, 'braze-s3-data-access-role-policy', {
-      policyArn: brazeIAMPolicy.arn,
-      role: brazeIAMRole.name,
-    });
+    new iamRolePolicyAttachment.IamRolePolicyAttachment(
+      scope,
+      'braze-s3-data-access-role-policy',
+      {
+        policyArn: brazeIAMPolicy.arn,
+        role: brazeIAMRole.name,
+      },
+    );
   }
 }

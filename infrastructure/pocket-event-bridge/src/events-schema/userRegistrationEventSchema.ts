@@ -3,10 +3,7 @@
  * user initiates a password recovery
  */
 import { Construct } from 'constructs';
-import {
-  SchemasSchema,
-  SchemasSchemaConfig,
-} from '@cdktf/provider-aws/lib/schemas-schema';
+import { schemasSchema } from '@cdktf/provider-aws';
 import { SCHEMA_REGISTRY, SCHEMA_TYPE } from './types';
 
 export class UserRegistrationEventSchema extends Construct {
@@ -21,14 +18,14 @@ export class UserRegistrationEventSchema extends Construct {
   }
 
   private createUserRegistrationEventSchema() {
-    const schemaProps: SchemasSchemaConfig = {
+    const schemaProps: schemasSchema.SchemasSchemaConfig = {
       name: this.userRegistrationEvent,
       description: `emitted when pocket user is registered (e.g signup)`,
       type: SCHEMA_TYPE,
       registryName: SCHEMA_REGISTRY,
       content: JSON.stringify(this.getUserRegistrationPayload()),
     };
-    const schema = new SchemasSchema(
+    const schema = new schemasSchema.SchemasSchema(
       this,
       `${this.userRegistrationEvent}-Schema`,
       schemaProps,

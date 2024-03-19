@@ -3,10 +3,7 @@
  * Both events share the same payload type
  */
 import { Construct } from 'constructs';
-import {
-  SchemasSchema,
-  SchemasSchemaConfig,
-} from '@cdktf/provider-aws/lib/schemas-schema';
+import { schemasSchema } from '@cdktf/provider-aws';
 import { SCHEMA_REGISTRY, SCHEMA_TYPE } from './types';
 
 export class PremiumPurchaseEvent extends Construct {
@@ -24,14 +21,14 @@ export class PremiumPurchaseEvent extends Construct {
   }
 
   private createPremiumPurchaseEvent() {
-    const schemaProps: SchemasSchemaConfig = {
+    const schemaProps: schemasSchema.SchemasSchemaConfig = {
       name: this.premiumPurchaseEvent,
       description: `emitted when pocket user subscribes for premium account`,
       type: SCHEMA_TYPE,
       registryName: SCHEMA_REGISTRY,
       content: JSON.stringify(this.getPremiumPurchaseEventSchema()),
     };
-    const schema = new SchemasSchema(
+    const schema = new schemasSchema.SchemasSchema(
       this,
       `${this.premiumPurchaseEvent}-Schema`,
       schemaProps,
@@ -41,14 +38,14 @@ export class PremiumPurchaseEvent extends Construct {
   }
 
   private createPremiumRenewalUpcomingEvent() {
-    const schemaProps: SchemasSchemaConfig = {
+    const schemaProps: schemasSchema.SchemasSchemaConfig = {
       name: this.premiumRenewalUpcomingEvent,
       description: `emitted when pocket user premium subscription is renewed`,
       type: SCHEMA_TYPE,
       registryName: SCHEMA_REGISTRY,
       content: JSON.stringify(this.getPremiumPurchaseEventSchema()),
     };
-    const schema = new SchemasSchema(
+    const schema = new schemasSchema.SchemasSchema(
       this,
       `${this.premiumRenewalUpcomingEvent}-Schema`,
       schemaProps,

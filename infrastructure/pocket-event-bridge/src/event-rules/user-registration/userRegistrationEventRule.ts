@@ -5,16 +5,18 @@ import {
   PocketPagerDuty,
 } from '@pocket-tools/terraform-modules';
 import { config } from '../../config';
-import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
-import { SnsTopic } from '@cdktf/provider-aws/lib/sns-topic';
-import { DataAwsIamPolicyDocument } from '@cdktf/provider-aws/lib/data-aws-iam-policy-document';
-import { SnsTopicPolicy } from '@cdktf/provider-aws/lib/sns-topic-policy';
-import { Resource } from '@cdktf/provider-null/lib/resource';
+import {
+  sqsQueue,
+  snsTopic,
+  dataAwsIamPolicyDocument,
+  snsTopicPolicy,
+} from '@cdktf/provider-aws';
+import { resource } from '@cdktf/provider-null';
 import { eventConfig } from './eventConfig';
 
-export class UserRegistrationEventRule extends Resource {
-  public readonly snsTopic: SnsTopic;
-  public readonly snsTopicDlq: SqsQueue;
+export class UserRegistrationEventRule extends Construct {
+  public readonly snsTopic: snsTopic.SnsTopic;
+  public readonly snsTopicDlq: sqsQueue.SqsQueue;
 
   constructor(
     scope: Construct,
@@ -23,14 +25,14 @@ export class UserRegistrationEventRule extends Resource {
   ) {
     super(scope, name);
 
-    this.snsTopic = new SnsTopic(this, 'user-registration-topic', {
+    this.snsTopic = new snsTopic.SnsTopic(this, 'user-registration-topic', {
       name: `${config.prefix}-UserRegistrationTopic`,
       lifecycle: {
         preventDestroy: true,
       },
     });
 
-    this.snsTopicDlq = new SqsQueue(this, 'sns-topic-dql', {
+    this.snsTopicDlq = new sqsQueue.SqsQueue(this, 'sns-topic-dql', {
       name: `${config.prefix}-SNS-${eventConfig.name}-Topic--DLQ`,
       tags: config.tags,
     });
@@ -46,7 +48,7 @@ export class UserRegistrationEventRule extends Resource {
     //to prevent resource deletion in-addition to preventDestroy
     //e.g removing any of the dependsOn resource and running npm build would
     //throw error
-    new Resource(this, 'null-resource', {
+    new resource.Resource(this, 'null-resource', {
       dependsOn: [userRegistrationEvent.getEventBridge().rule, this.snsTopic],
     });
   }
@@ -84,27 +86,28 @@ export class UserRegistrationEventRule extends Resource {
   }
 
   private createPolicyForEventBridgeToSns() {
-    const eventBridgeSnsPolicy = new DataAwsIamPolicyDocument(
-      this,
-      `${config.prefix}-EventBridge-SNS-Policy`,
-      {
-        statement: [
-          {
-            effect: 'Allow',
-            actions: ['sns:Publish'],
-            resources: [this.snsTopic.arn],
-            principals: [
-              {
-                identifiers: ['events.amazonaws.com'],
-                type: 'Service',
-              },
-            ],
-          },
-        ],
-      },
-    ).json;
+    const eventBridgeSnsPolicy =
+      new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
+        this,
+        `${config.prefix}-EventBridge-SNS-Policy`,
+        {
+          statement: [
+            {
+              effect: 'Allow',
+              actions: ['sns:Publish'],
+              resources: [this.snsTopic.arn],
+              principals: [
+                {
+                  identifiers: ['events.amazonaws.com'],
+                  type: 'Service',
+                },
+              ],
+            },
+          ],
+        },
+      ).json;
 
-    return new SnsTopicPolicy(
+    return new snsTopicPolicy.SnsTopicPolicy(
       this,
       'user-registration-events-sns-topic-policy',
       {

@@ -1,14 +1,13 @@
 import { Construct } from 'constructs';
 import { App, TerraformStack } from 'cdktf';
-import { provider as awsProvider } from '@cdktf/provider-aws';
-import { PocketALBApplication } from './pocket/PocketALBApplication.js'
-import { ApplicationECSContainerDefinitionProps } from './base/ApplicationECSContainerDefinition.js'
+import { provider as awsProvider, wafv2WebAcl } from '@cdktf/provider-aws';
+import { PocketALBApplication } from './pocket/PocketALBApplication.js';
+import { ApplicationECSContainerDefinitionProps } from './base/ApplicationECSContainerDefinition.js';
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import { provider as timeProvider } from '@cdktf/provider-time';
-import { Wafv2WebAcl } from '@cdktf/provider-aws/lib/wafv2-web-acl';
-import { PocketAwsSyntheticChecks } from './pocket/PocketCloudwatchSynthetics.js'
-import { PocketVPC } from './pocket/PocketVPC.js'
+import { PocketAwsSyntheticChecks } from './pocket/PocketCloudwatchSynthetics.js';
+import { PocketVPC } from './pocket/PocketVPC.js';
 
 class Example extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -59,7 +58,7 @@ class Example extends TerraformStack {
       ],
     };
 
-    const wafAcl = new Wafv2WebAcl(this, 'example_waf_acl', {
+    const wafAcl = new wafv2WebAcl.Wafv2WebAcl(this, 'example_waf_acl', {
       description: 'Example Pocket Waf ACL',
       name: 'pocket-example-waf',
       scope: 'REGIONAL',

@@ -4,10 +4,7 @@
  */
 import { Fn } from 'cdktf';
 import { Construct } from 'constructs';
-import {
-  SchemasSchema,
-  SchemasSchemaConfig,
-} from '@cdktf/provider-aws/lib/schemas-schema';
+import { schemasSchema } from '@cdktf/provider-aws';
 import { SCHEMA_REGISTRY, SCHEMA_TYPE } from './types';
 
 export class UserMergeEventSchema extends Construct {
@@ -21,14 +18,14 @@ export class UserMergeEventSchema extends Construct {
   }
 
   private createUserMergeEvent() {
-    const schemaProps: SchemasSchemaConfig = {
+    const schemaProps: schemasSchema.SchemasSchemaConfig = {
       name: this.eventName,
       description: `user merge event is emitted when sourceUserId's account data is merged to the destinationUserId's account`,
       type: SCHEMA_TYPE,
       registryName: SCHEMA_REGISTRY,
       content: Fn.jsonencode(this.getUserMergeEventSchema()),
     };
-    const schema = new SchemasSchema(
+    const schema = new schemasSchema.SchemasSchema(
       this,
       `${this.eventName}-schema`,
       schemaProps,

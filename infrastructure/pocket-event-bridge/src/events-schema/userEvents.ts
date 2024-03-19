@@ -1,9 +1,6 @@
 import { Fn } from 'cdktf';
 import { Construct } from 'constructs';
-import {
-  SchemasSchema,
-  SchemasSchemaConfig,
-} from '@cdktf/provider-aws/lib/schemas-schema';
+import { schemasSchema } from '@cdktf/provider-aws';
 import { SCHEMA_REGISTRY, SCHEMA_TYPE } from './types';
 
 export class UserEventsSchema extends Construct {
@@ -16,14 +13,18 @@ export class UserEventsSchema extends Construct {
   }
 
   private createUserEventsSchema() {
-    const schemaProps: SchemasSchemaConfig = {
+    const schemaProps: schemasSchema.SchemasSchemaConfig = {
       name: 'user-events',
       description: 'events emitted by user-api',
       type: SCHEMA_TYPE,
       registryName: SCHEMA_REGISTRY,
       content: Fn.jsonencode(this.getUserEventsSchema()),
     };
-    const schema = new SchemasSchema(this, 'user-events-schema', schemaProps);
+    const schema = new schemasSchema.SchemasSchema(
+      this,
+      'user-events-schema',
+      schemaProps,
+    );
     return schema;
   }
 

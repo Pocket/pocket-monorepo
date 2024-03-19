@@ -3,10 +3,7 @@
  * user initiates a password recovery
  */
 import { Construct } from 'constructs';
-import {
-  SchemasSchema,
-  SchemasSchemaConfig,
-} from '@cdktf/provider-aws/lib/schemas-schema';
+import { schemasSchema } from '@cdktf/provider-aws';
 import { SCHEMA_REGISTRY, SCHEMA_TYPE } from './types';
 
 export class ForgotPasswordRequestEvent extends Construct {
@@ -21,14 +18,14 @@ export class ForgotPasswordRequestEvent extends Construct {
   }
 
   private createForgotPasswordRequestEvent() {
-    const schemaProps: SchemasSchemaConfig = {
+    const schemaProps: schemasSchema.SchemasSchemaConfig = {
       name: this.forgotPasswordRequest,
       description: `emitted when pocket user initiates a password recovery`,
       type: SCHEMA_TYPE,
       registryName: SCHEMA_REGISTRY,
       content: JSON.stringify(this.getForgotPasswordRequestPayload()),
     };
-    const schema = new SchemasSchema(
+    const schema = new schemasSchema.SchemasSchema(
       this,
       `${this.forgotPasswordRequest}-Schema`,
       schemaProps,
