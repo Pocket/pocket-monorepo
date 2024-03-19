@@ -277,7 +277,6 @@ class ShareableListsAPI extends TerraformStack {
       containerConfigs: [
         {
           name: 'app',
-          imageSha: config.releaseSha,
           portMappings: [
             {
               hostPort: 4029,

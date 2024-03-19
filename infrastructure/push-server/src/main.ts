@@ -151,7 +151,6 @@ class PushServer extends TerraformStack {
       containerConfigs: [
         {
           name: 'app',
-          imageSha: config.releaseSha,
           logMultilinePattern: '^\\S.+',
           logGroup: this.createCustomLogGroup('app'),
           envVars: [

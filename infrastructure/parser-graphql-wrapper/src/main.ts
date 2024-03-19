@@ -171,7 +171,6 @@ class ParserGraphQLWrapper extends TerraformStack {
       containerConfigs: [
         {
           name: 'app',
-          imageSha: config.releaseSha,
           envVars: [
             {
               name: 'ENVIRONMENT',

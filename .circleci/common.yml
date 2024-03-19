@@ -347,9 +347,9 @@ jobs:
           name: Deploy ECS Service
           codedeploy_application_name: << parameters.codedeploy-app-name >>
           codedeploy_deployment_group_name: << parameters.codedeploy-group-name >>
-          codedeploy_load_balanced_container_name: $ECS_TASK_CONTAINER_NAME
-          codedeploy_load_balanced_container_port: $ECS_TASK_CONTAINER_PORT
-          container_image_name_updates: tag=$CIRCLECI_SHA1, container=$ECS_TASK_CONTAINER_NAME
+          codedeploy_load_balanced_container_name: ${ECS_TASK_CONTAINER_NAME}
+          codedeploy_load_balanced_container_port: ${ECS_TASK_CONTAINER_PORT}
+          container_image_name_updates: tag=$CIRCLECI_SHA1, container=${ECS_TASK_CONTAINER_NAME}
           deployment_controller: CODE_DEPLOY
           verify_revision_is_deployed: true
 
