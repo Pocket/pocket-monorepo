@@ -76,8 +76,6 @@ workflows:
           for: shared_snowplow_consumer
           name: shared-snowplow-consumer_code_deploy_ecs_dev
           resource-class: pocket/default-dev
-          codedeploy-app-name: SharedSnowplowConsumer-Dev-ECS
-          codedeploy-group-name: SharedSnowplowConsumer-Dev-ECS
           requires:
             - shared-snowplow-consumer_build_docker_dev
 
@@ -142,8 +140,6 @@ workflows:
           for: shared_snowplow_consumer
           name: shared-snowplow-consumer_code_deploy_ecs_prod
           resource-class: pocket/default-prod
-          codedeploy-app-name: SharedSnowplowConsumer-Prod-ECS
-          codedeploy-group-name: SharedSnowplowConsumer-Prod-ECS
           requires:
             - shared-snowplow-consumer_build_docker_prod
 

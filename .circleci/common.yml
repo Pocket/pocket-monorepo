@@ -304,16 +304,6 @@ jobs:
 
   code_deploy_ecs:
     parameters:
-      workspace:
-        description: Workspace where the appspec.json are at
-        type: string
-        default: /tmp/workspace
-      codedeploy-app-name:
-        description: CodeDeploy app name
-        type: string
-      codedeploy-group-name:
-        description: CodeDeploy group name
-        type: string
       <<: [*repo_for_enum, *resource_class_enmum]
     # Our self hosted runners dont support docker images, cause its not deployed in kubernetes, so we have some special steps
     machine: true
@@ -359,26 +349,32 @@ jobs:
       #     verify_revision_is_deployed: true
 
       - aws-cli/install
+      ## Set the AWS CLI to use the Ecs Container credentials since this is in a hosted runner on AWS.
       - run:
           name: Setup AWS Auth
           command: |
             aws configure set profile.default.credential_source EcsContainer
 
+      ## This will use the last revision in AWS to create a new task definition with the container image pointed to the sha of this commit
+      ## If the task def was changed in terraform, that will be the latest revision that this will then over
       - aws-ecs/update_task_definition:
           family: ${ECS_TASK_FAMILY}
-          container_image_name_updates: tag=${CIRCLE_SHA1}, container=${ECS_TASK_CONTAINER_NAME}
-
+          container_image_name_updates: container=${ECS_TASK_CONTAINER_NAME},tag=${CIRCLE_SHA1}
+      ## We need to checkout the code, because that contains our copied script from the aws-ecs orb repo.
+      - checkout
       - run:
           name: Update ECS Blue/Green service with registered task definition.
-          command: \<< include(scripts/update_bluegreen_service_via_task_def.sh) >>
+          command: |
+            .circleci/scripts/update_bluegreen_service_via_task_def.sh
           no_output_timeout: 10m
           environment:
             DEPLOYMENT_CONTROLLER: CODE_DEPLOY
             ORB_STR_CD_APP_NAME: ${ECS_CODEDEPLOY_APP}
             ORB_STR_CD_DEPLOY_GROUP_NAME: ${ECS_CODEDEPLOY_GROUP}
             ORB_STR_CD_LOAD_BALANCED_CONTAINER_NAME: ${ECS_TASK_CONTAINER_NAME}
-            ORB_INT_CD_LOAD_BALANCED_CONTAINER_PORT:  ${ECS_TASK_CONTAINER_PORT}
-            ORB_BOOL_VERIFY_REV_DEPLOY: true
+            ORB_INT_CD_LOAD_BALANCED_CONTAINER_PORT: ${ECS_TASK_CONTAINER_PORT}
+            # Dont wait for a successful deploy, we will get alerts in slack for those.
+            ORB_BOOL_VERIFY_REV_DEPLOY: false
             ORB_STR_PROFILE_NAME: default
             ORB_BOOL_ENABLE_CIRCUIT_BREAKER: false
             ORB_STR_CD_CAPACITY_PROVIDER_NAME: 

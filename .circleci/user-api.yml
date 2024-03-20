@@ -83,8 +83,6 @@ workflows:
           for: user_api
           name: user-api_code_deploy_ecs_dev
           resource-class: pocket/default-dev
-          codedeploy-app-name: UserAPI-Dev-ECS
-          codedeploy-group-name: UserAPI-Dev-ECS
           requires:
             - user-api_build_docker_dev
 
@@ -149,8 +147,6 @@ workflows:
           for: user_api
           name: user-api_code_deploy_ecs_prod
           resource-class: pocket/default-prod
-          codedeploy-app-name: UserAPI-Prod-ECS
-          codedeploy-group-name: UserAPI-Prod-ECS
           requires:
             - user-api_build_docker_prod
 

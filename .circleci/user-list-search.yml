@@ -176,8 +176,6 @@ workflows:
           for: user_list_search
           name: user-list-search_code_deploy_ecs_dev
           resource-class: pocket/default-dev
-          codedeploy-app-name: UserListSearch-Dev
-          codedeploy-group-name: UserListSearch-Dev-Apollo
           requires:
             - user-list-search_build_docker_dev
 
@@ -407,8 +405,6 @@ workflows:
           for: user_list_search
           name: user-list-search_code_deploy_ecs_prod
           resource-class: pocket/default-prod
-          codedeploy-app-name: UserListSearch-Prod
-          codedeploy-group-name: UserListSearch-Prod-Apollo
           requires:
             - user-list-search_build_docker_prod
 
