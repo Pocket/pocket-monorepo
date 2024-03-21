@@ -319,6 +319,7 @@ class AnnotationsAPI extends TerraformStack {
         useCodePipeline: false,
         useTerraformBasedCodeDeploy: false,
         snsNotificationTopicArn: snsTopic.arn,
+        generateAppSpec: false,
         notifications: {
           //only notify on failed deploys
           notifyOnFailed: true,

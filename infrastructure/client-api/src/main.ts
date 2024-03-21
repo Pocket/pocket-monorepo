@@ -248,6 +248,7 @@ class ClientAPI extends TerraformStack {
         useCodeDeploy: true,
         useCodePipeline: false,
         useTerraformBasedCodeDeploy: false,
+        generateAppSpec: false,
         snsNotificationTopicArn: snsTopic.arn,
         successTerminationWaitTimeInMinutes: 5,
         notifications: {

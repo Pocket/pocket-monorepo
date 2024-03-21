@@ -258,6 +258,7 @@ class UserAPI extends TerraformStack {
         useCodeDeploy: true,
         useCodePipeline: false,
         useTerraformBasedCodeDeploy: false,
+        generateAppSpec: false,
         snsNotificationTopicArn: snsTopic.arn,
         notifications: {
           //only notify on failed deploys
