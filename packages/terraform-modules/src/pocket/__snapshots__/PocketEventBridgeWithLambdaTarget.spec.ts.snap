@@ -55,6 +55,20 @@ exports[`renders an event bridge and lambda target with event bus name 1`] = `
       }
     }
   },
+  "output": {
+    "test-event-bridge-lambda_lambda_arn_96078D0A": {
+      "description": "Lambda Function ARN",
+      "value": "\${aws_lambda_function.test-event-bridge-lambda_65C2E1CE.arn}"
+    },
+    "test-event-bridge-lambda_lambda_function_name_D7307C54": {
+      "description": "Lambda Function Name",
+      "value": "\${aws_lambda_function.test-event-bridge-lambda_65C2E1CE.function_name}"
+    },
+    "test-event-bridge-lambda_lambda_version_arn_96661CD8": {
+      "description": "Lambda Version ARN",
+      "value": "\${aws_lambda_alias.test-event-bridge-lambda_alias_2EC274FC.arn}"
+    }
+  },
   "resource": {
     "aws_cloudwatch_event_rule": {
       "test-event-bridge-lambda_event-bridge-rule_529FF7C2": {
@@ -245,6 +259,20 @@ exports[`renders an event bridge and lambda target with rule description 1`] = `
         ],
         "version": "2012-10-17"
       }
+    }
+  },
+  "output": {
+    "test-event-bridge-lambda_lambda_arn_96078D0A": {
+      "description": "Lambda Function ARN",
+      "value": "\${aws_lambda_function.test-event-bridge-lambda_65C2E1CE.arn}"
+    },
+    "test-event-bridge-lambda_lambda_function_name_D7307C54": {
+      "description": "Lambda Function Name",
+      "value": "\${aws_lambda_function.test-event-bridge-lambda_65C2E1CE.function_name}"
+    },
+    "test-event-bridge-lambda_lambda_version_arn_96661CD8": {
+      "description": "Lambda Version ARN",
+      "value": "\${aws_lambda_alias.test-event-bridge-lambda_alias_2EC274FC.arn}"
     }
   },
   "resource": {

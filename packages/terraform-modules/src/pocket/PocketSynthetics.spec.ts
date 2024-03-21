@@ -1,5 +1,8 @@
 import { Testing } from 'cdktf';
-import { PocketSyntheticProps, PocketSyntheticCheck } from './PocketSynthetics.js'
+import {
+  PocketSyntheticProps,
+  PocketSyntheticCheck,
+} from './PocketSynthetics.js';
 
 const config: PocketSyntheticProps = {
   uri: 'acme.getpocket.dev',

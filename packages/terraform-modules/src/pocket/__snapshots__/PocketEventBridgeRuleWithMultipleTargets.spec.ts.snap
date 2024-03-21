@@ -55,6 +55,20 @@ exports[`PocketEventBridgeRuleWithMultipleTargets renders an event bridge and mu
       }
     }
   },
+  "output": {
+    "test-lambda_lambda_arn_DFC95AD9": {
+      "description": "Lambda Function ARN",
+      "value": "\${aws_lambda_function.test-lambda_8915D118.arn}"
+    },
+    "test-lambda_lambda_function_name_9563C002": {
+      "description": "Lambda Function Name",
+      "value": "\${aws_lambda_function.test-lambda_8915D118.function_name}"
+    },
+    "test-lambda_lambda_version_arn_A02B37A5": {
+      "description": "Lambda Version ARN",
+      "value": "\${aws_lambda_alias.test-lambda_alias_CCFDFCE9.arn}"
+    }
+  },
   "resource": {
     "aws_cloudwatch_event_rule": {
       "test-event-bridge-for-multiple-targets-1_event-bridge-rule_1CCF9D7B": {
