@@ -55,7 +55,6 @@ export class ApiGateway extends Construct {
           timeout: 120,
           environment: {
             SENTRY_DSN: sentryDsn,
-            GIT_SHA: gitSha,
             ENVIRONMENT:
               config.environment === 'Prod' ? 'production' : 'development',
             AWS_CLOUDWATCH_METRIC_NAMESPACE: config.prefix,

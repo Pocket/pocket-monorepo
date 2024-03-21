@@ -42,7 +42,6 @@ export class SQSEventLambda extends Construct {
         reservedConcurrencyLimit: 10,
         environment: {
           SENTRY_DSN: sentryDsn,
-          GIT_SHA: gitSha,
           ENVIRONMENT:
             stackConfig.environment === 'Prod' ? 'production' : 'development',
           EVENT_TRACKER_DYNAMO: config.dynamoTable.dynamodb.name,

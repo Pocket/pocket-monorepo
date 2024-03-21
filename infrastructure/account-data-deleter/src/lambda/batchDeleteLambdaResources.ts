@@ -55,7 +55,6 @@ export class BatchDeleteLambdaResources extends Construct {
           timeout: 120,
           environment: {
             SENTRY_DSN: sentryDsn,
-            GIT_SHA: gitSha,
             ENVIRONMENT:
               stackConfig.environment === 'Prod' ? 'production' : 'development',
             NODE_ENV:

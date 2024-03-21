@@ -37,7 +37,6 @@ export class SqsLambda extends Construct {
           REGION: vpc.region,
           JWT_KEY: config.sqsLambda.jwtKey,
           SENTRY_DSN: sentryDsn,
-          GIT_SHA: gitSha,
           ENVIRONMENT:
             config.environment === 'Prod' ? 'production' : 'development',
         },

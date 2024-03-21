@@ -52,7 +52,6 @@ export class SqsLambda extends Construct {
             stackConfig.environment === 'Prod' ? 'production' : 'development',
           NODE_ENV:
             stackConfig.environment === 'Prod' ? 'production' : 'development',
-          GIT_SHA: gitSha,
           SENTRY_DSN: sentryDsn,
         },
         handler: 'index.handler',

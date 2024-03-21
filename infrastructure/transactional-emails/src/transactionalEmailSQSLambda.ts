@@ -35,7 +35,6 @@ export class TransactionalEmailSQSLambda extends Construct {
         timeout: 120,
         environment: {
           SENTRY_DSN: sentryDsn,
-          GIT_SHA: gitSha,
           NODE_ENV:
             config.environment === 'Prod' ? 'production' : 'development',
           SSM_BRAZE_API_KEY_NAME: `/${config.name}/${config.environment}/BRAZE_API_KEY`,

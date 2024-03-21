@@ -39,7 +39,6 @@ export class ApiGateway extends Construct {
           timeout: 120,
           environment: {
             SENTRY_DSN: sentryDsn,
-            GIT_SHA: gitSha,
             ENVIRONMENT:
               config.environment === 'Prod' ? 'production' : 'development',
             SQS_FXA_EVENTS_URL: sqsQueue.url,
