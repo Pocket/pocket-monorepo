@@ -207,29 +207,22 @@ export async function callSearchByOffsetComplete(
  * @param tags tags to associate to the saved item (optional)
  */
 export async function addSavedItem(
-  accessToken: string,
-  consumerKey: string,
-  headers: any,
+  client: GraphQLClient,
   variables: AddSavedItemCompleteMutationVariables,
 ): Promise<AddSavedItemCompleteMutation>;
 export async function addSavedItem(
-  accessToken: string,
-  consumerKey: string,
-  headers: any,
+  client: GraphQLClient,
   variables: AddSavedItemBeforeTagMutationVariables,
   tags: string[],
 ): Promise<AddTagsToSavedItemMutation>;
 export async function addSavedItem(
-  accessToken: string,
-  consumerKey: string,
-  headers: any,
+  client: GraphQLClient,
   variables: // These are the same types...
   | AddSavedItemBeforeTagMutationVariables
     | AddSavedItemCompleteMutationVariables,
   tags?: string[],
 ): Promise<AddSavedItemCompleteMutation | AddTagsToSavedItemMutation> {
   Sentry.addBreadcrumb({ message: 'invoking addSavedItem' });
-  const client = getClient(accessToken, consumerKey, headers);
   if (tags) {
     const addResult = await client.request<
       AddSavedItemBeforeTagMutation,
