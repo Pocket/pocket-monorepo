@@ -1,4 +1,4 @@
-import { LambdaPermission } from '@cdktf/provider-aws/lib/lambda-permission';
+import { lambdaPermission } from '@cdktf/provider-aws';
 import { Construct } from 'constructs';
 import {
   ApplicationEventBridgeRule,
@@ -45,7 +45,7 @@ export class PocketEventBridgeWithLambdaTarget extends PocketVersionedLambda {
     eventBridgeRule: ApplicationEventBridgeRule,
   ): void {
     targetLambdas.forEach((lambda) => {
-      new LambdaPermission(this, 'lambda-permission', {
+      new lambdaPermission.LambdaPermission(this, 'lambda-permission', {
         action: 'lambda:InvokeFunction',
         functionName: lambda.versionedLambda.functionName,
         qualifier: lambda.versionedLambda.name,

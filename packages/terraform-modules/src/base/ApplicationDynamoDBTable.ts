@@ -1,14 +1,12 @@
-import { AppautoscalingPolicy } from '@cdktf/provider-aws/lib/appautoscaling-policy';
-import { AppautoscalingTarget } from '@cdktf/provider-aws/lib/appautoscaling-target';
-import { DataAwsIamPolicyDocument } from '@cdktf/provider-aws/lib/data-aws-iam-policy-document';
 import {
-  DynamodbTableConfig,
-  DynamodbTable,
-  DynamodbTableGlobalSecondaryIndex,
-} from '@cdktf/provider-aws/lib/dynamodb-table';
-import { IamPolicy } from '@cdktf/provider-aws/lib/iam-policy';
-import { IamRole } from '@cdktf/provider-aws/lib/iam-role';
-import { IamRolePolicyAttachment } from '@cdktf/provider-aws/lib/iam-role-policy-attachment';
+  appautoscalingPolicy,
+  appautoscalingTarget,
+  dataAwsIamPolicyDocument,
+  dynamodbTable,
+  iamPolicy,
+  iamRole,
+  iamRolePolicyAttachment,
+} from '@cdktf/provider-aws';
 import { IResolvable, TerraformMetaArguments, TerraformProvider } from 'cdktf';
 import { Construct } from 'constructs';
 
@@ -40,7 +38,7 @@ export interface ApplicationDynamoDBTableAutoScaleProps {
 
 //Override the default dynamo config but remove the items that we set ourselves.
 export type ApplicationDynamoDBTableConfig = Omit<
-  DynamodbTableConfig,
+  dynamodbTable.DynamodbTableConfig,
   'name' | 'tags' | 'lifecycle'
 >;
 
@@ -63,7 +61,7 @@ export interface ApplicationDynamoDBProps extends TerraformMetaArguments {
  * Generates a dynamodb
  */
 export class ApplicationDynamoDBTable extends Construct {
-  public readonly dynamodb: DynamodbTable;
+  public readonly dynamodb: dynamodbTable.DynamodbTable;
 
   constructor(
     scope: Construct,
@@ -82,7 +80,7 @@ export class ApplicationDynamoDBTable extends Construct {
       config.capacityMode ?? ApplicationDynamoDBTableCapacityMode.PROVISIONED
     ).valueOf();
 
-    this.dynamodb = new DynamodbTable(this, `dynamodb_table`, {
+    this.dynamodb = new dynamodbTable.DynamodbTable(this, `dynamodb_table`, {
       ...config.tableConfig,
       billingMode: billingMode,
       tags: config.tags,
@@ -137,9 +135,11 @@ export class ApplicationDynamoDBTable extends Construct {
     scope: Construct,
     prefix,
     config: ApplicationDynamoDBTableAutoScaleProps,
-    dynamoDB: DynamodbTable,
+    dynamoDB: dynamodbTable.DynamodbTable,
     capacityType: ApplicationDynamoDBTableCapacityType,
-    globalSecondaryIndexes: DynamodbTableGlobalSecondaryIndex[] | IResolvable,
+    globalSecondaryIndexes:
+      | dynamodbTable.DynamodbTableGlobalSecondaryIndex[]
+      | IResolvable,
     tags?: { [key: string]: string },
     provider?: TerraformProvider,
   ): void {
@@ -169,7 +169,7 @@ export class ApplicationDynamoDBTable extends Construct {
     //cdktf 0.9 updated the types of Globalsecondary indexes to be IResolvable | DynamodbGlobalSecondaryIndexes[]
     // we need to cast it here to loop it.
     const castedGlobalSecondaryIndexes =
-      globalSecondaryIndexes as DynamodbTableGlobalSecondaryIndex[];
+      globalSecondaryIndexes as dynamodbTable.DynamodbTableGlobalSecondaryIndex[];
 
     // create an auto scaling policy for each global secondary index
     if (castedGlobalSecondaryIndexes.length) {
@@ -220,7 +220,7 @@ export class ApplicationDynamoDBTable extends Construct {
     minCapacity: number,
     maxCapacity: number,
     tracking: number,
-    dynamoDB: DynamodbTable,
+    dynamoDB: dynamodbTable.DynamodbTable,
     indexName?: string,
     provider?: TerraformProvider,
   ): void {
@@ -241,7 +241,7 @@ export class ApplicationDynamoDBTable extends Construct {
       indexName ? indexName : dynamoDB.friendlyUniqueId
     }_${capacityType}_${policyTarget}`;
 
-    const targetTracking = new AppautoscalingTarget(
+    const targetTracking = new appautoscalingTarget.AppautoscalingTarget(
       scope,
       `${constructPrefix}_target`,
       {
@@ -256,21 +256,25 @@ export class ApplicationDynamoDBTable extends Construct {
       },
     );
 
-    new AppautoscalingPolicy(scope, `${constructPrefix}_policy`, {
-      name: `DynamoDB${capacityType}Utilization:${targetTracking.resourceId}`,
-      policyType: 'TargetTrackingScaling',
-      resourceId: targetTracking.resourceId,
-      scalableDimension: targetTracking.scalableDimension,
-      serviceNamespace: targetTracking.serviceNamespace,
-      targetTrackingScalingPolicyConfiguration: {
-        predefinedMetricSpecification: {
-          predefinedMetricType: `DynamoDB${capacityType}Utilization`,
+    new appautoscalingPolicy.AppautoscalingPolicy(
+      scope,
+      `${constructPrefix}_policy`,
+      {
+        name: `DynamoDB${capacityType}Utilization:${targetTracking.resourceId}`,
+        policyType: 'TargetTrackingScaling',
+        resourceId: targetTracking.resourceId,
+        scalableDimension: targetTracking.scalableDimension,
+        serviceNamespace: targetTracking.serviceNamespace,
+        targetTrackingScalingPolicyConfiguration: {
+          predefinedMetricSpecification: {
+            predefinedMetricType: `DynamoDB${capacityType}Utilization`,
+          },
+          targetValue: tracking,
         },
-        targetValue: tracking,
+        dependsOn: [targetTracking, dynamoDB],
+        provider,
       },
-      dependsOn: [targetTracking, dynamoDB],
-      provider,
-    });
+    );
   }
 
   /**
@@ -290,32 +294,36 @@ export class ApplicationDynamoDBTable extends Construct {
     tags?: { [key: string]: string },
     provider?: TerraformProvider,
   ): string {
-    const policy = new IamPolicy(scope, `${capacityType}_autoscaling_policy`, {
-      name: `${prefix}-${capacityType}-AutoScalingPolicy`,
-      policy: new DataAwsIamPolicyDocument(
-        scope,
-        `${capacityType}_policy_document`,
-        {
-          statement: [
-            {
-              effect: 'Allow',
-              actions: [
-                'application-autoscaling:*',
-                'cloudwatch:DescribeAlarms',
-                'cloudwatch:PutMetricAlarm',
-              ],
-              resources: ['*'],
-            },
-            {
-              effect: 'Allow',
-              actions: ['dynamodb:DescribeTable', 'dynamodb:UpdateTable'],
-              resources: [dynamoDBARN, `${dynamoDBARN}*`], // 🏚
-            },
-          ],
-        },
-      ).json,
-      provider,
-    });
+    const policy = new iamPolicy.IamPolicy(
+      scope,
+      `${capacityType}_autoscaling_policy`,
+      {
+        name: `${prefix}-${capacityType}-AutoScalingPolicy`,
+        policy: new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
+          scope,
+          `${capacityType}_policy_document`,
+          {
+            statement: [
+              {
+                effect: 'Allow',
+                actions: [
+                  'application-autoscaling:*',
+                  'cloudwatch:DescribeAlarms',
+                  'cloudwatch:PutMetricAlarm',
+                ],
+                resources: ['*'],
+              },
+              {
+                effect: 'Allow',
+                actions: ['dynamodb:DescribeTable', 'dynamodb:UpdateTable'],
+                resources: [dynamoDBARN, `${dynamoDBARN}*`], // 🏚
+              },
+            ],
+          },
+        ).json,
+        provider,
+      },
+    );
 
     // In a perfect world we would be using a IamServiceLinkedRole, but Amazon is very amazon.
     // Amazon doesn't allow a custom suffix for dynamodb application autoscaling, so we need to use an IAM Role.
@@ -328,10 +336,10 @@ export class ApplicationDynamoDBTable extends Construct {
     //   description: `Autoscaling Service Role for ${prefix}-${capacityType}`,
     // });
 
-    const role = new IamRole(scope, `${capacityType}_role`, {
+    const role = new iamRole.IamRole(scope, `${capacityType}_role`, {
       name: `${prefix}-${capacityType}-AutoScalingRole`,
       tags: tags,
-      assumeRolePolicy: new DataAwsIamPolicyDocument(
+      assumeRolePolicy: new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
         scope,
         `${capacityType}_assume_role_policy_document`,
         {
@@ -352,12 +360,16 @@ export class ApplicationDynamoDBTable extends Construct {
       provider,
     });
 
-    new IamRolePolicyAttachment(scope, `${capacityType}_role_attachment`, {
-      policyArn: policy.arn,
-      role: role.name,
-      dependsOn: [role, policy],
-      provider,
-    });
+    new iamRolePolicyAttachment.IamRolePolicyAttachment(
+      scope,
+      `${capacityType}_role_attachment`,
+      {
+        policyArn: policy.arn,
+        role: role.name,
+        dependsOn: [role, policy],
+        provider,
+      },
+    );
 
     return role.arn;
   }

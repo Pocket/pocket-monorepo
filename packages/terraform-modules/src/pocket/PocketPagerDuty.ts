@@ -1,10 +1,11 @@
 import { TerraformMetaArguments } from 'cdktf';
 import { Construct } from 'constructs';
-import { SnsTopic } from '@cdktf/provider-aws/lib/sns-topic';
-import { SnsTopicSubscription } from '@cdktf/provider-aws/lib/sns-topic-subscription';
-import { DataPagerdutyVendor } from '@cdktf/provider-pagerduty/lib/data-pagerduty-vendor';
-import { Service } from '@cdktf/provider-pagerduty/lib/service';
-import { ServiceIntegration } from '@cdktf/provider-pagerduty/lib/service-integration';
+import { snsTopicSubscription, snsTopic } from '@cdktf/provider-aws';
+import {
+  dataPagerdutyVendor,
+  service,
+  serviceIntegration,
+} from '@cdktf/provider-pagerduty';
 
 export interface PocketPagerDutyProps extends TerraformMetaArguments {
   prefix: string;
@@ -33,8 +34,8 @@ export class PocketPagerDuty extends Construct {
   static readonly SERVICE_AUTO_RESOLVE_TIMEOUT = '14400';
   static readonly SERVICE_ACKNOWLEDGEMENT_TIMEOUT = '1800'; // 30 minutes
   static readonly SNS_SUBSCRIPTION_CONFIRMATION_TIMEOUT_IN_MINUTES = 2;
-  public readonly snsCriticalAlarmTopic: SnsTopic;
-  public readonly snsNonCriticalAlarmTopic: SnsTopic;
+  public readonly snsCriticalAlarmTopic: snsTopic.SnsTopic;
+  public readonly snsNonCriticalAlarmTopic: snsTopic.SnsTopic;
   private config: PocketPagerDutyProps;
 
   constructor(scope: Construct, name: string, config: PocketPagerDutyProps) {
@@ -98,11 +99,11 @@ export class PocketPagerDuty extends Construct {
   }
 
   private createSnsTopicSubscription(
-    topic: SnsTopic,
-    integration: ServiceIntegration,
+    topic: snsTopic.SnsTopic,
+    integration: serviceIntegration.ServiceIntegration,
     urgency: PAGERDUTY_SERVICE_URGENCY,
-  ): SnsTopicSubscription {
-    return new SnsTopicSubscription(
+  ): snsTopicSubscription.SnsTopicSubscription {
+    return new snsTopicSubscription.SnsTopicSubscription(
       this,
       `alarm-${urgency.toLowerCase()}-subscription`,
       {
@@ -119,8 +120,10 @@ export class PocketPagerDuty extends Construct {
     );
   }
 
-  private createSnsTopic(urgency: PAGERDUTY_SERVICE_URGENCY): SnsTopic {
-    return new SnsTopic(this, `alarm-${urgency.toLowerCase()}-topic`, {
+  private createSnsTopic(
+    urgency: PAGERDUTY_SERVICE_URGENCY,
+  ): snsTopic.SnsTopic {
+    return new snsTopic.SnsTopic(this, `alarm-${urgency.toLowerCase()}-topic`, {
       name: `${this.config.prefix}-Infrastructure-Alarm-${urgency}`,
       tags: this.config.sns?.topic?.tags ?? {},
       provider: this.config.provider,
@@ -128,11 +131,11 @@ export class PocketPagerDuty extends Construct {
   }
 
   private createServiceIntegration(
-    vendor: DataPagerdutyVendor,
-    service: Service,
+    vendor: dataPagerdutyVendor.DataPagerdutyVendor,
+    service: service.Service,
     urgency: PAGERDUTY_SERVICE_URGENCY,
-  ): ServiceIntegration {
-    return new ServiceIntegration(
+  ): serviceIntegration.ServiceIntegration {
+    return new serviceIntegration.ServiceIntegration(
       this,
       `${vendor.friendlyUniqueId}-${urgency.toLowerCase()}`,
       {
@@ -144,10 +147,10 @@ export class PocketPagerDuty extends Construct {
     );
   }
 
-  private createService(urgency: PAGERDUTY_SERVICE_URGENCY): Service {
+  private createService(urgency: PAGERDUTY_SERVICE_URGENCY): service.Service {
     const serviceConfig = this.config.service;
 
-    return new Service(this, `pagerduty-${urgency.toLowerCase()}`, {
+    return new service.Service(this, `pagerduty-${urgency.toLowerCase()}`, {
       name: `${this.config.prefix}-PagerDuty-${urgency}`,
       acknowledgementTimeout:
         serviceConfig.acknowledgementTimeout?.toString() ??
@@ -169,9 +172,13 @@ export class PocketPagerDuty extends Construct {
     });
   }
 
-  private getVendor(name: string): DataPagerdutyVendor {
-    return new DataPagerdutyVendor(this, name.toLowerCase(), {
-      name,
-    });
+  private getVendor(name: string): dataPagerdutyVendor.DataPagerdutyVendor {
+    return new dataPagerdutyVendor.DataPagerdutyVendor(
+      this,
+      name.toLowerCase(),
+      {
+        name,
+      },
+    );
   }
 }

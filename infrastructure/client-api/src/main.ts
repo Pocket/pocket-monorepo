@@ -1,16 +1,20 @@
 import { config } from './config';
 
-import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
-import { CloudwatchLogGroup } from '@cdktf/provider-aws/lib/cloudwatch-log-group';
-import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
-import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/data-aws-kms-alias';
-import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
-import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
-import { DataAwsSubnets } from '@cdktf/provider-aws/lib/data-aws-subnets';
-import { LocalProvider } from '@cdktf/provider-local/lib/provider';
-import { NullProvider } from '@cdktf/provider-null/lib/provider';
-import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
-import { DataPagerdutyEscalationPolicy } from '@cdktf/provider-pagerduty/lib/data-pagerduty-escalation-policy';
+import {
+  provider as awsProvider,
+  cloudwatchLogGroup,
+  dataAwsCallerIdentity,
+  dataAwsRegion,
+  dataAwsKmsAlias,
+  dataAwsSnsTopic,
+  dataAwsSubnets,
+} from '@cdktf/provider-aws';
+import { provider as localProvider } from '@cdktf/provider-local';
+import { provider as nullProvider } from '@cdktf/provider-null';
+import {
+  provider as pagerdutyProvider,
+  dataPagerdutyEscalationPolicy,
+} from '@cdktf/provider-pagerduty';
 import {
   PocketALBApplication,
   PocketPagerDuty,
@@ -27,10 +31,12 @@ class ClientAPI extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
-    new AwsProvider(this, 'aws', { region: 'us-east-1' });
-    new LocalProvider(this, 'local_provider');
-    new NullProvider(this, 'null_provider');
-    new PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
+    new awsProvider.AwsProvider(this, 'aws', { region: 'us-east-1' });
+    new localProvider.LocalProvider(this, 'local_provider');
+    new nullProvider.NullProvider(this, 'null_provider');
+    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
+      token: undefined,
+    });
     new S3Backend(this, {
       bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
       dynamodbTable: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
@@ -38,8 +44,11 @@ class ClientAPI extends TerraformStack {
       region: 'us-east-1',
     });
 
-    const caller = new DataAwsCallerIdentity(this, 'caller');
-    const region = new DataAwsRegion(this, 'region');
+    const caller = new dataAwsCallerIdentity.DataAwsCallerIdentity(
+      this,
+      'caller',
+    );
+    const region = new dataAwsRegion.DataAwsRegion(this, 'region');
 
     const clientApiPagerduty = this.createPagerDuty();
     const pocketVPC = new PocketVPC(this, 'pocket-vpc');
@@ -78,7 +87,7 @@ class ClientAPI extends TerraformStack {
    * @private
    */
   private getCodeDeploySnsTopic() {
-    return new DataAwsSnsTopic(this, 'backend_notifications', {
+    return new dataAwsSnsTopic.DataAwsSnsTopic(this, 'backend_notifications', {
       name: `Backend-${config.environment}-ChatBot`,
     });
   }
@@ -88,7 +97,7 @@ class ClientAPI extends TerraformStack {
    * @private
    */
   private getSecretsManagerKmsAlias() {
-    return new DataAwsKmsAlias(this, 'kms_alias', {
+    return new dataAwsKmsAlias.DataAwsKmsAlias(this, 'kms_alias', {
       name: 'alias/aws/secretsmanager',
     });
   }
@@ -103,13 +112,14 @@ class ClientAPI extends TerraformStack {
       return null;
     }
 
-    const mozillaEscalation = new DataPagerdutyEscalationPolicy(
-      this,
-      'mozilla_sre_escalation_policy',
-      {
-        name: 'IT SRE: Escalation Policy',
-      },
-    );
+    const mozillaEscalation =
+      new dataPagerdutyEscalationPolicy.DataPagerdutyEscalationPolicy(
+        this,
+        'mozilla_sre_escalation_policy',
+        {
+          name: 'IT SRE: Escalation Policy',
+        },
+      );
 
     return new PocketPagerDuty(this, 'pagerduty', {
       prefix: config.prefix,
@@ -122,10 +132,10 @@ class ClientAPI extends TerraformStack {
 
   private createPocketAlbApplication(dependencies: {
     pagerDuty?: PocketPagerDuty;
-    region: DataAwsRegion;
-    caller: DataAwsCallerIdentity;
-    secretsManagerKmsAlias: DataAwsKmsAlias;
-    snsTopic: DataAwsSnsTopic;
+    region: dataAwsRegion.DataAwsRegion;
+    caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
+    secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
+    snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
     cache: string;
   }): PocketALBApplication {
     const {
@@ -332,7 +342,7 @@ class ClientAPI extends TerraformStack {
    */
   private createElasticache(scope: Construct, pocketVPC: PocketVPC): string {
     // Serverless elasticache doesn't support the `e` availablity zone in us-east-1... so we need to filter it out..
-    const privateSubnets = new DataAwsSubnets(
+    const privateSubnets = new dataAwsSubnets.DataAwsSubnets(
       this,
       `cache_private_subnet_ids`,
       {
@@ -375,7 +385,7 @@ class ClientAPI extends TerraformStack {
    * @private
    */
   private createCustomLogGroup(containerName: string) {
-    const logGroup = new CloudwatchLogGroup(
+    const logGroup = new cloudwatchLogGroup.CloudwatchLogGroup(
       this,
       `${containerName}-log-group`,
       {

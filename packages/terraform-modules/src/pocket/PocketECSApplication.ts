@@ -1,9 +1,8 @@
-import { CloudwatchDashboard } from '@cdktf/provider-aws/lib/cloudwatch-dashboard';
 import {
-  CloudwatchMetricAlarmConfig,
-  CloudwatchMetricAlarm,
-} from '@cdktf/provider-aws/lib/cloudwatch-metric-alarm';
-import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
+  provider as awsProvider,
+  cloudwatchMetricAlarm,
+  cloudwatchDashboard,
+} from '@cdktf/provider-aws';
 import { TerraformMetaArguments } from 'cdktf';
 import { Construct } from 'constructs';
 import {
@@ -80,7 +79,7 @@ export interface PocketECSApplicationProps extends TerraformMetaArguments {
    * Option for defining Cloudwatch alarms
    */
   alarms?: {
-    alarms?: CloudwatchMetricAlarmConfig[];
+    alarms?: cloudwatchMetricAlarm.CloudwatchMetricAlarmConfig[];
   };
 }
 
@@ -146,7 +145,7 @@ export class PocketECSApplication extends Construct {
       const pocketVpc = new PocketVPC(
         this,
         `pocket_vpc`,
-        config.provider as AwsProvider,
+        config.provider as awsProvider.AwsProvider,
       );
       return {
         vpcId: pocketVpc.vpc.id,
@@ -192,11 +191,13 @@ export class PocketECSApplication extends Construct {
       }
     });
 
-    config.alarms?.forEach((alarm: CloudwatchMetricAlarmConfig) => {
-      if (alarm.datapointsToAlarm > alarm.evaluationPeriods) {
-        throw new Error(`${alarm.alarmName}: ${errorMessage}`);
-      }
-    });
+    config.alarms?.forEach(
+      (alarm: cloudwatchMetricAlarm.CloudwatchMetricAlarmConfig) => {
+        if (alarm.datapointsToAlarm > alarm.evaluationPeriods) {
+          throw new Error(`${alarm.alarmName}: ${errorMessage}`);
+        }
+      },
+    );
   }
 
   /**
@@ -270,7 +271,7 @@ export class PocketECSApplication extends Construct {
   private createCloudwatchDashboard(
     ecsServiceName: string,
     ecsServiceClusterName: string,
-  ): CloudwatchDashboard {
+  ): cloudwatchDashboard.CloudwatchDashboard {
     // set some defaults, then ignore all future changes / manual edits & additions.
     const dashboardJSON = {
       widgets: [
@@ -342,14 +343,18 @@ export class PocketECSApplication extends Construct {
       ],
     };
 
-    return new CloudwatchDashboard(this, 'cloudwatch-dashboard', {
-      dashboardName: `${this.config.prefix}`,
-      dashboardBody: JSON.stringify(dashboardJSON),
-      lifecycle: {
-        ignoreChanges: ['dashboard_body'],
+    return new cloudwatchDashboard.CloudwatchDashboard(
+      this,
+      'cloudwatch-dashboard',
+      {
+        dashboardName: `${this.config.prefix}`,
+        dashboardBody: JSON.stringify(dashboardJSON),
+        lifecycle: {
+          ignoreChanges: ['dashboard_body'],
+        },
+        provider: this.config.provider,
       },
-      provider: this.config.provider,
-    });
+    );
   }
 
   /**
@@ -358,7 +363,8 @@ export class PocketECSApplication extends Construct {
   private createCloudwatchAlarms(): void {
     const alarmsConfig = this.config.alarms;
 
-    const defaultAlarms: CloudwatchMetricAlarmConfig[] = [];
+    const defaultAlarms: cloudwatchMetricAlarm.CloudwatchMetricAlarmConfig[] =
+      [];
 
     if (alarmsConfig?.alarms) {
       defaultAlarms.push(...alarmsConfig.alarms);
@@ -371,12 +377,18 @@ export class PocketECSApplication extends Construct {
    * @param alarms
    * @private
    */
-  private createAlarms(alarms: CloudwatchMetricAlarmConfig[]): void {
+  private createAlarms(
+    alarms: cloudwatchMetricAlarm.CloudwatchMetricAlarmConfig[],
+  ): void {
     alarms.forEach((alarmConfig) => {
-      new CloudwatchMetricAlarm(this, alarmConfig.alarmName.toLowerCase(), {
-        ...alarmConfig,
-        alarmName: `${this.config.prefix}-${alarmConfig.alarmName}`,
-      } as CloudwatchMetricAlarmConfig);
+      new cloudwatchMetricAlarm.CloudwatchMetricAlarm(
+        this,
+        alarmConfig.alarmName.toLowerCase(),
+        {
+          ...alarmConfig,
+          alarmName: `${this.config.prefix}-${alarmConfig.alarmName}`,
+        } as cloudwatchMetricAlarm.CloudwatchMetricAlarmConfig,
+      );
     });
   }
 }

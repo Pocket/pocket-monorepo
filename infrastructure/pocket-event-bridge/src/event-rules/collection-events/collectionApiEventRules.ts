@@ -6,17 +6,19 @@ import {
   PocketPagerDuty,
 } from '@pocket-tools/terraform-modules';
 import { config } from '../../config';
-import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
-import { SnsTopic } from '@cdktf/provider-aws/lib/sns-topic';
-import { DataAwsIamPolicyDocument } from '@cdktf/provider-aws/lib/data-aws-iam-policy-document';
-import { SnsTopicPolicy } from '@cdktf/provider-aws/lib/sns-topic-policy';
+import {
+  sqsQueue,
+  snsTopic,
+  dataAwsIamPolicyDocument,
+  snsTopicPolicy,
+} from '@cdktf/provider-aws';
 import { Resource } from '@cdktf/provider-null/lib/resource';
 import { eventConfig } from './eventConfig';
 import { createDeadLetterQueueAlarm } from '../utils';
 
 export class CollectionApiEvents extends Construct {
-  public readonly snsTopic: SnsTopic;
-  public readonly snsTopicDlq: SqsQueue;
+  public readonly snsTopic: snsTopic.SnsTopic;
+  public readonly snsTopicDlq: sqsQueue.SqsQueue;
 
   constructor(
     scope: Construct,
@@ -26,14 +28,14 @@ export class CollectionApiEvents extends Construct {
   ) {
     super(scope, name);
 
-    this.snsTopic = new SnsTopic(this, 'collection-event-topic', {
+    this.snsTopic = new snsTopic.SnsTopic(this, 'collection-event-topic', {
       name: `${config.prefix}-CollectionEventTopic`,
       lifecycle: {
         preventDestroy: true,
       },
     });
 
-    this.snsTopicDlq = new SqsQueue(this, 'sns-topic-dql', {
+    this.snsTopicDlq = new sqsQueue.SqsQueue(this, 'sns-topic-dql', {
       name: `${config.prefix}-SNS-${eventConfig.name}-Event-Rule-DLQ`,
       tags: config.tags,
     });
@@ -97,29 +99,34 @@ export class CollectionApiEvents extends Construct {
   }
 
   private createPolicyForEventBridgeToSns() {
-    const eventBridgeSnsPolicy = new DataAwsIamPolicyDocument(
-      this,
-      `${config.prefix}-EventBridge-SNS-Policy`,
-      {
-        statement: [
-          {
-            effect: 'Allow',
-            actions: ['sns:Publish'],
-            resources: [this.snsTopic.arn],
-            principals: [
-              {
-                identifiers: ['events.amazonaws.com'],
-                type: 'Service',
-              },
-            ],
-          },
-        ],
-      },
-    ).json;
+    const eventBridgeSnsPolicy =
+      new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
+        this,
+        `${config.prefix}-EventBridge-SNS-Policy`,
+        {
+          statement: [
+            {
+              effect: 'Allow',
+              actions: ['sns:Publish'],
+              resources: [this.snsTopic.arn],
+              principals: [
+                {
+                  identifiers: ['events.amazonaws.com'],
+                  type: 'Service',
+                },
+              ],
+            },
+          ],
+        },
+      ).json;
 
-    return new SnsTopicPolicy(this, 'collection-events-sns-topic-policy', {
-      arn: this.snsTopic.arn,
-      policy: eventBridgeSnsPolicy,
-    });
+    return new snsTopicPolicy.SnsTopicPolicy(
+      this,
+      'collection-events-sns-topic-policy',
+      {
+        arn: this.snsTopic.arn,
+        policy: eventBridgeSnsPolicy,
+      },
+    );
   }
 }

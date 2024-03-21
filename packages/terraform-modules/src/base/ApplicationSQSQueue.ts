@@ -1,4 +1,4 @@
-import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
+import { sqsQueue } from '@cdktf/provider-aws';
 import { TerraformMetaArguments } from 'cdktf';
 import { Construct } from 'constructs';
 
@@ -71,8 +71,8 @@ const validations: {
  * Creates an SQS Queue with a dead letter queue
  */
 export class ApplicationSQSQueue extends Construct {
-  public readonly sqsQueue: SqsQueue;
-  public deadLetterQueue: SqsQueue | undefined;
+  public readonly sqsQueue: sqsQueue.SqsQueue;
+  public deadLetterQueue: sqsQueue.SqsQueue | undefined;
 
   constructor(
     scope: Construct,
@@ -107,7 +107,7 @@ export class ApplicationSQSQueue extends Construct {
   }
 
   private createSQSQueue(config: ApplicationSQSQueueProps) {
-    //Have to use the any type because SqsQueueConfig marks the properties as readonly 🤦🏼‍
+    //Have to use the any type because sqsQueue.SqsQueueConfig marks the properties as readonly 🤦🏼‍
     const sqsConfig: any = {
       name: config.name,
       messageRetentionSeconds: config.messageRetentionSeconds,
@@ -127,7 +127,7 @@ export class ApplicationSQSQueue extends Construct {
       });
     }
 
-    return new SqsQueue(this, `sqs_queue`, sqsConfig);
+    return new sqsQueue.SqsQueue(this, `sqs_queue`, sqsConfig);
   }
 
   /**
@@ -136,7 +136,7 @@ export class ApplicationSQSQueue extends Construct {
    * @private
    */
   private createDeadLetterSQSQueue(config: ApplicationSQSQueueProps) {
-    return new SqsQueue(this, `redrive_sqs_queue`, {
+    return new sqsQueue.SqsQueue(this, `redrive_sqs_queue`, {
       name: `${config.name}-Deadletter`,
       tags: config.tags,
       fifoQueue: false,

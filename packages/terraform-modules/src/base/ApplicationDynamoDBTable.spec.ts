@@ -1,4 +1,4 @@
-import { DynamodbTableGlobalSecondaryIndex } from '@cdktf/provider-aws/lib/dynamodb-table';
+import { dynamodbTable } from '@cdktf/provider-aws';
 import { Testing } from 'cdktf';
 import {
   ApplicationDynamoDBTable,
@@ -117,7 +117,7 @@ describe('ApplicationDynamoDBTable', () => {
 
     (
       BASE_CONFIG.tableConfig
-        .globalSecondaryIndex as DynamodbTableGlobalSecondaryIndex[]
+        .globalSecondaryIndex as dynamodbTable.DynamodbTableGlobalSecondaryIndex[]
     ).push({
       name: 'card-index',
       hashKey: 'card-type',
@@ -149,7 +149,7 @@ describe('ApplicationDynamoDBTable', () => {
     //This test runs after the first secondary index test, so here we just add another index which gives us 2
     (
       BASE_CONFIG.tableConfig
-        .globalSecondaryIndex as DynamodbTableGlobalSecondaryIndex[]
+        .globalSecondaryIndex as dynamodbTable.DynamodbTableGlobalSecondaryIndex[]
     ).push({
       name: 'card-index-2',
       hashKey: 'card-type-123',

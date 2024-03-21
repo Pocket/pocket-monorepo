@@ -7,17 +7,19 @@ import {
 import { config } from '../../config';
 import { config as admConfig } from './config';
 import { createDeadLetterQueueAlarm } from '../utils';
-import { DataAwsSqsQueue } from '@cdktf/provider-aws/lib/data-aws-sqs-queue';
-import { SnsTopic } from '@cdktf/provider-aws/lib/sns-topic';
-import { DataAwsIamPolicyDocument } from '@cdktf/provider-aws/lib/data-aws-iam-policy-document';
-import { SnsTopicPolicy } from '@cdktf/provider-aws/lib/sns-topic-policy';
-import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
+import {
+  dataAwsSqsQueue,
+  snsTopic,
+  dataAwsIamPolicyDocument,
+  snsTopicPolicy,
+  sqsQueue,
+} from '@cdktf/provider-aws';
 import { Resource } from '@cdktf/provider-null/lib/resource';
 
 export class AccountDeleteMonitorEvents extends Construct {
-  public readonly sqs: DataAwsSqsQueue;
-  public readonly sqsDlq: DataAwsSqsQueue;
-  public readonly UserMergeTopic: SnsTopic;
+  public readonly sqs: dataAwsSqsQueue.DataAwsSqsQueue;
+  public readonly sqsDlq: dataAwsSqsQueue.DataAwsSqsQueue;
+  public readonly UserMergeTopic: snsTopic.SnsTopic;
 
   constructor(
     scope: Construct,
@@ -26,18 +28,26 @@ export class AccountDeleteMonitorEvents extends Construct {
   ) {
     super(scope, name);
     // pre-existing queues (prod and dev) created by account-delete-monitor
-    this.sqs = new DataAwsSqsQueue(this, `${admConfig.prefix}-queue`, {
-      name: `${admConfig.prefix}-${admConfig.queueCheckDelete.name}-Queue`,
-    });
+    this.sqs = new dataAwsSqsQueue.DataAwsSqsQueue(
+      this,
+      `${admConfig.prefix}-queue`,
+      {
+        name: `${admConfig.prefix}-${admConfig.queueCheckDelete.name}-Queue`,
+      },
+    );
 
-    this.sqsDlq = new DataAwsSqsQueue(this, `${admConfig.prefix}-queue-dlq`, {
-      name: `${admConfig.prefix}-${admConfig.queueCheckDelete.name}-Queue-Deadletter`,
-    });
+    this.sqsDlq = new dataAwsSqsQueue.DataAwsSqsQueue(
+      this,
+      `${admConfig.prefix}-queue-dlq`,
+      {
+        name: `${admConfig.prefix}-${admConfig.queueCheckDelete.name}-Queue-Deadletter`,
+      },
+    );
 
     this.createAdmRules();
     //todo: revisit - the scheduled event will need iam permission to trigger sqs
 
-    this.UserMergeTopic = new SnsTopic(this, 'user-merge-topic', {
+    this.UserMergeTopic = new snsTopic.SnsTopic(this, 'user-merge-topic', {
       name: `${config.prefix}-${admConfig.userMerge.name}-Topic`,
       lifecycle: {
         preventDestroy: true,
@@ -92,7 +102,7 @@ export class AccountDeleteMonitorEvents extends Construct {
    * @private
    */
   private createUserMergeRules() {
-    const snsTopicDlq = new SqsQueue(this, 'sns-topic-dql', {
+    const snsTopicDlq = new sqsQueue.SqsQueue(this, 'sns-topic-dql', {
       name: `${config.prefix}-${admConfig.userMerge.name}-SNS-Topic-DLQ`,
       tags: config.tags,
     });
@@ -129,29 +139,34 @@ export class AccountDeleteMonitorEvents extends Construct {
    * @private
    */
   private createPolicyForEventBridgeToSns() {
-    const eventBridgeSnsPolicy = new DataAwsIamPolicyDocument(
-      this,
-      `${config.prefix}-EventBridge-SNS-Policy`,
-      {
-        statement: [
-          {
-            effect: 'Allow',
-            actions: ['sns:Publish'],
-            resources: [this.UserMergeTopic.arn],
-            principals: [
-              {
-                identifiers: ['events.amazonaws.com'],
-                type: 'Service',
-              },
-            ],
-          },
-        ],
-      },
-    ).json;
+    const eventBridgeSnsPolicy =
+      new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
+        this,
+        `${config.prefix}-EventBridge-SNS-Policy`,
+        {
+          statement: [
+            {
+              effect: 'Allow',
+              actions: ['sns:Publish'],
+              resources: [this.UserMergeTopic.arn],
+              principals: [
+                {
+                  identifiers: ['events.amazonaws.com'],
+                  type: 'Service',
+                },
+              ],
+            },
+          ],
+        },
+      ).json;
 
-    return new SnsTopicPolicy(this, 'user-events-sns-topic-policy', {
-      arn: this.UserMergeTopic.arn,
-      policy: eventBridgeSnsPolicy,
-    });
+    return new snsTopicPolicy.SnsTopicPolicy(
+      this,
+      'user-events-sns-topic-policy',
+      {
+        arn: this.UserMergeTopic.arn,
+        policy: eventBridgeSnsPolicy,
+      },
+    );
   }
 }

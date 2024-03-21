@@ -66,7 +66,7 @@ describe('ApplicationAutoscaling', () => {
     });
   });
 
-  describe('generateCloudwatchMetricAlarm', () => {
+  describe('generatecloudwatchMetricAlarm.CloudwatchMetricAlarm', () => {
     it('renders a scale-in Cloudwatch Alarm', () => {
       const synthed = Testing.synthScope((stack) => {
         const construct = new TestResource(stack, 'test-resource');

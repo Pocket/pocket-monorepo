@@ -5,9 +5,11 @@ import {
   LAMBDA_RUNTIMES,
 } from '../base/ApplicationVersionedLambda.js';
 import { ApplicationLambdaCodeDeploy } from '../base/ApplicationLambdaCodeDeploy.js';
-import { CloudwatchMetricAlarm } from '@cdktf/provider-aws/lib/cloudwatch-metric-alarm';
-import { DataAwsIamPolicyDocumentStatement } from '@cdktf/provider-aws/lib/data-aws-iam-policy-document';
-import { LambdaFunctionVpcConfig } from '@cdktf/provider-aws/lib/lambda-function';
+import {
+  cloudwatchMetricAlarm,
+  dataAwsIamPolicyDocument,
+  lambdaFunction,
+} from '@cdktf/provider-aws';
 
 export interface PocketVersionedLambdaDefaultAlarmProps {
   threshold: number;
@@ -37,8 +39,8 @@ export interface PocketVersionedLambdaProps extends TerraformMetaArguments {
     reservedConcurrencyLimit?: number;
     memorySizeInMb?: number;
     environment?: { [key: string]: string };
-    vpcConfig?: LambdaFunctionVpcConfig;
-    executionPolicyStatements?: DataAwsIamPolicyDocumentStatement[];
+    vpcConfig?: lambdaFunction.LambdaFunctionVpcConfig;
+    executionPolicyStatements?: dataAwsIamPolicyDocument.DataAwsIamPolicyDocumentStatement[];
     logRetention?: number;
     s3Bucket?: string;
     codeDeploy?: {
@@ -142,29 +144,33 @@ export class PocketVersionedLambda extends Construct {
     const props = config.props;
     const defaultEvaluationPeriods = 1;
 
-    new CloudwatchMetricAlarm(this, config.metricName.toLowerCase(), {
-      alarmName: `${this.config.name}-Lambda-${config.metricName}-Alarm`,
-      namespace: 'AWS/Lambda',
-      metricName: config.metricName,
-      dimensions: {
-        FunctionName: lambda.versionedLambda.functionName,
-        Resource: `${lambda.versionedLambda.functionName}:${lambda.versionedLambda.name}`,
+    new cloudwatchMetricAlarm.CloudwatchMetricAlarm(
+      this,
+      config.metricName.toLowerCase(),
+      {
+        alarmName: `${this.config.name}-Lambda-${config.metricName}-Alarm`,
+        namespace: 'AWS/Lambda',
+        metricName: config.metricName,
+        dimensions: {
+          FunctionName: lambda.versionedLambda.functionName,
+          Resource: `${lambda.versionedLambda.functionName}:${lambda.versionedLambda.name}`,
+        },
+        period: props.period,
+        evaluationPeriods: props.evaluationPeriods ?? defaultEvaluationPeriods,
+        datapointsToAlarm: props.datapointsToAlarm ?? defaultEvaluationPeriods,
+        statistic: 'Sum',
+        comparisonOperator: props.comparisonOperator ?? 'GreaterThanThreshold',
+        threshold: props.threshold,
+        alarmDescription:
+          props.alarmDescription ??
+          `Total ${config.metricName.toLowerCase()} breaches threshold`,
+        insufficientDataActions: [],
+        alarmActions: props.actions ?? [],
+        okActions: props.actions ?? [],
+        tags: this.config.tags,
+        treatMissingData: props.treatMissingData ?? 'missing',
       },
-      period: props.period,
-      evaluationPeriods: props.evaluationPeriods ?? defaultEvaluationPeriods,
-      datapointsToAlarm: props.datapointsToAlarm ?? defaultEvaluationPeriods,
-      statistic: 'Sum',
-      comparisonOperator: props.comparisonOperator ?? 'GreaterThanThreshold',
-      threshold: props.threshold,
-      alarmDescription:
-        props.alarmDescription ??
-        `Total ${config.metricName.toLowerCase()} breaches threshold`,
-      insufficientDataActions: [],
-      alarmActions: props.actions ?? [],
-      okActions: props.actions ?? [],
-      tags: this.config.tags,
-      treatMissingData: props.treatMissingData ?? 'missing',
-    });
+    );
   }
 
   private createLambdaCodeDeploy(): void {

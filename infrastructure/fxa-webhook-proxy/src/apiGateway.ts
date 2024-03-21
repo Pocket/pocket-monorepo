@@ -9,14 +9,14 @@ import {
 import { config } from './config';
 import { getEnvVariableValues } from './utilities';
 import { Construct } from 'constructs';
-import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
+import { sqsQueue } from '@cdktf/provider-aws';
 
 export class ApiGateway extends Construct {
   constructor(
     scope: Construct,
     private name: string,
     private vpc: PocketVPC,
-    private sqsQueue: SqsQueue,
+    private sqsQueue: sqsQueue.SqsQueue,
     pagerDuty?: PocketPagerDuty,
   ) {
     super(scope, name);

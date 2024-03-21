@@ -1,10 +1,9 @@
 import { TerraformMetaArguments, TerraformResource } from 'cdktf';
 import { Construct } from 'constructs';
-import { CloudwatchEventRule } from '@cdktf/provider-aws/lib/cloudwatch-event-rule';
 import {
-  CloudwatchEventTarget,
-  CloudwatchEventTargetConfig,
-} from '@cdktf/provider-aws/lib/cloudwatch-event-target';
+  cloudwatchEventTarget,
+  cloudwatchEventRule,
+} from '@cdktf/provider-aws';
 
 export type Target = {
   arn: string;
@@ -36,7 +35,7 @@ export interface ApplicationEventBridgeRuleProps
 }
 
 export class ApplicationEventBridgeRule extends Construct {
-  public readonly rule: CloudwatchEventRule;
+  public readonly rule: cloudwatchEventRule.CloudwatchEventRule;
 
   constructor(
     scope: Construct,
@@ -54,18 +53,22 @@ export class ApplicationEventBridgeRule extends Construct {
     }
     const eventBus = this.config.eventBusName ?? 'default';
     const { scheduleExpression, eventPattern } = this.config;
-    const rule = new CloudwatchEventRule(this, 'event-bridge-rule', {
-      name: `${this.config.name}-Rule`,
-      description: this.config.description,
-      eventPattern: eventPattern ? JSON.stringify(eventPattern) : undefined,
-      scheduleExpression,
-      eventBusName: eventBus,
-      lifecycle: {
-        preventDestroy: this.config.preventDestroy,
+    const rule = new cloudwatchEventRule.CloudwatchEventRule(
+      this,
+      'event-bridge-rule',
+      {
+        name: `${this.config.name}-Rule`,
+        description: this.config.description,
+        eventPattern: eventPattern ? JSON.stringify(eventPattern) : undefined,
+        scheduleExpression,
+        eventBusName: eventBus,
+        lifecycle: {
+          preventDestroy: this.config.preventDestroy,
+        },
+        tags: this.config.tags,
+        provider: this.config.provider,
       },
-      tags: this.config.tags,
-      provider: this.config.provider,
-    });
+    );
 
     if (this.config.targets) {
       this.config.targets.forEach((t) => {
@@ -89,11 +92,11 @@ export class ApplicationEventBridgeRule extends Construct {
           eventTargetConfig.dependsOn = [t.dependsOn, rule];
         }
 
-        new CloudwatchEventTarget(
+        new cloudwatchEventTarget.CloudwatchEventTarget(
           this,
           `event-bridge-target-${t.targetId}`,
           // yuck!
-          eventTargetConfig as CloudwatchEventTargetConfig,
+          eventTargetConfig as cloudwatchEventTarget.CloudwatchEventTargetConfig,
         );
       });
     }

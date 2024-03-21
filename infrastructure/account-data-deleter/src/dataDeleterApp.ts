@@ -1,11 +1,13 @@
 import { config } from './config';
 
-import { CloudwatchLogGroup } from '@cdktf/provider-aws/lib/cloudwatch-log-group';
-import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
-import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/data-aws-kms-alias';
-import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
-import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
-import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
+import {
+  cloudwatchLogGroup,
+  dataAwsCallerIdentity,
+  dataAwsKmsAlias,
+  dataAwsRegion,
+  sqsQueue,
+  dataAwsSnsTopic,
+} from '@cdktf/provider-aws';
 
 import {
   PocketALBApplication,
@@ -16,12 +18,12 @@ import { Construct } from 'constructs';
 
 export type DataDeleterAppConfig = {
   pagerDuty: PocketPagerDuty;
-  region: DataAwsRegion;
-  caller: DataAwsCallerIdentity;
-  secretsManagerKmsAlias: DataAwsKmsAlias;
-  snsTopic: DataAwsSnsTopic;
-  batchDeleteQueue: SqsQueue;
-  batchDeleteDLQ: SqsQueue;
+  region: dataAwsRegion.DataAwsRegion;
+  caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
+  secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
+  snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
+  batchDeleteQueue: sqsQueue.SqsQueue;
+  batchDeleteDLQ: sqsQueue.SqsQueue;
 };
 
 export class DataDeleterApp extends Construct {
@@ -243,7 +245,7 @@ export class DataDeleterApp extends Construct {
    * @private
    */
   private createCustomLogGroup(containerName: string) {
-    const logGroup = new CloudwatchLogGroup(
+    const logGroup = new cloudwatchLogGroup.CloudwatchLogGroup(
       this,
       `${containerName}-log-group`,
       {

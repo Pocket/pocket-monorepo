@@ -1,11 +1,9 @@
 import { config as stackConfig } from './config';
 
-import { DataAwsSsmParameter } from '@cdktf/provider-aws/lib/data-aws-ssm-parameter';
+import { dataAwsSsmParameter } from '@cdktf/provider-aws';
 import {
   ApplicationDynamoDBTable,
   PocketSQSWithLambdaTarget,
-} from '@pocket-tools/terraform-modules';
-import {
   LAMBDA_RUNTIMES,
   PocketPagerDuty,
   PocketVersionedLambdaProps,
@@ -65,13 +63,21 @@ export class SQSEventLambda extends Construct {
   }
 
   private getEnvVariableValues() {
-    const sentryDsn = new DataAwsSsmParameter(this, 'sentry-dsn', {
-      name: `/${stackConfig.name}/${stackConfig.environment}/SENTRY_DSN`,
-    });
+    const sentryDsn = new dataAwsSsmParameter.DataAwsSsmParameter(
+      this,
+      'sentry-dsn',
+      {
+        name: `/${stackConfig.name}/${stackConfig.environment}/SENTRY_DSN`,
+      },
+    );
 
-    const serviceHash = new DataAwsSsmParameter(this, 'service-hash', {
-      name: `${stackConfig.circleCIPrefix}/SERVICE_HASH`,
-    });
+    const serviceHash = new dataAwsSsmParameter.DataAwsSsmParameter(
+      this,
+      'service-hash',
+      {
+        name: `${stackConfig.circleCIPrefix}/SERVICE_HASH`,
+      },
+    );
 
     return { sentryDsn: sentryDsn.value, gitSha: serviceHash.value };
   }

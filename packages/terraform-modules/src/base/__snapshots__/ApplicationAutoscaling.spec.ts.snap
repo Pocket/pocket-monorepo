@@ -198,7 +198,7 @@ exports[`ApplicationAutoscaling generateAutoScalingTarget renders an Autoscaling
 }"
 `;
 
-exports[`ApplicationAutoscaling generateCloudwatchMetricAlarm renders a scale-in Cloudwatch Alarm 1`] = `
+exports[`ApplicationAutoscaling generatecloudwatchMetricAlarm.CloudwatchMetricAlarm renders a scale-in Cloudwatch Alarm 1`] = `
 "{
   "resource": {
     "aws_appautoscaling_policy": {
@@ -259,7 +259,7 @@ exports[`ApplicationAutoscaling generateCloudwatchMetricAlarm renders a scale-in
 }"
 `;
 
-exports[`ApplicationAutoscaling generateCloudwatchMetricAlarm renders a scale-out Cloudwatch Alarm 1`] = `
+exports[`ApplicationAutoscaling generatecloudwatchMetricAlarm.CloudwatchMetricAlarm renders a scale-out Cloudwatch Alarm 1`] = `
 "{
   "resource": {
     "aws_appautoscaling_policy": {

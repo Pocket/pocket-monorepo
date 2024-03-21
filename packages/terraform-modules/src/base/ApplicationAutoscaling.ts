@@ -1,7 +1,9 @@
 import { TerraformMetaArguments } from 'cdktf';
-import { AppautoscalingPolicy } from '@cdktf/provider-aws/lib/appautoscaling-policy';
-import { AppautoscalingTarget } from '@cdktf/provider-aws/lib/appautoscaling-target';
-import { CloudwatchMetricAlarm } from '@cdktf/provider-aws/lib/cloudwatch-metric-alarm';
+import {
+  appautoscalingPolicy,
+  appautoscalingTarget,
+  cloudwatchMetricAlarm,
+} from '@cdktf/provider-aws';
 import { Construct } from 'constructs';
 
 export interface ApplicationAutoscalingProps extends TerraformMetaArguments {
@@ -79,20 +81,24 @@ export class ApplicationAutoscaling extends Construct {
    * Creates an Auto Scaling Target
    * @param resource
    * @param config
-   * @returns AppautoscalingTarget
+   * @returns appautoscalingTarget.AppautoscalingTarget
    */
   static generateAutoScalingTarget(
     scope: Construct,
     config: ApplicationAutoscalingProps,
-  ): AppautoscalingTarget {
-    return new AppautoscalingTarget(scope, `autoscaling_target`, {
-      maxCapacity: config.targetMaxCapacity,
-      minCapacity: config.targetMinCapacity,
-      resourceId: `service/${config.ecsClusterName}/${config.ecsServiceName}`,
-      scalableDimension: 'ecs:service:DesiredCount',
-      serviceNamespace: 'ecs',
-      provider: config.provider,
-    });
+  ): appautoscalingTarget.AppautoscalingTarget {
+    return new appautoscalingTarget.AppautoscalingTarget(
+      scope,
+      `autoscaling_target`,
+      {
+        maxCapacity: config.targetMaxCapacity,
+        minCapacity: config.targetMinCapacity,
+        resourceId: `service/${config.ecsClusterName}/${config.ecsServiceName}`,
+        scalableDimension: 'ecs:service:DesiredCount',
+        serviceNamespace: 'ecs',
+        provider: config.provider,
+      },
+    );
   }
 
   /**
@@ -101,14 +107,14 @@ export class ApplicationAutoscaling extends Construct {
    * @param config
    * @param target
    * @param type
-   * @returns AppautoscalingPolicy
+   * @returns appautoscalingPolicy.AppautoscalingPolicy
    */
   static generateAutoSclaingPolicy(
     scope: Construct,
     config: ApplicationAutoscalingProps,
-    target: AppautoscalingTarget,
+    target: appautoscalingTarget.AppautoscalingTarget,
     type: 'In' | 'Out',
-  ): AppautoscalingPolicy {
+  ): appautoscalingPolicy.AppautoscalingPolicy {
     let stepAdjustment;
 
     if (type === 'In') {
@@ -127,7 +133,7 @@ export class ApplicationAutoscaling extends Construct {
       ];
     }
 
-    const appAutoscaling = new AppautoscalingPolicy(
+    const appAutoscaling = new appautoscalingPolicy.AppautoscalingPolicy(
       scope,
       `scale_${type.toLowerCase()}_policy`,
       {
@@ -179,7 +185,7 @@ export class ApplicationAutoscaling extends Construct {
     threshold: number,
     arn: string,
   ): void {
-    new CloudwatchMetricAlarm(scope, id, {
+    new cloudwatchMetricAlarm.CloudwatchMetricAlarm(scope, id, {
       alarmName: name,
       alarmDescription: desc,
       comparisonOperator: operator,

@@ -1,4 +1,4 @@
-import { AlbTargetGroup } from '@cdktf/provider-aws/lib/alb-target-group';
+import { albTargetGroup } from '@cdktf/provider-aws';
 import { TerraformMetaArguments } from 'cdktf';
 import { Construct } from 'constructs';
 
@@ -10,7 +10,7 @@ export interface ApplicationTargetGroupProps extends TerraformMetaArguments {
 }
 
 export class ApplicationTargetGroup extends Construct {
-  public readonly targetGroup: AlbTargetGroup;
+  public readonly targetGroup: albTargetGroup.AlbTargetGroup;
 
   constructor(
     scope: Construct,
@@ -19,22 +19,26 @@ export class ApplicationTargetGroup extends Construct {
   ) {
     super(scope, name);
 
-    this.targetGroup = new AlbTargetGroup(this, 'ecs_target_group', {
-      namePrefix: config.shortName,
-      protocol: 'HTTP',
-      vpcId: config.vpcId,
-      tags: config.tags,
-      targetType: 'ip',
-      port: 80,
-      deregistrationDelay: '120',
-      healthCheck: {
-        interval: 15,
-        path: config.healthCheckPath,
+    this.targetGroup = new albTargetGroup.AlbTargetGroup(
+      this,
+      'ecs_target_group',
+      {
+        namePrefix: config.shortName,
         protocol: 'HTTP',
-        healthyThreshold: 5,
-        unhealthyThreshold: 3,
+        vpcId: config.vpcId,
+        tags: config.tags,
+        targetType: 'ip',
+        port: 80,
+        deregistrationDelay: '120',
+        healthCheck: {
+          interval: 15,
+          path: config.healthCheckPath,
+          protocol: 'HTTP',
+          healthyThreshold: 5,
+          unhealthyThreshold: 3,
+        },
+        provider: config.provider,
       },
-      provider: config.provider,
-    });
+    );
   }
 }

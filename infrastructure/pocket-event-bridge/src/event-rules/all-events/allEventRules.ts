@@ -6,17 +6,19 @@ import {
   PocketPagerDuty,
 } from '@pocket-tools/terraform-modules';
 import { config } from '../../config';
-import { CloudwatchLogGroup } from '@cdktf/provider-aws/lib/cloudwatch-log-group';
-import { DataAwsIamPolicyDocument } from '@cdktf/provider-aws/lib/data-aws-iam-policy-document';
-import { CloudwatchLogResourcePolicy } from '@cdktf/provider-aws/lib/cloudwatch-log-resource-policy';
-import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
-import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
+import {
+  cloudwatchLogGroup,
+  dataAwsIamPolicyDocument,
+  dataAwsRegion,
+  dataAwsCallerIdentity,
+  cloudwatchLogResourcePolicy,
+} from '@cdktf/provider-aws';
 
 import { Resource } from '@cdktf/provider-null/lib/resource';
 import { eventConfig } from './eventConfig';
 
 export class AllEventsRule extends Construct {
-  public readonly cloudwatchLogGroup: CloudwatchLogGroup;
+  public readonly cloudwatchLogGroup: cloudwatchLogGroup.CloudwatchLogGroup;
 
   constructor(
     scope: Construct,
@@ -42,10 +44,14 @@ export class AllEventsRule extends Construct {
   }
 
   private createLogGroup() {
-    return new CloudwatchLogGroup(this, 'all-event-log-group', {
-      name: `/aws/events/${config.name}/AllEvents`,
-      retentionInDays: 14,
-    });
+    return new cloudwatchLogGroup.CloudwatchLogGroup(
+      this,
+      'all-event-log-group',
+      {
+        name: `/aws/events/${config.name}/AllEvents`,
+        retentionInDays: 14,
+      },
+    );
   }
 
   /**
@@ -53,7 +59,7 @@ export class AllEventsRule extends Construct {
    * for collection-events
    * @private
    */
-  private createAllEventRules(logGroup: CloudwatchLogGroup) {
+  private createAllEventRules(logGroup: cloudwatchLogGroup.CloudwatchLogGroup) {
     const allEventRuleProps: PocketEventBridgeProps = {
       eventRule: {
         name: `${config.prefix}-${eventConfig.name}-Rule`,
@@ -82,33 +88,36 @@ export class AllEventsRule extends Construct {
     );
   }
 
-  private createPolicyForEventBridgeToCloudwatch(logGroup: CloudwatchLogGroup) {
-    const eventBridgeCloudwatchPolicy = new DataAwsIamPolicyDocument(
-      this,
-      `${config.prefix}-EventBridge-Cloudwatch-Policy`,
-      {
-        statement: [
-          {
-            effect: 'Allow',
-            actions: ['logs:CreateLogStream', 'logs:PutLogEvents'],
-            resources: [
-              `arn:aws:logs:${new DataAwsRegion(this, 'region').name}:${new DataAwsCallerIdentity(this, 'caller').accountId}:log-group:/aws/events/*:*`,
-            ],
-            principals: [
-              {
-                identifiers: [
-                  'events.amazonaws.com',
-                  'delivery.logs.amazonaws.com',
-                ],
-                type: 'Service',
-              },
-            ],
-          },
-        ],
-      },
-    ).json;
+  private createPolicyForEventBridgeToCloudwatch(
+    logGroup: cloudwatchLogGroup.CloudwatchLogGroup,
+  ) {
+    const eventBridgeCloudwatchPolicy =
+      new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
+        this,
+        `${config.prefix}-EventBridge-Cloudwatch-Policy`,
+        {
+          statement: [
+            {
+              effect: 'Allow',
+              actions: ['logs:CreateLogStream', 'logs:PutLogEvents'],
+              resources: [
+                `arn:aws:logs:${new dataAwsRegion.DataAwsRegion(this, 'region').name}:${new dataAwsCallerIdentity.DataAwsCallerIdentity(this, 'caller').accountId}:log-group:/aws/events/*:*`,
+              ],
+              principals: [
+                {
+                  identifiers: [
+                    'events.amazonaws.com',
+                    'delivery.logs.amazonaws.com',
+                  ],
+                  type: 'Service',
+                },
+              ],
+            },
+          ],
+        },
+      ).json;
 
-    return new CloudwatchLogResourcePolicy(
+    return new cloudwatchLogResourcePolicy.CloudwatchLogResourcePolicy(
       this,
       'all-events-cloudwatch-policy',
       {
