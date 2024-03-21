@@ -123,7 +123,7 @@ export class ApplicationVersionedLambda extends Construct {
           'source_code_hash',
           this.shouldIgnorePublish() ? 'publish' : '',
           ...this.config.ignoreEnvironmentVars.map(
-            (value) => `environment.0.variables["${value}"]`,
+            (value) => `environment["${value}"]`,
           ),
         ].filter((v: string) => v),
       },
