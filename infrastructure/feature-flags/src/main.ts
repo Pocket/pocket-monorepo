@@ -156,7 +156,6 @@ class FeatureFlags extends TerraformStack {
       containerConfigs: [
         {
           name: 'app',
-          imageSha: config.releaseSha,
           portMappings: [
             {
               hostPort: 4242,

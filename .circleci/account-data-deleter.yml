@@ -109,8 +109,6 @@ workflows:
           for: account_data_deleter
           name: account-data-deleter_code_deploy_ecs_dev
           resource-class: pocket/default-dev
-          codedeploy-app-name: AccountDataDeleter-Dev-ECS
-          codedeploy-group-name: AccountDataDeleter-Dev-ECS
           requires:
             - account-data-deleter_build_docker_dev
 
@@ -237,8 +235,6 @@ workflows:
           for: account_data_deleter
           name: account-data-deleter_code_deploy_ecs_prod
           resource-class: pocket/default-prod
-          codedeploy-app-name: AccountDataDeleter-Prod-ECS
-          codedeploy-group-name: AccountDataDeleter-Prod-ECS
           requires:
             - account-data-deleter_build_docker_prod
 

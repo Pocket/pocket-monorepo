@@ -37,7 +37,6 @@ workflows:
           resource-class: pocket/default-prod
           dev: false
           apply: false
-          save_app_spec: false
 
       # ######
       # # Dev Branch Deployment (Dev Environment)
@@ -53,7 +52,6 @@ workflows:
           resource-class: pocket/default-dev
           apply: true
           dev: true
-          save_app_spec: false
 
       # Build & Deploy the Dev Docker Image
       - build_image:
@@ -109,7 +107,6 @@ workflows:
           resource-class: pocket/default-prod
           apply: true
           dev: false
-          save_app_spec: false
 
       # Build & Deploy the Prod Docker Image
       - build_image:

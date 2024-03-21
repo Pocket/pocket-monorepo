@@ -1,9 +1,10 @@
 version: 2.1
 
 orbs:
-  aws-cli: circleci/aws-cli@2.0.6
+  aws-cli: circleci/aws-cli@4.1.3
   aws-ecr: circleci/aws-ecr@7.3.0
   aws-code-deploy: circleci/aws-code-deploy@3.0.0
+  aws-ecs: circleci/aws-ecs@4.0.0
 
 # This is an enum that is used within all our jobs and our exit early job.
 # As a new "service/deployment" is added you should add to the enum.
@@ -156,7 +157,7 @@ commands:
       - run: 
           name: Install and setup node
           command: |
-            . /home/circleci/.codebuild_shims_wrapper.sh
+            printenv
             nvm install
             nvm use
             npm install -g pnpm   
@@ -166,7 +167,6 @@ commands:
       - run: 
           name: Setup our secrets from AWS Secret Manager
           command: |
-            . /home/circleci/.codebuild_shims_wrapper.sh
             echo 'export SECRET_VALUE="$(aws secretsmanager get-secret-value --secret-id CodeBuild/Default --query SecretString --output text)"' >> "$BASH_ENV"
             echo 'export TERRAFORM_TOKEN="$(echo $SECRET_VALUE | jq -r '.terraform_token')"' >> "$BASH_ENV"
             echo 'export PAGERDUTY_TOKEN="$(echo $SECRET_VALUE | jq -r '.mozilla_pagerduty_token')"' >> "$BASH_ENV"
@@ -201,10 +201,6 @@ jobs:
         description: Whether or not its a dev build
         type: boolean
         default: false
-      save_app_spec:
-        description: Whether or not we should save off the app spec file for later use
-        type: boolean
-        default: true
       uses_raw_hcl:
         description: Signals that we do not need to compile the app code
         type: boolean
@@ -212,6 +208,7 @@ jobs:
       <<: [*repo_for_enum, *resource_class_enmum]
     # Our self hosted runners dont support docker images, cause its not deployed in kubernetes, so we have some special steps
     machine: true
+    shell: /bin/bash --login -eo pipefail
     resource_class: << parameters.resource-class >>
     steps:
       - exit-early-if-irrelevant:
@@ -224,7 +221,7 @@ jobs:
       - run:
           name: Install tfcmt
           command: |
-            curl -L https://github.com/suzuki-shunsuke/tfcmt/releases/download/v4.7.3/tfcmt_linux_amd64.tar.gz | tar xvzf - tfcmt
+            curl -L https://github.com/suzuki-shunsuke/tfcmt/releases/download/v4.9.0/tfcmt_linux_amd64.tar.gz | tar xvzf - tfcmt
             mv tfcmt /home/circleci/tfcmt
             chmod a+x /home/circleci/tfcmt
       - install_codebuild_secrets
@@ -239,7 +236,6 @@ jobs:
                   - run:
                       name: Build Dev Infra
                       command: |
-                        . /home/circleci/.codebuild_shims_wrapper.sh
                         nvm use
                         export NODE_ENV=development
                         pnpm run synth --filter=<< parameters.scope >>...
@@ -249,7 +245,6 @@ jobs:
                   - run:
                       name: Build Prod Infra
                       command: |
-                        . /home/circleci/.codebuild_shims_wrapper.sh
                         nvm use
                         export NODE_ENV=production
                         pnpm run synth --filter=<< parameters.scope >>...
@@ -275,49 +270,30 @@ jobs:
       - run:
           name: Setup terraform
           command: |
-            . /home/circleci/.codebuild_shims_wrapper.sh
             cd << parameters.stack-output-path >>
             tfenv use
             terraform init
       - when:
-          condition: <<parameters.save_app_spec>>
-          steps:
-            - restore_cache:
-                name: Restore AppSpec Cache
-                keys:
-                  - appspec-<< parameters.for >>
-      - when:
           condition: <<parameters.apply>>
           steps:
-            - attach_workspace:
-                at: /tmp/workspace
             - run:
                 name: Terraform apply
                 command: |
-                  . /home/circleci/.codebuild_shims_wrapper.sh
                   cd << parameters.stack-output-path >>
                   /home/circleci/tfcmt --var target:<< parameters.scope >><<#parameters.dev>>-dev<</parameters.dev>> apply -- terraform apply -auto-approve -lock-timeout=10m
-            - when:
-                condition: <<parameters.save_app_spec>>
-                steps:
-                 - run:
-                     name: Copy App Spec
-                     command: |
-                       . /home/circleci/.codebuild_shims_wrapper.sh
-                       cd << parameters.stack-output-path >>
-                       mkdir -p /tmp/workspace/<< parameters.for >>
-                       cp appspec.json /tmp/workspace/<< parameters.for >>/
-                 - persist_to_workspace:
-                    root: /tmp/workspace
-                    paths:
-                      - '<< parameters.for >>/appspec.json'
+                  mkdir -p /tmp/workspace
+                  echo "$(terraform output -json)" > /tmp/workspace/tf_output.json
+            # Persist TF_OUTPUT using workspace
+            - persist_to_workspace:
+                root: /tmp/workspace
+                paths:
+                  - tf_output.json
       - unless:
           condition: <<parameters.apply>>
           steps:
             - run:
                 name: Terraform plan
                 command: |
-                  . /home/circleci/.codebuild_shims_wrapper.sh
                   cd << parameters.stack-output-path >>
                   /home/circleci/tfcmt --var target:<< parameters.scope >><<#parameters.dev>>-dev<</parameters.dev>> plan --skip-no-changes --patch -- terraform plan -lock-timeout=10m
       - save_cache:
@@ -325,57 +301,86 @@ jobs:
           paths:
             - /home/circleci/.tfenv/versions/*
             - /home/circleci/.tfenv/bin/terraform-*
-      - when:
-          condition: <<parameters.save_app_spec>>
-          steps:
-            - save_cache:
-                key: appspec-<< parameters.for >>
-                paths:
-                  - << parameters.stack-output-path >>/appspec.json
+
   code_deploy_ecs:
     parameters:
-      workspace:
-        description: Workspace where the appspec.json are at
-        type: string
-        default: /tmp/workspace
-      codedeploy-app-name:
-        description: CodeDeploy app name
-        type: string
-      codedeploy-group-name:
-        description: CodeDeploy group name
-        type: string
       <<: [*repo_for_enum, *resource_class_enmum]
     # Our self hosted runners dont support docker images, cause its not deployed in kubernetes, so we have some special steps
     machine: true
+    shell: /bin/bash --login -eo pipefail
     resource_class: << parameters.resource-class >>
     steps:
       - exit-early-if-irrelevant:
           for: << parameters.for >>
+      # Restore TF_OUTPUT from workspace
       - attach_workspace:
-          at: << parameters.workspace >>
+          at: /tmp/workspace
       - run:
-          name: CodeDeploy
+          # Pulls out the terraform params needed for CodeDeploy and then re-saves them to be used in the CodeDeploy ORB
+          name: CodeDeploy Load Env
           command: |
-            . /home/circleci/.codebuild_shims_wrapper.sh
-            export AWS_PAGER=""
-            currentDeployment=$(aws deploy list-deployments --application-name "<< parameters.codedeploy-app-name >>" --deployment-group-name "<< parameters.codedeploy-group-name >>" --query "deployments[?status=='InProgress'].deploymentId" --output text --no-cli-pager)
-            if [ -n "$currentDeployment" ]; then
-              echo "There is already a deployment in progress with ID: $currentDeployment" waiting for it to finish
-              aws deploy wait deployment-successful --deployment-id "$deploymentId" --no-cli-pager || {
-                echo "Deployment failed or timed out."
-                exit 1
-              }
-            fi
+            TF_OUTPUT=$(cat /tmp/workspace/tf_output.json)
+            ECS_TASK_ARN=$(echo "$TF_OUTPUT" | jq -r '.["ecs-task-arn"].value')
+            ECS_TASK_CONTAINER_NAME=$(echo "$TF_OUTPUT" | jq -r '.["ecs-task-containerName"].value')
+            ECS_TASK_CONTAINER_PORT=$(echo "$TF_OUTPUT" | jq -r '.["ecs-task-containerPort"].value')
+            ECS_TASK_FAMILY=$(echo "$TF_OUTPUT" | jq -r '.["ecs-task-family"].value')
+            ECS_CODEDEPLOY_GROUP=$(echo "$TF_OUTPUT" | jq -r '.["ecs-codedeploy-group"].value')
+            ECS_CODEDEPLOY_APP=$(echo "$TF_OUTPUT" | jq -r '.["ecs-codedeploy-app"].value')
 
-            export appspec=$(cat '<< parameters.workspace >>/<< parameters.for >>/appspec.json')
-            export REVISION="revisionType=AppSpecContent,appSpecContent={content='$appspec'}"
-            aws deploy \
-            create-deployment \
-            --application-name="<< parameters.codedeploy-app-name >>"  \
-            --deployment-group-name="<< parameters.codedeploy-group-name >>" \
-            --description="Triggered from CircleCI" \
-            --revision="$REVISION" \
-            --no-cli-pager
+            echo "export ECS_TASK_ARN=$ECS_TASK_ARN" >> $BASH_ENV
+            echo "export ECS_TASK_CONTAINER_NAME=$ECS_TASK_CONTAINER_NAME" >> $BASH_ENV
+            echo "export ECS_TASK_CONTAINER_PORT=$ECS_TASK_CONTAINER_PORT" >> $BASH_ENV
+            echo "export ECS_TASK_FAMILY=$ECS_TASK_FAMILY" >> $BASH_ENV
+            echo "export ECS_CODEDEPLOY_GROUP=$ECS_CODEDEPLOY_GROUP" >> $BASH_ENV
+            echo "export ECS_CODEDEPLOY_APP=$ECS_CODEDEPLOY_APP" >> $BASH_ENV
+
+      ## All the following steps are copied from https://github.com/CircleCI-Public/aws-ecs-orb/blob/master/src/commands/update_service.yml but we manually run them so we can pass env variables that we otherwise couldn't since it relies on parameter steps.
+      ## See open issue to clean up when we can. https://github.com/CircleCI-Public/aws-ecs-orb/issues/211
+      ## Once the above issue is fixed we can remove the included script and these commands and replace it with the below.
+      # - aws-ecs/update_service:
+      #     name: Deploy ECS Service
+      #     codedeploy_application_name: ${ECS_CODEDEPLOY_APP}
+      #     codedeploy_deployment_group_name: ${ECS_CODEDEPLOY_GROUP}
+      #     codedeploy_load_balanced_container_name: ${ECS_TASK_CONTAINER_NAME}
+      #     codedeploy_load_balanced_container_port: ${ECS_TASK_CONTAINER_PORT}
+      #     family: ${ECS_TASK_FAMILY}
+      #     container_image_name_updates: tag=${CIRCLE_SHA1}, container=${ECS_TASK_CONTAINER_NAME}
+      #     deployment_controller: CODE_DEPLOY
+      #     verify_revision_is_deployed: true
+
+      - aws-cli/install
+      ## Set the AWS CLI to use the Ecs Container credentials since this is in a hosted runner on AWS.
+      - run:
+          name: Setup AWS Auth
+          command: |
+            aws configure set profile.default.credential_source EcsContainer
+
+      ## This will use the last revision in AWS to create a new task definition with the container image pointed to the sha of this commit
+      ## If the task def was changed in terraform, that will be the latest revision that this will then over
+      - aws-ecs/update_task_definition:
+          family: ${ECS_TASK_FAMILY}
+          container_image_name_updates: container=${ECS_TASK_CONTAINER_NAME},tag=${CIRCLE_SHA1}
+      ## We need to checkout the code, because that contains our copied script from the aws-ecs orb repo.
+      - checkout
+      - run:
+          name: Update ECS Blue/Green service with registered task definition.
+          command: |
+            .circleci/scripts/update_bluegreen_service_via_task_def.sh
+          no_output_timeout: 10m
+          environment:
+            DEPLOYMENT_CONTROLLER: CODE_DEPLOY
+            ORB_STR_CD_APP_NAME: ${ECS_CODEDEPLOY_APP}
+            ORB_STR_CD_DEPLOY_GROUP_NAME: ${ECS_CODEDEPLOY_GROUP}
+            ORB_STR_CD_LOAD_BALANCED_CONTAINER_NAME: ${ECS_TASK_CONTAINER_NAME}
+            ORB_INT_CD_LOAD_BALANCED_CONTAINER_PORT: ${ECS_TASK_CONTAINER_PORT}
+            # Dont wait for a successful deploy, we will get alerts in slack for those.
+            ORB_BOOL_VERIFY_REV_DEPLOY: false
+            ORB_STR_PROFILE_NAME: default
+            ORB_BOOL_ENABLE_CIRCUIT_BREAKER: false
+            ORB_STR_CD_CAPACITY_PROVIDER_NAME: 
+            ORB_STR_CD_CAPACITY_PROVIDER_WEIGHT: 
+            ORB_STR_CD_CAPACITY_PROVIDER_BASE: 
+            ORB_STR_CD_DEPLOYMENT_CONFIG_NAME:
 
   code_deploy_lambda:
     parameters:
@@ -403,6 +408,7 @@ jobs:
       <<: [*repo_for_enum, *resource_class_enmum]
     # Our self hosted runners dont support docker images, cause its not deployed in kubernetes, so we have some special steps
     machine: true
+    shell: /bin/bash --login -eo pipefail
     resource_class: << parameters.resource-class >>
     steps:
       - exit-early-if-irrelevant:
@@ -410,7 +416,6 @@ jobs:
       - run:
           name: Deploy Lambda
           command: |
-            . /home/circleci/.codebuild_shims_wrapper.sh
             export AWS_PAGER=""
             aws lambda wait function-updated --function-name '<< parameters.function-name >>'
 
@@ -546,9 +551,9 @@ jobs:
           for: << parameters.for >>
       - checkout
       - aws-cli/setup:
-          aws-access-key-id: << parameters.aws-access-key-id >>
-          aws-secret-access-key: << parameters.aws-secret-access-key >>
-          aws-region: << parameters.aws-region >>
+          aws_access_key_id: << parameters.aws-access-key-id >>
+          aws_secret_access_key: << parameters.aws-secret-access-key >>
+          region: << parameters.aws-region >>
       - run:
           name: Setup common environment variables
           command: |
@@ -676,9 +681,9 @@ jobs:
           condition: << parameters.s3-bucket >>
           steps:
             - aws-cli/setup:
-                aws-access-key-id: << parameters.aws-access-key-id >>
-                aws-secret-access-key: << parameters.aws-secret-access-key >>
-                aws-region: << parameters.aws-region >>
+                aws_access_key_id: << parameters.aws-access-key-id >>
+                aws_secret_access_key: << parameters.aws-secret-access-key >>
+                region: << parameters.aws-region >>
             - run:
                 name: Upload Package
                 command: |

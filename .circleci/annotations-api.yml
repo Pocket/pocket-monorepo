@@ -97,8 +97,6 @@ workflows:
           for: annotations_api
           name: annotations-api_code_deploy_ecs_dev
           resource-class: pocket/default-dev
-          codedeploy-app-name: AnnotationsAPI-Dev-ECS
-          codedeploy-group-name: AnnotationsAPI-Dev-ECS
           requires:
             - annotations-api_build_docker_dev
 
@@ -193,8 +191,6 @@ workflows:
           for: annotations_api
           name: annotations-api_code_deploy_ecs_prod
           resource-class: pocket/default-prod
-          codedeploy-app-name: AnnotationsAPI-Prod-ECS
-          codedeploy-group-name: AnnotationsAPI-Prod-ECS
           requires:
             - annotations-api_build_docker_prod
 
