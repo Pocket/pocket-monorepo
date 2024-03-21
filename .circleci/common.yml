@@ -157,7 +157,6 @@ commands:
       - run: 
           name: Install and setup node
           command: |
-            printenv
             nvm install
             nvm use
             npm install -g pnpm   
@@ -430,6 +429,10 @@ jobs:
                 --s3-key "$s3Key"
 
             aws lambda wait function-updated --function-name '<< parameters.function-name >>'
+
+            NEW_ENVVARS=$(aws lambda get-function-configuration --function-name '<< parameters.function-name >>' --query "Environment.Variables | merge(@, \`{\"GIT_SHA\":\"$CIRCLE_SHA1\"}\`)")
+            echo $NEW_ENVVARS
+            aws lambda update-function-configuration --function-name '<< parameters.function-name >>' --environment "{ \"Variables\": $NEW_ENVVARS }"
 
             versionId=$(aws lambda publish-version \
                 --function-name '<< parameters.function-name >>' | jq -r .Version)
