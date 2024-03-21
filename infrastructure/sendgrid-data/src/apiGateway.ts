@@ -18,7 +18,7 @@ export class ApiGateway extends Construct {
     pagerDuty?: PocketPagerDuty,
   ) {
     super(scope, name);
-    const { sentryDsn, gitSha } = getEnvVariableValues(this);
+    const { sentryDsn } = getEnvVariableValues(this);
 
     const sendGridDataRoute: ApiGatewayLambdaRoute = {
       path: 'events',
@@ -60,6 +60,7 @@ export class ApiGateway extends Construct {
             AWS_CLOUDWATCH_METRIC_NAMESPACE: config.prefix,
             AWS_FIREHOSE_DELIVERY_STREAM_NAME: config.firehoseStream,
           },
+          ignoreEnvironmentVars: ['GIT_SHA'],
           vpcConfig: {
             securityGroupIds: vpc.internalSecurityGroups.ids,
             subnetIds: vpc.privateSubnetIds,

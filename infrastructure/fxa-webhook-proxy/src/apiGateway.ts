@@ -20,7 +20,7 @@ export class ApiGateway extends Construct {
     pagerDuty?: PocketPagerDuty,
   ) {
     super(scope, name);
-    const { sentryDsn, gitSha } = getEnvVariableValues(this);
+    const { sentryDsn } = getEnvVariableValues(this);
     const fxaEventsRoute: ApiGatewayLambdaRoute = {
       path: 'events',
       method: 'POST',

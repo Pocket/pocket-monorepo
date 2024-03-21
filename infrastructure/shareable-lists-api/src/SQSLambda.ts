@@ -45,6 +45,7 @@ export class SQSLambda extends Construct {
               ? 'https://shareablelistsapi.readitlater.com'
               : 'https://shareablelistsapi.getpocket.dev',
         },
+        ignoreEnvironmentVars: ['GIT_SHA'],
         vpcConfig: {
           securityGroupIds: vpc.defaultSecurityGroups.ids,
           subnetIds: vpc.privateSubnetIds,

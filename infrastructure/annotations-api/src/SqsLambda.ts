@@ -45,6 +45,7 @@ export class SqsLambda extends Construct {
               ? 'https://annotations-api.readitlater.com'
               : 'https://annotations-api.getpocket.dev',
         },
+        ignoreEnvironmentVars: ['GIT_SHA'],
         vpcConfig: {
           securityGroupIds: vpc.defaultSecurityGroups.ids,
           subnetIds: vpc.privateSubnetIds,

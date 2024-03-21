@@ -25,7 +25,7 @@ export class SQSEventLambda extends Construct {
   constructor(scope: Construct, name: string, config: SqsLambdaProps) {
     super(scope, name.toLowerCase());
 
-    const { sentryDsn, gitSha } = this.getEnvVariableValues();
+    const { sentryDsn } = this.getEnvVariableValues();
 
     this.construct = new PocketSQSWithLambdaTarget(this, name.toLowerCase(), {
       name: `${stackConfig.prefix}-${name}`,
@@ -47,6 +47,7 @@ export class SQSEventLambda extends Construct {
           EVENT_TRACKER_DYNAMO: config.dynamoTable.dynamodb.name,
           USER_API_URL: stackConfig.userApi.prodUrl,
         },
+        ignoreEnvironmentVars: ['GIT_SHA'],
         vpcConfig: {
           securityGroupIds: config.vpc.defaultSecurityGroups.ids,
           subnetIds: config.vpc.privateSubnetIds,
@@ -70,14 +71,6 @@ export class SQSEventLambda extends Construct {
       },
     );
 
-    const serviceHash = new dataAwsSsmParameter.DataAwsSsmParameter(
-      this,
-      'service-hash',
-      {
-        name: `${stackConfig.circleCIPrefix}/SERVICE_HASH`,
-      },
-    );
-
-    return { sentryDsn: sentryDsn.value, gitSha: serviceHash.value };
+    return { sentryDsn: sentryDsn.value };
   }
 }

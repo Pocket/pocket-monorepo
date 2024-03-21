@@ -61,6 +61,7 @@ export class BatchDeleteLambdaResources extends Construct {
               stackConfig.environment === 'Prod' ? 'production' : 'development',
             USER_API: `https://${stackConfig.userApiDomain}`,
           },
+          ignoreEnvironmentVars: ['GIT_SHA'],
           vpcConfig: {
             securityGroupIds: this.vpc.defaultSecurityGroups.ids,
             subnetIds: this.vpc.privateSubnetIds,
