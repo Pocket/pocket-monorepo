@@ -86,6 +86,7 @@ export class DataDeleterApp extends Construct {
         useCodeDeploy: true,
         useCodePipeline: false,
         useTerraformBasedCodeDeploy: false,
+        generateAppSpec: false,
       },
       containerConfigs: [
         {
