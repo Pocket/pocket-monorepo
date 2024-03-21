@@ -3,12 +3,6 @@ import { GraphQLClient } from 'graphql-request';
 import {
   GetSavedItemsByOffsetSimpleQuery,
   GetSavedItemsByOffsetSimpleQueryVariables,
-  SaveArchiveDocument,
-  SaveArchiveMutation,
-  SaveFavoriteDocument,
-  SaveFavoriteMutation,
-  SaveFavoriteMutationVariables,
-  SaveArchiveMutationVariables,
   GetSavedItemsByOffsetSimpleDocument,
   GetSavedItemsByOffsetCompleteDocument,
   GetSavedItemsByOffsetCompleteQuery,
@@ -73,47 +67,6 @@ export function getClient(
     //can give custom fetch package
     fetch,
   });
-}
-/**
- * Calls saveArchive mutation
- *
- * @param accessToken accessToken of the user
- * @param consumerKey consumerKey associated with the user
- * @param variables variables required for the mutation
- * @param headers any headers received by proxy is just pass through to web graphQL proxy.
- */
-export async function callSaveArchive(
-  accessToken: string,
-  consumerKey: string,
-  headers: any,
-  variables: SaveArchiveMutationVariables,
-): Promise<SaveArchiveMutation> {
-  const client = getClient(accessToken, consumerKey, headers);
-  return client.request<SaveArchiveMutation, SaveArchiveMutationVariables>(
-    SaveArchiveDocument,
-    variables,
-  );
-}
-
-/**
- * Calls saveFavorite mutation
- *
- * @param accessToken accessToken of the user
- * @param consumerKey consumerKey associated with the user
- * @param variables variables required for the mutation
- * @param headers any headers received by proxy is just pass through to web graphQL proxy.
- */
-export async function callSaveFavorite(
-  accessToken: string,
-  consumerKey: string,
-  headers: any,
-  variables: SaveFavoriteMutationVariables,
-): Promise<SaveFavoriteMutation> {
-  const client = getClient(accessToken, consumerKey, headers);
-  return client.request<SaveFavoriteMutation, SaveFavoriteMutationVariables>(
-    SaveFavoriteDocument,
-    variables,
-  );
 }
 
 /**

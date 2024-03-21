@@ -8,10 +8,36 @@ import {
 import { AddResponse, PendingAddResponse } from '../graph/types';
 import { processV3Add } from './v3Add';
 import * as Sentry from '@sentry/node';
-import { SavedItemUpsertInput } from '../generated/graphql/types';
+import {
+  ArchiveSavedItemByIdDocument,
+  ArchiveSavedItemByIdMutation,
+  ArchiveSavedItemByIdMutationVariables,
+  ArchiveSavedItemByUrlDocument,
+  ArchiveSavedItemByUrlMutation,
+  ArchiveSavedItemByUrlMutationVariables,
+  DeleteSavedItemByIdDocument,
+  DeleteSavedItemByIdMutation,
+  DeleteSavedItemByIdMutationVariables,
+  DeleteSavedItemByUrlDocument,
+  DeleteSavedItemByUrlMutation,
+  DeleteSavedItemByUrlMutationVariables,
+  FavoriteSavedItemByIdDocument,
+  FavoriteSavedItemByIdMutation,
+  FavoriteSavedItemByIdMutationVariables,
+  FavoriteSavedItemByUrlDocument,
+  FavoriteSavedItemByUrlMutation,
+  FavoriteSavedItemByUrlMutationVariables,
+  SavedItemUpsertInput,
+  UnFavoriteSavedItemByIdDocument,
+  UnFavoriteSavedItemByIdMutation,
+  UnFavoriteSavedItemByIdMutationVariables,
+  UnFavoriteSavedItemByUrlDocument,
+  UnFavoriteSavedItemByUrlMutationVariables,
+} from '../generated/graphql/types';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { customErrorHeaders } from '../middleware';
 import { Request } from 'express';
+import { epochSecondsToISOString } from '../graph/shared/utils';
 
 type SendActionError = {
   message: string;
@@ -106,6 +132,11 @@ export class ActionsRouter {
     };
     return await processV3Add(this.client, addVars, input.tags);
   }
+  /**
+   * Process the 'readd' action from a batch of actions sent to /v3/send.
+   * The actions should be validated and sanitized before this is invoked.
+   * Public for unit-testing (consuming functions should use `processActions`).
+   */
   public async readd(
     input: Omit<ItemAction, 'action'> & { action: 'readd' },
   ): Promise<AddResponse | PendingAddResponse> {
@@ -118,5 +149,157 @@ export class ActionsRouter {
       },
     };
     return await processV3Add(this.client, addVars);
+  }
+  /**
+   * Process the 'archive' action from a batch of actions sent to /v3/send.
+   * The actions should be validated and sanitized before this is invoked.
+   *
+   * Currently we only have a batch endpoint for ID-identified SavedItems;
+   * splitting the execution and transforming the output based on which
+   * identifier is used is annoying and a band-aid solution.
+   * A more efficient path forward is to just continue using the single-item
+   * endpoints, then move to using batch endpoints once the graph APIs
+   * are available for both URL- and ID-identified saves.
+   *
+   * Technically, doing them one at a time like this is more similar
+   * to the /v3 endpoint because unlike v3, the pocket-graph batch
+   *  endpoints are atomic (either all operations fail or all operations succeed).
+   * @returns true (operation is successful unless error is thrown)
+   * @throws ClientError if operation fails
+   */
+  private async archive(
+    input: Omit<ItemAction, 'action'> & { action: 'archive' },
+  ): Promise<true> {
+    if (input.itemId) {
+      // TODO [POCKET-9807]: This mutation does not accept timestamp
+      const variables: ArchiveSavedItemByIdMutationVariables = {
+        updateSavedItemArchiveId: input.itemId.toString(),
+      };
+      await this.client.request<
+        ArchiveSavedItemByIdMutation,
+        ArchiveSavedItemByIdMutationVariables
+      >(ArchiveSavedItemByIdDocument, variables);
+      // If we make it this far, the client did not throw
+      // We don't actually need the result otherwise for
+      // these /v3 operations
+      return true;
+    }
+    const variables: ArchiveSavedItemByUrlMutationVariables = {
+      givenUrl: input.url,
+      ...(input.time && { timestamp: epochSecondsToISOString(input.time) }),
+    };
+    await this.client.request<
+      ArchiveSavedItemByUrlMutation,
+      ArchiveSavedItemByUrlMutationVariables
+    >(ArchiveSavedItemByUrlDocument, variables);
+    // If we make it this far, the client did not throw
+    // We don't actually need the result otherwise for
+    // these /v3 operations
+    return true;
+  }
+  /**
+   * Process the 'favorite' action from a batch of actions sent to /v3/send.
+   * The actions should be validated and sanitized before this is invoked.
+   *
+   * See `ActionsRouter.archive` for more detailed docstring (same pattern).
+   * @returns true (operation is successful unless error is thrown)
+   * @throws ClientError if operation fails
+   */
+  private async favorite(
+    input: Omit<ItemAction, 'action'> & { action: 'favorite' },
+  ): Promise<true> {
+    if (input.itemId) {
+      // TODO [POCKET-9807]: This mutation does not accept timestamp
+      const variables: FavoriteSavedItemByIdMutationVariables = {
+        updateSavedItemFavoriteId: input.itemId.toString(),
+      };
+      await this.client.request<
+        FavoriteSavedItemByIdMutation,
+        FavoriteSavedItemByIdMutationVariables
+      >(FavoriteSavedItemByIdDocument, variables);
+      // If we make it this far, the client did not throw
+      // We don't actually need the result otherwise for
+      // these /v3 operations
+      return true;
+    }
+    const variables: FavoriteSavedItemByUrlMutationVariables = {
+      givenUrl: input.url,
+      ...(input.time && { timestamp: epochSecondsToISOString(input.time) }),
+    };
+    await this.client.request<
+      FavoriteSavedItemByUrlMutation,
+      ArchiveSavedItemByUrlMutationVariables
+    >(FavoriteSavedItemByUrlDocument, variables);
+    return true;
+  }
+  /**
+   * Process the 'unfavorite' action from a batch of actions sent to /v3/send.
+   * The actions should be validated and sanitized before this is invoked.
+   *
+   * See `ActionsRouter.archive` for more detailed docstring (same pattern).
+   * @returns true (operation is successful unless error is thrown)
+   * @throws ClientError if operation fails
+   */
+  private async unfavorite(
+    input: Omit<ItemAction, 'action'> & { action: 'unfavorite' },
+  ): Promise<true> {
+    if (input.itemId) {
+      // TODO [POCKET-9807]: This mutation does not accept timestamp
+      const variables: UnFavoriteSavedItemByIdMutationVariables = {
+        updateSavedItemUnFavoriteId: input.itemId.toString(),
+      };
+      await this.client.request<
+        UnFavoriteSavedItemByIdMutation,
+        UnFavoriteSavedItemByIdMutationVariables
+      >(UnFavoriteSavedItemByIdDocument, variables);
+      // If we make it this far, the client did not throw
+      // We don't actually need the result otherwise for
+      // these /v3 operations
+      return true;
+    }
+    const variables: UnFavoriteSavedItemByUrlMutationVariables = {
+      givenUrl: input.url,
+      ...(input.time && { timestamp: epochSecondsToISOString(input.time) }),
+    };
+    await this.client.request<
+      UnFavoriteSavedItemByIdMutation,
+      UnFavoriteSavedItemByUrlMutationVariables
+    >(UnFavoriteSavedItemByUrlDocument, variables);
+    return true;
+  }
+  /**
+   * Process the 'unfavorite' action from a batch of actions sent to /v3/send.
+   * The actions should be validated and sanitized before this is invoked.
+   *
+   * See `ActionsRouter.archive` for more detailed docstring (same pattern).
+   * @returns true (operation is successful unless error is thrown)
+   * @throws ClientError if operation fails
+   */
+  private async delete(
+    input: Omit<ItemAction, 'action'> & { action: 'delete' },
+  ): Promise<true> {
+    if (input.itemId) {
+      // TODO [POCKET-9807]: This mutation does not accept timestamp
+      const variables: DeleteSavedItemByIdMutationVariables = {
+        id: input.itemId.toString(),
+      };
+      await this.client.request<
+        DeleteSavedItemByIdMutation,
+        DeleteSavedItemByIdMutationVariables
+      >(DeleteSavedItemByIdDocument, variables);
+      // If we make it this far, the client did not throw
+      // We don't actually need the result otherwise for
+      // these /v3 operations
+      return true;
+    }
+    const variables: DeleteSavedItemByUrlMutationVariables = {
+      givenUrl: input.url,
+      ...(input.time && { timestamp: epochSecondsToISOString(input.time) }),
+    };
+    await this.client.request<
+      DeleteSavedItemByUrlMutation,
+      DeleteSavedItemByUrlMutationVariables
+    >(DeleteSavedItemByUrlDocument, variables);
+    return true;
   }
 }
