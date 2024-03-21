@@ -172,7 +172,7 @@ function MaybeHasTime<TBase extends ActionSanitizable>(Base: TBase) {
         // Also, it will parse date timestamps that just have numerals
         // and '-' as subtraction operations.
         // In this case, these numeric strings only contain numerals.
-        const hasNonNumeral = this.input.time.match(/\D/)?.length;
+        const hasNonNumeral = this.input.time.toString().match(/\D/)?.length;
         const time = parseInt(this.input.time);
         if (hasNonNumeral || isNaN(time)) {
           const error: ArrayFieldError = {

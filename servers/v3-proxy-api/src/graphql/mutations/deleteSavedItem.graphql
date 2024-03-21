@@ -1,0 +1,7 @@
+mutation DeleteSavedItemByUrl($givenUrl: Url!, $timestamp: ISOString!) {
+  savedItemDelete(givenUrl: $givenUrl, timestamp: $timestamp)
+}
+
+mutation DeleteSavedItemById($id: ID!) {
+  deleteSavedItem(id: $id)
+}

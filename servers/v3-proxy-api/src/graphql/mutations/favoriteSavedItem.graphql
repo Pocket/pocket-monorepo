@@ -1,0 +1,11 @@
+mutation FavoriteSavedItemByUrl($givenUrl: Url!, $timestamp: ISOString!) {
+  savedItemFavorite(givenUrl: $givenUrl, timestamp: $timestamp) {
+    url
+  }
+}
+
+mutation FavoriteSavedItemById($updateSavedItemFavoriteId: ID!) {
+  updateSavedItemFavorite(id: $updateSavedItemFavoriteId) {
+    id
+  }
+}
