@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 
-import { addSavedItem } from '../graph/graphQLClient';
+import { addSavedItem, getClient } from '../graph/graphQLClient';
 
 import {
   AddSavedItemBeforeTagMutationVariables,
@@ -11,6 +11,7 @@ import { checkSchema, validationResult, matchedData } from 'express-validator';
 import { V3AddSchema, V3AddParams } from './validations';
 import { InputValidationError } from '../errors/InputValidationError';
 import { AddItemTransformer } from '../graph/add/toRest';
+import { GraphQLClient } from 'graphql-request';
 
 const router: Router = Router();
 
@@ -37,13 +38,8 @@ const v3AddController = async (
     const headers = req.headers;
     const accessToken = (data.access_token as string) ?? null;
     const consumerKey = (data.consumer_key as string) ?? null;
-    const graphResponse = await processV3Add(
-      accessToken,
-      consumerKey,
-      headers,
-      variables,
-      data.tags,
-    );
+    const client = getClient(accessToken, consumerKey, headers);
+    const graphResponse = await processV3Add(client, variables, data.tags);
     return res.json(graphResponse);
   } catch (err) {
     // Pass along to error handling middleware
@@ -79,31 +75,18 @@ function buildVariables(
  * @param headers request headers. treated as blackbox pass through for proxy
  */
 export async function processV3Add(
-  accessToken: string,
-  consumerKey: string,
-  headers: any,
+  client: GraphQLClient,
   variables:
     | AddSavedItemCompleteMutationVariables // these are the same
     | AddSavedItemBeforeTagMutationVariables,
   tags?: string[],
 ) {
   if (tags == null) {
-    const result = await addSavedItem(
-      accessToken,
-      consumerKey,
-      headers,
-      variables,
-    );
+    const result = await addSavedItem(client, variables);
     return AddItemTransformer(result['upsertSavedItem']);
   } else {
     // Note that the  /v3/add response does not include tags (even if they were added)
-    const result = await addSavedItem(
-      accessToken,
-      consumerKey,
-      headers,
-      variables,
-      tags,
-    );
+    const result = await addSavedItem(client, variables, tags);
     return AddItemTransformer(result['createSavedItemTags'][0]);
   }
 }

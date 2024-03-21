@@ -2,6 +2,8 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { checkSchema, validationResult, matchedData } from 'express-validator';
 import { V3SendSchema, ActionSanitizer, V3SendParams } from './validations';
 import { InputValidationError } from '../errors/InputValidationError';
+import { SendAction } from './validations/SendActionValidators';
+import { ActionsRouter } from './ActionsRouter';
 
 const router: Router = Router();
 
@@ -26,14 +28,19 @@ const v3SendController = async (
   }
   // Additional per-action validation, since validating heterogenous
   // arrays with non-intersecting types is hard
-  let actions;
+  let actions: SendAction[];
   try {
     actions = data.actions.map((action) => ActionSanitizer(action));
   } catch (err) {
     return next(err);
   }
   try {
-    res.json(actions);
+    const result = await new ActionsRouter(
+      data.access_token,
+      data.consumer_key,
+      req.headers,
+    ).processActions(actions);
+    return res.json(result);
   } catch (err) {
     // Pass along to error handling middleware
     // Has to be in a try/catch block due to async call

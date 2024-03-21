@@ -37,7 +37,7 @@ export const V3SendSchema: Schema = {
       options: [
         [
           'add',
-          // 'readd',
+          'readd',
           // 'archive',
           // 'favorite',
           // 'unfavorite',
