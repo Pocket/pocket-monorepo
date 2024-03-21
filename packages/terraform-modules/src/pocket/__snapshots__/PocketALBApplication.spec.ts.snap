@@ -423,7 +423,7 @@ exports[`PocketALBApplication renders a Pocket App with attached persistent stor
     },
     "aws_ecs_task_definition": {
       "testPocketApp_ecs_service_ecs-task_A7E74E45": {
-        "container_definitions": "[{\\"dnsSearchDomains\\":null,\\"environmentFiles\\":null,\\"logConfiguration\\":{\\"logDriver\\":\\"awslogs\\",\\"secretOptions\\":[],\\"options\\":{\\"awslogs-group\\":\\"\${aws_cloudwatch_log_group.testPocketApp_ecs_service_ecs-someMountPoint_BC9739A3.name}\\",\\"awslogs-region\\":\\"us-east-1\\",\\"awslogs-stream-prefix\\":\\"ecs\\"}},\\"entryPoint\\":null,\\"portMappings\\":[],\\"linuxParameters\\":null,\\"cpu\\":0,\\"environment\\":[],\\"resourceRequirements\\":null,\\"ulimits\\":null,\\"repositoryCredentials\\":null,\\"dnsServers\\":null,\\"mountPoints\\":[{\\"containerPath\\":\\"/qdrant/storage\\",\\"sourceVolume\\":\\"sourceVolume\\"}],\\"workingDirectory\\":null,\\"secrets\\":null,\\"dockerSecurityOptions\\":null,\\"memory\\":null,\\"memoryReservation\\":null,\\"volumesFrom\\":[],\\"stopTimeout\\":null,\\"image\\":\\"\${aws_ecr_repository.testPocketApp_ecs_service_ecr-someMountPoint_ecr-repo_B9A958B3.repository_url}:latest\\",\\"startTimeout\\":null,\\"firelensConfiguration\\":null,\\"dependsOn\\":null,\\"disableNetworking\\":null,\\"interactive\\":null,\\"healthCheck\\":null,\\"essential\\":true,\\"links\\":null,\\"hostname\\":null,\\"extraHosts\\":null,\\"pseudoTerminal\\":null,\\"user\\":null,\\"readonlyRootFilesystem\\":false,\\"dockerLabels\\":null,\\"systemControls\\":null,\\"privileged\\":null,\\"name\\":\\"someMountPoint\\"}]",
+        "container_definitions": "[{\\"dnsSearchDomains\\":null,\\"environmentFiles\\":null,\\"logConfiguration\\":{\\"logDriver\\":\\"awslogs\\",\\"secretOptions\\":[],\\"options\\":{\\"awslogs-group\\":\\"\${aws_cloudwatch_log_group.testPocketApp_ecs_service_ecs-someMountPoint_BC9739A3.name}\\",\\"awslogs-region\\":\\"us-east-1\\",\\"awslogs-stream-prefix\\":\\"ecs\\"}},\\"entryPoint\\":null,\\"portMappings\\":[],\\"linuxParameters\\":null,\\"cpu\\":0,\\"environment\\":[],\\"resourceRequirements\\":null,\\"ulimits\\":null,\\"repositoryCredentials\\":null,\\"dnsServers\\":null,\\"mountPoints\\":[{\\"containerPath\\":\\"/qdrant/storage\\",\\"sourceVolume\\":\\"sourceVolume\\"}],\\"workingDirectory\\":null,\\"secrets\\":null,\\"dockerSecurityOptions\\":null,\\"memory\\":null,\\"memoryReservation\\":null,\\"volumesFrom\\":[],\\"stopTimeout\\":null,\\"image\\":\\"\${aws_ecr_repository.testPocketApp_ecs_service_ecr-someMountPoint_ecr-repo_B9A958B3.repository_url}:latest\\",\\"startTimeout\\":null,\\"firelensConfiguration\\":null,\\"dependsOn\\":null,\\"disableNetworking\\":null,\\"interactive\\":null,\\"healthCheck\\":null,\\"essential\\":true,\\"links\\":null,\\"hostname\\":null,\\"extraHosts\\":null,\\"pseudoTerminal\\":null,\\"user\\":null,\\"readonlyRootFilesystem\\":false,\\"dockerLabels\\":null,\\"systemControls\\":[],\\"privileged\\":null,\\"name\\":\\"someMountPoint\\"}]",
         "cpu": "512",
         "depends_on": [
           "aws_ecr_repository.testPocketApp_ecs_service_ecr-someMountPoint_ecr-repo_B9A958B3"
@@ -1417,6 +1417,32 @@ exports[`PocketALBApplication renders an Pocket App with code deploy 1`] = `
       }
     }
   },
+  "output": {
+    "ecs-codedeploy-app": {
+      "description": "ECS Code Deploy App",
+      "value": "\${aws_codedeploy_app.testPocketApp_ecs_service_ecs_codedeploy_ecs_code_deploy_480D0565.name}"
+    },
+    "ecs-codedeploy-group": {
+      "description": "ECS Code Deploy Group",
+      "value": "\${aws_codedeploy_deployment_group.testPocketApp_ecs_service_ecs_codedeploy_ecs_codedeploy_deployment_group_44B006D1.deployment_group_name}"
+    },
+    "ecs-task-arn": {
+      "description": "ECS Task Definition ARN",
+      "value": "\${aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45.arn}"
+    },
+    "ecs-task-containerName": {
+      "description": "ECS Task Container Name",
+      "value": "main_container"
+    },
+    "ecs-task-containerPort": {
+      "description": "ECS Task Container Port",
+      "value": 8675309
+    },
+    "ecs-task-family": {
+      "description": "ECS Task Family",
+      "value": "\${aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45.family}"
+    }
+  },
   "resource": {
     "aws_acm_certificate": {
       "testPocketApp_alb_certificate_417C14FF": {
@@ -2125,6 +2151,32 @@ exports[`PocketALBApplication renders an Pocket App with code deploy and creates
       }
     }
   },
+  "output": {
+    "ecs-codedeploy-app": {
+      "description": "ECS Code Deploy App",
+      "value": "\${aws_codedeploy_app.testPocketApp_ecs_service_ecs_codedeploy_ecs_code_deploy_480D0565.name}"
+    },
+    "ecs-codedeploy-group": {
+      "description": "ECS Code Deploy Group",
+      "value": "\${aws_codedeploy_deployment_group.testPocketApp_ecs_service_ecs_codedeploy_ecs_codedeploy_deployment_group_44B006D1.deployment_group_name}"
+    },
+    "ecs-task-arn": {
+      "description": "ECS Task Definition ARN",
+      "value": "\${aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45.arn}"
+    },
+    "ecs-task-containerName": {
+      "description": "ECS Task Container Name",
+      "value": "main_container"
+    },
+    "ecs-task-containerPort": {
+      "description": "ECS Task Container Port",
+      "value": 8675309
+    },
+    "ecs-task-family": {
+      "description": "ECS Task Family",
+      "value": "\${aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45.family}"
+    }
+  },
   "resource": {
     "aws_acm_certificate": {
       "testPocketApp_alb_certificate_417C14FF": {
@@ -2829,6 +2881,32 @@ exports[`PocketALBApplication renders an Pocket App with code deploy notificatio
           }
         ]
       }
+    }
+  },
+  "output": {
+    "ecs-codedeploy-app": {
+      "description": "ECS Code Deploy App",
+      "value": "\${aws_codedeploy_app.testPocketApp_ecs_service_ecs_codedeploy_ecs_code_deploy_480D0565.name}"
+    },
+    "ecs-codedeploy-group": {
+      "description": "ECS Code Deploy Group",
+      "value": "\${aws_codedeploy_deployment_group.testPocketApp_ecs_service_ecs_codedeploy_ecs_codedeploy_deployment_group_44B006D1.deployment_group_name}"
+    },
+    "ecs-task-arn": {
+      "description": "ECS Task Definition ARN",
+      "value": "\${aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45.arn}"
+    },
+    "ecs-task-containerName": {
+      "description": "ECS Task Container Name",
+      "value": "main_container"
+    },
+    "ecs-task-containerPort": {
+      "description": "ECS Task Container Port",
+      "value": 8675309
+    },
+    "ecs-task-family": {
+      "description": "ECS Task Family",
+      "value": "\${aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45.family}"
     }
   },
   "resource": {
@@ -8663,7 +8741,7 @@ exports[`PocketALBApplication renders an application with modified container def
     },
     "aws_ecs_task_definition": {
       "testPocketApp_ecs_service_ecs-task_A7E74E45": {
-        "container_definitions": "[{\\"dnsSearchDomains\\":null,\\"environmentFiles\\":null,\\"logConfiguration\\":{\\"logDriver\\":\\"awslogs\\",\\"secretOptions\\":[],\\"options\\":{\\"awslogs-group\\":\\"\${aws_cloudwatch_log_group.testPocketApp_ecs_service_ecs-xray-daemon_55253A74.name}\\",\\"awslogs-region\\":\\"us-east-1\\",\\"awslogs-stream-prefix\\":\\"ecs\\"}},\\"entryPoint\\":null,\\"portMappings\\":[{\\"hostPort\\":0,\\"containerPort\\":2000,\\"protocol\\":\\"udp\\"}],\\"linuxParameters\\":null,\\"cpu\\":10,\\"environment\\":[],\\"resourceRequirements\\":null,\\"ulimits\\":null,\\"repositoryCredentials\\":null,\\"dnsServers\\":null,\\"mountPoints\\":[],\\"workingDirectory\\":null,\\"secrets\\":null,\\"dockerSecurityOptions\\":null,\\"memory\\":null,\\"memoryReservation\\":50,\\"volumesFrom\\":[],\\"stopTimeout\\":null,\\"image\\":\\"\${aws_ecr_repository.testPocketApp_ecs_service_ecr-xray-daemon_ecr-repo_9028CD2C.repository_url}:latest\\",\\"startTimeout\\":null,\\"firelensConfiguration\\":null,\\"dependsOn\\":null,\\"disableNetworking\\":null,\\"interactive\\":null,\\"healthCheck\\":null,\\"essential\\":true,\\"links\\":null,\\"hostname\\":null,\\"extraHosts\\":null,\\"pseudoTerminal\\":null,\\"user\\":null,\\"readonlyRootFilesystem\\":false,\\"dockerLabels\\":null,\\"systemControls\\":null,\\"privileged\\":null,\\"name\\":\\"xray-daemon\\"}]",
+        "container_definitions": "[{\\"dnsSearchDomains\\":null,\\"environmentFiles\\":null,\\"logConfiguration\\":{\\"logDriver\\":\\"awslogs\\",\\"secretOptions\\":[],\\"options\\":{\\"awslogs-group\\":\\"\${aws_cloudwatch_log_group.testPocketApp_ecs_service_ecs-xray-daemon_55253A74.name}\\",\\"awslogs-region\\":\\"us-east-1\\",\\"awslogs-stream-prefix\\":\\"ecs\\"}},\\"entryPoint\\":null,\\"portMappings\\":[{\\"hostPort\\":0,\\"containerPort\\":2000,\\"protocol\\":\\"udp\\"}],\\"linuxParameters\\":null,\\"cpu\\":10,\\"environment\\":[],\\"resourceRequirements\\":null,\\"ulimits\\":null,\\"repositoryCredentials\\":null,\\"dnsServers\\":null,\\"mountPoints\\":[],\\"workingDirectory\\":null,\\"secrets\\":null,\\"dockerSecurityOptions\\":null,\\"memory\\":null,\\"memoryReservation\\":50,\\"volumesFrom\\":[],\\"stopTimeout\\":null,\\"image\\":\\"\${aws_ecr_repository.testPocketApp_ecs_service_ecr-xray-daemon_ecr-repo_9028CD2C.repository_url}:latest\\",\\"startTimeout\\":null,\\"firelensConfiguration\\":null,\\"dependsOn\\":null,\\"disableNetworking\\":null,\\"interactive\\":null,\\"healthCheck\\":null,\\"essential\\":true,\\"links\\":null,\\"hostname\\":null,\\"extraHosts\\":null,\\"pseudoTerminal\\":null,\\"user\\":null,\\"readonlyRootFilesystem\\":false,\\"dockerLabels\\":null,\\"systemControls\\":[],\\"privileged\\":null,\\"name\\":\\"xray-daemon\\"}]",
         "cpu": "512",
         "depends_on": [
           "aws_ecr_repository.testPocketApp_ecs_service_ecr-xray-daemon_ecr-repo_9028CD2C"

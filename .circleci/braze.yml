@@ -17,7 +17,6 @@ workflows:
           resource-class: pocket/default-prod
           dev: false
           apply: false
-          save_app_spec: false
 
       ######
       # Dev Branch Deployment (Dev Environment)
@@ -33,7 +32,6 @@ workflows:
           resource-class: pocket/default-dev
           apply: true
           dev: true
-          save_app_spec: false
 
 
       ######
@@ -49,4 +47,3 @@ workflows:
           resource-class: pocket/default-prod
           apply: true
           dev: false
-          save_app_spec: false

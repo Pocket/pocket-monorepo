@@ -92,8 +92,6 @@ workflows:
           for: parser_graphql_wrapper
           name: parser-graphql-wrapper_code_deploy_ecs_dev
           resource-class: pocket/default-dev
-          codedeploy-app-name: ParserGraphQLWrapper-Dev-ECS
-          codedeploy-group-name: ParserGraphQLWrapper-Dev-ECS
           requires:
             - parser-graphql-wrapper_build_docker_dev
 
@@ -158,8 +156,6 @@ workflows:
           for: parser_graphql_wrapper
           name: parser-graphql-wrapper_code_deploy_ecs_prod
           resource-class: pocket/default-prod
-          codedeploy-app-name: ParserGraphQLWrapper-Prod-ECS
-          codedeploy-group-name: ParserGraphQLWrapper-Prod-ECS
           requires:
             - parser-graphql-wrapper_build_docker_prod
 

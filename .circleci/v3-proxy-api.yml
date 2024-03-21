@@ -75,8 +75,6 @@ workflows:
           for: v3_proxy_api
           name: v3-proxy-api_code_deploy_ecs_dev
           resource-class: pocket/default-dev
-          codedeploy-app-name: V3ProxyApi-Dev-ECS
-          codedeploy-group-name: V3ProxyApi-Dev-ECS
           requires:
             - v3-proxy-api_build_docker_dev
 
@@ -141,8 +139,6 @@ workflows:
           for: v3_proxy_api
           name: v3-proxy-api_code_deploy_ecs_prod
           resource-class: pocket/default-prod
-          codedeploy-app-name: V3ProxyApi-Prod-ECS
-          codedeploy-group-name: V3ProxyApi-Prod-ECS
           requires:
             - v3-proxy-api_build_docker_prod
 

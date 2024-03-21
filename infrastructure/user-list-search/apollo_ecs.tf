@@ -97,6 +97,26 @@ resource "aws_ecs_task_definition" "apollo" {
   tags = local.tags
 }
 
+output "ecs-task-family" {
+  description = "ECS Task Family"
+  value = aws_ecs_task_definition.apollo.family
+}
+
+output "ecs-task-containerPort" {
+  description = "ECS Task Container Port"
+  value = local.container_port
+}
+
+output "ecs-task-containerName" {
+  description = "ECS Task Container Name"
+  value = local.container_name
+}
+
+output "ecs-task-arn" {
+  description = "ECS Task Arn"
+  value = aws_ecs_task_definition.apollo.arn
+}
+
 resource "aws_ecs_service" "apollo" {
   name            = "Apollo"
   task_definition = aws_ecs_task_definition.apollo.arn

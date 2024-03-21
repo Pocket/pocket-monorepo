@@ -72,6 +72,18 @@ export function buildDefinitionJSON(
     throw new Error('logGroup is required in buildDefinitionJSON');
   }
 
+  if (config.portMappings) {
+    config.portMappings = config.portMappings.map(
+      (portMapping: PortMapping) => {
+        if (!portMapping.protocol) {
+          portMapping.protocol = 'tcp';
+        }
+
+        return portMapping;
+      },
+    );
+  }
+
   const containerDefinition = {
     dnsSearchDomains: null,
     environmentFiles: null,
@@ -126,7 +138,7 @@ export function buildDefinitionJSON(
     user: null,
     readonlyRootFilesystem: false,
     dockerLabels: null,
-    systemControls: null,
+    systemControls: [],
     privileged: null,
     name: config.name,
   };
