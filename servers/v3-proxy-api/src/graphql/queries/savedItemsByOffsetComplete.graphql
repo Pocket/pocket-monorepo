@@ -1,6 +1,6 @@
-query getSavedItemsByOffsetComplete($pagination: OffsetPaginationInput, $filters: SavedItemsFilter, $sort: SavedItemsSort) {
+query getSavedItemsByOffsetComplete($pagination: OffsetPaginationInput, $filter: SavedItemsFilter, $sort: SavedItemsSort) {
     user {    
-        savedItemsByOffset(pagination: $pagination, filter: $filters sort: $sort) {
+        savedItemsByOffset(pagination: $pagination, filter: $filter sort: $sort) {
             entries {
                 ...SavedItemComplete
             }

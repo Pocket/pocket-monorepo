@@ -14,18 +14,17 @@
     "format": "eslint --fix \"src/**/*.ts\""
   },
   "dependencies": {
-    "@aws-sdk/client-eventbridge": "3.525.0",
-    "@aws-sdk/client-kinesis": "3.525.0",
-    "@aws-sdk/client-sqs": "3.525.0",
+    "@aws-sdk/client-eventbridge": "3.535.0",
+    "@aws-sdk/client-kinesis": "3.535.0",
+    "@aws-sdk/client-sqs": "3.535.0",
     "@pocket-tools/apollo-cursor-pagination": "1.0.3",
     "@pocket-tools/apollo-utils": "workspace:*",
+    "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "7.103.0",
-    "@sentry/tracing": "7.103.0",
-    "@snowplow/node-tracker": "3.21.0",
+    "@snowplow/node-tracker": "3.22.1",
     "dataloader": "2.2.2",
-    "express": "4.18.2",
+    "express": "4.18.3",
     "express-validator": "^7.0.1",
     "graphql": "16.8.1",
     "graphql-constraint-directive": "5.4.2",
@@ -36,7 +35,7 @@
     "lodash": "4.17.21",
     "luxon": "3.4.4",
     "mysql2": "3.9.2",
-    "unleash-client": "5.5.1"
+    "unleash-client": "5.5.2"
   },
   "devDependencies": {
     "@pocket-tools/backend-benchmarking": "workspace:*",
@@ -45,7 +44,7 @@
     "@types/graphql-upload": "16.0.7",
     "@types/jest": "29.5.12",
     "@types/locutus": "0.0.8",
-    "@types/lodash": "4.14.202",
+    "@types/lodash": "4.17.0",
     "@types/luxon": "3.4.2",
     "@types/supertest": "^6.0.2",
     "chance": "1.1.11",

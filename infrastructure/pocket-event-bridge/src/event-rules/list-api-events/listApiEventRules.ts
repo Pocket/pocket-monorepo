@@ -6,17 +6,19 @@ import {
   PocketPagerDuty,
 } from '@pocket-tools/terraform-modules';
 import { config } from '../../config';
-import { SnsTopic } from '@cdktf/provider-aws/lib/sns-topic';
-import { DataAwsIamPolicyDocument } from '@cdktf/provider-aws/lib/data-aws-iam-policy-document';
-import { SnsTopicPolicy } from '@cdktf/provider-aws/lib/sns-topic-policy';
-import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
-import { Resource } from '@cdktf/provider-null/lib/resource';
+import {
+  snsTopic,
+  dataAwsIamPolicyDocument,
+  snsTopicPolicy,
+  sqsQueue,
+} from '@cdktf/provider-aws';
+import { resource } from '@cdktf/provider-null';
 import { eventConfig } from './eventConfig';
 import { createDeadLetterQueueAlarm } from '../utils';
 
 export class ListApiEvents extends Construct {
-  public readonly snsTopic: SnsTopic;
-  public readonly snsTopicDlq: SqsQueue;
+  public readonly snsTopic: snsTopic.SnsTopic;
+  public readonly snsTopicDlq: sqsQueue.SqsQueue;
 
   constructor(
     scope: Construct,
@@ -26,14 +28,14 @@ export class ListApiEvents extends Construct {
   ) {
     super(scope, name);
 
-    this.snsTopic = new SnsTopic(this, 'list-event-topic', {
+    this.snsTopic = new snsTopic.SnsTopic(this, 'list-event-topic', {
       name: `${config.prefix}-ListEventTopic`,
       lifecycle: {
         preventDestroy: true,
       },
     });
 
-    this.snsTopicDlq = new SqsQueue(this, 'sns-topic-dql', {
+    this.snsTopicDlq = new sqsQueue.SqsQueue(this, 'sns-topic-dql', {
       name: `${config.prefix}-${eventConfig.name}-Topic-Rule-DLQ`,
       tags: config.tags,
     });
@@ -59,7 +61,7 @@ export class ListApiEvents extends Construct {
     //to prevent resource deletion in-addition to preventDestroy
     //e.g removing any of the dependsOn resource and running npm build would
     //throw error
-    new Resource(this, 'null-resource', {
+    new resource.Resource(this, 'null-resource', {
       dependsOn: [listEvent.getEventBridge().rule, this.snsTopic],
     });
   }
@@ -97,29 +99,34 @@ export class ListApiEvents extends Construct {
   }
 
   private createPolicyForEventBridgeToSns() {
-    const eventBridgeSnsPolicy = new DataAwsIamPolicyDocument(
-      this,
-      `${config.prefix}-EventBridge-SNS-Policy`,
-      {
-        statement: [
-          {
-            effect: 'Allow',
-            actions: ['sns:Publish'],
-            resources: [this.snsTopic.arn],
-            principals: [
-              {
-                identifiers: ['events.amazonaws.com'],
-                type: 'Service',
-              },
-            ],
-          },
-        ],
-      },
-    ).json;
+    const eventBridgeSnsPolicy =
+      new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
+        this,
+        `${config.prefix}-EventBridge-SNS-Policy`,
+        {
+          statement: [
+            {
+              effect: 'Allow',
+              actions: ['sns:Publish'],
+              resources: [this.snsTopic.arn],
+              principals: [
+                {
+                  identifiers: ['events.amazonaws.com'],
+                  type: 'Service',
+                },
+              ],
+            },
+          ],
+        },
+      ).json;
 
-    return new SnsTopicPolicy(this, 'list-events-sns-topic-policy', {
-      arn: this.snsTopic.arn,
-      policy: eventBridgeSnsPolicy,
-    });
+    return new snsTopicPolicy.SnsTopicPolicy(
+      this,
+      'list-events-sns-topic-policy',
+      {
+        arn: this.snsTopic.arn,
+        policy: eventBridgeSnsPolicy,
+      },
+    );
   }
 }

@@ -124,6 +124,9 @@ describe('itemLoader - integration', () => {
       `    ${item.normalUrl}    `,
     );
     expect(returnedItem.givenUrl).toEqual(item.normalUrl);
+    expect(returnedItem.id).toEqual(
+      'fe562f9c5BCfC1eeQ9AffKeCaiD2a190J7eb5D66B8DccAd6E6a1f247B54Egd22',
+    );
   });
 
   it('should retry with a refresh when resolved_id is 0', async () => {
@@ -158,7 +161,7 @@ describe('itemLoader - integration', () => {
           authors: [],
           images: [],
           videos: [],
-          resolved_id: '16822',
+          resolved_id: '123',
         },
       });
 
@@ -167,6 +170,9 @@ describe('itemLoader - integration', () => {
     );
     expect(scope.isDone()).toBeTruthy();
     expect(returnedItem.givenUrl).toEqual(item.normalUrl);
-    expect(returnedItem.resolvedId).toEqual('16822');
+    expect(returnedItem.resolvedId).toEqual('123');
+    expect(returnedItem.id).toEqual(
+      'fe562f9c5BCfC1eeQ9AffKeCaiD2a190J7eb5D66B8DccAd6E6a1f247B54Egd22',
+    );
   });
 });

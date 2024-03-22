@@ -1,8 +1,7 @@
 import * as setup from './setup';
 import { readClient, writeClient } from '../../database/client';
 import { gql } from 'graphql-tag';
-import IntMask from '../../utils/intMask';
-import { PinpointController } from '../../aws/pinpointController';
+import { IntMask } from '@pocket-tools/int-mask';
 import { UserDataService } from '../../dataService/userDataService';
 import { startServer } from '../../apollo';
 import request from 'supertest';
@@ -58,9 +57,6 @@ describe('updateUserEmailByFxaId Mutation test', () => {
         }
       }
     `;
-    const pinpointStub: jest.SpyInstance = jest
-      .spyOn(PinpointController.prototype, 'updateUserEndpointEmail')
-      .mockImplementation();
     const updateEmailSpy: jest.SpyInstance = jest.spyOn(
       UserDataService.prototype,
       'updateUserEmail',
@@ -75,7 +71,7 @@ describe('updateUserEmailByFxaId Mutation test', () => {
     afterEach(async () => {
       await setup.truncateEmailMutation(writeDb);
     });
-    it('should successfully update db and pinpoint', async () => {
+    it('should successfully update db', async () => {
       const variables = { id: fxaId, email: email };
       const result = await request(app)
         .post(url)
@@ -96,9 +92,8 @@ describe('updateUserEmailByFxaId Mutation test', () => {
       expect(
         (await readDb('users').where('user_id', userId).first()).email,
       ).toEqual('def@456.com');
-      expect(pinpointStub).toHaveBeenCalledTimes(1);
       expect(eventObj.user.hashedId).toBe(
-        `fX792e6e9163ec630a71a9X08497c36eT3e25a4cd0ba5b1056fv989d5`,
+        `fb792e6e9DE6E3ecI3Ca1CaE49A08497Bc36eA3eD5AacCd0Ba3b1056DbaB89d5`,
       );
       expect(eventObj.user.email).toBe(`def@456.com`);
     });
@@ -118,7 +113,6 @@ describe('updateUserEmailByFxaId Mutation test', () => {
       // );
       // expect(result.body.errors[0].extensions.code).toEqual('BAD_USER_INPUT');
       expect(result.body.data).toBeNull();
-      expect(pinpointStub).toHaveBeenCalledTimes(0);
       expect(updateEmailSpy).toHaveBeenCalledTimes(0);
     });
 
@@ -135,22 +129,6 @@ describe('updateUserEmailByFxaId Mutation test', () => {
         });
 
       // expect(result.body.errors[0].extensions.code).toEqual('NOT_FOUND');
-      expect(pinpointStub).toHaveBeenCalledTimes(0);
-      expect(updateEmailSpy).toHaveBeenCalledTimes(0);
-    });
-    it('should not update db if Pinpoint call fails', async () => {
-      pinpointStub.mockImplementationOnce(() => Promise.reject());
-      const variables = { id: fxaId, email: email };
-      const result = await request(app)
-        .post(url)
-        .set(req.headers)
-        .send({
-          query: print(updateEmailByFxaId),
-          variables,
-        });
-      expect(result.body.errors.length).toEqual(1);
-      expect(result.body.data).toBeNull();
-      expect(pinpointStub).toHaveBeenCalledTimes(1);
       expect(updateEmailSpy).toHaveBeenCalledTimes(0);
     });
     it('should rollback DB', async () => {

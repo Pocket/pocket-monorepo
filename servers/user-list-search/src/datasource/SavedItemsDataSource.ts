@@ -7,10 +7,13 @@ import {
   SavedItemsFilter,
   SavedItemStatus,
   SearchSavedItemParameters,
+  SavedItemSearchResultPage,
+  SearchSavedItemOffsetParams,
 } from '../types';
 import { IContext } from '../server/context';
 import { validatePagination as externalValidatePagination } from '@pocket-tools/apollo-utils';
 import { config } from '../config';
+import { getCleanedupDomainName } from './elasticsearch/elasticsearchSearch';
 
 export class SavedItemDataService {
   private db: Knex;
@@ -61,7 +64,18 @@ export class SavedItemDataService {
     if (filter.contentType != null) {
       SavedItemDataService.contentTypeFilter(baseQuery, filter.contentType);
     }
-
+    if (filter.domain != null) {
+      const cleanDomain = getCleanedupDomainName(filter.domain);
+      baseQuery.andWhere((builder) => {
+        builder
+          .where('readitla_ril-tmp.list.given_url', 'LIKE', `%${cleanDomain}%`)
+          .orWhere(
+            'readitla_b.items_extended.resolved_url',
+            'LIKE',
+            `%${cleanDomain}%`,
+          );
+      });
+    }
     return baseQuery;
   }
 
@@ -116,8 +130,62 @@ export class SavedItemDataService {
             'like',
             `%${term}%`,
           )
-          .orWhere('readitla_b.items_extended.title', 'like', `%${term}%`);
+          .orWhereRaw(`LOWER(readitla_b.items_extended.title) LIKE ?`, [
+            `%${term}%`,
+          ]);
       });
+  }
+
+  /**
+   * Search for a term in the title, given_url, or resolved_url fields
+   * of a user's saves, with offset pagination.
+   * Returns a page of results.
+   * @param term search term
+   * @param filter can be filtered by status, favorite and content type
+   * @param sort sort field and sort direction
+   * @param pagination instructions for how to paginate the data
+   */
+  public async searchSavedItemsByOffset(
+    params: SearchSavedItemOffsetParams,
+  ): Promise<SavedItemSearchResultPage> {
+    const defaultPagination = {
+      offset: 0,
+      limit: config.pagination.defaultPageSize,
+    };
+    const pageInput = {
+      ...defaultPagination,
+      ...(params.pagination ?? {}),
+    };
+    const sortOrder = params.sort ? params.sort.sortOrder : 'DESC';
+    const sortColumn =
+      params.sort?.sortBy == `TIME_TO_READ` ? `word_count` : 'time_added';
+    const term = params.term.toLowerCase();
+    let baseQuery = this.buildQuery(term).andWhere(
+      'readitla_ril-tmp.list.user_id',
+      this.userId,
+    );
+    if (params.filter != null) {
+      baseQuery = SavedItemDataService.buildFilterQuery(
+        baseQuery,
+        params.filter,
+      );
+    }
+    // Pagination requires a stable sort,
+    // item_id sort is to resolve ties with stable sort (e.g. null sort field)
+    baseQuery.orderBy(sortColumn, sortOrder.toLowerCase(), 'item_id', 'asc');
+    const totalcount = (await this.db
+      .count('* as count')
+      .from(baseQuery.clone().limit(5000).as('countQuery'))
+      .first()
+      .then((_) => _?.count ?? 0)) as number;
+    const page =
+      (await baseQuery.limit(pageInput.limit).offset(pageInput.offset)) ?? [];
+    const entries = page.map((entry) => ({ savedItem: entry }));
+    return {
+      entries,
+      totalCount: totalcount,
+      ...pageInput,
+    };
   }
 
   /**
@@ -137,7 +205,8 @@ export class SavedItemDataService {
     const sortOrder = params.sort ? params.sort.sortOrder : 'DESC';
     const sortColumn =
       params.sort?.sortBy == `TIME_TO_READ` ? `word_count` : 'time_added';
-    let baseQuery = this.buildQuery(params.term).andWhere(
+    const term = params.term.toLowerCase();
+    let baseQuery = this.buildQuery(term).andWhere(
       'readitla_ril-tmp.list.user_id',
       this.userId,
     );

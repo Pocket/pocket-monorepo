@@ -1,11 +1,13 @@
 import { config as stackConfig } from '../../config';
 
-import { DataAwsSsmParameter } from '@cdktf/provider-aws/lib/data-aws-ssm-parameter';
-import { LAMBDA_RUNTIMES } from '@pocket-tools/terraform-modules';
-import { PocketPagerDuty } from '@pocket-tools/terraform-modules';
-import { PocketSQSWithLambdaTarget } from '@pocket-tools/terraform-modules';
-import { PocketVersionedLambdaProps } from '@pocket-tools/terraform-modules';
-import { PocketVPC } from '@pocket-tools/terraform-modules';
+import { dataAwsSsmParameter } from '@cdktf/provider-aws';
+import {
+  LAMBDA_RUNTIMES,
+  PocketPagerDuty,
+  PocketSQSWithLambdaTarget,
+  PocketVersionedLambdaProps,
+  PocketVPC,
+} from '@pocket-tools/terraform-modules';
 
 import { Construct } from 'constructs';
 
@@ -67,13 +69,21 @@ export class SqsLambda extends Construct {
   }
 
   private getEnvVariableValues() {
-    const sentryDsn = new DataAwsSsmParameter(this, 'sentry-dsn', {
-      name: `/${stackConfig.name}/${stackConfig.environment}/SENTRY_DSN`,
-    });
+    const sentryDsn = new dataAwsSsmParameter.DataAwsSsmParameter(
+      this,
+      'sentry-dsn',
+      {
+        name: `/${stackConfig.name}/${stackConfig.environment}/SENTRY_DSN`,
+      },
+    );
 
-    const serviceHash = new DataAwsSsmParameter(this, 'service-hash', {
-      name: `${stackConfig.circleCIPrefix}/SERVICE_HASH`,
-    });
+    const serviceHash = new dataAwsSsmParameter.DataAwsSsmParameter(
+      this,
+      'service-hash',
+      {
+        name: `${stackConfig.circleCIPrefix}/SERVICE_HASH`,
+      },
+    );
 
     return { sentryDsn: sentryDsn.value, gitSha: serviceHash.value };
   }

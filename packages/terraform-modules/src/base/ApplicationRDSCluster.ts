@@ -1,20 +1,19 @@
-import { DataAwsVpc } from '@cdktf/provider-aws/lib/data-aws-vpc';
-import { DbSubnetGroup } from '@cdktf/provider-aws/lib/db-subnet-group';
 import {
-  RdsClusterConfig,
-  RdsCluster,
-} from '@cdktf/provider-aws/lib/rds-cluster';
-import { RdsClusterInstance } from '@cdktf/provider-aws/lib/rds-cluster-instance';
-import { SecretsmanagerSecret } from '@cdktf/provider-aws/lib/secretsmanager-secret';
-import { SecretsmanagerSecretVersion } from '@cdktf/provider-aws/lib/secretsmanager-secret-version';
-import { SecurityGroup } from '@cdktf/provider-aws/lib/security-group';
+  dataAwsVpc,
+  securityGroup,
+  rdsCluster,
+  rdsClusterInstance,
+  dbSubnetGroup,
+  secretsmanagerSecret,
+  secretsmanagerSecretVersion,
+} from '@cdktf/provider-aws';
 import { TerraformMetaArguments, TerraformProvider } from 'cdktf';
 import { Construct } from 'constructs';
 import crypto from 'crypto';
 
 //Override the default rds config but remove the items that we set ourselves.
 export type ApplicationRDSClusterConfig = Omit<
-  RdsClusterConfig,
+  rdsCluster.RdsClusterConfig,
   | 'clusterIdentifierPrefix'
   | 'vpcSecurityGroupIds'
   | 'dbSubnetGroupName'
@@ -51,8 +50,8 @@ const defaults = {
  * that you can invoke in the AWS console after creation to rotate the password
  */
 export class ApplicationRDSCluster extends Construct {
-  public readonly rds: RdsCluster;
-  public readonly rdsInstance?: RdsClusterInstance;
+  public readonly rds: rdsCluster.RdsCluster;
+  public readonly rdsInstance?: rdsClusterInstance.RdsClusterInstance;
   public readonly secretARN?: string;
 
   constructor(
@@ -65,7 +64,7 @@ export class ApplicationRDSCluster extends Construct {
     // Apply defaults
     config = { ...defaults, ...config };
 
-    const appVpc = new DataAwsVpc(this, `vpc`, {
+    const appVpc = new dataAwsVpc.DataAwsVpc(this, `vpc`, {
       filter: [
         {
           name: 'vpc-id',
@@ -80,46 +79,54 @@ export class ApplicationRDSCluster extends Construct {
       ? 5432
       : 3306;
 
-    const securityGroup = new SecurityGroup(this, 'rds_security_group', {
-      namePrefix: config.prefix,
-      description: 'Managed by Terraform',
-      vpcId: appVpc.id,
-      ingress: [
-        {
-          fromPort: rdsPort,
-          toPort: rdsPort,
-          protocol: 'tcp',
-          cidrBlocks: [appVpc.cidrBlock],
-          // the following are included due to a bug
-          // https://github.com/hashicorp/terraform-cdk/issues/223
-          description: null,
-          ipv6CidrBlocks: null,
-          prefixListIds: null,
-          securityGroups: null,
-        },
-      ],
-      egress: [
-        {
-          fromPort: 0,
-          protocol: '-1',
-          toPort: 0,
-          cidrBlocks: ['0.0.0.0/0'],
-          description: 'required',
-          ipv6CidrBlocks: [],
-          prefixListIds: [],
-          securityGroups: [],
-        },
-      ],
-      provider: config.provider,
-      tags: config.tags,
-    });
+    const securityGroupResource = new securityGroup.SecurityGroup(
+      this,
+      'rds_security_group',
+      {
+        namePrefix: config.prefix,
+        description: 'Managed by Terraform',
+        vpcId: appVpc.id,
+        ingress: [
+          {
+            fromPort: rdsPort,
+            toPort: rdsPort,
+            protocol: 'tcp',
+            cidrBlocks: [appVpc.cidrBlock],
+            // the following are included due to a bug
+            // https://github.com/hashicorp/terraform-cdk/issues/223
+            description: null,
+            ipv6CidrBlocks: null,
+            prefixListIds: null,
+            securityGroups: null,
+          },
+        ],
+        egress: [
+          {
+            fromPort: 0,
+            protocol: '-1',
+            toPort: 0,
+            cidrBlocks: ['0.0.0.0/0'],
+            description: 'required',
+            ipv6CidrBlocks: [],
+            prefixListIds: [],
+            securityGroups: [],
+          },
+        ],
+        provider: config.provider,
+        tags: config.tags,
+      },
+    );
 
-    const subnetGroup = new DbSubnetGroup(this, 'rds_subnet_group', {
-      namePrefix: config.useName ? config.prefix.toLowerCase() : undefined,
-      subnetIds: config.subnetIds,
-      provider: config.provider,
-      tags: config.tags,
-    });
+    const subnetGroup = new dbSubnetGroup.DbSubnetGroup(
+      this,
+      'rds_subnet_group',
+      {
+        namePrefix: config.useName ? config.prefix.toLowerCase() : undefined,
+        subnetIds: config.subnetIds,
+        provider: config.provider,
+        tags: config.tags,
+      },
+    );
 
     const configCopy: ApplicationRDSClusterConfig = {
       ...config.rdsConfig,
@@ -127,7 +134,7 @@ export class ApplicationRDSCluster extends Construct {
     // Remove non standard rds params for passing through.
     delete configCopy.createServerlessV2Instance;
 
-    this.rds = new RdsCluster(this, 'rds_cluster', {
+    this.rds = new rdsCluster.RdsCluster(this, 'rds_cluster', {
       ...configCopy,
       clusterIdentifierPrefix: config.useName
         ? config.prefix.toLowerCase()
@@ -137,7 +144,7 @@ export class ApplicationRDSCluster extends Construct {
       masterPassword:
         config.rdsConfig.masterPassword ??
         crypto.randomBytes(8).toString('hex'),
-      vpcSecurityGroupIds: [securityGroup.id],
+      vpcSecurityGroupIds: [securityGroupResource.id],
       dbSubnetGroupName: subnetGroup.name,
       lifecycle: {
         ignoreChanges: ['master_username', 'master_password'],
@@ -146,12 +153,16 @@ export class ApplicationRDSCluster extends Construct {
     });
 
     if (config.rdsConfig.createServerlessV2Instance) {
-      this.rdsInstance = new RdsClusterInstance(this, 'rds-instance', {
-        clusterIdentifier: this.rds.id,
-        instanceClass: 'db.serverless',
-        engine: this.rds.engine,
-        engineVersion: this.rds.engineVersion,
-      });
+      this.rdsInstance = new rdsClusterInstance.RdsClusterInstance(
+        this,
+        'rds-instance',
+        {
+          clusterIdentifier: this.rds.id,
+          instanceClass: 'db.serverless',
+          engine: this.rds.engine,
+          engineVersion: this.rds.engineVersion,
+        },
+      );
     }
 
     // Create secrets manager resource for the RDS
@@ -182,7 +193,7 @@ export class ApplicationRDSCluster extends Construct {
    */
   private static createRdsSecret(
     scope: Construct,
-    rds: RdsCluster,
+    rds: rdsCluster.RdsCluster,
     rdsPort: number,
     prefix: string,
     tags?: { [key: string]: string },
@@ -190,15 +201,19 @@ export class ApplicationRDSCluster extends Construct {
     provider?: TerraformProvider,
   ): { secretARN: string } {
     //Create the secret
-    const secret = new SecretsmanagerSecret(scope, `rds_secret`, {
-      description: `Secret For ${rds.clusterIdentifier}`,
-      name: `${prefix}/${rds.clusterIdentifier}`,
-      //We dont auto rotate, because our apps dont have triggers to refresh yet.
-      //This is mainly so we can rotate after we create the
-      dependsOn: [rds],
-      provider,
-      tags,
-    });
+    const secret = new secretsmanagerSecret.SecretsmanagerSecret(
+      scope,
+      `rds_secret`,
+      {
+        description: `Secret For ${rds.clusterIdentifier}`,
+        name: `${prefix}/${rds.clusterIdentifier}`,
+        //We dont auto rotate, because our apps dont have triggers to refresh yet.
+        //This is mainly so we can rotate after we create the
+        dependsOn: [rds],
+        provider,
+        tags,
+      },
+    );
 
     const secretValues: {
       engine: string;
@@ -223,12 +238,16 @@ export class ApplicationRDSCluster extends Construct {
     }
 
     //Create the initial secret version
-    new SecretsmanagerSecretVersion(scope, `rds_secret_version`, {
-      secretId: secret.id,
-      secretString: JSON.stringify(secretValues),
-      dependsOn: [secret],
-      provider,
-    });
+    new secretsmanagerSecretVersion.SecretsmanagerSecretVersion(
+      scope,
+      `rds_secret_version`,
+      {
+        secretId: secret.id,
+        secretString: JSON.stringify(secretValues),
+        dependsOn: [secret],
+        provider,
+      },
+    );
 
     return { secretARN: secret.arn };
   }

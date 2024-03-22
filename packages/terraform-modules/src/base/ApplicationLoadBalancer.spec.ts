@@ -1,5 +1,5 @@
 import { Testing } from 'cdktf';
-import { ApplicationLoadBalancer } from './ApplicationLoadBalancer';
+import { ApplicationLoadBalancer } from './ApplicationLoadBalancer.js'
 
 describe('ApplicationLoadBalancer', () => {
   it('renders an ALB without tags', () => {

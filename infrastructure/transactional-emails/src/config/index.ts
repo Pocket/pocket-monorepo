@@ -14,11 +14,10 @@ export const config = {
     environment,
   },
   lambda: {
-    snsTopicName: {
-      userEvents: `PocketEventBridge-${environment}-UserEventTopic`,
-      premiumPurchaseEvent: `PocketEventBridge-${environment}-PremiumPurchase-Topic`,
-    },
     braze: {
+      forgotPasswordCampaignId: isDev
+        ? 'e9c7ebd4-e81b-354a-673b-e0cd1b075d28'
+        : '309d4141-2c47-4512-9df0-28921db49f98',
       //todo: read from ssm
       accountDeletionCampaignId: isDev
         ? '2e3050bb-da99-b1a3-e200-5939b8e07f8d'
@@ -31,8 +30,11 @@ export const config = {
   },
   eventBridge: {
     prefix: 'PocketEventBridge',
-    userTopic: 'UserEventTopic',
-    premiumPurchaseTopic: 'PremiumPurchase-Topic',
-    userRegistrationTopic: 'UserRegistrationTopic',
+    topics: [
+      'UserEventTopic',
+      'PremiumPurchase-Topic',
+      'UserRegistrationTopic',
+      'ForgotPasswordRequest-Topic',
+    ],
   },
 };

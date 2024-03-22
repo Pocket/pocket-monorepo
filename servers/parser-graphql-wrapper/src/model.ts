@@ -2,6 +2,7 @@ import { ParserArticle } from './dataLoaders/articleLoader';
 
 export interface Item {
   itemId: string;
+  id: string;
   resolvedId: string;
   topImageUrl?: string;
   topImage?: Image;
@@ -28,7 +29,7 @@ export interface Item {
   datePublished?: string;
   hasOldDupes?: boolean;
   domainId?: string;
-  originDomainId?: boolean;
+  originDomainId?: string;
   responseCode?: number;
   contentLength?: number;
   innerDomainRedirect?: boolean;

@@ -1,35 +1,19 @@
-import * as Sentry from '@sentry/node';
-import express, { Application, json } from 'express';
+//this must run before all imports and server start
+//so open-telemetry can patch all libraries that we use
+import { nodeSDKBuilder } from '@pocket-tools/tracing';
 import config from './config';
-import { clientErrorHandler, logAndCaptureErrors } from './middleware';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
-import v3GetRouter from './routes/v3Get';
-
-Sentry.init({
-  ...config.sentry,
-  debug: config.sentry.environment == 'development',
+nodeSDKBuilder({
+  host: config.tracing.host,
+  serviceName: config.tracing.serviceName,
+  release: config.sentry.release,
+  logger: serverLogger,
+}).then(async () => {
+  await startServer(config.app.port);
+  serverLogger.info(
+    `🚀 Public server ready at http://localhost:${config.app.port}`,
+  );
 });
 
-//todo: set telemetry -
-// would it make sense to add them here or directly export/add to this package
-
-export const app: Application = express();
-
-app.use(json());
-app.set('query parser', 'simple');
-app.get('/.well-known/server-health', (req, res) => {
-  res.status(200).send('ok');
-});
-
-// register public API routes
-app.use('/v3/get', v3GetRouter);
-
-// Error handling middleware (must be defined last)
-app.use(logAndCaptureErrors);
-app.use(clientErrorHandler);
-
-export const server = app.listen({ port: config.app.port }, () =>
-  console.log(
-    `🚀 v3 Proxy API is ready at http://localhost:${config.app.port}`,
-  ),
-);
+import { startServer } from './server';

@@ -12,9 +12,9 @@ import {
   isSubgraphIntrospection,
   isIntrospection,
   defaultPlugins,
-  initSentry,
   sentryPocketMiddleware,
 } from '@pocket-tools/apollo-utils';
+import { initSentry } from '@pocket-tools/sentry';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 import config from '../config';
 import { getRedis } from '../cache';

@@ -30,14 +30,13 @@
   "dependencies": {
     "@keyv/redis": "2.8.4",
     "@pocket-tools/apollo-utils": "workspace:*",
+    "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "7.103.0",
-    "@sentry/tracing": "7.103.0",
-    "axios": "1.6.7",
+    "axios": "1.6.8",
     "axios-retry": "4.0.0",
     "dataloader": "2.2.2",
-    "parse-url": "8.1.0"
+    "parse-url": "9.0.1"
   },
   "files": [
     "dist",

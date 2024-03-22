@@ -45,27 +45,22 @@ async function loadUserItem(
     ...defaultDocProps,
     ...item,
   };
-
-  await loadList(
-    db,
-    merged.favorite ? 1 : 0,
-    merged.item_id,
+  const seed = {
+    favorite: merged.favorite ? 1 : 0,
+    itemId: merged.item_id,
     // The use case here only needs to support queued and archived, so not getting fancy.
-    merged.status == 'queued'
-      ? SavedItemStatus.UNREAD
-      : SavedItemStatus.ARCHIVED,
-    merged.title,
-    merged.url,
-    new Date(merged.date_added),
-  );
-  await loadItemExtended(
-    db,
-    merged.item_id,
-    merged.url,
-    merged.title,
-    merged.word_count,
-  );
+    status:
+      merged.status == 'queued'
+        ? SavedItemStatus.UNREAD
+        : SavedItemStatus.ARCHIVED,
+    title: merged.title,
+    url: merged.url,
+    date: new Date(merged.date_added),
+    wordCount: merged.word_count,
+  };
 
+  await loadList(db, seed);
+  await loadItemExtended(db, seed);
   return await bulkDocument([
     {
       action: 'index',

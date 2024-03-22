@@ -1,6 +1,5 @@
 import { readClient, writeClient } from '../../database/client';
 import { gql } from 'graphql-tag';
-import { PinpointController } from '../../aws/pinpointController';
 import { userEventEmitter } from '../../events/init';
 import { EventType } from '../../events/eventType';
 import config from '../../config';
@@ -12,8 +11,6 @@ import { IContext } from '../../context';
 import { ApolloServer } from '@apollo/server';
 import { Application } from 'express';
 
-jest.mock('../../aws/pinpointController');
-
 describe('Delete user mutations', () => {
   const allTables = Object.entries(config.database.userPIITables).flatMap(
     ([_, tables]) => tables,
@@ -24,7 +21,6 @@ describe('Delete user mutations', () => {
   let server: ApolloServer<IContext>;
   let app: Application;
   let url: string;
-  let deleteUserEndpointsMock: jest.Mock<any, any, any>;
   let eventObj = null;
 
   beforeAll(async () => {
@@ -46,9 +42,6 @@ describe('Delete user mutations', () => {
     await writeDb('readitla_auth.users').truncate();
     await writeDb('readitla_auth.user_providers').truncate();
     await PiiTableSeed(userId, '1');
-
-    deleteUserEndpointsMock = PinpointController.prototype.deleteUserEndpoints =
-      jest.fn();
   });
 
   afterEach(async () => {
@@ -86,7 +79,6 @@ describe('Delete user mutations', () => {
       for (const tableName of allTablesPlusAuth) {
         expect((await readDb(tableName).select()).length).toBe(0);
       }
-      expect(deleteUserEndpointsMock.mock.calls.length).toBe(1);
       expect(eventObj.user.id).toBe(`1`);
     });
 
@@ -111,10 +103,9 @@ describe('Delete user mutations', () => {
       for (const tableName of allTablesPlusAuth) {
         expect((await readDb(tableName).select()).length).toBe(0);
       }
-      expect(deleteUserEndpointsMock.mock.calls.length).toBe(1);
       expect(eventObj.user.id).toBe(`1`);
       expect(eventObj.user.hashedId).toBe(
-        `fX792e6e9163ec630a71a9X08497c36eT3e25a4cd0ba5b1056fv989d5`,
+        `fb792e6e9DE6E3ecI3Ca1CaE49A08497Bc36eA3eD5AacCd0Ba3b1056DbaB89d5`,
       );
     });
 
@@ -149,7 +140,6 @@ describe('Delete user mutations', () => {
       for (const tableName of allTablesPlusAuth) {
         expect((await readDb(tableName).select()).length).toBe(0);
       }
-      expect(deleteUserEndpointsMock.mock.calls.length).toBe(1);
       expect(eventObj.user.id).toBe(`1`);
     });
   });
@@ -182,10 +172,9 @@ describe('Delete user mutations', () => {
       for (const tableName of allTables) {
         expect((await readDb(tableName).select()).length).toBe(0);
       }
-      expect(deleteUserEndpointsMock.mock.calls.length).toBe(1);
       expect(eventObj.user.id).toBe(`1`);
       expect(eventObj.user.hashedId).toBe(
-        `fX792e6e9163ec630a71a9X08497c36eT3e25a4cd0ba5b1056fv989d5`,
+        `fb792e6e9DE6E3ecI3Ca1CaE49A08497Bc36eA3eD5AacCd0Ba3b1056DbaB89d5`,
       );
     });
 

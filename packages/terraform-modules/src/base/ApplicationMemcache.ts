@@ -2,10 +2,9 @@ import {
   ApplicationElasticacheCluster,
   ApplicationElasticacheClusterProps,
   ApplicationElasticacheEngine,
-} from './ApplicationElasticacheCluster';
+} from './ApplicationElasticacheCluster.js';
 import { Construct } from 'constructs';
-import { DataAwsVpc } from '@cdktf/provider-aws/lib/data-aws-vpc';
-import { ElasticacheCluster } from '@cdktf/provider-aws/lib/elasticache-cluster';
+import { dataAwsVpc, elasticacheCluster } from '@cdktf/provider-aws';
 
 const DEFAULT_CONFIG = {
   node: {
@@ -15,7 +14,7 @@ const DEFAULT_CONFIG = {
 };
 
 export class ApplicationMemcache extends ApplicationElasticacheCluster {
-  public elasticacheCluster: ElasticacheCluster;
+  public elasticacheCluster: elasticacheCluster.ElasticacheCluster;
 
   constructor(
     scope: Construct,
@@ -48,9 +47,9 @@ export class ApplicationMemcache extends ApplicationElasticacheCluster {
    */
   private static createElasticacheCluster(
     scope: Construct,
-    appVpc: DataAwsVpc,
+    appVpc: dataAwsVpc.DataAwsVpc,
     config: ApplicationElasticacheClusterProps,
-  ): ElasticacheCluster {
+  ): elasticacheCluster.ElasticacheCluster {
     const engine = ApplicationElasticacheEngine.MEMCACHED;
     const port = ApplicationElasticacheCluster.getPortForEngine(engine);
 
@@ -63,22 +62,26 @@ export class ApplicationMemcache extends ApplicationElasticacheCluster {
 
     const subnetGroup = ApplicationMemcache.createSubnet(scope, config);
 
-    return new ElasticacheCluster(scope, `elasticache_cluster`, {
-      clusterId: config.prefix.toLowerCase(),
-      engine: engine.toString(),
-      nodeType: config.node.size,
-      numCacheNodes: config.node.count,
-      parameterGroupName:
-        ApplicationMemcache.getParameterGroupForEngine(engine),
-      port: port,
-      engineVersion:
-        ApplicationElasticacheCluster.getEngineVersionForEngine(engine),
-      subnetGroupName: subnetGroup.name,
-      securityGroupIds: [securityGroup.id],
-      tags: config.tags,
-      applyImmediately: true,
-      dependsOn: [subnetGroup, securityGroup],
-      provider: config.provider,
-    });
+    return new elasticacheCluster.ElasticacheCluster(
+      scope,
+      `elasticache_cluster`,
+      {
+        clusterId: config.prefix.toLowerCase(),
+        engine: engine.toString(),
+        nodeType: config.node.size,
+        numCacheNodes: config.node.count,
+        parameterGroupName:
+          ApplicationMemcache.getParameterGroupForEngine(engine),
+        port: port,
+        engineVersion:
+          ApplicationElasticacheCluster.getEngineVersionForEngine(engine),
+        subnetGroupName: subnetGroup.name,
+        securityGroupIds: [securityGroup.id],
+        tags: config.tags,
+        applyImmediately: true,
+        dependsOn: [subnetGroup, securityGroup],
+        provider: config.provider,
+      },
+    );
   }
 }

@@ -1,10 +1,9 @@
 import DataLoader from 'dataloader';
 import { UserDataService } from '../dataService/userDataService';
 import { IContext } from '../context';
-import { PinpointController } from '../aws/pinpointController';
 import { EventType } from '../events/eventType';
 import { User, UserProfile, ExpireUserWebSessionReason } from '../types';
-import IntMask from '../utils/intMask';
+import { IntMask } from '@pocket-tools/int-mask';
 
 // The Entity corresponding to GraphQL Schema
 interface UserEntity {
@@ -115,9 +114,8 @@ export class UserModel implements UserEntity {
     return this.lazyLoadAttribute('email');
   }
 
-  /** Delete this User from database and Pinpoint */
+  /** Delete this User from database */
   async delete(): Promise<string> {
-    await new PinpointController(this.context.userId).deleteUserEndpoints();
     const email = await this.email;
     const isPremium = await this.isPremium;
     await this.userDataService.deletePIIUserInfo(this.context.userId);
@@ -130,15 +128,12 @@ export class UserModel implements UserEntity {
     return this.context.userId;
   }
 
-  /** Update this User's email address in database and Pinpoint
+  /** Update this User's email address in database
    * @param email the new email address for the User
    * @returns UserModel
    */
   async updateEmail(email: string): Promise<UserModel> {
     const newEmail = await this.userDataService.validateEmail(email);
-    await new PinpointController(this.context.userId).updateUserEndpointEmail(
-      newEmail,
-    );
     await this.userDataService.updateUserEmail(newEmail, true);
     // Update the internal user model so the mutated data is reflected
     this.user.email = newEmail;

@@ -1,8 +1,14 @@
 extend schema
+  @link(url: "https://specs.apollo.dev/link/v1.0")
   @link(
-    url: "https://specs.apollo.dev/federation/v2.0"
-    import: ["@key", "@shareable"]
+    url: "https://specs.apollo.dev/federation/v2.3"
+    import: ["@key", "@composeDirective", "@tag", "@shareable"]
   )
+  # The link directive is required to federate @constraint
+  # It doesn't actually have to be a real spec, but it would be good
+  # to write one and replace this.
+  @link(url: "https://myspecs.dev/myDirective/v1.0", import: ["@constraint"])
+  @composeDirective(name: "@constraint")
 
 scalar Url
 scalar FunctionalBoostValue
@@ -152,13 +158,34 @@ type User @key(fields: "id") {
     sort: SearchSortInput
     pagination: PaginationInput
   ): SavedItemSearchResultConnection
-
   advancedSearch(
     queryString: String
     filter: AdvancedSearchFilters
     sort: SearchSortInput
     pagination: PaginationInput
   ): SavedItemSearchResultConnection
+  searchSavedItemsByOffset(
+    term: String!
+    filter: SearchFilterInput
+    sort: SearchSortInput
+    pagination: OffsetPaginationInput
+  ): SavedItemSearchResultPage @tag(name: "internal")
+  advancedSearchByOffset(
+    queryString: String
+    filter: AdvancedSearchFilters
+    sort: SearchSortInput
+    pagination: OffsetPaginationInput
+  ): SavedItemSearchResultPage @tag(name: "internal")
+}
+
+"""
+A page of SavedItemSearchResult, retrieved by offset-based pagination.
+"""
+type SavedItemSearchResultPage @tag(name: "internal") {
+  entries: [SavedItemSearchResult!]!
+  totalCount: Int!
+  offset: Int!
+  limit: Int!
 }
 
 """
@@ -245,6 +272,16 @@ input PaginationInput {
   this has to set with before/last combination.
   """
   last: Int
+}
+
+"""
+Input for offset-pagination (internal backend use only).
+"""
+input OffsetPaginationInput {
+  """ Defaults to 0 """
+  offset: Int @constraint(min: 0)
+  """ Defaults to 30 """
+  limit: Int @constraint(exclusiveMin: 0, max: 100)
 }
 
 """

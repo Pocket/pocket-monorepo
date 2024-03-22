@@ -1,13 +1,12 @@
-import { DataAwsIamPolicyDocument } from '@cdktf/provider-aws/lib/data-aws-iam-policy-document';
-import { DataAwsLambdaFunction } from '@cdktf/provider-aws/lib/data-aws-lambda-function';
-import { LambdaFunction } from '@cdktf/provider-aws/lib/lambda-function';
-import { LambdaPermission } from '@cdktf/provider-aws/lib/lambda-permission';
 import {
-  SnsTopicSubscription,
-  SnsTopicSubscriptionConfig,
-} from '@cdktf/provider-aws/lib/sns-topic-subscription';
-import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
-import { SqsQueuePolicy } from '@cdktf/provider-aws/lib/sqs-queue-policy';
+  dataAwsIamPolicyDocument,
+  dataAwsLambdaFunction,
+  lambdaFunction,
+  lambdaPermission,
+  snsTopicSubscription,
+  sqsQueue,
+  sqsQueuePolicy,
+} from '@cdktf/provider-aws';
 import { TerraformMetaArguments, TerraformResource } from 'cdktf';
 import { Construct } from 'constructs';
 
@@ -19,7 +18,9 @@ export interface ApplicationLambdaSnsTopicSubscriptionProps
   /** The SNS topic to subscribe the Lambda to */
   snsTopicArn: string;
   /** The Lambda that should be invoked by incoming messages to the SNS topic */
-  lambda: DataAwsLambdaFunction | LambdaFunction;
+  lambda:
+    | dataAwsLambdaFunction.DataAwsLambdaFunction
+    | lambdaFunction.LambdaFunction;
   /** Tags to apply to the resource(s), where applicable (in this case only the DLQ for the SNS) */
   tags?: { [key: string]: string };
   /** Optional list of resource dependencies */
@@ -40,9 +41,9 @@ export interface ApplicationLambdaSnsTopicSubscriptionProps
  */
 export class ApplicationLambdaSnsTopicSubscription extends Construct {
   /** the {@link https://www.terraform.io/docs/providers/aws/r/sns_topic_subscription aws_sns_topic_subscription} resource */
-  public readonly snsTopicSubscription: SnsTopicSubscription;
+  public readonly snsTopicSubscription: snsTopicSubscription.SnsTopicSubscription;
   /** the {@link https://www.terraform.io/docs/providers/aws/r/sqs_queue aws_sqs_queue} (DLQ) resource */
-  public readonly snsTopicDlq: SqsQueue;
+  public readonly snsTopicDlq: sqsQueue.SqsQueue;
 
   constructor(
     scope: Construct,
@@ -63,8 +64,8 @@ export class ApplicationLambdaSnsTopicSubscription extends Construct {
    * Create a dead-letter queue for failed SNS messages
    * @private
    */
-  private createSqsSubscriptionDlq(): SqsQueue {
-    return new SqsQueue(this, 'sns-topic-dlq', {
+  private createSqsSubscriptionDlq(): sqsQueue.SqsQueue {
+    return new sqsQueue.SqsQueue(this, 'sns-topic-dlq', {
       name: `${this.config.name}-SNS-Topic-DLQ`,
       tags: this.config.tags,
       provider: this.config.provider,
@@ -77,23 +78,27 @@ export class ApplicationLambdaSnsTopicSubscription extends Construct {
    * @private
    */
   private createSnsTopicSubscription(
-    snsTopicDlq: SqsQueue,
-  ): SnsTopicSubscription {
-    return new SnsTopicSubscription(this, 'sns-subscription', {
-      topicArn: this.config.snsTopicArn,
-      protocol: 'lambda',
-      endpoint: this.config.lambda.arn,
-      redrivePolicy: JSON.stringify({
-        deadLetterTargetArn: snsTopicDlq.arn,
-      }),
-      dependsOn: [
-        snsTopicDlq,
-        this.config.lambda.arn,
-        ...(this.config.dependsOn ? this.config.dependsOn : []),
-      ],
-      provider: this.config.provider,
-      tags: this.config.tags,
-    } as SnsTopicSubscriptionConfig);
+    snsTopicDlq: sqsQueue.SqsQueue,
+  ): snsTopicSubscription.SnsTopicSubscription {
+    return new snsTopicSubscription.SnsTopicSubscription(
+      this,
+      'sns-subscription',
+      {
+        topicArn: this.config.snsTopicArn,
+        protocol: 'lambda',
+        endpoint: this.config.lambda.arn,
+        redrivePolicy: JSON.stringify({
+          deadLetterTargetArn: snsTopicDlq.arn,
+        }),
+        dependsOn: [
+          snsTopicDlq,
+          this.config.lambda.arn,
+          ...(this.config.dependsOn ? this.config.dependsOn : []),
+        ],
+        provider: this.config.provider,
+        tags: this.config.tags,
+      } as snsTopicSubscription.SnsTopicSubscriptionConfig,
+    );
   }
 
   /**
@@ -101,13 +106,17 @@ export class ApplicationLambdaSnsTopicSubscription extends Construct {
    * Cannot be applied to an alias; must use the base lambda function
    */
   private createLambdaPolicy(): void {
-    new LambdaPermission(this, `${this.name}-lambda-permission`, {
-      principal: 'sns.amazonaws.com',
-      action: 'lambda:InvokeFunction',
-      functionName: this.config.lambda.functionName,
-      sourceArn: this.config.snsTopicArn,
-      provider: this.config.provider,
-    });
+    new lambdaPermission.LambdaPermission(
+      this,
+      `${this.name}-lambda-permission`,
+      {
+        principal: 'sns.amazonaws.com',
+        action: 'lambda:InvokeFunction',
+        functionName: this.config.lambda.functionName,
+        sourceArn: this.config.snsTopicArn,
+        provider: this.config.provider,
+      },
+    );
   }
 
   /**
@@ -115,9 +124,9 @@ export class ApplicationLambdaSnsTopicSubscription extends Construct {
    * @param snsTopicDlq the SQS resource (used as DLQ) to grant permissions on
    * @private
    */
-  private createDlqPolicy(snsTopicDlq: SqsQueue): void {
+  private createDlqPolicy(snsTopicDlq: sqsQueue.SqsQueue): void {
     const queue = { name: 'sns-dlq', resource: snsTopicDlq };
-    const policy = new DataAwsIamPolicyDocument(
+    const policy = new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
       this,
       `${queue.name}-policy-document`,
       {
@@ -146,7 +155,7 @@ export class ApplicationLambdaSnsTopicSubscription extends Construct {
       },
     ).json;
 
-    new SqsQueuePolicy(this, `${queue.name}-policy`, {
+    new sqsQueuePolicy.SqsQueuePolicy(this, `${queue.name}-policy`, {
       queueUrl: queue.resource.url,
       policy: policy,
       provider: this.config.provider,

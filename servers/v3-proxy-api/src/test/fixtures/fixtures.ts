@@ -5,12 +5,12 @@ import {
   SavedItemSimpleFragment,
   ItemSimpleFragment,
 } from '../../generated/graphql/types';
-import { ListItemObject, RestResponseSimple } from '../../graph/types';
+import { ListItemObject, GetResponseSimple } from '../../graph/types';
 
 export const seedDataRest: MockListItemObject = Object.freeze({
   ids: ['1', '2'],
   given_url: 'https://test.com',
-  given_title: 'title',
+  given_title: 'given title',
   favorite: '1',
   status: '1',
   time_added: '1677818995',
@@ -41,6 +41,7 @@ export const mockSavedItemFragment: SavedItemFragment = {
   url: seedDataRest.given_url,
   isFavorite: seedDataRest.favorite === '1',
   isArchived: true,
+  title: seedDataRest.given_title,
   _createdAt: parseInt(seedDataRest.time_added),
   _updatedAt: parseInt(seedDataRest.time_updated),
   favoritedAt: parseInt(seedDataRest.time_favorited),
@@ -101,15 +102,13 @@ type MockListItemObject = Omit<ListItemObject, 'item_id' | 'resolved_id'> & {
 };
 /**
  * return REST v3 GET response for given Ids
- * //todo: need to include tags, images, videoes etc
- * //todo: map top level fields and sort_id
  * @param ids
  */
 export const testV3GetResponse = (
   mockInputs: MockListItemObject = {
     ...seedDataRest,
   },
-): RestResponseSimple => {
+): GetResponseSimple => {
   const map: { [key: string]: ListItemObject } = {};
 
   mockInputs.ids.forEach((id, index) => {
@@ -141,7 +140,12 @@ export const testV3GetResponse = (
   });
 
   return {
-    cacheType: 'db',
+    complete: 1,
+    status: 1,
+    error: null,
+    since: 1677818995,
+    maxActions: 30,
+    cachetype: 'db',
     list: map,
   };
 };

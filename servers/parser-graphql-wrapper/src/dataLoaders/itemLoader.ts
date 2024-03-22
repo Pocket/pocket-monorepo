@@ -20,6 +20,7 @@ import {
 } from '@pocket-tools/apollo-utils';
 import { FetchHandler } from '../fetch';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { IntMask } from '@pocket-tools/int-mask';
 import { getRedisCache } from '../cache';
 
 /**
@@ -116,6 +117,7 @@ const internalGetItemByUrl = async (
 
   return {
     itemId: itemId ?? item.item_id.toString(),
+    id: itemId ? IntMask.encode(itemId) : IntMask.encode(item.item_id),
     resolvedId: item.resolved_id.toString(),
     topImageUrl: item.top_image_url,
     topImage: item.top_image_url
@@ -148,7 +150,7 @@ const internalGetItemByUrl = async (
     datePublished: normalizeDate(item.date_published),
     hasOldDupes: !!parseInt(item.has_old_dupes),
     domainId: item.domain_id,
-    originDomainId: item.origin_domain_Id,
+    originDomainId: item.origin_domain_id,
     responseCode: parseInt(item.response_code),
     contentLength: parseInt(item.content_length),
     innerDomainRedirect: !!parseInt(item.innerdomain_redirect),

@@ -1,25 +1,24 @@
 import { Construct } from 'constructs';
 import { App, TerraformStack } from 'cdktf';
-import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
-import { PocketALBApplication } from './pocket/PocketALBApplication';
-import { ApplicationECSContainerDefinitionProps } from './base/ApplicationECSContainerDefinition';
-import { LocalProvider } from '@cdktf/provider-local/lib/provider';
-import { NullProvider } from '@cdktf/provider-null/lib/provider';
-import { TimeProvider } from '@cdktf/provider-time/lib/provider';
-import { Wafv2WebAcl } from '@cdktf/provider-aws/lib/wafv2-web-acl';
-import { PocketAwsSyntheticChecks } from './pocket/PocketCloudwatchSynthetics';
-import { PocketVPC } from './pocket/PocketVPC';
+import { provider as awsProvider, wafv2WebAcl } from '@cdktf/provider-aws';
+import { PocketALBApplication } from './pocket/PocketALBApplication.js';
+import { ApplicationECSContainerDefinitionProps } from './base/ApplicationECSContainerDefinition.js';
+import { provider as localProvider } from '@cdktf/provider-local';
+import { provider as nullProvider } from '@cdktf/provider-null';
+import { provider as timeProvider } from '@cdktf/provider-time';
+import { PocketAwsSyntheticChecks } from './pocket/PocketCloudwatchSynthetics.js';
+import { PocketVPC } from './pocket/PocketVPC.js';
 
 class Example extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
-    new AwsProvider(this, 'aws', {
+    new awsProvider.AwsProvider(this, 'aws', {
       region: 'us-east-1',
     });
-    new LocalProvider(this, 'local', {});
-    new NullProvider(this, 'null', {});
-    new TimeProvider(this, 'timeProvider', {});
+    new localProvider.LocalProvider(this, 'local', {});
+    new nullProvider.NullProvider(this, 'null', {});
+    new timeProvider.TimeProvider(this, 'timeProvider', {});
 
     const pocketVpc = new PocketVPC(this, 'pocket-vpc');
 
@@ -59,7 +58,7 @@ class Example extends TerraformStack {
       ],
     };
 
-    const wafAcl = new Wafv2WebAcl(this, 'example_waf_acl', {
+    const wafAcl = new wafv2WebAcl.Wafv2WebAcl(this, 'example_waf_acl', {
       description: 'Example Pocket Waf ACL',
       name: 'pocket-example-waf',
       scope: 'REGIONAL',

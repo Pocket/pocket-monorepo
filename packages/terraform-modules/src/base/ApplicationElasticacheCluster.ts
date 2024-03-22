@@ -1,6 +1,8 @@
-import { DataAwsVpc } from '@cdktf/provider-aws/lib/data-aws-vpc';
-import { ElasticacheSubnetGroup } from '@cdktf/provider-aws/lib/elasticache-subnet-group';
-import { SecurityGroup } from '@cdktf/provider-aws/lib/security-group';
+import {
+  securityGroup,
+  elasticacheSubnetGroup,
+  dataAwsVpc,
+} from '@cdktf/provider-aws';
 import { TerraformMetaArguments } from 'cdktf';
 import { Construct } from 'constructs';
 
@@ -48,8 +50,8 @@ export abstract class ApplicationElasticacheCluster extends Construct {
   protected static getVpc(
     scope: Construct,
     config: ApplicationElasticacheClusterProps,
-  ): DataAwsVpc {
-    return new DataAwsVpc(scope, `vpc`, {
+  ): dataAwsVpc.DataAwsVpc {
+    return new dataAwsVpc.DataAwsVpc(scope, `vpc`, {
       filter: [
         {
           name: 'vpc-id',
@@ -119,13 +121,17 @@ export abstract class ApplicationElasticacheCluster extends Construct {
   protected static createSubnet(
     scope: Construct,
     config: ApplicationElasticacheClusterProps,
-  ): ElasticacheSubnetGroup {
-    return new ElasticacheSubnetGroup(scope, 'elasticache_subnet_group', {
-      name: `${config.prefix.toLowerCase()}-ElasticacheSubnetGroup`,
-      subnetIds: config.subnetIds,
-      provider: config.provider,
-      tags: config.tags,
-    });
+  ): elasticacheSubnetGroup.ElasticacheSubnetGroup {
+    return new elasticacheSubnetGroup.ElasticacheSubnetGroup(
+      scope,
+      'elasticache_subnet_group',
+      {
+        name: `${config.prefix.toLowerCase()}-ElasticacheSubnetGroup`,
+        subnetIds: config.subnetIds,
+        provider: config.provider,
+        tags: config.tags,
+      },
+    );
   }
 
   /**
@@ -139,38 +145,42 @@ export abstract class ApplicationElasticacheCluster extends Construct {
   protected static createSecurityGroup(
     scope: Construct,
     config: ApplicationElasticacheClusterProps,
-    appVpc: DataAwsVpc,
+    appVpc: dataAwsVpc.DataAwsVpc,
     port: number,
-  ): SecurityGroup {
-    return new SecurityGroup(scope, 'elasticache_security_group', {
-      namePrefix: config.prefix,
-      description: 'Managed by Terraform',
-      vpcId: appVpc.id,
-      ingress: [
-        {
-          fromPort: port,
-          toPort: port,
-          protocol: 'tcp',
+  ): securityGroup.SecurityGroup {
+    return new securityGroup.SecurityGroup(
+      scope,
+      'elasticache_security_group',
+      {
+        namePrefix: config.prefix,
+        description: 'Managed by Terraform',
+        vpcId: appVpc.id,
+        ingress: [
+          {
+            fromPort: port,
+            toPort: port,
+            protocol: 'tcp',
 
-          //If we have a ingress security group it takes precedence
-          securityGroups: config.allowedIngressSecurityGroupIds
-            ? config.allowedIngressSecurityGroupIds
-            : null,
+            //If we have a ingress security group it takes precedence
+            securityGroups: config.allowedIngressSecurityGroupIds
+              ? config.allowedIngressSecurityGroupIds
+              : null,
 
-          //IF we do not have a ingress security group lets all the whole vpc access
-          cidrBlocks: config.allowedIngressSecurityGroupIds
-            ? null
-            : [appVpc.cidrBlock],
+            //IF we do not have a ingress security group lets all the whole vpc access
+            cidrBlocks: config.allowedIngressSecurityGroupIds
+              ? null
+              : [appVpc.cidrBlock],
 
-          // the following are included due to a bug
-          // https://github.com/hashicorp/terraform-cdk/issues/223
-          description: null,
-          ipv6CidrBlocks: null,
-          prefixListIds: null,
-        },
-      ],
-      tags: config.tags,
-      provider: config.provider,
-    });
+            // the following are included due to a bug
+            // https://github.com/hashicorp/terraform-cdk/issues/223
+            description: null,
+            ipv6CidrBlocks: null,
+            prefixListIds: null,
+          },
+        ],
+        tags: config.tags,
+        provider: config.provider,
+      },
+    );
   }
 }

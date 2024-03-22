@@ -3,21 +3,22 @@ import {
   SharedSnowplowConsumerApp,
   SharedSnowplowConsumerProps,
 } from './sharedSnowplowConsumerApp';
-import { ArchiveProvider } from '@cdktf/provider-archive/lib/provider';
-import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
-import { LocalProvider } from '@cdktf/provider-local/lib/provider';
-import { NullProvider } from '@cdktf/provider-null/lib/provider';
-import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
-
-import { CloudwatchMetricAlarm } from '@cdktf/provider-aws/lib/cloudwatch-metric-alarm';
-import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
-import { DataAwsIamPolicyDocument } from '@cdktf/provider-aws/lib/data-aws-iam-policy-document';
-import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/data-aws-kms-alias';
-import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
-import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
-import { SnsTopicSubscription } from '@cdktf/provider-aws/lib/sns-topic-subscription';
-import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
-import { SqsQueuePolicy } from '@cdktf/provider-aws/lib/sqs-queue-policy';
+import { provider as archiveProvider } from '@cdktf/provider-archive';
+import {
+  provider as awsProvider,
+  cloudwatchMetricAlarm,
+  dataAwsCallerIdentity,
+  dataAwsIamPolicyDocument,
+  dataAwsKmsAlias,
+  dataAwsRegion,
+  dataAwsSnsTopic,
+  snsTopicSubscription,
+  sqsQueue,
+  sqsQueuePolicy,
+} from '@cdktf/provider-aws';
+import { provider as localProvider } from '@cdktf/provider-local';
+import { provider as nullProvider } from '@cdktf/provider-null';
+import { provider as pagerdutyProvider } from '@cdktf/provider-pagerduty';
 
 import { PocketPagerDuty } from '@pocket-tools/terraform-modules';
 import { Construct } from 'constructs';
@@ -35,11 +36,13 @@ class SnowplowSharedConsumerStack extends TerraformStack {
   ) {
     super(scope, name);
 
-    new AwsProvider(this, 'aws', { region: 'us-east-1' });
-    new PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
-    new LocalProvider(this, 'local_provider');
-    new NullProvider(this, 'null_provider');
-    new ArchiveProvider(this, 'archive_provider');
+    new awsProvider.AwsProvider(this, 'aws', { region: 'us-east-1' });
+    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
+      token: undefined,
+    });
+    new localProvider.LocalProvider(this, 'local_provider');
+    new nullProvider.NullProvider(this, 'null_provider');
+    new archiveProvider.ArchiveProvider(this, 'archive_provider');
 
     new S3Backend(this, {
       bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
@@ -48,19 +51,26 @@ class SnowplowSharedConsumerStack extends TerraformStack {
       region: 'us-east-1',
     });
 
-    const region = new DataAwsRegion(this, 'region');
-    const caller = new DataAwsCallerIdentity(this, 'caller');
+    const region = new dataAwsRegion.DataAwsRegion(this, 'region');
+    const caller = new dataAwsCallerIdentity.DataAwsCallerIdentity(
+      this,
+      'caller',
+    );
     const pagerDuty = this.createPagerDuty();
 
     // Consume Queue - receives all events from event-bridge
-    const sqsConsumeQueue = new SqsQueue(this, 'shared-event-consumer', {
-      name: `${config.prefix}-SharedEventConsumer-Queue`,
-      tags: config.tags,
-    });
+    const sqsConsumeQueue = new sqsQueue.SqsQueue(
+      this,
+      'shared-event-consumer',
+      {
+        name: `${config.prefix}-SharedEventConsumer-Queue`,
+        tags: config.tags,
+      },
+    );
 
     // Dead Letter Queue (dlq) for sqs-sns subscription.
     // Also re-used for any Snowplow emission failure
-    const snsTopicDlq = new SqsQueue(this, 'sns-topic-dlq', {
+    const snsTopicDlq = new sqsQueue.SqsQueue(this, 'sns-topic-dlq', {
       name: `${config.prefix}-SNS-Topics-DLQ`,
       tags: config.tags,
     });
@@ -157,7 +167,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
    * @private
    */
   private getCodeDeploySnsTopic() {
-    return new DataAwsSnsTopic(this, 'backend_notifications', {
+    return new dataAwsSnsTopic.DataAwsSnsTopic(this, 'backend_notifications', {
       name: `Backend-${config.environment}-ChatBot`,
     });
   }
@@ -167,7 +177,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
    * @private
    */
   private getSecretsManagerKmsAlias() {
-    return new DataAwsKmsAlias(this, 'kms_alias', {
+    return new dataAwsKmsAlias.DataAwsKmsAlias(this, 'kms_alias', {
       name: 'alias/aws/secretsmanager',
     });
   }
@@ -181,20 +191,24 @@ class SnowplowSharedConsumerStack extends TerraformStack {
    * @private
    */
   private subscribeSqsToSnsTopic(
-    sqsConsumeQueue: SqsQueue,
-    snsTopicDlq: SqsQueue,
+    sqsConsumeQueue: sqsQueue.SqsQueue,
+    snsTopicDlq: sqsQueue.SqsQueue,
     snsTopicArn: string,
     topicName: string,
   ) {
     // This Topic already exists and is managed elsewhere
-    return new SnsTopicSubscription(this, `${topicName}-sns-subscription`, {
-      topicArn: snsTopicArn,
-      protocol: 'sqs',
-      endpoint: sqsConsumeQueue.arn,
-      redrivePolicy: JSON.stringify({
-        deadLetterTargetArn: snsTopicDlq.arn,
-      }),
-    });
+    return new snsTopicSubscription.SnsTopicSubscription(
+      this,
+      `${topicName}-sns-subscription`,
+      {
+        topicArn: snsTopicArn,
+        protocol: 'sqs',
+        endpoint: sqsConsumeQueue.arn,
+        redrivePolicy: JSON.stringify({
+          deadLetterTargetArn: snsTopicDlq.arn,
+        }),
+      },
+    );
   }
 
   /**
@@ -238,15 +252,15 @@ class SnowplowSharedConsumerStack extends TerraformStack {
    * @private
    */
   private createPoliciesForAccountDeletionMonitoringSqs(
-    snsTopicQueue: SqsQueue,
-    snsTopicDlq: SqsQueue,
+    snsTopicQueue: sqsQueue.SqsQueue,
+    snsTopicDlq: sqsQueue.SqsQueue,
     snsTopicArns: string[],
   ): void {
     [
       { name: 'shared-snowplow-consumer-sns-sqs', resource: snsTopicQueue },
       { name: 'shared-snowplow-consumer-sns-dlq', resource: snsTopicDlq },
     ].forEach((queue) => {
-      const policy = new DataAwsIamPolicyDocument(
+      const policy = new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
         this,
         `${queue.name}-policy-document`,
         {
@@ -275,7 +289,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
         },
       ).json;
 
-      new SqsQueuePolicy(this, `${queue.name}-policy`, {
+      new sqsQueuePolicy.SqsQueuePolicy(this, `${queue.name}-policy`, {
         queueUrl: queue.resource.url,
         policy: policy,
       });
@@ -303,22 +317,26 @@ class SnowplowSharedConsumerStack extends TerraformStack {
     periodInSeconds = 900,
     threshold = 15,
   ) {
-    new CloudwatchMetricAlarm(this, alarmName.toLowerCase(), {
-      alarmActions: config.isDev
-        ? []
-        : [pagerDuty.snsNonCriticalAlarmTopic.arn],
-      alarmDescription: `Number of messages >= ${threshold}`,
-      alarmName: `${config.prefix}-${alarmName}`,
-      comparisonOperator: 'GreaterThanOrEqualToThreshold',
-      dimensions: { QueueName: queueName },
-      evaluationPeriods: evaluationPeriods,
-      metricName: 'ApproximateNumberOfMessagesVisible',
-      namespace: 'AWS/SQS',
-      okActions: config.isDev ? [] : [pagerDuty.snsNonCriticalAlarmTopic.arn],
-      period: periodInSeconds,
-      statistic: 'Sum',
-      threshold: threshold,
-    });
+    new cloudwatchMetricAlarm.CloudwatchMetricAlarm(
+      this,
+      alarmName.toLowerCase(),
+      {
+        alarmActions: config.isDev
+          ? []
+          : [pagerDuty.snsNonCriticalAlarmTopic.arn],
+        alarmDescription: `Number of messages >= ${threshold}`,
+        alarmName: `${config.prefix}-${alarmName}`,
+        comparisonOperator: 'GreaterThanOrEqualToThreshold',
+        dimensions: { QueueName: queueName },
+        evaluationPeriods: evaluationPeriods,
+        metricName: 'ApproximateNumberOfMessagesVisible',
+        namespace: 'AWS/SQS',
+        okActions: config.isDev ? [] : [pagerDuty.snsNonCriticalAlarmTopic.arn],
+        period: periodInSeconds,
+        statistic: 'Sum',
+        threshold: threshold,
+      },
+    );
   }
 }
 

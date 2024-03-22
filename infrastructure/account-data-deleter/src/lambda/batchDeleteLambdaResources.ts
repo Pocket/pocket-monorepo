@@ -1,12 +1,14 @@
 import { config, config as stackConfig } from '../config';
 
-import { DataAwsSsmParameter } from '@cdktf/provider-aws/lib/data-aws-ssm-parameter';
-import { DataAwsIamPolicyDocument } from '@cdktf/provider-aws/lib/data-aws-iam-policy-document';
-import { DynamodbTable } from '@cdktf/provider-aws/lib/dynamodb-table';
-import { IamPolicy } from '@cdktf/provider-aws/lib/iam-policy';
-import { IamRolePolicyAttachment } from '@cdktf/provider-aws/lib/iam-role-policy-attachment';
-import { IamRole } from '@cdktf/provider-aws/lib/iam-role';
-import { LambdaPermission } from '@cdktf/provider-aws/lib/lambda-permission';
+import {
+  dataAwsSsmParameter,
+  dataAwsIamPolicyDocument,
+  dynamodbTable,
+  iamPolicy,
+  iamRolePolicyAttachment,
+  iamRole,
+  lambdaPermission,
+} from '@cdktf/provider-aws';
 import {
   ApplicationDynamoDBTable,
   ApplicationDynamoDBTableCapacityMode,
@@ -117,7 +119,7 @@ export class BatchDeleteLambdaResources extends Construct {
     );
 
     //permission for scheduledEvent to invoke the batchDeleteLambda
-    new LambdaPermission(this, `${config.prefix}-batchLambda-permission`, {
+    new lambdaPermission.LambdaPermission(this, `${config.prefix}-batchLambda-permission`, {
       principal: 'events.amazonaws.com',
       action: 'lambda:InvokeFunction',
       functionName: this.batchDeleteLambda.lambda.defaultLambda.arn,
@@ -126,11 +128,11 @@ export class BatchDeleteLambdaResources extends Construct {
   }
 
   private getEnvVariableValues() {
-    const sentryDsn = new DataAwsSsmParameter(this, 'sentry-dsn', {
+    const sentryDsn = new dataAwsSsmParameter.DataAwsSsmParameter(this, 'sentry-dsn', {
       name: `/${stackConfig.name}/${stackConfig.environment}/SENTRY_DSN`,
     });
 
-    const serviceHash = new DataAwsSsmParameter(this, 'service-hash', {
+    const serviceHash = new dataAwsSsmParameter.DataAwsSsmParameter(this, 'service-hash', {
       name: `${stackConfig.circleCIPrefix}/SERVICE_HASH`,
     });
 
@@ -199,14 +201,14 @@ export class BatchDeleteLambdaResources extends Construct {
    */
   private addDynamoPermissions(
     name: string,
-    lambdaExecutionRole: IamRole,
-    dynamoTables: DynamodbTable[],
+    lambdaExecutionRole: iamRole.IamRole,
+    dynamoTables: dynamodbTable.DynamodbTable[],
     actions: string[],
   ) {
     const resources = dynamoTables.map((_) => _.arn);
-    const policy = new IamPolicy(this, `${name}-lambda-dynamo-policy`, {
+    const policy = new iamPolicy.IamPolicy(this, `${name}-lambda-dynamo-policy`, {
       name: `${this.name}-${name}-DynamoLambdaPolicy`,
-      policy: new DataAwsIamPolicyDocument(
+      policy: new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
         this,
         `${name}-lambda-dynamo-policy-doc`,
         {
@@ -221,7 +223,7 @@ export class BatchDeleteLambdaResources extends Construct {
       ).json,
       dependsOn: [lambdaExecutionRole],
     });
-    return new IamRolePolicyAttachment(
+    return new iamRolePolicyAttachment.IamRolePolicyAttachment(
       this,
       `${name}-execution-role-policy-attachment`,
       {

@@ -1,5 +1,5 @@
 import { Testing } from 'cdktf';
-import { ApplicationBackup } from './ApplicationBackups';
+import { ApplicationBackup } from './ApplicationBackups.js'
 
 describe('ApplicationBackup', () => {
   it('renders vault with plans without tags', () => {

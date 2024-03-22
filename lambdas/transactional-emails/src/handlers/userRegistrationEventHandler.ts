@@ -4,12 +4,14 @@ import {
   sendCreateUserAlias,
   sendUserTrack,
   setSubscription,
-  SetSubscriptionRequestBodyForEmail,
-  UserTrackBody,
 } from '../braze';
 import { config } from '../config';
 import * as Sentry from '@sentry/node';
 import { SQSRecord } from 'aws-lambda';
+import type {
+  UsersTrackObject,
+  V2SubscriptionStatusSetObject,
+} from 'braze-api';
 
 export type AttributeForUserRegistration = {
   external_id: string;
@@ -76,7 +78,7 @@ export async function userRegistrationEventHandler(record: SQSRecord) {
   console.log(
     `logging marketing subscription id: ${config.braze.marketingSubscriptionId}`,
   );
-  const marketingSubscription: SetSubscriptionRequestBodyForEmail =
+  const marketingSubscription: V2SubscriptionStatusSetObject =
     generateSubscriptionPayloadForEmail(
       config.braze.marketingSubscriptionId,
       true,
@@ -96,7 +98,7 @@ export async function userRegistrationEventHandler(record: SQSRecord) {
 export function generateUserTrackBody(
   payload: UserRegistrationEvent,
   eventTime: string,
-): UserTrackBody {
+): UsersTrackObject {
   return {
     attributes: [
       {
@@ -110,7 +112,7 @@ export function generateUserTrackBody(
       {
         external_id: payload.encodedUserId,
         name: 'user_registration',
-        time: new Date(eventTime),
+        time: new Date(eventTime).toISOString(),
       },
     ],
   };

@@ -1,7 +1,9 @@
 import { SearchResponse } from 'elasticsearch';
 import {
   ElasticSearchSavedItem,
+  SavedItemSearchResult,
   SavedItemSearchResultConnection,
+  SavedItemSearchResultPage,
   SearchSavedItemEdge,
 } from '../../types';
 
@@ -23,6 +25,30 @@ export class Paginator {
   }
   public static decodeCursor(cursor: string): string[] {
     return Buffer.from(cursor, 'base64').toString().split(this.cursorSeparator);
+  }
+  public static resultToPage(
+    input: SearchResponse<ElasticSearchSavedItem>,
+  ): Pick<SavedItemSearchResultPage, 'entries' | 'totalCount'> {
+    const entries: SavedItemSearchResult[] = input.hits.hits.map((item) => ({
+      savedItem: {
+        id: item._source.item_id.toString(),
+      },
+      searchHighlights: {
+        ...item.highlight,
+        fullText: item.highlight?.full_text ?? null,
+      },
+    }));
+    // There's a bug in the elasticsearch interface definition
+    // Says it's an integer, but integration testing shows
+    // { value: number, relation: string } (example relation='eq')
+    // Parse it conditionally
+    const totalCount = Number.isInteger(input.hits.total)
+      ? input.hits.total
+      : (input.hits.total as any).value;
+    return {
+      entries,
+      totalCount,
+    };
   }
   public static resultToConnection(
     input: SearchResponse<ElasticSearchSavedItem>,

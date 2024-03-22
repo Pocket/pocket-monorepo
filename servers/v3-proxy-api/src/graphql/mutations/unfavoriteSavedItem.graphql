@@ -1,0 +1,10 @@
+mutation UnFavoriteSavedItemByUrl($givenUrl: Url!, $timestamp: ISOString!) {
+  savedItemUnFavorite(givenUrl: $givenUrl, timestamp: $timestamp) {
+    url
+  }
+}
+mutation UnFavoriteSavedItemById($updateSavedItemUnFavoriteId: ID!) {
+  updateSavedItemUnFavorite(id: $updateSavedItemUnFavoriteId) {
+    id
+  }
+}

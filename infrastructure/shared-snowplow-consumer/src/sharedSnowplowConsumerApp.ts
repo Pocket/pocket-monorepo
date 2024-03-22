@@ -3,22 +3,24 @@ import {
   PocketALBApplication,
   PocketPagerDuty,
 } from '@pocket-tools/terraform-modules';
-import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
-import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/data-aws-kms-alias';
-import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
-import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
-import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
+import {
+  dataAwsCallerIdentity,
+  dataAwsKmsAlias,
+  dataAwsRegion,
+  dataAwsSnsTopic,
+  sqsQueue,
+  cloudwatchLogGroup,
+} from '@cdktf/provider-aws';
 import { Construct } from 'constructs';
-import { CloudwatchLogGroup } from '@cdktf/provider-aws/lib/cloudwatch-log-group';
 
 export type SharedSnowplowConsumerProps = {
-  caller: DataAwsCallerIdentity;
+  caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
   pagerDuty: PocketPagerDuty;
-  region: DataAwsRegion;
-  secretsManagerKmsAlias: DataAwsKmsAlias;
-  snsTopic: DataAwsSnsTopic;
-  sqsConsumeQueue: SqsQueue;
-  sqsDLQ: SqsQueue;
+  region: dataAwsRegion.DataAwsRegion;
+  secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
+  snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
+  sqsConsumeQueue: sqsQueue.SqsQueue;
+  sqsDLQ: sqsQueue.SqsQueue;
 };
 
 export class SharedSnowplowConsumerApp extends Construct {
@@ -55,7 +57,6 @@ export class SharedSnowplowConsumerApp extends Construct {
       containerConfigs: [
         {
           name: 'app',
-          imageSha: config.releaseSha,
           logMultilinePattern: '^\\S.+',
           logGroup: this.createCustomLogGroup('app'),
           portMappings: [
@@ -128,6 +129,7 @@ export class SharedSnowplowConsumerApp extends Construct {
         useCodeDeploy: true,
         useCodePipeline: false,
         useTerraformBasedCodeDeploy: false,
+        generateAppSpec: false,
         notifications: {
           notifyOnFailed: true,
           notifyOnStarted: false,
@@ -206,7 +208,7 @@ export class SharedSnowplowConsumerApp extends Construct {
    * @private
    */
   private createCustomLogGroup(containerName: string) {
-    const logGroup = new CloudwatchLogGroup(
+    const logGroup = new cloudwatchLogGroup.CloudwatchLogGroup(
       this,
       `${containerName}-log-group`,
       {

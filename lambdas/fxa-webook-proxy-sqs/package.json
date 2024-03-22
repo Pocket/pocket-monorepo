@@ -13,16 +13,16 @@
     "format": "eslint --fix \"src/**/*.ts\""
   },
   "dependencies": {
-    "@aws-sdk/client-secrets-manager": "3.525.0",
-    "@aws-sdk/client-sqs": "3.525.0",
-    "@sentry/serverless": "7.103.0",
+    "@aws-sdk/client-secrets-manager": "3.535.0",
+    "@aws-sdk/client-sqs": "3.535.0",
+    "@sentry/serverless": "7.107.0",
     "jsonwebtoken": "^9.0.0",
     "jwk-to-pem": "^2.0.5",
     "node-fetch": "2.7.0",
     "tslib": "2.6.2"
   },
   "devDependencies": {
-    "@types/aws-lambda": "8.10.134",
+    "@types/aws-lambda": "8.10.136",
     "@types/jest": "29.5.12",
     "@types/jsonwebtoken": "^9.0.5",
     "eslint-config-custom": "workspace:*",

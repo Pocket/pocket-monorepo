@@ -181,7 +181,7 @@ describe('user registration event handler', () => {
           {
             external_id: testPayload.encodedUserId,
             name: 'user_registration',
-            time: new Date('2022-09-10T17:29:22Z'),
+            time: new Date('2022-09-10T17:29:22Z').toISOString(),
           },
         ],
       });
@@ -203,7 +203,7 @@ describe('user registration event handler', () => {
           {
             external_id: testPayload.encodedUserId,
             name: 'user_registration',
-            time: new Date('2022-09-10T17:29:22Z'),
+            time: new Date('2022-09-10T17:29:22Z').toISOString(),
           },
         ],
       });
@@ -225,7 +225,7 @@ describe('user registration event handler', () => {
           {
             external_id: testPayload.encodedUserId,
             name: 'user_registration',
-            time: new Date('2022-09-10T17:29:22Z'),
+            time: new Date('2022-09-10T17:29:22Z').toISOString(),
           },
         ],
       });

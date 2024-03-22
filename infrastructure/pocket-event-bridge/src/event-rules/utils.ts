@@ -1,6 +1,6 @@
 import { config } from '../config';
 import { PocketPagerDuty } from '@pocket-tools/terraform-modules';
-import { CloudwatchMetricAlarm } from '@cdktf/provider-aws/lib/cloudwatch-metric-alarm';
+import { cloudwatchMetricAlarm } from '@cdktf/provider-aws';
 
 /**
  * Function to create alarms for Dead-letter queues
@@ -27,19 +27,25 @@ export function createDeadLetterQueueAlarm(
   periodInSeconds = 900,
   threshold = 15,
 ) {
-  new CloudwatchMetricAlarm(stack, alarmName.toLowerCase(), {
-    alarmName: `${config.prefix}-${alarmName}`,
-    alarmDescription: `Number of messages >= ${threshold}`,
-    namespace: 'AWS/SQS',
-    metricName: 'ApproximateNumberOfMessagesVisible',
-    dimensions: { QueueName: queueName },
-    comparisonOperator: 'GreaterThanOrEqualToThreshold',
-    evaluationPeriods: evaluationPeriods,
-    period: periodInSeconds,
-    threshold: threshold,
-    statistic: 'Sum',
-    alarmActions: config.isDev ? [] : [pagerDuty.snsNonCriticalAlarmTopic.arn],
-    okActions: config.isDev ? [] : [pagerDuty.snsNonCriticalAlarmTopic.arn],
-    actionsEnabled: enabled,
-  });
+  new cloudwatchMetricAlarm.CloudwatchMetricAlarm(
+    stack,
+    alarmName.toLowerCase(),
+    {
+      alarmName: `${config.prefix}-${alarmName}`,
+      alarmDescription: `Number of messages >= ${threshold}`,
+      namespace: 'AWS/SQS',
+      metricName: 'ApproximateNumberOfMessagesVisible',
+      dimensions: { QueueName: queueName },
+      comparisonOperator: 'GreaterThanOrEqualToThreshold',
+      evaluationPeriods: evaluationPeriods,
+      period: periodInSeconds,
+      threshold: threshold,
+      statistic: 'Sum',
+      alarmActions: config.isDev
+        ? []
+        : [pagerDuty.snsNonCriticalAlarmTopic.arn],
+      okActions: config.isDev ? [] : [pagerDuty.snsNonCriticalAlarmTopic.arn],
+      actionsEnabled: enabled,
+    },
+  );
 }

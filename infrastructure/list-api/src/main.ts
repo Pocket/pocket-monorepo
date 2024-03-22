@@ -1,13 +1,15 @@
-import { ArchiveProvider } from '@cdktf/provider-archive/lib/provider';
-import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
-import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
-import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
-import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/data-aws-kms-alias';
-import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
-import { CloudwatchLogGroup } from '@cdktf/provider-aws/lib/cloudwatch-log-group';
-import { LocalProvider } from '@cdktf/provider-local/lib/provider';
-import { NullProvider } from '@cdktf/provider-null/lib/provider';
-import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
+import { provider as archiveProvider } from '@cdktf/provider-archive';
+import {
+  provider as awsProvider,
+  dataAwsCallerIdentity,
+  dataAwsRegion,
+  dataAwsKmsAlias,
+  dataAwsSnsTopic,
+  cloudwatchLogGroup,
+} from '@cdktf/provider-aws';
+import { provider as localProvider } from '@cdktf/provider-local';
+import { provider as nullProvider } from '@cdktf/provider-null';
+import { provider as pagerdutyProvider } from '@cdktf/provider-pagerduty';
 import {
   ApplicationRDSCluster,
   PocketALBApplication,
@@ -27,11 +29,13 @@ class ListAPI extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
-    new AwsProvider(this, 'aws', { region: 'us-east-1' });
-    new PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
-    new NullProvider(this, 'null-provider');
-    new LocalProvider(this, 'local-provider');
-    new ArchiveProvider(this, 'archive-provider');
+    new awsProvider.AwsProvider(this, 'aws', { region: 'us-east-1' });
+    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
+      token: undefined,
+    });
+    new nullProvider.NullProvider(this, 'null-provider');
+    new localProvider.LocalProvider(this, 'local-provider');
+    new archiveProvider.ArchiveProvider(this, 'archive-provider');
 
     new S3Backend(this, {
       bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
@@ -41,8 +45,11 @@ class ListAPI extends TerraformStack {
     });
 
     const pocketVPC = new PocketVPC(this, 'pocket-vpc');
-    const region = new DataAwsRegion(this, 'region');
-    const caller = new DataAwsCallerIdentity(this, 'caller');
+    const region = new dataAwsRegion.DataAwsRegion(this, 'region');
+    const caller = new dataAwsCallerIdentity.DataAwsCallerIdentity(
+      this,
+      'caller',
+    );
     this.createPocketAlbApplication({
       pagerDuty: this.createPagerDuty(),
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
@@ -58,7 +65,7 @@ class ListAPI extends TerraformStack {
    * @private
    */
   private getCodeDeploySnsTopic() {
-    return new DataAwsSnsTopic(this, 'backend_notifications', {
+    return new dataAwsSnsTopic.DataAwsSnsTopic(this, 'backend_notifications', {
       name: `Backend-${config.environment}-ChatBot`,
     });
   }
@@ -68,7 +75,7 @@ class ListAPI extends TerraformStack {
    * @private
    */
   private getSecretsManagerKmsAlias() {
-    return new DataAwsKmsAlias(this, 'kms_alias', {
+    return new dataAwsKmsAlias.DataAwsKmsAlias(this, 'kms_alias', {
       name: 'alias/aws/secretsmanager',
     });
   }
@@ -132,10 +139,10 @@ class ListAPI extends TerraformStack {
 
   private createPocketAlbApplication(dependencies: {
     pagerDuty: PocketPagerDuty;
-    region: DataAwsRegion;
-    caller: DataAwsCallerIdentity;
-    secretsManagerKmsAlias: DataAwsKmsAlias;
-    snsTopic: DataAwsSnsTopic;
+    region: dataAwsRegion.DataAwsRegion;
+    caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
+    secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
+    snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
     vpc: PocketVPC;
   }): PocketALBApplication {
     const { pagerDuty, region, caller, secretsManagerKmsAlias, snsTopic, vpc } =
@@ -199,7 +206,6 @@ class ListAPI extends TerraformStack {
       containerConfigs: [
         {
           name: 'app',
-          imageSha: config.releaseSha,
           portMappings: [
             {
               hostPort: 4005,
@@ -337,6 +343,7 @@ class ListAPI extends TerraformStack {
         useCodeDeploy: true,
         useCodePipeline: false,
         useTerraformBasedCodeDeploy: false,
+        generateAppSpec: false,
         notifications: {
           notifyOnFailed: true,
           notifyOnStarted: false,
@@ -445,7 +452,7 @@ class ListAPI extends TerraformStack {
    * @private
    */
   private createCustomLogGroup(containerName: string) {
-    const logGroup = new CloudwatchLogGroup(
+    const logGroup = new cloudwatchLogGroup.CloudwatchLogGroup(
       this,
       `${containerName}-log-group`,
       {

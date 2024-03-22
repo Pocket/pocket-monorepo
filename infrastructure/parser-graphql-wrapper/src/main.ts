@@ -1,16 +1,20 @@
 import { config } from './config';
-import { ArchiveProvider } from '@cdktf/provider-archive/lib/provider';
-import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
-import { CloudwatchLogGroup } from '@cdktf/provider-aws/lib/cloudwatch-log-group';
-import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
-import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/data-aws-kms-alias';
-import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
-import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
-import { DataAwsSubnets } from '@cdktf/provider-aws/lib/data-aws-subnets';
-import { DataPagerdutyEscalationPolicy } from '@cdktf/provider-pagerduty/lib/data-pagerduty-escalation-policy';
-import { LocalProvider } from '@cdktf/provider-local/lib/provider';
-import { NullProvider } from '@cdktf/provider-null/lib/provider';
-import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
+import { provider as archiveProvider } from '@cdktf/provider-archive';
+import {
+  provider as awsProvider,
+  cloudwatchLogGroup,
+  dataAwsCallerIdentity,
+  dataAwsSnsTopic,
+  dataAwsKmsAlias,
+  dataAwsRegion,
+  dataAwsSubnets,
+} from '@cdktf/provider-aws';
+import { provider as localProvider } from '@cdktf/provider-local';
+import { provider as nullProvider } from '@cdktf/provider-null';
+import {
+  provider as pagerdutyProvider,
+  dataPagerdutyEscalationPolicy,
+} from '@cdktf/provider-pagerduty';
 import {
   ApplicationRDSCluster,
   PocketALBApplication,
@@ -25,11 +29,13 @@ class ParserGraphQLWrapper extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
-    new ArchiveProvider(this, 'archive_provider');
-    new AwsProvider(this, 'aws', { region: 'us-east-1' });
-    new LocalProvider(this, 'local_provider');
-    new NullProvider(this, 'null_provider');
-    new PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
+    new archiveProvider.ArchiveProvider(this, 'archive_provider');
+    new awsProvider.AwsProvider(this, 'aws', { region: 'us-east-1' });
+    new localProvider.LocalProvider(this, 'local_provider');
+    new nullProvider.NullProvider(this, 'null_provider');
+    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
+      token: undefined,
+    });
 
     new S3Backend(this, {
       bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
@@ -38,8 +44,11 @@ class ParserGraphQLWrapper extends TerraformStack {
       region: 'us-east-1',
     });
 
-    const region = new DataAwsRegion(this, 'region');
-    const caller = new DataAwsCallerIdentity(this, 'caller');
+    const region = new dataAwsRegion.DataAwsRegion(this, 'region');
+    const caller = new dataAwsCallerIdentity.DataAwsCallerIdentity(
+      this,
+      'caller',
+    );
     const vpc = new PocketVPC(this, 'pocket-vpc');
     const { primaryEndpoint, readerEndpoint } = this.createElasticache(
       this,
@@ -63,7 +72,7 @@ class ParserGraphQLWrapper extends TerraformStack {
    * @private
    */
   private getCodeDeploySnsTopic() {
-    return new DataAwsSnsTopic(this, 'backend_notifications', {
+    return new dataAwsSnsTopic.DataAwsSnsTopic(this, 'backend_notifications', {
       name: `Backend-${config.environment}-ChatBot`,
     });
   }
@@ -73,7 +82,7 @@ class ParserGraphQLWrapper extends TerraformStack {
    * @private
    */
   private getSecretsManagerKmsAlias() {
-    return new DataAwsKmsAlias(this, 'kms_alias', {
+    return new dataAwsKmsAlias.DataAwsKmsAlias(this, 'kms_alias', {
       name: 'alias/aws/secretsmanager',
     });
   }
@@ -83,13 +92,14 @@ class ParserGraphQLWrapper extends TerraformStack {
    * @private
    */
   private createPagerDuty() {
-    const mozillaEscalation = new DataPagerdutyEscalationPolicy(
-      this,
-      'mozilla_sre_escalation_policy',
-      {
-        name: 'IT SRE: Escalation Policy',
-      },
-    );
+    const mozillaEscalation =
+      new dataPagerdutyEscalationPolicy.DataPagerdutyEscalationPolicy(
+        this,
+        'mozilla_sre_escalation_policy',
+        {
+          name: 'IT SRE: Escalation Policy',
+        },
+      );
 
     return new PocketPagerDuty(this, 'pagerduty', {
       prefix: config.prefix,
@@ -102,10 +112,10 @@ class ParserGraphQLWrapper extends TerraformStack {
 
   private createPocketAlbApplication(dependencies: {
     pagerDuty: PocketPagerDuty;
-    region: DataAwsRegion;
-    caller: DataAwsCallerIdentity;
-    secretsManagerKmsAlias: DataAwsKmsAlias;
-    snsTopic: DataAwsSnsTopic;
+    region: dataAwsRegion.DataAwsRegion;
+    caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
+    secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
+    snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
     primaryEndpoint: string;
     readerEndpoint: string;
     vpc: PocketVPC;
@@ -123,6 +133,7 @@ class ParserGraphQLWrapper extends TerraformStack {
 
     const PocketSharesSecretPrefix = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:ParserWrapperApi/${config.environment}/POCKET_SHARES`;
     const PocketSecretsPrefix = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:ParserWrapperApi/${config.environment}/SECRETS`;
+    const intMaskSecretArn = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/IntMask`;
 
     const secretResources = [
       `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared`,
@@ -134,6 +145,8 @@ class ParserGraphQLWrapper extends TerraformStack {
       `${PocketSharesSecretPrefix}/*`,
       `${PocketSecretsPrefix}*`,
       `${PocketSecretsPrefix}/*`,
+      `${intMaskSecretArn}*`,
+      `${intMaskSecretArn}/*`,
     ];
 
     let rdsCluster: ApplicationRDSCluster;
@@ -158,7 +171,6 @@ class ParserGraphQLWrapper extends TerraformStack {
       containerConfigs: [
         {
           name: 'app',
-          imageSha: config.releaseSha,
           envVars: [
             {
               name: 'ENVIRONMENT',
@@ -248,6 +260,30 @@ class ParserGraphQLWrapper extends TerraformStack {
               name: 'SHORT_CODE_CHARS',
               valueFrom: `${PocketSecretsPrefix}:short_code_chars::`,
             },
+            {
+              name: 'CHARACTER_MAP',
+              valueFrom: `${intMaskSecretArn}:characterMap::`,
+            },
+            {
+              name: 'POSITION_MAP',
+              valueFrom: `${intMaskSecretArn}:positionMap::`,
+            },
+            {
+              name: 'MD5_RANDOMIZER',
+              valueFrom: `${intMaskSecretArn}:md5Randomizer::`,
+            },
+            {
+              name: 'LETTER_INDEX',
+              valueFrom: `${intMaskSecretArn}:letterIndex::`,
+            },
+            {
+              name: 'SALT_1',
+              valueFrom: `${intMaskSecretArn}:salt1::`,
+            },
+            {
+              name: 'SALT_2',
+              valueFrom: `${intMaskSecretArn}:salt2::`,
+            },
           ],
         },
         {
@@ -274,6 +310,7 @@ class ParserGraphQLWrapper extends TerraformStack {
         useCodeDeploy: true,
         useCodePipeline: false,
         useTerraformBasedCodeDeploy: false,
+        generateAppSpec: false,
         snsNotificationTopicArn: snsTopic.arn,
         notifications: {
           //only notify on failed deploys
@@ -372,7 +409,7 @@ class ParserGraphQLWrapper extends TerraformStack {
     readerEndpoint: string;
   } {
     // Serverless elasticache doesn't support the `e` availablity zone in us-east-1... so we need to filter it out..
-    const privateSubnets = new DataAwsSubnets(
+    const privateSubnets = new dataAwsSubnets.DataAwsSubnets(
       this,
       `cache_private_subnet_ids`,
       {
@@ -452,7 +489,7 @@ class ParserGraphQLWrapper extends TerraformStack {
    * @private
    */
   private createCustomLogGroup(containerName: string) {
-    const logGroup = new CloudwatchLogGroup(
+    const logGroup = new cloudwatchLogGroup.CloudwatchLogGroup(
       this,
       `${containerName}-log-group`,
       {

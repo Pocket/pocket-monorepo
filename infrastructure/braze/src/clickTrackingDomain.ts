@@ -3,11 +3,7 @@ import {
   ApplicationCertificate,
 } from '@pocket-tools/terraform-modules';
 import { Construct } from 'constructs';
-import { Route53Record } from '@cdktf/provider-aws/lib/route53-record';
-import {
-  CloudfrontDistributionOrderedCacheBehavior,
-  CloudfrontDistribution,
-} from '@cdktf/provider-aws/lib/cloudfront-distribution';
+import { route53Record, cloudfrontDistribution } from '@cdktf/provider-aws';
 
 export interface ClickTrackingDomainConfig {
   tags?: { [key: string]: string };
@@ -32,7 +28,7 @@ interface ClickTrackingCDNConfig extends RootZoneConfig {
 }
 
 const defaultWellKnownBehavior: Omit<
-  CloudfrontDistributionOrderedCacheBehavior,
+  cloudfrontDistribution.CloudfrontDistributionOrderedCacheBehavior,
   'targetOriginId' | 'pathPattern'
 > = {
   viewerProtocolPolicy: 'https-only',
@@ -116,80 +112,84 @@ export class ClickTrackingDomain extends Construct {
    */
   private createClickTrackingCDN(
     config: ClickTrackingCDNConfig,
-  ): CloudfrontDistribution {
-    return new CloudfrontDistribution(this, `cloudfront_distribution`, {
-      comment: `ClickTracking CDN for ${config.domain}`,
-      enabled: true,
-      aliases: [config.domain],
-      priceClass: 'PriceClass_All',
-      tags: config.tags,
-      origin: [
-        {
-          domainName: config.clickTrackingOrigin,
-          originId: config.clickTrackingOrigin,
-          customOriginConfig: {
-            originProtocolPolicy: 'https-only',
-            httpPort: 80,
-            httpsPort: 443,
-            originSslProtocols: ['TLSv1.2'],
+  ): cloudfrontDistribution.CloudfrontDistribution {
+    return new cloudfrontDistribution.CloudfrontDistribution(
+      this,
+      `cloudfront_distribution`,
+      {
+        comment: `ClickTracking CDN for ${config.domain}`,
+        enabled: true,
+        aliases: [config.domain],
+        priceClass: 'PriceClass_All',
+        tags: config.tags,
+        origin: [
+          {
+            domainName: config.clickTrackingOrigin,
+            originId: config.clickTrackingOrigin,
+            customOriginConfig: {
+              originProtocolPolicy: 'https-only',
+              httpPort: 80,
+              httpsPort: 443,
+              originSslProtocols: ['TLSv1.2'],
+            },
+          },
+          {
+            //Create an origin that maps to where we store the .well-known files.
+            domainName: config.wellKnownStorageDomain,
+            originId: config.wellKnownStorageDomain,
+            customOriginConfig: {
+              originProtocolPolicy: 'https-only',
+              httpPort: 80,
+              httpsPort: 443,
+              originSslProtocols: ['TLSv1.2'],
+            },
+          },
+        ],
+        orderedCacheBehavior: [
+          {
+            ...defaultWellKnownBehavior,
+            targetOriginId: config.wellKnownStorageDomain,
+            pathPattern: 'apple-app-site-association',
+          },
+          {
+            ...defaultWellKnownBehavior,
+            targetOriginId: config.wellKnownStorageDomain,
+            pathPattern: '.well-known/apple-app-site-association',
+          },
+          {
+            ...defaultWellKnownBehavior,
+            targetOriginId: config.wellKnownStorageDomain,
+            pathPattern: '.well-known/assetlinks.json',
+          },
+        ],
+        defaultCacheBehavior: {
+          targetOriginId: config.clickTrackingOrigin,
+          viewerProtocolPolicy: 'allow-all',
+          compress: true,
+          allowedMethods: ['GET', 'HEAD'],
+          cachedMethods: ['GET', 'HEAD'],
+          forwardedValues: {
+            queryString: true,
+            headers: ['*'],
+            cookies: {
+              forward: 'none',
+            },
+          },
+          smoothStreaming: false,
+        },
+        viewerCertificate: {
+          acmCertificateArn: config.sslCertificate.arn,
+          sslSupportMethod: 'sni-only',
+          minimumProtocolVersion: 'TLSv1.1_2016',
+        },
+        restrictions: {
+          geoRestriction: {
+            restrictionType: 'none',
           },
         },
-        {
-          //Create an origin that maps to where we store the .well-known files.
-          domainName: config.wellKnownStorageDomain,
-          originId: config.wellKnownStorageDomain,
-          customOriginConfig: {
-            originProtocolPolicy: 'https-only',
-            httpPort: 80,
-            httpsPort: 443,
-            originSslProtocols: ['TLSv1.2'],
-          },
-        },
-      ],
-      orderedCacheBehavior: [
-        {
-          ...defaultWellKnownBehavior,
-          targetOriginId: config.wellKnownStorageDomain,
-          pathPattern: 'apple-app-site-association',
-        },
-        {
-          ...defaultWellKnownBehavior,
-          targetOriginId: config.wellKnownStorageDomain,
-          pathPattern: '.well-known/apple-app-site-association',
-        },
-        {
-          ...defaultWellKnownBehavior,
-          targetOriginId: config.wellKnownStorageDomain,
-          pathPattern: '.well-known/assetlinks.json',
-        },
-      ],
-      defaultCacheBehavior: {
-        targetOriginId: config.clickTrackingOrigin,
-        viewerProtocolPolicy: 'allow-all',
-        compress: true,
-        allowedMethods: ['GET', 'HEAD'],
-        cachedMethods: ['GET', 'HEAD'],
-        forwardedValues: {
-          queryString: true,
-          headers: ['*'],
-          cookies: {
-            forward: 'none',
-          },
-        },
-        smoothStreaming: false,
+        dependsOn: [config.sslCertificate.certificateValidation],
       },
-      viewerCertificate: {
-        acmCertificateArn: config.sslCertificate.arn,
-        sslSupportMethod: 'sni-only',
-        minimumProtocolVersion: 'TLSv1.1_2016',
-      },
-      restrictions: {
-        geoRestriction: {
-          restrictionType: 'none',
-        },
-      },
-      dependsOn: [config.sslCertificate.certificateValidation],
-    });
+    );
   }
 
   /**
@@ -200,10 +200,10 @@ export class ClickTrackingDomain extends Construct {
    */
   private createCDNAlias(
     zone: ApplicationBaseDNS,
-    cdn: CloudfrontDistribution,
-  ): Route53Record {
+    cdn: cloudfrontDistribution.CloudfrontDistribution,
+  ): route53Record.Route53Record {
     //Setup the Base DNS stack for our application which includes a hosted SubZone
-    return new Route53Record(this, `cdn_route53_alias`, {
+    return new route53Record.Route53Record(this, `cdn_route53_alias`, {
       zoneId: zone.zoneId,
       name: '',
       type: 'A',

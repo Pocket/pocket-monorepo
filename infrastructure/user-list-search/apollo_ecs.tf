@@ -97,6 +97,26 @@ resource "aws_ecs_task_definition" "apollo" {
   tags = local.tags
 }
 
+output "ecs-task-family" {
+  description = "ECS Task Family"
+  value = aws_ecs_task_definition.apollo.family
+}
+
+output "ecs-task-containerPort" {
+  description = "ECS Task Container Port"
+  value = local.container_port
+}
+
+output "ecs-task-containerName" {
+  description = "ECS Task Container Name"
+  value = local.container_name
+}
+
+output "ecs-task-arn" {
+  description = "ECS Task Arn"
+  value = aws_ecs_task_definition.apollo.arn
+}
+
 resource "aws_ecs_service" "apollo" {
   name            = "Apollo"
   task_definition = aws_ecs_task_definition.apollo.arn
@@ -147,31 +167,6 @@ resource "aws_ecs_service" "apollo" {
     aws_alb_listener.listener_https,
     aws_ecs_cluster.ecs_cluster
   ]
-}
-
-locals {
-  appspec_content = {
-    version = 1,
-    Resources = [
-      {
-        TargetService = {
-          Type       = "AWS::ECS::Service",
-          Properties = {
-            TaskDefinition = aws_ecs_task_definition.apollo.arn,
-            LoadBalancerInfo = {
-              ContainerName = local.container_name,
-              ContainerPort = local.container_port,
-            },
-          },
-        },
-      },
-    ],
-  }
-}
-
-resource "local_file" "appspec" {
-  content  = jsonencode(local.appspec_content)
-  filename = "appspec.json"
 }
 
 /**

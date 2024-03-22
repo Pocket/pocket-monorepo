@@ -1,6 +1,5 @@
 import { Construct } from 'constructs';
-import { DataAwsRoute53Zone } from '@cdktf/provider-aws/lib/data-aws-route53-zone';
-import { Route53Record } from '@cdktf/provider-aws/lib/route53-record';
+import { dataAwsRoute53Zone, route53Record } from '@cdktf/provider-aws';
 import { getRootDomain } from '@pocket-tools/terraform-modules';
 
 export interface EmailSendDomainConfig {
@@ -23,25 +22,25 @@ interface RootZoneConfig {
 }
 
 interface TextRecordsConfig {
-  baseDNS: DataAwsRoute53Zone;
+  baseDNS: dataAwsRoute53Zone.DataAwsRoute53Zone;
   subdomain: string;
   textRecords: { [key: string]: string[] };
 }
 
 interface ARecordsConfig {
-  baseDNS: DataAwsRoute53Zone;
+  baseDNS: dataAwsRoute53Zone.DataAwsRoute53Zone;
   subdomain: string;
   aRecords: { [key: string]: string };
 }
 
 interface CNAMEConfig {
-  baseDNS: DataAwsRoute53Zone;
+  baseDNS: dataAwsRoute53Zone.DataAwsRoute53Zone;
   subdomain: string;
   cname: string;
 }
 
 interface MXConfig {
-  baseDNS: DataAwsRoute53Zone;
+  baseDNS: dataAwsRoute53Zone.DataAwsRoute53Zone;
   subdomain: string;
   mx: string;
 }
@@ -91,10 +90,12 @@ export class EmailSendDomain extends Construct {
    * @param zone
    * @private
    */
-  private getRootZone(zone: RootZoneConfig): DataAwsRoute53Zone {
+  private getRootZone(
+    zone: RootZoneConfig,
+  ): dataAwsRoute53Zone.DataAwsRoute53Zone {
     //Get the root zone for our subdomain
     //We can't make a sub hosted zone like we usually do because we need to CNAME the root record
-    return new DataAwsRoute53Zone(this, `base_dns`, {
+    return new dataAwsRoute53Zone.DataAwsRoute53Zone(this, `base_dns`, {
       name: getRootDomain(zone.domain),
     });
   }
@@ -105,7 +106,7 @@ export class EmailSendDomain extends Construct {
    * @private
    */
   private createMainCNAMERecord(config: CNAMEConfig) {
-    return new Route53Record(this, `cname_record`, {
+    return new route53Record.Route53Record(this, `cname_record`, {
       zoneId: config.baseDNS.zoneId,
       name: config.subdomain,
       type: 'CNAME',
@@ -120,7 +121,7 @@ export class EmailSendDomain extends Construct {
    * @private
    */
   private createMXRecord(config: MXConfig) {
-    return new Route53Record(this, `mx_record`, {
+    return new route53Record.Route53Record(this, `mx_record`, {
       zoneId: config.baseDNS.zoneId,
       name: config.subdomain,
       type: 'MX',
@@ -135,18 +136,22 @@ export class EmailSendDomain extends Construct {
    * @private
    */
   private createTextVerificationRecords(config: TextRecordsConfig) {
-    const records: Route53Record[] = [];
+    const records: route53Record.Route53Record[] = [];
     for (const [name, value] of Object.entries(config.textRecords)) {
       const recordName =
         name == '' ? config.subdomain : `${name}.${config.subdomain}`;
       records.push(
-        new Route53Record(this, `${records.length}_text_records`, {
-          zoneId: config.baseDNS.zoneId,
-          name: recordName,
-          type: 'TXT',
-          records: value,
-          ttl: 300,
-        }),
+        new route53Record.Route53Record(
+          this,
+          `${records.length}_text_records`,
+          {
+            zoneId: config.baseDNS.zoneId,
+            name: recordName,
+            type: 'TXT',
+            records: value,
+            ttl: 300,
+          },
+        ),
       );
     }
 
@@ -159,12 +164,12 @@ export class EmailSendDomain extends Construct {
    * @private
    */
   private createARecords(config: ARecordsConfig) {
-    const records: Route53Record[] = [];
+    const records: route53Record.Route53Record[] = [];
     for (const [name, value] of Object.entries(config.aRecords)) {
       const recordName =
         name == '' ? config.subdomain : `${name}.${config.subdomain}`;
       records.push(
-        new Route53Record(this, `${records.length}_a_records`, {
+        new route53Record.Route53Record(this, `${records.length}_a_records`, {
           zoneId: config.baseDNS.zoneId,
           name: recordName,
           type: 'A',

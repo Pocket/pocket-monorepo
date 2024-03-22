@@ -5,32 +5,36 @@ import {
   S3Backend,
   TerraformStack,
 } from 'cdktf';
-import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
-import { CloudwatchLogGroup } from '@cdktf/provider-aws/lib/cloudwatch-log-group';
-import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
-import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/data-aws-kms-alias';
-import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
-import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
+import {
+  provider as awsProvider,
+  cloudwatchLogGroup,
+  dataAwsCallerIdentity,
+  dataAwsKmsAlias,
+  dataAwsRegion,
+  dataAwsSnsTopic,
+} from '@cdktf/provider-aws';
 import { config } from './config';
 import {
   PocketALBApplication,
   PocketPagerDuty,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
-import { LocalProvider } from '@cdktf/provider-local/lib/provider';
-import { NullProvider } from '@cdktf/provider-null/lib/provider';
-import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
+import { provider as localProvider } from '@cdktf/provider-local';
+import { provider as nullProvider } from '@cdktf/provider-null';
+import { provider as pagerdutyProvider } from '@cdktf/provider-pagerduty';
 import * as fs from 'fs';
 
 class UserAPI extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
-    new AwsProvider(this, 'aws', { region: 'us-east-1' });
+    new awsProvider.AwsProvider(this, 'aws', { region: 'us-east-1' });
 
-    new PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
-    new LocalProvider(this, 'local_provider');
-    new NullProvider(this, 'null_provider');
+    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
+      token: undefined,
+    });
+    new localProvider.LocalProvider(this, 'local_provider');
+    new nullProvider.NullProvider(this, 'null_provider');
 
     new S3Backend(this, {
       bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
@@ -40,8 +44,11 @@ class UserAPI extends TerraformStack {
     });
 
     new PocketVPC(this, 'pocket-vpc');
-    const region = new DataAwsRegion(this, 'region');
-    const caller = new DataAwsCallerIdentity(this, 'caller');
+    const region = new dataAwsRegion.DataAwsRegion(this, 'region');
+    const caller = new dataAwsCallerIdentity.DataAwsCallerIdentity(
+      this,
+      'caller',
+    );
 
     this.createPocketAlbApplication({
       pagerDuty: this.createPagerDuty(),
@@ -57,7 +64,7 @@ class UserAPI extends TerraformStack {
    * @private
    */
   private getCodeDeploySnsTopic() {
-    return new DataAwsSnsTopic(this, 'backend_notifications', {
+    return new dataAwsSnsTopic.DataAwsSnsTopic(this, 'backend_notifications', {
       name: `Backend-${config.environment}-ChatBot`,
     });
   }
@@ -67,7 +74,7 @@ class UserAPI extends TerraformStack {
    * @private
    */
   private getSecretsManagerKmsAlias() {
-    return new DataAwsKmsAlias(this, 'kms_alias', {
+    return new dataAwsKmsAlias.DataAwsKmsAlias(this, 'kms_alias', {
       name: 'alias/aws/secretsmanager',
     });
   }
@@ -103,10 +110,10 @@ class UserAPI extends TerraformStack {
 
   private createPocketAlbApplication(dependencies: {
     pagerDuty: PocketPagerDuty;
-    region: DataAwsRegion;
-    caller: DataAwsCallerIdentity;
-    secretsManagerKmsAlias: DataAwsKmsAlias;
-    snsTopic: DataAwsSnsTopic;
+    region: dataAwsRegion.DataAwsRegion;
+    caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
+    secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
+    snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
   }): PocketALBApplication {
     const { pagerDuty, region, caller, secretsManagerKmsAlias, snsTopic } =
       dependencies;
@@ -124,7 +131,6 @@ class UserAPI extends TerraformStack {
       containerConfigs: [
         {
           name: 'app',
-          imageSha: config.releaseSha,
           portMappings: [
             {
               hostPort: 4006,
@@ -153,10 +159,6 @@ class UserAPI extends TerraformStack {
             {
               name: 'DATABASE_WRITE_PORT',
               value: config.database.port,
-            },
-            {
-              name: 'PINPOINT_APPLICATION_ID',
-              value: config.envVars.pinpointApplicationId,
             },
             {
               name: 'EVENT_BUS_NAME',
@@ -256,6 +258,7 @@ class UserAPI extends TerraformStack {
         useCodeDeploy: true,
         useCodePipeline: false,
         useTerraformBasedCodeDeploy: false,
+        generateAppSpec: false,
         snsNotificationTopicArn: snsTopic.arn,
         notifications: {
           //only notify on failed deploys
@@ -313,18 +316,6 @@ class UserAPI extends TerraformStack {
             resources: ['*'],
             effect: 'Allow',
           },
-          // Pinpoint access specific to user subgraph
-          {
-            actions: [
-              'mobiletargeting:DeleteUserEndpoints',
-              'mobiletargeting:UpdateEndpoint*',
-            ],
-            resources: [
-              `arn:aws:mobiletargeting:${region.name}:${caller.accountId}:apps/${config.envVars.pinpointApplicationId}`,
-              `arn:aws:mobiletargeting:${region.name}:${caller.accountId}:apps/${config.envVars.pinpointApplicationId}/*`,
-            ],
-            effect: 'Allow',
-          },
           {
             actions: ['events:PutEvents'],
             resources: [
@@ -375,7 +366,7 @@ class UserAPI extends TerraformStack {
    * @private
    */
   private createCustomLogGroup(containerName: string) {
-    const logGroup = new CloudwatchLogGroup(
+    const logGroup = new cloudwatchLogGroup.CloudwatchLogGroup(
       this,
       `${containerName}-log-group`,
       {

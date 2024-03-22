@@ -6,7 +6,7 @@ import {
   EventType,
   UserForEvent,
 } from './events/eventType';
-import IntMask from './utils/intMask';
+import { IntMask } from '@pocket-tools/int-mask';
 import { UserDataService } from './dataService/userDataService';
 import { UserModel } from './models/User';
 import { NotFoundError } from '@pocket-tools/apollo-utils';
@@ -143,7 +143,9 @@ class ContextManager implements IContext {
       Sentry.configureScope((scope) => {
         // This is in a try catch in case the IntMask function values on a weird or invalid value, for now we dont want to halt execution, or throw an error.
         try {
-          scope.setUser({ id: IntMask.encode(this._userId) });
+          scope.setUser({
+            id: IntMask.encode(this._userId),
+          });
         } catch (e) {
           serverLogger.error('Could not encode user id for sentry', {
             userId: this._userId,

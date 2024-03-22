@@ -5,10 +5,10 @@ import {
   TerraformStack,
   DataTerraformRemoteState,
 } from 'cdktf';
-import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
-import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
-import { LocalProvider } from '@cdktf/provider-local/lib/provider';
-import { NullProvider } from '@cdktf/provider-null/lib/provider';
+import { provider as awsProvider } from '@cdktf/provider-aws';
+import { provider as pagerdutyProvider } from '@cdktf/provider-pagerduty';
+import { provider as localProvider } from '@cdktf/provider-local';
+import { provider as nullProvider } from '@cdktf/provider-null';
 import {
   ApplicationEventBus,
   ApplicationEventBusProps,
@@ -20,7 +20,7 @@ import { ShareableListEvents } from './event-rules/shareable-lists-api-events/sh
 import { ShareableListItemEvents } from './event-rules/shareable-lists-api-events/shareableListItemEventRules';
 import { ListApiEvents } from './event-rules/list-api-events/listApiEventRules';
 import { PocketPagerDuty } from '@pocket-tools/terraform-modules';
-import { ArchiveProvider } from '@cdktf/provider-archive/lib/provider';
+import { provider as archiveProvider } from '@cdktf/provider-archive';
 import { config } from './config';
 import { UserEventsSchema } from './events-schema/userEvents';
 import { AccountDeleteMonitorEvents } from './event-rules/account-delete-monitor';
@@ -31,16 +31,21 @@ import { ForgotPasswordRequestEvent } from './events-schema/ForgotPasswordReques
 import { PremiumPurchase } from './event-rules/premium-purchase';
 import { UserRegistrationEventRule } from './event-rules/user-registration/userRegistrationEventRule';
 import { UserRegistrationEventSchema } from './events-schema/userRegistrationEventSchema';
+import { AllEventsRule } from './event-rules/all-events/allEventRules';
+import { ForgotPassword as ForgotPasswordRequest } from './event-rules/forgot-password-request';
 
 class PocketEventBus extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
-    new AwsProvider(this, 'aws', { region: 'us-east-1' });
-    new PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
-    new LocalProvider(this, 'local_provider');
-    new NullProvider(this, 'null_provider');
-    new ArchiveProvider(this, 'archive_provider');
+    new awsProvider.AwsProvider(this, 'aws', {
+      region: 'us-east-1',
+      defaultTags: [{ tags: config.tags }],
+    });
+    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
+    new localProvider.LocalProvider(this, 'local_provider');
+    new nullProvider.NullProvider(this, 'null_provider');
+    new archiveProvider.ArchiveProvider(this, 'archive_provider');
 
     new S3Backend(this, {
       bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
@@ -51,7 +56,7 @@ class PocketEventBus extends TerraformStack {
 
     const eventBusProps: ApplicationEventBusProps = {
       name: `${config.prefix}-Shared-Event-Bus`,
-      tags: { service: config.prefix },
+      tags: config.tags,
     };
 
     const sharedPocketEventBus = new ApplicationEventBus(
@@ -84,6 +89,12 @@ class PocketEventBus extends TerraformStack {
 
     //'User Registration' event, currently emitted by web-repo
     new UserRegistrationEventRule(this, 'user-registration', pagerDuty);
+
+    // All events that have a detail type in the bus.
+    new AllEventsRule(this, 'all-events', sharedPocketEventBus, pagerDuty);
+
+    //'Forgot Password Request' event, currently emitted by web-repo
+    new ForgotPasswordRequest(this, 'forgot-password', pagerDuty);
 
     new CollectionApiEvents(
       this,

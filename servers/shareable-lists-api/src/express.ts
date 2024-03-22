@@ -14,7 +14,8 @@ import { getPublicContext, IPublicContext } from './public/context';
 import { getAdminContext, IAdminContext } from './admin/context';
 import { startAdminServer } from './admin/server';
 import { startPublicServer } from './public/server';
-import { initSentry, sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
+import { sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
+import { initSentry } from '@pocket-tools/sentry';
 import { getRedis } from './cache';
 
 /**

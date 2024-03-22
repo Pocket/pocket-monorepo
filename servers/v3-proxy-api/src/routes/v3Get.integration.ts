@@ -1,22 +1,32 @@
 import request from 'supertest';
-import { app, server } from '../main';
 import * as Sentry from '@sentry/node';
 import * as GraphQLCalls from '../graph/graphQLClient';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { setTimeout } from 'timers/promises';
-import { mockGraphGetComplete, mockGraphGetSimple } from '../test/fixtures';
+import {
+  mockGraphGetComplete,
+  mockGraphGetSimple,
+  freeTierSearchGraphComplete,
+  freeTierSearchGraphSimple,
+} from '../test/fixtures';
 import { ClientError } from 'graphql-request';
 import { GraphQLError } from 'graphql-request/build/esm/types';
+import { startServer } from '../server';
+import { Server } from 'http';
+import { Application } from 'express';
 
 describe('v3Get', () => {
+  let app: Application;
+  let server: Server;
   const expectedHeaders = {
     'X-Error-Code': '198',
     'X-Error': 'Internal Server Error',
+    'X-Source': 'Pocket',
   };
+  beforeAll(async () => {
+    ({ app, server } = await startServer(0));
+  });
   afterAll(async () => {
     server.close();
-    // Make sure it closes
-    await setTimeout(100);
   });
   afterEach(() => {
     jest.restoreAllMocks();
@@ -38,6 +48,7 @@ describe('v3Get', () => {
       expect(response.headers['x-error-code']).toBe(
         expectedHeaders['X-Error-Code'],
       );
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
       expect(response.body).toEqual({
         error: 'test error',
       });
@@ -60,6 +71,7 @@ describe('v3Get', () => {
       expect(response.headers['x-error-code']).toBe(
         expectedHeaders['X-Error-Code'],
       );
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
       expect(response.body).toEqual({
         error: 'test error',
       });
@@ -83,6 +95,7 @@ describe('v3Get', () => {
       expect(response.headers['x-error-code']).toBe(
         expectedHeaders['X-Error-Code'],
       );
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
       expect(response.body).toEqual({
         error: 'test error',
       });
@@ -107,12 +120,44 @@ describe('v3Get', () => {
       expect(response.headers['x-error-code']).toBe(
         expectedHeaders['X-Error-Code'],
       );
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
       expect(response.body).toEqual({
         error: 'test error',
       });
     });
   });
-  describe('Ggraphql error handler', () => {
+  describe('search', () => {
+    it('calls search api if search term is included (simple)', async () => {
+      const searchApi = jest
+        .spyOn(GraphQLCalls, 'callSearchByOffsetSimple')
+        .mockImplementation(() => Promise.resolve(freeTierSearchGraphSimple));
+      const response = await request(app).get('/v3/get').query({
+        consumer_key: 'test',
+        access_token: 'test',
+        search: 'abc',
+        sort: 'relevance',
+        detailType: 'simple',
+      });
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+      expect(searchApi).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls search api if search term is included (complete)', async () => {
+      const searchApi = jest
+        .spyOn(GraphQLCalls, 'callSearchByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(freeTierSearchGraphComplete));
+      const response = await request(app).get('/v3/get').query({
+        consumer_key: 'test',
+        access_token: 'test',
+        search: 'abc',
+        sort: 'relevance',
+        detailType: 'complete',
+      });
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+      expect(searchApi).toHaveBeenCalledTimes(1);
+    });
+  });
+  describe('Graphql error handler', () => {
     it('Returns 400 status code, with logging and sentry, for bad input errors', async () => {
       const consoleSpy = jest.spyOn(serverLogger, 'error');
       const sentrySpy = jest.spyOn(Sentry, 'captureException');
@@ -138,12 +183,13 @@ describe('v3Get', () => {
 
       const response = await request(app).get('/v3/get').query({
         consumer_key: 'test',
-        access_key: 'test',
+        access_token: 'test',
       });
       expect(response.status).toEqual(400);
       expect(response.body).toEqual({
         error: "invalid type for variable: 'pagination'",
       });
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
       expect(consoleSpy).toHaveBeenCalledTimes(1);
       expect(sentrySpy).toHaveBeenCalledTimes(1);
     });
@@ -185,8 +231,9 @@ describe('v3Get', () => {
 
         const response = await request(app).get('/v3/get').query({
           consumer_key: 'test',
-          access_key: 'test',
+          access_token: 'test',
         });
+        expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
         expect(response.status).toEqual(errData.status);
         expect(response.body).toEqual(expected);
         expect(consoleSpy).not.toHaveBeenCalled();
@@ -224,9 +271,23 @@ describe('v3Get', () => {
         detailType: 'unknown',
         count: '10',
       });
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
       expect(response.status).toBe(400);
       expect(consoleSpy).not.toHaveBeenCalled();
       expect(sentrySpy).not.toHaveBeenCalled();
+    });
+    it('should convert since string to numeric', async () => {
+      const apiSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).get('/v3/get').query({
+        consumer_key: 'test',
+        access_token: 'test',
+        since: '123123',
+        detailType: 'complete',
+      });
+      expect(apiSpy.mock.lastCall[3].filter.updatedSince).toEqual(123123);
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
     it.each([
       { consumer_key: 'test', access_token: 'test', detailType: 'complete' },
@@ -247,6 +308,7 @@ describe('v3Get', () => {
         .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
         .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
       const response = await request(app).post('/v3/get').send(params);
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
       expect(callSpy).toHaveBeenCalledTimes(1);
       expect(response.status).toBe(200);
     });
@@ -288,6 +350,7 @@ describe('v3Get', () => {
         const response = await request(app).get('/v3/get').query(query);
         expect(callSpy).not.toHaveBeenCalled();
         expect(response.status).toBe(400);
+        expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
       },
     );
     it.each([
@@ -344,12 +407,89 @@ describe('v3Get', () => {
       jest
         .spyOn(GraphQLCalls, 'callSavedItemsByOffsetSimple')
         .mockImplementation(() => Promise.resolve(mockGraphGetSimple));
+      jest
+        .spyOn(GraphQLCalls, 'callSearchByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(freeTierSearchGraphComplete));
+      jest
+        .spyOn(GraphQLCalls, 'callSearchByOffsetSimple')
+        .mockImplementation(() => Promise.resolve(freeTierSearchGraphSimple));
       const response = await request(app).get('/v3/get').query(params);
       if (hasTotal) {
         expect(response.body).toHaveProperty('total');
       } else {
         expect(response.body).not.toHaveProperty('total');
       }
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+    });
+    it('relevance sort is not allowed sort for non-search', async () => {
+      const callSpy = jest.spyOn(
+        GraphQLCalls,
+        'callSavedItemsByOffsetComplete',
+      );
+      const response = await request(app).get('/v3/get').query({
+        consumer_key: 'test',
+        access_token: 'test',
+        sort: 'relevance',
+        detailType: 'complete',
+      });
+      expect(callSpy).not.toHaveBeenCalled();
+      expect(response.status).toBe(400);
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+    });
+    it('relevance sort is not allowed sort for invalid search term', async () => {
+      const callSpy = jest.spyOn(
+        GraphQLCalls,
+        'callSavedItemsByOffsetComplete',
+      );
+      const response = await request(app).get('/v3/get').query({
+        consumer_key: 'test',
+        access_token: 'test',
+        sort: 'relevance',
+        search: '',
+        detailType: 'complete',
+      });
+      expect(callSpy).not.toHaveBeenCalled();
+      expect(response.status).toBe(400);
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+    });
+    it('relevance is a valid input for search term', async () => {
+      jest
+        .spyOn(GraphQLCalls, 'callSearchByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(freeTierSearchGraphComplete));
+      const response = await request(app).get('/v3/get').query({
+        consumer_key: 'test',
+        access_token: 'test',
+        search: 'abc',
+        sort: 'relevance',
+        detailType: 'complete',
+      });
+      expect(response.status).toBe(200);
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+    });
+    it('defaults to relevance sort for search', async () => {
+      const apiSpy = jest
+        .spyOn(GraphQLCalls, 'callSearchByOffsetSimple')
+        .mockImplementation(() => Promise.resolve(freeTierSearchGraphSimple));
+      const response = await request(app).get('/v3/get').query({
+        consumer_key: 'test',
+        access_token: 'test',
+        search: 'abc',
+      });
+      expect(apiSpy.mock.lastCall[3].sort.sortBy).toEqual('RELEVANCE');
+      expect(apiSpy.mock.lastCall[3].sort.sortOrder).toEqual('DESC');
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+    });
+    it('defaults to newest sort for non-search', async () => {
+      const apiSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetSimple')
+        .mockImplementation(() => Promise.resolve(mockGraphGetSimple));
+      const response = await request(app).get('/v3/get').query({
+        consumer_key: 'test',
+        access_token: 'test',
+      });
+      expect(apiSpy.mock.lastCall[3].sort.sortBy).toEqual('CREATED_AT');
+      expect(apiSpy.mock.lastCall[3].sort.sortOrder).toEqual('DESC');
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
   });
 });

@@ -1,12 +1,18 @@
-import { CodedeployApp } from '@cdktf/provider-aws/lib/codedeploy-app';
-import { CodedeployDeploymentGroup } from '@cdktf/provider-aws/lib/codedeploy-deployment-group';
-import { CodestarnotificationsNotificationRule } from '@cdktf/provider-aws/lib/codestarnotifications-notification-rule';
-import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
-import { DataAwsIamPolicyDocument } from '@cdktf/provider-aws/lib/data-aws-iam-policy-document';
-import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
-import { IamRole } from '@cdktf/provider-aws/lib/iam-role';
-import { IamRolePolicyAttachment } from '@cdktf/provider-aws/lib/iam-role-policy-attachment';
-import { TerraformMetaArguments, TerraformResource } from 'cdktf';
+import {
+  iamRole,
+  iamRolePolicyAttachment,
+  dataAwsIamPolicyDocument,
+  dataAwsRegion,
+  dataAwsCallerIdentity,
+  codestarnotificationsNotificationRule,
+  codedeployApp,
+  codedeployDeploymentGroup,
+} from '@cdktf/provider-aws';
+import {
+  TerraformMetaArguments,
+  TerraformOutput,
+  TerraformResource,
+} from 'cdktf';
 import { Construct } from 'constructs';
 
 export interface ApplicationECSAlbCodeDeployProps
@@ -28,8 +34,8 @@ export interface ApplicationECSAlbCodeDeployProps
 }
 
 interface CodeDeployResponse {
-  codeDeployApp: CodedeployApp;
-  ecsCodeDeployRole: IamRole;
+  codeDeployApp: codedeployApp.CodedeployApp;
+  ecsCodeDeployRole: iamRole.IamRole;
 }
 
 /**
@@ -38,8 +44,8 @@ interface CodeDeployResponse {
 export class ApplicationECSAlbCodeDeploy extends Construct {
   private readonly config: ApplicationECSAlbCodeDeployProps;
 
-  public readonly codeDeployApp: CodedeployApp;
-  public readonly codeDeployDeploymentGroup: CodedeployDeploymentGroup;
+  public readonly codeDeployApp: codedeployApp.CodedeployApp;
+  public readonly codeDeployDeploymentGroup: codedeployDeploymentGroup.CodedeployDeploymentGroup;
 
   constructor(
     scope: Construct,
@@ -53,49 +59,62 @@ export class ApplicationECSAlbCodeDeploy extends Construct {
     const { codeDeployApp, ecsCodeDeployRole } = this.setupCodeDeployApp();
     this.codeDeployApp = codeDeployApp;
 
-    this.codeDeployDeploymentGroup = new CodedeployDeploymentGroup(
-      this,
-      `ecs_codedeploy_deployment_group`,
-      {
-        dependsOn: config.dependsOn,
-        appName: codeDeployApp.name,
-        deploymentConfigName: 'CodeDeployDefault.ECSAllAtOnce',
-        deploymentGroupName: `${this.config.prefix}-ECS`,
-        serviceRoleArn: ecsCodeDeployRole.arn,
-        autoRollbackConfiguration: {
-          enabled: true,
-          events: ['DEPLOYMENT_FAILURE'],
-        },
-        blueGreenDeploymentConfig: {
-          deploymentReadyOption: {
-            actionOnTimeout: 'CONTINUE_DEPLOYMENT',
+    this.codeDeployDeploymentGroup =
+      new codedeployDeploymentGroup.CodedeployDeploymentGroup(
+        this,
+        `ecs_codedeploy_deployment_group`,
+        {
+          dependsOn: config.dependsOn,
+          appName: codeDeployApp.name,
+          deploymentConfigName: 'CodeDeployDefault.ECSAllAtOnce',
+          deploymentGroupName: `${this.config.prefix}-ECS`,
+          serviceRoleArn: ecsCodeDeployRole.arn,
+          autoRollbackConfiguration: {
+            enabled: true,
+            events: ['DEPLOYMENT_FAILURE'],
           },
-          terminateBlueInstancesOnDeploymentSuccess: {
-            action: 'TERMINATE',
-            terminationWaitTimeInMinutes:
-              (this.config.successTerminationWaitTimeInMinutes ??= 5),
+          blueGreenDeploymentConfig: {
+            deploymentReadyOption: {
+              actionOnTimeout: 'CONTINUE_DEPLOYMENT',
+            },
+            terminateBlueInstancesOnDeploymentSuccess: {
+              action: 'TERMINATE',
+              terminationWaitTimeInMinutes:
+                (this.config.successTerminationWaitTimeInMinutes ??= 5),
+            },
           },
-        },
-        deploymentStyle: {
-          deploymentOption: 'WITH_TRAFFIC_CONTROL',
-          deploymentType: 'BLUE_GREEN',
-        },
-        ecsService: {
-          clusterName: this.config.clusterName,
-          serviceName: this.config.serviceName,
-        },
-        loadBalancerInfo: {
-          targetGroupPairInfo: {
-            prodTrafficRoute: { listenerArns: [this.config.listenerArn] },
-            targetGroup: this.config.targetGroupNames.map((name) => {
-              return { name };
-            }),
+          deploymentStyle: {
+            deploymentOption: 'WITH_TRAFFIC_CONTROL',
+            deploymentType: 'BLUE_GREEN',
           },
+          ecsService: {
+            clusterName: this.config.clusterName,
+            serviceName: this.config.serviceName,
+          },
+          loadBalancerInfo: {
+            targetGroupPairInfo: {
+              prodTrafficRoute: { listenerArns: [this.config.listenerArn] },
+              targetGroup: this.config.targetGroupNames.map((name) => {
+                return { name };
+              }),
+            },
+          },
+          tags: this.config.tags,
+          provider: this.config.provider,
         },
-        tags: this.config.tags,
-        provider: this.config.provider,
-      },
-    );
+      );
+
+    new TerraformOutput(this, 'ecs-codedeploy-app', {
+      description: 'ECS Code Deploy App',
+      value: this.codeDeployApp.name,
+      staticId: true,
+    });
+
+    new TerraformOutput(this, 'ecs-codedeploy-group', {
+      description: 'ECS Code Deploy Group',
+      value: this.codeDeployDeploymentGroup.deploymentGroupName,
+      staticId: true,
+    });
   }
 
   /**
@@ -133,52 +152,68 @@ export class ApplicationECSAlbCodeDeploy extends Construct {
    * @private
    */
   private setupCodeDeployApp(): CodeDeployResponse {
-    const ecsCodeDeployRole = new IamRole(this, 'ecs_code_deploy_role', {
-      name: `${this.config.prefix}-ECSCodeDeployRole`,
-      assumeRolePolicy: new DataAwsIamPolicyDocument(
-        this,
-        `codedeploy_assume_role`,
-        {
-          statement: [
-            {
-              effect: 'Allow',
-              actions: ['sts:AssumeRole'],
-              principals: [
-                {
-                  identifiers: ['codedeploy.amazonaws.com'],
-                  type: 'Service',
-                },
-              ],
-            },
-          ],
-        },
-      ).json,
-      tags: this.config.tags,
-      provider: this.config.provider,
-    });
+    const ecsCodeDeployRole = new iamRole.IamRole(
+      this,
+      'ecs_code_deploy_role',
+      {
+        name: `${this.config.prefix}-ECSCodeDeployRole`,
+        assumeRolePolicy: new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
+          this,
+          `codedeploy_assume_role`,
+          {
+            statement: [
+              {
+                effect: 'Allow',
+                actions: ['sts:AssumeRole'],
+                principals: [
+                  {
+                    identifiers: ['codedeploy.amazonaws.com'],
+                    type: 'Service',
+                  },
+                ],
+              },
+            ],
+          },
+        ).json,
+        tags: this.config.tags,
+        provider: this.config.provider,
+      },
+    );
 
-    new IamRolePolicyAttachment(this, 'ecs_codedeploy_role_attachment', {
-      policyArn: 'arn:aws:iam::aws:policy/AWSCodeDeployRoleForECS',
-      role: ecsCodeDeployRole.name,
-      dependsOn: [ecsCodeDeployRole],
-      provider: this.config.provider,
-    });
+    new iamRolePolicyAttachment.IamRolePolicyAttachment(
+      this,
+      'ecs_codedeploy_role_attachment',
+      {
+        policyArn: 'arn:aws:iam::aws:policy/AWSCodeDeployRoleForECS',
+        role: ecsCodeDeployRole.name,
+        dependsOn: [ecsCodeDeployRole],
+        provider: this.config.provider,
+      },
+    );
 
-    const codeDeployApp = new CodedeployApp(this, 'ecs_code_deploy', {
-      computePlatform: 'ECS',
-      name: `${this.config.prefix}-ECS`,
-      tags: this.config.tags,
-      provider: this.config.provider,
-    });
+    const codeDeployApp = new codedeployApp.CodedeployApp(
+      this,
+      'ecs_code_deploy',
+      {
+        computePlatform: 'ECS',
+        name: `${this.config.prefix}-ECS`,
+        tags: this.config.tags,
+        provider: this.config.provider,
+      },
+    );
 
     if (this.config.snsNotificationTopicArn) {
-      const region = new DataAwsRegion(this, 'current_region', {
+      const region = new dataAwsRegion.DataAwsRegion(this, 'current_region', {
         provider: this.config.provider,
       });
-      const account = new DataAwsCallerIdentity(this, 'current_account', {
-        provider: this.config.provider,
-      });
-      new CodestarnotificationsNotificationRule(
+      const account = new dataAwsCallerIdentity.DataAwsCallerIdentity(
+        this,
+        'current_account',
+        {
+          provider: this.config.provider,
+        },
+      );
+      new codestarnotificationsNotificationRule.CodestarnotificationsNotificationRule(
         this,
         `ecs_codedeploy_notifications`,
         {

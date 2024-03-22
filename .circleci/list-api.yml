@@ -85,8 +85,6 @@ workflows:
           for: list_api
           name: list-api_code_deploy_ecs_dev
           resource-class: pocket/default-dev
-          codedeploy-app-name: ListAPI-Dev-ECS
-          codedeploy-group-name: ListAPI-Dev-ECS
           requires:
             - list-api_build_docker_dev
 
@@ -151,8 +149,6 @@ workflows:
           for: list_api
           name: list-api_code_deploy_ecs_prod
           resource-class: pocket/default-prod
-          codedeploy-app-name: ListAPI-Prod-ECS
-          codedeploy-group-name: ListAPI-Prod-ECS
           requires:
             - list-api_build_docker_prod
 

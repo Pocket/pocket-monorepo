@@ -7,14 +7,14 @@ import {
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
 import { getEnvVariableValues } from './utilities';
-import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
+import { sqsQueue } from '@cdktf/provider-aws';
 
 export class SqsLambda extends Construct {
   constructor(
     scope: Construct,
     private name: string,
     private vpc: PocketVPC,
-    private sqsQueue: SqsQueue,
+    private sqsQueue: sqsQueue.SqsQueue,
     pagerDuty?: PocketPagerDuty,
   ) {
     super(scope, name);

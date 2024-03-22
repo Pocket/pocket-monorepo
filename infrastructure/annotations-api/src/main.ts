@@ -5,16 +5,19 @@ import {
   S3Backend,
   TerraformStack,
 } from 'cdktf';
-import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
-import { SqsQueue } from '@cdktf/provider-aws/lib/sqs-queue';
-import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
-import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/data-aws-kms-alias';
-import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
-import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
-import { LocalProvider } from '@cdktf/provider-local/lib/provider';
-import { NullProvider } from '@cdktf/provider-null/lib/provider';
-import { ArchiveProvider } from '@cdktf/provider-archive/lib/provider';
-import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
+import {
+  provider as awsProvider,
+  sqsQueue,
+  dataAwsCallerIdentity,
+  dataAwsKmsAlias,
+  dataAwsRegion,
+  dataAwsSnsTopic,
+  cloudwatchLogGroup
+} from '@cdktf/provider-aws';
+import { provider as localProvider } from '@cdktf/provider-local';
+import { provider as nullProvider } from '@cdktf/provider-null';
+import { provider as archiveProvider } from '@cdktf/provider-archive';
+import { provider as pagerdutyProvider } from '@cdktf/provider-pagerduty';
 import { config } from './config';
 import {
   ApplicationSQSQueue,
@@ -26,17 +29,18 @@ import {
 } from '@pocket-tools/terraform-modules';
 import { DynamoDB } from './dynamodb';
 import { SqsLambda } from './SqsLambda';
-import { CloudwatchLogGroup } from '@cdktf/provider-aws/lib/cloudwatch-log-group';
 
 class AnnotationsAPI extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
-    new AwsProvider(this, 'aws', { region: 'us-east-1' });
-    new PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
-    new LocalProvider(this, 'local_provider');
-    new NullProvider(this, 'null_provider');
-    new ArchiveProvider(this, 'archive-provider');
+    new awsProvider.AwsProvider(this, 'aws', { region: 'us-east-1' });
+    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
+      token: undefined,
+    });
+    new localProvider.LocalProvider(this, 'local_provider');
+    new nullProvider.NullProvider(this, 'null_provider');
+    new archiveProvider.ArchiveProvider(this, 'archive-provider');
 
     new S3Backend(this, {
       bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
@@ -45,8 +49,11 @@ class AnnotationsAPI extends TerraformStack {
       region: 'us-east-1',
     });
 
-    const region = new DataAwsRegion(this, 'region');
-    const caller = new DataAwsCallerIdentity(this, 'caller');
+    const region = new dataAwsRegion.DataAwsRegion(this, 'region');
+    const caller = new dataAwsCallerIdentity.DataAwsCallerIdentity(
+      this,
+      'caller',
+    );
     const pocketVPC = new PocketVPC(this, 'pocket-vpc');
     const dynamodb = new DynamoDB(this, 'dynamodb');
 
@@ -68,7 +75,7 @@ class AnnotationsAPI extends TerraformStack {
         snsTopicArn: `arn:aws:sns:${pocketVPC.region}:${pocketVPC.accountId}:${config.lambda.snsTopicName.userEvents}`,
         sqsQueue: lambda.sqsQueueResource,
         tags: config.tags,
-        dependsOn: [lambda.sqsQueueResource as SqsQueue],
+        dependsOn: [lambda.sqsQueueResource as sqsQueue.SqsQueue],
       },
     );
 
@@ -125,7 +132,7 @@ class AnnotationsAPI extends TerraformStack {
    * @private
    */
   private getCodeDeploySnsTopic() {
-    return new DataAwsSnsTopic(this, 'backend_notifications', {
+    return new dataAwsSnsTopic.DataAwsSnsTopic(this, 'backend_notifications', {
       name: `Backend-${config.environment}-ChatBot`,
     });
   }
@@ -135,7 +142,7 @@ class AnnotationsAPI extends TerraformStack {
    * @private
    */
   private getSecretsManagerKmsAlias() {
-    return new DataAwsKmsAlias(this, 'kms_alias', {
+    return new dataAwsKmsAlias.DataAwsKmsAlias(this, 'kms_alias', {
       name: 'alias/aws/secretsmanager',
     });
   }
@@ -177,10 +184,10 @@ class AnnotationsAPI extends TerraformStack {
 
   private createPocketAlbApplication(dependencies: {
     pagerDuty: PocketPagerDuty;
-    region: DataAwsRegion;
-    caller: DataAwsCallerIdentity;
-    secretsManagerKmsAlias: DataAwsKmsAlias;
-    snsTopic: DataAwsSnsTopic;
+    region: dataAwsRegion.DataAwsRegion;
+    caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
+    secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
+    snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
     dynamodb: DynamoDB;
   }): PocketALBApplication {
     const { region, caller, secretsManagerKmsAlias, snsTopic, dynamodb } =
@@ -201,7 +208,6 @@ class AnnotationsAPI extends TerraformStack {
       containerConfigs: [
         {
           name: 'app',
-          imageSha: config.releaseSha,
           portMappings: [
             {
               hostPort: config.port,
@@ -313,6 +319,7 @@ class AnnotationsAPI extends TerraformStack {
         useCodePipeline: false,
         useTerraformBasedCodeDeploy: false,
         snsNotificationTopicArn: snsTopic.arn,
+        generateAppSpec: false,
         notifications: {
           //only notify on failed deploys
           notifyOnFailed: true,
@@ -425,7 +432,7 @@ class AnnotationsAPI extends TerraformStack {
    * @private
    */
   private createCustomLogGroup(containerName: string) {
-    const logGroup = new CloudwatchLogGroup(
+    const logGroup = new cloudwatchLogGroup.CloudwatchLogGroup(
       this,
       `${containerName}-log-group`,
       {

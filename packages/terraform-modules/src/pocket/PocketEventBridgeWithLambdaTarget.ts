@@ -1,15 +1,15 @@
-import { LambdaPermission } from '@cdktf/provider-aws/lib/lambda-permission';
+import { lambdaPermission } from '@cdktf/provider-aws';
 import { Construct } from 'constructs';
 import {
   ApplicationEventBridgeRule,
   ApplicationEventBridgeRuleProps,
   Target,
-} from '../base/ApplicationEventBridgeRule';
-import { ApplicationVersionedLambda } from '../base/ApplicationVersionedLambda';
+} from '../base/ApplicationEventBridgeRule.js';
+import { ApplicationVersionedLambda } from '../base/ApplicationVersionedLambda.js';
 import {
   PocketVersionedLambda,
   PocketVersionedLambdaProps,
-} from './PocketVersionedLambda';
+} from './PocketVersionedLambda.js';
 
 export interface PocketEventBridgeWithLambdaTargetProps
   extends PocketVersionedLambdaProps {
@@ -45,7 +45,7 @@ export class PocketEventBridgeWithLambdaTarget extends PocketVersionedLambda {
     eventBridgeRule: ApplicationEventBridgeRule,
   ): void {
     targetLambdas.forEach((lambda) => {
-      new LambdaPermission(this, 'lambda-permission', {
+      new lambdaPermission.LambdaPermission(this, 'lambda-permission', {
         action: 'lambda:InvokeFunction',
         functionName: lambda.versionedLambda.functionName,
         qualifier: lambda.versionedLambda.name,

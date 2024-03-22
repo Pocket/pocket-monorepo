@@ -14,27 +14,31 @@ import {
 } from '@pocket-tools/terraform-modules';
 import * as fs from 'fs';
 
-import { AwsProvider } from '@cdktf/provider-aws/lib/provider';
-import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
-import { DataAwsCallerIdentity } from '@cdktf/provider-aws/lib/data-aws-caller-identity';
-import { CloudwatchLogGroup } from '@cdktf/provider-aws/lib/cloudwatch-log-group';
-import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/data-aws-kms-alias';
-import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/data-aws-sns-topic';
-import { DataAwsSubnets } from '@cdktf/provider-aws/lib/data-aws-subnets';
-import { PagerdutyProvider } from '@cdktf/provider-pagerduty/lib/provider';
-import { NullProvider } from '@cdktf/provider-null/lib/provider';
-import { LocalProvider } from '@cdktf/provider-local/lib/provider';
-import { ArchiveProvider } from '@cdktf/provider-archive/lib/provider';
+import {
+  provider as awsProvider,
+  dataAwsRegion,
+  dataAwsCallerIdentity,
+  dataAwsKmsAlias,
+  cloudwatchLogGroup,
+  dataAwsSnsTopic,
+  dataAwsSubnets,
+} from '@cdktf/provider-aws';
+import { provider as pagerdutyProvider } from '@cdktf/provider-pagerduty';
+import { provider as nullProvider } from '@cdktf/provider-null';
+import { provider as localProvider } from '@cdktf/provider-local';
+import { provider as archiveProvider } from '@cdktf/provider-archive';
 
 class ImageAPI extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
-    new AwsProvider(this, 'aws', { region: 'us-east-1' });
-    new PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
-    new NullProvider(this, 'null-provider');
-    new LocalProvider(this, 'local-provider');
-    new ArchiveProvider(this, 'archive-provider');
+    new awsProvider.AwsProvider(this, 'aws', { region: 'us-east-1' });
+    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
+      token: undefined,
+    });
+    new nullProvider.NullProvider(this, 'null-provider');
+    new localProvider.LocalProvider(this, 'local-provider');
+    new archiveProvider.ArchiveProvider(this, 'archive-provider');
 
     new S3Backend(this, {
       bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
@@ -44,8 +48,11 @@ class ImageAPI extends TerraformStack {
     });
 
     const pocketVPC = new PocketVPC(this, 'pocket-vpc');
-    const region = new DataAwsRegion(this, 'region');
-    const caller = new DataAwsCallerIdentity(this, 'caller');
+    const region = new dataAwsRegion.DataAwsRegion(this, 'region');
+    const caller = new dataAwsCallerIdentity.DataAwsCallerIdentity(
+      this,
+      'caller',
+    );
 
     const { primaryEndpoint, readerEndpoint } = this.createElasticache(
       this,
@@ -68,7 +75,7 @@ class ImageAPI extends TerraformStack {
    * @private
    */
   private getCodeDeploySnsTopic() {
-    return new DataAwsSnsTopic(this, 'backend_notifications', {
+    return new dataAwsSnsTopic.DataAwsSnsTopic(this, 'backend_notifications', {
       name: `Backend-${config.environment}-ChatBot`,
     });
   }
@@ -78,7 +85,7 @@ class ImageAPI extends TerraformStack {
    * @private
    */
   private getSecretsManagerKmsAlias() {
-    return new DataAwsKmsAlias(this, 'kms_alias', {
+    return new dataAwsKmsAlias.DataAwsKmsAlias(this, 'kms_alias', {
       name: 'alias/aws/secretsmanager',
     });
   }
@@ -119,10 +126,10 @@ class ImageAPI extends TerraformStack {
 
   private createPocketAlbApplication(dependencies: {
     pagerDuty: PocketPagerDuty;
-    region: DataAwsRegion;
-    caller: DataAwsCallerIdentity;
-    secretsManagerKmsAlias: DataAwsKmsAlias;
-    snsTopic: DataAwsSnsTopic;
+    region: dataAwsRegion.DataAwsRegion;
+    caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
+    secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
+    snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
     primaryEndpoint: string;
     readerEndpoint: string;
   }): PocketALBApplication {
@@ -156,7 +163,6 @@ class ImageAPI extends TerraformStack {
       containerConfigs: [
         {
           name: 'app',
-          imageSha: config.releaseSha,
           portMappings: [
             {
               hostPort: config.appPort,
@@ -242,6 +248,7 @@ class ImageAPI extends TerraformStack {
         useCodeDeploy: true,
         useCodePipeline: false,
         useTerraformBasedCodeDeploy: false,
+        generateAppSpec: false,
         notifications: {
           notifyOnFailed: true,
           notifyOnStarted: false,
@@ -324,7 +331,7 @@ class ImageAPI extends TerraformStack {
     readerEndpoint: string;
   } {
     // Serverless elasticache doesn't support the `e` availablity zone in us-east-1... so we need to filter it out..
-    const privateSubnets = new DataAwsSubnets(
+    const privateSubnets = new dataAwsSubnets.DataAwsSubnets(
       this,
       `cache_private_subnet_ids`,
       {
@@ -370,7 +377,7 @@ class ImageAPI extends TerraformStack {
    * @private
    */
   private createCustomLogGroup(containerName: string) {
-    const logGroup = new CloudwatchLogGroup(
+    const logGroup = new cloudwatchLogGroup.CloudwatchLogGroup(
       this,
       `${containerName}-log-group`,
       {

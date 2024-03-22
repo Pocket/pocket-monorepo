@@ -1,3 +1,5 @@
+import { AddSavedItemCompleteMutation } from '../generated/graphql/types';
+
 /**
  * Reusable types intended for use throughout the process go here.
  */
@@ -17,28 +19,183 @@ export type ToStringParams<T> = {
   [Property in keyof T]: string;
 };
 
-export type RestResponseSimple = {
-  //todo: add top level fields and sortId
-  //e.g status, complete - as they are not mapped by developer portal docs
-  list: { [key: string]: ListItemObject };
-  cacheType: string;
-};
-export type RestResponseComplete = {
+export type GetResponseSimple = {
   //todo: add top level fields
   //e.g status, complete - as they are not mapped by developer portal docs
-  // note that complete returns 1 for detailType=simple and
-  // detailType=complete when querying v3 API directly
-  list: { [key: string]: ListItemObjectComplete };
-  cacheType: string;
+  list: { [key: string]: ListItemObject };
+} & GetStaticResponse &
+  GetTopLevelDefaultResponse;
+
+export type SearchMeta = {
+  search_meta: {
+    // Technicaly the free tier search does not include
+    // these fields, but I don't see any issue being additive
+    // since the data are available regardless
+    total_result_count: number;
+    count: number;
+    offset: number;
+    has_more: boolean;
+  };
 };
-export type RestResponseSimpleTotal = RestResponseSimple & { total: string };
-export type RestResponseCompleteTotal = RestResponseComplete & {
+
+export type SearchHighlights = {
+  highlights: {
+    fullText: string | null;
+    tags: string | null;
+    title: string | null;
+    url: string | null;
+  } | null;
+};
+
+export type ListItemWithSearchHighlights = ListItemObject & SearchHighlights;
+export type ListItemCompleteWithSearchHighlights = ListItemObjectComplete &
+  SearchHighlights;
+
+export type GetSearchResponseSimple = Omit<GetResponseSimple, 'list'> &
+  SearchMeta & {
+    list: { [key: string]: ListItemWithSearchHighlights } | never[];
+  };
+export type GetSearchResponseComplete = Omit<GetResponseComplete, 'list'> &
+  SearchMeta & {
+    list: { [key: string]: ListItemCompleteWithSearchHighlights } | never[];
+  };
+export type GetSearchResponseSimpleTotal = GetSearchResponseSimple & {
   total: string;
+};
+export type GetSearchResponseCompleteTotal = GetSearchResponseComplete & {
+  total: string;
+};
+
+/**
+ * Represents a static response that we still need to return from Get with static
+ */
+export type GetStaticResponse = {
+  // Always return 30.
+  maxActions: number;
+  cachetype: string;
+};
+
+/**
+ * Represents a static response that we still need to return from Get with empty values when a client requests `shares=1`
+ */
+export type GetSharesResponse = {
+  // empty data fields that used to have a use, but now are empty and Android will crash without.
+  recent_friends: [];
+  auto_complete_emails: [];
+  unconfirmed_shares: [];
+};
+
+/**
+ * Represents a set of fields that are always included in /v3/get responses
+ */
+export type GetTopLevelDefaultResponse = {
+  complete: number; // 0 if preg_match('/^[0-9]*$/', $since) && $since > 0, else 1
+  status: number; // 1 if no error & list > 0, 2 if no error & list == 0, 0 if error
+  since: number; // unix timestamp of the last updated at in the response of items
+  error: number; // maps to pocket error codes or null if no error
+};
+
+export type GetResponseComplete = {
+  // search_meta: { search_type: 'normal' };
+  list: { [key: string]: ListItemObjectComplete };
+} & GetStaticResponse &
+  GetTopLevelDefaultResponse;
+
+export type GetResponseSimpleTotal = GetResponseSimple & { total: string };
+export type GetResponseCompleteTotal = GetResponseComplete & {
+  total: string;
+};
+
+export type PassthroughResponse = {
+  firstChunkSize: string; // the count of the amount we just asked for
+  fetchChunkSize: string; // the count of how many the client should ask for next.
+  chunk: string;
+};
+
+export type FetchResponse = {
+  list: { [key: string]: ListItemObjectComplete };
+  passthrough: PassthroughResponse;
+} & GetResponseCompleteTotal;
+
+// The response type for an 'add' action which is pending
+// Separating because unless it's pending, some of these values
+// cannot be null but instead default to empty strings or other
+// default vaules (see AddResponse)
+export type PendingAddResponse = {
+  item: {
+    item_id: string;
+    normal_url: string;
+    resolved_id: string;
+    resolved_url: null;
+    domain_id: null;
+    origin_domain_id: null;
+    response_code: null;
+    mime_type: null;
+    content_length: null;
+    encoding: null;
+    date_resolved: null;
+    date_published: null;
+    title: null;
+    excerpt: null;
+    word_count: null;
+    innerdomain_redirect: null;
+    login_required: null;
+    has_image: null;
+    has_video: null;
+    is_index: null;
+    is_article: null;
+    used_fallback: null;
+    lang: null;
+    time_first_parsed: null;
+    given_url: string;
+  };
+  status: 1;
+};
+
+export type AddResponse = {
+  // There is some overlap with GetResponse but enough is different to warrant
+  // defining them without composition (the differences aren't along an obvious
+  // domain boundary)
+  item: {
+    item_id: string;
+    normal_url: string;
+    resolved_id: string;
+    resolved_url: string;
+    domain_id: string;
+    origin_domain_id: string;
+    response_code: string;
+    mime_type: string; // MIME_TYPES
+    content_length: string;
+    encoding: string;
+    date_resolved: string; // timestamp string without timezone
+    date_published: string; // not nullable (deafult='0000-00-00 00:00:00')
+    title: string;
+    excerpt: string; // not nullable (deafult='')
+    word_count: string; // stringified int; not nullable (default='0')
+    innerdomain_redirect: '0' | '1';
+    login_required: '0' | '1';
+    has_image: '0' | '1' | '2';
+    has_video: '0' | '1' | '2';
+    is_index: '0' | '1';
+    is_article: '0' | '1';
+    used_fallback: '0' | '1';
+    lang: string; // 2-letter lang code
+    time_first_parsed: string; // epoch time in seconds as string
+    authors: AddAuthorsObject | []; // non-nullable, non-optional (default=[])
+    images: ImagesItemObject | []; // non-nullable, non-optional (default=[])
+    videos: VideosItemObject | []; // non-nullable, non-optional (default=[])
+    top_image_url?: string;
+    resolved_normal_url: string;
+    domain_metadata?: DomainMetadataItemObject;
+    given_url: string;
+  };
+  // what does this mean
+  status: 1;
 };
 
 export type TagsItemObject = {
   [tag: string]: {
-    item_id: string;
+    item_id: string; // item.item_id
     // Same as top-level key
     tag: string;
   };
@@ -58,7 +215,7 @@ export type ImagesItemObject = {
 };
 
 export type BaseImageData = {
-  item_id: string;
+  item_id: string; // item.resolved_id
   src: string;
   // Number as string
   width: string;
@@ -81,7 +238,7 @@ export type VideosItemObject = {
   [videoId: string]: {
     // Same as top-level ID
     video_id: string;
-    item_id: string;
+    item_id: string; // item.resolved_id
     src: string;
     // Number as string
     width: string;
@@ -94,14 +251,20 @@ export type VideosItemObject = {
   };
 };
 
+export type AddAuthorsObject = {
+  [authorId: string]: Omit<AuthorData, 'item_id'>;
+};
+
+type AuthorData = {
+  item_id: string; // item.resolved_id
+  // Same as top-level key
+  author_id: string;
+  name: string;
+  url: string;
+};
+
 export type AuthorsItemObject = {
-  [authorId: string]: {
-    item_id: string;
-    // Same as top-level key
-    author_id: string;
-    name: string;
-    url: string;
-  };
+  [authorId: string]: AuthorData;
 };
 
 export type DomainMetadataItemObject = {
@@ -129,8 +292,8 @@ export type ListItemObject = {
   excerpt: string;
   is_article: '0' | '1';
   is_index: '0' | '1';
-  has_video: '0' | '1';
-  has_image: '0' | '1';
+  has_video: '0' | '1' | '2';
+  has_image: '0' | '1' | '2';
   word_count: string;
   // Empty if unavailable, 2-letter lang code
   lang: string;
@@ -152,3 +315,6 @@ export type ListItemObjectAdditional = {
   domain_metadata?: DomainMetadataItemObject;
   image?: BaseImageData;
 };
+
+export type SavedItemWithParserMetadata =
+  AddSavedItemCompleteMutation['upsertSavedItem'];

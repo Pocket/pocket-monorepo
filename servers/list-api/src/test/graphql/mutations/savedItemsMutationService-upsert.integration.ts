@@ -8,6 +8,7 @@ import {
   SqsListener,
 } from '../../../businessEvents';
 import {
+  PurgeQueueCommand,
   QueueAttributeName,
   ReceiveMessageCommand,
   ReceiveMessageCommandInput,
@@ -82,8 +83,14 @@ describe('UpsertSavedItem Mutation', () => {
   afterEach(() => eventSpy.mockClear());
 
   beforeEach(async () => {
-    await sqs.purgeQueue({ QueueUrl: config.aws.sqs.publisherQueue.url });
-    await sqs.purgeQueue({ QueueUrl: config.aws.sqs.permLibItemMainQueue.url });
+    await sqs.send(
+      new PurgeQueueCommand({ QueueUrl: config.aws.sqs.publisherQueue.url }),
+    );
+    await sqs.send(
+      new PurgeQueueCommand({
+        QueueUrl: config.aws.sqs.permLibItemMainQueue.url,
+      }),
+    );
     await writeDb('item_tags').truncate();
     await writeDb('list').truncate();
     await writeDb('item_tags').insert([
@@ -427,7 +434,7 @@ describe('UpsertSavedItem Mutation', () => {
         config.aws.sqs.permLibItemMainQueue.url,
       );
       // Should not send for non-premium users
-      expect(permLibQueueData?.Messages).toBeEmpty();
+      expect(permLibQueueData?.Messages).toBeUndefined();
     });
 
     it('should push addItem event to perm lib queue for premium users', async () => {
