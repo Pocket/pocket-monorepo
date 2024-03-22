@@ -12,7 +12,7 @@ import {
   dataAwsKmsAlias,
   dataAwsRegion,
   dataAwsSnsTopic,
-  cloudwatchLogGroup
+  cloudwatchLogGroup,
 } from '@cdktf/provider-aws';
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
