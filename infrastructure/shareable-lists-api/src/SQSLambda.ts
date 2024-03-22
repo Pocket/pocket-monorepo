@@ -37,7 +37,6 @@ export class SQSLambda extends Construct {
         reservedConcurrencyLimit: config.reservedConcurrencyLimit,
         environment: {
           SENTRY_DSN: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/SENTRY_DSN`,
-          RELEASE_SHA: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/SERVICE_HASH`,
           ENVIRONMENT:
             config.environment === 'Prod' ? 'production' : 'development',
           SHAREABLE_LISTS_API_URI:
