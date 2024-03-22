@@ -169,8 +169,6 @@ commands:
             echo 'export SECRET_VALUE="$(aws secretsmanager get-secret-value --secret-id CodeBuild/Default --query SecretString --output text)"' >> "$BASH_ENV"
             echo 'export TERRAFORM_TOKEN="$(echo $SECRET_VALUE | jq -r '.terraform_token')"' >> "$BASH_ENV"
             echo 'export PAGERDUTY_TOKEN="$(echo $SECRET_VALUE | jq -r '.mozilla_pagerduty_token')"' >> "$BASH_ENV"
-            echo 'export GITHUB_ACCESS_TOKEN="$(echo $SECRET_VALUE | jq -r '.github_access_token')"' >> "$BASH_ENV"
-            echo 'export GITHUB_TOKEN="$(echo $SECRET_VALUE | jq -r '.github_access_token')"' >> "$BASH_ENV"
       - run:
           name: Save off terraform token
           command: |
@@ -179,6 +177,64 @@ commands:
             rc="${rc} token=\"$TERRAFORM_TOKEN\" "
             rc="${rc}}"
             echo "$rc" > ~/.terraformrc
+
+  setup_github_bot:
+    steps:
+      - run:
+          name: Get Github Bot Token
+          command: |
+            app_id=$GITHUB_APP_ID
+            pem="$(echo "$GITHUB_APP_PRIVATE_KEY" | base64 -d)"
+            installation_id=$GITHUB_INSTALLATION_APP_ID
+
+            now=$(date +%s)
+            iat=$((${now} - 60)) # Issues 60 seconds in the past
+            exp=$((${now} + 600)) # Expires 15 minutes in the future
+
+            b64enc() { openssl base64 | tr -d '=' | tr '/+' '_-' | tr -d '\n'; }
+
+            header_json='{
+                "typ":"JWT",
+                "alg":"RS256"
+            }'
+            # Header encode
+            header=$( echo -n "${header_json}" | b64enc )
+
+            payload_json='{
+                "iat":'"${iat}"',
+                "exp":'"${exp}"',
+                "iss":'"${app_id}"'
+            }'
+            # Payload encode
+            payload=$( echo -n "${payload_json}" | b64enc )
+
+            # Signature
+            header_payload="${header}"."${payload}"
+            signature=$( 
+                openssl dgst -sha256 -sign <(echo -n "${pem}") \
+                <(echo -n "${header_payload}") | b64enc 
+            )
+
+            # Create JWT
+            JWT="${header_payload}"."${signature}"
+
+            # Make a POST request to GitHub API to get the installation token
+            response=$(curl -s -X POST \
+              -H "Accept: application/vnd.github.v3+json" \
+              -H "Authorization: Bearer $JWT" \
+              -d "{}" \
+              "https://api.github.com/app/installations/$installation_id/access_tokens")
+            echo "Expires at"
+            echo $(echo "$response" | jq -r '.expires_at')
+            echo "Permissions"
+            echo $(echo "$response" | jq -r '.permissions')
+
+            # Extract the token from the response
+            token=$(echo "$response" | jq -r '.token')
+            echo "export GITHUB_TOKEN=$token" >> $BASH_ENV
+            echo "export GH_TOKEN=$token" >> $BASH_ENV
+            echo "export GITHUB_ACCESS_TOKEN=$token" >> $BASH_ENV
+
 
 jobs:
 
@@ -224,6 +280,7 @@ jobs:
             mv tfcmt /home/circleci/tfcmt
             chmod a+x /home/circleci/tfcmt
       - install_codebuild_secrets
+      - setup_github_bot
       - unless:
           # Only compile if we do not use raw hcl
           condition: <<parameters.uses_raw_hcl>>
