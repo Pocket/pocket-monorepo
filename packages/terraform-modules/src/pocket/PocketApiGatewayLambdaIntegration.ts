@@ -84,7 +84,7 @@ export class PocketApiGateway extends Construct {
       route.lambda.lambda.versionedLambda,
     ]);
 
-    // If no triggers are provided, this resource will be redeployed only if soemthing changes to cause it.
+    // If no triggers are provided, this resource will be redeployed only if something changes to cause it.
     const triggers = config.triggers ?? {};
 
     // Deployment before adding permissions, so we can restrict to the stage
