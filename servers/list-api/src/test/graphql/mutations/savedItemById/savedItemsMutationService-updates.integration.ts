@@ -77,7 +77,7 @@ describe('Update Mutation for SavedItem: ', () => {
     `;
     let res: request.Response;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
       eventSpy.mockReset();
       res = await request(app).post(url).set(headers).send({
         query: archiveItemMutation,
@@ -136,7 +136,7 @@ describe('Update Mutation for SavedItem: ', () => {
     `;
     let res: request.Response;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
       eventSpy.mockReset();
       res = await request(app).post(url).set(headers).send({
         query: unArchiveItemMutation,
@@ -194,7 +194,7 @@ describe('Update Mutation for SavedItem: ', () => {
       }
     `;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
       eventSpy.mockReset();
       res = await request(app).post(url).set(headers).send({
         query: savedItemFavoriteMutation,
@@ -251,7 +251,7 @@ describe('Update Mutation for SavedItem: ', () => {
       }
     `;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
       eventSpy.mockReset();
       res = await request(app).post(url).set(headers).send({
         query: savedItemUnFavoriteMutation,
