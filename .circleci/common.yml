@@ -277,9 +277,12 @@ jobs:
           steps:
             - run:
                 name: Terraform apply
+                # Re-add this when tfcmt supports ignoring no change applies
+                # https://github.com/suzuki-shunsuke/tfcmt/issues/1184
+                #  /home/circleci/tfcmt --var target:<< parameters.scope >><<#parameters.dev>>-dev<</parameters.dev>> apply -- terraform apply -auto-approve -lock-timeout=10m
                 command: |
                   cd << parameters.stack-output-path >>
-                  /home/circleci/tfcmt --var target:<< parameters.scope >><<#parameters.dev>>-dev<</parameters.dev>> apply -- terraform apply -auto-approve -lock-timeout=10m
+                  terraform apply -auto-approve -lock-timeout=10m
                   mkdir -p /tmp/workspace
                   echo "$(terraform output -json)" > /tmp/workspace/tf_output.json
             # Persist TF_OUTPUT using workspace
