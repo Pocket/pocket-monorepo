@@ -84,9 +84,8 @@ export class PocketApiGateway extends Construct {
       route.lambda.lambda.versionedLambda,
     ]);
 
-    // Use the current timestamp in milliseconds to trigger a redeployment if no triggers are provided.
-    // If no triggers are provided, this resource will be redeployed on every "terraform apply".
-    const triggers = config.triggers ?? { deployedAt: Date.now().toString() };
+    // If no triggers are provided, this resource will be redeployed only if soemthing changes to cause it.
+    const triggers = config.triggers ?? {};
 
     // Deployment before adding permissions, so we can restrict to the stage
     this.apiGatewayDeployment = new apiGatewayDeployment.ApiGatewayDeployment(
