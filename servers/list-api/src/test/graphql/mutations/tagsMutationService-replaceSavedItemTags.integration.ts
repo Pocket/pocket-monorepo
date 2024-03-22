@@ -120,8 +120,8 @@ describe('tags mutation: replace savedItem tags', () => {
   });
 
   const replaceSavedItemTags = `
-    mutation replaceSavedItemTags($input: [SavedItemTagsInput!]!) {
-      replaceSavedItemTags(input: $input) {
+    mutation replaceSavedItemTags($input: [SavedItemTagsInput!]!, $timestamp: ISOString) {
+      replaceSavedItemTags(input: $input, timestamp: $timestamp) {
         url
         _updatedAt
         tags {
@@ -291,5 +291,27 @@ describe('tags mutation: replace savedItem tags', () => {
       'Tag name must have at least 1 non-whitespace character.',
     );
     expect(res.body.errors[0].extensions?.code).toEqual('BAD_USER_INPUT');
+  });
+  it('should set SavedItem._updatedAt to provided timestamp', async () => {
+    const tagNames = ['🤪😒', '(╯°□°)╯︵ ┻━┻'];
+
+    const variables = {
+      input: [
+        {
+          savedItemId: '1',
+          tags: tagNames,
+        },
+      ],
+      timestamp: '2024-03-21T23:35:14.000Z',
+    };
+
+    const res = await request(app).post(url).set(headers).send({
+      query: replaceSavedItemTags,
+      variables,
+    });
+
+    expect(res).not.toBeUndefined();
+    const data = res.body.data.replaceSavedItemTags;
+    expect(data[0]._updatedAt).toEqual(1711064114);
   });
 });

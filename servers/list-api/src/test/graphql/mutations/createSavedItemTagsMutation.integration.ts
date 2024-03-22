@@ -97,8 +97,8 @@ describe('createSavedItemTags mutation', function () {
   });
 
   const createSavedItemTags = `
-    mutation createSavedItemTags($input: [SavedItemTagsInput!]!) {
-      createSavedItemTags(input: $input) {
+    mutation createSavedItemTags($input: [SavedItemTagsInput!]!, $timestamp: ISOString) {
+      createSavedItemTags(input: $input, timestamp: $timestamp) {
         url
         _updatedAt
         tags {
@@ -213,5 +213,17 @@ describe('createSavedItemTags mutation', function () {
     expect(res.body.errors).toBeUndefined();
     expect(readClientSpy).toHaveBeenCalledTimes(0);
     expect(writeClientSpy).toHaveBeenCalledTimes(1);
+  });
+  it('createSavedItemTags should set SavedItem._updatedAt to provided timestamp', async () => {
+    const variables = {
+      input: [{ savedItemId: '1', tags: ['tofino', 'victoria'] }],
+      timestamp: '2024-03-21T23:35:14.000Z',
+    };
+    const res = await request(app)
+      .post(url)
+      .set(headers)
+      .send({ query: createSavedItemTags, variables });
+    const data = res.body.data.createSavedItemTags;
+    expect(data[0]._updatedAt).toEqual(1711064114);
   });
 });

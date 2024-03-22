@@ -125,8 +125,8 @@ describe('tags mutation update: ', () => {
   `;
 
   const updateSavedItemRemoveTags = `
-    mutation updateSavedItemRemoveTags($savedItemId: ID!) {
-      updateSavedItemRemoveTags(savedItemId: $savedItemId) {
+    mutation updateSavedItemRemoveTags($savedItemId: ID!, $timestamp: ISOString) {
+      updateSavedItemRemoveTags(savedItemId: $savedItemId, timestamp: $timestamp) {
         id
         url
         _createdAt
@@ -302,6 +302,21 @@ describe('tags mutation update: ', () => {
       getUnixTimestamp(updateDate),
     );
     expect(res.body.data.updateSavedItemRemoveTags.tags).toBeEmpty();
+  });
+  it('updateSavedItemRemoveTags: should set SavedItem._updatedAt to provided timestamp', async () => {
+    const variables = {
+      savedItemId: '1',
+      timestamp: '2024-03-21T23:35:14.000Z',
+    };
+
+    const res = await request(app).post(url).set(headers).send({
+      query: updateSavedItemRemoveTags,
+      variables,
+    });
+    expect(res).not.toBeUndefined();
+    expect(res.body.data.updateSavedItemRemoveTags._updatedAt).toEqual(
+      1711064114,
+    );
   });
 
   it('updateSavedItemRemoveTags : should throw not found error if savedItemId doesnt exist', async () => {

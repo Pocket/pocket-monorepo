@@ -140,23 +140,12 @@ describe('Delete/Undelete SavedItem: ', () => {
 
   afterEach(() => jest.clearAllMocks());
 
-  it('should delete a saved item', async () => {
-    await setUpSavedItem(writeDb, date);
-    const itemId = '1';
-
-    const variables = {
-      itemId: itemId,
-    };
-
+  describe('delete', () => {
     const deleteSavedItemMutation = `
-      mutation deleteSavedItem($itemId: ID!) {
-        deleteSavedItem(id: $itemId)
+      mutation deleteSavedItem($itemId: ID!, $timestamp: ISOString) {
+        deleteSavedItem(id: $itemId, timestamp: $timestamp)
       }
     `;
-    const res = await request(app).post(url).set(headers).send({
-      query: deleteSavedItemMutation,
-      variables,
-    });
     const querySavedItem = `
       query getSavedItem($userId: ID!, $itemId: ID!) {
         _entities(representations: { id: $userId, __typename: "User" }) {
@@ -169,79 +158,118 @@ describe('Delete/Undelete SavedItem: ', () => {
         }
       }
     `;
-    const queryVars = {
-      userId: userId,
-      itemId: itemId,
-    };
-    const roundtrip = await request(app).post(url).set(headers).send({
-      query: querySavedItem,
-      variables: queryVars,
+    beforeEach(async () => await setUpSavedItem(writeDb, date));
+    it('should delete a saved item', async () => {
+      const itemId = '1';
+      const variables = {
+        itemId: itemId,
+      };
+      const res = await request(app).post(url).set(headers).send({
+        query: deleteSavedItemMutation,
+        variables,
+      });
+      const roundtrip = await request(app).post(url).set(headers).send({
+        query: querySavedItem,
+        variables: { userId, itemId },
+      });
+      const itemRes = roundtrip.body.data?._entities[0].savedItemById;
+
+      const query = async (tableName) =>
+        await readDb(tableName)
+          .select()
+          .where({ user_id: 1, item_id: 1 })
+          .first();
+
+      expect(res.body.errors).toBeUndefined();
+      expect(res.body.data?.deleteSavedItem).toBe('1');
+      expect(itemRes.status).toBe('DELETED');
+      expect(new Date(itemRes._deletedAt * 1000)).toBeAfterOrEqualTo(
+        updateDate,
+      );
+      expect(await query('item_tags')).toBeUndefined();
+      expect(await query('item_attribution')).toBeUndefined();
+      expect(await query('items_scroll')).toBeUndefined();
+      // Check for delete event
+      expect(eventSpy).toHaveBeenCalledTimes(1);
+      const eventData = eventSpy.mock.calls[0];
+      expect(eventData[0]).toBe(EventType.DELETE_ITEM);
+      expect(eventData[1].id).toBe(1);
     });
-    const itemRes = roundtrip.body.data?._entities[0].savedItemById;
-
-    const query = async (tableName) =>
-      await readDb(tableName)
-        .select()
-        .where({ user_id: 1, item_id: 1 })
-        .first();
-
-    expect(res.body.errors).toBeUndefined();
-    expect(res.body.data?.deleteSavedItem).toBe('1');
-    expect(itemRes.status).toBe('DELETED');
-    expect(new Date(itemRes._deletedAt * 1000)).toBeAfterOrEqualTo(updateDate);
-    expect(await query('item_tags')).toBeUndefined();
-    expect(await query('item_attribution')).toBeUndefined();
-    expect(await query('items_scroll')).toBeUndefined();
-    // Check for delete event
-    expect(eventSpy).toHaveBeenCalledTimes(1);
-    const eventData = eventSpy.mock.calls[0];
-    expect(eventData[0]).toBe(EventType.DELETE_ITEM);
-    expect(eventData[1].id).toBe(1);
+    it('should set _deletedAt to be the given timestamp if provided', async () => {
+      const itemId = '1';
+      const variables = {
+        itemId: itemId,
+        timestamp: '2024-03-21T23:35:14.000Z',
+      };
+      await request(app).post(url).set(headers).send({
+        query: deleteSavedItemMutation,
+        variables,
+      });
+      const roundtrip = await request(app).post(url).set(headers).send({
+        query: querySavedItem,
+        variables: { userId, itemId },
+      });
+      const itemRes = roundtrip.body.data?._entities[0].savedItemById;
+      expect(itemRes.status).toBe('DELETED');
+      expect(itemRes._deletedAt).toEqual(1711064114);
+    });
   });
 
-  it('should undelete a deleted saved item and set status to unread if not previously archived', async () => {
-    await upsertSavedItem(writeDb, 2, date);
-
-    const variables = { itemId: '1' };
+  describe('undelete', () => {
     const updateSavedItemUnDelete = `
-      mutation updateSavedItemUnDelete($itemId: ID!) {
-        updateSavedItemUnDelete(id: $itemId) {
+      mutation updateSavedItemUnDelete($itemId: ID!, $timestamp: ISOString) {
+        updateSavedItemUnDelete(id: $itemId, timestamp: $timestamp) {
           status
           _updatedAt
         }
       }
     `;
-    const res = await request(app).post(url).set(headers).send({
-      query: updateSavedItemUnDelete,
-      variables,
+    it('should undelete a deleted saved item and set status to unread if not previously archived', async () => {
+      await upsertSavedItem(writeDb, 2, date);
+      const res = await request(app)
+        .post(url)
+        .set(headers)
+        .send({
+          query: updateSavedItemUnDelete,
+          variables: { itemId: '1' },
+        });
+
+      expect(res.body.errors).toBeUndefined();
+      const itemRes = res.body.data?.updateSavedItemUnDelete;
+      expect(itemRes.status).toBe('UNREAD');
+      expect(new Date(itemRes._updatedAt * 1000)).toBeAfterOrEqualTo(
+        updateDate,
+      );
+    });
+    it('should set _updatedAt to the given timestamp if provided', async () => {
+      await upsertSavedItem(writeDb, 2, date);
+      const res = await request(app)
+        .post(url)
+        .set(headers)
+        .send({
+          query: updateSavedItemUnDelete,
+          variables: { itemId: '1', timestamp: '2024-03-21T23:35:14.000Z' },
+        });
+      expect(res.body.errors).toBeUndefined();
+      const itemRes = res.body.data?.updateSavedItemUnDelete;
+      expect(itemRes._updatedAt).toEqual(1711064114);
     });
 
-    expect(res.body.errors).toBeUndefined();
-    const itemRes = res.body.data?.updateSavedItemUnDelete;
-    expect(itemRes.status).toBe('UNREAD');
-    expect(new Date(itemRes._updatedAt * 1000)).toBeAfterOrEqualTo(updateDate);
-  });
-
-  it('should undelete a deleted saved item and set status to archived if previously archived', async () => {
-    await upsertSavedItem(writeDb, 2, date, true);
-
-    const variables = { itemId: '1' };
-    const updateSavedItemUnDelete = `
-      mutation updateSavedItemUnDelete($itemId: ID!) {
-        updateSavedItemUnDelete(id: $itemId) {
-          status
-          _updatedAt
-        }
-      }
-    `;
-    const res = await request(app).post(url).set(headers).send({
-      query: updateSavedItemUnDelete,
-      variables,
+    it('should undelete a deleted saved item and set status to archived if previously archived', async () => {
+      await upsertSavedItem(writeDb, 2, date, true);
+      const res = await request(app)
+        .post(url)
+        .set(headers)
+        .send({
+          query: updateSavedItemUnDelete,
+          variables: { itemId: '1' },
+        });
+      expect(res.body.errors).toBeUndefined();
+      const itemRes = res.body.data?.updateSavedItemUnDelete;
+      expect(itemRes.status).toBe('ARCHIVED');
+      expect(new Date(itemRes._updatedAt * 1000)).toBeAfterOrEqualTo(
+        updateDate,
+      );
     });
-
-    expect(res.body.errors).toBeUndefined();
-    const itemRes = res.body.data?.updateSavedItemUnDelete;
-    expect(itemRes.status).toBe('ARCHIVED');
-    expect(new Date(itemRes._updatedAt * 1000)).toBeAfterOrEqualTo(updateDate);
   });
 });
