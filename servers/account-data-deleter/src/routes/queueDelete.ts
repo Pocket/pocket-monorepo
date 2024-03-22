@@ -16,6 +16,7 @@ import {
 import { nanoid } from 'nanoid';
 import { readClient } from '../dataService/clients';
 import { accountDeleteSchema } from './schemas';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export type SqsMessage = {
   userId: number;
@@ -166,7 +167,7 @@ export async function enqueueTablesForDeletion(
         table: table,
         where: where,
       };
-      Logger.error({
+      serverLogger.error({
         message: errorMessage,
         error: error,
         data: errorData,
@@ -207,7 +208,7 @@ async function sqsSendBatch(
     /* eslint-disable max-len */
     const errorMessage = `sqsSendBatch: Error - Failed to enqueue keys for given data.')`;
     /* eslint-enable max-len */
-    Logger.error({
+    serverLogger.error({
       message: errorMessage,
       error: error,
       data: {

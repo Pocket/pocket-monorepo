@@ -35,7 +35,7 @@ app.use(
 
 // Endpoints
 app.get('/health', (req, res) => {
-  Logger.info('healthcheck Logger');
+  serverLogger.info('healthcheck Logger');
   res.status(200).send('ok');
 });
 app.use('/queueDelete', queueDeleteRouter);
