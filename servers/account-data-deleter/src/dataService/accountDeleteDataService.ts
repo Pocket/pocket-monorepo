@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/node';
 import { indexedTables } from '../config/tables';
 import { config } from '../config';
 import { setTimeout } from 'timers/promises';
-import { serverLogger } from '../logger';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 interface LimitOverridesConfig {
   limit: number;

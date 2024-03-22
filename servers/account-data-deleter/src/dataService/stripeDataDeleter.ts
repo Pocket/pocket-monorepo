@@ -3,7 +3,7 @@ import { readClient, writeClient, stripeClient } from './clients';
 import Stripe from 'stripe';
 import * as Sentry from '@sentry/node';
 import { config } from '../config';
-import Logger from '../logger';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export class StripeDataDeleter {
   private write: Knex;
@@ -63,7 +63,7 @@ export class StripeDataDeleter {
             stripeId: id,
             userIOd: this.userId,
           };
-          Logger.error({
+          serverLogger.error({
             message: errorMessage,
             error: error,
             data: errorData,

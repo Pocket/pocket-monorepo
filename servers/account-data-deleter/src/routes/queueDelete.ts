@@ -16,7 +16,6 @@ import {
 import { nanoid } from 'nanoid';
 import { readClient } from '../dataService/clients';
 import { accountDeleteSchema } from './schemas';
-import Logger from '../logger';
 
 export type SqsMessage = {
   userId: number;
