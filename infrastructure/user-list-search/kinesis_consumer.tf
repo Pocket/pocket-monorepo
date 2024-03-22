@@ -19,6 +19,7 @@ resource "aws_lambda_function" "unified_events_consumer" {
   memory_size = 256
   lifecycle {
     ignore_changes = [
+      environment["GIT_SHA"],
       filename,
       source_code_hash
     ]

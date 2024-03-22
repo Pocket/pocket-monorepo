@@ -43,6 +43,7 @@ export class ApiGateway extends Construct {
               config.environment === 'Prod' ? 'production' : 'development',
             SQS_FXA_EVENTS_URL: sqsQueue.url,
           },
+          ignoreEnvironmentVars: ['GIT_SHA'],
           vpcConfig: {
             securityGroupIds: vpc.internalSecurityGroups.ids,
             subnetIds: vpc.privateSubnetIds,
