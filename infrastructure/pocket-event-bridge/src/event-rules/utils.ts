@@ -1,6 +1,7 @@
 import { config } from '../config';
 import { PocketPagerDuty } from '@pocket-tools/terraform-modules';
 import { cloudwatchMetricAlarm } from '@cdktf/provider-aws';
+import { Construct } from 'constructs';
 
 /**
  * Function to create alarms for Dead-letter queues
@@ -18,7 +19,7 @@ import { cloudwatchMetricAlarm } from '@cdktf/provider-aws';
  * @private
  */
 export function createDeadLetterQueueAlarm(
-  stack,
+  stack: Construct,
   pagerDuty: PocketPagerDuty,
   queueName: string,
   alarmName: string,

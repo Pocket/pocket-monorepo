@@ -52,7 +52,7 @@ export class ShareableListItemEvents extends Construct {
       this,
       pagerDuty,
       this.snsTopicDlq.name,
-      `${eventConfig.shareableList.name}-Rule-dlq-alarm`,
+      `${eventConfig.shareableList.name}Items-Rule-dlq-alarm`,
       true,
       4,
       300,
