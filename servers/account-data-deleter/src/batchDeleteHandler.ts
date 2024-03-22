@@ -17,6 +17,7 @@ import Logger from './logger';
 import { SeverityLevel } from '@sentry/types';
 import { unleash } from './unleash';
 import { Unleash } from 'unleash-client';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export class BatchDeleteHandler {
   readonly sqsClient: SQSClient;
@@ -207,6 +208,10 @@ export class BatchDeleteHandler {
       WaitTimeSeconds: config.aws.sqs.accountDeleteQueue.waitTimeSeconds,
     };
 
+    serverLogger.info(
+      `Begining polling of ${config.aws.sqs.accountDeleteQueue.url}`,
+    );
+
     let data: ReceiveMessageCommandOutput;
     let body: SqsMessage;
 
@@ -221,6 +226,9 @@ export class BatchDeleteHandler {
         config.unleash.flags.deletesDisabled.fallback,
       )
     ) {
+      serverLogger.info(
+        `Skipping polling of ${config.aws.sqs.accountDeleteQueue.url} due to feature flag kill switch on.`,
+      );
       // Schedule next poll and do nothing else
       await this.scheduleNextPoll(
         config.aws.sqs.accountDeleteQueue.defaultPollIntervalSeconds * 1000,
