@@ -1,11 +1,11 @@
-import { readClient, writeClient } from '../../../database/client';
-import { EventType } from '../../../businessEvents';
-import { ContextManager } from '../../../server/context';
-import { startServer } from '../../../server/apollo';
+import { readClient, writeClient } from '../../../../database/client';
+import { EventType } from '../../../../businessEvents';
+import { ContextManager } from '../../../../server/context';
+import { startServer } from '../../../../server/apollo';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
-import * as Client from '../../../database/client';
+import * as Client from '../../../../database/client';
 
 describe('createSavedItemTags mutation', function () {
   const writeDb = writeClient();

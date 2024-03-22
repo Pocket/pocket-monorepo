@@ -1,9 +1,9 @@
-import { readClient, writeClient } from '../../../database/client';
-import { EventType } from '../../../businessEvents';
-import { UsersMetaService } from '../../../dataService';
-import { getUnixTimestamp } from '../../../utils';
-import { ContextManager } from '../../../server/context';
-import { startServer } from '../../../server/apollo';
+import { readClient, writeClient } from '../../../../database/client';
+import { EventType } from '../../../../businessEvents';
+import { UsersMetaService } from '../../../../dataService';
+import { getUnixTimestamp } from '../../../../utils';
+import { ContextManager } from '../../../../server/context';
+import { startServer } from '../../../../server/apollo';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';

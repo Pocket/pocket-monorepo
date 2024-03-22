@@ -1,16 +1,15 @@
-import { readClient, writeClient } from '../../../database/client';
-import { ContextManager } from '../../../server/context';
-import { startServer } from '../../../server/apollo';
+import { readClient, writeClient } from '../../../../database/client';
+import { ContextManager } from '../../../../server/context';
+import { startServer } from '../../../../server/apollo';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 import request from 'supertest';
 
-describe('saveArchive mutation', function () {
+describe('saveUnArchive mutation', function () {
   const writeDb = writeClient();
   const readDb = readClient();
-  const eventSpy = jest.spyOn(ContextManager.prototype, 'emitItemEvent');
   const headers = { userid: '1' };
   const date = new Date('2020-10-03T10:20:30.000Z'); // Consistent date for seeding
   const date1 = new Date('2020-10-03T10:30:30.000Z'); // Consistent date for seeding
@@ -18,9 +17,9 @@ describe('saveArchive mutation', function () {
   let server: ApolloServer<ContextManager>;
   let url: string;
 
-  const ARCHIVE_MUTATION = gql`
-    mutation saveArchive($id: [ID!]!, $timestamp: ISOString!) {
-      saveArchive(id: $id, timestamp: $timestamp) {
+  const UNARCHIVE_MUTATION = gql`
+    mutation saveUnArchive($id: [ID!]!, $timestamp: ISOString!) {
+      saveUnArchive(id: $id, timestamp: $timestamp) {
         save {
           id
           archived
@@ -41,10 +40,9 @@ describe('saveArchive mutation', function () {
   beforeEach(async () => {
     await writeDb('list').truncate();
     const inputData = [
-      { item_id: 0, status: 0, favorite: 0 },
-      { item_id: 1, status: 0, favorite: 0 },
-      // One that's already archived
-      { item_id: 2, status: 1, favorite: 0 },
+      { item_id: 0, status: 1, favorite: 0 },
+      { item_id: 1, status: 1, favorite: 0 },
+      { item_id: 2, status: 0, favorite: 1 },
     ].map((row) => {
       return {
         ...row,
@@ -76,7 +74,7 @@ describe('saveArchive mutation', function () {
 
   afterEach(() => jest.clearAllMocks());
 
-  it('should archive one save', async () => {
+  it('should unarchive one save', async () => {
     const testTimestamp = '2023-10-05T14:48:00.000Z';
     const variables = {
       id: ['1'],
@@ -86,16 +84,16 @@ describe('saveArchive mutation', function () {
     const res = await request(app)
       .post(url)
       .set(headers)
-      .send({ query: print(ARCHIVE_MUTATION), variables });
+      .send({ query: print(UNARCHIVE_MUTATION), variables });
 
     expect(res).not.toBeUndefined();
-    expect(res.body.data.saveArchive.save).toBeArrayOfSize(1);
-    expect(res.body.data.saveArchive.errors).toBeArrayOfSize(0);
-    const actual = res.body.data.saveArchive.save[0];
+    expect(res.body.data.saveUnArchive.save).toBeArrayOfSize(1);
+    expect(res.body.data.saveUnArchive.errors).toBeArrayOfSize(0);
+    const actual = res.body.data.saveUnArchive.save[0];
     expect(actual).toStrictEqual({
       id: '1',
-      archived: true,
-      archivedAt: testTimestamp,
+      archived: false,
+      archivedAt: null,
       updatedAt: testTimestamp,
     });
   });
@@ -111,20 +109,20 @@ describe('saveArchive mutation', function () {
     const res = await request(app)
       .post(url)
       .set(headers)
-      .send({ query: print(ARCHIVE_MUTATION), variables });
+      .send({ query: print(UNARCHIVE_MUTATION), variables });
 
     expect(res).not.toBeUndefined();
-    expect(res.body.data.saveArchive.save).toBeArrayOfSize(0);
-    const errors = res.body.data.saveArchive.errors;
+    expect(res.body.data.saveUnArchive.save).toBeArrayOfSize(0);
+    const errors = res.body.data.saveUnArchive.errors;
     expect(errors).toBeArrayOfSize(1);
     expect(errors[0]).toStrictEqual({
       __typename: 'NotFound',
       message: 'Entity identified by key=id, value=123123 was not found.',
-      path: 'saveArchive',
+      path: 'saveUnArchive',
     });
   });
 
-  it('should archive multiple saves', async () => {
+  it('should unarchive multiple saves', async () => {
     const testTimestamp = '2023-10-05T14:48:00.000Z';
     const variables = {
       id: ['0', '1'],
@@ -134,31 +132,31 @@ describe('saveArchive mutation', function () {
     const res = await request(app)
       .post(url)
       .set(headers)
-      .send({ query: print(ARCHIVE_MUTATION), variables });
+      .send({ query: print(UNARCHIVE_MUTATION), variables });
 
     const expected = {
       save: [
         {
           id: '0',
-          archived: true,
-          archivedAt: testTimestamp,
+          archived: false,
+          archivedAt: null,
           updatedAt: testTimestamp,
         },
         {
           id: '1',
-          archived: true,
-          archivedAt: testTimestamp,
+          archived: false,
+          archivedAt: null,
           updatedAt: testTimestamp,
         },
       ],
       errors: [],
     };
-    const data = res.body.data.saveArchive;
+    const data = res.body.data.saveUnArchive;
     expect(data.save).toIncludeSameMembers(expected.save);
     expect(data.errors).toBeArrayOfSize(0);
   });
 
-  it('should not fail if trying to archive a save that is already archived (no-op)', async () => {
+  it('should not fail if trying to unarchive a save that is already archived (no-op)', async () => {
     const testTimestamp = '2023-10-05T14:48:00.000Z';
     const variables = {
       id: ['2'],
@@ -168,44 +166,16 @@ describe('saveArchive mutation', function () {
     const res = await request(app)
       .post(url)
       .set(headers)
-      .send({ query: print(ARCHIVE_MUTATION), variables });
+      .send({ query: print(UNARCHIVE_MUTATION), variables });
 
-    const data = res.body.data.saveArchive.save;
+    const data = res.body.data.saveUnArchive.save;
     expect(data).toMatchObject([
       {
-        archived: true,
-        archivedAt: date.toISOString(),
+        archived: false,
+        archivedAt: null,
+        updatedAt: date1.toISOString(),
       },
     ]);
-    expect(res.body.data.saveArchive.errors).toBeArrayOfSize(0);
+    expect(res.body.data.saveUnArchive.errors).toBeArrayOfSize(0);
   });
-  // TODO: Unskip when archive events are implemented
-  it.skip('should emit an archive event for each save archived', async () => {
-    const testTimestamp = '2023-10-05T14:48:00.000Z';
-    const variables = {
-      id: ['0', '1'],
-      timestamp: testTimestamp,
-    };
-    await request(app)
-      .post(url)
-      .set(headers)
-      .send({ query: print(ARCHIVE_MUTATION), variables });
-    expect(eventSpy).toHaveBeenCalledTimes(2);
-  });
-  // TODO: Unskip when archive events are implemented
-  it.skip('should not emit an archive event if the save is already archived', async () => {
-    const testTimestamp = '2023-10-05T14:48:00.000Z';
-    const variables = {
-      id: ['2'],
-      timestamp: testTimestamp,
-    };
-    await request(app)
-      .post(url)
-      .set(headers)
-      .send({ query: print(ARCHIVE_MUTATION), variables });
-    expect(eventSpy).toHaveBeenCalledTimes(0);
-  });
-  // TODO: When @constraint annotations are added to schema
-  it.todo('should not accept more than 30 input ids');
-  it.todo('should require at least one input id');
 });

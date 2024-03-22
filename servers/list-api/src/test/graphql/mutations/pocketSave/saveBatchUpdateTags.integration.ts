@@ -1,12 +1,12 @@
 import { ApolloServer } from '@apollo/server';
-import { ContextManager } from '../../../server/context';
-import { readClient, writeClient } from '../../../database/client';
-import { startServer } from '../../../server/apollo';
+import { ContextManager } from '../../../../server/context';
+import { readClient, writeClient } from '../../../../database/client';
+import { startServer } from '../../../../server/apollo';
 import { Application } from 'express';
 import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 import request from 'supertest';
-import { TagModel } from '../../../models';
+import { TagModel } from '../../../../models';
 
 describe('saveBatchUpdateTags', () => {
   const writeDb = writeClient();
