@@ -49,6 +49,16 @@ export class DynamoDB extends Construct {
           },
         ],
       },
+      lifecycle: {
+        ignoreChanges: [
+          // Bug in terraform with DynamoDB and global secondary indexes
+          // https://github.com/hashicorp/terraform-provider-aws/issues/671
+          // https://github.com/hashicorp/terraform-provider-aws/issues/671#issuecomment-346711738
+          'global_secondary_index',
+          'read_capacity',
+          'write_capacity',
+        ],
+      },
     });
   }
 }

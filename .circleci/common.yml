@@ -224,10 +224,6 @@ commands:
               -H "Authorization: Bearer $JWT" \
               -d "{}" \
               "https://api.github.com/app/installations/$installation_id/access_tokens")
-            echo "Expires at"
-            echo $(echo "$response" | jq -r '.expires_at')
-            echo "Permissions"
-            echo $(echo "$response" | jq -r '.permissions')
 
             # Extract the token from the response
             token=$(echo "$response" | jq -r '.token')
