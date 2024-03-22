@@ -60,6 +60,20 @@ exports[`PocketApiGatewayLambdaIntegration renders an api gateway with a lambda 
       }
     }
   },
+  "output": {
+    "test-api-lambda_endpoint-lambda_lambda_arn_160BFD72": {
+      "description": "Lambda Function ARN",
+      "value": "\${aws_lambda_function.test-api-lambda_endpoint-lambda_3FA91964.arn}"
+    },
+    "test-api-lambda_endpoint-lambda_lambda_function_name_83D1A2F3": {
+      "description": "Lambda Function Name",
+      "value": "\${aws_lambda_function.test-api-lambda_endpoint-lambda_3FA91964.function_name}"
+    },
+    "test-api-lambda_endpoint-lambda_lambda_version_arn_920D0E8C": {
+      "description": "Lambda Version ARN",
+      "value": "\${aws_lambda_alias.test-api-lambda_endpoint-lambda_alias_A14F4FF8.arn}"
+    }
+  },
   "resource": {
     "aws_acm_certificate": {
       "test-api-lambda_api-gateway-certificate_8D77B940": {
@@ -103,7 +117,6 @@ exports[`PocketApiGatewayLambdaIntegration renders an api gateway with a lambda 
         },
         "rest_api_id": "\${aws_api_gateway_rest_api.api-gateway-rest.id}",
         "triggers": {
-          "deployedAt": "1637693316456",
           "redeployment": "\${sha1(jsonencode({\\"resources\\" = [aws_api_gateway_integration.test-api-lambda_endpoint-integration_8D80A8F8.id, aws_api_gateway_method.test-api-lambda_endpoint-method_B2F73D1A.id, aws_api_gateway_resource.test-api-lambda_endpoint_02B05EB1.id, aws_lambda_alias.test-api-lambda_endpoint-lambda_alias_A14F4FF8.id]}))}"
         }
       }

@@ -165,6 +165,28 @@ describe('ApplicationDynamoDBTable', () => {
     expect(synthed).toMatchSnapshot();
   });
 
+  it('renders dynamo db table ignoring global secondary iundex changes', () => {
+    BASE_CONFIG.writeCapacity = {
+      tracking: 1,
+      max: 10,
+      min: 3,
+    };
+
+    BASE_CONFIG.readCapacity = {
+      tracking: 1,
+      max: 10,
+      min: 3,
+    };
+
+    const synthed = Testing.synthScope((stack) => {
+      new ApplicationDynamoDBTable(stack, 'testDynamoDBTable', {
+        ...BASE_CONFIG,
+        lifecycle: { ignoreChanges: ['global_secondary_index'] },
+      });
+    });
+    expect(synthed).toMatchSnapshot();
+  });
+
   it('renders dynamo db table that is not protected from being destroyed', () => {
     BASE_CONFIG.preventDestroyTable = false;
 

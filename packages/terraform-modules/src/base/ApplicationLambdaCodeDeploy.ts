@@ -6,7 +6,7 @@ import {
   iamRole,
   iamRolePolicyAttachment,
 } from '@cdktf/provider-aws';
-import { TerraformMetaArguments } from 'cdktf';
+import { TerraformMetaArguments, TerraformOutput } from 'cdktf';
 import { Construct } from 'constructs';
 
 export interface ApplicationVersionedLambdaCodeDeployProps
@@ -35,6 +35,7 @@ export interface ApplicationVersionedLambdaCodeDeployProps
 
 export class ApplicationLambdaCodeDeploy extends Construct {
   public readonly codeDeployApp: codedeployApp.CodedeployApp;
+  public readonly codeDeployGroup: codedeployDeploymentGroup.CodedeployDeploymentGroup;
 
   constructor(
     scope: Construct,
@@ -43,7 +44,19 @@ export class ApplicationLambdaCodeDeploy extends Construct {
   ) {
     super(scope, name);
 
-    this.codeDeployApp = this.setupCodeDeploy();
+    const { codeDeployApp, codeDeployGroup } = this.setupCodeDeploy();
+    this.codeDeployApp = codeDeployApp;
+    this.codeDeployGroup = codeDeployGroup;
+
+    new TerraformOutput(this, 'lambda_codedeploy_app', {
+      value: this.codeDeployApp.name,
+      description: 'Lambda CodeDeploy App Name',
+    });
+
+    new TerraformOutput(this, 'lambda_codedeploy_group', {
+      value: this.codeDeployGroup.deploymentGroupName,
+      description: 'Lambda CodeDeploy Group Name',
+    });
   }
 
   private setupCodeDeploy() {
@@ -58,19 +71,19 @@ export class ApplicationLambdaCodeDeploy extends Construct {
       },
     );
 
-    this.createCodeDeploymentGroup(codeDeployApp);
+    const codeDeployGroup = this.createCodeDeploymentGroup(codeDeployApp);
 
     if (this.config.deploySnsTopicArn) {
       this.setupCodeDeployNotifications(codeDeployApp);
     }
 
-    return codeDeployApp;
+    return { codeDeployApp, codeDeployGroup };
   }
 
   private createCodeDeploymentGroup(
     codeDeployApp: codedeployApp.CodedeployApp,
   ) {
-    new codedeployDeploymentGroup.CodedeployDeploymentGroup(
+    return new codedeployDeploymentGroup.CodedeployDeploymentGroup(
       this,
       'code-deployment-group',
       {

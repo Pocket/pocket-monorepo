@@ -42,7 +42,9 @@ class PocketEventBus extends TerraformStack {
       region: 'us-east-1',
       defaultTags: [{ tags: config.tags }],
     });
-    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
+    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
+      token: undefined,
+    });
     new localProvider.LocalProvider(this, 'local_provider');
     new nullProvider.NullProvider(this, 'null_provider');
     new archiveProvider.ArchiveProvider(this, 'archive_provider');

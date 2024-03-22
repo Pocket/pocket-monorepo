@@ -1,5 +1,5 @@
 import { Testing } from 'cdktf';
-import { ApplicationECSCluster } from './ApplicationECSCluster.js'
+import { ApplicationECSCluster } from './ApplicationECSCluster.js';
 
 describe('ApplicationECSCluster', () => {
   it('renders an ECS cluster without tags', () => {

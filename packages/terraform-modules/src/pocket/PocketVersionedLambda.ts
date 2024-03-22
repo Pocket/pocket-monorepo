@@ -39,6 +39,7 @@ export interface PocketVersionedLambdaProps extends TerraformMetaArguments {
     reservedConcurrencyLimit?: number;
     memorySizeInMb?: number;
     environment?: { [key: string]: string };
+    ignoreEnvironmentVars?: string[];
     vpcConfig?: lambdaFunction.LambdaFunctionVpcConfig;
     executionPolicyStatements?: dataAwsIamPolicyDocument.DataAwsIamPolicyDocumentStatement[];
     logRetention?: number;
@@ -197,6 +198,7 @@ export class PocketVersionedLambda extends Construct {
       timeout: lambdaConfig.timeout,
       environment: lambdaConfig.environment,
       vpcConfig: lambdaConfig.vpcConfig,
+      ignoreEnvironmentVars: lambdaConfig.ignoreEnvironmentVars,
       executionPolicyStatements: lambdaConfig.executionPolicyStatements,
       logRetention: lambdaConfig.logRetention,
       s3Bucket:

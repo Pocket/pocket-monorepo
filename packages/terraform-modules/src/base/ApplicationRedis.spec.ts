@@ -1,7 +1,7 @@
 import { Testing } from 'cdktf';
-import { ApplicationElasticacheClusterProps } from './ApplicationElasticacheCluster.js'
+import { ApplicationElasticacheClusterProps } from './ApplicationElasticacheCluster.js';
 
-import { ApplicationRedis } from './ApplicationRedis.js'
+import { ApplicationRedis } from './ApplicationRedis.js';
 
 const BASE_CONFIG: ApplicationElasticacheClusterProps = {
   allowedIngressSecurityGroupIds: [],

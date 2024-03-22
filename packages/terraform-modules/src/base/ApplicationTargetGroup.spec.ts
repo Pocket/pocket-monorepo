@@ -1,5 +1,5 @@
 import { Testing } from 'cdktf';
-import { ApplicationTargetGroup } from './ApplicationTargetGroup.js'
+import { ApplicationTargetGroup } from './ApplicationTargetGroup.js';
 
 describe('ApplicationTargetGroup', () => {
   it('renders a Target Group without tags', () => {
