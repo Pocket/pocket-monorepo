@@ -18,7 +18,7 @@ export class TransactionalEmailSQSLambda extends Construct {
   ) {
     super(scope, name);
 
-    const { sentryDsn, gitSha } = this.getEnvVariableValues();
+    const { sentryDsn } = this.getEnvVariableValues();
 
     this.construct = new PocketSQSWithLambdaTarget(this, 'sqs-event-consumer', {
       name: `${config.prefix}-Sqs-Event-Consumer`,
@@ -35,7 +35,6 @@ export class TransactionalEmailSQSLambda extends Construct {
         timeout: 120,
         environment: {
           SENTRY_DSN: sentryDsn,
-          GIT_SHA: gitSha,
           NODE_ENV:
             config.environment === 'Prod' ? 'production' : 'development',
           SSM_BRAZE_API_KEY_NAME: `/${config.name}/${config.environment}/BRAZE_API_KEY`,
@@ -47,6 +46,7 @@ export class TransactionalEmailSQSLambda extends Construct {
           BRAZE_FORGOT_PASSWORD_CAMPAIGN_ID:
             config.lambda.braze.forgotPasswordCampaignId,
         },
+        ignoreEnvironmentVars: ['GIT_SHA'],
         vpcConfig: {
           securityGroupIds: vpc.defaultSecurityGroups.ids,
           subnetIds: vpc.privateSubnetIds,
@@ -82,14 +82,14 @@ export class TransactionalEmailSQSLambda extends Construct {
   }
 
   private getEnvVariableValues() {
-    const sentryDsn = new dataAwsSsmParameter.DataAwsSsmParameter(this, 'sentry-dsn', {
-      name: `/${config.name}/${config.environment}/SENTRY_DSN`,
-    });
+    const sentryDsn = new dataAwsSsmParameter.DataAwsSsmParameter(
+      this,
+      'sentry-dsn',
+      {
+        name: `/${config.name}/${config.environment}/SENTRY_DSN`,
+      },
+    );
 
-    const serviceHash = new dataAwsSsmParameter.DataAwsSsmParameter(this, 'service-hash', {
-      name: `${config.circleCIPrefix}/SERVICE_HASH`,
-    });
-
-    return { sentryDsn: sentryDsn.value, gitSha: serviceHash.value };
+    return { sentryDsn: sentryDsn.value };
   }
 }

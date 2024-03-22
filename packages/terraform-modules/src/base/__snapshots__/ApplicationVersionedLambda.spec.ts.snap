@@ -55,6 +55,20 @@ exports[`ApplicationVersionedLambda renders a lambda with a node v14 runtime 1`]
       }
     }
   },
+  "output": {
+    "test-versioned-lambda_lambda_arn_EE780827": {
+      "description": "Lambda Function ARN",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.arn}"
+    },
+    "test-versioned-lambda_lambda_function_name_8E4C0AF1": {
+      "description": "Lambda Function Name",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.function_name}"
+    },
+    "test-versioned-lambda_lambda_version_arn_0407D06E": {
+      "description": "Lambda Version ARN",
+      "value": "\${aws_lambda_alias.test-versioned-lambda_alias_60AF9CE1.arn}"
+    }
+  },
   "resource": {
     "aws_cloudwatch_log_group": {
       "test-versioned-lambda_log-group_CB8A67E7": {
@@ -209,6 +223,20 @@ exports[`ApplicationVersionedLambda renders a versioned lambda 1`] = `
         ],
         "version": "2012-10-17"
       }
+    }
+  },
+  "output": {
+    "test-versioned-lambda_lambda_arn_EE780827": {
+      "description": "Lambda Function ARN",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.arn}"
+    },
+    "test-versioned-lambda_lambda_function_name_8E4C0AF1": {
+      "description": "Lambda Function Name",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.function_name}"
+    },
+    "test-versioned-lambda_lambda_version_arn_0407D06E": {
+      "description": "Lambda Version ARN",
+      "value": "\${aws_lambda_alias.test-versioned-lambda_alias_60AF9CE1.arn}"
     }
   },
   "resource": {
@@ -367,6 +395,20 @@ exports[`ApplicationVersionedLambda renders a versioned lambda with description 
       }
     }
   },
+  "output": {
+    "test-versioned-lambda_lambda_arn_EE780827": {
+      "description": "Lambda Function ARN",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.arn}"
+    },
+    "test-versioned-lambda_lambda_function_name_8E4C0AF1": {
+      "description": "Lambda Function Name",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.function_name}"
+    },
+    "test-versioned-lambda_lambda_version_arn_0407D06E": {
+      "description": "Lambda Version ARN",
+      "value": "\${aws_lambda_alias.test-versioned-lambda_alias_60AF9CE1.arn}"
+    }
+  },
   "resource": {
     "aws_cloudwatch_log_group": {
       "test-versioned-lambda_log-group_CB8A67E7": {
@@ -521,6 +563,20 @@ exports[`ApplicationVersionedLambda renders a versioned lambda with environment 
         ],
         "version": "2012-10-17"
       }
+    }
+  },
+  "output": {
+    "test-versioned-lambda_lambda_arn_EE780827": {
+      "description": "Lambda Function ARN",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.arn}"
+    },
+    "test-versioned-lambda_lambda_function_name_8E4C0AF1": {
+      "description": "Lambda Function Name",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.function_name}"
+    },
+    "test-versioned-lambda_lambda_version_arn_0407D06E": {
+      "description": "Lambda Version ARN",
+      "value": "\${aws_lambda_alias.test-versioned-lambda_alias_60AF9CE1.arn}"
     }
   },
   "resource": {
@@ -694,6 +750,20 @@ exports[`ApplicationVersionedLambda renders a versioned lambda with execution po
       }
     }
   },
+  "output": {
+    "test-versioned-lambda_lambda_arn_EE780827": {
+      "description": "Lambda Function ARN",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.arn}"
+    },
+    "test-versioned-lambda_lambda_function_name_8E4C0AF1": {
+      "description": "Lambda Function Name",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.function_name}"
+    },
+    "test-versioned-lambda_lambda_version_arn_0407D06E": {
+      "description": "Lambda Version ARN",
+      "value": "\${aws_lambda_alias.test-versioned-lambda_alias_60AF9CE1.arn}"
+    }
+  },
   "resource": {
     "aws_cloudwatch_log_group": {
       "test-versioned-lambda_log-group_CB8A67E7": {
@@ -850,6 +920,20 @@ exports[`ApplicationVersionedLambda renders a versioned lambda with log retentio
       }
     }
   },
+  "output": {
+    "test-versioned-lambda_lambda_arn_EE780827": {
+      "description": "Lambda Function ARN",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.arn}"
+    },
+    "test-versioned-lambda_lambda_function_name_8E4C0AF1": {
+      "description": "Lambda Function Name",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.function_name}"
+    },
+    "test-versioned-lambda_lambda_version_arn_0407D06E": {
+      "description": "Lambda Version ARN",
+      "value": "\${aws_lambda_alias.test-versioned-lambda_alias_60AF9CE1.arn}"
+    }
+  },
   "resource": {
     "aws_cloudwatch_log_group": {
       "test-versioned-lambda_log-group_CB8A67E7": {
@@ -1004,6 +1088,20 @@ exports[`ApplicationVersionedLambda renders a versioned lambda with publish igno
         ],
         "version": "2012-10-17"
       }
+    }
+  },
+  "output": {
+    "test-versioned-lambda_lambda_arn_EE780827": {
+      "description": "Lambda Function ARN",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.arn}"
+    },
+    "test-versioned-lambda_lambda_function_name_8E4C0AF1": {
+      "description": "Lambda Function Name",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.function_name}"
+    },
+    "test-versioned-lambda_lambda_version_arn_0407D06E": {
+      "description": "Lambda Version ARN",
+      "value": "\${aws_lambda_alias.test-versioned-lambda_alias_60AF9CE1.arn}"
     }
   },
   "resource": {
@@ -1163,6 +1261,20 @@ exports[`ApplicationVersionedLambda renders a versioned lambda with s3 bucket 1`
       }
     }
   },
+  "output": {
+    "test-versioned-lambda_lambda_arn_EE780827": {
+      "description": "Lambda Function ARN",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.arn}"
+    },
+    "test-versioned-lambda_lambda_function_name_8E4C0AF1": {
+      "description": "Lambda Function Name",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.function_name}"
+    },
+    "test-versioned-lambda_lambda_version_arn_0407D06E": {
+      "description": "Lambda Version ARN",
+      "value": "\${aws_lambda_alias.test-versioned-lambda_alias_60AF9CE1.arn}"
+    }
+  },
   "resource": {
     "aws_cloudwatch_log_group": {
       "test-versioned-lambda_log-group_CB8A67E7": {
@@ -1317,6 +1429,20 @@ exports[`ApplicationVersionedLambda renders a versioned lambda with tags 1`] = `
         ],
         "version": "2012-10-17"
       }
+    }
+  },
+  "output": {
+    "test-versioned-lambda_lambda_arn_EE780827": {
+      "description": "Lambda Function ARN",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.arn}"
+    },
+    "test-versioned-lambda_lambda_function_name_8E4C0AF1": {
+      "description": "Lambda Function Name",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.function_name}"
+    },
+    "test-versioned-lambda_lambda_version_arn_0407D06E": {
+      "description": "Lambda Version ARN",
+      "value": "\${aws_lambda_alias.test-versioned-lambda_alias_60AF9CE1.arn}"
     }
   },
   "resource": {
@@ -1495,6 +1621,20 @@ exports[`ApplicationVersionedLambda renders a versioned lambda with timeout 1`] 
       }
     }
   },
+  "output": {
+    "test-versioned-lambda_lambda_arn_EE780827": {
+      "description": "Lambda Function ARN",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.arn}"
+    },
+    "test-versioned-lambda_lambda_function_name_8E4C0AF1": {
+      "description": "Lambda Function Name",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.function_name}"
+    },
+    "test-versioned-lambda_lambda_version_arn_0407D06E": {
+      "description": "Lambda Version ARN",
+      "value": "\${aws_lambda_alias.test-versioned-lambda_alias_60AF9CE1.arn}"
+    }
+  },
   "resource": {
     "aws_cloudwatch_log_group": {
       "test-versioned-lambda_log-group_CB8A67E7": {
@@ -1662,6 +1802,20 @@ exports[`ApplicationVersionedLambda renders a versioned lambda with vpc 1`] = `
         ],
         "version": "2012-10-17"
       }
+    }
+  },
+  "output": {
+    "test-versioned-lambda_lambda_arn_EE780827": {
+      "description": "Lambda Function ARN",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.arn}"
+    },
+    "test-versioned-lambda_lambda_function_name_8E4C0AF1": {
+      "description": "Lambda Function Name",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.function_name}"
+    },
+    "test-versioned-lambda_lambda_version_arn_0407D06E": {
+      "description": "Lambda Version ARN",
+      "value": "\${aws_lambda_alias.test-versioned-lambda_alias_60AF9CE1.arn}"
     }
   },
   "resource": {

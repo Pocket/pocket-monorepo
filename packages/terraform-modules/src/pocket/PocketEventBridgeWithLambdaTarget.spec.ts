@@ -3,7 +3,7 @@ import {
   PocketEventBridgeWithLambdaTarget,
   PocketEventBridgeWithLambdaTargetProps,
 } from './PocketEventBridgeWithLambdaTarget';
-import { LAMBDA_RUNTIMES } from '../base/ApplicationVersionedLambda.js'
+import { LAMBDA_RUNTIMES } from '../base/ApplicationVersionedLambda.js';
 
 const config: PocketEventBridgeWithLambdaTargetProps = {
   name: 'test-event-bridge-lambda',

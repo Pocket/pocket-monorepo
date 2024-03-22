@@ -11,13 +11,5 @@ export function getEnvVariableValues(scope: Construct) {
     },
   );
 
-  const serviceHash = new dataAwsSsmParameter.DataAwsSsmParameter(
-    scope,
-    'service-hash',
-    {
-      name: `${config.circleCIPrefix}/SERVICE_HASH`,
-    },
-  );
-
-  return { sentryDsn: sentryDsn.value, gitSha: serviceHash.value };
+  return { sentryDsn: sentryDsn.value };
 }

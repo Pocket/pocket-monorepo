@@ -20,7 +20,7 @@ export class ApiGateway extends Construct {
     pagerDuty?: PocketPagerDuty,
   ) {
     super(scope, name);
-    const { sentryDsn, gitSha } = getEnvVariableValues(this);
+    const { sentryDsn } = getEnvVariableValues(this);
     const fxaEventsRoute: ApiGatewayLambdaRoute = {
       path: 'events',
       method: 'POST',
@@ -39,7 +39,6 @@ export class ApiGateway extends Construct {
           timeout: 120,
           environment: {
             SENTRY_DSN: sentryDsn,
-            GIT_SHA: gitSha,
             ENVIRONMENT:
               config.environment === 'Prod' ? 'production' : 'development',
             SQS_FXA_EVENTS_URL: sqsQueue.url,

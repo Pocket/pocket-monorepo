@@ -157,7 +157,6 @@ commands:
       - run: 
           name: Install and setup node
           command: |
-            printenv
             nvm install
             nvm use
             npm install -g pnpm   
@@ -278,9 +277,12 @@ jobs:
           steps:
             - run:
                 name: Terraform apply
+                # Re-add this when tfcmt supports ignoring no change applies
+                # https://github.com/suzuki-shunsuke/tfcmt/issues/1184
+                #  /home/circleci/tfcmt --var target:<< parameters.scope >><<#parameters.dev>>-dev<</parameters.dev>> apply -- terraform apply -auto-approve -lock-timeout=10m
                 command: |
                   cd << parameters.stack-output-path >>
-                  /home/circleci/tfcmt --var target:<< parameters.scope >><<#parameters.dev>>-dev<</parameters.dev>> apply -- terraform apply -auto-approve -lock-timeout=10m
+                  terraform apply -auto-approve -lock-timeout=10m
                   mkdir -p /tmp/workspace
                   echo "$(terraform output -json)" > /tmp/workspace/tf_output.json
             # Persist TF_OUTPUT using workspace
@@ -429,6 +431,10 @@ jobs:
                 --s3-bucket '<< parameters.s3-bucket >>' \
                 --s3-key "$s3Key"
 
+            aws lambda wait function-updated --function-name '<< parameters.function-name >>'
+
+            NEW_ENVVARS=$(aws lambda get-function-configuration --function-name '<< parameters.function-name >>' --query "Environment.Variables | merge(@, \`{\"GIT_SHA\":\"$CIRCLE_SHA1\"}\`)")
+            aws lambda update-function-configuration --function-name '<< parameters.function-name >>' --environment "{ \"Variables\": $NEW_ENVVARS }"
             aws lambda wait function-updated --function-name '<< parameters.function-name >>'
 
             versionId=$(aws lambda publish-version \

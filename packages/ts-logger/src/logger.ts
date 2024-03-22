@@ -75,7 +75,7 @@ export function createLogger(options: LoggerOptions | undefined = {}): Logger {
   };
 
   const enchancedDefaultMeta = {
-    releaseSha: process.env.RELEASE_SHA || null,
+    releaseSha: process.env.RELEASE_SHA || process.env.GIT_SHA || null,
     ...options.defaultMeta,
   };
 

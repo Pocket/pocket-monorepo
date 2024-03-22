@@ -24,7 +24,9 @@ class FxAWebhookProxy extends TerraformStack {
     super(scope, name);
 
     new awsProvider.AwsProvider(this, 'aws', { region: 'us-east-1' });
-    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
+    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
+      token: undefined,
+    });
     new archiveProvider.ArchiveProvider(this, 'archive-provider');
     new nullProvider.NullProvider(this, 'null-provider');
     new localProvider.LocalProvider(this, 'local-provider');
