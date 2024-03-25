@@ -34,7 +34,7 @@
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
     "axios": "1.6.8",
-    "axios-retry": "4.0.0",
+    "axios-retry": "4.1.0",
     "dataloader": "2.2.2",
     "parse-url": "9.0.1"
   },
