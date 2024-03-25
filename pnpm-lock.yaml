@@ -625,7 +625,7 @@ importers:
         version: 7.108.0
       braze-api:
         specifier: ^2.6.0
-        version: 2.6.0
+        version: 2.7.0
       fetch-retry:
         specifier: ^5.0.6
         version: 5.0.6
@@ -9499,8 +9499,8 @@ packages:
     dependencies:
       fill-range: 7.0.1
 
-  /braze-api@2.6.0:
-    resolution: {integrity: sha512-hgIt/pZcTj59ZNM5n79zBhbp1y+kvFhLxnkxGx7sQLiJDDK2tV0RWVCNLTWaFOyZVvGSeFz3DSTaBnRobpVtyw==}
+  /braze-api@2.7.0:
+    resolution: {integrity: sha512-5xAJHsjV+iTqQL31MBVVkzB3wmtPlsQ7Urnmh+urwC7Mehsa0AADBiNC7vErxTYUsR0NG8Ol5GPA+FRHzlQm0g==}
     engines: {node: '>=14'}
     dependencies:
       '@types/node-fetch': 2.6.6
