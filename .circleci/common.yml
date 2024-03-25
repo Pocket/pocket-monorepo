@@ -910,7 +910,7 @@ jobs:
         default: AWS_SECRET_ACCESS_KEY
         description: AWS secret key for IAM role
     docker:
-      - image: amazon/aws-cli:latest@sha256:e55139d687402a5e601f3481035f3e5b8cf8884a69dc4859d48bfb3ff05c5520
+      - image: amazon/aws-cli:latest@sha256:1ac1d86b8b03082fa47fd89ebc624f9720aa68e4fe9ac36a71a4d6541a5e76b8
         auth:
           username: $DOCKER_LOGIN
           password: $DOCKER_PASSWORD
