@@ -30,8 +30,9 @@ jobs:
       - install_pnpm
       - run:
           name: Test
+          # Following uses a 2 concurrency because terraform modules seems to fail with an OOM error on CI if we do more.
           command: |
-            pnpm run test
+            pnpm run test --concurrency=2 
 
 workflows:
   repo:
