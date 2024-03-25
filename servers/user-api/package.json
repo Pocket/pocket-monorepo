@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "8.4.1",
-    "@sentry/types": "7.107.0",
+    "@sentry/types": "7.108.0",
     "@types/jest": "29.5.12",
     "@types/supertest": "^6.0.2",
     "eslint-config-custom": "workspace:*",
