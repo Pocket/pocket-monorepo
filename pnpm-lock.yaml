@@ -1005,20 +1005,20 @@ importers:
         specifier: 10.0.1
         version: 10.0.1(cdktf@0.20.5)(constructs@10.3.0)
       '@cdktf/provider-aws':
-        specifier: 19.10.0
-        version: 19.10.0(cdktf@0.20.5)(constructs@10.3.0)
+        specifier: 19.11.0
+        version: 19.11.0(cdktf@0.20.5)(constructs@10.3.0)
       '@cdktf/provider-local':
         specifier: 10.1.0
         version: 10.1.0(cdktf@0.20.5)(constructs@10.3.0)
       '@cdktf/provider-newrelic':
-        specifier: 12.3.0
-        version: 12.3.0(cdktf@0.20.5)(constructs@10.3.0)
+        specifier: 12.4.0
+        version: 12.4.0(cdktf@0.20.5)(constructs@10.3.0)
       '@cdktf/provider-null':
         specifier: 10.0.0
         version: 10.0.0(cdktf@0.20.5)(constructs@10.3.0)
       '@cdktf/provider-pagerduty':
-        specifier: 13.5.0
-        version: 13.5.0(cdktf@0.20.5)(constructs@10.3.0)
+        specifier: 13.6.0
+        version: 13.6.0(cdktf@0.20.5)(constructs@10.3.0)
       '@cdktf/provider-time':
         specifier: 10.1.0
         version: 10.1.0(cdktf@0.20.5)(constructs@10.3.0)
@@ -4448,8 +4448,8 @@ packages:
       constructs: 10.3.0
     dev: false
 
-  /@cdktf/provider-aws@19.10.0(cdktf@0.20.5)(constructs@10.3.0):
-    resolution: {integrity: sha512-CKCKJMWI5nzz+mVUhEU/81P1/lOkZmm+WPdRyoTolbZDf872jSF86iHeug68yHyrGKQhePK7rmYLRKGP7muNiQ==}
+  /@cdktf/provider-aws@19.11.0(cdktf@0.20.5)(constructs@10.3.0):
+    resolution: {integrity: sha512-Nl47iOIlCk+IHNfE00myuE4aUTF2VzrE+ooS5J9zVRHxG9sOvHWqXPARnNNTnJphZjXrfsmWLMHlEOrXRySgmw==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
       cdktf: ^0.20.0
@@ -4486,8 +4486,8 @@ packages:
       constructs: 10.3.0
     dev: false
 
-  /@cdktf/provider-newrelic@12.3.0(cdktf@0.20.5)(constructs@10.3.0):
-    resolution: {integrity: sha512-F/3a6K9ofxwRXrXwV9S0HFtTFOwcbTXre3zZCOmhhyJpmM+shqqmDKpKaCMRJhsbXhGeOku+9H2TzluoWJAFtA==}
+  /@cdktf/provider-newrelic@12.4.0(cdktf@0.20.5)(constructs@10.3.0):
+    resolution: {integrity: sha512-0CtBfnNu6+l/rYnWWOzBR4+5J8W9nLDSGX7rrICx9psqJc8wd8H0dVDUy2/wx4pyyHCEv8hA6TV1VaxSyUjnMg==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
       cdktf: ^0.20.0
@@ -4508,8 +4508,8 @@ packages:
       constructs: 10.3.0
     dev: false
 
-  /@cdktf/provider-pagerduty@13.5.0(cdktf@0.20.5)(constructs@10.3.0):
-    resolution: {integrity: sha512-yulYrQsJaM+HgaG9SSVUK9JOEc4B0J9XRojGUk38yREbOdtH8ijjlJcmJ2FTCKjKkAZQORHZBKn2IBFb2XVWFg==}
+  /@cdktf/provider-pagerduty@13.6.0(cdktf@0.20.5)(constructs@10.3.0):
+    resolution: {integrity: sha512-kbcxEaeSh9nDqo3f5TLgzualn/ZB3kfFaXDrMuSV7pUP6vrq2hDBRHudeVRvXfnrM5H7J9bjVAXip/kKdTCdLg==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
       cdktf: ^0.20.0
