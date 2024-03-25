@@ -11,7 +11,7 @@
       "cache": true
     },
     "synth": {
-      "dependsOn": ["^build", "build"],
+      "dependsOn": ["@pocket-tools/terraform-modules#build"],
       "inputs": ["src/**/*", "package.json", "cdktf.json", ".terraform-version"],
       "outputs": ["cdktf.out/**/*"]
     },
