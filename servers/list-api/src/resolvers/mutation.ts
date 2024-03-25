@@ -12,7 +12,7 @@ import { ParserCaller } from '../externalCaller/parserCaller';
 import { SavedItemDataService } from '../dataService';
 import * as Sentry from '@sentry/node';
 import { EventType } from '../businessEvents';
-import { getSavedItemTagsMap } from './utils';
+import { getSavedItemTagsMap, atLeastOneOf } from './utils';
 import { TagModel } from '../models';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
@@ -102,10 +102,10 @@ export async function upsertSavedItem(
  */
 export async function updateSavedItemFavorite(
   root,
-  args: { id: string },
+  args: { id: string; timestamp?: Date },
   context: IContext,
 ): Promise<SavedItem> {
-  return context.models.savedItem.favoriteById(args.id);
+  return context.models.savedItem.favoriteById(args.id, args.timestamp);
 }
 
 /**
@@ -116,10 +116,10 @@ export async function updateSavedItemFavorite(
  */
 export async function updateSavedItemUnFavorite(
   root,
-  args: { id: string },
+  args: { id: string; timestamp?: Date },
   context: IContext,
 ): Promise<SavedItem> {
-  return context.models.savedItem.unfavoriteById(args.id);
+  return context.models.savedItem.unfavoriteById(args.id, args.timestamp);
 }
 
 /**
@@ -130,10 +130,10 @@ export async function updateSavedItemUnFavorite(
  */
 export async function updateSavedItemArchive(
   root,
-  args: { id: string },
+  args: { id: string; timestamp?: Date },
   context: IContext,
 ): Promise<SavedItem> {
-  return context.models.savedItem.archiveById(args.id);
+  return context.models.savedItem.archiveById(args.id, args.timestamp);
 }
 
 /**
@@ -144,10 +144,10 @@ export async function updateSavedItemArchive(
  */
 export async function updateSavedItemUnArchive(
   root,
-  args: { id: string },
+  args: { id: string; timestamp?: Date },
   context: IContext,
 ): Promise<SavedItem> {
-  return context.models.savedItem.unarchiveById(args.id);
+  return context.models.savedItem.unarchiveById(args.id, args.timestamp);
 }
 
 /**
@@ -158,10 +158,10 @@ export async function updateSavedItemUnArchive(
  */
 export async function deleteSavedItem(
   root,
-  args: { id: string },
+  args: { id: string; timestamp?: Date },
   context: IContext,
 ): Promise<string> {
-  return context.models.savedItem.deleteById(args.id);
+  return context.models.savedItem.deleteById(args.id, args.timestamp);
 }
 
 /**
@@ -172,10 +172,10 @@ export async function deleteSavedItem(
  */
 export async function updateSavedItemUnDelete(
   root,
-  args: { id: string },
+  args: { id: string; timestamp?: Date },
   context: IContext,
 ): Promise<SavedItem> {
-  return context.models.savedItem.undeleteById(args.id);
+  return context.models.savedItem.undeleteById(args.id, args.timestamp);
 }
 
 /**
@@ -187,11 +187,12 @@ export async function updateSavedItemUnDelete(
  */
 export async function updateSavedItemTags(
   root,
-  args: { input: SavedItemTagUpdateInput },
+  args: { input: SavedItemTagUpdateInput; timestamp?: Date },
   context: IContext,
 ): Promise<SavedItem> {
   const savedItem = await context.models.tag.updateTagSaveConnections(
     args.input,
+    args.timestamp,
   );
   context.emitItemEvent(
     EventType.REPLACE_TAGS,
@@ -212,11 +213,12 @@ export async function updateSavedItemTags(
  */
 export async function updateSavedItemRemoveTags(
   root,
-  args: { savedItemId: string },
+  args: { savedItemId: string; timestamp?: Date },
   context: IContext,
 ): Promise<SavedItem> {
   const { save, removed } = await context.models.tag.removeSaveTags(
     args.savedItemId,
+    args.timestamp,
   );
   context.emitItemEvent(EventType.CLEAR_TAGS, save, removed);
   return save;
@@ -231,12 +233,13 @@ export async function updateSavedItemRemoveTags(
  */
 export async function createSavedItemTags(
   root,
-  args: { input: SavedItemTagsInput[] },
+  args: { input: SavedItemTagsInput[]; timestamp?: Date },
   context: IContext,
 ): Promise<SavedItem[]> {
   const savedItemTagsMap = getSavedItemTagsMap(args.input);
   const savedItems = await context.models.tag.createTagSaveConnections(
     args.input,
+    args.timestamp,
   );
 
   for (const savedItem of savedItems) {
@@ -256,11 +259,12 @@ export async function createSavedItemTags(
  */
 export async function deleteSavedItemTags(
   root,
-  args: { input: DeleteSavedItemTagsInput[] },
+  args: { input: DeleteSavedItemTagsInput[]; timestamp?: Date },
   context: IContext,
 ): Promise<SavedItem[]> {
   const deleteOperations = await context.models.tag.deleteTagSaveConnection(
     args.input,
+    args.timestamp,
   );
   const saves = deleteOperations.map(({ save, removed }) => {
     context.emitItemEvent(EventType.REMOVE_TAGS, save, removed);
@@ -289,12 +293,13 @@ export async function deleteTag(
  */
 export async function replaceSavedItemTags(
   root,
-  args: { input: SavedItemTagsInput[] },
+  args: { input: SavedItemTagsInput[]; timestamp?: Date },
   context: IContext,
 ): Promise<SavedItem[]> {
   const savedItemTagsMap = getSavedItemTagsMap(args.input);
   const savedItems = await context.models.tag.replaceSaveTagConnections(
     args.input,
+    args.timestamp,
   );
 
   for (const savedItem of savedItems) {
@@ -313,4 +318,72 @@ export async function updateTag(
   context: IContext,
 ): Promise<Tag> {
   return context.models.tag.renameTag(args.input);
+}
+
+/** Replace all tags on a single SavedItem with a new set of tags */
+export async function replaceTags(
+  root,
+  args: { savedItem: SavedItemRefInput; tagNames: string[]; timestamp: Date },
+  context: IContext,
+): Promise<SavedItem> {
+  if (!atLeastOneOf(args.savedItem, ['id', 'url'])) {
+    throw new UserInputError('SavedItemRef must have one of `id` or `url`');
+  }
+  if (args.savedItem.id != null) {
+    return context.models.savedItem.replaceTagsById(
+      args.savedItem.id,
+      args.tagNames,
+      args.timestamp,
+    );
+  } else {
+    return context.models.savedItem.replaceTagsByUrl(
+      args.savedItem.url,
+      args.tagNames,
+      args.timestamp,
+    );
+  }
+}
+/** Remove specific tags from a single SavedItem */
+export async function removeTagsByName(
+  root,
+  args: { savedItem: SavedItemRefInput; tagNames: string[]; timestamp: Date },
+  context: IContext,
+): Promise<SavedItem> {
+  if (!atLeastOneOf(args.savedItem, ['id', 'url'])) {
+    throw new UserInputError('SavedItemRef must have one of `id` or `url`');
+  }
+  if (args.savedItem.id != null) {
+    return context.models.savedItem.removeTagsFromSaveById(
+      args.savedItem.id,
+      args.tagNames,
+      args.timestamp,
+    );
+  } else {
+    return context.models.savedItem.removeTagsFromSaveByUrl(
+      args.savedItem.url,
+      args.tagNames,
+      args.timestamp,
+    );
+  }
+}
+/** Remove all tags associated to a single SavedItem */
+export async function clearTags(
+  root,
+  args: { savedItem: SavedItemRefInput; tagNames: string[]; timestamp: Date },
+  context: IContext,
+): Promise<SavedItem> {
+  if (!atLeastOneOf(args.savedItem, ['id', 'url'])) {
+    throw new UserInputError('SavedItemRef must have one of `id` or `url`');
+  }
+  if (args.savedItem.id != null) {
+    return context.models.savedItem.clearTagsById(
+      args.savedItem.id,
+      args.timestamp,
+    );
+  } else {
+    return context.models.savedItem.clearTagsByUrl(
+      args.savedItem.url,
+      args.timestamp,
+    );
+  }
 }

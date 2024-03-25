@@ -8,6 +8,7 @@ import { SavedItem } from '../types';
 export class SavedItemModel {
   private readonly defaultNotFoundMessage = 'SavedItem does not exist';
   private saveService: SavedItemDataService;
+
   constructor(public readonly context: IContext) {
     this.saveService = new SavedItemDataService(this.context);
   }
@@ -284,6 +285,58 @@ export class SavedItemModel {
     const id = await this.fetchIdFromUrl(url);
     // Will throw if fails or returns null
     return this.updateTitleById(id, timestamp, title);
+  }
+  /** Replace all tags associated to a single Saved Item, identified by url */
+  public async replaceTagsById(id: string, tags: string[], timestamp?: Date) {
+    const savedItem = await this.context.models.tag.replaceSaveTagConnections(
+      [{ savedItemId: id, tags }],
+      timestamp,
+    )[0];
+    this.context.emitItemEvent(EventType.REPLACE_TAGS, savedItem, tags);
+    return savedItem;
+  }
+  /** Replace all tags associated to a single Saved Item, identified by url */
+  public async replaceTagsByUrl(url: string, tags: string[], timestamp?: Date) {
+    const id = await this.fetchIdFromUrl(url);
+    return await this.replaceTagsById(id, tags, timestamp);
+  }
+  /** Remove all tags from a single Saved Item, identified by ID */
+  public async clearTagsById(id: string, timestamp?: Date) {
+    const { save, removed } = await this.context.models.tag.removeSaveTags(
+      id,
+      timestamp,
+    );
+    this.context.emitItemEvent(EventType.CLEAR_TAGS, save, removed);
+    return save;
+  }
+  /** Remove all tags from a single Saved Item, identified by url */
+  public async clearTagsByUrl(url: string, timestamp?: Date) {
+    const id = await this.fetchIdFromUrl(url);
+    return await this.clearTagsById(id, timestamp);
+  }
+  /** Remove tag names from a single Saved Item, identified by ID */
+  public async removeTagsFromSaveById(
+    id: string,
+    tags: string[],
+    timestamp?: Date,
+  ): Promise<SavedItem> {
+    const { save, removed } =
+      await this.context.models.tag.removeTagNamesFromSavedItem(
+        id,
+        tags,
+        timestamp,
+      );
+    this.context.emitItemEvent(EventType.REMOVE_TAGS, save, removed);
+    return save;
+  }
+  /** Remove tag names from a single Saved Item, identified by Url */
+  public async removeTagsFromSaveByUrl(
+    url: string,
+    tags: string[],
+    timestamp?: Date,
+  ): Promise<SavedItem> {
+    const id = await this.fetchIdFromUrl(url);
+    return await this.removeTagsFromSaveById(id, tags, timestamp);
   }
 
   /**
