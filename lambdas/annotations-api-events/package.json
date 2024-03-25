@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@sentry/serverless": "7.107.0",
+    "@sentry/serverless": "7.108.0",
     "node-fetch": "2.7.0",
     "tslib": "2.6.2"
   },
