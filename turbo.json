@@ -12,10 +12,10 @@
       "outputs": ["cdktf.out/**"]
     },
     "lint": {
-      "dependsOn": ["^build", "build"]
+      "dependsOn": ["^build", "prebuild"]
     },
     "format": {
-      "dependsOn": ["^build", "build"]
+      "dependsOn": ["^build", "prebuild"]
     },
     "semantic-release": {
       "dependsOn": ["^build", "build"]
