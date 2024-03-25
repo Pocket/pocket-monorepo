@@ -326,8 +326,8 @@ importers:
         specifier: 2.18.1
         version: 2.18.1
       stripe:
-        specifier: 14.21.0
-        version: 14.21.0
+        specifier: 14.22.0
+        version: 14.22.0
       tslib:
         specifier: 2.6.2
         version: 2.6.2
@@ -1212,8 +1212,8 @@ importers:
         specifier: 3.3.7
         version: 3.3.7
       stripe:
-        specifier: 14.21.0
-        version: 14.21.0
+        specifier: 14.22.0
+        version: 14.22.0
     devDependencies:
       '@sentry/types':
         specifier: 7.108.0
@@ -8348,12 +8348,6 @@ packages:
     resolution: {integrity: sha512-Kza43ewS3xoLgCEpQrsT+xRo/EJej1y0kVYGiLFE1NEODXGzTfwiC6tXTLMQskn1X4/Rjlh0MQUvx9W+L9long==}
     dependencies:
       undici-types: 5.26.5
-
-  /@types/node@20.11.28:
-    resolution: {integrity: sha512-M/GPWVS2wLkSkNHVeLkrF2fD5Lx5UC4PxA0uZcKc6QqbIQUJyW1jVjueJYi1z8n0I5PxYrtpnPnWglE+y9A0KA==}
-    dependencies:
-      undici-types: 5.26.5
-    dev: false
 
   /@types/node@20.11.30:
     resolution: {integrity: sha512-dHM6ZxwlmuZaRmUPfv1p+KrdD1Dci04FbdEm/9wEMouFqxYoFl5aMkt0VMAUtYRQDyYvD41WJLukhq/ha3YuTw==}
@@ -18289,11 +18283,11 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /stripe@14.21.0:
-    resolution: {integrity: sha512-PFmpl35Myn6UDdVLTHcuppdbkPVvlQfkMHOmgGZh5QOdSUxVmvz090Z4obLg8ta1MNs1PNpzr9i7E39iAIv07A==}
+  /stripe@14.22.0:
+    resolution: {integrity: sha512-Pj8SAdTNjMq42UnWzBTTy8KMQ8qbQoVemPHbw3x+rHvwq1Psg9UFPT58j54F5os/SCgUAOZSEMcUedvzIDuqvw==}
     engines: {node: '>=12.*'}
     dependencies:
-      '@types/node': 20.11.28
+      '@types/node': 20.11.30
       qs: 6.12.0
     dev: false
 
