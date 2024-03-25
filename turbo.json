@@ -12,8 +12,8 @@
     },
     "synth": {
       "dependsOn": ["^build", "build"],
-      "inputs": ["src/**/*", "package.json", "cdktf.json", ".terraform-version", "cdktf.out/**/*"],
-      "outputs": ["cdktf.out/**"]
+      "inputs": ["src/**/*", "package.json", "cdktf.json", ".terraform-version"],
+      "outputs": ["cdktf.out/**/*"]
     },
     "lint": {
       "inputs": ["src/**/*", ".eslintrc.js", "package.json"],
