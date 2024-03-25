@@ -28,11 +28,11 @@
     },
     "test": {
       "inputs": ["src/**/*", "package.json", "jest.config.js", "jest.setup.js"],
-      "dependsOn": ["^build", "build"],
+      "dependsOn": ["^build", "prebuild"],
       "cache": true
     },
     "test-integrations": {
-      "dependsOn": ["^build", "build", "pretest"],
+      "dependsOn": ["^build", "prebuild", "pretest"],
       "cache": false
     },
     "dev": {
