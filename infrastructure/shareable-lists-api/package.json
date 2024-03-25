@@ -7,8 +7,7 @@
   "private": true,
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "watch": "tsc -w",
-    "test": "echo ok",
+    "watch": "tsc -w", 
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\"",
     "synth": "cdktf synth",

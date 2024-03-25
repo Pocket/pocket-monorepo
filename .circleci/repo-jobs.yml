@@ -7,9 +7,8 @@ jobs:
       - install_pnpm
       - run:
           name: Lint
-          # Need to build first, so the linter picks up all needed imports
           command: |
-            pnpm run lint --concurrency=1
+            pnpm run lint
 
   mismatched_versions:
     docker:
@@ -31,8 +30,9 @@ jobs:
       - install_pnpm
       - run:
           name: Test
+          # Following uses a 2 concurrency because terraform modules seems to fail with an OOM error on CI if we do more.
           command: |
-            pnpm run test --concurrency=2
+            pnpm run test --concurrency=2 
 
 workflows:
   repo:

@@ -71,6 +71,26 @@ Where annotations-api is the server name from package.json you want to run. `...
 You can expand this to run multiple specific servers as well like:
 ```pnpm run dev --filter=list-api... --filter=feature-flags...```
 
+### Caching
+
+This repo relies on Turbo repos caching strategies to speed up development and only execute tasks that are needed when certain files change.
+
+More information can be found on [Turbo repos site](https://turbo.build/repo/docs/core-concepts/caching).
+
+If you add new build outputs or inputs, you will need to add them to the necessary area in [turbo.json](./turbo.json).
+
+If for any reason you need to bypass caching you can add `--force` to any command. It would be run like:
+
+```bash
+pnpm run test --force
+```
+
+or
+
+```bash
+pnpm run test --filter=annocations-api... --force
+```
+
 ### Testing
 
 ### Updating Packages

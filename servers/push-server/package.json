@@ -19,7 +19,6 @@
   "scripts": {
     "start": "node -r dotenv/config dist/index.js",
     "build": "rm -rf dist && tsc",
-    "test": "echo ok",
     "dev": "npm run build && npm run watch",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand --forceExit",
     "test:watch": "npm test -- --watchAll",
