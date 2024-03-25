@@ -7,9 +7,8 @@ jobs:
       - install_pnpm
       - run:
           name: Lint
-          # Need to build first, so the linter picks up all needed imports
           command: |
-            pnpm run lint --concurrency=1
+            pnpm run lint
 
   mismatched_versions:
     docker:
