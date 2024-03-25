@@ -12,7 +12,7 @@
     },
     "synth": {
       "dependsOn": ["^build", "build"],
-      "inputs": ["src/**/*", "package.json", "cdktf.json", ".terraform-version"],
+      "inputs": ["src/**/*", "package.json", "cdktf.json", ".terraform-version", "cdktf.out/**/*"],
       "outputs": ["cdktf.out/**"]
     },
     "lint": {
