@@ -29,7 +29,7 @@ export class SqsLambda extends Construct {
   ) {
     super(scope, name.toLowerCase());
 
-    const { sentryDsn, gitSha } = this.getEnvVariableValues();
+    const { sentryDsn } = this.getEnvVariableValues();
 
     this.lambda = new PocketSQSWithLambdaTarget(this, name.toLowerCase(), {
       name: `${stackConfig.prefix}-${name}`,
@@ -52,9 +52,9 @@ export class SqsLambda extends Construct {
             stackConfig.environment === 'Prod' ? 'production' : 'development',
           NODE_ENV:
             stackConfig.environment === 'Prod' ? 'production' : 'development',
-          GIT_SHA: gitSha,
           SENTRY_DSN: sentryDsn,
         },
+        ignoreEnvironmentVars: ['GIT_SHA'],
         handler: 'index.handler',
         reservedConcurrencyLimit: config.reservedConcurrencyLimit,
         runtime: LAMBDA_RUNTIMES.NODEJS20,
@@ -77,14 +77,6 @@ export class SqsLambda extends Construct {
       },
     );
 
-    const serviceHash = new dataAwsSsmParameter.DataAwsSsmParameter(
-      this,
-      'service-hash',
-      {
-        name: `${stackConfig.circleCIPrefix}/SERVICE_HASH`,
-      },
-    );
-
-    return { sentryDsn: sentryDsn.value, gitSha: serviceHash.value };
+    return { sentryDsn: sentryDsn.value };
   }
 }

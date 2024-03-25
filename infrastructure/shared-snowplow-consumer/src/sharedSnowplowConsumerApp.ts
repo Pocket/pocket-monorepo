@@ -129,6 +129,7 @@ export class SharedSnowplowConsumerApp extends Construct {
         useCodeDeploy: true,
         useCodePipeline: false,
         useTerraformBasedCodeDeploy: false,
+        generateAppSpec: false,
         notifications: {
           notifyOnFailed: true,
           notifyOnStarted: false,

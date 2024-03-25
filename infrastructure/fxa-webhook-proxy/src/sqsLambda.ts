@@ -19,7 +19,7 @@ export class SqsLambda extends Construct {
   ) {
     super(scope, name);
 
-    const { sentryDsn, gitSha } = getEnvVariableValues(this);
+    const { sentryDsn } = getEnvVariableValues(this);
 
     new PocketSQSWithLambdaTarget(this, 'fxa-events-sqs-lambda', {
       name: `${config.prefix}-Sqs-FxA-Events`,
@@ -37,10 +37,10 @@ export class SqsLambda extends Construct {
           REGION: vpc.region,
           JWT_KEY: config.sqsLambda.jwtKey,
           SENTRY_DSN: sentryDsn,
-          GIT_SHA: gitSha,
           ENVIRONMENT:
             config.environment === 'Prod' ? 'production' : 'development',
         },
+        ignoreEnvironmentVars: ['GIT_SHA'],
         vpcConfig: {
           securityGroupIds: vpc.internalSecurityGroups.ids,
           subnetIds: vpc.privateSubnetIds,

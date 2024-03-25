@@ -10,8 +10,7 @@
     "synth": "cdktf synth",
     "compile": "tsc --pretty",
     "watch": "tsc -w",
-    "test": "echo ok",
-    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "lint":  "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\""
   },
   "dependencies": {

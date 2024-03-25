@@ -31,7 +31,7 @@ export class BatchDeleteLambdaResources extends Construct {
   ) {
     super(scope, name.toLowerCase());
 
-    const { sentryDsn, gitSha } = this.getEnvVariableValues();
+    const { sentryDsn } = this.getEnvVariableValues();
 
     // Tables for retrieving historically deleted user ID lists
     // and keeping track of which ones have been processed
@@ -55,13 +55,13 @@ export class BatchDeleteLambdaResources extends Construct {
           timeout: 120,
           environment: {
             SENTRY_DSN: sentryDsn,
-            GIT_SHA: gitSha,
             ENVIRONMENT:
               stackConfig.environment === 'Prod' ? 'production' : 'development',
             NODE_ENV:
               stackConfig.environment === 'Prod' ? 'production' : 'development',
             USER_API: `https://${stackConfig.userApiDomain}`,
           },
+          ignoreEnvironmentVars: ['GIT_SHA'],
           vpcConfig: {
             securityGroupIds: this.vpc.defaultSecurityGroups.ids,
             subnetIds: this.vpc.privateSubnetIds,
@@ -119,24 +119,28 @@ export class BatchDeleteLambdaResources extends Construct {
     );
 
     //permission for scheduledEvent to invoke the batchDeleteLambda
-    new lambdaPermission.LambdaPermission(this, `${config.prefix}-batchLambda-permission`, {
-      principal: 'events.amazonaws.com',
-      action: 'lambda:InvokeFunction',
-      functionName: this.batchDeleteLambda.lambda.defaultLambda.arn,
-      sourceArn: scheduledEvent.rule.arn,
-    });
+    new lambdaPermission.LambdaPermission(
+      this,
+      `${config.prefix}-batchLambda-permission`,
+      {
+        principal: 'events.amazonaws.com',
+        action: 'lambda:InvokeFunction',
+        functionName: this.batchDeleteLambda.lambda.defaultLambda.arn,
+        sourceArn: scheduledEvent.rule.arn,
+      },
+    );
   }
 
   private getEnvVariableValues() {
-    const sentryDsn = new dataAwsSsmParameter.DataAwsSsmParameter(this, 'sentry-dsn', {
-      name: `/${stackConfig.name}/${stackConfig.environment}/SENTRY_DSN`,
-    });
+    const sentryDsn = new dataAwsSsmParameter.DataAwsSsmParameter(
+      this,
+      'sentry-dsn',
+      {
+        name: `/${stackConfig.name}/${stackConfig.environment}/SENTRY_DSN`,
+      },
+    );
 
-    const serviceHash = new dataAwsSsmParameter.DataAwsSsmParameter(this, 'service-hash', {
-      name: `${stackConfig.circleCIPrefix}/SERVICE_HASH`,
-    });
-
-    return { sentryDsn: sentryDsn.value, gitSha: serviceHash.value };
+    return { sentryDsn: sentryDsn.value };
   }
 
   /**
@@ -206,23 +210,27 @@ export class BatchDeleteLambdaResources extends Construct {
     actions: string[],
   ) {
     const resources = dynamoTables.map((_) => _.arn);
-    const policy = new iamPolicy.IamPolicy(this, `${name}-lambda-dynamo-policy`, {
-      name: `${this.name}-${name}-DynamoLambdaPolicy`,
-      policy: new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
-        this,
-        `${name}-lambda-dynamo-policy-doc`,
-        {
-          statement: [
-            {
-              effect: 'Allow',
-              actions,
-              resources,
-            },
-          ],
-        },
-      ).json,
-      dependsOn: [lambdaExecutionRole],
-    });
+    const policy = new iamPolicy.IamPolicy(
+      this,
+      `${name}-lambda-dynamo-policy`,
+      {
+        name: `${this.name}-${name}-DynamoLambdaPolicy`,
+        policy: new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
+          this,
+          `${name}-lambda-dynamo-policy-doc`,
+          {
+            statement: [
+              {
+                effect: 'Allow',
+                actions,
+                resources,
+              },
+            ],
+          },
+        ).json,
+        dependsOn: [lambdaExecutionRole],
+      },
+    );
     return new iamRolePolicyAttachment.IamRolePolicyAttachment(
       this,
       `${name}-execution-role-policy-attachment`,

@@ -13,10 +13,10 @@ import { nanoid } from 'nanoid';
 import { writeClient } from './dataService/clients';
 import { AccountDeleteDataService } from './dataService/accountDeleteDataService';
 import { setTimeout } from 'timers/promises';
-import Logger from './logger';
 import { SeverityLevel } from '@sentry/types';
 import { unleash } from './unleash';
 import { Unleash } from 'unleash-client';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export class BatchDeleteHandler {
   readonly sqsClient: SQSClient;
@@ -53,6 +53,7 @@ export class BatchDeleteHandler {
       endpoint: config.aws.endpoint,
       maxAttempts: 3,
     });
+    this.unleashClient = unleashClient ?? unleash();
     emitter.on(
       BatchDeleteHandler.eventName,
       async () => await this.pollQueue(),
@@ -61,7 +62,6 @@ export class BatchDeleteHandler {
     if (pollOnInit) {
       emitter.emit(BatchDeleteHandler.eventName);
     }
-    this.unleashClient = unleashClient ?? unleash();
   }
 
   /**
@@ -78,7 +78,11 @@ export class BatchDeleteHandler {
       await this.sqsClient.send(new DeleteMessageCommand(deleteParams));
     } catch (error) {
       const errorMessage = 'deleteMessage: Error deleting message from queue';
-      Logger.error({ message: errorMessage, error: error, data: message });
+      serverLogger.error({
+        message: errorMessage,
+        error: error,
+        data: message,
+      });
       Sentry.addBreadcrumb({ message: errorMessage, data: message });
       Sentry.captureException(error);
     }
@@ -98,7 +102,7 @@ export class BatchDeleteHandler {
 
     // Kick off promises for deletes, but don't block response
     try {
-      Logger.info({
+      serverLogger.info({
         message: 'handleMessage: Starting deletes.',
         data: {
           traceId: traceId,
@@ -122,7 +126,7 @@ export class BatchDeleteHandler {
     } catch (error) {
       const errorMessage =
         'handleMessage: Error occurred during batch delete query';
-      Logger.error({ message: errorMessage, error: error, data: body });
+      serverLogger.error({ message: errorMessage, error: error, data: body });
       Sentry.addBreadcrumb({
         message: errorMessage,
         data: body,
@@ -164,7 +168,7 @@ export class BatchDeleteHandler {
     } catch (error) {
       const errorMessage =
         'handleSpecialDeletes: Error occurred during batch delete query';
-      Logger.error({ message: errorMessage, error: error, data: body });
+      serverLogger.error({ message: errorMessage, error: error, data: body });
       Sentry.addBreadcrumb({
         message: errorMessage,
         data: body,
@@ -182,7 +186,7 @@ export class BatchDeleteHandler {
    */
   async scheduleNextPoll(timeout: number) {
     if (timeout > 0) {
-      Logger.info(`Set next poll timeout at ${timeout}`);
+      serverLogger.info(`Set next poll timeout at ${timeout}`);
       await setTimeout(timeout);
     }
     this.emitter.emit(BatchDeleteHandler.eventName);
@@ -207,6 +211,10 @@ export class BatchDeleteHandler {
       WaitTimeSeconds: config.aws.sqs.accountDeleteQueue.waitTimeSeconds,
     };
 
+    serverLogger.info(
+      `Begining polling of ${config.aws.sqs.accountDeleteQueue.url}`,
+    );
+
     let data: ReceiveMessageCommandOutput;
     let body: SqsMessage;
 
@@ -221,6 +229,9 @@ export class BatchDeleteHandler {
         config.unleash.flags.deletesDisabled.fallback,
       )
     ) {
+      serverLogger.info(
+        `Skipping polling of ${config.aws.sqs.accountDeleteQueue.url} due to feature flag kill switch on.`,
+      );
       // Schedule next poll and do nothing else
       await this.scheduleNextPoll(
         config.aws.sqs.accountDeleteQueue.defaultPollIntervalSeconds * 1000,
@@ -236,7 +247,7 @@ export class BatchDeleteHandler {
       }
     } catch (error) {
       const receiveError = 'PollQueue: Error receiving messages from queue';
-      Logger.error({ message: receiveError, error: error });
+      serverLogger.error({ message: receiveError, error: error });
       Sentry.addBreadcrumb({ message: receiveError });
       Sentry.captureException(error, { level: 'fatal' as SeverityLevel });
     }

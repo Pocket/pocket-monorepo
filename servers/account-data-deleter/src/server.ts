@@ -4,8 +4,7 @@ import express, { Application, json } from 'express';
 import { queueDeleteRouter, stripeDeleteRouter } from './routes';
 import { EventEmitter } from 'events';
 import { BatchDeleteHandler } from './batchDeleteHandler';
-import Logger from './logger';
-import { setMorgan } from '@pocket-tools/ts-logger';
+import { serverLogger, setMorgan } from '@pocket-tools/ts-logger';
 import { sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
 import { initSentry } from '@pocket-tools/sentry';
 import { unleash } from './unleash';
@@ -31,12 +30,12 @@ app.use(
   json(),
   sentryPocketMiddleware,
   // Logging Setup, Express app-specific
-  setMorgan(Logger),
+  setMorgan(serverLogger),
 );
 
 // Endpoints
 app.get('/health', (req, res) => {
-  Logger.info('healthcheck Logger');
+  serverLogger.info('healthcheck Logger');
   res.status(200).send('ok');
 });
 app.use('/queueDelete', queueDeleteRouter);
@@ -51,9 +50,9 @@ new BatchDeleteHandler(new EventEmitter());
 // Start Express app
 app
   .listen({ port: config.app.port }, () => {
-    Logger.info(`🚀 Server ready at http://localhost:${config.app.port}`);
+    serverLogger.info(`🚀 Server ready at http://localhost:${config.app.port}`);
   })
   .on('error', (_error) => {
     Sentry.captureException(_error.message);
-    return Logger.error('Error: ', _error.message);
+    return serverLogger.error('Error: ', _error.message);
   });

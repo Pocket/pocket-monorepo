@@ -12,7 +12,7 @@ import {
   dataAwsKmsAlias,
   dataAwsRegion,
   dataAwsSnsTopic,
-  cloudwatchLogGroup
+  cloudwatchLogGroup,
 } from '@cdktf/provider-aws';
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
@@ -319,6 +319,7 @@ class AnnotationsAPI extends TerraformStack {
         useCodePipeline: false,
         useTerraformBasedCodeDeploy: false,
         snsNotificationTopicArn: snsTopic.arn,
+        generateAppSpec: false,
         notifications: {
           //only notify on failed deploys
           notifyOnFailed: true,

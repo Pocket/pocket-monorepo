@@ -80,13 +80,19 @@ export class ApplicationDynamoDBTable extends Construct {
       config.capacityMode ?? ApplicationDynamoDBTableCapacityMode.PROVISIONED
     ).valueOf();
 
+    const ignoreChanges = [
+      'read_capacity',
+      'write_capacity',
+      ...(config.lifecycle ? config.lifecycle.ignoreChanges : []),
+    ].filter((value) => typeof value === 'string');
+
     this.dynamodb = new dynamodbTable.DynamodbTable(this, `dynamodb_table`, {
       ...config.tableConfig,
       billingMode: billingMode,
       tags: config.tags,
       name: config.prefix,
       lifecycle: {
-        ignoreChanges: ['read_capacity', 'write_capacity'],
+        ignoreChanges: [...new Set(ignoreChanges)], // use set to remove duplicates
         // Protect the table from being removed, unless preventDestroyTable is explicitly set to false.
         preventDestroy: config.preventDestroyTable !== false,
       },

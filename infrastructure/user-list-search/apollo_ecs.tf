@@ -169,31 +169,6 @@ resource "aws_ecs_service" "apollo" {
   ]
 }
 
-locals {
-  appspec_content = {
-    version = 1,
-    Resources = [
-      {
-        TargetService = {
-          Type       = "AWS::ECS::Service",
-          Properties = {
-            TaskDefinition = aws_ecs_task_definition.apollo.arn,
-            LoadBalancerInfo = {
-              ContainerName = local.container_name,
-              ContainerPort = local.container_port,
-            },
-          },
-        },
-      },
-    ],
-  }
-}
-
-resource "local_file" "appspec" {
-  content  = jsonencode(local.appspec_content)
-  filename = "appspec.json"
-}
-
 /**
  * If you make any changes to the Task Definition this must be called since we ignore changes to it.
  *

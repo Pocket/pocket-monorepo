@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/node';
 import { indexedTables } from '../config/tables';
 import { config } from '../config';
 import { setTimeout } from 'timers/promises';
-import Logger from '../logger';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 interface LimitOverridesConfig {
   limit: number;
@@ -49,7 +49,7 @@ export class AccountDeleteDataService {
       return [...indexedTables[table]];
     }
 
-    Logger.error({
+    serverLogger.error({
       message: 'getIndexColumnForTables: lookup failed.',
       data: {
         table: table,
@@ -168,7 +168,7 @@ export class AccountDeleteDataService {
         whereCondition: where,
         requestId: requestId,
       };
-      Logger.error({ message: errorMessage, error: error, data: errorData });
+      serverLogger.error({ message: errorMessage, error: error, data: errorData });
       Sentry.addBreadcrumb({ message: errorMessage, data: errorData });
       Sentry.captureException(error);
     }
@@ -189,7 +189,7 @@ export class AccountDeleteDataService {
     /* eslint-disable max-len */
     const successMessage = `deleted rows for ${tableName} with provided where condition.`;
     /* eslint-enable max-len */
-    Logger.info({ message: successMessage, data: where });
+    serverLogger.info({ message: successMessage, data: where });
     return rowCount;
   }
 

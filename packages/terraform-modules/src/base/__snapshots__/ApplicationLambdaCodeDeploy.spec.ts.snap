@@ -24,6 +24,16 @@ exports[`ApplicationLambdaCodeDeploy renders a lambda code deploy app 1`] = `
       }
     }
   },
+  "output": {
+    "test-lambda-code-deploy_lambda_codedeploy_app_08E19C48": {
+      "description": "Lambda CodeDeploy App Name",
+      "value": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}"
+    },
+    "test-lambda-code-deploy_lambda_codedeploy_group_FC959693": {
+      "description": "Lambda CodeDeploy Group Name",
+      "value": "\${aws_codedeploy_deployment_group.test-lambda-code-deploy_code-deployment-group_3F73EBCE.deployment_group_name}"
+    }
+  },
   "resource": {
     "aws_codedeploy_app": {
       "test-lambda-code-deploy_code-deploy-app_A7640CFE": {
@@ -93,6 +103,16 @@ exports[`ApplicationLambdaCodeDeploy renders a lambda code deploy app with all n
           }
         ]
       }
+    }
+  },
+  "output": {
+    "test-lambda-code-deploy_lambda_codedeploy_app_08E19C48": {
+      "description": "Lambda CodeDeploy App Name",
+      "value": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}"
+    },
+    "test-lambda-code-deploy_lambda_codedeploy_group_FC959693": {
+      "description": "Lambda CodeDeploy Group Name",
+      "value": "\${aws_codedeploy_deployment_group.test-lambda-code-deploy_code-deployment-group_3F73EBCE.deployment_group_name}"
     }
   },
   "resource": {
@@ -183,6 +203,16 @@ exports[`ApplicationLambdaCodeDeploy renders a lambda code deploy app with defau
       }
     }
   },
+  "output": {
+    "test-lambda-code-deploy_lambda_codedeploy_app_08E19C48": {
+      "description": "Lambda CodeDeploy App Name",
+      "value": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}"
+    },
+    "test-lambda-code-deploy_lambda_codedeploy_group_FC959693": {
+      "description": "Lambda CodeDeploy Group Name",
+      "value": "\${aws_codedeploy_deployment_group.test-lambda-code-deploy_code-deployment-group_3F73EBCE.deployment_group_name}"
+    }
+  },
   "resource": {
     "aws_codedeploy_app": {
       "test-lambda-code-deploy_code-deploy-app_A7640CFE": {
@@ -267,6 +297,16 @@ exports[`ApplicationLambdaCodeDeploy renders a lambda code deploy app with sns t
           }
         ]
       }
+    }
+  },
+  "output": {
+    "test-lambda-code-deploy_lambda_codedeploy_app_08E19C48": {
+      "description": "Lambda CodeDeploy App Name",
+      "value": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}"
+    },
+    "test-lambda-code-deploy_lambda_codedeploy_group_FC959693": {
+      "description": "Lambda CodeDeploy Group Name",
+      "value": "\${aws_codedeploy_deployment_group.test-lambda-code-deploy_code-deployment-group_3F73EBCE.deployment_group_name}"
     }
   },
   "resource": {
@@ -355,6 +395,16 @@ exports[`ApplicationLambdaCodeDeploy renders a lambda code deploy app with sns t
       }
     }
   },
+  "output": {
+    "test-lambda-code-deploy_lambda_codedeploy_app_08E19C48": {
+      "description": "Lambda CodeDeploy App Name",
+      "value": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}"
+    },
+    "test-lambda-code-deploy_lambda_codedeploy_group_FC959693": {
+      "description": "Lambda CodeDeploy Group Name",
+      "value": "\${aws_codedeploy_deployment_group.test-lambda-code-deploy_code-deployment-group_3F73EBCE.deployment_group_name}"
+    }
+  },
   "resource": {
     "aws_codedeploy_app": {
       "test-lambda-code-deploy_code-deploy-app_A7640CFE": {
@@ -439,6 +489,16 @@ exports[`ApplicationLambdaCodeDeploy renders a lambda code deploy app with start
           }
         ]
       }
+    }
+  },
+  "output": {
+    "test-lambda-code-deploy_lambda_codedeploy_app_08E19C48": {
+      "description": "Lambda CodeDeploy App Name",
+      "value": "\${aws_codedeploy_app.test-lambda-code-deploy_code-deploy-app_A7640CFE.name}"
+    },
+    "test-lambda-code-deploy_lambda_codedeploy_group_FC959693": {
+      "description": "Lambda CodeDeploy Group Name",
+      "value": "\${aws_codedeploy_deployment_group.test-lambda-code-deploy_code-deployment-group_3F73EBCE.deployment_group_name}"
     }
   },
   "resource": {

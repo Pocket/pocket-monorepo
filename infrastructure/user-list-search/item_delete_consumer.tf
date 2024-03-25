@@ -20,6 +20,7 @@ resource "aws_lambda_function" "item_delete_sqs_processor" {
   publish = true # We need to publish an initial version
   lifecycle {
     ignore_changes = [
+      environment["GIT_SHA"],
       filename,
       source_code_hash,
       reserved_concurrent_executions

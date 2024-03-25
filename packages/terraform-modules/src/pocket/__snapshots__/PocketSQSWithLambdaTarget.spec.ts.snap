@@ -77,6 +77,20 @@ exports[`renders a lambda triggered by an existing sqs queue 1`] = `
       }
     }
   },
+  "output": {
+    "test-sqs-lambda_lambda_arn_BFDEC9C8": {
+      "description": "Lambda Function ARN",
+      "value": "\${aws_lambda_function.test-sqs-lambda_C2DB9DC9.arn}"
+    },
+    "test-sqs-lambda_lambda_function_name_E2ECB413": {
+      "description": "Lambda Function Name",
+      "value": "\${aws_lambda_function.test-sqs-lambda_C2DB9DC9.function_name}"
+    },
+    "test-sqs-lambda_lambda_version_arn_1B6A0BE0": {
+      "description": "Lambda Version ARN",
+      "value": "\${aws_lambda_alias.test-sqs-lambda_alias_2C2A09A2.arn}"
+    }
+  },
   "resource": {
     "aws_cloudwatch_log_group": {
       "test-sqs-lambda_log-group_F69AB78F": {
@@ -269,6 +283,20 @@ exports[`renders a plain sqs queue and lambda target 1`] = `
           }
         ]
       }
+    }
+  },
+  "output": {
+    "test-sqs-lambda_lambda_arn_BFDEC9C8": {
+      "description": "Lambda Function ARN",
+      "value": "\${aws_lambda_function.test-sqs-lambda_C2DB9DC9.arn}"
+    },
+    "test-sqs-lambda_lambda_function_name_E2ECB413": {
+      "description": "Lambda Function Name",
+      "value": "\${aws_lambda_function.test-sqs-lambda_C2DB9DC9.function_name}"
+    },
+    "test-sqs-lambda_lambda_version_arn_1B6A0BE0": {
+      "description": "Lambda Version ARN",
+      "value": "\${aws_lambda_alias.test-sqs-lambda_alias_2C2A09A2.arn}"
     }
   },
   "resource": {
@@ -469,6 +497,20 @@ exports[`renders a plain sqs queue with a deadletter and lambda target 1`] = `
           }
         ]
       }
+    }
+  },
+  "output": {
+    "test-sqs-lambda_lambda_arn_BFDEC9C8": {
+      "description": "Lambda Function ARN",
+      "value": "\${aws_lambda_function.test-sqs-lambda_C2DB9DC9.arn}"
+    },
+    "test-sqs-lambda_lambda_function_name_E2ECB413": {
+      "description": "Lambda Function Name",
+      "value": "\${aws_lambda_function.test-sqs-lambda_C2DB9DC9.function_name}"
+    },
+    "test-sqs-lambda_lambda_version_arn_1B6A0BE0": {
+      "description": "Lambda Version ARN",
+      "value": "\${aws_lambda_alias.test-sqs-lambda_alias_2C2A09A2.arn}"
     }
   },
   "resource": {

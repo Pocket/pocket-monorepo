@@ -16,7 +16,7 @@ import {
   lambdaAlias,
 } from '@cdktf/provider-aws';
 
-import { Fn, TerraformMetaArguments } from 'cdktf';
+import { Fn, TerraformMetaArguments, TerraformOutput } from 'cdktf';
 import { Construct } from 'constructs';
 
 export enum LAMBDA_RUNTIMES {
@@ -46,6 +46,7 @@ export interface ApplicationVersionedLambdaProps
   logRetention?: number;
   s3Bucket: string;
   usesCodeDeploy?: boolean;
+  ignoreEnvironmentVars?: string[];
 }
 
 const DEFAULT_TIMEOUT = 5;
@@ -65,6 +66,10 @@ export class ApplicationVersionedLambda extends Construct {
     private config: ApplicationVersionedLambdaProps,
   ) {
     super(scope, name);
+
+    if (!config.ignoreEnvironmentVars) {
+      config.ignoreEnvironmentVars = [];
+    }
 
     this.createCodeBucket();
     const { versionedLambda, lambda } = this.createLambdaFunction();
@@ -117,6 +122,9 @@ export class ApplicationVersionedLambda extends Construct {
           'filename',
           'source_code_hash',
           this.shouldIgnorePublish() ? 'publish' : '',
+          ...this.config.ignoreEnvironmentVars.map(
+            (value) => `environment["${value}"]`,
+          ),
         ].filter((v: string) => v),
       },
       tags: this.config.tags,
@@ -131,6 +139,16 @@ export class ApplicationVersionedLambda extends Construct {
       'lambda',
       lambdaConfig,
     );
+
+    new TerraformOutput(this, 'lambda_function_name', {
+      value: lambda.functionName,
+      description: 'Lambda Function Name',
+    });
+
+    new TerraformOutput(this, 'lambda_arn', {
+      value: lambda.arn,
+      description: 'Lambda Function ARN',
+    });
 
     new cloudwatchLogGroup.CloudwatchLogGroup(this, 'log-group', {
       name: `/aws/lambda/${lambda.functionName}`,
@@ -150,6 +168,12 @@ export class ApplicationVersionedLambda extends Construct {
       dependsOn: [lambda],
       provider: this.config.provider,
     });
+
+    new TerraformOutput(this, 'lambda_version_arn', {
+      value: versionedLambda.arn,
+      description: 'Lambda Version ARN',
+    });
+
     return { versionedLambda, lambda };
   }
 

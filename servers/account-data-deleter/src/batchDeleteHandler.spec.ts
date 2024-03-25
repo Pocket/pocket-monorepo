@@ -6,7 +6,7 @@ import { AccountDeleteDataService } from './dataService/accountDeleteDataService
 import * as Sentry from '@sentry/node';
 import { SeverityLevel } from '@sentry/types';
 import { config } from './config';
-import Logger from './logger';
+import { serverLogger } from '@pocket-tools/ts-logger';
 import { mockUnleash } from '@pocket-tools/feature-flags-client';
 
 describe('batchDeleteHandler', () => {
@@ -42,7 +42,7 @@ describe('batchDeleteHandler', () => {
       .spyOn(batchDeleteHandler, 'scheduleNextPoll')
       .mockResolvedValue();
     sentryStub = jest.spyOn(Sentry, 'captureException');
-    loggerError = jest.spyOn(Logger, 'error');
+    loggerError = jest.spyOn(serverLogger, 'error');
   });
   afterAll(() => {
     mockClient.destroy();

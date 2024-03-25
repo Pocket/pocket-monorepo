@@ -1,6 +1,6 @@
 import { dataAwsLambdaFunction } from '@cdktf/provider-aws';
 import { Testing } from 'cdktf';
-import { ApplicationLambdaSnsTopicSubscription } from './ApplicationLambdaSnsTopicSubscription.js'
+import { ApplicationLambdaSnsTopicSubscription } from './ApplicationLambdaSnsTopicSubscription.js';
 
 describe('ApplicationSqsSnsTopicSubscription', () => {
   const getConfig = (stack) => ({
