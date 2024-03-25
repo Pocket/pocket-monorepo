@@ -1,14 +1,17 @@
-import { readClient, writeClient } from '../../../database/client';
-import { SavedItemDataService, UsersMetaService } from '../../../dataService';
-import { mysqlTimeString } from '../../../dataService/utils';
-import config from '../../../config';
-import { ContextManager } from '../../../server/context';
-import { getUnixTimestamp } from '../../../utils';
-import { startServer } from '../../../server/apollo';
+import { readClient, writeClient } from '../../../../database/client';
+import {
+  SavedItemDataService,
+  UsersMetaService,
+} from '../../../../dataService';
+import { mysqlTimeString } from '../../../../dataService/utils';
+import config from '../../../../config';
+import { ContextManager } from '../../../../server/context';
+import { getUnixTimestamp } from '../../../../utils';
+import { startServer } from '../../../../server/apollo';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
-import { TagModel } from '../../../models';
+import { TagModel } from '../../../../models';
 
 describe('updateTag Mutation: ', () => {
   const writeDb = writeClient();

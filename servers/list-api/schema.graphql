@@ -122,9 +122,13 @@ input PaginationInput {
 Input for offset-pagination (internal backend use only).
 """
 input OffsetPaginationInput {
-  """ Defaults to 0 """
+  """
+  Defaults to 0
+  """
   offset: Int @constraint(min: 0)
-  """ Defaults to 30 """
+  """
+  Defaults to 30
+  """
   limit: Int @constraint(exclusiveMin: 0, max: 5000)
 }
 
@@ -673,27 +677,27 @@ type Mutation {
   """
   Archives a SavedItem
   """
-  updateSavedItemArchive(id: ID!): SavedItem!
+  updateSavedItemArchive(id: ID!, timestamp: ISOString): SavedItem!
 
   """
   Unarchives a SavedItem
   """
-  updateSavedItemUnArchive(id: ID!): SavedItem!
+  updateSavedItemUnArchive(id: ID!, timestamp: ISOString): SavedItem!
 
   """
   Undo the delete operation for a SavedItem
   """
-  updateSavedItemUnDelete(id: ID!): SavedItem!
+  updateSavedItemUnDelete(id: ID!, timestamp: ISOString): SavedItem!
 
   """
   Favorites a SavedItem
   """
-  updateSavedItemFavorite(id: ID!): SavedItem!
+  updateSavedItemFavorite(id: ID!, timestamp: ISOString): SavedItem!
 
   """
   Unfavorites a SavedItem
   """
-  updateSavedItemUnFavorite(id: ID!): SavedItem!
+  updateSavedItemUnFavorite(id: ID!, timestamp: ISOString): SavedItem!
 
   """
   Update the title display of a Saved Item, retrieved by ID.
@@ -722,14 +726,14 @@ type Mutation {
   Note that if this operation results in a Tag having no associations
   to a SavedItem, the Tag object will be deleted.
   """
-  updateSavedItemRemoveTags(savedItemId: ID): SavedItem!
+  updateSavedItemRemoveTags(savedItemId: ID, timestamp: ISOString): SavedItem!
     @deprecated(reason: "use saveBatchUpdateTags")
 
   """
   Deletes a SavedItem from the users list. Returns ID of the
   deleted SavedItem
   """
-  deleteSavedItem(id: ID!): ID!
+  deleteSavedItem(id: ID!, timestamp: ISOString): ID!
 
   """
   Updates a Tag (renames the tag), and returns the updated Tag.
@@ -755,7 +759,10 @@ type Mutation {
   Inputs a list of SavedItemTagsInput(ie. savedItemId and the list of tagName)
   Returns the list of `SavedItem` for which the tags were added
   """
-  createSavedItemTags(input: [SavedItemTagsInput!]!): [SavedItem!]!
+  createSavedItemTags(
+    input: [SavedItemTagsInput!]!
+    timestamp: ISOString
+  ): [SavedItem!]!
 
   """
   Replaces the old tags associated with the savedItem to the new tag list
@@ -765,8 +772,10 @@ type Mutation {
   Inputs a list of SavedItemTagsInput(ie. savedItemId and list of tag names)
   Returns the SavedItem for which the tags have been modified.
   """
-  replaceSavedItemTags(input: [SavedItemTagsInput!]!): [SavedItem!]!
-    @deprecated(reason: "use saveBatchUpdateTags")
+  replaceSavedItemTags(
+    input: [SavedItemTagsInput!]!
+    timestamp: ISOString
+  ): [SavedItem!]! @deprecated(reason: "use saveBatchUpdateTags")
 
   """
   Archives PocketSaves

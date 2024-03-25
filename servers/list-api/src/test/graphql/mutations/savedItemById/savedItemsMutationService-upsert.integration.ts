@@ -1,12 +1,12 @@
-import { readClient, writeClient } from '../../../database/client';
+import { readClient, writeClient } from '../../../../database/client';
 import nock, { cleanAll } from 'nock';
-import config from '../../../config';
+import config from '../../../../config';
 import {
   EventType,
   ItemsEventEmitter,
   SQSEvents,
   SqsListener,
-} from '../../../businessEvents';
+} from '../../../../businessEvents';
 import {
   PurgeQueueCommand,
   QueueAttributeName,
@@ -14,11 +14,11 @@ import {
   ReceiveMessageCommandInput,
   ReceiveMessageCommandOutput,
 } from '@aws-sdk/client-sqs';
-import { sqs } from '../../../aws/sqs';
-import { getUnixTimestamp } from '../../../utils';
-import { transformers } from '../../../businessEvents/sqs/transformers';
-import { ContextManager } from '../../../server/context';
-import { startServer } from '../../../server/apollo';
+import { sqs } from '../../../../aws/sqs';
+import { getUnixTimestamp } from '../../../../utils';
+import { transformers } from '../../../../businessEvents/sqs/transformers';
+import { ContextManager } from '../../../../server/context';
+import { startServer } from '../../../../server/apollo';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';

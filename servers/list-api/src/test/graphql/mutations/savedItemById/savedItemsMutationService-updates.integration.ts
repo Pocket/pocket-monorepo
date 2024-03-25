@@ -1,7 +1,7 @@
-import { readClient, writeClient } from '../../../database/client';
-import { EventType } from '../../../businessEvents';
-import { ContextManager } from '../../../server/context';
-import { startServer } from '../../../server/apollo';
+import { readClient, writeClient } from '../../../../database/client';
+import { EventType } from '../../../../businessEvents';
+import { ContextManager } from '../../../../server/context';
+import { startServer } from '../../../../server/apollo';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
@@ -66,8 +66,8 @@ describe('Update Mutation for SavedItem: ', () => {
     };
 
     const archiveItemMutation = `
-      mutation updateSavedItemArchive($itemId: ID!) {
-        updateSavedItemArchive(id: $itemId) {
+      mutation updateSavedItemArchive($itemId: ID!, $timestamp: ISOString) {
+        updateSavedItemArchive(id: $itemId, timestamp: $timestamp) {
           archivedAt
           isArchived
           status
@@ -77,7 +77,7 @@ describe('Update Mutation for SavedItem: ', () => {
     `;
     let res: request.Response;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
       eventSpy.mockReset();
       res = await request(app).post(url).set(headers).send({
         query: archiveItemMutation,
@@ -95,6 +95,23 @@ describe('Update Mutation for SavedItem: ', () => {
         updateDate,
       );
     });
+    it('should archive an item and set updatedAt to provided timestamp', async () => {
+      const timestampedResult = await request(app)
+        .post(url)
+        .set(headers)
+        .send({
+          query: archiveItemMutation,
+          variables: {
+            ...variables,
+            timestamp: '2024-03-21T23:35:14.000Z',
+          },
+        });
+      expect(timestampedResult.body.errors).toBeUndefined();
+      const itemRes = timestampedResult.body.data?.updateSavedItemArchive;
+      expect(itemRes.isArchived).toBe(true);
+      expect(itemRes._updatedAt).toEqual(1711064114);
+      expect(itemRes.archivedAt).toEqual(1711064114);
+    });
     it('should emit an archive event', async () => {
       expect(eventSpy).toHaveBeenCalledTimes(1);
       const eventData = eventSpy.mock.calls[0];
@@ -108,8 +125,8 @@ describe('Update Mutation for SavedItem: ', () => {
     };
 
     const unArchiveItemMutation = `
-      mutation updateSavedItemUnArchive($itemId: ID!) {
-        updateSavedItemUnArchive(id: $itemId) {
+      mutation updateSavedItemUnArchive($itemId: ID!, $timestamp: ISOString) {
+        updateSavedItemUnArchive(id: $itemId, timestamp: $timestamp) {
           archivedAt
           isArchived
           status
@@ -119,7 +136,7 @@ describe('Update Mutation for SavedItem: ', () => {
     `;
     let res: request.Response;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
       eventSpy.mockReset();
       res = await request(app).post(url).set(headers).send({
         query: unArchiveItemMutation,
@@ -143,6 +160,23 @@ describe('Update Mutation for SavedItem: ', () => {
       expect(eventData[0]).toBe(EventType.UNARCHIVE_ITEM);
       expect(eventData[1].id).toBe(parseInt(variables.itemId));
     });
+    it('should unarchive an item and set updatedAt to provided timestamp', async () => {
+      const timestampedResult = await request(app)
+        .post(url)
+        .set(headers)
+        .send({
+          query: unArchiveItemMutation,
+          variables: {
+            ...variables,
+            timestamp: '2024-03-21T23:35:14.000Z',
+          },
+        });
+      expect(timestampedResult.body.errors).toBeUndefined();
+      const itemRes = timestampedResult.body.data?.updateSavedItemUnArchive;
+      expect(itemRes.isArchived).toBe(false);
+      expect(itemRes._updatedAt).toEqual(1711064114);
+      expect(itemRes.archivedAt).toBeNull();
+    });
   });
   describe('updatedSavedItemFavorite', () => {
     let res: request.Response;
@@ -151,8 +185,8 @@ describe('Update Mutation for SavedItem: ', () => {
     };
 
     const savedItemFavoriteMutation = `
-      mutation updateSavedItemFavorite($itemId: ID!) {
-        updateSavedItemFavorite(id: $itemId) {
+      mutation updateSavedItemFavorite($itemId: ID!, $timestamp: ISOString) {
+        updateSavedItemFavorite(id: $itemId, timestamp: $timestamp) {
           favoritedAt
           isFavorite
           _updatedAt
@@ -160,7 +194,7 @@ describe('Update Mutation for SavedItem: ', () => {
       }
     `;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
       eventSpy.mockReset();
       res = await request(app).post(url).set(headers).send({
         query: savedItemFavoriteMutation,
@@ -177,6 +211,23 @@ describe('Update Mutation for SavedItem: ', () => {
         updateDate,
       );
     });
+    it('should favorite an item and set updatedAt to provided timestamp', async () => {
+      const timestampedResult = await request(app)
+        .post(url)
+        .set(headers)
+        .send({
+          query: savedItemFavoriteMutation,
+          variables: {
+            ...variables,
+            timestamp: '2024-03-21T23:35:14.000Z',
+          },
+        });
+      expect(timestampedResult.body.errors).toBeUndefined();
+      const itemRes = timestampedResult.body.data?.updateSavedItemFavorite;
+      expect(itemRes.isFavorite).toBe(true);
+      expect(itemRes._updatedAt).toEqual(1711064114);
+      expect(itemRes.favoritedAt).toEqual(1711064114);
+    });
     it('should emit a favorite event', async () => {
       expect(eventSpy).toHaveBeenCalledTimes(1);
       const eventData = eventSpy.mock.calls[0];
@@ -191,8 +242,8 @@ describe('Update Mutation for SavedItem: ', () => {
     };
 
     const savedItemUnFavoriteMutation = `
-      mutation updateSavedItemUnFavorite($itemId: ID!) {
-        updateSavedItemUnFavorite(id: $itemId) {
+      mutation updateSavedItemUnFavorite($itemId: ID!, $timestamp: ISOString) {
+        updateSavedItemUnFavorite(id: $itemId, timestamp: $timestamp) {
           favoritedAt
           isFavorite
           _updatedAt
@@ -200,7 +251,7 @@ describe('Update Mutation for SavedItem: ', () => {
       }
     `;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
       eventSpy.mockReset();
       res = await request(app).post(url).set(headers).send({
         query: savedItemUnFavoriteMutation,
@@ -214,6 +265,20 @@ describe('Update Mutation for SavedItem: ', () => {
       expect(new Date(itemRes._updatedAt * 1000)).toBeAfterOrEqualTo(
         updateDate,
       );
+      expect(itemRes.favoritedAt).toBeNull();
+    });
+    it('should unfavorite an item and set updatedAt to provided timestamp', async () => {
+      const timestampedResult = await request(app)
+        .post(url)
+        .set(headers)
+        .send({
+          query: savedItemUnFavoriteMutation,
+          variables: { ...variables, timestamp: '2024-03-21T23:35:14.000Z' },
+        });
+      expect(timestampedResult.body.errors).toBeUndefined();
+      const itemRes = timestampedResult.body.data?.updateSavedItemUnFavorite;
+      expect(itemRes.isFavorite).toBe(false);
+      expect(itemRes._updatedAt).toEqual(1711064114);
       expect(itemRes.favoritedAt).toBeNull();
     });
 
