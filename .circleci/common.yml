@@ -285,16 +285,31 @@ jobs:
       - exit-early-if-irrelevant:
           for: << parameters.for >>
       - checkout
-      - restore_cache:
-          name: Restore Tfenv
-          keys:
-            - tfenv-v2
+      - unless:
+          # When it is not raw hcl, the stack output path is 3 folders away from our .terraform-version
+          condition: <<parameters.uses_raw_hcl>>
+          steps:
+            - restore_cache:
+                name: Restore Terraform
+                keys:
+                  - terraform-version-{{ checksum "<< parameters.stack-output-path >>/../../../.terraform-version" }}
+      - when:
+          # When it is hcl, the stack output path is the same as our .terraform-version
+          condition: <<parameters.uses_raw_hcl>>
+          steps:
+            - restore_cache:
+                name: Restore Terraform
+                keys:
+                  - terraform-version-{{ checksum "<< parameters.stack-output-path >>/.terraform-version" }}
       - run:
           name: Install tfcmt
           command: |
-            curl -L https://github.com/suzuki-shunsuke/tfcmt/releases/download/v4.9.0/tfcmt_linux_amd64.tar.gz | tar xvzf - tfcmt
-            mv tfcmt /home/circleci/tfcmt
-            chmod a+x /home/circleci/tfcmt
+            if ! command -v tfcmt &> /dev/null; then
+                echo "tfcmt does not exist, installing"
+                curl -L https://github.com/suzuki-shunsuke/tfcmt/releases/download/v4.9.0/tfcmt_linux_amd64.tar.gz | tar xvzf - tfcmt
+                mv tfcmt /home/circleci/tfcmt
+                chmod a+x /home/circleci/tfcmt
+            fi
       - install_codebuild_secrets
       - setup_github_bot
       - unless:
@@ -370,12 +385,25 @@ jobs:
                 name: Terraform plan
                 command: |
                   cd << parameters.stack-output-path >>
-                  /home/circleci/tfcmt --var target:<< parameters.scope >><<#parameters.dev>>-dev<</parameters.dev>> plan --skip-no-changes --patch -- terraform plan -lock-timeout=10m
-      - save_cache:
-          key: tfenv-v2
-          paths:
-            - /home/circleci/.tfenv/versions/*
-            - /home/circleci/.tfenv/bin/terraform-*
+                  tfcmt --var target:<< parameters.scope >><<#parameters.dev>>-dev<</parameters.dev>> plan --skip-no-changes --patch -- terraform plan -lock-timeout=10m
+      - unless:
+          # When it is not raw hcl, the stack output path is 3 folders away from our .terraform-version
+          condition: <<parameters.uses_raw_hcl>>
+          steps:
+            - save_cache:
+                key: terraform-version-{{ checksum "<< parameters.stack-output-path >>/../../../.terraform-version" }}
+                paths:
+                  - /home/circleci/.tfenv/versions/*
+                  - /home/circleci/.tfenv/bin/terraform-*
+      - when:
+          # When it is hcl, the stack output path is the same as our .terraform-version
+          condition: <<parameters.uses_raw_hcl>>
+          steps:
+            - save_cache:
+                key: terraform-version-{{ checksum "<< parameters.stack-output-path >>/.terraform-version" }}
+                paths:
+                  - /home/circleci/.tfenv/versions/*
+                  - /home/circleci/.tfenv/bin/terraform-*
 
   code_deploy_ecs:
     parameters:
