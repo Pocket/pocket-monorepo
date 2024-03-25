@@ -33,7 +33,7 @@
     "@pocket-tools/ts-logger": "workspace:*",
     "@prisma/client": "5.11.0",
     "cors": "2.8.5",
-    "express": "4.18.3",
+    "express": "4.19.2",
     "express-validator": "^7.0.1",
     "graphql-constraint-directive": "5.4.2",
     "keyv": "4.5.4",
