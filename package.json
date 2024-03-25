@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "syncpack": "^12.3.0",
-    "turbo": "^1.12.5"
+    "turbo": "^1.13.0"
   },
   "packageManager": "pnpm@8.15.5",
   "name": "pocket-monorepo",
