@@ -31,7 +31,7 @@ jobs:
       - run:
           name: Test
           command: |
-            pnpm run test --concurrency=2
+            pnpm run test
 
 workflows:
   repo:
