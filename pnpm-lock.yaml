@@ -1379,8 +1379,8 @@ importers:
         specifier: 5.5.2
         version: 5.5.2
       unleash-server:
-        specifier: 5.10.1
-        version: 5.10.1(core-js@3.36.1)(mobx@6.12.1)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8)
+        specifier: 5.10.2
+        version: 5.10.2(core-js@3.36.1)(mobx@6.12.1)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8)
     devDependencies:
       '@types/cors':
         specifier: ^2.8.17
@@ -8636,7 +8636,7 @@ packages:
       serve-static: 1.15.0
       swagger-parser: 10.0.3(openapi-types@12.1.3)
       swagger-ui-dist: 5.11.7
-      yaml: 2.4.0
+      yaml: 2.4.1
     transitivePeerDependencies:
       - core-js
       - encoding
@@ -10912,7 +10912,7 @@ packages:
     dependencies:
       semver: 7.6.0
       shelljs: 0.8.5
-      typescript: 5.5.0-dev.20240322
+      typescript: 5.5.0-dev.20240325
     dev: false
 
   /dset@3.1.3:
@@ -19178,8 +19178,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.5.0-dev.20240322:
-    resolution: {integrity: sha512-z05wAbLJ5lx9QKlbZFaV+B6T8Y/9AvVb4ma+glJ0JL0lp+QeAZuWSDoBALphG6fwkvfjaCYWb5t37VcUOPTR/w==}
+  /typescript@5.5.0-dev.20240325:
+    resolution: {integrity: sha512-3kSBj+PWimbJvH3s/sQiIU7zBIOWAEpHdD3lykIykePugc1qXNIK8d5/WJJNpzH4q2n6gY8pz8lLoe/HanVGnA==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: false
@@ -19319,8 +19319,8 @@ packages:
       murmurhash3js: 3.0.1
       semver: 7.6.0
 
-  /unleash-server@5.10.1(core-js@3.36.1)(mobx@6.12.1)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8):
-    resolution: {integrity: sha512-WpXUm//LAO9nQR9n6qR7kaWfUmdf+k6AEzCFKGcyKTlaGntCwZ2ufbk22Lft810d6kHSsH7Sy0v+dh/n97fuIw==}
+  /unleash-server@5.10.2(core-js@3.36.1)(mobx@6.12.1)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8):
+    resolution: {integrity: sha512-11duKiZm9ZDTCNoWsDR8A96bM7GYlbNCk+07ZMslSr4SFlHWTUg3bPtgKS+wLdT4qQGLo7gAqbY7zvGm18joIw==}
     engines: {node: '>=18 <21'}
     dependencies:
       '@slack/web-api': 6.12.0
@@ -19867,7 +19867,6 @@ packages:
     resolution: {integrity: sha512-pIXzoImaqmfOrL7teGUBt/T7ZDnyeGBWyXQBvOVhLkWLN37GXv8NMLK406UY6dS51JfcQHsmcW5cJ441bHg6Lg==}
     engines: {node: '>= 14'}
     hasBin: true
-    dev: true
 
   /yargs-parser@18.1.3:
     resolution: {integrity: sha512-o50j0JeToy/4K6OZcaQmW6lyXXKhq7csREXcDwk2omFPJEwUNOVtJKvmDr9EI1fAJZUyZcRF7kxGBWmRXudrCQ==}
