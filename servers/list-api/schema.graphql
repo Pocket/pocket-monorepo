@@ -118,20 +118,6 @@ input PaginationInput {
   last: Int
 }
 
-"""
-Input for offset-pagination (internal backend use only).
-"""
-input OffsetPaginationInput {
-  """
-  Defaults to 0
-  """
-  offset: Int @constraint(min: 0)
-  """
-  Defaults to 30
-  """
-  limit: Int @constraint(exclusiveMin: 0, max: 5000)
-}
-
 input SaveUpdateTagsInput {
   saveId: ID!
   """
@@ -321,10 +307,6 @@ enum SavedItemsContentType {
   Item is a parsed article that contains videos
   """
   HAS_VIDEO
-  """
-  Item is a video or a parsed article that contains videos
-  """
-  HAS_VIDEO_INCLUSIVE
   """
   Item is a parsed page can be opened in reader view
   """
@@ -564,16 +546,6 @@ type SavedItemTagAssociation {
   tagId: ID!
 }
 
-"""
-A page of SavedItems, retrieved by offset-based pagination.
-"""
-type SavedItemsPage @tag(name: "internal") {
-  entries: [SavedItem!]!
-  totalCount: Int!
-  offset: Int!
-  limit: Int!
-}
-
 type User @key(fields: "id") {
   #Note more properties exist here but are defined in another service.
 
@@ -590,15 +562,6 @@ type User @key(fields: "id") {
     sort: SavedItemsSort
     pagination: PaginationInput
   ): SavedItemConnection
-
-  """
-  Fetch SavedItems with offset pagination. Internal backend use only.
-  """
-  savedItemsByOffset(
-    filter: SavedItemsFilter
-    sort: SavedItemsSort
-    pagination: OffsetPaginationInput
-  ): SavedItemsPage @tag(name: "internal")
 
   """
   Get a paginated listing of all a user's Tags
@@ -677,27 +640,27 @@ type Mutation {
   """
   Archives a SavedItem
   """
-  updateSavedItemArchive(id: ID!, timestamp: ISOString): SavedItem!
+  updateSavedItemArchive(id: ID!): SavedItem!
 
   """
   Unarchives a SavedItem
   """
-  updateSavedItemUnArchive(id: ID!, timestamp: ISOString): SavedItem!
+  updateSavedItemUnArchive(id: ID!): SavedItem!
 
   """
   Undo the delete operation for a SavedItem
   """
-  updateSavedItemUnDelete(id: ID!, timestamp: ISOString): SavedItem!
+  updateSavedItemUnDelete(id: ID!): SavedItem!
 
   """
   Favorites a SavedItem
   """
-  updateSavedItemFavorite(id: ID!, timestamp: ISOString): SavedItem!
+  updateSavedItemFavorite(id: ID!): SavedItem!
 
   """
   Unfavorites a SavedItem
   """
-  updateSavedItemUnFavorite(id: ID!, timestamp: ISOString): SavedItem!
+  updateSavedItemUnFavorite(id: ID!): SavedItem!
 
   """
   Update the title display of a Saved Item, retrieved by ID.
@@ -726,14 +689,14 @@ type Mutation {
   Note that if this operation results in a Tag having no associations
   to a SavedItem, the Tag object will be deleted.
   """
-  updateSavedItemRemoveTags(savedItemId: ID, timestamp: ISOString): SavedItem!
+  updateSavedItemRemoveTags(savedItemId: ID): SavedItem!
     @deprecated(reason: "use saveBatchUpdateTags")
 
   """
   Deletes a SavedItem from the users list. Returns ID of the
   deleted SavedItem
   """
-  deleteSavedItem(id: ID!, timestamp: ISOString): ID!
+  deleteSavedItem(id: ID!): ID!
 
   """
   Updates a Tag (renames the tag), and returns the updated Tag.
@@ -759,10 +722,7 @@ type Mutation {
   Inputs a list of SavedItemTagsInput(ie. savedItemId and the list of tagName)
   Returns the list of `SavedItem` for which the tags were added
   """
-  createSavedItemTags(
-    input: [SavedItemTagsInput!]!
-    timestamp: ISOString
-  ): [SavedItem!]!
+  createSavedItemTags(input: [SavedItemTagsInput!]!): [SavedItem!]!
 
   """
   Replaces the old tags associated with the savedItem to the new tag list
@@ -772,10 +732,8 @@ type Mutation {
   Inputs a list of SavedItemTagsInput(ie. savedItemId and list of tag names)
   Returns the SavedItem for which the tags have been modified.
   """
-  replaceSavedItemTags(
-    input: [SavedItemTagsInput!]!
-    timestamp: ISOString
-  ): [SavedItem!]! @deprecated(reason: "use saveBatchUpdateTags")
+  replaceSavedItemTags(input: [SavedItemTagsInput!]!): [SavedItem!]!
+    @deprecated(reason: "use saveBatchUpdateTags")
 
   """
   Archives PocketSaves
@@ -906,6 +864,7 @@ type Mutation {
     timestamp: ISOString
   ): SavedItem @tag(name: "v3proxy")
 }
+
 """
 We don't have official oneOf support, but this will
 throw if one of these fields is not set and not null.

@@ -10,7 +10,6 @@ import {
   isSubgraphIntrospection,
   sentryPocketMiddleware,
 } from '@pocket-tools/apollo-utils';
-import { initSentry } from '@pocket-tools/sentry';
 import config from '../config';
 import { ContextManager } from './context';
 import { readClient, writeClient } from '../database/client';
@@ -57,11 +56,6 @@ export async function startServer(port: number): Promise<{
   // provided to drain plugin for graceful shutdown.
   const app: Application = express();
   const httpServer: Server = createServer(app);
-
-  initSentry(app, {
-    ...config.sentry,
-    debug: config.sentry.environment == 'development',
-  });
 
   // RequestHandler creates a separate execution context, so that all
   // transactions/spans/breadcrumbs are isolated across requests

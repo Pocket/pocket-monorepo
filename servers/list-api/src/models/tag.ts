@@ -81,7 +81,6 @@ export class TagModel {
    */
   public async createTagSaveConnections(
     inputs: SavedItemTagsInput[],
-    timestamp?: Date,
   ): Promise<SavedItem[]> {
     const creates: TagSaveAssociation[] = sanitizeTagSaveAssociation(
       inputs.flatMap((input) =>
@@ -91,7 +90,7 @@ export class TagModel {
         })),
       ),
     );
-    await this.tagService.insertTags(creates, timestamp);
+    await this.tagService.insertTags(creates);
     const saveIds = creates.map((_) => _.savedItemId);
     return this.saveService.batchGetSavedItemsByGivenIds(saveIds);
   }
@@ -134,7 +133,6 @@ export class TagModel {
    */
   public updateTagSaveConnections(
     updates: SavedItemTagUpdateInput,
-    timestamp?: Date,
   ): Promise<SavedItem> {
     const creates: TagSaveAssociation[] = updates.tagIds.map((tagId) => {
       return {
@@ -149,19 +147,16 @@ export class TagModel {
     if (deleteFromSaveId.size != 1) {
       throw new UserInputError('Cannot update Tags on multiple Saves');
     }
-    return this.tagService.updateSavedItemTags(sanitized, timestamp);
+    return this.tagService.updateSavedItemTags(sanitized);
   }
 
   /**
    * Replace the tags associated with one or more saves in
    * in a single batch.
    */
-  public replaceTagSaveConnections(
-    tags: TagSaveAssociation[],
-    timestamp?: Date,
-  ) {
+  public replaceTagSaveConnections(tags: TagSaveAssociation[]) {
     const sanitizedInput = sanitizeTagSaveAssociation(tags);
-    return this.tagService.replaceSavedItemTags(sanitizedInput, timestamp);
+    return this.tagService.replaceSavedItemTags(sanitizedInput);
   }
 
   /**
@@ -203,7 +198,6 @@ export class TagModel {
    */
   public async deleteTagSaveConnection(
     deletes: DeleteSavedItemTagsInput[],
-    timestamp?: Date,
   ): Promise<DeleteSaveTagResponse[]> {
     // Explode tag ids list keyed on Save into list of save:tagName
     const nameConnections: SaveTagNameConnection[] = deletes.flatMap((save) =>
@@ -254,16 +248,10 @@ export class TagModel {
    * @throws NotFoundError if the Save does not exist
    * @returns the updated Save and a list of tag names removed
    */
-  public async removeSaveTags(
-    saveId: string,
-    timestamp?: Date,
-  ): Promise<DeleteSaveTagResponse> {
+  public async removeSaveTags(saveId: string): Promise<DeleteSaveTagResponse> {
     const tagsCleared = await this.tagService.getTagsByUserItem(saveId);
     const removed = tagsCleared.map((_) => _.name);
-    const save = await this.tagService.updateSavedItemRemoveTags(
-      saveId,
-      timestamp,
-    );
+    const save = await this.tagService.updateSavedItemRemoveTags(saveId);
     if (save == null) {
       throw new NotFoundError(`SavedItem Id ${saveId} does not exist`);
     }
@@ -276,7 +264,6 @@ export class TagModel {
    */
   public async replaceSaveTagConnections(
     replacements: SavedItemTagsInput[],
-    timestamp?: Date,
   ): Promise<SavedItem[]> {
     const tagCreates: TagSaveAssociation[] = replacements.flatMap(
       (replacement) =>
@@ -285,7 +272,7 @@ export class TagModel {
           name: sanitizeTagName(tag),
         })),
     );
-    return this.tagService.replaceSavedItemTags(tagCreates, timestamp);
+    return this.tagService.replaceSavedItemTags(tagCreates);
   }
   // TODO: These weren't required for the ID thing
   //   public getPage(pagination: Pagination): Promise<TagConnection> {}

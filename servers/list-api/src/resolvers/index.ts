@@ -1,9 +1,4 @@
-import {
-  savedItemById,
-  savedItems,
-  savedItemsPage,
-  tags as userTags,
-} from './user';
+import { savedItemById, savedItems, tags as userTags } from './user';
 import { item, suggestedTags as savedItemSuggestedTags } from './savedItem';
 import {
   createSavedItemTags,
@@ -67,7 +62,6 @@ const resolvers = {
     },
     savedItemById,
     savedItems,
-    savedItemsByOffset: savedItemsPage,
     tags: userTags,
   },
   Item: {

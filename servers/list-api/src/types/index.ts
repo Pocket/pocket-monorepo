@@ -10,16 +10,6 @@ export type PageInfo = {
   hasPreviousPage: boolean;
   startCursor?: string;
 };
-export type SavedItemResult = Omit<SavedItem, 'item' | 'tags'>;
-
-export type OffsetPaginationInput = { limit: number; offset: number };
-
-export type SavedItemsPage = {
-  entries: SavedItemResult[];
-  totalCount: number;
-  limit: number;
-  offset: number;
-};
 
 export type SavedItemConnection = {
   edges: SavedItemEdge[];
@@ -101,7 +91,6 @@ export enum SavedItemsContentType {
   HAS_VIDEO = 'HAS_VIDEO',
   IS_READABLE = 'IS_READABLE',
   IS_EXTERNAL = 'IS_EXTERNAL',
-  HAS_VIDEO_INCLUSIVE = 'HAS_VIDEO_INCLUSIVE',
 }
 
 export type SavedItemsFilter = {

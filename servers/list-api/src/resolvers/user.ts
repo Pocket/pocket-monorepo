@@ -6,7 +6,6 @@ import {
   SavedItemsSort,
   TagConnection,
   User,
-  OffsetPaginationInput,
 } from '../types';
 import {
   SavedItemDataService,
@@ -52,26 +51,6 @@ export function savedItems(
     config.pagination.maxPageSize,
   );
   return new ListPaginationService(context).getSavedItems(
-    args.filter,
-    args.sort,
-    args.pagination,
-  );
-}
-
-/**
- * Get a page of SavedItems with offset-pagination.
- * Internal backend use only.
- */
-export function savedItemsPage(
-  parent: User,
-  args: {
-    filter?: SavedItemsFilter;
-    sort?: SavedItemsSort;
-    pagination?: OffsetPaginationInput;
-  },
-  context: IContext,
-) {
-  return new ListPaginationService(context).getSavedItemsPage(
     args.filter,
     args.sort,
     args.pagination,
