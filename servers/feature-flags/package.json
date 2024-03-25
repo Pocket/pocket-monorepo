@@ -15,7 +15,7 @@
     "passport": "0.7.0",
     "passport-jwt": "4.0.1",
     "unleash-client": "5.5.2",
-    "unleash-server": "5.10.1"
+    "unleash-server": "5.10.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
