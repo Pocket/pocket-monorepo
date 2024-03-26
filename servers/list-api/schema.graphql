@@ -567,7 +567,7 @@ type SavedItemTagAssociation {
 """
 A page of SavedItems, retrieved by offset-based pagination.
 """
-type SavedItemsPage @tag(name: "internal") {
+type SavedItemsPage @tag(name: "v3proxy") {
   entries: [SavedItem!]!
   totalCount: Int!
   offset: Int!
@@ -598,7 +598,7 @@ type User @key(fields: "id") {
     filter: SavedItemsFilter
     sort: SavedItemsSort
     pagination: OffsetPaginationInput
-  ): SavedItemsPage @tag(name: "internal")
+  ): SavedItemsPage @tag(name: "v3proxy")
 
   """
   Get a paginated listing of all a user's Tags
@@ -880,8 +880,11 @@ type Mutation {
   """
   Rename a tag identified by name (rather than ID), to support v3 proxy.
   """
-  renameTagByName(tagName: String!, timestamp: ISOString): Tag
-    @tag(name: "v3proxy")
+  renameTagByName(
+    oldName: String!
+    newName: String!
+    timestamp: ISOString
+  ): Tag @tag(name: "v3proxy")
   """
   Delete a tag entity identified by name (rather than ID), to support v3 proxy.
   Disassociates this tag from all SavedItems.

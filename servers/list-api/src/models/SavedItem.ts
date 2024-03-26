@@ -285,6 +285,46 @@ export class SavedItemModel {
     // Will throw if fails or returns null
     return this.updateTitleById(id, timestamp, title);
   }
+  /** Remove all tags from a single Saved Item, identified by ID */
+  public async clearTagsById(id: string, timestamp?: Date) {
+    const { save, removed } = await this.context.models.tag.removeSaveTags(
+      id,
+      timestamp,
+    );
+    if (removed.length) {
+      this.context.emitItemEvent(EventType.CLEAR_TAGS, save, removed);
+    }
+    return save;
+  }
+  /** Remove all tags from a single Saved Item, identified by url */
+  public async clearTagsByUrl(url: string, timestamp?: Date) {
+    const id = await this.fetchIdFromUrl(url);
+    return await this.clearTagsById(id, timestamp);
+  }
+  /** Remove tag names from a single Saved Item, identified by ID */
+  public async removeTagsFromSaveById(
+    id: string,
+    tags: string[],
+    timestamp?: Date,
+  ): Promise<SavedItem> {
+    const { save, removed } =
+      await this.context.models.tag.removeTagNamesFromSavedItem(
+        id,
+        tags,
+        timestamp,
+      );
+    this.context.emitItemEvent(EventType.REMOVE_TAGS, save, removed);
+    return save;
+  }
+  /** Remove tag names from a single Saved Item, identified by Url */
+  public async removeTagsFromSaveByUrl(
+    url: string,
+    tags: string[],
+    timestamp?: Date,
+  ): Promise<SavedItem> {
+    const id = await this.fetchIdFromUrl(url);
+    return await this.removeTagsFromSaveById(id, tags, timestamp);
+  }
 
   /**
    * Given a URL, fetch the itemId associated with it from the Parser
@@ -300,7 +340,7 @@ export class SavedItemModel {
    *  for a savedItem record, etc. The ID should already exist
    *  if update mutations are being called on the SavedItem entity.
    */
-  private async fetchIdFromUrl(url: string): Promise<string> {
+  public async fetchIdFromUrl(url: string): Promise<string> {
     const id = await ParserCaller.getItemIdFromUrl(url);
     if (id == null) {
       throw new NotFoundError(this.defaultNotFoundMessage);
