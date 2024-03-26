@@ -1,5 +1,9 @@
 import { SavedItemTagsInput, Tag } from '../types';
-import { getSavedItemMapFromTags, getSavedItemTagsMap } from './utils';
+import {
+  atLeastOneOf,
+  getSavedItemMapFromTags,
+  getSavedItemTagsMap,
+} from './utils';
 
 describe('getSavedItemMapFromTags', () => {
   it('should return a savedItem map from a list of tags', () => {
@@ -10,6 +14,29 @@ describe('getSavedItemMapFromTags', () => {
     const expected = { '1': [tagA, tagB], '2': [tagA], '3': [tagB] };
     const actual = getSavedItemMapFromTags(input);
     expect(actual).toEqual(expected);
+  });
+});
+describe('atLeastOneOf', () => {
+  it('returns false if no keys are included', () => {
+    const hasAtLeastOne = atLeastOneOf({ spell: undefined, level: undefined }, [
+      'spell',
+      'level',
+    ]);
+    expect(hasAtLeastOne).toBeFalse();
+  });
+  it('returns false if there are other keys but not the ones you want', () => {
+    const hasAtLeastOne = atLeastOneOf(
+      { spell: undefined, level: undefined, range: '3m' },
+      ['spell', 'level'],
+    );
+    expect(hasAtLeastOne).toBeFalse();
+  });
+  it('passes if at least one key is included', () => {
+    const hasAtLeastOne = atLeastOneOf(
+      { spell: 'Speak With Dead', level: 2, range: '3m' },
+      ['spell', 'level'],
+    );
+    expect(hasAtLeastOne).toBeTrue();
   });
 });
 

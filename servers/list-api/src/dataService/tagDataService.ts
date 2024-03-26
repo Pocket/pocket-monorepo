@@ -287,15 +287,25 @@ export class TagDataService {
    * associations it has to a user's SavedItems
    * @param tagName the name of the Tag to delete
    */
-  public async deleteTagObject(tagName: string): Promise<void> {
+  public async deleteTagObject(
+    tagName: string,
+    timestamp?: Date,
+  ): Promise<void> {
     const affectedItems = await this.db('item_tags')
       .where({ user_id: this.userId, tag: tagName })
       .pluck('item_id');
     if (affectedItems.length > 0) {
       await this.db.transaction(async (trx: Knex.Transaction) => {
         await this.deleteTagsByName(tagName).transacting(trx);
-        await this.savedItemService.updateListItemMany(affectedItems, trx);
-        await this.usersMetaService.logTagMutation(new Date(), trx);
+        await this.savedItemService.updateListItemMany(
+          affectedItems,
+          trx,
+          timestamp,
+        );
+        await this.usersMetaService.logTagMutation(
+          timestamp ?? new Date(),
+          trx,
+        );
       });
     }
   }
@@ -309,6 +319,7 @@ export class TagDataService {
     oldName: string,
     newName: string,
     itemIds: string[],
+    timestamp?: Date,
   ): Promise<void> {
     await this.db.transaction(async (trx: Knex.Transaction) => {
       await trx.raw(
@@ -319,12 +330,15 @@ export class TagDataService {
           newTagName: newName,
           userId: this.userId,
           oldTagName: oldName,
-          _updatedAt: mysqlTimeString(new Date(), config.database.tz),
+          _updatedAt: mysqlTimeString(
+            timestamp ?? new Date(),
+            config.database.tz,
+          ),
         },
       );
-      await this.savedItemService.updateListItemMany(itemIds, trx);
+      await this.savedItemService.updateListItemMany(itemIds, trx, timestamp);
       await this.deleteTagsByName(oldName).transacting(trx);
-      await this.usersMetaService.logTagMutation(new Date(), trx);
+      await this.usersMetaService.logTagMutation(timestamp ?? new Date(), trx);
     });
   }
 
@@ -374,13 +388,18 @@ export class TagDataService {
   ): Promise<any> {
     //clear first, so we can get rid of noisy data if savedItem doesn't exist.
     await this.db.transaction(async (trx: Knex.Transaction) => {
-      await this.deleteTagsByItemId(savedItemId).transacting(trx);
-      await this.savedItemService.updateListItemOne(
-        savedItemId,
-        trx,
-        timestamp,
-      );
-      await this.usersMetaService.logTagMutation(timestamp ?? new Date(), trx);
+      const count = await this.deleteTagsByItemId(savedItemId).transacting(trx);
+      if (count) {
+        await this.savedItemService.updateListItemOne(
+          savedItemId,
+          trx,
+          timestamp,
+        );
+        await this.usersMetaService.logTagMutation(
+          timestamp ?? new Date(),
+          trx,
+        );
+      }
     });
     return await this.savedItemService.getSavedItemById(savedItemId);
   }
@@ -393,8 +412,9 @@ export class TagDataService {
     tagInputs: TagSaveAssociation[],
     timestamp?: Date,
   ): Promise<SavedItem[]> {
-    const savedItemIds = tagInputs.map((input) => input.savedItemId);
-
+    const savedItemIds = Array.from(
+      new Set(tagInputs.map((input) => input.savedItemId)),
+    );
     await this.db.transaction(async (trx) => {
       await Promise.all(
         savedItemIds.map(async (id) => {
@@ -454,6 +474,25 @@ export class TagDataService {
       .where({ tag, user_id: this.userId })
       .pluck('item_id');
     return res as string[];
+  }
+
+  /**
+   * Delete tag associations from a single saved item, by the tag name(s).
+   */
+  public async deleteItemTagsByName(
+    tagNames: string[],
+    itemId: string,
+    timestamp?: Date,
+  ): Promise<Knex.QueryBuilder> {
+    await this.db.transaction(async (trx) => {
+      await trx('item_tags')
+        .whereIn('tag', tagNames)
+        .andWhere({ user_id: this.userId, item_id: itemId })
+        .del();
+      await this.savedItemService.updateListItemOne(itemId, trx, timestamp);
+      await this.usersMetaService.logTagMutation(timestamp ?? new Date(), trx);
+    });
+    return await this.savedItemService.getSavedItemById(itemId);
   }
 
   private deleteTagsByItemId(itemId: string): Knex.QueryBuilder {
