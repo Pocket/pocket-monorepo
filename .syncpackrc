@@ -1,4 +1,23 @@
 {
     "$schema": "https://unpkg.com/syncpack@12.3.0/dist/schema.json",
-    "dependencyTypes": ["dev", "peer", "prod"]
+    "dependencyTypes": ["dev", "peer", "prod", "nodeEngine"],
+    "customTypes": {
+        "nodeEngine": {
+          "path": "engines.node",
+          "strategy": "version"
+        }
+    },
+    "versionGroups": [
+        {
+          "dependencies": ["@aws-sdk/**"],
+          "label": "AWS SDK Dependencies should all have the same version"
+        },
+        {
+            "dependencies": ["@types/**"],
+            "dependencyTypes": ["!dev"],
+            "isBanned": true,
+            "label": "@types packages should only be under devDependencies",
+            "packages": ["!tsconfig"]
+        }
+      ]
 }
