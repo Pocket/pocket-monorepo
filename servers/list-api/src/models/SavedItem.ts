@@ -306,7 +306,9 @@ export class SavedItemModel {
       id,
       timestamp,
     );
-    this.context.emitItemEvent(EventType.CLEAR_TAGS, save, removed);
+    if (removed.length) {
+      this.context.emitItemEvent(EventType.CLEAR_TAGS, save, removed);
+    }
     return save;
   }
   /** Remove all tags from a single Saved Item, identified by url */

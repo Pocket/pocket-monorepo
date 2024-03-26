@@ -99,7 +99,7 @@ export function atLeastOneOf<T extends object, K extends keyof T>(
   obj: T,
   keys: K[],
 ) {
-  for (const key in keys) {
+  for (const key of keys) {
     if (obj[key] != null) return true;
   }
   return false;

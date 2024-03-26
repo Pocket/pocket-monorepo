@@ -1,11 +1,13 @@
 import { savedItemById, savedItems, tags as userTags } from './user';
 import { item, suggestedTags as savedItemSuggestedTags } from './savedItem';
 import {
+  clearTags,
   createSavedItemTags,
   deleteSavedItem,
   deleteSavedItemTags,
   deleteTag,
   replaceSavedItemTags,
+  replaceTags,
   updateSavedItemArchive,
   updateSavedItemFavorite,
   updateSavedItemRemoveTags,
@@ -293,6 +295,8 @@ const resolvers = {
         args.title,
       );
     },
+    clearTags,
+    replaceTags,
   },
 };
 

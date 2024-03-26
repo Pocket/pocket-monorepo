@@ -6,6 +6,7 @@ import {
   SavedItemTagUpdateInput,
   SavedItemTagsInput,
   Tag,
+  SavedItemRefInput,
 } from '../types';
 import { IContext } from '../server/context';
 import { ParserCaller } from '../externalCaller/parserCaller';
@@ -15,6 +16,7 @@ import { EventType } from '../businessEvents';
 import { getSavedItemTagsMap, atLeastOneOf } from './utils';
 import { TagModel } from '../models';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { UserInputError } from '@pocket-tools/apollo-utils';
 
 /**
  * Create or re-add a saved item in a user's list.
@@ -330,13 +332,13 @@ export async function replaceTags(
     throw new UserInputError('SavedItemRef must have one of `id` or `url`');
   }
   if (args.savedItem.id != null) {
-    return context.models.savedItem.replaceTagsById(
+    return await context.models.savedItem.replaceTagsById(
       args.savedItem.id,
       args.tagNames,
       args.timestamp,
     );
   } else {
-    return context.models.savedItem.replaceTagsByUrl(
+    return await context.models.savedItem.replaceTagsByUrl(
       args.savedItem.url,
       args.tagNames,
       args.timestamp,
