@@ -5,6 +5,13 @@
         {
           "dependencies": ["@aws-sdk/**"],
           "label": "AWS SDK Dependencies should all have the same version"
+        },
+        {
+            "dependencies": ["@types/**"],
+            "dependencyTypes": ["!dev"],
+            "isBanned": true,
+            "label": "@types packages should only be under devDependencies",
+            "packages": ["!tsconfig"]
         }
       ]
 }
