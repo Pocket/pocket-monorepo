@@ -871,6 +871,51 @@ type Mutation {
     timestamp: ISOString!
     title: String! @constraint(minLength: 1, maxLength: 75)
   ): SavedItem
+
+  """
+  Remove all tags associated to a SavedItem (included for v3 proxy).
+  """
+  clearTags(savedItem: SavedItemRef!, timestamp: ISOString): SavedItem
+    @tag(name: "v3proxy")
+  """
+  Rename a tag identified by name (rather than ID), to support v3 proxy.
+  """
+  renameTagByName(tagName: String!, timestamp: ISOString): Tag
+    @tag(name: "v3proxy")
+  """
+  Delete a tag entity identified by name (rather than ID), to support v3 proxy.
+  Disassociates this tag from all SavedItems.
+  """
+  deleteTagByName(tagName: String!, timestamp: ISOString): String
+    @tag(name: "v3proxy")
+  """
+  Removes specific tags associated to a SavedItem,
+  referenced by name, to support v3 proxy.
+  """
+  removeTagsByName(
+    savedItem: SavedItemRef!
+    tagNames: [String!]!
+    timestamp: ISOString
+  ): SavedItem @tag(name: "v3proxy")
+  """
+  Replace specific tags associated to a SavedItem, to support v3 proxy.
+  """
+  replaceTags(
+    savedItem: SavedItemRef!
+    tagNames: [String!]!
+    timestamp: ISOString
+  ): SavedItem @tag(name: "v3proxy")
+}
+
+"""
+We don't have official oneOf support, but this will
+throw if one of these fields is not set and not null.
+Don't provide both... but if both are provided, it will
+default to using ID.
+"""
+input SavedItemRef { # @oneOf
+  id: ID
+  url: Url
 }
 
 # """
