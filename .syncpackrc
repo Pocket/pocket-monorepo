@@ -1,4 +1,10 @@
 {
     "$schema": "https://unpkg.com/syncpack@12.3.0/dist/schema.json",
-    "dependencyTypes": ["dev", "peer", "prod"]
+    "dependencyTypes": ["dev", "peer", "prod"],
+    "versionGroups": [
+        {
+          "dependencies": ["@aws-sdk/**"],
+          "label": "AWS SDK Dependencies should all have the same version"
+        }
+      ]
 }
