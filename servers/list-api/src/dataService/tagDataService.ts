@@ -415,9 +415,6 @@ export class TagDataService {
     const savedItemIds = Array.from(
       new Set(tagInputs.map((input) => input.savedItemId)),
     );
-
-    // const savedItemIds = tagInputs.map((input) => input.savedItemId);
-
     await this.db.transaction(async (trx) => {
       await Promise.all(
         savedItemIds.map(async (id) => {

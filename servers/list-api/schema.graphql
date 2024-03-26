@@ -912,7 +912,7 @@ type Mutation {
 
 """
 We don't have official oneOf support, but this will
-throw if one of these fields is not set and not null.
+throw if both `id` and `url` are unset/null.
 Don't provide both... but if both are provided, it will
 default to using ID.
 """
