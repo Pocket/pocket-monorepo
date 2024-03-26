@@ -12,7 +12,7 @@
     "format": "eslint --fix \"src/**/*.ts\""
   },
   "dependencies": {
-    "@aws-sdk/client-eventbridge": "3.535.0",
+    "@aws-sdk/client-eventbridge": "3.540.0",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/int-mask": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
