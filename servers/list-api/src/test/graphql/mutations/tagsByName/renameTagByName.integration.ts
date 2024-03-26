@@ -5,15 +5,10 @@ import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 
-describe('renameTagByName mutation', () => {
+describe('deleteTagByName mutation', () => {
   //using write client as mutation will use write client to read as well.
   const writeDb = writeClient();
   const readDb = readClient();
-  const tagQueryStub = readDb('item_tags').count().first();
-  const listUpdatedStub = readDb('list')
-    .select()
-    .andWhere('user_id', '1')
-    .pluck('time_updated');
   const date = new Date(1711470611 * 1000); // 2024-03-26 16:30:11.000Z
   const now = Math.round(Date.now() / 1000) * 1000;
   let app: Application;
@@ -23,9 +18,18 @@ describe('renameTagByName mutation', () => {
     userid: '1',
   };
 
-  const deleteTagMutation = `
-      mutation deleteTagByName($tagName: String!, $timestamp: ISOString) {
-        deleteTagByName(tagName: $tagName, timestamp: $timestamp)
+  const renameTagMutation = `
+      mutation renameTagByName($oldName: String!, $newName: String!, $timestamp: ISOString) {
+        renameTagByName(oldName: $oldName, newName: $newName, timestamp: $timestamp) {
+          name
+          savedItems {
+            edges {
+              node {
+                _updatedAt
+              }
+            }
+          }
+        }
       }
     `;
 
@@ -83,47 +87,47 @@ describe('renameTagByName mutation', () => {
     jest.useRealTimers();
     await server.stop();
   });
-  it('should completely remove an existing tag from all associated items', async () => {
-    const variables = { tagName: 'ketheric' };
+  it('should rename a tag and update associated saves', async () => {
+    const variables = {
+      oldName: 'ketheric',
+      newName: 'tav',
+    };
     const res = await request(app)
       .post(url)
       .set(headers)
-      .send({ query: deleteTagMutation, variables });
-    const expectedDate = new Date(now);
-    expect(res.body.data.deleteTagByName).toEqual('ketheric');
-    const kethericCount = (await tagQueryStub.where('tag', 'ketheric'))[
-      'count(*)'
-    ];
-    expect(kethericCount).toEqual(0);
-    const updatedTimes = await listUpdatedStub.whereIn('item_id', ['0', '1']);
-    expect(updatedTimes).toEqual([expectedDate, expectedDate]);
+      .send({ query: renameTagMutation, variables });
+    expect(res.body.data.renameTagByName.name).toEqual('tav');
+    const updatedDates = res.body.data.renameTagByName.savedItems.edges.map(
+      (edge) => edge.node._updatedAt,
+    );
+    expect(updatedDates).toEqual([now / 1000, now / 1000]);
   });
-  it('accepts a timestamp to delete tags and sets _updatedAt to it for associated Saves', async () => {
+  it('accepts a timestamp to rename tag and sets _updatedAt to it for associated Saves', async () => {
     const timestamp = '2024-03-26T16:41:25.000Z';
     const variables = {
-      tagName: 'ketheric',
+      oldName: 'ketheric',
+      newName: 'tav',
       timestamp,
     };
-    const expectedDate = new Date(timestamp);
+    const expectedDate = new Date(timestamp).getTime() / 1000;
     const res = await request(app)
       .post(url)
       .set(headers)
-      .send({ query: deleteTagMutation, variables });
-    expect(res.body.data.deleteTagByName).toEqual('ketheric');
-    const kethericCount = (await tagQueryStub.where('tag', 'ketheric'))[
-      'count(*)'
-    ];
-    expect(kethericCount).toEqual(0);
-    const updatedTimes = await listUpdatedStub.whereIn('item_id', ['0', '1']);
-    expect(updatedTimes).toEqual([expectedDate, expectedDate]);
+      .send({ query: renameTagMutation, variables });
+    expect(res.body.data.renameTagByName.name).toEqual('tav');
+    const updatedDates = res.body.data.renameTagByName.savedItems.edges.map(
+      (edge) => edge.node._updatedAt,
+    );
+    expect(updatedDates).toEqual([expectedDate, expectedDate]);
   });
-  it('do nothing if the tag does not exist, and not throw error', async () => {
-    const variables = { tagName: 'orin' };
+  it('throws NotFoundError if the tag does not exist', async () => {
+    const variables = { oldName: 'durge', newName: 'tav' };
     const res = await request(app)
       .post(url)
       .set(headers)
-      .send({ query: deleteTagMutation, variables });
-    const expected = 'orin';
-    expect(res.body.data.deleteTagByName).toEqual(expected);
+      .send({ query: renameTagMutation, variables });
+    const error = res.body.errors?.[0];
+    expect(error).not.toBeUndefined();
+    expect(error.extensions.code).toEqual('NOT_FOUND');
   });
 });
