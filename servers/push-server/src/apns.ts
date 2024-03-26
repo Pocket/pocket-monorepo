@@ -80,9 +80,7 @@ export const apns = {
     }
 
     const recipient = apnToken(Buffer.from(tokenString, 'base64'));
-    const note = new Notification(recipient, {
-      expiration: Math.floor(Date.now() / 1000) + 3600, // Expires 1 hour from now.
-    });
+    const note = new Notification(recipient, noteOptions);
 
     try {
       await provider.send(note);
