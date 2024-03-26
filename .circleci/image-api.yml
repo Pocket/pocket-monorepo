@@ -106,19 +106,6 @@ workflows:
           sentry_org: pocket
           requires:
             - image-api_code_deploy_ecs_dev
-     
-      # Setup params we may use in Lambdas
-      - setup_deploy_params:
-          <<: *only_dev
-          name: image-api_deploy-params-dev
-          aws_access_key_id: Dev_AWS_ACCESS_KEY
-          aws_secret_access_key: Dev_AWS_SECRET_ACCESS_KEY
-          context: pocket
-          env: Dev
-          service_name: ImageAPI
-          requires:
-            - image-api_code_deploy_ecs_dev
-
 
       ######
       # Main Branch Deployment (Prod Environment)
@@ -168,17 +155,5 @@ workflows:
           sentry_project_name: image-api
           sentry_env: production
           sentry_org: pocket
-          requires:
-            - image-api_code_deploy_ecs_prod
-
-      # Setup params we may use in Lambdas
-      - setup_deploy_params:
-          <<: *only_main
-          name: image-api_deploy-params-prod
-          aws_access_key_id: Prod_AWS_ACCESS_KEY
-          aws_secret_access_key: Prod_AWS_SECRET_ACCESS_KEY
-          context: pocket
-          env: Prod
-          service_name: ImageAPI
           requires:
             - image-api_code_deploy_ecs_prod

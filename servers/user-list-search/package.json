@@ -37,7 +37,7 @@
     "unleash-client": "5.5.2"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "3.535.0",
+    "@aws-sdk/client-sqs": "3.540.0",
     "@pocket-tools/apollo-cursor-pagination": "1.0.3",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",

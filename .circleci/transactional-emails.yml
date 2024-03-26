@@ -86,18 +86,6 @@ workflows:
           requires:
             - transactional-emails_events_code_deploy_lambda_dev
 
-      # Setup params we may use in Lambdas
-      - setup_deploy_params:
-          <<: *only_dev
-          name: transactional-emails_deploy-params-dev
-          aws_access_key_id: Dev_AWS_ACCESS_KEY
-          aws_secret_access_key: Dev_AWS_SECRET_ACCESS_KEY
-          context: pocket
-          env: Dev
-          service_name: TransactionalEmails
-          requires:
-            - transactional-emails_events_code_deploy_lambda_dev
-
       ######
       # Main Branch Deployment (Prod Environment)
       ######
@@ -150,17 +138,5 @@ workflows:
           sentry_project_name: transactional-emails
           sentry_env: production
           sentry_org: pocket
-          requires:
-            - transactional-emails_events_code_deploy_lambda_prod
-
-      # Setup params we may use in Lambdas
-      - setup_deploy_params:
-          <<: *only_main
-          name: transactional-emails_deploy-params-prod
-          aws_access_key_id: Prod_AWS_ACCESS_KEY
-          aws_secret_access_key: Prod_AWS_SECRET_ACCESS_KEY
-          context: pocket
-          env: Prod
-          service_name: TransactionalEmails
           requires:
             - transactional-emails_events_code_deploy_lambda_prod
