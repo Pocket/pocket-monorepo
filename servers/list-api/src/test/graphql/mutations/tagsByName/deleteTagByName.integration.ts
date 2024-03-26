@@ -9,8 +9,6 @@ describe('deleteTagByName mutation', () => {
   //using write client as mutation will use write client to read as well.
   const writeDb = writeClient();
   const readDb = readClient();
-  const tagQueryStub = readDb('item_tags').count().first();
-  const listUpdatedStub = readDb('list')
     .select()
     .andWhere('user_id', '1')
     .pluck('time_updated');
