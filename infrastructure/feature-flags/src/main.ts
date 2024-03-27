@@ -91,11 +91,12 @@ class FeatureFlags extends TerraformStack {
         databaseName: 'featureflags',
         masterUsername: 'pkt_fflags',
         engine: 'aurora-postgresql',
-        engineMode: 'serverless',
-        scalingConfiguration: {
+        engineMode: 'provisioned',
+        engineVersion: '16.1',
+        createServerlessV2Instance: true,
+        serverlessv2ScalingConfiguration: {
           minCapacity: config.rds.minCapacity,
           maxCapacity: config.rds.maxCapacity,
-          autoPause: false,
         },
       },
 
