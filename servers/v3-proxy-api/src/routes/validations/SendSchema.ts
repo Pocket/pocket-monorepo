@@ -47,7 +47,7 @@ export const V3SendSchema: Schema = {
           'tags_replace',
           'tags_clear',
           'tag_rename',
-          // 'tags_delete',
+          'tag_delete',
         ],
       ],
       bail: true,
