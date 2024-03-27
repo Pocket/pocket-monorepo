@@ -40,6 +40,9 @@ import {
   RemoveTagsDocument,
   RemoveTagsMutation,
   RemoveTagsMutationVariables,
+  ReplaceTagsDocument,
+  ReplaceTagsMutation,
+  ReplaceTagsMutationVariables,
   SavedItemUpsertInput,
   UnFavoriteSavedItemByIdDocument,
   UnFavoriteSavedItemByIdMutation,
@@ -397,6 +400,31 @@ export class ActionsRouter {
       RemoveTagsDocument,
       variables,
     );
+    return true;
+  }
+  /**
+   * Process the 'tags_replace' action from a batch of actions sent to /v3/send.
+   * The actions should be validated and sanitized before this is invoked.
+   *
+   * See `ActionsRouter.archive` for more detailed docstring (same pattern).
+   * @returns true (operation is successful unless error is thrown)
+   * @throws ClientError if operation fails
+   */
+  private async tags_replace(
+    input: Omit<ItemTagAction, 'action'> & { action: 'tags_replace' },
+  ) {
+    const variables: ReplaceTagsMutationVariables = {
+      savedItem: {
+        ...(input.itemId && { id: input.itemId.toString() }),
+        ...(input.url && { url: input.url }),
+      },
+      timestamp: epochSecondsToISOString(input.time),
+      tagNames: input.tags,
+    };
+    await this.client.request<
+      ReplaceTagsMutation,
+      ReplaceTagsMutationVariables
+    >(ReplaceTagsDocument, variables);
     return true;
   }
 }
