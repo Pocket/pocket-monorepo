@@ -1,0 +1,149 @@
+
+workflows:
+  instant-sync-events:
+    jobs:
+
+      ######
+      # Every PR Jobs
+      ######
+      - test_integrations:
+          <<: *not_dev_main
+          for: instant_sync_events
+          context: pocket
+          name: instant-sync-events_test_integrations
+          scope: instant-sync-events
+
+      - build_lambda:
+          <<: *not_dev_main
+          context: pocket
+          for: instant_sync_events
+          name: instant-sync-events_build_lambda
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          scope: instant-sync-events
+          sentry_project_name: instant-sync-events
+          sentry_env: development
+          sentry_org: pocket
+
+      - infrastructure:
+          <<: *not_dev_main
+          context: pocket
+          for: instant_sync_events
+          name: instant-sync-events_infrastructure_plan_prod
+          scope: instant-sync-events-cdk
+          stack-output-path: infrastructure/instant-sync-events/cdktf.out/stacks/instant-sync-events
+          resource-class: pocket/default-prod
+          dev: false
+          apply: false
+
+      ######
+      # Dev Branch Deployment (Dev Environment)
+      ######
+
+      - infrastructure:
+          <<: *only_dev
+          context: pocket
+          for: instant_sync_events
+          name: instant-sync-events_infrastructure_apply_dev
+          scope: instant-sync-events-cdk
+          stack-output-path: infrastructure/instant-sync-events/cdktf.out/stacks/instant-sync-events
+          resource-class: pocket/default-dev
+          apply: true
+          dev: true
+
+      - build_lambda:
+          <<: *only_dev
+          context: pocket
+          for: instant_sync_events
+          name: instant-sync-events_build_lambda_dev
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          scope: instant-sync-events
+          sentry_project_name: instant-sync-events
+          sentry_env: development
+          sentry_org: pocket
+          s3-bucket: pocket-instantsyncevents-dev-eventtracker
+          requires:
+            - instant-sync-events_infrastructure_apply_dev
+
+      - code_deploy_lambda:
+          <<: *only_dev
+          context: pocket
+          for: instant_sync_events
+          name: instant-sync-events_code_deploy_lambda_dev
+          resource-class: pocket/default-dev
+          codedeploy-app-name: InstantSyncEvents-Dev-EventTracker-Lambda
+          codedeploy-group-name: InstantSyncEvents-Dev-EventTracker-Lambda
+          function-name: InstantSyncEvents-Dev-EventTracker-Function
+          s3-bucket: pocket-instantsyncevents-dev-eventtracker
+          requires:
+            - instant-sync-events_build_lambda_dev
+
+      # Notify sentry of dev deployment
+      - sentry_release_notification:
+          <<: *only_dev
+          name: instant-sync-events_sentry-release-notification-dev
+          context: pocket
+          for: instant_sync_events
+          sentry_project_name: instant-sync-events
+          sentry_env: development
+          sentry_org: pocket
+          requires:
+            - instant-sync-events_code_deploy_lambda_dev
+
+      ######
+      # Main Branch Deployment (Prod Environment)
+      ######
+      - infrastructure:
+          <<: *only_main
+          context: pocket
+          for: instant_sync_events
+          name: instant-sync-events_infrastructure_apply_prod
+          scope: instant-sync-events-cdk
+          stack-output-path: infrastructure/instant-sync-events/cdktf.out/stacks/instant-sync-events
+          resource-class: pocket/default-prod
+          apply: true
+          dev: false
+
+      - build_lambda:
+          <<: *only_main
+          context: pocket
+          for: instant_sync_events
+          name: instant-sync-events_build_lambda_prod
+          aws-access-key-id: Prod_AWS_ACCESS_KEY
+          aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
+          aws-region: Prod_AWS_DEFAULT_REGION
+          scope: instant-sync-events
+          sentry_project_name: instant-sync-events
+          sentry_env: production
+          sentry_org: pocket
+          s3-bucket: pocket-instantsyncevents-prod-eventtracker
+          requires:
+            - instant-sync-events_infrastructure_apply_prod
+
+      - code_deploy_lambda:
+          <<: *only_main
+          context: pocket
+          for: instant_sync_events
+          name: instant-sync-events_code_deploy_lambda_prod
+          resource-class: pocket/default-prod
+          codedeploy-app-name: InstantSyncEvents-Prod-EventTracker-Lambda
+          codedeploy-group-name: InstantSyncEvents-Prod-EventTracker-Lambda
+          function-name: InstantSyncEvents-Prod-EventTracker-Function
+          s3-bucket: pocket-instantsyncevents-prod-eventtracker
+          requires:
+            - instant-sync-events_build_lambda_prod
+
+      # Notify sentry of main deployment
+      - sentry_release_notification:
+          <<: *only_main
+          name: instant-sync-events_sentry-release-notification-prod
+          context: pocket
+          for: instant_sync_events
+          sentry_project_name: instant-sync-events
+          sentry_env: production
+          sentry_org: pocket
+          requires:
+            - instant-sync-events_code_deploy_lambda_prod

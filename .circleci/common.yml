@@ -33,6 +33,7 @@ repo_for_enum: &repo_for_enum
       - braze
       - v3_proxy_api
       - push_server
+      - instant_sync_events
 
 resource_class_enmum: &resource_class_enmum
   resource-class:
@@ -101,6 +102,9 @@ parameters:
   push_server:
     type: boolean
     default: false
+  instant_sync_events:
+    type: boolean
+    default: false
 
 commands:
   # Refrenced from https://github.com/kelvintaywl-cci/dynamic-config-showcase/blob/main/.circleci/next.yml
@@ -141,6 +145,7 @@ commands:
             braze: << pipeline.parameters.braze >>
             v3_proxy_api: << pipeline.parameters.v3_proxy_api >>
             push_server: << pipeline.parameters.push_server >>
+            instant_sync_events: << pipeline.parameters.instant_sync_events >>
 
   install_pnpm:  
     steps:
