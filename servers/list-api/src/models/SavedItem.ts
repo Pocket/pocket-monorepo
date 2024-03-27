@@ -347,4 +347,30 @@ export class SavedItemModel {
     }
     return id;
   }
+
+  /**
+   * 'Re-add' a SavedItem by id. Unarchives and undeletes the SavedItem
+   * as applicable, and refreshes the "createdAt" timestamp.
+   * @param id the id of the SavedItem to re-add
+   * @param timestamp the timestamp to set the new createdAt and updatedAt fields
+   * @returns the 're-added' SavedItem
+   * @throws NotFoundError if SavedItem does not exist for user with the
+   * given id
+   */
+  public async reAdd(id: string, timestamp: Date): Promise<SavedItem> {
+    const extantSave = await this.saveService.getSavedItemById(id);
+    if (extantSave == null) {
+      throw new NotFoundError(
+        `SavedItem=${id} not found; try creating a new Save by URL instead.`,
+      );
+    }
+    const updated = await this.saveService.reAdd(id, timestamp);
+    // "Re-add" event depends on the state of the item
+    if (extantSave.status === 'ARCHIVED') {
+      this.context.emitItemEvent(EventType.UNARCHIVE_ITEM, updated);
+    } else {
+      this.context.emitItemEvent(EventType.ADD_ITEM, updated);
+    }
+    return updated;
+  }
 }

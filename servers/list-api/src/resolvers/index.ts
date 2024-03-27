@@ -326,6 +326,13 @@ const resolvers = {
         args.timestamp,
       );
     },
+    reAddById: async (
+      _,
+      args: { id: string; timestamp: Date },
+      context: IContext,
+    ): Promise<SavedItem | null> => {
+      return await context.models.savedItem.reAdd(args.id, args.timestamp);
+    },
   },
 };
 
