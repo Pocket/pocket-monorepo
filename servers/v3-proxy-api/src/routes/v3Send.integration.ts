@@ -181,7 +181,95 @@ describe('v3Get', () => {
           },
         );
       });
-      describe('actions which accept saved items by id or url', () => {
+      describe('single-item tag actions', () => {
+        describe('tags_remove', () => {
+          it.each([
+            {
+              input: {
+                action: 'tags_remove',
+                item_id: '12345',
+                tags: 'supplemental',
+              },
+              expectedCall: {
+                savedItem: { id: '12345' },
+                timestamp: isoNow,
+                tagNames: ['supplemental'],
+              },
+            },
+            {
+              input: {
+                action: 'tags_remove',
+                url: 'http://test.com',
+                tags: 'supplemental',
+              },
+              expectedCall: {
+                savedItem: { url: 'http://test.com' },
+                timestamp: isoNow,
+                tagNames: ['supplemental'],
+              },
+            },
+            {
+              input: {
+                action: 'tags_remove',
+                item_id: '12345',
+                url: 'http://test.com',
+                tags: 'supplemental',
+              },
+              expectedCall: {
+                savedItem: { id: '12345', url: 'http://test.com' },
+                timestamp: isoNow,
+                tagNames: ['supplemental'],
+              },
+            },
+            {
+              input: {
+                action: 'tags_remove',
+                item_id: '12345',
+                time: '1711558016',
+                tags: 'supplemental',
+              },
+              expectedCall: {
+                savedItem: { id: '12345' },
+                timestamp: '2024-03-27T16:46:56.000Z',
+                tagNames: ['supplemental'],
+              },
+            },
+            {
+              input: {
+                action: 'tags_remove',
+                url: 'http://test.com',
+                time: '1711558016',
+                tags: 'supplemental',
+              },
+              expectedCall: {
+                savedItem: { url: 'http://test.com' },
+                timestamp: '2024-03-27T16:46:56.000Z',
+                tagNames: ['supplemental'],
+              },
+            },
+          ])(
+            'conditionally adds id or url, and timestamp',
+            async ({ input, expectedCall }) => {
+              const res = await request(app)
+                .post('/v3/send')
+                .send({
+                  consumer_key: 'test',
+                  access_token: 'test',
+                  actions: [input],
+                });
+              expect(clientSpy).toHaveBeenCalledTimes(1);
+              expect(
+                clientSpy.mock.calls[0][0].definitions[0].name.value,
+              ).toEqual('RemoveTags');
+              expect(clientSpy.mock.calls[0][1]).toEqual(expectedCall);
+              expect(res.body).toEqual({
+                status: 1,
+                action_results: [true],
+                action_errors: [null],
+              });
+            },
+          );
+        });
         describe('tags_clear', () => {
           it.each([
             {

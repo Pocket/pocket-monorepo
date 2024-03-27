@@ -37,6 +37,9 @@ import {
   FavoriteSavedItemByUrlDocument,
   FavoriteSavedItemByUrlMutation,
   FavoriteSavedItemByUrlMutationVariables,
+  RemoveTagsDocument,
+  RemoveTagsMutation,
+  RemoveTagsMutationVariables,
   SavedItemUpsertInput,
   UnFavoriteSavedItemByIdDocument,
   UnFavoriteSavedItemByIdMutation,
@@ -313,7 +316,7 @@ export class ActionsRouter {
     return true;
   }
   /**
-   * Process the 'unfavorite' action from a batch of actions sent to /v3/send.
+   * Process the 'tags_add' action from a batch of actions sent to /v3/send.
    * The actions should be validated and sanitized before this is invoked.
    *
    * See `ActionsRouter.archive` for more detailed docstring (same pattern).
@@ -367,6 +370,31 @@ export class ActionsRouter {
     };
     await this.client.request<ClearTagsMutation, ClearTagsMutationVariables>(
       ClearTagsDocument,
+      variables,
+    );
+    return true;
+  }
+  /**
+   * Process the 'tags_remove' action from a batch of actions sent to /v3/send.
+   * The actions should be validated and sanitized before this is invoked.
+   *
+   * See `ActionsRouter.archive` for more detailed docstring (same pattern).
+   * @returns true (operation is successful unless error is thrown)
+   * @throws ClientError if operation fails
+   */
+  private async tags_remove(
+    input: Omit<ItemTagAction, 'action'> & { action: 'tags_remove' },
+  ) {
+    const variables: RemoveTagsMutationVariables = {
+      savedItem: {
+        ...(input.itemId && { id: input.itemId.toString() }),
+        ...(input.url && { url: input.url }),
+      },
+      timestamp: epochSecondsToISOString(input.time),
+      tagNames: input.tags,
+    };
+    await this.client.request<RemoveTagsMutation, RemoveTagsMutationVariables>(
+      RemoveTagsDocument,
       variables,
     );
     return true;

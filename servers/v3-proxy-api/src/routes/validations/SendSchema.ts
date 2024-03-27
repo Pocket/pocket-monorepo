@@ -43,7 +43,7 @@ export const V3SendSchema: Schema = {
           'unfavorite',
           'delete',
           'tags_add',
-          // 'tags_remove',
+          'tags_remove',
           // 'tags_replace',
           'tags_clear',
           // 'tags_rename',
