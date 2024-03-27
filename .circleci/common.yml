@@ -914,7 +914,7 @@ jobs:
         description: The sentry org
       <<: *repo_for_enum
     docker:
-      - image: getsentry/sentry-cli@sha256:6f67c389dd00c5fd44f99ba618a2f7d0490e8f40df2cc14c699afec3b7df61b2
+      - image: getsentry/sentry-cli@sha256:c57367b665283bc4510d757a5ffa4e469bad74f792a6b6e4bcae14dd3f82ef58
         auth:
           username: $DOCKER_LOGIN
           password: $DOCKER_PASSWORD
@@ -939,38 +939,3 @@ jobs:
           command: |
             source "$BASH_ENV"
             sentry-cli releases deploys "$CIRCLE_SHA1" new -e "<< parameters.sentry_env >>"
-
-  setup_deploy_params:
-    description: Sets up the CircleCI variables in AWS using the service name and env that is passed
-    parameters:
-      service_name:
-        description: Service Name
-        type: string
-      env:
-        description: Environment of the service
-        type: string
-      aws_access_key_id:
-        type: env_var_name
-        default: AWS_ACCESS_KEY_ID
-        description: AWS access key id for IAM role
-      aws_secret_access_key:
-        type: env_var_name
-        default: AWS_SECRET_ACCESS_KEY
-        description: AWS secret key for IAM role
-    docker:
-      - image: amazon/aws-cli:latest@sha256:1ac1d86b8b03082fa47fd89ebc624f9720aa68e4fe9ac36a71a4d6541a5e76b8
-        auth:
-          username: $DOCKER_LOGIN
-          password: $DOCKER_PASSWORD
-        environment:
-          TERM: xterm
-
-    steps:
-      - run:
-          name: Put SSM Parameters
-          command: |
-            export AWS_ACCESS_KEY_ID="${<< parameters.aws_access_key_id >>}"
-            export AWS_SECRET_ACCESS_KEY="${<< parameters.aws_secret_access_key >>}"
-            aws ssm put-parameter --name "/<< parameters.service_name >>/CircleCI/<< parameters.env >>/BUILD_BRANCH" --type "SecureString" --value "${CIRCLE_BRANCH}" --overwrite
-            aws ssm put-parameter --name "/<< parameters.service_name >>/CircleCI/<< parameters.env >>/SERVICE_VERSION" --type "SecureString" --value "${CIRCLE_BUILD_NUM}" --overwrite
-            aws ssm put-parameter --name "/<< parameters.service_name >>/CircleCI/<< parameters.env >>/SERVICE_HASH" --type "SecureString" --value "${CIRCLE_SHA1}" --overwrite

@@ -6,11 +6,14 @@ import {
 } from './user';
 import { item, suggestedTags as savedItemSuggestedTags } from './savedItem';
 import {
+  clearTags,
   createSavedItemTags,
   deleteSavedItem,
   deleteSavedItemTags,
   deleteTag,
+  removeTagsByName,
   replaceSavedItemTags,
+  replaceTags,
   updateSavedItemArchive,
   updateSavedItemFavorite,
   updateSavedItemRemoveTags,
@@ -138,6 +141,19 @@ const resolvers = {
     deleteTag,
     createSavedItemTags,
     replaceSavedItemTags,
+    clearTags,
+    replaceTags,
+    removeTagsByName,
+    deleteTagByName: async (
+      _,
+      args: { tagName: string; timestamp?: Date },
+      context: IContext,
+    ): Promise<string> => {
+      return await context.models.tag.deleteTagByName(
+        args.tagName,
+        args.timestamp,
+      );
+    },
     saveArchive: async (
       _,
       args: SaveMutationInput,
@@ -297,6 +313,17 @@ const resolvers = {
         args.id,
         args.timestamp,
         args.title,
+      );
+    },
+    renameTagByName: async (
+      _,
+      args: { oldName: string; newName: string; timestamp?: Date },
+      context: IContext,
+    ): Promise<Tag | null> => {
+      return await context.models.tag.renameTagByName(
+        args.oldName,
+        args.newName,
+        args.timestamp,
       );
     },
   },

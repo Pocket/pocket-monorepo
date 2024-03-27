@@ -213,12 +213,31 @@ export class TagModel {
       })),
     );
     const saveIds = deletes.map((_) => _.savedItemId);
-    await this.tagService.deleteSavedItemAssociations(nameConnections);
+    await this.tagService.deleteSavedItemAssociations(
+      nameConnections,
+      timestamp,
+    );
     const saves = await this.saveService.batchGetSavedItemsByGivenIds(saveIds);
     return deletes.map((del) => ({
       removed: del.tagIds.map(TagModel.decodeId),
       save: saves.find((save) => del.savedItemId === save.id.toString()),
     }));
+  }
+
+  /**
+   * Remove tags by name from a single SavedItem.
+   */
+  public async removeTagNamesFromSavedItem(
+    itemId: string,
+    tagNames: string[],
+    timestamp?: Date,
+  ): Promise<DeleteSaveTagResponse> {
+    const save = await this.tagService.deleteItemTagsByName(
+      tagNames,
+      itemId,
+      timestamp,
+    );
+    return { removed: tagNames, save };
   }
 
   /**
@@ -237,6 +256,26 @@ export class TagModel {
     return this.tagService.getTagByName(newName);
   }
 
+  public async renameTagByName(
+    oldName: string,
+    newName: string,
+    timestamp?: Date,
+  ): Promise<Tag> {
+    const newNameSanitized = sanitizeTagName(newName);
+    const savedItems = await this.getItemIdAssociations(oldName);
+    await this.tagService.updateTagByUser(
+      oldName,
+      newNameSanitized,
+      savedItems,
+      timestamp,
+    );
+    const tag = await this.tagService.getTagByName(newName);
+    if (tag == null) {
+      throw new NotFoundError('Tag not found');
+    }
+    return tag;
+  }
+
   /**
    * Delete a Tag. Removes all associations with any saves.
    * @param id the Tag ID to delete
@@ -246,6 +285,19 @@ export class TagModel {
     const name = TagModel.decodeId(id);
     await this.tagService.deleteTagObject(name);
     return id;
+  }
+
+  /**
+   * Delete a Tag. Removes all associations with any saves.
+   * @param name the Tag name to delete
+   * @returns the name
+   */
+  public async deleteTagByName(
+    name: string,
+    timestamp?: Date,
+  ): Promise<string> {
+    await this.tagService.deleteTagObject(name, timestamp);
+    return name;
   }
 
   /**
@@ -285,7 +337,7 @@ export class TagModel {
           name: sanitizeTagName(tag),
         })),
     );
-    return this.tagService.replaceSavedItemTags(tagCreates, timestamp);
+    return await this.tagService.replaceSavedItemTags(tagCreates, timestamp);
   }
   // TODO: These weren't required for the ID thing
   //   public getPage(pagination: Pagination): Promise<TagConnection> {}

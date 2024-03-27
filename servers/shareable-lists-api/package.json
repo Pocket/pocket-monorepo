@@ -26,7 +26,7 @@
     "migrate:reset": "prisma migrate reset"
   },
   "dependencies": {
-    "@aws-sdk/client-eventbridge": "3.535.0",
+    "@aws-sdk/client-eventbridge": "3.540.0",
     "@keyv/redis": "2.8.4",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
@@ -38,7 +38,7 @@
     "graphql-constraint-directive": "5.4.2",
     "keyv": "4.5.4",
     "kysely": "0.27.3",
-    "mysql2": "3.9.2",
+    "mysql2": "3.9.3",
     "slugify": "1.6.6",
     "uuid": "^9.0.1"
   },

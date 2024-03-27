@@ -6,15 +6,17 @@ import {
   SavedItemTagUpdateInput,
   SavedItemTagsInput,
   Tag,
+  SavedItemRefInput,
 } from '../types';
 import { IContext } from '../server/context';
 import { ParserCaller } from '../externalCaller/parserCaller';
 import { SavedItemDataService } from '../dataService';
 import * as Sentry from '@sentry/node';
 import { EventType } from '../businessEvents';
-import { getSavedItemTagsMap } from './utils';
+import { getSavedItemTagsMap, atLeastOneOf } from './utils';
 import { TagModel } from '../models';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { NotFoundError, UserInputError } from '@pocket-tools/apollo-utils';
 
 /**
  * Create or re-add a saved item in a user's list.
@@ -318,4 +320,91 @@ export async function updateTag(
   context: IContext,
 ): Promise<Tag> {
   return context.models.tag.renameTag(args.input);
+}
+
+/** Replace all tags on a single SavedItem with a new set of tags */
+export async function replaceTags(
+  root,
+  args: { savedItem: SavedItemRefInput; tagNames: string[]; timestamp: Date },
+  context: IContext,
+): Promise<SavedItem> {
+  if (!atLeastOneOf(args.savedItem, ['id', 'url'])) {
+    throw new UserInputError('SavedItemRef must have one of `id` or `url`');
+  }
+  // Previously clients have used this to clear tags by passing an
+  // empty replacement array, so reroute to clearTags mutation if
+  // if the array of tagNames is empty
+  if (args.tagNames.length === 0) {
+    return clearTags(root, args, context);
+  }
+  let replacement: SavedItemTagsInput;
+  if (args.savedItem.id != null) {
+    replacement = { savedItemId: args.savedItem.id, tags: args.tagNames };
+  } else {
+    const id = await context.models.savedItem.fetchIdFromUrl(
+      args.savedItem.url,
+    );
+    replacement = { savedItemId: id, tags: args.tagNames };
+  }
+  const savedItem = (
+    await context.models.tag.replaceSaveTagConnections(
+      [replacement],
+      args.timestamp,
+    )
+  )[0];
+  if (savedItem == null) {
+    throw new NotFoundError(`SavedItem does not exist`);
+  }
+  context.emitItemEvent(EventType.REPLACE_TAGS, savedItem, args.tagNames);
+  return savedItem;
+}
+/** Remove specific tags from a single SavedItem */
+export async function removeTagsByName(
+  root,
+  args: { savedItem: SavedItemRefInput; tagNames: string[]; timestamp: Date },
+  context: IContext,
+): Promise<SavedItem> {
+  if (!atLeastOneOf(args.savedItem, ['id', 'url'])) {
+    throw new UserInputError('SavedItemRef must have one of `id` or `url`');
+  }
+  let updatedSave: SavedItem;
+  if (args.savedItem.id != null) {
+    updatedSave = await context.models.savedItem.removeTagsFromSaveById(
+      args.savedItem.id,
+      args.tagNames,
+      args.timestamp,
+    );
+    console.log(JSON.stringify(updatedSave));
+  } else {
+    updatedSave = await context.models.savedItem.removeTagsFromSaveByUrl(
+      args.savedItem.url,
+      args.tagNames,
+      args.timestamp,
+    );
+  }
+  if (updatedSave == null) {
+    throw new NotFoundError('SavedItem not found');
+  }
+  return updatedSave;
+}
+/** Remove all tags associated to a single SavedItem */
+export async function clearTags(
+  root,
+  args: { savedItem: SavedItemRefInput; timestamp: Date },
+  context: IContext,
+): Promise<SavedItem> {
+  if (!atLeastOneOf(args.savedItem, ['id', 'url'])) {
+    throw new UserInputError('SavedItemRef must have one of `id` or `url`');
+  }
+  if (args.savedItem.id != null) {
+    return context.models.savedItem.clearTagsById(
+      args.savedItem.id,
+      args.timestamp,
+    );
+  } else {
+    return context.models.savedItem.clearTagsByUrl(
+      args.savedItem.url,
+      args.timestamp,
+    );
+  }
 }

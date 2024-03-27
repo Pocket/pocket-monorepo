@@ -87,3 +87,20 @@ export async function lazyParentLoad<T extends object, K, A extends keyof T>(
     return fetched[attr];
   }
 }
+
+/**
+ * Returns true if the object has at least one property, accessed by a
+ * key in the list 'keys', with non-null data.
+ * @param obj
+ * @param keys
+ * @returns
+ */
+export function atLeastOneOf<T extends object, K extends keyof T>(
+  obj: T,
+  keys: K[],
+) {
+  for (const key of keys) {
+    if (obj[key] != null) return true;
+  }
+  return false;
+}

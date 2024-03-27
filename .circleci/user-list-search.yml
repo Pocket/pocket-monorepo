@@ -296,27 +296,6 @@ workflows:
             - user-list-search_user-list-import_code_deploy_lambda_dev
             - user-list-search_user-list-import-backfill_code_deploy_lambda_dev
 
-     
-      # Setup params we may use in Lambdas
-      - setup_deploy_params:
-          <<: *only_dev
-          name: user-list-search_deploy-params-dev
-          aws_access_key_id: Dev_AWS_ACCESS_KEY
-          aws_secret_access_key: Dev_AWS_SECRET_ACCESS_KEY
-          context: pocket
-          env: Dev
-          service_name: UserListSearch
-          requires:
-            - user-list-search_code_deploy_ecs_dev
-            - user-list-search_events_code_deploy_lambda_dev
-            - user-list-search_kinesis_code_deploy_lambda_dev
-            - user-list-search_item-update_code_deploy_lambda_dev
-            - user-list-search_item-delete_code_deploy_lambda_dev
-            - user-list-search_item-update-backfill_code_deploy_lambda_dev
-            - user-list-search_user-list-import_code_deploy_lambda_dev
-            - user-list-search_user-list-import-backfill_code_deploy_lambda_dev
-
-
       ######
       # Main Branch Deployment (Prod Environment)
       ######
@@ -515,25 +494,6 @@ workflows:
           sentry_project_name: user-list-search
           sentry_env: production
           sentry_org: pocket
-          requires:
-            - user-list-search_code_deploy_ecs_prod
-            - user-list-search_events_code_deploy_lambda_prod
-            - user-list-search_kinesis_code_deploy_lambda_prod
-            - user-list-search_item-update_code_deploy_lambda_prod
-            - user-list-search_item-delete_code_deploy_lambda_prod
-            - user-list-search_item-update-backfill_code_deploy_lambda_prod
-            - user-list-search_user-list-import_code_deploy_lambda_prod
-            - user-list-search_user-list-import-backfill_code_deploy_lambda_prod
-
-      # Setup params we may use in Lambdas
-      - setup_deploy_params:
-          <<: *only_main
-          name: user-list-search_deploy-params-prod
-          aws_access_key_id: Prod_AWS_ACCESS_KEY
-          aws_secret_access_key: Prod_AWS_SECRET_ACCESS_KEY
-          context: pocket
-          env: Prod
-          service_name: UserListSearch
           requires:
             - user-list-search_code_deploy_ecs_prod
             - user-list-search_events_code_deploy_lambda_prod
