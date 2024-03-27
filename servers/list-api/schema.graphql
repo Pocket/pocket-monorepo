@@ -908,6 +908,12 @@ type Mutation {
     tagNames: [String!]!
     timestamp: ISOString
   ): SavedItem @tag(name: "v3proxy")
+
+  """
+  'Re-add' a SavedItem by id. Unarchives and undeletes the SavedItem
+  as applicable, and refreshes the "createdAt" timestamp.
+  """
+  reAddById(id: ID!, timestamp: ISOString!): SavedItem @tag(name: "v3proxy")
 }
 
 """
