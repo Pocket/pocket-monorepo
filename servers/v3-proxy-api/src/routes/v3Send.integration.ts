@@ -10,13 +10,17 @@ import { GraphQLError } from 'graphql-request/build/esm/types';
 describe('v3Get', () => {
   let app: Application;
   let server: Server;
+  const now = Math.round(Date.now() / 1000);
+  const isoNow = new Date(now * 1000).toISOString();
   beforeAll(async () => {
     ({ app, server } = await startServer(0));
+    jest.useFakeTimers({ now: now * 1000, advanceTimers: true });
   });
   afterAll(async () => {
     server.close();
+    jest.restoreAllMocks();
+    jest.useRealTimers();
   });
-  afterAll(() => jest.restoreAllMocks());
 
   describe('v3/send', () => {
     describe('validation', () => {
@@ -144,7 +148,7 @@ describe('v3Get', () => {
           { name: 'unfavorite' },
           { name: 'delete' },
         ])(
-          'calls mutation by url if itemId is not present (optional timestamp) and returns true: $name',
+          'calls mutation by url if itemId is not present and returns true: $name',
           async ({ name }) => {
             const res = await request(app)
               .post('/v3/send')
@@ -162,6 +166,7 @@ describe('v3Get', () => {
               });
             expect(clientSpy.mock.calls[0][1]).toEqual({
               givenUrl: 'http://domain.com',
+              timestamp: isoNow,
             });
             expect(clientSpy.mock.calls[1][1]).toEqual({
               givenUrl: 'http://domain2.com',
@@ -174,6 +179,74 @@ describe('v3Get', () => {
             });
           },
         );
+      });
+      describe('actions which accept saved items by id or url', () => {
+        describe('tags_clear', () => {
+          it.each([
+            {
+              input: { action: 'tags_clear', item_id: '12345' },
+              expectedCall: { savedItem: { id: '12345' }, timestamp: isoNow },
+            },
+            {
+              input: { action: 'tags_clear', url: 'http://test.com' },
+              expectedCall: {
+                savedItem: { url: 'http://test.com' },
+                timestamp: isoNow,
+              },
+            },
+            {
+              input: {
+                action: 'tags_clear',
+                item_id: '12345',
+                url: 'http://test.com',
+              },
+              expectedCall: {
+                savedItem: { id: '12345', url: 'http://test.com' },
+                timestamp: isoNow,
+              },
+            },
+            {
+              input: {
+                action: 'tags_clear',
+                item_id: '12345',
+                time: '1711558016',
+              },
+              expectedCall: {
+                savedItem: { id: '12345' },
+                timestamp: '2024-03-27T16:46:56.000Z',
+              },
+            },
+            {
+              input: {
+                action: 'tags_clear',
+                url: 'http://test.com',
+                time: '1711558016',
+              },
+              expectedCall: {
+                savedItem: { url: 'http://test.com' },
+                timestamp: '2024-03-27T16:46:56.000Z',
+              },
+            },
+          ])(
+            'conditionally adds id or url, and timestamp',
+            async ({ input, expectedCall }) => {
+              const res = await request(app)
+                .post('/v3/send')
+                .send({
+                  consumer_key: 'test',
+                  access_token: 'test',
+                  actions: [input],
+                });
+              expect(clientSpy).toHaveBeenCalledTimes(1);
+              expect(clientSpy.mock.calls[0][1]).toEqual(expectedCall);
+              expect(res.body).toEqual({
+                status: 1,
+                action_results: [true],
+                action_errors: [null],
+              });
+            },
+          );
+        });
       });
     });
   });

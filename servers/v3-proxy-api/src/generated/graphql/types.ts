@@ -936,6 +936,8 @@ export type Mutation = {
    * Mutation is atomic -- if there is a response, all operations were successful.
    */
   batchWriteHighlights: BatchWriteHighlightsResult;
+  /** Remove all tags associated to a SavedItem (included for v3 proxy). */
+  clearTags?: Maybe<SavedItem>;
   /** Add a batch of items to an existing shareable list. */
   createAndAddToShareableList?: Maybe<ShareableList>;
   /** Create new highlight note. Returns the data for the created Highlight note. */
@@ -979,6 +981,11 @@ export type Mutation = {
    * (removes the Tag from all SavedItems). Returns ID of the deleted Tag.
    */
   deleteTag: Scalars['ID']['output'];
+  /**
+   * Delete a tag entity identified by name (rather than ID), to support v3 proxy.
+   * Disassociates this tag from all SavedItems.
+   */
+  deleteTagByName?: Maybe<Scalars['String']['output']>;
   /** Deletes user information and their pocket data for the given pocket userId. Returns pocket userId. */
   deleteUser: Scalars['ID']['output'];
   /**
@@ -1002,6 +1009,13 @@ export type Mutation = {
   /** Refresh an Item's article content. */
   refreshItemArticle: Item;
   /**
+   * Removes specific tags associated to a SavedItem,
+   * referenced by name, to support v3 proxy.
+   */
+  removeTagsByName?: Maybe<SavedItem>;
+  /** Rename a tag identified by name (rather than ID), to support v3 proxy. */
+  renameTagByName?: Maybe<Tag>;
+  /**
    * Replaces the old tags associated with the savedItem to the new tag list
    * given in the entry
    * To remove all Tags from a SavedItem, use `updateSavedItemRemoveTags`.
@@ -1011,6 +1025,8 @@ export type Mutation = {
    * @deprecated use saveBatchUpdateTags
    */
   replaceSavedItemTags: Array<SavedItem>;
+  /** Replace specific tags associated to a SavedItem, to support v3 proxy. */
+  replaceTags?: Maybe<SavedItem>;
   /** Archives PocketSaves */
   saveArchive?: Maybe<SaveWriteMutationPayload>;
   /**
@@ -1165,6 +1181,13 @@ export type MutationBatchWriteHighlightsArgs = {
 
 
 /** Default Mutation Type */
+export type MutationClearTagsArgs = {
+  savedItem: SavedItemRef;
+  timestamp?: InputMaybe<Scalars['ISOString']['input']>;
+};
+
+
+/** Default Mutation Type */
 export type MutationCreateAndAddToShareableListArgs = {
   itemData: Array<AddItemInput>;
   listData: CreateShareableListInput;
@@ -1187,6 +1210,7 @@ export type MutationCreateSavedItemHighlightsArgs = {
 /** Default Mutation Type */
 export type MutationCreateSavedItemTagsArgs = {
   input: Array<SavedItemTagsInput>;
+  timestamp?: InputMaybe<Scalars['ISOString']['input']>;
 };
 
 
@@ -1206,6 +1230,7 @@ export type MutationCreateShareableListItemArgs = {
 /** Default Mutation Type */
 export type MutationDeleteSavedItemArgs = {
   id: Scalars['ID']['input'];
+  timestamp?: InputMaybe<Scalars['ISOString']['input']>;
 };
 
 
@@ -1246,6 +1271,13 @@ export type MutationDeleteTagArgs = {
 
 
 /** Default Mutation Type */
+export type MutationDeleteTagByNameArgs = {
+  tagName: Scalars['String']['input'];
+  timestamp?: InputMaybe<Scalars['ISOString']['input']>;
+};
+
+
+/** Default Mutation Type */
 export type MutationDeleteUserByFxaIdArgs = {
   id: Scalars['ID']['input'];
 };
@@ -1272,8 +1304,33 @@ export type MutationRefreshItemArticleArgs = {
 
 
 /** Default Mutation Type */
+export type MutationRemoveTagsByNameArgs = {
+  savedItem: SavedItemRef;
+  tagNames: Array<Scalars['String']['input']>;
+  timestamp?: InputMaybe<Scalars['ISOString']['input']>;
+};
+
+
+/** Default Mutation Type */
+export type MutationRenameTagByNameArgs = {
+  newName: Scalars['String']['input'];
+  oldName: Scalars['String']['input'];
+  timestamp?: InputMaybe<Scalars['ISOString']['input']>;
+};
+
+
+/** Default Mutation Type */
 export type MutationReplaceSavedItemTagsArgs = {
   input: Array<SavedItemTagsInput>;
+  timestamp?: InputMaybe<Scalars['ISOString']['input']>;
+};
+
+
+/** Default Mutation Type */
+export type MutationReplaceTagsArgs = {
+  savedItem: SavedItemRef;
+  tagNames: Array<Scalars['String']['input']>;
+  timestamp?: InputMaybe<Scalars['ISOString']['input']>;
 };
 
 
@@ -1386,12 +1443,14 @@ export type MutationUpdateHighlightArgs = {
 /** Default Mutation Type */
 export type MutationUpdateSavedItemArchiveArgs = {
   id: Scalars['ID']['input'];
+  timestamp?: InputMaybe<Scalars['ISOString']['input']>;
 };
 
 
 /** Default Mutation Type */
 export type MutationUpdateSavedItemFavoriteArgs = {
   id: Scalars['ID']['input'];
+  timestamp?: InputMaybe<Scalars['ISOString']['input']>;
 };
 
 
@@ -1412,6 +1471,7 @@ export type MutationUpdateSavedItemHighlightNoteArgs = {
 /** Default Mutation Type */
 export type MutationUpdateSavedItemRemoveTagsArgs = {
   savedItemId?: InputMaybe<Scalars['ID']['input']>;
+  timestamp?: InputMaybe<Scalars['ISOString']['input']>;
 };
 
 
@@ -1432,18 +1492,21 @@ export type MutationUpdateSavedItemTitleArgs = {
 /** Default Mutation Type */
 export type MutationUpdateSavedItemUnArchiveArgs = {
   id: Scalars['ID']['input'];
+  timestamp?: InputMaybe<Scalars['ISOString']['input']>;
 };
 
 
 /** Default Mutation Type */
 export type MutationUpdateSavedItemUnDeleteArgs = {
   id: Scalars['ID']['input'];
+  timestamp?: InputMaybe<Scalars['ISOString']['input']>;
 };
 
 
 /** Default Mutation Type */
 export type MutationUpdateSavedItemUnFavoriteArgs = {
   id: Scalars['ID']['input'];
+  timestamp?: InputMaybe<Scalars['ISOString']['input']>;
 };
 
 
@@ -1515,9 +1578,9 @@ export type NumberedListElement = ListElement & {
 
 /** Input for offset-pagination (internal backend use only). */
 export type OffsetPaginationInput = {
-  /**  Defaults to 30  */
+  /** Defaults to 30 */
   limit?: InputMaybe<Scalars['Int']['input']>;
-  /**  Defaults to 0  */
+  /** Defaults to 0 */
   offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -2159,6 +2222,17 @@ export type SavedItemEdge = {
 
 /** All types in this union should implement BaseError, for client fallback */
 export type SavedItemMutationError = NotFound | SyncConflict;
+
+/**
+ * We don't have official oneOf support, but this will
+ * throw if both `id` and `url` are unset/null.
+ * Don't provide both... but if both are provided, it will
+ * default to using ID.
+ */
+export type SavedItemRef = {
+  id?: InputMaybe<Scalars['ID']['input']>;
+  url?: InputMaybe<Scalars['Url']['input']>;
+};
 
 export type SavedItemSearchResult = {
   __typename?: 'SavedItemSearchResult';
@@ -3235,6 +3309,22 @@ export type AddTagsToSavedItemMutationVariables = Exact<{
 
 export type AddTagsToSavedItemMutation = { __typename?: 'Mutation', createSavedItemTags: Array<{ __typename?: 'SavedItem', id: string, status?: SavedItemStatus | null, url: string, isFavorite: boolean, isArchived: boolean, _updatedAt?: number | null, _createdAt: number, favoritedAt?: number | null, archivedAt?: number | null, title?: string | null, item: { __typename: 'Item', normalUrl: string, resolvedUrl?: any | null, domainId?: string | null, originDomainId?: string | null, responseCode?: number | null, mimeType?: string | null, contentLength?: number | null, encoding?: string | null, dateResolved?: any | null, datePublished?: any | null, innerDomainRedirect?: boolean | null, loginRequired?: boolean | null, timeFirstParsed?: any | null, resolvedNormalUrl?: any | null, usedFallback?: number | null, itemId: string, resolvedId?: string | null, wordCount?: number | null, title?: string | null, timeToRead?: number | null, givenUrl: any, excerpt?: string | null, domain?: string | null, isArticle?: boolean | null, isIndex?: boolean | null, hasVideo?: Videoness | null, hasImage?: Imageness | null, language?: string | null, authors?: Array<{ __typename?: 'Author', id: string, name?: string | null, url?: string | null } | null> | null, domainMetadata?: { __typename?: 'DomainMetadata', logo?: any | null, logoGreyscale?: any | null, name?: string | null } | null, images?: Array<{ __typename?: 'Image', imageId: number, url: any, height?: number | null, width?: number | null, credit?: string | null, caption?: string | null } | null> | null, videos?: Array<{ __typename?: 'Video', videoId: number, src: string, width?: number | null, type: VideoType, vid?: string | null, length?: number | null, height?: number | null } | null> | null, topImage?: { __typename?: 'Image', url: any } | null } | { __typename: 'PendingItem' } }> };
 
+export type AddTagsByIdMutationVariables = Exact<{
+  input: Array<SavedItemTagsInput> | SavedItemTagsInput;
+  timestamp?: InputMaybe<Scalars['ISOString']['input']>;
+}>;
+
+
+export type AddTagsByIdMutation = { __typename?: 'Mutation', createSavedItemTags: Array<{ __typename?: 'SavedItem', id: string }> };
+
+export type AddTagsByUrlMutationVariables = Exact<{
+  input: SavedItemTagInput;
+  timestamp: Scalars['ISOString']['input'];
+}>;
+
+
+export type AddTagsByUrlMutation = { __typename?: 'Mutation', savedItemTag?: { __typename?: 'SavedItem', url: string } | null };
+
 export type ArchiveSavedItemByUrlMutationVariables = Exact<{
   givenUrl: Scalars['Url']['input'];
   timestamp: Scalars['ISOString']['input'];
@@ -3249,6 +3339,14 @@ export type ArchiveSavedItemByIdMutationVariables = Exact<{
 
 
 export type ArchiveSavedItemByIdMutation = { __typename?: 'Mutation', updateSavedItemArchive: { __typename?: 'SavedItem', id: string } };
+
+export type ClearTagsMutationVariables = Exact<{
+  savedItem: SavedItemRef;
+  timestamp?: InputMaybe<Scalars['ISOString']['input']>;
+}>;
+
+
+export type ClearTagsMutation = { __typename?: 'Mutation', clearTags?: { __typename?: 'SavedItem', id: string } | null };
 
 export type DeleteSavedItemByUrlMutationVariables = Exact<{
   givenUrl: Scalars['Url']['input'];
@@ -3343,8 +3441,11 @@ export const SearchResultHighlightsFragmentDoc = {"kind":"Document","definitions
 export const AddSavedItemCompleteDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"addSavedItemComplete"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SavedItemUpsertInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"upsertSavedItem"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"SavedItemWithParserMetadata"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ItemSimple"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Item"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"Field","name":{"kind":"Name","value":"itemId"}},{"kind":"Field","name":{"kind":"Name","value":"resolvedId"}},{"kind":"Field","name":{"kind":"Name","value":"wordCount"}},{"kind":"Field","name":{"kind":"Name","value":"topImage"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"timeToRead"}},{"kind":"Field","name":{"kind":"Name","value":"resolvedUrl"}},{"kind":"Field","name":{"kind":"Name","value":"givenUrl"}},{"kind":"Field","name":{"kind":"Name","value":"excerpt"}},{"kind":"Field","name":{"kind":"Name","value":"domain"}},{"kind":"Field","name":{"kind":"Name","value":"isArticle"}},{"kind":"Field","name":{"kind":"Name","value":"isIndex"}},{"kind":"Field","name":{"kind":"Name","value":"hasVideo"}},{"kind":"Field","name":{"kind":"Name","value":"hasImage"}},{"kind":"Field","name":{"kind":"Name","value":"language"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"SavedItemSimple"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SavedItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"isFavorite"}},{"kind":"Field","name":{"kind":"Name","value":"isArchived"}},{"kind":"Field","name":{"kind":"Name","value":"_updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"_createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"favoritedAt"}},{"kind":"Field","name":{"kind":"Name","value":"archivedAt"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Item"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ItemSimple"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ItemComplete"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Item"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ItemSimple"}},{"kind":"Field","name":{"kind":"Name","value":"authors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"domainMetadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"logo"}},{"kind":"Field","name":{"kind":"Name","value":"logoGreyscale"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"images"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"imageId"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"width"}},{"kind":"Field","name":{"kind":"Name","value":"credit"}},{"kind":"Field","name":{"kind":"Name","value":"caption"}}]}},{"kind":"Field","name":{"kind":"Name","value":"videos"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"videoId"}},{"kind":"Field","name":{"kind":"Name","value":"src"}},{"kind":"Field","name":{"kind":"Name","value":"width"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"vid"}},{"kind":"Field","name":{"kind":"Name","value":"length"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ItemParserMetadata"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Item"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"normalUrl"}},{"kind":"Field","name":{"kind":"Name","value":"resolvedUrl"}},{"kind":"Field","name":{"kind":"Name","value":"domainId"}},{"kind":"Field","name":{"kind":"Name","value":"originDomainId"}},{"kind":"Field","name":{"kind":"Name","value":"responseCode"}},{"kind":"Field","name":{"kind":"Name","value":"mimeType"}},{"kind":"Field","name":{"kind":"Name","value":"contentLength"}},{"kind":"Field","name":{"kind":"Name","value":"encoding"}},{"kind":"Field","name":{"kind":"Name","value":"dateResolved"}},{"kind":"Field","name":{"kind":"Name","value":"datePublished"}},{"kind":"Field","name":{"kind":"Name","value":"innerDomainRedirect"}},{"kind":"Field","name":{"kind":"Name","value":"loginRequired"}},{"kind":"Field","name":{"kind":"Name","value":"timeFirstParsed"}},{"kind":"Field","name":{"kind":"Name","value":"topImage"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"resolvedNormalUrl"}},{"kind":"Field","name":{"kind":"Name","value":"usedFallback"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"SavedItemWithParserMetadata"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SavedItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"SavedItemSimple"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Item"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ItemComplete"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"ItemParserMetadata"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PendingItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}}]}}]}}]}}]} as unknown as DocumentNode<AddSavedItemCompleteMutation, AddSavedItemCompleteMutationVariables>;
 export const AddSavedItemBeforeTagDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"addSavedItemBeforeTag"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SavedItemUpsertInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"upsertSavedItem"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<AddSavedItemBeforeTagMutation, AddSavedItemBeforeTagMutationVariables>;
 export const AddTagsToSavedItemDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"addTagsToSavedItem"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"tags"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SavedItemTagsInput"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createSavedItemTags"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"tags"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"SavedItemWithParserMetadata"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ItemSimple"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Item"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"Field","name":{"kind":"Name","value":"itemId"}},{"kind":"Field","name":{"kind":"Name","value":"resolvedId"}},{"kind":"Field","name":{"kind":"Name","value":"wordCount"}},{"kind":"Field","name":{"kind":"Name","value":"topImage"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"timeToRead"}},{"kind":"Field","name":{"kind":"Name","value":"resolvedUrl"}},{"kind":"Field","name":{"kind":"Name","value":"givenUrl"}},{"kind":"Field","name":{"kind":"Name","value":"excerpt"}},{"kind":"Field","name":{"kind":"Name","value":"domain"}},{"kind":"Field","name":{"kind":"Name","value":"isArticle"}},{"kind":"Field","name":{"kind":"Name","value":"isIndex"}},{"kind":"Field","name":{"kind":"Name","value":"hasVideo"}},{"kind":"Field","name":{"kind":"Name","value":"hasImage"}},{"kind":"Field","name":{"kind":"Name","value":"language"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"SavedItemSimple"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SavedItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"isFavorite"}},{"kind":"Field","name":{"kind":"Name","value":"isArchived"}},{"kind":"Field","name":{"kind":"Name","value":"_updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"_createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"favoritedAt"}},{"kind":"Field","name":{"kind":"Name","value":"archivedAt"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Item"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ItemSimple"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ItemComplete"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Item"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ItemSimple"}},{"kind":"Field","name":{"kind":"Name","value":"authors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"domainMetadata"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"logo"}},{"kind":"Field","name":{"kind":"Name","value":"logoGreyscale"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"images"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"imageId"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"width"}},{"kind":"Field","name":{"kind":"Name","value":"credit"}},{"kind":"Field","name":{"kind":"Name","value":"caption"}}]}},{"kind":"Field","name":{"kind":"Name","value":"videos"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"videoId"}},{"kind":"Field","name":{"kind":"Name","value":"src"}},{"kind":"Field","name":{"kind":"Name","value":"width"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"vid"}},{"kind":"Field","name":{"kind":"Name","value":"length"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ItemParserMetadata"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Item"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"normalUrl"}},{"kind":"Field","name":{"kind":"Name","value":"resolvedUrl"}},{"kind":"Field","name":{"kind":"Name","value":"domainId"}},{"kind":"Field","name":{"kind":"Name","value":"originDomainId"}},{"kind":"Field","name":{"kind":"Name","value":"responseCode"}},{"kind":"Field","name":{"kind":"Name","value":"mimeType"}},{"kind":"Field","name":{"kind":"Name","value":"contentLength"}},{"kind":"Field","name":{"kind":"Name","value":"encoding"}},{"kind":"Field","name":{"kind":"Name","value":"dateResolved"}},{"kind":"Field","name":{"kind":"Name","value":"datePublished"}},{"kind":"Field","name":{"kind":"Name","value":"innerDomainRedirect"}},{"kind":"Field","name":{"kind":"Name","value":"loginRequired"}},{"kind":"Field","name":{"kind":"Name","value":"timeFirstParsed"}},{"kind":"Field","name":{"kind":"Name","value":"topImage"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"resolvedNormalUrl"}},{"kind":"Field","name":{"kind":"Name","value":"usedFallback"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"SavedItemWithParserMetadata"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"SavedItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"SavedItemSimple"}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Item"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ItemComplete"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"ItemParserMetadata"}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"PendingItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}}]}}]}}]}}]} as unknown as DocumentNode<AddTagsToSavedItemMutation, AddTagsToSavedItemMutationVariables>;
+export const AddTagsByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AddTagsById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SavedItemTagsInput"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"timestamp"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ISOString"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createSavedItemTags"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}},{"kind":"Argument","name":{"kind":"Name","value":"timestamp"},"value":{"kind":"Variable","name":{"kind":"Name","value":"timestamp"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<AddTagsByIdMutation, AddTagsByIdMutationVariables>;
+export const AddTagsByUrlDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AddTagsByUrl"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SavedItemTagInput"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"timestamp"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ISOString"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"savedItemTag"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}},{"kind":"Argument","name":{"kind":"Name","value":"timestamp"},"value":{"kind":"Variable","name":{"kind":"Name","value":"timestamp"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}}]}}]}}]} as unknown as DocumentNode<AddTagsByUrlMutation, AddTagsByUrlMutationVariables>;
 export const ArchiveSavedItemByUrlDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ArchiveSavedItemByUrl"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"givenUrl"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Url"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"timestamp"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ISOString"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"savedItemArchive"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"givenUrl"},"value":{"kind":"Variable","name":{"kind":"Name","value":"givenUrl"}}},{"kind":"Argument","name":{"kind":"Name","value":"timestamp"},"value":{"kind":"Variable","name":{"kind":"Name","value":"timestamp"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}}]}}]}}]} as unknown as DocumentNode<ArchiveSavedItemByUrlMutation, ArchiveSavedItemByUrlMutationVariables>;
 export const ArchiveSavedItemByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ArchiveSavedItemById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"updateSavedItemArchiveId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateSavedItemArchive"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"updateSavedItemArchiveId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<ArchiveSavedItemByIdMutation, ArchiveSavedItemByIdMutationVariables>;
+export const ClearTagsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ClearTags"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"savedItem"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SavedItemRef"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"timestamp"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ISOString"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"clearTags"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"savedItem"},"value":{"kind":"Variable","name":{"kind":"Name","value":"savedItem"}}},{"kind":"Argument","name":{"kind":"Name","value":"timestamp"},"value":{"kind":"Variable","name":{"kind":"Name","value":"timestamp"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<ClearTagsMutation, ClearTagsMutationVariables>;
 export const DeleteSavedItemByUrlDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteSavedItemByUrl"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"givenUrl"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Url"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"timestamp"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ISOString"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"savedItemDelete"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"givenUrl"},"value":{"kind":"Variable","name":{"kind":"Name","value":"givenUrl"}}},{"kind":"Argument","name":{"kind":"Name","value":"timestamp"},"value":{"kind":"Variable","name":{"kind":"Name","value":"timestamp"}}}]}]}}]} as unknown as DocumentNode<DeleteSavedItemByUrlMutation, DeleteSavedItemByUrlMutationVariables>;
 export const DeleteSavedItemByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteSavedItemById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteSavedItem"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<DeleteSavedItemByIdMutation, DeleteSavedItemByIdMutationVariables>;
 export const FavoriteSavedItemByUrlDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"FavoriteSavedItemByUrl"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"givenUrl"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Url"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"timestamp"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ISOString"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"savedItemFavorite"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"givenUrl"},"value":{"kind":"Variable","name":{"kind":"Name","value":"givenUrl"}}},{"kind":"Argument","name":{"kind":"Name","value":"timestamp"},"value":{"kind":"Variable","name":{"kind":"Name","value":"timestamp"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}}]}}]}}]} as unknown as DocumentNode<FavoriteSavedItemByUrlMutation, FavoriteSavedItemByUrlMutationVariables>;

@@ -15,6 +15,9 @@ import {
   ArchiveSavedItemByUrlDocument,
   ArchiveSavedItemByUrlMutation,
   ArchiveSavedItemByUrlMutationVariables,
+  ClearTagsDocument,
+  ClearTagsMutation,
+  ClearTagsMutationVariables,
   DeleteSavedItemByIdDocument,
   DeleteSavedItemByIdMutation,
   DeleteSavedItemByIdMutationVariables,
@@ -61,7 +64,7 @@ export class ActionsRouter {
     this.client = getClient(accessToken, consumerKey, headers);
   }
   public async processActions(
-    actions: SendAction[], // Right now this is the only kind of action supported
+    actions: SendAction[],
   ): Promise<SendActionResult> {
     const result: SendActionResult = {
       status: 1,
@@ -126,7 +129,7 @@ export class ActionsRouter {
     } = {
       input: {
         url: input.url,
-        ...(input.time && { timestamp: input.time }),
+        timestamp: input.time,
         ...(input.title && { title: input.title }),
       },
     };
@@ -145,7 +148,7 @@ export class ActionsRouter {
     } = {
       input: {
         url: input.url,
-        ...(input.time && { timestamp: input.time }),
+        timestamp: input.time,
       },
     };
     return await processV3Add(this.client, addVars);
@@ -186,7 +189,7 @@ export class ActionsRouter {
     }
     const variables: ArchiveSavedItemByUrlMutationVariables = {
       givenUrl: input.url,
-      ...(input.time && { timestamp: epochSecondsToISOString(input.time) }),
+      timestamp: epochSecondsToISOString(input.time),
     };
     await this.client.request<
       ArchiveSavedItemByUrlMutation,
@@ -224,7 +227,7 @@ export class ActionsRouter {
     }
     const variables: FavoriteSavedItemByUrlMutationVariables = {
       givenUrl: input.url,
-      ...(input.time && { timestamp: epochSecondsToISOString(input.time) }),
+      timestamp: epochSecondsToISOString(input.time),
     };
     await this.client.request<
       FavoriteSavedItemByUrlMutation,
@@ -259,7 +262,7 @@ export class ActionsRouter {
     }
     const variables: UnFavoriteSavedItemByUrlMutationVariables = {
       givenUrl: input.url,
-      ...(input.time && { timestamp: epochSecondsToISOString(input.time) }),
+      timestamp: epochSecondsToISOString(input.time),
     };
     await this.client.request<
       UnFavoriteSavedItemByIdMutation,
@@ -294,12 +297,28 @@ export class ActionsRouter {
     }
     const variables: DeleteSavedItemByUrlMutationVariables = {
       givenUrl: input.url,
-      ...(input.time && { timestamp: epochSecondsToISOString(input.time) }),
+      timestamp: epochSecondsToISOString(input.time),
     };
     await this.client.request<
       DeleteSavedItemByUrlMutation,
       DeleteSavedItemByUrlMutationVariables
     >(DeleteSavedItemByUrlDocument, variables);
+    return true;
+  }
+  private async tags_clear(
+    input: Omit<ItemAction, 'action'> & { action: 'tags_clear' },
+  ) {
+    const variables: ClearTagsMutationVariables = {
+      savedItem: {
+        ...(input.itemId && { id: input.itemId.toString() }),
+        ...(input.url && { url: input.url }),
+      },
+      timestamp: epochSecondsToISOString(input.time),
+    };
+    await this.client.request<ClearTagsMutation, ClearTagsMutationVariables>(
+      ClearTagsDocument,
+      variables,
+    );
     return true;
   }
 }
