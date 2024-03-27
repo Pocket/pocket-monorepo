@@ -7,32 +7,39 @@ import {
 } from './SendActionValidators';
 
 describe('send validator', () => {
+  const now = Math.round(Date.now() / 1000);
+  beforeAll(() => jest.useFakeTimers({ now: now * 1000 }));
+  afterAll(() => jest.useRealTimers());
   describe('for item actions', () => {
     it.each([
       // All possible actions
       {
         input: { item_id: '12345', action: 'favorite' as const },
-        expected: { itemId: 12345, action: 'favorite' },
+        expected: { itemId: 12345, action: 'favorite', time: now },
       },
       {
         input: { item_id: '12345', action: 'unfavorite' as const },
-        expected: { itemId: 12345, action: 'unfavorite' },
+        expected: { itemId: 12345, action: 'unfavorite', time: now },
       },
       {
         input: { item_id: '12345', action: 'readd' as const },
-        expected: { itemId: 12345, action: 'readd' },
+        expected: { itemId: 12345, action: 'readd', time: now },
       },
       {
         input: { item_id: '12345', action: 'archive' as const },
-        expected: { itemId: 12345, action: 'archive' },
+        expected: { itemId: 12345, action: 'archive', time: now },
       },
       {
         input: { item_id: '12345', action: 'delete' as const },
-        expected: { itemId: 12345, action: 'delete' },
+        expected: { itemId: 12345, action: 'delete', time: now },
       },
       {
         input: { url: 'http://domain.com/path', action: 'delete' as const },
-        expected: { url: 'http://domain.com/path', action: 'delete' },
+        expected: {
+          url: 'http://domain.com/path',
+          action: 'delete',
+          time: now,
+        },
       },
       {
         input: {
@@ -44,6 +51,7 @@ describe('send validator', () => {
           itemId: 12345,
           url: 'http://domain.com/path',
           action: 'delete',
+          time: now,
         },
       },
       // Optional time field
@@ -136,6 +144,7 @@ describe('send validator', () => {
           itemId: 12345,
           action: 'tags_add',
           tags: ['perilous', 'supplemental'],
+          time: now,
         },
       },
       {
@@ -148,6 +157,7 @@ describe('send validator', () => {
           itemId: 12345,
           action: 'tags_replace',
           tags: ['perilous', 'supplemental'],
+          time: now,
         },
       },
       {
@@ -160,6 +170,7 @@ describe('send validator', () => {
           itemId: 12345,
           action: 'tags_remove',
           tags: ['perilous', 'supplemental'],
+          time: now,
         },
       },
       {
@@ -172,6 +183,7 @@ describe('send validator', () => {
           itemId: 12345,
           action: 'tags_remove',
           tags: ['perilous'],
+          time: now,
         },
       },
       {
@@ -184,6 +196,7 @@ describe('send validator', () => {
           url: 'http://domain.com/path',
           action: 'tags_remove',
           tags: ['perilous', 'supplemental'],
+          time: now,
         },
       },
       {
@@ -198,6 +211,7 @@ describe('send validator', () => {
           url: 'http://domain.com/path',
           action: 'tags_remove',
           tags: ['perilous', 'supplemental'],
+          time: now,
         },
       },
       // Optional time
@@ -311,6 +325,7 @@ describe('send validator', () => {
           oldTag: 'perilous',
           newTag: 'dangerous',
           action: 'tag_rename',
+          time: now,
         },
       },
       // Optional time field
@@ -340,6 +355,7 @@ describe('send validator', () => {
           oldTag: 'perilous',
           newTag: 'dangerous',
           action: 'tag_rename',
+          time: now,
         },
       },
     ])('sanitizes valid input', ({ input, expected }) => {
@@ -396,6 +412,7 @@ describe('send validator', () => {
         expected: {
           tag: 'perilous',
           action: 'tag_delete',
+          time: now,
         },
       },
       // Optional time field
@@ -422,6 +439,7 @@ describe('send validator', () => {
         expected: {
           tag: 'loud',
           action: 'tag_delete',
+          time: now,
         },
       },
     ])('sanitizes valid input', ({ input, expected }) => {
@@ -472,12 +490,12 @@ describe('send validator', () => {
     it.each([
       {
         input: { url: 'http://domain.com/path', action: 'add' as const },
-        expected: { url: 'http://domain.com/path', action: 'add' },
+        expected: { url: 'http://domain.com/path', action: 'add', time: now },
       },
       // I guess this evaluates to readd, technically it's valid
       {
         input: { item_id: '12323', action: 'add' as const },
-        expected: { itemId: 12323, action: 'add' },
+        expected: { itemId: 12323, action: 'add', time: now },
       },
       // Another technically valid...
       {
@@ -490,6 +508,7 @@ describe('send validator', () => {
           itemId: 12345,
           url: 'http://domain.com/path',
           action: 'add',
+          time: now,
         },
       },
       // Optional time field
@@ -516,6 +535,7 @@ describe('send validator', () => {
           url: 'http://domain.com/path',
           action: 'add',
           title: 'Heavenly Guardian Defense',
+          time: now,
         },
       },
       // optional tags
@@ -529,6 +549,7 @@ describe('send validator', () => {
           url: 'http://domain.com/path',
           action: 'add',
           tags: ['perilous', 'decisive-only'],
+          time: now,
         },
       },
       // all optional metadata possible

@@ -7,14 +7,14 @@ export type ItemAction = {
   action: ItemActionNames;
   itemId?: number;
   url?: string;
-  time?: number;
+  time: number;
 };
 
 export type ItemAddAction = {
   action: AddActionName;
   itemId?: number;
   tags?: string[];
-  time?: number;
+  time: number;
   title?: string;
   url?: string;
 };
@@ -24,20 +24,20 @@ export type ItemTagAction = {
   tags: string[];
   itemId?: number;
   url?: string;
-  time?: number;
+  time: number;
 };
 
 export type TagRenameAction = {
   action: TagRenameActionName;
   newTag: string;
   oldTag: string;
-  time?: number;
+  time: number;
 };
 
 export type TagDeleteAction = {
   action: TagDeleteActionName;
   tag: string;
-  time?: number;
+  time: number;
 };
 
 export type SendAction =
@@ -151,6 +151,8 @@ function HasItemIdOrUrl<TBase extends ActionSanitizable>(Base: TBase) {
  * class which has the rule: there might be a valid `time` (number) field
  * in the input passed to the constructor. Just validates that `time` is
  * a valid number -- does not impose constraints on the time itself.
+ * If no timestamp is passed, it will default to the current time in seconds
+ * from epoch.
  *
  * Must be called with a Class that implements or extends the
  * ActionSanitizable type (constructor with a single argument, `input`,
@@ -161,9 +163,9 @@ function HasItemIdOrUrl<TBase extends ActionSanitizable>(Base: TBase) {
  * data which conforms to the expected action schema. See `HasItemIdOrUrl`
  * for example usage.
  */
-function MaybeHasTime<TBase extends ActionSanitizable>(Base: TBase) {
-  return class MaybeHasTime extends Base {
-    readonly time: number | undefined;
+function HasTimeOrDefault<TBase extends ActionSanitizable>(Base: TBase) {
+  return class HasTimeOrDefault extends Base {
+    readonly time: number;
     constructor(...args: any[]) {
       super(...args);
       if ('time' in this.input) {
@@ -184,6 +186,9 @@ function MaybeHasTime<TBase extends ActionSanitizable>(Base: TBase) {
           throw new InputValidationError(error);
         }
         this.time = time;
+      } else {
+        // Time in seconds from epoch
+        this.time = Math.round(Date.now() / 1000);
       }
     }
   };
@@ -419,7 +424,7 @@ function validTagsOrError(tags: string[]): void {
  * Makes the input value accessible to other mixins.
  *
  * Example:
- * `SanitizedTagDelete(MaybeHasTime(HasTag(NamedAction<'tag_delete'>)))`
+ * `SanitizedTagDelete(HasTimeOrDefault(HasTag(NamedAction<'tag_delete'>)))`
  */
 class NamedAction<Action extends ActionNames> {
   readonly action: Action;
@@ -440,7 +445,7 @@ class NamedAction<Action extends ActionNames> {
  * Chain with other validators/sanitizers to set rules.
  * Example:
  * ```
- * const ItemActionSanitizer = SanitizedItem(HasItemIdOrUrl(MaybeHasTime(NamedAction<ItemActionNames>)))
+ * const ItemActionSanitizer = SanitizedItem(HasItemIdOrUrl(HasTimeOrDefault(NamedAction<ItemActionNames>)))
  * const validAction = ItemActionSanitizer(
  *  {action: 'favorite', item_id: '12345', time: '1923938382'}
  * ).validate() // returns { action: 'favorite', itemId: 12345, time: 1923938382 }
@@ -454,9 +459,9 @@ function SanitizedItem<TBase extends ItemProps>(Base: TBase) {
     public validate(): ItemAction {
       return {
         action: this.action,
+        time: this.time,
         ...(this.url && { url: this.url }),
         ...(this.itemId != null && { itemId: this.itemId }),
-        ...(this.time && { time: this.time }),
       };
     }
   };
@@ -478,9 +483,9 @@ function SanitizedItemTag<TBase extends ItemTagProps>(Base: TBase) {
       return {
         action: this.action,
         tags: this.tags,
+        time: this.time,
         ...(this.itemId != null && { itemId: this.itemId }),
         ...(this.url && { url: this.url }),
-        ...(this.time && { time: this.time }),
       };
     }
   };
@@ -503,7 +508,7 @@ function SanitizedTagRename<TBase extends TagRenameProps>(Base: TBase) {
         action: this.action,
         oldTag: this.oldTag,
         newTag: this.newTag,
-        ...(this.time && { time: this.time }),
+        time: this.time,
       };
     }
   };
@@ -525,7 +530,7 @@ function SanitizedTagDelete<TBase extends TagDeleteProps>(Base: TBase) {
       return {
         action: this.action,
         tag: this.tag,
-        ...(this.time && { time: this.time }),
+        time: this.time,
       };
     }
   };
@@ -546,11 +551,11 @@ function SanitizedAddItem<TBase extends ItemAddProps>(Base: TBase) {
     public validate(): ItemAddAction {
       return {
         action: this.action,
+        time: this.time,
         ...(this.url && { url: this.url }),
         ...(this.itemId != null && { itemId: this.itemId }),
         ...(this.title && { title: this.title }),
         ...(this.tags && { tags: this.tags }),
-        ...(this.time && { time: this.time }),
       };
     }
   };
@@ -564,7 +569,7 @@ function SanitizedAddItem<TBase extends ItemAddProps>(Base: TBase) {
  * `ItemAction` object or throws error if validation fails.
  */
 export const ItemActionSanitizer = SanitizedItem(
-  HasItemIdOrUrl(MaybeHasTime(NamedAction<ItemActionNames>)),
+  HasItemIdOrUrl(HasTimeOrDefault(NamedAction<ItemActionNames>)),
 );
 /**
  * Sanitizer for actions: 'tags_add', 'tags_replace', 'tags_delete'
@@ -574,7 +579,9 @@ export const ItemActionSanitizer = SanitizedItem(
  * `ItemTagAction` object or throws error if validation fails.
  */
 export const ItemTagActionSanitizer = SanitizedItemTag(
-  HasItemIdOrUrl(MaybeHasTime(HasValidTags(NamedAction<ItemTagActionNames>))),
+  HasItemIdOrUrl(
+    HasTimeOrDefault(HasValidTags(NamedAction<ItemTagActionNames>)),
+  ),
 );
 /**
  * Sanitizer for action: 'tag_rename'.
@@ -583,7 +590,7 @@ export const ItemTagActionSanitizer = SanitizedItemTag(
  * `TagRenameAction` object or throws error if validation fails.
  */
 export const TagRenameActionSanitizer = SanitizedTagRename(
-  MaybeHasTime(HasNewTag(HasOldTag(NamedAction<'tag_rename'>))),
+  HasTimeOrDefault(HasNewTag(HasOldTag(NamedAction<'tag_rename'>))),
 );
 /**
  * Sanitizer for action: 'tag_delete'
@@ -593,7 +600,7 @@ export const TagRenameActionSanitizer = SanitizedTagRename(
  * `TagDeleteAction` object or throws error if validation fails.
  */
 export const TagDeleteActionSanitizer = SanitizedTagDelete(
-  MaybeHasTime(HasTag(NamedAction<'tag_delete'>)),
+  HasTimeOrDefault(HasTag(NamedAction<'tag_delete'>)),
 );
 /**
  * Sanitizer for actions: 'add'.
@@ -603,7 +610,9 @@ export const TagDeleteActionSanitizer = SanitizedTagDelete(
  * `ItemAddAction` object or throws error if validation fails.
  */
 export const ItemAddActionSanitizer = SanitizedAddItem(
-  HasItemIdOrUrl(MaybeHasTime(MaybeHasTags(MaybeHasTitle(NamedAction<'add'>)))),
+  HasItemIdOrUrl(
+    HasTimeOrDefault(MaybeHasTags(MaybeHasTitle(NamedAction<'add'>))),
+  ),
 );
 
 /**

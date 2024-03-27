@@ -1,0 +1,13 @@
+mutation RemoveTags(
+  $savedItem: SavedItemRef!
+  $tagNames: [String!]!
+  $timestamp: ISOString
+) {
+  removeTagsByName(
+    savedItem: $savedItem
+    tagNames: $tagNames
+    timestamp: $timestamp
+  ) {
+    id
+  }
+}

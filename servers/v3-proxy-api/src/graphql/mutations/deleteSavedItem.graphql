@@ -2,6 +2,6 @@ mutation DeleteSavedItemByUrl($givenUrl: Url!, $timestamp: ISOString!) {
   savedItemDelete(givenUrl: $givenUrl, timestamp: $timestamp)
 }
 
-mutation DeleteSavedItemById($id: ID!) {
-  deleteSavedItem(id: $id)
+mutation DeleteSavedItemById($id: ID!, $timestamp: ISOString) {
+  deleteSavedItem(id: $id, timestamp: $timestamp)
 }

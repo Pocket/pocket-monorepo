@@ -10,13 +10,17 @@ import { GraphQLError } from 'graphql-request/build/esm/types';
 describe('v3Get', () => {
   let app: Application;
   let server: Server;
+  const now = Math.round(Date.now() / 1000);
+  const isoNow = new Date(now * 1000).toISOString();
   beforeAll(async () => {
     ({ app, server } = await startServer(0));
+    jest.useFakeTimers({ now: now * 1000, advanceTimers: true });
   });
   afterAll(async () => {
     server.close();
+    jest.restoreAllMocks();
+    jest.useRealTimers();
   });
-  afterAll(() => jest.restoreAllMocks());
 
   describe('v3/send', () => {
     describe('validation', () => {
@@ -130,6 +134,7 @@ describe('v3Get', () => {
               });
             expect(clientSpy.mock.calls[0][1]).toEqual({
               [property]: '12345',
+              timestamp: isoNow,
             });
             expect(res.body).toEqual({
               status: 1,
@@ -144,7 +149,7 @@ describe('v3Get', () => {
           { name: 'unfavorite' },
           { name: 'delete' },
         ])(
-          'calls mutation by url if itemId is not present (optional timestamp) and returns true: $name',
+          'calls mutation by url if itemId is not present and returns true: $name',
           async ({ name }) => {
             const res = await request(app)
               .post('/v3/send')
@@ -162,6 +167,7 @@ describe('v3Get', () => {
               });
             expect(clientSpy.mock.calls[0][1]).toEqual({
               givenUrl: 'http://domain.com',
+              timestamp: isoNow,
             });
             expect(clientSpy.mock.calls[1][1]).toEqual({
               givenUrl: 'http://domain2.com',
@@ -174,6 +180,359 @@ describe('v3Get', () => {
             });
           },
         );
+      });
+      describe('single-item tag actions', () => {
+        describe('tags_replace', () => {
+          it.each([
+            {
+              input: {
+                action: 'tags_replace',
+                item_id: '12345',
+                tags: 'supplemental',
+              },
+              expectedCall: {
+                savedItem: { id: '12345' },
+                timestamp: isoNow,
+                tagNames: ['supplemental'],
+              },
+            },
+            {
+              input: {
+                action: 'tags_replace',
+                url: 'http://test.com',
+                tags: 'supplemental',
+              },
+              expectedCall: {
+                savedItem: { url: 'http://test.com' },
+                timestamp: isoNow,
+                tagNames: ['supplemental'],
+              },
+            },
+            {
+              input: {
+                action: 'tags_replace',
+                item_id: '12345',
+                url: 'http://test.com',
+                tags: 'supplemental',
+              },
+              expectedCall: {
+                savedItem: { id: '12345', url: 'http://test.com' },
+                timestamp: isoNow,
+                tagNames: ['supplemental'],
+              },
+            },
+            {
+              input: {
+                action: 'tags_replace',
+                item_id: '12345',
+                time: '1711558016',
+                tags: 'supplemental',
+              },
+              expectedCall: {
+                savedItem: { id: '12345' },
+                timestamp: '2024-03-27T16:46:56.000Z',
+                tagNames: ['supplemental'],
+              },
+            },
+            {
+              input: {
+                action: 'tags_replace',
+                url: 'http://test.com',
+                time: '1711558016',
+                tags: 'supplemental',
+              },
+              expectedCall: {
+                savedItem: { url: 'http://test.com' },
+                timestamp: '2024-03-27T16:46:56.000Z',
+                tagNames: ['supplemental'],
+              },
+            },
+          ])(
+            'conditionally adds id or url, and timestamp',
+            async ({ input, expectedCall }) => {
+              const res = await request(app)
+                .post('/v3/send')
+                .send({
+                  consumer_key: 'test',
+                  access_token: 'test',
+                  actions: [input],
+                });
+              expect(clientSpy).toHaveBeenCalledTimes(1);
+              expect(
+                clientSpy.mock.calls[0][0].definitions[0].name.value,
+              ).toEqual('ReplaceTags');
+              expect(clientSpy.mock.calls[0][1]).toEqual(expectedCall);
+              expect(res.body).toEqual({
+                status: 1,
+                action_results: [true],
+                action_errors: [null],
+              });
+            },
+          );
+        });
+        describe('tags_remove', () => {
+          it.each([
+            {
+              input: {
+                action: 'tags_remove',
+                item_id: '12345',
+                tags: 'supplemental',
+              },
+              expectedCall: {
+                savedItem: { id: '12345' },
+                timestamp: isoNow,
+                tagNames: ['supplemental'],
+              },
+            },
+            {
+              input: {
+                action: 'tags_remove',
+                url: 'http://test.com',
+                tags: 'supplemental',
+              },
+              expectedCall: {
+                savedItem: { url: 'http://test.com' },
+                timestamp: isoNow,
+                tagNames: ['supplemental'],
+              },
+            },
+            {
+              input: {
+                action: 'tags_remove',
+                item_id: '12345',
+                url: 'http://test.com',
+                tags: 'supplemental',
+              },
+              expectedCall: {
+                savedItem: { id: '12345', url: 'http://test.com' },
+                timestamp: isoNow,
+                tagNames: ['supplemental'],
+              },
+            },
+            {
+              input: {
+                action: 'tags_remove',
+                item_id: '12345',
+                time: '1711558016',
+                tags: 'supplemental',
+              },
+              expectedCall: {
+                savedItem: { id: '12345' },
+                timestamp: '2024-03-27T16:46:56.000Z',
+                tagNames: ['supplemental'],
+              },
+            },
+            {
+              input: {
+                action: 'tags_remove',
+                url: 'http://test.com',
+                time: '1711558016',
+                tags: 'supplemental',
+              },
+              expectedCall: {
+                savedItem: { url: 'http://test.com' },
+                timestamp: '2024-03-27T16:46:56.000Z',
+                tagNames: ['supplemental'],
+              },
+            },
+          ])(
+            'conditionally adds id or url, and timestamp',
+            async ({ input, expectedCall }) => {
+              const res = await request(app)
+                .post('/v3/send')
+                .send({
+                  consumer_key: 'test',
+                  access_token: 'test',
+                  actions: [input],
+                });
+              expect(clientSpy).toHaveBeenCalledTimes(1);
+              expect(
+                clientSpy.mock.calls[0][0].definitions[0].name.value,
+              ).toEqual('RemoveTags');
+              expect(clientSpy.mock.calls[0][1]).toEqual(expectedCall);
+              expect(res.body).toEqual({
+                status: 1,
+                action_results: [true],
+                action_errors: [null],
+              });
+            },
+          );
+        });
+        describe('tags_clear', () => {
+          it.each([
+            {
+              input: { action: 'tags_clear', item_id: '12345' },
+              expectedCall: { savedItem: { id: '12345' }, timestamp: isoNow },
+            },
+            {
+              input: { action: 'tags_clear', url: 'http://test.com' },
+              expectedCall: {
+                savedItem: { url: 'http://test.com' },
+                timestamp: isoNow,
+              },
+            },
+            {
+              input: {
+                action: 'tags_clear',
+                item_id: '12345',
+                url: 'http://test.com',
+              },
+              expectedCall: {
+                savedItem: { id: '12345', url: 'http://test.com' },
+                timestamp: isoNow,
+              },
+            },
+            {
+              input: {
+                action: 'tags_clear',
+                item_id: '12345',
+                time: '1711558016',
+              },
+              expectedCall: {
+                savedItem: { id: '12345' },
+                timestamp: '2024-03-27T16:46:56.000Z',
+              },
+            },
+            {
+              input: {
+                action: 'tags_clear',
+                url: 'http://test.com',
+                time: '1711558016',
+              },
+              expectedCall: {
+                savedItem: { url: 'http://test.com' },
+                timestamp: '2024-03-27T16:46:56.000Z',
+              },
+            },
+          ])(
+            'conditionally adds id or url, and timestamp',
+            async ({ input, expectedCall }) => {
+              const res = await request(app)
+                .post('/v3/send')
+                .send({
+                  consumer_key: 'test',
+                  access_token: 'test',
+                  actions: [input],
+                });
+              expect(clientSpy).toHaveBeenCalledTimes(1);
+              expect(
+                clientSpy.mock.calls[0][0].definitions[0].name.value,
+              ).toEqual('ClearTags');
+              expect(clientSpy.mock.calls[0][1]).toEqual(expectedCall);
+              expect(res.body).toEqual({
+                status: 1,
+                action_results: [true],
+                action_errors: [null],
+              });
+            },
+          );
+        });
+        describe('tags_add', () => {
+          it.each([
+            {
+              input: {
+                action: 'tags_add',
+                item_id: '12345',
+                tags: 'perilous,decisive-only',
+              },
+              expectedCall: {
+                input: [
+                  {
+                    savedItemId: '12345',
+                    tags: ['perilous', 'decisive-only'],
+                  },
+                ],
+                timestamp: isoNow,
+              },
+              mutationName: 'AddTagsById',
+            },
+            {
+              input: {
+                action: 'tags_add',
+                url: 'http://test.com',
+                tags: 'perilous,decisive-only',
+              },
+              expectedCall: {
+                input: {
+                  givenUrl: 'http://test.com',
+                  tagNames: ['perilous', 'decisive-only'],
+                },
+                timestamp: isoNow,
+              },
+              mutationName: 'AddTagsByUrl',
+            },
+            {
+              input: {
+                action: 'tags_add',
+                item_id: '12345',
+                url: 'http://test.com',
+                tags: 'perilous,decisive-only',
+              },
+              expectedCall: {
+                input: [
+                  {
+                    savedItemId: '12345',
+                    tags: ['perilous', 'decisive-only'],
+                  },
+                ],
+                timestamp: isoNow,
+              },
+              mutationName: 'AddTagsById',
+            },
+            {
+              input: {
+                action: 'tags_add',
+                item_id: '12345',
+                time: '1711558016',
+                tags: 'perilous,decisive-only',
+              },
+              expectedCall: {
+                input: [
+                  {
+                    savedItemId: '12345',
+                    tags: ['perilous', 'decisive-only'],
+                  },
+                ],
+                timestamp: '2024-03-27T16:46:56.000Z',
+              },
+              mutationName: 'AddTagsById',
+            },
+            {
+              input: {
+                action: 'tags_add',
+                url: 'http://test.com',
+                time: '1711558016',
+                tags: 'perilous',
+              },
+              expectedCall: {
+                input: { givenUrl: 'http://test.com', tagNames: ['perilous'] },
+                timestamp: '2024-03-27T16:46:56.000Z',
+              },
+              mutationName: 'AddTagsByUrl',
+            },
+          ])(
+            'conditionally adds id or url, timestamp, and routes to correct mutation',
+            async ({ input, expectedCall, mutationName }) => {
+              const res = await request(app)
+                .post('/v3/send')
+                .send({
+                  consumer_key: 'test',
+                  access_token: 'test',
+                  actions: [input],
+                });
+              expect(clientSpy).toHaveBeenCalledTimes(1);
+              expect(
+                clientSpy.mock.calls[0][0].definitions[0].name.value,
+              ).toEqual(mutationName);
+              expect(clientSpy.mock.calls[0][1]).toEqual(expectedCall);
+              expect(res.body).toEqual({
+                status: 1,
+                action_results: [true],
+                action_errors: [null],
+              });
+            },
+          );
+        });
       });
     });
   });
