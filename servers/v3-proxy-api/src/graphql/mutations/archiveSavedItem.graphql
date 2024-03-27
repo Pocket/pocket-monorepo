@@ -3,8 +3,11 @@ mutation ArchiveSavedItemByUrl($givenUrl: Url!, $timestamp: ISOString!) {
     url
   }
 }
-mutation ArchiveSavedItemById($updateSavedItemArchiveId: ID!) {
-  updateSavedItemArchive(id: $updateSavedItemArchiveId) {
+mutation ArchiveSavedItemById(
+  $updateSavedItemArchiveId: ID!
+  $timestamp: ISOString
+) {
+  updateSavedItemArchive(id: $updateSavedItemArchiveId, timestamp: $timestamp) {
     id
   }
 }

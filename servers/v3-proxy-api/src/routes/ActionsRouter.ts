@@ -174,9 +174,9 @@ export class ActionsRouter {
     input: Omit<ItemAction, 'action'> & { action: 'archive' },
   ): Promise<true> {
     if (input.itemId) {
-      // TODO [POCKET-9807]: This mutation does not accept timestamp
       const variables: ArchiveSavedItemByIdMutationVariables = {
         updateSavedItemArchiveId: input.itemId.toString(),
+        timestamp: epochSecondsToISOString(input.time),
       };
       await this.client.request<
         ArchiveSavedItemByIdMutation,
@@ -212,9 +212,9 @@ export class ActionsRouter {
     input: Omit<ItemAction, 'action'> & { action: 'favorite' },
   ): Promise<true> {
     if (input.itemId) {
-      // TODO [POCKET-9807]: This mutation does not accept timestamp
       const variables: FavoriteSavedItemByIdMutationVariables = {
         updateSavedItemFavoriteId: input.itemId.toString(),
+        timestamp: epochSecondsToISOString(input.time),
       };
       await this.client.request<
         FavoriteSavedItemByIdMutation,
@@ -247,9 +247,9 @@ export class ActionsRouter {
     input: Omit<ItemAction, 'action'> & { action: 'unfavorite' },
   ): Promise<true> {
     if (input.itemId) {
-      // TODO [POCKET-9807]: This mutation does not accept timestamp
       const variables: UnFavoriteSavedItemByIdMutationVariables = {
         updateSavedItemUnFavoriteId: input.itemId.toString(),
+        timestamp: epochSecondsToISOString(input.time),
       };
       await this.client.request<
         UnFavoriteSavedItemByIdMutation,
@@ -282,9 +282,9 @@ export class ActionsRouter {
     input: Omit<ItemAction, 'action'> & { action: 'delete' },
   ): Promise<true> {
     if (input.itemId) {
-      // TODO [POCKET-9807]: This mutation does not accept timestamp
       const variables: DeleteSavedItemByIdMutationVariables = {
         id: input.itemId.toString(),
+        timestamp: epochSecondsToISOString(input.time),
       };
       await this.client.request<
         DeleteSavedItemByIdMutation,

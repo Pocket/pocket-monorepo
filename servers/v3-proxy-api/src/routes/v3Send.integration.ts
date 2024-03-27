@@ -134,6 +134,7 @@ describe('v3Get', () => {
               });
             expect(clientSpy.mock.calls[0][1]).toEqual({
               [property]: '12345',
+              timestamp: isoNow,
             });
             expect(res.body).toEqual({
               status: 1,
@@ -180,6 +181,27 @@ describe('v3Get', () => {
           },
         );
       });
+      // describe('tags_add', () => {
+      //   it('calls mutation by id if itemId is present and returns true', async () => {
+      //     const res = await request(app)
+      //       .post('/v3/send')
+      //       .send({
+      //         consumer_key: 'test',
+      //         access_token: 'test',
+      //         actions: [{ action: 'tags_add', input: {} }],
+      //       });
+      //     expect(clientSpy.mock.calls[0][1]).toEqual({
+      //       [property]: '12345',
+      //     });
+      //     expect(res.body).toEqual({
+      //       status: 1,
+      //       action_results: [true],
+      //       action_errors: [null],
+      //     });
+      //   });
+      //   it('calls mutation by URL if url is present and returns true', () => {});
+      //   it('populates required timestamp field for URL mutation', () => {});
+      // });
       describe('actions which accept saved items by id or url', () => {
         describe('tags_clear', () => {
           it.each([
@@ -238,6 +260,83 @@ describe('v3Get', () => {
                   actions: [input],
                 });
               expect(clientSpy).toHaveBeenCalledTimes(1);
+              expect(
+                clientSpy.mock.calls[0][0].definitions[0].name.value,
+              ).toEqual('ClearTags');
+              expect(clientSpy.mock.calls[0][1]).toEqual(expectedCall);
+              expect(res.body).toEqual({
+                status: 1,
+                action_results: [true],
+                action_errors: [null],
+              });
+            },
+          );
+        });
+        describe('tags_add', () => {
+          it.each([
+            {
+              input: { action: 'tags_add', item_id: '12345' },
+              expectedCall: { savedItem: { id: '12345' }, timestamp: isoNow },
+              mutationName: 'AddTagsById',
+            },
+            {
+              input: { action: 'tags_add', url: 'http://test.com' },
+              expectedCall: {
+                savedItem: { url: 'http://test.com' },
+                timestamp: isoNow,
+              },
+              mutationName: 'AddTagsByUrl',
+            },
+            {
+              input: {
+                action: 'tags_add',
+                item_id: '12345',
+                url: 'http://test.com',
+              },
+              expectedCall: {
+                savedItem: { id: '12345', url: 'http://test.com' },
+                timestamp: isoNow,
+              },
+              mutationName: 'AddTagsById',
+            },
+            {
+              input: {
+                action: 'tags_add',
+                item_id: '12345',
+                time: '1711558016',
+              },
+              expectedCall: {
+                savedItem: { id: '12345' },
+                timestamp: '2024-03-27T16:46:56.000Z',
+              },
+              mutationName: 'AddTagsById',
+            },
+            {
+              input: {
+                action: 'tags_add',
+                url: 'http://test.com',
+                time: '1711558016',
+              },
+              expectedCall: {
+                savedItem: { url: 'http://test.com' },
+                timestamp: '2024-03-27T16:46:56.000Z',
+              },
+              mutationName: 'AddTagsByUrl',
+            },
+          ])(
+            'conditionally adds id or url, timestamp, and routes to correct mutation',
+            async ({ input, expectedCall, mutationName }) => {
+              const res = await request(app)
+                .post('/v3/send')
+                .send({
+                  consumer_key: 'test',
+                  access_token: 'test',
+                  actions: [input],
+                });
+              expect(clientSpy).toHaveBeenCalledTimes(1);
+              expect(
+                clientSpy.mock.calls[0][0].definitions[0].name.value,
+              ).toEqual(mutationName);
               expect(clientSpy.mock.calls[0][1]).toEqual(expectedCall);
               expect(res.body).toEqual({
                 status: 1,
