@@ -181,27 +181,6 @@ describe('v3Get', () => {
           },
         );
       });
-      // describe('tags_add', () => {
-      //   it('calls mutation by id if itemId is present and returns true', async () => {
-      //     const res = await request(app)
-      //       .post('/v3/send')
-      //       .send({
-      //         consumer_key: 'test',
-      //         access_token: 'test',
-      //         actions: [{ action: 'tags_add', input: {} }],
-      //       });
-      //     expect(clientSpy.mock.calls[0][1]).toEqual({
-      //       [property]: '12345',
-      //     });
-      //     expect(res.body).toEqual({
-      //       status: 1,
-      //       action_results: [true],
-      //       action_errors: [null],
-      //     });
-      //   });
-      //   it('calls mutation by URL if url is present and returns true', () => {});
-      //   it('populates required timestamp field for URL mutation', () => {});
-      // });
       describe('actions which accept saved items by id or url', () => {
         describe('tags_clear', () => {
           it.each([
@@ -275,14 +254,33 @@ describe('v3Get', () => {
         describe('tags_add', () => {
           it.each([
             {
-              input: { action: 'tags_add', item_id: '12345' },
-              expectedCall: { savedItem: { id: '12345' }, timestamp: isoNow },
+              input: {
+                action: 'tags_add',
+                item_id: '12345',
+                tags: 'perilous,decisive-only',
+              },
+              expectedCall: {
+                input: [
+                  {
+                    savedItemId: '12345',
+                    tags: ['perilous', 'decisive-only'],
+                  },
+                ],
+                timestamp: isoNow,
+              },
               mutationName: 'AddTagsById',
             },
             {
-              input: { action: 'tags_add', url: 'http://test.com' },
+              input: {
+                action: 'tags_add',
+                url: 'http://test.com',
+                tags: 'perilous,decisive-only',
+              },
               expectedCall: {
-                savedItem: { url: 'http://test.com' },
+                input: {
+                  givenUrl: 'http://test.com',
+                  tagNames: ['perilous', 'decisive-only'],
+                },
                 timestamp: isoNow,
               },
               mutationName: 'AddTagsByUrl',
@@ -292,9 +290,15 @@ describe('v3Get', () => {
                 action: 'tags_add',
                 item_id: '12345',
                 url: 'http://test.com',
+                tags: 'perilous,decisive-only',
               },
               expectedCall: {
-                savedItem: { id: '12345', url: 'http://test.com' },
+                input: [
+                  {
+                    savedItemId: '12345',
+                    tags: ['perilous', 'decisive-only'],
+                  },
+                ],
                 timestamp: isoNow,
               },
               mutationName: 'AddTagsById',
@@ -304,9 +308,15 @@ describe('v3Get', () => {
                 action: 'tags_add',
                 item_id: '12345',
                 time: '1711558016',
+                tags: 'perilous,decisive-only',
               },
               expectedCall: {
-                savedItem: { id: '12345' },
+                input: [
+                  {
+                    savedItemId: '12345',
+                    tags: ['perilous', 'decisive-only'],
+                  },
+                ],
                 timestamp: '2024-03-27T16:46:56.000Z',
               },
               mutationName: 'AddTagsById',
@@ -316,9 +326,10 @@ describe('v3Get', () => {
                 action: 'tags_add',
                 url: 'http://test.com',
                 time: '1711558016',
+                tags: 'perilous',
               },
               expectedCall: {
-                savedItem: { url: 'http://test.com' },
+                input: { givenUrl: 'http://test.com', tagNames: ['perilous'] },
                 timestamp: '2024-03-27T16:46:56.000Z',
               },
               mutationName: 'AddTagsByUrl',

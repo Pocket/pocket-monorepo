@@ -3,12 +3,19 @@ import { getClient } from '../graph/graphQLClient';
 import {
   ItemAction,
   ItemAddAction,
+  ItemTagAction,
   SendAction,
 } from './validations/SendActionValidators';
 import { AddResponse, PendingAddResponse } from '../graph/types';
 import { processV3Add } from './v3Add';
 import * as Sentry from '@sentry/node';
 import {
+  AddTagsByIdDocument,
+  AddTagsByIdMutation,
+  AddTagsByIdMutationVariables,
+  AddTagsByUrlDocument,
+  AddTagsByUrlMutation,
+  AddTagsByUrlMutationVariables,
   ArchiveSavedItemByIdDocument,
   ArchiveSavedItemByIdMutation,
   ArchiveSavedItemByIdMutationVariables,
@@ -305,6 +312,49 @@ export class ActionsRouter {
     >(DeleteSavedItemByUrlDocument, variables);
     return true;
   }
+  /**
+   * Process the 'unfavorite' action from a batch of actions sent to /v3/send.
+   * The actions should be validated and sanitized before this is invoked.
+   *
+   * See `ActionsRouter.archive` for more detailed docstring (same pattern).
+   * @returns true (operation is successful unless error is thrown)
+   * @throws ClientError if operation fails
+   */
+  private async tags_add(
+    input: Omit<ItemTagAction, 'action'> & { action: 'tags_add' },
+  ): Promise<true> {
+    if (input.itemId) {
+      const variables: AddTagsByIdMutationVariables = {
+        input: [{ savedItemId: input.itemId.toString(), tags: input.tags }],
+        timestamp: epochSecondsToISOString(input.time),
+      };
+      await this.client.request<
+        AddTagsByIdMutation,
+        AddTagsByIdMutationVariables
+      >(AddTagsByIdDocument, variables);
+      // If we make it this far, the client did not throw
+      // We don't actually need the result otherwise for
+      // these /v3 operations
+      return true;
+    }
+    const variables: AddTagsByUrlMutationVariables = {
+      input: { givenUrl: input.url, tagNames: input.tags },
+      timestamp: epochSecondsToISOString(input.time),
+    };
+    await this.client.request<
+      AddTagsByUrlMutation,
+      AddTagsByUrlMutationVariables
+    >(AddTagsByUrlDocument, variables);
+    return true;
+  }
+  /**
+   * Process the 'tags_clear' action from a batch of actions sent to /v3/send.
+   * The actions should be validated and sanitized before this is invoked.
+   *
+   * See `ActionsRouter.archive` for more detailed docstring (same pattern).
+   * @returns true (operation is successful unless error is thrown)
+   * @throws ClientError if operation fails
+   */
   private async tags_clear(
     input: Omit<ItemAction, 'action'> & { action: 'tags_clear' },
   ) {
