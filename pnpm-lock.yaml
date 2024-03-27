@@ -123,6 +123,19 @@ importers:
         specifier: workspace:*
         version: link:../../packages/tsconfig
 
+  infrastructure/instant-sync-events:
+    dependencies:
+      '@pocket-tools/terraform-modules':
+        specifier: workspace:*
+        version: link:../../packages/terraform-modules
+    devDependencies:
+      eslint-config-custom:
+        specifier: workspace:*
+        version: link:../../packages/eslint-config-custom
+      tsconfig:
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
+
   infrastructure/list-api:
     dependencies:
       '@pocket-tools/terraform-modules':
@@ -534,6 +547,37 @@ importers:
       nodemon:
         specifier: 3.1.0
         version: 3.1.0
+      ts-jest:
+        specifier: 29.1.2
+        version: 29.1.2(@babel/core@7.24.3)(jest@29.7.0)(typescript@5.4.3)
+      tsconfig:
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
+
+  lambdas/instant-sync-events:
+    dependencies:
+      '@aws-sdk/client-sqs':
+        specifier: 3.540.0
+        version: 3.540.0
+      '@sentry/serverless':
+        specifier: 7.108.0
+        version: 7.108.0
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
+    devDependencies:
+      '@types/aws-lambda':
+        specifier: 8.10.136
+        version: 8.10.136
+      '@types/jest':
+        specifier: 29.5.12
+        version: 29.5.12
+      eslint-config-custom:
+        specifier: workspace:*
+        version: link:../../packages/eslint-config-custom
+      jest:
+        specifier: 29.7.0
+        version: 29.7.0(@types/node@20.11.30)(ts-node@10.9.2)
       ts-jest:
         specifier: 29.1.2
         version: 29.1.2(@babel/core@7.24.3)(jest@29.7.0)(typescript@5.4.3)
@@ -9369,7 +9413,7 @@ packages:
   /builtins@5.0.1:
     resolution: {integrity: sha512-qwVpFEHNfhYJIzNRBvd2C1kyo6jz3ZSMPyyuR47OPdiKWlbYnZNyDWuyR175qDnAJLiCo5fBBqPb3RiXgWlkOQ==}
     dependencies:
-      semver: 7.6.0
+      semver: 7.5.4
     dev: true
 
   /bundle-require@4.0.2(esbuild@0.19.12):
@@ -15550,7 +15594,7 @@ packages:
     dependencies:
       hosted-git-info: 7.0.1
       proc-log: 3.0.0
-      semver: 7.6.0
+      semver: 7.5.4
       validate-npm-package-name: 5.0.0
     dev: true
 

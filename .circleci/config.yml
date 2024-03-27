@@ -17,7 +17,30 @@ jobs:
           name: Generate List of Configs to Merge
           command: |
             # Generate a list of all the circleci configs we want to run
-            file_list=(".circleci/common.yml" ".circleci/repo-jobs.yml" ".circleci/image-api.yml" ".circleci/annotations-api.yml" ".circleci/shared-snowplow-consumer.yml" ".circleci/parser-graphql-wrapper.yml" ".circleci/transactional-emails.yml" ".circleci/fxa-webhook-proxy.yml" ".circleci/user-api.yml" ".circleci/client-api.yml" ".circleci/list-api.yml" ".circleci/feature-flags.yml" ".circleci/sendgrid-data.yml" ".circleci/account-data-deleter.yml" ".circleci/account-delete-monitor.yml" ".circleci/shareable-lists-api.yml" ".circleci/pocket-event-bridge.yml" ".circleci/user-list-search.yml" ".circleci/braze.yml" ".circleci/v3-proxy-api.yml" ".circleci/push-server.yml")       
+            file_list=(
+            ".circleci/common.yml" 
+            ".circleci/repo-jobs.yml" 
+            ".circleci/image-api.yml" 
+            ".circleci/annotations-api.yml" 
+            ".circleci/shared-snowplow-consumer.yml" 
+            ".circleci/parser-graphql-wrapper.yml" 
+            ".circleci/transactional-emails.yml" 
+            ".circleci/fxa-webhook-proxy.yml" 
+            ".circleci/user-api.yml" 
+            ".circleci/client-api.yml" 
+            ".circleci/list-api.yml" 
+            ".circleci/feature-flags.yml" 
+            ".circleci/sendgrid-data.yml" 
+            ".circleci/account-data-deleter.yml" 
+            ".circleci/account-delete-monitor.yml" 
+            ".circleci/shareable-lists-api.yml" 
+            ".circleci/pocket-event-bridge.yml" 
+            ".circleci/user-list-search.yml" 
+            ".circleci/braze.yml" 
+            ".circleci/v3-proxy-api.yml" 
+            ".circleci/push-server.yml"
+            ".circleci/instant-sync-events.yml"
+            )       
             touch /tmp/configs.txt
 
             # Add file header to each file and dump it to the config list
@@ -66,6 +89,7 @@ jobs:
             ((infrastructure)/braze/.*)|(packages/.*)|(pnpm-lock\.yaml)|(.circleci/braze.yml)|(.circleci/common.yml) braze true
             ((servers|infrastructure)/v3-proxy-api/.*)|(packages/.*)|(pnpm-lock\.yaml)|(.circleci/v3-proxy-api.yml)|(.circleci/common.yml) v3_proxy_api true
             ((servers|infrastructure)/push-server/.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile)|(.circleci/push-server.yml)|(.circleci/common.yml) push_server true
+            ((lambda|infrastructure)/instant-sync-events/.*)|(packages/.*)|(pnpm-lock\.yaml)|(.circleci/instant-sync-events.yml)|(.circleci/common.yml) instant_sync_events true
 
       - continuation/continue:
           configuration_path: /tmp/generated-config.yml
