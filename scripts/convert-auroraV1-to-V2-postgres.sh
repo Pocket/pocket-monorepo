@@ -1,11 +1,11 @@
 #!/bin/bash
 set -xe
-# Script to convert a serverless v1 mysql to serverless v2
+# Script to convert a serverless v1 postgresql to serverless v2
 # Steps from https://aws.amazon.com/blogs/database/upgrade-from-amazon-aurora-serverless-v1-to-v2-with-minimal-downtime/
 
 DATABASE_IDENTIFIER=
-GREEN_DATABASE_IDENTIFIER=
-SMALL_DATABASE_IDENTITER=
+GREEN_DATABASE_IDENTIFIER=featureflags-dev-green
+SMALL_DATABASE_IDENTITER=featureflags-dev
 ACCOUNT_ID=
 REGION=us-east-1
 
@@ -15,8 +15,8 @@ export AWS_PAGER=""
 echo 'creating new replication param groups'
 aws rds create-db-cluster-parameter-group \
  --db-cluster-parameter-group-name aurora-postgres-with-replication \
- --description 'Aurora Postgres 11 With Replication Enabled' \
- --db-parameter-group-family aurora-postgresql11 \
+ --description 'Aurora Postgres 13 With Replication Enabled' \
+ --db-parameter-group-family aurora-postgresql13 \
  --no-paginate
 
 aws rds modify-db-cluster-parameter-group \
@@ -37,7 +37,7 @@ sleep 900
 
 
 echo 'mopdifiying to provisioned'
-output=$(aws rds modify-db-cluster --db-cluster-identifier $DATABASE_IDENTIFIER -engine-mode provisioned --allow-engine-mode-change --db-cluster-instance-class db.r5.xlarge --apply-immediately --no-paginate )
+output=$(aws rds modify-db-cluster --db-cluster-identifier $DATABASE_IDENTIFIER --engine-mode provisioned --allow-engine-mode-change --db-cluster-instance-class db.r5.xlarge --apply-immediately --no-paginate )
 PROVISINED_INSTANCE_IDENTIFIER=$(echo $output | jq -r '.DBCluster.DBClusterMembers[0].DBInstanceIdentifier')
 
  aws rds wait db-instance-available \
@@ -87,7 +87,7 @@ echo 'creating v2 instance'
  aws rds create-db-instance \
  --db-instance-identifier $SMALL_DATABASE_IDENTITER-serverless \
  --db-instance-class db.serverless \
- --engine aurora-mysql \
+ --engine aurora-postgresql \
  --db-cluster-identifier $green_cluster_id \
  --no-paginate
 
