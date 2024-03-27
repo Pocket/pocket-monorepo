@@ -18,9 +18,7 @@ export function getAdminServer(
     schema,
     plugins: [
       ...defaultPlugins(httpServer),
-      createApollo4QueryValidationPlugin({
-        schema,
-      }),
+      createApollo4QueryValidationPlugin(),
     ],
     // OSL-202 (https://getpocket.atlassian.net/browse/OSL-202) needs to get done in order
     // to stop masking Apollo Errors.

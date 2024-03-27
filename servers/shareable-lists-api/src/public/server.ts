@@ -24,9 +24,7 @@ export function getPublicServer(
         // and we will specify the max age for specific queries on the schema and resolver level
         defaultMaxAge: config.app.defaultMaxAge,
       }),
-      createApollo4QueryValidationPlugin({
-        schema,
-      }),
+      createApollo4QueryValidationPlugin(),
       responseCachePlugin(),
     ],
     cache,
