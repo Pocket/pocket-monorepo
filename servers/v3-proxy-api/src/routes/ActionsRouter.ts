@@ -5,6 +5,7 @@ import {
   ItemAddAction,
   ItemTagAction,
   SendAction,
+  TagRenameAction,
 } from './validations/SendActionValidators';
 import { AddResponse, PendingAddResponse } from '../graph/types';
 import { processV3Add } from './v3Add';
@@ -40,6 +41,9 @@ import {
   RemoveTagsDocument,
   RemoveTagsMutation,
   RemoveTagsMutationVariables,
+  RenameTagDocument,
+  RenameTagMutation,
+  RenameTagMutationVariables,
   ReplaceTagsDocument,
   ReplaceTagsMutation,
   ReplaceTagsMutationVariables,
@@ -425,6 +429,28 @@ export class ActionsRouter {
       ReplaceTagsMutation,
       ReplaceTagsMutationVariables
     >(ReplaceTagsDocument, variables);
+    return true;
+  }
+  /**
+   * Process the 'tag_rename' action from a batch of actions sent to /v3/send.
+   * The actions should be validated and sanitized before this is invoked.
+   *
+   * See `ActionsRouter.archive` for more detailed docstring (same pattern).
+   * @returns true (operation is successful unless error is thrown)
+   * @throws ClientError if operation fails
+   */
+  private async tag_rename(
+    input: Omit<TagRenameAction, 'action'> & { action: 'tags_replace' },
+  ) {
+    const variables: RenameTagMutationVariables = {
+      oldName: input.oldTag,
+      newName: input.newTag,
+      timestamp: epochSecondsToISOString(input.time),
+    };
+    await this.client.request<RenameTagMutation, RenameTagMutationVariables>(
+      RenameTagDocument,
+      variables,
+    );
     return true;
   }
 }
