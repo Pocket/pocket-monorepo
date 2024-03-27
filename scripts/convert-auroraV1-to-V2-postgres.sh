@@ -5,7 +5,7 @@ set -xe
 
 DATABASE_IDENTIFIER=
 GREEN_DATABASE_IDENTIFIER=featureflags-dev-green
-SMALL_DATABASE_IDENTITER=featureflags-dev
+SMALL_DATABASE_IDENTIFIER=featureflags-dev
 ACCOUNT_ID=
 REGION=us-east-1
 
@@ -38,10 +38,10 @@ sleep 900
 
 echo 'mopdifiying to provisioned'
 output=$(aws rds modify-db-cluster --db-cluster-identifier $DATABASE_IDENTIFIER --engine-mode provisioned --allow-engine-mode-change --db-cluster-instance-class db.r5.xlarge --apply-immediately --no-paginate )
-PROVISINED_INSTANCE_IDENTIFIER=$(echo $output | jq -r '.DBCluster.DBClusterMembers[0].DBInstanceIdentifier')
+PROVISIONED_INSTANCE_IDENTIFIER=$(echo $output | jq -r '.DBCluster.DBClusterMembers[0].DBInstanceIdentifier')
 
  aws rds wait db-instance-available \
- --db-instance-identifier $PROVISINED_INSTANCE_IDENTIFIER \
+ --db-instance-identifier $PROVISIONED_INSTANCE_IDENTIFIER \
  --no-paginate
 
 aws rds wait db-cluster-available \
@@ -85,20 +85,20 @@ aws rds modify-db-cluster \
 
 echo 'creating v2 instance'
  aws rds create-db-instance \
- --db-instance-identifier $SMALL_DATABASE_IDENTITER-serverless \
+ --db-instance-identifier $SMALL_DATABASE_IDENTIFIER-serverless \
  --db-instance-class db.serverless \
  --engine aurora-postgresql \
  --db-cluster-identifier $green_cluster_id \
  --no-paginate
 
 aws rds wait db-instance-available \
- --db-instance-identifier $SMALL_DATABASE_IDENTITER-serverless \
+ --db-instance-identifier $SMALL_DATABASE_IDENTIFIER-serverless \
  --no-paginate
 
 echo 'failing green database over' 
 aws rds failover-db-cluster \
  --db-cluster-identifier $green_cluster_id \
- --target-db-instance-identifier $SMALL_DATABASE_IDENTITER-serverless \
+ --target-db-instance-identifier $SMALL_DATABASE_IDENTIFIER-serverless \
  --no-paginate
 
 aws rds wait db-cluster-available \
