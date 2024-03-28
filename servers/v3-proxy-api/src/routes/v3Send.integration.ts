@@ -3,7 +3,10 @@ import { startServer } from '../server';
 import { Server } from 'http';
 import { Application } from 'express';
 import { ActionsRouter } from './ActionsRouter';
-import { expectedAddResponses } from '../test/fixtures/add';
+import {
+  expectedAddResponses,
+  mockGraphAddResponses,
+} from '../test/fixtures/add';
 import { ClientError, GraphQLClient } from 'graphql-request';
 import { GraphQLError } from 'graphql-request/build/esm/types';
 
@@ -528,6 +531,100 @@ describe('v3Get', () => {
               expect(res.body).toEqual({
                 status: 1,
                 action_results: [true],
+                action_errors: [null],
+              });
+            },
+          );
+        });
+        describe('readd', () => {
+          it.each([
+            {
+              input: {
+                action: 'readd',
+                url: 'http://domain.com',
+              },
+              expectedCall: {
+                input: { url: 'http://domain.com', timestamp: now },
+              },
+              mutationName: 'addSavedItemComplete',
+              property: 'upsertSavedItem',
+            },
+            {
+              input: {
+                action: 'readd',
+                url: 'http://test.com',
+                time: '1711558016',
+              },
+              expectedCall: {
+                input: {
+                  url: 'http://test.com',
+                  timestamp: 1711558016,
+                },
+              },
+              mutationName: 'addSavedItemComplete',
+              property: 'upsertSavedItem',
+            },
+            {
+              input: {
+                action: 'readd',
+                item_id: '12345',
+                url: 'http://test.com',
+              },
+              expectedCall: {
+                id: '12345',
+                timestamp: isoNow,
+              },
+              mutationName: 'ReAddById',
+              property: 'reAddById',
+            },
+            {
+              input: {
+                action: 'readd',
+                item_id: '12345',
+              },
+              expectedCall: {
+                id: '12345',
+                timestamp: isoNow,
+              },
+              mutationName: 'ReAddById',
+              property: 'reAddById',
+            },
+            {
+              input: {
+                action: 'readd',
+                item_id: '12345',
+                time: '1711558016',
+              },
+              expectedCall: {
+                id: '12345',
+                timestamp: '2024-03-27T16:46:56.000Z',
+              },
+              mutationName: 'ReAddById',
+              property: 'reAddById',
+            },
+          ])(
+            'conditionally adds id or url, timestamp, and routes to correct mutation',
+            async ({ input, expectedCall, mutationName, property }) => {
+              // This one actually uses the response
+              clientSpy.mockRestore();
+              clientSpy = jest
+                .spyOn(GraphQLClient.prototype, 'request')
+                .mockResolvedValue({ [property]: mockGraphAddResponses[0] });
+              const res = await request(app)
+                .post('/v3/send')
+                .send({
+                  consumer_key: 'test',
+                  access_token: 'test',
+                  actions: [input],
+                });
+              expect(clientSpy).toHaveBeenCalledTimes(1);
+              expect(
+                clientSpy.mock.calls[0][0].definitions[0].name.value,
+              ).toEqual(mutationName);
+              expect(clientSpy.mock.calls[0][1]).toEqual(expectedCall);
+              expect(res.body).toEqual({
+                status: 1,
+                action_results: [expectedAddResponses[0]],
                 action_errors: [null],
               });
             },
