@@ -44,6 +44,8 @@ export interface PocketVersionedLambdaProps extends TerraformMetaArguments {
     executionPolicyStatements?: dataAwsIamPolicyDocument.DataAwsIamPolicyDocumentStatement[];
     logRetention?: number;
     s3Bucket?: string;
+    addParameterStoreAndSecretsLayer?: boolean;
+    layers?: string[];
     codeDeploy?: {
       deploySnsTopicArn?: string;
       detailType?: 'BASIC' | 'FULL';
@@ -207,6 +209,9 @@ export class PocketVersionedLambda extends Construct {
       usesCodeDeploy: !!lambdaConfig.codeDeploy,
       memorySizeInMb: lambdaConfig.memorySizeInMb,
       reservedConcurrencyLimit: lambdaConfig.reservedConcurrencyLimit,
+      layers: lambdaConfig.layers,
+      addParameterStoreAndSecretsLayer:
+        lambdaConfig.addParameterStoreAndSecretsLayer,
     });
   }
 }

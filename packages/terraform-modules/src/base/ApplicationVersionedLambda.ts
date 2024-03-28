@@ -15,6 +15,7 @@ import {
   s3BucketOwnershipControls,
   lambdaAlias,
 } from '@cdktf/provider-aws';
+import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
 
 import { Fn, TerraformMetaArguments, TerraformOutput } from 'cdktf';
 import { Construct } from 'constructs';
@@ -29,6 +30,80 @@ export enum LAMBDA_RUNTIMES {
   NODEJS18 = 'nodejs18.x',
   NODEJS20 = 'nodejs20.x',
 }
+
+/**
+ * Map of Lambda X86_X64 Layers from https://docs.aws.amazon.com/systems-manager/latest/userguide/ps-integration-lambda-extensions.html#ps-integration-lambda-extensions-add
+ *
+ * We only map the X86_X64 layers because right now this module only supports X64 lambdas
+ */
+export const LAMBDA_SECRETS_X86_X64_LAYER_ARN_MAP: Record<string, string> = {
+  'us-east-2':
+    'arn:aws:lambda:us-east-2:590474943231:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'us-east-1':
+    'arn:aws:lambda:us-east-1:177933569100:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'us-west-1':
+    'arn:aws:lambda:us-west-1:997803712105:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'us-west-2':
+    'arn:aws:lambda:us-west-2:345057560386:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'af-south-1':
+    'arn:aws:lambda:af-south-1:317013901791:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'ap-east-1':
+    'arn:aws:lambda:ap-east-1:768336418462:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'ap-south-2':
+    'arn:aws:lambda:ap-south-2:070087711984:layer:AWS-Parameters-and-Secrets-Lambda-Extension:8',
+  'ap-southeast-3':
+    'arn:aws:lambda:ap-southeast-3:490737872127:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'ap-southeast-4':
+    'arn:aws:lambda:ap-southeast-4:090732460067:layer:AWS-Parameters-and-Secrets-Lambda-Extension:1',
+  'ap-south-1':
+    'arn:aws:lambda:ap-south-1:176022468876:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'ap-northeast-3':
+    'arn:aws:lambda:ap-northeast-3:576959938190:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'ap-northeast-2':
+    'arn:aws:lambda:ap-northeast-2:738900069198:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'ap-southeast-1':
+    'arn:aws:lambda:ap-southeast-1:044395824272:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'ap-southeast-2':
+    'arn:aws:lambda:ap-southeast-2:665172237481:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'ap-northeast-1':
+    'arn:aws:lambda:ap-northeast-1:133490724326:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'ca-central-1':
+    'arn:aws:lambda:ca-central-1:200266452380:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'ca-west-1':
+    'arn:aws:lambda:ca-west-1:243964427225:layer:AWS-Parameters-and-Secrets-Lambda-Extension:1',
+  'cn-north-1':
+    'arn:aws-cn:lambda:cn-north-1:287114880934:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'cn-northwest-1':
+    'arn:aws-cn:lambda:cn-northwest-1:287310001119:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'eu-central-1':
+    'arn:aws:lambda:eu-central-1:187925254637:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'eu-west-1':
+    'arn:aws:lambda:eu-west-1:015030872274:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'eu-west-2':
+    'arn:aws:lambda:eu-west-2:133256977650:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'eu-south-1':
+    'arn:aws:lambda:eu-south-1:325218067255:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'eu-west-3':
+    'arn:aws:lambda:eu-west-3:780235371811:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'eu-south-2':
+    'arn:aws:lambda:eu-south-2:524103009944:layer:AWS-Parameters-and-Secrets-Lambda-Extension:8',
+  'eu-north-1':
+    'arn:aws:lambda:eu-north-1:427196147048:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'il-central-1':
+    'arn:aws:lambda:il-central-1:148806536434:layer:AWS-Parameters-and-Secrets-Lambda-Extension:1',
+  'eu-central-2':
+    'arn:aws:lambda:eu-central-2:772501565639:layer:AWS-Parameters-and-Secrets-Lambda-Extension:8',
+  'me-south-1':
+    'arn:aws:lambda:me-south-1:832021897121:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'me-central-1':
+    'arn:aws:lambda:me-central-1:858974508948:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'sa-east-1':
+    'arn:aws:lambda:sa-east-1:933737806257:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'us-gov-east-1':
+    'arn:aws-us-gov:lambda:us-gov-east-1:129776340158:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+  'us-gov-west-1':
+    'arn:aws-us-gov:lambda:us-gov-west-1:127562683043:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11',
+};
 
 export interface ApplicationVersionedLambdaProps
   extends TerraformMetaArguments {
@@ -47,6 +122,8 @@ export interface ApplicationVersionedLambdaProps
   s3Bucket: string;
   usesCodeDeploy?: boolean;
   ignoreEnvironmentVars?: string[];
+  addParameterStoreAndSecretsLayer?: boolean;
+  layers?: string[];
 }
 
 const DEFAULT_TIMEOUT = 5;
@@ -103,6 +180,17 @@ export class ApplicationVersionedLambda extends Construct {
       },
     );
 
+    const layers = this.config.layers ?? [];
+    if (this.config.addParameterStoreAndSecretsLayer) {
+      const region = new DataAwsRegion(this, 'lambda-region');
+      // use a fn to look up the values, because region is terraform runtime not build time.
+      const layer = Fn.lookup(
+        LAMBDA_SECRETS_X86_X64_LAYER_ARN_MAP,
+        region.name,
+      );
+      layers.push(layer);
+    }
+
     const defaultLambda = this.getDefaultLambda();
     const lambdaConfig: lambdaFunction.LambdaFunctionConfig = {
       functionName: `${this.config.name}-Function`,
@@ -131,6 +219,7 @@ export class ApplicationVersionedLambda extends Construct {
       environment: this.config.environment
         ? { variables: this.config.environment }
         : undefined,
+      layers: layers.length == 0 ? undefined : layers,
       provider: this.config.provider,
     };
 

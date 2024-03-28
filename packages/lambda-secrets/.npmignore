@@ -1,0 +1,6 @@
+src
+.github
+.idea
+.prettier*
+.eslintrc.js
+.tsconfig.js
