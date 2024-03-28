@@ -44,7 +44,7 @@ export class SQSEventLambda extends Construct {
           ENVIRONMENT:
             stackConfig.environment === 'Prod' ? 'production' : 'development',
         },
-        
+        addParameterStoreAndSecretsLayer: true,
         ignoreEnvironmentVars: ['GIT_SHA'],
         vpcConfig: {
           securityGroupIds: config.vpc.defaultSecurityGroups.ids,
