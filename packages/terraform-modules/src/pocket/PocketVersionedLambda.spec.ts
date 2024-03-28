@@ -111,6 +111,19 @@ test('renders a lambda with log retention', () => {
   expect(synthed).toMatchSnapshot();
 });
 
+test('renders a lambda with secrets layer', () => {
+  const synthed = Testing.synthScope((stack) => {
+    new PocketVersionedLambda(stack, 'test-lambda', {
+      ...config,
+      lambda: {
+        ...config.lambda,
+        addParameterStoreAndSecretsLayer: true,
+      },
+    });
+  });
+  expect(synthed).toMatchSnapshot();
+});
+
 test('renders a lambda with execution policy', () => {
   const synthed = Testing.synthScope((stack) => {
     new PocketVersionedLambda(stack, 'test-lambda', {
