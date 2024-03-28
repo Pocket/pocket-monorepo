@@ -1,6 +1,12 @@
 import * as Sentry from '@sentry/serverless';
 import { SQSEvent } from 'aws-lambda';
 import { config } from './config';
+import { instantSyncHandler } from './handlerFn';
+
+Sentry.AWSLambda.init({
+  ...config.sentry,
+  debug: config.sentry.environment == 'development',
+});
 
 /**
  * Processes messages originating from event bridge. The detail-type field in
@@ -9,11 +15,7 @@ import { config } from './config';
  * @returns
  */
 async function __handler(event: SQSEvent): Promise<any> {
-  Sentry.AWSLambda.init({
-    ...config.sentry,
-    debug: config.sentry.environment == 'development',
-  });
-  return {};
+  instantSyncHandler(event.Records);
 }
 
 export const handler = Sentry.AWSLambda.wrapHandler(__handler, {

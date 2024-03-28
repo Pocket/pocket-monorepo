@@ -1,0 +1,84 @@
+import { SQSRecord, SQSBatchResponse, SQSBatchItemFailure } from 'aws-lambda';
+
+export const eventTypes = [
+  'ADD_ITEM',
+  'DELETE_ITEM',
+  'FAVORITE_ITEM',
+  'UNFAVORITE_ITEM',
+  'ARCHIVE_ITEM',
+  'UNARCHIVE_ITEM',
+  'ADD_TAGS',
+  'REPLACE_TAGS',
+  'CLEAR_TAGS',
+  'REMOVE_TAGS',
+  'RENAME_TAG',
+  'DELETE_TAG',
+];
+
+export const sourceTypes = ['list-api'];
+
+export type Message = {
+  'detail-type': string;
+  source: string;
+  detail: Detail;
+};
+
+export type Detail = {
+  user: User;
+  // There are other objects here that we don't need for this use case
+};
+
+/**
+ * Helper type for the User object that is embedded in the list-api detail data
+ */
+export type User = {
+  id: string;
+  // used to ensure we don't push notifiy the device that triggered the action.
+  hashedGuid: string;
+};
+
+/**
+ * Given a list api event, de-dupe all users, and for each user, grab their push tokens and send a singular instant sync notification
+ * @param record SQSRecord containing forwarded event from eventbridge
+ * @throws Error if response is not ok
+ */
+export const instantSyncHandler = async (
+  records: SQSRecord[],
+): Promise<SQSBatchResponse> => {
+  const batchFailures: SQSBatchItemFailure[] = [];
+
+  console.log(`Received ${records.length} records to process`);
+  const userIds = filterUserIds(records);
+
+  //TODO:
+  // 1. From userIds grab all device tokens
+  // 2. from device tokens build the SQS message to send to the push queue
+  // 3. Send to the push queue
+  // 4. Deterimine if we need to ignore device tokens from the sent guid.. (prob not)
+
+  console.log(`Sending ${userIds.length} to instant sync`);
+
+  return { batchItemFailures: batchFailures };
+};
+
+/**
+ * Given a set of SQSRecords lets grab all the user ids
+ * @param records
+ * @returns
+ */
+const filterUserIds = (records: SQSRecord[]): string[] => {
+  const userIds = records
+    .map(
+      (record: SQSRecord) =>
+        JSON.parse(JSON.parse(record.body).Message) as Message,
+    )
+    .filter(
+      (message: Message) =>
+        eventTypes.includes(message['detail-type']) &&
+        sourceTypes.includes(message.source),
+    )
+    .map((message: Message) => message.detail.user.id);
+
+  // dedupe by making it a set
+  return [...new Set(userIds)];
+};
