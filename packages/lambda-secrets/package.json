@@ -13,7 +13,8 @@
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\"",
-    "dev": "pnpm run build --watch"
+    "dev": "pnpm run build --watch",
+    "semantic-release": "semantic-release"
   },
   "author": "",
   "license": "Apache-2.0",
@@ -28,5 +29,55 @@
   },
   "dependencies": {
     "node-fetch": "2.7.0"
+  },
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pocket/pocket-monorepo.git"
+  },
+  "release": {
+    "extends": "semantic-release-monorepo",
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "conventionalcommits",
+          "parserOpts": {
+            "noteKeywords": [
+              "BREAKING CHANGE",
+              "BREAKING CHANGES",
+              "BREAKING"
+            ]
+          }
+        }
+      ],
+      [
+        "@semantic-release/release-notes-generator",
+        {
+          "preset": "conventionalcommits",
+          "parserOpts": {
+            "noteKeywords": [
+              "BREAKING CHANGE",
+              "BREAKING CHANGES",
+              "BREAKING"
+            ]
+          },
+          "writerOpts": {
+            "commitsSort": [
+              "subject",
+              "scope"
+            ]
+          }
+        }
+      ],
+      "@semantic-release/npm",
+      "@semantic-release/github"
+    ]
   }
 }
