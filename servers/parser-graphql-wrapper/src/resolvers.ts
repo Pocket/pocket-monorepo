@@ -192,7 +192,7 @@ export const resolvers = {
         return url;
       }
       const item: Item = await getItemByUrl(url);
-      return await context.dataLoaders.shortUrlLoader.load({
+      return context.dataLoaders.shortUrlLoader.load({
         itemId: parseInt(item.itemId),
         resolvedId: parseInt(item.resolvedId),
         givenUrl: item.givenUrl,
@@ -223,7 +223,7 @@ export const resolvers = {
       if (extractCodeFromShortUrl(item.givenUrl) != null) {
         return item.givenUrl;
       }
-      return await context.dataLoaders.shortUrlLoader.load({
+      return context.dataLoaders.shortUrlLoader.load({
         itemId: parseInt(item.itemId),
         resolvedId: parseInt(item.resolvedId),
         givenUrl: item.givenUrl,

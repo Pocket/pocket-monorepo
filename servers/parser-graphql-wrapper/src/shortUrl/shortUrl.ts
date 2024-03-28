@@ -150,7 +150,6 @@ export const shareUrl = {
     );
     // Compute the missing itemIds so that we can batch generate them
     const returnedIds = new Set(
-      // This should be inferred properly but it's not
       Object.keys(resultMapping).map((_) => parseInt(_)),
     );
     const missingIds = Array.from(new Set(itemIds)).filter(
