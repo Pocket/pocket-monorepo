@@ -559,6 +559,9 @@ importers:
       '@aws-sdk/client-sqs':
         specifier: 3.540.0
         version: 3.540.0
+      '@pocket-tools/lambda-secrets':
+        specifier: workspace:*
+        version: link:../../packages/lambda-secrets
       '@sentry/serverless':
         specifier: 7.108.0
         version: 7.108.0
