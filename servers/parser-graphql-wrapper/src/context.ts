@@ -1,8 +1,9 @@
 import DataLoader from 'dataloader';
 import { ContextWithDataSources } from './datasources/legacyDataSourcesPlugin';
 import { Item } from './model';
-import { itemIdLoader, itemUrlLoader } from './dataLoaders/itemLoader';
+import { itemIdLoader, itemUrlLoader, ShortUrlLoader } from './dataLoaders';
 import {
+  BatchAddShareUrlInput,
   ItemResolverRepository,
   SharedUrlsResolverRepository,
   getItemResolverRepository,
@@ -17,6 +18,7 @@ export interface IContext extends ContextWithDataSources {
   dataLoaders: {
     itemIdLoader: DataLoader<string[], Promise<Item[]>>;
     itemUrlLoader: DataLoader<string[], Promise<Item[]>>;
+    shortUrlLoader: DataLoader<BatchAddShareUrlInput, string>;
   };
   repositories: {
     itemResolver: Promise<ItemResolverRepository>;
@@ -36,6 +38,7 @@ export class ContextManager implements IContext {
     this.dataLoaders = {
       itemIdLoader: itemIdLoader,
       itemUrlLoader: itemUrlLoader,
+      shortUrlLoader: ShortUrlLoader,
     };
     this.repositories = {
       itemResolver: getItemResolverRepository(),

@@ -1,12 +1,11 @@
 import * as Sentry from '@sentry/node';
 import { Item } from './model';
-import { clear, getItemById, getItemByUrl } from './dataLoaders/itemLoader';
+import { clear, getItemById, getItemByUrl } from './dataLoaders';
 import config from './config';
 import { MediaTypeParam, ParserAPI } from './datasources/parserApi';
 import { MarticleElement, parseArticle } from './marticle/marticleParser';
 import { CacheScope } from '@apollo/cache-control-types';
 import {
-  getShortUrl,
   extractCodeFromShortUrl,
   givenUrlFromShareCode,
 } from './shortUrl/shortUrl';
@@ -114,7 +113,6 @@ export const resolvers = {
       return generateSSML(item);
     },
     shortUrl: async (parent, args, context: IContext): Promise<string> => {
-      const repo = await context.repositories.sharedUrlsResolver;
       // If the givenUrl is already a short share url, or there is a
       // short url key on the parent from a previous step, return the
       // same value to avoid another db trip
@@ -124,12 +122,12 @@ export const resolvers = {
       if (extractCodeFromShortUrl(parent.givenUrl) != null) {
         return parent.givenUrl;
       }
-      return await getShortUrl(
-        parent.itemId,
-        parent.resolvedId,
-        parent.givenUrl,
-        repo,
-      );
+      return context.dataLoaders.shortUrlLoader.load({
+        itemId: parent.itemId,
+
+        resolvedId: parent.resolvedId,
+        givenUrl: parent.givenUrl,
+      });
     },
   },
   MarticleComponent: {
@@ -188,14 +186,17 @@ export const resolvers = {
   },
   CorpusItem: {
     shortUrl: async ({ url }, args, context: IContext): Promise<string> => {
+      // Unlikely, but if the givenUrl is already a short share url
+      // return the same value to avoid another db trip
+      if (extractCodeFromShortUrl(url) != null) {
+        return url;
+      }
       const item: Item = await getItemByUrl(url);
-      const repo = await context.repositories.sharedUrlsResolver;
-      return await getShortUrl(
-        parseInt(item.itemId),
-        parseInt(item.resolvedId),
-        item.givenUrl,
-        repo,
-      );
+      return await context.dataLoaders.shortUrlLoader.load({
+        itemId: parseInt(item.itemId),
+        resolvedId: parseInt(item.resolvedId),
+        givenUrl: item.givenUrl,
+      });
     },
     timeToRead: async (
       { url },
@@ -217,13 +218,16 @@ export const resolvers = {
       const item: Item = await getItemByUrl(
         `${config.shortUrl.collectionUrl}/${slug}`,
       );
-      const repo = await context.repositories.sharedUrlsResolver;
-      return await getShortUrl(
-        parseInt(item.itemId),
-        parseInt(item.resolvedId),
-        item.givenUrl,
-        repo,
-      );
+      // Unlikely, but if the givenUrl is already a short share url
+      // return the same value to avoid another db trip
+      if (extractCodeFromShortUrl(item.givenUrl) != null) {
+        return item.givenUrl;
+      }
+      return await context.dataLoaders.shortUrlLoader.load({
+        itemId: parseInt(item.itemId),
+        resolvedId: parseInt(item.resolvedId),
+        givenUrl: item.givenUrl,
+      });
     },
   },
   Mutation: {

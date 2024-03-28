@@ -16,6 +16,7 @@ import {
 } from '../database/mysql';
 import config from '../config';
 import { Application } from 'express';
+import { shareUrl } from './shortUrl';
 
 describe('ShortUrl', () => {
   const testUrl = 'https://someurl.com';
@@ -35,12 +36,11 @@ describe('ShortUrl', () => {
     await (await getSharedUrlsConnection()).destroy();
     await getRedis().disconnect();
   });
+  afterEach(() => jest.clearAllMocks());
 
   beforeAll(async () => {
     sharedRepo = await getSharedUrlsResolverRepo();
     itemRepo = await getItemResolverRepository();
-    await sharedRepo.clear();
-    await sharedRepo.query('ALTER TABLE share_urls AUTO_INCREMENT = 1');
     // port 0 tells express to dynamically assign an available port
     ({ app, server, url: graphQLUrl } = await startServer(0));
   });
@@ -50,6 +50,7 @@ describe('ShortUrl', () => {
     await getRedis().clear();
     await itemRepo.clear();
     await sharedRepo.clear();
+    await sharedRepo.query('ALTER TABLE share_urls AUTO_INCREMENT = 1');
     //first call for getItemByUrl.
     nock(`http://example-parser.com`)
       .get(`/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular`)
@@ -207,6 +208,85 @@ describe('ShortUrl', () => {
 
     const db = await sharedRepo.batchGetShareUrlsById([1, 1]);
     expect(db.length).toBe(1);
+  });
+  it('fetches all shortUrls in a single batch when resolving item entities', async () => {
+    const givenUrls = [testUrl, 'http://another-test.com'];
+    nock(`http://example-parser.com`)
+      .get(`/?url=${encodeURIComponent(givenUrls[0])}&getItem=1&output=regular`)
+      .reply(200, {
+        item: {
+          given_url: testUrl,
+          item_id: '1',
+          resolved_id: '1',
+        },
+      });
+    nock(`http://example-parser.com`)
+      .get(`/?url=${encodeURIComponent(givenUrls[1])}&getItem=1&output=regular`)
+      .reply(200, {
+        item: {
+          given_url: givenUrls[1],
+          item_id: '2',
+          resolved_id: '2',
+        },
+      });
+    const shareBatchSpy = jest.spyOn(shareUrl, 'batchGetOrCreateShareUrls');
+    const resolveItemQuery = gql`
+        query Items {
+            _entities(representations: [
+              { givenUrl: "${givenUrls[0]}", __typename: "Item" },
+              { givenUrl: "${givenUrls[1]}", __typename: "Item"}
+            ]) {
+                ... on Item {
+                    shortUrl
+                }
+            }
+        }
+    `;
+    const res = await request(app)
+      .post(graphQLUrl)
+      .send({ query: print(resolveItemQuery) });
+    const expected = [
+      { shortUrl: 'https://local.co/ab' },
+      { shortUrl: 'https://local.co/bc' },
+    ]; // shareIds = 1,2
+    expect(res.body.data._entities).toEqual(expected);
+    expect(shareBatchSpy).toHaveBeenCalledTimes(1);
+    expect(shareBatchSpy.mock.calls[0][0]).toEqual([
+      { itemId: '1', resolvedId: '1', givenUrl: 'https://someurl.com' },
+      { itemId: '2', resolvedId: '2', givenUrl: 'http://another-test.com' },
+    ]);
+  });
+  it('batch inserts many records and returns IDs', async () => {
+    const result = await sharedRepo.batchAddToShareUrls([
+      { itemId: 999, resolvedId: 1000, givenUrl: 'https://test-url.com' },
+      { itemId: 123, resolvedId: 123, givenUrl: 'https://another-test.com' },
+    ]);
+    // Just being extra careful because there were some old typeorm bugs
+    // that are probably solved, but...
+    const moreResult = await sharedRepo.batchAddToShareUrls([
+      { itemId: 7779, resolvedId: 10, givenUrl: 'https://test-url.com' },
+    ]);
+    // auto-increment on a cleared db, so we should get 1-2, 3
+    expect(result).toEqual([1, 2]);
+    expect(moreResult).toEqual([3]);
+  });
+  it('retrieves existing shareUrlIds and creates new ones for items that do not exist', async () => {
+    await sharedRepo.batchAddToShareUrls([
+      { itemId: 999, resolvedId: 999, givenUrl: 'https://test-url.com' },
+      { itemId: 123, resolvedId: 123, givenUrl: 'https://another-test.com' },
+    ]);
+    const ids = await shareUrl.batchGetOrCreateShareUrls(
+      [
+        { itemId: 777, resolvedId: 777, givenUrl: 'https://some-url.com' },
+        { itemId: 333, resolvedId: 333, givenUrl: 'https://who-knows.com' },
+        { itemId: 123, resolvedId: 123, givenUrl: 'https://another-test.com' },
+        { itemId: 999, resolvedId: 999, givenUrl: 'https://test-url.com' },
+        { itemId: 222, resolvedId: 222, givenUrl: 'https://feeling-lucky.com' },
+        { itemId: 777, resolvedId: 777, givenUrl: 'https://some-url.com' },
+      ],
+      sharedRepo,
+    );
+    expect(ids).toEqual([3, 4, 1, 2, 5, 3]);
   });
   describe('resolving from short url', () => {
     beforeEach(async () => {
