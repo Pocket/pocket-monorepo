@@ -5,6 +5,8 @@ import {
   ItemAddAction,
   ItemTagAction,
   SendAction,
+  TagDeleteAction,
+  TagRenameAction,
 } from './validations/SendActionValidators';
 import { AddResponse, PendingAddResponse } from '../graph/types';
 import { processV3Add } from './v3Add';
@@ -31,6 +33,9 @@ import {
   DeleteSavedItemByUrlDocument,
   DeleteSavedItemByUrlMutation,
   DeleteSavedItemByUrlMutationVariables,
+  DeleteTagDocument,
+  DeleteTagMutation,
+  DeleteTagMutationVariables,
   FavoriteSavedItemByIdDocument,
   FavoriteSavedItemByIdMutation,
   FavoriteSavedItemByIdMutationVariables,
@@ -43,6 +48,9 @@ import {
   RemoveTagsDocument,
   RemoveTagsMutation,
   RemoveTagsMutationVariables,
+  RenameTagDocument,
+  RenameTagMutation,
+  RenameTagMutationVariables,
   ReplaceTagsDocument,
   ReplaceTagsMutation,
   ReplaceTagsMutationVariables,
@@ -93,7 +101,11 @@ export class ActionsRouter {
     for await (const action of actions) {
       try {
         Sentry.addBreadcrumb({ data: action });
-        const actionResult = await this[action.action](action);
+        // Note: casting `as any`
+        // This seems to be a typescript bug, maybe with the length of the union...?
+        // Typescript doesn't complain if you comment out any single transform field,
+        // regardless of which one it is. But it won't work with all of them.
+        const actionResult = await this[action.action](action as any);
         result['action_results'][i] = actionResult;
       } catch (err) {
         const defaultMessage = 'Something Went Wrong';
@@ -441,6 +453,45 @@ export class ActionsRouter {
       ReplaceTagsMutation,
       ReplaceTagsMutationVariables
     >(ReplaceTagsDocument, variables);
+    return true;
+  }
+  /**
+   * Process the 'tag_rename' action from a batch of actions sent to /v3/send.
+   * The actions should be validated and sanitized before this is invoked.
+   *
+   * See `ActionsRouter.archive` for more detailed docstring (same pattern).
+   * @returns true (operation is successful unless error is thrown)
+   * @throws ClientError if operation fails
+   */
+  private async tag_rename(input: TagRenameAction) {
+    const variables: RenameTagMutationVariables = {
+      oldName: input.oldTag,
+      newName: input.newTag,
+      timestamp: epochSecondsToISOString(input.time),
+    };
+    await this.client.request<RenameTagMutation, RenameTagMutationVariables>(
+      RenameTagDocument,
+      variables,
+    );
+    return true;
+  }
+  /**
+   * Process the 'tag_delete' action from a batch of actions sent to /v3/send.
+   * The actions should be validated and sanitized before this is invoked.
+   *
+   * See `ActionsRouter.archive` for more detailed docstring (same pattern).
+   * @returns true (operation is successful unless error is thrown)
+   * @throws ClientError if operation fails
+   */
+  private async tag_delete(input: TagDeleteAction) {
+    const variables: DeleteTagMutationVariables = {
+      tagName: input.tag,
+      timestamp: epochSecondsToISOString(input.time),
+    };
+    await this.client.request<DeleteTagMutation, DeleteTagMutationVariables>(
+      DeleteTagDocument,
+      variables,
+    );
     return true;
   }
 }

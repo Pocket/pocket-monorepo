@@ -1,0 +1,29 @@
+{
+  "name": "instant-sync-events",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "test": "echo ok",
+    "lint": "eslint --fix-dry-run \"./**/*.ts\"",
+    "format": "eslint --fix \"./**/*.ts\""
+  },
+  "dependencies": {
+    "@sentry/serverless": "7.108.0",
+    "@aws-sdk/client-sqs": "3.540.0",
+    "tslib": "2.6.2"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "8.10.136",
+    "@types/jest": "29.5.12",
+    "eslint-config-custom": "workspace:*",
+    "jest": "29.7.0",
+    "ts-jest": "29.1.2",
+    "tsconfig": "workspace:*"
+  },
+  "files": [
+    "dist",
+    "package.json"
+  ]
+}

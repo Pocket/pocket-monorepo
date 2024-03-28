@@ -490,6 +490,32 @@ export class SavedItemDataService {
   }
 
   /**
+   * Used for 're-add' mutation: set the createdAt and updatedAt fields
+   * for an existing item, set status to 'unread' and set archivedAt
+   * to null.
+   * @param itemId the existing item's ID
+   * @param timestamp the timestamp to set createdAt and updatedAt
+   * @returns SavedItem or null if it doesn't exist
+   */
+  public async reAdd(
+    itemId: string,
+    timestamp: Date,
+  ): Promise<SavedItem | null> {
+    const date = SavedItemDataService.formatDate(timestamp);
+    await this.db('list')
+      .update({
+        time_added: date,
+        time_updated: date,
+        status: 0,
+        time_read: '0000-00-00 00:00:00',
+        api_id: this.apiId,
+        api_id_updated: this.apiId,
+      })
+      .where({ user_id: this.userId, item_id: itemId });
+    return await this.getSavedItemById(itemId);
+  }
+
+  /**
    * Build a query to update the `time_updated` field of many items
    * the list table, by item id.
    * @param itemIds The item IDS to update the `time_Updated` to now.

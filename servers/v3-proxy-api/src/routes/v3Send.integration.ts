@@ -631,6 +631,100 @@ describe('v3Get', () => {
           );
         });
       });
+      describe('multi-item tag action', () => {
+        describe('tag_rename', () => {
+          it.each([
+            {
+              input: { action: 'tag_rename', old_tag: 'tav', new_tag: 'rue' },
+              expectedCall: {
+                oldName: 'tav',
+                newName: 'rue',
+                timestamp: isoNow,
+              },
+            },
+            {
+              input: {
+                action: 'tag_rename',
+                old_tag: 'tav',
+                new_tag: 'rue',
+                time: '1711558016',
+              },
+              expectedCall: {
+                oldName: 'tav',
+                newName: 'rue',
+                timestamp: '2024-03-27T16:46:56.000Z',
+              },
+            },
+          ])(
+            'conditionally adds timestamp and calls correct mutation',
+            async ({ input, expectedCall }) => {
+              const res = await request(app)
+                .post('/v3/send')
+                .send({
+                  consumer_key: 'test',
+                  access_token: 'test',
+                  actions: [input],
+                });
+              expect(clientSpy).toHaveBeenCalledTimes(1);
+              expect(
+                clientSpy.mock.calls[0][0].definitions[0].name.value,
+              ).toEqual('RenameTag');
+              expect(clientSpy.mock.calls[0][1]).toEqual(expectedCall);
+              expect(res.body).toEqual({
+                status: 1,
+                action_results: [true],
+                action_errors: [null],
+              });
+            },
+          );
+        });
+        describe('tag_delete', () => {
+          it.each([
+            {
+              input: {
+                action: 'tag_delete',
+                tag: 'tav',
+              },
+              expectedCall: {
+                tagName: 'tav',
+                timestamp: isoNow,
+              },
+            },
+            {
+              input: {
+                action: 'tag_delete',
+                tag: 'tav',
+                time: '1711558016',
+              },
+              expectedCall: {
+                tagName: 'tav',
+                timestamp: '2024-03-27T16:46:56.000Z',
+              },
+            },
+          ])(
+            'conditionally adds timestamp and calls correct mutation',
+            async ({ input, expectedCall }) => {
+              const res = await request(app)
+                .post('/v3/send')
+                .send({
+                  consumer_key: 'test',
+                  access_token: 'test',
+                  actions: [input],
+                });
+              expect(clientSpy).toHaveBeenCalledTimes(1);
+              expect(
+                clientSpy.mock.calls[0][0].definitions[0].name.value,
+              ).toEqual('DeleteTag');
+              expect(clientSpy.mock.calls[0][1]).toEqual(expectedCall);
+              expect(res.body).toEqual({
+                status: 1,
+                action_results: [true],
+                action_errors: [null],
+              });
+            },
+          );
+        });
+      });
     });
   });
 });

@@ -168,7 +168,11 @@ export class AccountDeleteDataService {
         whereCondition: where,
         requestId: requestId,
       };
-      serverLogger.error({ message: errorMessage, error: error, data: errorData });
+      serverLogger.error({
+        message: errorMessage,
+        error: error,
+        data: errorData,
+      });
       Sentry.addBreadcrumb({ message: errorMessage, data: errorData });
       Sentry.captureException(error);
     }
