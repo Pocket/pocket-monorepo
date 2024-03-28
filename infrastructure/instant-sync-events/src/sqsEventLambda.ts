@@ -1,6 +1,11 @@
 import { config as stackConfig } from './config';
 
-import { dataAwsSsmParameter } from '@cdktf/provider-aws';
+import {
+  dataAwsSsmParameter,
+  dataAwsRegion,
+  dataAwsCallerIdentity,
+  dataAwsKmsAlias,
+} from '@cdktf/provider-aws';
 import {
   PocketSQSWithLambdaTarget,
   LAMBDA_RUNTIMES,
@@ -24,6 +29,20 @@ export class SQSEventLambda extends Construct {
     super(scope, name.toLowerCase());
 
     const { sentryDsn } = this.getEnvVariableValues();
+
+    const region = new dataAwsRegion.DataAwsRegion(this, 'region');
+    const caller = new dataAwsCallerIdentity.DataAwsCallerIdentity(
+      this,
+      'caller',
+    );
+
+    const secretsManagerKmsAlias = new dataAwsKmsAlias.DataAwsKmsAlias(
+      this,
+      'kms_alias',
+      {
+        name: 'alias/aws/secretsmanager',
+      },
+    );
 
     this.construct = new PocketSQSWithLambdaTarget(this, name.toLowerCase(), {
       name: `${stackConfig.prefix}-${name}`,
@@ -50,6 +69,30 @@ export class SQSEventLambda extends Construct {
           securityGroupIds: config.vpc.defaultSecurityGroups.ids,
           subnetIds: config.vpc.privateSubnetIds,
         },
+        executionPolicyStatements: [
+          {
+            actions: ['secretsmanager:GetSecretValue', 'kms:Decrypt'],
+            resources: [
+              `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared`,
+              `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/*`,
+              secretsManagerKmsAlias.targetKeyArn,
+              `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${stackConfig.name}/${stackConfig.environment}`,
+              `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${stackConfig.name}/${stackConfig.environment}/*`,
+              `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${stackConfig.prefix}`,
+              `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${stackConfig.prefix}/*`,
+            ],
+            effect: 'Allow',
+          },
+          //This policy could probably go in the shared module in the future.
+          {
+            actions: ['ssm:GetParameter*'],
+            resources: [
+              `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${stackConfig.name}/${stackConfig.environment}`,
+              `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${stackConfig.name}/${stackConfig.environment}/*`,
+            ],
+            effect: 'Allow',
+          },
+        ],
         codeDeploy: {
           region: config.vpc.region,
           accountId: config.vpc.accountId,
