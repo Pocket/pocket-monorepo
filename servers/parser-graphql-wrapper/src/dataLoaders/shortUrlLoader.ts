@@ -9,13 +9,13 @@ const partialBatchGetShortUrls = async (
   inputs: readonly BatchAddShareUrlInput[],
 ) => {
   const shareRepo = await getSharedUrlsResolverRepo();
-  return batchGetShortUrl(inputs, shareRepo);
+  return await batchGetShortUrl(inputs, shareRepo);
 };
 
-export const ShortUrlLoader = new DataLoader<
-  BatchAddShareUrlInput,
-  string,
-  string
->((inputs) => partialBatchGetShortUrls(inputs), {
-  cacheKeyFn: (key) => `${key.itemId}|${key.resolvedId}|${key.givenUrl}`,
-});
+export const ShortUrlLoader = () =>
+  new DataLoader<BatchAddShareUrlInput, string, string>(
+    (inputs) => partialBatchGetShortUrls(inputs),
+    {
+      cacheKeyFn: (key) => `${key.itemId}|${key.resolvedId}|${key.givenUrl}`,
+    },
+  );

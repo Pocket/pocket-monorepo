@@ -112,20 +112,23 @@ export const resolvers = {
       }
       return generateSSML(item);
     },
-    shortUrl: async (parent, args, context: IContext): Promise<string> => {
+    shortUrl: async (
+      parent: Item,
+      args,
+      context: IContext,
+    ): Promise<string> => {
       // If the givenUrl is already a short share url, or there is a
       // short url key on the parent from a previous step, return the
       // same value to avoid another db trip
-      if (parent.shortUrl) {
-        return parent.shortUrl;
+      if (parent['shortUrl']) {
+        return parent['shortUrl'];
       }
       if (extractCodeFromShortUrl(parent.givenUrl) != null) {
         return parent.givenUrl;
       }
       return context.dataLoaders.shortUrlLoader.load({
-        itemId: parent.itemId,
-
-        resolvedId: parent.resolvedId,
+        itemId: parseInt(parent.itemId),
+        resolvedId: parseInt(parent.resolvedId),
         givenUrl: parent.givenUrl,
       });
     },

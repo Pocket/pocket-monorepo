@@ -3,7 +3,6 @@ import {
   BatchAddShareUrlInput,
   SharedUrlsResolverRepository,
 } from '../database/mysql';
-import { ShareUrls } from '../entities/ShareUrls';
 
 /**
  * generates a record in share_url if record doesn't exist.
