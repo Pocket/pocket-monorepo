@@ -147,7 +147,7 @@ export class ApplicationRDSCluster extends Construct {
       vpcSecurityGroupIds: [securityGroupResource.id],
       dbSubnetGroupName: subnetGroup.name,
       lifecycle: {
-        ignoreChanges: ['master_username', 'master_password'],
+        ignoreChanges: ['master_username', 'master_password', 'engine_version'],
       },
       provider: config.provider,
     });
@@ -161,6 +161,9 @@ export class ApplicationRDSCluster extends Construct {
           instanceClass: 'db.serverless',
           engine: this.rds.engine,
           engineVersion: this.rds.engineVersion,
+          lifecycle: {
+            ignoreChanges: ['engine_version'],
+          },
         },
       );
     }
