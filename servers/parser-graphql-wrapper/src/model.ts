@@ -1,4 +1,4 @@
-import { ParserArticle } from './dataLoaders/articleLoader';
+import { ParserArticle } from './dataLoaders';
 
 export interface Item {
   itemId: string;
