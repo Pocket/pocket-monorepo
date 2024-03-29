@@ -1,0 +1,13 @@
+mutation ReplaceTags(
+  $savedItem: SavedItemRef!
+  $tagNames: [String!]!
+  $timestamp: ISOString
+) {
+  replaceTags(
+    savedItem: $savedItem
+    tagNames: $tagNames
+    timestamp: $timestamp
+  ) {
+    id
+  }
+}

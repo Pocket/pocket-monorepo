@@ -1,0 +1,9 @@
+mutation RenameTag(
+  $oldName: String!
+  $newName: String!
+  $timestamp: ISOString
+) {
+  renameTagByName(oldName: $oldName, newName: $newName, timestamp: $timestamp) {
+    name
+  }
+}

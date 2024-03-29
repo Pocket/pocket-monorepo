@@ -39,7 +39,8 @@ exports[`ApplicationRDSCluster renders a RDS cluster 1`] = `
         "lifecycle": {
           "ignore_changes": [
             "master_username",
-            "master_password"
+            "master_password",
+            "engine_version"
           ]
         },
         "master_password": "bowling",
@@ -159,7 +160,8 @@ exports[`ApplicationRDSCluster renders a RDS cluster with a database URL 1`] = `
         "lifecycle": {
           "ignore_changes": [
             "master_username",
-            "master_password"
+            "master_password",
+            "engine_version"
           ]
         },
         "master_password": "bowling",
@@ -277,7 +279,8 @@ exports[`ApplicationRDSCluster renders a RDS cluster without a name 1`] = `
         "lifecycle": {
           "ignore_changes": [
             "master_username",
-            "master_password"
+            "master_password",
+            "engine_version"
           ]
         },
         "master_password": "bowling",

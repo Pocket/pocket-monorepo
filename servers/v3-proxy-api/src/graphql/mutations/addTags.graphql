@@ -1,0 +1,11 @@
+mutation AddTagsById($input: [SavedItemTagsInput!]!, $timestamp: ISOString) {
+  createSavedItemTags(input: $input, timestamp: $timestamp) {
+    id
+  }
+}
+
+mutation AddTagsByUrl($input: SavedItemTagInput!, $timestamp: ISOString!) {
+  savedItemTag(input: $input, timestamp: $timestamp) {
+    url
+  }
+}

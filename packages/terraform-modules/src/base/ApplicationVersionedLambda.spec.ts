@@ -134,4 +134,35 @@ describe('ApplicationVersionedLambda', () => {
     });
     expect(synthed).toMatchSnapshot();
   });
+
+  it('renders a lambda with the secrets layer', () => {
+    const synthed = Testing.synthScope((stack) => {
+      new ApplicationVersionedLambda(stack, 'test-versioned-lambda', {
+        ...config,
+        addParameterStoreAndSecretsLayer: true,
+      });
+    });
+    expect(synthed).toMatchSnapshot();
+  });
+
+  it('renders a lambda with the secrets layer and extra layers', () => {
+    const synthed = Testing.synthScope((stack) => {
+      new ApplicationVersionedLambda(stack, 'test-versioned-lambda', {
+        ...config,
+        addParameterStoreAndSecretsLayer: true,
+        layers: ['thebest-layer'],
+      });
+    });
+    expect(synthed).toMatchSnapshot();
+  });
+
+  it('renders a lambda with extra layers', () => {
+    const synthed = Testing.synthScope((stack) => {
+      new ApplicationVersionedLambda(stack, 'test-versioned-lambda', {
+        ...config,
+        layers: ['thebest-layer'],
+      });
+    });
+    expect(synthed).toMatchSnapshot();
+  });
 });

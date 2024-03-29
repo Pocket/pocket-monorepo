@@ -3,30 +3,57 @@ import { getClient } from '../graph/graphQLClient';
 import {
   ItemAction,
   ItemAddAction,
+  ItemTagAction,
   SendAction,
+  TagDeleteAction,
+  TagRenameAction,
 } from './validations/SendActionValidators';
 import { AddResponse, PendingAddResponse } from '../graph/types';
 import { processV3Add } from './v3Add';
 import * as Sentry from '@sentry/node';
 import {
+  AddTagsByIdDocument,
+  AddTagsByIdMutation,
+  AddTagsByIdMutationVariables,
+  AddTagsByUrlDocument,
+  AddTagsByUrlMutation,
+  AddTagsByUrlMutationVariables,
   ArchiveSavedItemByIdDocument,
   ArchiveSavedItemByIdMutation,
   ArchiveSavedItemByIdMutationVariables,
   ArchiveSavedItemByUrlDocument,
   ArchiveSavedItemByUrlMutation,
   ArchiveSavedItemByUrlMutationVariables,
+  ClearTagsDocument,
+  ClearTagsMutation,
+  ClearTagsMutationVariables,
   DeleteSavedItemByIdDocument,
   DeleteSavedItemByIdMutation,
   DeleteSavedItemByIdMutationVariables,
   DeleteSavedItemByUrlDocument,
   DeleteSavedItemByUrlMutation,
   DeleteSavedItemByUrlMutationVariables,
+  DeleteTagDocument,
+  DeleteTagMutation,
+  DeleteTagMutationVariables,
   FavoriteSavedItemByIdDocument,
   FavoriteSavedItemByIdMutation,
   FavoriteSavedItemByIdMutationVariables,
   FavoriteSavedItemByUrlDocument,
   FavoriteSavedItemByUrlMutation,
   FavoriteSavedItemByUrlMutationVariables,
+  ReAddByIdDocument,
+  ReAddByIdMutation,
+  ReAddByIdMutationVariables,
+  RemoveTagsDocument,
+  RemoveTagsMutation,
+  RemoveTagsMutationVariables,
+  RenameTagDocument,
+  RenameTagMutation,
+  RenameTagMutationVariables,
+  ReplaceTagsDocument,
+  ReplaceTagsMutation,
+  ReplaceTagsMutationVariables,
   SavedItemUpsertInput,
   UnFavoriteSavedItemByIdDocument,
   UnFavoriteSavedItemByIdMutation,
@@ -38,6 +65,7 @@ import { serverLogger } from '@pocket-tools/ts-logger';
 import { customErrorHeaders } from '../middleware';
 import { Request } from 'express';
 import { epochSecondsToISOString } from '../graph/shared/utils';
+import { AddItemTransformer } from '../graph/add/toRest';
 
 type SendActionError = {
   message: string;
@@ -61,7 +89,7 @@ export class ActionsRouter {
     this.client = getClient(accessToken, consumerKey, headers);
   }
   public async processActions(
-    actions: SendAction[], // Right now this is the only kind of action supported
+    actions: SendAction[],
   ): Promise<SendActionResult> {
     const result: SendActionResult = {
       status: 1,
@@ -73,7 +101,11 @@ export class ActionsRouter {
     for await (const action of actions) {
       try {
         Sentry.addBreadcrumb({ data: action });
-        const actionResult = await this[action.action](action);
+        // Note: casting `as any`
+        // This seems to be a typescript bug, maybe with the length of the union...?
+        // Typescript doesn't complain if you comment out any single transform field,
+        // regardless of which one it is. But it won't work with all of them.
+        const actionResult = await this[action.action](action as any);
         result['action_results'][i] = actionResult;
       } catch (err) {
         const defaultMessage = 'Something Went Wrong';
@@ -126,7 +158,7 @@ export class ActionsRouter {
     } = {
       input: {
         url: input.url,
-        ...(input.time && { timestamp: input.time }),
+        timestamp: input.time,
         ...(input.title && { title: input.title }),
       },
     };
@@ -140,15 +172,27 @@ export class ActionsRouter {
   public async readd(
     input: Omit<ItemAction, 'action'> & { action: 'readd' },
   ): Promise<AddResponse | PendingAddResponse> {
-    const addVars: {
-      input: SavedItemUpsertInput;
-    } = {
-      input: {
-        url: input.url,
-        ...(input.time && { timestamp: input.time }),
-      },
-    };
-    return await processV3Add(this.client, addVars);
+    if (input.itemId != null) {
+      const variables: ReAddByIdMutationVariables = {
+        id: input.itemId.toString(),
+        timestamp: epochSecondsToISOString(input.time),
+      };
+      const result = await this.client.request<
+        ReAddByIdMutation,
+        ReAddByIdMutationVariables
+      >(ReAddByIdDocument, variables);
+      return AddItemTransformer(result['reAddById']);
+    } else {
+      const addVars: {
+        input: SavedItemUpsertInput;
+      } = {
+        input: {
+          url: input.url,
+          timestamp: input.time,
+        },
+      };
+      return await processV3Add(this.client, addVars);
+    }
   }
   /**
    * Process the 'archive' action from a batch of actions sent to /v3/send.
@@ -171,9 +215,9 @@ export class ActionsRouter {
     input: Omit<ItemAction, 'action'> & { action: 'archive' },
   ): Promise<true> {
     if (input.itemId) {
-      // TODO [POCKET-9807]: This mutation does not accept timestamp
       const variables: ArchiveSavedItemByIdMutationVariables = {
         updateSavedItemArchiveId: input.itemId.toString(),
+        timestamp: epochSecondsToISOString(input.time),
       };
       await this.client.request<
         ArchiveSavedItemByIdMutation,
@@ -186,7 +230,7 @@ export class ActionsRouter {
     }
     const variables: ArchiveSavedItemByUrlMutationVariables = {
       givenUrl: input.url,
-      ...(input.time && { timestamp: epochSecondsToISOString(input.time) }),
+      timestamp: epochSecondsToISOString(input.time),
     };
     await this.client.request<
       ArchiveSavedItemByUrlMutation,
@@ -209,9 +253,9 @@ export class ActionsRouter {
     input: Omit<ItemAction, 'action'> & { action: 'favorite' },
   ): Promise<true> {
     if (input.itemId) {
-      // TODO [POCKET-9807]: This mutation does not accept timestamp
       const variables: FavoriteSavedItemByIdMutationVariables = {
         updateSavedItemFavoriteId: input.itemId.toString(),
+        timestamp: epochSecondsToISOString(input.time),
       };
       await this.client.request<
         FavoriteSavedItemByIdMutation,
@@ -224,7 +268,7 @@ export class ActionsRouter {
     }
     const variables: FavoriteSavedItemByUrlMutationVariables = {
       givenUrl: input.url,
-      ...(input.time && { timestamp: epochSecondsToISOString(input.time) }),
+      timestamp: epochSecondsToISOString(input.time),
     };
     await this.client.request<
       FavoriteSavedItemByUrlMutation,
@@ -244,9 +288,9 @@ export class ActionsRouter {
     input: Omit<ItemAction, 'action'> & { action: 'unfavorite' },
   ): Promise<true> {
     if (input.itemId) {
-      // TODO [POCKET-9807]: This mutation does not accept timestamp
       const variables: UnFavoriteSavedItemByIdMutationVariables = {
         updateSavedItemUnFavoriteId: input.itemId.toString(),
+        timestamp: epochSecondsToISOString(input.time),
       };
       await this.client.request<
         UnFavoriteSavedItemByIdMutation,
@@ -259,7 +303,7 @@ export class ActionsRouter {
     }
     const variables: UnFavoriteSavedItemByUrlMutationVariables = {
       givenUrl: input.url,
-      ...(input.time && { timestamp: epochSecondsToISOString(input.time) }),
+      timestamp: epochSecondsToISOString(input.time),
     };
     await this.client.request<
       UnFavoriteSavedItemByIdMutation,
@@ -279,9 +323,9 @@ export class ActionsRouter {
     input: Omit<ItemAction, 'action'> & { action: 'delete' },
   ): Promise<true> {
     if (input.itemId) {
-      // TODO [POCKET-9807]: This mutation does not accept timestamp
       const variables: DeleteSavedItemByIdMutationVariables = {
         id: input.itemId.toString(),
+        timestamp: epochSecondsToISOString(input.time),
       };
       await this.client.request<
         DeleteSavedItemByIdMutation,
@@ -294,12 +338,160 @@ export class ActionsRouter {
     }
     const variables: DeleteSavedItemByUrlMutationVariables = {
       givenUrl: input.url,
-      ...(input.time && { timestamp: epochSecondsToISOString(input.time) }),
+      timestamp: epochSecondsToISOString(input.time),
     };
     await this.client.request<
       DeleteSavedItemByUrlMutation,
       DeleteSavedItemByUrlMutationVariables
     >(DeleteSavedItemByUrlDocument, variables);
+    return true;
+  }
+  /**
+   * Process the 'tags_add' action from a batch of actions sent to /v3/send.
+   * The actions should be validated and sanitized before this is invoked.
+   *
+   * See `ActionsRouter.archive` for more detailed docstring (same pattern).
+   * @returns true (operation is successful unless error is thrown)
+   * @throws ClientError if operation fails
+   */
+  private async tags_add(
+    input: Omit<ItemTagAction, 'action'> & { action: 'tags_add' },
+  ): Promise<true> {
+    if (input.itemId) {
+      const variables: AddTagsByIdMutationVariables = {
+        input: [{ savedItemId: input.itemId.toString(), tags: input.tags }],
+        timestamp: epochSecondsToISOString(input.time),
+      };
+      await this.client.request<
+        AddTagsByIdMutation,
+        AddTagsByIdMutationVariables
+      >(AddTagsByIdDocument, variables);
+      // If we make it this far, the client did not throw
+      // We don't actually need the result otherwise for
+      // these /v3 operations
+      return true;
+    }
+    const variables: AddTagsByUrlMutationVariables = {
+      input: { givenUrl: input.url, tagNames: input.tags },
+      timestamp: epochSecondsToISOString(input.time),
+    };
+    await this.client.request<
+      AddTagsByUrlMutation,
+      AddTagsByUrlMutationVariables
+    >(AddTagsByUrlDocument, variables);
+    return true;
+  }
+  /**
+   * Process the 'tags_clear' action from a batch of actions sent to /v3/send.
+   * The actions should be validated and sanitized before this is invoked.
+   *
+   * See `ActionsRouter.archive` for more detailed docstring (same pattern).
+   * @returns true (operation is successful unless error is thrown)
+   * @throws ClientError if operation fails
+   */
+  private async tags_clear(
+    input: Omit<ItemAction, 'action'> & { action: 'tags_clear' },
+  ) {
+    const variables: ClearTagsMutationVariables = {
+      savedItem: {
+        ...(input.itemId && { id: input.itemId.toString() }),
+        ...(input.url && { url: input.url }),
+      },
+      timestamp: epochSecondsToISOString(input.time),
+    };
+    await this.client.request<ClearTagsMutation, ClearTagsMutationVariables>(
+      ClearTagsDocument,
+      variables,
+    );
+    return true;
+  }
+  /**
+   * Process the 'tags_remove' action from a batch of actions sent to /v3/send.
+   * The actions should be validated and sanitized before this is invoked.
+   *
+   * See `ActionsRouter.archive` for more detailed docstring (same pattern).
+   * @returns true (operation is successful unless error is thrown)
+   * @throws ClientError if operation fails
+   */
+  private async tags_remove(
+    input: Omit<ItemTagAction, 'action'> & { action: 'tags_remove' },
+  ) {
+    const variables: RemoveTagsMutationVariables = {
+      savedItem: {
+        ...(input.itemId && { id: input.itemId.toString() }),
+        ...(input.url && { url: input.url }),
+      },
+      timestamp: epochSecondsToISOString(input.time),
+      tagNames: input.tags,
+    };
+    await this.client.request<RemoveTagsMutation, RemoveTagsMutationVariables>(
+      RemoveTagsDocument,
+      variables,
+    );
+    return true;
+  }
+  /**
+   * Process the 'tags_replace' action from a batch of actions sent to /v3/send.
+   * The actions should be validated and sanitized before this is invoked.
+   *
+   * See `ActionsRouter.archive` for more detailed docstring (same pattern).
+   * @returns true (operation is successful unless error is thrown)
+   * @throws ClientError if operation fails
+   */
+  private async tags_replace(
+    input: Omit<ItemTagAction, 'action'> & { action: 'tags_replace' },
+  ) {
+    const variables: ReplaceTagsMutationVariables = {
+      savedItem: {
+        ...(input.itemId && { id: input.itemId.toString() }),
+        ...(input.url && { url: input.url }),
+      },
+      timestamp: epochSecondsToISOString(input.time),
+      tagNames: input.tags,
+    };
+    await this.client.request<
+      ReplaceTagsMutation,
+      ReplaceTagsMutationVariables
+    >(ReplaceTagsDocument, variables);
+    return true;
+  }
+  /**
+   * Process the 'tag_rename' action from a batch of actions sent to /v3/send.
+   * The actions should be validated and sanitized before this is invoked.
+   *
+   * See `ActionsRouter.archive` for more detailed docstring (same pattern).
+   * @returns true (operation is successful unless error is thrown)
+   * @throws ClientError if operation fails
+   */
+  private async tag_rename(input: TagRenameAction) {
+    const variables: RenameTagMutationVariables = {
+      oldName: input.oldTag,
+      newName: input.newTag,
+      timestamp: epochSecondsToISOString(input.time),
+    };
+    await this.client.request<RenameTagMutation, RenameTagMutationVariables>(
+      RenameTagDocument,
+      variables,
+    );
+    return true;
+  }
+  /**
+   * Process the 'tag_delete' action from a batch of actions sent to /v3/send.
+   * The actions should be validated and sanitized before this is invoked.
+   *
+   * See `ActionsRouter.archive` for more detailed docstring (same pattern).
+   * @returns true (operation is successful unless error is thrown)
+   * @throws ClientError if operation fails
+   */
+  private async tag_delete(input: TagDeleteAction) {
+    const variables: DeleteTagMutationVariables = {
+      tagName: input.tag,
+      timestamp: epochSecondsToISOString(input.time),
+    };
+    await this.client.request<DeleteTagMutation, DeleteTagMutationVariables>(
+      DeleteTagDocument,
+      variables,
+    );
     return true;
   }
 }
