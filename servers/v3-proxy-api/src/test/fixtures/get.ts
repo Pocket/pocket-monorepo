@@ -1,6 +1,6 @@
 import {
-  GetSavedItemsByOffsetCompleteQuery,
-  GetSavedItemsByOffsetSimpleQuery,
+  SavedItemsCompleteQuery,
+  SavedItemsSimpleQuery,
   Imageness,
   SavedItemStatus,
   VideoType,
@@ -13,7 +13,7 @@ import {
   GetResponseSimpleTotal,
 } from '../../graph/types';
 
-export const mockGraphGetComplete: GetSavedItemsByOffsetCompleteQuery = {
+export const mockGraphGetComplete: SavedItemsCompleteQuery = {
   user: {
     savedItemsByOffset: {
       // A response with all optional 'complete' fields
@@ -153,7 +153,7 @@ export const mockGraphGetComplete: GetSavedItemsByOffsetCompleteQuery = {
   },
 };
 
-export const mockGraphGetSimple: GetSavedItemsByOffsetSimpleQuery = {
+export const mockGraphGetSimple: SavedItemsSimpleQuery = {
   user: {
     savedItemsByOffset: {
       totalCount: 10,
@@ -455,7 +455,7 @@ export const expectedGetSimpleTotal: GetResponseSimpleTotal = {
   ...expectedGetSimple,
 };
 
-export const mockGraphGetSimpleTitle: GetSavedItemsByOffsetSimpleQuery = {
+export const mockGraphGetSimpleTitle: SavedItemsSimpleQuery = {
   // First one, no user-provided title and field is null
   // Second, have a user-provided title
   user: {

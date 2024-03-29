@@ -1,8 +1,8 @@
 import {
   Imageness,
   SavedItemStatus,
-  SearchSavedItemsByOffsetCompleteQuery,
-  SearchSavedItemsByOffsetSimpleQuery,
+  SearchSavedItemsCompleteQuery,
+  SearchSavedItemsSimpleQuery,
   VideoType,
   Videoness,
 } from '../../generated/graphql/types';
@@ -865,362 +865,361 @@ export const expectedPremiumTierResponseComplete: GetSearchResponseComplete = {
   },
 };
 
-export const premiumSearchGraphComplete: SearchSavedItemsByOffsetCompleteQuery =
-  {
-    user: {
-      searchSavedItemsByOffset: {
-        entries: [
-          {
-            savedItem: {
-              id: '3670270094',
-              status: SavedItemStatus.Unread,
-              url: 'https://www.musicalwriters.com/writing-a-musical/how-opening-numbers-reveal-a-world-or-launch-the-story/',
-              isFavorite: false,
-              isArchived: false,
-              _updatedAt: 1659049945,
-              _createdAt: 1659049937,
-              favoritedAt: null,
-              archivedAt: null,
-              item: {
-                __typename: 'Item' as const,
-                itemId: '3670270094',
-                resolvedId: '3670270094',
-                wordCount: 2288,
-                topImage: {
-                  url: 'https://www.musicalwriters.com/wp-content/uploads/2022/01/Opening-Numbers-interview-with-Stephen-Schwartz.jpg',
-                },
-                title: 'How Opening Numbers Reveal a World or Launch the Story',
-                timeToRead: 10,
-                resolvedUrl:
-                  'https://www.musicalwriters.com/writing-a-musical/how-opening-numbers-reveal-a-world-or-launch-the-story/',
-                givenUrl:
-                  'https://www.musicalwriters.com/writing-a-musical/how-opening-numbers-reveal-a-world-or-launch-the-story/',
-                excerpt:
-                  'When musical theatre aficionados list favorite opening numbers, they often include Pippin’s “Magic to Do” with its alluring, break-the-fourth-wall invitation into the world of the show.',
-                domain: null,
-                isArticle: true,
-                isIndex: false,
-                hasVideo: Videoness.HasVideos,
-                hasImage: Imageness.HasImages,
-                language: 'en',
-                authors: [
-                  {
-                    id: '108109059',
-                    name: 'Carol de Giere',
-                    url: 'https://www.musicalwriters.com/author/carol-de-giere/',
-                  },
-                ],
-                images: [
-                  {
-                    imageId: 1,
-                    url: 'https://www.musicalwriters.com/wp-content/uploads/2022/01/carol-dg-and-stephen-schwartz-20211110-sm.jpg',
-                    height: 286,
-                    width: 478,
-                    credit: '',
-                    caption: '',
-                  },
-                ],
-                videos: [
-                  {
-                    videoId: 1,
-                    src: 'https://www.youtube.com/embed/RH1gH33z1Y4',
-                    width: 560,
-                    type: VideoType.Youtube,
-                    vid: 'RH1gH33z1Y4',
-                    length: 0,
-                    height: 315,
-                  },
-                  {
-                    videoId: 2,
-                    src: 'https://www.youtube.com/embed/EAYUuspQ6BY',
-                    width: 560,
-                    type: VideoType.Youtube,
-                    vid: 'EAYUuspQ6BY',
-                    length: 0,
-                    height: 315,
-                  },
-                  {
-                    videoId: 3,
-                    src: 'https://www.youtube.com/embed/VxcT7HImOcg',
-                    width: 560,
-                    type: VideoType.Youtube,
-                    vid: 'VxcT7HImOcg',
-                    length: 0,
-                    height: 315,
-                  },
-                  {
-                    videoId: 4,
-                    src: 'https://www.youtube.com/embed/DH_XQcEhOPA',
-                    width: 560,
-                    type: VideoType.Youtube,
-                    vid: 'DH_XQcEhOPA',
-                    length: 0,
-                    height: 315,
-                  },
-                  {
-                    videoId: 5,
-                    src: 'https://www.youtube.com/embed/Fw7SsNNjQGQ',
-                    width: 560,
-                    type: VideoType.Youtube,
-                    vid: 'Fw7SsNNjQGQ',
-                    length: 0,
-                    height: 315,
-                  },
-                ],
-                domainMetadata: {
-                  logo: null,
-                  logoGreyscale: null,
-                  name: 'musicalwriters.com',
-                },
+export const premiumSearchGraphComplete: SearchSavedItemsCompleteQuery = {
+  user: {
+    searchSavedItemsByOffset: {
+      entries: [
+        {
+          savedItem: {
+            id: '3670270094',
+            status: SavedItemStatus.Unread,
+            url: 'https://www.musicalwriters.com/writing-a-musical/how-opening-numbers-reveal-a-world-or-launch-the-story/',
+            isFavorite: false,
+            isArchived: false,
+            _updatedAt: 1659049945,
+            _createdAt: 1659049937,
+            favoritedAt: null,
+            archivedAt: null,
+            item: {
+              __typename: 'Item' as const,
+              itemId: '3670270094',
+              resolvedId: '3670270094',
+              wordCount: 2288,
+              topImage: {
+                url: 'https://www.musicalwriters.com/wp-content/uploads/2022/01/Opening-Numbers-interview-with-Stephen-Schwartz.jpg',
               },
-              tags: [
+              title: 'How Opening Numbers Reveal a World or Launch the Story',
+              timeToRead: 10,
+              resolvedUrl:
+                'https://www.musicalwriters.com/writing-a-musical/how-opening-numbers-reveal-a-world-or-launch-the-story/',
+              givenUrl:
+                'https://www.musicalwriters.com/writing-a-musical/how-opening-numbers-reveal-a-world-or-launch-the-story/',
+              excerpt:
+                'When musical theatre aficionados list favorite opening numbers, they often include Pippin’s “Magic to Do” with its alluring, break-the-fourth-wall invitation into the world of the show.',
+              domain: null,
+              isArticle: true,
+              isIndex: false,
+              hasVideo: Videoness.HasVideos,
+              hasImage: Imageness.HasImages,
+              language: 'en',
+              authors: [
                 {
-                  name: 'musical',
+                  id: '108109059',
+                  name: 'Carol de Giere',
+                  url: 'https://www.musicalwriters.com/author/carol-de-giere/',
                 },
               ],
-            },
-            searchHighlights: {
-              fullText: [
-                'When <em>musical</em> theatre aficionados list favorite opening numbers, they often include Pippin&rsquo;s &ldquo',
-                'Rodgers and Hammerstein <em>musicals</em> tend to start right away.',
-                '&ldquo;Deliver Us&rdquo; (for The Prince of Egypt movie and stage <em>musical</em>) is a good example.',
-                'What setting, tone, who am I following, <em>musical</em> style?',
-                'This eventually drew out some other principles of <em>musical</em> writing.',
-              ],
-              url: [
-                'https://www.musicalwriters.com/writing-a-<em>musical</em>/how-opening-numbers-reveal-a-world-or-launch-the-story',
-              ],
-              tags: ['<em>musical</em>'],
-              title: null,
-            },
-          },
-          {
-            savedItem: {
-              id: '3670270497',
-              status: SavedItemStatus.Unread,
-              url: 'https://www.musicalwriters.com/writing-a-musical/montages-backstory-memories-and-ticking-clocks/',
-              isFavorite: false,
-              isArchived: false,
-              _updatedAt: 1659049987,
-              _createdAt: 1659049981,
-              favoritedAt: null,
-              archivedAt: null,
-              item: {
-                __typename: 'Item' as const,
-                itemId: '3670270497',
-                resolvedId: '3670270497',
-                wordCount: 1843,
-                topImage: {
-                  url: 'https://www.musicalwriters.com/wp-content/uploads/2021/10/Montage-Backstory-Memories-and-Ticking-Clocks.jpg',
+              images: [
+                {
+                  imageId: 1,
+                  url: 'https://www.musicalwriters.com/wp-content/uploads/2022/01/carol-dg-and-stephen-schwartz-20211110-sm.jpg',
+                  height: 286,
+                  width: 478,
+                  credit: '',
+                  caption: '',
                 },
-                title:
-                  'How Musicals Make the Most of Time: Montage, Backstory, Memories, and Ticking Clocks',
-                timeToRead: 8,
-                resolvedUrl:
-                  'https://www.musicalwriters.com/writing-a-musical/montages-backstory-memories-and-ticking-clocks/',
-                givenUrl:
-                  'https://www.musicalwriters.com/writing-a-musical/montages-backstory-memories-and-ticking-clocks/',
-                excerpt:
-                  'Two young lovers in the musical Children of Eden face each other in front of Noah’s Ark just before the rain begins—one is scheduled to get on the boat and the other is not. The fictional moment set up in the musical is precarious and precious.',
-                domain: null,
-                isArticle: true,
-                isIndex: false,
-                hasVideo: Videoness.HasVideos,
-                hasImage: Imageness.HasImages,
-                language: 'en',
-                authors: [
-                  {
-                    id: '108109059',
-                    name: 'Carol de Giere',
-                    url: 'https://www.musicalwriters.com/author/carol-de-giere/',
-                  },
-                ],
-                images: [
-                  {
-                    imageId: 1,
-                    url: 'http://img.youtube.com/vi/vo_s6PsVogI/0.jpg',
-                    height: 360,
-                    width: 480,
-                    credit: '',
-                    caption: '',
-                  },
-                ],
-                videos: [
-                  {
-                    videoId: 1,
-                    src: 'https://www.youtube.com/embed/vo_s6PsVogI?feature=oembed',
-                    width: 1080,
-                    type: VideoType.Youtube,
-                    vid: 'vo_s6PsVogI',
-                    length: 0,
-                    height: 608,
-                  },
-                  {
-                    videoId: 2,
-                    src: 'https://www.youtube.com/embed/ujsd49oR17g?feature=oembed',
-                    width: 1080,
-                    type: VideoType.Youtube,
-                    vid: 'ujsd49oR17g',
-                    length: 0,
-                    height: 810,
-                  },
-                  {
-                    videoId: 3,
-                    src: 'https://www.youtube.com/embed/yL9f_L-s8GQ?feature=oembed',
-                    width: 1080,
-                    type: VideoType.Youtube,
-                    vid: 'yL9f_L-s8GQ',
-                    length: 0,
-                    height: 608,
-                  },
-                  {
-                    videoId: 4,
-                    src: 'https://www.youtube.com/embed/UB-NjDicZmI?feature=oembed',
-                    width: 1080,
-                    type: VideoType.Youtube,
-                    vid: 'UB-NjDicZmI',
-                    length: 0,
-                    height: 810,
-                  },
-                ],
-                domainMetadata: {
-                  logo: null,
-                  logoGreyscale: null,
-                  name: 'musicalwriters.com',
+              ],
+              videos: [
+                {
+                  videoId: 1,
+                  src: 'https://www.youtube.com/embed/RH1gH33z1Y4',
+                  width: 560,
+                  type: VideoType.Youtube,
+                  vid: 'RH1gH33z1Y4',
+                  length: 0,
+                  height: 315,
                 },
+                {
+                  videoId: 2,
+                  src: 'https://www.youtube.com/embed/EAYUuspQ6BY',
+                  width: 560,
+                  type: VideoType.Youtube,
+                  vid: 'EAYUuspQ6BY',
+                  length: 0,
+                  height: 315,
+                },
+                {
+                  videoId: 3,
+                  src: 'https://www.youtube.com/embed/VxcT7HImOcg',
+                  width: 560,
+                  type: VideoType.Youtube,
+                  vid: 'VxcT7HImOcg',
+                  length: 0,
+                  height: 315,
+                },
+                {
+                  videoId: 4,
+                  src: 'https://www.youtube.com/embed/DH_XQcEhOPA',
+                  width: 560,
+                  type: VideoType.Youtube,
+                  vid: 'DH_XQcEhOPA',
+                  length: 0,
+                  height: 315,
+                },
+                {
+                  videoId: 5,
+                  src: 'https://www.youtube.com/embed/Fw7SsNNjQGQ',
+                  width: 560,
+                  type: VideoType.Youtube,
+                  vid: 'Fw7SsNNjQGQ',
+                  length: 0,
+                  height: 315,
+                },
+              ],
+              domainMetadata: {
+                logo: null,
+                logoGreyscale: null,
+                name: 'musicalwriters.com',
               },
-              tags: [
-                {
-                  name: 'musical',
-                },
-              ],
             },
-            searchHighlights: {
-              fullText: [
-                'The fictional moment set up in the <em>musical</em> is precarious and precious.',
-                'Other <em>musicals</em> zip through time by using &ldquo;montages&rdquo; or &ldquo;<em>musical</em> sequences&rdquo;&mdash',
-                ';<em>musical</em> numbers that span plot points.',
-                'The 1996 <em>musical</em> Evita includes several montage examples.',
-                'In Hal Prince&rsquo;s original production, it was done as a game of <em>musical</em> chairs.',
-              ],
-              url: [
-                'https://www.musicalwriters.com/writing-a-<em>musical</em>/montages-backstory-memories-and-ticking-clocks/',
-              ],
-              tags: ['<em>musical</em>'],
-              title: [
-                'How <em>Musicals</em> Make the Most of Time: Montage, Backstory, Memories, and Ticking Clocks',
-              ],
-            },
-          },
-          {
-            savedItem: {
-              id: '3457459746',
-              status: SavedItemStatus.Unread,
-              url: 'https://www.musicalwriters.com/writing-a-musical/musicals-make-the-most-of-time-stephen-schwartz/',
-              isFavorite: false,
-              isArchived: false,
-              _updatedAt: 1659049974,
-              _createdAt: 1659049971,
-              favoritedAt: null,
-              archivedAt: null,
-              item: {
-                __typename: 'Item' as const,
-                itemId: '3457459746',
-                resolvedId: '3457459746',
-                wordCount: 2722,
-                topImage: {
-                  url: 'https://www.musicalwriters.com/wp-content/uploads/2021/10/How-Musicals-Make-the-Most-of-Time-part-one.jpg',
-                },
-                title:
-                  'How Musicals Make the Most of Time – A Conversation with Stephen Schwartz',
-                timeToRead: 12,
-                resolvedUrl:
-                  'https://www.musicalwriters.com/writing-a-musical/musicals-make-the-most-of-time-stephen-schwartz/',
-                givenUrl:
-                  'https://www.musicalwriters.com/writing-a-musical/musicals-make-the-most-of-time-stephen-schwartz/',
-                excerpt:
-                  'We enjoy sharing content and resources that we know and love. MusicalWriters.com is an Amazon Associate and earns from qualifying purchases, so if you take action from an Amazon link, we earn a small percentage that helps keep MusicalWriters running.',
-                domain: null,
-                isArticle: true,
-                isIndex: false,
-                hasVideo: Videoness.HasVideos,
-                hasImage: Imageness.HasImages,
-                language: 'en',
-                authors: [
-                  {
-                    id: '108109059',
-                    name: 'Carol de Giere',
-                    url: 'https://www.musicalwriters.com/author/carol-de-giere/',
-                  },
-                ],
-                images: [
-                  {
-                    imageId: 1,
-                    url: 'http://img.youtube.com/vi/7ls478MwuGc/0.jpg',
-                    height: 360,
-                    width: 480,
-                    credit: '',
-                    caption: '',
-                  },
-                ],
-                videos: [
-                  {
-                    videoId: 1,
-                    src: 'https://www.youtube.com/embed/7ls478MwuGc?feature=oembed',
-                    width: 1080,
-                    type: VideoType.Youtube,
-                    vid: '7ls478MwuGc',
-                    length: 0,
-                    height: 810,
-                  },
-                  {
-                    videoId: 2,
-                    src: 'https://www.youtube.com/embed/GQxM5rJ-uiY?start=3&feature=oembed',
-                    width: 1080,
-                    type: VideoType.Youtube,
-                    vid: 'GQxM5rJ-uiY',
-                    length: 0,
-                    height: 608,
-                  },
-                ],
-                domainMetadata: {
-                  logo: null,
-                  logoGreyscale: null,
-                  name: 'musicalwriters.com',
-                },
+            tags: [
+              {
+                name: 'musical',
               },
-              tags: [
+            ],
+          },
+          searchHighlights: {
+            fullText: [
+              'When <em>musical</em> theatre aficionados list favorite opening numbers, they often include Pippin&rsquo;s &ldquo',
+              'Rodgers and Hammerstein <em>musicals</em> tend to start right away.',
+              '&ldquo;Deliver Us&rdquo; (for The Prince of Egypt movie and stage <em>musical</em>) is a good example.',
+              'What setting, tone, who am I following, <em>musical</em> style?',
+              'This eventually drew out some other principles of <em>musical</em> writing.',
+            ],
+            url: [
+              'https://www.musicalwriters.com/writing-a-<em>musical</em>/how-opening-numbers-reveal-a-world-or-launch-the-story',
+            ],
+            tags: ['<em>musical</em>'],
+            title: null,
+          },
+        },
+        {
+          savedItem: {
+            id: '3670270497',
+            status: SavedItemStatus.Unread,
+            url: 'https://www.musicalwriters.com/writing-a-musical/montages-backstory-memories-and-ticking-clocks/',
+            isFavorite: false,
+            isArchived: false,
+            _updatedAt: 1659049987,
+            _createdAt: 1659049981,
+            favoritedAt: null,
+            archivedAt: null,
+            item: {
+              __typename: 'Item' as const,
+              itemId: '3670270497',
+              resolvedId: '3670270497',
+              wordCount: 1843,
+              topImage: {
+                url: 'https://www.musicalwriters.com/wp-content/uploads/2021/10/Montage-Backstory-Memories-and-Ticking-Clocks.jpg',
+              },
+              title:
+                'How Musicals Make the Most of Time: Montage, Backstory, Memories, and Ticking Clocks',
+              timeToRead: 8,
+              resolvedUrl:
+                'https://www.musicalwriters.com/writing-a-musical/montages-backstory-memories-and-ticking-clocks/',
+              givenUrl:
+                'https://www.musicalwriters.com/writing-a-musical/montages-backstory-memories-and-ticking-clocks/',
+              excerpt:
+                'Two young lovers in the musical Children of Eden face each other in front of Noah’s Ark just before the rain begins—one is scheduled to get on the boat and the other is not. The fictional moment set up in the musical is precarious and precious.',
+              domain: null,
+              isArticle: true,
+              isIndex: false,
+              hasVideo: Videoness.HasVideos,
+              hasImage: Imageness.HasImages,
+              language: 'en',
+              authors: [
                 {
-                  name: 'musical',
+                  id: '108109059',
+                  name: 'Carol de Giere',
+                  url: 'https://www.musicalwriters.com/author/carol-de-giere/',
                 },
               ],
+              images: [
+                {
+                  imageId: 1,
+                  url: 'http://img.youtube.com/vi/vo_s6PsVogI/0.jpg',
+                  height: 360,
+                  width: 480,
+                  credit: '',
+                  caption: '',
+                },
+              ],
+              videos: [
+                {
+                  videoId: 1,
+                  src: 'https://www.youtube.com/embed/vo_s6PsVogI?feature=oembed',
+                  width: 1080,
+                  type: VideoType.Youtube,
+                  vid: 'vo_s6PsVogI',
+                  length: 0,
+                  height: 608,
+                },
+                {
+                  videoId: 2,
+                  src: 'https://www.youtube.com/embed/ujsd49oR17g?feature=oembed',
+                  width: 1080,
+                  type: VideoType.Youtube,
+                  vid: 'ujsd49oR17g',
+                  length: 0,
+                  height: 810,
+                },
+                {
+                  videoId: 3,
+                  src: 'https://www.youtube.com/embed/yL9f_L-s8GQ?feature=oembed',
+                  width: 1080,
+                  type: VideoType.Youtube,
+                  vid: 'yL9f_L-s8GQ',
+                  length: 0,
+                  height: 608,
+                },
+                {
+                  videoId: 4,
+                  src: 'https://www.youtube.com/embed/UB-NjDicZmI?feature=oembed',
+                  width: 1080,
+                  type: VideoType.Youtube,
+                  vid: 'UB-NjDicZmI',
+                  length: 0,
+                  height: 810,
+                },
+              ],
+              domainMetadata: {
+                logo: null,
+                logoGreyscale: null,
+                name: 'musicalwriters.com',
+              },
             },
-            searchHighlights: {
-              fullText: [
-                'from an Amazon link, we earn a small percentage that helps keep <em>MusicalWriters</em> running.',
-                'CD: It seems to me that time is a big part of <em>musical</em> writing.',
-                'But <em>musicals</em> also have characters stopping to sing a song, and that expands time.',
-                'Do <em>musical</em> writers keep montages in mind?',
-                'What makes it work is that the <em>musicalization</em> makes it feel like all one song.',
-              ],
-              url: [
-                'https://www.musicalwriters.com/writing-a-<em>musical</em>/<em>musicals</em>-make-the-most-of-time-stephen-schwartz/',
-              ],
-              tags: ['<em>musical</em>'],
-              title: [
-                'How <em>Musicals</em> Make the Most of Time – A Conversation with Stephen Schwartz',
-              ],
-            },
+            tags: [
+              {
+                name: 'musical',
+              },
+            ],
           },
-        ],
-        offset: 0,
-        limit: 3,
-        totalCount: 22,
-      },
+          searchHighlights: {
+            fullText: [
+              'The fictional moment set up in the <em>musical</em> is precarious and precious.',
+              'Other <em>musicals</em> zip through time by using &ldquo;montages&rdquo; or &ldquo;<em>musical</em> sequences&rdquo;&mdash',
+              ';<em>musical</em> numbers that span plot points.',
+              'The 1996 <em>musical</em> Evita includes several montage examples.',
+              'In Hal Prince&rsquo;s original production, it was done as a game of <em>musical</em> chairs.',
+            ],
+            url: [
+              'https://www.musicalwriters.com/writing-a-<em>musical</em>/montages-backstory-memories-and-ticking-clocks/',
+            ],
+            tags: ['<em>musical</em>'],
+            title: [
+              'How <em>Musicals</em> Make the Most of Time: Montage, Backstory, Memories, and Ticking Clocks',
+            ],
+          },
+        },
+        {
+          savedItem: {
+            id: '3457459746',
+            status: SavedItemStatus.Unread,
+            url: 'https://www.musicalwriters.com/writing-a-musical/musicals-make-the-most-of-time-stephen-schwartz/',
+            isFavorite: false,
+            isArchived: false,
+            _updatedAt: 1659049974,
+            _createdAt: 1659049971,
+            favoritedAt: null,
+            archivedAt: null,
+            item: {
+              __typename: 'Item' as const,
+              itemId: '3457459746',
+              resolvedId: '3457459746',
+              wordCount: 2722,
+              topImage: {
+                url: 'https://www.musicalwriters.com/wp-content/uploads/2021/10/How-Musicals-Make-the-Most-of-Time-part-one.jpg',
+              },
+              title:
+                'How Musicals Make the Most of Time – A Conversation with Stephen Schwartz',
+              timeToRead: 12,
+              resolvedUrl:
+                'https://www.musicalwriters.com/writing-a-musical/musicals-make-the-most-of-time-stephen-schwartz/',
+              givenUrl:
+                'https://www.musicalwriters.com/writing-a-musical/musicals-make-the-most-of-time-stephen-schwartz/',
+              excerpt:
+                'We enjoy sharing content and resources that we know and love. MusicalWriters.com is an Amazon Associate and earns from qualifying purchases, so if you take action from an Amazon link, we earn a small percentage that helps keep MusicalWriters running.',
+              domain: null,
+              isArticle: true,
+              isIndex: false,
+              hasVideo: Videoness.HasVideos,
+              hasImage: Imageness.HasImages,
+              language: 'en',
+              authors: [
+                {
+                  id: '108109059',
+                  name: 'Carol de Giere',
+                  url: 'https://www.musicalwriters.com/author/carol-de-giere/',
+                },
+              ],
+              images: [
+                {
+                  imageId: 1,
+                  url: 'http://img.youtube.com/vi/7ls478MwuGc/0.jpg',
+                  height: 360,
+                  width: 480,
+                  credit: '',
+                  caption: '',
+                },
+              ],
+              videos: [
+                {
+                  videoId: 1,
+                  src: 'https://www.youtube.com/embed/7ls478MwuGc?feature=oembed',
+                  width: 1080,
+                  type: VideoType.Youtube,
+                  vid: '7ls478MwuGc',
+                  length: 0,
+                  height: 810,
+                },
+                {
+                  videoId: 2,
+                  src: 'https://www.youtube.com/embed/GQxM5rJ-uiY?start=3&feature=oembed',
+                  width: 1080,
+                  type: VideoType.Youtube,
+                  vid: 'GQxM5rJ-uiY',
+                  length: 0,
+                  height: 608,
+                },
+              ],
+              domainMetadata: {
+                logo: null,
+                logoGreyscale: null,
+                name: 'musicalwriters.com',
+              },
+            },
+            tags: [
+              {
+                name: 'musical',
+              },
+            ],
+          },
+          searchHighlights: {
+            fullText: [
+              'from an Amazon link, we earn a small percentage that helps keep <em>MusicalWriters</em> running.',
+              'CD: It seems to me that time is a big part of <em>musical</em> writing.',
+              'But <em>musicals</em> also have characters stopping to sing a song, and that expands time.',
+              'Do <em>musical</em> writers keep montages in mind?',
+              'What makes it work is that the <em>musicalization</em> makes it feel like all one song.',
+            ],
+            url: [
+              'https://www.musicalwriters.com/writing-a-<em>musical</em>/<em>musicals</em>-make-the-most-of-time-stephen-schwartz/',
+            ],
+            tags: ['<em>musical</em>'],
+            title: [
+              'How <em>Musicals</em> Make the Most of Time – A Conversation with Stephen Schwartz',
+            ],
+          },
+        },
+      ],
+      offset: 0,
+      limit: 3,
+      totalCount: 22,
     },
-  };
+  },
+};
 
-export const premiumSearchGraphSimple: SearchSavedItemsByOffsetSimpleQuery = {
+export const premiumSearchGraphSimple: SearchSavedItemsSimpleQuery = {
   user: {
     searchSavedItemsByOffset: {
       entries: [

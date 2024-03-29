@@ -1,4 +1,4 @@
-import { GetSavedItemsByOffsetSimpleQuery } from '../../generated/graphql/types';
+import { SavedItemsSimpleQuery } from '../../generated/graphql/types';
 import {
   savedItemsCompleteToRest,
   savedItemsCompleteTotalToRest,
@@ -43,7 +43,7 @@ describe('GraphQL <> Rest convesion', () => {
     it('should transform graphql savedItemsByOffset response to rest response', () => {
       // TODO: Remove these function layers and use explicit data to
       // avoid bugs due to expected data referencing fixture directly
-      const graphResponse: GetSavedItemsByOffsetSimpleQuery = {
+      const graphResponse: SavedItemsSimpleQuery = {
         user: {
           savedItemsByOffset: {
             totalCount: 10,
@@ -88,7 +88,7 @@ describe('GraphQL <> Rest convesion', () => {
     });
 
     it('should return defaults for pending items', () => {
-      const graphResponse: GetSavedItemsByOffsetSimpleQuery = {
+      const graphResponse: SavedItemsSimpleQuery = {
         user: {
           savedItemsByOffset: {
             totalCount: 10,

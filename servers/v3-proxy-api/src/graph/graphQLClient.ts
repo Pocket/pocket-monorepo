@@ -1,12 +1,12 @@
 import { GraphQLClient } from 'graphql-request';
 
 import {
-  GetSavedItemsByOffsetSimpleQuery,
-  GetSavedItemsByOffsetSimpleQueryVariables,
-  GetSavedItemsByOffsetSimpleDocument,
-  GetSavedItemsByOffsetCompleteDocument,
-  GetSavedItemsByOffsetCompleteQuery,
-  GetSavedItemsByOffsetCompleteQueryVariables,
+  SavedItemsSimpleQuery,
+  SavedItemsSimpleQueryVariables,
+  SavedItemsSimpleDocument,
+  SavedItemsCompleteDocument,
+  SavedItemsCompleteQuery,
+  SavedItemsCompleteQueryVariables,
   AddSavedItemBeforeTagMutationVariables,
   AddSavedItemCompleteMutationVariables,
   AddSavedItemCompleteMutation,
@@ -16,12 +16,12 @@ import {
   AddTagsToSavedItemMutation,
   AddTagsToSavedItemMutationVariables,
   AddTagsToSavedItemDocument,
-  SearchSavedItemsByOffsetSimpleQueryVariables,
-  SearchSavedItemsByOffsetSimpleQuery,
-  SearchSavedItemsByOffsetSimpleDocument,
-  SearchSavedItemsByOffsetCompleteQueryVariables,
-  SearchSavedItemsByOffsetCompleteQuery,
-  SearchSavedItemsByOffsetCompleteDocument,
+  SearchSavedItemsSimpleQueryVariables,
+  SearchSavedItemsSimpleQuery,
+  SearchSavedItemsSimpleDocument,
+  SearchSavedItemsCompleteQueryVariables,
+  SearchSavedItemsCompleteQuery,
+  SearchSavedItemsCompleteDocument,
 } from '../generated/graphql/types';
 import config from '../config';
 import * as Sentry from '@sentry/node';
@@ -81,14 +81,14 @@ export async function callSavedItemsByOffsetSimple(
   accessToken: string,
   consumerKey: string,
   headers: any,
-  variables: GetSavedItemsByOffsetSimpleQueryVariables,
-): Promise<GetSavedItemsByOffsetSimpleQuery> {
+  variables: SavedItemsSimpleQueryVariables,
+): Promise<SavedItemsSimpleQuery> {
   Sentry.addBreadcrumb({ message: 'invoking callSavedItemsByOffsetSimple' });
   const client = getClient(accessToken, consumerKey, headers);
   return client.request<
-    GetSavedItemsByOffsetSimpleQuery,
-    GetSavedItemsByOffsetSimpleQueryVariables
-  >(GetSavedItemsByOffsetSimpleDocument, variables);
+    SavedItemsSimpleQuery,
+    SavedItemsSimpleQueryVariables
+  >(SavedItemsSimpleDocument, variables);
 }
 
 /**
@@ -98,14 +98,14 @@ export async function callSavedItemsByOffsetComplete(
   accessToken: string,
   consumerKey: string,
   headers: any,
-  variables: GetSavedItemsByOffsetCompleteQueryVariables,
-): Promise<GetSavedItemsByOffsetCompleteQuery> {
+  variables: SavedItemsCompleteQueryVariables,
+): Promise<SavedItemsCompleteQuery> {
   Sentry.addBreadcrumb({ message: 'invoking callSavedItemsByOffsetComplete' });
   const client = getClient(accessToken, consumerKey, headers);
   return client.request<
-    GetSavedItemsByOffsetCompleteQuery,
-    GetSavedItemsByOffsetCompleteQueryVariables
-  >(GetSavedItemsByOffsetCompleteDocument, variables);
+    SavedItemsCompleteQuery,
+    SavedItemsCompleteQueryVariables
+  >(SavedItemsCompleteDocument, variables);
 }
 
 /**
@@ -120,14 +120,14 @@ export async function callSearchByOffsetSimple(
   accessToken: string,
   consumerKey: string,
   headers: any,
-  variables: SearchSavedItemsByOffsetSimpleQueryVariables,
-): Promise<SearchSavedItemsByOffsetSimpleQuery> {
+  variables: SearchSavedItemsSimpleQueryVariables,
+): Promise<SearchSavedItemsSimpleQuery> {
   Sentry.addBreadcrumb({ message: 'invoking callSearchByOffsetSimple' });
   const client = getClient(accessToken, consumerKey, headers);
   return client.request<
-    SearchSavedItemsByOffsetSimpleQuery,
-    SearchSavedItemsByOffsetSimpleQueryVariables
-  >(SearchSavedItemsByOffsetSimpleDocument, variables);
+    SearchSavedItemsSimpleQuery,
+    SearchSavedItemsSimpleQueryVariables
+  >(SearchSavedItemsSimpleDocument, variables);
 }
 
 /**
@@ -137,14 +137,14 @@ export async function callSearchByOffsetComplete(
   accessToken: string,
   consumerKey: string,
   headers: any,
-  variables: SearchSavedItemsByOffsetCompleteQueryVariables,
-): Promise<SearchSavedItemsByOffsetCompleteQuery> {
+  variables: SearchSavedItemsCompleteQueryVariables,
+): Promise<SearchSavedItemsCompleteQuery> {
   Sentry.addBreadcrumb({ message: 'invoking callSearchByOffsetComplete' });
   const client = getClient(accessToken, consumerKey, headers);
   return client.request<
-    SearchSavedItemsByOffsetCompleteQuery,
-    SearchSavedItemsByOffsetCompleteQueryVariables
-  >(SearchSavedItemsByOffsetCompleteDocument, variables);
+    SearchSavedItemsCompleteQuery,
+    SearchSavedItemsCompleteQueryVariables
+  >(SearchSavedItemsCompleteDocument, variables);
 }
 
 /**

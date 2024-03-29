@@ -3,10 +3,10 @@
  */
 
 import {
-  GetSavedItemsByOffsetCompleteQuery,
-  GetSavedItemsByOffsetSimpleQuery,
-  SearchSavedItemsByOffsetCompleteQuery,
-  SearchSavedItemsByOffsetSimpleQuery,
+  SavedItemsCompleteQuery,
+  SavedItemsSimpleQuery,
+  SearchSavedItemsCompleteQuery,
+  SearchSavedItemsSimpleQuery,
 } from '../../generated/graphql/types';
 import {
   ListItemObject,
@@ -33,10 +33,10 @@ import {
 import * as tx from '../shared/transforms';
 
 type SavedItemSimple =
-  GetSavedItemsByOffsetSimpleQuery['user']['savedItemsByOffset']['entries'][number];
+  SavedItemsSimpleQuery['user']['savedItemsByOffset']['entries'][number];
 
 type SavedItemComplete =
-  GetSavedItemsByOffsetCompleteQuery['user']['savedItemsByOffset']['entries'][number];
+  SavedItemsCompleteQuery['user']['savedItemsByOffset']['entries'][number];
 
 /**
  * The default and static set of fields that are in all v3/get responses
@@ -59,9 +59,7 @@ export const staticV3ShareResponseDefaults: GetSharesResponse = {
 };
 
 function getStatusResponse(
-  response:
-    | GetSavedItemsByOffsetCompleteQuery
-    | GetSavedItemsByOffsetSimpleQuery,
+  response: SavedItemsCompleteQuery | SavedItemsSimpleQuery,
 ): GetTopLevelDefaultResponse {
   if (response.user.savedItemsByOffset === undefined) {
     return {
@@ -98,9 +96,7 @@ function getStatusResponse(
 }
 
 function searchStatusResponse(
-  response:
-    | SearchSavedItemsByOffsetCompleteQuery
-    | SearchSavedItemsByOffsetSimpleQuery,
+  response: SearchSavedItemsCompleteQuery | SearchSavedItemsSimpleQuery,
 ): GetTopLevelDefaultResponse {
   if (response.user.searchSavedItemsByOffset === undefined) {
     return {
@@ -146,7 +142,7 @@ function searchStatusResponse(
  * matched result.
  */
 function HighlightsTransformer(
-  highlights: SearchSavedItemsByOffsetSimpleQuery['user']['searchSavedItemsByOffset']['entries'][number]['searchHighlights'],
+  highlights: SearchSavedItemsSimpleQuery['user']['searchSavedItemsByOffset']['entries'][number]['searchHighlights'],
 ): SearchHighlights {
   if (highlights == null) {
     return { highlights: null };
@@ -166,7 +162,7 @@ function HighlightsTransformer(
  * REST response, detailType="simple" fields only.
  */
 export function SearchResultTransformerSimple(
-  searchResult: SearchSavedItemsByOffsetSimpleQuery['user']['searchSavedItemsByOffset']['entries'][number],
+  searchResult: SearchSavedItemsSimpleQuery['user']['searchSavedItemsByOffset']['entries'][number],
   index: number,
 ): ListItemWithSearchHighlights {
   return {
@@ -179,7 +175,7 @@ export function SearchResultTransformerSimple(
  * REST response, for detailType="complete" fields.
  */
 export function SearchResultTransformerComplete(
-  searchResult: SearchSavedItemsByOffsetCompleteQuery['user']['searchSavedItemsByOffset']['entries'][number],
+  searchResult: SearchSavedItemsCompleteQuery['user']['searchSavedItemsByOffset']['entries'][number],
   index: number,
 ): ListItemCompleteWithSearchHighlights {
   return {
@@ -313,9 +309,7 @@ function listToMap<T>(input: T[], key: string): { [key: string]: T } {
 }
 
 function searchMetaTransformer(
-  response:
-    | SearchSavedItemsByOffsetSimpleQuery
-    | SearchSavedItemsByOffsetCompleteQuery,
+  response: SearchSavedItemsSimpleQuery | SearchSavedItemsCompleteQuery,
 ): SearchMeta {
   const data = response.user.searchSavedItemsByOffset;
   return {
@@ -334,7 +328,7 @@ function searchMetaTransformer(
  * @param response
  */
 export function savedItemsSimpleToRest(
-  response: GetSavedItemsByOffsetSimpleQuery,
+  response: SavedItemsSimpleQuery,
 ): GetResponseSimple {
   return {
     ...staticV3ResponseDefaults,
@@ -352,7 +346,7 @@ export function savedItemsSimpleToRest(
  * Convert GraphQL response for detailType=complete to v3 API format
  */
 export function savedItemsCompleteToRest(
-  response: GetSavedItemsByOffsetCompleteQuery,
+  response: SavedItemsCompleteQuery,
 ): GetResponseComplete {
   return {
     ...staticV3ResponseDefaults,
@@ -374,7 +368,7 @@ export function savedItemsCompleteToRest(
  */
 export function savedItemsFetchToRest(
   passthrough: PassthroughResponse,
-  response: GetSavedItemsByOffsetCompleteQuery,
+  response: SavedItemsCompleteQuery,
 ): FetchResponse {
   return {
     ...savedItemsCompleteTotalToRest(response),
@@ -388,7 +382,7 @@ export function savedItemsFetchToRest(
  */
 export function savedItemsFetchSharesToRest(
   passthrough: PassthroughResponse,
-  response: GetSavedItemsByOffsetCompleteQuery,
+  response: SavedItemsCompleteQuery,
 ): FetchResponse & GetSharesResponse {
   return {
     ...staticV3ShareResponseDefaults,
@@ -402,7 +396,7 @@ export function savedItemsFetchSharesToRest(
  * adding the top-level 'total' field.
  */
 export function savedItemsCompleteTotalToRest(
-  response: GetSavedItemsByOffsetCompleteQuery,
+  response: SavedItemsCompleteQuery,
 ): GetResponseCompleteTotal {
   return {
     total: response.user.savedItemsByOffset.totalCount.toString(),
@@ -415,7 +409,7 @@ export function savedItemsCompleteTotalToRest(
  * adding the top-level 'total' field.
  */
 export function savedItemsSimpleTotalToRest(
-  response: GetSavedItemsByOffsetSimpleQuery,
+  response: SavedItemsSimpleQuery,
 ): GetResponseSimpleTotal {
   return {
     total: response.user.savedItemsByOffset.totalCount.toString(),
@@ -428,7 +422,7 @@ export function savedItemsSimpleTotalToRest(
  * format.
  */
 export function searchSavedItemSimpleToRest(
-  response: SearchSavedItemsByOffsetSimpleQuery,
+  response: SearchSavedItemsSimpleQuery,
 ): GetSearchResponseSimple {
   const list =
     response.user.searchSavedItemsByOffset.entries.length === 0
@@ -454,7 +448,7 @@ export function searchSavedItemSimpleToRest(
  * format.
  */
 export function searchSavedItemCompleteToRest(
-  response: SearchSavedItemsByOffsetCompleteQuery,
+  response: SearchSavedItemsCompleteQuery,
 ): GetSearchResponseComplete {
   const list =
     response.user.searchSavedItemsByOffset.entries.length === 0
@@ -480,7 +474,7 @@ export function searchSavedItemCompleteToRest(
  * format, adding top-level total field.
  */
 export function searchSavedItemSimpleTotalToRest(
-  response: SearchSavedItemsByOffsetSimpleQuery,
+  response: SearchSavedItemsSimpleQuery,
 ): GetSearchResponseSimpleTotal {
   return {
     ...searchSavedItemSimpleToRest(response),
@@ -493,7 +487,7 @@ export function searchSavedItemSimpleTotalToRest(
  * format, adding top-level total field.
  */
 export function searchSavedItemCompleteTotalToRest(
-  response: SearchSavedItemsByOffsetCompleteQuery,
+  response: SearchSavedItemsCompleteQuery,
 ): GetSearchResponseCompleteTotal {
   return {
     ...searchSavedItemCompleteToRest(response),
