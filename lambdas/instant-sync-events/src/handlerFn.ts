@@ -66,7 +66,7 @@ export const instantSyncHandler = async (
  * @param records
  * @returns
  */
-const filterUserIds = (records: SQSRecord[]): string[] => {
+export const filterUserIds = (records: SQSRecord[]): string[] => {
   const userIds = records
     .map(
       (record: SQSRecord) =>

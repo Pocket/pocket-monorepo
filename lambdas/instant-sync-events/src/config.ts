@@ -4,4 +4,6 @@ export const config = {
     release: process.env.GIT_SHA || '',
     environment: process.env.NODE_ENV || 'development',
   },
+  dbSecretName:
+    process.env.DB_SECRET_NAME || '/InstantSyncEvents/Test/READITLA_DB',
 };

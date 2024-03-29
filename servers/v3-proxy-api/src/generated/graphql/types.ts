@@ -1006,6 +1006,11 @@ export type Mutation = {
    * Note: requires `transfersub` to be set in the header.
    */
   migrateAppleUser: Scalars['ID']['output'];
+  /**
+   * 'Re-add' a SavedItem by id. Unarchives and undeletes the SavedItem
+   * as applicable, and refreshes the "createdAt" timestamp.
+   */
+  reAddById?: Maybe<SavedItem>;
   /** Refresh an Item's article content. */
   refreshItemArticle: Item;
   /**
@@ -1294,6 +1299,13 @@ export type MutationExpireUserWebSessionByFxaIdArgs = {
 export type MutationMigrateAppleUserArgs = {
   email: Scalars['String']['input'];
   fxaId: Scalars['ID']['input'];
+};
+
+
+/** Default Mutation Type */
+export type MutationReAddByIdArgs = {
+  id: Scalars['ID']['input'];
+  timestamp: Scalars['ISOString']['input'];
 };
 
 
