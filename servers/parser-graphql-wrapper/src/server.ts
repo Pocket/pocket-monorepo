@@ -98,10 +98,6 @@ export async function startServer(port: number): Promise<{
   // Simple sentry middleware for context attribution
   app.use(sentryPocketMiddleware);
 
-  // ContextManager is currently stateless, just provide singleton rather
-  // than factory function.
-  const contextManager = new ContextManager();
-
   app.use(
     url,
     cors<cors.CorsRequest>(),
@@ -111,7 +107,7 @@ export async function startServer(port: number): Promise<{
     // Logging Setup, Express app-specific
     setMorgan(serverLogger),
     expressMiddleware(server, {
-      context: async () => contextManager,
+      context: async () => await ContextManager.initialize(),
     }),
   );
 

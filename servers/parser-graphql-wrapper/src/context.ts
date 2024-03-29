@@ -1,8 +1,9 @@
 import DataLoader from 'dataloader';
 import { ContextWithDataSources } from './datasources/legacyDataSourcesPlugin';
 import { Item } from './model';
-import { itemIdLoader, itemUrlLoader } from './dataLoaders/itemLoader';
+import { itemIdLoader, itemUrlLoader, ShortUrlLoader } from './dataLoaders';
 import {
+  BatchAddShareUrlInput,
   ItemResolverRepository,
   SharedUrlsResolverRepository,
   getItemResolverRepository,
@@ -15,31 +16,44 @@ import {
  */
 export interface IContext extends ContextWithDataSources {
   dataLoaders: {
-    itemIdLoader: DataLoader<string[], Promise<Item[]>>;
-    itemUrlLoader: DataLoader<string[], Promise<Item[]>>;
+    itemIdLoader: DataLoader<string, Item>;
+    itemUrlLoader: DataLoader<string, Item>;
+    shortUrlLoader: DataLoader<BatchAddShareUrlInput, string>;
   };
   repositories: {
-    itemResolver: Promise<ItemResolverRepository>;
-    sharedUrlsResolver: Promise<SharedUrlsResolverRepository>;
+    itemResolver: ItemResolverRepository;
+    sharedUrlsResolver: SharedUrlsResolverRepository;
   };
 }
 
 /**
- * ContextManager currently has no parameters and is stateless,
- * it may be passed around directly as a single object.
+ * Initialize a new ContextManager instance to create fresh
+ * dataloaders on a per-request basis.
+ * Connections to ItemResolverRepository and SharedUrlsResolverRepository
+ * will be reused for subsequent initializations after the first.
  */
 export class ContextManager implements IContext {
   public readonly dataLoaders: IContext['dataLoaders'];
   public readonly repositories: IContext['repositories'];
 
-  constructor() {
-    this.dataLoaders = {
+  private constructor(
+    dataloaders: IContext['dataLoaders'],
+    repositories: IContext['repositories'],
+  ) {
+    this.dataLoaders = dataloaders;
+    this.repositories = repositories;
+  }
+  static async initialize(): Promise<ContextManager> {
+    const dataloaders = {
       itemIdLoader: itemIdLoader,
       itemUrlLoader: itemUrlLoader,
+      shortUrlLoader: ShortUrlLoader(),
     };
-    this.repositories = {
-      itemResolver: getItemResolverRepository(),
-      sharedUrlsResolver: getSharedUrlsResolverRepo(),
-    };
+    const itemResolver = await getItemResolverRepository();
+    const sharedUrlsResolver = await getSharedUrlsResolverRepo();
+    return new ContextManager(dataloaders, {
+      itemResolver,
+      sharedUrlsResolver,
+    });
   }
 }

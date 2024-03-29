@@ -1,5 +1,8 @@
 import config from '../config';
-import { SharedUrlsResolverRepository } from '../database/mysql';
+import {
+  BatchAddShareUrlInput,
+  SharedUrlsResolverRepository,
+} from '../database/mysql';
 
 /**
  * generates a record in share_url if record doesn't exist.
@@ -33,6 +36,19 @@ export async function getShortUrl(
   const shortCode = getShortCodeForId(id);
   const shortUrl = generateShortUrl(givenUrl, shortCode);
   return shortUrl;
+}
+
+export async function batchGetShortUrl(
+  input: readonly BatchAddShareUrlInput[],
+  sharedUrlRepo: SharedUrlsResolverRepository,
+): Promise<string[]> {
+  const ids = await shareUrl.batchGetOrCreateShareUrls(input, sharedUrlRepo);
+  const shortCodes = ids.map((id) => getShortCodeForId(id));
+  const givenUrls = input.map(({ givenUrl }) => givenUrl);
+  const shortUrls = shortCodes.map((code, ix) =>
+    generateShortUrl(givenUrls[ix], code),
+  );
+  return shortUrls;
 }
 
 /**
@@ -108,6 +124,56 @@ export const shareUrl = {
       id = record['shareUrlId'];
     }
     return id;
+  },
+  /**
+   * Batching function for retrieving shareUrlIds. If the record does not exist,
+   * one will be created. Retrievals and inserts are each done in a single batch,
+   * then compiled to ensure the input shape matches the output shape.
+   * @param input list of records containing metadata for fetching/creating shareUrlId
+   * @param repo SharedUrlsResolverRespository
+   * @returns list of shareUrlIds corresponding to `input`
+   */
+  batchGetOrCreateShareUrls: async (
+    input: readonly BatchAddShareUrlInput[],
+    repo: SharedUrlsResolverRepository,
+  ): Promise<number[]> => {
+    const itemIds = input.map(({ itemId }) => itemId);
+    // Get existing shortUrls and compile them into a mapping
+    // of { itemId: shortUrlId }
+    const resultMapping = (await repo.batchGetShareUrlsById(itemIds)).reduce(
+      (mapping, record) => {
+        mapping[record.itemId] = record.shareUrlId;
+        return mapping;
+      },
+      {} as { [itemId: number]: number },
+    );
+    // Compute the missing itemIds so that we can batch generate them
+    const returnedIds = new Set(
+      Object.keys(resultMapping).map((_) => parseInt(_)),
+    );
+    const missingIds = Array.from(new Set(itemIds)).filter(
+      (elem) => !returnedIds.has(elem),
+    );
+    if (missingIds) {
+      // Build a mapping to look up the associated records
+      // in the input for shortUrls we need to generate
+      const inputMap = input.reduce(
+        (mapping, insert) => {
+          mapping[insert.itemId] = insert;
+          return mapping;
+        },
+        {} as { [itemId: number]: BatchAddShareUrlInput },
+      );
+      const missingRecords = missingIds.map((id) => inputMap[id]);
+      const generated = await repo.batchAddToShareUrls(missingRecords);
+      // Update the result map with the additional data
+      missingIds.forEach((addedId, index) => {
+        resultMapping[addedId] = generated[index];
+      });
+    }
+    // Ensure that the output is the same shape as the input (e.g. in case
+    // of partially missing data, duplicated keys, etc.)
+    return input.map(({ itemId }) => resultMapping[itemId]);
   },
 };
 

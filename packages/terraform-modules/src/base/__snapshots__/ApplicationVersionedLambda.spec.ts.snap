@@ -170,6 +170,534 @@ exports[`ApplicationVersionedLambda renders a lambda with a node v14 runtime 1`]
 }"
 `;
 
+exports[`ApplicationVersionedLambda renders a lambda with extra layers 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-versioned-lambda_lambda-default-file_E2490368": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-versioned-lambda_assume-policy-document_54E2E6E3": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-versioned-lambda_execution-policy-document_BA37CD4D": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    }
+  },
+  "output": {
+    "test-versioned-lambda_lambda_arn_EE780827": {
+      "description": "Lambda Function ARN",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.arn}"
+    },
+    "test-versioned-lambda_lambda_function_name_8E4C0AF1": {
+      "description": "Lambda Function Name",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.function_name}"
+    },
+    "test-versioned-lambda_lambda_version_arn_0407D06E": {
+      "description": "Lambda Version ARN",
+      "value": "\${aws_lambda_alias.test-versioned-lambda_alias_60AF9CE1.arn}"
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "test-versioned-lambda_log-group_CB8A67E7": {
+        "depends_on": [
+          "aws_lambda_function.test-versioned-lambda_D818669D"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-versioned-lambda_D818669D.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_iam_policy": {
+      "test-versioned-lambda_execution-policy_A934214F": {
+        "name": "Test-Lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-versioned-lambda_execution-policy-document_BA37CD4D.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-versioned-lambda_execution-role_068103E3": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-versioned-lambda_assume-policy-document_54E2E6E3.json}",
+        "name": "Test-Lambda-ExecutionRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-versioned-lambda_execution-role-policy-attachment_30E5BCA4": {
+        "depends_on": [
+          "aws_iam_role.test-versioned-lambda_execution-role_068103E3",
+          "aws_iam_policy.test-versioned-lambda_execution-policy_A934214F"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-versioned-lambda_execution-policy_A934214F.arn}",
+        "role": "\${aws_iam_role.test-versioned-lambda_execution-role_068103E3.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-versioned-lambda_alias_60AF9CE1": {
+        "depends_on": [
+          "aws_lambda_function.test-versioned-lambda_D818669D"
+        ],
+        "function_name": "\${aws_lambda_function.test-versioned-lambda_D818669D.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-versioned-lambda_D818669D.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_function": {
+      "test-versioned-lambda_D818669D": {
+        "filename": "\${data.archive_file.test-versioned-lambda_lambda-default-file_E2490368.output_path}",
+        "function_name": "Test-Lambda-Function",
+        "handler": "index.handler",
+        "layers": [
+          "thebest-layer"
+        ],
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-versioned-lambda_execution-role_068103E3.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-versioned-lambda_lambda-default-file_E2490368.output_base64sha256}",
+        "timeout": 5
+      }
+    },
+    "aws_s3_bucket": {
+      "test-versioned-lambda_code-bucket_C658EE92": {
+        "bucket": "test-bucket",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-versioned-lambda_code-bucket-acl_3407F3AC": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19": {
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-versioned-lambda_code-bucket-public-access-block_9662548B": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationVersionedLambda renders a lambda with the secrets layer 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-versioned-lambda_lambda-default-file_E2490368": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-versioned-lambda_assume-policy-document_54E2E6E3": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-versioned-lambda_execution-policy-document_BA37CD4D": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    },
+    "aws_region": {
+      "test-versioned-lambda_lambda-region_129D850E": {
+      }
+    }
+  },
+  "output": {
+    "test-versioned-lambda_lambda_arn_EE780827": {
+      "description": "Lambda Function ARN",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.arn}"
+    },
+    "test-versioned-lambda_lambda_function_name_8E4C0AF1": {
+      "description": "Lambda Function Name",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.function_name}"
+    },
+    "test-versioned-lambda_lambda_version_arn_0407D06E": {
+      "description": "Lambda Version ARN",
+      "value": "\${aws_lambda_alias.test-versioned-lambda_alias_60AF9CE1.arn}"
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "test-versioned-lambda_log-group_CB8A67E7": {
+        "depends_on": [
+          "aws_lambda_function.test-versioned-lambda_D818669D"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-versioned-lambda_D818669D.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_iam_policy": {
+      "test-versioned-lambda_execution-policy_A934214F": {
+        "name": "Test-Lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-versioned-lambda_execution-policy-document_BA37CD4D.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-versioned-lambda_execution-role_068103E3": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-versioned-lambda_assume-policy-document_54E2E6E3.json}",
+        "name": "Test-Lambda-ExecutionRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-versioned-lambda_execution-role-policy-attachment_30E5BCA4": {
+        "depends_on": [
+          "aws_iam_role.test-versioned-lambda_execution-role_068103E3",
+          "aws_iam_policy.test-versioned-lambda_execution-policy_A934214F"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-versioned-lambda_execution-policy_A934214F.arn}",
+        "role": "\${aws_iam_role.test-versioned-lambda_execution-role_068103E3.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-versioned-lambda_alias_60AF9CE1": {
+        "depends_on": [
+          "aws_lambda_function.test-versioned-lambda_D818669D"
+        ],
+        "function_name": "\${aws_lambda_function.test-versioned-lambda_D818669D.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-versioned-lambda_D818669D.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_function": {
+      "test-versioned-lambda_D818669D": {
+        "filename": "\${data.archive_file.test-versioned-lambda_lambda-default-file_E2490368.output_path}",
+        "function_name": "Test-Lambda-Function",
+        "handler": "index.handler",
+        "layers": [
+          "\${{\\"us-east-2\\" = \\"arn:aws:lambda:us-east-2:590474943231:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"us-east-1\\" = \\"arn:aws:lambda:us-east-1:177933569100:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"us-west-1\\" = \\"arn:aws:lambda:us-west-1:997803712105:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"us-west-2\\" = \\"arn:aws:lambda:us-west-2:345057560386:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"af-south-1\\" = \\"arn:aws:lambda:af-south-1:317013901791:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"ap-east-1\\" = \\"arn:aws:lambda:ap-east-1:768336418462:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"ap-south-2\\" = \\"arn:aws:lambda:ap-south-2:070087711984:layer:AWS-Parameters-and-Secrets-Lambda-Extension:8\\", \\"ap-southeast-3\\" = \\"arn:aws:lambda:ap-southeast-3:490737872127:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"ap-southeast-4\\" = \\"arn:aws:lambda:ap-southeast-4:090732460067:layer:AWS-Parameters-and-Secrets-Lambda-Extension:1\\", \\"ap-south-1\\" = \\"arn:aws:lambda:ap-south-1:176022468876:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"ap-northeast-3\\" = \\"arn:aws:lambda:ap-northeast-3:576959938190:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"ap-northeast-2\\" = \\"arn:aws:lambda:ap-northeast-2:738900069198:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"ap-southeast-1\\" = \\"arn:aws:lambda:ap-southeast-1:044395824272:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"ap-southeast-2\\" = \\"arn:aws:lambda:ap-southeast-2:665172237481:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"ap-northeast-1\\" = \\"arn:aws:lambda:ap-northeast-1:133490724326:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"ca-central-1\\" = \\"arn:aws:lambda:ca-central-1:200266452380:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"ca-west-1\\" = \\"arn:aws:lambda:ca-west-1:243964427225:layer:AWS-Parameters-and-Secrets-Lambda-Extension:1\\", \\"cn-north-1\\" = \\"arn:aws-cn:lambda:cn-north-1:287114880934:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"cn-northwest-1\\" = \\"arn:aws-cn:lambda:cn-northwest-1:287310001119:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"eu-central-1\\" = \\"arn:aws:lambda:eu-central-1:187925254637:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"eu-west-1\\" = \\"arn:aws:lambda:eu-west-1:015030872274:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"eu-west-2\\" = \\"arn:aws:lambda:eu-west-2:133256977650:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"eu-south-1\\" = \\"arn:aws:lambda:eu-south-1:325218067255:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"eu-west-3\\" = \\"arn:aws:lambda:eu-west-3:780235371811:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"eu-south-2\\" = \\"arn:aws:lambda:eu-south-2:524103009944:layer:AWS-Parameters-and-Secrets-Lambda-Extension:8\\", \\"eu-north-1\\" = \\"arn:aws:lambda:eu-north-1:427196147048:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"il-central-1\\" = \\"arn:aws:lambda:il-central-1:148806536434:layer:AWS-Parameters-and-Secrets-Lambda-Extension:1\\", \\"eu-central-2\\" = \\"arn:aws:lambda:eu-central-2:772501565639:layer:AWS-Parameters-and-Secrets-Lambda-Extension:8\\", \\"me-south-1\\" = \\"arn:aws:lambda:me-south-1:832021897121:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"me-central-1\\" = \\"arn:aws:lambda:me-central-1:858974508948:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"sa-east-1\\" = \\"arn:aws:lambda:sa-east-1:933737806257:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"us-gov-east-1\\" = \\"arn:aws-us-gov:lambda:us-gov-east-1:129776340158:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"us-gov-west-1\\" = \\"arn:aws-us-gov:lambda:us-gov-west-1:127562683043:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\"}[data.aws_region.test-versioned-lambda_lambda-region_129D850E.name]}"
+        ],
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-versioned-lambda_execution-role_068103E3.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-versioned-lambda_lambda-default-file_E2490368.output_base64sha256}",
+        "timeout": 5
+      }
+    },
+    "aws_s3_bucket": {
+      "test-versioned-lambda_code-bucket_C658EE92": {
+        "bucket": "test-bucket",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-versioned-lambda_code-bucket-acl_3407F3AC": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19": {
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-versioned-lambda_code-bucket-public-access-block_9662548B": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationVersionedLambda renders a lambda with the secrets layer and extra layers 1`] = `
+"{
+  "data": {
+    "archive_file": {
+      "test-versioned-lambda_lambda-default-file_E2490368": {
+        "output_path": "index.py.zip",
+        "source": [
+          {
+            "content": "import json\\ndef handler(event, context):\\n\\t print(event)\\n\\t return {'statusCode': 200, 'headers': {'dance': 'party'}, 'body': json.dumps({'electric': 'boogaloo'}), 'isBase64Encoded': False}",
+            "filename": "index.py"
+          }
+        ],
+        "type": "zip"
+      }
+    },
+    "aws_iam_policy_document": {
+      "test-versioned-lambda_assume-policy-document_54E2E6E3": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "lambda.amazonaws.com",
+                  "edgelambda.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      },
+      "test-versioned-lambda_execution-policy-document_BA37CD4D": {
+        "statement": [
+          {
+            "actions": [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents",
+              "logs:DescribeLogStreams"
+            ],
+            "effect": "Allow",
+            "resources": [
+              "arn:aws:logs:*:*:*"
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    },
+    "aws_region": {
+      "test-versioned-lambda_lambda-region_129D850E": {
+      }
+    }
+  },
+  "output": {
+    "test-versioned-lambda_lambda_arn_EE780827": {
+      "description": "Lambda Function ARN",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.arn}"
+    },
+    "test-versioned-lambda_lambda_function_name_8E4C0AF1": {
+      "description": "Lambda Function Name",
+      "value": "\${aws_lambda_function.test-versioned-lambda_D818669D.function_name}"
+    },
+    "test-versioned-lambda_lambda_version_arn_0407D06E": {
+      "description": "Lambda Version ARN",
+      "value": "\${aws_lambda_alias.test-versioned-lambda_alias_60AF9CE1.arn}"
+    }
+  },
+  "resource": {
+    "aws_cloudwatch_log_group": {
+      "test-versioned-lambda_log-group_CB8A67E7": {
+        "depends_on": [
+          "aws_lambda_function.test-versioned-lambda_D818669D"
+        ],
+        "name": "/aws/lambda/\${aws_lambda_function.test-versioned-lambda_D818669D.function_name}",
+        "retention_in_days": 14
+      }
+    },
+    "aws_iam_policy": {
+      "test-versioned-lambda_execution-policy_A934214F": {
+        "name": "Test-Lambda-ExecutionRolePolicy",
+        "policy": "\${data.aws_iam_policy_document.test-versioned-lambda_execution-policy-document_BA37CD4D.json}"
+      }
+    },
+    "aws_iam_role": {
+      "test-versioned-lambda_execution-role_068103E3": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.test-versioned-lambda_assume-policy-document_54E2E6E3.json}",
+        "name": "Test-Lambda-ExecutionRole"
+      }
+    },
+    "aws_iam_role_policy_attachment": {
+      "test-versioned-lambda_execution-role-policy-attachment_30E5BCA4": {
+        "depends_on": [
+          "aws_iam_role.test-versioned-lambda_execution-role_068103E3",
+          "aws_iam_policy.test-versioned-lambda_execution-policy_A934214F"
+        ],
+        "policy_arn": "\${aws_iam_policy.test-versioned-lambda_execution-policy_A934214F.arn}",
+        "role": "\${aws_iam_role.test-versioned-lambda_execution-role_068103E3.name}"
+      }
+    },
+    "aws_lambda_alias": {
+      "test-versioned-lambda_alias_60AF9CE1": {
+        "depends_on": [
+          "aws_lambda_function.test-versioned-lambda_D818669D"
+        ],
+        "function_name": "\${aws_lambda_function.test-versioned-lambda_D818669D.function_name}",
+        "function_version": "\${element(split(\\":\\", aws_lambda_function.test-versioned-lambda_D818669D.qualified_arn), 7)}",
+        "lifecycle": {
+          "ignore_changes": [
+            "function_version"
+          ]
+        },
+        "name": "DEPLOYED"
+      }
+    },
+    "aws_lambda_function": {
+      "test-versioned-lambda_D818669D": {
+        "filename": "\${data.archive_file.test-versioned-lambda_lambda-default-file_E2490368.output_path}",
+        "function_name": "Test-Lambda-Function",
+        "handler": "index.handler",
+        "layers": [
+          "thebest-layer",
+          "\${{\\"us-east-2\\" = \\"arn:aws:lambda:us-east-2:590474943231:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"us-east-1\\" = \\"arn:aws:lambda:us-east-1:177933569100:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"us-west-1\\" = \\"arn:aws:lambda:us-west-1:997803712105:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"us-west-2\\" = \\"arn:aws:lambda:us-west-2:345057560386:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"af-south-1\\" = \\"arn:aws:lambda:af-south-1:317013901791:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"ap-east-1\\" = \\"arn:aws:lambda:ap-east-1:768336418462:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"ap-south-2\\" = \\"arn:aws:lambda:ap-south-2:070087711984:layer:AWS-Parameters-and-Secrets-Lambda-Extension:8\\", \\"ap-southeast-3\\" = \\"arn:aws:lambda:ap-southeast-3:490737872127:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"ap-southeast-4\\" = \\"arn:aws:lambda:ap-southeast-4:090732460067:layer:AWS-Parameters-and-Secrets-Lambda-Extension:1\\", \\"ap-south-1\\" = \\"arn:aws:lambda:ap-south-1:176022468876:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"ap-northeast-3\\" = \\"arn:aws:lambda:ap-northeast-3:576959938190:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"ap-northeast-2\\" = \\"arn:aws:lambda:ap-northeast-2:738900069198:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"ap-southeast-1\\" = \\"arn:aws:lambda:ap-southeast-1:044395824272:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"ap-southeast-2\\" = \\"arn:aws:lambda:ap-southeast-2:665172237481:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"ap-northeast-1\\" = \\"arn:aws:lambda:ap-northeast-1:133490724326:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"ca-central-1\\" = \\"arn:aws:lambda:ca-central-1:200266452380:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"ca-west-1\\" = \\"arn:aws:lambda:ca-west-1:243964427225:layer:AWS-Parameters-and-Secrets-Lambda-Extension:1\\", \\"cn-north-1\\" = \\"arn:aws-cn:lambda:cn-north-1:287114880934:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"cn-northwest-1\\" = \\"arn:aws-cn:lambda:cn-northwest-1:287310001119:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"eu-central-1\\" = \\"arn:aws:lambda:eu-central-1:187925254637:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"eu-west-1\\" = \\"arn:aws:lambda:eu-west-1:015030872274:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"eu-west-2\\" = \\"arn:aws:lambda:eu-west-2:133256977650:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"eu-south-1\\" = \\"arn:aws:lambda:eu-south-1:325218067255:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"eu-west-3\\" = \\"arn:aws:lambda:eu-west-3:780235371811:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"eu-south-2\\" = \\"arn:aws:lambda:eu-south-2:524103009944:layer:AWS-Parameters-and-Secrets-Lambda-Extension:8\\", \\"eu-north-1\\" = \\"arn:aws:lambda:eu-north-1:427196147048:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"il-central-1\\" = \\"arn:aws:lambda:il-central-1:148806536434:layer:AWS-Parameters-and-Secrets-Lambda-Extension:1\\", \\"eu-central-2\\" = \\"arn:aws:lambda:eu-central-2:772501565639:layer:AWS-Parameters-and-Secrets-Lambda-Extension:8\\", \\"me-south-1\\" = \\"arn:aws:lambda:me-south-1:832021897121:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"me-central-1\\" = \\"arn:aws:lambda:me-central-1:858974508948:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"sa-east-1\\" = \\"arn:aws:lambda:sa-east-1:933737806257:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"us-gov-east-1\\" = \\"arn:aws-us-gov:lambda:us-gov-east-1:129776340158:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\", \\"us-gov-west-1\\" = \\"arn:aws-us-gov:lambda:us-gov-west-1:127562683043:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11\\"}[data.aws_region.test-versioned-lambda_lambda-region_129D850E.name]}"
+        ],
+        "lifecycle": {
+          "ignore_changes": [
+            "filename",
+            "source_code_hash"
+          ]
+        },
+        "memory_size": 128,
+        "publish": true,
+        "reserved_concurrent_executions": -1,
+        "role": "\${aws_iam_role.test-versioned-lambda_execution-role_068103E3.arn}",
+        "runtime": "python3.8",
+        "source_code_hash": "\${data.archive_file.test-versioned-lambda_lambda-default-file_E2490368.output_base64sha256}",
+        "timeout": 5
+      }
+    },
+    "aws_s3_bucket": {
+      "test-versioned-lambda_code-bucket_C658EE92": {
+        "bucket": "test-bucket",
+        "force_destroy": true
+      }
+    },
+    "aws_s3_bucket_acl": {
+      "test-versioned-lambda_code-bucket-acl_3407F3AC": {
+        "acl": "private",
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "depends_on": [
+          "aws_s3_bucket_ownership_controls.test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19"
+        ]
+      }
+    },
+    "aws_s3_bucket_ownership_controls": {
+      "test-versioned-lambda_code-bucket-ownership-controls_7D2C8F19": {
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}",
+        "rule": {
+          "object_ownership": "BucketOwnerPreferred"
+        }
+      }
+    },
+    "aws_s3_bucket_public_access_block": {
+      "test-versioned-lambda_code-bucket-public-access-block_9662548B": {
+        "block_public_acls": true,
+        "block_public_policy": true,
+        "bucket": "\${aws_s3_bucket.test-versioned-lambda_code-bucket_C658EE92.id}"
+      }
+    }
+  }
+}"
+`;
+
 exports[`ApplicationVersionedLambda renders a versioned lambda 1`] = `
 "{
   "data": {

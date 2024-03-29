@@ -327,7 +327,7 @@ export const batchGetItems = async (
  * Batch get items by ids
  * @param itemIds
  */
-export const batchGetItemsByIds: any = async (
+export const batchGetItemsByIds = async (
   itemIds: string[],
 ): Promise<Item[]> => {
   return await batchGetItems(
@@ -386,7 +386,7 @@ export const clear = (options: {
  * Create a data loader to batch requests
  * @param batchLoadFn
  */
-const createLoader = (batchLoadFn: DataLoader.BatchLoadFn<any, any>) => {
+const createLoader = <T, K>(batchLoadFn: DataLoader.BatchLoadFn<T, K>) => {
   return new DataLoader(batchLoadFn, {
     cache: false,
   });
