@@ -6,6 +6,12 @@ import { ShareUrls } from '../entities/ShareUrls';
 let connection: DataSource;
 let sharedUrlsConnection: DataSource;
 
+export type BatchAddShareUrlInput = {
+  itemId: number;
+  resolvedId: number;
+  givenUrl: string;
+};
+
 /**
  * Creates a connection that we can use for typeorm
  * This should only be used below, but we export it so tests can access it
@@ -91,6 +97,7 @@ export type SharedUrlsResolverRepository = Repository<ShareUrls> & {
     resolvedId: number,
     givenUrl: string,
   ): Promise<number>;
+  batchAddToShareUrls(input: BatchAddShareUrlInput[]): Promise<number[]>;
   getShareUrls(itemId: number): Promise<ShareUrls>;
   batchGetShareUrlsById(itemIds: number[]): Promise<ShareUrls[]>;
   fetchByShareId(shareId: number): Promise<ShareUrls>;
@@ -121,6 +128,27 @@ export const getSharedUrlsResolverRepo = async () => {
         .getRepository(ShareUrls)
         .insert(obj);
       return insertResult.identifiers[0].shareUrlId;
+    },
+
+    async batchAddToShareUrls(input: BatchAddShareUrlInput[]) {
+      const records: Omit<ShareUrls, 'shareUrlId'>[] = input.map(
+        ({ itemId, resolvedId, givenUrl }) => ({
+          userId: config.shortUrl.userId,
+          itemId: itemId,
+          resolvedId: resolvedId,
+          givenUrl: givenUrl,
+          apiId: config.shortUrl.apiId,
+          serviceId: config.shortUrl.serviceId,
+          timeGenerated: new Date().getTime() / 1000,
+          timeShared: new Date().getTime() / 1000,
+        }),
+      );
+      const insertResult = await this.createQueryBuilder()
+        .insert()
+        .into(ShareUrls)
+        .values(records)
+        .execute();
+      return insertResult.identifiers.map((row) => row.shareUrlId);
     },
 
     /**

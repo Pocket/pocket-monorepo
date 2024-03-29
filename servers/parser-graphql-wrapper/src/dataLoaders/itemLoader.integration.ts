@@ -74,8 +74,10 @@ describe('itemLoader - integration', () => {
   });
 
   it('should batch resolve item ids from the parser', async () => {
-    const batchItems = await itemLoader.batchGetItemsByIds([item.itemId]);
-    expect(batchItems[0].itemId).toEqual(item.itemId);
+    const batchItems = await itemLoader.batchGetItemsByIds([
+      item.itemId.toString(),
+    ]);
+    expect(batchItems[0].itemId).toEqual(item.itemId.toString());
   });
 
   it('should batch resolve item urls', async () => {

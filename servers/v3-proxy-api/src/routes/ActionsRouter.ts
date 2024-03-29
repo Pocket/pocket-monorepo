@@ -42,6 +42,9 @@ import {
   FavoriteSavedItemByUrlDocument,
   FavoriteSavedItemByUrlMutation,
   FavoriteSavedItemByUrlMutationVariables,
+  ReAddByIdDocument,
+  ReAddByIdMutation,
+  ReAddByIdMutationVariables,
   RemoveTagsDocument,
   RemoveTagsMutation,
   RemoveTagsMutationVariables,
@@ -62,6 +65,7 @@ import { serverLogger } from '@pocket-tools/ts-logger';
 import { customErrorHeaders } from '../middleware';
 import { Request } from 'express';
 import { epochSecondsToISOString } from '../graph/shared/utils';
+import { AddItemTransformer } from '../graph/add/toRest';
 
 type SendActionError = {
   message: string;
@@ -168,15 +172,27 @@ export class ActionsRouter {
   public async readd(
     input: Omit<ItemAction, 'action'> & { action: 'readd' },
   ): Promise<AddResponse | PendingAddResponse> {
-    const addVars: {
-      input: SavedItemUpsertInput;
-    } = {
-      input: {
-        url: input.url,
-        timestamp: input.time,
-      },
-    };
-    return await processV3Add(this.client, addVars);
+    if (input.itemId != null) {
+      const variables: ReAddByIdMutationVariables = {
+        id: input.itemId.toString(),
+        timestamp: epochSecondsToISOString(input.time),
+      };
+      const result = await this.client.request<
+        ReAddByIdMutation,
+        ReAddByIdMutationVariables
+      >(ReAddByIdDocument, variables);
+      return AddItemTransformer(result['reAddById']);
+    } else {
+      const addVars: {
+        input: SavedItemUpsertInput;
+      } = {
+        input: {
+          url: input.url,
+          timestamp: input.time,
+        },
+      };
+      return await processV3Add(this.client, addVars);
+    }
   }
   /**
    * Process the 'archive' action from a batch of actions sent to /v3/send.
