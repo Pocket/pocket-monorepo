@@ -21,7 +21,7 @@ export const mockGraphGetComplete: SavedItemsCompleteQuery = {
       totalCount: 10,
       entries: [
         {
-          id: '11231399273',
+          id: '2111834840',
           status: SavedItemStatus.Unread,
           url: 'https://www.scientificamerican.com/article/brains-are-not-required-when-it-comes-to-thinking-and-solving-problems-simple-cells-can-do-it/',
           isFavorite: false,
@@ -34,7 +34,7 @@ export const mockGraphGetComplete: SavedItemsCompleteQuery = {
             'Brains Are Not Required When It Comes to Thinking and Solving Problems—Simple Cells Can Do It',
           item: {
             __typename: 'Item' as const,
-            itemId: '11231399273',
+            itemId: '2111834840',
             resolvedId: '11231399273',
             wordCount: 4410,
             topImage: {
@@ -159,7 +159,7 @@ export const mockGraphGetSimple: SavedItemsSimpleQuery = {
       totalCount: 10,
       entries: [
         {
-          id: '11231399273',
+          id: '2111834840',
           status: SavedItemStatus.Unread,
           url: 'https://www.scientificamerican.com/article/brains-are-not-required-when-it-comes-to-thinking-and-solving-problems-simple-cells-can-do-it/',
           isFavorite: false,
@@ -172,7 +172,7 @@ export const mockGraphGetSimple: SavedItemsSimpleQuery = {
             'Brains Are Not Required When It Comes to Thinking and Solving Problems—Simple Cells Can Do It',
           item: {
             __typename: 'Item' as const,
-            itemId: '11231399273',
+            itemId: '2111834840',
             resolvedId: '11231399273',
             wordCount: 4410,
             topImage: {
@@ -238,8 +238,8 @@ export const expectedGetComplete: GetResponseComplete = {
   maxActions: 30,
   cachetype: 'db',
   list: {
-    '11231399273': {
-      item_id: '11231399273',
+    '2111834840': {
+      item_id: '2111834840',
       resolved_id: '11231399273',
       given_url:
         'https://www.scientificamerican.com/article/brains-are-not-required-when-it-comes-to-thinking-and-solving-problems-simple-cells-can-do-it/',
@@ -388,8 +388,8 @@ export const expectedGetSimple: GetResponseSimple = {
   maxActions: 30,
   cachetype: 'db',
   list: {
-    '11231399273': {
-      item_id: '11231399273',
+    '2111834840': {
+      item_id: '2111834840',
       resolved_id: '11231399273',
       given_url:
         'https://www.scientificamerican.com/article/brains-are-not-required-when-it-comes-to-thinking-and-solving-problems-simple-cells-can-do-it/',
@@ -485,8 +485,8 @@ export const expectedGetSimpleTitle: GetResponseSimple = {
   // First one, title falls back to resolved_title
   // Second one, have a title
   list: {
-    '11231399273': {
-      ...expectedGetSimple.list['11231399273'],
+    '2111834840': {
+      ...expectedGetSimple.list['2111834840'],
       given_title:
         'Brains Are Not Required When It Comes to Thinking and Solving Problems—Simple Cells Can Do It',
     },
