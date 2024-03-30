@@ -6,6 +6,7 @@ import {
   SavedItemsCompleteQuery,
   SavedItemsSimpleQuery,
   SearchSavedItemsCompleteQuery,
+  SearchSavedItemsSimpleAnnotationsQuery,
   SearchSavedItemsSimpleQuery,
 } from '../../generated/graphql/types';
 import {
@@ -29,6 +30,7 @@ import {
   GetStaticResponse,
   GetSharesResponse,
   GetTopLevelDefaultResponse,
+  Annotations,
 } from '../types';
 import * as tx from '../shared/transforms';
 
@@ -154,6 +156,33 @@ function HighlightsTransformer(
       title: highlights.title?.[0] ?? null,
       url: highlights.url?.[0] ?? null,
     },
+  };
+}
+
+/**
+ * Extract annotations (highlights) from the graph search response.
+ */
+function AnnotationsTransformer(
+  savedItem: SearchSavedItemsSimpleAnnotationsQuery['user']['searchSavedItemsByOffset']['entries'][number]['savedItem'],
+): Annotations | undefined {
+  if (
+    savedItem.annotations == null ||
+    savedItem.annotations.highlights == null ||
+    savedItem.annotations.highlights.length === 0
+  ) {
+    return;
+  }
+  return {
+    annotations: savedItem.annotations.highlights.map((highlight) => ({
+      annotation_id: highlight.id,
+      item_id: savedItem.id,
+      quote: highlight.quote,
+      patch: highlight.patch,
+      version: highlight.version.toString(),
+      // TODO: Ensure Android can consume this -- /v3 returns central time
+      // timestamp without timezone (e.g. "2024-03-29 13:54:32")
+      created_at: new Date(highlight._createdAt * 1000).toISOString(),
+    })),
   };
 }
 
@@ -329,13 +358,23 @@ function searchMetaTransformer(
  */
 export function savedItemsSimpleToRest(
   response: SavedItemsSimpleQuery,
+  options?: { withAnnotations?: boolean },
 ): GetResponseSimple {
   return {
     ...staticV3ResponseDefaults,
     ...getStatusResponse(response),
     list: listToMap(
       response.user.savedItemsByOffset.entries
-        .map((savedItem, index) => ListItemTransformerSimple(savedItem, index))
+        .map((savedItem, index) => {
+          if (options?.withAnnotations) {
+            return {
+              ...ListItemTransformerSimple(savedItem, index),
+              ...AnnotationsTransformer(savedItem),
+            };
+          } else {
+            return ListItemTransformerSimple(savedItem, index);
+          }
+        })
         .filter((s) => s !== null),
       'item_id',
     ),
@@ -347,15 +386,23 @@ export function savedItemsSimpleToRest(
  */
 export function savedItemsCompleteToRest(
   response: SavedItemsCompleteQuery,
+  options?: { withAnnotations?: boolean },
 ): GetResponseComplete {
   return {
     ...staticV3ResponseDefaults,
     ...getStatusResponse(response),
     list: listToMap(
       response.user.savedItemsByOffset.entries
-        .map((savedItem, index) =>
-          ListItemTransformerComplete(savedItem, index),
-        )
+        .map((savedItem, index) => {
+          if (options?.withAnnotations) {
+            return {
+              ...ListItemTransformerComplete(savedItem, index),
+              ...AnnotationsTransformer(savedItem),
+            };
+          } else {
+            return ListItemTransformerComplete(savedItem, index);
+          }
+        })
         .filter((s) => s !== null),
       'item_id',
     ),
@@ -397,10 +444,11 @@ export function savedItemsFetchSharesToRest(
  */
 export function savedItemsCompleteTotalToRest(
   response: SavedItemsCompleteQuery,
+  options?: { withAnnotations?: boolean },
 ): GetResponseCompleteTotal {
   return {
     total: response.user.savedItemsByOffset.totalCount.toString(),
-    ...savedItemsCompleteToRest(response),
+    ...savedItemsCompleteToRest(response, options),
   };
 }
 
@@ -410,10 +458,11 @@ export function savedItemsCompleteTotalToRest(
  */
 export function savedItemsSimpleTotalToRest(
   response: SavedItemsSimpleQuery,
+  options?: { withAnnotations?: boolean },
 ): GetResponseSimpleTotal {
   return {
     total: response.user.savedItemsByOffset.totalCount.toString(),
-    ...savedItemsSimpleToRest(response),
+    ...savedItemsSimpleToRest(response, options),
   };
 }
 
@@ -423,15 +472,23 @@ export function savedItemsSimpleTotalToRest(
  */
 export function searchSavedItemSimpleToRest(
   response: SearchSavedItemsSimpleQuery,
+  options?: { withAnnotations?: boolean },
 ): GetSearchResponseSimple {
   const list =
     response.user.searchSavedItemsByOffset.entries.length === 0
       ? ([] as never[])
       : listToMap(
           response.user.searchSavedItemsByOffset.entries
-            .map((searchResult, index) =>
-              SearchResultTransformerSimple(searchResult, index),
-            )
+            .map((searchResult, index) => {
+              if (options?.withAnnotations) {
+                return {
+                  ...SearchResultTransformerSimple(searchResult, index),
+                  ...(AnnotationsTransformer(searchResult.savedItem) ?? {}),
+                };
+              } else {
+                return SearchResultTransformerSimple(searchResult, index);
+              }
+            })
             .filter((s) => s !== null),
           'item_id',
         );
@@ -449,15 +506,23 @@ export function searchSavedItemSimpleToRest(
  */
 export function searchSavedItemCompleteToRest(
   response: SearchSavedItemsCompleteQuery,
+  options?: { withAnnotations?: boolean },
 ): GetSearchResponseComplete {
   const list =
     response.user.searchSavedItemsByOffset.entries.length === 0
       ? ([] as never[])
       : listToMap(
           response.user.searchSavedItemsByOffset.entries
-            .map((searchResult, index) =>
-              SearchResultTransformerComplete(searchResult, index),
-            )
+            .map((searchResult, index) => {
+              if (options?.withAnnotations) {
+                return {
+                  ...SearchResultTransformerComplete(searchResult, index),
+                  ...(AnnotationsTransformer(searchResult.savedItem) ?? {}),
+                };
+              } else {
+                return SearchResultTransformerComplete(searchResult, index);
+              }
+            })
             .filter((s) => s !== null),
           'item_id',
         );
@@ -475,9 +540,10 @@ export function searchSavedItemCompleteToRest(
  */
 export function searchSavedItemSimpleTotalToRest(
   response: SearchSavedItemsSimpleQuery,
+  options?: { withAnnotations?: boolean },
 ): GetSearchResponseSimpleTotal {
   return {
-    ...searchSavedItemSimpleToRest(response),
+    ...searchSavedItemSimpleToRest(response, options),
     total: response.user.searchSavedItemsByOffset.totalCount.toString(),
   };
 }
@@ -488,9 +554,10 @@ export function searchSavedItemSimpleTotalToRest(
  */
 export function searchSavedItemCompleteTotalToRest(
   response: SearchSavedItemsCompleteQuery,
+  options?: { withAnnotations?: boolean },
 ): GetSearchResponseCompleteTotal {
   return {
-    ...searchSavedItemCompleteToRest(response),
+    ...searchSavedItemCompleteToRest(response, options),
     total: response.user.searchSavedItemsByOffset.totalCount.toString(),
   };
 }

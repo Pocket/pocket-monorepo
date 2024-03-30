@@ -22,6 +22,12 @@ import {
   SearchSavedItemsCompleteQueryVariables,
   SearchSavedItemsCompleteQuery,
   SearchSavedItemsCompleteDocument,
+  SearchSavedItemsSimpleAnnotationsQuery,
+  SearchSavedItemsSimpleAnnotationsQueryVariables,
+  SearchSavedItemsSimpleAnnotationsDocument,
+  SearchSavedItemsCompleteAnnotationsQuery,
+  SearchSavedItemsCompleteAnnotationsQueryVariables,
+  SearchSavedItemsCompleteAnnotationsDocument,
 } from '../generated/graphql/types';
 import config from '../config';
 import * as Sentry from '@sentry/node';
@@ -82,13 +88,16 @@ export async function callSavedItemsByOffsetSimple(
   consumerKey: string,
   headers: any,
   variables: SavedItemsSimpleQueryVariables,
+  options?: { withAnnotations?: boolean },
 ): Promise<SavedItemsSimpleQuery> {
   Sentry.addBreadcrumb({ message: 'invoking callSavedItemsByOffsetSimple' });
   const client = getClient(accessToken, consumerKey, headers);
-  return client.request<
-    SavedItemsSimpleQuery,
-    SavedItemsSimpleQueryVariables
-  >(SavedItemsSimpleDocument, variables);
+  if (options?.withAnnotations) {
+  }
+  return client.request<SavedItemsSimpleQuery, SavedItemsSimpleQueryVariables>(
+    SavedItemsSimpleDocument,
+    variables,
+  );
 }
 
 /**
@@ -99,6 +108,7 @@ export async function callSavedItemsByOffsetComplete(
   consumerKey: string,
   headers: any,
   variables: SavedItemsCompleteQueryVariables,
+  options?: { withAnnotations?: boolean },
 ): Promise<SavedItemsCompleteQuery> {
   Sentry.addBreadcrumb({ message: 'invoking callSavedItemsByOffsetComplete' });
   const client = getClient(accessToken, consumerKey, headers);
@@ -109,21 +119,33 @@ export async function callSavedItemsByOffsetComplete(
 }
 
 /**
- * function call to search saves (detailType=simple)
+ * function call to search saves (detailType=simple), optionaly
+ * including annotations (highlights) fields.
  *
  * @param accessToken accessToken of the user
  * @param consumerKey consumerKey associated with the user
  * @param headers any headers received by proxy is just pass through to web graphQL proxy.
  * @param variables input variables required for the query
+ * @param options additional options
+ *    withAnnotations (default=false) - include annotations (highlights) fields
  */
 export async function callSearchByOffsetSimple(
   accessToken: string,
   consumerKey: string,
   headers: any,
   variables: SearchSavedItemsSimpleQueryVariables,
-): Promise<SearchSavedItemsSimpleQuery> {
+  options?: { withAnnotations?: boolean },
+): Promise<
+  SearchSavedItemsSimpleQuery | SearchSavedItemsSimpleAnnotationsQuery
+> {
   Sentry.addBreadcrumb({ message: 'invoking callSearchByOffsetSimple' });
   const client = getClient(accessToken, consumerKey, headers);
+  if (options?.withAnnotations) {
+    return client.request<
+      SearchSavedItemsSimpleAnnotationsQuery,
+      SearchSavedItemsSimpleAnnotationsQueryVariables
+    >(SearchSavedItemsSimpleAnnotationsDocument, variables);
+  }
   return client.request<
     SearchSavedItemsSimpleQuery,
     SearchSavedItemsSimpleQueryVariables
@@ -131,16 +153,26 @@ export async function callSearchByOffsetSimple(
 }
 
 /**
- * Call API to search saves (detailType=complete)
+ * Call API to search saves (detailType=complete), optionally
+ * including annotations (highlights) fields.
  */
 export async function callSearchByOffsetComplete(
   accessToken: string,
   consumerKey: string,
   headers: any,
   variables: SearchSavedItemsCompleteQueryVariables,
-): Promise<SearchSavedItemsCompleteQuery> {
+  options?: { withAnnotations?: boolean },
+): Promise<
+  SearchSavedItemsCompleteQuery | SearchSavedItemsCompleteAnnotationsQuery
+> {
   Sentry.addBreadcrumb({ message: 'invoking callSearchByOffsetComplete' });
   const client = getClient(accessToken, consumerKey, headers);
+  if (options?.withAnnotations) {
+    return client.request<
+      SearchSavedItemsCompleteAnnotationsQuery,
+      SearchSavedItemsCompleteAnnotationsQueryVariables
+    >(SearchSavedItemsCompleteAnnotationsDocument, variables);
+  }
   return client.request<
     SearchSavedItemsCompleteQuery,
     SearchSavedItemsCompleteQueryVariables

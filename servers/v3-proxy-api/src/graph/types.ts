@@ -47,6 +47,19 @@ export type SearchHighlights = {
   } | null;
 };
 
+export type Annotation = {
+  annotation_id: string;
+  item_id: string;
+  quote: string;
+  patch: string;
+  version: string;
+  created_at: string;
+};
+
+export type Annotations = {
+  annotations?: Annotation[];
+};
+
 export type ListItemWithSearchHighlights = ListItemObject & SearchHighlights;
 export type ListItemCompleteWithSearchHighlights = ListItemObjectComplete &
   SearchHighlights;
@@ -58,6 +71,24 @@ export type GetSearchResponseSimple = Omit<GetResponseSimple, 'list'> &
 export type GetSearchResponseComplete = Omit<GetResponseComplete, 'list'> &
   SearchMeta & {
     list: { [key: string]: ListItemCompleteWithSearchHighlights } | never[];
+  };
+export type GetSearchResponseSimpleAnnotations = Omit<
+  GetResponseSimple,
+  'list'
+> &
+  SearchMeta & {
+    list:
+      | { [key: string]: ListItemWithSearchHighlights & Annotations }
+      | never[];
+  };
+export type GetSearchResponseCompleteAnnotations = Omit<
+  GetResponseComplete,
+  'list'
+> &
+  SearchMeta & {
+    list:
+      | { [key: string]: ListItemCompleteWithSearchHighlights & Annotations }
+      | never[];
   };
 export type GetSearchResponseSimpleTotal = GetSearchResponseSimple & {
   total: string;

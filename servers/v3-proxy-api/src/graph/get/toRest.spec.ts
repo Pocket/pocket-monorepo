@@ -36,6 +36,18 @@ import {
   mockGraphGetSimpleTitle,
   expectedGetSimpleTitle,
   expectedSharesFetch,
+  freeTierSearchGraphSimpleAnnotations,
+  expectedFreeTierResponseSimpleAnnotations,
+  freeTierSearchGraphCompleteAnnotations,
+  expectedFreeTierResponseCompleteAnnotations,
+  expectedPremiumTierResponseCompleteAnnotations,
+  expectedPremiumTierResponseSimpleAnnotations,
+  premiumSearchGraphSimpleAnnotations,
+  premiumSearchGraphCompleteAnnotations,
+  mockGraphGetCompleteAnnotations,
+  expectedGetCompleteAnnotations,
+  expectedGetSimpleAnnotations,
+  mockGraphGetSimpleAnnotations,
 } from '../../test/fixtures';
 
 describe('GraphQL <> Rest convesion', () => {
@@ -159,6 +171,12 @@ describe('GraphQL <> Rest convesion', () => {
       const res = savedItemsSimpleToRest(mockGraphGetSimpleTitle);
       expect(res).toEqual(expectedGetSimpleTitle);
     });
+    it('works for adding annotations field', () => {
+      const res = savedItemsSimpleToRest(mockGraphGetSimpleAnnotations, {
+        withAnnotations: true,
+      });
+      expect(res).toEqual(expectedGetSimpleAnnotations);
+    });
   });
   describe('convertSavedItemsComplete', () => {
     it('should transform graphql savedItemsByOffset response to rest response', () => {
@@ -168,6 +186,12 @@ describe('GraphQL <> Rest convesion', () => {
     it('works for adding the "total" field', () => {
       const res = savedItemsCompleteTotalToRest(mockGraphGetComplete);
       expect(res).toEqual(expectedGetCompleteTotal);
+    });
+    it('works for adding annotations field', () => {
+      const res = savedItemsCompleteToRest(mockGraphGetCompleteAnnotations, {
+        withAnnotations: true,
+      });
+      expect(res).toEqual(expectedGetCompleteAnnotations);
     });
   });
   describe('convertSearchSavedItemSimple', () => {
@@ -186,6 +210,38 @@ describe('GraphQL <> Rest convesion', () => {
     it('works for search response with results (premium tier, complete)', () => {
       const res = searchSavedItemCompleteToRest(premiumSearchGraphComplete);
       expect(res).toEqual(expectedPremiumTierResponseComplete);
+    });
+    it('works for search response with annotations (free tier, simple)', () => {
+      const res = searchSavedItemSimpleToRest(
+        freeTierSearchGraphSimpleAnnotations,
+        { withAnnotations: true },
+      );
+      expect(res).toEqual(expectedFreeTierResponseSimpleAnnotations);
+    });
+    it('works for search response with annotations (free tier, complete)', () => {
+      const res = searchSavedItemCompleteToRest(
+        freeTierSearchGraphCompleteAnnotations,
+        { withAnnotations: true },
+      );
+      expect(res).toEqual(expectedFreeTierResponseCompleteAnnotations);
+    });
+    it('works for search response with annotations (premium tier, simple)', () => {
+      const res = searchSavedItemSimpleToRest(
+        premiumSearchGraphSimpleAnnotations,
+        {
+          withAnnotations: true,
+        },
+      );
+      expect(res).toEqual(expectedPremiumTierResponseSimpleAnnotations);
+    });
+    it('works for search response with annotations (premium tier, complete)', () => {
+      const res = searchSavedItemCompleteToRest(
+        premiumSearchGraphCompleteAnnotations,
+        {
+          withAnnotations: true,
+        },
+      );
+      expect(res).toEqual(expectedPremiumTierResponseCompleteAnnotations);
     });
     it('works with no results in response', () => {
       const resSimple = searchSavedItemSimpleToRest(graphSearchNoResults);

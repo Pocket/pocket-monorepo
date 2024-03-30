@@ -496,3 +496,123 @@ export const expectedGetSimpleTitle: GetResponseSimple = {
     },
   },
 };
+
+const expectedAnnotations = (itemId: string) => ({
+  annotations: [
+    {
+      annotation_id: 'd4d4fcef-bce1-4676-b291-f8678d08d234',
+      item_id: itemId,
+      quote:
+        'Creators of any type of fiction are often advised to include some kind of metaphorical “ticking clock” in their stories— a plot device that puts a time limit on when the protagonist(s) must complete a task or resolve a conflict. The consequences of success or failure provide motivation for the characters.',
+      patch:
+        '@@ -8485,16 +8485,36 @@\n tum is.%0A\n+%3Cpkt_tag_annotation%3E\n Creators\n@@ -8811,16 +8811,37 @@\n racters.\n+%3C/pkt_tag_annotation%3E\n %0AThe tic\n',
+      version: '2',
+      created_at: '2022-07-28T23:13:01.000Z',
+    },
+    {
+      annotation_id: 'eed69c26-aa18-458b-8753-775bab3e676a',
+      item_id: itemId,
+      quote:
+        'Other musicals zip through time by using “montages” or “musical sequences”—musical numbers that span plot points. Disparate moments are compressed in individual songs either to create greater impact or to help with exposition.\n\n',
+      patch:
+        '@@ -2898,16 +2898,36 @@\n  there.%0A\n+%3Cpkt_tag_annotation%3E\n Other mu\n@@ -3145,16 +3145,37 @@\n sition.%0A\n+%3C/pkt_tag_annotation%3E\n The 1996\n',
+      version: '2',
+      created_at: '2022-07-28T23:13:01.000Z',
+    },
+  ],
+});
+
+const graphAnnotations = {
+  highlights: [
+    {
+      id: 'd4d4fcef-bce1-4676-b291-f8678d08d234',
+      quote:
+        'Creators of any type of fiction are often advised to include some kind of metaphorical “ticking clock” in their stories— a plot device that puts a time limit on when the protagonist(s) must complete a task or resolve a conflict. The consequences of success or failure provide motivation for the characters.',
+      patch:
+        '@@ -8485,16 +8485,36 @@\n tum is.%0A\n+%3Cpkt_tag_annotation%3E\n Creators\n@@ -8811,16 +8811,37 @@\n racters.\n+%3C/pkt_tag_annotation%3E\n %0AThe tic\n',
+      version: 2,
+      _createdAt: 1659049981,
+    },
+    {
+      id: 'eed69c26-aa18-458b-8753-775bab3e676a',
+      quote:
+        'Other musicals zip through time by using “montages” or “musical sequences”—musical numbers that span plot points. Disparate moments are compressed in individual songs either to create greater impact or to help with exposition.\n\n',
+      patch:
+        '@@ -2898,16 +2898,36 @@\n  there.%0A\n+%3Cpkt_tag_annotation%3E\n Other mu\n@@ -3145,16 +3145,37 @@\n sition.%0A\n+%3C/pkt_tag_annotation%3E\n The 1996\n',
+      version: 2,
+      _createdAt: 1659049981,
+    },
+  ],
+};
+
+export const mockGraphGetSimpleAnnotations = {
+  user: {
+    savedItemsByOffset: {
+      totalCount: 10,
+      entries: [
+        {
+          ...mockGraphGetSimple.user.savedItemsByOffset.entries[0],
+          annotations: graphAnnotations,
+        },
+        {
+          ...mockGraphGetSimple.user.savedItemsByOffset.entries[1],
+        },
+      ],
+    },
+  },
+};
+
+export const expectedGetSimpleAnnotations = {
+  complete: 1,
+  status: 1,
+  error: null,
+  since: 1706732550,
+  maxActions: 30,
+  cachetype: 'db',
+  // First one, title falls back to resolved_title
+  // Second one, have a title
+  list: {
+    '11231399273': {
+      ...expectedGetSimple.list['11231399273'],
+      ...expectedAnnotations('11231399273'),
+    },
+    '2344395952': {
+      ...expectedGetSimple.list['2344395952'],
+    },
+  },
+};
+
+export const mockGraphGetCompleteAnnotations = {
+  user: {
+    savedItemsByOffset: {
+      totalCount: 10,
+      entries: [
+        {
+          ...mockGraphGetComplete.user.savedItemsByOffset.entries[0],
+          annotations: graphAnnotations,
+        },
+        {
+          ...mockGraphGetComplete.user.savedItemsByOffset.entries[1],
+        },
+      ],
+    },
+  },
+};
+
+export const expectedGetCompleteAnnotations = {
+  complete: 1,
+  status: 1,
+  error: null,
+  since: 1706732550,
+  maxActions: 30,
+  cachetype: 'db',
+  list: {
+    '11231399273': {
+      ...expectedGetComplete.list['11231399273'],
+      ...expectedAnnotations('11231399273'),
+    },
+    '2344395952': {
+      ...expectedGetComplete.list['2344395952'],
+    },
+  },
+};

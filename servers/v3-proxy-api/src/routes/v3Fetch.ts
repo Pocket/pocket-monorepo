@@ -79,6 +79,7 @@ export async function processV3call(
     count: data.count,
     offset: data.offset,
     sort: 'newest',
+    annotations: false,
   };
 
   // Otherwise call SavedItems list api

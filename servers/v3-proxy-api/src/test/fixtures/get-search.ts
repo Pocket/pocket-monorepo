@@ -1,7 +1,9 @@
 import {
   Imageness,
   SavedItemStatus,
+  SearchSavedItemsCompleteAnnotationsQuery,
   SearchSavedItemsCompleteQuery,
+  SearchSavedItemsSimpleAnnotationsQuery,
   SearchSavedItemsSimpleQuery,
   VideoType,
   Videoness,
@@ -1386,3 +1388,189 @@ export const premiumSearchGraphSimple: SearchSavedItemsSimpleQuery = {
     },
   },
 };
+
+export const premiumSearchGraphSimpleAnnotations: SearchSavedItemsSimpleAnnotationsQuery =
+  addAnnotations(premiumSearchGraphSimple, 2);
+export const premiumSearchGraphCompleteAnnotations: SearchSavedItemsCompleteAnnotationsQuery =
+  addAnnotations(premiumSearchGraphComplete, 2);
+export const freeTierSearchGraphSimpleAnnotations: SearchSavedItemsSimpleAnnotationsQuery =
+  addAnnotations(freeTierSearchGraphSimple, 0);
+export const freeTierSearchGraphCompleteAnnotations: SearchSavedItemsCompleteAnnotationsQuery =
+  addAnnotations(freeTierSearchGraphComplete, 0);
+
+const expectedAnnotations = (itemId: string) => ({
+  annotations: [
+    {
+      annotation_id: 'd4d4fcef-bce1-4676-b291-f8678d08d234',
+      item_id: itemId,
+      quote:
+        'Creators of any type of fiction are often advised to include some kind of metaphorical “ticking clock” in their stories— a plot device that puts a time limit on when the protagonist(s) must complete a task or resolve a conflict. The consequences of success or failure provide motivation for the characters.',
+      patch:
+        '@@ -8485,16 +8485,36 @@\n tum is.%0A\n+%3Cpkt_tag_annotation%3E\n Creators\n@@ -8811,16 +8811,37 @@\n racters.\n+%3C/pkt_tag_annotation%3E\n %0AThe tic\n',
+      version: '2',
+      created_at: '2022-07-28T23:13:01.000Z',
+    },
+    {
+      annotation_id: 'eed69c26-aa18-458b-8753-775bab3e676a',
+      item_id: itemId,
+      quote:
+        'Other musicals zip through time by using “montages” or “musical sequences”—musical numbers that span plot points. Disparate moments are compressed in individual songs either to create greater impact or to help with exposition.\n\n',
+      patch:
+        '@@ -2898,16 +2898,36 @@\n  there.%0A\n+%3Cpkt_tag_annotation%3E\n Other mu\n@@ -3145,16 +3145,37 @@\n sition.%0A\n+%3C/pkt_tag_annotation%3E\n The 1996\n',
+      version: '2',
+      created_at: '2022-07-28T23:13:01.000Z',
+    },
+  ],
+});
+
+export const expectedFreeTierResponseSimpleAnnotations = {
+  list: {
+    '282381128': {
+      ...expectedFreeTierResponseSimple.list['282381128'],
+      ...expectedAnnotations('282381128'),
+    },
+    '3833727237': expectedFreeTierResponseSimple.list['3833727237'],
+  },
+  search_meta: {
+    total_result_count: 2,
+    offset: 0,
+    count: 30,
+    has_more: false,
+  },
+  complete: 1,
+  status: 1,
+  error: null,
+  since: 1709662321,
+  maxActions: 30,
+  cachetype: 'db',
+};
+
+export const expectedFreeTierResponseCompleteAnnotations = {
+  list: {
+    '282381128': {
+      ...expectedFreeTierResponseComplete.list['282381128'],
+      ...expectedAnnotations('282381128'),
+    },
+    '3833727237': expectedFreeTierResponseComplete.list['3833727237'],
+  },
+  search_meta: {
+    total_result_count: 2,
+    offset: 0,
+    count: 30,
+    has_more: false,
+  },
+  complete: 1,
+  status: 1,
+  error: null,
+  since: 1709662321,
+  maxActions: 30,
+  cachetype: 'db',
+};
+
+export const expectedPremiumTierResponseSimpleAnnotations = {
+  search_meta: {
+    total_result_count: 22,
+    count: 3,
+    offset: 0,
+    has_more: true,
+  },
+  complete: 1,
+  status: 1,
+  error: null,
+  since: 1659049987,
+  maxActions: 30,
+  cachetype: 'db',
+  list: {
+    '3670270497': expectedPremiumTierResponseSimple.list['3670270497'],
+    '3670270094': expectedPremiumTierResponseSimple.list['3670270094'],
+    '3457459746': {
+      ...expectedPremiumTierResponseSimple.list['3457459746'],
+      ...expectedAnnotations('3457459746'),
+    },
+  },
+};
+export const expectedPremiumTierResponseCompleteAnnotations = {
+  search_meta: {
+    total_result_count: 22,
+    count: 3,
+    offset: 0,
+    has_more: true,
+  },
+  complete: 1,
+  status: 1,
+  error: null,
+  since: 1659049987,
+  maxActions: 30,
+  cachetype: 'db',
+  list: {
+    '3670270497': expectedPremiumTierResponseComplete.list['3670270497'],
+    '3670270094': expectedPremiumTierResponseComplete.list['3670270094'],
+    '3457459746': {
+      ...expectedPremiumTierResponseComplete.list['3457459746'],
+      ...expectedAnnotations('3457459746'),
+    },
+  },
+};
+
+/**
+ * Tack on some annotations to the response on
+ * the entity at `index`.
+ */
+function addAnnotations(
+  responseFixture: SearchSavedItemsSimpleQuery,
+  index: number,
+): SearchSavedItemsSimpleAnnotationsQuery;
+function addAnnotations(
+  responseFixutre: SearchSavedItemsCompleteQuery,
+  index: number,
+): SearchSavedItemsCompleteAnnotationsQuery;
+function addAnnotations(
+  responseFixture: SearchSavedItemsSimpleQuery | SearchSavedItemsCompleteQuery,
+  index: number,
+):
+  | SearchSavedItemsSimpleAnnotationsQuery
+  | SearchSavedItemsCompleteAnnotationsQuery {
+  const annotations = {
+    highlights: [
+      {
+        id: 'd4d4fcef-bce1-4676-b291-f8678d08d234',
+        quote:
+          'Creators of any type of fiction are often advised to include some kind of metaphorical “ticking clock” in their stories— a plot device that puts a time limit on when the protagonist(s) must complete a task or resolve a conflict. The consequences of success or failure provide motivation for the characters.',
+        patch:
+          '@@ -8485,16 +8485,36 @@\n tum is.%0A\n+%3Cpkt_tag_annotation%3E\n Creators\n@@ -8811,16 +8811,37 @@\n racters.\n+%3C/pkt_tag_annotation%3E\n %0AThe tic\n',
+        version: 2,
+        _createdAt: 1659049981,
+      },
+      {
+        id: 'eed69c26-aa18-458b-8753-775bab3e676a',
+        quote:
+          'Other musicals zip through time by using “montages” or “musical sequences”—musical numbers that span plot points. Disparate moments are compressed in individual songs either to create greater impact or to help with exposition.\n\n',
+        patch:
+          '@@ -2898,16 +2898,36 @@\n  there.%0A\n+%3Cpkt_tag_annotation%3E\n Other mu\n@@ -3145,16 +3145,37 @@\n sition.%0A\n+%3C/pkt_tag_annotation%3E\n The 1996\n',
+        version: 2,
+        _createdAt: 1659049981,
+      },
+    ],
+  };
+  const hydratedEntries =
+    responseFixture.user.searchSavedItemsByOffset.entries.map((entry, ix) => {
+      if (ix === index) {
+        return {
+          searchHighlights: entry.searchHighlights,
+          savedItem: { ...entry.savedItem, annotations },
+        };
+      } else {
+        return entry;
+      }
+    });
+  return {
+    user: {
+      searchSavedItemsByOffset: {
+        entries: hydratedEntries,
+        offset: responseFixture.user.searchSavedItemsByOffset.offset,
+        limit: responseFixture.user.searchSavedItemsByOffset.limit,
+        totalCount: responseFixture.user.searchSavedItemsByOffset.totalCount,
+      },
+    },
+  };
+}
