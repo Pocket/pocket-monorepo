@@ -1,4 +1,12 @@
 import { SQSRecord, SQSBatchResponse, SQSBatchItemFailure } from 'aws-lambda';
+import { readClient } from './clients';
+import { client } from './sqs';
+import {
+  SendMessageBatchCommand,
+  SendMessageBatchRequestEntry,
+} from '@aws-sdk/client-sqs';
+import { config } from './config';
+import { nanoid } from 'nanoid';
 
 export const eventTypes = [
   'ADD_ITEM',
@@ -38,6 +46,16 @@ export type User = {
 };
 
 /**
+ * Database representation of push_tokens
+ */
+export type TokenEntry = {
+  token: string;
+  user_id: number;
+  platform: string; // ios, android
+  push_type: string; //prod, prodalpha..
+};
+
+/**
  * Given a list api event, de-dupe all users, and for each user, grab their push tokens and send a singular instant sync notification
  * @param record SQSRecord containing forwarded event from eventbridge
  * @throws Error if response is not ok
@@ -50,13 +68,25 @@ export const instantSyncHandler = async (
   console.log(`Received ${records.length} records to process`);
   const userIds = filterUserIds(records);
 
-  //TODO:
-  // 1. From userIds grab all device tokens
-  // 2. from device tokens build the SQS message to send to the push queue
-  // 3. Send to the push queue
-  // 4. Deterimine if we need to ignore device tokens from the sent guid.. (prob not)
+  const db = await readClient();
+  const tokens: TokenEntry[] = await db('push_tokens')
+    .select('push_type', 'platform', 'token', 'user_id')
+    .whereIn('user_id', userIds)
+    .andWhere('expires_at', '>', new Date());
+
+  const entries: SendMessageBatchRequestEntry[] = tokens.map((tokenEntry) =>
+    convertToSqsEntry(tokenEntry),
+  );
 
   console.log(`Sending ${userIds.length} to instant sync`);
+
+  await client.send(
+    new SendMessageBatchCommand({
+      QueueUrl: config.pushQueueUrl,
+      Entries: entries,
+    }),
+  );
+  console.log(`Sent ${userIds.length} to instant sync`);
 
   return { batchItemFailures: batchFailures };
 };
@@ -82,3 +112,19 @@ export const filterUserIds = (records: SQSRecord[]): string[] => {
   // dedupe by making it a set
   return [...new Set(userIds)];
 };
+
+/**
+ * Convert a JSON object to an SQS send message entry
+ * @param message
+ */
+function convertToSqsEntry(entry: TokenEntry): SendMessageBatchRequestEntry {
+  return {
+    Id: nanoid(),
+    MessageBody: JSON.stringify({
+      user_id: entry.user_id,
+      message: 'Ping',
+      target: entry.platform == 'ios' ? 7 : 5,
+      recipient: `${entry.push_type}::${entry.token}`,
+    }),
+  };
+}

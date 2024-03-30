@@ -14,10 +14,10 @@ export async function readClient(): Promise<knex.Knex<any, any[]>> {
   const secret = await fetchSecret(config.dbSecretName);
 
   readDb = createConnection({
-    host: secret.host,
-    port: secret.port,
-    user: secret.readUser,
-    password: secret.password,
+    host: secret.read_host,
+    port: 3306,
+    user: secret.read_username,
+    password: secret.read_password,
   });
 
   return readDb;
@@ -32,10 +32,10 @@ export async function writeClient(): Promise<knex.Knex<any, any[]>> {
   const secret = await fetchSecret(config.dbSecretName);
 
   writeDb = createConnection({
-    host: secret.host,
-    port: secret.port,
-    user: secret.writeUser,
-    password: secret.password,
+    host: secret.write_host,
+    port: 3306,
+    user: secret.write_username,
+    password: secret.write_password,
   });
 
   return writeDb;
@@ -48,7 +48,7 @@ export async function writeClient(): Promise<knex.Knex<any, any[]>> {
  */
 export function createConnection(dbConfig: {
   host: string;
-  port: string;
+  port: number;
   user: string;
   password: string;
 }): Knex {
@@ -58,7 +58,7 @@ export function createConnection(dbConfig: {
     client: 'mysql2',
     connection: {
       host: host,
-      port: parseInt(port),
+      port: port,
       user: user,
       password: password,
       database: config.database.dbName,
