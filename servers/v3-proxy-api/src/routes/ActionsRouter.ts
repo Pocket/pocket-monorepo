@@ -7,6 +7,7 @@ import {
   SendAction,
   TagDeleteAction,
   TagRenameAction,
+  UnimplementedAction,
 } from './validations/SendActionValidators';
 import { AddResponse, PendingAddResponse } from '../graph/types';
 import { processV3Add } from './v3Add';
@@ -66,6 +67,7 @@ import { customErrorHeaders } from '../middleware';
 import { Request } from 'express';
 import { epochSecondsToISOString } from '../graph/shared/utils';
 import { AddItemTransformer } from '../graph/add/toRest';
+import { InvalidActionError } from '../errors/InvalidActionError';
 
 type SendActionError = {
   message: string;
@@ -105,7 +107,10 @@ export class ActionsRouter {
         // This seems to be a typescript bug, maybe with the length of the union...?
         // Typescript doesn't complain if you comment out any single transform field,
         // regardless of which one it is. But it won't work with all of them.
-        const actionResult = await this[action.action](action as any);
+        const actionResult =
+          this[action.action] !== undefined
+            ? await this[action.action](action as any)
+            : this.invalidAction(action);
         result['action_results'][i] = actionResult;
       } catch (err) {
         const defaultMessage = 'Something Went Wrong';
@@ -124,6 +129,14 @@ export class ActionsRouter {
             message: primaryError.message ?? defaultMessage,
             type: primaryErrorData['X-Error'],
             code: primaryErrorData['X-Error-Code'],
+          } as SendActionError;
+          result['action_errors'][i] = errorResult;
+        } else if (err instanceof InvalidActionError) {
+          const defaultError = customErrorHeaders('BAD_USER_INPUT');
+          const errorResult = {
+            message: err.message,
+            type: defaultError['X-Error'],
+            code: defaultError['X-Error-Code'],
           } as SendActionError;
           result['action_errors'][i] = errorResult;
         } else {
@@ -493,5 +506,8 @@ export class ActionsRouter {
       variables,
     );
     return true;
+  }
+  private invalidAction(input: UnimplementedAction) {
+    throw new InvalidActionError(input.action);
   }
 }
