@@ -6,7 +6,6 @@ import { SQSRecord } from 'aws-lambda';
 import { client as sqs } from './sqs';
 import { PurgeQueueCommand, ReceiveMessageCommand } from '@aws-sdk/client-sqs';
 import { config } from './config';
-import { serverLogger } from '@pocket-tools/ts-logger';
 
 jest.mock('@pocket-tools/lambda-secrets');
 
@@ -22,7 +21,7 @@ describe('instantSyncHandler', () => {
 
   beforeEach(async () => {
     await writeDb('push_tokens').truncate();
-    serverLoggerSpy = jest.spyOn(serverLogger, 'info');
+    serverLoggerSpy = jest.spyOn(console, 'info');
   });
 
   beforeAll(async () => {

@@ -556,9 +556,6 @@ importers:
       '@pocket-tools/lambda-secrets':
         specifier: workspace:*
         version: link:../../packages/lambda-secrets
-      '@pocket-tools/ts-logger':
-        specifier: workspace:*
-        version: link:../../packages/ts-logger
       '@sentry/serverless':
         specifier: 7.108.0
         version: 7.108.0
