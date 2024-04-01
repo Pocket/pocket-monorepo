@@ -919,7 +919,7 @@ jobs:
         description: The sentry org
       <<: *repo_for_enum
     docker:
-      - image: getsentry/sentry-cli@sha256:c57367b665283bc4510d757a5ffa4e469bad74f792a6b6e4bcae14dd3f82ef58
+      - image: getsentry/sentry-cli@sha256:67e30136fc6c4b38c7b93df802d03507f5afbcf6307ddfbaa4ebf98a640c6d02
         auth:
           username: $DOCKER_LOGIN
           password: $DOCKER_PASSWORD
