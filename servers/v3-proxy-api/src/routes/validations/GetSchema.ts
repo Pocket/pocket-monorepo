@@ -6,7 +6,7 @@ import { Schema } from 'express-validator';
  */
 export type V3GetParams = {
   access_token?: string;
-  consumer_key?: string;
+  consumer_key: string;
   contentType?: 'article' | 'image' | 'video';
   count: number;
   detailType: 'simple' | 'complete';
@@ -16,8 +16,9 @@ export type V3GetParams = {
   sort: 'newest' | 'oldest' | 'relevance';
   state?: 'unread' | 'read' | 'archive' | 'queue' | 'all';
   tag?: string;
-  total?: boolean;
+  total: boolean;
   search?: string;
+  annotations: boolean;
 };
 
 /**
@@ -153,6 +154,17 @@ export const V3GetSchema: Schema = {
     },
   },
   total: {
+    default: {
+      options: '0',
+    },
+    isIn: {
+      options: [['0', '1']],
+    },
+    customSanitizer: {
+      options: (value) => (value === '1' ? true : false),
+    },
+  },
+  annotations: {
     default: {
       options: '0',
     },

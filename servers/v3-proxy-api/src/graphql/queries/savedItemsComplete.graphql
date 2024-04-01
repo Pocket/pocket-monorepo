@@ -1,0 +1,30 @@
+query savedItemsComplete(
+  $pagination: OffsetPaginationInput
+  $filter: SavedItemsFilter
+  $sort: SavedItemsSort
+) {
+  user {
+    savedItemsByOffset(pagination: $pagination, filter: $filter, sort: $sort) {
+      entries {
+        ...SavedItemComplete
+      }
+      totalCount
+    }
+  }
+}
+
+query savedItemsCompleteAnnotations(
+  $pagination: OffsetPaginationInput
+  $filter: SavedItemsFilter
+  $sort: SavedItemsSort
+) {
+  user {
+    savedItemsByOffset(pagination: $pagination, filter: $filter, sort: $sort) {
+      entries {
+        ...SavedItemComplete
+        ...HighlightFields
+      }
+      totalCount
+    }
+  }
+}

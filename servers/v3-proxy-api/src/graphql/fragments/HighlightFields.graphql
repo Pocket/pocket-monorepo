@@ -1,0 +1,11 @@
+fragment HighlightFields on SavedItem {
+  annotations {
+    highlights {
+      id
+      patch
+      quote
+      version
+      _createdAt
+    }
+  }
+}
