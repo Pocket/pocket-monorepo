@@ -22,6 +22,7 @@ import { FetchHandler } from '../fetch';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { IntMask } from '@pocket-tools/int-mask';
 import { getRedisCache } from '../cache';
+import { ListenModel } from '../listen/ListenModel';
 
 /**
  * Gets an item by its id by using the Item Resolvers table
@@ -136,6 +137,7 @@ const internalGetItemByUrl = async (
     excerpt: item.excerpt,
     wordCount: item.word_count,
     timeToRead: item.time_to_read,
+    listenDuration: ListenModel.estimateDuration(item.word_count),
     images: images,
     videos: videos,
     authors: authors,
