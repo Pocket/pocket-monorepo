@@ -6,6 +6,8 @@ export const defaultQuery: V3GetParams = {
   offset: 0,
   sort: 'newest',
   detailType: 'simple',
+  total: false,
+  annotations: false,
 };
 
 export const defaultSearchQuery: V3GetParams = {
@@ -15,4 +17,6 @@ export const defaultSearchQuery: V3GetParams = {
   sort: 'relevance',
   detailType: 'simple',
   search: 'abc',
+  total: false,
+  annotations: false,
 };

@@ -3,10 +3,14 @@
  */
 
 import {
-  GetSavedItemsByOffsetCompleteQuery,
-  GetSavedItemsByOffsetSimpleQuery,
-  SearchSavedItemsByOffsetCompleteQuery,
-  SearchSavedItemsByOffsetSimpleQuery,
+  SavedItemsCompleteAnnotationsQuery,
+  SavedItemsCompleteQuery,
+  SavedItemsSimpleAnnotationsQuery,
+  SavedItemsSimpleQuery,
+  SearchSavedItemsCompleteAnnotationsQuery,
+  SearchSavedItemsCompleteQuery,
+  SearchSavedItemsSimpleAnnotationsQuery,
+  SearchSavedItemsSimpleQuery,
 } from '../../generated/graphql/types';
 import {
   ListItemObject,
@@ -29,14 +33,15 @@ import {
   GetStaticResponse,
   GetSharesResponse,
   GetTopLevelDefaultResponse,
+  Annotations,
 } from '../types';
 import * as tx from '../shared/transforms';
 
 type SavedItemSimple =
-  GetSavedItemsByOffsetSimpleQuery['user']['savedItemsByOffset']['entries'][number];
+  SavedItemsSimpleQuery['user']['savedItemsByOffset']['entries'][number];
 
 type SavedItemComplete =
-  GetSavedItemsByOffsetCompleteQuery['user']['savedItemsByOffset']['entries'][number];
+  SavedItemsCompleteQuery['user']['savedItemsByOffset']['entries'][number];
 
 /**
  * The default and static set of fields that are in all v3/get responses
@@ -59,9 +64,7 @@ export const staticV3ShareResponseDefaults: GetSharesResponse = {
 };
 
 function getStatusResponse(
-  response:
-    | GetSavedItemsByOffsetCompleteQuery
-    | GetSavedItemsByOffsetSimpleQuery,
+  response: SavedItemsCompleteQuery | SavedItemsSimpleQuery,
 ): GetTopLevelDefaultResponse {
   if (response.user.savedItemsByOffset === undefined) {
     return {
@@ -98,9 +101,7 @@ function getStatusResponse(
 }
 
 function searchStatusResponse(
-  response:
-    | SearchSavedItemsByOffsetCompleteQuery
-    | SearchSavedItemsByOffsetSimpleQuery,
+  response: SearchSavedItemsCompleteQuery | SearchSavedItemsSimpleQuery,
 ): GetTopLevelDefaultResponse {
   if (response.user.searchSavedItemsByOffset === undefined) {
     return {
@@ -146,7 +147,7 @@ function searchStatusResponse(
  * matched result.
  */
 function HighlightsTransformer(
-  highlights: SearchSavedItemsByOffsetSimpleQuery['user']['searchSavedItemsByOffset']['entries'][number]['searchHighlights'],
+  highlights: SearchSavedItemsSimpleQuery['user']['searchSavedItemsByOffset']['entries'][number]['searchHighlights'],
 ): SearchHighlights {
   if (highlights == null) {
     return { highlights: null };
@@ -162,11 +163,38 @@ function HighlightsTransformer(
 }
 
 /**
+ * Extract annotations (highlights) from the graph search response.
+ */
+function AnnotationsTransformer(
+  savedItem: SearchSavedItemsSimpleAnnotationsQuery['user']['searchSavedItemsByOffset']['entries'][number]['savedItem'],
+): Annotations | undefined {
+  if (
+    savedItem.annotations == null ||
+    savedItem.annotations.highlights == null ||
+    savedItem.annotations.highlights.length === 0
+  ) {
+    return;
+  }
+  return {
+    annotations: savedItem.annotations.highlights.map((highlight) => ({
+      annotation_id: highlight.id,
+      item_id: savedItem.id,
+      quote: highlight.quote,
+      patch: highlight.patch,
+      version: highlight.version.toString(),
+      // TODO: Ensure Android can consume this -- /v3 returns central time
+      // timestamp without timezone (e.g. "2024-03-29 13:54:32")
+      created_at: new Date(highlight._createdAt * 1000).toISOString(),
+    })),
+  };
+}
+
+/**
  * Transform a SavedItemSearchResult into the appropriate
  * REST response, detailType="simple" fields only.
  */
 export function SearchResultTransformerSimple(
-  searchResult: SearchSavedItemsByOffsetSimpleQuery['user']['searchSavedItemsByOffset']['entries'][number],
+  searchResult: SearchSavedItemsSimpleQuery['user']['searchSavedItemsByOffset']['entries'][number],
   index: number,
 ): ListItemWithSearchHighlights {
   return {
@@ -179,7 +207,7 @@ export function SearchResultTransformerSimple(
  * REST response, for detailType="complete" fields.
  */
 export function SearchResultTransformerComplete(
-  searchResult: SearchSavedItemsByOffsetCompleteQuery['user']['searchSavedItemsByOffset']['entries'][number],
+  searchResult: SearchSavedItemsCompleteQuery['user']['searchSavedItemsByOffset']['entries'][number],
   index: number,
 ): ListItemCompleteWithSearchHighlights {
   return {
@@ -319,9 +347,7 @@ function listToMap<T>(input: T[], key: string): { [key: string]: T } {
 }
 
 function searchMetaTransformer(
-  response:
-    | SearchSavedItemsByOffsetSimpleQuery
-    | SearchSavedItemsByOffsetCompleteQuery,
+  response: SearchSavedItemsSimpleQuery | SearchSavedItemsCompleteQuery,
 ): SearchMeta {
   const data = response.user.searchSavedItemsByOffset;
   return {
@@ -340,14 +366,24 @@ function searchMetaTransformer(
  * @param response
  */
 export function savedItemsSimpleToRest(
-  response: GetSavedItemsByOffsetSimpleQuery,
+  response: SavedItemsSimpleQuery | SavedItemsSimpleAnnotationsQuery,
+  options?: { withAnnotations?: boolean },
 ): GetResponseSimple {
   return {
     ...staticV3ResponseDefaults,
     ...getStatusResponse(response),
     list: listToMap(
       response.user.savedItemsByOffset.entries
-        .map((savedItem, index) => ListItemTransformerSimple(savedItem, index))
+        .map((savedItem, index) => {
+          if (options?.withAnnotations) {
+            return {
+              ...ListItemTransformerSimple(savedItem, index),
+              ...AnnotationsTransformer(savedItem),
+            };
+          } else {
+            return ListItemTransformerSimple(savedItem, index);
+          }
+        })
         .filter((s) => s !== null),
       'item_id',
     ),
@@ -358,16 +394,24 @@ export function savedItemsSimpleToRest(
  * Convert GraphQL response for detailType=complete to v3 API format
  */
 export function savedItemsCompleteToRest(
-  response: GetSavedItemsByOffsetCompleteQuery,
+  response: SavedItemsCompleteQuery | SavedItemsCompleteAnnotationsQuery,
+  options?: { withAnnotations?: boolean },
 ): GetResponseComplete {
   return {
     ...staticV3ResponseDefaults,
     ...getStatusResponse(response),
     list: listToMap(
       response.user.savedItemsByOffset.entries
-        .map((savedItem, index) =>
-          ListItemTransformerComplete(savedItem, index),
-        )
+        .map((savedItem, index) => {
+          if (options?.withAnnotations) {
+            return {
+              ...ListItemTransformerComplete(savedItem, index),
+              ...AnnotationsTransformer(savedItem),
+            };
+          } else {
+            return ListItemTransformerComplete(savedItem, index);
+          }
+        })
         .filter((s) => s !== null),
       'item_id',
     ),
@@ -380,7 +424,7 @@ export function savedItemsCompleteToRest(
  */
 export function savedItemsFetchToRest(
   passthrough: PassthroughResponse,
-  response: GetSavedItemsByOffsetCompleteQuery,
+  response: SavedItemsCompleteQuery,
 ): FetchResponse {
   return {
     ...savedItemsCompleteTotalToRest(response),
@@ -394,7 +438,7 @@ export function savedItemsFetchToRest(
  */
 export function savedItemsFetchSharesToRest(
   passthrough: PassthroughResponse,
-  response: GetSavedItemsByOffsetCompleteQuery,
+  response: SavedItemsCompleteQuery,
 ): FetchResponse & GetSharesResponse {
   return {
     ...staticV3ShareResponseDefaults,
@@ -408,11 +452,12 @@ export function savedItemsFetchSharesToRest(
  * adding the top-level 'total' field.
  */
 export function savedItemsCompleteTotalToRest(
-  response: GetSavedItemsByOffsetCompleteQuery,
+  response: SavedItemsCompleteQuery | SavedItemsCompleteAnnotationsQuery,
+  options?: { withAnnotations?: boolean },
 ): GetResponseCompleteTotal {
   return {
     total: response.user.savedItemsByOffset.totalCount.toString(),
-    ...savedItemsCompleteToRest(response),
+    ...savedItemsCompleteToRest(response, options),
   };
 }
 
@@ -421,11 +466,12 @@ export function savedItemsCompleteTotalToRest(
  * adding the top-level 'total' field.
  */
 export function savedItemsSimpleTotalToRest(
-  response: GetSavedItemsByOffsetSimpleQuery,
+  response: SavedItemsSimpleQuery | SavedItemsSimpleAnnotationsQuery,
+  options?: { withAnnotations?: boolean },
 ): GetResponseSimpleTotal {
   return {
     total: response.user.savedItemsByOffset.totalCount.toString(),
-    ...savedItemsSimpleToRest(response),
+    ...savedItemsSimpleToRest(response, options),
   };
 }
 
@@ -434,16 +480,26 @@ export function savedItemsSimpleTotalToRest(
  * format.
  */
 export function searchSavedItemSimpleToRest(
-  response: SearchSavedItemsByOffsetSimpleQuery,
+  response:
+    | SearchSavedItemsSimpleQuery
+    | SearchSavedItemsSimpleAnnotationsQuery,
+  options?: { withAnnotations?: boolean },
 ): GetSearchResponseSimple {
   const list =
     response.user.searchSavedItemsByOffset.entries.length === 0
       ? ([] as never[])
       : listToMap(
           response.user.searchSavedItemsByOffset.entries
-            .map((searchResult, index) =>
-              SearchResultTransformerSimple(searchResult, index),
-            )
+            .map((searchResult, index) => {
+              if (options?.withAnnotations) {
+                return {
+                  ...SearchResultTransformerSimple(searchResult, index),
+                  ...(AnnotationsTransformer(searchResult.savedItem) ?? {}),
+                };
+              } else {
+                return SearchResultTransformerSimple(searchResult, index);
+              }
+            })
             .filter((s) => s !== null),
           'item_id',
         );
@@ -460,16 +516,26 @@ export function searchSavedItemSimpleToRest(
  * format.
  */
 export function searchSavedItemCompleteToRest(
-  response: SearchSavedItemsByOffsetCompleteQuery,
+  response:
+    | SearchSavedItemsCompleteQuery
+    | SearchSavedItemsCompleteAnnotationsQuery,
+  options?: { withAnnotations?: boolean },
 ): GetSearchResponseComplete {
   const list =
     response.user.searchSavedItemsByOffset.entries.length === 0
       ? ([] as never[])
       : listToMap(
           response.user.searchSavedItemsByOffset.entries
-            .map((searchResult, index) =>
-              SearchResultTransformerComplete(searchResult, index),
-            )
+            .map((searchResult, index) => {
+              if (options?.withAnnotations) {
+                return {
+                  ...SearchResultTransformerComplete(searchResult, index),
+                  ...(AnnotationsTransformer(searchResult.savedItem) ?? {}),
+                };
+              } else {
+                return SearchResultTransformerComplete(searchResult, index);
+              }
+            })
             .filter((s) => s !== null),
           'item_id',
         );
@@ -486,10 +552,13 @@ export function searchSavedItemCompleteToRest(
  * format, adding top-level total field.
  */
 export function searchSavedItemSimpleTotalToRest(
-  response: SearchSavedItemsByOffsetSimpleQuery,
+  response:
+    | SearchSavedItemsSimpleQuery
+    | SearchSavedItemsSimpleAnnotationsQuery,
+  options?: { withAnnotations?: boolean },
 ): GetSearchResponseSimpleTotal {
   return {
-    ...searchSavedItemSimpleToRest(response),
+    ...searchSavedItemSimpleToRest(response, options),
     total: response.user.searchSavedItemsByOffset.totalCount.toString(),
   };
 }
@@ -499,10 +568,13 @@ export function searchSavedItemSimpleTotalToRest(
  * format, adding top-level total field.
  */
 export function searchSavedItemCompleteTotalToRest(
-  response: SearchSavedItemsByOffsetCompleteQuery,
+  response:
+    | SearchSavedItemsCompleteQuery
+    | SearchSavedItemsCompleteAnnotationsQuery,
+  options?: { withAnnotations?: boolean },
 ): GetSearchResponseCompleteTotal {
   return {
-    ...searchSavedItemCompleteToRest(response),
+    ...searchSavedItemCompleteToRest(response, options),
     total: response.user.searchSavedItemsByOffset.totalCount.toString(),
   };
 }

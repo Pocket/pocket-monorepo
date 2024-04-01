@@ -7,8 +7,16 @@ import {
   mockGraphGetSimple,
   freeTierSearchGraphComplete,
   freeTierSearchGraphSimple,
+  freeTierSearchGraphSimpleAnnotations,
+  expectedFreeTierResponseSimpleAnnotations,
+  expectedFreeTierResponseCompleteAnnotations,
+  freeTierSearchGraphCompleteAnnotations,
+  mockGraphGetSimpleAnnotations,
+  expectedGetSimpleAnnotations,
+  mockGraphGetCompleteAnnotations,
+  expectedGetCompleteAnnotations,
 } from '../test/fixtures';
-import { ClientError } from 'graphql-request';
+import { ClientError, GraphQLClient } from 'graphql-request';
 import { GraphQLError } from 'graphql-request/build/esm/types';
 import { startServer } from '../server';
 import { Server } from 'http';
@@ -156,6 +164,156 @@ describe('v3Get', () => {
       expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
       expect(searchApi).toHaveBeenCalledTimes(1);
     });
+  });
+  describe('with annotations option', () => {
+    let clientSpy;
+    afterEach(() => clientSpy.mockRestore());
+    it.each([
+      {
+        requestData: {
+          detailType: 'simple',
+          search: 'abc',
+          sort: 'relevance',
+        },
+        fixture: {
+          requestName: 'callSearchByOffsetSimple' as const,
+          requestData: freeTierSearchGraphSimpleAnnotations,
+        },
+        expected: {
+          name: 'searchSavedItemsSimpleAnnotations',
+          response: expectedFreeTierResponseSimpleAnnotations,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          search: 'abc',
+          sort: 'relevance',
+        },
+        fixture: {
+          requestName: 'callSearchByOffsetComplete' as const,
+          requestData: freeTierSearchGraphCompleteAnnotations,
+        },
+        expected: {
+          name: 'searchSavedItemsCompleteAnnotations',
+          response: expectedFreeTierResponseCompleteAnnotations,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          search: 'abc',
+          sort: 'relevance',
+          total: '1',
+        },
+        fixture: {
+          requestName: 'callSearchByOffsetComplete' as const,
+          requestData: freeTierSearchGraphCompleteAnnotations,
+        },
+        expected: {
+          name: 'searchSavedItemsCompleteAnnotations',
+          response: {
+            ...expectedFreeTierResponseCompleteAnnotations,
+            total: '2',
+          },
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          search: 'abc',
+          sort: 'relevance',
+          total: '1',
+        },
+        fixture: {
+          requestName: 'callSearchByOffsetSimple' as const,
+          requestData: freeTierSearchGraphSimpleAnnotations,
+        },
+        expected: {
+          name: 'searchSavedItemsSimpleAnnotations',
+          response: {
+            ...expectedFreeTierResponseSimpleAnnotations,
+            total: '2',
+          },
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleAnnotations,
+        },
+        expected: {
+          name: 'savedItemsSimpleAnnotations',
+          response: expectedGetSimpleAnnotations,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteAnnotations,
+        },
+        expected: {
+          name: 'savedItemsCompleteAnnotations',
+          response: expectedGetCompleteAnnotations,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          total: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteAnnotations,
+        },
+        expected: {
+          name: 'savedItemsCompleteAnnotations',
+          response: { ...expectedGetCompleteAnnotations, total: '10' },
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          total: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleAnnotations,
+        },
+        expected: {
+          name: 'savedItemsSimpleAnnotations',
+          response: { ...expectedGetSimpleAnnotations, total: '10' },
+        },
+      },
+    ])(
+      'makes request with annotations',
+      async ({ requestData, fixture, expected }) => {
+        const requestSpy = jest.spyOn(GraphQLCalls, fixture.requestName);
+        clientSpy = jest
+          .spyOn(GraphQLClient.prototype, 'request')
+          .mockResolvedValueOnce(fixture.requestData);
+        const response = await request(app)
+          .get('/v3/get')
+          .query({
+            ...requestData,
+            consumer_key: 'test',
+            access_token: 'test',
+            annotations: '1',
+          });
+        expect(response.body).toEqual(expected.response);
+        expect(requestSpy).toHaveBeenCalledTimes(1);
+        expect(requestSpy.mock.calls[0][4]).toEqual({ withAnnotations: true });
+        expect(clientSpy.mock.calls[0][0]['definitions'][0].name.value).toEqual(
+          expected.name,
+        );
+      },
+    );
   });
   describe('Graphql error handler', () => {
     it('Returns 400 status code, with logging and sentry, for bad input errors', async () => {

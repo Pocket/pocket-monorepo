@@ -78,6 +78,7 @@ export async function processV3call(
   headers: any,
   data: V3GetParams,
 ) {
+  const options = { withAnnotations: data.annotations };
   // Search takes precedence -- if search term is passed, call search api
   if (data.search) {
     const variables = setSearchVariables(data);
@@ -87,11 +88,12 @@ export async function processV3call(
         consumerKey,
         headers,
         variables,
+        options,
       );
       if (data.total) {
-        return searchSavedItemCompleteTotalToRest(response);
+        return searchSavedItemCompleteTotalToRest(response, options);
       } else {
-        return searchSavedItemCompleteToRest(response);
+        return searchSavedItemCompleteToRest(response, options);
       }
     }
     const response = await callSearchByOffsetSimple(
@@ -99,11 +101,12 @@ export async function processV3call(
       consumerKey,
       headers,
       variables,
+      options,
     );
     if (data.total) {
-      return searchSavedItemSimpleTotalToRest(response);
+      return searchSavedItemSimpleTotalToRest(response, options);
     } else {
-      return searchSavedItemSimpleToRest(response);
+      return searchSavedItemSimpleToRest(response, options);
     }
   } else {
     // Otherwise call SavedItems list api
@@ -119,11 +122,12 @@ export async function processV3call(
         consumerKey,
         headers,
         variables,
+        options,
       );
       if (data.total) {
-        return savedItemsCompleteTotalToRest(response);
+        return savedItemsCompleteTotalToRest(response, options);
       } else {
-        return savedItemsCompleteToRest(response);
+        return savedItemsCompleteToRest(response, options);
       }
     }
     const response = await callSavedItemsByOffsetSimple(
@@ -131,11 +135,12 @@ export async function processV3call(
       consumerKey,
       headers,
       variables,
+      options,
     );
     if (data.total) {
-      return savedItemsSimpleTotalToRest(response);
+      return savedItemsSimpleTotalToRest(response, options);
     } else {
-      return savedItemsSimpleToRest(response);
+      return savedItemsSimpleToRest(response, options);
     }
   }
 }
