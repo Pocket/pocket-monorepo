@@ -19,6 +19,7 @@ export interface Item {
   excerpt?: string;
   wordCount?: number;
   timeToRead?: number;
+  listenDuration?: number;
   images?: Image[];
   videos?: Video[];
   authors: Author[];

@@ -17,8 +17,6 @@
     "@sentry/serverless": "7.109.0",
     "fetch-retry": "^5.0.6",
     "isomorphic-fetch": "^3.0.0",
-    "knex": "3.1.0",
-    "mysql": "2.18.1",
     "stripe": "14.22.0",
     "tslib": "2.6.2"
   },

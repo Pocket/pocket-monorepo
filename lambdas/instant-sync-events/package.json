@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "test": "echo ok",
+    "test": "jest \"\\.spec\\.ts\"",
+    "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",
     "lint": "eslint --fix-dry-run \"./**/*.ts\"",
     "format": "eslint --fix \"./**/*.ts\""
   },
@@ -13,9 +14,13 @@
     "@sentry/serverless": "7.109.0",
     "@aws-sdk/client-sqs": "3.540.0",
     "@pocket-tools/lambda-secrets": "workspace:*",
-    "tslib": "2.6.2"
+    "knex": "3.1.0",
+    "mysql2": "3.9.3",
+    "tslib": "2.6.2",
+    "nanoid": "3.3.7"
   },
   "devDependencies": {
+    "@aws-sdk/client-sqs": "3.540.0",
     "@types/aws-lambda": "8.10.136",
     "@types/jest": "29.5.12",
     "eslint-config-custom": "workspace:*",

@@ -34,7 +34,6 @@ type NoteOptions =
 export const apns = {
   sendNotificationToDevice: async (
     notification: NoteOptions,
-    payload: any,
     token: string,
     isSilent: boolean,
   ): Promise<void> => {

@@ -5,6 +5,7 @@ import {
   dataAwsRegion,
   dataAwsCallerIdentity,
   dataAwsKmsAlias,
+  dataAwsSqsQueue,
 } from '@cdktf/provider-aws';
 import {
   PocketSQSWithLambdaTarget,
@@ -20,6 +21,7 @@ export interface SqsLambdaProps {
   vpc: PocketVPC;
   pagerDuty?: PocketPagerDuty;
   alarms?: PocketVersionedLambdaProps['lambda']['alarms'];
+  pushQueue: dataAwsSqsQueue.DataAwsSqsQueue;
 }
 
 export class SQSEventLambda extends Construct {
@@ -62,6 +64,8 @@ export class SQSEventLambda extends Construct {
           SENTRY_DSN: sentryDsn,
           ENVIRONMENT:
             stackConfig.environment === 'Prod' ? 'production' : 'development',
+          PUSH_QUEUE_URL: config.pushQueue.url,
+          DB_SECRET_NAME: stackConfig.databaseSecretName,
         },
         addParameterStoreAndSecretsLayer: true,
         ignoreEnvironmentVars: ['GIT_SHA'],
@@ -91,6 +95,10 @@ export class SQSEventLambda extends Construct {
               `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${stackConfig.name}/${stackConfig.environment}/*`,
             ],
             effect: 'Allow',
+          },
+          {
+            actions: ['sqs:SendMessage', 'sqs:SendMessageBatch'],
+            resources: [config.pushQueue.arn],
           },
         ],
         codeDeploy: {
