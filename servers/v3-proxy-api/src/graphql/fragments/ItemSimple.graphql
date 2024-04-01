@@ -1,20 +1,21 @@
 fragment ItemSimple on Item {
-    __typename
-    itemId
-    resolvedId
-    wordCount
-    topImage {
-        url
-    }
-    title
-    timeToRead
-    resolvedUrl
-    givenUrl
-    excerpt
-    domain
-    isArticle
-    isIndex
-    hasVideo
-    hasImage
-    language
+  __typename
+  itemId
+  resolvedId
+  wordCount
+  topImage {
+    url
+  }
+  title
+  timeToRead
+  listenDuration
+  resolvedUrl
+  givenUrl
+  excerpt
+  domain
+  isArticle
+  isIndex
+  hasVideo
+  hasImage
+  language
 }

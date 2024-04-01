@@ -36,7 +36,7 @@ export const expectedFreeTierResponseSimple: GetSearchResponseSimple = {
       has_image: '0',
       word_count: '5',
       lang: '',
-      listen_duration_estimate: 0, // 2,
+      listen_duration_estimate: 2,
       // Technically this is not returned by the v3/get API with search, but
       // I don't see a reason not to set it to the default value
       // that is returned by v3/get without the search term, if it
@@ -127,7 +127,7 @@ export const expectedFreeTierResponseComplete: GetSearchResponseComplete = {
       domain_metadata: {
         name: 'isithalloween.com',
       },
-      listen_duration_estimate: 0, // 2,
+      listen_duration_estimate: 2,
       time_to_read: 0,
       highlights: null,
     },
@@ -225,6 +225,7 @@ export const freeTierSearchGraphSimple = {
               itemId: '282381128',
               resolvedId: '282381128',
               wordCount: 5,
+              listenDuration: 2,
               topImage: null,
               title: 'No.',
               timeToRead: null,
@@ -257,6 +258,7 @@ export const freeTierSearchGraphSimple = {
               itemId: '3833727237',
               resolvedId: '3833727237',
               wordCount: 0,
+              listenDuration: 0,
               topImage: null,
               title: '',
               timeToRead: null,
@@ -301,6 +303,7 @@ export const freeTierSearchGraphComplete = {
               itemId: '282381128',
               resolvedId: '282381128',
               wordCount: 5,
+              listenDuration: 2,
               topImage: null,
               title: 'No.',
               timeToRead: null,
@@ -347,6 +350,7 @@ export const freeTierSearchGraphComplete = {
               itemId: '3833727237',
               resolvedId: '3833727237',
               wordCount: 0,
+              listenDuration: 0,
               topImage: null,
               title: '',
               timeToRead: null,
@@ -432,7 +436,7 @@ export const expectedPremiumTierResponseSimple: GetSearchResponseSimple = {
       time_to_read: 8,
       top_image_url:
         'https://www.musicalwriters.com/wp-content/uploads/2021/10/Montage-Backstory-Memories-and-Ticking-Clocks.jpg',
-      listen_duration_estimate: 0, // 713,
+      listen_duration_estimate: 713,
     },
     '3457459746': {
       item_id: '3457459746',
@@ -471,7 +475,7 @@ export const expectedPremiumTierResponseSimple: GetSearchResponseSimple = {
       time_to_read: 12,
       top_image_url:
         'https://www.musicalwriters.com/wp-content/uploads/2021/10/How-Musicals-Make-the-Most-of-Time-part-one.jpg',
-      listen_duration_estimate: 0, // 1054,
+      listen_duration_estimate: 1054,
     },
     '3670270094': {
       item_id: '3670270094',
@@ -507,7 +511,7 @@ export const expectedPremiumTierResponseSimple: GetSearchResponseSimple = {
       time_to_read: 10,
       top_image_url:
         'https://www.musicalwriters.com/wp-content/uploads/2022/01/Opening-Numbers-interview-with-Stephen-Schwartz.jpg',
-      listen_duration_estimate: 0, // 886,
+      listen_duration_estimate: 886,
     },
   },
   search_meta: {
@@ -639,7 +643,7 @@ export const expectedPremiumTierResponseComplete: GetSearchResponseComplete = {
           length: '0',
         },
       },
-      listen_duration_estimate: 0, // 713,
+      listen_duration_estimate: 713,
     },
     '3457459746': {
       item_id: '3457459746',
@@ -734,7 +738,7 @@ export const expectedPremiumTierResponseComplete: GetSearchResponseComplete = {
           length: '0',
         },
       },
-      listen_duration_estimate: 0, // 1054,
+      listen_duration_estimate: 1054,
     },
     '3670270094': {
       item_id: '3670270094',
@@ -856,7 +860,7 @@ export const expectedPremiumTierResponseComplete: GetSearchResponseComplete = {
           length: '0',
         },
       },
-      listen_duration_estimate: 0, // 886,
+      listen_duration_estimate: 886,
     },
   },
   search_meta: {
@@ -887,6 +891,7 @@ export const premiumSearchGraphComplete: SearchSavedItemsCompleteQuery = {
               itemId: '3670270094',
               resolvedId: '3670270094',
               wordCount: 2288,
+              listenDuration: 886,
               topImage: {
                 url: 'https://www.musicalwriters.com/wp-content/uploads/2022/01/Opening-Numbers-interview-with-Stephen-Schwartz.jpg',
               },
@@ -1011,6 +1016,7 @@ export const premiumSearchGraphComplete: SearchSavedItemsCompleteQuery = {
               itemId: '3670270497',
               resolvedId: '3670270497',
               wordCount: 1843,
+              listenDuration: 713,
               topImage: {
                 url: 'https://www.musicalwriters.com/wp-content/uploads/2021/10/Montage-Backstory-Memories-and-Ticking-Clocks.jpg',
               },
@@ -1129,6 +1135,7 @@ export const premiumSearchGraphComplete: SearchSavedItemsCompleteQuery = {
               itemId: '3457459746',
               resolvedId: '3457459746',
               wordCount: 2722,
+              listenDuration: 1054,
               topImage: {
                 url: 'https://www.musicalwriters.com/wp-content/uploads/2021/10/How-Musicals-Make-the-Most-of-Time-part-one.jpg',
               },
@@ -1241,6 +1248,7 @@ export const premiumSearchGraphSimple: SearchSavedItemsSimpleQuery = {
               itemId: '3670270094',
               resolvedId: '3670270094',
               wordCount: 2288,
+              listenDuration: 886,
               topImage: {
                 url: 'https://www.musicalwriters.com/wp-content/uploads/2022/01/Opening-Numbers-interview-with-Stephen-Schwartz.jpg',
               },
@@ -1291,6 +1299,7 @@ export const premiumSearchGraphSimple: SearchSavedItemsSimpleQuery = {
               itemId: '3670270497',
               resolvedId: '3670270497',
               wordCount: 1843,
+              listenDuration: 713,
               topImage: {
                 url: 'https://www.musicalwriters.com/wp-content/uploads/2021/10/Montage-Backstory-Memories-and-Ticking-Clocks.jpg',
               },
@@ -1344,6 +1353,7 @@ export const premiumSearchGraphSimple: SearchSavedItemsSimpleQuery = {
               itemId: '3457459746',
               resolvedId: '3457459746',
               wordCount: 2722,
+              listenDuration: 1054,
               topImage: {
                 url: 'https://www.musicalwriters.com/wp-content/uploads/2021/10/How-Musicals-Make-the-Most-of-Time-part-one.jpg',
               },

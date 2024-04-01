@@ -283,8 +283,6 @@ function ListItemTransformer<T extends SavedItemSimple>(
     time_updated: savedItem._updatedAt?.toString(),
     time_read: (savedItem.archivedAt ?? '0').toString(),
     time_favorited: (savedItem.favoritedAt ?? '0').toString(),
-    // TODO POCKET-9657
-    listen_duration_estimate: 0,
     sort_id: index,
   };
   const conditionalFields = {};
@@ -307,6 +305,7 @@ function ListItemTransformer<T extends SavedItemSimple>(
         word_count: '0',
         lang: '',
         time_to_read: 0,
+        listen_duration_estimate: 0,
       };
     case 'Item':
       savedItem.item.topImage?.url &&
@@ -330,6 +329,7 @@ function ListItemTransformer<T extends SavedItemSimple>(
         word_count: (savedItem.item.wordCount ?? 0).toString(),
         lang: savedItem.item.language ?? '',
         time_to_read: savedItem.item.timeToRead ?? 0,
+        listen_duration_estimate: savedItem.item.listenDuration ?? 0,
       };
   }
 }
