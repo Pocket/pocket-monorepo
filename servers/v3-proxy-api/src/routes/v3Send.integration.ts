@@ -27,16 +27,6 @@ describe('v3Get', () => {
 
   describe('v3/send', () => {
     describe('validation', () => {
-      it('Returns 400 if action array element name is not in allowlist', async () => {
-        const response = await request(app)
-          .post('/v3/send')
-          .send({
-            consumer_key: 'test',
-            access_token: 'test',
-            actions: [{ action: 'really_add', url: 'http://domain.com/path' }],
-          });
-        expect(response.status).toEqual(400);
-      });
       it('Returns 400 if action array element fails validation', async () => {
         const response = await request(app)
           .post('/v3/send')
@@ -64,7 +54,7 @@ describe('v3Get', () => {
       afterAll(() => clientSpy.mockRestore());
       describe('processActions', () => {
         let addSpy;
-        beforeAll(
+        beforeEach(
           () =>
             (addSpy = jest
               .spyOn(ActionsRouter.prototype, 'add')
@@ -85,7 +75,7 @@ describe('v3Get', () => {
               )
               .mockResolvedValueOnce(expectedAddResponses[1])),
         );
-        afterAll(() => addSpy.mockRestore());
+        afterEach(() => addSpy.mockRestore());
         it('sends an array of responses and errors', async () => {
           const response = await request(app)
             .post('/v3/send')
@@ -113,6 +103,38 @@ describe('v3Get', () => {
                 code: 5200,
               },
               null,
+            ],
+          };
+          expect(response.status).toEqual(200);
+          expect(response.body).toEqual(expected);
+        });
+        it('returns false response with error for unimplemented action', async () => {
+          const response = await request(app)
+            .post('/v3/send')
+            .send({
+              consumer_key: 'test',
+              access_token: 'test',
+              actions: [
+                { action: 'action_imposter', name: 'no, really' },
+                { action: 'add', url: 'http://domain.com/path' },
+                { action: 'not_an_action', data: 'whatever' },
+              ],
+            });
+          const expected = {
+            status: 1,
+            action_results: [false, expectedAddResponses[0], false],
+            action_errors: [
+              {
+                message: `Invalid Action: 'action_imposter'`,
+                type: 'Bad request',
+                code: 130,
+              },
+              null,
+              {
+                message: `Invalid Action: 'not_an_action'`,
+                type: 'Bad request',
+                code: 130,
+              },
             ],
           };
           expect(response.status).toEqual(200);

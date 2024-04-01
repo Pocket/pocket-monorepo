@@ -40,12 +40,17 @@ export type TagDeleteAction = {
   time: number;
 };
 
+export type UnimplementedAction = {
+  action: string;
+};
+
 export type SendAction =
   | ItemAction
   | ItemAddAction
   | ItemTagAction
   | TagDeleteAction
-  | TagRenameAction;
+  | TagRenameAction
+  | UnimplementedAction;
 
 type ItemActionNames =
   | 'archive'
@@ -64,7 +69,8 @@ type ActionNames =
   | AddActionName
   | TagRenameActionName
   | TagDeleteActionName
-  | ItemTagActionNames;
+  | ItemTagActionNames
+  | string;
 
 export type MaybeAction = { action: ActionNames; [key: string]: string };
 
@@ -659,13 +665,7 @@ export function ActionSanitizer(input: MaybeAction): SendAction {
         action: input.action,
       }).validate();
     default:
-      // Should never reach this due to earlier validations
-      // but just in case...
-      throw new InputValidationError({
-        type: 'array_field',
-        path: 'action',
-        msg: `Invalid action`,
-        value: input.action,
-      });
+      // This is an action that we do not support
+      return { action: input.action };
   }
 }

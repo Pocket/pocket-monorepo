@@ -33,25 +33,7 @@ export const V3SendSchema: Schema = {
     notEmpty: true,
   },
   'actions[*].action': {
-    isIn: {
-      options: [
-        [
-          'add',
-          'readd',
-          'archive',
-          'favorite',
-          'unfavorite',
-          'delete',
-          'tags_add',
-          'tags_remove',
-          'tags_replace',
-          'tags_clear',
-          'tag_rename',
-          'tag_delete',
-        ],
-      ],
-      bail: true,
-      errorMessage: `Invalid action`,
-    },
+    isString: true,
+    notEmpty: true,
   },
 };
