@@ -21,6 +21,7 @@ export const eventTypes = [
   'REMOVE_TAGS',
   'RENAME_TAG',
   'DELETE_TAG',
+  'UPDATE_TITLE',
 ];
 
 export const sourceTypes = ['list-api'];
