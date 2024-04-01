@@ -15,7 +15,7 @@
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "3.540.0",
     "@aws-sdk/client-sqs": "3.540.0",
-    "@sentry/serverless": "7.108.0",
+    "@sentry/serverless": "7.109.0",
     "jsonwebtoken": "^9.0.0",
     "jwk-to-pem": "^2.0.5",
     "node-fetch": "2.7.0",
