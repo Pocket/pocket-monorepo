@@ -3,8 +3,11 @@
  */
 
 import {
+  SavedItemsCompleteAnnotationsQuery,
   SavedItemsCompleteQuery,
+  SavedItemsSimpleAnnotationsQuery,
   SavedItemsSimpleQuery,
+  SearchSavedItemsCompleteAnnotationsQuery,
   SearchSavedItemsCompleteQuery,
   SearchSavedItemsSimpleAnnotationsQuery,
   SearchSavedItemsSimpleQuery,
@@ -357,7 +360,7 @@ function searchMetaTransformer(
  * @param response
  */
 export function savedItemsSimpleToRest(
-  response: SavedItemsSimpleQuery,
+  response: SavedItemsSimpleQuery | SavedItemsSimpleAnnotationsQuery,
   options?: { withAnnotations?: boolean },
 ): GetResponseSimple {
   return {
@@ -385,7 +388,7 @@ export function savedItemsSimpleToRest(
  * Convert GraphQL response for detailType=complete to v3 API format
  */
 export function savedItemsCompleteToRest(
-  response: SavedItemsCompleteQuery,
+  response: SavedItemsCompleteQuery | SavedItemsCompleteAnnotationsQuery,
   options?: { withAnnotations?: boolean },
 ): GetResponseComplete {
   return {
@@ -443,7 +446,7 @@ export function savedItemsFetchSharesToRest(
  * adding the top-level 'total' field.
  */
 export function savedItemsCompleteTotalToRest(
-  response: SavedItemsCompleteQuery,
+  response: SavedItemsCompleteQuery | SavedItemsCompleteAnnotationsQuery,
   options?: { withAnnotations?: boolean },
 ): GetResponseCompleteTotal {
   return {
@@ -457,7 +460,7 @@ export function savedItemsCompleteTotalToRest(
  * adding the top-level 'total' field.
  */
 export function savedItemsSimpleTotalToRest(
-  response: SavedItemsSimpleQuery,
+  response: SavedItemsSimpleQuery | SavedItemsSimpleAnnotationsQuery,
   options?: { withAnnotations?: boolean },
 ): GetResponseSimpleTotal {
   return {
@@ -471,7 +474,9 @@ export function savedItemsSimpleTotalToRest(
  * format.
  */
 export function searchSavedItemSimpleToRest(
-  response: SearchSavedItemsSimpleQuery,
+  response:
+    | SearchSavedItemsSimpleQuery
+    | SearchSavedItemsSimpleAnnotationsQuery,
   options?: { withAnnotations?: boolean },
 ): GetSearchResponseSimple {
   const list =
@@ -505,7 +510,9 @@ export function searchSavedItemSimpleToRest(
  * format.
  */
 export function searchSavedItemCompleteToRest(
-  response: SearchSavedItemsCompleteQuery,
+  response:
+    | SearchSavedItemsCompleteQuery
+    | SearchSavedItemsCompleteAnnotationsQuery,
   options?: { withAnnotations?: boolean },
 ): GetSearchResponseComplete {
   const list =
@@ -539,7 +546,9 @@ export function searchSavedItemCompleteToRest(
  * format, adding top-level total field.
  */
 export function searchSavedItemSimpleTotalToRest(
-  response: SearchSavedItemsSimpleQuery,
+  response:
+    | SearchSavedItemsSimpleQuery
+    | SearchSavedItemsSimpleAnnotationsQuery,
   options?: { withAnnotations?: boolean },
 ): GetSearchResponseSimpleTotal {
   return {
@@ -553,7 +562,9 @@ export function searchSavedItemSimpleTotalToRest(
  * format, adding top-level total field.
  */
 export function searchSavedItemCompleteTotalToRest(
-  response: SearchSavedItemsCompleteQuery,
+  response:
+    | SearchSavedItemsCompleteQuery
+    | SearchSavedItemsCompleteAnnotationsQuery,
   options?: { withAnnotations?: boolean },
 ): GetSearchResponseCompleteTotal {
   return {

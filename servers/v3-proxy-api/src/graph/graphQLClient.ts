@@ -28,6 +28,12 @@ import {
   SearchSavedItemsCompleteAnnotationsQuery,
   SearchSavedItemsCompleteAnnotationsQueryVariables,
   SearchSavedItemsCompleteAnnotationsDocument,
+  SavedItemsSimpleAnnotationsQuery,
+  SavedItemsSimpleAnnotationsQueryVariables,
+  SavedItemsSimpleAnnotationsDocument,
+  SavedItemsCompleteAnnotationsQuery,
+  SavedItemsCompleteAnnotationsQueryVariables,
+  SavedItemsCompleteAnnotationsDocument,
 } from '../generated/graphql/types';
 import config from '../config';
 import * as Sentry from '@sentry/node';
@@ -89,10 +95,14 @@ export async function callSavedItemsByOffsetSimple(
   headers: any,
   variables: SavedItemsSimpleQueryVariables,
   options?: { withAnnotations?: boolean },
-): Promise<SavedItemsSimpleQuery> {
+): Promise<SavedItemsSimpleQuery | SavedItemsSimpleAnnotationsQuery> {
   Sentry.addBreadcrumb({ message: 'invoking callSavedItemsByOffsetSimple' });
   const client = getClient(accessToken, consumerKey, headers);
   if (options?.withAnnotations) {
+    return client.request<
+      SavedItemsSimpleAnnotationsQuery,
+      SavedItemsSimpleAnnotationsQueryVariables
+    >(SavedItemsSimpleAnnotationsDocument, variables);
   }
   return client.request<SavedItemsSimpleQuery, SavedItemsSimpleQueryVariables>(
     SavedItemsSimpleDocument,
@@ -109,9 +119,15 @@ export async function callSavedItemsByOffsetComplete(
   headers: any,
   variables: SavedItemsCompleteQueryVariables,
   options?: { withAnnotations?: boolean },
-): Promise<SavedItemsCompleteQuery> {
+): Promise<SavedItemsCompleteQuery | SavedItemsCompleteAnnotationsQuery> {
   Sentry.addBreadcrumb({ message: 'invoking callSavedItemsByOffsetComplete' });
   const client = getClient(accessToken, consumerKey, headers);
+  if (options?.withAnnotations) {
+    return client.request<
+      SavedItemsCompleteAnnotationsQuery,
+      SavedItemsCompleteAnnotationsQueryVariables
+    >(SavedItemsCompleteAnnotationsDocument, variables);
+  }
   return client.request<
     SavedItemsCompleteQuery,
     SavedItemsCompleteQueryVariables
