@@ -115,8 +115,7 @@ export const expectedFetch: FetchResponse = {
           tag: 'science',
         },
       },
-      // TODO: POCKET-9657
-      listen_duration_estimate: 0,
+      listen_duration_estimate: 1707,
     },
     // Example without 'complete' fields (except a partial domain metadata)
     '2344395952': {
@@ -145,8 +144,7 @@ export const expectedFetch: FetchResponse = {
       domain_metadata: {
         name: 'saf.apollographql.com',
       },
-      // TODO: POCKET-9657
-      listen_duration_estimate: 0,
+      listen_duration_estimate: 18,
     },
   },
 };

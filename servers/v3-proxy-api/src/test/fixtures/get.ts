@@ -37,6 +37,7 @@ export const mockGraphGetComplete: SavedItemsCompleteQuery = {
             itemId: '2111834840',
             resolvedId: '11231399273',
             wordCount: 4410,
+            listenDuration: 1707,
             topImage: {
               url: 'https://static.scientificamerican.com/sciam/cache/file/0B155646-0D3C-4284-A0AB8EE80631BBA1_source.jpg?w=1200',
             },
@@ -127,6 +128,7 @@ export const mockGraphGetComplete: SavedItemsCompleteQuery = {
             itemId: '2344395952',
             resolvedId: '2344395952',
             wordCount: 46,
+            listenDuration: 18,
             topImage: null,
             title: 'Supergraph Architecture Framework',
             timeToRead: 20,
@@ -175,6 +177,7 @@ export const mockGraphGetSimple: SavedItemsSimpleQuery = {
             itemId: '2111834840',
             resolvedId: '11231399273',
             wordCount: 4410,
+            listenDuration: 1707,
             topImage: {
               url: 'https://static.scientificamerican.com/sciam/cache/file/0B155646-0D3C-4284-A0AB8EE80631BBA1_source.jpg?w=1200',
             },
@@ -210,6 +213,7 @@ export const mockGraphGetSimple: SavedItemsSimpleQuery = {
             itemId: '2344395952',
             resolvedId: '2344395952',
             wordCount: 46,
+            listenDuration: 18,
             topImage: null,
             title: 'Supergraph Architecture Framework',
             timeToRead: 20,
@@ -339,8 +343,7 @@ export const expectedGetComplete: GetResponseComplete = {
           tag: 'science',
         },
       },
-      // TODO: POCKET-9657
-      listen_duration_estimate: 0,
+      listen_duration_estimate: 1707,
     },
     // Example without 'complete' fields (except a partial domain metadata)
     '2344395952': {
@@ -369,8 +372,7 @@ export const expectedGetComplete: GetResponseComplete = {
       domain_metadata: {
         name: 'saf.apollographql.com',
       },
-      // TODO: POCKET-9657
-      listen_duration_estimate: 0,
+      listen_duration_estimate: 18,
     },
   },
 };
@@ -417,8 +419,7 @@ export const expectedGetSimple: GetResponseSimple = {
       time_to_read: 20,
       top_image_url:
         'https://static.scientificamerican.com/sciam/cache/file/0B155646-0D3C-4284-A0AB8EE80631BBA1_source.jpg?w=1200',
-      // TODO: POCKET-9657
-      listen_duration_estimate: 0,
+      listen_duration_estimate: 1707,
     },
     // Example without 'complete' fields (except a partial domain metadata)
     '2344395952': {
@@ -444,8 +445,7 @@ export const expectedGetSimple: GetResponseSimple = {
       has_image: '0',
       word_count: '46',
       lang: 'en',
-      // TODO: POCKET-9657
-      listen_duration_estimate: 0,
+      listen_duration_estimate: 18,
     },
   },
 };
