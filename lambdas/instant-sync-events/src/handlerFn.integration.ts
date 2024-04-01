@@ -6,19 +6,23 @@ import { SQSRecord } from 'aws-lambda';
 import { client as sqs } from './sqs';
 import { PurgeQueueCommand, ReceiveMessageCommand } from '@aws-sdk/client-sqs';
 import { config } from './config';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 jest.mock('@pocket-tools/lambda-secrets');
 
 describe('instantSyncHandler', () => {
   let writeDb: Knex;
   let readDb: Knex;
+  let serverLoggerSpy: jest.SpyInstance;
 
   afterEach(async () => {
     await sqs.send(new PurgeQueueCommand({ QueueUrl: config.pushQueueUrl }));
+    jest.restoreAllMocks();
   });
 
   beforeEach(async () => {
     await writeDb('push_tokens').truncate();
+    serverLoggerSpy = jest.spyOn(serverLogger, 'info');
   });
 
   beforeAll(async () => {
@@ -100,6 +104,7 @@ describe('instantSyncHandler', () => {
         { token: 'prod::sometokenhere', target: 7 },
         { token: 'prod::sometokenhere2', target: 7 },
       ],
+      cleanup: 0,
     },
     {
       // Filters out expired tokens
@@ -146,6 +151,7 @@ describe('instantSyncHandler', () => {
         },
       ],
       expected: [{ token: 'prod::sometokenhere2', target: 7 }],
+      cleanup: 1,
     },
     {
       // Returns all tokens for a user
@@ -195,6 +201,7 @@ describe('instantSyncHandler', () => {
         { token: 'prod::sometokenhere', target: 7 },
         { token: 'prod::sometokenhere2', target: 7 },
       ],
+      cleanup: 0,
     },
     {
       // Works for android and ios
@@ -244,10 +251,11 @@ describe('instantSyncHandler', () => {
         { token: 'prod::sometokenhere', target: 5 },
         { token: 'prod::sometokenhere2', target: 7 },
       ],
+      cleanup: 0,
     },
   ])(
     'should send sqs records for batch of users',
-    async ({ tokens, input, expected }) => {
+    async ({ tokens, input, expected, cleanup }) => {
       await writeDb('push_tokens').insert(tokens);
       const messages: Message[] = input;
 
@@ -280,6 +288,10 @@ describe('instantSyncHandler', () => {
 
       expect(sentTargets).toStrictEqual(
         expected.map((expectedBody) => expectedBody.target),
+      );
+
+      expect(serverLoggerSpy).toHaveBeenLastCalledWith(
+        `Cleaning up ${cleanup}`,
       );
     },
   );

@@ -4,7 +4,7 @@ const environment = isDev ? 'Dev' : 'Prod';
 const pushQueueName = 'pocket-push-queue';
 const databaseSecretName = isDev
   ? '/InstantSyncEvents/Dev/READITLA_DB'
-  : 'InstantSyncEvents/Prod/READITLA_DB';
+  : '/InstantSyncEvents/Prod/READITLA_DB';
 
 export const config = {
   name,

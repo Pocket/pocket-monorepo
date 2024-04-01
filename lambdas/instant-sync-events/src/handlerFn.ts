@@ -1,5 +1,5 @@
 import { SQSRecord, SQSBatchResponse, SQSBatchItemFailure } from 'aws-lambda';
-import { readClient } from './clients';
+import { readClient, writeClient } from './clients';
 import { client } from './sqs';
 import {
   SendMessageBatchCommand,
@@ -93,6 +93,13 @@ export const instantSyncHandler = async (
     }),
   );
   serverLogger.info(`Sent ${userIds.length} to instant sync`);
+
+  const writeDb = await writeClient();
+  const cleanedUpRecords = await writeDb('push_tokens')
+    .delete()
+    .whereIn('user_id', userIds)
+    .andWhere('expires_at', '<', new Date());
+  serverLogger.info(`Cleaning up ${cleanedUpRecords}`);
 
   return { batchItemFailures: batchFailures };
 };
