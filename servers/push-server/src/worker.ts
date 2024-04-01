@@ -1,8 +1,4 @@
-import {
-  TARGET_APNS,
-  TARGET_APNS_SILENT,
-  TARGET_GCM,
-} from './notificationTypes';
+import { TARGET_APNS_SILENT, TARGET_GCM } from './notificationTypes';
 import { apns } from './apns';
 import { sendNotificationToDevice } from './gcm';
 import Sentry from './sentry';
@@ -23,40 +19,13 @@ const processMessage = async (fullMessage: Message): Promise<void> => {
     level: 'info',
   });
 
-  if (target === TARGET_APNS) {
-    console.log('APNS push', token);
-    await apns.sendNotificationToDevice(
-      contents,
-      {
-        s: message.share_id,
-        i: message.item_id,
-        url: message.url,
-        notification_id: message.notification_id,
-      },
-      token,
-      false,
-    );
-  } else if (target === TARGET_APNS_SILENT) {
+  if (target === TARGET_APNS_SILENT) {
     console.log('APNS SILENT push', token);
-    await apns.sendNotificationToDevice(
-      contents,
-      {
-        g: message.guid,
-      },
-      token,
-      true,
-    );
+    await apns.sendNotificationToDevice(contents, token, true);
   } else if (target === TARGET_GCM) {
     console.log('GCM push', token);
     try {
-      await sendNotificationToDevice(
-        contents,
-        {
-          share_id: message.share_id,
-          item_id: message.item_id,
-        },
-        token,
-      );
+      await sendNotificationToDevice(contents, token);
     } catch (err) {
       if (err === 'NotRegistered') {
         await sqs.destroyToken(TARGET_GCM, token);

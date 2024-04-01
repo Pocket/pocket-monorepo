@@ -10,6 +10,7 @@ import {
   snsTopicSubscription,
   sqsQueue,
   sqsQueuePolicy,
+  dataAwsSqsQueue,
 } from '@cdktf/provider-aws';
 
 import { provider as localProvider } from '@cdktf/provider-local';
@@ -59,6 +60,9 @@ class InstantSyncEvents extends TerraformStack {
     const sqsEventLambda = new SQSEventLambda(this, 'EventTracker', {
       vpc: pocketVPC,
       pagerDuty,
+      pushQueue: new dataAwsSqsQueue.DataAwsSqsQueue(this, 'job-queue', {
+        name: config.pushQueueName,
+      }),
     });
 
     //dlq for sqs-sns subscription

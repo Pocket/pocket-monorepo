@@ -3,5 +3,6 @@ module.exports = {
   testEnvironment: 'node',
   testMatch: ['**/?(*.)+(spec|integration).ts'],
   testPathIgnorePatterns: ['/dist/'],
-  displayName: 'events-lambda',
+  displayName: 'instant-sync-events',
+  setupFiles: ['./jest.setup.js'],
 };
