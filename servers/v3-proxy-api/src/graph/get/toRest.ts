@@ -239,14 +239,20 @@ export function ListItemTransformerComplete(
     return simple;
   }
   const completeFieldMap = {
-    authors: tx.AuthorsReducer(savedItem.item.authors, savedItem.id),
+    authors: tx.AuthorsReducer(
+      savedItem.item.authors,
+      savedItem.item.resolvedId,
+    ),
     domain_metadata: tx.DomainMetadataTransformer(
       savedItem.item.domainMetadata,
     ),
-    images: tx.ImagesReducer(savedItem.item.images, savedItem.id),
-    tags: tx.TagsReducer(savedItem.tags, savedItem.id),
-    videos: tx.VideosReducer(savedItem.item.videos, savedItem.id),
-    image: tx.DisplayImageTransformer(savedItem.item.images, savedItem.id),
+    images: tx.ImagesReducer(savedItem.item.images, savedItem.item.resolvedId),
+    tags: tx.TagsReducer(savedItem.tags, savedItem.item.resolvedId),
+    videos: tx.VideosReducer(savedItem.item.videos, savedItem.item.resolvedId),
+    image: tx.DisplayImageTransformer(
+      savedItem.item.images,
+      savedItem.item.resolvedId,
+    ),
   };
   const complete = Object.entries(completeFieldMap).reduce(
     (complete, [k, v]) => {

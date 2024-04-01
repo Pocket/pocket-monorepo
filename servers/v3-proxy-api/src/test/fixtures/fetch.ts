@@ -14,8 +14,8 @@ export const expectedFetch: FetchResponse = {
   },
   cachetype: 'db',
   list: {
-    '11231399273': {
-      item_id: '11231399273',
+    '2111834840': {
+      item_id: '2111834840',
       resolved_id: '11231399273',
       given_url:
         'https://www.scientificamerican.com/article/brains-are-not-required-when-it-comes-to-thinking-and-solving-problems-simple-cells-can-do-it/',

@@ -404,7 +404,7 @@ export const mockGraphAddResponses: SavedItemWithParserMetadata[] = [
     archivedAt: null,
     item: {
       __typename: 'Item',
-      itemId: '1192348383',
+      itemId: '2111834840',
       resolvedId: '1192348383',
       wordCount: 0,
       topImage: {

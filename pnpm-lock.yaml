@@ -1086,14 +1086,14 @@ importers:
         specifier: 10.1.0
         version: 10.1.0(cdktf@0.20.5)(constructs@10.3.0)
       '@cdktf/provider-newrelic':
-        specifier: 12.4.0
-        version: 12.4.0(cdktf@0.20.5)(constructs@10.3.0)
+        specifier: 12.5.0
+        version: 12.5.0(cdktf@0.20.5)(constructs@10.3.0)
       '@cdktf/provider-null':
         specifier: 10.0.0
         version: 10.0.0(cdktf@0.20.5)(constructs@10.3.0)
       '@cdktf/provider-pagerduty':
-        specifier: 13.6.0
-        version: 13.6.0(cdktf@0.20.5)(constructs@10.3.0)
+        specifier: 13.6.1
+        version: 13.6.1(cdktf@0.20.5)(constructs@10.3.0)
       '@cdktf/provider-time':
         specifier: 10.1.0
         version: 10.1.0(cdktf@0.20.5)(constructs@10.3.0)
@@ -4396,8 +4396,8 @@ packages:
       constructs: 10.3.0
     dev: false
 
-  /@cdktf/provider-newrelic@12.4.0(cdktf@0.20.5)(constructs@10.3.0):
-    resolution: {integrity: sha512-0CtBfnNu6+l/rYnWWOzBR4+5J8W9nLDSGX7rrICx9psqJc8wd8H0dVDUy2/wx4pyyHCEv8hA6TV1VaxSyUjnMg==}
+  /@cdktf/provider-newrelic@12.5.0(cdktf@0.20.5)(constructs@10.3.0):
+    resolution: {integrity: sha512-Jv0Ahz0AxgwjgwTTflkMwDGyxCY6x/4pJUpgfszvkS/O2aQPnro5H3nEMHeZY3PtherpeMmjN0oyvllGGxEseg==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
       cdktf: ^0.20.0
@@ -4418,8 +4418,8 @@ packages:
       constructs: 10.3.0
     dev: false
 
-  /@cdktf/provider-pagerduty@13.6.0(cdktf@0.20.5)(constructs@10.3.0):
-    resolution: {integrity: sha512-kbcxEaeSh9nDqo3f5TLgzualn/ZB3kfFaXDrMuSV7pUP6vrq2hDBRHudeVRvXfnrM5H7J9bjVAXip/kKdTCdLg==}
+  /@cdktf/provider-pagerduty@13.6.1(cdktf@0.20.5)(constructs@10.3.0):
+    resolution: {integrity: sha512-IzWi13CDNfmbgXsIPjnDY41F3W8+GS7q55BD4vhdY8YfqdLg+5fz3rAzK8rlQlpq9tAQPVdo7N85JJItJR3mEw==}
     engines: {node: '>= 18.12.0'}
     peerDependencies:
       cdktf: ^0.20.0
@@ -10807,7 +10807,7 @@ packages:
     dependencies:
       semver: 7.6.0
       shelljs: 0.8.5
-      typescript: 5.5.0-dev.20240328
+      typescript: 5.5.0-dev.20240329
     dev: false
 
   /dset@3.1.3:
@@ -19044,8 +19044,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.5.0-dev.20240328:
-    resolution: {integrity: sha512-psmUop0GPegCmqZqysToBqpX/pKW/0YGwVc/Ma0kDOkruXO40euXu2GL5UM6KbL+nnyHiMtWiTmVQ+7To9s9yQ==}
+  /typescript@5.5.0-dev.20240329:
+    resolution: {integrity: sha512-T1vHxyzRt1MeCLzQdY8JYOM1K9XRs4YgTOzMjlw8m5K19P9264rc22CyvUB9lA0vBIcMSDjObfh+/GVHMOXhkg==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: false
