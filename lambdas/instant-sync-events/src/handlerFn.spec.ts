@@ -1,5 +1,5 @@
 import { SQSRecord } from 'aws-lambda';
-import { Message, User, filterUserIds } from './handlerFn';
+import { Message, filterUserIds } from './handlerFn';
 
 describe('filterUserIds', () => {
   it.each([
@@ -119,7 +119,7 @@ describe('filterUserIds', () => {
         } as unknown as SQSRecord;
       });
 
-      const userIds = filterUserIds(records).map((user: User) => user.id);
+      const userIds = filterUserIds(records);
       expect(userIds).toStrictEqual(expected);
     },
   );

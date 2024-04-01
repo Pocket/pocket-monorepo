@@ -18,7 +18,7 @@ export const config = {
   },
   database: {
     tz: 'US/Central',
-    dbName: 'push_tokens',
+    dbName: process.env.DATABASE_NAME || 'readitla_ril-tmp',
   },
   dbSecretName:
     process.env.DB_SECRET_NAME || '/InstantSyncEvents/Test/READITLA_DB',

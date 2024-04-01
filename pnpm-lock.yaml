@@ -556,6 +556,9 @@ importers:
       '@pocket-tools/lambda-secrets':
         specifier: workspace:*
         version: link:../../packages/lambda-secrets
+      '@pocket-tools/ts-logger':
+        specifier: workspace:*
+        version: link:../../packages/ts-logger
       '@sentry/serverless':
         specifier: 7.108.0
         version: 7.108.0
@@ -10806,7 +10809,7 @@ packages:
     dependencies:
       semver: 7.6.0
       shelljs: 0.8.5
-      typescript: 5.5.0-dev.20240329
+      typescript: 5.5.0-dev.20240401
     dev: false
 
   /dset@3.1.3:
@@ -18969,8 +18972,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.5.0-dev.20240329:
-    resolution: {integrity: sha512-T1vHxyzRt1MeCLzQdY8JYOM1K9XRs4YgTOzMjlw8m5K19P9264rc22CyvUB9lA0vBIcMSDjObfh+/GVHMOXhkg==}
+  /typescript@5.5.0-dev.20240401:
+    resolution: {integrity: sha512-YeImidiTV9afClWslA8QLyJTTU6PQ5oWyeBSS04yjoVelrK2kpPPtJdnGLooOdzfFRgtZhGIxRIffDen8X93vw==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: false

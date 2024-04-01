@@ -7,6 +7,7 @@ import {
 } from '@aws-sdk/client-sqs';
 import { config } from './config';
 import { nanoid } from 'nanoid';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export const eventTypes = [
   'ADD_ITEM',
@@ -65,7 +66,7 @@ export const instantSyncHandler = async (
 ): Promise<SQSBatchResponse> => {
   const batchFailures: SQSBatchItemFailure[] = [];
 
-  console.log(`Received ${records.length} records to process`);
+  serverLogger.info(`Received ${records.length} records to process`);
   const userIds = filterUserIds(records);
 
   const db = await readClient();
@@ -74,11 +75,16 @@ export const instantSyncHandler = async (
     .whereIn('user_id', userIds)
     .andWhere('expires_at', '>', new Date());
 
+  if (tokens.length == 0) {
+    serverLogger.info(`No tokens for users to process`);
+    return { batchItemFailures: batchFailures };
+  }
+
   const entries: SendMessageBatchRequestEntry[] = tokens.map((tokenEntry) =>
     convertToSqsEntry(tokenEntry),
   );
 
-  console.log(`Sending ${userIds.length} to instant sync`);
+  serverLogger.info(`Sending ${userIds.length} to instant sync`);
 
   await client.send(
     new SendMessageBatchCommand({
@@ -86,7 +92,7 @@ export const instantSyncHandler = async (
       Entries: entries,
     }),
   );
-  console.log(`Sent ${userIds.length} to instant sync`);
+  serverLogger.info(`Sent ${userIds.length} to instant sync`);
 
   return { batchItemFailures: batchFailures };
 };
