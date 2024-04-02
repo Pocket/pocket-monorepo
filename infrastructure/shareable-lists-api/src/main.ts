@@ -37,7 +37,10 @@ class ShareableListsAPI extends TerraformStack {
     super(scope, name);
 
     new archiveProvider.ArchiveProvider(this, 'archive-provider');
-    new awsProvider.AwsProvider(this, 'aws', { region: 'us-east-1' });
+    new awsProvider.AwsProvider(this, 'aws', {
+      region: 'us-east-1',
+      defaultTags: [{ tags: config.tags }],
+    });
     new localProvider.LocalProvider(this, 'local_provider');
     new nullProvider.NullProvider(this, 'null_provider');
     new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
