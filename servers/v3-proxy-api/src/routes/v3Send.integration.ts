@@ -64,6 +64,40 @@ describe('v3/send', () => {
       expect(response.body).toEqual(expected);
     });
   });
+  describe('POST verb', () => {
+    it('handles encoded actions array in POST body and returns expected response', async () => {
+      const actions =
+        '%5B%7B%22time%22%3A1712010135%2C%22action%22%3A%22opened_app%22%2C%22cxt_online%22%3A1%2C%22cxt_orient%22%3A1%2C%22cxt_theme%22%3A0%2C%22cxt_view%22%3A%22pocket%22%2C%22sid%22%3A%221712010135%22%7D%2C%7B%22event%22%3A%22open%22%2C%22section%22%3A%22options%22%2C%22time%22%3A1712010136%2C%22version%22%3A%221%22%2C%22view%22%3A%22options%22%2C%22action%22%3A%22pv%22%2C%22cxt_online%22%3A3%2C%22cxt_orient%22%3A1%2C%22cxt_theme%22%3A0%2C%22cxt_view%22%3A%22list%22%2C%22sid%22%3A%221712010135%22%7D%2C%7B%22time%22%3A1712016912%2C%22action%22%3A%22favorite%22%2C%22item_id%22%3A%22123345%22%2C%22cxt_view%22%3A%22pocket%22%2C%22sid%22%3A%221712010135%22%7D%5D';
+      const response = await request(app)
+        .post('/v3/send')
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .send({
+          consumer_key: 'test',
+          guid: 'test',
+          access_token: 'test',
+          locale_lang: 'en-US',
+          actions,
+        });
+      const expected = {
+        status: 1,
+        action_results: [false, false, true],
+        action_errors: [
+          {
+            message: "Invalid Action: 'opened_app'",
+            type: 'Bad request',
+            code: 130,
+          },
+          {
+            message: "Invalid Action: 'pv'",
+            type: 'Bad request',
+            code: 130,
+          },
+          null,
+        ],
+      };
+      expect(response.body).toEqual(expected);
+    });
+  });
   describe('v3/send', () => {
     describe('validation', () => {
       it('Returns 400 if action array element fails validation', async () => {
