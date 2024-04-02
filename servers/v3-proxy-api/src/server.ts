@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/node';
 import { initSentry } from '@pocket-tools/sentry';
-import express, { Application, json } from 'express';
+import express, { Application, json, urlencoded } from 'express';
 import config from './config';
 import {
   clientErrorHandler,
@@ -31,6 +31,7 @@ export async function startServer(port: number) {
   app.use(Sentry.Handlers.tracingHandler());
 
   app.use(json());
+  app.use(urlencoded({ extended: true }));
   app.set('query parser', 'simple');
   app.get('/.well-known/server-health', (req, res) => {
     res.status(200).send('ok');

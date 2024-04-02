@@ -29,12 +29,22 @@ export const V3SendSchemaPost: Schema = {
     },
   },
   actions: {
-    isArray: true,
     notEmpty: true,
-  },
-  'actions[*].action': {
-    isString: true,
-    notEmpty: true,
+    customSanitizer: {
+      // If we get a urlencoded string payload, decode it into JSON array
+      options: (value) =>
+        typeof value === 'string'
+          ? JSON.parse(decodeURIComponent(value))
+          : value,
+    },
+    custom: {
+      options: (arr) =>
+        arr.length > 0 &&
+        arr.filter((action) => !(action.action && action.action !== ''))
+          .length === 0
+          ? true
+          : false,
+    },
   },
 };
 
