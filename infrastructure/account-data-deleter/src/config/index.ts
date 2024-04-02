@@ -52,6 +52,8 @@ export const config = {
   tags: {
     service: name,
     environment,
+    owner: 'Pocket',
+    costCenter: 'Pocket',
   },
   userApiDomain,
 };
