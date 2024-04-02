@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@sentry/serverless": "7.109.0",
-    "@aws-sdk/client-sqs": "3.540.0",
     "@pocket-tools/lambda-secrets": "workspace:*",
     "knex": "3.1.0",
     "mysql2": "3.9.3",
