@@ -1,6 +1,11 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { checkSchema, validationResult, matchedData } from 'express-validator';
-import { V3SendSchema, ActionSanitizer, V3SendParams } from './validations';
+import {
+  ActionSanitizer,
+  V3SendParams,
+  V3SendSchemaGet,
+  V3SendSchemaPost,
+} from './validations';
 import { InputValidationError } from '../errors/InputValidationError';
 import { SendAction } from './validations/SendActionValidators';
 import { ActionsRouter } from './ActionsRouter';
@@ -48,7 +53,7 @@ const v3SendController = async (
   }
 };
 
-router.get('/', checkSchema(V3SendSchema, ['query']), v3SendController);
-router.post('/', checkSchema(V3SendSchema, ['body']), v3SendController);
+router.get('/', checkSchema(V3SendSchemaGet, ['query']), v3SendController);
+router.post('/', checkSchema(V3SendSchemaPost, ['body']), v3SendController);
 
 export default router;

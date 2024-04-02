@@ -15,7 +15,7 @@ export type V3SendParams = {
  * This gives us some safety from bad user input values
  * and limits the cases we have to handle downstream.
  */
-export const V3SendSchema: Schema = {
+export const V3SendSchemaPost: Schema = {
   access_token: {
     isString: true,
     notEmpty: {
@@ -35,5 +35,43 @@ export const V3SendSchema: Schema = {
   'actions[*].action': {
     isString: true,
     notEmpty: true,
+  },
+};
+
+/**
+ * Schema for valid V3 GET/POST requests.
+ * Depending on the method, checkSchema looks
+ * for the data in the query or the body.
+ *
+ * This gives us some safety from bad user input values
+ * and limits the cases we have to handle downstream.
+ */
+export const V3SendSchemaGet: Schema = {
+  access_token: {
+    isString: true,
+    notEmpty: {
+      errorMessage: '`access_token` cannot be empty',
+    },
+  },
+  consumer_key: {
+    isString: true,
+    notEmpty: {
+      errorMessage: '`consumer_key` cannot be empty',
+    },
+  },
+  actions: {
+    isString: true,
+    notEmpty: true,
+    customSanitizer: {
+      options: (value) => JSON.parse(decodeURIComponent(value)),
+    },
+    custom: {
+      options: (arr) =>
+        arr.length > 0 &&
+        arr.filter((action) => !(action.action && action.action !== ''))
+          .length === 0
+          ? true
+          : false,
+    },
   },
 };

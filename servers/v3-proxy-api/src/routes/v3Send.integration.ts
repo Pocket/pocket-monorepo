@@ -10,21 +10,60 @@ import {
 import { ClientError, GraphQLClient } from 'graphql-request';
 import { GraphQLError } from 'graphql-request/build/esm/types';
 
-describe('v3Get', () => {
+describe('v3/send', () => {
   let app: Application;
   let server: Server;
+  let clientSpy;
+
   const now = Math.round(Date.now() / 1000);
   const isoNow = new Date(now * 1000).toISOString();
   beforeAll(async () => {
     ({ app, server } = await startServer(0));
+    // Response is unused so it doesn't matter what it returns
+    clientSpy = jest
+      .spyOn(GraphQLClient.prototype, 'request')
+      .mockResolvedValue(true);
     jest.useFakeTimers({ now: now * 1000, advanceTimers: true });
   });
   afterAll(async () => {
+    clientSpy.mockRestore();
     server.close();
     jest.restoreAllMocks();
     jest.useRealTimers();
   });
+  afterEach(() => jest.clearAllMocks());
 
+  describe('GET verb', () => {
+    it('handles encoded actions array in GET request and returns expected response', async () => {
+      const actions =
+        '%5B%7B%22time%22%3A1712010135%2C%22action%22%3A%22opened_app%22%2C%22cxt_online%22%3A1%2C%22cxt_orient%22%3A1%2C%22cxt_theme%22%3A0%2C%22cxt_view%22%3A%22pocket%22%2C%22sid%22%3A%221712010135%22%7D%2C%7B%22event%22%3A%22open%22%2C%22section%22%3A%22options%22%2C%22time%22%3A1712010136%2C%22version%22%3A%221%22%2C%22view%22%3A%22options%22%2C%22action%22%3A%22pv%22%2C%22cxt_online%22%3A3%2C%22cxt_orient%22%3A1%2C%22cxt_theme%22%3A0%2C%22cxt_view%22%3A%22list%22%2C%22sid%22%3A%221712010135%22%7D%2C%7B%22time%22%3A1712016912%2C%22action%22%3A%22favorite%22%2C%22item_id%22%3A%22123345%22%2C%22cxt_view%22%3A%22pocket%22%2C%22sid%22%3A%221712010135%22%7D%5D';
+      const response = await request(app).get('/v3/send').query({
+        consumer_key: 'test',
+        guid: 'test',
+        access_token: 'test',
+        locale_lang: 'en-US',
+        actions,
+      });
+      const expected = {
+        status: 1,
+        action_results: [false, false, true],
+        action_errors: [
+          {
+            message: "Invalid Action: 'opened_app'",
+            type: 'Bad request',
+            code: 130,
+          },
+          {
+            message: "Invalid Action: 'pv'",
+            type: 'Bad request',
+            code: 130,
+          },
+          null,
+        ],
+      };
+      expect(response.body).toEqual(expected);
+    });
+  });
   describe('v3/send', () => {
     describe('validation', () => {
       it('Returns 400 if action array element fails validation', async () => {
@@ -42,16 +81,6 @@ describe('v3Get', () => {
       });
     });
     describe('actions router', () => {
-      let clientSpy;
-      beforeAll(
-        () =>
-          // Response is unused so it doesn't matter what it returns
-          (clientSpy = jest
-            .spyOn(GraphQLClient.prototype, 'request')
-            .mockResolvedValue(true)),
-      );
-      afterEach(() => jest.clearAllMocks());
-      afterAll(() => clientSpy.mockRestore());
       describe('processActions', () => {
         let addSpy;
         beforeEach(
