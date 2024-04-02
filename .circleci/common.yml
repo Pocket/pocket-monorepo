@@ -582,7 +582,7 @@ jobs:
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
-      - image: mysql:8.0.36@sha256:92923e99278839ae86ba3edde972cf46f620ada05b37f85db04398cf8d7fc2b1
+      - image: mysql:8.0.36@sha256:8660220f10a03e81055938f34a0ccdb3f3fa6c3b9a47e2dc49a6c4a5abe3d6ae
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
