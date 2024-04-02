@@ -43,6 +43,8 @@ export const config = {
   tags: {
     service: name,
     environment,
+    owner: 'Pocket',
+    costCenter: 'Shared',
   },
   eventBridge: {
     prefix: 'PocketEventBridge',

@@ -29,7 +29,10 @@ class ListAPI extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
-    new awsProvider.AwsProvider(this, 'aws', { region: 'us-east-1' });
+    new awsProvider.AwsProvider(this, 'aws', {
+      region: 'us-east-1',
+      defaultTags: [{ tags: config.tags }],
+    });
     new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
       token: undefined,
     });

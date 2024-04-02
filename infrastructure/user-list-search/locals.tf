@@ -5,6 +5,8 @@ locals {
   tags = {
     service     = local.name
     environment = local.env
+    owner       = "Pocket"
+    costCenter  = "Pocket"
   }
 
   aws_path_prefix      = "${local.name}/${local.env}/"

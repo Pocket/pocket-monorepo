@@ -33,7 +33,10 @@ class AccountDataDeleter extends TerraformStack {
     super(scope, name);
 
     new archiveProvider.ArchiveProvider(this, 'archive-provider');
-    new awsProvider.AwsProvider(this, 'aws', { region: 'us-east-1' });
+    new awsProvider.AwsProvider(this, 'aws', {
+      region: 'us-east-1',
+      defaultTags: [{ tags: config.tags }],
+    });
     new localProvider.LocalProvider(this, 'local-provider');
     new nullProvider.NullProvider(this, 'null-provider');
     new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty-provider', {
