@@ -77,6 +77,36 @@ describe('send validator', () => {
         },
         expected: { itemId: 12345, action: 'delete', time: 192392329 },
       },
+      // item_id key included but value  is null/undefined - default to url
+      {
+        input: {
+          item_id: null,
+          action: 'favorite' as const,
+          url: 'http://test.com',
+        },
+        expected: { action: 'favorite', time: now, url: 'http://test.com' },
+      },
+      {
+        input: {
+          item_id: undefined,
+          action: 'favorite' as const,
+          url: 'http://test.com',
+        },
+        expected: { action: 'favorite', time: now, url: 'http://test.com' },
+      },
+      // url key included but value  is null/undefined - default to url
+      {
+        input: { url: null, item_id: '12345', action: 'favorite' as const },
+        expected: { itemId: 12345, action: 'favorite', time: now },
+      },
+      {
+        input: {
+          url: undefined,
+          item_id: '12345',
+          action: 'favorite' as const,
+        },
+        expected: { itemId: 12345, action: 'favorite', time: now },
+      },
     ])('sanitizes valid input', ({ input, expected }) => {
       const res = new ItemActionSanitizer(input).validate();
       expect(res).toEqual(expected);

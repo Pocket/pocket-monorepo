@@ -113,11 +113,16 @@ function HasItemIdOrUrl<TBase extends ActionSanitizable>(Base: TBase) {
     readonly url?: string;
     constructor(...args: any[]) {
       super(...args);
-      if (!('item_id' in this.input || 'url' in this.input)) {
+      if (
+        !(
+          ('item_id' in this.input && this.input['item_id'] != null) ||
+          ('url' in this.input && this.input['url'] != null)
+        )
+      ) {
         // All other actions require one of item_id or url
         throw Error('Action must have one of `item_id` or `url`');
       }
-      if ('item_id' in this.input) {
+      if ('item_id' in this.input && this.input['item_id'] != null) {
         // parseInt has some unexpected behavior for strings that
         // contain numerals + numbers, e.g. parseInt('123abc') returns 123.
         // In this case, these numeric strings only contain numerals
@@ -134,7 +139,7 @@ function HasItemIdOrUrl<TBase extends ActionSanitizable>(Base: TBase) {
         }
         this.itemId = itemId;
       }
-      if ('url' in this.input) {
+      if ('url' in this.input && this.input['url'] != null) {
         try {
           new URL(this.input.url);
           this.url = this.input.url;
