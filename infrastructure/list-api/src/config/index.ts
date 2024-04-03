@@ -8,6 +8,7 @@ const domain = isDev
   : `${domainPrefix}.readitlater.com`;
 const graphqlVariant = isDev ? 'development' : 'current';
 const releaseSha = process.env.CIRCLE_SHA1;
+const s3LogsBucket = isDev ? 'pocket-data-items-dev' : 'pocket-data-items';
 
 export const config = {
   name,
@@ -17,6 +18,7 @@ export const config = {
   shortName: 'LSTAPI',
   releaseSha,
   environment,
+  s3LogsBucket,
   rds: {
     minCapacity: 1,
     maxCapacity: isDev ? 1 : undefined,

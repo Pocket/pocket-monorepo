@@ -8,9 +8,7 @@ const domain = isDev
   : `${domainPrefix}.readitlater.com`;
 const graphqlVariant = isDev ? 'development' : 'current';
 const releaseSha = process.env.CIRCLE_SHA1;
-
-const cacheNodes = 2;
-const cacheSize = isDev ? 'cache.t3.micro' : 'cache.m6g.large';
+const s3LogsBucket = isDev ? 'pocket-data-items-dev' : 'pocket-data-items';
 
 export const config = {
   name,
@@ -23,8 +21,7 @@ export const config = {
   releaseSha,
   environment,
   domain,
-  cacheNodes,
-  cacheSize,
+  s3LogsBucket,
   tags: {
     service: name,
     environment,

@@ -6,10 +6,7 @@ const domain = isDev
   ? `${domainPrefix}.getpocket.dev`
   : `${domainPrefix}.readitlater.com`;
 const releaseSha = process.env.CIRCLE_SHA1;
-
-//Arbitrary size and count for cache. No logic was used in deciding this.
-const cacheNodes = isDev ? 2 : 2;
-const cacheSize = isDev ? 'cache.t2.micro' : 'cache.t3.medium';
+const s3LogsBucket = isDev ? 'pocket-data-items-dev' : 'pocket-data-items';
 
 const snowplowEndpoint = isDev
   ? 'com-getpocket-prod1.mini.snplow.net'
@@ -25,8 +22,7 @@ export const config = {
   releaseSha,
   environment,
   domain,
-  cacheNodes,
-  cacheSize,
+  s3LogsBucket,
   tracing: {
     host: 'localhost',
   },

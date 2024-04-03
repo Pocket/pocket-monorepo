@@ -131,6 +131,9 @@ class UserAPI extends TerraformStack {
       tags: config.tags,
       cdn: false,
       domain: config.domain,
+      accessLogs: {
+        existingBucket: config.s3LogsBucket,
+      },
       containerConfigs: [
         {
           name: 'app',
