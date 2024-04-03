@@ -14,8 +14,7 @@ const rds = {
 const eventBusName = `PocketEventBridge-${environment}-Shared-Event-Bus`;
 const releaseSha = process.env.CIRCLE_SHA1;
 
-const cacheNodes = isDev ? 2 : 2;
-const cacheSize = isDev ? 'cache.t3.micro' : 'cache.t3.micro';
+const s3LogsBucket = isDev ? 'pocket-data-items-dev' : 'pocket-data-items';
 
 export const config = {
   name,
@@ -29,8 +28,7 @@ export const config = {
   domain,
   graphqlVariant,
   rds,
-  cacheNodes,
-  cacheSize,
+  s3LogsBucket,
   reservedConcurrencyLimit: 1, // A maximum of 1 instance of the Lambda shall be running at whatever time needed.
   tags: {
     service: name,

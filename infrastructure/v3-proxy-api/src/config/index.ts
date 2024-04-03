@@ -6,11 +6,13 @@ const domain = isDev
   ? `${domainPrefix}.getpocket.dev`
   : `${domainPrefix}.readitlater.com`;
 const port = 4030;
+const s3LogsBucket = isDev ? 'pocket-data-items-dev' : 'pocket-data-items';
 
 export const config = {
   name,
   isDev,
   port,
+  s3LogsBucket,
   prefix: `${name}-${environment}`,
   circleCIPrefix: `/${name}/CircleCI/${environment}`,
   shortName: 'v3Prxy', // max 6 characters

@@ -8,6 +8,7 @@ const domain = isDev
 const graphqlVariant = isDev ? 'development' : 'current';
 const eventBusName = `PocketEventBridge-${environment}-Shared-Event-Bus`;
 const releaseSha = process.env.CIRCLE_SHA1;
+const s3LogsBucket = isDev ? 'pocket-data-items-dev' : 'pocket-data-items';
 
 export const config = {
   name,
@@ -18,6 +19,7 @@ export const config = {
   environment,
   domain,
   graphqlVariant,
+  s3LogsBucket,
   database: {
     port: '3306',
   },

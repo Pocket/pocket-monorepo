@@ -9,12 +9,9 @@ const domain = isDev
   : `${domainPrefix}.readitlater.com`;
 const graphqlVariant = isDev ? 'development' : 'current';
 const releaseSha = process.env.CIRCLE_SHA1;
+const s3LogsBucket = isDev ? 'pocket-data-items-dev' : 'pocket-data-items';
 
 const appPort = 4867;
-
-const cacheNodes = 2;
-// no/low utilization, setting to smallest instance available in dev and prod
-const cacheSize = isDev ? 'cache.t3.micro' : 'cache.t3.micro';
 
 export const config = {
   name,
@@ -23,12 +20,11 @@ export const config = {
   prefix,
   circleCIPrefix: `/${name}/CircleCI/${environment}`,
   shortName: 'IMGAPI',
+  s3LogsBucket,
   appPort,
   environment,
   domain,
   graphqlVariant,
-  cacheNodes,
-  cacheSize,
   releaseSha,
   tags: {
     service: name,
