@@ -275,10 +275,16 @@ function ListItemTransformer<T extends SavedItemSimple>(
   savedItem: T,
   index: number,
 ): ListItemObject | ListItemObjectComplete {
+  const statusMap = {
+    UNREAD: '0' as const,
+    ARCHIVED: '1' as const,
+    DELETED: '2' as const,
+    HIDDEN: '3' as const,
+  };
   const baseFields = {
     item_id: savedItem.id,
     favorite: savedItem.isFavorite ? ('1' as const) : ('0' as const),
-    status: savedItem.isArchived ? ('1' as const) : ('0' as const),
+    status: statusMap[savedItem.status],
     time_added: savedItem._createdAt?.toString(),
     time_updated: savedItem._updatedAt?.toString(),
     time_read: (savedItem.archivedAt ?? '0').toString(),

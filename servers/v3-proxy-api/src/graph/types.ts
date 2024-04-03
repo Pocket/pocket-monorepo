@@ -314,7 +314,7 @@ export type ListItemObject = {
   resolved_title: string;
   sort_id: number;
   favorite: '0' | '1';
-  status: '0' | '1';
+  status: '0' | '1' | '2' | '3'; // UNREAD/ARCHIVED/DELETED/HIDDEN
   //timestamps are string in v3 response
   time_added: string;
   time_updated: string;
