@@ -69,7 +69,7 @@ export async function processV3call(
   if (data.offset == 0) {
     data.count = 25; // set the intial page size to a smaller value to allow the user to see something as quickly as possible
   }
-
+  const options = { withAnnotations: data.annotations };
   //do sometthing to count here for page size.
   const params: V3GetParams = {
     detailType: 'complete',
@@ -79,7 +79,7 @@ export async function processV3call(
     count: data.count,
     offset: data.offset,
     sort: 'newest',
-    annotations: false,
+    annotations: data.annotations,
   };
 
   // Otherwise call SavedItems list api
@@ -90,6 +90,7 @@ export async function processV3call(
     consumerKey,
     headers,
     variables,
+    options,
   );
 
   const nextChunkSize = '250'; // Every chunk after the first one is always 250. This informs the client how many to download next.
@@ -102,6 +103,7 @@ export async function processV3call(
         chunk: data.chunk.toFixed(),
       },
       response,
+      options,
     );
   }
 
@@ -112,6 +114,7 @@ export async function processV3call(
       chunk: data.chunk.toFixed(),
     },
     response,
+    options,
   );
 }
 

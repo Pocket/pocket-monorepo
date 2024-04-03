@@ -2,8 +2,12 @@ import request from 'supertest';
 import * as Sentry from '@sentry/node';
 import * as GraphQLCalls from '../graph/graphQLClient';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { mockGraphGetComplete } from '../test/fixtures';
-import { ClientError } from 'graphql-request';
+import {
+  expectedGetCompleteAnnotations,
+  mockGraphGetComplete,
+  mockGraphGetCompleteAnnotations,
+} from '../test/fixtures';
+import { ClientError, GraphQLClient } from 'graphql-request';
 import { GraphQLError } from 'graphql-request/build/esm/types';
 import { startServer } from '../server';
 import { Server } from 'http';
@@ -74,7 +78,72 @@ describe('v3Fetch', () => {
       });
     });
   });
-
+  describe('with annotations option', () => {
+    let clientSpy;
+    afterEach(() => clientSpy.mockRestore());
+    it.each([
+      {
+        requestData: {
+          detailType: 'complete',
+          shares: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteAnnotations,
+        },
+        expected: {
+          name: 'savedItemsCompleteAnnotations',
+          response: {
+            ...expectedGetCompleteAnnotations,
+            recent_friends: [],
+            auto_complete_emails: [],
+            unconfirmed_shares: [],
+            total: '10',
+          },
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteAnnotations,
+        },
+        expected: {
+          name: 'savedItemsCompleteAnnotations',
+          response: { ...expectedGetCompleteAnnotations, total: '10' },
+        },
+      },
+    ])(
+      'makes request with annotations',
+      async ({ requestData, fixture, expected }) => {
+        const requestSpy = jest.spyOn(GraphQLCalls, fixture.requestName);
+        clientSpy = jest
+          .spyOn(GraphQLClient.prototype, 'request')
+          .mockResolvedValueOnce(fixture.requestData);
+        const response = await request(app)
+          .get('/v3/fetch')
+          .query({
+            ...requestData,
+            consumer_key: 'test',
+            access_token: 'test',
+            annotations: '1',
+          });
+        const passthrough = {
+          chunk: '0',
+          fetchChunkSize: '250',
+          firstChunkSize: '25',
+        };
+        expect(response.body).toEqual({ ...expected.response, passthrough });
+        expect(requestSpy).toHaveBeenCalledTimes(1);
+        expect(requestSpy.mock.calls[0][4]).toEqual({ withAnnotations: true });
+        expect(clientSpy.mock.calls[0][0]['definitions'][0].name.value).toEqual(
+          expected.name,
+        );
+      },
+    );
+  });
   describe('Graphql error handler', () => {
     it('Returns 400 status code, with logging and sentry, for bad input errors', async () => {
       const consoleSpy = jest.spyOn(serverLogger, 'error');
