@@ -1,4 +1,7 @@
-import { SavedItemsSimpleQuery } from '../../generated/graphql/types';
+import {
+  SavedItemsSimpleQuery,
+  SavedItemStatus,
+} from '../../generated/graphql/types';
 import {
   savedItemsCompleteToRest,
   savedItemsCompleteTotalToRest,
@@ -98,7 +101,39 @@ describe('GraphQL <> Rest convesion', () => {
         }),
       );
     });
-
+    it('works for all statuses', () => {
+      const entries = [
+        { id: 'id1', status: SavedItemStatus.Unread },
+        { id: 'id2', status: SavedItemStatus.Archived },
+        { id: 'id3', status: SavedItemStatus.Deleted },
+        { id: 'id4', status: SavedItemStatus.Hidden },
+      ].map((data) => ({
+        __typename: 'SavedItem' as const,
+        ...testSavedItemFragment({
+          ...mockSavedItemFragment,
+          ...data,
+        }),
+        item: {
+          ...testItemFragment({
+            ...mockItemFragment,
+            itemId: data.id,
+          }),
+        },
+      }));
+      const graphResponse: SavedItemsSimpleQuery = {
+        user: {
+          savedItemsByOffset: {
+            totalCount: 10,
+            entries,
+          },
+        },
+      };
+      const res = savedItemsSimpleToRest(graphResponse).list;
+      expect(res['id1'].status).toEqual('0');
+      expect(res['id2'].status).toEqual('1');
+      expect(res['id3'].status).toEqual('2');
+      expect(res['id4'].status).toEqual('3');
+    });
     it('should return defaults for pending items', () => {
       const graphResponse: SavedItemsSimpleQuery = {
         user: {
