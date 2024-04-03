@@ -431,9 +431,10 @@ export function savedItemsCompleteToRest(
 export function savedItemsFetchToRest(
   passthrough: PassthroughResponse,
   response: SavedItemsCompleteQuery,
+  options?: { withAnnotations?: boolean },
 ): FetchResponse {
   return {
-    ...savedItemsCompleteTotalToRest(response),
+    ...savedItemsCompleteTotalToRest(response, options),
     passthrough,
   };
 }
@@ -445,10 +446,11 @@ export function savedItemsFetchToRest(
 export function savedItemsFetchSharesToRest(
   passthrough: PassthroughResponse,
   response: SavedItemsCompleteQuery,
+  options?: { withAnnotations?: boolean },
 ): FetchResponse & GetSharesResponse {
   return {
     ...staticV3ShareResponseDefaults,
-    ...savedItemsCompleteTotalToRest(response),
+    ...savedItemsCompleteTotalToRest(response, options),
     passthrough,
   };
 }

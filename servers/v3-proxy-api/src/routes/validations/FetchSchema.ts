@@ -7,6 +7,7 @@ import { Schema } from 'express-validator';
 export type V3FetchParams = {
   access_token: string;
   consumer_key: string;
+  annotations: boolean;
   chunk?: number;
   count: number;
   offset: number;
@@ -88,6 +89,17 @@ export const V3FetchSchema: Schema = {
     },
   },
   shares: {
+    default: {
+      options: '0',
+    },
+    isIn: {
+      options: [['0', '1']],
+    },
+    customSanitizer: {
+      options: (value) => (value === '1' ? true : false),
+    },
+  },
+  annotations: {
     default: {
       options: '0',
     },
