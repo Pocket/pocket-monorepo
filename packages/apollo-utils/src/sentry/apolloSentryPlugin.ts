@@ -82,7 +82,6 @@ export const sentryPlugin: ApolloServerPlugin<BaseContext> = {
             data: errorData,
             error: err,
             message: err.message,
-            stack: err.stack, // parity with Sentry setup
           });
 
           const scope = Sentry.getCurrentScope();
