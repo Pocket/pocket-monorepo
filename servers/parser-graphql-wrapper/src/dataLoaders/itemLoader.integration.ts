@@ -41,7 +41,12 @@ describe('itemLoader - integration', () => {
 
     nock('http://example-parser.com')
       .get('/')
-      .query({ url: urlToParse, getItem: '1', output: 'regular' })
+      .query({
+        url: urlToParse,
+        getItem: '1',
+        output: 'regular',
+        enableItemUrlFallback: '1',
+      })
       .reply(200, {
         item: {
           item_id: parserItemId,
@@ -103,13 +108,28 @@ describe('itemLoader - integration', () => {
 
     nock('http://example-parser.com')
       .get('/')
-      .query({ url: urlToParse, getItem: '1', output: 'regular' })
+      .query({
+        url: urlToParse,
+        getItem: '1',
+        output: 'regular',
+        enableItemUrlFallback: '1',
+      })
       .reply(503, {})
       .get('/')
-      .query({ url: urlToParse, getItem: '1', output: 'regular' })
+      .query({
+        url: urlToParse,
+        getItem: '1',
+        output: 'regular',
+        enableItemUrlFallback: '1',
+      })
       .reply(200, {})
       .get('/')
-      .query({ url: urlToParse, getItem: '1', output: 'regular' })
+      .query({
+        url: urlToParse,
+        getItem: '1',
+        output: 'regular',
+        enableItemUrlFallback: '1',
+      })
       .reply(200, {
         item: {
           item_id: parserItemId,
@@ -136,7 +156,12 @@ describe('itemLoader - integration', () => {
 
     const scope = nock('http://example-parser.com')
       .get('/')
-      .query({ url: urlToParse, getItem: '1', output: 'regular' })
+      .query({
+        url: urlToParse,
+        getItem: '1',
+        output: 'regular',
+        enableItemUrlFallback: '1',
+      })
       .reply(200, {
         item: {
           item_id: parserItemId,
@@ -154,6 +179,7 @@ describe('itemLoader - integration', () => {
         getItem: '1',
         output: 'regular',
         refresh: true,
+        enableItemUrlFallback: '1',
       })
       .reply(200, {
         item: {

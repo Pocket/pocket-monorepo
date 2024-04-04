@@ -36,7 +36,9 @@ describe('refresh mutation', () => {
     await getRedis().clear();
     //first call for getItemByUrl.
     nock(`http://example-parser.com`)
-      .get(`/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular`)
+      .get(
+        `/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular&enableItemUrlFallback=1`,
+      )
       .reply(200, {
         item: {
           given_url: testUrl,
@@ -78,7 +80,9 @@ describe('refresh mutation', () => {
 
     //third call used by refresh aritcle.
     nock(`http://example-parser.com`)
-      .get(`/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular`)
+      .get(
+        `/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular&enableItemUrlFallback=1`,
+      )
       .reply(200, {
         item: {
           given_url: testUrl,
@@ -98,7 +102,9 @@ describe('refresh mutation', () => {
 
     // final call used by the refrence resolver.
     nock(`http://example-parser.com`)
-      .get(`/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular`)
+      .get(
+        `/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular&enableItemUrlFallback=1`,
+      )
       .reply(200, {
         item: {
           given_url: testUrl,
