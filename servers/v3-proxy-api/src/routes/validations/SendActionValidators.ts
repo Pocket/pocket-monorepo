@@ -72,7 +72,18 @@ type ActionNames =
   | ItemTagActionNames
   | string;
 
-export type MaybeAction = { action: ActionNames; [key: string]: string };
+export type MaybeAction = {
+  [key: string]: string | string[];
+  item_id?: string;
+  tags?: string | string[];
+  url?: string;
+  time?: string;
+  new_tag?: string;
+  old_tag?: string;
+  tag?: string;
+  title?: string;
+  action: ActionNames;
+};
 
 type Constructor<T> = new (...args: any[]) => T;
 type ActionSanitizable = Constructor<{
@@ -228,7 +239,12 @@ function MaybeHasTags<TBase extends ActionSanitizable>(Base: TBase) {
     constructor(...args: any[]) {
       super(...args);
       if ('tags' in this.input) {
-        const tags = this.input.tags.split(',');
+        let tags: string[];
+        if (typeof this.input.tags === 'string') {
+          tags = this.input.tags.split(',');
+        } else {
+          tags = this.input.tags;
+        }
         validTagsOrError(tags);
         this.tags = tags;
       }
@@ -267,7 +283,12 @@ function HasValidTags<TBase extends ActionSanitizable>(Base: TBase) {
         };
         throw new InputValidationError(error);
       }
-      const tags = this.input.tags.split(',');
+      let tags: string[];
+      if (typeof this.input.tags === 'string') {
+        tags = this.input.tags.split(',');
+      } else {
+        tags = this.input.tags;
+      }
       validTagsOrError(tags);
       this.tags = tags;
     }
@@ -441,7 +462,7 @@ class NamedAction<Action extends ActionNames> {
   readonly action: Action;
   constructor(
     public readonly input: {
-      [key: string]: string;
+      [key: string]: string | string[];
       action: Action;
     },
   ) {

@@ -43,9 +43,13 @@ export const V3AddSchema: Schema = {
   },
   tags: {
     optional: true,
-    isString: true,
+    notEmpty: true,
     customSanitizer: {
-      options: (tags) => tags.split(','),
+      options: (tags) => {
+        if (typeof tags === 'string') return tags.split(',');
+        if (Array.isArray(tags)) return tags;
+        return []; // Will fail custom validator in next step
+      },
     },
     custom: {
       options: (tags) =>

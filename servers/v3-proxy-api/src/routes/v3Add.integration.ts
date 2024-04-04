@@ -24,7 +24,7 @@ describe('v3Add', () => {
   });
   describe('with tags', () => {
     let tagRequestSpy;
-    beforeAll(() => {
+    beforeEach(() => {
       tagRequestSpy = jest
         .spyOn(GraphQLClient.prototype, 'request')
         .mockResolvedValueOnce({ upsertSavedItem: { id: '1234' } })
@@ -49,6 +49,24 @@ describe('v3Add', () => {
       });
       expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
+    it('accepts array of tags', async () => {
+      const response = await request(app)
+        .post('/v3/add')
+        .send({
+          consumer_key: 'test',
+          access_token: 'test',
+          url: 'https://isithalloween.com',
+          tags: ['abc', '123'],
+        });
+      expect(tagRequestSpy).toHaveBeenCalledTimes(2);
+      // Struggling with a matcher for toHaveBeenLastCalledWith... the call signature is nasty
+      // on these functions
+      expect(tagRequestSpy.mock.calls[1].length).toEqual(2);
+      expect((tagRequestSpy.mock.calls[1] as any)[1]).toEqual({
+        tags: { savedItemId: '1234', tags: ['abc', '123'] },
+      });
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+    });
     it('throws error if tags array is empty', async () => {
       const response = await request(app).post('/v3/add').send({
         consumer_key: 'test',
@@ -60,7 +78,7 @@ describe('v3Add', () => {
       expect(tagRequestSpy).not.toHaveBeenCalled();
       expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
-    it.each(['abc,', 'abc,,def', ',abc,123'])(
+    it.each(['abc,', 'abc,,def', ',abc,123', ['abc', '']])(
       'throws error if there is an empty tag string',
       async (tags) => {
         const response = await request(app).post('/v3/add').send({
