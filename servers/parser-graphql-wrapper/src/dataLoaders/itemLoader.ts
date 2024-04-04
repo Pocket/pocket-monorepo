@@ -58,7 +58,12 @@ const internalGetItemByUrl = async (
   let data = await new FetchHandler().fetchJSON(endpoint);
   // check if there's an item
   if (!data || (data && !data.item)) {
-    throw new Error(`No item found for URL: ${url}`);
+    Sentry.addBreadcrumb({
+      level: 'debug',
+      message: 'internalGetItemByUrl: parser request',
+      data: { originalUrl: url, endpoint, itemId },
+    });
+    throw new Error(`No item found for URL`);
   }
 
   // If the item resolves to 0, that means the item object is going to be empty and we need to refresh it cause of bad parser data..
@@ -67,7 +72,12 @@ const internalGetItemByUrl = async (
     data = await new FetchHandler().fetchJSON(`${endpoint}&refresh=true`);
     // check if there's an item
     if (!data || (data && !data.item)) {
-      throw new Error(`No item found for URL: ${url}`);
+      Sentry.addBreadcrumb({
+        level: 'debug',
+        message: 'internalGetItemByUrl: parser request, resolved id is 0',
+        data: { originalUrl: url, endpoint, itemId },
+      });
+      throw new Error(`No item found for URL`);
     }
   }
 
@@ -76,10 +86,13 @@ const internalGetItemByUrl = async (
 
   // validate the response has a given_url
   if (!item.given_url) {
+    Sentry.addBreadcrumb({
+      level: 'debug',
+      message: 'internalGetItemByUrl: item has no given url',
+      data: { originalUrl: url, endpoint, itemId, item },
+    });
     Sentry.captureException(
-      new Error(
-        `Item with item_id: ${item.item_id} does not have a given URL (given_url)`,
-      ),
+      new Error(`Item does not have a given URL (given_url)`),
     );
 
     return null;
@@ -114,6 +127,11 @@ const internalGetItemByUrl = async (
       url: url,
     };
     serverLogger.error(errorMessage, { data: errorData });
+    Sentry.addBreadcrumb({
+      level: 'debug',
+      message: 'internalGetItemByUrl: item has no given url',
+      data: { endpoint, errorData },
+    });
   }
 
   return {

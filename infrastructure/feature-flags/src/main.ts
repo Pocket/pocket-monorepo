@@ -7,7 +7,10 @@ import {
 } from '@cdktf/provider-aws';
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
-import { provider as pagerdutyProvider } from '@cdktf/provider-pagerduty';
+import {
+  provider as pagerdutyProvider,
+  dataPagerdutyEscalationPolicy,
+} from '@cdktf/provider-pagerduty';
 import {
   ApplicationRDSCluster,
   PocketALBApplication,
@@ -112,31 +115,28 @@ class FeatureFlags extends TerraformStack {
    * @private
    */
   private createPagerDuty(): PocketPagerDuty | undefined {
-    // Don't create pagerduty services for a dev service.
-    return null;
+    // don't create any pagerduty resources if in dev
+    if (config.isDev) {
+      return undefined;
+    }
 
-    // const incidentManagement = new DataTerraformRemoteState(
-    //   this,
-    //   'incident_management',
-    //   {
-    //     organization: 'Pocket',
-    //     workspaces: {
-    //       name: 'incident-management',
-    //     },
-    //   }
-    // );
+    const nonCriticalEscalationPolicyId =
+      new dataPagerdutyEscalationPolicy.DataPagerdutyEscalationPolicy(
+        this,
+        'non_critical_escalation_policy',
+        {
+          name: 'Pocket On-Call: Default Non-Critical - Tier 2+ (Former Backend Temporary Holder)',
+        },
+      ).id;
 
-    // return new PocketPagerDuty(this, 'pagerduty', {
-    //   prefix: config.prefix,
-    //   service: {
-    //     criticalEscalationPolicyId: incidentManagement
-    //       .get('policy_backend_critical_id')
-    //       .toString(),
-    //     nonCriticalEscalationPolicyId: incidentManagement
-    //       .get('policy_backend_non_critical_id')
-    //       .toString(),
-    //   },
-    // });
+    return new PocketPagerDuty(this, 'pagerduty', {
+      prefix: config.prefix,
+      service: {
+        // This is a Tier 2 service and as such only raises non-critical alarms.
+        criticalEscalationPolicyId: nonCriticalEscalationPolicyId,
+        nonCriticalEscalationPolicyId: nonCriticalEscalationPolicyId,
+      },
+    });
   }
 
   private createPocketAlbApplication(dependencies: {
