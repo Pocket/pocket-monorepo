@@ -127,9 +127,7 @@ export const V3GetSchema: Schema = {
     optional: true,
     isString: true,
     customSanitizer: {
-      options: (value) => {
-        if (value === '') return undefined;
-      },
+      options: (value) => (value === '' ? undefined : value),
     },
   },
   sort: {

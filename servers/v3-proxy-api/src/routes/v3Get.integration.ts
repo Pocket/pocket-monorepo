@@ -172,7 +172,7 @@ describe('v3Get', () => {
         consumer_key: 'test',
         access_token: 'test',
         search: '',
-        detailType: 'simpe',
+        detailType: 'simple',
       });
       expect(response.status).toEqual(200);
       expect(nonSearchApi).toHaveBeenCalledTimes(1);
