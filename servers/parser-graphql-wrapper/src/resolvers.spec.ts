@@ -11,7 +11,12 @@ describe('Resolvers', () => {
   beforeEach(() => {
     nock('http://example-parser.com')
       .get('/')
-      .query({ url: urlToParse, output: 'regular', getItem: '1' })
+      .query({
+        url: urlToParse,
+        output: 'regular',
+        getItem: '1',
+        enableItemUrlFallback: '1',
+      })
       .reply(200, {
         article: articleBody,
         item: {
