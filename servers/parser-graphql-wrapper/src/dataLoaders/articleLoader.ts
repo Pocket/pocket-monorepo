@@ -41,7 +41,12 @@ export const getArticleByUrl = async (
   const data = await new FetchHandler().fetchJSON(endpoint);
   // check if there's an item
   if (!data || (data && !data.item)) {
-    Sentry.captureException(new Error(`No item found for URL: ${url}`));
+    Sentry.addBreadcrumb({
+      level: 'debug',
+      message: 'article loader parser request',
+      data: { originalUrl: url, endpoint },
+    });
+    Sentry.captureException(new Error(`No item found for URL`));
     return null;
   }
 
