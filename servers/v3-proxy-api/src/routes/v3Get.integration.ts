@@ -164,6 +164,32 @@ describe('v3Get', () => {
       expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
       expect(searchApi).toHaveBeenCalledTimes(1);
     });
+    it('ignores empty search term and does not call search (simple)', async () => {
+      const nonSearchApi = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetSimple')
+        .mockImplementation(() => Promise.resolve(mockGraphGetSimple));
+      const response = await request(app).get('/v3/get').query({
+        consumer_key: 'test',
+        access_token: 'test',
+        search: '',
+        detailType: 'simpe',
+      });
+      expect(response.status).toEqual(200);
+      expect(nonSearchApi).toHaveBeenCalledTimes(1);
+    });
+    it('ignores empty search term and does not call search (complete)', async () => {
+      const nonSearchApi = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).get('/v3/get').query({
+        consumer_key: 'test',
+        access_token: 'test',
+        search: '',
+        detailType: 'complete',
+      });
+      expect(response.status).toEqual(200);
+      expect(nonSearchApi).toHaveBeenCalledTimes(1);
+    });
   });
   describe('with annotations option', () => {
     let clientSpy;
