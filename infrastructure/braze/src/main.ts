@@ -1,10 +1,7 @@
 import { Construct } from 'constructs';
-import { App, S3Backend, TerraformStack, Aspects, MigrateIds } from 'cdktf';
+import { App, S3Backend, TerraformStack } from 'cdktf';
 import { provider as awsProvider } from '@cdktf/provider-aws';
 import { config } from './config';
-import { provider as pagerdutyProvider } from '@cdktf/provider-pagerduty';
-import { provider as localProvider } from '@cdktf/provider-local';
-import { provider as nullProvider } from '@cdktf/provider-null';
 import { EmailSendDomain } from './emailSendDomain';
 import * as fs from 'fs';
 import { ClickTrackingDomain } from './clickTrackingDomain';
@@ -18,11 +15,6 @@ class Braze extends TerraformStack {
       region: 'us-east-1',
       defaultTags: [{ tags: config.tags }],
     });
-    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
-      token: undefined,
-    });
-    new localProvider.LocalProvider(this, 'local_provider');
-    new nullProvider.NullProvider(this, 'null_provider');
 
     new S3Backend(this, {
       bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
@@ -82,10 +74,6 @@ class Braze extends TerraformStack {
       prefix: config.prefix,
       tags: config.tags,
     });
-
-    // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
-    // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
-    Aspects.of(this).add(new MigrateIds());
   }
 }
 

@@ -1,10 +1,5 @@
 import { Construct } from 'constructs';
-import {
-  App,
-  DataTerraformRemoteState,
-  S3Backend,
-  TerraformStack,
-} from 'cdktf';
+import { App, S3Backend, TerraformStack } from 'cdktf';
 import {
   provider as awsProvider,
   cloudwatchLogGroup,
@@ -21,7 +16,10 @@ import {
 } from '@pocket-tools/terraform-modules';
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
-import { provider as pagerdutyProvider } from '@cdktf/provider-pagerduty';
+import {
+  provider as pagerdutyProvider,
+  dataPagerdutyEscalationPolicy,
+} from '@cdktf/provider-pagerduty';
 import * as fs from 'fs';
 
 class UserAPI extends TerraformStack {
@@ -87,26 +85,34 @@ class UserAPI extends TerraformStack {
    * @private
    */
   private createPagerDuty() {
-    const incidentManagement = new DataTerraformRemoteState(
-      this,
-      'incident_management',
-      {
-        organization: 'Pocket',
-        workspaces: {
-          name: 'incident-management',
+    // don't create any pagerduty resources if in dev
+    if (config.isDev) {
+      return undefined;
+    }
+
+    const nonCriticalEscalationPolicyId =
+      new dataPagerdutyEscalationPolicy.DataPagerdutyEscalationPolicy(
+        this,
+        'non_critical_escalation_policy',
+        {
+          name: 'Pocket On-Call: Default Non-Critical - Tier 2+ (Former Backend Temporary Holder)',
         },
-      },
-    );
+      ).id;
+
+    const criticalEscalationPolicyId =
+      new dataPagerdutyEscalationPolicy.DataPagerdutyEscalationPolicy(
+        this,
+        'critical_escalation_policy',
+        {
+          name: 'Pocket On-Call: Default Critical - Tier 1 (Former Backend Temporary Holder)',
+        },
+      ).id;
 
     return new PocketPagerDuty(this, 'pagerduty', {
       prefix: config.prefix,
       service: {
-        criticalEscalationPolicyId: incidentManagement
-          .get('policy_default_critical_id')
-          .toString(),
-        nonCriticalEscalationPolicyId: incidentManagement
-          .get('policy_default_non_critical_id')
-          .toString(),
+        criticalEscalationPolicyId: criticalEscalationPolicyId,
+        nonCriticalEscalationPolicyId: nonCriticalEscalationPolicyId,
       },
     });
   }

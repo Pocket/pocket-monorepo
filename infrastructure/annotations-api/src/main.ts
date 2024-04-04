@@ -1,10 +1,5 @@
 import { Construct } from 'constructs';
-import {
-  App,
-  DataTerraformRemoteState,
-  S3Backend,
-  TerraformStack,
-} from 'cdktf';
+import { App, S3Backend, TerraformStack } from 'cdktf';
 import {
   provider as awsProvider,
   sqsQueue,
@@ -17,7 +12,10 @@ import {
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
-import { provider as pagerdutyProvider } from '@cdktf/provider-pagerduty';
+import {
+  provider as pagerdutyProvider,
+  dataPagerdutyEscalationPolicy,
+} from '@cdktf/provider-pagerduty';
 import { config } from './config';
 import {
   ApplicationSQSQueue,
@@ -160,27 +158,21 @@ class AnnotationsAPI extends TerraformStack {
       return undefined;
     }
 
-    const incidentManagement = new DataTerraformRemoteState(
-      this,
-      'incident_management',
-      {
-        organization: 'Pocket',
-        workspaces: {
-          name: 'incident-management',
+    const nonCriticalEscalationPolicyId =
+      new dataPagerdutyEscalationPolicy.DataPagerdutyEscalationPolicy(
+        this,
+        'non_critical_escalation_policy',
+        {
+          name: 'Pocket On-Call: Default Non-Critical - Tier 2+ (Former Backend Temporary Holder)',
         },
-      },
-    );
+      ).id;
 
     return new PocketPagerDuty(this, 'pagerduty', {
       prefix: config.prefix,
       service: {
         // This is a Tier 2 service and as such only raises non-critical alarms.
-        criticalEscalationPolicyId: incidentManagement
-          .get('policy_default_non_critical_id')
-          .toString(),
-        nonCriticalEscalationPolicyId: incidentManagement
-          .get('policy_default_non_critical_id')
-          .toString(),
+        criticalEscalationPolicyId: nonCriticalEscalationPolicyId,
+        nonCriticalEscalationPolicyId: nonCriticalEscalationPolicyId,
       },
     });
   }
