@@ -53,7 +53,9 @@ describe('ShortUrl', () => {
     await sharedRepo.query('ALTER TABLE share_urls AUTO_INCREMENT = 1');
     //first call for getItemByUrl.
     nock(`http://example-parser.com`)
-      .get(`/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular`)
+      .get(
+        `/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular&enableItemUrlFallback=1`,
+      )
       .reply(200, {
         item: {
           given_url: testUrl,
@@ -131,7 +133,7 @@ describe('ShortUrl', () => {
       .get(
         `/?url=${encodeURIComponent(
           `${config.shortUrl.collectionUrl}/${testSlug}`,
-        )}&getItem=1&output=regular`,
+        )}&getItem=1&output=regular&enableItemUrlFallback=1`,
       )
       .reply(200, {
         item: {
@@ -170,7 +172,9 @@ describe('ShortUrl', () => {
   it('should make a single db record for an existing given_url', async () => {
     //first call for getItemByUrl.
     nock(`http://example-parser.com`)
-      .get(`/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular`)
+      .get(
+        `/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular&enableItemUrlFallback=1`,
+      )
       .reply(200, {
         item: {
           given_url: testUrl,
@@ -212,7 +216,9 @@ describe('ShortUrl', () => {
   it('fetches all shortUrls in a single batch when resolving item entities', async () => {
     const givenUrls = [testUrl, 'http://another-test.com'];
     nock(`http://example-parser.com`)
-      .get(`/?url=${encodeURIComponent(givenUrls[0])}&getItem=1&output=regular`)
+      .get(
+        `/?url=${encodeURIComponent(givenUrls[0])}&getItem=1&output=regular&enableItemUrlFallback=1`,
+      )
       .reply(200, {
         item: {
           given_url: testUrl,
@@ -221,7 +227,9 @@ describe('ShortUrl', () => {
         },
       });
     nock(`http://example-parser.com`)
-      .get(`/?url=${encodeURIComponent(givenUrls[1])}&getItem=1&output=regular`)
+      .get(
+        `/?url=${encodeURIComponent(givenUrls[1])}&getItem=1&output=regular&enableItemUrlFallback=1`,
+      )
       .reply(200, {
         item: {
           given_url: givenUrls[1],
@@ -269,7 +277,9 @@ describe('ShortUrl', () => {
     });
     it('should resolve the item from the short url', async () => {
       nock(`http://example-parser.com`)
-        .get(`/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular`)
+        .get(
+          `/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular&enableItemUrlFallback=1`,
+        )
         .reply(200, {
           item: {
             given_url: testUrl,

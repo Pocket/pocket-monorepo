@@ -69,7 +69,12 @@ describe('SSML integration ', () => {
     //first call for getItemByUrl.
     nock('http://example-parser.com')
       .get('/')
-      .query({ url: testUrl, getItem: '1', output: 'regular' })
+      .query({
+        url: testUrl,
+        getItem: '1',
+        output: 'regular',
+        enableItemUrlFallback: '1',
+      })
       .reply(200, {
         item: {
           title: 'The cool article',

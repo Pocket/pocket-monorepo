@@ -92,7 +92,12 @@ function nockerHelper(fakeData: any, url: string, refresh?: boolean) {
     encodedQueryParams: false,
   })
     .get('/')
-    .query({ url: url, output: 'regular', getItem: '1' })
+    .query({
+      url: url,
+      output: 'regular',
+      getItem: '1',
+      enableItemUrlFallback: '1',
+    })
     .reply(200, {
       item: {
         given_url: url,

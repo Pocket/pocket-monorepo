@@ -54,7 +54,7 @@ const internalGetItemByUrl = async (
 
   const endpoint = `${config.parserEndpoint}?url=${encodeURIComponent(
     url,
-  )}&getItem=1&output=regular`;
+  )}&getItem=1&output=regular&enableItemUrlFallback=1`;
   let data = await new FetchHandler().fetchJSON(endpoint);
   // check if there's an item
   if (!data || (data && !data.item)) {
