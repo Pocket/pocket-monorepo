@@ -20,6 +20,7 @@ export const config = {
   domain,
   graphqlVariant,
   s3LogsBucket,
+  isDev,
   database: {
     port: '3306',
   },

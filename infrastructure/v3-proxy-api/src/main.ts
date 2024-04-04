@@ -8,7 +8,10 @@ import {
 } from '@cdktf/provider-aws';
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
-import { provider as pagerdutyProvider } from '@cdktf/provider-pagerduty';
+import {
+  provider as pagerdutyProvider,
+  dataPagerdutyEscalationPolicy,
+} from '@cdktf/provider-pagerduty';
 import {
   PocketALBApplication,
   PocketPagerDuty,
@@ -79,8 +82,28 @@ class Stack extends TerraformStack {
    * @private
    */
   private createPagerDuty() {
-    // don't create any pagerduty resources for now
-    return undefined;
+    // don't create any pagerduty resources if in dev
+    if (config.isDev) {
+      return undefined;
+    }
+
+    const nonCriticalEscalationPolicyId =
+      new dataPagerdutyEscalationPolicy.DataPagerdutyEscalationPolicy(
+        this,
+        'non_critical_escalation_policy',
+        {
+          name: 'Pocket On-Call: Default Non-Critical - Tier 2+ (Former Backend Temporary Holder)',
+        },
+      ).id;
+
+    return new PocketPagerDuty(this, 'pagerduty', {
+      prefix: config.prefix,
+      service: {
+        // This is a Tier 2 service and as such only raises non-critical alarms.
+        criticalEscalationPolicyId: nonCriticalEscalationPolicyId,
+        nonCriticalEscalationPolicyId: nonCriticalEscalationPolicyId,
+      },
+    });
   }
 
   /**
