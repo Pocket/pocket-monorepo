@@ -177,6 +177,20 @@ describe('send validator', () => {
           time: now,
         },
       },
+      // array tags input
+      {
+        input: {
+          item_id: '12345',
+          action: 'tags_add' as const,
+          tags: ['perilous', 'supplemental'],
+        },
+        expected: {
+          itemId: 12345,
+          action: 'tags_add',
+          tags: ['perilous', 'supplemental'],
+          time: now,
+        },
+      },
       {
         input: {
           item_id: '12345',
@@ -190,11 +204,39 @@ describe('send validator', () => {
           time: now,
         },
       },
+      // Array input
+      {
+        input: {
+          item_id: '12345',
+          action: 'tags_replace' as const,
+          tags: ['perilous', 'supplemental'],
+        },
+        expected: {
+          itemId: 12345,
+          action: 'tags_replace',
+          tags: ['perilous', 'supplemental'],
+          time: now,
+        },
+      },
       {
         input: {
           item_id: '12345',
           action: 'tags_remove' as const,
           tags: 'perilous,supplemental',
+        },
+        expected: {
+          itemId: 12345,
+          action: 'tags_remove',
+          tags: ['perilous', 'supplemental'],
+          time: now,
+        },
+      },
+      // array input
+      {
+        input: {
+          item_id: '12345',
+          action: 'tags_remove' as const,
+          tags: ['perilous', 'supplemental'],
         },
         expected: {
           itemId: 12345,
@@ -331,6 +373,22 @@ describe('send validator', () => {
           action: 'tags_add' as const,
           item_id: '123',
           tags: 'perilous,,supplemental',
+        },
+        error: 'Tag cannot be an empty string',
+      },
+      {
+        input: {
+          action: 'tags_add' as const,
+          item_id: '123',
+          tags: [],
+        },
+        error: 'Tags input cannot be empty',
+      },
+      {
+        input: {
+          action: 'tags_add' as const,
+          item_id: '123',
+          tags: ['perilous', '', 'supplemental'],
         },
         error: 'Tag cannot be an empty string',
       },
