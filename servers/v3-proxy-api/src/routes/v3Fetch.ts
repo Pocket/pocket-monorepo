@@ -70,7 +70,6 @@ export async function processV3call(
     data.count = 25; // set the intial page size to a smaller value to allow the user to see something as quickly as possible
   }
   const options = { withAnnotations: data.annotations };
-  //do sometthing to count here for page size.
   const params: V3GetParams = {
     detailType: 'complete',
     total: true,
@@ -80,6 +79,7 @@ export async function processV3call(
     offset: data.offset,
     sort: 'newest',
     annotations: data.annotations,
+    state: 'unread',
   };
 
   // Otherwise call SavedItems list api

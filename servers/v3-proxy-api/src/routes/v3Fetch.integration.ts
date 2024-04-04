@@ -255,6 +255,15 @@ describe('v3Fetch', () => {
       expect(consoleSpy).not.toHaveBeenCalled();
       expect(sentrySpy).not.toHaveBeenCalled();
     });
+    it('only requests "unread" items', async () => {
+      const params = { consumer_key: 'test', access_token: 'test' };
+      const requestSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).get('/v3/fetch').query(params);
+      expect(response.status).toBe(200);
+      expect(requestSpy.mock.calls[0][3].filter).toEqual({ status: 'UNREAD' });
+    });
     it.each([
       { consumer_key: 'test', access_token: 'test' },
       {
