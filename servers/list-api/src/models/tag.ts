@@ -446,6 +446,10 @@ export class TagModel {
   private async getItemIdAssociations(tag: string): Promise<string[]> {
     return await this.tagService.fetchItemIdAssociations(tag);
   }
+
+  public async tagsList(syncSince?: Date): Promise<string[] | undefined> {
+    return await this.tagService.tagsList(syncSince);
+  }
 }
 
 /**

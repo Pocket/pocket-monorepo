@@ -606,6 +606,19 @@ type User @key(fields: "id") {
   tags(pagination: PaginationInput): TagConnection
 
   """
+  Get all tag names for a user.
+  If syncSince is passed, it will only return tags if changes
+  to a user's tags have occurred after syncSince. It will return
+  all of the user's tags (not just the changes).
+
+  Yes, this is bad graphql design. It's serving a specific
+  REST API which has unlimited SQL queries, and we do not want to
+  make it possible to request every associated SavedItem
+  node on a tag object. Just biting the bullet on this one.
+  """
+  tagsList(syncSince: ISOString): [String!] @tag(name: "v3proxy")
+
+  """
   Get a SavedItem by its id
   """
   savedItemById(id: ID!): SavedItem @deprecated(reason: "Use saveById instead")

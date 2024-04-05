@@ -431,6 +431,40 @@ export class TagDataService {
   }
 
   /**
+   * Return the user's entire list of tags.
+   * This is to support a specific v3 API and should not be reused.
+   * And yes, this is a problematic query and sync strategy.
+   * @param syncSince if defined, will only return the list of tags if
+   * there has been a change since `syncSince`
+   * @returns the user's entire list of tags, or undefined if no changes
+   * have happened since syncSince
+   */
+  public async tagsList(syncSince?: Date): Promise<string[] | undefined> {
+    const tags = this.db('item_tags')
+      .select('tag')
+      .distinct()
+      .where('user_id', this.userId)
+      .pluck('tag');
+    if (syncSince != null) {
+      const lastUpdate = await this.usersMetaService.lastTagMutationTime();
+      const updateFallback = lastUpdate ?? new Date();
+      // Per web repo, set this timestamp now if it doesn't exist to prevent extraneous syncs
+      if (lastUpdate == null) {
+        this.usersMetaService.upsertTagLog(updateFallback);
+      }
+      if (updateFallback > syncSince) {
+        return tags;
+      } else {
+        // Don't return data if no changs since syncSince
+        return undefined;
+      }
+    } else {
+      // If no timestamp is passed we return data
+      return tags;
+    }
+  }
+
+  /**
    * Bulk update method for creating and deleting tags associated to a Save.
    * All SaveIds passed to this function must be valid; if any are not
    * found in the user's saves, the entire operation will be rolled

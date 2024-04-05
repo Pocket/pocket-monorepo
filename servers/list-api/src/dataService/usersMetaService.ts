@@ -2,6 +2,7 @@ import { Knex } from 'knex';
 import { IContext } from '../server/context';
 import { mysqlTimeString } from './utils';
 import config from '../config';
+import { DateTime } from 'luxon';
 
 export class UsersMetaService {
   private static propertiesMap = {
@@ -63,5 +64,38 @@ export class UsersMetaService {
     await this.insertTimestampByProperty(propertyCode, timestamp).transacting(
       trx,
     );
+  }
+
+  /**
+   * Upsert a record into the tag log.
+   * Used for updating the tag sync record as a side-effect of the
+   * v3 tagslist sync query, not a mutation.
+   * It should only be called when there is not a record, but just
+   * in case we will merge (upsert) on conflict.
+   */
+  public async upsertTagLog(timestamp: Date) {
+    await this.insertTimestampByProperty(
+      UsersMetaService.propertiesMap.tag,
+      timestamp,
+    )
+      .onConflict()
+      .merge();
+  }
+
+  /**
+   * Fetch the last time a change to tags was recorded.
+   * Returns undefined if no changes to tags have occurred
+   * for the user (e.g. they don't have any)
+   */
+  public async lastTagMutationTime(): Promise<Date | undefined> {
+    const row = await this.db
+      .where({
+        user_id: this.userId,
+        property: UsersMetaService.propertiesMap.tag,
+      })
+      .select()
+      .first();
+    if (row == null) return undefined;
+    return DateTime.fromSQL(row.value, { zone: config.database.tz }).toJSDate();
   }
 }

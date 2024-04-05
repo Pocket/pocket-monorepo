@@ -72,6 +72,13 @@ const resolvers = {
     savedItems,
     savedItemsByOffset: savedItemsPage,
     tags: userTags,
+    async tagsList(
+      _,
+      args: { syncSince?: Date },
+      context: IContext,
+    ): Promise<string[] | undefined> {
+      return await context.models.tag.tagsList(args.syncSince);
+    },
   },
   Item: {
     savedItem: async (item: Item, args, context: IContext) => {
