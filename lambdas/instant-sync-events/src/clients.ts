@@ -8,8 +8,10 @@ let writeDb: Knex;
 /**
  * Create a db client for reads from readitla_ril-* databases
  */
-export async function readClient(): Promise<knex.Knex<any, any[]>> {
-  if (readDb) return readDb;
+export async function readClient(
+  reset: boolean = false,
+): Promise<knex.Knex<any, any[]>> {
+  if (readDb && !reset) return readDb;
 
   const secret = await fetchSecret(config.dbSecretName);
 
@@ -26,8 +28,10 @@ export async function readClient(): Promise<knex.Knex<any, any[]>> {
 /**
  * Create a db client for writes to readitla_ril-* databases
  */
-export async function writeClient(): Promise<knex.Knex<any, any[]>> {
-  if (writeDb) return writeDb;
+export async function writeClient(
+  reset: boolean = false,
+): Promise<knex.Knex<any, any[]>> {
+  if (writeDb && !reset) return writeDb;
 
   const secret = await fetchSecret(config.dbSecretName);
 

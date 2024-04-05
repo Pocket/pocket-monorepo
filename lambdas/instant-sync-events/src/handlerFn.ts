@@ -101,6 +101,9 @@ export const instantSyncHandler = async (
     .andWhere('expires_at', '<', new Date());
   console.info(`Cleaning up ${cleanedUpRecords}`);
 
+  await writeDb.destroy();
+  await db.destroy();
+
   return { batchItemFailures: batchFailures };
 };
 

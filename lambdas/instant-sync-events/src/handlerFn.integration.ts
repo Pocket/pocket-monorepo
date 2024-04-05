@@ -11,7 +11,6 @@ jest.mock('@pocket-tools/lambda-secrets');
 
 describe('instantSyncHandler', () => {
   let writeDb: Knex;
-  let readDb: Knex;
   let serverLoggerSpy: jest.SpyInstance;
 
   afterEach(async () => {
@@ -20,11 +19,6 @@ describe('instantSyncHandler', () => {
   });
 
   beforeEach(async () => {
-    await writeDb('push_tokens').truncate();
-    serverLoggerSpy = jest.spyOn(console, 'info');
-  });
-
-  beforeAll(async () => {
     jest.spyOn(LambdaSecrets, 'fetchSecret').mockImplementation(() => {
       return Promise.resolve({
         read_host: 'localhost',
@@ -35,13 +29,10 @@ describe('instantSyncHandler', () => {
         write_password: '',
       });
     });
-    writeDb = await writeClient();
-    readDb = await readClient();
-  });
-
-  afterAll(async () => {
-    await writeDb.destroy();
-    await readDb.destroy();
+    serverLoggerSpy = jest.spyOn(console, 'info');
+    writeDb = await writeClient(true);
+    await readClient(true);
+    await writeDb('push_tokens').truncate();
   });
 
   it.each([
