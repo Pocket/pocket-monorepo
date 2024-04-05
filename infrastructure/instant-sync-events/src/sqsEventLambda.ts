@@ -66,6 +66,8 @@ export class SQSEventLambda extends Construct {
             stackConfig.environment === 'Prod' ? 'production' : 'development',
           PUSH_QUEUE_URL: config.pushQueue.url,
           DB_SECRET_NAME: stackConfig.databaseSecretName,
+          PARAMETERS_SECRETS_EXTENSION_MAX_CONNECTIONS: '50',
+          SECRETS_MANAGER_TIMEOUT_MILLIS: '5000',
         },
         addParameterStoreAndSecretsLayer: true,
         ignoreEnvironmentVars: ['GIT_SHA'],
