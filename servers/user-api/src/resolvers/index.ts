@@ -10,7 +10,7 @@ import {
   updateUserEmailByFxaId,
   expireUserWebSessionByFxaId,
 } from './mutations';
-import { User } from '../types';
+import { PremiumFeature, PremiumStatus, User } from '../types';
 import { UserModel } from '../models/User';
 import { UserDataService } from '../dataService/userDataService';
 
@@ -90,6 +90,32 @@ export const resolvers = {
     },
     description: (parent, args, context: IContext): Promise<string> => {
       return parent.description ?? context.models.user.description;
+    },
+    premiumStatus: (
+      parent,
+      args,
+      context: IContext,
+    ): Promise<PremiumStatus> => {
+      return parent.premiumStatus ?? context.models.user.premiumStatus;
+    },
+    premiumFeatures: async (
+      parent,
+      args,
+      context: IContext,
+    ): Promise<PremiumFeature[] | null> => {
+      const status =
+        (await parent.premiumStatus) ??
+        (await context.models.user.premiumStatus);
+      if (status !== PremiumStatus.ACTIVE) {
+        return null;
+      }
+      return [
+        PremiumFeature.PERMANENT_LIBRARY,
+        PremiumFeature.SUGGESTED_TAGS,
+        PremiumFeature.PREMIUM_SEARCH,
+        PremiumFeature.ANNOTATIONS,
+        PremiumFeature.AD_FREE,
+      ];
     },
   },
   Mutation: {

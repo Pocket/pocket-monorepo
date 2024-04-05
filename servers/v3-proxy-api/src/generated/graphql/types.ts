@@ -2067,8 +2067,6 @@ export type RecommendationReason = {
 
 /** Reasons why recommendations are made. Focuses on client needs and is not exhaustive. */
 export enum RecommendationReasonType {
-  /** Recommendations based on hybrid collaborative filtering. */
-  HybridCfRecommender = 'HYBRID_CF_RECOMMENDER',
   /** Recommendations are sourced from the Pocket Hits newsletter. */
   PocketHits = 'POCKET_HITS',
   /** Recommendations that match the user's topic preferences are ranked higher. */

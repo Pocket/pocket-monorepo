@@ -115,7 +115,7 @@ type User @key(fields: "id") {
   """
   Premium features that a user has access to
   """
-  premiumFeatures: PremiumFeature[]
+  premiumFeatures: [PremiumFeature]
 
   """
   Current premium status of the user
