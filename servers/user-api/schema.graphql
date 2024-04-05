@@ -11,11 +11,56 @@ See Section 5.6 of the RFC 3339 profile of the ISO 8601 standard: https://www.ie
 """
 scalar ISOString
 
+enum PremiumStatus {
+  """
+  User has never had premium
+  """
+  NEVER
+
+  """
+  User has premium and its active
+  NOTE: User will still show as active if they turn off auto-renew or have otherwise canceled but the expiration date hasn't hit yet
+  """
+  ACTIVE
+
+  """
+  User has had premium, but it is expired
+  """
+  EXPIRED
+}
+
+enum PremiumFeature {
+  """
+  Feature where pocket saves permanent copies of all your saves
+  """
+  PERMANENT_LIBRARY
+
+  """
+  Feature where pocket suggests tags
+  """
+  SUGGESTED_TAGS
+
+  """
+  Feature where pocket's search is enhanced
+  """
+  PREMIUM_SEARCH
+
+  """
+  Feature where you can highlight articles
+  """
+  ANNOTATIONS
+
+  """
+  Feature where you get an ad-free experience
+  """
+  AD_FREE
+}
+
 type User @key(fields: "id") {
   """
   User id, provided by the user service.
   """
-  id: ID! @inaccessible
+  id: ID!
 
   """
   The public avatar url for the user
@@ -66,6 +111,16 @@ type User @key(fields: "id") {
   Indicates if a user is FxA or not
   """
   isFxa: Boolean
+
+  """
+  Premium features that a user has access to
+  """
+  premiumFeatures: [PremiumFeature]
+
+  """
+  Current premium status of the user
+  """
+  premiumStatus: PremiumStatus
 }
 
 """

@@ -130,6 +130,9 @@ export class UserDataService {
         'last_name as lastName',
         'users.user_id as id',
         'username',
+        this.readDb.raw(
+          `COALESCE(premiumQuery.premiumStatus, 'NEVER') AS premiumStatus`,
+        ),
       )
       .where('users.user_id', this.userId)
       .leftOuterJoin('user_profile', 'user_profile.user_id', 'users.user_id')
@@ -137,6 +140,21 @@ export class UserDataService {
         'user_firefox_account',
         'user_firefox_account.user_id',
         'users.user_id',
+      )
+      .leftJoin(
+        this.readDb.raw(`(
+        SELECT user_id,
+               CASE
+                   WHEN active = 1 THEN 'ACTIVE'
+                   WHEN active = 0 THEN 'EXPIRED'
+                   ELSE 'NEVER'
+               END AS premiumStatus
+        FROM payment_subscriptions
+        ORDER BY active DESC, expires_at DESC
+        LIMIT 1
+      ) AS premiumQuery`),
+        'users.user_id',
+        'premiumQuery.user_id',
       )
       .first();
   }

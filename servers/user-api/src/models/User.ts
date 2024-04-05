@@ -114,6 +114,10 @@ export class UserModel implements UserEntity {
     return this.lazyLoadAttribute('email');
   }
 
+  get premiumStatus(): Promise<User['premiumStatus']> {
+    return this.lazyLoadAttribute('premiumStatus');
+  }
+
   /** Delete this User from database */
   async delete(): Promise<string> {
     const email = await this.email;

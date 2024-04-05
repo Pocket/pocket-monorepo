@@ -118,6 +118,10 @@ describe('User', () => {
     );
   });
 
+  beforeEach(async () => {
+    await writeDb('payment_subscriptions').truncate();
+  });
+
   describe('getUser', () => {
     it('should only load data once, despite requesting all fields', async () => {
       const variables = {
@@ -136,6 +140,8 @@ describe('User', () => {
             avatarUrl
             accountCreationDate
             isFxa
+            premiumStatus
+            premiumFeatures
           }
         }
       `;
@@ -160,6 +166,8 @@ describe('User', () => {
       );
       // user1 is also FxA so should be true
       expect(res.body.data?.user.isFxa).toBe(true);
+      expect(res.body.data?.user.premiumStatus).toBe('NEVER');
+      expect(res.body.data?.user.premiumFeatures).toBeNull();
       expect(getUserDataSpy).toHaveBeenCalledTimes(1);
     });
 
@@ -253,6 +261,234 @@ describe('User', () => {
         'fb792e6e9DE6E3ecI3Ca1CaE49A08497Bc36eA3eD5AacCd0Ba3b1056DbaB89d5',
       );
       expect(res.body.data?.user.isPremium).toBe(false);
+      expect(getUserDataSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should load active subscription status', async () => {
+      await writeDb('payment_subscriptions').insert([
+        {
+          user_id: 1,
+          vendor_id: '123',
+          product_id: 1,
+          active: true,
+          expires_at: new Date(),
+        },
+      ]);
+
+      const variables = {
+        userId: '1',
+      };
+
+      const GET_USER = gql`
+        query getUser {
+          user {
+            id
+            username
+            name
+            firstName
+            lastName
+            description
+            avatarUrl
+            accountCreationDate
+            isFxa
+            premiumStatus
+            premiumFeatures
+          }
+        }
+      `;
+
+      const res = await request(app)
+        .post(url)
+        .set(req.headers)
+        .send({
+          query: print(GET_USER),
+          variables,
+        });
+
+      expect(res.body.data?.user.id).toBe(
+        'fb792e6e9DE6E3ecI3Ca1CaE49A08497Bc36eA3eD5AacCd0Ba3b1056DbaB89d5',
+      );
+      expect(res.body.data?.user.username).toBe('username');
+      expect(res.body.data?.user.name).toBe('Pocket User');
+      expect(res.body.data?.user.avatarUrl).toBe('s3://my-avatar');
+      expect(res.body.data?.user.description).toBe('my bio');
+      expect(res.body.data?.user.accountCreationDate).toBe(
+        accountBirthUser1.toISOString(),
+      );
+      // user1 is also FxA so should be true
+      expect(res.body.data?.user.isFxa).toBe(true);
+      expect(res.body.data?.user.premiumStatus).toBe('ACTIVE');
+      expect(res.body.data?.user.premiumFeatures).toStrictEqual([
+        'PERMANENT_LIBRARY',
+        'SUGGESTED_TAGS',
+        'PREMIUM_SEARCH',
+        'ANNOTATIONS',
+        'AD_FREE',
+      ]);
+      expect(getUserDataSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should load active subscription status, when multiple have expired', async () => {
+      await writeDb('payment_subscriptions').insert([
+        {
+          user_id: 1,
+          vendor_id: '12d3',
+          product_id: 1,
+          active: false,
+          expires_at: new Date(),
+        },
+        {
+          user_id: 1,
+          vendor_id: '12asd',
+          product_id: 1,
+          active: false,
+          expires_at: new Date(),
+        },
+        {
+          user_id: 12,
+          vendor_id: '123',
+          product_id: 1,
+          active: false,
+          expires_at: new Date(),
+        },
+        {
+          user_id: 1,
+          vendor_id: '123s',
+          product_id: 1,
+          active: true,
+          expires_at: new Date(),
+        },
+      ]);
+
+      const variables = {
+        userId: '1',
+      };
+
+      const GET_USER = gql`
+        query getUser {
+          user {
+            id
+            username
+            name
+            firstName
+            lastName
+            description
+            avatarUrl
+            accountCreationDate
+            isFxa
+            premiumStatus
+            premiumFeatures
+          }
+        }
+      `;
+
+      const res = await request(app)
+        .post(url)
+        .set(req.headers)
+        .send({
+          query: print(GET_USER),
+          variables,
+        });
+
+      expect(res.body.data?.user.id).toBe(
+        'fb792e6e9DE6E3ecI3Ca1CaE49A08497Bc36eA3eD5AacCd0Ba3b1056DbaB89d5',
+      );
+      expect(res.body.data?.user.username).toBe('username');
+      expect(res.body.data?.user.name).toBe('Pocket User');
+      expect(res.body.data?.user.avatarUrl).toBe('s3://my-avatar');
+      expect(res.body.data?.user.description).toBe('my bio');
+      expect(res.body.data?.user.accountCreationDate).toBe(
+        accountBirthUser1.toISOString(),
+      );
+      // user1 is also FxA so should be true
+      expect(res.body.data?.user.isFxa).toBe(true);
+      expect(res.body.data?.user.premiumStatus).toBe('ACTIVE');
+      expect(res.body.data?.user.premiumFeatures).toStrictEqual([
+        'PERMANENT_LIBRARY',
+        'SUGGESTED_TAGS',
+        'PREMIUM_SEARCH',
+        'ANNOTATIONS',
+        'AD_FREE',
+      ]);
+      expect(getUserDataSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should load expire subscription status, when all have expired', async () => {
+      await writeDb('payment_subscriptions').insert([
+        {
+          user_id: 1,
+          vendor_id: '12d3',
+          product_id: 1,
+          active: false,
+          expires_at: new Date(),
+        },
+        {
+          user_id: 1,
+          vendor_id: '12asd',
+          product_id: 1,
+          active: false,
+          expires_at: new Date(),
+        },
+        {
+          user_id: 12,
+          vendor_id: '123',
+          product_id: 1,
+          active: false,
+          expires_at: new Date(),
+        },
+        {
+          user_id: 1,
+          vendor_id: '123s',
+          product_id: 1,
+          active: false,
+          expires_at: new Date(),
+        },
+      ]);
+
+      const variables = {
+        userId: '1',
+      };
+
+      const GET_USER = gql`
+        query getUser {
+          user {
+            id
+            username
+            name
+            firstName
+            lastName
+            description
+            avatarUrl
+            accountCreationDate
+            isFxa
+            premiumStatus
+            premiumFeatures
+          }
+        }
+      `;
+
+      const res = await request(app)
+        .post(url)
+        .set(req.headers)
+        .send({
+          query: print(GET_USER),
+          variables,
+        });
+
+      expect(res.body.data?.user.id).toBe(
+        'fb792e6e9DE6E3ecI3Ca1CaE49A08497Bc36eA3eD5AacCd0Ba3b1056DbaB89d5',
+      );
+      expect(res.body.data?.user.username).toBe('username');
+      expect(res.body.data?.user.name).toBe('Pocket User');
+      expect(res.body.data?.user.avatarUrl).toBe('s3://my-avatar');
+      expect(res.body.data?.user.description).toBe('my bio');
+      expect(res.body.data?.user.accountCreationDate).toBe(
+        accountBirthUser1.toISOString(),
+      );
+      // user1 is also FxA so should be true
+      expect(res.body.data?.user.isFxa).toBe(true);
+      expect(res.body.data?.user.premiumStatus).toBe('EXPIRED');
+      expect(res.body.data?.user.premiumFeatures).toBeNull();
       expect(getUserDataSpy).toHaveBeenCalledTimes(1);
     });
   });

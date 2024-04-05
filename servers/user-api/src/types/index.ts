@@ -19,7 +19,22 @@ export type User = UserProfile & {
   firstName: string | null;
   lastName: string | null;
   accountCreationDate: string | null;
+  premiumStatus: PremiumStatus;
 };
+
+export enum PremiumStatus {
+  NEVER = 'NEVER',
+  ACTIVE = 'ACTIVE',
+  EXPIRED = 'EXPIRED',
+}
+
+export enum PremiumFeature {
+  PERMANENT_LIBRARY = 'PERMANENT_LIBRARY',
+  SUGGESTED_TAGS = 'SUGGESTED_TAGS',
+  PREMIUM_SEARCH = 'PREMIUM_SEARCH',
+  ANNOTATIONS = 'ANNOTATIONS',
+  AD_FREE = 'AD_FREE',
+}
 
 export enum ExpireUserWebSessionReason {
   PASSWORD_CHANGED = 'PASSWORD_CHANGED',
