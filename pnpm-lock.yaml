@@ -1585,8 +1585,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@snowplow/node-tracker':
-        specifier: 3.22.1
-        version: 3.22.1
+        specifier: 3.23.0
+        version: 3.23.0
       dataloader:
         specifier: 2.2.2
         version: 2.2.2
@@ -1931,8 +1931,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@snowplow/node-tracker':
-        specifier: 3.22.1
-        version: 3.22.1
+        specifier: 3.23.0
+        version: 3.23.0
       express:
         specifier: 4.19.2
         version: 4.19.2
@@ -7804,10 +7804,10 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@snowplow/node-tracker@3.22.1:
-    resolution: {integrity: sha512-+iMAxr6mOJWOeaFJ5L120YD1w2JO5ULiahqhjhO0JAyNnvgOtwZAIO8NSI/U2pNDbGTFF0fVPUQp5AfoRsI08Q==}
+  /@snowplow/node-tracker@3.23.0:
+    resolution: {integrity: sha512-ZeSXrsMnUxJJxrgHR2aSze8V6uD7OCF/Han9DxAklcEl3e4HIeYzVFTYgcjAQg9JKHUqPGJBGHhenp3+0Ml0/Q==}
     dependencies:
-      '@snowplow/tracker-core': 3.22.1
+      '@snowplow/tracker-core': 3.23.0
       got: 11.8.6
       tslib: 2.6.2
     dev: false
@@ -7845,8 +7845,8 @@ packages:
       - encoding
     dev: true
 
-  /@snowplow/tracker-core@3.22.1:
-    resolution: {integrity: sha512-xv07gO4/Jw1lLfXJwri6BTZUpIX2thJx/hjMym7VvutXvbcIM+yoln1R14kjpgcOOyKhbr+cELThOpaJUvRX1A==}
+  /@snowplow/tracker-core@3.23.0:
+    resolution: {integrity: sha512-q6Z7czCjyfzhnftnofWo+jaLf3jdmTO8yNze7WbJcnZBTQjO0iMjx1ffVieZ38zFOc+O6ANLv4roMfmgyohwiQ==}
     dependencies:
       tslib: 2.6.2
       uuid: 3.4.0
