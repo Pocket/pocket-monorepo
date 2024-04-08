@@ -23,17 +23,6 @@ import { checkSchema, validationResult, matchedData } from 'express-validator';
 import { V3GetParams, V3GetSchema } from './validations';
 import { InputValidationError } from '../errors/InputValidationError';
 
-// const client = new ApolloClient({
-//   link: new HttpLink({ fetch, uri: 'https://client-api.getpocket.com' }),
-//   name: 'v3-proxy',
-//   cache: new InMemoryCache(),
-//   defaultOptions: {
-//     query: {
-//       fetchPolicy: 'no-cache', // Cache is required, but can be disabled.
-//     },
-//   },
-// });
-
 const router: Router = Router();
 
 /**

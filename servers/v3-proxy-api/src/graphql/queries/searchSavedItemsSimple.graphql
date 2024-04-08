@@ -25,30 +25,3 @@ query searchSavedItemsSimple(
     }
   }
 }
-
-# query searchSavedItemsSimpleAnnotations(
-#   $term: String!
-#   $pagination: OffsetPaginationInput
-#   $filter: SearchFilterInput
-#   $sort: SearchSortInput
-# ) {
-#   user {
-#     searchSavedItemsByOffset(
-#       term: $term
-#       pagination: $pagination
-#       filter: $filter
-#       sort: $sort
-#     ) {
-#       entries {
-#         savedItem {
-#           ...SavedItemSimple
-#           ...HighlightFields
-#         }
-#         ...SearchResultHighlights
-#       }
-#       offset
-#       limit
-#       totalCount
-#     }
-#   }
-# }

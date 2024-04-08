@@ -14,19 +14,3 @@ query savedItemsComplete(
     }
   }
 }
-
-# query savedItemsCompleteAnnotations(
-#   $pagination: OffsetPaginationInput
-#   $filter: SavedItemsFilter
-#   $sort: SavedItemsSort
-# ) {
-#   user {
-#     savedItemsByOffset(pagination: $pagination, filter: $filter, sort: $sort) {
-#       entries {
-#         ...SavedItemComplete
-#         ...HighlightFields
-#       }
-#       totalCount
-#     }
-#   }
-# }
