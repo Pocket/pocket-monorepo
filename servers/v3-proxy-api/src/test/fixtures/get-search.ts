@@ -1,9 +1,7 @@
 import {
   Imageness,
   SavedItemStatus,
-  SearchSavedItemsCompleteAnnotationsQuery,
   SearchSavedItemsCompleteQuery,
-  SearchSavedItemsSimpleAnnotationsQuery,
   SearchSavedItemsSimpleQuery,
   VideoType,
   Videoness,
@@ -1399,13 +1397,13 @@ export const premiumSearchGraphSimple: SearchSavedItemsSimpleQuery = {
   },
 };
 
-export const premiumSearchGraphSimpleAnnotations: SearchSavedItemsSimpleAnnotationsQuery =
+export const premiumSearchGraphSimpleAnnotations: SearchSavedItemsSimpleQuery =
   addAnnotations(premiumSearchGraphSimple, 2);
-export const premiumSearchGraphCompleteAnnotations: SearchSavedItemsCompleteAnnotationsQuery =
+export const premiumSearchGraphCompleteAnnotations: SearchSavedItemsCompleteQuery =
   addAnnotations(premiumSearchGraphComplete, 2);
-export const freeTierSearchGraphSimpleAnnotations: SearchSavedItemsSimpleAnnotationsQuery =
+export const freeTierSearchGraphSimpleAnnotations: SearchSavedItemsSimpleQuery =
   addAnnotations(freeTierSearchGraphSimple, 0);
-export const freeTierSearchGraphCompleteAnnotations: SearchSavedItemsCompleteAnnotationsQuery =
+export const freeTierSearchGraphCompleteAnnotations: SearchSavedItemsCompleteQuery =
   addAnnotations(freeTierSearchGraphComplete, 0);
 
 const expectedAnnotations = (itemId: string) => ({
@@ -1529,17 +1527,15 @@ export const expectedPremiumTierResponseCompleteAnnotations = {
 function addAnnotations(
   responseFixture: SearchSavedItemsSimpleQuery,
   index: number,
-): SearchSavedItemsSimpleAnnotationsQuery;
+): SearchSavedItemsSimpleQuery;
 function addAnnotations(
   responseFixutre: SearchSavedItemsCompleteQuery,
   index: number,
-): SearchSavedItemsCompleteAnnotationsQuery;
+): SearchSavedItemsCompleteQuery;
 function addAnnotations(
   responseFixture: SearchSavedItemsSimpleQuery | SearchSavedItemsCompleteQuery,
   index: number,
-):
-  | SearchSavedItemsSimpleAnnotationsQuery
-  | SearchSavedItemsCompleteAnnotationsQuery {
+): SearchSavedItemsSimpleQuery | SearchSavedItemsCompleteQuery {
   const annotations = {
     highlights: [
       {
