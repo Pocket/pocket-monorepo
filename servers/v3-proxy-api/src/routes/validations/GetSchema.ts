@@ -134,6 +134,8 @@ export const V3GetSchema: Schema = {
     toLowerCase: true,
     customSanitizer: {
       options: (value, { req }) => {
+        // Android sends in shortest and longest, but this is not supported by legacy v3/get.
+        if (['shortest', 'longest'].includes(value)) return 'newest';
         if (value) return value;
         if (req.body.search || req.query.search) {
           return 'relevance';
@@ -142,7 +144,7 @@ export const V3GetSchema: Schema = {
       },
     },
     isIn: {
-      options: [['newest', 'oldest', 'relevance']],
+      options: [['newest', 'oldest', 'relevance', 'longest', 'shortest']],
     },
     custom: {
       options: (value, { req }) => {

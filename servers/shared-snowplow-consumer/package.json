@@ -23,7 +23,7 @@
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@snowplow/node-tracker": "3.22.1",
+    "@snowplow/node-tracker": "3.23.0",
     "express": "4.19.2",
     "express-validator": "^7.0.1",
     "node-fetch": "2.7.0"
