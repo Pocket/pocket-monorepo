@@ -3,6 +3,7 @@ query searchSavedItemsSimple(
   $pagination: OffsetPaginationInput
   $filter: SearchFilterInput
   $sort: SearchSortInput
+  $withAnnotations: Boolean!
 ) {
   user {
     searchSavedItemsByOffset(
@@ -14,6 +15,7 @@ query searchSavedItemsSimple(
       entries {
         savedItem {
           ...SavedItemSimple
+          ...HighlightFields @include(if: $withAnnotations)
         }
         ...SearchResultHighlights
       }
@@ -24,29 +26,29 @@ query searchSavedItemsSimple(
   }
 }
 
-query searchSavedItemsSimpleAnnotations(
-  $term: String!
-  $pagination: OffsetPaginationInput
-  $filter: SearchFilterInput
-  $sort: SearchSortInput
-) {
-  user {
-    searchSavedItemsByOffset(
-      term: $term
-      pagination: $pagination
-      filter: $filter
-      sort: $sort
-    ) {
-      entries {
-        savedItem {
-          ...SavedItemSimple
-          ...HighlightFields
-        }
-        ...SearchResultHighlights
-      }
-      offset
-      limit
-      totalCount
-    }
-  }
-}
+# query searchSavedItemsSimpleAnnotations(
+#   $term: String!
+#   $pagination: OffsetPaginationInput
+#   $filter: SearchFilterInput
+#   $sort: SearchSortInput
+# ) {
+#   user {
+#     searchSavedItemsByOffset(
+#       term: $term
+#       pagination: $pagination
+#       filter: $filter
+#       sort: $sort
+#     ) {
+#       entries {
+#         savedItem {
+#           ...SavedItemSimple
+#           ...HighlightFields
+#         }
+#         ...SearchResultHighlights
+#       }
+#       offset
+#       limit
+#       totalCount
+#     }
+#   }
+# }

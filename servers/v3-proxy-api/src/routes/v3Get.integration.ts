@@ -206,7 +206,7 @@ describe('v3Get', () => {
           requestData: freeTierSearchGraphSimpleAnnotations,
         },
         expected: {
-          name: 'searchSavedItemsSimpleAnnotations',
+          name: 'searchSavedItemsSimple',
           response: expectedFreeTierResponseSimpleAnnotations,
         },
       },
@@ -221,7 +221,7 @@ describe('v3Get', () => {
           requestData: freeTierSearchGraphCompleteAnnotations,
         },
         expected: {
-          name: 'searchSavedItemsCompleteAnnotations',
+          name: 'searchSavedItemsComplete',
           response: expectedFreeTierResponseCompleteAnnotations,
         },
       },
@@ -237,7 +237,7 @@ describe('v3Get', () => {
           requestData: freeTierSearchGraphCompleteAnnotations,
         },
         expected: {
-          name: 'searchSavedItemsCompleteAnnotations',
+          name: 'searchSavedItemsComplete',
           response: {
             ...expectedFreeTierResponseCompleteAnnotations,
             total: '2',
@@ -256,7 +256,7 @@ describe('v3Get', () => {
           requestData: freeTierSearchGraphSimpleAnnotations,
         },
         expected: {
-          name: 'searchSavedItemsSimpleAnnotations',
+          name: 'searchSavedItemsSimple',
           response: {
             ...expectedFreeTierResponseSimpleAnnotations,
             total: '2',
@@ -272,7 +272,7 @@ describe('v3Get', () => {
           requestData: mockGraphGetSimpleAnnotations,
         },
         expected: {
-          name: 'savedItemsSimpleAnnotations',
+          name: 'savedItemsSimple',
           response: expectedGetSimpleAnnotations,
         },
       },
@@ -285,7 +285,7 @@ describe('v3Get', () => {
           requestData: mockGraphGetCompleteAnnotations,
         },
         expected: {
-          name: 'savedItemsCompleteAnnotations',
+          name: 'savedItemsComplete',
           response: expectedGetCompleteAnnotations,
         },
       },
@@ -299,7 +299,7 @@ describe('v3Get', () => {
           requestData: mockGraphGetCompleteAnnotations,
         },
         expected: {
-          name: 'savedItemsCompleteAnnotations',
+          name: 'savedItemsComplete',
           response: { ...expectedGetCompleteAnnotations, total: '10' },
         },
       },
@@ -313,7 +313,7 @@ describe('v3Get', () => {
           requestData: mockGraphGetSimpleAnnotations,
         },
         expected: {
-          name: 'savedItemsSimpleAnnotations',
+          name: 'savedItemsSimple',
           response: { ...expectedGetSimpleAnnotations, total: '10' },
         },
       },
@@ -334,7 +334,9 @@ describe('v3Get', () => {
           });
         expect(response.body).toEqual(expected.response);
         expect(requestSpy).toHaveBeenCalledTimes(1);
-        expect(requestSpy.mock.calls[0][4]).toEqual({ withAnnotations: true });
+        expect(requestSpy.mock.calls[0][3]).toMatchObject({
+          withAnnotations: true,
+        });
         expect(clientSpy.mock.calls[0][0]['definitions'][0].name.value).toEqual(
           expected.name,
         );

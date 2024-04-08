@@ -92,7 +92,7 @@ describe('v3Fetch', () => {
           requestData: mockGraphGetCompleteAnnotations,
         },
         expected: {
-          name: 'savedItemsCompleteAnnotations',
+          name: 'savedItemsComplete',
           response: {
             ...expectedGetCompleteAnnotations,
             recent_friends: [],
@@ -111,7 +111,7 @@ describe('v3Fetch', () => {
           requestData: mockGraphGetCompleteAnnotations,
         },
         expected: {
-          name: 'savedItemsCompleteAnnotations',
+          name: 'savedItemsComplete',
           response: { ...expectedGetCompleteAnnotations, total: '10' },
         },
       },
@@ -137,7 +137,9 @@ describe('v3Fetch', () => {
         };
         expect(response.body).toEqual({ ...expected.response, passthrough });
         expect(requestSpy).toHaveBeenCalledTimes(1);
-        expect(requestSpy.mock.calls[0][4]).toEqual({ withAnnotations: true });
+        expect(requestSpy.mock.calls[0][3]).toMatchObject({
+          withAnnotations: true,
+        });
         expect(clientSpy.mock.calls[0][0]['definitions'][0].name.value).toEqual(
           expected.name,
         );

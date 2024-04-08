@@ -2,29 +2,31 @@ query savedItemsSimple(
   $pagination: OffsetPaginationInput
   $filter: SavedItemsFilter
   $sort: SavedItemsSort
+  $withAnnotations: Boolean! # $withTagsList: Boolean!
 ) {
   user {
     savedItemsByOffset(pagination: $pagination, filter: $filter, sort: $sort) {
       entries {
         ...SavedItemSimple
+        ...HighlightFields @include(if: $withAnnotations)
       }
       totalCount
     }
   }
 }
 
-query savedItemsSimpleAnnotations(
-  $pagination: OffsetPaginationInput
-  $filter: SavedItemsFilter
-  $sort: SavedItemsSort
-) {
-  user {
-    savedItemsByOffset(pagination: $pagination, filter: $filter, sort: $sort) {
-      entries {
-        ...SavedItemSimple
-        ...HighlightFields
-      }
-      totalCount
-    }
-  }
-}
+# query savedItemsSimpleAnnotations(
+#   $pagination: OffsetPaginationInput
+#   $filter: SavedItemsFilter
+#   $sort: SavedItemsSort
+# ) {
+#   user {
+#     savedItemsByOffset(pagination: $pagination, filter: $filter, sort: $sort) {
+#       entries {
+#         ...SavedItemSimple
+#         ...HighlightFields
+#       }
+#       totalCount
+#     }
+#   }
+# }
