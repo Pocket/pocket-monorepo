@@ -313,7 +313,7 @@ importers:
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.3)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -1788,8 +1788,8 @@ importers:
         specifier: 7.109.0
         version: 7.109.0
       apns2:
-        specifier: 11.6.0
-        version: 11.6.0
+        specifier: 11.7.0
+        version: 11.7.0
       dotenv:
         specifier: 16.4.5
         version: 16.4.5
@@ -2224,7 +2224,7 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.3)(jest@29.7.0)(typescript@5.4.4)
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@types/node@20.12.5)(typescript@5.4.4)
@@ -8801,11 +8801,11 @@ packages:
       normalize-path: 3.0.0
       picomatch: 2.3.1
 
-  /apns2@11.6.0:
-    resolution: {integrity: sha512-CQ9mCE9exl9Gk/xxukthQO5sMZTv+13n6s7TKK0xWGP7LTqRlzKEJ5fetQ1byq+/7paxAgaNcIP3ROdfXjeE2Q==}
+  /apns2@11.7.0:
+    resolution: {integrity: sha512-krzKgO9VlfBuq79+Ufz2BOdmG2vZoDNADxicu2Dfxn4NypiG+Pm1f/CAu730kR7QhyY4kfjveO49ixQw6L9JEQ==}
     engines: {node: '>=16'}
     dependencies:
-      fast-jwt: 3.3.3
+      fast-jwt: 4.0.0
       fetch-http2: 1.4.0
     dev: false
 
@@ -11652,8 +11652,8 @@ packages:
     resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
     dev: true
 
-  /fast-jwt@3.3.3:
-    resolution: {integrity: sha512-oS3P8bRI24oPLJUePt2OgF64FBQib5TlgHLFQxYNoHYEEZe0gU3cKjJAVqpB5XKV/zjxmq4Hzbk3fgfW/wRz8Q==}
+  /fast-jwt@4.0.0:
+    resolution: {integrity: sha512-CnI93Tmk7eSzfw4e0Jlc5ZcWiN+/zK7xAKAhtXS8PAcKmYqfcXqxJl1hMyhk3iEt0M9JLo7DCYRDV2XcIacWAw==}
     engines: {node: '>=16 <22'}
     dependencies:
       '@lukeed/ms': 2.0.2
