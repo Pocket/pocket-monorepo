@@ -441,6 +441,32 @@ describe('v3Get', () => {
         sort: 'newest',
         since: '12345',
       },
+      {
+        consumer_key: 'test',
+        access_token: 'test',
+        detailType: 'complete',
+        contentType: 'article',
+        count: '10',
+        offset: '10',
+        state: 'read',
+        favorite: '0',
+        tag: 'tag',
+        sort: 'longest',
+        since: '12345',
+      },
+      {
+        consumer_key: 'test',
+        access_token: 'test',
+        detailType: 'complete',
+        contentType: 'article',
+        count: '10',
+        offset: '10',
+        state: 'read',
+        favorite: '0',
+        tag: 'tag',
+        sort: 'shortest',
+        since: '12345',
+      },
     ])('should work with valid query parameters (GET)', async (params) => {
       jest
         .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
