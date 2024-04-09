@@ -5,11 +5,11 @@ describe('lambda secrets', () => {
   const secretName = 'Lambda/Super/Secret';
   const session = 'super_secret_session';
   const secretValue = {
-    SecretString: {
+    SecretString: JSON.stringify({
       secret1: 'pocket',
       secret2: 'is',
       secret3: 'cool',
-    },
+    }),
     OtherAWSValues: 'blah',
   };
 
@@ -27,7 +27,7 @@ describe('lambda secrets', () => {
   it('does fetch from lambda endpoint', async () => {
     process.env.AWS_SESSION_TOKEN = session;
     const secret = await fetchSecret(secretName);
-    expect(secret).toEqual(secretValue.SecretString);
+    expect(secret).toEqual(JSON.parse(secretValue.SecretString));
   });
 
   it('does fail from lambda endpoint when session not valid', async () => {
@@ -73,7 +73,7 @@ describe('lambda parameters', () => {
   beforeEach(() => {
     nock(`http://localhost:2773`)
       .get(
-        `/systemsmanager/parameters/get/?name=${encodeURIComponent(secretName)}`,
+        `/systemsmanager/parameters/get?name=${encodeURIComponent(secretName)}`,
       )
       .matchHeader('X-Aws-Parameters-Secrets-Token', session)
       .reply(200, JSON.stringify(secretValue));
@@ -107,7 +107,7 @@ describe('lambda parameters', () => {
     cleanAll();
     nock(`http://localhost:2773`)
       .get(
-        `/systemsmanager/parameters/get/?name=${encodeURIComponent(secretName)}`,
+        `/systemsmanager/parameters/get?name=${encodeURIComponent(secretName)}`,
       )
       .matchHeader('X-Aws-Parameters-Secrets-Token', session)
       .reply(500);
@@ -115,7 +115,7 @@ describe('lambda parameters', () => {
       await fetchParameter(secretName);
     } catch (e) {
       expect(e.message).toBe(
-        `Failed fetching /systemsmanager/parameters/get/?name=${encodeURIComponent(secretName)} from lambda secret layer`,
+        `Failed fetching /systemsmanager/parameters/get?name=${encodeURIComponent(secretName)} from lambda secret layer`,
       );
     }
   });
