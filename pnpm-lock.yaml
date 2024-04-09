@@ -313,7 +313,7 @@ importers:
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.3)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -1022,10 +1022,6 @@ importers:
         version: link:../tsconfig
 
   packages/lambda-secrets:
-    dependencies:
-      node-fetch:
-        specifier: 2.7.0
-        version: 2.7.0
     devDependencies:
       '@jest/globals':
         specifier: 29.7.0
@@ -1033,15 +1029,15 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
-      '@types/node-fetch':
-        specifier: 2.6.11
-        version: 2.6.11
       eslint-config-custom:
         specifier: workspace:*
         version: link:../eslint-config-custom
       jest:
         specifier: 29.7.0
         version: 29.7.0(@types/node@20.12.5)(ts-node@10.9.2)
+      nock:
+        specifier: 14.0.0-beta.5
+        version: 14.0.0-beta.5
       ts-jest:
         specifier: 29.1.2
         version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
@@ -10801,7 +10797,7 @@ packages:
     dependencies:
       semver: 7.6.0
       shelljs: 0.8.5
-      typescript: 5.5.0-dev.20240408
+      typescript: 5.5.0-dev.20240409
     dev: false
 
   /dreamopt@0.8.0:
@@ -15411,6 +15407,14 @@ packages:
       - supports-color
     dev: true
 
+  /nock@14.0.0-beta.5:
+    resolution: {integrity: sha512-u255tf4DYvyErTlPZA9uTfXghiZZy+NflUOFONPVKZ5tP0yaHwKig28zyFOLhu8y5YcCRC+V5vDk4HHileh2iw==}
+    engines: {node: '>= 18'}
+    dependencies:
+      json-stringify-safe: 5.0.1
+      propagate: 2.0.1
+    dev: true
+
   /node-abi@3.55.0:
     resolution: {integrity: sha512-uPEjtyh2tFEvWYt4Jw7McOD5FPcHkcxm/tHZc5PWaDB3JYq0rGFUbgaAK+CT5pYpQddBfsZVWI08OwoRfdfbcQ==}
     engines: {node: '>=10'}
@@ -18548,6 +18552,40 @@ packages:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
     dev: false
 
+  /ts-jest@29.1.2(@babel/core@7.24.3)(jest@29.7.0)(typescript@5.4.4):
+    resolution: {integrity: sha512-br6GJoH/WUX4pu7FbZXuWGKGNDuU7b8Uj77g/Sp7puZV6EXzuByl6JrECvm0MzVzSTkSHWTihsXt+5XYER5b+g==}
+    engines: {node: ^16.10.0 || ^18.0.0 || >=20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@babel/core': '>=7.0.0-beta.0 <8'
+      '@jest/types': ^29.0.0
+      babel-jest: ^29.0.0
+      esbuild: '*'
+      jest: ^29.0.0
+      typescript: '>=4.3 <6'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      '@jest/types':
+        optional: true
+      babel-jest:
+        optional: true
+      esbuild:
+        optional: true
+    dependencies:
+      '@babel/core': 7.24.3
+      bs-logger: 0.2.6
+      fast-json-stable-stringify: 2.1.0
+      jest: 29.7.0(@types/node@20.12.5)(ts-node@10.9.2)
+      jest-util: 29.7.0
+      json5: 2.2.3
+      lodash.memoize: 4.1.2
+      make-error: 1.3.6
+      semver: 7.6.0
+      typescript: 5.4.4
+      yargs-parser: 21.1.1
+    dev: true
+
   /ts-jest@29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4):
     resolution: {integrity: sha512-br6GJoH/WUX4pu7FbZXuWGKGNDuU7b8Uj77g/Sp7puZV6EXzuByl6JrECvm0MzVzSTkSHWTihsXt+5XYER5b+g==}
     engines: {node: ^16.10.0 || ^18.0.0 || >=20.0.0}
@@ -18983,8 +19021,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.5.0-dev.20240408:
-    resolution: {integrity: sha512-WCqFA68PbE0+khOu6x2LPxePy0tKdWuNO2m2K4A/L+OPqua1Qmck9OXUQ/5nUd4B/8UlBuhkhuulQbr2LHO9vA==}
+  /typescript@5.5.0-dev.20240409:
+    resolution: {integrity: sha512-nQUzu2O0eRlESMnU/Xd9a2CD7MAvKPI1bCLB4Iu5aNA+cUymUnBAq8P3xaWipea0a3zRabE1UqwwxswMKp3X8g==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: false
