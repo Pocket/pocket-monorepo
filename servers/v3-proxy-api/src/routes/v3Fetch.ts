@@ -89,8 +89,7 @@ export async function processV3call(
     accessToken,
     consumerKey,
     headers,
-    variables,
-    options,
+    { ...variables, ...options },
   );
 
   const nextChunkSize = '250'; // Every chunk after the first one is always 250. This informs the client how many to download next.
