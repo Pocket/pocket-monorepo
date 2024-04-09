@@ -87,8 +87,7 @@ export async function processV3call(
         accessToken,
         consumerKey,
         headers,
-        variables,
-        options,
+        { ...variables, ...options },
       );
       if (data.total) {
         return searchSavedItemCompleteTotalToRest(response, options);
@@ -100,8 +99,7 @@ export async function processV3call(
       accessToken,
       consumerKey,
       headers,
-      variables,
-      options,
+      { ...variables, ...options },
     );
     if (data.total) {
       return searchSavedItemSimpleTotalToRest(response, options);
@@ -121,8 +119,7 @@ export async function processV3call(
         accessToken,
         consumerKey,
         headers,
-        variables,
-        options,
+        { ...variables, ...options },
       );
       if (data.total) {
         return savedItemsCompleteTotalToRest(response, options);
@@ -134,8 +131,7 @@ export async function processV3call(
       accessToken,
       consumerKey,
       headers,
-      variables,
-      options,
+      { ...variables, ...options },
     );
     if (data.total) {
       return savedItemsSimpleTotalToRest(response, options);

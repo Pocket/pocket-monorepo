@@ -22,18 +22,6 @@ import {
   SearchSavedItemsCompleteQueryVariables,
   SearchSavedItemsCompleteQuery,
   SearchSavedItemsCompleteDocument,
-  SearchSavedItemsSimpleAnnotationsQuery,
-  SearchSavedItemsSimpleAnnotationsQueryVariables,
-  SearchSavedItemsSimpleAnnotationsDocument,
-  SearchSavedItemsCompleteAnnotationsQuery,
-  SearchSavedItemsCompleteAnnotationsQueryVariables,
-  SearchSavedItemsCompleteAnnotationsDocument,
-  SavedItemsSimpleAnnotationsQuery,
-  SavedItemsSimpleAnnotationsQueryVariables,
-  SavedItemsSimpleAnnotationsDocument,
-  SavedItemsCompleteAnnotationsQuery,
-  SavedItemsCompleteAnnotationsQueryVariables,
-  SavedItemsCompleteAnnotationsDocument,
 } from '../generated/graphql/types';
 import config from '../config';
 import * as Sentry from '@sentry/node';
@@ -94,16 +82,9 @@ export async function callSavedItemsByOffsetSimple(
   consumerKey: string,
   headers: any,
   variables: SavedItemsSimpleQueryVariables,
-  options?: { withAnnotations?: boolean },
-): Promise<SavedItemsSimpleQuery | SavedItemsSimpleAnnotationsQuery> {
+): Promise<SavedItemsSimpleQuery> {
   Sentry.addBreadcrumb({ message: 'invoking callSavedItemsByOffsetSimple' });
   const client = getClient(accessToken, consumerKey, headers);
-  if (options?.withAnnotations) {
-    return client.request<
-      SavedItemsSimpleAnnotationsQuery,
-      SavedItemsSimpleAnnotationsQueryVariables
-    >(SavedItemsSimpleAnnotationsDocument, variables);
-  }
   return client.request<SavedItemsSimpleQuery, SavedItemsSimpleQueryVariables>(
     SavedItemsSimpleDocument,
     variables,
@@ -118,16 +99,9 @@ export async function callSavedItemsByOffsetComplete(
   consumerKey: string,
   headers: any,
   variables: SavedItemsCompleteQueryVariables,
-  options?: { withAnnotations?: boolean },
-): Promise<SavedItemsCompleteQuery | SavedItemsCompleteAnnotationsQuery> {
+): Promise<SavedItemsCompleteQuery> {
   Sentry.addBreadcrumb({ message: 'invoking callSavedItemsByOffsetComplete' });
   const client = getClient(accessToken, consumerKey, headers);
-  if (options?.withAnnotations) {
-    return client.request<
-      SavedItemsCompleteAnnotationsQuery,
-      SavedItemsCompleteAnnotationsQueryVariables
-    >(SavedItemsCompleteAnnotationsDocument, variables);
-  }
   return client.request<
     SavedItemsCompleteQuery,
     SavedItemsCompleteQueryVariables
@@ -150,18 +124,9 @@ export async function callSearchByOffsetSimple(
   consumerKey: string,
   headers: any,
   variables: SearchSavedItemsSimpleQueryVariables,
-  options?: { withAnnotations?: boolean },
-): Promise<
-  SearchSavedItemsSimpleQuery | SearchSavedItemsSimpleAnnotationsQuery
-> {
+): Promise<SearchSavedItemsSimpleQuery> {
   Sentry.addBreadcrumb({ message: 'invoking callSearchByOffsetSimple' });
   const client = getClient(accessToken, consumerKey, headers);
-  if (options?.withAnnotations) {
-    return client.request<
-      SearchSavedItemsSimpleAnnotationsQuery,
-      SearchSavedItemsSimpleAnnotationsQueryVariables
-    >(SearchSavedItemsSimpleAnnotationsDocument, variables);
-  }
   return client.request<
     SearchSavedItemsSimpleQuery,
     SearchSavedItemsSimpleQueryVariables
@@ -177,18 +142,9 @@ export async function callSearchByOffsetComplete(
   consumerKey: string,
   headers: any,
   variables: SearchSavedItemsCompleteQueryVariables,
-  options?: { withAnnotations?: boolean },
-): Promise<
-  SearchSavedItemsCompleteQuery | SearchSavedItemsCompleteAnnotationsQuery
-> {
+): Promise<SearchSavedItemsCompleteQuery> {
   Sentry.addBreadcrumb({ message: 'invoking callSearchByOffsetComplete' });
   const client = getClient(accessToken, consumerKey, headers);
-  if (options?.withAnnotations) {
-    return client.request<
-      SearchSavedItemsCompleteAnnotationsQuery,
-      SearchSavedItemsCompleteAnnotationsQueryVariables
-    >(SearchSavedItemsCompleteAnnotationsDocument, variables);
-  }
   return client.request<
     SearchSavedItemsCompleteQuery,
     SearchSavedItemsCompleteQueryVariables
