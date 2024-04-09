@@ -36,7 +36,7 @@
     "axios": "1.6.8",
     "axios-retry": "4.1.0",
     "dataloader": "2.2.2",
-    "parse-url": "9.0.1"
+    "parse-url": "9.2.0"
   },
   "files": [
     "dist",
