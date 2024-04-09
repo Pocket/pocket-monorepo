@@ -15,7 +15,7 @@
     "list-packages": "syncpack list",
     "list-mismatches": "syncpack list-mismatches",
     "fix-mismatches": "syncpack fix-mismatches && pnpm install",
-    "semantic-release": "dotenv -- turbo run semantic-release --concurrency 1"
+    "semantic-release": "dotenv -- turbo run semantic-release"
   },
   "dependencies": {
     "dotenv-cli": "latest"
