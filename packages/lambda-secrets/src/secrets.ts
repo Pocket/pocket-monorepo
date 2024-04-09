@@ -9,7 +9,7 @@ export const fetchSecret = async (
   secretName: string,
 ): Promise<Record<string, string>> => {
   const secretExtensionEndpoint: string = `/secretsmanager/get?secretId=${encodeURIComponent(secretName)}`;
-  const secret = await fetchFromLambda(secretExtensionEndpoint);
+  const secret = await fetchFromLambda(secretExtensionEndpoint, 3);
   // Secret string is itself a JSON string that needs to be decoded
   return JSON.parse(secret.SecretString);
 };
@@ -23,11 +23,14 @@ export const fetchParameter = async (
   parameterName: string,
 ): Promise<string> => {
   const secretExtensionEndpoint: string = `/systemsmanager/parameters/get?name=${encodeURIComponent(parameterName)}`;
-  const secret = await fetchFromLambda(secretExtensionEndpoint);
+  const secret = await fetchFromLambda(secretExtensionEndpoint, 3);
   return secret.Parameter.Value;
 };
 
-const fetchFromLambda = async (url: string): Promise<Record<string, any>> => {
+const fetchFromLambda = async (
+  url: string,
+  tries: number,
+): Promise<Record<string, any>> => {
   if (
     !process.env.AWS_SESSION_TOKEN ||
     process.env.AWS_SESSION_TOKEN == 'undefined'
@@ -59,7 +62,12 @@ const fetchFromLambda = async (url: string): Promise<Record<string, any>> => {
     // endpoint does not return json headers, so we grab the text and then parse it.
     return JSON.parse(await secret.text());
   } catch (err) {
-    console.error(err);
-    throw err;
+    if (tries == 0) {
+      console.error(err);
+      throw err;
+    }
+    // adding some retry logic because lambda layer seems to have some socket issues
+    tries = tries - 1;
+    return await fetchFromLambda(url, tries);
   }
 };
