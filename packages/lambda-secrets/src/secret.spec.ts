@@ -50,6 +50,18 @@ describe('lambda secrets', () => {
       .get(`/secretsmanager/get?secretId=${encodeURIComponent(secretName)}`)
       .matchHeader('X-Aws-Parameters-Secrets-Token', session)
       .reply(500);
+    nock(`http://localhost:2773`)
+      .get(`/secretsmanager/get?secretId=${encodeURIComponent(secretName)}`)
+      .matchHeader('X-Aws-Parameters-Secrets-Token', session)
+      .reply(500);
+    nock(`http://localhost:2773`)
+      .get(`/secretsmanager/get?secretId=${encodeURIComponent(secretName)}`)
+      .matchHeader('X-Aws-Parameters-Secrets-Token', session)
+      .reply(500);
+    nock(`http://localhost:2773`)
+      .get(`/secretsmanager/get?secretId=${encodeURIComponent(secretName)}`)
+      .matchHeader('X-Aws-Parameters-Secrets-Token', session)
+      .reply(500);
     try {
       await fetchSecret(secretName);
     } catch (e) {
@@ -105,6 +117,24 @@ describe('lambda parameters', () => {
     process.env.AWS_SESSION_TOKEN = session;
     expect.assertions(1);
     cleanAll();
+    nock(`http://localhost:2773`)
+      .get(
+        `/systemsmanager/parameters/get?name=${encodeURIComponent(secretName)}`,
+      )
+      .matchHeader('X-Aws-Parameters-Secrets-Token', session)
+      .reply(500);
+    nock(`http://localhost:2773`)
+      .get(
+        `/systemsmanager/parameters/get?name=${encodeURIComponent(secretName)}`,
+      )
+      .matchHeader('X-Aws-Parameters-Secrets-Token', session)
+      .reply(500);
+    nock(`http://localhost:2773`)
+      .get(
+        `/systemsmanager/parameters/get?name=${encodeURIComponent(secretName)}`,
+      )
+      .matchHeader('X-Aws-Parameters-Secrets-Token', session)
+      .reply(500);
     nock(`http://localhost:2773`)
       .get(
         `/systemsmanager/parameters/get?name=${encodeURIComponent(secretName)}`,
