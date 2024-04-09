@@ -45,7 +45,7 @@
   "devDependencies": {
     "@faker-js/faker": "8.4.1",
     "@types/jest": "29.5.12",
-    "@types/node": "^20.11.28",
+    "@types/node": "^20.12.6",
     "dotenv": "16.4.5",
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
