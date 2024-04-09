@@ -1,4 +1,8 @@
-import { TARGET_APNS_SILENT, TARGET_GCM } from './notificationTypes';
+import {
+  TARGET_APNS,
+  TARGET_APNS_SILENT,
+  TARGET_GCM,
+} from './notificationTypes';
 import { apns } from './apns';
 import { sendNotificationToDevice } from './gcm';
 import Sentry from './sentry';
@@ -19,7 +23,10 @@ const processMessage = async (fullMessage: Message): Promise<void> => {
     level: 'info',
   });
 
-  if (target === TARGET_APNS_SILENT) {
+  if (
+    target === TARGET_APNS_SILENT ||
+    (target === TARGET_APNS && contents == 'Ping')
+  ) {
     console.log('APNS SILENT push', token);
     await apns.sendNotificationToDevice(contents, token, true);
   } else if (target === TARGET_GCM) {
@@ -33,7 +40,6 @@ const processMessage = async (fullMessage: Message): Promise<void> => {
     }
   } else {
     console.warn(`Unhandled target ${target}`, { message });
-    Sentry.captureMessage(`Unhandled target ${target}`);
   }
 };
 
