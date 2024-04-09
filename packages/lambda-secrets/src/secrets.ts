@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 const debug = process.env.PARAMETERS_SECRETS_EXTENSION_LOG_LEVEL == 'debug';
 
 /**
@@ -54,9 +52,10 @@ const fetchFromLambda = async (url: string): Promise<Record<string, any>> => {
         headers: secret.headers,
       });
     }
-    if (!secret.ok) {
+    if (secret.status != 200) {
       throw new Error(`Failed fetching ${url} from lambda secret layer`);
     }
+
     // endpoint does not return json headers, so we grab the text and then parse it.
     return JSON.parse(await secret.text());
   } catch (err) {
