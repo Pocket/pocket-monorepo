@@ -90,6 +90,8 @@ export async function processV3call(
     sort: 'newest',
     annotations: data.annotations,
     state: 'unread',
+    taglist: data.taglist,
+    forcetaglist: data.forcetaglist,
   };
 
   // Otherwise call SavedItems list api
