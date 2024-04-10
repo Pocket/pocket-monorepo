@@ -13,6 +13,9 @@ export type V3FetchParams = {
   offset: number;
   shares?: boolean;
   updatedBefore?: number;
+  taglist: boolean;
+  forcetaglist: boolean;
+  since?: number;
 };
 
 /**
@@ -109,5 +112,36 @@ export const V3FetchSchema: Schema = {
     customSanitizer: {
       options: (value) => (value === '1' ? true : false),
     },
+  },
+  taglist: {
+    default: {
+      options: '0',
+    },
+    isIn: {
+      options: [['0', '1']],
+    },
+    customSanitizer: {
+      options: (value) => (value === '1' ? true : false),
+    },
+  },
+  forcetaglist: {
+    default: {
+      options: '0',
+    },
+    isIn: {
+      options: [['0', '1']],
+    },
+    customSanitizer: {
+      options: (value) => (value === '1' ? true : false),
+    },
+  },
+  since: {
+    optional: true,
+    isInt: {
+      options: {
+        min: 0,
+      },
+    },
+    toInt: true,
   },
 };

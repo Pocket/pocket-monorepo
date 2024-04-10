@@ -24,7 +24,8 @@ export type GetResponseSimple = {
   //e.g status, complete - as they are not mapped by developer portal docs
   list: { [key: string]: ListItemObject };
 } & GetStaticResponse &
-  GetTopLevelDefaultResponse;
+  GetTopLevelDefaultResponse &
+  TagsList;
 
 export type SearchMeta = {
   search_meta: {
@@ -60,22 +61,29 @@ export type Annotations = {
   annotations?: Annotation[];
 };
 
+export type TagsList = {
+  tags?: string[];
+};
+
 export type ListItemWithSearchHighlights = ListItemObject & SearchHighlights;
 export type ListItemCompleteWithSearchHighlights = ListItemObjectComplete &
   SearchHighlights;
 
 export type GetSearchResponseSimple = Omit<GetResponseSimple, 'list'> &
-  SearchMeta & {
+  SearchMeta &
+  TagsList & {
     list: { [key: string]: ListItemWithSearchHighlights } | never[];
   };
 export type GetSearchResponseComplete = Omit<GetResponseComplete, 'list'> &
-  SearchMeta & {
+  SearchMeta &
+  TagsList & {
     list: { [key: string]: ListItemCompleteWithSearchHighlights } | never[];
   };
 export type GetSearchResponseSimpleAnnotations = Omit<
   GetResponseSimple,
   'list'
 > &
+  TagsList &
   SearchMeta & {
     list:
       | { [key: string]: ListItemWithSearchHighlights & Annotations }
@@ -85,6 +93,7 @@ export type GetSearchResponseCompleteAnnotations = Omit<
   GetResponseComplete,
   'list'
 > &
+  TagsList &
   SearchMeta & {
     list:
       | { [key: string]: ListItemCompleteWithSearchHighlights & Annotations }
@@ -130,9 +139,12 @@ export type GetResponseComplete = {
   // search_meta: { search_type: 'normal' };
   list: { [key: string]: ListItemObjectComplete };
 } & GetStaticResponse &
-  GetTopLevelDefaultResponse;
+  GetTopLevelDefaultResponse &
+  TagsList;
 
-export type GetResponseSimpleTotal = GetResponseSimple & { total: string };
+export type GetResponseSimpleTotal = GetResponseSimple & {
+  total: string;
+};
 export type GetResponseCompleteTotal = GetResponseComplete & {
   total: string;
 };

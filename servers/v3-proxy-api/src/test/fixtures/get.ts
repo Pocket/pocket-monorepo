@@ -616,3 +616,27 @@ export const expectedGetCompleteAnnotations = {
     },
   },
 };
+
+export const mockGraphGetCompleteTagsList = {
+  user: {
+    ...mockGraphGetComplete.user,
+    tagsList: ['perilous', 'mute', 'supplemental', 'mastery', 'decisive-only'],
+  },
+};
+
+export const expectedGetCompleteTagslist = {
+  ...expectedGetComplete,
+  tags: ['perilous', 'mute', 'supplemental', 'mastery', 'decisive-only'],
+};
+
+export const mockGraphGetSimpleTagsList = {
+  user: {
+    ...mockGraphGetSimple.user,
+    tagsList: ['perilous', 'mute', 'supplemental', 'mastery', 'decisive-only'],
+  },
+};
+
+export const expectedGetSimpleTagslist = {
+  ...expectedGetSimple,
+  tags: ['perilous', 'mute', 'supplemental', 'mastery', 'decisive-only'],
+};

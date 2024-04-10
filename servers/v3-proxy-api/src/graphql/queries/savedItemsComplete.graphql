@@ -3,8 +3,11 @@ query savedItemsComplete(
   $filter: SavedItemsFilter
   $sort: SavedItemsSort
   $withAnnotations: Boolean!
+  $withTagsList: Boolean!
+  $tagsListSince: ISOString
 ) {
   user {
+    tagsList(syncSince: $tagsListSince) @include(if: $withTagsList)
     savedItemsByOffset(pagination: $pagination, filter: $filter, sort: $sort) {
       entries {
         ...SavedItemComplete
