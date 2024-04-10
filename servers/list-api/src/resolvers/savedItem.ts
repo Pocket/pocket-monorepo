@@ -29,13 +29,13 @@ export async function suggestedTags(
  * Resolve Item entity using the givenUrl
  * @param parent
  */
-export async function item(parent: SavedItem): Promise<Item | PendingItem> {
+export async function item(
+  parent: SavedItem,
+): Promise<Pick<Item, 'givenUrl'> | PendingItem> {
   if (parseInt(parent.resolvedId)) {
     return {
       __typename: 'Item',
-      itemId: parent.id,
       givenUrl: parent.url,
-      resolvedId: parent.resolvedId,
     };
   }
   return {
