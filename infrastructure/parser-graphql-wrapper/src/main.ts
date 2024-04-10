@@ -50,9 +50,8 @@ class ParserGraphQLWrapper extends TerraformStack {
       'caller',
     );
     const vpc = new PocketVPC(this, 'pocket-vpc');
-    this.createElasticache(this, vpc);
 
-    const { primaryEndpoint, readerEndpoint } = this.createElasticacheV2(
+    const { primaryEndpoint, readerEndpoint } = this.createElasticache(
       this,
       vpc,
     );
@@ -407,66 +406,6 @@ class ParserGraphQLWrapper extends TerraformStack {
    * @private
    */
   private createElasticache(
-    scope: Construct,
-    pocketVPC: PocketVPC,
-  ): {
-    primaryEndpoint: string;
-    readerEndpoint: string;
-  } {
-    // Serverless elasticache doesn't support the `e` availablity zone in us-east-1... so we need to filter it out..
-    const privateSubnets = new dataAwsSubnets.DataAwsSubnets(
-      this,
-      `cache_private_subnet_ids`,
-      {
-        filter: [
-          {
-            name: 'subnet-id',
-            values: pocketVPC.privateSubnetIds,
-          },
-          {
-            name: 'availability-zone',
-            values: ['us-east-1a', 'us-east-1c', 'us-east-1d'],
-          },
-        ],
-      },
-    );
-    const elasticache = new ApplicationServerlessRedis(
-      scope,
-      'serverless_redis',
-      {
-        //Usually we would set the security group ids of the service that needs to hit this.
-        //However we don't have the necessary security group because it gets created in PocketALBApplication
-        //So instead we set it to null and allow anything within the vpc to access it.
-        //This is not ideal..
-        //Ideally we need to be able to add security groups to the ALB application.
-        allowedIngressSecurityGroupIds: undefined,
-        subnetIds: privateSubnets.ids,
-        tags: config.tags,
-        vpcId: pocketVPC.vpc.id,
-        // Starting with 100GB and will actively lower to ensure we do not break the parser graphql wrapper.
-        // Our original redis pre-serverless only had 7GB of data, but right now we are using 125Gb
-        // with a 50% cache hit rate, so lets limit it a bit to save $$.
-        // Not going to limit Ecpu atm berccuase that is charged per million ecpus and we are well under the first bill number.
-
-        // Add back once https://github.com/hashicorp/terraform-provider-aws/issues/35897 is fixed.
-        // cacheUsageLimits: [{ dataStorage: [{ maximum: 100, unit: 'GB' }] }],
-        // add on a serverless to the name, because our previous elasticache will still exist at the old name
-        prefix: `${config.prefix}-serverless`,
-      },
-    );
-
-    return {
-      primaryEndpoint: elasticache.elasticache.endpoint.get(0).address,
-      readerEndpoint: elasticache.elasticache.readerEndpoint.get(0).address,
-    };
-  }
-
-  /**
-   * Creates the elasticache and returns the node address list
-   * @param scope
-   * @private
-   */
-  private createElasticacheV2(
     scope: Construct,
     pocketVPC: PocketVPC,
   ): {
