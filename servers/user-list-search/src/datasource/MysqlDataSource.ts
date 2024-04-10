@@ -14,6 +14,7 @@ import {
 import zlib from 'zlib';
 import { contentDb, knexDbClient } from './clients/knexClient';
 import knex from 'knex';
+import { RecentSearch } from '../types';
 
 type ParserContent = {
   itemId: number;
@@ -375,5 +376,15 @@ export class MysqlDataSource implements DataSourceInterface {
     const [result] = await knexDbClient().raw(sql, params);
 
     return result;
+  }
+
+  public async getRecentSearches(userId: number): Promise<RecentSearch[]> {
+    this.readitla('readitla_ril-tmp.user_recent_search').select([
+      'search',
+      'context_key as contextKey',
+      'context_value as contextValue',
+      this.readitla.raw('@curRank := @curRank -1 AS sortId'),
+    ]);
+    return [];
   }
 }

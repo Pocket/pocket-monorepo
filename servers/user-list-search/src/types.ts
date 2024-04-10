@@ -182,3 +182,14 @@ export type ElasticSearchSavedItem = {
   user_id: number;
   word_count: number;
 };
+
+export type RecentSearch = {
+  term: string;
+  context: RecentSearchContext;
+  sortId: number;
+};
+
+export type RecentSearchContext = {
+  key?: string;
+  value?: string;
+};

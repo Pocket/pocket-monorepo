@@ -143,6 +143,17 @@ type SearchResult {
   perPage: Int @deprecated(reason: "Not required by implementing client")
 }
 
+type RecentSearch {
+  term: String!
+  context: RecentSearchContext!
+  sortId: Int!
+}
+
+type RecentSearchContext {
+  key: String
+  value: String
+}
+
 type User @key(fields: "id") {
   "key field to identify the User entity in the UserAPI service"
   id: ID!
@@ -176,6 +187,7 @@ type User @key(fields: "id") {
     sort: SearchSortInput
     pagination: OffsetPaginationInput
   ): SavedItemSearchResultPage @tag(name: "internal")
+  recentSearches: [RecentSearch!]
 }
 
 """

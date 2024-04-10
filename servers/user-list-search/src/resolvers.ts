@@ -12,6 +12,7 @@ import {
 } from './datasource/elasticsearch/elasticsearchSearch';
 import {
   AuthenticationError,
+  ForbiddenError,
   UserInputError,
 } from '@pocket-tools/apollo-utils';
 import { IContext } from './server/context';
@@ -23,6 +24,7 @@ import {
   SavedItemSearchResultPage,
   AdvancedSearchByOffsetParams,
   SearchSavedItemOffsetParams,
+  RecentSearch,
 } from './types';
 import { config } from './config';
 
@@ -184,6 +186,18 @@ export const resolvers = {
         input['filter'] = { domain, isFavorite, contentType, status };
       }
       return searchDataService.searchSavedItemsByOffset(input);
+    },
+    recentSearches: async (
+      parent,
+      params,
+      context: IContext,
+    ): Promise<RecentSearch[]> => {
+      if (!context.userIsPremium) {
+        throw new ForbiddenError(
+          'Recent searches are only available for premium users',
+        );
+      }
+      return [];
     },
   },
 };
