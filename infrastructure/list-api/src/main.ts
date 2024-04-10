@@ -156,6 +156,8 @@ class ListAPI extends TerraformStack {
      */
     let rdsCluster: ApplicationRDSCluster;
 
+    const intMaskSecretArn = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/IntMask`;
+
     const secretResources = [
       `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared`,
       `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/*`,
@@ -164,6 +166,8 @@ class ListAPI extends TerraformStack {
       `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/*`,
       `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.prefix}`,
       `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.prefix}/*`,
+      `${intMaskSecretArn}*`,
+      `${intMaskSecretArn}/*`,
     ];
 
     // Set out the DB connection details for the production (legacy) database.
@@ -311,6 +315,30 @@ class ListAPI extends TerraformStack {
             {
               name: 'UNLEASH_KEY',
               valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/UNLEASH_KEY`,
+            },
+            {
+              name: 'CHARACTER_MAP',
+              valueFrom: `${intMaskSecretArn}:characterMap::`,
+            },
+            {
+              name: 'POSITION_MAP',
+              valueFrom: `${intMaskSecretArn}:positionMap::`,
+            },
+            {
+              name: 'MD5_RANDOMIZER',
+              valueFrom: `${intMaskSecretArn}:md5Randomizer::`,
+            },
+            {
+              name: 'LETTER_INDEX',
+              valueFrom: `${intMaskSecretArn}:letterIndex::`,
+            },
+            {
+              name: 'SALT_1',
+              valueFrom: `${intMaskSecretArn}:salt1::`,
+            },
+            {
+              name: 'SALT_2',
+              valueFrom: `${intMaskSecretArn}:salt2::`,
             },
           ],
           logGroup: this.createCustomLogGroup('app'),

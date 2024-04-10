@@ -16,6 +16,7 @@ import {
 import config from '../config';
 import {
   DataLoaderCacheInterface,
+  NotFoundError,
   batchCacheFn,
 } from '@pocket-tools/apollo-utils';
 import { FetchHandler } from '../fetch';
@@ -63,7 +64,7 @@ const internalGetItemByUrl = async (
       message: 'internalGetItemByUrl: parser request',
       data: { originalUrl: url, endpoint, itemId },
     });
-    throw new Error(`No item found for URL`);
+    throw new NotFoundError(`No item found for URL`);
   }
 
   // If the item resolves to 0, that means the item object is going to be empty and we need to refresh it cause of bad parser data..
@@ -77,7 +78,7 @@ const internalGetItemByUrl = async (
         message: 'internalGetItemByUrl: parser request, resolved id is 0',
         data: { originalUrl: url, endpoint, itemId },
       });
-      throw new Error(`No item found for URL`);
+      throw new NotFoundError(`No item found for URL`);
     }
   }
 

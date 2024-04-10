@@ -22,6 +22,7 @@
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
+    "@pocket-tools/int-mask": "workspace:*",
     "@snowplow/node-tracker": "3.23.0",
     "dataloader": "2.2.2",
     "express": "4.19.2",

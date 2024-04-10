@@ -107,3 +107,29 @@ export interface Author {
   name?: string;
   url?: string;
 }
+
+export type ItemSummary = {
+  image?: Image;
+  excerpt?: string;
+  title?: string;
+  authors?: Author[];
+  domain?: DomainMetadata;
+  datePublished?: Date;
+  url: string;
+  item: Item;
+};
+
+export type ItemNotFound = {
+  message: string;
+};
+
+export type ReaderInterstitial = {
+  itemCard: ItemSummary;
+};
+
+export type ReaderFallback = ReaderInterstitial | ItemNotFound;
+
+export type ReaderViewResult = {
+  slug: string;
+  fallbackPage: ReaderFallback;
+};

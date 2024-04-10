@@ -12,6 +12,12 @@ extend schema
   )
 "A String representing a date in the format of `yyyy-MM-dd HH:mm:ss`"
 scalar DateString
+"""
+ISOString scalar - all datetimes fields are Typescript Date objects on this server &
+returned as ISO-8601 encoded date strings (e.g. ISOString scalars) to GraphQL clients.
+See Section 5.6 of the RFC 3339 profile of the ISO 8601 standard: https://www.ietf.org/rfc/rfc3339.txt.
+"""
+scalar ISOString
 
 """
 A string formatted with CommonMark markdown,
@@ -410,6 +416,15 @@ type Query {
   Look up Item info by ID.
   """
   itemByItemId(id: ID!): Item @cacheControl(maxAge: 86400) @inaccessible
+
+  """
+  Resolve Reader View links which might point to SavedItems that do not
+  exist, aren't in the Pocket User's list, or are requested by a logged-out
+  user (or user without a Pocket Account).
+  Fetches data to create an interstitial page/modal so the visitor can click
+  through to the shared site.
+  """
+  readerSlug(slug: ID!): ReaderViewResult!
 }
 
 type Mutation {
@@ -438,4 +453,31 @@ extend type Collection @key(fields: "slug") {
   """
   shortUrl: Url @tag(name: "beta")
   slug: String! @external
+}
+
+type ReaderViewResult @key(fields: "slug") {
+  slug: ID!
+  fallbackPage: ReaderFallback
+}
+
+union ReaderFallback = ReaderInterstitial | ItemNotFound
+
+type ItemSummary {
+  image: Image
+  excerpt: String
+  title: String
+  # publisher: Publisher
+  authors: [Author!]
+  domain: DomainMetadata
+  datePublished: ISOString
+  url: Url!
+  item: Item 
+}
+
+type ReaderInterstitial {
+  itemCard: ItemSummary
+}
+
+type ItemNotFound {
+  message: String 
 }
