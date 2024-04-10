@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/node';
-import { Item } from './model';
+import { Item, ReaderViewResult } from './model';
 import { clear, getItemById, getItemByUrl } from './dataLoaders';
 import config from './config';
 import { MediaTypeParam, ParserAPI } from './datasources/parserApi';
@@ -12,8 +12,11 @@ import {
 import { IContext } from './context';
 import { generateSSML } from './ssml/ssml';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { fallbackPage } from './readerView';
+import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
 
 export const resolvers = {
+  ...PocketDefaultScalars,
   Item: {
     __resolveReference: async (item, { dataLoaders }, info) => {
       // Setting the cache hint manually here because when the gateway(Client API) resolves an item using this
@@ -140,6 +143,17 @@ export const resolvers = {
       }
     },
   },
+  ReaderFallback: {
+    __resolveType(fallback) {
+      if (fallback.itemCard?.url) {
+        return 'ReaderInterstitial';
+      } else if (fallback.message) {
+        return 'ItemNotFound';
+      } else {
+        return null;
+      }
+    },
+  },
   Query: {
     //deprecated
     getItemByUrl: async (_source, { url }, { repositories }): Promise<Item> => {
@@ -185,7 +199,14 @@ export const resolvers = {
     itemByItemId: async (_source, { id }, { repositories }): Promise<Item> => {
       return getItemById(id, await repositories.itemResolver);
     },
-    //add a resolver for shortUrl
+    readerSlug: async (
+      _,
+      { slug }: { slug: string },
+      context: IContext,
+    ): Promise<ReaderViewResult> => {
+      const fallbackData = await fallbackPage(slug, context);
+      return { slug, fallbackPage: fallbackData };
+    },
   },
   CorpusItem: {
     shortUrl: async ({ url }, args, context: IContext): Promise<string> => {

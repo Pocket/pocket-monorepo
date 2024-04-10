@@ -42,6 +42,7 @@ import {
 import { IContext } from '../server/context';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
 import { GraphQLResolveInfo } from 'graphql';
+import { IntMask } from '@pocket-tools/int-mask';
 
 const resolvers = {
   ...PocketDefaultScalars,
@@ -123,6 +124,16 @@ const resolvers = {
       } else {
         return await context.dataLoaders.savedItemsByUrl.load(savedItem.url);
       }
+    },
+  },
+  ReaderViewResult: {
+    async savedItem(
+      parent: { slug: string },
+      _,
+      context: IContext,
+    ): Promise<SavedItem | null> {
+      const id = IntMask.decode(parent.slug).toString();
+      return await context.dataLoaders.savedItemsById.load(id);
     },
   },
   Tag: {

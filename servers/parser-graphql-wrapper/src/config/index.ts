@@ -49,6 +49,7 @@ export default {
     port: 3306,
     username: process.env.DB_USERNAME || 'root',
     password: process.env.DB_PASSWORD || '',
+    tz: process.env.DATABASE_TZ || 'US/Central',
   },
   pocketSharedRds: {
     host: process.env.POCKET_SHARES_DATABASE_WRITE_HOST || 'localhost',

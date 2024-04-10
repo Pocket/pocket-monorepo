@@ -574,6 +574,15 @@ type SavedItemsPage @tag(name: "v3proxy") {
   limit: Int!
 }
 
+type ReaderViewResult @key(fields: "slug") {
+  slug: ID!
+  """
+  The SavedItem referenced by this reader view slug, if it
+  is in the Pocket User's list.
+  """
+  savedItem: SavedItem
+}
+
 type User @key(fields: "id") {
   #Note more properties exist here but are defined in another service.
 
