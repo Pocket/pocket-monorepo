@@ -101,7 +101,7 @@ export const V3FetchSchema: Schema = {
   },
   annotations: {
     default: {
-      options: '0',
+      options: '1',
     },
     isIn: {
       options: [['0', '1']],
