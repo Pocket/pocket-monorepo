@@ -812,8 +812,25 @@ export type ItemHighlights = {
   url?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
 };
 
+export type ItemNotFound = {
+  __typename?: 'ItemNotFound';
+  message?: Maybe<Scalars['String']['output']>;
+};
+
 /** Union type for items that may or may not be processed */
 export type ItemResult = Item | PendingItem;
+
+export type ItemSummary = {
+  __typename?: 'ItemSummary';
+  authors?: Maybe<Array<Author>>;
+  datePublished?: Maybe<Scalars['ISOString']['output']>;
+  domain?: Maybe<DomainMetadata>;
+  excerpt?: Maybe<Scalars['String']['output']>;
+  image?: Maybe<Image>;
+  item?: Maybe<Item>;
+  title?: Maybe<Scalars['String']['output']>;
+  url: Scalars['Url']['output'];
+};
 
 /** A label used to mark and categorize an Entity (e.g. Collection). */
 export type Label = {
@@ -1852,6 +1869,14 @@ export type Query = {
   listTopics: Array<Topic>;
   /** Get a slate of ranked recommendations for the Firefox New Tab. Currently supports the Italy, France, and Spain markets. */
   newTabSlate: CorpusSlate;
+  /**
+   * Resolve Reader View links which might point to SavedItems that do not
+   * exist, aren't in the Pocket User's list, or are requested by a logged-out
+   * user (or user without a Pocket Account).
+   * Fetches data to create an interstitial page/modal so the visitor can click
+   * through to the shared site.
+   */
+  readerSlug: ReaderViewResult;
   /** List all topics that the user can express a preference for. */
   recommendationPreferenceTopics: Array<Topic>;
   scheduledSurface: ScheduledSurface;
@@ -1998,6 +2023,15 @@ export type QueryNewTabSlateArgs = {
  * Default root level query type. All authorization checks are done in these queries.
  * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
  */
+export type QueryReaderSlugArgs = {
+  slug: Scalars['ID']['input'];
+};
+
+
+/**
+ * Default root level query type. All authorization checks are done in these queries.
+ * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
+ */
 export type QueryScheduledSurfaceArgs = {
   id: Scalars['ID']['input'];
 };
@@ -2046,6 +2080,24 @@ export type QuerySyndicatedArticleBySlugArgs = {
  */
 export type QueryUnleashAssignmentsArgs = {
   context: UnleashContext;
+};
+
+export type ReaderFallback = ItemNotFound | ReaderInterstitial;
+
+export type ReaderInterstitial = {
+  __typename?: 'ReaderInterstitial';
+  itemCard?: Maybe<ItemSummary>;
+};
+
+export type ReaderViewResult = {
+  __typename?: 'ReaderViewResult';
+  fallbackPage?: Maybe<ReaderFallback>;
+  /**
+   * The SavedItem referenced by this reader view slug, if it
+   * is in the Pocket User's list.
+   */
+  savedItem?: Maybe<SavedItem>;
+  slug: Scalars['ID']['output'];
 };
 
 export type RecItUserProfile = {

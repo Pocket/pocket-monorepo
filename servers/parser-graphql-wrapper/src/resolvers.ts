@@ -32,9 +32,9 @@ export const resolvers = {
       const { itemId, givenUrl } = item;
 
       try {
-        return await (itemId
-          ? dataLoaders.itemIdLoader.load(itemId)
-          : dataLoaders.itemUrlLoader.load(givenUrl));
+        return givenUrl
+          ? await dataLoaders.itemUrlLoader.load(givenUrl)
+          : await dataLoaders.itemIdLoader.load(itemId);
       } catch (error) {
         const errorMessage = '__resolveReference: Error getting item';
         const errorData = {
