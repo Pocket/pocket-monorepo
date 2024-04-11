@@ -161,7 +161,7 @@ function HighlightsTransformer(
 /** Extract list of tags from the graph search response */
 function TagListTransformer(
   tags: string[] | undefined,
-): { tags: string[] } | {} {
+): { tags: string[] } | Record<string, never> {
   if (tags != null) {
     return { tags };
   }
