@@ -35,7 +35,7 @@
     "locutus": "2.0.32",
     "lodash": "4.17.21",
     "luxon": "3.4.4",
-    "mysql2": "3.9.3",
+    "mysql2": "3.9.4",
     "unleash-client": "5.5.2"
   },
   "devDependencies": {
