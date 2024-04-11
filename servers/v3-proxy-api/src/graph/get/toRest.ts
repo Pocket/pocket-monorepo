@@ -158,6 +158,16 @@ function HighlightsTransformer(
   };
 }
 
+/** Extract list of tags from the graph search response */
+function TagListTransformer(
+  tags: string[] | undefined,
+): { tags: string[] } | Record<string, never> {
+  if (tags != null) {
+    return { tags };
+  }
+  return {};
+}
+
 /**
  * Extract annotations (highlights) from the graph search response.
  */
@@ -374,6 +384,7 @@ export function savedItemsSimpleToRest(
   return {
     ...staticV3ResponseDefaults,
     ...getStatusResponse(response),
+    ...TagListTransformer(response.user.tagsList),
     list: listToMap(
       response.user.savedItemsByOffset.entries
         .map((savedItem, index) => {
@@ -402,6 +413,7 @@ export function savedItemsCompleteToRest(
   return {
     ...staticV3ResponseDefaults,
     ...getStatusResponse(response),
+    ...TagListTransformer(response.user.tagsList),
     list: listToMap(
       response.user.savedItemsByOffset.entries
         .map((savedItem, index) => {
@@ -508,6 +520,7 @@ export function searchSavedItemSimpleToRest(
   return {
     ...staticV3ResponseDefaults,
     ...searchStatusResponse(response),
+    ...TagListTransformer(response.user.tagsList),
     list,
     ...searchMetaTransformer(response),
   };
@@ -541,6 +554,7 @@ export function searchSavedItemCompleteToRest(
         );
   return {
     ...searchStatusResponse(response),
+    ...TagListTransformer(response.user.tagsList),
     ...staticV3ResponseDefaults,
     list,
     ...searchMetaTransformer(response),

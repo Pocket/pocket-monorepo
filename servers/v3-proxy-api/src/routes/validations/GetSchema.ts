@@ -19,6 +19,8 @@ export type V3GetParams = {
   total: boolean;
   search?: string;
   annotations: boolean;
+  taglist: boolean;
+  forcetaglist: boolean;
 };
 
 /**
@@ -169,6 +171,28 @@ export const V3GetSchema: Schema = {
     },
   },
   annotations: {
+    default: {
+      options: '0',
+    },
+    isIn: {
+      options: [['0', '1']],
+    },
+    customSanitizer: {
+      options: (value) => (value === '1' ? true : false),
+    },
+  },
+  taglist: {
+    default: {
+      options: '0',
+    },
+    isIn: {
+      options: [['0', '1']],
+    },
+    customSanitizer: {
+      options: (value) => (value === '1' ? true : false),
+    },
+  },
+  forcetaglist: {
     default: {
       options: '0',
     },

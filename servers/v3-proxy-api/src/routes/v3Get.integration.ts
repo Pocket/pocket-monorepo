@@ -15,6 +15,14 @@ import {
   expectedGetSimpleAnnotations,
   mockGraphGetCompleteAnnotations,
   expectedGetCompleteAnnotations,
+  freeTierSearchGraphSimpleTagList,
+  expectedFreeTierResponseSimpleTaglist,
+  freeTierSearchGraphCompleteTagList,
+  expectedFreeTierResponseCompleteTaglist,
+  mockGraphGetSimpleTagsList,
+  expectedGetSimpleTagslist,
+  mockGraphGetCompleteTagsList,
+  expectedGetCompleteTagslist,
 } from '../test/fixtures';
 import { ClientError, GraphQLClient } from 'graphql-request';
 import { GraphQLError } from 'graphql-request/build/esm/types';
@@ -336,6 +344,175 @@ describe('v3Get', () => {
         expect(requestSpy).toHaveBeenCalledTimes(1);
         expect(requestSpy.mock.calls[0][3]).toMatchObject({
           withAnnotations: true,
+        });
+        expect(clientSpy.mock.calls[0][0]['definitions'][0].name.value).toEqual(
+          expected.name,
+        );
+      },
+    );
+  });
+  describe('with taglist option', () => {
+    let clientSpy;
+    afterEach(() => clientSpy.mockRestore());
+    it.each([
+      {
+        requestData: {
+          detailType: 'simple',
+          search: 'abc',
+          sort: 'relevance',
+        },
+        fixture: {
+          requestName: 'callSearchByOffsetSimple' as const,
+          requestData: freeTierSearchGraphSimpleTagList,
+        },
+        expected: {
+          name: 'searchSavedItemsSimple',
+          response: expectedFreeTierResponseSimpleTaglist,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          search: 'abc',
+          sort: 'relevance',
+        },
+        fixture: {
+          requestName: 'callSearchByOffsetComplete' as const,
+          requestData: freeTierSearchGraphCompleteTagList,
+        },
+        expected: {
+          name: 'searchSavedItemsComplete',
+          response: expectedFreeTierResponseCompleteTaglist,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          search: 'abc',
+          sort: 'relevance',
+          total: '1',
+        },
+        fixture: {
+          requestName: 'callSearchByOffsetComplete' as const,
+          requestData: freeTierSearchGraphCompleteTagList,
+        },
+        expected: {
+          name: 'searchSavedItemsComplete',
+          response: {
+            ...expectedFreeTierResponseCompleteTaglist,
+            total: '2',
+          },
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          search: 'abc',
+          sort: 'relevance',
+          total: '1',
+        },
+        fixture: {
+          requestName: 'callSearchByOffsetSimple' as const,
+          requestData: freeTierSearchGraphSimpleTagList,
+        },
+        expected: {
+          name: 'searchSavedItemsSimple',
+          response: {
+            ...expectedFreeTierResponseSimpleTaglist,
+            total: '2',
+          },
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleTagsList,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimpleTagslist,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteTagsList,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: expectedGetCompleteTagslist,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          total: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteTagsList,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: { ...expectedGetCompleteTagslist, total: '10' },
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          total: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleTagsList,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: { ...expectedGetSimpleTagslist, total: '10' },
+        },
+      },
+    ])(
+      'makes request with taglist',
+      async ({ requestData, fixture, expected }) => {
+        const requestSpy = jest.spyOn(GraphQLCalls, fixture.requestName);
+        clientSpy = jest
+          .spyOn(GraphQLClient.prototype, 'request')
+          .mockResolvedValueOnce(fixture.requestData)
+          .mockResolvedValueOnce(fixture.requestData);
+        const response = await request(app)
+          .get('/v3/get')
+          .query({
+            ...requestData,
+            consumer_key: 'test',
+            access_token: 'test',
+            taglist: '1',
+            since: 1712766000,
+          });
+        expect(response.body).toEqual(expected.response);
+        expect(requestSpy).toHaveBeenCalledTimes(1);
+        expect(requestSpy.mock.calls[0][3]).toMatchObject({
+          withTagsList: true,
+          tagListSince: '2024-04-10T16:20:00.000Z',
+        });
+        const forceResponse = await request(app)
+          .get('/v3/get')
+          .query({
+            ...requestData,
+            consumer_key: 'test',
+            access_token: 'test',
+            forcetaglist: '1',
+            since: 1712766000,
+          });
+        expect(forceResponse.body).toEqual(expected.response);
+        expect(requestSpy).toHaveBeenCalledTimes(2);
+        expect(requestSpy.mock.calls[1][3]).toMatchObject({
+          withTagsList: true,
         });
         expect(clientSpy.mock.calls[0][0]['definitions'][0].name.value).toEqual(
           expected.name,

@@ -4,8 +4,11 @@ query searchSavedItemsSimple(
   $filter: SearchFilterInput
   $sort: SearchSortInput
   $withAnnotations: Boolean!
+  $withTagsList: Boolean!
+  $tagsListSince: ISOString
 ) {
   user {
+    tagsList(syncSince: $tagsListSince) @include(if: $withTagsList)
     searchSavedItemsByOffset(
       term: $term
       pagination: $pagination

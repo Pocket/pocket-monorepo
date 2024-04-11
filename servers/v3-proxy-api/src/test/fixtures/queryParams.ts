@@ -8,6 +8,8 @@ export const defaultQuery: V3GetParams = {
   detailType: 'simple',
   total: false,
   annotations: false,
+  taglist: false,
+  forcetaglist: false,
 };
 
 export const defaultSearchQuery: V3GetParams = {
@@ -19,4 +21,6 @@ export const defaultSearchQuery: V3GetParams = {
   search: 'abc',
   total: false,
   annotations: false,
+  taglist: false,
+  forcetaglist: false,
 };

@@ -78,7 +78,17 @@ export async function processV3call(
   headers: any,
   data: V3GetParams,
 ) {
-  const options = { withAnnotations: data.annotations };
+  const options = {
+    withAnnotations: data.annotations,
+    withTagsList: data.taglist || data.forcetaglist,
+  };
+  // This time is only set if taglist is requested and 'since' is provided;
+  // 'forcetaglist' overrides the 'since' check
+  const tagListSince =
+    data.taglist && data.since
+      ? new Date(data.since * 1000).toISOString()
+      : undefined;
+  if (tagListSince) options['tagListSince'] = tagListSince;
   // Search takes precedence -- if search term is passed, call search api
   if (data.search) {
     const variables = setSearchVariables(data);

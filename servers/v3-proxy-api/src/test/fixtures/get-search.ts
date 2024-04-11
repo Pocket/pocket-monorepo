@@ -1580,3 +1580,27 @@ function addAnnotations(
     },
   };
 }
+
+export const freeTierSearchGraphSimpleTagList = {
+  user: {
+    ...freeTierSearchGraphSimple.user,
+    tagsList: ['supplemental'],
+  },
+};
+
+export const freeTierSearchGraphCompleteTagList = {
+  user: {
+    ...freeTierSearchGraphComplete.user,
+    tagsList: ['supplemental'],
+  },
+};
+
+export const expectedFreeTierResponseSimpleTaglist = {
+  ...expectedFreeTierResponseSimple,
+  tags: ['supplemental'],
+};
+
+export const expectedFreeTierResponseCompleteTaglist = {
+  ...expectedFreeTierResponseComplete,
+  tags: ['supplemental'],
+};

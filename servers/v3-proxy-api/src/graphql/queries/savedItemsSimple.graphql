@@ -2,9 +2,12 @@ query savedItemsSimple(
   $pagination: OffsetPaginationInput
   $filter: SavedItemsFilter
   $sort: SavedItemsSort
-  $withAnnotations: Boolean! # $withTagsList: Boolean!
+  $withAnnotations: Boolean!
+  $withTagsList: Boolean!
+  $tagsListSince: ISOString
 ) {
   user {
+    tagsList(syncSince: $tagsListSince) @include(if: $withTagsList)
     savedItemsByOffset(pagination: $pagination, filter: $filter, sort: $sort) {
       entries {
         ...SavedItemSimple

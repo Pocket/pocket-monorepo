@@ -4,8 +4,10 @@ import * as GraphQLCalls from '../graph/graphQLClient';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import {
   expectedGetCompleteAnnotations,
+  expectedGetCompleteTagslist,
   mockGraphGetComplete,
   mockGraphGetCompleteAnnotations,
+  mockGraphGetCompleteTagsList,
 } from '../test/fixtures';
 import { ClientError, GraphQLClient } from 'graphql-request';
 import { GraphQLError } from 'graphql-request/build/esm/types';
@@ -139,6 +141,95 @@ describe('v3Fetch', () => {
         expect(requestSpy).toHaveBeenCalledTimes(1);
         expect(requestSpy.mock.calls[0][3]).toMatchObject({
           withAnnotations: true,
+        });
+        expect(clientSpy.mock.calls[0][0]['definitions'][0].name.value).toEqual(
+          expected.name,
+        );
+      },
+    );
+  });
+  describe('with tagslist option', () => {
+    let clientSpy;
+    afterEach(() => clientSpy.mockRestore());
+    it.each([
+      {
+        requestData: {
+          detailType: 'complete',
+          shares: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteTagsList,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: {
+            ...expectedGetCompleteTagslist,
+            recent_friends: [],
+            auto_complete_emails: [],
+            unconfirmed_shares: [],
+            total: '10',
+          },
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          total: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteTagsList,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: { ...expectedGetCompleteTagslist, total: '10' },
+        },
+      },
+    ])(
+      'makes request with taglist',
+      async ({ requestData, fixture, expected }) => {
+        const requestSpy = jest.spyOn(GraphQLCalls, fixture.requestName);
+        clientSpy = jest
+          .spyOn(GraphQLClient.prototype, 'request')
+          .mockResolvedValueOnce(fixture.requestData)
+          .mockResolvedValueOnce(fixture.requestData);
+        const response = await request(app)
+          .get('/v3/fetch')
+          .query({
+            ...requestData,
+            consumer_key: 'test',
+            access_token: 'test',
+            taglist: '1',
+            since: 1712766000,
+          });
+        const passthrough = {
+          chunk: '0',
+          fetchChunkSize: '250',
+          firstChunkSize: '25',
+        };
+        expect(response.body).toEqual({ ...expected.response, passthrough });
+        expect(requestSpy).toHaveBeenCalledTimes(1);
+        expect(requestSpy.mock.calls[0][3]).toMatchObject({
+          withTagsList: true,
+          tagListSince: '2024-04-10T16:20:00.000Z',
+        });
+        const forceResponse = await request(app)
+          .get('/v3/fetch')
+          .query({
+            ...requestData,
+            consumer_key: 'test',
+            access_token: 'test',
+            forcetaglist: '1',
+            since: 1712766000,
+          });
+        expect(forceResponse.body).toEqual({
+          ...expected.response,
+          passthrough,
+        });
+        expect(requestSpy).toHaveBeenCalledTimes(2);
+        expect(requestSpy.mock.calls[1][3]).toMatchObject({
+          withTagsList: true,
         });
         expect(clientSpy.mock.calls[0][0]['definitions'][0].name.value).toEqual(
           expected.name,
