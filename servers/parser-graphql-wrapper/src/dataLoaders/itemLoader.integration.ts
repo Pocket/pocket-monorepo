@@ -203,4 +203,33 @@ describe('itemLoader - integration', () => {
       'fe562f9c5BCfC1eeQ9AffKeCaiD2a190J7eb5D66B8DccAd6E6a1f247B54Egd22',
     );
   });
+  it('should use top-level item_id and given_url fields if they exist', async () => {
+    const urlTopFields = 'http://this-url-has-data.com';
+    nock('http://example-parser.com')
+      .get('/')
+      .query({
+        url: urlTopFields,
+        getItem: '1',
+        output: 'regular',
+        enableItemUrlFallback: '1',
+      })
+      .reply(200, {
+        item_id: '123',
+        given_url: urlTopFields,
+        item: {
+          item_id: '16822',
+          given_url: 'do not use this one',
+          normal_url: urlTopFields,
+          authors: [],
+          images: [],
+          videos: [],
+          resolved_id: '16822',
+        },
+      });
+    const returnedItem = await itemLoader.getItemByUrl(urlTopFields);
+    expect(returnedItem).toMatchObject({
+      itemId: '123',
+      givenUrl: urlTopFields,
+    });
+  });
 });

@@ -134,10 +134,15 @@ const internalGetItemByUrl = async (
       data: { endpoint, errorData },
     });
   }
+  // itemId precedence in order of accuracy:
+  // 1: the itemId that was passed
+  // 2: the `item_id` returned by the parser for this givenUrl
+  // 3: the `item_id` on the resolved item (typically resolved_id)
+  const returnItemId = itemId ?? data.item_id ?? item.item_id.toString();
 
   return {
-    itemId: itemId ?? item.item_id.toString(),
-    id: itemId ? IntMask.encode(itemId) : IntMask.encode(item.item_id),
+    itemId: returnItemId,
+    id: IntMask.encode(returnItemId),
     resolvedId: item.resolved_id.toString(),
     topImageUrl: item.top_image_url,
     topImage: item.top_image_url
@@ -145,7 +150,7 @@ const internalGetItemByUrl = async (
       : undefined,
     dateResolved: normalizeDate(item.date_resolved),
     normalUrl: item.normal_url,
-    givenUrl: item.given_url,
+    givenUrl: data.given_url ?? item.given_url,
     title: item.title,
     ampUrl: item.resolved_url,
     resolvedUrl: item.resolved_url,
