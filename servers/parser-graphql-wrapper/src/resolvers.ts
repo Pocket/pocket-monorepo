@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/node';
-import { Item, ReaderViewResult } from './model';
+import { Item, ItemSummary, ReaderViewResult } from './model';
 import { clear, getItemById, getItemByUrl } from './dataLoaders';
 import config from './config';
 import { MediaTypeParam, ParserAPI } from './datasources/parserApi';
@@ -14,6 +14,7 @@ import { generateSSML } from './ssml/ssml';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { fallbackPage } from './readerView';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
+import { deriveItemSummary } from './display/display';
 
 export const resolvers = {
   ...PocketDefaultScalars,
@@ -134,6 +135,13 @@ export const resolvers = {
         resolvedId: parseInt(parent.resolvedId),
         givenUrl: parent.givenUrl,
       });
+    },
+    display: async (
+      parent: Item,
+      args,
+      context: IContext,
+    ): Promise<ItemSummary> => {
+      return deriveItemSummary(parent);
     },
   },
   MarticleComponent: {
