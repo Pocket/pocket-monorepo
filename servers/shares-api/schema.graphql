@@ -1,3 +1,77 @@
-type PocketShare {
-  id: ID!
+extend schema
+  @link(url: "https://specs.apollo.dev/link/v1.0")
+  @link(
+    url: "https://specs.apollo.dev/federation/v2.3"
+    import: ["@key", "@composeDirective", "@tag"]
+  )
+  # The link directive is required to federate @constraint
+  # It doesn't actually have to be a real spec, but it would be good
+  # to write one and replace this.
+  @link(url: "https://myspecs.dev/myDirective/v1.0", import: ["@constraint"])
+  @composeDirective(name: "@constraint")
+
+scalar Url
+scalar Markdown
+scalar ISOString
+
+type PocketShare @key(fields: "slug targetUrl") {
+  slug: ID!
+  shareUrl: Url!
+  targetUrl: Url!
+  createdAt: ISOString
+  context: ShareContext
+}
+
+type ShareContext {
+  """
+  A user-provided comment/note on the shared content.
+  """
+  note: Markdown
+  """User-provided highlights of the content"""
+  highlights: [ShareHighlight!]
+}
+
+type ShareHighlight {
+  """
+  Highlighted text on a piece of shared content.
+  Limited to 500 characters per quote (longer quotes
+  will be truncated).
+  """
+  quote: String!
+}
+
+input ShareHighlightInput {
+  quotes: [String!]!
+}
+
+"""
+Input for mutation which creates a new Pocket Share link.
+"""
+input ShareContextInput {
+  """A note/comment about the Share"""
+  note: Markdown @constraint(maxLength: 500)
+  """Quoted content from the Share source"""
+  highlights: ShareHighlightInput
+}
+
+union ShareResult = PocketShare | ItemNotFound
+
+type Query {
+  """
+  Resolve data for a Shared link, or return a Not Found
+  message if the share does not exist.
+  """
+  shareSlug(slug: ID!): ShareResult
+}
+
+type ItemNotFound {
+  message: String 
+}
+
+type Mutation {
+  """
+  Create a Pocket Share for a provided target URL, optionally
+  with additional share context.
+  """
+  createShareLink(target: Url!, context: ShareContextInput): Url
 }
