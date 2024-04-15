@@ -1,0 +1,52 @@
+{
+  "name": "shares-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "rm -rf dist && tsc && npm run build-schema",
+    "watch": "concurrently  --names \"CodeGen,TS,Nodemon\" -c \"bgYellow,bgBlue,bgMagenta\" \"graphql-codegen --watch 'src/**/*.ts'\"  \"tsc -w --preserveWatchOutput\" \"nodemon  --config ../../nodemon.json ./dist/main.js\"",
+    "start": "node dist/main.js",
+    "dev": "npm run build && npm run watch",
+    "build-schema": "echo 'node dist/server/apollo/buildSchema.js'",
+    "test:watch": "npm test -- --watchAll",
+    "test": "jest \"\\.spec\\.ts\"",
+    "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",
+    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix \"src/**/*.ts\"",
+    "prebuild": "graphql-codegen --config codegen.yml"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "3.549.0",
+    "@aws-sdk/lib-dynamodb": "3.549.0",
+    "@pocket-tools/apollo-utils": "workspace:*",
+    "@pocket-tools/sentry": "workspace:*",
+    "@pocket-tools/tracing": "workspace:*",
+    "@pocket-tools/ts-logger": "workspace:*",
+    "cors": "2.8.5",
+    "express": "4.19.2",
+    "graphql-constraint-directive": "5.4.2"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "5.0.2",
+    "@graphql-codegen/typescript": "4.0.6",
+    "@graphql-codegen/typescript-resolvers": "^4.0.6",
+    "@parcel/watcher": "^2.4.1",
+    "concurrently": "^8.2.2",
+    "eslint-config-custom": "workspace:*",
+    "jest": "29.7.0",
+    "jest-extended": "4.0.2",
+    "nock": "13.5.4",
+    "nodemon": "3.1.0",
+    "supertest": "6.3.4",
+    "ts-jest": "29.1.2",
+    "tsconfig": "workspace:*"
+  },
+  "files": [
+    "dist",
+    "schema.graphql",
+    "package.json"
+  ]
+}
