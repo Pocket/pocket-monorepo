@@ -578,7 +578,7 @@ jobs:
         environment:
           AWS_XRAY_LOG_LEVEL: silent
           AWS_XRAY_CONTEXT_MISSING: LOG_ERROR
-      - image: redis:latest@sha256:e3e87587e36a629844e987facec7def0562d9ac5e51940c1ff8b4744054b8409
+      - image: redis:latest@sha256:d6ecc832969a4827645a083da38345327b3447772fe907e7d4311c79b4e3a06e
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD
