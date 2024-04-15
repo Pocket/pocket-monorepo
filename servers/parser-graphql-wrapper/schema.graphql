@@ -165,7 +165,7 @@ type Item
   marticle: [MarticleComponent!]
 
   "The client preview/display logic for this url"
-  preview: ItemSummary
+  preview: ItemSummary @tag(name: "alpha")
 }
 
 type ArticleMarkdown {
