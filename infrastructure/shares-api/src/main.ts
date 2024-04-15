@@ -2,7 +2,6 @@ import { Construct } from 'constructs';
 import { App, S3Backend, TerraformStack } from 'cdktf';
 import {
   provider as awsProvider,
-  sqsQueue,
   dataAwsCallerIdentity,
   dataAwsKmsAlias,
   dataAwsRegion,
@@ -18,12 +17,10 @@ import {
 } from '@cdktf/provider-pagerduty';
 import { config } from './config';
 import {
-  ApplicationSQSQueue,
   PocketALBApplication,
   PocketAwsSyntheticChecks,
   PocketPagerDuty,
   PocketVPC,
-  ApplicationSqsSnsTopicSubscription,
 } from '@pocket-tools/terraform-modules';
 import { DynamoDB } from './dynamodb';
 
