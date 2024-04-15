@@ -44,11 +44,10 @@ const openGraphMetadata = async (item: Item): Promise<Partial<ItemSummary>> => {
 
   const result = openGraphData.result;
   const firstImage = result.ogImage ? result.ogImage[0] : undefined;
-  serverLogger.info('og data', result);
+  serverLogger.debug('Open Graph Data', { opengraph: openGraphData.result });
 
   // We return a parital object that is expanded into the main ItemSummary object populated with Item data.
   // We use undefined because that will make the root object default to Item data when not existant
-
   // TODO:
   // authors, published date, etc
   return {
