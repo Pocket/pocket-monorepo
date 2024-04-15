@@ -7,7 +7,7 @@ import { schema } from './schema';
 const sdl = printSubgraphSchema(schema);
 const filePath = path.resolve(
   __dirname,
-  'dist/../../..',
+  'dist/../..',
   'schema-generated.graphql',
 );
 fs.writeFileSync(filePath, sdl);

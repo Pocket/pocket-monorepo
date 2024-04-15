@@ -8,7 +8,7 @@
     "watch": "concurrently  --names \"CodeGen,TS,Nodemon\" -c \"bgYellow,bgBlue,bgMagenta\" \"graphql-codegen --watch 'src/**/*.ts'\"  \"tsc -w --preserveWatchOutput\" \"nodemon  --config ../../nodemon.json ./dist/main.js\"",
     "start": "node dist/main.js",
     "dev": "npm run build && npm run watch",
-    "build-schema": "echo 'node dist/server/apollo/buildSchema.js'",
+    "build-schema": "node dist/apollo/buildSchema.js",
     "test:watch": "npm test -- --watchAll",
     "test": "jest \"\\.spec\\.ts\"",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",
