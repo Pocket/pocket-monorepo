@@ -16,17 +16,14 @@ describe('createLogger', () => {
     jest.resetAllMocks();
   });
 
-  it('Local environment writes to files only', async () => {
-    process.env.NODE_ENV = 'local';
+  it('Local environment does not write to file', async () => {
+    process.env.NODE_ENV = 'development';
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const createLogger = require('./logger').createLogger;
 
     const testLogger = createLogger();
-    expect(testLogger.transports.length).toEqual(2);
-    expect(testLogger.transports[0].name).toBe('file');
-    expect(testLogger.transports[0].filename).toBe('error.log');
-    expect(testLogger.transports[1].name).toBe('file');
-    expect(testLogger.transports[1].filename).toBe('all.log');
+    expect(testLogger.transports.length).toEqual(1);
+    expect(testLogger.transports[0].name).toBe('console');
   });
   it('Test environment writes to files only', async () => {
     process.env.NODE_ENV = 'test';
