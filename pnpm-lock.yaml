@@ -1453,8 +1453,8 @@ importers:
         specifier: 5.5.2
         version: 5.5.2
       unleash-server:
-        specifier: 5.11.0
-        version: 5.11.0(core-js@3.36.1)(mobx@6.12.3)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8)
+        specifier: 5.11.2
+        version: 5.11.2(core-js@3.36.1)(mobx@6.12.3)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8)
     devDependencies:
       '@types/cors':
         specifier: ^2.8.17
@@ -10829,7 +10829,7 @@ packages:
     dependencies:
       semver: 7.6.0
       shelljs: 0.8.5
-      typescript: 5.5.0-dev.20240410
+      typescript: 5.5.0-dev.20240415
     dev: false
 
   /dreamopt@0.8.0:
@@ -19060,8 +19060,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.5.0-dev.20240410:
-    resolution: {integrity: sha512-OvGiFb8iPBHHqR8RuhIeCM+j2W1TtPbTZLuesCEi4gulAxzkOP2B3jDPTWmcOmxvUeJN5pNzlKoi/reRn1BZww==}
+  /typescript@5.5.0-dev.20240415:
+    resolution: {integrity: sha512-2FlWR0afPLL3qaO+AcMp6rWmV6nrLoRhwDYAgGn7/Kw1/K8hcW83bZnn+gzGNWfXozx/EdJuG0KfN7V/RGysjg==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: false
@@ -19191,8 +19191,8 @@ packages:
       murmurhash3js: 3.0.1
       semver: 7.6.0
 
-  /unleash-server@5.11.0(core-js@3.36.1)(mobx@6.12.3)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8):
-    resolution: {integrity: sha512-5tRQCpZCzy204GpIy3fsxQ7mFPLy7arfP9UJjJUe6/GHpoResdRSg+yv2nri1U4qwjPu68ky99IWb5Aok45H3w==}
+  /unleash-server@5.11.2(core-js@3.36.1)(mobx@6.12.3)(react-dom@18.2.0)(react@18.2.0)(styled-components@6.1.8):
+    resolution: {integrity: sha512-NkSR4bhlzVuLiZ1gttu/n+lFR2jckIDxkeZDq2QhFGzBXe6hhuo8Tx7xPxKUCFwqtvi418z9d/cae6NsuZhuHA==}
     engines: {node: '>=18 <21'}
     dependencies:
       '@slack/web-api': 6.12.0
