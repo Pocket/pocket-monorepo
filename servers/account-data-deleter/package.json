@@ -30,7 +30,7 @@
     "stripe": "14.24.0"
   },
   "devDependencies": {
-    "@sentry/types": "7.109.0",
+    "@sentry/types": "7.110.0",
     "@types/jest": "29.5.12",
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
