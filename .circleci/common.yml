@@ -34,6 +34,7 @@ repo_for_enum: &repo_for_enum
       - v3_proxy_api
       - push_server
       - instant_sync_events
+      - shares_api
 
 resource_class_enmum: &resource_class_enmum
   resource-class:
@@ -105,6 +106,9 @@ parameters:
   instant_sync_events:
     type: boolean
     default: false
+  shares_api:
+    type: boolean
+    default: false
 
 commands:
   # Refrenced from https://github.com/kelvintaywl-cci/dynamic-config-showcase/blob/main/.circleci/next.yml
@@ -146,6 +150,7 @@ commands:
             v3_proxy_api: << pipeline.parameters.v3_proxy_api >>
             push_server: << pipeline.parameters.push_server >>
             instant_sync_events: << pipeline.parameters.instant_sync_events >>
+            shares_api: << pipeline.parameters.shares_api >>
 
   install_pnpm:  
     steps:
