@@ -18,22 +18,12 @@ const config: CodegenConfig = {
         },
         {
           add: {
-            content: '/* eslint-disable @typescript-eslint/ban-ts-comment */',
-          },
-        },
-        {
-          add: {
-            content: '/* eslint-disable prettier/prettier */',
+            content: '/* eslint-disable */',
           },
         },
         {
           add: {
             content: '/* tslint:disable */',
-          },
-        },
-        {
-          add: {
-            content: '/* eslint:disable */',
           },
         },
         'typescript',
