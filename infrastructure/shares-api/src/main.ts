@@ -371,5 +371,5 @@ class SharesAPI extends TerraformStack {
 }
 
 const app = new App();
-new SharesAPI(app, 'annotations-api');
+new SharesAPI(app, 'shares-api');
 app.synth();
