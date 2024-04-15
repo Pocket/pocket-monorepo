@@ -208,6 +208,7 @@ export const getItemByUrl = async (
   }
 
   Sentry.captureException(lastError);
+  serverLogger.error('Error getItemByUrl', lastError);
   //Old function returned null instead of throwing.
   return null;
 };
