@@ -21,10 +21,10 @@ describe('preview', () => {
   let graphQLUrl: string;
   let connection: DataSource;
 
-  const GET_DISPLAY = gql`
+  const GET_PREVIEW = gql`
     query display($url: String!) {
       itemByUrl(url: $url) {
-        display {
+        preview {
           title
         }
       }
@@ -122,8 +122,8 @@ describe('preview', () => {
       };
       const res = await request(app)
         .post(graphQLUrl)
-        .send({ query: print(GET_DISPLAY), variables });
-      expect(res.body.data).toEqual({ itemByUrl: { display: expected } });
+        .send({ query: print(GET_PREVIEW), variables });
+      expect(res.body.data).toEqual({ itemByUrl: { preview: expected } });
     },
   );
 });

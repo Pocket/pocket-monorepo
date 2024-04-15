@@ -1,7 +1,7 @@
 import { IntMask } from '@pocket-tools/int-mask';
 import { IContext } from '../context';
 import { ReaderFallback } from '../model';
-import { deriveItemSummary } from '../display/display';
+import { deriveItemSummary } from '../preview/preview';
 
 /**
  * FallbackPage resolver for ReaderViewResult query

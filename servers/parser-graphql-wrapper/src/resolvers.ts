@@ -14,7 +14,7 @@ import { generateSSML } from './ssml/ssml';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { fallbackPage } from './readerView';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
-import { deriveItemSummary } from './display/display';
+import { deriveItemSummary } from './preview/preview';
 
 export const resolvers = {
   ...PocketDefaultScalars,
@@ -136,7 +136,7 @@ export const resolvers = {
         givenUrl: parent.givenUrl,
       });
     },
-    display: async (
+    preview: async (
       parent: Item,
       args,
       context: IContext,

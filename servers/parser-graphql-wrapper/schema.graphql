@@ -164,8 +164,8 @@ type Item
   "The Marticle format of the article, used by clients for native article view."
   marticle: [MarticleComponent!]
 
-  "The client display logic for this url"
-  display: ItemSummary
+  "The client preview/display logic for this url"
+  preview: ItemSummary
 }
 
 type ArticleMarkdown {
