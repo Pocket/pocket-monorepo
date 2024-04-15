@@ -25,7 +25,25 @@ describe('preview', () => {
     query display($url: String!) {
       itemByUrl(url: $url) {
         preview {
+          id
           title
+          image {
+            url
+            src
+          }
+          excerpt
+          authors {
+            id
+          }
+          domain {
+            name
+            logo
+          }
+          datePublished
+          url
+          item {
+            id
+          }
         }
       }
     }
@@ -42,6 +60,19 @@ describe('preview', () => {
   };
 
   const parserItemId = '123';
+
+  const defaultExpected = {
+    id: 'encodedId',
+    image: null,
+    excerpt: null,
+    authors: null,
+    domain: null,
+    datePublished: null,
+    url: testUrl,
+    item: {
+      id: 'encodedId',
+    },
+  };
 
   beforeAll(async () => {
     ({ app, server, url: graphQLUrl } = await startServer(0));
@@ -60,6 +91,7 @@ describe('preview', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.spyOn(IntMask, 'decode').mockReturnValueOnce(123);
+    jest.spyOn(IntMask, 'encode').mockReturnValueOnce('encodedId');
 
     // flush the redis cache
     getRedis().clear();
@@ -123,7 +155,9 @@ describe('preview', () => {
       const res = await request(app)
         .post(graphQLUrl)
         .send({ query: print(GET_PREVIEW), variables });
-      expect(res.body.data).toEqual({ itemByUrl: { preview: expected } });
+      expect(res.body.data).toEqual({
+        itemByUrl: { preview: { ...defaultExpected, ...expected } },
+      });
     },
   );
 });
