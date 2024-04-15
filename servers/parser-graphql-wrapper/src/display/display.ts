@@ -36,6 +36,7 @@ const openGraphMetadata = async (item: Item): Promise<Partial<ItemSummary>> => {
     url: item.givenUrl,
     onlyGetOpenGraphInfo: false,
     fetchOptions: { headers: { 'user-agent': userAgent } },
+    timeout: 3,
   });
 
   if (openGraphData.error) {
