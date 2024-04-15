@@ -54,7 +54,7 @@ input ShareContextInput {
   highlights: ShareHighlightInput
 }
 
-union ShareResult = PocketShare | ItemNotFound
+union ShareResult = PocketShare | ShareNotFound
 
 type Query {
   """
@@ -64,7 +64,7 @@ type Query {
   shareSlug(slug: ID!): ShareResult
 }
 
-type ItemNotFound {
+type ShareNotFound {
   message: String 
 }
 

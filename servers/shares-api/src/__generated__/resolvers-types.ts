@@ -24,11 +24,6 @@ export type Scalars = {
   _FieldSet: { input: any; output: any; }
 };
 
-export type ItemNotFound = {
-  __typename?: 'ItemNotFound';
-  message?: Maybe<Scalars['String']['output']>;
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   /**
@@ -97,7 +92,12 @@ export type ShareHighlightInput = {
   quotes: Array<Scalars['String']['input']>;
 };
 
-export type ShareResult = ItemNotFound | PocketShare;
+export type ShareNotFound = {
+  __typename?: 'ShareNotFound';
+  message?: Maybe<Scalars['String']['output']>;
+};
+
+export type ShareResult = PocketShare | ShareNotFound;
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
 export type ResolversObject<TObject> = WithIndex<TObject>;
@@ -180,15 +180,13 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping of union types */
 export type ResolversUnionTypes<RefType extends Record<string, unknown>> = ResolversObject<{
-  ShareResult: ( ItemNotFound ) | ( PocketShare );
+  ShareResult: ( PocketShare ) | ( ShareNotFound );
 }>;
 
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
   ISOString: ResolverTypeWrapper<Scalars['ISOString']['output']>;
-  ItemNotFound: ResolverTypeWrapper<ItemNotFound>;
-  String: ResolverTypeWrapper<Scalars['String']['output']>;
   Markdown: ResolverTypeWrapper<Scalars['Markdown']['output']>;
   Mutation: ResolverTypeWrapper<{}>;
   PocketShare: ResolverTypeWrapper<PocketShare>;
@@ -197,7 +195,9 @@ export type ResolversTypes = ResolversObject<{
   ShareContext: ResolverTypeWrapper<ShareContext>;
   ShareContextInput: ShareContextInput;
   ShareHighlight: ResolverTypeWrapper<ShareHighlight>;
+  String: ResolverTypeWrapper<Scalars['String']['output']>;
   ShareHighlightInput: ShareHighlightInput;
+  ShareNotFound: ResolverTypeWrapper<ShareNotFound>;
   ShareResult: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['ShareResult']>;
   Url: ResolverTypeWrapper<Scalars['Url']['output']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
@@ -206,8 +206,6 @@ export type ResolversTypes = ResolversObject<{
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   ISOString: Scalars['ISOString']['output'];
-  ItemNotFound: ItemNotFound;
-  String: Scalars['String']['output'];
   Markdown: Scalars['Markdown']['output'];
   Mutation: {};
   PocketShare: PocketShare;
@@ -216,7 +214,9 @@ export type ResolversParentTypes = ResolversObject<{
   ShareContext: ShareContext;
   ShareContextInput: ShareContextInput;
   ShareHighlight: ShareHighlight;
+  String: Scalars['String']['output'];
   ShareHighlightInput: ShareHighlightInput;
+  ShareNotFound: ShareNotFound;
   ShareResult: ResolversUnionTypes<ResolversParentTypes>['ShareResult'];
   Url: Scalars['Url']['output'];
   Boolean: Scalars['Boolean']['output'];
@@ -225,11 +225,6 @@ export type ResolversParentTypes = ResolversObject<{
 export interface IsoStringScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ISOString'], any> {
   name: 'ISOString';
 }
-
-export type ItemNotFoundResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['ItemNotFound'] = ResolversParentTypes['ItemNotFound']> = ResolversObject<{
-  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
 
 export interface MarkdownScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Markdown'], any> {
   name: 'Markdown';
@@ -264,8 +259,13 @@ export type ShareHighlightResolvers<ContextType = IContext, ParentType extends R
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type ShareNotFoundResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['ShareNotFound'] = ResolversParentTypes['ShareNotFound']> = ResolversObject<{
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type ShareResultResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['ShareResult'] = ResolversParentTypes['ShareResult']> = ResolversObject<{
-  __resolveType: TypeResolveFn<'ItemNotFound' | 'PocketShare', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'PocketShare' | 'ShareNotFound', ParentType, ContextType>;
 }>;
 
 export interface UrlScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Url'], any> {
@@ -274,13 +274,13 @@ export interface UrlScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes[
 
 export type Resolvers<ContextType = IContext> = ResolversObject<{
   ISOString?: GraphQLScalarType;
-  ItemNotFound?: ItemNotFoundResolvers<ContextType>;
   Markdown?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   PocketShare?: PocketShareResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   ShareContext?: ShareContextResolvers<ContextType>;
   ShareHighlight?: ShareHighlightResolvers<ContextType>;
+  ShareNotFound?: ShareNotFoundResolvers<ContextType>;
   ShareResult?: ShareResultResolvers<ContextType>;
   Url?: GraphQLScalarType;
 }>;
