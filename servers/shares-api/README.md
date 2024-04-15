@@ -1,4 +1,4 @@
-# Annotations API
+# Shares API
 
 This subgraph handles creating Share links
 
