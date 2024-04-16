@@ -6,7 +6,7 @@ import ogs from 'open-graph-scraper';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { IContext } from '../context';
 import { unleash } from '../unleash';
-
+import { merge } from 'lodash';
 // We skip these domains for opengraph data because the parser grabs it from their APIs which is more accurate.
 const openGraphDomainsToSkip = ['reddit.com', 'youtube.com'];
 
@@ -42,15 +42,14 @@ export const deriveItemSummary = async (
     )
   ) {
     const openGraphData = await openGraphMetadata(item);
-    itemCard = {
-      ...itemCard,
-      // If we have data from opengraph, let's overwrite the Parser content, unless its a domain we should be skipping
-      ...(openGraphDomainsToSkip.some((domain) =>
-        item.givenUrl.includes(domain),
-      )
+    // If we have data from opengraph, let's overwrite the Parser content, unless its a domain we should be skipping
+    // Also uses lodash for a deep merge ignoring undefined
+    itemCard = merge(
+      itemCard,
+      openGraphDomainsToSkip.some((domain) => item.givenUrl.includes(domain))
         ? {}
-        : openGraphData),
-    };
+        : openGraphData,
+    );
   }
   return itemCard;
 };

@@ -70,7 +70,7 @@ describe('preview', () => {
     image: null,
     excerpt: null,
     authors: null,
-    domain: null,
+    domain: { logo: null, name: 'test.com' },
     datePublished: null,
     url: testUrl,
     item: {
@@ -125,7 +125,16 @@ describe('preview', () => {
     {
       parserData: {},
       openGraphData: { error: false, result: { ogTitle: 'openGraphTitle' } },
-      expected: { title: 'openGraphTitle' },
+      expected: {
+        title: 'openGraphTitle',
+      },
+    },
+    {
+      parserData: {},
+      openGraphData: undefined,
+      expected: {
+        title: 'parser test',
+      },
     },
   ])(
     'should return item display data',
