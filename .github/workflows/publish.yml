@@ -36,7 +36,7 @@ jobs:
       - name: PNPM Setup
         uses: pnpm/action-setup@v2
         with:
-          version: 8
+          version: 9
       
       - name: Install dependencies
         run: pnpm i
