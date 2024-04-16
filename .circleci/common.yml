@@ -161,7 +161,7 @@ commands:
       - run:
           name: Install pnpm package manager
           command: |
-            corepack prepare pnpm@latest-8 --activate
+            corepack prepare pnpm@8.15.6 --activate
             pnpm config set store-dir .pnpm-store
       - run:  
           name: Install Dependencies
@@ -183,7 +183,7 @@ commands:
           command: |
             nvm install
             nvm use
-            npm install -g pnpm
+            npm install -g pnpm@8.15.6
             pnpm config set store-dir .pnpm-store
             pnpm install    
       - save_cache:
