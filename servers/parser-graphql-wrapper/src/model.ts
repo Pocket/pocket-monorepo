@@ -109,6 +109,7 @@ export interface Author {
 }
 
 export type ItemSummary = {
+  id: string;
   image?: Image;
   excerpt?: string;
   title?: string;

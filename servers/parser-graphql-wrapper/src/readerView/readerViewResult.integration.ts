@@ -7,16 +7,18 @@ import { print } from 'graphql';
 import { gql } from 'graphql-tag';
 import { IContext } from '../context';
 import { Application } from 'express';
-import { Connection } from 'typeorm';
-import { getConnection } from '../database/mysql';
+import { DataSource } from 'typeorm';
+import { getConnection, getSharedUrlsConnection } from '../database/mysql';
 import { ItemResolver } from '../entities/ItemResolver';
 import { IntMask } from '@pocket-tools/int-mask';
+import * as ogs from 'open-graph-scraper';
+jest.mock('open-graph-scraper');
 
 describe('readerSlug', () => {
   let app: Application;
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
-  let connection: Connection;
+  let connection: DataSource;
 
   const GET_READER_INTERSTITIAL = gql`
     query readerSlug($slug: ID!) {
@@ -79,6 +81,15 @@ describe('readerSlug', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks();
+    jest.spyOn(ogs, 'default').mockImplementation(() => {
+      return Promise.resolve({
+        error: true,
+        html: undefined,
+        response: undefined,
+        result: {},
+      });
+    });
+
     nock('http://example-parser.com')
       .get('/')
       .query({
@@ -107,12 +118,14 @@ describe('readerSlug', () => {
     await server.stop();
     await getRedis().disconnect();
     cleanAll();
-    await connection.close();
+    await connection.destroy();
+    await (await getSharedUrlsConnection()).destroy();
     jest.restoreAllMocks();
   });
 
   it('should return item card fallback data', async () => {
     jest.spyOn(IntMask, 'decode').mockReturnValueOnce(123);
+
     const variables = {
       slug: 'inscrutableid',
     };
