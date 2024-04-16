@@ -238,7 +238,7 @@ exports[`ApplicationDynamoDBTable renders dynamo db table global secondary index
         "attribute": [
           {
             "name": "attribeautiful",
-            "type": "shrugs!"
+            "type": "N"
           }
         ],
         "billing_mode": "PROVISIONED",
@@ -465,7 +465,7 @@ exports[`ApplicationDynamoDBTable renders dynamo db table ignoring global second
         "attribute": [
           {
             "name": "attribeautiful",
-            "type": "shrugs!"
+            "type": "N"
           }
         ],
         "billing_mode": "PROVISIONED",
@@ -533,7 +533,7 @@ exports[`ApplicationDynamoDBTable renders dynamo db table that is not protected 
         "attribute": [
           {
             "name": "attribeautiful",
-            "type": "shrugs!"
+            "type": "N"
           }
         ],
         "billing_mode": "PROVISIONED",
@@ -770,7 +770,7 @@ exports[`ApplicationDynamoDBTable renders dynamo db table with 2 global secondar
         "attribute": [
           {
             "name": "attribeautiful",
-            "type": "shrugs!"
+            "type": "N"
           }
         ],
         "billing_mode": "PROVISIONED",
@@ -845,7 +845,7 @@ exports[`ApplicationDynamoDBTable renders dynamo db table with minimal config 1`
         "attribute": [
           {
             "name": "attribeautiful",
-            "type": "shrugs!"
+            "type": "N"
           }
         ],
         "billing_mode": "PROVISIONED",
@@ -874,7 +874,7 @@ exports[`ApplicationDynamoDBTable renders dynamo db table with on-demand capacit
         "attribute": [
           {
             "name": "attribeautiful",
-            "type": "shrugs!"
+            "type": "N"
           }
         ],
         "billing_mode": "PAY_PER_REQUEST",
@@ -1055,7 +1055,7 @@ exports[`ApplicationDynamoDBTable renders dynamo db table with read and write ca
         "attribute": [
           {
             "name": "attribeautiful",
-            "type": "shrugs!"
+            "type": "N"
           }
         ],
         "billing_mode": "PROVISIONED",
@@ -1274,7 +1274,7 @@ exports[`ApplicationDynamoDBTable renders dynamo db table with read and write ca
         "attribute": [
           {
             "name": "attribeautiful",
-            "type": "shrugs!"
+            "type": "N"
           }
         ],
         "billing_mode": "PROVISIONED",
@@ -1433,7 +1433,7 @@ exports[`ApplicationDynamoDBTable renders dynamo db table with read capacity 1`]
         "attribute": [
           {
             "name": "attribeautiful",
-            "type": "shrugs!"
+            "type": "N"
           }
         ],
         "billing_mode": "PROVISIONED",
@@ -1564,7 +1564,7 @@ exports[`ApplicationDynamoDBTable renders dynamo db table with write capacity 1`
         "attribute": [
           {
             "name": "attribeautiful",
-            "type": "shrugs!"
+            "type": "N"
           }
         ],
         "billing_mode": "PROVISIONED",
@@ -1601,6 +1601,39 @@ exports[`ApplicationDynamoDBTable renders dynamo db table with write capacity 1`
         ],
         "policy_arn": "\${aws_iam_policy.testDynamoDBTable_WriteCapacity_autoscaling_policy_9632CE60.arn}",
         "role": "\${aws_iam_role.testDynamoDBTable_WriteCapacity_role_4BB8E3F1.name}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`ApplicationDynamoDBTable renders dynamodb table with ttl column 1`] = `
+"{
+  "resource": {
+    "aws_dynamodb_table": {
+      "testDynamoDBTable_dynamodb_table_A3DD49A4": {
+        "attribute": [
+          {
+            "name": "attribeautiful",
+            "type": "N"
+          }
+        ],
+        "billing_mode": "PROVISIONED",
+        "global_secondary_index": [
+        ],
+        "hash_key": "123",
+        "lifecycle": {
+          "ignore_changes": [
+            "read_capacity",
+            "write_capacity"
+          ],
+          "prevent_destroy": true
+        },
+        "name": "abides-",
+        "ttl": {
+          "attribute_name": "attribeautiful",
+          "enabled": true
+        }
       }
     }
   }
