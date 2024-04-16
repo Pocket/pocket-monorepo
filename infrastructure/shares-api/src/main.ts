@@ -193,10 +193,6 @@ class SharesAPI extends TerraformStack {
               value: dynamodb.sharesTable.dynamodb.name,
             },
             {
-              name: 'SHARES_TABLE_KEY',
-              value: config.dynamodb.sharesTable.key,
-            },
-            {
               name: 'SQS_BATCH_DELETE_QUEUE_URL',
               value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.envVars.sqsBatchDeleteQueueName}`,
             },
