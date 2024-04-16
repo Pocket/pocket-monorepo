@@ -288,6 +288,14 @@ class ParserGraphQLWrapper extends TerraformStack {
               name: 'SALT_2',
               valueFrom: `${intMaskSecretArn}:salt2::`,
             },
+            {
+              name: 'UNLEASH_ENDPOINT',
+              valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Shared/${config.environment}/UNLEASH_ENDPOINT`,
+            },
+            {
+              name: 'UNLEASH_KEY',
+              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/UNLEASH_KEY`,
+            },
           ],
         },
         {

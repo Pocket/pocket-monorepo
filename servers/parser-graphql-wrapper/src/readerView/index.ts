@@ -20,7 +20,7 @@ export async function fallbackPage(
     return { message: "We couldn't find that page." };
   }
 
-  const itemCard = await deriveItemSummary(item);
+  const itemCard = await deriveItemSummary(item, context);
 
   return { itemCard };
 }

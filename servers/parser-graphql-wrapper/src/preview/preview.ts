@@ -4,13 +4,17 @@ import config from '../config';
 
 import ogs from 'open-graph-scraper';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { IContext } from '../context';
+import { unleash } from '../unleash';
 
 // We skip these domains for opengraph data because the parser grabs it from their APIs which is more accurate.
 const openGraphDomainsToSkip = ['reddit.com', 'youtube.com'];
 
-export const deriveItemSummary = async (item: Item): Promise<ItemSummary> => {
-  const openGraphData = await openGraphMetadata(item);
-  const itemCard = {
+export const deriveItemSummary = async (
+  item: Item,
+  context: IContext,
+): Promise<ItemSummary> => {
+  let itemCard = {
     id: item.id,
     image: item.topImage ?? item.images?.[0],
     excerpt: item.excerpt,
@@ -24,11 +28,30 @@ export const deriveItemSummary = async (item: Item): Promise<ItemSummary> => {
       : null,
     url: item.givenUrl,
     item,
-    // If we have data from opengraph, let's overwrite the Parser content, unless its a domain we should be skipping
-    ...(openGraphDomainsToSkip.some((domain) => item.givenUrl.includes(domain))
-      ? {}
-      : openGraphData),
   };
+
+  // If the open graph parser is enabled lets use it
+  if (
+    unleash().isEnabled(
+      config.unleash.flags.openGraphParser.name,
+      {
+        userId: context.userId,
+        remoteAddress: context.ip,
+      },
+      config.unleash.flags.openGraphParser.fallback,
+    )
+  ) {
+    const openGraphData = await openGraphMetadata(item);
+    itemCard = {
+      ...itemCard,
+      // If we have data from opengraph, let's overwrite the Parser content, unless its a domain we should be skipping
+      ...(openGraphDomainsToSkip.some((domain) =>
+        item.givenUrl.includes(domain),
+      )
+        ? {}
+        : openGraphData),
+    };
+  }
   return itemCard;
 };
 

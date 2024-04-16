@@ -141,7 +141,7 @@ export const resolvers = {
       args,
       context: IContext,
     ): Promise<ItemSummary> => {
-      return deriveItemSummary(parent);
+      return deriveItemSummary(parent, context);
     },
   },
   MarticleComponent: {

@@ -20,6 +20,7 @@ import { ParserAPI } from './datasources/parserApi';
 import { LegacyDataSourcesPlugin } from './datasources/legacyDataSourcesPlugin';
 import { ContextManager, IContext } from './context';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
+import { unleash } from './unleash';
 
 export async function startServer(port: number): Promise<{
   app: Application;
@@ -35,6 +36,9 @@ export async function startServer(port: number): Promise<{
     ...config.sentry,
     debug: config.sentry.environment == 'development',
   });
+
+  // Initialize unleash client
+  unleash();
 
   // RequestHandler creates a separate execution context, so that all
   // transactions/spans/breadcrumbs are isolated across requests
@@ -107,7 +111,8 @@ export async function startServer(port: number): Promise<{
     // Logging Setup, Express app-specific
     setMorgan(serverLogger),
     expressMiddleware(server, {
-      context: async () => await ContextManager.initialize(),
+      context: async ({ req }) =>
+        await ContextManager.initialize({ headers: req.headers }),
     }),
   );
 

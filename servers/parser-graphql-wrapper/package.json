@@ -22,6 +22,7 @@
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
+    "@pocket-tools/feature-flags-client": "workspace:*",
     "apollo-datasource": "3.3.2",
     "cors": "2.8.5",
     "dataloader": "2.2.2",

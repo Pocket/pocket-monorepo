@@ -12,6 +12,9 @@ import { getConnection, getSharedUrlsConnection } from '../database/mysql';
 import { ItemResolver } from '../entities/ItemResolver';
 import { IntMask } from '@pocket-tools/int-mask';
 import * as ogs from 'open-graph-scraper';
+import { mockUnleash } from '@pocket-tools/feature-flags-client';
+import * as unleash from '../unleash';
+import config from '../config';
 
 jest.mock('open-graph-scraper');
 
@@ -20,6 +23,7 @@ describe('preview', () => {
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
   let connection: DataSource;
+  const { unleash: mockClient, repo } = mockUnleash([]);
 
   const GET_PREVIEW = gql`
     query display($url: String!) {
@@ -74,7 +78,18 @@ describe('preview', () => {
     },
   };
 
+  const openGraphFeatureToggle = {
+    name: config.unleash.flags.openGraphParser.name,
+    stale: false,
+    type: 'release',
+    project: 'default',
+    variants: [],
+    strategies: [],
+    impressionData: false,
+  };
+
   beforeAll(async () => {
+    jest.spyOn(unleash, 'unleash').mockReturnValue(mockClient);
     ({ app, server, url: graphQLUrl } = await startServer(0));
     connection = await getConnection();
     //Delete the items
@@ -89,10 +104,10 @@ describe('preview', () => {
   });
 
   beforeEach(async () => {
+    jest.spyOn(unleash, 'unleash').mockReturnValue(mockClient);
     jest.clearAllMocks();
     jest.spyOn(IntMask, 'decode').mockReturnValueOnce(123);
     jest.spyOn(IntMask, 'encode').mockReturnValueOnce('encodedId');
-
     // flush the redis cache
     getRedis().clear();
   });
@@ -115,16 +130,27 @@ describe('preview', () => {
   ])(
     'should return item display data',
     async ({ parserData, openGraphData, expected }) => {
-      jest.spyOn(ogs, 'default').mockImplementation(() => {
-        return Promise.resolve({
-          html: undefined,
-          response: undefined,
-          error: false,
-          result: {},
-          // override the default
-          ...openGraphData,
+      if (openGraphData == undefined) {
+        repo.setToggle(config.unleash.flags.openGraphParser.name, {
+          ...openGraphFeatureToggle,
+          enabled: false,
         });
-      });
+      } else {
+        repo.setToggle(config.unleash.flags.openGraphParser.name, {
+          ...openGraphFeatureToggle,
+          enabled: true,
+        });
+        jest.spyOn(ogs, 'default').mockImplementation(() => {
+          return Promise.resolve({
+            html: undefined,
+            response: undefined,
+            error: false,
+            result: {},
+            // override the default
+            ...openGraphData,
+          });
+        });
+      }
 
       nock('http://example-parser.com')
         .get('/')
