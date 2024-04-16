@@ -20,7 +20,7 @@ terraform {
     }
   }
 
-  required_version = ">= 1.7.5"
+  required_version = ">= 1.8.0"
 }
 
 data "terraform_remote_state" "incident_management" {
