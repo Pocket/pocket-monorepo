@@ -161,7 +161,7 @@ commands:
       - run:
           name: Install pnpm package manager
           command: |
-            corepack prepare pnpm@latest-8 --activate
+            corepack prepare pnpm@8.15.6 --activate
             pnpm config set store-dir .pnpm-store
       - run:  
           name: Install Dependencies
@@ -174,23 +174,14 @@ commands:
             - .pnpm-store
   install_infrastructure_pnpm:
     steps:
-      - restore_cache:
-          name: Restore pnpm Package Cache
-          keys:
-            - pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
-      - run: 
+      - run:
           name: Install and setup node
           command: |
             nvm install
             nvm use
-            npm install -g pnpm
+            npm install -g pnpm@8.15.6
             pnpm config set store-dir .pnpm-store
             pnpm install    
-      - save_cache:
-          name: Save pnpm Package Cache
-          key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
-          paths:
-            - .pnpm-store 
   install_codebuild_secrets:
     steps:
       - run: 
@@ -295,22 +286,6 @@ jobs:
       - exit-early-if-irrelevant:
           for: << parameters.for >>
       - checkout
-      - unless:
-          # When it is not raw hcl, the stack output path is 3 folders away from our .terraform-version
-          condition: <<parameters.uses_raw_hcl>>
-          steps:
-            - restore_cache:
-                name: Restore Terraform
-                keys:
-                  - terraform-version-{{ checksum "<< parameters.stack-output-path >>/../../../.terraform-version" }}
-      - when:
-          # When it is hcl, the stack output path is the same as our .terraform-version
-          condition: <<parameters.uses_raw_hcl>>
-          steps:
-            - restore_cache:
-                name: Restore Terraform
-                keys:
-                  - terraform-version-{{ checksum "<< parameters.stack-output-path >>/.terraform-version" }}
       - run:
           name: Install tfcmt
           command: |
@@ -396,24 +371,6 @@ jobs:
                 command: |
                   cd << parameters.stack-output-path >>
                   tfcmt --var target:<< parameters.scope >><<#parameters.dev>>-dev<</parameters.dev>> plan --skip-no-changes --patch -- terraform plan -lock-timeout=10m
-      - unless:
-          # When it is not raw hcl, the stack output path is 3 folders away from our .terraform-version
-          condition: <<parameters.uses_raw_hcl>>
-          steps:
-            - save_cache:
-                key: terraform-version-{{ checksum "<< parameters.stack-output-path >>/../../../.terraform-version" }}
-                paths:
-                  - /home/circleci/.tfenv/versions/*
-                  - /home/circleci/.tfenv/bin/terraform-*
-      - when:
-          # When it is hcl, the stack output path is the same as our .terraform-version
-          condition: <<parameters.uses_raw_hcl>>
-          steps:
-            - save_cache:
-                key: terraform-version-{{ checksum "<< parameters.stack-output-path >>/.terraform-version" }}
-                paths:
-                  - /home/circleci/.tfenv/versions/*
-                  - /home/circleci/.tfenv/bin/terraform-*
 
   code_deploy_ecs:
     parameters:
