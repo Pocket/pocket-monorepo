@@ -92,12 +92,7 @@ describe('preview', () => {
     jest.spyOn(unleash, 'unleash').mockReturnValue(mockClient);
     ({ app, server, url: graphQLUrl } = await startServer(0));
     connection = await getConnection();
-    //Delete the items
-    const entities = connection.entityMetadatas;
-    for (const entity of entities) {
-      const repository = connection.getRepository(entity.name);
-      await repository.query(`DELETE FROM ${entity.tableName}`);
-    }
+    await connection.query('TRUNCATE readitla_b.items_resolver');
     //Create a seed item
     const insert = connection.manager.create(ItemResolver, item);
     await connection.manager.save([insert]);
