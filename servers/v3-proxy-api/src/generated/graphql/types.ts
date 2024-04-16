@@ -1742,6 +1742,11 @@ export enum PocketSaveStatus {
   Unread = 'UNREAD'
 }
 
+export type PocketShare = {
+  __typename?: 'PocketShare';
+  id: Scalars['ID']['output'];
+};
+
 export enum PremiumFeature {
   /** Feature where you get an ad-free experience */
   AdFree = 'AD_FREE',

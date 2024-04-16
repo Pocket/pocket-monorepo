@@ -163,6 +163,9 @@ type Item
 
   "The Marticle format of the article, used by clients for native article view."
   marticle: [MarticleComponent!]
+
+  "The client preview/display logic for this url"
+  preview: ItemSummary
 }
 
 type ArticleMarkdown {
@@ -463,6 +466,7 @@ type ReaderViewResult @key(fields: "slug") {
 union ReaderFallback = ReaderInterstitial | ItemNotFound
 
 type ItemSummary {
+  id: ID!
   image: Image
   excerpt: String
   title: String
@@ -471,7 +475,7 @@ type ItemSummary {
   domain: DomainMetadata
   datePublished: ISOString
   url: Url!
-  item: Item 
+  item: Item
 }
 
 type ReaderInterstitial {

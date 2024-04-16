@@ -30,7 +30,7 @@ const format = winstonFormat.combine(
   winstonFormat.json(),
 );
 
-// write logs to file, for local development
+// write logs to file, for testing
 // Set to a function because when its not the code is executed,
 // and tries making a logs directory even if its not used
 const fileLoggingTransports = () => {
@@ -46,9 +46,7 @@ const fileLoggingTransports = () => {
 const transports = [
   // for local and test envs, log to files
   // otherwise, log to the console
-  ...(isLocal || isTest
-    ? fileLoggingTransports()
-    : [new winstonTransports.Console()]),
+  ...(isTest ? fileLoggingTransports() : [new winstonTransports.Console()]),
 ];
 
 /**
