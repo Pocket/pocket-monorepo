@@ -18,6 +18,7 @@ describe('SSML', () => {
         logo: '',
         name: 'Mozilla',
       },
+      givenUrl: 'https://something-to.test',
     });
 
     expect(ssml).toBe(
@@ -43,6 +44,7 @@ describe('SSML', () => {
         logo: '',
         name: 'Mozilla',
       },
+      givenUrl: 'https://something-to.test',
     });
 
     expect(ssml).toBe(

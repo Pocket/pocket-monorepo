@@ -1,4 +1,4 @@
-import { Item, ItemSummary } from '../model';
+import { Item, ItemSummary } from '../__generated__/resolvers-types';
 import { DateTime } from 'luxon';
 import config from '../config';
 
@@ -86,7 +86,7 @@ const openGraphMetadata = async (item: Item): Promise<Partial<ItemSummary>> => {
     title: result.ogTitle ?? undefined,
     image: firstImage
       ? {
-          imageId: '1',
+          imageId: 1,
           url: firstImage.url,
           src: firstImage.url,
           width: firstImage.width ?? undefined,

@@ -1,23 +1,26 @@
 import * as Sentry from '@sentry/node';
-import { Item, ItemSummary, ReaderViewResult } from './model';
 import { clear, getItemById, getItemByUrl } from './dataLoaders';
 import config from './config';
-import { MediaTypeParam, ParserAPI } from './datasources/parserApi';
+import {
+  MediaTypeParam,
+  ParserAPI,
+  ParserArticle,
+} from './datasources/parserApi';
 import { MarticleElement, parseArticle } from './marticle/marticleParser';
 import { CacheScope } from '@apollo/cache-control-types';
 import {
   extractCodeFromShortUrl,
   givenUrlFromShareCode,
 } from './shortUrl/shortUrl';
-import { IContext } from './context';
 import { generateSSML } from './ssml/ssml';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { fallbackPage } from './readerView';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
 import { deriveItemSummary, itemSummaryFromUrl } from './preview/preview';
 import { URLResolver } from 'graphql-scalars';
+import { Resolvers } from './__generated__/resolvers-types';
 
-export const resolvers = {
+export const resolvers: Resolvers = {
   ...PocketDefaultScalars,
   URL: URLResolver,
   Item: {
@@ -32,26 +35,39 @@ export const resolvers = {
         });
       }
 
-      const { itemId, givenUrl } = item;
-
-      try {
-        return givenUrl
-          ? await dataLoaders.itemUrlLoader.load(givenUrl)
-          : await dataLoaders.itemIdLoader.load(itemId);
-      } catch (error) {
-        const errorMessage = '__resolveReference: Error getting item';
-        const errorData = {
-          itemId: itemId,
-          givenUrl: givenUrl,
-          info: info,
-        };
-        serverLogger.error(errorMessage, { error: error, data: errorData });
-        Sentry.addBreadcrumb({ message: errorMessage, data: errorData });
-        Sentry.captureException(error);
-        throw error;
+      if ('givenUrl' in item) {
+        try {
+          return await dataLoaders.itemUrlLoader.load(item.givenUrl);
+        } catch (error) {
+          const errorMessage =
+            '__resolveReference: Error getting item by givenUrl';
+          const errorData = {
+            itemId: item.givenUrl,
+            info: info,
+          };
+          serverLogger.error(errorMessage, { error: error, data: errorData });
+          Sentry.addBreadcrumb({ message: errorMessage, data: errorData });
+          Sentry.captureException(error);
+          throw error;
+        }
+      } else if ('itemId' in item) {
+        try {
+          return await dataLoaders.itemUrlLoader.load(item.itemId);
+        } catch (error) {
+          const errorMessage =
+            '__resolveReference: Error getting item by itemId';
+          const errorData = {
+            itemId: item.itemId,
+            info: info,
+          };
+          serverLogger.error(errorMessage, { error: error, data: errorData });
+          Sentry.addBreadcrumb({ message: errorMessage, data: errorData });
+          Sentry.captureException(error);
+          throw error;
+        }
       }
     },
-    article: async (parent, args, { dataSources }, info): Promise<string> => {
+    article: async (parent, args, { dataSources }, info) => {
       if (parent.article) {
         // Use the parent resolver for article content if available
         // (e.g. via refreshArticle mutation), otherwise load the article
@@ -69,12 +85,7 @@ export const resolvers = {
       });
       return articleText.article;
     },
-    marticle: async (
-      parent,
-      args,
-      { dataSources },
-      info,
-    ): Promise<MarticleElement[]> => {
+    marticle: async (parent, args, { dataSources }, info) => {
       // Note: When the Web & Android teams switch to MArticle, make all the parser article call use
       // MediaTypeParam.AS_COMMENTS and add back this optimization:
       //
@@ -97,32 +108,26 @@ export const resolvers = {
         ? parseArticle(article)
         : ([] as MarticleElement[]);
     },
-    ssml: async (parent, args, { dataSources }, info): Promise<string> => {
-      const item = parent as Item;
-
-      if (!item.article && item.isArticle) {
-        item.article = (
-          await (dataSources.parserAPI as ParserAPI).articleLoader.load({
+    ssml: async (parent, args, { dataSources }, info) => {
+      if (!parent.article && parent.isArticle) {
+        parent.article = (
+          (await (dataSources.parserAPI as ParserAPI).articleLoader.load({
             url: parent.givenUrl,
             options: {
               imageStyle: MediaTypeParam.DIV_TAG,
               videoStyle: MediaTypeParam.DIV_TAG,
               maxAge: info.cacheControl.cacheHint.maxAge,
             },
-          })
+          })) as ParserArticle
         ).article;
       }
 
-      if (!item.article) {
+      if (!parent.article) {
         return null;
       }
-      return generateSSML(item);
+      return generateSSML(parent);
     },
-    shortUrl: async (
-      parent: Item,
-      args,
-      context: IContext,
-    ): Promise<string> => {
+    shortUrl: async (parent, args, context) => {
       // If the givenUrl is already a short share url, or there is a
       // short url key on the parent from a previous step, return the
       // same value to avoid another db trip
@@ -138,26 +143,22 @@ export const resolvers = {
         givenUrl: parent.givenUrl,
       });
     },
-    preview: async (
-      parent: Item,
-      args,
-      context: IContext,
-    ): Promise<ItemSummary> => {
+    preview: async (parent, args, context) => {
       return deriveItemSummary(parent, context);
     },
   },
   MarticleComponent: {
     __resolveType(marticleComponent, context, info) {
-      if (marticleComponent.__typeName) {
-        return marticleComponent.__typeName;
+      if (marticleComponent.__typename) {
+        return marticleComponent.__typename;
       }
     },
   },
   ReaderFallback: {
     __resolveType(fallback) {
-      if (fallback.itemCard?.url) {
+      if ('itemCard' in fallback && fallback.itemCard.url) {
         return 'ReaderInterstitial';
-      } else if (fallback.message) {
+      } else if ('message' in fallback) {
         return 'ItemNotFound';
       } else {
         return null;
@@ -166,7 +167,7 @@ export const resolvers = {
   },
   Query: {
     //deprecated
-    getItemByUrl: async (_source, { url }, { repositories }): Promise<Item> => {
+    getItemByUrl: async (_source, { url }, { repositories }) => {
       // If it's a special short share URL, use alternative resolution path
       const shortCode = extractCodeFromShortUrl(url);
       if (shortCode != null) {
@@ -183,14 +184,10 @@ export const resolvers = {
       }
     },
     //deprecated
-    getItemByItemId: async (
-      _source,
-      { id },
-      { repositories },
-    ): Promise<Item> => {
+    getItemByItemId: async (_source, { id }, { repositories }) => {
       return getItemById(id, await repositories.itemResolver);
     },
-    itemByUrl: async (_source, { url }, { repositories }): Promise<Item> => {
+    itemByUrl: async (_source, { url }, { repositories }) => {
       // If it's a special short share URL, use alternative resolution path
       const shortCode = extractCodeFromShortUrl(url);
       if (shortCode != null) {
@@ -206,37 +203,29 @@ export const resolvers = {
         return getItemByUrl(url);
       }
     },
-    itemByItemId: async (_source, { id }, { repositories }): Promise<Item> => {
+    itemByItemId: async (_source, { id }, { repositories }) => {
       return getItemById(id, await repositories.itemResolver);
     },
-    readerSlug: async (
-      _,
-      { slug }: { slug: string },
-      context: IContext,
-    ): Promise<ReaderViewResult> => {
+    readerSlug: async (_, { slug }: { slug: string }, context) => {
       const fallbackData = await fallbackPage(slug, context);
       return { slug, fallbackPage: fallbackData };
     },
   },
   CorpusItem: {
-    shortUrl: async ({ url }, args, context: IContext): Promise<string> => {
+    shortUrl: async ({ url }, args, context) => {
       // Unlikely, but if the givenUrl is already a short share url
       // return the same value to avoid another db trip
       if (extractCodeFromShortUrl(url) != null) {
         return url;
       }
-      const item: Item = await getItemByUrl(url);
+      const item = await getItemByUrl(url);
       return context.dataLoaders.shortUrlLoader.load({
         itemId: parseInt(item.itemId),
         resolvedId: parseInt(item.resolvedId),
         givenUrl: item.givenUrl,
       });
     },
-    timeToRead: async (
-      { url },
-      args,
-      context: IContext,
-    ): Promise<number | undefined | null> => {
+    timeToRead: async ({ url }, args, context) => {
       // timeToRead is not a guaranteed field on CorpusItem - we shouldn't
       // return underlying parser errors to clients if this call fails
       // (as some clients will fail outright if any graph errors are present)
@@ -248,8 +237,8 @@ export const resolvers = {
     },
   },
   Collection: {
-    shortUrl: async ({ slug }, args, context: IContext): Promise<string> => {
-      const item: Item = await getItemByUrl(
+    shortUrl: async ({ slug }, args, context) => {
+      const item = await getItemByUrl(
         `${config.shortUrl.collectionUrl}/${slug}`,
       );
       // Unlikely, but if the givenUrl is already a short share url
@@ -265,11 +254,7 @@ export const resolvers = {
     },
   },
   PocketShare: {
-    preview: async (
-      parent: { targetUrl: string },
-      _,
-      context: IContext,
-    ): Promise<ItemSummary> => {
+    preview: async (parent: { targetUrl: string }, _, context) => {
       return await itemSummaryFromUrl(parent.targetUrl, context);
     },
   },
@@ -279,7 +264,7 @@ export const resolvers = {
       { url }: { url: string },
       { dataSources },
       info,
-    ): Promise<Item> => {
+    ) => {
       // Article loader will always return a cache miss for `refresh`=true
       // so no need to use it
       const articleData = await (

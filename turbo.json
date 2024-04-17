@@ -40,8 +40,22 @@
       "persistent": true
     },
     "prebuild": {
-      "inputs": ["schema-public.graphql", "schema-shared.graphql", "schema-admin.graphql", "prisma/schema.prisma", "src/graphql/**/*.graphql", "codegen.ts"],
-      "outputs": ["schema-admin-api.graphql", "schema-client-api.graphql", "prisma/src/**/*", "src/generated/**/*"],
+      "inputs": [
+        "schema-public.graphql",
+        "schema-shared.graphql",
+        "schema-admin.graphql",
+        "schema.graphql",
+        "prisma/schema.prisma",
+        "src/graphql/**/*.graphql",
+        "codegen.ts"
+      ],
+      "outputs": [
+        "schema-admin-api.graphql",
+        "schema-client-api.graphql",
+        "prisma/src/**/*",
+        "src/generated/**/*",
+        "src/__generated__/**/*"
+      ],
       "cache": true
     },
     "pretest": {

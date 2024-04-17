@@ -1,6 +1,5 @@
 import DataLoader from 'dataloader';
 import { ContextWithDataSources } from './datasources/legacyDataSourcesPlugin';
-import { Item } from './model';
 import { itemIdLoader, itemUrlLoader, ShortUrlLoader } from './dataLoaders';
 import {
   BatchAddShareUrlInput,
@@ -9,6 +8,7 @@ import {
   getItemResolverRepository,
   getSharedUrlsResolverRepo,
 } from './database/mysql';
+import { Item } from './__generated__/resolvers-types';
 
 /**
  * Change this to `extends BaseContext` once LegacyDataSourcesPlugin
