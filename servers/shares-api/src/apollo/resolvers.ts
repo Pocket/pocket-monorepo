@@ -1,5 +1,5 @@
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
-import { Resolvers } from '../__generated__/resolvers-types';
+import { Resolvers } from '../__generated__/types';
 import { URLResolver } from 'graphql-scalars';
 import { Max300CharStringResolver } from '../models';
 

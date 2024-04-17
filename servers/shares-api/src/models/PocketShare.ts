@@ -2,7 +2,7 @@ import {
   PocketShare,
   ShareContextInput,
   ShareResult,
-} from '../__generated__/resolvers-types';
+} from '../__generated__/types';
 import { ISharesDataSource, ShareEntity } from '../datasources/shares';
 import { v4 as uuidv4 } from 'uuid';
 import { config } from '../config';

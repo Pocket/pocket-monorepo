@@ -1,4 +1,4 @@
-import { ShareNotFound } from '../__generated__/resolvers-types';
+import { ShareNotFound } from '../__generated__/types';
 
 export class ShareNotFoundModel implements ShareNotFound {
   static message = `The link you followed has expired or does not exist.`;
