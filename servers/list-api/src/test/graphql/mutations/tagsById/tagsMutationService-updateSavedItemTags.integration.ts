@@ -42,7 +42,16 @@ describe('tags mutation update: ', () => {
     // Mock Date.now() to get a consistent date for inserting body.data
     jest.useFakeTimers({
       now: updateDate,
-      advanceTimers: true,
+      doNotFake: [
+        'nextTick',
+        'setImmediate',
+        'clearImmediate',
+        'setInterval',
+        'clearInterval',
+        'setTimeout',
+        'clearTimeout',
+      ],
+      advanceTimers: false,
     });
     await writeDb('item_tags').truncate();
     await writeDb('item_tags').insert([

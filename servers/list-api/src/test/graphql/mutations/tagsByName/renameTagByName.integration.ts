@@ -36,7 +36,16 @@ describe('deleteTagByName mutation', () => {
   beforeAll(async () => {
     jest.useFakeTimers({
       now: now,
-      advanceTimers: true,
+      doNotFake: [
+        'nextTick',
+        'setImmediate',
+        'clearImmediate',
+        'setInterval',
+        'clearInterval',
+        'setTimeout',
+        'clearTimeout',
+      ],
+      advanceTimers: false,
     });
     ({ app, server, url } = await startServer(0));
   });
