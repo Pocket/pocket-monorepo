@@ -1,20 +1,23 @@
 import nock, { cleanAll } from 'nock';
-import { getRedis } from '../cache';
-import { startServer } from '../server';
+import { getRedis } from '../../cache';
+import { startServer } from '../../apollo/server';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import { print } from 'graphql';
 import { gql } from 'graphql-tag';
-import { IContext } from '../context';
+import { IContext } from '../../apollo/context';
 import { Application } from 'express';
 import { DataSource } from 'typeorm';
-import { getConnection, getSharedUrlsConnection } from '../database/mysql';
-import { ItemResolver } from '../entities/ItemResolver';
+import {
+  getConnection,
+  getSharedUrlsConnection,
+} from '../../datasources/mysql';
+import { ItemResolver } from '../../entities/ItemResolver';
 import { IntMask } from '@pocket-tools/int-mask';
 import * as ogs from 'open-graph-scraper';
 import { mockUnleash } from '@pocket-tools/feature-flags-client';
-import * as unleash from '../unleash';
-import config from '../config';
+import * as unleash from '../../unleash';
+import config from '../../config';
 
 jest.mock('open-graph-scraper');
 

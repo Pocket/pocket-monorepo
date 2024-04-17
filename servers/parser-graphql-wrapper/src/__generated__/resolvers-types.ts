@@ -3,7 +3,7 @@
 /* tslint:disable */
 import { GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 import { GraphQLResolveInfoWithCacheControl as GraphQLResolveInfo } from '@apollo/cache-control-types';
-import { IContext } from '../context';
+import { IContext } from '../apollo/context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };

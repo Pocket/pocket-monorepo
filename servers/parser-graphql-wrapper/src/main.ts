@@ -16,4 +16,4 @@ nodeSDKBuilder({
   );
 });
 
-import { startServer } from './server';
+import { startServer } from './apollo/server';

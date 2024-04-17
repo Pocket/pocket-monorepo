@@ -1,5 +1,5 @@
 import { ItemResolver } from './ItemResolver';
-import { getConnection, getItemResolverRepository } from '../database/mysql';
+import { getConnection, getItemResolverRepository } from '../datasources/mysql';
 import { DataSource } from 'typeorm';
 
 const item = {

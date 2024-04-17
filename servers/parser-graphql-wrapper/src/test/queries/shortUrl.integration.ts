@@ -1,7 +1,7 @@
 import { ApolloServer } from '@apollo/server';
-import { IContext } from '../context';
-import { startServer } from '../server';
-import { getRedis } from '../cache';
+import { IContext } from '../../apollo/context';
+import { startServer } from '../../apollo/server';
+import { getRedis } from '../../cache';
 import nock from 'nock';
 import { print } from 'graphql/index';
 import { gql } from 'graphql-tag';
@@ -13,10 +13,10 @@ import {
   getItemResolverRepository,
   getSharedUrlsConnection,
   getSharedUrlsResolverRepo,
-} from '../database/mysql';
-import config from '../config';
+} from '../../datasources/mysql';
+import config from '../../config';
 import { Application } from 'express';
-import { shareUrl } from './shortUrl';
+import { shareUrl } from '../../shortUrl/shortUrl';
 
 describe('ShortUrl', () => {
   const testUrl = 'https://someurl.com';

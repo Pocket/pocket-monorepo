@@ -1,7 +1,7 @@
 import { IntMask } from '@pocket-tools/int-mask';
-import { IContext } from '../context';
+import { IContext } from '../apollo/context';
 import { ReaderFallback } from '../__generated__/resolvers-types';
-import { deriveItemSummary } from '../preview/preview';
+import { deriveItemSummary } from '../preview';
 
 /**
  * FallbackPage resolver for ReaderViewResult query

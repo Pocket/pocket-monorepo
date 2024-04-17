@@ -4,7 +4,7 @@ import config from '../config';
 
 import ogs from 'open-graph-scraper';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { IContext } from '../context';
+import { IContext } from '../apollo/context';
 import { unleash } from '../unleash';
 import { merge } from 'lodash';
 // We skip these domains for opengraph data because the parser grabs it from their APIs which is more accurate.

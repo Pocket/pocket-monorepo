@@ -1,6 +1,6 @@
 import { ApolloServer } from '@apollo/server';
-import { IContext } from '../context';
-import { startServer } from '../server';
+import { IContext } from '../../apollo/context';
+import { startServer } from '../../apollo/server';
 import nock from 'nock';
 import { print } from 'graphql/index';
 import { gql } from 'graphql-tag';

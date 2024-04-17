@@ -2,7 +2,7 @@ import {
   SharedUrlsResolverRepository,
   getSharedUrlsConnection,
   getSharedUrlsResolverRepo,
-} from '../database/mysql';
+} from '../datasources/mysql';
 import { shareUrl } from '../shortUrl/shortUrl';
 
 describe('SharedUrls', () => {
