@@ -288,8 +288,8 @@ importers:
         specifier: 3.554.0
         version: 3.554.0(@aws-sdk/client-dynamodb@3.554.0)
       '@sentry/serverless':
-        specifier: 7.110.0
-        version: 7.110.0
+        specifier: 7.110.1
+        version: 7.110.1
       exponential-backoff:
         specifier: ^3.1.1
         version: 3.1.1
@@ -326,7 +326,7 @@ importers:
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.3)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.3)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -337,8 +337,8 @@ importers:
         specifier: 3.554.0
         version: 3.554.0
       '@sentry/serverless':
-        specifier: 7.110.0
-        version: 7.110.0
+        specifier: 7.110.1
+        version: 7.110.1
       fetch-retry:
         specifier: ^5.0.6
         version: 5.0.6
@@ -372,7 +372,7 @@ importers:
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -386,8 +386,8 @@ importers:
         specifier: 3.554.0
         version: 3.554.0(@aws-sdk/client-dynamodb@3.554.0)
       '@sentry/serverless':
-        specifier: 7.110.0
-        version: 7.110.0
+        specifier: 7.110.1
+        version: 7.110.1
       exponential-backoff:
         specifier: ^3.1.1
         version: 3.1.1
@@ -412,7 +412,7 @@ importers:
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -420,8 +420,8 @@ importers:
   lambdas/annotations-api-events:
     dependencies:
       '@sentry/serverless':
-        specifier: 7.110.0
-        version: 7.110.0
+        specifier: 7.110.1
+        version: 7.110.1
       node-fetch:
         specifier: 2.7.0
         version: 2.7.0
@@ -449,7 +449,7 @@ importers:
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -460,8 +460,8 @@ importers:
         specifier: 3.554.0
         version: 3.554.0
       '@sentry/serverless':
-        specifier: 7.110.0
-        version: 7.110.0
+        specifier: 7.110.1
+        version: 7.110.1
       jsonwebtoken:
         specifier: ^9.0.0
         version: 9.0.2
@@ -504,7 +504,7 @@ importers:
         version: 3.1.0
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -518,8 +518,8 @@ importers:
         specifier: 3.554.0
         version: 3.554.0
       '@sentry/serverless':
-        specifier: 7.110.0
-        version: 7.110.0
+        specifier: 7.110.1
+        version: 7.110.1
       jsonwebtoken:
         specifier: ^9.0.0
         version: 9.0.2
@@ -556,7 +556,7 @@ importers:
         version: 3.1.0
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -567,8 +567,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/lambda-secrets
       '@sentry/serverless':
-        specifier: 7.110.0
-        version: 7.110.0
+        specifier: 7.110.1
+        version: 7.110.1
       knex:
         specifier: 3.1.0
         version: 3.1.0(mysql2@3.9.3)
@@ -599,7 +599,7 @@ importers:
         version: 29.7.0(@types/node@20.12.7)(ts-node@10.9.2)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -616,8 +616,8 @@ importers:
         specifier: ^8.0.0
         version: 8.1.3
       '@sentry/serverless':
-        specifier: 7.110.0
-        version: 7.110.0
+        specifier: 7.110.1
+        version: 7.110.1
       tslib:
         specifier: 2.6.2
         version: 2.6.2
@@ -633,7 +633,7 @@ importers:
         version: 29.7.0(@types/node@20.12.7)(ts-node@10.9.2)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -641,8 +641,8 @@ importers:
   lambdas/shareable-lists-api-events:
     dependencies:
       '@sentry/serverless':
-        specifier: 7.110.0
-        version: 7.110.0
+        specifier: 7.110.1
+        version: 7.110.1
       fetch-retry:
         specifier: ^5.0.6
         version: 5.0.6
@@ -673,7 +673,7 @@ importers:
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -684,8 +684,8 @@ importers:
         specifier: ^3.533.0
         version: 3.549.0
       '@sentry/serverless':
-        specifier: 7.110.0
-        version: 7.110.0
+        specifier: 7.110.1
+        version: 7.110.1
       braze-api:
         specifier: ^2.6.0
         version: 2.7.0
@@ -722,7 +722,7 @@ importers:
         version: 3.1.0
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -730,8 +730,8 @@ importers:
   lambdas/user-list-search-events:
     dependencies:
       '@sentry/serverless':
-        specifier: 7.110.0
-        version: 7.110.0
+        specifier: 7.110.1
+        version: 7.110.1
       node-fetch:
         specifier: 2.7.0
         version: 2.7.0
@@ -759,7 +759,7 @@ importers:
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -767,8 +767,8 @@ importers:
   lambdas/user-list-search-indexing:
     dependencies:
       '@sentry/serverless':
-        specifier: 7.110.0
-        version: 7.110.0
+        specifier: 7.110.1
+        version: 7.110.1
       nanoid:
         specifier: 3.3.7
         version: 3.3.7
@@ -802,7 +802,7 @@ importers:
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -813,8 +813,8 @@ importers:
         specifier: 3.554.0
         version: 3.554.0
       '@sentry/serverless':
-        specifier: 7.110.0
-        version: 7.110.0
+        specifier: 7.110.1
+        version: 7.110.1
       highland:
         specifier: 2.13.5
         version: 2.13.5
@@ -845,7 +845,7 @@ importers:
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -874,8 +874,8 @@ importers:
         specifier: workspace:*
         version: link:../ts-logger
       '@sentry/node':
-        specifier: 7.110.0
-        version: 7.110.0
+        specifier: 7.110.1
+        version: 7.110.1
       apollo-server-cache-redis:
         specifier: 3.3.1
         version: 3.3.1
@@ -918,13 +918,13 @@ importers:
         version: 4.0.2(jest@29.7.0)
       semantic-release:
         specifier: 23.0.7
-        version: 23.0.7(typescript@5.4.5)
+        version: 23.0.7(typescript@5.4.4)
       semantic-release-monorepo:
         specifier: 8.0.2
         version: 8.0.2(semantic-release@23.0.7)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -946,7 +946,7 @@ importers:
         version: 29.7.0(@types/node@20.12.7)(ts-node@10.9.2)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -1001,7 +1001,7 @@ importers:
         version: 29.7.0(@types/node@20.12.7)(ts-node@10.9.2)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -1029,7 +1029,7 @@ importers:
         version: 29.7.0(@types/node@20.12.7)(ts-node@10.9.2)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -1053,7 +1053,7 @@ importers:
         version: 14.0.0-beta.5
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -1061,11 +1061,11 @@ importers:
   packages/sentry:
     dependencies:
       '@sentry/node':
-        specifier: 7.110.0
-        version: 7.110.0
+        specifier: 7.110.1
+        version: 7.110.1
       '@sentry/tracing':
-        specifier: 7.110.0
-        version: 7.110.0
+        specifier: 7.110.1
+        version: 7.110.1
     devDependencies:
       '@jest/globals':
         specifier: 29.7.0
@@ -1081,7 +1081,7 @@ importers:
         version: 29.7.0(@types/node@20.12.7)(ts-node@10.9.2)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -1136,13 +1136,13 @@ importers:
         version: 29.7.0(@types/node@20.12.7)(ts-node@10.9.2)
       semantic-release:
         specifier: 23.0.7
-        version: 23.0.7(typescript@5.4.5)
+        version: 23.0.7(typescript@5.4.4)
       semantic-release-monorepo:
         specifier: 8.0.2
         version: 8.0.2(semantic-release@23.0.7)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -1209,7 +1209,7 @@ importers:
         version: 29.7.0(@types/node@20.12.7)(ts-node@10.9.2)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -1237,13 +1237,13 @@ importers:
         version: 29.7.0(@types/node@20.12.7)(ts-node@10.9.2)
       semantic-release:
         specifier: 23.0.7
-        version: 23.0.7(typescript@5.4.5)
+        version: 23.0.7(typescript@5.4.4)
       semantic-release-monorepo:
         specifier: 8.0.2
         version: 8.0.2(semantic-release@23.0.7)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -1303,8 +1303,8 @@ importers:
         version: 14.24.0
     devDependencies:
       '@sentry/types':
-        specifier: 7.110.0
-        version: 7.110.0
+        specifier: 7.110.1
+        version: 7.110.1
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
@@ -1328,10 +1328,10 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       ts-node:
         specifier: 10.9.2
-        version: 10.9.2(@types/node@20.12.7)(typescript@5.4.5)
+        version: 10.9.2(@types/node@20.12.7)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -1391,8 +1391,8 @@ importers:
         version: 3.3.7
     devDependencies:
       '@sentry/types':
-        specifier: 7.110.0
-        version: 7.110.0
+        specifier: 7.110.1
+        version: 7.110.1
       '@types/chance':
         specifier: 1.1.6
         version: 1.1.6
@@ -1425,7 +1425,7 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -1504,7 +1504,7 @@ importers:
         version: 3.1.0
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -1562,7 +1562,7 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -1689,7 +1689,7 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -1777,7 +1777,7 @@ importers:
     devDependencies:
       '@graphql-codegen/cli':
         specifier: 5.0.2
-        version: 5.0.2(graphql@16.8.1)(typescript@5.4.5)
+        version: 5.0.2(graphql@16.8.1)(typescript@5.4.4)
       '@graphql-codegen/typescript':
         specifier: 4.0.6
         version: 4.0.6(graphql@16.8.1)
@@ -1807,7 +1807,7 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -1818,8 +1818,8 @@ importers:
         specifier: 3.554.0
         version: 3.554.0
       '@sentry/node':
-        specifier: 7.110.0
-        version: 7.110.0
+        specifier: 7.110.1
+        version: 7.110.1
       apns2:
         specifier: 11.7.0
         version: 11.7.0
@@ -1853,7 +1853,7 @@ importers:
         version: 3.1.0
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -1941,7 +1941,7 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -1999,7 +1999,7 @@ importers:
         version: 3.1.0
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -2039,7 +2039,7 @@ importers:
     devDependencies:
       '@graphql-codegen/cli':
         specifier: 5.0.2
-        version: 5.0.2(@parcel/watcher@2.4.1)(graphql@16.8.1)(typescript@5.4.5)
+        version: 5.0.2(@parcel/watcher@2.4.1)(graphql@16.8.1)(typescript@5.4.4)
       '@graphql-codegen/typescript':
         specifier: 4.0.6
         version: 4.0.6(graphql@16.8.1)
@@ -2072,7 +2072,7 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -2117,8 +2117,8 @@ importers:
         specifier: 8.4.1
         version: 8.4.1
       '@sentry/types':
-        specifier: 7.110.0
-        version: 7.110.0
+        specifier: 7.110.1
+        version: 7.110.1
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
@@ -2145,7 +2145,7 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -2251,7 +2251,7 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -2294,7 +2294,7 @@ importers:
         version: 5.0.2(graphql@16.8.1)
       '@graphql-codegen/cli':
         specifier: 5.0.2
-        version: 5.0.2(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.5)
+        version: 5.0.2(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.4)
       '@graphql-codegen/typed-document-node':
         specifier: 5.0.6
         version: 5.0.6(graphql@16.8.1)
@@ -2330,10 +2330,10 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       ts-node:
         specifier: 10.9.2
-        version: 10.9.2(@types/node@20.12.7)(typescript@5.4.5)
+        version: 10.9.2(@types/node@20.12.7)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -5444,7 +5444,7 @@ packages:
       tslib: 2.6.2
     dev: true
 
-  /@graphql-codegen/cli@5.0.2(@parcel/watcher@2.4.1)(graphql@16.8.1)(typescript@5.4.5):
+  /@graphql-codegen/cli@5.0.2(@parcel/watcher@2.4.1)(graphql@16.8.1)(typescript@5.4.4):
     resolution: {integrity: sha512-MBIaFqDiLKuO4ojN6xxG9/xL9wmfD3ZjZ7RsPjwQnSHBCUXnEkdKvX+JVpx87Pq29Ycn8wTJUguXnTZ7Di0Mlw==}
     hasBin: true
     peerDependencies:
@@ -5473,11 +5473,11 @@ packages:
       '@parcel/watcher': 2.4.1
       '@whatwg-node/fetch': 0.8.8
       chalk: 4.1.2
-      cosmiconfig: 8.3.6(typescript@5.4.5)
+      cosmiconfig: 8.3.6(typescript@5.4.4)
       debounce: 1.2.1
       detect-indent: 6.1.0
       graphql: 16.8.1
-      graphql-config: 5.0.3(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.5)
+      graphql-config: 5.0.3(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.4)
       inquirer: 8.2.6
       is-glob: 4.0.3
       jiti: 1.21.0
@@ -5502,7 +5502,7 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@graphql-codegen/cli@5.0.2(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.5):
+  /@graphql-codegen/cli@5.0.2(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.4):
     resolution: {integrity: sha512-MBIaFqDiLKuO4ojN6xxG9/xL9wmfD3ZjZ7RsPjwQnSHBCUXnEkdKvX+JVpx87Pq29Ycn8wTJUguXnTZ7Di0Mlw==}
     hasBin: true
     peerDependencies:
@@ -5530,11 +5530,11 @@ packages:
       '@graphql-tools/utils': 10.0.13(graphql@16.8.1)
       '@whatwg-node/fetch': 0.8.8
       chalk: 4.1.2
-      cosmiconfig: 8.3.6(typescript@5.4.5)
+      cosmiconfig: 8.3.6(typescript@5.4.4)
       debounce: 1.2.1
       detect-indent: 6.1.0
       graphql: 16.8.1
-      graphql-config: 5.0.3(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.5)
+      graphql-config: 5.0.3(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.4)
       inquirer: 8.2.6
       is-glob: 4.0.3
       jiti: 1.21.0
@@ -5559,7 +5559,7 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@graphql-codegen/cli@5.0.2(graphql@16.8.1)(typescript@5.4.5):
+  /@graphql-codegen/cli@5.0.2(graphql@16.8.1)(typescript@5.4.4):
     resolution: {integrity: sha512-MBIaFqDiLKuO4ojN6xxG9/xL9wmfD3ZjZ7RsPjwQnSHBCUXnEkdKvX+JVpx87Pq29Ycn8wTJUguXnTZ7Di0Mlw==}
     hasBin: true
     peerDependencies:
@@ -5587,11 +5587,11 @@ packages:
       '@graphql-tools/utils': 10.1.3(graphql@16.8.1)
       '@whatwg-node/fetch': 0.8.8
       chalk: 4.1.2
-      cosmiconfig: 8.3.6(typescript@5.4.5)
+      cosmiconfig: 8.3.6(typescript@5.4.4)
       debounce: 1.2.1
       detect-indent: 6.1.0
       graphql: 16.8.1
-      graphql-config: 5.0.3(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.5)
+      graphql-config: 5.0.3(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.4)
       inquirer: 8.2.6
       is-glob: 4.0.3
       jiti: 1.21.0
@@ -8166,7 +8166,7 @@ packages:
       import-from-esm: 1.3.3
       lodash-es: 4.17.21
       micromatch: 4.0.5
-      semantic-release: 23.0.7(typescript@5.4.5)
+      semantic-release: 23.0.7(typescript@5.4.4)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -8197,7 +8197,7 @@ packages:
       lodash-es: 4.17.21
       mime: 4.0.1
       p-filter: 4.1.0
-      semantic-release: 23.0.7(typescript@5.4.5)
+      semantic-release: 23.0.7(typescript@5.4.4)
       url-join: 5.0.0
     transitivePeerDependencies:
       - supports-color
@@ -8220,7 +8220,7 @@ packages:
       rc: 1.2.8
       read-pkg: 9.0.1
       registry-auth-token: 5.0.2
-      semantic-release: 23.0.7(typescript@5.4.5)
+      semantic-release: 23.0.7(typescript@5.4.4)
       semver: 7.6.0
       tempy: 3.1.0
     dev: true
@@ -8241,7 +8241,7 @@ packages:
       into-stream: 7.0.0
       lodash-es: 4.17.21
       read-pkg-up: 11.0.0
-      semantic-release: 23.0.7(typescript@5.4.5)
+      semantic-release: 23.0.7(typescript@5.4.4)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -8272,13 +8272,13 @@ packages:
       '@sentry/utils': 7.108.0
     dev: false
 
-  /@sentry-internal/tracing@7.110.0:
-    resolution: {integrity: sha512-IIHHa9e/mE7uOMJfNELI8adyoELxOy6u6TNCn5t6fphmq84w8FTc9adXkG/FY2AQpglkIvlILojfMROFB2aaAQ==}
+  /@sentry-internal/tracing@7.110.1:
+    resolution: {integrity: sha512-4kTd6EM0OP1SVWl2yLn3KIwlCpld1lyhNDeR8G1aKLm1PN+kVsR6YB/jy9KPPp4Q3lN3W9EkTSES3qhP4jVffQ==}
     engines: {node: '>=8'}
     dependencies:
-      '@sentry/core': 7.110.0
-      '@sentry/types': 7.110.0
-      '@sentry/utils': 7.110.0
+      '@sentry/core': 7.110.1
+      '@sentry/types': 7.110.1
+      '@sentry/utils': 7.110.1
     dev: false
 
   /@sentry/core@7.108.0:
@@ -8289,12 +8289,12 @@ packages:
       '@sentry/utils': 7.108.0
     dev: false
 
-  /@sentry/core@7.110.0:
-    resolution: {integrity: sha512-g4suCQO94mZsKVaAbyD1zLFC5YSuBQCIPHXx9fdgtfoPib7BWjWWePkllkrvsKAv4u8Oq05RfnKOhOMRHpOKqg==}
+  /@sentry/core@7.110.1:
+    resolution: {integrity: sha512-yC1yeUFQlmHj9u/KxKmwOMVanBmgfX+4MZnZU31QPqN95adyZTwpaYFZl4fH5kDVnz7wXJI0qRP8SxuMePtqhw==}
     engines: {node: '>=8'}
     dependencies:
-      '@sentry/types': 7.110.0
-      '@sentry/utils': 7.110.0
+      '@sentry/types': 7.110.1
+      '@sentry/utils': 7.110.1
     dev: false
 
   /@sentry/node@7.108.0:
@@ -8307,33 +8307,33 @@ packages:
       '@sentry/utils': 7.108.0
     dev: false
 
-  /@sentry/node@7.110.0:
-    resolution: {integrity: sha512-YPfweCSzo/omnx5q1xOEZfI8Em3jnPqj7OM4ObXmoSKEK+kM1oUF3BTRzw5BJOaOCSTBFY1RAsGyfVIyrwxWnA==}
+  /@sentry/node@7.110.1:
+    resolution: {integrity: sha512-n6sNzZJ/ChfyCI1FxuGWgloeevC8j2vax3vXM4IZrSIm5hS1d9L2oCJ4HEPuxGUxCkQ1f4kXPcdmNaQsWH0JBw==}
     engines: {node: '>=8'}
     dependencies:
-      '@sentry-internal/tracing': 7.110.0
-      '@sentry/core': 7.110.0
-      '@sentry/types': 7.110.0
-      '@sentry/utils': 7.110.0
+      '@sentry-internal/tracing': 7.110.1
+      '@sentry/core': 7.110.1
+      '@sentry/types': 7.110.1
+      '@sentry/utils': 7.110.1
     dev: false
 
-  /@sentry/serverless@7.110.0:
-    resolution: {integrity: sha512-IARjzjOTQATJ57k/1n9UIA/EQKlP0bH6Npr1vz37ZlIaQixXMcgdMP1+H2+kbV65ltTyVixj0R5n3ZxvcGYgTg==}
+  /@sentry/serverless@7.110.1:
+    resolution: {integrity: sha512-7l3AyjFar0CUhltVbB4wmE4zLSZYrhIGGUJiWfIBKSXx5DRCWNvpnpL17Qz5rriO8qK7OnyPWtWlBo5wOXJpPw==}
     engines: {node: '>=10'}
     dependencies:
-      '@sentry/core': 7.110.0
-      '@sentry/node': 7.110.0
-      '@sentry/types': 7.110.0
-      '@sentry/utils': 7.110.0
+      '@sentry/core': 7.110.1
+      '@sentry/node': 7.110.1
+      '@sentry/types': 7.110.1
+      '@sentry/utils': 7.110.1
       '@types/aws-lambda': 8.10.137
       '@types/express': 4.17.21
     dev: false
 
-  /@sentry/tracing@7.110.0:
-    resolution: {integrity: sha512-pAydcCqzyzn2Uv9qmuDX5saHbXp4eMMsBW2C/oSkVdKQQSdA7JeG27d82Jz3cMVrfjv105lShP5qS2YjhBTkow==}
+  /@sentry/tracing@7.110.1:
+    resolution: {integrity: sha512-y9tFHCV/8PeuV9TBOyMJ9w1vVOhkzoHy9d78eO5N3Q1lC+wImJSEBxb6aPcZ+RkuFBKSMm7fZTF3OFA32dHHLA==}
     engines: {node: '>=8'}
     dependencies:
-      '@sentry-internal/tracing': 7.110.0
+      '@sentry-internal/tracing': 7.110.1
     dev: false
 
   /@sentry/types@7.108.0:
@@ -8341,8 +8341,8 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
-  /@sentry/types@7.110.0:
-    resolution: {integrity: sha512-DqYBLyE8thC5P5MuPn+sj8tL60nCd/f5cerFFPcudn5nJ4Zs1eI6lKlwwyHYTEu5c4KFjCB0qql6kXfwAHmTyA==}
+  /@sentry/types@7.110.1:
+    resolution: {integrity: sha512-sZxOpM5gfyxvJeWVvNpHnxERTnlqcozjqNcIv29SZ6wonlkekmxDyJ3uCuPv85VO54WLyA4uzskPKnNFHacI8A==}
     engines: {node: '>=8'}
 
   /@sentry/utils@7.108.0:
@@ -8352,11 +8352,11 @@ packages:
       '@sentry/types': 7.108.0
     dev: false
 
-  /@sentry/utils@7.110.0:
-    resolution: {integrity: sha512-VBsdLLN+5tf73fhf/Cm7JIsUJ6y9DkJj8h4I6Mxx0rszrvOyH6S5px40K+V4jdLBzMEvVinC7q2Cbf1YM18BSw==}
+  /@sentry/utils@7.110.1:
+    resolution: {integrity: sha512-eibLo2m1a7sHkOHxYYmRujr3D7ek2l9sv26F1SLoQBVDF7Afw5AKyzPmtA1D+4M9P/ux1okj7cGj3SaBrVpxXA==}
     engines: {node: '>=8'}
     dependencies:
-      '@sentry/types': 7.110.0
+      '@sentry/types': 7.110.1
     dev: false
 
   /@sideway/address@4.1.5:
@@ -11459,7 +11459,7 @@ packages:
       vary: 1.1.2
     dev: false
 
-  /cosmiconfig@8.3.6(typescript@5.4.5):
+  /cosmiconfig@8.3.6(typescript@5.4.4):
     resolution: {integrity: sha512-kcZ6+W5QzcJ3P1Mt+83OUv/oHFqZHIx8DuxG6eZ5RGMERoLqp4BuGjhHLYGK+Kf5XVkQvqBSmAy/nGWN3qDgEA==}
     engines: {node: '>=14'}
     peerDependencies:
@@ -11472,10 +11472,10 @@ packages:
       js-yaml: 4.1.0
       parse-json: 5.2.0
       path-type: 4.0.0
-      typescript: 5.4.5
+      typescript: 5.4.4
     dev: true
 
-  /cosmiconfig@9.0.0(typescript@5.4.5):
+  /cosmiconfig@9.0.0(typescript@5.4.4):
     resolution: {integrity: sha512-itvL5h8RETACmOTFc4UfIyB2RfEHi71Ax6E/PivVxq9NseKbOWpeyHEOIbmAw1rs8Ak0VursQNww7lf7YtUwzg==}
     engines: {node: '>=14'}
     peerDependencies:
@@ -11488,7 +11488,7 @@ packages:
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
-      typescript: 5.4.5
+      typescript: 5.4.4
     dev: true
 
   /cpu-features@0.0.2:
@@ -13637,7 +13637,7 @@ packages:
       obliterator: 2.0.4
     dev: false
 
-  /graphql-config@5.0.3(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.5):
+  /graphql-config@5.0.3(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.4):
     resolution: {integrity: sha512-BNGZaoxIBkv9yy6Y7omvsaBUHOzfFcII3UN++tpH8MGOKFPFkCPZuwx09ggANMt8FgyWP1Od8SWPmrUEZca4NQ==}
     engines: {node: '>= 16.0.0'}
     peerDependencies:
@@ -13653,7 +13653,7 @@ packages:
       '@graphql-tools/merge': 9.0.3(graphql@16.8.1)
       '@graphql-tools/url-loader': 8.0.2(@types/node@20.12.7)(graphql@16.8.1)
       '@graphql-tools/utils': 10.1.3(graphql@16.8.1)
-      cosmiconfig: 8.3.6(typescript@5.4.5)
+      cosmiconfig: 8.3.6(typescript@5.4.4)
       graphql: 16.8.1
       jiti: 1.21.0
       minimatch: 4.2.3
@@ -14889,7 +14889,7 @@ packages:
       pretty-format: 29.7.0
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.9.2(@types/node@20.12.7)(typescript@5.4.5)
+      ts-node: 10.9.2(@types/node@20.12.7)(typescript@5.4.4)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -18657,7 +18657,7 @@ packages:
       pkg-up: 3.1.0
       ramda: 0.27.2
       read-pkg: 5.2.0
-      semantic-release: 23.0.7(typescript@5.4.5)
+      semantic-release: 23.0.7(typescript@5.4.4)
       semantic-release-plugin-decorators: 4.0.0(semantic-release@23.0.7)
       tempy: 1.0.1
     transitivePeerDependencies:
@@ -18669,10 +18669,10 @@ packages:
     peerDependencies:
       semantic-release: '>20'
     dependencies:
-      semantic-release: 23.0.7(typescript@5.4.5)
+      semantic-release: 23.0.7(typescript@5.4.4)
     dev: true
 
-  /semantic-release@23.0.7(typescript@5.4.5):
+  /semantic-release@23.0.7(typescript@5.4.4):
     resolution: {integrity: sha512-PFxXQE57zrYiCbWKkdsVUF08s0SifEw3WhDhrN47ZEUWQiLl21FI9Dg/H8g7i/lPx0IkF6u7PjJbgxPceXKBeg==}
     engines: {node: '>=20.8.1'}
     hasBin: true
@@ -18683,7 +18683,7 @@ packages:
       '@semantic-release/npm': 12.0.0(semantic-release@23.0.7)
       '@semantic-release/release-notes-generator': 13.0.0(semantic-release@23.0.7)
       aggregate-error: 5.0.0
-      cosmiconfig: 9.0.0(typescript@5.4.5)
+      cosmiconfig: 9.0.0(typescript@5.4.4)
       debug: 4.3.4(supports-color@5.5.0)
       env-ci: 11.0.0
       execa: 8.0.1
@@ -19579,7 +19579,7 @@ packages:
       '@effect/schema': 0.56.1(effect@2.0.0-next.62)(fast-check@3.15.0)
       chalk: 4.1.2
       commander: 11.1.0
-      cosmiconfig: 9.0.0(typescript@5.4.5)
+      cosmiconfig: 9.0.0(typescript@5.4.4)
       effect: 2.0.0-next.62
       enquirer: 2.4.1
       fast-check: 3.15.0
@@ -19864,7 +19864,7 @@ packages:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
     dev: false
 
-  /ts-jest@29.1.2(@babel/core@7.24.3)(jest@29.7.0)(typescript@5.4.5):
+  /ts-jest@29.1.2(@babel/core@7.24.3)(jest@29.7.0)(typescript@5.4.4):
     resolution: {integrity: sha512-br6GJoH/WUX4pu7FbZXuWGKGNDuU7b8Uj77g/Sp7puZV6EXzuByl6JrECvm0MzVzSTkSHWTihsXt+5XYER5b+g==}
     engines: {node: ^16.10.0 || ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -19894,11 +19894,11 @@ packages:
       lodash.memoize: 4.1.2
       make-error: 1.3.6
       semver: 7.6.0
-      typescript: 5.4.5
+      typescript: 5.4.4
       yargs-parser: 21.1.1
     dev: true
 
-  /ts-jest@29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5):
+  /ts-jest@29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4):
     resolution: {integrity: sha512-br6GJoH/WUX4pu7FbZXuWGKGNDuU7b8Uj77g/Sp7puZV6EXzuByl6JrECvm0MzVzSTkSHWTihsXt+5XYER5b+g==}
     engines: {node: ^16.10.0 || ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -19928,7 +19928,7 @@ packages:
       lodash.memoize: 4.1.2
       make-error: 1.3.6
       semver: 7.6.0
-      typescript: 5.4.5
+      typescript: 5.4.4
       yargs-parser: 21.1.1
     dev: true
 
@@ -19965,38 +19965,6 @@ packages:
       typescript: 5.4.4
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
-    dev: false
-
-  /ts-node@10.9.2(@types/node@20.12.7)(typescript@5.4.5):
-    resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
-    hasBin: true
-    peerDependencies:
-      '@swc/core': '>=1.2.50'
-      '@swc/wasm': '>=1.2.50'
-      '@types/node': '*'
-      typescript: '>=2.7'
-    peerDependenciesMeta:
-      '@swc/core':
-        optional: true
-      '@swc/wasm':
-        optional: true
-    dependencies:
-      '@cspotcode/source-map-support': 0.8.1
-      '@tsconfig/node10': 1.0.9
-      '@tsconfig/node12': 1.0.11
-      '@tsconfig/node14': 1.0.3
-      '@tsconfig/node16': 1.0.4
-      '@types/node': 20.12.7
-      acorn: 8.11.3
-      acorn-walk: 8.3.2
-      arg: 4.1.3
-      create-require: 1.1.1
-      diff: 4.0.2
-      make-error: 1.3.6
-      typescript: 5.4.5
-      v8-compile-cache-lib: 3.0.1
-      yn: 3.1.1
-    dev: true
 
   /ts-pattern@4.3.0:
     resolution: {integrity: sha512-pefrkcd4lmIVR0LA49Imjf9DYLK8vtWhqBPA3Ya1ir8xCW0O2yjL9dsCVvI7pCodLC5q7smNpEtDR2yVulQxOg==}
@@ -20364,12 +20332,6 @@ packages:
     resolution: {integrity: sha512-dGE2Vv8cpVvw28v8HCPqyb08EzbBURxDpuhJvTrusShUfGnhHBafDsLdS1EhhxyL6BJQE+2cT3dDPAv+MQ6oLw==}
     engines: {node: '>=14.17'}
     hasBin: true
-
-  /typescript@5.4.5:
-    resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
-    engines: {node: '>=14.17'}
-    hasBin: true
-    dev: true
 
   /typescript@5.5.0-dev.20240417:
     resolution: {integrity: sha512-BjMYWxzDLRaNlnnMC/NHf0uUIZEnw5VLe7q0h7hEi5Q4H1XoIDdjBjk6stBS2nj6R/HrsdEqhWdPz6+DLx+sRw==}

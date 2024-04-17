@@ -10,7 +10,7 @@
     "format": "eslint --fix \"./**/*.ts\""
   },
   "dependencies": {
-    "@sentry/serverless": "7.110.0",
+    "@sentry/serverless": "7.110.1",
     "nanoid": "3.3.7",
     "node-fetch": "2.7.0",
     "tslib": "2.6.2"
