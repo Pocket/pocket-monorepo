@@ -1729,6 +1729,9 @@ importers:
       express:
         specifier: 4.19.2
         version: 4.19.2
+      graphql-scalars:
+        specifier: ^1.23.0
+        version: 1.23.0(graphql@16.8.1)
       graphql-tag:
         specifier: 2.12.6
         version: 2.12.6(graphql@16.8.1)
