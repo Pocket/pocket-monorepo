@@ -10,6 +10,14 @@ import { merge } from 'lodash';
 // We skip these domains for opengraph data because the parser grabs it from their APIs which is more accurate.
 const openGraphDomainsToSkip = ['reddit.com', 'youtube.com'];
 
+export const itemSummaryFromUrl = async (
+  url: string,
+  context: IContext,
+): Promise<ItemSummary> => {
+  const item = await context.dataLoaders.itemUrlLoader.load(url);
+  return await deriveItemSummary(item, context);
+};
+
 export const deriveItemSummary = async (
   item: Item,
   context: IContext,
