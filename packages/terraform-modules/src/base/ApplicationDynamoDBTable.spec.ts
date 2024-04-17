@@ -18,7 +18,7 @@ describe('ApplicationDynamoDBTable', () => {
         attribute: [
           {
             name: 'attribeautiful',
-            type: 'shrugs!',
+            type: 'N',
           },
         ],
         globalSecondaryIndex: [],
@@ -257,5 +257,12 @@ describe('ApplicationDynamoDBTable', () => {
         new ApplicationDynamoDBTable(stack, 'testDynamoDBTable', config);
       });
     }).toThrow('you must specify a valid stream view type');
+  });
+  it('renders dynamodb table with ttl column', () => {
+    BASE_CONFIG.ttl = { attributeName: 'attribeautiful', enabled: true };
+    const synthed = Testing.synthScope((stack) => {
+      new ApplicationDynamoDBTable(stack, 'testDynamoDBTable', BASE_CONFIG);
+    });
+    expect(synthed).toMatchSnapshot();
   });
 });

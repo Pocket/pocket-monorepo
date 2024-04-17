@@ -193,16 +193,16 @@ class SharesAPI extends TerraformStack {
               value: dynamodb.sharesTable.dynamodb.name,
             },
             {
-              name: 'SHARES_TABLE_KEY',
-              value: config.dynamodb.sharesTable.key,
-            },
-            {
               name: 'SQS_BATCH_DELETE_QUEUE_URL',
               value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.envVars.sqsBatchDeleteQueueName}`,
             },
             {
               name: 'OTLP_COLLECTOR_HOST',
               value: config.tracing.host,
+            },
+            {
+              name: 'SHARE_URL',
+              value: 'https://pocket.co/share',
             },
           ],
           logGroup: this.createCustomLogGroup('app'),
