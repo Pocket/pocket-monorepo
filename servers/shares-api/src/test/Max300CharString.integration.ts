@@ -4,7 +4,6 @@ import { IContext } from '../apollo/context';
 import { startServer } from '../apollo/server';
 import { Application } from 'express';
 import { CREATE_SHARE, GET_SHARE } from './queries';
-import { dynamoClient } from '../datasources/dynamoClient';
 
 const uuidMock = jest.fn().mockImplementation(() => '0000-00-00');
 
@@ -30,7 +29,7 @@ describe('CreateShareLink', () => {
     await server.stop();
   });
   afterEach(async () => {});
-  it('truncates long quotes', async () => {
+  it('truncates long quotes (keeps shorter)', async () => {
     const uuidMock = '0000-00-00';
     const longString = 'why' + new Array(300).fill('y').join('');
     const expectedTruncated =
