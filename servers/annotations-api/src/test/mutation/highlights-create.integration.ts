@@ -202,7 +202,18 @@ describe('Highlights creation', () => {
 
     it('should mark the list item as updated and log the highlight mutation', async () => {
       const updateDate = new Date(2022, 3, 3);
-      jest.useFakeTimers({ advanceTimers: true });
+      jest.useFakeTimers({
+        doNotFake: [
+          'nextTick',
+          'setImmediate',
+          'clearImmediate',
+          'setInterval',
+          'clearInterval',
+          'setTimeout',
+          'clearTimeout',
+        ],
+        advanceTimers: false,
+      });
       jest.setSystemTime(updateDate);
 
       const variables: { input: HighlightInput[] } = {

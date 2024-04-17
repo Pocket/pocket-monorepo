@@ -197,7 +197,16 @@ describe('Highlights batchWrite', () => {
 
       jest.useFakeTimers({
         now: updateDate,
-        advanceTimers: true,
+        doNotFake: [
+          'nextTick',
+          'setImmediate',
+          'clearImmediate',
+          'setInterval',
+          'clearInterval',
+          'setTimeout',
+          'clearTimeout',
+        ],
+        advanceTimers: false,
       });
 
       const variables: { input: BatchWriteHighlightsInput } = {

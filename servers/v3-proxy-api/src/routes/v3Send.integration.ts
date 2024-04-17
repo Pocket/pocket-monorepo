@@ -23,7 +23,19 @@ describe('v3/send', () => {
     clientSpy = jest
       .spyOn(GraphQLClient.prototype, 'request')
       .mockResolvedValue(true);
-    jest.useFakeTimers({ now: now * 1000, advanceTimers: true });
+    jest.useFakeTimers({
+      now: now * 1000,
+      doNotFake: [
+        'nextTick',
+        'setImmediate',
+        'clearImmediate',
+        'setInterval',
+        'clearInterval',
+        'setTimeout',
+        'clearTimeout',
+      ],
+      advanceTimers: false,
+    });
   });
   afterAll(async () => {
     clientSpy.mockRestore();

@@ -68,7 +68,19 @@ describe('UpsertSavedItem Mutation', () => {
 
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
-    jest.useFakeTimers({ advanceTimers: true, now: dateNow });
+    jest.useFakeTimers({
+      doNotFake: [
+        'nextTick',
+        'setImmediate',
+        'clearImmediate',
+        'setInterval',
+        'clearInterval',
+        'setTimeout',
+        'clearTimeout',
+      ],
+      advanceTimers: false,
+      now: dateNow,
+    });
   });
 
   afterAll(async () => {
@@ -438,7 +450,19 @@ describe('UpsertSavedItem Mutation', () => {
     });
 
     it('should push addItem event to perm lib queue for premium users', async () => {
-      jest.useFakeTimers({ advanceTimers: true, now: dateNow });
+      jest.useFakeTimers({
+        doNotFake: [
+          'nextTick',
+          'setImmediate',
+          'clearImmediate',
+          'setInterval',
+          'clearInterval',
+          'setTimeout',
+          'clearTimeout',
+        ],
+        advanceTimers: false,
+        now: dateNow,
+      });
       const variables = {
         url: 'http://addingtoqueue.com',
       };
@@ -517,7 +541,19 @@ describe('UpsertSavedItem Mutation', () => {
       });
 
       it(`should update an item already in a user's list`, async () => {
-        jest.useFakeTimers({ advanceTimers: true, now: dateNow });
+        jest.useFakeTimers({
+          doNotFake: [
+            'nextTick',
+            'setImmediate',
+            'clearImmediate',
+            'setInterval',
+            'clearInterval',
+            'setTimeout',
+            'clearTimeout',
+          ],
+          advanceTimers: false,
+          now: dateNow,
+        });
         const variables = {
           url: 'http://google.com',
           isFavorite: true,
