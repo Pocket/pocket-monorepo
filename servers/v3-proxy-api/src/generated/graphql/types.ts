@@ -33,10 +33,14 @@ export type Scalars = {
    * not treated differently from String in the API.
    */
   Markdown: { input: any; output: any; }
+  /** String truncated to 300 chararacters (truncated strings indicated with ellipses) */
+  Max300CharString: { input: any; output: any; }
   /** A positive integer number. */
   NonNegativeInt: { input: any; output: any; }
   /** Integer based represention of a unix timestamp */
   Timestamp: { input: any; output: any; }
+  /** Also a string in the format of a URL, but actually validated... */
+  URL: { input: any; output: any; }
   /** A String in the format of a url. */
   Url: { input: any; output: any; }
   _FieldSet: { input: any; output: any; }
@@ -729,6 +733,8 @@ export type Item = {
    * @deprecated Use a domain as the identifier instead
    */
   originDomainId?: Maybe<Scalars['String']['output']>;
+  /** The client preview/display logic for this url */
+  preview?: Maybe<ItemSummary>;
   /** Recommend similar articles to show in the bottom of an article. */
   relatedAfterArticle: Array<CorpusRecommendation>;
   /** Recommend similar articles after saving. */
@@ -826,6 +832,7 @@ export type ItemSummary = {
   datePublished?: Maybe<Scalars['ISOString']['output']>;
   domain?: Maybe<DomainMetadata>;
   excerpt?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
   image?: Maybe<Image>;
   item?: Maybe<Item>;
   title?: Maybe<Scalars['String']['output']>;
@@ -969,6 +976,11 @@ export type Mutation = {
    * Returns the list of `SavedItem` for which the tags were added
    */
   createSavedItemTags: Array<SavedItem>;
+  /**
+   * Create a Pocket Share for a provided target URL, optionally
+   * with additional share context.
+   */
+  createShareLink?: Maybe<Scalars['URL']['output']>;
   /**
    * Creates a Shareable List. Takes in an optional listItemData parameter to create a ShareableListItem
    * along with a ShareableList.
@@ -1235,6 +1247,13 @@ export type MutationCreateSavedItemHighlightsArgs = {
 export type MutationCreateSavedItemTagsArgs = {
   input: Array<SavedItemTagsInput>;
   timestamp?: InputMaybe<Scalars['ISOString']['input']>;
+};
+
+
+/** Default Mutation Type */
+export type MutationCreateShareLinkArgs = {
+  context?: InputMaybe<ShareContextInput>;
+  target: Scalars['URL']['input'];
 };
 
 
@@ -1744,7 +1763,12 @@ export enum PocketSaveStatus {
 
 export type PocketShare = {
   __typename?: 'PocketShare';
-  id: Scalars['ID']['output'];
+  context?: Maybe<ShareContext>;
+  createdAt?: Maybe<Scalars['ISOString']['output']>;
+  preview?: Maybe<ItemSummary>;
+  shareUrl: Scalars['URL']['output'];
+  slug: Scalars['ID']['output'];
+  targetUrl: Scalars['URL']['output'];
 };
 
 export enum PremiumFeature {
@@ -1885,6 +1909,11 @@ export type Query = {
   /** List all topics that the user can express a preference for. */
   recommendationPreferenceTopics: Array<Topic>;
   scheduledSurface: ScheduledSurface;
+  /**
+   * Resolve data for a Shared link, or return a Not Found
+   * message if the share does not exist.
+   */
+  shareSlug?: Maybe<ShareResult>;
   /**
    * Looks up and returns a Shareable List with a given external ID for a given user.
    * (the user ID will be coming through with the headers)
@@ -2039,6 +2068,15 @@ export type QueryReaderSlugArgs = {
  */
 export type QueryScheduledSurfaceArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+/**
+ * Default root level query type. All authorization checks are done in these queries.
+ * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
+ */
+export type QueryShareSlugArgs = {
+  slug: Scalars['ID']['input'];
 };
 
 
@@ -2221,7 +2259,10 @@ export type SaveUpsertInput = {
   isFavorite?: InputMaybe<Scalars['Boolean']['input']>;
   /** Optional, title of the SavedItem */
   title?: InputMaybe<Scalars['String']['input']>;
-  /** The url to create/update the SavedItem with. (the url to save to the list) */
+  /**
+   * The url to create/update the SavedItem with. (the url to save to the list)
+   * Must be at least a 4 character string which is the shortest url
+   */
   url: Scalars['String']['input'];
 };
 
@@ -2419,7 +2460,10 @@ export type SavedItemUpsertInput = {
   timestamp?: InputMaybe<Scalars['Int']['input']>;
   /** Optional, title of the SavedItem */
   title?: InputMaybe<Scalars['String']['input']>;
-  /** The url to create/update the SavedItem with. (the url to save to the list) */
+  /**
+   * The url to create/update the SavedItem with. (the url to save to the list)
+   * Must be at least a 4 character string which is the shortest url
+   */
   url: Scalars['String']['input'];
 };
 
@@ -2698,6 +2742,48 @@ export enum SearchStatus {
   Archived = 'ARCHIVED',
   Queued = 'QUEUED'
 }
+
+export type ShareContext = {
+  __typename?: 'ShareContext';
+  /** User-provided highlights of the content */
+  highlights?: Maybe<Array<ShareHighlight>>;
+  /** A user-provided comment/note on the shared content. */
+  note?: Maybe<Scalars['String']['output']>;
+};
+
+/** Input for mutation which creates a new Pocket Share link. */
+export type ShareContextInput = {
+  /** Quoted content from the Share source */
+  highlights?: InputMaybe<ShareHighlightInput>;
+  /** A note/comment about the Share (up to 500 characters). */
+  note?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type ShareHighlight = {
+  __typename?: 'ShareHighlight';
+  /** Highlighted text on a piece of shared content. */
+  quote: Scalars['String']['output'];
+};
+
+export type ShareHighlightInput = {
+  /**
+   * Highlighted text on a piece of shared content.
+   * This is a permissive constraint but there needs
+   * to be _a_ constraint.
+   * This input is not required, but if present 'quotes'
+   * is required as it is the only field.
+   * Limited to 300 characters per quote (longer quotes
+   * will not be rejected, but will be truncated).
+   */
+  quotes: Array<Scalars['Max300CharString']['input']>;
+};
+
+export type ShareNotFound = {
+  __typename?: 'ShareNotFound';
+  message?: Maybe<Scalars['String']['output']>;
+};
+
+export type ShareResult = PocketShare | ShareNotFound;
 
 /** A user-created list of Pocket saves that can be shared publicly. */
 export type ShareableList = {

@@ -5,7 +5,6 @@ import {
   ItemResolverRepository,
   getItemResolverRepository,
 } from '../database/mysql';
-import { Author, Image, Imageness, Item, Video, Videoness } from '../model';
 import {
   extractDomainMeta,
   getAuthors,
@@ -24,6 +23,14 @@ import { serverLogger } from '@pocket-tools/ts-logger';
 import { IntMask } from '@pocket-tools/int-mask';
 import { getRedisCache } from '../cache';
 import { ListenModel } from '../listen/ListenModel';
+import {
+  Author,
+  Image,
+  Imageness,
+  Item,
+  Video,
+  Videoness,
+} from '../__generated__/resolvers-types';
 
 /**
  * Gets an item by its id by using the Item Resolvers table
@@ -146,7 +153,7 @@ const internalGetItemByUrl = async (
     resolvedId: item.resolved_id.toString(),
     topImageUrl: item.top_image_url,
     topImage: item.top_image_url
-      ? { url: item.top_image_url, src: item.top_image_url, imageId: '0' }
+      ? { url: item.top_image_url, src: item.top_image_url, imageId: 0 }
       : undefined,
     dateResolved: normalizeDate(item.date_resolved),
     normalUrl: item.normal_url,
@@ -181,7 +188,7 @@ const internalGetItemByUrl = async (
     contentLength: parseInt(item.content_length),
     innerDomainRedirect: !!parseInt(item.innerdomain_redirect),
     loginRequired: !!parseInt(item.login_required),
-    usedFallback: !!parseInt(item.used_fallback),
+    usedFallback: parseInt(item.used_fallback),
     timeFirstParsed: normalizeDate(item.time_first_parsed),
     resolvedNormalUrl: item.resolved_normal_url,
   };
@@ -220,11 +227,11 @@ export const getItemByUrl = async (
 const parseVideoness = (hasVideo: string): Videoness => {
   switch (parseInt(hasVideo)) {
     case 0:
-      return Videoness.NO_VIDEOS;
+      return Videoness.NoVideos;
     case 1:
-      return Videoness.HAS_VIDEOS;
+      return Videoness.HasVideos;
     case 2:
-      return Videoness.IS_VIDEO;
+      return Videoness.IsVideo;
   }
 };
 
@@ -235,11 +242,11 @@ const parseVideoness = (hasVideo: string): Videoness => {
 const parseImageness = (hasImage: string): Imageness => {
   switch (hasImage) {
     case '0':
-      return Imageness.NO_IMAGES;
+      return Imageness.NoImages;
     case '1':
-      return Imageness.HAS_IMAGES;
+      return Imageness.HasImages;
     case '2':
-      return Imageness.IS_IMAGE;
+      return Imageness.IsImage;
   }
 };
 

@@ -8,7 +8,7 @@
 
 import nock, { cleanAll } from 'nock';
 import { getRedis } from '../cache';
-import { VideoType } from '../model';
+import { VideoType } from '../__generated__/resolvers-types';
 import { startServer } from '../server';
 import { ParserAPI } from '../datasources/parserApi';
 import { ApolloServer } from '@apollo/server';
@@ -285,7 +285,7 @@ describe('Marticle integration ', () => {
         height: 150,
         vid: 'wubbalubbadubdub',
         length: 10,
-        type: VideoType.YOUTUBE,
+        type: VideoType.Youtube,
       },
       {
         __typename: 'MarticleText',
@@ -376,7 +376,7 @@ describe('Marticle integration ', () => {
         height: 150,
         vid: 'wubbalubbadubdub',
         length: 10,
-        type: VideoType.YOUTUBE,
+        type: VideoType.Youtube,
       },
     ]);
   });

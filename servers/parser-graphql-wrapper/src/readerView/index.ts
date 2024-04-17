@@ -1,6 +1,6 @@
 import { IntMask } from '@pocket-tools/int-mask';
 import { IContext } from '../context';
-import { ReaderFallback } from '../model';
+import { ReaderFallback } from '../__generated__/resolvers-types';
 import { deriveItemSummary } from '../preview/preview';
 
 /**

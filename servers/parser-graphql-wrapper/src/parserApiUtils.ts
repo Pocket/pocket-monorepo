@@ -1,5 +1,10 @@
 import { URL } from 'url';
-import { Author, Image, Video, VideoType } from './model';
+import {
+  Author,
+  Image,
+  Video,
+  VideoType,
+} from './__generated__/resolvers-types';
 
 /**
  * Get Author array from raw authors object returned from the parser
@@ -58,21 +63,21 @@ export const getVideos = (videos): Video[] => {
 const parseVideoType = (videoType) => {
   switch (parseInt(videoType)) {
     case 1:
-      return VideoType.YOUTUBE;
+      return VideoType.Youtube;
     case 2:
-      return VideoType.VIMEO_LINK;
+      return VideoType.VimeoLink;
     case 3:
-      return VideoType.VIMEO_MOOGALOOP;
+      return VideoType.VimeoMoogaloop;
     case 4:
-      return VideoType.VIMEO_IFRAME;
+      return VideoType.VimeoIframe;
     case 5:
-      return VideoType.HTML5;
+      return VideoType.Html5;
     case 6:
-      return VideoType.FLASH;
+      return VideoType.Flash;
     case 7:
-      return VideoType.IFRAME;
+      return VideoType.Iframe;
     case 8:
-      return VideoType.BRIGHTCOVE;
+      return VideoType.Brightcove;
   }
 };
 

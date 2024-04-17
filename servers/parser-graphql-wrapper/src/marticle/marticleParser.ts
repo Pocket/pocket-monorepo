@@ -12,14 +12,27 @@ import {
   MarticleText,
   MarticleBlockquote,
   UnMarseable,
-} from './marticleTypes';
+  Image,
+  Video,
+  VideoType,
+} from '../__generated__/resolvers-types';
 import { countAncestors, countPreviousSiblings, createSubtree } from './utils';
 import turndownService from './turndown';
 import TurndownService from 'turndown';
 import { ParserArticle } from '../datasources/parserApi';
-import { Image, Video, videoTypeMap } from '../model';
 import { config } from './config';
 import { serverLogger } from '@pocket-tools/ts-logger';
+
+export const videoTypeMap = {
+  1: VideoType.Youtube,
+  2: VideoType.VimeoLink,
+  3: VideoType.VimeoMoogaloop,
+  4: VideoType.VimeoIframe,
+  5: VideoType.Html5,
+  6: VideoType.Flash,
+  7: VideoType.Iframe,
+  8: VideoType.Brightcove,
+};
 
 type ParserMediaMap = {
   [key: string]: SrcRecord;
@@ -84,7 +97,7 @@ const eventualComponents = ['P', 'BLOCKQUOTE', 'LI', 'DIV'];
 
 function unMarseableTransformer(root: Node): UnMarseable {
   return {
-    __typeName: 'UnMarseable',
+    __typename: 'UnMarseable',
     html: (root as Element).outerHTML,
   };
 }
@@ -113,7 +126,7 @@ const transformers = {
     // Don't return empty content; this can sometimes happen for text nodes
     if (content != '') {
       return {
-        __typeName: blockquoteAncestor ? 'MarticleBlockquote' : 'MarticleText',
+        __typename: blockquoteAncestor ? 'MarticleBlockquote' : 'MarticleText',
         content: turndownService.turndown(subtree),
       };
     }
@@ -128,7 +141,7 @@ const transformers = {
     const content = turndownService.turndown(subtree);
     if (content != '') {
       return {
-        __typeName: 'MarticleText',
+        __typename: 'MarticleText',
         content: content,
       };
     }
@@ -141,7 +154,7 @@ const transformers = {
     const content = turndownService.turndown(subtree);
     if (content != '') {
       return {
-        __typeName: 'MarticleBlockquote',
+        __typename: 'MarticleBlockquote',
         content: content,
       };
     }
@@ -149,12 +162,12 @@ const transformers = {
   },
   HR: (root: Node): MarticleDivider => {
     return {
-      __typeName: 'MarticleDivider',
+      __typename: 'MarticleDivider',
       content: '---',
     };
   },
   TABLE: (root: Node): MarticleTable => ({
-    __typeName: 'MarticleTable',
+    __typename: 'MarticleTable',
     // outerHTML only available on Element, not Node
     // Is there a less janky way to do this?
     html: root.firstChild.parentElement.outerHTML,
@@ -169,7 +182,7 @@ const transformers = {
     // textContent returns a concatenated string of
     // all the child elements for a given node
     text: root.textContent,
-    __typeName: 'MarticleCodeBlock',
+    __typename: 'MarticleCodeBlock',
   }),
   // The typing gets difficult for lists
   // Lists can be broken up, so the transformer can return any kind
@@ -188,7 +201,7 @@ const transformers = {
     if (aggFrom != null) {
       const aggOutput = output.splice(aggFrom) as ListElement[];
       output.push({
-        __typeName: 'MarticleBulletedList',
+        __typename: 'MarticleBulletedList',
         rows: aggOutput,
       });
     }
@@ -205,7 +218,7 @@ const transformers = {
     if (aggFrom != null) {
       const aggOutput = output.splice(aggFrom) as NumberedListElement[];
       output.push({
-        __typeName: 'MarticleNumberedList',
+        __typename: 'MarticleNumberedList',
         rows: aggOutput,
       });
     }
@@ -254,7 +267,7 @@ const transformers = {
   '#comment': (
     root: Node,
     article: ParserArticle,
-  ): ((Image | Video) & { __typeName: string }) | UnMarseable => {
+  ): ((Image | Video) & { __typename: string }) | UnMarseable => {
     const text = root.textContent.trim();
 
     // If an image comment is found, replace it with an Image component
@@ -274,13 +287,13 @@ const transformers = {
 
       if (!image)
         return {
-          __typeName: 'UnMarseable',
+          __typename: 'UnMarseable',
           html: config.UnMarseable.imageFallback,
         };
 
       return {
         ...image,
-        __typeName: 'Image',
+        __typename: 'Image',
         imageId: parseInt(image.image_id),
         width: parseInt(image.width) || null,
         height: parseInt(image.height) || null,
@@ -294,13 +307,13 @@ const transformers = {
 
       if (!video)
         return {
-          __typeName: 'UnMarseable',
+          __typename: 'UnMarseable',
           html: config.UnMarseable.videoFallback,
         };
 
       return {
         ...video,
-        __typeName: 'Video',
+        __typename: 'Video',
         videoId: parseInt(video.video_id),
         width: parseInt(video.width) || null,
         height: parseInt(video.height) || null,
@@ -320,7 +333,7 @@ function headingTransformer(headingRoot: Node, level: number): MarticleHeading {
   // For some reason the '#' markup doesn't show up with turndown when you pass
   // the root element directly, but does work if you pass the html
   return {
-    __typeName: 'MarticleHeading',
+    __typename: 'MarticleHeading',
     content: turndownService.turndown((headingRoot as Element).outerHTML),
     level: level,
   };
@@ -547,7 +560,7 @@ function listTransformer(
           // Aggregate row elements into one component before making a new one
           const aggOutput = output.splice(aggFrom);
           aggFrom = null; // Reset counter
-          output.push({ __typeName: listTypeMap[listType], rows: aggOutput });
+          output.push({ __typename: listTypeMap[listType], rows: aggOutput });
         }
         currentNodeOutput = processCurrentNode(child, article);
       }
