@@ -1,0 +1,16 @@
+{
+  "TableName": "SHARES-local-shares",
+  "BillingMode": "PAY_PER_REQUEST",
+  "KeySchema": [
+    {
+      "AttributeName": "shareId",
+      "KeyType": "HASH"
+    }
+  ],
+  "AttributeDefinitions": [
+    {
+      "AttributeName": "shareId",
+      "AttributeType": "S"
+    }
+  ]
+}

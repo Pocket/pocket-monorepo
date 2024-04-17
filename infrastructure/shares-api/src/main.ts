@@ -200,6 +200,10 @@ class SharesAPI extends TerraformStack {
               name: 'OTLP_COLLECTOR_HOST',
               value: config.tracing.host,
             },
+            {
+              name: 'SHARE_URL',
+              value: 'https://pocket.co/share',
+            },
           ],
           logGroup: this.createCustomLogGroup('app'),
           logMultilinePattern: '^\\S.+',
