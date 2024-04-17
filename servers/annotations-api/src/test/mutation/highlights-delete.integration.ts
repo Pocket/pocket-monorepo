@@ -53,7 +53,16 @@ describe('Highlights deletion', () => {
 
     jest.useFakeTimers({
       now: updateDate,
-      advanceTimers: true,
+      doNotFake: [
+        'nextTick',
+        'setImmediate',
+        'clearImmediate',
+        'setInterval',
+        'clearInterval',
+        'setTimeout',
+        'clearTimeout',
+      ],
+      advanceTimers: false,
     });
 
     const variables = { id: 'b3a95dd3-dd9b-49b0-bb72-dc6daabd809b' };

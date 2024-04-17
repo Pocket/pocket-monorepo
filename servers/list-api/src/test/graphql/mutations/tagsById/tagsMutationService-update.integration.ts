@@ -40,7 +40,16 @@ describe('updateTag Mutation: ', () => {
   beforeEach(async () => {
     jest.useFakeTimers({
       now: updateDate,
-      advanceTimers: true,
+      doNotFake: [
+        'nextTick',
+        'setImmediate',
+        'clearImmediate',
+        'setInterval',
+        'clearInterval',
+        'setTimeout',
+        'clearTimeout',
+      ],
+      advanceTimers: false,
     });
     jest.clearAllMocks();
     const baseTag = {

@@ -25,7 +25,16 @@ describe('createSavedItemTags mutation', function () {
     // Mock Date.now() to get a consistent date for inserting data
     jest.useFakeTimers({
       now: updateDate,
-      advanceTimers: true,
+      doNotFake: [
+        'nextTick',
+        'setImmediate',
+        'clearImmediate',
+        'setInterval',
+        'clearInterval',
+        'setTimeout',
+        'clearTimeout',
+      ],
+      advanceTimers: false,
     });
   });
 

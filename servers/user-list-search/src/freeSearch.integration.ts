@@ -101,7 +101,19 @@ describe('free search test', () => {
   });
 
   beforeEach(async () => {
-    jest.useFakeTimers({ now: updateDate, advanceTimers: true });
+    jest.useFakeTimers({
+      now: updateDate,
+      doNotFake: [
+        'nextTick',
+        'setImmediate',
+        'clearImmediate',
+        'setInterval',
+        'clearInterval',
+        'setTimeout',
+        'clearTimeout',
+      ],
+      advanceTimers: false,
+    });
   });
 
   afterAll(async () => {
