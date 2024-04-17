@@ -15,9 +15,11 @@ import { serverLogger } from '@pocket-tools/ts-logger';
 import { fallbackPage } from './readerView';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
 import { deriveItemSummary, itemSummaryFromUrl } from './preview/preview';
+import { URLResolver } from 'graphql-scalars';
 
 export const resolvers = {
   ...PocketDefaultScalars,
+  URL: URLResolver,
   Item: {
     __resolveReference: async (item, { dataLoaders }, info) => {
       // Setting the cache hint manually here because when the gateway(Client API) resolves an item using this
