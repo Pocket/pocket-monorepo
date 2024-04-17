@@ -4,10 +4,13 @@ import { print } from 'graphql/index';
 import { gql } from 'graphql-tag';
 import request from 'supertest';
 import { Application } from 'express';
-import { IContext } from './context';
-import { getConnection, getSharedUrlsConnection } from './database/mysql';
-import { getRedis } from './cache';
-import { startServer } from './server';
+import { IContext } from '../../apollo/context';
+import {
+  getConnection,
+  getSharedUrlsConnection,
+} from '../../datasources/mysql';
+import { getRedis } from '../../cache';
+import { startServer } from '../../apollo/server';
 
 describe('refresh mutation', () => {
   const testUrl = 'https://someurl.com';

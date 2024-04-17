@@ -1,4 +1,4 @@
-import { getConnection } from '../database/mysql';
+import { getConnection } from '../datasources/mysql';
 import { ItemResolver } from '../entities/ItemResolver';
 import { Connection } from 'typeorm';
 import * as itemLoader from './itemLoader';

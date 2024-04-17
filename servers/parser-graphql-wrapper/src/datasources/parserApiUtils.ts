@@ -4,7 +4,7 @@ import {
   Image,
   Video,
   VideoType,
-} from './__generated__/resolvers-types';
+} from '../__generated__/resolvers-types';
 
 /**
  * Get Author array from raw authors object returned from the parser

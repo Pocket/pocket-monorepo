@@ -14,13 +14,13 @@ import { initSentry } from '@pocket-tools/sentry';
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl';
 import { typeDefs } from './typeDefs';
 import { resolvers } from './resolvers';
-import config from './config';
-import { getRedis, getRedisCache } from './cache';
-import { ParserAPI } from './datasources/parserApi';
-import { LegacyDataSourcesPlugin } from './datasources/legacyDataSourcesPlugin';
+import config from '../config';
+import { getRedis, getRedisCache } from '../cache';
+import { ParserAPI } from '../datasources/parserApi';
+import { LegacyDataSourcesPlugin } from '../datasources/legacyDataSourcesPlugin';
 import { ContextManager, IContext } from './context';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
-import { unleash } from './unleash';
+import { unleash } from '../unleash';
 
 export async function startServer(port: number): Promise<{
   app: Application;

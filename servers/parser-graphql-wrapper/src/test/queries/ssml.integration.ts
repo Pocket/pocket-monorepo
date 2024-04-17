@@ -1,12 +1,12 @@
 import nock, { cleanAll } from 'nock';
-import { getRedis } from '../cache';
-import { startServer } from '../server';
-import { MediaTypeParam, ParserAPI } from '../datasources/parserApi';
+import { getRedis } from '../../cache';
+import { startServer } from '../../apollo/server';
+import { MediaTypeParam, ParserAPI } from '../../datasources/parserApi';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import { print } from 'graphql';
 import { gql } from 'graphql-tag';
-import { IContext } from '../context';
+import { IContext } from '../../apollo/context';
 import { Application } from 'express';
 
 function makeResponseForParserTextEndpoint(testUrl: string, html: string) {

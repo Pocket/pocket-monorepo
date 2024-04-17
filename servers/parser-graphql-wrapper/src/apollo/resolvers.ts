@@ -1,24 +1,24 @@
 import * as Sentry from '@sentry/node';
-import { clear, getItemById, getItemByUrl } from './dataLoaders';
-import config from './config';
+import { clear, getItemById, getItemByUrl } from '../dataLoaders';
+import config from '../config';
 import {
   MediaTypeParam,
   ParserAPI,
   ParserArticle,
-} from './datasources/parserApi';
-import { MarticleElement, parseArticle } from './marticle/marticleParser';
+} from '../datasources/parserApi';
+import { MarticleElement, parseArticle } from '../marticle/marticleParser';
 import { CacheScope } from '@apollo/cache-control-types';
 import {
   extractCodeFromShortUrl,
   givenUrlFromShareCode,
-} from './shortUrl/shortUrl';
-import { generateSSML } from './ssml/ssml';
+} from '../shortUrl/shortUrl';
+import { SSMLModel } from '../models/SSMLModel';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { fallbackPage } from './readerView';
+import { fallbackPage } from '../readerView';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
-import { deriveItemSummary, itemSummaryFromUrl } from './preview/preview';
+import { deriveItemSummary, itemSummaryFromUrl } from '../preview';
 import { URLResolver } from 'graphql-scalars';
-import { Resolvers } from './__generated__/resolvers-types';
+import { Resolvers } from '../__generated__/resolvers-types';
 
 export const resolvers: Resolvers = {
   ...PocketDefaultScalars,
@@ -125,7 +125,7 @@ export const resolvers: Resolvers = {
       if (!parent.article) {
         return null;
       }
-      return generateSSML(parent);
+      return SSMLModel.generateSSML(parent);
     },
     shortUrl: async (parent, args, context) => {
       // If the givenUrl is already a short share url, or there is a

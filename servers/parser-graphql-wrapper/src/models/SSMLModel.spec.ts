@@ -1,11 +1,11 @@
-import { generateSSML } from './ssml';
+import { SSMLModel } from './SSMLModel';
 
 describe('SSML', () => {
   it('should generate SSML text from html with data', () => {
     const input =
       '<p>A paragraph with an <b>image</b><img src="https://123"/></p><h1>heading</h1><p>Another paragraph with some <em>em</em> text</p>';
 
-    const ssml = generateSSML({
+    const ssml = SSMLModel.generateSSML({
       id: 'fo562fkc52f1ee092fOXe3Z2a7907eb576688dccd6e6a7fh4754a0d22d',
       title: 'The Example Article',
       isArticle: true,
@@ -30,7 +30,7 @@ describe('SSML', () => {
     const input =
       '<p>A paragraph with an <b>image</b><img src="https://123"/></p><h1>heading</h1><p>Another paragraph with some <em>em</em> text</p>';
 
-    const ssml = generateSSML({
+    const ssml = SSMLModel.generateSSML({
       title: 'The Example Article',
       isArticle: true,
       article: input,

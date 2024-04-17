@@ -1,13 +1,13 @@
-import { startServer } from '../server';
+import { startServer } from '../../apollo/server';
 import { ApolloServer } from '@apollo/server';
 import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 import request from 'supertest';
 import nock, { cleanAll } from 'nock';
-import { getRedis } from '../cache';
-import { MediaTypeParam, ParserAPI } from './parserApi';
+import { getRedis } from '../../cache';
+import { MediaTypeParam, ParserAPI } from '../../datasources/parserApi';
 import { setTimeout } from 'timers/promises';
-import { IContext } from '../context';
+import { IContext } from '../../apollo/context';
 import Keyv from 'keyv';
 import { Application } from 'express';
 

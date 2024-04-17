@@ -2,7 +2,7 @@ import config from '../config';
 import {
   BatchAddShareUrlInput,
   SharedUrlsResolverRepository,
-} from '../database/mysql';
+} from '../datasources/mysql';
 
 /**
  * generates a record in share_url if record doesn't exist.

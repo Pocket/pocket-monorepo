@@ -3,7 +3,7 @@ import { batchGetShortUrl } from '../shortUrl/shortUrl';
 import {
   BatchAddShareUrlInput,
   getSharedUrlsResolverRepo,
-} from '../database/mysql';
+} from '../datasources/mysql';
 
 const partialBatchGetShortUrls = async (
   inputs: readonly BatchAddShareUrlInput[],

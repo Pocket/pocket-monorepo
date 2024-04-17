@@ -4,14 +4,14 @@ import * as Sentry from '@sentry/node';
 import {
   ItemResolverRepository,
   getItemResolverRepository,
-} from '../database/mysql';
+} from '../datasources/mysql';
 import {
   extractDomainMeta,
   getAuthors,
   getImages,
   getVideos,
   normalizeDate,
-} from '../parserApiUtils';
+} from '../datasources/parserApiUtils';
 import config from '../config';
 import {
   DataLoaderCacheInterface,
@@ -22,7 +22,7 @@ import { FetchHandler } from '../fetch';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { IntMask } from '@pocket-tools/int-mask';
 import { getRedisCache } from '../cache';
-import { ListenModel } from '../listen/ListenModel';
+import { ListenModel } from '../models/ListenModel';
 import {
   Author,
   Image,
