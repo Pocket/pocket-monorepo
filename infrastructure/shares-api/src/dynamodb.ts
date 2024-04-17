@@ -31,10 +31,6 @@ export class DynamoDB extends Construct {
             name: config.dynamodb.sharesTable.key,
             type: 'S',
           },
-          {
-            name: 'ttl',
-            type: 'N',
-          },
         ],
       },
       ttl: {
