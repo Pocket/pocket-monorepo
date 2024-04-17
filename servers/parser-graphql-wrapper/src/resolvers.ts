@@ -14,7 +14,7 @@ import { generateSSML } from './ssml/ssml';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { fallbackPage } from './readerView';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
-import { deriveItemSummary } from './preview/preview';
+import { deriveItemSummary, itemSummaryFromUrl } from './preview/preview';
 
 export const resolvers = {
   ...PocketDefaultScalars,
@@ -260,6 +260,15 @@ export const resolvers = {
         resolvedId: parseInt(item.resolvedId),
         givenUrl: item.givenUrl,
       });
+    },
+  },
+  PocketShare: {
+    preview: async (
+      parent: { targetUrl: string },
+      _,
+      context: IContext,
+    ): Promise<ItemSummary> => {
+      return await itemSummaryFromUrl(parent.targetUrl, context);
     },
   },
   Mutation: {
