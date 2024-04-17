@@ -1,4 +1,10 @@
 import { Request } from 'express';
+import { PocketShareModel } from '../models';
+import {
+  SharesDataSourceAuthenticated,
+  SharesDataSourceUnauthenticated,
+} from '../datasources/shares';
+import { dynamoClient } from '../datasources/dynamoClient';
 
 /**
  * Context factory function. Creates a new context upon
@@ -16,8 +22,27 @@ export async function getContext({
   });
 }
 
-export interface IContext {}
+export interface IContext {
+  PocketShareModel: PocketShareModel;
+}
 
 export class ContextManager implements IContext {
-  constructor(options: { request: Request }) {}
+  PocketShareModel: PocketShareModel;
+  constructor(options: { request: Request }) {
+    const userId = options.request.headers.userid;
+    const client = dynamoClient();
+    // We have an authenticated user?
+    if (
+      userId &&
+      typeof userId === 'string' &&
+      userId.length &&
+      userId !== 'anonymous'
+    ) {
+      const dataSource = new SharesDataSourceAuthenticated(client);
+      this.PocketShareModel = new PocketShareModel(dataSource);
+    } else {
+      const dataSource = new SharesDataSourceUnauthenticated(client);
+      this.PocketShareModel = new PocketShareModel(dataSource);
+    }
+  }
 }

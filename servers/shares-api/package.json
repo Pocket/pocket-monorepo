@@ -27,7 +27,8 @@
     "@pocket-tools/ts-logger": "workspace:*",
     "cors": "2.8.5",
     "express": "4.19.2",
-    "graphql-constraint-directive": "5.4.2"
+    "graphql-constraint-directive": "5.4.2",
+    "graphql-scalars": "^1.23.0"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "5.0.2",

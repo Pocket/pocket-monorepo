@@ -6,18 +6,20 @@ extend schema
   )
   # The link directive is required to federate @constraint
   # It doesn't actually have to be a real spec, but it would be good
-  # to write one and replace this.
+  # to write one and replace this. It has to end in a version so the github
+  # link alone doesn't work, and it doesn't like a patch version so the
+  # link tot he specific release on github doesn't work...
   @link(url: "https://myspecs.dev/myDirective/v1.0", import: ["@constraint"])
   @composeDirective(name: "@constraint")
 
-scalar Url
-scalar Markdown
+scalar URL
 scalar ISOString
+scalar Max300CharString
 
 type PocketShare @key(fields: "slug targetUrl") {
   slug: ID!
-  shareUrl: Url!
-  targetUrl: Url!
+  shareUrl: URL!
+  targetUrl: URL!
   createdAt: ISOString
   context: ShareContext
 }
@@ -26,7 +28,7 @@ type ShareContext {
   """
   A user-provided comment/note on the shared content.
   """
-  note: Markdown
+  note: String
   """User-provided highlights of the content"""
   highlights: [ShareHighlight!]
 }
@@ -34,22 +36,31 @@ type ShareContext {
 type ShareHighlight {
   """
   Highlighted text on a piece of shared content.
-  Limited to 500 characters per quote (longer quotes
-  will be truncated).
   """
   quote: String!
 }
 
 input ShareHighlightInput {
-  quotes: [String!]!
+  """
+  Highlighted text on a piece of shared content.
+  This is a permissive constraint but there needs
+  to be _a_ constraint.
+  This input is not required, but if present 'quotes'
+  is required as it is the only field.
+  Limited to 300 characters per quote (longer quotes
+  will not be rejected, but will be truncated).
+  """
+  quotes: [Max300CharString!]! @constraint(maxItems: 20)
 }
 
 """
 Input for mutation which creates a new Pocket Share link.
 """
 input ShareContextInput {
-  """A note/comment about the Share"""
-  note: Markdown @constraint(maxLength: 500)
+  """
+  A note/comment about the Share (up to 500 characters).
+  """
+  note: String @constraint(maxLength: 500)
   """Quoted content from the Share source"""
   highlights: ShareHighlightInput
 }
@@ -73,5 +84,5 @@ type Mutation {
   Create a Pocket Share for a provided target URL, optionally
   with additional share context.
   """
-  createShareLink(target: Url!, context: ShareContextInput): Url
+  createShareLink(target: URL!, context: ShareContextInput): URL
 }
