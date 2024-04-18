@@ -10,7 +10,7 @@ import nock, { cleanAll } from 'nock';
 import { getRedis } from '../../cache';
 import { VideoType } from '../../__generated__/resolvers-types';
 import { startServer } from '../../apollo/server';
-import { ParserAPI } from '../../datasources/parserApi';
+import { ParserAPI } from '../../datasources/ParserAPI';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import { print } from 'graphql';

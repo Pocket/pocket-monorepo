@@ -1,7 +1,7 @@
 import nock, { cleanAll } from 'nock';
 import { getRedis } from '../../cache';
 import { startServer } from '../../apollo/server';
-import { MediaTypeParam, ParserAPI } from '../../datasources/parserApi';
+import { MediaTypeParam, ParserAPI } from '../../datasources/ParserAPI';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import { print } from 'graphql';

@@ -19,7 +19,7 @@ import {
 import { countAncestors, countPreviousSiblings, createSubtree } from './utils';
 import turndownService from './turndown';
 import TurndownService from 'turndown';
-import { ParserArticle } from '../datasources/parserApi';
+import { ParserArticle } from '../datasources/ParserAPI';
 import { config } from './config';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
