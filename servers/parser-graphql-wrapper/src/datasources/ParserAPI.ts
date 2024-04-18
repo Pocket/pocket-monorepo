@@ -32,7 +32,7 @@ export type ParserAPIOptions = {
   refresh: BoolStringParam;
   images: MediaTypeParam;
   videos: MediaTypeParam;
-  article: BoolStringParam;
+  noArticle: BoolStringParam;
   createIfNone: BoolStringParam;
   output: 'regular';
 };
@@ -46,7 +46,7 @@ export class ParserAPI extends RESTDataSource {
 
   public static readonly DEFAULT_PARSER_OPTIONS: ParserAPIOptions = {
     refresh: BoolStringParam.FALSE,
-    article: BoolStringParam.FALSE,
+    noArticle: BoolStringParam.TRUE,
     images: MediaTypeParam.DIV_TAG,
     videos: MediaTypeParam.DIV_TAG,
     createIfNone: BoolStringParam.TRUE,

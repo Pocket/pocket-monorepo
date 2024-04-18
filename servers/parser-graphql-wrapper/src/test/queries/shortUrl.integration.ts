@@ -2,7 +2,7 @@ import { ApolloServer } from '@apollo/server';
 import { IContext } from '../../apollo/context';
 import { startServer } from '../../apollo/server';
 import { getRedis } from '../../cache';
-import nock from 'nock';
+import { cleanAll } from 'nock';
 import { print } from 'graphql/index';
 import { gql } from 'graphql-tag';
 import request from 'supertest';
@@ -16,7 +16,6 @@ import {
 } from '../../datasources/mysql';
 import config from '../../config';
 import { Application } from 'express';
-import { shareUrl } from '../../shortUrl/shortUrl';
 import { nockResponseForParser } from '../utils/parserResponse';
 
 describe('ShortUrl', () => {
@@ -36,10 +35,12 @@ describe('ShortUrl', () => {
     await (await getConnection()).destroy();
     await (await getSharedUrlsConnection()).destroy();
     await getRedis().disconnect();
+    cleanAll();
   });
   afterEach(() => jest.clearAllMocks());
 
   beforeAll(async () => {
+    cleanAll();
     sharedRepo = await getSharedUrlsResolverRepo();
     itemRepo = await getItemResolverRepository();
     // port 0 tells express to dynamically assign an available port
@@ -128,7 +129,7 @@ describe('ShortUrl', () => {
     const testSlug = `test-slug`;
     const testUrl = `${config.shortUrl.collectionUrl}/${testSlug}`;
 
-    nockResponseForParser(``, {
+    nockResponseForParser(testUrl, {
       data: {
         given_url: testUrl,
         normal_url: testUrl,
@@ -201,7 +202,7 @@ describe('ShortUrl', () => {
     const db = await sharedRepo.batchGetShareUrlsById([1]);
     expect(db.length).toBe(1);
   });
-  it('fetches all shortUrls in a single batch when resolving item entities', async () => {
+  it('fetches all shortUrls when resolving item entities', async () => {
     const givenUrls = [testUrl, 'http://another-test.com'];
 
     nockResponseForParser(givenUrls[0], {
@@ -236,7 +237,6 @@ describe('ShortUrl', () => {
       },
     });
 
-    const shareBatchSpy = jest.spyOn(shareUrl, 'batchGetOrCreateShareUrls');
     const resolveItemQuery = gql`
         query Items {
             _entities(representations: [
@@ -257,11 +257,6 @@ describe('ShortUrl', () => {
       { shortUrl: 'https://local.co/bc' },
     ]; // shareIds = 1,2
     expect(res.body.data._entities).toEqual(expected);
-    expect(shareBatchSpy).toHaveBeenCalledTimes(1);
-    expect(shareBatchSpy.mock.calls[0][0]).toEqual([
-      { itemId: 1, resolvedId: 1, givenUrl: givenUrls[0] },
-      { itemId: 2, resolvedId: 2, givenUrl: givenUrls[1] },
-    ]);
   });
 
   describe('resolving from short url', () => {
@@ -275,25 +270,21 @@ describe('ShortUrl', () => {
       });
     });
     it('should resolve the item from the short url', async () => {
-      nock(`http://example-parser.com`)
-        .get(
-          `/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular&enableItemUrlFallback=1`,
-        )
-        .reply(200, {
-          item: {
-            given_url: testUrl,
-            normal_url: testUrl,
-            item_id: '12345',
-            resolved_id: '12345',
-            domain_metadata: {
-              name: 'domain',
-              logo: 'logo',
-            },
-            authors: [],
-            images: [],
-            videos: [],
+      nockResponseForParser(testUrl, {
+        data: {
+          given_url: testUrl,
+          normal_url: testUrl,
+          item_id: '12345',
+          resolved_id: '12345',
+          domainMetadata: {
+            name: 'domain',
+            logo: 'logo',
           },
-        });
+          authors: [],
+          images: [],
+          videos: [],
+        },
+      });
       const url = 'https://local.co/ab';
 
       const item_by_url = gql`

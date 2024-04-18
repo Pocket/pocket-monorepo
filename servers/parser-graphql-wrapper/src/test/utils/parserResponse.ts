@@ -8,6 +8,7 @@ import {
 import { ParserResponse } from '../../datasources/ParserAPITypes';
 import { faker } from '@faker-js/faker';
 import { Videoness } from '../../__generated__/resolvers-types';
+import { merge } from 'lodash';
 
 /**
  * Converts parser item.has_video to a graphql enum
@@ -40,16 +41,14 @@ export const nockResponseForParser = (
     url: testUrl,
   });
 
-  const data = {
-    ...fakerParserResponse(),
-    given_url: testUrl,
-    ...options?.data,
-  };
-  if (options?.parserOptions?.article == BoolStringParam.FALSE) {
-    data.article = undefined;
+  const data = merge(fakerParserResponse(), options?.data);
+  data.given_url = testUrl;
+  data.normal_url = testUrl;
+  if (queryParams.get('noArticle') == BoolStringParam.TRUE) {
+    delete data.article;
   }
 
-  const scope = options.scope ?? nock(config.parser.baseEndpoint);
+  const scope = options?.scope ?? nock(config.parser.baseEndpoint);
   scope.get(`${config.parser.dataPath}`).query(queryParams).reply(200, data);
   return data;
 };
