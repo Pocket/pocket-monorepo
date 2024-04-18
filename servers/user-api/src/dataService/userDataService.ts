@@ -142,17 +142,20 @@ export class UserDataService {
         'users.user_id',
       )
       .leftJoin(
-        this.readDb.raw(`(
-        SELECT user_id,
-               CASE
-                   WHEN active = 1 THEN 'ACTIVE'
-                   WHEN active = 0 THEN 'EXPIRED'
-                   ELSE 'NEVER'
-               END AS premiumStatus
-        FROM payment_subscriptions
-        ORDER BY active DESC, expires_at DESC
-        LIMIT 1
-      ) AS premiumQuery`),
+        this.readDb.raw(
+          `(
+          SELECT user_id,
+                last_value(
+                  CASE
+                    WHEN active = 1 THEN 'ACTIVE'
+                    WHEN active = 0 THEN 'EXPIRED'
+                    ELSE 'NEVER'
+                  END) OVER (ORDER BY active DESC, expires_at DESC) premiumStatus
+          FROM payment_subscriptions
+          WHERE user_id = ?
+      ) AS premiumQuery`,
+          [this.userId],
+        ),
         'users.user_id',
         'premiumQuery.user_id',
       )

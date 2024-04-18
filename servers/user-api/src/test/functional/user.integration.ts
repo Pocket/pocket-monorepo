@@ -267,6 +267,13 @@ describe('User', () => {
     it('should load active subscription status', async () => {
       await writeDb('payment_subscriptions').insert([
         {
+          user_id: 2,
+          vendor_id: '12d3',
+          product_id: 1,
+          active: true,
+          expires_at: new Date(new Date().getTime() + 1000000),
+        },
+        {
           user_id: 1,
           vendor_id: '123',
           product_id: 1,
@@ -415,6 +422,13 @@ describe('User', () => {
 
     it('should load expire subscription status, when all have expired', async () => {
       await writeDb('payment_subscriptions').insert([
+        {
+          user_id: 2,
+          vendor_id: '12d3',
+          product_id: 1,
+          active: true,
+          expires_at: new Date(new Date().getTime() + 1000000),
+        },
         {
           user_id: 1,
           vendor_id: '12d3',
