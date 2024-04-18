@@ -350,7 +350,7 @@ Input field for filtering a user's list
 input SavedItemsFilter {
   """
   Optional, filter to get SavedItems updated since a unix timestamp.
-  Mutually exclusive with `updatedSince` option.
+  Mutually exclusive with `updatedBefore` option.
   """
   updatedSince: Int
   """
