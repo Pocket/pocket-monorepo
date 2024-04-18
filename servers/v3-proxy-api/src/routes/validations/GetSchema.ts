@@ -22,6 +22,7 @@ export type V3GetParams = {
   taglist: boolean;
   forcetaglist: boolean;
   hasAnnotations?: boolean;
+  updatedBefore?: number;
 };
 
 /**
@@ -109,6 +110,17 @@ export const V3GetSchema: Schema = {
       },
     },
     toInt: true,
+  },
+  updatedBefore: {
+    optional: true,
+    isInt: {
+      options: {
+        min: 0,
+      },
+    },
+    customSanitizer: {
+      options: (value) => (typeof value === 'string' ? parseInt(value) : value),
+    },
   },
   contentType: {
     optional: true,

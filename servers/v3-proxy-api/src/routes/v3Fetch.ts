@@ -93,6 +93,7 @@ export async function processV3call(
     taglist: data.taglist,
     forcetaglist: data.forcetaglist,
     hasAnnotations: data.hasAnnotations,
+    updatedBefore: data.updatedBefore,
   };
 
   // Otherwise call SavedItems list api

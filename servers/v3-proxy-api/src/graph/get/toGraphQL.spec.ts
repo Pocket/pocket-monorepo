@@ -29,6 +29,10 @@ describe('toGraphQL', () => {
           expected: { filter: { updatedSince: 123456 } },
         },
         {
+          params: { updatedBefore: 123456 },
+          expected: { filter: { updatedBefore: 123456 } },
+        },
+        {
           params: { state: 'all' as const },
           expected: {},
         },
