@@ -1,5 +1,5 @@
 import DataLoader from 'dataloader';
-import { itemIdLoader, itemUrlLoader, ShortUrlLoader } from '../dataLoaders';
+import { itemIdLoader, ItemLoaderType, ShortUrlLoader } from '../dataLoaders';
 import {
   BatchAddShareUrlInput,
   ItemResolverRepository,
@@ -7,7 +7,6 @@ import {
   getItemResolverRepository,
   getSharedUrlsResolverRepo,
 } from '../datasources/mysql';
-import { Item } from '../__generated__/resolvers-types';
 import { ParserAPI } from '../datasources/ParserAPI';
 
 /**
@@ -16,7 +15,7 @@ import { ParserAPI } from '../datasources/ParserAPI';
  */
 export interface IContext {
   dataLoaders: {
-    itemIdLoader: DataLoader<string, Item>;
+    itemIdLoader: DataLoader<string, ItemLoaderType>;
     shortUrlLoader: DataLoader<BatchAddShareUrlInput, string>;
   };
   repositories: {

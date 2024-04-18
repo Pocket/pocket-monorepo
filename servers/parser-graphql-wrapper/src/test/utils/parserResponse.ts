@@ -7,12 +7,31 @@ import {
 } from '../../datasources/ParserAPI';
 import { ParserResponse } from '../../datasources/ParserAPITypes';
 import { faker } from '@faker-js/faker';
+import { Videoness } from '../../__generated__/resolvers-types';
+
+/**
+ * Converts parser item.has_video to a graphql enum
+ * @param hasVideo
+ */
+export const videonessToParser = (hasVideo: Videoness): string => {
+  switch (hasVideo) {
+    case Videoness.NoVideos:
+      return '0';
+    case Videoness.HasVideos:
+      return '1';
+    case Videoness.IsVideo:
+      return '2';
+    default:
+      return '0';
+  }
+};
 
 export const nockResponseForParser = (
   testUrl: string,
   options?: {
     parserOptions?: Partial<ParserAPIOptions>;
     data?: Partial<ParserResponse>;
+    scope?: nock.Scope;
   },
 ): ParserResponse => {
   const queryParams = new URLSearchParams({
@@ -21,15 +40,17 @@ export const nockResponseForParser = (
     url: testUrl,
   });
 
-  const data = { ...fakerParserResponse(), ...options?.data };
+  const data = {
+    ...fakerParserResponse(),
+    given_url: testUrl,
+    ...options?.data,
+  };
   if (options?.parserOptions?.article == BoolStringParam.FALSE) {
     data.article = undefined;
   }
 
-  nock(`${config.parser.baseEndpoint}`)
-    .get(`${config.parser.dataPath}`)
-    .query(queryParams)
-    .reply(200, data);
+  const scope = options.scope ?? nock(config.parser.baseEndpoint);
+  scope.get(`${config.parser.dataPath}`).query(queryParams).reply(200, data);
   return data;
 };
 
