@@ -127,6 +127,7 @@ export function SavedItemsFilterFactory(params: V3GetParams) {
     },
     since: (val: number) => ({ updatedSince: val }),
     tag: (val: string) => ({ tagNames: [val] }),
+    hasAnnotations: (val: boolean) => ({ isHighlighted: val }),
   };
 
   const filter: SavedItemsFilter = Object.entries(params).reduce(
