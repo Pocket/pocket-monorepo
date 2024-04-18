@@ -5,7 +5,7 @@ import { print } from 'graphql';
 import request from 'supertest';
 import nock, { cleanAll } from 'nock';
 import { getRedis } from '../../cache';
-import { MediaTypeParam, ParserAPI } from '../../datasources/parserApi';
+import { MediaTypeParam, ParserAPI } from '../../datasources/ParserAPI';
 import { setTimeout } from 'timers/promises';
 import { IContext } from '../../apollo/context';
 import Keyv from 'keyv';

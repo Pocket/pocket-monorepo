@@ -1,257 +1,153 @@
-import { DataSource, DataSourceConfig } from 'apollo-datasource';
-import { KeyValueCache } from 'apollo-server-caching';
 import { URLSearchParams } from 'url';
 import config from '../config';
-import DataLoader from 'dataloader';
-import { FetchHandler } from '../fetch';
-
-interface ParserRequestParams {
-  url: string;
-  getItem: number;
-  output: string;
-  images: MediaTypeParam;
-  videos: MediaTypeParam;
-  refresh?: boolean;
-}
-
-interface GetArticleByUrlOptions {
-  imageStyle?: MediaTypeParam;
-  videoStyle?: MediaTypeParam;
-  refresh?: boolean;
-  maxAge?: number;
-  createIfNone?: boolean;
-}
+import { RESTDataSource } from '@apollo/datasource-rest';
+import md5 from 'md5';
+import { Item } from '../__generated__/resolvers-types';
+import { IntMask } from '@pocket-tools/int-mask';
+import {
+  getAuthors,
+  getImages,
+  getVideos,
+  normalizeDate,
+  parseVideoness,
+  parseImageness,
+} from './parserApiUtils';
+import { ListenModel } from '../models/ListenModel';
+import { ParserResponse } from './ParserAPITypes';
+import fetchRetry from 'fetch-retry';
 
 export enum MediaTypeParam {
-  AS_COMMENTS = 0,
-  NO_POSITION = 1,
-  DIV_TAG = 2,
-  WITH_POSITION = 3,
+  AS_COMMENTS = '0',
+  NO_POSITION = '1',
+  DIV_TAG = '2',
+  WITH_POSITION = '3',
 }
 
-export type ParserArticle = {
-  isArticle: boolean;
-  isVideo: boolean;
-  article: string;
-  images?: { [key: string]: any } | null;
-  videos?: { [key: string]: any } | null;
-  givenUrl: string;
+export enum BoolStringParam {
+  FALSE = '0',
+  TRUE = '1',
+}
+
+export type ParserAPIOptions = {
+  refresh: BoolStringParam;
+  images: MediaTypeParam;
+  videos: MediaTypeParam;
+  article: BoolStringParam;
 };
 
 /**
  * A DataSource for retrieving article data from the Parser
- * REST API. A new instance is created for each incoming operation.
- * Uses the cache configured when starting Apollo Server (or a new
- * in-memory LRU cache by default). Methods are designed for making GET
- * requests only since that's all we need right now.
- * https://www.apollographql.com/docs/apollo-server/data/data-sources/
+ * REST API.
  */
-export class ParserAPI<TContext = any> extends DataSource {
-  public static readonly baseUrl = config.parserEndpoint;
-  // TODO: Confirm that images=0 is the same as not having images query param
-  // Default query parameters for GET-ing an article.
-  public static readonly defaultParams = {
-    getItem: 1,
+export class ParserAPI extends RESTDataSource {
+  public static readonly baseUrl = config.parser.baseEndpoint;
+
+  private readonly DEFAULT_PARAMS = {
+    createIfNone: '1',
     output: 'regular',
-    images: MediaTypeParam.AS_COMMENTS,
-    videos: MediaTypeParam.AS_COMMENTS,
-    createIfNone: true,
   };
 
-  public context!: TContext;
-  public articleLoader!: DataLoader<
-    { url: string; options?: GetArticleByUrlOptions },
-    ParserArticle
-  >;
-  private cache!: KeyValueCache;
+  private readonly DEFAULT_PARSER_OPTIONS: ParserAPIOptions = {
+    refresh: BoolStringParam.FALSE,
+    article: BoolStringParam.FALSE,
+    images: MediaTypeParam.AS_COMMENTS,
+    videos: MediaTypeParam.AS_COMMENTS,
+  };
 
-  // Always need to call super()
   constructor() {
-    super();
-    // DataLoader layer deduplicates requests made in a single tick of the
-    // application by storing results in a memoization cache.
-    // If not using the dataloader, it's possible that multiple requests
-    // to fetch the article will be sent, despite the shared cache
-    // (e.g. requesting both `marticle` and `article` fields in the same query)
-    this.articleLoader = new DataLoader(
-      async (requests: { url: string; options?: GetArticleByUrlOptions }[]) => {
-        // Don't load from cache if refresh option is true
-        // This is overly cautious at this time, since the code
-        // does not call the dataloader during the refresh mutation
-        requests.forEach((request) => {
-          if (request.options?.refresh) {
-            this.articleLoader.clear(request);
-          }
-        });
-        return Promise.all(
-          requests.map(async ({ url, options }) => {
-            return this.getArticleByUrl(url, options);
-          }),
-        );
-      },
-      {
-        // Stringify the call made to `getArticleByUrl` as the cache key,
-        // minus arguments that won't change the result
-        cacheKeyFn: ({ url, options }) => {
-          const relevantOptions = { ...options };
-          delete relevantOptions.maxAge;
-          return JSON.stringify({ url, options: relevantOptions });
-        },
-      },
-    );
+    super({
+      fetch: fetchRetry(global.fetch, {
+        retries: config.parser.retries,
+        retryDelay: 500,
+      }),
+    });
   }
 
   /**
-   * Initialize method with Apollo context and cache. This method
-   * is called automatically by Apollo Server. Require a shared
-   * server cache to initialize the datasource, otherwise throw
-   * an error.
+   * Gets the baseline Item data from the Pocket parser excluding the article data
+   * @param url The URL of the data to fetch
+   * @param refresh Whether or not to refresh the article data
+   * @returns Item object
    */
-  initialize(config: DataSourceConfig<any>): void | Promise<void> {
-    this.context = config.context;
-    if (!config.cache) {
-      throw new Error(
-        'ParserApi requires shared server cache, but found none; check Apollo server cache configuration.',
-      );
-    }
-    this.cache = config.cache;
-  }
-
-  /**
-   * Build the cache key for a GET request to the parser endpoint.
-   * We remove the `refresh` param from the
-   * cache key so that we can set refreshed results and retrieve
-   * them later. Sorting ensures tha query parameter order doesn't
-   * affect cache key.
-   * @param request
-   * @returns
-   */
-  static cacheKeyFor(params: URLSearchParams): string {
-    // Mutability :|
-    const paramsCopy = new URLSearchParams(params.toString());
-    paramsCopy.sort();
-    paramsCopy.delete('refresh');
-    return ParserAPI.baseUrl + paramsCopy.toString();
-  }
-
-  /**
-   * Build the query string for GET request, with query parameters.
-   * Made public to help testing.
-   */
-  public static buildQueryString(params: ParserRequestParams): {
-    query: string;
-    cacheKey: string;
-  } {
-    const urlParams = Object.entries(params).reduce(
-      (paramsObject, [key, val]) => {
-        if (val != null) {
-          paramsObject.append(key, val.toString());
-        }
-        return paramsObject;
-      },
-      new URLSearchParams(),
-    );
-    const query = urlParams.toString();
-    return { query, cacheKey: ParserAPI.cacheKeyFor(urlParams) };
-  }
-
-  /**
-   * Make a GET request to an endpoint. Check the cache if allowed, and return
-   * the cached result if it exists. If there is no cached result, or if noCache
-   * is true, then fetch the data from the endpoint and store the result in the
-   * cache if it's valid. Will not cache errors or null responses.
-   * @param endpoint the GET request url
-   * @param cacheKey key for caching/retrieving result from cache
-   * @param noCache if true, don't check the cache first (do cache the result)
-   * @param maxAge the max age, in seconds, before the cache is stale, for
-   * new results that are put into the cache.
-   */
-  private async get(
-    endpoint: string,
-    cacheKey: string,
-    noCache: boolean,
-    maxAge: number,
-  ): Promise<ParserArticle> {
-    // Grab from the cache first if we are allowed
-    if (!noCache) {
-      const cachedData: any = await this.cache.get(cacheKey);
-      if (cachedData != null) {
-        return JSON.parse(cachedData);
-      }
-    }
-    // If we shouldn't use the cache, or the key does not exist/has expired,
-    // fetch the data and then cache the response with appropriate expiration
-    const articleData = await this.fetch(endpoint);
-    if (articleData != null) {
-      await this.cache.set(cacheKey, JSON.stringify(articleData), {
-        ttl: maxAge,
-      });
-    }
-    return articleData;
-  }
-
-  /**
-   * Small wrapper around node-fetch for fetching and parsing an article.
-   * Only works for GET requests since that's all we need right now.
-   * Send exception to Sentry if the item doesn't exist.
-   * @param endpoint the GET request endpoint, with query string included
-   * as needed.
-   * @returns the parsed article, or null, if the item doesn't exist
-   */
-  private async fetch(endpoint: string): Promise<ParserArticle> {
-    const articleData = await new FetchHandler().fetchJSON(endpoint);
-    // check if there's an item
-    if (!articleData || (articleData && !articleData.item)) {
-      throw new Error(`No item found for URL: ${endpoint}`);
-    }
-    return {
-      isArticle: articleData.isArticle === 1,
-      isVideo: articleData.isVideo === 1,
-      article: articleData.article,
-      givenUrl: articleData.item.given_url,
-      images: articleData.images ?? null,
-      videos: articleData.videos ?? null,
-    };
-  }
-
-  /**
-   * Method for fetching an article from the Parser HTTP endpoint.
-   * @param url the URL to parse the article
-   * @param options Additional options for the parser.
-   *  `imageStyle`: an integer representing how images should be
-   * returned. See `MediaTypeParam` for descriptive enum mapping
-   * to the integer values. Default: IMAGES_AS_COMMENTS (0)
-   *  `refresh`: whether to trigger re-parsing an article. If
-   * true, will bypass the cache to fetch the article (but will)
-   * cache the new refreshed result. Default: false
-   *  `maxAge`: the time in seconds before a newly cached result
-   * expires. Relevant for cache misses or if `refresh`=true.
-   * Default: config.app.defaultMaxAge
-   */
-  async getArticleByUrl(
+  async getItemData(
     url: string,
-    options?: GetArticleByUrlOptions,
-  ): Promise<ParserArticle> {
-    // Parse options and build parameters with defaults
-    const params = {
-      ...ParserAPI.defaultParams,
-      url: url,
-    } as ParserRequestParams;
-    // Override defaults if provided
-    if (options?.refresh != null) {
-      params['refresh'] = options?.refresh;
-    }
-    if (options?.imageStyle != null) {
-      params['images'] = options?.imageStyle;
-    }
-    if (options?.videoStyle != null) {
-      params['videos'] = options?.videoStyle;
-    }
-    const maxAge = options?.maxAge ?? config.app.defaultMaxAge;
+    options?: Partial<ParserAPIOptions>,
+  ): Promise<Item> {
+    url = url.trim();
+    const queryParams = new URLSearchParams({
+      ...this.DEFAULT_PARSER_OPTIONS,
+      ...options,
+      url,
+    });
+    return this.parserResponseToItem(
+      await this.get<ParserResponse>(
+        `${config.parser.dataPath}/${encodeURIComponent(url)}`,
+        {
+          params: queryParams,
+          cacheKey: md5(`${url}${queryParams.toString()}`),
+          signal: AbortSignal.timeout(config.parser.timeout * 1000),
+        },
+      ),
+    );
+  }
 
-    const { query, cacheKey } = ParserAPI.buildQueryString(params);
-    const endpoint = `${ParserAPI.baseUrl}?${query}`;
-
-    return await this.get(endpoint, cacheKey, !!options?.refresh, maxAge);
+  private parserResponseToItem(parserResponse: ParserResponse): Item {
+    return {
+      itemId: parserResponse.item_id,
+      id: IntMask.encode(parserResponse.item_id),
+      resolvedId: parserResponse.resolved_id,
+      topImageUrl: parserResponse.topImageUrl,
+      topImage: parserResponse.topImageUrl
+        ? {
+            url: parserResponse.topImageUrl,
+            src: parserResponse.topImageUrl,
+            imageId: 0,
+          }
+        : undefined,
+      dateResolved: normalizeDate(parserResponse.date_resolved),
+      normalUrl: parserResponse.normal_url,
+      givenUrl: parserResponse.given_url,
+      title: parserResponse.title,
+      ampUrl: parserResponse.resolvedUrl,
+      resolvedUrl: parserResponse.resolvedUrl,
+      isArticle: !!parserResponse.isArticle,
+      isIndex: !!parserResponse.isIndex,
+      hasVideo: parseVideoness(parserResponse.has_video),
+      hasImage: parseImageness(parserResponse.has_image),
+      excerpt: parserResponse.excerpt,
+      wordCount: parserResponse.wordCount,
+      timeToRead: parserResponse.time_to_read,
+      listenDuration: ListenModel.estimateDuration(parserResponse.wordCount),
+      images: Object.keys(parserResponse.images || {}).length
+        ? getImages(parserResponse.images)
+        : null,
+      videos: Object.keys(parserResponse.videos || {}).length
+        ? getVideos(parserResponse.videos)
+        : null,
+      authors: Object.keys(parserResponse.authors || {}).length
+        ? getAuthors(parserResponse.authors)
+        : null,
+      mimeType: parserResponse.mime_type,
+      encoding: parserResponse.encoding,
+      domainMetadata: parserResponse.domainMetadata
+        ? {
+            name: parserResponse.domainMetadata.name,
+            logo: parserResponse.domainMetadata.logo,
+            logoGreyscale: parserResponse.domainMetadata.greyscale_logo,
+          }
+        : null,
+      language: parserResponse.lang,
+      datePublished: normalizeDate(parserResponse.datePublished),
+      hasOldDupes: !!parseInt(parserResponse.has_old_dupes),
+      domainId: parserResponse.domain_id,
+      originDomainId: parserResponse.origin_domain_id,
+      responseCode: parseInt(parserResponse.responseCode),
+      contentLength: parserResponse.content_length,
+      innerDomainRedirect: !!parserResponse.innerdomain_redirect,
+      loginRequired: !!parserResponse.requiresLogin,
+      usedFallback: parserResponse.usedFallback,
+      timeFirstParsed: normalizeDate(parserResponse.time_first_parsed),
+      resolvedNormalUrl: parserResponse.resolved_normal_url,
+    };
   }
 }
