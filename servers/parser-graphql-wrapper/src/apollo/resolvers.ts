@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/node';
-import { clear, getItemById } from '../dataLoaders';
+import { clear } from '../dataLoaders';
 import config from '../config';
 import { MarticleElement, parseArticle } from '../marticle/marticleParser';
 import { CacheScope } from '@apollo/cache-control-types';
@@ -48,7 +48,10 @@ export const resolvers: Resolvers = {
         }
       } else if ('itemId' in item) {
         try {
-          return await dataLoaders.itemIdLoader.load(item.itemId);
+          const itemLoaderType = await dataLoaders.itemIdLoader.load(
+            item.itemId,
+          );
+          return await dataSources.parserAPI.getItemData(itemLoaderType.url);
         } catch (error) {
           const errorMessage =
             '__resolveReference: Error getting item by itemId';
@@ -87,10 +90,13 @@ export const resolvers: Resolvers = {
       const article = await dataSources.parserAPI.getItemData(parent.givenUrl, {
         videos: MediaTypeParam.AS_COMMENTS,
         images: MediaTypeParam.AS_COMMENTS,
+        article: BoolStringParam.TRUE,
       });
       // Only extract Marticle data from article string if Parser
       // extracted valid data (isArticle or isVideo is 1)
-      return article.isArticle || article.hasVideo == Videoness.IsVideo
+      return article.isArticle ||
+        article.hasVideo == Videoness.IsVideo ||
+        article.hasVideo == Videoness.HasVideos
         ? parseArticle(article)
         : ([] as MarticleElement[]);
     },

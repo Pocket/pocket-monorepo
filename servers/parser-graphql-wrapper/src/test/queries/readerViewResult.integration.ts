@@ -1,4 +1,4 @@
-import nock, { cleanAll } from 'nock';
+import { cleanAll } from 'nock';
 import { getRedis } from '../../cache';
 import { startServer } from '../../apollo/server';
 import { ApolloServer } from '@apollo/server';

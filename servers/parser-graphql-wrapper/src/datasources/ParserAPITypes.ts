@@ -59,10 +59,10 @@ interface ImageRecord {
   src: string;
   item_id: string;
   image_id: string;
-  width: string;
-  height: string;
-  credit: string;
-  caption: string;
+  width?: string;
+  height?: string;
+  credit?: string;
+  caption?: string;
 }
 
 export type ParserVideoRecord = {
@@ -73,8 +73,8 @@ interface VideoRecord {
   src: string;
   item_id: string;
   video_id: string;
-  width: string;
-  height: string;
-  credit: string;
-  caption: string;
-};
+  width?: string;
+  height?: string;
+  credit?: string;
+  caption?: string;
+}

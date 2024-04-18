@@ -15,7 +15,6 @@ import {
 } from './parserApiUtils';
 import { ListenModel } from '../models/ListenModel';
 import { ParserResponse } from './ParserAPITypes';
-import fetchRetry from 'fetch-retry';
 
 export enum MediaTypeParam {
   AS_COMMENTS = '0',
@@ -48,8 +47,8 @@ export class ParserAPI extends RESTDataSource {
   public static readonly DEFAULT_PARSER_OPTIONS: ParserAPIOptions = {
     refresh: BoolStringParam.FALSE,
     article: BoolStringParam.FALSE,
-    images: MediaTypeParam.AS_COMMENTS,
-    videos: MediaTypeParam.AS_COMMENTS,
+    images: MediaTypeParam.DIV_TAG,
+    videos: MediaTypeParam.DIV_TAG,
     createIfNone: BoolStringParam.TRUE,
     output: 'regular',
   };
@@ -79,13 +78,12 @@ export class ParserAPI extends RESTDataSource {
       ...options,
       url,
     });
-    return this.parserResponseToItem(
-      await this.get<ParserResponse>(config.parser.dataPath, {
-        params: queryParams,
-        cacheKey: md5(`${url}${queryParams.toString()}`),
-        signal: AbortSignal.timeout(config.parser.timeout * 1000),
-      }),
-    );
+    const data = await this.get<ParserResponse>(config.parser.dataPath, {
+      params: queryParams,
+      cacheKey: md5(`${url}${queryParams.toString()}`),
+      signal: AbortSignal.timeout(config.parser.timeout * 1000),
+    });
+    return this.parserResponseToItem(data);
   }
 
   private parserResponseToItem(parserResponse: ParserResponse): Item {
@@ -139,6 +137,7 @@ export class ParserAPI extends RESTDataSource {
       usedFallback: parserResponse.usedFallback,
       timeFirstParsed: normalizeDate(parserResponse.time_first_parsed),
       resolvedNormalUrl: parserResponse.resolved_normal_url,
+      article: parserResponse.article,
     };
   }
 }

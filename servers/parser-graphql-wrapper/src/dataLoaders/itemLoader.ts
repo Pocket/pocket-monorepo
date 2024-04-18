@@ -1,10 +1,7 @@
 import DataLoader from 'dataloader';
 import * as Sentry from '@sentry/node';
 
-import {
-  ItemResolverRepository,
-  getItemResolverRepository,
-} from '../datasources/mysql';
+import { getItemResolverRepository } from '../datasources/mysql';
 import config from '../config';
 import {
   DataLoaderCacheInterface,
@@ -13,23 +10,6 @@ import {
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { getRedisCache } from '../cache';
 import { Item } from '../__generated__/resolvers-types';
-import { ParserAPI } from '../datasources/ParserAPI';
-
-/**
- * Gets an item by its id by using the Item Resolvers table
- * @param itemId
- * @param itemResolverRepository
- */
-export const getItemById = async (
-  itemId: string,
-  itemResolverRepository: ItemResolverRepository,
-  parserApi: ParserAPI,
-): Promise<Item> => {
-  const mysqlItem = await itemResolverRepository.getResolvedItemById(itemId);
-  //For now we just hit the parser once we turn the resolved id into a url
-  //Eventually we could bypass the parser and go to the database with async mysql calls for all the fields we need
-  return parserApi.getItemData(mysqlItem.normalUrl);
-};
 
 export type ItemLoaderType = { itemId?: string; url?: string };
 
@@ -38,13 +18,13 @@ export type ItemLoaderType = { itemId?: string; url?: string };
  * @param items ItemLoaderType
  */
 export const batchGetItemUrlsByItemIds = async (
-  items: ItemLoaderType[],
+  itemIds: string[],
 ): Promise<ItemLoaderType[]> => {
   const itemResolverRepository = await getItemResolverRepository();
 
-  const itemQueries = items.map((item) => {
+  const itemQueries = itemIds.map((itemId) => {
     return itemResolverRepository
-      .getResolvedItemById(item.itemId)
+      .getResolvedItemById(itemId)
       .then((data) => {
         if (!data.normalUrl) return null;
         /*
@@ -58,13 +38,13 @@ export const batchGetItemUrlsByItemIds = async (
         Ideally we should not access items by ItemId and instead always resolve
         using a URL and mark the itemId fetch method as deprecated.
         */
-        return { url: data.normalUrl, itemId: item.itemId };
+        return { url: data.normalUrl, itemId: itemId };
       })
       .catch((error) => {
         const errorMessage =
           'batchGetItemUrlsByItemIds: Could not get item by ID.';
         const errorData = {
-          item: item,
+          itemIds: itemIds,
         };
         serverLogger.error(errorMessage, { error: error, data: errorData });
         Sentry.addBreadcrumb({ message: errorMessage, data: errorData });
@@ -77,57 +57,22 @@ export const batchGetItemUrlsByItemIds = async (
 };
 
 /**
- * Grabs all items from
- * @param items
- */
-export const batchGetItemsByItemUrls = async (
-  items: ItemLoaderType[],
-  parserApi: ParserAPI,
-): Promise<any> => {
-  const resolvedItems = items.map((item) => {
-    if (!item) {
-      return null;
-    }
-
-    // return getItemByUrl(item.url, item.itemId).catch((error) => {
-    //   const errorMessage =
-    //     'batchGetItemsByItemUrls: Could not get item by URL.';
-    //   const errorData = {
-    //     item: item,
-    //   };
-    //   serverLogger.error(errorMessage, { error: error, data: errorData });
-    //   Sentry.addBreadcrumb({ message: errorMessage, data: errorData });
-    //   Sentry.captureException(error);
-    //   return null;
-    // });
-  });
-
-  return await Promise.all(resolvedItems);
-};
-
-/**
  * Batch get items by ids or urls
  * @param values
  * @param params
  */
-export const batchGetItems = async (
-  values: ItemLoaderType[],
+export const batchGetItemUrls = async (
+  values: string[],
   params: {
     key: 'itemId';
     getValueFn: (item: Item) => string;
     cache: DataLoaderCacheInterface;
   },
-  parserApi: ParserAPI,
-): Promise<Item[]> => {
-  const callback = async (values) => {
-    values = await batchGetItemUrlsByItemIds(values);
-    return batchGetItemsByItemUrls(values, parserApi);
-  };
-
-  return await batchCacheFn<ItemLoaderType, Item>({
+): Promise<ItemLoaderType[]> => {
+  return await batchCacheFn<string, ItemLoaderType>({
     values: values,
-    valueKeyFn: (value) => value.itemId,
-    callback,
+    valueKeyFn: (value) => value,
+    callback: batchGetItemUrlsByItemIds,
     cache: params.cache,
     returnTypeKeyFn: params.getValueFn,
     maxAge: config.app.defaultMaxAge,
@@ -140,16 +85,12 @@ export const batchGetItems = async (
  */
 export const batchGetItemsByIds = async (
   itemIds: string[],
-  parserApi: ParserAPI,
-): Promise<Item[]> => {
-  return await batchGetItems(
-    itemIds.map((id) => ({ itemId: id })),
-    {
-      key: 'itemId',
-      getValueFn: (item) => item.itemId,
-      cache: getRedisCache(),
-    },
-  );
+): Promise<ItemLoaderType[]> => {
+  return await batchGetItemUrls(itemIds, {
+    key: 'itemId',
+    getValueFn: (item) => item.itemId,
+    cache: getRedisCache(),
+  });
 };
 
 export const clear = (options: {

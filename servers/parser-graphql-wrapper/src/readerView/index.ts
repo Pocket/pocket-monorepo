@@ -15,7 +15,11 @@ export async function fallbackPage(
   context: IContext,
 ): Promise<ReaderFallback> {
   const id = IntMask.decode(slug).toString();
-  const item = await context.dataLoaders.itemIdLoader.load(id);
+  const itemLoaderResult = await context.dataLoaders.itemIdLoader.load(id);
+  const item = await context.dataSources.parserAPI.getItemData(
+    itemLoaderResult.url,
+  );
+
   if (item == null) {
     return { message: "We couldn't find that page." };
   }

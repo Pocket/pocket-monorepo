@@ -92,7 +92,7 @@ const parseVideoType = (videoType) => {
 export const extractDomainMeta = (parserResponse: ParserResponse): any => {
   // a rawItem may not have any domain_metadata. if that's the case, init
   // domainMeta to be an empty object.
-  const domainMeta = parserResponse.domainMetadata || { name: null };
+  const domainMeta = parserResponse.domainMetadata || { name: undefined };
 
   // if the domainMeta doesn't have a name property, and rawItem does have a
   // normal_url, populate the domainMeta.name based on the normal_url hostname
