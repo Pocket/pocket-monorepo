@@ -357,6 +357,22 @@ describe('getSavedItems filter', () => {
     );
   });
 
+  it('should return items updated before a specific time', async () => {
+    const variables = {
+      id: '1',
+      filter: { updatedBefore: date2Unix },
+    };
+    const res = await request(app).post(url).set(headers).send({
+      query: GET_SAVED_ITEMS,
+      variables,
+    });
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(4);
+    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).toBe(
+      'http://abc',
+    );
+  });
+
   it('should return favorited items', async () => {
     const variables = {
       id: '1',
