@@ -2528,7 +2528,15 @@ export type SavedItemsFilter = {
    * To get untagged items, include the string '_untagged_'.
    */
   tagNames?: InputMaybe<Array<Scalars['String']['input']>>;
-  /** Optional, filter to get SavedItems updated since a unix timestamp */
+  /**
+   * Optional, filter to get SavedItems updated before a unix timestamp.
+   * Mutually exclusive with `updatedSince` option.
+   */
+  updatedBefore?: InputMaybe<Scalars['Int']['input']>;
+  /**
+   * Optional, filter to get SavedItems updated since a unix timestamp.
+   * Mutually exclusive with `updatedBefore` option.
+   */
   updatedSince?: InputMaybe<Scalars['Int']['input']>;
 };
 
