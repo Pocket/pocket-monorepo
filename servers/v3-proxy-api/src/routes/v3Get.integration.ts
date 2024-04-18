@@ -40,9 +40,11 @@ describe('v3Get', () => {
   };
   beforeAll(async () => {
     ({ app, server } = await startServer(0));
+    jest.useFakeTimers({ now: 1706732550000, doNotFake: ['setImmediate'] });
   });
   afterAll(async () => {
     server.close();
+    jest.useRealTimers();
   });
   afterEach(() => {
     jest.restoreAllMocks();

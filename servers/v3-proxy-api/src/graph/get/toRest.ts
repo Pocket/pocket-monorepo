@@ -67,32 +67,15 @@ function getStatusResponse(
       status: 0,
       error: 1,
       complete: 1,
-      since: 0,
+      since: Math.round(new Date().getTime() / 1000),
     };
   }
-
-  const latestItem = response.user.savedItemsByOffset.entries.reduce(
-    (maxObject, currentObject) => {
-      if (
-        maxObject === null ||
-        currentObject._updatedAt > maxObject._updatedAt
-      ) {
-        return currentObject;
-      } else {
-        return maxObject;
-      }
-    },
-    null,
-  );
 
   return {
     status: response.user.savedItemsByOffset.totalCount > 0 ? 1 : 2,
     error: null,
     complete: 1,
-    since:
-      latestItem === null || latestItem._updatedAt === null
-        ? 0
-        : latestItem._updatedAt,
+    since: Math.round(new Date().getTime() / 1000),
   };
 }
 
@@ -104,34 +87,15 @@ function searchStatusResponse(
       status: 0,
       error: 1,
       complete: 1,
-      since: 0,
+      since: Math.round(new Date().getTime() / 1000),
     };
   }
-
-  const latestItem = response.user.searchSavedItemsByOffset.entries.reduce(
-    (maxObject, currentObject) => {
-      if (
-        maxObject === null ||
-        currentObject.savedItem._updatedAt > maxObject.savedItem._updatedAt
-      ) {
-        return currentObject;
-      } else {
-        return maxObject;
-      }
-    },
-    null,
-  );
 
   return {
     status: response.user.searchSavedItemsByOffset.totalCount > 0 ? 1 : 2,
     error: null,
     complete: 1,
-    since:
-      latestItem === null ||
-      latestItem.savedItem === null ||
-      latestItem.savedItem._updatedAt === null
-        ? 0
-        : latestItem.savedItem._updatedAt,
+    since: Math.round(new Date().getTime() / 1000),
   };
 }
 
