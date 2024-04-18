@@ -71,20 +71,6 @@ function getStatusResponse(
     };
   }
 
-  const latestItem = response.user.savedItemsByOffset.entries.reduce(
-    (maxObject, currentObject) => {
-      if (
-        maxObject === null ||
-        currentObject._updatedAt > maxObject._updatedAt
-      ) {
-        return currentObject;
-      } else {
-        return maxObject;
-      }
-    },
-    null,
-  );
-
   return {
     status: response.user.savedItemsByOffset.totalCount > 0 ? 1 : 2,
     error: null,
@@ -104,20 +90,6 @@ function searchStatusResponse(
       since: Math.round(new Date().getTime() / 1000),
     };
   }
-
-  const latestItem = response.user.searchSavedItemsByOffset.entries.reduce(
-    (maxObject, currentObject) => {
-      if (
-        maxObject === null ||
-        currentObject.savedItem._updatedAt > maxObject.savedItem._updatedAt
-      ) {
-        return currentObject;
-      } else {
-        return maxObject;
-      }
-    },
-    null,
-  );
 
   return {
     status: response.user.searchSavedItemsByOffset.totalCount > 0 ? 1 : 2,
