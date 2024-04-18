@@ -126,27 +126,23 @@ describe('ShortUrl', () => {
   });
   it('should fetch shortUrl for Collection ', async () => {
     const testSlug = `test-slug`;
-    nock(`http://example-parser.com`)
-      .get(
-        `/?url=${encodeURIComponent(
-          `${config.shortUrl.collectionUrl}/${testSlug}`,
-        )}&getItem=1&output=regular&enableItemUrlFallback=1`,
-      )
-      .reply(200, {
-        item: {
-          given_url: testUrl,
-          normal_url: testUrl,
-          item_id: '1',
-          resolved_id: '1',
-          domain_metadata: {
-            name: 'domain',
-            logo: 'logo',
-          },
-          authors: [],
-          images: [],
-          videos: [],
+    const testUrl = `${config.shortUrl.collectionUrl}/${testSlug}`;
+
+    nockResponseForParser(``, {
+      data: {
+        given_url: testUrl,
+        normal_url: testUrl,
+        item_id: '1',
+        resolved_id: '1',
+        domainMetadata: {
+          name: 'domain',
+          logo: 'logo',
         },
-      });
+        authors: [],
+        images: [],
+        videos: [],
+      },
+    });
 
     const collections_query = gql`
         query Collection {
@@ -167,26 +163,21 @@ describe('ShortUrl', () => {
   });
 
   it('should make a single db record for an existing given_url', async () => {
-    //first call for getItemByUrl.
-    nock(`http://example-parser.com`)
-      .get(
-        `/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular&enableItemUrlFallback=1`,
-      )
-      .reply(200, {
-        item: {
-          given_url: testUrl,
-          normal_url: testUrl,
-          item_id: '1',
-          resolved_id: '1',
-          domain_metadata: {
-            name: 'domain',
-            logo: 'logo',
-          },
-          authors: [],
-          images: [],
-          videos: [],
+    nockResponseForParser(testUrl, {
+      data: {
+        given_url: testUrl,
+        normal_url: testUrl,
+        item_id: '1',
+        resolved_id: '1',
+        domainMetadata: {
+          name: 'domain',
+          logo: 'logo',
         },
-      });
+        authors: [],
+        images: [],
+        videos: [],
+      },
+    });
 
     const item_by_url = gql`
       query itemByUrl($url: String!) {
@@ -212,28 +203,39 @@ describe('ShortUrl', () => {
   });
   it('fetches all shortUrls in a single batch when resolving item entities', async () => {
     const givenUrls = [testUrl, 'http://another-test.com'];
-    nock(`http://example-parser.com`)
-      .get(
-        `/?url=${encodeURIComponent(givenUrls[0])}&getItem=1&output=regular&enableItemUrlFallback=1`,
-      )
-      .reply(200, {
-        item: {
-          given_url: testUrl,
-          item_id: '1',
-          resolved_id: '1',
+
+    nockResponseForParser(givenUrls[0], {
+      data: {
+        given_url: givenUrls[0],
+        normal_url: givenUrls[0],
+        item_id: '1',
+        resolved_id: '1',
+        domainMetadata: {
+          name: 'domain',
+          logo: 'logo',
         },
-      });
-    nock(`http://example-parser.com`)
-      .get(
-        `/?url=${encodeURIComponent(givenUrls[1])}&getItem=1&output=regular&enableItemUrlFallback=1`,
-      )
-      .reply(200, {
-        item: {
-          given_url: givenUrls[1],
-          item_id: '2',
-          resolved_id: '2',
+        authors: [],
+        images: [],
+        videos: [],
+      },
+    });
+
+    nockResponseForParser(givenUrls[1], {
+      data: {
+        given_url: givenUrls[1],
+        normal_url: givenUrls[1],
+        item_id: '2',
+        resolved_id: '2',
+        domainMetadata: {
+          name: 'domain',
+          logo: 'logo',
         },
-      });
+        authors: [],
+        images: [],
+        videos: [],
+      },
+    });
+
     const shareBatchSpy = jest.spyOn(shareUrl, 'batchGetOrCreateShareUrls');
     const resolveItemQuery = gql`
         query Items {
@@ -257,8 +259,8 @@ describe('ShortUrl', () => {
     expect(res.body.data._entities).toEqual(expected);
     expect(shareBatchSpy).toHaveBeenCalledTimes(1);
     expect(shareBatchSpy.mock.calls[0][0]).toEqual([
-      { itemId: 1, resolvedId: 1, givenUrl: 'https://someurl.com' },
-      { itemId: 2, resolvedId: 2, givenUrl: 'http://another-test.com' },
+      { itemId: 1, resolvedId: 1, givenUrl: givenUrls[0] },
+      { itemId: 2, resolvedId: 2, givenUrl: givenUrls[1] },
     ]);
   });
 
