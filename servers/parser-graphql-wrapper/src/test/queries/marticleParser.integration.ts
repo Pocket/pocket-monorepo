@@ -77,7 +77,7 @@ function makeResponseForParserTextEndpoint(options: {
     parserOptions: {
       images: MediaTypeParam.AS_COMMENTS,
       videos: MediaTypeParam.AS_COMMENTS,
-      article: BoolStringParam.TRUE,
+      noArticle: BoolStringParam.FALSE,
     },
     scope: scope,
     data: { ...data, article: html },

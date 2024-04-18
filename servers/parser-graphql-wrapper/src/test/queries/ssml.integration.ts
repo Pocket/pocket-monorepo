@@ -8,9 +8,14 @@ import { gql } from 'graphql-tag';
 import { IContext } from '../../apollo/context';
 import { Application } from 'express';
 import { nockResponseForParser } from '../utils/parserResponse';
+import { BoolStringParam, MediaTypeParam } from '../../datasources/ParserAPI';
+import {
+  getConnection,
+  getSharedUrlsConnection,
+} from '../../datasources/mysql';
 
 describe('SSML integration ', () => {
-  const testUrl = 'https://someurl.com';
+  const testUrl = 'https://someurl.com/test';
   let app: Application;
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
@@ -29,17 +34,36 @@ describe('SSML integration ', () => {
     await server.stop();
     await getRedis().disconnect();
     cleanAll();
+    await (await getConnection()).destroy();
+    await (await getSharedUrlsConnection()).destroy();
+    jest.restoreAllMocks();
   });
 
   it('should return ssml text for the given url', async () => {
     const testInput =
       '<p>A paragraph with an <b>image</b><p>Another paragraph with some <em>em</em> text</p>';
-    //first call for getItemByUrl.
-    nockResponseForParser(testUrl, { data: { article: testInput } });
+    //first call for itemByUrl.
+    const data = nockResponseForParser(testUrl, {
+      data: {
+        isArticle: 1,
+        title: 'The cool article',
+        domainMetadata: { name: 'domain', logo: '' },
+        datePublished: '2023-03-03 00:00:00',
+      },
+    });
+    // ssml call
+    nockResponseForParser(testUrl, {
+      parserOptions: {
+        noArticle: BoolStringParam.FALSE,
+        videos: MediaTypeParam.DIV_TAG,
+        images: MediaTypeParam.DIV_TAG,
+      },
+      data: { ...data, article: testInput },
+    });
 
     const GET_ITEMS_BY_URL = gql`
-      query getItemByUrl($url: String!) {
-        getItemByUrl(url: $url) {
+      query itemByUrl($url: String!) {
+        itemByUrl(url: $url) {
           ssml
         }
       }
@@ -54,7 +78,7 @@ describe('SSML integration ', () => {
       .send({ query: print(GET_ITEMS_BY_URL), variables });
 
     expect(res.body.data).not.toBeUndefined();
-    const ssml = res.body.data.getItemByUrl.ssml;
+    const ssml = res.body.data.itemByUrl.ssml;
     expect(ssml).toBe(
       "<speak><prosody rate='medium' volume='medium'>The cool article, published by domain, on <say-as interpret-as='date' format='m/d/y'>3/3/2023</say-as></prosody><prosody rate='medium' volume='medium'> A paragraph with an  image  Another paragraph with some  em  text </prosody></speak>",
     );

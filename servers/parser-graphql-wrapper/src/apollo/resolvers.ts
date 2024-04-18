@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/node';
 import { clear } from '../dataLoaders';
 import config from '../config';
 import { MarticleElement, parseArticle } from '../marticle/marticleParser';
@@ -8,7 +7,6 @@ import {
   givenUrlFromShareCode,
 } from '../shortUrl/shortUrl';
 import { SSMLModel } from '../models/SSMLModel';
-import { serverLogger } from '@pocket-tools/ts-logger';
 import { fallbackPage } from '../readerView';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
 import { deriveItemSummary, itemSummaryFromUrl } from '../preview';
@@ -32,38 +30,10 @@ export const resolvers: Resolvers = {
       }
 
       if ('givenUrl' in item) {
-        try {
-          return await dataSources.parserAPI.getItemData(item.givenUrl);
-        } catch (error) {
-          const errorMessage =
-            '__resolveReference: Error getting item by givenUrl';
-          const errorData = {
-            itemId: item.givenUrl,
-            info: info,
-          };
-          serverLogger.error(errorMessage, { error: error, data: errorData });
-          Sentry.addBreadcrumb({ message: errorMessage, data: errorData });
-          Sentry.captureException(error);
-          throw error;
-        }
+        return dataSources.parserAPI.getItemData(item.givenUrl);
       } else if ('itemId' in item) {
-        try {
-          const itemLoaderType = await dataLoaders.itemIdLoader.load(
-            item.itemId,
-          );
-          return await dataSources.parserAPI.getItemData(itemLoaderType.url);
-        } catch (error) {
-          const errorMessage =
-            '__resolveReference: Error getting item by itemId';
-          const errorData = {
-            itemId: item.itemId,
-            info: info,
-          };
-          serverLogger.error(errorMessage, { error: error, data: errorData });
-          Sentry.addBreadcrumb({ message: errorMessage, data: errorData });
-          Sentry.captureException(error);
-          throw error;
-        }
+        const itemLoaderType = await dataLoaders.itemIdLoader.load(item.itemId);
+        return dataSources.parserAPI.getItemData(itemLoaderType.url);
       }
     },
     article: async (parent, args, { dataSources }, info) => {
@@ -75,6 +45,7 @@ export const resolvers: Resolvers = {
       const item = await dataSources.parserAPI.getItemData(parent.givenUrl, {
         videos: MediaTypeParam.DIV_TAG,
         images: MediaTypeParam.DIV_TAG,
+        noArticle: BoolStringParam.FALSE,
       });
 
       return item.article || null;
@@ -90,7 +61,7 @@ export const resolvers: Resolvers = {
       const article = await dataSources.parserAPI.getItemData(parent.givenUrl, {
         videos: MediaTypeParam.AS_COMMENTS,
         images: MediaTypeParam.AS_COMMENTS,
-        article: BoolStringParam.TRUE,
+        noArticle: BoolStringParam.FALSE,
       });
       // Only extract Marticle data from article string if Parser
       // extracted valid data (isArticle or isVideo is 1)
@@ -106,10 +77,10 @@ export const resolvers: Resolvers = {
           await dataSources.parserAPI.getItemData(parent.givenUrl, {
             videos: MediaTypeParam.DIV_TAG,
             images: MediaTypeParam.DIV_TAG,
+            noArticle: BoolStringParam.FALSE,
           })
         ).article;
       }
-
       if (!parent.article) {
         return null;
       }

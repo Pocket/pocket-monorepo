@@ -8,6 +8,7 @@ import {
   getSharedUrlsResolverRepo,
 } from '../datasources/mysql';
 import { ParserAPI } from '../datasources/ParserAPI';
+import { getRedisCache } from '../cache';
 
 /**
  * Change this to `extends BaseContext` once LegacyDataSourcesPlugin
@@ -66,7 +67,7 @@ export class ContextManager implements IContext {
     return new ContextManager(
       dataloaders,
       {
-        parserAPI: new ParserAPI(),
+        parserAPI: new ParserAPI({ cache: getRedisCache() }),
       },
       {
         itemResolver,
