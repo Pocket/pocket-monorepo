@@ -20,35 +20,26 @@ export type ParserResponse = {
   content_length: number;
   encoding: string;
   time_first_parsed: string;
-  innerdomain_redirect: number;
+  innerdomain_redirect: string;
   responseCode: string;
   excerpt: string;
   domainMetadata?: {
     name: string;
     logo: string;
-    greyscale_logo: string;
+    greyscale_logo?: string;
   };
-  authors: Record<
-    string,
-    {
-      author_id: string;
-      name: string;
-      url: string;
-    }
-  >;
-  images: Record<
-    string,
-    {
-      item_id: string;
-      image_id: string;
-      src: string;
-      width: string;
-      height: string;
-      credit: string;
-      caption: string;
-    }
-  >;
-  videos: string;
+  authors:
+    | Record<
+        string,
+        {
+          author_id: string;
+          name: string;
+          url: string;
+        }
+      >
+    | undefined[];
+  images: ParserImageRecord | null | undefined[];
+  videos: ParserVideoRecord | null | undefined[];
   wordCount: number;
   isArticle: number;
   isVideo: number;
@@ -57,5 +48,33 @@ export type ParserResponse = {
   requiresLogin: number;
   lang: string;
   topImageUrl: string;
-  article: string;
+  article?: string;
+};
+
+export type ParserImageRecord = {
+  [key: string]: ImageRecord;
+};
+interface ImageRecord {
+  [key: string]: any;
+  src: string;
+  item_id: string;
+  image_id: string;
+  width: string;
+  height: string;
+  credit: string;
+  caption: string;
+}
+
+export type ParserVideoRecord = {
+  [key: string]: VideoRecord;
+};
+interface VideoRecord {
+  [key: string]: any;
+  src: string;
+  item_id: string;
+  video_id: string;
+  width: string;
+  height: string;
+  credit: string;
+  caption: string;
 };

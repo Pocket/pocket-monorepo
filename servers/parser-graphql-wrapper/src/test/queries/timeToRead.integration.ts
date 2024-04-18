@@ -1,11 +1,11 @@
 import { ApolloServer } from '@apollo/server';
 import { IContext } from '../../apollo/context';
 import { startServer } from '../../apollo/server';
-import nock from 'nock';
 import { print } from 'graphql/index';
 import { gql } from 'graphql-tag';
 import request from 'supertest';
 import { Application } from 'express';
+import { nockResponseForParser } from '../utils/parserResponse';
 
 describe('timeToRead', () => {
   const testUrl = 'https://someurl.com';
@@ -39,14 +39,7 @@ describe('timeToRead', () => {
   });
 
   it('should return timeToRead for a CorpusItem when parser item has time_to_read property', async () => {
-    // mock the Parser call to return a parser item with `time_to_read` as 5
-    nock(`http://example-parser.com`)
-      .get(
-        `/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular&enableItemUrlFallback=1`,
-      )
-      .reply(200, {
-        item: parserItem,
-      });
+    nockResponseForParser(testUrl, { data: parserItem });
 
     const corpus_item_query_ = gql`
       query CorpusItem {
@@ -74,14 +67,7 @@ describe('timeToRead', () => {
   it('should return null timeToRead for a CorpusItem when parser item does not have a time_to_read property', async () => {
     parserItem = { ...parserItem, time_to_read: null };
 
-    // mock the Parser call to return a parser item with `time_to_read` as null
-    nock(`http://example-parser.com`)
-      .get(
-        `/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular&enableItemUrlFallback=1`,
-      )
-      .reply(200, {
-        item: parserItem,
-      });
+    nockResponseForParser(testUrl, { data: parserItem });
 
     const corpus_item_query_ = gql`
       query CorpusItem {

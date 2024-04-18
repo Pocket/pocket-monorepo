@@ -17,6 +17,7 @@ import {
 import config from '../../config';
 import { Application } from 'express';
 import { shareUrl } from '../../shortUrl/shortUrl';
+import { nockResponseForParser } from '../utils/parserResponse';
 
 describe('ShortUrl', () => {
   const testUrl = 'https://someurl.com';
@@ -51,26 +52,22 @@ describe('ShortUrl', () => {
     await itemRepo.clear();
     await sharedRepo.clear();
     await sharedRepo.query('ALTER TABLE share_urls AUTO_INCREMENT = 1');
-    //first call for getItemByUrl.
-    nock(`http://example-parser.com`)
-      .get(
-        `/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular&enableItemUrlFallback=1`,
-      )
-      .reply(200, {
-        item: {
-          given_url: testUrl,
-          normal_url: testUrl,
-          item_id: '1',
-          resolved_id: '1',
-          domain_metadata: {
-            name: 'domain',
-            logo: 'logo',
-          },
-          authors: [],
-          images: [],
-          videos: [],
+
+    nockResponseForParser(testUrl, {
+      data: {
+        given_url: testUrl,
+        normal_url: testUrl,
+        item_id: '1',
+        resolved_id: '1',
+        domainMetadata: {
+          name: 'domain',
+          logo: 'logo',
         },
-      });
+        authors: [],
+        images: [],
+        videos: [],
+      },
+    });
   });
 
   it('should return shortUrl for a givenUrl (that is not a shortUrl) for getItemByUrl', async () => {

@@ -11,6 +11,7 @@ import {
   normalizeDate,
   parseVideoness,
   parseImageness,
+  extractDomainMeta,
 } from './parserApiUtils';
 import { ListenModel } from '../models/ListenModel';
 import { ParserResponse } from './ParserAPITypes';
@@ -33,6 +34,8 @@ export type ParserAPIOptions = {
   images: MediaTypeParam;
   videos: MediaTypeParam;
   article: BoolStringParam;
+  createIfNone: BoolStringParam;
+  output: 'regular';
 };
 
 /**
@@ -40,28 +43,25 @@ export type ParserAPIOptions = {
  * REST API.
  */
 export class ParserAPI extends RESTDataSource {
-  public static readonly baseUrl = config.parser.baseEndpoint;
+  override baseURL = config.parser.baseEndpoint;
 
-  private readonly DEFAULT_PARAMS = {
-    createIfNone: '1',
-    output: 'regular',
-  };
-
-  private readonly DEFAULT_PARSER_OPTIONS: ParserAPIOptions = {
+  public static readonly DEFAULT_PARSER_OPTIONS: ParserAPIOptions = {
     refresh: BoolStringParam.FALSE,
     article: BoolStringParam.FALSE,
     images: MediaTypeParam.AS_COMMENTS,
     videos: MediaTypeParam.AS_COMMENTS,
+    createIfNone: BoolStringParam.TRUE,
+    output: 'regular',
   };
 
-  constructor() {
-    super({
-      fetch: fetchRetry(global.fetch, {
-        retries: config.parser.retries,
-        retryDelay: 500,
-      }),
-    });
-  }
+  // constructor() {
+  //   super({
+  //     fetch: fetchRetry(global.fetch, {
+  //       retries: config.parser.retries,
+  //       retryDelay: 500,
+  //     }),
+  //   });
+  // }
 
   /**
    * Gets the baseline Item data from the Pocket parser excluding the article data
@@ -75,19 +75,16 @@ export class ParserAPI extends RESTDataSource {
   ): Promise<Item> {
     url = url.trim();
     const queryParams = new URLSearchParams({
-      ...this.DEFAULT_PARSER_OPTIONS,
+      ...ParserAPI.DEFAULT_PARSER_OPTIONS,
       ...options,
       url,
     });
     return this.parserResponseToItem(
-      await this.get<ParserResponse>(
-        `${config.parser.dataPath}/${encodeURIComponent(url)}`,
-        {
-          params: queryParams,
-          cacheKey: md5(`${url}${queryParams.toString()}`),
-          signal: AbortSignal.timeout(config.parser.timeout * 1000),
-        },
-      ),
+      await this.get<ParserResponse>(config.parser.dataPath, {
+        params: queryParams,
+        cacheKey: md5(`${url}${queryParams.toString()}`),
+        signal: AbortSignal.timeout(config.parser.timeout * 1000),
+      }),
     );
   }
 
@@ -129,13 +126,7 @@ export class ParserAPI extends RESTDataSource {
         : null,
       mimeType: parserResponse.mime_type,
       encoding: parserResponse.encoding,
-      domainMetadata: parserResponse.domainMetadata
-        ? {
-            name: parserResponse.domainMetadata.name,
-            logo: parserResponse.domainMetadata.logo,
-            logoGreyscale: parserResponse.domainMetadata.greyscale_logo,
-          }
-        : null,
+      domainMetadata: extractDomainMeta(parserResponse),
       language: parserResponse.lang,
       datePublished: normalizeDate(parserResponse.datePublished),
       hasOldDupes: !!parseInt(parserResponse.has_old_dupes),
