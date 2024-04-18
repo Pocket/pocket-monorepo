@@ -57,6 +57,16 @@ describe('toGraphQL', () => {
             },
           },
         },
+        {
+          params: {
+            hasAnnotations: true,
+          },
+          expected: {
+            filter: {
+              isHighlighted: true,
+            },
+          },
+        },
       ])(
         'maps filters appropriately, including combos',
         ({ params, expected }) => {

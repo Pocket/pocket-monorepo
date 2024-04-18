@@ -92,6 +92,7 @@ export async function processV3call(
     state: 'unread',
     taglist: data.taglist,
     forcetaglist: data.forcetaglist,
+    hasAnnotations: data.hasAnnotations,
   };
 
   // Otherwise call SavedItems list api

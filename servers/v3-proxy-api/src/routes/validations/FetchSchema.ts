@@ -16,6 +16,7 @@ export type V3FetchParams = {
   taglist: boolean;
   forcetaglist: boolean;
   since?: number;
+  hasAnnotations?: boolean;
 };
 
 /**
@@ -143,5 +144,14 @@ export const V3FetchSchema: Schema = {
       },
     },
     toInt: true,
+  },
+  hasAnnotations: {
+    optional: true,
+    isIn: {
+      options: [['0', '1']],
+    },
+    customSanitizer: {
+      options: (value) => (value === '1' ? true : false),
+    },
   },
 };

@@ -21,6 +21,7 @@ export type V3GetParams = {
   annotations: boolean;
   taglist: boolean;
   forcetaglist: boolean;
+  hasAnnotations?: boolean;
 };
 
 /**
@@ -196,6 +197,15 @@ export const V3GetSchema: Schema = {
     default: {
       options: '0',
     },
+    isIn: {
+      options: [['0', '1']],
+    },
+    customSanitizer: {
+      options: (value) => (value === '1' ? true : false),
+    },
+  },
+  hasAnnotations: {
+    optional: true,
     isIn: {
       options: [['0', '1']],
     },
