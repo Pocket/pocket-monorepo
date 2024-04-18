@@ -25,8 +25,13 @@ describe('v3Fetch', () => {
   };
   beforeAll(async () => {
     ({ app, server } = await startServer(0));
+    jest.useFakeTimers({
+      now: 1706732550000,
+      doNotFake: ['setImmediate'],
+    });
   });
   afterAll(async () => {
+    jest.useRealTimers();
     server.close();
   });
   afterEach(() => {

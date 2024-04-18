@@ -67,7 +67,7 @@ function getStatusResponse(
       status: 0,
       error: 1,
       complete: 1,
-      since: 0,
+      since: Math.round(new Date().getTime() / 1000),
     };
   }
 
@@ -89,10 +89,7 @@ function getStatusResponse(
     status: response.user.savedItemsByOffset.totalCount > 0 ? 1 : 2,
     error: null,
     complete: 1,
-    since:
-      latestItem === null || latestItem._updatedAt === null
-        ? 0
-        : latestItem._updatedAt,
+    since: Math.round(new Date().getTime() / 1000),
   };
 }
 
@@ -104,7 +101,7 @@ function searchStatusResponse(
       status: 0,
       error: 1,
       complete: 1,
-      since: 0,
+      since: Math.round(new Date().getTime() / 1000),
     };
   }
 
@@ -126,12 +123,7 @@ function searchStatusResponse(
     status: response.user.searchSavedItemsByOffset.totalCount > 0 ? 1 : 2,
     error: null,
     complete: 1,
-    since:
-      latestItem === null ||
-      latestItem.savedItem === null ||
-      latestItem.savedItem._updatedAt === null
-        ? 0
-        : latestItem.savedItem._updatedAt,
+    since: Math.round(new Date().getTime() / 1000),
   };
 }
 
