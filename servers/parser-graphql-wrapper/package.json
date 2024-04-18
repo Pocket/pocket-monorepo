@@ -46,6 +46,7 @@
     "winston": "3.13.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "8.4.1",
     "@graphql-codegen/cli": "5.0.2",
     "@graphql-codegen/typescript": "4.0.6",
     "@graphql-codegen/typescript-resolvers": "^4.0.6",

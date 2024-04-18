@@ -90,14 +90,17 @@ export const resolvers: Resolvers = {
       });
       // Only extract Marticle data from article string if Parser
       // extracted valid data (isArticle or isVideo is 1)
-      return article.isArticle || article.hasVideo == Videoness.HasVideos
+      return article.isArticle || article.hasVideo == Videoness.IsVideo
         ? parseArticle(article)
         : ([] as MarticleElement[]);
     },
     ssml: async (parent, args, { dataSources }, info) => {
       if (!parent.article && parent.isArticle) {
         parent.article = (
-          await dataSources.parserAPI.getItemData(parent.givenUrl)
+          await dataSources.parserAPI.getItemData(parent.givenUrl, {
+            videos: MediaTypeParam.DIV_TAG,
+            images: MediaTypeParam.DIV_TAG,
+          })
         ).article;
       }
 
@@ -162,10 +165,6 @@ export const resolvers: Resolvers = {
         return dataSources.parserAPI.getItemData(url);
       }
     },
-    //deprecated
-    getItemByItemId: async (_source, { id }, { repositories }) => {
-      return getItemById(id, await repositories.itemResolver);
-    },
     itemByUrl: async (_source, { url }, { repositories, dataSources }) => {
       // If it's a special short share URL, use alternative resolution path
       const shortCode = extractCodeFromShortUrl(url);
@@ -179,11 +178,8 @@ export const resolvers: Resolvers = {
         return item;
       } else {
         // Regular URL resolution
-        return dataSources.parserAPI.getItemData(url);
+        return await dataSources.parserAPI.getItemData(url);
       }
-    },
-    itemByItemId: async (_source, { id }, { repositories, dataSources }) => {
-      return getItemById(id, await repositories.itemResolver);
     },
     readerSlug: async (_, { slug }: { slug: string }, context) => {
       const fallbackData = await fallbackPage(slug, context);

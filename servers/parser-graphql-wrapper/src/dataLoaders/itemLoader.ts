@@ -82,23 +82,24 @@ export const batchGetItemUrlsByItemIds = async (
  */
 export const batchGetItemsByItemUrls = async (
   items: ItemLoaderType[],
+  parserApi: ParserAPI,
 ): Promise<any> => {
   const resolvedItems = items.map((item) => {
     if (!item) {
       return null;
     }
 
-    return getItemByUrl(item.url, item.itemId).catch((error) => {
-      const errorMessage =
-        'batchGetItemsByItemUrls: Could not get item by URL.';
-      const errorData = {
-        item: item,
-      };
-      serverLogger.error(errorMessage, { error: error, data: errorData });
-      Sentry.addBreadcrumb({ message: errorMessage, data: errorData });
-      Sentry.captureException(error);
-      return null;
-    });
+    // return getItemByUrl(item.url, item.itemId).catch((error) => {
+    //   const errorMessage =
+    //     'batchGetItemsByItemUrls: Could not get item by URL.';
+    //   const errorData = {
+    //     item: item,
+    //   };
+    //   serverLogger.error(errorMessage, { error: error, data: errorData });
+    //   Sentry.addBreadcrumb({ message: errorMessage, data: errorData });
+    //   Sentry.captureException(error);
+    //   return null;
+    // });
   });
 
   return await Promise.all(resolvedItems);
@@ -112,25 +113,20 @@ export const batchGetItemsByItemUrls = async (
 export const batchGetItems = async (
   values: ItemLoaderType[],
   params: {
-    key: 'itemId' | 'givenUrl';
+    key: 'itemId';
     getValueFn: (item: Item) => string;
     cache: DataLoaderCacheInterface;
   },
+  parserApi: ParserAPI,
 ): Promise<Item[]> => {
-  let callback;
-
-  if (params.key === 'itemId') {
-    callback = async (values) => {
-      values = await batchGetItemUrlsByItemIds(values);
-      return batchGetItemsByItemUrls(values);
-    };
-  } else {
-    callback = batchGetItemsByItemUrls;
-  }
+  const callback = async (values) => {
+    values = await batchGetItemUrlsByItemIds(values);
+    return batchGetItemsByItemUrls(values, parserApi);
+  };
 
   return await batchCacheFn<ItemLoaderType, Item>({
     values: values,
-    valueKeyFn: (value) => (params.key === 'itemId' ? value.itemId : value.url),
+    valueKeyFn: (value) => value.itemId,
     callback,
     cache: params.cache,
     returnTypeKeyFn: params.getValueFn,
@@ -144,29 +140,13 @@ export const batchGetItems = async (
  */
 export const batchGetItemsByIds = async (
   itemIds: string[],
+  parserApi: ParserAPI,
 ): Promise<Item[]> => {
   return await batchGetItems(
     itemIds.map((id) => ({ itemId: id })),
     {
       key: 'itemId',
       getValueFn: (item) => item.itemId,
-      cache: getRedisCache(),
-    },
-  );
-};
-
-/**
- * Batch get items by urls
- * @param itemUrls
- */
-export const batchGetItemsByUrls = async (
-  itemUrls: string[],
-): Promise<Item[]> => {
-  return await batchGetItems(
-    itemUrls.map((url) => ({ url })),
-    {
-      key: 'givenUrl',
-      getValueFn: (item) => item.givenUrl,
       cache: getRedisCache(),
     },
   );
@@ -211,8 +191,3 @@ const createLoader = <T, K>(batchLoadFn: DataLoader.BatchLoadFn<T, K>) => {
  * Item itemId loader
  */
 export const itemIdLoader = createLoader(batchGetItemsByIds);
-
-/**
- * Item givenUrl loader
- */
-export const itemUrlLoader = createLoader(batchGetItemsByUrls);

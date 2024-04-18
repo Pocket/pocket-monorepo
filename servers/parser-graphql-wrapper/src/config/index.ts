@@ -59,7 +59,7 @@ export default {
   },
   parser: {
     baseEndpoint:
-      process.env.PARSER_BASE_ENDPOINT || 'http://example-parser.com/',
+      process.env.PARSER_BASE_ENDPOINT || 'http://example-parser.com',
     dataPath: process.env.PARSER_DATA_PATH || '/wrapper',
     retries: 3,
     timeout: 5,

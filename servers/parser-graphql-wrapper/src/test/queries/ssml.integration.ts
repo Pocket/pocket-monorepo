@@ -1,55 +1,13 @@
 import nock, { cleanAll } from 'nock';
 import { getRedis } from '../../cache';
 import { startServer } from '../../apollo/server';
-import { MediaTypeParam, ParserAPI } from '../../datasources/ParserAPI';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import { print } from 'graphql';
 import { gql } from 'graphql-tag';
 import { IContext } from '../../apollo/context';
 import { Application } from 'express';
-
-function makeResponseForParserTextEndpoint(testUrl: string, html: string) {
-  const { query } = ParserAPI.buildQueryString({
-    ...ParserAPI.defaultParams,
-    url: testUrl,
-    images: MediaTypeParam.DIV_TAG,
-    videos: MediaTypeParam.DIV_TAG,
-  });
-
-  return nock('http://example-parser.com', {
-    encodedQueryParams: false,
-  })
-    .get(`/?${query}`)
-    .reply(200, {
-      article: html,
-      //needs item, otherwise the endpoint throws error
-      item: {
-        given_url: testUrl,
-      },
-      images: {
-        1: {
-          image_id: '1',
-          width: 200,
-          height: 150,
-          src: 'https://imagine.a-cool.image.jpg',
-          caption: 'I told you this is a cool image',
-          credit: 'give it all to kelvin',
-        },
-      },
-      videos: {
-        1: {
-          video_id: '1',
-          src: 'https://imagine.a-cool.video',
-          width: '200',
-          height: '150',
-          vid: 'wubbalubbadubdub',
-          length: '10',
-          type: '1',
-        },
-      },
-    });
-}
+import { nockResponseForParser } from '../utils/parserResponse';
 
 describe('SSML integration ', () => {
   const testUrl = 'https://someurl.com';
@@ -65,34 +23,6 @@ describe('SSML integration ', () => {
   beforeEach(() => {
     // Flush the redis cache before each test
     getRedis().clear();
-
-    //first call for getItemByUrl.
-    nock('http://example-parser.com')
-      .get('/')
-      .query({
-        url: testUrl,
-        getItem: '1',
-        output: 'regular',
-        enableItemUrlFallback: '1',
-      })
-      .reply(200, {
-        item: {
-          title: 'The cool article',
-          is_article: '1',
-          date_published: '2023-04-26 07:30:00',
-          given_url: testUrl,
-          normal_url: testUrl,
-          item_id: '1',
-          resolved_id: '1',
-          domain_metadata: {
-            name: 'domain',
-            logo: 'logo',
-          },
-          authors: [],
-          images: [],
-          videos: [],
-        },
-      });
   });
 
   afterAll(async () => {
@@ -104,7 +34,8 @@ describe('SSML integration ', () => {
   it('should return ssml text for the given url', async () => {
     const testInput =
       '<p>A paragraph with an <b>image</b><p>Another paragraph with some <em>em</em> text</p>';
-    makeResponseForParserTextEndpoint(testUrl, testInput);
+    //first call for getItemByUrl.
+    nockResponseForParser(testUrl, { data: { article: testInput } });
 
     const GET_ITEMS_BY_URL = gql`
       query getItemByUrl($url: String!) {

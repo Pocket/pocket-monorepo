@@ -18,6 +18,7 @@ import * as ogs from 'open-graph-scraper';
 import { mockUnleash } from '@pocket-tools/feature-flags-client';
 import * as unleash from '../../unleash';
 import config from '../../config';
+import { nockResponseForParser } from '../utils/parserResponse';
 
 jest.mock('open-graph-scraper');
 
@@ -159,29 +160,23 @@ describe('preview', () => {
         });
       }
 
-      nock('http://example-parser.com')
-        .get('/')
-        .query({
-          url: testUrl,
-          getItem: '1',
-          output: 'regular',
-          enableItemUrlFallback: '1',
-        })
-        .reply(200, {
-          item: {
-            item_id: parserItemId,
-            given_url: testUrl,
-            normal_url: testUrl,
-            title: 'parser test',
-            authors: [],
-            images: [],
-            videos: [],
-            resolved_id: '16822',
-            // override the default
-            ...parserData,
-          },
-        });
-
+      nockResponseForParser(testUrl, {
+        data: {
+          item_id: parserItemId,
+          given_url: testUrl,
+          normal_url: testUrl,
+          title: 'parser test',
+          authors: [],
+          images: [],
+          videos: [],
+          resolved_id: '16822',
+          excerpt: null,
+          domainMetadata: null,
+          topImageUrl: null,
+          // override the default
+          ...parserData,
+        },
+      });
       const variables = {
         url: testUrl,
       };

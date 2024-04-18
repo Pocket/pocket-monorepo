@@ -60,7 +60,6 @@ export class ContextManager implements IContext {
   }): Promise<ContextManager> {
     const dataloaders = {
       itemIdLoader: itemIdLoader,
-      itemUrlLoader: itemUrlLoader,
       shortUrlLoader: ShortUrlLoader(),
     };
     const itemResolver = await getItemResolverRepository();
