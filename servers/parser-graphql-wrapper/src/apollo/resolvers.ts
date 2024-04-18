@@ -52,7 +52,7 @@ export const resolvers: Resolvers = {
         }
       } else if ('itemId' in item) {
         try {
-          return await dataLoaders.itemUrlLoader.load(item.itemId);
+          return await dataLoaders.itemIdLoader.load(item.itemId);
         } catch (error) {
           const errorMessage =
             '__resolveReference: Error getting item by itemId';
