@@ -962,7 +962,7 @@ export type Mutation = {
    * Create a Pocket Share for a provided target URL, optionally
    * with additional share context.
    */
-  createShareLink?: Maybe<Scalars['URL']['output']>;
+  createShareLink?: Maybe<PocketShare>;
   /**
    * Creates a Shareable List. Takes in an optional listItemData parameter to create a ShareableListItem
    * along with a ShareableList.
