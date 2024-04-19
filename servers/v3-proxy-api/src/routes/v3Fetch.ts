@@ -72,6 +72,7 @@ export async function processV3call(
   const options = {
     withAnnotations: data.annotations,
     withTagsList: data.taglist || data.forcetaglist,
+    withAccountData: false,
   };
   // This time is only set if taglist is requested and 'since' is provided;
   // 'forcetaglist' overrides the 'since' check
@@ -93,6 +94,8 @@ export async function processV3call(
     taglist: data.taglist,
     forcetaglist: data.forcetaglist,
     hasAnnotations: data.hasAnnotations,
+    account: false,
+    forceaccount: false,
     updatedBefore: data.updatedBefore,
   };
 

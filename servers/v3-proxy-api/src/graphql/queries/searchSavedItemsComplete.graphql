@@ -5,9 +5,11 @@ query searchSavedItemsComplete(
   $sort: SearchSortInput
   $withAnnotations: Boolean!
   $withTagsList: Boolean!
+  $withAccountData: Boolean!
   $tagsListSince: ISOString
 ) {
   user {
+    ...AccountFields @include(if: $withAccountData)
     tagsList(syncSince: $tagsListSince) @include(if: $withTagsList)
     searchSavedItemsByOffset(
       term: $term

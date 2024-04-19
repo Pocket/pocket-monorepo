@@ -5,7 +5,7 @@ import {
   SearchSavedItemsSimpleQuery,
   VideoType,
   Videoness,
-} from '../../generated/graphql/types';
+} from '../../generated/graphql';
 import {
   GetSearchResponseComplete,
   GetSearchResponseSimple,

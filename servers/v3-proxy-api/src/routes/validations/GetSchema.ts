@@ -22,6 +22,8 @@ export type V3GetParams = {
   taglist: boolean;
   forcetaglist: boolean;
   hasAnnotations?: boolean;
+  account: boolean;
+  forceaccount: boolean;
   updatedBefore?: number;
 };
 
@@ -218,6 +220,28 @@ export const V3GetSchema: Schema = {
   },
   hasAnnotations: {
     optional: true,
+    isIn: {
+      options: [['0', '1']],
+    },
+    customSanitizer: {
+      options: (value) => (value === '1' ? true : false),
+    },
+  },
+  account: {
+    default: {
+      options: '0',
+    },
+    isIn: {
+      options: [['0', '1']],
+    },
+    customSanitizer: {
+      options: (value) => (value === '1' ? true : false),
+    },
+  },
+  forceaccount: {
+    default: {
+      options: '0',
+    },
     isIn: {
       options: [['0', '1']],
     },
