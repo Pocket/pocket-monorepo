@@ -15,7 +15,6 @@ export const premiumAccount = {
     last_name: 'Țepeș',
     premium_status: '1',
     is_fxa: 'true',
-    // TODO POCKET-9982
     aliases: {
       'vlad@bran.castle': {
         email: 'vlad@bran.castle',
@@ -43,7 +42,7 @@ export const premiumAccount = {
       'ad_free',
     ],
     premium_alltime_status: '1',
-    premium_on_trial: '0', // TODO POCKET-9981 '1',
+    premium_on_trial: '0',
   },
 };
 
@@ -57,7 +56,6 @@ export const freeAccount = {
     last_name: '',
     premium_status: '0',
     is_fxa: 'true',
-    // TODO
     aliases: {
       'adrian@bran.castle': {
         email: 'adrian@bran.castle',

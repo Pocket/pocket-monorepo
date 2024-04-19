@@ -124,7 +124,6 @@ function AccountTransformer(
       last_name: lastName,
       premium_status: accountData.isPremium ? '1' : '0',
       is_fxa: accountData.isFxa ? 'true' : 'false',
-      // TODO - Fetch all aliases POCKET-9882
       aliases: {
         [accountData.email]: {
           email: accountData.email,
@@ -149,7 +148,7 @@ function AccountTransformer(
       premium_alltime_status: AlltimeStatusTransformer(
         accountData.premiumStatus,
       ),
-      premium_on_trial: '0', // TODO POCKET-9981 - don't have this value
+      premium_on_trial: '0', // unused
       ...(!accountData.isPremium && { annotations_per_article_limit: 3 }), // Hardcode alert
     },
   };
