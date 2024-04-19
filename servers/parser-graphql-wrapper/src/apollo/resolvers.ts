@@ -1,4 +1,3 @@
-import { clear } from '../dataLoaders';
 import config from '../config';
 import { MarticleElement, parseArticle } from '../marticle/marticleParser';
 import { CacheScope } from '@apollo/cache-control-types';
@@ -42,11 +41,17 @@ export const resolvers: Resolvers = {
         // (e.g. via refreshArticle mutation), otherwise load the article
         return parent.article;
       }
-      const item = await dataSources.parserAPI.getItemData(parent.givenUrl, {
-        videos: MediaTypeParam.DIV_TAG,
-        images: MediaTypeParam.DIV_TAG,
-        noArticle: BoolStringParam.FALSE,
-      });
+      // If the field was requested via refreshArticle we need to clear the cache before we request data
+      const clearCache = info.operation.name.value == 'refreshArticle';
+      const item = await dataSources.parserAPI.getItemData(
+        parent.givenUrl,
+        {
+          videos: MediaTypeParam.DIV_TAG,
+          images: MediaTypeParam.DIV_TAG,
+          noArticle: BoolStringParam.FALSE,
+        },
+        clearCache,
+      );
 
       return item.article || null;
     },
@@ -58,11 +63,17 @@ export const resolvers: Resolvers = {
       //       // (e.g. via refreshArticle mutation), otherwise load the article
       //       const article =
       //         parent.parsedArticle ??
-      const article = await dataSources.parserAPI.getItemData(parent.givenUrl, {
-        videos: MediaTypeParam.AS_COMMENTS,
-        images: MediaTypeParam.AS_COMMENTS,
-        noArticle: BoolStringParam.FALSE,
-      });
+      // If the field was requested via refreshArticle we need to clear the cache before we request data
+      const clearCache = info.operation.name.value == 'refreshArticle';
+      const article = await dataSources.parserAPI.getItemData(
+        parent.givenUrl,
+        {
+          videos: MediaTypeParam.AS_COMMENTS,
+          images: MediaTypeParam.AS_COMMENTS,
+          noArticle: BoolStringParam.FALSE,
+        },
+        clearCache,
+      );
       // Only extract Marticle data from article string if Parser
       // extracted valid data (isArticle or isVideo is 1)
       return article.isArticle ||
@@ -73,12 +84,18 @@ export const resolvers: Resolvers = {
     },
     ssml: async (parent, args, { dataSources }, info) => {
       if (!parent.article && parent.isArticle) {
+        // If the field was requested via refreshArticle we need to clear the cache before we request data
+        const clearCache = info.operation.name.value == 'refreshArticle';
         parent.article = (
-          await dataSources.parserAPI.getItemData(parent.givenUrl, {
-            videos: MediaTypeParam.DIV_TAG,
-            images: MediaTypeParam.DIV_TAG,
-            noArticle: BoolStringParam.FALSE,
-          })
+          await dataSources.parserAPI.getItemData(
+            parent.givenUrl,
+            {
+              videos: MediaTypeParam.DIV_TAG,
+              images: MediaTypeParam.DIV_TAG,
+              noArticle: BoolStringParam.FALSE,
+            },
+            clearCache,
+          )
         ).article;
       }
       if (!parent.article) {
@@ -218,16 +235,13 @@ export const resolvers: Resolvers = {
       { dataSources },
       info,
     ) => {
-      const item = await dataSources.parserAPI.getItemData(url, {
-        refresh: BoolStringParam.TRUE,
-      });
-      // Clear our dataloader cache
-      clear({
-        itemId: item.itemId,
-        givenUrl: item.givenUrl,
-        resolvedUrl: item.resolvedUrl,
-        resolvedItemId: item.resolvedId,
-      });
+      const item = await dataSources.parserAPI.getItemData(
+        url,
+        {
+          refresh: BoolStringParam.TRUE,
+        },
+        true,
+      );
 
       return item;
     },

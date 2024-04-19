@@ -35,7 +35,7 @@ function makeResponseForParserTextEndpoint(options: {
 
   const itemId = faker.number.bigInt().toString();
   // first request will not ask the parser for article data
-  const data = nockResponseForParser(url, {
+  const itemMock = nockResponseForParser(url, {
     parserOptions: {
       images: MediaTypeParam.DIV_TAG,
       videos: MediaTypeParam.DIV_TAG,
@@ -80,7 +80,7 @@ function makeResponseForParserTextEndpoint(options: {
       noArticle: BoolStringParam.FALSE,
     },
     scope: scope,
-    data: { ...data, article: html },
+    data: { ...itemMock.data, article: html },
   });
 }
 

@@ -25,7 +25,7 @@ export type ParserResponse = {
   excerpt: string;
   domainMetadata?: {
     name: string;
-    logo: string;
+    logo?: string;
     greyscale_logo?: string;
   };
   authors:

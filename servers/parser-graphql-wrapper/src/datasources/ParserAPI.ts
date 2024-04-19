@@ -1,6 +1,6 @@
 import { URLSearchParams } from 'url';
 import config from '../config';
-import { RESTDataSource } from '@apollo/datasource-rest';
+import { DataSourceConfig, RESTDataSource } from '@apollo/datasource-rest';
 import md5 from 'md5';
 import { Item } from '../__generated__/resolvers-types';
 import { IntMask } from '@pocket-tools/int-mask';
@@ -14,6 +14,10 @@ import {
   extractDomainMeta,
 } from './parserApiUtils';
 import { ListenModel } from '../models/ListenModel';
+import type {
+  KeyValueCache,
+  KeyValueCacheSetOptions,
+} from '@apollo/utils.keyvaluecache';
 import { ParserResponse } from './ParserAPITypes';
 
 export enum MediaTypeParam {
@@ -37,12 +41,39 @@ export type ParserAPIOptions = {
   output: 'regular';
 };
 
+export type ParserAPIQueryParams = {
+  queryParams: URLSearchParams;
+  cacheKey: string;
+};
+
 /**
  * A DataSource for retrieving article data from the Parser
  * REST API.
  */
 export class ParserAPI extends RESTDataSource {
   override baseURL = config.parser.baseEndpoint;
+
+  public static generateQueryParams(
+    url: string,
+    options?: Partial<ParserAPIOptions>,
+  ): ParserAPIQueryParams {
+    const queryParams = new URLSearchParams({
+      ...ParserAPI.DEFAULT_PARSER_OPTIONS,
+      ...options,
+      url,
+    });
+
+    const cachedParams = new URLSearchParams({
+      ...ParserAPI.DEFAULT_PARSER_OPTIONS,
+      ...options,
+      url,
+      // delete the refresh param when making our cache key its not important when deciding which cached content to pull out,
+      // and weould cause cache misses if a request comes in after we refreshed content
+      refresh: undefined,
+    });
+
+    return { queryParams, cacheKey: md5(`${url}${cachedParams.toString()}`) };
+  }
 
   public static readonly DEFAULT_PARSER_OPTIONS: ParserAPIOptions = {
     refresh: BoolStringParam.FALSE,
@@ -53,14 +84,23 @@ export class ParserAPI extends RESTDataSource {
     output: 'regular',
   };
 
-  // constructor() {
-  //   super({
-  //     fetch: fetchRetry(global.fetch, {
-  //       retries: config.parser.retries,
-  //       retryDelay: 500,
-  //     }),
-  //   });
-  // }
+  private cache: KeyValueCache<string, KeyValueCacheSetOptions>;
+
+  constructor(datasourceConfig?: DataSourceConfig) {
+    super(datasourceConfig);
+    this.cache = datasourceConfig.cache;
+
+    // super({
+    //   fetch: fetchRetry(global.fetch, {
+    //     retries: config.parser.retries,
+    //     retryDelay: 500,
+    //   }),
+    // });
+  }
+
+  async clearCache(cacheKey: string) {
+    this.cache.delete(`httpcache:${cacheKey}`);
+  }
 
   /**
    * Gets the baseline Item data from the Pocket parser excluding the article data
@@ -71,17 +111,21 @@ export class ParserAPI extends RESTDataSource {
   async getItemData(
     url: string,
     options?: Partial<ParserAPIOptions>,
+    clearCache: boolean = false,
   ): Promise<Item> {
     url = url.trim();
-    const queryParams = new URLSearchParams({
-      ...ParserAPI.DEFAULT_PARSER_OPTIONS,
-      ...options,
+    const { queryParams, cacheKey } = ParserAPI.generateQueryParams(
       url,
-    });
+      options,
+    );
+    if (clearCache) {
+      this.clearCache(cacheKey);
+    }
     const data = await this.get<ParserResponse>(config.parser.dataPath, {
       params: queryParams,
-      cacheKey: md5(`${url}${queryParams.toString()}`),
+      cacheKey: cacheKey,
       signal: AbortSignal.timeout(config.parser.timeout * 1000),
+      cacheOptions: { ttl: 3600 },
     });
     return this.parserResponseToItem(data);
   }

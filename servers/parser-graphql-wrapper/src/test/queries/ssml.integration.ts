@@ -25,9 +25,9 @@ describe('SSML integration ', () => {
     ({ app, server, url: graphQLUrl } = await startServer(0));
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     // Flush the redis cache before each test
-    getRedis().clear();
+    await getRedis().clear();
   });
 
   afterAll(async () => {
@@ -43,7 +43,7 @@ describe('SSML integration ', () => {
     const testInput =
       '<p>A paragraph with an <b>image</b><p>Another paragraph with some <em>em</em> text</p>';
     //first call for itemByUrl.
-    const data = nockResponseForParser(testUrl, {
+    const itemMock = nockResponseForParser(testUrl, {
       data: {
         isArticle: 1,
         title: 'The cool article',
@@ -58,7 +58,7 @@ describe('SSML integration ', () => {
         videos: MediaTypeParam.DIV_TAG,
         images: MediaTypeParam.DIV_TAG,
       },
-      data: { ...data, article: testInput },
+      data: { ...itemMock.data, article: testInput },
     });
 
     const GET_ITEMS_BY_URL = gql`

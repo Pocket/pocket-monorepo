@@ -3,6 +3,8 @@ import { IContext } from '../apollo/context';
 import { ReaderFallback } from '../__generated__/resolvers-types';
 import { deriveItemSummary } from '../preview';
 
+const notFound = { message: "We couldn't find that page." };
+
 /**
  * FallbackPage resolver for ReaderViewResult query
  * @param parent GraphQL root/parent field
@@ -16,12 +18,17 @@ export async function fallbackPage(
 ): Promise<ReaderFallback> {
   const id = IntMask.decode(slug).toString();
   const itemLoaderResult = await context.dataLoaders.itemIdLoader.load(id);
+
+  if (itemLoaderResult == null || itemLoaderResult.url == null) {
+    return notFound;
+  }
+
   const item = await context.dataSources.parserAPI.getItemData(
     itemLoaderResult.url,
   );
 
   if (item == null) {
-    return { message: "We couldn't find that page." };
+    return notFound;
   }
 
   const itemCard = await deriveItemSummary(item, context);
