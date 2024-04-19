@@ -96,6 +96,7 @@ export async function processV3call(
     hasAnnotations: data.hasAnnotations,
     account: false,
     forceaccount: false,
+    updatedBefore: data.updatedBefore,
   };
 
   // Otherwise call SavedItems list api

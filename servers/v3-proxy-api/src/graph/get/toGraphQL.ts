@@ -126,6 +126,7 @@ export function SavedItemsFilterFactory(params: V3GetParams) {
       return stateMap[val];
     },
     since: (val: number) => ({ updatedSince: val }),
+    updatedBefore: (val: number) => ({ updatedBefore: val }),
     tag: (val: string) => ({ tagNames: [val] }),
     hasAnnotations: (val: boolean) => ({ isHighlighted: val }),
   };
