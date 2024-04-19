@@ -117,10 +117,9 @@ function AccountTransformer(
       user_id: accountData.id,
       username: '', // omitted - included for shape only
       email: accountData.email,
-      birth: mysqlTimeString(
-        new Date(accountData.accountCreationDate),
-        'US/Central',
-      ),
+      birth: DateTime.fromISO(accountData.accountCreationDate)
+        .setZone('US/Central')
+        .toFormat('yyyy-MM-dd HH:mm:ss'),
       first_name: firstName,
       last_name: lastName,
       premium_status: accountData.isPremium ? '1' : '0',
@@ -174,21 +173,6 @@ function AlltimeStatusTransformer(status: PremiumStatus): string {
     [PremiumStatus.Expired]: '2',
   };
   return statusMap[status];
-}
-/**
- * This is lifted from list-api, and gosh I hope we don't need to use
- * it so much to justify it becoming a package...
- * Convert date object to timestamp as a string (yyyy-MM-dd HH:mm:ss)
- * localized to a time zone.
- * Used for database timestamp strings in text columns
- * (e.g. users_meta.value)
- * @param timestamp the date object to localize and return as string
- * @param tz the timezone string for the timezone
- */
-export function mysqlTimeString(timestamp: Date, tz?: string): string {
-  const dt = DateTime.fromMillis(timestamp.getTime());
-  if (tz) dt.setZone(tz);
-  return dt.toFormat('yyyy-MM-dd HH:mm:ss');
 }
 
 /**
