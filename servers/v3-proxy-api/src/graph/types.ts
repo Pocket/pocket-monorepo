@@ -1,7 +1,4 @@
-import {
-  AddSavedItemCompleteMutation,
-  PremiumFeature,
-} from '../generated/graphql/types';
+import { AddSavedItemCompleteMutation } from '../generated/graphql/types';
 
 /**
  * Reusable types intended for use throughout the process go here.

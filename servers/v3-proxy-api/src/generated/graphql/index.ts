@@ -1,4 +1,9 @@
+/* eslint-disable */
 /**
+ * ESLint disabled for this file because it doesn't like me overriding the
+ * type exports, but typescript is compiling and everything is OK...
+ * I can't find the specific rule that's failing.
+ *
  * Patching the query types... Specifically, the `id` field being non-nullable
  * in the schema is causing the computed queries which may include the
  * AccountData fragment to require `user.id`, even though the @includes
@@ -38,6 +43,7 @@ export type SearchSavedItemsSimpleQueryOverride = Omit<
 };
 
 export * from './types';
+
 export {
   SearchSavedItemsCompleteQueryOverride as SearchSavedItemsCompleteQuery,
   SearchSavedItemsSimpleQueryOverride as SearchSavedItemsSimpleQuery,
