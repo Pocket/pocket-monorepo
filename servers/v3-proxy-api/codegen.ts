@@ -5,7 +5,6 @@ const config: CodegenConfig = {
   documents: ['src/graphql/**/*.graphql'],
   generates: {
     './src/generated/graphql/types.ts': {
-      config: { federation: true },
       plugins: [
         //generated types do not conform to ts/lint rules, disable them for these files
         {
@@ -15,22 +14,12 @@ const config: CodegenConfig = {
         },
         {
           add: {
-            content: '/* eslint-disable @typescript-eslint/ban-ts-comment */',
-          },
-        },
-        {
-          add: {
-            content: '/* eslint-disable prettier/prettier */',
-          },
-        },
-        {
-          add: {
             content: '/* tslint:disable */',
           },
         },
         {
           add: {
-            content: '/* eslint:disable */',
+            content: '/* eslint-disable */',
           },
         },
         'typescript',

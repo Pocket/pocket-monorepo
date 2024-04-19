@@ -23,6 +23,14 @@ import {
   expectedGetSimpleTagslist,
   mockGraphGetCompleteTagsList,
   expectedGetCompleteTagslist,
+  mockGraphGetSimpleFreeAccount,
+  mockGraphGetCompleteFreeAccount,
+  mockGraphGetSimplePremiumAccount,
+  mockGraphGetCompletePremiumAccount,
+  expectedGetSimpleFreeAccount,
+  expectedGetSimplePremiumAccount,
+  expectedGetCompletePremiumAccount,
+  expectedGetCompleteFreeAccount,
 } from '../test/fixtures';
 import { ClientError, GraphQLClient } from 'graphql-request';
 import { GraphQLError } from 'graphql-request/build/esm/types';
@@ -350,6 +358,146 @@ describe('v3Get', () => {
         expect(clientSpy.mock.calls[0][0]['definitions'][0].name.value).toEqual(
           expected.name,
         );
+      },
+    );
+  });
+  describe('with account/forceaccount option', () => {
+    let clientSpy;
+    afterEach(() => clientSpy.mockRestore());
+    it.each([
+      {
+        requestData: {
+          detailType: 'simple',
+          forceaccount: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleFreeAccount,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimpleFreeAccount,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          account: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleFreeAccount,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimpleFreeAccount,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          account: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimplePremiumAccount,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimplePremiumAccount,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          forceaccount: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimplePremiumAccount,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimplePremiumAccount,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          forceaccount: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteFreeAccount,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: expectedGetCompleteFreeAccount,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          account: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteFreeAccount,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: expectedGetCompleteFreeAccount,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          account: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompletePremiumAccount,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: expectedGetCompletePremiumAccount,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          forceaccount: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompletePremiumAccount,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: expectedGetCompletePremiumAccount,
+        },
+      },
+    ])(
+      'makes request with taglist',
+      async ({ requestData, fixture, expected }) => {
+        const requestSpy = jest.spyOn(GraphQLCalls, fixture.requestName);
+        clientSpy = jest
+          .spyOn(GraphQLClient.prototype, 'request')
+          .mockResolvedValueOnce(fixture.requestData)
+          .mockResolvedValueOnce(fixture.requestData);
+        const response = await request(app)
+          .get('/v3/get')
+          .query({
+            ...requestData,
+            consumer_key: 'test',
+            access_token: 'test',
+            since: 1712766000,
+          });
+        expect(response.body).toEqual(expected.response);
+        expect(requestSpy).toHaveBeenCalledTimes(1);
+        expect(requestSpy.mock.calls[0][3]).toMatchObject({
+          withAccountData: true,
+        });
       },
     );
   });

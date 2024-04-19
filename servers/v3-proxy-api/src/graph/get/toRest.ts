@@ -3,11 +3,14 @@
  */
 
 import {
+  AccountFieldsFragment,
+  PremiumFeature,
+  PremiumStatus,
   SavedItemsCompleteQuery,
   SavedItemsSimpleQuery,
   SearchSavedItemsCompleteQuery,
   SearchSavedItemsSimpleQuery,
-} from '../../generated/graphql/types';
+} from '../../generated/graphql';
 import {
   ListItemObject,
   ListItemObjectComplete,
@@ -30,8 +33,11 @@ import {
   GetSharesResponse,
   GetTopLevelDefaultResponse,
   Annotations,
+  AccountResponse,
+  PremiumFeatures,
 } from '../types';
 import * as tx from '../shared/transforms';
+import { DateTime } from 'luxon';
 
 type SavedItemSimple =
   SavedItemsSimpleQuery['user']['savedItemsByOffset']['entries'][number];
@@ -97,6 +103,92 @@ function searchStatusResponse(
     complete: 1,
     since: Math.round(new Date().getTime() / 1000),
   };
+}
+
+function AccountTransformer(
+  accountData: Partial<AccountFieldsFragment>,
+): AccountResponse | Record<never, never> {
+  // Short-circuit if data is not present
+  if (accountData?.id == null) return {};
+  const firstName = accountData.firstName ?? '';
+  const lastName = accountData.lastName ?? '';
+  return {
+    account: {
+      user_id: accountData.id,
+      username: '', // omitted - included for shape only
+      email: accountData.email,
+      birth: mysqlTimeString(
+        new Date(accountData.accountCreationDate),
+        'US/Central',
+      ),
+      first_name: firstName,
+      last_name: lastName,
+      premium_status: accountData.isPremium ? '1' : '0',
+      is_fxa: accountData.isFxa ? 'true' : 'false',
+      // TODO - Fetch all aliases POCKET-9882
+      aliases: {
+        [accountData.email]: {
+          email: accountData.email,
+          confirmed: '1',
+        },
+      },
+      profile: {
+        username: accountData.username ?? null,
+        name: [firstName, lastName].join(' ').trim(),
+        description: accountData.description ?? '',
+        avatar_url: accountData.avatarUrl,
+        follower_count: '0', // unused
+        follow_count: '0', // unused
+        is_following: '0', // unused
+        uid: accountData.id,
+        type: 'pocket' as const, // static value
+        sort_id: 1, // static value
+      },
+      premium_features: accountData.premiumFeatures.map((feat) =>
+        PremiumFeatureTransformer(feat),
+      ),
+      premium_alltime_status: AlltimeStatusTransformer(
+        accountData.premiumStatus,
+      ),
+      premium_on_trial: '0', // TODO POCKET-9981 - don't have this value
+      ...(!accountData.isPremium && { annotations_per_article_limit: 3 }), // Hardcode alert
+    },
+  };
+}
+
+function PremiumFeatureTransformer(feat: PremiumFeature): PremiumFeatures {
+  const featureNameMap = {
+    [PremiumFeature.AdFree]: 'ad_free',
+    [PremiumFeature.Annotations]: 'annotations',
+    [PremiumFeature.PermanentLibrary]: 'library',
+    [PremiumFeature.SuggestedTags]: 'suggested_tags',
+    [PremiumFeature.PremiumSearch]: 'premium_search',
+  } as Record<PremiumFeature, PremiumFeatures>;
+  return featureNameMap[feat];
+}
+
+function AlltimeStatusTransformer(status: PremiumStatus): string {
+  const statusMap = {
+    [PremiumStatus.Never]: '0',
+    [PremiumStatus.Active]: '1',
+    [PremiumStatus.Expired]: '2',
+  };
+  return statusMap[status];
+}
+/**
+ * This is lifted from list-api, and gosh I hope we don't need to use
+ * it so much to justify it becoming a package...
+ * Convert date object to timestamp as a string (yyyy-MM-dd HH:mm:ss)
+ * localized to a time zone.
+ * Used for database timestamp strings in text columns
+ * (e.g. users_meta.value)
+ * @param timestamp the date object to localize and return as string
+ * @param tz the timezone string for the timezone
+ */
+export function mysqlTimeString(timestamp: Date, tz?: string): string {
+  const dt = DateTime.fromMillis(timestamp.getTime());
+  if (tz) dt.setZone(tz);
+  return dt.toFormat('yyyy-MM-dd HH:mm:ss');
 }
 
 /**
@@ -349,6 +441,7 @@ export function savedItemsSimpleToRest(
     ...staticV3ResponseDefaults,
     ...getStatusResponse(response),
     ...TagListTransformer(response.user.tagsList),
+    ...AccountTransformer(response.user),
     list: listToMap(
       response.user.savedItemsByOffset.entries
         .map((savedItem, index) => {
@@ -378,6 +471,7 @@ export function savedItemsCompleteToRest(
     ...staticV3ResponseDefaults,
     ...getStatusResponse(response),
     ...TagListTransformer(response.user.tagsList),
+    ...AccountTransformer(response.user),
     list: listToMap(
       response.user.savedItemsByOffset.entries
         .map((savedItem, index) => {
@@ -485,6 +579,7 @@ export function searchSavedItemSimpleToRest(
     ...staticV3ResponseDefaults,
     ...searchStatusResponse(response),
     ...TagListTransformer(response.user.tagsList),
+    ...AccountTransformer(response.user),
     list,
     ...searchMetaTransformer(response),
   };
@@ -519,6 +614,7 @@ export function searchSavedItemCompleteToRest(
   return {
     ...searchStatusResponse(response),
     ...TagListTransformer(response.user.tagsList),
+    ...AccountTransformer(response.user),
     ...staticV3ResponseDefaults,
     list,
     ...searchMetaTransformer(response),

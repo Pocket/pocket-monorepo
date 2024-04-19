@@ -22,7 +22,7 @@ import {
   SearchSavedItemsCompleteQueryVariables,
   SearchSavedItemsCompleteQuery,
   SearchSavedItemsCompleteDocument,
-} from '../generated/graphql/types';
+} from '../generated/graphql';
 import config from '../config';
 import * as Sentry from '@sentry/node';
 /**

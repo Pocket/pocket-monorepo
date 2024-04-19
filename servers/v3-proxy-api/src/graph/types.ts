@@ -1,4 +1,7 @@
-import { AddSavedItemCompleteMutation } from '../generated/graphql/types';
+import {
+  AddSavedItemCompleteMutation,
+  PremiumFeature,
+} from '../generated/graphql/types';
 
 /**
  * Reusable types intended for use throughout the process go here.
@@ -361,3 +364,49 @@ export type ListItemObjectAdditional = {
 
 export type SavedItemWithParserMetadata =
   AddSavedItemCompleteMutation['upsertSavedItem'];
+
+export type AccountResponse = {
+  account: {
+    user_id: string;
+    username: string;
+    email: string;
+    birth: string;
+    first_name: string;
+    last_name: string;
+    premium_status: string;
+    is_fxa: string;
+    aliases: Aliases;
+    profile: Profile;
+    premium_features: Array<PremiumFeatures>;
+    premium_alltime_status: string;
+    premium_on_trial: string;
+    annotations_per_article_limit?: number;
+  };
+};
+
+export type Profile = {
+  username: string | null;
+  name: string;
+  description: string | null;
+  avatar_url: string;
+  follower_count: string;
+  follow_count: string;
+  is_following: string;
+  uid: string;
+  type: 'pocket';
+  sort_id: 1;
+};
+
+export type PremiumFeatures =
+  | 'library'
+  | 'suggested_tags'
+  | 'premium_search'
+  | 'annotations'
+  | 'ad_free';
+
+export type Aliases = {
+  [key: string]: {
+    email: string;
+    confirmed: string;
+  };
+};

@@ -5,7 +5,7 @@ import {
   SavedItemStatus,
   VideoType,
   Videoness,
-} from '../../generated/graphql/types';
+} from '../../generated/graphql';
 import {
   GetResponseCompleteTotal,
   GetResponseComplete,
@@ -13,7 +13,10 @@ import {
   GetResponseSimpleTotal,
 } from '../../graph/types';
 
-export const mockGraphGetComplete: SavedItemsCompleteQuery = {
+// For some reason the type codegen is incorrectly requiring user.id
+export const mockGraphGetComplete: {
+  user: Partial<SavedItemsCompleteQuery['user']>;
+} = {
   user: {
     savedItemsByOffset: {
       // A response with all optional 'complete' fields
@@ -155,7 +158,9 @@ export const mockGraphGetComplete: SavedItemsCompleteQuery = {
   },
 };
 
-export const mockGraphGetSimple: SavedItemsSimpleQuery = {
+export const mockGraphGetSimple: {
+  user: Partial<SavedItemsSimpleQuery['user']>;
+} = {
   user: {
     savedItemsByOffset: {
       totalCount: 10,
@@ -455,7 +460,9 @@ export const expectedGetSimpleTotal: GetResponseSimpleTotal = {
   ...expectedGetSimple,
 };
 
-export const mockGraphGetSimpleTitle: SavedItemsSimpleQuery = {
+export const mockGraphGetSimpleTitle: {
+  user: Partial<SavedItemsSimpleQuery['user']>;
+} = {
   // First one, no user-provided title and field is null
   // Second, have a user-provided title
   user: {
