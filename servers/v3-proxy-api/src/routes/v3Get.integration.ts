@@ -478,7 +478,7 @@ describe('v3Get', () => {
         },
       },
     ])(
-      'makes request with taglist',
+      'makes request with account data',
       async ({ requestData, fixture, expected }) => {
         const requestSpy = jest.spyOn(GraphQLCalls, fixture.requestName);
         clientSpy = jest
