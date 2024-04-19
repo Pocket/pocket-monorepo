@@ -6,6 +6,8 @@ import { gql } from 'graphql-tag';
 import request from 'supertest';
 import { Application } from 'express';
 import { nockResponseForParser } from '../utils/parserResponse';
+import { getRedis } from '../../cache';
+import { ParserResponse } from '../../datasources/ParserAPITypes';
 
 describe('timeToRead', () => {
   const testUrl = 'https://someurl.com';
@@ -14,12 +16,12 @@ describe('timeToRead', () => {
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
 
-  let parserItem = {
+  let parserItem: Partial<ParserResponse> = {
     given_url: testUrl,
     normal_url: testUrl,
     item_id: '1',
     resolved_id: '1',
-    domain_metadata: {
+    domainMetadata: {
       name: 'domain',
       logo: 'logo',
     },
@@ -32,6 +34,10 @@ describe('timeToRead', () => {
   beforeAll(async () => {
     // port 0 tells express to dynamically assign an available port
     ({ app, server, url: graphQLUrl } = await startServer(0));
+  });
+
+  beforeEach(async () => {
+    await getRedis().clear();
   });
 
   afterAll(async () => {

@@ -71,10 +71,10 @@ describe('ShortUrl', () => {
     });
   });
 
-  it('should return shortUrl for a givenUrl (that is not a shortUrl) for getItemByUrl', async () => {
+  it('should return shortUrl for a givenUrl (that is not a shortUrl) for itemByUrl', async () => {
     const GET_ITEM_BY_URL = gql`
-      query getItemByUrl($url: String!) {
-        getItemByUrl(url: $url) {
+      query itemByUrl($url: String!) {
+        itemByUrl(url: $url) {
           shortUrl
         }
       }
@@ -84,7 +84,7 @@ describe('ShortUrl', () => {
       .post(graphQLUrl)
       .send({ query: print(GET_ITEM_BY_URL), variables });
     expect(res).not.toBeNull();
-    expect(res.body.data.getItemByUrl.shortUrl).toBe('https://local.co/ab');
+    expect(res.body.data.itemByUrl.shortUrl).toBe('https://local.co/ab');
   });
 
   it('should return shortUrl for a givenUrl (that is not a shortUrl) for itemByUrl', async () => {

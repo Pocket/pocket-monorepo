@@ -75,7 +75,7 @@ describe('preview', () => {
     excerpt: null,
     authors: null,
     domain: { logo: null, name: 'test.com' },
-    datePublished: null,
+    datePublished: '2022-06-29T20:14:49.000Z',
     url: testUrl,
     item: {
       id: 'encodedId',
