@@ -51,7 +51,7 @@ describe('CreateShareLink', () => {
       .set(headers)
       .send({ query: CREATE_SHARE, variables });
     expect(res.body.data).toEqual({
-      createShareLink: `https://pocket.co/share/${uuidMock}`,
+      createShareLink: { shareUrl: `https://pocket.co/share/${uuidMock}` },
     });
     const roundtrip = await request(app)
       .post(graphQLUrl)

@@ -84,5 +84,5 @@ type Mutation {
   Create a Pocket Share for a provided target URL, optionally
   with additional share context.
   """
-  createShareLink(target: URL!, context: ShareContextInput): URL
+  createShareLink(target: URL!, context: ShareContextInput): PocketShare
 }

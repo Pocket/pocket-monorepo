@@ -61,13 +61,13 @@ export class PocketShareModel {
   async createShareLink(
     target: URL,
     context: ShareContextInput,
-  ): Promise<string> {
+  ): Promise<PocketShare> {
     const input = this.toEntity(target, context);
     const res = await this.db.createShare(input);
     if (res instanceof Error) {
       throw res;
     }
-    return this.shareUrl(res.shareId);
+    return this.fromEntity(res);
   }
   /**
    * Look up a share record by the URL slug
