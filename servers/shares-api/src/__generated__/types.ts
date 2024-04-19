@@ -30,7 +30,7 @@ export type Mutation = {
    * Create a Pocket Share for a provided target URL, optionally
    * with additional share context.
    */
-  createShareLink?: Maybe<Scalars['URL']['output']>;
+  createShareLink?: Maybe<PocketShare>;
 };
 
 
@@ -236,7 +236,7 @@ export interface Max300CharStringScalarConfig extends GraphQLScalarTypeConfig<Re
 }
 
 export type MutationResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  createShareLink?: Resolver<Maybe<ResolversTypes['URL']>, ParentType, ContextType, RequireFields<MutationCreateShareLinkArgs, 'target'>>;
+  createShareLink?: Resolver<Maybe<ResolversTypes['PocketShare']>, ParentType, ContextType, RequireFields<MutationCreateShareLinkArgs, 'target'>>;
 }>;
 
 export type PocketShareResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['PocketShare'] = ResolversParentTypes['PocketShare']> = ResolversObject<{
