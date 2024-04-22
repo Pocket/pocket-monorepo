@@ -73,6 +73,7 @@ export const batchGetItemUrls = async (
     values: values,
     valueKeyFn: (value) => value,
     callback: batchGetItemUrlsByItemIds,
+    cacheKeyPrefix: 'v2',
     cache: params.cache,
     returnTypeKeyFn: params.getValueFn,
     maxAge: config.app.defaultMaxAge,

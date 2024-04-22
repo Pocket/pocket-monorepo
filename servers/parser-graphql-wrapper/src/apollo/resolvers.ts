@@ -32,6 +32,9 @@ export const resolvers: Resolvers = {
         return dataSources.parserAPI.getItemData(item.givenUrl);
       } else if ('itemId' in item) {
         const itemLoaderType = await dataLoaders.itemIdLoader.load(item.itemId);
+        if (!itemLoaderType.url) {
+          throw new Error(`No url found for itemId: ${item.itemId}`);
+        }
         return dataSources.parserAPI.getItemData(itemLoaderType.url);
       }
     },

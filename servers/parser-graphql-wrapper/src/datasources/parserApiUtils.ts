@@ -30,9 +30,9 @@ export const getAuthors = (authors): Author[] => {
 export const getImages = (images): Image[] => {
   return Object.keys(images).map((index: string): Image => {
     return {
-      imageId: images[index].image_id,
-      width: images[index].width,
-      height: images[index].height,
+      imageId: parseInt(images[index].image_id),
+      width: parseInt(images[index]?.width) ?? null,
+      height: parseInt(images[index]?.height) ?? null,
       src: images[index].src,
       url: images[index].src,
       caption: images[index].caption,
