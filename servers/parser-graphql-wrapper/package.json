@@ -27,6 +27,7 @@
     "@pocket-tools/ts-logger": "workspace:*",
     "cors": "2.8.5",
     "dataloader": "2.2.2",
+    "exponential-backoff": "^3.1.1",
     "express": "4.19.2",
     "fetch-retry": "^5.0.6",
     "graphql-scalars": "^1.23.0",
@@ -46,6 +47,7 @@
     "winston": "3.13.0"
   },
   "devDependencies": {
+    "@apollo/utils.fetcher": "^3.1.0",
     "@faker-js/faker": "8.4.1",
     "@graphql-codegen/cli": "5.0.2",
     "@graphql-codegen/typescript": "4.0.6",

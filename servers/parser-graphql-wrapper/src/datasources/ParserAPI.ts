@@ -19,6 +19,8 @@ import type {
   KeyValueCacheSetOptions,
 } from '@apollo/utils.keyvaluecache';
 import { ParserResponse } from './ParserAPITypes';
+import fetch from 'node-fetch';
+import { backOff } from 'exponential-backoff';
 
 export enum MediaTypeParam {
   AS_COMMENTS = '0',
@@ -87,15 +89,22 @@ export class ParserAPI extends RESTDataSource {
   private cache: KeyValueCache<string, KeyValueCacheSetOptions>;
 
   constructor(datasourceConfig?: DataSourceConfig) {
-    super(datasourceConfig);
+    // Set up custom fetch - exponential backoff with request timeout
+    const backoffFetch = (url: string) =>
+      backOff(
+        () =>
+          fetch(url, {
+            signal: AbortSignal.timeout(config.parser.timeout * 1000),
+          }),
+        {
+          delayFirstAttempt: false,
+          jitter: 'full',
+          maxDelay: 1000,
+          numOfAttempts: config.parser.retries,
+        },
+      );
+    super({ ...datasourceConfig, fetch: backoffFetch });
     this.cache = datasourceConfig.cache;
-
-    // super({
-    //   fetch: fetchRetry(global.fetch, {
-    //     retries: config.parser.retries,
-    //     retryDelay: 500,
-    //   }),
-    // });
   }
 
   async clearCache(cacheKey: string) {
@@ -124,7 +133,6 @@ export class ParserAPI extends RESTDataSource {
     const data = await this.get<ParserResponse>(config.parser.dataPath, {
       params: queryParams,
       cacheKey: cacheKey,
-      signal: AbortSignal.timeout(config.parser.timeout * 1000),
       cacheOptions: { ttl: 3600 },
     });
     return this.parserResponseToItem(data);
