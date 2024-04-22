@@ -88,7 +88,7 @@ export class ParserAPI extends RESTDataSource {
 
   private cache: KeyValueCache<string, KeyValueCacheSetOptions>;
 
-  constructor(datasourceConfig?: DataSourceConfig) {
+  constructor(datasourceConfig: DataSourceConfig) {
     // Set up custom fetch - exponential backoff with request timeout
     const backoffFetch = (url: string) =>
       backOff(
