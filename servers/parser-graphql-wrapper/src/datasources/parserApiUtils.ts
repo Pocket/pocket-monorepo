@@ -2,12 +2,9 @@ import { URL } from 'url';
 import {
   Author,
   Image,
-  Imageness,
   Video,
   VideoType,
-  Videoness,
 } from '../__generated__/resolvers-types';
-import { ParserResponse } from './ParserAPITypes';
 
 /**
  * Get Author array from raw authors object returned from the parser
@@ -89,15 +86,15 @@ const parseVideoType = (videoType) => {
  * @param rawItem
  * @returns
  */
-export const extractDomainMeta = (parserResponse: ParserResponse): any => {
+export const extractDomainMeta = (rawItem): any => {
   // a rawItem may not have any domain_metadata. if that's the case, init
   // domainMeta to be an empty object.
-  const domainMeta = parserResponse.domainMetadata || { name: undefined };
+  const domainMeta = rawItem.domain_metadata || {};
 
   // if the domainMeta doesn't have a name property, and rawItem does have a
   // normal_url, populate the domainMeta.name based on the normal_url hostname
-  if (!domainMeta.name && parserResponse.given_url) {
-    const url = new URL(parserResponse.given_url);
+  if (!domainMeta.name && rawItem.normal_url) {
+    const url = new URL(rawItem.normal_url);
     domainMeta.name = url.hostname;
   }
 
@@ -123,38 +120,4 @@ export const normalizeDate = (date?: string): string | null => {
   }
 
   return date;
-};
-
-/**
- * Converts parser item.has_video to a graphql enum
- * @param hasVideo
- */
-export const parseVideoness = (hasVideo: string): Videoness => {
-  switch (parseInt(hasVideo)) {
-    case 0:
-      return Videoness.NoVideos;
-    case 1:
-      return Videoness.HasVideos;
-    case 2:
-      return Videoness.IsVideo;
-    default:
-      return Videoness.NoVideos;
-  }
-};
-
-/**
- * Converts parser item.has_image to a graphql enum
- * @param hasImage
- */
-export const parseImageness = (hasImage: string): Imageness => {
-  switch (hasImage) {
-    case '0':
-      return Imageness.NoImages;
-    case '1':
-      return Imageness.HasImages;
-    case '2':
-      return Imageness.IsImage;
-    default:
-      return Imageness.NoImages;
-  }
 };

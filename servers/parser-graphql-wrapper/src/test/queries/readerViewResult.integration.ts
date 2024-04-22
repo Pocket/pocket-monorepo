@@ -1,4 +1,4 @@
-import { cleanAll } from 'nock';
+import nock, { cleanAll } from 'nock';
 import { getRedis } from '../../cache';
 import { startServer } from '../../apollo/server';
 import { ApolloServer } from '@apollo/server';
@@ -15,7 +15,6 @@ import {
 import { ItemResolver } from '../../entities/ItemResolver';
 import { IntMask } from '@pocket-tools/int-mask';
 import * as ogs from 'open-graph-scraper';
-import { nockResponseForParser } from '../utils/parserResponse';
 jest.mock('open-graph-scraper');
 
 describe('readerSlug', () => {
@@ -84,7 +83,6 @@ describe('readerSlug', () => {
   });
 
   beforeEach(async () => {
-    cleanAll();
     jest.clearAllMocks();
     jest.spyOn(ogs, 'default').mockImplementation(() => {
       return Promise.resolve({
@@ -95,22 +93,26 @@ describe('readerSlug', () => {
       });
     });
 
-    nockResponseForParser(testUrl, {
-      data: {
-        item_id: parserItemId,
-        given_url: testUrl,
-        normal_url: testUrl,
-        title: 'test',
-        datePublished: null,
-        domainMetadata: { name: 'test.com' },
-        excerpt: null,
-        authors: [],
-        images: [],
-        topImageUrl: null,
-        videos: [],
-        resolved_id: '16822',
-      },
-    });
+    nock('http://example-parser.com')
+      .get('/')
+      .query({
+        url: testUrl,
+        getItem: '1',
+        output: 'regular',
+        enableItemUrlFallback: '1',
+      })
+      .reply(200, {
+        item: {
+          item_id: parserItemId,
+          given_url: testUrl,
+          normal_url: testUrl,
+          title: 'test',
+          authors: [],
+          images: [],
+          videos: [],
+          resolved_id: '16822',
+        },
+      });
     // flush the redis cache
     getRedis().clear();
   });

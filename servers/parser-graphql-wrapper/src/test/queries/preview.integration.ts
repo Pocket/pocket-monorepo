@@ -1,4 +1,4 @@
-import { cleanAll } from 'nock';
+import nock, { cleanAll } from 'nock';
 import { getRedis } from '../../cache';
 import { startServer } from '../../apollo/server';
 import { ApolloServer } from '@apollo/server';
@@ -18,7 +18,6 @@ import * as ogs from 'open-graph-scraper';
 import { mockUnleash } from '@pocket-tools/feature-flags-client';
 import * as unleash from '../../unleash';
 import config from '../../config';
-import { nockResponseForParser } from '../utils/parserResponse';
 
 jest.mock('open-graph-scraper');
 
@@ -75,7 +74,7 @@ describe('preview', () => {
     excerpt: null,
     authors: null,
     domain: { logo: null, name: 'test.com' },
-    datePublished: '2022-06-29T20:14:49.000Z',
+    datePublished: null,
     url: testUrl,
     item: {
       id: 'encodedId',
@@ -160,23 +159,29 @@ describe('preview', () => {
         });
       }
 
-      nockResponseForParser(testUrl, {
-        data: {
-          item_id: parserItemId,
-          given_url: testUrl,
-          normal_url: testUrl,
-          title: 'parser test',
-          authors: [],
-          images: [],
-          videos: [],
-          resolved_id: '16822',
-          excerpt: null,
-          domainMetadata: null,
-          topImageUrl: null,
-          // override the default
-          ...parserData,
-        },
-      });
+      nock('http://example-parser.com')
+        .get('/')
+        .query({
+          url: testUrl,
+          getItem: '1',
+          output: 'regular',
+          enableItemUrlFallback: '1',
+        })
+        .reply(200, {
+          item: {
+            item_id: parserItemId,
+            given_url: testUrl,
+            normal_url: testUrl,
+            title: 'parser test',
+            authors: [],
+            images: [],
+            videos: [],
+            resolved_id: '16822',
+            // override the default
+            ...parserData,
+          },
+        });
+
       const variables = {
         url: testUrl,
       };

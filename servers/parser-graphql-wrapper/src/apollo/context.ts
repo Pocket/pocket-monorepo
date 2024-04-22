@@ -1,5 +1,6 @@
 import DataLoader from 'dataloader';
-import { itemIdLoader, ItemLoaderType, ShortUrlLoader } from '../dataLoaders';
+import { ContextWithDataSources } from '../datasources/legacyDataSourcesPlugin';
+import { itemIdLoader, itemUrlLoader, ShortUrlLoader } from '../dataLoaders';
 import {
   BatchAddShareUrlInput,
   ItemResolverRepository,
@@ -7,24 +8,21 @@ import {
   getItemResolverRepository,
   getSharedUrlsResolverRepo,
 } from '../datasources/mysql';
-import { ParserAPI } from '../datasources/ParserAPI';
-import { getRedisCache } from '../cache';
+import { Item } from '../__generated__/resolvers-types';
 
 /**
  * Change this to `extends BaseContext` once LegacyDataSourcesPlugin
  * can be deprecated.
  */
-export interface IContext {
+export interface IContext extends ContextWithDataSources {
   dataLoaders: {
-    itemIdLoader: DataLoader<string, ItemLoaderType>;
+    itemIdLoader: DataLoader<string, Item>;
+    itemUrlLoader: DataLoader<string, Item>;
     shortUrlLoader: DataLoader<BatchAddShareUrlInput, string>;
   };
   repositories: {
     itemResolver: ItemResolverRepository;
     sharedUrlsResolver: SharedUrlsResolverRepository;
-  };
-  dataSources: {
-    parserAPI: ParserAPI;
   };
   headers: { [key: string]: any };
   userId: string | undefined;
@@ -40,18 +38,15 @@ export interface IContext {
  */
 export class ContextManager implements IContext {
   public readonly dataLoaders: IContext['dataLoaders'];
-  public readonly dataSources: IContext['dataSources'];
   public readonly repositories: IContext['repositories'];
   public readonly headers: IContext['headers'];
 
   private constructor(
     dataloaders: IContext['dataLoaders'],
-    dataSources: IContext['dataSources'],
     repositories: IContext['repositories'],
     headers: { [key: string]: any },
   ) {
     this.dataLoaders = dataloaders;
-    this.dataSources = dataSources;
     this.repositories = repositories;
     this.headers = headers;
   }
@@ -60,15 +55,13 @@ export class ContextManager implements IContext {
   }): Promise<ContextManager> {
     const dataloaders = {
       itemIdLoader: itemIdLoader,
+      itemUrlLoader: itemUrlLoader,
       shortUrlLoader: ShortUrlLoader(),
     };
     const itemResolver = await getItemResolverRepository();
     const sharedUrlsResolver = await getSharedUrlsResolverRepo();
     return new ContextManager(
       dataloaders,
-      {
-        parserAPI: new ParserAPI({ cache: getRedisCache() }),
-      },
       {
         itemResolver,
         sharedUrlsResolver,

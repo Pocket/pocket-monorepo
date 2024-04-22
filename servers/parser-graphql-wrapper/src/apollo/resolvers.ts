@@ -1,4 +1,11 @@
+import * as Sentry from '@sentry/node';
+import { clear, getItemById, getItemByUrl } from '../dataLoaders';
 import config from '../config';
+import {
+  MediaTypeParam,
+  ParserAPI,
+  ParserArticle,
+} from '../datasources/parserApi';
 import { MarticleElement, parseArticle } from '../marticle/marticleParser';
 import { CacheScope } from '@apollo/cache-control-types';
 import {
@@ -6,18 +13,18 @@ import {
   givenUrlFromShareCode,
 } from '../shortUrl/shortUrl';
 import { SSMLModel } from '../models/SSMLModel';
+import { serverLogger } from '@pocket-tools/ts-logger';
 import { fallbackPage } from '../readerView';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
 import { deriveItemSummary, itemSummaryFromUrl } from '../preview';
 import { URLResolver } from 'graphql-scalars';
-import { Resolvers, Videoness } from '../__generated__/resolvers-types';
-import { BoolStringParam, MediaTypeParam } from '../datasources/ParserAPI';
+import { Resolvers } from '../__generated__/resolvers-types';
 
 export const resolvers: Resolvers = {
   ...PocketDefaultScalars,
   URL: URLResolver,
   Item: {
-    __resolveReference: async (item, { dataLoaders, dataSources }, info) => {
+    __resolveReference: async (item, { dataLoaders }, info) => {
       // Setting the cache hint manually here because when the gateway(Client API) resolves an item using this
       // Parser service, it does not respect the cacheHints on the schema types.
       // NOTE: The cache hint value for resolving the reference should always be the same as the cache hint on the type
@@ -29,10 +36,35 @@ export const resolvers: Resolvers = {
       }
 
       if ('givenUrl' in item) {
-        return dataSources.parserAPI.getItemData(item.givenUrl);
+        try {
+          return await dataLoaders.itemUrlLoader.load(item.givenUrl);
+        } catch (error) {
+          const errorMessage =
+            '__resolveReference: Error getting item by givenUrl';
+          const errorData = {
+            itemId: item.givenUrl,
+            info: info,
+          };
+          serverLogger.error(errorMessage, { error: error, data: errorData });
+          Sentry.addBreadcrumb({ message: errorMessage, data: errorData });
+          Sentry.captureException(error);
+          throw error;
+        }
       } else if ('itemId' in item) {
-        const itemLoaderType = await dataLoaders.itemIdLoader.load(item.itemId);
-        return dataSources.parserAPI.getItemData(itemLoaderType.url);
+        try {
+          return await dataLoaders.itemIdLoader.load(item.itemId);
+        } catch (error) {
+          const errorMessage =
+            '__resolveReference: Error getting item by itemId';
+          const errorData = {
+            itemId: item.itemId,
+            info: info,
+          };
+          serverLogger.error(errorMessage, { error: error, data: errorData });
+          Sentry.addBreadcrumb({ message: errorMessage, data: errorData });
+          Sentry.captureException(error);
+          throw error;
+        }
       }
     },
     article: async (parent, args, { dataSources }, info) => {
@@ -41,19 +73,17 @@ export const resolvers: Resolvers = {
         // (e.g. via refreshArticle mutation), otherwise load the article
         return parent.article;
       }
-      // If the field was requested via refreshArticle we need to clear the cache before we request data
-      const clearCache = info.operation.name.value == 'refreshArticle';
-      const item = await dataSources.parserAPI.getItemData(
-        parent.givenUrl,
-        {
-          videos: MediaTypeParam.DIV_TAG,
-          images: MediaTypeParam.DIV_TAG,
-          noArticle: BoolStringParam.FALSE,
+      const articleText = await (
+        dataSources.parserAPI as ParserAPI
+      ).articleLoader.load({
+        url: parent.givenUrl,
+        options: {
+          imageStyle: MediaTypeParam.DIV_TAG,
+          videoStyle: MediaTypeParam.DIV_TAG,
+          maxAge: info.cacheControl.cacheHint.maxAge,
         },
-        clearCache,
-      );
-
-      return item.article || null;
+      });
+      return articleText.article;
     },
     marticle: async (parent, args, { dataSources }, info) => {
       // Note: When the Web & Android teams switch to MArticle, make all the parser article call use
@@ -63,41 +93,35 @@ export const resolvers: Resolvers = {
       //       // (e.g. via refreshArticle mutation), otherwise load the article
       //       const article =
       //         parent.parsedArticle ??
-      // If the field was requested via refreshArticle we need to clear the cache before we request data
-      const clearCache = info.operation.name.value == 'refreshArticle';
-      const article = await dataSources.parserAPI.getItemData(
-        parent.givenUrl,
-        {
-          videos: MediaTypeParam.AS_COMMENTS,
-          images: MediaTypeParam.AS_COMMENTS,
-          noArticle: BoolStringParam.FALSE,
+      const article = await (
+        dataSources.parserAPI as ParserAPI
+      ).articleLoader.load({
+        url: parent.givenUrl,
+        options: {
+          imageStyle: MediaTypeParam.AS_COMMENTS,
+          maxAge: info.cacheControl.cacheHint.maxAge,
         },
-        clearCache,
-      );
+      });
       // Only extract Marticle data from article string if Parser
       // extracted valid data (isArticle or isVideo is 1)
-      return article.isArticle ||
-        article.hasVideo == Videoness.IsVideo ||
-        article.hasVideo == Videoness.HasVideos
+      return article.isArticle || article.isVideo
         ? parseArticle(article)
         : ([] as MarticleElement[]);
     },
     ssml: async (parent, args, { dataSources }, info) => {
       if (!parent.article && parent.isArticle) {
-        // If the field was requested via refreshArticle we need to clear the cache before we request data
-        const clearCache = info.operation.name.value == 'refreshArticle';
         parent.article = (
-          await dataSources.parserAPI.getItemData(
-            parent.givenUrl,
-            {
-              videos: MediaTypeParam.DIV_TAG,
-              images: MediaTypeParam.DIV_TAG,
-              noArticle: BoolStringParam.FALSE,
+          (await (dataSources.parserAPI as ParserAPI).articleLoader.load({
+            url: parent.givenUrl,
+            options: {
+              imageStyle: MediaTypeParam.DIV_TAG,
+              videoStyle: MediaTypeParam.DIV_TAG,
+              maxAge: info.cacheControl.cacheHint.maxAge,
             },
-            clearCache,
-          )
+          })) as ParserArticle
         ).article;
       }
+
       if (!parent.article) {
         return null;
       }
@@ -143,7 +167,7 @@ export const resolvers: Resolvers = {
   },
   Query: {
     //deprecated
-    getItemByUrl: async (_source, { url }, { repositories, dataSources }) => {
+    getItemByUrl: async (_source, { url }, { repositories }) => {
       // If it's a special short share URL, use alternative resolution path
       const shortCode = extractCodeFromShortUrl(url);
       if (shortCode != null) {
@@ -151,15 +175,19 @@ export const resolvers: Resolvers = {
           shortCode,
           await repositories.sharedUrlsResolver,
         );
-        const item = await dataSources.parserAPI.getItemData(givenUrl);
+        const item = getItemByUrl(givenUrl);
         item['shortUrl'] = url;
         return item;
       } else {
         // Regular URL resolution
-        return dataSources.parserAPI.getItemData(url);
+        return getItemByUrl(url);
       }
     },
-    itemByUrl: async (_source, { url }, { repositories, dataSources }) => {
+    //deprecated
+    getItemByItemId: async (_source, { id }, { repositories }) => {
+      return getItemById(id, await repositories.itemResolver);
+    },
+    itemByUrl: async (_source, { url }, { repositories }) => {
       // If it's a special short share URL, use alternative resolution path
       const shortCode = extractCodeFromShortUrl(url);
       if (shortCode != null) {
@@ -167,13 +195,16 @@ export const resolvers: Resolvers = {
           shortCode,
           await repositories.sharedUrlsResolver,
         );
-        const item = await dataSources.parserAPI.getItemData(givenUrl);
+        const item = await getItemByUrl(givenUrl);
         item['shortUrl'] = url;
         return item;
       } else {
         // Regular URL resolution
-        return await dataSources.parserAPI.getItemData(url);
+        return getItemByUrl(url);
       }
+    },
+    itemByItemId: async (_source, { id }, { repositories }) => {
+      return getItemById(id, await repositories.itemResolver);
     },
     readerSlug: async (_, { slug }: { slug: string }, context) => {
       const fallbackData = await fallbackPage(slug, context);
@@ -181,34 +212,33 @@ export const resolvers: Resolvers = {
     },
   },
   CorpusItem: {
-    shortUrl: async ({ url }, args, { dataSources, dataLoaders }) => {
+    shortUrl: async ({ url }, args, context) => {
       // Unlikely, but if the givenUrl is already a short share url
       // return the same value to avoid another db trip
       if (extractCodeFromShortUrl(url) != null) {
         return url;
       }
-      const item = await dataSources.parserAPI.getItemData(url);
-      return dataLoaders.shortUrlLoader.load({
+      const item = await getItemByUrl(url);
+      return context.dataLoaders.shortUrlLoader.load({
         itemId: parseInt(item.itemId),
         resolvedId: parseInt(item.resolvedId),
         givenUrl: item.givenUrl,
       });
     },
-    timeToRead: async ({ url }, args, { dataSources }) => {
+    timeToRead: async ({ url }, args, context) => {
       // timeToRead is not a guaranteed field on CorpusItem - we shouldn't
       // return underlying parser errors to clients if this call fails
       // (as some clients will fail outright if any graph errors are present)
       try {
-        const item = await dataSources.parserAPI.getItemData(url);
-        return item.timeToRead || null;
+        return (await getItemByUrl(url)).timeToRead;
       } catch (e) {
         return null;
       }
     },
   },
   Collection: {
-    shortUrl: async ({ slug }, args, { dataSources, dataLoaders }) => {
-      const item = await dataSources.parserAPI.getItemData(
+    shortUrl: async ({ slug }, args, context) => {
+      const item = await getItemByUrl(
         `${config.shortUrl.collectionUrl}/${slug}`,
       );
       // Unlikely, but if the givenUrl is already a short share url
@@ -216,7 +246,7 @@ export const resolvers: Resolvers = {
       if (extractCodeFromShortUrl(item.givenUrl) != null) {
         return item.givenUrl;
       }
-      return dataLoaders.shortUrlLoader.load({
+      return context.dataLoaders.shortUrlLoader.load({
         itemId: parseInt(item.itemId),
         resolvedId: parseInt(item.resolvedId),
         givenUrl: item.givenUrl,
@@ -235,15 +265,31 @@ export const resolvers: Resolvers = {
       { dataSources },
       info,
     ) => {
-      const item = await dataSources.parserAPI.getItemData(
-        url,
-        {
-          refresh: BoolStringParam.TRUE,
-        },
-        true,
-      );
+      // Article loader will always return a cache miss for `refresh`=true
+      // so no need to use it
+      const articleData = await (
+        dataSources.parserAPI as ParserAPI
+      ).getArticleByUrl(url, {
+        refresh: true,
+        imageStyle: MediaTypeParam.DIV_TAG,
+        videoStyle: MediaTypeParam.DIV_TAG,
+        maxAge: info.cacheControl.cacheHint.maxAge,
+      });
+      const item = await getItemByUrl(url);
 
-      return item;
+      // Clear our dataloader cache
+      clear({
+        itemId: item.itemId,
+        givenUrl: item.givenUrl,
+        resolvedUrl: item.resolvedUrl,
+        resolvedItemId: item.resolvedId,
+      });
+
+      return {
+        ...item,
+        article: articleData.article,
+        parsedArticle: articleData,
+      };
     },
   },
 };

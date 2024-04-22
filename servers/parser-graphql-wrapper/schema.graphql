@@ -405,11 +405,22 @@ type Query {
   getItemByUrl(url: String!): Item
     @cacheControl(maxAge: 86400)
     @deprecated(reason: "Use itemByUrl instead")
+  """
+  Look up Item info by ID.
+  """
+  getItemByItemId(id: ID!): Item
+    @cacheControl(maxAge: 86400)
+    @deprecated(reason: "Use itemById instead")
+    @inaccessible
 
   """
   Look up Item info by a url.
   """
   itemByUrl(url: String!): Item @cacheControl(maxAge: 86400)
+  """
+  Look up Item info by ID.
+  """
+  itemByItemId(id: ID!): Item @cacheControl(maxAge: 86400) @inaccessible
 
   """
   Resolve Reader View links which might point to SavedItems that do not

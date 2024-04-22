@@ -14,7 +14,7 @@ export const itemSummaryFromUrl = async (
   url: string,
   context: IContext,
 ): Promise<ItemSummary> => {
-  const item = await context.dataSources.parserAPI.getItemData(url);
+  const item = await context.dataLoaders.itemUrlLoader.load(url);
   return await deriveItemSummary(item, context);
 };
 

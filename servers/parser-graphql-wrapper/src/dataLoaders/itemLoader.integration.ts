@@ -1,8 +1,10 @@
 import { getConnection } from '../datasources/mysql';
 import { ItemResolver } from '../entities/ItemResolver';
-import { DataSource } from 'typeorm';
+import { Connection } from 'typeorm';
 import * as itemLoader from './itemLoader';
 import { getRedis } from '../cache';
+import nock, { cleanAll } from 'nock';
+import config from '../config';
 
 const urlToParse = 'https://test.com';
 
@@ -22,14 +24,40 @@ const item2 = {
   hasOldDupes: false,
 };
 
+const parserItemId = '123';
+
 describe('itemLoader - integration', () => {
-  let connection: DataSource;
+  let connection: Connection;
 
   beforeEach(async () => {
     //Setup our db connection
     connection = await getConnection();
     //Delete the items
-    await connection.query('TRUNCATE readitla_b.items_resolver');
+    const entities = connection.entityMetadatas;
+    for (const entity of entities) {
+      const repository = connection.getRepository(entity.name);
+      await repository.query(`DELETE FROM ${entity.tableName}`);
+    }
+
+    nock('http://example-parser.com')
+      .get('/')
+      .query({
+        url: urlToParse,
+        getItem: '1',
+        output: 'regular',
+        enableItemUrlFallback: '1',
+      })
+      .reply(200, {
+        item: {
+          item_id: parserItemId,
+          given_url: urlToParse,
+          normal_url: urlToParse,
+          authors: [],
+          images: [],
+          videos: [],
+          resolved_id: '16822',
+        },
+      });
 
     // flush the redis cache
     getRedis().clear();
@@ -42,7 +70,12 @@ describe('itemLoader - integration', () => {
 
   afterAll(async () => {
     await getRedis().disconnect();
-    await connection.destroy();
+    await connection.close();
+  });
+
+  it('should batch resolve item ids with the given id even if the parser returns a different item id', async () => {
+    const batchItems = await itemLoader.batchGetItemsByIds([parserItemId]);
+    expect(batchItems[0].itemId).toEqual(parserItemId);
   });
 
   it('should batch resolve item ids from the parser', async () => {
@@ -50,6 +83,153 @@ describe('itemLoader - integration', () => {
       item.itemId.toString(),
     ]);
     expect(batchItems[0].itemId).toEqual(item.itemId.toString());
-    expect(batchItems[0].url).toEqual(urlToParse);
+  });
+
+  it('should batch resolve item urls', async () => {
+    const batchItems = await itemLoader.batchGetItemsByUrls([item.normalUrl]);
+    expect(batchItems[0].givenUrl).toEqual(item.normalUrl);
+  });
+
+  it('should batch resolve item urls when error', async () => {
+    config.redis.port = '123123';
+    const batchItems = await itemLoader.batchGetItemsByUrls([item.normalUrl]);
+    expect(batchItems[0].givenUrl).toEqual(item.normalUrl);
+  });
+
+  it('should resolve item urls with space', async () => {
+    const returnedItem = await itemLoader.getItemByUrl(
+      `    ${item.normalUrl}    `,
+    );
+    expect(returnedItem.givenUrl).toEqual(item.normalUrl);
+  });
+
+  it('should retry up to 3 times', async () => {
+    cleanAll();
+
+    nock('http://example-parser.com')
+      .get('/')
+      .query({
+        url: urlToParse,
+        getItem: '1',
+        output: 'regular',
+        enableItemUrlFallback: '1',
+      })
+      .reply(503, {})
+      .get('/')
+      .query({
+        url: urlToParse,
+        getItem: '1',
+        output: 'regular',
+        enableItemUrlFallback: '1',
+      })
+      .reply(200, {})
+      .get('/')
+      .query({
+        url: urlToParse,
+        getItem: '1',
+        output: 'regular',
+        enableItemUrlFallback: '1',
+      })
+      .reply(200, {
+        item: {
+          item_id: parserItemId,
+          given_url: urlToParse,
+          normal_url: urlToParse,
+          authors: [],
+          images: [],
+          videos: [],
+          resolved_id: '16822',
+        },
+      });
+
+    const returnedItem = await itemLoader.getItemByUrl(
+      `    ${item.normalUrl}    `,
+    );
+    expect(returnedItem.givenUrl).toEqual(item.normalUrl);
+    expect(returnedItem.id).toEqual(
+      'fe562f9c5BCfC1eeQ9AffKeCaiD2a190J7eb5D66B8DccAd6E6a1f247B54Egd22',
+    );
+  });
+
+  it('should retry with a refresh when resolved_id is 0', async () => {
+    cleanAll();
+
+    const scope = nock('http://example-parser.com')
+      .get('/')
+      .query({
+        url: urlToParse,
+        getItem: '1',
+        output: 'regular',
+        enableItemUrlFallback: '1',
+      })
+      .reply(200, {
+        item: {
+          item_id: parserItemId,
+          given_url: urlToParse,
+          normal_url: urlToParse,
+          authors: null,
+          images: null,
+          videos: null,
+          resolved_id: '0',
+        },
+      })
+      .get('/')
+      .query({
+        url: urlToParse,
+        getItem: '1',
+        output: 'regular',
+        refresh: true,
+        enableItemUrlFallback: '1',
+      })
+      .reply(200, {
+        item: {
+          item_id: parserItemId,
+          given_url: urlToParse,
+          normal_url: urlToParse,
+          authors: [],
+          images: [],
+          videos: [],
+          resolved_id: '123',
+        },
+      });
+
+    const returnedItem = await itemLoader.getItemByUrl(
+      `    ${item.normalUrl}    `,
+    );
+    expect(scope.isDone()).toBeTruthy();
+    expect(returnedItem.givenUrl).toEqual(item.normalUrl);
+    expect(returnedItem.resolvedId).toEqual('123');
+    expect(returnedItem.id).toEqual(
+      'fe562f9c5BCfC1eeQ9AffKeCaiD2a190J7eb5D66B8DccAd6E6a1f247B54Egd22',
+    );
+  });
+  it('should use top-level item_id and given_url fields if they exist', async () => {
+    const urlTopFields = 'http://this-url-has-data.com';
+    nock('http://example-parser.com')
+      .get('/')
+      .query({
+        url: urlTopFields,
+        getItem: '1',
+        output: 'regular',
+        enableItemUrlFallback: '1',
+      })
+      .reply(200, {
+        item_id: '123',
+        given_url: urlTopFields,
+        item: {
+          item_id: '16822',
+          given_url: 'do not use this one',
+          normal_url: urlTopFields,
+          authors: [],
+          images: [],
+          videos: [],
+          resolved_id: '16822',
+        },
+      });
+    const returnedItem = await itemLoader.getItemByUrl(urlTopFields);
+    expect(returnedItem).toMatchObject({
+      itemId: '123',
+      givenUrl: urlTopFields,
+    });
   });
 });

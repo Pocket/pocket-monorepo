@@ -15,11 +15,11 @@ import {
   Image,
   Video,
   VideoType,
-  Item,
 } from '../__generated__/resolvers-types';
 import { countAncestors, countPreviousSiblings, createSubtree } from './utils';
 import turndownService from './turndown';
 import TurndownService from 'turndown';
+import { ParserArticle } from '../datasources/parserApi';
 import { config } from './config';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
@@ -34,6 +34,9 @@ export const videoTypeMap = {
   8: VideoType.Brightcove,
 };
 
+type ParserMediaMap = {
+  [key: string]: SrcRecord;
+};
 interface SrcRecord {
   [key: string]: any;
   src: string;
@@ -185,7 +188,7 @@ const transformers = {
   // Lists can be broken up, so the transformer can return any kind
   // of Marticle* component ( + lists).
   // Kind of cheating on types for documentation purposes
-  UL: (root: Node, article: Item): MarticleElement[] => {
+  UL: (root: Node, article: ParserArticle): MarticleElement[] => {
     const { output, aggFrom } = listTransformer(
       root,
       [],
@@ -204,7 +207,7 @@ const transformers = {
     }
     return output as MarticleElement[];
   },
-  OL: (root: Node, article: Item): MarticleElement[] => {
+  OL: (root: Node, article: ParserArticle): MarticleElement[] => {
     const { output, aggFrom } = listTransformer(
       root,
       [],
@@ -263,7 +266,7 @@ const transformers = {
   // comment and replace with a marticle media component
   '#comment': (
     root: Node,
-    article: Item,
+    article: ParserArticle,
   ): ((Image | Video) & { __typename: string }) | UnMarseable => {
     const text = root.textContent.trim();
 
@@ -291,8 +294,9 @@ const transformers = {
       return {
         ...image,
         __typename: 'Image',
-        width: image.width || null,
-        height: image.height || null,
+        imageId: parseInt(image.image_id),
+        width: parseInt(image.width) || null,
+        height: parseInt(image.height) || null,
         targetUrl: link,
       };
     }
@@ -310,10 +314,10 @@ const transformers = {
       return {
         ...video,
         __typename: 'Video',
-        videoId: video.videoId,
-        width: video.width || null,
-        height: video.height || null,
-        type: video.type,
+        videoId: parseInt(video.video_id),
+        width: parseInt(video.width) || null,
+        height: parseInt(video.height) || null,
+        type: videoTypeMap[video.type],
       };
     }
   },
@@ -356,7 +360,10 @@ function RootNode(input: string) {
  * @param parserArticle parser data on images and videos
  * @returns an array of MarticleComponents representing the article
  */
-export function parse(html: string, parserArticle?: Item): MarticleElement[] {
+export function parse(
+  html: string,
+  parserArticle?: ParserArticle,
+): MarticleElement[] {
   const tree = RootNode(html);
   return visitDeep(tree, [], parserArticle);
 }
@@ -365,7 +372,7 @@ export function parse(html: string, parserArticle?: Item): MarticleElement[] {
  *
  * @param article
  */
-export function parseArticle(article: Item): MarticleElement[] {
+export function parseArticle(article: ParserArticle): MarticleElement[] {
   return parse(article.article, article);
 }
 
@@ -382,7 +389,7 @@ export function parseArticle(article: Item): MarticleElement[] {
 function visitDeep(
   node: Node,
   output: any[],
-  parserArticle?: Item,
+  parserArticle?: ParserArticle,
   hasEventualAncestor?: boolean,
 ): MarticleElement[] {
   if (eventualComponents.indexOf(node.nodeName) >= 0) {
@@ -481,7 +488,7 @@ function processSubtree(children: Node[], parentType: string) {
  * @param node the root of the subtree to process into a MarticleComponent.
  * @param article
  */
-function processCurrentNode(node: Node, article: Item) {
+function processCurrentNode(node: Node, article: ParserArticle) {
   const component = transformers[node.nodeName]
     ? transformers[node.nodeName](node, article)
     : null;
@@ -520,7 +527,7 @@ function listTransformer(
   output: any[],
   listType: 'UL' | 'OL',
   aggFrom: number,
-  article: Item,
+  article: ParserArticle,
 ): {
   output: Array<MarticleElement | NumberedListElement | ListElement>;
   aggFrom: number | null;
@@ -599,19 +606,10 @@ function listTransformer(
  */
 function getParserMediaFromComment(
   comment: string,
-  media: Image[] | Video[],
+  media: ParserMediaMap,
 ): SrcRecord | null {
   const mediaId = parseInt(comment.trim()?.split('_').pop());
-
-  const mediaElement = media
-    ? (media.filter((value) => {
-        if ('imageId' in value) {
-          return value.imageId == mediaId;
-        } else if ('videoId' in value) {
-          return value.videoId == mediaId;
-        }
-      })[0] as unknown as SrcRecord)
-    : null;
+  const mediaElement = media ? media[mediaId] : null;
   const hasValidSrc = (mediaElement: SrcRecord | null): boolean => {
     if (mediaElement == null) {
       return false;

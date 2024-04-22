@@ -1,4 +1,3 @@
-import { ParserResponse } from './ParserAPITypes';
 import { extractDomainMeta, normalizeDate } from './parserApiUtils';
 
 describe('normalizeDate', () => {
@@ -17,14 +16,12 @@ describe('normalizeDate', () => {
 
 describe('extractDomainMeta', () => {
   it('gets an empty domainMeta object', () => {
-    expect(extractDomainMeta({} as ParserResponse)).toEqual({});
+    expect(extractDomainMeta({})).toEqual({});
   });
 
-  it('infers domain from given url', () => {
+  it('infers domain from normalized url', () => {
     expect(
-      extractDomainMeta({
-        given_url: 'http://getpocket.com',
-      } as ParserResponse),
+      extractDomainMeta({ normal_url: 'http://getpocket.com' }),
     ).toMatchObject({
       name: 'getpocket.com',
     });
@@ -32,9 +29,7 @@ describe('extractDomainMeta', () => {
 
   it('passes through existing domain metadata', () => {
     expect(
-      extractDomainMeta({
-        domainMetadata: { name: 'domain', logo: 'http' },
-      } as ParserResponse),
+      extractDomainMeta({ domain_metadata: { name: 'domain', logo: 'http' } }),
     ).toMatchObject({ name: 'domain', logo: 'http' });
   });
 });

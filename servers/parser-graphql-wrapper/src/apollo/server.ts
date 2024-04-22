@@ -16,6 +16,8 @@ import { typeDefs } from './typeDefs';
 import { resolvers } from './resolvers';
 import config from '../config';
 import { getRedis, getRedisCache } from '../cache';
+import { ParserAPI } from '../datasources/parserApi';
+import { LegacyDataSourcesPlugin } from '../datasources/legacyDataSourcesPlugin';
 import { ContextManager, IContext } from './context';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 import { unleash } from '../unleash';
@@ -75,6 +77,14 @@ export async function startServer(port: number): Promise<{
     cache,
     plugins: [
       ...defaultPlugins(httpServer),
+      // TODO: remove once dataSources has been migrated to context
+      LegacyDataSourcesPlugin({
+        dataSources: () => {
+          return {
+            parserAPI: new ParserAPI(),
+          };
+        },
+      }),
       // Set a default cache control of 0 seconds so it respects the individual set cache controls on the schema
       // With this set to 0 it will not cache by default
       ApolloServerPluginCacheControl({

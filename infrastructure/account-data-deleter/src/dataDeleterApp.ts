@@ -17,7 +17,7 @@ import {
 import { Construct } from 'constructs';
 
 export type DataDeleterAppConfig = {
-  pagerDuty?: PocketPagerDuty;
+  pagerDuty: PocketPagerDuty;
   region: dataAwsRegion.DataAwsRegion;
   caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
   secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
@@ -64,7 +64,7 @@ export class DataDeleterApp extends Construct {
     return new PocketALBApplication(this, 'application', {
       alarms: {
         http5xxErrorPercentage: {
-          actions: pagerDuty ? [pagerDuty.snsNonCriticalAlarmTopic.arn] : [],
+          actions: [pagerDuty.snsNonCriticalAlarmTopic.arn],
           evaluationPeriods: 4,
           period: 300, //5 mins each
           threshold: 25,
