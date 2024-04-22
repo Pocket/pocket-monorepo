@@ -8,4 +8,4 @@ process.env.LETTER_INDEX =
   '[["a",0],["b",1],["c",2],["d",3],["e",4],["f",5],["0",6]]';
 process.env.SALT_1 = '123asdf';
 process.env.SALT_2 = 'asdaa47';
-process.env.PARSER_URL = 'http://example-parser.com/';
+process.env.PARSER_BASE_ENDPOINT = 'http://example-parser.com';

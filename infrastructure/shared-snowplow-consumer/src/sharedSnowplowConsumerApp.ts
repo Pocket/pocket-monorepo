@@ -15,7 +15,7 @@ import { Construct } from 'constructs';
 
 export type SharedSnowplowConsumerProps = {
   caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
-  pagerDuty: PocketPagerDuty;
+  pagerDuty?: PocketPagerDuty;
   region: dataAwsRegion.DataAwsRegion;
   secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
   snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
@@ -199,7 +199,7 @@ export class SharedSnowplowConsumerApp extends Construct {
           threshold: 25,
           evaluationPeriods: 4,
           period: 300, //5 mins each
-          actions: [pagerDuty.snsNonCriticalAlarmTopic.arn],
+          actions: pagerDuty ? [pagerDuty.snsNonCriticalAlarmTopic.arn] : [],
         },
       },
     });

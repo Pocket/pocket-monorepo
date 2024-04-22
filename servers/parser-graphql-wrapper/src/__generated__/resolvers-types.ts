@@ -413,17 +413,10 @@ export type PocketShare = {
 export type Query = {
   __typename?: 'Query';
   /**
-   * Look up Item info by ID.
-   * @deprecated Use itemById instead
-   */
-  getItemByItemId?: Maybe<Item>;
-  /**
    * Look up Item info by a url.
    * @deprecated Use itemByUrl instead
    */
   getItemByUrl?: Maybe<Item>;
-  /** Look up Item info by ID. */
-  itemByItemId?: Maybe<Item>;
   /** Look up Item info by a url. */
   itemByUrl?: Maybe<Item>;
   /**
@@ -437,18 +430,8 @@ export type Query = {
 };
 
 
-export type QuerygetItemByItemIdArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
 export type QuerygetItemByUrlArgs = {
   url: Scalars['String']['input'];
-};
-
-
-export type QueryitemByItemIdArgs = {
-  id: Scalars['ID']['input'];
 };
 
 
@@ -925,9 +908,7 @@ export type PocketShareResolvers<ContextType = IContext, ParentType extends Reso
 }>;
 
 export type QueryResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  getItemByItemId?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType, RequireFields<QuerygetItemByItemIdArgs, 'id'>>;
   getItemByUrl?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType, RequireFields<QuerygetItemByUrlArgs, 'url'>>;
-  itemByItemId?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType, RequireFields<QueryitemByItemIdArgs, 'id'>>;
   itemByUrl?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType, RequireFields<QueryitemByUrlArgs, 'url'>>;
   readerSlug?: Resolver<ResolversTypes['ReaderViewResult'], ParentType, ContextType, RequireFields<QueryreaderSlugArgs, 'slug'>>;
 }>;

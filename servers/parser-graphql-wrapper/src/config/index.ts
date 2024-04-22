@@ -57,8 +57,13 @@ export default {
     username: process.env.POCKET_SHARES_DATABASE_WRITE_USER || 'root',
     password: process.env.POCKET_SHARES_DATABASE_WRITE_PASSWORD || '',
   },
-  parserEndpoint: process.env.PARSER_URL || 'http://example-parser.com/',
-  parserRetries: 3,
+  parser: {
+    baseEndpoint:
+      process.env.PARSER_BASE_ENDPOINT || 'http://example-parser.com',
+    dataPath: process.env.PARSER_DATA_PATH || '/wrapper',
+    retries: 3,
+    timeout: 5,
+  },
   unleash: {
     clientKey: process.env.UNLEASH_KEY || 'unleash-key-fake',
     endpoint: process.env.UNLEASH_ENDPOINT || 'http://localhost:4242/api',
