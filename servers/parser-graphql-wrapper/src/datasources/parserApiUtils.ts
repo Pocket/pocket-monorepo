@@ -16,7 +16,7 @@ import { ParserResponse } from './ParserAPITypes';
 export const getAuthors = (authors): Author[] => {
   return Object.keys(authors).map((authorId: string): Author => {
     return {
-      id: authors[authorId].author_id,
+      id: authors[authorId].author_id ?? authorId, //default to the key if it does not exist yet in the db
       name: authors[authorId].name,
       url: authors[authorId].url,
     };
@@ -30,9 +30,9 @@ export const getAuthors = (authors): Author[] => {
 export const getImages = (images): Image[] => {
   return Object.keys(images).map((index: string): Image => {
     return {
-      imageId: parseInt(images[index].image_id),
-      width: parseInt(images[index]?.width) ?? null,
-      height: parseInt(images[index]?.height) ?? null,
+      imageId: parseIntOrNull(images[index].image_id),
+      width: parseIntOrNull(images[index]?.width) ?? null,
+      height: parseIntOrNull(images[index]?.height) ?? null,
       src: images[index].src,
       url: images[index].src,
       caption: images[index].caption,
@@ -48,15 +48,24 @@ export const getImages = (images): Image[] => {
 export const getVideos = (videos): Video[] => {
   return Object.keys(videos).map((index: string): Video => {
     return {
-      videoId: parseInt(videos[index].video_id),
-      width: parseInt(videos[index]?.width) ?? null,
-      height: parseInt(videos[index]?.height) ?? null,
+      videoId: parseIntOrNull(videos[index].video_id),
+      width: parseIntOrNull(videos[index]?.width) ?? null,
+      height: parseIntOrNull(videos[index]?.height) ?? null,
       src: videos[index].src,
       type: parseVideoType(videos[index].type),
       vid: videos[index]?.vid,
       length: videos[index]?.length,
     };
   });
+};
+
+const parseIntOrNull = (val: any): number | null => {
+  const intValue = parseInt(val);
+  if (isNaN(intValue)) {
+    return null;
+  }
+
+  return intValue;
 };
 
 /**
