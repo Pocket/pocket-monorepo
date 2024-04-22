@@ -1,5 +1,4 @@
 import { ApolloServer } from '@apollo/server';
-import nock from 'nock';
 import { print } from 'graphql/index';
 import { gql } from 'graphql-tag';
 import request from 'supertest';
@@ -11,6 +10,16 @@ import {
 } from '../../datasources/mysql';
 import { getRedis } from '../../cache';
 import { startServer } from '../../apollo/server';
+import {
+  cacheParserResponse,
+  fakeArticle,
+  getCachedParserResponse,
+  newFakeArticle,
+  nockResponseForParser,
+  nockThreeStandardParserResponses,
+} from '../utils/parserResponse';
+import { BoolStringParam } from '../../datasources/ParserAPI';
+import Keyv from 'keyv';
 
 describe('refresh mutation', () => {
   const testUrl = 'https://someurl.com';
@@ -21,109 +30,24 @@ describe('refresh mutation', () => {
   let app: Application;
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
+  let cache: Keyv;
 
   afterAll(async () => {
     await server.stop();
     await (await getConnection()).destroy();
     await (await getSharedUrlsConnection()).destroy();
-    await getRedis().disconnect();
+    cache.disconnect();
   });
 
   beforeAll(async () => {
     // port 0 tells express to dynamically assign an available port
     ({ app, server, url: graphQLUrl } = await startServer(0));
+    cache = getRedis();
   });
 
   beforeEach(async () => {
     // Flush the redis cache before each test
-    await getRedis().clear();
-    //first call for getItemByUrl.
-    nock(`http://example-parser.com`)
-      .get(
-        `/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular&enableItemUrlFallback=1`,
-      )
-      .reply(200, {
-        item: {
-          given_url: testUrl,
-          normal_url: testUrl,
-          item_id: '1',
-          resolved_id: '1',
-          title: 'first title',
-          domain_metadata: {
-            name: 'domain',
-            logo: 'logo',
-          },
-          authors: [],
-          images: [],
-          videos: [],
-        },
-      });
-
-    // second call to refresh
-    nock(`http://example-parser.com`)
-      .get(
-        `/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular&images=2&videos=2&createIfNone=true&refresh=true`,
-      )
-      .reply(200, {
-        item: {
-          given_url: testUrl,
-          normal_url: testUrl,
-          item_id: '1',
-          resolved_id: '1',
-          title: 'new title',
-          domain_metadata: {
-            name: 'domain',
-            logo: 'logo',
-          },
-          authors: [],
-          images: [],
-          videos: [],
-        },
-      });
-
-    //third call used by refresh aritcle.
-    nock(`http://example-parser.com`)
-      .get(
-        `/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular&enableItemUrlFallback=1`,
-      )
-      .reply(200, {
-        item: {
-          given_url: testUrl,
-          normal_url: testUrl,
-          item_id: '1',
-          resolved_id: '1',
-          title: 'new title',
-          domain_metadata: {
-            name: 'domain',
-            logo: 'logo',
-          },
-          authors: [],
-          images: [],
-          videos: [],
-        },
-      });
-
-    // final call used by the refrence resolver.
-    nock(`http://example-parser.com`)
-      .get(
-        `/?url=${encodeURIComponent(testUrl)}&getItem=1&output=regular&enableItemUrlFallback=1`,
-      )
-      .reply(200, {
-        item: {
-          given_url: testUrl,
-          normal_url: testUrl,
-          item_id: '1',
-          resolved_id: '1',
-          title: 'new title',
-          domain_metadata: {
-            name: 'domain',
-            logo: 'logo',
-          },
-          authors: [],
-          images: [],
-          videos: [],
-        },
-      });
+    await cache.clear();
   });
 
   it('should return updated title from query', async () => {
@@ -145,6 +69,10 @@ describe('refresh mutation', () => {
       }
     `;
 
+    const firstRequest = nockResponseForParser(testUrl, {
+      data: { title: 'first title' },
+    });
+
     const res = await request(app)
       .post(graphQLUrl)
       .send({
@@ -161,6 +89,10 @@ describe('refresh mutation', () => {
     expect(res).not.toBeNull();
     expect(res.body.data._entities[0].title).toBe('first title');
 
+    nockResponseForParser(testUrl, {
+      data: { ...firstRequest.data, title: 'new title' },
+      parserOptions: { refresh: BoolStringParam.TRUE },
+    });
     const refreshResponse = await request(app)
       .post(graphQLUrl)
       .send({ query: print(REFRESH_ITEM_BY_URL), variables });
@@ -184,5 +116,63 @@ describe('refresh mutation', () => {
       });
     expect(secondQueryResponse).not.toBeNull();
     expect(secondQueryResponse.body.data._entities[0].title).toBe('new title');
+  });
+
+  it('should update the cached response when refresh=true, and return updated response', async () => {
+    const url = 'https://botnik.org/content/harry-potter.html';
+    const REFRESH_ARTICLE = gql`
+      mutation refreshArticle($url: String!) {
+        refreshItemArticle(url: $url) {
+          givenUrl
+          article
+          marticle {
+            __typename
+          }
+          authors {
+            name
+          }
+        }
+      }
+    `;
+    const { textMock, getItemMock, marticleTextMock } =
+      nockThreeStandardParserResponses(newFakeArticle, url, true);
+    await cacheParserResponse(
+      getItemMock.params.cacheKey,
+      { ...fakeArticle, article: undefined },
+      cache,
+    );
+    await cacheParserResponse(
+      textMock.params.cacheKey,
+      { ...fakeArticle },
+      cache,
+    );
+    await cacheParserResponse(
+      marticleTextMock.params.cacheKey,
+      { ...fakeArticle },
+      cache,
+    );
+
+    const result = await request(app)
+      .post(graphQLUrl)
+      .send({ query: print(REFRESH_ARTICLE), variables: { url: url } });
+    expect(textMock.scope.isDone()).toEqual(true); // should have made request
+    expect(getItemMock.scope.isDone()).toEqual(true);
+    expect(marticleTextMock.scope.isDone()).toEqual(true);
+
+    expect(result.body.data.refreshItemArticle.article).toEqual(
+      newFakeArticle.article,
+    );
+    expect(result.body.data.refreshItemArticle.marticle).toEqual([
+      { __typename: 'MarticleText' },
+      { __typename: 'Image' },
+    ]);
+    // Should also have resolved item data
+    expect(result.body.data.refreshItemArticle.authors).toEqual([
+      { name: 'botnik' },
+    ]);
+    const cachedResult = (
+      await getCachedParserResponse(textMock.params.cacheKey, cache)
+    ).article;
+    expect(cachedResult).toEqual(newFakeArticle.article);
   });
 });

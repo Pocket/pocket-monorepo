@@ -41,7 +41,7 @@ export class SSMLModel {
     if (!articleLang || articleLang === 'en') {
       if (timePublished) {
         const publishedDate = new Date(Date.parse(timePublished));
-        const dateString = `<say-as interpret-as='date' format='m/d/y'>${publishedDate.getMonth()}/${publishedDate.getDay()}/${publishedDate.getFullYear()}</say-as>`;
+        const dateString = `<say-as interpret-as='date' format='m/d/y'>${publishedDate.getMonth() + 1}/${publishedDate.getUTCDate()}/${publishedDate.getFullYear()}</say-as>`;
 
         introFullText = publisher
           ? `${articleTitle}, published by ${publisher}, on ${dateString}`

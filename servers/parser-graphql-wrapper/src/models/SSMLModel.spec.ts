@@ -48,7 +48,7 @@ describe('SSML', () => {
     });
 
     expect(ssml).toBe(
-      "<speak><prosody rate='medium' volume='medium'>The Example Article, published by Mozilla, on <say-as interpret-as='date' format='m/d/y'>3/3/2023</say-as></prosody><prosody rate='medium' volume='medium'> A paragraph with an  image    heading  Another paragraph with some  em  text </prosody></speak>",
+      "<speak><prosody rate='medium' volume='medium'>The Example Article, published by Mozilla, on <say-as interpret-as='date' format='m/d/y'>4/26/2023</say-as></prosody><prosody rate='medium' volume='medium'> A paragraph with an  image    heading  Another paragraph with some  em  text </prosody></speak>",
     );
   });
 });

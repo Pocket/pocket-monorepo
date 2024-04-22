@@ -1,5 +1,12 @@
 import * as marticleParser from './marticleParser';
-import { VideoType, MarticleComponent } from '../__generated__/resolvers-types';
+import {
+  VideoType,
+  MarticleComponent,
+  Item,
+  Videoness,
+} from '../__generated__/resolvers-types';
+import { faker } from '@faker-js/faker';
+import { IntMask } from '@pocket-tools/int-mask';
 
 /**
  * Returns data in the format of an API response from the legacy Parser service.
@@ -7,22 +14,28 @@ import { VideoType, MarticleComponent } from '../__generated__/resolvers-types';
  * @param images
  * @param url
  */
-function getTestArticle(html, images?, url?) {
+function getTestArticle(item: Partial<Item>): Item {
+  const itemId = faker.number.bigInt().toString();
   return {
+    itemId: itemId,
+    id: IntMask.encode(itemId),
+    resolvedId: faker.number.bigInt().toString(),
     isArticle: true,
-    isVideo: false,
-    article: html,
-    images: images ?? {
-      1: {
-        image_id: '1',
+    hasVideo: Videoness.NoVideos,
+    images: [
+      {
+        imageId: 1,
         width: 200,
         height: 150,
         src: 'https://imagine.a-cool.image.jpg',
+        url: 'https://imagine.a-cool.image.jpg',
         caption: 'I told you this is a cool image',
         credit: 'give it all to kelvin',
       },
-    },
-    givenUrl: url ?? 'https://something-to.test',
+    ],
+    givenUrl: 'https://something-to.test',
+    normalUrl: 'https://something-to.test',
+    ...item,
   };
 }
 
@@ -35,7 +48,7 @@ describe('MarticleParser', () => {
     // }
     const input =
       '<p>A paragraph with an <b>image</b><img src="https://123"/></p><h1>heading</h1><p>Another paragraph with some <em>em</em> text</p>';
-    const res = marticleParser.parseArticle(getTestArticle(input));
+    const res = marticleParser.parseArticle(getTestArticle({ article: input }));
     const expected = [
       {
         __typename: 'MarticleText',
@@ -56,7 +69,7 @@ describe('MarticleParser', () => {
   it('should parse text only html', () => {
     const input =
       '<p>A top-level paragraph</p><p>Another top-level paragraph. <i>No</i> special components</p>';
-    const res = marticleParser.parseArticle(getTestArticle(input));
+    const res = marticleParser.parseArticle(getTestArticle({ article: input }));
     const expected = [
       { __typename: 'MarticleText', content: 'A top-level paragraph' },
       {
@@ -73,7 +86,7 @@ describe('MarticleParser', () => {
     const input =
       '<h1>A heading</h1><p>A paragraph</p><h2>A <b>formatted</b> heading</h2><h6>An h6</h6><h4>A <a href=/link>linked</a> h4</h4><h5>An h5</h5><h3>An h3</h3>';
     const res = marticleParser.parseArticle(
-      getTestArticle(input),
+      getTestArticle({ article: input }),
     ) as MarticleComponent[];
     const expected = [
       { __typename: 'MarticleHeading', content: '# A heading', level: 1 },
@@ -113,7 +126,7 @@ describe('MarticleParser', () => {
 
   it('should parse horizontal rules/content dividers', () => {
     const input = '<hr><p>Some text</p><hr><hr><p>A paragraph</p><hr>';
-    const res = marticleParser.parseArticle(getTestArticle(input));
+    const res = marticleParser.parseArticle(getTestArticle({ article: input }));
     const expected = [
       { __typename: 'MarticleDivider', content: '---' },
       {
@@ -134,7 +147,7 @@ describe('MarticleParser', () => {
   it('should parse tables', () => {
     const input =
       '<table><thead><tr><th>a</th><th>b</th></tr></thead><tbody><tr><td>c</td><td>d</td></tr></tbody></table>';
-    const res = marticleParser.parseArticle(getTestArticle(input));
+    const res = marticleParser.parseArticle(getTestArticle({ article: input }));
     const expected = [{ __typename: 'MarticleTable', html: input }];
     expect(res).toEqual(expected);
   });
@@ -142,7 +155,7 @@ describe('MarticleParser', () => {
   it('should parse codeblocks with a code tag', () => {
     const input =
       '<pre><code>p { color: red; }\nbody { background-color: #eee; }\n</code></pre>';
-    const res = marticleParser.parseArticle(getTestArticle(input));
+    const res = marticleParser.parseArticle(getTestArticle({ article: input }));
     const expected = [
       {
         __typename: 'MarticleCodeBlock',
@@ -560,32 +573,31 @@ describe('MarticleParser', () => {
       width: 200,
       height: 150,
       vid: 'wubbalubbadubdub',
-      length: '10',
-      type: '1',
+      length: 10,
+      type: VideoType.Youtube,
     };
 
-    const article = {
-      isArticle: true,
-      isVideo: false,
-      article: input,
-      videos: {
-        1: {
-          ...baseVideo,
-          video_id: '1',
-          src: 'https://imagine.a-cool.video',
-        },
-        2: {
-          ...baseVideo,
-          height: '',
-          width: '',
-          video_id: '2',
-          src: 'https://imagine.another-cool.video',
-        },
-      },
-      givenUrl: 'https://something-to.test',
-    };
-
-    const res = marticleParser.parseArticle(article);
+    const res = marticleParser.parseArticle(
+      getTestArticle({
+        isArticle: true,
+        hasVideo: Videoness.IsVideo,
+        article: input,
+        videos: [
+          {
+            ...baseVideo,
+            videoId: 1,
+            src: 'https://imagine.a-cool.video',
+          },
+          {
+            ...baseVideo,
+            width: undefined,
+            height: undefined,
+            videoId: 2,
+            src: 'https://imagine.another-cool.video',
+          },
+        ],
+      }),
+    );
 
     const expected = [
       {
@@ -599,7 +611,6 @@ describe('MarticleParser', () => {
         videoId: 1,
         src: 'https://imagine.a-cool.video',
         url: 'https://imagine.a-cool.video/',
-        video_id: '1',
       },
       {
         __typename: 'MarticleText',
@@ -614,7 +625,6 @@ describe('MarticleParser', () => {
         height: null,
         src: 'https://imagine.another-cool.video',
         url: 'https://imagine.another-cool.video/',
-        video_id: '2',
       },
     ];
     expect(res).toEqual(expected);
@@ -634,27 +644,29 @@ describe('MarticleParser', () => {
       credit: 'give it all to kelvin',
     };
 
-    const article = {
-      isArticle: true,
-      article: input,
-      isVideo: false,
-      images: {
-        1: {
-          ...baseImage,
-          image_id: '1',
-          src: 'https://imagine.a-cool.image.jpg',
-        },
-        2: {
-          ...baseImage,
-          width: '',
-          image_id: '2',
-          src: 'https://imagine.another-cool.image.jpg',
-        },
-      },
-      givenUrl: 'https://something-to.test',
-    };
-
-    const res = marticleParser.parseArticle(article);
+    const res = marticleParser.parseArticle(
+      getTestArticle({
+        isArticle: true,
+        article: input,
+        hasVideo: Videoness.NoVideos,
+        images: [
+          {
+            ...baseImage,
+            imageId: 1,
+            src: 'https://imagine.a-cool.image.jpg',
+            url: 'https://imagine.a-cool.image.jpg',
+          },
+          {
+            ...baseImage,
+            width: undefined,
+            imageId: 2,
+            src: 'https://imagine.another-cool.image.jpg',
+            url: 'https://imagine.another-cool.image.jpg',
+          },
+        ],
+        givenUrl: 'https://something-to.test',
+      }),
+    );
 
     const expected = [
       {
@@ -667,7 +679,6 @@ describe('MarticleParser', () => {
         imageId: 1,
         src: 'https://imagine.a-cool.image.jpg',
         url: 'https://imagine.a-cool.image.jpg/',
-        image_id: '1',
         targetUrl: null,
       },
       {
@@ -681,7 +692,6 @@ describe('MarticleParser', () => {
         imageId: 2,
         src: 'https://imagine.another-cool.image.jpg',
         url: 'https://imagine.another-cool.image.jpg/',
-        image_id: '2',
         targetUrl: null,
       },
     ];
@@ -881,20 +891,22 @@ describe('MarticleParser', () => {
       credit: 'thanks',
     };
 
-    const article = {
-      isArticle: true,
-      isVideo: false,
-      article: input,
-      images: {
-        1: {
-          ...baseImage,
-          image_id: '1',
-          src: 'https://imagine.a-cool.image.jpg',
-        },
-      },
-      givenUrl: 'https://something-to.test',
-    };
-    const res = marticleParser.parseArticle(article);
+    const res = marticleParser.parseArticle(
+      getTestArticle({
+        isArticle: true,
+        hasVideo: Videoness.NoVideos,
+        article: input,
+        images: [
+          {
+            ...baseImage,
+            imageId: 1,
+            src: 'https://imagine.a-cool.image.jpg',
+            url: 'https://imagine.a-cool.image.jpg',
+          },
+        ],
+        givenUrl: 'https://something-to.test',
+      }),
+    );
     const expected = [
       { __typename: 'MarticleText', content: 'some text' },
       {
@@ -903,7 +915,6 @@ describe('MarticleParser', () => {
         imageId: 1,
         src: 'https://imagine.a-cool.image.jpg',
         url: 'https://imagine.a-cool.image.jpg/',
-        image_id: '1',
         targetUrl: '/url',
       },
       { __typename: 'MarticleText', content: 'whatever more' },
@@ -975,39 +986,40 @@ describe('MarticleParser', () => {
       width: 200,
       height: 150,
       vid: 'wubbalubbadubdub',
-      length: '10',
-      type: '1',
+      length: 10,
+      type: VideoType.Youtube,
     };
 
-    const article = {
-      isArticle: true,
-      isVideo: false,
-      article: input,
-      videos: {
-        1: {
-          ...baseVideo,
-          video_id: '1',
-          src: '', // empty string
-        },
-        2: {
-          ...baseVideo,
-          height: '',
-          width: '',
-          video_id: '2',
-          // src is null or undefined
-        },
-        3: {
-          ...baseVideo,
-          height: '',
-          width: '',
-          video_id: '3',
-          src: 'https://a_url.mpeg https://why_arethere_two.mpeg', //malformed
-        },
-      },
-      givenUrl: 'https://something-to.test',
-    };
-
-    const res = marticleParser.parseArticle(article);
+    const res = marticleParser.parseArticle(
+      getTestArticle({
+        isArticle: true,
+        hasVideo: Videoness.HasVideos,
+        article: input,
+        videos: [
+          {
+            ...baseVideo,
+            videoId: 1,
+            src: '', // empty string
+          },
+          {
+            ...baseVideo,
+            height: undefined,
+            width: undefined,
+            videoId: 2,
+            src: undefined,
+            // src is null or undefined
+          },
+          {
+            ...baseVideo,
+            height: undefined,
+            width: undefined,
+            videoId: 3,
+            src: 'https://a_url.mpeg https://why_arethere_two.mpeg', //malformed
+          },
+        ],
+        givenUrl: 'https://something-to.test',
+      }),
+    );
 
     const expected = [
       {
@@ -1048,33 +1060,37 @@ describe('MarticleParser', () => {
       credit: 'give it all to kelvin',
     };
 
-    const article = {
-      isArticle: true,
-      isVideo: false,
-      article: input,
-      images: {
-        1: {
-          ...baseImage,
-          image_id: '1',
-          src: '', // src empty string
-        },
-        2: {
-          ...baseImage,
-          width: '',
-          image_id: '2',
-          // src missing/null
-        },
-        3: {
-          ...baseImage,
-          width: '',
-          image_id: '2',
-          src: 'https://a_url.png https://why_arethere_two.jpg', //malformed
-        },
-      },
-      givenUrl: 'https://something-to.test',
-    };
-
-    const res = marticleParser.parseArticle(article);
+    const res = marticleParser.parseArticle(
+      getTestArticle({
+        isArticle: true,
+        hasVideo: Videoness.NoVideos,
+        article: input,
+        images: [
+          {
+            ...baseImage,
+            imageId: 1,
+            src: '', // src empty string
+            url: '',
+          },
+          {
+            ...baseImage,
+            width: undefined,
+            imageId: 2,
+            src: undefined,
+            url: undefined,
+            // src missing/null
+          },
+          {
+            ...baseImage,
+            width: undefined,
+            imageId: 2,
+            src: 'https://a_url.png https://why_arethere_two.jpg', //malformed
+            url: 'https://a_url.png https://why_arethere_two.jpg', //malformed
+          },
+        ],
+        givenUrl: 'https://something-to.test',
+      }),
+    );
 
     const expected = [
       {

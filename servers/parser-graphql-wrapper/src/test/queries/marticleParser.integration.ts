@@ -8,44 +8,50 @@
 
 import nock, { cleanAll } from 'nock';
 import { getRedis } from '../../cache';
-import { VideoType } from '../../__generated__/resolvers-types';
+import { VideoType, Videoness } from '../../__generated__/resolvers-types';
 import { startServer } from '../../apollo/server';
-import { ParserAPI } from '../../datasources/parserApi';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import { print } from 'graphql';
 import { gql } from 'graphql-tag';
 import { IContext } from '../../apollo/context';
 import { Application } from 'express';
+import {
+  nockResponseForParser,
+  videonessToParser,
+} from '../utils/parserResponse';
+import { faker } from '@faker-js/faker';
+import { BoolStringParam, MediaTypeParam } from '../../datasources/ParserAPI';
+import config from '../../config';
 
 function makeResponseForParserTextEndpoint(options: {
   url: string;
   html: string;
   isArticle: boolean;
-  isVideo: boolean;
+  videoness: Videoness;
 }) {
-  const { url, html, isArticle, isVideo } = options;
-  const { query } = ParserAPI.buildQueryString({
-    ...ParserAPI.defaultParams,
-    url: url,
-  });
-  return nock('http://example-parser.com', {
-    encodedQueryParams: false,
-  })
-    .get(`/?${query}`)
-    .reply(200, {
+  const scope = nock(`${config.parser.baseEndpoint}`);
+  const { url, html, isArticle, videoness } = options;
+
+  const itemId = faker.number.bigInt().toString();
+  // first request will not ask the parser for article data
+  const itemMock = nockResponseForParser(url, {
+    parserOptions: {
+      images: MediaTypeParam.DIV_TAG,
+      videos: MediaTypeParam.DIV_TAG,
+    },
+    scope: scope,
+    data: {
+      item_id: itemId,
       isArticle: +isArticle,
-      isVideo: +isVideo,
-      article: html,
-      //needs item, otherwise the endpoint throws error
-      item: {
-        given_url: url,
-      },
+      isVideo: videoness == Videoness.HasVideos ? 1 : 0,
+      has_video: videonessToParser(videoness),
       images: {
         1: {
+          item_id: itemId,
           image_id: '1',
-          width: 200,
-          height: 150,
+          width: '200',
+          height: '150',
           src: 'https://imagine.a-cool.image.jpg',
           caption: 'I told you this is a cool image',
           credit: 'give it all to kelvin',
@@ -53,6 +59,7 @@ function makeResponseForParserTextEndpoint(options: {
       },
       videos: {
         1: {
+          item_id: itemId,
           video_id: '1',
           src: 'https://imagine.a-cool.video',
           width: '200',
@@ -62,7 +69,19 @@ function makeResponseForParserTextEndpoint(options: {
           type: '1',
         },
       },
-    });
+    },
+  });
+
+  // second request will get article data
+  nockResponseForParser(url, {
+    parserOptions: {
+      images: MediaTypeParam.AS_COMMENTS,
+      videos: MediaTypeParam.AS_COMMENTS,
+      noArticle: BoolStringParam.FALSE,
+    },
+    scope: scope,
+    data: { ...itemMock.data, article: html },
+  });
 }
 
 describe('Marticle integration ', () => {
@@ -79,31 +98,6 @@ describe('Marticle integration ', () => {
   beforeEach(() => {
     // Flush the redis cache before each test
     getRedis().clear();
-
-    //first call for getItemByUrl.
-    nock('http://example-parser.com')
-      .get('/')
-      .query({
-        url: testUrl,
-        getItem: '1',
-        output: 'regular',
-        enableItemUrlFallback: '1',
-      })
-      .reply(200, {
-        item: {
-          given_url: testUrl,
-          normal_url: testUrl,
-          item_id: '1',
-          resolved_id: '1',
-          domain_metadata: {
-            name: 'domain',
-            logo: 'logo',
-          },
-          authors: [],
-          images: [],
-          videos: [],
-        },
-      });
   });
 
   afterAll(async () => {
@@ -119,12 +113,12 @@ describe('Marticle integration ', () => {
       url: testUrl,
       html: testInput,
       isArticle: true,
-      isVideo: false,
+      videoness: Videoness.NoVideos,
     });
 
     const GET_ITEMS_BY_URL = gql`
-      query getItemByUrl($url: String!) {
-        getItemByUrl(url: $url) {
+      query itemByUrl($url: String!) {
+        itemByUrl(url: $url) {
           marticle {
             __typename
             ... on MarticleText {
@@ -155,7 +149,7 @@ describe('Marticle integration ', () => {
     ];
 
     expect(res.body.data).not.toBeUndefined;
-    const marticle = res.body.data.getItemByUrl.marticle;
+    const marticle = res.body.data.itemByUrl.marticle;
     expect(marticle.length).toBeGreaterThan(0);
     expect(marticle).toStrictEqual(expected);
   });
@@ -169,12 +163,12 @@ describe('Marticle integration ', () => {
       url: testUrl,
       html: testInput,
       isArticle: true,
-      isVideo: false,
+      videoness: Videoness.NoVideos,
     });
 
     const GET_ITEMS_BY_URL = gql`
-      query getItemByUrl($url: String!) {
-        getItemByUrl(url: $url) {
+      query itemByUrl($url: String!) {
+        itemByUrl(url: $url) {
           marticle {
             ... on MarticleText {
               __typename
@@ -203,7 +197,7 @@ describe('Marticle integration ', () => {
       .post(graphQLUrl)
       .send({ query: print(GET_ITEMS_BY_URL), variables });
     expect(res.body.data).not.toBeUndefined;
-    const marticle = res.body.data.getItemByUrl.marticle;
+    const marticle = res.body.data.itemByUrl.marticle;
     expect(marticle.length).toBeGreaterThan(0);
     expect(marticle).toStrictEqual([
       {
@@ -236,12 +230,12 @@ describe('Marticle integration ', () => {
       url: testUrl,
       html: testInput,
       isArticle: true,
-      isVideo: false,
+      videoness: Videoness.HasVideos,
     });
 
     const GET_ITEMS_BY_URL = gql`
-      query getItemByUrl($url: String!) {
-        getItemByUrl(url: $url) {
+      query itemByUrl($url: String!) {
+        itemByUrl(url: $url) {
           marticle {
             ... on MarticleText {
               __typename
@@ -270,7 +264,7 @@ describe('Marticle integration ', () => {
       .post(graphQLUrl)
       .send({ query: print(GET_ITEMS_BY_URL), variables });
     expect(res.body.data).not.toBeUndefined;
-    const marticle = res.body.data.getItemByUrl.marticle;
+    const marticle = res.body.data.itemByUrl.marticle;
     expect(marticle.length).toBeGreaterThan(0);
     expect(marticle).toStrictEqual([
       {
@@ -293,7 +287,7 @@ describe('Marticle integration ', () => {
       },
     ]);
   });
-  it('should not return Marticle data if the Parser responds with isArticle=0 and isVideo=0', async () => {
+  it('should not return Marticle data if the Parser responds with isArticle=0 and videoness=NoVideos', async () => {
     // Even if there is an extracted article string
     const testInput =
       '<p>A paragraph with an <b>image</b><p>Another paragraph with some <em>em</em> text</p>';
@@ -301,12 +295,12 @@ describe('Marticle integration ', () => {
       url: testUrl,
       html: testInput,
       isArticle: false,
-      isVideo: false,
+      videoness: Videoness.NoVideos,
     });
 
     const GET_ITEMS_BY_URL = gql`
-      query getItemByUrl($url: String!) {
-        getItemByUrl(url: $url) {
+      query itemByUrl($url: String!) {
+        itemByUrl(url: $url) {
           marticle {
             __typename
             ... on MarticleText {
@@ -326,21 +320,21 @@ describe('Marticle integration ', () => {
       .send({ query: print(GET_ITEMS_BY_URL), variables });
 
     expect(res.body.data).not.toBeUndefined;
-    const marticle = res.body.data.getItemByUrl.marticle;
+    const marticle = res.body.data.itemByUrl.marticle;
     expect(marticle).toStrictEqual([]);
   });
-  it('should return Marticle data if isVideo=1', async () => {
+  it('should return Marticle data if videoness=HasVideo', async () => {
     const testInput = '<div><!--VIDEO_1--></div>';
     makeResponseForParserTextEndpoint({
       url: testUrl,
       html: testInput,
       isArticle: false,
-      isVideo: true,
+      videoness: Videoness.HasVideos,
     });
 
     const GET_ITEMS_BY_URL = gql`
-      query getItemByUrl($url: String!) {
-        getItemByUrl(url: $url) {
+      query itemByUrl($url: String!) {
+        itemByUrl(url: $url) {
           marticle {
             ... on Video {
               __typename
@@ -365,7 +359,7 @@ describe('Marticle integration ', () => {
       .post(graphQLUrl)
       .send({ query: print(GET_ITEMS_BY_URL), variables });
     expect(res.body.data).not.toBeUndefined;
-    const marticle = res.body.data.getItemByUrl.marticle;
+    const marticle = res.body.data.itemByUrl.marticle;
     expect(marticle.length).toBeGreaterThan(0);
     expect(marticle).toStrictEqual([
       {
