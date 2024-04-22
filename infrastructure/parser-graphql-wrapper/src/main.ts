@@ -249,12 +249,12 @@ class ParserGraphQLWrapper extends TerraformStack {
               valueFrom: `${PocketSharesSecretPrefix}:password::`,
             },
             {
-              name: 'PARSER_URL',
-              valueFrom: `${PocketSecretsPrefix}:parser_endpoint::`,
-            },
-            {
               name: 'PARSER_BASE_ENDPOINT',
               valueFrom: `${PocketSecretsPrefix}:parser_base_endpoint::`,
+            },
+            {
+              name: 'PARSER_DATA_PATH',
+              valueFrom: `${PocketSecretsPrefix}:parser_data_path::`,
             },
             {
               name: 'SHORT_PREFIX',
