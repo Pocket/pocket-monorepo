@@ -56,12 +56,6 @@ class ParserGraphQLWrapper extends TerraformStack {
       ? this.createServerlessElasticache(this, vpc)
       : this.createElasticache(this, vpc);
 
-    if (!config.isDev) {
-      // keeping this here so we can bluegreen to the new cluster in Prod.
-      // will delete after deployment.
-      this.createServerlessElasticache(this, vpc);
-    }
-
     this.createPocketAlbApplication({
       pagerDuty: this.createPagerDuty(),
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
