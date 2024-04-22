@@ -1,7 +1,7 @@
 import {
   SavedItemsSimpleQuery,
   SavedItemStatus,
-} from '../../generated/graphql/types';
+} from '../../generated/graphql';
 import {
   savedItemsCompleteToRest,
   savedItemsCompleteTotalToRest,

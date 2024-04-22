@@ -138,6 +138,11 @@ export class ParserAPI extends RESTDataSource {
     return this.parserResponseToItem(data);
   }
 
+  /**
+   * Takes a response from the pocket parser and converts it to an item
+   * @param parserResponse
+   * @returns
+   */
   private parserResponseToItem(parserResponse: ParserResponse): Item {
     return {
       itemId: parserResponse.item_id,
