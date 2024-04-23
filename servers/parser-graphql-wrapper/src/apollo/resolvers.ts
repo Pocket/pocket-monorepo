@@ -9,11 +9,13 @@ import { SSMLModel } from '../models/SSMLModel';
 import { fallbackPage } from '../readerView';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
 import { deriveItemSummary, itemSummaryFromUrl } from '../preview';
+import { URLResolver } from 'graphql-scalars';
 import { Resolvers, Videoness } from '../__generated__/resolvers-types';
 import { BoolStringParam, MediaTypeParam } from '../datasources/ParserAPI';
 
 export const resolvers: Resolvers = {
   ...PocketDefaultScalars,
+  URL: URLResolver,
   Item: {
     __resolveReference: async (item, { dataLoaders, dataSources }, info) => {
       // Setting the cache hint manually here because when the gateway(Client API) resolves an item using this
