@@ -40,7 +40,7 @@
     "lodash": "4.17.21",
     "md5": "2.3.0",
     "morgan": "^1.10.0",
-    "mysql2": "3.9.3",
+    "mysql2": "3.9.7",
     "node-fetch": "2.7.0",
     "open-graph-scraper": "^6.5.1",
     "qs": "6.12.0",
