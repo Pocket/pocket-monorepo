@@ -8,7 +8,7 @@ import {
 import { SSMLModel } from '../models/SSMLModel';
 import { fallbackPage } from '../readerView';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
-import { deriveItemSummary, itemSummaryFromUrl } from '../preview';
+import { deriveItemSummary } from '../preview';
 import { URLResolver } from 'graphql-scalars';
 import { Resolvers, Videoness } from '../__generated__/resolvers-types';
 import { BoolStringParam, MediaTypeParam } from '../datasources/ParserAPI';
