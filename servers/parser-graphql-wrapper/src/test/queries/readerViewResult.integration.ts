@@ -13,7 +13,6 @@ import {
   getSharedUrlsConnection,
 } from '../../datasources/mysql';
 import { ItemResolver } from '../../entities/ItemResolver';
-import { IntMask } from '@pocket-tools/int-mask';
 import * as ogs from 'open-graph-scraper';
 import { nockResponseForParser } from '../utils/parserResponse';
 jest.mock('open-graph-scraper');
@@ -125,14 +124,12 @@ describe('readerSlug', () => {
   });
 
   it('should return item card fallback data', async () => {
-    jest.spyOn(IntMask, 'decode').mockReturnValueOnce(123);
-
     const variables = {
-      slug: 'inscrutableid',
+      slug: 'fe562f9c5BCfC1eeQ9AffKeCaiD2a190J7eb5D66B8DccAd6E6a1f247B54Egd22_202cb962ac59075b964b07152d234b70',
     };
     const expected = {
       readerSlug: {
-        slug: 'inscrutableid',
+        slug: 'fe562f9c5BCfC1eeQ9AffKeCaiD2a190J7eb5D66B8DccAd6E6a1f247B54Egd22_202cb962ac59075b964b07152d234b70',
         fallbackPage: {
           itemCard: {
             image: null,
@@ -155,13 +152,30 @@ describe('readerSlug', () => {
     expect(res.body.data).toEqual(expected);
   });
   it('should return ItemNotFound if ID is not in the database', async () => {
-    jest.spyOn(IntMask, 'decode').mockReturnValueOnce(11112342323);
     const variables = {
-      slug: 'inscrutableid',
+      slug: '1fcq7b8aaCXcD2ebR2Lb8LhIagEaaaadPaOb0Od0RdJ64B54Fc3d1f98H70A78d6_468ebb364f349ce7428161da948a2202',
     };
     const expected = {
       readerSlug: {
-        slug: 'inscrutableid',
+        slug: '1fcq7b8aaCXcD2ebR2Lb8LhIagEaaaadPaOb0Od0RdJ64B54Fc3d1f98H70A78d6_468ebb364f349ce7428161da948a2202',
+        fallbackPage: {
+          message: "We couldn't find that page.",
+        },
+      },
+    };
+    const res = await request(app)
+      .post(graphQLUrl)
+      .send({ query: print(GET_READER_INTERSTITIAL), variables });
+    expect(res.body.data).toEqual(expected);
+  });
+
+  it('should return ItemNotFound if ID can not be verified', async () => {
+    const variables = {
+      slug: '1fcq7b8aaCXcD2ebR2Lb8LhIagEaaaadPaOb0Od0RdJ644Fc3d1f98H70A78d6_468ebb364f349ce742811da948a2202',
+    };
+    const expected = {
+      readerSlug: {
+        slug: '1fcq7b8aaCXcD2ebR2Lb8LhIagEaaaadPaOb0Od0RdJ644Fc3d1f98H70A78d6_468ebb364f349ce742811da948a2202',
         fallbackPage: {
           message: "We couldn't find that page.",
         },

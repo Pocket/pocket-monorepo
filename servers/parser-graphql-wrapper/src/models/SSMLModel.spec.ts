@@ -19,6 +19,7 @@ describe('SSML', () => {
         name: 'Mozilla',
       },
       givenUrl: 'https://something-to.test',
+      readerSlug: 'fo562fkc52f1ee092fOXe3Z2a7907eb576688dccd6e6a7fh4754a0d22d',
     });
 
     expect(ssml).toBe(
@@ -45,6 +46,7 @@ describe('SSML', () => {
         name: 'Mozilla',
       },
       givenUrl: 'https://something-to.test',
+      readerSlug: 'fo562fkc52f1ee092fOXe3Z2a7907eb576688dccd6e6a7fh4754a0d22d',
     });
 
     expect(ssml).toBe(

@@ -3,7 +3,6 @@ import config from '../config';
 import { DataSourceConfig, RESTDataSource } from '@apollo/datasource-rest';
 import md5 from 'md5';
 import { Item } from '../__generated__/resolvers-types';
-import { IntMask } from '@pocket-tools/int-mask';
 import {
   getAuthors,
   getImages,
@@ -21,6 +20,7 @@ import type {
 import { ParserResponse } from './ParserAPITypes';
 import fetch from 'node-fetch';
 import { backOff } from 'exponential-backoff';
+import { createReaderSlug } from '../readerView/idUtils';
 
 export enum MediaTypeParam {
   AS_COMMENTS = '0',
@@ -146,7 +146,8 @@ export class ParserAPI extends RESTDataSource {
   private parserResponseToItem(parserResponse: ParserResponse): Item {
     return {
       itemId: parserResponse.item_id,
-      id: IntMask.encode(parserResponse.item_id),
+      id: createReaderSlug(parserResponse.item_id),
+      readerSlug: createReaderSlug(parserResponse.item_id),
       resolvedId: parserResponse.resolved_id,
       topImageUrl: parserResponse.topImageUrl,
       topImage: parserResponse.topImageUrl

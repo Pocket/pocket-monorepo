@@ -240,6 +240,8 @@ export type Item = {
   originDomainId?: Maybe<Scalars['String']['output']>;
   /** The client preview/display logic for this url */
   preview?: Maybe<ItemSummary>;
+  /** A server generated unique reader slug for this item based on itemId */
+  readerSlug: Scalars['String']['output'];
   /** The item id of the resolved_url */
   resolvedId?: Maybe<Scalars['String']['output']>;
   /**
@@ -791,6 +793,7 @@ export type ItemResolvers<ContextType = IContext, ParentType extends ResolversPa
   normalUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   originDomainId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   preview?: Resolver<Maybe<ResolversTypes['ItemSummary']>, ParentType, ContextType>;
+  readerSlug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   resolvedId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   resolvedNormalUrl?: Resolver<Maybe<ResolversTypes['Url']>, ParentType, ContextType>;
   resolvedUrl?: Resolver<Maybe<ResolversTypes['Url']>, ParentType, ContextType>;

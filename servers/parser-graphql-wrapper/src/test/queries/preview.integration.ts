@@ -70,7 +70,7 @@ describe('preview', () => {
   const parserItemId = '123';
 
   const defaultExpected = {
-    id: 'encodedId',
+    id: 'encodedId_202cb962ac59075b964b07152d234b70',
     image: null,
     excerpt: null,
     authors: null,
@@ -78,7 +78,7 @@ describe('preview', () => {
     datePublished: '2022-06-29T20:14:49.000Z',
     url: testUrl,
     item: {
-      id: 'encodedId',
+      id: 'encodedId_202cb962ac59075b964b07152d234b70',
     },
   };
 
