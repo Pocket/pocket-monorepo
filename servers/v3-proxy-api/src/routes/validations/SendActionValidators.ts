@@ -374,6 +374,7 @@ function HasTag<TBase extends ActionSanitizable>(Base: TBase) {
  * Class mixin for input validation. Use to construct a Validation/Sanitizer
  * class which has the rule: there might be a valid `title` field
  * in the input passed to the constructor. If present, it must be a non-empty string.
+ * Null values are allowed as inputs, but skipped.
  *
  * Must be called with a Class that implements or extends the
  * ActionSanitizable type (constructor with a single argument, `input`,
@@ -389,6 +390,11 @@ function MaybeHasTitle<TBase extends ActionSanitizable>(Base: TBase) {
     readonly title: string;
     constructor(...args: any[]) {
       super(...args);
+      if (
+        'title' in this.input &&
+        (this.input.title == null || this.input.title == 'null')
+      )
+        return;
       if (
         'title' in this.input &&
         (!(typeof this.input.title === 'string') || this.input.title === '')

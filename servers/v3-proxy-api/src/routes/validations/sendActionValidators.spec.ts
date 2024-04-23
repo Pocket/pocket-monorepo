@@ -626,6 +626,31 @@ describe('send validator', () => {
           time: now,
         },
       },
+      // null title is skipped
+      {
+        input: {
+          url: 'http://domain.com/path',
+          action: 'add' as const,
+          title: null,
+        },
+        expected: {
+          url: 'http://domain.com/path',
+          action: 'add',
+          time: now,
+        },
+      },
+      {
+        input: {
+          url: 'http://domain.com/path',
+          action: 'add' as const,
+          title: 'null',
+        },
+        expected: {
+          url: 'http://domain.com/path',
+          action: 'add',
+          time: now,
+        },
+      },
       // optional tags
       {
         input: {
