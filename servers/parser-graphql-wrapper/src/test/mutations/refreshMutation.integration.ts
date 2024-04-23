@@ -4,10 +4,6 @@ import { gql } from 'graphql-tag';
 import request from 'supertest';
 import { Application } from 'express';
 import { IContext } from '../../apollo/context';
-import {
-  getConnection,
-  getSharedUrlsConnection,
-} from '../../datasources/mysql';
 import { getRedis } from '../../cache';
 import { startServer } from '../../apollo/server';
 import {
@@ -20,6 +16,8 @@ import {
 } from '../utils/parserResponse';
 import { BoolStringParam } from '../../datasources/ParserAPI';
 import Keyv from 'keyv';
+import { conn as sharesInit } from '../../databases/readitlaShares';
+import { conn as readitlbInit } from '../../databases/readitlab';
 
 describe('refresh mutation', () => {
   const testUrl = 'https://someurl.com';
@@ -34,8 +32,8 @@ describe('refresh mutation', () => {
 
   afterAll(async () => {
     await server.stop();
-    await (await getConnection()).destroy();
-    await (await getSharedUrlsConnection()).destroy();
+    await readitlbInit().destroy();
+    await sharesInit().destroy();
     cache.disconnect();
   });
 

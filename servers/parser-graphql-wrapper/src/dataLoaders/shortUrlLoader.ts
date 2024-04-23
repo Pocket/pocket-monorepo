@@ -1,15 +1,11 @@
 import DataLoader from 'dataloader';
 import { batchGetShortUrl } from '../shortUrl/shortUrl';
-import {
-  BatchAddShareUrlInput,
-  getSharedUrlsResolverRepo,
-} from '../datasources/mysql';
+import { BatchAddShareUrlInput, conn } from '../databases/readitlaShares';
 
 const partialBatchGetShortUrls = async (
   inputs: readonly BatchAddShareUrlInput[],
 ) => {
-  const shareRepo = await getSharedUrlsResolverRepo();
-  return await batchGetShortUrl(inputs, shareRepo);
+  return await batchGetShortUrl(inputs, conn());
 };
 
 export const ShortUrlLoader = () =>

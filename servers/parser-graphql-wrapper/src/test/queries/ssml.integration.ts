@@ -9,10 +9,8 @@ import { IContext } from '../../apollo/context';
 import { Application } from 'express';
 import { nockResponseForParser } from '../utils/parserResponse';
 import { BoolStringParam, MediaTypeParam } from '../../datasources/ParserAPI';
-import {
-  getConnection,
-  getSharedUrlsConnection,
-} from '../../datasources/mysql';
+import { conn as readitlabConn } from '../../databases/readitlab';
+import { conn as sharesConn } from '../../databases/readitlaShares';
 
 describe('SSML integration ', () => {
   const testUrl = 'https://someurl.com/test';
@@ -34,8 +32,8 @@ describe('SSML integration ', () => {
     await server.stop();
     await getRedis().disconnect();
     cleanAll();
-    await (await getConnection()).destroy();
-    await (await getSharedUrlsConnection()).destroy();
+    await readitlabConn().destroy();
+    await sharesConn().destroy();
     jest.restoreAllMocks();
   });
 

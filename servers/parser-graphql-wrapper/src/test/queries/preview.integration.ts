@@ -7,18 +7,16 @@ import { print } from 'graphql';
 import { gql } from 'graphql-tag';
 import { IContext } from '../../apollo/context';
 import { Application } from 'express';
-import { DataSource } from 'typeorm';
-import {
-  getConnection,
-  getSharedUrlsConnection,
-} from '../../datasources/mysql';
-import { ItemResolver } from '../../entities/ItemResolver';
 import { IntMask } from '@pocket-tools/int-mask';
 import * as ogs from 'open-graph-scraper';
 import { mockUnleash } from '@pocket-tools/feature-flags-client';
 import * as unleash from '../../unleash';
 import config from '../../config';
 import { nockResponseForParser } from '../utils/parserResponse';
+import { Kysely } from 'kysely';
+import { DB } from '../../__generated__/readitlab';
+import { conn as readitlabInit } from '../../databases/readitlab';
+import { conn as sharesInit } from '../../databases/readitlaShares';
 
 jest.mock('open-graph-scraper');
 
@@ -26,7 +24,7 @@ describe('preview', () => {
   let app: Application;
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
-  let connection: DataSource;
+  let readitlabDB: Kysely<DB>;
   const { unleash: mockClient, repo } = mockUnleash([]);
 
   const GET_PREVIEW = gql`
@@ -60,11 +58,11 @@ describe('preview', () => {
   const testUrl = 'https://test.com';
 
   const item = {
-    itemId: 123,
-    searchHash: '123455sdf',
-    normalUrl: testUrl,
-    resolvedId: 123,
-    hasOldDupes: false,
+    item_id: 123,
+    search_hash: '123455sdf',
+    normal_url: testUrl,
+    resolved_id: 123,
+    has_old_dupes: 0,
   };
 
   const parserItemId = '123';
@@ -95,11 +93,11 @@ describe('preview', () => {
   beforeAll(async () => {
     jest.spyOn(unleash, 'unleash').mockReturnValue(mockClient);
     ({ app, server, url: graphQLUrl } = await startServer(0));
-    connection = await getConnection();
-    await connection.query('TRUNCATE readitla_b.items_resolver');
+    readitlabDB = readitlabInit();
+    await readitlabDB.deleteFrom('items_resolver').execute();
+
     //Create a seed item
-    const insert = connection.manager.create(ItemResolver, item);
-    await connection.manager.save([insert]);
+    await readitlabDB.insertInto('items_resolver').values([item]).execute();
   });
 
   beforeEach(async () => {
@@ -115,8 +113,8 @@ describe('preview', () => {
     await server.stop();
     await getRedis().disconnect();
     cleanAll();
-    await connection.destroy();
-    await (await getSharedUrlsConnection()).destroy();
+    await readitlabDB.destroy();
+    await sharesInit().destroy();
     jest.restoreAllMocks();
   });
 

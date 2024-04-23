@@ -6,17 +6,17 @@ import { cleanAll } from 'nock';
 import { print } from 'graphql/index';
 import { gql } from 'graphql-tag';
 import request from 'supertest';
-import {
-  ItemResolverRepository,
-  SharedUrlsResolverRepository,
-  getConnection,
-  getItemResolverRepository,
-  getSharedUrlsConnection,
-  getSharedUrlsResolverRepo,
-} from '../../datasources/mysql';
 import config from '../../config';
 import { Application } from 'express';
 import { nockResponseForParser } from '../utils/parserResponse';
+import { Kysely, sql } from 'kysely';
+import { DB as SharesDb } from '../../__generated__/readitlaShares';
+import { DB as ReaditlaDb } from '../../__generated__/readitlab';
+import {
+  batchGetShareUrlsById,
+  conn as sharesInit,
+} from '../../databases/readitlaShares';
+import { conn as readitlabInit } from '../../databases/readitlab';
 
 describe('ShortUrl', () => {
   const testUrl = 'https://someurl.com';
@@ -27,13 +27,13 @@ describe('ShortUrl', () => {
   let app: Application;
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
-  let sharedRepo: SharedUrlsResolverRepository;
-  let itemRepo: ItemResolverRepository;
+  let sharesConnection: Kysely<SharesDb>;
+  let readitlabConnection: Kysely<ReaditlaDb>;
 
   afterAll(async () => {
     await server.stop();
-    await (await getConnection()).destroy();
-    await (await getSharedUrlsConnection()).destroy();
+    await readitlabConnection.destroy();
+    await sharesConnection.destroy();
     await getRedis().disconnect();
     cleanAll();
   });
@@ -41,8 +41,8 @@ describe('ShortUrl', () => {
 
   beforeAll(async () => {
     cleanAll();
-    sharedRepo = await getSharedUrlsResolverRepo();
-    itemRepo = await getItemResolverRepository();
+    sharesConnection = sharesInit();
+    readitlabConnection = readitlabInit();
     // port 0 tells express to dynamically assign an available port
     ({ app, server, url: graphQLUrl } = await startServer(0));
   });
@@ -50,9 +50,12 @@ describe('ShortUrl', () => {
   beforeEach(async () => {
     // Flush the redis cache before each test
     await getRedis().clear();
-    await itemRepo.clear();
-    await sharedRepo.clear();
-    await sharedRepo.query('ALTER TABLE share_urls AUTO_INCREMENT = 1');
+    await readitlabConnection.deleteFrom('items_resolver').execute();
+    await sharesConnection.deleteFrom('share_urls').execute();
+
+    await sql`ALTER TABLE share_urls AUTO_INCREMENT = 1 `.execute(
+      sharesConnection,
+    );
 
     nockResponseForParser(testUrl, {
       data: {
@@ -199,7 +202,7 @@ describe('ShortUrl', () => {
       res2.body.data.itemByUrl.shortUrl,
     );
 
-    const db = await sharedRepo.batchGetShareUrlsById([1]);
+    const db = await batchGetShareUrlsById(sharesConnection, [1]);
     expect(db.length).toBe(1);
   });
   it('fetches all shortUrls when resolving item entities', async () => {
@@ -262,12 +265,17 @@ describe('ShortUrl', () => {
   describe('resolving from short url', () => {
     beforeEach(async () => {
       // Seed some data not needed by the other tests
-      await sharedRepo.insert({
-        shareUrlId: 1,
-        itemId: 12345,
-        resolvedId: 12345,
-        givenUrl: testUrl,
-      });
+      await sharesConnection
+        .insertInto('share_urls')
+        .values([
+          {
+            share_url_id: 1,
+            item_id: 12345,
+            resolved_id: 12345,
+            given_url: testUrl,
+          },
+        ])
+        .execute();
     });
     it('should resolve the item from the short url', async () => {
       nockResponseForParser(testUrl, {

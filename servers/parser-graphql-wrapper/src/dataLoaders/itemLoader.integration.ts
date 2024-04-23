@@ -1,43 +1,45 @@
-import { getConnection } from '../datasources/mysql';
-import { ItemResolver } from '../entities/ItemResolver';
-import { DataSource } from 'typeorm';
+import { conn } from '../databases/readitlab';
 import * as itemLoader from './itemLoader';
 import { getRedis } from '../cache';
+import { Kysely } from 'kysely';
+import { DB, Generated, ItemsResolver } from '../__generated__/readitlab';
 
 const urlToParse = 'https://test.com';
 
-const item = {
-  itemId: 1234,
-  searchHash: '123455sdf',
-  normalUrl: urlToParse,
-  resolvedId: 1234,
-  hasOldDupes: false,
+const item: ItemsResolver = {
+  item_id: 1234 as unknown as Generated<number>,
+  search_hash: '123455sdf',
+  normal_url: urlToParse,
+  resolved_id: 1234,
+  has_old_dupes: 0,
 };
 
-const item2 = {
-  itemId: 123,
-  searchHash: '123455sdf',
-  normalUrl: urlToParse,
-  resolvedId: 123,
-  hasOldDupes: false,
+const item2: ItemsResolver = {
+  item_id: 123 as unknown as Generated<number>,
+  search_hash: '123455sdf',
+  normal_url: urlToParse,
+  resolved_id: 123,
+  has_old_dupes: 0,
 };
 
 describe('itemLoader - integration', () => {
-  let connection: DataSource;
+  let connection: Kysely<DB>;
 
   beforeEach(async () => {
     //Setup our db connection
-    connection = await getConnection();
+    connection = conn();
+
     //Delete the items
-    await connection.query('TRUNCATE readitla_b.items_resolver');
+    await connection.deleteFrom('items_resolver').execute();
 
     // flush the redis cache
     getRedis().clear();
 
     //Create a seed item
-    const insert = connection.manager.create(ItemResolver, item);
-    const insert2 = connection.manager.create(ItemResolver, item2);
-    await connection.manager.save([insert, insert2]);
+    await connection
+      .insertInto('items_resolver')
+      .values([item, item2])
+      .execute();
   });
 
   afterAll(async () => {
@@ -47,9 +49,9 @@ describe('itemLoader - integration', () => {
 
   it('should batch resolve item ids from the parser', async () => {
     const batchItems = await itemLoader.batchGetItemsByIds([
-      item.itemId.toString(),
+      item.item_id.toString(),
     ]);
-    expect(batchItems[0].itemId).toEqual(item.itemId.toString());
+    expect(batchItems[0].itemId).toEqual(item.item_id.toString());
     expect(batchItems[0].url).toEqual(urlToParse);
   });
 });

@@ -1,8 +1,14 @@
+import { Kysely } from 'kysely';
 import config from '../config';
 import {
   BatchAddShareUrlInput,
-  SharedUrlsResolverRepository,
-} from '../datasources/mysql';
+  addToShareUrls,
+  batchAddToShareUrls,
+  batchGetShareUrlsById,
+  fetchByShareId,
+  getShareUrls,
+} from '../databases/readitlaShares';
+import { DB } from '../__generated__/readitlaShares';
 
 /**
  * generates a record in share_url if record doesn't exist.
@@ -25,13 +31,13 @@ export async function getShortUrl(
   itemId: number,
   resolvedId: number,
   givenUrl: string,
-  sharedUrlRepo: SharedUrlsResolverRepository,
+  sharesDB: Kysely<DB>,
 ) {
   const id = await shareUrl.fetchShareUrlId(
     itemId,
     resolvedId,
     givenUrl,
-    sharedUrlRepo,
+    sharesDB,
   );
   const shortCode = getShortCodeForId(id);
   const shortUrl = generateShortUrl(givenUrl, shortCode);
@@ -40,9 +46,9 @@ export async function getShortUrl(
 
 export async function batchGetShortUrl(
   input: readonly BatchAddShareUrlInput[],
-  sharedUrlRepo: SharedUrlsResolverRepository,
+  sharesDB: Kysely<DB>,
 ): Promise<string[]> {
-  const ids = await shareUrl.batchGetOrCreateShareUrls(input, sharedUrlRepo);
+  const ids = await shareUrl.batchGetOrCreateShareUrls(input, sharesDB);
   const shortCodes = ids.map((id) => getShortCodeForId(id));
   const givenUrls = input.map(({ givenUrl }) => givenUrl);
   const shortUrls = shortCodes.map((code, ix) =>
@@ -114,14 +120,15 @@ export const shareUrl = {
     itemId: number,
     resolvedId: number,
     givenUrl: string,
-    sharedUrlRepo: SharedUrlsResolverRepository,
+    sharesDB: Kysely<DB>,
   ): Promise<number> => {
-    let id;
-    const record = await sharedUrlRepo.getShareUrls(itemId);
+    let id: number;
+
+    const record = await getShareUrls(sharesDB, itemId);
     if (!record) {
-      id = await sharedUrlRepo.addToShareUrls(itemId, resolvedId, givenUrl);
+      id = Number(await addToShareUrls(sharesDB, itemId, resolvedId, givenUrl));
     } else {
-      id = record['shareUrlId'];
+      id = Number(record.share_url_id);
     }
     return id;
   },
@@ -135,14 +142,17 @@ export const shareUrl = {
    */
   batchGetOrCreateShareUrls: async (
     input: readonly BatchAddShareUrlInput[],
-    repo: SharedUrlsResolverRepository,
+    sharesDB: Kysely<DB>,
   ): Promise<number[]> => {
     const itemIds = input.map(({ itemId }) => itemId);
     // Get existing shortUrls and compile them into a mapping
     // of { itemId: shortUrlId }
-    const resultMapping = (await repo.batchGetShareUrlsById(itemIds)).reduce(
+
+    const resultMapping = (
+      await batchGetShareUrlsById(sharesDB, itemIds)
+    ).reduce(
       (mapping, record) => {
-        mapping[record.itemId] = record.shareUrlId;
+        mapping[record.item_id] = Number(record.share_url_id);
         return mapping;
       },
       {} as { [itemId: number]: number },
@@ -154,7 +164,7 @@ export const shareUrl = {
     const missingIds = Array.from(new Set(itemIds)).filter(
       (elem) => !returnedIds.has(elem),
     );
-    if (missingIds) {
+    if (missingIds && missingIds.length > 0) {
       // Build a mapping to look up the associated records
       // in the input for shortUrls we need to generate
       const inputMap = input.reduce(
@@ -165,10 +175,11 @@ export const shareUrl = {
         {} as { [itemId: number]: BatchAddShareUrlInput },
       );
       const missingRecords = missingIds.map((id) => inputMap[id]);
-      const generated = await repo.batchAddToShareUrls(missingRecords);
+
+      const generated = await batchAddToShareUrls(sharesDB, missingRecords);
       // Update the result map with the additional data
       missingIds.forEach((addedId, index) => {
-        resultMapping[addedId] = generated[index];
+        resultMapping[addedId] = Number(generated[index]);
       });
     }
     // Ensure that the output is the same shape as the input (e.g. in case
@@ -182,20 +193,20 @@ export const shareUrl = {
  */
 export async function itemIdFromShareCode(
   code: string,
-  sharedUrlRepo: SharedUrlsResolverRepository,
+  sharesDB: Kysely<DB>,
 ): Promise<string> {
   const id = getIdFromShortCode(code);
-  const record = await sharedUrlRepo.fetchByShareId(id);
-  return record.itemId.toString();
+  const record = await fetchByShareId(sharesDB, id);
+  return record.item_id.toString();
 }
 
 export async function givenUrlFromShareCode(
   code: string,
-  sharedUrlRepo: SharedUrlsResolverRepository,
+  sharesDB: Kysely<DB>,
 ): Promise<string> {
   const id = getIdFromShortCode(code);
-  const record = await sharedUrlRepo.fetchByShareId(id);
-  return record.givenUrl;
+  const record = await fetchByShareId(sharesDB, id);
+  return record.given_url;
 }
 
 /**
