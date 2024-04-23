@@ -476,8 +476,3 @@ type ReaderInterstitial {
 type ItemNotFound {
   message: String 
 }
-
-type PocketShare @key(fields: "targetUrl") {
-  targetUrl: ValidUrl!
-  preview: ItemSummary
-}

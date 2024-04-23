@@ -8,7 +8,7 @@ import {
 import { SSMLModel } from '../models/SSMLModel';
 import { fallbackPage } from '../readerView';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
-import { deriveItemSummary, itemSummaryFromUrl } from '../preview';
+import { deriveItemSummary } from '../preview';
 import { Resolvers, Videoness } from '../__generated__/resolvers-types';
 import { BoolStringParam, MediaTypeParam } from '../datasources/ParserAPI';
 
@@ -224,11 +224,11 @@ export const resolvers: Resolvers = {
       });
     },
   },
-  PocketShare: {
-    preview: async (parent: { targetUrl: string }, _, context) => {
-      return await itemSummaryFromUrl(parent.targetUrl, context);
-    },
-  },
+  // PocketShare: {
+  //   preview: async (parent: { targetUrl: string }, _, context) => {
+  //     return await itemSummaryFromUrl(parent.targetUrl, context);
+  //   },
+  // },
   Mutation: {
     refreshItemArticle: async (
       _source,
