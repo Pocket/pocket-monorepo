@@ -1,7 +1,7 @@
-import { IntMask } from '@pocket-tools/int-mask';
 import { IContext } from '../apollo/context';
 import { ReaderFallback } from '../__generated__/resolvers-types';
 import { deriveItemSummary } from '../preview';
+import { itemIdFromSlug } from './idUtils';
 
 const notFound = { message: "We couldn't find that page." };
 
@@ -16,7 +16,10 @@ export async function fallbackPage(
   slug: string,
   context: IContext,
 ): Promise<ReaderFallback> {
-  const id = IntMask.decode(slug).toString();
+  const id = itemIdFromSlug(slug);
+  if (id == null) {
+    return notFound;
+  }
   const itemLoaderResult = await context.dataLoaders.itemIdLoader.load(id);
 
   if (itemLoaderResult == null || itemLoaderResult.url == null) {
