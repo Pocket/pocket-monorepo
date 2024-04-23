@@ -2,7 +2,7 @@ import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 
 export const CREATE_SHARE = print(gql`
-  mutation CreateShareLink($target: URL!, $context: ShareContextInput) {
+  mutation CreateShareLink($target: ValidUrl!, $context: ShareContextInput) {
     createShareLink(target: $target, context: $context) {
       shareUrl
     }

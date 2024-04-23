@@ -8,14 +8,12 @@ import {
 import { SSMLModel } from '../models/SSMLModel';
 import { fallbackPage } from '../readerView';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
-import { deriveItemSummary } from '../preview';
-import { URLResolver } from 'graphql-scalars';
+import { deriveItemSummary, itemSummaryFromUrl } from '../preview';
 import { Resolvers, Videoness } from '../__generated__/resolvers-types';
 import { BoolStringParam, MediaTypeParam } from '../datasources/ParserAPI';
 
 export const resolvers: Resolvers = {
   ...PocketDefaultScalars,
-  URL: URLResolver,
   Item: {
     __resolveReference: async (item, { dataLoaders, dataSources }, info) => {
       // Setting the cache hint manually here because when the gateway(Client API) resolves an item using this
@@ -226,11 +224,11 @@ export const resolvers: Resolvers = {
       });
     },
   },
-  // PocketShare: {
-  //   preview: async (parent: { targetUrl: string }, _, context) => {
-  //     return await itemSummaryFromUrl(parent.targetUrl, context);
-  //   },
-  // },
+  PocketShare: {
+    preview: async (parent: { targetUrl: string }, _, context) => {
+      return await itemSummaryFromUrl(parent.targetUrl, context);
+    },
+  },
   Mutation: {
     refreshItemArticle: async (
       _source,

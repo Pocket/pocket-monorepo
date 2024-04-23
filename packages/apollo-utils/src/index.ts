@@ -4,15 +4,16 @@ export * from './cache/DataloaderKeyValueCache';
 export * from './cache/interface';
 export * from './dataloader';
 export * from './errorHandler/errorHandler';
-export * from './isoStringScalar/isoStringScalar';
+export * from './scalars';
 export * from './pagination/';
 export * from './plugins/defaultPlugin';
 export * from './sentry/expressSentryMiddleware';
 export * from './utils';
 
 // export a generic object with all Pocket Custom Scalars
-import { isoStringScalar } from './isoStringScalar/isoStringScalar';
+import { GraphQLValidUrl, isoStringScalar } from './scalars';
 
 export const PocketDefaultScalars = {
   ISOString: isoStringScalar,
+  ValidUrl: GraphQLValidUrl,
 };

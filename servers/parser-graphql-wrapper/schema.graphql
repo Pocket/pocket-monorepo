@@ -30,7 +30,7 @@ scalar Markdown
 "A String in the format of a url."
 scalar Url
 "Also a string in the format of a URL, but actually validated..."
-scalar URL
+scalar ValidUrl
 
 enum CacheControlScope {
   PUBLIC
@@ -475,4 +475,9 @@ type ReaderInterstitial {
 
 type ItemNotFound {
   message: String 
+}
+
+type PocketShare @key(fields: "targetUrl") {
+  targetUrl: ValidUrl!
+  preview: ItemSummary
 }
