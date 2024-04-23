@@ -2,15 +2,41 @@ import { DataSource, Repository } from 'typeorm';
 import { ItemResolver } from '../entities/ItemResolver';
 import config from '../config';
 import { ShareUrls } from '../entities/ShareUrls';
+import { Kysely, MysqlDialect } from 'kysely';
+import { createPool } from 'mysql2';
 
 let connection: DataSource;
 let sharedUrlsConnection: DataSource;
+let kysely: Kysely<DB>;
 
 export type BatchAddShareUrlInput = {
   itemId: number;
   resolvedId: number;
   givenUrl: string;
 };
+
+/**
+ * Kysely query builder for more control
+ * @returns Kysely query builder
+ */
+export function conn(): Kysely<DB> {
+  if (kysely) return kysely;
+  const dialect = new MysqlDialect({
+    pool: createPool({
+      database: config.database.dbname,
+      host: config.database.host,
+      user: config.database.username,
+      password: config.database.password,
+      port: config.database.port,
+      connectionLimit: 10,
+      timezone: '+00:00',
+    }),
+  });
+  kysely = new Kysely<DB>({
+    dialect,
+  });
+  return kysely;
+}
 
 /**
  * Creates a connection that we can use for typeorm
