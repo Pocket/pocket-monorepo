@@ -43,7 +43,7 @@ export async function startServer(port: number): Promise<{
       ...defaultPlugins(httpServer),
       createApollo4QueryValidationPlugin({ schema }),
     ],
-    formatError: errorHandler,
+    // formatError: errorHandler,
     introspection: true,
   });
 

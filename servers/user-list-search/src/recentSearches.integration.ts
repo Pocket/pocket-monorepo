@@ -6,46 +6,12 @@ import request from 'supertest';
 import { knexDbClient } from './datasource/clients/knexClient';
 import { Knex } from 'knex';
 import { createHash } from 'node:crypto';
-
-type UserRecentSearch = {
-  search: string;
-  contextKey: string;
-  contextValue: string;
-  timeAdded: Date;
-  searchHash: string;
-  userId: string;
-};
-
-const defaultSearchValues: Omit<UserRecentSearch, 'searchHash'> = {
-  search: 'apple',
-  contextKey: '',
-  contextValue: '',
-  timeAdded: new Date(),
-  userId: '1',
-};
-
-async function loadSearchTerm(
-  searchValues: Partial<UserRecentSearch>,
-  db: Knex,
-) {
-  searchValues = {
-    ...defaultSearchValues,
-    ...searchValues,
-  };
-  const seachHash = createHash('sha1')
-    .update(
-      `${searchValues.search}${searchValues.contextKey}${searchValues.contextValue}`,
-    )
-    .digest('hex');
-  await db('readitla_ril-tmp.user_recent_search').insert({
-    search: searchValues.search,
-    context_key: searchValues.contextKey,
-    context_value: searchValues.contextValue,
-    user_id: searchValues.userId,
-    time_added: searchValues.timeAdded.getTime(),
-    search_hash: seachHash,
-  });
-}
+import { print } from 'graphql';
+import {
+  RECENT_SEARCHES_QUERY,
+  SEARCH_OFFSET_QUERY,
+  SEARCH_SAVED_ITEM_QUERY,
+} from './queries';
 
 describe('premium search functional test', () => {
   let app: Application;
@@ -56,28 +22,13 @@ describe('premium search functional test', () => {
     userid: '1',
     premium: 'true',
   };
-  const RECENT_SEARCHES_QUERY = `
-    query recentSearches($id: ID!) {
-      _entities(representations: { id: $id, __typename: "User" }) {
-        ... on User {
-          recentSearches {
-            term
-            context {
-              key
-              value
-            }
-            timeAdded
-          }
-        }
-      }
-    }
-  `;
 
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
-    await db('readitla_ril-tmp.list').truncate();
-    await db('readitla_b.items_extended').truncate();
   });
+  beforeEach(
+    async () => await db('readitla_ril-tmp.user_recent_search').truncate(),
+  );
 
   afterAll(async () => {
     await server.stop();
@@ -89,30 +40,39 @@ describe('premium search functional test', () => {
       .post(url)
       .set(headers)
       .send({
-        query: RECENT_SEARCHES_QUERY,
+        query: print(RECENT_SEARCHES_QUERY),
         variables: { id: '1' },
       });
     const expected = [];
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data?._entities[0].recentSearches).toIncludeSameMembers(
-      expected,
-    );
+    expect(res.body.data?._entities[0].recentSearches).toEqual(expected);
   });
 
-  it('should return recent searches for User entity when there are some', async () => {
-    await loadSearchTerm({ search: 'balloon' }, db);
-    await loadSearchTerm({ search: 'apple' }, db);
+  it('should return recent searches for User entity after searches are performed', async () => {
+    await request(app)
+      .post(url)
+      .set(headers)
+      .send({
+        query: print(SEARCH_SAVED_ITEM_QUERY),
+        variables: { id: '1', term: 'apple' },
+      });
+    await request(app)
+      .post(url)
+      .set(headers)
+      .send({
+        query: print(SEARCH_SAVED_ITEM_QUERY),
+        variables: { id: '1', term: 'balloon' },
+      });
     const res = await request(app)
       .post(url)
       .set(headers)
       .send({
-        query: RECENT_SEARCHES_QUERY,
+        query: print(RECENT_SEARCHES_QUERY),
         variables: { id: '1' },
       });
+    // Recency order
     const expected = ['balloon', 'apple'];
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data?._entities[0].recentSearches).toIncludeSameMembers(
-      expected,
-    );
+    expect(res.body.data?._entities[0].recentSearches).toEqual(expected);
   });
 });

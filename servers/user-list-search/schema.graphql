@@ -145,7 +145,7 @@ type SearchResult {
 
 type RecentSearch {
   term: String!
-  context: RecentSearchContext!
+  context: RecentSearchContext
   sortId: Int!
 }
 

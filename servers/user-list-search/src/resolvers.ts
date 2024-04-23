@@ -27,6 +27,7 @@ import {
   RecentSearch,
 } from './types';
 import { config } from './config';
+import { MysqlDataSource } from './datasource/MysqlDataSource';
 
 /**
  * Custom type for FunctionalBoostValue coming from client.
@@ -197,7 +198,7 @@ export const resolvers = {
           'Recent searches are only available for premium users',
         );
       }
-      return [];
+      return new MysqlDataSource().getRecentSearches(parseInt(context.userId));
     },
   },
 };

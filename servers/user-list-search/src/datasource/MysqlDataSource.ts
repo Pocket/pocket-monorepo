@@ -15,6 +15,7 @@ import zlib from 'zlib';
 import { contentDb, knexDbClient } from './clients/knexClient';
 import knex from 'knex';
 import { RecentSearch } from '../types';
+import { createHash } from 'node:crypto';
 
 type ParserContent = {
   itemId: number;
@@ -378,13 +379,52 @@ export class MysqlDataSource implements DataSourceInterface {
     return result;
   }
 
+  /**
+   * Retrieve a user's recent searches (premium only)
+   * @param userId  the userId with searches to retrieve
+   * @returns the 5 most recent searches performed by the userId
+   */
   public async getRecentSearches(userId: number): Promise<RecentSearch[]> {
-    this.readitla('readitla_ril-tmp.user_recent_search').select([
-      'search',
-      'context_key as contextKey',
-      'context_value as contextValue',
-      this.readitla.raw('@curRank := @curRank -1 AS sortId'),
-    ]);
-    return [];
+    const rows = await this.readitla('readitla_ril-tmp.user_recent_search')
+      .select([
+        'search',
+        'context_key as contextKey',
+        'context_value as contextValue',
+      ])
+      .where({ user_id: userId })
+      .orderBy('time_added', 'desc')
+      .limit(5);
+    // TODO: users_meta update? log user action?
+    //github.com/Pocket/Web/blob/37abe545392b7a6903ff500a03b3f1853fdc9e09/includes/functions_search.php#L31
+    return rows.map((row, ix) => ({
+      term: row.search,
+      context:
+        row.context_key && row.context_key.length
+          ? { key: row.context_key, value: row.context_value }
+          : null,
+      sortId: ix,
+    }));
+  }
+
+  /**
+   * Save the search that was performed to pre-populate list of
+   * recent searches for premium users
+   * @param userId the userId associated with this search
+   * @param term the search term
+   */
+  public async insertRecentSearch(userId: number, term: string) {
+    const hash = createHash('sha1').update(term).digest('hex');
+    const data = {
+      user_id: userId,
+      search: term,
+      context_key: '',
+      context_value: '',
+      search_hash: hash,
+      time_added: Math.round(new Date().getTime() / 1000),
+    };
+    await this.readitla('readitla_ril-tmp.user_recent_search')
+      .insert(data)
+      .onConflict()
+      .merge();
   }
 }
