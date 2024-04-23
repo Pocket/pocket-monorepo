@@ -12,14 +12,14 @@ extend schema
   @link(url: "https://myspecs.dev/myDirective/v1.0", import: ["@constraint"])
   @composeDirective(name: "@constraint")
 
+scalar URL
 scalar ISOString
 scalar Max300CharString
-scalar ValidUrl
 
 type PocketShare @key(fields: "slug targetUrl") {
   slug: ID!
-  shareUrl: ValidUrl!
-  targetUrl: ValidUrl!
+  shareUrl: URL!
+  targetUrl: URL!
   createdAt: ISOString
   context: ShareContext
 }
@@ -84,5 +84,5 @@ type Mutation {
   Create a Pocket Share for a provided target URL, optionally
   with additional share context.
   """
-  createShareLink(target: ValidUrl!, context: ShareContextInput): PocketShare
+  createShareLink(target: URL!, context: ShareContextInput): PocketShare
 }

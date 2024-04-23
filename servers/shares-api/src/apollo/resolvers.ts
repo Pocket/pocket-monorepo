@@ -1,9 +1,11 @@
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
 import { Resolvers } from '../__generated__/types';
+import { URLResolver } from 'graphql-scalars';
 import { Max300CharStringResolver } from '../models';
 
 export const resolvers: Resolvers = {
   ...PocketDefaultScalars,
+  URL: URLResolver,
   Max300CharString: Max300CharStringResolver,
   ShareResult: {
     __resolveType(obj) {
