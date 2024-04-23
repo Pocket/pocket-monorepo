@@ -35,10 +35,10 @@ export type Scalars = {
    * not treated differently from String in the API.
    */
   Markdown: { input: any; output: any; }
-  /** Also a string in the format of a URL, but actually validated... */
-  URL: { input: any; output: any; }
   /** A String in the format of a url. */
   Url: { input: any; output: any; }
+  /** Also a string in the format of a URL, but actually validated... */
+  ValidUrl: { input: any; output: any; }
   _FieldSet: { input: any; output: any; }
 };
 
@@ -409,7 +409,7 @@ export type NumberedListElement = ListElement & {
 export type PocketShare = {
   __typename?: 'PocketShare';
   preview?: Maybe<ItemSummary>;
-  targetUrl: Scalars['URL']['output'];
+  targetUrl: Scalars['ValidUrl']['output'];
 };
 
 export type Query = {
@@ -642,9 +642,9 @@ export type ResolversTypes = ResolversObject<{
   ReaderFallback: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['ReaderFallback']>;
   ReaderInterstitial: ResolverTypeWrapper<ReaderInterstitial>;
   ReaderViewResult: ResolverTypeWrapper<Omit<ReaderViewResult, 'fallbackPage'> & { fallbackPage?: Maybe<ResolversTypes['ReaderFallback']> }>;
-  URL: ResolverTypeWrapper<Scalars['URL']['output']>;
   UnMarseable: ResolverTypeWrapper<UnMarseable>;
   Url: ResolverTypeWrapper<Scalars['Url']['output']>;
+  ValidUrl: ResolverTypeWrapper<Scalars['ValidUrl']['output']>;
   Video: ResolverTypeWrapper<Video>;
   VideoType: VideoType;
   Videoness: Videoness;
@@ -687,9 +687,9 @@ export type ResolversParentTypes = ResolversObject<{
   ReaderFallback: ResolversUnionTypes<ResolversParentTypes>['ReaderFallback'];
   ReaderInterstitial: ReaderInterstitial;
   ReaderViewResult: Omit<ReaderViewResult, 'fallbackPage'> & { fallbackPage?: Maybe<ResolversParentTypes['ReaderFallback']> };
-  URL: Scalars['URL']['output'];
   UnMarseable: UnMarseable;
   Url: Scalars['Url']['output'];
+  ValidUrl: Scalars['ValidUrl']['output'];
   Video: Video;
 }>;
 
@@ -906,7 +906,7 @@ export type NumberedListElementResolvers<ContextType = IContext, ParentType exte
 export type PocketShareResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['PocketShare'] = ResolversParentTypes['PocketShare']> = ResolversObject<{
   __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['PocketShare']>, { __typename: 'PocketShare' } & GraphQLRecursivePick<ParentType, {"targetUrl":true}>, ContextType>;
   preview?: Resolver<Maybe<ResolversTypes['ItemSummary']>, ParentType, ContextType>;
-  targetUrl?: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
+  targetUrl?: Resolver<ResolversTypes['ValidUrl'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -932,10 +932,6 @@ export type ReaderViewResultResolvers<ContextType = IContext, ParentType extends
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export interface URLScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['URL'], any> {
-  name: 'URL';
-}
-
 export type UnMarseableResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['UnMarseable'] = ResolversParentTypes['UnMarseable']> = ResolversObject<{
   html?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -943,6 +939,10 @@ export type UnMarseableResolvers<ContextType = IContext, ParentType extends Reso
 
 export interface UrlScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Url'], any> {
   name: 'Url';
+}
+
+export interface ValidUrlScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ValidUrl'], any> {
+  name: 'ValidUrl';
 }
 
 export type VideoResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Video'] = ResolversParentTypes['Video']> = ResolversObject<{
@@ -988,9 +988,9 @@ export type Resolvers<ContextType = IContext> = ResolversObject<{
   ReaderFallback?: ReaderFallbackResolvers<ContextType>;
   ReaderInterstitial?: ReaderInterstitialResolvers<ContextType>;
   ReaderViewResult?: ReaderViewResultResolvers<ContextType>;
-  URL?: GraphQLScalarType;
   UnMarseable?: UnMarseableResolvers<ContextType>;
   Url?: GraphQLScalarType;
+  ValidUrl?: GraphQLScalarType;
   Video?: VideoResolvers<ContextType>;
 }>;
 

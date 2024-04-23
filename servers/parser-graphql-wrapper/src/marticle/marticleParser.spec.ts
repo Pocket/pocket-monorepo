@@ -6,7 +6,7 @@ import {
   Videoness,
 } from '../__generated__/resolvers-types';
 import { faker } from '@faker-js/faker';
-import { IntMask } from '@pocket-tools/int-mask';
+import { createReaderSlug } from '../readerView/idUtils';
 
 /**
  * Returns data in the format of an API response from the legacy Parser service.
@@ -18,7 +18,8 @@ function getTestArticle(item: Partial<Item>): Item {
   const itemId = faker.number.bigInt().toString();
   return {
     itemId: itemId,
-    id: IntMask.encode(itemId),
+    readerSlug: createReaderSlug(itemId),
+    id: createReaderSlug(itemId),
     resolvedId: faker.number.bigInt().toString(),
     isArticle: true,
     hasVideo: Videoness.NoVideos,
