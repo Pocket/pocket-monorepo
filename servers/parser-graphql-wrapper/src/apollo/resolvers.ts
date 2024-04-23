@@ -15,7 +15,7 @@ import { BoolStringParam, MediaTypeParam } from '../datasources/ParserAPI';
 
 export const resolvers: Resolvers = {
   ...PocketDefaultScalars,
-  URL: URLResolver,
+  ValidUrl: URLResolver,
   Item: {
     __resolveReference: async (item, { dataLoaders, dataSources }, info) => {
       // Setting the cache hint manually here because when the gateway(Client API) resolves an item using this
