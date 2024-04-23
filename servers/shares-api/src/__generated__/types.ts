@@ -20,7 +20,7 @@ export type Scalars = {
   Float: { input: number; output: number; }
   ISOString: { input: any; output: any; }
   Max300CharString: { input: any; output: any; }
-  URL: { input: any; output: any; }
+  ValidUrl: { input: any; output: any; }
   _FieldSet: { input: any; output: any; }
 };
 
@@ -36,16 +36,16 @@ export type Mutation = {
 
 export type MutationCreateShareLinkArgs = {
   context?: InputMaybe<ShareContextInput>;
-  target: Scalars['URL']['input'];
+  target: Scalars['ValidUrl']['input'];
 };
 
 export type PocketShare = {
   __typename?: 'PocketShare';
   context?: Maybe<ShareContext>;
   createdAt?: Maybe<Scalars['ISOString']['output']>;
-  shareUrl: Scalars['URL']['output'];
+  shareUrl: Scalars['ValidUrl']['output'];
   slug: Scalars['ID']['output'];
-  targetUrl: Scalars['URL']['output'];
+  targetUrl: Scalars['ValidUrl']['output'];
 };
 
 export type Query = {
@@ -204,7 +204,7 @@ export type ResolversTypes = ResolversObject<{
   ShareHighlightInput: ShareHighlightInput;
   ShareNotFound: ResolverTypeWrapper<ShareNotFound>;
   ShareResult: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['ShareResult']>;
-  URL: ResolverTypeWrapper<Scalars['URL']['output']>;
+  ValidUrl: ResolverTypeWrapper<Scalars['ValidUrl']['output']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
 }>;
 
@@ -223,7 +223,7 @@ export type ResolversParentTypes = ResolversObject<{
   ShareHighlightInput: ShareHighlightInput;
   ShareNotFound: ShareNotFound;
   ShareResult: ResolversUnionTypes<ResolversParentTypes>['ShareResult'];
-  URL: Scalars['URL']['output'];
+  ValidUrl: Scalars['ValidUrl']['output'];
   Boolean: Scalars['Boolean']['output'];
 }>;
 
@@ -243,9 +243,9 @@ export type PocketShareResolvers<ContextType = IContext, ParentType extends Reso
   __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['PocketShare']>, { __typename: 'PocketShare' } & GraphQLRecursivePick<ParentType, {"slug":true,"targetUrl":true}>, ContextType>;
   context?: Resolver<Maybe<ResolversTypes['ShareContext']>, ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['ISOString']>, ParentType, ContextType>;
-  shareUrl?: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
+  shareUrl?: Resolver<ResolversTypes['ValidUrl'], ParentType, ContextType>;
   slug?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  targetUrl?: Resolver<ResolversTypes['URL'], ParentType, ContextType>;
+  targetUrl?: Resolver<ResolversTypes['ValidUrl'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -273,8 +273,8 @@ export type ShareResultResolvers<ContextType = IContext, ParentType extends Reso
   __resolveType: TypeResolveFn<'PocketShare' | 'ShareNotFound', ParentType, ContextType>;
 }>;
 
-export interface UrlScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['URL'], any> {
-  name: 'URL';
+export interface ValidUrlScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ValidUrl'], any> {
+  name: 'ValidUrl';
 }
 
 export type Resolvers<ContextType = IContext> = ResolversObject<{
@@ -287,6 +287,6 @@ export type Resolvers<ContextType = IContext> = ResolversObject<{
   ShareHighlight?: ShareHighlightResolvers<ContextType>;
   ShareNotFound?: ShareNotFoundResolvers<ContextType>;
   ShareResult?: ShareResultResolvers<ContextType>;
-  URL?: GraphQLScalarType;
+  ValidUrl?: GraphQLScalarType;
 }>;
 
