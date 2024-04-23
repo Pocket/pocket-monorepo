@@ -59,6 +59,8 @@ type Item
   itemId: String!
   "A server generated unique id for this item based on itemId"
   id: ID!
+  "A server generated unique reader slug for this item based on itemId"
+  readerSlug: String!
   """
   A normalized value of the givenUrl.
   It will look like a url but is not guaranteed to be a valid url, just a unique string that is used to eliminate common duplicates.

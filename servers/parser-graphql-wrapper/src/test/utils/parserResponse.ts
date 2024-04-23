@@ -14,6 +14,7 @@ import { merge } from 'lodash';
 import Keyv from 'keyv';
 
 export const fakeArticle: Partial<ParserResponse> = {
+  item_id: '1',
   isArticle: 1,
   article: `<p>"Not so handsome now", thought Harry as he dipped Hermione in hot sauce. The Death Eaters were dead now, and Harry was hungier than he'd ever been.</p>`,
   given_url: 'https://botnik.org/content/harry-potter.html',
@@ -23,6 +24,7 @@ export const fakeArticle: Partial<ParserResponse> = {
   videos: null,
 };
 export const newFakeArticle: Partial<ParserResponse> = {
+  item_id: '1',
   isArticle: 1,
   given_url: 'https://botnik.org/content/harry-potter.html',
   article: `<p>Ron was going to be spiders. He just was. He wasn't proud of that, but it was going to be hard to not have spiders all over his body after all is said and done.</p><div><!--RIL_IMG_1--></div>`,
