@@ -13,8 +13,8 @@
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\"",
     "prebuild": "graphql-codegen",
-    "generate:database:types:readitla_b": "DATABASE_URL=mysql://root@localhost:3306/readitla_b kysely-codegen --include-pattern=\"readitla_b.items_resolver\"",
-    "generate:database:types:shares": "DATABASE_URL=mysql://root@localhost:3306/readitla_shares kysely-codegen --include-pattern=\"readitla_shares.share_urls\""
+    "generate:database:types:readitlab": "DATABASE_URL=mysql://root@localhost:3306/readitla_b kysely-codegen --include-pattern=\"readitla_b.items_resolver\" --out-file=src/__generated__/readitlab.d.ts",
+    "generate:database:types:shares": "DATABASE_URL=mysql://root@localhost:3306/readitla_shares kysely-codegen --include-pattern=\"readitla_shares.share_urls\" --out-file=src/__generated__/readitlaShares.d.ts"
   },
   "author": "",
   "license": "ISC",
@@ -46,7 +46,6 @@
     "qs": "6.12.0",
     "reflect-metadata": "0.2.2",
     "turndown": "7.1.3",
-    "typeorm": "0.3.20",
     "winston": "3.13.0"
   },
   "devDependencies": {

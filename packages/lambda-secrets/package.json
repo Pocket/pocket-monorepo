@@ -27,7 +27,6 @@
     "tsconfig": "workspace:*",
     "nock": "14.0.0-beta.5"
   },
-  "dependencies": {},
   "files": [
     "dist",
     "package.json"

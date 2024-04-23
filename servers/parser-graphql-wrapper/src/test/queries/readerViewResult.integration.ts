@@ -7,22 +7,20 @@ import { print } from 'graphql';
 import { gql } from 'graphql-tag';
 import { IContext } from '../../apollo/context';
 import { Application } from 'express';
-import { DataSource } from 'typeorm';
-import {
-  getConnection,
-  getSharedUrlsConnection,
-} from '../../datasources/mysql';
-import { ItemResolver } from '../../entities/ItemResolver';
 import { IntMask } from '@pocket-tools/int-mask';
 import * as ogs from 'open-graph-scraper';
 import { nockResponseForParser } from '../utils/parserResponse';
+import { conn } from '../../databases/readitlab';
+import { ColumnType, Kysely } from 'kysely';
+import { DB, ItemsResolver } from '../../__generated__/readitlab';
+import { conn as sharesInit } from '../../databases/readitlaShares';
 jest.mock('open-graph-scraper');
 
 describe('readerSlug', () => {
   let app: Application;
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
-  let connection: DataSource;
+  let readitlaDB: Kysely<DB>;
 
   const GET_READER_INTERSTITIAL = gql`
     query readerSlug($slug: ID!) {
@@ -59,28 +57,23 @@ describe('readerSlug', () => {
 
   const testUrl = 'https://test.com';
 
-  const item = {
-    itemId: 123,
-    searchHash: '123455sdf',
-    normalUrl: testUrl,
-    resolvedId: 123,
-    hasOldDupes: false,
+  const item: ItemsResolver = {
+    item_id: 123 as unknown as ColumnType<number, number, number>,
+    search_hash: '123455sdf',
+    normal_url: testUrl,
+    resolved_id: 123,
+    has_old_dupes: 0,
   };
 
   const parserItemId = '123';
 
   beforeAll(async () => {
     ({ app, server, url: graphQLUrl } = await startServer(0));
-    connection = await getConnection();
+    readitlaDB = conn();
     //Delete the items
-    const entities = connection.entityMetadatas;
-    for (const entity of entities) {
-      const repository = connection.getRepository(entity.name);
-      await repository.query(`DELETE FROM ${entity.tableName}`);
-    }
+    await readitlaDB.deleteFrom('items_resolver').execute();
     //Create a seed item
-    const insert = connection.manager.create(ItemResolver, item);
-    await connection.manager.save([insert]);
+    await readitlaDB.insertInto('items_resolver').values([item]).execute();
   });
 
   beforeEach(async () => {
@@ -119,8 +112,8 @@ describe('readerSlug', () => {
     await server.stop();
     await getRedis().disconnect();
     cleanAll();
-    await connection.destroy();
-    await (await getSharedUrlsConnection()).destroy();
+    await readitlaDB.destroy();
+    await sharesInit().destroy();
     jest.restoreAllMocks();
   });
 

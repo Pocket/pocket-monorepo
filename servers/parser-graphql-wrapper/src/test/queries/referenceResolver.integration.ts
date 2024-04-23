@@ -8,9 +8,9 @@ import { Application } from 'express';
 import { nockResponseForParser } from '../utils/parserResponse';
 import { getRedis } from '../../cache';
 import { ParserResponse } from '../../datasources/ParserAPITypes';
-import { DataSource } from 'typeorm';
-import { getConnection } from '../../datasources/mysql';
-import { ItemResolver } from '../../entities/ItemResolver';
+import { Kysely } from 'kysely';
+import { DB } from '../../__generated__/readitlab';
+import { conn } from '../../databases/readitlab';
 
 describe('referenceResolver', () => {
   const testUrl = 'https://someurl.com';
@@ -19,7 +19,7 @@ describe('referenceResolver', () => {
   let app: Application;
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
-  let connection: DataSource;
+  let readitlabDB: Kysely<DB>;
 
   const parserItem: Partial<ParserResponse> = {
     given_url: testUrl,
@@ -40,34 +40,38 @@ describe('referenceResolver', () => {
     // port 0 tells express to dynamically assign an available port
     ({ app, server, url: graphQLUrl } = await startServer(0));
     //Setup our db connection
-    connection = await getConnection();
-    //Delete the items
-    await connection.query('TRUNCATE readitla_b.items_resolver');
+    readitlabDB = conn();
 
     // flush the redis cache
     getRedis().clear();
   });
 
   beforeEach(async () => {
+    //Delete the items
+    await readitlabDB.deleteFrom('items_resolver').execute();
     await getRedis().clear();
   });
 
   afterAll(async () => {
     await server.stop();
-    await connection.destroy();
+    await readitlabDB.destroy();
   });
 
   it('should return item for a single item id', async () => {
     const mockData = nockResponseForParser(testUrl, { data: parserItem });
     //Create a seed item
-    const insert = connection.manager.create(ItemResolver, {
-      itemId: parseInt(mockData.data.item_id),
-      searchHash: '123455sdf',
-      normalUrl: mockData.data.given_url,
-      resolvedId: parseInt(mockData.data.item_id),
-      hasOldDupes: false,
-    });
-    await connection.manager.save([insert]);
+    await readitlabDB
+      .insertInto('items_resolver')
+      .values([
+        {
+          item_id: parseInt(mockData.data.item_id),
+          search_hash: '123455sdf',
+          normal_url: mockData.data.given_url,
+          resolved_id: parseInt(mockData.data.item_id),
+          has_old_dupes: 0,
+        },
+      ])
+      .execute();
 
     const itemByItemId = gql`
       query referenceResolver {
@@ -95,21 +99,25 @@ describe('referenceResolver', () => {
     });
 
     //Create a seed item
-    const insert = connection.manager.create(ItemResolver, {
-      itemId: parseInt(mockData.data.item_id),
-      searchHash: '123455sdf',
-      normalUrl: mockData.data.given_url,
-      resolvedId: parseInt(mockData.data.item_id),
-      hasOldDupes: false,
-    });
-    const insert2 = connection.manager.create(ItemResolver, {
-      itemId: parseInt(mockData2.data.item_id),
-      searchHash: '123455sdaf',
-      normalUrl: mockData2.data.given_url,
-      resolvedId: parseInt(mockData2.data.item_id),
-      hasOldDupes: false,
-    });
-    await connection.manager.save([insert, insert2]);
+    await readitlabDB
+      .insertInto('items_resolver')
+      .values([
+        {
+          item_id: parseInt(mockData.data.item_id),
+          search_hash: '123455sdf',
+          normal_url: mockData.data.given_url,
+          resolved_id: parseInt(mockData.data.item_id),
+          has_old_dupes: false,
+        },
+        {
+          item_id: parseInt(mockData2.data.item_id),
+          search_hash: '123455sdaf',
+          normal_url: mockData2.data.given_url,
+          resolved_id: parseInt(mockData2.data.item_id),
+          has_old_dupes: false,
+        },
+      ])
+      .execute();
 
     const itemByItemId = gql`
       query referenceResolver {

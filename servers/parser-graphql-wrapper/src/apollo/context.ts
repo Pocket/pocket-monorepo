@@ -2,13 +2,14 @@ import DataLoader from 'dataloader';
 import { itemIdLoader, ItemLoaderType, ShortUrlLoader } from '../dataLoaders';
 import {
   BatchAddShareUrlInput,
-  ItemResolverRepository,
-  SharedUrlsResolverRepository,
-  getItemResolverRepository,
-  getSharedUrlsResolverRepo,
-} from '../datasources/mysql';
+  conn as sharesConn,
+} from '../databases/readitlaShares';
+import { conn as readitlabConn } from '../databases/readitlab';
 import { ParserAPI } from '../datasources/ParserAPI';
 import { getRedisCache } from '../cache';
+import { DB as ReaditlabDB } from '../__generated__/readitlab';
+import { DB as SharesDB } from '../__generated__/readitlaShares';
+import { Kysely } from 'kysely';
 
 /**
  * Change this to `extends BaseContext` once LegacyDataSourcesPlugin
@@ -19,9 +20,9 @@ export interface IContext {
     itemIdLoader: DataLoader<string, ItemLoaderType>;
     shortUrlLoader: DataLoader<BatchAddShareUrlInput, string>;
   };
-  repositories: {
-    itemResolver: ItemResolverRepository;
-    sharedUrlsResolver: SharedUrlsResolverRepository;
+  databases: {
+    readitlab: Kysely<ReaditlabDB>;
+    shares: Kysely<SharesDB>;
   };
   dataSources: {
     parserAPI: ParserAPI;
@@ -41,18 +42,18 @@ export interface IContext {
 export class ContextManager implements IContext {
   public readonly dataLoaders: IContext['dataLoaders'];
   public readonly dataSources: IContext['dataSources'];
-  public readonly repositories: IContext['repositories'];
+  public readonly databases: IContext['databases'];
   public readonly headers: IContext['headers'];
 
   private constructor(
     dataloaders: IContext['dataLoaders'],
     dataSources: IContext['dataSources'],
-    repositories: IContext['repositories'],
+    databases: IContext['databases'],
     headers: { [key: string]: any },
   ) {
     this.dataLoaders = dataloaders;
     this.dataSources = dataSources;
-    this.repositories = repositories;
+    this.databases = databases;
     this.headers = headers;
   }
   static async initialize(config: {
@@ -62,16 +63,14 @@ export class ContextManager implements IContext {
       itemIdLoader: itemIdLoader,
       shortUrlLoader: ShortUrlLoader(),
     };
-    const itemResolver = await getItemResolverRepository();
-    const sharedUrlsResolver = await getSharedUrlsResolverRepo();
     return new ContextManager(
       dataloaders,
       {
         parserAPI: new ParserAPI({ cache: getRedisCache() }),
       },
       {
-        itemResolver,
-        sharedUrlsResolver,
+        readitlab: readitlabConn(),
+        shares: sharesConn(),
       },
       config.headers,
     );
