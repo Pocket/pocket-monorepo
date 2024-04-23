@@ -226,11 +226,11 @@ export const resolvers: Resolvers = {
       });
     },
   },
-  PocketShare: {
-    preview: async (parent: { targetUrl: string }, _, context) => {
-      return await itemSummaryFromUrl(parent.targetUrl, context);
-    },
-  },
+  // PocketShare: {
+  //   preview: async (parent: { targetUrl: string }, _, context) => {
+  //     return await itemSummaryFromUrl(parent.targetUrl, context);
+  //   },
+  // },
   Mutation: {
     refreshItemArticle: async (
       _source,
