@@ -6,7 +6,10 @@ import { ContextManager } from './server/context';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
-import { knexDbReadClient } from './datasource/clients/knexClient';
+import {
+  knexDbReadClient,
+  knexDbWriteClient,
+} from './datasource/clients/knexClient';
 import { Knex } from 'knex';
 import { loadItemExtended, loadList } from './searchIntegrationTestHelpers';
 import { SavedItemStatus } from './types';
@@ -238,6 +241,7 @@ describe('premium search functional test', () => {
   afterAll(async () => {
     await server.stop();
     await db.destroy();
+    await knexDbWriteClient().destroy();
     testEsClient.close();
   });
 

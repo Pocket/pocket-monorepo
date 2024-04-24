@@ -4,11 +4,16 @@ import {
   seedItemWithDifferentResolvedId,
 } from '../test/_support/seeder';
 import { MysqlDataSource } from './MysqlDataSource';
-import { contentDb, knexDbReadClient } from './clients/knexClient';
+import {
+  contentDb,
+  knexDbReadClient,
+  knexDbWriteClient,
+} from './clients/knexClient';
 
 describe('MysqlDataSource', () => {
   afterAll(async () => {
     await knexDbReadClient().destroy();
+    await knexDbWriteClient().destroy();
     await contentDb().destroy();
   });
 
