@@ -36,7 +36,7 @@
     "nanoid": "3.3.7"
   },
   "devDependencies": {
-    "@sentry/types": "7.110.1",
+    "@sentry/types": "7.112.1",
     "@types/chance": "1.1.6",
     "@types/jest": "29.5.12",
     "@types/uuid": "9.0.8",

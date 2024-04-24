@@ -11,7 +11,7 @@
     "format": "eslint --fix \"./**/*.ts\""
   },
   "dependencies": {
-    "@sentry/serverless": "7.110.1",
+    "@sentry/serverless": "7.112.1",
     "@pocket-tools/lambda-secrets": "workspace:*",
     "knex": "3.1.0",
     "mysql2": "3.9.7",
