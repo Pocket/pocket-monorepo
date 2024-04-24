@@ -12,7 +12,11 @@ import {
   ResolvedIdToItemIdHash,
 } from '../shared/itemIdUtil';
 import zlib from 'zlib';
-import { contentDb, knexDbClient } from './clients/knexClient';
+import {
+  contentDb,
+  knexDbReadClient,
+  knexDbWriteClient,
+} from './clients/knexClient';
 import knex from 'knex';
 import { RecentSearch } from '../types';
 import { createHash } from 'node:crypto';
@@ -44,10 +48,12 @@ export const legacyMysqlInterface = () => {
 
 export class MysqlDataSource implements DataSourceInterface {
   readitla: knex.Knex<any, any[]>;
+  readitlaWriter: knex.Knex<any, any[]>;
   content: knex.Knex<any, any[]>;
 
   constructor() {
-    this.readitla = knexDbClient();
+    this.readitla = knexDbReadClient();
+    this.readitlaWriter = knexDbWriteClient();
     this.content = contentDb();
   }
 
@@ -374,7 +380,7 @@ export class MysqlDataSource implements DataSourceInterface {
   }
 
   private async query(sql: string, params?: any[]): Promise<any[]> {
-    const [result] = await knexDbClient().raw(sql, params);
+    const [result] = await knexDbReadClient().raw(sql, params);
 
     return result;
   }
@@ -422,7 +428,7 @@ export class MysqlDataSource implements DataSourceInterface {
       search_hash: hash,
       time_added: Math.round(new Date().getTime() / 1000),
     };
-    await this.readitla('readitla_ril-tmp.user_recent_search')
+    await this.readitlaWriter('readitla_ril-tmp.user_recent_search')
       .insert(data)
       .onConflict()
       .merge();

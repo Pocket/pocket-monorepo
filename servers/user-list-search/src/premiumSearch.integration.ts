@@ -6,7 +6,7 @@ import { ContextManager } from './server/context';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
-import { knexDbClient } from './datasource/clients/knexClient';
+import { knexDbReadClient } from './datasource/clients/knexClient';
 import { Knex } from 'knex';
 import { loadItemExtended, loadList } from './searchIntegrationTestHelpers';
 import { SavedItemStatus } from './types';
@@ -74,7 +74,7 @@ describe('premium search functional test', () => {
   let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;
-  const db = knexDbClient();
+  const db = knexDbReadClient();
   const headers = {
     userid: '1',
     premium: 'true',

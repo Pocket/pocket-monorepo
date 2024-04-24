@@ -6,7 +6,10 @@ import { ContextManager } from '../context';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import { startServer } from '../serverUtils';
-import { contentDb, knexDbClient } from '../../datasource/clients/knexClient';
+import {
+  contentDb,
+  knexDbReadClient,
+} from '../../datasource/clients/knexClient';
 import { client } from '../../datasource/elasticsearch';
 
 describe('User List Import User Search Processor', () => {
@@ -16,7 +19,7 @@ describe('User List Import User Search Processor', () => {
   afterAll(async () => {
     await server.stop();
     client.close();
-    knexDbClient().destroy();
+    knexDbReadClient().destroy();
     contentDb().destroy();
     jest.resetAllMocks();
   });

@@ -17,7 +17,8 @@ export const config = {
     timezone: process.env.DATABASE_TZ || 'US/Central',
     readitla:
       process.env.READITLA_DB ||
-      '{"password":"","dbname":"readitla_ril-tmp","engine":"mysql","port":"3306","host":"localhost","username":"pkt_listserch_r"}',
+      '{"password":"","dbname":"readitla_ril-tmp","engine":"mysql","port":"3306","host":"localhost","username":"pkt_listserch_r",' +
+        '"write_password":"","write_dbname":"readitla_ril-tmp","write_port":"3306","write_host":"localhost","write_username":"pkt_listserch_w"}',
     content:
       process.env.CONTENT_AURORA_DB ||
       '{"password":"","dbname":"content","engine":"mysql","port":"3306","host":"localhost","username":"pkt_listserch_r"}',
