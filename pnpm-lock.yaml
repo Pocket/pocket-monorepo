@@ -862,8 +862,8 @@ importers:
         specifier: 4.1.3
         version: 4.1.3(@apollo/server@4.10.2)(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.7.2
-        version: 2.7.2(graphql@16.8.1)
+        specifier: 2.7.4
+        version: 2.7.4(graphql@16.8.1)
       '@apollo/utils.keyvadapter':
         specifier: 3.1.0
         version: 3.1.0
@@ -2442,8 +2442,8 @@ packages:
       - encoding
     dev: false
 
-  /@apollo/federation-internals@2.7.2(graphql@16.8.1):
-    resolution: {integrity: sha512-i+9mbw8UN6P+i5xpLxH3m8n3zqEBzoN8a1cct4yrab9loiZeIlxW8cLXzqglEMic++Sz9tai4L21ZY0GlW8ebg==}
+  /@apollo/federation-internals@2.7.4(graphql@16.8.1):
+    resolution: {integrity: sha512-344X7b+9MWhbr0DetDNIHxxTh6WB3K+kr1uQJAlsllwQ32Br/4kb5X2hSJ24tG3X8ZurYeJuYTeobDQLt9Dahw==}
     engines: {node: '>=14.15.0'}
     peerDependencies:
       graphql: ^16.5.0
@@ -2536,14 +2536,14 @@ packages:
       - supports-color
     dev: false
 
-  /@apollo/subgraph@2.7.2(graphql@16.8.1):
-    resolution: {integrity: sha512-n3N8HULcj0Mpegsgd9z4MK2oEbC4BVJFuhcrliNdpq+vlcmvOaEaHGMw+ZgBi6aiZjhKb/2nsmQzzr8G2RXOLw==}
+  /@apollo/subgraph@2.7.4(graphql@16.8.1):
+    resolution: {integrity: sha512-HZHFPrOQgfvZcJCX3u07t8OfVx/Ax8rffXAF13HeFDlkRadSSA+DiFH9I92OAhmlnJ4XzE/uhdpYXxBTURW/8Q==}
     engines: {node: '>=14.15.0'}
     peerDependencies:
       graphql: ^16.5.0
     dependencies:
       '@apollo/cache-control-types': 1.0.3(graphql@16.8.1)
-      '@apollo/federation-internals': 2.7.2(graphql@16.8.1)
+      '@apollo/federation-internals': 2.7.4(graphql@16.8.1)
       graphql: 16.8.1
     dev: false
 
@@ -11431,7 +11431,7 @@ packages:
     dependencies:
       semver: 7.6.0
       shelljs: 0.8.5
-      typescript: 5.5.0-dev.20240423
+      typescript: 5.5.0-dev.20240424
     dev: false
 
   /dreamopt@0.8.0:
@@ -19735,8 +19735,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.5.0-dev.20240423:
-    resolution: {integrity: sha512-4/ZRU+Mu0ckZV71Bb5ikMBYPAVD6zqGoNQ7ETFezcOIiv3dUxAwWVicdPKZLqokV7NRbtDLuSj+tyVZJN/jEzw==}
+  /typescript@5.5.0-dev.20240424:
+    resolution: {integrity: sha512-gX3baGVamMRrQTd2nNBh+GC5/5Dhx08BnatGKOURQ8Dx29K/JjOToj+VrIFUKE76CzmT/pHQKz++l7NDTSBBOQ==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: false
