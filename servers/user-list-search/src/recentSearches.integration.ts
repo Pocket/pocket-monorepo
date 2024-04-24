@@ -7,8 +7,6 @@ import {
   knexDbReadClient,
   knexDbWriteClient,
 } from './datasource/clients/knexClient';
-import { Knex } from 'knex';
-import { createHash } from 'node:crypto';
 import { print } from 'graphql';
 import {
   RECENT_SEARCHES_QUERY,
