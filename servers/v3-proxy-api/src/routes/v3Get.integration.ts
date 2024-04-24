@@ -31,6 +31,7 @@ import {
   expectedGetSimplePremiumAccount,
   expectedGetCompletePremiumAccount,
   expectedGetCompleteFreeAccount,
+  mockGraphGetSimpleFreeAccountNullFeatures,
 } from '../test/fixtures';
 import { ClientError, GraphQLClient } from 'graphql-request';
 import { GraphQLError } from 'graphql-request/build/esm/types';
@@ -475,6 +476,20 @@ describe('v3Get', () => {
         expected: {
           name: 'savedItemsComplete',
           response: expectedGetCompletePremiumAccount,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          account: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleFreeAccountNullFeatures,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimpleFreeAccount,
         },
       },
     ])(

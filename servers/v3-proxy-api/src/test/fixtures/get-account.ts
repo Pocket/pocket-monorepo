@@ -126,6 +126,25 @@ export const freeAccountGraph = {
   },
 };
 
+export const freeAccountGraphNullFeatures = {
+  user: {
+    id: 'l2q3sadflkjasdf903493482jkadsfjksadfjk349803489sdfs',
+    username: null, // this is profile.username
+    email: 'adrian@bran.castle',
+    accountCreationDate: '2024-04-19T22:30:08.000Z',
+    firstName: 'Alucard',
+    lastName: '',
+    isPremium: false,
+    isFxa: true,
+    description: '',
+    avatarUrl:
+      'https://pocket-profile-images.s3.amazonaws.com/profileGreen.png',
+    premiumStatus: 'NEVER',
+    premiumFeatures: null,
+    name: 'Alucard',
+  },
+};
+
 export const mockGraphGetCompletePremiumAccount = {
   user: {
     ...mockGraphGetComplete.user,
@@ -166,6 +185,13 @@ export const mockGraphGetSimpleFreeAccount = {
   user: {
     ...mockGraphGetSimple.user,
     ...freeAccountGraph.user,
+  },
+};
+
+export const mockGraphGetSimpleFreeAccountNullFeatures = {
+  user: {
+    ...mockGraphGetSimple.user,
+    ...freeAccountGraphNullFeatures.user,
   },
 };
 
