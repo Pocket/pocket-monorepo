@@ -37,7 +37,6 @@ export type Scalars = {
   Markdown: { input: any; output: any; }
   /** A String in the format of a url. */
   Url: { input: any; output: any; }
-  /** Also a string in the format of a URL, but actually validated... */
   ValidUrl: { input: any; output: any; }
   _FieldSet: { input: any; output: any; }
 };
