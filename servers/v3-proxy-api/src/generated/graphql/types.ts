@@ -24,8 +24,8 @@ export type Scalars = {
   Max300CharString: { input: any; output: any; }
   NonNegativeInt: { input: any; output: any; }
   Timestamp: { input: any; output: any; }
-  URL: { input: any; output: any; }
   Url: { input: any; output: any; }
+  ValidUrl: { input: any; output: any; }
 };
 
 /**
@@ -717,6 +717,8 @@ export type Item = {
   originDomainId?: Maybe<Scalars['String']['output']>;
   /** The client preview/display logic for this url */
   preview?: Maybe<ItemSummary>;
+  /** A server generated unique reader slug for this item based on itemId */
+  readerSlug: Scalars['String']['output'];
   /** Recommend similar articles to show in the bottom of an article. */
   relatedAfterArticle: Array<CorpusRecommendation>;
   /** Recommend similar articles after saving. */
@@ -1235,7 +1237,7 @@ export type MutationCreateSavedItemTagsArgs = {
 /** Default Mutation Type */
 export type MutationCreateShareLinkArgs = {
   context?: InputMaybe<ShareContextInput>;
-  target: Scalars['URL']['input'];
+  target: Scalars['ValidUrl']['input'];
 };
 
 
@@ -1748,9 +1750,9 @@ export type PocketShare = {
   context?: Maybe<ShareContext>;
   createdAt?: Maybe<Scalars['ISOString']['output']>;
   preview?: Maybe<ItemSummary>;
-  shareUrl: Scalars['URL']['output'];
+  shareUrl: Scalars['ValidUrl']['output'];
   slug: Scalars['ID']['output'];
-  targetUrl: Scalars['URL']['output'];
+  targetUrl: Scalars['ValidUrl']['output'];
 };
 
 export enum PremiumFeature {

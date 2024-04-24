@@ -9,13 +9,18 @@ import { SSMLModel } from '../models/SSMLModel';
 import { fallbackPage } from '../readerView';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
 import { deriveItemSummary, itemSummaryFromUrl } from '../preview';
-import { Resolvers, Videoness } from '../__generated__/resolvers-types';
+import { Item, Resolvers, Videoness } from '../__generated__/resolvers-types';
 import { BoolStringParam, MediaTypeParam } from '../datasources/ParserAPI';
+import {
+  extractSlugFromReadUrl,
+  urlFromReaderSlug,
+} from '../readerView/readersSlug';
+import { IContext } from './context';
 
 export const resolvers: Resolvers = {
   ...PocketDefaultScalars,
   Item: {
-    __resolveReference: async (item, { dataLoaders, dataSources }, info) => {
+    __resolveReference: async (item, context, info) => {
       // Setting the cache hint manually here because when the gateway(Client API) resolves an item using this
       // Parser service, it does not respect the cacheHints on the schema types.
       // NOTE: The cache hint value for resolving the reference should always be the same as the cache hint on the type
@@ -27,13 +32,15 @@ export const resolvers: Resolvers = {
       }
 
       if ('givenUrl' in item) {
-        return dataSources.parserAPI.getItemData(item.givenUrl);
+        return itemFromUrl(item.givenUrl, context);
       } else if ('itemId' in item) {
-        const itemLoaderType = await dataLoaders.itemIdLoader.load(item.itemId);
+        const itemLoaderType = await context.dataLoaders.itemIdLoader.load(
+          item.itemId,
+        );
         if (!itemLoaderType.url) {
           throw new Error(`No url found for itemId: ${item.itemId}`);
         }
-        return dataSources.parserAPI.getItemData(itemLoaderType.url);
+        return itemFromUrl(itemLoaderType.url, context);
       }
     },
     article: async (parent, args, { dataSources }, info) => {
@@ -144,37 +151,11 @@ export const resolvers: Resolvers = {
   },
   Query: {
     //deprecated
-    getItemByUrl: async (_source, { url }, { databases, dataSources }) => {
-      // If it's a special short share URL, use alternative resolution path
-      const shortCode = extractCodeFromShortUrl(url);
-      if (shortCode != null) {
-        const givenUrl = await givenUrlFromShareCode(
-          shortCode,
-          databases.shares,
-        );
-        const item = await dataSources.parserAPI.getItemData(givenUrl);
-        item['shortUrl'] = url;
-        return item;
-      } else {
-        // Regular URL resolution
-        return dataSources.parserAPI.getItemData(url);
-      }
+    getItemByUrl: async (_source, { url }, context) => {
+      return itemFromUrl(url, context);
     },
-    itemByUrl: async (_source, { url }, { databases, dataSources }) => {
-      // If it's a special short share URL, use alternative resolution path
-      const shortCode = extractCodeFromShortUrl(url);
-      if (shortCode != null) {
-        const givenUrl = await givenUrlFromShareCode(
-          shortCode,
-          databases.shares,
-        );
-        const item = await dataSources.parserAPI.getItemData(givenUrl);
-        item['shortUrl'] = url;
-        return item;
-      } else {
-        // Regular URL resolution
-        return await dataSources.parserAPI.getItemData(url);
-      }
+    itemByUrl: async (_source, { url }, context) => {
+      return itemFromUrl(url, context);
     },
     readerSlug: async (_, { slug }: { slug: string }, context) => {
       const fallbackData = await fallbackPage(slug, context);
@@ -247,4 +228,35 @@ export const resolvers: Resolvers = {
       return item;
     },
   },
+};
+
+/**
+ * Helper function to resolve an item from a url.
+ * This exists because we do a bit of logic depending on if the URL is a pocket owned url
+ * @param url
+ * @param context: IContext
+ * @returns an item or null
+ */
+const itemFromUrl = async (
+  url: string,
+  { dataLoaders, dataSources, databases }: IContext,
+): Promise<Item> => {
+  // If it's a special short share URL, use alternative resolution path
+  const shortCode = extractCodeFromShortUrl(url);
+  // if its a reader url, also use a different path
+  const readerSlug = extractSlugFromReadUrl(url);
+  if (shortCode != null) {
+    const givenUrl = await givenUrlFromShareCode(shortCode, databases.shares);
+    const item = await dataSources.parserAPI.getItemData(givenUrl);
+    item.shortUrl = url;
+    return item;
+  } else if (readerSlug != null) {
+    const url = await urlFromReaderSlug(readerSlug, dataLoaders.itemIdLoader);
+    const item = await dataSources.parserAPI.getItemData(url);
+    item.readerSlug = readerSlug;
+    return item;
+  } else {
+    // Regular URL resolution
+    return await dataSources.parserAPI.getItemData(url);
+  }
 };
