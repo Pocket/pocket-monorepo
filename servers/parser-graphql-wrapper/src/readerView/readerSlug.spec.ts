@@ -47,6 +47,26 @@ describe('Reader slug utils', () => {
       expected:
         'fe562f9c5BCfC1eeQ9AffKeCaiD2a190J7E6a1f247B54Egd22_202cb962ac59075b964b07152d234b70',
     },
+    {
+      url: 'getpocket.com/read/fe562f9c5BCfC1eeQ9AffKeCaiD2a190J7E6a1f247B54Egd22_202cb962ac59075b964b07152d234b70?utm_source=pocket-saves',
+      expected:
+        'fe562f9c5BCfC1eeQ9AffKeCaiD2a190J7E6a1f247B54Egd22_202cb962ac59075b964b07152d234b70',
+    },
+    {
+      url: 'getpocket.com/read/fe562f9c5BCfC1eeQ9AffKeCaiD2a190J7E6a1f247B54Egd22_202cb962ac59075b964b07152d234b70?utm_source=pocket-saves',
+      expected:
+        'fe562f9c5BCfC1eeQ9AffKeCaiD2a190J7E6a1f247B54Egd22_202cb962ac59075b964b07152d234b70',
+    },
+    {
+      url: 'http://getpocket.com/read/fe562f9c5BCfC1eeQ9AffKeCaiD2a190J7E6a1f247B54Egd22_202cb962ac59075b964b07152d234b70?utm_source=pocket-saves&testing=1234',
+      expected:
+        'fe562f9c5BCfC1eeQ9AffKeCaiD2a190J7E6a1f247B54Egd22_202cb962ac59075b964b07152d234b70',
+    },
+    {
+      url: 'http://getpocket.com/read/fe562f9c5BCfC1eeQ9AffKeCaiD2a190J7E6a1f247B54Egd22_202cb962ac59075b964b07152d234b70/',
+      expected:
+        'fe562f9c5BCfC1eeQ9AffKeCaiD2a190J7E6a1f247B54Egd22_202cb962ac59075b964b07152d234b70',
+    },
   ])('extracts slug from read links', ({ url, expected }) => {
     expect(extractSlugFromReadUrl(url)).toBe(expected);
   });

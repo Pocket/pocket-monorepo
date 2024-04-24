@@ -27,7 +27,7 @@ export async function urlFromReaderSlug(
  */
 export function extractSlugFromReadUrl(url: string): string | undefined {
   const regex =
-    /^(?:https?:\/\/)?getpocket\.com\/read\/([A-Za-z\d]+_[A-Za-z\d]+)(?:(?:\/?)|(?:\?[A-Za-z_\-\d]+=[A-Za-z_\-\d]+)(?:\\&[A-Za-z_\-\d]+=[A-Za-z_\-\d]+)*)$/;
+    /^(?:https?:\/\/)?getpocket\.com\/read\/([A-Za-z\d]+_[A-Za-z\d]+)(?:(?:\/?)|(?:\?[A-Za-z_\-\d]+=[A-Za-z_\-\d]+)(?:&[A-Za-z_\-\d]+=[A-Za-z_\-\d]+)*)$/;
   const match = url.match(regex);
   return match ? match[1] : undefined;
 }
