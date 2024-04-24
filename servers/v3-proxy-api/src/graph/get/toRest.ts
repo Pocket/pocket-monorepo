@@ -142,9 +142,10 @@ function AccountTransformer(
         type: 'pocket' as const, // static value
         sort_id: 1, // static value
       },
-      premium_features: accountData.premiumFeatures.map((feat) =>
-        PremiumFeatureTransformer(feat),
-      ),
+      premium_features:
+        accountData.premiumFeatures?.map((feat) =>
+          PremiumFeatureTransformer(feat),
+        ) ?? [],
       premium_alltime_status: AlltimeStatusTransformer(
         accountData.premiumStatus,
       ),
