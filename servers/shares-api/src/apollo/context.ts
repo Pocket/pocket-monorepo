@@ -2,6 +2,7 @@ import { Request } from 'express';
 import { PocketShareModel } from '../models';
 import {
   SharesDataSourceAuthenticated,
+  SharesDataSourceNonNativeApp,
   SharesDataSourceUnauthenticated,
 } from '../datasources/shares';
 import { dynamoClient } from '../datasources/dynamoClient';
@@ -30,19 +31,27 @@ export class ContextManager implements IContext {
   PocketShareModel: PocketShareModel;
   constructor(options: { request: Request }) {
     const userId = options.request.headers.userid;
+    const isNative =
+      options.request.headers.applicationisnative === 'true' ? true : false;
     const client = dynamoClient();
-    // We have an authenticated user?
-    if (
-      userId &&
-      typeof userId === 'string' &&
-      userId.length &&
-      userId !== 'anonymous'
-    ) {
-      const dataSource = new SharesDataSourceAuthenticated(client);
+    // Using native app is required for link creation regardless of login status
+    if (!isNative) {
+      const dataSource = new SharesDataSourceNonNativeApp(client);
       this.PocketShareModel = new PocketShareModel(dataSource);
     } else {
-      const dataSource = new SharesDataSourceUnauthenticated(client);
-      this.PocketShareModel = new PocketShareModel(dataSource);
+      // We have an authenticated user?
+      if (
+        userId &&
+        typeof userId === 'string' &&
+        userId.length &&
+        userId !== 'anonymous'
+      ) {
+        const dataSource = new SharesDataSourceAuthenticated(client);
+        this.PocketShareModel = new PocketShareModel(dataSource);
+      } else {
+        const dataSource = new SharesDataSourceUnauthenticated(client);
+        this.PocketShareModel = new PocketShareModel(dataSource);
+      }
     }
   }
 }

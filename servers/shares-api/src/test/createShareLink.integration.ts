@@ -14,7 +14,8 @@ describe('CreateShareLink', () => {
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
   // Variables/data
-  const headers = { userId: '1' };
+  const nativeHeader = { applicationisnative: 'true' };
+  const headers = { ...nativeHeader, userId: '1' };
   const now = Math.round(Date.now() / 1000) * 1000;
   jest.useFakeTimers({ now });
 
@@ -29,10 +30,29 @@ describe('CreateShareLink', () => {
     await server.stop();
   });
   afterEach(async () => {});
+  it.each(['anonymous', undefined, '1'])(
+    'returns forbidden error if non-native app attempts to return share link (regardless of auth)',
+    async (userId) => {
+      const nonNativeHeader = userId
+        ? { applicationisnative: 'false', userid: userId }
+        : { applicationisnative: 'false' };
+      const variables = {
+        target: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      };
+      const res = await request(app)
+        .post(graphQLUrl)
+        .set(nonNativeHeader)
+        .send({ query: CREATE_SHARE, variables });
+      expect(res.body.errors?.length).toEqual(1);
+      expect(res.body.errors[0].extensions.code).toEqual('FORBIDDEN');
+    },
+  );
   it.each(['anonymous', undefined])(
     'does not create a share link and returns unauthenticated error for unauthenticated users',
     async (userId) => {
-      const unauthHeaders = userId ? { userid: userId } : {};
+      const unauthHeaders = userId
+        ? { ...nativeHeader, userid: userId }
+        : nativeHeader;
       const variables = {
         target: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
       };

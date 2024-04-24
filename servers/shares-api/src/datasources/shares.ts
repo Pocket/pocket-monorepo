@@ -4,7 +4,10 @@ import {
   PutCommand,
 } from '@aws-sdk/lib-dynamodb';
 import { config } from '../config';
-import { AuthenticationError } from '@pocket-tools/apollo-utils';
+import {
+  AuthenticationError,
+  ForbiddenError,
+} from '@pocket-tools/apollo-utils';
 import * as Sentry from '@sentry/node';
 
 export type ShareEntity = {
@@ -19,7 +22,10 @@ export interface ISharesDataSource {
   getShare(id: string): Promise<ShareEntity | null>;
   createShare(
     input: ShareEntity,
-  ): Promise<ShareEntity> | Promise<AuthenticationError>;
+  ):
+    | Promise<ShareEntity>
+    | Promise<AuthenticationError>
+    | Promise<ForbiddenError>;
 }
 
 class SharesDataSourceBase {
@@ -66,6 +72,18 @@ export class SharesDataSourceUnauthenticated
     return new AuthenticationError(
       'You must be logged in to create Share links',
     );
+  }
+}
+
+export class SharesDataSourceNonNativeApp
+  extends SharesDataSourceBase
+  implements ISharesDataSource
+{
+  constructor(conn: DynamoDBDocumentClient) {
+    super(conn);
+  }
+  async createShare(input: ShareEntity): Promise<ForbiddenError> {
+    return new ForbiddenError('Only Native Pocket Apps may create Share links');
   }
 }
 

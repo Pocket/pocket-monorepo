@@ -12,7 +12,7 @@ describe('shareSlug', () => {
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
   // Variables/data
-  const headers = { userId: '1' };
+  const headers = { applicationisnative: 'true', userId: '1' };
   const now = Math.round(Date.now() / 1000) * 1000;
   const expected = {
     shareSlug: {
