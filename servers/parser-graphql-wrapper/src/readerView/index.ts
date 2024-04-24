@@ -1,6 +1,5 @@
 import { IContext } from '../apollo/context';
 import { ReaderFallback } from '../__generated__/resolvers-types';
-import { deriveItemSummary } from '../preview';
 import { itemIdFromSlug } from './idUtils';
 
 const notFound = { message: "We couldn't find that page." };
@@ -34,7 +33,11 @@ export async function fallbackPage(
     return notFound;
   }
 
-  const itemCard = await deriveItemSummary(item, context);
+  const itemCard =
+    await context.dataSources.itemSummaryRouter.deriveItemSummary(
+      item,
+      context,
+    );
 
   return { itemCard };
 }

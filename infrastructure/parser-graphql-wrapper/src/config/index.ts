@@ -31,6 +31,11 @@ export const config = {
   tracing: {
     host: 'localhost',
   },
+  dynamodb: {
+    itemSummaryTable: {
+      key: 'urlHash',
+    },
+  },
   pocketSharedRds: {
     minCapacity: 1,
     maxCapacity: isDev ? 1 : undefined,

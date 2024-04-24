@@ -457,6 +457,12 @@ type ReaderViewResult @key(fields: "slug") {
 
 union ReaderFallback = ReaderInterstitial | ItemNotFound
 
+
+enum ItemSummarySource {
+  POCKET_PARSER
+  OPENGRAPH
+}
+
 type ItemSummary {
   id: ID!
   image: Image
@@ -467,6 +473,7 @@ type ItemSummary {
   domain: DomainMetadata
   datePublished: ISOString
   url: Url!
+  source: ItemSummarySource!
   item: Item
 }
 

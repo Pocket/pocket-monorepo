@@ -8,7 +8,7 @@ import {
 import { SSMLModel } from '../models/SSMLModel';
 import { fallbackPage } from '../readerView';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
-import { deriveItemSummary, itemSummaryFromUrl } from '../preview';
+import { itemSummaryFromUrl } from '../summary';
 import { Item, Resolvers, Videoness } from '../__generated__/resolvers-types';
 import { BoolStringParam, MediaTypeParam } from '../datasources/ParserAPI';
 import {
@@ -128,7 +128,10 @@ export const resolvers: Resolvers = {
       });
     },
     preview: async (parent, args, context) => {
-      return deriveItemSummary(parent, context);
+      return context.dataSources.itemSummaryRouter.deriveItemSummary(
+        parent,
+        context,
+      );
     },
   },
   MarticleComponent: {
