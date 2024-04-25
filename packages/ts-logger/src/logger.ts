@@ -25,7 +25,18 @@ const envDefaultLogLevel = () => {
   return isDevelopment || isLocal ? 'debug' : 'info';
 };
 
+/**
+ * Our graphql resolvers add on a data key that is an entire dump
+ * of the graphql context that is not needed
+ * This removes it to clean up logs
+ */
+const removeBlobsOfRandomData = winstonFormat((info) => {
+  delete info.data;
+  return info;
+});
+
 const format = winstonFormat.combine(
+  removeBlobsOfRandomData(),
   winstonFormat.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
   winstonFormat.json(),
 );
