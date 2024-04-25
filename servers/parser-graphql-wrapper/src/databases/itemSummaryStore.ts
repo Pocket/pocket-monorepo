@@ -5,18 +5,33 @@ import {
 } from '@aws-sdk/lib-dynamodb';
 import config from '../config';
 import * as Sentry from '@sentry/node';
-import { ItemSummary } from '../__generated__/resolvers-types';
+import {
+  DomainMetadata,
+  ItemSummary,
+  ItemSummarySource,
+} from '../__generated__/resolvers-types';
 import md5 from 'md5';
 
 export interface IItemSummaryDataStore {
   getStoredItemSummary(resolvedUrl: string): Promise<ItemSummaryEntity | null>;
-  storeItemSummary(input: ItemSummaryEntity): Promise<ItemSummaryEntity>;
+  storeItemSummary(
+    input: ItemSummaryEntity,
+    ttl: number,
+  ): Promise<ItemSummaryEntity>;
 }
 
-export type ItemSummaryEntity = ItemSummary & {
+export type ItemSummaryEntity = Omit<
+  ItemSummary,
+  'domain' | 'url' | 'source'
+> & {
   urlHash: string; // md5 hash of the resolved Url
   createdAt: number; // epoch time in seconds
-  source: string; // class name of the datasource
+  // source is a reserved keyword in dynamodb so we need to remap it.
+  dataSource: ItemSummarySource; // class name of the datasource
+  // Domain is a reserved keyword in dynamodb so we need to remap it.
+  domainMetadata?: DomainMetadata;
+  // url is a reserved keyword in dynamodb so we need to remap it.
+  itemUrl: string;
 };
 
 // Create an array of the key names to be used in the projection expression.
@@ -29,10 +44,11 @@ const itemSummaryEntityKeys: (keyof ItemSummaryEntity)[] = [
   'excerpt',
   'title',
   'authors',
-  'domain',
+  'domainMetadata',
   'datePublished',
-  'url',
+  'itemUrl',
   'createdAt',
+  'dataSource',
 ];
 
 export class ItemSummaryDataStoreBase implements IItemSummaryDataStore {
@@ -59,10 +75,10 @@ export class ItemSummaryDataStoreBase implements IItemSummaryDataStore {
     return null;
   }
 
-  async storeItemSummary(input: ItemSummaryEntity): Promise<ItemSummaryEntity> {
-    const ttl = Math.round(
-      (Date.now() + config.dynamoDb.itemSummaryTable.ttl) / 1000,
-    );
+  async storeItemSummary(
+    input: ItemSummaryEntity,
+    ttl: number,
+  ): Promise<ItemSummaryEntity> {
     const putCommand = new PutCommand({
       Item: { ...input, ttl },
       TableName: ItemSummaryDataStoreBase.table.name,

@@ -10,11 +10,10 @@ import { getRedisCache } from '../cache';
 import { DB as ReaditlabDB } from '../__generated__/readitlab';
 import { DB as SharesDB } from '../__generated__/readitlaShares';
 import { Kysely } from 'kysely';
-import { ItemSummaryRouter } from '../summary/ItemSummaryRouter';
 import { ItemSummaryModel } from '../models/ItemSummaryModel';
+import { ItemSummaryDataStoreBase } from '../databases/itemSummaryStore';
 import { dynamoClient } from '../datasources/dynamoClient';
-import { ItemSummaryDataStoreBase } from '../datasources/itemSummaryStore';
-import { OpenGraphDataSource } from '../summary/OpenGraphDatasource';
+import { OpenGraphModel } from '../models/summaryModels/OpenGraphModel';
 
 /**
  * Change this to `extends BaseContext` once LegacyDataSourcesPlugin
@@ -31,7 +30,7 @@ export interface IContext {
   };
   dataSources: {
     parserAPI: ParserAPI;
-    itemSummaryRouter: ItemSummaryRouter;
+    itemSummaryModel: ItemSummaryModel;
   };
   headers: { [key: string]: any };
   userId: string | undefined;
@@ -73,9 +72,11 @@ export class ContextManager implements IContext {
       dataloaders,
       {
         parserAPI: new ParserAPI({ cache: getRedisCache() }),
-        itemSummaryRouter: new ItemSummaryRouter(
-          new ItemSummaryModel(new ItemSummaryDataStoreBase(dynamoClient())),
-          [new OpenGraphDataSource()], // Add all datasource types here in order we should iterate them
+        itemSummaryModel: new ItemSummaryModel(
+          new ItemSummaryDataStoreBase(dynamoClient()),
+          // Add all datasource types here in order we should iterate them
+          // Note that datasources should be indexed in this array from more specific to least specific
+          [new OpenGraphModel()],
         ),
       },
       {

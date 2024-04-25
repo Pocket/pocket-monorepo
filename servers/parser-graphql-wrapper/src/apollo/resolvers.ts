@@ -8,7 +8,6 @@ import {
 import { SSMLModel } from '../models/SSMLModel';
 import { fallbackPage } from '../readerView';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
-import { itemSummaryFromUrl } from '../summary';
 import { Item, Resolvers, Videoness } from '../__generated__/resolvers-types';
 import { BoolStringParam, MediaTypeParam } from '../datasources/ParserAPI';
 import {
@@ -128,7 +127,7 @@ export const resolvers: Resolvers = {
       });
     },
     preview: async (parent, args, context) => {
-      return context.dataSources.itemSummaryRouter.deriveItemSummary(
+      return context.dataSources.itemSummaryModel.deriveItemSummary(
         parent,
         context,
       );
@@ -210,7 +209,13 @@ export const resolvers: Resolvers = {
   },
   PocketShare: {
     preview: async (parent: { targetUrl: string }, _, context) => {
-      return await itemSummaryFromUrl(parent.targetUrl, context);
+      const item = await context.dataSources.parserAPI.getItemData(
+        parent.targetUrl,
+      );
+      return await context.dataSources.itemSummaryModel.deriveItemSummary(
+        item,
+        context,
+      );
     },
   },
   Mutation: {
