@@ -14,6 +14,7 @@ import { ItemSummaryModel } from '../models/ItemSummaryModel';
 import { ItemSummaryDataStoreBase } from '../databases/itemSummaryStore';
 import { dynamoClient } from '../datasources/dynamoClient';
 import { OpenGraphModel } from '../models/summaryModels/OpenGraphModel';
+import { oEmbedModel } from '../models/summaryModels/oEmbedModel';
 
 /**
  * Change this to `extends BaseContext` once LegacyDataSourcesPlugin
@@ -76,7 +77,7 @@ export class ContextManager implements IContext {
           new ItemSummaryDataStoreBase(dynamoClient()),
           // Add all datasource types here in order we should iterate them
           // Note that datasources should be indexed in this array from more specific to least specific
-          [new OpenGraphModel()],
+          [new oEmbedModel(), new OpenGraphModel()],
         ),
       },
       {
