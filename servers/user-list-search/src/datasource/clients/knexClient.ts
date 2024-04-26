@@ -29,15 +29,15 @@ export function knexDbReadClient(): Knex {
  */
 export function knexDbWriteClient(): Knex {
   if (dbWrite) return dbWrite;
-  const credentials = JSON.parse(config.mysql.readitla);
+  const credentials = JSON.parse(config.mysql.readitla_w);
   const mysqlConfig = config.mysql as any;
 
   dbWrite = createConnection({
-    host: credentials.write_host,
-    port: credentials.write_port,
-    user: credentials.write_username,
-    password: credentials.write_password,
-    database: credentials.write_dbname,
+    host: credentials.host,
+    port: credentials.port,
+    user: credentials.username,
+    password: credentials.password,
+    database: credentials.dbname,
     timezone: mysqlConfig.timezone,
   });
   return dbWrite;

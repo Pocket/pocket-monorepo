@@ -7,6 +7,10 @@ locals {
       valueFrom = "${local.secret_path}DatabaseCredentials"
     },
     {
+      name      = "READITLA_DB_W"
+      valueFrom = "${local.secret_path}DatabaseCredentials_w"
+    },
+    {
       name      = "CONTENT_AURORA_DB"
       valueFrom = "${local.secret_path}ParserAuroraDbCredentials"
     },
