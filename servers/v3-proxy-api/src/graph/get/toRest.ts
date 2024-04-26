@@ -6,6 +6,7 @@ import {
   AccountFieldsFragment,
   PremiumFeature,
   PremiumStatus,
+  RecentSearchFieldsFragment,
   SavedItemsCompleteQuery,
   SavedItemsSimpleQuery,
   SearchSavedItemsCompleteQuery,
@@ -35,6 +36,7 @@ import {
   Annotations,
   AccountResponse,
   PremiumFeatures,
+  RecentSearchResponse,
 } from '../types';
 import * as tx from '../shared/transforms';
 import { DateTime } from 'luxon';
@@ -103,6 +105,21 @@ function searchStatusResponse(
     complete: 1,
     since: Math.round(new Date().getTime() / 1000),
   };
+}
+
+function RecentSearchesTransformer(
+  data: Partial<RecentSearchFieldsFragment>,
+): RecentSearchResponse | Record<never, never> {
+  if (data.recentSearches == null) return {};
+  const recentSearches = data.recentSearches.map((search) => {
+    return {
+      search: search.term,
+      context_key: search.context?.key ?? '',
+      context_value: search.context?.value ?? '',
+      sort_id: (search.sortId + 1).toString(),
+    };
+  });
+  return { recent_searches: recentSearches };
 }
 
 function AccountTransformer(
@@ -426,6 +443,7 @@ export function savedItemsSimpleToRest(
     ...getStatusResponse(response),
     ...TagListTransformer(response.user.tagsList),
     ...AccountTransformer(response.user),
+    ...RecentSearchesTransformer(response.user),
     list: listToMap(
       response.user.savedItemsByOffset.entries
         .map((savedItem, index) => {
@@ -456,6 +474,7 @@ export function savedItemsCompleteToRest(
     ...getStatusResponse(response),
     ...TagListTransformer(response.user.tagsList),
     ...AccountTransformer(response.user),
+    ...RecentSearchesTransformer(response.user),
     list: listToMap(
       response.user.savedItemsByOffset.entries
         .map((savedItem, index) => {
@@ -564,6 +583,7 @@ export function searchSavedItemSimpleToRest(
     ...searchStatusResponse(response),
     ...TagListTransformer(response.user.tagsList),
     ...AccountTransformer(response.user),
+    ...RecentSearchesTransformer(response.user),
     list,
     ...searchMetaTransformer(response),
   };
@@ -599,6 +619,7 @@ export function searchSavedItemCompleteToRest(
     ...searchStatusResponse(response),
     ...TagListTransformer(response.user.tagsList),
     ...AccountTransformer(response.user),
+    ...RecentSearchesTransformer(response.user),
     ...staticV3ResponseDefaults,
     list,
     ...searchMetaTransformer(response),

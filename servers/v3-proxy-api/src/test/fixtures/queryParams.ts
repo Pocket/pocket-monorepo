@@ -12,6 +12,8 @@ export const defaultQuery: V3GetParams = {
   forcetaglist: false,
   account: false,
   forceaccount: false,
+  premium: false,
+  forcepremium: false,
 };
 
 export const defaultSearchQuery: V3GetParams = {
@@ -27,4 +29,6 @@ export const defaultSearchQuery: V3GetParams = {
   forcetaglist: false,
   account: false,
   forceaccount: false,
+  premium: false,
+  forcepremium: false,
 };

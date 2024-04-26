@@ -6,10 +6,12 @@ query searchSavedItemsSimple(
   $withAnnotations: Boolean!
   $withTagsList: Boolean!
   $withAccountData: Boolean!
+  $withRecentSearches: Boolean!
   $tagsListSince: ISOString
 ) {
   user {
     ...AccountFields @include(if: $withAccountData)
+    ...RecentSearchFields @include(if: $withRecentSearches)
     tagsList(syncSince: $tagsListSince) @include(if: $withTagsList)
     searchSavedItemsByOffset(
       term: $term
