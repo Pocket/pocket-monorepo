@@ -207,6 +207,11 @@ export const resolvers: Resolvers = {
       });
     },
   },
+  PocketMetadata: {
+    __resolveType() {
+      return 'ItemSummary';
+    },
+  },
   PocketShare: {
     preview: async (parent: { targetUrl: string }, _, context) => {
       const item = await context.dataSources.parserAPI.getItemData(

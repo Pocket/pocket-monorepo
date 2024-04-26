@@ -819,9 +819,15 @@ export type ItemSummary = {
   id: Scalars['ID']['output'];
   image?: Maybe<Image>;
   item?: Maybe<Item>;
+  source: ItemSummarySource;
   title?: Maybe<Scalars['String']['output']>;
   url: Scalars['Url']['output'];
 };
+
+export enum ItemSummarySource {
+  Opengraph = 'OPENGRAPH',
+  PocketParser = 'POCKET_PARSER'
+}
 
 /** A label used to mark and categorize an Entity (e.g. Collection). */
 export type Label = {
@@ -2131,6 +2137,19 @@ export type RecItUserProfile = {
   userModels: Array<Scalars['String']['input']>;
 };
 
+export type RecentSearch = {
+  __typename?: 'RecentSearch';
+  context?: Maybe<RecentSearchContext>;
+  sortId: Scalars['Int']['output'];
+  term: Scalars['String']['output'];
+};
+
+export type RecentSearchContext = {
+  __typename?: 'RecentSearchContext';
+  key?: Maybe<Scalars['String']['output']>;
+  value?: Maybe<Scalars['String']['output']>;
+};
+
 /** Represents a Recommendation from Pocket */
 export type Recommendation = {
   __typename?: 'Recommendation';
@@ -3296,6 +3315,7 @@ export type User = {
   premiumFeatures?: Maybe<Array<Maybe<PremiumFeature>>>;
   /** Current premium status of the user */
   premiumStatus?: Maybe<PremiumStatus>;
+  recentSearches?: Maybe<Array<RecentSearch>>;
   /** Preferences for recommendations that the user has explicitly set. */
   recommendationPreferences?: Maybe<UserRecommendationPreferences>;
   /** Get a PocketSave(s) by its id(s) */
