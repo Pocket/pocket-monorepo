@@ -26,6 +26,7 @@ import {
 import { Construct } from 'constructs';
 import { App, S3Backend, TerraformStack } from 'cdktf';
 import * as fs from 'fs';
+import { DynamoDB } from './dynamodb';
 class ParserGraphQLWrapper extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
@@ -56,6 +57,8 @@ class ParserGraphQLWrapper extends TerraformStack {
       ? this.createServerlessElasticache(this, vpc)
       : this.createElasticache(this, vpc);
 
+    const dynamodb = new DynamoDB(this, 'dynamodb');
+
     this.createPocketAlbApplication({
       pagerDuty: this.createPagerDuty(),
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
@@ -65,6 +68,7 @@ class ParserGraphQLWrapper extends TerraformStack {
       region,
       caller,
       vpc,
+      dynamodb,
     });
   }
 
@@ -120,6 +124,7 @@ class ParserGraphQLWrapper extends TerraformStack {
     primaryEndpoint: string;
     readerEndpoint: string;
     vpc: PocketVPC;
+    dynamodb: DynamoDB;
   }): PocketALBApplication {
     const {
       pagerDuty,
@@ -130,6 +135,7 @@ class ParserGraphQLWrapper extends TerraformStack {
       primaryEndpoint,
       readerEndpoint,
       vpc,
+      dynamodb,
     } = dependencies;
 
     const PocketSharesSecretPrefix = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:ParserWrapperApi/${config.environment}/POCKET_SHARES`;
@@ -199,6 +205,14 @@ class ParserGraphQLWrapper extends TerraformStack {
             {
               name: 'REDIS_IS_TLS',
               value: config.isDev ? 'true' : 'false',
+            },
+            {
+              name: 'AWS_REGION',
+              value: region.name,
+            },
+            {
+              name: 'ITEM_SUMMARY_TABLE',
+              value: dynamodb.itemSummaryTable.dynamodb.name,
             },
           ],
           healthCheck: {
@@ -376,6 +390,24 @@ class ParserGraphQLWrapper extends TerraformStack {
               'xray:GetSamplingStatisticSummaries',
             ],
             resources: ['*'],
+            effect: 'Allow',
+          },
+          {
+            actions: [
+              'dynamodb:BatchGet*',
+              'dynamodb:DescribeTable',
+              'dynamodb:Get*',
+              'dynamodb:Query',
+              'dynamodb:Scan',
+              'dynamodb:UpdateItem',
+              'dynamodb:BatchWrite*',
+              'dynamodb:Delete*',
+              'dynamodb:PutItem',
+            ],
+            resources: [
+              dynamodb.itemSummaryTable.dynamodb.arn,
+              `${dynamodb.itemSummaryTable.dynamodb.arn}/*`,
+            ],
             effect: 'Allow',
           },
         ],

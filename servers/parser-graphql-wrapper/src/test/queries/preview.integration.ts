@@ -17,6 +17,10 @@ import { Kysely } from 'kysely';
 import { DB } from '../../__generated__/readitlab';
 import { conn as readitlabInit } from '../../databases/readitlab';
 import { conn as sharesInit } from '../../databases/readitlaShares';
+import { clearDynamoDB, dynamoClient } from '../../datasources/dynamoClient';
+import { ItemSummarySource } from '../../__generated__/resolvers-types';
+import { ItemSummaryDataStoreBase } from '../../databases/itemSummaryStore';
+import md5 from 'md5';
 
 jest.mock('open-graph-scraper');
 
@@ -106,7 +110,8 @@ describe('preview', () => {
     jest.spyOn(IntMask, 'decode').mockReturnValueOnce(123);
     jest.spyOn(IntMask, 'encode').mockReturnValueOnce('encodedId');
     // flush the redis cache
-    getRedis().clear();
+    await getRedis().clear();
+    await clearDynamoDB(dynamoClient());
   });
 
   afterAll(async () => {
@@ -186,4 +191,56 @@ describe('preview', () => {
       });
     },
   );
+
+  it('uses cached dynamodb data if availables', async () => {
+    repo.setToggle(config.unleash.flags.openGraphParser.name, {
+      ...openGraphFeatureToggle,
+      enabled: true,
+    });
+    nockResponseForParser(testUrl, {
+      data: {
+        item_id: parserItemId,
+        given_url: testUrl,
+        normal_url: testUrl,
+        title: 'parser test',
+        authors: [],
+        images: [],
+        videos: [],
+        resolved_id: '16822',
+        excerpt: null,
+        domainMetadata: null,
+        topImageUrl: null,
+      },
+    });
+
+    await new ItemSummaryDataStoreBase(dynamoClient()).storeItemSummary(
+      {
+        id: 'id',
+        itemUrl: testUrl,
+        urlHash: md5(testUrl),
+        title: 'the saved data',
+        dataSource: ItemSummarySource.Opengraph,
+        createdAt: Date.now() / 1000,
+      },
+      3600,
+    );
+
+    const variables = {
+      url: testUrl,
+    };
+    const res = await request(app)
+      .post(graphQLUrl)
+      .send({ query: print(GET_PREVIEW), variables });
+    expect(res.body.data).toEqual({
+      itemByUrl: {
+        preview: {
+          ...defaultExpected,
+          id: 'id',
+          title: 'the saved data',
+          datePublished: null,
+          domain: null,
+        },
+      },
+    });
+  });
 });

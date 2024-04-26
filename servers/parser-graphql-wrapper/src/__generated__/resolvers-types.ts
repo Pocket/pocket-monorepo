@@ -303,9 +303,15 @@ export type ItemSummary = {
   id: Scalars['ID']['output'];
   image?: Maybe<Image>;
   item?: Maybe<Item>;
+  source: ItemSummarySource;
   title?: Maybe<Scalars['String']['output']>;
   url: Scalars['Url']['output'];
 };
+
+export enum ItemSummarySource {
+  Opengraph = 'OPENGRAPH',
+  PocketParser = 'POCKET_PARSER'
+}
 
 export type ListElement = {
   /** Row in a list. */
@@ -622,6 +628,7 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   ItemNotFound: ResolverTypeWrapper<ItemNotFound>;
   ItemSummary: ResolverTypeWrapper<ItemSummary>;
+  ItemSummarySource: ItemSummarySource;
   ListElement: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['ListElement']>;
   Markdown: ResolverTypeWrapper<Scalars['Markdown']['output']>;
   MarkdownImagePosition: ResolverTypeWrapper<MarkdownImagePosition>;
@@ -823,6 +830,7 @@ export type ItemSummaryResolvers<ContextType = IContext, ParentType extends Reso
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   image?: Resolver<Maybe<ResolversTypes['Image']>, ParentType, ContextType>;
   item?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType>;
+  source?: Resolver<ResolversTypes['ItemSummarySource'], ParentType, ContextType>;
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   url?: Resolver<ResolversTypes['Url'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
