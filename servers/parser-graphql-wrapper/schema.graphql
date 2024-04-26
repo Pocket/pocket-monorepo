@@ -490,14 +490,14 @@ type ItemSummary implements PocketMetadata {
 }
 
 type ReaderInterstitial {
-  itemCard: ItemSummary
+  itemCard: PocketMetadata
 }
 
 type ItemNotFound {
-  message: String 
+  message: String
 }
 
 type PocketShare @key(fields: "targetUrl") {
   targetUrl: ValidUrl!
-  preview: ItemSummary
+  preview: PocketMetadata
 }
