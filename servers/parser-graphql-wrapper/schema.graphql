@@ -168,7 +168,7 @@ type Item
   marticle: [MarticleComponent!]
 
   "The client preview/display logic for this url"
-  preview: ItemSummary
+  preview: PocketMetadata
 }
 
 type ArticleMarkdown {
@@ -457,13 +457,25 @@ type ReaderViewResult @key(fields: "slug") {
 
 union ReaderFallback = ReaderInterstitial | ItemNotFound
 
-
 enum ItemSummarySource {
   POCKET_PARSER
   OPENGRAPH
 }
 
-type ItemSummary {
+interface PocketMetadata {
+  id: ID!
+  image: Image
+  excerpt: String
+  title: String
+  authors: [Author!]
+  domain: DomainMetadata
+  datePublished: ISOString
+  url: Url!
+  source: ItemSummarySource!
+  item: Item
+}
+
+type ItemSummary implements PocketMetadata {
   id: ID!
   image: Image
   excerpt: String

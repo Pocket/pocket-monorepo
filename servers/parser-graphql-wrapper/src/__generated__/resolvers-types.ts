@@ -238,7 +238,7 @@ export type Item = {
    */
   originDomainId?: Maybe<Scalars['String']['output']>;
   /** The client preview/display logic for this url */
-  preview?: Maybe<ItemSummary>;
+  preview?: Maybe<PocketMetadata>;
   /** A server generated unique reader slug for this item based on itemId */
   readerSlug: Scalars['String']['output'];
   /** The item id of the resolved_url */
@@ -294,7 +294,7 @@ export type ItemNotFound = {
   message?: Maybe<Scalars['String']['output']>;
 };
 
-export type ItemSummary = {
+export type ItemSummary = PocketMetadata & {
   __typename?: 'ItemSummary';
   authors?: Maybe<Array<Author>>;
   datePublished?: Maybe<Scalars['ISOString']['output']>;
@@ -409,6 +409,19 @@ export type NumberedListElement = ListElement & {
   index: Scalars['Int']['output'];
   /** Zero-indexed level, for handling nested lists. */
   level: Scalars['Int']['output'];
+};
+
+export type PocketMetadata = {
+  authors?: Maybe<Array<Author>>;
+  datePublished?: Maybe<Scalars['ISOString']['output']>;
+  domain?: Maybe<DomainMetadata>;
+  excerpt?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  image?: Maybe<Image>;
+  item?: Maybe<Item>;
+  source: ItemSummarySource;
+  title?: Maybe<Scalars['String']['output']>;
+  url: Scalars['Url']['output'];
 };
 
 export type PocketShare = {
@@ -606,6 +619,7 @@ export type ResolversUnionTypes<RefType extends Record<string, unknown>> = Resol
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = ResolversObject<{
   ListElement: ( BulletedListElement ) | ( NumberedListElement );
+  PocketMetadata: ( ItemSummary );
 }>;
 
 /** Mapping between all available schema types and the resolvers types */
@@ -643,6 +657,7 @@ export type ResolversTypes = ResolversObject<{
   MarticleText: ResolverTypeWrapper<MarticleText>;
   Mutation: ResolverTypeWrapper<{}>;
   NumberedListElement: ResolverTypeWrapper<NumberedListElement>;
+  PocketMetadata: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['PocketMetadata']>;
   PocketShare: ResolverTypeWrapper<PocketShare>;
   Query: ResolverTypeWrapper<{}>;
   ReaderFallback: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['ReaderFallback']>;
@@ -688,6 +703,7 @@ export type ResolversParentTypes = ResolversObject<{
   MarticleText: MarticleText;
   Mutation: {};
   NumberedListElement: NumberedListElement;
+  PocketMetadata: ResolversInterfaceTypes<ResolversParentTypes>['PocketMetadata'];
   PocketShare: PocketShare;
   Query: {};
   ReaderFallback: ResolversUnionTypes<ResolversParentTypes>['ReaderFallback'];
@@ -798,7 +814,7 @@ export type ItemResolvers<ContextType = IContext, ParentType extends ResolversPa
   mimeType?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   normalUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   originDomainId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  preview?: Resolver<Maybe<ResolversTypes['ItemSummary']>, ParentType, ContextType>;
+  preview?: Resolver<Maybe<ResolversTypes['PocketMetadata']>, ParentType, ContextType>;
   readerSlug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   resolvedId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   resolvedNormalUrl?: Resolver<Maybe<ResolversTypes['Url']>, ParentType, ContextType>;
@@ -910,6 +926,20 @@ export type NumberedListElementResolvers<ContextType = IContext, ParentType exte
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type PocketMetadataResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['PocketMetadata'] = ResolversParentTypes['PocketMetadata']> = ResolversObject<{
+  __resolveType: TypeResolveFn<'ItemSummary', ParentType, ContextType>;
+  authors?: Resolver<Maybe<Array<ResolversTypes['Author']>>, ParentType, ContextType>;
+  datePublished?: Resolver<Maybe<ResolversTypes['ISOString']>, ParentType, ContextType>;
+  domain?: Resolver<Maybe<ResolversTypes['DomainMetadata']>, ParentType, ContextType>;
+  excerpt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  image?: Resolver<Maybe<ResolversTypes['Image']>, ParentType, ContextType>;
+  item?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType>;
+  source?: Resolver<ResolversTypes['ItemSummarySource'], ParentType, ContextType>;
+  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['Url'], ParentType, ContextType>;
+}>;
+
 export type PocketShareResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['PocketShare'] = ResolversParentTypes['PocketShare']> = ResolversObject<{
   __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['PocketShare']>, { __typename: 'PocketShare' } & GraphQLRecursivePick<ParentType, {"targetUrl":true}>, ContextType>;
   preview?: Resolver<Maybe<ResolversTypes['ItemSummary']>, ParentType, ContextType>;
@@ -990,6 +1020,7 @@ export type Resolvers<ContextType = IContext> = ResolversObject<{
   MarticleText?: MarticleTextResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   NumberedListElement?: NumberedListElementResolvers<ContextType>;
+  PocketMetadata?: PocketMetadataResolvers<ContextType>;
   PocketShare?: PocketShareResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   ReaderFallback?: ReaderFallbackResolvers<ContextType>;

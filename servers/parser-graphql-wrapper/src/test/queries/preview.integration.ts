@@ -35,24 +35,26 @@ describe('preview', () => {
     query display($url: String!) {
       itemByUrl(url: $url) {
         preview {
-          id
-          title
-          image {
+          ... on PocketMetadata {
+            id
+            title
+            image {
+              url
+              src
+            }
+            excerpt
+            authors {
+              id
+            }
+            domain {
+              name
+              logo
+            }
+            datePublished
             url
-            src
-          }
-          excerpt
-          authors {
-            id
-          }
-          domain {
-            name
-            logo
-          }
-          datePublished
-          url
-          item {
-            id
+            item {
+              id
+            }
           }
         }
       }
