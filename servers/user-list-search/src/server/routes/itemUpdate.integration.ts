@@ -7,7 +7,10 @@ import { ContextManager } from '../context';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import { startServer } from '../serverUtils';
-import { contentDb, knexDbClient } from '../../datasource/clients/knexClient';
+import {
+  contentDb,
+  knexDbReadClient,
+} from '../../datasource/clients/knexClient';
 
 //Set this here so the client instantiates outside of the before block that has a timeout.
 const esClient = client;
@@ -19,7 +22,7 @@ describe('itemUpdate', () => {
   afterAll(async () => {
     await server.stop();
     esClient.close();
-    knexDbClient().destroy();
+    knexDbReadClient().destroy();
     contentDb().destroy();
     jest.resetAllMocks();
   });
@@ -94,7 +97,7 @@ describe('itemUpdate', () => {
       }),
     ]);
 
-    await knexDbClient().raw(
+    await knexDbReadClient().raw(
       'UPDATE readitla_b.items_extended SET date_published = "0000-00-00 00:00:00" ',
     );
 

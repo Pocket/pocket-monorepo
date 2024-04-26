@@ -18,6 +18,9 @@ export const config = {
     readitla:
       process.env.READITLA_DB ||
       '{"password":"","dbname":"readitla_ril-tmp","engine":"mysql","port":"3306","host":"localhost","username":"pkt_listserch_r"}',
+    readitla_w:
+      process.env.READITLA_DB_W ||
+      '{"password":"","dbname":"readitla_ril-tmp","engine":"mysql","port":"3306","host":"localhost","username":"pkt_listserch_w"}',
     content:
       process.env.CONTENT_AURORA_DB ||
       '{"password":"","dbname":"content","engine":"mysql","port":"3306","host":"localhost","username":"pkt_listserch_r"}',

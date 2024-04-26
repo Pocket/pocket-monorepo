@@ -19,7 +19,7 @@ import { router as itemDeleteRouter } from './routes/itemDelete';
 import { router as itemUpdateRouter } from './routes/itemUpdate';
 import { router as userListImportRouter } from './routes/userListImport';
 
-import { knexDbClient } from '../datasource/clients/knexClient';
+import { knexDbReadClient } from '../datasource/clients/knexClient';
 
 /**
  * Create and start the apollo server.
@@ -63,7 +63,7 @@ export async function startServer(port: number): Promise<{
   // Apply to root
   const url = '/graphql';
 
-  const dbClient = knexDbClient();
+  const dbClient = knexDbReadClient();
 
   app.use(
     url,
