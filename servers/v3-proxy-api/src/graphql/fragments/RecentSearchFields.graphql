@@ -1,0 +1,10 @@
+fragment RecentSearchFields on User {
+  recentSearches {
+    term
+    context {
+      key
+      value
+    }
+    sortId
+  }
+}

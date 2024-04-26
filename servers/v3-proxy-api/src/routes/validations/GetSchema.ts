@@ -25,6 +25,8 @@ export type V3GetParams = {
   account: boolean;
   forceaccount: boolean;
   updatedBefore?: number;
+  premium: boolean;
+  forcepremium: boolean;
 };
 
 /**
@@ -239,6 +241,28 @@ export const V3GetSchema: Schema = {
     },
   },
   forceaccount: {
+    default: {
+      options: '0',
+    },
+    isIn: {
+      options: [['0', '1']],
+    },
+    customSanitizer: {
+      options: (value) => (value === '1' ? true : false),
+    },
+  },
+  premium: {
+    default: {
+      options: '0',
+    },
+    isIn: {
+      options: [['0', '1']],
+    },
+    customSanitizer: {
+      options: (value) => (value === '1' ? true : false),
+    },
+  },
+  forcepremium: {
     default: {
       options: '0',
     },

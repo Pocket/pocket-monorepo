@@ -4,3 +4,4 @@ export * from './queryParams';
 export * from './get-search';
 export * from './fetch';
 export * from './get-account';
+export * from './get-recent-searches';

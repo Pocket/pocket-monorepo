@@ -381,6 +381,17 @@ export type AccountResponse = {
   };
 };
 
+export type RecentSearch = {
+  context_key: string;
+  context_value: string;
+  search: string;
+  sort_id: string;
+};
+
+export type RecentSearchResponse = {
+  recent_searches: Array<RecentSearch>;
+};
+
 export type Profile = {
   username: string | null;
   name: string;

@@ -73,6 +73,7 @@ export async function processV3call(
     withAnnotations: data.annotations,
     withTagsList: data.taglist || data.forcetaglist,
     withAccountData: false,
+    withRecentSearches: false,
   };
   // This time is only set if taglist is requested and 'since' is provided;
   // 'forcetaglist' overrides the 'since' check
@@ -97,6 +98,8 @@ export async function processV3call(
     account: false,
     forceaccount: false,
     updatedBefore: data.updatedBefore,
+    premium: false,
+    forcepremium: false,
   };
 
   // Otherwise call SavedItems list api
