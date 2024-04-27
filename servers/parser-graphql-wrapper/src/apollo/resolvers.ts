@@ -127,7 +127,7 @@ export const resolvers: Resolvers = {
       });
     },
     preview: async (parent, args, context) => {
-      return context.dataSources.itemSummaryModel.deriveItemSummary(
+      return context.dataSources.pocketMetadataModel.derivePocketMetadata(
         parent,
         context,
       );
@@ -208,7 +208,11 @@ export const resolvers: Resolvers = {
     },
   },
   PocketMetadata: {
-    __resolveType() {
+    __resolveType(parent) {
+      // Note when a new type is added we need to add it here.
+      if ('htmlEmbed' in parent) {
+        return 'OEmbed';
+      }
       return 'ItemSummary';
     },
   },
@@ -217,7 +221,7 @@ export const resolvers: Resolvers = {
       const item = await context.dataSources.parserAPI.getItemData(
         parent.targetUrl,
       );
-      return await context.dataSources.itemSummaryModel.deriveItemSummary(
+      return await context.dataSources.pocketMetadataModel.derivePocketMetadata(
         item,
         context,
       );

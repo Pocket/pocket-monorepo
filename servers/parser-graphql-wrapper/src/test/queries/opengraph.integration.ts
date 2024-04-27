@@ -18,9 +18,9 @@ import { DB } from '../../__generated__/readitlab';
 import { conn as readitlabInit } from '../../databases/readitlab';
 import { conn as sharesInit } from '../../databases/readitlaShares';
 import { clearDynamoDB, dynamoClient } from '../../datasources/dynamoClient';
-import { ItemSummarySource } from '../../__generated__/resolvers-types';
-import { ItemSummaryDataStoreBase } from '../../databases/itemSummaryStore';
+import { ItemSummaryDataStoreBase } from '../../databases/pocketMetadataStore';
 import md5 from 'md5';
+import { PocketMetadataSource } from '../../__generated__/resolvers-types';
 
 jest.mock('open-graph-scraper');
 
@@ -36,6 +36,7 @@ describe('preview', () => {
       itemByUrl(url: $url) {
         preview {
           ... on PocketMetadata {
+            source
             id
             title
             image {
@@ -132,6 +133,7 @@ describe('preview', () => {
       openGraphData: { error: false, result: { ogTitle: 'openGraphTitle' } },
       expected: {
         title: 'openGraphTitle',
+        source: PocketMetadataSource.Opengraph,
       },
     },
     {
@@ -139,10 +141,11 @@ describe('preview', () => {
       openGraphData: undefined,
       expected: {
         title: 'parser test',
+        source: PocketMetadataSource.PocketParser,
       },
     },
   ])(
-    'should return item display data',
+    'should return opengraph display data if enabled',
     async ({ parserData, openGraphData, expected }) => {
       if (openGraphData == undefined) {
         repo.setToggle(config.unleash.flags.openGraphParser.name, {
@@ -216,14 +219,14 @@ describe('preview', () => {
       },
     });
 
-    await new ItemSummaryDataStoreBase(dynamoClient()).storeItemSummary(
+    await new ItemSummaryDataStoreBase(dynamoClient()).storePocketMetadata(
       {
         id: 'id',
         itemUrl: testUrl,
         urlHash: md5(testUrl),
         datePublished: null,
         title: 'the saved data',
-        dataSource: ItemSummarySource.Opengraph,
+        dataSource: PocketMetadataSource.Opengraph,
         createdAt: Math.round(Date.now() / 1000),
       },
       3600,

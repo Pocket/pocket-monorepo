@@ -303,16 +303,10 @@ export type ItemSummary = PocketMetadata & {
   id: Scalars['ID']['output'];
   image?: Maybe<Image>;
   item?: Maybe<Item>;
-  source: ItemSummarySource;
+  source: PocketMetadataSource;
   title?: Maybe<Scalars['String']['output']>;
   url: Scalars['Url']['output'];
 };
-
-export enum ItemSummarySource {
-  Oembed = 'OEMBED',
-  Opengraph = 'OPENGRAPH',
-  PocketParser = 'POCKET_PARSER'
-}
 
 export type ListElement = {
   /** Row in a list. */
@@ -422,7 +416,7 @@ export type OEmbed = PocketMetadata & {
   id: Scalars['ID']['output'];
   image?: Maybe<Image>;
   item?: Maybe<Item>;
-  source: ItemSummarySource;
+  source: PocketMetadataSource;
   title?: Maybe<Scalars['String']['output']>;
   url: Scalars['Url']['output'];
 };
@@ -435,10 +429,16 @@ export type PocketMetadata = {
   id: Scalars['ID']['output'];
   image?: Maybe<Image>;
   item?: Maybe<Item>;
-  source: ItemSummarySource;
+  source: PocketMetadataSource;
   title?: Maybe<Scalars['String']['output']>;
   url: Scalars['Url']['output'];
 };
+
+export enum PocketMetadataSource {
+  Oembed = 'OEMBED',
+  Opengraph = 'OPENGRAPH',
+  PocketParser = 'POCKET_PARSER'
+}
 
 export type PocketShare = {
   __typename?: 'PocketShare';
@@ -658,7 +658,6 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   ItemNotFound: ResolverTypeWrapper<ItemNotFound>;
   ItemSummary: ResolverTypeWrapper<ItemSummary>;
-  ItemSummarySource: ItemSummarySource;
   ListElement: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['ListElement']>;
   Markdown: ResolverTypeWrapper<Scalars['Markdown']['output']>;
   MarkdownImagePosition: ResolverTypeWrapper<MarkdownImagePosition>;
@@ -675,6 +674,7 @@ export type ResolversTypes = ResolversObject<{
   NumberedListElement: ResolverTypeWrapper<NumberedListElement>;
   OEmbed: ResolverTypeWrapper<OEmbed>;
   PocketMetadata: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['PocketMetadata']>;
+  PocketMetadataSource: PocketMetadataSource;
   PocketShare: ResolverTypeWrapper<PocketShare>;
   Query: ResolverTypeWrapper<{}>;
   ReaderFallback: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['ReaderFallback']>;
@@ -864,7 +864,7 @@ export type ItemSummaryResolvers<ContextType = IContext, ParentType extends Reso
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   image?: Resolver<Maybe<ResolversTypes['Image']>, ParentType, ContextType>;
   item?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType>;
-  source?: Resolver<ResolversTypes['ItemSummarySource'], ParentType, ContextType>;
+  source?: Resolver<ResolversTypes['PocketMetadataSource'], ParentType, ContextType>;
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   url?: Resolver<ResolversTypes['Url'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -953,7 +953,7 @@ export type OEmbedResolvers<ContextType = IContext, ParentType extends Resolvers
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   image?: Resolver<Maybe<ResolversTypes['Image']>, ParentType, ContextType>;
   item?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType>;
-  source?: Resolver<ResolversTypes['ItemSummarySource'], ParentType, ContextType>;
+  source?: Resolver<ResolversTypes['PocketMetadataSource'], ParentType, ContextType>;
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   url?: Resolver<ResolversTypes['Url'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -968,7 +968,7 @@ export type PocketMetadataResolvers<ContextType = IContext, ParentType extends R
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   image?: Resolver<Maybe<ResolversTypes['Image']>, ParentType, ContextType>;
   item?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType>;
-  source?: Resolver<ResolversTypes['ItemSummarySource'], ParentType, ContextType>;
+  source?: Resolver<ResolversTypes['PocketMetadataSource'], ParentType, ContextType>;
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   url?: Resolver<ResolversTypes['Url'], ParentType, ContextType>;
 }>;

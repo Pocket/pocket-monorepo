@@ -7,52 +7,37 @@ import config from '../config';
 import * as Sentry from '@sentry/node';
 import {
   DomainMetadata,
-  ItemSummary,
-  ItemSummarySource,
+  PocketMetadata,
+  PocketMetadataSource,
 } from '../__generated__/resolvers-types';
 import md5 from 'md5';
 
-export interface IItemSummaryDataStore {
-  getStoredItemSummary(resolvedUrl: string): Promise<ItemSummaryEntity | null>;
-  storeItemSummary(
-    input: ItemSummaryEntity,
+export interface IPocketMetadataDataStore {
+  getStoredPocketMetadata(
+    resolvedUrl: string,
+  ): Promise<PocketMetadataEntity | null>;
+  storePocketMetadata(
+    input: PocketMetadataEntity,
     ttl: number,
-  ): Promise<ItemSummaryEntity>;
+  ): Promise<PocketMetadataEntity>;
 }
 
-export type ItemSummaryEntity = Omit<
-  ItemSummary,
+export type PocketMetadataEntity = Omit<
+  PocketMetadata,
   'domain' | 'url' | 'source' | 'createdAt' | 'datePublished'
 > & {
   urlHash: string; // md5 hash of the resolved Url
   createdAt: number; // epoch time in seconds
   datePublished: number; // epoch time in seconds
   // source is a reserved keyword in dynamodb so we need to remap it.
-  dataSource: ItemSummarySource; // class name of the datasource
+  dataSource: PocketMetadataSource; // class name of the datasource
   // Domain is a reserved keyword in dynamodb so we need to remap it.
   domainMetadata?: DomainMetadata;
   // url is a reserved keyword in dynamodb so we need to remap it.
   itemUrl: string;
 };
 
-// Create an array of the key names to be used in the projection expression.
-// Because typescript erases types at runtime we need to build this manually
-// but we can use a keyof type to ensure we have compile time safety and include all keys
-const itemSummaryEntityKeys: (keyof ItemSummaryEntity)[] = [
-  'urlHash',
-  'id',
-  'image',
-  'excerpt',
-  'title',
-  'authors',
-  'domainMetadata',
-  'datePublished',
-  'itemUrl',
-  'createdAt',
-  'dataSource',
-];
-
-export class ItemSummaryDataStoreBase implements IItemSummaryDataStore {
+export class ItemSummaryDataStoreBase implements IPocketMetadataDataStore {
   public static table = config.dynamoDb.itemSummaryTable;
 
   constructor(public conn: DynamoDBDocumentClient) {}
@@ -61,25 +46,24 @@ export class ItemSummaryDataStoreBase implements IItemSummaryDataStore {
    * @param id the lookup ID (hash key)
    * @returns ShareEntity, or null if record does not exist
    */
-  async getStoredItemSummary(
+  async getStoredPocketMetadata(
     resolvedUrl: string,
-  ): Promise<ItemSummaryEntity | null> {
+  ): Promise<PocketMetadataEntity | null> {
     const getPreviewCommand = new GetCommand({
       TableName: ItemSummaryDataStoreBase.table.name,
       Key: { urlHash: md5(resolvedUrl) },
-      ProjectionExpression: itemSummaryEntityKeys.join(','),
     });
     const response = await this.conn.send(getPreviewCommand);
     if (response?.Item != null) {
-      return response.Item as ItemSummaryEntity;
+      return response.Item as PocketMetadataEntity;
     }
     return null;
   }
 
-  async storeItemSummary(
-    input: ItemSummaryEntity,
+  async storePocketMetadata(
+    input: PocketMetadataEntity,
     ttl: number,
-  ): Promise<ItemSummaryEntity> {
+  ): Promise<PocketMetadataEntity> {
     const putCommand = new PutCommand({
       Item: { ...input, ttl },
       TableName: ItemSummaryDataStoreBase.table.name,

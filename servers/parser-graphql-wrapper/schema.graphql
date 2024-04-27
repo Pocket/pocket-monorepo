@@ -457,7 +457,7 @@ type ReaderViewResult @key(fields: "slug") {
 
 union ReaderFallback = ReaderInterstitial | ItemNotFound
 
-enum ItemSummarySource {
+enum PocketMetadataSource {
   POCKET_PARSER
   OPENGRAPH
   OEMBED
@@ -472,7 +472,7 @@ interface PocketMetadata {
   domain: DomainMetadata
   datePublished: ISOString
   url: Url!
-  source: ItemSummarySource!
+  source: PocketMetadataSource!
   item: Item
 }
 
@@ -485,7 +485,7 @@ type ItemSummary implements PocketMetadata {
   domain: DomainMetadata
   datePublished: ISOString
   url: Url!
-  source: ItemSummarySource!
+  source: PocketMetadataSource!
   item: Item
 }
 
@@ -498,7 +498,7 @@ type OEmbed implements PocketMetadata {
   domain: DomainMetadata
   datePublished: ISOString
   url: Url!
-  source: ItemSummarySource!
+  source: PocketMetadataSource!
   item: Item
   htmlEmbed: String
 }

@@ -10,11 +10,11 @@ import { getRedisCache } from '../cache';
 import { DB as ReaditlabDB } from '../__generated__/readitlab';
 import { DB as SharesDB } from '../__generated__/readitlaShares';
 import { Kysely } from 'kysely';
-import { ItemSummaryModel } from '../models/ItemSummaryModel';
-import { ItemSummaryDataStoreBase } from '../databases/itemSummaryStore';
+import { PocketMetadataModel } from '../models/PocketMetadataModel';
+import { ItemSummaryDataStoreBase } from '../databases/pocketMetadataStore';
 import { dynamoClient } from '../datasources/dynamoClient';
-import { OpenGraphModel } from '../models/summaryModels/OpenGraphModel';
-import { oEmbedModel } from '../models/summaryModels/oEmbedModel';
+import { OpenGraphModel } from '../models/pocketMetadataModels/OpenGraphModel';
+import { OEmbedModel } from '../models/pocketMetadataModels/OEmbedModel';
 
 /**
  * Change this to `extends BaseContext` once LegacyDataSourcesPlugin
@@ -31,7 +31,7 @@ export interface IContext {
   };
   dataSources: {
     parserAPI: ParserAPI;
-    itemSummaryModel: ItemSummaryModel;
+    pocketMetadataModel: PocketMetadataModel;
   };
   headers: { [key: string]: any };
   userId: string | undefined;
@@ -73,11 +73,12 @@ export class ContextManager implements IContext {
       dataloaders,
       {
         parserAPI: new ParserAPI({ cache: getRedisCache() }),
-        itemSummaryModel: new ItemSummaryModel(
+        pocketMetadataModel: new PocketMetadataModel(
           new ItemSummaryDataStoreBase(dynamoClient()),
           // Add all datasource types here in order we should iterate them
           // Note that datasources should be indexed in this array from more specific to least specific
-          [new oEmbedModel(), new OpenGraphModel()],
+          // Note If you are adding a new type, make sure to return it in PocketMetadata __resolveTypename
+          [new OEmbedModel(), new OpenGraphModel()],
         ),
       },
       {

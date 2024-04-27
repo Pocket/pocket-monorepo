@@ -1,31 +1,32 @@
 import {
   Item,
   ItemSummary,
-  ItemSummarySource,
+  PocketMetadata,
+  PocketMetadataSource,
 } from '../../__generated__/resolvers-types';
 import { IContext } from '../../apollo/context';
 import config from '../../config';
 import { unleash } from '../../unleash';
-import { IItemSummaryDataSource } from '../ItemSummaryModel';
+import { IPocketMetadataDataSource } from '../PocketMetadataModel';
 import ogs from 'open-graph-scraper';
 import { merge } from 'lodash';
 
-export class OpenGraphModel implements IItemSummaryDataSource {
+export class OpenGraphModel implements IPocketMetadataDataSource {
   // Use OpenGraph for all domains except for youtube.com and reddit.
   // Open graph should be last in the matcher array
   matcher = /^(?!.*\b(youtube\.com|reddit\.com)\b).*$/;
   ttl = 7 * 60 * 60 * 24; // 7 days of ttl cache
-  source = ItemSummarySource.Opengraph;
+  source = PocketMetadataSource.Opengraph;
 
-  async deriveItemSummary(
+  async derivePocketMetadata(
     item: Item,
-    fallbackParserItemSummary: ItemSummary,
+    fallbackParserPocketMetadata: PocketMetadata,
     context: IContext,
   ): Promise<ItemSummary> {
     const openGraphData = await this.openGraphMetadata(item);
     // If we have data from opengraph, let's overwrite the Parser content
     // Also uses lodash for a deep merge with the fallback data ignoring undefined
-    return merge(fallbackParserItemSummary, openGraphData);
+    return merge(fallbackParserPocketMetadata, openGraphData);
   }
 
   isEnabled(context: IContext): boolean {
@@ -62,7 +63,7 @@ export class OpenGraphModel implements IItemSummaryDataSource {
     // We return a parital object that is expanded into the main ItemSummary object populated with Item data.
     // We use undefined because that will make the root object default to Item data when not existant
     return {
-      source: ItemSummarySource.Opengraph,
+      source: PocketMetadataSource.Opengraph,
       title: result.ogTitle ?? undefined,
       image: firstImage
         ? {

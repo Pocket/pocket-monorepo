@@ -33,10 +33,11 @@ export async function fallbackPage(
     return notFound;
   }
 
-  const itemCard = await context.dataSources.itemSummaryModel.deriveItemSummary(
-    item,
-    context,
-  );
+  const itemCard =
+    await context.dataSources.pocketMetadataModel.derivePocketMetadata(
+      item,
+      context,
+    );
 
   return { itemCard };
 }
