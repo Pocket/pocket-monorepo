@@ -1712,8 +1712,8 @@ importers:
         specifier: 3.554.0
         version: 3.554.0(@aws-sdk/client-dynamodb@3.554.0)
       '@extractus/oembed-extractor':
-        specifier: ^4.0.4
-        version: 4.0.4
+        specifier: ^3.2.1
+        version: 3.2.1
       '@keyv/redis':
         specifier: 2.8.4
         version: 2.8.4
@@ -5148,9 +5148,9 @@ packages:
     resolution: {integrity: sha512-5Aap/GaRupgNx/feGBwLLTVv8OQFfv3pq2lPRzPg9R+IOBnDgghTGW7l7EuVXOvg5cc/xSAlRW8rBrjIC3Nvqw==}
     dev: false
 
-  /@extractus/oembed-extractor@4.0.4:
-    resolution: {integrity: sha512-Jd+a+5fpGYxF4Lhs8iXZlL0vjCPg3FKnuXt8jrvXMXzTlazLNAE2My5/EIU/T1hH0XKRBS534ASEnicEhfjSlQ==}
-    engines: {node: '>= 18'}
+  /@extractus/oembed-extractor@3.2.1:
+    resolution: {integrity: sha512-ZwOY/SFqDph/1J4KfTTOKgGcy5xIrOSkK8b5KDHyoIg8AZ6+uEQ5l7SSNQskc4RxlLZGk+CBNOuRUGfkdPhKLA==}
+    engines: {node: '>= 15'}
     dependencies:
       cross-fetch: 4.0.0
     transitivePeerDependencies:

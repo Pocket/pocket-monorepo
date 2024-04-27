@@ -7,6 +7,7 @@ import {
 import { IContext } from '../../apollo/context';
 import { IPocketMetadataDataSource } from '../PocketMetadataModel';
 import { merge } from 'lodash';
+import { extract } from '@extractus/oembed-extractor';
 
 export class OEmbedModel implements IPocketMetadataDataSource {
   // Use oEmbed for TikTok, and others in the future
@@ -19,12 +20,39 @@ export class OEmbedModel implements IPocketMetadataDataSource {
     fallbackParserPocketMetadata: PocketMetadata,
     context: IContext,
   ): Promise<OEmbed> {
+    let oembedData = await this.parseOEmbed(item);
     // If we have data from oembed, let's overwrite the Parser content
     // Also uses lodash for a deep merge with the fallback data ignoring undefined
-    return merge(fallbackParserPocketMetadata);
+    return merge(fallbackParserPocketMetadata, oembedData);
   }
 
   isEnabled(context: IContext): boolean {
     return true;
+  }
+
+  async parseOEmbed(item: Item): Promise<Partial<OEmbed>> {
+    const userAgent =
+      'PocketParser/2.0 (+https://getpocket.com/pocketparser_ua)';
+    let result = await extract(item.givenUrl, null, {
+      signal: AbortSignal.timeout(5000),
+      headers: { 'user-agent': userAgent },
+    });
+
+    return {
+      authors: result.author_name
+        ? [{ name: result.author_name, url: result.author_url, id: '1' }]
+        : undefined,
+      domain: result.provider_name ? { name: result.provider_name } : undefined,
+      title: result.title,
+      image: result.thumbnail_url
+        ? {
+            imageId: 1,
+            url: result.thumbnail_url,
+            src: result.thumbnail_url,
+            height: result.thumbnail_height,
+            width: result.thumbnail_width,
+          }
+        : undefined,
+    };
   }
 }

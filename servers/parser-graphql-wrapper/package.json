@@ -22,7 +22,7 @@
     "@apollo/datasource-rest": "^6.2.2",
     "@aws-sdk/client-dynamodb": "3.554.0",
     "@aws-sdk/lib-dynamodb": "3.554.0",
-    "@extractus/oembed-extractor": "^4.0.4",
+    "@extractus/oembed-extractor": "^3.2.1",
     "@keyv/redis": "2.8.4",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/feature-flags-client": "workspace:*",
