@@ -8,7 +8,7 @@ import { GraphQLScalarType, Kind } from 'graphql';
 export const Max300CharStringResolver = new GraphQLScalarType({
   name: 'Max300CharString',
   description:
-    'String truncated to 300 chararacters (truncated strings indicated with ellipses)',
+    'String truncated to 300 characters (truncated strings indicated with ellipses)',
   // Use the default string serialization because we are validating
   // the input, so we don't need to also validate before we return
   parseValue: possiblyTruncated,
