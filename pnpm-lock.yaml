@@ -326,7 +326,7 @@ importers:
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -372,7 +372,7 @@ importers:
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -412,7 +412,7 @@ importers:
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -449,7 +449,7 @@ importers:
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -504,7 +504,7 @@ importers:
         version: 3.1.0
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -556,7 +556,7 @@ importers:
         version: 3.1.0
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -599,7 +599,7 @@ importers:
         version: 29.7.0(@types/node@20.12.7)(ts-node@10.9.2)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -633,7 +633,7 @@ importers:
         version: 29.7.0(@types/node@20.12.7)(ts-node@10.9.2)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -673,7 +673,7 @@ importers:
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -722,7 +722,7 @@ importers:
         version: 3.1.0
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -759,7 +759,7 @@ importers:
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -802,7 +802,7 @@ importers:
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -845,7 +845,7 @@ importers:
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -918,13 +918,13 @@ importers:
         version: 4.0.2(jest@29.7.0)
       semantic-release:
         specifier: 23.0.7
-        version: 23.0.7(typescript@5.4.5)
+        version: 23.0.7(typescript@5.4.4)
       semantic-release-monorepo:
         specifier: 8.0.2
         version: 8.0.2(semantic-release@23.0.7)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -946,7 +946,7 @@ importers:
         version: 29.7.0(@types/node@20.12.7)(ts-node@10.9.2)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -1001,7 +1001,7 @@ importers:
         version: 29.7.0(@types/node@20.12.7)(ts-node@10.9.2)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -1029,7 +1029,7 @@ importers:
         version: 29.7.0(@types/node@20.12.7)(ts-node@10.9.2)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -1053,7 +1053,7 @@ importers:
         version: 14.0.0-beta.5
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -1081,7 +1081,7 @@ importers:
         version: 29.7.0(@types/node@20.12.7)(ts-node@10.9.2)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -1136,13 +1136,13 @@ importers:
         version: 29.7.0(@types/node@20.12.7)(ts-node@10.9.2)
       semantic-release:
         specifier: 23.0.7
-        version: 23.0.7(typescript@5.4.5)
+        version: 23.0.7(typescript@5.4.4)
       semantic-release-monorepo:
         specifier: 8.0.2
         version: 8.0.2(semantic-release@23.0.7)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -1150,11 +1150,11 @@ importers:
   packages/tracing:
     dependencies:
       '@opentelemetry/exporter-trace-otlp-grpc':
-        specifier: 0.50.0
-        version: 0.50.0(@opentelemetry/api@1.8.0)
+        specifier: 0.51.0
+        version: 0.51.0(@opentelemetry/api@1.8.0)
       '@opentelemetry/exporter-trace-otlp-http':
-        specifier: 0.50.0
-        version: 0.50.0(@opentelemetry/api@1.8.0)
+        specifier: 0.51.0
+        version: 0.51.0(@opentelemetry/api@1.8.0)
       '@opentelemetry/id-generator-aws-xray':
         specifier: 1.2.1
         version: 1.2.1(@opentelemetry/api@1.8.0)
@@ -1171,8 +1171,8 @@ importers:
         specifier: 0.39.0
         version: 0.39.0(@opentelemetry/api@1.8.0)
       '@opentelemetry/instrumentation-http':
-        specifier: 0.50.0
-        version: 0.50.0(@opentelemetry/api@1.8.0)
+        specifier: 0.51.0
+        version: 0.51.0(@opentelemetry/api@1.8.0)
       '@opentelemetry/instrumentation-knex':
         specifier: 0.35.0
         version: 0.35.0(@opentelemetry/api@1.8.0)
@@ -1183,17 +1183,17 @@ importers:
         specifier: 0.35.0
         version: 0.35.0(@opentelemetry/api@1.8.0)
       '@opentelemetry/propagator-aws-xray':
-        specifier: 1.3.1
-        version: 1.3.1(@opentelemetry/api@1.8.0)
+        specifier: 1.24.0
+        version: 1.24.0(@opentelemetry/api@1.8.0)
       '@opentelemetry/resource-detector-aws':
         specifier: 1.4.1
         version: 1.4.1(@opentelemetry/api@1.8.0)
       '@opentelemetry/sdk-node':
-        specifier: 0.50.0
-        version: 0.50.0(@opentelemetry/api@1.8.0)
+        specifier: 0.51.0
+        version: 0.51.0(@opentelemetry/api@1.8.0)
       '@opentelemetry/sdk-trace-node':
-        specifier: 1.23.0
-        version: 1.23.0(@opentelemetry/api@1.8.0)
+        specifier: 1.24.0
+        version: 1.24.0(@opentelemetry/api@1.8.0)
     devDependencies:
       '@jest/globals':
         specifier: 29.7.0
@@ -1209,13 +1209,13 @@ importers:
         version: 29.7.0(@types/node@20.12.7)(ts-node@10.9.2)
       semantic-release:
         specifier: 23.0.7
-        version: 23.0.7(typescript@5.4.5)
+        version: 23.0.7(typescript@5.4.4)
       semantic-release-monorepo:
         specifier: 8.0.2
         version: 8.0.2(semantic-release@23.0.7)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -1243,13 +1243,13 @@ importers:
         version: 29.7.0(@types/node@20.12.7)(ts-node@10.9.2)
       semantic-release:
         specifier: 23.0.7
-        version: 23.0.7(typescript@5.4.5)
+        version: 23.0.7(typescript@5.4.4)
       semantic-release-monorepo:
         specifier: 8.0.2
         version: 8.0.2(semantic-release@23.0.7)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
@@ -1334,10 +1334,10 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       ts-node:
         specifier: 10.9.2
-        version: 10.9.2(@types/node@20.12.7)(typescript@5.4.5)
+        version: 10.9.2(@types/node@20.12.7)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -1431,7 +1431,7 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -1510,7 +1510,7 @@ importers:
         version: 3.1.0
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -1568,7 +1568,7 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -1695,7 +1695,7 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -1792,7 +1792,7 @@ importers:
         version: 8.4.1
       '@graphql-codegen/cli':
         specifier: 5.0.2
-        version: 5.0.2(@parcel/watcher@2.4.1)(graphql@16.8.1)(typescript@5.4.5)
+        version: 5.0.2(@parcel/watcher@2.4.1)(graphql@16.8.1)(typescript@5.4.4)
       '@graphql-codegen/typescript':
         specifier: 4.0.6
         version: 4.0.6(graphql@16.8.1)
@@ -1825,7 +1825,7 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -1871,7 +1871,7 @@ importers:
         version: 3.1.0
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -1959,7 +1959,7 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -2017,7 +2017,7 @@ importers:
         version: 3.1.0
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -2057,7 +2057,7 @@ importers:
     devDependencies:
       '@graphql-codegen/cli':
         specifier: 5.0.2
-        version: 5.0.2(@parcel/watcher@2.4.1)(graphql@16.8.1)(typescript@5.4.5)
+        version: 5.0.2(@parcel/watcher@2.4.1)(graphql@16.8.1)(typescript@5.4.4)
       '@graphql-codegen/typescript':
         specifier: 4.0.6
         version: 4.0.6(graphql@16.8.1)
@@ -2090,7 +2090,7 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -2163,7 +2163,7 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -2269,7 +2269,7 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -2315,7 +2315,7 @@ importers:
         version: 5.0.2(graphql@16.8.1)
       '@graphql-codegen/cli':
         specifier: 5.0.2
-        version: 5.0.2(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.5)
+        version: 5.0.2(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.4)
       '@graphql-codegen/typed-document-node':
         specifier: 5.0.6
         version: 5.0.6(graphql@16.8.1)
@@ -2351,10 +2351,10 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5)
+        version: 29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4)
       ts-node:
         specifier: 10.9.2
-        version: 10.9.2(@types/node@20.12.7)(typescript@5.4.5)
+        version: 10.9.2(@types/node@20.12.7)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -5310,7 +5310,7 @@ packages:
       tslib: 2.6.2
     dev: true
 
-  /@graphql-codegen/cli@5.0.2(@parcel/watcher@2.4.1)(graphql@16.8.1)(typescript@5.4.5):
+  /@graphql-codegen/cli@5.0.2(@parcel/watcher@2.4.1)(graphql@16.8.1)(typescript@5.4.4):
     resolution: {integrity: sha512-MBIaFqDiLKuO4ojN6xxG9/xL9wmfD3ZjZ7RsPjwQnSHBCUXnEkdKvX+JVpx87Pq29Ycn8wTJUguXnTZ7Di0Mlw==}
     hasBin: true
     peerDependencies:
@@ -5339,11 +5339,11 @@ packages:
       '@parcel/watcher': 2.4.1
       '@whatwg-node/fetch': 0.8.8
       chalk: 4.1.2
-      cosmiconfig: 8.3.6(typescript@5.4.5)
+      cosmiconfig: 8.3.6(typescript@5.4.4)
       debounce: 1.2.1
       detect-indent: 6.1.0
       graphql: 16.8.1
-      graphql-config: 5.0.3(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.5)
+      graphql-config: 5.0.3(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.4)
       inquirer: 8.2.6
       is-glob: 4.0.3
       jiti: 1.21.0
@@ -5368,7 +5368,7 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@graphql-codegen/cli@5.0.2(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.5):
+  /@graphql-codegen/cli@5.0.2(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.4):
     resolution: {integrity: sha512-MBIaFqDiLKuO4ojN6xxG9/xL9wmfD3ZjZ7RsPjwQnSHBCUXnEkdKvX+JVpx87Pq29Ycn8wTJUguXnTZ7Di0Mlw==}
     hasBin: true
     peerDependencies:
@@ -5396,11 +5396,11 @@ packages:
       '@graphql-tools/utils': 10.1.3(graphql@16.8.1)
       '@whatwg-node/fetch': 0.8.8
       chalk: 4.1.2
-      cosmiconfig: 8.3.6(typescript@5.4.5)
+      cosmiconfig: 8.3.6(typescript@5.4.4)
       debounce: 1.2.1
       detect-indent: 6.1.0
       graphql: 16.8.1
-      graphql-config: 5.0.3(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.5)
+      graphql-config: 5.0.3(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.4)
       inquirer: 8.2.6
       is-glob: 4.0.3
       jiti: 1.21.0
@@ -6667,6 +6667,13 @@ packages:
       '@opentelemetry/api': 1.8.0
     dev: false
 
+  /@opentelemetry/api-logs@0.51.0:
+    resolution: {integrity: sha512-m/jtfBPEIXS1asltl8fPQtO3Sb1qMpuL61unQajUmM8zIxeMF1AlqzWXM3QedcYgTTFiJCew5uJjyhpmqhc0+g==}
+    engines: {node: '>=14'}
+    dependencies:
+      '@opentelemetry/api': 1.8.0
+    dev: false
+
   /@opentelemetry/api@1.4.1:
     resolution: {integrity: sha512-O2yRJce1GOc6PAy3QxFM4NzFiWzvScDC1/5ihYBL6BUEVdq0XMWN01sppE+H6bBXbaFYipjwFLEWLg5PaSOThA==}
     engines: {node: '>=8.0.0'}
@@ -6677,8 +6684,8 @@ packages:
     engines: {node: '>=8.0.0'}
     dev: false
 
-  /@opentelemetry/context-async-hooks@1.23.0(@opentelemetry/api@1.8.0):
-    resolution: {integrity: sha512-wazGJZDRevibOJ+VgyrT+9+8sybZAxpZx2G7vy30OAtk92OpZCg7HgNxT11NUx0VBDWcRx1dOatMYGOVplQ7QA==}
+  /@opentelemetry/context-async-hooks@1.24.0(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-s7xaQ9ifDpJvwbWRLkZD/J5hY35w+MECm4TQUkg6szRcny9lf6oVhWij4w3JJFQgvHQMXU7oXOpX8Z05HxV/8g==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.9.0'
@@ -6696,61 +6703,71 @@ packages:
       '@opentelemetry/semantic-conventions': 1.23.0
     dev: false
 
-  /@opentelemetry/exporter-trace-otlp-grpc@0.50.0(@opentelemetry/api@1.8.0):
-    resolution: {integrity: sha512-w/NF4TrwHxx+Uz1M0rCOSVr6KgcoQPv3zF9JRqcebY2euD7ddWnLP0hE8JavyA1uq4UchnMp9faAk9n7hTCePw==}
+  /@opentelemetry/core@1.24.0(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-FP2oN7mVPqcdxJDTTnKExj4mi91EH+DNuArKfHTjPuJWe2K1JfMIVXNfahw1h3onJxQnxS8K0stKkogX05s+Aw==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      '@opentelemetry/api': '>=1.0.0 <1.9.0'
+    dependencies:
+      '@opentelemetry/api': 1.8.0
+      '@opentelemetry/semantic-conventions': 1.24.0
+    dev: false
+
+  /@opentelemetry/exporter-trace-otlp-grpc@0.51.0(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-xQpxKzS8ZnxYCa1v+3EKWhwMrSK3+RezpJ+AEKaP2pf2QbLfHt7kKfSn7niR2u3A1Tbe2aC7Ptt9+MafhThOOQ==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': ^1.0.0
     dependencies:
       '@grpc/grpc-js': 1.10.1
       '@opentelemetry/api': 1.8.0
-      '@opentelemetry/core': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/otlp-grpc-exporter-base': 0.50.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/otlp-transformer': 0.50.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/resources': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/sdk-trace-base': 1.23.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/core': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/otlp-grpc-exporter-base': 0.51.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/otlp-transformer': 0.51.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/resources': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/sdk-trace-base': 1.24.0(@opentelemetry/api@1.8.0)
     dev: false
 
-  /@opentelemetry/exporter-trace-otlp-http@0.50.0(@opentelemetry/api@1.8.0):
-    resolution: {integrity: sha512-L7OtIMT7MsFqkmhbQlPBGRXt7152VN5esHpQEJYIBFedOEo3Da+yHpu5ojMZtPzpIvSpB5Xr5lnJUjJCbkttCA==}
+  /@opentelemetry/exporter-trace-otlp-http@0.51.0(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-zODqnLZmPOxj9CarFv0TrVlx9mgj0TfCMCiUiTdNi9iA2rgdKVo+bjJjpYF6LCTJOQCR5TScAUCKyzwkgDI+iA==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': ^1.0.0
     dependencies:
       '@opentelemetry/api': 1.8.0
-      '@opentelemetry/core': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/otlp-exporter-base': 0.50.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/otlp-transformer': 0.50.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/resources': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/sdk-trace-base': 1.23.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/core': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/otlp-exporter-base': 0.51.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/otlp-transformer': 0.51.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/resources': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/sdk-trace-base': 1.24.0(@opentelemetry/api@1.8.0)
     dev: false
 
-  /@opentelemetry/exporter-trace-otlp-proto@0.50.0(@opentelemetry/api@1.8.0):
-    resolution: {integrity: sha512-vavD9Ow6yOLiD+ocuS/oeciCsXNdsN41aYUrEljNaLXogvnkfMhJ+JLAhOnRSpzlVtRp7Ciw2BYGdYSebR0OsA==}
+  /@opentelemetry/exporter-trace-otlp-proto@0.51.0(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-Fi7r0iMqGoFCQQ+WY0pYOWp395vdinZJIkYKnNbnreHxAN/kVDBl2FxbV3DeOKuRxEY08Gyb9ggPf+Zrqp7l/w==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': ^1.0.0
     dependencies:
       '@opentelemetry/api': 1.8.0
-      '@opentelemetry/core': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/otlp-exporter-base': 0.50.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/otlp-proto-exporter-base': 0.50.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/otlp-transformer': 0.50.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/resources': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/sdk-trace-base': 1.23.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/core': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/otlp-exporter-base': 0.51.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/otlp-proto-exporter-base': 0.51.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/otlp-transformer': 0.51.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/resources': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/sdk-trace-base': 1.24.0(@opentelemetry/api@1.8.0)
     dev: false
 
-  /@opentelemetry/exporter-zipkin@1.23.0(@opentelemetry/api@1.8.0):
-    resolution: {integrity: sha512-2LOGvNUGONuIcWhynFaJorVyqv03uZkURScciLmOxvBf2lWTNPEj77br1dCpShIWBM+YlrH7Tc+JXAs+GC7DqA==}
+  /@opentelemetry/exporter-zipkin@1.24.0(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-QeGv0PHONswmu567pf9QliJ6s6DgCu5+ziF+soNS1LTcr1VRRVLViYLmGxmzDFUC48sjNTu7sumcKT0nJXsGBw==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': ^1.0.0
     dependencies:
       '@opentelemetry/api': 1.8.0
-      '@opentelemetry/core': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/resources': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/sdk-trace-base': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/semantic-conventions': 1.23.0
+      '@opentelemetry/core': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/resources': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/sdk-trace-base': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/semantic-conventions': 1.24.0
     dev: false
 
   /@opentelemetry/id-generator-aws-xray@1.2.1(@opentelemetry/api@1.8.0):
@@ -6816,16 +6833,16 @@ packages:
       - supports-color
     dev: false
 
-  /@opentelemetry/instrumentation-http@0.50.0(@opentelemetry/api@1.8.0):
-    resolution: {integrity: sha512-bsd6Nv0FtN9C6M6vX/kgPzvJY9UhJc4CZZNvqDbsfVQv3/MWvPrYgthf41AhrehqeDnpfn/QGzNKtdWUduGanQ==}
+  /@opentelemetry/instrumentation-http@0.51.0(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-6VsGPBnU6iVKWhVBnuRpwrmiHfxt8EYrqfnH2glfsMpsn4xy+O6U0yGlggPLhoYeOVafV3h70EEk5MU0tpsbiw==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': ^1.3.0
     dependencies:
       '@opentelemetry/api': 1.8.0
-      '@opentelemetry/core': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/instrumentation': 0.50.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/semantic-conventions': 1.23.0
+      '@opentelemetry/core': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/instrumentation': 0.51.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/semantic-conventions': 1.24.0
       semver: 7.6.0
     transitivePeerDependencies:
       - supports-color
@@ -6888,54 +6905,71 @@ packages:
       - supports-color
     dev: false
 
-  /@opentelemetry/otlp-exporter-base@0.50.0(@opentelemetry/api@1.8.0):
-    resolution: {integrity: sha512-JUmjmrCmE1/fc4LjCQMqLfudgSl5OpUkzx7iA94b4jgeODM7zWxUoVXL7/CT7fWf47Cn+pmKjMvTCSESqZZ3mA==}
+  /@opentelemetry/instrumentation@0.51.0(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-Eg/+Od5bEvzpvZQGhvMyKIkrzB9S7jW+6z9LHEI2VXhl/GrqQ3oBqlzJt4tA6pGtxRmqQWKWGM1wAbwDdW/gUA==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      '@opentelemetry/api': ^1.3.0
+    dependencies:
+      '@opentelemetry/api': 1.8.0
+      '@opentelemetry/api-logs': 0.51.0
+      '@types/shimmer': 1.0.5
+      import-in-the-middle: 1.7.1
+      require-in-the-middle: 7.2.1
+      semver: 7.6.0
+      shimmer: 1.2.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /@opentelemetry/otlp-exporter-base@0.51.0(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-hR4c9vWVz1QgzCBSyy9zSDkvfTgaK96E6/tfVP6O4dzdZW9HqWimA3lXV/KXadEGqShvM4GToz9EHp2A5RU5bQ==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': ^1.0.0
     dependencies:
       '@opentelemetry/api': 1.8.0
-      '@opentelemetry/core': 1.23.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/core': 1.24.0(@opentelemetry/api@1.8.0)
     dev: false
 
-  /@opentelemetry/otlp-grpc-exporter-base@0.50.0(@opentelemetry/api@1.8.0):
-    resolution: {integrity: sha512-J500AczSD7xEsjXpwNzSh5HQqxW73PT3CCNsi1VEWCE+8UPgVfkHYIGRHGoch35DV+CMe1svbi7gAk3e5eCSVA==}
+  /@opentelemetry/otlp-grpc-exporter-base@0.51.0(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-oTRtDvvB0bTRTBVrvKA/oM1gIAqQ6DVQS07pvqiL1cZS8wBrGgpw+2iTd0nV661Y/MhDn/kNWp8lRhMEIKN9bw==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': ^1.0.0
     dependencies:
       '@grpc/grpc-js': 1.10.1
       '@opentelemetry/api': 1.8.0
-      '@opentelemetry/core': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/otlp-exporter-base': 0.50.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/core': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/otlp-exporter-base': 0.51.0(@opentelemetry/api@1.8.0)
       protobufjs: 7.2.6
     dev: false
 
-  /@opentelemetry/otlp-proto-exporter-base@0.50.0(@opentelemetry/api@1.8.0):
-    resolution: {integrity: sha512-hlbn3eZbhxoK79Sq1ddj1f7qcx+PzsPQC/SFpJvaWgTaqacCbqJmpzWDKfRRCAC7iGX2Hj/sgpf8vysazqyMOw==}
+  /@opentelemetry/otlp-proto-exporter-base@0.51.0(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-WDANDLSUh11Gu5o6iCzmjZraIv5bK8z1L/t6lxQ2NeEKiKUPo5pVOBBQQC/yAQU2yeqkiO1GRCieH+XahZf60A==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': ^1.0.0
     dependencies:
       '@opentelemetry/api': 1.8.0
-      '@opentelemetry/core': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/otlp-exporter-base': 0.50.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/core': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/otlp-exporter-base': 0.51.0(@opentelemetry/api@1.8.0)
       protobufjs: 7.2.6
     dev: false
 
-  /@opentelemetry/otlp-transformer@0.50.0(@opentelemetry/api@1.8.0):
-    resolution: {integrity: sha512-s0sl1Yfqd5q1Kjrf6DqXPWzErL+XHhrXOfejh4Vc/SMTNqC902xDsC8JQxbjuramWt/+hibfguIvi7Ns8VLolA==}
+  /@opentelemetry/otlp-transformer@0.51.0(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-ylLgx2xumVoSefDHP9GMAU/LG+TU3+8eacVDXV5o1RqWxsdVOaQmCTY0XyDgeRTn6hIOVAq/HHQbRq3iWOrt2A==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.9.0'
     dependencies:
       '@opentelemetry/api': 1.8.0
-      '@opentelemetry/api-logs': 0.50.0
-      '@opentelemetry/core': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/resources': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/sdk-logs': 0.50.0(@opentelemetry/api-logs@0.50.0)(@opentelemetry/api@1.8.0)
-      '@opentelemetry/sdk-metrics': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/sdk-trace-base': 1.23.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/api-logs': 0.51.0
+      '@opentelemetry/core': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/resources': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/sdk-logs': 0.51.0(@opentelemetry/api-logs@0.51.0)(@opentelemetry/api@1.8.0)
+      '@opentelemetry/sdk-metrics': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/sdk-trace-base': 1.24.0(@opentelemetry/api@1.8.0)
     dev: false
 
   /@opentelemetry/propagation-utils@0.30.8(@opentelemetry/api@1.8.0):
@@ -6947,34 +6981,34 @@ packages:
       '@opentelemetry/api': 1.8.0
     dev: false
 
-  /@opentelemetry/propagator-aws-xray@1.3.1(@opentelemetry/api@1.8.0):
-    resolution: {integrity: sha512-6fDMzFlt5r6VWv7MUd0eOpglXPFqykW8CnOuUxJ1VZyLy6mV1bzBlzpsqEmhx1bjvZYvH93vhGkQZqrm95mlrQ==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.0.0
-    dependencies:
-      '@opentelemetry/api': 1.8.0
-      '@opentelemetry/core': 1.23.0(@opentelemetry/api@1.8.0)
-    dev: false
-
-  /@opentelemetry/propagator-b3@1.23.0(@opentelemetry/api@1.8.0):
-    resolution: {integrity: sha512-cZ6rl8y2bdxYQ4e+zP2CQ+QmuPebaLBLO1skjFpj3eEu7zar+6hBzUP3llMOUupkQeQSwXz+4c8dZ26OhYfG/g==}
+  /@opentelemetry/propagator-aws-xray@1.24.0(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-rcuMtEOTZC7TW84tws1QLUVRElrGSbBJwK0b+qa56zJULDiUIiUpS+dSzO+aUchg7MtTJBZSG5OPsfsKpGgNig==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.9.0'
     dependencies:
       '@opentelemetry/api': 1.8.0
-      '@opentelemetry/core': 1.23.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/core': 1.24.0(@opentelemetry/api@1.8.0)
     dev: false
 
-  /@opentelemetry/propagator-jaeger@1.23.0(@opentelemetry/api@1.8.0):
-    resolution: {integrity: sha512-6iArixfgIl3ZgzeltQ5jyiKbjZygM+MbM84pXi1HL0Qs4x4Ck5rM6wEtjhZffFnlDMWEkEqrnM0xF6bTfbiMAQ==}
+  /@opentelemetry/propagator-b3@1.24.0(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-7TMIDE4+NO5vnkor+zned42wqca+hmhW5gWKhmYjUHC5B5uojo1PvtmBrd7kigFu96XvL4ZUWVzibWRWIQ/++Q==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.9.0'
     dependencies:
       '@opentelemetry/api': 1.8.0
-      '@opentelemetry/core': 1.23.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/core': 1.24.0(@opentelemetry/api@1.8.0)
+    dev: false
+
+  /@opentelemetry/propagator-jaeger@1.24.0(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-r3MX3AmJiUeiWTXSDOdwBeaO+ahvWcFCpuKxmhhsH8Q8LqDnjhNd3krqBh4Qsq9wa0WhWtiQaDs/NOCWoMOlOw==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      '@opentelemetry/api': '>=1.0.0 <1.9.0'
+    dependencies:
+      '@opentelemetry/api': 1.8.0
+      '@opentelemetry/core': 1.24.0(@opentelemetry/api@1.8.0)
     dev: false
 
   /@opentelemetry/resource-detector-aws@1.4.1(@opentelemetry/api@1.8.0):
@@ -7000,84 +7034,100 @@ packages:
       '@opentelemetry/semantic-conventions': 1.23.0
     dev: false
 
-  /@opentelemetry/sdk-logs@0.50.0(@opentelemetry/api-logs@0.50.0)(@opentelemetry/api@1.8.0):
-    resolution: {integrity: sha512-PeUEupBB29p9nlPNqXoa1PUWNLsZnxG0DCDj3sHqzae+8y76B/A5hvZjg03ulWdnvBLYpnJslqzylG9E0IL87g==}
+  /@opentelemetry/resources@1.24.0(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-mxC7E7ocUS1tLzepnA7O9/G8G6ZTdjCH2pXme1DDDuCuk6n2/53GADX+GWBuyX0dfIxeMInIbJAdjlfN9GNr6A==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      '@opentelemetry/api': '>=1.0.0 <1.9.0'
+    dependencies:
+      '@opentelemetry/api': 1.8.0
+      '@opentelemetry/core': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/semantic-conventions': 1.24.0
+    dev: false
+
+  /@opentelemetry/sdk-logs@0.51.0(@opentelemetry/api-logs@0.51.0)(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-K4fMBRFD8hQ6khk0rvYFuo6L9ymeGgByir6BcuFIgQuQ00OhYwBi9AruZz5V733Ejq7P8ObR3YyubkOUIbeVAw==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': '>=1.4.0 <1.9.0'
       '@opentelemetry/api-logs': '>=0.39.1'
     dependencies:
       '@opentelemetry/api': 1.8.0
-      '@opentelemetry/api-logs': 0.50.0
-      '@opentelemetry/core': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/resources': 1.23.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/api-logs': 0.51.0
+      '@opentelemetry/core': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/resources': 1.24.0(@opentelemetry/api@1.8.0)
     dev: false
 
-  /@opentelemetry/sdk-metrics@1.23.0(@opentelemetry/api@1.8.0):
-    resolution: {integrity: sha512-4OkvW6+wST4h6LFG23rXSTf6nmTf201h9dzq7bE0z5R9ESEVLERZz6WXwE7PSgg1gdjlaznm1jLJf8GttypFDg==}
+  /@opentelemetry/sdk-metrics@1.24.0(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-4tJ+E6N019OZVB/nUW/LoK9xHxfeh88TCoaTqHeLBE9wLYfi6irWW6J9cphMav7J8Qk0D5b7/RM4VEY4dArWOA==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.9.0'
     dependencies:
       '@opentelemetry/api': 1.8.0
-      '@opentelemetry/core': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/resources': 1.23.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/core': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/resources': 1.24.0(@opentelemetry/api@1.8.0)
       lodash.merge: 4.6.2
     dev: false
 
-  /@opentelemetry/sdk-node@0.50.0(@opentelemetry/api@1.8.0):
-    resolution: {integrity: sha512-LhIXHnvcnhRYcPwG9VG4G6lJ7x4ElYF6UYHHmXA7e4ZWzSUEFmAPfR1IBWv358aD1KwffcEBu7J6zeAR7lPZag==}
+  /@opentelemetry/sdk-node@0.51.0(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-MrPXDQsTAj3lcY8YUCjb7dvSXVZ5jG6wmjD2LB68V1rsLBdP8j70jsI9GaKijY7QB6psbLq6apO1vYeim5U7aw==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.9.0'
     dependencies:
       '@opentelemetry/api': 1.8.0
-      '@opentelemetry/api-logs': 0.50.0
-      '@opentelemetry/core': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/exporter-trace-otlp-grpc': 0.50.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/exporter-trace-otlp-http': 0.50.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/exporter-trace-otlp-proto': 0.50.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/exporter-zipkin': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/instrumentation': 0.50.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/resources': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/sdk-logs': 0.50.0(@opentelemetry/api-logs@0.50.0)(@opentelemetry/api@1.8.0)
-      '@opentelemetry/sdk-metrics': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/sdk-trace-base': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/sdk-trace-node': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/semantic-conventions': 1.23.0
+      '@opentelemetry/api-logs': 0.51.0
+      '@opentelemetry/core': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/exporter-trace-otlp-grpc': 0.51.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/exporter-trace-otlp-http': 0.51.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/exporter-trace-otlp-proto': 0.51.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/exporter-zipkin': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/instrumentation': 0.51.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/resources': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/sdk-logs': 0.51.0(@opentelemetry/api-logs@0.51.0)(@opentelemetry/api@1.8.0)
+      '@opentelemetry/sdk-metrics': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/sdk-trace-base': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/sdk-trace-node': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/semantic-conventions': 1.24.0
     transitivePeerDependencies:
       - supports-color
     dev: false
 
-  /@opentelemetry/sdk-trace-base@1.23.0(@opentelemetry/api@1.8.0):
-    resolution: {integrity: sha512-PzBmZM8hBomUqvCddF/5Olyyviayka44O5nDWq673np3ctnvwMOvNrsUORZjKja1zJbwEuD9niAGbnVrz3jwRQ==}
+  /@opentelemetry/sdk-trace-base@1.24.0(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-H9sLETZ4jw9UJ3totV8oM5R0m4CW0ZIOLfp4NV3g0CM8HD5zGZcaW88xqzWDgiYRpctFxd+WmHtGX/Upoa2vRg==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.9.0'
     dependencies:
       '@opentelemetry/api': 1.8.0
-      '@opentelemetry/core': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/resources': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/semantic-conventions': 1.23.0
+      '@opentelemetry/core': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/resources': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/semantic-conventions': 1.24.0
     dev: false
 
-  /@opentelemetry/sdk-trace-node@1.23.0(@opentelemetry/api@1.8.0):
-    resolution: {integrity: sha512-dwnin5Go2r6VzJZkVc9JBPupssWp7j2EFto+S7qRkwQ00WDykWeq3x2Skk7I1Jr448FeBSvGCQVPgV5e6s6O3w==}
+  /@opentelemetry/sdk-trace-node@1.24.0(@opentelemetry/api@1.8.0):
+    resolution: {integrity: sha512-QgByHmM9uloTpcYEEyW9YJEIMKHFSIM677RH9pJPWWwtM2NQFbEp/8HIJw80Ymtaz6cAxg1Kay1ByqIVzq3t5g==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.9.0'
     dependencies:
       '@opentelemetry/api': 1.8.0
-      '@opentelemetry/context-async-hooks': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/core': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/propagator-b3': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/propagator-jaeger': 1.23.0(@opentelemetry/api@1.8.0)
-      '@opentelemetry/sdk-trace-base': 1.23.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/context-async-hooks': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/core': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/propagator-b3': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/propagator-jaeger': 1.24.0(@opentelemetry/api@1.8.0)
+      '@opentelemetry/sdk-trace-base': 1.24.0(@opentelemetry/api@1.8.0)
       semver: 7.6.0
     dev: false
 
   /@opentelemetry/semantic-conventions@1.23.0:
     resolution: {integrity: sha512-MiqFvfOzfR31t8cc74CTP1OZfz7MbqpAnLCra8NqQoaHJX6ncIRTdYOQYBDQ2uFISDq0WY8Y9dDTWvsgzzBYRg==}
+    engines: {node: '>=14'}
+    dev: false
+
+  /@opentelemetry/semantic-conventions@1.24.0:
+    resolution: {integrity: sha512-yL0jI6Ltuz8R+Opj7jClGrul6pOoYrdfVmzQS4SITXRPH7I5IRZbrwe/6/v8v4WYMa6MYZG480S1+uc/IGfqsA==}
     engines: {node: '>=14'}
     dev: false
 
@@ -7636,7 +7686,7 @@ packages:
       import-from-esm: 1.3.4
       lodash-es: 4.17.21
       micromatch: 4.0.5
-      semantic-release: 23.0.7(typescript@5.4.5)
+      semantic-release: 23.0.7(typescript@5.4.4)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -7667,7 +7717,7 @@ packages:
       lodash-es: 4.17.21
       mime: 4.0.1
       p-filter: 4.1.0
-      semantic-release: 23.0.7(typescript@5.4.5)
+      semantic-release: 23.0.7(typescript@5.4.4)
       url-join: 5.0.0
     transitivePeerDependencies:
       - supports-color
@@ -7690,7 +7740,7 @@ packages:
       rc: 1.2.8
       read-pkg: 9.0.1
       registry-auth-token: 5.0.2
-      semantic-release: 23.0.7(typescript@5.4.5)
+      semantic-release: 23.0.7(typescript@5.4.4)
       semver: 7.6.0
       tempy: 3.1.0
     dev: true
@@ -7711,7 +7761,7 @@ packages:
       into-stream: 7.0.0
       lodash-es: 4.17.21
       read-pkg-up: 11.0.0
-      semantic-release: 23.0.7(typescript@5.4.5)
+      semantic-release: 23.0.7(typescript@5.4.4)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -10867,7 +10917,7 @@ packages:
       vary: 1.1.2
     dev: false
 
-  /cosmiconfig@8.3.6(typescript@5.4.5):
+  /cosmiconfig@8.3.6(typescript@5.4.4):
     resolution: {integrity: sha512-kcZ6+W5QzcJ3P1Mt+83OUv/oHFqZHIx8DuxG6eZ5RGMERoLqp4BuGjhHLYGK+Kf5XVkQvqBSmAy/nGWN3qDgEA==}
     engines: {node: '>=14'}
     peerDependencies:
@@ -10880,10 +10930,10 @@ packages:
       js-yaml: 4.1.0
       parse-json: 5.2.0
       path-type: 4.0.0
-      typescript: 5.4.5
+      typescript: 5.4.4
     dev: true
 
-  /cosmiconfig@9.0.0(typescript@5.4.5):
+  /cosmiconfig@9.0.0(typescript@5.4.4):
     resolution: {integrity: sha512-itvL5h8RETACmOTFc4UfIyB2RfEHi71Ax6E/PivVxq9NseKbOWpeyHEOIbmAw1rs8Ak0VursQNww7lf7YtUwzg==}
     engines: {node: '>=14'}
     peerDependencies:
@@ -10896,7 +10946,7 @@ packages:
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
-      typescript: 5.4.5
+      typescript: 5.4.4
     dev: true
 
   /cpu-features@0.0.2:
@@ -11467,7 +11517,7 @@ packages:
     dependencies:
       semver: 7.6.0
       shelljs: 0.8.5
-      typescript: 5.5.0-dev.20240426
+      typescript: 5.5.0-dev.20240429
     dev: false
 
   /dreamopt@0.8.0:
@@ -13119,7 +13169,7 @@ packages:
       obliterator: 2.0.4
     dev: false
 
-  /graphql-config@5.0.3(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.5):
+  /graphql-config@5.0.3(@types/node@20.12.7)(graphql@16.8.1)(typescript@5.4.4):
     resolution: {integrity: sha512-BNGZaoxIBkv9yy6Y7omvsaBUHOzfFcII3UN++tpH8MGOKFPFkCPZuwx09ggANMt8FgyWP1Od8SWPmrUEZca4NQ==}
     engines: {node: '>= 16.0.0'}
     peerDependencies:
@@ -13135,7 +13185,7 @@ packages:
       '@graphql-tools/merge': 9.0.3(graphql@16.8.1)
       '@graphql-tools/url-loader': 8.0.2(@types/node@20.12.7)(graphql@16.8.1)
       '@graphql-tools/utils': 10.1.3(graphql@16.8.1)
-      cosmiconfig: 8.3.6(typescript@5.4.5)
+      cosmiconfig: 8.3.6(typescript@5.4.4)
       graphql: 16.8.1
       jiti: 1.21.0
       minimatch: 4.2.3
@@ -13361,7 +13411,7 @@ packages:
     resolution: {integrity: sha512-+K84LB1DYwMHoHSgaOY/Jfhw3ucPmSET5v98Ke/HdNSw4a0UktWzyW1mjhjpuxxTqOOsfWT/7iVshHmVZ4IpOA==}
     engines: {node: ^16.14.0 || >=18.0.0}
     dependencies:
-      lru-cache: 10.2.0
+      lru-cache: 10.2.1
     dev: true
 
   /html-entities@2.5.2:
@@ -14381,7 +14431,7 @@ packages:
       pretty-format: 29.7.0
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.9.2(@types/node@20.12.7)(typescript@5.4.5)
+      ts-node: 10.9.2(@types/node@20.12.7)(typescript@5.4.4)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -15597,6 +15647,7 @@ packages:
   /lru-cache@10.2.0:
     resolution: {integrity: sha512-2bIM8x+VAf6JT4bKAljS1qUWgMsqZRPGJS6FSahIMPVvctcNhyVp7AJu7quxOW9jwkryBReKZY5tY5JYv2n/7Q==}
     engines: {node: 14 || >=16.14}
+    dev: false
 
   /lru-cache@10.2.1:
     resolution: {integrity: sha512-tS24spDe/zXhWbNPErCHs/AGOzbKGHT+ybSBqmdLm8WZ1xXLWvH8Qn71QPAlqVhd0qUTWjy+Kl9JmISgDdEjsA==}
@@ -18220,7 +18271,7 @@ packages:
       pkg-up: 3.1.0
       ramda: 0.27.2
       read-pkg: 5.2.0
-      semantic-release: 23.0.7(typescript@5.4.5)
+      semantic-release: 23.0.7(typescript@5.4.4)
       semantic-release-plugin-decorators: 4.0.0(semantic-release@23.0.7)
       tempy: 1.0.1
     transitivePeerDependencies:
@@ -18232,10 +18283,10 @@ packages:
     peerDependencies:
       semantic-release: '>20'
     dependencies:
-      semantic-release: 23.0.7(typescript@5.4.5)
+      semantic-release: 23.0.7(typescript@5.4.4)
     dev: true
 
-  /semantic-release@23.0.7(typescript@5.4.5):
+  /semantic-release@23.0.7(typescript@5.4.4):
     resolution: {integrity: sha512-PFxXQE57zrYiCbWKkdsVUF08s0SifEw3WhDhrN47ZEUWQiLl21FI9Dg/H8g7i/lPx0IkF6u7PjJbgxPceXKBeg==}
     engines: {node: '>=20.8.1'}
     hasBin: true
@@ -18246,7 +18297,7 @@ packages:
       '@semantic-release/npm': 12.0.0(semantic-release@23.0.7)
       '@semantic-release/release-notes-generator': 13.0.0(semantic-release@23.0.7)
       aggregate-error: 5.0.0
-      cosmiconfig: 9.0.0(typescript@5.4.5)
+      cosmiconfig: 9.0.0(typescript@5.4.4)
       debug: 4.3.4(supports-color@5.5.0)
       env-ci: 11.0.0
       execa: 8.0.1
@@ -19153,7 +19204,7 @@ packages:
       chalk: 5.3.0
       chalk-template: 1.1.0
       commander: 12.0.0
-      cosmiconfig: 9.0.0(typescript@5.4.5)
+      cosmiconfig: 9.0.0(typescript@5.4.4)
       effect: 3.0.3
       enquirer: 2.4.1
       fast-check: 3.17.2
@@ -19442,7 +19493,7 @@ packages:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
     dev: false
 
-  /ts-jest@29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.5):
+  /ts-jest@29.1.2(@babel/core@7.24.4)(jest@29.7.0)(typescript@5.4.4):
     resolution: {integrity: sha512-br6GJoH/WUX4pu7FbZXuWGKGNDuU7b8Uj77g/Sp7puZV6EXzuByl6JrECvm0MzVzSTkSHWTihsXt+5XYER5b+g==}
     engines: {node: ^16.10.0 || ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -19472,7 +19523,7 @@ packages:
       lodash.memoize: 4.1.2
       make-error: 1.3.6
       semver: 7.6.0
-      typescript: 5.4.5
+      typescript: 5.4.4
       yargs-parser: 21.1.1
     dev: true
 
@@ -19509,38 +19560,6 @@ packages:
       typescript: 5.4.4
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
-    dev: false
-
-  /ts-node@10.9.2(@types/node@20.12.7)(typescript@5.4.5):
-    resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
-    hasBin: true
-    peerDependencies:
-      '@swc/core': '>=1.2.50'
-      '@swc/wasm': '>=1.2.50'
-      '@types/node': '*'
-      typescript: '>=2.7'
-    peerDependenciesMeta:
-      '@swc/core':
-        optional: true
-      '@swc/wasm':
-        optional: true
-    dependencies:
-      '@cspotcode/source-map-support': 0.8.1
-      '@tsconfig/node10': 1.0.9
-      '@tsconfig/node12': 1.0.11
-      '@tsconfig/node14': 1.0.3
-      '@tsconfig/node16': 1.0.4
-      '@types/node': 20.12.7
-      acorn: 8.11.3
-      acorn-walk: 8.3.2
-      arg: 4.1.3
-      create-require: 1.1.1
-      diff: 4.0.2
-      make-error: 1.3.6
-      typescript: 5.4.5
-      v8-compile-cache-lib: 3.0.1
-      yn: 3.1.1
-    dev: true
 
   /ts-pattern@4.3.0:
     resolution: {integrity: sha512-pefrkcd4lmIVR0LA49Imjf9DYLK8vtWhqBPA3Ya1ir8xCW0O2yjL9dsCVvI7pCodLC5q7smNpEtDR2yVulQxOg==}
@@ -19843,14 +19862,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.4.5:
-    resolution: {integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==}
-    engines: {node: '>=14.17'}
-    hasBin: true
-    dev: true
-
-  /typescript@5.5.0-dev.20240426:
-    resolution: {integrity: sha512-96cu+y3DrjSNhNSgB3t3nRiesCwBVjZpbjJ6DcQoCgt0crXXPrOMmJQH/E8TZ41U4JzaULD+cB1Z2owh5HANew==}
+  /typescript@5.5.0-dev.20240429:
+    resolution: {integrity: sha512-oaeASmILG5rODErsKfCtOv1mDllgxW7wilw05mHMgm1pzye6YKMsvd0nEHuVdzwql06viXRA3vumjLvtXERngQ==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: false
