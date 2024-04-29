@@ -426,7 +426,7 @@ export type PocketMetadata = {
 
 export type PocketShare = {
   __typename?: 'PocketShare';
-  preview?: Maybe<ItemSummary>;
+  preview?: Maybe<PocketMetadata>;
   targetUrl: Scalars['ValidUrl']['output'];
 };
 
@@ -468,7 +468,7 @@ export type ReaderFallback = ItemNotFound | ReaderInterstitial;
 
 export type ReaderInterstitial = {
   __typename?: 'ReaderInterstitial';
-  itemCard?: Maybe<ItemSummary>;
+  itemCard?: Maybe<PocketMetadata>;
 };
 
 export type ReaderViewResult = {
@@ -942,7 +942,7 @@ export type PocketMetadataResolvers<ContextType = IContext, ParentType extends R
 
 export type PocketShareResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['PocketShare'] = ResolversParentTypes['PocketShare']> = ResolversObject<{
   __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['PocketShare']>, { __typename: 'PocketShare' } & GraphQLRecursivePick<ParentType, {"targetUrl":true}>, ContextType>;
-  preview?: Resolver<Maybe<ResolversTypes['ItemSummary']>, ParentType, ContextType>;
+  preview?: Resolver<Maybe<ResolversTypes['PocketMetadata']>, ParentType, ContextType>;
   targetUrl?: Resolver<ResolversTypes['ValidUrl'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -958,7 +958,7 @@ export type ReaderFallbackResolvers<ContextType = IContext, ParentType extends R
 }>;
 
 export type ReaderInterstitialResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['ReaderInterstitial'] = ResolversParentTypes['ReaderInterstitial']> = ResolversObject<{
-  itemCard?: Resolver<Maybe<ResolversTypes['ItemSummary']>, ParentType, ContextType>;
+  itemCard?: Resolver<Maybe<ResolversTypes['PocketMetadata']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
