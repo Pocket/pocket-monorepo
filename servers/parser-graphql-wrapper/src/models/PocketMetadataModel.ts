@@ -33,6 +33,7 @@ export class PocketMetadataModel {
   public async derivePocketMetadata(
     item: Item,
     context: IContext,
+    refresh: boolean,
   ): Promise<PocketMetadata> {
     const url = item.givenUrl; // the url we are going to key everything on.
     const fallbackParserPocketMetadata: PocketMetadata = {
@@ -65,12 +66,14 @@ export class PocketMetadataModel {
 
     const source = sources[0];
 
-    const storedSummary = await this.getPocketMetadata(url);
-    // we need to ensure the stored source we pulled out of the dynamodb matches the one we are looking
-    // for in case 2 sites are used by multipe sources or an older less specific source
-    // TODO: In the future we should probably do a more specific select of the dynamodb data
-    if (storedSummary && source.source == storedSummary.source) {
-      return { ...storedSummary, item };
+    if (!refresh) {
+      const storedSummary = await this.getPocketMetadata(url);
+      // we need to ensure the stored source we pulled out of the dynamodb matches the one we are looking
+      // for in case 2 sites are used by multipe sources or an older less specific source
+      // TODO: In the future we should probably do a more specific select of the dynamodb data
+      if (storedSummary && source.source == storedSummary.source) {
+        return { ...storedSummary, item };
+      }
     }
 
     const newPocketMetadata = await sources[0].derivePocketMetadata(

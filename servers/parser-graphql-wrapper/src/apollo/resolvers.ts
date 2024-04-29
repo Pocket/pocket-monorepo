@@ -49,7 +49,7 @@ export const resolvers: Resolvers = {
         return parent.article;
       }
       // If the field was requested via refreshArticle we need to clear the cache before we request data
-      const clearCache = info.operation.name.value == 'refreshArticle';
+      const clearCache = info.path.prev.key == 'refreshItemArticle';
       const item = await dataSources.parserAPI.getItemData(
         parent.givenUrl,
         {
@@ -71,7 +71,7 @@ export const resolvers: Resolvers = {
       //       const article =
       //         parent.parsedArticle ??
       // If the field was requested via refreshArticle we need to clear the cache before we request data
-      const clearCache = info.operation.name.value == 'refreshArticle';
+      const clearCache = info.path.prev.key == 'refreshItemArticle';
       const article = await dataSources.parserAPI.getItemData(
         parent.givenUrl,
         {
@@ -92,7 +92,7 @@ export const resolvers: Resolvers = {
     ssml: async (parent, args, { dataSources }, info) => {
       if (!parent.article && parent.isArticle) {
         // If the field was requested via refreshArticle we need to clear the cache before we request data
-        const clearCache = info.operation.name.value == 'refreshArticle';
+        const clearCache = info.path.prev.key == 'refreshItemArticle';
         parent.article = (
           await dataSources.parserAPI.getItemData(
             parent.givenUrl,
@@ -126,10 +126,13 @@ export const resolvers: Resolvers = {
         givenUrl: parent.givenUrl,
       });
     },
-    preview: async (parent, args, context) => {
+    preview: async (parent, args, context, info) => {
+      // If the field was requested via refreshArticle we need to clear the cache before we request data
+      const clearCache = info.path.prev.key == 'refreshItemArticle';
       return context.dataSources.pocketMetadataModel.derivePocketMetadata(
         parent,
         context,
+        clearCache,
       );
     },
   },
@@ -224,6 +227,7 @@ export const resolvers: Resolvers = {
       return await context.dataSources.pocketMetadataModel.derivePocketMetadata(
         item,
         context,
+        false,
       );
     },
   },

@@ -11,7 +11,7 @@ import { extract } from '@extractus/oembed-extractor';
 
 export class OEmbedModel implements IPocketMetadataDataSource {
   // Use oEmbed for TikTok, and others in the future
-  matcher = /^(.*\b(tiktok\.com)\b).*$/;
+  matcher = /^(.*\b(tiktok\.com|ted\.com)\b).*$/;
   ttl = 7 * 60 * 60 * 24; // 7 days of ttl cache
   source = PocketMetadataSource.Oembed;
 
@@ -20,7 +20,7 @@ export class OEmbedModel implements IPocketMetadataDataSource {
     fallbackParserPocketMetadata: PocketMetadata,
     context: IContext,
   ): Promise<OEmbed> {
-    let oembedData = await this.parseOEmbed(item);
+    const oembedData = await this.parseOEmbed(item);
     // If we have data from oembed, let's overwrite the Parser content
     // Also uses lodash for a deep merge with the fallback data ignoring undefined
     return merge(fallbackParserPocketMetadata, oembedData);
@@ -33,17 +33,19 @@ export class OEmbedModel implements IPocketMetadataDataSource {
   async parseOEmbed(item: Item): Promise<Partial<OEmbed>> {
     const userAgent =
       'PocketParser/2.0 (+https://getpocket.com/pocketparser_ua)';
-    let result = await extract(item.givenUrl, null, {
+    const result = await extract(item.givenUrl, null, {
       signal: AbortSignal.timeout(5000),
       headers: { 'user-agent': userAgent },
     });
 
     return {
+      source: PocketMetadataSource.Oembed,
       authors: result.author_name
         ? [{ name: result.author_name, url: result.author_url, id: '1' }]
         : undefined,
       domain: result.provider_name ? { name: result.provider_name } : undefined,
       title: result.title,
+      htmlEmbed: 'html' in result ? (result.html as string) : undefined,
       image: result.thumbnail_url
         ? {
             imageId: 1,

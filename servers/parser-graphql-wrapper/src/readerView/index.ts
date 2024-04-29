@@ -37,6 +37,7 @@ export async function fallbackPage(
     await context.dataSources.pocketMetadataModel.derivePocketMetadata(
       item,
       context,
+      false,
     );
 
   return { itemCard };
