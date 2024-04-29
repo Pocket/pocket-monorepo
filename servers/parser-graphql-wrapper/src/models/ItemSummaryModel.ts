@@ -92,13 +92,14 @@ export class ItemSummaryModel {
   toEntity(itemSummary: ItemSummary): ItemSummaryEntity {
     let date = itemSummary.datePublished;
     if (date instanceof Date) {
-      date = Math.round(date.getTime() / 1000);
+      date = date.getTime() / 1000;
     }
+
     // We are explicit instead of using a spread so we don't save more data then we need.
     return {
       dataSource: itemSummary.source,
       authors: itemSummary.authors,
-      datePublished: date, // time in s
+      datePublished: date, // time in ms
       // Domain is a reserved keyword in dynamodb so we need to remap it.
       domainMetadata: itemSummary.domain,
       excerpt: itemSummary.excerpt,
@@ -115,7 +116,6 @@ export class ItemSummaryModel {
    */
   fromEntity(entity: ItemSummaryEntity): ItemSummary {
     return {
-      ...entity,
       __typename: 'ItemSummary' as const,
       domain: entity.domainMetadata,
       url: entity.itemUrl,
@@ -123,6 +123,7 @@ export class ItemSummaryModel {
       datePublished: entity.datePublished
         ? DateTime.fromSeconds(entity.datePublished).toJSDate()
         : null,
+      ...entity,
     };
   }
 
