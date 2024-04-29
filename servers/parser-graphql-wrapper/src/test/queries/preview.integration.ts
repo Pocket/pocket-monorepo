@@ -194,7 +194,7 @@ describe('preview', () => {
     },
   );
 
-  it('uses cached dynamodb data if availables', async () => {
+  it('uses cached dynamodb data if available', async () => {
     repo.setToggle(config.unleash.flags.openGraphParser.name, {
       ...openGraphFeatureToggle,
       enabled: true,
@@ -233,6 +233,7 @@ describe('preview', () => {
     const res = await request(app)
       .post(graphQLUrl)
       .send({ query: print(GET_PREVIEW), variables });
+    expect(res.body.errors).toBeUndefined();
     expect(res.body.data).toEqual({
       itemByUrl: {
         preview: {
