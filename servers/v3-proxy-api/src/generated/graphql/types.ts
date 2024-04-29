@@ -716,7 +716,7 @@ export type Item = {
    */
   originDomainId?: Maybe<Scalars['String']['output']>;
   /** The client preview/display logic for this url */
-  preview?: Maybe<ItemSummary>;
+  preview?: Maybe<PocketMetadata>;
   /** A server generated unique reader slug for this item based on itemId */
   readerSlug: Scalars['String']['output'];
   /** Recommend similar articles to show in the bottom of an article. */
@@ -810,7 +810,7 @@ export type ItemNotFound = {
 /** Union type for items that may or may not be processed */
 export type ItemResult = Item | PendingItem;
 
-export type ItemSummary = {
+export type ItemSummary = PocketMetadata & {
   __typename?: 'ItemSummary';
   authors?: Maybe<Array<Author>>;
   datePublished?: Maybe<Scalars['ISOString']['output']>;
@@ -1699,6 +1699,19 @@ export enum PendingItemStatus {
   Resolved = 'RESOLVED',
   Unresolved = 'UNRESOLVED'
 }
+
+export type PocketMetadata = {
+  authors?: Maybe<Array<Author>>;
+  datePublished?: Maybe<Scalars['ISOString']['output']>;
+  domain?: Maybe<DomainMetadata>;
+  excerpt?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  image?: Maybe<Image>;
+  item?: Maybe<Item>;
+  source: ItemSummarySource;
+  title?: Maybe<Scalars['String']['output']>;
+  url: Scalars['Url']['output'];
+};
 
 /**
  * New Pocket Save Type, replacing SavedItem.
