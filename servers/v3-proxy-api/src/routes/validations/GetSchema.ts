@@ -153,27 +153,32 @@ export const V3GetSchema: Schema = {
     toLowerCase: true,
     customSanitizer: {
       options: (value, { req }) => {
-        // Android sends in shortest and longest, but this is not supported by legacy v3/get.
-        if (['shortest', 'longest'].includes(value)) return 'newest';
-        if (value) return value;
-        if (req.body.search || req.query.search) {
-          return 'relevance';
+        const isSearch = req.body.search || req.query.search ? true : false;
+        // No value was passed
+        if (value == null) {
+          // If searching, default to relevance
+          if (isSearch) return 'relevance';
+          // Otherwise default to newest
+          return 'newest';
         }
-        return 'newest';
+        // A value was passed - apply conditional validation
+
+        // Android sends in shortest and longest,
+        // but this is not supported. Default to 'newest'.
+        if (['shortest', 'longest'].includes(value)) {
+          return isSearch ? 'relevance' : 'newest';
+        }
+        // Default to 'newest' if 'relevance' is passed,
+        // but search term is omitted or invalid
+        if (value === 'relevance') {
+          return isSearch ? value : 'newest';
+        }
+        // Otherwise the value passes
+        return value;
       },
     },
     isIn: {
       options: [['newest', 'oldest', 'relevance', 'longest', 'shortest']],
-    },
-    custom: {
-      options: (value, { req }) => {
-        // Relevance only valid for search query
-        if (value === 'relevance') {
-          return req.body.search || req.query.search ? true : false;
-        } else {
-          return true;
-        }
-      },
     },
   },
   total: {
