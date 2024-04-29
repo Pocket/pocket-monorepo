@@ -1,13 +1,14 @@
 import {
   Item,
   OEmbed,
+  OEmbedType,
   PocketMetadata,
   PocketMetadataSource,
 } from '../../__generated__/resolvers-types';
 import { IContext } from '../../apollo/context';
 import { IPocketMetadataDataSource } from '../PocketMetadataModel';
 import { merge } from 'lodash';
-import { extract } from '@extractus/oembed-extractor';
+import { OembedData, extract } from '@extractus/oembed-extractor';
 
 export class OEmbedModel implements IPocketMetadataDataSource {
   // Use oEmbed for TikTok, and others in the future
@@ -55,6 +56,7 @@ export class OEmbedModel implements IPocketMetadataDataSource {
             width: result.thumbnail_width,
           }
         : undefined,
+      type: result.type.toUpperCase() as OEmbedType, // cast because we manually convert to upper case which typescript doesnt understand
     };
   }
 }

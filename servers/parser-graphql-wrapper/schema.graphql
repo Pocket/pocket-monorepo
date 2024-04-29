@@ -489,6 +489,13 @@ type ItemSummary implements PocketMetadata {
   item: Item
 }
 
+enum OEmbedType {
+  RICH
+  VIDEO
+  PHOTO
+  LINK
+}
+
 type OEmbed implements PocketMetadata {
   id: ID!
   image: Image
@@ -501,6 +508,7 @@ type OEmbed implements PocketMetadata {
   source: PocketMetadataSource!
   item: Item
   htmlEmbed: String
+  type: OEmbedType
 }
 
 type ReaderInterstitial {

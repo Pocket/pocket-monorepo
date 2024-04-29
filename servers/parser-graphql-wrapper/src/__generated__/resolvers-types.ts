@@ -418,8 +418,16 @@ export type OEmbed = PocketMetadata & {
   item?: Maybe<Item>;
   source: PocketMetadataSource;
   title?: Maybe<Scalars['String']['output']>;
+  type?: Maybe<OEmbedType>;
   url: Scalars['Url']['output'];
 };
+
+export enum OEmbedType {
+  Link = 'LINK',
+  Photo = 'PHOTO',
+  Rich = 'RICH',
+  Video = 'VIDEO'
+}
 
 export type PocketMetadata = {
   authors?: Maybe<Array<Author>>;
@@ -673,6 +681,7 @@ export type ResolversTypes = ResolversObject<{
   Mutation: ResolverTypeWrapper<{}>;
   NumberedListElement: ResolverTypeWrapper<NumberedListElement>;
   OEmbed: ResolverTypeWrapper<OEmbed>;
+  OEmbedType: OEmbedType;
   PocketMetadata: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['PocketMetadata']>;
   PocketMetadataSource: PocketMetadataSource;
   PocketShare: ResolverTypeWrapper<PocketShare>;
@@ -955,6 +964,7 @@ export type OEmbedResolvers<ContextType = IContext, ParentType extends Resolvers
   item?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType>;
   source?: Resolver<ResolversTypes['PocketMetadataSource'], ParentType, ContextType>;
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  type?: Resolver<Maybe<ResolversTypes['OEmbedType']>, ParentType, ContextType>;
   url?: Resolver<ResolversTypes['Url'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
