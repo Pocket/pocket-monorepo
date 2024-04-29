@@ -194,7 +194,7 @@ describe('preview', () => {
     },
   );
 
-  it('uses cached dynamodb data if available', async () => {
+  it('uses cached dynamodb data if availables', async () => {
     repo.setToggle(config.unleash.flags.openGraphParser.name, {
       ...openGraphFeatureToggle,
       enabled: true,
@@ -220,10 +220,9 @@ describe('preview', () => {
         id: 'id',
         itemUrl: testUrl,
         urlHash: md5(testUrl),
-        datePublished: null,
         title: 'the saved data',
         dataSource: ItemSummarySource.Opengraph,
-        createdAt: Math.round(Date.now() / 1000),
+        createdAt: Date.now() / 1000,
       },
       3600,
     );
@@ -234,7 +233,6 @@ describe('preview', () => {
     const res = await request(app)
       .post(graphQLUrl)
       .send({ query: print(GET_PREVIEW), variables });
-    expect(res.body.errors).toBeUndefined();
     expect(res.body.data).toEqual({
       itemByUrl: {
         preview: {

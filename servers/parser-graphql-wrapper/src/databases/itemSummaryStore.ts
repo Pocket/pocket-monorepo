@@ -22,11 +22,10 @@ export interface IItemSummaryDataStore {
 
 export type ItemSummaryEntity = Omit<
   ItemSummary,
-  'domain' | 'url' | 'source' | 'createdAt' | 'datePublished'
+  'domain' | 'url' | 'source'
 > & {
   urlHash: string; // md5 hash of the resolved Url
   createdAt: number; // epoch time in seconds
-  datePublished: number; // epoch time in seconds
   // source is a reserved keyword in dynamodb so we need to remap it.
   dataSource: ItemSummarySource; // class name of the datasource
   // Domain is a reserved keyword in dynamodb so we need to remap it.
