@@ -220,9 +220,10 @@ describe('preview', () => {
         id: 'id',
         itemUrl: testUrl,
         urlHash: md5(testUrl),
+        datePublished: null,
         title: 'the saved data',
         dataSource: ItemSummarySource.Opengraph,
-        createdAt: Date.now() / 1000,
+        createdAt: Math.round(Date.now() / 1000),
       },
       3600,
     );
