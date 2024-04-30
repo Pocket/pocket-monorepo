@@ -8,7 +8,7 @@ import { dynamoClient } from '../datasources/dynamoClient';
 import { SharesDataSourceAuthenticated } from '../datasources/shares';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 
-let uuidOverride = '0000-00-00';
+const uuidOverride = '0000-00-00';
 const uuidMock = jest.fn().mockImplementation(() => uuidOverride);
 jest.mock('uuid', () => ({ v4: () => uuidMock() }));
 

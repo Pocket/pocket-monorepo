@@ -9,7 +9,6 @@ import {
   AuthenticationError,
   ForbiddenError,
 } from '@pocket-tools/apollo-utils';
-import { ShareContextInput, ShareResult } from '../__generated__/types';
 import * as Sentry from '@sentry/node';
 import { UserContext } from '../models/UserContext';
 
