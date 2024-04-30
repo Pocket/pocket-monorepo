@@ -1,6 +1,9 @@
 //this must run before all imports and server start
 //so open-telemetry can patch all libraries that we use
-import { nodeSDKBuilder } from '@pocket-tools/tracing';
+import {
+  AdditionalInstrumentation,
+  nodeSDKBuilder,
+} from '@pocket-tools/tracing';
 import { config } from './config';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
@@ -9,6 +12,7 @@ nodeSDKBuilder({
   serviceName: config.tracing.serviceName,
   release: config.sentry.release,
   logger: serverLogger,
+  additionalInstrumentations: [AdditionalInstrumentation.KNEX],
 }).then(async () => {
   const { url } = await startServer(config.app.port);
   serverLogger.info(
