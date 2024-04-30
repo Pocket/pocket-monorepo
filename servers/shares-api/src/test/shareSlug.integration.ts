@@ -3,7 +3,7 @@ import request from 'supertest';
 import { IContext } from '../apollo/context';
 import { startServer } from '../apollo/server';
 import { Application } from 'express';
-import { GET_SHARE } from './queries';
+import { GET_SHARE } from './operations';
 import { dynamoClient } from '../datasources/dynamoClient';
 import { SharesDataSourceAuthenticated } from '../datasources/shares';
 
@@ -71,7 +71,7 @@ describe('shareSlug', () => {
       .send({ query: GET_SHARE, variables });
     const expected = {
       shareSlug: {
-        message: 'The link you followed has expired or does not exist.',
+        message: 'The link has expired or does not exist.',
       },
     };
     expect(res.body.data).toEqual(expected);

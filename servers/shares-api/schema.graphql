@@ -85,4 +85,16 @@ type Mutation {
   with additional share context.
   """
   createShareLink(target: ValidUrl!, context: ShareContextInput): PocketShare
+  """
+  Attach share context to a Pocket Share. If a context already exists
+  on the Pocket Share, it will be overrwritten. Session ID via the `guid`
+  field on the JWT is used to determine ownership of a share.
+  That means users may only edit share links created in the same
+  session (intended to be a post-share add, not something returned to
+  later). It also lets us attribute ownership to anonymous/logged-out
+  users.
+  Attempting to update a nonexistent share or a share that is not owned
+  by the session user will return ShareNotFound.
+  """
+  addShareContext(slug: ID!, context: ShareContextInput!): ShareResult
 }

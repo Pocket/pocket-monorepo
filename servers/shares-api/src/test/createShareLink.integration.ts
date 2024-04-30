@@ -3,7 +3,7 @@ import request from 'supertest';
 import { IContext } from '../apollo/context';
 import { startServer } from '../apollo/server';
 import { Application } from 'express';
-import { CREATE_SHARE, GET_SHARE } from './queries';
+import { CREATE_SHARE, GET_SHARE } from './operations';
 
 const uuidMock = jest.fn().mockImplementation(() => '0000-00-00');
 

@@ -6,7 +6,8 @@ import {
   SharesDataSourceUnauthenticated,
 } from '../datasources/shares';
 import { dynamoClient } from '../datasources/dynamoClient';
-
+import { UserContext, UserContextFactory } from '../models/UserContext';
+import { config } from '../config';
 /**
  * Context factory function. Creates a new context upon
  * every request
@@ -25,32 +26,46 @@ export async function getContext({
 
 export interface IContext {
   PocketShareModel: PocketShareModel;
+  User: UserContext;
 }
 
 export class ContextManager implements IContext {
   PocketShareModel: PocketShareModel;
+  User: UserContext;
   constructor(options: { request: Request }) {
-    const userId = options.request.headers.userid;
+    const rawUserId = options.request.headers.userid;
+    const rawGuid = options.request.headers.guid;
     const isNative =
       options.request.headers.applicationisnative === 'true' ? true : false;
     const client = dynamoClient();
+    // We have an authenticated user?
+    const userId =
+      rawUserId &&
+      typeof rawUserId === 'string' &&
+      rawUserId.length &&
+      rawUserId !== 'anonymous'
+        ? rawUserId
+        : undefined;
+    const guid =
+      rawGuid && typeof rawGuid === 'string' && rawGuid.length
+        ? rawGuid
+        : undefined;
+    const salts = {
+      userSalt: config.dynamoDb.sharesTable.userSalt,
+      guidSalt: config.dynamoDb.sharesTable.guidSalt,
+    };
+    this.User = UserContextFactory(salts, guid, userId);
     // Using native app is required for link creation regardless of login status
     if (!isNative) {
       const dataSource = new SharesDataSourceNonNativeApp(client);
-      this.PocketShareModel = new PocketShareModel(dataSource);
+      this.PocketShareModel = new PocketShareModel(dataSource, this.User);
     } else {
-      // We have an authenticated user?
-      if (
-        userId &&
-        typeof userId === 'string' &&
-        userId.length &&
-        userId !== 'anonymous'
-      ) {
+      if (userId) {
         const dataSource = new SharesDataSourceAuthenticated(client);
-        this.PocketShareModel = new PocketShareModel(dataSource);
+        this.PocketShareModel = new PocketShareModel(dataSource, this.User);
       } else {
         const dataSource = new SharesDataSourceUnauthenticated(client);
-        this.PocketShareModel = new PocketShareModel(dataSource);
+        this.PocketShareModel = new PocketShareModel(dataSource, this.User);
       }
     }
   }
