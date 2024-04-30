@@ -1139,36 +1139,44 @@ describe('v3Get', () => {
       }
       expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
-    it('relevance sort is not allowed sort for non-search', async () => {
-      const callSpy = jest.spyOn(
-        GraphQLCalls,
-        'callSavedItemsByOffsetComplete',
-      );
+    it('relevance sort is converted to "newest" for non-search', async () => {
+      const callSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetSimple')
+        .mockImplementation(() => Promise.resolve(mockGraphGetSimple));
       const response = await request(app).get('/v3/get').query({
         consumer_key: 'test',
         access_token: 'test',
         sort: 'relevance',
-        detailType: 'complete',
+        detailType: 'simple',
       });
-      expect(callSpy).not.toHaveBeenCalled();
-      expect(response.status).toBe(400);
-      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+      expect(callSpy).toHaveBeenCalled();
+      expect(callSpy.mock.calls[0][3]).toMatchObject({
+        sort: {
+          sortBy: 'CREATED_AT',
+          sortOrder: 'DESC',
+        },
+      });
+      expect(response.status).toBe(200);
     });
-    it('relevance sort is not allowed sort for invalid search term', async () => {
-      const callSpy = jest.spyOn(
-        GraphQLCalls,
-        'callSavedItemsByOffsetComplete',
-      );
+    it('relevance sort is converted to "newest" for invalid search term', async () => {
+      const callSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetSimple')
+        .mockImplementation(() => Promise.resolve(mockGraphGetSimple));
       const response = await request(app).get('/v3/get').query({
         consumer_key: 'test',
         access_token: 'test',
         sort: 'relevance',
         search: '',
-        detailType: 'complete',
+        detailType: 'simple',
       });
-      expect(callSpy).not.toHaveBeenCalled();
-      expect(response.status).toBe(400);
-      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+      expect(callSpy).toHaveBeenCalled();
+      expect(callSpy.mock.calls[0][3]).toMatchObject({
+        sort: {
+          sortBy: 'CREATED_AT',
+          sortOrder: 'DESC',
+        },
+      });
+      expect(response.status).toBe(200);
     });
     it('relevance is a valid input for search term', async () => {
       jest
