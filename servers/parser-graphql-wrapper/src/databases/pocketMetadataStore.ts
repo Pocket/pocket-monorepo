@@ -7,6 +7,7 @@ import config from '../config';
 import * as Sentry from '@sentry/node';
 import {
   DomainMetadata,
+  OEmbed,
   PocketMetadata,
   PocketMetadataSource,
 } from '../__generated__/resolvers-types';
@@ -25,17 +26,18 @@ export interface IPocketMetadataDataStore {
 export type PocketMetadataEntity = Omit<
   PocketMetadata,
   'domain' | 'url' | 'source' | 'createdAt' | 'datePublished'
-> & {
-  urlHash: string; // md5 hash of the resolved Url
-  createdAt: number; // epoch time in seconds
-  datePublished: number; // epoch time in seconds
-  // source is a reserved keyword in dynamodb so we need to remap it.
-  dataSource: PocketMetadataSource; // class name of the datasource
-  // Domain is a reserved keyword in dynamodb so we need to remap it.
-  domainMetadata?: DomainMetadata;
-  // url is a reserved keyword in dynamodb so we need to remap it.
-  itemUrl: string;
-};
+> &
+  Partial<Pick<OEmbed, 'htmlEmbed' | 'type'>> & {
+    urlHash: string; // md5 hash of the resolved Url
+    createdAt: number; // epoch time in seconds
+    datePublished: number; // epoch time in seconds
+    // source is a reserved keyword in dynamodb so we need to remap it.
+    dataSource: PocketMetadataSource; // class name of the datasource
+    // Domain is a reserved keyword in dynamodb so we need to remap it.
+    domainMetadata?: DomainMetadata;
+    // url is a reserved keyword in dynamodb so we need to remap it.
+    itemUrl: string;
+  };
 
 export class ItemSummaryDataStoreBase implements IPocketMetadataDataStore {
   public static table = config.dynamoDb.itemSummaryTable;

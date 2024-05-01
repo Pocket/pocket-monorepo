@@ -39,6 +39,10 @@ export class OEmbedModel implements IPocketMetadataDataSource {
       headers: { 'user-agent': userAgent },
     });
 
+    if (!result) {
+      return {};
+    }
+
     return {
       source: PocketMetadataSource.Oembed,
       authors: result.author_name

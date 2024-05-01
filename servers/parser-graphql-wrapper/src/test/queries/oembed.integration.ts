@@ -8,10 +8,6 @@ import { gql } from 'graphql-tag';
 import { IContext } from '../../apollo/context';
 import { Application } from 'express';
 import { IntMask } from '@pocket-tools/int-mask';
-import * as ogs from 'open-graph-scraper';
-import { mockUnleash } from '@pocket-tools/feature-flags-client';
-import * as unleash from '../../unleash';
-import config from '../../config';
 import { nockResponseForParser } from '../utils/parserResponse';
 import { Kysely } from 'kysely';
 import { DB } from '../../__generated__/readitlab';
@@ -20,16 +16,19 @@ import { conn as sharesInit } from '../../databases/readitlaShares';
 import { clearDynamoDB, dynamoClient } from '../../datasources/dynamoClient';
 import { ItemSummaryDataStoreBase } from '../../databases/pocketMetadataStore';
 import md5 from 'md5';
-import { PocketMetadataSource } from '../../__generated__/resolvers-types';
+import {
+  OEmbedType,
+  PocketMetadataSource,
+} from '../../__generated__/resolvers-types';
+import * as oembed from '@extractus/oembed-extractor';
 
-jest.mock('open-graph-scraper');
+jest.mock('@extractus/oembed-extractor');
 
-describe('preview', () => {
+describe('oembedPreview', () => {
   let app: Application;
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
   let readitlabDB: Kysely<DB>;
-  const { unleash: mockClient, repo } = mockUnleash([]);
 
   const GET_PREVIEW = gql`
     query display($url: String!) {
@@ -45,6 +44,7 @@ describe('preview', () => {
             }
             excerpt
             authors {
+              name
               id
             }
             domain {
@@ -57,12 +57,16 @@ describe('preview', () => {
               id
             }
           }
+          ... on OEmbed {
+            htmlEmbed
+            type
+          }
         }
       }
     }
   `;
 
-  const testUrl = 'https://test.com';
+  const testUrl = 'https://tiktok.com';
 
   const item = {
     item_id: 123,
@@ -79,7 +83,7 @@ describe('preview', () => {
     image: null,
     excerpt: null,
     authors: null,
-    domain: { logo: null, name: 'test.com' },
+    domain: { logo: null, name: 'tiktok.com' },
     datePublished: '2022-06-29T20:14:49.000Z',
     url: testUrl,
     item: {
@@ -87,18 +91,7 @@ describe('preview', () => {
     },
   };
 
-  const openGraphFeatureToggle = {
-    name: config.unleash.flags.openGraphParser.name,
-    stale: false,
-    type: 'release',
-    project: 'default',
-    variants: [],
-    strategies: [],
-    impressionData: false,
-  };
-
   beforeAll(async () => {
-    jest.spyOn(unleash, 'unleash').mockReturnValue(mockClient);
     ({ app, server, url: graphQLUrl } = await startServer(0));
     readitlabDB = readitlabInit();
     await readitlabDB.deleteFrom('items_resolver').execute();
@@ -110,7 +103,6 @@ describe('preview', () => {
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
-    jest.spyOn(unleash, 'unleash').mockReturnValue(mockClient);
     jest.spyOn(IntMask, 'decode').mockReturnValueOnce(123);
     jest.spyOn(IntMask, 'encode').mockReturnValueOnce('encodedId');
     // flush the redis cache
@@ -130,41 +122,49 @@ describe('preview', () => {
   it.each([
     {
       parserData: {},
-      openGraphData: { error: false, result: { ogTitle: 'openGraphTitle' } },
+      oembedData: {
+        title: 'oembed video title',
+        type: 'video',
+        html: 'embed html',
+      },
       expected: {
-        title: 'openGraphTitle',
-        source: PocketMetadataSource.Opengraph,
+        title: 'oembed video title',
+        source: PocketMetadataSource.Oembed,
+        type: 'VIDEO',
+        htmlEmbed: 'embed html',
       },
     },
     {
       parserData: {},
-      openGraphData: undefined,
+      oembedData: undefined,
       expected: {
         title: 'parser test',
         source: PocketMetadataSource.PocketParser,
       },
     },
+    {
+      parserData: {},
+      oembedData: {
+        type: 'video',
+        author_name: 'an author',
+        html: 'embeded html',
+      },
+      expected: {
+        title: 'parser test',
+        authors: [{ name: 'an author', id: '1' }],
+        source: PocketMetadataSource.Oembed,
+        type: 'VIDEO',
+        htmlEmbed: 'embeded html',
+      },
+    },
   ])(
     'should return opengraph display data if enabled',
-    async ({ parserData, openGraphData, expected }) => {
-      if (openGraphData == undefined) {
-        repo.setToggle(config.unleash.flags.openGraphParser.name, {
-          ...openGraphFeatureToggle,
-          enabled: false,
-        });
-      } else {
-        repo.setToggle(config.unleash.flags.openGraphParser.name, {
-          ...openGraphFeatureToggle,
-          enabled: true,
-        });
-        jest.spyOn(ogs, 'default').mockImplementation(() => {
+    async ({ parserData, oembedData, expected }) => {
+      if (oembedData) {
+        jest.spyOn(oembed, 'extract').mockImplementation(() => {
           return Promise.resolve({
-            html: undefined,
-            response: undefined,
-            error: false,
-            result: {},
             // override the default
-            ...openGraphData,
+            ...oembedData,
           });
         });
       }
@@ -199,10 +199,6 @@ describe('preview', () => {
   );
 
   it('uses cached dynamodb data if available', async () => {
-    repo.setToggle(config.unleash.flags.openGraphParser.name, {
-      ...openGraphFeatureToggle,
-      enabled: true,
-    });
     nockResponseForParser(testUrl, {
       data: {
         item_id: parserItemId,
@@ -226,8 +222,10 @@ describe('preview', () => {
         urlHash: md5(testUrl),
         datePublished: null,
         title: 'the saved data',
-        dataSource: PocketMetadataSource.Opengraph,
+        dataSource: PocketMetadataSource.Oembed,
         createdAt: Math.round(Date.now() / 1000),
+        htmlEmbed: 'html embed',
+        type: OEmbedType.Video,
       },
       3600,
     );
@@ -243,7 +241,9 @@ describe('preview', () => {
       itemByUrl: {
         preview: {
           ...defaultExpected,
-          source: PocketMetadataSource.Opengraph,
+          htmlEmbed: 'html embed',
+          type: OEmbedType.Video,
+          source: PocketMetadataSource.Oembed,
           id: 'id',
           title: 'the saved data',
           datePublished: null,
