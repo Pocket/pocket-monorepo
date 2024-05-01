@@ -16,8 +16,6 @@ import {
 import { UserInputError, validatePagination } from '@pocket-tools/apollo-utils';
 import { SearchQueryBuilder } from './searchQueryBuilder';
 import { Paginator } from './Paginator';
-import { MysqlDataSource } from '../MysqlDataSource';
-import * as Sentry from '@sentry/node';
 
 const { index, type, defaultQueryScore } = config.aws.elasticsearch;
 
