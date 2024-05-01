@@ -8,7 +8,7 @@ import {
 import { IContext } from '../../apollo/context';
 import { IPocketMetadataDataSource } from '../PocketMetadataModel';
 import { merge } from 'lodash';
-import { OembedData, extract } from '@extractus/oembed-extractor';
+import { extract } from '@extractus/oembed-extractor';
 
 export class OEmbedModel implements IPocketMetadataDataSource {
   // Use oEmbed for TikTok, and others in the future

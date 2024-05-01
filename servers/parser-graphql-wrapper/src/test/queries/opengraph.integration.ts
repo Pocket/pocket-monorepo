@@ -243,6 +243,7 @@ describe('preview', () => {
       itemByUrl: {
         preview: {
           ...defaultExpected,
+          source: 'OPENGRAPH',
           id: 'id',
           title: 'the saved data',
           datePublished: null,
