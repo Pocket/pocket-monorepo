@@ -60,7 +60,9 @@ export function getClient(
  * Calling the `request` method creates an internal instance of
  * GraphQLClient, which is used to serve the request. The
  * internal GraphQLClient is injected with custom middleware
- * that
+ * that allows us to handle error data specially; in this case, we
+ * want to skip some known errors but still return data, and return
+ * error if there is an unhandled issue.
  * The alternative of using `rawRequest` would require significant
  * refactoring due to the changes in response type, call signature, etc.
  * This allows us to essentially keep the same behavior of throwing
