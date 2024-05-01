@@ -20,6 +20,12 @@ export const resolvers: Resolvers = {
         args.context,
       );
     },
+    addShareContext: (_, args, context) => {
+      return context.PocketShareModel.updateShareContext(
+        args.slug,
+        args.context,
+      );
+    },
   },
   Query: {
     shareSlug: (_, { slug }, context) => {
