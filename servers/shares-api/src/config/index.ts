@@ -27,6 +27,8 @@ export const config = {
     sharesTable: {
       name: process.env.SHARES_TABLE || 'SHARES-local-shares',
       ttl: 365 * 24 * 60 * 60 * 1000, // ~1 year in ms
+      userSalt: process.env.USERID_SALT || 'NACL',
+      guidSalt: process.env.GUID_SALT || 'MSG',
     },
   },
   tracing: {

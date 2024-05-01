@@ -3,21 +3,44 @@ import {
   ShareContextInput,
   ShareResult,
 } from '../__generated__/types';
-import { ISharesDataSource, ShareEntity } from '../datasources/shares';
+import {
+  ISharesDataSource,
+  ShareEntity,
+  CreateShareEntity,
+} from '../datasources/shares';
 import { v4 as uuidv4 } from 'uuid';
 import { config } from '../config';
+import { UserContext } from './UserContext';
+import { UserInputError } from '@pocket-tools/apollo-utils';
 import { ShareNotFoundModel } from './ShareNotFoundModel';
 
 export class PocketShareModel {
-  constructor(private db: ISharesDataSource) {}
+  constructor(
+    private db: ISharesDataSource,
+    private user: UserContext,
+  ) {}
   /**
    * Convert input to DynamoDB entity
    */
-  toEntity(target: URL, context?: ShareContextInput): ShareEntity {
+  toEntity(target: URL, context?: ShareContextInput): CreateShareEntity {
     return {
       shareId: uuidv4(),
       targetUrl: target.toString(),
       createdAt: Math.round(Date.now() / 1000),
+      ...(context?.note && { note: context.note }),
+      ...(context?.highlights?.quotes.length && {
+        highlights: context.highlights.quotes,
+      }),
+      ...this.user,
+    };
+  }
+  /**
+   * For update statement, convert to subset of DynamoDB fields
+   */
+  updateContextEntity(
+    context: ShareContextInput,
+  ): Pick<ShareEntity, 'note' | 'highlights'> {
+    return {
       ...(context?.note && { note: context.note }),
       ...(context?.highlights?.quotes.length && {
         highlights: context.highlights.quotes,
@@ -68,6 +91,41 @@ export class PocketShareModel {
       throw res;
     }
     return this.fromEntity(res);
+  }
+  /**
+   * Update the context added to a share (the highlighted quotes or note).
+   * Overrwrites existing data if it exists.
+   * Requires that the owner matches the value stored in the database
+   * referenced by the passed owner key (e.g. guid).
+   * The calling function should ensure that at least one key in
+   * the `context` argument exists and contains data (not null/undefined).
+   * Otherwise this function will fail.
+   * @param shareId the key of the share to update
+   * @param context the context to attach to the share (quotes, note)
+   * @returns the updated ShareEntity if successful,
+   * or a message indicating that the record is not found/owned by the user
+   */
+  async updateShareContext(
+    shareId: string,
+    context: ShareContextInput,
+  ): Promise<ShareResult> {
+    const addHighlights =
+      context.highlights != null && context.highlights.quotes.length > 0;
+    const addNote = context.note != null && context.note.length > 0;
+    const hasAnUpdate = addHighlights || addNote;
+    if (!hasAnUpdate) {
+      throw new UserInputError(
+        'Must define at least one of ShareContextInput.highlights or ShareContextInput.note',
+      );
+    }
+    const contextEntity = this.updateContextEntity(context);
+    const owner = { key: 'guid' as const, value: this.user.guid };
+    const res = await this.db.updateShareContext(shareId, contextEntity, owner);
+    if (res instanceof Error) {
+      throw res;
+    } else if (res != null) {
+      return this.fromEntity(res);
+    } else return ShareNotFoundModel;
   }
   /**
    * Look up a share record by the URL slug

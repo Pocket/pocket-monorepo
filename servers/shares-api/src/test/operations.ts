@@ -30,3 +30,22 @@ export const GET_SHARE = print(gql`
     }
   }
 `);
+
+export const ADD_SHARE_CONTEXT = print(gql`
+  mutation addShareContext($slug: ID!, $context: ShareContextInput!) {
+    addShareContext(slug: $slug, context: $context) {
+      ... on PocketShare {
+        slug
+        context {
+          note
+          highlights {
+            quote
+          }
+        }
+      }
+      ... on ShareNotFound {
+        message
+      }
+    }
+  }
+`);

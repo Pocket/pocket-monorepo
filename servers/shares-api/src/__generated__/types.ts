@@ -27,10 +27,28 @@ export type Scalars = {
 export type Mutation = {
   __typename?: 'Mutation';
   /**
+   * Attach share context to a Pocket Share. If a context already exists
+   * on the Pocket Share, it will be overrwritten. Session ID via the `guid`
+   * field on the JWT is used to determine ownership of a share.
+   * That means users may only edit share links created in the same
+   * session (intended to be a post-share add, not something returned to
+   * later). It also lets us attribute ownership to anonymous/logged-out
+   * users.
+   * Attempting to update a nonexistent share or a share that is not owned
+   * by the session user will return ShareNotFound.
+   */
+  addShareContext?: Maybe<ShareResult>;
+  /**
    * Create a Pocket Share for a provided target URL, optionally
    * with additional share context.
    */
   createShareLink?: Maybe<PocketShare>;
+};
+
+
+export type MutationAddShareContextArgs = {
+  context?: InputMaybe<ShareContextInput>;
+  slug: Scalars['ID']['input'];
 };
 
 
@@ -194,8 +212,8 @@ export type ResolversTypes = ResolversObject<{
   ISOString: ResolverTypeWrapper<Scalars['ISOString']['output']>;
   Max300CharString: ResolverTypeWrapper<Scalars['Max300CharString']['output']>;
   Mutation: ResolverTypeWrapper<{}>;
-  PocketShare: ResolverTypeWrapper<PocketShare>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  PocketShare: ResolverTypeWrapper<PocketShare>;
   Query: ResolverTypeWrapper<{}>;
   ShareContext: ResolverTypeWrapper<ShareContext>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -213,8 +231,8 @@ export type ResolversParentTypes = ResolversObject<{
   ISOString: Scalars['ISOString']['output'];
   Max300CharString: Scalars['Max300CharString']['output'];
   Mutation: {};
-  PocketShare: PocketShare;
   ID: Scalars['ID']['output'];
+  PocketShare: PocketShare;
   Query: {};
   ShareContext: ShareContext;
   String: Scalars['String']['output'];
@@ -236,6 +254,7 @@ export interface Max300CharStringScalarConfig extends GraphQLScalarTypeConfig<Re
 }
 
 export type MutationResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  addShareContext?: Resolver<Maybe<ResolversTypes['ShareResult']>, ParentType, ContextType, RequireFields<MutationAddShareContextArgs, 'slug'>>;
   createShareLink?: Resolver<Maybe<ResolversTypes['PocketShare']>, ParentType, ContextType, RequireFields<MutationCreateShareLinkArgs, 'target'>>;
 }>;
 

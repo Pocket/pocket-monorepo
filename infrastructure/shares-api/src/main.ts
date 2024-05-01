@@ -155,6 +155,8 @@ class SharesAPI extends TerraformStack {
     const { region, caller, secretsManagerKmsAlias, snsTopic, dynamodb } =
       dependencies;
 
+    const UserContextSaltArn = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/USER_CONTEXT_SALT`;
+
     return new PocketALBApplication(this, 'application', {
       internal: true,
       prefix: config.prefix,
@@ -211,6 +213,14 @@ class SharesAPI extends TerraformStack {
             {
               name: 'SENTRY_DSN',
               valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/SENTRY_DSN`,
+            },
+            {
+              name: 'USERID_SALT',
+              valueFrom: `${UserContextSaltArn}:userid_salt::`,
+            },
+            {
+              name: 'GUID_SALT',
+              valueFrom: `${UserContextSaltArn}:guid_salt::`,
             },
           ],
         },
