@@ -716,7 +716,7 @@ export type Item = {
    */
   originDomainId?: Maybe<Scalars['String']['output']>;
   /** The client preview/display logic for this url */
-  preview?: Maybe<ItemSummary>;
+  preview?: Maybe<PocketMetadata>;
   /** A server generated unique reader slug for this item based on itemId */
   readerSlug: Scalars['String']['output'];
   /** Recommend similar articles to show in the bottom of an article. */
@@ -810,7 +810,7 @@ export type ItemNotFound = {
 /** Union type for items that may or may not be processed */
 export type ItemResult = Item | PendingItem;
 
-export type ItemSummary = {
+export type ItemSummary = PocketMetadata & {
   __typename?: 'ItemSummary';
   authors?: Maybe<Array<Author>>;
   datePublished?: Maybe<Scalars['ISOString']['output']>;
@@ -945,6 +945,18 @@ export type MarticleText = {
 /** Default Mutation Type */
 export type Mutation = {
   __typename?: 'Mutation';
+  /**
+   * Attach share context to a Pocket Share. If a context already exists
+   * on the Pocket Share, it will be overrwritten. Session ID via the `guid`
+   * field on the JWT is used to determine ownership of a share.
+   * That means users may only edit share links created in the same
+   * session (intended to be a post-share add, not something returned to
+   * later). It also lets us attribute ownership to anonymous/logged-out
+   * users.
+   * Attempting to update a nonexistent share or a share that is not owned
+   * by the session user will return ShareNotFound.
+   */
+  addShareContext?: Maybe<ShareResult>;
   /** Add a batch of items to an existing shareable list. */
   addToShareableList: ShareableList;
   /**
@@ -1190,6 +1202,13 @@ export type Mutation = {
    * and creates it if it doesn't.
    */
   upsertSavedItem: SavedItem;
+};
+
+
+/** Default Mutation Type */
+export type MutationAddShareContextArgs = {
+  context: ShareContextInput;
+  slug: Scalars['ID']['input'];
 };
 
 
@@ -1700,6 +1719,19 @@ export enum PendingItemStatus {
   Unresolved = 'UNRESOLVED'
 }
 
+export type PocketMetadata = {
+  authors?: Maybe<Array<Author>>;
+  datePublished?: Maybe<Scalars['ISOString']['output']>;
+  domain?: Maybe<DomainMetadata>;
+  excerpt?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  image?: Maybe<Image>;
+  item?: Maybe<Item>;
+  source: ItemSummarySource;
+  title?: Maybe<Scalars['String']['output']>;
+  url: Scalars['Url']['output'];
+};
+
 /**
  * New Pocket Save Type, replacing SavedItem.
  *
@@ -1755,7 +1787,7 @@ export type PocketShare = {
   __typename?: 'PocketShare';
   context?: Maybe<ShareContext>;
   createdAt?: Maybe<Scalars['ISOString']['output']>;
-  preview?: Maybe<ItemSummary>;
+  preview?: Maybe<PocketMetadata>;
   shareUrl: Scalars['ValidUrl']['output'];
   slug: Scalars['ID']['output'];
   targetUrl: Scalars['ValidUrl']['output'];
@@ -2119,7 +2151,7 @@ export type ReaderFallback = ItemNotFound | ReaderInterstitial;
 
 export type ReaderInterstitial = {
   __typename?: 'ReaderInterstitial';
-  itemCard?: Maybe<ItemSummary>;
+  itemCard?: Maybe<PocketMetadata>;
 };
 
 export type ReaderViewResult = {
