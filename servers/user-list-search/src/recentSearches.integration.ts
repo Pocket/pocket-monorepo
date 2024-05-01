@@ -8,11 +8,7 @@ import {
   knexDbWriteClient,
 } from './datasource/clients/knexClient';
 import { print } from 'graphql';
-import {
-  RECENT_SEARCHES_QUERY,
-  SEARCH_OFFSET_QUERY,
-  SEARCH_SAVED_ITEM_QUERY,
-} from './queries';
+import { RECENT_SEARCHES_QUERY, SAVE_RECENT_SEARCH } from './operations';
 
 describe('premium search functional test', () => {
   let app: Application;
@@ -51,37 +47,68 @@ describe('premium search functional test', () => {
     expect(res.body.data?._entities[0].recentSearches).toEqual(expected);
   });
 
-  it.each([SEARCH_SAVED_ITEM_QUERY, SEARCH_OFFSET_QUERY])(
-    'should return recent searches for User entity after searches are performed',
-    async (searchQuery) => {
-      await request(app)
-        .post(url)
-        .set(headers)
-        .send({
-          query: print(searchQuery),
-          variables: { id: '1', term: 'apple' },
-        });
-      await request(app)
-        .post(url)
-        .set(headers)
-        .send({
-          query: print(searchQuery),
-          variables: { id: '1', term: 'balloon' },
-        });
-      const res = await request(app)
-        .post(url)
-        .set(headers)
-        .send({
-          query: print(RECENT_SEARCHES_QUERY),
-          variables: { id: '1' },
-        });
-      // Recency order
-      const expected = [
-        { term: 'balloon', context: null },
-        { term: 'apple', context: null },
-      ];
-      expect(res.body.errors).toBeUndefined();
-      expect(res.body.data?._entities[0].recentSearches).toEqual(expected);
-    },
-  );
+  it('should return recent searches for User entity after searches are saved', async () => {
+    await request(app)
+      .post(url)
+      .set(headers)
+      .send({
+        query: print(SAVE_RECENT_SEARCH),
+        variables: { search: { term: 'apple' } },
+      });
+    await request(app)
+      .post(url)
+      .set(headers)
+      .send({
+        query: print(SAVE_RECENT_SEARCH),
+        variables: { search: { term: 'balloon' } },
+      });
+    const res = await request(app)
+      .post(url)
+      .set(headers)
+      .send({
+        query: print(RECENT_SEARCHES_QUERY),
+        variables: { id: '1' },
+      });
+    // Recency order
+    const expected = [
+      { term: 'balloon', context: null },
+      { term: 'apple', context: null },
+    ];
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?._entities[0].recentSearches).toEqual(expected);
+  });
+  it('should return recent searches for User entity in timestamp order', async () => {
+    await request(app)
+      .post(url)
+      .set(headers)
+      .send({
+        query: print(SAVE_RECENT_SEARCH),
+        variables: {
+          search: { term: 'apple', timestamp: new Date(1714605569000) },
+        },
+      });
+    await request(app)
+      .post(url)
+      .set(headers)
+      .send({
+        query: print(SAVE_RECENT_SEARCH),
+        variables: {
+          search: { term: 'balloon', timestamp: new Date(1714605559000) },
+        },
+      });
+    const res = await request(app)
+      .post(url)
+      .set(headers)
+      .send({
+        query: print(RECENT_SEARCHES_QUERY),
+        variables: { id: '1' },
+      });
+    // Recency order
+    const expected = [
+      { term: 'apple', context: null },
+      { term: 'balloon', context: null },
+    ];
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?._entities[0].recentSearches).toEqual(expected);
+  });
 });

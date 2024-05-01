@@ -659,20 +659,6 @@ async function searchBase(
 }> {
   const searchParams = generateSearchSavedItemsParams(params, userId);
   const body = buildSearchBody(searchParams);
-  // Save recent searches; if it fails, still perform the search
-  try {
-    await new MysqlDataSource().insertRecentSearch(
-      parseInt(userId),
-      params.term,
-    );
-  } catch (err) {
-    Sentry.addBreadcrumb({
-      data: { term: params.term },
-      message: 'Attempted to save recent search',
-    });
-    Sentry.captureException(err);
-  }
-
   const result = await client.search({
     index,
     body,

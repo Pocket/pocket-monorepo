@@ -58,6 +58,14 @@ export const RECENT_SEARCHES_QUERY = gql`
   }
 `;
 
+export const SAVE_RECENT_SEARCH = gql`
+  mutation saveRecentSearch($search: RecentSearchInput!) {
+    saveSearch(search: $search) {
+      term
+    }
+  }
+`;
+
 export const SEARCH_OFFSET_QUERY = gql`
   query searchSavedItem(
     $id: ID!

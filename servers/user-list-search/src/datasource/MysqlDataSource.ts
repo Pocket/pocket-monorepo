@@ -418,7 +418,14 @@ export class MysqlDataSource implements DataSourceInterface {
    * @param userId the userId associated with this search
    * @param term the search term
    */
-  public async insertRecentSearch(userId: number, term: string) {
+  public async insertRecentSearch(
+    userId: number,
+    term: string,
+    timestamp?: Date,
+  ) {
+    const timeAdded = Math.round(
+      (timestamp?.getTime() ?? new Date().getTime()) / 1000,
+    );
     const hash = createHash('sha1').update(term).digest('hex');
     const data = {
       user_id: userId,
@@ -426,7 +433,7 @@ export class MysqlDataSource implements DataSourceInterface {
       context_key: '',
       context_value: '',
       search_hash: hash,
-      time_added: Math.round(new Date().getTime() / 1000),
+      time_added: timeAdded,
     };
     await this.readitlaWriter('readitla_ril-tmp.user_recent_search')
       .insert(data)
