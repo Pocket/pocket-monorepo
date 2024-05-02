@@ -263,8 +263,9 @@ Input field for upserting a SavedItem
 input SavedItemUpsertInput {
   """
   The url to create/update the SavedItem with. (the url to save to the list)
+  Must be at least a 4 character string which is the shortest url
   """
-  url: String!
+  url: String! @constraint(minLength: 4)
   """
   Optional, create/update the SavedItem as a favorited item
   """
@@ -285,8 +286,9 @@ Input field for upserting a Save. Used by saveUpsert mutation
 input SaveUpsertInput {
   """
   The url to create/update the SavedItem with. (the url to save to the list)
+  Must be at least a 4 character string which is the shortest url
   """
-  url: String!
+  url: String! @constraint(minLength: 4)
   """
   Optional, title of the SavedItem
   """
@@ -347,9 +349,15 @@ Input field for filtering a user's list
 """
 input SavedItemsFilter {
   """
-  Optional, filter to get SavedItems updated since a unix timestamp
+  Optional, filter to get SavedItems updated since a unix timestamp.
+  Mutually exclusive with `updatedBefore` option.
   """
   updatedSince: Int
+  """
+  Optional, filter to get SavedItems updated before a unix timestamp.
+  Mutually exclusive with `updatedSince` option.
+  """
+  updatedBefore: Int
   """
   Optional, filter to get SavedItems that have been favorited
   """

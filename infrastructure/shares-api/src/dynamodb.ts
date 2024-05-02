@@ -33,6 +33,10 @@ export class DynamoDB extends Construct {
           },
         ],
       },
+      ttl: {
+        attributeName: 'ttl',
+        enabled: true,
+      },
       lifecycle: {
         ignoreChanges: [
           // Bug in terraform with DynamoDB and global secondary indexes

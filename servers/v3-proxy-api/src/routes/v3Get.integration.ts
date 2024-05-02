@@ -23,6 +23,24 @@ import {
   expectedGetSimpleTagslist,
   mockGraphGetCompleteTagsList,
   expectedGetCompleteTagslist,
+  mockGraphGetSimpleFreeAccount,
+  mockGraphGetCompleteFreeAccount,
+  mockGraphGetSimplePremiumAccount,
+  mockGraphGetCompletePremiumAccount,
+  expectedGetSimpleFreeAccount,
+  expectedGetSimplePremiumAccount,
+  expectedGetCompletePremiumAccount,
+  expectedGetCompleteFreeAccount,
+  mockGraphGetSimpleFreeAccountNullFeatures,
+  mockGraphGetCompleteFreeRecentSearches,
+  mockGraphGetSimpleFreeRecentSearches,
+  mockGraphGetSimplePremiumRecentSearches,
+  mockGraphGetCompletePremiumRecentSearches,
+  expectedGetCompletePremiumRecentSearches,
+  expectedGetSimplePremiumRecentSearches,
+  expectedGetSimple,
+  expectedGetComplete,
+  mockGraphGetSimplePremiumNoRecentSearches,
 } from '../test/fixtures';
 import { ClientError, GraphQLClient } from 'graphql-request';
 import { GraphQLError } from 'graphql-request/build/esm/types';
@@ -40,9 +58,11 @@ describe('v3Get', () => {
   };
   beforeAll(async () => {
     ({ app, server } = await startServer(0));
+    jest.useFakeTimers({ now: 1706732550000, doNotFake: ['setImmediate'] });
   });
   afterAll(async () => {
     server.close();
+    jest.useRealTimers();
   });
   afterEach(() => {
     jest.restoreAllMocks();
@@ -348,6 +368,315 @@ describe('v3Get', () => {
         expect(clientSpy.mock.calls[0][0]['definitions'][0].name.value).toEqual(
           expected.name,
         );
+      },
+    );
+  });
+  describe('with account/forceaccount option', () => {
+    let clientSpy;
+    afterEach(() => clientSpy.mockRestore());
+    it.each([
+      {
+        requestData: {
+          detailType: 'simple',
+          forceaccount: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleFreeAccount,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimpleFreeAccount,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          account: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleFreeAccount,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimpleFreeAccount,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          account: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimplePremiumAccount,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimplePremiumAccount,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          forceaccount: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimplePremiumAccount,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimplePremiumAccount,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          forceaccount: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteFreeAccount,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: expectedGetCompleteFreeAccount,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          account: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteFreeAccount,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: expectedGetCompleteFreeAccount,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          account: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompletePremiumAccount,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: expectedGetCompletePremiumAccount,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          forceaccount: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompletePremiumAccount,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: expectedGetCompletePremiumAccount,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          account: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleFreeAccountNullFeatures,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimpleFreeAccount,
+        },
+      },
+    ])(
+      'makes request with account data',
+      async ({ requestData, fixture, expected }) => {
+        const requestSpy = jest.spyOn(GraphQLCalls, fixture.requestName);
+        clientSpy = jest
+          .spyOn(GraphQLClient.prototype, 'request')
+          .mockResolvedValueOnce(fixture.requestData)
+          .mockResolvedValueOnce(fixture.requestData);
+        const response = await request(app)
+          .get('/v3/get')
+          .query({
+            ...requestData,
+            consumer_key: 'test',
+            access_token: 'test',
+            since: 1712766000,
+          });
+        expect(response.body).toEqual(expected.response);
+        expect(requestSpy).toHaveBeenCalledTimes(1);
+        expect(requestSpy.mock.calls[0][3]).toMatchObject({
+          withAccountData: true,
+        });
+      },
+    );
+  });
+
+  describe('with premium/forcepremium option', () => {
+    let clientSpy;
+    afterEach(() => clientSpy.mockRestore());
+    it.each([
+      {
+        requestData: {
+          detailType: 'simple',
+          forcepremium: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleFreeRecentSearches,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimple,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          premium: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleFreeRecentSearches,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimple,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          premium: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimplePremiumRecentSearches,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimplePremiumRecentSearches,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          forcepremium: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimplePremiumRecentSearches,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimplePremiumRecentSearches,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          forcepremium: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteFreeRecentSearches,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: expectedGetComplete,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          forcepremium: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteFreeRecentSearches,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: expectedGetComplete,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          premium: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompletePremiumRecentSearches,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: expectedGetCompletePremiumRecentSearches,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          forcepremium: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompletePremiumRecentSearches,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: expectedGetCompletePremiumRecentSearches,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          premium: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimplePremiumNoRecentSearches,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: { ...expectedGetSimple, recent_searches: [] },
+        },
+      },
+    ])(
+      'makes request with recent searches data',
+      async ({ requestData, fixture, expected }) => {
+        const requestSpy = jest.spyOn(GraphQLCalls, fixture.requestName);
+        clientSpy = jest
+          .spyOn(GraphQLClient.prototype, 'request')
+          .mockResolvedValueOnce(fixture.requestData)
+          .mockResolvedValueOnce(fixture.requestData);
+        const response = await request(app)
+          .get('/v3/get')
+          .query({
+            ...requestData,
+            consumer_key: 'test',
+            access_token: 'test',
+            since: 1712766000,
+          });
+        expect(response.body).toEqual(expected.response);
+        expect(requestSpy).toHaveBeenCalledTimes(1);
+        expect(requestSpy.mock.calls[0][3]).toMatchObject({
+          withRecentSearches: true,
+        });
       },
     );
   });
@@ -810,36 +1139,44 @@ describe('v3Get', () => {
       }
       expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
-    it('relevance sort is not allowed sort for non-search', async () => {
-      const callSpy = jest.spyOn(
-        GraphQLCalls,
-        'callSavedItemsByOffsetComplete',
-      );
+    it('relevance sort is converted to "newest" for non-search', async () => {
+      const callSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetSimple')
+        .mockImplementation(() => Promise.resolve(mockGraphGetSimple));
       const response = await request(app).get('/v3/get').query({
         consumer_key: 'test',
         access_token: 'test',
         sort: 'relevance',
-        detailType: 'complete',
+        detailType: 'simple',
       });
-      expect(callSpy).not.toHaveBeenCalled();
-      expect(response.status).toBe(400);
-      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+      expect(callSpy).toHaveBeenCalled();
+      expect(callSpy.mock.calls[0][3]).toMatchObject({
+        sort: {
+          sortBy: 'CREATED_AT',
+          sortOrder: 'DESC',
+        },
+      });
+      expect(response.status).toBe(200);
     });
-    it('relevance sort is not allowed sort for invalid search term', async () => {
-      const callSpy = jest.spyOn(
-        GraphQLCalls,
-        'callSavedItemsByOffsetComplete',
-      );
+    it('relevance sort is converted to "newest" for invalid search term', async () => {
+      const callSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetSimple')
+        .mockImplementation(() => Promise.resolve(mockGraphGetSimple));
       const response = await request(app).get('/v3/get').query({
         consumer_key: 'test',
         access_token: 'test',
         sort: 'relevance',
         search: '',
-        detailType: 'complete',
+        detailType: 'simple',
       });
-      expect(callSpy).not.toHaveBeenCalled();
-      expect(response.status).toBe(400);
-      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+      expect(callSpy).toHaveBeenCalled();
+      expect(callSpy.mock.calls[0][3]).toMatchObject({
+        sort: {
+          sortBy: 'CREATED_AT',
+          sortOrder: 'DESC',
+        },
+      });
+      expect(response.status).toBe(200);
     });
     it('relevance is a valid input for search term', async () => {
       jest

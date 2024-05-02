@@ -1,3 +1,12 @@
+// Environment variables below are set in
+// pocket-monorepo/infrastructure/parser-graphql-wrapper/src/main.ts
+
+const awsEnvironments = ['production', 'development'];
+let localAwsEndpoint: string = undefined;
+if (!awsEnvironments.includes(process.env.NODE_ENV)) {
+  localAwsEndpoint = process.env.AWS_ENDPOINT || 'http://localhost:4566';
+}
+
 export default {
   // Same as domain prefix in .aws/src/config
   serviceName: 'parser-graphql-wrapper',
@@ -13,6 +22,11 @@ export default {
     environment: process.env.NODE_ENV || 'development',
     defaultMaxAge: 21100, // ~6 hours
     serverPort: 4001,
+  },
+  aws: {
+    region: process.env.AWS_REGION || 'us-east-1',
+    endpoint: localAwsEndpoint,
+    maxBackoff: 3000, // in ms, max amount of backoff time allowed for multiple requests
   },
   redis: {
     primaryEndpoint: process.env.REDIS_PRIMARY_ENDPOINT || 'localhost',
@@ -57,8 +71,19 @@ export default {
     username: process.env.POCKET_SHARES_DATABASE_WRITE_USER || 'root',
     password: process.env.POCKET_SHARES_DATABASE_WRITE_PASSWORD || '',
   },
-  parserEndpoint: process.env.PARSER_URL || 'http://example-parser.com/',
-  parserRetries: 3,
+  parser: {
+    baseEndpoint:
+      process.env.PARSER_BASE_ENDPOINT || 'http://example-parser.com',
+    dataPath: process.env.PARSER_DATA_PATH || '/wrapper',
+    retries: 3,
+    timeout: 5,
+  },
+  dynamoDb: {
+    itemSummaryTable: {
+      name: process.env.ITEM_SUMMARY_TABLE || 'PARSER-local-item-summary',
+      ttl: 30 * 24 * 60 * 60 * 1000, // ~30 days in ms
+    },
+  },
   unleash: {
     clientKey: process.env.UNLEASH_KEY || 'unleash-key-fake',
     endpoint: process.env.UNLEASH_ENDPOINT || 'http://localhost:4242/api',

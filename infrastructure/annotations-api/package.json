@@ -9,7 +9,7 @@
     "build": "rm -rf dist && tsc",
     "synth": "cdktf synth",
     "compile": "tsc --pretty",
-    "watch": "tsc -w", 
+    "watch": "tsc -w",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\""
   },

@@ -7,6 +7,7 @@ import {
   iamRole,
   iamRolePolicyAttachment,
 } from '@cdktf/provider-aws';
+import { DynamodbTableTtl } from '@cdktf/provider-aws/lib/dynamodb-table';
 import { IResolvable, TerraformMetaArguments, TerraformProvider } from 'cdktf';
 import { Construct } from 'constructs';
 
@@ -48,6 +49,7 @@ export interface ApplicationDynamoDBProps extends TerraformMetaArguments {
   tableConfig: ApplicationDynamoDBTableConfig;
   readCapacity?: ApplicationDynamoDBTableAutoScaleProps;
   writeCapacity?: ApplicationDynamoDBTableAutoScaleProps;
+  ttl?: DynamodbTableTtl;
   // If capacityMode is ON_DEMAND, the dynamodb table will have on-demand capacity. By default this is PROVISIONED.
   // On-demand capacity mode is capable of serving thousands of requests per second without capacity planning.
   // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadWriteCapacityMode.html
@@ -91,6 +93,7 @@ export class ApplicationDynamoDBTable extends Construct {
       billingMode: billingMode,
       tags: config.tags,
       name: config.prefix,
+      ttl: config.ttl,
       lifecycle: {
         ignoreChanges: [...new Set(ignoreChanges)], // use set to remove duplicates
         // Protect the table from being removed, unless preventDestroyTable is explicitly set to false.

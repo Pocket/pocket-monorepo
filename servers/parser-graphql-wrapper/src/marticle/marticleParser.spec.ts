@@ -1,6 +1,12 @@
 import * as marticleParser from './marticleParser';
-import { VideoType } from '../model';
-import { MarticleComponent } from './marticleTypes';
+import {
+  VideoType,
+  MarticleComponent,
+  Item,
+  Videoness,
+} from '../__generated__/resolvers-types';
+import { faker } from '@faker-js/faker';
+import { createReaderSlug } from '../readerView/idUtils';
 
 /**
  * Returns data in the format of an API response from the legacy Parser service.
@@ -8,22 +14,29 @@ import { MarticleComponent } from './marticleTypes';
  * @param images
  * @param url
  */
-function getTestArticle(html, images?, url?) {
+function getTestArticle(item: Partial<Item>): Item {
+  const itemId = faker.number.bigInt().toString();
   return {
+    itemId: itemId,
+    readerSlug: createReaderSlug(itemId),
+    id: createReaderSlug(itemId),
+    resolvedId: faker.number.bigInt().toString(),
     isArticle: true,
-    isVideo: false,
-    article: html,
-    images: images ?? {
-      1: {
-        image_id: '1',
+    hasVideo: Videoness.NoVideos,
+    images: [
+      {
+        imageId: 1,
         width: 200,
         height: 150,
         src: 'https://imagine.a-cool.image.jpg',
+        url: 'https://imagine.a-cool.image.jpg',
         caption: 'I told you this is a cool image',
         credit: 'give it all to kelvin',
       },
-    },
-    givenUrl: url ?? 'https://something-to.test',
+    ],
+    givenUrl: 'https://something-to.test',
+    normalUrl: 'https://something-to.test',
+    ...item,
   };
 }
 
@@ -31,19 +44,19 @@ describe('MarticleParser', () => {
   it('should parse all text', () => {
     // TODO: when images are not formatted properly, transform into an Unmarsable component.
     // {
-    //   __typeName: 'UnMarseable',
+    //   __typename: 'UnMarseable',
     //   content: '<img src=https://123/>'
     // }
     const input =
       '<p>A paragraph with an <b>image</b><img src="https://123"/></p><h1>heading</h1><p>Another paragraph with some <em>em</em> text</p>';
-    const res = marticleParser.parseArticle(getTestArticle(input));
+    const res = marticleParser.parseArticle(getTestArticle({ article: input }));
     const expected = [
       {
-        __typeName: 'MarticleText',
+        __typename: 'MarticleText',
         content: 'A paragraph with an **image**',
       },
       {
-        __typeName: 'MarticleText',
+        __typename: 'MarticleText',
         content: 'Another paragraph with some _em_ text',
       },
     ];
@@ -57,11 +70,11 @@ describe('MarticleParser', () => {
   it('should parse text only html', () => {
     const input =
       '<p>A top-level paragraph</p><p>Another top-level paragraph. <i>No</i> special components</p>';
-    const res = marticleParser.parseArticle(getTestArticle(input));
+    const res = marticleParser.parseArticle(getTestArticle({ article: input }));
     const expected = [
-      { __typeName: 'MarticleText', content: 'A top-level paragraph' },
+      { __typename: 'MarticleText', content: 'A top-level paragraph' },
       {
-        __typeName: 'MarticleText',
+        __typename: 'MarticleText',
         content: 'Another top-level paragraph. _No_ special components',
       },
     ];
@@ -74,38 +87,38 @@ describe('MarticleParser', () => {
     const input =
       '<h1>A heading</h1><p>A paragraph</p><h2>A <b>formatted</b> heading</h2><h6>An h6</h6><h4>A <a href=/link>linked</a> h4</h4><h5>An h5</h5><h3>An h3</h3>';
     const res = marticleParser.parseArticle(
-      getTestArticle(input),
+      getTestArticle({ article: input }),
     ) as MarticleComponent[];
     const expected = [
-      { __typeName: 'MarticleHeading', content: '# A heading', level: 1 },
+      { __typename: 'MarticleHeading', content: '# A heading', level: 1 },
       {
-        __typeName: 'MarticleHeading',
+        __typename: 'MarticleHeading',
         content: '## A **formatted** heading',
         level: 2,
       },
       {
-        __typeName: 'MarticleHeading',
+        __typename: 'MarticleHeading',
         content: '###### An h6',
         level: 6,
       },
       {
-        __typeName: 'MarticleHeading',
+        __typename: 'MarticleHeading',
         content: '#### A [linked](/link) h4',
         level: 4,
       },
       {
-        __typeName: 'MarticleHeading',
+        __typename: 'MarticleHeading',
         content: '##### An h5',
         level: 5,
       },
       {
-        __typeName: 'MarticleHeading',
+        __typename: 'MarticleHeading',
         content: '### An h3',
         level: 3,
       },
     ];
     expect(res.length).toBe(7);
-    expect(res[1].__typeName).toBe('MarticleText');
+    expect(res[1].__typename).toBe('MarticleText');
     // TODO: Test ordering
     expected.forEach(function (value) {
       expect(res).toContainEqual(value);
@@ -114,20 +127,20 @@ describe('MarticleParser', () => {
 
   it('should parse horizontal rules/content dividers', () => {
     const input = '<hr><p>Some text</p><hr><hr><p>A paragraph</p><hr>';
-    const res = marticleParser.parseArticle(getTestArticle(input));
+    const res = marticleParser.parseArticle(getTestArticle({ article: input }));
     const expected = [
-      { __typeName: 'MarticleDivider', content: '---' },
+      { __typename: 'MarticleDivider', content: '---' },
       {
-        __typeName: 'MarticleText',
+        __typename: 'MarticleText',
         content: 'Some text',
       },
-      { __typeName: 'MarticleDivider', content: '---' },
-      { __typeName: 'MarticleDivider', content: '---' },
+      { __typename: 'MarticleDivider', content: '---' },
+      { __typename: 'MarticleDivider', content: '---' },
       {
-        __typeName: 'MarticleText',
+        __typename: 'MarticleText',
         content: 'A paragraph',
       },
-      { __typeName: 'MarticleDivider', content: '---' },
+      { __typename: 'MarticleDivider', content: '---' },
     ];
     expect(res).toEqual(expected);
   });
@@ -135,18 +148,18 @@ describe('MarticleParser', () => {
   it('should parse tables', () => {
     const input =
       '<table><thead><tr><th>a</th><th>b</th></tr></thead><tbody><tr><td>c</td><td>d</td></tr></tbody></table>';
-    const res = marticleParser.parseArticle(getTestArticle(input));
-    const expected = [{ __typeName: 'MarticleTable', html: input }];
+    const res = marticleParser.parseArticle(getTestArticle({ article: input }));
+    const expected = [{ __typename: 'MarticleTable', html: input }];
     expect(res).toEqual(expected);
   });
 
   it('should parse codeblocks with a code tag', () => {
     const input =
       '<pre><code>p { color: red; }\nbody { background-color: #eee; }\n</code></pre>';
-    const res = marticleParser.parseArticle(getTestArticle(input));
+    const res = marticleParser.parseArticle(getTestArticle({ article: input }));
     const expected = [
       {
-        __typeName: 'MarticleCodeBlock',
+        __typename: 'MarticleCodeBlock',
         text: 'p { color: red; }\nbody { background-color: #eee; }\n',
       },
     ];
@@ -169,7 +182,7 @@ describe('MarticleParser', () => {
     const res = marticleParser.parse(minified);
     const expected = [
       {
-        __typeName: 'MarticleBulletedList',
+        __typename: 'MarticleBulletedList',
         rows: [
           {
             level: 0,
@@ -201,7 +214,7 @@ describe('MarticleParser', () => {
     const res = marticleParser.parse(input);
     const expected = [
       {
-        __typeName: 'MarticleNumberedList',
+        __typename: 'MarticleNumberedList',
         rows: [
           {
             index: 0,
@@ -239,7 +252,7 @@ describe('MarticleParser', () => {
     const res = marticleParser.parse(minified);
     const expected = [
       {
-        __typeName: 'MarticleNumberedList',
+        __typename: 'MarticleNumberedList',
         rows: [
           {
             level: 0,
@@ -259,12 +272,12 @@ describe('MarticleParser', () => {
         ],
       },
       {
-        __typeName: 'MarticleHeading',
+        __typename: 'MarticleHeading',
         level: 1,
         content: '# illegalHeading',
       },
       {
-        __typeName: 'MarticleNumberedList',
+        __typename: 'MarticleNumberedList',
         rows: [
           {
             level: 0,
@@ -293,7 +306,7 @@ describe('MarticleParser', () => {
     const res = marticleParser.parse(minified);
     const expected = [
       {
-        __typeName: 'MarticleNumberedList',
+        __typename: 'MarticleNumberedList',
         rows: [
           {
             index: 0,
@@ -341,7 +354,7 @@ describe('MarticleParser', () => {
     const res = marticleParser.parse(minified);
     const expected = [
       {
-        __typeName: 'MarticleBulletedList',
+        __typename: 'MarticleBulletedList',
         rows: [
           {
             level: 0,
@@ -354,7 +367,7 @@ describe('MarticleParser', () => {
         ],
       },
       {
-        __typeName: 'MarticleNumberedList',
+        __typename: 'MarticleNumberedList',
         rows: [
           {
             index: 0,
@@ -369,7 +382,7 @@ describe('MarticleParser', () => {
         ],
       },
       {
-        __typeName: 'MarticleBulletedList',
+        __typename: 'MarticleBulletedList',
         rows: [
           {
             level: 0,
@@ -396,7 +409,7 @@ describe('MarticleParser', () => {
     const res = marticleParser.parse(minified);
     const expected = [
       {
-        __typeName: 'MarticleNumberedList',
+        __typename: 'MarticleNumberedList',
         rows: [
           {
             index: 0,
@@ -411,7 +424,7 @@ describe('MarticleParser', () => {
         ],
       },
       {
-        __typeName: 'MarticleBulletedList',
+        __typename: 'MarticleBulletedList',
         rows: [
           {
             level: 1,
@@ -424,7 +437,7 @@ describe('MarticleParser', () => {
         ],
       },
       {
-        __typeName: 'MarticleNumberedList',
+        __typename: 'MarticleNumberedList',
         rows: [
           {
             index: 2,
@@ -455,7 +468,7 @@ describe('MarticleParser', () => {
     const res = marticleParser.parse(minified);
     const expected = [
       {
-        __typeName: 'MarticleNumberedList',
+        __typename: 'MarticleNumberedList',
         rows: [
           {
             index: 0,
@@ -470,7 +483,7 @@ describe('MarticleParser', () => {
         ],
       },
       {
-        __typeName: 'MarticleBulletedList',
+        __typename: 'MarticleBulletedList',
         rows: [
           {
             level: 1,
@@ -479,7 +492,7 @@ describe('MarticleParser', () => {
         ],
       },
       {
-        __typeName: 'MarticleNumberedList',
+        __typename: 'MarticleNumberedList',
         rows: [
           {
             index: 0,
@@ -489,7 +502,7 @@ describe('MarticleParser', () => {
         ],
       },
       {
-        __typeName: 'MarticleNumberedList',
+        __typename: 'MarticleNumberedList',
         rows: [
           {
             index: 2,
@@ -517,7 +530,7 @@ describe('MarticleParser', () => {
     const res = marticleParser.parse(minified);
     const expected = [
       {
-        __typeName: 'MarticleBulletedList',
+        __typename: 'MarticleBulletedList',
         rows: [
           {
             level: 0,
@@ -534,12 +547,12 @@ describe('MarticleParser', () => {
         ],
       },
       {
-        __typeName: 'MarticleHeading',
+        __typename: 'MarticleHeading',
         level: 1,
         content: '# illegalHeading',
       },
       {
-        __typeName: 'MarticleBulletedList',
+        __typename: 'MarticleBulletedList',
         rows: [
           {
             level: 0,
@@ -561,61 +574,58 @@ describe('MarticleParser', () => {
       width: 200,
       height: 150,
       vid: 'wubbalubbadubdub',
-      length: '10',
-      type: '1',
+      length: 10,
+      type: VideoType.Youtube,
     };
 
-    const article = {
-      isArticle: true,
-      isVideo: false,
-      article: input,
-      videos: {
-        1: {
-          ...baseVideo,
-          video_id: '1',
-          src: 'https://imagine.a-cool.video',
-        },
-        2: {
-          ...baseVideo,
-          height: '',
-          width: '',
-          video_id: '2',
-          src: 'https://imagine.another-cool.video',
-        },
-      },
-      givenUrl: 'https://something-to.test',
-    };
-
-    const res = marticleParser.parseArticle(article);
+    const res = marticleParser.parseArticle(
+      getTestArticle({
+        isArticle: true,
+        hasVideo: Videoness.IsVideo,
+        article: input,
+        videos: [
+          {
+            ...baseVideo,
+            videoId: 1,
+            src: 'https://imagine.a-cool.video',
+          },
+          {
+            ...baseVideo,
+            width: undefined,
+            height: undefined,
+            videoId: 2,
+            src: 'https://imagine.another-cool.video',
+          },
+        ],
+      }),
+    );
 
     const expected = [
       {
-        __typeName: 'MarticleText',
+        __typename: 'MarticleText',
         content: 'A paragraph with a **video**',
       },
       {
-        __typeName: 'Video',
+        __typename: 'Video',
         ...baseVideo,
-        type: VideoType.YOUTUBE,
+        type: VideoType.Youtube,
         videoId: 1,
         src: 'https://imagine.a-cool.video',
         url: 'https://imagine.a-cool.video/',
-        video_id: '1',
       },
       {
-        __typeName: 'MarticleText',
+        __typename: 'MarticleText',
         content: 'Another paragraph with a **second video**',
       },
       {
-        __typeName: 'Video',
+        __typename: 'Video',
         ...baseVideo,
-        type: VideoType.YOUTUBE,
+        type: VideoType.Youtube,
         videoId: 2,
         width: null,
         height: null,
         src: 'https://imagine.another-cool.video',
         url: 'https://imagine.another-cool.video/',
-        video_id: '2',
       },
     ];
     expect(res).toEqual(expected);
@@ -635,54 +645,54 @@ describe('MarticleParser', () => {
       credit: 'give it all to kelvin',
     };
 
-    const article = {
-      isArticle: true,
-      article: input,
-      isVideo: false,
-      images: {
-        1: {
-          ...baseImage,
-          image_id: '1',
-          src: 'https://imagine.a-cool.image.jpg',
-        },
-        2: {
-          ...baseImage,
-          width: '',
-          image_id: '2',
-          src: 'https://imagine.another-cool.image.jpg',
-        },
-      },
-      givenUrl: 'https://something-to.test',
-    };
-
-    const res = marticleParser.parseArticle(article);
+    const res = marticleParser.parseArticle(
+      getTestArticle({
+        isArticle: true,
+        article: input,
+        hasVideo: Videoness.NoVideos,
+        images: [
+          {
+            ...baseImage,
+            imageId: 1,
+            src: 'https://imagine.a-cool.image.jpg',
+            url: 'https://imagine.a-cool.image.jpg',
+          },
+          {
+            ...baseImage,
+            width: undefined,
+            imageId: 2,
+            src: 'https://imagine.another-cool.image.jpg',
+            url: 'https://imagine.another-cool.image.jpg',
+          },
+        ],
+        givenUrl: 'https://something-to.test',
+      }),
+    );
 
     const expected = [
       {
-        __typeName: 'MarticleText',
+        __typename: 'MarticleText',
         content: 'A paragraph with an **image**',
       },
       {
-        __typeName: 'Image',
+        __typename: 'Image',
         ...baseImage,
         imageId: 1,
         src: 'https://imagine.a-cool.image.jpg',
         url: 'https://imagine.a-cool.image.jpg/',
-        image_id: '1',
         targetUrl: null,
       },
       {
-        __typeName: 'MarticleText',
+        __typename: 'MarticleText',
         content: 'Another paragraph with a **second image**',
       },
       {
-        __typeName: 'Image',
+        __typename: 'Image',
         ...baseImage,
         width: null,
         imageId: 2,
         src: 'https://imagine.another-cool.image.jpg',
         url: 'https://imagine.another-cool.image.jpg/',
-        image_id: '2',
         targetUrl: null,
       },
     ];
@@ -692,7 +702,7 @@ describe('MarticleParser', () => {
     const input = '<blockquote>this is an insightful quote</blockquote>';
     const expected = [
       {
-        __typeName: 'MarticleBlockquote',
+        __typename: 'MarticleBlockquote',
         content: 'this is an insightful quote',
       },
     ];
@@ -704,11 +714,11 @@ describe('MarticleParser', () => {
       '<blockquote><p>this <em>insightful</em> quote</p><p>has multiple paragraphs</p></blockquote>';
     const expected = [
       {
-        __typeName: 'MarticleBlockquote',
+        __typename: 'MarticleBlockquote',
         content: 'this _insightful_ quote',
       },
       {
-        __typeName: 'MarticleBlockquote',
+        __typename: 'MarticleBlockquote',
         content: 'has multiple paragraphs',
       },
     ];
@@ -721,15 +731,15 @@ describe('MarticleParser', () => {
     const res = marticleParser.parse(input);
     const expected = [
       {
-        __typeName: 'MarticleBlockquote',
+        __typename: 'MarticleBlockquote',
         content: 'this _insightful_ quote',
       },
       {
-        __typeName: 'MarticleBlockquote',
+        __typename: 'MarticleBlockquote',
         content: 'has multiple paragraphs',
       },
       {
-        __typeName: 'MarticleBlockquote',
+        __typename: 'MarticleBlockquote',
         content: 'and **naked** text',
       },
     ];
@@ -740,19 +750,19 @@ describe('MarticleParser', () => {
       '<p>a paragraph</p><blockquote><p>bq 1</p><p>bq 2</p></blockquote><p>a final paragraph</p>';
     const expected = [
       {
-        __typeName: 'MarticleText',
+        __typename: 'MarticleText',
         content: 'a paragraph',
       },
       {
-        __typeName: 'MarticleBlockquote',
+        __typename: 'MarticleBlockquote',
         content: 'bq 1',
       },
       {
-        __typeName: 'MarticleBlockquote',
+        __typename: 'MarticleBlockquote',
         content: 'bq 2',
       },
       {
-        __typeName: 'MarticleText',
+        __typename: 'MarticleText',
         content: 'a final paragraph',
       },
     ];
@@ -763,15 +773,15 @@ describe('MarticleParser', () => {
     const input = '<blockquote>bq 1<hr>bq 2 <b>some text</b></blockquote>';
     const expected = [
       {
-        __typeName: 'MarticleBlockquote',
+        __typename: 'MarticleBlockquote',
         content: 'bq 1',
       },
       {
-        __typeName: 'MarticleDivider',
+        __typename: 'MarticleDivider',
         content: '---',
       },
       {
-        __typeName: 'MarticleBlockquote',
+        __typename: 'MarticleBlockquote',
         content: 'bq 2 **some text**',
       },
     ];
@@ -784,12 +794,12 @@ describe('MarticleParser', () => {
     const res = marticleParser.parse(input);
     const expected = [
       {
-        __typeName: 'MarticleText',
+        __typename: 'MarticleText',
         content:
           'The new October issue of Science #Immunology is out! More to come: https://t.co/dvNsyTHvAs',
       },
       {
-        __typeName: 'MarticleBlockquote',
+        __typename: 'MarticleBlockquote',
         content: 'something',
       },
     ];
@@ -801,11 +811,11 @@ describe('MarticleParser', () => {
     const res = marticleParser.parse(input);
     const expected = [
       {
-        __typeName: 'MarticleBlockquote',
+        __typename: 'MarticleBlockquote',
         content: 'something',
       },
       {
-        __typeName: 'MarticleText',
+        __typename: 'MarticleText',
         content:
           'The new October issue of Science #Immunology is out! More to come: https://t.co/dvNsyTHvAs',
       },
@@ -818,7 +828,7 @@ describe('MarticleParser', () => {
     const res = marticleParser.parse(input);
     const expected = [
       {
-        __typeName: 'MarticleText',
+        __typename: 'MarticleText',
         content:
           'The new October issue of Science #Immunology is out! More to come: https://t.co/dv\\_Ns\\_yTHvAs',
       },
@@ -831,11 +841,11 @@ describe('MarticleParser', () => {
     const res = marticleParser.parse(input);
     const expected = [
       {
-        __typeName: 'MarticleText',
+        __typename: 'MarticleText',
         content:
           'The new October issue of Science #Immunology is out! More to come: https://t.co/dvNsyTHvAs',
       },
-      { __typeName: 'MarticleHeading', content: '# title', level: 1 },
+      { __typename: 'MarticleHeading', content: '# title', level: 1 },
     ];
     expect(res).toEqual(expected);
   });
@@ -845,12 +855,12 @@ describe('MarticleParser', () => {
       '<div>The new <em>October</em> issue<p>of Science #Immunology<blockquote>is out!</blockquote>More</p>to come:  https://t.co/dvNsyTHvAs</div>';
     const res = marticleParser.parse(input);
     const expected = [
-      { __typeName: 'MarticleText', content: 'The new _October_ issue' },
-      { __typeName: 'MarticleText', content: 'of Science #Immunology' },
-      { __typeName: 'MarticleBlockquote', content: 'is out!' },
-      { __typeName: 'MarticleText', content: 'More' },
+      { __typename: 'MarticleText', content: 'The new _October_ issue' },
+      { __typename: 'MarticleText', content: 'of Science #Immunology' },
+      { __typename: 'MarticleBlockquote', content: 'is out!' },
+      { __typename: 'MarticleText', content: 'More' },
       {
-        __typeName: 'MarticleText',
+        __typename: 'MarticleText',
         content: 'to come: https://t.co/dvNsyTHvAs',
       },
     ];
@@ -861,14 +871,14 @@ describe('MarticleParser', () => {
       '<div>this div<div>has another div<p>with <em>a</em> paragraph<div>why not another div</div>ok?</p>and text</div><blockquote>and blockquote</blockquote>and more text</div>';
     const res = marticleParser.parse(input);
     const expected = [
-      { __typeName: 'MarticleText', content: 'this div' },
-      { __typeName: 'MarticleText', content: 'has another div' },
-      { __typeName: 'MarticleText', content: 'with _a_ paragraph' },
-      { __typeName: 'MarticleText', content: 'why not another div' },
-      { __typeName: 'MarticleText', content: 'ok?' },
-      { __typeName: 'MarticleText', content: 'and text' },
-      { __typeName: 'MarticleBlockquote', content: 'and blockquote' },
-      { __typeName: 'MarticleText', content: 'and more text' },
+      { __typename: 'MarticleText', content: 'this div' },
+      { __typename: 'MarticleText', content: 'has another div' },
+      { __typename: 'MarticleText', content: 'with _a_ paragraph' },
+      { __typename: 'MarticleText', content: 'why not another div' },
+      { __typename: 'MarticleText', content: 'ok?' },
+      { __typename: 'MarticleText', content: 'and text' },
+      { __typename: 'MarticleBlockquote', content: 'and blockquote' },
+      { __typename: 'MarticleText', content: 'and more text' },
     ];
     expect(res).toEqual(expected);
   });
@@ -882,32 +892,33 @@ describe('MarticleParser', () => {
       credit: 'thanks',
     };
 
-    const article = {
-      isArticle: true,
-      isVideo: false,
-      article: input,
-      images: {
-        1: {
-          ...baseImage,
-          image_id: '1',
-          src: 'https://imagine.a-cool.image.jpg',
-        },
-      },
-      givenUrl: 'https://something-to.test',
-    };
-    const res = marticleParser.parseArticle(article);
+    const res = marticleParser.parseArticle(
+      getTestArticle({
+        isArticle: true,
+        hasVideo: Videoness.NoVideos,
+        article: input,
+        images: [
+          {
+            ...baseImage,
+            imageId: 1,
+            src: 'https://imagine.a-cool.image.jpg',
+            url: 'https://imagine.a-cool.image.jpg',
+          },
+        ],
+        givenUrl: 'https://something-to.test',
+      }),
+    );
     const expected = [
-      { __typeName: 'MarticleText', content: 'some text' },
+      { __typename: 'MarticleText', content: 'some text' },
       {
-        __typeName: 'Image',
+        __typename: 'Image',
         ...baseImage,
         imageId: 1,
         src: 'https://imagine.a-cool.image.jpg',
         url: 'https://imagine.a-cool.image.jpg/',
-        image_id: '1',
         targetUrl: '/url',
       },
-      { __typeName: 'MarticleText', content: 'whatever more' },
+      { __typename: 'MarticleText', content: 'whatever more' },
     ];
     expect(res).toEqual(expected);
   });
@@ -915,53 +926,53 @@ describe('MarticleParser', () => {
     const input =
       '<audio controls="" src="/media/cc0-audio/t-rex-roar.mp3">Your browser does not support the <code>audio</code> element.</audio>';
     const res = marticleParser.parse(input);
-    const expected = [{ __typeName: 'UnMarseable', html: input }];
+    const expected = [{ __typename: 'UnMarseable', html: input }];
     expect(res).toEqual(expected);
   });
   it('should return UnMarseable for iframe elements', () => {
     const input =
       '<iframe id="inlineFrameExample" width="300" height="200" src="https://getpocket.com"></iframe>';
     const res = marticleParser.parse(input);
-    const expected = [{ __typeName: 'UnMarseable', html: input }];
+    const expected = [{ __typename: 'UnMarseable', html: input }];
     expect(res).toEqual(expected);
   });
   it('should return UnMarseable for definition lists', () => {
     const input =
       '<dl><dt>Beast of Bodmin</dt><dd>A large feline inhabiting Bodmin Moor.</dd></dl>';
     const res = marticleParser.parse(input);
-    const expected = [{ __typeName: 'UnMarseable', html: input }];
+    const expected = [{ __typename: 'UnMarseable', html: input }];
     expect(res).toEqual(expected);
   });
   it('should return UnMarseable for script elements', () => {
     const input = '<script>alert("Hello World!");</script>';
     const res = marticleParser.parse(input);
-    const expected = [{ __typeName: 'UnMarseable', html: input }];
+    const expected = [{ __typename: 'UnMarseable', html: input }];
     expect(res).toEqual(expected);
   });
   it('should return UnMarseable for math elements', () => {
     const input = '<math><mrow><msup><mi>a</mi><mn>2</mn></msup></mrow></math>';
     const res = marticleParser.parse(input);
-    const expected = [{ __typeName: 'UnMarseable', html: input }];
+    const expected = [{ __typename: 'UnMarseable', html: input }];
     expect(res).toEqual(expected);
   });
   it('should return UnMarseable for details elements', () => {
     const input =
       '<details><summary>Details</summary>Something small enough to escape casual notice.</details>';
     const res = marticleParser.parse(input);
-    const expected = [{ __typeName: 'UnMarseable', html: input }];
+    const expected = [{ __typename: 'UnMarseable', html: input }];
     expect(res).toEqual(expected);
   });
   it('should return UnMarseable for dialog elements', () => {
     const input = '<dialog open=""><p>Greetings, one and all!</p></dialog>';
     const res = marticleParser.parse(input);
-    const expected = [{ __typeName: 'UnMarseable', html: input }];
+    const expected = [{ __typename: 'UnMarseable', html: input }];
     expect(res).toEqual(expected);
   });
   it('should return UnMarseable for menu elements', () => {
     const input =
       '<menu><button id="updateDetails">Update details</button></menu>';
     const res = marticleParser.parse(input);
-    const expected = [{ __typeName: 'UnMarseable', html: input }];
+    const expected = [{ __typename: 'UnMarseable', html: input }];
     expect(res).toEqual(expected);
   });
   it('should return UnMarseable for Videos without a valid src (empty/null/undefined/malformed)', () => {
@@ -976,59 +987,60 @@ describe('MarticleParser', () => {
       width: 200,
       height: 150,
       vid: 'wubbalubbadubdub',
-      length: '10',
-      type: '1',
+      length: 10,
+      type: VideoType.Youtube,
     };
 
-    const article = {
-      isArticle: true,
-      isVideo: false,
-      article: input,
-      videos: {
-        1: {
-          ...baseVideo,
-          video_id: '1',
-          src: '', // empty string
-        },
-        2: {
-          ...baseVideo,
-          height: '',
-          width: '',
-          video_id: '2',
-          // src is null or undefined
-        },
-        3: {
-          ...baseVideo,
-          height: '',
-          width: '',
-          video_id: '3',
-          src: 'https://a_url.mpeg https://why_arethere_two.mpeg', //malformed
-        },
-      },
-      givenUrl: 'https://something-to.test',
-    };
-
-    const res = marticleParser.parseArticle(article);
+    const res = marticleParser.parseArticle(
+      getTestArticle({
+        isArticle: true,
+        hasVideo: Videoness.HasVideos,
+        article: input,
+        videos: [
+          {
+            ...baseVideo,
+            videoId: 1,
+            src: '', // empty string
+          },
+          {
+            ...baseVideo,
+            height: undefined,
+            width: undefined,
+            videoId: 2,
+            src: undefined,
+            // src is null or undefined
+          },
+          {
+            ...baseVideo,
+            height: undefined,
+            width: undefined,
+            videoId: 3,
+            src: 'https://a_url.mpeg https://why_arethere_two.mpeg', //malformed
+          },
+        ],
+        givenUrl: 'https://something-to.test',
+      }),
+    );
 
     const expected = [
       {
-        __typeName: 'MarticleText',
+        __typename: 'MarticleText',
         content: 'A paragraph with a **video**',
       },
       {
-        __typeName: 'UnMarseable',
+        __typename: 'UnMarseable',
         html: '<div><p>This video could not be shown.</p></div>',
       },
       {
-        __typeName: 'MarticleText',
+        __typename: 'MarticleText',
         content: 'Another paragraph with a **second video**',
       },
       {
-        __typeName: 'UnMarseable',
+        __typename: 'UnMarseable',
         html: '<div><p>This video could not be shown.</p></div>',
       },
       {
-        __typeName: 'UnMarseable',
+        __typename: 'UnMarseable',
         html: '<div><p>This video could not be shown.</p></div>',
       },
     ];
@@ -1049,53 +1061,57 @@ describe('MarticleParser', () => {
       credit: 'give it all to kelvin',
     };
 
-    const article = {
-      isArticle: true,
-      isVideo: false,
-      article: input,
-      images: {
-        1: {
-          ...baseImage,
-          image_id: '1',
-          src: '', // src empty string
-        },
-        2: {
-          ...baseImage,
-          width: '',
-          image_id: '2',
-          // src missing/null
-        },
-        3: {
-          ...baseImage,
-          width: '',
-          image_id: '2',
-          src: 'https://a_url.png https://why_arethere_two.jpg', //malformed
-        },
-      },
-      givenUrl: 'https://something-to.test',
-    };
-
-    const res = marticleParser.parseArticle(article);
+    const res = marticleParser.parseArticle(
+      getTestArticle({
+        isArticle: true,
+        hasVideo: Videoness.NoVideos,
+        article: input,
+        images: [
+          {
+            ...baseImage,
+            imageId: 1,
+            src: '', // src empty string
+            url: '',
+          },
+          {
+            ...baseImage,
+            width: undefined,
+            imageId: 2,
+            src: undefined,
+            url: undefined,
+            // src missing/null
+          },
+          {
+            ...baseImage,
+            width: undefined,
+            imageId: 2,
+            src: 'https://a_url.png https://why_arethere_two.jpg', //malformed
+            url: 'https://a_url.png https://why_arethere_two.jpg', //malformed
+          },
+        ],
+        givenUrl: 'https://something-to.test',
+      }),
+    );
 
     const expected = [
       {
-        __typeName: 'MarticleText',
+        __typename: 'MarticleText',
         content: 'A paragraph with an **image**',
       },
       {
-        __typeName: 'UnMarseable',
+        __typename: 'UnMarseable',
         html: '<div><p>This image could not be shown.</p></div>',
       },
       {
-        __typeName: 'MarticleText',
+        __typename: 'MarticleText',
         content: 'Another paragraph with a **second image**',
       },
       {
-        __typeName: 'UnMarseable',
+        __typename: 'UnMarseable',
         html: '<div><p>This image could not be shown.</p></div>',
       },
       {
-        __typeName: 'UnMarseable',
+        __typename: 'UnMarseable',
         html: '<div><p>This image could not be shown.</p></div>',
       },
     ];

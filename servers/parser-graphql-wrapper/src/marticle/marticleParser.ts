@@ -12,18 +12,28 @@ import {
   MarticleText,
   MarticleBlockquote,
   UnMarseable,
-} from './marticleTypes';
+  Image,
+  Video,
+  VideoType,
+  Item,
+} from '../__generated__/resolvers-types';
 import { countAncestors, countPreviousSiblings, createSubtree } from './utils';
 import turndownService from './turndown';
 import TurndownService from 'turndown';
-import { ParserArticle } from '../datasources/parserApi';
-import { Image, Video, videoTypeMap } from '../model';
 import { config } from './config';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
-type ParserMediaMap = {
-  [key: string]: SrcRecord;
+export const videoTypeMap = {
+  1: VideoType.Youtube,
+  2: VideoType.VimeoLink,
+  3: VideoType.VimeoMoogaloop,
+  4: VideoType.VimeoIframe,
+  5: VideoType.Html5,
+  6: VideoType.Flash,
+  7: VideoType.Iframe,
+  8: VideoType.Brightcove,
 };
+
 interface SrcRecord {
   [key: string]: any;
   src: string;
@@ -84,7 +94,7 @@ const eventualComponents = ['P', 'BLOCKQUOTE', 'LI', 'DIV'];
 
 function unMarseableTransformer(root: Node): UnMarseable {
   return {
-    __typeName: 'UnMarseable',
+    __typename: 'UnMarseable',
     html: (root as Element).outerHTML,
   };
 }
@@ -113,7 +123,7 @@ const transformers = {
     // Don't return empty content; this can sometimes happen for text nodes
     if (content != '') {
       return {
-        __typeName: blockquoteAncestor ? 'MarticleBlockquote' : 'MarticleText',
+        __typename: blockquoteAncestor ? 'MarticleBlockquote' : 'MarticleText',
         content: turndownService.turndown(subtree),
       };
     }
@@ -128,7 +138,7 @@ const transformers = {
     const content = turndownService.turndown(subtree);
     if (content != '') {
       return {
-        __typeName: 'MarticleText',
+        __typename: 'MarticleText',
         content: content,
       };
     }
@@ -141,7 +151,7 @@ const transformers = {
     const content = turndownService.turndown(subtree);
     if (content != '') {
       return {
-        __typeName: 'MarticleBlockquote',
+        __typename: 'MarticleBlockquote',
         content: content,
       };
     }
@@ -149,12 +159,12 @@ const transformers = {
   },
   HR: (root: Node): MarticleDivider => {
     return {
-      __typeName: 'MarticleDivider',
+      __typename: 'MarticleDivider',
       content: '---',
     };
   },
   TABLE: (root: Node): MarticleTable => ({
-    __typeName: 'MarticleTable',
+    __typename: 'MarticleTable',
     // outerHTML only available on Element, not Node
     // Is there a less janky way to do this?
     html: root.firstChild.parentElement.outerHTML,
@@ -169,13 +179,13 @@ const transformers = {
     // textContent returns a concatenated string of
     // all the child elements for a given node
     text: root.textContent,
-    __typeName: 'MarticleCodeBlock',
+    __typename: 'MarticleCodeBlock',
   }),
   // The typing gets difficult for lists
   // Lists can be broken up, so the transformer can return any kind
   // of Marticle* component ( + lists).
   // Kind of cheating on types for documentation purposes
-  UL: (root: Node, article: ParserArticle): MarticleElement[] => {
+  UL: (root: Node, article: Item): MarticleElement[] => {
     const { output, aggFrom } = listTransformer(
       root,
       [],
@@ -188,13 +198,13 @@ const transformers = {
     if (aggFrom != null) {
       const aggOutput = output.splice(aggFrom) as ListElement[];
       output.push({
-        __typeName: 'MarticleBulletedList',
+        __typename: 'MarticleBulletedList',
         rows: aggOutput,
       });
     }
     return output as MarticleElement[];
   },
-  OL: (root: Node, article: ParserArticle): MarticleElement[] => {
+  OL: (root: Node, article: Item): MarticleElement[] => {
     const { output, aggFrom } = listTransformer(
       root,
       [],
@@ -205,7 +215,7 @@ const transformers = {
     if (aggFrom != null) {
       const aggOutput = output.splice(aggFrom) as NumberedListElement[];
       output.push({
-        __typeName: 'MarticleNumberedList',
+        __typename: 'MarticleNumberedList',
         rows: aggOutput,
       });
     }
@@ -253,8 +263,8 @@ const transformers = {
   // comment and replace with a marticle media component
   '#comment': (
     root: Node,
-    article: ParserArticle,
-  ): ((Image | Video) & { __typeName: string }) | UnMarseable => {
+    article: Item,
+  ): ((Image | Video) & { __typename: string }) | UnMarseable => {
     const text = root.textContent.trim();
 
     // If an image comment is found, replace it with an Image component
@@ -274,16 +284,15 @@ const transformers = {
 
       if (!image)
         return {
-          __typeName: 'UnMarseable',
+          __typename: 'UnMarseable',
           html: config.UnMarseable.imageFallback,
         };
 
       return {
         ...image,
-        __typeName: 'Image',
-        imageId: parseInt(image.image_id),
-        width: parseInt(image.width) || null,
-        height: parseInt(image.height) || null,
+        __typename: 'Image',
+        width: image.width || null,
+        height: image.height || null,
         targetUrl: link,
       };
     }
@@ -294,17 +303,17 @@ const transformers = {
 
       if (!video)
         return {
-          __typeName: 'UnMarseable',
+          __typename: 'UnMarseable',
           html: config.UnMarseable.videoFallback,
         };
 
       return {
         ...video,
-        __typeName: 'Video',
-        videoId: parseInt(video.video_id),
-        width: parseInt(video.width) || null,
-        height: parseInt(video.height) || null,
-        type: videoTypeMap[video.type],
+        __typename: 'Video',
+        videoId: video.videoId,
+        width: video.width || null,
+        height: video.height || null,
+        type: video.type,
       };
     }
   },
@@ -320,7 +329,7 @@ function headingTransformer(headingRoot: Node, level: number): MarticleHeading {
   // For some reason the '#' markup doesn't show up with turndown when you pass
   // the root element directly, but does work if you pass the html
   return {
-    __typeName: 'MarticleHeading',
+    __typename: 'MarticleHeading',
     content: turndownService.turndown((headingRoot as Element).outerHTML),
     level: level,
   };
@@ -347,10 +356,7 @@ function RootNode(input: string) {
  * @param parserArticle parser data on images and videos
  * @returns an array of MarticleComponents representing the article
  */
-export function parse(
-  html: string,
-  parserArticle?: ParserArticle,
-): MarticleElement[] {
+export function parse(html: string, parserArticle?: Item): MarticleElement[] {
   const tree = RootNode(html);
   return visitDeep(tree, [], parserArticle);
 }
@@ -359,7 +365,7 @@ export function parse(
  *
  * @param article
  */
-export function parseArticle(article: ParserArticle): MarticleElement[] {
+export function parseArticle(article: Item): MarticleElement[] {
   return parse(article.article, article);
 }
 
@@ -376,7 +382,7 @@ export function parseArticle(article: ParserArticle): MarticleElement[] {
 function visitDeep(
   node: Node,
   output: any[],
-  parserArticle?: ParserArticle,
+  parserArticle?: Item,
   hasEventualAncestor?: boolean,
 ): MarticleElement[] {
   if (eventualComponents.indexOf(node.nodeName) >= 0) {
@@ -475,7 +481,7 @@ function processSubtree(children: Node[], parentType: string) {
  * @param node the root of the subtree to process into a MarticleComponent.
  * @param article
  */
-function processCurrentNode(node: Node, article: ParserArticle) {
+function processCurrentNode(node: Node, article: Item) {
   const component = transformers[node.nodeName]
     ? transformers[node.nodeName](node, article)
     : null;
@@ -514,7 +520,7 @@ function listTransformer(
   output: any[],
   listType: 'UL' | 'OL',
   aggFrom: number,
-  article: ParserArticle,
+  article: Item,
 ): {
   output: Array<MarticleElement | NumberedListElement | ListElement>;
   aggFrom: number | null;
@@ -547,7 +553,7 @@ function listTransformer(
           // Aggregate row elements into one component before making a new one
           const aggOutput = output.splice(aggFrom);
           aggFrom = null; // Reset counter
-          output.push({ __typeName: listTypeMap[listType], rows: aggOutput });
+          output.push({ __typename: listTypeMap[listType], rows: aggOutput });
         }
         currentNodeOutput = processCurrentNode(child, article);
       }
@@ -593,10 +599,19 @@ function listTransformer(
  */
 function getParserMediaFromComment(
   comment: string,
-  media: ParserMediaMap,
+  media: Image[] | Video[],
 ): SrcRecord | null {
   const mediaId = parseInt(comment.trim()?.split('_').pop());
-  const mediaElement = media ? media[mediaId] : null;
+
+  const mediaElement = media
+    ? (media.filter((value) => {
+        if ('imageId' in value) {
+          return value.imageId == mediaId;
+        } else if ('videoId' in value) {
+          return value.videoId == mediaId;
+        }
+      })[0] as unknown as SrcRecord)
+    : null;
   const hasValidSrc = (mediaElement: SrcRecord | null): boolean => {
     if (mediaElement == null) {
       return false;

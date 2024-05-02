@@ -7,7 +7,7 @@ if (!awsEnvironments.includes(process.env.NODE_ENV)) {
   localAwsEndpoint = process.env.AWS_ENDPOINT || 'http://localhost:4566';
 }
 
-export default {
+export const config = {
   app: {
     environment: process.env.NODE_ENV || 'development',
     defaultMaxAge: 86400,
@@ -24,13 +24,18 @@ export default {
     maxBackoff: 3000, // in ms, max amount of backoff time allowed for multiple requests
   },
   dynamoDb: {
-    notesTable: {
+    sharesTable: {
       name: process.env.SHARES_TABLE || 'SHARES-local-shares',
-      key: process.env.SHARES_TABLE_KEY || 'shareId',
+      ttl: 365 * 24 * 60 * 60 * 1000, // ~1 year in ms
+      userSalt: process.env.USERID_SALT || 'NACL',
+      guidSalt: process.env.GUID_SALT || 'MSG',
     },
   },
   tracing: {
     host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
     serviceName: 'shares-api',
+  },
+  share: {
+    url: process.env.SHARE_URL || 'https://pocket.co/share',
   },
 };

@@ -29,6 +29,7 @@ scalar Markdown
 
 "A String in the format of a url."
 scalar Url
+scalar ValidUrl
 
 enum CacheControlScope {
   PUBLIC
@@ -57,6 +58,8 @@ type Item
   itemId: String!
   "A server generated unique id for this item based on itemId"
   id: ID!
+  "A server generated unique reader slug for this item based on itemId"
+  readerSlug: String!
   """
   A normalized value of the givenUrl.
   It will look like a url but is not guaranteed to be a valid url, just a unique string that is used to eliminate common duplicates.
@@ -165,7 +168,7 @@ type Item
   marticle: [MarticleComponent!]
 
   "The client preview/display logic for this url"
-  preview: ItemSummary
+  preview: PocketMetadata
 }
 
 type ArticleMarkdown {
@@ -403,22 +406,11 @@ type Query {
   getItemByUrl(url: String!): Item
     @cacheControl(maxAge: 86400)
     @deprecated(reason: "Use itemByUrl instead")
-  """
-  Look up Item info by ID.
-  """
-  getItemByItemId(id: ID!): Item
-    @cacheControl(maxAge: 86400)
-    @deprecated(reason: "Use itemById instead")
-    @inaccessible
 
   """
   Look up Item info by a url.
   """
   itemByUrl(url: String!): Item @cacheControl(maxAge: 86400)
-  """
-  Look up Item info by ID.
-  """
-  itemByItemId(id: ID!): Item @cacheControl(maxAge: 86400) @inaccessible
 
   """
   Resolve Reader View links which might point to SavedItems that do not
@@ -465,7 +457,25 @@ type ReaderViewResult @key(fields: "slug") {
 
 union ReaderFallback = ReaderInterstitial | ItemNotFound
 
-type ItemSummary {
+enum ItemSummarySource {
+  POCKET_PARSER
+  OPENGRAPH
+}
+
+interface PocketMetadata {
+  id: ID!
+  image: Image
+  excerpt: String
+  title: String
+  authors: [Author!]
+  domain: DomainMetadata
+  datePublished: ISOString
+  url: Url!
+  source: ItemSummarySource!
+  item: Item
+}
+
+type ItemSummary implements PocketMetadata {
   id: ID!
   image: Image
   excerpt: String
@@ -475,13 +485,19 @@ type ItemSummary {
   domain: DomainMetadata
   datePublished: ISOString
   url: Url!
+  source: ItemSummarySource!
   item: Item
 }
 
 type ReaderInterstitial {
-  itemCard: ItemSummary
+  itemCard: PocketMetadata
 }
 
 type ItemNotFound {
-  message: String 
+  message: String
+}
+
+type PocketShare @key(fields: "targetUrl") {
+  targetUrl: ValidUrl!
+  preview: PocketMetadata
 }

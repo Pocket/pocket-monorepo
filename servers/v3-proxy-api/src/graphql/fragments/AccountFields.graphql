@@ -1,0 +1,15 @@
+fragment AccountFields on User {
+  id
+  username
+  email
+  accountCreationDate
+  name
+  firstName
+  lastName
+  isPremium
+  isFxa
+  description
+  avatarUrl
+  premiumStatus
+  premiumFeatures
+}

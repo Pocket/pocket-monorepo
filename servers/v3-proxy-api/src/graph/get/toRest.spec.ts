@@ -1,7 +1,7 @@
 import {
   SavedItemsSimpleQuery,
   SavedItemStatus,
-} from '../../generated/graphql/types';
+} from '../../generated/graphql';
 import {
   savedItemsCompleteToRest,
   savedItemsCompleteTotalToRest,
@@ -54,6 +54,9 @@ import {
 } from '../../test/fixtures';
 
 describe('GraphQL <> Rest convesion', () => {
+  beforeAll(() => jest.useFakeTimers({ now: 1706732550000 }));
+  afterAll(() => jest.useRealTimers());
+
   describe('convertSavedItemsSimple', () => {
     it('should transform graphql savedItemsByOffset response to rest response', () => {
       // TODO: Remove these function layers and use explicit data to
@@ -167,7 +170,7 @@ describe('GraphQL <> Rest convesion', () => {
         maxActions: 30,
         status: 1,
         complete: 1,
-        since: 1677818995,
+        since: 1706732550,
         error: null,
         list: {
           id1: {

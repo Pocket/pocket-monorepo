@@ -1,235 +1,57 @@
-import { getConnection } from '../database/mysql';
-import { ItemResolver } from '../entities/ItemResolver';
-import { Connection } from 'typeorm';
+import { conn } from '../databases/readitlab';
 import * as itemLoader from './itemLoader';
 import { getRedis } from '../cache';
-import nock, { cleanAll } from 'nock';
-import config from '../config';
+import { Kysely } from 'kysely';
+import { DB, Generated, ItemsResolver } from '../__generated__/readitlab';
 
 const urlToParse = 'https://test.com';
 
-const item = {
-  itemId: 1234,
-  searchHash: '123455sdf',
-  normalUrl: urlToParse,
-  resolvedId: 1234,
-  hasOldDupes: false,
+const item: ItemsResolver = {
+  item_id: 1234 as unknown as Generated<number>,
+  search_hash: '123455sdf',
+  normal_url: urlToParse,
+  resolved_id: 1234,
+  has_old_dupes: 0,
 };
 
-const item2 = {
-  itemId: 123,
-  searchHash: '123455sdf',
-  normalUrl: urlToParse,
-  resolvedId: 123,
-  hasOldDupes: false,
+const item2: ItemsResolver = {
+  item_id: 123 as unknown as Generated<number>,
+  search_hash: '123455sdf',
+  normal_url: urlToParse,
+  resolved_id: 123,
+  has_old_dupes: 0,
 };
-
-const parserItemId = '123';
 
 describe('itemLoader - integration', () => {
-  let connection: Connection;
+  let connection: Kysely<DB>;
 
   beforeEach(async () => {
     //Setup our db connection
-    connection = await getConnection();
-    //Delete the items
-    const entities = connection.entityMetadatas;
-    for (const entity of entities) {
-      const repository = connection.getRepository(entity.name);
-      await repository.query(`DELETE FROM ${entity.tableName}`);
-    }
+    connection = conn();
 
-    nock('http://example-parser.com')
-      .get('/')
-      .query({
-        url: urlToParse,
-        getItem: '1',
-        output: 'regular',
-        enableItemUrlFallback: '1',
-      })
-      .reply(200, {
-        item: {
-          item_id: parserItemId,
-          given_url: urlToParse,
-          normal_url: urlToParse,
-          authors: [],
-          images: [],
-          videos: [],
-          resolved_id: '16822',
-        },
-      });
+    //Delete the items
+    await connection.deleteFrom('items_resolver').execute();
 
     // flush the redis cache
     getRedis().clear();
 
     //Create a seed item
-    const insert = connection.manager.create(ItemResolver, item);
-    const insert2 = connection.manager.create(ItemResolver, item2);
-    await connection.manager.save([insert, insert2]);
+    await connection
+      .insertInto('items_resolver')
+      .values([item, item2])
+      .execute();
   });
 
   afterAll(async () => {
     await getRedis().disconnect();
-    await connection.close();
-  });
-
-  it('should batch resolve item ids with the given id even if the parser returns a different item id', async () => {
-    const batchItems = await itemLoader.batchGetItemsByIds([parserItemId]);
-    expect(batchItems[0].itemId).toEqual(parserItemId);
+    await connection.destroy();
   });
 
   it('should batch resolve item ids from the parser', async () => {
     const batchItems = await itemLoader.batchGetItemsByIds([
-      item.itemId.toString(),
+      item.item_id.toString(),
     ]);
-    expect(batchItems[0].itemId).toEqual(item.itemId.toString());
-  });
-
-  it('should batch resolve item urls', async () => {
-    const batchItems = await itemLoader.batchGetItemsByUrls([item.normalUrl]);
-    expect(batchItems[0].givenUrl).toEqual(item.normalUrl);
-  });
-
-  it('should batch resolve item urls when error', async () => {
-    config.redis.port = '123123';
-    const batchItems = await itemLoader.batchGetItemsByUrls([item.normalUrl]);
-    expect(batchItems[0].givenUrl).toEqual(item.normalUrl);
-  });
-
-  it('should resolve item urls with space', async () => {
-    const returnedItem = await itemLoader.getItemByUrl(
-      `    ${item.normalUrl}    `,
-    );
-    expect(returnedItem.givenUrl).toEqual(item.normalUrl);
-  });
-
-  it('should retry up to 3 times', async () => {
-    cleanAll();
-
-    nock('http://example-parser.com')
-      .get('/')
-      .query({
-        url: urlToParse,
-        getItem: '1',
-        output: 'regular',
-        enableItemUrlFallback: '1',
-      })
-      .reply(503, {})
-      .get('/')
-      .query({
-        url: urlToParse,
-        getItem: '1',
-        output: 'regular',
-        enableItemUrlFallback: '1',
-      })
-      .reply(200, {})
-      .get('/')
-      .query({
-        url: urlToParse,
-        getItem: '1',
-        output: 'regular',
-        enableItemUrlFallback: '1',
-      })
-      .reply(200, {
-        item: {
-          item_id: parserItemId,
-          given_url: urlToParse,
-          normal_url: urlToParse,
-          authors: [],
-          images: [],
-          videos: [],
-          resolved_id: '16822',
-        },
-      });
-
-    const returnedItem = await itemLoader.getItemByUrl(
-      `    ${item.normalUrl}    `,
-    );
-    expect(returnedItem.givenUrl).toEqual(item.normalUrl);
-    expect(returnedItem.id).toEqual(
-      'fe562f9c5BCfC1eeQ9AffKeCaiD2a190J7eb5D66B8DccAd6E6a1f247B54Egd22',
-    );
-  });
-
-  it('should retry with a refresh when resolved_id is 0', async () => {
-    cleanAll();
-
-    const scope = nock('http://example-parser.com')
-      .get('/')
-      .query({
-        url: urlToParse,
-        getItem: '1',
-        output: 'regular',
-        enableItemUrlFallback: '1',
-      })
-      .reply(200, {
-        item: {
-          item_id: parserItemId,
-          given_url: urlToParse,
-          normal_url: urlToParse,
-          authors: null,
-          images: null,
-          videos: null,
-          resolved_id: '0',
-        },
-      })
-      .get('/')
-      .query({
-        url: urlToParse,
-        getItem: '1',
-        output: 'regular',
-        refresh: true,
-        enableItemUrlFallback: '1',
-      })
-      .reply(200, {
-        item: {
-          item_id: parserItemId,
-          given_url: urlToParse,
-          normal_url: urlToParse,
-          authors: [],
-          images: [],
-          videos: [],
-          resolved_id: '123',
-        },
-      });
-
-    const returnedItem = await itemLoader.getItemByUrl(
-      `    ${item.normalUrl}    `,
-    );
-    expect(scope.isDone()).toBeTruthy();
-    expect(returnedItem.givenUrl).toEqual(item.normalUrl);
-    expect(returnedItem.resolvedId).toEqual('123');
-    expect(returnedItem.id).toEqual(
-      'fe562f9c5BCfC1eeQ9AffKeCaiD2a190J7eb5D66B8DccAd6E6a1f247B54Egd22',
-    );
-  });
-  it('should use top-level item_id and given_url fields if they exist', async () => {
-    const urlTopFields = 'http://this-url-has-data.com';
-    nock('http://example-parser.com')
-      .get('/')
-      .query({
-        url: urlTopFields,
-        getItem: '1',
-        output: 'regular',
-        enableItemUrlFallback: '1',
-      })
-      .reply(200, {
-        item_id: '123',
-        given_url: urlTopFields,
-        item: {
-          item_id: '16822',
-          given_url: 'do not use this one',
-          normal_url: urlTopFields,
-          authors: [],
-          images: [],
-          videos: [],
-          resolved_id: '16822',
-        },
-      });
-    const returnedItem = await itemLoader.getItemByUrl(urlTopFields);
-    expect(returnedItem).toMatchObject({
-      itemId: '123',
-      givenUrl: urlTopFields,
-    });
+    expect(batchItems[0].itemId).toEqual(item.item_id.toString());
+    expect(batchItems[0].url).toEqual(urlToParse);
   });
 });

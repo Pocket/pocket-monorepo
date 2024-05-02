@@ -21,10 +21,12 @@ import {
   PocketPagerDuty,
   PocketVPC,
   ApplicationServerlessRedis,
+  ApplicationRedis,
 } from '@pocket-tools/terraform-modules';
 import { Construct } from 'constructs';
 import { App, S3Backend, TerraformStack } from 'cdktf';
 import * as fs from 'fs';
+import { DynamoDB } from './dynamodb';
 class ParserGraphQLWrapper extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
@@ -51,10 +53,11 @@ class ParserGraphQLWrapper extends TerraformStack {
     );
     const vpc = new PocketVPC(this, 'pocket-vpc');
 
-    const { primaryEndpoint, readerEndpoint } = this.createElasticache(
-      this,
-      vpc,
-    );
+    const { primaryEndpoint, readerEndpoint } = config.isDev
+      ? this.createServerlessElasticache(this, vpc)
+      : this.createElasticache(this, vpc);
+
+    const dynamodb = new DynamoDB(this, 'dynamodb');
 
     this.createPocketAlbApplication({
       pagerDuty: this.createPagerDuty(),
@@ -65,6 +68,7 @@ class ParserGraphQLWrapper extends TerraformStack {
       region,
       caller,
       vpc,
+      dynamodb,
     });
   }
 
@@ -120,6 +124,7 @@ class ParserGraphQLWrapper extends TerraformStack {
     primaryEndpoint: string;
     readerEndpoint: string;
     vpc: PocketVPC;
+    dynamodb: DynamoDB;
   }): PocketALBApplication {
     const {
       pagerDuty,
@@ -130,6 +135,7 @@ class ParserGraphQLWrapper extends TerraformStack {
       primaryEndpoint,
       readerEndpoint,
       vpc,
+      dynamodb,
     } = dependencies;
 
     const PocketSharesSecretPrefix = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:ParserWrapperApi/${config.environment}/POCKET_SHARES`;
@@ -194,11 +200,19 @@ class ParserGraphQLWrapper extends TerraformStack {
             },
             {
               name: 'REDIS_IS_CLUSTER',
-              value: 'true',
+              value: config.isDev ? 'true' : 'false',
             },
             {
               name: 'REDIS_IS_TLS',
-              value: 'true',
+              value: config.isDev ? 'true' : 'false',
+            },
+            {
+              name: 'AWS_REGION',
+              value: region.name,
+            },
+            {
+              name: 'ITEM_SUMMARY_TABLE',
+              value: dynamodb.itemSummaryTable.dynamodb.name,
             },
           ],
           healthCheck: {
@@ -249,8 +263,12 @@ class ParserGraphQLWrapper extends TerraformStack {
               valueFrom: `${PocketSharesSecretPrefix}:password::`,
             },
             {
-              name: 'PARSER_URL',
-              valueFrom: `${PocketSecretsPrefix}:parser_endpoint::`,
+              name: 'PARSER_BASE_ENDPOINT',
+              valueFrom: `${PocketSecretsPrefix}:parser_base_endpoint::`,
+            },
+            {
+              name: 'PARSER_DATA_PATH',
+              valueFrom: `${PocketSecretsPrefix}:parser_data_path::`,
             },
             {
               name: 'SHORT_PREFIX',
@@ -374,6 +392,24 @@ class ParserGraphQLWrapper extends TerraformStack {
             resources: ['*'],
             effect: 'Allow',
           },
+          {
+            actions: [
+              'dynamodb:BatchGet*',
+              'dynamodb:DescribeTable',
+              'dynamodb:Get*',
+              'dynamodb:Query',
+              'dynamodb:Scan',
+              'dynamodb:UpdateItem',
+              'dynamodb:BatchWrite*',
+              'dynamodb:Delete*',
+              'dynamodb:PutItem',
+            ],
+            resources: [
+              dynamodb.itemSummaryTable.dynamodb.arn,
+              `${dynamodb.itemSummaryTable.dynamodb.arn}/*`,
+            ],
+            effect: 'Allow',
+          },
         ],
         taskExecutionDefaultAttachmentArn:
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
@@ -411,11 +447,11 @@ class ParserGraphQLWrapper extends TerraformStack {
   }
 
   /**
-   * Creates the elasticache and returns the node address list
+   * Creates theserverless elasticache and returns the node address list
    * @param scope
    * @private
    */
-  private createElasticache(
+  private createServerlessElasticache(
     scope: Construct,
     pocketVPC: PocketVPC,
   ): {
@@ -465,6 +501,40 @@ class ParserGraphQLWrapper extends TerraformStack {
     return {
       primaryEndpoint: elasticache.elasticache.endpoint.get(0).address,
       readerEndpoint: elasticache.elasticache.readerEndpoint.get(0).address,
+    };
+  }
+
+  /**
+   * Creates the elasticache for prod and returns the node address list
+   * @param scope
+   * @private
+   */
+  private createElasticache(
+    scope: Construct,
+    pocketVPC: PocketVPC,
+  ): {
+    primaryEndpoint: string;
+    readerEndpoint: string;
+  } {
+    const elasticache = new ApplicationRedis(scope, 'redis', {
+      //Usually we would set the security group ids of the service that needs to hit this.
+      //However we don't have the necessary security group because it gets created in PocketALBApplication
+      //So instead we set it to null and allow anything within the vpc to access it.
+      //This is not ideal..
+      //Ideally we need to be able to add security groups to the ALB application.
+      allowedIngressSecurityGroupIds: undefined,
+      subnetIds: pocketVPC.privateSubnetIds,
+      tags: config.tags,
+      vpcId: pocketVPC.vpc.id,
+      node: { size: 'cache.m6g.large', count: 2 },
+      prefix: `${config.prefix}-reserved`,
+    });
+
+    return {
+      primaryEndpoint:
+        elasticache.elasticacheReplicationGroup.primaryEndpointAddress,
+      readerEndpoint:
+        elasticache.elasticacheReplicationGroup.readerEndpointAddress,
     };
   }
 

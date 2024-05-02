@@ -337,6 +337,27 @@ describe('getSavedItemsByOffset filter', () => {
     };
     expect(res.body.data?._entities[0].savedItemsByOffset).toEqual(expected);
   });
+  it('should return items updated before a specific time', async () => {
+    const variables = {
+      id: '1',
+      filter: { updatedBefore: date2Unix },
+    };
+    const res = await request(app).post(url).set(headers).send({
+      query: GET_SAVED_ITEMS,
+      variables,
+    });
+    expect(res.body.errors).toBeUndefined();
+    const expected = {
+      totalCount: 4,
+      entries: expect.toIncludeSameMembers([
+        { url: 'http://abc' },
+        { url: 'http://lmn' },
+        { url: 'http://opq' },
+        { url: 'http://rst' },
+      ]),
+    };
+    expect(res.body.data?._entities[0].savedItemsByOffset).toEqual(expected);
+  });
 
   it('should return favorited items', async () => {
     const variables = {

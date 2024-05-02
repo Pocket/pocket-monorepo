@@ -106,6 +106,7 @@ export enum SavedItemsContentType {
 
 export type SavedItemsFilter = {
   updatedSince?: number;
+  updatedBefore?: number;
   isFavorite?: boolean;
   isArchived?: boolean;
   tagIds?: string[];

@@ -3,7 +3,7 @@ import { ContextManager } from './server/context';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
-import { knexDbClient } from './datasource/clients/knexClient';
+import { knexDbReadClient } from './datasource/clients/knexClient';
 import { Knex } from 'knex';
 import { SavedItemStatus } from './types';
 import { loadItemExtended, loadList } from './searchIntegrationTestHelpers';
@@ -85,7 +85,7 @@ describe('free search test', () => {
   let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;
-  const db = knexDbClient();
+  const db = knexDbReadClient();
   const headers = {
     userid: '1',
     premium: 'false',
@@ -101,7 +101,19 @@ describe('free search test', () => {
   });
 
   beforeEach(async () => {
-    jest.useFakeTimers({ now: updateDate, advanceTimers: true });
+    jest.useFakeTimers({
+      now: updateDate,
+      doNotFake: [
+        'nextTick',
+        'setImmediate',
+        'clearImmediate',
+        'setInterval',
+        'clearInterval',
+        'setTimeout',
+        'clearTimeout',
+      ],
+      advanceTimers: false,
+    });
   });
 
   afterAll(async () => {

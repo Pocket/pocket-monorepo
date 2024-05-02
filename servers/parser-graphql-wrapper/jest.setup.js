@@ -8,4 +8,10 @@ process.env.LETTER_INDEX =
   '[["a",0],["b",1],["c",2],["d",3],["e",4],["f",5],["0",6]]';
 process.env.SALT_1 = '123asdf';
 process.env.SALT_2 = 'asdaa47';
-process.env.PARSER_URL = 'http://example-parser.com/';
+process.env.PARSER_BASE_ENDPOINT = 'http://example-parser.com';
+
+// AWS_ENDPOINT is set in .docker/local.env
+process.env.AWS_ENDPOINT = process.env.AWS_ENDPOINT || 'http://localhost:4566';
+process.env.AWS_ACCESS_KEY_ID = 'fake-id';
+process.env.AWS_SECRET_ACCESS_KEY = 'fake-key';
+process.env.AWS_DEFAULT_REGION = 'us-east-1';

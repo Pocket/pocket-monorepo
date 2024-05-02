@@ -479,12 +479,24 @@ export class ListPaginationService {
   ): Promise<any> {
     // The base query will always have a 'where' statement selecting
     // the user ID, so use andWhere for all additional methods
-    if (filter.updatedSince != null) {
+    if (filter.updatedSince != null && filter.updatedBefore == null) {
       baseQuery.andWhere(
         'time_updated',
         '>',
         mysqlTimeString(
           new Date(filter.updatedSince * 1000),
+          config.database.tz,
+        ),
+      );
+    }
+    // The base query will always have a 'where' statement selecting
+    // the user ID, so use andWhere for all additional methods
+    if (filter.updatedSince == null && filter.updatedBefore != null) {
+      baseQuery.andWhere(
+        'time_updated',
+        '<',
+        mysqlTimeString(
+          new Date(filter.updatedBefore * 1000),
           config.database.tz,
         ),
       );

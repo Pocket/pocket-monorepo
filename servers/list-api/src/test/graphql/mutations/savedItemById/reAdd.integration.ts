@@ -35,7 +35,19 @@ describe('reAddById mutation', () => {
 
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
-    jest.useFakeTimers({ advanceTimers: true, now });
+    jest.useFakeTimers({
+      doNotFake: [
+        'nextTick',
+        'setImmediate',
+        'clearImmediate',
+        'setInterval',
+        'clearInterval',
+        'setTimeout',
+        'clearTimeout',
+      ],
+      advanceTimers: false,
+      now,
+    });
   });
 
   afterAll(async () => {

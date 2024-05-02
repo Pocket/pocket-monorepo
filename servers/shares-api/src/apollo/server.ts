@@ -13,7 +13,7 @@ import { initSentry } from '@pocket-tools/sentry';
 import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4';
 
 import { schema } from './schema';
-import config from '../config';
+import { config } from '../config';
 import { getContext, ContextManager } from './context';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 

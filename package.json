@@ -21,8 +21,8 @@
     "dotenv-cli": "latest"
   },
   "devDependencies": {
-    "syncpack": "^12.3.0",
-    "turbo": "^1.13.2"
+    "syncpack": "^12.3.2",
+    "turbo": "^1.13.3"
   },
   "packageManager": "pnpm@8.15.6",
   "name": "pocket-monorepo",

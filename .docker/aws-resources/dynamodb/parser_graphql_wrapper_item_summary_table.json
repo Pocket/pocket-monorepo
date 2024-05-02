@@ -1,0 +1,16 @@
+{
+  "TableName": "PARSER-local-item-summary",
+  "BillingMode": "PAY_PER_REQUEST",
+  "KeySchema": [
+    {
+      "AttributeName": "urlHash",
+      "KeyType": "HASH"
+    }
+  ],
+  "AttributeDefinitions": [
+    {
+      "AttributeName": "urlHash",
+      "AttributeType": "S"
+    }
+  ]
+}

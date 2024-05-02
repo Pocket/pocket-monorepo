@@ -22,11 +22,11 @@
     "express": "4.19.2",
     "knex": "3.1.0",
     "luxon": "3.4.4",
-    "mysql2": "3.9.3"
+    "mysql2": "3.9.7"
   },
   "devDependencies": {
     "@faker-js/faker": "8.4.1",
-    "@sentry/types": "7.110.0",
+    "@sentry/types": "7.113.0",
     "@types/jest": "29.5.12",
     "@types/supertest": "^6.0.2",
     "eslint-config-custom": "workspace:*",

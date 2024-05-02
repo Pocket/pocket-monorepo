@@ -1,7 +1,10 @@
 import { faker } from '@faker-js/faker';
 import { config } from '../../config';
 import * as zlib from 'zlib';
-import { contentDb, knexDbClient } from '../../datasource/clients/knexClient';
+import {
+  contentDb,
+  knexDbReadClient,
+} from '../../datasource/clients/knexClient';
 
 export interface SeedConfig {
   userCount: number;
@@ -29,8 +32,8 @@ const seedItems = async (
   truncate = true,
 ): Promise<any> => {
   if (truncate) {
-    await knexDbClient().table('readitla_b.items_extended').truncate();
-    await knexDbClient().table('readitla_b.items_resolver').truncate();
+    await knexDbReadClient().table('readitla_b.items_extended').truncate();
+    await knexDbReadClient().table('readitla_b.items_resolver').truncate();
   }
 
   for (let i = 0; i < itemIds.length; i++) {
@@ -44,7 +47,9 @@ const seedItems = async (
       resolved_id: resolvedId,
       has_old_dupes: false,
     };
-    await knexDbClient().table('readitla_b.items_resolver').insert(resolver);
+    await knexDbReadClient()
+      .table('readitla_b.items_resolver')
+      .insert(resolver);
 
     const resolvedItemResolver = {
       item_id: resolvedId,
@@ -53,7 +58,7 @@ const seedItems = async (
       resolved_id: resolvedId,
       has_old_dupes: false,
     };
-    await knexDbClient()
+    await knexDbReadClient()
       .table('readitla_b.items_resolver')
       .insert(resolvedItemResolver);
 
@@ -80,7 +85,7 @@ const seedItems = async (
       used_fallback: faker.datatype.boolean(),
       lang: faker.location.countryCode('alpha-2').toLowerCase(),
     };
-    await knexDbClient().table('readitla_b.items_extended').insert(item);
+    await knexDbReadClient().table('readitla_b.items_extended').insert(item);
   }
 };
 
@@ -112,10 +117,10 @@ const seedTags = async (
   truncate = true,
 ): Promise<void> => {
   if (truncate) {
-    await knexDbClient().table('item_tags').truncate();
+    await knexDbReadClient().table('item_tags').truncate();
   }
 
-  const userIds = await knexDbClient().select('user_id').from('users');
+  const userIds = await knexDbReadClient().select('user_id').from('users');
 
   if (userIds.length) {
     for (let i = 0; i < count; i++) {
@@ -130,7 +135,7 @@ const seedTags = async (
         api_id_updated: faker.number.int(),
       };
 
-      await knexDbClient().table('item_tags').insert(tag);
+      await knexDbReadClient().table('item_tags').insert(tag);
     }
   } else {
     console.log('no users! cannot create tags without users...');
@@ -143,8 +148,8 @@ const seedUsers = async (
   truncate = true,
 ): Promise<void> => {
   if (truncate) {
-    await knexDbClient().table('users').truncate();
-    await knexDbClient().table('user_recent_search').truncate();
+    await knexDbReadClient().table('users').truncate();
+    await knexDbReadClient().table('user_recent_search').truncate();
   }
 
   for (let i = 1; i <= count; i++) {
@@ -162,7 +167,7 @@ const seedUsers = async (
       premium_status: forcePremium ? true : faker.datatype.boolean(),
     };
 
-    await knexDbClient().table('users').insert(user);
+    await knexDbReadClient().table('users').insert(user);
     const timeOpts = { min: 12846124, max: new Date().getTime() / 1000 };
 
     if (user.premium_status == true) {
@@ -176,11 +181,11 @@ const seedUsers = async (
         search_hash: i + '1',
         time_added: faker.number.int(timeOpts),
       };
-      await knexDbClient().table('user_recent_search').insert(userSearch);
+      await knexDbReadClient().table('user_recent_search').insert(userSearch);
 
       userSearch.search_hash = i + '2';
       userSearch.time_added = faker.number.int(timeOpts);
-      await knexDbClient().table('user_recent_search').insert(userSearch);
+      await knexDbReadClient().table('user_recent_search').insert(userSearch);
     }
   }
 };
@@ -191,10 +196,10 @@ const seedList = async (
   truncate = true,
 ): Promise<void> => {
   if (truncate) {
-    await knexDbClient().table('list').truncate();
+    await knexDbReadClient().table('list').truncate();
   }
 
-  const userIds = await knexDbClient().select('user_id').from('users');
+  const userIds = await knexDbReadClient().select('user_id').from('users');
 
   if (userIds.length) {
     for (let j = 0; j < userIds.length; j++) {
@@ -214,7 +219,7 @@ const seedList = async (
           api_id_updated: faker.number.int(),
         };
 
-        await knexDbClient().table('list').insert(list);
+        await knexDbReadClient().table('list').insert(list);
       }
     }
   } else {
@@ -228,9 +233,9 @@ export const seedItemWithDifferentResolvedId = async (
   truncate = true,
 ): Promise<void> => {
   if (truncate) {
-    await knexDbClient().table('readitla_b.items_resolver').truncate();
+    await knexDbReadClient().table('readitla_b.items_resolver').truncate();
   }
-  await knexDbClient().table('readitla_b.items_resolver').insert({
+  await knexDbReadClient().table('readitla_b.items_resolver').insert({
     item_id: itemId,
     resolved_id: resolvedId,
     search_hash: '',

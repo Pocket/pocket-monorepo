@@ -1,18 +1,19 @@
 import knex, { Knex } from 'knex';
 import { config } from '../../config';
 
-let db: Knex;
+let dbRead: Knex;
+let dbWrite: Knex;
 let cDb: Knex;
 
 /**
  * Create a db client for reads from readitla_ril-tmp
  */
-export function knexDbClient(): Knex {
-  if (db) return db;
+export function knexDbReadClient(): Knex {
+  if (dbRead) return dbRead;
   const credentials = JSON.parse(config.mysql.readitla);
   const mysqlConfig = config.mysql as any;
 
-  db = createConnection({
+  dbRead = createConnection({
     host: credentials.host,
     port: credentials.port,
     user: credentials.username,
@@ -20,7 +21,26 @@ export function knexDbClient(): Knex {
     database: credentials.dbname,
     timezone: mysqlConfig.timezone,
   });
-  return db;
+  return dbRead;
+}
+
+/**
+ * Create a db client for reads from readitla_ril-tmp
+ */
+export function knexDbWriteClient(): Knex {
+  if (dbWrite) return dbWrite;
+  const credentials = JSON.parse(config.mysql.readitla_w);
+  const mysqlConfig = config.mysql as any;
+
+  dbWrite = createConnection({
+    host: credentials.host,
+    port: credentials.port,
+    user: credentials.username,
+    password: credentials.password,
+    database: credentials.dbname,
+    timezone: mysqlConfig.timezone,
+  });
+  return dbWrite;
 }
 
 /**

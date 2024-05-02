@@ -1,7 +1,8 @@
-import { IntMask } from '@pocket-tools/int-mask';
-import { IContext } from '../context';
-import { ReaderFallback } from '../model';
-import { deriveItemSummary } from '../preview/preview';
+import { IContext } from '../apollo/context';
+import { ReaderFallback } from '../__generated__/resolvers-types';
+import { itemIdFromSlug } from './idUtils';
+
+const notFound = { message: "We couldn't find that page." };
 
 /**
  * FallbackPage resolver for ReaderViewResult query
@@ -14,13 +15,28 @@ export async function fallbackPage(
   slug: string,
   context: IContext,
 ): Promise<ReaderFallback> {
-  const id = IntMask.decode(slug).toString();
-  const item = await context.dataLoaders.itemIdLoader.load(id);
-  if (item == null) {
-    return { message: "We couldn't find that page." };
+  const id = itemIdFromSlug(slug);
+  if (id == null) {
+    return notFound;
+  }
+  const itemLoaderResult = await context.dataLoaders.itemIdLoader.load(id);
+
+  if (itemLoaderResult == null || itemLoaderResult.url == null) {
+    return notFound;
   }
 
-  const itemCard = await deriveItemSummary(item, context);
+  const item = await context.dataSources.parserAPI.getItemData(
+    itemLoaderResult.url,
+  );
+
+  if (item == null) {
+    return notFound;
+  }
+
+  const itemCard = await context.dataSources.itemSummaryModel.deriveItemSummary(
+    item,
+    context,
+  );
 
   return { itemCard };
 }

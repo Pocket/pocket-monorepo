@@ -1,3 +1,100 @@
-type PocketShare {
-  id: ID!
+extend schema
+  @link(url: "https://specs.apollo.dev/link/v1.0")
+  @link(
+    url: "https://specs.apollo.dev/federation/v2.3"
+    import: ["@key", "@composeDirective", "@tag"]
+  )
+  # The link directive is required to federate @constraint
+  # It doesn't actually have to be a real spec, but it would be good
+  # to write one and replace this. It has to end in a version so the github
+  # link alone doesn't work, and it doesn't like a patch version so the
+  # link tot he specific release on github doesn't work...
+  @link(url: "https://myspecs.dev/myDirective/v1.0", import: ["@constraint"])
+  @composeDirective(name: "@constraint")
+
+scalar ISOString
+scalar Max300CharString
+scalar ValidUrl
+
+type PocketShare @key(fields: "slug targetUrl") {
+  slug: ID!
+  shareUrl: ValidUrl!
+  targetUrl: ValidUrl!
+  createdAt: ISOString
+  context: ShareContext
+}
+
+type ShareContext {
+  """
+  A user-provided comment/note on the shared content.
+  """
+  note: String
+  """User-provided highlights of the content"""
+  highlights: [ShareHighlight!]
+}
+
+type ShareHighlight {
+  """
+  Highlighted text on a piece of shared content.
+  """
+  quote: String!
+}
+
+input ShareHighlightInput {
+  """
+  Highlighted text on a piece of shared content.
+  This is a permissive constraint but there needs
+  to be _a_ constraint.
+  This input is not required, but if present 'quotes'
+  is required as it is the only field.
+  Limited to 300 characters per quote (longer quotes
+  will not be rejected, but will be truncated).
+  """
+  quotes: [Max300CharString!]! @constraint(maxItems: 20)
+}
+
+"""
+Input for mutation which creates a new Pocket Share link.
+"""
+input ShareContextInput {
+  """
+  A note/comment about the Share (up to 500 characters).
+  """
+  note: String @constraint(maxLength: 500)
+  """Quoted content from the Share source"""
+  highlights: ShareHighlightInput
+}
+
+union ShareResult = PocketShare | ShareNotFound
+
+type Query {
+  """
+  Resolve data for a Shared link, or return a Not Found
+  message if the share does not exist.
+  """
+  shareSlug(slug: ID!): ShareResult
+}
+
+type ShareNotFound {
+  message: String 
+}
+
+type Mutation {
+  """
+  Create a Pocket Share for a provided target URL, optionally
+  with additional share context.
+  """
+  createShareLink(target: ValidUrl!, context: ShareContextInput): PocketShare
+  """
+  Attach share context to a Pocket Share. If a context already exists
+  on the Pocket Share, it will be overrwritten. Session ID via the `guid`
+  field on the JWT is used to determine ownership of a share.
+  That means users may only edit share links created in the same
+  session (intended to be a post-share add, not something returned to
+  later). It also lets us attribute ownership to anonymous/logged-out
+  users.
+  Attempting to update a nonexistent share or a share that is not owned
+  by the session user will return ShareNotFound.
+  """
+  addShareContext(slug: ID!, context: ShareContextInput!): ShareResult
 }

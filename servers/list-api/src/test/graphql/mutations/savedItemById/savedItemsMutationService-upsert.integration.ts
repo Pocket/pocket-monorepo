@@ -68,7 +68,19 @@ describe('UpsertSavedItem Mutation', () => {
 
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
-    jest.useFakeTimers({ advanceTimers: true, now: dateNow });
+    jest.useFakeTimers({
+      doNotFake: [
+        'nextTick',
+        'setImmediate',
+        'clearImmediate',
+        'setInterval',
+        'clearInterval',
+        'setTimeout',
+        'clearTimeout',
+      ],
+      advanceTimers: false,
+      now: dateNow,
+    });
   });
 
   afterAll(async () => {
@@ -438,7 +450,19 @@ describe('UpsertSavedItem Mutation', () => {
     });
 
     it('should push addItem event to perm lib queue for premium users', async () => {
-      jest.useFakeTimers({ advanceTimers: true, now: dateNow });
+      jest.useFakeTimers({
+        doNotFake: [
+          'nextTick',
+          'setImmediate',
+          'clearImmediate',
+          'setInterval',
+          'clearInterval',
+          'setTimeout',
+          'clearTimeout',
+        ],
+        advanceTimers: false,
+        now: dateNow,
+      });
       const variables = {
         url: 'http://addingtoqueue.com',
       };
@@ -517,7 +541,19 @@ describe('UpsertSavedItem Mutation', () => {
       });
 
       it(`should update an item already in a user's list`, async () => {
-        jest.useFakeTimers({ advanceTimers: true, now: dateNow });
+        jest.useFakeTimers({
+          doNotFake: [
+            'nextTick',
+            'setImmediate',
+            'clearImmediate',
+            'setInterval',
+            'clearInterval',
+            'setTimeout',
+            'clearTimeout',
+          ],
+          advanceTimers: false,
+          now: dateNow,
+        });
         const variables = {
           url: 'http://google.com',
           isFavorite: true,
@@ -685,6 +721,37 @@ describe('UpsertSavedItem Mutation', () => {
         `unable to add item with url: ${variables.url}`,
       );
     });
+
+    it('should fail to save an item shorter then 4 characters', async () => {
+      const variables = {
+        url: 't.y',
+      };
+
+      const ADD_AN_ITEM = `
+        mutation addAnItem($url: String!) {
+          upsertSavedItem(input: { url: $url }) {
+            id
+           
+            _createdAt
+            _updatedAt
+          }
+        }
+      `;
+
+      const mutationResult = await request(app).post(url).set(headers).send({
+        query: ADD_AN_ITEM,
+        variables,
+      });
+      expect(mutationResult).not.toBeNull();
+      expect(mutationResult.body.data).toBeUndefined();
+      expect(mutationResult.body.errors).not.toBeNull();
+
+      expect(mutationResult.body.errors[0].extensions.code).toBe(
+        'BAD_USER_INPUT',
+      );
+      expect(mutationResult.body.errors[0].extensions.field).toBe('url');
+    });
+
     it('should return error when insertion throws error', async () => {
       mockParserGetItemRequest('http://databasetest.com', {
         item: {

@@ -29,6 +29,10 @@ describe('toGraphQL', () => {
           expected: { filter: { updatedSince: 123456 } },
         },
         {
+          params: { updatedBefore: 123456 },
+          expected: { filter: { updatedBefore: 123456 } },
+        },
+        {
           params: { state: 'all' as const },
           expected: {},
         },
@@ -54,6 +58,16 @@ describe('toGraphQL', () => {
             filter: {
               status: 'ARCHIVED',
               contentType: 'IS_READABLE',
+            },
+          },
+        },
+        {
+          params: {
+            hasAnnotations: true,
+          },
+          expected: {
+            filter: {
+              isHighlighted: true,
             },
           },
         },

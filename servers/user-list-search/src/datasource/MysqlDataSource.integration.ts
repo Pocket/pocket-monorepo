@@ -4,11 +4,16 @@ import {
   seedItemWithDifferentResolvedId,
 } from '../test/_support/seeder';
 import { MysqlDataSource } from './MysqlDataSource';
-import { contentDb, knexDbClient } from './clients/knexClient';
+import {
+  contentDb,
+  knexDbReadClient,
+  knexDbWriteClient,
+} from './clients/knexClient';
 
 describe('MysqlDataSource', () => {
   afterAll(async () => {
-    await knexDbClient().destroy();
+    await knexDbReadClient().destroy();
+    await knexDbWriteClient().destroy();
     await contentDb().destroy();
   });
 
@@ -23,17 +28,17 @@ describe('MysqlDataSource', () => {
       });
 
       // get total users
-      const [total] = await knexDbClient().raw(
+      const [total] = await knexDbReadClient().raw(
         'SELECT COUNT(user_id) AS total FROM users',
       );
 
       // get premium users
-      const [premium] = await knexDbClient().raw(
+      const [premium] = await knexDbReadClient().raw(
         'SELECT COUNT(user_id) AS total FROM users WHERE premium_status = 1',
       );
 
       // get non-premium users
-      const [nonPremium] = await knexDbClient().raw(
+      const [nonPremium] = await knexDbReadClient().raw(
         'SELECT COUNT(user_id) AS total FROM users WHERE premium_status = 0',
       );
 
@@ -50,7 +55,7 @@ describe('MysqlDataSource', () => {
 
       // verify order of user_ids from newest activity to oldest
       const usersMostRecent: { [key: string]: number } = {};
-      const [mostRecentActivityLog] = await knexDbClient().raw(
+      const [mostRecentActivityLog] = await knexDbReadClient().raw(
         'SELECT user_id, time_added FROM user_recent_search GROUP BY user_id ORDER BY time_added DESC',
       );
       for (const userActivity of mostRecentActivityLog) {
