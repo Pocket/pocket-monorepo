@@ -1,13 +1,11 @@
 import {
   DynamoDBDocumentClient,
-  GetCommand,
   PutCommand,
+  QueryCommand,
 } from '@aws-sdk/lib-dynamodb';
 import config from '../config';
 import * as Sentry from '@sentry/node';
 import {
-  DomainMetadata,
-  OEmbed,
   PocketMetadata,
   PocketMetadataSource,
 } from '../__generated__/resolvers-types';
@@ -16,6 +14,8 @@ import md5 from 'md5';
 export interface IPocketMetadataDataStore {
   getStoredPocketMetadata(
     resolvedUrl: string,
+    version: number,
+    source: PocketMetadataSource,
   ): Promise<PocketMetadataEntity | null>;
   storePocketMetadata(
     input: PocketMetadataEntity,
@@ -25,19 +25,14 @@ export interface IPocketMetadataDataStore {
 
 export type PocketMetadataEntity = Omit<
   PocketMetadata,
-  'domain' | 'url' | 'source' | 'createdAt' | 'datePublished'
-> &
-  Partial<Pick<OEmbed, 'htmlEmbed' | 'type'>> & {
-    urlHash: string; // md5 hash of the resolved Url
-    createdAt: number; // epoch time in seconds
-    datePublished: number; // epoch time in seconds
-    // source is a reserved keyword in dynamodb so we need to remap it.
-    dataSource: PocketMetadataSource; // class name of the datasource
-    // Domain is a reserved keyword in dynamodb so we need to remap it.
-    domainMetadata?: DomainMetadata;
-    // url is a reserved keyword in dynamodb so we need to remap it.
-    itemUrl: string;
-  };
+  'createdAt' | 'datePublished'
+> & {
+  urlHash: string; // md5 hash of the resolved Url
+  createdAt: number; // epoch time in seconds
+  datePublished: number; // epoch time in seconds
+  version: number;
+  __typename: string;
+};
 
 export class ItemSummaryDataStoreBase implements IPocketMetadataDataStore {
   public static table = config.dynamoDb.itemSummaryTable;
@@ -50,14 +45,29 @@ export class ItemSummaryDataStoreBase implements IPocketMetadataDataStore {
    */
   async getStoredPocketMetadata(
     resolvedUrl: string,
+    version: number,
+    source: PocketMetadataSource,
   ): Promise<PocketMetadataEntity | null> {
-    const getPreviewCommand = new GetCommand({
+    const getPreviewCommand = new QueryCommand({
       TableName: ItemSummaryDataStoreBase.table.name,
-      Key: { urlHash: md5(resolvedUrl) },
+      KeyConditionExpression: `urlHash = :key`,
+      FilterExpression: `version = :version`,
+      ExpressionAttributeValues: {
+        ':key': md5(resolvedUrl),
+        ':version': version,
+      },
     });
     const response = await this.conn.send(getPreviewCommand);
-    if (response?.Item != null) {
-      return response.Item as PocketMetadataEntity;
+
+    const items: PocketMetadataEntity[] = response.Items.filter(
+      (item: PocketMetadataEntity) => {
+        // source is a reserved keyword in dynamo and we want to project all values,
+        // so we just filter after instead of filtering at the dynamodb level
+        return item.source == source;
+      },
+    ) as PocketMetadataEntity[];
+    if (items != null && items.length > 0) {
+      return items[0];
     }
     return null;
   }

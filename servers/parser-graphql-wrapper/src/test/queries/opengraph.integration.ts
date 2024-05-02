@@ -222,12 +222,14 @@ describe('preview', () => {
     await new ItemSummaryDataStoreBase(dynamoClient()).storePocketMetadata(
       {
         id: 'id',
-        itemUrl: testUrl,
+        url: testUrl,
         urlHash: md5(testUrl),
         datePublished: null,
         title: 'the saved data',
-        dataSource: PocketMetadataSource.Opengraph,
+        source: PocketMetadataSource.Opengraph,
         createdAt: Math.round(Date.now() / 1000),
+        version: 1,
+        __typename: 'ItemSummary',
       },
       3600,
     );

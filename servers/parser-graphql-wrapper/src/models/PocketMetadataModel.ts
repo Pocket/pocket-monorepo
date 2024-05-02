@@ -2,6 +2,7 @@ import {
   Item,
   PocketMetadataSource,
   PocketMetadata,
+  ItemSummary,
 } from '../__generated__/resolvers-types';
 import config from '../config';
 import { DateTime } from 'luxon';
@@ -16,6 +17,7 @@ export interface IPocketMetadataDataSource {
   matcher: RegExp;
   ttl: number; // The ttl of the data in seconds
   source: PocketMetadataSource;
+  version: number; // the version of the source parser
   derivePocketMetadata(
     item: Item,
     fallbackParserPocketMetadata: PocketMetadata,
@@ -36,7 +38,7 @@ export class PocketMetadataModel {
     refresh: boolean,
   ): Promise<PocketMetadata> {
     const url = item.givenUrl; // the url we are going to key everything on.
-    const fallbackParserPocketMetadata: PocketMetadata = {
+    const fallbackParserPocketMetadata: ItemSummary = {
       id: item.id,
       image: item.topImage ?? item.images?.[0],
       excerpt: item.excerpt,
@@ -50,7 +52,7 @@ export class PocketMetadataModel {
         : null,
       url: url,
       source: PocketMetadataSource.PocketParser,
-      item,
+      __typename: 'ItemSummary',
     };
 
     // First we filter to our sources.
@@ -67,7 +69,11 @@ export class PocketMetadataModel {
     const source = sources[0];
 
     if (!refresh) {
-      const storedSummary = await this.getPocketMetadata(url);
+      const storedSummary = await this.getPocketMetadata(
+        url,
+        source.version,
+        source.source,
+      );
       // we need to ensure the stored source we pulled out of the dynamodb matches the one we are looking
       // for in case 2 sites are used by multipe sources or an older less specific source
       // TODO: In the future we should probably do a more specific select of the dynamodb data
@@ -84,7 +90,11 @@ export class PocketMetadataModel {
     if (newPocketMetadata == null) return fallbackParserPocketMetadata;
 
     // specifically we do not await this, so its a non-blocking call.
-    await this.savePocketMetadata(newPocketMetadata, source.ttl);
+    await this.savePocketMetadata(
+      newPocketMetadata,
+      source.ttl,
+      source.version,
+    );
 
     return { ...newPocketMetadata, item };
   }
@@ -92,7 +102,10 @@ export class PocketMetadataModel {
   /**
    * Convert input to DynamoDB entity
    */
-  toEntity(pocketMetadata: PocketMetadata): PocketMetadataEntity {
+  toEntity(
+    pocketMetadata: PocketMetadata & { __typename?: string },
+    version: number,
+  ): PocketMetadataEntity {
     let date = pocketMetadata.datePublished;
     if (date instanceof Date) {
       date = Math.round(date.getTime() / 1000);
@@ -100,16 +113,10 @@ export class PocketMetadataModel {
     // We are explicit instead of using a spread so we don't save more data then we need.
     return {
       ...pocketMetadata,
-      // unset the item object before saving
-      item: undefined,
-      authors: pocketMetadata.authors,
-      // Source is a reserved keyword in dynamodb so we need to remap it.
-      dataSource: pocketMetadata.source,
+      __typename: pocketMetadata.__typename ?? 'Unknown',
+      version,
       // we manually set the date cause we cant store a js date in dynamodb
       datePublished: date, // time in ms
-      // Domain is a reserved keyword in dynamodb so we need to remap it.
-      domainMetadata: pocketMetadata.domain,
-      itemUrl: pocketMetadata.url,
       urlHash: md5(pocketMetadata.url),
       createdAt: Math.round(Date.now() / 1000),
     };
@@ -120,9 +127,6 @@ export class PocketMetadataModel {
   fromEntity(entity: PocketMetadataEntity): PocketMetadata {
     return {
       ...entity,
-      domain: entity.domainMetadata,
-      url: entity.itemUrl,
-      source: entity.dataSource,
       datePublished: entity.datePublished
         ? DateTime.fromSeconds(entity.datePublished).toJSDate()
         : null,
@@ -138,8 +142,9 @@ export class PocketMetadataModel {
   async savePocketMetadata(
     pocketMetadata: PocketMetadata,
     ttl: number,
+    version: number,
   ): Promise<PocketMetadata> {
-    const input = this.toEntity(pocketMetadata);
+    const input = this.toEntity(pocketMetadata, version);
     const res = await this.db.storePocketMetadata(input, ttl);
     if (res instanceof Error) {
       throw res;
@@ -153,8 +158,16 @@ export class PocketMetadataModel {
    * @returns the data that was saved to the store or null
    * @throws internal server error if summary could not be fetched
    */
-  async getPocketMetadata(resolvedUrl: string): Promise<PocketMetadata | null> {
-    const res = await this.db.getStoredPocketMetadata(resolvedUrl);
+  async getPocketMetadata(
+    resolvedUrl: string,
+    version: number,
+    source: PocketMetadataSource,
+  ): Promise<PocketMetadata | null> {
+    const res = await this.db.getStoredPocketMetadata(
+      resolvedUrl,
+      version,
+      source,
+    );
     if (res instanceof Error) {
       throw res;
     }

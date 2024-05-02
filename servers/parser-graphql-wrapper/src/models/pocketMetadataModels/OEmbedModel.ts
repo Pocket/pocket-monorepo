@@ -15,6 +15,7 @@ export class OEmbedModel implements IPocketMetadataDataSource {
   matcher = /^(.*\b(tiktok\.com|ted\.com)\b).*$/;
   ttl = 7 * 60 * 60 * 24; // 7 days of ttl cache
   source = PocketMetadataSource.Oembed;
+  version = 1;
 
   async derivePocketMetadata(
     item: Item,
@@ -44,6 +45,7 @@ export class OEmbedModel implements IPocketMetadataDataSource {
     }
 
     return {
+      __typename: 'OEmbed',
       source: PocketMetadataSource.Oembed,
       authors: result.author_name
         ? [{ name: result.author_name, url: result.author_url, id: '1' }]

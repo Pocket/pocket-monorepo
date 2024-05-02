@@ -17,6 +17,7 @@ export class OpenGraphModel implements IPocketMetadataDataSource {
   matcher = /^(?!.*\b(youtube\.com|reddit\.com)\b).*$/;
   ttl = 7 * 60 * 60 * 24; // 7 days of ttl cache
   source = PocketMetadataSource.Opengraph;
+  version = 1;
 
   async derivePocketMetadata(
     item: Item,
@@ -63,6 +64,7 @@ export class OpenGraphModel implements IPocketMetadataDataSource {
     // We return a parital object that is expanded into the main ItemSummary object populated with Item data.
     // We use undefined because that will make the root object default to Item data when not existant
     return {
+      __typename: 'ItemSummary',
       source: PocketMetadataSource.Opengraph,
       title: result.ogTitle ?? undefined,
       image: firstImage

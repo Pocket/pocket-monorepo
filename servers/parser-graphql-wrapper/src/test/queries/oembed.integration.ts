@@ -14,7 +14,10 @@ import { DB } from '../../__generated__/readitlab';
 import { conn as readitlabInit } from '../../databases/readitlab';
 import { conn as sharesInit } from '../../databases/readitlaShares';
 import { clearDynamoDB, dynamoClient } from '../../datasources/dynamoClient';
-import { ItemSummaryDataStoreBase } from '../../databases/pocketMetadataStore';
+import {
+  ItemSummaryDataStoreBase,
+  PocketMetadataEntity,
+} from '../../databases/pocketMetadataStore';
 import md5 from 'md5';
 import {
   OEmbedType,
@@ -218,15 +221,17 @@ describe('oembedPreview', () => {
     await new ItemSummaryDataStoreBase(dynamoClient()).storePocketMetadata(
       {
         id: 'id',
-        itemUrl: testUrl,
+        url: testUrl,
         urlHash: md5(testUrl),
         datePublished: null,
         title: 'the saved data',
-        dataSource: PocketMetadataSource.Oembed,
+        source: PocketMetadataSource.Oembed,
         createdAt: Math.round(Date.now() / 1000),
         htmlEmbed: 'html embed',
         type: OEmbedType.Video,
-      },
+        __typename: 'OEmbed',
+        version: 1,
+      } as unknown as PocketMetadataEntity,
       3600,
     );
 
@@ -248,6 +253,61 @@ describe('oembedPreview', () => {
           title: 'the saved data',
           datePublished: null,
           domain: null,
+        },
+      },
+    });
+  });
+
+  it('does not use cached dynamodb data if it is a different version', async () => {
+    nockResponseForParser(testUrl, {
+      data: {
+        item_id: parserItemId,
+        given_url: testUrl,
+        normal_url: testUrl,
+        title: 'parser test',
+        authors: [],
+        images: [],
+        videos: [],
+        resolved_id: '16822',
+        excerpt: null,
+        domainMetadata: null,
+        topImageUrl: null,
+      },
+    });
+
+    await new ItemSummaryDataStoreBase(dynamoClient()).storePocketMetadata(
+      {
+        id: 'id',
+        url: testUrl,
+        urlHash: md5(testUrl),
+        datePublished: null,
+        title: 'the saved data',
+        source: PocketMetadataSource.Oembed,
+        createdAt: Math.round(Date.now() / 1000),
+        htmlEmbed: 'html embed',
+        type: OEmbedType.Video,
+        __typename: 'OEmbed',
+        version: 200,
+      } as unknown as PocketMetadataEntity,
+      3600,
+    );
+
+    const variables = {
+      url: testUrl,
+    };
+    const res = await request(app)
+      .post(graphQLUrl)
+      .send({ query: print(GET_PREVIEW), variables });
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data).toEqual({
+      itemByUrl: {
+        preview: {
+          ...defaultExpected,
+          source: PocketMetadataSource.PocketParser,
+          id: 'encodedId_202cb962ac59075b964b07152d234b70',
+          title: 'parser test',
+          datePublished: '2022-06-29T20:14:49.000Z',
+          domain: { logo: null, name: 'tiktok.com' },
         },
       },
     });

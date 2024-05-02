@@ -128,12 +128,15 @@ export const resolvers: Resolvers = {
     },
     preview: async (parent, args, context, info) => {
       // If the field was requested via refreshArticle we need to clear the cache before we request data
+      // TODO: see if we can look at the root top level instead.
       const clearCache = info.path.prev.key == 'refreshItemArticle';
-      return context.dataSources.pocketMetadataModel.derivePocketMetadata(
-        parent,
-        context,
-        clearCache,
-      );
+      const preview =
+        await context.dataSources.pocketMetadataModel.derivePocketMetadata(
+          parent,
+          context,
+          clearCache,
+        );
+      return { ...preview, item: parent };
     },
   },
   MarticleComponent: {
@@ -213,10 +216,7 @@ export const resolvers: Resolvers = {
   PocketMetadata: {
     __resolveType(parent) {
       // Note when a new type is added we need to add it here.
-      if ('htmlEmbed' in parent) {
-        return 'OEmbed';
-      }
-      return 'ItemSummary';
+      return parent.__typename;
     },
   },
   PocketShare: {
@@ -224,11 +224,14 @@ export const resolvers: Resolvers = {
       const item = await context.dataSources.parserAPI.getItemData(
         parent.targetUrl,
       );
-      return await context.dataSources.pocketMetadataModel.derivePocketMetadata(
-        item,
-        context,
-        false,
-      );
+
+      const preview =
+        await context.dataSources.pocketMetadataModel.derivePocketMetadata(
+          item,
+          context,
+          false,
+        );
+      return { ...preview, item };
     },
   },
   Mutation: {

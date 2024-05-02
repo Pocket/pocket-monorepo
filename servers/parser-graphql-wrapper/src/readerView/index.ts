@@ -40,5 +40,5 @@ export async function fallbackPage(
       false,
     );
 
-  return { itemCard };
+  return { itemCard: { ...itemCard, item } };
 }
