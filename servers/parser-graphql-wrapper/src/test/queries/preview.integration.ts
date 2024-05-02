@@ -108,6 +108,7 @@ describe('preview', () => {
 
   beforeEach(async () => {
     jest.resetAllMocks();
+    jest.restoreAllMocks();
     jest.spyOn(unleash, 'unleash').mockReturnValue(mockClient);
     jest.spyOn(IntMask, 'decode').mockReturnValueOnce(123);
     jest.spyOn(IntMask, 'encode').mockReturnValueOnce('encodedId');
