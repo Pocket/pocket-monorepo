@@ -3,7 +3,7 @@ import { DateTime, Settings } from 'luxon';
 import {
   InternalServerError,
   UserInputError,
-} from '../errorHandler/errorHandler';
+} from '../errorHandler/errorHandler.js';
 
 export const isoStringScalar = new GraphQLScalarType({
   name: 'ISOString',

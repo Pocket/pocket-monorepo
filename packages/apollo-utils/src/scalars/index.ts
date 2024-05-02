@@ -1,2 +1,2 @@
-export { GraphQLValidUrl } from './ValidUrlScalar';
-export { isoStringScalar } from './isoStringScalar';
+export { GraphQLValidUrl } from './ValidUrlScalar.js';
+export { isoStringScalar } from './isoStringScalar.js';

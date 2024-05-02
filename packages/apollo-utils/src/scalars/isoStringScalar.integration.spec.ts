@@ -2,8 +2,8 @@ import { ApolloServer } from '@apollo/server';
 import { ApolloServerPluginUsageReportingDisabled } from '@apollo/server/plugin/disabled';
 import { buildSubgraphSchema } from '@apollo/subgraph';
 import { gql } from 'graphql-tag';
-import { errorHandler } from '../errorHandler/errorHandler';
-import { isoStringScalar } from './isoStringScalar';
+import { errorHandler } from '../errorHandler/errorHandler.js';
+import { isoStringScalar } from './isoStringScalar.js';
 
 const isoUTCDateStr = '2023-02-11T18:39:48.000Z';
 const isoUTCDateObj = new Date(isoUTCDateStr);

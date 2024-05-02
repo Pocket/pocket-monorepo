@@ -1,5 +1,5 @@
 import { ErrorsAreMissesCache } from '@apollo/utils.keyvaluecache';
-import { DataLoaderCacheInterface } from './interface';
+import { DataLoaderCacheInterface } from './interface.js';
 import md5 from 'md5';
 
 /**

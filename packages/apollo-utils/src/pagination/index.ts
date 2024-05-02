@@ -1,2 +1,2 @@
-export { PaginationInput, ValidatedPagination } from './types';
-export { validatePagination } from './validatePagination';
+export { PaginationInput, ValidatedPagination } from './types.js';
+export { validatePagination } from './validatePagination.js';

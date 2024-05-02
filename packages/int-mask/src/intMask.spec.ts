@@ -1,4 +1,4 @@
-import { IntMask } from './intMask';
+import { IntMask } from './intMask.js';
 
 describe('intMask', () => {
   it.each([

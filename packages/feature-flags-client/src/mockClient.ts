@@ -4,8 +4,8 @@ import { EventEmitter } from 'events';
 import {
   EnhancedFeatureInterface,
   FeatureInterface,
-} from 'unleash-client/lib/feature';
-import { Segment } from 'unleash-client/lib/strategy/strategy';
+} from 'unleash-client/lib/feature.js';
+import { Segment } from 'unleash-client/lib/strategy/strategy.js';
 
 /**
  * Create a local unleash client with bootstrapped feature

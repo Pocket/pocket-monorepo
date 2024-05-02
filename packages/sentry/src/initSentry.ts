@@ -1,5 +1,5 @@
-import { NodeOptions } from '@sentry/node/types/types';
 import * as Sentry from '@sentry/node';
+import { NodeOptions } from '@sentry/node';
 import { Application } from 'express';
 
 export const initSentry = (app: Application, options?: NodeOptions) => {

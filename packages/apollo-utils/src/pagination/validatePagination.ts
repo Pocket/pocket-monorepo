@@ -1,5 +1,5 @@
-import { UserInputError } from '../errorHandler/errorHandler';
-import { PaginationInput, ValidatedPagination } from './types';
+import { UserInputError } from '../errorHandler/errorHandler.js';
+import { PaginationInput, ValidatedPagination } from './types.js';
 
 export function validatePagination(
   pagination: PaginationInput | null | undefined,

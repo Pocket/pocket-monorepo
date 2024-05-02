@@ -6,6 +6,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/index.mjs",
+  "type": "module",
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "dev": "pnpm run build --watch",

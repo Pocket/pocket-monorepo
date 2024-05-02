@@ -1,5 +1,5 @@
 import nock, { cleanAll } from 'nock';
-import { fetchParameter, fetchSecret } from './secrets';
+import { fetchParameter, fetchSecret } from './secrets.js';
 
 describe('lambda secrets', () => {
   const secretName = 'Lambda/Super/Secret';

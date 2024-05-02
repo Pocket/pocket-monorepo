@@ -12,20 +12,25 @@ import {
   DiagLogger,
   diag,
 } from '@opentelemetry/api';
-import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
+import {
+  ExpressInstrumentation,
+  ExpressLayerType,
+} from '@opentelemetry/instrumentation-express';
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 import { KnexInstrumentation } from '@opentelemetry/instrumentation-knex';
 import { MySQL2Instrumentation } from '@opentelemetry/instrumentation-mysql2';
 import { NetInstrumentation } from '@opentelemetry/instrumentation-net';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
 import { Resource } from '@opentelemetry/resources';
-import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+import {
+  SEMRESATTRS_SERVICE_NAME,
+  SEMRESATTRS_SERVICE_VERSION,
+} from '@opentelemetry/semantic-conventions';
 
 import {
   ParentBasedSampler,
   TraceIdRatioBasedSampler,
 } from '@opentelemetry/sdk-trace-node';
-import { ExpressLayerType } from '@opentelemetry/instrumentation-express/build/src/enums/ExpressLayerType';
 
 export type TracingConfig = {
   serviceName: string;
@@ -67,8 +72,8 @@ export async function nodeSDKBuilder(config: TracingConfig) {
 
   const _resource = Resource.default().merge(
     new Resource({
-      [SemanticResourceAttributes.SERVICE_NAME]: config.serviceName,
-      [SemanticResourceAttributes.SERVICE_VERSION]: config.release,
+      [SEMRESATTRS_SERVICE_NAME]: config.serviceName,
+      [SEMRESATTRS_SERVICE_VERSION]: config.release,
     }),
   );
 

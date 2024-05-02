@@ -1,1 +1,1 @@
-export * from './intMask';
+export * from './intMask.js';

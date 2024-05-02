@@ -1,8 +1,8 @@
 import {
   DataLoaderCacheInterface,
   KeyValueCacheSetOptions,
-} from './cache/interface';
-import * as dataloader from './dataloader';
+} from './cache/interface.js';
+import * as dataloader from './dataloader.js';
 
 class FakeCache implements DataLoaderCacheInterface {
   get(key: string): Promise<string | undefined> {

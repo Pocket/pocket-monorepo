@@ -1,4 +1,4 @@
-import { DataLoaderCacheInterface } from './cache/interface';
+import { DataLoaderCacheInterface } from './cache/interface.js';
 
 export type BatchFnProps<T, U> = {
   /**

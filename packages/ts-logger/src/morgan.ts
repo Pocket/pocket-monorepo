@@ -1,5 +1,5 @@
 import type { Logger } from 'winston';
-import { createLogger } from './logger';
+import { createLogger } from './logger.js';
 import morgan, { token } from 'morgan';
 import type { StreamOptions } from 'morgan';
 

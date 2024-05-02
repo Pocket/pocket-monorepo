@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 import { Kind } from 'graphql';
-import { isoStringScalar } from './isoStringScalar';
+import { isoStringScalar } from './isoStringScalar.js';
 
 const isoESTDateStr = '2023-02-11T13:39:48.000-05:00';
 const isoESTDateObj = new Date(isoESTDateStr);

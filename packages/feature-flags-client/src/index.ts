@@ -1,6 +1,6 @@
 import { initialize, Unleash, UnleashConfig } from 'unleash-client';
 import { serverLogger } from '@pocket-tools/ts-logger';
-export { mockUnleash } from './mockClient';
+export { mockUnleash } from './mockClient.js';
 
 /*
  * Create and return an Unleash client instance (global).
