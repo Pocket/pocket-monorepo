@@ -107,8 +107,8 @@ describe('preview', () => {
   });
 
   beforeEach(async () => {
+    jest.resetAllMocks();
     jest.spyOn(unleash, 'unleash').mockReturnValue(mockClient);
-    jest.clearAllMocks();
     jest.spyOn(IntMask, 'decode').mockReturnValueOnce(123);
     jest.spyOn(IntMask, 'encode').mockReturnValueOnce('encodedId');
     // flush the redis cache
