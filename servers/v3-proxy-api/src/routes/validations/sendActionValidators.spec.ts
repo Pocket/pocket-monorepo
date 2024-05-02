@@ -2,6 +2,7 @@ import {
   ItemActionSanitizer,
   ItemAddActionSanitizer,
   ItemTagActionSanitizer,
+  SaveSearchActionSanitizer,
   TagDeleteActionSanitizer,
   TagRenameActionSanitizer,
 } from './SendActionValidators';
@@ -758,6 +759,72 @@ describe('send validator', () => {
       expect.assertions(1);
       try {
         new ItemAddActionSanitizer(input).validate();
+      } catch (err) {
+        expect(err.message).toContain(error);
+      }
+    });
+  });
+  describe('for save recent search action', () => {
+    it.each([
+      {
+        input: {
+          search: 'recipe',
+          action: 'recent_search' as const,
+        },
+        expected: {
+          term: 'recipe',
+          action: 'recent_search',
+          time: now,
+        },
+      },
+      // Optional time field
+      {
+        input: {
+          search: 'tofu',
+          action: 'recent_search' as const,
+          time: '192392329',
+        },
+        expected: {
+          term: 'tofu',
+          action: 'recent_search' as const,
+          time: 192392329,
+        },
+      },
+      // Ignores additional input
+      {
+        input: {
+          item_id: '12345', // unused
+          search: 'collards',
+          action: 'recent_search' as const,
+        },
+        expected: {
+          term: 'collards',
+          action: 'recent_search',
+          time: now,
+        },
+      },
+    ])('sanitizes valid input', ({ input, expected }) => {
+      const res = new SaveSearchActionSanitizer(input).validate();
+      expect(res).toEqual(expected);
+    });
+    it.each([
+      {
+        input: {
+          action: 'recent_search' as const,
+        },
+        error: 'Action must have non-empty search field',
+      },
+      {
+        input: {
+          action: 'recent_search' as const,
+          search: '',
+        },
+        error: 'Action must have non-empty search field',
+      },
+    ])('throws error for invalid input', ({ input, error }) => {
+      expect.assertions(1);
+      try {
+        new SaveSearchActionSanitizer(input).validate();
       } catch (err) {
         expect(err.message).toContain(error);
       }

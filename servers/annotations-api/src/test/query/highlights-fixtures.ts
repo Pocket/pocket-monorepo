@@ -78,10 +78,23 @@ export const seedData = (now) => ({
       updated_at: now,
       created_at: now,
     },
+    {
+      annotation_id: '4d27b61e-bc6b-4de7-92f3-5214d6eb2741',
+      user_id: 5,
+      item_id: 2,
+      quote:
+        'Basically, when hardware performance has been pushed to its final limit, and programmers have had several centuries to code, you reach a point where there is far more signicant code than can be rationalized',
+      version: 0,
+      patch: undefined,
+      status: 1,
+      updated_at: now,
+      created_at: now,
+    },
   ],
   list: [
     { item_id: 1, user_id: 1, time_updated: now, api_id_updated: 0 },
     { item_id: 2, user_id: 1, time_updated: now, api_id_updated: 0 },
     { item_id: 3, user_id: 1, time_updated: now, api_id_updated: 0 }, // no highlights
+    { item_id: 2, user_id: 5, time_updated: now, api_id_updated: 0 },
   ],
 });

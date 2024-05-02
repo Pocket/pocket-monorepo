@@ -12,6 +12,7 @@ extend schema
 
 scalar Url
 scalar FunctionalBoostValue
+scalar ISOString
 
 """
 An index item can be in one of these states
@@ -415,4 +416,22 @@ type SavedItemSearchResult {
 type SavedItem @key(fields: "id") {
   "key field to identify the SavedItem entity in the ListAPI service"
   id: ID!
+}
+
+input RecentSearchInput {
+  """The term that was used for search"""
+  term: String!
+  """
+  Optional, the time the search was performed. 
+  Defaults to current server time at time of request.
+  """
+  timestamp: ISOString
+}
+
+type Mutation {
+  """
+  Save search to potentially appear in recentSearches response.
+  Requires premium account (otherwise will send ForbiddenError).
+  """
+  saveSearch(search: RecentSearchInput!): RecentSearch
 }

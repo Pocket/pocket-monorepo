@@ -4,6 +4,7 @@ import {
   ItemAction,
   ItemAddAction,
   ItemTagAction,
+  SaveSearchAction,
   SendAction,
   TagDeleteAction,
   TagRenameAction,
@@ -56,6 +57,9 @@ import {
   ReplaceTagsMutation,
   ReplaceTagsMutationVariables,
   SavedItemUpsertInput,
+  SaveSearchDocument,
+  SaveSearchMutation,
+  SaveSearchMutationVariables,
   UnFavoriteSavedItemByIdDocument,
   UnFavoriteSavedItemByIdMutation,
   UnFavoriteSavedItemByIdMutationVariables,
@@ -503,6 +507,27 @@ export class ActionsRouter {
     };
     await this.client.request<DeleteTagMutation, DeleteTagMutationVariables>(
       DeleteTagDocument,
+      variables,
+    );
+    return true;
+  }
+  /**
+   * Process the 'recent_search' action from a batch of actions sent to /v3/send.
+   * The actions should be validated and sanitized before this is invoked.
+   *
+   * See `ActionsRouter.archive` for more detailed docstring (same pattern).
+   * @returns true (operation is successful unless error is thrown)
+   * @throws ClientError if operation fails
+   */
+  private async recent_search(input: SaveSearchAction) {
+    const variables: SaveSearchMutationVariables = {
+      search: {
+        term: input.term,
+        timestamp: epochSecondsToISOString(input.time),
+      },
+    };
+    await this.client.request<SaveSearchMutation, SaveSearchMutationVariables>(
+      SaveSearchDocument,
       variables,
     );
     return true;

@@ -401,7 +401,7 @@ export class HighlightsDataService {
     return {
       id: entity.annotation_id,
       quote: entity.quote,
-      patch: entity.patch,
+      patch: entity.patch ?? '',
       version: entity.version,
       _createdAt: entity.created_at.getTime() / 1000,
       _updatedAt: entity.updated_at.getTime() / 1000,
