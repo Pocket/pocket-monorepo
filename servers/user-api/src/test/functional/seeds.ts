@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
-import { db } from '../../types';
-import { writeClient as conn } from '../../database/client';
-import config from '../../config';
+import { db } from '../../types/index.js';
+import { writeClient as conn } from '../../database/client.js';
+import config from '../../config/index.js';
 
 export async function truncatePiiTables() {
   const allTables = Object.entries(config.database.userPIITables).flatMap(

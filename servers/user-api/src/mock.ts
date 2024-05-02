@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { getSchemaFile } from './typeDefs';
+import { getSchemaFile } from './typeDefs.js';
 
 /**
  * Define mocks for the schema

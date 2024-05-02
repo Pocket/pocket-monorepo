@@ -1,10 +1,10 @@
 import { gql } from 'graphql-tag';
-import { readClient, writeClient } from '../../database/client';
-import { UserDataService } from '../../dataService/userDataService';
-import { startServer } from '../../apollo';
+import { readClient, writeClient } from '../../database/client.js';
+import { UserDataService } from '../../dataService/userDataService.js';
+import { startServer } from '../../apollo.js';
 import { print } from 'graphql';
 import request from 'supertest';
-import { UserFirefoxAccountSeed, UserProfileSeed, UserSeed } from './seeds';
+import { UserFirefoxAccountSeed, UserProfileSeed, UserSeed } from './seeds.js';
 
 describe('Context manager', () => {
   const readDb = readClient();

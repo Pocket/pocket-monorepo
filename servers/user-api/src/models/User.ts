@@ -1,8 +1,12 @@
 import DataLoader from 'dataloader';
-import { UserDataService } from '../dataService/userDataService';
-import { IContext } from '../context';
-import { EventType } from '../events/eventType';
-import { User, UserProfile, ExpireUserWebSessionReason } from '../types';
+import { UserDataService } from '../dataService/userDataService.js';
+import { IContext } from '../context.js';
+import { EventType } from '../events/eventType.js';
+import {
+  User,
+  UserProfile,
+  ExpireUserWebSessionReason,
+} from '../types/index.js';
 import { IntMask } from '@pocket-tools/int-mask';
 
 // The Entity corresponding to GraphQL Schema

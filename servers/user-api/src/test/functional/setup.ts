@@ -4,7 +4,7 @@ import {
   UsersMetaSeed,
   UserFirefoxAccountSeed,
   UserProfileSeed,
-} from './seeds';
+} from './seeds.js';
 
 /**
  * Helper function to seed data for testing update email mutations

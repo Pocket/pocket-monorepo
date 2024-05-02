@@ -6,10 +6,10 @@ import {
   PutEventsCommand,
   PutEventsCommandOutput,
 } from '@aws-sdk/client-eventbridge';
-import config from '../../config';
-import { eventMap } from './config';
-import { EventHandlerInterface } from '../interfaces';
-import { EventHandlerCallbackMap } from './types';
+import config from '../../config/index.js';
+import { eventMap } from './config.js';
+import { EventHandlerInterface } from '../interfaces.js';
+import { EventHandlerCallbackMap } from './types.js';
 
 /**
  * This class MUST be initialized using the EventBusHandler.init() method.

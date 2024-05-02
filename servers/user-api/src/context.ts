@@ -1,14 +1,14 @@
 import { IncomingHttpHeaders } from 'http';
 import { Knex } from 'knex';
-import { UserEventEmitter } from './events/userEventEmitter';
+import { UserEventEmitter } from './events/userEventEmitter.js';
 import {
   BasicUserEventPayloadWithContext,
   EventType,
   UserForEvent,
-} from './events/eventType';
+} from './events/eventType.js';
 import { IntMask } from '@pocket-tools/int-mask';
-import { UserDataService } from './dataService/userDataService';
-import { UserModel } from './models/User';
+import { UserDataService } from './dataService/userDataService.js';
+import { UserModel } from './models/User.js';
 import { NotFoundError } from '@pocket-tools/apollo-utils';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import * as Sentry from '@sentry/node';

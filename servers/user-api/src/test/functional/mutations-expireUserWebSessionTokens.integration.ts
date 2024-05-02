@@ -1,10 +1,10 @@
-import { readClient, writeClient } from '../../database/client';
-import { ExpireUserWebSessionReason } from '../../types';
+import { readClient, writeClient } from '../../database/client.js';
+import { ExpireUserWebSessionReason } from '../../types/index.js';
 import { gql } from 'graphql-tag';
-import { startServer } from '../../apollo';
+import { startServer } from '../../apollo.js';
 import request from 'supertest';
 import { print } from 'graphql';
-import { UserFirefoxAccountSeed } from './seeds';
+import { UserFirefoxAccountSeed } from './seeds.js';
 
 describe('Expire user web session tokens mutation', () => {
   const readDb = readClient();

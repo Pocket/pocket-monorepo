@@ -1,9 +1,9 @@
-import { BasicUserEventPayloadWithContext, EventType } from '../eventType';
+import { BasicUserEventPayloadWithContext, EventType } from '../eventType.js';
 import {
   UserEventsPayload,
   EventBridgeEventType,
   EventHandlerCallbackMap,
-} from './types';
+} from './types.js';
 
 /**
  * Mapping for events

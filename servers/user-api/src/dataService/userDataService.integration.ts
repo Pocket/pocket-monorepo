@@ -1,8 +1,8 @@
 import { NotFoundError } from '@pocket-tools/apollo-utils';
-import { IContext } from '../context';
-import { readClient, writeClient } from '../database/client';
-import { UserDataService } from './userDataService';
-import { UserFirefoxAccountSeed } from '../test/functional/seeds';
+import { IContext } from '../context.js';
+import { readClient, writeClient } from '../database/client.js';
+import { UserDataService } from './userDataService.js';
+import { UserFirefoxAccountSeed } from '../test/functional/seeds.js';
 
 describe('userDataService', () => {
   const readDb = readClient();

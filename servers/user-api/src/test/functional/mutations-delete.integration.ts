@@ -1,13 +1,13 @@
-import { readClient, writeClient } from '../../database/client';
+import { readClient, writeClient } from '../../database/client.js';
 import { gql } from 'graphql-tag';
-import { userEventEmitter } from '../../events/init';
-import { EventType } from '../../events/eventType';
-import config from '../../config';
-import { startServer } from '../../apollo';
+import { userEventEmitter } from '../../events/init.js';
+import { EventType } from '../../events/eventType.js';
+import config from '../../config/index.js';
+import { startServer } from '../../apollo.js';
 import request from 'supertest';
 import { print } from 'graphql';
-import { PiiTableSeed, truncatePiiTables } from './seeds';
-import { IContext } from '../../context';
+import { PiiTableSeed, truncatePiiTables } from './seeds.js';
+import { IContext } from '../../context.js';
 import { ApolloServer } from '@apollo/server';
 import { Application } from 'express';
 

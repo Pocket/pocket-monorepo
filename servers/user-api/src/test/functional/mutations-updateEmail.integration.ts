@@ -1,16 +1,16 @@
-import * as setup from './setup';
-import { readClient, writeClient } from '../../database/client';
+import * as setup from './setup.js';
+import { readClient, writeClient } from '../../database/client.js';
 import { gql } from 'graphql-tag';
 import { IntMask } from '@pocket-tools/int-mask';
-import { UserDataService } from '../../dataService/userDataService';
-import { startServer } from '../../apollo';
+import { UserDataService } from '../../dataService/userDataService.js';
+import { startServer } from '../../apollo.js';
 import request from 'supertest';
 import { print } from 'graphql';
-import * as utils from '../../utils/email';
-import { IContext } from '../../context';
+import * as utils from '../../utils/email.js';
+import { IContext } from '../../context.js';
 import { ApolloServer } from '@apollo/server';
-import { EventType } from '../../events/eventType';
-import { userEventEmitter } from '../../events/init';
+import { EventType } from '../../events/eventType.js';
+import { userEventEmitter } from '../../events/init.js';
 import { Application } from 'express';
 
 describe('updateUserEmailByFxaId Mutation test', () => {

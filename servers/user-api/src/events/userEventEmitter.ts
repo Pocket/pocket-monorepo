@@ -3,8 +3,8 @@ import {
   BasicUserEventPayloadWithContext,
   EventType,
   UserEventPayload,
-} from './eventType';
-import { EventHandlerInterface } from './interfaces';
+} from './eventType.js';
+import { EventHandlerInterface } from './interfaces.js';
 
 export class UserEventEmitter extends EventEmitter {
   /**

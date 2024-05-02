@@ -1,7 +1,7 @@
-import { IContext } from '../context';
-import { resolvers } from './index';
+import { IContext } from '../context.js';
+import { resolvers } from './index.js';
 import { ForbiddenError } from '@pocket-tools/apollo-utils';
-import { UserModel } from '../models/User';
+import { UserModel } from '../models/User.js';
 import { mockRequest } from 'jest-mock-req-res';
 
 describe('tests for context factory initialization', () => {

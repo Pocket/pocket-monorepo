@@ -1,12 +1,12 @@
 import { mockRequest } from 'jest-mock-req-res';
-import { IContext, ContextFactory } from './context';
-import { UserEventEmitter } from './events/userEventEmitter';
+import { IContext, ContextFactory } from './context.js';
+import { UserEventEmitter } from './events/userEventEmitter.js';
 import {
   BasicUserEventPayloadWithContext,
   EventType,
-} from './events/eventType';
+} from './events/eventType.js';
 import knex, { Knex } from 'knex';
-import { UserDataService } from './dataService/userDataService';
+import { UserDataService } from './dataService/userDataService.js';
 
 describe('tests for context factory initialization', () => {
   afterEach(() => {

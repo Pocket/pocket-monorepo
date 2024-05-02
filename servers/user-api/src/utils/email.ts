@@ -1,6 +1,6 @@
 import { UserInputError } from '@pocket-tools/apollo-utils';
 import crypto from 'crypto';
-import config from '../config';
+import config from '../config/index.js';
 /**
  * Validate and normalize an email address to be inserted into the DB
  * @param email the updated email address. Should be validated

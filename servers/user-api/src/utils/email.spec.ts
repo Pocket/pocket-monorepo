@@ -1,5 +1,5 @@
 import { UserInputError } from '@pocket-tools/apollo-utils';
-import { contactHash, normalizeEmail } from './email';
+import { contactHash, normalizeEmail } from './email.js';
 
 describe('Email functions - ', () => {
   describe('normalizeEmail', () => {

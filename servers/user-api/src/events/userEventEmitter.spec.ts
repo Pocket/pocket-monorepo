@@ -1,5 +1,5 @@
-import { UserEventEmitter } from './userEventEmitter';
-import { BasicUserEventPayloadWithContext, EventType } from './eventType';
+import { UserEventEmitter } from './userEventEmitter.js';
+import { BasicUserEventPayloadWithContext, EventType } from './eventType.js';
 
 describe('UserEventEmitter', () => {
   const emitter = new UserEventEmitter();

@@ -1,13 +1,13 @@
 import { Knex } from 'knex';
-import { IContext } from '../context';
-import { User } from '../types';
+import { IContext } from '../context.js';
+import { User } from '../types/index.js';
 import * as Sentry from '@sentry/node';
 import { NotFoundError } from '@pocket-tools/apollo-utils';
-import { normalizeEmail, contactHash } from '../utils/email';
-import { getUnixTimestamp } from '../utils/unixTimestamp';
+import { normalizeEmail, contactHash } from '../utils/email.js';
+import { getUnixTimestamp } from '../utils/unixTimestamp.js';
 import { DateTime } from 'luxon';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import config from '../config';
+import config from '../config/index.js';
 
 /** Database constants for some lookups; inferred from web repo */
 const constants = {

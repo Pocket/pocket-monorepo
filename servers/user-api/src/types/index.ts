@@ -1,4 +1,4 @@
-export * as db from './database';
+export * as db from './database.js';
 
 // The User Profile model
 // Corresponds to user_profile table

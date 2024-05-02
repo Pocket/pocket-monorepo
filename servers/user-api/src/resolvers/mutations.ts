@@ -1,9 +1,9 @@
-import { IContext } from '../context';
-import { UserModel } from '../models/User';
+import { IContext } from '../context.js';
+import { UserModel } from '../models/User.js';
 import { ForbiddenError } from '@pocket-tools/apollo-utils';
-import { UserDataService } from '../dataService/userDataService';
-import { ExpireUserWebSessionReason } from '../types';
-import { EventType } from '../events/eventType';
+import { UserDataService } from '../dataService/userDataService.js';
+import { ExpireUserWebSessionReason } from '../types/index.js';
+import { EventType } from '../events/eventType.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 const blockedUsersFromDeletion = ['8008162'];

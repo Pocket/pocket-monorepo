@@ -1,11 +1,11 @@
 import * as Sentry from '@sentry/node';
 import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
-import config from '../../config';
+import config from '../../config/index.js';
 import { setTimeout } from 'timers/promises';
 import EventEmitter from 'events';
-import { EventType } from '../eventType';
-import { UserEventsPayload, EventBridgeEventType } from './types';
-import { EventBusHandler } from './eventBusHandler';
+import { EventType } from '../eventType.js';
+import { UserEventsPayload, EventBridgeEventType } from './types.js';
+import { EventBusHandler } from './eventBusHandler.js';
 
 /**
  * Mock event payload

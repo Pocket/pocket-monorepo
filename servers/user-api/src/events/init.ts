@@ -1,5 +1,5 @@
-import { UserEventEmitter } from './userEventEmitter';
-import { EventBusHandler } from './eventBus/eventBusHandler';
+import { UserEventEmitter } from './userEventEmitter.js';
+import { EventBusHandler } from './eventBus/eventBusHandler.js';
 
 export const userEventEmitter = new UserEventEmitter();
 

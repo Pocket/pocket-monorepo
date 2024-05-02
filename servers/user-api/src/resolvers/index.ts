@@ -2,17 +2,17 @@ import {
   PocketDefaultScalars,
   ForbiddenError,
 } from '@pocket-tools/apollo-utils';
-import { IContext } from '../context';
+import { IContext } from '../context.js';
 import {
   deleteUser,
   deleteUserByFxaId,
   migrateAppleUser,
   updateUserEmailByFxaId,
   expireUserWebSessionByFxaId,
-} from './mutations';
-import { PremiumFeature, PremiumStatus, User } from '../types';
-import { UserModel } from '../models/User';
-import { UserDataService } from '../dataService/userDataService';
+} from './mutations.js';
+import { PremiumFeature, PremiumStatus, User } from '../types/index.js';
+import { UserModel } from '../models/User.js';
+import { UserDataService } from '../dataService/userDataService.js';
 
 export const resolvers = {
   ...PocketDefaultScalars,

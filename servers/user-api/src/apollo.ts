@@ -1,11 +1,11 @@
 import * as Sentry from '@sentry/node';
-import config from './config';
+import config from './config/index.js';
 import express, { Application, json } from 'express';
-import { getServer } from './server';
+import { getServer } from './server.js';
 import { expressMiddleware } from '@apollo/server/express4';
-import { ContextFactory } from './context';
-import { readClient, writeClient } from './database/client';
-import { userEventEmitter } from './events/init';
+import { ContextFactory } from './context.js';
+import { readClient, writeClient } from './database/client.js';
+import { userEventEmitter } from './events/init.js';
 import { Server, createServer } from 'http';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 import { sentryPocketMiddleware } from '@pocket-tools/apollo-utils';

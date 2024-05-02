@@ -1,15 +1,15 @@
-import { readClient, writeClient } from '../../database/client';
+import { readClient, writeClient } from '../../database/client.js';
 import { gql } from 'graphql-tag';
-import { UserDataService } from '../../dataService/userDataService';
+import { UserDataService } from '../../dataService/userDataService.js';
 import request from 'supertest';
 import { print } from 'graphql';
-import { startServer } from '../../apollo';
+import { startServer } from '../../apollo.js';
 import {
   OauthUserAccessSeed,
   UserFirefoxAccountSeed,
   UserProfileSeed,
   UserSeed,
-} from './seeds';
+} from './seeds.js';
 
 describe('User', () => {
   const getUserDataSpy: jest.SpyInstance = jest.spyOn(

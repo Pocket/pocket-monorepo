@@ -1,12 +1,12 @@
-import * as setup from './setup';
-import { readClient, writeClient } from '../../database/client';
+import * as setup from './setup.js';
+import { readClient, writeClient } from '../../database/client.js';
 import { gql } from 'graphql-tag';
-import { startServer } from '../../apollo';
+import { startServer } from '../../apollo.js';
 import request from 'supertest';
 import { print } from 'graphql';
-import { UserEventEmitter } from '../../events/userEventEmitter';
-import config from '../../config';
-import { IContext } from '../../context';
+import { UserEventEmitter } from '../../events/userEventEmitter.js';
+import config from '../../config/index.js';
+import { IContext } from '../../context.js';
 import { ApolloServer } from '@apollo/server';
 import { Application } from 'express';
 

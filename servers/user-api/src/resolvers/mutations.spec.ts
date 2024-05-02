@@ -1,6 +1,6 @@
 import { ForbiddenError } from '@pocket-tools/apollo-utils';
-import { IContext } from '../context';
-import { deleteUserByFxaId, updateUserEmailByFxaId } from './mutations';
+import { IContext } from '../context.js';
+import { deleteUserByFxaId, updateUserEmailByFxaId } from './mutations.js';
 describe('Mutations', () => {
   describe('by FxA ID', () => {
     const context: IContext = { fxaUserId: '123' } as unknown as IContext; // just need userId
