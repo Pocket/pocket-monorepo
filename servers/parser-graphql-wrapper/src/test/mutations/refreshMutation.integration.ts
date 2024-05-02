@@ -1,11 +1,11 @@
 import { ApolloServer } from '@apollo/server';
-import { print } from 'graphql/index';
+import { print } from 'graphql/index.js';
 import { gql } from 'graphql-tag';
 import request from 'supertest';
 import { Application } from 'express';
-import { IContext } from '../../apollo/context';
-import { getRedis } from '../../cache';
-import { startServer } from '../../apollo/server';
+import { IContext } from '../../apollo/context.js';
+import { getRedis } from '../../cache/index.js';
+import { startServer } from '../../apollo/server.js';
 import {
   cacheParserResponse,
   fakeArticle,
@@ -13,11 +13,11 @@ import {
   newFakeArticle,
   nockResponseForParser,
   nockThreeStandardParserResponses,
-} from '../utils/parserResponse';
-import { BoolStringParam } from '../../datasources/ParserAPI';
+} from '../utils/parserResponse.js';
+import { BoolStringParam } from '../../datasources/ParserAPI.js';
 import Keyv from 'keyv';
-import { conn as sharesInit } from '../../databases/readitlaShares';
-import { conn as readitlbInit } from '../../databases/readitlab';
+import { conn as sharesInit } from '../../databases/readitlaShares.js';
+import { conn as readitlbInit } from '../../databases/readitlab.js';
 
 describe('refresh mutation', () => {
   const testUrl = 'https://someurl.com';

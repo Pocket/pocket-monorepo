@@ -1,21 +1,25 @@
-import config from '../config';
-import { MarticleElement, parseArticle } from '../marticle/marticleParser';
+import config from '../config/index.js';
+import { MarticleElement, parseArticle } from '../marticle/marticleParser.js';
 import { CacheScope } from '@apollo/cache-control-types';
 import {
   extractCodeFromShortUrl,
   givenUrlFromShareCode,
-} from '../shortUrl/shortUrl';
-import { SSMLModel } from '../models/SSMLModel';
-import { fallbackPage } from '../readerView';
+} from '../shortUrl/shortUrl.js';
+import { SSMLModel } from '../models/SSMLModel.js';
+import { fallbackPage } from '../readerView/index.js';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
-import { Item, Resolvers, Videoness } from '../__generated__/resolvers-types';
-import { BoolStringParam, MediaTypeParam } from '../datasources/ParserAPI';
+import {
+  Item,
+  Resolvers,
+  Videoness,
+} from '../__generated__/resolvers-types.js';
+import { BoolStringParam, MediaTypeParam } from '../datasources/ParserAPI.js';
 import {
   extractSlugFromReadUrl,
   urlFromReaderSlug,
-} from '../readerView/readersSlug';
-import { IContext } from './context';
-import { isInResolverChain } from './utils';
+} from '../readerView/readersSlug.js';
+import { IContext } from './context.js';
+import { isInResolverChain } from './utils.js';
 
 export const resolvers: Resolvers = {
   ...PocketDefaultScalars,

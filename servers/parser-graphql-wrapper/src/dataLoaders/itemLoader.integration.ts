@@ -1,8 +1,8 @@
-import { conn } from '../databases/readitlab';
-import * as itemLoader from './itemLoader';
-import { getRedis } from '../cache';
+import { conn } from '../databases/readitlab.js';
+import * as itemLoader from './itemLoader.js';
+import { getRedis } from '../cache/index.js';
 import { Kysely } from 'kysely';
-import { DB, Generated, ItemsResolver } from '../__generated__/readitlab';
+import { DB, Generated, ItemsResolver } from '../__generated__/readitlab.js';
 
 const urlToParse = 'https://test.com';
 

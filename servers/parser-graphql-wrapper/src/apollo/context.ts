@@ -1,26 +1,27 @@
 import DataLoader from 'dataloader';
-import { itemIdLoader, ItemLoaderType, ShortUrlLoader } from '../dataLoaders';
+import {
+  itemIdLoader,
+  ItemLoaderType,
+  ShortUrlLoader,
+} from '../dataLoaders/index.js';
 import {
   BatchAddShareUrlInput,
   conn as sharesConn,
-} from '../databases/readitlaShares';
-import { conn as readitlabConn } from '../databases/readitlab';
-import { ParserAPI } from '../datasources/ParserAPI';
-import { getRedisCache } from '../cache';
-import { DB as ReaditlabDB } from '../__generated__/readitlab';
-import { DB as SharesDB } from '../__generated__/readitlaShares';
+} from '../databases/readitlaShares.js';
+import { conn as readitlabConn } from '../databases/readitlab.js';
+import { ParserAPI } from '../datasources/ParserAPI.js';
+import { getRedisCache } from '../cache/index.js';
+import { DB as ReaditlabDB } from '../__generated__/readitlab.js';
+import { DB as SharesDB } from '../__generated__/readitlaShares.js';
 import { Kysely } from 'kysely';
-import { PocketMetadataModel } from '../models/PocketMetadataModel';
-import { ItemSummaryDataStoreBase } from '../databases/pocketMetadataStore';
-import { dynamoClient } from '../datasources/dynamoClient';
-import { OpenGraphModel } from '../models/pocketMetadataModels/OpenGraphModel';
-import { OEmbedModel } from '../models/pocketMetadataModels/OEmbedModel';
+import { PocketMetadataModel } from '../models/PocketMetadataModel.js';
+import { ItemSummaryDataStoreBase } from '../databases/pocketMetadataStore.js';
+import { dynamoClient } from '../datasources/dynamoClient.js';
+import { OpenGraphModel } from '../models/pocketMetadataModels/OpenGraphModel.js';
+import { OEmbedModel } from '../models/pocketMetadataModels/OEmbedModel.js';
+import { BaseContext } from '@pocket-tools/apollo-utils';
 
-/**
- * Change this to `extends BaseContext` once LegacyDataSourcesPlugin
- * can be deprecated.
- */
-export interface IContext {
+export interface IContext extends BaseContext {
   dataLoaders: {
     itemIdLoader: DataLoader<string, ItemLoaderType>;
     shortUrlLoader: DataLoader<BatchAddShareUrlInput, string>;

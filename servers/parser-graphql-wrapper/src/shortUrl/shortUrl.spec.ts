@@ -4,8 +4,8 @@ import {
   getShortUrl,
   shareUrl,
   extractCodeFromShortUrl,
-} from './shortUrl';
-import config from '../config';
+} from './shortUrl.js';
+import config from '../config/index.js';
 
 describe('ShortUrl', () => {
   let sharedRepo;

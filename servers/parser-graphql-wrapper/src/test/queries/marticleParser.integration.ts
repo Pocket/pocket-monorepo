@@ -7,22 +7,25 @@
  */
 
 import nock, { cleanAll } from 'nock';
-import { getRedis } from '../../cache';
-import { VideoType, Videoness } from '../../__generated__/resolvers-types';
-import { startServer } from '../../apollo/server';
+import { getRedis } from '../../cache/index.js';
+import { VideoType, Videoness } from '../../__generated__/resolvers-types.js';
+import { startServer } from '../../apollo/server.js';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import { print } from 'graphql';
 import { gql } from 'graphql-tag';
-import { IContext } from '../../apollo/context';
+import { IContext } from '../../apollo/context.js';
 import { Application } from 'express';
 import {
   nockResponseForParser,
   videonessToParser,
-} from '../utils/parserResponse';
+} from '../utils/parserResponse.js';
 import { faker } from '@faker-js/faker';
-import { BoolStringParam, MediaTypeParam } from '../../datasources/ParserAPI';
-import config from '../../config';
+import {
+  BoolStringParam,
+  MediaTypeParam,
+} from '../../datasources/ParserAPI.js';
+import config from '../../config/index.js';
 
 function makeResponseForParserTextEndpoint(options: {
   url: string;

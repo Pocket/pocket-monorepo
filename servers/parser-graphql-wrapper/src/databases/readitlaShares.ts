@@ -1,7 +1,7 @@
-import config from '../config';
+import config from '../config/index.js';
 import { Kysely, MysqlDialect } from 'kysely';
 import { createPool } from 'mysql2';
-import { DB, ShareUrls } from '../__generated__/readitlaShares';
+import { DB, ShareUrls } from '../__generated__/readitlaShares.js';
 
 let connection: Kysely<DB>;
 

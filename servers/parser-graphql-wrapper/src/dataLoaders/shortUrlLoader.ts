@@ -1,6 +1,6 @@
 import DataLoader from 'dataloader';
-import { batchGetShortUrl } from '../shortUrl/shortUrl';
-import { BatchAddShareUrlInput, conn } from '../databases/readitlaShares';
+import { batchGetShortUrl } from '../shortUrl/shortUrl.js';
+import { BatchAddShareUrlInput, conn } from '../databases/readitlaShares.js';
 
 const partialBatchGetShortUrls = async (
   inputs: readonly BatchAddShareUrlInput[],

@@ -10,15 +10,16 @@ import {
   errorHandler,
   sentryPocketMiddleware,
 } from '@pocket-tools/apollo-utils';
+
 import { initSentry } from '@pocket-tools/sentry';
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl';
-import { typeDefs } from './typeDefs';
-import { resolvers } from './resolvers';
-import config from '../config';
-import { getRedis, getRedisCache } from '../cache';
-import { ContextManager, IContext } from './context';
+import { typeDefs } from './typeDefs.js';
+import { resolvers } from './resolvers.js';
+import config from '../config/index.js';
+import { getRedis, getRedisCache } from '../cache/index.js';
+import { ContextManager, IContext } from './context.js';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
-import { unleash } from '../unleash';
+import { unleash } from '../unleash.js';
 
 export async function startServer(port: number): Promise<{
   app: Application;

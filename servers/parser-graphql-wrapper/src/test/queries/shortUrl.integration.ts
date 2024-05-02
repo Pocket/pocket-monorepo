@@ -1,22 +1,22 @@
 import { ApolloServer } from '@apollo/server';
-import { IContext } from '../../apollo/context';
-import { startServer } from '../../apollo/server';
-import { getRedis } from '../../cache';
+import { IContext } from '../../apollo/context.js';
+import { startServer } from '../../apollo/server.js';
+import { getRedis } from '../../cache/index.js';
 import { cleanAll } from 'nock';
-import { print } from 'graphql/index';
+import { print } from 'graphql/index.js';
 import { gql } from 'graphql-tag';
 import request from 'supertest';
-import config from '../../config';
+import config from '../../config/index.js';
 import { Application } from 'express';
-import { nockResponseForParser } from '../utils/parserResponse';
+import { nockResponseForParser } from '../utils/parserResponse.js';
 import { Kysely, sql } from 'kysely';
-import { DB as SharesDb } from '../../__generated__/readitlaShares';
-import { DB as ReaditlaDb } from '../../__generated__/readitlab';
+import { DB as SharesDb } from '../../__generated__/readitlaShares.js';
+import { DB as ReaditlaDb } from '../../__generated__/readitlab.js';
 import {
   batchGetShareUrlsById,
   conn as sharesInit,
-} from '../../databases/readitlaShares';
-import { conn as readitlabInit } from '../../databases/readitlab';
+} from '../../databases/readitlaShares.js';
+import { conn as readitlabInit } from '../../databases/readitlab.js';
 
 describe('ShortUrl', () => {
   const testUrl = 'https://someurl.com';

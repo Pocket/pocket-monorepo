@@ -1,28 +1,28 @@
 import { cleanAll } from 'nock';
-import { getRedis } from '../../cache';
-import { startServer } from '../../apollo/server';
+import { getRedis } from '../../cache/index.js';
+import { startServer } from '../../apollo/server.js';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import { print } from 'graphql';
 import { gql } from 'graphql-tag';
-import { IContext } from '../../apollo/context';
+import { IContext } from '../../apollo/context.js';
 import { Application } from 'express';
 import { IntMask } from '@pocket-tools/int-mask';
-import { nockResponseForParser } from '../utils/parserResponse';
+import { nockResponseForParser } from '../utils/parserResponse.js';
 import { Kysely } from 'kysely';
-import { DB } from '../../__generated__/readitlab';
-import { conn as readitlabInit } from '../../databases/readitlab';
-import { conn as sharesInit } from '../../databases/readitlaShares';
-import { clearDynamoDB, dynamoClient } from '../../datasources/dynamoClient';
+import { DB } from '../../__generated__/readitlab.js';
+import { conn as readitlabInit } from '../../databases/readitlab.js';
+import { conn as sharesInit } from '../../databases/readitlaShares.js';
+import { clearDynamoDB, dynamoClient } from '../../datasources/dynamoClient.js';
 import {
   ItemSummaryDataStoreBase,
   PocketMetadataEntity,
-} from '../../databases/pocketMetadataStore';
+} from '../../databases/pocketMetadataStore.js';
 import md5 from 'md5';
 import {
   OEmbedType,
   PocketMetadataSource,
-} from '../../__generated__/resolvers-types';
+} from '../../__generated__/resolvers-types.js';
 import * as oembed from '@extractus/oembed-extractor';
 
 jest.mock('@extractus/oembed-extractor');

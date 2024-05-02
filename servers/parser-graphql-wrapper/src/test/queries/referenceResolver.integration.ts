@@ -1,16 +1,16 @@
 import { ApolloServer } from '@apollo/server';
-import { IContext } from '../../apollo/context';
-import { startServer } from '../../apollo/server';
-import { print } from 'graphql/index';
+import { IContext } from '../../apollo/context.js';
+import { startServer } from '../../apollo/server.js';
+import { print } from 'graphql/index.js';
 import { gql } from 'graphql-tag';
 import request from 'supertest';
 import { Application } from 'express';
-import { nockResponseForParser } from '../utils/parserResponse';
-import { getRedis } from '../../cache';
-import { ParserResponse } from '../../datasources/ParserAPITypes';
+import { nockResponseForParser } from '../utils/parserResponse.js';
+import { getRedis } from '../../cache/index.js';
+import { ParserResponse } from '../../datasources/ParserAPITypes.js';
 import { Kysely } from 'kysely';
-import { DB } from '../../__generated__/readitlab';
-import { conn } from '../../databases/readitlab';
+import { DB } from '../../__generated__/readitlab.js';
+import { conn } from '../../databases/readitlab.js';
 
 describe('referenceResolver', () => {
   const testUrl = 'https://someurl.com';

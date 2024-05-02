@@ -1,16 +1,19 @@
 import { cleanAll } from 'nock';
-import { getRedis } from '../../cache';
-import { startServer } from '../../apollo/server';
+import { getRedis } from '../../cache/index.js';
+import { startServer } from '../../apollo/server.js';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import { print } from 'graphql';
 import { gql } from 'graphql-tag';
-import { IContext } from '../../apollo/context';
+import { IContext } from '../../apollo/context.js';
 import { Application } from 'express';
-import { nockResponseForParser } from '../utils/parserResponse';
-import { BoolStringParam, MediaTypeParam } from '../../datasources/ParserAPI';
-import { conn as readitlabConn } from '../../databases/readitlab';
-import { conn as sharesConn } from '../../databases/readitlaShares';
+import { nockResponseForParser } from '../utils/parserResponse.js';
+import {
+  BoolStringParam,
+  MediaTypeParam,
+} from '../../datasources/ParserAPI.js';
+import { conn as readitlabConn } from '../../databases/readitlab.js';
+import { conn as sharesConn } from '../../databases/readitlaShares.js';
 
 describe('SSML integration ', () => {
   const testUrl = 'https://someurl.com/test';

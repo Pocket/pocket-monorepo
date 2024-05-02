@@ -1,13 +1,13 @@
 import DataLoader from 'dataloader';
 
-import config from '../config';
+import config from '../config/index.js';
 import {
   DataLoaderCacheInterface,
   batchCacheFn,
 } from '@pocket-tools/apollo-utils';
-import { getRedisCache } from '../cache';
-import { Item } from '../__generated__/resolvers-types';
-import { conn, resolvedItemsByItemIds } from '../databases/readitlab';
+import { getRedisCache } from '../cache/index.js';
+import { Item } from '../__generated__/resolvers-types.js';
+import { conn, resolvedItemsByItemIds } from '../databases/readitlab.js';
 
 export type ItemLoaderType = { itemId?: string; url?: string };
 

@@ -1,4 +1,4 @@
-import { createReaderSlug, itemIdFromSlug } from './idUtils';
+import { createReaderSlug, itemIdFromSlug } from './idUtils.js';
 
 describe('ID Utils', () => {
   afterAll(() => {

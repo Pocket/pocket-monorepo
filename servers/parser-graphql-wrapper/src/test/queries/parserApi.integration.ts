@@ -1,11 +1,11 @@
-import { startServer } from '../../apollo/server';
+import { startServer } from '../../apollo/server.js';
 import { ApolloServer } from '@apollo/server';
 import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 import request from 'supertest';
 import { cleanAll } from 'nock';
-import { getRedis } from '../../cache';
-import { IContext } from '../../apollo/context';
+import { getRedis } from '../../cache/index.js';
+import { IContext } from '../../apollo/context.js';
 import Keyv from 'keyv';
 import { Application } from 'express';
 import {
@@ -14,7 +14,7 @@ import {
   getCachedParserResponse,
   newFakeArticle,
   nockThreeStandardParserResponses,
-} from '../utils/parserResponse';
+} from '../utils/parserResponse.js';
 import { setTimeout } from 'timers/promises';
 
 const GET_ARTICLE = gql`

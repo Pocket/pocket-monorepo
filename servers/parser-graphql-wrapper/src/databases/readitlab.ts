@@ -1,7 +1,7 @@
 import { Kysely, MysqlDialect } from 'kysely';
-import { DB } from '../__generated__/readitlab';
+import { DB } from '../__generated__/readitlab.js';
 import { createPool } from 'mysql2';
-import config from '../config';
+import config from '../config/index.js';
 
 let connection: Kysely<DB>;
 

@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@sentry/serverless": "7.113.0",
-    "nanoid": "3.3.7",
-    "node-fetch": "2.7.0",
+    "nanoid": "5.0.7",
+    "node-fetch": "3.3.2",
     "tslib": "2.6.2"
   },
   "devDependencies": {
@@ -21,10 +21,10 @@
     "@types/node-fetch": "2.6.11",
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
+    "jest-extended": "4.0.2",
     "nock": "13.5.4",
     "ts-jest": "29.1.2",
-    "tsconfig": "workspace:*",
-    "jest-extended": "4.0.2"
+    "tsconfig": "workspace:*"
   },
   "files": [
     "dist",

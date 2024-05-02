@@ -1,5 +1,5 @@
 import { Kysely } from 'kysely';
-import config from '../config';
+import config from '../config/index.js';
 import {
   BatchAddShareUrlInput,
   addToShareUrls,
@@ -7,8 +7,8 @@ import {
   batchGetShareUrlsById,
   fetchByShareId,
   getShareUrls,
-} from '../databases/readitlaShares';
-import { DB } from '../__generated__/readitlaShares';
+} from '../databases/readitlaShares.js';
+import { DB } from '../__generated__/readitlaShares.js';
 
 /**
  * generates a record in share_url if record doesn't exist.

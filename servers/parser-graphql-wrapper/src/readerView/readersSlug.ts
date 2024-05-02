@@ -1,6 +1,6 @@
-import { itemIdFromSlug } from './idUtils';
+import { itemIdFromSlug } from './idUtils.js';
 import DataLoader from 'dataloader';
-import { ItemLoaderType } from '../dataLoaders';
+import { ItemLoaderType } from '../dataLoaders/index.js';
 
 export async function urlFromReaderSlug(
   slug: string,

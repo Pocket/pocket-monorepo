@@ -7,7 +7,8 @@ const config: CodegenConfig = {
       config: {
         federation: true,
         useIndexSignature: true,
-        contextType: '../apollo/context#IContext',
+        emitLegacyCommonJSImports: false,
+        contextType: '../apollo/context.js#IContext',
         customResolveInfo:
           '@apollo/cache-control-types#GraphQLResolveInfoWithCacheControl',
         namingConvention: {

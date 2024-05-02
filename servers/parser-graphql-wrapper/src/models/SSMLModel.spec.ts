@@ -1,4 +1,4 @@
-import { SSMLModel } from './SSMLModel';
+import { SSMLModel } from './SSMLModel.js';
 
 describe('SSML', () => {
   it('should generate SSML text from html with data', () => {

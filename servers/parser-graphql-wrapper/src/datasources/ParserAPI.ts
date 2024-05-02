@@ -1,8 +1,8 @@
 import { URLSearchParams } from 'url';
-import config from '../config';
+import config from '../config/index.js';
 import { DataSourceConfig, RESTDataSource } from '@apollo/datasource-rest';
 import md5 from 'md5';
-import { Item } from '../__generated__/resolvers-types';
+import { Item } from '../__generated__/resolvers-types.js';
 import {
   getAuthors,
   getImages,
@@ -11,16 +11,16 @@ import {
   parseVideoness,
   parseImageness,
   extractDomainMeta,
-} from './parserApiUtils';
-import { ListenModel } from '../models/ListenModel';
+} from './parserApiUtils.js';
+import { ListenModel } from '../models/ListenModel.js';
 import type {
   KeyValueCache,
   KeyValueCacheSetOptions,
 } from '@apollo/utils.keyvaluecache';
-import { ParserResponse } from './ParserAPITypes';
+import { ParserResponse } from './ParserAPITypes.js';
 import fetch from 'node-fetch';
 import { backOff } from 'exponential-backoff';
-import { createReaderSlug } from '../readerView/idUtils';
+import { createReaderSlug } from '../readerView/idUtils.js';
 
 export enum MediaTypeParam {
   AS_COMMENTS = '0',

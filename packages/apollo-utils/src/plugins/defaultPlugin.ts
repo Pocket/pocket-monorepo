@@ -4,16 +4,13 @@ import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHt
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { sentryPlugin } from '../sentry/apolloSentryPlugin';
 import { Server } from 'http';
-import { ApolloServerPlugin, BaseContext } from '@apollo/server';
 
 /**
  * Standard set of plugins for Pocket systems
  * @param httpServer Server to pass through the drain plugin
  * @returns
  */
-export const defaultPlugins = (
-  httpServer: Server,
-): ApolloServerPlugin<BaseContext>[] => {
+export const defaultPlugins = (httpServer: Server) => {
   return [
     // Capture all errors into Sentry
     sentryPlugin,

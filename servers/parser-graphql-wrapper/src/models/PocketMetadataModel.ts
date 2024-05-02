@@ -3,14 +3,14 @@ import {
   PocketMetadataSource,
   PocketMetadata,
   ItemSummary,
-} from '../__generated__/resolvers-types';
-import config from '../config';
+} from '../__generated__/resolvers-types.js';
+import config from '../config/index.js';
 import { DateTime } from 'luxon';
-import { IContext } from '../apollo/context';
+import { IContext } from '../apollo/context.js';
 import {
   IPocketMetadataDataStore,
   PocketMetadataEntity,
-} from '../databases/pocketMetadataStore';
+} from '../databases/pocketMetadataStore.js';
 import md5 from 'md5';
 
 export interface IPocketMetadataDataSource {

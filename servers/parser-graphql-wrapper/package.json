@@ -17,12 +17,13 @@
     "generate:database:types:shares": "DATABASE_URL=mysql://root@localhost:3306/readitla_shares kysely-codegen --include-pattern=\"readitla_shares.share_urls\" --out-file=src/__generated__/readitlaShares.d.ts"
   },
   "author": "",
+  "type": "module",
   "license": "ISC",
   "dependencies": {
     "@apollo/datasource-rest": "^6.2.2",
     "@aws-sdk/client-dynamodb": "3.554.0",
     "@aws-sdk/lib-dynamodb": "3.554.0",
-    "@extractus/oembed-extractor": "^3.2.1",
+    "@extractus/oembed-extractor": "4.0.4",
     "@keyv/redis": "2.8.4",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/feature-flags-client": "workspace:*",
@@ -42,7 +43,7 @@
     "lodash": "4.17.21",
     "md5": "2.3.0",
     "mysql2": "3.9.7",
-    "node-fetch": "2.7.0",
+    "node-fetch": "3.3.2",
     "open-graph-scraper": "^6.5.1",
     "qs": "6.12.0",
     "reflect-metadata": "0.2.2",

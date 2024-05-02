@@ -1,5 +1,5 @@
 import domino from 'domino';
-import { countAncestors } from './utils';
+import { countAncestors } from './utils.js';
 
 /**
  * Make a chain of nodes with linear parentage, helper function

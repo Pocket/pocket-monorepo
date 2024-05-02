@@ -1,6 +1,6 @@
-import { IContext } from '../apollo/context';
-import { ReaderFallback } from '../__generated__/resolvers-types';
-import { itemIdFromSlug } from './idUtils';
+import { IContext } from '../apollo/context.js';
+import { ReaderFallback } from '../__generated__/resolvers-types.js';
+import { itemIdFromSlug } from './idUtils.js';
 
 const notFound = { message: "We couldn't find that page." };
 

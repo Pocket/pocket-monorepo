@@ -6,8 +6,8 @@ import {
   Video,
   VideoType,
   Videoness,
-} from '../__generated__/resolvers-types';
-import { ParserResponse } from './ParserAPITypes';
+} from '../__generated__/resolvers-types.js';
+import { ParserResponse } from './ParserAPITypes.js';
 
 /**
  * Get Author array from raw authors object returned from the parser

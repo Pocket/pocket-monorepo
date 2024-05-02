@@ -1,5 +1,5 @@
-import { ParserResponse } from './ParserAPITypes';
-import { extractDomainMeta, normalizeDate } from './parserApiUtils';
+import { ParserResponse } from './ParserAPITypes.js';
+import { extractDomainMeta, normalizeDate } from './parserApiUtils.js';
 
 describe('normalizeDate', () => {
   it('catches 0000 empty date', () => {

@@ -1,5 +1,5 @@
 import { decode } from 'html-entities';
-import { Item } from '../__generated__/resolvers-types';
+import { Item } from '../__generated__/resolvers-types.js';
 
 export class SSMLModel {
   // From https://github.com/Pocket/scout-ua/blob/master/command/texttools.js#L27

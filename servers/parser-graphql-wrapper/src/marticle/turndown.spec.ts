@@ -1,4 +1,4 @@
-import turndownService from './turndown';
+import turndownService from './turndown.js';
 
 describe('markdown conversion: ', () => {
   it('does not parse images', () => {

@@ -1,2 +1,2 @@
-export * from './itemLoader';
-export * from './shortUrlLoader';
+export * from './itemLoader.js';
+export * from './shortUrlLoader.js';

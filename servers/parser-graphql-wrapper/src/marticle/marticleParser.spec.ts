@@ -1,12 +1,12 @@
-import * as marticleParser from './marticleParser';
+import * as marticleParser from './marticleParser.js';
 import {
   VideoType,
   MarticleComponent,
   Item,
   Videoness,
-} from '../__generated__/resolvers-types';
+} from '../__generated__/resolvers-types.js';
 import { faker } from '@faker-js/faker';
-import { createReaderSlug } from '../readerView/idUtils';
+import { createReaderSlug } from '../readerView/idUtils.js';
 
 /**
  * Returns data in the format of an API response from the legacy Parser service.

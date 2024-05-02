@@ -4,9 +4,9 @@ import {
   OEmbedType,
   PocketMetadata,
   PocketMetadataSource,
-} from '../../__generated__/resolvers-types';
-import { IContext } from '../../apollo/context';
-import { IPocketMetadataDataSource } from '../PocketMetadataModel';
+} from '../../__generated__/resolvers-types.js';
+import { IContext } from '../../apollo/context.js';
+import { IPocketMetadataDataSource } from '../PocketMetadataModel.js';
 import { merge } from 'lodash';
 import { extract } from '@extractus/oembed-extractor';
 

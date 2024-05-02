@@ -1,4 +1,4 @@
-import { isInResolverChain } from './utils';
+import { isInResolverChain } from './utils.js';
 
 describe('isInResolverChain', () => {
   it.each([

@@ -1,4 +1,4 @@
-import { extractSlugFromReadUrl } from './readersSlug';
+import { extractSlugFromReadUrl } from './readersSlug.js';
 
 describe('Reader slug utils', () => {
   afterAll(() => {

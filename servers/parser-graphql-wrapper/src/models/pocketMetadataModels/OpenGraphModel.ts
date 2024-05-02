@@ -3,11 +3,11 @@ import {
   ItemSummary,
   PocketMetadata,
   PocketMetadataSource,
-} from '../../__generated__/resolvers-types';
-import { IContext } from '../../apollo/context';
-import config from '../../config';
-import { unleash } from '../../unleash';
-import { IPocketMetadataDataSource } from '../PocketMetadataModel';
+} from '../../__generated__/resolvers-types.js';
+import { IContext } from '../../apollo/context.js';
+import config from '../../config/index.js';
+import { unleash } from '../../unleash.js';
+import { IPocketMetadataDataSource } from '../PocketMetadataModel.js';
 import ogs from 'open-graph-scraper';
 import { merge } from 'lodash';
 
@@ -47,7 +47,7 @@ export class OpenGraphModel implements IPocketMetadataDataSource {
     const userAgent =
       'PocketParser/2.0 (+https://getpocket.com/pocketparser_ua)';
 
-    const openGraphData = await ogs({
+    const openGraphData = await ogs.default({
       url: item.givenUrl,
       onlyGetOpenGraphInfo: false,
       fetchOptions: { headers: { 'user-agent': userAgent } },

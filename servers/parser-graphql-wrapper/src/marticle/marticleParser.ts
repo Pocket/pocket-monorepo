@@ -16,11 +16,15 @@ import {
   Video,
   VideoType,
   Item,
-} from '../__generated__/resolvers-types';
-import { countAncestors, countPreviousSiblings, createSubtree } from './utils';
-import turndownService from './turndown';
+} from '../__generated__/resolvers-types.js';
+import {
+  countAncestors,
+  countPreviousSiblings,
+  createSubtree,
+} from './utils.js';
+import turndownService from './turndown.js';
 import TurndownService from 'turndown';
-import { config } from './config';
+import { config } from './config.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 export const videoTypeMap = {

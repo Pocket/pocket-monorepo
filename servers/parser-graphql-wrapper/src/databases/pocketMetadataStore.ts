@@ -3,12 +3,12 @@ import {
   GetCommand,
   PutCommand,
 } from '@aws-sdk/lib-dynamodb';
-import config from '../config';
+import config from '../config/index.js';
 import * as Sentry from '@sentry/node';
 import {
   PocketMetadata,
   PocketMetadataSource,
-} from '../__generated__/resolvers-types';
+} from '../__generated__/resolvers-types.js';
 import md5 from 'md5';
 
 export interface IPocketMetadataDataStore {

@@ -1,15 +1,15 @@
 import nock, { Scope } from 'nock';
-import config from '../../config';
+import config from '../../config/index.js';
 import {
   BoolStringParam,
   MediaTypeParam,
   ParserAPI,
   ParserAPIOptions,
   ParserAPIQueryParams,
-} from '../../datasources/ParserAPI';
-import { ParserResponse } from '../../datasources/ParserAPITypes';
+} from '../../datasources/ParserAPI.js';
+import { ParserResponse } from '../../datasources/ParserAPITypes.js';
 import { faker } from '@faker-js/faker';
-import { Videoness } from '../../__generated__/resolvers-types';
+import { Videoness } from '../../__generated__/resolvers-types.js';
 import { merge } from 'lodash';
 import Keyv from 'keyv';
 

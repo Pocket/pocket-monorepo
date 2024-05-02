@@ -1,11 +1,7 @@
 import * as Sentry from '@sentry/node';
-import {
-  ApolloServerPlugin,
-  BaseContext,
-  GraphQLRequestListener,
-} from '@apollo/server';
+import { ApolloServerPlugin } from '@apollo/server';
 import { ApolloServerErrorCode } from '@apollo/server/errors';
-import { InternalErrorCode } from '../errorHandler/errorHandler';
+import { InternalErrorCode } from '../errorHandler/errorHandler.js';
 import { setLogger, Logger } from '@pocket-tools/ts-logger';
 
 export const defaultLogger: Logger = setLogger();
@@ -42,8 +38,8 @@ const NO_REPORT_ERRORS = new Set<string>([
  * query sent by client)
  */
 // See https://blog.sentry.io/2020/07/22/handling-graphql-errors-using-sentry
-export const sentryPlugin: ApolloServerPlugin<BaseContext> = {
-  async requestDidStart(): Promise<GraphQLRequestListener<BaseContext>> {
+export const sentryPlugin: ApolloServerPlugin = {
+  async requestDidStart() {
     return {
       async didEncounterErrors(ctx) {
         if (!ctx.operation) {

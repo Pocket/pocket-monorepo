@@ -1,4 +1,4 @@
-import { ListenModel } from './ListenModel';
+import { ListenModel } from './ListenModel.js';
 
 describe('Listen', () => {
   it.each([
