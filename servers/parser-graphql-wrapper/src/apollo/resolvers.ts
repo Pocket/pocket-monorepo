@@ -15,6 +15,7 @@ import {
   urlFromReaderSlug,
 } from '../readerView/readersSlug';
 import { IContext } from './context';
+import { isInResolverChain } from './utils';
 
 export const resolvers: Resolvers = {
   ...PocketDefaultScalars,
@@ -49,7 +50,7 @@ export const resolvers: Resolvers = {
         return parent.article;
       }
       // If the field was requested via refreshArticle we need to clear the cache before we request data
-      const clearCache = info.path.prev.key == 'refreshItemArticle';
+      const clearCache = isInResolverChain('refreshItemArticle', info.path);
       const item = await dataSources.parserAPI.getItemData(
         parent.givenUrl,
         {
@@ -71,7 +72,7 @@ export const resolvers: Resolvers = {
       //       const article =
       //         parent.parsedArticle ??
       // If the field was requested via refreshArticle we need to clear the cache before we request data
-      const clearCache = info.path.prev.key == 'refreshItemArticle';
+      const clearCache = isInResolverChain('refreshItemArticle', info.path);
       const article = await dataSources.parserAPI.getItemData(
         parent.givenUrl,
         {
@@ -92,7 +93,7 @@ export const resolvers: Resolvers = {
     ssml: async (parent, args, { dataSources }, info) => {
       if (!parent.article && parent.isArticle) {
         // If the field was requested via refreshArticle we need to clear the cache before we request data
-        const clearCache = info.path.prev.key == 'refreshItemArticle';
+        const clearCache = isInResolverChain('refreshItemArticle', info.path);
         parent.article = (
           await dataSources.parserAPI.getItemData(
             parent.givenUrl,
@@ -128,8 +129,7 @@ export const resolvers: Resolvers = {
     },
     preview: async (parent, args, context, info) => {
       // If the field was requested via refreshArticle we need to clear the cache before we request data
-      // TODO: see if we can look at the root top level instead.
-      const clearCache = info.path.prev.key == 'refreshItemArticle';
+      const clearCache = isInResolverChain('refreshItemArticle', info.path);
       const preview =
         await context.dataSources.pocketMetadataModel.derivePocketMetadata(
           parent,

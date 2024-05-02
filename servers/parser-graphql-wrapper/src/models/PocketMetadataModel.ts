@@ -89,7 +89,6 @@ export class PocketMetadataModel {
     );
     if (newPocketMetadata == null) return fallbackParserPocketMetadata;
 
-    // specifically we do not await this, so its a non-blocking call.
     await this.savePocketMetadata(
       newPocketMetadata,
       source.ttl,
@@ -110,7 +109,6 @@ export class PocketMetadataModel {
     if (date instanceof Date) {
       date = Math.round(date.getTime() / 1000);
     }
-    // We are explicit instead of using a spread so we don't save more data then we need.
     return {
       ...pocketMetadata,
       __typename: pocketMetadata.__typename ?? 'Unknown',

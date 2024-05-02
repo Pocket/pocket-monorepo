@@ -1,7 +1,7 @@
 import {
   DynamoDBDocumentClient,
+  GetCommand,
   PutCommand,
-  QueryCommand,
 } from '@aws-sdk/lib-dynamodb';
 import config from '../config';
 import * as Sentry from '@sentry/node';
@@ -48,26 +48,17 @@ export class ItemSummaryDataStoreBase implements IPocketMetadataDataStore {
     version: number,
     source: PocketMetadataSource,
   ): Promise<PocketMetadataEntity | null> {
-    const getPreviewCommand = new QueryCommand({
+    const getPreviewCommand = new GetCommand({
       TableName: ItemSummaryDataStoreBase.table.name,
-      KeyConditionExpression: `urlHash = :key`,
-      FilterExpression: `version = :version`,
-      ExpressionAttributeValues: {
-        ':key': md5(resolvedUrl),
-        ':version': version,
-      },
+      Key: { urlHash: md5(resolvedUrl) },
     });
     const response = await this.conn.send(getPreviewCommand);
-
-    const items: PocketMetadataEntity[] = response.Items.filter(
-      (item: PocketMetadataEntity) => {
-        // source is a reserved keyword in dynamo and we want to project all values,
-        // so we just filter after instead of filtering at the dynamodb level
-        return item.source == source;
-      },
-    ) as PocketMetadataEntity[];
-    if (items != null && items.length > 0) {
-      return items[0];
+    if (
+      response.Item != null &&
+      response.Item.source == source &&
+      response.Item.version == version
+    ) {
+      return response.Item as PocketMetadataEntity;
     }
     return null;
   }
