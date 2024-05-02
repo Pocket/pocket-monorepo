@@ -40,6 +40,12 @@ export type TagDeleteAction = {
   time: number;
 };
 
+export type SaveSearchAction = {
+  action: SaveSearchActionName;
+  term: string;
+  time: number;
+};
+
 export type UnimplementedAction = {
   action: string;
 };
@@ -64,12 +70,14 @@ type AddActionName = 'add';
 type TagRenameActionName = 'tag_rename';
 type TagDeleteActionName = 'tag_delete';
 type ItemTagActionNames = 'tags_add' | 'tags_remove' | 'tags_replace';
+type SaveSearchActionName = 'recent_search';
 type ActionNames =
   | ItemActionNames
   | AddActionName
   | TagRenameActionName
   | TagDeleteActionName
   | ItemTagActionNames
+  | SaveSearchActionName
   | string;
 
 export type MaybeAction = {
@@ -83,6 +91,7 @@ export type MaybeAction = {
   tag?: string;
   title?: string;
   action: ActionNames;
+  search?: string;
 };
 
 type Constructor<T> = new (...args: any[]) => T;
@@ -94,6 +103,7 @@ type ItemTagProps = Constructor<ItemTagAction>;
 type TagRenameProps = Constructor<TagRenameAction>;
 type TagDeleteProps = Constructor<TagDeleteAction>;
 type ItemAddProps = Constructor<ItemAddAction>;
+type SaveSearchProps = Constructor<SaveSearchAction>;
 
 /**
  * Class mixin for input validation. Use to construct a Validation/Sanitizer
@@ -372,6 +382,31 @@ function HasTag<TBase extends ActionSanitizable>(Base: TBase) {
 
 /**
  * Class mixin for input validation. Use to construct a Validation/Sanitizer
+ * class which has the rule: there must be a valid `search` field
+ * in the input passed to the constructor. It must be a non-empty string.
+ *
+ * Must be called with a Class that implements or extends the
+ * ActionSanitizable type (constructor with a single argument, `input`,
+ * which contains an object minimally with a valid key-value pair for 'action').
+ *
+ * Can be chained with other mixins to add additional validation rules.
+ * Should be used with a "Sanitize" class to return sanitized
+ * data which conforms to the expected action schema. See `HasItemIdOrUrl`
+ * for example usage.
+ */
+function HasSearchTerm<TBase extends ActionSanitizable>(Base: TBase) {
+  return class HasSearchTerm extends Base {
+    readonly term: string;
+    constructor(...args: any[]) {
+      super(...args);
+      nonEmptyStringPropOrError(this.input, 'search');
+      this.term = this.input.search;
+    }
+  };
+}
+
+/**
+ * Class mixin for input validation. Use to construct a Validation/Sanitizer
  * class which has the rule: there might be a valid `title` field
  * in the input passed to the constructor. If present, it must be a non-empty string.
  * Null values are allowed as inputs, but skipped.
@@ -599,6 +634,21 @@ function SanitizedAddItem<TBase extends ItemAddProps>(Base: TBase) {
   };
 }
 
+function SanitizedSearch<TBase extends SaveSearchProps>(Base: TBase) {
+  return class extends Base {
+    constructor(...args: any[]) {
+      super(...args);
+    }
+    public validate(): SaveSearchAction {
+      return {
+        action: this.action,
+        time: this.time,
+        term: this.term,
+      };
+    }
+  };
+}
+
 /**
  * Sanitizer for actions: 'favorite', 'add', 'readd', 'unfavorite', 'delete', 'archive'.
  * The input must have a valid item_id or url, the action name, and might have
@@ -653,6 +703,10 @@ export const ItemAddActionSanitizer = SanitizedAddItem(
   ),
 );
 
+export const SaveSearchActionSanitizer = SanitizedSearch(
+  HasSearchTerm(HasTimeOrDefault(NamedAction<'recent_search'>)),
+);
+
 /**
  * Route input to a proper sanitizer based on action name.
  * This is the main method that should be used from this file.
@@ -693,6 +747,11 @@ export function ActionSanitizer(input: MaybeAction): SendAction {
       }).validate();
     case 'add':
       return new ItemAddActionSanitizer({
+        ...input,
+        action: input.action,
+      }).validate();
+    case 'recent_search':
+      return new SaveSearchActionSanitizer({
         ...input,
         action: input.action,
       }).validate();

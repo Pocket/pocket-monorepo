@@ -216,6 +216,56 @@ describe('v3/send', () => {
           expect(response.body).toEqual(expected);
         });
       });
+      describe('recent_search', () => {
+        it.each([
+          {
+            input: {
+              action: 'recent_search',
+              search: 'tav',
+            },
+            expectedCall: {
+              search: {
+                term: 'tav',
+                timestamp: isoNow,
+              },
+            },
+          },
+          {
+            input: {
+              action: 'recent_search',
+              search: 'tav',
+              time: '1711558016',
+            },
+            expectedCall: {
+              search: {
+                term: 'tav',
+                timestamp: '2024-03-27T16:46:56.000Z',
+              },
+            },
+          },
+        ])(
+          'conditionally adds timestamp and calls correct mutation',
+          async ({ input, expectedCall }) => {
+            const res = await request(app)
+              .post('/v3/send')
+              .send({
+                consumer_key: 'test',
+                access_token: 'test',
+                actions: [input],
+              });
+            expect(clientSpy).toHaveBeenCalledTimes(1);
+            expect(
+              clientSpy.mock.calls[0][0].definitions[0].name.value,
+            ).toEqual('SaveSearch');
+            expect(clientSpy.mock.calls[0][1]).toEqual(expectedCall);
+            expect(res.body).toEqual({
+              status: 1,
+              action_results: [true],
+              action_errors: [null],
+            });
+          },
+        );
+      });
       describe('save property actions', () => {
         it.each([
           { name: 'archive', property: 'updateSavedItemArchiveId' },
