@@ -81,7 +81,7 @@ export class ItemSummaryModel {
     if (newSummary == null) return fallbackParserItemSummary;
 
     // specifically we do not await this, so its a non-blocking call.
-    this.saveItemSummary(newSummary, source.ttl);
+    await this.saveItemSummary(newSummary, source.ttl);
 
     return { ...newSummary, item };
   }
