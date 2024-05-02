@@ -945,6 +945,18 @@ export type MarticleText = {
 /** Default Mutation Type */
 export type Mutation = {
   __typename?: 'Mutation';
+  /**
+   * Attach share context to a Pocket Share. If a context already exists
+   * on the Pocket Share, it will be overrwritten. Session ID via the `guid`
+   * field on the JWT is used to determine ownership of a share.
+   * That means users may only edit share links created in the same
+   * session (intended to be a post-share add, not something returned to
+   * later). It also lets us attribute ownership to anonymous/logged-out
+   * users.
+   * Attempting to update a nonexistent share or a share that is not owned
+   * by the session user will return ShareNotFound.
+   */
+  addShareContext?: Maybe<ShareResult>;
   /** Add a batch of items to an existing shareable list. */
   addToShareableList: ShareableList;
   /**
@@ -1190,6 +1202,13 @@ export type Mutation = {
    * and creates it if it doesn't.
    */
   upsertSavedItem: SavedItem;
+};
+
+
+/** Default Mutation Type */
+export type MutationAddShareContextArgs = {
+  context: ShareContextInput;
+  slug: Scalars['ID']['input'];
 };
 
 
@@ -1768,7 +1787,7 @@ export type PocketShare = {
   __typename?: 'PocketShare';
   context?: Maybe<ShareContext>;
   createdAt?: Maybe<Scalars['ISOString']['output']>;
-  preview?: Maybe<ItemSummary>;
+  preview?: Maybe<PocketMetadata>;
   shareUrl: Scalars['ValidUrl']['output'];
   slug: Scalars['ID']['output'];
   targetUrl: Scalars['ValidUrl']['output'];
@@ -2132,7 +2151,7 @@ export type ReaderFallback = ItemNotFound | ReaderInterstitial;
 
 export type ReaderInterstitial = {
   __typename?: 'ReaderInterstitial';
-  itemCard?: Maybe<ItemSummary>;
+  itemCard?: Maybe<PocketMetadata>;
 };
 
 export type ReaderViewResult = {
