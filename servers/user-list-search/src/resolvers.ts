@@ -13,6 +13,7 @@ import {
 import {
   AuthenticationError,
   ForbiddenError,
+  PocketDefaultScalars,
   UserInputError,
 } from '@pocket-tools/apollo-utils';
 import { IContext } from './server/context';
@@ -81,6 +82,7 @@ function elasticSearch(
 }
 
 export const resolvers = {
+  ...PocketDefaultScalars,
   FunctionalBoostValue: functionalBoostValue,
   User: {
     search: elasticSearch,
@@ -199,6 +201,29 @@ export const resolvers = {
         );
       }
       return new MysqlDataSource().getRecentSearches(parseInt(context.userId));
+    },
+  },
+  Mutation: {
+    saveSearch: async (
+      _,
+      { search }: { search: { term: string; timestamp: Date } },
+      context: IContext,
+    ): Promise<RecentSearch> => {
+      if (!context.userIsPremium) {
+        throw new ForbiddenError(
+          'Recent searches are only available for premium users',
+        );
+      }
+      await new MysqlDataSource().insertRecentSearch(
+        parseInt(context.userId),
+        search.term,
+        search.timestamp,
+      );
+      return {
+        term: search.term,
+        sortId: 0,
+        context: null,
+      };
     },
   },
 };
