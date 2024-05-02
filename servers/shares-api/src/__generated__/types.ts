@@ -47,7 +47,7 @@ export type Mutation = {
 
 
 export type MutationAddShareContextArgs = {
-  context?: InputMaybe<ShareContextInput>;
+  context: ShareContextInput;
   slug: Scalars['ID']['input'];
 };
 
@@ -254,7 +254,7 @@ export interface Max300CharStringScalarConfig extends GraphQLScalarTypeConfig<Re
 }
 
 export type MutationResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  addShareContext?: Resolver<Maybe<ResolversTypes['ShareResult']>, ParentType, ContextType, RequireFields<MutationAddShareContextArgs, 'slug'>>;
+  addShareContext?: Resolver<Maybe<ResolversTypes['ShareResult']>, ParentType, ContextType, RequireFields<MutationAddShareContextArgs, 'context' | 'slug'>>;
   createShareLink?: Resolver<Maybe<ResolversTypes['PocketShare']>, ParentType, ContextType, RequireFields<MutationCreateShareLinkArgs, 'target'>>;
 }>;
 

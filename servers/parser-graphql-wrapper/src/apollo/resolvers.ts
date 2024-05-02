@@ -15,6 +15,7 @@ import {
   urlFromReaderSlug,
 } from '../readerView/readersSlug';
 import { IContext } from './context';
+import { isInResolverChain } from './utils';
 
 export const resolvers: Resolvers = {
   ...PocketDefaultScalars,
@@ -49,7 +50,7 @@ export const resolvers: Resolvers = {
         return parent.article;
       }
       // If the field was requested via refreshArticle we need to clear the cache before we request data
-      const clearCache = info.operation.name.value == 'refreshArticle';
+      const clearCache = isInResolverChain('refreshItemArticle', info.path);
       const item = await dataSources.parserAPI.getItemData(
         parent.givenUrl,
         {
@@ -71,7 +72,7 @@ export const resolvers: Resolvers = {
       //       const article =
       //         parent.parsedArticle ??
       // If the field was requested via refreshArticle we need to clear the cache before we request data
-      const clearCache = info.operation.name.value == 'refreshArticle';
+      const clearCache = isInResolverChain('refreshItemArticle', info.path);
       const article = await dataSources.parserAPI.getItemData(
         parent.givenUrl,
         {
@@ -92,7 +93,7 @@ export const resolvers: Resolvers = {
     ssml: async (parent, args, { dataSources }, info) => {
       if (!parent.article && parent.isArticle) {
         // If the field was requested via refreshArticle we need to clear the cache before we request data
-        const clearCache = info.operation.name.value == 'refreshArticle';
+        const clearCache = isInResolverChain('refreshItemArticle', info.path);
         parent.article = (
           await dataSources.parserAPI.getItemData(
             parent.givenUrl,
@@ -126,11 +127,16 @@ export const resolvers: Resolvers = {
         givenUrl: parent.givenUrl,
       });
     },
-    preview: async (parent, args, context) => {
-      return context.dataSources.itemSummaryModel.deriveItemSummary(
-        parent,
-        context,
-      );
+    preview: async (parent, args, context, info) => {
+      // If the field was requested via refreshArticle we need to clear the cache before we request data
+      const clearCache = isInResolverChain('refreshItemArticle', info.path);
+      const preview =
+        await context.dataSources.pocketMetadataModel.derivePocketMetadata(
+          parent,
+          context,
+          clearCache,
+        );
+      return { ...preview, item: parent };
     },
   },
   MarticleComponent: {
@@ -208,8 +214,9 @@ export const resolvers: Resolvers = {
     },
   },
   PocketMetadata: {
-    __resolveType() {
-      return 'ItemSummary';
+    __resolveType(parent) {
+      // Note when a new type is added we need to add it here.
+      return parent.__typename;
     },
   },
   PocketShare: {
@@ -217,10 +224,14 @@ export const resolvers: Resolvers = {
       const item = await context.dataSources.parserAPI.getItemData(
         parent.targetUrl,
       );
-      return await context.dataSources.itemSummaryModel.deriveItemSummary(
-        item,
-        context,
-      );
+
+      const preview =
+        await context.dataSources.pocketMetadataModel.derivePocketMetadata(
+          item,
+          context,
+          false,
+        );
+      return { ...preview, item };
     },
   },
   Mutation: {

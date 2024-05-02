@@ -8,34 +8,37 @@ import { gql } from 'graphql-tag';
 import { IContext } from '../../apollo/context';
 import { Application } from 'express';
 import { IntMask } from '@pocket-tools/int-mask';
-import * as ogs from 'open-graph-scraper';
-import { mockUnleash } from '@pocket-tools/feature-flags-client';
-import * as unleash from '../../unleash';
-import config from '../../config';
 import { nockResponseForParser } from '../utils/parserResponse';
 import { Kysely } from 'kysely';
 import { DB } from '../../__generated__/readitlab';
 import { conn as readitlabInit } from '../../databases/readitlab';
 import { conn as sharesInit } from '../../databases/readitlaShares';
 import { clearDynamoDB, dynamoClient } from '../../datasources/dynamoClient';
-import { ItemSummarySource } from '../../__generated__/resolvers-types';
-import { ItemSummaryDataStoreBase } from '../../databases/itemSummaryStore';
+import {
+  ItemSummaryDataStoreBase,
+  PocketMetadataEntity,
+} from '../../databases/pocketMetadataStore';
 import md5 from 'md5';
+import {
+  OEmbedType,
+  PocketMetadataSource,
+} from '../../__generated__/resolvers-types';
+import * as oembed from '@extractus/oembed-extractor';
 
-jest.mock('open-graph-scraper');
+jest.mock('@extractus/oembed-extractor');
 
-describe('preview', () => {
+describe('oembedPreview', () => {
   let app: Application;
   let server: ApolloServer<IContext>;
   let graphQLUrl: string;
   let readitlabDB: Kysely<DB>;
-  const { unleash: mockClient, repo } = mockUnleash([]);
 
   const GET_PREVIEW = gql`
     query display($url: String!) {
       itemByUrl(url: $url) {
         preview {
           ... on PocketMetadata {
+            source
             id
             title
             image {
@@ -44,6 +47,7 @@ describe('preview', () => {
             }
             excerpt
             authors {
+              name
               id
             }
             domain {
@@ -56,12 +60,16 @@ describe('preview', () => {
               id
             }
           }
+          ... on OEmbed {
+            htmlEmbed
+            type
+          }
         }
       }
     }
   `;
 
-  const testUrl = 'https://test.com';
+  const testUrl = 'https://tiktok.com';
 
   const item = {
     item_id: 123,
@@ -78,7 +86,7 @@ describe('preview', () => {
     image: null,
     excerpt: null,
     authors: null,
-    domain: { logo: null, name: 'test.com' },
+    domain: { logo: null, name: 'tiktok.com' },
     datePublished: '2022-06-29T20:14:49.000Z',
     url: testUrl,
     item: {
@@ -86,18 +94,7 @@ describe('preview', () => {
     },
   };
 
-  const openGraphFeatureToggle = {
-    name: config.unleash.flags.openGraphParser.name,
-    stale: false,
-    type: 'release',
-    project: 'default',
-    variants: [],
-    strategies: [],
-    impressionData: false,
-  };
-
   beforeAll(async () => {
-    jest.spyOn(unleash, 'unleash').mockReturnValue(mockClient);
     ({ app, server, url: graphQLUrl } = await startServer(0));
     readitlabDB = readitlabInit();
     await readitlabDB.deleteFrom('items_resolver').execute();
@@ -109,7 +106,6 @@ describe('preview', () => {
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
-    jest.spyOn(unleash, 'unleash').mockReturnValue(mockClient);
     jest.spyOn(IntMask, 'decode').mockReturnValueOnce(123);
     jest.spyOn(IntMask, 'encode').mockReturnValueOnce('encodedId');
     // flush the redis cache
@@ -129,39 +125,49 @@ describe('preview', () => {
   it.each([
     {
       parserData: {},
-      openGraphData: { error: false, result: { ogTitle: 'openGraphTitle' } },
+      oembedData: {
+        title: 'oembed video title',
+        type: 'video',
+        html: 'embed html',
+      },
       expected: {
-        title: 'openGraphTitle',
+        title: 'oembed video title',
+        source: PocketMetadataSource.Oembed,
+        type: 'VIDEO',
+        htmlEmbed: 'embed html',
       },
     },
     {
       parserData: {},
-      openGraphData: undefined,
+      oembedData: undefined,
       expected: {
         title: 'parser test',
+        source: PocketMetadataSource.PocketParser,
+      },
+    },
+    {
+      parserData: {},
+      oembedData: {
+        type: 'video',
+        author_name: 'an author',
+        html: 'embeded html',
+      },
+      expected: {
+        title: 'parser test',
+        authors: [{ name: 'an author', id: '1' }],
+        source: PocketMetadataSource.Oembed,
+        type: 'VIDEO',
+        htmlEmbed: 'embeded html',
       },
     },
   ])(
-    'should return item display data',
-    async ({ parserData, openGraphData, expected }) => {
-      if (openGraphData == undefined) {
-        repo.setToggle(config.unleash.flags.openGraphParser.name, {
-          ...openGraphFeatureToggle,
-          enabled: false,
-        });
-      } else {
-        repo.setToggle(config.unleash.flags.openGraphParser.name, {
-          ...openGraphFeatureToggle,
-          enabled: true,
-        });
-        jest.spyOn(ogs, 'default').mockImplementation(() => {
+    'should return opengraph display data if enabled',
+    async ({ parserData, oembedData, expected }) => {
+      if (oembedData) {
+        jest.spyOn(oembed, 'extract').mockImplementation(() => {
           return Promise.resolve({
-            html: undefined,
-            response: undefined,
-            error: false,
-            result: {},
             // override the default
-            ...openGraphData,
+            ...oembedData,
           });
         });
       }
@@ -196,10 +202,6 @@ describe('preview', () => {
   );
 
   it('uses cached dynamodb data if available', async () => {
-    repo.setToggle(config.unleash.flags.openGraphParser.name, {
-      ...openGraphFeatureToggle,
-      enabled: true,
-    });
     nockResponseForParser(testUrl, {
       data: {
         item_id: parserItemId,
@@ -216,16 +218,20 @@ describe('preview', () => {
       },
     });
 
-    await new ItemSummaryDataStoreBase(dynamoClient()).storeItemSummary(
+    await new ItemSummaryDataStoreBase(dynamoClient()).storePocketMetadata(
       {
         id: 'id',
-        itemUrl: testUrl,
+        url: testUrl,
         urlHash: md5(testUrl),
         datePublished: null,
         title: 'the saved data',
-        dataSource: ItemSummarySource.Opengraph,
+        source: PocketMetadataSource.Oembed,
         createdAt: Math.round(Date.now() / 1000),
-      },
+        htmlEmbed: 'html embed',
+        type: OEmbedType.Video,
+        __typename: 'OEmbed',
+        version: 1,
+      } as unknown as PocketMetadataEntity,
       3600,
     );
 
@@ -240,10 +246,68 @@ describe('preview', () => {
       itemByUrl: {
         preview: {
           ...defaultExpected,
+          htmlEmbed: 'html embed',
+          type: OEmbedType.Video,
+          source: PocketMetadataSource.Oembed,
           id: 'id',
           title: 'the saved data',
           datePublished: null,
           domain: null,
+        },
+      },
+    });
+  });
+
+  it('does not use cached dynamodb data if it is a different version', async () => {
+    nockResponseForParser(testUrl, {
+      data: {
+        item_id: parserItemId,
+        given_url: testUrl,
+        normal_url: testUrl,
+        title: 'parser test',
+        authors: [],
+        images: [],
+        videos: [],
+        resolved_id: '16822',
+        excerpt: null,
+        domainMetadata: null,
+        topImageUrl: null,
+      },
+    });
+
+    await new ItemSummaryDataStoreBase(dynamoClient()).storePocketMetadata(
+      {
+        id: 'id',
+        url: testUrl,
+        urlHash: md5(testUrl),
+        datePublished: null,
+        title: 'the saved data',
+        source: PocketMetadataSource.Oembed,
+        createdAt: Math.round(Date.now() / 1000),
+        htmlEmbed: 'html embed',
+        type: OEmbedType.Video,
+        __typename: 'OEmbed',
+        version: 200,
+      } as unknown as PocketMetadataEntity,
+      3600,
+    );
+
+    const variables = {
+      url: testUrl,
+    };
+    const res = await request(app)
+      .post(graphQLUrl)
+      .send({ query: print(GET_PREVIEW), variables });
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data).toEqual({
+      itemByUrl: {
+        preview: {
+          ...defaultExpected,
+          source: PocketMetadataSource.PocketParser,
+          id: 'encodedId_202cb962ac59075b964b07152d234b70',
+          title: 'parser test',
+          datePublished: '2022-06-29T20:14:49.000Z',
+          domain: { logo: null, name: 'tiktok.com' },
         },
       },
     });
