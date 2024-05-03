@@ -1,8 +1,8 @@
 import * as Sentry from '@sentry/node';
 import { SendMessageCommand, SQS } from '@aws-sdk/client-sqs';
-import { ItemsEventEmitter } from '../itemsEventEmitter';
-import { EventTransFormer } from './transformers';
-import { sqs } from '../../aws/sqs';
+import { ItemsEventEmitter } from '../itemsEventEmitter.js';
+import { EventTransFormer } from './transformers/index.js';
+import { sqs } from '../../aws/sqs.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 /**

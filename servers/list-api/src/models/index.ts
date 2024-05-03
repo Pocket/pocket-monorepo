@@ -1,4 +1,4 @@
-export { TagModel } from './tag';
-export { PocketSaveModel } from './pocketSave';
-export { NotFoundErrorModel } from './notFoundError';
-export { ItemModel } from './item';
+export { TagModel } from './tag.js';
+export { PocketSaveModel } from './pocketSave.js';
+export { NotFoundErrorModel } from './notFoundError.js';
+export { ItemModel } from './item.js';

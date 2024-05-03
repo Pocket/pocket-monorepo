@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { IContext } from '../server/context';
+import { IContext } from '../server/context.js';
 import { knexPaginator as paginate } from '@pocket-tools/apollo-cursor-pagination';
 import {
   Pagination,
@@ -10,14 +10,14 @@ import {
   TagSaveAssociation,
   TagEdge,
   SaveUpdateTagsInputDb,
-} from '../types';
-import { mysqlTimeString, uniqueArray } from './utils';
-import config from '../config';
-import { UsersMetaService } from './usersMetaService';
-import { SavedItemDataService } from './savedItemsService';
-import { TagModel } from '../models';
+} from '../types/index.js';
+import { mysqlTimeString, uniqueArray } from './utils.js';
+import config from '../config/index.js';
+import { UsersMetaService } from './usersMetaService.js';
+import { SavedItemDataService } from './savedItemsService.js';
+import { TagModel } from '../models/index.js';
 import { NotFoundError } from '@pocket-tools/apollo-utils';
-import { PocketSaveDataService } from './pocketSavesService';
+import { PocketSaveDataService } from './pocketSavesService.js';
 
 /***
  * class that handles the read and write from `readitla-temp.item_tags` table.

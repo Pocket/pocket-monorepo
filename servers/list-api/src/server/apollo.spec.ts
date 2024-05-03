@@ -1,5 +1,5 @@
-import { readClient, writeClient } from '../database/client';
-import { contextConnection } from './apollo';
+import { readClient, writeClient } from '../database/client.js';
+import { contextConnection } from './apollo.js';
 
 describe('context factory connection', () => {
   describe('should use write connection', () => {

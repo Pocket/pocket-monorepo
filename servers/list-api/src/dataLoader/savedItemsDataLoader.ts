@@ -1,8 +1,8 @@
 import DataLoader from 'dataloader';
-import { SavedItemDataService } from '../dataService';
-import { IContext } from '../server/context';
-import { SavedItem } from '../types';
-import { reorderResultByKey } from './utils';
+import { SavedItemDataService } from '../dataService/index.js';
+import { IContext } from '../server/context.js';
+import { SavedItem } from '../types/index.js';
+import { reorderResultByKey } from './utils.js';
 
 /**
  * Batch loader function to get saved items by URLs

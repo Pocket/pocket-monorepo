@@ -34,7 +34,7 @@
     "conventional-changelog-conventionalcommits": "7.0.2",
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
-    "semantic-release": "23.0.7",
+    "semantic-release": "23.0.8",
     "semantic-release-monorepo": "8.0.2",
     "ts-jest": "29.1.2",
     "tsconfig": "workspace:*"

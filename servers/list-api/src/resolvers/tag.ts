@@ -1,7 +1,7 @@
-import { SavedItemConnection, SavedItemsFilter, Tag } from '../types';
-import { IContext } from '../server/context';
+import { SavedItemConnection, SavedItemsFilter, Tag } from '../types/index.js';
+import { IContext } from '../server/context.js';
 import { validatePagination, UserInputError } from '@pocket-tools/apollo-utils';
-import { ListPaginationService } from '../dataService';
+import { ListPaginationService } from '../dataService/index.js';
 import { GraphQLResolveInfo } from 'graphql';
 
 /**

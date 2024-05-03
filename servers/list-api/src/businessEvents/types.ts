@@ -1,5 +1,5 @@
-import { SavedItem, SavedItemStatus } from '../types';
-import { ListItem } from '../snowplow/schema';
+import { SavedItem, SavedItemStatus } from '../types/index.js';
+import { ListItem } from '../snowplow/schema.js';
 
 export enum EventType {
   ADD_ITEM = 'ADD_ITEM',

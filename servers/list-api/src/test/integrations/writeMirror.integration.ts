@@ -2,14 +2,14 @@ import {
   PocketSaveDataService,
   SavedItemDataService,
   TagDataService,
-} from '../../dataService';
-import { writeClient } from '../../database/client';
-import { ItemResponse } from '../../externalCaller/parserCaller';
-import { SavedItemUpsertInput } from '../../types';
+} from '../../dataService/index.js';
+import { writeClient } from '../../database/client.js';
+import { ItemResponse } from '../../externalCaller/parserCaller.js';
+import { SavedItemUpsertInput } from '../../types/index.js';
 import { expect } from '@jest/globals';
-import unleashClient from '../../featureFlags/mockClient';
-import config from '../../config';
-import { ContextManager } from '../../server/context';
+import unleashClient from '../../featureFlags/mockClient.js';
+import config from '../../config/index.js';
+import { ContextManager } from '../../server/context.js';
 
 function areBothNaN(a, b) {
   if (isNaN(a) && isNaN(b)) {

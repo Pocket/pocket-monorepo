@@ -4,10 +4,10 @@ import {
   ItemsEventEmitter,
   initItemEventHandlers,
   eventBridgeEventHandler,
-} from '../../businessEvents';
-import { SavedItem } from '../../types';
+} from '../../businessEvents/index.js';
+import { SavedItem } from '../../types/index.js';
 import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
-import config from '../../config';
+import config from '../../config/index.js';
 
 const testSavedItem: SavedItem = {
   id: '2',

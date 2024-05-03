@@ -1,8 +1,8 @@
-import { readClient, writeClient } from '../../database/client';
-import { UsersMetaService } from '../../dataService';
-import { ContextManager } from '../../server/context';
-import { mysqlTimeString } from '../../dataService/utils';
-import config from '../../config';
+import { readClient, writeClient } from '../../database/client.js';
+import { UsersMetaService } from '../../dataService/index.js';
+import { ContextManager } from '../../server/context.js';
+import { mysqlTimeString } from '../../dataService/utils.js';
+import config from '../../config/index.js';
 
 describe('UsersMetaService ', () => {
   const writeDb = writeClient();

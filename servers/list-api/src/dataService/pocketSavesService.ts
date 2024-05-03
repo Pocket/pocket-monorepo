@@ -1,17 +1,17 @@
 import { Knex } from 'knex';
-import { IContext } from '../server/context';
-import { mysqlDateConvert, mysqlTimeString, setDifference } from './utils';
-import { PocketSaveStatus } from '../types';
+import { IContext } from '../server/context.js';
+import { mysqlDateConvert, mysqlTimeString, setDifference } from './utils.js';
+import { PocketSaveStatus } from '../types/index.js';
 import { NotFoundError } from '@pocket-tools/apollo-utils';
-import config from '../config';
-import { SavedItemDataService } from './savedItemsService';
+import config from '../config/index.js';
+import { SavedItemDataService } from './savedItemsService.js';
 import {
   ListResult,
   RawListResult,
   ListArchiveUpdate,
   ListFavoriteUpdate,
   FavoriteStatus,
-} from './types';
+} from './types.js';
 /**
  * Make PocketSaveStatus enums
  * to the desired status string.

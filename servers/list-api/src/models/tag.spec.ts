@@ -1,9 +1,9 @@
-import { TagSaveAssociation, PocketSave, Tag } from '../types';
-import * as tagModel from './tag';
+import { TagSaveAssociation, PocketSave, Tag } from '../types/index.js';
+import * as tagModel from './tag.js';
 import { strings } from 'locutus/php';
-import { ContextManager, IContext } from '../server/context';
+import { ContextManager, IContext } from '../server/context.js';
 import { Knex } from 'knex';
-import { TagDataService } from '../dataService';
+import { TagDataService } from '../dataService/index.js';
 
 const tagServiceResp: Tag[] = [
   { name: 'zebra', id: 'emVicmFfX3hwa3R4dGFneF9f' },

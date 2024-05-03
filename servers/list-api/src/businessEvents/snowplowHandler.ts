@@ -4,7 +4,7 @@ import {
   ItemEventPayload,
   SnowplowEventMap,
   SnowplowSavedItemStatusMap,
-} from './types';
+} from './types.js';
 import { PayloadBuilder, SelfDescribingJson } from '@snowplow/tracker-core';
 import {
   ApiUser,
@@ -12,10 +12,10 @@ import {
   ListItem,
   ListItemUpdate,
   User,
-} from '../snowplow/schema';
-import { ItemsEventEmitter } from './itemsEventEmitter';
-import config from '../config';
-import { SavedItem } from '../types';
+} from '../snowplow/schema.js';
+import { ItemsEventEmitter } from './itemsEventEmitter.js';
+import config from '../config/index.js';
+import { SavedItem } from '../types/index.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 type ListItemUpdateEvent = Omit<SelfDescribingJson, 'data'> & {

@@ -3,11 +3,11 @@ import {
   EventType,
   ItemsEventEmitter,
   SnowplowHandler,
-} from '../../businessEvents';
-import { tracker } from '../../snowplow/tracker';
-import config from '../../config';
-import { ListItemUpdate } from '../../snowplow/schema';
-import { SavedItem } from '../../types';
+} from '../../businessEvents/index.js';
+import { tracker } from '../../snowplow/tracker.js';
+import config from '../../config/index.js';
+import { ListItemUpdate } from '../../snowplow/schema.js';
+import { SavedItem } from '../../types/index.js';
 import { forEach } from 'lodash';
 
 async function snowplowRequest(path: string, post = false): Promise<any> {

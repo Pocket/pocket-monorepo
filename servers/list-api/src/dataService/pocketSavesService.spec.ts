@@ -1,5 +1,5 @@
-import { PocketSaveDataService } from './pocketSavesService';
-import { RawListResult } from './types';
+import { PocketSaveDataService } from './pocketSavesService.js';
+import { RawListResult } from './types.js';
 const dateAdded = new Date('2008-10-21 13:57:01');
 const dateFavorited = new Date('0000-00-00 00:00:00');
 const dateRead = new Date('2008-10-21 14:00:01');

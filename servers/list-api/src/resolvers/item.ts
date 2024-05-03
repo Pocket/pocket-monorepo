@@ -1,6 +1,6 @@
-import { Item, SavedItem } from '../types';
-import { IContext } from '../server/context';
-import { SavedItemDataService } from '../dataService';
+import { Item, SavedItem } from '../types/index.js';
+import { IContext } from '../server/context.js';
+import { SavedItemDataService } from '../dataService/index.js';
 
 /**
  * Resolve saved item on the Item entity

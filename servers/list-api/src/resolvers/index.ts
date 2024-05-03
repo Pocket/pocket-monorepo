@@ -3,8 +3,8 @@ import {
   savedItems,
   savedItemsPage,
   tags as userTags,
-} from './user';
-import { item, suggestedTags as savedItemSuggestedTags } from './savedItem';
+} from './user.js';
+import { item, suggestedTags as savedItemSuggestedTags } from './savedItem.js';
 import {
   clearTags,
   createSavedItemTags,
@@ -23,8 +23,8 @@ import {
   updateSavedItemUnFavorite,
   updateTag,
   upsertSavedItem,
-} from './mutation';
-import { tagsSavedItems } from './tag';
+} from './mutation.js';
+import { tagsSavedItems } from './tag.js';
 import {
   BaseError,
   Item,
@@ -38,8 +38,8 @@ import {
   SavedItem,
   SavedItemTagInput,
   Tag,
-} from '../types';
-import { IContext } from '../server/context';
+} from '../types/index.js';
+import { IContext } from '../server/context.js';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
 import { GraphQLResolveInfo } from 'graphql';
 import { IntMask } from '@pocket-tools/int-mask';

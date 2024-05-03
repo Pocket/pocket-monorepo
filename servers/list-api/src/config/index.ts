@@ -1,5 +1,5 @@
 // DO NOT CHANGE: circular dependency if simplified to "import { EventType } from '../businessEvents'"
-import { EventType } from '../businessEvents/types';
+import { EventType } from '../businessEvents/types.js';
 
 const serviceName = 'list-api';
 const awsEnvironments = ['production', 'development'];

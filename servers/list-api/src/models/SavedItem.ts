@@ -1,9 +1,9 @@
 import { NotFoundError } from '@pocket-tools/apollo-utils';
-import { SavedItemDataService } from '../dataService';
-import { ParserCaller } from '../externalCaller/parserCaller';
-import { IContext } from '../server/context';
-import { EventType } from '../businessEvents';
-import { SavedItem } from '../types';
+import { SavedItemDataService } from '../dataService/index.js';
+import { ParserCaller } from '../externalCaller/parserCaller.js';
+import { IContext } from '../server/context.js';
+import { EventType } from '../businessEvents/index.js';
+import { SavedItem } from '../types/index.js';
 
 export class SavedItemModel {
   private readonly defaultNotFoundMessage = 'SavedItem does not exist';

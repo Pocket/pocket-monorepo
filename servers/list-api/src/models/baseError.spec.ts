@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo } from 'graphql';
-import { BaseErrorModel } from './baseError';
+import { BaseErrorModel } from './baseError.js';
 
 describe('Error model', () => {
   const noPrev: GraphQLResolveInfo['path'] = {

@@ -1,6 +1,12 @@
-import { Item, PendingItem, PendingItemStatus, SavedItem, Tag } from '../types';
-import { SavedItemDataService, TagDataService } from '../dataService';
-import { IContext } from '../server/context';
+import {
+  Item,
+  PendingItem,
+  PendingItemStatus,
+  SavedItem,
+  Tag,
+} from '../types/index.js';
+import { SavedItemDataService, TagDataService } from '../dataService/index.js';
+import { IContext } from '../server/context.js';
 
 /**
  * Get paginated saved item tags

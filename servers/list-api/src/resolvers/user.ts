@@ -7,15 +7,15 @@ import {
   TagConnection,
   User,
   OffsetPaginationInput,
-} from '../types';
+} from '../types/index.js';
 import {
   SavedItemDataService,
   TagDataService,
   ListPaginationService,
-} from '../dataService';
+} from '../dataService/index.js';
 import { validatePagination } from '@pocket-tools/apollo-utils';
-import { IContext } from '../server/context';
-import config from '../config';
+import { IContext } from '../server/context.js';
+import config from '../config/index.js';
 
 /**
  * Get saved item by ID

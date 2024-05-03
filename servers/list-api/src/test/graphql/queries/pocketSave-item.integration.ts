@@ -1,7 +1,7 @@
 import { ApolloServer } from '@apollo/server';
-import { ContextManager } from '../../../server/context';
-import { readClient, writeClient } from '../../../database/client';
-import { startServer } from '../../../server/apollo';
+import { ContextManager } from '../../../server/context.js';
+import { readClient, writeClient } from '../../../database/client.js';
+import { startServer } from '../../../server/apollo.js';
 import { Application } from 'express';
 import { gql } from 'graphql-tag';
 import { print } from 'graphql';

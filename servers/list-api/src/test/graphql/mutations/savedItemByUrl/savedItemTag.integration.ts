@@ -1,13 +1,13 @@
 import { ApolloServer } from '@apollo/server';
-import { ContextManager } from '../../../../server/context';
-import { readClient, writeClient } from '../../../../database/client';
-import { startServer } from '../../../../server/apollo';
-import { mockParserGetItemIdRequest } from '../../../utils/parserMocks';
+import { ContextManager } from '../../../../server/context.js';
+import { readClient, writeClient } from '../../../../database/client.js';
+import { startServer } from '../../../../server/apollo.js';
+import { mockParserGetItemIdRequest } from '../../../utils/parserMocks.js';
 import { Application } from 'express';
 import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 import request from 'supertest';
-import { EventType } from '../../../../businessEvents';
+import { EventType } from '../../../../businessEvents/index.js';
 
 describe('savedItemTag mutation', () => {
   const writeDb = writeClient();

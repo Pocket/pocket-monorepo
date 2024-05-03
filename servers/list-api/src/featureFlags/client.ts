@@ -1,5 +1,5 @@
 import { initialize, Unleash } from 'unleash-client';
-import config from '../config';
+import config from '../config/index.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 /**

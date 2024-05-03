@@ -1,8 +1,8 @@
-import { readClient, writeClient } from '../../../../database/client';
+import { readClient, writeClient } from '../../../../database/client.js';
 import { Knex } from 'knex';
-import { EventType } from '../../../../businessEvents';
-import { ContextManager } from '../../../../server/context';
-import { startServer } from '../../../../server/apollo';
+import { EventType } from '../../../../businessEvents/index.js';
+import { ContextManager } from '../../../../server/context.js';
+import { startServer } from '../../../../server/apollo.js';
 import request from 'supertest';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';

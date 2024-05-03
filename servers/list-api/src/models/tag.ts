@@ -13,16 +13,16 @@ import {
   SaveUpdateTagsInputDb,
   SaveWriteMutationPayload,
   SavedItemTagInput,
-} from '../types';
-import config from '../config';
-import { IContext } from '../server/context';
-import { SavedItemDataService, TagDataService } from '../dataService';
+} from '../types/index.js';
+import config from '../config/index.js';
+import { IContext } from '../server/context.js';
+import { SavedItemDataService, TagDataService } from '../dataService/index.js';
 import { NotFoundError, UserInputError } from '@pocket-tools/apollo-utils';
 import { addslashes } from 'locutus/php/strings';
 import * as Sentry from '@sentry/node';
 import { GraphQLResolveInfo } from 'graphql';
-import { ParserCaller } from '../externalCaller/parserCaller';
-import { EventType } from '../businessEvents';
+import { ParserCaller } from '../externalCaller/parserCaller.js';
+import { EventType } from '../businessEvents/index.js';
 
 export class TagModel {
   private tagService: TagDataService;

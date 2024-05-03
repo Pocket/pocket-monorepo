@@ -1,5 +1,5 @@
-import kinesis from '../aws/kinesis';
-import config from '../config';
+import kinesis from '../aws/kinesis.js';
+import config from '../config/index.js';
 import { KinesisClient, PutRecordCommand } from '@aws-sdk/client-kinesis';
 import * as Sentry from '@sentry/node';
 import {
@@ -8,9 +8,9 @@ import {
   ItemEventPayload,
   UnifiedEventMap,
   UnifiedEventPayload,
-} from './types';
+} from './types.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { ItemsEventEmitter } from './itemsEventEmitter';
+import { ItemsEventEmitter } from './itemsEventEmitter.js';
 
 export class UnifiedEventKinesisHandler {
   private readonly kinesis: KinesisClient;

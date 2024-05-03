@@ -3,23 +3,23 @@ import {
   BasicItemEventPayloadWithContext,
   EventType,
   ItemsEventEmitter,
-} from '../businessEvents';
+} from '../businessEvents/index.js';
 import { IncomingHttpHeaders } from 'http';
 import { Knex } from 'knex';
-import { SavedItem, Tag } from '../types';
+import { SavedItem, Tag } from '../types/index.js';
 import DataLoader from 'dataloader';
-import { createSavedItemDataLoaders } from '../dataLoader/savedItemsDataLoader';
-import { createTagDataLoaders } from '../dataLoader/tagsDataLoader';
+import { createSavedItemDataLoaders } from '../dataLoader/savedItemsDataLoader.js';
+import { createTagDataLoaders } from '../dataLoader/tagsDataLoader.js';
 import * as Sentry from '@sentry/node';
 import {
   PocketSaveModel,
   NotFoundErrorModel,
   ItemModel,
   TagModel,
-} from '../models';
-import { SavedItemModel } from '../models/SavedItem';
+} from '../models/index.js';
+import { SavedItemModel } from '../models/SavedItem.js';
 import { Unleash } from 'unleash-client';
-import { getClient } from '../featureFlags';
+import { getClient } from '../featureFlags/index.js';
 
 export interface IContext {
   userId: string;

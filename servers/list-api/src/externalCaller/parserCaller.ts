@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import config from '../config';
+import config from '../config/index.js';
 import { setTimeout } from 'timers/promises';
 
 export type PartialGetItemResponse = {
@@ -101,7 +101,8 @@ export class ParserCaller {
       }/getItem?url=${encodeURIComponent(url)}&createIfNone=false`,
     );
 
-    const data: PartialGetItemResponse | null = await response.json();
+    const data: PartialGetItemResponse | null =
+      (await response.json()) as PartialGetItemResponse;
     return data?.item_id ?? null;
   }
 }

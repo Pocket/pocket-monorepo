@@ -4,7 +4,7 @@ import {
   HttpProtocol,
   tracker as snowPlowTracker,
 } from '@snowplow/node-tracker';
-import config from '../config';
+import config from '../config/index.js';
 
 const emitter = gotEmitter(
   config.snowplow.endpoint,

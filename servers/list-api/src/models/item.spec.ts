@@ -1,5 +1,5 @@
-import { PendingItemStatus } from '../types';
-import { ItemModel } from './item';
+import { PendingItemStatus } from '../types/index.js';
+import { ItemModel } from './item.js';
 
 describe('ItemModel', () => {
   describe('getBySave', () => {

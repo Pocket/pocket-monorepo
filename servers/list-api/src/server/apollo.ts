@@ -4,6 +4,7 @@ import { Server, createServer } from 'http';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServer } from '@apollo/server';
 import {
+  ApolloServerPlugin,
   defaultPlugins,
   errorHandler,
   isIntrospection,
@@ -11,9 +12,9 @@ import {
   sentryPocketMiddleware,
 } from '@pocket-tools/apollo-utils';
 import { initSentry } from '@pocket-tools/sentry';
-import config from '../config';
-import { ContextManager } from './context';
-import { readClient, writeClient } from '../database/client';
+import config from '../config/index.js';
+import { ContextManager } from './context.js';
+import { readClient, writeClient } from '../database/client.js';
 import {
   eventBridgeEventHandler,
   initItemEventHandlers,
@@ -21,12 +22,12 @@ import {
   snowplowEventHandler,
   sqsEventHandler,
   unifiedEventHandler,
-} from '../businessEvents';
+} from '../businessEvents/index.js';
 import { Knex } from 'knex';
-import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4';
-import { schema } from './schema';
+import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4.js';
+import { schema } from './schema.js';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
-import * as unleash from '../featureFlags';
+import * as unleash from '../featureFlags/index.js';
 
 /**
  * Stopgap method to set global db connection in context,
@@ -107,7 +108,10 @@ export async function startServer(port: number): Promise<{
     schema,
     plugins: [
       ...defaultPlugins(httpServer),
-      createApollo4QueryValidationPlugin({ schema }),
+      // https://github.com/confuser/graphql-constraint-directive/issues/188
+      createApollo4QueryValidationPlugin({
+        schema,
+      }) as unknown as ApolloServerPlugin,
     ],
     formatError: process.env.NODE_ENV !== 'test' ? errorHandler : undefined,
     introspection: true,

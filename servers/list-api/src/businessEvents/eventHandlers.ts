@@ -1,12 +1,12 @@
-import { UnifiedEventKinesisHandler } from './unifiedEventKinesisHandler';
-import { SqsListener } from './sqs/sqsListener';
-import { ItemsEventEmitter } from './itemsEventEmitter';
-import { SnowplowHandler } from './snowplowHandler';
-import { tracker } from '../snowplow/tracker';
-import config from '../config';
-import { transformers } from './sqs/transformers';
-import { EventType } from './types';
-import { EventBridgeHandler } from './eventBridgeHandler';
+import { UnifiedEventKinesisHandler } from './unifiedEventKinesisHandler.js';
+import { SqsListener } from './sqs/sqsListener.js';
+import { ItemsEventEmitter } from './itemsEventEmitter.js';
+import { SnowplowHandler } from './snowplowHandler.js';
+import { tracker } from '../snowplow/tracker.js';
+import config from '../config/index.js';
+import { transformers } from './sqs/transformers/index.js';
+import { EventType } from './types.js';
+import { EventBridgeHandler } from './eventBridgeHandler.js';
 
 export type ItemEventHandlerFn = (emitter: ItemsEventEmitter) => void;
 

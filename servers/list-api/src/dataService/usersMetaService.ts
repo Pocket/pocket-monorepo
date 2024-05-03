@@ -1,7 +1,7 @@
 import { Knex } from 'knex';
-import { IContext } from '../server/context';
-import { mysqlTimeString } from './utils';
-import config from '../config';
+import { IContext } from '../server/context.js';
+import { mysqlTimeString } from './utils.js';
+import config from '../config/index.js';
 import { DateTime } from 'luxon';
 
 export class UsersMetaService {

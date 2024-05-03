@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { IContext } from '../server/context';
+import { IContext } from '../server/context.js';
 import {
   SavedItemStatus,
   SavedItem,
@@ -11,10 +11,10 @@ import {
   OffsetPaginationInput,
   SavedItemsPage,
   SavedItemResult,
-} from '../types';
-import * as tag from '../models/tag';
-import { mysqlTimeString } from './utils';
-import config from '../config';
+} from '../types/index.js';
+import * as tag from '../models/tag.js';
+import { mysqlTimeString } from './utils.js';
+import config from '../config/index.js';
 import { PaginationInput, UserInputError } from '@pocket-tools/apollo-utils';
 
 interface ListEntity {

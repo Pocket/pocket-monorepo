@@ -1,11 +1,11 @@
-import { SavedItem } from '../types';
-import { SavedItemDataService } from '../dataService';
+import { SavedItem } from '../types/index.js';
+import { SavedItemDataService } from '../dataService/index.js';
 import {
   batchGetSavedItemsByIds,
   batchGetSavedItemsByUrls,
-} from './savedItemsDataLoader';
-import { writeClient } from '../database/client';
-import { getClient } from '../featureFlags/client';
+} from './savedItemsDataLoader.js';
+import { writeClient } from '../database/client.js';
+import { getClient } from '../featureFlags/client.js';
 
 describe('savedItem data loader', function () {
   const testSavedItem: SavedItem[] = [

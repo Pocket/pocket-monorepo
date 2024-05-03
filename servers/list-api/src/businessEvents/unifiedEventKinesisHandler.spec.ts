@@ -1,7 +1,7 @@
-import config from '../config';
-import { EventType, unifiedEventTransformer } from '.';
-import { SavedItem } from '../types';
-import { getUnixTimestamp } from '../utils';
+import config from '../config/index.js';
+import { EventType, unifiedEventTransformer } from './index.js';
+import { SavedItem } from '../types/index.js';
+import { getUnixTimestamp } from '../utils.js';
 
 describe('UnifiedEventHandler', () => {
   afterEach(() => {

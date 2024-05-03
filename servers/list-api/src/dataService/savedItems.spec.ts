@@ -1,4 +1,4 @@
-import { SavedItemDataService } from './savedItemsService';
+import { SavedItemDataService } from './savedItemsService.js';
 
 describe('SavedItemsDataService', () => {
   describe('convertDbResultStatus', () => {

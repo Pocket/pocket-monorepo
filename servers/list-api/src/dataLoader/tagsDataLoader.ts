@@ -1,9 +1,9 @@
-import config from '../config';
-import { IContext } from '../server/context';
-import { reorderResultByKey } from './utils';
-import { SavedItemDataService, TagDataService } from '../dataService';
-import { Tag } from '../types';
-import { TagModel } from '../models';
+import config from '../config/index.js';
+import { IContext } from '../server/context.js';
+import { reorderResultByKey } from './utils.js';
+import { SavedItemDataService, TagDataService } from '../dataService/index.js';
+import { Tag } from '../types/index.js';
+import { TagModel } from '../models/index.js';
 import DataLoader from 'dataloader';
 
 /**

@@ -35,7 +35,7 @@
     "jest-mock-req-res": "1.0.2",
     "nock": "13.5.4",
     "nodemon": "3.1.0",
-    "supertest": "6.3.4",
+    "supertest": "7.0.0",
     "ts-jest": "29.1.2",
     "tsconfig": "workspace:*"
   },

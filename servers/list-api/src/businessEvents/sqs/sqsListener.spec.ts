@@ -1,9 +1,9 @@
-import { SqsListener } from './sqsListener';
-import { ItemsEventEmitter } from '../itemsEventEmitter';
-import { SavedItem } from '../../types';
-import { EventType } from '../types';
-import config from '../../config';
-import { sqs } from '../../aws/sqs';
+import { SqsListener } from './sqsListener.js';
+import { ItemsEventEmitter } from '../itemsEventEmitter.js';
+import { SavedItem } from '../../types/index.js';
+import { EventType } from '../types.js';
+import config from '../../config/index.js';
+import { sqs } from '../../aws/sqs.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 describe('SqsListener spec test', function () {

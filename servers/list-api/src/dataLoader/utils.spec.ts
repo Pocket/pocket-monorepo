@@ -1,4 +1,4 @@
-import { reorderResultByKey } from './utils';
+import { reorderResultByKey } from './utils.js';
 
 type MyObject = {
   name: string;

@@ -1,6 +1,6 @@
-import { ItemEventPayload, SQSEvents } from '../../types';
-import config from '../../../config';
-import { mysqlTimeString } from '../../../dataService/utils';
+import { ItemEventPayload, SQSEvents } from '../../types.js';
+import config from '../../../config/index.js';
+import { mysqlTimeString } from '../../../dataService/utils.js';
 import * as Sentry from '@sentry/node';
 
 export type EventTransFormer = {

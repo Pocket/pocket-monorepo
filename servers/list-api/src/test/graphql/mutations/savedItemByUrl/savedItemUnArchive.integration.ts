@@ -1,12 +1,12 @@
-import { readClient, writeClient } from '../../../../database/client';
-import { ContextManager } from '../../../../server/context';
-import { startServer } from '../../../../server/apollo';
+import { readClient, writeClient } from '../../../../database/client.js';
+import { ContextManager } from '../../../../server/context.js';
+import { startServer } from '../../../../server/apollo.js';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 import request from 'supertest';
-import { mockParserGetItemIdRequest } from '../../../utils/parserMocks';
+import { mockParserGetItemIdRequest } from '../../../utils/parserMocks.js';
 
 describe('savedItemUnArchive mutation', function () {
   const writeDb = writeClient();

@@ -1,8 +1,8 @@
-import { readClient, writeClient } from '../../../database/client';
+import { readClient, writeClient } from '../../../database/client.js';
 import { seeds } from '@pocket-tools/backend-benchmarking';
-import { ListPaginationService } from '../../../dataService/listPaginationService';
-import { ContextManager } from '../../../server/context';
-import { startServer } from '../../../server/apollo';
+import { ListPaginationService } from '../../../dataService/listPaginationService.js';
+import { ContextManager } from '../../../server/context.js';
+import { startServer } from '../../../server/apollo.js';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';

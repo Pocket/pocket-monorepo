@@ -1,6 +1,6 @@
-import { readClient, writeClient } from '../../database/client';
-import { SavedItemDataService } from '../../dataService';
-import { ContextManager } from '../../server/context';
+import { readClient, writeClient } from '../../database/client.js';
+import { SavedItemDataService } from '../../dataService/index.js';
+import { ContextManager } from '../../server/context.js';
 
 describe('SavedItemsService', () => {
   const db = writeClient();

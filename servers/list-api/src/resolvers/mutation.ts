@@ -7,14 +7,14 @@ import {
   SavedItemTagsInput,
   Tag,
   SavedItemRefInput,
-} from '../types';
-import { IContext } from '../server/context';
-import { ParserCaller } from '../externalCaller/parserCaller';
-import { SavedItemDataService } from '../dataService';
+} from '../types/index.js';
+import { IContext } from '../server/context.js';
+import { ParserCaller } from '../externalCaller/parserCaller.js';
+import { SavedItemDataService } from '../dataService/index.js';
 import * as Sentry from '@sentry/node';
-import { EventType } from '../businessEvents';
-import { getSavedItemTagsMap, atLeastOneOf } from './utils';
-import { TagModel } from '../models';
+import { EventType } from '../businessEvents/index.js';
+import { getSavedItemTagsMap, atLeastOneOf } from './utils.js';
+import { TagModel } from '../models/index.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { NotFoundError, UserInputError } from '@pocket-tools/apollo-utils';
 

@@ -1,4 +1,4 @@
-import { PocketSaveStatus } from '../types';
+import { PocketSaveStatus } from '../types/index.js';
 
 export type RawListResult = {
   api_id: string;

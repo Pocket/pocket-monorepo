@@ -1,12 +1,12 @@
-import { readClient, writeClient } from '../../../database/client';
-import { startServer } from '../../../server/apollo';
-import { ContextManager } from '../../../server/context';
+import { readClient, writeClient } from '../../../database/client.js';
+import { startServer } from '../../../server/apollo.js';
+import { ContextManager } from '../../../server/context.js';
 import { ApolloServer } from '@apollo/server';
 import { Application } from 'express';
 import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 import request from 'supertest';
-import { TagDataService } from '../../../dataService';
+import { TagDataService } from '../../../dataService/index.js';
 
 describe('pocketSave.tags', () => {
   // proxy for testing we're using dataloader => batch queries

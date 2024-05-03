@@ -1,11 +1,15 @@
 import { Knex } from 'knex';
-import { IContext } from '../server/context';
-import { mysqlTimeString } from './utils';
-import { SavedItem, SavedItemStatus, SavedItemUpsertInput } from '../types';
-import config from '../config';
-import { ItemResponse } from '../externalCaller/parserCaller';
+import { IContext } from '../server/context.js';
+import { mysqlTimeString } from './utils.js';
+import {
+  SavedItem,
+  SavedItemStatus,
+  SavedItemUpsertInput,
+} from '../types/index.js';
+import config from '../config/index.js';
+import { ItemResponse } from '../externalCaller/parserCaller.js';
 import { chunk } from 'lodash';
-import { RawListResult, ListResult } from './types';
+import { RawListResult, ListResult } from './types.js';
 
 export type ListEntity = {
   user_id?: number;

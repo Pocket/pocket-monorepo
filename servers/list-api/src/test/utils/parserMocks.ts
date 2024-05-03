@@ -1,5 +1,5 @@
 import nock from 'nock';
-import config from '../../config';
+import config from '../../config/index.js';
 
 function mockParserRequest(
   urlToParse: string,

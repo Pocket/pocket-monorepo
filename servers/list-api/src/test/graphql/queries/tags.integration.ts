@@ -1,13 +1,13 @@
-import { readClient, writeClient } from '../../../database/client';
-import config from '../../../config';
-import { ContextManager } from '../../../server/context';
-import { startServer } from '../../../server/apollo';
+import { readClient, writeClient } from '../../../database/client.js';
+import config from '../../../config/index.js';
+import { ContextManager } from '../../../server/context.js';
+import { startServer } from '../../../server/apollo.js';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import { gql } from 'graphql-tag';
 import { print } from 'graphql';
-import { TagDataService } from '../../../dataService';
+import { TagDataService } from '../../../dataService/index.js';
 
 const toBeStringOfLengthGreaterThanOne = () => expect.stringMatching(/.+/);
 

@@ -4,7 +4,7 @@ import {
   PendingItemStatus,
   PendingItem,
   Item,
-} from '../types';
+} from '../types/index.js';
 
 export class ItemModel {
   /**

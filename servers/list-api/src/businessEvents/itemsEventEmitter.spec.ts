@@ -1,8 +1,8 @@
-import { ItemsEventEmitter } from './itemsEventEmitter';
-import { BasicItemEventPayloadWithContext, EventType } from './types';
-import config from '../config';
-import { SavedItem } from '../types';
-import { getUnixTimestamp } from '../utils';
+import { ItemsEventEmitter } from './itemsEventEmitter.js';
+import { BasicItemEventPayloadWithContext, EventType } from './types.js';
+import config from '../config/index.js';
+import { SavedItem } from '../types/index.js';
+import { getUnixTimestamp } from '../utils.js';
 
 describe('ItemsEventEmitter', () => {
   const emitter = new ItemsEventEmitter();

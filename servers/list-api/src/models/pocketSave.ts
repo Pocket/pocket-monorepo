@@ -1,7 +1,11 @@
-import { PocketSave, SaveByIdResult, SaveWriteMutationPayload } from '../types';
-import { IContext } from '../server/context';
-import { ListResult, PocketSaveDataService } from '../dataService';
-import { uniqueArray } from '../dataService/utils';
+import {
+  PocketSave,
+  SaveByIdResult,
+  SaveWriteMutationPayload,
+} from '../types/index.js';
+import { IContext } from '../server/context.js';
+import { ListResult, PocketSaveDataService } from '../dataService/index.js';
+import { uniqueArray } from '../dataService/utils.js';
 import { GraphQLResolveInfo } from 'graphql';
 
 export class PocketSaveModel {

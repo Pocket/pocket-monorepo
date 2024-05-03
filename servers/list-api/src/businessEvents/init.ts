@@ -1,5 +1,5 @@
-import { ItemsEventEmitter } from './itemsEventEmitter';
-import { ItemEventHandlerFn } from './eventHandlers';
+import { ItemsEventEmitter } from './itemsEventEmitter.js';
+import { ItemEventHandlerFn } from './eventHandlers.js';
 
 // Init the event emitter
 export const itemsEventEmitter = new ItemsEventEmitter();

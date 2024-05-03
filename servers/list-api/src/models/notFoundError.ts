@@ -1,5 +1,5 @@
-import { BaseErrorModel } from './baseError';
-import { NotFound } from '../types';
+import { BaseErrorModel } from './baseError.js';
+import { NotFound } from '../types/index.js';
 
 export class NotFoundErrorModel extends BaseErrorModel {
   public message(key: string, value: string, includeKV = false): NotFound {

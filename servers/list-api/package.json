@@ -1,6 +1,7 @@
 {
   "main": "dist/server/main.js",
   "name": "list-api",
+  "type": "module",
   "scripts": {
     "build": "rm -rf dist && tsc && npm run build-schema",
     "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json",
@@ -19,10 +20,10 @@
     "@aws-sdk/client-sqs": "3.554.0",
     "@pocket-tools/apollo-cursor-pagination": "1.0.3",
     "@pocket-tools/apollo-utils": "workspace:*",
+    "@pocket-tools/int-mask": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@pocket-tools/int-mask": "workspace:*",
     "@snowplow/node-tracker": "3.23.0",
     "dataloader": "2.2.2",
     "express": "4.19.2",
@@ -54,7 +55,7 @@
     "jest-extended": "4.0.2",
     "nock": "13.5.4",
     "nodemon": "3.1.0",
-    "supertest": "6.3.4",
+    "supertest": "7.0.0",
     "ts-jest": "29.1.2",
     "tsconfig": "workspace:*"
   },

@@ -1,10 +1,10 @@
-import { ParserCaller } from './parserCaller';
+import { ParserCaller } from './parserCaller.js';
 import nock from 'nock';
-import config from '../config';
+import config from '../config/index.js';
 import {
   mockParserGetItemRequest,
   mockParserGetItemIdRequest,
-} from '../test/utils/parserMocks';
+} from '../test/utils/parserMocks.js';
 
 describe('ParserCallerTest', function () {
   const urlToParse = 'https://igiveyou.a.test';

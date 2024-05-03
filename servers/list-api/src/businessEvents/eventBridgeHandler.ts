@@ -1,9 +1,9 @@
-import { ItemsEventEmitter } from './itemsEventEmitter';
-import { EventType, ItemEventPayload } from './types';
-import config from '../config';
+import { ItemsEventEmitter } from './itemsEventEmitter.js';
+import { EventType, ItemEventPayload } from './types.js';
+import config from '../config/index.js';
 import { PutEventsCommand } from '@aws-sdk/client-eventbridge';
-import { eventBridgeClient } from '../aws/eventBridgeClient';
-import { EventBridgeBase } from '../aws/eventBridgeBase';
+import { eventBridgeClient } from '../aws/eventBridgeClient.js';
+import { EventBridgeBase } from '../aws/eventBridgeBase.js';
 
 export class EventBridgeHandler extends EventBridgeBase {
   constructor(

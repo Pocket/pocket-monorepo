@@ -1,9 +1,9 @@
-import { SavedItemTagsInput, Tag } from '../types';
+import { SavedItemTagsInput, Tag } from '../types/index.js';
 import {
   atLeastOneOf,
   getSavedItemMapFromTags,
   getSavedItemTagsMap,
-} from './utils';
+} from './utils.js';
 
 describe('getSavedItemMapFromTags', () => {
   it('should return a savedItem map from a list of tags', () => {

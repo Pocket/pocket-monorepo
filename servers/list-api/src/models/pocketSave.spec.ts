@@ -1,6 +1,6 @@
-import { ListResult } from '../dataService/index';
-import { PocketSaveModel } from './index';
-import { PocketSave } from '../types';
+import { ListResult } from '../dataService/index.js';
+import { PocketSaveModel } from './index.js';
+import { PocketSave } from '../types/index.js';
 
 const dateAdded = new Date('2008-10-21 13:57:01');
 const dateFavorited = null;

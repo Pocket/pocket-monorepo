@@ -3,8 +3,8 @@ import {
   PutEventsCommand,
 } from '@aws-sdk/client-eventbridge';
 import * as Sentry from '@sentry/node';
-import { EventBridgeBase } from './eventBridgeBase';
-import { eventBridgeClient } from './eventBridgeClient';
+import { EventBridgeBase } from './eventBridgeBase.js';
+import { eventBridgeClient } from './eventBridgeClient.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 describe('EventBridgeBase.putEvent', () => {

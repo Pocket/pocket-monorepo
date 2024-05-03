@@ -3,7 +3,7 @@ import {
   mysqlTimeString,
   setDifference,
   uniqueArray,
-} from './utils';
+} from './utils.js';
 
 const dateGood = new Date('2008-11-03 08:51:01');
 const dateNull = new Date('0000-00-00 00:00:00');

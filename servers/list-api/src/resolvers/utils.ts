@@ -3,7 +3,7 @@ import {
   SavedItemTagsInput,
   SavedItemTagsMap,
   TagSaveAssociation,
-} from '../types';
+} from '../types/index.js';
 
 /**
  * Returns a savedItemMap from the list of tags.

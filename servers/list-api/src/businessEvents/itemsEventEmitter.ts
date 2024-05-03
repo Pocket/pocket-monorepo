@@ -1,11 +1,11 @@
 import EventEmitter from 'events';
-import config from '../config';
+import config from '../config/index.js';
 import {
   BasicItemEventPayloadWithContext,
   EventType,
   ItemEventPayload,
-} from './types';
-import { getUnixTimestamp } from '../utils';
+} from './types.js';
+import { getUnixTimestamp } from '../utils.js';
 
 export class ItemsEventEmitter extends EventEmitter {
   private static buildEvent(

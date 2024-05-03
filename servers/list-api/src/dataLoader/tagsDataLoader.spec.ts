@@ -1,8 +1,8 @@
-import { batchGetTagsByItemIds } from './tagsDataLoader';
-import { writeClient } from '../database/client';
-import { SavedItemDataService, TagDataService } from '../dataService';
-import { ContextManager, IContext } from '../server/context';
-import { Tag } from '../types';
+import { batchGetTagsByItemIds } from './tagsDataLoader.js';
+import { writeClient } from '../database/client.js';
+import { SavedItemDataService, TagDataService } from '../dataService/index.js';
+import { ContextManager, IContext } from '../server/context.js';
+import { Tag } from '../types/index.js';
 
 describe('tags dataloader', function () {
   const testTags: { [savedItemId: string]: Tag[] } = {

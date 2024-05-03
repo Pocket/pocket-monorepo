@@ -1,9 +1,9 @@
-import { ContextManager, IContext } from './context';
+import { ContextManager, IContext } from './context.js';
 import { Knex } from 'knex';
 import DataLoader from 'dataloader';
-import { SavedItemDataService } from '../dataService';
-import { SavedItem } from '../types';
-import { EventType, ItemsEventEmitter } from '../businessEvents';
+import { SavedItemDataService } from '../dataService/index.js';
+import { SavedItem } from '../types/index.js';
+import { EventType, ItemsEventEmitter } from '../businessEvents/index.js';
 import * as Sentry from '@sentry/node';
 import { Request } from 'express';
 
