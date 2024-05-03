@@ -1,6 +1,6 @@
 import knex, { Knex } from 'knex';
 import { fetchSecret } from '@pocket-tools/lambda-secrets';
-import { config } from './config';
+import { config } from './config.js';
 
 let readDb: Knex;
 let writeDb: Knex;

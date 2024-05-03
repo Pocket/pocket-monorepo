@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/serverless';
 import { SQSEvent } from 'aws-lambda';
-import { config } from './config';
-import { instantSyncHandler } from './handlerFn';
+import { config } from './config.js';
+import { instantSyncHandler } from './handlerFn.js';
 
 Sentry.AWSLambda.init({
   ...config.sentry,

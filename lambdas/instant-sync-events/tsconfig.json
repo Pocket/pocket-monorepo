@@ -1,8 +1,7 @@
 {
   "extends": "tsconfig/lambda.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "outDir": "dist",
+    "outDir": "dist"
   },
   "exclude": [
     "node_modules",

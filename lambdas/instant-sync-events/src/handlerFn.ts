@@ -1,11 +1,11 @@
 import { SQSRecord, SQSBatchResponse, SQSBatchItemFailure } from 'aws-lambda';
-import { readClient, writeClient } from './clients';
-import { client } from './sqs';
+import { readClient, writeClient } from './clients.js';
+import { client } from './sqs.js';
 import {
   SendMessageBatchCommand,
   SendMessageBatchRequestEntry,
 } from '@aws-sdk/client-sqs';
-import { config } from './config';
+import { config } from './config.js';
 import { nanoid } from 'nanoid';
 
 export const eventTypes = [

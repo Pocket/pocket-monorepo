@@ -1,5 +1,5 @@
 import { SQSRecord } from 'aws-lambda';
-import { Message, filterUserIds } from './handlerFn';
+import { Message, filterUserIds } from './handlerFn.js';
 
 describe('filterUserIds', () => {
   it.each([
