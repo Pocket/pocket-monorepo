@@ -4,9 +4,9 @@ import { Server, createServer } from 'http';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServer } from '@apollo/server';
 import { buildSubgraphSchema } from '@apollo/subgraph';
-import { typeDefs } from './typeDefs';
-import { resolvers } from '../resolvers';
-import { ContextManager } from './context';
+import { typeDefs } from './typeDefs.js';
+import { resolvers } from '../resolvers/index.js';
+import { ContextManager } from './context.js';
 import {
   errorHandler,
   isSubgraphIntrospection,
@@ -16,8 +16,8 @@ import {
 } from '@pocket-tools/apollo-utils';
 import { initSentry } from '@pocket-tools/sentry';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
-import config from '../config';
-import { getRedis } from '../cache';
+import config from '../config/index.js';
+import { getRedis } from '../cache/index.js';
 
 /**
  * Context factory function. Creates a new context upon

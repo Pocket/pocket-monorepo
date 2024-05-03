@@ -1,5 +1,5 @@
 import { NotFoundError } from '@pocket-tools/apollo-utils';
-import { getOriginalUrlIfPocketImageCached } from './utils';
+import { getOriginalUrlIfPocketImageCached } from './utils.js';
 
 describe('getOriginalUrlIfPocketImageCached', () => {
   it('gets the original image if it has been encoded already', () => {

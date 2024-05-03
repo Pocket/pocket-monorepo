@@ -1,8 +1,8 @@
-import { IContext } from '../server/context';
-import { Image, CachedImageInput, CachedImage } from '../types';
-import { getOriginalUrlIfPocketImageCached } from '../pocketImageCache/utils';
-import { getPocketImageCachePath } from '../pocketImageCache';
-import config from '../config';
+import { IContext } from '../server/context.js';
+import { Image, CachedImageInput, CachedImage } from '../types/index.js';
+import { getOriginalUrlIfPocketImageCached } from '../pocketImageCache/utils.js';
+import { getPocketImageCachePath } from '../pocketImageCache/index.js';
+import config from '../config/index.js';
 
 export const resolvers = {
   Image: {

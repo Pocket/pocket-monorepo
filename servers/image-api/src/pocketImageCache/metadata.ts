@@ -1,8 +1,8 @@
 import axios from 'axios';
 import axiosRetry, { exponentialDelay } from 'axios-retry';
-import config from '../config';
-import { Image } from '../types';
-import { getEncodedImageUrl } from './index';
+import config from '../config/index.js';
+import { Image } from '../types/index.js';
+import { getEncodedImageUrl } from './index.js';
 
 // Retry requests 3 times
 axiosRetry(axios, { retries: 3 });

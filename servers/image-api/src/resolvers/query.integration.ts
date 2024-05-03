@@ -3,12 +3,12 @@ import {
   IMAGE_REFERENCE_RESOLVER_SOURCE_METADATA,
   BASE_CACHED_IMAGE_REFERENCE_RESOLVER,
   CACHED_IMAGE_REFERENCE_RESOLVER_METADATA,
-} from './sample-queries';
+} from './sample-queries.js';
 import nock, { cleanAll, pendingMocks } from 'nock';
-import { getRedis, getRedisCache } from '../cache';
-import { startServer } from '../server/apollo';
+import { getRedis, getRedisCache } from '../cache/index.js';
+import { startServer } from '../server/apollo.js';
 import request from 'supertest';
-import { ContextManager } from '../server/context';
+import { ContextManager } from '../server/context.js';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import { expect } from '@jest/globals';

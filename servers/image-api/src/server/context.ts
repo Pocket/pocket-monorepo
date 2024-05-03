@@ -1,7 +1,7 @@
 import { IncomingHttpHeaders } from 'http';
-import { Image } from '../types';
+import { Image } from '../types/index.js';
 import DataLoader from 'dataloader';
-import { createImageDataLoaders } from '../dataLoaders/imageLoader';
+import { createImageDataLoaders } from '../dataLoaders/imageLoader.js';
 
 export interface IContext {
   headers: IncomingHttpHeaders;

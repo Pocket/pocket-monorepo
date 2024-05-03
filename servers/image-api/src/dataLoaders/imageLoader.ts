@@ -1,10 +1,10 @@
 import DataLoader from 'dataloader';
-import { IContext } from '../server/context';
-import { Image } from '../types';
+import { IContext } from '../server/context.js';
+import { Image } from '../types/index.js';
 import { batchCacheFn } from '@pocket-tools/apollo-utils';
-import { getRedisCache } from '../cache';
-import config from '../config';
-import { getImageMetadata } from '../pocketImageCache/metadata';
+import { getRedisCache } from '../cache/index.js';
+import config from '../config/index.js';
+import { getImageMetadata } from '../pocketImageCache/metadata.js';
 
 /**
  * Grabs all source image values, first grabbing from the redis cache

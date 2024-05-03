@@ -1,4 +1,4 @@
-import { CachedImageInput, ImageFileType } from '../types';
+import { CachedImageInput, ImageFileType } from '../types/index.js';
 
 /**
  * Given the image and cached input, build the Pocket Image Cache end path of the url

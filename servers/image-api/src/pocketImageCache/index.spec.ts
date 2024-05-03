@@ -1,5 +1,5 @@
-import { getPocketImageCacheURLPathFilters } from '.';
-import { CachedImageInput } from '../types';
+import { getPocketImageCacheURLPathFilters } from './index.js';
+import { CachedImageInput } from '../types/index.js';
 
 describe('getPocketImageCacheURLPathFilters', () => {
   it('works with no input and returns defaults', () => {
