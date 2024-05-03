@@ -1,14 +1,14 @@
 import { SQSEvent } from 'aws-lambda';
 import * as Sentry from '@sentry/serverless';
 
-import config from './config';
+import config from './config.js';
 import {
   handleMutationErrors,
   migrateAppleUserMutation,
   passwordChangeMutation,
   submitDeleteMutation,
   submitEmailUpdatedMutation,
-} from './mutations';
+} from './mutations.js';
 
 // these events are defined in ./gateway_lambda/config.ts
 export enum EVENT {

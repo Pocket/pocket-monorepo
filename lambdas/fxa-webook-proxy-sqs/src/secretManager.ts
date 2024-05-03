@@ -2,7 +2,7 @@ import {
   GetSecretValueCommand,
   SecretsManagerClient,
 } from '@aws-sdk/client-secrets-manager';
-import config from './config';
+import config from './config.js';
 
 const client = new SecretsManagerClient({ region: config.aws.region });
 

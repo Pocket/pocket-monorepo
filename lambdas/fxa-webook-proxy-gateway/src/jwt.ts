@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
 import fetch from 'node-fetch';
-import config from './config';
-import { FxaPayload, FxaOpenIdConfigPayload } from './types';
+import config from './config.js';
+import { FxaPayload, FxaOpenIdConfigPayload } from './types.js';
 
 export class FxaJwt {
   public readonly token: jwt.Jwt;
@@ -29,9 +29,9 @@ export class FxaJwt {
       throw new Error('Invalid token: No token kid.');
     }
 
-    const fxaOpenIdConfigPayload: FxaOpenIdConfigPayload = await (
-      await fetch(config.fxa.openIdConfigUrl)
-    ).json();
+    const data = await fetch(config.fxa.openIdConfigUrl);
+    const fxaOpenIdConfigPayload: FxaOpenIdConfigPayload =
+      (await data.json()) as FxaOpenIdConfigPayload;
 
     const client = jwksClient({ jwksUri: fxaOpenIdConfigPayload.jwks_uri });
     const key = await client.getSigningKey(this.token.header.kid);

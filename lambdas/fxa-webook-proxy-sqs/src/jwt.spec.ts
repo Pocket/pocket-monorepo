@@ -1,4 +1,4 @@
-import { generateJwt } from './jwt';
+import { generateJwt } from './jwt.js';
 import jwt from 'jsonwebtoken';
 import jwkToPem from 'jwk-to-pem';
 

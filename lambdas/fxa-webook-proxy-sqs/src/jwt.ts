@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import jwkToPem from 'jwk-to-pem';
-import config from './config';
+import config from './config.js';
 
 type JwtPayload = {
   iss: string;

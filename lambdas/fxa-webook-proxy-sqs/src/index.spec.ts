@@ -1,9 +1,9 @@
-import * as fx from './index';
-import config from './config';
+import * as fx from './index.js';
+import config from './config.js';
 import nock from 'nock';
-import * as jwt from './jwt';
-import * as secretManager from './secretManager';
-import * as mutations from './mutations';
+import * as jwt from './jwt.js';
+import * as secretManager from './secretManager.js';
+import * as mutations from './mutations.js';
 
 describe('SQS Event Handler', () => {
   let handleMutationErrorsSpy;

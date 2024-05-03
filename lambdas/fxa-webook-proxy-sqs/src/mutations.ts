@@ -2,10 +2,10 @@ import fetch from 'node-fetch';
 
 import { SQSRecord } from 'aws-lambda';
 
-import config from './config';
-import { getFxaPrivateKey } from './secretManager';
-import { generateJwt } from './jwt';
-import { FxaEvent } from '.';
+import config from './config.js';
+import { getFxaPrivateKey } from './secretManager.js';
+import { generateJwt } from './jwt.js';
+import { FxaEvent } from './index.js';
 
 // should match the reasons defined in user-api subgraph schema:
 // https://github.com/Pocket/user-api/blob/main/schema.graphql#L69

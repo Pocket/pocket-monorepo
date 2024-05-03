@@ -1,15 +1,15 @@
-import { FxaJwt } from './jwt';
+import { FxaJwt } from './jwt.js';
 import * as Sentry from '@sentry/serverless';
-import { eventHandler, formatResponse } from './index';
-import config from './config';
+import { eventHandler, formatResponse } from './index.js';
+import config from './config.js';
 import {
   PurgeQueueCommand,
   ReceiveMessageCommand,
   ReceiveMessageCommandInput,
 } from '@aws-sdk/client-sqs';
-import { sqsClient } from './sqs';
+import { sqsClient } from './sqs.js';
 import { APIGatewayEvent } from 'aws-lambda';
-import { EVENT } from './types';
+import { EVENT } from './types.js';
 
 const sampleApiGatewayEvent: APIGatewayEvent = {
   body: null,

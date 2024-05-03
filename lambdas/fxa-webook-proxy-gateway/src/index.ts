@@ -1,9 +1,9 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 import * as Sentry from '@sentry/serverless';
-import config from './config';
-import { FxaJwt } from './jwt';
-import { sendMessage } from './sqs';
-import { SqsEvent, FxaPayload } from './types';
+import config from './config.js';
+import { FxaJwt } from './jwt.js';
+import { sendMessage } from './sqs.js';
+import { SqsEvent, FxaPayload } from './types.js';
 
 Sentry.AWSLambda.init({
   dsn: config.sentry.dsn,
