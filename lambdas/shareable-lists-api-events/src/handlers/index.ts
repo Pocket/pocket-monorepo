@@ -1,5 +1,5 @@
 import { SQSRecord } from 'aws-lambda';
-import { accountDeleteHandler } from './accountDelete';
+import { accountDeleteHandler } from './accountDelete.js';
 
 // right hand value should map to the respective `detailType` in event bridge
 export enum Event {

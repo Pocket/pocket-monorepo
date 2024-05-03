@@ -1,5 +1,5 @@
 import { SQSRecord } from 'aws-lambda';
-import { config } from '../config';
+import { config } from '../config.js';
 import isomorphicFetch from 'isomorphic-fetch';
 import fetchRetry from 'fetch-retry';
 
