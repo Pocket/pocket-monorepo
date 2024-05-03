@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import { gql } from 'graphql-tag';
-import { Context, Properties } from 'unleash-client/lib/context';
+import { Context, Properties } from 'unleash-client/lib/context.js';
 
 /**
  * Any updates to the types in this file also need to be reflected in the schema.gql.

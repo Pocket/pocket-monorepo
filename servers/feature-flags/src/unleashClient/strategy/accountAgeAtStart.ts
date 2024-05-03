@@ -1,11 +1,11 @@
 import { Strategy } from 'unleash-client';
-import { UnleashContext } from '../../graphql/typeDefs';
-import { normalizedStrategyValue } from 'unleash-client/lib/strategy/util';
+import { UnleashContext } from '../../graphql/typeDefs.js';
+import { normalizedStrategyValue } from 'unleash-client/lib/strategy/util.js';
 import {
   StartDateError,
   AccountAgeError,
   SessionIdError,
-} from '../../utils/customErrors';
+} from '../../utils/customErrors.js';
 import * as Sentry from '@sentry/node';
 
 const DAY_IN_MILLISECONDS = 86400000;

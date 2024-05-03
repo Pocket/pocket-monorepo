@@ -6,7 +6,7 @@ import {
   RoleName,
   AuthenticationRequired,
 } from 'unleash-server';
-import appConfig from '../config';
+import appConfig from '../config/index.js';
 import {
   Strategy as OidcStrategy,
   MergedProfile,

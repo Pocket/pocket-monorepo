@@ -1,7 +1,7 @@
-import { resolvers } from './resolvers';
-import { RequestHandlerContext } from './index';
-import { UnleashContext, UnleashProperties } from './typeDefs';
-import * as UnleashClient from '../unleashClient';
+import { resolvers } from './resolvers.js';
+import { RequestHandlerContext } from './index.js';
+import { UnleashContext, UnleashProperties } from './typeDefs.js';
+import * as UnleashClient from '../unleashClient/index.js';
 
 describe('resolvers converts unleash assignment', () => {
   let defaultProperties: UnleashProperties;

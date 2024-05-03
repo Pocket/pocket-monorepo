@@ -2,10 +2,10 @@ import { buildSubgraphSchema } from '@apollo/subgraph';
 import { ExpressContextFunctionArgument } from '@apollo/server/express4';
 import { ApolloServer } from '@apollo/server';
 import { defaultPlugins, errorHandler } from '@pocket-tools/apollo-utils';
-import { typeDefs } from './typeDefs';
-import { resolvers } from './resolvers';
+import { typeDefs } from './typeDefs.js';
+import { resolvers } from './resolvers.js';
 import http from 'http';
-import config from '../config';
+import config from '../config/index.js';
 
 /**
  * Represents the built up context that we take from the standard request headers

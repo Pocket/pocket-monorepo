@@ -2,8 +2,8 @@ import {
   UnleashContext,
   UnleashProperties,
   RecItUserProfile,
-} from '../../graphql/typeDefs';
-import { HasUserModel } from './hasUserModel';
+} from '../../graphql/typeDefs.js';
+import { HasUserModel } from './hasUserModel.js';
 
 describe('Strategy: hasUserModel', () => {
   let defaultContext: UnleashContext;

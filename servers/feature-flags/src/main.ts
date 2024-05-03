@@ -1,5 +1,5 @@
-import { start } from './';
-import config from './config';
+import { start } from './index.js';
+import config from './config/index.js';
 
 start(config.app.port)
   .then(({ graphqlUrl }) => {

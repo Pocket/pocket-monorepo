@@ -1,11 +1,11 @@
 import { initialize, Unleash } from 'unleash-client';
-import { ServerOptions } from '../index';
-import { NewUserStrategy } from './strategy/newUser';
-import { UserInLocaleStrategy } from './strategy/userInLocale';
-import { NewUserInLocaleStrategy } from './strategy/newUserInLocale';
-import { AccountAgeAtStartStrategy } from './strategy/accountAgeAtStart';
-import { AccountAgeStrategy } from './strategy/accountAge';
-import { HasUserModel } from './strategy/hasUserModel';
+import { ServerOptions } from '../index.js';
+import { NewUserStrategy } from './strategy/newUser.js';
+import { UserInLocaleStrategy } from './strategy/userInLocale.js';
+import { NewUserInLocaleStrategy } from './strategy/newUserInLocale.js';
+import { AccountAgeAtStartStrategy } from './strategy/accountAgeAtStart.js';
+import { AccountAgeStrategy } from './strategy/accountAge.js';
+import { HasUserModel } from './strategy/hasUserModel.js';
 
 export interface ClientContext {
   unleash: Unleash;

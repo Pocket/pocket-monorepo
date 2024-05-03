@@ -1,5 +1,5 @@
-import { UnleashContext } from '../../graphql/typeDefs';
-import { AccountAgeAtStartStrategy } from './accountAgeAtStart';
+import { UnleashContext } from '../../graphql/typeDefs.js';
+import { AccountAgeAtStartStrategy } from './accountAgeAtStart.js';
 
 describe('Strategy: accountAgeAtStart', () => {
   const context: UnleashContext = {

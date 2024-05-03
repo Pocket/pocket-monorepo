@@ -1,13 +1,13 @@
-import { RequestHandlerContext } from './index';
+import { RequestHandlerContext } from './index.js';
 import {
   UnleashAssignment,
   UnleashAssignmentList,
   UnleashContext,
   UnleashProperties,
-} from './typeDefs';
-import { getUnleashClient } from '../unleashClient';
+} from './typeDefs.js';
+import { getUnleashClient } from '../unleashClient/index.js';
 import { Unleash } from 'unleash-client';
-import { FeatureInterface } from 'unleash-client/lib/feature';
+import { FeatureInterface } from 'unleash-client/lib/feature.js';
 
 /**
  * Given an input, and the base express data, create unleash assignments

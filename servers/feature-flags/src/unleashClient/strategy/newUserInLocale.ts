@@ -1,8 +1,8 @@
 import { Strategy } from 'unleash-client';
-import { UnleashContext } from '../../graphql/typeDefs';
-import { normalizedStrategyValue } from 'unleash-client/lib/strategy/util';
-import { pocketSupportedLocales } from '../../utils/pocketSupportedLocales';
-import { StartDateError, SessionIdError } from '../../utils/customErrors';
+import { UnleashContext } from '../../graphql/typeDefs.js';
+import { normalizedStrategyValue } from 'unleash-client/lib/strategy/util.js';
+import { pocketSupportedLocales } from '../../utils/pocketSupportedLocales.js';
+import { StartDateError, SessionIdError } from '../../utils/customErrors.js';
 import * as Sentry from '@sentry/node';
 
 export class NewUserInLocaleStrategy extends Strategy {

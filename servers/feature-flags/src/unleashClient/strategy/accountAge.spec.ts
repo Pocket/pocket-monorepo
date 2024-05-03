@@ -1,5 +1,5 @@
-import { UnleashContext } from '../../graphql/typeDefs';
-import { AccountAgeStrategy } from './accountAge';
+import { UnleashContext } from '../../graphql/typeDefs.js';
+import { AccountAgeStrategy } from './accountAge.js';
 
 // Helper function to get the date parts (year, month, day) in a given timezone.
 // TODO: It would be nice if there were tests around this helper, especially if we start using it more.

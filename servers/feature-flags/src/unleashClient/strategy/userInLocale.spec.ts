@@ -1,5 +1,5 @@
-import { UnleashContext } from '../../graphql/typeDefs';
-import { UserInLocaleStrategy } from './userInLocale';
+import { UnleashContext } from '../../graphql/typeDefs.js';
+import { UserInLocaleStrategy } from './userInLocale.js';
 
 describe('Strategy: userInLocale', () => {
   const defaultContext: UnleashContext = {

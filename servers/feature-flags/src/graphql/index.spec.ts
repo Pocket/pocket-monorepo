@@ -1,4 +1,4 @@
-import { buildContext } from './index';
+import { buildContext } from './index.js';
 
 describe('apollo server', () => {
   describe('does extract express context', () => {

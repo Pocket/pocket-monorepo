@@ -1,11 +1,14 @@
 import express, { Application } from 'express';
 import * as Sentry from '@sentry/node';
 import { create } from 'unleash-server';
-import { setUnleash } from './unleashClient';
+import { setUnleash } from './unleashClient/index.js';
 import { ApolloServer } from '@apollo/server';
-import config from './config';
-import { IAuthOption, IAuthType } from 'unleash-server/dist/lib/types/option';
-import { enableJwtAuth } from './admin/jwtAuthHook';
+import config from './config/index.js';
+import {
+  IAuthOption,
+  IAuthType,
+} from 'unleash-server/dist/lib/types/option.js';
+import { enableJwtAuth } from './admin/jwtAuthHook.js';
 import { Server, createServer } from 'http';
 import cors from 'cors';
 import { json } from 'body-parser';
@@ -14,7 +17,7 @@ import {
   RequestHandlerContext,
   buildContext,
   getApolloServer,
-} from './graphql';
+} from './graphql/index.js';
 import { sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
 import { initSentry } from '@pocket-tools/sentry';
 

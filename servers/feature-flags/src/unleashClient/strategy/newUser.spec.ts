@@ -1,5 +1,5 @@
-import { UnleashContext } from '../../graphql/typeDefs';
-import { NewUserStrategy } from './newUser';
+import { UnleashContext } from '../../graphql/typeDefs.js';
+import { NewUserStrategy } from './newUser.js';
 
 describe('Strategy: newUser', () => {
   const defaultContext: UnleashContext = {
