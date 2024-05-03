@@ -1,6 +1,6 @@
-import { config } from './config';
+import { config } from './config.js';
 import nock from 'nock';
-import { accountDeleteHandler } from './handlerFns';
+import { accountDeleteHandler } from './handlerFns.js';
 import { SQSRecord } from 'aws-lambda';
 
 describe('event handler functions', () => {

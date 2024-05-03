@@ -1,7 +1,7 @@
-import { UserItemsSqsMessage, UserListImportSqsMessage } from './types';
+import { UserItemsSqsMessage, UserListImportSqsMessage } from './types.js';
 import { nanoid } from 'nanoid';
 import fetch from 'node-fetch';
-import { config } from './config';
+import { config } from './config/index.js';
 
 /**
  * Processes messages from the itemDelete queue or the itemUpdate queues.

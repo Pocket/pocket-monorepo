@@ -1,8 +1,8 @@
 import { SQSEvent, SQSRecord } from 'aws-lambda';
-import { processUserItem } from './helper';
+import { processUserItem } from './helper.js';
 import * as Sentry from '@sentry/serverless';
-import { config } from './config';
-import { UserItemsSqsMessage } from './types';
+import { config } from './config/index.js';
+import { UserItemsSqsMessage } from './types.js';
 
 Sentry.AWSLambda.init({
   ...config.sentry,

@@ -1,5 +1,5 @@
 import { Writable } from 'stream';
-import { generateId, SQSBatchSendError } from './utils';
+import { generateId, SQSBatchSendError } from './utils.js';
 import {
   SendMessageBatchCommand,
   SendMessageBatchRequestEntry,

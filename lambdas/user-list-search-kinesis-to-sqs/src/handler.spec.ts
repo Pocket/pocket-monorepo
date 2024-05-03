@@ -1,4 +1,4 @@
-import { getHandler, KinesisEvent } from './handler';
+import { getHandler, KinesisEvent } from './handler.js';
 import { SendMessageBatchCommandOutput, SQSClient } from '@aws-sdk/client-sqs';
 
 const createEvent = (msg: Record<string, unknown>): KinesisEvent => {

@@ -1,5 +1,5 @@
-import { config } from './config';
-import { getHandler } from './handler';
+import { config } from './config/index.js';
+import { getHandler } from './handler.js';
 import { SQSClient } from '@aws-sdk/client-sqs';
 import * as Sentry from '@sentry/serverless';
 

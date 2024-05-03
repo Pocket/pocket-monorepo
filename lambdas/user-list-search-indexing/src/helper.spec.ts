@@ -1,8 +1,8 @@
-import { config } from './config';
+import { config } from './config/index.js';
 import nock from 'nock';
-import { processUserImport, processUserItem } from './helper';
+import { processUserImport, processUserItem } from './helper.js';
 
-import { UserItemsSqsMessage, UserListImportSqsMessage } from './types';
+import { UserItemsSqsMessage, UserListImportSqsMessage } from './types.js';
 
 describe('Item functions', () => {
   describe('itemDelete', () => {

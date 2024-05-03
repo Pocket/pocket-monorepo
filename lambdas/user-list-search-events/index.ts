@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/serverless';
 import { SQSEvent } from 'aws-lambda';
-import { config } from './config';
-import { handlerMap } from './handlerMap';
+import { config } from './config.js';
+import { handlerMap } from './handlerMap.js';
 
 /**
  * Processes messages originating from event bridge. The detail-type field in
