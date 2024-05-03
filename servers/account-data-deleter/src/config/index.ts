@@ -1,4 +1,4 @@
-import { tables } from './tables';
+import { tables } from './tables.js';
 
 const awsEnvironments = ['production', 'development'];
 let localAwsEndpoint;

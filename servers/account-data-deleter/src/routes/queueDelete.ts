@@ -1,21 +1,21 @@
 import { Request, Response, Router } from 'express';
 import { checkSchema } from 'express-validator';
-import { validate } from './validator';
+import { validate } from './validator.js';
 import * as Sentry from '@sentry/node';
-import { config } from '../config';
+import { config } from '../config/index.js';
 import {
   SendMessageBatchCommand,
   SendMessageBatchCommandOutput,
   SendMessageBatchRequestEntry,
 } from '@aws-sdk/client-sqs';
-import { sqs } from '../aws/sqs';
+import { sqs } from '../aws/sqs.js';
 import {
   AccountDeleteDataService,
   TablePrimaryKeyModel,
-} from '../dataService/accountDeleteDataService';
+} from '../dataService/accountDeleteDataService.js';
 import { nanoid } from 'nanoid';
-import { readClient } from '../dataService/clients';
-import { accountDeleteSchema } from './schemas';
+import { readClient } from '../dataService/clients.js';
+import { accountDeleteSchema } from './schemas.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 export type SqsMessage = {

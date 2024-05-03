@@ -1,5 +1,5 @@
 import knex, { Knex } from 'knex';
-import { config } from '../config';
+import { config } from '../config/index.js';
 import Stripe from 'stripe';
 
 let readDb: Knex;

@@ -1,5 +1,5 @@
 import { getUnleash } from '@pocket-tools/feature-flags-client';
-import { config } from './config';
+import { config } from './config/index.js';
 import { Unleash } from 'unleash-client';
 
 let _unleash: Unleash;

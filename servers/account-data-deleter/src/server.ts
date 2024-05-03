@@ -1,13 +1,13 @@
-import { config } from './config';
+import { config } from './config/index.js';
 import * as Sentry from '@sentry/node';
 import express, { Application, json } from 'express';
-import { queueDeleteRouter, stripeDeleteRouter } from './routes';
+import { queueDeleteRouter, stripeDeleteRouter } from './routes/index.js';
 import { EventEmitter } from 'events';
-import { BatchDeleteHandler } from './batchDeleteHandler';
+import { BatchDeleteHandler } from './batchDeleteHandler.js';
 import { serverLogger, setMorgan } from '@pocket-tools/ts-logger';
 import { sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
 import { initSentry } from '@pocket-tools/sentry';
-import { unleash } from './unleash';
+import { unleash } from './unleash.js';
 const app: Application = express();
 
 // Sentry Setup

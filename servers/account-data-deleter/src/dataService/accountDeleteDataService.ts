@@ -1,7 +1,7 @@
 import { Knex } from 'knex';
 import * as Sentry from '@sentry/node';
-import { indexedTables } from '../config/tables';
-import { config } from '../config';
+import { indexedTables } from '../config/tables.js';
+import { config } from '../config/index.js';
 import { setTimeout } from 'timers/promises';
 import { serverLogger } from '@pocket-tools/ts-logger';
 

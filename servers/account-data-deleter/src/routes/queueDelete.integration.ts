@@ -1,8 +1,8 @@
-import { readClient, writeClient } from '../dataService/clients';
+import { readClient, writeClient } from '../dataService/clients.js';
 import { SQS } from '@aws-sdk/client-sqs';
-import { enqueueTablesForDeletion } from './queueDelete';
-import { AccountDeleteDataService } from '../dataService/accountDeleteDataService';
-import { config } from '../config';
+import { enqueueTablesForDeletion } from './queueDelete.js';
+import { AccountDeleteDataService } from '../dataService/accountDeleteDataService.js';
+import { config } from '../config/index.js';
 
 describe('enqueueTablesForDeletion', () => {
   const db = writeClient();

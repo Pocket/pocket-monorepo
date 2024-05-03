@@ -1,9 +1,9 @@
 import { Request, Response, Router } from 'express';
 import { checkSchema } from 'express-validator';
-import { validate } from './validator';
+import { validate } from './validator.js';
 import { nanoid } from 'nanoid';
-import { accountDeleteSchema } from './schemas';
-import { StripeDataDeleter } from '../dataService/stripeDataDeleter';
+import { accountDeleteSchema } from './schemas.js';
+import { StripeDataDeleter } from '../dataService/stripeDataDeleter.js';
 
 const router = Router();
 

@@ -7,14 +7,14 @@ import {
   ReceiveMessageCommandOutput,
 } from '@aws-sdk/client-sqs';
 import * as Sentry from '@sentry/node';
-import { config } from './config';
-import { SqsMessage } from './routes/queueDelete';
+import { config } from './config/index.js';
+import { SqsMessage } from './routes/queueDelete.js';
 import { nanoid } from 'nanoid';
-import { writeClient } from './dataService/clients';
-import { AccountDeleteDataService } from './dataService/accountDeleteDataService';
+import { writeClient } from './dataService/clients.js';
+import { AccountDeleteDataService } from './dataService/accountDeleteDataService.js';
 import { setTimeout } from 'timers/promises';
 import { SeverityLevel } from '@sentry/types';
-import { unleash } from './unleash';
+import { unleash } from './unleash.js';
 import { Unleash } from 'unleash-client';
 import { serverLogger } from '@pocket-tools/ts-logger';
 

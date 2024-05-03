@@ -1,2 +1,2 @@
-export { default as queueDeleteRouter } from './queueDelete';
-export { default as stripeDeleteRouter } from './stripeDelete';
+export { default as queueDeleteRouter } from './queueDelete.js';
+export { default as stripeDeleteRouter } from './stripeDelete.js';

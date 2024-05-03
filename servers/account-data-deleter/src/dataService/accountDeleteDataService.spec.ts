@@ -1,8 +1,8 @@
 import {
   AccountDeleteDataService,
   TablePrimaryKeyModel,
-} from './accountDeleteDataService';
-import { writeClient } from './clients';
+} from './accountDeleteDataService.js';
+import { writeClient } from './clients.js';
 
 describe('batchDeleteUserInformation', () => {
   const dataService = new AccountDeleteDataService(1, writeClient());

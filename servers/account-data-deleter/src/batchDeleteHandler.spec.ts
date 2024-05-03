@@ -1,11 +1,11 @@
 import { EventEmitter } from 'events';
-import { BatchDeleteHandler } from './batchDeleteHandler';
+import { BatchDeleteHandler } from './batchDeleteHandler.js';
 import { DeleteMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
-import { SqsMessage } from './routes/queueDelete';
-import { AccountDeleteDataService } from './dataService/accountDeleteDataService';
+import { SqsMessage } from './routes/queueDelete.js';
+import { AccountDeleteDataService } from './dataService/accountDeleteDataService.js';
 import * as Sentry from '@sentry/node';
 import { SeverityLevel } from '@sentry/types';
-import { config } from './config';
+import { config } from './config/index.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { mockUnleash } from '@pocket-tools/feature-flags-client';
 

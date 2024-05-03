@@ -1,6 +1,6 @@
-import { StripeDataDeleter } from './stripeDataDeleter';
+import { StripeDataDeleter } from './stripeDataDeleter.js';
 import * as Sentry from '@sentry/node';
-import * as conn from './clients';
+import * as conn from './clients.js';
 
 describe.skip('StripeDataDeleter', () => {
   let sentryStub: jest.SpyInstance, crumbStub: jest.SpyInstance;

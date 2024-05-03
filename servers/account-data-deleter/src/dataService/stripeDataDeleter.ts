@@ -1,8 +1,8 @@
 import { Knex } from 'knex';
-import { readClient, writeClient, stripeClient } from './clients';
+import { readClient, writeClient, stripeClient } from './clients.js';
 import Stripe from 'stripe';
 import * as Sentry from '@sentry/node';
-import { config } from '../config';
+import { config } from '../config/index.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 export class StripeDataDeleter {
