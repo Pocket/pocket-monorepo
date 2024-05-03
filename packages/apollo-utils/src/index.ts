@@ -15,7 +15,7 @@ export * from './utils.js';
 // export a generic object with all Pocket Custom Scalars
 import { GraphQLValidUrl, isoStringScalar } from './scalars/index.js';
 
-export type { BaseContext } from '@apollo/server';
+export type { BaseContext, ApolloServerPlugin } from '@apollo/server';
 
 export const PocketDefaultScalars = {
   ISOString: isoStringScalar,

@@ -1,8 +1,8 @@
-import { config } from '../../config';
-import { client } from './index';
+import { config } from '../../config/index.js';
+import { client } from './index.js';
 
-import { bulkDocument } from './elasticsearchBulk';
-import { getDocument } from './elasticsearchSearch';
+import { bulkDocument } from './elasticsearchBulk.js';
+import { getDocument } from './elasticsearchSearch.js';
 
 const defaultDocProps = {
   resolved_id: 1,

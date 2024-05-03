@@ -9,11 +9,11 @@ import {
   SearchSavedItemParameters,
   SavedItemSearchResultPage,
   SearchSavedItemOffsetParams,
-} from '../types';
-import { IContext } from '../server/context';
+} from '../types.js';
+import { IContext } from '../server/context.js';
 import { validatePagination as externalValidatePagination } from '@pocket-tools/apollo-utils';
-import { config } from '../config';
-import { getCleanedupDomainName } from './elasticsearch/elasticsearchSearch';
+import { config } from '../config/index.js';
+import { getCleanedupDomainName } from './elasticsearch/elasticsearchSearch.js';
 
 export class SavedItemDataService {
   private db: Knex;

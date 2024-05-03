@@ -1,25 +1,26 @@
 import express, { Application, json } from 'express';
 import { Server, createServer } from 'http';
-import { config } from '../config';
+import { config } from '../config/index.js';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServer } from '@apollo/server';
-import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4';
-import { schema } from './schema';
-import { ContextManager, getContextFactory } from './context';
+import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4.js';
+import { schema } from './schema.js';
+import { ContextManager, getContextFactory } from './context.js';
 import {
   defaultPlugins,
   errorHandler,
   sentryPocketMiddleware,
+  ApolloServerPlugin,
 } from '@pocket-tools/apollo-utils';
 import { initSentry } from '@pocket-tools/sentry';
 import * as Sentry from '@sentry/node';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
-import { router as batchDeleteRouter } from '../server/routes/batchDelete';
-import { router as itemDeleteRouter } from './routes/itemDelete';
-import { router as itemUpdateRouter } from './routes/itemUpdate';
-import { router as userListImportRouter } from './routes/userListImport';
+import { router as batchDeleteRouter } from '../server/routes/batchDelete.js';
+import { router as itemDeleteRouter } from './routes/itemDelete.js';
+import { router as itemUpdateRouter } from './routes/itemUpdate.js';
+import { router as userListImportRouter } from './routes/userListImport.js';
 
-import { knexDbReadClient } from '../datasource/clients/knexClient';
+import { knexDbReadClient } from '../datasource/clients/knexClient.js';
 
 /**
  * Create and start the apollo server.
@@ -41,7 +42,10 @@ export async function startServer(port: number): Promise<{
     schema,
     plugins: [
       ...defaultPlugins(httpServer),
-      createApollo4QueryValidationPlugin({ schema }),
+      // https://github.com/confuser/graphql-constraint-directive/issues/188
+      createApollo4QueryValidationPlugin({
+        schema,
+      }) as unknown as ApolloServerPlugin,
     ],
     formatError: errorHandler,
     introspection: true,

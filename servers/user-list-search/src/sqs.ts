@@ -9,7 +9,7 @@ import {
   SendMessageRequest,
   SendMessageResult,
 } from '@aws-sdk/client-sqs';
-import { config } from './config';
+import { config } from './config/index.js';
 
 const sqs = new SQSClient({
   region: config.aws.region,

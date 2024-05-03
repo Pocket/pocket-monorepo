@@ -1,15 +1,15 @@
 import {
   DataSourceInterface,
   ListItemEnriched,
-} from '../../datasource/DataSourceInterface';
-import { indexInElasticSearch } from '../../elasticsearch';
+} from '../../datasource/DataSourceInterface.js';
+import { indexInElasticSearch } from '../../elasticsearch.js';
 
 import { Request, Response, NextFunction, Router } from 'express';
 import { checkSchema, Schema, validationResult } from 'express-validator';
 import { nanoid } from 'nanoid';
 import * as Sentry from '@sentry/node';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { legacyMysqlInterface } from '../../datasource/MysqlDataSource';
+import { legacyMysqlInterface } from '../../datasource/MysqlDataSource.js';
 
 export const router = Router();
 

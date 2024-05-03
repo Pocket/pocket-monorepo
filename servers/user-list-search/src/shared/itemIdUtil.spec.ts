@@ -3,7 +3,7 @@ import {
   generateResolvedIdToItemIdMap,
   ResolvedIdToItemIdHash,
   ItemIdResolvedIdPair,
-} from './itemIdUtil';
+} from './itemIdUtil.js';
 
 describe('itemIdUtil', () => {
   describe('getItemIdFromResolvedId', () => {

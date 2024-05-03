@@ -2,7 +2,7 @@ import { Request, Response, NextFunction, Router } from 'express';
 import { checkSchema, Schema, validationResult } from 'express-validator';
 import { nanoid } from 'nanoid';
 import * as Sentry from '@sentry/node';
-import { deleteSearchIndexByUserId } from '../../elasticsearch';
+import { deleteSearchIndexByUserId } from '../../elasticsearch.js';
 
 export const router = Router();
 

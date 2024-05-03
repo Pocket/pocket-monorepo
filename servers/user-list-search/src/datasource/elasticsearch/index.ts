@@ -1,5 +1,6 @@
-import { Client } from 'elasticsearch';
-import { config } from '../../config';
+import elasticsearch from 'elasticsearch';
+const { Client } = elasticsearch;
+import { config } from '../../config/index.js';
 
 const getHost = (host: string): string => {
   // Setting the host using terraform does not add a protocol to the host

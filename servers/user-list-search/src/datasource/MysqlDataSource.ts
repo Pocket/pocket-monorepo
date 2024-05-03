@@ -3,22 +3,22 @@ import {
   ItemMap,
   ListItem,
   ParserItem,
-} from './DataSourceInterface';
-import { mysqlTimeStampToDate } from '../shared/util';
+} from './DataSourceInterface.js';
+import { mysqlTimeStampToDate } from '../shared/util.js';
 import {
   generateResolvedIdToItemIdMap,
   getItemIdFromResolvedId,
   ItemIdResolvedIdPair,
   ResolvedIdToItemIdHash,
-} from '../shared/itemIdUtil';
+} from '../shared/itemIdUtil.js';
 import zlib from 'zlib';
 import {
   contentDb,
   knexDbReadClient,
   knexDbWriteClient,
-} from './clients/knexClient';
+} from './clients/knexClient.js';
 import knex from 'knex';
-import { RecentSearch } from '../types';
+import { RecentSearch } from '../types.js';
 import { createHash } from 'node:crypto';
 
 type ParserContent = {

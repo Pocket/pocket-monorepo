@@ -1,12 +1,12 @@
-import { startServer } from './server/serverUtils';
-import { ContextManager } from './server/context';
+import { startServer } from './server/serverUtils.js';
+import { ContextManager } from './server/context.js';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
-import { knexDbReadClient } from './datasource/clients/knexClient';
+import { knexDbReadClient } from './datasource/clients/knexClient.js';
 import { Knex } from 'knex';
-import { SavedItemStatus } from './types';
-import { loadItemExtended, loadList } from './searchIntegrationTestHelpers';
+import { SavedItemStatus } from './types.js';
+import { loadItemExtended, loadList } from './searchIntegrationTestHelpers.js';
 
 async function seedDb(db: Knex) {
   const data = [

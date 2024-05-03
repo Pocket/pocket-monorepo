@@ -1,13 +1,13 @@
-import { config } from '../../config';
-import { getDocument } from '../../datasource/elasticsearch/elasticsearchSearch';
-import { IndexDocument } from '../../elasticsearch';
-import { bulkDocument } from '../../datasource/elasticsearch/elasticsearchBulk';
-import { client } from '../../datasource/elasticsearch';
+import { config } from '../../config/index.js';
+import { getDocument } from '../../datasource/elasticsearch/elasticsearchSearch.js';
+import { IndexDocument } from '../../elasticsearch.js';
+import { bulkDocument } from '../../datasource/elasticsearch/elasticsearchBulk.js';
+import { client } from '../../datasource/elasticsearch/index.js';
 import { Application } from 'express';
-import { ContextManager } from '../context';
+import { ContextManager } from '../context.js';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
-import { startServer } from '../serverUtils';
+import { startServer } from '../serverUtils.js';
 
 const defaultDoc = {
   action: 'index',

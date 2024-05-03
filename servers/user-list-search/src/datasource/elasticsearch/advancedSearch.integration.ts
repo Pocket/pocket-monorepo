@@ -1,14 +1,14 @@
-import { advancedSearch } from './elasticsearchSearch';
-import { bulkDocument } from './elasticsearchBulk';
-import { client } from './index';
-import { config } from '../../config';
+import { advancedSearch } from './elasticsearchSearch.js';
+import { bulkDocument } from './elasticsearchBulk.js';
+import { client } from './index.js';
+import { config } from '../../config/index.js';
 import { faker } from '@faker-js/faker';
 import {
   SavedItemContentType,
   SearchFilterStatus,
   SearchItemsSortBy,
   SortDirection,
-} from '../../types';
+} from '../../types.js';
 
 const defaultDocProps = {
   resolved_id: 1,

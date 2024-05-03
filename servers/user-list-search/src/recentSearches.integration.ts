@@ -1,14 +1,14 @@
-import { startServer } from './server/serverUtils';
-import { ContextManager } from './server/context';
+import { startServer } from './server/serverUtils.js';
+import { ContextManager } from './server/context.js';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import {
   knexDbReadClient,
   knexDbWriteClient,
-} from './datasource/clients/knexClient';
+} from './datasource/clients/knexClient.js';
 import { print } from 'graphql';
-import { RECENT_SEARCHES_QUERY, SAVE_RECENT_SEARCH } from './operations';
+import { RECENT_SEARCHES_QUERY, SAVE_RECENT_SEARCH } from './operations.js';
 
 describe('premium search functional test', () => {
   let app: Application;

@@ -2,13 +2,13 @@ import {
   seedDb,
   getArrayOfIds,
   seedItemWithDifferentResolvedId,
-} from '../test/_support/seeder';
-import { MysqlDataSource } from './MysqlDataSource';
+} from '../test/_support/seeder.js';
+import { MysqlDataSource } from './MysqlDataSource.js';
 import {
   contentDb,
   knexDbReadClient,
   knexDbWriteClient,
-} from './clients/knexClient';
+} from './clients/knexClient.js';
 
 describe('MysqlDataSource', () => {
   afterAll(async () => {

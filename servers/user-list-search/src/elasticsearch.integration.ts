@@ -1,7 +1,7 @@
-import { client } from './datasource/elasticsearch';
-import { config } from './config';
-import { bulkDocument } from './datasource/elasticsearch/elasticsearchBulk';
-import { deleteSearchIndexByUserId } from './elasticsearch';
+import { client } from './datasource/elasticsearch/index.js';
+import { config } from './config/index.js';
+import { bulkDocument } from './datasource/elasticsearch/elasticsearchBulk.js';
+import { deleteSearchIndexByUserId } from './elasticsearch.js';
 
 const defaultDocProps = {
   resolved_id: 1,

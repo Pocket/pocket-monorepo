@@ -1,16 +1,16 @@
-import { config } from '../../config';
-import { seedDb } from '../../test/_support/seeder';
-import { getDocument } from '../../datasource/elasticsearch/elasticsearchSearch';
-import { client } from '../../datasource/elasticsearch';
+import { config } from '../../config/index.js';
+import { seedDb } from '../../test/_support/seeder.js';
+import { getDocument } from '../../datasource/elasticsearch/elasticsearchSearch.js';
+import { client } from '../../datasource/elasticsearch/index.js';
 import { Application } from 'express';
-import { ContextManager } from '../context';
+import { ContextManager } from '../context.js';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
-import { startServer } from '../serverUtils';
+import { startServer } from '../serverUtils.js';
 import {
   contentDb,
   knexDbReadClient,
-} from '../../datasource/clients/knexClient';
+} from '../../datasource/clients/knexClient.js';
 
 //Set this here so the client instantiates outside of the before block that has a timeout.
 const esClient = client;

@@ -1,11 +1,15 @@
 import { faker } from '@faker-js/faker';
-import { IndexDocument, createDocument, getContentType } from './elasticsearch';
+import {
+  IndexDocument,
+  createDocument,
+  getContentType,
+} from './elasticsearch.js';
 import {
   ListItemEnriched,
   ParserItem,
   listItemStatusToString,
-} from './datasource/DataSourceInterface';
-import { normalizeDate, normalizeFullText } from './shared/util';
+} from './datasource/DataSourceInterface.js';
+import { normalizeDate, normalizeFullText } from './shared/util.js';
 
 describe('elasticsearch', () => {
   let dateCreated: Date;

@@ -1,16 +1,20 @@
-import { bulkDocument } from './datasource/elasticsearch/elasticsearchBulk';
+import { bulkDocument } from './datasource/elasticsearch/elasticsearchBulk.js';
 import {
   BaseListItem,
   ListItemEnriched,
   listItemStatusToString,
   ParserItem,
-} from './datasource/DataSourceInterface';
-import { normalizeDate, normalizeFullText, normalizeUrl } from './shared/util';
+} from './datasource/DataSourceInterface.js';
+import {
+  normalizeDate,
+  normalizeFullText,
+  normalizeUrl,
+} from './shared/util.js';
 import { chunk } from 'lodash';
 import { captureMessage } from '@sentry/node';
 import { DeleteDocumentByQueryResponse } from 'elasticsearch';
-import { config } from './config';
-import { client } from './datasource/elasticsearch';
+import { config } from './config/index.js';
+import { client } from './datasource/elasticsearch/index.js';
 import * as Sentry from '@sentry/node';
 
 export const getId = (doc: BaseDocument): string =>

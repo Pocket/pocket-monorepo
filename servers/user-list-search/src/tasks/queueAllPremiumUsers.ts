@@ -1,7 +1,7 @@
-import { DataSourceInterface } from '../datasource/DataSourceInterface';
-import { sendMessage } from '../sqs';
-import { UserListImportSqsMessage } from '../shared';
-import { config } from '../config';
+import { DataSourceInterface } from '../datasource/DataSourceInterface.js';
+import { sendMessage } from '../sqs.js';
+import { UserListImportSqsMessage } from '../shared/index.js';
+import { config } from '../config/index.js';
 
 const USERS_CHUNK_SIZE = 500;
 

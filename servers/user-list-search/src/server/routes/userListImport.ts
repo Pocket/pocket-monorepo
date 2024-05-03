@@ -1,12 +1,12 @@
-import { config } from '../../config';
-import { sendMessage } from '../../sqs';
-import { UserItemsSqsMessage } from '../../shared';
+import { config } from '../../config/index.js';
+import { sendMessage } from '../../sqs.js';
+import { UserItemsSqsMessage } from '../../shared/index.js';
 
 import { Request, Response, NextFunction, Router } from 'express';
 import { checkSchema, Schema, validationResult } from 'express-validator';
 import { nanoid } from 'nanoid';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { legacyMysqlInterface } from '../../datasource/MysqlDataSource';
+import { legacyMysqlInterface } from '../../datasource/MysqlDataSource.js';
 
 export const router = Router();
 

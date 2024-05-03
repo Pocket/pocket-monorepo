@@ -9,15 +9,15 @@ import {
   searchSavedItemsByOffset,
   advancedSearch,
   advancedSearchByOffset,
-} from './datasource/elasticsearch/elasticsearchSearch';
+} from './datasource/elasticsearch/elasticsearchSearch.js';
 import {
   AuthenticationError,
   ForbiddenError,
   PocketDefaultScalars,
   UserInputError,
 } from '@pocket-tools/apollo-utils';
-import { IContext } from './server/context';
-import { SavedItemDataService } from './datasource/SavedItemsDataSource';
+import { IContext } from './server/context.js';
+import { SavedItemDataService } from './datasource/SavedItemsDataSource.js';
 import {
   SavedItemSearchResultConnection,
   AdvancedSearchParams,
@@ -26,9 +26,9 @@ import {
   AdvancedSearchByOffsetParams,
   SearchSavedItemOffsetParams,
   RecentSearch,
-} from './types';
-import { config } from './config';
-import { MysqlDataSource } from './datasource/MysqlDataSource';
+} from './types.js';
+import { config } from './config/index.js';
+import { MysqlDataSource } from './datasource/MysqlDataSource.js';
 
 /**
  * Custom type for FunctionalBoostValue coming from client.

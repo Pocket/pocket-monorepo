@@ -1,5 +1,5 @@
-import { SavedItemDataService } from './SavedItemsDataSource';
-import { config } from '../config';
+import { SavedItemDataService } from './SavedItemsDataSource.js';
+import { config } from '../config/index.js';
 
 describe('spec test to make sure validatePagination works as expected for user-list-search', () => {
   it('validate pagination should return first 30 when pagination is null', () => {

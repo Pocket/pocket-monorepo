@@ -1,18 +1,18 @@
-import { config } from './config';
-import { bulkDocument } from './datasource/elasticsearch/elasticsearchBulk';
-import { client } from './datasource/elasticsearch';
-import { startServer } from './server/serverUtils';
-import { ContextManager } from './server/context';
+import { config } from './config/index.js';
+import { bulkDocument } from './datasource/elasticsearch/elasticsearchBulk.js';
+import { client } from './datasource/elasticsearch/index.js';
+import { startServer } from './server/serverUtils.js';
+import { ContextManager } from './server/context.js';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import {
   knexDbReadClient,
   knexDbWriteClient,
-} from './datasource/clients/knexClient';
+} from './datasource/clients/knexClient.js';
 import { Knex } from 'knex';
-import { loadItemExtended, loadList } from './searchIntegrationTestHelpers';
-import { SavedItemStatus } from './types';
+import { loadItemExtended, loadList } from './searchIntegrationTestHelpers.js';
+import { SavedItemStatus } from './types.js';
 
 // These tests are lifted from premiumSearch.integration.ts
 

@@ -5,15 +5,15 @@ import {
   SearchSortInput,
   ValidPagination,
   OffsetPagination,
-} from '../../types';
+} from '../../types.js';
 import {
   ElasticSearchSortField,
   ElasticSearchSortDirection,
   ElasticSearchFilterStatus,
   ElasticSearchContentType,
-} from './elasticsearchSearch';
-import { config } from '../../config';
-import { Paginator } from './Paginator';
+} from './elasticsearchSearch.js';
+import { config } from '../../config/index.js';
+import { Paginator } from './Paginator.js';
 
 /**
  * Build elasticsearch query from graphql input.

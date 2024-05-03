@@ -5,8 +5,8 @@ import {
   SearchFilterStatus,
   SearchItemsSortBy,
   SortDirection,
-} from '../../types';
-import { SearchQueryBuilder } from './searchQueryBuilder';
+} from '../../types.js';
+import { SearchQueryBuilder } from './searchQueryBuilder.js';
 
 describe('SearchQueryBuilder', () => {
   const query = new SearchQueryBuilder();

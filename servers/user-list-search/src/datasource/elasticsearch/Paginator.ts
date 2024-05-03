@@ -5,7 +5,7 @@ import {
   SavedItemSearchResultConnection,
   SavedItemSearchResultPage,
   SearchSavedItemEdge,
-} from '../../types';
+} from '../../types.js';
 
 /**
  * Extract and format pagination information from elasticsearch

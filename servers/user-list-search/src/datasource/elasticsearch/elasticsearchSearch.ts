@@ -1,6 +1,6 @@
 import { GetResponse, SearchResponse } from 'elasticsearch';
-import { client } from './index';
-import { config } from '../../config';
+import { client } from './index.js';
+import { config } from '../../config/index.js';
 import {
   ElasticSearchSavedItem,
   Pagination,
@@ -12,10 +12,10 @@ import {
   SavedItemSearchResultPage,
   SavedItemSearchResult,
   AdvancedSearchByOffsetParams,
-} from '../../types';
+} from '../../types.js';
 import { UserInputError, validatePagination } from '@pocket-tools/apollo-utils';
-import { SearchQueryBuilder } from './searchQueryBuilder';
-import { Paginator } from './Paginator';
+import { SearchQueryBuilder } from './searchQueryBuilder.js';
+import { Paginator } from './Paginator.js';
 
 const { index, type, defaultQueryScore } = config.aws.elasticsearch;
 

@@ -1,13 +1,13 @@
-import { search, searchSavedItems } from './elasticsearchSearch';
-import { bulkDocument } from './elasticsearchBulk';
+import { search, searchSavedItems } from './elasticsearchSearch.js';
+import { bulkDocument } from './elasticsearchBulk.js';
 import {
   SavedItemContentType,
   SearchFilterStatus,
   SearchItemsSortBy,
   SortDirection,
-} from '../../types';
-import { client } from './index';
-import { config } from '../../config';
+} from '../../types.js';
+import { client } from './index.js';
+import { config } from '../../config/index.js';
 
 const defaultDocProps = {
   resolved_id: 1,

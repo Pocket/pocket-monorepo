@@ -3,9 +3,9 @@ import {
   DeleteDocument,
   getId,
   IndexDocument,
-} from '../../elasticsearch';
-import { client } from './index';
-import { config } from '../../config';
+} from '../../elasticsearch.js';
+import { client } from './index.js';
+import { config } from '../../config/index.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 const index = config.aws.elasticsearch.index;

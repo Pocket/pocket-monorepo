@@ -1,4 +1,4 @@
-import { resolvers } from './resolvers';
+import { resolvers } from './resolvers.js';
 
 describe('search', () => {
   it('should throw AuthenticationError if userId is not in context', async () => {

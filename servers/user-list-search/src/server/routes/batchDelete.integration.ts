@@ -1,8 +1,8 @@
 import request from 'supertest';
-import { startServer } from '../serverUtils';
-import * as es from '../../elasticsearch';
+import { startServer } from '../serverUtils.js';
+import * as es from '../../elasticsearch.js';
 import { Application } from 'express';
-import { ContextManager } from '../context';
+import { ContextManager } from '../context.js';
 import { ApolloServer } from '@apollo/server';
 
 describe('batchDelete', () => {

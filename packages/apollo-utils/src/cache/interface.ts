@@ -7,7 +7,7 @@ export interface MsetKeyValues {
   [key: string]: string;
 }
 
-export { KeyValueCacheSetOptions };
+export type { KeyValueCacheSetOptions };
 
 export interface DataLoaderCacheInterface extends KeyValueCache {
   /**

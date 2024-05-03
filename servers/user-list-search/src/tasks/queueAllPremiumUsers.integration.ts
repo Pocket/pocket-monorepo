@@ -1,9 +1,9 @@
-import { config } from '../config';
-import { receiveMessage, purgeQueue } from '../sqs';
+import { config } from '../config/index.js';
+import { receiveMessage, purgeQueue } from '../sqs.js';
 import {
   queueUserIds,
   createUserListImportQueueMessage,
-} from './queueAllPremiumUsers';
+} from './queueAllPremiumUsers.js';
 
 describe('queueAllPremiumUsers', () => {
   describe('queueUserIds', () => {

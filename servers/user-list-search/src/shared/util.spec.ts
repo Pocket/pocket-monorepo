@@ -3,7 +3,7 @@ import {
   normalizeDate,
   mysqlTimeStampToDate,
   normalizeUrl,
-} from './util';
+} from './util.js';
 
 describe('util', () => {
   describe('normalizeFullText()', () => {

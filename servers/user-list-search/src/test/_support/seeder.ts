@@ -1,10 +1,10 @@
 import { faker } from '@faker-js/faker';
-import { config } from '../../config';
+import { config } from '../../config/index.js';
 import * as zlib from 'zlib';
 import {
   contentDb,
   knexDbReadClient,
-} from '../../datasource/clients/knexClient';
+} from '../../datasource/clients/knexClient.js';
 
 export interface SeedConfig {
   userCount: number;

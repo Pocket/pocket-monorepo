@@ -1,16 +1,16 @@
-import { receiveMessage, purgeQueue } from '../../sqs';
-import { config } from '../../config';
-import { seedDb, getArrayOfIds } from '../../test/_support/seeder';
+import { receiveMessage, purgeQueue } from '../../sqs.js';
+import { config } from '../../config/index.js';
+import { seedDb, getArrayOfIds } from '../../test/_support/seeder.js';
 import { Application } from 'express';
-import { ContextManager } from '../context';
+import { ContextManager } from '../context.js';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
-import { startServer } from '../serverUtils';
+import { startServer } from '../serverUtils.js';
 import {
   contentDb,
   knexDbReadClient,
-} from '../../datasource/clients/knexClient';
-import { client } from '../../datasource/elasticsearch';
+} from '../../datasource/clients/knexClient.js';
+import { client } from '../../datasource/elasticsearch/index.js';
 
 describe('User List Import User Search Processor', () => {
   let server: ApolloServer<ContextManager>;

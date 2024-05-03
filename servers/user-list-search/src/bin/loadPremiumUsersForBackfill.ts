@@ -1,6 +1,6 @@
-import { DataSourceInterface } from '../datasource/DataSourceInterface';
-import { MysqlDataSource } from '../datasource/MysqlDataSource';
-import { run } from '../tasks/queueAllPremiumUsers';
+import { DataSourceInterface } from '../datasource/DataSourceInterface.js';
+import { MysqlDataSource } from '../datasource/MysqlDataSource.js';
+import { run } from '../tasks/queueAllPremiumUsers.js';
 
 /**
  * Kicks off loading all premium users into the backfill queue

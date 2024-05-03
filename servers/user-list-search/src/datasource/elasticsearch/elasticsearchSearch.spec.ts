@@ -15,8 +15,8 @@ import {
   cleanSearchTerm,
   generateSearchSavedItemsParams,
   getCleanedupDomainName,
-} from './elasticsearchSearch';
-import { Pagination, SearchSavedItemParameters } from '../../types';
+} from './elasticsearchSearch.js';
+import { Pagination, SearchSavedItemParameters } from '../../types.js';
 
 describe('Elasticsearch', () => {
   describe('term cleaner', () => {
