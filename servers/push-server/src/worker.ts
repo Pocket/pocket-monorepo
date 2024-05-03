@@ -2,11 +2,11 @@ import {
   TARGET_APNS,
   TARGET_APNS_SILENT,
   TARGET_GCM,
-} from './notificationTypes';
-import { apns } from './apns';
-import { sendNotificationToDevice } from './gcm';
-import Sentry from './sentry';
-import { sqs } from './sqs';
+} from './notificationTypes.js';
+import { apns } from './apns.js';
+import { sendNotificationToDevice } from './gcm.js';
+import Sentry from './sentry.js';
+import { sqs } from './sqs.js';
 import { Message } from '@aws-sdk/client-sqs';
 
 const processMessage = async (fullMessage: Message): Promise<void> => {

@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/node';
-import { sentryDsn } from './config';
+import { sentryDsn } from './config.js';
 
 Sentry.init({ dsn: sentryDsn });
 

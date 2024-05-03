@@ -1,7 +1,7 @@
 import { Worker, isMainThread } from 'worker_threads';
-import Sentry from './sentry';
-import { worker } from './worker';
-import { numWorkers, msBetweenStarts } from './config';
+import Sentry from './sentry.js';
+import { worker } from './worker.js';
+import { numWorkers, msBetweenStarts } from './config.js';
 
 if (isMainThread) {
   console.log('Starting main');

@@ -6,9 +6,9 @@ import {
   Priority,
   PushType,
 } from 'apns2';
-import { sqs } from './sqs';
-import { TARGET_APNS, TARGET_APNS_SILENT } from './notificationTypes';
-import * as config from './config';
+import { sqs } from './sqs.js';
+import { TARGET_APNS, TARGET_APNS_SILENT } from './notificationTypes.js';
+import * as config from './config.js';
 
 const prodProvider = new ApnsClient({
   team: config.apns.token.teamId,

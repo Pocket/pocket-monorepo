@@ -1,6 +1,6 @@
 import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs';
-import { config } from './sqs';
-import { worker } from './worker';
+import { config } from './sqs.js';
+import { worker } from './worker.js';
 
 describe('e2e test', () => {
   it('Receives message from queue and sends it', async () => {
