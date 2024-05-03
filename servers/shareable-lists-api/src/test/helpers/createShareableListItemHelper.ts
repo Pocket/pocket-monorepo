@@ -1,4 +1,4 @@
-import { List, ListItem, PrismaClient } from '.prisma/client';
+import { List, ListItem, PrismaClient } from 'generated-prisma/client/index.js';
 import { faker } from '@faker-js/faker';
 
 interface ListItemHelperInput {

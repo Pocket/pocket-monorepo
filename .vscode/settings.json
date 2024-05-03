@@ -20,15 +20,14 @@
           "*/**/logs/",
           "*/**/node_modules/",
           "node_modules/",
-          ".turbo/",
-        ]
+          ".turbo/"
+        ],
+        "peek": ["node_modules/"]
       },
       {
         "name": "Strict",
         "detail": "Hide everything not immediately required",
-        "hidden": [
-          "$Default"
-        ]
+        "hidden": ["$Default"]
       }
     ]
   },
@@ -43,7 +42,6 @@
     "*/**/dist/": true,
     "*/**/logs/": true,
     "*/**/node_modules/": true,
-    "node_modules/": true,
     ".turbo/": true
   },
   "hidefiles.selectedProfile": "Default"

@@ -1,4 +1,8 @@
-import { List, Visibility, PrismaClient } from '.prisma/client';
+import {
+  List,
+  Visibility,
+  PrismaClient,
+} from 'generated-prisma/client/index.js';
 
 interface UpdateListHelperInput {
   status: Visibility;

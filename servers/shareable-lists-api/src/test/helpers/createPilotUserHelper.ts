@@ -1,4 +1,4 @@
-import { PilotUser, PrismaClient } from '.prisma/client';
+import { PilotUser, PrismaClient } from 'generated-prisma/client/index.js';
 
 interface PilotUserInput {
   userId: number | bigint;

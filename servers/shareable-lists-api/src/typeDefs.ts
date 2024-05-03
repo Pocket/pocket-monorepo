@@ -1,6 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import { gql } from 'graphql-tag';
+const __dirname = import.meta.dirname;
 
 const sharedSchema = fs
   .readFileSync(path.join(__dirname, '..', 'schema-shared.graphql'))

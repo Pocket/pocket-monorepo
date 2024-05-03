@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/node';
-import { parseFieldToInt } from '../../../shared/resolvers/fields/PrismaBigInt';
+import { parseFieldToInt } from '../../../shared/resolvers/fields/PrismaBigInt.js';
 
 describe('Shared Resolver Helpers', () => {
   let sentryStub: jest.SpyInstance<string>;

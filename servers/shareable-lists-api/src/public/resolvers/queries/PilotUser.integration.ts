@@ -1,16 +1,16 @@
 import { ApolloServer } from '@apollo/server';
-import { PilotUser, PrismaClient } from '.prisma/client';
+import { PilotUser, PrismaClient } from 'generated-prisma/client/index.js';
 import { print } from 'graphql';
 import request from 'supertest';
-import { IPublicContext } from '../../context';
-import { startServer } from '../../../express';
-import { client } from '../../../database/client';
+import { IPublicContext } from '../../context.js';
+import { startServer } from '../../../express.js';
+import { client } from '../../../database/client.js';
 import {
   clearDb,
   createPilotUserHelper,
   mockRedisServer,
-} from '../../../test/helpers';
-import { SHAREABLE_LISTS_PILOT_USER } from './sample-queries.gql';
+} from '../../../test/helpers/index.js';
+import { SHAREABLE_LISTS_PILOT_USER } from './sample-queries.gql.js';
 import { Application } from 'express';
 
 describe('public queries: PilotUser', () => {

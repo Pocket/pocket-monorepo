@@ -1,9 +1,9 @@
 import { ApolloServer } from '@apollo/server';
 import { Server } from 'http';
-import { defaultPlugins } from '@pocket-tools/apollo-utils';
-import { IAdminContext } from './context';
-import { schema } from './schema';
-import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4';
+import { ApolloServerPlugin, defaultPlugins } from '@pocket-tools/apollo-utils';
+import { IAdminContext } from './context.js';
+import { schema } from './schema.js';
+import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4.js';
 
 /**
  * Sets up and configures an ApolloServer for the application.
@@ -18,9 +18,10 @@ export function getAdminServer(
     schema,
     plugins: [
       ...defaultPlugins(httpServer),
+      // https://github.com/confuser/graphql-constraint-directive/issues/188
       createApollo4QueryValidationPlugin({
         schema,
-      }),
+      }) as unknown as ApolloServerPlugin,
     ],
     // OSL-202 (https://getpocket.atlassian.net/browse/OSL-202) needs to get done in order
     // to stop masking Apollo Errors.

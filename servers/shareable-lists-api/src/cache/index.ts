@@ -1,7 +1,7 @@
 import Keyv from 'keyv';
 import { KeyvAdapter } from '@apollo/utils.keyvadapter';
 import { ErrorsAreMissesCache } from '@apollo/utils.keyvaluecache';
-import config from '../config';
+import config from '../config/index.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import KeyvRedis from '@keyv/redis';
 

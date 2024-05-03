@@ -1,5 +1,5 @@
-import { Visibility, ModerationStatus } from '.prisma/client';
-import { ShareableListComplete, ShareableListItem } from '../database/types';
+import { Visibility, ModerationStatus } from 'generated-prisma/client/index.js';
+import { ShareableListComplete, ShareableListItem } from '../database/types.js';
 
 export type ShareableListEventBusPayload = {
   eventType: EventBridgeEventType;

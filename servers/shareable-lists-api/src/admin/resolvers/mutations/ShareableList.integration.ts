@@ -1,23 +1,23 @@
 import { ApolloServer } from '@apollo/server';
-import { PrismaClient } from '.prisma/client';
+import { PrismaClient } from 'generated-prisma/client/index.js';
 import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
 import { print } from 'graphql';
 import request from 'supertest';
-import { IAdminContext } from '../../context';
-import { startServer } from '../../../express';
-import { client } from '../../../database/client';
+import { IAdminContext } from '../../context.js';
+import { startServer } from '../../../express.js';
+import { client } from '../../../database/client.js';
 import {
   clearDb,
   createShareableListHelper,
   mockRedisServer,
-} from '../../../test/helpers';
+} from '../../../test/helpers/index.js';
 import {
   ACCESS_DENIED_ERROR,
   FULLACCESS,
   READONLY,
-} from '../../../shared/constants';
-import { MODERATE_SHAREABLE_LIST } from './sample-mutations.gql';
-import { ShareableListModerationReason } from '../../../database/types';
+} from '../../../shared/constants.js';
+import { MODERATE_SHAREABLE_LIST } from './sample-mutations.gql.js';
+import { ShareableListModerationReason } from '../../../database/types.js';
 import { Application } from 'express';
 
 const validHeaders = {

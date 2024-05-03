@@ -1,4 +1,4 @@
-import { OffsetPagination } from './OffsetPagination';
+import { OffsetPagination } from './OffsetPagination.js';
 
 describe('OffsetPagination', () => {
   it('encodes cursor with offset information', () => {

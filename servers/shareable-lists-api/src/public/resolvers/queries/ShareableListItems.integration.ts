@@ -2,21 +2,25 @@ import { print } from 'graphql';
 import request from 'supertest';
 
 import { ApolloServer } from '@apollo/server';
-import { List, Visibility, PrismaClient } from '.prisma/client';
+import {
+  List,
+  Visibility,
+  PrismaClient,
+} from 'generated-prisma/client/index.js';
 
-import { IPublicContext } from '../../context';
-import { startServer } from '../../../express';
-import { client, conn } from '../../../database/client';
+import { IPublicContext } from '../../context.js';
+import { startServer } from '../../../express.js';
+import { client, conn } from '../../../database/client.js';
 import {
   clearDb,
   createShareableListHelper,
   createShareableListItemHelper,
   mockRedisServer,
-} from '../../../test/helpers';
-import { GET_SHAREABLE_LIST_PAGINATED_ITEMS } from './sample-queries.gql';
+} from '../../../test/helpers/index.js';
+import { GET_SHAREABLE_LIST_PAGINATED_ITEMS } from './sample-queries.gql.js';
 import { Application } from 'express';
 import { Kysely } from 'kysely';
-import { DB } from '.kysely/client/types';
+import { DB } from 'generated-kysely/client/types.js';
 
 describe('ListItems on a List', () => {
   let app: Application;

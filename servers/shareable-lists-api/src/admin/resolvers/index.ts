@@ -1,8 +1,8 @@
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
-import { searchShareableList } from './queries/ShareableList';
-import { moderateShareableList } from './mutations/ShareableList';
-import { UserResolver } from '../../shared/resolvers/fields/User';
-import { ShareableListItem } from '../../database/types';
+import { searchShareableList } from './queries/ShareableList.js';
+import { moderateShareableList } from './mutations/ShareableList.js';
+import { UserResolver } from '../../shared/resolvers/fields/User.js';
+import { ShareableListItem } from '../../database/types.js';
 
 export const resolvers = {
   ...PocketDefaultScalars,

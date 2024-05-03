@@ -3,7 +3,7 @@ import {
   Visibility,
   ModerationStatus,
   PrismaClient,
-} from '.prisma/client';
+} from 'generated-prisma/client/index.js';
 import { faker } from '@faker-js/faker';
 
 interface ListHelperInput {

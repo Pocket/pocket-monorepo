@@ -3,7 +3,7 @@ import {
   ListItemConnectionProps,
   ShareableListPublicProps,
   ShareableListPublicQueryProps,
-} from '../../../shared/fragments.gql';
+} from '../../../shared/fragments.gql.js';
 
 export const GET_SHAREABLE_LIST = gql`
   query shareableList($externalId: ID!) {

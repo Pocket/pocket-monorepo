@@ -3,8 +3,8 @@ import { UserInputError } from '@pocket-tools/apollo-utils';
 import {
   CreateShareableListInput,
   CreateShareableListItemInput,
-} from '../../database/types';
-import { sanitizeMutationInput, validateItemId } from './utils';
+} from '../../database/types.js';
+import { sanitizeMutationInput, validateItemId } from './utils.js';
 
 describe('utility functions', () => {
   describe('validateItemId', () => {

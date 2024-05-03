@@ -1,29 +1,29 @@
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
-import { UserResolver } from '../../shared/resolvers/fields/User';
+import { UserResolver } from '../../shared/resolvers/fields/User.js';
 import {
   getShareableList,
   getShareableListPublic,
   getShareableLists,
-} from './queries/ShareableList';
-import { isPilotUser } from './queries/PilotUser';
+} from './queries/ShareableList.js';
+import { isPilotUser } from './queries/PilotUser.js';
 import {
   addToShareableList,
   createShareableList,
   deleteShareableList,
   updateShareableList,
   createAndAddToShareableList,
-} from './mutations/ShareableList';
+} from './mutations/ShareableList.js';
 import {
   createShareableListItem,
   deleteShareableListItem,
   updateShareableListItem,
   updateShareableListItems,
-} from './mutations/ShareableListItem';
+} from './mutations/ShareableListItem.js';
 import {
   ListItemsResolver,
   ListItemsConnectionResolver,
-} from '../../shared/resolvers/fields/ShareableList';
-import { ShareableListItem } from '../../database/types';
+} from '../../shared/resolvers/fields/ShareableList.js';
+import { ShareableListItem } from '../../database/types.js';
 
 export const resolvers = {
   ...PocketDefaultScalars,

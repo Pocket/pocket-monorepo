@@ -1,5 +1,5 @@
 import { NotFoundError, UserInputError } from '@pocket-tools/apollo-utils';
-import { ModerationStatus } from '.prisma/client';
+import { ModerationStatus } from 'generated-prisma/client/index.js';
 import {
   AddItemInput,
   CreateShareableListItemInput,
@@ -11,14 +11,14 @@ import {
   ShareableListSelect,
   UpdateShareableListItemInput,
   UpdateShareableListItemsInput,
-} from '../types';
-import { PRISMA_RECORD_NOT_FOUND } from '../../shared/constants';
-import { validateItemId } from '../../public/resolvers/utils';
+} from '../types.js';
+import { PRISMA_RECORD_NOT_FOUND } from '../../shared/constants.js';
+import { validateItemId } from '../../public/resolvers/utils.js';
 import { v4 as uuid } from 'uuid';
 
-import { sendEventHelper as sendEvent } from '../../snowplow/events';
-import { EventBridgeEventType } from '../../snowplow/types';
-import { BaseContext } from '../../shared/types';
+import { sendEventHelper as sendEvent } from '../../snowplow/events.js';
+import { EventBridgeEventType } from '../../snowplow/types.js';
+import { BaseContext } from '../../shared/types.js';
 
 /**
  * What can actually go into the database vs. client-provided type

@@ -1,7 +1,8 @@
-import { schema } from './schema';
+import { schema } from './schema.js';
 import { printSubgraphSchema } from '@apollo/subgraph';
 import path from 'path';
 import fs from 'fs';
+const __dirname = import.meta.dirname;
 
 const sdl = printSubgraphSchema(schema);
 

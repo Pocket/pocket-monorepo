@@ -1,6 +1,6 @@
-import { Connection, Edge } from '../shared/types';
+import { Connection, Edge } from '../shared/types.js';
 import { SelectQueryBuilder } from 'kysely';
-import { DB } from '.kysely/client/types';
+import { DB } from 'generated-kysely/client/types.js';
 import { ValidatedPagination } from '@pocket-tools/apollo-utils';
 
 /**

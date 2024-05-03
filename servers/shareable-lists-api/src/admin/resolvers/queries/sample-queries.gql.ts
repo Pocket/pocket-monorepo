@@ -1,5 +1,5 @@
 import { gql } from 'graphql-tag';
-import { ShareableListCompleteProps } from '../fragments.gql';
+import { ShareableListCompleteProps } from '../fragments.gql.js';
 
 export const SEARCH_SHAREABLE_LIST = gql`
   query searchShareableList($externalId: ID!) {

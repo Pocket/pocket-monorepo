@@ -1,8 +1,8 @@
 import { Request, Response, Router } from 'express';
 import { checkSchema, Schema } from 'express-validator';
 import * as Sentry from '@sentry/node';
-import { client } from '../../database/client';
-import { validate } from './';
+import { client } from '../../database/client.js';
+import { validate } from './index.js';
 
 const router = Router();
 const db = client();

@@ -1,4 +1,4 @@
-import { startServer } from './express';
+import { startServer } from './express.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 (async () => {

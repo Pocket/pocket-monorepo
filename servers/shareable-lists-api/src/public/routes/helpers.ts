@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
-import { PrismaClient } from '.prisma/client';
+import { PrismaClient } from 'generated-prisma/client/index.js';
 
 /**
  * This method validates the request made to the endpoint

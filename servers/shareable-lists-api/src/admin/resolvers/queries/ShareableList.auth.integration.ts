@@ -1,17 +1,17 @@
 import { ApolloServer } from '@apollo/server';
-import { PrismaClient } from '.prisma/client';
+import { PrismaClient } from 'generated-prisma/client/index.js';
 import { print } from 'graphql';
 import request from 'supertest';
-import { IAdminContext } from '../../context';
-import { startServer } from '../../../express';
-import { client } from '../../../database/client';
-import { clearDb, mockRedisServer } from '../../../test/helpers';
-import { SEARCH_SHAREABLE_LIST } from './sample-queries.gql';
+import { IAdminContext } from '../../context.js';
+import { startServer } from '../../../express.js';
+import { client } from '../../../database/client.js';
+import { clearDb, mockRedisServer } from '../../../test/helpers/index.js';
+import { SEARCH_SHAREABLE_LIST } from './sample-queries.gql.js';
 import {
   ACCESS_DENIED_ERROR,
   FULLACCESS,
   READONLY,
-} from '../../../shared/constants';
+} from '../../../shared/constants.js';
 import { Application } from 'express';
 
 describe('auth: ShareableList', () => {

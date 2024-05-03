@@ -1,18 +1,18 @@
 import * as Sentry from '@sentry/node';
 import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
-import { Visibility, ModerationStatus } from '.prisma/client';
+import { Visibility, ModerationStatus } from 'generated-prisma/client/index.js';
 import {
   ShareableListModerationReason,
   ShareableListComplete,
   ShareableListItem,
-} from '../database/types';
+} from '../database/types.js';
 import {
   generateShareableListEventBridgePayload,
   generateShareableListItemEventBridgePayload,
   sendEvent,
   sendEventHelper,
-} from './events';
-import { EventBridgeEventType } from './types';
+} from './events.js';
+import { EventBridgeEventType } from './types.js';
 import { faker } from '@faker-js/faker';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import winston from 'winston';

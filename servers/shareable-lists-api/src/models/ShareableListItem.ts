@@ -1,8 +1,8 @@
 import { SelectQueryBuilder } from 'kysely';
-import { DB } from '.kysely/client/types';
-import { ListItemResponse, ListItemSelect } from '../database/types';
-import { BaseContext, Connection } from '../shared/types';
-import { OffsetPagination } from '../database/OffsetPagination';
+import { DB } from 'generated-kysely/client/types.js';
+import { ListItemResponse, ListItemSelect } from '../database/types.js';
+import { BaseContext, Connection } from '../shared/types.js';
+import { OffsetPagination } from '../database/OffsetPagination.js';
 import { ValidatedPagination } from '@pocket-tools/apollo-utils';
 
 export class ListItemModel {

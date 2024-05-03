@@ -7,24 +7,24 @@ import {
   Visibility,
   ModerationStatus,
   PrismaClient,
-} from '.prisma/client';
+} from 'generated-prisma/client/index.js';
 
-import { IPublicContext } from '../../context';
-import { startServer } from '../../../express';
-import { client } from '../../../database/client';
+import { IPublicContext } from '../../context.js';
+import { startServer } from '../../../express.js';
+import { client } from '../../../database/client.js';
 import {
   clearDb,
   createPilotUserHelper,
   createShareableListHelper,
   createShareableListItemHelper,
   mockRedisServer,
-} from '../../../test/helpers';
+} from '../../../test/helpers/index.js';
 import {
   GET_SHAREABLE_LIST,
   GET_SHAREABLE_LIST_PUBLIC,
   GET_SHAREABLE_LISTS,
-} from './sample-queries.gql';
-import { ACCESS_DENIED_ERROR } from '../../../shared/constants';
+} from './sample-queries.gql.js';
+import { ACCESS_DENIED_ERROR } from '../../../shared/constants.js';
 import { Application } from 'express';
 import { faker } from '@faker-js/faker';
 

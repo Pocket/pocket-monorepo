@@ -1,7 +1,7 @@
-import { PrismaClient } from '.prisma/client';
+import { PrismaClient } from 'generated-prisma/client/index.js';
 import { Kysely } from 'kysely';
-import { DB } from '.kysely/client/types';
-import { ShareableListItem } from '../database/types';
+import { DB } from 'generated-kysely/client/types.js';
+import { ShareableListItem } from '../database/types.js';
 
 export interface BaseContext {
   db: PrismaClient;

@@ -1,4 +1,4 @@
-import { PrismaClient } from '.prisma/client';
+import { PrismaClient } from 'generated-prisma/client/index.js';
 
 /**
  * Retrieves the number of users in the PilotUser table with the given userid

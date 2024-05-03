@@ -2,12 +2,12 @@ generator client {
   provider        = "prisma-client-js"
   binaryTargets   = ["native", "debian-openssl-1.1.x"]
   previewFeatures = []
-  output          = "../node_modules/.prisma/client"
+  output          = "../node_modules/generated-prisma/client"
 }
 
 generator kysely {
   provider = "prisma-kysely"
-  output   = "../node_modules/.kysely/client"
+  output   = "../node_modules/generated-kysely/client"
   fileName = "types.ts"
 }
 

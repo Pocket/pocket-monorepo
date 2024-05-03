@@ -1,12 +1,12 @@
-import { PrismaClient } from '.prisma/client';
+import { PrismaClient } from 'generated-prisma/client/index.js';
 import { ForbiddenError, UserInputError } from '@pocket-tools/apollo-utils';
 
-import { IPublicContext } from '../context';
+import { IPublicContext } from '../context.js';
 import {
   ACCESS_DENIED_ERROR,
   GT_ENCODED,
   LT_ENCODED,
-} from '../../shared/constants';
+} from '../../shared/constants.js';
 
 /**
  * Executes a mutation, catches exceptions and records to sentry and console

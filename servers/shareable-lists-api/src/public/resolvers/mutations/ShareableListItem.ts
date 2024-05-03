@@ -1,17 +1,17 @@
-import { IPublicContext } from '../../context';
+import { IPublicContext } from '../../context.js';
 import {
   CreateShareableListItemInput,
   ShareableListItem,
   UpdateShareableListItemInput,
   UpdateShareableListItemsInput,
-} from '../../../database/types';
+} from '../../../database/types.js';
 import {
   createShareableListItem as dbCreateShareableListItem,
   deleteShareableListItem as dbDeleteShareableListItem,
   updateShareableListItem as dbUpdateShareableListItem,
   updateShareableListItems as dbUpdateShareableListItems,
-} from '../../../database';
-import { executeMutation } from '../utils';
+} from '../../../database/index.js';
+import { executeMutation } from '../utils.js';
 
 /**
  * @param parent

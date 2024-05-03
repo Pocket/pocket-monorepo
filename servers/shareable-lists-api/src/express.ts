@@ -7,16 +7,16 @@ import { expressMiddleware } from '@apollo/server/express4';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 import * as Sentry from '@sentry/node';
 
-import config from './config';
-import { client } from './database/client';
-import deleteUserDataRouter from './public/routes/deleteUserData';
-import { getPublicContext, IPublicContext } from './public/context';
-import { getAdminContext, IAdminContext } from './admin/context';
-import { startAdminServer } from './admin/server';
-import { startPublicServer } from './public/server';
+import config from './config/index.js';
+import { client } from './database/client.js';
+import deleteUserDataRouter from './public/routes/deleteUserData.js';
+import { getPublicContext, IPublicContext } from './public/context.js';
+import { getAdminContext, IAdminContext } from './admin/context.js';
+import { startAdminServer } from './admin/server.js';
+import { startPublicServer } from './public/server.js';
 import { sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
 import { initSentry } from '@pocket-tools/sentry';
-import { getRedis } from './cache';
+import { getRedis } from './cache/index.js';
 
 /**
  * Initialize an express server.

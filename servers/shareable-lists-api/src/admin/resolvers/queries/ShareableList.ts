@@ -1,7 +1,7 @@
 import { ForbiddenError, NotFoundError } from '@pocket-tools/apollo-utils';
-import { searchShareableList as dbSearchShareableList } from '../../../database';
-import { ShareableListComplete } from '../../../database/types';
-import { ACCESS_DENIED_ERROR } from '../../../shared/constants';
+import { searchShareableList as dbSearchShareableList } from '../../../database/index.js';
+import { ShareableListComplete } from '../../../database/types.js';
+import { ACCESS_DENIED_ERROR } from '../../../shared/constants.js';
 
 /**
  * Resolver for the admin `searchShareableList` query.

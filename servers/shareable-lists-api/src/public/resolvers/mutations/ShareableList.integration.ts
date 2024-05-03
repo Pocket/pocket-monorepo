@@ -7,41 +7,41 @@ import {
   ModerationStatus,
   // PilotUser,
   PrismaClient,
-} from '.prisma/client';
+} from 'generated-prisma/client/index.js';
 import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
 import { faker } from '@faker-js/faker';
 // import slugify from 'slugify';
-import { startServer } from '../../../express';
-import { IPublicContext } from '../../context';
-import { client, conn } from '../../../database/client';
+import { startServer } from '../../../express.js';
+import { IPublicContext } from '../../context.js';
+import { client, conn } from '../../../database/client.js';
 import {
   CreateAndAddToShareableListInput,
   CreateShareableListInput,
   UpdateShareableListInput,
-} from '../../../database/types';
+} from '../../../database/types.js';
 import {
   CREATE_SHAREABLE_LIST,
   DELETE_SHAREABLE_LIST,
   UPDATE_SHAREABLE_LIST,
   CREATE_AND_ADD_TO_SHAREABLE_LIST,
-} from './sample-mutations.gql';
+} from './sample-mutations.gql.js';
 import {
   clearDb,
   createPilotUserHelper,
   createShareableListHelper,
   createShareableListItemHelper,
   mockRedisServer,
-} from '../../../test/helpers';
+} from '../../../test/helpers/index.js';
 // import config from '../../../config';
 import {
   ACCESS_DENIED_ERROR,
   LIST_TITLE_MAX_CHARS,
   LIST_DESCRIPTION_MAX_CHARS,
-} from '../../../shared/constants';
+} from '../../../shared/constants.js';
 import { Application } from 'express';
-import { IAdminContext } from '../../../admin/context';
+import { IAdminContext } from '../../../admin/context.js';
 import { Kysely } from 'kysely';
-import { DB } from '.kysely/client/types';
+import { DB } from 'generated-kysely/client/types.js';
 
 describe('public mutations: ShareableList', () => {
   let app: Application;

@@ -1,5 +1,9 @@
-import { Visibility, ModerationStatus, Prisma } from '.prisma/client';
-import { ListItem, List } from '.kysely/client/types';
+import {
+  Visibility,
+  ModerationStatus,
+  Prisma,
+} from 'generated-prisma/client/index.js';
+import { ListItem, List } from 'generated-kysely/client/types.js';
 import { ColumnType } from 'kysely';
 
 // For db-generated columns in Kysely-Prisma types, we get a type error in

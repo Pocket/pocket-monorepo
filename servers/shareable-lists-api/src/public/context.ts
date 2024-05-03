@@ -1,8 +1,8 @@
-import { PrismaClient } from '.prisma/client';
-import { client, conn } from '../database/client';
+import { PrismaClient } from 'generated-prisma/client/index.js';
+import { client, conn } from '../database/client.js';
 import { Kysely } from 'kysely';
-import { DB } from '.kysely/client/types';
-import { BaseContext } from '../shared/types';
+import { DB } from 'generated-kysely/client/types.js';
+import { BaseContext } from '../shared/types.js';
 
 /**
  * Context components specifically for the public graph.

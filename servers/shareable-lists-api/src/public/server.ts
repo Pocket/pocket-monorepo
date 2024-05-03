@@ -1,14 +1,14 @@
-import { defaultPlugins } from '@pocket-tools/apollo-utils';
+import { ApolloServerPlugin, defaultPlugins } from '@pocket-tools/apollo-utils';
 import { ApolloServer } from '@apollo/server';
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl';
 import responseCachePlugin from '@apollo/server-plugin-response-cache';
-import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4';
+import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4.js';
 import { Server } from 'http';
 
-import { IPublicContext } from './context';
-import config from '../config';
-import { getRedisCache } from '../cache';
-import { schema } from './schema';
+import { IPublicContext } from './context.js';
+import config from '../config/index.js';
+import { getRedisCache } from '../cache/index.js';
+import { schema } from './schema.js';
 
 export function getPublicServer(
   httpServer: Server,
@@ -24,9 +24,10 @@ export function getPublicServer(
         // and we will specify the max age for specific queries on the schema and resolver level
         defaultMaxAge: config.app.defaultMaxAge,
       }),
+      // https://github.com/confuser/graphql-constraint-directive/issues/188
       createApollo4QueryValidationPlugin({
         schema,
-      }),
+      }) as unknown as ApolloServerPlugin,
       responseCachePlugin(),
     ],
     cache,

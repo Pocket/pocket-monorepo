@@ -3,37 +3,42 @@ import { print } from 'graphql';
 import request from 'supertest';
 import { ApolloServer } from '@apollo/server';
 import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
-import { List, ListItem, ModerationStatus, PrismaClient } from '.prisma/client';
-import { startServer } from '../../../express';
-import { IPublicContext } from '../../context';
-import { client, conn } from '../../../database/client';
+import {
+  List,
+  ListItem,
+  ModerationStatus,
+  PrismaClient,
+} from 'generated-prisma/client/index.js';
+import { startServer } from '../../../express.js';
+import { IPublicContext } from '../../context.js';
+import { client, conn } from '../../../database/client.js';
 import {
   AddItemInput,
   CreateShareableListItemInput,
   UpdateShareableListItemInput,
   UpdateShareableListItemsInput,
-} from '../../../database/types';
+} from '../../../database/types.js';
 import {
   CREATE_SHAREABLE_LIST_ITEM,
   UPDATE_SHAREABLE_LIST_ITEM,
   UPDATE_SHAREABLE_LIST_ITEMS,
   DELETE_SHAREABLE_LIST_ITEM,
   ADD_TO_SHAREABLE_LIST,
-} from './sample-mutations.gql';
+} from './sample-mutations.gql.js';
 import {
   clearDb,
   createShareableListHelper,
   createShareableListItemHelper,
   mockRedisServer,
-} from '../../../test/helpers';
+} from '../../../test/helpers/index.js';
 import {
   ACCESS_DENIED_ERROR,
   LIST_ITEM_NOTE_MAX_CHARS,
-} from '../../../shared/constants';
+} from '../../../shared/constants.js';
 import { Application } from 'express';
-import { IAdminContext } from '../../../admin/context';
+import { IAdminContext } from '../../../admin/context.js';
 import { Kysely } from 'kysely';
-import { DB } from '.kysely/client/types';
+import { DB } from 'generated-kysely/client/types.js';
 
 describe('public mutations: ShareableListItem', () => {
   let app: Application;

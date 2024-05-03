@@ -1,10 +1,10 @@
-import { PrismaClient } from '.prisma/client';
+import { PrismaClient } from 'generated-prisma/client/index.js';
 import { Request } from 'express';
 import { Kysely } from 'kysely';
-import { DB } from '.kysely/client/types';
-import { client, conn } from '../database/client';
-import { FULLACCESS, READONLY } from '../shared/constants';
-import { BaseContext } from '../shared/types';
+import { DB } from 'generated-kysely/client/types.js';
+import { client, conn } from '../database/client.js';
+import { FULLACCESS, READONLY } from '../shared/constants.js';
+import { BaseContext } from '../shared/types.js';
 
 /**
  * Context components specifically for the admin graph.

@@ -3,7 +3,7 @@ import {
   NotFoundError,
   UserInputError,
 } from '@pocket-tools/apollo-utils';
-import { Visibility, ModerationStatus } from '.prisma/client';
+import { Visibility, ModerationStatus } from 'generated-prisma/client/index.js';
 // import slugify from 'slugify';
 import {
   CreateShareableListInput,
@@ -15,25 +15,25 @@ import {
   UpdateShareableListInput,
   ListItemSelect,
   ShareableListSelect,
-} from '../types';
+} from '../types.js';
 import {
   createShareableListItem,
   deleteAllListItemsForList,
   CreateListItemDb,
-} from './ShareableListItem';
+} from './ShareableListItem.js';
 import {
   ACCESS_DENIED_ERROR,
   PRISMA_RECORD_NOT_FOUND,
-} from '../../shared/constants';
+} from '../../shared/constants.js';
 import {
   getShareableList,
   // isPilotUser
-} from '..';
+} from '../index.js';
 // import config from '../../config';
-import { validateItemId } from '../../public/resolvers/utils';
-import { sendEventHelper } from '../../snowplow/events';
-import { EventBridgeEventType } from '../../snowplow/types';
-import { BaseContext } from '../../shared/types';
+import { validateItemId } from '../../public/resolvers/utils.js';
+import { sendEventHelper } from '../../snowplow/events.js';
+import { EventBridgeEventType } from '../../snowplow/types.js';
+import { BaseContext } from '../../shared/types.js';
 import { v4 as uuid } from 'uuid';
 
 /**

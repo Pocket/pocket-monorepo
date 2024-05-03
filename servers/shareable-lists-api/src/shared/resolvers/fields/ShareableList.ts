@@ -6,10 +6,10 @@ import {
   ListItemResponse,
   ListResponse,
   ShareableListItem,
-} from '../../../database/types';
-import { ListItemModel } from '../../../models/ShareableListItem';
-import { BaseContext, Connection } from '../../types';
-import config from '../../../config';
+} from '../../../database/types.js';
+import { ListItemModel } from '../../../models/ShareableListItem.js';
+import { BaseContext, Connection } from '../../types.js';
+import config from '../../../config/index.js';
 
 export async function ListItemsResolver(
   parent: ListResponse & { listItems?: ShareableListItem[] },

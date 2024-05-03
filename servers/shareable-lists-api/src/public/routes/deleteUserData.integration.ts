@@ -1,20 +1,20 @@
 import request from 'supertest';
 import { ApolloServer } from '@apollo/server';
 import * as Sentry from '@sentry/node';
-import { PrismaClient } from '.prisma/client';
-import { startServer } from '../../express';
-import { IPublicContext } from '../context';
-import { client } from '../../database/client';
+import { PrismaClient } from 'generated-prisma/client/index.js';
+import { startServer } from '../../express.js';
+import { IPublicContext } from '../context.js';
+import { client } from '../../database/client.js';
 import {
   clearDb,
   createShareableListHelper,
   createShareableListItemHelper,
   mockRedisServer,
-} from '../../test/helpers';
+} from '../../test/helpers/index.js';
 import {
   getAllShareableListIdsForUser,
   deleteShareableListItemsForUser,
-} from './deleteUserData';
+} from './deleteUserData.js';
 import { Application } from 'express';
 
 describe('/deleteUserData express endpoint', () => {

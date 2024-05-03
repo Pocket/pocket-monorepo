@@ -3,9 +3,9 @@ import {
   PutEventsCommandOutput,
 } from '@aws-sdk/client-eventbridge';
 import * as Sentry from '@sentry/node';
-import config from '../config/';
-import { eventBridgeClient } from '../aws/eventBridgeClient';
-import { ShareableListComplete, ShareableListItem } from '../database/types';
+import config from '../config/index.js';
+import { eventBridgeClient } from '../aws/eventBridgeClient.js';
+import { ShareableListComplete, ShareableListItem } from '../database/types.js';
 import {
   EventBridgeEventType,
   EventBridgeEventOptions,
@@ -13,7 +13,7 @@ import {
   SnowplowShareableListItem,
   ShareableListEventBusPayload,
   ShareableListItemEventBusPayload,
-} from './types';
+} from './types.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 /**

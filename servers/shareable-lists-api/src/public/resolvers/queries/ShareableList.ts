@@ -3,9 +3,9 @@ import {
   getShareableList as dbGetShareableList,
   getShareableListPublic as dbGetShareableListPublic,
   getShareableLists as dbGetShareableLists,
-} from '../../../database';
-import { ShareableList } from '../../../database/types';
-import { validateUserId } from '../utils';
+} from '../../../database/index.js';
+import { ShareableList } from '../../../database/types.js';
+import { validateUserId } from '../utils.js';
 
 /**
  * Resolver for the public `shareableList` query.

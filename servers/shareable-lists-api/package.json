@@ -1,6 +1,7 @@
 {
   "name": "shareable-lists-api",
   "main": "dist/main.js",
+  "type": "module",
   "prisma": {
     "seed": "ts-node --emit=false prisma/seed.ts"
   },

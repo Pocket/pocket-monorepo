@@ -4,9 +4,9 @@ export {
   getShareableListPublic,
   getShareableLists,
   searchShareableList,
-} from './queries/ShareableList';
+} from './queries/ShareableList.js';
 
-export { isPilotUser } from './queries/PilotUser';
+export { isPilotUser } from './queries/PilotUser.js';
 
 // provide a single file to use for imports
 export {
@@ -15,11 +15,11 @@ export {
   moderateShareableList,
   updateShareableList,
   createAndAddToShareableList,
-} from './mutations/ShareableList';
+} from './mutations/ShareableList.js';
 export {
   createShareableListItem,
   deleteShareableListItem,
   updateShareableListItem,
   updateShareableListItems,
   addToShareableList,
-} from './mutations/ShareableListItem';
+} from './mutations/ShareableListItem.js';

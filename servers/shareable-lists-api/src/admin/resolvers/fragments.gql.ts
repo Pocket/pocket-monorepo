@@ -1,5 +1,5 @@
 import { gql } from 'graphql-tag';
-import { ShareableListItemPublicProps } from '../../shared/fragments.gql';
+import { ShareableListItemPublicProps } from '../../shared/fragments.gql.js';
 
 export const ShareableListCompleteProps = gql`
   fragment ShareableListCompleteProps on ShareableListComplete {

@@ -1,9 +1,9 @@
-import { PrismaClient } from '.prisma/client';
+import { PrismaClient } from 'generated-prisma/client/index.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { createPool } from 'mysql2';
 import { Kysely, MysqlDialect } from 'kysely';
-import { DB } from '.kysely/client/types';
-import config from '../config';
+import { DB } from 'generated-kysely/client/types.js';
+import config from '../config/index.js';
 
 let kysely: Kysely<DB>;
 

@@ -1,7 +1,11 @@
-import { Visibility, ModerationStatus, PrismaClient } from '.prisma/client';
-import { ShareableList, ShareableListComplete } from '../types';
+import {
+  Visibility,
+  ModerationStatus,
+  PrismaClient,
+} from 'generated-prisma/client/index.js';
+import { ShareableList, ShareableListComplete } from '../types.js';
 import { ForbiddenError, NotFoundError } from '@pocket-tools/apollo-utils';
-import { ACCESS_DENIED_ERROR } from '../../shared/constants';
+import { ACCESS_DENIED_ERROR } from '../../shared/constants.js';
 
 /**
  * This is an authenticated query, which is why we only return

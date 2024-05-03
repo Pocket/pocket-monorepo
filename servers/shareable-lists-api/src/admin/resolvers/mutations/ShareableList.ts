@@ -1,9 +1,9 @@
 import { ForbiddenError, UserInputError } from '@pocket-tools/apollo-utils';
-import { ModerationStatus } from '.prisma/client';
-import { ACCESS_DENIED_ERROR } from '../../../shared/constants';
-import { ShareableListComplete } from '../../../database/types';
-import { moderateShareableList as dbModerateShareableList } from '../../../database';
-import { IAdminContext } from '../../context';
+import { ModerationStatus } from 'generated-prisma/client/index.js';
+import { ACCESS_DENIED_ERROR } from '../../../shared/constants.js';
+import { ShareableListComplete } from '../../../database/types.js';
+import { moderateShareableList as dbModerateShareableList } from '../../../database/index.js';
+import { IAdminContext } from '../../context.js';
 
 /**
  * Resolver for the admin 'removeShareableList' mutation.

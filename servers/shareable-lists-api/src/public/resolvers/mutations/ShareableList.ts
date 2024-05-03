@@ -5,16 +5,16 @@ import {
   AddItemInput,
   ListResponse,
   CreateAndAddToShareableListInput,
-} from '../../../database/types';
+} from '../../../database/types.js';
 import {
   createShareableList as dbCreateShareableList,
   deleteShareableList as dbDeleteShareableList,
   updateShareableList as dbUpdateShareableList,
   addToShareableList as dbAddToShareableList,
   createAndAddToShareableList as dbCreateAndAddToShareableList,
-} from '../../../database';
-import { IPublicContext } from '../../context';
-import { executeMutation } from '../utils';
+} from '../../../database/index.js';
+import { IPublicContext } from '../../context.js';
+import { executeMutation } from '../utils.js';
 
 /**
  * @param parent

@@ -11657,7 +11657,7 @@ packages:
     dependencies:
       semver: 7.6.0
       shelljs: 0.8.5
-      typescript: 5.5.0-dev.20240502
+      typescript: 5.5.0-dev.20240503
     dev: false
 
   /dreamopt@0.8.0:
@@ -20162,8 +20162,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.5.0-dev.20240502:
-    resolution: {integrity: sha512-k2os5k45m5icuXipmT6PBBA2byI+V9WhDS5StUQbU1m9NYvivVPurukxM7otJSRfYPMgpLerkvsRM/bLAykaxg==}
+  /typescript@5.5.0-dev.20240503:
+    resolution: {integrity: sha512-tOdPPinGIa3zx6xEhbvrNseqE+4ODzcDBLl9cFAnSsOrbjlXaQVMdDRXR2T8pS4GR4mc0aoU5XX+sP61ynHgAQ==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: false

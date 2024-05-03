@@ -5,22 +5,22 @@ import {
   Visibility,
   ModerationStatus,
   PrismaClient,
-} from '.prisma/client';
+} from 'generated-prisma/client/index.js';
 import { print } from 'graphql';
 import request from 'supertest';
-import { IAdminContext } from '../../context';
-import { startServer } from '../../../express';
-import { client } from '../../../database/client';
+import { IAdminContext } from '../../context.js';
+import { startServer } from '../../../express.js';
+import { client } from '../../../database/client.js';
 import {
   clearDb,
   createShareableListHelper,
   createShareableListItemHelper,
   updateShareableListHelper,
   mockRedisServer,
-} from '../../../test/helpers';
-import { SEARCH_SHAREABLE_LIST } from './sample-queries.gql';
-import { FULLACCESS } from '../../../shared/constants';
-import config from '../../../config';
+} from '../../../test/helpers/index.js';
+import { SEARCH_SHAREABLE_LIST } from './sample-queries.gql.js';
+import { FULLACCESS } from '../../../shared/constants.js';
+import config from '../../../config/index.js';
 import slugify from 'slugify';
 import { Application } from 'express';
 
@@ -96,7 +96,7 @@ describe('admin queries: ShareableList', () => {
       // make list public
       await updateShareableListHelper(db, shareableList.externalId, {
         status: Visibility.PUBLIC,
-        slug: slugify(shareableList.title, config.slugify),
+        slug: slugify.default(shareableList.title, config.slugify),
       });
 
       // Run the query we're testing
