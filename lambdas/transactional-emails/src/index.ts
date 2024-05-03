@@ -1,7 +1,7 @@
 import { SQSEvent, SQSBatchResponse, SQSBatchItemFailure } from 'aws-lambda';
 import * as Sentry from '@sentry/serverless';
-import { handlers } from './handlers';
-import { config } from './config';
+import { handlers } from './handlers/index.js';
+import { config } from './config.js';
 
 /**
  * The main handler function which will be wrapped by Sentry prior to export.

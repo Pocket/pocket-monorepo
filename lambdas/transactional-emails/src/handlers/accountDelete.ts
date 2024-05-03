@@ -1,6 +1,6 @@
 import { SQSRecord } from 'aws-lambda';
-import { AccountDeleteEvent } from '../schemas/accountDeleteEvent';
-import { sendAccountDeletionEmail } from '../braze';
+import { AccountDeleteEvent } from '../schemas/accountDeleteEvent.js';
+import { sendAccountDeletionEmail } from '../braze.js';
 
 /**
  * Validates that email is not null in the account delete event payload and

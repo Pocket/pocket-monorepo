@@ -1,9 +1,9 @@
 import nock, { cleanAll } from 'nock';
 import { SQSRecord } from 'aws-lambda';
-import { config } from '../config';
-import * as ssm from '../ssm';
-import { sendForgotPasswordEmail } from '../braze';
-import { forgotPasswordHandler } from './forgotPassword';
+import { config } from '../config.js';
+import * as ssm from '../ssm.js';
+import { sendForgotPasswordEmail } from '../braze.js';
+import { forgotPasswordHandler } from './forgotPassword.js';
 
 describe('forgotPassword handler', () => {
   const record = {

@@ -1,5 +1,5 @@
-import { Purchase } from './purchase';
-import { User } from './user';
+import { Purchase } from './purchase.js';
+import { User } from './user.js';
 
 export class PremiumPurchaseEvent {
   'purchase': Purchase;

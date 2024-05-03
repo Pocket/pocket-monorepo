@@ -1,8 +1,8 @@
 import { SQSRecord } from 'aws-lambda';
-import { accountDeleteHandler } from './accountDelete';
-import { premiumPurchaseHandler } from './premiumPurchaseHandler';
-import { userRegistrationEventHandler } from './userRegistrationEventHandler';
-import { forgotPasswordHandler } from './forgotPassword';
+import { accountDeleteHandler } from './accountDelete.js';
+import { premiumPurchaseHandler } from './premiumPurchaseHandler.js';
+import { userRegistrationEventHandler } from './userRegistrationEventHandler.js';
+import { forgotPasswordHandler } from './forgotPassword.js';
 
 export enum Event {
   ACCOUNT_DELETION = 'account-deletion', //source: user-event

@@ -1,11 +1,11 @@
-import { UserRegistrationEvent } from '../schemas/userRegistrationEvent';
+import { UserRegistrationEvent } from '../schemas/userRegistrationEvent/index.js';
 import {
   generateSubscriptionPayloadForEmail,
   sendCreateUserAlias,
   sendUserTrack,
   setSubscription,
-} from '../braze';
-import { config } from '../config';
+} from '../braze.js';
+import { config } from '../config.js';
 import * as Sentry from '@sentry/node';
 import { SQSRecord } from 'aws-lambda';
 import type {

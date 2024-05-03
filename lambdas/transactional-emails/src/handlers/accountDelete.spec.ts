@@ -1,9 +1,9 @@
 import nock, { cleanAll } from 'nock';
-import { accountDeleteHandler } from './accountDelete';
+import { accountDeleteHandler } from './accountDelete.js';
 import { SQSRecord } from 'aws-lambda';
-import { config } from '../config';
-import * as ssm from '../ssm';
-import { sendAccountDeletionEmail } from '../braze';
+import { config } from '../config.js';
+import * as ssm from '../ssm.js';
+import { sendAccountDeletionEmail } from '../braze.js';
 
 describe('accountDelete handler', () => {
   const record = {

@@ -1,7 +1,7 @@
 import isomorphicFetch from 'isomorphic-fetch';
 import fetchRetry from 'fetch-retry';
-import { config } from './config';
-import { getBrazeApiKey } from './ssm';
+import { config } from './config.js';
+import { getBrazeApiKey } from './ssm.js';
 import * as Sentry from '@sentry/node';
 import type {
   UsersTrackObject,

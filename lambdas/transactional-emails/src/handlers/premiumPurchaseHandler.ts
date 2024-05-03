@@ -1,8 +1,8 @@
 import { SQSRecord } from 'aws-lambda';
-import { PremiumPurchaseEvent } from '../schemas/premiumPurchaseSchema/premiumPurchaseEvent';
-import { sendUserTrack } from '../braze';
-import { User } from '../schemas/premiumPurchaseSchema/user';
-import { Purchase } from '../schemas/premiumPurchaseSchema/purchase';
+import { PremiumPurchaseEvent } from '../schemas/premiumPurchaseSchema/premiumPurchaseEvent.js';
+import { sendUserTrack } from '../braze.js';
+import { User } from '../schemas/premiumPurchaseSchema/user.js';
+import { Purchase } from '../schemas/premiumPurchaseSchema/purchase.js';
 
 /**
  * validate the event payload with User and Purchase object of

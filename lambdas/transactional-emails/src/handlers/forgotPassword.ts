@@ -1,6 +1,6 @@
 import { SQSRecord } from 'aws-lambda';
-import { sendForgotPasswordEmail } from '../braze';
-import { FogotPasswordResetEvent } from '../schemas/forgotPasswordResetEvent';
+import { sendForgotPasswordEmail } from '../braze.js';
+import { FogotPasswordResetEvent } from '../schemas/forgotPasswordResetEvent.js';
 
 /**
  * Validates that email is not null in the forgot password event payload and

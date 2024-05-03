@@ -1,13 +1,13 @@
-import * as ssm from '../ssm';
+import * as ssm from '../ssm.js';
 import nock, { cleanAll } from 'nock';
-import { config } from '../config';
+import { config } from '../config.js';
 import { SQSRecord } from 'aws-lambda';
-import { UserRegistrationEvent } from '../schemas/userRegistrationEvent';
+import { UserRegistrationEvent } from '../schemas/userRegistrationEvent/index.js';
 import {
   generateUserAliasRequestBody,
   generateUserTrackBody,
   userRegistrationEventHandler,
-} from './userRegistrationEventHandler';
+} from './userRegistrationEventHandler.js';
 
 function generateRecord(eventPayload: UserRegistrationEvent) {
   return {

@@ -1,9 +1,9 @@
-import * as ssm from '../ssm';
+import * as ssm from '../ssm.js';
 import nock from 'nock';
-import { config } from '../config';
-import { premiumPurchaseHandler } from './premiumPurchaseHandler';
+import { config } from '../config.js';
+import { premiumPurchaseHandler } from './premiumPurchaseHandler.js';
 import { SQSRecord } from 'aws-lambda';
-import { PremiumPurchaseEvent } from '../schemas/premiumPurchaseSchema/premiumPurchaseEvent';
+import { PremiumPurchaseEvent } from '../schemas/premiumPurchaseSchema/premiumPurchaseEvent.js';
 
 function generateRecord(eventPayload: PremiumPurchaseEvent) {
   return {
