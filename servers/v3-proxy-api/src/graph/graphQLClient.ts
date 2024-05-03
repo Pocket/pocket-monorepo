@@ -155,6 +155,8 @@ export class GraphQLClientFactory {
         const errors = response.errors.filter(
           (error) =>
             !(
+              error.path &&
+              Array.isArray(error.path) &&
               error.path.indexOf('recentSearches') &&
               error.extensions.code === 'FORBIDDEN'
             ),

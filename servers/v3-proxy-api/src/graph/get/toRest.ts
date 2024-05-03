@@ -310,7 +310,6 @@ export function ListItemTransformerComplete(
       savedItem.item.domainMetadata,
     ),
     images: tx.ImagesReducer(savedItem.item.images, savedItem.item.resolvedId),
-    tags: tx.TagsReducer(savedItem.tags, savedItem.item.resolvedId),
     videos: tx.VideosReducer(savedItem.item.videos, savedItem.item.resolvedId),
     image: tx.DisplayImageTransformer(
       savedItem.item.images,
@@ -355,6 +354,8 @@ function ListItemTransformer<T extends SavedItemSimple>(
     sort_id: index,
   };
   const conditionalFields = {};
+  const tags = tx.TagsReducer(savedItem.tags, savedItem.id);
+  tags != null && (conditionalFields['tags'] = tags);
   switch (savedItem.item.__typename) {
     case 'PendingItem':
       // This case shouldn't happen, but we set values to defaults
