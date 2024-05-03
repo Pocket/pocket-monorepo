@@ -1,4 +1,4 @@
-import { chunkArray } from './util';
+import { chunkArray } from './util.js';
 
 describe('util', () => {
   describe('chunkArray', () => {

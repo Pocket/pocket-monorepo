@@ -1,5 +1,5 @@
-import { deliver as deliverFirehose } from './firehose';
-import { deliver as deliverMetrics } from './cloudwatch-metrics';
+import { deliver as deliverFirehose } from './firehose.js';
+import { deliver as deliverMetrics } from './cloudwatch-metrics.js';
 
 export const logEventsReceived = (events: any) => {
   let _ev = events;

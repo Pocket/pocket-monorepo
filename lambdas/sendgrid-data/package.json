@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "dependencies": {
     "@aws-sdk/client-cloudwatch": "3.554.0",
     "@aws-sdk/client-firehose": "3.554.0",

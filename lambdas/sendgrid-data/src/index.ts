@@ -1,7 +1,11 @@
-import config from './config';
-import { deliverEvents, logEventsError, logEventsReceived } from './sendgrid';
+import config from './config/index.js';
+import {
+  deliverEvents,
+  logEventsError,
+  logEventsReceived,
+} from './sendgrid/index.js';
 import * as Sentry from '@sentry/serverless';
-import { captureException } from './sentry';
+import { captureException } from './sentry.js';
 import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 Sentry.AWSLambda.init({

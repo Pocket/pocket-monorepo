@@ -4,10 +4,10 @@ import {
   CloudWatchClient,
   PutMetricDataCommand,
 } from '@aws-sdk/client-cloudwatch';
-import config from '../config';
-import { Event } from './event';
-import { chunkArray } from './util';
-import { addBreadcrumbs, captureException } from '../sentry';
+import config from '../config/index.js';
+import { Event } from './event.js';
+import { chunkArray } from './util.js';
+import { addBreadcrumbs, captureException } from '../sentry.js';
 
 export type DimensionMapping = {
   [key: string]: any;

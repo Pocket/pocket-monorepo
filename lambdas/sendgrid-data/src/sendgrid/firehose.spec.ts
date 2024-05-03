@@ -1,6 +1,6 @@
 import { FirehoseClient } from '@aws-sdk/client-firehose';
-import config from '../config';
-import { deliver, createRecords, encodeRecord } from './firehose';
+import config from '../config/index.js';
+import { deliver, createRecords, encodeRecord } from './firehose.js';
 
 describe('firehose', () => {
   describe('deliver', () => {
