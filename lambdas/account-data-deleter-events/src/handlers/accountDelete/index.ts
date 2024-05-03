@@ -1,10 +1,10 @@
-import { AccountDeleteEvent } from '../../schemas/accountDeleteEvent';
+import { AccountDeleteEvent } from '../../schemas/accountDeleteEvent.js';
 import {
   callQueueDeleteEndpoint,
   callStripeDeleteEndpoint,
-} from './postRequest';
+} from './postRequest.js';
 import { SQSRecord } from 'aws-lambda';
-import { AggregateError } from '../../errors/AggregateError';
+import { AggregateError } from '../../errors/AggregateError.js';
 
 type AccountDeleteBody = {
   userId: string;

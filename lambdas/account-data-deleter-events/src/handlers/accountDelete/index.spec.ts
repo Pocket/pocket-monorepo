@@ -1,6 +1,6 @@
-import { config } from '../../config';
+import { config } from '../../config.js';
 import nock from 'nock';
-import { accountDeleteHandler } from './';
+import { accountDeleteHandler } from './index.js';
 import { callQueueDeleteEndpoint } from './postRequest';
 import { SQSRecord } from 'aws-lambda';
 

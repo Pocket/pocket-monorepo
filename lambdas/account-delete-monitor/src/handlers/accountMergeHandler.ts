@@ -1,9 +1,9 @@
 import { SQSRecord } from 'aws-lambda';
-import { client } from '../dynamodb';
+import { client } from '../dynamodb.js';
 import { UpdateCommand } from '@aws-sdk/lib-dynamodb';
-import { config } from '../config';
+import { config } from '../config.js';
 // import { expirationTimestamp } from '../utils';
-import { UserMergeEvent } from '../types';
+import { UserMergeEvent } from '../types.js';
 
 /**
  * Store records to identify history of merged accounts.

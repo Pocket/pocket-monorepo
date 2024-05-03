@@ -1,9 +1,9 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import { BatchGetCommand } from '@aws-sdk/lib-dynamodb';
-import { config } from './config';
-import { BatchDeleteDyanmoClient } from './dynamoUtils';
-import { seedData, truncateTable } from '../test/utils';
+import { config } from './config.js';
+import { BatchDeleteDyanmoClient } from './dynamoUtils.js';
+import { seedData, truncateTable } from '../test/utils.js';
 
 describe('Data fetcher', () => {
   const client = new DynamoDBClient({

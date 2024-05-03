@@ -1,9 +1,9 @@
 import { SQSRecord } from 'aws-lambda';
-import { client, dynamo } from '../dynamodb';
+import { client, dynamo } from '../dynamodb.js';
 import { GetCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
-import { config } from '../config';
-import { accountMergeHandler } from './accountMergeHandler';
-import { truncateTable } from '../test/utils';
+import { config } from '../config.js';
+import { accountMergeHandler } from './accountMergeHandler.js';
+import { truncateTable } from '../test/utils.js';
 
 describe('Account merge handler', () => {
   beforeEach(async () => {

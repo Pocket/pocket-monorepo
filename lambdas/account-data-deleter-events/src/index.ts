@@ -1,7 +1,7 @@
-import { config } from './config';
+import { config } from './config.js';
 import * as Sentry from '@sentry/serverless';
 import { SQSBatchItemFailure, SQSEvent } from 'aws-lambda';
-import { handlers } from './handlers';
+import { handlers } from './handlers/index.js';
 
 Sentry.AWSLambda.init({
   dsn: config.sentry.dsn,

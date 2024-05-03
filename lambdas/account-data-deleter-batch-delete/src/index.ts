@@ -1,9 +1,9 @@
-import { config } from './config';
+import { config } from './config.js';
 import * as Sentry from '@sentry/serverless';
 import { EventBridgeEvent } from 'aws-lambda';
-import { BatchDeleteDyanmoClient } from './dynamoUtils';
+import { BatchDeleteDyanmoClient } from './dynamoUtils.js';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { deleteUserMutationCaller } from './externalCaller/deleteMutation';
+import { deleteUserMutationCaller } from './externalCaller/deleteMutation.js';
 
 Sentry.AWSLambda.init({
   dsn: config.sentry.dsn,

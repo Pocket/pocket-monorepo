@@ -1,6 +1,6 @@
 import { backOff } from 'exponential-backoff';
 import fetch from 'node-fetch';
-import { config } from '../config';
+import { config } from '../config.js';
 
 /**
  * Function that establishes the number of back off attempts

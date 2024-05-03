@@ -3,8 +3,9 @@
     "compilerOptions": {
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true,
-      "target": "es2019",
-      "module": "commonjs",
+      "target": "ESNext",
+      "module": "NodeNext",
+      "moduleResolution": "NodeNext",
       "lib": [
         "dom",
         "es2019",

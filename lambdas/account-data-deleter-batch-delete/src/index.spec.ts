@@ -1,8 +1,8 @@
 import { BatchDeleteDyanmoClient } from './dynamoUtils';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { config } from './config';
-import * as DeleteMutation from './externalCaller/deleteMutation';
-import { deleteUsers } from './index';
+import { config } from './config.js';
+import * as DeleteMutation from './externalCaller/deleteMutation.js';
+import { deleteUsers } from './index.js';
 import * as Sentry from '@sentry/serverless';
 
 describe('deleteUsers spec test', () => {

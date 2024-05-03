@@ -1,6 +1,6 @@
 import isomorphicFetch from 'isomorphic-fetch';
 import fetchRetry from 'fetch-retry';
-import { config } from '../../config';
+import { config } from '../../config.js';
 
 const fetch = fetchRetry(isomorphicFetch);
 
