@@ -9,6 +9,9 @@ fragment SavedItemSimple on SavedItem {
     favoritedAt
     archivedAt
     title
+    tags {
+        name
+    }
     item {
         __typename
         ... on Item {

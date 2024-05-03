@@ -175,6 +175,7 @@ export const mockGraphGetSimple: {
           _createdAt: 1706300602,
           favoritedAt: null,
           archivedAt: null,
+          tags: [{ name: 'science' }, { name: 'research' }],
           title:
             'Brains Are Not Required When It Comes to Thinking and Solving Problems—Simple Cells Can Do It',
           item: {
@@ -340,11 +341,11 @@ export const expectedGetComplete: GetResponseComplete = {
       },
       tags: {
         research: {
-          item_id: '11231399273',
+          item_id: '2111834840',
           tag: 'research',
         },
         science: {
-          item_id: '11231399273',
+          item_id: '2111834840',
           tag: 'science',
         },
       },
@@ -404,6 +405,16 @@ export const expectedGetSimple: GetResponseSimple = {
         'Brains Are Not Required When It Comes to Thinking and Solving Problems—Simple Cells Can Do It',
       favorite: '0',
       status: '0',
+      tags: {
+        research: {
+          item_id: '2111834840',
+          tag: 'research',
+        },
+        science: {
+          item_id: '2111834840',
+          tag: 'science',
+        },
+      },
       time_added: '1706300602',
       time_updated: '1706300602',
       time_read: '0',

@@ -341,6 +341,7 @@ export type ListItemObject = {
   // Empty if unavailable, 2-letter lang code
   lang: string;
   time_to_read: number;
+  tags?: TagsItemObject;
   // Not present if null
   top_image_url?: string;
   // Zero if estimate is unavailable
@@ -353,7 +354,6 @@ export type ListItemObjectAdditional = {
   // Optional fields are included only if data is present
   authors?: AuthorsItemObject;
   images?: ImagesItemObject;
-  tags?: TagsItemObject;
   videos?: VideosItemObject;
   domain_metadata?: DomainMetadataItemObject;
   image?: BaseImageData;
