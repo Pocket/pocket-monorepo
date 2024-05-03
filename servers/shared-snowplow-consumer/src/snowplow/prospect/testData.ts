@@ -1,7 +1,7 @@
 import {
   Prospect,
   ProspectReviewStatus,
-} from '../../eventConsumer/prospectEvents/types';
+} from '../../eventConsumer/prospectEvents/types.js';
 
 export const testProspectData: Prospect = {
   // a GUID we generate prior to inserting into dynamo

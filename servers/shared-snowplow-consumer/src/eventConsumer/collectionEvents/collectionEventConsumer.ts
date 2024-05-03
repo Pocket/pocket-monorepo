@@ -1,5 +1,5 @@
-import { CollectionEventHandler } from '../../snowplow/collection/collectionEventHandler';
-import { CollectionEventBridgePayload } from './types';
+import { CollectionEventHandler } from '../../snowplow/collection/collectionEventHandler.js';
+import { CollectionEventBridgePayload } from './types.js';
 
 export function collectionEventConsumer(
   requestBody: CollectionEventBridgePayload,

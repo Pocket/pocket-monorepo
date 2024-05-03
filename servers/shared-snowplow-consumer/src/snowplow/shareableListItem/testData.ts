@@ -1,4 +1,4 @@
-import { ShareableListItem } from '../../eventConsumer/shareableListItemEvents/types';
+import { ShareableListItem } from '../../eventConsumer/shareableListItemEvents/types.js';
 
 export const testShareableListItemData: ShareableListItem = {
   shareable_list_item_external_id: 'test-shareable-list-item-external-id',

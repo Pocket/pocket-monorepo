@@ -5,9 +5,9 @@ import {
   SQSClient,
 } from '@aws-sdk/client-sqs';
 import * as Sentry from '@sentry/node';
-import { config } from './config';
-import { SqsConsumer } from './SqsConsumer';
-import * as Consumer from './eventConsumer/userEvents/userEventConsumer';
+import { config } from './config/index.js';
+import { SqsConsumer } from './SqsConsumer.js';
+import * as Consumer from './eventConsumer/userEvents/userEventConsumer.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 describe('sqsConsumer', () => {

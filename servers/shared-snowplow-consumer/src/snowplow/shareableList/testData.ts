@@ -2,7 +2,7 @@ import {
   ModerationStatus,
   ShareableList,
   Visibility,
-} from '../../eventConsumer/shareableListEvents/types';
+} from '../../eventConsumer/shareableListEvents/types.js';
 
 export const testShareableListData: ShareableList = {
   shareable_list_external_id: 'test-shareable-list-external-id',

@@ -1,13 +1,13 @@
 import { SelfDescribingJson } from '@snowplow/tracker-core';
-import { config } from '../../config';
-import { EventHandler } from '../EventHandler';
-import { getTracker } from '../tracker';
+import { config } from '../../config/index.js';
+import { EventHandler } from '../EventHandler.js';
+import { getTracker } from '../tracker.js';
 import {
   ObjectUpdate,
   ShareableListItem,
   createShareableListItem,
-} from '../../snowtype/snowplow';
-import { ShareableListItemEventBridgePayload } from '../../eventConsumer/shareableListItemEvents/types';
+} from '../../snowtype/snowplow.js';
+import { ShareableListItemEventBridgePayload } from '../../eventConsumer/shareableListItemEvents/types.js';
 
 /**
  * class to send `shareable-list-item-event` to snowplow

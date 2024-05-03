@@ -1,5 +1,5 @@
-import { ShareableListItemEventHandler } from '../../snowplow/shareableListItem/shareableListItemEventHandler';
-import { ShareableListItemEventBridgePayload } from './types';
+import { ShareableListItemEventHandler } from '../../snowplow/shareableListItem/shareableListItemEventHandler.js';
+import { ShareableListItemEventBridgePayload } from './types.js';
 
 export function shareableListItemEventConsumer(
   requestBody: ShareableListItemEventBridgePayload,

@@ -1,11 +1,11 @@
-import { UserEventHandler } from './userEventHandler';
+import { UserEventHandler } from './userEventHandler.js';
 import {
   resetSnowplowEvents,
   getAllSnowplowEvents,
   getGoodSnowplowEvents,
   parseSnowplowData,
-} from '../testUtils';
-import { ObjectUpdate } from '../../snowtype/snowplow';
+} from '../testUtils.js';
+import { ObjectUpdate } from '../../snowtype/snowplow.js';
 
 export const userEventsSchema = {
   account: 'iglu:com.pocket/account/jsonschema/1-0-3',

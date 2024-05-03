@@ -1,15 +1,15 @@
-import { ShareableListEventHandler } from './shareableListEventHandler';
+import { ShareableListEventHandler } from './shareableListEventHandler.js';
 import {
   testShareableListData,
   testPartialShareableListData,
-} from './testData';
+} from './testData.js';
 import {
   resetSnowplowEvents,
   getAllSnowplowEvents,
   getGoodSnowplowEvents,
   parseSnowplowData,
-} from '../testUtils';
-import { ObjectUpdate } from '../../snowtype/snowplow';
+} from '../testUtils.js';
+import { ObjectUpdate } from '../../snowtype/snowplow.js';
 
 export const shareableListEventSchema = {
   objectUpdate: 'iglu:com.pocket/object_update/jsonschema/1-0-16',

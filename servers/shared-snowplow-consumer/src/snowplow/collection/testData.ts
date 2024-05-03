@@ -10,7 +10,7 @@ import {
   Collection,
   CollectionLanguage,
   IABChildCategory,
-} from '../../eventConsumer/collectionEvents/types';
+} from '../../eventConsumer/collectionEvents/types.js';
 
 const testAuthor: CollectionAuthor = {
   active: true,

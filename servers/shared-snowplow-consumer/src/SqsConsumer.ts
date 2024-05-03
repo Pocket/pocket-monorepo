@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/node';
-import { eventConsumer } from './eventConsumer';
+import { eventConsumer } from './eventConsumer/index.js';
 import { EventEmitter } from 'events';
-import { config } from './config';
+import { config } from './config/index.js';
 import {
   SQSClient,
   ReceiveMessageCommand,

@@ -1,17 +1,17 @@
 import { SelfDescribingJson } from '@snowplow/tracker-core';
-import { config } from '../../config';
-import { EventHandler } from '../EventHandler';
-import { getTracker } from '../tracker';
+import { config } from '../../config/index.js';
+import { EventHandler } from '../EventHandler.js';
+import { getTracker } from '../tracker.js';
 import {
   ObjectUpdate,
   createProspect,
   Prospect,
   ObjectUpdateTrigger,
-} from '../../snowtype/snowplow';
+} from '../../snowtype/snowplow.js';
 import {
   EventType,
   ProspectEventBridgePayload,
-} from '../../eventConsumer/prospectEvents/types';
+} from '../../eventConsumer/prospectEvents/types.js';
 
 export const SnowplowEventMap: Record<EventType, ObjectUpdateTrigger> = {
   'prospect-dismiss': 'prospect_reviewed',

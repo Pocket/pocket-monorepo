@@ -1,13 +1,13 @@
-import { CollectionEventHandler } from './collectionEventHandler';
-import { testCollectionData } from './testData';
+import { CollectionEventHandler } from './collectionEventHandler.js';
+import { testCollectionData } from './testData.js';
 import {
   resetSnowplowEvents,
   getAllSnowplowEvents,
   getGoodSnowplowEvents,
   parseSnowplowData,
-} from '../testUtils';
-import { ObjectUpdate } from '../../snowtype/snowplow';
-import { CollectionEventBridgePayload } from '../../eventConsumer/collectionEvents/types';
+} from '../testUtils.js';
+import { ObjectUpdate } from '../../snowtype/snowplow.js';
+import { CollectionEventBridgePayload } from '../../eventConsumer/collectionEvents/types.js';
 
 export const collectionEventSchema = {
   objectUpdate: 'iglu:com.pocket/object_update/jsonschema/1-0-16',

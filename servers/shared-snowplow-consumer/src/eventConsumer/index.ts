@@ -1,8 +1,8 @@
-import { userEventConsumer } from './userEvents/userEventConsumer';
-import { prospectEventConsumer } from './prospectEvents/prospectEventConsumer';
-import { collectionEventConsumer } from './collectionEvents/collectionEventConsumer';
-import { shareableListEventConsumer } from './shareableListEvents/shareableListEventConsumer';
-import { shareableListItemEventConsumer } from './shareableListItemEvents/shareableListItemEventConsumer';
+import { userEventConsumer } from './userEvents/userEventConsumer.js';
+import { prospectEventConsumer } from './prospectEvents/prospectEventConsumer.js';
+import { collectionEventConsumer } from './collectionEvents/collectionEventConsumer.js';
+import { shareableListEventConsumer } from './shareableListEvents/shareableListEventConsumer.js';
+import { shareableListItemEventConsumer } from './shareableListItemEvents/shareableListItemEventConsumer.js';
 
 //any types shared between events can be added here
 

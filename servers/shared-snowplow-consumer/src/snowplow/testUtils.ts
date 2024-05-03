@@ -1,4 +1,4 @@
-import { config } from '../config';
+import { config } from '../config/index.js';
 import fetch from 'node-fetch';
 
 async function snowplowRequest(path: string, post = false): Promise<any> {

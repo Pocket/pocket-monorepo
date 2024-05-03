@@ -1,18 +1,18 @@
 import { SelfDescribingJson } from '@snowplow/tracker-core';
-import { config } from '../../config';
-import { EventHandler } from '../EventHandler';
-import { getTracker } from '../tracker';
+import { config } from '../../config/index.js';
+import { EventHandler } from '../EventHandler.js';
+import { getTracker } from '../tracker.js';
 import {
   EventType,
   UserEventBridgePaylod,
-} from '../../eventConsumer/userEvents/types';
+} from '../../eventConsumer/userEvents/types.js';
 import {
   ObjectUpdate,
   ObjectUpdateTrigger,
   createAPIUser,
   createAccount,
   createUser,
-} from '../../snowtype/snowplow';
+} from '../../snowtype/snowplow.js';
 
 export const SnowplowEventMap: Record<EventType, ObjectUpdateTrigger> = {
   'account-deletion': 'account_delete',

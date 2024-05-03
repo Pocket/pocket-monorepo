@@ -4,7 +4,7 @@ import {
   CommonEventProperties,
   ObjectUpdate,
   trackObjectUpdate as baseTrackObjectUpdate,
-} from '../snowtype/snowplow';
+} from '../snowtype/snowplow.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 export class EventHandler {

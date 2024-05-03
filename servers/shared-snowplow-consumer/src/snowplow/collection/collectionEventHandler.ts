@@ -1,17 +1,17 @@
 import { SelfDescribingJson } from '@snowplow/tracker-core';
-import { config } from '../../config';
-import { EventHandler } from '../EventHandler';
-import { getTracker } from '../tracker';
+import { config } from '../../config/index.js';
+import { EventHandler } from '../EventHandler.js';
+import { getTracker } from '../tracker.js';
 import {
   Collection,
   ObjectUpdate,
   ObjectUpdateTrigger,
   createCollection,
-} from '../../snowtype/snowplow';
+} from '../../snowtype/snowplow.js';
 import {
   CollectionEventBridgePayload,
   EventType,
-} from '../../eventConsumer/collectionEvents/types';
+} from '../../eventConsumer/collectionEvents/types.js';
 
 export const SnowplowEventMap: Record<EventType, ObjectUpdateTrigger> = {
   'collection-created': 'collection_created',

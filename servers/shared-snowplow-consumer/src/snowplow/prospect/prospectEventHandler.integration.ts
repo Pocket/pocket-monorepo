@@ -1,13 +1,13 @@
-import { ProspectEventHandler } from './prospectEventHandler';
-import { testProspectData } from './testData';
+import { ProspectEventHandler } from './prospectEventHandler.js';
+import { testProspectData } from './testData.js';
 import {
   resetSnowplowEvents,
   getAllSnowplowEvents,
   getGoodSnowplowEvents,
   parseSnowplowData,
-} from '../testUtils';
-import { ObjectUpdate } from '../../snowtype/snowplow';
-import { ProspectEventBridgePayload } from '../../eventConsumer/prospectEvents/types';
+} from '../testUtils.js';
+import { ObjectUpdate } from '../../snowtype/snowplow.js';
+import { ProspectEventBridgePayload } from '../../eventConsumer/prospectEvents/types.js';
 
 export const prospectEventSchema = {
   objectUpdate: 'iglu:com.pocket/object_update/jsonschema/1-0-16',

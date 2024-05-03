@@ -1,11 +1,11 @@
 import * as Sentry from '@sentry/node';
 import express, { Application, json } from 'express';
 import { Server, createServer } from 'http';
-import { config } from './config';
+import { config } from './config/index.js';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 
 import { EventEmitter } from 'events';
-import { SqsConsumer } from './SqsConsumer';
+import { SqsConsumer } from './SqsConsumer.js';
 import { sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
 import { initSentry } from '@pocket-tools/sentry';
 
