@@ -8,13 +8,14 @@ import {
   errorHandler,
   defaultPlugins,
   sentryPocketMiddleware,
+  ApolloServerPlugin,
 } from '@pocket-tools/apollo-utils';
 import { initSentry } from '@pocket-tools/sentry';
-import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4';
+import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4.js';
 
-import { schema } from './schema';
-import { config } from '../config';
-import { getContext, ContextManager } from './context';
+import { schema } from './schema.js';
+import { config } from '../config/index.js';
+import { getContext, ContextManager } from './context.js';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 
 export async function startServer(port: number): Promise<{
@@ -54,7 +55,10 @@ export async function startServer(port: number): Promise<{
     schema,
     plugins: [
       ...defaultPlugins(httpServer),
-      createApollo4QueryValidationPlugin({ schema }),
+      // https://github.com/confuser/graphql-constraint-directive/issues/188
+      createApollo4QueryValidationPlugin({
+        schema,
+      }) as unknown as ApolloServerPlugin,
     ],
     formatError: config.app.environment !== 'test' ? errorHandler : undefined,
   });

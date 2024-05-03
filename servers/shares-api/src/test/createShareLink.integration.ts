@@ -1,9 +1,9 @@
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
-import { IContext } from '../apollo/context';
-import { startServer } from '../apollo/server';
+import { IContext } from '../apollo/context.js';
+import { startServer } from '../apollo/server.js';
 import { Application } from 'express';
-import { CREATE_SHARE, GET_SHARE } from './operations';
+import { CREATE_SHARE, GET_SHARE } from './operations.js';
 
 const uuidMock = jest.fn().mockImplementation(() => '0000-00-00');
 

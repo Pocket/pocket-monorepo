@@ -1,11 +1,11 @@
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
-import { IContext } from '../apollo/context';
-import { startServer } from '../apollo/server';
+import { IContext } from '../apollo/context.js';
+import { startServer } from '../apollo/server.js';
 import { Application } from 'express';
-import { GET_SHARE } from './operations';
-import { dynamoClient } from '../datasources/dynamoClient';
-import { SharesDataSourceAuthenticated } from '../datasources/shares';
+import { GET_SHARE } from './operations.js';
+import { dynamoClient } from '../datasources/dynamoClient.js';
+import { SharesDataSourceAuthenticated } from '../datasources/shares.js';
 
 describe('shareSlug', () => {
   let app: Application;

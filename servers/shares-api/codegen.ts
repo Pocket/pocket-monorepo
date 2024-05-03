@@ -7,7 +7,8 @@ const config: CodegenConfig = {
       config: {
         federation: true,
         useIndexSignature: true,
-        contextType: '../apollo/context#IContext',
+        emitLegacyCommonJSImports: false,
+        contextType: '../apollo/context.js#IContext',
       },
       plugins: [
         //generated types do not conform to ts/lint rules, disable them for these files

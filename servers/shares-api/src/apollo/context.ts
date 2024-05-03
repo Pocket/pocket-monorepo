@@ -1,13 +1,13 @@
 import { Request } from 'express';
-import { PocketShareModel } from '../models';
+import { PocketShareModel } from '../models/index.js';
 import {
   SharesDataSourceAuthenticated,
   SharesDataSourceNonNativeApp,
   SharesDataSourceUnauthenticated,
-} from '../datasources/shares';
-import { dynamoClient } from '../datasources/dynamoClient';
-import { UserContext, UserContextFactory } from '../models/UserContext';
-import { config } from '../config';
+} from '../datasources/shares.js';
+import { dynamoClient } from '../datasources/dynamoClient.js';
+import { UserContext, UserContextFactory } from '../models/UserContext.js';
+import { config } from '../config/index.js';
 /**
  * Context factory function. Creates a new context upon
  * every request

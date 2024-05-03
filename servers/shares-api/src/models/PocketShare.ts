@@ -2,17 +2,17 @@ import {
   PocketShare,
   ShareContextInput,
   ShareResult,
-} from '../__generated__/types';
+} from '../__generated__/types.js';
 import {
   ISharesDataSource,
   ShareEntity,
   CreateShareEntity,
-} from '../datasources/shares';
+} from '../datasources/shares.js';
 import { v4 as uuidv4 } from 'uuid';
-import { config } from '../config';
-import { UserContext } from './UserContext';
+import { config } from '../config/index.js';
+import { UserContext } from './UserContext.js';
 import { UserInputError } from '@pocket-tools/apollo-utils';
-import { ShareNotFoundModel } from './ShareNotFoundModel';
+import { ShareNotFoundModel } from './ShareNotFoundModel.js';
 
 export class PocketShareModel {
   constructor(

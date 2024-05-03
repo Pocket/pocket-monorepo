@@ -1,6 +1,6 @@
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
-import { Resolvers } from '../__generated__/types';
-import { Max300CharStringResolver } from '../models';
+import { Resolvers } from '../__generated__/types.js';
+import { Max300CharStringResolver } from '../models/index.js';
 
 export const resolvers: Resolvers = {
   ...PocketDefaultScalars,

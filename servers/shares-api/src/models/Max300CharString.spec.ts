@@ -1,4 +1,4 @@
-import { possiblyTruncated } from './Max300CharString';
+import { possiblyTruncated } from './Max300CharString.js';
 describe('Max300CharString', () => {
   it('truncates strings longer than 300 characters (ellipses suffix)', () => {
     const longString = 'why' + new Array(300).fill('y').join('');

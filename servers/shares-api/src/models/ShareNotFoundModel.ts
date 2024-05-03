@@ -1,4 +1,4 @@
-import { ShareNotFound } from '../__generated__/types';
+import { ShareNotFound } from '../__generated__/types.js';
 
 export class ShareNotFoundModel implements ShareNotFound {
   static message = `The link has expired or does not exist.`;

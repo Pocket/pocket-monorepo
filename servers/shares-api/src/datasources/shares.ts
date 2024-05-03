@@ -4,13 +4,13 @@ import {
   PutCommand,
   UpdateCommand,
 } from '@aws-sdk/lib-dynamodb';
-import { config } from '../config';
+import { config } from '../config/index.js';
 import {
   AuthenticationError,
   ForbiddenError,
 } from '@pocket-tools/apollo-utils';
 import * as Sentry from '@sentry/node';
-import { UserContext } from '../models/UserContext';
+import { UserContext } from '../models/UserContext.js';
 
 export type ShareEntity = {
   shareId: string;
