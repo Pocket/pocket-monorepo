@@ -6,8 +6,8 @@
 import { Fn } from 'cdktf';
 import { Construct } from 'constructs';
 import { schemasSchema } from '@cdktf/provider-aws';
-import { SCHEMA_REGISTRY, SCHEMA_TYPE } from './types';
-import { config } from '../event-rules/account-delete-monitor/config';
+import { SCHEMA_REGISTRY, SCHEMA_TYPE } from './types.js';
+import { config } from '../event-rules/account-delete-monitor/config.js';
 
 export class QueueCheckDeleteSchema extends Construct {
   constructor(

@@ -1,4 +1,4 @@
-import { config } from '../config';
+import { config } from '../config/index.js';
 import { PocketPagerDuty } from '@pocket-tools/terraform-modules';
 import { cloudwatchMetricAlarm } from '@cdktf/provider-aws';
 import { Construct } from 'constructs';

@@ -4,7 +4,7 @@
  */
 import { Construct } from 'constructs';
 import { schemasSchema } from '@cdktf/provider-aws';
-import { SCHEMA_REGISTRY, SCHEMA_TYPE } from './types';
+import { SCHEMA_REGISTRY, SCHEMA_TYPE } from './types.js';
 
 export class UserRegistrationEventSchema extends Construct {
   public readonly userRegistrationEvent: string = 'User-Registration-Event';

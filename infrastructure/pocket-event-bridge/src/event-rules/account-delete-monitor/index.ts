@@ -4,9 +4,9 @@ import {
   PocketEventBridgeRuleWithMultipleTargets,
   PocketPagerDuty,
 } from '@pocket-tools/terraform-modules';
-import { config } from '../../config';
-import { config as admConfig } from './config';
-import { createDeadLetterQueueAlarm } from '../utils';
+import { config } from '../../config/index.js';
+import { config as admConfig } from './config.js';
+import { createDeadLetterQueueAlarm } from '../utils.js';
 import {
   dataAwsSqsQueue,
   snsTopic,

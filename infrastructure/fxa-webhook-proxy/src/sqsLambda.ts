@@ -1,12 +1,12 @@
 import { Construct } from 'constructs';
-import { config } from './config';
+import { config } from './config/index.js';
 import {
   LAMBDA_RUNTIMES,
   PocketPagerDuty,
   PocketSQSWithLambdaTarget,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
-import { getEnvVariableValues } from './utilities';
+import { getEnvVariableValues } from './utilities.js';
 import { sqsQueue } from '@cdktf/provider-aws';
 
 export class SqsLambda extends Construct {

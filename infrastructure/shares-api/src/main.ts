@@ -15,14 +15,14 @@ import {
   provider as pagerdutyProvider,
   dataPagerdutyEscalationPolicy,
 } from '@cdktf/provider-pagerduty';
-import { config } from './config';
+import { config } from './config/index.js';
 import {
   PocketALBApplication,
   PocketAwsSyntheticChecks,
   PocketPagerDuty,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
-import { DynamoDB } from './dynamodb';
+import { DynamoDB } from './dynamodb.js';
 
 class SharesAPI extends TerraformStack {
   constructor(scope: Construct, name: string) {

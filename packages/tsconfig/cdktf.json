@@ -4,8 +4,8 @@
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true,
       "target": "ESNext",
-      "module": "NodeNext",
-      "moduleResolution": "NodeNext",
+      "module": "Preserve",
+      "moduleResolution": "Bundler",
       "lib": [
         "dom",
         "es2019",

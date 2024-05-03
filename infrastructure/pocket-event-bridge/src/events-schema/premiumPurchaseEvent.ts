@@ -4,7 +4,7 @@
  */
 import { Construct } from 'constructs';
 import { schemasSchema } from '@cdktf/provider-aws';
-import { SCHEMA_REGISTRY, SCHEMA_TYPE } from './types';
+import { SCHEMA_REGISTRY, SCHEMA_TYPE } from './types.js';
 
 export class PremiumPurchaseEvent extends Construct {
   public readonly premiumPurchaseEvent: string = 'Premium-Purchase';

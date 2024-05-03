@@ -1,8 +1,8 @@
-import { SqsLambda, SqsLambdaProps } from './base/sqsLambda';
-import { config as stackConfig } from '../config';
+import { SqsLambda, SqsLambdaProps } from './base/sqsLambda.js';
+import { config as stackConfig } from '../config/index.js';
 
 import { sqsQueue } from '@cdktf/provider-aws';
-import { ApplicationSqsSnsTopicSubscription } from '@pocket-tools/terraform-modules/';
+import { ApplicationSqsSnsTopicSubscription } from '@pocket-tools/terraform-modules';
 
 import { Construct } from 'constructs';
 

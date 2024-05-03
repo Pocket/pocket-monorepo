@@ -1,5 +1,5 @@
 import { Construct } from 'constructs';
-import { config } from './config';
+import { config } from './config/index.js';
 import { dataAwsSsmParameter } from '@cdktf/provider-aws';
 import {
   PocketVPC,

@@ -4,7 +4,7 @@ import {
   PocketEventBridgeRuleWithMultipleTargets,
   PocketPagerDuty,
 } from '@pocket-tools/terraform-modules';
-import { config } from '../../config';
+import { config } from '../../config/index.js';
 import {
   snsTopic,
   dataAwsIamPolicyDocument,
@@ -12,8 +12,8 @@ import {
   sqsQueue,
 } from '@cdktf/provider-aws';
 import { resource } from '@cdktf/provider-null';
-import { eventConfig } from './eventConfig';
-import { createDeadLetterQueueAlarm } from '../utils';
+import { eventConfig } from './eventConfig.js';
+import { createDeadLetterQueueAlarm } from '../utils.js';
 
 export class PremiumPurchase extends Construct {
   public readonly snsTopic: snsTopic.SnsTopic;

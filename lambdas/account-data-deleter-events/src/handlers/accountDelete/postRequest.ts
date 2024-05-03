@@ -1,8 +1,8 @@
-import isomorphicFetch from 'isomorphic-fetch';
 import fetchRetry from 'fetch-retry';
 import { config } from '../../config.js';
 
-const fetch = fetchRetry(isomorphicFetch);
+let baseFetch = global.fetch;
+const fetch = fetchRetry(baseFetch);
 
 /**
  * Generic post builder with retry logic

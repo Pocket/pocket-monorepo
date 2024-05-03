@@ -346,9 +346,6 @@ importers:
       fetch-retry:
         specifier: ^6.0.0
         version: 6.0.0
-      isomorphic-fetch:
-        specifier: ^3.0.0
-        version: 3.0.0
       stripe:
         specifier: 14.24.0
         version: 14.24.0

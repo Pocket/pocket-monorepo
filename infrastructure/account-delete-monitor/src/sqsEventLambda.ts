@@ -1,4 +1,4 @@
-import { config as stackConfig } from './config';
+import { config as stackConfig } from './config/index.js';
 
 import { dataAwsSsmParameter } from '@cdktf/provider-aws';
 import {

@@ -3,7 +3,7 @@ import { TestResource } from '../testHelpers.js';
 import {
   ApplicationAutoscaling,
   ApplicationAutoscalingProps,
-} from './ApplicationAutoscaling';
+} from './ApplicationAutoscaling.js';
 
 describe('ApplicationAutoscaling', () => {
   const props: ApplicationAutoscalingProps = {

@@ -6,8 +6,8 @@ import {
   PocketPagerDuty,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
-import { config } from './config';
-import { getEnvVariableValues } from './utilities';
+import { config } from './config/index.js';
+import { getEnvVariableValues } from './utilities.js';
 import { Construct } from 'constructs';
 import { sqsQueue } from '@cdktf/provider-aws';
 

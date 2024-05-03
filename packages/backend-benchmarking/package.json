@@ -5,7 +5,6 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/index.mjs",
-  "type": "module",
   "scripts": {
     "test": "jest",
     "test:watch": "npm run test -- --watch",

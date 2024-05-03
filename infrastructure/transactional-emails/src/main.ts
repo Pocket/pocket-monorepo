@@ -16,10 +16,10 @@ import {
 import { provider as nullProvider } from '@cdktf/provider-null';
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
-import { config } from './config';
+import { config } from './config/index.js';
 import { PocketPagerDuty, PocketVPC } from '@pocket-tools/terraform-modules';
 import * as fs from 'fs';
-import { TransactionalEmailSQSLambda } from './transactionalEmailSQSLambda';
+import { TransactionalEmailSQSLambda } from './transactionalEmailSQSLambda.js';
 
 class TransactionalEmails extends TerraformStack {
   constructor(scope: Construct, name: string) {

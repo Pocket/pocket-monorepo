@@ -4,7 +4,7 @@ import {
   PocketEventBridgeRuleWithMultipleTargets,
   PocketPagerDuty,
 } from '@pocket-tools/terraform-modules';
-import { config } from '../../config';
+import { config } from '../../config/index.js';
 import {
   sqsQueue,
   snsTopic,
@@ -12,7 +12,7 @@ import {
   snsTopicPolicy,
 } from '@cdktf/provider-aws';
 import { resource } from '@cdktf/provider-null';
-import { eventConfig } from './eventConfig';
+import { eventConfig } from './eventConfig.js';
 
 export class UserRegistrationEventRule extends Construct {
   public readonly snsTopic: snsTopic.SnsTopic;

@@ -16,7 +16,7 @@ import {
   provider as pagerdutyProvider,
   dataPagerdutyEscalationPolicy,
 } from '@cdktf/provider-pagerduty';
-import { config } from './config';
+import { config } from './config/index.js';
 import {
   ApplicationSQSQueue,
   PocketALBApplication,
@@ -25,8 +25,8 @@ import {
   PocketVPC,
   ApplicationSqsSnsTopicSubscription,
 } from '@pocket-tools/terraform-modules';
-import { DynamoDB } from './dynamodb';
-import { SqsLambda } from './SqsLambda';
+import { DynamoDB } from './dynamodb.js';
+import { SqsLambda } from './SqsLambda.js';
 
 class AnnotationsAPI extends TerraformStack {
   constructor(scope: Construct, name: string) {

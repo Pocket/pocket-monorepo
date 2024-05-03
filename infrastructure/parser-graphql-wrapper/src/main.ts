@@ -26,7 +26,7 @@ import {
 import { Construct } from 'constructs';
 import { App, S3Backend, TerraformStack } from 'cdktf';
 import * as fs from 'fs';
-import { DynamoDB } from './dynamodb';
+import { DynamoDB } from './dynamodb.js';
 class ParserGraphQLWrapper extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);

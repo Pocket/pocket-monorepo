@@ -1,5 +1,5 @@
 import { dataAwsSsmParameter } from '@cdktf/provider-aws';
-import { config } from './config';
+import { config } from './config/index.js';
 import { Construct } from 'constructs';
 
 export function getEnvVariableValues(scope: Construct) {

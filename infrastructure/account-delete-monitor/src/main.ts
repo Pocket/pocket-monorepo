@@ -1,6 +1,6 @@
-import { config } from './config';
-import { DynamoDB } from './dynamodb';
-import { SQSEventLambda } from './sqsEventLambda';
+import { config } from './config/index.js';
+import { DynamoDB } from './dynamodb.js';
+import { SQSEventLambda } from './sqsEventLambda.js';
 
 import { provider as archiveProvider } from '@cdktf/provider-archive';
 import {

@@ -11,26 +11,26 @@ import {
   ApplicationEventBus,
   ApplicationEventBusProps,
 } from '@pocket-tools/terraform-modules';
-import { UserApiEvents } from './event-rules/user-api-events/userApiEventRules';
-import { ProspectEvents } from './event-rules/prospect-events/prospectEventRules';
-import { CollectionApiEvents } from './event-rules/collection-events/collectionApiEventRules';
-import { ShareableListEvents } from './event-rules/shareable-lists-api-events/shareableListEventRules';
-import { ShareableListItemEvents } from './event-rules/shareable-lists-api-events/shareableListItemEventRules';
-import { ListApiEvents } from './event-rules/list-api-events/listApiEventRules';
+import { UserApiEvents } from './event-rules/user-api-events/userApiEventRules.js';
+import { ProspectEvents } from './event-rules/prospect-events/prospectEventRules.js';
+import { CollectionApiEvents } from './event-rules/collection-events/collectionApiEventRules.js';
+import { ShareableListEvents } from './event-rules/shareable-lists-api-events/shareableListEventRules.js';
+import { ShareableListItemEvents } from './event-rules/shareable-lists-api-events/shareableListItemEventRules.js';
+import { ListApiEvents } from './event-rules/list-api-events/listApiEventRules.js';
 import { PocketPagerDuty } from '@pocket-tools/terraform-modules';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
-import { config } from './config';
-import { UserEventsSchema } from './events-schema/userEvents';
-import { AccountDeleteMonitorEvents } from './event-rules/account-delete-monitor';
-import { QueueCheckDeleteSchema } from './events-schema/queueCheckDelete';
-import { UserMergeEventSchema } from './events-schema/userMergeEvent';
-import { PremiumPurchaseEvent } from './events-schema/premiumPurchaseEvent';
-import { ForgotPasswordRequestEvent } from './events-schema/ForgotPasswordRequestEvent';
-import { PremiumPurchase } from './event-rules/premium-purchase';
-import { UserRegistrationEventRule } from './event-rules/user-registration/userRegistrationEventRule';
-import { UserRegistrationEventSchema } from './events-schema/userRegistrationEventSchema';
-import { AllEventsRule } from './event-rules/all-events/allEventRules';
-import { ForgotPassword as ForgotPasswordRequest } from './event-rules/forgot-password-request';
+import { config } from './config/index.js';
+import { UserEventsSchema } from './events-schema/userEvents.js';
+import { AccountDeleteMonitorEvents } from './event-rules/account-delete-monitor/index.js';
+import { QueueCheckDeleteSchema } from './events-schema/queueCheckDelete.js';
+import { UserMergeEventSchema } from './events-schema/userMergeEvent.js';
+import { PremiumPurchaseEvent } from './events-schema/premiumPurchaseEvent.js';
+import { ForgotPasswordRequestEvent } from './events-schema/ForgotPasswordRequestEvent.js';
+import { PremiumPurchase } from './event-rules/premium-purchase/index.js';
+import { UserRegistrationEventRule } from './event-rules/user-registration/userRegistrationEventRule.js';
+import { UserRegistrationEventSchema } from './events-schema/userRegistrationEventSchema.js';
+import { AllEventsRule } from './event-rules/all-events/allEventRules.js';
+import { ForgotPassword as ForgotPasswordRequest } from './event-rules/forgot-password-request/index.js';
 
 class PocketEventBus extends TerraformStack {
   constructor(scope: Construct, name: string) {

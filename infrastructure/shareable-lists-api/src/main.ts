@@ -1,4 +1,4 @@
-import { config } from './config';
+import { config } from './config/index.js';
 import {
   provider as awsProvider,
   sqsQueue,
@@ -28,7 +28,7 @@ import {
 import { Construct } from 'constructs';
 import { App, S3Backend, TerraformStack } from 'cdktf';
 import * as fs from 'fs';
-import { SQSLambda } from './SQSLambda';
+import { SQSLambda } from './SQSLambda.js';
 
 class ShareableListsAPI extends TerraformStack {
   constructor(scope: Construct, name: string) {

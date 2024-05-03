@@ -5,6 +5,7 @@
   "types": "dist/main.ts",
   "license": "MPL-2.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "rm -rf dist && tsc",
     "watch": "tsc -w",

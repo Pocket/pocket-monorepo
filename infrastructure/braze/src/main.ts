@@ -1,11 +1,11 @@
 import { Construct } from 'constructs';
 import { App, S3Backend, TerraformStack } from 'cdktf';
 import { provider as awsProvider } from '@cdktf/provider-aws';
-import { config } from './config';
-import { EmailSendDomain } from './emailSendDomain';
+import { config } from './config/index.js';
+import { EmailSendDomain } from './emailSendDomain.js';
 import * as fs from 'fs';
-import { ClickTrackingDomain } from './clickTrackingDomain';
-import { DataExportBucket } from './dataExport';
+import { ClickTrackingDomain } from './clickTrackingDomain.js';
+import { DataExportBucket } from './dataExport.js';
 
 class Braze extends TerraformStack {
   constructor(scope: Construct, name: string) {

@@ -5,7 +5,7 @@
 import { Fn } from 'cdktf';
 import { Construct } from 'constructs';
 import { schemasSchema } from '@cdktf/provider-aws';
-import { SCHEMA_REGISTRY, SCHEMA_TYPE } from './types';
+import { SCHEMA_REGISTRY, SCHEMA_TYPE } from './types.js';
 
 export class UserMergeEventSchema extends Construct {
   public readonly eventName: string = 'user-merge';

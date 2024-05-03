@@ -4,7 +4,7 @@
  */
 import { Construct } from 'constructs';
 import { schemasSchema } from '@cdktf/provider-aws';
-import { SCHEMA_REGISTRY, SCHEMA_TYPE } from './types';
+import { SCHEMA_REGISTRY, SCHEMA_TYPE } from './types.js';
 
 export class ForgotPasswordRequestEvent extends Construct {
   public readonly forgotPasswordRequest: string = 'Forgot-Password-Request';
