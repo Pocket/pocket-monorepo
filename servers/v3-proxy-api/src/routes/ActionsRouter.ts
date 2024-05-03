@@ -1,5 +1,5 @@
 import { ClientError, GraphQLClient } from 'graphql-request';
-import { getClient } from '../graph/graphQLClient';
+import { getClient } from '../graph/graphQLClient.js';
 import {
   ItemAction,
   ItemAddAction,
@@ -9,9 +9,9 @@ import {
   TagDeleteAction,
   TagRenameAction,
   UnimplementedAction,
-} from './validations/SendActionValidators';
-import { AddResponse, PendingAddResponse } from '../graph/types';
-import { processV3Add } from './v3Add';
+} from './validations/SendActionValidators.js';
+import { AddResponse, PendingAddResponse } from '../graph/types.js';
+import { processV3Add } from './v3Add.js';
 import * as Sentry from '@sentry/node';
 import {
   AddTagsByIdDocument,
@@ -65,13 +65,13 @@ import {
   UnFavoriteSavedItemByIdMutationVariables,
   UnFavoriteSavedItemByUrlDocument,
   UnFavoriteSavedItemByUrlMutationVariables,
-} from '../generated/graphql/types';
+} from '../generated/graphql/index.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { customErrorHeaders } from '../middleware';
+import { customErrorHeaders } from '../middleware/index.js';
 import { Request } from 'express';
-import { epochSecondsToISOString } from '../graph/shared/utils';
-import { AddItemTransformer } from '../graph/add/toRest';
-import { InvalidActionError } from '../errors/InvalidActionError';
+import { epochSecondsToISOString } from '../graph/shared/utils.js';
+import { AddItemTransformer } from '../graph/add/toRest.js';
+import { InvalidActionError } from '../errors/InvalidActionError.js';
 
 type SendActionError = {
   message: string;

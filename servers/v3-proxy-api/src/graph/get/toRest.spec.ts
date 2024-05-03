@@ -1,7 +1,7 @@
 import {
   SavedItemsSimpleQuery,
   SavedItemStatus,
-} from '../../generated/graphql';
+} from '../../generated/graphql/index.js';
 import {
   savedItemsCompleteToRest,
   savedItemsCompleteTotalToRest,
@@ -11,8 +11,8 @@ import {
   searchSavedItemCompleteToRest,
   savedItemsFetchToRest,
   savedItemsFetchSharesToRest,
-} from './toRest';
-import { GetResponseSimple } from '../types';
+} from './toRest.js';
+import { GetResponseSimple } from '../types.js';
 import {
   testV3GetResponse,
   testItemFragment,
@@ -51,7 +51,7 @@ import {
   expectedGetCompleteAnnotations,
   expectedGetSimpleAnnotations,
   mockGraphGetSimpleAnnotations,
-} from '../../test/fixtures';
+} from '../../test/fixtures/index.js';
 
 describe('GraphQL <> Rest convesion', () => {
   beforeAll(() => jest.useFakeTimers({ now: 1706732550000 }));

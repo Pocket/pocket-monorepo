@@ -5,7 +5,7 @@ import {
   SaveSearchActionSanitizer,
   TagDeleteActionSanitizer,
   TagRenameActionSanitizer,
-} from './SendActionValidators';
+} from './SendActionValidators.js';
 
 describe('send validator', () => {
   const now = Math.round(Date.now() / 1000);

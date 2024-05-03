@@ -3,7 +3,7 @@ import {
   mockGraphGetSimple,
   expectedGetComplete,
   expectedGetSimple,
-} from './get';
+} from './get.js';
 
 export const premiumRecentSearches = {
   recent_searches: [

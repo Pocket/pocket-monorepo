@@ -18,7 +18,7 @@ import {
   SavedItemsSimpleQuery,
   SearchSavedItemsCompleteQuery,
   SearchSavedItemsSimpleQuery,
-} from './types';
+} from './types.js';
 export type SavedItemsCompleteQueryOverride = Omit<
   SavedItemsCompleteQuery,
   'user'
@@ -42,7 +42,7 @@ export type SearchSavedItemsSimpleQueryOverride = Omit<
   user?: Omit<SearchSavedItemsSimpleQuery['user'], 'id'> & { id?: string };
 };
 
-export * from './types';
+export * from './types.js';
 
 export {
   SearchSavedItemsCompleteQueryOverride as SearchSavedItemsCompleteQuery,

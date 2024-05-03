@@ -1,11 +1,11 @@
 //add unit test for input type mapping
-import { setSavedItemsVariables, setSearchVariables } from './toGraphQL';
+import { setSavedItemsVariables, setSearchVariables } from './toGraphQL.js';
 import {
   SavedItemsSortBy,
   SavedItemsSortOrder,
   SearchItemsSortBy,
-} from '../../generated/graphql/types';
-import { defaultQuery, defaultSearchQuery } from '../../test/fixtures';
+} from '../../generated/graphql/index.js';
+import { defaultQuery, defaultSearchQuery } from '../../test/fixtures/index.js';
 
 describe('toGraphQL', () => {
   describe('get saved items', () => {

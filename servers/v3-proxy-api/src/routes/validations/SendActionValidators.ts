@@ -1,7 +1,7 @@
 import {
   ArrayFieldError,
   InputValidationError,
-} from '../../errors/InputValidationError';
+} from '../../errors/InputValidationError.js';
 
 export type ItemAction = {
   action: ItemActionNames;

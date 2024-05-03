@@ -1,2 +1,2 @@
-export * from './errorHandlers';
-export * from './sourceHeader';
+export * from './errorHandlers.js';
+export * from './sourceHeader.js';

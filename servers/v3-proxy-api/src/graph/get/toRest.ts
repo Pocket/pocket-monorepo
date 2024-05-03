@@ -11,7 +11,7 @@ import {
   SavedItemsSimpleQuery,
   SearchSavedItemsCompleteQuery,
   SearchSavedItemsSimpleQuery,
-} from '../../generated/graphql';
+} from '../../generated/graphql/index.js';
 import {
   ListItemObject,
   ListItemObjectComplete,
@@ -37,8 +37,8 @@ import {
   AccountResponse,
   PremiumFeatures,
   RecentSearchResponse,
-} from '../types';
-import * as tx from '../shared/transforms';
+} from '../types.js';
+import * as tx from '../shared/transforms.js';
 import { DateTime } from 'luxon';
 
 type SavedItemSimple =

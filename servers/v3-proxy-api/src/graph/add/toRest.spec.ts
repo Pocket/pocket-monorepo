@@ -3,8 +3,8 @@ import {
   expectedAddResponsePending,
   mockGraphAddResponses,
   mockGraphAddResponsePending,
-} from '../../test/fixtures/add';
-import { AddItemTransformer } from './toRest';
+} from '../../test/fixtures/add.js';
+import { AddItemTransformer } from './toRest.js';
 
 describe('AddItemTransformer', () => {
   it('should convert pending response to expected result', () => {

@@ -5,10 +5,10 @@ import {
   V3SendParams,
   V3SendSchemaGet,
   V3SendSchemaPost,
-} from './validations';
-import { InputValidationError } from '../errors/InputValidationError';
-import { SendAction } from './validations/SendActionValidators';
-import { ActionsRouter } from './ActionsRouter';
+} from './validations/index.js';
+import { InputValidationError } from '../errors/InputValidationError.js';
+import { SendAction } from './validations/SendActionValidators.js';
+import { ActionsRouter } from './ActionsRouter.js';
 
 const router: Router = Router();
 

@@ -11,7 +11,7 @@ import {
   ItemCompleteFragment,
   Imageness,
   Videoness,
-} from '../../generated/graphql/types';
+} from '../../generated/graphql/index.js';
 import {
   TagsItemObject,
   AuthorsItemObject,
@@ -20,7 +20,7 @@ import {
   VideosItemObject,
   VideoTypeMap,
   AddAuthorsObject,
-} from '../types';
+} from '../types.js';
 
 /**
  * Convert tag response array into a map keyed by tag name

@@ -5,11 +5,11 @@ import {
   SearchSavedItemsSimpleQuery,
   VideoType,
   Videoness,
-} from '../../generated/graphql';
+} from '../../generated/graphql/index.js';
 import {
   GetSearchResponseComplete,
   GetSearchResponseSimple,
-} from '../../graph/types';
+} from '../../graph/types.js';
 
 export const expectedFreeTierResponseSimple: GetSearchResponseSimple = {
   list: {

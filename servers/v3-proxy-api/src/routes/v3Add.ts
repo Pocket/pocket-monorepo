@@ -1,16 +1,16 @@
 import { NextFunction, Request, Response, Router } from 'express';
 
-import { addSavedItem, getClient } from '../graph/graphQLClient';
+import { addSavedItem, getClient } from '../graph/graphQLClient.js';
 
 import {
   AddSavedItemBeforeTagMutationVariables,
   AddSavedItemCompleteMutationVariables,
   SavedItemUpsertInput,
-} from '../generated/graphql/types';
+} from '../generated/graphql/index.js';
 import { checkSchema, validationResult, matchedData } from 'express-validator';
-import { V3AddSchema, V3AddParams } from './validations';
-import { InputValidationError } from '../errors/InputValidationError';
-import { AddItemTransformer } from '../graph/add/toRest';
+import { V3AddSchema, V3AddParams } from './validations/index.js';
+import { InputValidationError } from '../errors/InputValidationError.js';
+import { AddItemTransformer } from '../graph/add/toRest.js';
 import { GraphQLClient } from 'graphql-request';
 
 const router: Router = Router();

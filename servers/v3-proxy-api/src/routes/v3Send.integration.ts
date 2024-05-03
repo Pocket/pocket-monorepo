@@ -1,14 +1,14 @@
 import request from 'supertest';
-import { startServer } from '../server';
+import { startServer } from '../server.js';
 import { Server } from 'http';
 import { Application } from 'express';
-import { ActionsRouter } from './ActionsRouter';
+import { ActionsRouter } from './ActionsRouter.js';
 import {
   expectedAddResponses,
   mockGraphAddResponses,
-} from '../test/fixtures/add';
+} from '../test/fixtures/add.js';
 import { ClientError, GraphQLClient } from 'graphql-request';
-import { GraphQLError } from 'graphql-request/build/esm/types';
+import { GraphQLError } from 'graphql-request/build/esm/index.js';
 
 describe('v3/send', () => {
   let app: Application;

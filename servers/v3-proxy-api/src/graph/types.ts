@@ -1,4 +1,4 @@
-import { AddSavedItemCompleteMutation } from '../generated/graphql/types';
+import { AddSavedItemCompleteMutation } from '../generated/graphql/index.js';
 
 /**
  * Reusable types intended for use throughout the process go here.

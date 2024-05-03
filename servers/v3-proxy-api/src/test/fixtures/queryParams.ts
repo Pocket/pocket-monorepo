@@ -1,4 +1,4 @@
-import { V3GetParams } from '../../routes/validations/GetSchema';
+import { V3GetParams } from '../../routes/validations/GetSchema.js';
 
 export const defaultQuery: V3GetParams = {
   consumer_key: 'abc-def',

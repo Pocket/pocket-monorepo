@@ -10,7 +10,7 @@ import {
   GraphQLResponse,
   ResponseMiddleware,
   VariablesAndRequestHeadersArgs,
-} from 'graphql-request/build/esm/types';
+} from 'graphql-request/build/esm/types.js';
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import {
   SavedItemsSimpleQuery,
@@ -34,8 +34,8 @@ import {
   SearchSavedItemsCompleteQuery,
   SearchSavedItemsCompleteDocument,
   SearchSavedItemsSimpleDocument,
-} from '../generated/graphql';
-import config from '../config';
+} from '../generated/graphql/index.js';
+import config from '../config/index.js';
 import * as Sentry from '@sentry/node';
 
 export function getClient(

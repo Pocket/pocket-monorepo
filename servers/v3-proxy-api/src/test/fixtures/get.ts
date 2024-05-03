@@ -5,13 +5,13 @@ import {
   SavedItemStatus,
   VideoType,
   Videoness,
-} from '../../generated/graphql';
+} from '../../generated/graphql/index.js';
 import {
   GetResponseCompleteTotal,
   GetResponseComplete,
   GetResponseSimple,
   GetResponseSimpleTotal,
-} from '../../graph/types';
+} from '../../graph/types.js';
 
 // For some reason the type codegen is incorrectly requiring user.id
 export const mockGraphGetComplete: {

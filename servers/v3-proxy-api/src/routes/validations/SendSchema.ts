@@ -1,5 +1,5 @@
 import { Schema } from 'express-validator';
-import { MaybeAction } from './SendActionValidators';
+import { MaybeAction } from './SendActionValidators.js';
 
 export type V3SendParams = {
   access_token: string;

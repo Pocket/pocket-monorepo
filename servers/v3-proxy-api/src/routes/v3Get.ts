@@ -2,13 +2,13 @@ import { NextFunction, Request, Response, Router } from 'express';
 import {
   setSavedItemsVariables,
   setSearchVariables,
-} from '../graph/get/toGraphQL';
+} from '../graph/get/toGraphQL.js';
 import {
   callSavedItemsByOffsetSimple,
   callSavedItemsByOffsetComplete,
   callSearchByOffsetComplete,
   callSearchByOffsetSimple,
-} from '../graph/graphQLClient';
+} from '../graph/graphQLClient.js';
 import {
   savedItemsSimpleToRest,
   savedItemsCompleteToRest,
@@ -18,10 +18,10 @@ import {
   savedItemsCompleteTotalToRest,
   searchSavedItemSimpleTotalToRest,
   searchSavedItemSimpleToRest,
-} from '../graph/get/toRest';
+} from '../graph/get/toRest.js';
 import { checkSchema, validationResult, matchedData } from 'express-validator';
-import { V3GetParams, V3GetSchema } from './validations';
-import { InputValidationError } from '../errors/InputValidationError';
+import { V3GetParams, V3GetSchema } from './validations/index.js';
+import { InputValidationError } from '../errors/InputValidationError.js';
 
 const router: Router = Router();
 

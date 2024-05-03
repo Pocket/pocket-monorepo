@@ -1,9 +1,9 @@
 import { GraphQLClient } from 'graphql-request';
 import request from 'supertest';
-import { mockGraphAddResponses } from '../test/fixtures/add';
+import { mockGraphAddResponses } from '../test/fixtures/add.js';
 import { Application } from 'express';
 import { Server } from 'http';
-import { startServer } from '../server';
+import { startServer } from '../server.js';
 
 describe('v3Add', () => {
   let app: Application;

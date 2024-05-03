@@ -1,4 +1,4 @@
-import { FetchResponse, GetSharesResponse } from '../../graph/types';
+import { FetchResponse, GetSharesResponse } from '../../graph/types.js';
 
 export const expectedFetch: FetchResponse = {
   complete: 1,

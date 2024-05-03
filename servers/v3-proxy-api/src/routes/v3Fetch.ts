@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { setSavedItemsVariables } from '../graph/get/toGraphQL';
-import { callSavedItemsByOffsetComplete } from '../graph/graphQLClient';
+import { setSavedItemsVariables } from '../graph/get/toGraphQL.js';
+import { callSavedItemsByOffsetComplete } from '../graph/graphQLClient.js';
 import {
   savedItemsFetchSharesToRest,
   savedItemsFetchToRest,
-} from '../graph/get/toRest';
+} from '../graph/get/toRest.js';
 import { checkSchema, validationResult, matchedData } from 'express-validator';
-import { V3FetchParams, V3FetchSchema } from './validations/FetchSchema';
-import { InputValidationError } from '../errors/InputValidationError';
-import { V3GetParams } from './validations';
-import { FetchResponse, GetSharesResponse } from '../graph/types';
+import { V3FetchParams, V3FetchSchema } from './validations/FetchSchema.js';
+import { InputValidationError } from '../errors/InputValidationError.js';
+import { V3GetParams } from './validations/index.js';
+import { FetchResponse, GetSharesResponse } from '../graph/types.js';
 
 const router: Router = Router();
 

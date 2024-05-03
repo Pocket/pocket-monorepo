@@ -1,6 +1,6 @@
 import request from 'supertest';
 import * as Sentry from '@sentry/node';
-import * as GraphQLCalls from '../graph/graphQLClient';
+import * as GraphQLCalls from '../graph/graphQLClient.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import {
   expectedGetCompleteAnnotations,
@@ -8,10 +8,10 @@ import {
   mockGraphGetComplete,
   mockGraphGetCompleteAnnotations,
   mockGraphGetCompleteTagsList,
-} from '../test/fixtures';
+} from '../test/fixtures/index.js';
 import { ClientError, GraphQLClient } from 'graphql-request';
-import { GraphQLError } from 'graphql-request/build/esm/types';
-import { startServer } from '../server';
+import { GraphQLError } from 'graphql-request/build/esm/types.js';
+import { startServer } from '../server.js';
 import { Server } from 'http';
 import { Application } from 'express';
 

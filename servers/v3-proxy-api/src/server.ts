@@ -1,18 +1,18 @@
 import * as Sentry from '@sentry/node';
 import { initSentry } from '@pocket-tools/sentry';
 import express, { Application, json, urlencoded } from 'express';
-import config from './config';
+import config from './config/index.js';
 import {
   clientErrorHandler,
   logAndCaptureErrors,
   sourceHeaderHandler,
-} from './middleware';
+} from './middleware/index.js';
 import { Server, createServer } from 'http';
 
-import v3GetRouter from './routes/v3Get';
-import v3AddRouter from './routes/v3Add';
-import v3FetchRouter from './routes/v3Fetch';
-import v3SendRouter from './routes/v3Send';
+import v3GetRouter from './routes/v3Get.js';
+import v3AddRouter from './routes/v3Add.js';
+import v3FetchRouter from './routes/v3Fetch.js';
+import v3SendRouter from './routes/v3Send.js';
 
 export async function startServer(port: number) {
   const app: Application = express();

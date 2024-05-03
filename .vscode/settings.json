@@ -22,7 +22,7 @@
           "node_modules/",
           ".turbo/"
         ],
-        "peek": ["node_modules/"]
+        "peek": ["node_modules/", "*/"]
       },
       {
         "name": "Strict",

@@ -819,15 +819,10 @@ export type ItemSummary = PocketMetadata & {
   id: Scalars['ID']['output'];
   image?: Maybe<Image>;
   item?: Maybe<Item>;
-  source: ItemSummarySource;
+  source: PocketMetadataSource;
   title?: Maybe<Scalars['String']['output']>;
   url: Scalars['Url']['output'];
 };
-
-export enum ItemSummarySource {
-  Opengraph = 'OPENGRAPH',
-  PocketParser = 'POCKET_PARSER'
-}
 
 /** A label used to mark and categorize an Entity (e.g. Collection). */
 export type Label = {
@@ -1646,6 +1641,29 @@ export type NumberedListElement = ListElement & {
   level: Scalars['Int']['output'];
 };
 
+export type OEmbed = PocketMetadata & {
+  __typename?: 'OEmbed';
+  authors?: Maybe<Array<Author>>;
+  datePublished?: Maybe<Scalars['ISOString']['output']>;
+  domain?: Maybe<DomainMetadata>;
+  excerpt?: Maybe<Scalars['String']['output']>;
+  htmlEmbed?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  image?: Maybe<Image>;
+  item?: Maybe<Item>;
+  source: PocketMetadataSource;
+  title?: Maybe<Scalars['String']['output']>;
+  type?: Maybe<OEmbedType>;
+  url: Scalars['Url']['output'];
+};
+
+export enum OEmbedType {
+  Link = 'LINK',
+  Photo = 'PHOTO',
+  Rich = 'RICH',
+  Video = 'VIDEO'
+}
+
 /** Input for offset-pagination (internal backend use only). */
 export type OffsetPaginationInput = {
   /** Defaults to 30 */
@@ -1738,10 +1756,16 @@ export type PocketMetadata = {
   id: Scalars['ID']['output'];
   image?: Maybe<Image>;
   item?: Maybe<Item>;
-  source: ItemSummarySource;
+  source: PocketMetadataSource;
   title?: Maybe<Scalars['String']['output']>;
   url: Scalars['Url']['output'];
 };
+
+export enum PocketMetadataSource {
+  Oembed = 'OEMBED',
+  Opengraph = 'OPENGRAPH',
+  PocketParser = 'POCKET_PARSER'
+}
 
 /**
  * New Pocket Save Type, replacing SavedItem.

@@ -1,4 +1,4 @@
-export { ActionSanitizer } from './SendActionValidators';
-export * from './GetSchema';
-export * from './AddSchema';
-export * from './SendSchema';
+export { ActionSanitizer } from './SendActionValidators.js';
+export * from './GetSchema.js';
+export * from './AddSchema.js';
+export * from './SendSchema.js';

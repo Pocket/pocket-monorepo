@@ -1,13 +1,13 @@
 import {
   AddResponse,
   SavedItemWithParserMetadata,
-} from '../../../src/graph/types';
+} from '../../../src/graph/types.js';
 import {
   SavedItemStatus,
   Videoness,
   Imageness,
   VideoType,
-} from '../../generated/graphql/types';
+} from '../../generated/graphql/index.js';
 
 export const expectedAddResponses: AddResponse[] = [
   {

@@ -1,6 +1,6 @@
 import { Application } from 'express';
 import request from 'supertest';
-import { startServer } from './server';
+import { startServer } from './server.js';
 import { Server } from 'http';
 
 describe('server is up!', () => {

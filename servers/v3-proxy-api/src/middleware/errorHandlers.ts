@@ -2,7 +2,7 @@ import { serverLogger } from '@pocket-tools/ts-logger';
 import { NextFunction, Request, Response } from 'express';
 import * as Sentry from '@sentry/node';
 import { ClientError } from 'graphql-request';
-import { InputValidationError } from '../errors/InputValidationError';
+import { InputValidationError } from '../errors/InputValidationError.js';
 
 const errorHeaders = {
   INTERNAL_SERVER_ERROR: {

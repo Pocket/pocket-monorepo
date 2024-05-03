@@ -4,8 +4,8 @@ import {
   Videoness,
   SavedItemSimpleFragment,
   ItemSimpleFragment,
-} from '../../generated/graphql/types';
-import { ListItemObject, GetResponseSimple } from '../../graph/types';
+} from '../../generated/graphql/index.js';
+import { ListItemObject, GetResponseSimple } from '../../graph/types.js';
 
 export const seedDataRest: MockListItemObject = Object.freeze({
   ids: ['1', '2'],

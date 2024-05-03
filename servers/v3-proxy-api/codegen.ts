@@ -3,8 +3,12 @@ import { CodegenConfig } from '@graphql-codegen/cli';
 const config: CodegenConfig = {
   schema: 'https://client-api.getpocket.com',
   documents: ['src/graphql/**/*.graphql'],
+  emitLegacyCommonJSImports: false,
   generates: {
     './src/generated/graphql/types.ts': {
+      config: {
+        emitLegacyCommonJSImports: false,
+      },
       plugins: [
         //generated types do not conform to ts/lint rules, disable them for these files
         {

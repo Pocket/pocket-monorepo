@@ -16,8 +16,8 @@ import {
   SearchSortInput,
   UserSavedItemsByOffsetArgs,
   UserSearchSavedItemsByOffsetArgs,
-} from '../../generated/graphql/types';
-import { V3GetParams } from '../../routes/validations/GetSchema';
+} from '../../generated/graphql/index.js';
+import { V3GetParams } from '../../routes/validations/GetSchema.js';
 
 /**
  * Build GraphQL SavedItemsSortInput values from

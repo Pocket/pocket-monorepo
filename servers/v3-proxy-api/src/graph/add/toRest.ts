@@ -2,8 +2,8 @@ import {
   AddResponse,
   PendingAddResponse,
   SavedItemWithParserMetadata,
-} from '../types';
-import * as tx from '../shared/transforms';
+} from '../types.js';
+import * as tx from '../shared/transforms.js';
 
 export function AddItemTransformer(
   savedItem: SavedItemWithParserMetadata,
