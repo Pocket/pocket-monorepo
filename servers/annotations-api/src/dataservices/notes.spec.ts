@@ -1,7 +1,7 @@
-import { NotesDataService } from './notes';
+import { NotesDataService } from './notes.js';
 import { BatchGetCommandOutput } from '@aws-sdk/lib-dynamodb';
-import config from '../config';
-import { dynamoClient } from '../database/client';
+import config from '../config/index.js';
+import { dynamoClient } from '../database/client.js';
 
 describe('Notes data service', () => {
   let dynamoSendStub;

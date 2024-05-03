@@ -1,4 +1,4 @@
-import { groupByCount, sumByKey } from './dataAggregation';
+import { groupByCount, sumByKey } from './dataAggregation.js';
 
 describe('Data aggregation functions', () => {
   describe('groupByCount', () => {

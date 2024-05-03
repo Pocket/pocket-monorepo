@@ -1,18 +1,18 @@
 import { ApolloServer } from '@apollo/server';
-import { startServer } from '../../server';
+import { startServer } from '../../server/index.js';
 import request from 'supertest';
 import { print } from 'graphql';
-import { IContext } from '../../context';
-import { readClient, writeClient } from '../../database/client';
-import { seedData } from '../query/highlights-fixtures';
+import { IContext } from '../../context.js';
+import { readClient, writeClient } from '../../database/client.js';
+import { seedData } from '../query/highlights-fixtures.js';
 import {
   CREATE_HIGHLIGHTS,
   CREATE_HIGHLIGHTS_WITH_NOTE,
-} from './highlights-mutations';
-import { HighlightInput } from '../../types';
-import { UsersMeta } from '../../dataservices/usersMeta';
-import { mysqlTimeString } from '../../dataservices/utils';
-import config from '../../config';
+} from './highlights-mutations.js';
+import { HighlightInput } from '../../types.js';
+import { UsersMeta } from '../../dataservices/usersMeta.js';
+import { mysqlTimeString } from '../../dataservices/utils.js';
+import config from '../../config/index.js';
 import { v4 as uuid } from 'uuid';
 import { Application } from 'express';
 

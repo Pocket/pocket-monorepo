@@ -1,7 +1,7 @@
-import { NotesDataService } from '../dataservices/notes';
-import { dynamoClient } from '../database/client';
-import { createNotesLoader, orderAndMapNotes } from './dataloaders';
-import { IContext } from '../context';
+import { NotesDataService } from '../dataservices/notes.js';
+import { dynamoClient } from '../database/client.js';
+import { createNotesLoader, orderAndMapNotes } from './dataloaders.js';
+import { IContext } from '../context.js';
 
 describe('dataloaders', () => {
   const mockNotesResponse = [

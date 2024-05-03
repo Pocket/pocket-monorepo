@@ -1,7 +1,7 @@
-import { seedData } from '../query/highlights-fixtures';
-import { writeClient } from '../../database/client';
-import { HighlightsDataService } from '../../dataservices/highlights';
-import config from '../../config';
+import { seedData } from '../query/highlights-fixtures.js';
+import { writeClient } from '../../database/client.js';
+import { HighlightsDataService } from '../../dataservices/highlights.js';
+import config from '../../config/index.js';
 
 describe('clearUserData for Highlights data', () => {
   // Stubs/mocks

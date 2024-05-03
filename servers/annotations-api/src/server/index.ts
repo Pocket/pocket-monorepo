@@ -8,14 +8,15 @@ import {
   errorHandler,
   defaultPlugins,
   sentryPocketMiddleware,
+  ApolloServerPlugin,
 } from '@pocket-tools/apollo-utils';
 import { initSentry } from '@pocket-tools/sentry';
-import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4';
+import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4.js';
 
-import { schema } from './apollo';
-import config from '../config';
-import { getContext, IContext } from '../context';
-import queueDeleteRouter from './routes/queueDelete';
+import { schema } from './apollo/index.js';
+import config from '../config/index.js';
+import { getContext, IContext } from '../context.js';
+import queueDeleteRouter from './routes/queueDelete.js';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 
 export async function startServer(port: number): Promise<{
@@ -56,7 +57,9 @@ export async function startServer(port: number): Promise<{
     schema,
     plugins: [
       ...defaultPlugins(httpServer),
-      createApollo4QueryValidationPlugin({ schema }),
+      createApollo4QueryValidationPlugin({
+        schema,
+      }) as unknown as ApolloServerPlugin,
     ],
     formatError: config.app.environment !== 'test' ? errorHandler : undefined,
   });

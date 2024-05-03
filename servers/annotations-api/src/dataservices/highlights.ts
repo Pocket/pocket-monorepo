@@ -1,19 +1,19 @@
 import { Knex } from 'knex';
-import { IContext } from '../context';
+import { IContext } from '../context.js';
 import {
   BatchWriteHighlightsResult,
   Highlight,
   HighlightEntity,
   HighlightInput,
   HighlightUpdateInput,
-} from '../types';
+} from '../types.js';
 import { NotFoundError, UserInputError } from '@pocket-tools/apollo-utils';
 import { v4 as uuid } from 'uuid';
-import config from '../config';
-import { groupByCount, sumByKey } from '../utils/dataAggregation';
-import { UsersMeta } from './usersMeta';
-import { SavedItem } from './savedItem';
-import { failCallback } from '../server/routes/helper';
+import config from '../config/index.js';
+import { groupByCount, sumByKey } from '../utils/dataAggregation.js';
+import { UsersMeta } from './usersMeta.js';
+import { SavedItem } from './savedItem.js';
+import { failCallback } from '../server/routes/helper.js';
 import { setTimeout } from 'timers/promises';
 import { serverLogger } from '@pocket-tools/ts-logger';
 

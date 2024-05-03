@@ -2,7 +2,7 @@
 //so open-telemetry can patch all libraries that we use
 import { nodeSDKBuilder } from '@pocket-tools/tracing';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import config from './config';
+import config from './config/index.js';
 
 nodeSDKBuilder({
   host: config.tracing.host,
@@ -19,6 +19,6 @@ nodeSDKBuilder({
   serverLogger.info(`🚀 Server ready at http://localhost:${config.app.port}`);
 });
 
-import { startServer } from './server';
+import { startServer } from './server/index.js';
 import { EventEmitter } from 'events';
-import { BatchDeleteHandler } from './server/aws/batchDeleteHandler';
+import { BatchDeleteHandler } from './server/aws/batchDeleteHandler.js';

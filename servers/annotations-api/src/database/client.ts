@@ -1,5 +1,5 @@
 import knex, { Knex } from 'knex';
-import config from '../config';
+import config from '../config/index.js';
 import { DynamoDBClient, DynamoDBClientConfig } from '@aws-sdk/client-dynamodb';
 
 let readDb: Knex;

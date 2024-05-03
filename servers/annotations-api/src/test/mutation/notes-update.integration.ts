@@ -1,18 +1,22 @@
 import { ApolloServer } from '@apollo/server';
-import { startServer } from '../../server';
+import { startServer } from '../../server/index.js';
 import request from 'supertest';
 import { print } from 'graphql';
-import { IContext } from '../../context';
-import { dynamoClient, readClient, writeClient } from '../../database/client';
-import { seedData } from '../query/highlights-fixtures';
-import { UPDATE_NOTE } from './notes-mutations';
-import { NoteInput } from '../../types';
+import { IContext } from '../../context.js';
+import {
+  dynamoClient,
+  readClient,
+  writeClient,
+} from '../../database/client.js';
+import { seedData } from '../query/highlights-fixtures.js';
+import { UPDATE_NOTE } from './notes-mutations.js';
+import { NoteInput } from '../../types.js';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
-import config from '../../config';
-import { noteSeedCommand } from '../query/notes-fixtures';
-import { NotesDataService } from '../../dataservices/notes';
-import { truncateTable } from '../utils';
+import config from '../../config/index.js';
+import { noteSeedCommand } from '../query/notes-fixtures.js';
+import { NotesDataService } from '../../dataservices/notes.js';
+import { truncateTable } from '../utils.js';
 import { Application } from 'express';
 
 describe('Notes update', () => {

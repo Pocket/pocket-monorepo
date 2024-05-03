@@ -1,12 +1,12 @@
 import { ApolloServer } from '@apollo/server';
-import { startServer } from '../../server';
+import { startServer } from '../../server/index.js';
 import request from 'supertest';
 import { print } from 'graphql';
-import { IContext } from '../../context';
-import { readClient, writeClient } from '../../database/client';
-import { seedData } from '../query/highlights-fixtures';
-import { CREATE_NOTE } from './notes-mutations';
-import { NoteInput } from '../../types';
+import { IContext } from '../../context.js';
+import { readClient, writeClient } from '../../database/client.js';
+import { seedData } from '../query/highlights-fixtures.js';
+import { CREATE_NOTE } from './notes-mutations.js';
+import { NoteInput } from '../../types.js';
 import { Application } from 'express';
 
 describe('Notes creation', () => {

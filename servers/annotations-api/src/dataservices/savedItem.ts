@@ -1,7 +1,7 @@
 import { Knex } from 'knex';
-import { IContext } from '../context';
-import { mysqlTimeString } from './utils';
-import config from '../config';
+import { IContext } from '../context.js';
+import { mysqlTimeString } from './utils.js';
+import config from '../config/index.js';
 
 export class SavedItem {
   private readonly userId: string;

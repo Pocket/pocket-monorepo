@@ -1,10 +1,13 @@
 import { EventEmitter } from 'events';
-import { BatchDeleteHandler, BatchDeleteMessage } from './batchDeleteHandler';
+import {
+  BatchDeleteHandler,
+  BatchDeleteMessage,
+} from './batchDeleteHandler.js';
 import { DeleteMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
-import { HighlightsDataService } from '../../dataservices/highlights';
+import { HighlightsDataService } from '../../dataservices/highlights.js';
 import * as Sentry from '@sentry/node';
 import { SeverityLevel } from '@sentry/types';
-import config from '../../config';
+import config from '../../config/index.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 describe('batchDeleteHandler', () => {

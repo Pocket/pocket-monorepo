@@ -1,4 +1,4 @@
-import { IContext } from './context';
+import { IContext } from './context.js';
 import {
   SavedItemAnnotations,
   SavedItem,
@@ -8,8 +8,8 @@ import {
   HighlightUpdateInput,
   BatchWriteHighlightsResult,
   BatchWriteHighlightsInput,
-} from './types';
-import { HighlightsDataService } from './dataservices/highlights';
+} from './types.js';
+import { HighlightsDataService } from './dataservices/highlights.js';
 
 export const resolvers = {
   SavedItem: {

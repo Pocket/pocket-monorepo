@@ -1,7 +1,7 @@
 import DataLoader from 'dataloader';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { HighlightNote } from '../types';
-import { IContext } from '../context';
+import { HighlightNote } from '../types.js';
+import { IContext } from '../context.js';
 
 /**
  * Function for initializing dataloader. This function should be

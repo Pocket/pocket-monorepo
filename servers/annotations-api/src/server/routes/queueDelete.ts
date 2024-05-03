@@ -1,18 +1,22 @@
 import { Request, Response, Router } from 'express';
 import { checkSchema, Schema } from 'express-validator';
-import { dynamoClient, readClient, writeClient } from '../../database/client';
-import config from '../../config';
-import { sqs } from '../aws/sqs';
+import {
+  dynamoClient,
+  readClient,
+  writeClient,
+} from '../../database/client.js';
+import config from '../../config/index.js';
+import { sqs } from '../aws/sqs.js';
 import {
   SendMessageBatchCommand,
   SendMessageBatchRequestEntry,
 } from '@aws-sdk/client-sqs';
 import { nanoid } from 'nanoid';
 import * as Sentry from '@sentry/node';
-import { validate } from './validator';
-import { HighlightsDataService } from '../../dataservices/highlights';
-import { NotesDataService } from '../../dataservices/notes';
-import { failCallback, successCallback } from './helper';
+import { validate } from './validator.js';
+import { HighlightsDataService } from '../../dataservices/highlights.js';
+import { NotesDataService } from '../../dataservices/notes.js';
+import { failCallback, successCallback } from './helper.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 export type SqsMessage = {

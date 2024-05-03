@@ -18,9 +18,9 @@ import {
   QueryCommandInput,
   QueryCommandOutput,
 } from '@aws-sdk/lib-dynamodb';
-import config from '../config';
-import { HighlightNote, HighlightNoteEntity } from '../types';
-import { backoff } from './utils';
+import config from '../config/index.js';
+import { HighlightNote, HighlightNoteEntity } from '../types.js';
+import { backoff } from './utils.js';
 import { NotFoundError } from '@pocket-tools/apollo-utils';
 
 export class NotesDataService {

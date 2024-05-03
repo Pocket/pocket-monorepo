@@ -1,15 +1,15 @@
 import { ApolloServer } from '@apollo/server';
-import { startServer } from '../../server';
+import { startServer } from '../../server/index.js';
 import request from 'supertest';
 import { print } from 'graphql';
-import { IContext } from '../../context';
-import { readClient, writeClient } from '../../database/client';
-import { seedData } from '../query/highlights-fixtures';
-import { UPDATE_HIGHLIGHT } from './highlights-mutations';
-import { HighlightEntity, HighlightUpdateInput } from '../../types';
-import { UsersMeta } from '../../dataservices/usersMeta';
-import { mysqlTimeString } from '../../dataservices/utils';
-import config from '../../config';
+import { IContext } from '../../context.js';
+import { readClient, writeClient } from '../../database/client.js';
+import { seedData } from '../query/highlights-fixtures.js';
+import { UPDATE_HIGHLIGHT } from './highlights-mutations.js';
+import { HighlightEntity, HighlightUpdateInput } from '../../types.js';
+import { UsersMeta } from '../../dataservices/usersMeta.js';
+import { mysqlTimeString } from '../../dataservices/utils.js';
+import config from '../../config/index.js';
 import { Application } from 'express';
 
 describe('Highlights update', () => {

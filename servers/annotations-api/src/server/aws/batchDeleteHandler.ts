@@ -9,15 +9,15 @@ import {
   QueueAttributeName,
 } from '@aws-sdk/client-sqs';
 import * as Sentry from '@sentry/node';
-import config from '../../config';
+import config from '../../config/index.js';
 import { nanoid } from 'nanoid';
-import { readClient, writeClient } from '../../database/client';
-import { HighlightsDataService } from '../../dataservices/highlights';
+import { readClient, writeClient } from '../../database/client.js';
+import { HighlightsDataService } from '../../dataservices/highlights.js';
 import { setTimeout } from 'timers/promises';
-import { failCallback } from '../routes/helper';
+import { failCallback } from '../routes/helper.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { SeverityLevel } from '@sentry/types';
-import { sqs } from './sqs';
+import { sqs } from './sqs.js';
 
 export type BatchDeleteMessage = {
   traceId: string;

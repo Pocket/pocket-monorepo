@@ -1,6 +1,6 @@
 import { gql } from 'graphql-tag';
 import { BatchWriteCommandInput, PutCommand } from '@aws-sdk/lib-dynamodb';
-import config from '../../config';
+import config from '../../config/index.js';
 import Chance from 'chance';
 
 export const GET_NOTES = gql`

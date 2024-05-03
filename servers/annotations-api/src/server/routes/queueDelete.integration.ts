@@ -1,8 +1,8 @@
-import { readClient, writeClient } from '../../database/client';
+import { readClient, writeClient } from '../../database/client.js';
 import { SQS } from '@aws-sdk/client-sqs';
-import { enqueueAnnotationIds, SqsMessage } from './queueDelete';
-import { HighlightsDataService } from '../../dataservices/highlights';
-import config from '../../config';
+import { enqueueAnnotationIds, SqsMessage } from './queueDelete.js';
+import { HighlightsDataService } from '../../dataservices/highlights.js';
+import config from '../../config/index.js';
 import * as Sentry from '@sentry/node';
 import { Knex } from 'knex';
 

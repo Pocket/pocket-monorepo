@@ -1,16 +1,16 @@
 import { ApolloServer } from '@apollo/server';
-import { startServer } from '../../server';
+import { startServer } from '../../server/index.js';
 import request from 'supertest';
 import { print } from 'graphql';
-import { IContext } from '../../context';
-import { readClient, writeClient } from '../../database/client';
-import { seedData } from '../query/highlights-fixtures';
-import { DELETE_NOTE } from './notes-mutations';
+import { IContext } from '../../context.js';
+import { readClient, writeClient } from '../../database/client.js';
+import { seedData } from '../query/highlights-fixtures.js';
+import { DELETE_NOTE } from './notes-mutations.js';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
-import config from '../../config';
-import { noteSeedCommand } from '../query/notes-fixtures';
-import { NotesDataService } from '../../dataservices/notes';
+import config from '../../config/index.js';
+import { noteSeedCommand } from '../query/notes-fixtures.js';
+import { NotesDataService } from '../../dataservices/notes.js';
 import { Application } from 'express';
 
 describe('Notes delete', () => {

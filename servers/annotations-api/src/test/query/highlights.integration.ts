@@ -1,10 +1,10 @@
 import { ApolloServer } from '@apollo/server';
-import { startServer } from '../../server';
+import { startServer } from '../../server/index.js';
 import request from 'supertest';
 import { print } from 'graphql';
-import { IContext } from '../../context';
-import { readClient, writeClient } from '../../database/client';
-import { GET_HIGHLIGHTS, seedData } from './highlights-fixtures';
+import { IContext } from '../../context.js';
+import { readClient, writeClient } from '../../database/client.js';
+import { GET_HIGHLIGHTS, seedData } from './highlights-fixtures.js';
 import { Application } from 'express';
 
 describe('Highlights on a SavedItem', () => {
