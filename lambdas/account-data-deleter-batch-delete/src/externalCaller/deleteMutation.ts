@@ -1,5 +1,4 @@
 import { backOff } from 'exponential-backoff';
-import fetch from 'node-fetch';
 import { config } from '../config.js';
 
 /**
@@ -47,7 +46,7 @@ export const userApiCalls = {
   `;
 
     const res = await fetch(config.userApi, {
-      method: 'post',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         userid: userId.toString(),
@@ -55,7 +54,6 @@ export const userApiCalls = {
       },
       body: JSON.stringify({ query: DELETE_USER }),
     });
-
     return await res.json();
   },
 };

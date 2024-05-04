@@ -300,9 +300,6 @@ importers:
       lodash:
         specifier: 4.17.21
         version: 4.17.21
-      node-fetch:
-        specifier: 3.3.2
-        version: 3.3.2
       tslib:
         specifier: 2.6.2
         version: 2.6.2
@@ -316,9 +313,6 @@ importers:
       '@types/lodash':
         specifier: 4.17.0
         version: 4.17.0
-      '@types/node-fetch':
-        specifier: 2.6.11
-        version: 2.6.11
       eslint-config-custom:
         specifier: workspace:*
         version: link:../../packages/eslint-config-custom
@@ -326,8 +320,8 @@ importers:
         specifier: 29.7.0
         version: 29.7.0(@types/node@20.12.8)(ts-node@10.9.2)
       nock:
-        specifier: 13.5.4
-        version: 13.5.4
+        specifier: beta
+        version: 14.0.0-beta.6
       ts-jest:
         specifier: 29.1.2
         version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.5)
@@ -346,6 +340,9 @@ importers:
       fetch-retry:
         specifier: ^6.0.0
         version: 6.0.0
+      isomorphic-fetch:
+        specifier: ^3.0.0
+        version: 3.0.0
       stripe:
         specifier: 14.24.0
         version: 14.24.0
@@ -359,9 +356,6 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
-      '@types/node-fetch':
-        specifier: 2.6.11
-        version: 2.6.11
       eslint-config-custom:
         specifier: workspace:*
         version: link:../../packages/eslint-config-custom
@@ -436,9 +430,6 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
-      '@types/node-fetch':
-        specifier: 2.6.11
-        version: 2.6.11
       eslint-config-custom:
         specifier: workspace:*
         version: link:../../packages/eslint-config-custom
@@ -746,9 +737,6 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
-      '@types/node-fetch':
-        specifier: 2.6.11
-        version: 2.6.11
       eslint-config-custom:
         specifier: workspace:*
         version: link:../../packages/eslint-config-custom
@@ -786,9 +774,6 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
-      '@types/node-fetch':
-        specifier: 2.6.11
-        version: 2.6.11
       eslint-config-custom:
         specifier: workspace:*
         version: link:../../packages/eslint-config-custom
@@ -8899,6 +8884,7 @@ packages:
     dependencies:
       '@types/node': 20.12.8
       form-data: 4.0.0
+    dev: false
 
   /@types/node-fetch@2.6.6:
     resolution: {integrity: sha512-95X8guJYhfqiuVVhRFxVQcf4hW/2bCuoPwDasMf/531STFoNoWTT7YDnWdXHEZKqAGUigmpG31r2FE70LwnzJw==}
@@ -16452,6 +16438,14 @@ packages:
 
   /nock@14.0.0-beta.5:
     resolution: {integrity: sha512-u255tf4DYvyErTlPZA9uTfXghiZZy+NflUOFONPVKZ5tP0yaHwKig28zyFOLhu8y5YcCRC+V5vDk4HHileh2iw==}
+    engines: {node: '>= 18'}
+    dependencies:
+      json-stringify-safe: 5.0.1
+      propagate: 2.0.1
+    dev: true
+
+  /nock@14.0.0-beta.6:
+    resolution: {integrity: sha512-b7lc7qvj1dQzxtbU7TqyTMnKbNKwGQd585xsRtcCZOv3I/yOK9Vwv4nOgnLFxFtX9m1yjhQDRbgqFCqNh9HuEw==}
     engines: {node: '>= 18'}
     dependencies:
       json-stringify-safe: 5.0.1

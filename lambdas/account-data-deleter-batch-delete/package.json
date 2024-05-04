@@ -19,17 +19,15 @@
     "@sentry/serverless": "7.113.0",
     "exponential-backoff": "^3.1.1",
     "lodash": "4.17.21",
-    "node-fetch": "3.3.2",
     "tslib": "2.6.2"
   },
   "devDependencies": {
     "@types/aws-lambda": "8.10.137",
     "@types/jest": "29.5.12",
     "@types/lodash": "4.17.0",
-    "@types/node-fetch": "2.6.11",
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
-    "nock": "13.5.4",
+    "nock": "beta",
     "ts-jest": "29.1.2",
     "tsconfig": "workspace:*"
   },

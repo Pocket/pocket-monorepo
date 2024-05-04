@@ -7,7 +7,7 @@ import { print } from 'graphql';
 import { gql } from 'graphql-tag';
 import { IContext } from '../../apollo/context.js';
 import { Application } from 'express';
-import ogs from 'open-graph-scraper';
+import * as ogs from 'open-graph-scraper';
 import { nockResponseForParser } from '../utils/parserResponse.js';
 import { conn } from '../../databases/readitlab.js';
 import { ColumnType, Kysely } from 'kysely';

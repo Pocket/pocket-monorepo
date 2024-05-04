@@ -1,8 +1,11 @@
 {
   "extends": "tsconfig/graphql.json",
   "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "target": "ES2015",
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": "src"
   },
   "exclude": ["node_modules", "dist", "**/.pnpm/*", "src/test"],
   "include": ["src/**/*.ts", "src/config"]

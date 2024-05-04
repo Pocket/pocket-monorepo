@@ -8,7 +8,8 @@ import {
 } from '../types/index.js';
 import config from '../config/index.js';
 import { ItemResponse } from '../externalCaller/parserCaller.js';
-import { chunk } from 'lodash';
+import lodash from 'lodash';
+const { chunk } = lodash;
 import { RawListResult, ListResult } from './types.js';
 
 export type ListEntity = {

@@ -18,7 +18,8 @@ import config from '../config/index.js';
 import { IContext } from '../server/context.js';
 import { SavedItemDataService, TagDataService } from '../dataService/index.js';
 import { NotFoundError, UserInputError } from '@pocket-tools/apollo-utils';
-import { addslashes } from 'locutus/php/strings';
+import locutus from 'locutus';
+const addslashes = locutus.php.strings.addslashes;
 import * as Sentry from '@sentry/node';
 import { GraphQLResolveInfo } from 'graphql';
 import { ParserCaller } from '../externalCaller/parserCaller.js';
@@ -485,6 +486,7 @@ export function sanitizeTagName(name: string): string {
       'Tag name must have at least 1 non-whitespace character.',
     );
   }
+
   return addslashes(strippedTag);
 }
 

@@ -17,26 +17,28 @@ describe('deleteUser mutation test', () => {
       },
     };
 
-    nock(config.userApi).post('/').replyWithError('Something went wrong');
+    nock(config.userApi)
+      .post('/')
+      .replyWithError('Something went wrong in fetch');
     nock(config.userApi).post('/').reply(200, testResponse);
 
     const userApiCaller = jest.spyOn(userApiCalls, 'deleteUserMutation');
     const res = await deleteUserMutationCaller(testUserId);
-    expect(userApiCaller).toBeCalledTimes(2);
+    expect(userApiCaller).toHaveBeenCalledTimes(2);
     expect(res).toEqual(testUserId);
   });
 
   it('should throw an error after three failed tries', async () => {
-    const testError = 'Something went wrong';
+    const testError = 'Something went wrong in fetch';
 
     nock(config.userApi).post('/').times(3).replyWithError(testError);
 
     const userApiCaller = jest.spyOn(userApiCalls, 'deleteUserMutation');
 
-    await expect(deleteUserMutationCaller(testUserId)).rejects.toThrowError(
+    await expect(deleteUserMutationCaller(testUserId)).rejects.toThrow(
       testError,
     );
-    expect(userApiCaller).toBeCalledTimes(3);
+    expect(userApiCaller).toHaveBeenCalledTimes(3);
   });
 
   it('should throw errors if graphql response has errors', async () => {
@@ -45,7 +47,7 @@ describe('deleteUser mutation test', () => {
       errors: testError,
     });
 
-    await expect(deleteUserMutationCaller(testUserId)).rejects.toThrowError(
+    await expect(deleteUserMutationCaller(testUserId)).rejects.toThrow(
       `Error calling deleteUser mutation.\n GraphQL Errors: ${JSON.stringify(
         testError,
       )}`,

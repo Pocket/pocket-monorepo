@@ -21,7 +21,7 @@ import {
 import { SEARCH_SHAREABLE_LIST } from './sample-queries.gql.js';
 import { FULLACCESS } from '../../../shared/constants.js';
 import config from '../../../config/index.js';
-import slugify from 'slugify';
+import * as slugify from 'slugify';
 import { Application } from 'express';
 
 describe('admin queries: ShareableList', () => {

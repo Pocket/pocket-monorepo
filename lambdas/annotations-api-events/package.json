@@ -21,7 +21,6 @@
   "devDependencies": {
     "@types/aws-lambda": "8.10.137",
     "@types/jest": "29.5.12",
-    "@types/node-fetch": "2.6.11",
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
     "nock": "13.5.4",

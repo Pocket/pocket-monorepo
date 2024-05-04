@@ -8,7 +8,7 @@ import {
   mockGraphAddResponses,
 } from '../test/fixtures/add.js';
 import { ClientError, GraphQLClient } from 'graphql-request';
-import { GraphQLError } from 'graphql-request/build/esm/index.js';
+import { GraphQLError } from 'graphql-request/build/esm/types.js';
 
 describe('v3/send', () => {
   let app: Application;

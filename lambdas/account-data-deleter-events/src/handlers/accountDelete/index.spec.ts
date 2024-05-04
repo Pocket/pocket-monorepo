@@ -1,7 +1,7 @@
 import { config } from '../../config.js';
 import nock from 'nock';
 import { accountDeleteHandler } from './index.js';
-import { callQueueDeleteEndpoint } from './postRequest';
+import { callQueueDeleteEndpoint } from './postRequest.js';
 import { SQSRecord } from 'aws-lambda';
 
 describe('accountDelete handler', () => {
