@@ -30,7 +30,7 @@ export class HighlightsModel {
     return { highlights };
   }
   async createOneByUrl(input: CreateHighlightByUrlInput): Promise<Highlight> {
-    const itemId = await this.parserApi.getItemId(input.url);
+    const itemId = await this.parserApi.getItemId(input.url.toString());
     const createById = { ...input, itemId };
     const result = await this.createMany([createById]);
     return result[0];

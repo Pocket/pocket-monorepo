@@ -490,15 +490,20 @@ describe('Highlights creation', () => {
   });
   describe('by url', () => {
     it('creates a highlight by calling underlying byId service function', async () => {
-      const url = 'http://test.com';
+      const url = 'http://test.com/abc';
       const createSpy = jest.spyOn(HighlightsModel.prototype, 'createMany');
       nock(config.parser.baseEndpoint)
         .get(config.parser.dataPath)
-        .query({ noArticle: '1', createIfNone: '0', output: 'regular', url })
+        .query({
+          noArticle: '1',
+          createIfNone: '0',
+          output: 'regular',
+          url,
+        })
         .reply(200, { item_id: '1' });
       const variables: { input: CreateHighlightByUrlInput } = {
         input: {
-          url: 'http://test.com',
+          url: 'http://test.com/abc',
           version: 2,
           patch: 'Prow scuttle parrel',
           quote: 'provost Sail ho shrouds spirits boom',
@@ -506,6 +511,7 @@ describe('Highlights creation', () => {
       };
       const expectedVars = {
         ...variables.input,
+        url: new URL(url),
         itemId: '1',
       };
       const res = await request(app)
