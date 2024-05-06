@@ -62,6 +62,7 @@ const tracingDefaults: TracingConfig = {
   httpDefaultPort: 4318,
   host: 'otlpcollector',
   logger: new DiagConsoleLogger(),
+  additionalInstrumentations: [],
 };
 
 /**
