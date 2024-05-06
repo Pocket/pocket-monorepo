@@ -118,7 +118,7 @@ describe('Notes update', () => {
       expect(res.body.data?.updateSavedItemHighlightNote).toBeNull();
       expect(res.body.errors?.length).toEqual(1);
       expect(res.body.errors?.[0].message).toContain(
-        'Premium account required',
+        'This feature is restricted to premium Pocket accounts',
       );
     });
   });

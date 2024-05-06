@@ -1,15 +1,15 @@
 import { Knex } from 'knex';
 import { HighlightNote } from '../../types';
 import DataLoader from 'dataloader';
-import {
-  AuthenticationError,
-  ForbiddenError,
-} from '@pocket-tools/apollo-utils';
+import { AuthenticationError } from '@pocket-tools/apollo-utils';
 import express from 'express';
 import { dynamoClient, readClient, writeClient } from '../../database/client';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { createNotesLoader } from '../../dataservices/dataloaders';
 import { NotesDataService } from '../../dataservices/notes';
+import { HighlightsModel } from '../../models/HighlightsModel';
+import { ParserAPI } from '../../dataservices/parserApi';
+import { HighlightsDataService } from '../../dataservices/highlights';
 
 export interface IContext {
   apiId: string;
@@ -20,15 +20,19 @@ export interface IContext {
     writeClient: Knex;
   };
   dynamoClient: DynamoDBClient;
+  parserApi: ParserAPI;
+  HighlightsModel: HighlightsModel;
   dataLoaders: {
     noteByHighlightId: DataLoader<string, HighlightNote | undefined>;
   };
-  notesService: NotesDataService;
 }
 
 export class ContextManager implements IContext {
   public readonly db: IContext['db'];
   public readonly dataLoaders: IContext['dataLoaders'];
+  HighlightsModel: HighlightsModel;
+  parserApi: ParserAPI;
+  dynamoClient: DynamoDBClient;
 
   constructor(
     private config: {
@@ -40,11 +44,20 @@ export class ContextManager implements IContext {
     this.db = config.db;
     this.config = config;
     this.dynamoClient = config.dynamoClient;
+    this.parserApi = new ParserAPI();
+    const noteService = new NotesDataService(config.dynamoClient, this.userId);
     this.dataLoaders = {
-      noteByHighlightId: createNotesLoader(config.dynamoClient, this),
+      noteByHighlightId: createNotesLoader(noteService),
     };
+    const highlightService = new HighlightsDataService(this);
+    this.HighlightsModel = new HighlightsModel(
+      highlightService,
+      noteService,
+      this.parserApi,
+      this.isPremium,
+    );
   }
-  dynamoClient: DynamoDBClient;
+
   get isPremium(): boolean {
     // Using getter to make it easier to stub in tests
     return this.config.request?.headers.premium === 'true';
@@ -65,15 +78,6 @@ export class ContextManager implements IContext {
     const apiId = this.config.request?.headers?.apiid || '0';
 
     return apiId instanceof Array ? apiId[0] : apiId;
-  }
-
-  get notesService(): NotesDataService {
-    if (!this.isPremium) {
-      throw new ForbiddenError(
-        'Premium account required to access this feature',
-      );
-    }
-    return new NotesDataService(this.dynamoClient, this.userId);
   }
 }
 

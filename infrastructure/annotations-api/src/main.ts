@@ -188,6 +188,7 @@ class AnnotationsAPI extends TerraformStack {
     const { region, caller, secretsManagerKmsAlias, snsTopic, dynamodb } =
       dependencies;
 
+    const PocketSSMPrefix = `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}`;
     const databaseSecretsArn = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/READITLA_DB`;
 
     return new PocketALBApplication(this, 'application', {
@@ -261,7 +262,7 @@ class AnnotationsAPI extends TerraformStack {
           secretEnvVars: [
             {
               name: 'SENTRY_DSN',
-              valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/SENTRY_DSN`,
+              valueFrom: `${PocketSSMPrefix}/SENTRY_DSN`,
             },
             {
               name: 'DATABASE_READ_HOST',
@@ -286,6 +287,14 @@ class AnnotationsAPI extends TerraformStack {
             {
               name: 'DATABASE_WRITE_PASSWORD',
               valueFrom: `${databaseSecretsArn}:write_password::`,
+            },
+            {
+              name: 'PARSER_BASE_ENDPOINT',
+              valueFrom: `${PocketSSMPrefix}/PARSER_ENDPOINT`,
+            },
+            {
+              name: 'PARSER_DATA_PATH',
+              valueFrom: `${PocketSSMPrefix}/PARSER_CONFIG`,
             },
           ],
         },

@@ -6,15 +6,21 @@ import { IContext } from '../../server/apollo/context';
 import { readClient, writeClient } from '../../database/client';
 import { seedData } from '../query/highlights-fixtures';
 import {
+  CREATE_HIGHLIGHT_BY_URL,
   CREATE_HIGHLIGHTS,
   CREATE_HIGHLIGHTS_WITH_NOTE,
 } from './highlights-mutations';
-import { CreateHighlightInput } from '../../__generated__/resolvers-types';
+import {
+  CreateHighlightByUrlInput,
+  CreateHighlightInput,
+} from '../../__generated__/resolvers-types';
 import { UsersMeta } from '../../dataservices/usersMeta';
 import { mysqlTimeString } from '../../dataservices/utils';
 import config from '../../config';
 import { v4 as uuid } from 'uuid';
 import { Application } from 'express';
+import nock from 'nock';
+import { HighlightsModel } from '../../models/HighlightsModel';
 
 describe('Highlights creation', () => {
   let app: Application;
@@ -481,5 +487,35 @@ describe('Highlights creation', () => {
         expect(actualQuotes).toEqual(expect.arrayContaining(expectedQuotes));
       },
     );
+  });
+  describe('by url', () => {
+    it('creates a highlight by calling underlying byId service function', async () => {
+      const url = 'http://test.com';
+      const createSpy = jest.spyOn(HighlightsModel.prototype, 'createMany');
+      nock(config.parser.baseEndpoint)
+        .get(config.parser.dataPath)
+        .query({ noArticle: '1', createIfNone: '0', output: 'regular', url })
+        .reply(200, { item_id: '1' });
+      const variables: { input: CreateHighlightByUrlInput } = {
+        input: {
+          url: 'http://test.com',
+          version: 2,
+          patch: 'Prow scuttle parrel',
+          quote: 'provost Sail ho shrouds spirits boom',
+        },
+      };
+      const expectedVars = {
+        ...variables.input,
+        itemId: '1',
+      };
+      const res = await request(app)
+        .post(graphQLUrl)
+        .set(baseHeaders)
+        .send({ query: print(CREATE_HIGHLIGHT_BY_URL), variables });
+      const result = res.body.data?.createHighlightByUrl;
+      expect(result.patch).toBe('Prow scuttle parrel');
+      expect(result.quote).toBe('provost Sail ho shrouds spirits boom');
+      expect(createSpy).toHaveBeenCalledExactlyOnceWith([expectedVars]);
+    });
   });
 });
