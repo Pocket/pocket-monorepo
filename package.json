@@ -28,11 +28,5 @@
   "name": "pocket-monorepo",
   "engines": {
     "node": "^20.12"
-  },
-  "pnpm": {
-    "overrides": {
-      "long": "5.2.3",
-      "@types/long": "5.0.0"
-    }
   }
 }

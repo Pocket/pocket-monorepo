@@ -7,7 +7,6 @@ import {
   iamRole,
   iamRolePolicyAttachment,
 } from '@cdktf/provider-aws';
-import { DynamodbTableTtl } from '@cdktf/provider-aws/lib/dynamodb-table';
 import { IResolvable, TerraformMetaArguments, TerraformProvider } from 'cdktf';
 import { Construct } from 'constructs';
 
@@ -49,7 +48,7 @@ export interface ApplicationDynamoDBProps extends TerraformMetaArguments {
   tableConfig: ApplicationDynamoDBTableConfig;
   readCapacity?: ApplicationDynamoDBTableAutoScaleProps;
   writeCapacity?: ApplicationDynamoDBTableAutoScaleProps;
-  ttl?: DynamodbTableTtl;
+  ttl?: dynamodbTable.DynamodbTableTtl;
   // If capacityMode is ON_DEMAND, the dynamodb table will have on-demand capacity. By default this is PROVISIONED.
   // On-demand capacity mode is capable of serving thousands of requests per second without capacity planning.
   // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadWriteCapacityMode.html

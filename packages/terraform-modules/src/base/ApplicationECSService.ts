@@ -1,5 +1,5 @@
-import { Resource } from '@cdktf/provider-null/lib/resource';
-import { Sleep } from '@cdktf/provider-time/lib/sleep';
+import { resource } from '@cdktf/provider-null';
+import { sleep } from '@cdktf/provider-time';
 import { Construct } from 'constructs';
 import { ApplicationECR, ECRProps } from './ApplicationECR.js';
 import {
@@ -20,7 +20,7 @@ import {
   TerraformOutput,
 } from 'cdktf';
 import { truncateString } from '../utilities.js';
-import { File } from '@cdktf/provider-local/lib/file';
+import { file } from '@cdktf/provider-local';
 import {
   ecrRepository,
   albListenerRule,
@@ -226,14 +226,18 @@ export class ApplicationECSService extends Construct {
          * ECS Task Definition
          * ECS Placement Strategy Config
          */
-        const nullECSTaskUpdate = new Resource(this, 'update-task-definition', {
-          triggers: { task_arn: taskDef.arn },
-          dependsOn: [
-            taskDef,
-            codeDeployApp.codeDeployApp,
-            codeDeployApp.codeDeployDeploymentGroup,
-          ],
-        });
+        const nullECSTaskUpdate = new resource.Resource(
+          this,
+          'update-task-definition',
+          {
+            triggers: { task_arn: taskDef.arn },
+            dependsOn: [
+              taskDef,
+              codeDeployApp.codeDeployApp,
+              codeDeployApp.codeDeployDeploymentGroup,
+            ],
+          },
+        );
 
         nullECSTaskUpdate.addOverride(
           'provisioner.local-exec.command',
@@ -299,7 +303,7 @@ export class ApplicationECSService extends Construct {
     config: ApplicationECSServiceProps,
   ) {
     if (config.useCodePipeline) {
-      const nullCreateTaskDef = new Resource(
+      const nullCreateTaskDef = new resource.Resource(
         this,
         'create-task-definition-file',
         {
@@ -323,7 +327,7 @@ export class ApplicationECSService extends Construct {
     }
 
     if (config.generateAppSpec) {
-      new File(this, 'appspec', {
+      new file.File(this, 'appspec', {
         content: JSON.stringify({
           version: 1,
           Resources: [
@@ -630,7 +634,7 @@ export class ApplicationECSService extends Construct {
       ],
     };
 
-    const waitTwoMinutes = new Sleep(this, 'waitTwoMinutes', {
+    const waitTwoMinutes = new sleep.Sleep(this, 'waitTwoMinutes', {
       createDuration: '2m',
       dependsOn: [this.ecsIam.taskRoleArn],
     });

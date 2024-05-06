@@ -8,7 +8,7 @@ import { gql } from 'graphql-tag';
 import { IContext } from '../../apollo/context.js';
 import { Application } from 'express';
 import { IntMask } from '@pocket-tools/int-mask';
-import * as ogs from 'open-graph-scraper';
+import ogs from 'open-graph-scraper';
 import { mockUnleash } from '@pocket-tools/feature-flags-client';
 import * as unleash from '../../unleash.js';
 import config from '../../config/index.js';

@@ -1,7 +1,4 @@
-import {
-  DataArchiveFile,
-  DataArchiveFileSource,
-} from '@cdktf/provider-archive/lib/data-archive-file';
+import { dataArchiveFile } from '@cdktf/provider-archive';
 import {
   cloudwatchLogGroup,
   dataAwsIamPolicyDocument,
@@ -14,8 +11,8 @@ import {
   s3BucketPublicAccessBlock,
   s3BucketOwnershipControls,
   lambdaAlias,
+  dataAwsRegion,
 } from '@cdktf/provider-aws';
-import { DataAwsRegion } from '@cdktf/provider-aws/lib/data-aws-region';
 
 import { Fn, TerraformMetaArguments, TerraformOutput } from 'cdktf';
 import { Construct } from 'constructs';
@@ -182,7 +179,7 @@ export class ApplicationVersionedLambda extends Construct {
 
     const layers = this.config.layers ?? [];
     if (this.config.addParameterStoreAndSecretsLayer) {
-      const region = new DataAwsRegion(this, 'lambda-region');
+      const region = new dataAwsRegion.DataAwsRegion(this, 'lambda-region');
       // use a fn to look up the values, because region is terraform runtime not build time.
       const layer = Fn.lookup(
         LAMBDA_SECRETS_X86_X64_LAYER_ARN_MAP,
@@ -342,14 +339,14 @@ export class ApplicationVersionedLambda extends Construct {
 
   private getDefaultLambda() {
     const source = this.getDefaultLambdaSource();
-    return new DataArchiveFile(this, 'lambda-default-file', {
+    return new dataArchiveFile.DataArchiveFile(this, 'lambda-default-file', {
       type: 'zip',
       source: [source],
       outputPath: `${source.filename}.zip`,
     });
   }
 
-  private getDefaultLambdaSource(): DataArchiveFileSource {
+  private getDefaultLambdaSource(): dataArchiveFile.DataArchiveFileSource {
     const runtime = this.config.runtime.match(/[a-z]*/)[0];
     const handler = this.config.handler.split('.');
     const functionName = handler.pop();

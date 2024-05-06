@@ -1,9 +1,20 @@
 {
   "name": "@pocket-tools/terraform-modules",
   "version": "0.0.0-development",
-  "main": "dist/index.js",
+  "main": "dist/index.cjs",
   "types": "dist/index.d.ts",
-  "module": "dist/index.mjs",
+  "module": "dist/index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": {
+        "require": "./dist/index.d.cts",
+        "default": "./dist/index.d.ts"
+      },
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.js"
+    }
+  },
   "license": "MPL-2.0",
   "scripts": {
     "build:dev": "rm -rf dist && NODE_ENV=development npm run example:synth",

@@ -1,4 +1,4 @@
-import { config } from './config';
+import { config } from './config/index.js';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
 import {
   provider as awsProvider,

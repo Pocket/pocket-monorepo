@@ -8,7 +8,7 @@ import { IContext } from '../../apollo/context.js';
 import config from '../../config/index.js';
 import { unleash } from '../../unleash.js';
 import { IPocketMetadataDataSource } from '../PocketMetadataModel.js';
-import * as ogs from 'open-graph-scraper';
+import ogs from 'open-graph-scraper';
 import { merge } from 'lodash';
 
 export class OpenGraphModel implements IPocketMetadataDataSource {

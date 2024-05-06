@@ -2,10 +2,7 @@
   "extends": "tsconfig/graphql.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDirs": ["src"],
-    "target": "es2019",
-    "module": "commonjs",
-    "moduleResolution": "Node"
+    "rootDirs": ["src"]
   },
   "exclude": ["node_module"],
   "include": ["src/**/*.ts"]

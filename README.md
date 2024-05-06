@@ -121,3 +121,12 @@ Learn more about the power of Turborepo:
 - [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
 - [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
 - [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+
+## Notes
+
+### Long.js ESM Issues
+
+Long.js has a known ESM compatibility issue. To fix this we execute the workaround on <https://github.com/dcodeIO/long.js/issues/125#issuecomment-1789840098> until it is solved. This will ignore checking the types within libraries and only check the types that are within our own codebase that we reference.
+
+From the [typescript docs](https://www.typescriptlang.org/tsconfig/#skipLibCheck)
+> A common case where you might think to use skipLibCheck is when there are two copies of a library’s types in your node_modules. In these cases, you should consider using a feature like yarn’s resolutions to ensure there is only one copy of that dependency in your tree or investigate how to ensure there is only one copy by understanding the dependency resolution to fix the issue without additional tooling.

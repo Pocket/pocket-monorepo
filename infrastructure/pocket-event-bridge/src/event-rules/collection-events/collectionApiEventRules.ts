@@ -12,7 +12,7 @@ import {
   dataAwsIamPolicyDocument,
   snsTopicPolicy,
 } from '@cdktf/provider-aws';
-import { Resource } from '@cdktf/provider-null/lib/resource';
+import { resource } from '@cdktf/provider-null';
 import { eventConfig } from './eventConfig.js';
 import { createDeadLetterQueueAlarm } from '../utils.js';
 
@@ -61,7 +61,7 @@ export class CollectionApiEvents extends Construct {
     //to prevent resource deletion in-addition to preventDestroy
     //e.g removing any of the dependsOn resource and running npm build would
     //throw error
-    new Resource(this, 'null-resource', {
+    new resource.Resource(this, 'null-resource', {
       dependsOn: [collectionEvent.getEventBridge().rule, this.snsTopic],
     });
   }
