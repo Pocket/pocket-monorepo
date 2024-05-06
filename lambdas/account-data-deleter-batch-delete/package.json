@@ -18,6 +18,7 @@
     "@aws-sdk/lib-dynamodb": "3.554.0",
     "@sentry/serverless": "7.113.0",
     "exponential-backoff": "^3.1.1",
+    "node-fetch": "3.3.2",
     "lodash": "4.17.21",
     "tslib": "2.6.2"
   },
@@ -27,7 +28,7 @@
     "@types/lodash": "4.17.0",
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
-    "nock": "beta",
+    "nock": "13.5.4",
     "ts-jest": "29.1.2",
     "tsconfig": "workspace:*"
   },

@@ -9,6 +9,7 @@ pocket-publisher-data-queue
 PermLib-UserMain
 PermLib-ItemMain
 pocket-list-delete-queue
+fxa-events-queue
 )
 
 

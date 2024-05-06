@@ -10,7 +10,10 @@ const jestConfig: JestConfigWithTsJest = {
   testMatch: ['**/?(*.)+(spec|integration).ts'],
   testPathIgnorePatterns: ['/dist/'],
   setupFiles: ['./jest.setup.ts'],
-  displayName: 'account-data-deleter-events',
+  displayName: 'instant-sync-events',
+  transformIgnorePatterns: [
+    'node_modules/(?!(.*(nanoid|nanostores|node-fetch))/)',
+  ],
   transform: {
     '^.+\\.[tj]sx?$': [
       'ts-jest',

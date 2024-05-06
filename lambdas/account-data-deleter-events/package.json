@@ -7,7 +7,6 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "test": "jest \"\\.spec\\.ts\"",
-    "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\""
   },

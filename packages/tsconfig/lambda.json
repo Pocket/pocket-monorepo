@@ -4,6 +4,8 @@
       "target": "ESNext",
       "module": "NodeNext",
       "skipLibCheck": true,
+      "allowJs": true,
+      "checkJs": true,
       "outDir": "dist",
       "sourceMap": true,
       "esModuleInterop": true,

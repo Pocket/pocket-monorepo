@@ -44,7 +44,7 @@ workflows:
           aws-access-key-id: Dev_AWS_ACCESS_KEY
           aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
           aws-region: Dev_AWS_DEFAULT_REGION
-          scope: annotations-api-events-lambda
+          scope: annotations-api-events
           sentry_project_name: annotations-api
           sentry_env: development
           sentry_org: pocket
@@ -108,7 +108,7 @@ workflows:
           aws-access-key-id: Dev_AWS_ACCESS_KEY
           aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
           aws-region: Dev_AWS_DEFAULT_REGION
-          scope: annotations-api-events-lambda
+          scope: annotations-api-events
           sentry_project_name: annotations-api
           sentry_env: development
           sentry_org: pocket
@@ -189,7 +189,7 @@ workflows:
           aws-access-key-id: Prod_AWS_ACCESS_KEY
           aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
           aws-region: Prod_AWS_DEFAULT_REGION
-          scope: annotations-api-events-lambda
+          scope: annotations-api-events
           sentry_project_name: annotations-api
           sentry_env: production
           sentry_org: pocket

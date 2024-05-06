@@ -10,11 +10,12 @@ const jestConfig: JestConfigWithTsJest = {
   testMatch: ['**/?(*.)+(spec|integration).ts'],
   testPathIgnorePatterns: ['/dist/'],
   setupFiles: ['./jest.setup.ts'],
-  displayName: 'lambda-batchdelete',
+  displayName: 'account-data-deleter-batch-delete',
+  transformIgnorePatterns: [
+    'node_modules/(?!(.*(nanoid|nanostores|node-fetch))/)',
+  ],
   transform: {
-    // '^.+\\.[tj]sx?$' to process js/ts with `ts-jest`
-    // '' to process js/ts/mjs/mts with `ts-jest`
-    '^.+\\.m?[tj]sx?$': [
+    '^.+\\.[tj]sx?$': [
       'ts-jest',
       {
         useESM: true,

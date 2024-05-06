@@ -143,7 +143,7 @@ describe('API Gateway successful event handler', () => {
   });
 
   describe('API Gateway good events', () => {
-    let jwtSpy;
+    let jwtSpy: jest.SpyInstance;
     beforeEach(() => {
       jwtSpy = jest
         .spyOn(FxaJwt.prototype, 'validate')
@@ -170,7 +170,7 @@ describe('API Gateway successful event handler', () => {
     };
 
     it('should send valid messages to SQS', async () => {
-      jwtSpy.resolves({
+      jwtSpy.mockResolvedValue({
         sub: 'FXA_USER_ID',
         events: {
           'https://schemas.accounts.firefox.com/event/profile-change': {},
@@ -198,7 +198,7 @@ describe('API Gateway successful event handler', () => {
     });
 
     it('should send valid messages to SQS for email change profile updated event', async () => {
-      jwtSpy.resolves({
+      jwtSpy.mockResolvedValue({
         sub: 'FXA_USER_ID',
         events: {
           'https://schemas.accounts.firefox.com/event/profile-change': {
@@ -225,7 +225,7 @@ describe('API Gateway successful event handler', () => {
     });
 
     it('should not send messages to SQS if no valid FxA events are found', async () => {
-      jwtSpy.resolves({
+      jwtSpy.mockResolvedValue({
         sub: 'FXA_USER_ID',
         events: {
           'https://schemas.accounts.firefox.com/event/subscription-state-change':
@@ -242,7 +242,7 @@ describe('API Gateway successful event handler', () => {
     });
 
     it('should send partial events and log failed SQS send to cloudwatch and sentry', async () => {
-      jwtSpy.resolves({
+      jwtSpy.mockResolvedValue({
         sub: 'FXA_USER_ID',
         events: {
           'https://schemas.accounts.firefox.com/event/profile-change': {},
@@ -262,12 +262,10 @@ describe('API Gateway successful event handler', () => {
         timestamp: Math.round(now / 1000),
         transfer_sub: null,
       });
-      expect(consoleSpy.mock.calls[0][0]).toEqual(
-        expect.arrayContaining(['error: no send']),
-      );
+      expect(consoleSpy.mock.calls[0][0]).toContain('error: no send');
       expect(sentrySpy.mock.calls[0][0].message).toBe('no send');
-      expect(JSON.parse(handlerResponse.body).message).toEqual(
-        expect.arrayContaining(['Successfully sent 1 out of 2 events to SQS']),
+      expect(JSON.parse(handlerResponse.body).message).toContain(
+        'Successfully sent 1 out of 2 events to SQS',
       );
     });
   });

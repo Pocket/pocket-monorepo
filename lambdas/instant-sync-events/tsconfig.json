@@ -3,12 +3,6 @@
   "compilerOptions": {
     "outDir": "dist"
   },
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts",
-    "**/*.integration.ts",
-    "jest.config.js",
-    "jest.setup.js"
-  ],
+  "exclude": ["node_modules", "**/*.spec.ts", "**/*.integration.ts"],
   "include": ["./**/*.ts"]
 }

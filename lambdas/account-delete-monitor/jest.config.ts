@@ -11,6 +11,17 @@ const jestConfig: JestConfigWithTsJest = {
   testPathIgnorePatterns: ['/dist/'],
   setupFiles: ['./jest.setup.ts'],
   displayName: 'account-delete-monitor',
+  transformIgnorePatterns: [
+    'node_modules/(?!(.*(nanoid|nanostores|node-fetch))/)',
+  ],
+  transform: {
+    '^.+\\.[tj]sx?$': [
+      'ts-jest',
+      {
+        useESM: true,
+      },
+    ],
+  },
 };
 
 export default jestConfig;
