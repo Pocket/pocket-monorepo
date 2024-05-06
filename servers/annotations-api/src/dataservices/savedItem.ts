@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { IContext } from '../context';
+import { IContext } from '../server/apollo/context';
 import { mysqlTimeString } from './utils';
 import config from '../config';
 

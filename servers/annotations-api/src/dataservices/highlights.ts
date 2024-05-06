@@ -1,12 +1,6 @@
 import { Knex } from 'knex';
-import { IContext } from '../context';
-import {
-  BatchWriteHighlightsResult,
-  Highlight,
-  HighlightEntity,
-  HighlightInput,
-  HighlightUpdateInput,
-} from '../types';
+import { IContext } from '../server/apollo/context';
+import { HighlightEntity } from '../types';
 import { NotFoundError, UserInputError } from '@pocket-tools/apollo-utils';
 import { v4 as uuid } from 'uuid';
 import config from '../config';
@@ -16,6 +10,13 @@ import { SavedItem } from './savedItem';
 import { failCallback } from '../server/routes/helper';
 import { setTimeout } from 'timers/promises';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import {
+  CreateHighlightInput,
+  UpdateHighlightInput,
+  Highlight,
+  BatchWriteHighlightsResult,
+  BatchWriteHighlightsInput,
+} from '../__generated__/resolvers-types';
 
 export class HighlightsDataService {
   public readonly userId: string;
@@ -93,7 +94,7 @@ export class HighlightsDataService {
    * the limit for any item
    * @returns void if validation passes
    */
-  private async checkHighlightLimit(highlightInput: HighlightInput[]) {
+  private async checkHighlightLimit(highlightInput: CreateHighlightInput[]) {
     // Compute the total requested highlights by itemId
     const additionalCounts = groupByCount(highlightInput, 'itemId');
     const uniqueItemIds = Object.keys(additionalCounts).map(parseInt);
@@ -128,7 +129,7 @@ export class HighlightsDataService {
    * @returns The Highlights created
    */
   public async create(
-    highlightInput: HighlightInput[],
+    highlightInput: CreateHighlightInput[],
     trx?: Knex.Transaction,
   ): Promise<Highlight[]> {
     // Ensure non-premium users don't exceed highlight limits
@@ -161,7 +162,7 @@ export class HighlightsDataService {
    * @returns
    */
   private async _create(
-    highlightInput: HighlightInput[],
+    highlightInput: CreateHighlightInput[],
     trx: Knex.Transaction,
     fromBatch: boolean = false,
   ) {
@@ -201,7 +202,7 @@ export class HighlightsDataService {
    */
   public async update(
     id: string,
-    input: HighlightInput | HighlightUpdateInput,
+    input: CreateHighlightInput | UpdateHighlightInput,
   ): Promise<void> {
     const annotation = await this.getById(id);
 
@@ -354,11 +355,12 @@ export class HighlightsDataService {
    * @returns
    */
   public async batchWrite(
-    deletes: string[],
-    creates: HighlightInput[],
+    input: BatchWriteHighlightsInput,
   ): Promise<BatchWriteHighlightsResult> {
     const trx = await this.writeDb.transaction();
     const updateDate = new Date();
+    const creates = input.create ?? [];
+    const deletes = input.delete ?? [];
 
     try {
       await Promise.all(
@@ -422,7 +424,7 @@ export class HighlightsDataService {
    * entry in the table.
    */
   private toDbEntity(
-    input: HighlightInput,
+    input: CreateHighlightInput,
   ): Omit<HighlightEntity, 'created_at' | 'updated_at'> {
     return {
       annotation_id: input.id ?? uuid(),

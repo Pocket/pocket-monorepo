@@ -1,7 +1,7 @@
 import { Knex } from 'knex';
 import { mysqlTimeString } from './utils';
 import config from '../config';
-import { IContext } from '../context';
+import { IContext } from '../server/apollo/context';
 
 export class UsersMeta {
   public static propertiesMap = {

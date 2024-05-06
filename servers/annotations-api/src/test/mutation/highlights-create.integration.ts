@@ -2,14 +2,14 @@ import { ApolloServer } from '@apollo/server';
 import { startServer } from '../../server';
 import request from 'supertest';
 import { print } from 'graphql';
-import { IContext } from '../../context';
+import { IContext } from '../../server/apollo/context';
 import { readClient, writeClient } from '../../database/client';
 import { seedData } from '../query/highlights-fixtures';
 import {
   CREATE_HIGHLIGHTS,
   CREATE_HIGHLIGHTS_WITH_NOTE,
 } from './highlights-mutations';
-import { HighlightInput } from '../../types';
+import { CreateHighlightInput } from '../../__generated__/resolvers-types';
 import { UsersMeta } from '../../dataservices/usersMeta';
 import { mysqlTimeString } from '../../dataservices/utils';
 import config from '../../config';
@@ -57,7 +57,7 @@ describe('Highlights creation', () => {
   describe('any user', () => {
     const headers = baseHeaders;
     it('should create a highlight on a SavedItem without any existing highlights', async () => {
-      const variables: { input: HighlightInput[] } = {
+      const variables: { input: CreateHighlightInput[] } = {
         input: [
           {
             itemId: '3',
@@ -92,7 +92,7 @@ describe('Highlights creation', () => {
     });
     it('should optionally accept a UUID passed from the client and use for the ID', async () => {
       const id = uuid();
-      const variables: { input: HighlightInput[] } = {
+      const variables: { input: CreateHighlightInput[] } = {
         input: [
           {
             id,
@@ -120,7 +120,7 @@ describe('Highlights creation', () => {
       expect(result[0]).toEqual(expect.objectContaining(expectedHighlight));
     });
     it('does not accept input with non-uuid ID strings', async () => {
-      const variables: { input: HighlightInput[] } = {
+      const variables: { input: CreateHighlightInput[] } = {
         input: [
           {
             id: 'abc-234',
@@ -180,7 +180,7 @@ describe('Highlights creation', () => {
       expect(result[0].extensions.code).toBe('INTERNAL_SERVER_ERROR');
     });
     it('should create a highlight on a SavedItem with existing highlights', async () => {
-      const variables: { input: HighlightInput[] } = {
+      const variables: { input: CreateHighlightInput[] } = {
         input: [
           {
             itemId: '1',
@@ -216,7 +216,7 @@ describe('Highlights creation', () => {
       });
       jest.setSystemTime(updateDate);
 
-      const variables: { input: HighlightInput[] } = {
+      const variables: { input: CreateHighlightInput[] } = {
         input: [
           {
             itemId: '3',
@@ -249,7 +249,7 @@ describe('Highlights creation', () => {
   describe('non-premium users', () => {
     const headers = baseHeaders;
     it('should not allow non-premium users to create more than three highlights at once', async () => {
-      const variables: { input: HighlightInput[] } = {
+      const variables: { input: CreateHighlightInput[] } = {
         input: [
           {
             itemId: '3',
@@ -287,7 +287,7 @@ describe('Highlights creation', () => {
       expect(res.body.errors[0].message).toContain('Too many highlights');
     });
     it('should not allow non-premium users to create additional highlights on a SavedItem that already has highlights, if it would put them over the three-highlight limit', async () => {
-      const variables: { input: HighlightInput[] } = {
+      const variables: { input: CreateHighlightInput[] } = {
         input: [
           {
             itemId: '2',
@@ -313,7 +313,7 @@ describe('Highlights creation', () => {
       expect(res.body.errors[0].message).toContain('Too many highlights');
     });
     it('should not include deleted highlights in the limit', async () => {
-      const variables: { input: HighlightInput[] } = {
+      const variables: { input: CreateHighlightInput[] } = {
         input: [
           {
             itemId: '2',
@@ -335,7 +335,7 @@ describe('Highlights creation', () => {
   describe('premium users', () => {
     const headers = { ...baseHeaders, premium: 'true' };
     it('should be able to create a note at the same time as a highlight', async () => {
-      const variables: { input: HighlightInput[] } = {
+      const variables: { input: CreateHighlightInput[] } = {
         input: [
           {
             itemId: '3',
@@ -374,7 +374,7 @@ describe('Highlights creation', () => {
       expect(result[0].note?.text).toBe('This is the coolest of notes');
     });
     it('should create multiple highlights with and without notes', async () => {
-      const variables: { input: HighlightInput[] } = {
+      const variables: { input: CreateHighlightInput[] } = {
         input: [
           {
             itemId: '3',
@@ -410,7 +410,7 @@ describe('Highlights creation', () => {
       expect(result[2].note.text).toBe('An even cooler note???');
     });
     it('should not restrict the number of highlights a premium user can create at once', async () => {
-      const variables: { input: HighlightInput[] } = {
+      const variables: { input: CreateHighlightInput[] } = {
         input: [
           {
             itemId: '3',
@@ -453,7 +453,7 @@ describe('Highlights creation', () => {
       'should not restrict the number of highlights a premium user can add to a SavedItem' +
         'that already has highlights',
       async () => {
-        const variables: { input: HighlightInput[] } = {
+        const variables: { input: CreateHighlightInput[] } = {
           input: [
             {
               itemId: '2',

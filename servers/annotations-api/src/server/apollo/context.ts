@@ -1,15 +1,15 @@
 import { Knex } from 'knex';
-import { HighlightNote } from './types';
+import { HighlightNote } from '../../types';
 import DataLoader from 'dataloader';
 import {
   AuthenticationError,
   ForbiddenError,
 } from '@pocket-tools/apollo-utils';
 import express from 'express';
-import { dynamoClient, readClient, writeClient } from './database/client';
+import { dynamoClient, readClient, writeClient } from '../../database/client';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { createNotesLoader } from './dataservices/dataloaders';
-import { NotesDataService } from './dataservices/notes';
+import { createNotesLoader } from '../../dataservices/dataloaders';
+import { NotesDataService } from '../../dataservices/notes';
 
 export interface IContext {
   apiId: string;
