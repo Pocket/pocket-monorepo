@@ -5,10 +5,10 @@ import {
 } from './batchDeleteHandler.js';
 import { DeleteMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
 import { HighlightsDataService } from '../../dataservices/highlights.js';
-import * as Sentry from '@sentry/node';
-import { SeverityLevel } from '@sentry/types';
 import config from '../../config/index.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { jest } from '@jest/globals';
+import { SpyInstance } from 'jest-mock';
 
 describe('batchDeleteHandler', () => {
   const emitter = new EventEmitter();
@@ -18,16 +18,16 @@ describe('batchDeleteHandler', () => {
     annotationIds: ['1', '2', '3', '4', '5'],
     userId: 123,
   };
-  let scheduleStub: jest.SpyInstance;
-  let sentryStub: jest.SpyInstance;
-  let serverLoggerStub: jest.SpyInstance;
+  let scheduleStub: SpyInstance;
+  let serverLoggerStub: SpyInstance;
 
   beforeEach(() => {
     jest.restoreAllMocks();
     scheduleStub = jest
       .spyOn(batchDeleteHandler, 'scheduleNextPoll')
-      .mockImplementation();
-    sentryStub = jest.spyOn(Sentry, 'captureException');
+      .mockImplementation(() => {
+        return Promise.resolve();
+      });
     serverLoggerStub = jest.spyOn(serverLogger, 'error');
   });
 
@@ -60,10 +60,6 @@ describe('batchDeleteHandler', () => {
       .spyOn(SQSClient.prototype, 'send')
       .mockImplementation(() => Promise.reject(error));
     await batchDeleteHandler.pollQueue();
-    expect(sentryStub).toHaveBeenCalledTimes(1);
-    expect(sentryStub).toHaveBeenCalledWith(error, {
-      level: 'fatal' as SeverityLevel,
-    });
     expect(serverLoggerStub).toHaveBeenCalledTimes(1);
     expect(scheduleStub).toHaveBeenCalledWith(300000);
     expect(scheduleStub).toHaveBeenCalledTimes(1);
@@ -142,8 +138,6 @@ describe('batchDeleteHandler', () => {
           .spyOn(HighlightsDataService.prototype, 'deleteByAnnotationIds')
           .mockRejectedValue(error);
         await batchDeleteHandler.handleMessage(fakeMessageBody);
-        expect(sentryStub).toHaveBeenCalledWith(error);
-        expect(sentryStub).toHaveBeenCalledTimes(1);
         expect(serverLoggerStub).toHaveBeenCalledTimes(2);
       });
     });

@@ -3,6 +3,7 @@ import {
   TablePrimaryKeyModel,
 } from './accountDeleteDataService.js';
 import { writeClient } from './clients.js';
+import { jest } from '@jest/globals';
 
 describe('batchDeleteUserInformation', () => {
   const dataService = new AccountDeleteDataService(1, writeClient());

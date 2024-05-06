@@ -2,6 +2,7 @@ import { NotesDataService } from './notes.js';
 import { BatchGetCommandOutput } from '@aws-sdk/lib-dynamodb';
 import config from '../config/index.js';
 import { dynamoClient } from '../database/client.js';
+import { jest } from '@jest/globals';
 
 describe('Notes data service', () => {
   let dynamoSendStub;

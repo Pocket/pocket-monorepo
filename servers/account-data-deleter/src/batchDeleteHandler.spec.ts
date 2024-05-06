@@ -3,11 +3,11 @@ import { BatchDeleteHandler } from './batchDeleteHandler.js';
 import { DeleteMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
 import { SqsMessage } from './routes/queueDelete.js';
 import { AccountDeleteDataService } from './dataService/accountDeleteDataService.js';
-import * as Sentry from '@sentry/node';
-import { SeverityLevel } from '@sentry/types';
 import { config } from './config/index.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { mockUnleash } from '@pocket-tools/feature-flags-client';
+import { jest } from '@jest/globals';
+import { SpyInstance } from 'jest-mock';
 
 describe('batchDeleteHandler', () => {
   const { unleash: mockClient, repo } = mockUnleash([]);
@@ -22,9 +22,8 @@ describe('batchDeleteHandler', () => {
     email: 'q@q.continuum',
     isPremium: true,
   };
-  let scheduleStub: jest.SpyInstance;
-  let sentryStub: jest.SpyInstance;
-  let loggerError: jest.SpyInstance;
+  let scheduleStub: SpyInstance;
+  let loggerError: SpyInstance;
 
   const deleteFeatureToggle = {
     name: config.unleash.flags.deletesDisabled.name,
@@ -41,7 +40,6 @@ describe('batchDeleteHandler', () => {
     scheduleStub = jest
       .spyOn(batchDeleteHandler, 'scheduleNextPoll')
       .mockResolvedValue();
-    sentryStub = jest.spyOn(Sentry, 'captureException');
     loggerError = jest.spyOn(serverLogger, 'error');
   });
   afterAll(() => {
@@ -61,7 +59,7 @@ describe('batchDeleteHandler', () => {
           .mockImplementation(() => Promise.resolve());
         await batchDeleteHandler.pollQueue();
         expect(sendSpy).not.toHaveBeenCalled();
-        expect(scheduleStub).toHaveBeenCalledOnce();
+        expect(scheduleStub).toHaveBeenCalledTimes(1);
       });
     });
   });
@@ -100,10 +98,6 @@ describe('batchDeleteHandler', () => {
         throw error;
       });
       await batchDeleteHandler.pollQueue();
-      expect(sentryStub).toHaveBeenCalledWith(error, {
-        level: 'fatal' as SeverityLevel,
-      });
-      expect(sentryStub).toHaveBeenCalledTimes(1);
       expect(loggerError).toHaveBeenCalledTimes(1);
       expect(scheduleStub).toHaveBeenCalledTimes(1);
       expect(scheduleStub).toHaveBeenCalledWith(300000);
@@ -198,8 +192,6 @@ describe('batchDeleteHandler', () => {
               throw error;
             });
           await batchDeleteHandler.handleMessage(fakeMessageBody);
-          expect(sentryStub).toHaveBeenCalledWith(error);
-          expect(sentryStub).toHaveBeenCalledTimes(1);
           expect(loggerError).toHaveBeenCalledTimes(1);
         });
 

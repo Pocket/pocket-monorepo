@@ -11,8 +11,8 @@
     "start": "node dist/server.js",
     "dev": "npm run build && npm run watch",
     "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json",
-    "test": "jest \"\\.spec\\.ts\"",
-    "test-integrations": "jest \"\\.integration\\.ts\" --forceExit",
+    "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest \"\\.spec\\.ts\"",
+    "test-integrations": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest \"\\.integration\\.ts\" --forceExit",
     "test:watch": "npm test -- --watchAll"
   },
   "author": "",

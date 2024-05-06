@@ -15,6 +15,7 @@ import { mysqlTimeString } from '../../dataservices/utils.js';
 import config from '../../config/index.js';
 import { v4 as uuid } from 'uuid';
 import { Application } from 'express';
+import { jest } from '@jest/globals';
 
 describe('Highlights batchWrite', () => {
   let app: Application;

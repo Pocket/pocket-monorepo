@@ -3,11 +3,20 @@ import { SQS } from '@aws-sdk/client-sqs';
 import { enqueueTablesForDeletion } from './queueDelete.js';
 import { AccountDeleteDataService } from '../dataService/accountDeleteDataService.js';
 import { config } from '../config/index.js';
+import {
+  jest,
+  describe,
+  beforeEach,
+  afterEach,
+  afterAll,
+  beforeAll,
+} from '@jest/globals';
+import { SpyInstance } from 'jest-mock';
 
 describe('enqueueTablesForDeletion', () => {
   const db = writeClient();
 
-  let sqsSendMock: jest.SpyInstance, queryLimit, sqsBatchSize;
+  let sqsSendMock: SpyInstance, queryLimit, sqsBatchSize;
   beforeEach(() => {
     queryLimit = config.queueDelete.queryLimit;
     sqsBatchSize = config.aws.sqs.batchSize;
@@ -146,7 +155,7 @@ describe('enqueueTablesForDeletion', () => {
 
       expect(sqsSendMock).toHaveBeenCalledTimes(expectedMessages.length);
       const actualMessages = sqsSendMock.mock.calls.map((call) => {
-        return JSON.parse(call[0].input.Entries[0].MessageBody);
+        return JSON.parse((call[0] as any).input.Entries[0].MessageBody);
       });
       for (let i = 0; i < expectedMessages.length; i++) {
         expect(actualMessages[i]).toMatchObject(expectedMessages[i]);
@@ -232,7 +241,7 @@ describe('enqueueTablesForDeletion', () => {
 
       expect(sqsSendMock).toHaveBeenCalledTimes(expectedMessages.length);
       const actualMessages = sqsSendMock.mock.calls.map((call) => {
-        return JSON.parse(call[0].input.Entries[0].MessageBody);
+        return JSON.parse((call[0] as any).input.Entries[0].MessageBody);
       });
       for (let i = 0; i < expectedMessages.length; i++) {
         expect(actualMessages[i]).toMatchObject(expectedMessages[i]);
@@ -371,7 +380,7 @@ describe('enqueueTablesForDeletion', () => {
 
       expect(sqsSendMock).toHaveBeenCalledTimes(expectedMessages.length);
       const actualMessages = sqsSendMock.mock.calls.map((call) => {
-        return JSON.parse(call[0].input.Entries[0].MessageBody);
+        return JSON.parse((call[0] as any).input.Entries[0].MessageBody);
       });
       for (let i = 0; i < expectedMessages.length; i++) {
         // Stupid timezone

@@ -11,8 +11,8 @@
     "dev": "npm run build && npm run watch",
     "build-schema": "node dist/server/apollo/buildSchema.js",
     "test:watch": "npm test -- --watchAll",
-    "test": "jest \"\\.spec\\.ts\"",
-    "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",
+    "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest \"\\.spec\\.ts\"",
+    "test-integrations": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest \"\\.integration\\.ts\" --runInBand",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\""
   },

@@ -2,6 +2,7 @@ import { NotesDataService } from '../dataservices/notes.js';
 import { dynamoClient } from '../database/client.js';
 import { createNotesLoader, orderAndMapNotes } from './dataloaders.js';
 import { IContext } from '../context.js';
+import { jest } from '@jest/globals';
 
 describe('dataloaders', () => {
   const mockNotesResponse = [

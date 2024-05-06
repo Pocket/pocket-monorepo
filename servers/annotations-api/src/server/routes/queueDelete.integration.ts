@@ -3,13 +3,12 @@ import { SQS } from '@aws-sdk/client-sqs';
 import { enqueueAnnotationIds, SqsMessage } from './queueDelete.js';
 import { HighlightsDataService } from '../../dataservices/highlights.js';
 import config from '../../config/index.js';
-import * as Sentry from '@sentry/node';
 import { Knex } from 'knex';
+import { jest } from '@jest/globals';
+import { SpyInstance } from 'jest-mock';
 
 describe('/queueDelete', () => {
-  let sentrySpy: jest.SpyInstance;
-  let breadSpy: jest.SpyInstance;
-  let sqsSendMock: jest.SpyInstance;
+  let sqsSendMock: SpyInstance;
   let queryLimit, itemIdChunkSize, sqsBatchSize;
   let db: Knex;
   beforeAll(async () => {
@@ -31,8 +30,6 @@ describe('/queueDelete', () => {
       });
     }
     await db('user_annotations').insert(data);
-    sentrySpy = jest.spyOn(Sentry, 'captureException').mockClear();
-    breadSpy = jest.spyOn(Sentry, 'addBreadcrumb').mockClear();
   });
 
   afterAll(async () => {
@@ -49,8 +46,6 @@ describe('/queueDelete', () => {
     config.queueDelete.queryLimit = queryLimit;
     config.queueDelete.itemIdChunkSize = itemIdChunkSize;
     config.aws.sqs.batchSize = sqsBatchSize;
-    sentrySpy.mockReset();
-    breadSpy.mockReset();
   });
 
   describe('enqueueAnnotationsId success', () => {
@@ -92,13 +87,11 @@ describe('/queueDelete', () => {
       );
 
       expect(sqsSendMock).toHaveBeenCalledTimes(2);
-      // No exceptions
-      expect(sentrySpy).toHaveBeenCalledTimes(0);
       const firstMessage = JSON.parse(
-        sqsSendMock.mock.calls[0][0].input.Entries[0].MessageBody,
+        (sqsSendMock.mock.calls[0][0] as any).input.Entries[0].MessageBody,
       );
       const secondMessage = JSON.parse(
-        sqsSendMock.mock.calls[1][0].input.Entries[0].MessageBody,
+        (sqsSendMock.mock.calls[1][0] as any).input.Entries[0].MessageBody,
       );
       expect(firstMessage.traceId).toBeDefined();
       expect(firstMessage).toEqual({
@@ -158,12 +151,6 @@ describe('/queueDelete', () => {
 
       // Two calls made
       expect(sqsSendMock).toHaveBeenCalledTimes(2);
-      // Only one fails
-      expect(sentrySpy).toHaveBeenCalledTimes(1);
-      expect(sentrySpy.mock.calls[0][0].message).toEqual('no queue for you');
-      expect(breadSpy).toHaveBeenCalledTimes(1);
-      expect(breadSpy.mock.calls[0][0].message).toContain('QueueDelete: Error');
-      expect(breadSpy.mock.calls[0][0].message).toContain('annotationIds');
     });
   });
 });

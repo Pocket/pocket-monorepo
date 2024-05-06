@@ -11,6 +11,7 @@ import { UsersMeta } from '../../dataservices/usersMeta.js';
 import { mysqlTimeString } from '../../dataservices/utils.js';
 import config from '../../config/index.js';
 import { Application } from 'express';
+import { jest } from '@jest/globals';
 
 describe('Highlights deletion', () => {
   let app: Application;
