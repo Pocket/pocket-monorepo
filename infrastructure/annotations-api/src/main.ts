@@ -289,11 +289,7 @@ class AnnotationsAPI extends TerraformStack {
               valueFrom: `${databaseSecretsArn}:write_password::`,
             },
             {
-              name: 'PARSER_BASE_ENDPOINT',
-              valueFrom: `${PocketSSMPrefix}/PARSER_ENDPOINT`,
-            },
-            {
-              name: 'PARSER_DATA_PATH',
+              name: 'PARSER_CONFIG',
               valueFrom: `${PocketSSMPrefix}/PARSER_CONFIG`,
             },
           ],
