@@ -31,6 +31,7 @@
     "@opentelemetry/exporter-trace-otlp-grpc": "0.51.0",
     "@opentelemetry/exporter-trace-otlp-http": "0.51.0",
     "@opentelemetry/id-generator-aws-xray": "1.2.2",
+    "@opentelemetry/instrumentation": "0.51.0",
     "@opentelemetry/instrumentation-aws-sdk": "0.41.0",
     "@opentelemetry/instrumentation-dataloader": "0.9.0",
     "@opentelemetry/instrumentation-express": "0.38.0",
@@ -41,8 +42,11 @@
     "@opentelemetry/instrumentation-net": "0.36.0",
     "@opentelemetry/propagator-aws-xray": "1.24.0",
     "@opentelemetry/resource-detector-aws": "1.4.2",
+    "@opentelemetry/resources": "1.13.0",
     "@opentelemetry/sdk-node": "0.51.0",
-    "@opentelemetry/sdk-trace-node": "1.24.0"
+    "@opentelemetry/sdk-trace-node": "1.24.0",
+    "@opentelemetry/sdk-trace-base": "1.24.0",
+    "@prisma/instrumentation": "5.13.0"
   },
   "repository": {
     "type": "git",
