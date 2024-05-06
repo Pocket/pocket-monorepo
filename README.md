@@ -126,7 +126,11 @@ Learn more about the power of Turborepo:
 
 ### Long.js ESM Issues
 
-Long.js has a known ESM compatibility issue. To fix this we execute the workaround on <https://github.com/dcodeIO/long.js/issues/125#issuecomment-1789840098> until it is solved. This will ignore checking the types within libraries and only check the types that are within our own codebase that we reference.
+Long.js has a known ESM compatibility issue. To fix this we execute the workaround on <https://github.com/dcodeIO/long.js/issues/125#issuecomment-1789840098> until it is solved. This will ignore checking the types within libraries and only check the types that are within our own codebase that we reference. This workaround sets `skipLibCheck` to true in our tsconfig.
 
 From the [typescript docs](https://www.typescriptlang.org/tsconfig/#skipLibCheck)
 > A common case where you might think to use skipLibCheck is when there are two copies of a library’s types in your node_modules. In these cases, you should consider using a feature like yarn’s resolutions to ensure there is only one copy of that dependency in your tree or investigate how to ensure there is only one copy by understanding the dependency resolution to fix the issue without additional tooling.
+
+### TS-Jest Esm Issues
+
+Some packages like `node-fetch` or `nanoid` have import issues with ts-jest when you don't transplile them. Based on [this](https://github.com/kulshekhar/ts-jest/issues/398#issuecomment-1455659355) we explicitlly tell ts-jest to transpile those packages and have `allowJs` and `checkJs` set to true in our tsconfig so that we can run tests with these libraries.

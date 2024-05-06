@@ -1,6 +1,10 @@
 import { SQSRecord } from 'aws-lambda';
 import { config } from './config.js';
-import fetch from 'node-fetch';
+
+if (typeof global.fetch === 'undefined') {
+  // small trick since in lambdas fetch is defined as global.fetch and our tests run locally in node.
+  global.fetch = fetch;
+}
 
 /**
  * Given an account delete event, call the batchDelete endpoint on the
@@ -16,7 +20,7 @@ export async function accountDeleteHandler(record: SQSRecord): Promise<void> {
   if (message['traceId']) {
     postBody['traceId'] = message['traceId'];
   }
-  const res = await fetch(config.endpoint + config.accountDeletePath, {
+  const res = await global.fetch(config.endpoint + config.accountDeletePath, {
     method: 'post',
     headers: {
       'Content-Type': 'application/json',

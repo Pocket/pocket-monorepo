@@ -8,8 +8,8 @@
     "node_modules",
     "**/*.spec.ts",
     "**/*.integration.ts",
-    "jest.config.js",
-    "jest.setup.js"
+    "jest.config.ts",
+    "jest.setup.ts"
   ],
   "include": ["src/**/*.ts"]
 }

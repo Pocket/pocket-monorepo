@@ -1,8 +1,11 @@
 import { UserItemsSqsMessage, UserListImportSqsMessage } from './types.js';
 import { nanoid } from 'nanoid';
-import fetch from 'node-fetch';
 import { config } from './config/index.js';
 
+if (typeof global.fetch === 'undefined') {
+  // small trick since in lambdas fetch is defined as global.fetch and our tests run locally in node.
+  global.fetch = fetch;
+}
 /**
  * Processes messages from the itemDelete queue or the itemUpdate queues.
  * This will call the user search api with a set of userId : itemIds to be indexed/or deleted depending on the endpoint called
@@ -87,7 +90,7 @@ export const processUserItem = async (
 };
 
 const sendRequest = async (endpoint: string, postBody: any) => {
-  const res = await fetch(endpoint, {
+  const res = await global.fetch(endpoint, {
     method: 'post', // delete methods can not have a body
     headers: {
       'Content-Type': 'application/json',
