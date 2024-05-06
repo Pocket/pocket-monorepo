@@ -1,3 +1,4 @@
+import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
 import {
   SavedItem,
   SavedItemAnnotations,
@@ -13,6 +14,7 @@ import {
 import { IContext } from './context';
 
 export const resolvers: Resolvers = {
+  ...PocketDefaultScalars,
   SavedItem: {
     annotations: async (
       parent: SavedItem,
