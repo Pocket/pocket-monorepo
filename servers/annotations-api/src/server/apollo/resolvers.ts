@@ -1,4 +1,4 @@
-import { IContext } from './context';
+import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
 import {
   SavedItem,
   SavedItemAnnotations,
@@ -9,21 +9,19 @@ import {
   BatchWriteHighlightsResult,
   BatchWriteHighlightsInput,
   Resolvers,
+  CreateHighlightByUrlInput,
 } from '../../__generated__/resolvers-types';
-import { HighlightNote as HighlightNoteInternal } from '../../types';
-import { HighlightsDataService } from '../../dataservices/highlights';
+import { IContext } from './context';
 
 export const resolvers: Resolvers = {
+  ...PocketDefaultScalars,
   SavedItem: {
     annotations: async (
       parent: SavedItem,
       _,
       context: IContext,
     ): Promise<SavedItemAnnotations> => {
-      const highlights = await new HighlightsDataService(context).getByItemId(
-        parent.id,
-      );
-      return { highlights };
+      return context.HighlightsModel.getByItemId(parent.id);
     },
   },
   Highlight: {
@@ -41,101 +39,63 @@ export const resolvers: Resolvers = {
       args: { input: CreateHighlightInput[] },
       context: IContext,
     ): Promise<Highlight[]> => {
-      const highlights = await new HighlightsDataService(context).create(
-        args.input,
-      );
-      const noteData = args.input.reduce(
-        (result, highlightInput, index) => {
-          if (highlightInput.note) {
-            result.push({
-              id: highlights[index].id,
-              text: highlightInput.note,
-            });
-          }
-          return result;
-        },
-        [] as { id: string; text: string }[],
-      );
-      const notes =
-        noteData.length > 0
-          ? await context.notesService.batchCreate(noteData)
-          : [];
-      const noteMap = notes.map((note) => ({
-        id: note.highlightId,
-        data: note,
-      }));
-      // Attach notes back to highlights result
-      const result = highlights.map((highlight) => {
-        const note: HighlightNoteInternal = noteMap[highlight.id]?.data;
-        return {
-          ...highlight,
-          note,
-        };
-      });
-      return result;
+      return context.HighlightsModel.createMany(args.input);
+    },
+    createHighlightByUrl: async (
+      _,
+      args: { input: CreateHighlightByUrlInput },
+      context: IContext,
+    ): Promise<Highlight> => {
+      return context.HighlightsModel.createOneByUrl(args.input);
     },
     updateSavedItemHighlight: async (
       _: any,
       params: { id: string; input: CreateHighlightInput },
       context: IContext,
     ): Promise<Highlight> => {
-      const dataService = new HighlightsDataService(context);
-      await dataService.update(params.id, params.input);
-      return await dataService.getById(params.id);
+      return context.HighlightsModel.update(params.id, params.input);
     },
     updateHighlight: async (
       _: any,
       params: { id: string; input: UpdateHighlightInput },
       context: IContext,
     ): Promise<Highlight> => {
-      const dataService = new HighlightsDataService(context);
-      await dataService.update(params.id, params.input);
-      return await dataService.getById(params.id);
+      return context.HighlightsModel.update(params.id, params.input);
     },
     deleteSavedItemHighlight: async (
       _,
-      args,
+      args: { id: string },
       context: IContext,
     ): Promise<string> => {
-      const highlightId = await new HighlightsDataService(context).delete(
-        args.id,
-      );
-      return highlightId;
+      return context.HighlightsModel.delete(args.id);
     },
     createSavedItemHighlightNote: async (
       _,
       args: { id: string; input: string },
       context: IContext,
     ): Promise<HighlightNote> => {
-      const dataService = new HighlightsDataService(context);
-      await dataService.getById(args.id);
-      return context.notesService.create(args.id, args.input);
+      return context.HighlightsModel.addNote(args.id, args.input);
     },
     updateSavedItemHighlightNote: async (
       _,
       args: { id: string; input: string },
       context: IContext,
     ): Promise<HighlightNote> => {
-      const dataService = new HighlightsDataService(context);
-      await dataService.getById(args.id);
-      return context.notesService.upsert(args.id, args.input);
+      return context.HighlightsModel.updateNote(args.id, args.input);
     },
     deleteSavedItemHighlightNote: async (
       _,
       args,
       context: IContext,
     ): Promise<string> => {
-      const dataService = new HighlightsDataService(context);
-      await dataService.delete(args.id);
-      return context.notesService.delete(args.id);
+      return context.HighlightsModel.deleteNote(args.id);
     },
     batchWriteHighlights: async (
       _,
       args: { input: BatchWriteHighlightsInput },
       context: IContext,
     ): Promise<BatchWriteHighlightsResult> => {
-      const dataService = new HighlightsDataService(context);
-      return await dataService.batchWrite(args.input);
+      return context.HighlightsModel.batchWrite(args.input);
     },
   },
 };

@@ -90,7 +90,7 @@ describe('Notes creation', () => {
       expect(res.body.data?.createSavedItemHighlightNote).toBeNull();
       expect(res.body.errors?.length).toEqual(1);
       expect(res.body.errors?.[0].message).toContain(
-        'Premium account required',
+        'This feature is restricted to premium Pocket accounts',
       );
     });
   });

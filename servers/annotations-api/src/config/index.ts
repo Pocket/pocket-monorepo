@@ -6,6 +6,15 @@ if (!awsEnvironments.includes(process.env.NODE_ENV)) {
   localAwsEndpoint = process.env.AWS_ENDPOINT || 'http://localhost:4566';
 }
 
+const parserConfig: { parser_base_endpoint: string; parser_data_path: string } =
+  JSON.parse(
+    process.env.PARSER_CONFIG ||
+      JSON.stringify({
+        parser_base_endpoint: 'https://parser.pocket.dev',
+        parser_data_path: '/getItemId',
+      }),
+  );
+
 export default {
   app: {
     environment: process.env.NODE_ENV || 'development',
@@ -76,5 +85,11 @@ export default {
   tracing: {
     host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
     serviceName: 'annotations-api',
+  },
+  parser: {
+    baseEndpoint: parserConfig.parser_base_endpoint,
+    dataPath: parserConfig.parser_data_path,
+    retries: 3,
+    timeout: 5,
   },
 };

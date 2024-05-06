@@ -12,6 +12,18 @@ export const CREATE_HIGHLIGHTS = gql`
     }
   }
 `;
+export const CREATE_HIGHLIGHT_BY_URL = gql`
+  mutation CreateHighlightByUrl($input: CreateHighlightByUrlInput!) {
+    createHighlightByUrl(input: $input) {
+      id
+      patch
+      version
+      quote
+      _createdAt
+      _updatedAt
+    }
+  }
+`;
 export const CREATE_HIGHLIGHTS_WITH_NOTE = gql`
   mutation CreateHighlights($input: [CreateHighlightInput!]!) {
     createSavedItemHighlights(input: $input) {
