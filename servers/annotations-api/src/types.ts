@@ -11,17 +11,6 @@ export type HighlightEntity = {
   updated_at: Date;
 };
 
-// Highlight type conforming to GraphQL schema
-export type Highlight = {
-  id: string;
-  quote: string;
-  patch: string;
-  version: number;
-  _createdAt: number;
-  _updatedAt: number;
-  note?: HighlightNote;
-};
-
 export type HighlightNote = {
   highlightId: string;
   text: string;
@@ -35,40 +24,4 @@ export type HighlightNoteEntity = {
   note: string; // text is reserved keyword
   createdAt: number;
   updatedAt: number;
-};
-
-// SavedItemAnnotations type conforming to GraphQL Schema
-export type SavedItemAnnotations = {
-  highlights: Highlight[];
-};
-
-export type SavedItem = {
-  id: string;
-  annotations: SavedItemAnnotations;
-};
-
-export type HighlightInput = {
-  id?: string;
-  quote: string;
-  patch: string;
-  version: number;
-  itemId: string;
-  note?: string;
-};
-
-export type HighlightUpdateInput = Omit<HighlightInput, 'id'>;
-
-export type NoteInput = {
-  id: string;
-  input: string;
-};
-
-export type BatchWriteHighlightsInput = {
-  delete?: string[];
-  create?: HighlightInput[];
-};
-
-export type BatchWriteHighlightsResult = {
-  deleted: string[];
-  created: Highlight[];
 };

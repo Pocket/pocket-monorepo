@@ -2,7 +2,7 @@ import { ApolloServer } from '@apollo/server';
 import { startServer } from '../../server';
 import request from 'supertest';
 import { print } from 'graphql';
-import { IContext } from '../../context';
+import { IContext } from '../../server/apollo/context';
 import { readClient, writeClient } from '../../database/client';
 import { GET_HIGHLIGHTS, seedData } from './highlights-fixtures';
 import { Application } from 'express';

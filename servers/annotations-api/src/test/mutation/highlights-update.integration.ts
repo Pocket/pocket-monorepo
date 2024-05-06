@@ -2,11 +2,12 @@ import { ApolloServer } from '@apollo/server';
 import { startServer } from '../../server';
 import request from 'supertest';
 import { print } from 'graphql';
-import { IContext } from '../../context';
+import { IContext } from '../../server/apollo/context';
 import { readClient, writeClient } from '../../database/client';
 import { seedData } from '../query/highlights-fixtures';
 import { UPDATE_HIGHLIGHT } from './highlights-mutations';
-import { HighlightEntity, HighlightUpdateInput } from '../../types';
+import { HighlightEntity } from '../../types';
+import { UpdateHighlightInput } from '../../__generated__/resolvers-types';
 import { UsersMeta } from '../../dataservices/usersMeta';
 import { mysqlTimeString } from '../../dataservices/utils';
 import config from '../../config';
@@ -66,7 +67,7 @@ describe('Highlights update', () => {
       quote: 'provost Sail ho shrouds spirits boom',
     };
     const id = 'b3a95dd3-dd9b-49b0-bb72-dc6daabd809b';
-    const variables: { id: string; input: HighlightUpdateInput } = {
+    const variables: { id: string; input: UpdateHighlightInput } = {
       id,
       input,
     };
@@ -96,7 +97,7 @@ describe('Highlights update', () => {
     jest.useRealTimers();
   });
   it('should throw a NOT_FOUND error if the annotation_id does not exist', async () => {
-    const variables: { id: string; input: HighlightUpdateInput } = {
+    const variables: { id: string; input: UpdateHighlightInput } = {
       id: '999',
       input: {
         itemId: '1',
@@ -127,7 +128,7 @@ describe('Highlights update', () => {
       updated_at: now,
       created_at: now,
     });
-    const variables: { id: string; input: HighlightUpdateInput } = {
+    const variables: { id: string; input: UpdateHighlightInput } = {
       id: '05347f61-8fee-4e54-8cd6-618b02c39c73',
       input: {
         itemId: '2',

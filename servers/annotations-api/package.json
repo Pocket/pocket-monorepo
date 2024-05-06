@@ -5,7 +5,7 @@
   "main": "dist/main.js",
   "scripts": {
     "build": "rm -rf dist && tsc && npm run build-schema",
-    "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json",
+    "watch": "concurrently  --names \"CodeGen,TS,Nodemon\" -c \"bgYellow,bgBlue,bgMagenta\" \"graphql-codegen --watch 'src/**/*.ts'\"  \"tsc -w --preserveWatchOutput\" \"nodemon  --config ../../nodemon.json ./dist/main.js\"",
     "start": "node dist/main.js",
     "dev": "npm run build && npm run watch",
     "build-schema": "node dist/server/apollo/buildSchema.js",
@@ -13,7 +13,8 @@
     "test": "jest \"\\.spec\\.ts\"",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
-    "format": "eslint --fix \"src/**/*.ts\""
+    "format": "eslint --fix \"src/**/*.ts\"",
+    "prebuild": "graphql-codegen"
   },
   "author": "",
   "license": "ISC",
@@ -39,6 +40,9 @@
     "@sentry/types": "7.113.0",
     "@types/chance": "1.1.6",
     "@types/jest": "29.5.12",
+    "@graphql-codegen/cli": "5.0.2",
+    "@graphql-codegen/typescript": "4.0.6",
+    "@graphql-codegen/typescript-resolvers": "^4.0.6",
     "@types/uuid": "9.0.8",
     "chance": "1.1.11",
     "eslint-config-custom": "workspace:*",

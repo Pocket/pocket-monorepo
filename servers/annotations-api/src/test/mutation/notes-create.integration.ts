@@ -2,11 +2,11 @@ import { ApolloServer } from '@apollo/server';
 import { startServer } from '../../server';
 import request from 'supertest';
 import { print } from 'graphql';
-import { IContext } from '../../context';
+import { IContext } from '../../server/apollo/context';
 import { readClient, writeClient } from '../../database/client';
 import { seedData } from '../query/highlights-fixtures';
 import { CREATE_NOTE } from './notes-mutations';
-import { NoteInput } from '../../types';
+import { MutationcreateSavedItemHighlightNoteArgs as NoteInput } from '../../__generated__/resolvers-types';
 import { Application } from 'express';
 
 describe('Notes creation', () => {
