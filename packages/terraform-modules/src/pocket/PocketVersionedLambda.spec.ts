@@ -2,7 +2,7 @@ import { Testing, TerraformStack } from 'cdktf';
 import {
   PocketVersionedLambda,
   PocketVersionedLambdaProps,
-} from './PocketVersionedLambda';
+} from './PocketVersionedLambda.js';
 import { LAMBDA_RUNTIMES } from '../base/ApplicationVersionedLambda.js';
 
 const config: PocketVersionedLambdaProps = {

@@ -3,7 +3,7 @@ import { LAMBDA_RUNTIMES } from '../base/ApplicationVersionedLambda.js';
 import {
   PocketSQSWithLambdaTarget,
   PocketSQSWithLambdaTargetProps,
-} from './PocketSQSWithLambdaTarget';
+} from './PocketSQSWithLambdaTarget.js';
 
 const config: PocketSQSWithLambdaTargetProps = {
   name: 'test-sqs-lambda',

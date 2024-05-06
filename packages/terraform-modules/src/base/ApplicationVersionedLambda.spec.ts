@@ -3,7 +3,7 @@ import {
   ApplicationVersionedLambda,
   ApplicationVersionedLambdaProps,
   LAMBDA_RUNTIMES,
-} from './ApplicationVersionedLambda';
+} from './ApplicationVersionedLambda.js';
 
 const config: ApplicationVersionedLambdaProps = {
   name: 'Test-Lambda',

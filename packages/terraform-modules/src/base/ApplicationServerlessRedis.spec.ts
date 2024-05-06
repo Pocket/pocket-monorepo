@@ -3,7 +3,7 @@ import { Testing } from 'cdktf';
 import {
   ApplicationServerlessRedis,
   ApplicationServerlessRedisProps,
-} from './ApplicationServerlessRedis';
+} from './ApplicationServerlessRedis.js';
 import { dataAwsSubnets } from '@cdktf/provider-aws';
 
 const BASE_CONFIG: ApplicationServerlessRedisProps = {

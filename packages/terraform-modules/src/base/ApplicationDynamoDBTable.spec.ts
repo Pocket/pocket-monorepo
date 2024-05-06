@@ -5,7 +5,7 @@ import {
   ApplicationDynamoDBProps,
   ApplicationDynamoDBTableCapacityMode,
   ApplicationDynamoDBTableStreamViewType,
-} from './ApplicationDynamoDBTable';
+} from './ApplicationDynamoDBTable.js';
 
 describe('ApplicationDynamoDBTable', () => {
   let BASE_CONFIG: ApplicationDynamoDBProps;

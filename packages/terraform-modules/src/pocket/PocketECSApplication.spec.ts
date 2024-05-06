@@ -2,7 +2,7 @@ import { TerraformStack, Testing } from 'cdktf';
 import {
   PocketECSApplication,
   PocketECSApplicationProps,
-} from './PocketECSApplication';
+} from './PocketECSApplication.js';
 
 describe('PocketECSApplication', () => {
   let BASE_CONFIG: PocketECSApplicationProps;

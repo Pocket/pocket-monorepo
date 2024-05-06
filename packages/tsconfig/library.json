@@ -6,6 +6,8 @@
     "skipLibCheck": true,
     "target": "ESNext",
     "module": "NodeNext",
+    "allowJs": true,
+    "checkJs": true,
     "lib": [
       "dom",
       "es2019",

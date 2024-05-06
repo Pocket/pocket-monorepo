@@ -2,7 +2,7 @@ import { Testing, TerraformStack } from 'cdktf';
 import {
   ApplicationSQSQueue,
   ApplicationSQSQueueProps,
-} from './ApplicationSQSQueue';
+} from './ApplicationSQSQueue.js';
 
 describe('ApplicationSQSQueue', () => {
   it('renders an sqs queue without tags', () => {

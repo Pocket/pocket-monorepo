@@ -3,7 +3,8 @@ import { LAMBDA_RUNTIMES } from '../base/ApplicationVersionedLambda.js';
 import {
   PocketApiGateway,
   PocketApiGatewayProps,
-} from './PocketApiGatewayLambdaIntegration';
+} from './PocketApiGatewayLambdaIntegration.js';
+import { jest } from '@jest/globals';
 
 const config: PocketApiGatewayProps = {
   name: 'test-api-lambda',

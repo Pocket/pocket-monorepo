@@ -43,6 +43,13 @@ workflows:
           dev: false
           apply: false
 
+      - test_integrations:
+          <<: *not_dev_main
+          for: fxa_webhook_proxy
+          context: pocket
+          name: fxa-webhook-proxy_test_integrations
+          scope: fxa-webhook-proxy-gateway
+
       ######
       # Dev Branch Deployment (Dev Environment)
       ######

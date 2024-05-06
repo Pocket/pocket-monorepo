@@ -24,6 +24,7 @@
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\"",
+    "test": "jest \"\\.spec\\.ts\"",
     "dev": "pnpm run build --watch",
     "semantic-release": "semantic-release"
   },

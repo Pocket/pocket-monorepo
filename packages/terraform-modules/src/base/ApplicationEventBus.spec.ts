@@ -2,7 +2,7 @@ import { Testing } from 'cdktf';
 import {
   ApplicationEventBus,
   ApplicationEventBusProps,
-} from './ApplicationEventBus';
+} from './ApplicationEventBus.js';
 
 describe('ApplicationEventBus', () => {
   it('renders an event bus with name and target', () => {

@@ -2,7 +2,7 @@ import { Testing } from 'cdktf';
 import {
   PocketAwsSyntheticCheckProps,
   PocketAwsSyntheticChecks,
-} from './PocketCloudwatchSynthetics';
+} from './PocketCloudwatchSynthetics.js';
 
 const testConfig: PocketAwsSyntheticCheckProps = {
   environment: 'Dev',
