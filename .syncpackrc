@@ -37,15 +37,6 @@
       "packages": [
         "!tsconfig"
       ]
-    },
-    {
-      "dependencies": [
-        "nock"
-      ],
-      "label": "Nock should be the same version except for lambda-secrets because of native fetch",
-      "packages": [
-        "!@pocket-tools/lambda-secrets"
-      ]
     }
   ]
 }

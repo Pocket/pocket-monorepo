@@ -21,7 +21,7 @@
     "eslint-config-custom": "workspace:*",
     "jest": "29.7.0",
     "jest-extended": "4.0.2",
-    "nock": "beta",
+    "nock": "14.0.0-beta.6",
     "ts-jest": "29.1.2",
     "tsconfig": "workspace:*"
   },
