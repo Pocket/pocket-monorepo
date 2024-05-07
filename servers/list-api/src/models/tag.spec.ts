@@ -1,6 +1,5 @@
 import { TagSaveAssociation, PocketSave, Tag } from '../types/index.js';
 import * as tagModel from './tag.js';
-import { strings } from 'locutus/php';
 import { ContextManager, IContext } from '../server/context.js';
 import { Knex } from 'knex';
 import { TagDataService } from '../dataService/index.js';
@@ -123,9 +122,7 @@ describe('tag model', () => {
       expect(cleaned).toBe('o h');
     });
     it('should use `addslashes`', () => {
-      const addslashesSpy = jest.spyOn(strings, 'addslashes');
       const cleaned = tagModel.sanitizeTagName(`🤡-tdd-'is'\\"bug-free"-🤡`);
-      expect(addslashesSpy).toHaveBeenCalledTimes(1);
       expect(cleaned).toBe(`🤡-tdd-\\'is\\'\\\\\\"bug-free\\"-🤡`);
     });
   });

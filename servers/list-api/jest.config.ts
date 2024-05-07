@@ -16,14 +16,7 @@ const jestConfig: JestConfigWithTsJest = {
   testMatch: ['**/?(*.)+(spec|integration).ts'],
   testPathIgnorePatterns: ['/dist/'],
   displayName: 'list-api',
-  transform: {
-    '^.+\\.[tj]sx?$': [
-      'ts-jest',
-      {
-        useESM: true,
-      },
-    ],
-  },
+  transform: {},
   setupFilesAfterEnv: ['jest-extended/all'],
   setupFiles: ['./jest.setup.ts'],
 };
