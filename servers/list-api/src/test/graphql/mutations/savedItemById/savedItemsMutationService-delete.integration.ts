@@ -1,4 +1,4 @@
-import { readClient, writeClient } from '../../../../database/client.js';
+import Client from '../../../../database/client.js';
 import { Knex } from 'knex';
 import { EventType } from '../../../../businessEvents/index.js';
 import { ContextManager } from '../../../../server/context.js';
@@ -6,6 +6,7 @@ import { startServer } from '../../../../server/apollo.js';
 import request from 'supertest';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
+import { jest } from '@jest/globals';
 
 async function upsertSavedItem(
   db: Knex,
@@ -99,8 +100,8 @@ async function setUpSavedItem(db: Knex, date: Date) {
 
 describe('Delete/Undelete SavedItem: ', () => {
   //using write client as mutation will use write client to read as well.
-  const writeDb = writeClient();
-  const readDb = readClient();
+  const writeDb = Client.writeClient();
+  const readDb = Client.readClient();
   const eventSpy = jest.spyOn(ContextManager.prototype, 'emitItemEvent');
   const userId = '1';
   const headers = {

@@ -1,15 +1,15 @@
-import { readClient, writeClient } from '../../../../database/client.js';
 import { EventType } from '../../../../businessEvents/index.js';
 import { ContextManager } from '../../../../server/context.js';
 import { startServer } from '../../../../server/apollo.js';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
-import * as Client from '../../../../database/client.js';
+import Client from '../../../../database/client.js';
+import { jest } from '@jest/globals';
 
 describe('createSavedItemTags mutation', function () {
-  const writeDb = writeClient();
-  const readDb = readClient();
+  const writeDb = Client.writeClient();
+  const readDb = Client.readClient();
   const eventSpy = jest.spyOn(ContextManager.prototype, 'emitItemEvent');
   const headers = { userid: '1' };
   const date = new Date('2020-10-03 10:20:30'); // Consistent date for seeding
@@ -211,9 +211,8 @@ describe('createSavedItemTags mutation', function () {
     const variables = {
       input: [{ savedItemId: '1', tags: ['tag', 'added'] }],
     };
-
-    const readClientSpy = jest.spyOn(Client, 'readClient').mockClear();
-    const writeClientSpy = jest.spyOn(Client, 'writeClient').mockClear();
+    const readClientSpy = jest.spyOn(Client, 'readClient');
+    const writeClientSpy = jest.spyOn(Client, 'writeClient');
     const res = await request(app)
       .post(url)
       .set(headers)

@@ -1,4 +1,4 @@
-import { readClient, writeClient } from '../../../database/client.js';
+import Client from '../../../database/client.js';
 import config from '../../../config/index.js';
 import { ContextManager } from '../../../server/context.js';
 import { startServer } from '../../../server/apollo.js';
@@ -8,6 +8,7 @@ import request from 'supertest';
 import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 import { TagDataService } from '../../../dataService/index.js';
+import { jest } from '@jest/globals';
 
 const toBeStringOfLengthGreaterThanOne = () => expect.stringMatching(/.+/);
 
@@ -16,8 +17,8 @@ describe('tags query tests - happy path', () => {
   const dbBatchSpy = jest
     .spyOn(TagDataService.prototype, 'batchGetTagsByUserItems')
     .mockClear();
-  const writeDb = writeClient();
-  const readDb = readClient();
+  const writeDb = Client.writeClient();
+  const readDb = Client.readClient();
   const headers = { userid: '1', premium: 'true' };
   const date = new Date('2020-10-03T10:20:30.000Z');
   const date1 = new Date('2021-10-03T10:20:30.000Z');

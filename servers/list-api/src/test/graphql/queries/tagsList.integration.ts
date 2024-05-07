@@ -1,4 +1,4 @@
-import { readClient, writeClient } from '../../../database/client.js';
+import Client from '../../../database/client.js';
 import { ContextManager } from '../../../server/context.js';
 import { startServer } from '../../../server/apollo.js';
 import { Application } from 'express';
@@ -9,8 +9,8 @@ import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 
 describe('tagsList query', () => {
-  const writeDb = writeClient();
-  const readDb = readClient();
+  const writeDb = Client.writeClient();
+  const readDb = Client.readClient();
   const headers = { userid: '1' };
   let app: Application;
   let url: string;

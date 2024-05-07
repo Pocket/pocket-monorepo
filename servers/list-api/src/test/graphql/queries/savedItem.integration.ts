@@ -1,4 +1,4 @@
-import { readClient, writeClient } from '../../../database/client.js';
+import Client from '../../../database/client.js';
 import { getUnixTimestamp } from '../../../utils.js';
 import { ContextManager } from '../../../server/context.js';
 import { startServer } from '../../../server/apollo.js';
@@ -7,8 +7,8 @@ import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 
 describe('getSavedItemByItemId', () => {
-  const writeDb = writeClient();
-  const readDb = readClient();
+  const writeDb = Client.writeClient();
+  const readDb = Client.readClient();
   const headers = { userid: '1' };
   const date = new Date('2020-10-03 10:20:30'); // Consistent date for seeding
   const unixDate = getUnixTimestamp(date); // unix timestamp

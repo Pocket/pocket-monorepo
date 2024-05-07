@@ -4,7 +4,7 @@ import {
   batchGetSavedItemsByIds,
   batchGetSavedItemsByUrls,
 } from './savedItemsDataLoader.js';
-import { writeClient } from '../database/client.js';
+import Client from '../database/client.js';
 import { getClient } from '../featureFlags/client.js';
 import { jest } from '@jest/globals';
 
@@ -44,7 +44,7 @@ describe('savedItem data loader', function () {
 
   it('batchGetSavedItemsByIds should return undefined for non-existent items', async () => {
     const promiseSavedItem = Promise.resolve(testSavedItem);
-    const db = writeClient();
+    const db = Client.writeClient();
     const service = new SavedItemDataService({
       dbClient: db,
       userId: '1',
@@ -64,7 +64,7 @@ describe('savedItem data loader', function () {
 
   it('batchGetSavedItemsByUrls should return undefined in the batch for non-existent items', async () => {
     const promiseSavedItem = Promise.resolve(testSavedItem);
-    const db = writeClient();
+    const db = Client.writeClient();
     const service = new SavedItemDataService({
       dbClient: db,
       userId: '1',

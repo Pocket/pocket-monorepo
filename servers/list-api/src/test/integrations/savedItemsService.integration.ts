@@ -1,9 +1,9 @@
-import { readClient, writeClient } from '../../database/client.js';
+import Client from '../../database/client.js';
 import { SavedItemDataService } from '../../dataService/index.js';
 import { ContextManager } from '../../server/context.js';
 
 describe('SavedItemsService', () => {
-  const db = writeClient();
+  const db = Client.writeClient();
   const date = new Date('2020-10-03 10:20:30');
 
   beforeAll(async () => {
@@ -44,7 +44,7 @@ describe('SavedItemsService', () => {
 
   afterAll(async () => {
     await db.destroy();
-    await readClient().destroy();
+    await Client.readClient().destroy();
   });
 
   it('fetches saved items for multiple urls for the same user', async () => {
@@ -52,7 +52,7 @@ describe('SavedItemsService', () => {
       request: {
         headers: { userid: '1', apiid: '0' },
       },
-      dbClient: readClient(),
+      dbClient: Client.readClient(),
       eventEmitter: null,
     });
 
@@ -69,7 +69,7 @@ describe('SavedItemsService', () => {
       request: {
         headers: { userid: '1', apiid: '0' },
       },
-      dbClient: readClient(),
+      dbClient: Client.readClient(),
       eventEmitter: null,
     });
 
@@ -86,7 +86,7 @@ describe('SavedItemsService', () => {
       request: {
         headers: { userid: '1', apiid: '0' },
       },
-      dbClient: readClient(),
+      dbClient: Client.readClient(),
       eventEmitter: null,
     });
 
@@ -102,7 +102,7 @@ describe('SavedItemsService', () => {
       request: {
         headers: { userid: '1', apiid: '0' },
       },
-      dbClient: readClient(),
+      dbClient: Client.readClient(),
       eventEmitter: null,
     });
 
@@ -118,7 +118,7 @@ describe('SavedItemsService', () => {
       request: {
         headers: { userid: '1', apiid: '0' },
       },
-      dbClient: readClient(),
+      dbClient: Client.readClient(),
       eventEmitter: null,
     });
 
@@ -162,7 +162,7 @@ describe('SavedItemsService', () => {
         request: {
           headers: { userid: '1', apiid: '0' },
         },
-        dbClient: writeClient(),
+        dbClient: Client.writeClient(),
         eventEmitter: null,
       });
       await new SavedItemDataService(context).deleteSavedItem(itemId);

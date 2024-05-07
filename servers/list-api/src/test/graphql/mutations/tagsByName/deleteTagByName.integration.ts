@@ -1,14 +1,15 @@
-import { readClient, writeClient } from '../../../../database/client.js';
+import Client from '../../../../database/client.js';
 import { ContextManager } from '../../../../server/context.js';
 import { startServer } from '../../../../server/apollo.js';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
+import { jest } from '@jest/globals';
 
 describe('deleteTagByName mutation', () => {
   //using write client as mutation will use write client to read as well.
-  const writeDb = writeClient();
-  const readDb = readClient();
+  const writeDb = Client.writeClient();
+  const readDb = Client.readClient();
   const tagQueryStub = readDb('item_tags').count().first();
   const listUpdatedStub = readDb('list')
     .select()

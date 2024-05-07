@@ -3,7 +3,7 @@ import {
   SavedItemDataService,
   TagDataService,
 } from '../../dataService/index.js';
-import { writeClient } from '../../database/client.js';
+import Client from '../../database/client.js';
 import { ItemResponse } from '../../externalCaller/parserCaller.js';
 import { SavedItemUpsertInput } from '../../types/index.js';
 import { expect } from '@jest/globals';
@@ -24,7 +24,7 @@ function areBothNaN(a, b) {
 expect.addEqualityTesters([areBothNaN]);
 
 describe('List API mirroring', () => {
-  const db = writeClient();
+  const db = Client.writeClient();
   const date = new Date();
   const epochDate = date.getTime() / 1000;
   const unleash = unleashClient([

@@ -7,7 +7,7 @@ let writeDb: Knex;
 /**
  * Create a db client for reads from readitla_ril-tmp
  */
-export function readClient(): Knex {
+function readClient(): Knex {
   if (readDb) return readDb;
 
   readDb = createConnection(config.database.read);
@@ -18,7 +18,7 @@ export function readClient(): Knex {
 /**
  * Create a db client for writes to readitla_ril-tmp
  */
-export function writeClient(): Knex {
+function writeClient(): Knex {
   if (writeDb) return writeDb;
 
   writeDb = createConnection(config.database.write);
@@ -31,7 +31,7 @@ export function writeClient(): Knex {
  * @param dbConfig
  * @param database
  */
-export function createConnection(dbConfig: {
+function createConnection(dbConfig: {
   host: string;
   port: string;
   user: string;
@@ -65,3 +65,5 @@ export function createConnection(dbConfig: {
     },
   });
 }
+
+export default { writeClient, readClient, createConnection };

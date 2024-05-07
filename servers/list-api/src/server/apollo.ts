@@ -14,7 +14,8 @@ import {
 import { initSentry } from '@pocket-tools/sentry';
 import config from '../config/index.js';
 import { ContextManager } from './context.js';
-import { readClient, writeClient } from '../database/client.js';
+import Client from '../database/client.js';
+
 import {
   eventBridgeEventHandler,
   initItemEventHandlers,
@@ -46,7 +47,7 @@ import * as unleash from '../featureFlags/index.js';
 export const contextConnection = (query: string): Knex => {
   const isMutationRegex = /^[\n\r\s]*(mutation)/;
   const isMutation = isMutationRegex.test(query);
-  return isMutation ? writeClient() : readClient();
+  return isMutation ? Client.writeClient() : Client.readClient();
 };
 
 export async function startServer(port: number): Promise<{

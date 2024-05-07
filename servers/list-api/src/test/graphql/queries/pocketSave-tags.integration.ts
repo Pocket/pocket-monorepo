@@ -1,4 +1,4 @@
-import { readClient, writeClient } from '../../../database/client.js';
+import Client from '../../../database/client.js';
 import { startServer } from '../../../server/apollo.js';
 import { ContextManager } from '../../../server/context.js';
 import { ApolloServer } from '@apollo/server';
@@ -7,6 +7,7 @@ import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 import request from 'supertest';
 import { TagDataService } from '../../../dataService/index.js';
+import { jest } from '@jest/globals';
 
 describe('pocketSave.tags', () => {
   // proxy for testing we're using dataloader => batch queries
@@ -14,8 +15,8 @@ describe('pocketSave.tags', () => {
     TagDataService.prototype,
     'batchGetTagsByUserItems',
   );
-  const writeDb = writeClient();
-  const readDb = readClient();
+  const writeDb = Client.writeClient();
+  const readDb = Client.readClient();
   const headers = { userid: '1' };
   const date = new Date('2020-10-03 10:20:30');
   let app: Application;

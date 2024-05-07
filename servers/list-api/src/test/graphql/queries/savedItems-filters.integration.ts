@@ -1,4 +1,4 @@
-import { readClient, writeClient } from '../../../database/client.js';
+import Client from '../../../database/client.js';
 import { getUnixTimestamp } from '../../../utils.js';
 import { ContextManager } from '../../../server/context.js';
 import { startServer } from '../../../server/apollo.js';
@@ -7,8 +7,8 @@ import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 
 describe('getSavedItems filter', () => {
-  const writeDb = writeClient();
-  const readDb = readClient();
+  const writeDb = Client.writeClient();
+  const readDb = Client.readClient();
   const headers = { userid: '1' };
   // TODO: What date is the server running in? Web repo does central...
   // should this do UTC, this changes pagination cursors.

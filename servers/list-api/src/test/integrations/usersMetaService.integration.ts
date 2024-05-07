@@ -1,12 +1,12 @@
-import { readClient, writeClient } from '../../database/client.js';
+import Client from '../../database/client.js';
 import { UsersMetaService } from '../../dataService/index.js';
 import { ContextManager } from '../../server/context.js';
 import { mysqlTimeString } from '../../dataService/utils.js';
 import config from '../../config/index.js';
 
 describe('UsersMetaService ', () => {
-  const writeDb = writeClient();
-  const readDb = readClient();
+  const writeDb = Client.writeClient();
+  const readDb = Client.readClient();
   const context = new ContextManager({
     request: {
       headers: {

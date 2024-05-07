@@ -1,4 +1,4 @@
-import { readClient, writeClient } from '../../../../database/client.js';
+import Client from '../../../../database/client.js';
 import { UsersMetaService } from '../../../../dataService/index.js';
 import { EventType } from '../../../../businessEvents/index.js';
 import { ContextManager } from '../../../../server/context.js';
@@ -6,10 +6,11 @@ import { startServer } from '../../../../server/apollo.js';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
+import { jest } from '@jest/globals';
 
 describe('Mutation for Tag deletions: ', () => {
-  const writeDb = writeClient();
-  const readDb = readClient();
+  const writeDb = Client.writeClient();
+  const readDb = Client.readClient();
   let eventSpy = jest.spyOn(ContextManager.prototype, 'emitItemEvent');
   const dbTagsQuery = writeDb('item_tags').select('tag').pluck('tag');
   const listUpdatedQuery = readDb('list').select('time_updated');

@@ -1,5 +1,5 @@
-import { readClient, writeClient } from '../../../../database/client.js';
-import nock, { cleanAll } from 'nock';
+import Client from '../../../../database/client.js';
+import nock from 'nock';
 import config from '../../../../config/index.js';
 import {
   EventType,
@@ -23,6 +23,7 @@ import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import type { Knex } from 'knex';
+import { jest } from '@jest/globals';
 
 function mockParserGetItemRequest(urlToParse: string, data: any) {
   nock(config.parserDomain)
@@ -53,8 +54,8 @@ async function getSqsMessages(
 }
 
 describe('UpsertSavedItem Mutation', () => {
-  const writeDb = writeClient();
-  const readDb = readClient();
+  const writeDb = Client.writeClient();
+  const readDb = Client.readClient();
   const itemsEventEmitter = new ItemsEventEmitter();
   const eventSpy = jest.spyOn(ContextManager.prototype, 'emitItemEvent');
   new SqsListener(itemsEventEmitter, transformers);
@@ -88,7 +89,7 @@ describe('UpsertSavedItem Mutation', () => {
     await readDb.destroy();
     jest.useRealTimers();
     jest.restoreAllMocks();
-    cleanAll();
+    nock.cleanAll();
     await server.stop();
   });
 
@@ -763,7 +764,6 @@ describe('UpsertSavedItem Mutation', () => {
       const contextStub = jest
         // @ts-expect-error ts(2345)
         .spyOn(ContextManager.prototype, 'dbClient', 'get')
-        // @ts-expect-error ts(2339)
         .mockImplementation(() => {
           return (() => undefined) as Knex;
         });

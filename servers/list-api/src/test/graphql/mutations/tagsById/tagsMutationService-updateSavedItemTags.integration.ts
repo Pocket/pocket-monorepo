@@ -1,4 +1,4 @@
-import { readClient, writeClient } from '../../../../database/client.js';
+import Client from '../../../../database/client.js';
 import { UsersMetaService } from '../../../../dataService/index.js';
 import { mysqlTimeString } from '../../../../dataService/utils.js';
 import config from '../../../../config/index.js';
@@ -9,17 +9,19 @@ import { startServer } from '../../../../server/apollo.js';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
+import { jest } from '@jest/globals';
+import { SpyInstance } from 'jest-mock';
 
 describe('tags mutation update: ', () => {
-  const writeDb = writeClient();
-  const readDb = readClient();
+  const writeDb = Client.writeClient();
+  const readDb = Client.readClient();
   const eventSpy = jest.spyOn(ContextManager.prototype, 'emitItemEvent');
   const headers = { userid: '1' };
   const date = new Date('2020-10-03 10:20:30'); // Consistent date for seeding
   const unixDate = getUnixTimestamp(date);
   const date1 = new Date('2020-10-03 10:30:30'); // Consistent date for seeding
   const updateDate = new Date(2021, 1, 1, 0, 0); // mock date for insert
-  let logTagSpy: jest.SpyInstance;
+  let logTagSpy: SpyInstance;
   let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;

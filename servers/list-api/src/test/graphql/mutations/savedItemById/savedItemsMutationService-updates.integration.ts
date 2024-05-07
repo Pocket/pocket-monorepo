@@ -1,15 +1,16 @@
-import { readClient, writeClient } from '../../../../database/client.js';
+import Client from '../../../../database/client.js';
 import { EventType } from '../../../../businessEvents/index.js';
 import { ContextManager } from '../../../../server/context.js';
 import { startServer } from '../../../../server/apollo.js';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
+import { jest } from '@jest/globals';
 
 describe('Update Mutation for SavedItem: ', () => {
   //using write client as mutation will use write client to read as well.
-  const writeDb = writeClient();
-  const readDb = readClient();
+  const writeDb = Client.writeClient();
+  const readDb = Client.readClient();
   const eventSpy = jest.spyOn(ContextManager.prototype, 'emitItemEvent');
   const date = new Date('2020-10-03 10:20:30'); // Consistent date for seeding
   const date1 = new Date('2020-10-03 10:30:30'); // Consistent date for seeding

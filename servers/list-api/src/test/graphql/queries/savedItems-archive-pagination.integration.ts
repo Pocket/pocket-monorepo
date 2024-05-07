@@ -1,4 +1,4 @@
-import { readClient, writeClient } from '../../../database/client.js';
+import Client from '../../../database/client.js';
 import { seeds } from '@pocket-tools/backend-benchmarking';
 import { ListPaginationService } from '../../../dataService/listPaginationService.js';
 import { ContextManager } from '../../../server/context.js';
@@ -9,8 +9,8 @@ import request from 'supertest';
 
 // Note -- additional pagination-related tests are included in savedItems* test files
 describe('getSavedItems pagination', () => {
-  const writeDb = writeClient();
-  const readDb = readClient();
+  const writeDb = Client.writeClient();
+  const readDb = Client.readClient();
   const headers = { userid: '1' };
 
   const baseVariables = {

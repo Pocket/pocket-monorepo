@@ -1,5 +1,5 @@
 import { batchGetTagsByItemIds } from './tagsDataLoader.js';
-import { writeClient } from '../database/client.js';
+import Client from '../database/client.js';
 import { SavedItemDataService, TagDataService } from '../dataService/index.js';
 import { ContextManager, IContext } from '../server/context.js';
 import { Tag } from '../types/index.js';
@@ -35,7 +35,7 @@ describe('tags dataloader', function () {
 
   it('batchGetTagsByItemIds should return empty array of Tags for non-existant Items', async () => {
     const promiseTags = Promise.resolve(testTags);
-    const db = writeClient();
+    const db = Client.writeClient();
     const context: IContext = new ContextManager({
       request: {
         headers: { userid: '1', apiid: '0', premium: 'true' },
@@ -63,7 +63,7 @@ describe('tags dataloader', function () {
 
   it('batchGetTagsByItemIds should return array of Tags & empty array for mix of existing & non-existing Item IDs', async () => {
     const promiseTags = Promise.resolve(testTags);
-    const db = writeClient();
+    const db = Client.writeClient();
     const context: IContext = new ContextManager({
       request: {
         headers: { userid: '1', apiid: '0', premium: 'true' },
@@ -99,7 +99,7 @@ describe('tags dataloader', function () {
 
   it('batchGetTagsByItemIds can handle ItemIDs given as int or number instead of string', async () => {
     const promiseTags = Promise.resolve(testTags);
-    const db = writeClient();
+    const db = Client.writeClient();
     const context: IContext = new ContextManager({
       request: {
         headers: { userid: '1', apiid: '0', premium: 'true' },

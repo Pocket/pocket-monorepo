@@ -1,4 +1,4 @@
-import { readClient, writeClient } from '../../../database/client.js';
+import Client from '../../../database/client.js';
 import { ContextManager } from '../../../server/context.js';
 import { startServer } from '../../../server/apollo.js';
 import { Application } from 'express';
@@ -12,8 +12,8 @@ const range = (n: number) => Array.from({ length: n }, (_, index) => index);
 
 describe('tags on saved items', () => {
   const chance = new Chance();
-  const writeDb = writeClient();
-  const readDb = readClient();
+  const writeDb = Client.writeClient();
+  const readDb = Client.readClient();
   const userid = '1';
   const headers = { userid };
   const count = 5000;

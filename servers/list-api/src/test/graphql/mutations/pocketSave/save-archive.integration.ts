@@ -1,15 +1,16 @@
-import { readClient, writeClient } from '../../../../database/client.js';
 import { ContextManager } from '../../../../server/context.js';
 import { startServer } from '../../../../server/apollo.js';
+import Client from '../../../../database/client.js';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 import request from 'supertest';
+import { jest } from '@jest/globals';
 
 describe('saveArchive mutation', function () {
-  const writeDb = writeClient();
-  const readDb = readClient();
+  const writeDb = Client.writeClient();
+  const readDb = Client.readClient();
   const eventSpy = jest.spyOn(ContextManager.prototype, 'emitItemEvent');
   const headers = { userid: '1' };
   const date = new Date('2020-10-03T10:20:30.000Z'); // Consistent date for seeding

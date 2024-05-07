@@ -1,5 +1,5 @@
 import { timeIt, seeds } from '@pocket-tools/backend-benchmarking';
-import { readClient, writeClient } from '../../../database/client.js';
+import Client from '../../../database/client.js';
 import { ContextManager } from '../../../server/context.js';
 import { startServer } from '../../../server/apollo.js';
 import { Application } from 'express';
@@ -34,8 +34,8 @@ const GET_SAVED_ITEMS = `
   }
 `;
 describe.skip('temp table with new list pagination - benchmarking', () => {
-  const writeDb = writeClient();
-  const readDb = readClient();
+  const writeDb = Client.writeClient();
+  const readDb = Client.readClient();
   const headers = { userid: '1' };
   const variables = {
     id: '1',

@@ -1,4 +1,4 @@
-import { readClient, writeClient } from '../../../database/client.js';
+import Client from '../../../database/client.js';
 import { ContextManager } from '../../../server/context.js';
 import { startServer } from '../../../server/apollo.js';
 import { Application } from 'express';
@@ -6,8 +6,8 @@ import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 
 describe('tags query tests - happy path', () => {
-  const writeDb = writeClient();
-  const readDb = readClient();
+  const writeDb = Client.writeClient();
+  const readDb = Client.readClient();
   const headers = { userid: '1', premium: 'true' };
   const date = new Date('2020-10-03T10:20:30.000Z');
   const date1 = new Date('2021-10-03T10:20:30.000Z');

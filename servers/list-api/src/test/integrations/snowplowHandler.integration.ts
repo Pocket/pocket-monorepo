@@ -8,7 +8,8 @@ import { tracker } from '../../snowplow/tracker.js';
 import config from '../../config/index.js';
 import { ListItemUpdate } from '../../snowplow/schema.js';
 import { SavedItem } from '../../types/index.js';
-import { forEach } from 'lodash';
+import lodash from 'lodash';
+const forEach = lodash.forEach;
 
 async function snowplowRequest(path: string, post = false): Promise<any> {
   const response = await fetch(`http://${config.snowplow.endpoint}${path}`, {

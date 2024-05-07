@@ -8,6 +8,7 @@ import {
 import { SavedItem } from '../../types/index.js';
 import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
 import config from '../../config/index.js';
+import { jest } from '@jest/globals';
 
 const testSavedItem: SavedItem = {
   id: '2',
