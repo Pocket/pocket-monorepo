@@ -681,7 +681,7 @@ importers:
   lambdas/transactional-emails:
     dependencies:
       '@aws-sdk/client-ssm':
-        specifier: ^3.533.0
+        specifier: 3.569.0
         version: 3.569.0
       '@sentry/serverless':
         specifier: 7.113.0

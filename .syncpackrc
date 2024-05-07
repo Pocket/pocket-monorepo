@@ -17,6 +17,7 @@
       "dependencies": [
         "@aws-sdk/**"
       ],
+      "pinVersion": "3.569.0",
       "label": "AWS SDK Dependencies should all have the same version"
     },
     {
