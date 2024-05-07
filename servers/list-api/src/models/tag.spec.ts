@@ -4,6 +4,7 @@ import { strings } from 'locutus/php';
 import { ContextManager, IContext } from '../server/context.js';
 import { Knex } from 'knex';
 import { TagDataService } from '../dataService/index.js';
+import { jest } from '@jest/globals';
 
 const tagServiceResp: Tag[] = [
   { name: 'zebra', id: 'emVicmFfX3hwa3R4dGFneF9f' },
@@ -124,7 +125,7 @@ describe('tag model', () => {
     it('should use `addslashes`', () => {
       const addslashesSpy = jest.spyOn(strings, 'addslashes');
       const cleaned = tagModel.sanitizeTagName(`🤡-tdd-'is'\\"bug-free"-🤡`);
-      expect(addslashesSpy.mock.calls.length).toBe(1);
+      expect(addslashesSpy).toHaveBeenCalledTimes(1);
       expect(cleaned).toBe(`🤡-tdd-\\'is\\'\\\\\\"bug-free\\"-🤡`);
     });
   });

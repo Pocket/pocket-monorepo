@@ -6,6 +6,7 @@ import {
 } from './savedItemsDataLoader.js';
 import { writeClient } from '../database/client.js';
 import { getClient } from '../featureFlags/client.js';
+import { jest } from '@jest/globals';
 
 describe('savedItem data loader', function () {
   const testSavedItem: SavedItem[] = [

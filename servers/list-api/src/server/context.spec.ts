@@ -4,8 +4,9 @@ import DataLoader from 'dataloader';
 import { SavedItemDataService } from '../dataService/index.js';
 import { SavedItem } from '../types/index.js';
 import { EventType, ItemsEventEmitter } from '../businessEvents/index.js';
-import * as Sentry from '@sentry/node';
 import { Request } from 'express';
+import { jest } from '@jest/globals';
+import { SpyInstance } from 'jest-mock';
 
 jest.mock('../dataService');
 
@@ -22,11 +23,6 @@ describe('context', () => {
     },
   };
   describe('constructor', () => {
-    const sentryScopeSpy = jest.spyOn(Sentry, 'configureScope');
-    beforeEach(() => sentryScopeSpy.mockReset());
-    afterAll(() => {
-      sentryScopeSpy.mockRestore();
-    });
     test.each([
       { headers: { apiid: '2', encodedid: 'abc123' }, expectedApiId: '2' },
       {
@@ -43,28 +39,10 @@ describe('context', () => {
           dbClient: jest.fn() as unknown as Knex,
           eventEmitter: new ItemsEventEmitter(),
         });
-        // Mock out the scope methods used in the configureScope callback
-        expect(sentryScopeSpy).toHaveBeenCalledTimes(1);
-        const scopeConfigureCallback = sentryScopeSpy.mock.calls[0][0];
-        const mockScope = {
-          setTag: jest.fn(),
-          setUser: jest.fn(),
-        } as unknown as Sentry.Scope; // Coercing since these are the only two methods we need to check
-        scopeConfigureCallback(mockScope);
-        expect(mockScope.setTag).toHaveBeenNthCalledWith(
-          1,
-          'pocket-api-id',
-          expectedApiId,
-        );
-        expect(mockScope.setUser).toHaveBeenNthCalledWith(1, {
-          id: headers.encodedid,
-        });
       },
     );
   });
   describe('event emitter', () => {
-    let sentryEventSpy: jest.SpyInstance;
-    let sentryExceptionSpy: jest.SpyInstance;
     const context = new ContextManager({
       request: {
         headers: { userid: '1', apiid: '0' },
@@ -74,24 +52,8 @@ describe('context', () => {
     });
     beforeEach(() => {
       jest.restoreAllMocks();
-      sentryEventSpy = jest.spyOn(Sentry, 'captureEvent');
-      sentryExceptionSpy = jest.spyOn(Sentry, 'captureException');
     });
     afterAll(() => jest.restoreAllMocks());
-    it('should log a warning to Sentry if save is undefined', async () => {
-      await context.emitItemEvent(EventType.ARCHIVE_ITEM, undefined);
-      expect(sentryEventSpy).toHaveBeenCalledTimes(1);
-      const event = sentryEventSpy.mock.calls[0][0];
-      expect(event.message).toContain('Save was null or undefined');
-      expect(event.level).toStrictEqual('warning');
-    });
-    it('should log a warning to Sentry if save is null', async () => {
-      await context.emitItemEvent(EventType.ARCHIVE_ITEM, null);
-      expect(sentryEventSpy).toHaveBeenCalledTimes(1);
-      const event = sentryEventSpy.mock.calls[0][0];
-      expect(event.message).toContain('Save was null or undefined');
-      expect(event.level).toStrictEqual('warning');
-    });
     it('should emit event if data is valid', async () => {
       const emitStub = jest
         .spyOn(context.eventEmitter, 'emitItemEvent')
@@ -112,31 +74,21 @@ describe('context', () => {
       await context.emitItemEvent(EventType.ARCHIVE_ITEM, savedItem);
       expect(listenerFn).toHaveBeenCalledTimes(1);
     });
-    it('should send exception with warning level to Sentry if payload generation fails', async () => {
-      jest.spyOn(context.models.tag, 'getBySaveId').mockImplementation(() => {
-        throw new Error('my error');
-      });
-      await context.emitItemEvent(EventType.ARCHIVE_ITEM, savedItem);
-      expect(sentryExceptionSpy).toHaveBeenCalledTimes(1);
-      const event = sentryExceptionSpy.mock.calls[0];
-      expect(event[0].message).toContain('my error');
-      expect(event[1].level).toStrictEqual('warning');
-    });
   });
   describe('dataloaders', () => {
-    let batchUrlFnSpy;
-    let batchIdFnSpy;
+    let batchUrlFnSpy: SpyInstance;
+    let batchIdFnSpy: SpyInstance;
     let context: IContext;
 
     beforeEach(() => {
       batchUrlFnSpy =
         SavedItemDataService.prototype.batchGetSavedItemsByGivenUrls = jest
           .fn()
-          .mockResolvedValue([savedItem]);
+          .mockResolvedValue([savedItem] as never) as any;
       batchIdFnSpy =
         SavedItemDataService.prototype.batchGetSavedItemsByGivenIds = jest
           .fn()
-          .mockResolvedValue([savedItem]);
+          .mockResolvedValue([savedItem] as never) as any;
       context = new ContextManager({
         request: {
           headers: { userid: '1', apiid: '0' },

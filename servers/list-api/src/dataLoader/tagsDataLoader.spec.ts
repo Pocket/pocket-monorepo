@@ -3,6 +3,7 @@ import { writeClient } from '../database/client.js';
 import { SavedItemDataService, TagDataService } from '../dataService/index.js';
 import { ContextManager, IContext } from '../server/context.js';
 import { Tag } from '../types/index.js';
+import { jest } from '@jest/globals';
 
 describe('tags dataloader', function () {
   const testTags: { [savedItemId: string]: Tag[] } = {

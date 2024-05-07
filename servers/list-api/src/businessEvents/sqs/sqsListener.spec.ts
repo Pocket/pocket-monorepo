@@ -5,13 +5,15 @@ import { EventType } from '../types.js';
 import config from '../../config/index.js';
 import { sqs } from '../../aws/sqs.js';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { jest } from '@jest/globals';
+import { SpyInstance } from 'jest-mock';
 
 describe('SqsListener spec test', function () {
   function fakeSendError() {
     throw new Error('some SQS error');
   }
 
-  let stub = null;
+  let stub: SpyInstance = null;
   afterAll(() => {
     stub.mockReset();
   });

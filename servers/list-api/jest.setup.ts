@@ -8,13 +8,4 @@ process.env.AWS_SECRET_ACCESS_KEY = 'fake-key';
 process.env.AWS_DEFAULT_REGION = 'us-east-1';
 process.env.NODE_ENV = 'test';
 process.env.EVENT_BUS_NAME = 'default';
-process.env.MAX_TRX_SIZE = 2;
-module.exports = {
-  preset: 'ts-jest',
-  testEnvironment: 'node',
-  testMatch: ['**/src/**/?(*.)+(spec|integration).[jt]s?(x)'],
-  testPathIgnorePatterns: ['/dist/', '/lambda/'],
-  testTimeout: 10000,
-  displayName: 'list-api',
-  setupFilesAfterEnv: ['jest-extended/all'],
-};
+process.env.MAX_TRX_SIZE = '2';

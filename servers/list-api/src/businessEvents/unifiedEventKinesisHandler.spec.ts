@@ -2,6 +2,7 @@ import config from '../config/index.js';
 import { EventType, unifiedEventTransformer } from './index.js';
 import { SavedItem } from '../types/index.js';
 import { getUnixTimestamp } from '../utils.js';
+import { jest } from '@jest/globals';
 
 describe('UnifiedEventHandler', () => {
   afterEach(() => {
