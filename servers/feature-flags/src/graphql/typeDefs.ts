@@ -1,7 +1,10 @@
-import path from 'path';
-import fs from 'fs';
+import path, { dirname } from 'node:path';
+import fs from 'node:fs';
 import { gql } from 'graphql-tag';
 import { Context, Properties } from 'unleash-client/lib/context.js';
+//https://stackoverflow.com/questions/46745014/alternative-for-dirname-in-node-js-when-using-es6-modules
+import { fileURLToPath } from 'node:url';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Any updates to the types in this file also need to be reflected in the schema.gql.

@@ -10,8 +10,8 @@
     "start": "node dist/server/main.js",
     "dev": "npm run build && npm run watch",
     "test-ci": "npm test",
-    "test": "jest \"\\.spec\\.ts\"",
-    "test-integrations": "jest \"\\.integration\\.ts\" --runInBand --ci --watchAll=false --forceExit",
+    "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest \"\\.spec\\.ts\"",
+    "test-integrations": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest \"\\.integration\\.ts\" --runInBand --ci --watchAll=false --forceExit",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\""
   },

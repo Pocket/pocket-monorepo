@@ -4,7 +4,7 @@ import {
   BASE_CACHED_IMAGE_REFERENCE_RESOLVER,
   CACHED_IMAGE_REFERENCE_RESOLVER_METADATA,
 } from './sample-queries.js';
-import nock, { cleanAll, pendingMocks } from 'nock';
+import nock from 'nock';
 import { getRedis, getRedisCache } from '../cache/index.js';
 import { startServer } from '../server/apollo.js';
 import request from 'supertest';
@@ -36,7 +36,7 @@ describe('queries: resolveReference', () => {
   afterAll(async () => {
     await server.stop();
     await cache.disconnect();
-    cleanAll();
+    nock.cleanAll();
   });
 
   beforeEach(async () => {
@@ -106,7 +106,7 @@ describe('queries: resolveReference', () => {
     expect(res.body.data?._entities[0].url).toBe(testUrl);
     expect(res.body.data?._entities[0].width).toBe(250);
     expect(res.body.data?._entities[0].height).toBe(250);
-    expect(pendingMocks().length).toBe(0);
+    expect(nock.pendingMocks().length).toBe(0);
     expect(await hasCacheValue(testUrl)).toBe(true);
     expect(await getCacheValue(testUrl)).toEqual({
       url: testUrl,
@@ -206,7 +206,7 @@ describe('queries: resolveReference', () => {
     expect(res.body.data).not.toBeNull();
     expect(res.body.data?._entities).toHaveLength(1);
     expect(res.body.data?._entities[0].url).toBe(testUrl);
-    expect(pendingMocks().length).toBe(0);
+    expect(nock.pendingMocks().length).toBe(0);
     expect(await hasCacheValue(cachedImageUrl)).toBe(true);
     expect(await getCacheValue(cachedImageUrl)).toEqual({
       url: cachedImageUrl,

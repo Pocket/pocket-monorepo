@@ -44,5 +44,11 @@
     "*/**/node_modules/": true,
     ".turbo/": true
   },
-  "hidefiles.selectedProfile": "Default"
+  "hidefiles.selectedProfile": "Default",
+  "jestrunner.preserveEditorFocus": true,
+  "jestrunner.jestCommand": "NODE_OPTIONS=--experimental-vm-modules node 'node_modules/jest/bin/jest.js'",
+  "jestrunner.codeLensSelector": "**/*.{test,spec,integration,functional}.{js,jsx,ts,tsx}",
+  "jestrunner.debugOptions": {
+    "runtimeArgs": ["--experimental-vm-modules"]
+  }
 }
