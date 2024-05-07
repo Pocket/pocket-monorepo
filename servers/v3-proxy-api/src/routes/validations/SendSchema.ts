@@ -73,7 +73,19 @@ export const V3SendSchemaGet: Schema = {
     isString: true,
     notEmpty: true,
     customSanitizer: {
-      options: (value) => JSON.parse(decodeURIComponent(value)),
+      options: (value) => {
+        // Is this already decoded JSON string?
+        try {
+          const actions = JSON.parse(value);
+          return actions;
+        } catch (err) {
+          // If not, it's probably a url-encoded JSON string
+          // which needs to be decoded first
+          if (err instanceof SyntaxError) {
+            return JSON.parse(decodeURIComponent(value));
+          }
+        }
+      },
     },
     custom: {
       options: (arr) =>
