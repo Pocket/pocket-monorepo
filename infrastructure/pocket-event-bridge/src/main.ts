@@ -31,6 +31,7 @@ import { UserRegistrationEventRule } from './event-rules/user-registration/userR
 import { UserRegistrationEventSchema } from './events-schema/userRegistrationEventSchema';
 import { AllEventsRule } from './event-rules/all-events/allEventRules';
 import { ForgotPassword as ForgotPasswordRequest } from './event-rules/forgot-password-request';
+import { SharesApiEvents } from './event-rules/shares-api-events/pocketShareEventRules';
 
 class PocketEventBus extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -122,6 +123,13 @@ class PocketEventBus extends TerraformStack {
 
     // list-api events
     new ListApiEvents(this, 'list-api-events', sharedPocketEventBus, pagerDuty);
+    // shares-api events
+    new SharesApiEvents(
+      this,
+      'shares-api-events',
+      sharedPocketEventBus,
+      pagerDuty,
+    );
 
     //Schema
     new UserEventsSchema(this, 'user-api-events-schema');

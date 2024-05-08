@@ -13,10 +13,12 @@ import { config } from '../config';
 import { UserContext } from './UserContext';
 import { UserInputError } from '@pocket-tools/apollo-utils';
 import { ShareNotFoundModel } from './ShareNotFoundModel';
+import { EventBus } from '../events';
 
 export class PocketShareModel {
   constructor(
     private db: ISharesDataSource,
+    private events: EventBus,
     private user: UserContext,
   ) {}
   /**
@@ -90,7 +92,9 @@ export class PocketShareModel {
     if (res instanceof Error) {
       throw res;
     }
-    return this.fromEntity(res);
+    const share = this.fromEntity(res);
+    await this.events.sendCreateEvent(share);
+    return share;
   }
   /**
    * Update the context added to a share (the highlighted quotes or note).
@@ -124,7 +128,9 @@ export class PocketShareModel {
     if (res instanceof Error) {
       throw res;
     } else if (res != null) {
-      return this.fromEntity(res);
+      const share = this.fromEntity(res);
+      await this.events.sendUpdateEvent(share);
+      return share;
     } else return ShareNotFoundModel;
   }
   /**

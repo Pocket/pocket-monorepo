@@ -8,6 +8,7 @@ import {
 import { dynamoClient } from '../datasources/dynamoClient';
 import { UserContext, UserContextFactory } from '../models/UserContext';
 import { config } from '../config';
+import { eventBridgeClient, EventBus } from '../events';
 /**
  * Context factory function. Creates a new context upon
  * every request
@@ -38,6 +39,7 @@ export class ContextManager implements IContext {
     const isNative =
       options.request.headers.applicationisnative === 'true' ? true : false;
     const client = dynamoClient();
+    const bus = new EventBus(eventBridgeClient());
     // We have an authenticated user?
     const userId =
       rawUserId &&
@@ -58,14 +60,22 @@ export class ContextManager implements IContext {
     // Using native app is required for link creation regardless of login status
     if (!isNative) {
       const dataSource = new SharesDataSourceNonNativeApp(client);
-      this.PocketShareModel = new PocketShareModel(dataSource, this.User);
+      this.PocketShareModel = new PocketShareModel(dataSource, bus, this.User);
     } else {
       if (userId) {
         const dataSource = new SharesDataSourceAuthenticated(client);
-        this.PocketShareModel = new PocketShareModel(dataSource, this.User);
+        this.PocketShareModel = new PocketShareModel(
+          dataSource,
+          bus,
+          this.User,
+        );
       } else {
         const dataSource = new SharesDataSourceUnauthenticated(client);
-        this.PocketShareModel = new PocketShareModel(dataSource, this.User);
+        this.PocketShareModel = new PocketShareModel(
+          dataSource,
+          bus,
+          this.User,
+        );
       }
     }
   }

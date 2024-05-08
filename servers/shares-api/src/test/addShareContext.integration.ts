@@ -7,6 +7,7 @@ import { CREATE_SHARE, ADD_SHARE_CONTEXT } from './operations';
 import { dynamoClient } from '../datasources/dynamoClient';
 import { SharesDataSourceAuthenticated } from '../datasources/shares';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import { EventBus } from '../events';
 
 const uuidOverride = '0000-00-00';
 const uuidMock = jest.fn().mockImplementation(() => uuidOverride);
@@ -19,6 +20,9 @@ describe('addShareContext mutation', () => {
   // Variables/data
   const headers = { applicationisnative: 'true', userId: '1', guid: 'abc' };
   const now = Math.round(Date.now() / 1000) * 1000;
+  const eventSpy = jest
+    .spyOn(EventBus.prototype, 'sendUpdateEvent')
+    .mockImplementation(() => Promise.resolve());
   jest.useFakeTimers({ now });
 
   beforeAll(async () => {
@@ -31,7 +35,9 @@ describe('addShareContext mutation', () => {
     jest.useRealTimers();
     await server.stop();
   });
-  afterEach(async () => {});
+  afterEach(async () => {
+    eventSpy.mockClear();
+  });
   it.each([
     {
       context: {
@@ -160,19 +166,57 @@ describe('addShareContext mutation', () => {
     };
     expect(res.body.data).toEqual(expected);
   });
-  it('Returns generic error if error is not ConditionalCheckFailedException', async () => {
-    jest
-      .spyOn(DynamoDBDocumentClient.prototype, 'send')
-      .mockImplementation(() => Promise.reject(new Error('some error')));
+  it('emits update event', async () => {
+    const createVars = {
+      target: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      context: {
+        note: 'this is a cool video!',
+        highlights: { quotes: ['never gonna give'] },
+      },
+    };
+    await request(app)
+      .post(graphQLUrl)
+      .set(headers)
+      .send({ query: CREATE_SHARE, variables: createVars });
     const variables = {
-      slug: 'aaaaaa-aa-aaaaaaah',
+      slug: uuidOverride,
       context: { note: 'please watch' },
     };
-    const res = await request(app)
+    await request(app)
       .post(graphQLUrl)
       .set(headers)
       .send({ query: ADD_SHARE_CONTEXT, variables });
-    expect(res.body.errors[0].message).toEqual('Failed to update share record');
-    expect(res.body.errors[0].extensions.code).toEqual('INTERNAL_SERVER_ERROR');
+    expect(eventSpy).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({
+        slug: uuidOverride,
+      }),
+    );
+  });
+  describe('error handling', () => {
+    let errorSpy;
+    beforeAll(() => {
+      errorSpy = jest
+        .spyOn(DynamoDBDocumentClient.prototype, 'send')
+        .mockImplementation(() => Promise.reject(new Error('some error')));
+    });
+    afterAll(() => {
+      errorSpy.mockRestore();
+    });
+    it('Returns generic error if error is not ConditionalCheckFailedException', async () => {
+      const variables = {
+        slug: 'aaaaaa-aa-aaaaaaah',
+        context: { note: 'please watch' },
+      };
+      const res = await request(app)
+        .post(graphQLUrl)
+        .set(headers)
+        .send({ query: ADD_SHARE_CONTEXT, variables });
+      expect(res.body.errors[0].message).toEqual(
+        'Failed to update share record',
+      );
+      expect(res.body.errors[0].extensions.code).toEqual(
+        'INTERNAL_SERVER_ERROR',
+      );
+    });
   });
 });
