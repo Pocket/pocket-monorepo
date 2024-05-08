@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+local_branch_name="$(git rev-parse --abbrev-ref HEAD)"
+
+valid_branch_regex='^((feat|fix|refactor|build|docs|test|chore)\/[a-zA-Z0-9\-]+)$'
+
+message="There is something wrong with your branch name. \n 
+Branch names in this project must adhere to our commit pattern and be prefixed with:\n
+feat|fix|refactor|build|docs|test|chore followed by a slash and then the branch name\n
+Your commit will be rejected..."
+
+if [[ ! $local_branch_name =~ $valid_branch_regex ]]; then
+    echo "$message"
+    exit 1
+fi
+
+pnpm format

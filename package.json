@@ -8,6 +8,7 @@
     "dev": "dotenv -- turbo run dev --concurrency 50",
     "lint": "turbo run lint",
     "format": "turbo run format",
+    "lint-staged": "lint-staged",
     "test": "dotenv -- turbo run test",
     "test-integrations": "dotenv -- turbo run test-integrations",
     "synth": "dotenv -- turbo run synth",
@@ -15,14 +16,25 @@
     "list-packages": "syncpack list",
     "list-mismatches": "syncpack list-mismatches",
     "fix-mismatches": "syncpack fix-mismatches && pnpm install",
-    "semantic-release": "dotenv -- turbo run semantic-release"
+    "semantic-release": "dotenv -- turbo run semantic-release",
+    "prepare": "husky"
   },
   "dependencies": {
     "dotenv-cli": "latest"
   },
   "devDependencies": {
     "syncpack": "^12.3.2",
-    "turbo": "^1.13.3"
+    "turbo": "^1.13.3",
+    "husky": "9.0.11",
+    "lint-staged": "15.2.2",
+    "@commitlint/cli": "19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@pocket-tools/eslint-config": "workspace:*"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   },
   "packageManager": "pnpm@8.15.6",
   "name": "pocket-monorepo",
