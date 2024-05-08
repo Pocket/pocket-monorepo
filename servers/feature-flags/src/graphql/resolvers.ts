@@ -94,8 +94,8 @@ export const resolvers = {
   Query: {
     getUnleashAssignments: async (
       // we ignore the any types here because we do not know the graphql resolver types
-      parent: any, // eslint-disable-line
-      args: any, // eslint-disable-line
+      parent: any,
+      args: any,
       context: RequestHandlerContext,
     ): Promise<UnleashAssignmentList> => {
       return {
@@ -105,8 +105,8 @@ export const resolvers = {
     },
     unleashAssignments: async (
       // we ignore the any types here because we do not know the graphql resolver types
-      parent: any, // eslint-disable-line
-      args: any, // eslint-disable-line
+      parent: any,
+      args: any,
       context: RequestHandlerContext,
     ): Promise<UnleashAssignmentList> => {
       return {

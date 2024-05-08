@@ -161,7 +161,6 @@ export class SearchQueryBuilder {
     return { term: { content_type: ElasticSearchContentType[contentType] } };
   }
   private sort(input?: SearchSortInput) {
-    /* eslint-disable indent */
     const sortQuery = input?.sortBy
       ? {
           [ElasticSearchSortField[input.sortBy]]:
@@ -170,7 +169,7 @@ export class SearchQueryBuilder {
             ],
         }
       : '_score';
-    /* eslint-enable indent */
+
     return {
       sort: [
         sortQuery,

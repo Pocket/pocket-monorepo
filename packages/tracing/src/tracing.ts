@@ -100,7 +100,7 @@ export async function nodeSDKBuilder(config: TracingConfig) {
   const _idGenerator = new AWSXRayIdGenerator();
 
   // set up the default instrumentations for all implementors
-  let instrumentations: any[] = [
+  const instrumentations: any[] = [
     new AwsInstrumentation({
       suppressInternalInstrumentation: true,
     }),
