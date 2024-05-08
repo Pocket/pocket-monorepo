@@ -34,6 +34,8 @@ export type Mutation = {
    * session (intended to be a post-share add, not something returned to
    * later). It also lets us attribute ownership to anonymous/logged-out
    * users.
+   * Null values in provided context will not overrwrite existing values
+   * if there are any, but but empty values will (e.g. empty string, empty array).
    * Attempting to update a nonexistent share or a share that is not owned
    * by the session user will return ShareNotFound.
    */

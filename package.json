@@ -14,7 +14,6 @@
     "clean": "rm -rf .turbo node_modules packages/**/.turbo packages/**/dist packages/**/node_modules servers/**/logs servers/**/.turbo servers/**/dist servers/**/node_modules lambdas/**/logs lambdas/**/.turbo lambdas/**/dist lambdas/**/node_modules infrastructure/**/dist infrastructure/**/node_modules infrastructure/**/.turbo infrastructure/**/cdktf.out",
     "list-packages": "syncpack list",
     "list-mismatches": "syncpack list-mismatches",
-    "lint-staged": "lint-staged",
     "fix-mismatches": "syncpack fix-mismatches && pnpm install",
     "semantic-release": "dotenv -- turbo run semantic-release",
     "prepare": "husky"
@@ -29,7 +28,7 @@
     "@commitlint/cli": "19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
     "@pocket-tools/eslint-config": "workspace:*",
-    "lint-staged": "15.2.2"
+    "tsconfig": "workspace:*"
   },
   "commitlint": {
     "extends": [
