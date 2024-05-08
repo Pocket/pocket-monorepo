@@ -3,7 +3,7 @@ import {
   PutEventsCommand,
 } from '@aws-sdk/client-eventbridge';
 import { PocketShare } from '../__generated__/types';
-import * as Sentry from '@Sentry/node';
+import * as Sentry from '@sentry/node';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { config } from '../config';
 
@@ -21,7 +21,6 @@ enum PocketShareEventType {
 }
 
 export class EventBus {
-  private static source = 'shares-api-events';
   constructor(private client: EventBridgeClient) {}
   private buildShareEvent(input: PocketShare): PocketShareEvent {
     return {
@@ -41,7 +40,7 @@ export class EventBus {
         {
           EventBusName: config.aws.eventBus.name,
           Detail: JSON.stringify(payload),
-          Source: EventBus.source,
+          Source: config.aws.eventBus.source,
           DetailType: eventType,
         },
       ],

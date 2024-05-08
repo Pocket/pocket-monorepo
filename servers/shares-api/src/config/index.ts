@@ -25,11 +25,7 @@ export const config = {
     eventBus: {
       name:
         process.env.EVENT_BUS_NAME || 'PocketEventBridge-Dev-Shared-Event-Bus',
-      eventBridge: {
-        pocketShare: {
-          source: 'pocket-share-events',
-        },
-      },
+      source: 'shares-api-events',
     },
   },
   dynamoDb: {
