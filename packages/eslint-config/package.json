@@ -1,0 +1,45 @@
+{
+  "name": "@pocket-tools/eslint-config",
+  "license": "MIT",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@eslint/js": "^9.2.0",
+    "eslint": "^9.2.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "prettier": "^3.2.5",
+    "typescript": "5.4.4",
+    "typescript-eslint": "^7.8.0"
+  },
+  "main": "./dist/base.js",
+  "exports": {
+    ".": {
+      "types": "./base.d.ts",
+      "default": "./base.js"
+    },
+    "./cdktf": {
+      "types": "./cdktf.d.ts",
+      "default": "./cdktf.js"
+    },
+    "./servers": {
+      "types": "./servers.d.ts",
+      "default": "./servers.js"
+    },
+    "./lambda": {
+      "types": "./lambda.d.ts",
+      "default": "./lambda.js"
+    },
+    "./packages": {
+      "types": "./packages.d.ts",
+      "default": "./packages.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "*.js",
+    "*.d.ts",
+    "package.json"
+  ]
+}

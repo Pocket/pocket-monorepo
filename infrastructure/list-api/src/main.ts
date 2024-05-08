@@ -138,7 +138,7 @@ class ListAPI extends TerraformStack {
   }
 
   private createPocketAlbApplication(dependencies: {
-    pagerDuty: PocketPagerDuty;
+    pagerDuty?: PocketPagerDuty;
     region: dataAwsRegion.DataAwsRegion;
     caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;

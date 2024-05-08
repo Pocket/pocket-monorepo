@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@types/jest": "29.5.12",
-    "eslint-config-custom": "workspace:*",
+    "@pocket-tools/eslint-config": "workspace:*",
     "jest": "29.7.0",
     "ts-jest": "29.1.2",
     "tsconfig": "workspace:*"

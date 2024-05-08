@@ -27,7 +27,7 @@
     "@types/jest": "29.5.12",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/jwk-to-pem": "^2.0.1",
-    "eslint-config-custom": "workspace:*",
+    "@pocket-tools/eslint-config": "workspace:*",
     "jest": "29.7.0",
     "nock": "13.5.4",
     "nodemon": "3.1.0",

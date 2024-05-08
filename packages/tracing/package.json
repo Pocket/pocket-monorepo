@@ -20,7 +20,7 @@
   "devDependencies": {
     "@jest/globals": "29.7.0",
     "@types/jest": "29.5.12",
-    "eslint-config-custom": "workspace:*",
+    "@pocket-tools/eslint-config": "workspace:*",
     "jest": "29.7.0",
     "semantic-release": "23.0.7",
     "semantic-release-monorepo": "8.0.2",
