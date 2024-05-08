@@ -32,10 +32,20 @@ export const V3SendSchemaPost: Schema = {
     notEmpty: true,
     customSanitizer: {
       // If we get a urlencoded string payload, decode it into JSON array
-      options: (value) =>
-        typeof value === 'string'
-          ? JSON.parse(decodeURIComponent(value))
-          : value,
+      options: (value) => {
+        if (typeof value != 'string') return value;
+        // Is this already decoded JSON string?
+        try {
+          const actions = JSON.parse(value);
+          return actions;
+        } catch (err) {
+          // If not, it's probably a url-encoded JSON string
+          // which needs to be decoded first
+          if (err instanceof SyntaxError) {
+            return JSON.parse(decodeURIComponent(value));
+          }
+        }
+      },
     },
     custom: {
       options: (arr) =>
