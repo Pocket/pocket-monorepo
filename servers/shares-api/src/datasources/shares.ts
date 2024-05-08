@@ -149,6 +149,7 @@ export class SharesDataSourceAuthenticated
     }
     return input;
   }
+
   /**
    * Update the context added to a share (the highlighted quotes or note).
    * Overrwrites existing data if it exists.
@@ -168,10 +169,9 @@ export class SharesDataSourceAuthenticated
     context: Pick<ShareEntity, 'note' | 'highlights'>,
     owner: { key: keyof UserContext; value: string },
   ): Promise<ShareEntity | null> {
-    const noteUpdate = context.note ? 'note = :note' : '';
-    const highlightUpdate = context.highlights
-      ? 'highlights = :highlights'
-      : '';
+    const noteUpdate = context.note != null ? 'note = :note' : '';
+    const highlightUpdate =
+      context.highlights != null ? 'highlights = :highlights' : '';
     const updates = [noteUpdate, highlightUpdate].filter(Boolean).join(', ');
     const UpdateExpression = `SET ${updates}`;
     const update = new UpdateCommand({

@@ -11,7 +11,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { config } from '../config';
 import { UserContext } from './UserContext';
-import { UserInputError } from '@pocket-tools/apollo-utils';
+
 import { ShareNotFoundModel } from './ShareNotFoundModel';
 
 export class PocketShareModel {
@@ -41,8 +41,8 @@ export class PocketShareModel {
     context: ShareContextInput,
   ): Pick<ShareEntity, 'note' | 'highlights'> {
     return {
-      ...(context?.note && { note: context.note }),
-      ...(context?.highlights?.quotes.length && {
+      ...(context?.note != null && { note: context.note }),
+      ...(context?.highlights?.quotes != null && {
         highlights: context.highlights.quotes,
       }),
     };
@@ -51,6 +51,7 @@ export class PocketShareModel {
    * Convert DynamoDB entity to GraphQL Type
    */
   fromEntity(entity: ShareEntity): PocketShare {
+    const highlights = entity.highlights?.map((quote) => ({ quote }));
     return {
       __typename: 'PocketShare' as const,
       slug: entity.shareId,
@@ -58,7 +59,7 @@ export class PocketShareModel {
       targetUrl: entity.targetUrl,
       createdAt: new Date(entity.createdAt * 1000),
       context: {
-        highlights: entity.highlights?.map((quote) => ({ quote })),
+        highlights: highlights.length ? highlights : undefined,
         note: entity.note,
       },
     };
@@ -109,15 +110,6 @@ export class PocketShareModel {
     shareId: string,
     context: ShareContextInput,
   ): Promise<ShareResult> {
-    const addHighlights =
-      context.highlights != null && context.highlights.quotes.length > 0;
-    const addNote = context.note != null && context.note.length > 0;
-    const hasAnUpdate = addHighlights || addNote;
-    if (!hasAnUpdate) {
-      throw new UserInputError(
-        'Must define at least one of ShareContextInput.highlights or ShareContextInput.note',
-      );
-    }
     const contextEntity = this.updateContextEntity(context);
     const owner = { key: 'guid' as const, value: this.user.guid };
     const res = await this.db.updateShareContext(shareId, contextEntity, owner);
