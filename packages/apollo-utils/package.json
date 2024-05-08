@@ -25,7 +25,7 @@
     "@jest/globals": "29.7.0",
     "@types/jest": "29.5.12",
     "@types/md5": "2.3.5",
-    "eslint-config-custom": "workspace:*",
+    "@pocket-tools/eslint-config": "workspace:*",
     "ioredis-mock": "8.9.0",
     "jest": "29.7.0",
     "jest-extended": "4.0.2",

@@ -16,7 +16,7 @@
     "@pocket-tools/terraform-modules": "workspace:*"
   },
   "devDependencies": {
-    "eslint-config-custom": "workspace:*",
+    "@pocket-tools/eslint-config": "workspace:*",
     "tsconfig": "workspace:*"
   }
 }

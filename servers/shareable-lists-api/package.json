@@ -47,7 +47,7 @@
     "@types/jest": "29.5.12",
     "@types/node": "^20.12.6",
     "dotenv": "16.4.5",
-    "eslint-config-custom": "workspace:*",
+    "@pocket-tools/eslint-config": "workspace:*",
     "jest": "29.7.0",
     "jest-extended": "4.0.2",
     "nodemon": "3.1.0",
