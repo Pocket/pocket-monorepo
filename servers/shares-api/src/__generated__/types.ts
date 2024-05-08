@@ -34,6 +34,8 @@ export type Mutation = {
    * session (intended to be a post-share add, not something returned to
    * later). It also lets us attribute ownership to anonymous/logged-out
    * users.
+   * Null values in provided context will not overrwrite existing values
+   * if there are any, but but empty values will (e.g. empty string, empty array).
    * Attempting to update a nonexistent share or a share that is not owned
    * by the session user will return ShareNotFound.
    */
@@ -60,7 +62,7 @@ export type MutationCreateShareLinkArgs = {
 export type PocketShare = {
   __typename?: 'PocketShare';
   context?: Maybe<ShareContext>;
-  createdAt?: Maybe<Scalars['ISOString']['output']>;
+  createdAt: Scalars['ISOString']['output'];
   shareUrl: Scalars['ValidUrl']['output'];
   slug: Scalars['ID']['output'];
   targetUrl: Scalars['ValidUrl']['output'];
@@ -261,7 +263,7 @@ export type MutationResolvers<ContextType = IContext, ParentType extends Resolve
 export type PocketShareResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['PocketShare'] = ResolversParentTypes['PocketShare']> = ResolversObject<{
   __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['PocketShare']>, { __typename: 'PocketShare' } & GraphQLRecursivePick<ParentType, {"slug":true,"targetUrl":true}>, ContextType>;
   context?: Resolver<Maybe<ResolversTypes['ShareContext']>, ParentType, ContextType>;
-  createdAt?: Resolver<Maybe<ResolversTypes['ISOString']>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['ISOString'], ParentType, ContextType>;
   shareUrl?: Resolver<ResolversTypes['ValidUrl'], ParentType, ContextType>;
   slug?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   targetUrl?: Resolver<ResolversTypes['ValidUrl'], ParentType, ContextType>;
