@@ -158,9 +158,8 @@ export async function enqueueTablesForDeletion(
         }),
       );
     } catch (error) {
-      /* eslint-disable max-len */
       const errorMessage = `enqueueTablesForDeletion: Error - Failed to enqueue keys for given data.')`;
-      /* eslint-enable max-len */
+
       const errorData = {
         userId: userId,
         requestId: requestId,
@@ -205,9 +204,8 @@ async function sqsSendBatch(
   tableName: string,
 ): Promise<SendMessageBatchCommandOutput> {
   return sqs.send(command).catch((error) => {
-    /* eslint-disable max-len */
     const errorMessage = `sqsSendBatch: Error - Failed to enqueue keys for given data.')`;
-    /* eslint-enable max-len */
+
     serverLogger.error({
       message: errorMessage,
       error: error,
