@@ -10,8 +10,7 @@ import {
   DiagConsoleLogger,
   DiagLogLevel,
   DiagLogger,
-  diag,
-} from '@opentelemetry/api';
+  diag,} from '@opentelemetry/api';
 import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 import { KnexInstrumentation } from '@opentelemetry/instrumentation-knex';
@@ -24,8 +23,7 @@ import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions'
 
 import {
   ParentBasedSampler,
-  TraceIdRatioBasedSampler,
-} from '@opentelemetry/sdk-trace-node';
+  TraceIdRatioBasedSampler} from '@opentelemetry/sdk-trace-node';
 import { ExpressLayerType } from '@opentelemetry/instrumentation-express/build/src/enums/ExpressLayerType';
 
 // instrumentations available to be added by implementing services
@@ -100,7 +98,7 @@ export async function nodeSDKBuilder(config: TracingConfig) {
   const _idGenerator = new AWSXRayIdGenerator();
 
   // set up the default instrumentations for all implementors
-  let instrumentations: any[] = [
+  const instrumentations: any[] = [
     new AwsInstrumentation({
       suppressInternalInstrumentation: true,
     }),
