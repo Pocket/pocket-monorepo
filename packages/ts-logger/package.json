@@ -24,7 +24,7 @@
   "devDependencies": {
     "@types/jest": "29.5.12",
     "@types/morgan": "1.9.9",
-    "eslint-config-custom": "workspace:*",
+    "@pocket-tools/eslint-config": "workspace:*",
     "jest": "29.7.0",
     "semantic-release": "23.0.7",
     "semantic-release-monorepo": "8.0.2",

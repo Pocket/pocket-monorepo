@@ -26,7 +26,7 @@
     "@types/mysql": "2.15.26",
     "@types/supertest": "^6.0.2",
     "@types/uuid": "9.0.8",
-    "eslint-config-custom": "workspace:*",
+    "@pocket-tools/eslint-config": "workspace:*",
     "jest": "29.7.0",
     "jest-extended": "4.0.2",
     "nock": "13.5.4",

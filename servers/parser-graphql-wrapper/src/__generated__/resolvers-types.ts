@@ -467,8 +467,8 @@ export type Query = {
    * Resolve Reader View links which might point to SavedItems that do not
    * exist, aren't in the Pocket User's list, or are requested by a logged-out
    * user (or user without a Pocket Account).
-   * Fetches data to create an interstitial page/modal so the visitor can click
-   * through to the shared site.
+   * Fetches data which clients can use to generate an appropriate fallback view
+   * that allows users to preview the content and access the original source site.
    */
   readerSlug: ReaderViewResult;
 };
@@ -488,13 +488,28 @@ export type QueryreaderSlugArgs = {
   slug: Scalars['ID']['input'];
 };
 
+/**
+ * Metadata of an Item in Pocket for preview purposes,
+ * or an ItemNotFound result if the record does not exist.
+ */
 export type ReaderFallback = ItemNotFound | ReaderInterstitial;
 
+/**
+ * Card preview data for Items resolved from reader view
+ * (getpocket.com/read/) links.
+ *
+ * Should be used to create a view if Reader Mode cannot
+ * be rendered (e.g. the link is visited by an anonymous
+ * Pocket user, or a Pocket User that does not have the
+ * underlying Item in their Saves). Due to legal obligations
+ * we can only display Reader Mode for SavedItems.
+ */
 export type ReaderInterstitial = {
   __typename?: 'ReaderInterstitial';
   itemCard?: Maybe<PocketMetadata>;
 };
 
+/** Result for resolving a getpocket.com/read/<slug> link. */
 export type ReaderViewResult = {
   __typename?: 'ReaderViewResult';
   fallbackPage?: Maybe<ReaderFallback>;

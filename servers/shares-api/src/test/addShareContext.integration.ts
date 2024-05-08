@@ -6,8 +6,9 @@ import { Application } from 'express';
 import { CREATE_SHARE, ADD_SHARE_CONTEXT } from './operations';
 import { dynamoClient } from '../datasources/dynamoClient';
 import { SharesDataSourceAuthenticated } from '../datasources/shares';
-import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import { EventBus } from '../events';
+import { DeleteCommand, DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import { config } from '../config';
 
 const uuidOverride = '0000-00-00';
 const uuidMock = jest.fn().mockImplementation(() => uuidOverride);
@@ -23,6 +24,7 @@ describe('addShareContext mutation', () => {
   const eventSpy = jest
     .spyOn(EventBus.prototype, 'sendUpdateEvent')
     .mockImplementation(() => Promise.resolve());
+  const db = dynamoClient();
   jest.useFakeTimers({ now });
 
   beforeAll(async () => {
@@ -34,6 +36,15 @@ describe('addShareContext mutation', () => {
     jest.restoreAllMocks();
     jest.useRealTimers();
     await server.stop();
+    db.destroy();
+  });
+  afterEach(async () => {
+    await db.send(
+      new DeleteCommand({
+        TableName: config.dynamoDb.sharesTable.name,
+        Key: { shareId: uuidOverride },
+      }),
+    );
   });
   afterEach(async () => {
     eventSpy.mockClear();
@@ -166,6 +177,70 @@ describe('addShareContext mutation', () => {
     };
     expect(res.body.data).toEqual(expected);
   });
+  it.each([
+    {
+      context: {
+        note: '',
+      },
+      expected: {
+        note: null,
+        highlights: [{ quote: 'never gonna give' }],
+      },
+    },
+    {
+      context: {
+        highlights: { quotes: [] },
+      },
+      expected: {
+        note: 'this is a cool video!',
+        highlights: null,
+      },
+    },
+    {
+      context: {
+        note: '',
+        highlights: { quotes: [] },
+      },
+      expected: {
+        note: null,
+        highlights: null,
+      },
+    },
+  ])('clears existing context if empty values are passed', async (fixture) => {
+    const originalContext = {
+      note: 'this is a cool video!',
+      highlights: [{ quote: 'never gonna give' }],
+    };
+    const createVars = {
+      target: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      context: {
+        note: 'this is a cool video!',
+        highlights: { quotes: ['never gonna give'] },
+      },
+    };
+    await request(app)
+      .post(graphQLUrl)
+      .set(headers)
+      .send({ query: CREATE_SHARE, variables: createVars });
+    const variables = {
+      slug: uuidOverride,
+      context: fixture.context,
+    };
+    const res = await request(app)
+      .post(graphQLUrl)
+      .set(headers)
+      .send({ query: ADD_SHARE_CONTEXT, variables });
+    const expected = {
+      addShareContext: {
+        slug: uuidOverride,
+        context: {
+          ...originalContext,
+          ...fixture.expected,
+        },
+      },
+    };
+    expect(res.body.data).toEqual(expected);
+  });
   it('emits update event', async () => {
     const createVars = {
       target: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
@@ -185,22 +260,20 @@ describe('addShareContext mutation', () => {
     await request(app)
       .post(graphQLUrl)
       .set(headers)
-      .send({ query: ADD_SHARE_CONTEXT, variables });
+      .send({ query: ADD_SHARE_CONTEXT, variables: variables });
     expect(eventSpy).toHaveBeenCalledExactlyOnceWith(
-      expect.objectContaining({
-        slug: uuidOverride,
-      }),
+      expect.objectContaining({ slug: uuidOverride }),
     );
   });
-  describe('error handling', () => {
-    let errorSpy;
-    beforeAll(() => {
-      errorSpy = jest
+  describe('send failure', () => {
+    let sendFailMock;
+    beforeEach(() => {
+      sendFailMock = jest
         .spyOn(DynamoDBDocumentClient.prototype, 'send')
         .mockImplementation(() => Promise.reject(new Error('some error')));
     });
-    afterAll(() => {
-      errorSpy.mockRestore();
+    afterEach(() => {
+      sendFailMock.mockRestore();
     });
     it('Returns generic error if error is not ConditionalCheckFailedException', async () => {
       const variables = {
