@@ -47,6 +47,7 @@
     "luxon": "3.4.4",
     "mysql2": "3.9.7",
     "node-fetch": "2.7.0",
+    "tslib": "2.6.2",
     "unleash-client": "5.5.2"
   },
   "devDependencies": {
