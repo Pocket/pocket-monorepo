@@ -36,9 +36,33 @@ importers:
 
   infrastructure/account-data-deleter:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -58,9 +82,33 @@ importers:
 
   infrastructure/account-delete-monitor:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -80,9 +128,33 @@ importers:
 
   infrastructure/annotations-api:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -102,9 +174,21 @@ importers:
 
   infrastructure/braze:
     dependencies:
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -124,9 +208,30 @@ importers:
 
   infrastructure/client-api:
     dependencies:
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -146,9 +251,30 @@ importers:
 
   infrastructure/feature-flags:
     dependencies:
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -168,9 +294,33 @@ importers:
 
   infrastructure/fxa-webhook-proxy:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -190,9 +340,33 @@ importers:
 
   infrastructure/image-api:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -212,9 +386,33 @@ importers:
 
   infrastructure/instant-sync-events:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -234,9 +432,33 @@ importers:
 
   infrastructure/list-api:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -256,9 +478,33 @@ importers:
 
   infrastructure/parser-graphql-wrapper:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -278,9 +524,33 @@ importers:
 
   infrastructure/pocket-event-bridge:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -300,9 +570,33 @@ importers:
 
   infrastructure/push-server:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -322,9 +616,33 @@ importers:
 
   infrastructure/sendgrid-data:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -344,9 +662,33 @@ importers:
 
   infrastructure/shareable-lists-api:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -366,9 +708,33 @@ importers:
 
   infrastructure/shared-snowplow-consumer:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -388,22 +754,79 @@ importers:
 
   infrastructure/shares-api:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   infrastructure/transactional-emails:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -423,9 +846,30 @@ importers:
 
   infrastructure/user-api:
     dependencies:
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -445,9 +889,30 @@ importers:
 
   infrastructure/v3-proxy-api:
     dependencies:
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -4452,7 +4917,7 @@ packages:
     resolution: {integrity: sha512-Xd6+v6SnjWVx/nus+y0l1sxMOTOMBkyL4+BIdbALyatQnAe/SRVjANeDPSCYaX+i1iJmuGSKf3Z+E+V/va1Hvw==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/types': 7.24.0
+      '@babel/types': 7.24.5
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
       jsesc: 2.5.2
@@ -7084,7 +7549,7 @@ packages:
     engines: {node: '>= 14.17.0'}
     dependencies:
       chalk: 4.1.2
-      semver: 7.6.0
+      semver: 7.6.1
     dev: false
 
   /@jsii/check-node@1.98.0:
@@ -7092,7 +7557,7 @@ packages:
     engines: {node: '>= 14.17.0'}
     dependencies:
       chalk: 4.1.2
-      semver: 7.6.0
+      semver: 7.6.1
     dev: false
 
   /@jsii/spec@1.98.0:
@@ -7157,7 +7622,7 @@ packages:
     resolution: {integrity: sha512-7kZUAaLscfgbwBQRbvdMYaZOWyMEcPTH/tJjnyAWJ/dvvs9Ef+CERx/qJb9GExJpl1qipaDGn7KqHnFGGixd0w==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dependencies:
-      semver: 7.6.0
+      semver: 7.6.1
 
   /@octokit/auth-token@5.1.1:
     resolution: {integrity: sha512-rh3G3wDO8J9wSjfI436JUKzHIxq8NaiL0tVeB2aXmG6p/9859aUOAjA9pmSPNGGZxfwmaJ9ozOJImuNVJdpvbA==}
@@ -7503,7 +7968,7 @@ packages:
       '@types/shimmer': 1.0.5
       import-in-the-middle: 1.7.1
       require-in-the-middle: 7.3.0
-      semver: 7.6.0
+      semver: 7.6.1
       shimmer: 1.2.1
     transitivePeerDependencies:
       - supports-color
@@ -9677,7 +10142,7 @@ packages:
       graphemer: 1.4.0
       ignore: 5.3.1
       natural-compare: 1.4.0
-      semver: 7.6.0
+      semver: 7.6.1
       ts-api-utils: 1.3.0(typescript@5.4.4)
       typescript: 5.4.4
     transitivePeerDependencies:
@@ -9753,7 +10218,7 @@ packages:
       globby: 11.1.0
       is-glob: 4.0.3
       minimatch: 9.0.4
-      semver: 7.6.0
+      semver: 7.6.1
       ts-api-utils: 1.3.0(typescript@5.4.4)
       typescript: 5.4.4
     transitivePeerDependencies:
@@ -9773,7 +10238,7 @@ packages:
       '@typescript-eslint/types': 7.8.0
       '@typescript-eslint/typescript-estree': 7.8.0(typescript@5.4.4)
       eslint: 9.2.0
-      semver: 7.6.0
+      semver: 7.6.1
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -11418,7 +11883,7 @@ packages:
       handlebars: 4.7.8
       json-stringify-safe: 5.0.1
       meow: 12.1.1
-      semver: 7.6.0
+      semver: 7.6.1
       split2: 4.2.0
     dev: true
 
@@ -11795,7 +12260,7 @@ packages:
       bluebird: 3.7.2
       db-migrate-base: 2.3.1
       pg: 8.11.5
-      semver: 7.6.0
+      semver: 7.6.1
     transitivePeerDependencies:
       - pg-native
     dev: false
@@ -12171,9 +12636,9 @@ packages:
     resolution: {integrity: sha512-vo835pntK7kzYStk7xUHDifiYJvXxVhUapt85uk2AI94gUUAQX9HNRtrcMHNSc3YHJUEHGbYIGsM99uIbgAtxw==}
     hasBin: true
     dependencies:
-      semver: 7.6.0
+      semver: 7.6.1
       shelljs: 0.8.5
-      typescript: 5.5.0-dev.20240508
+      typescript: 5.5.0-dev.20240509
     dev: false
 
   /dreamopt@0.8.0:
@@ -14854,7 +15319,7 @@ packages:
       '@babel/parser': 7.24.5
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.2
-      semver: 7.6.0
+      semver: 7.6.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -15353,7 +15818,7 @@ packages:
       jest-util: 29.7.0
       natural-compare: 1.4.0
       pretty-format: 29.7.0
-      semver: 7.6.0
+      semver: 7.6.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -15575,7 +16040,7 @@ packages:
       fs-extra: 10.1.0
       jsii-reflect: 1.98.0
       jsii-rosetta: 1.98.0
-      semver: 7.6.0
+      semver: 7.6.1
       spdx-license-list: 6.9.0
       xmlbuilder: 15.1.1
       yargs: 16.2.0
@@ -15607,7 +16072,7 @@ packages:
       commonmark: 0.30.0
       fast-glob: 3.3.2
       jsii: 1.98.0
-      semver: 7.6.0
+      semver: 7.6.1
       semver-intersect: 1.5.0
       stream-json: 1.8.0
       typescript: 3.9.10
@@ -15629,7 +16094,7 @@ packages:
       commonmark: 0.31.0
       fast-glob: 3.3.2
       jsii: 5.3.29
-      semver: 7.6.0
+      semver: 7.6.1
       semver-intersect: 1.5.0
       stream-json: 1.8.0
       typescript: 5.3.3
@@ -15664,7 +16129,7 @@ packages:
       fast-deep-equal: 3.1.3
       fs-extra: 10.1.0
       log4js: 6.9.1
-      semver: 7.6.0
+      semver: 7.6.1
       semver-intersect: 1.5.0
       sort-json: 2.0.1
       spdx-license-list: 6.9.0
@@ -15686,7 +16151,7 @@ packages:
       downlevel-dts: 0.11.0
       fast-deep-equal: 3.1.3
       log4js: 6.9.1
-      semver: 7.6.0
+      semver: 7.6.1
       semver-intersect: 1.5.0
       sort-json: 2.0.1
       spdx-license-list: 6.9.0
@@ -16436,7 +16901,7 @@ packages:
     resolution: {integrity: sha512-hXdUTZYIVOt1Ex//jAQi+wTZZpUpwBj/0QsOzqegb3rGMMeJiSEu5xLHnYfBrRV4RH2+OCSOO95Is/7x1WJ4bw==}
     engines: {node: '>=10'}
     dependencies:
-      semver: 7.6.0
+      semver: 7.6.1
     dev: true
 
   /make-error@1.3.6:
@@ -16994,7 +17459,7 @@ packages:
     resolution: {integrity: sha512-CPMcGa+y33xuL1E0TcNIu4YyaZCxnnvkVaEXrsosR3FxN+fV8xvb7Mzpb7IgKler10qeMkE6+Dp8qJhpzdq35g==}
     engines: {node: '>=10'}
     dependencies:
-      semver: 7.6.0
+      semver: 7.6.1
     dev: false
 
   /node-abort-controller@3.1.1:
@@ -17119,7 +17584,7 @@ packages:
     dependencies:
       hosted-git-info: 7.0.2
       is-core-module: 2.13.1
-      semver: 7.6.0
+      semver: 7.6.1
       validate-npm-package-license: 3.0.4
     dev: true
 
@@ -17161,7 +17626,7 @@ packages:
     dependencies:
       hosted-git-info: 7.0.2
       proc-log: 4.2.0
-      semver: 7.6.0
+      semver: 7.6.1
       validate-npm-package-name: 5.0.1
     dev: true
 
@@ -19082,7 +19547,6 @@ packages:
     resolution: {integrity: sha512-f/vbBsu+fOiYt+lmwZV0rVwJScl46HppnOA1ZvIuBWKOTlllpyJ3bfVax76/OrhCH38dyxoDIA8K7uB963IYgA==}
     engines: {node: '>=10'}
     hasBin: true
-    dev: true
 
   /send@0.18.0:
     resolution: {integrity: sha512-qqWzuOjSFOuqPjFe4NOsMLafToQQwBSOEpS+FwEt3A2V3vKubTquT3vmLTQpFgMXp8AlFWFuP1qKaJZOtPpVXg==}
@@ -19812,7 +20276,7 @@ packages:
       methods: 1.1.2
       mime: 2.6.0
       qs: 6.12.0
-      semver: 7.6.0
+      semver: 7.6.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -20620,8 +21084,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.5.0-dev.20240508:
-    resolution: {integrity: sha512-5hkQ+5UaeQFyG4Z4UiupCIQo2pcUZ+e8OZlIxeiljeqei989RyA99QnF+hS0pxZpxvOt/yJCTN9zIdT2m/O1WA==}
+  /typescript@5.5.0-dev.20240509:
+    resolution: {integrity: sha512-r/zZRQGt3udzXP4ZaxPUs7r+NgrzW94LRfqa0XrFe0IXANWaewB/amTIL8O/zZ9qRv4QN34kr4td6HJsSbG9eA==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: false

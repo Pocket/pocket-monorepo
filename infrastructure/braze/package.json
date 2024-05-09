@@ -14,7 +14,11 @@
     "watch": "tsc -w"
   },
   "dependencies": {
-    "@pocket-tools/terraform-modules": "workspace:*"
+    "@pocket-tools/terraform-modules": "workspace:*",
+    "@cdktf/provider-aws": "19.15.0",
+    "cdktf": "0.20.7",
+    "cdktf-cli": "0.20.7",
+    "constructs": "10.3.0"
   },
   "devDependencies": {
     "@pocket-tools/eslint-config": "workspace:*",
