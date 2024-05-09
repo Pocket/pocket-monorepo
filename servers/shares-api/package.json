@@ -34,9 +34,17 @@
     "express": "4.19.2",
     "graphql-constraint-directive": "5.4.2",
     "graphql-scalars": "^1.23.0",
-    "tslib": "2.6.2"
+    "tslib": "2.6.2",
+    "@sentry/node": "7.114.0",
+    "@snowplow/tracker-core": "3.23.0",
+    "@apollo/server": "4.10.4",
+    "graphql": "16.8.1",
+    "graphql-tag": "2.12.6",
+    "uuid": "9.0.1",
+    "@apollo/subgraph": "2.7.6"
   },
   "devDependencies": {
+    "@types/jest": "29.5.12",
     "@graphql-codegen/cli": "5.0.2",
     "@graphql-codegen/typescript": "4.0.6",
     "@graphql-codegen/typescript-resolvers": "^4.0.6",

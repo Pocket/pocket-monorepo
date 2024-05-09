@@ -1769,9 +1769,15 @@ importers:
       eslint-config-prettier:
         specifier: ^9.1.0
         version: 9.1.0(eslint@9.2.0)
+      eslint-plugin-package-json:
+        specifier: ^0.13.1
+        version: 0.13.1(eslint@9.2.0)(jsonc-eslint-parser@2.4.0)
       eslint-plugin-prettier:
         specifier: ^5.1.3
         version: 5.1.3(eslint-config-prettier@9.1.0)(eslint@9.2.0)(prettier@3.2.5)
+      jsonc-eslint-parser:
+        specifier: ^2.4.0
+        version: 2.4.0
       prettier:
         specifier: ^3.2.5
         version: 3.2.5
@@ -3030,6 +3036,21 @@ importers:
 
   servers/shareable-lists-api:
     dependencies:
+      '@apollo/server':
+        specifier: 4.10.4
+        version: 4.10.4(graphql@16.8.1)
+      '@apollo/server-plugin-response-cache':
+        specifier: 4.1.3
+        version: 4.1.3(@apollo/server@4.10.4)(graphql@16.8.1)
+      '@apollo/subgraph':
+        specifier: 2.7.6
+        version: 2.7.6(graphql@16.8.1)
+      '@apollo/utils.keyvadapter':
+        specifier: 3.1.0
+        version: 3.1.0
+      '@apollo/utils.keyvaluecache':
+        specifier: 3.1.0
+        version: 3.1.0
       '@aws-sdk/client-eventbridge':
         specifier: 3.569.0
         version: 3.569.0
@@ -3048,6 +3069,9 @@ importers:
       '@prisma/client':
         specifier: 5.11.0
         version: 5.11.0(prisma@5.11.0)
+      '@sentry/node':
+        specifier: 7.114.0
+        version: 7.114.0
       cors:
         specifier: 2.8.5
         version: 2.8.5
@@ -3057,9 +3081,15 @@ importers:
       express-validator:
         specifier: ^7.0.1
         version: 7.0.1
+      graphql:
+        specifier: 16.8.1
+        version: 16.8.1
       graphql-constraint-directive:
         specifier: 5.4.2
         version: 5.4.2(graphql@16.8.1)
+      graphql-tag:
+        specifier: 2.12.6
+        version: 2.12.6(graphql@16.8.1)
       keyv:
         specifier: 4.5.4
         version: 4.5.4
@@ -3078,6 +3108,9 @@ importers:
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
+      winston:
+        specifier: 3.13.0
+        version: 3.13.0
     devDependencies:
       '@faker-js/faker':
         specifier: 8.4.1
@@ -3142,7 +3175,13 @@ importers:
       '@pocket-tools/ts-logger':
         specifier: workspace:*
         version: link:../../packages/ts-logger
+      '@sentry/node':
+        specifier: 7.114.0
+        version: 7.114.0
       '@snowplow/node-tracker':
+        specifier: 3.23.0
+        version: 3.23.0
+      '@snowplow/tracker-core':
         specifier: 3.23.0
         version: 3.23.0
       express:
@@ -3197,6 +3236,12 @@ importers:
 
   servers/shares-api:
     dependencies:
+      '@apollo/server':
+        specifier: 4.10.4
+        version: 4.10.4(graphql@16.8.1)
+      '@apollo/subgraph':
+        specifier: 2.7.6
+        version: 2.7.6(graphql@16.8.1)
       '@aws-sdk/client-dynamodb':
         specifier: 3.569.0
         version: 3.569.0
@@ -3215,21 +3260,36 @@ importers:
       '@pocket-tools/ts-logger':
         specifier: workspace:*
         version: link:../../packages/ts-logger
+      '@sentry/node':
+        specifier: 7.114.0
+        version: 7.114.0
+      '@snowplow/tracker-core':
+        specifier: 3.23.0
+        version: 3.23.0
       cors:
         specifier: 2.8.5
         version: 2.8.5
       express:
         specifier: 4.19.2
         version: 4.19.2
+      graphql:
+        specifier: 16.8.1
+        version: 16.8.1
       graphql-constraint-directive:
         specifier: 5.4.2
         version: 5.4.2(graphql@16.8.1)
       graphql-scalars:
         specifier: ^1.23.0
         version: 1.23.0(graphql@16.8.1)
+      graphql-tag:
+        specifier: 2.12.6
+        version: 2.12.6(graphql@16.8.1)
       tslib:
         specifier: 2.6.2
         version: 2.6.2
+      uuid:
+        specifier: 9.0.1
+        version: 9.0.1
     devDependencies:
       '@graphql-codegen/cli':
         specifier: 5.0.2
@@ -3246,6 +3306,9 @@ importers:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/jest':
+        specifier: 29.5.12
+        version: 29.5.12
       '@types/node':
         specifier: ^20.12.6
         version: 20.12.11
@@ -3282,6 +3345,12 @@ importers:
 
   servers/user-api:
     dependencies:
+      '@apollo/server':
+        specifier: 4.10.4
+        version: 4.10.4(graphql@16.8.1)
+      '@apollo/subgraph':
+        specifier: 2.7.6
+        version: 2.7.6(graphql@16.8.1)
       '@aws-sdk/client-eventbridge':
         specifier: 3.569.0
         version: 3.569.0
@@ -3300,12 +3369,21 @@ importers:
       '@pocket-tools/ts-logger':
         specifier: workspace:*
         version: link:../../packages/ts-logger
+      '@sentry/node':
+        specifier: 7.114.0
+        version: 7.114.0
       dataloader:
         specifier: 2.2.2
         version: 2.2.2
       express:
         specifier: 4.19.2
         version: 4.19.2
+      graphql:
+        specifier: 16.8.1
+        version: 16.8.1
+      graphql-tag:
+        specifier: 2.12.6
+        version: 2.12.6(graphql@16.8.1)
       knex:
         specifier: 3.1.0
         version: 3.1.0(mysql2@3.9.7)
@@ -3367,6 +3445,12 @@ importers:
 
   servers/user-list-search:
     dependencies:
+      '@apollo/server':
+        specifier: 4.10.4
+        version: 4.10.4(graphql@16.8.1)
+      '@apollo/subgraph':
+        specifier: 2.7.6
+        version: 2.7.6(graphql@16.8.1)
       '@aws-sdk/client-sqs':
         specifier: 3.569.0
         version: 3.569.0
@@ -3385,6 +3469,9 @@ importers:
       '@pocket-tools/ts-logger':
         specifier: workspace:*
         version: link:../../packages/ts-logger
+      '@sentry/node':
+        specifier: 7.114.0
+        version: 7.114.0
       elasticsearch:
         specifier: ^16.7.3
         version: 16.7.3
@@ -3394,9 +3481,15 @@ importers:
       express-validator:
         specifier: ^7.0.1
         version: 7.0.1
+      graphql:
+        specifier: 16.8.1
+        version: 16.8.1
       graphql-constraint-directive:
         specifier: 5.4.2
         version: 5.4.2(graphql@16.8.1)
+      graphql-tag:
+        specifier: 2.12.6
+        version: 2.12.6(graphql@16.8.1)
       knex:
         specifier: 3.1.0
         version: 3.1.0(mysql2@3.9.7)
@@ -3476,6 +3569,9 @@ importers:
 
   servers/v3-proxy-api:
     dependencies:
+      '@graphql-typed-document-node/core':
+        specifier: 3.2.0
+        version: 3.2.0(graphql@16.8.1)
       '@pocket-tools/apollo-utils':
         specifier: workspace:*
         version: link:../../packages/apollo-utils
@@ -3488,6 +3584,9 @@ importers:
       '@pocket-tools/ts-logger':
         specifier: workspace:*
         version: link:../../packages/ts-logger
+      '@sentry/node':
+        specifier: 7.114.0
+        version: 7.114.0
       express:
         specifier: 4.19.2
         version: 4.19.2
@@ -3647,6 +3746,19 @@ packages:
       uuid: 9.0.1
     dev: false
 
+  /@apollo/federation-internals@2.7.6(graphql@16.8.1):
+    resolution: {integrity: sha512-V1xbnkFb0UZpqHFjj5i52qX/ijd+Lxp3opVkeLLpKEXLKCaLG6S277IGUXIJQPYDiELUB9rbEq/FRUeRmdjRVA==}
+    engines: {node: '>=14.15.0'}
+    peerDependencies:
+      graphql: ^16.5.0
+    dependencies:
+      '@types/uuid': 9.0.8
+      chalk: 4.1.2
+      graphql: 16.8.1
+      js-levenshtein: 1.1.6
+      uuid: 9.0.1
+    dev: false
+
   /@apollo/protobufjs@1.2.7:
     resolution: {integrity: sha512-Lahx5zntHPZia35myYDBRuF58tlwPskwHc5CWBZC/4bMKB6siTBWwtMrkqXcsNwQiFSzSx5hKdRPUmemrEp3Gg==}
     hasBin: true
@@ -3736,6 +3848,17 @@ packages:
     dependencies:
       '@apollo/cache-control-types': 1.0.3(graphql@16.8.1)
       '@apollo/federation-internals': 2.7.4(graphql@16.8.1)
+      graphql: 16.8.1
+    dev: false
+
+  /@apollo/subgraph@2.7.6(graphql@16.8.1):
+    resolution: {integrity: sha512-xpRt9Zi4mX/oeYll4uv0eS3JDYrYH8jyeIWuGrsG1JFUY/HiF11YZv0DQXZ1+/HpO2gcjnmDYMLvTazeL1ZViA==}
+    engines: {node: '>=14.15.0'}
+    peerDependencies:
+      graphql: ^16.5.0
+    dependencies:
+      '@apollo/cache-control-types': 1.0.3(graphql@16.8.1)
+      '@apollo/federation-internals': 2.7.6(graphql@16.8.1)
       graphql: 16.8.1
     dev: false
 
@@ -9759,6 +9882,13 @@ packages:
       '@types/qs': 6.9.15
       '@types/serve-static': 1.15.7
 
+  /@types/glob@7.2.0:
+    resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
+    dependencies:
+      '@types/minimatch': 5.1.2
+      '@types/node': 20.12.11
+    dev: false
+
   /@types/graceful-fs@4.1.9:
     resolution: {integrity: sha512-olP3sd1qOEe5dXTSaFvQG+02VdRXcdytWLAZsAq1PecU8uqQAhkrnbli7DagjtXKW/Bl7YJbUsa8MPcuc8LHEQ==}
     dependencies:
@@ -9915,6 +10045,10 @@ packages:
 
   /@types/mime@1.3.5:
     resolution: {integrity: sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==}
+
+  /@types/minimatch@5.1.2:
+    resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
+    dev: false
 
   /@types/morgan@1.9.9:
     resolution: {integrity: sha512-iRYSDKVaC6FkGSpEVVIvrRGw0DfJMiQzIn3qr2G5B3C//AWkulhXgaBd7tS9/J79GWSYMTHGs7PfI5b3Y8m+RQ==}
@@ -12479,7 +12613,6 @@ packages:
   /detect-indent@6.1.0:
     resolution: {integrity: sha512-reYkTUJAZb9gUuZ2RvVCNhVHdg62RHnJ7WJl8ftMi4diZ6NWlciOzQN88pUhSELEwflJht4oQDv0F0BMlwaYtA==}
     engines: {node: '>=8'}
-    dev: true
 
   /detect-libc@1.0.3:
     resolution: {integrity: sha512-pGjwhsmsp4kL2RTz08wcOlGN83otlqHeD/Z5T8GXZB+/YcpQ/dgo+lbU8ZsGxV0HIvqqxo9l7mqYwyYMD9bKDg==}
@@ -12500,7 +12633,6 @@ packages:
   /detect-newline@3.1.0:
     resolution: {integrity: sha512-TLz+x/vEXm/Y7P7wn1EJFNLxYpUD4TgMosxY6fAVJUnJMbupHBOncxyWUG9OpTaH9EBD7uFI5LfEgmMOc54DsA==}
     engines: {node: '>=8'}
-    dev: true
 
   /detect-port@1.5.1:
     resolution: {integrity: sha512-aBzdj76lueB6uUst5iAs7+0H/oOjqI5D16XUWxlWMIMROhcM0rfsNVk93zTngq1dDNpoXRr++Sus7ETAExppAQ==}
@@ -13018,6 +13150,24 @@ packages:
       eslint: 9.2.0
     dev: false
 
+  /eslint-plugin-package-json@0.13.1(eslint@9.2.0)(jsonc-eslint-parser@2.4.0):
+    resolution: {integrity: sha512-aZkSvyJZRW4JKFhdoBhuPgc8sM/UAQN993uh956Yb8dSFCAV0Vkwrw09cuPL5onZ6ygF5pCqSs57wZRqGIwDQQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      eslint: '>=8.0.0'
+      jsonc-eslint-parser: ^2.0.0
+    dependencies:
+      detect-indent: 6.1.0
+      detect-newline: 3.1.0
+      eslint: 9.2.0
+      jsonc-eslint-parser: 2.4.0
+      package-json-validator: 0.6.4
+      semver: 7.6.1
+      sort-object-keys: 1.1.3
+      sort-package-json: 1.57.0
+      validate-npm-package-name: 5.0.1
+    dev: false
+
   /eslint-plugin-prettier@5.1.3(eslint-config-prettier@9.1.0)(eslint@9.2.0)(prettier@3.2.5):
     resolution: {integrity: sha512-C9GCVAs4Eq7ZC/XFQHITLiHJxQngdtraXaM+LoUFoFp/lHNl2Zn8f3WQbe9HvTBBQ9YnKFB0/2Ajdqwo5D1EAw==}
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -13122,6 +13272,15 @@ packages:
       acorn: 8.11.3
       acorn-jsx: 5.3.2(acorn@8.11.3)
       eslint-visitor-keys: 4.0.0
+    dev: false
+
+  /espree@9.6.1:
+    resolution: {integrity: sha512-oruZaFkjorTpF32kDSI5/75ViwGeZginGGy2NoOSg3Q9bnwlnmDm4HLnkl0RE3n+njDXR037aY1+x58Z/zFdwQ==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    dependencies:
+      acorn: 8.11.3
+      acorn-jsx: 5.3.2(acorn@8.11.3)
+      eslint-visitor-keys: 3.4.3
     dev: false
 
   /esprima@4.0.1:
@@ -13980,6 +14139,10 @@ packages:
       shelljs.exec: 1.1.8
     dev: true
 
+  /git-hooks-list@1.0.3:
+    resolution: {integrity: sha512-Y7wLWcrLUXwk2noSka166byGCvhMtDRpgHdzCno1UQv/n/Hegp++a2xBWJL1lJarnKD3SWaljD+0z1ztqxuKyQ==}
+    dev: false
+
   /git-log-parser@1.2.0:
     resolution: {integrity: sha512-rnCVNfkTL8tdNryFuaY0fYiBWEBcgF748O6ZI61rslBvr2o7U65c2/6npCRqH40vuAhtgtDiqLTJjBVdrejCzA==}
     dependencies:
@@ -14084,6 +14247,20 @@ packages:
     dependencies:
       define-properties: 1.2.1
       gopd: 1.0.1
+
+  /globby@10.0.0:
+    resolution: {integrity: sha512-3LifW9M4joGZasyYPz2A1U74zbC/45fvpXUvO/9KbSa+VV0aGZarWkfdgKyR9sExNP0t0x0ss/UMJpNpcaTspw==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@types/glob': 7.2.0
+      array-union: 2.1.0
+      dir-glob: 3.0.1
+      fast-glob: 3.3.2
+      glob: 7.2.3
+      ignore: 5.3.1
+      merge2: 1.4.1
+      slash: 3.0.0
+    dev: false
 
   /globby@11.1.0:
     resolution: {integrity: sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g==}
@@ -15092,6 +15269,11 @@ packages:
   /is-path-inside@3.0.3:
     resolution: {integrity: sha512-Fd4gABb+ycGAmKou8eMftCupSir5lRxqf4aD/vd0cD2qc4HL07OjCeuHMr8Ro4CoMaeCKDB0/ECBOVWjTwUvPQ==}
     engines: {node: '>=8'}
+
+  /is-plain-obj@2.1.0:
+    resolution: {integrity: sha512-YWnfyRwxL/+SsrWYfOpUtz5b3YD+nyfkHvjbcanzk8zgyO4ASD67uVMRt8k5bM4lLMDnXfriRhOpemw+NfT1eA==}
+    engines: {node: '>=8'}
+    dev: false
 
   /is-plain-object@2.0.4:
     resolution: {integrity: sha512-h5PpgXkWitc38BBMYawTYMWJHFZJVnBquFE57xFpjB8pJFiF6gZ+bU+WyI/yqXiFR5mdLsgYNaPe8uao6Uv9Og==}
@@ -16243,6 +16425,16 @@ packages:
     hasBin: true
     dev: true
 
+  /jsonc-eslint-parser@2.4.0:
+    resolution: {integrity: sha512-WYDyuc/uFcGp6YtM2H0uKmUwieOuzeE/5YocFJLnLfclZ4inf3mRn8ZVy1s7Hxji7Jxm6Ss8gqpexD/GlKoGgg==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    dependencies:
+      acorn: 8.11.3
+      eslint-visitor-keys: 3.4.3
+      espree: 9.6.1
+      semver: 7.6.1
+    dev: false
+
   /jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
     optionalDependencies:
@@ -17154,6 +17346,10 @@ packages:
     dependencies:
       brace-expansion: 2.0.1
 
+  /minimist@0.0.10:
+    resolution: {integrity: sha512-iotkTvxc+TwOm5Ieim8VnSNvCDjCK9S8G3scJ50ZthspSxa7jx50jkhYduuAtAjvfDUwSgOwf8+If99AlOEhyw==}
+    dev: false
+
   /minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
 
@@ -17914,6 +18110,13 @@ packages:
     resolution: {integrity: sha512-N4YtSYJqghVu4iek2ZUvcN/0aqH1kRDuNqzcycDxhOUpg7GdvLa2F3DgS6yBNhInhv2r/6I0Flkn7CqL8+nIcw==}
     dev: false
 
+  /optimist@0.6.1:
+    resolution: {integrity: sha512-snN4O4TkigujZphWLN0E//nQmm7790RYaE53DdL7ZYwee2D8DDo9/EyYiKUfN3rneWUjhJnueija3G9I2i0h3g==}
+    dependencies:
+      minimist: 0.0.10
+      wordwrap: 0.0.3
+    dev: false
+
   /optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
     engines: {node: '>= 0.8.0'}
@@ -18111,6 +18314,13 @@ packages:
   /p-try@2.2.0:
     resolution: {integrity: sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==}
     engines: {node: '>=6'}
+
+  /package-json-validator@0.6.4:
+    resolution: {integrity: sha512-sp5bWr5eUoVgNV50vsJyil0XCluM+qMvtba8X4ug5Z/0YtYZsePka+tZgqiZnAyFyf5pwXaSDwYncFdSEzX7PA==}
+    hasBin: true
+    dependencies:
+      optimist: 0.6.1
+    dev: false
 
   /pako@0.2.9:
     resolution: {integrity: sha512-NUcwaKxUxWrZLpDG+z/xZaCgQITkA/Dv4V/T6bw7VON6l1Xz/VnrBqrYjZQ12TamKHzITTfOEIYUj48y2KXImA==}
@@ -19864,6 +20074,22 @@ packages:
       minimist: 1.2.8
     dev: false
 
+  /sort-object-keys@1.1.3:
+    resolution: {integrity: sha512-855pvK+VkU7PaKYPc+Jjnmt4EzejQHyhhF33q31qG8x7maDzkeFhAAThdCYay11CISO+qAMwjOBP+fPZe0IPyg==}
+    dev: false
+
+  /sort-package-json@1.57.0:
+    resolution: {integrity: sha512-FYsjYn2dHTRb41wqnv+uEqCUvBpK3jZcTp9rbz2qDTmel7Pmdtf+i2rLaaPMRZeSVM60V3Se31GyWFpmKs4Q5Q==}
+    hasBin: true
+    dependencies:
+      detect-indent: 6.1.0
+      detect-newline: 3.1.0
+      git-hooks-list: 1.0.3
+      globby: 10.0.0
+      is-plain-obj: 2.1.0
+      sort-object-keys: 1.1.3
+    dev: false
+
   /source-map-js@1.2.0:
     resolution: {integrity: sha512-itJW8lvSA0TXEphiRoawsCksnlf8SyvmFzIhltqAHluXd88pkCd+cXJVHTDwdCr0IzwptSm035IHQktUu1QUMg==}
     engines: {node: '>=0.10.0'}
@@ -21447,7 +21673,6 @@ packages:
   /validate-npm-package-name@5.0.1:
     resolution: {integrity: sha512-OljLrQ9SQdOUqTaQxqL5dEfZWrXExyyWsozYlAWFawPVNuD83igl7uJD2RTkNMbniIYgt8l81eCJGIdQF7avLQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-    dev: true
 
   /validator@13.11.0:
     resolution: {integrity: sha512-Ii+sehpSfZy+At5nPdnyMhx78fEoPDkR2XW/zimHEL3MyGJQOCQ7WeP20jPYRz7ZCpcKLB21NxuXHF3bxjStBQ==}
@@ -21658,6 +21883,11 @@ packages:
   /word-wrap@1.2.5:
     resolution: {integrity: sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==}
     engines: {node: '>=0.10.0'}
+    dev: false
+
+  /wordwrap@0.0.3:
+    resolution: {integrity: sha512-1tMA907+V4QmxV7dbRvb4/8MaRALK6q9Abid3ndMYnbyo8piisCmeONVqVSXqQA3KaP4SLt5b7ud6E2sqP8TFw==}
+    engines: {node: '>=0.4.0'}
     dev: false
 
   /wordwrap@1.0.0:

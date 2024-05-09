@@ -3,6 +3,7 @@
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import packageJson from 'eslint-plugin-package-json/configs/recommended';
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -34,6 +35,7 @@ export default tseslint.config(
       },
     },
   },
+  packageJson,
   // Must be last, turns on prettier rules
   // https://github.com/prettier/eslint-plugin-prettier?tab=readme-ov-file#configuration-new-eslintconfigjs
   // also uses eslint-config-prettier to turn off conflicting rules
