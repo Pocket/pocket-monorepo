@@ -1,5 +1,6 @@
 {
   "name": "user-api",
+  "version": "1.0.0",
   "main": "dist/main.js",
   "files": [
     "dist",
@@ -9,31 +10,31 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "dev": "npm run build && NODE_ENV=development npm run watch",
-    "format": "eslint --fix \"src/**/*.ts\"",
-    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix",
+    "lint": "eslint --fix-dry-run",
     "start": "node dist/main.js",
     "test": "jest \"\\.spec\\.ts\"",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",
     "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json"
   },
   "dependencies": {
+    "@apollo/server": "4.10.4",
+    "@apollo/subgraph": "2.7.6",
     "@aws-sdk/client-eventbridge": "3.569.0",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/int-mask": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
+    "@sentry/node": "7.114.0",
     "dataloader": "2.2.2",
     "express": "4.19.2",
+    "graphql": "16.8.1",
+    "graphql-tag": "2.12.6",
     "knex": "3.1.0",
     "luxon": "3.4.4",
     "mysql2": "3.9.7",
-    "tslib": "2.6.2",
-    "@sentry/node": "7.114.0",
-    "@apollo/server": "4.10.4",
-    "graphql": "16.8.1",
-    "graphql-tag": "2.12.6",
-    "@apollo/subgraph": "2.7.6"
+    "tslib": "2.6.2"
   },
   "devDependencies": {
     "@faker-js/faker": "8.4.1",

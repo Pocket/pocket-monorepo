@@ -18,8 +18,8 @@
     "build:dev": "rm -rf dist && NODE_ENV=development npm run example:synth",
     "compile": "tsc --pretty",
     "example:synth": "cdktf synth",
-    "format": "eslint --fix \"src/**/*.ts\"",
-    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix",
+    "lint": "eslint --fix-dry-run",
     "semantic-release": "semantic-release",
     "test": "jest --ci --maxWorkers=4 --logHeapUsage",
     "test:watch": "npm test -- --watch --watch-extensions ts -R min --watch-files src"

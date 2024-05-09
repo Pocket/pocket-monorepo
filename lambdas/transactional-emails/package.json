@@ -12,8 +12,8 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "dev": "tsc -w",
-    "format": "eslint --fix \"src/**/*.ts\"",
-    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix",
+    "lint": "eslint --fix-dry-run",
     "test": "jest \"\\.spec\\.ts\"",
     "test:watch": "npm test -- --watchAll"
   },

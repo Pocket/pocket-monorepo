@@ -13,8 +13,8 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "dev": "npm run build && npm run watch",
-    "format": "eslint --fix \"src/**/*.ts\"",
-    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix",
+    "lint": "eslint --fix-dry-run",
     "start": "node dist/server/main.js",
     "test": "jest \"\\.spec\\.ts\"",
     "test-ci": "npm test",
@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@apollo/server": "4.10.4",
-    "@apollo/subgraph": "2.7.4",
+    "@apollo/subgraph": "2.7.6",
     "@apollo/utils.keyvadapter": "3.1.0",
     "@keyv/redis": "2.8.4",
     "@pocket-tools/apollo-utils": "workspace:*",

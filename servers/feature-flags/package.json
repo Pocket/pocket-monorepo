@@ -13,8 +13,8 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "dev": "npm run build && NODE_ENV=local npm run watch",
-    "format": "eslint --fix \"src/**/*.ts\"",
-    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix",
+    "lint": "eslint --fix-dry-run",
     "start": "node dist/main.js",
     "test": "jest \"\\.spec\\.ts\"",
     "test:watch": "npm test -- --watchAll",
@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@apollo/server": "4.10.4",
-    "@apollo/subgraph": "2.7.4",
+    "@apollo/subgraph": "2.7.6",
     "@govtechsg/passport-openidconnect": "1.0.2",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",

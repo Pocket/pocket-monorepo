@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "description": "Push notification server",
-  "repository": "https://github.com/Pocket/PushServer.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Pocket/pocket-monorepo"
+  },
   "license": "BSD",
   "author": "",
   "main": "dist/index.js",
@@ -14,8 +17,8 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "dev": "npm run build && npm run watch",
-    "format": "eslint --fix \"src/**/*.ts\"",
-    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix",
+    "lint": "eslint --fix-dry-run",
     "start": "node -r dotenv/config dist/index.js",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand --forceExit",
     "test:watch": "npm test -- --watchAll",

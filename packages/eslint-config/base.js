@@ -35,7 +35,29 @@ export default tseslint.config(
       },
     },
   },
-  packageJson,
+  {
+    ignores: [
+      'node_modules/*',
+      'dist/*',
+      '*.mjs',
+      '*.js',
+      '**/*.js',
+      'codegen.ts',
+      'prisma/**/*',
+    ],
+  },
+  {
+    ...packageJson,
+    rules: {
+      ...packageJson.rules,
+      'package-json/order-properties': [
+        'error',
+        {
+          order: 'sort-package-json',
+        },
+      ],
+    },
+  },
   // Must be last, turns on prettier rules
   // https://github.com/prettier/eslint-plugin-prettier?tab=readme-ov-file#configuration-new-eslintconfigjs
   // also uses eslint-config-prettier to turn off conflicting rules

@@ -13,8 +13,8 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "dev": "pnpm run build --watch",
-    "format": "eslint --fix \"src/**/*.ts\"",
-    "lint": "eslint --fix-dry-run \"src/**/*.ts\""
+    "format": "eslint --fix",
+    "lint": "eslint --fix-dry-run"
   },
   "dependencies": {
     "@sentry/node": "7.114.0",

@@ -9,8 +9,8 @@
   ],
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "format": "eslint --fix \"src/**/*.ts\"",
-    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix",
+    "lint": "eslint --fix-dry-run",
     "test": "jest \"\\.spec\\.ts\""
   },
   "dependencies": {

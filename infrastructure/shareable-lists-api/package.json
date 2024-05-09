@@ -8,18 +8,18 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "compile": "tsc --pretty",
-    "format": "eslint --fix \"src/**/*.ts\"",
-    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix",
+    "lint": "eslint --fix-dry-run",
     "synth": "cdktf synth",
     "watch": "tsc -w"
   },
   "dependencies": {
-    "@pocket-tools/terraform-modules": "workspace:*",
     "@cdktf/provider-archive": "10.0.1",
     "@cdktf/provider-aws": "19.15.0",
     "@cdktf/provider-local": "10.1.0",
     "@cdktf/provider-null": "10.0.0",
     "@cdktf/provider-pagerduty": "13.7.4",
+    "@pocket-tools/terraform-modules": "workspace:*",
     "cdktf": "0.20.7",
     "cdktf-cli": "0.20.7",
     "constructs": "10.3.0"

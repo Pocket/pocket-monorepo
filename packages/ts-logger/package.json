@@ -19,8 +19,8 @@
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "clean": "rm -rf node_modules dist",
     "dev": "pnpm run build --watch",
-    "format": "eslint --fix \"src/**/*.ts\"",
-    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "format": "eslint --fix",
+    "lint": "eslint --fix-dry-run",
     "semantic-release": "semantic-release",
     "test": "jest",
     "test:watch": "pnpm run test -- --watch"
