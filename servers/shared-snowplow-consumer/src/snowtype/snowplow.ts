@@ -18,12 +18,12 @@ export interface ObjectUpdate {
 /**
  * The name of the entity being updated.
  */
-export type Object = "account" | "syndicated_article" | "newsletter_subscriber" | "user" | "payment_subscription" | "collection" | "reviewed_corpus_item" | "scheduled_corpus_item" | "corpus_slate" | "corpus_slate_lineup" | "prospect" | "shareable_list" | "shareable_list_item";
+export type Object = "account" | "syndicated_article" | "newsletter_subscriber" | "user" | "payment_subscription" | "collection" | "reviewed_corpus_item" | "scheduled_corpus_candidate" | "scheduled_corpus_item" | "prospect" | "shareable_list" | "shareable_list_item" | "pocket_share";
 
 /**
  * The backend action taken that triggers the object update.
  */
-export type ObjectUpdateTrigger = "sso_login" | "account_signup" | "account_product_digest_update" | "account_email_updated" | "account_delete" | "collection_created" | "collection_updated" | "corpus_slate_recommendation" | "corpus_slate_lineup_recommendation" | "newsletter_signup" | "payment_subscription_renewed" | "payment_subscription_ended" | "payment_subscription_created" | "prospect_reviewed" | "reviewed_corpus_item_updated" | "reviewed_corpus_item_removed" | "reviewed_corpus_item_rejected" | "reviewed_corpus_item_added" | "scheduled_corpus_item_rescheduled" | "scheduled_corpus_item_removed" | "scheduled_corpus_item_added" | "shareable_list_created" | "shareable_list_updated" | "shareable_list_deleted" | "shareable_list_hidden" | "shareable_list_unhidden" | "shareable_list_published" | "shareable_list_unpublished" | "shareable_list_item_created" | "shareable_list_item_deleted" | "shareable_list_item_updated" | "modify" | "insert" | "user_guid_linked" | "account_login" | "account_password_changed";
+export type ObjectUpdateTrigger = "sso_login" | "account_signup" | "account_product_digest_update" | "account_email_updated" | "account_delete" | "collection_created" | "collection_updated" | "newsletter_signup" | "payment_subscription_renewed" | "payment_subscription_ended" | "payment_subscription_created" | "pocket_share_created" | "pocket_share_context_updated" | "prospect_created" | "prospect_reviewed" | "reviewed_corpus_item_updated" | "reviewed_corpus_item_removed" | "reviewed_corpus_item_rejected" | "reviewed_corpus_item_added" | "scheduled_corpus_candidate_generated" | "scheduled_corpus_item_rescheduled" | "scheduled_corpus_item_removed" | "scheduled_corpus_item_added" | "shareable_list_created" | "shareable_list_updated" | "shareable_list_deleted" | "shareable_list_hidden" | "shareable_list_unhidden" | "shareable_list_published" | "shareable_list_unpublished" | "shareable_list_item_created" | "shareable_list_item_deleted" | "shareable_list_item_updated" | "modify" | "insert" | "user_guid_linked" | "account_login" | "account_password_changed";
 
 /**
  * Entity that describes the concept of an item within a shareable list. This item must be
@@ -726,16 +726,41 @@ export interface Prospect {
  */
 export type ProspectReviewStatus = "created" | "recommendation" | "corpus" | "rejected" | "dismissed";
 
+/**
+ * Entity to describe an Item that has been shared from the Pocket Share button.
+ */
+export interface PocketShare {
+    /**
+     * The UTC unix timestamp (in seconds) for when the list item was created (list.time_added).
+     */
+    created_at: number;
+    /**
+     * The number of characters in the attached note (zero if there is no note)
+     */
+    note_length: number;
+    /**
+     * The number of quotes from the article included on the share (can be zero)
+     */
+    quote_count: number;
+    /**
+     * The share url's slug. Corresponds to the slug used in the database.
+     */
+    slug: string;
+    /**
+     * The URL of the Item that was shared.
+     */
+    target_url: string;
+}
+
 import { buildSelfDescribingEvent, SelfDescribingJson, Timestamp, Tracker } from '@snowplow/node-tracker';
 
-// WARNING!
-// NOTE POCKET DEV - OUT OF BOUND CHANGE TO EXPORT THIS. IF YOU REGENERATE TYPES, RE-EXPORT THIS
-export interface CommonEventProperties<T = Record<string, unknown>> {
+interface CommonEventProperties<T = Record<string, unknown>> {
     /** Add context to an event by setting an Array of Self Describing JSON */
     context?: Array<SelfDescribingJson<T>> | null;
     /** Set the true timestamp or overwrite the device sent timestamp on an event */
     timestamp?: Timestamp | null;
 }
+
 
 /**
  * Track a Snowplow event for ObjectUpdate.
@@ -745,7 +770,7 @@ export function trackObjectUpdate<T extends {} = any>(tracker: Tracker, objectUp
     const { context, timestamp, ...data } = objectUpdate;
     tracker.track(buildSelfDescribingEvent({
         event: {
-            schema: 'iglu:com.pocket/object_update/jsonschema/1-0-16',
+            schema: 'iglu:com.pocket/object_update/jsonschema/1-0-20',
             data
         }
     }), context, timestamp);
@@ -756,7 +781,7 @@ export function trackObjectUpdate<T extends {} = any>(tracker: Tracker, objectUp
  */
 export function createObjectUpdate(objectUpdate: ObjectUpdate){
     return {
-        schema: 'iglu:com.pocket/object_update/jsonschema/1-0-16',
+        schema: 'iglu:com.pocket/object_update/jsonschema/1-0-20',
         data: objectUpdate
     }
 }
@@ -965,6 +990,29 @@ export function createProspect(prospect: Prospect){
     return {
         schema: 'iglu:com.pocket/prospect/jsonschema/1-0-1',
         data: prospect
+    }
+}
+/**
+ * Track a Snowplow event for PocketShare.
+ * Entity to describe an Item that has been shared from the Pocket Share button.
+ */
+export function trackPocketShare<T extends {} = any>(tracker: Tracker, pocketShare: PocketShare & CommonEventProperties<T>){
+    const { context, timestamp, ...data } = pocketShare;
+    tracker.track(buildSelfDescribingEvent({
+        event: {
+            schema: 'iglu:com.pocket/pocket_share/jsonschema/1-0-1',
+            data
+        }
+    }), context, timestamp);
+}
+
+/**
+ * Creates a Snowplow PocketShare entity.
+ */
+export function createPocketShare(pocketShare: PocketShare){
+    return {
+        schema: 'iglu:com.pocket/pocket_share/jsonschema/1-0-1',
+        data: pocketShare
     }
 }
 

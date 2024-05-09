@@ -3,6 +3,7 @@ import { prospectEventConsumer } from './prospectEvents/prospectEventConsumer';
 import { collectionEventConsumer } from './collectionEvents/collectionEventConsumer';
 import { shareableListEventConsumer } from './shareableListEvents/shareableListEventConsumer';
 import { shareableListItemEventConsumer } from './shareableListItemEvents/shareableListItemEventConsumer';
+import { pocketShareEventConsumer } from './sharesEvents/sharesEventConsumer';
 
 //any types shared between events can be added here
 
@@ -24,6 +25,8 @@ export enum EventType {
   SHAREABLE_LIST_ITEM_CREATED = 'shareable_list_item_created',
   SHAREABLE_LIST_ITEM_UPDATED = 'shareable_list_item_updated',
   SHAREABLE_LIST_ITEM_DELETED = 'shareable_list_item_deleted',
+  POCKET_SHARE_CREATED = 'pocket_share_created',
+  POCKET_SHARE_CONTEXT_UPDATED = 'pocket_share_context_updated',
 }
 
 // Mapping of detail-type (via event bridge message)
@@ -46,4 +49,6 @@ export const eventConsumer: {
   [EventType.SHAREABLE_LIST_ITEM_CREATED]: shareableListItemEventConsumer,
   [EventType.SHAREABLE_LIST_ITEM_UPDATED]: shareableListItemEventConsumer,
   [EventType.SHAREABLE_LIST_ITEM_DELETED]: shareableListItemEventConsumer,
+  [EventType.POCKET_SHARE_CREATED]: pocketShareEventConsumer,
+  [EventType.POCKET_SHARE_CONTEXT_UPDATED]: pocketShareEventConsumer,
 };
