@@ -21,7 +21,6 @@
   "devDependencies": {
     "@faker-js/faker": "8.4.1",
     "@types/elasticsearch": "^5.0.37",
-    "@types/graphql": "^14.5.0",
     "@types/jest": "29.5.12",
     "@types/mysql": "2.15.26",
     "@types/supertest": "^6.0.2",
@@ -34,7 +33,10 @@
     "supertest": "6.3.4",
     "ts-jest": "29.1.2",
     "tsconfig": "workspace:*",
-    "unleash-client": "5.5.2"
+    "unleash-client": "5.5.2",
+    "@types/node": "^20.12.6",
+    "ts-node": "10.9.2",
+    "typescript": "5.4.4"
   },
   "dependencies": {
     "@aws-sdk/client-sqs": "3.569.0",
@@ -46,9 +48,7 @@
     "elasticsearch": "^16.7.3",
     "express": "4.19.2",
     "express-validator": "^7.0.1",
-    "graphql": "16.8.1",
     "graphql-constraint-directive": "5.4.2",
-    "graphql-tag": "2.12.6",
     "knex": "3.1.0",
     "lodash": "4.17.21",
     "mysql2": "3.9.7",

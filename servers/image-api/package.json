@@ -25,7 +25,11 @@
     "nodemon": "3.1.0",
     "supertest": "6.3.4",
     "ts-jest": "29.1.2",
-    "tsconfig": "workspace:*"
+    "tsconfig": "workspace:*",
+    "@types/node": "^20.12.6",
+    "ts-node": "10.9.2",
+    "typescript": "5.4.4",
+    "@jest/globals": "29.7.0"
   },
   "dependencies": {
     "@keyv/redis": "2.8.4",
@@ -36,7 +40,15 @@
     "axios": "1.6.8",
     "axios-retry": "4.1.0",
     "dataloader": "2.2.2",
-    "parse-url": "9.2.0"
+    "parse-url": "9.2.0",
+    "tslib": "2.6.2",
+    "graphql-tag": "2.12.6",
+    "graphql": "16.8.1",
+    "@apollo/server": "4.10.4",
+    "@apollo/subgraph": "2.7.4",
+    "express": "4.19.2",
+    "@apollo/utils.keyvadapter": "3.1.0",
+    "keyv": "4.5.4"
   },
   "files": [
     "dist",

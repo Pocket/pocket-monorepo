@@ -28,7 +28,8 @@
     "cors": "2.8.5",
     "express": "4.19.2",
     "graphql-constraint-directive": "5.4.2",
-    "graphql-scalars": "^1.23.0"
+    "graphql-scalars": "^1.23.0",
+    "tslib": "2.6.2"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "5.0.2",
@@ -43,7 +44,10 @@
     "nodemon": "3.1.0",
     "supertest": "6.3.4",
     "ts-jest": "29.1.2",
-    "tsconfig": "workspace:*"
+    "tsconfig": "workspace:*",
+    "@types/node": "^20.12.6",
+    "ts-node": "10.9.2",
+    "typescript": "5.4.4"
   },
   "files": [
     "dist",

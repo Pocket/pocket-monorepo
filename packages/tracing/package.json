@@ -33,6 +33,7 @@
     "typescript": "5.4.4"
   },
   "dependencies": {
+    "@opentelemetry/api": "1.8.0",
     "@opentelemetry/exporter-trace-otlp-grpc": "0.51.1",
     "@opentelemetry/exporter-trace-otlp-http": "0.51.1",
     "@opentelemetry/id-generator-aws-xray": "1.2.2",

@@ -1,6 +1,6 @@
 import { getUnleash } from '@pocket-tools/feature-flags-client';
 import config from './config';
-import { Unleash } from 'unleash-client';
+import type { Unleash } from '@pocket-tools/feature-flags-client';
 
 let _unleash: Unleash;
 

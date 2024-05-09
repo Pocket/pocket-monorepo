@@ -25,7 +25,10 @@
     "@pocket-tools/eslint-config": "workspace:*",
     "jest": "29.7.0",
     "ts-jest": "29.1.2",
-    "tsconfig": "workspace:*"
+    "tsconfig": "workspace:*",
+    "@types/node": "^20.12.6",
+    "ts-node": "10.9.2",
+    "typescript": "5.4.4"
   },
   "files": [
     "dist",

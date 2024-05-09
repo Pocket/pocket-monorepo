@@ -8,14 +8,21 @@
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
     "cors": "2.8.5",
-    "express": "4.19.2",
     "jsonwebtoken": "^9.0.0",
     "jwk-to-pem": "^2.0.5",
     "jwks-rsa": "3.1.0",
     "passport": "0.7.0",
     "passport-jwt": "4.0.1",
     "unleash-client": "5.5.2",
-    "unleash-server": "5.11.2"
+    "unleash-server": "5.11.2",
+    "tslib": "2.6.2",
+    "@sentry/node": "7.113.0",
+    "@apollo/server": "4.10.4",
+    "@apollo/subgraph": "2.7.4",
+    "express": "4.19.2",
+    "body-parser": "1.20.2",
+    "graphql-tag": "2.12.6",
+    "graphql": "16.8.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
@@ -30,7 +37,10 @@
     "nock": "13.5.4",
     "nodemon": "3.1.0",
     "ts-jest": "29.1.2",
-    "tsconfig": "workspace:*"
+    "tsconfig": "workspace:*",
+    "@types/node": "^20.12.6",
+    "ts-node": "10.9.2",
+    "typescript": "5.4.4"
   },
   "scripts": {
     "build": "rm -rf dist && tsc",

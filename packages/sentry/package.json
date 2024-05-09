@@ -27,10 +27,16 @@
     "ts-node": "10.9.2",
     "tslib": "2.6.2",
     "tsup": "8.0.2",
-    "typescript": "5.4.4"
+    "typescript": "5.4.4",
+    "@types/express": "4.17.21"
   },
   "dependencies": {
     "@sentry/node": "7.113.0",
-    "@sentry/tracing": "7.113.0"
+    "@sentry/tracing": "7.113.0",
+    "express": "4.19.2"
+  },
+  "peerDependencies": {
+    "@sentry/node": "7.113.0",
+    "express": "4.19.2"
   }
 }

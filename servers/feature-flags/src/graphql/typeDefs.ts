@@ -1,7 +1,8 @@
 import path from 'path';
 import fs from 'fs';
-import { gql } from 'graphql-tag';
 import { Context, Properties } from 'unleash-client/lib/context';
+import { gql } from 'graphql-tag';
+import { DocumentNode } from 'graphql';
 
 /**
  * Any updates to the types in this file also need to be reflected in the schema.gql.
@@ -56,7 +57,7 @@ export type UnleashAssignmentList = {
   assignments: UnleashAssignment[];
 };
 
-export const typeDefs = gql(
+export const typeDefs: DocumentNode = gql(
   fs
     .readFileSync(path.join(__dirname, '..', '..', 'schema.graphql'))
     .toString(),

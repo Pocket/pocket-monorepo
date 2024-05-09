@@ -13,7 +13,8 @@
     "@sentry/serverless": "7.113.0",
     "@aws-sdk/client-sqs": "3.569.0",
     "highland": "2.13.5",
-    "tslib": "2.6.2"
+    "tslib": "2.6.2",
+    "uuid": "9.0.1"
   },
   "devDependencies": {
     "@types/aws-lambda": "8.10.137",
@@ -24,7 +25,10 @@
     "nock": "13.5.4",
     "ts-jest": "29.1.2",
     "tsconfig": "workspace:*",
-    "jest-extended": "4.0.2"
+    "jest-extended": "4.0.2",
+    "@types/node": "^20.12.6",
+    "ts-node": "10.9.2",
+    "typescript": "5.4.4"
   },
   "files": [
     "dist",

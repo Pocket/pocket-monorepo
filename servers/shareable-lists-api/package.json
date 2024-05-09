@@ -40,12 +40,12 @@
     "kysely": "0.27.3",
     "mysql2": "3.9.7",
     "slugify": "1.6.6",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "tslib": "2.6.2"
   },
   "devDependencies": {
     "@faker-js/faker": "8.4.1",
     "@types/jest": "29.5.12",
-    "@types/node": "^20.12.6",
     "dotenv": "16.4.5",
     "@pocket-tools/eslint-config": "workspace:*",
     "jest": "29.7.0",
@@ -55,7 +55,10 @@
     "prisma-kysely": "1.8.0",
     "supertest": "6.3.4",
     "ts-jest": "29.1.2",
-    "tsconfig": "workspace:*"
+    "tsconfig": "workspace:*",
+    "@types/node": "^20.12.6",
+    "ts-node": "10.9.2",
+    "typescript": "5.4.4"
   },
   "files": [
     "dist",

@@ -48,12 +48,21 @@
     "@apollo/utils.keyvaluecache": "3.1.0",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "7.113.0",
-    "apollo-server-cache-redis": "3.3.1",
     "express": "4.19.2",
     "graphql-tag": "2.12.6",
+    "graphql": "16.8.1",
     "ioredis": "5.3.2",
     "luxon": "3.4.4",
     "md5": "2.3.0"
+  },
+  "peerDependencies": {
+    "@apollo/server": "4.10.4",
+    "@apollo/subgraph": "2.7.4",
+    "@apollo/utils.keyvadapter": "3.1.0",
+    "@apollo/utils.keyvaluecache": "3.1.0",
+    "express": "4.19.2",
+    "graphql-tag": "2.12.6",
+    "graphql": "16.8.1"
   },
   "files": [
     "dist",
