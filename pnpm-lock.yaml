@@ -1122,7 +1122,7 @@ importers:
         specifier: 2.6.2
         version: 2.6.2
       uuid:
-        specifier: 9.0.1
+        specifier: ^9.0.1
         version: 9.0.1
     devDependencies:
       '@pocket-tools/eslint-config':
@@ -1186,8 +1186,8 @@ importers:
         specifier: workspace:*
         version: link:../ts-logger
       '@sentry/node':
-        specifier: 7.113.0
-        version: 7.113.0
+        specifier: 7.114.0
+        version: 7.114.0
       express:
         specifier: 4.19.2
         version: 4.19.2
@@ -1442,8 +1442,8 @@ importers:
   packages/sentry:
     dependencies:
       '@sentry/node':
-        specifier: 7.113.0
-        version: 7.113.0
+        specifier: 7.114.0
+        version: 7.114.0
       '@sentry/tracing':
         specifier: 7.113.0
         version: 7.113.0
@@ -1900,7 +1900,7 @@ importers:
         specifier: 3.3.7
         version: 3.3.7
       node-fetch:
-        specifier: ^2.6.7
+        specifier: 2.7.0
         version: 2.7.0
       tslib:
         specifier: 2.6.2
@@ -1988,8 +1988,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/sentry
       '@sentry/node':
-        specifier: 7.113.0
-        version: 7.113.0
+        specifier: 7.114.0
+        version: 7.114.0
       body-parser:
         specifier: 1.20.2
         version: 1.20.2
@@ -2254,7 +2254,7 @@ importers:
         specifier: 3.9.7
         version: 3.9.7
       node-fetch:
-        specifier: ^2.6.7
+        specifier: 2.7.0
         version: 2.7.0
       unleash-client:
         specifier: 5.5.2
@@ -2511,8 +2511,8 @@ importers:
         specifier: 3.569.0
         version: 3.569.0
       '@sentry/node':
-        specifier: 7.113.0
-        version: 7.113.0
+        specifier: 7.114.0
+        version: 7.114.0
       apns2:
         specifier: 11.7.0
         version: 11.7.0
