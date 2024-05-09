@@ -22,7 +22,6 @@
     "@sentry/serverless": "7.114.0",
     "jsonwebtoken": "^9.0.0",
     "jwk-to-pem": "^2.0.5",
-    "node-fetch": "2.7.0",
     "tslib": "2.6.2"
   },
   "devDependencies": {

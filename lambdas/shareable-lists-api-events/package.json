@@ -19,7 +19,6 @@
   "dependencies": {
     "@sentry/serverless": "7.114.0",
     "fetch-retry": "^5.0.6",
-    "isomorphic-fetch": "^3.0.0",
     "tslib": "2.6.2"
   },
   "devDependencies": {

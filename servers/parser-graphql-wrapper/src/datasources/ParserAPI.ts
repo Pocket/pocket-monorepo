@@ -18,7 +18,6 @@ import type {
   KeyValueCacheSetOptions,
 } from '@apollo/utils.keyvaluecache';
 import { ParserResponse } from './ParserAPITypes';
-import fetch from 'node-fetch';
 import { backOff } from 'exponential-backoff';
 import { createReaderSlug } from '../readerView/idUtils';
 
