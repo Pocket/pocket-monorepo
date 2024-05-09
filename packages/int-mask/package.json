@@ -22,7 +22,12 @@
     "@pocket-tools/eslint-config": "workspace:*",
     "jest": "29.7.0",
     "ts-jest": "29.1.2",
-    "tsconfig": "workspace:*"
+    "tsconfig": "workspace:*",
+    "@types/node": "^20.12.6",
+    "ts-node": "10.9.2",
+    "tslib": "2.6.2",
+    "tsup": "8.0.2",
+    "typescript": "5.4.4"
   },
   "dependencies": {
     "underscore.string": "3.3.6",
