@@ -59,7 +59,10 @@ export class PocketShareModel {
       targetUrl: entity.targetUrl,
       createdAt: new Date(entity.createdAt * 1000),
       context: {
-        highlights: highlights.length ? highlights : undefined,
+        highlights:
+          highlights !== undefined && highlights.length
+            ? highlights
+            : undefined,
         note: entity.note,
       },
     };
