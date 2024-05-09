@@ -3,11 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
+  "files": [
+    "dist",
+    "package.json"
+  ],
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "test": "jest \"\\.spec\\.ts\" --runInBand --forceExit",
-    "lint": "eslint --fix-dry-run \"./**/*.ts\"",
-    "format": "eslint --fix \"./**/*.ts\""
+    "format": "eslint --fix",
+    "lint": "eslint --fix-dry-run",
+    "test": "jest \"\\.spec\\.ts\" --runInBand --forceExit"
   },
   "dependencies": {
     "@sentry/serverless": "7.113.0",
@@ -16,18 +20,17 @@
     "tslib": "2.6.2"
   },
   "devDependencies": {
+    "@pocket-tools/eslint-config": "workspace:*",
     "@types/aws-lambda": "8.10.137",
     "@types/jest": "29.5.12",
+    "@types/node": "^20.12.6",
     "@types/node-fetch": "2.6.11",
-    "@pocket-tools/eslint-config": "workspace:*",
     "jest": "29.7.0",
+    "jest-extended": "4.0.2",
     "nock": "13.5.4",
     "ts-jest": "29.1.2",
+    "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "jest-extended": "4.0.2"
-  },
-  "files": [
-    "dist",
-    "package.json"
-  ]
+    "typescript": "5.4.4"
+  }
 }

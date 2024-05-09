@@ -1,22 +1,32 @@
 {
   "name": "client-api-cdk",
   "version": "1.0.0",
+  "private": true,
   "main": "dist/main.js",
   "types": "src/main.ts",
-  "private": true,
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "synth": "cdktf synth",
     "compile": "tsc --pretty",
-    "watch": "tsc -w",
-    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
-    "format": "eslint --fix \"src/**/*.ts\""
+    "format": "eslint --fix",
+    "lint": "eslint --fix-dry-run",
+    "synth": "cdktf synth",
+    "watch": "tsc -w"
   },
   "dependencies": {
-    "@pocket-tools/terraform-modules": "workspace:*"
+    "@cdktf/provider-aws": "19.15.0",
+    "@cdktf/provider-local": "10.1.0",
+    "@cdktf/provider-null": "10.0.0",
+    "@cdktf/provider-pagerduty": "13.7.4",
+    "@pocket-tools/terraform-modules": "workspace:*",
+    "cdktf": "0.20.7",
+    "cdktf-cli": "0.20.7",
+    "constructs": "10.3.0"
   },
   "devDependencies": {
+    "@pocket-tools/eslint-config": "workspace:*",
+    "@types/node": "^20.12.6",
+    "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "@pocket-tools/eslint-config": "workspace:*"
+    "typescript": "5.4.4"
   }
 }

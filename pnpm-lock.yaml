@@ -36,263 +36,899 @@ importers:
 
   infrastructure/account-data-deleter:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   infrastructure/account-delete-monitor:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   infrastructure/annotations-api:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   infrastructure/braze:
     dependencies:
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   infrastructure/client-api:
     dependencies:
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   infrastructure/feature-flags:
     dependencies:
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   infrastructure/fxa-webhook-proxy:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   infrastructure/image-api:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   infrastructure/instant-sync-events:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   infrastructure/list-api:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   infrastructure/parser-graphql-wrapper:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   infrastructure/pocket-event-bridge:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   infrastructure/push-server:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   infrastructure/sendgrid-data:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   infrastructure/shareable-lists-api:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   infrastructure/shared-snowplow-consumer:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   infrastructure/shares-api:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   infrastructure/transactional-emails:
     dependencies:
+      '@cdktf/provider-archive':
+        specifier: 10.0.1
+        version: 10.0.1(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   infrastructure/user-api:
     dependencies:
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   infrastructure/v3-proxy-api:
     dependencies:
+      '@cdktf/provider-aws':
+        specifier: 19.15.0
+        version: 19.15.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-local':
+        specifier: 10.1.0
+        version: 10.1.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-null':
+        specifier: 10.0.0
+        version: 10.0.0(cdktf@0.20.7)(constructs@10.3.0)
+      '@cdktf/provider-pagerduty':
+        specifier: 13.7.4
+        version: 13.7.4(cdktf@0.20.7)(constructs@10.3.0)
       '@pocket-tools/terraform-modules':
         specifier: workspace:*
         version: link:../../packages/terraform-modules
+      cdktf:
+        specifier: 0.20.7
+        version: 0.20.7(constructs@10.3.0)
+      cdktf-cli:
+        specifier: 0.20.7
+        version: 0.20.7(ink@3.2.0)(react@17.0.2)
+      constructs:
+        specifier: 10.3.0
+        version: 10.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   lambdas/account-data-deleter-batch-delete:
     dependencies:
@@ -330,21 +966,30 @@ importers:
       '@types/lodash':
         specifier: 4.17.0
         version: 4.17.0
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       '@types/node-fetch':
         specifier: 2.6.11
         version: 2.6.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       nock:
         specifier: 13.5.4
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   lambdas/account-data-deleter-events:
     dependencies:
@@ -376,21 +1021,30 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       '@types/node-fetch':
         specifier: 2.6.11
         version: 2.6.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       nock:
         specifier: 13.5.4
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   lambdas/account-delete-monitor:
     dependencies:
@@ -416,21 +1070,33 @@ importers:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/aws-lambda':
+        specifier: 8.10.137
+        version: 8.10.137
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       nock:
         specifier: 13.5.4
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   lambdas/annotations-api-events:
     dependencies:
@@ -453,21 +1119,30 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       '@types/node-fetch':
         specifier: 2.6.11
         version: 2.6.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       nock:
         specifier: 13.5.4
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   lambdas/fxa-webook-proxy-gateway:
     dependencies:
@@ -508,9 +1183,12 @@ importers:
       '@types/jwk-to-pem':
         specifier: ^2.0.1
         version: 2.0.3
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       nock:
         specifier: 13.5.4
         version: 13.5.4
@@ -519,10 +1197,16 @@ importers:
         version: 3.1.0
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   lambdas/fxa-webook-proxy-sqs:
     dependencies:
@@ -560,9 +1244,12 @@ importers:
       '@types/jsonwebtoken':
         specifier: ^9.0.5
         version: 9.0.6
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       nock:
         specifier: 13.5.4
         version: 13.5.4
@@ -571,10 +1258,16 @@ importers:
         version: 3.1.0
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   lambdas/instant-sync-events:
     dependencies:
@@ -609,15 +1302,24 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   lambdas/sendgrid-data:
     dependencies:
@@ -643,15 +1345,27 @@ importers:
       '@types/aws-lambda':
         specifier: 8.10.137
         version: 8.10.137
+      '@types/jest':
+        specifier: 29.5.12
+        version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   lambdas/shareable-lists-api-events:
     dependencies:
@@ -677,21 +1391,30 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       aws-lambda:
         specifier: ^1.0.7
         version: 1.0.7
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       nock:
         specifier: 13.5.4
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   lambdas/transactional-emails:
     dependencies:
@@ -726,9 +1449,12 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       nock:
         specifier: 13.5.4
         version: 13.5.4
@@ -737,10 +1463,16 @@ importers:
         version: 3.1.0
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   lambdas/user-list-search-events:
     dependencies:
@@ -763,21 +1495,30 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       '@types/node-fetch':
         specifier: 2.6.11
         version: 2.6.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       nock:
         specifier: 13.5.4
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   lambdas/user-list-search-indexing:
     dependencies:
@@ -803,12 +1544,15 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       '@types/node-fetch':
         specifier: 2.6.11
         version: 2.6.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       jest-extended:
         specifier: 4.0.2
         version: 4.0.2(jest@29.7.0)
@@ -817,10 +1561,16 @@ importers:
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   lambdas/user-list-search-kinesis-to-sqs:
     dependencies:
@@ -836,6 +1586,9 @@ importers:
       tslib:
         specifier: 2.6.2
         version: 2.6.2
+      uuid:
+        specifier: ^9.0.1
+        version: 9.0.1
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -849,9 +1602,12 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       jest-extended:
         specifier: 4.0.2
         version: 4.0.2(jest@29.7.0)
@@ -860,10 +1616,16 @@ importers:
         version: 13.5.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   packages/apollo-utils:
     dependencies:
@@ -877,8 +1639,8 @@ importers:
         specifier: 4.1.3
         version: 4.1.3(@apollo/server@4.10.4)(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.7.4
-        version: 2.7.4(graphql@16.8.1)
+        specifier: 2.7.6
+        version: 2.7.6(graphql@16.8.1)
       '@apollo/utils.keyvadapter':
         specifier: 3.1.0
         version: 3.1.0
@@ -889,14 +1651,14 @@ importers:
         specifier: workspace:*
         version: link:../ts-logger
       '@sentry/node':
-        specifier: 7.113.0
-        version: 7.113.0
-      apollo-server-cache-redis:
-        specifier: 3.3.1
-        version: 3.3.1
+        specifier: 7.114.0
+        version: 7.114.0
       express:
         specifier: 4.19.2
         version: 4.19.2
+      graphql:
+        specifier: 16.8.1
+        version: 16.8.1
       graphql-tag:
         specifier: 2.12.6
         version: 2.12.6(graphql@16.8.1)
@@ -922,12 +1684,15 @@ importers:
       '@types/md5':
         specifier: 2.3.5
         version: 2.3.5
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       ioredis-mock:
         specifier: 8.9.0
         version: 8.9.0(@types/ioredis-mock@8.2.5)(ioredis@5.3.2)
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       jest-extended:
         specifier: 4.0.2
         version: 4.0.2(jest@29.7.0)
@@ -939,10 +1704,22 @@ importers:
         version: 8.0.2(semantic-release@23.0.7)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
+      tsup:
+        specifier: 8.0.2
+        version: 8.0.2(ts-node@10.9.2)(typescript@5.4.4)
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   packages/backend-benchmarking:
     dependencies:
@@ -956,15 +1733,30 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
+      tsup:
+        specifier: 8.0.2
+        version: 8.0.2(ts-node@10.9.2)(typescript@5.4.4)
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   packages/eslint-config:
     dependencies:
@@ -977,9 +1769,15 @@ importers:
       eslint-config-prettier:
         specifier: ^9.1.0
         version: 9.1.0(eslint@9.2.0)
+      eslint-plugin-package-json:
+        specifier: ^0.13.1
+        version: 0.13.1(eslint@9.2.0)(jsonc-eslint-parser@2.4.0)
       eslint-plugin-prettier:
         specifier: ^5.1.3
         version: 5.1.3(eslint-config-prettier@9.1.0)(eslint@9.2.0)(prettier@3.2.5)
+      jsonc-eslint-parser:
+        specifier: ^2.4.0
+        version: 2.4.0
       prettier:
         specifier: ^3.2.5
         version: 3.2.5
@@ -1005,15 +1803,30 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
+      tsup:
+        specifier: 8.0.2
+        version: 8.0.2(ts-node@10.9.2)(typescript@5.4.4)
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   packages/int-mask:
     dependencies:
@@ -1033,15 +1846,30 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
+      tsup:
+        specifier: 8.0.2
+        version: 8.0.2(ts-node@10.9.2)(typescript@5.4.4)
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   packages/lambda-secrets:
     devDependencies:
@@ -1054,27 +1882,51 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       nock:
         specifier: 14.0.0-beta.5
         version: 14.0.0-beta.5
+      semantic-release:
+        specifier: 23.0.7
+        version: 23.0.7(typescript@5.4.4)
+      semantic-release-monorepo:
+        specifier: 8.0.2
+        version: 8.0.2(semantic-release@23.0.7)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
+      tsup:
+        specifier: 8.0.2
+        version: 8.0.2(ts-node@10.9.2)(typescript@5.4.4)
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   packages/sentry:
     dependencies:
       '@sentry/node':
-        specifier: 7.113.0
-        version: 7.113.0
+        specifier: 7.114.0
+        version: 7.114.0
       '@sentry/tracing':
         specifier: 7.113.0
         version: 7.113.0
+      express:
+        specifier: 4.19.2
+        version: 4.19.2
     devDependencies:
       '@jest/globals':
         specifier: 29.7.0
@@ -1082,18 +1934,36 @@ importers:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@types/express':
+        specifier: 4.17.21
+        version: 4.17.21
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
+      tsup:
+        specifier: 8.0.2
+        version: 8.0.2(ts-node@10.9.2)(typescript@5.4.4)
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   packages/terraform-modules:
     dependencies:
@@ -1137,12 +2007,15 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       conventional-changelog-conventionalcommits:
         specifier: 7.0.2
         version: 7.0.2
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       semantic-release:
         specifier: 23.0.7
         version: 23.0.7(typescript@5.4.4)
@@ -1151,13 +2024,28 @@ importers:
         version: 8.0.2(semantic-release@23.0.7)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
+      tsup:
+        specifier: 8.0.2
+        version: 8.0.2(ts-node@10.9.2)(typescript@5.4.4)
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   packages/tracing:
     dependencies:
+      '@opentelemetry/api':
+        specifier: 1.8.0
+        version: 1.8.0
       '@opentelemetry/exporter-trace-otlp-grpc':
         specifier: 0.51.1
         version: 0.51.1(@opentelemetry/api@1.8.0)
@@ -1228,9 +2116,12 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       semantic-release:
         specifier: 23.0.7
         version: 23.0.7(typescript@5.4.4)
@@ -1239,10 +2130,22 @@ importers:
         version: 8.0.2(semantic-release@23.0.7)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
+      tsup:
+        specifier: 8.0.2
+        version: 8.0.2(ts-node@10.9.2)(typescript@5.4.4)
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   packages/ts-logger:
     dependencies:
@@ -1262,9 +2165,12 @@ importers:
       '@types/morgan':
         specifier: 1.9.9
         version: 1.9.9
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       semantic-release:
         specifier: 23.0.7
         version: 23.0.7(typescript@5.4.4)
@@ -1273,10 +2179,22 @@ importers:
         version: 8.0.2(semantic-release@23.0.7)
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
+      tsup:
+        specifier: 8.0.2
+        version: 8.0.2(ts-node@10.9.2)(typescript@5.4.4)
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   packages/tsconfig:
     dependencies:
@@ -1313,6 +2231,9 @@ importers:
       '@pocket-tools/ts-logger':
         specifier: workspace:*
         version: link:../../packages/ts-logger
+      '@sentry/node':
+        specifier: 7.114.0
+        version: 7.114.0
       express:
         specifier: 4.19.2
         version: 4.19.2
@@ -1331,6 +2252,9 @@ importers:
       stripe:
         specifier: 14.24.0
         version: 14.24.0
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -1341,6 +2265,9 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       jest:
         specifier: 29.7.0
         version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
@@ -1358,22 +2285,34 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
       unleash-client:
         specifier: 5.5.2
         version: 5.5.2
 
   servers/annotations-api:
     dependencies:
+      '@apollo/cache-control-types':
+        specifier: 1.0.3
+        version: 1.0.3(graphql@16.8.1)
       '@apollo/datasource-rest':
         specifier: ^6.2.2
         version: 6.2.2(graphql@16.8.1)
+      '@apollo/server':
+        specifier: 4.10.4
+        version: 4.10.4(graphql@16.8.1)
+      '@apollo/subgraph':
+        specifier: 2.7.6
+        version: 2.7.6(graphql@16.8.1)
       '@aws-sdk/client-dynamodb':
         specifier: 3.569.0
         version: 3.569.0
@@ -1395,6 +2334,9 @@ importers:
       '@pocket-tools/ts-logger':
         specifier: workspace:*
         version: link:../../packages/ts-logger
+      '@sentry/node':
+        specifier: 7.114.0
+        version: 7.114.0
       cors:
         specifier: 2.8.5
         version: 2.8.5
@@ -1410,21 +2352,36 @@ importers:
       express-validator:
         specifier: ^7.0.1
         version: 7.0.1
+      graphql:
+        specifier: 16.8.1
+        version: 16.8.1
       graphql-constraint-directive:
         specifier: 5.4.2
         version: 5.4.2(graphql@16.8.1)
+      graphql-tag:
+        specifier: 2.12.6
+        version: 2.12.6(graphql@16.8.1)
       knex:
         specifier: 3.1.0
         version: 3.1.0(mysql2@3.9.7)
       luxon:
         specifier: 3.4.4
         version: 3.4.4
+      md5:
+        specifier: 2.3.0
+        version: 2.3.0
       mysql2:
         specifier: 3.9.7
         version: 3.9.7
       nanoid:
         specifier: 3.3.7
         version: 3.3.7
+      node-fetch:
+        specifier: 2.7.0
+        version: 2.7.0
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
     devDependencies:
       '@graphql-codegen/cli':
         specifier: 5.0.2
@@ -1447,6 +2404,15 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/md5':
+        specifier: 2.3.5
+        version: 2.3.5
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      '@types/node-fetch':
+        specifier: 2.6.11
+        version: 2.6.11
       '@types/uuid':
         specifier: 9.0.8
         version: 9.0.8
@@ -1455,7 +2421,7 @@ importers:
         version: 1.1.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       jest-extended:
         specifier: 4.0.2
         version: 4.0.2(jest@29.7.0)
@@ -1470,13 +2436,25 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   servers/feature-flags:
     dependencies:
+      '@apollo/server':
+        specifier: 4.10.4
+        version: 4.10.4(graphql@16.8.1)
+      '@apollo/subgraph':
+        specifier: 2.7.6
+        version: 2.7.6(graphql@16.8.1)
       '@govtechsg/passport-openidconnect':
         specifier: 1.0.2
         version: 1.0.2
@@ -1486,12 +2464,24 @@ importers:
       '@pocket-tools/sentry':
         specifier: workspace:*
         version: link:../../packages/sentry
+      '@sentry/node':
+        specifier: 7.114.0
+        version: 7.114.0
+      body-parser:
+        specifier: 1.20.2
+        version: 1.20.2
       cors:
         specifier: 2.8.5
         version: 2.8.5
       express:
         specifier: 4.19.2
         version: 4.19.2
+      graphql:
+        specifier: 16.8.1
+        version: 16.8.1
+      graphql-tag:
+        specifier: 2.12.6
+        version: 2.12.6(graphql@16.8.1)
       jsonwebtoken:
         specifier: ^9.0.0
         version: 9.0.2
@@ -1507,6 +2497,9 @@ importers:
       passport-jwt:
         specifier: 4.0.1
         version: 4.0.1
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
       unleash-client:
         specifier: 5.5.2
         version: 5.5.2
@@ -1532,6 +2525,9 @@ importers:
       '@types/jsonwebtoken':
         specifier: ^9.0.5
         version: 9.0.6
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       '@types/passport':
         specifier: 1.0.16
         version: 1.0.16
@@ -1540,7 +2536,7 @@ importers:
         version: 4.0.1
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       nock:
         specifier: 13.5.4
         version: 13.5.4
@@ -1549,13 +2545,28 @@ importers:
         version: 3.1.0
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   servers/image-api:
     dependencies:
+      '@apollo/server':
+        specifier: 4.10.4
+        version: 4.10.4(graphql@16.8.1)
+      '@apollo/subgraph':
+        specifier: 2.7.6
+        version: 2.7.6(graphql@16.8.1)
+      '@apollo/utils.keyvadapter':
+        specifier: 3.1.0
+        version: 3.1.0
       '@keyv/redis':
         specifier: 2.8.4
         version: 2.8.4
@@ -1580,19 +2591,40 @@ importers:
       dataloader:
         specifier: 2.2.2
         version: 2.2.2
+      express:
+        specifier: 4.19.2
+        version: 4.19.2
+      graphql:
+        specifier: 16.8.1
+        version: 16.8.1
+      graphql-tag:
+        specifier: 2.12.6
+        version: 2.12.6(graphql@16.8.1)
+      keyv:
+        specifier: 4.5.4
+        version: 4.5.4
       parse-url:
         specifier: 9.2.0
         version: 9.2.0
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
     devDependencies:
+      '@jest/globals':
+        specifier: 29.7.0
+        version: 29.7.0
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       jest-extended:
         specifier: 4.0.2
         version: 4.0.2(jest@29.7.0)
@@ -1607,13 +2639,25 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   servers/list-api:
     dependencies:
+      '@apollo/server':
+        specifier: 4.10.4
+        version: 4.10.4(graphql@16.8.1)
+      '@apollo/subgraph':
+        specifier: 2.7.6
+        version: 2.7.6(graphql@16.8.1)
       '@aws-sdk/client-eventbridge':
         specifier: 3.569.0
         version: 3.569.0
@@ -1641,7 +2685,13 @@ importers:
       '@pocket-tools/ts-logger':
         specifier: workspace:*
         version: link:../../packages/ts-logger
+      '@sentry/node':
+        specifier: 7.114.0
+        version: 7.114.0
       '@snowplow/node-tracker':
+        specifier: 3.23.0
+        version: 3.23.0
+      '@snowplow/tracker-core':
         specifier: 3.23.0
         version: 3.23.0
       dataloader:
@@ -1680,10 +2730,16 @@ importers:
       mysql2:
         specifier: 3.9.7
         version: 3.9.7
+      node-fetch:
+        specifier: 2.7.0
+        version: 2.7.0
       unleash-client:
         specifier: 5.5.2
         version: 5.5.2
     devDependencies:
+      '@jest/globals':
+        specifier: 29.7.0
+        version: 29.7.0
       '@pocket-tools/backend-benchmarking':
         specifier: workspace:*
         version: link:../../packages/backend-benchmarking
@@ -1711,6 +2767,9 @@ importers:
       '@types/luxon':
         specifier: 3.4.2
         version: 3.4.2
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       '@types/supertest':
         specifier: ^6.0.2
         version: 6.0.2
@@ -1719,7 +2778,7 @@ importers:
         version: 1.1.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       jest-extended:
         specifier: 4.0.2
         version: 4.0.2(jest@29.7.0)
@@ -1734,16 +2793,40 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   servers/parser-graphql-wrapper:
     dependencies:
+      '@apollo/cache-control-types':
+        specifier: 1.0.3
+        version: 1.0.3(graphql@16.8.1)
       '@apollo/datasource-rest':
         specifier: ^6.2.2
         version: 6.2.2(graphql@16.8.1)
+      '@apollo/server':
+        specifier: 4.10.4
+        version: 4.10.4(graphql@16.8.1)
+      '@apollo/subgraph':
+        specifier: 2.7.6
+        version: 2.7.6(graphql@16.8.1)
+      '@apollo/utils.keyvadapter':
+        specifier: 3.1.0
+        version: 3.1.0
+      '@apollo/utils.keyvaluecache':
+        specifier: 3.1.0
+        version: 3.1.0
       '@aws-sdk/client-dynamodb':
         specifier: 3.569.0
         version: 3.569.0
@@ -1774,18 +2857,27 @@ importers:
       '@pocket-tools/ts-logger':
         specifier: workspace:*
         version: link:../../packages/ts-logger
+      '@sentry/node':
+        specifier: 7.114.0
+        version: 7.114.0
       cors:
         specifier: 2.8.5
         version: 2.8.5
       dataloader:
         specifier: 2.2.2
         version: 2.2.2
+      domino:
+        specifier: 2.1.6
+        version: 2.1.6
       exponential-backoff:
         specifier: ^3.1.1
         version: 3.1.1
       express:
         specifier: 4.19.2
         version: 4.19.2
+      graphql:
+        specifier: 16.8.1
+        version: 16.8.1
       graphql-scalars:
         specifier: ^1.23.0
         version: 1.23.0(graphql@16.8.1)
@@ -1804,6 +2896,9 @@ importers:
       lodash:
         specifier: 4.17.21
         version: 4.17.21
+      luxon:
+        specifier: 3.4.4
+        version: 3.4.4
       md5:
         specifier: 2.3.0
         version: 2.3.0
@@ -1822,6 +2917,9 @@ importers:
       reflect-metadata:
         specifier: 0.2.2
         version: 0.2.2
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
       turndown:
         specifier: 7.1.3
         version: 7.1.3
@@ -1847,12 +2945,18 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
+      '@types/node-fetch':
+        specifier: 2.6.11
+        version: 2.6.11
       '@types/turndown':
         specifier: 5.0.4
         version: 5.0.4
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       kysely-codegen:
         specifier: ^0.15.0
         version: 0.15.0(kysely@0.27.3)(mysql2@3.9.7)
@@ -1867,10 +2971,16 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   servers/push-server:
     dependencies:
@@ -1878,8 +2988,8 @@ importers:
         specifier: 3.569.0
         version: 3.569.0
       '@sentry/node':
-        specifier: 7.113.0
-        version: 7.113.0
+        specifier: 7.114.0
+        version: 7.114.0
       apns2:
         specifier: 11.7.0
         version: 11.7.0
@@ -1892,6 +3002,9 @@ importers:
       lodash:
         specifier: 4.17.21
         version: 4.17.21
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
@@ -1902,24 +3015,48 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       '@types/node-gcm':
         specifier: ^1.0.5
         version: 1.0.5
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       nodemon:
         specifier: 3.1.0
         version: 3.1.0
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   servers/shareable-lists-api:
     dependencies:
+      '@apollo/server':
+        specifier: 4.10.4
+        version: 4.10.4(graphql@16.8.1)
+      '@apollo/server-plugin-response-cache':
+        specifier: 4.1.3
+        version: 4.1.3(@apollo/server@4.10.4)(graphql@16.8.1)
+      '@apollo/subgraph':
+        specifier: 2.7.6
+        version: 2.7.6(graphql@16.8.1)
+      '@apollo/utils.keyvadapter':
+        specifier: 3.1.0
+        version: 3.1.0
+      '@apollo/utils.keyvaluecache':
+        specifier: 3.1.0
+        version: 3.1.0
       '@aws-sdk/client-eventbridge':
         specifier: 3.569.0
         version: 3.569.0
@@ -1938,6 +3075,9 @@ importers:
       '@prisma/client':
         specifier: 5.11.0
         version: 5.11.0(prisma@5.11.0)
+      '@sentry/node':
+        specifier: 7.114.0
+        version: 7.114.0
       cors:
         specifier: 2.8.5
         version: 2.8.5
@@ -1947,9 +3087,15 @@ importers:
       express-validator:
         specifier: ^7.0.1
         version: 7.0.1
+      graphql:
+        specifier: 16.8.1
+        version: 16.8.1
       graphql-constraint-directive:
         specifier: 5.4.2
         version: 5.4.2(graphql@16.8.1)
+      graphql-tag:
+        specifier: 2.12.6
+        version: 2.12.6(graphql@16.8.1)
       keyv:
         specifier: 4.5.4
         version: 4.5.4
@@ -1962,9 +3108,15 @@ importers:
       slugify:
         specifier: 1.6.6
         version: 1.6.6
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
+      winston:
+        specifier: 3.13.0
+        version: 3.13.0
     devDependencies:
       '@faker-js/faker':
         specifier: 8.4.1
@@ -1983,7 +3135,7 @@ importers:
         version: 16.4.5
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.10)
+        version: 29.7.0(@types/node@20.12.10)(ts-node@10.9.2)
       jest-extended:
         specifier: 4.0.2
         version: 4.0.2(jest@29.7.0)
@@ -2001,10 +3153,16 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.10)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   servers/shared-snowplow-consumer:
     dependencies:
@@ -2023,7 +3181,13 @@ importers:
       '@pocket-tools/ts-logger':
         specifier: workspace:*
         version: link:../../packages/ts-logger
+      '@sentry/node':
+        specifier: 7.114.0
+        version: 7.114.0
       '@snowplow/node-tracker':
+        specifier: 3.23.0
+        version: 3.23.0
+      '@snowplow/tracker-core':
         specifier: 3.23.0
         version: 3.23.0
       express:
@@ -2035,6 +3199,9 @@ importers:
       node-fetch:
         specifier: 2.7.0
         version: 2.7.0
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
     devDependencies:
       '@faker-js/faker':
         specifier: 8.4.1
@@ -2048,9 +3215,12 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       nock:
         specifier: 13.5.4
         version: 13.5.4
@@ -2059,13 +3229,25 @@ importers:
         version: 3.1.0
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   servers/shares-api:
     dependencies:
+      '@apollo/server':
+        specifier: 4.10.4
+        version: 4.10.4(graphql@16.8.1)
+      '@apollo/subgraph':
+        specifier: 2.7.6
+        version: 2.7.6(graphql@16.8.1)
       '@aws-sdk/client-dynamodb':
         specifier: 3.569.0
         version: 3.569.0
@@ -2084,18 +3266,36 @@ importers:
       '@pocket-tools/ts-logger':
         specifier: workspace:*
         version: link:../../packages/ts-logger
+      '@sentry/node':
+        specifier: 7.114.0
+        version: 7.114.0
+      '@snowplow/tracker-core':
+        specifier: 3.23.0
+        version: 3.23.0
       cors:
         specifier: 2.8.5
         version: 2.8.5
       express:
         specifier: 4.19.2
         version: 4.19.2
+      graphql:
+        specifier: 16.8.1
+        version: 16.8.1
       graphql-constraint-directive:
         specifier: 5.4.2
         version: 5.4.2(graphql@16.8.1)
       graphql-scalars:
         specifier: ^1.23.0
         version: 1.23.0(graphql@16.8.1)
+      graphql-tag:
+        specifier: 2.12.6
+        version: 2.12.6(graphql@16.8.1)
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
+      uuid:
+        specifier: ^9.0.1
+        version: 9.0.1
     devDependencies:
       '@graphql-codegen/cli':
         specifier: 5.0.2
@@ -2112,12 +3312,18 @@ importers:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/jest':
+        specifier: 29.5.12
+        version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       concurrently:
         specifier: ^8.2.2
         version: 8.2.2
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       jest-extended:
         specifier: 4.0.2
         version: 4.0.2(jest@29.7.0)
@@ -2132,13 +3338,25 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   servers/user-api:
     dependencies:
+      '@apollo/server':
+        specifier: 4.10.4
+        version: 4.10.4(graphql@16.8.1)
+      '@apollo/subgraph':
+        specifier: 2.7.6
+        version: 2.7.6(graphql@16.8.1)
       '@aws-sdk/client-eventbridge':
         specifier: 3.569.0
         version: 3.569.0
@@ -2157,12 +3375,21 @@ importers:
       '@pocket-tools/ts-logger':
         specifier: workspace:*
         version: link:../../packages/ts-logger
+      '@sentry/node':
+        specifier: 7.114.0
+        version: 7.114.0
       dataloader:
         specifier: 2.2.2
         version: 2.2.2
       express:
         specifier: 4.19.2
         version: 4.19.2
+      graphql:
+        specifier: 16.8.1
+        version: 16.8.1
+      graphql-tag:
+        specifier: 2.12.6
+        version: 2.12.6(graphql@16.8.1)
       knex:
         specifier: 3.1.0
         version: 3.1.0(mysql2@3.9.7)
@@ -2172,6 +3399,9 @@ importers:
       mysql2:
         specifier: 3.9.7
         version: 3.9.7
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
     devDependencies:
       '@faker-js/faker':
         specifier: 8.4.1
@@ -2185,12 +3415,15 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       '@types/supertest':
         specifier: ^6.0.2
         version: 6.0.2
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       jest-mock-req-res:
         specifier: 1.0.2
         version: 1.0.2(jest@29.7.0)
@@ -2205,13 +3438,25 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
   servers/user-list-search:
     dependencies:
+      '@apollo/server':
+        specifier: 4.10.4
+        version: 4.10.4(graphql@16.8.1)
+      '@apollo/subgraph':
+        specifier: 2.7.6
+        version: 2.7.6(graphql@16.8.1)
       '@aws-sdk/client-sqs':
         specifier: 3.569.0
         version: 3.569.0
@@ -2230,6 +3475,9 @@ importers:
       '@pocket-tools/ts-logger':
         specifier: workspace:*
         version: link:../../packages/ts-logger
+      '@sentry/node':
+        specifier: 7.114.0
+        version: 7.114.0
       elasticsearch:
         specifier: ^16.7.3
         version: 16.7.3
@@ -2279,15 +3527,15 @@ importers:
       '@types/elasticsearch':
         specifier: ^5.0.37
         version: 5.0.43
-      '@types/graphql':
-        specifier: ^14.5.0
-        version: 14.5.0
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
       '@types/mysql':
         specifier: 2.15.26
         version: 2.15.26
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       '@types/supertest':
         specifier: ^6.0.2
         version: 6.0.2
@@ -2296,7 +3544,7 @@ importers:
         version: 9.0.8
       jest:
         specifier: 29.7.0
-        version: 29.7.0(@types/node@20.12.11)
+        version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       jest-extended:
         specifier: 4.0.2
         version: 4.0.2(jest@29.7.0)
@@ -2311,16 +3559,25 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
       unleash-client:
         specifier: 5.5.2
         version: 5.5.2
 
   servers/v3-proxy-api:
     dependencies:
+      '@graphql-typed-document-node/core':
+        specifier: 3.2.0
+        version: 3.2.0(graphql@16.8.1)
       '@pocket-tools/apollo-utils':
         specifier: workspace:*
         version: link:../../packages/apollo-utils
@@ -2333,24 +3590,24 @@ importers:
       '@pocket-tools/ts-logger':
         specifier: workspace:*
         version: link:../../packages/ts-logger
+      '@sentry/node':
+        specifier: 7.114.0
+        version: 7.114.0
       express:
         specifier: 4.19.2
         version: 4.19.2
       express-validator:
         specifier: ^7.0.1
         version: 7.0.1
-      graphql:
-        specifier: 16.8.1
-        version: 16.8.1
       graphql-request:
         specifier: ^6.1.0
         version: 6.1.0(graphql@16.8.1)
-      graphql-tag:
-        specifier: 2.12.6
-        version: 2.12.6(graphql@16.8.1)
       luxon:
         specifier: 3.4.4
         version: 3.4.4
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
     devDependencies:
       '@graphql-codegen/add':
         specifier: 5.0.2
@@ -2376,6 +3633,9 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/node':
+        specifier: ^20.12.6
+        version: 20.12.11
       '@types/supertest':
         specifier: ^6.0.2
         version: 6.0.2
@@ -2393,13 +3653,16 @@ importers:
         version: 6.3.4
       ts-jest:
         specifier: 29.1.2
-        version: 29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4)
+        version: 29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4)
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       tsconfig:
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      typescript:
+        specifier: 5.4.4
+        version: 5.4.4
 
 packages:
 
@@ -2476,8 +3739,8 @@ packages:
       - encoding
     dev: false
 
-  /@apollo/federation-internals@2.7.4(graphql@16.8.1):
-    resolution: {integrity: sha512-344X7b+9MWhbr0DetDNIHxxTh6WB3K+kr1uQJAlsllwQ32Br/4kb5X2hSJ24tG3X8ZurYeJuYTeobDQLt9Dahw==}
+  /@apollo/federation-internals@2.7.6(graphql@16.8.1):
+    resolution: {integrity: sha512-V1xbnkFb0UZpqHFjj5i52qX/ijd+Lxp3opVkeLLpKEXLKCaLG6S277IGUXIJQPYDiELUB9rbEq/FRUeRmdjRVA==}
     engines: {node: '>=14.15.0'}
     peerDependencies:
       graphql: ^16.5.0
@@ -2570,14 +3833,14 @@ packages:
       - supports-color
     dev: false
 
-  /@apollo/subgraph@2.7.4(graphql@16.8.1):
-    resolution: {integrity: sha512-HZHFPrOQgfvZcJCX3u07t8OfVx/Ax8rffXAF13HeFDlkRadSSA+DiFH9I92OAhmlnJ4XzE/uhdpYXxBTURW/8Q==}
+  /@apollo/subgraph@2.7.6(graphql@16.8.1):
+    resolution: {integrity: sha512-xpRt9Zi4mX/oeYll4uv0eS3JDYrYH8jyeIWuGrsG1JFUY/HiF11YZv0DQXZ1+/HpO2gcjnmDYMLvTazeL1ZViA==}
     engines: {node: '>=14.15.0'}
     peerDependencies:
       graphql: ^16.5.0
     dependencies:
       '@apollo/cache-control-types': 1.0.3(graphql@16.8.1)
-      '@apollo/federation-internals': 2.7.4(graphql@16.8.1)
+      '@apollo/federation-internals': 2.7.6(graphql@16.8.1)
       graphql: 16.8.1
     dev: false
 
@@ -3759,7 +5022,7 @@ packages:
     resolution: {integrity: sha512-Xd6+v6SnjWVx/nus+y0l1sxMOTOMBkyL4+BIdbALyatQnAe/SRVjANeDPSCYaX+i1iJmuGSKf3Z+E+V/va1Hvw==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/types': 7.24.0
+      '@babel/types': 7.24.5
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
       jsesc: 2.5.2
@@ -4873,7 +6136,6 @@ packages:
     cpu: [ppc64]
     os: [aix]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@esbuild/android-arm64@0.19.12:
@@ -4882,7 +6144,6 @@ packages:
     cpu: [arm64]
     os: [android]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@esbuild/android-arm@0.19.12:
@@ -4891,7 +6152,6 @@ packages:
     cpu: [arm]
     os: [android]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@esbuild/android-x64@0.19.12:
@@ -4900,7 +6160,6 @@ packages:
     cpu: [x64]
     os: [android]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@esbuild/darwin-arm64@0.19.12:
@@ -4909,7 +6168,6 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@esbuild/darwin-x64@0.19.12:
@@ -4918,7 +6176,6 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@esbuild/freebsd-arm64@0.19.12:
@@ -4927,7 +6184,6 @@ packages:
     cpu: [arm64]
     os: [freebsd]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@esbuild/freebsd-x64@0.19.12:
@@ -4936,7 +6192,6 @@ packages:
     cpu: [x64]
     os: [freebsd]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@esbuild/linux-arm64@0.19.12:
@@ -4945,7 +6200,6 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@esbuild/linux-arm@0.19.12:
@@ -4954,7 +6208,6 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@esbuild/linux-ia32@0.19.12:
@@ -4963,7 +6216,6 @@ packages:
     cpu: [ia32]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@esbuild/linux-loong64@0.19.12:
@@ -4972,7 +6224,6 @@ packages:
     cpu: [loong64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@esbuild/linux-mips64el@0.19.12:
@@ -4981,7 +6232,6 @@ packages:
     cpu: [mips64el]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@esbuild/linux-ppc64@0.19.12:
@@ -4990,7 +6240,6 @@ packages:
     cpu: [ppc64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@esbuild/linux-riscv64@0.19.12:
@@ -4999,7 +6248,6 @@ packages:
     cpu: [riscv64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@esbuild/linux-s390x@0.19.12:
@@ -5008,7 +6256,6 @@ packages:
     cpu: [s390x]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@esbuild/linux-x64@0.19.12:
@@ -5017,7 +6264,6 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@esbuild/netbsd-x64@0.19.12:
@@ -5026,7 +6272,6 @@ packages:
     cpu: [x64]
     os: [netbsd]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@esbuild/openbsd-x64@0.19.12:
@@ -5035,7 +6280,6 @@ packages:
     cpu: [x64]
     os: [openbsd]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@esbuild/sunos-x64@0.19.12:
@@ -5044,7 +6288,6 @@ packages:
     cpu: [x64]
     os: [sunos]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@esbuild/win32-arm64@0.19.12:
@@ -5053,7 +6296,6 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@esbuild/win32-ia32@0.19.12:
@@ -5062,7 +6304,6 @@ packages:
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@esbuild/win32-x64@0.19.12:
@@ -5071,7 +6312,6 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@eslint-community/eslint-utils@4.4.0(eslint@9.2.0):
@@ -6002,7 +7242,7 @@ packages:
     dependencies:
       '@inquirer/type': 1.3.1
       '@types/mute-stream': 0.0.1
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       '@types/wrap-ansi': 3.0.0
       ansi-escapes: 4.3.2
       chalk: 4.1.2
@@ -6022,7 +7262,7 @@ packages:
     dependencies:
       '@inquirer/type': 1.3.1
       '@types/mute-stream': 0.0.4
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       '@types/wrap-ansi': 3.0.0
       ansi-escapes: 4.3.2
       chalk: 4.1.2
@@ -6161,7 +7401,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       chalk: 4.1.2
       jest-message-util: 29.7.0
       jest-util: 29.7.0
@@ -6182,14 +7422,14 @@ packages:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       ci-info: 3.9.0
       exit: 0.1.2
       graceful-fs: 4.2.11
       jest-changed-files: 29.7.0
-      jest-config: 29.7.0(@types/node@20.12.10)(ts-node@10.9.2)
+      jest-config: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       jest-haste-map: 29.7.0
       jest-message-util: 29.7.0
       jest-regex-util: 29.6.3
@@ -6217,7 +7457,7 @@ packages:
     dependencies:
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       jest-mock: 29.7.0
 
   /@jest/expect-utils@29.7.0:
@@ -6243,7 +7483,7 @@ packages:
     dependencies:
       '@jest/types': 29.6.3
       '@sinonjs/fake-timers': 10.3.0
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       jest-message-util: 29.7.0
       jest-mock: 29.7.0
       jest-util: 29.7.0
@@ -6275,7 +7515,7 @@ packages:
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
       '@jridgewell/trace-mapping': 0.3.25
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       chalk: 4.1.2
       collect-v8-coverage: 1.0.2
       exit: 0.1.2
@@ -6362,7 +7602,7 @@ packages:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       '@types/yargs': 17.0.32
       chalk: 4.1.2
 
@@ -6414,7 +7654,7 @@ packages:
     engines: {node: '>= 14.17.0'}
     dependencies:
       chalk: 4.1.2
-      semver: 7.6.0
+      semver: 7.6.1
     dev: false
 
   /@jsii/check-node@1.98.0:
@@ -6422,7 +7662,7 @@ packages:
     engines: {node: '>= 14.17.0'}
     dependencies:
       chalk: 4.1.2
-      semver: 7.6.0
+      semver: 7.6.1
     dev: false
 
   /@jsii/spec@1.98.0:
@@ -6487,7 +7727,7 @@ packages:
     resolution: {integrity: sha512-7kZUAaLscfgbwBQRbvdMYaZOWyMEcPTH/tJjnyAWJ/dvvs9Ef+CERx/qJb9GExJpl1qipaDGn7KqHnFGGixd0w==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dependencies:
-      semver: 7.6.0
+      semver: 7.6.1
 
   /@octokit/auth-token@5.1.1:
     resolution: {integrity: sha512-rh3G3wDO8J9wSjfI436JUKzHIxq8NaiL0tVeB2aXmG6p/9859aUOAjA9pmSPNGGZxfwmaJ9ozOJImuNVJdpvbA==}
@@ -6833,7 +8073,7 @@ packages:
       '@types/shimmer': 1.0.5
       import-in-the-middle: 1.7.1
       require-in-the-middle: 7.3.0
-      semver: 7.6.0
+      semver: 7.6.1
       shimmer: 1.2.1
     transitivePeerDependencies:
       - supports-color
@@ -7540,7 +8780,6 @@ packages:
     cpu: [arm]
     os: [android]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-android-arm64@4.17.2:
@@ -7548,7 +8787,6 @@ packages:
     cpu: [arm64]
     os: [android]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-darwin-arm64@4.17.2:
@@ -7556,7 +8794,6 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-darwin-x64@4.17.2:
@@ -7564,7 +8801,6 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-linux-arm-gnueabihf@4.17.2:
@@ -7572,7 +8808,6 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-linux-arm-musleabihf@4.17.2:
@@ -7580,7 +8815,6 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-linux-arm64-gnu@4.17.2:
@@ -7588,7 +8822,6 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-linux-arm64-musl@4.17.2:
@@ -7596,7 +8829,6 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-linux-powerpc64le-gnu@4.17.2:
@@ -7604,7 +8836,6 @@ packages:
     cpu: [ppc64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-linux-riscv64-gnu@4.17.2:
@@ -7612,7 +8843,6 @@ packages:
     cpu: [riscv64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-linux-s390x-gnu@4.17.2:
@@ -7620,7 +8850,6 @@ packages:
     cpu: [s390x]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-linux-x64-gnu@4.17.2:
@@ -7628,7 +8857,6 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-linux-x64-musl@4.17.2:
@@ -7636,7 +8864,6 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-win32-arm64-msvc@4.17.2:
@@ -7644,7 +8871,6 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-win32-ia32-msvc@4.17.2:
@@ -7652,7 +8878,6 @@ packages:
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@rollup/rollup-win32-x64-msvc@4.17.2:
@@ -7660,7 +8885,6 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@semantic-release/commit-analyzer@12.0.0(semantic-release@23.0.7):
@@ -7731,7 +8955,7 @@ packages:
       read-pkg: 9.0.1
       registry-auth-token: 5.0.2
       semantic-release: 23.0.7(typescript@5.4.4)
-      semver: 7.6.0
+      semver: 7.6.1
       tempy: 3.1.0
     dev: true
 
@@ -7800,6 +9024,15 @@ packages:
       '@sentry/utils': 7.113.0
     dev: false
 
+  /@sentry-internal/tracing@7.114.0:
+    resolution: {integrity: sha512-dOuvfJN7G+3YqLlUY4HIjyWHaRP8vbOgF+OsE5w2l7ZEn1rMAaUbPntAR8AF9GBA6j2zWNoSo8e7GjbJxVofSg==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@sentry/core': 7.114.0
+      '@sentry/types': 7.114.0
+      '@sentry/utils': 7.114.0
+    dev: false
+
   /@sentry/core@7.109.0:
     resolution: {integrity: sha512-xwD4U0IlvvlE/x/g/W1I8b4Cfb16SsCMmiEuBf6XxvAa3OfWBxKoqLifb3GyrbxMC4LbIIZCN/SvLlnGJPgszA==}
     engines: {node: '>=8'}
@@ -7824,6 +9057,14 @@ packages:
       '@sentry/utils': 7.113.0
     dev: false
 
+  /@sentry/core@7.114.0:
+    resolution: {integrity: sha512-YnanVlmulkjgZiVZ9BfY9k6I082n+C+LbZo52MTvx3FY6RE5iyiPMpaOh67oXEZRWcYQEGm+bKruRxLVP6RlbA==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@sentry/types': 7.114.0
+      '@sentry/utils': 7.114.0
+    dev: false
+
   /@sentry/integrations@7.113.0:
     resolution: {integrity: sha512-w0sspGBQ+6+V/9bgCkpuM3CGwTYoQEVeTW6iNebFKbtN7MrM3XsGAM9I2cW1jVxFZROqCBPFtd2cs5n0j14aAg==}
     engines: {node: '>=8'}
@@ -7831,6 +9072,16 @@ packages:
       '@sentry/core': 7.113.0
       '@sentry/types': 7.113.0
       '@sentry/utils': 7.113.0
+      localforage: 1.10.0
+    dev: false
+
+  /@sentry/integrations@7.114.0:
+    resolution: {integrity: sha512-BJIBWXGKeIH0ifd7goxOS29fBA8BkEgVVCahs6xIOXBjX1IRS6PmX0zYx/GP23nQTfhJiubv2XPzoYOlZZmDxg==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@sentry/core': 7.114.0
+      '@sentry/types': 7.114.0
+      '@sentry/utils': 7.114.0
       localforage: 1.10.0
     dev: false
 
@@ -7863,6 +9114,17 @@ packages:
       '@sentry/integrations': 7.113.0
       '@sentry/types': 7.113.0
       '@sentry/utils': 7.113.0
+    dev: false
+
+  /@sentry/node@7.114.0:
+    resolution: {integrity: sha512-cqvi+OHV1Hj64mIGHoZtLgwrh1BG6ntcRjDLlVNMqml5rdTRD3TvG21579FtlqHlwZpbpF7K5xkwl8e5KL2hGw==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@sentry-internal/tracing': 7.114.0
+      '@sentry/core': 7.114.0
+      '@sentry/integrations': 7.114.0
+      '@sentry/types': 7.114.0
+      '@sentry/utils': 7.114.0
     dev: false
 
   /@sentry/serverless@7.113.0:
@@ -7898,6 +9160,11 @@ packages:
     resolution: {integrity: sha512-PJbTbvkcPu/LuRwwXB1He8m+GjDDLKBtu3lWg5xOZaF5IRdXQU2xwtdXXsjge4PZR00tF7MO7X8ZynTgWbYaew==}
     engines: {node: '>=8'}
 
+  /@sentry/types@7.114.0:
+    resolution: {integrity: sha512-tsqkkyL3eJtptmPtT0m9W/bPLkU7ILY7nvwpi1hahA5jrM7ppoU0IMaQWAgTD+U3rzFH40IdXNBFb8Gnqcva4w==}
+    engines: {node: '>=8'}
+    dev: false
+
   /@sentry/utils@7.109.0:
     resolution: {integrity: sha512-3RjxMOLMBwZ5VSiH84+o/3NY2An4Zldjz0EbfEQNRY9yffRiCPJSQiCJID8EoylCFOh/PAhPimBhqbtWJxX6iw==}
     engines: {node: '>=8'}
@@ -7917,6 +9184,13 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       '@sentry/types': 7.113.0
+    dev: false
+
+  /@sentry/utils@7.114.0:
+    resolution: {integrity: sha512-319N90McVpupQ6vws4+tfCy/03AdtsU0MurIE4+W5cubHME08HtiEWlfacvAxX+yuKFhvdsO4K4BB/dj54ideg==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@sentry/types': 7.114.0
     dev: false
 
   /@sideway/address@4.1.5:
@@ -7956,7 +9230,7 @@ packages:
     resolution: {integrity: sha512-DTuBFbqu4gGfajREEMrkq5jBhcnskinhr4+AnfJEk48zhVeEv3XnUKGIX98B74kxhYsIMfApGGySTn7V3b5yBA==}
     engines: {node: '>= 12.13.0', npm: '>= 6.12.0'}
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
     dev: false
 
   /@slack/types@2.11.0:
@@ -7971,7 +9245,7 @@ packages:
       '@slack/logger': 3.0.0
       '@slack/types': 2.11.0
       '@types/is-stream': 1.1.0
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       axios: 1.6.8
       eventemitter3: 3.1.2
       form-data: 2.5.1
@@ -8456,7 +9730,7 @@ packages:
   /@types/accepts@1.3.7:
     resolution: {integrity: sha512-Pay9fq2lM2wXPWbteBsRAGiWH2hig4ZE2asK+mm7kUzlxRTfL961rj89I6zV/E3PcIkDqyuBEcMxFT7rccugeQ==}
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
     dev: true
 
   /@types/aws-lambda@8.10.137:
@@ -8495,14 +9769,14 @@ packages:
     resolution: {integrity: sha512-fB3Zu92ucau0iQ0JMCFQE7b/dv8Ot07NI3KaZIkIUNXq82k4eBAqUaneXfleGY9JWskeS9y+u0nXMyspcuQrCg==}
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
 
   /@types/cacheable-request@6.0.3:
     resolution: {integrity: sha512-IQ3EbTzGxIigb1I3qPZc1rWJnH0BmSKv5QYTalEwweFvyBDLSAe24zP0le/hyi7ecGfZVlIVAg4BZqb8WBwKqw==}
     dependencies:
       '@types/http-cache-semantics': 4.0.4
       '@types/keyv': 3.1.4
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       '@types/responselike': 1.0.3
 
   /@types/caseless@0.12.5:
@@ -8518,7 +9792,7 @@ packages:
   /@types/connect@3.4.38:
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
 
   /@types/content-disposition@0.5.8:
     resolution: {integrity: sha512-QVSSvno3dE0MgO76pJhmv4Qyi/j0Yk9pBp0Y7TJ2Tlj+KCgJWY6qX7nnxCOLkZ3VYRSIk1WTxCvwUSdx6CCLdg==}
@@ -8540,19 +9814,19 @@ packages:
       '@types/connect': 3.4.38
       '@types/express': 4.17.21
       '@types/keygrip': 1.0.6
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
     dev: true
 
   /@types/cors@2.8.17:
     resolution: {integrity: sha512-8CGDvrBj1zgo2qE+oS3pOCyYNqCPryMWY2bGfwA0dcfopWGgxs+78df0Rs3rc9THP4JkOhLsAa+15VdpAqkcUA==}
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
     dev: true
 
   /@types/cross-spawn@6.0.2:
     resolution: {integrity: sha512-KuwNhp3eza+Rhu8IFI5HUXRP0LIhqH5cAjubUvGXXthh4YYBuP2ntwEX+Cz8GJoZUHlKo247wPWOfA9LYEq4cw==}
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
     dev: true
 
   /@types/debug@4.1.8:
@@ -8567,12 +9841,11 @@ packages:
 
   /@types/estree@1.0.5:
     resolution: {integrity: sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==}
-    dev: false
 
   /@types/express-serve-static-core@4.19.0:
     resolution: {integrity: sha512-bGyep3JqPCRry1wq+O5n7oiBgGWmeIJXPjXXCo8EK0u8duZGSYar7cGqd3ML2JUsLGeB7fmc06KYo9fLGWqPvQ==}
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       '@types/qs': 6.9.15
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -8591,10 +9864,17 @@ packages:
       '@types/qs': 6.9.15
       '@types/serve-static': 1.15.7
 
+  /@types/glob@7.2.0:
+    resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
+    dependencies:
+      '@types/minimatch': 5.1.2
+      '@types/node': 20.12.11
+    dev: false
+
   /@types/graceful-fs@4.1.9:
     resolution: {integrity: sha512-olP3sd1qOEe5dXTSaFvQG+02VdRXcdytWLAZsAq1PecU8uqQAhkrnbli7DagjtXKW/Bl7YJbUsa8MPcuc8LHEQ==}
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
     dev: true
 
   /@types/graphql-depth-limit@1.1.6:
@@ -8608,22 +9888,15 @@ packages:
     dependencies:
       '@types/express': 4.17.21
       '@types/koa': 2.15.0
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       fs-capacitor: 8.0.0
-      graphql: 16.8.1
-    dev: true
-
-  /@types/graphql@14.5.0:
-    resolution: {integrity: sha512-MOkzsEp1Jk5bXuAsHsUi6BVv0zCO+7/2PTiZMXWDSsMXvNU6w/PLMQT2vHn8hy2i0JqojPz1Sz6rsFjHtsU0lA==}
-    deprecated: This is a stub types definition. graphql provides its own type definitions, so you do not need this installed.
-    dependencies:
       graphql: 16.8.1
     dev: true
 
   /@types/highland@2.13.0:
     resolution: {integrity: sha512-ZB4u9dUDnBmqGtbY4t7gAiW9L5oHWfP1TknVzlucd9se+AYXhcr3/5V51ViNBj8lqmRC0xvTRSBmSPU4hkPGAQ==}
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
     dev: true
 
   /@types/http-assert@1.5.5:
@@ -8648,7 +9921,7 @@ packages:
   /@types/is-stream@1.1.0:
     resolution: {integrity: sha512-jkZatu4QVbR60mpIzjINmtS1ZF4a/FqdTUTBeQDVOQ2PYyidtwFKr0B5G6ERukKwliq+7mIXvxyppwzG5EgRYg==}
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
     dev: false
 
   /@types/isomorphic-fetch@0.0.39:
@@ -8682,7 +9955,7 @@ packages:
   /@types/jsdom@20.0.1:
     resolution: {integrity: sha512-d0r18sZPmMQr1eG35u12FZfhIXNrnsPU/g5wvRKCUf/tOGilKKwYMYGqh33BNR6ba+2gkHw1EUiHoN3mn7E5IQ==}
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       '@types/tough-cookie': 4.0.5
       parse5: 7.1.2
     dev: false
@@ -8694,7 +9967,7 @@ packages:
   /@types/jsonwebtoken@9.0.6:
     resolution: {integrity: sha512-/5hndP5dCjloafCXns6SZyESp3Ldq7YjH3zwzwczYnjxIT0Fqzk5ROSYVGfFyczIue7IUEj8hkvLbPoLQ18vQw==}
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
 
   /@types/jwk-to-pem@2.0.3:
     resolution: {integrity: sha512-I/WFyFgk5GrNbkpmt14auGO3yFK1Wt4jXzkLuI+fDBNtO5ZI2rbymyGd6bKzfSBEuyRdM64ZUwxU1+eDcPSOEQ==}
@@ -8707,7 +9980,7 @@ packages:
   /@types/keyv@3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
 
   /@types/koa-compose@3.2.8:
     resolution: {integrity: sha512-4Olc63RY+MKvxMwVknCUDhRQX1pFQoBZ/lXcRLP69PQkEpze/0cr8LNqJQe5NFb/b19DWi2a5bTi2VAlQzhJuA==}
@@ -8725,7 +9998,7 @@ packages:
       '@types/http-errors': 2.0.4
       '@types/keygrip': 1.0.6
       '@types/koa-compose': 3.2.8
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
     dev: true
 
   /@types/locutus@0.0.8:
@@ -8755,10 +10028,14 @@ packages:
   /@types/mime@1.3.5:
     resolution: {integrity: sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==}
 
+  /@types/minimatch@5.1.2:
+    resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
+    dev: false
+
   /@types/morgan@1.9.9:
     resolution: {integrity: sha512-iRYSDKVaC6FkGSpEVVIvrRGw0DfJMiQzIn3qr2G5B3C//AWkulhXgaBd7tS9/J79GWSYMTHGs7PfI5b3Y8m+RQ==}
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
     dev: true
 
   /@types/ms@0.7.34:
@@ -8768,30 +10045,30 @@ packages:
   /@types/mute-stream@0.0.1:
     resolution: {integrity: sha512-0yQLzYhCqGz7CQPE3iDmYjhb7KMBFOP+tBkyw+/Y2YyDI5wpS7itXXxneN1zSsUwWx3Ji6YiVYrhAnpQGS/vkw==}
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
     dev: false
 
   /@types/mute-stream@0.0.4:
     resolution: {integrity: sha512-CPM9nzrCPPJHQNA9keH9CVkVI+WR5kMa+7XEs5jcGQ0VoAGnLv242w8lIVgwAEfmE4oufJRaTc9PNLQl0ioAow==}
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
 
   /@types/mysql@2.15.26:
     resolution: {integrity: sha512-DSLCOXhkvfS5WNNPbfn2KdICAmk8lLc+/PNvnPnF7gOdMZCxopXduqv0OQ13y/yA/zXTSikZZqVgybUxOEg6YQ==}
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
     dev: true
 
   /@types/node-fetch@2.6.11:
     resolution: {integrity: sha512-24xFj9R5+rfQJLRyM56qh+wnVSYhyXC2tkoBndtY0U+vubqNsYXGjufB2nn8Q6gt0LrARwL6UBtMCSVCwl4B1g==}
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       form-data: 4.0.0
 
   /@types/node-fetch@2.6.6:
     resolution: {integrity: sha512-95X8guJYhfqiuVVhRFxVQcf4hW/2bCuoPwDasMf/531STFoNoWTT7YDnWdXHEZKqAGUigmpG31r2FE70LwnzJw==}
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       form-data: 4.0.0
     dev: false
 
@@ -8814,7 +10091,6 @@ packages:
     resolution: {integrity: sha512-vDg9PZ/zi+Nqp6boSOT7plNuthRugEKixDv5sFTIpkE89MmNtEArAShI4mxuX2+UrLEe9pxC1vm2cjm9YlWbJw==}
     dependencies:
       undici-types: 5.26.5
-    dev: true
 
   /@types/normalize-package-data@2.4.4:
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -8855,7 +10131,7 @@ packages:
     requiresBuild: true
     dependencies:
       '@types/caseless': 0.12.5
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       '@types/tough-cookie': 4.0.5
       form-data: 2.5.1
     dev: false
@@ -8864,7 +10140,7 @@ packages:
   /@types/responselike@1.0.3:
     resolution: {integrity: sha512-H/+L+UkTV33uf49PH5pCAUBVPNj2nDBXTN+qS1dOwyyg24l3CcicicCA7ca+HMvJBZcFgl5r8e+RR6elsb4Lyw==}
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
 
   /@types/retry@0.12.0:
     resolution: {integrity: sha512-wWKOClTTiizcZhXnPY4wikVAwmdYHp8q6DmC+EJUzAMsycb7HB32Kh9RN4+0gExjmPmZSAQjgURXIGATPegAvA==}
@@ -8877,13 +10153,13 @@ packages:
     resolution: {integrity: sha512-x2EM6TJOybec7c52BX0ZspPodMsQUd5L6PRwOunVyVUhXiBSKf3AezDL8Dgvgt5o0UfKNfuA0eMLr2wLT4AiBA==}
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
 
   /@types/serve-static@1.15.7:
     resolution: {integrity: sha512-W8Ym+h8nhuRwaKPaDw34QUkwsGi6Rc4yYqvKFo5rm2FUEhCFbzVWrxXUxuKK8TASjWsysJY0nsmNCGhCOIsrOw==}
     dependencies:
       '@types/http-errors': 2.0.4
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       '@types/send': 0.17.4
 
   /@types/shimmer@1.0.5:
@@ -8902,7 +10178,7 @@ packages:
     dependencies:
       '@types/cookiejar': 2.1.5
       '@types/methods': 1.1.4
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
     dev: true
 
   /@types/supertest@6.0.2:
@@ -8937,7 +10213,7 @@ packages:
   /@types/ws@8.5.10:
     resolution: {integrity: sha512-vmQSUcfalpIq0R9q7uTo2lXs6eGIpt9wtnLdMv9LVpIjCA/+ufZRozlVoVelIYixx1ugCBKDhn89vnsEGOCx9A==}
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
     dev: true
 
   /@types/yargs-parser@21.0.3:
@@ -8952,7 +10228,7 @@ packages:
     resolution: {integrity: sha512-oJoftv0LSuaDZE3Le4DbKX+KS9G36NzOeSap90UIK0yMA/NhKJhqlSGtNDORNRaIbQfzjXDrQa0ytJ6mNRGz/Q==}
     requiresBuild: true
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
     dev: false
     optional: true
 
@@ -8982,7 +10258,7 @@ packages:
       graphemer: 1.4.0
       ignore: 5.3.1
       natural-compare: 1.4.0
-      semver: 7.6.0
+      semver: 7.6.1
       ts-api-utils: 1.3.0(typescript@5.4.4)
       typescript: 5.4.4
     transitivePeerDependencies:
@@ -9058,7 +10334,7 @@ packages:
       globby: 11.1.0
       is-glob: 4.0.3
       minimatch: 9.0.4
-      semver: 7.6.0
+      semver: 7.6.1
       ts-api-utils: 1.3.0(typescript@5.4.4)
       typescript: 5.4.4
     transitivePeerDependencies:
@@ -9078,7 +10354,7 @@ packages:
       '@typescript-eslint/types': 7.8.0
       '@typescript-eslint/typescript-estree': 7.8.0(typescript@5.4.4)
       eslint: 9.2.0
-      semver: 7.6.0
+      semver: 7.6.1
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -9394,38 +10670,6 @@ packages:
     dependencies:
       fast-jwt: 4.0.1
       fetch-http2: 1.4.0
-    dev: false
-
-  /apollo-server-cache-redis@3.3.1:
-    resolution: {integrity: sha512-z+WX74PKM8Epsyd+cjRq789b2RtgARcdQ/u8acs+T5nf32Qt7eYhumKemUZf7lkwnKfh0nCNf81+e1Ll4xckAA==}
-    engines: {node: '>=12.0'}
-    deprecated: This package is part of the legacy caching implementation used by Apollo Server v2 and v3, and is no longer maintained. We recommend you switch to the newer Keyv-based implementation (which is compatible with all versions of Apollo Server). See https://www.apollographql.com/docs/apollo-server/v3/performance/cache-backends#legacy-caching-implementation for more details.
-    dependencies:
-      apollo-server-caching: 3.3.0
-      apollo-server-env: 4.2.1
-      dataloader: 2.2.2
-      ioredis: 4.28.5
-    transitivePeerDependencies:
-      - encoding
-      - supports-color
-    dev: false
-
-  /apollo-server-caching@3.3.0:
-    resolution: {integrity: sha512-Wgcb0ArjZ5DjQ7ID+tvxUcZ7Yxdbk5l1MxZL8D8gkyjooOkhPNzjRVQ7ubPoXqO54PrOMOTm1ejVhsF+AfIirQ==}
-    engines: {node: '>=12.0'}
-    deprecated: This package is part of the legacy caching implementation used by Apollo Server v2 and v3, and is no longer maintained. We recommend you switch to the newer Keyv-based implementation (which is compatible with all versions of Apollo Server). See https://www.apollographql.com/docs/apollo-server/v3/performance/cache-backends#legacy-caching-implementation for more details.
-    dependencies:
-      lru-cache: 6.0.0
-    dev: false
-
-  /apollo-server-env@4.2.1:
-    resolution: {integrity: sha512-vm/7c7ld+zFMxibzqZ7SSa5tBENc4B0uye9LTfjJwGoQFY5xsUPH5FpO5j0bMUDZ8YYNbrF9SNtzc5Cngcr90g==}
-    engines: {node: '>=12.0'}
-    deprecated: The `apollo-server-env` package is part of Apollo Server v2 and v3, which are now deprecated (end-of-life October 22nd 2023 and October 22nd 2024, respectively). This package's functionality is now found in the `@apollo/utils.fetcher` package. See https://www.apollographql.com/docs/apollo-server/previous-versions/ for more details.
-    dependencies:
-      node-fetch: 2.7.0
-    transitivePeerDependencies:
-      - encoding
     dev: false
 
   /append-field@1.0.0:
@@ -9963,7 +11207,6 @@ packages:
     dependencies:
       esbuild: 0.19.12
       load-tsconfig: 0.2.5
-    dev: false
 
   /busboy@1.6.0:
     resolution: {integrity: sha512-8SFQbg/0hQ9xy3UNTB0YEnsNBbWfhf7RtnzpL7TkBiTBRfrQ9Fxcnz7VJsleJpyp6rVLvXiuORqjlHi5q+PYuA==}
@@ -9984,7 +11227,6 @@ packages:
   /cac@6.7.14:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
     engines: {node: '>=8'}
-    dev: false
 
   /cacache@17.1.4:
     resolution: {integrity: sha512-/aJwG2l3ZMJ1xNAnqbMpA40of9dj/pIH3QfiuQSqjfPJF747VR0J/bHn+/KdNnHKc6XQcWt/AfRSBft82W1d2A==}
@@ -10567,7 +11809,6 @@ packages:
   /commander@4.1.1:
     resolution: {integrity: sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==}
     engines: {node: '>= 6'}
-    dev: false
 
   /commander@6.2.1:
     resolution: {integrity: sha512-U7VdrJFnJgo4xjrHpTzu0yrHPGImdsmD95ZlgYSEajAn2JKzDhDTPG9kBTefmObL2w/ngeZnilk+OV9CG3d7UA==}
@@ -10758,7 +11999,7 @@ packages:
       handlebars: 4.7.8
       json-stringify-safe: 5.0.1
       meow: 12.1.1
-      semver: 7.6.0
+      semver: 7.6.1
       split2: 4.2.0
     dev: true
 
@@ -10925,7 +12166,7 @@ packages:
       crc-32: 1.2.2
       readable-stream: 3.6.2
 
-  /create-jest@29.7.0(@types/node@20.12.10):
+  /create-jest@29.7.0(@types/node@20.12.10)(ts-node@10.9.2):
     resolution: {integrity: sha512-Adz2bdH0Vq3F53KEMJOoftQFutWCukm6J24wbPWRO4k1kMY7gS7ds/uoJkNuV8wDCtWWnuwGcJwpWcih+zEW1Q==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     hasBin: true
@@ -11135,7 +12376,7 @@ packages:
       bluebird: 3.7.2
       db-migrate-base: 2.3.1
       pg: 8.11.5
-      semver: 7.6.0
+      semver: 7.6.1
     transitivePeerDependencies:
       - pg-native
     dev: false
@@ -11322,11 +12563,6 @@ packages:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
     engines: {node: '>=0.4.0'}
 
-  /denque@1.5.1:
-    resolution: {integrity: sha512-XwE+iZ4D6ZUB7mfYRMb5wByE8L74HCn30FBN7sWnXksWc1LO1bPDl67pBR9o/kC4z/xSNAwkMYcGgqDV3BE3Hw==}
-    engines: {node: '>=0.10'}
-    dev: false
-
   /denque@2.1.0:
     resolution: {integrity: sha512-HVQE3AAb/pxF8fQAoiqpvg9i3evqug3hoiwakOyZAwJm+6vZehbkYXZ0l4JxS+I3QxM97v5aaRNhj8v5oBhekw==}
     engines: {node: '>=0.10'}
@@ -11359,7 +12595,6 @@ packages:
   /detect-indent@6.1.0:
     resolution: {integrity: sha512-reYkTUJAZb9gUuZ2RvVCNhVHdg62RHnJ7WJl8ftMi4diZ6NWlciOzQN88pUhSELEwflJht4oQDv0F0BMlwaYtA==}
     engines: {node: '>=8'}
-    dev: true
 
   /detect-libc@1.0.3:
     resolution: {integrity: sha512-pGjwhsmsp4kL2RTz08wcOlGN83otlqHeD/Z5T8GXZB+/YcpQ/dgo+lbU8ZsGxV0HIvqqxo9l7mqYwyYMD9bKDg==}
@@ -11380,7 +12615,6 @@ packages:
   /detect-newline@3.1.0:
     resolution: {integrity: sha512-TLz+x/vEXm/Y7P7wn1EJFNLxYpUD4TgMosxY6fAVJUnJMbupHBOncxyWUG9OpTaH9EBD7uFI5LfEgmMOc54DsA==}
     engines: {node: '>=8'}
-    dev: true
 
   /detect-port@1.5.1:
     resolution: {integrity: sha512-aBzdj76lueB6uUst5iAs7+0H/oOjqI5D16XUWxlWMIMROhcM0rfsNVk93zTngq1dDNpoXRr++Sus7ETAExppAQ==}
@@ -11516,9 +12750,9 @@ packages:
     resolution: {integrity: sha512-vo835pntK7kzYStk7xUHDifiYJvXxVhUapt85uk2AI94gUUAQX9HNRtrcMHNSc3YHJUEHGbYIGsM99uIbgAtxw==}
     hasBin: true
     dependencies:
-      semver: 7.6.0
+      semver: 7.6.1
       shelljs: 0.8.5
-      typescript: 5.5.0-dev.20240508
+      typescript: 5.5.0-dev.20240509
     dev: false
 
   /dreamopt@0.8.0:
@@ -11851,7 +13085,6 @@ packages:
       '@esbuild/win32-arm64': 0.19.12
       '@esbuild/win32-ia32': 0.19.12
       '@esbuild/win32-x64': 0.19.12
-    dev: false
 
   /escalade@3.1.2:
     resolution: {integrity: sha512-ErCHMCae19vR8vQGe50xIsVomy19rg6gFu3+r3jkEO46suLMWBksvVyoGgQV+jOfl84ZSOSlmv6Gxa89PmTGmA==}
@@ -11897,6 +13130,24 @@ packages:
       eslint: '>=7.0.0'
     dependencies:
       eslint: 9.2.0
+    dev: false
+
+  /eslint-plugin-package-json@0.13.1(eslint@9.2.0)(jsonc-eslint-parser@2.4.0):
+    resolution: {integrity: sha512-aZkSvyJZRW4JKFhdoBhuPgc8sM/UAQN993uh956Yb8dSFCAV0Vkwrw09cuPL5onZ6ygF5pCqSs57wZRqGIwDQQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      eslint: '>=8.0.0'
+      jsonc-eslint-parser: ^2.0.0
+    dependencies:
+      detect-indent: 6.1.0
+      detect-newline: 3.1.0
+      eslint: 9.2.0
+      jsonc-eslint-parser: 2.4.0
+      package-json-validator: 0.6.4
+      semver: 7.6.1
+      sort-object-keys: 1.1.3
+      sort-package-json: 1.57.0
+      validate-npm-package-name: 5.0.1
     dev: false
 
   /eslint-plugin-prettier@5.1.3(eslint-config-prettier@9.1.0)(eslint@9.2.0)(prettier@3.2.5):
@@ -12003,6 +13254,15 @@ packages:
       acorn: 8.11.3
       acorn-jsx: 5.3.2(acorn@8.11.3)
       eslint-visitor-keys: 4.0.0
+    dev: false
+
+  /espree@9.6.1:
+    resolution: {integrity: sha512-oruZaFkjorTpF32kDSI5/75ViwGeZginGGy2NoOSg3Q9bnwlnmDm4HLnkl0RE3n+njDXR037aY1+x58Z/zFdwQ==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    dependencies:
+      acorn: 8.11.3
+      acorn-jsx: 5.3.2(acorn@8.11.3)
+      eslint-visitor-keys: 3.4.3
     dev: false
 
   /esprima@4.0.1:
@@ -12530,7 +13790,7 @@ packages:
       '@fastify/busboy': 2.1.1
       '@firebase/database-compat': 1.0.4
       '@firebase/database-types': 1.0.2
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       farmhash: 3.3.1
       jsonwebtoken: 9.0.2
       jwks-rsa: 3.1.0
@@ -12861,6 +14121,10 @@ packages:
       shelljs.exec: 1.1.8
     dev: true
 
+  /git-hooks-list@1.0.3:
+    resolution: {integrity: sha512-Y7wLWcrLUXwk2noSka166byGCvhMtDRpgHdzCno1UQv/n/Hegp++a2xBWJL1lJarnKD3SWaljD+0z1ztqxuKyQ==}
+    dev: false
+
   /git-log-parser@1.2.0:
     resolution: {integrity: sha512-rnCVNfkTL8tdNryFuaY0fYiBWEBcgF748O6ZI61rslBvr2o7U65c2/6npCRqH40vuAhtgtDiqLTJjBVdrejCzA==}
     dependencies:
@@ -12965,6 +14229,20 @@ packages:
     dependencies:
       define-properties: 1.2.1
       gopd: 1.0.1
+
+  /globby@10.0.0:
+    resolution: {integrity: sha512-3LifW9M4joGZasyYPz2A1U74zbC/45fvpXUvO/9KbSa+VV0aGZarWkfdgKyR9sExNP0t0x0ss/UMJpNpcaTspw==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@types/glob': 7.2.0
+      array-union: 2.1.0
+      dir-glob: 3.0.1
+      fast-glob: 3.3.2
+      glob: 7.2.3
+      ignore: 5.3.1
+      merge2: 1.4.1
+      slash: 3.0.0
+    dev: false
 
   /globby@11.1.0:
     resolution: {integrity: sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g==}
@@ -13759,25 +15037,6 @@ packages:
       semver: 7.6.0
     dev: true
 
-  /ioredis@4.28.5:
-    resolution: {integrity: sha512-3GYo0GJtLqgNXj4YhrisLaNNvWSNwSS2wS4OELGfGxH8I69+XfNdnmV1AyN+ZqMh0i7eX+SWjrwFKDBDgfBC1A==}
-    engines: {node: '>=6'}
-    dependencies:
-      cluster-key-slot: 1.1.2
-      debug: 4.3.4(supports-color@5.5.0)
-      denque: 1.5.1
-      lodash.defaults: 4.2.0
-      lodash.flatten: 4.4.0
-      lodash.isarguments: 3.1.0
-      p-map: 2.1.0
-      redis-commands: 1.7.0
-      redis-errors: 1.2.0
-      redis-parser: 3.0.0
-      standard-as-callback: 2.1.0
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
   /ioredis@5.3.2:
     resolution: {integrity: sha512-1DKMMzlIHM02eBBVOFQ1+AolGjs6+xEcM4PDL7NqOS6szq7H9jSaEkIUH6/a5Hl241LzW6JLSiAbNvTQjUupUA==}
     engines: {node: '>=12.22.0'}
@@ -13992,6 +15251,11 @@ packages:
   /is-path-inside@3.0.3:
     resolution: {integrity: sha512-Fd4gABb+ycGAmKou8eMftCupSir5lRxqf4aD/vd0cD2qc4HL07OjCeuHMr8Ro4CoMaeCKDB0/ECBOVWjTwUvPQ==}
     engines: {node: '>=8'}
+
+  /is-plain-obj@2.1.0:
+    resolution: {integrity: sha512-YWnfyRwxL/+SsrWYfOpUtz5b3YD+nyfkHvjbcanzk8zgyO4ASD67uVMRt8k5bM4lLMDnXfriRhOpemw+NfT1eA==}
+    engines: {node: '>=8'}
+    dev: false
 
   /is-plain-object@2.0.4:
     resolution: {integrity: sha512-h5PpgXkWitc38BBMYawTYMWJHFZJVnBquFE57xFpjB8pJFiF6gZ+bU+WyI/yqXiFR5mdLsgYNaPe8uao6Uv9Og==}
@@ -14219,7 +15483,7 @@ packages:
       '@babel/parser': 7.24.5
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.2
-      semver: 7.6.0
+      semver: 7.6.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -14286,7 +15550,7 @@ packages:
       '@jest/expect': 29.7.0
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       chalk: 4.1.2
       co: 4.6.0
       dedent: 1.5.3
@@ -14307,7 +15571,7 @@ packages:
       - supports-color
     dev: true
 
-  /jest-cli@29.7.0(@types/node@20.12.10):
+  /jest-cli@29.7.0(@types/node@20.12.10)(ts-node@10.9.2):
     resolution: {integrity: sha512-OVVobw2IubN/GSYsxETi+gOe7Ka59EFMR/twOU3Jb2GnKKeMGJB5SGUUrEz3SFVmJASUdZUzy83sLNNQ2gZslg==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     hasBin: true
@@ -14321,38 +15585,10 @@ packages:
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
       chalk: 4.1.2
-      create-jest: 29.7.0(@types/node@20.12.10)
+      create-jest: 29.7.0(@types/node@20.12.10)(ts-node@10.9.2)
       exit: 0.1.2
       import-local: 3.1.0
       jest-config: 29.7.0(@types/node@20.12.10)(ts-node@10.9.2)
-      jest-util: 29.7.0
-      jest-validate: 29.7.0
-      yargs: 17.7.2
-    transitivePeerDependencies:
-      - '@types/node'
-      - babel-plugin-macros
-      - supports-color
-      - ts-node
-    dev: true
-
-  /jest-cli@29.7.0(@types/node@20.12.11):
-    resolution: {integrity: sha512-OVVobw2IubN/GSYsxETi+gOe7Ka59EFMR/twOU3Jb2GnKKeMGJB5SGUUrEz3SFVmJASUdZUzy83sLNNQ2gZslg==}
-    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
-    hasBin: true
-    peerDependencies:
-      node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
-    peerDependenciesMeta:
-      node-notifier:
-        optional: true
-    dependencies:
-      '@jest/core': 29.7.0(ts-node@10.9.2)
-      '@jest/test-result': 29.7.0
-      '@jest/types': 29.6.3
-      chalk: 4.1.2
-      create-jest: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
-      exit: 0.1.2
-      import-local: 3.1.0
-      jest-config: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       jest-util: 29.7.0
       jest-validate: 29.7.0
       yargs: 17.7.2
@@ -14426,7 +15662,7 @@ packages:
       pretty-format: 29.7.0
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
+      ts-node: 10.9.2(@types/node@20.12.10)(typescript@5.4.4)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -14514,7 +15750,7 @@ packages:
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
       '@types/jsdom': 20.0.1
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       jest-mock: 29.7.0
       jest-util: 29.7.0
       jsdom: 20.0.3
@@ -14531,7 +15767,7 @@ packages:
       '@jest/environment': 29.7.0
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       jest-mock: 29.7.0
       jest-util: 29.7.0
     dev: true
@@ -14545,7 +15781,7 @@ packages:
       jest:
         optional: true
     dependencies:
-      jest: 29.7.0(@types/node@20.12.11)
+      jest: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       jest-diff: 29.7.0
       jest-get-type: 29.6.3
     dev: true
@@ -14561,7 +15797,7 @@ packages:
     dependencies:
       '@jest/types': 29.6.3
       '@types/graceful-fs': 4.1.9
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
@@ -14611,7 +15847,7 @@ packages:
     peerDependencies:
       jest: '>=13.x'
     dependencies:
-      jest: 29.7.0(@types/node@20.12.11)
+      jest: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
     dev: true
 
   /jest-mock@29.7.0:
@@ -14619,7 +15855,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       jest-util: 29.7.0
 
   /jest-pnp-resolver@1.2.3(jest-resolve@29.7.0):
@@ -14673,7 +15909,7 @@ packages:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       chalk: 4.1.2
       emittery: 0.13.1
       graceful-fs: 4.2.11
@@ -14704,7 +15940,7 @@ packages:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       chalk: 4.1.2
       cjs-module-lexer: 1.3.1
       collect-v8-coverage: 1.0.2
@@ -14746,7 +15982,7 @@ packages:
       jest-util: 29.7.0
       natural-compare: 1.4.0
       pretty-format: 29.7.0
-      semver: 7.6.0
+      semver: 7.6.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -14756,7 +15992,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -14780,7 +16016,7 @@ packages:
     dependencies:
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.13.1
@@ -14792,13 +16028,13 @@ packages:
     resolution: {integrity: sha512-eIz2msL/EzL9UFTFFx7jBTkeZfku0yUAyZZZmJ93H2TYEiroIx2PQjEXcwYtYl8zXCxb+PAmA2hLIt/6ZEkPHw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: true
 
-  /jest@29.7.0(@types/node@20.12.10):
+  /jest@29.7.0(@types/node@20.12.10)(ts-node@10.9.2):
     resolution: {integrity: sha512-NIy3oAFp9shda19hy4HK0HRTWKtPJmGdnvywu01nOqNC2vZg+Z+fvJDxpMQA88eb2I9EcafcdjYgsDthnYTvGw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     hasBin: true
@@ -14811,28 +16047,7 @@ packages:
       '@jest/core': 29.7.0(ts-node@10.9.2)
       '@jest/types': 29.6.3
       import-local: 3.1.0
-      jest-cli: 29.7.0(@types/node@20.12.10)
-    transitivePeerDependencies:
-      - '@types/node'
-      - babel-plugin-macros
-      - supports-color
-      - ts-node
-    dev: true
-
-  /jest@29.7.0(@types/node@20.12.11):
-    resolution: {integrity: sha512-NIy3oAFp9shda19hy4HK0HRTWKtPJmGdnvywu01nOqNC2vZg+Z+fvJDxpMQA88eb2I9EcafcdjYgsDthnYTvGw==}
-    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
-    hasBin: true
-    peerDependencies:
-      node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
-    peerDependenciesMeta:
-      node-notifier:
-        optional: true
-    dependencies:
-      '@jest/core': 29.7.0(ts-node@10.9.2)
-      '@jest/types': 29.6.3
-      import-local: 3.1.0
-      jest-cli: 29.7.0(@types/node@20.12.11)
+      jest-cli: 29.7.0(@types/node@20.12.10)(ts-node@10.9.2)
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
@@ -14891,7 +16106,6 @@ packages:
   /joycon@3.1.1:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
     engines: {node: '>=10'}
-    dev: false
 
   /js-base64@3.7.7:
     resolution: {integrity: sha512-7rCnleh0z2CkXhH67J8K1Ytz0b2Y+yxTPL+/KOJoa20hfnVQ/3/T6W/KflYI4bRHRagNeXeU2bkNGI3v1oS/lw==}
@@ -14990,7 +16204,7 @@ packages:
       fs-extra: 10.1.0
       jsii-reflect: 1.98.0
       jsii-rosetta: 1.98.0
-      semver: 7.6.0
+      semver: 7.6.1
       spdx-license-list: 6.9.0
       xmlbuilder: 15.1.1
       yargs: 16.2.0
@@ -15022,7 +16236,7 @@ packages:
       commonmark: 0.30.0
       fast-glob: 3.3.2
       jsii: 1.98.0
-      semver: 7.6.0
+      semver: 7.6.1
       semver-intersect: 1.5.0
       stream-json: 1.8.0
       typescript: 3.9.10
@@ -15044,7 +16258,7 @@ packages:
       commonmark: 0.31.0
       fast-glob: 3.3.2
       jsii: 5.3.29
-      semver: 7.6.0
+      semver: 7.6.1
       semver-intersect: 1.5.0
       stream-json: 1.8.0
       typescript: 5.3.3
@@ -15079,7 +16293,7 @@ packages:
       fast-deep-equal: 3.1.3
       fs-extra: 10.1.0
       log4js: 6.9.1
-      semver: 7.6.0
+      semver: 7.6.1
       semver-intersect: 1.5.0
       sort-json: 2.0.1
       spdx-license-list: 6.9.0
@@ -15101,7 +16315,7 @@ packages:
       downlevel-dts: 0.11.0
       fast-deep-equal: 3.1.3
       log4js: 6.9.1
-      semver: 7.6.0
+      semver: 7.6.1
       semver-intersect: 1.5.0
       sort-json: 2.0.1
       spdx-license-list: 6.9.0
@@ -15192,6 +16406,16 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
     dev: true
+
+  /jsonc-eslint-parser@2.4.0:
+    resolution: {integrity: sha512-WYDyuc/uFcGp6YtM2H0uKmUwieOuzeE/5YocFJLnLfclZ4inf3mRn8ZVy1s7Hxji7Jxm6Ss8gqpexD/GlKoGgg==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    dependencies:
+      acorn: 8.11.3
+      eslint-visitor-keys: 3.4.3
+      espree: 9.6.1
+      semver: 7.6.1
+    dev: false
 
   /jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
@@ -15504,7 +16728,6 @@ packages:
   /lilconfig@3.1.1:
     resolution: {integrity: sha512-O18pf7nyvHTckunPWCV1XUNXU1piu01y2b7ATJ0ppkUkk8ocqVWBrYjJBCwHDjD/ZWcfyrA0P4gKhzWGi5EINQ==}
     engines: {node: '>=14'}
-    dev: false
 
   /limiter@1.1.5:
     resolution: {integrity: sha512-FWWMIEOxz3GwUI4Ts/IvgVy6LPvoMPgjMdQ185nN6psJyBJ4yOpzqm695/h5umdLJg2vW3GR5iG11MAkR2AzJA==}
@@ -15545,7 +16768,6 @@ packages:
   /load-tsconfig@0.2.5:
     resolution: {integrity: sha512-IXO6OCs9yg8tMKzfPZ1YmheJbZCiEsnBdcB03l0OcfK9prKnJb96siuHCr5Fl37/yo9DnKU+TLpxzTUspw9shg==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
-    dev: false
 
   /localforage@1.10.0:
     resolution: {integrity: sha512-14/H1aX7hzBBmmh7sGPd+AOMkkIrHM3Z1PAyGgZigA1H1p5O5ANnMyWzvpAETtG68/dC4pC0ncy3+PPGzXZHPg==}
@@ -15853,7 +17075,7 @@ packages:
     resolution: {integrity: sha512-hXdUTZYIVOt1Ex//jAQi+wTZZpUpwBj/0QsOzqegb3rGMMeJiSEu5xLHnYfBrRV4RH2+OCSOO95Is/7x1WJ4bw==}
     engines: {node: '>=10'}
     dependencies:
-      semver: 7.6.0
+      semver: 7.6.1
     dev: true
 
   /make-error@1.3.6:
@@ -16105,6 +17327,10 @@ packages:
     engines: {node: '>=16 || 14 >=14.17'}
     dependencies:
       brace-expansion: 2.0.1
+
+  /minimist@0.0.10:
+    resolution: {integrity: sha512-iotkTvxc+TwOm5Ieim8VnSNvCDjCK9S8G3scJ50ZthspSxa7jx50jkhYduuAtAjvfDUwSgOwf8+If99AlOEhyw==}
+    dev: false
 
   /minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
@@ -16411,7 +17637,7 @@ packages:
     resolution: {integrity: sha512-CPMcGa+y33xuL1E0TcNIu4YyaZCxnnvkVaEXrsosR3FxN+fV8xvb7Mzpb7IgKler10qeMkE6+Dp8qJhpzdq35g==}
     engines: {node: '>=10'}
     dependencies:
-      semver: 7.6.0
+      semver: 7.6.1
     dev: false
 
   /node-abort-controller@3.1.1:
@@ -16536,7 +17762,7 @@ packages:
     dependencies:
       hosted-git-info: 7.0.2
       is-core-module: 2.13.1
-      semver: 7.6.0
+      semver: 7.6.1
       validate-npm-package-license: 3.0.4
     dev: true
 
@@ -16578,7 +17804,7 @@ packages:
     dependencies:
       hosted-git-info: 7.0.2
       proc-log: 4.2.0
-      semver: 7.6.0
+      semver: 7.6.1
       validate-npm-package-name: 5.0.1
     dev: true
 
@@ -16866,6 +18092,13 @@ packages:
     resolution: {integrity: sha512-N4YtSYJqghVu4iek2ZUvcN/0aqH1kRDuNqzcycDxhOUpg7GdvLa2F3DgS6yBNhInhv2r/6I0Flkn7CqL8+nIcw==}
     dev: false
 
+  /optimist@0.6.1:
+    resolution: {integrity: sha512-snN4O4TkigujZphWLN0E//nQmm7790RYaE53DdL7ZYwee2D8DDo9/EyYiKUfN3rneWUjhJnueija3G9I2i0h3g==}
+    dependencies:
+      minimist: 0.0.10
+      wordwrap: 0.0.3
+    dev: false
+
   /optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
     engines: {node: '>= 0.8.0'}
@@ -17015,6 +18248,7 @@ packages:
   /p-map@2.1.0:
     resolution: {integrity: sha512-y3b8Kpd8OAN444hxfBbFfj1FY/RjtTd8tzYwhUqNYXx0fXx2iX4maP4Qr6qhIKbQXI02wTLAda4fYUbDagTUFw==}
     engines: {node: '>=6'}
+    dev: true
 
   /p-map@4.0.0:
     resolution: {integrity: sha512-/bjOqmgETBYB5BoEeGVea8dmvHb2m9GLy1E9W43yeyfP6QQCZGFNa+XRceJEuDB6zqr+gKpIAmlLebMpykw/MQ==}
@@ -17062,6 +18296,13 @@ packages:
   /p-try@2.2.0:
     resolution: {integrity: sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==}
     engines: {node: '>=6'}
+
+  /package-json-validator@0.6.4:
+    resolution: {integrity: sha512-sp5bWr5eUoVgNV50vsJyil0XCluM+qMvtba8X4ug5Z/0YtYZsePka+tZgqiZnAyFyf5pwXaSDwYncFdSEzX7PA==}
+    hasBin: true
+    dependencies:
+      optimist: 0.6.1
+    dev: false
 
   /pako@0.2.9:
     resolution: {integrity: sha512-NUcwaKxUxWrZLpDG+z/xZaCgQITkA/Dv4V/T6bw7VON6l1Xz/VnrBqrYjZQ12TamKHzITTfOEIYUj48y2KXImA==}
@@ -17463,9 +18704,8 @@ packages:
         optional: true
     dependencies:
       lilconfig: 3.1.1
-      ts-node: 10.9.2(@types/node@20.12.10)(typescript@5.4.4)
+      ts-node: 10.9.2(@types/node@20.12.11)(typescript@5.4.4)
       yaml: 2.4.2
-    dev: false
 
   /postcss-value-parser@4.2.0:
     resolution: {integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==}
@@ -17678,7 +18918,7 @@ packages:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       long: 5.2.3
     dev: false
 
@@ -18006,10 +19246,6 @@ packages:
       resolve: 1.22.8
     dev: false
 
-  /redis-commands@1.7.0:
-    resolution: {integrity: sha512-nJWqw3bTFy21hX/CPKHth6sfhZbdiHP6bTawSgQBlKOVRG7EZkfHbbHwQJnrE4vsQf0CMNE+3gJ4Fmm16vdVlQ==}
-    dev: false
-
   /redis-errors@1.2.0:
     resolution: {integrity: sha512-1qny3OExCf0UvUV/5wpYKf2YwPcOqXzkwKKSmKHiE6ZMQs5heeE/c8eXK+PNllPvmjgAbfnsbpkGZWy8cBpn9w==}
     engines: {node: '>=4'}
@@ -18287,7 +19523,6 @@ packages:
       '@rollup/rollup-win32-ia32-msvc': 4.17.2
       '@rollup/rollup-win32-x64-msvc': 4.17.2
       fsevents: 2.3.3
-    dev: false
 
   /router@1.3.8:
     resolution: {integrity: sha512-461UFH44NtSfIlS83PUg2N7OZo86BC/kB3dY77gJdsODsBhhw7+2uE0tzTINxrY9CahCUVk1VhpWCA5i1yoIEg==}
@@ -18458,7 +19693,7 @@ packages:
       p-reduce: 3.0.0
       read-pkg-up: 11.0.0
       resolve-from: 5.0.0
-      semver: 7.6.0
+      semver: 7.6.1
       semver-diff: 4.0.0
       signale: 1.4.0
       yargs: 17.7.2
@@ -18471,7 +19706,7 @@ packages:
     resolution: {integrity: sha512-0Ju4+6A8iOnpL/Thra7dZsSlOHYAHIeMxfhWQRI1/VLcT3WDBZKKtQt/QkBOsiIN9ZpuvHE6cGZ0x4glCMmfiA==}
     engines: {node: '>=12'}
     dependencies:
-      semver: 7.6.0
+      semver: 7.6.1
     dev: true
 
   /semver-intersect@1.5.0:
@@ -18504,7 +19739,6 @@ packages:
     resolution: {integrity: sha512-f/vbBsu+fOiYt+lmwZV0rVwJScl46HppnOA1ZvIuBWKOTlllpyJ3bfVax76/OrhCH38dyxoDIA8K7uB963IYgA==}
     engines: {node: '>=10'}
     hasBin: true
-    dev: true
 
   /send@0.18.0:
     resolution: {integrity: sha512-qqWzuOjSFOuqPjFe4NOsMLafToQQwBSOEpS+FwEt3A2V3vKubTquT3vmLTQpFgMXp8AlFWFuP1qKaJZOtPpVXg==}
@@ -18822,6 +20056,22 @@ packages:
       minimist: 1.2.8
     dev: false
 
+  /sort-object-keys@1.1.3:
+    resolution: {integrity: sha512-855pvK+VkU7PaKYPc+Jjnmt4EzejQHyhhF33q31qG8x7maDzkeFhAAThdCYay11CISO+qAMwjOBP+fPZe0IPyg==}
+    dev: false
+
+  /sort-package-json@1.57.0:
+    resolution: {integrity: sha512-FYsjYn2dHTRb41wqnv+uEqCUvBpK3jZcTp9rbz2qDTmel7Pmdtf+i2rLaaPMRZeSVM60V3Se31GyWFpmKs4Q5Q==}
+    hasBin: true
+    dependencies:
+      detect-indent: 6.1.0
+      detect-newline: 3.1.0
+      git-hooks-list: 1.0.3
+      globby: 10.0.0
+      is-plain-obj: 2.1.0
+      sort-object-keys: 1.1.3
+    dev: false
+
   /source-map-js@1.2.0:
     resolution: {integrity: sha512-itJW8lvSA0TXEphiRoawsCksnlf8SyvmFzIhltqAHluXd88pkCd+cXJVHTDwdCr0IzwptSm035IHQktUu1QUMg==}
     engines: {node: '>=0.10.0'}
@@ -18843,7 +20093,6 @@ packages:
     engines: {node: '>= 8'}
     dependencies:
       whatwg-url: 7.1.0
-    dev: false
 
   /spawn-command@0.0.2:
     resolution: {integrity: sha512-zC8zGoGkmc8J9ndvml8Xksr1Amk9qBujgbF0JAIWO7kXr43w0h/0GJNM/Vustixu+YE8N/MTrQ7N31FvHUACxQ==}
@@ -19159,7 +20408,7 @@ packages:
     resolution: {integrity: sha512-r0JWz2quThXsFbp1pevkAAoDk4sw3kFMQEc2qvxMFUOhw/SFGqtAGz4vQgP/fMWzO28ljBNEiz68KqRx0JS3dw==}
     engines: {node: '>=12.*'}
     dependencies:
-      '@types/node': 20.12.10
+      '@types/node': 20.12.11
       qs: 6.12.0
     dev: false
 
@@ -19212,7 +20461,6 @@ packages:
       mz: 2.7.0
       pirates: 4.0.6
       ts-interface-checker: 0.1.13
-    dev: false
 
   /super-regex@1.0.0:
     resolution: {integrity: sha512-CY8u7DtbvucKuquCmOFEKhr9Besln7n9uN8eFbwcoGYWXOMW07u2o8njWaiXt11ylS3qoGF55pILjRmPlbodyg==}
@@ -19236,7 +20484,7 @@ packages:
       methods: 1.1.2
       mime: 2.6.0
       qs: 6.12.0
-      semver: 7.6.0
+      semver: 7.6.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -19601,7 +20849,6 @@ packages:
     resolution: {integrity: sha512-dTpowEjclQ7Kgx5SdBkqRzVhERQXov8/l9Ft9dVM9fmg0W0KQSVaXX9T4i6twCPNtYiZM53lpSSUAwJbFPOHxA==}
     dependencies:
       punycode: 2.3.1
-    dev: false
 
   /tr46@3.0.0:
     resolution: {integrity: sha512-l7FvfAHlcmulp8kr+flpQZmVwtu7nfRV7NZujtN0OqES8EL4O4e0qqzL0DC5gAvx/ZC/9lk6rhcUwYvkBnBnYA==}
@@ -19649,9 +20896,8 @@ packages:
 
   /ts-interface-checker@0.1.13:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
-    dev: false
 
-  /ts-jest@29.1.2(@babel/core@7.24.5)(jest@29.7.0)(typescript@5.4.4):
+  /ts-jest@29.1.2(@babel/core@7.24.5)(esbuild@0.19.12)(jest@29.7.0)(typescript@5.4.4):
     resolution: {integrity: sha512-br6GJoH/WUX4pu7FbZXuWGKGNDuU7b8Uj77g/Sp7puZV6EXzuByl6JrECvm0MzVzSTkSHWTihsXt+5XYER5b+g==}
     engines: {node: ^16.10.0 || ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -19674,8 +20920,9 @@ packages:
     dependencies:
       '@babel/core': 7.24.5
       bs-logger: 0.2.6
+      esbuild: 0.19.12
       fast-json-stable-stringify: 2.1.0
-      jest: 29.7.0(@types/node@20.12.11)
+      jest: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
       jest-util: 29.7.0
       json5: 2.2.3
       lodash.memoize: 4.1.2
@@ -19718,7 +20965,6 @@ packages:
       typescript: 5.4.4
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
-    dev: false
 
   /ts-node@10.9.2(@types/node@20.12.11)(typescript@5.4.4):
     resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
@@ -19749,7 +20995,6 @@ packages:
       typescript: 5.4.4
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
-    dev: true
 
   /ts-pattern@4.3.0:
     resolution: {integrity: sha512-pefrkcd4lmIVR0LA49Imjf9DYLK8vtWhqBPA3Ya1ir8xCW0O2yjL9dsCVvI7pCodLC5q7smNpEtDR2yVulQxOg==}
@@ -19806,7 +21051,6 @@ packages:
     transitivePeerDependencies:
       - supports-color
       - ts-node
-    dev: false
 
   /tunnel-agent@0.6.0:
     resolution: {integrity: sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w==}
@@ -20048,8 +21292,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /typescript@5.5.0-dev.20240508:
-    resolution: {integrity: sha512-5hkQ+5UaeQFyG4Z4UiupCIQo2pcUZ+e8OZlIxeiljeqei989RyA99QnF+hS0pxZpxvOt/yJCTN9zIdT2m/O1WA==}
+  /typescript@5.5.0-dev.20240509:
+    resolution: {integrity: sha512-r/zZRQGt3udzXP4ZaxPUs7r+NgrzW94LRfqa0XrFe0IXANWaewB/amTIL8O/zZ9qRv4QN34kr4td6HJsSbG9eA==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: false
@@ -20411,7 +21655,6 @@ packages:
   /validate-npm-package-name@5.0.1:
     resolution: {integrity: sha512-OljLrQ9SQdOUqTaQxqL5dEfZWrXExyyWsozYlAWFawPVNuD83igl7uJD2RTkNMbniIYgt8l81eCJGIdQF7avLQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-    dev: true
 
   /validator@13.11.0:
     resolution: {integrity: sha512-Ii+sehpSfZy+At5nPdnyMhx78fEoPDkR2XW/zimHEL3MyGJQOCQ7WeP20jPYRz7ZCpcKLB21NxuXHF3bxjStBQ==}
@@ -20474,7 +21717,6 @@ packages:
 
   /webidl-conversions@4.0.2:
     resolution: {integrity: sha512-YQ+BmxuTgd6UXZW3+ICGfyqRyHXVlD5GtQr5+qjiNW7bF0cqrzX500HVXPBOvgXb5YnzDd+h0zqyv61KUD7+Sg==}
-    dev: false
 
   /webidl-conversions@7.0.0:
     resolution: {integrity: sha512-VwddBukDzu71offAQR975unBIGqfKZpM+8ZX6ySk8nYhVoo5CYaZyzt3YBvYtRtO+aoGlqxPg/B87NGVZ/fu6g==}
@@ -20531,7 +21773,6 @@ packages:
       lodash.sortby: 4.7.0
       tr46: 1.0.1
       webidl-conversions: 4.0.2
-    dev: false
 
   /when@2.0.1:
     resolution: {integrity: sha512-h0l57vFJ4YQe1/U+C+oqBfAoopxXABUm6VqWM0x2gg4pARru4IUWo/PAxyawWgbGtndXrZbA41EzsfxacZVEXQ==}
@@ -20624,6 +21865,11 @@ packages:
   /word-wrap@1.2.5:
     resolution: {integrity: sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==}
     engines: {node: '>=0.10.0'}
+    dev: false
+
+  /wordwrap@0.0.3:
+    resolution: {integrity: sha512-1tMA907+V4QmxV7dbRvb4/8MaRALK6q9Abid3ndMYnbyo8piisCmeONVqVSXqQA3KaP4SLt5b7ud6E2sqP8TFw==}
+    engines: {node: '>=0.4.0'}
     dev: false
 
   /wordwrap@1.0.0:

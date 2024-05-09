@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/node';
 import express, { json, Application } from 'express';
 import { Server, createServer } from 'http';
 import { expressMiddleware } from '@apollo/server/express4';
@@ -14,7 +13,7 @@ import {
   defaultPlugins,
   sentryPocketMiddleware,
 } from '@pocket-tools/apollo-utils';
-import { initSentry } from '@pocket-tools/sentry';
+import { initSentry, initSentryErrorHandler } from '@pocket-tools/sentry';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 import config from '../config';
 import { getRedis } from '../cache';
@@ -54,12 +53,6 @@ export async function startServer(port: number): Promise<{
     debug: config.sentry.environment == 'development',
   });
 
-  // RequestHandler creates a separate execution context, so that all
-  // transactions/spans/breadcrumbs are isolated across requests
-  app.use(Sentry.Handlers.requestHandler() as express.RequestHandler);
-  // TracingHandler creates a trace for every incoming request
-  app.use(Sentry.Handlers.tracingHandler());
-
   // Expose health check url
   app.get('/.well-known/apollo/server-health', async (req, res) => {
     // Check redis can connect
@@ -98,7 +91,7 @@ export async function startServer(port: number): Promise<{
   );
 
   // The error handler must be before any other error middleware and after all controllers
-  app.use(Sentry.Handlers.errorHandler() as express.ErrorRequestHandler);
+  initSentryErrorHandler(app);
 
   await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
   return { app, server, url };

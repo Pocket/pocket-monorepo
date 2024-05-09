@@ -2,16 +2,20 @@
   "name": "account-delete-monitor",
   "version": "1.0.0",
   "description": "",
+  "license": "ISC",
+  "author": "",
   "main": "dist/index.js",
+  "files": [
+    "dist",
+    "package.json"
+  ],
   "scripts": {
     "build": "rm -rf dist && tsc",
+    "format": "eslint --fix",
+    "lint": "eslint --fix-dry-run",
     "test": "jest \"\\.spec\\.ts\"",
-    "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",
-    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
-    "format": "eslint --fix \"src/**/*.ts\""
+    "test-integrations": "jest \"\\.integration\\.ts\" --runInBand"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-dynamodb": "3.569.0",
     "@aws-sdk/lib-dynamodb": "3.569.0",
@@ -21,15 +25,15 @@
     "tslib": "2.6.2"
   },
   "devDependencies": {
-    "@types/jest": "29.5.12",
     "@pocket-tools/eslint-config": "workspace:*",
+    "@types/aws-lambda": "8.10.137",
+    "@types/jest": "29.5.12",
+    "@types/node": "^20.12.6",
     "jest": "29.7.0",
     "nock": "13.5.4",
     "ts-jest": "29.1.2",
-    "tsconfig": "workspace:*"
-  },
-  "files": [
-    "dist",
-    "package.json"
-  ]
+    "ts-node": "10.9.2",
+    "tsconfig": "workspace:*",
+    "typescript": "5.4.4"
+  }
 }

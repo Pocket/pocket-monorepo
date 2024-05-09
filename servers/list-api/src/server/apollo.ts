@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/node';
 import express, { Application, json } from 'express';
 import { Server, createServer } from 'http';
 import { expressMiddleware } from '@apollo/server/express4';
@@ -10,7 +9,7 @@ import {
   isSubgraphIntrospection,
   sentryPocketMiddleware,
 } from '@pocket-tools/apollo-utils';
-import { initSentry } from '@pocket-tools/sentry';
+import { initSentry, initSentryErrorHandler } from '@pocket-tools/sentry';
 import config from '../config';
 import { ContextManager } from './context';
 import { readClient, writeClient } from '../database/client';
@@ -62,12 +61,6 @@ export async function startServer(port: number): Promise<{
     ...config.sentry,
     debug: config.sentry.environment == 'development',
   });
-
-  // RequestHandler creates a separate execution context, so that all
-  // transactions/spans/breadcrumbs are isolated across requests
-  app.use(Sentry.Handlers.requestHandler() as express.RequestHandler);
-  // TracingHandler creates a trace for every incoming request
-  app.use(Sentry.Handlers.tracingHandler());
 
   // Expose health check url
   app.get('/.well-known/apollo/server-health', (req, res) => {
@@ -130,7 +123,7 @@ export async function startServer(port: number): Promise<{
   );
 
   // The error handler must be before any other error middleware and after all controllers
-  app.use(Sentry.Handlers.errorHandler() as express.ErrorRequestHandler);
+  initSentryErrorHandler(app);
 
   await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
   return { app, server, url };
