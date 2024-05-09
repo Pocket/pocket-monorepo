@@ -2,36 +2,29 @@
   "name": "image-api",
   "version": "1.0.0",
   "description": "",
+  "license": "ISC",
+  "author": "",
   "main": "dist/server/main.js",
+  "files": [
+    "dist",
+    "schema.graphql",
+    "package.json"
+  ],
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "watch": "tsc -w --preserveWatchOutput & nodemon -r dotenv/config --config ../../nodemon.json",
-    "start": "node dist/server/main.js",
     "dev": "npm run build && npm run watch",
-    "test-ci": "npm test",
-    "test": "jest \"\\.spec\\.ts\"",
-    "test-integrations": "jest \"\\.integration\\.ts\" --runInBand --ci --watchAll=false --forceExit",
+    "format": "eslint --fix \"src/**/*.ts\"",
     "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
-    "format": "eslint --fix \"src/**/*.ts\""
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/jest": "29.5.12",
-    "@pocket-tools/eslint-config": "workspace:*",
-    "jest": "29.7.0",
-    "jest-extended": "4.0.2",
-    "nock": "13.5.4",
-    "nodemon": "3.1.0",
-    "supertest": "6.3.4",
-    "ts-jest": "29.1.2",
-    "tsconfig": "workspace:*",
-    "@types/node": "^20.12.6",
-    "ts-node": "10.9.2",
-    "typescript": "5.4.4",
-    "@jest/globals": "29.7.0"
+    "start": "node dist/server/main.js",
+    "test": "jest \"\\.spec\\.ts\"",
+    "test-ci": "npm test",
+    "test-integrations": "jest \"\\.integration\\.ts\" --runInBand --ci --watchAll=false --forceExit",
+    "watch": "tsc -w --preserveWatchOutput & nodemon -r dotenv/config --config ../../nodemon.json"
   },
   "dependencies": {
+    "@apollo/server": "4.10.4",
+    "@apollo/subgraph": "2.7.4",
+    "@apollo/utils.keyvadapter": "3.1.0",
     "@keyv/redis": "2.8.4",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
@@ -40,19 +33,26 @@
     "axios": "1.6.8",
     "axios-retry": "4.1.0",
     "dataloader": "2.2.2",
-    "parse-url": "9.2.0",
-    "tslib": "2.6.2",
-    "graphql-tag": "2.12.6",
-    "graphql": "16.8.1",
-    "@apollo/server": "4.10.4",
-    "@apollo/subgraph": "2.7.4",
     "express": "4.19.2",
-    "@apollo/utils.keyvadapter": "3.1.0",
-    "keyv": "4.5.4"
+    "graphql": "16.8.1",
+    "graphql-tag": "2.12.6",
+    "keyv": "4.5.4",
+    "parse-url": "9.2.0",
+    "tslib": "2.6.2"
   },
-  "files": [
-    "dist",
-    "schema.graphql",
-    "package.json"
-  ]
+  "devDependencies": {
+    "@jest/globals": "29.7.0",
+    "@pocket-tools/eslint-config": "workspace:*",
+    "@types/jest": "29.5.12",
+    "@types/node": "^20.12.6",
+    "jest": "29.7.0",
+    "jest-extended": "4.0.2",
+    "nock": "13.5.4",
+    "nodemon": "3.1.0",
+    "supertest": "6.3.4",
+    "ts-jest": "29.1.2",
+    "ts-node": "10.9.2",
+    "tsconfig": "workspace:*",
+    "typescript": "5.4.4"
+  }
 }

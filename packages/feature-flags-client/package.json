@@ -2,41 +2,41 @@
   "name": "@pocket-tools/feature-flags-client",
   "version": "0.0.0-development",
   "description": "Basic Unleash client for feature flags",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pocket/pocket-monorepo.git"
+  },
   "author": "",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "package.json"
+  ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
+    "clean": "rm -rf node_modules dist",
     "dev": "pnpm run build --watch",
-    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "format": "eslint --fix \"src/**/*.ts\"",
+    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
     "test": "jest",
-    "test:watch": "pnpm run test -- --watch",
-    "clean": "rm -rf node_modules dist"
+    "test:watch": "pnpm run test -- --watch"
   },
   "dependencies": {
     "@pocket-tools/ts-logger": "workspace:*",
     "unleash-client": "5.5.2"
   },
   "devDependencies": {
-    "@types/jest": "29.5.12",
     "@pocket-tools/eslint-config": "workspace:*",
+    "@types/jest": "29.5.12",
+    "@types/node": "^20.12.6",
     "jest": "29.7.0",
     "ts-jest": "29.1.2",
-    "tsconfig": "workspace:*",
-    "@types/node": "^20.12.6",
     "ts-node": "10.9.2",
+    "tsconfig": "workspace:*",
     "tslib": "2.6.2",
     "tsup": "8.0.2",
     "typescript": "5.4.4"
-  },
-  "files": [
-    "dist",
-    "package.json"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Pocket/pocket-monorepo.git"
   }
 }

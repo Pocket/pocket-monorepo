@@ -3,10 +3,24 @@
   "version": "1.0.0",
   "private": true,
   "description": "Push notification server",
-  "main": "dist/index.js",
   "repository": "https://github.com/Pocket/PushServer.git",
-  "author": "",
   "license": "BSD",
+  "author": "",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "dev": "npm run build && npm run watch",
+    "format": "eslint --fix \"src/**/*.ts\"",
+    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "start": "node -r dotenv/config dist/index.js",
+    "test-integrations": "jest \"\\.integration\\.ts\" --runInBand --forceExit",
+    "test:watch": "npm test -- --watchAll",
+    "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json"
+  },
   "dependencies": {
     "@aws-sdk/client-sqs": "3.569.0",
     "@sentry/node": "7.113.0",
@@ -14,33 +28,19 @@
     "dotenv": "16.4.5",
     "firebase-admin": "^12.0.0",
     "lodash": "4.17.21",
-    "uuid": "^9.0.1",
-    "tslib": "2.6.2"
-  },
-  "scripts": {
-    "start": "node -r dotenv/config dist/index.js",
-    "build": "rm -rf dist && tsc",
-    "dev": "npm run build && npm run watch",
-    "test-integrations": "jest \"\\.integration\\.ts\" --runInBand --forceExit",
-    "test:watch": "npm test -- --watchAll",
-    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
-    "format": "eslint --fix \"src/**/*.ts\"",
-    "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json"
+    "tslib": "2.6.2",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@types/jest": "29.5.12",
-    "@types/node-gcm": "^1.0.5",
     "@pocket-tools/eslint-config": "workspace:*",
+    "@types/jest": "29.5.12",
+    "@types/node": "^20.12.6",
+    "@types/node-gcm": "^1.0.5",
     "jest": "29.7.0",
     "nodemon": "3.1.0",
     "ts-jest": "29.1.2",
-    "tsconfig": "workspace:*",
-    "@types/node": "^20.12.6",
     "ts-node": "10.9.2",
+    "tsconfig": "workspace:*",
     "typescript": "5.4.4"
-  },
-  "files": [
-    "dist",
-    "package.json"
-  ]
+  }
 }

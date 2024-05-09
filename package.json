@@ -1,42 +1,42 @@
 {
+  "name": "pocket-monorepo",
   "private": true,
   "scripts": {
     "prebuild": "dotenv -- turbo run prebuild",
-    "pretest": "dotenv -- turbo run pretest",
-    "preinstall": "npx only-allow pnpm",
     "build": "dotenv -- turbo run build",
-    "dev": "dotenv -- turbo run dev --concurrency 50",
-    "lint": "turbo run lint",
-    "format": "turbo run format",
-    "test": "dotenv -- turbo run test",
-    "test-integrations": "dotenv -- turbo run test-integrations",
-    "synth": "dotenv -- turbo run synth",
     "clean": "rm -rf .turbo node_modules packages/**/.turbo packages/**/dist packages/**/node_modules servers/**/logs servers/**/.turbo servers/**/dist servers/**/node_modules lambdas/**/logs lambdas/**/.turbo lambdas/**/dist lambdas/**/node_modules infrastructure/**/dist infrastructure/**/node_modules infrastructure/**/.turbo infrastructure/**/cdktf.out",
-    "list-packages": "syncpack list",
-    "list-mismatches": "syncpack list-mismatches",
+    "dev": "dotenv -- turbo run dev --concurrency 50",
     "fix-mismatches": "syncpack fix-mismatches && pnpm install",
+    "format": "turbo run format",
+    "preinstall": "npx only-allow pnpm",
+    "lint": "turbo run lint",
+    "list-mismatches": "syncpack list-mismatches",
+    "list-packages": "syncpack list",
+    "prepare": "husky",
     "semantic-release": "dotenv -- turbo run semantic-release",
-    "prepare": "husky"
-  },
-  "dependencies": {
-    "dotenv-cli": "latest",
-    "husky": "9.0.11"
-  },
-  "devDependencies": {
-    "syncpack": "^12.3.2",
-    "turbo": "^1.13.3",
-    "@commitlint/cli": "19.3.0",
-    "@commitlint/config-conventional": "^19.2.2",
-    "@pocket-tools/eslint-config": "workspace:*",
-    "tsconfig": "workspace:*"
+    "synth": "dotenv -- turbo run synth",
+    "pretest": "dotenv -- turbo run pretest",
+    "test": "dotenv -- turbo run test",
+    "test-integrations": "dotenv -- turbo run test-integrations"
   },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
     ]
   },
+  "dependencies": {
+    "dotenv-cli": "latest",
+    "husky": "9.0.11"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@pocket-tools/eslint-config": "workspace:*",
+    "syncpack": "^12.3.2",
+    "tsconfig": "workspace:*",
+    "turbo": "^1.13.3"
+  },
   "packageManager": "pnpm@8.15.6",
-  "name": "pocket-monorepo",
   "engines": {
     "node": "^20.12"
   }

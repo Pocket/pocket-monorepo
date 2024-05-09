@@ -4,15 +4,15 @@
   "description": "",
   "main": "dist/main.js",
   "scripts": {
+    "prebuild": "graphql-codegen",
     "build": "rm -rf dist && tsc",
-    "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json",
-    "start": "node dist/main.js",
     "dev": "npm run build && npm run watch",
+    "format": "eslint --fix \"src/**/*.ts\"",
+    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
+    "start": "node dist/main.js",
     "test": "jest \"\\.spec\\.ts\" --runInBand",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand --force-exit",
-    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
-    "format": "eslint --fix \"src/**/*.ts\"",
-    "prebuild": "graphql-codegen"
+    "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json"
   },
   "dependencies": {
     "@pocket-tools/apollo-utils": "workspace:*",
@@ -31,18 +31,18 @@
     "@graphql-codegen/typed-document-node": "5.0.6",
     "@graphql-codegen/typescript": "4.0.6",
     "@graphql-codegen/typescript-operations": "4.2.0",
+    "@pocket-tools/eslint-config": "workspace:*",
     "@types/express": "4.17.21",
     "@types/jest": "29.5.12",
+    "@types/node": "^20.12.6",
     "@types/supertest": "^6.0.2",
-    "@pocket-tools/eslint-config": "workspace:*",
     "jest": "29.7.0",
     "nock": "13.5.4",
     "nodemon": "3.1.0",
     "supertest": "6.3.4",
     "ts-jest": "29.1.2",
-    "tsconfig": "workspace:*",
-    "@types/node": "^20.12.6",
     "ts-node": "10.9.2",
+    "tsconfig": "workspace:*",
     "typescript": "5.4.4"
   }
 }
