@@ -39,7 +39,7 @@ export class EventBus {
       Entries: [
         {
           EventBusName: config.aws.eventBus.name,
-          Detail: JSON.stringify(payload),
+          Detail: JSON.stringify({ pocketShare: payload }),
           Source: config.aws.eventBus.source,
           DetailType: eventType,
         },
