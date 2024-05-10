@@ -17,7 +17,7 @@
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand"
   },
   "dependencies": {
-    "@aws-sdk/client-lambda": "3.569.0",
+    "@aws-sdk/client-lambda": "3.572.0",
     "@sentry/serverless": "7.114.0",
     "fetch-retry": "^5.0.6",
     "isomorphic-fetch": "^3.0.0",
