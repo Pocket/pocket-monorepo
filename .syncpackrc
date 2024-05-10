@@ -41,6 +41,16 @@
     },
     {
       "dependencies": [
+        "tslib"
+      ],
+      "dependencyTypes": [
+        "!prod"
+      ],
+      "isBanned": true,
+      "label": "tslib should only ever be in prod dependencies"
+    },
+    {
+      "dependencies": [
         "nock"
       ],
       "label": "Nock should be the same version except for lambda-secrets because of native fetch",

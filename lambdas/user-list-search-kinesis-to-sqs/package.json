@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-sqs": "3.569.0",
-    "@sentry/serverless": "7.113.0",
+    "@sentry/serverless": "7.114.0",
     "highland": "2.13.5",
     "tslib": "2.6.2",
     "uuid": "^9.0.1"
