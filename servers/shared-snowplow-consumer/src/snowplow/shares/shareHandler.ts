@@ -2,11 +2,7 @@ import { SelfDescribingJson } from '@snowplow/tracker-core';
 import { config } from '../../config';
 import { EventHandler } from '../EventHandler';
 import { getTracker } from '../tracker';
-import {
-  ObjectUpdate,
-  PocketShare,
-  createPocketShare,
-} from '../../snowtype/snowplow';
+import { PocketShare, createPocketShare } from '../../snowtype/snowplow';
 import { PocketSharePayload } from '../../eventConsumer/sharesEvents/sharesEventConsumer';
 
 /**
@@ -25,13 +21,9 @@ export class PocketShareEventHandler extends EventHandler {
    */
   process(data: PocketSharePayload): void {
     const shareData = createPocketShare(data.detail.pocketShare);
-    const objectUpdate: ObjectUpdate = {
+    this.trackObjectUpdate<PocketShare>(this.tracker, {
       trigger: data['detail-type'],
       object: 'pocket_share',
-    };
-    this.trackObjectUpdate<PocketShare>(this.tracker, {
-      objectUpdate,
-      // TODO: why is this array
       context: [shareData],
     });
   }

@@ -1,10 +1,6 @@
 import * as Sentry from '@sentry/node';
 import { Tracker } from '@snowplow/node-tracker';
-import {
-  CommonEventProperties,
-  ObjectUpdate,
-  trackObjectUpdate as baseTrackObjectUpdate,
-} from '../snowtype/snowplow';
+import { trackObjectUpdate as baseTrackObjectUpdate } from '../snowtype/snowplow';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 export class EventHandler {
@@ -13,8 +9,7 @@ export class EventHandler {
   }
 
   public trackObjectUpdate<T = any>(
-    tracker: Tracker,
-    objectUpdate: ObjectUpdate & CommonEventProperties<T>,
+    ...[tracker, objectUpdate]: Parameters<typeof baseTrackObjectUpdate<T>>
   ) {
     try {
       // Note: the track method provided by the @snowplow/node-tracker package
@@ -24,7 +19,7 @@ export class EventHandler {
       //
       // Snowplow has an open issue to make this library async:
       // https://github.com/snowplow/snowplow-javascript-tracker/issues/1087
-      baseTrackObjectUpdate(tracker, objectUpdate);
+      baseTrackObjectUpdate<T>(tracker, objectUpdate);
       serverLogger.info(
         `queueing snowplow event to be tracked ->${JSON.stringify(
           objectUpdate,

@@ -13,22 +13,6 @@ export const shareableListItemEventSchema = {
   shareable_list_item: 'iglu:com.pocket/shareable_list_item/jsonschema/1-0-5',
 };
 
-function assertValidSnowplowObjectUpdateEvents(
-  events,
-  triggers: ObjectUpdate['trigger'][],
-) {
-  const parsedEvents = events
-    .map(parseSnowplowData)
-    .map((parsedEvent) => parsedEvent.data);
-
-  expect(parsedEvents).toEqual(
-    triggers.map((trigger) => ({
-      schema: shareableListItemEventSchema.objectUpdate,
-      data: { trigger: trigger, object: 'shareable_list_item' },
-    })),
-  );
-}
-
 describe('ShareableListItemEventHandler', () => {
   const pocketShare: PocketShareEvent = {
     target_url: 'https://chess.com',
@@ -46,19 +30,31 @@ describe('ShareableListItemEventHandler', () => {
       source: 'shares-api-events' as const,
       'detail-type': 'pocket_share_created' as const,
     },
+    {
+      detail: { pocketShare },
+      source: 'shares-api-events' as const,
+      'detail-type': 'pocket_share_context_updated' as const,
+    },
   ])('sends event to snowplow', async (event) => {
     new PocketShareEventHandler().process(event);
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
     // make sure we only have good events
     const allEvents = await getAllSnowplowEvents();
     expect(allEvents.total).toBe(1);
     expect(allEvents.good).toBe(1);
     expect(allEvents.bad).toBe(0);
-    const goodEvents = await getGoodSnowplowEvents();
-
-    const eventContext = parseSnowplowData(
-      goodEvents[0].rawEvent.parameters.cx,
+    const goodEvent = (await getGoodSnowplowEvents())[0];
+    expect(goodEvent.event.app_id).toEqual('pocket-shares-api');
+    expect(goodEvent.event.event_name).toEqual('object_update');
+    const description = parseSnowplowData(goodEvent.rawEvent.parameters.ue_px);
+    expect(description.data.data).toEqual({
+      object: 'pocket_share',
+      trigger: event['detail-type'],
+    });
+    const eventContext = parseSnowplowData(goodEvent.rawEvent.parameters.cx);
+    expect(eventContext.data[0].data).toEqual(pocketShare);
+    expect(eventContext.data[0].schema).toMatch(
+      'iglu:com.pocket/pocket_share/jsonschema/',
     );
-    console.log('hi');
   });
 });
