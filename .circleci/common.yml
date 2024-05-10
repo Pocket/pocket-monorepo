@@ -153,25 +153,53 @@ commands:
             shares_api: << pipeline.parameters.shares_api >>
 
   install_pnpm:  
+    parameters:
+      scope:
+        description: The pnpm scope to build for
+        type: string
+        default: ""
     steps:
-      - restore_cache:
-          name: Restore pnpm Package Cache
-          keys:
-            - pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
       - run:
           name: Install pnpm package manager
           command: |
             corepack prepare pnpm@8.15.6 --activate
             pnpm config set store-dir .pnpm-store
-      - run:  
-          name: Install Dependencies
-          command: |
-            pnpm install
-      - save_cache:
-          name: Save pnpm Package Cache
-          key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
-          paths:
-            - .pnpm-store
+      - when:
+          # Only compile if we do not use raw hcl
+          condition: <<parameters.scope>>
+          steps:
+            - restore_cache:
+                name: Restore pnpm Package Cache
+                keys:
+                  - pnpm-packages-{{ checksum "pnpm-lock.yaml" }}-{{ << parameters.scope >> }}
+            - run:  
+                # Need to set peer-deps to false for pnpmv8 https://github.com/pnpm/pnpm/issues/6300
+                name: Install Dependencies
+                command: |
+                  pnpm install --filter=<< parameters.scope >>... --config.dedupe-peer-dependents=false
+            - save_cache:
+                name: Save pnpm Package Cache
+                key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}-{{ << parameters.scope >> }}
+                paths:
+                  - .pnpm-store
+      - unless:
+          # Only compile if we do not use raw hcl
+          condition: <<parameters.scope>>
+          steps:
+            - restore_cache:
+                name: Restore pnpm Package Cache
+                keys:
+                  - pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
+            - run:  
+                # Need to set peer-deps to false for pnpmv8 https://github.com/pnpm/pnpm/issues/6300
+                name: Install Dependencies
+                command: |
+                  pnpm install
+            - save_cache:
+                name: Save pnpm Package Cache
+                key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}
+                paths:
+                  - .pnpm-store
   install_infrastructure_pnpm:
     parameters:
       scope:
@@ -179,13 +207,14 @@ commands:
         type: string
     steps:
       - run:
+          # Need to set peer-deps to false for pnpmv8 https://github.com/pnpm/pnpm/issues/6300
           name: Install and setup node
           command: |
             nvm install
             nvm use
             npm install -g pnpm@8.15.6
             pnpm config set store-dir .pnpm-store
-            pnpm install --filter=<< parameters.scope >>...
+            pnpm install --filter=<< parameters.scope >>... --config.dedupe-peer-dependents=false
   install_codebuild_secrets:
     steps:
       - run: 
@@ -571,7 +600,8 @@ jobs:
       - exit-early-if-irrelevant:
           for: << parameters.for >>
       - checkout
-      - install_pnpm
+      - install_pnpm:
+          scope: << parameters.scope >>
       - run:
           name: run setup.sh
           command: |
@@ -714,7 +744,8 @@ jobs:
           command: |
             echo "export SENTRY_AUTH_TOKEN="$SENTRY_BEARER"" >> "$BASH_ENV"
       - checkout
-      - install_pnpm
+      - install_pnpm:
+          scope: << parameters.scope >>
       - run:
           # Theres a really annoying bug in PNPM deploy command that will try and create a folder at /home/pruned which we are not allowed to do, 
           # so we move it under 1 directory to let it do its thing.
@@ -821,7 +852,9 @@ jobs:
         description: 'build command to use if we need to'
         type: string
         default: ""
-
+      scope:
+        description: The pnpm scope to build for
+        type: string
     docker:
       - image: *node_image
         auth:
@@ -841,7 +874,8 @@ jobs:
       - when:
           condition: << parameters.build_command >>
           steps:
-            - install_pnpm
+            - install_pnpm:
+                scope: << parameters.scope >>
             - run:
                 name: build schema
                 command: |

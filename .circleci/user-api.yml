@@ -13,6 +13,7 @@ workflows:
           schema_file_path: servers/user-api/schema.graphql
           prod_graph_url: https://user-api.readitlater.com
           dev_graph_url: https://user-api.getpocket.dev
+          scope: user-api
 
       - test_integrations:
           <<: *not_dev_main

@@ -10,4 +10,5 @@ module.exports = {
   restoreMocks: true,
   coverageProvider: 'v8',
   setupFilesAfterEnv: ['./setup.js'],
+  workerIdleMemoryLimit: 0.5,
 };

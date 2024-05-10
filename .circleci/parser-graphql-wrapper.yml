@@ -13,6 +13,7 @@ workflows:
           schema_file_path: servers/parser-graphql-wrapper/schema.graphql
           prod_graph_url: https://parser-graphql-wrapper.readitlater.com
           dev_graph_url: https://parser-graphql-wrapper.getpocket.dev
+          scope: parser-graphql-wrapper
 
       - apollo:
           name: parser-graphql-wrapper_apollo_admin
@@ -22,6 +23,7 @@ workflows:
           prod_graph_url: https://parser-graphql-wrapper.readitlater.com
           dev_graph_url: https://parser-graphql-wrapper.getpocket.dev
           apollo_key_env: APOLLO_ADMIN_KEY
+          scope: parser-graphql-wrapper
 
       - test_integrations:
           <<: *not_dev_main
