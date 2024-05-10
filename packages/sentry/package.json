@@ -19,7 +19,8 @@
   "dependencies": {
     "@sentry/node": "7.114.0",
     "@sentry/tracing": "7.114.0",
-    "express": "4.19.2"
+    "express": "4.19.2",
+    "tslib": "2.6.2"
   },
   "devDependencies": {
     "@jest/globals": "29.7.0",
@@ -31,7 +32,6 @@
     "ts-jest": "29.1.2",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "tslib": "2.6.2",
     "tsup": "8.0.2",
     "typescript": "5.4.4"
   },
