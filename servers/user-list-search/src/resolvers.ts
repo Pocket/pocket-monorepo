@@ -3,8 +3,6 @@ import {
   ElasticSearchFilter,
   ElasticSearchParams,
   search,
-  SearchParams,
-  PocketSearchResponse,
   searchSavedItems,
   searchSavedItemsByOffset,
   advancedSearch,
@@ -18,17 +16,20 @@ import {
 } from '@pocket-tools/apollo-utils';
 import { IContext } from './server/context';
 import { SavedItemDataService } from './datasource/SavedItemsDataSource';
-import {
-  SavedItemSearchResultConnection,
-  AdvancedSearchParams,
-  SearchSavedItemParameters,
-  SavedItemSearchResultPage,
-  AdvancedSearchByOffsetParams,
-  SearchSavedItemOffsetParams,
-  RecentSearch,
-} from './types';
 import { config } from './config';
 import { MysqlDataSource } from './datasource/MysqlDataSource';
+import {
+  Resolvers,
+  SearchResult,
+  SearchParams,
+  UserAdvancedSearchArgs,
+  UserAdvancedSearchByOffsetArgs,
+  SavedItemSearchResultConnection,
+  SavedItemSearchResultPage,
+  UserSearchSavedItemsByOffsetArgs,
+  RecentSearch,
+  UserSearchSavedItemsArgs,
+} from './__generated__/types';
 
 /**
  * Custom type for FunctionalBoostValue coming from client.
@@ -66,7 +67,7 @@ function elasticSearch(
   _,
   { params }: { params: SearchParams },
   context: IContext,
-): Promise<PocketSearchResponse> {
+): Promise<SearchResult> {
   if (context.userId == null) {
     throw new AuthenticationError('Must be logged in to perform search');
   }
@@ -81,14 +82,14 @@ function elasticSearch(
   return search(searchParams);
 }
 
-export const resolvers = {
+export const resolvers: Resolvers = {
   ...PocketDefaultScalars,
   FunctionalBoostValue: functionalBoostValue,
   User: {
     search: elasticSearch,
     advancedSearch: async (
       _,
-      params: AdvancedSearchParams,
+      params: UserAdvancedSearchArgs,
       context: IContext,
     ): Promise<SavedItemSearchResultConnection> => {
       if (params.pagination?.before || params.pagination?.last) {
@@ -108,7 +109,7 @@ export const resolvers = {
       }
       // Free search
       const searchDataService = new SavedItemDataService(context);
-      const input: SearchSavedItemParameters = {
+      const input: UserSearchSavedItemsArgs = {
         term: params.queryString,
         sort: params.sort,
         pagination: params.pagination,
@@ -158,7 +159,7 @@ export const resolvers = {
     },
     advancedSearchByOffset: async (
       _,
-      params: AdvancedSearchByOffsetParams,
+      params: UserAdvancedSearchByOffsetArgs,
       context: IContext,
     ): Promise<SavedItemSearchResultPage> => {
       // Set up default to ensure pagination fields are always present
@@ -178,7 +179,7 @@ export const resolvers = {
       }
       // Free search
       const searchDataService = new SavedItemDataService(context);
-      const input: SearchSavedItemOffsetParams = {
+      const input: UserSearchSavedItemsByOffsetArgs = {
         term: params.queryString,
         sort: params.sort,
         pagination: params.pagination,
