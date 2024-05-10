@@ -62,7 +62,9 @@
     "nodemon": "3.1.0",
     "supertest": "6.3.4",
     "ts-jest": "29.1.2",
+    "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
+    "typescript": "5.4.4",
     "unleash-client": "5.5.2"
   }
 }

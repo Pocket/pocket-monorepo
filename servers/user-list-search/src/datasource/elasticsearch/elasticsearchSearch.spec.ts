@@ -9,6 +9,7 @@ import {
   getFilterTerms,
   getSearchHighlightFields,
   getTerms,
+  Term,
   cleanSearchTerm,
   generateSearchSavedItemsParams,
   getCleanedupDomainName,
