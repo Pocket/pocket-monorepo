@@ -76,7 +76,7 @@ COPY --from=setup /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 
 # First install dependencies (as they change less often)
 COPY --from=setup /app/out/json/ ./
-RUN pnpm install --filter=${SCOPE} --frozen-lockfile
+RUN pnpm install --filter=${SCOPE}... --frozen-lockfile --config.dedupe-peer-dependents=false
 
 # Build the project and its dependencies
 COPY --from=setup /app/out/full/ ./
@@ -87,7 +87,7 @@ RUN pnpm run build --filter=${SCOPE}...
 # This is a temporary hack, hopefully
 RUN cp -r ${APP_PATH}/node_modules/.prisma ./.prisma.tmp | true
 ## Installing only the dev dependencies after we used them to build
-RUN rm -rf node_modules/ && pnpm install --prod --filter=${SCOPE} --frozen-lockfile
+RUN rm -rf node_modules/ && pnpm install --prod --filter=${SCOPE}... --frozen-lockfile --config.dedupe-peer-dependents=false
 
 # Inject sentry source maps
 RUN pnpm --filter=$SCOPE --prod deploy pruned
