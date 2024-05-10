@@ -69,7 +69,8 @@
   },
   "dependencies": {
     "morgan": "^1.10.0",
-    "winston": "3.13.0"
+    "winston": "3.13.0",
+    "tslib": "2.6.2"
   },
   "devDependencies": {
     "@pocket-tools/eslint-config": "workspace:*",
@@ -82,7 +83,6 @@
     "ts-jest": "29.1.2",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "tslib": "2.6.2",
     "tsup": "8.0.2",
     "typescript": "5.4.4"
   }
