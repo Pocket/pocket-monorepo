@@ -6,17 +6,20 @@ import {
   extractSearchValues,
   formatFilterKey,
   formatFilterValues,
-  FunctionalBoostOperation,
   getFilterTerms,
   getSearchHighlightFields,
   getTerms,
-  SearchParams,
   Term,
   cleanSearchTerm,
   generateSearchSavedItemsParams,
   getCleanedupDomainName,
 } from './elasticsearchSearch';
-import { Pagination, SearchSavedItemParameters } from '../../types';
+import { Pagination } from '../../types';
+import {
+  SearchFunctionalBoostOperation,
+  UserSearchArgs,
+  UserSearchSavedItemsArgs,
+} from '../../__generated__/types';
 
 describe('Elasticsearch', () => {
   describe('term cleaner', () => {
@@ -81,7 +84,7 @@ describe('Elasticsearch', () => {
 
   describe('getSearchHighlightFields', () => {
     it('should generate an object of highlight fields', () => {
-      const inputParams: SearchParams['highlightFields'] = [
+      const inputParams: UserSearchArgs['params']['highlightFields'] = [
         {
           field: 'lebowski',
           size: 10,
@@ -225,13 +228,13 @@ describe('Elasticsearch', () => {
         {
           field: 'test',
           value: true,
-          operation: FunctionalBoostOperation.ADD,
+          operation: SearchFunctionalBoostOperation.Add,
           factor: 1,
         },
         {
           field: 'test2',
           value: 'flow',
-          operation: FunctionalBoostOperation.MULTIPLY,
+          operation: SearchFunctionalBoostOperation.Multiply,
           factor: 2,
         },
       ],
@@ -504,7 +507,7 @@ describe('Elasticsearch', () => {
   });
   describe('generateSearchSavedItemsParams', () => {
     it('extracts tags from search term and adds to filter', () => {
-      const params: SearchSavedItemParameters = {
+      const params: UserSearchSavedItemsArgs = {
         term: 'tag:"book reviews" #"short story" vampire',
       };
       const searchParams = generateSearchSavedItemsParams(params, '1');

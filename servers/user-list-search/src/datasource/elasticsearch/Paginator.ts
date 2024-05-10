@@ -1,11 +1,11 @@
 import { SearchResponse } from 'elasticsearch';
+import { ElasticSearchSavedItem } from '../../types';
 import {
-  ElasticSearchSavedItem,
   SavedItemSearchResult,
   SavedItemSearchResultConnection,
   SavedItemSearchResultPage,
-  SearchSavedItemEdge,
-} from '../../types';
+  SavedItemSearchResultEdge,
+} from '../../__generated__/types';
 
 /**
  * Extract and format pagination information from elasticsearch
@@ -53,7 +53,7 @@ export class Paginator {
   public static resultToConnection(
     input: SearchResponse<ElasticSearchSavedItem>,
   ): SavedItemSearchResultConnection {
-    const edges: SearchSavedItemEdge[] = input.hits.hits.map((item) => ({
+    const edges: SavedItemSearchResultEdge[] = input.hits.hits.map((item) => ({
       cursor: Paginator.encodeCursor(item.sort),
       node: {
         savedItem: {

@@ -1,11 +1,4 @@
-import {
-  AdvancedSearchFilters,
-  DefaultSortDirection,
-  AdvancedSearchParams,
-  SearchSortInput,
-  ValidPagination,
-  OffsetPagination,
-} from '../../types';
+import { DefaultSortDirection, ValidPagination } from '../../types';
 import {
   ElasticSearchSortField,
   ElasticSearchSortDirection,
@@ -14,6 +7,12 @@ import {
 } from './elasticsearchSearch';
 import { config } from '../../config';
 import { Paginator } from './Paginator';
+import {
+  UserAdvancedSearchArgs,
+  AdvancedSearchFilters,
+  SearchSortInput,
+  OffsetPaginationInput,
+} from '../../__generated__/types';
 
 /**
  * Build elasticsearch query from graphql input.
@@ -42,8 +41,8 @@ import { Paginator } from './Paginator';
  */
 export class SearchQueryBuilder {
   parse(
-    input: Omit<AdvancedSearchParams, 'pagination'> & {
-      pagination?: ValidPagination | OffsetPagination;
+    input: Omit<UserAdvancedSearchArgs, 'pagination'> & {
+      pagination?: ValidPagination | OffsetPaginationInput;
     },
     userId: string,
   ) {
@@ -76,7 +75,7 @@ export class SearchQueryBuilder {
     }
   }
   private queryString(
-    input: Pick<AdvancedSearchParams, 'queryString' | 'filter'>,
+    input: Pick<UserAdvancedSearchArgs, 'queryString' | 'filter'>,
   ) {
     if (input.queryString == null) {
       return undefined;
@@ -180,7 +179,7 @@ export class SearchQueryBuilder {
       ],
     };
   }
-  private paginate(input?: ValidPagination | OffsetPagination): {
+  private paginate(input?: ValidPagination | OffsetPaginationInput): {
     size: number;
     search_after?: string[];
   } {

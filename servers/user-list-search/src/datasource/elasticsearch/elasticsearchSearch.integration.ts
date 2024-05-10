@@ -1,11 +1,11 @@
 import { search, searchSavedItems } from './elasticsearchSearch';
 import { bulkDocument } from './elasticsearchBulk';
 import {
-  SavedItemContentType,
-  SearchFilterStatus,
+  SearchItemsContentType,
   SearchItemsSortBy,
-  SortDirection,
-} from '../../types';
+  SearchItemsSortOrder,
+  SearchItemsStatusFilter,
+} from '../../__generated__/types';
 import { client } from './index';
 import { config } from '../../config';
 
@@ -167,8 +167,8 @@ describe('Elasticsearch Search Query', () => {
         term: 'fun article',
         filter: {
           isFavorite: true,
-          status: SearchFilterStatus.UNREAD,
-          contentType: SavedItemContentType.VIDEO,
+          status: SearchItemsStatusFilter.Unread,
+          contentType: SearchItemsContentType.Video,
         },
         sort: null,
         pagination: { first: 10 },
@@ -194,8 +194,8 @@ describe('Elasticsearch Search Query', () => {
       {
         term: 'fun article',
         sort: {
-          sortBy: SearchItemsSortBy.CREATED_AT,
-          sortOrder: SortDirection.DESC,
+          sortBy: SearchItemsSortBy.CreatedAt,
+          sortOrder: SearchItemsSortOrder.Desc,
         },
         pagination: { first: 2 },
       },
@@ -215,8 +215,8 @@ describe('Elasticsearch Search Query', () => {
       {
         term: 'fun article',
         sort: {
-          sortBy: SearchItemsSortBy.CREATED_AT,
-          sortOrder: SortDirection.ASC,
+          sortBy: SearchItemsSortBy.CreatedAt,
+          sortOrder: SearchItemsSortOrder.Asc,
         },
         pagination: { first: 2 },
       },
@@ -236,7 +236,7 @@ describe('Elasticsearch Search Query', () => {
       {
         term: 'fun article',
         sort: {
-          sortBy: SearchItemsSortBy.TIME_TO_READ,
+          sortBy: SearchItemsSortBy.TimeToRead,
         },
         pagination: { first: 2 },
       },
@@ -257,8 +257,8 @@ describe('Elasticsearch Search Query', () => {
       {
         term: 'fun article',
         sort: {
-          sortBy: SearchItemsSortBy.TIME_TO_READ,
-          sortOrder: SortDirection.DESC,
+          sortBy: SearchItemsSortBy.TimeToRead,
+          sortOrder: SearchItemsSortOrder.Desc,
         },
         pagination: { first: 2 },
       },
@@ -279,8 +279,8 @@ describe('Elasticsearch Search Query', () => {
       {
         term: 'music',
         sort: {
-          sortBy: SearchItemsSortBy.RELEVANCE,
-          sortOrder: SortDirection.DESC,
+          sortBy: SearchItemsSortBy.Relevance,
+          sortOrder: SearchItemsSortOrder.Desc,
         },
         pagination: { first: 2 },
       },
@@ -299,8 +299,8 @@ describe('Elasticsearch Search Query', () => {
       {
         term: 'music',
         sort: {
-          sortBy: SearchItemsSortBy.RELEVANCE,
-          sortOrder: SortDirection.ASC,
+          sortBy: SearchItemsSortBy.Relevance,
+          sortOrder: SearchItemsSortOrder.Asc,
         },
         pagination: { first: 2 },
       },

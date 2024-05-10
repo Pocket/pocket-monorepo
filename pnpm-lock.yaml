@@ -3525,27 +3525,39 @@ importers:
       '@faker-js/faker':
         specifier: 8.4.1
         version: 8.4.1
+      '@graphql-codegen/cli':
+        specifier: 5.0.2
+        version: 5.0.2(@parcel/watcher@2.4.1)(@types/node@20.12.11)(graphql@16.8.1)(typescript@5.4.4)
+      '@graphql-codegen/typescript':
+        specifier: 4.0.6
+        version: 4.0.6(graphql@16.8.1)
+      '@graphql-codegen/typescript-resolvers':
+        specifier: ^4.0.6
+        version: 4.0.6(graphql@16.8.1)
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
       '@types/elasticsearch':
         specifier: ^5.0.37
         version: 5.0.43
+      '@types/graphql':
+        specifier: ^14.5.0
+        version: 14.5.0
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
       '@types/mysql':
         specifier: 2.15.26
         version: 2.15.26
-      '@types/node':
-        specifier: ^20.12.6
-        version: 20.12.11
       '@types/supertest':
         specifier: ^6.0.2
         version: 6.0.2
       '@types/uuid':
         specifier: 9.0.8
         version: 9.0.8
+      concurrently:
+        specifier: ^8.2.2
+        version: 8.2.2
       jest:
         specifier: 29.7.0
         version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2)
@@ -9849,6 +9861,13 @@ packages:
       '@types/koa': 2.15.0
       '@types/node': 20.12.11
       fs-capacitor: 8.0.0
+      graphql: 16.8.1
+    dev: true
+
+  /@types/graphql@14.5.0:
+    resolution: {integrity: sha512-MOkzsEp1Jk5bXuAsHsUi6BVv0zCO+7/2PTiZMXWDSsMXvNU6w/PLMQT2vHn8hy2i0JqojPz1Sz6rsFjHtsU0lA==}
+    deprecated: This is a stub types definition. graphql provides its own type definitions, so you do not need this installed.
+    dependencies:
       graphql: 16.8.1
     dev: true
 

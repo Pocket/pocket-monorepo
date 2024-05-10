@@ -4,11 +4,11 @@ import { client } from './index';
 import { config } from '../../config';
 import { faker } from '@faker-js/faker';
 import {
-  SavedItemContentType,
-  SearchFilterStatus,
+  SearchItemsContentType,
   SearchItemsSortBy,
-  SortDirection,
-} from '../../types';
+  SearchItemsSortOrder,
+  SearchItemsStatusFilter,
+} from '../../__generated__/types';
 
 const defaultDocProps = {
   resolved_id: 1,
@@ -248,7 +248,7 @@ describe('Elasticsearch Search Query', () => {
     {
       name: 'content type',
       filter: {
-        contentType: SavedItemContentType.VIDEO,
+        contentType: SearchItemsContentType.Video,
       },
       expected: {
         edges: expect.toIncludeSameMembers([
@@ -263,7 +263,7 @@ describe('Elasticsearch Search Query', () => {
     {
       name: 'status',
       filter: {
-        status: SearchFilterStatus.ARCHIVED,
+        status: SearchItemsStatusFilter.Archived,
       },
       expected: {
         edges: expect.toIncludeSameMembers([
@@ -339,14 +339,14 @@ describe('Elasticsearch Search Query', () => {
   it.each([
     {
       name: 'desc',
-      sort: { sortBy: SearchItemsSortBy.CREATED_AT },
+      sort: { sortBy: SearchItemsSortBy.CreatedAt },
       expectedIds: ['3', '411', '777', '666'],
     },
     {
       name: 'asc',
       sort: {
-        sortBy: SearchItemsSortBy.CREATED_AT,
-        sortOrder: SortDirection.ASC,
+        sortBy: SearchItemsSortBy.CreatedAt,
+        sortOrder: SearchItemsSortOrder.Asc,
       },
       expectedIds: ['666', '777', '3', '411'],
     },

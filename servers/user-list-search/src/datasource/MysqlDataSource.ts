@@ -18,7 +18,7 @@ import {
   knexDbWriteClient,
 } from './clients/knexClient';
 import knex from 'knex';
-import { RecentSearch } from '../types';
+import { RecentSearch } from '../__generated__/types';
 import { createHash } from 'node:crypto';
 
 type ParserContent = {

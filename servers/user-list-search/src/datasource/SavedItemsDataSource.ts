@@ -1,19 +1,19 @@
 import { Knex } from 'knex';
 import { knexPaginator as paginate } from '@pocket-tools/apollo-cursor-pagination';
 import {
-  Pagination,
+  PaginationInput,
   SavedItemSearchResultConnection,
-  SavedItemContentType,
-  SavedItemsFilter,
-  SavedItemStatus,
-  SearchSavedItemParameters,
   SavedItemSearchResultPage,
-  SearchSavedItemOffsetParams,
-} from '../types';
+  SearchFilterInput,
+  SearchItemsContentType,
+  UserSearchSavedItemsArgs,
+  UserSearchSavedItemsByOffsetArgs,
+} from '../__generated__/types';
 import { IContext } from '../server/context';
 import { validatePagination as externalValidatePagination } from '@pocket-tools/apollo-utils';
 import { config } from '../config';
 import { getCleanedupDomainName } from './elasticsearch/elasticsearchSearch';
+import { SavedItemStatus } from '../types';
 
 export class SavedItemDataService {
   private db: Knex;
@@ -30,7 +30,7 @@ export class SavedItemDataService {
    * @param pagination
    * @private
    */
-  public static validatePagination(pagination: Pagination) {
+  public static validatePagination(pagination: PaginationInput) {
     return externalValidatePagination(
       pagination,
       config.pagination.defaultPageSize,
@@ -48,7 +48,7 @@ export class SavedItemDataService {
    */
   private static buildFilterQuery(
     baseQuery: Knex,
-    filter: SavedItemsFilter,
+    filter: SearchFilterInput,
   ): Knex {
     if (filter.isFavorite != null) {
       baseQuery.andWhere('readitla_ril-tmp.list.favorite', filter.isFavorite);
@@ -81,7 +81,7 @@ export class SavedItemDataService {
 
   private static contentTypeFilter(
     baseQuery: Knex,
-    contentType: SavedItemContentType,
+    contentType: SearchItemsContentType,
   ): Knex {
     if (contentType == 'VIDEO') {
       baseQuery.where('readitla_b.items_extended.video', 1);
@@ -146,7 +146,7 @@ export class SavedItemDataService {
    * @param pagination instructions for how to paginate the data
    */
   public async searchSavedItemsByOffset(
-    params: SearchSavedItemOffsetParams,
+    params: UserSearchSavedItemsByOffsetArgs,
   ): Promise<SavedItemSearchResultPage> {
     const defaultPagination = {
       offset: 0,
@@ -196,7 +196,7 @@ export class SavedItemDataService {
    * @param pagination: instructions for how to paginate the data
    */
   public async searchSavedItems(
-    params: SearchSavedItemParameters,
+    params: UserSearchSavedItemsArgs,
   ): Promise<SavedItemSearchResultConnection> {
     params.pagination = SavedItemDataService.validatePagination(
       params.pagination,
