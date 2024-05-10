@@ -46,6 +46,19 @@ describe('v3/send', () => {
   afterEach(() => jest.clearAllMocks());
 
   describe('GET verb', () => {
+    it('handles GET requests with json-stringified query params already decoded by urlencoded middleware', async () => {
+      const actions =
+        '%5B%7B%22tags%22%3A%5B%22%21%40%23%24%25%26%22%5D%2C%22time%22%3A1714995462%2C%22url%22%3A%22https%3A%2F%2Fwww.independent.co.uk%2Flife-style%2Ffood-and-drink%2Ffeatures%2Fpizza-sauce-american-italian-food-b2534835.html%22%2C%22action%22%3A%22tags_replace%22%2C%22cxt_enter_cnt%22%3A0%2C%22cxt_online%22%3A2%2C%22cxt_orient%22%3A1%2C%22cxt_remove_cnt%22%3A0%2C%22cxt_suggested_available%22%3A0%2C%22cxt_suggested_cnt%22%3A0%2C%22cxt_tags_cnt%22%3A0%2C%22cxt_tap_cnt%22%3A1%2C%22cxt_theme%22%3A0%2C%22cxt_ui%22%3Anull%2C%22cxt_view%22%3A%22add_tags%22%2C%22sid%22%3A%221714834421%22%7D%5D';
+      const response = await request(app).get(
+        `/v3/send?consumer_key=test&guid=test&access_token=test&locale_lang=en-US&actions=${actions}`,
+      );
+      const expected = {
+        status: 1,
+        action_results: [true],
+        action_errors: [null],
+      };
+      expect(response.body).toEqual(expected);
+    });
     it('handles encoded actions array in GET request and returns expected response', async () => {
       const actions =
         '%5B%7B%22time%22%3A1712010135%2C%22action%22%3A%22opened_app%22%2C%22cxt_online%22%3A1%2C%22cxt_orient%22%3A1%2C%22cxt_theme%22%3A0%2C%22cxt_view%22%3A%22pocket%22%2C%22sid%22%3A%221712010135%22%7D%2C%7B%22event%22%3A%22open%22%2C%22section%22%3A%22options%22%2C%22time%22%3A1712010136%2C%22version%22%3A%221%22%2C%22view%22%3A%22options%22%2C%22action%22%3A%22pv%22%2C%22cxt_online%22%3A3%2C%22cxt_orient%22%3A1%2C%22cxt_theme%22%3A0%2C%22cxt_view%22%3A%22list%22%2C%22sid%22%3A%221712010135%22%7D%2C%7B%22time%22%3A1712016912%2C%22action%22%3A%22favorite%22%2C%22item_id%22%3A%22123345%22%2C%22cxt_view%22%3A%22pocket%22%2C%22sid%22%3A%221712010135%22%7D%5D';
@@ -215,6 +228,56 @@ describe('v3/send', () => {
           expect(response.status).toEqual(200);
           expect(response.body).toEqual(expected);
         });
+      });
+      describe('recent_search', () => {
+        it.each([
+          {
+            input: {
+              action: 'recent_search',
+              search: 'tav',
+            },
+            expectedCall: {
+              search: {
+                term: 'tav',
+                timestamp: isoNow,
+              },
+            },
+          },
+          {
+            input: {
+              action: 'recent_search',
+              search: 'tav',
+              time: '1711558016',
+            },
+            expectedCall: {
+              search: {
+                term: 'tav',
+                timestamp: '2024-03-27T16:46:56.000Z',
+              },
+            },
+          },
+        ])(
+          'conditionally adds timestamp and calls correct mutation',
+          async ({ input, expectedCall }) => {
+            const res = await request(app)
+              .post('/v3/send')
+              .send({
+                consumer_key: 'test',
+                access_token: 'test',
+                actions: [input],
+              });
+            expect(clientSpy).toHaveBeenCalledTimes(1);
+            expect(
+              clientSpy.mock.calls[0][0].definitions[0].name.value,
+            ).toEqual('SaveSearch');
+            expect(clientSpy.mock.calls[0][1]).toEqual(expectedCall);
+            expect(res.body).toEqual({
+              status: 1,
+              action_results: [true],
+              action_errors: [null],
+            });
+          },
+        );
       });
       describe('save property actions', () => {
         it.each([

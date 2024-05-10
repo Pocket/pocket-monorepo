@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 const name = 'Braze';
 const transactionalDomainPrefix = 'team';
 const marketingDomainPrefix = 'go';
@@ -135,4 +134,3 @@ export const config = {
     costCenter: 'Pocket',
   },
 };
-/* eslint-enable indent */

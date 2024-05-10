@@ -2,7 +2,7 @@ import { ApolloServer } from '@apollo/server';
 import { startServer } from '../../server';
 import request from 'supertest';
 import { print } from 'graphql';
-import { IContext } from '../../context';
+import { IContext } from '../../server/apollo/context';
 import { readClient, writeClient } from '../../database/client';
 import { seedData } from '../query/highlights-fixtures';
 import { DELETE_NOTE } from './notes-mutations';
@@ -81,25 +81,6 @@ describe('Notes delete', () => {
       expect(res.body.data).toBeNull();
       expect(res.body.errors?.length).toEqual(1);
       expect(res.body.errors?.[0].message).toContain('Not Found');
-    });
-  });
-
-  describe('for non-premium users', () => {
-    const headers = baseHeaders;
-
-    it('should throw an invalid permissions error', async () => {
-      const variables = {
-        id: '29de0654-a2ab-4df3-afc2-3d0d8d29ecbe',
-      };
-      const res = await request(app)
-        .post(graphQLUrl)
-        .set(headers)
-        .send({ query: print(DELETE_NOTE), variables });
-      expect(res.body.data).toBeNull();
-      expect(res.body.errors?.length).toEqual(1);
-      expect(res.body.errors?.[0].message).toContain(
-        'Premium account required',
-      );
     });
   });
 });

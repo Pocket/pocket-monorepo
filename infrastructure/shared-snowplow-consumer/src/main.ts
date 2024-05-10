@@ -119,6 +119,15 @@ class SnowplowSharedConsumerStack extends TerraformStack {
       config.eventBridge.shareableListItemEventTopic,
     );
 
+    // Consumer Queue should be able to listen to pocket_share (create, update) from shares-api.
+    const sharesApiEventTopicArn = `arn:aws:sns:${region.name}:${caller.accountId}:${config.eventBridge.prefix}-${config.environment}-${config.eventBridge.sharesApiEventTopic}`;
+    this.subscribeSqsToSnsTopic(
+      sqsConsumeQueue,
+      snsTopicDlq,
+      sharesApiEventTopicArn,
+      config.eventBridge.sharesApiEventTopic,
+    );
+
     // Consumer Queue should be able to listen to collection-created and collection-updated events from collection-api.
     const collectionEventTopicArn = `arn:aws:sns:${region.name}:${caller.accountId}:${config.eventBridge.prefix}-${config.environment}-${config.eventBridge.collectionEventTopic}`;
     this.subscribeSqsToSnsTopic(
@@ -135,6 +144,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
       shareableListEventTopicArn,
       shareableListItemEventTopicArn,
       collectionEventTopicArn,
+      sharesApiEventTopicArn,
     ];
 
     // Assigns inline access policy for SQS and DLQ.

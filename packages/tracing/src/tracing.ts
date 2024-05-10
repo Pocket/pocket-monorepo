@@ -18,6 +18,7 @@ import { KnexInstrumentation } from '@opentelemetry/instrumentation-knex';
 import { MySQL2Instrumentation } from '@opentelemetry/instrumentation-mysql2';
 import { NetInstrumentation } from '@opentelemetry/instrumentation-net';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
+import { PrismaInstrumentation } from '@prisma/instrumentation';
 import { Resource } from '@opentelemetry/resources';
 import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
 
@@ -26,6 +27,19 @@ import {
   TraceIdRatioBasedSampler,
 } from '@opentelemetry/sdk-trace-node';
 import { ExpressLayerType } from '@opentelemetry/instrumentation-express/build/src/enums/ExpressLayerType';
+
+// instrumentations available to be added by implementing services
+export enum AdditionalInstrumentation {
+  KNEX = 'KNEX',
+  PRISMA = 'PRISMA',
+}
+
+// available optional instrumentations
+// used to instantiate instrumentations specified in the config
+const additionalInstrumentationConstructors = {
+  KNEX: KnexInstrumentation,
+  PRISMA: PrismaInstrumentation,
+};
 
 export type TracingConfig = {
   serviceName: string;
@@ -36,6 +50,7 @@ export type TracingConfig = {
   httpDefaultPort?: number;
   host?: string;
   logger?: DiagLogger;
+  additionalInstrumentations?: AdditionalInstrumentation[];
 };
 
 const tracingDefaults: TracingConfig = {
@@ -47,6 +62,7 @@ const tracingDefaults: TracingConfig = {
   httpDefaultPort: 4318,
   host: 'otlpcollector',
   logger: new DiagConsoleLogger(),
+  additionalInstrumentations: [],
 };
 
 /**
@@ -83,28 +99,37 @@ export async function nodeSDKBuilder(config: TracingConfig) {
   });
   const _idGenerator = new AWSXRayIdGenerator();
 
+  // set up the default instrumentations for all implementors
+  const instrumentations: any[] = [
+    new AwsInstrumentation({
+      suppressInternalInstrumentation: true,
+    }),
+    new DataloaderInstrumentation({}),
+    new ExpressInstrumentation({
+      ignoreLayersType: [ExpressLayerType.MIDDLEWARE],
+    }),
+    new GraphQLInstrumentation({
+      // optional params
+      depth: config.graphQLDepth, //query depth
+      allowValues: true,
+    }),
+    new HttpInstrumentation({
+      ignoreIncomingPaths: ['/.well-known/apollo/server-health'],
+    }),
+    new MySQL2Instrumentation({}),
+    new NetInstrumentation({}),
+  ];
+
+  // add any instrumentations specified by the implementing service
+  config.additionalInstrumentations.forEach((instrumentation) => {
+    instrumentations.push(
+      new additionalInstrumentationConstructors[instrumentation](),
+    );
+  });
+
   const sdk = new NodeSDK({
     textMapPropagator: new AWSXRayPropagator(),
-    instrumentations: [
-      new AwsInstrumentation({
-        suppressInternalInstrumentation: true,
-      }),
-      new DataloaderInstrumentation({}),
-      new ExpressInstrumentation({
-        ignoreLayersType: [ExpressLayerType.MIDDLEWARE],
-      }),
-      new GraphQLInstrumentation({
-        // optional params
-        depth: config.graphQLDepth, //query depth
-        allowValues: true,
-      }),
-      new HttpInstrumentation({
-        ignoreIncomingPaths: ['/.well-known/apollo/server-health'],
-      }),
-      new KnexInstrumentation({}),
-      new MySQL2Instrumentation({}),
-      new NetInstrumentation({}),
-    ],
+    instrumentations,
     resource: _resource,
     spanProcessor: _spanProcessor,
     traceExporter: _traceExporter,

@@ -1,6 +1,6 @@
 import { NodeOptions } from '@sentry/node/types/types';
 import * as Sentry from '@sentry/node';
-import { Application } from 'express';
+import { Application, RequestHandler, ErrorRequestHandler } from 'express';
 
 export const initSentry = (app: Application, options?: NodeOptions) => {
   Sentry.init({
@@ -20,4 +20,13 @@ export const initSentry = (app: Application, options?: NodeOptions) => {
       }),
     ],
   });
+
+  // RequestHandler creates a separate execution context, so that all
+  // transactions/spans/breadcrumbs are isolated across requests
+  app.use(Sentry.Handlers.requestHandler() as RequestHandler);
+  // TracingHandler creates a trace for every incoming request
+  app.use(Sentry.Handlers.tracingHandler());
+};
+export const initSentryErrorHandler = (app: Application) => {
+  app.use(Sentry.Handlers.errorHandler() as ErrorRequestHandler);
 };

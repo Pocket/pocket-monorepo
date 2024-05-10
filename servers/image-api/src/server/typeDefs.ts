@@ -1,6 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import { gql } from 'graphql-tag';
+import { DocumentNode } from 'graphql';
 
 export const getSchemaFile = () => {
   return fs
@@ -8,4 +9,4 @@ export const getSchemaFile = () => {
     .toString();
 };
 
-export const typeDefs = gql(getSchemaFile());
+export const typeDefs: DocumentNode = gql(getSchemaFile());

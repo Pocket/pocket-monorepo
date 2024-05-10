@@ -1,7 +1,6 @@
 import { NotesDataService } from '../dataservices/notes';
 import { dynamoClient } from '../database/client';
 import { createNotesLoader, orderAndMapNotes } from './dataloaders';
-import { IContext } from '../context';
 
 describe('dataloaders', () => {
   const mockNotesResponse = [
@@ -44,10 +43,7 @@ describe('dataloaders', () => {
       notesStub = jest
         .spyOn(NotesDataService.prototype, 'getMany')
         .mockReturnValue(Promise.resolve(mockNotesResponse));
-      notesLoader = createNotesLoader(dynamo, {
-        isPremium: true,
-        notesService,
-      } as IContext);
+      notesLoader = createNotesLoader(notesService);
     });
     afterEach(() => {
       notesStub.mockRestore();

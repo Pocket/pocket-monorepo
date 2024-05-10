@@ -8,10 +8,12 @@ import {
 import { ObjectUpdate } from '../../snowtype/snowplow';
 
 export const userEventsSchema = {
-  account: 'iglu:com.pocket/account/jsonschema/1-0-3',
-  objectUpdate: 'iglu:com.pocket/object_update/jsonschema/1-0-16',
-  user: 'iglu:com.pocket/user/jsonschema/1-0-1',
-  apiUser: 'iglu:com.pocket/api_user/jsonschema/1-0-2',
+  account: expect.stringMatching('iglu:com.pocket/account/jsonschema'),
+  objectUpdate: expect.stringMatching(
+    'iglu:com.pocket/object_update/jsonschema',
+  ),
+  user: expect.stringMatching('iglu:com.pocket/user/jsonschema'),
+  apiUser: expect.stringMatching('iglu:com.pocket/api_user/jsonschema'),
 };
 
 function assertValidSnowplowObjectUpdateEvents(

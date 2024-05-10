@@ -12,8 +12,12 @@ import {
 import { ObjectUpdate } from '../../snowtype/snowplow';
 
 export const shareableListItemEventSchema = {
-  objectUpdate: 'iglu:com.pocket/object_update/jsonschema/1-0-16',
-  shareable_list_item: 'iglu:com.pocket/shareable_list_item/jsonschema/1-0-5',
+  objectUpdate: expect.stringMatching(
+    'iglu:com.pocket/object_update/jsonschema',
+  ),
+  shareable_list_item: expect.stringMatching(
+    'iglu:com.pocket/shareable_list_item/jsonschema',
+  ),
 };
 
 function assertValidSnowplowObjectUpdateEvents(

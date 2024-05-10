@@ -4,13 +4,7 @@
     "module": "commonjs",
     "outDir": "dist",
   },
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts",
-    "**/*.integration.ts",
-    "jest.config.js",
-    "jest.setup.js"
-  ],
+  "exclude": ["node_modules", "jest.config.js", "jest.setup.js"],
   "include": ["./**/*.ts"],
   "files": ["node_modules/jest-extended/types/index.d.ts"]
 }

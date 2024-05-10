@@ -101,7 +101,8 @@ export class ParserCaller {
       }/getItem?url=${encodeURIComponent(url)}&createIfNone=false`,
     );
 
-    const data: PartialGetItemResponse | null = await response.json();
+    const data: PartialGetItemResponse | null =
+      (await response.json()) as PartialGetItemResponse;
     return data?.item_id ?? null;
   }
 }

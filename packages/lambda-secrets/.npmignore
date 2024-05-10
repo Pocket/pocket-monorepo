@@ -4,3 +4,5 @@ src
 .prettier*
 .eslintrc.js
 .tsconfig.js
+*.spec.ts
+*.integration.ts

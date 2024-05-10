@@ -3,16 +3,16 @@ import fs from 'fs';
 import { FxaJwt } from './jwt';
 
 describe('jwt', () => {
-  const publicKey = fs.readFileSync(__dirname + '/../test/jwtRS256.key.pub', {
+  const publicKey = fs.readFileSync(__dirname + '/test/jwtRS256.key.pub', {
     encoding: 'ascii',
   }) as string;
 
-  const privateKey = fs.readFileSync(__dirname + '/../test/jwtRS256.key', {
+  const privateKey = fs.readFileSync(__dirname + '/test/jwtRS256.key', {
     encoding: 'ascii',
   }) as string;
 
   const otherPrivateKey = fs.readFileSync(
-    __dirname + '/../test/private-other.key',
+    __dirname + '/test/private-other.key',
     {
       encoding: 'ascii',
     },

@@ -1,8 +1,5 @@
 fragment SavedItemComplete on SavedItem {
     ...SavedItemSimple,
-    tags {
-        name
-    }
     item {
         ... on Item {
             ...ItemComplete

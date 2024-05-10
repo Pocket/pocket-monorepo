@@ -14,7 +14,7 @@ import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive
 
 import { schema } from './apollo';
 import config from '../config';
-import { getContext, IContext } from '../context';
+import { getContext, IContext } from './apollo/context';
 import queueDeleteRouter from './routes/queueDelete';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 

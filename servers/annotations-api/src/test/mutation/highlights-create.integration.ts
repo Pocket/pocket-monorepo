@@ -2,19 +2,25 @@ import { ApolloServer } from '@apollo/server';
 import { startServer } from '../../server';
 import request from 'supertest';
 import { print } from 'graphql';
-import { IContext } from '../../context';
+import { IContext } from '../../server/apollo/context';
 import { readClient, writeClient } from '../../database/client';
 import { seedData } from '../query/highlights-fixtures';
 import {
+  CREATE_HIGHLIGHT_BY_URL,
   CREATE_HIGHLIGHTS,
   CREATE_HIGHLIGHTS_WITH_NOTE,
 } from './highlights-mutations';
-import { HighlightInput } from '../../types';
+import {
+  CreateHighlightByUrlInput,
+  CreateHighlightInput,
+} from '../../__generated__/resolvers-types';
 import { UsersMeta } from '../../dataservices/usersMeta';
 import { mysqlTimeString } from '../../dataservices/utils';
 import config from '../../config';
 import { v4 as uuid } from 'uuid';
 import { Application } from 'express';
+import nock from 'nock';
+import { HighlightsModel } from '../../models/HighlightsModel';
 
 describe('Highlights creation', () => {
   let app: Application;
@@ -57,7 +63,7 @@ describe('Highlights creation', () => {
   describe('any user', () => {
     const headers = baseHeaders;
     it('should create a highlight on a SavedItem without any existing highlights', async () => {
-      const variables: { input: HighlightInput[] } = {
+      const variables: { input: CreateHighlightInput[] } = {
         input: [
           {
             itemId: '3',
@@ -92,7 +98,7 @@ describe('Highlights creation', () => {
     });
     it('should optionally accept a UUID passed from the client and use for the ID', async () => {
       const id = uuid();
-      const variables: { input: HighlightInput[] } = {
+      const variables: { input: CreateHighlightInput[] } = {
         input: [
           {
             id,
@@ -120,7 +126,7 @@ describe('Highlights creation', () => {
       expect(result[0]).toEqual(expect.objectContaining(expectedHighlight));
     });
     it('does not accept input with non-uuid ID strings', async () => {
-      const variables: { input: HighlightInput[] } = {
+      const variables: { input: CreateHighlightInput[] } = {
         input: [
           {
             id: 'abc-234',
@@ -180,7 +186,7 @@ describe('Highlights creation', () => {
       expect(result[0].extensions.code).toBe('INTERNAL_SERVER_ERROR');
     });
     it('should create a highlight on a SavedItem with existing highlights', async () => {
-      const variables: { input: HighlightInput[] } = {
+      const variables: { input: CreateHighlightInput[] } = {
         input: [
           {
             itemId: '1',
@@ -216,7 +222,7 @@ describe('Highlights creation', () => {
       });
       jest.setSystemTime(updateDate);
 
-      const variables: { input: HighlightInput[] } = {
+      const variables: { input: CreateHighlightInput[] } = {
         input: [
           {
             itemId: '3',
@@ -249,7 +255,7 @@ describe('Highlights creation', () => {
   describe('non-premium users', () => {
     const headers = baseHeaders;
     it('should not allow non-premium users to create more than three highlights at once', async () => {
-      const variables: { input: HighlightInput[] } = {
+      const variables: { input: CreateHighlightInput[] } = {
         input: [
           {
             itemId: '3',
@@ -287,7 +293,7 @@ describe('Highlights creation', () => {
       expect(res.body.errors[0].message).toContain('Too many highlights');
     });
     it('should not allow non-premium users to create additional highlights on a SavedItem that already has highlights, if it would put them over the three-highlight limit', async () => {
-      const variables: { input: HighlightInput[] } = {
+      const variables: { input: CreateHighlightInput[] } = {
         input: [
           {
             itemId: '2',
@@ -313,7 +319,7 @@ describe('Highlights creation', () => {
       expect(res.body.errors[0].message).toContain('Too many highlights');
     });
     it('should not include deleted highlights in the limit', async () => {
-      const variables: { input: HighlightInput[] } = {
+      const variables: { input: CreateHighlightInput[] } = {
         input: [
           {
             itemId: '2',
@@ -335,7 +341,7 @@ describe('Highlights creation', () => {
   describe('premium users', () => {
     const headers = { ...baseHeaders, premium: 'true' };
     it('should be able to create a note at the same time as a highlight', async () => {
-      const variables: { input: HighlightInput[] } = {
+      const variables: { input: CreateHighlightInput[] } = {
         input: [
           {
             itemId: '3',
@@ -374,7 +380,7 @@ describe('Highlights creation', () => {
       expect(result[0].note?.text).toBe('This is the coolest of notes');
     });
     it('should create multiple highlights with and without notes', async () => {
-      const variables: { input: HighlightInput[] } = {
+      const variables: { input: CreateHighlightInput[] } = {
         input: [
           {
             itemId: '3',
@@ -410,7 +416,7 @@ describe('Highlights creation', () => {
       expect(result[2].note.text).toBe('An even cooler note???');
     });
     it('should not restrict the number of highlights a premium user can create at once', async () => {
-      const variables: { input: HighlightInput[] } = {
+      const variables: { input: CreateHighlightInput[] } = {
         input: [
           {
             itemId: '3',
@@ -453,7 +459,7 @@ describe('Highlights creation', () => {
       'should not restrict the number of highlights a premium user can add to a SavedItem' +
         'that already has highlights',
       async () => {
-        const variables: { input: HighlightInput[] } = {
+        const variables: { input: CreateHighlightInput[] } = {
           input: [
             {
               itemId: '2',
@@ -481,5 +487,41 @@ describe('Highlights creation', () => {
         expect(actualQuotes).toEqual(expect.arrayContaining(expectedQuotes));
       },
     );
+  });
+  describe('by url', () => {
+    it('creates a highlight by calling underlying byId service function', async () => {
+      const url = 'http://test.com/abc';
+      const createSpy = jest.spyOn(HighlightsModel.prototype, 'createMany');
+      nock(config.parser.baseEndpoint)
+        .get(config.parser.dataPath)
+        .query({
+          noArticle: '1',
+          createIfNone: '0',
+          output: 'regular',
+          url,
+        })
+        .reply(200, { item_id: '1' });
+      const variables: { input: CreateHighlightByUrlInput } = {
+        input: {
+          url: 'http://test.com/abc',
+          version: 2,
+          patch: 'Prow scuttle parrel',
+          quote: 'provost Sail ho shrouds spirits boom',
+        },
+      };
+      const expectedVars = {
+        ...variables.input,
+        url: new URL(url),
+        itemId: '1',
+      };
+      const res = await request(app)
+        .post(graphQLUrl)
+        .set(baseHeaders)
+        .send({ query: print(CREATE_HIGHLIGHT_BY_URL), variables });
+      const result = res.body.data?.createHighlightByUrl;
+      expect(result.patch).toBe('Prow scuttle parrel');
+      expect(result.quote).toBe('provost Sail ho shrouds spirits boom');
+      expect(createSpy).toHaveBeenCalledExactlyOnceWith([expectedVars]);
+    });
   });
 });

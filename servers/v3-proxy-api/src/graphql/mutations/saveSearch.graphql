@@ -1,0 +1,5 @@
+mutation SaveSearch($search: RecentSearchInput!) {
+  saveSearch(search: $search) {
+    term
+  }
+}

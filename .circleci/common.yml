@@ -173,6 +173,10 @@ commands:
           paths:
             - .pnpm-store
   install_infrastructure_pnpm:
+    parameters:
+      scope:
+        description: The pnpm scope to build for
+        type: string
     steps:
       - run:
           name: Install and setup node
@@ -181,7 +185,7 @@ commands:
             nvm use
             npm install -g pnpm@8.15.6
             pnpm config set store-dir .pnpm-store
-            pnpm install    
+            pnpm install --filter=<< parameters.scope >>...
   install_codebuild_secrets:
     steps:
       - run: 
@@ -301,7 +305,8 @@ jobs:
           # Only compile if we do not use raw hcl
           condition: <<parameters.uses_raw_hcl>>
           steps:
-            - install_infrastructure_pnpm
+            - install_infrastructure_pnpm:
+                scope: << parameters.scope >>
             - when:
                 condition: <<parameters.dev>>
                 steps:
@@ -570,7 +575,7 @@ jobs:
       - run:
           name: run setup.sh
           command: |
-            export $(egrep -v '^#' .docker/local.env | xargs -0) && ./.circleci/scripts/setup.sh --db --aws
+            export $(egrep -v '^#' .docker/local.env | xargs -0) && ./.circleci/scripts/setup.sh --db --aws=<< parameters.scope >>
       - run:
           # Note there is a bug in turbo repo requiring a build https://github.com/vercel/turbo/issues/1609
           name: run tests

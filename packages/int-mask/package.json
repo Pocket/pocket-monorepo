@@ -5,27 +5,32 @@
   "keywords": [
     "masking"
   ],
+  "license": "Apache-2.0",
+  "author": "",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts",
-    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
-    "format": "eslint --fix \"src/**/*.ts\"",
-    "dev": "pnpm run build --watch"
-  },
-  "author": "",
-  "license": "Apache-2.0",
-  "devDependencies": {
-    "@jest/globals": "29.7.0",
-    "@types/jest": "29.5.12",
-    "eslint-config-custom": "workspace:*",
-    "jest": "29.7.0",
-    "ts-jest": "29.1.2",
-    "tsconfig": "workspace:*"
+    "dev": "pnpm run build --watch",
+    "format": "eslint --fix",
+    "lint": "eslint --fix-dry-run"
   },
   "dependencies": {
+    "lodash": "4.17.21",
     "underscore.string": "3.3.6",
-    "lodash": "4.17.21"
+    "tslib": "2.6.2"
+  },
+  "devDependencies": {
+    "@jest/globals": "29.7.0",
+    "@pocket-tools/eslint-config": "workspace:*",
+    "@types/jest": "29.5.12",
+    "@types/node": "^20.12.6",
+    "jest": "29.7.0",
+    "ts-jest": "29.1.2",
+    "ts-node": "10.9.2",
+    "tsconfig": "workspace:*",
+    "tsup": "8.0.2",
+    "typescript": "5.4.4"
   }
 }

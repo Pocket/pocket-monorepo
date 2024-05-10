@@ -107,11 +107,11 @@ export const expectedFetch: FetchResponse = {
       },
       tags: {
         research: {
-          item_id: '11231399273',
+          item_id: '2111834840',
           tag: 'research',
         },
         science: {
-          item_id: '11231399273',
+          item_id: '2111834840',
           tag: 'science',
         },
       },

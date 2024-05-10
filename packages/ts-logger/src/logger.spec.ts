@@ -9,6 +9,7 @@ describe('createLogger', () => {
   beforeEach(() => {
     jest.resetModules();
     process.env = { ...defaultEnvs };
+    delete process.env.LOG_LEVEL;
   });
 
   afterEach(() => {
@@ -58,7 +59,8 @@ describe('createLogger', () => {
 
     describe('when env LOG_LEVEL is undefined', () => {
       beforeEach(() => () => {
-        delete process.env.LOG_LEVEL;
+        process.env.LOG_LEVEL = undefined;
+        process.env.NODE_ENV = undefined;
       });
 
       it('level is debug when NODE_ENV is development', async () => {

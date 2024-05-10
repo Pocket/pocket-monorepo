@@ -2,7 +2,7 @@ import isomorphicFetch from 'isomorphic-fetch';
 import fetchRetry from 'fetch-retry';
 import { config } from './config';
 import { getBrazeApiKey } from './ssm';
-import * as Sentry from '@sentry/node';
+import * as Sentry from '@sentry/serverless';
 import type {
   UsersTrackObject,
   UsersAliasObject,

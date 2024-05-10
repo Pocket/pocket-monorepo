@@ -111,6 +111,10 @@ To select and update *production* and *optional* dependencices, interactively yo
 pnpm update -iPLr
 ```
 
+### Integration Testing
+
+When doing an integration test, if you need aws based resources, the CI is setup to run a `.sh` script that corresponds to the package name you are testing. So if you need aws resources for a package named `annotations-api` you would create a `annoations-api.sh` in `.docker/aws-resources` that created all the necessary aws resources.
+
 ## Useful Links
 
 Learn more about the power of Turborepo:

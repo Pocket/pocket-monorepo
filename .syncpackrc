@@ -17,6 +17,7 @@
       "dependencies": [
         "@aws-sdk/**"
       ],
+      "pinVersion": "3.569.0",
       "label": "AWS SDK Dependencies should all have the same version"
     },
     {
@@ -37,6 +38,16 @@
       "packages": [
         "!tsconfig"
       ]
+    },
+    {
+      "dependencies": [
+        "tslib"
+      ],
+      "dependencyTypes": [
+        "!prod"
+      ],
+      "isBanned": true,
+      "label": "tslib should only ever be in prod dependencies"
     },
     {
       "dependencies": [

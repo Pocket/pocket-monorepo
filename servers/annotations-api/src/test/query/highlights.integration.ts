@@ -2,7 +2,7 @@ import { ApolloServer } from '@apollo/server';
 import { startServer } from '../../server';
 import request from 'supertest';
 import { print } from 'graphql';
-import { IContext } from '../../context';
+import { IContext } from '../../server/apollo/context';
 import { readClient, writeClient } from '../../database/client';
 import { GET_HIGHLIGHTS, seedData } from './highlights-fixtures';
 import { Application } from 'express';
@@ -82,5 +82,25 @@ describe('Highlights on a SavedItem', () => {
 
     expect(res).toBeTruthy();
     expect(annotations).toHaveLength(0);
+  });
+  it('converts null patch to empty string and does not throw error', async () => {
+    const variables = { itemId: 2 };
+    const res = await request(app)
+      .post(graphQLUrl)
+      .set({ userid: '5', premium: 'true' })
+      .send({ query: print(GET_HIGHLIGHTS), variables });
+    const annotations = res.body.data?._entities[0].annotations?.highlights;
+    const expected = {
+      id: '4d27b61e-bc6b-4de7-92f3-5214d6eb2741',
+      quote:
+        'Basically, when hardware performance has been pushed to its final limit, and programmers have had several centuries to code, you reach a point where there is far more signicant code than can be rationalized',
+      patch: '',
+      version: 0,
+      _updatedAt: Math.round(now.getTime() / 1000),
+      _createdAt: Math.round(now.getTime() / 1000),
+    };
+    expect(res.body.errors).toBeUndefined();
+    expect(annotations).toHaveLength(1);
+    expect(annotations[0]).toEqual(expected);
   });
 });
