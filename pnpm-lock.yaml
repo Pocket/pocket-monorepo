@@ -1711,9 +1711,6 @@ importers:
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
-      tslib:
-        specifier: 2.6.2
-        version: 2.6.2
       tsup:
         specifier: 8.0.2
         version: 8.0.2(ts-node@10.9.2)(typescript@5.4.4)
@@ -1726,6 +1723,9 @@ importers:
       chance:
         specifier: 1.1.11
         version: 1.1.11
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -1748,9 +1748,6 @@ importers:
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
-      tslib:
-        specifier: 2.6.2
-        version: 2.6.2
       tsup:
         specifier: 8.0.2
         version: 8.0.2(ts-node@10.9.2)(typescript@5.4.4)
@@ -1793,6 +1790,9 @@ importers:
       '@pocket-tools/ts-logger':
         specifier: workspace:*
         version: link:../ts-logger
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
       unleash-client:
         specifier: 5.5.2
         version: 5.5.2
@@ -1818,9 +1818,6 @@ importers:
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
-      tslib:
-        specifier: 2.6.2
-        version: 2.6.2
       tsup:
         specifier: 8.0.2
         version: 8.0.2(ts-node@10.9.2)(typescript@5.4.4)
@@ -1833,6 +1830,9 @@ importers:
       lodash:
         specifier: 4.17.21
         version: 4.17.21
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
       underscore.string:
         specifier: 3.3.6
         version: 3.3.6
@@ -1861,9 +1861,6 @@ importers:
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
-      tslib:
-        specifier: 2.6.2
-        version: 2.6.2
       tsup:
         specifier: 8.0.2
         version: 8.0.2(ts-node@10.9.2)(typescript@5.4.4)
@@ -1872,6 +1869,10 @@ importers:
         version: 5.4.4
 
   packages/lambda-secrets:
+    dependencies:
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
     devDependencies:
       '@jest/globals':
         specifier: 29.7.0
@@ -1906,9 +1907,6 @@ importers:
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
-      tslib:
-        specifier: 2.6.2
-        version: 2.6.2
       tsup:
         specifier: 8.0.2
         version: 8.0.2(ts-node@10.9.2)(typescript@5.4.4)
@@ -1927,6 +1925,9 @@ importers:
       express:
         specifier: 4.19.2
         version: 4.19.2
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
     devDependencies:
       '@jest/globals':
         specifier: 29.7.0
@@ -1955,9 +1956,6 @@ importers:
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
-      tslib:
-        specifier: 2.6.2
-        version: 2.6.2
       tsup:
         specifier: 8.0.2
         version: 8.0.2(ts-node@10.9.2)(typescript@5.4.4)
@@ -2000,6 +1998,9 @@ importers:
       parse-domain:
         specifier: 5.0.0
         version: 5.0.0
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -2031,9 +2032,6 @@ importers:
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
-      tslib:
-        specifier: 2.6.2
-        version: 2.6.2
       tsup:
         specifier: 8.0.2
         version: 8.0.2(ts-node@10.9.2)(typescript@5.4.4)
@@ -2106,6 +2104,9 @@ importers:
       '@prisma/instrumentation':
         specifier: 5.13.0
         version: 5.13.0
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
     devDependencies:
       '@jest/globals':
         specifier: 29.7.0
@@ -2137,9 +2138,6 @@ importers:
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
-      tslib:
-        specifier: 2.6.2
-        version: 2.6.2
       tsup:
         specifier: 8.0.2
         version: 8.0.2(ts-node@10.9.2)(typescript@5.4.4)
@@ -2152,6 +2150,9 @@ importers:
       morgan:
         specifier: ^1.10.0
         version: 1.10.0
+      tslib:
+        specifier: 2.6.2
+        version: 2.6.2
       winston:
         specifier: 3.13.0
         version: 3.13.0
@@ -2186,9 +2187,6 @@ importers:
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
-      tslib:
-        specifier: 2.6.2
-        version: 2.6.2
       tsup:
         specifier: 8.0.2
         version: 8.0.2(ts-node@10.9.2)(typescript@5.4.4)
