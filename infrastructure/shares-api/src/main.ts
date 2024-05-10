@@ -187,6 +187,10 @@ class SharesAPI extends TerraformStack {
               value: process.env.NODE_ENV, // this gives us a nice lowercase production and development
             },
             {
+              name: 'EVENT_BUS_NAME',
+              value: config.eventBusName,
+            },
+            {
               name: 'AWS_REGION',
               value: region.name,
             },
@@ -334,6 +338,13 @@ class SharesAPI extends TerraformStack {
             ],
             resources: [
               `arn:aws:sqs:${region.name}:${caller.accountId}:${config.envVars.sqsBatchDeleteQueueName}`,
+            ],
+            effect: 'Allow',
+          },
+          {
+            actions: ['events:PutEvents'],
+            resources: [
+              `arn:aws:events:${region.name}:${caller.accountId}:event-bus/${config.eventBusName}`,
             ],
             effect: 'Allow',
           },

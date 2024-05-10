@@ -1,7 +1,7 @@
 {
   "igluCentralSchemas": [],
   "dataStructures": [
-    "iglu:com.pocket/object_update/jsonschema/1-0-16", 
+    "iglu:com.pocket/object_update/jsonschema/1-0-20",
     "iglu:com.pocket/shareable_list_item/jsonschema/1-0-5",
     "iglu:com.pocket/shareable_list/jsonschema/1-0-6",
     "iglu:com.pocket/api_user/jsonschema/1-0-2",
@@ -10,7 +10,8 @@
     "iglu:com.pocket/list_item_update/jsonschema/1-0-1",
     "iglu:com.pocket/list_item/jsonschema/1-0-1",
     "iglu:com.pocket/collection/jsonschema/1-0-3",
-    "iglu:com.pocket/prospect/jsonschema/1-0-1"
+    "iglu:com.pocket/prospect/jsonschema/1-0-1",
+    "iglu:com.pocket/pocket_share/jsonschema/1-0-1"
   ],
   "eventSpecificationIds": [],
   "dataProductIds": [],

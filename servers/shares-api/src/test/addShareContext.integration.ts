@@ -6,6 +6,7 @@ import { Application } from 'express';
 import { CREATE_SHARE, ADD_SHARE_CONTEXT } from './operations';
 import { dynamoClient } from '../datasources/dynamoClient';
 import { SharesDataSourceAuthenticated } from '../datasources/shares';
+import { EventBus } from '../events';
 import { DeleteCommand, DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import { config } from '../config';
 
@@ -20,6 +21,9 @@ describe('addShareContext mutation', () => {
   // Variables/data
   const headers = { applicationisnative: 'true', userId: '1', guid: 'abc' };
   const now = Math.round(Date.now() / 1000) * 1000;
+  const eventSpy = jest
+    .spyOn(EventBus.prototype, 'sendUpdateEvent')
+    .mockImplementation(() => Promise.resolve());
   const db = dynamoClient();
   jest.useFakeTimers({ now });
 
@@ -41,6 +45,9 @@ describe('addShareContext mutation', () => {
         Key: { shareId: uuidOverride },
       }),
     );
+  });
+  afterEach(async () => {
+    eventSpy.mockClear();
   });
   it.each([
     {
@@ -233,6 +240,30 @@ describe('addShareContext mutation', () => {
       },
     };
     expect(res.body.data).toEqual(expected);
+  });
+  it('emits update event', async () => {
+    const createVars = {
+      target: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      context: {
+        note: 'this is a cool video!',
+        highlights: { quotes: ['never gonna give'] },
+      },
+    };
+    await request(app)
+      .post(graphQLUrl)
+      .set(headers)
+      .send({ query: CREATE_SHARE, variables: createVars });
+    const variables = {
+      slug: uuidOverride,
+      context: { note: 'please watch' },
+    };
+    await request(app)
+      .post(graphQLUrl)
+      .set(headers)
+      .send({ query: ADD_SHARE_CONTEXT, variables: variables });
+    expect(eventSpy).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({ slug: uuidOverride }),
+    );
   });
   describe('send failure', () => {
     let sendFailMock;

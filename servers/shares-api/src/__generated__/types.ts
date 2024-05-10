@@ -62,7 +62,7 @@ export type MutationCreateShareLinkArgs = {
 export type PocketShare = {
   __typename?: 'PocketShare';
   context?: Maybe<ShareContext>;
-  createdAt?: Maybe<Scalars['ISOString']['output']>;
+  createdAt: Scalars['ISOString']['output'];
   shareUrl: Scalars['ValidUrl']['output'];
   slug: Scalars['ID']['output'];
   targetUrl: Scalars['ValidUrl']['output'];
@@ -263,7 +263,7 @@ export type MutationResolvers<ContextType = IContext, ParentType extends Resolve
 export type PocketShareResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['PocketShare'] = ResolversParentTypes['PocketShare']> = ResolversObject<{
   __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['PocketShare']>, { __typename: 'PocketShare' } & GraphQLRecursivePick<ParentType, {"slug":true,"targetUrl":true}>, ContextType>;
   context?: Resolver<Maybe<ResolversTypes['ShareContext']>, ParentType, ContextType>;
-  createdAt?: Resolver<Maybe<ResolversTypes['ISOString']>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['ISOString'], ParentType, ContextType>;
   shareUrl?: Resolver<ResolversTypes['ValidUrl'], ParentType, ContextType>;
   slug?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   targetUrl?: Resolver<ResolversTypes['ValidUrl'], ParentType, ContextType>;

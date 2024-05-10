@@ -22,6 +22,11 @@ export const config = {
     region: process.env.AWS_REGION || 'us-east-1',
     endpoint: localAwsEndpoint,
     maxBackoff: 3000, // in ms, max amount of backoff time allowed for multiple requests
+    eventBus: {
+      name:
+        process.env.EVENT_BUS_NAME || 'PocketEventBridge-Dev-Shared-Event-Bus',
+      source: 'shares-api-events',
+    },
   },
   dynamoDb: {
     sharesTable: {

@@ -64,6 +64,10 @@ export const config = {
       userApi: 'pocket-user-api',
       collectionApi: 'pocket-collection-api',
       shareableListsApi: 'pocket-shareable-lists-api',
+      // todo: kat - confused about this; why not use event bridge
+      // source or update the source field?
+      // todo: kat - set this as the source field for events?
+      sharesApi: 'pocket-shares-api',
     },
   },
 };

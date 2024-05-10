@@ -12,6 +12,7 @@ const cacheSize = isDev ? 'cache.t3.micro' : 'cache.t3.micro';
 const appPort = 4031;
 const s3LogsBucket = isDev ? 'pocket-data-items-dev' : 'pocket-data-items';
 const releaseSha = process.env.CIRCLE_SHA1;
+const eventBusName = `PocketEventBridge-${environment}-Shared-Event-Bus`;
 
 export const config = {
   name,
@@ -29,6 +30,7 @@ export const config = {
   reservedConcurrencyLimit: 1,
   cacheSize,
   releaseSha,
+  eventBusName,
   healthCheck: {
     command: [
       'CMD-SHELL',

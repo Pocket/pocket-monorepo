@@ -4,6 +4,7 @@ import { IContext } from '../apollo/context';
 import { startServer } from '../apollo/server';
 import { Application } from 'express';
 import { CREATE_SHARE, GET_SHARE } from './operations';
+import { EventBus } from '../events';
 
 const uuidMock = jest.fn().mockImplementation(() => '0000-00-00');
 
@@ -17,6 +18,9 @@ describe('CreateShareLink', () => {
   const nativeHeader = { applicationisnative: 'true' };
   const headers = { ...nativeHeader, userId: '1' };
   const now = Math.round(Date.now() / 1000) * 1000;
+  const eventSpy = jest
+    .spyOn(EventBus.prototype, 'sendCreateEvent')
+    .mockImplementation(() => Promise.resolve());
   jest.useFakeTimers({ now });
 
   beforeAll(async () => {
@@ -29,7 +33,9 @@ describe('CreateShareLink', () => {
     jest.useRealTimers();
     await server.stop();
   });
-  afterEach(async () => {});
+  afterEach(async () => {
+    eventSpy.mockClear();
+  });
   it.each(['anonymous', undefined, '1'])(
     'returns forbidden error if non-native app attempts to return share link (regardless of auth)',
     async (userId) => {
@@ -100,5 +106,22 @@ describe('CreateShareLink', () => {
       },
     };
     expect(roundtrip.body.data).toEqual(expected);
+  });
+  it('emits create event when created', async () => {
+    const uuidMock = '0000-00-00';
+    const variables = {
+      target: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      context: {
+        note: 'this is a cool video!',
+        highlights: { quotes: ['never gonna give'] },
+      },
+    };
+    await request(app)
+      .post(graphQLUrl)
+      .set(headers)
+      .send({ query: CREATE_SHARE, variables });
+    expect(eventSpy).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({ slug: uuidMock }),
+    );
   });
 });
