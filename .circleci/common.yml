@@ -179,13 +179,14 @@ commands:
         type: string
     steps:
       - run:
+          # Need to set peer-deps to false for pnpmv8 https://github.com/pnpm/pnpm/issues/6300
           name: Install and setup node
           command: |
             nvm install
             nvm use
             npm install -g pnpm@8.15.6
             pnpm config set store-dir .pnpm-store
-            pnpm install --filter=<< parameters.scope >>...
+            pnpm install --filter=<< parameters.scope >>... --config.dedupe-peer-dependents=false   
   install_codebuild_secrets:
     steps:
       - run: 
