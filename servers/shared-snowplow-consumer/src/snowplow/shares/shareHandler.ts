@@ -1,4 +1,3 @@
-import { SelfDescribingJson } from '@snowplow/tracker-core';
 import { config } from '../../config';
 import { EventHandler } from '../EventHandler';
 import { getTracker } from '../tracker';

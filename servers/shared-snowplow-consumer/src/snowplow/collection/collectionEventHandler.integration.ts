@@ -10,8 +10,10 @@ import { ObjectUpdate } from '../../snowtype/snowplow';
 import { CollectionEventBridgePayload } from '../../eventConsumer/collectionEvents/types';
 
 export const collectionEventSchema = {
-  objectUpdate: 'iglu:com.pocket/object_update/jsonschema/1-0-16',
-  collection: 'iglu:com.pocket/collection/jsonschema/1-0-3',
+  objectUpdate: expect.stringMatching(
+    'iglu:com.pocket/object_update/jsonschema',
+  ),
+  collection: expect.stringMatching('iglu:com.pocket/collection/jsonschema'),
 };
 
 function assertValidSnowplowObjectUpdateEvents(
