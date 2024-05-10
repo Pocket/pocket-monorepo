@@ -6,7 +6,7 @@ import {
   setSubscription,
 } from '../braze';
 import { config } from '../config';
-import * as Sentry from '@sentry/node';
+import * as Sentry from '@sentry/serverless';
 import { SQSRecord } from 'aws-lambda';
 import type {
   UsersTrackObject,

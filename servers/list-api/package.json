@@ -1,29 +1,39 @@
 {
-  "main": "dist/server/main.js",
   "name": "list-api",
+  "version": "1.0.0",
+  "main": "dist/server/main.js",
+  "files": [
+    "dist",
+    "schema.graphql",
+    "package.json"
+  ],
   "scripts": {
     "build": "rm -rf dist && tsc && npm run build-schema",
-    "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json",
-    "start": "node dist/server/main.js",
-    "dev": "npm run build && npm run watch",
     "build-schema": "node dist/server/buildSchema.js",
-    "test:watch": "npm test -- --watchAll",
+    "dev": "npm run build && npm run watch",
+    "format": "eslint --fix",
+    "lint": "eslint --fix-dry-run",
+    "start": "node dist/server/main.js",
     "test": "jest \"\\.spec\\.ts\"",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",
-    "lint": "eslint --fix-dry-run \"src/**/*.ts\"",
-    "format": "eslint --fix \"src/**/*.ts\""
+    "test:watch": "npm test -- --watchAll",
+    "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json"
   },
   "dependencies": {
+    "@apollo/server": "4.10.4",
+    "@apollo/subgraph": "2.7.6",
     "@aws-sdk/client-eventbridge": "3.569.0",
     "@aws-sdk/client-kinesis": "3.569.0",
     "@aws-sdk/client-sqs": "3.569.0",
     "@pocket-tools/apollo-cursor-pagination": "1.0.3",
     "@pocket-tools/apollo-utils": "workspace:*",
+    "@pocket-tools/int-mask": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@pocket-tools/int-mask": "workspace:*",
+    "@sentry/node": "7.114.0",
     "@snowplow/node-tracker": "3.23.0",
+    "@snowplow/tracker-core": "3.23.0",
     "dataloader": "2.2.2",
     "express": "4.19.2",
     "express-validator": "^7.0.1",
@@ -36,10 +46,14 @@
     "lodash": "4.17.21",
     "luxon": "3.4.4",
     "mysql2": "3.9.7",
+    "node-fetch": "2.7.0",
+    "tslib": "2.6.2",
     "unleash-client": "5.5.2"
   },
   "devDependencies": {
+    "@jest/globals": "29.7.0",
     "@pocket-tools/backend-benchmarking": "workspace:*",
+    "@pocket-tools/eslint-config": "workspace:*",
     "@types/chance": "1.1.6",
     "@types/graphql-depth-limit": "1.1.6",
     "@types/graphql-upload": "16.0.7",
@@ -47,20 +61,18 @@
     "@types/locutus": "0.0.8",
     "@types/lodash": "4.17.0",
     "@types/luxon": "3.4.2",
+    "@types/node": "^20.12.6",
     "@types/supertest": "^6.0.2",
     "chance": "1.1.11",
-    "@pocket-tools/eslint-config": "workspace:*",
     "jest": "29.7.0",
     "jest-extended": "4.0.2",
     "nock": "13.5.4",
     "nodemon": "3.1.0",
     "supertest": "6.3.4",
     "ts-jest": "29.1.2",
-    "tsconfig": "workspace:*"
-  },
-  "files": [
-    "dist",
-    "schema.graphql",
-    "package.json"
-  ]
+    "ts-node": "10.9.2",
+    "tsconfig": "workspace:*",
+    "tslib": "2.6.2",
+    "typescript": "5.4.4"
+  }
 }

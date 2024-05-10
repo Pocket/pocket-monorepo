@@ -4,9 +4,6 @@
   "private": true,
   "license": "MIT",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
   "dependencies": {
     "@types/node": "^20.12.6",
     "ts-node": "10.9.2",
@@ -16,5 +13,8 @@
   },
   "engines": {
     "node": "^20.12"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

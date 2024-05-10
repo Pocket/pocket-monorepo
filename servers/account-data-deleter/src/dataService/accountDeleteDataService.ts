@@ -190,9 +190,8 @@ export class AccountDeleteDataService {
       .whereIn(where.primaryKeyNames, where.primaryKeyValues);
     const rowCount = await query;
 
-    /* eslint-disable max-len */
     const successMessage = `deleted rows for ${tableName} with provided where condition.`;
-    /* eslint-enable max-len */
+
     serverLogger.info({ message: successMessage, data: where });
     return rowCount;
   }
