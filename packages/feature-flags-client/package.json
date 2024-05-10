@@ -25,8 +25,8 @@
   },
   "dependencies": {
     "@pocket-tools/ts-logger": "workspace:*",
-    "unleash-client": "5.5.2",
-    "tslib": "2.6.2"
+    "tslib": "2.6.2",
+    "unleash-client": "5.5.2"
   },
   "devDependencies": {
     "@pocket-tools/eslint-config": "workspace:*",

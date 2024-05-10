@@ -14,6 +14,7 @@ workflows:
           prod_graph_url: https://shares-api.readitlater.com
           dev_graph_url: https://shares-api.getpocket.dev
           build_command: pnpm run build --filter=shares-api...
+          scope: shares-api
 
       - test_integrations:
           <<: *not_dev_main
