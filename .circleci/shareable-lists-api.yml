@@ -14,6 +14,7 @@ workflows:
           prod_graph_url: https://shareablelistsapi.readitlater.com
           dev_graph_url: https://shareablelistsapi.getpocket.dev
           build_command: pnpm run build --filter=shareable-lists-api...
+          scope: shareable-lists-api
 
       - apollo:
           name: shareable-lists-api_apollo_admin
@@ -24,6 +25,7 @@ workflows:
           dev_graph_url: https://shareablelistsapi.getpocket.dev
           build_command: pnpm run build --filter=shareable-lists-api...
           apollo_key_env: APOLLO_ADMIN_KEY
+          scope: shareable-lists-api
 
       - test_integrations:
           <<: *not_dev_main

@@ -69,8 +69,8 @@
   },
   "dependencies": {
     "morgan": "^1.10.0",
-    "winston": "3.13.0",
-    "tslib": "2.6.2"
+    "tslib": "2.6.2",
+    "winston": "3.13.0"
   },
   "devDependencies": {
     "@pocket-tools/eslint-config": "workspace:*",

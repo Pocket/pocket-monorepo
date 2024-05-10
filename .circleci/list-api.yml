@@ -14,7 +14,7 @@ workflows:
           prod_graph_url: https://list-api.readitlater.com
           dev_graph_url: https://list-api.getpocket.dev
           build_command: pnpm run build --filter=list-api...
-
+          scope: list-api
 
       - test_integrations:
           <<: *not_dev_main

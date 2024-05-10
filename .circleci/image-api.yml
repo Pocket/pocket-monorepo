@@ -13,7 +13,8 @@ workflows:
           schema_file_path: servers/image-api/schema.graphql
           prod_graph_url: https://image-api.readitlater.com
           dev_graph_url: https://image-api.getpocket.dev
-
+          scope: image-api
+      
       - apollo:
           name: image-api_apollo_admin
           fed_graph_name: pocket-admin-api
@@ -22,6 +23,7 @@ workflows:
           prod_graph_url: https://image-api.readitlater.com
           dev_graph_url: https://image-api.getpocket.dev
           apollo_key_env: APOLLO_ADMIN_KEY
+          scope: image-api
 
       - test_integrations:
           <<: *not_dev_main

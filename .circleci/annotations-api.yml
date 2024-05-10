@@ -14,6 +14,7 @@ workflows:
           prod_graph_url: https://annotations-api.readitlater.com
           dev_graph_url: https://annotations-api.getpocket.dev
           build_command: pnpm run build --filter=annotations-api...
+          scope: annotations-api
 
       - test_integrations:
           <<: *not_dev_main
