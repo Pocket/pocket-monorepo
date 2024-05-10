@@ -8,8 +8,9 @@ while [[ "$1" ]]; do
       --db)
           "${dir}"/setup_db.sh
           ;;
-      --aws)
-          "${dir}"/setup_aws.sh
+      --aws=*)
+          # Extract the value after '='
+          "${dir}"/setup_aws.sh --scope="${1#*=}"
           ;;
     esac
     shift
