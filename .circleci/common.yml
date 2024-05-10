@@ -162,7 +162,7 @@ commands:
       - run:
           name: Install pnpm package manager
           command: |
-            corepack prepare pnpm@8.15.6 --activate
+            corepack prepare pnpm@9.1.1 --activate
             pnpm config set store-dir .pnpm-store
       - when:
           # Only compile if we do not use raw hcl
@@ -217,7 +217,7 @@ commands:
           command: |
             nvm install
             nvm use
-            npm install -g pnpm@8.15.6
+            npm install -g pnpm@9.1.1
             pnpm config set store-dir .pnpm-store
             pnpm install --filter=<< parameters.scope >>... --config.dedupe-peer-dependents=false
   install_codebuild_secrets:
