@@ -1,28 +1,25 @@
 import { GetResponse, SearchResponse } from 'elasticsearch';
 import { client } from './index';
 import { config } from '../../config';
-import {
-  ElasticSearchSavedItem,
-  Pagination,
-  SavedItemSearchResultConnection,
-  AdvancedSearchParams,
-  SearchSavedItemEdge,
-  SearchSavedItemParameters,
-  SearchSavedItemOffsetParams,
-  SavedItemSearchResultPage,
-  SavedItemSearchResult,
-  AdvancedSearchByOffsetParams,
-} from '../../types';
+import { ElasticSearchSavedItem, Pagination } from '../../types';
 import { UserInputError, validatePagination } from '@pocket-tools/apollo-utils';
 import { SearchQueryBuilder } from './searchQueryBuilder';
 import { Paginator } from './Paginator';
+import {
+  SearchFunctionalBoostOperation,
+  SearchParams,
+  UserAdvancedSearchArgs,
+  UserAdvancedSearchByOffsetArgs,
+  SavedItemSearchResultConnection,
+  SavedItemSearchResultEdge,
+  SavedItemSearchResultPage,
+  SavedItemSearchResult,
+  UserSearchSavedItemsArgs,
+  SearchSortInput,
+  UserSearchSavedItemsByOffsetArgs,
+} from '../../__generated__/types';
 
 const { index, type, defaultQueryScore } = config.aws.elasticsearch;
-
-export enum FunctionalBoostOperation {
-  ADD = 'ADD',
-  MULTIPLY = 'MULTIPLY',
-}
 
 export const ElasticSearchFilterStatus = {
   ARCHIVED: 'ARCHIVED',
@@ -46,7 +43,7 @@ export const ElasticSearchContentType = {
   IMAGE: 'image',
 };
 
-export type FunctionScoreQuery = {
+type FunctionScoreQuery = {
   query: {
     function_score: {
       query: any;
@@ -76,29 +73,6 @@ export type InputFilter = {
   favorite?: boolean;
   contentType?: string;
   domain?: string;
-};
-
-// Query input for `search`
-export type SearchParams = {
-  term: string;
-  fields: string[];
-  from?: number;
-  size?: number;
-  sort?: {
-    field: string;
-    direction: ElasticSearchSortDirection;
-  };
-  filters?: InputFilter;
-  highlightFields?: {
-    field: string;
-    size: number;
-  }[];
-  functionalBoosts?: {
-    field: string;
-    value: string | boolean;
-    operation: FunctionalBoostOperation;
-    factor: number;
-  }[];
 };
 
 //todo: can simplify this type once we refactor ElasticSearchParams
@@ -247,12 +221,12 @@ export enum FunctionalBoostOperationsMap {
   MULTIPLY = '*',
 }
 
-export type ScriptScoreFunctionScript = {
+type ScriptScoreFunctionScript = {
   params?: { factor: number };
   source: string;
 };
 
-export type ScriptScoreFunction = {
+type ScriptScoreFunction = {
   filter?: {
     match: {
       [key: string]: boolean | string;
@@ -496,7 +470,7 @@ export function calculateSizeOffset(pagination: Pagination): {
   return { from: 0, size: cleanPagination.first };
 }
 
-function mapSortFields(params: { sort?: SearchSavedItemParameters['sort'] }) {
+export function mapSortFields(params: { sort?: SearchSortInput }) {
   if (params.sort) {
     return {
       field: ElasticSearchSortField[params.sort.sortBy],
@@ -520,7 +494,7 @@ export function getCleanedupDomainName(domain: string): string {
 }
 
 export function generateSearchSavedItemsParams(
-  params: SearchSavedItemParameters | SearchSavedItemOffsetParams,
+  params: UserSearchSavedItemsArgs | UserSearchSavedItemsByOffsetArgs,
   userId: string,
 ): ElasticSearchParams {
   const searchValues = extractSearchValues(params.term);
@@ -555,7 +529,10 @@ export function generateSearchSavedItemsParams(
     fields: fields,
     from,
     size,
-    sort: mapSortFields(params),
+    // TODO: body.sort is 'any' on the actual library types
+    // going to take the easy path here for now since this
+    // library we're using is deprecated anyway
+    sort: mapSortFields(params) as any,
     filters: {
       favorite: params.filter?.isFavorite,
       contentType: ElasticSearchContentType[params.filter?.contentType] ?? null,
@@ -579,7 +556,7 @@ export function generateSearchSavedItemsParams(
       {
         field: `favorite`,
         value: true,
-        operation: FunctionalBoostOperation.ADD,
+        operation: SearchFunctionalBoostOperation.Add,
         factor: 1,
       },
     ],
@@ -588,7 +565,7 @@ export function generateSearchSavedItemsParams(
 }
 
 async function advancedSearchBase(
-  params: AdvancedSearchParams | AdvancedSearchByOffsetParams,
+  params: UserAdvancedSearchArgs | UserAdvancedSearchByOffsetArgs,
   userId: string,
 ): Promise<SearchResponse<ElasticSearchSavedItem>> {
   const body = new SearchQueryBuilder().parse(params, userId);
@@ -608,7 +585,7 @@ async function advancedSearchBase(
 }
 
 export async function advancedSearch(
-  params: AdvancedSearchParams,
+  params: UserAdvancedSearchArgs,
   userId: string,
 ): Promise<SavedItemSearchResultConnection> {
   const result = await advancedSearchBase(params, userId);
@@ -616,7 +593,7 @@ export async function advancedSearch(
 }
 
 export async function advancedSearchByOffset(
-  params: AdvancedSearchByOffsetParams,
+  params: UserAdvancedSearchByOffsetArgs,
   userId: string,
 ): Promise<SavedItemSearchResultPage> {
   const result = await advancedSearchBase(params, userId);
@@ -629,7 +606,7 @@ export async function advancedSearchByOffset(
 }
 
 export async function searchSavedItemsByOffset(
-  params: SearchSavedItemOffsetParams,
+  params: UserSearchSavedItemsByOffsetArgs,
   userId: string,
 ): Promise<SavedItemSearchResultPage> {
   const { result, searchParams } = await searchBase(params, userId);
@@ -649,7 +626,7 @@ export async function searchSavedItemsByOffset(
 }
 
 async function searchBase(
-  params: SearchSavedItemParameters | SearchSavedItemOffsetParams,
+  params: UserSearchSavedItemsArgs | UserSearchSavedItemsByOffsetArgs,
   userId: string,
 ): Promise<{
   result: SearchResponse<unknown>;
@@ -673,12 +650,12 @@ async function searchBase(
  * aws response: https://docs.aws.amazon.com/opensearch-service/latest/developerguide/searching.html
  */
 export async function searchSavedItems(
-  params: SearchSavedItemParameters,
+  params: UserSearchSavedItemsArgs,
   userId: string,
 ): Promise<SavedItemSearchResultConnection> {
   const { result, searchParams } = await searchBase(params, userId);
   let cursor: number = searchParams.from;
-  const searchResultsEdges: SearchSavedItemEdge[] = result.hits.hits.map(
+  const searchResultsEdges: SavedItemSearchResultEdge[] = result.hits.hits.map(
     (res: any) => {
       const response = {
         cursor: Buffer.from(cursor.toString()).toString('base64'),

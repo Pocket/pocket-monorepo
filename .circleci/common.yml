@@ -168,10 +168,15 @@ commands:
           # Only compile if we do not use raw hcl
           condition: <<parameters.scope>>
           steps:
+            - run:
+                name: "Preprocess SCOPE"
+                command: |
+                  echo "export SAFE_SCOPE=$(echo << parameters.scope >> | tr '-' '')"
+                shell: /bin/bash -eo pipefail
             - restore_cache:
                 name: Restore pnpm Package Cache
                 keys:
-                  - pnpm-packages-{{ checksum "pnpm-lock.yaml" }}-{{ << parameters.scope >> }}
+                  - pnpm-packages-{{ .Environment.SAFE_SCOPE }}-{{ checksum "pnpm-lock.yaml" }}
             - run:  
                 # Need to set peer-deps to false for pnpmv8 https://github.com/pnpm/pnpm/issues/6300
                 name: Install Dependencies
@@ -179,7 +184,7 @@ commands:
                   pnpm install --filter=<< parameters.scope >>... --config.dedupe-peer-dependents=false
             - save_cache:
                 name: Save pnpm Package Cache
-                key: pnpm-packages-{{ checksum "pnpm-lock.yaml" }}-{{ << parameters.scope >> }}
+                key: pnpm-packages-{{ .Environment.SAFE_SCOPE }}-{{ checksum "pnpm-lock.yaml" }}
                 paths:
                   - .pnpm-store
       - unless:

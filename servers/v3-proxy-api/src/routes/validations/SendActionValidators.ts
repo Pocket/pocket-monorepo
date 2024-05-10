@@ -890,11 +890,28 @@ export function ActionSanitizer(input: MaybeAction): SendAction {
       }).validate();
     case 'tags_add':
     case 'tags_remove':
-    case 'tags_replace':
       return new ItemTagActionSanitizer({
         ...input,
         action: input.action,
       }).validate();
+    case 'tags_replace':
+      // Android sends an empty replacement array rather than
+      // using the tags_clear action...
+      if (
+        input.tags != null &&
+        (Array.isArray(input.tags) || typeof input.tags === 'string') &&
+        input.tags.length === 0
+      )
+        return new ItemActionSanitizer({
+          ...input,
+          action: 'tags_clear',
+        });
+      else {
+        return new ItemTagActionSanitizer({
+          ...input,
+          action: input.action,
+        }).validate();
+      }
     case 'tag_delete':
       return new TagDeleteActionSanitizer({
         ...input,

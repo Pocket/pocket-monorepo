@@ -524,6 +524,37 @@ describe('v3/send', () => {
               });
             },
           );
+          it.each(['', []])(
+            'makes a tags_clear request if tags_replace array is empty',
+            async (tags) => {
+              const input = {
+                action: 'tags_replace',
+                url: 'http://test.com',
+                time: '1711558016',
+                tags,
+              };
+              const res = await request(app)
+                .post('/v3/send')
+                .send({
+                  consumer_key: 'test',
+                  access_token: 'test',
+                  actions: [input],
+                });
+              expect(clientSpy).toHaveBeenCalledTimes(1);
+              expect(
+                clientSpy.mock.calls[0][0].definitions[0].name.value,
+              ).toEqual('ClearTags');
+              expect(clientSpy.mock.calls[0][1]).toEqual({
+                savedItem: { url: 'http://test.com' },
+                timestamp: '2024-03-27T16:46:56.000Z',
+              });
+              expect(res.body).toEqual({
+                status: 1,
+                action_results: [true],
+                action_errors: [null],
+              });
+            },
+          );
         });
         describe('tags_remove', () => {
           it.each([

@@ -1,11 +1,11 @@
 import {
   AdvancedSearchFilters,
-  AdvancedSearchParams,
-  SavedItemContentType,
-  SearchFilterStatus,
+  SearchItemsContentType,
   SearchItemsSortBy,
-  SortDirection,
-} from '../../types';
+  SearchItemsSortOrder,
+  SearchItemsStatusFilter,
+  UserAdvancedSearchArgs,
+} from '../../__generated__/types';
 import { SearchQueryBuilder } from './searchQueryBuilder';
 
 describe('SearchQueryBuilder', () => {
@@ -97,7 +97,7 @@ describe('SearchQueryBuilder', () => {
       },
       {
         name: 'status',
-        filter: { status: SearchFilterStatus.ARCHIVED },
+        filter: { status: SearchItemsStatusFilter.Archived },
         expected: {
           filter: {
             bool: {
@@ -111,13 +111,13 @@ describe('SearchQueryBuilder', () => {
       },
       {
         name: 'contentType',
-        filter: { contentType: SavedItemContentType.IMAGE },
+        filter: { contentType: SearchItemsContentType.Video },
         expected: {
           filter: {
             bool: {
               must: expect.toIncludeSameMembers([
                 { term: { user_id: 1 } },
-                { term: { content_type: 'image' } },
+                { term: { content_type: 'video' } },
               ]),
             },
           },
@@ -130,8 +130,8 @@ describe('SearchQueryBuilder', () => {
           isFavorite: true,
           domain: 'theonyxpath.com',
           title: 'solar exalted',
-          status: SearchFilterStatus.ARCHIVED,
-          contentType: SavedItemContentType.VIDEO,
+          status: SearchItemsStatusFilter.Archived,
+          contentType: SearchItemsContentType.Video,
         },
         expected: {
           filter: {
@@ -170,7 +170,7 @@ describe('SearchQueryBuilder', () => {
   });
   describe('query string', () => {
     it('replaces AND, OR, and NOT operators with +,|,- respectively', () => {
-      const input: AdvancedSearchParams = {
+      const input: UserAdvancedSearchArgs = {
         queryString: 'void AND solar OR abyssal NOT lunar',
       };
       const expected = {
@@ -230,7 +230,7 @@ describe('SearchQueryBuilder', () => {
   });
   describe('parse', () => {
     it('builds with query string and filters', () => {
-      const input: AdvancedSearchParams = {
+      const input: UserAdvancedSearchArgs = {
         queryString: '"reed in the wind" AND solar OR abyssal',
         filter: {
           tags: ['solar', 'abyssal'],
@@ -283,7 +283,7 @@ describe('SearchQueryBuilder', () => {
       expect(actual).toEqual(expected);
     });
     it('builds with filters alone', () => {
-      const input: AdvancedSearchParams = {
+      const input: UserAdvancedSearchArgs = {
         filter: {
           tags: ['solar', 'abyssal'],
         },
@@ -310,7 +310,7 @@ describe('SearchQueryBuilder', () => {
       expect(actual).toMatchObject(expected);
     });
     it('builds with query string alone', () => {
-      const input: AdvancedSearchParams = {
+      const input: UserAdvancedSearchArgs = {
         queryString: '"reed in the wind" AND solar OR abyssal',
       };
       const expected = {
@@ -337,7 +337,7 @@ describe('SearchQueryBuilder', () => {
   });
   describe('sort', () => {
     it('defaults to sorting by _score with item_id tiebreaker', () => {
-      const input: AdvancedSearchParams = {
+      const input: UserAdvancedSearchArgs = {
         queryString: '"reed in the wind" AND solar OR abyssal',
       };
       const actual = query.parse(input, userId);
@@ -347,11 +347,11 @@ describe('SearchQueryBuilder', () => {
       expect(actual).toMatchObject(expected);
     });
     it('includes custom sort', () => {
-      const input: AdvancedSearchParams = {
+      const input: UserAdvancedSearchArgs = {
         queryString: '"reed in the wind" AND solar OR abyssal',
         sort: {
-          sortBy: SearchItemsSortBy.CREATED_AT,
-          sortOrder: SortDirection.ASC,
+          sortBy: SearchItemsSortBy.CreatedAt,
+          sortOrder: SearchItemsSortOrder.Asc,
         },
       };
       const actual = query.parse(input, userId);
@@ -363,7 +363,7 @@ describe('SearchQueryBuilder', () => {
   });
   describe('pagination', () => {
     it('constructs search_after query if after is provided', () => {
-      const input: AdvancedSearchParams = {
+      const input: UserAdvancedSearchArgs = {
         queryString: '"reed in the wind" AND solar OR abyssal',
         pagination: { first: 10, after: 'MTAwX18rX18z' },
       };
@@ -375,7 +375,7 @@ describe('SearchQueryBuilder', () => {
       expect(actual).toMatchObject(expected);
     });
     it('adds limit to query by default', () => {
-      const input: AdvancedSearchParams = {
+      const input: UserAdvancedSearchArgs = {
         queryString: '"reed in the wind" AND solar OR abyssal',
       };
       const actual = query.parse(input, userId);
@@ -385,7 +385,7 @@ describe('SearchQueryBuilder', () => {
       expect(actual).toMatchObject(expected);
     });
     it('adds custom limit if first is provided', () => {
-      const input: AdvancedSearchParams = {
+      const input: UserAdvancedSearchArgs = {
         queryString: '"reed in the wind" AND solar OR abyssal',
         pagination: { first: 10 },
       };
