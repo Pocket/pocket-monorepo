@@ -58,7 +58,7 @@
     "@graphql-codegen/typescript": "4.0.6",
     "@graphql-codegen/typescript-resolvers": "^4.0.6",
     "@pocket-tools/eslint-config": "workspace:*",
-    "@sentry/types": "7.113.0",
+    "@sentry/types": "7.114.0",
     "@types/chance": "1.1.6",
     "@types/jest": "29.5.12",
     "@types/md5": "2.3.5",
