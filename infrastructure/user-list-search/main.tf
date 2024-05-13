@@ -18,6 +18,10 @@ data "aws_ssm_parameter" "sentry_dsn" {
   name = "/${local.name}/${local.env}/SENTRY_DSN"
 }
 
+data "aws_ssm_parameter" "unleash_endpoint" {
+  name = "/Shared/${local.env}/UNLEASH_ENDPOINT"
+}
+
 data "aws_ssm_parameter" "vpc" {
   name = "/Shared/Vpc"
 }

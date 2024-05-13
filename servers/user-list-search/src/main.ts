@@ -9,7 +9,7 @@ import { serverLogger } from '@pocket-tools/ts-logger';
 
 nodeSDKBuilder({
   host: config.tracing.host,
-  serviceName: config.tracing.serviceName,
+  serviceName: config.serviceName,
   release: config.sentry.release,
   logger: serverLogger,
   additionalInstrumentations: [AdditionalInstrumentation.KNEX],

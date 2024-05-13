@@ -13,7 +13,7 @@ resource "aws_lambda_function" "item_update_backfill_sqs_processor" {
   timeout = 300
   environment {
     variables = merge(local.lambda_env, {
-      BACKFILL     = "true"
+      BACKFILL = "true"
     })
   }
   tags    = local.tags

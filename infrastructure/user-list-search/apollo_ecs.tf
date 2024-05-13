@@ -74,7 +74,7 @@ module "apollo" {
     {
       name  = "SQS_USER_ITEMS_UPDATE_BACKFILL_URL"
       value = aws_sqs_queue.user_items_update_backfill.id
-    }
+    },
   ]
 }
 
@@ -99,22 +99,22 @@ resource "aws_ecs_task_definition" "apollo" {
 
 output "ecs-task-family" {
   description = "ECS Task Family"
-  value = aws_ecs_task_definition.apollo.family
+  value       = aws_ecs_task_definition.apollo.family
 }
 
 output "ecs-task-containerPort" {
   description = "ECS Task Container Port"
-  value = local.container_port
+  value       = local.container_port
 }
 
 output "ecs-task-containerName" {
   description = "ECS Task Container Name"
-  value = local.container_name
+  value       = local.container_name
 }
 
 output "ecs-task-arn" {
   description = "ECS Task Arn"
-  value = aws_ecs_task_definition.apollo.arn
+  value       = aws_ecs_task_definition.apollo.arn
 }
 
 resource "aws_ecs_service" "apollo" {

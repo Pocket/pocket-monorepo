@@ -67,10 +67,10 @@ resource "aws_codestarnotifications_notification_rule" "apollo_notifications" {
 
 output "ecs-codedeploy-app" {
   description = "Code deploy app"
-  value = aws_codedeploy_app.ecs_codedeploy_app.name
+  value       = aws_codedeploy_app.ecs_codedeploy_app.name
 }
 
 output "ecs-codedeploy-group" {
   description = "Code deploy group"
-  value = aws_codedeploy_deployment_group.apollo_codedeploy_group.deployment_group_name
+  value       = aws_codedeploy_deployment_group.apollo_codedeploy_group.deployment_group_name
 }
