@@ -1,6 +1,5 @@
 import { SQSRecord } from 'aws-lambda';
 import { config } from '../config';
-import fetch from 'node-fetch';
 
 /**
  * Given an account delete event, queue SQS messages to delete chunks of the

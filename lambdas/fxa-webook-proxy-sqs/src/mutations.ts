@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 import { SQSRecord } from 'aws-lambda';
 
 import config from './config';

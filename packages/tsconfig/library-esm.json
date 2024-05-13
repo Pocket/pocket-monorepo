@@ -7,7 +7,6 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "lib": [
-      "dom",
       "es2019",
       "es2020.bigint",
       "es2020.string",

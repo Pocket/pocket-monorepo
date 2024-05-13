@@ -1,6 +1,5 @@
 import { UserItemsSqsMessage, UserListImportSqsMessage } from './types';
 import { nanoid } from 'nanoid';
-import fetch from 'node-fetch';
 import { config } from './config';
 
 /**

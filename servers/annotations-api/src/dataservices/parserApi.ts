@@ -2,7 +2,6 @@ import { URLSearchParams } from 'url';
 import config from '../config';
 import { RESTDataSource } from '@apollo/datasource-rest';
 import md5 from 'md5';
-import fetch from 'node-fetch';
 import { backOff } from 'exponential-backoff';
 import { NotFoundError } from '@pocket-tools/apollo-utils';
 import * as Sentry from '@sentry/node';

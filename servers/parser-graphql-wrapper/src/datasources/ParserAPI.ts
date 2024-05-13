@@ -18,10 +18,9 @@ import type {
   KeyValueCacheSetOptions,
 } from '@apollo/utils.keyvaluecache';
 import { ParserResponse } from './ParserAPITypes';
-import fetch from 'node-fetch';
 import { backOff } from 'exponential-backoff';
 import { createReaderSlug } from '../readerView/idUtils';
-
+import type { FetcherResponse } from '@apollo/utils.fetcher';
 export enum MediaTypeParam {
   AS_COMMENTS = '0',
   NO_POSITION = '1',
@@ -102,7 +101,9 @@ export class ParserAPI extends RESTDataSource {
           maxDelay: 1000,
           numOfAttempts: config.parser.retries,
         },
-      );
+        // Having to use the `dom` library in marticle overrides the native node fetch types with browser types,
+        // so we do a cast to unknown to FetcherResponse
+      ) as unknown as Promise<FetcherResponse>;
     super({ ...datasourceConfig, fetch: backoffFetch });
     this.cache = datasourceConfig.cache;
   }

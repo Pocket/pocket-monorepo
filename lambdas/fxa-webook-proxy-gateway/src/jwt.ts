@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
-import fetch from 'node-fetch';
 import config from './config';
 import { FxaPayload, FxaOpenIdConfigPayload } from './types';
 

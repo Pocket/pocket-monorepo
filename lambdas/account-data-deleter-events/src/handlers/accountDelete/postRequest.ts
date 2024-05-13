@@ -1,8 +1,7 @@
-import isomorphicFetch from 'isomorphic-fetch';
 import fetchRetry from 'fetch-retry';
 import { config } from '../../config';
 
-const fetch = fetchRetry(isomorphicFetch);
+const newFetch = fetchRetry(fetch);
 
 /**
  * Generic post builder with retry logic
@@ -18,7 +17,7 @@ async function postRequest(
   endpoint?: string,
 ): Promise<any> {
   const fetchPath = (endpoint ?? config.endpoint) + path;
-  return fetch(fetchPath, {
+  return newFetch(fetchPath, {
     retryOn: [500, 502, 503],
     retryDelay: (attempt, error, response) => {
       return Math.pow(2, attempt) * 500;

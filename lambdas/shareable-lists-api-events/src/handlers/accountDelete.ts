@@ -1,9 +1,8 @@
 import { SQSRecord } from 'aws-lambda';
 import { config } from '../config';
-import isomorphicFetch from 'isomorphic-fetch';
 import fetchRetry from 'fetch-retry';
 
-const fetch = fetchRetry(isomorphicFetch);
+const newFetch = fetchRetry(fetch);
 /**
  * Invoke the deleteUserData express endpoint in shareable-lists-api
  * to delete user data
@@ -15,7 +14,7 @@ export async function accountDeleteHandler(record: SQSRecord) {
   const postBody = {
     userId: message['userId'],
   };
-  const res = await fetch(config.apiEndpoint + config.deleteUserDataPath, {
+  const res = await newFetch(config.apiEndpoint + config.deleteUserDataPath, {
     retryOn: [500, 502, 503],
     retryDelay: (attempt, error, response) => {
       return Math.pow(2, attempt) * 500;

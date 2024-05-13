@@ -1,5 +1,4 @@
 import { config } from '../config';
-import fetch from 'node-fetch';
 
 async function snowplowRequest(path: string, post = false): Promise<any> {
   const response = await fetch(`http://${config.snowplow.endpoint}${path}`, {

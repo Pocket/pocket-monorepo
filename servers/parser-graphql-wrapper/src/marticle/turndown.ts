@@ -1,3 +1,4 @@
+/// <reference lib="dom" />
 import TurndownService from 'turndown';
 
 const turndownService = new TurndownService({ headingStyle: 'atx' });

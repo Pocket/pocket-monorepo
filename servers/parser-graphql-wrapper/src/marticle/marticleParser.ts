@@ -1,3 +1,4 @@
+/// <reference lib="dom" />
 import domino from 'domino';
 import {
   ListElement,

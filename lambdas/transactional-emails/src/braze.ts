@@ -1,4 +1,3 @@
-import isomorphicFetch from 'isomorphic-fetch';
 import fetchRetry from 'fetch-retry';
 import { config } from './config';
 import { getBrazeApiKey } from './ssm';
@@ -9,7 +8,7 @@ import type {
   V2SubscriptionStatusSetObject,
   CampaignsTriggerSendObject,
 } from 'braze-api';
-export const fetchWithBackoff = fetchRetry(isomorphicFetch);
+export const fetchWithBackoff = fetchRetry(fetch);
 
 export async function sendForgotPasswordEmail(forgotPasswordOptions: {
   encodedId: string;
