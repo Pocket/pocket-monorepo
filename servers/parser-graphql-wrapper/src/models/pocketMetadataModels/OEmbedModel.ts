@@ -12,7 +12,7 @@ import { extract } from '@extractus/oembed-extractor';
 
 export class OEmbedModel implements IPocketMetadataDataSource {
   // Use oEmbed for TikTok, and others in the future
-  matcher = /^(.*\b(tiktok\.com|ted\.com|soundcloud\.com)\b).*$/;
+  matcher = /^(.*\b(tiktok\.com|ted\.com)\b).*$/;
   ttl = 2 * 60 * 60 * 24; // 2 days of ttl cache since TikTok expires their oembed urls after 2 days of generation
   source = PocketMetadataSource.Oembed;
   version = 1;

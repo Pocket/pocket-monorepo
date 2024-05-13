@@ -15,7 +15,7 @@
     "prepare": "husky",
     "semantic-release": "dotenv -- turbo run semantic-release",
     "synth": "dotenv -- turbo run synth",
-    "pretest": "dotenv -- turbo run pretest",
+    "pretest-integrations": "dotenv -- turbo run pretest-integrations",
     "test": "dotenv -- turbo run test",
     "test-integrations": "dotenv -- turbo run test-integrations"
   },

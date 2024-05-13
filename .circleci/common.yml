@@ -754,14 +754,13 @@ jobs:
           # Theres a really annoying bug in PNPM deploy command that will try and create a folder at /home/pruned which we are not allowed to do, 
           # so we move it under 1 directory to let it do its thing.
           # https://github.com/pnpm/pnpm/issues/5086
-          # We also go crazy on the deploy command per https://github.com/pnpm/pnpm/issues/6166#issuecomment-1802541463
           name: Build lambda
           command: |
             corepack pnpm run build --filter=<< parameters.scope >>...
             mkdir -p ~/bug/project
             cp -R . ~/bug/project/
             cd ~/bug/project/
-            corepack pnpm --config.node-linker=true --config.symlinks=false --config.shared-workspace-lockfile=false deploy --filter=<< parameters.scope >> --prod pruned
+            corepack pnpm deploy --filter=<< parameters.scope >> --prod pruned
       - when:
           condition: << parameters.sentry_project_name >>
           steps:
@@ -779,7 +778,7 @@ jobs:
             cp -r node_modules/ dist/node_modules/
 
             cd dist
-            zip -r9 ~/project/${CIRCLE_SHA1}.zip .
+            zip --symlinks -r9 ~/project/${CIRCLE_SHA1}.zip .
             mkdir /tmp/artifacts
             cp ~/project/${CIRCLE_SHA1}.zip /tmp/artifacts/
             cd ..

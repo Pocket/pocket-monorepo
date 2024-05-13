@@ -61,7 +61,7 @@
       ],
       "cache": true
     },
-    "pretest": {
+    "pretest-integrations": {
       "cache": false
     }
   }
