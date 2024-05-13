@@ -1,0 +1,11 @@
+mutation AddAnnotationByUrl($input: CreateHighlightByUrlInput!) {
+  createHighlightByUrl(input: $input) {
+    id
+  }
+}
+
+mutation AddAnnotationByItemId($input: [CreateHighlightInput!]!) {
+  createSavedItemHighlights(input: $input) {
+    id
+  }
+}

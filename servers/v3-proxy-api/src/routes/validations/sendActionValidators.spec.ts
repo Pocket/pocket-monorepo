@@ -1,4 +1,6 @@
 import {
+  AddAnnotationActionSanitizer,
+  DeleteAnnotationActionSanitizer,
   ItemActionSanitizer,
   ItemAddActionSanitizer,
   ItemTagActionSanitizer,
@@ -825,6 +827,238 @@ describe('send validator', () => {
       expect.assertions(1);
       try {
         new SaveSearchActionSanitizer(input).validate();
+      } catch (err) {
+        expect(err.message).toContain(error);
+      }
+    });
+  });
+  describe('for delete_annotation action', () => {
+    it.each([
+      {
+        input: {
+          annotation_id: 'abc123',
+          action: 'delete_annotation' as const,
+        },
+        expected: {
+          id: 'abc123',
+          action: 'delete_annotation',
+          time: now,
+        },
+      },
+      // Optional time field
+      {
+        input: {
+          annotation_id: 'abc123',
+          action: 'delete_annotation' as const,
+          time: '192392329',
+        },
+        expected: {
+          id: 'abc123',
+          action: 'delete_annotation' as const,
+          time: 192392329,
+        },
+      },
+      // Ignores additional input
+      {
+        input: {
+          item_id: '12345', // unused
+          annotation_id: 'abc123',
+          action: 'delete_annotation' as const,
+        },
+        expected: {
+          id: 'abc123',
+          action: 'delete_annotation',
+          time: now,
+        },
+      },
+    ])('sanitizes valid input', ({ input, expected }) => {
+      const res = new DeleteAnnotationActionSanitizer(input).validate();
+      expect(res).toEqual(expected);
+    });
+    it.each([
+      {
+        input: {
+          action: 'delete_annotation' as const,
+        },
+        error: 'Action must have non-empty annotation_id field',
+      },
+      {
+        input: {
+          action: 'delete_annotation' as const,
+          annotation_id: '',
+        },
+        error: 'Action must have non-empty annotation_id field',
+      },
+    ])('throws error for invalid input', ({ input, error }) => {
+      expect.assertions(1);
+      try {
+        new DeleteAnnotationActionSanitizer(input).validate();
+      } catch (err) {
+        expect(err.message).toContain(error);
+      }
+    });
+  });
+
+  describe('for add_annotation action', () => {
+    it.each([
+      {
+        input: {
+          item_id: '12345',
+          annotation: {
+            annotation_id: 'abc123',
+            patch: 'patch',
+            quote: 'quote',
+            version: 2,
+          },
+          action: 'add_annotation' as const,
+        },
+        expected: {
+          annotation: {
+            id: 'abc123',
+            patch: 'patch',
+            quote: 'quote',
+            version: 2,
+          },
+          itemId: 12345,
+          action: 'add_annotation',
+          time: now,
+        },
+      },
+      {
+        input: {
+          url: 'http://test.com',
+          annotation: {
+            annotation_id: 'abc123',
+            patch: 'patch',
+            quote: 'quote',
+            version: 2,
+          },
+          action: 'add_annotation' as const,
+        },
+        expected: {
+          url: 'http://test.com',
+          annotation: {
+            id: 'abc123',
+            patch: 'patch',
+            quote: 'quote',
+            version: 2,
+          },
+          action: 'add_annotation',
+          time: now,
+        },
+      },
+      // Optional time field
+      {
+        input: {
+          item_id: '12345',
+          annotation: {
+            annotation_id: 'abc123',
+            patch: 'patch',
+            quote: 'quote',
+            version: 2,
+          },
+          action: 'add_annotation' as const,
+          time: '192392329',
+        },
+        expected: {
+          itemId: 12345,
+          annotation: {
+            id: 'abc123',
+            patch: 'patch',
+            quote: 'quote',
+            version: 2,
+          },
+          action: 'add_annotation' as const,
+          time: 192392329,
+        },
+      },
+      // Ignores additional input
+      {
+        input: {
+          random: 'hey',
+          item_id: '12345',
+          annotation: {
+            annotation_id: 'abc123',
+            patch: 'patch',
+            quote: 'quote',
+            version: 2,
+          },
+          action: 'add_annotation' as const,
+        },
+        expected: {
+          annotation: {
+            id: 'abc123',
+            patch: 'patch',
+            quote: 'quote',
+            version: 2,
+          },
+          itemId: 12345,
+          action: 'add_annotation',
+          time: now,
+        },
+      },
+    ])('sanitizes valid input', ({ input, expected }) => {
+      const res = new AddAnnotationActionSanitizer(input).validate();
+      expect(res).toEqual(expected);
+    });
+    it.each([
+      {
+        input: {
+          action: 'add_annotation' as const,
+          annotation: {
+            annotation_id: '123',
+            quote: 'quote',
+            patch: 'patch',
+            version: 3,
+          },
+        },
+        error: `Field 'annotation.version' must be 2`,
+      },
+      {
+        input: {
+          action: 'add_annotation' as const,
+          annotation: {
+            annotation_id: '123',
+            version: 2,
+          },
+        },
+        error: `Field 'annotation' must be an object with the following fields`,
+      },
+      {
+        input: {
+          action: 'add_annotation' as const,
+          annotation: { quote: 'test', patch: 'test', version: 2 },
+        },
+        error: `Field 'annotation' must be an object with the following fields`,
+      },
+      {
+        input: {
+          action: 'add_annotation' as const,
+          annotation: {
+            quote: '',
+            patch: 'test',
+            version: 2,
+            annotation_id: 'abc132',
+          },
+        },
+        error: `Field 'annotation' must be an object with the following fields`,
+      },
+      {
+        input: {
+          action: 'add_annotation' as const,
+          annotation: {
+            quote: 'quote',
+            patch: '',
+            version: 2,
+            annotation_id: 'abc132',
+          },
+        },
+        error: `Field 'annotation' must be an object with the following fields`,
+      },
+    ])('throws error for invalid input', ({ input, error }) => {
+      expect.assertions(1);
+      try {
+        new AddAnnotationActionSanitizer(input).validate();
       } catch (err) {
         expect(err.message).toContain(error);
       }

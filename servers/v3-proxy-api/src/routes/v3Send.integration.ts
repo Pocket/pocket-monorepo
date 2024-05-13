@@ -344,7 +344,99 @@ describe('v3/send', () => {
           },
         );
       });
-      describe('single-item tag actions', () => {
+      describe('actions which affect a single item (but not its direct properties)', () => {
+        describe('add_annotation', () => {
+          const annotation = {
+            annotation_id: '79fb7c74-1c1c-429d-b4f9-1381b5c9b72f',
+            patch:
+              '@@ -997,16 +997,36 @@\n n fact, \n+%3Cpkt_tag_annotation%3E\n Kraft Si\n@@ -1130,16 +1130,37 @@\n e food,%E2%80%9D\n+%3C/pkt_tag_annotation%3E\n  due to \n',
+            quote:
+              'Kraft Singles, the standard for American cheese, cannot legally be called American cheese, or even “cheese food,”',
+            version: 2,
+          };
+          const expectedAnnotation = {
+            id: annotation.annotation_id,
+            patch: annotation.patch,
+            quote: annotation.quote,
+            version: annotation.version,
+          };
+          it.each([
+            {
+              input: {
+                action: 'add_annotation',
+                annotation,
+                time: 1711044762,
+                url: 'https://www.eater.com/23734992/new-school-cheese-artisanal-american-cheese',
+              },
+              mutationName: 'AddAnnotationByUrl',
+              expectedCall: {
+                input: {
+                  ...expectedAnnotation,
+                  url: 'https://www.eater.com/23734992/new-school-cheese-artisanal-american-cheese',
+                },
+              },
+            },
+            {
+              input: {
+                action: 'add_annotation',
+                annotation,
+                time: 1711044762,
+                item_id: '12345',
+              },
+              mutationName: 'AddAnnotationByItemId',
+              expectedCall: {
+                input: [{ ...expectedAnnotation, itemId: '12345' }],
+              },
+            },
+          ])(
+            'adds an annotation',
+            async ({ input, mutationName, expectedCall }) => {
+              const res = await request(app)
+                .post('/v3/send')
+                .send({
+                  consumer_key: 'test',
+                  access_token: 'test',
+                  actions: [input],
+                });
+              expect(clientSpy).toHaveBeenCalledTimes(1);
+              expect(
+                clientSpy.mock.calls[0][0].definitions[0].name.value,
+              ).toEqual(mutationName);
+              expect(clientSpy.mock.calls[0][1]).toEqual(expectedCall);
+              expect(res.body).toEqual({
+                status: 1,
+                action_results: [true],
+                action_errors: [null],
+              });
+            },
+          );
+        });
+        describe('delete_annotation', () => {
+          it('deletes an annotation', async () => {
+            const input = {
+              action: 'delete_annotation',
+              time: 1711044762,
+              annotation_id: 'abc-123-def',
+            };
+            const res = await request(app)
+              .post('/v3/send')
+              .send({
+                consumer_key: 'test',
+                access_token: 'test',
+                actions: [input],
+              });
+            expect(clientSpy).toHaveBeenCalledTimes(1);
+            expect(
+              clientSpy.mock.calls[0][0].definitions[0].name.value,
+            ).toEqual('DeleteAnnotation');
+            expect(clientSpy.mock.calls[0][1]).toEqual({ id: 'abc-123-def' });
+            expect(res.body).toEqual({
+              status: 1,
+              action_results: [true],
+              action_errors: [null],
+            });
+          });
+        });
         describe('tags_replace', () => {
           it.each([
             {

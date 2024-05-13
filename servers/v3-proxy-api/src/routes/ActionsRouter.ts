@@ -1,6 +1,8 @@
 import { ClientError, GraphQLClient } from 'graphql-request';
 import { getClient } from '../graph/graphQLClient';
 import {
+  AddAnnotationAction,
+  DeleteAnnotationAction,
   ItemAction,
   ItemAddAction,
   ItemTagAction,
@@ -14,6 +16,12 @@ import { AddResponse, PendingAddResponse } from '../graph/types';
 import { processV3Add } from './v3Add';
 import * as Sentry from '@sentry/node';
 import {
+  AddAnnotationByItemIdDocument,
+  AddAnnotationByItemIdMutation,
+  AddAnnotationByItemIdMutationVariables,
+  AddAnnotationByUrlDocument,
+  AddAnnotationByUrlMutation,
+  AddAnnotationByUrlMutationVariables,
   AddTagsByIdDocument,
   AddTagsByIdMutation,
   AddTagsByIdMutationVariables,
@@ -29,6 +37,9 @@ import {
   ClearTagsDocument,
   ClearTagsMutation,
   ClearTagsMutationVariables,
+  DeleteAnnotationDocument,
+  DeleteAnnotationMutation,
+  DeleteAnnotationMutationVariables,
   DeleteSavedItemByIdDocument,
   DeleteSavedItemByIdMutation,
   DeleteSavedItemByIdMutationVariables,
@@ -530,6 +541,55 @@ export class ActionsRouter {
       SaveSearchDocument,
       variables,
     );
+    return true;
+  }
+  /**
+   * Process the 'add_annotation' action from a batch of actions sent to /v3/send.
+   * The actions should be validated and sanitized before this is invoked.
+   *
+   * See `ActionsRouter.archive` for more detailed docstring (same pattern).
+   * @returns true (operation is successful unless error is thrown)
+   * @throws ClientError if operation fails
+   */
+  private async add_annotation(input: AddAnnotationAction) {
+    if (input.itemId) {
+      const variables: AddAnnotationByItemIdMutationVariables = {
+        input: [{ itemId: input.itemId.toString(), ...input.annotation }],
+      };
+      await this.client.request<
+        AddAnnotationByItemIdMutation,
+        AddAnnotationByItemIdMutationVariables
+      >(AddAnnotationByItemIdDocument, variables);
+      // If we make it this far, the client did not throw
+      // We don't actually need the result otherwise for
+      // these /v3 operations
+      return true;
+    }
+    const variables: AddAnnotationByUrlMutationVariables = {
+      input: { url: input.url, ...input.annotation },
+    };
+    await this.client.request<
+      AddAnnotationByUrlMutation,
+      AddAnnotationByUrlMutationVariables
+    >(AddAnnotationByUrlDocument, variables);
+    return true;
+  }
+  /**
+   * Process the 'delete_annotation' action from a batch of actions sent to /v3/send.
+   * The actions should be validated and sanitized before this is invoked.
+   *
+   * See `ActionsRouter.archive` for more detailed docstring (same pattern).
+   * @returns true (operation is successful unless error is thrown)
+   * @throws ClientError if operation fails
+   */
+  private async delete_annotation(input: DeleteAnnotationAction) {
+    const variables: DeleteAnnotationMutationVariables = {
+      id: input.id,
+    };
+    await this.client.request<
+      DeleteAnnotationMutation,
+      DeleteAnnotationMutationVariables
+    >(DeleteAnnotationDocument, variables);
     return true;
   }
   private invalidAction(input: UnimplementedAction) {

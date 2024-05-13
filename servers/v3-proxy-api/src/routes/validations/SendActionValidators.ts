@@ -46,6 +46,27 @@ export type SaveSearchAction = {
   time: number;
 };
 
+type Annotation = {
+  id?: string;
+  quote: string;
+  patch: string;
+  version: number;
+};
+
+export type AddAnnotationAction = {
+  action: AddAnnotationActionName;
+  annotation: Annotation;
+  itemId?: number;
+  url?: string;
+  time: number;
+};
+
+export type DeleteAnnotationAction = {
+  action: DeleteAnnotationActionName;
+  id: string;
+  time: number;
+};
+
 export type UnimplementedAction = {
   action: string;
 };
@@ -56,6 +77,9 @@ export type SendAction =
   | ItemTagAction
   | TagDeleteAction
   | TagRenameAction
+  | SaveSearchAction
+  | AddAnnotationAction
+  | DeleteAnnotationAction
   | UnimplementedAction;
 
 type ItemActionNames =
@@ -71,6 +95,8 @@ type TagRenameActionName = 'tag_rename';
 type TagDeleteActionName = 'tag_delete';
 type ItemTagActionNames = 'tags_add' | 'tags_remove' | 'tags_replace';
 type SaveSearchActionName = 'recent_search';
+type AddAnnotationActionName = 'add_annotation';
+type DeleteAnnotationActionName = 'delete_annotation';
 type ActionNames =
   | ItemActionNames
   | AddActionName
@@ -78,10 +104,12 @@ type ActionNames =
   | TagDeleteActionName
   | ItemTagActionNames
   | SaveSearchActionName
+  | AddAnnotationActionName
+  | DeleteAnnotationActionName
   | string;
 
 export type MaybeAction = {
-  [key: string]: string | string[];
+  [key: string]: any;
   item_id?: string;
   tags?: string | string[];
   url?: string;
@@ -92,6 +120,8 @@ export type MaybeAction = {
   title?: string;
   action: ActionNames;
   search?: string;
+  annotation?: any;
+  annotation_id?: string;
 };
 
 type Constructor<T> = new (...args: any[]) => T;
@@ -104,6 +134,8 @@ type TagRenameProps = Constructor<TagRenameAction>;
 type TagDeleteProps = Constructor<TagDeleteAction>;
 type ItemAddProps = Constructor<ItemAddAction>;
 type SaveSearchProps = Constructor<SaveSearchAction>;
+type AddAnnotationProps = Constructor<AddAnnotationAction>;
+type DeleteAnnotationProps = Constructor<DeleteAnnotationAction>;
 
 /**
  * Class mixin for input validation. Use to construct a Validation/Sanitizer
@@ -491,6 +523,90 @@ function validTagsOrError(tags: string[]): void {
 }
 
 /**
+ * Class mixin for input validation. Use to construct a Validation/Sanitizer
+ * class which has the rule: there is a valid 'annotaiton' input.
+ *
+ * Must be called with a Class that implements or extends the
+ * ActionSanitizable type (constructor with a single argument, `input`,
+ * which contains an object minimally with a valid key-value pair for 'action').
+ *
+ * Can be chained with other mixins to add additional validation rules.
+ * Should be used with a "Sanitize" class to return sanitized
+ * data which conforms to the expected action schema. See `HasItemIdOrUrl`
+ * for example usage.
+ */
+function HasAnnotation<TBase extends ActionSanitizable>(Base: TBase) {
+  return class HasAnnotation extends Base {
+    readonly annotation: Annotation;
+    constructor(...args: any[]) {
+      super(...args);
+      const isVersionValid =
+        'annotation' in this.input &&
+        this.input.annotation?.version &&
+        parseInt(this.input.annotation.version) === 2;
+      if (!isVersionValid) {
+        const error: ArrayFieldError = {
+          type: 'array_field',
+          path: 'title',
+          msg: `Field 'annotation.version' must be 2`,
+          value: this.input.annotation?.version,
+        };
+        throw new InputValidationError(error);
+      }
+      const isValid =
+        'annotation' in this.input &&
+        this.input.annotation != null &&
+        this.input.annotation.annotation_id?.length &&
+        this.input.annotation.patch?.length &&
+        this.input.annotation.quote?.length &&
+        isVersionValid;
+      if (!isValid) {
+        const error: ArrayFieldError = {
+          type: 'array_field',
+          path: 'title',
+          msg:
+            `Field 'annotation' must be an object with the following fields:` +
+            `'annotation_id' (string), 'patch' (string), 'quote' (string), 'version' (number)`,
+          value: JSON.stringify(this.input.annotation),
+        };
+        throw new InputValidationError(error);
+      }
+      this.annotation = {
+        id: this.input.annotation.annotation_id,
+        patch: this.input.annotation.patch,
+        quote: this.input.annotation.quote,
+        version: parseInt(this.input.annotation.version),
+      };
+    }
+  };
+}
+
+/**
+ * Class mixin for input validation. Use to construct a Validation/Sanitizer
+ * class which has the rule: there must be a valid `tag` field
+ * in the input passed to the constructor. It must be a non-empty string.
+ *
+ * Must be called with a Class that implements or extends the
+ * ActionSanitizable type (constructor with a single argument, `input`,
+ * which contains an object minimally with a valid key-value pair for 'action').
+ *
+ * Can be chained with other mixins to add additional validation rules.
+ * Should be used with a "Sanitize" class to return sanitized
+ * data which conforms to the expected action schema. See `HasItemIdOrUrl`
+ * for example usage.
+ */
+function HasAnnotationId<TBase extends ActionSanitizable>(Base: TBase) {
+  return class HasAnnotationId extends Base {
+    readonly id: string;
+    constructor(...args: any[]) {
+      super(...args);
+      nonEmptyStringPropOrError(this.input, 'annotation_id');
+      this.id = this.input.annotation_id;
+    }
+  };
+}
+
+/**
  * Base class for building validators. Takes as input to the
  * constructor an object which contains an 'action' key with
  * a valid action, and potentially other key-value string pairs.
@@ -503,7 +619,7 @@ class NamedAction<Action extends ActionNames> {
   readonly action: Action;
   constructor(
     public readonly input: {
-      [key: string]: string | string[];
+      [key: string]: any;
       action: Action;
     },
   ) {
@@ -649,6 +765,40 @@ function SanitizedSearch<TBase extends SaveSearchProps>(Base: TBase) {
   };
 }
 
+function SanitizedAddAnnotation<TBase extends AddAnnotationProps>(Base: TBase) {
+  return class extends Base {
+    constructor(...args: any[]) {
+      super(...args);
+    }
+    public validate(): AddAnnotationAction {
+      return {
+        action: this.action,
+        time: this.time,
+        annotation: this.annotation,
+        ...(this.url && { url: this.url }),
+        ...(this.itemId != null && { itemId: this.itemId }),
+      };
+    }
+  };
+}
+
+function SanitizedDeleteAnnotation<TBase extends DeleteAnnotationProps>(
+  Base: TBase,
+) {
+  return class extends Base {
+    constructor(...args: any[]) {
+      super(...args);
+    }
+    public validate(): DeleteAnnotationAction {
+      return {
+        action: this.action,
+        time: this.time,
+        id: this.id,
+      };
+    }
+  };
+}
+
 /**
  * Sanitizer for actions: 'favorite', 'add', 'readd', 'unfavorite', 'delete', 'archive'.
  * The input must have a valid item_id or url, the action name, and might have
@@ -701,6 +851,16 @@ export const ItemAddActionSanitizer = SanitizedAddItem(
   HasItemIdOrUrl(
     HasTimeOrDefault(MaybeHasTags(MaybeHasTitle(NamedAction<'add'>))),
   ),
+);
+
+export const AddAnnotationActionSanitizer = SanitizedAddAnnotation(
+  HasItemIdOrUrl(
+    HasTimeOrDefault(HasAnnotation(NamedAction<'add_annotation'>)),
+  ),
+);
+
+export const DeleteAnnotationActionSanitizer = SanitizedDeleteAnnotation(
+  HasAnnotationId(HasTimeOrDefault(NamedAction<'delete_annotation'>)),
 );
 
 export const SaveSearchActionSanitizer = SanitizedSearch(
@@ -769,6 +929,16 @@ export function ActionSanitizer(input: MaybeAction): SendAction {
       }).validate();
     case 'recent_search':
       return new SaveSearchActionSanitizer({
+        ...input,
+        action: input.action,
+      }).validate();
+    case 'add_annotation':
+      return new AddAnnotationActionSanitizer({
+        ...input,
+        action: input.action,
+      }).validate();
+    case 'delete_annotation':
+      return new DeleteAnnotationActionSanitizer({
         ...input,
         action: input.action,
       }).validate();
