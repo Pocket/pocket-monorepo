@@ -50,7 +50,7 @@ export class ParserAPI extends RESTDataSource {
           numOfAttempts: config.parser.retries,
         },
       );
-    super({ fetch: backoffFetch });
+    super({ fetch: fetch });
   }
 
   /**

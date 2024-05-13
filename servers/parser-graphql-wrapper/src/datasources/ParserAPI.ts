@@ -21,6 +21,10 @@ import { ParserResponse } from './ParserAPITypes';
 import { backOff } from 'exponential-backoff';
 import { createReaderSlug } from '../readerView/idUtils';
 
+// We need to import fetch from undici-types, because the use of the `dom` library in marticle files
+// conflicts with the native node fetch types. And you can't just include `dom` for certain files..
+import { fetch } from 'undici-types';
+
 export enum MediaTypeParam {
   AS_COMMENTS = '0',
   NO_POSITION = '1',
