@@ -171,7 +171,7 @@ commands:
             - run:
                 name: "Preprocess SCOPE"
                 command: |
-                  echo "export SAFE_SCOPE=$(echo << parameters.scope >> | tr '-' '')"
+                  echo "export SAFE_SCOPE=$(echo << parameters.scope >> | tr '-' 'S')"
                 shell: /bin/bash -eo pipefail
             - restore_cache:
                 name: Restore pnpm Package Cache
