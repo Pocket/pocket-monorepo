@@ -24,7 +24,7 @@
     "migrate:dev": "npm run export-env && prisma migrate dev",
     "migrate:reset": "prisma migrate reset",
     "prebuild": "dotenv -e .env.ci -- prisma generate",
-    "pretest": "dotenv -e .env.ci -- prisma migrate reset --skip-seed --force",
+    "pretest-integrations": "dotenv -e .env.ci -- prisma migrate reset --skip-seed --force",
     "start": "npm run migrate:deploy && node dist/main.js",
     "test": "jest \"\\.spec\\.ts\"",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",

@@ -35,7 +35,7 @@
       "cache": true
     },
     "test-integrations": {
-      "dependsOn": ["^build", "prebuild", "pretest"],
+      "dependsOn": ["^build", "prebuild", "pretest-integrations"],
       "cache": false
     },
     "dev": {
@@ -61,7 +61,7 @@
       ],
       "cache": true
     },
-    "pretest": {
+    "pretest-integrations": {
       "cache": false
     }
   }
