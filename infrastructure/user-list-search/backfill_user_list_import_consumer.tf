@@ -12,8 +12,8 @@ resource "aws_lambda_function" "user_list_import_backfill_sqs_processor" {
   # depends_on       = [aws_cloudwatch_log_group.item_update_sqs_processor]
   timeout = 900
   environment {
-    variables = merge(local.lambda_env, {      
-      BACKFILL     = "true"
+    variables = merge(local.lambda_env, {
+      BACKFILL = "true"
     })
   }
   tags    = local.tags

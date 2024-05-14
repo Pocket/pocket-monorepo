@@ -5,9 +5,9 @@ if (!awsEnvironments.includes(process.env.NODE_ENV)) {
 }
 
 export const config = {
+  serviceName: 'user-list-search',
   tracing: {
     host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
-    serviceName: 'user-list-search',
   },
   app: {
     environment: process.env.NODE_ENV || 'development',
@@ -64,5 +64,18 @@ export const config = {
   pagination: {
     defaultPageSize: 30,
     maxPageSize: 100,
+  },
+  unleash: {
+    clientKey: process.env.UNLEASH_KEY || 'unleash-key-fake',
+    endpoint: process.env.UNLEASH_ENDPOINT || 'http://localhost:4242/api',
+    refreshInterval: 60 * 1000, // ms
+    timeout: 2 * 1000, // ms
+    namePrefix: 'temp.backend',
+    flags: {
+      corpusExplore: {
+        name: 'temp.backend.explore_the_corpus',
+        fallback: false,
+      },
+    },
   },
 };

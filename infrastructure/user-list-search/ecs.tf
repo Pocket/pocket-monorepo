@@ -17,6 +17,14 @@ locals {
     {
       name      = "SENTRY_DSN"
       valueFrom = "${local.ssm_path}SENTRY_DSN"
+    },
+    {
+      name      = "UNLEASH_ENDPOINT"
+      valueFrom = "${local.ssm_path}UNLEASH_ENDPOINT"
+    },
+    {
+      name      = "UNLEASH_KEY"
+      valueFrom = "${local.secret_path}UNLEASH_KEY"
     }
   ]
 }

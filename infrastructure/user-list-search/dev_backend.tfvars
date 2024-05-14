@@ -8,5 +8,5 @@ terraform {
 }
 
 locals {
-    old_workspace = "UserListSearch-Dev"
+  old_workspace = "UserListSearch-Dev"
 }
