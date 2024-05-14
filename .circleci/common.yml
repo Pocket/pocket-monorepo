@@ -881,7 +881,7 @@ jobs:
             - run:
                 name: build schema
                 command: |
-                  << parameters.build_command >>
+                  corepack << parameters.build_command >>
       - run:
           name: check service
           command: |
