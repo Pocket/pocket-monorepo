@@ -40,17 +40,34 @@ do
   sleep 3
 done
 
+corpus_langs=(
+  en
+  de
+  es
+  fr
+  it
+)
 # if we have a healthy cluster, create the index
 if [ $health == "green" ]
 then
-  curl -vX PUT "http://localhost:4566/user-list-search/list" --header "Content-Type: application/json" -d @"$(dirname ${BASH_SOURCE[0]})/elasticsearch/esindex.json"
-
-  echo "elasticsearch index created!"
-  sleep 
+  curl -vX PUT "http://localhost:4566/user-list-search/list" --header "Content-Type: application/json" -d @"$(dirname ${BASH_SOURCE[0]})/elasticsearch/esindex_list.json"
+  echo "elasticsearch list index created!"
+  sleep 1
 
   curl -vX PUT "http://localhost:4566/user-list-search/list/_settings" -H "Content-Type: application/json" -d @"$(dirname ${BASH_SOURCE[0]})/elasticsearch/slow-query-log-thresholds.json"
+  echo "elasticsearch slow log thresholds set for list index!"
+  sleep 1
 
-  echo "elasticsearch slow log thresholds set!"
+  for lang in "${corpus_langs[@]}"; do
+    curl -vX PUT "http://localhost:4566/user-list-search/corpus_${lang}" --header "Content-Type: application/json" -d @"$(dirname ${BASH_SOURCE[0]})/elasticsearch/esindex_corpus_${lang}.json"
+    echo "elasticsearch corpus (${lang}) index created!"
+    sleep 1
+
+    curl -vX PUT "http://localhost:4566/user-list-search/corpus_${lang}/_settings" --header "Content-Type: application/json" -d @"$(dirname ${BASH_SOURCE[0]})/elasticsearch/slow-query-log-thresholds.json"
+    echo "elasticsearch slow log thresholds set for corpus (${lang}) index!"
+    sleep 1
+  done
+
 else
   echo "no healthy cluster found after 60 seconds. index not created. :("
 fi

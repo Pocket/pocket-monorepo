@@ -32,13 +32,25 @@ export const config = {
         process.env.ELASTICSEARCH_HOST ||
         'http://localhost:4566/user-list-search',
       apiVersion: '7.1',
-      index: process.env.ELASTICSEARCH_INDEX || 'list',
-      type: process.env.ELASTICSEARCH_TYPE || '_doc',
-      defaultQueryScore: process.env.ELASTICSEARCH_DEFAULT_QUERY_SCORE || 1,
-      maxRetries: 3,
-      deleteConfig: {
-        slices: 100,
+      list: {
+        index: process.env.ELASTICSEARCH_INDEX || 'list',
+        type: process.env.ELASTICSEARCH_TYPE || '_doc',
+        defaultQueryScore: process.env.ELASTICSEARCH_DEFAULT_QUERY_SCORE || 1,
+        deleteConfig: {
+          slices: 100,
+        },
       },
+      corpus: {
+        index: {
+          // language-specific corpus indices
+          en: process.env.CORPUS_INDEX_EN || 'corpus_en',
+          es: process.env.CORPUS_INDEX_ES || 'corpus_es',
+          de: process.env.CORPUS_INDEX_DE || 'corpus_de',
+          fr: process.env.CORPUS_INDEX_FR || 'corpus_fr',
+          it: process.env.CORPUS_INDEX_IT || 'corpus_it',
+        },
+      },
+      maxRetries: 3,
     },
     sqs: {
       waitTimeSeconds: 20,

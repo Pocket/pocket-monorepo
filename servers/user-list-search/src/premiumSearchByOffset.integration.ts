@@ -122,8 +122,8 @@ describe('premium search functional test (offset pagination)', () => {
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
     await testEsClient.deleteByQuery({
-      index: config.aws.elasticsearch.index,
-      type: config.aws.elasticsearch.type,
+      index: config.aws.elasticsearch.list.index,
+      type: config.aws.elasticsearch.list.type,
       body: {
         query: {
           match_all: {},
@@ -133,7 +133,7 @@ describe('premium search functional test (offset pagination)', () => {
 
     // Wait for delete to finish
     await testEsClient.indices.refresh({
-      index: config.aws.elasticsearch.index,
+      index: config.aws.elasticsearch.list.index,
     });
 
     await db('readitla_ril-tmp.list').truncate();
@@ -227,7 +227,7 @@ describe('premium search functional test (offset pagination)', () => {
     await Promise.all(items);
     // Takes a hot sec for the data to be available, otherwise test flakes
     await testEsClient.indices.refresh({
-      index: config.aws.elasticsearch.index,
+      index: config.aws.elasticsearch.list.index,
     });
   });
 

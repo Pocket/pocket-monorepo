@@ -20,8 +20,8 @@ const defaultDocProps = {
 describe('Elasticsearch Bulk', () => {
   beforeAll(async () => {
     await client.deleteByQuery({
-      index: config.aws.elasticsearch.index,
-      type: config.aws.elasticsearch.type,
+      index: config.aws.elasticsearch.list.index,
+      type: config.aws.elasticsearch.list.type,
       body: {
         query: {
           match_all: {},
@@ -30,7 +30,9 @@ describe('Elasticsearch Bulk', () => {
     });
 
     // Wait for delete to finish
-    await client.indices.refresh({ index: config.aws.elasticsearch.index });
+    await client.indices.refresh({
+      index: config.aws.elasticsearch.list.index,
+    });
 
     await bulkDocument([
       {
@@ -45,7 +47,9 @@ describe('Elasticsearch Bulk', () => {
       },
     ]);
     // Wait for index to finish
-    await client.indices.refresh({ index: config.aws.elasticsearch.index });
+    await client.indices.refresh({
+      index: config.aws.elasticsearch.list.index,
+    });
   });
 
   it('can bulk index a document', async () => {

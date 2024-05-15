@@ -14,6 +14,11 @@ locals {
   container_name       = "node"
   container_credential = "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:Shared/DockerHub"
   elastic_index        = "list"
+  corpus_index_en      = "corpus_en"
+  corpus_index_fr      = "corpus_fr"
+  corpus_index_es      = "corpus_es"
+  corpus_index_it      = "corpus_it"
+  corpus_index_de      = "corpus_de"
   elastic = {
     endpoint    = local.workspace.es_cluster_enable ? aws_elasticsearch_domain.user_search[0].endpoint : null
     domain_name = local.workspace.es_cluster_enable ? aws_elasticsearch_domain.user_search[0].domain_name : null

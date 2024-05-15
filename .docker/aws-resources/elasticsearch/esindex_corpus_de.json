@@ -1,0 +1,69 @@
+{
+  "settings": {
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 1
+    }
+  },
+  "mappings": {
+    "_source": {
+      "enabled": true
+    },
+    "properties": {
+      "id": {
+        "type": "keyword"
+      },
+      "title": {
+        "type": "text",
+        "analyzer": "german"
+      },
+      "url": {
+        "type": "text"
+      },
+      "excerpt": {
+        "type": "text",
+        "analyzer": "german"
+      },
+      "is_syndicated": {
+        "type": "boolean"
+      },
+      "language": {
+        "type": "keyword"
+      },
+      "publisher": {
+        "type": "text",
+        "analyzer": "simple"
+      },
+      "topic": {
+        "type": "keyword"
+      },
+      "authors": {
+        "type": "text",
+        "analyzer": "simple"
+      },
+      "created_at": {
+        "type": "date",
+        "format": "strict_date_optional_time||epoch_second"
+      },
+      "published_at": {
+        "type": "date",
+        "format": "strict_date_optional_time||epoch_second"
+      },
+      "is_collection": {
+        "type": "boolean"
+      },
+      "collection_labels": {
+        "type": "keyword"
+      },
+      "curation_category": {
+        "type": "keyword"
+      },
+      "iab_parent": {
+        "type": "keyword"
+      },
+      "iab_child": {
+        "type": "keyword"
+      }
+    }
+  }
+}
