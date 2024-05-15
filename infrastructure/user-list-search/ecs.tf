@@ -20,7 +20,7 @@ locals {
     },
     {
       name      = "UNLEASH_ENDPOINT"
-      valueFrom = "${local.ssm_path}UNLEASH_ENDPOINT"
+      valueFrom = "${local.ssm_path_shared}UNLEASH_ENDPOINT"
     },
     {
       name      = "UNLEASH_KEY"
