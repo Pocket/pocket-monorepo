@@ -21,6 +21,7 @@ locals {
   private_subnet_ids = split(",", data.aws_ssm_parameter.private_subnets.value)
   secret_path        = "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${local.name}/${local.env}/"
   ssm_path           = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${local.name}/${local.env}/"
+  ssm_path_shared    = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/Shared/${local.env}/"
 
   lambda_env = {
     NODE_ENV                  = local.workspace.nodeEnv
