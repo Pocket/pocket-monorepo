@@ -69,7 +69,11 @@ export class HighlightsModel {
   }
   async delete(id: string): Promise<string> {
     const highlightId = await this.highlightService.delete(id);
-    await this.noteService.delete(id);
+    try {
+      await this.noteService.delete(id);
+    } catch {
+      // This is ok to fail since a highlight can exist without a note
+    }
     return highlightId;
   }
   async addNote(id: string, note: string): Promise<HighlightNote> {

@@ -130,6 +130,8 @@ export class ActionsRouter {
       } catch (err) {
         const defaultMessage = 'Something Went Wrong';
         if (err instanceof ClientError) {
+          const defaultError = customErrorHeaders('INTENAL_SERVER_ERROR');
+
           // Log bad inputs because that indicates a bug in the proxy code
           // Anything else should be captured by the router/subgraphs
           if (err.response.status === 400) {
@@ -142,8 +144,12 @@ export class ActionsRouter {
           );
           const errorResult = {
             message: primaryError.message ?? defaultMessage,
-            type: primaryErrorData['X-Error'],
-            code: primaryErrorData['X-Error-Code'],
+            type: primaryErrorData
+              ? primaryErrorData['X-Error']
+              : defaultError['X-Error'],
+            code: primaryErrorData
+              ? primaryErrorData['X-Error-Code']
+              : defaultError['X-Error-Code'],
           } as SendActionError;
           result['action_errors'][i] = errorResult;
         } else if (err instanceof InvalidActionError) {
