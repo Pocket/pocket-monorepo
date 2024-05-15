@@ -19,7 +19,7 @@ import {
   UserSearchSavedItemsByOffsetArgs,
 } from '../../__generated__/types';
 
-const { index, type, defaultQueryScore } = config.aws.elasticsearch;
+const { index, type, defaultQueryScore } = config.aws.elasticsearch.list;
 
 export const ElasticSearchFilterStatus = {
   ARCHIVED: 'ARCHIVED',

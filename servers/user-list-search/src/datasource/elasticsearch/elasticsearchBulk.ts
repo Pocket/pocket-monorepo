@@ -8,8 +8,8 @@ import { client } from './index';
 import { config } from '../../config';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
-const index = config.aws.elasticsearch.index;
-const type = config.aws.elasticsearch.type;
+const index = config.aws.elasticsearch.list.index;
+const type = config.aws.elasticsearch.list.type;
 
 type BulkDeleteEntry = {
   delete: {

@@ -29,8 +29,8 @@ describe('itemUpdate', () => {
 
   beforeAll(async () => {
     await esClient.deleteByQuery({
-      index: config.aws.elasticsearch.index,
-      type: config.aws.elasticsearch.type,
+      index: config.aws.elasticsearch.list.index,
+      type: config.aws.elasticsearch.list.type,
       body: {
         query: {
           match_all: {},
@@ -38,7 +38,9 @@ describe('itemUpdate', () => {
       },
     });
     // Wait for delete to finish
-    await esClient.indices.refresh({ index: config.aws.elasticsearch.index });
+    await esClient.indices.refresh({
+      index: config.aws.elasticsearch.list.index,
+    });
 
     ({ app, server } = await startServer(0));
   });
@@ -71,7 +73,9 @@ describe('itemUpdate', () => {
     }
 
     // Wait for background indexing to finish
-    await esClient.indices.refresh({ index: config.aws.elasticsearch.index });
+    await esClient.indices.refresh({
+      index: config.aws.elasticsearch.list.index,
+    });
 
     //Ensure each document we just passed along was indexed for user 1
     for (let i = 1; i <= 5; i++) {
@@ -118,7 +122,9 @@ describe('itemUpdate', () => {
     }
 
     // Wait for background indexing to finish
-    await esClient.indices.refresh({ index: config.aws.elasticsearch.index });
+    await esClient.indices.refresh({
+      index: config.aws.elasticsearch.list.index,
+    });
 
     //Ensure each document we just passed along was indexed for user 1
     for (let i = 1; i <= 5; i++) {

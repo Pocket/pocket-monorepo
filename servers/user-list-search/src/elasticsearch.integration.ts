@@ -18,8 +18,8 @@ const defaultDocProps = {
 describe('Elasticsearch - Integration', () => {
   beforeEach(async () => {
     await client.deleteByQuery({
-      index: config.aws.elasticsearch.index,
-      type: config.aws.elasticsearch.type,
+      index: config.aws.elasticsearch.list.index,
+      type: config.aws.elasticsearch.list.type,
       body: {
         query: {
           match_all: {},
@@ -28,7 +28,9 @@ describe('Elasticsearch - Integration', () => {
     });
 
     // Wait for delete to finish
-    await client.indices.refresh({ index: config.aws.elasticsearch.index });
+    await client.indices.refresh({
+      index: config.aws.elasticsearch.list.index,
+    });
 
     await bulkDocument([
       {
@@ -94,13 +96,15 @@ describe('Elasticsearch - Integration', () => {
     ]);
 
     // Wait for index to finish
-    await client.indices.refresh({ index: config.aws.elasticsearch.index });
+    await client.indices.refresh({
+      index: config.aws.elasticsearch.list.index,
+    });
   });
 
   it('deletes all documents for a given user_id', async () => {
     const search = (userId: string) =>
       client.search({
-        index: config.aws.elasticsearch.index,
+        index: config.aws.elasticsearch.list.index,
         routing: userId,
         body: {
           query: {
@@ -117,7 +121,9 @@ describe('Elasticsearch - Integration', () => {
     await deleteSearchIndexByUserId('1');
 
     // Wait for delete to finish
-    await client.indices.refresh({ index: config.aws.elasticsearch.index });
+    await client.indices.refresh({
+      index: config.aws.elasticsearch.list.index,
+    });
 
     const resUser1 = await search('1');
     const resUser2 = await search('2');

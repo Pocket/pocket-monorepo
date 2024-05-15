@@ -52,6 +52,26 @@ module "apollo" {
       value = local.elastic_index
     },
     {
+      name  = "CORPUS_INDEX_EN"
+      value = local.corpus_index_en
+    },
+    {
+      name  = "CORPUS_INDEX_ES"
+      value = local.corpus_index_es
+    },
+    {
+      name  = "CORPUS_INDEX_IT"
+      value = local.corpus_index_it
+    },
+    {
+      name  = "CORPUS_INDEX_FR"
+      value = local.corpus_index_fr
+    },
+    {
+      name  = "CORPUS_INDEX_DE"
+      value = local.corpus_index_de
+    },
+    {
       name  = "ELASTICSEARCH_DOMAIN"
       value = local.elastic.domain_name
     },

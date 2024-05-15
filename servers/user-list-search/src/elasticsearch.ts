@@ -170,7 +170,8 @@ export async function deleteSearchIndexByUserId(
   userId: string,
   waitForCompletion = false,
 ): Promise<DeleteDocumentByQueryResponse | void> {
-  const { index, maxRetries, deleteConfig } = config.aws.elasticsearch;
+  const { list, maxRetries } = config.aws.elasticsearch;
+  const { index, deleteConfig } = list;
   return client.deleteByQuery({
     index,
     maxRetries,

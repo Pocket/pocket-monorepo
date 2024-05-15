@@ -24,8 +24,8 @@ const defaultDocProps = {
 describe('Elasticsearch Search Query', () => {
   beforeEach(async () => {
     await client.deleteByQuery({
-      index: config.aws.elasticsearch.index,
-      type: config.aws.elasticsearch.type,
+      index: config.aws.elasticsearch.list.index,
+      type: config.aws.elasticsearch.list.type,
       body: {
         query: {
           match_all: {},
@@ -34,7 +34,9 @@ describe('Elasticsearch Search Query', () => {
     });
 
     // Wait for delete to finish
-    await client.indices.refresh({ index: config.aws.elasticsearch.index });
+    await client.indices.refresh({
+      index: config.aws.elasticsearch.list.index,
+    });
 
     await bulkDocument([
       {
@@ -133,7 +135,9 @@ describe('Elasticsearch Search Query', () => {
     ]);
 
     // Wait for index to finish
-    await client.indices.refresh({ index: config.aws.elasticsearch.index });
+    await client.indices.refresh({
+      index: config.aws.elasticsearch.list.index,
+    });
   });
 
   // For now this gives us confidence that basic search is not
