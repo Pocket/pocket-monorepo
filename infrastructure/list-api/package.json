@@ -14,10 +14,10 @@
   },
   "dependencies": {
     "@cdktf/provider-archive": "10.0.1",
-    "@cdktf/provider-aws": "19.15.0",
+    "@cdktf/provider-aws": "19.18.0",
     "@cdktf/provider-local": "10.1.0",
     "@cdktf/provider-null": "10.0.0",
-    "@cdktf/provider-pagerduty": "13.7.4",
+    "@cdktf/provider-pagerduty": "13.8.1",
     "@pocket-tools/terraform-modules": "workspace:*",
     "cdktf": "0.20.7",
     "cdktf-cli": "0.20.7",
