@@ -17,7 +17,7 @@ importers:
     devDependencies:
       '@commitlint/cli':
         specifier: 19.3.0
-        version: 19.3.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240515)
+        version: 19.3.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240516)
       '@commitlint/config-conventional':
         specifier: ^19.2.2
         version: 19.2.2
@@ -26,7 +26,7 @@ importers:
         version: link:packages/eslint-config
       syncpack:
         specifier: ^12.3.2
-        version: 12.3.2(typescript@5.5.0-dev.20240515)
+        version: 12.3.2(typescript@5.5.0-dev.20240516)
       tsconfig:
         specifier: workspace:*
         version: link:packages/tsconfig
@@ -3145,8 +3145,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/eslint-config
       '@snowplow/snowtype':
-        specifier: ^0.2.5
-        version: 0.2.9(commander@12.0.0)(encoding@0.1.13)
+        specifier: ^0.4.0
+        version: 0.4.0(commander@12.0.0)(encoding@0.1.13)
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
@@ -6093,12 +6093,12 @@ packages:
   '@snowplow/node-tracker@3.23.0':
     resolution: {integrity: sha512-ZeSXrsMnUxJJxrgHR2aSze8V6uD7OCF/Han9DxAklcEl3e4HIeYzVFTYgcjAQg9JKHUqPGJBGHhenp3+0Ml0/Q==}
 
-  '@snowplow/snowtype-core@0.2.9':
-    resolution: {integrity: sha512-r7vsfSjxSfhI4cgU++ucCP8gQit94fArxSiFAcJi2BchEDXxhicwMDm1GEAZdFO3aMV/C3Ozi/vDWzGLyTP5Ew==}
+  '@snowplow/snowtype-core@0.4.0':
+    resolution: {integrity: sha512-UwPT1FuvFmKnKgHdbHammj13ZRIkee5w3KFhqFsxk6KWWhIl+pjUqMbCv9C4aoxP+ahS372aFPZov+It/R5aRg==}
     engines: {node: '>=18'}
 
-  '@snowplow/snowtype@0.2.9':
-    resolution: {integrity: sha512-FeD610QU/khc29Mwlg7QxKhpirJGpt/+f72xXAAFbfu1fLr2hz2Tg3VQzxLucWweTV8OL31dbcoGxlF4V44cig==}
+  '@snowplow/snowtype@0.4.0':
+    resolution: {integrity: sha512-qqcUeRZ8qZ/7q7YY35OjlLhd5HD4citJgYmEl+Ni3oZcwjZxEOKLNpQxPyt8LnM0gtdL4RgGjym93Npj4nJH3w==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -12363,8 +12363,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.5.0-dev.20240515:
-    resolution: {integrity: sha512-l2Rtvs3xAcEVgF5wOML5AASB79iMHrw9RGXEMY/oeV11IwP0nxOtB1Q5fLvmdPkbsP0PKeTfvd46sOWRATqAiA==}
+  typescript@5.5.0-dev.20240516:
+    resolution: {integrity: sha512-MNzi4B6WADePeOrxzfVArpyIW0P3ihAqAU4+l2GiBRbz3M+oIUEJCiLE/o5VMLoUAyPu9mCSshsMcsbpPu9wzQ==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -14495,11 +14495,11 @@ snapshots:
     dependencies:
       commander: 12.0.0
 
-  '@commitlint/cli@19.3.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240515)':
+  '@commitlint/cli@19.3.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240516)':
     dependencies:
       '@commitlint/format': 19.3.0
       '@commitlint/lint': 19.2.2
-      '@commitlint/load': 19.2.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240515)
+      '@commitlint/load': 19.2.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240516)
       '@commitlint/read': 19.2.1
       '@commitlint/types': 19.0.3
       execa: 8.0.1
@@ -14546,15 +14546,15 @@ snapshots:
       '@commitlint/rules': 19.0.3
       '@commitlint/types': 19.0.3
 
-  '@commitlint/load@19.2.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240515)':
+  '@commitlint/load@19.2.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240516)':
     dependencies:
       '@commitlint/config-validator': 19.0.3
       '@commitlint/execute-rule': 19.0.0
       '@commitlint/resolve-extends': 19.1.0
       '@commitlint/types': 19.0.3
       chalk: 5.3.0
-      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240515)
-      cosmiconfig-typescript-loader: 5.0.0(@types/node@20.12.11)(cosmiconfig@9.0.0(typescript@5.5.0-dev.20240515))(typescript@5.5.0-dev.20240515)
+      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240516)
+      cosmiconfig-typescript-loader: 5.0.0(@types/node@20.12.11)(cosmiconfig@9.0.0(typescript@5.5.0-dev.20240516))(typescript@5.5.0-dev.20240516)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -16884,7 +16884,7 @@ snapshots:
       got: 11.8.6
       tslib: 2.6.2
 
-  '@snowplow/snowtype-core@0.2.9(encoding@0.1.13)':
+  '@snowplow/snowtype-core@0.4.0(encoding@0.1.13)':
     dependencies:
       handlebars: 4.7.8
       json-pointer: 0.6.2
@@ -16892,11 +16892,11 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@snowplow/snowtype@0.2.9(commander@12.0.0)(encoding@0.1.13)':
+  '@snowplow/snowtype@0.4.0(commander@12.0.0)(encoding@0.1.13)':
     dependencies:
       '@commander-js/extra-typings': 11.1.0(commander@12.0.0)
       '@inquirer/prompts': 3.3.2
-      '@snowplow/snowtype-core': 0.2.9(encoding@0.1.13)
+      '@snowplow/snowtype-core': 0.4.0(encoding@0.1.13)
       chalk: 4.1.2
       cli-spinner: 0.2.10
       dotenv: 16.4.5
@@ -18482,12 +18482,12 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cosmiconfig-typescript-loader@5.0.0(@types/node@20.12.11)(cosmiconfig@9.0.0(typescript@5.5.0-dev.20240515))(typescript@5.5.0-dev.20240515):
+  cosmiconfig-typescript-loader@5.0.0(@types/node@20.12.11)(cosmiconfig@9.0.0(typescript@5.5.0-dev.20240516))(typescript@5.5.0-dev.20240516):
     dependencies:
       '@types/node': 20.12.11
-      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240515)
+      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240516)
       jiti: 1.21.0
-      typescript: 5.5.0-dev.20240515
+      typescript: 5.5.0-dev.20240516
 
   cosmiconfig@8.3.6(typescript@5.4.4):
     dependencies:
@@ -18507,14 +18507,14 @@ snapshots:
     optionalDependencies:
       typescript: 5.4.4
 
-  cosmiconfig@9.0.0(typescript@5.5.0-dev.20240515):
+  cosmiconfig@9.0.0(typescript@5.5.0-dev.20240516):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 5.5.0-dev.20240515
+      typescript: 5.5.0-dev.20240516
 
   cpu-features@0.0.2:
     dependencies:
@@ -18871,7 +18871,7 @@ snapshots:
     dependencies:
       semver: 7.6.2
       shelljs: 0.8.5
-      typescript: 5.5.0-dev.20240515
+      typescript: 5.5.0-dev.20240516
 
   dreamopt@0.8.0:
     dependencies:
@@ -23714,13 +23714,13 @@ snapshots:
       '@pkgr/core': 0.1.1
       tslib: 2.6.2
 
-  syncpack@12.3.2(typescript@5.5.0-dev.20240515):
+  syncpack@12.3.2(typescript@5.5.0-dev.20240516):
     dependencies:
       '@effect/schema': 0.66.5(effect@3.0.3)(fast-check@3.17.2)
       chalk: 5.3.0
       chalk-template: 1.1.0
       commander: 12.0.0
-      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240515)
+      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240516)
       effect: 3.0.3
       enquirer: 2.4.1
       fast-check: 3.17.2
@@ -24114,7 +24114,7 @@ snapshots:
 
   typescript@5.4.4: {}
 
-  typescript@5.5.0-dev.20240515: {}
+  typescript@5.5.0-dev.20240516: {}
 
   ua-parser-js@1.0.37: {}
 
