@@ -41,8 +41,10 @@ locals {
     SQS_USER_ITEMS_DELETE_URL = aws_sqs_queue.user_items_delete.id
   }
   sqsEndpoint = "https://sqs.us-east-1.amazonaws.com"
-  snsTopicName = {
-    userEvents = local.workspace.sns_topic_user_events
+  snsTopicName   = {
+    userEvents   = local.workspace.sns_topic_user_events
+    corpusEvents = local.workspace.sns_topic_corpus_events
+    collectionEvents = local.workspace.sns_topic_collection_events
   }
 
   # environment or workspace-specific local variables go here.
@@ -65,6 +67,8 @@ locals {
       nodeEnv                 = "development"
       root_domain             = "getpocket.dev"
       sns_topic_user_events   = "PocketEventBridge-Dev-UserEventTopic"
+      sns_topic_corpus_events = "PocketEventBridge-Dev-CorpusEvents"
+      sns_topic_collection_events = "PocketEventBridge-Dev-CollectionEvents"
       userApiUri              = "https://user-list-search.getpocket.dev"
     }
 
@@ -79,6 +83,8 @@ locals {
       nodeEnv                 = "production"
       root_domain             = "readitlater.com"
       sns_topic_user_events   = "PocketEventBridge-Prod-UserEventTopic"
+      sns_topic_corpus_events = "PocketEventBridge-Prod-CorpusEvents"
+      sns_topic_collection_events = "PocketEventBridge-Prod-CollectionEvents"
       userApiUri              = "https://user-list-search.readitlater.com"
     }
   }

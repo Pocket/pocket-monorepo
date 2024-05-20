@@ -10,6 +10,7 @@ import { provider as nullProvider } from '@cdktf/provider-null';
 import {
   ApplicationEventBus,
   ApplicationEventBusProps,
+  PocketVPC,
 } from '@pocket-tools/terraform-modules';
 import { UserApiEvents } from './event-rules/user-api-events/userApiEventRules';
 import { ProspectEvents } from './event-rules/prospect-events/prospectEventRules';
@@ -32,6 +33,7 @@ import { UserRegistrationEventSchema } from './events-schema/userRegistrationEve
 import { AllEventsRule } from './event-rules/all-events/allEventRules';
 import { ForgotPassword as ForgotPasswordRequest } from './event-rules/forgot-password-request';
 import { SharesApiEvents } from './event-rules/shares-api-events/pocketShareEventRules';
+import { CorpusEvents } from './event-rules/corpus-events/corpusEventRules';
 
 class PocketEventBus extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -54,6 +56,10 @@ class PocketEventBus extends TerraformStack {
       key: config.name,
       region: 'us-east-1',
     });
+
+    // VPC for accessing non-public resources, e.g. elasticsearch
+    // for the corpus event lambda consumer
+    const vpc = new PocketVPC(this, 'pocket-shared-vpc');
 
     const eventBusProps: ApplicationEventBusProps = {
       name: `${config.prefix}-Shared-Event-Bus`,
@@ -130,6 +136,8 @@ class PocketEventBus extends TerraformStack {
       sharedPocketEventBus,
       pagerDuty,
     );
+    // Corpus Events (uses the default bus, not the shared event bus)
+    new CorpusEvents(this, 'corpus-events', pagerDuty);
 
     //Schema
     new UserEventsSchema(this, 'user-api-events-schema');
