@@ -30,7 +30,10 @@ export const config = {
     service: name,
     environment,
     owner: 'Pocket',
-    costCenter: 'Shared',
+    costCenter: 'Pocket',
+    app_code: 'pocket',
+    component_code: `pocket-${name.toLowerCase()}`,
+    env_code: isDev ? 'dev' : 'prod',
   },
   tracing: {
     host: 'localhost',

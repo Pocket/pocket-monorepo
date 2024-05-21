@@ -3,10 +3,13 @@ locals {
   env    = local.workspace.environment
   prefix = "${local.name}-${local.env}"
   tags = {
-    service     = local.name
-    environment = local.env
-    owner       = "Pocket"
-    costCenter  = "Pocket"
+    service         = local.name
+    environment     = local.env
+    owner           = "Pocket"
+    costCenter      = "Pocket"
+    app_code        = "pocket"
+    component_code  = "pocket-${lower(local.name)}",
+    env_code        =  local.env == "Dev" ? "dev" : "prod"
   }
 
   aws_path_prefix      = "${local.name}/${local.env}/"

@@ -14,6 +14,9 @@ export const config = {
     environment,
     owner: 'Pocket',
     costCenter: 'Pocket',
+    app_code: 'pocket',
+    component_code: `pocket-${name.toLowerCase()}`,
+    env_code: isDev ? 'dev' : 'prod',
   },
   lambda: {
     braze: {
