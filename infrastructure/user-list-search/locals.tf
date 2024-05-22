@@ -67,8 +67,8 @@ locals {
       nodeEnv                     = "development"
       root_domain                 = "getpocket.dev"
       sns_topic_user_events       = "PocketEventBridge-Dev-UserEventTopic"
-      sns_topic_corpus_events     = "PocketEventBridge-Dev-CorpusEvents"
-      sns_topic_collection_events = "PocketEventBridge-Dev-CollectionEvents"
+      sns_topic_corpus_events     = "PocketEventBridge-Dev-CorpusEventsTopic"
+      sns_topic_collection_events = "PocketEventBridge-Dev-CollectionEventTopic"
       userApiUri                  = "https://user-list-search.getpocket.dev"
     }
 
@@ -83,8 +83,8 @@ locals {
       nodeEnv                     = "production"
       root_domain                 = "readitlater.com"
       sns_topic_user_events       = "PocketEventBridge-Prod-UserEventTopic"
-      sns_topic_corpus_events     = "PocketEventBridge-Prod-CorpusEvents"
-      sns_topic_collection_events = "PocketEventBridge-Prod-CollectionEvents"
+      sns_topic_corpus_events     = "PocketEventBridge-Prod-CorpusEventsTopic"
+      sns_topic_collection_events = "PocketEventBridge-Prod-CollectionEventTopic"
       userApiUri                  = "https://user-list-search.readitlater.com"
     }
   }
