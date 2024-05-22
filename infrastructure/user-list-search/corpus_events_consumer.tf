@@ -3,15 +3,15 @@ locals {
 }
 
 resource "aws_lambda_function" "corpus_events_sqs_processor" {
-  function_name    = local.cevh_function_name
-  filename         = data.archive_file.lambda_zip.output_path #Dummy lambda that just logs the event (use aws cli to package and deploy in circleci)
-  role             = aws_iam_role.corpus_events_lambda_role.arn
-  runtime          = "nodejs20.x"
-  handler          = "index.handler"
-  source_code_hash = data.archive_file.lambda_zip.output_base64sha256 #Dummy lambda that just logs the event.
-  batch_size       = 10
+  function_name                      = local.cevh_function_name
+  filename                           = data.archive_file.lambda_zip.output_path #Dummy lambda that just logs the event (use aws cli to package and deploy in circleci)
+  role                               = aws_iam_role.corpus_events_lambda_role.arn
+  runtime                            = "nodejs20.x"
+  handler                            = "index.handler"
+  source_code_hash                   = data.archive_file.lambda_zip.output_base64sha256 #Dummy lambda that just logs the event.
+  batch_size                         = 10
   maximum_batching_window_in_seconds = 300
-  timeout = 500
+  timeout                            = 500
   environment {
     variables = local.lambda_env
   }
@@ -100,18 +100,16 @@ data "aws_iam_policy_document" "corpus_events_lambda_execution_policy" {
   }
 
   statement {
-    effect = "Allow"
-    actions = [
-      
-    ]
+    effect  = "Allow"
+    actions = ["es:ESHttp*"]
     # Access to the bulk APIs for the corpus indices
     resources = [
-      "${aws_elasticsearch_domain.user_search.arn}/_bulk"
-      "${aws_elasticsearch_domain.user_search.arn}/corpus_en/_bulk"
-      "${aws_elasticsearch_domain.user_search.arn}/corpus_de/_bulk"
-      "${aws_elasticsearch_domain.user_search.arn}/corpus_es/_bulk"
-      "${aws_elasticsearch_domain.user_search.arn}/corpus_it/_bulk"
-      "${aws_elasticsearch_domain.user_search.arn}/corpus_fr/_bulk"
+      "${aws_elasticsearch_domain.user_search.arn}/_bulk",
+      "${aws_elasticsearch_domain.user_search.arn}/corpus_en/_bulk",
+      "${aws_elasticsearch_domain.user_search.arn}/corpus_de/_bulk",
+      "${aws_elasticsearch_domain.user_search.arn}/corpus_es/_bulk",
+      "${aws_elasticsearch_domain.user_search.arn}/corpus_it/_bulk",
+      "${aws_elasticsearch_domain.user_search.arn}/corpus_fr/_bulk",
     ]
   }
 

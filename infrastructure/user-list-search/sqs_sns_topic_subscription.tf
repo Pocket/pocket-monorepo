@@ -1,7 +1,7 @@
 locals {
-  userEventsSnsTopicArn = "arn:aws:sns:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.snsTopicName.userEvents}"
-  corpusEventsSnsTopicArn = "arn:aws:sns:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.snsTopicName.corpusEvents}"
-  corpusEventsSnsTopicArn = "arn:aws:sns:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.snsTopicName.collectionEvents}"
+  userEventsSnsTopicArn       = "arn:aws:sns:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.snsTopicName.userEvents}"
+  corpusEventsSnsTopicArn     = "arn:aws:sns:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.snsTopicName.corpusEvents}"
+  collectionEventsSnsTopicArn = "arn:aws:sns:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.snsTopicName.collectionEvents}"
 }
 
 resource "aws_sqs_queue" "user_events_sns_topic_dlq" {
