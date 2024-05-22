@@ -9,7 +9,7 @@ resource "aws_lambda_function" "corpus_events_sqs_processor" {
   runtime          = "nodejs20.x"
   handler          = "index.handler"
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256 #Dummy lambda that just logs the event.
-  timeout          = 500
+  timeout          = 300
   environment {
     variables = local.lambda_env
   }
@@ -60,7 +60,7 @@ resource "aws_lambda_alias" "corpus_events_sqs_processor" {
 resource "aws_lambda_event_source_mapping" "corpus_events_sqs" {
   event_source_arn                   = aws_sqs_queue.corpus_events.arn
   batch_size                         = 10
-  maximum_batching_window_in_seconds = 1000
+  maximum_batching_window_in_seconds = 300
   function_name                      = aws_lambda_alias.corpus_events_sqs_processor.arn #We set the function to our alias
 }
 

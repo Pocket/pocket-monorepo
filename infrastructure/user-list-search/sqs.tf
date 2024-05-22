@@ -75,7 +75,7 @@ resource "aws_sqs_queue" "corpus_events" {
     maxReceiveCount     = 3
   })
 
-  visibility_timeout_seconds = 300
+  visibility_timeout_seconds = 500
 }
 
 resource "aws_sqs_queue" "corpus_events_deadletter" {
