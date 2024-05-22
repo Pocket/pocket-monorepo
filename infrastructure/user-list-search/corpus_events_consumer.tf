@@ -136,4 +136,18 @@ data "aws_iam_policy_document" "corpus_events_lambda_execution_policy" {
       "arn:aws:logs:*:*:*"
     ]
   }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "ec2:DescribeNetworkInterfaces",
+      "ec2:CreateNetworkInterface",
+      "ec2:DeleteNetworkInterface",
+      "ec2:DescribeInstances",
+      "ec2:AttachNetworkInterface"
+    ]
+    resources = [
+      "*"
+    ]
+  }
 }
