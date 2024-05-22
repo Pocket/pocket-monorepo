@@ -59,7 +59,7 @@ class PocketEventBus extends TerraformStack {
 
     // VPC for accessing non-public resources, e.g. elasticsearch
     // for the corpus event lambda consumer
-    const vpc = new PocketVPC(this, 'pocket-shared-vpc');
+    new PocketVPC(this, 'pocket-shared-vpc');
 
     const eventBusProps: ApplicationEventBusProps = {
       name: `${config.prefix}-Shared-Event-Bus`,

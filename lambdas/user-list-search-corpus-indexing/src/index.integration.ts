@@ -8,7 +8,7 @@ import * as cd from './createDoc';
  */
 async function deleteDocuments() {
   for await (const index of Object.values(config.indexLangMap)) {
-    const res = await fetch(
+    await fetch(
       `${config.apiEndpoint}/${index}/_delete_by_query?wait_for_completion=true`,
       {
         method: 'post',
