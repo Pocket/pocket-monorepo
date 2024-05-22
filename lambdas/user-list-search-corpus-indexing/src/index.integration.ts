@@ -154,13 +154,13 @@ describe('bulk indexer', () => {
         url: 'http://der-vogel.de',
         title: 'die krähen fliegen heute',
         is_collection_story: true,
-        parent_id: '999rsk',
+        parent_collection_id: '999rsk',
       }),
       expect.objectContaining({
         url: 'http://manderley.de',
         title: 'wir wilkommen die neue mrs. de winter ins manderley',
         is_collection_story: true,
-        parent_id: '999rsk',
+        parent_collection_id: '999rsk',
       }),
     ]);
   });

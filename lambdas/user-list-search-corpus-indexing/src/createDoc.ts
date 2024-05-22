@@ -42,7 +42,7 @@ export function createDoc(payload: EventPayload): CorpusItemIndex[] {
         _index,
       },
       fields: {
-        parent_id: collection.externalId,
+        parent_collection_id: collection.externalId,
         url: story.url,
         title: story.title,
         excerpt: story.excerpt,

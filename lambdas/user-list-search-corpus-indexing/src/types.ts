@@ -24,7 +24,7 @@ export type CorpusItemIndex = {
     iab_parent: string;
     iab_child: string;
     is_collection_story?: boolean;
-    parent_id?: string;
+    parent_collection_id?: string;
   }>;
 };
 
