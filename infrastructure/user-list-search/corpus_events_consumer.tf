@@ -60,7 +60,7 @@ resource "aws_lambda_alias" "corpus_events_sqs_processor" {
 resource "aws_lambda_event_source_mapping" "corpus_events_sqs" {
   event_source_arn                   = aws_sqs_queue.corpus_events.arn
   batch_size                         = 10
-  maximum_batching_window_in_seconds = 300
+  maximum_batching_window_in_seconds = 1000
   function_name                      = aws_lambda_alias.corpus_events_sqs_processor.arn #We set the function to our alias
 }
 
