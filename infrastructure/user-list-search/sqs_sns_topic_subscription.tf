@@ -32,9 +32,11 @@ resource "aws_sns_topic_subscription" "corpus_events_sns_topic_subscription" {
   topic_arn = local.corpusEventsSnsTopicArn
   protocol  = "sqs"
   endpoint  = aws_sqs_queue.corpus_events.arn
-  redrive_policy = jsonencode({
-    deadLetterTargetArn : aws_sqs_queue.corpus_events_sns_topic_dlq.arn
-  })
+  # Need to do some more work to get this policy to work. It fails with
+  # permissions error.
+  # redrive_policy = jsonencode({
+  #   deadLetterTargetArn : aws_sqs_queue.corpus_events_sns_topic_dlq.arn
+  # })
   depends_on = [aws_sqs_queue.corpus_events_sns_topic_dlq, aws_sqs_queue.corpus_events]
 }
 
