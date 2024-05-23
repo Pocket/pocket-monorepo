@@ -65,3 +65,19 @@ resource "aws_sqs_queue" "user_list_events" {
 resource "aws_sqs_queue" "user_list_events_deadletter" {
   name = "${local.prefix}-UserListEvents-Deadletter"
 }
+
+resource "aws_sqs_queue" "corpus_events" {
+  name                      = "${local.prefix}-CorpusEvents"
+  message_retention_seconds = 86400
+  tags                      = local.tags
+  redrive_policy = jsonencode({
+    deadLetterTargetArn = aws_sqs_queue.corpus_events_deadletter.arn,
+    maxReceiveCount     = 3
+  })
+
+  visibility_timeout_seconds = 500
+}
+
+resource "aws_sqs_queue" "corpus_events_deadletter" {
+  name = "${local.prefix}-CorpusEvents-Deadletter"
+}

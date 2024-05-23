@@ -3,13 +3,13 @@ locals {
   env    = local.workspace.environment
   prefix = "${local.name}-${local.env}"
   tags = {
-    service         = local.name
-    environment     = local.env
-    owner           = "Pocket"
-    costCenter      = "Pocket"
-    app_code        = "pocket"
-    component_code  = "pocket-${lower(local.name)}",
-    env_code        =  local.env == "Dev" ? "dev" : "prod"
+    service        = local.name
+    environment    = local.env
+    owner          = "Pocket"
+    costCenter     = "Pocket"
+    app_code       = "pocket"
+    component_code = "pocket-${lower(local.name)}",
+    env_code       = local.env == "Dev" ? "dev" : "prod"
   }
 
   aws_path_prefix      = "${local.name}/${local.env}/"
@@ -39,10 +39,13 @@ locals {
     SQS_USER_LIST_IMPORT_URL  = aws_sqs_queue.user_list_import.id
     SQS_USER_ITEMS_UPDATE_URL = aws_sqs_queue.user_items_update.id
     SQS_USER_ITEMS_DELETE_URL = aws_sqs_queue.user_items_delete.id
+    ELASTICSEARCH_HOST        = local.elastic.endpoint
   }
   sqsEndpoint = "https://sqs.us-east-1.amazonaws.com"
   snsTopicName = {
-    userEvents = local.workspace.sns_topic_user_events
+    userEvents       = local.workspace.sns_topic_user_events
+    corpusEvents     = local.workspace.sns_topic_corpus_events
+    collectionEvents = local.workspace.sns_topic_collection_events
   }
 
   # environment or workspace-specific local variables go here.
@@ -55,31 +58,35 @@ locals {
     }
 
     UserListSearch-Dev = {
-      domain                  = "user-list-search.getpocket.dev"
-      environment             = "Dev"
-      es_cluster_enable       = true
-      es_instance_count       = 3
-      es_instance_type        = "t3.medium.elasticsearch"
-      es_master_instance_type = "t3.small.elasticsearch"
-      es_ebs_volume_size      = 35
-      nodeEnv                 = "development"
-      root_domain             = "getpocket.dev"
-      sns_topic_user_events   = "PocketEventBridge-Dev-UserEventTopic"
-      userApiUri              = "https://user-list-search.getpocket.dev"
+      domain                      = "user-list-search.getpocket.dev"
+      environment                 = "Dev"
+      es_cluster_enable           = true
+      es_instance_count           = 3
+      es_instance_type            = "t3.medium.elasticsearch"
+      es_master_instance_type     = "t3.small.elasticsearch"
+      es_ebs_volume_size          = 35
+      nodeEnv                     = "development"
+      root_domain                 = "getpocket.dev"
+      sns_topic_user_events       = "PocketEventBridge-Dev-UserEventTopic"
+      sns_topic_corpus_events     = "PocketEventBridge-Dev-CorpusEventsTopic"
+      sns_topic_collection_events = "PocketEventBridge-Dev-CollectionEventTopic"
+      userApiUri                  = "https://user-list-search.getpocket.dev"
     }
 
     UserListSearch-Prod = {
-      domain                  = "user-list-search.readitlater.com"
-      environment             = "Prod"
-      es_cluster_enable       = true
-      es_instance_count       = 11
-      es_instance_type        = "m5.xlarge.elasticsearch"
-      es_master_instance_type = "c5.large.elasticsearch"
-      es_ebs_volume_size      = 1500
-      nodeEnv                 = "production"
-      root_domain             = "readitlater.com"
-      sns_topic_user_events   = "PocketEventBridge-Prod-UserEventTopic"
-      userApiUri              = "https://user-list-search.readitlater.com"
+      domain                      = "user-list-search.readitlater.com"
+      environment                 = "Prod"
+      es_cluster_enable           = true
+      es_instance_count           = 11
+      es_instance_type            = "m5.xlarge.elasticsearch"
+      es_master_instance_type     = "c5.large.elasticsearch"
+      es_ebs_volume_size          = 1500
+      nodeEnv                     = "production"
+      root_domain                 = "readitlater.com"
+      sns_topic_user_events       = "PocketEventBridge-Prod-UserEventTopic"
+      sns_topic_corpus_events     = "PocketEventBridge-Prod-CorpusEventsTopic"
+      sns_topic_collection_events = "PocketEventBridge-Prod-CollectionEventTopic"
+      userApiUri                  = "https://user-list-search.readitlater.com"
     }
   }
 

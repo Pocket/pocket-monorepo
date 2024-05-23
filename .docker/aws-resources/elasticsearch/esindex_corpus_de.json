@@ -10,9 +10,6 @@
       "enabled": true
     },
     "properties": {
-      "id": {
-        "type": "keyword"
-      },
       "title": {
         "type": "text",
         "analyzer": "german"
@@ -63,6 +60,10 @@
       },
       "iab_child": {
         "type": "keyword"
+      },
+      "parent_collection_id": {
+        "type": "keyword",
+        "index": false
       }
     }
   }

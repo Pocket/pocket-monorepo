@@ -10,9 +10,6 @@
       "enabled": true
     },
     "properties": {
-      "id": {
-        "type": "keyword"
-      },
       "title": {
         "type": "text",
         "analyzer": "italian"
@@ -63,6 +60,10 @@
       },
       "iab_child": {
         "type": "keyword"
+      },
+      "parent_id": {
+        "type": "keyword",
+        "index": false
       }
     }
   }
