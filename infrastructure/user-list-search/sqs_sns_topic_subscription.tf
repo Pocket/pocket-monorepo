@@ -32,11 +32,9 @@ resource "aws_sns_topic_subscription" "corpus_events_sns_topic_subscription" {
   topic_arn = local.corpusEventsSnsTopicArn
   protocol  = "sqs"
   endpoint  = aws_sqs_queue.corpus_events.arn
-  # The version of terraform used in this service does not support redrive_policy
-  # an update is required. It is not blocking but should be prioritized soon
-  #  redrive_policy = jsonencode({
-  #    deadLetterTargetArn: aws_sqs_queue.corpus_events_sns_topic_dlq.arn
-  #  })
+  redrive_policy = jsonencode({
+    deadLetterTargetArn : aws_sqs_queue.corpus_events_sns_topic_dlq.arn
+  })
   depends_on = [aws_sqs_queue.corpus_events_sns_topic_dlq, aws_sqs_queue.corpus_events]
 }
 
