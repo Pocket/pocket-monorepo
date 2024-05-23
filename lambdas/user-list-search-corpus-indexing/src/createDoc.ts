@@ -1,5 +1,6 @@
 import { EventPayload, CorpusItemIndex } from './types';
 import { config } from './config';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 /**
  * Build elasticsearch documents from the event payload.
@@ -53,10 +54,11 @@ export function createDoc(payload: EventPayload): CorpusItemIndex[] {
       },
     }));
     stories.push(parent);
+    serverLogger.debug({ message: 'createDoc result', stories });
     return stories;
   } else {
     const event = payload.detail;
-    return [
+    const data = [
       {
         meta: {
           _id: event.approvedItemExternalId,
@@ -81,5 +83,7 @@ export function createDoc(payload: EventPayload): CorpusItemIndex[] {
         },
       },
     ];
+    serverLogger.debug({ message: 'createDoc result', data });
+    return data;
   }
 }

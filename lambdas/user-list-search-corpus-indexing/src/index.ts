@@ -19,6 +19,7 @@ const newFetch = fetchRetry(fetch);
  * @returns
  */
 export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
+  serverLogger.log({ message: 'Unparsed events', data: event, level: 'debug' });
   const validPayloads: Array<EventPayload> = event.Records.map((record) => {
     const message = JSON.parse(JSON.parse(record.body).Message);
     return {
@@ -28,6 +29,11 @@ export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
     };
   }).filter((message) => {
     validDetailTypes.includes(message['detail-type']);
+  });
+  serverLogger.log({
+    message: 'Message payloads (JSON-parsed and detail-type filtered)',
+    data: validPayloads,
+    level: 'debug',
   });
   const result = await bulkIndex(validPayloads);
   return result;
@@ -69,6 +75,11 @@ export async function bulkIndex(
     .map((line) => JSON.stringify(line))
     .join('\n');
   const body = `${bodyData}\n`; // must be terminated by a newline...
+  serverLogger.log({
+    message: 'GraphQL Bulk request',
+    data: { body, endpoint: `${config.apiEndpoint}/_bulk` },
+    level: 'debug',
+  });
   const res = await newFetch(`${config.apiEndpoint}/_bulk`, {
     retryOn: [500, 502, 503],
     retryDelay: (attempt) => {
@@ -83,6 +94,7 @@ export async function bulkIndex(
   });
   if (!res.ok) {
     const data = await res.json();
+    serverLogger.error({ message: 'Request failure', data: data });
     throw new Error(
       `user-list-search-corpus-index: ${res.status}\n${JSON.stringify(data.errors)}`,
     );
