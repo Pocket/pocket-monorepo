@@ -88,9 +88,16 @@ data "aws_iam_policy_document" "corpus_events_sqs_policy_document" {
       ]
       type = "Service"
     }
+    # This is actually an 'or' combination when it's the same test key
+    # https://github.com/hashicorp/terraform-provider-aws/issues/25071#issuecomment-1147934044
     condition {
       test     = "ArnEquals"
-      values   = [local.corpusEventsSnsTopicArn, local.collectionEventsSnsTopicArn]
+      values   = [local.corpusEventsSnsTopicArn]
+      variable = "aws:SourceArn"
+    }
+    condition {
+      test     = "ArnEquals"
+      values   = [local.collectionEventsSnsTopicArn]
       variable = "aws:SourceArn"
     }
   }
