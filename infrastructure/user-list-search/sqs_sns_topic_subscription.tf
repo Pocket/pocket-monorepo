@@ -90,29 +90,7 @@ data "aws_iam_policy_document" "corpus_events_sqs_policy_document" {
     }
     condition {
       test     = "ArnEquals"
-      values   = [local.corpusEventsSnsTopicArn]
-      variable = "aws:SourceArn"
-    }
-  }
-  depends_on = [aws_sqs_queue.corpus_events]
-}
-
-data "aws_iam_policy_document" "collection_events_sqs_policy_document" {
-  statement {
-    effect = "Allow"
-    actions = [
-      "sqs:SendMessage"
-    ]
-    resources = [aws_sqs_queue.corpus_events.arn]
-    principals {
-      identifiers = [
-        "sns.amazonaws.com"
-      ]
-      type = "Service"
-    }
-    condition {
-      test     = "ArnEquals"
-      values   = [local.collectionEventsSnsTopicArn]
+      values   = [local.corpusEventsSnsTopicArn, local.collectionEventsSnsTopicArn]
       variable = "aws:SourceArn"
     }
   }
@@ -127,11 +105,6 @@ resource "aws_sqs_queue_policy" "user_events_sqs_policy" {
 resource "aws_sqs_queue_policy" "corpus_events_sqs_policy" {
   queue_url = aws_sqs_queue.corpus_events.id
   policy    = data.aws_iam_policy_document.corpus_events_sqs_policy_document.json
-}
-
-resource "aws_sqs_queue_policy" "collection_events_sqs_policy" {
-  queue_url = aws_sqs_queue.corpus_events.id
-  policy    = data.aws_iam_policy_document.collection_events_sqs_policy_document.json
 }
 
 data "aws_iam_policy_document" "user_events_sns_topic_dlq_policy_document" {
@@ -171,29 +144,7 @@ data "aws_iam_policy_document" "corpus_events_sns_topic_dlq_policy_document" {
     }
     condition {
       test     = "ArnEquals"
-      values   = [local.corpusEventsSnsTopicArn]
-      variable = "aws:SourceArn"
-    }
-  }
-  depends_on = [aws_sqs_queue.corpus_events_sns_topic_dlq]
-}
-
-data "aws_iam_policy_document" "collection_events_sns_topic_dlq_policy_document" {
-  statement {
-    effect = "Allow"
-    actions = [
-      "sqs:SendMessage"
-    ]
-    resources = [aws_sqs_queue.corpus_events_sns_topic_dlq.arn]
-    principals {
-      identifiers = [
-        "sns.amazonaws.com"
-      ]
-      type = "Service"
-    }
-    condition {
-      test     = "ArnEquals"
-      values   = [local.collectionEventsSnsTopicArn]
+      values   = [local.corpusEventsSnsTopicArn, local.collectionEventsSnsTopicArn]
       variable = "aws:SourceArn"
     }
   }
@@ -208,9 +159,4 @@ resource "aws_sqs_queue_policy" "user_events_sns_topic_dlq_policy" {
 resource "aws_sqs_queue_policy" "corpus_events_sns_topic_dlq_policy" {
   queue_url = aws_sqs_queue.corpus_events_sns_topic_dlq.id
   policy    = data.aws_iam_policy_document.corpus_events_sns_topic_dlq_policy_document.json
-}
-
-resource "aws_sqs_queue_policy" "collection_events_sns_topic_dlq_policy" {
-  queue_url = aws_sqs_queue.corpus_events_sns_topic_dlq.id
-  policy    = data.aws_iam_policy_document.collection_events_sns_topic_dlq_policy_document.json
 }
