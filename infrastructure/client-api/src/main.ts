@@ -74,6 +74,8 @@ class ClientAPI extends TerraformStack {
       caller,
     });
 
+    this.createWafACL()
+
     new PocketAwsSyntheticChecks(this, 'synthetics', {
       // alarmTopicArn:
       //   config.environment === 'Prod'
