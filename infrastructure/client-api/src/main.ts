@@ -27,6 +27,14 @@ import { App, S3Backend, TerraformStack } from 'cdktf';
 import { Construct } from 'constructs';
 import fs from 'fs';
 
+
+import { Wafv2IpSet } from '@cdktf/provider-aws/lib/wafv2-ip-set';
+import { Wafv2RegexPatternSet } from '@cdktf/provider-aws/lib/wafv2-regex-pattern-set';
+import {
+  Wafv2WebAclRule,
+  Wafv2WebAcl
+} from '@cdktf/provider-aws/lib/wafv2-web-acl';
+
 class ClientAPI extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
@@ -85,6 +93,66 @@ class ClientAPI extends TerraformStack {
     });
   }
 
+  private createWafACL() {
+    const allowListIPs = new Wafv2IpSet(this, 'AllowlistIPs', {
+      name: `${config.name}-${config.environment}-AllowList`,
+      ipAddressVersion: 'IPV4',
+      scope: 'REGIONAL',
+      tags: config.tags,
+      addresses: [
+        '54.198.114.156/32', // Pocket Nat Gateway; ID: nat-099e4c60ff22e3827
+        '52.54.7.21/32', // Pocket Nat Gateway; ID: nat-041b98cf5532a39b3
+        '34.226.66.3/32', // Pocket Nat Gateway; ID: nat-038b7eb1d10a3e2aa
+        '52.0.226.89/32', // Pocket Nat Gateway; ID: nat-05ecc05c40f383455
+      ],
+    });
+
+    const ipAllowListRule = <Wafv2WebAclRule>{
+      name: `${config.name}-${config.environment}-ipAllowList`,
+      priority: 1,
+      action: { allow: {} },
+      statement: {
+        ipSetReferenceStatement: {
+          arn: allowListIPs.arn,
+        },
+      },
+      visibilityConfig: {
+        cloudwatchMetricsEnabled: true,
+        metricName: `${config.name}-${config.environment}-ipAllowList`,
+        sampledRequestsEnabled: true,
+      },
+    };
+
+    const regionalRateLimitRule = <Wafv2WebAclRule>{
+      name: `${config.name}-${config.environment}-RegionalRateLimit`,
+      priority: 2,
+      action: { block: {} },
+      statement: {
+        rateBasedStatement: {
+          limit: 1000,
+          aggregateKeyType: 'IP',
+        },
+      },
+      visibilityConfig: {
+        cloudwatchMetricsEnabled: true,
+        metricName: `${config.name}-${config.environment}-RegionalRateLimit`,
+        sampledRequestsEnabled: true,
+      },
+    };
+
+    return new Wafv2WebAcl(this, `${config.name}-waf`, {
+      description: `Waf for client-api-proxy ${config.environment} environment`,
+      name: `${config.name}-waf-${config.environment}`,
+      scope: 'REGIONAL',
+      defaultAction: { allow: {} },
+      visibilityConfig: {
+        cloudwatchMetricsEnabled: true,
+        metricName: `${config.name}-waf-${config.environment}`,
+        sampledRequestsEnabled: true,
+      },
+      rule: [ipAllowListRule, regionalRateLimitRule],
+    });
+  }
   /**
    * Get the sns topic for code deploy
    * @private
