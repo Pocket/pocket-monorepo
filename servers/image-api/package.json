@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@apollo/server": "4.10.4",
-    "@apollo/subgraph": "2.7.6",
+    "@apollo/subgraph": "2.7.8",
     "@apollo/utils.keyvadapter": "3.1.0",
     "@keyv/redis": "2.8.4",
     "@pocket-tools/apollo-utils": "workspace:*",

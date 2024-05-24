@@ -17,7 +17,7 @@ importers:
     devDependencies:
       '@commitlint/cli':
         specifier: 19.3.0
-        version: 19.3.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240522)
+        version: 19.3.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240523)
       '@commitlint/config-conventional':
         specifier: ^19.2.2
         version: 19.2.2
@@ -26,7 +26,7 @@ importers:
         version: link:packages/eslint-config
       syncpack:
         specifier: ^12.3.2
-        version: 12.3.2(typescript@5.5.0-dev.20240522)
+        version: 12.3.2(typescript@5.5.0-dev.20240523)
       tsconfig:
         specifier: workspace:*
         version: link:packages/tsconfig
@@ -1643,8 +1643,8 @@ importers:
         specifier: 4.1.3
         version: 4.1.3(@apollo/server@4.10.4(encoding@0.1.13)(graphql@16.8.1))(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.7.6
-        version: 2.7.6(graphql@16.8.1)
+        specifier: 2.7.8
+        version: 2.7.8(graphql@16.8.1)
       '@apollo/utils.keyvadapter':
         specifier: 3.1.0
         version: 3.1.0
@@ -2313,8 +2313,8 @@ importers:
         specifier: 4.10.4
         version: 4.10.4(encoding@0.1.13)(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.7.6
-        version: 2.7.6(graphql@16.8.1)
+        specifier: 2.7.8
+        version: 2.7.8(graphql@16.8.1)
       '@aws-sdk/client-dynamodb':
         specifier: 3.577.0
         version: 3.577.0
@@ -2452,8 +2452,8 @@ importers:
         specifier: 4.10.4
         version: 4.10.4(encoding@0.1.13)(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.7.6
-        version: 2.7.6(graphql@16.8.1)
+        specifier: 2.7.8
+        version: 2.7.8(graphql@16.8.1)
       '@govtechsg/passport-openidconnect':
         specifier: 1.0.2
         version: 1.0.2
@@ -2561,8 +2561,8 @@ importers:
         specifier: 4.10.4
         version: 4.10.4(encoding@0.1.13)(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.7.6
-        version: 2.7.6(graphql@16.8.1)
+        specifier: 2.7.8
+        version: 2.7.8(graphql@16.8.1)
       '@apollo/utils.keyvadapter':
         specifier: 3.1.0
         version: 3.1.0
@@ -2655,8 +2655,8 @@ importers:
         specifier: 4.10.4
         version: 4.10.4(encoding@0.1.13)(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.7.6
-        version: 2.7.6(graphql@16.8.1)
+        specifier: 2.7.8
+        version: 2.7.8(graphql@16.8.1)
       '@aws-sdk/client-eventbridge':
         specifier: 3.577.0
         version: 3.577.0
@@ -2815,8 +2815,8 @@ importers:
         specifier: 4.10.4
         version: 4.10.4(encoding@0.1.13)(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.7.6
-        version: 2.7.6(graphql@16.8.1)
+        specifier: 2.7.8
+        version: 2.7.8(graphql@16.8.1)
       '@apollo/utils.keyvadapter':
         specifier: 3.1.0
         version: 3.1.0
@@ -3039,8 +3039,8 @@ importers:
         specifier: 4.1.3
         version: 4.1.3(@apollo/server@4.10.4(encoding@0.1.13)(graphql@16.8.1))(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.7.6
-        version: 2.7.6(graphql@16.8.1)
+        specifier: 2.7.8
+        version: 2.7.8(graphql@16.8.1)
       '@apollo/utils.keyvadapter':
         specifier: 3.1.0
         version: 3.1.0
@@ -3233,8 +3233,8 @@ importers:
         specifier: 4.10.4
         version: 4.10.4(encoding@0.1.13)(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.7.6
-        version: 2.7.6(graphql@16.8.1)
+        specifier: 2.7.8
+        version: 2.7.8(graphql@16.8.1)
       '@aws-sdk/client-dynamodb':
         specifier: 3.577.0
         version: 3.577.0
@@ -3345,8 +3345,8 @@ importers:
         specifier: 4.10.4
         version: 4.10.4(encoding@0.1.13)(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.7.6
-        version: 2.7.6(graphql@16.8.1)
+        specifier: 2.7.8
+        version: 2.7.8(graphql@16.8.1)
       '@aws-sdk/client-eventbridge':
         specifier: 3.577.0
         version: 3.577.0
@@ -3445,8 +3445,8 @@ importers:
         specifier: 4.10.4
         version: 4.10.4(encoding@0.1.13)(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.7.6
-        version: 2.7.6(graphql@16.8.1)
+        specifier: 2.7.8
+        version: 2.7.8(graphql@16.8.1)
       '@aws-sdk/client-sqs':
         specifier: 3.577.0
         version: 3.577.0
@@ -3702,8 +3702,8 @@ packages:
     peerDependencies:
       graphql: ^16.5.0
 
-  '@apollo/federation-internals@2.7.6':
-    resolution: {integrity: sha512-V1xbnkFb0UZpqHFjj5i52qX/ijd+Lxp3opVkeLLpKEXLKCaLG6S277IGUXIJQPYDiELUB9rbEq/FRUeRmdjRVA==}
+  '@apollo/federation-internals@2.7.8':
+    resolution: {integrity: sha512-LET8YGJ/paYKx2WFqdmWKgQ++kRMwRQ80qNF3z9DNoUN029/qXoh+t433IB2TNtV4WCtN0btNog5DOgVUaXrog==}
     engines: {node: '>=14.15.0'}
     peerDependencies:
       graphql: ^16.5.0
@@ -3730,8 +3730,8 @@ packages:
     peerDependencies:
       graphql: ^16.6.0
 
-  '@apollo/subgraph@2.7.6':
-    resolution: {integrity: sha512-xpRt9Zi4mX/oeYll4uv0eS3JDYrYH8jyeIWuGrsG1JFUY/HiF11YZv0DQXZ1+/HpO2gcjnmDYMLvTazeL1ZViA==}
+  '@apollo/subgraph@2.7.8':
+    resolution: {integrity: sha512-S6/Atx8HpE/oCY9mOr2Ka+aIMr/7Eer6faNF6xb012OS70IvykHoFdw7M/TtlT5AX68FA+tlIpDJuSYx0LvrRQ==}
     engines: {node: '>=14.15.0'}
     peerDependencies:
       graphql: ^16.5.0
@@ -8875,6 +8875,7 @@ packages:
 
   inflight@1.0.6:
     resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}
+    deprecated: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
 
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
@@ -12415,8 +12416,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.5.0-dev.20240522:
-    resolution: {integrity: sha512-Lckk1709+mAFXxFVbO+QnpXo5TRSZsYcq0a96OTfcgP7eLOa0ZjX6/4lnS/8DODWBlQCPa0EvkegzWIwLZqC3w==}
+  typescript@5.5.0-dev.20240523:
+    resolution: {integrity: sha512-YOB70i/IXEmSACEQ87NIPif84AGq4mjufwmoAp4HCOpgTjq6KFZe51OtNGvZbi+kMwlmQiKSrKlkfRGMndmsRA==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -12927,7 +12928,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@apollo/federation-internals@2.7.6(graphql@16.8.1)':
+  '@apollo/federation-internals@2.7.8(graphql@16.8.1)':
     dependencies:
       '@types/uuid': 9.0.8
       chalk: 4.1.2
@@ -12997,10 +12998,10 @@ snapshots:
       - encoding
       - supports-color
 
-  '@apollo/subgraph@2.7.6(graphql@16.8.1)':
+  '@apollo/subgraph@2.7.8(graphql@16.8.1)':
     dependencies:
       '@apollo/cache-control-types': 1.0.3(graphql@16.8.1)
-      '@apollo/federation-internals': 2.7.6(graphql@16.8.1)
+      '@apollo/federation-internals': 2.7.8(graphql@16.8.1)
       graphql: 16.8.1
 
   '@apollo/usage-reporting-protobuf@4.1.1':
@@ -14547,11 +14548,11 @@ snapshots:
     dependencies:
       commander: 12.0.0
 
-  '@commitlint/cli@19.3.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240522)':
+  '@commitlint/cli@19.3.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240523)':
     dependencies:
       '@commitlint/format': 19.3.0
       '@commitlint/lint': 19.2.2
-      '@commitlint/load': 19.2.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240522)
+      '@commitlint/load': 19.2.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240523)
       '@commitlint/read': 19.2.1
       '@commitlint/types': 19.0.3
       execa: 8.0.1
@@ -14598,15 +14599,15 @@ snapshots:
       '@commitlint/rules': 19.0.3
       '@commitlint/types': 19.0.3
 
-  '@commitlint/load@19.2.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240522)':
+  '@commitlint/load@19.2.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240523)':
     dependencies:
       '@commitlint/config-validator': 19.0.3
       '@commitlint/execute-rule': 19.0.0
       '@commitlint/resolve-extends': 19.1.0
       '@commitlint/types': 19.0.3
       chalk: 5.3.0
-      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240522)
-      cosmiconfig-typescript-loader: 5.0.0(@types/node@20.12.11)(cosmiconfig@9.0.0(typescript@5.5.0-dev.20240522))(typescript@5.5.0-dev.20240522)
+      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240523)
+      cosmiconfig-typescript-loader: 5.0.0(@types/node@20.12.11)(cosmiconfig@9.0.0(typescript@5.5.0-dev.20240523))(typescript@5.5.0-dev.20240523)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -18534,12 +18535,12 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cosmiconfig-typescript-loader@5.0.0(@types/node@20.12.11)(cosmiconfig@9.0.0(typescript@5.5.0-dev.20240522))(typescript@5.5.0-dev.20240522):
+  cosmiconfig-typescript-loader@5.0.0(@types/node@20.12.11)(cosmiconfig@9.0.0(typescript@5.5.0-dev.20240523))(typescript@5.5.0-dev.20240523):
     dependencies:
       '@types/node': 20.12.11
-      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240522)
+      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240523)
       jiti: 1.21.0
-      typescript: 5.5.0-dev.20240522
+      typescript: 5.5.0-dev.20240523
 
   cosmiconfig@8.3.6(typescript@5.4.4):
     dependencies:
@@ -18559,14 +18560,14 @@ snapshots:
     optionalDependencies:
       typescript: 5.4.4
 
-  cosmiconfig@9.0.0(typescript@5.5.0-dev.20240522):
+  cosmiconfig@9.0.0(typescript@5.5.0-dev.20240523):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 5.5.0-dev.20240522
+      typescript: 5.5.0-dev.20240523
 
   cpu-features@0.0.2:
     dependencies:
@@ -18923,7 +18924,7 @@ snapshots:
     dependencies:
       semver: 7.6.2
       shelljs: 0.8.5
-      typescript: 5.5.0-dev.20240522
+      typescript: 5.5.0-dev.20240523
 
   dreamopt@0.8.0:
     dependencies:
@@ -23766,13 +23767,13 @@ snapshots:
       '@pkgr/core': 0.1.1
       tslib: 2.6.2
 
-  syncpack@12.3.2(typescript@5.5.0-dev.20240522):
+  syncpack@12.3.2(typescript@5.5.0-dev.20240523):
     dependencies:
       '@effect/schema': 0.66.5(effect@3.0.3)(fast-check@3.17.2)
       chalk: 5.3.0
       chalk-template: 1.1.0
       commander: 12.0.0
-      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240522)
+      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240523)
       effect: 3.0.3
       enquirer: 2.4.1
       fast-check: 3.17.2
@@ -24166,7 +24167,7 @@ snapshots:
 
   typescript@5.4.4: {}
 
-  typescript@5.5.0-dev.20240522: {}
+  typescript@5.5.0-dev.20240523: {}
 
   ua-parser-js@1.0.37: {}
 
