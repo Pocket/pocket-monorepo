@@ -108,7 +108,7 @@ class ClientAPI extends TerraformStack {
       ],
     });
 
-    const ipAllowListRule: Wafv2WebAclRule = {
+    const ipAllowListRule = <Wafv2WebAclRule>{
       name: `${config.name}-${config.environment}-ipAllowList`,
       priority: 1,
       action: { allow: {} },
@@ -131,7 +131,7 @@ class ClientAPI extends TerraformStack {
       statement: {
         rate_based_statement: {
           limit: 1000,
-          aggregateKeyType: 'IP',
+          aggregate_key_type: 'IP',
         },
       },
       visibilityConfig: {
