@@ -32,9 +32,8 @@ import { Wafv2IpSet } from '@cdktf/provider-aws/lib/wafv2-ip-set';
 import { Wafv2RegexPatternSet } from '@cdktf/provider-aws/lib/wafv2-regex-pattern-set';
 import {
   Wafv2WebAclRule,
-  Wafv2WebAcl
+  Wafv2WebAcl,
 } from '@cdktf/provider-aws/lib/wafv2-web-acl';
-
 class ClientAPI extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
@@ -109,12 +108,12 @@ class ClientAPI extends TerraformStack {
       ],
     });
 
-    const ipAllowListRule = <Wafv2WebAclRule>{
+    const ipAllowListRule: Wafv2WebAclRule = {
       name: `${config.name}-${config.environment}-ipAllowList`,
       priority: 1,
       action: { allow: {} },
       statement: {
-        ipSetReferenceStatement: {
+        ip_set_reference_statement: {
           arn: allowListIPs.arn,
         },
       },
@@ -130,7 +129,7 @@ class ClientAPI extends TerraformStack {
       priority: 2,
       action: { block: {} },
       statement: {
-        rateBasedStatement: {
+        rate_based_statement: {
           limit: 1000,
           aggregateKeyType: 'IP',
         },
