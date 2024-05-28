@@ -17,7 +17,7 @@ importers:
     devDependencies:
       '@commitlint/cli':
         specifier: 19.3.0
-        version: 19.3.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240523)
+        version: 19.3.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240524)
       '@commitlint/config-conventional':
         specifier: ^19.2.2
         version: 19.2.2
@@ -26,7 +26,7 @@ importers:
         version: link:packages/eslint-config
       syncpack:
         specifier: ^12.3.2
-        version: 12.3.2(typescript@5.5.0-dev.20240523)
+        version: 12.3.2(typescript@5.5.0-dev.20240524)
       tsconfig:
         specifier: workspace:*
         version: link:packages/tsconfig
@@ -1655,8 +1655,8 @@ importers:
         specifier: workspace:*
         version: link:../ts-logger
       '@sentry/node':
-        specifier: 7.114.0
-        version: 7.114.0
+        specifier: 7.116.0
+        version: 7.116.0
       express:
         specifier: 4.19.2
         version: 4.19.2
@@ -1921,8 +1921,8 @@ importers:
   packages/sentry:
     dependencies:
       '@sentry/node':
-        specifier: 7.114.0
-        version: 7.114.0
+        specifier: 7.116.0
+        version: 7.116.0
       '@sentry/tracing':
         specifier: 7.114.0
         version: 7.114.0
@@ -2234,8 +2234,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.114.0
-        version: 7.114.0
+        specifier: 7.116.0
+        version: 7.116.0
       express:
         specifier: 4.19.2
         version: 4.19.2
@@ -2262,8 +2262,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/eslint-config
       '@sentry/types':
-        specifier: 7.114.0
-        version: 7.114.0
+        specifier: 7.116.0
+        version: 7.116.0
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
@@ -2337,8 +2337,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.114.0
-        version: 7.114.0
+        specifier: 7.116.0
+        version: 7.116.0
       cors:
         specifier: 2.8.5
         version: 2.8.5
@@ -2398,8 +2398,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/eslint-config
       '@sentry/types':
-        specifier: 7.114.0
-        version: 7.114.0
+        specifier: 7.116.0
+        version: 7.116.0
       '@types/chance':
         specifier: 1.1.6
         version: 1.1.6
@@ -2464,8 +2464,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/sentry
       '@sentry/node':
-        specifier: 7.114.0
-        version: 7.114.0
+        specifier: 7.116.0
+        version: 7.116.0
       body-parser:
         specifier: 1.20.2
         version: 1.20.2
@@ -2685,8 +2685,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.114.0
-        version: 7.114.0
+        specifier: 7.116.0
+        version: 7.116.0
       '@snowplow/node-tracker':
         specifier: 3.23.0
         version: 3.23.0
@@ -2854,8 +2854,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.114.0
-        version: 7.114.0
+        specifier: 7.116.0
+        version: 7.116.0
       cors:
         specifier: 2.8.5
         version: 2.8.5
@@ -2978,8 +2978,8 @@ importers:
         specifier: 3.577.0
         version: 3.577.0
       '@sentry/node':
-        specifier: 7.114.0
-        version: 7.114.0
+        specifier: 7.116.0
+        version: 7.116.0
       apns2:
         specifier: 11.7.0
         version: 11.7.0
@@ -3066,8 +3066,8 @@ importers:
         specifier: 5.14.0
         version: 5.14.0(prisma@5.14.0)
       '@sentry/node':
-        specifier: 7.114.0
-        version: 7.114.0
+        specifier: 7.116.0
+        version: 7.116.0
       cors:
         specifier: 2.8.5
         version: 2.8.5
@@ -3172,8 +3172,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.114.0
-        version: 7.114.0
+        specifier: 7.116.0
+        version: 7.116.0
       '@snowplow/node-tracker':
         specifier: 3.23.0
         version: 3.23.0
@@ -3257,8 +3257,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.114.0
-        version: 7.114.0
+        specifier: 7.116.0
+        version: 7.116.0
       '@snowplow/tracker-core':
         specifier: 3.23.0
         version: 3.23.0
@@ -3366,8 +3366,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.114.0
-        version: 7.114.0
+        specifier: 7.116.0
+        version: 7.116.0
       dataloader:
         specifier: 2.2.2
         version: 2.2.2
@@ -3400,8 +3400,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/eslint-config
       '@sentry/types':
-        specifier: 7.114.0
-        version: 7.114.0
+        specifier: 7.116.0
+        version: 7.116.0
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
@@ -3469,8 +3469,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.114.0
-        version: 7.114.0
+        specifier: 7.116.0
+        version: 7.116.0
       elasticsearch:
         specifier: ^16.7.3
         version: 16.7.3
@@ -3593,8 +3593,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 7.114.0
-        version: 7.114.0
+        specifier: 7.116.0
+        version: 7.116.0
       express:
         specifier: 4.19.2
         version: 4.19.2
@@ -5862,6 +5862,10 @@ packages:
     resolution: {integrity: sha512-dOuvfJN7G+3YqLlUY4HIjyWHaRP8vbOgF+OsE5w2l7ZEn1rMAaUbPntAR8AF9GBA6j2zWNoSo8e7GjbJxVofSg==}
     engines: {node: '>=8'}
 
+  '@sentry-internal/tracing@7.116.0':
+    resolution: {integrity: sha512-y5ppEmoOlfr77c/HqsEXR72092qmGYS4QE5gSz5UZFn9CiinEwGfEorcg2xIrrCuU7Ry/ZU2VLz9q3xd04drRA==}
+    engines: {node: '>=8'}
+
   '@sentry/core@7.109.0':
     resolution: {integrity: sha512-xwD4U0IlvvlE/x/g/W1I8b4Cfb16SsCMmiEuBf6XxvAa3OfWBxKoqLifb3GyrbxMC4LbIIZCN/SvLlnGJPgszA==}
     engines: {node: '>=8'}
@@ -5874,8 +5878,16 @@ packages:
     resolution: {integrity: sha512-YnanVlmulkjgZiVZ9BfY9k6I082n+C+LbZo52MTvx3FY6RE5iyiPMpaOh67oXEZRWcYQEGm+bKruRxLVP6RlbA==}
     engines: {node: '>=8'}
 
+  '@sentry/core@7.116.0':
+    resolution: {integrity: sha512-J6Wmjjx+o7RwST0weTU1KaKUAlzbc8MGkJV1rcHM9xjNTWTva+nrcCM3vFBagnk2Gm/zhwv3h0PvWEqVyp3U1Q==}
+    engines: {node: '>=8'}
+
   '@sentry/integrations@7.114.0':
     resolution: {integrity: sha512-BJIBWXGKeIH0ifd7goxOS29fBA8BkEgVVCahs6xIOXBjX1IRS6PmX0zYx/GP23nQTfhJiubv2XPzoYOlZZmDxg==}
+    engines: {node: '>=8'}
+
+  '@sentry/integrations@7.116.0':
+    resolution: {integrity: sha512-UZb60gaF+7veh1Yv79RiGvgGYOnU6xA97H+hI6tKgc1uT20YpItO4X56Vhp0lvyEyUGFZzBRRH1jpMDPNGPkqw==}
     engines: {node: '>=8'}
 
   '@sentry/node@7.109.0':
@@ -5888,6 +5900,10 @@ packages:
 
   '@sentry/node@7.114.0':
     resolution: {integrity: sha512-cqvi+OHV1Hj64mIGHoZtLgwrh1BG6ntcRjDLlVNMqml5rdTRD3TvG21579FtlqHlwZpbpF7K5xkwl8e5KL2hGw==}
+    engines: {node: '>=8'}
+
+  '@sentry/node@7.116.0':
+    resolution: {integrity: sha512-HB/4TrJWbnu6swNzkid+MlwzLwY/D/klGt3R0aatgrgWPo2jJm6bSl4LUT39Cr2eg5I1gsREQtXE2mAlC6gm8w==}
     engines: {node: '>=8'}
 
   '@sentry/serverless@7.114.0':
@@ -5910,6 +5926,10 @@ packages:
     resolution: {integrity: sha512-tsqkkyL3eJtptmPtT0m9W/bPLkU7ILY7nvwpi1hahA5jrM7ppoU0IMaQWAgTD+U3rzFH40IdXNBFb8Gnqcva4w==}
     engines: {node: '>=8'}
 
+  '@sentry/types@7.116.0':
+    resolution: {integrity: sha512-QCCvG5QuQrwgKzV11lolNQPP2k67Q6HHD9vllZ/C4dkxkjoIym8Gy+1OgAN3wjsR0f/kG9o5iZyglgNpUVRapQ==}
+    engines: {node: '>=8'}
+
   '@sentry/utils@7.109.0':
     resolution: {integrity: sha512-3RjxMOLMBwZ5VSiH84+o/3NY2An4Zldjz0EbfEQNRY9yffRiCPJSQiCJID8EoylCFOh/PAhPimBhqbtWJxX6iw==}
     engines: {node: '>=8'}
@@ -5920,6 +5940,10 @@ packages:
 
   '@sentry/utils@7.114.0':
     resolution: {integrity: sha512-319N90McVpupQ6vws4+tfCy/03AdtsU0MurIE4+W5cubHME08HtiEWlfacvAxX+yuKFhvdsO4K4BB/dj54ideg==}
+    engines: {node: '>=8'}
+
+  '@sentry/utils@7.116.0':
+    resolution: {integrity: sha512-Vn9fcvwTq91wJvCd7WTMWozimqMi+dEZ3ie3EICELC2diONcN16ADFdzn65CQQbYwmUzRjN9EjDN2k41pKZWhQ==}
     engines: {node: '>=8'}
 
   '@sideway/address@4.1.5':
@@ -12416,8 +12440,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.5.0-dev.20240523:
-    resolution: {integrity: sha512-YOB70i/IXEmSACEQ87NIPif84AGq4mjufwmoAp4HCOpgTjq6KFZe51OtNGvZbi+kMwlmQiKSrKlkfRGMndmsRA==}
+  typescript@5.5.0-dev.20240524:
+    resolution: {integrity: sha512-x37/rBPLFB451GxMIKP4oVm18+iMs34VzcbyoqDLHX8+TfGZdiTEIfZOi2p6nWJTV6jmd8qyIc6KnAR9tHWxsw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -14548,11 +14572,11 @@ snapshots:
     dependencies:
       commander: 12.0.0
 
-  '@commitlint/cli@19.3.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240523)':
+  '@commitlint/cli@19.3.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240524)':
     dependencies:
       '@commitlint/format': 19.3.0
       '@commitlint/lint': 19.2.2
-      '@commitlint/load': 19.2.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240523)
+      '@commitlint/load': 19.2.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240524)
       '@commitlint/read': 19.2.1
       '@commitlint/types': 19.0.3
       execa: 8.0.1
@@ -14599,15 +14623,15 @@ snapshots:
       '@commitlint/rules': 19.0.3
       '@commitlint/types': 19.0.3
 
-  '@commitlint/load@19.2.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240523)':
+  '@commitlint/load@19.2.0(@types/node@20.12.11)(typescript@5.5.0-dev.20240524)':
     dependencies:
       '@commitlint/config-validator': 19.0.3
       '@commitlint/execute-rule': 19.0.0
       '@commitlint/resolve-extends': 19.1.0
       '@commitlint/types': 19.0.3
       chalk: 5.3.0
-      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240523)
-      cosmiconfig-typescript-loader: 5.0.0(@types/node@20.12.11)(cosmiconfig@9.0.0(typescript@5.5.0-dev.20240523))(typescript@5.5.0-dev.20240523)
+      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240524)
+      cosmiconfig-typescript-loader: 5.0.0(@types/node@20.12.11)(cosmiconfig@9.0.0(typescript@5.5.0-dev.20240524))(typescript@5.5.0-dev.20240524)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -16508,6 +16532,12 @@ snapshots:
       '@sentry/types': 7.114.0
       '@sentry/utils': 7.114.0
 
+  '@sentry-internal/tracing@7.116.0':
+    dependencies:
+      '@sentry/core': 7.116.0
+      '@sentry/types': 7.116.0
+      '@sentry/utils': 7.116.0
+
   '@sentry/core@7.109.0':
     dependencies:
       '@sentry/types': 7.109.0
@@ -16523,11 +16553,23 @@ snapshots:
       '@sentry/types': 7.114.0
       '@sentry/utils': 7.114.0
 
+  '@sentry/core@7.116.0':
+    dependencies:
+      '@sentry/types': 7.116.0
+      '@sentry/utils': 7.116.0
+
   '@sentry/integrations@7.114.0':
     dependencies:
       '@sentry/core': 7.114.0
       '@sentry/types': 7.114.0
       '@sentry/utils': 7.114.0
+      localforage: 1.10.0
+
+  '@sentry/integrations@7.116.0':
+    dependencies:
+      '@sentry/core': 7.116.0
+      '@sentry/types': 7.116.0
+      '@sentry/utils': 7.116.0
       localforage: 1.10.0
 
   '@sentry/node@7.109.0':
@@ -16552,6 +16594,14 @@ snapshots:
       '@sentry/types': 7.114.0
       '@sentry/utils': 7.114.0
 
+  '@sentry/node@7.116.0':
+    dependencies:
+      '@sentry-internal/tracing': 7.116.0
+      '@sentry/core': 7.116.0
+      '@sentry/integrations': 7.116.0
+      '@sentry/types': 7.116.0
+      '@sentry/utils': 7.116.0
+
   '@sentry/serverless@7.114.0':
     dependencies:
       '@sentry/core': 7.114.0
@@ -16571,6 +16621,8 @@ snapshots:
 
   '@sentry/types@7.114.0': {}
 
+  '@sentry/types@7.116.0': {}
+
   '@sentry/utils@7.109.0':
     dependencies:
       '@sentry/types': 7.109.0
@@ -16582,6 +16634,10 @@ snapshots:
   '@sentry/utils@7.114.0':
     dependencies:
       '@sentry/types': 7.114.0
+
+  '@sentry/utils@7.116.0':
+    dependencies:
+      '@sentry/types': 7.116.0
 
   '@sideway/address@4.1.5':
     dependencies:
@@ -18535,12 +18591,12 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cosmiconfig-typescript-loader@5.0.0(@types/node@20.12.11)(cosmiconfig@9.0.0(typescript@5.5.0-dev.20240523))(typescript@5.5.0-dev.20240523):
+  cosmiconfig-typescript-loader@5.0.0(@types/node@20.12.11)(cosmiconfig@9.0.0(typescript@5.5.0-dev.20240524))(typescript@5.5.0-dev.20240524):
     dependencies:
       '@types/node': 20.12.11
-      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240523)
+      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240524)
       jiti: 1.21.0
-      typescript: 5.5.0-dev.20240523
+      typescript: 5.5.0-dev.20240524
 
   cosmiconfig@8.3.6(typescript@5.4.4):
     dependencies:
@@ -18560,14 +18616,14 @@ snapshots:
     optionalDependencies:
       typescript: 5.4.4
 
-  cosmiconfig@9.0.0(typescript@5.5.0-dev.20240523):
+  cosmiconfig@9.0.0(typescript@5.5.0-dev.20240524):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 5.5.0-dev.20240523
+      typescript: 5.5.0-dev.20240524
 
   cpu-features@0.0.2:
     dependencies:
@@ -18924,7 +18980,7 @@ snapshots:
     dependencies:
       semver: 7.6.2
       shelljs: 0.8.5
-      typescript: 5.5.0-dev.20240523
+      typescript: 5.5.0-dev.20240524
 
   dreamopt@0.8.0:
     dependencies:
@@ -23767,13 +23823,13 @@ snapshots:
       '@pkgr/core': 0.1.1
       tslib: 2.6.2
 
-  syncpack@12.3.2(typescript@5.5.0-dev.20240523):
+  syncpack@12.3.2(typescript@5.5.0-dev.20240524):
     dependencies:
       '@effect/schema': 0.66.5(effect@3.0.3)(fast-check@3.17.2)
       chalk: 5.3.0
       chalk-template: 1.1.0
       commander: 12.0.0
-      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240523)
+      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240524)
       effect: 3.0.3
       enquirer: 2.4.1
       fast-check: 3.17.2
@@ -24167,7 +24223,7 @@ snapshots:
 
   typescript@5.4.4: {}
 
-  typescript@5.5.0-dev.20240523: {}
+  typescript@5.5.0-dev.20240524: {}
 
   ua-parser-js@1.0.37: {}
 
