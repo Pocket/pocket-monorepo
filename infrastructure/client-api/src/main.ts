@@ -67,12 +67,11 @@ class ClientAPI extends TerraformStack {
       pagerDuty: clientApiPagerduty,
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
+      wafAcl: this.createWafACL(),
       cache,
       region,
       caller,
     });
-
-    this.createWafACL()
 
     new PocketAwsSyntheticChecks(this, 'synthetics', {
       // alarmTopicArn:
@@ -208,6 +207,7 @@ class ClientAPI extends TerraformStack {
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
     snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
     cache: string;
+    wafAcl: Wafv2WebAcl;
   }): PocketALBApplication {
     const {
       pagerDuty,
@@ -216,6 +216,7 @@ class ClientAPI extends TerraformStack {
       secretsManagerKmsAlias,
       cache,
       snsTopic,
+      wafAcl,
     } = dependencies;
 
     return new PocketALBApplication(this, 'application', {
@@ -225,6 +226,9 @@ class ClientAPI extends TerraformStack {
       tags: config.tags,
       cdn: true,
       domain: config.domain,
+      wafConfig: {
+        aclArn: wafAcl.arn,
+      },
       taskSize: {
         cpu: 1024,
         memory: 2048,
