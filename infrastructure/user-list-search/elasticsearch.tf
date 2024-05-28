@@ -133,3 +133,82 @@ resource "aws_cloudwatch_log_group" "elasticsearch_error" {
   name              = "/aws/aes/domains/${lower(local.prefix)}/error"
   retention_in_days = 14
 }
+
+# Manual snapshot requirements
+# S3 bucket to store snapshots
+resource "aws_s3_bucket" "search_snapshots_bucket" {
+  bucket = "pocket-${lower(local.prefix)}-search-snapshots"
+  tags   = local.tags
+}
+
+resource "aws_s3_bucket_acl" "search_snapshots_bucket" {
+  acl    = "private"
+  bucket = aws_s3_bucket.search_snapshots_bucket.id
+}
+
+resource "aws_s3_bucket_public_access_block" "search_snapshots_bucket" {
+  bucket              = aws_s3_bucket.search_snapshots_bucket.id
+  block_public_acls   = true
+  block_public_policy = true
+}
+
+#  IAM role with access to S3 bucket
+resource "aws_iam_role" "search_snapshot_role" {
+  name               = "${local.prefix}-OSManualSnapshotRole"
+  tags               = local.tags
+  assume_role_policy = <<EOF
+  {
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Sid": "",
+    "Effect": "Allow",
+    "Principal": {
+      "Service": "es.amazonaws.com"
+    },
+    "Action": "sts:AssumeRole"
+  }]
+}
+EOF
+}
+
+data "aws_iam_policy_document" "snapshot_access_policy" {
+  version = "2012-10-17"
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject"
+    ]
+    resources = [
+      aws_s3_bucket.search_snapshots_bucket.arn,
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "iam:PassRole"
+    ]
+    resources = [
+      aws_iam_role.search_snapshot_role.arn
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "es:ESHttpPut",
+    ]
+    resources = [
+      "${aws_elasticsearch_domain.user_search[0].arn}/*",
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "snapshot_access_policy_attachment" {
+  name   = "${local.prefix}-OSManualSnapshotS3AccessPolicy"
+  role   = aws_iam_role.search_snapshot_role.id
+  policy = data.aws_iam_policy_document.snapshot_access_policy.json
+}
