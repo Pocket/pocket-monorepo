@@ -20,6 +20,7 @@ export function createDoc(payload: EventPayload): CorpusItemIndex[] {
       curation_category: collection.curationCategory?.name,
       iab_child: collection.IABChildCategory?.name,
       iab_parent: collection.IABParentCategory?.name,
+      status: collection.status,
     };
     const parent: CorpusItemIndex = {
       meta: { _id: collection.externalId, _index },
