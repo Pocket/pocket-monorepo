@@ -2147,6 +2147,7 @@ export type QueryItemByUrlArgs = {
  * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
  */
 export type QueryNewTabSlateArgs = {
+  enableRankingByRegion?: InputMaybe<Scalars['Boolean']['input']>;
   locale: Scalars['String']['input'];
   region?: InputMaybe<Scalars['String']['input']>;
 };

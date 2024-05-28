@@ -1,7 +1,7 @@
-import fetchRetry from 'fetch-retry';
 import { config } from './config';
+import * as Sentry from '@sentry/aws-serverless';
+import fetchRetry from 'fetch-retry';
 import { getBrazeApiKey } from './ssm';
-import * as Sentry from '@sentry/serverless';
 import type {
   UsersTrackObject,
   UsersAliasObject,

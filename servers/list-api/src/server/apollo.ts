@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node';
 import express, { Application, json } from 'express';
 import { Server, createServer } from 'http';
 import { expressMiddleware } from '@apollo/server/express4';
@@ -9,8 +10,6 @@ import {
   isSubgraphIntrospection,
   sentryPocketMiddleware,
 } from '@pocket-tools/apollo-utils';
-import { initSentry, initSentryErrorHandler } from '@pocket-tools/sentry';
-import config from '../config';
 import { ContextManager } from './context';
 import { readClient, writeClient } from '../database/client';
 import {
@@ -56,11 +55,6 @@ export async function startServer(port: number): Promise<{
   // provided to drain plugin for graceful shutdown.
   const app: Application = express();
   const httpServer: Server = createServer(app);
-
-  initSentry(app, {
-    ...config.sentry,
-    debug: config.sentry.environment == 'development',
-  });
 
   // Expose health check url
   app.get('/.well-known/apollo/server-health', (req, res) => {
@@ -123,7 +117,7 @@ export async function startServer(port: number): Promise<{
   );
 
   // The error handler must be before any other error middleware and after all controllers
-  initSentryErrorHandler(app);
+  Sentry.setupExpressErrorHandler(app);
 
   await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
   return { app, server, url };

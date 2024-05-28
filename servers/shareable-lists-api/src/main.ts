@@ -1,3 +1,11 @@
+import config from './config';
+import { initSentry } from '@pocket-tools/sentry';
+// Initialize sentry
+initSentry({
+  ...config.sentry,
+  debug: config.sentry.environment == 'development',
+});
+
 import { startServer } from './express';
 import { serverLogger } from '@pocket-tools/ts-logger';
 

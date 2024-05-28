@@ -6,6 +6,11 @@ import {
 } from '@pocket-tools/tracing';
 import config from './config';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { initSentry } from '@pocket-tools/sentry';
+initSentry({
+  ...config.sentry,
+  debug: config.sentry.environment == 'development',
+});
 
 nodeSDKBuilder({
   host: config.tracing.host,

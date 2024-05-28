@@ -3,7 +3,7 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { config } from './config';
 import * as DeleteMutation from './externalCaller/deleteMutation';
 import { deleteUsers } from './index';
-import * as Sentry from '@sentry/serverless';
+import * as Sentry from '@sentry/aws-serverless';
 
 describe('deleteUsers spec test', () => {
   let client: DynamoDBClient;

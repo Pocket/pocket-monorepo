@@ -1,5 +1,5 @@
 import { FxaJwt } from './jwt';
-import * as Sentry from '@sentry/serverless';
+import * as Sentry from '@sentry/aws-serverless';
 import { eventHandler, formatResponse } from './index';
 import config from './config';
 import {

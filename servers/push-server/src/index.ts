@@ -1,5 +1,5 @@
-import { Worker, isMainThread } from 'worker_threads';
 import Sentry from './sentry';
+import { Worker, isMainThread } from 'worker_threads';
 import { worker } from './worker';
 import { numWorkers, msBetweenStarts } from './config';
 

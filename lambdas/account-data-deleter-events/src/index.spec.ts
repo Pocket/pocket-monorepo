@@ -1,7 +1,7 @@
 import { Event, handlers } from './handlers';
 import { handlerFn } from './index';
 import { SQSEvent } from 'aws-lambda';
-import * as Sentry from '@sentry/serverless';
+import * as Sentry from '@sentry/aws-serverless';
 
 describe('event handlers', () => {
   let deleteStub: jest.SpyInstance;

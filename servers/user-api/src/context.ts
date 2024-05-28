@@ -83,12 +83,15 @@ class ContextManager implements IContext {
     }
 
     // Set tracking data for Sentry
-    Sentry.configureScope((scope) => {
-      scope.setTag('pocket-api-id', (this.headers.apiid || '0') as string);
-      if (this.headers.encodedid) {
-        scope.setUser({ id: this.headers.encodedid as string });
-      }
-    });
+    Sentry.getCurrentScope().setTag(
+      'pocket-api-id',
+      (this.headers.apiid || '0') as string,
+    );
+    if (this.headers.encodedid) {
+      Sentry.getCurrentScope().setUser({
+        id: this.headers.encodedid as string,
+      });
+    }
   }
 
   /**
@@ -140,21 +143,19 @@ class ContextManager implements IContext {
     if (this._userId != null && this._userId != 'anonymous') {
       // If we have a user, lets identify them and the error
       // We encode the error because we identifiy users in sentry with encoded user ids across all the clients and services
-      Sentry.configureScope((scope) => {
-        // This is in a try catch in case the IntMask function values on a weird or invalid value, for now we dont want to halt execution, or throw an error.
-        try {
-          scope.setUser({
-            id: IntMask.encode(this._userId),
-          });
-        } catch (e) {
-          serverLogger.error('Could not encode user id for sentry', {
-            userId: this._userId,
-            message: e.message,
-            headers: this.headers,
-          });
-          Sentry.captureMessage('Could not encode user id for sentry');
-        }
-      });
+      // This is in a try catch in case the IntMask function values on a weird or invalid value, for now we dont want to halt execution, or throw an error.
+      try {
+        Sentry.getCurrentScope().setUser({
+          id: IntMask.encode(this._userId),
+        });
+      } catch (e) {
+        serverLogger.error('Could not encode user id for sentry', {
+          userId: this._userId,
+          message: e.message,
+          headers: this.headers,
+        });
+        Sentry.captureMessage('Could not encode user id for sentry');
+      }
       this.models.user = new UserModel(this);
     } else {
       // when we get here, we have no userid, which should mean that this user is not logged in

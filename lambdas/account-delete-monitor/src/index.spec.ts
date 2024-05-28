@@ -1,7 +1,7 @@
 import { Event, handlers } from './handlers';
 import { processor } from './index';
 import { type SQSEvent } from 'aws-lambda';
-import * as Sentry from '@sentry/serverless';
+import * as Sentry from '@sentry/aws-serverless';
 
 describe('event handlers', () => {
   let consoleErrorStub: jest.SpyInstance;
