@@ -8,6 +8,7 @@ import { initSentry } from '@pocket-tools/sentry';
 initSentry({
   ...config.sentry,
   debug: config.sentry.environment == 'development',
+  skipOpenTelemetrySetup: true,
 });
 
 nodeSDKBuilder({
@@ -15,6 +16,7 @@ nodeSDKBuilder({
   serviceName: config.tracing.serviceName,
   release: config.sentry.release,
   logger: serverLogger,
+  addSentry: true,
 }).then(async () => {
   const { url } = await startServer(config.app.serverPort);
   serverLogger.info(
