@@ -43,7 +43,7 @@
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
     "@prisma/client": "5.14.0",
-    "@sentry/node": "7.114.0",
+    "@sentry/node": "7.116.0",
     "cors": "2.8.5",
     "express": "4.19.2",
     "express-validator": "^7.0.1",
