@@ -22,7 +22,7 @@ describe('context', () => {
     },
   };
   describe('constructor', () => {
-    const sentryScopeSpy = jest.spyOn(Sentry, 'configureScope');
+    const sentryScopeSpy = jest.spyOn(Sentry, 'getCurrentScope');
     beforeEach(() => sentryScopeSpy.mockReset());
     afterAll(() => {
       sentryScopeSpy.mockRestore();
@@ -36,6 +36,11 @@ describe('context', () => {
     ])(
       'sets the Sentry scope with appropriate headers',
       ({ headers, expectedApiId }) => {
+        const mockScope = {
+          setTag: jest.fn(),
+          setUser: jest.fn(),
+        } as unknown as Sentry.Scope; // Coercing since these are the only two methods we need to check
+        sentryScopeSpy.mockImplementation(() => mockScope);
         new ContextManager({
           request: {
             headers: { userid: '1', ...headers },
@@ -44,13 +49,7 @@ describe('context', () => {
           eventEmitter: new ItemsEventEmitter(),
         });
         // Mock out the scope methods used in the configureScope callback
-        expect(sentryScopeSpy).toHaveBeenCalledTimes(1);
-        const scopeConfigureCallback = sentryScopeSpy.mock.calls[0][0];
-        const mockScope = {
-          setTag: jest.fn(),
-          setUser: jest.fn(),
-        } as unknown as Sentry.Scope; // Coercing since these are the only two methods we need to check
-        scopeConfigureCallback(mockScope);
+        expect(sentryScopeSpy).toHaveBeenCalledTimes(2);
         expect(mockScope.setTag).toHaveBeenNthCalledWith(
           1,
           'pocket-api-id',

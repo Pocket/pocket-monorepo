@@ -16,7 +16,6 @@ import {
   getApolloServer,
 } from './graphql';
 import { sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
-import { initSentry } from '@pocket-tools/sentry';
 
 export interface ServerOptions {
   port?: number;
@@ -30,18 +29,6 @@ export async function start(port: number): Promise<{
 }> {
   const app: Application = express();
   const httpServer: Server = createServer(app);
-
-  // Initialize sentry
-  initSentry(app, {
-    ...config.sentry,
-    debug: config.sentry.environment == 'development',
-  });
-
-  // RequestHandler creates a separate execution context, so that all
-  // transactions/spans/breadcrumbs are isolated across requests
-  app.use(Sentry.Handlers.requestHandler() as express.RequestHandler);
-  // TracingHandler creates a trace for every incoming request
-  app.use(Sentry.Handlers.tracingHandler());
 
   const authOptions: Partial<IAuthOption> = {
     type: IAuthType.CUSTOM,
@@ -102,7 +89,7 @@ export async function start(port: number): Promise<{
   app.use(instance.app);
 
   // The error handler must be before any other error middleware and after all controllers
-  app.use(Sentry.Handlers.errorHandler() as express.ErrorRequestHandler);
+  Sentry.setupExpressErrorHandler(app);
 
   await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
   return { app, server, graphqlUrl: url };

@@ -78,15 +78,13 @@ export class ContextManager implements IContext {
       savedItem: new SavedItemModel(this),
     };
     // Set tracking data for Sentry
-    Sentry.configureScope((scope) => {
-      scope.setTag(
-        'pocket-api-id',
-        (config.request.headers.apiid || '0') as string,
-      );
-      scope.setUser({
-        id: config.request.headers.encodedid as string,
-        ip_address: config.request.headers.gatewayipaddress as string,
-      });
+    Sentry.getCurrentScope().setTag(
+      'pocket-api-id',
+      (config.request.headers.apiid || '0') as string,
+    );
+    Sentry.getCurrentScope().setUser({
+      id: config.request.headers.encodedid as string,
+      ip_address: config.request.headers.gatewayipaddress as string,
     });
   }
   models: {

@@ -33,7 +33,7 @@
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "7.116.0",
+    "@sentry/node": "8.5.0",
     "@snowplow/tracker-core": "3.23.0",
     "cors": "2.8.5",
     "express": "4.19.2",

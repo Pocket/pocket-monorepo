@@ -1,3 +1,10 @@
+import { config } from './config';
+import * as Sentry from '@sentry/aws-serverless';
+Sentry.init({
+  dsn: config.sentry.dsn,
+  release: config.sentry.release,
+  environment: config.sentry.environment,
+});
 import type {
   SQSBatchResponse,
   SQSBatchItemFailure,
@@ -5,9 +12,7 @@ import type {
 } from 'aws-lambda';
 import { EventPayload, validDetailTypes } from './types';
 import { createDoc } from './createDoc';
-import { config } from './config';
 import fetchRetry from 'fetch-retry';
-import * as Sentry from '@sentry/serverless';
 import { serverLogger } from '@pocket-tools/ts-logger';
 const newFetch = fetchRetry(fetch);
 
@@ -31,7 +36,7 @@ export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
   return result;
 }
 
-export const handler = Sentry.AWSLambda.wrapHandler(processor);
+export const handler = Sentry.wrapHandler(processor);
 
 /**
  * Make an HTTP request to the bulk index of elasticsearch to

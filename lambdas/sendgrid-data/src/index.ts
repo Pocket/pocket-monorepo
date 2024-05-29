@@ -1,14 +1,13 @@
 import config from './config';
-import { deliverEvents, logEventsError, logEventsReceived } from './sendgrid';
-import * as Sentry from '@sentry/serverless';
-import { captureException } from './sentry';
-import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
-
-Sentry.AWSLambda.init({
+import * as Sentry from '@sentry/aws-serverless';
+Sentry.init({
   dsn: config.sentry.dsn,
   release: config.sentry.release,
   environment: config.environment,
 });
+import { deliverEvents, logEventsError, logEventsReceived } from './sendgrid';
+import { captureException } from './sentry';
+import type { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 /**
  * Format the response data
@@ -68,4 +67,4 @@ const eventHandler = async (
   }
 };
 
-export const handler = Sentry.AWSLambda.wrapHandler(eventHandler);
+export const handler = Sentry.wrapHandler(eventHandler);

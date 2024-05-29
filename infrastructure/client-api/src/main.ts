@@ -33,6 +33,12 @@ import {
   Wafv2WebAclRule,
   Wafv2WebAcl,
 } from '@cdktf/provider-aws/lib/wafv2-web-acl';
+
+import { Wafv2IpSet } from '@cdktf/provider-aws/lib/wafv2-ip-set';
+import {
+  Wafv2WebAclRule,
+  Wafv2WebAcl,
+} from '@cdktf/provider-aws/lib/wafv2-web-acl';
 class ClientAPI extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
@@ -72,7 +78,7 @@ class ClientAPI extends TerraformStack {
       region,
       caller,
     });
-  
+ 
     this.createWafACL();
 
     new PocketAwsSyntheticChecks(this, 'synthetics', {

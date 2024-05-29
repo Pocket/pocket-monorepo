@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-ssm": "3.577.0",
-    "@sentry/serverless": "7.114.0",
+    "@sentry/aws-serverless": "8.5.0",
     "braze-api": "^2.6.0",
     "fetch-retry": "^5.0.6",
     "tslib": "2.6.2"

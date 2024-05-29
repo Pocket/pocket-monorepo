@@ -1,7 +1,4 @@
-import * as Sentry from '@sentry/node';
-import { initSentry } from '@pocket-tools/sentry';
 import express, { Application, json, urlencoded } from 'express';
-import config from './config';
 import {
   clientErrorHandler,
   logAndCaptureErrors,
@@ -17,18 +14,6 @@ import v3SendRouter from './routes/v3Send';
 export async function startServer(port: number) {
   const app: Application = express();
   const httpServer: Server = createServer(app);
-
-  // Sentry Setup
-  initSentry(app, {
-    ...config.sentry,
-    debug: config.sentry.environment == 'development',
-  });
-
-  // RequestHandler creates a separate execution context, so that all
-  // transactions/spans/breadcrumbs are isolated across requests
-  app.use(Sentry.Handlers.requestHandler() as express.RequestHandler);
-  // TracingHandler creates a trace for every incoming request
-  app.use(Sentry.Handlers.tracingHandler());
 
   app.use(json());
   app.use(urlencoded({ extended: true }));
