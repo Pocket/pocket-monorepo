@@ -32,7 +32,6 @@ import { Wafv2IpSet } from '@cdktf/provider-aws/lib/wafv2-ip-set';
 import {
   Wafv2WebAclRule,
   Wafv2WebAcl,
-  Wafv2WebAclAssociationConfig,
 } from '@cdktf/provider-aws/lib/wafv2-web-acl';
 import { Wafv2WebAclAssociation } from '@cdktf/provider-aws/lib/wafv2-web-acl-association';
 class ClientAPI extends TerraformStack {
