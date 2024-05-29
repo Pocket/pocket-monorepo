@@ -1,7 +1,13 @@
-import { SQSEvent } from 'aws-lambda';
-import * as Sentry from '@sentry/serverless';
-
 import config from './config';
+import * as Sentry from '@sentry/aws-serverless';
+Sentry.init({
+  dsn: config.app.sentry.dsn,
+  release: config.app.sentry.release,
+  environment: config.app.environment,
+  serverName: config.app.name,
+});
+
+import type { SQSEvent } from 'aws-lambda';
 import {
   handleMutationErrors,
   migrateAppleUserMutation,
@@ -115,12 +121,4 @@ export async function handlerFn(event: SQSEvent) {
 
   return {};
 }
-
-Sentry.AWSLambda.init({
-  dsn: config.app.sentry.dsn,
-  release: config.app.sentry.release,
-  environment: config.app.environment,
-  serverName: config.app.name,
-});
-
-export const handler = Sentry.AWSLambda.wrapHandler(handlerFn);
+export const handler = Sentry.wrapHandler(handlerFn);

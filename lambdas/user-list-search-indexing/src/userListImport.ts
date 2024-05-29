@@ -1,12 +1,11 @@
-import { SQSEvent, SQSRecord } from 'aws-lambda';
-import { processUserImport } from './helper';
-import * as Sentry from '@sentry/serverless';
 import { config } from './config';
-import { UserListImportSqsMessage } from './types';
-
-Sentry.AWSLambda.init({
+import * as Sentry from '@sentry/aws-serverless';
+Sentry.init({
   ...config.sentry,
 });
+import type { UserListImportSqsMessage } from './types';
+import type { SQSEvent, SQSRecord } from 'aws-lambda';
+import { processUserImport } from './helper';
 
 export const processor = async (event: SQSEvent): Promise<boolean[]> => {
   return await Promise.all(
@@ -19,4 +18,4 @@ export const processor = async (event: SQSEvent): Promise<boolean[]> => {
   );
 };
 
-export const handler = Sentry.AWSLambda.wrapHandler(processor);
+export const handler = Sentry.wrapHandler(processor);

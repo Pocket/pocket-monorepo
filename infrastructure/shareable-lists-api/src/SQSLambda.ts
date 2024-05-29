@@ -6,7 +6,11 @@ import {
   PocketVPC,
   PocketSQSWithLambdaTarget,
 } from '@pocket-tools/terraform-modules';
-import { dataAwsRegion, dataAwsCallerIdentity } from '@cdktf/provider-aws';
+import {
+  dataAwsRegion,
+  dataAwsCallerIdentity,
+  dataAwsSsmParameter,
+} from '@cdktf/provider-aws';
 
 export class SQSLambda extends Construct {
   public readonly lambda: PocketSQSWithLambdaTarget;
@@ -20,6 +24,7 @@ export class SQSLambda extends Construct {
     pagerDuty?: PocketPagerDuty,
   ) {
     super(scope, name);
+    const { sentryDsn } = this.getEnvVariableValues();
 
     this.lambda = new PocketSQSWithLambdaTarget(this, 'sqs-event-consumer', {
       name: `${config.prefix}-Sqs-Event-Consumer`,
@@ -36,7 +41,7 @@ export class SQSLambda extends Construct {
         timeout: 120,
         reservedConcurrencyLimit: config.reservedConcurrencyLimit,
         environment: {
-          SENTRY_DSN: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/SENTRY_DSN`,
+          SENTRY_DSN: sentryDsn,
           ENVIRONMENT:
             config.environment === 'Prod' ? 'production' : 'development',
           SHAREABLE_LISTS_API_URI:
@@ -56,5 +61,17 @@ export class SQSLambda extends Construct {
       },
       tags: config.tags,
     });
+  }
+
+  private getEnvVariableValues() {
+    const sentryDsn = new dataAwsSsmParameter.DataAwsSsmParameter(
+      this,
+      'sentry-dsn',
+      {
+        name: `/${config.name}/${config.environment}/SENTRY_DSN`,
+      },
+    );
+
+    return { sentryDsn: sentryDsn.value };
   }
 }

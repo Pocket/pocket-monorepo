@@ -1,3 +1,5 @@
+import { config } from '../config';
+import * as Sentry from '@sentry/aws-serverless';
 import { UserRegistrationEvent } from '../schemas/userRegistrationEvent';
 import {
   generateSubscriptionPayloadForEmail,
@@ -5,8 +7,6 @@ import {
   sendUserTrack,
   setSubscription,
 } from '../braze';
-import { config } from '../config';
-import * as Sentry from '@sentry/serverless';
 import { SQSRecord } from 'aws-lambda';
 import type {
   UsersTrackObject,

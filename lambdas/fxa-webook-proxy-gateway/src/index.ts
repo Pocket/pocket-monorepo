@@ -1,16 +1,16 @@
-import { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
-import * as Sentry from '@sentry/serverless';
 import config from './config';
-import { FxaJwt } from './jwt';
-import { sendMessage } from './sqs';
-import { SqsEvent, FxaPayload } from './types';
-
-Sentry.AWSLambda.init({
+import * as Sentry from '@sentry/aws-serverless';
+Sentry.init({
   dsn: config.sentry.dsn,
   release: config.sentry.release,
   environment: config.environment,
   serverName: config.name,
 });
+
+import type { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { FxaJwt } from './jwt';
+import { sendMessage } from './sqs';
+import { SqsEvent, FxaPayload } from './types';
 
 /**
  * Format the response data
@@ -148,4 +148,4 @@ export async function eventHandler(
  * useful context when the unexpected
  * happens.
  */
-export const handler = Sentry.AWSLambda.wrapHandler(eventHandler);
+export const handler = Sentry.wrapHandler(eventHandler);

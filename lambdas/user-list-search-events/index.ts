@@ -1,6 +1,10 @@
-import * as Sentry from '@sentry/serverless';
-import { SQSEvent } from 'aws-lambda';
 import { config } from './config';
+import * as Sentry from '@sentry/aws-serverless';
+Sentry.init({
+  ...config.sentry,
+  debug: config.sentry.environment == 'development',
+});
+import { SQSEvent } from 'aws-lambda';
 import { handlerMap } from './handlerMap';
 
 /**
@@ -10,10 +14,6 @@ import { handlerMap } from './handlerMap';
  * @returns
  */
 async function __handler(event: SQSEvent): Promise<any> {
-  Sentry.AWSLambda.init({
-    ...config.sentry,
-    debug: config.sentry.environment == 'development',
-  });
   for await (const record of event.Records) {
     try {
       const message = JSON.parse(JSON.parse(record.body).Message);
@@ -36,6 +36,6 @@ async function __handler(event: SQSEvent): Promise<any> {
   return {};
 }
 
-export const handler = Sentry.AWSLambda.wrapHandler(__handler, {
+export const handler = Sentry.wrapHandler(__handler, {
   captureTimeoutWarning: false,
 });
