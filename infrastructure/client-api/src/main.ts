@@ -69,13 +69,12 @@ class ClientAPI extends TerraformStack {
       pagerDuty: clientApiPagerduty,
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
+      wafAcl: this.createWafACL(),
       cache,
       region,
       caller,
     });
-
-    this.createWafACL()
-
+  
     new PocketAwsSyntheticChecks(this, 'synthetics', {
       // alarmTopicArn:
       //   config.environment === 'Prod'
