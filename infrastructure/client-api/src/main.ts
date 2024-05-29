@@ -27,13 +27,6 @@ import { App, S3Backend, TerraformStack } from 'cdktf';
 import { Construct } from 'constructs';
 import fs from 'fs';
 
-
-import { Wafv2IpSet } from '@cdktf/provider-aws/lib/wafv2-ip-set';
-import {
-  Wafv2WebAclRule,
-  Wafv2WebAcl,
-} from '@cdktf/provider-aws/lib/wafv2-web-acl';
-
 import { Wafv2IpSet } from '@cdktf/provider-aws/lib/wafv2-ip-set';
 import {
   Wafv2WebAclRule,
