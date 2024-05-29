@@ -9,7 +9,7 @@ import {
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { chunk } from 'lodash';
 import { setTimeout } from 'timers/promises';
-import * as Sentry from '@sentry/serverless';
+import * as Sentry from '@sentry/aws-serverless';
 
 export class BatchDeleteDyanmoClient {
   private dynamo: DynamoDBDocumentClient;

@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/serverless';
+import * as Sentry from '@sentry/aws-serverless';
 
 interface Map {
   [key: string]: Map | any;

@@ -1,7 +1,18 @@
-import { SQSEvent, SQSBatchResponse, SQSBatchItemFailure } from 'aws-lambda';
-import * as Sentry from '@sentry/serverless';
-import { handlers } from './handlers';
 import { config } from './config';
+import * as Sentry from '@sentry/aws-serverless';
+Sentry.init({
+  dsn: config.app.sentry.dsn,
+  release: config.app.sentry.release,
+  environment: config.app.environment,
+  serverName: config.app.name,
+});
+import type {
+  SQSEvent,
+  SQSBatchResponse,
+  SQSBatchItemFailure,
+} from 'aws-lambda';
+
+import { handlers } from './handlers';
 
 /**
  * The main handler function which will be wrapped by Sentry prior to export.
@@ -34,11 +45,4 @@ export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
   return { batchItemFailures: batchFailures };
 }
 
-Sentry.AWSLambda.init({
-  dsn: config.app.sentry.dsn,
-  release: config.app.sentry.release,
-  environment: config.app.environment,
-  serverName: config.app.name,
-});
-
-export const handler = Sentry.AWSLambda.wrapHandler(processor);
+export const handler = Sentry.wrapHandler(processor);

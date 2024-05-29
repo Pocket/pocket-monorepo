@@ -1,13 +1,11 @@
 import * as Sentry from '@sentry/node';
 import express, { Application, json } from 'express';
 import { Server, createServer } from 'http';
-import { config } from './config';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 
 import { EventEmitter } from 'events';
 import { SqsConsumer } from './SqsConsumer';
 import { sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
-import { initSentry } from '@pocket-tools/sentry';
 
 export async function startServer(port: number): Promise<{
   app: Application;
@@ -17,17 +15,6 @@ export async function startServer(port: number): Promise<{
   // provided to drain plugin for graceful shutdown.
   const app: Application = express();
   const httpServer: Server = createServer(app);
-
-  initSentry(app, {
-    ...config.sentry,
-    debug: config.sentry.environment == 'development',
-  });
-
-  // RequestHandler creates a separate execution context, so that all
-  // transactions/spans/breadcrumbs are isolated across requests
-  app.use(Sentry.Handlers.requestHandler() as express.RequestHandler);
-  // TracingHandler creates a trace for every incoming request
-  app.use(Sentry.Handlers.tracingHandler());
 
   // Start polling for messages from snowplow event queue
   new SqsConsumer(new EventEmitter());
@@ -48,7 +35,7 @@ export async function startServer(port: number): Promise<{
   );
 
   // The error handler must be before any other error middleware and after all controllers
-  app.use(Sentry.Handlers.errorHandler() as express.ErrorRequestHandler);
+  Sentry.setupExpressErrorHandler(app);
 
   await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
   return { app, url };

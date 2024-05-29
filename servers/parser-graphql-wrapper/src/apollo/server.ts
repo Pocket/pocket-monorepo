@@ -10,11 +10,9 @@ import {
   errorHandler,
   sentryPocketMiddleware,
 } from '@pocket-tools/apollo-utils';
-import { initSentry } from '@pocket-tools/sentry';
 import { ApolloServerPluginCacheControl } from '@apollo/server/plugin/cacheControl';
 import { typeDefs } from './typeDefs';
 import { resolvers } from './resolvers';
-import config from '../config';
 import { getRedis, getRedisCache } from '../cache';
 import { ContextManager, IContext } from './context';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
@@ -30,19 +28,8 @@ export async function startServer(port: number): Promise<{
   const app: Application = express();
   const httpServer: Server = createServer(app);
 
-  initSentry(app, {
-    ...config.sentry,
-    debug: config.sentry.environment == 'development',
-  });
-
   // Initialize unleash client
   unleash();
-
-  // RequestHandler creates a separate execution context, so that all
-  // transactions/spans/breadcrumbs are isolated across requests
-  app.use(Sentry.Handlers.requestHandler() as express.RequestHandler);
-  // TracingHandler creates a trace for every incoming request
-  app.use(Sentry.Handlers.tracingHandler());
 
   const cache = getRedisCache();
 
@@ -107,7 +94,7 @@ export async function startServer(port: number): Promise<{
   );
 
   // The error handler must be before any other error middleware and after all controllers
-  app.use(Sentry.Handlers.errorHandler() as express.ErrorRequestHandler);
+  Sentry.setupExpressErrorHandler(app);
 
   await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
   return { app, server, url };

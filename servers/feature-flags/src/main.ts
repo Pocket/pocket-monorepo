@@ -1,6 +1,12 @@
-import { start } from './';
 import config from './config';
+import { initSentry } from '@pocket-tools/sentry';
+// Initialize sentry
+initSentry({
+  ...config.sentry,
+  debug: config.sentry.environment == 'development',
+});
 
+import { start } from './';
 start(config.app.port)
   .then(({ graphqlUrl }) => {
     console.log(

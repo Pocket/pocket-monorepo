@@ -1,16 +1,18 @@
 import { config } from './config';
-import * as Sentry from '@sentry/serverless';
-import { EventBridgeEvent } from 'aws-lambda';
-import { BatchDeleteDyanmoClient } from './dynamoUtils';
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { deleteUserMutationCaller } from './externalCaller/deleteMutation';
+import * as Sentry from '@sentry/aws-serverless';
 
-Sentry.AWSLambda.init({
+//Init needs to come first.
+Sentry.init({
   dsn: config.sentry.dsn,
   release: config.sentry.release,
   environment: config.app.environment,
   serverName: config.app.name,
 });
+
+import { EventBridgeEvent } from 'aws-lambda';
+import { BatchDeleteDyanmoClient } from './dynamoUtils';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { deleteUserMutationCaller } from './externalCaller/deleteMutation';
 
 const dynamoDBClient = new DynamoDBClient({
   region: config.aws.region,
@@ -66,4 +68,4 @@ function validateEvent(event: EventBridgeEvent<any, any>) {
   }
 }
 
-export const handler = Sentry.AWSLambda.wrapHandler(handlerFn);
+export const handler = Sentry.wrapHandler(handlerFn);
