@@ -400,21 +400,6 @@ describe('PocketALBApplication', () => {
     expect(synthed).toMatchSnapshot();
   });
 
-  it('throws an error for if you enable a CDN and a WAF', () => {
-    const app = Testing.app();
-    const stack = new TerraformStack(app, 'test');
-
-    expect(() => {
-      new PocketALBApplication(stack, 'testPocketApp', {
-        ...BASE_CONFIG,
-        wafConfig: { aclArn: 'something' },
-        cdn: true,
-      });
-    }).toThrow(
-      'Implementation of waf association with CDN is not currently supported',
-    );
-  });
-
   it('renders a Pocket App with attached waf', () => {
     const synthed = Testing.synthScope((stack) => {
       new PocketALBApplication(stack, 'testPocketApp', {

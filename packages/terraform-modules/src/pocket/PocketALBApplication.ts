@@ -259,11 +259,6 @@ export class PocketALBApplication extends Construct {
     }
 
     if (config.wafConfig) {
-      if (config.cdn) {
-        throw new Error(
-          'Implementation of waf association with CDN is not currently supported',
-        );
-      }
       this.createWAF(alb, config.wafConfig.aclArn);
     }
 

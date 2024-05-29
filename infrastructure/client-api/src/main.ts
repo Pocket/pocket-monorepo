@@ -27,6 +27,12 @@ import { App, S3Backend, TerraformStack } from 'cdktf';
 import { Construct } from 'constructs';
 import fs from 'fs';
 
+
+import { Wafv2IpSet } from '@cdktf/provider-aws/lib/wafv2-ip-set';
+import {
+  Wafv2WebAclRule,
+  Wafv2WebAcl,
+} from '@cdktf/provider-aws/lib/wafv2-web-acl';
 class ClientAPI extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
@@ -61,11 +67,12 @@ class ClientAPI extends TerraformStack {
       pagerDuty: clientApiPagerduty,
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
+      wafAcl: this.createWafACL(),
       cache,
       region,
       caller,
     });
-
+  
     new PocketAwsSyntheticChecks(this, 'synthetics', {
       // alarmTopicArn:
       //   config.environment === 'Prod'
@@ -84,6 +91,78 @@ class ClientAPI extends TerraformStack {
       ],
     });
   }
+
+  private createWafACL() {
+    const ipListProd = [
+      '54.198.114.156/32', // Pocket Nat Gateway; ID: nat-099e4c60ff22e3827
+      '52.54.7.21/32', // Pocket Nat Gateway; ID: nat-041b98cf5532a39b3
+      '34.226.66.3/32', // Pocket Nat Gateway; ID: nat-038b7eb1d10a3e2aa
+      '52.0.226.89/32', // Pocket Nat Gateway; ID: nat-05ecc05c40f383455
+    ];
+
+    const ipListDev = [
+      '34.233.86.222/32', // Pocket Nat Gateway; ID: nat-06a8c51b7f3d76caa
+      '52.202.17.168/32', // Pocket Nat Gateway; ID: nat-0a0c2993503052dfa
+      '3.227.50.158/32', // Pocket Nat Gateway; ID: nat-012b70612d4ab16d1
+      '18.233.131.213/32', // Pocket Nat Gateway; ID: nat-0134b5e5f600ca800
+    ];
+
+    const ipList = config.environment === 'Prod' ? ipListProd : ipListDev;
+
+    const allowListIPs = new Wafv2IpSet(this, 'AllowlistIPs', {
+      name: `${config.name}-${config.environment}-AllowList`,
+      ipAddressVersion: 'IPV4',
+      scope: 'REGIONAL',
+      tags: config.tags,
+      addresses: ipList,
+    });
+
+    const ipAllowListRule = <Wafv2WebAclRule>{
+      name: `${config.name}-${config.environment}-ipAllowList`,
+      priority: 1,
+      action: { allow: {} },
+      statement: {
+        ip_set_reference_statement: {
+          arn: allowListIPs.arn,
+        },
+      },
+      visibilityConfig: {
+        cloudwatchMetricsEnabled: true,
+        metricName: `${config.name}-${config.environment}-ipAllowList`,
+        sampledRequestsEnabled: true,
+      },
+    };
+
+    const regionalRateLimitRule = <Wafv2WebAclRule>{
+      name: `${config.name}-${config.environment}-RegionalRateLimit`,
+      priority: 2,
+      action: { block: {} },
+      statement: {
+        rate_based_statement: {
+          limit: 1000,
+          aggregate_key_type: 'IP',
+        },
+      },
+      visibilityConfig: {
+        cloudwatchMetricsEnabled: true,
+        metricName: `${config.name}-${config.environment}-RegionalRateLimit`,
+        sampledRequestsEnabled: true,
+      },
+    };
+
+    return new Wafv2WebAcl(this, `${config.name}-waf`, {
+      description: `Waf for client-api-proxy ${config.environment} environment`,
+      name: `${config.name}-waf-${config.environment}`,
+      scope: 'REGIONAL',
+      defaultAction: { allow: {} },
+      visibilityConfig: {
+        cloudwatchMetricsEnabled: true,
+        metricName: `${config.name}-waf-${config.environment}`,
+        sampledRequestsEnabled: true,
+      },
+      rule: [ipAllowListRule, regionalRateLimitRule],
+    });
+  };
 
   /**
    * Get the sns topic for code deploy
@@ -140,6 +219,7 @@ class ClientAPI extends TerraformStack {
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
     snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
     cache: string;
+    wafAcl: Wafv2WebAcl;
   }): PocketALBApplication {
     const {
       pagerDuty,
@@ -148,6 +228,7 @@ class ClientAPI extends TerraformStack {
       secretsManagerKmsAlias,
       cache,
       snsTopic,
+      wafAcl,
     } = dependencies;
 
     return new PocketALBApplication(this, 'application', {
@@ -157,6 +238,9 @@ class ClientAPI extends TerraformStack {
       tags: config.tags,
       cdn: true,
       domain: config.domain,
+      wafConfig: {
+        aclArn: wafAcl.arn,
+      },
       taskSize: {
         cpu: 1024,
         memory: 2048,
