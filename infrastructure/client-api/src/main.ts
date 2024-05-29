@@ -167,13 +167,6 @@ class ClientAPI extends TerraformStack {
     });
   };
 
-  private createWAF(alb: ApplicationLoadBalancer, webAclArn: string) {
-    new Wafv2WebAclAssociation(this, 'application_waf_association', {
-      webAclArn: webAclArn,
-      resourceArn: alb.alb.arn,
-    });
-  }
-
   /**
    * Get the sns topic for code deploy
    * @private
