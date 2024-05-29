@@ -32,7 +32,9 @@ import { Wafv2IpSet } from '@cdktf/provider-aws/lib/wafv2-ip-set';
 import {
   Wafv2WebAclRule,
   Wafv2WebAcl,
+  Wafv2WebAclAssociationConfig,
 } from '@cdktf/provider-aws/lib/wafv2-web-acl';
+import { Wafv2WebAclAssociation } from '@cdktf/provider-aws/lib/wafv2-web-acl-association';
 class ClientAPI extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
@@ -165,6 +167,13 @@ class ClientAPI extends TerraformStack {
     });
   };
 
+  private createWAF(alb: ApplicationLoadBalancer, webAclArn: string) {
+    new Wafv2WebAclAssociation(this, 'application_waf_association', {
+      webAclArn: webAclArn,
+      resourceArn: alb.alb.arn,
+    });
+  }
+
   /**
    * Get the sns topic for code deploy
    * @private
@@ -220,6 +229,7 @@ class ClientAPI extends TerraformStack {
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
     snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
     cache: string;
+    wafAcl: Wafv2WebAcl;
   }): PocketALBApplication {
     const {
       pagerDuty,
@@ -228,6 +238,7 @@ class ClientAPI extends TerraformStack {
       secretsManagerKmsAlias,
       cache,
       snsTopic,
+      wafAcl,
     } = dependencies;
 
     return new PocketALBApplication(this, 'application', {
@@ -237,6 +248,9 @@ class ClientAPI extends TerraformStack {
       tags: config.tags,
       cdn: true,
       domain: config.domain,
+      wafConfig: {
+        aclArn: wafAcl.arn,
+      },
       taskSize: {
         cpu: 1024,
         memory: 2048,
