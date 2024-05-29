@@ -241,7 +241,7 @@ class ClientAPI extends TerraformStack {
       domain: config.domain,
     //  wafConfig: {
     //    aclArn: wafAcl.arn,
-      },
+    //  },
       taskSize: {
         cpu: 1024,
         memory: 2048,
