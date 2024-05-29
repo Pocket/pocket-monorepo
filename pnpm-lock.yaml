@@ -2944,6 +2944,12 @@ importers:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/cors':
+        specifier: ^2.8.17
+        version: 2.8.17
+      '@types/express':
+        specifier: 4.17.21
+        version: 4.17.21
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
@@ -2953,6 +2959,9 @@ importers:
       '@types/turndown':
         specifier: 5.0.4
         version: 5.0.4
+      concurrently:
+        specifier: ^8.2.2
+        version: 8.2.2
       jest:
         specifier: 29.7.0
         version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2(@types/node@20.12.11)(typescript@5.4.4))
@@ -17408,7 +17417,7 @@ snapshots:
 
   '@types/graceful-fs@4.1.9':
     dependencies:
-      '@types/node': 20.12.11
+      '@types/node': 20.12.12
 
   '@types/graphql-depth-limit@1.1.6':
     dependencies:

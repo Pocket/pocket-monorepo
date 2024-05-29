@@ -1,12 +1,12 @@
 import { config } from './config';
 import { initSentry } from '@pocket-tools/sentry';
-import * as Sentry from '@sentry/node';
 // Sentry Setup
 initSentry({
   ...config.sentry,
   debug: config.sentry.environment == 'development',
 });
 
+import * as Sentry from '@sentry/node';
 import express, { Application, json } from 'express';
 import { queueDeleteRouter, stripeDeleteRouter } from './routes';
 import { EventEmitter } from 'events';

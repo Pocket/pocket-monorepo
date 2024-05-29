@@ -71,14 +71,14 @@ export type TracingConfig = {
   httpDefaultPort?: number;
   host?: string;
   logger?: DiagLogger;
-  addSentry?: Boolean;
+  addSentry?: boolean;
   additionalInstrumentations?: AdditionalInstrumentation[];
 };
 
 const tracingDefaults: TracingConfig = {
   serviceName: 'unknown',
   release: 'unknown',
-  samplingRatio: 0.2,
+  samplingRatio: 1.0,
   graphQLDepth: 8,
   grpcDefaultPort: 4317,
   httpDefaultPort: 4318,
