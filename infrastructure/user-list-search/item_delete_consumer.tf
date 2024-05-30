@@ -63,7 +63,7 @@ resource "aws_lambda_alias" "item_delete_sqs_processor" {
 resource "aws_lambda_event_source_mapping" "item_delete_sqs" {
   event_source_arn = aws_sqs_queue.user_items_delete.arn
   function_name    = aws_lambda_alias.item_delete_sqs_processor.arn #We set the function to our alias
-  enabled          = false
+  enabled          = true
 }
 
 resource "aws_iam_role" "item_delete_lambda_role" {

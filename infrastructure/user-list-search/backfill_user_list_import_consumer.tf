@@ -63,7 +63,7 @@ resource "aws_lambda_alias" "user_list_import_backfill_sqs_processor" {
 resource "aws_lambda_event_source_mapping" "user_list_import_backfill_sqs" {
   event_source_arn = aws_sqs_queue.user_list_import_backfill.arn
   function_name    = aws_lambda_alias.user_list_import_backfill_sqs_processor.arn #We set the function to our alias
-  enabled          = false
+  enabled          = true
 }
 
 resource "aws_iam_role" "user_list_import_backfill_lambda_role" {
