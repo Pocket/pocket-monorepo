@@ -66,14 +66,12 @@ class ClientAPI extends TerraformStack {
       pagerDuty: clientApiPagerduty,
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
-    //  wafAcl: this.createWafACL(),
+      wafAcl: this.createWafACL(),
       cache,
       region,
       caller,
     });
  
-    this.createWafACL();
-
     new PocketAwsSyntheticChecks(this, 'synthetics', {
       // alarmTopicArn:
       //   config.environment === 'Prod'
@@ -137,11 +135,20 @@ class ClientAPI extends TerraformStack {
     const regionalRateLimitRule = <Wafv2WebAclRule>{
       name: `${config.name}-${config.environment}-RegionalRateLimit`,
       priority: 2,
-      action: { block: {} },
+      action: { count: {} },
       statement: {
         rate_based_statement: {
           limit: 1000,
           aggregate_key_type: 'IP',
+          scope_down_statement: {
+            not_statement: {
+              statement: {
+                ip_set_reference_statement: {
+                  arn: allowListIPs.arn,
+                }
+              }
+            }
+          }
         },
       },
       visibilityConfig: {
@@ -220,7 +227,7 @@ class ClientAPI extends TerraformStack {
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
     snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
     cache: string;
-  //  wafAcl: Wafv2WebAcl;
+    wafAcl: Wafv2WebAcl;
   }): PocketALBApplication {
     const {
       pagerDuty,
@@ -229,7 +236,7 @@ class ClientAPI extends TerraformStack {
       secretsManagerKmsAlias,
       cache,
       snsTopic,
-    //  wafAcl,
+      wafAcl,
     } = dependencies;
 
     return new PocketALBApplication(this, 'application', {
@@ -239,9 +246,9 @@ class ClientAPI extends TerraformStack {
       tags: config.tags,
       cdn: true,
       domain: config.domain,
-    //  wafConfig: {
-    //    aclArn: wafAcl.arn,
-    //  },
+      wafConfig: {
+        aclArn: wafAcl.arn,
+      },
       taskSize: {
         cpu: 1024,
         memory: 2048,
