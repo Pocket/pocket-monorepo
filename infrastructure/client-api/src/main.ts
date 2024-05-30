@@ -97,6 +97,12 @@ class ClientAPI extends TerraformStack {
       '52.54.7.21/32', // Pocket Nat Gateway; ID: nat-041b98cf5532a39b3
       '34.226.66.3/32', // Pocket Nat Gateway; ID: nat-038b7eb1d10a3e2aa
       '52.0.226.89/32', // Pocket Nat Gateway; ID: nat-05ecc05c40f383455
+      '54.214.136.64/32', // Snowplow NAT Gateway west-2 ID: nat-0bcc1bfa98ede54f3
+      '34.208.254.151/32', // Snowplow NAT Gateway west-2 ID: nat-0f039f265fb17ce01
+      '54.87.176.45/32', // Snowplow NAT Gateway east-1 ID: nat-037d9a34449f51e77
+      '34.233.187.14/32', // Snowplow NAT Gateway east-1 ID: nat-070b0eb5fff60fb5d
+      '107.22.212.189/32', // Snowplow NAT Gateway east-1 ID: nat-04b4e66e750b22835
+      '34.225.121.60/32', // Snowplow NAT Gateway east-1 ID: nat-0d08cffbcf4415024
     ];
 
     const ipListDev = [
