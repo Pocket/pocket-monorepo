@@ -62,7 +62,7 @@ resource "aws_lambda_event_source_mapping" "corpus_events_sqs" {
   batch_size                         = 10
   maximum_batching_window_in_seconds = 300
   function_name                      = aws_lambda_alias.corpus_events_sqs_processor.arn #We set the function to our alias
-  enabled                            = false
+  enabled                            = true
 }
 
 resource "aws_iam_role" "corpus_events_lambda_role" {
