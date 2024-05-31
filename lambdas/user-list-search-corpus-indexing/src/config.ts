@@ -13,4 +13,10 @@ export const config = {
     fr: 'corpus_fr',
     de: 'corpus_de',
   },
+  // Mapping of letter grade to numeric
+  gradeRankMap: {
+    a: 1,
+    b: 2,
+    c: 3,
+  },
 };
