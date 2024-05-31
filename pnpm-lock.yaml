@@ -17,7 +17,7 @@ importers:
     devDependencies:
       '@commitlint/cli':
         specifier: 19.3.0
-        version: 19.3.0(@types/node@20.12.12)(typescript@5.5.0-dev.20240528)
+        version: 19.3.0(@types/node@20.12.12)(typescript@5.5.0-dev.20240530)
       '@commitlint/config-conventional':
         specifier: ^19.2.2
         version: 19.2.2
@@ -26,7 +26,7 @@ importers:
         version: link:packages/eslint-config
       syncpack:
         specifier: ^12.3.2
-        version: 12.3.2(typescript@5.5.0-dev.20240528)
+        version: 12.3.2(typescript@5.5.0-dev.20240530)
       tsconfig:
         specifier: workspace:*
         version: link:packages/tsconfig
@@ -1252,10 +1252,10 @@ importers:
         version: 8.5.0(@opentelemetry/api@1.8.0)
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.9.7)
+        version: 3.1.0(mysql2@3.9.8)
       mysql2:
-        specifier: 3.9.7
-        version: 3.9.7
+        specifier: 3.9.8
+        version: 3.9.8
       nanoid:
         specifier: 3.3.7
         version: 3.3.7
@@ -2250,10 +2250,10 @@ importers:
         version: 7.0.1
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.9.7)
+        version: 3.1.0(mysql2@3.9.8)
       mysql2:
-        specifier: 3.9.7
-        version: 3.9.7
+        specifier: 3.9.8
+        version: 3.9.8
       nanoid:
         specifier: 3.3.7
         version: 3.3.7
@@ -2371,7 +2371,7 @@ importers:
         version: 2.12.6(graphql@16.8.1)
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.9.7)
+        version: 3.1.0(mysql2@3.9.8)
       luxon:
         specifier: 3.4.4
         version: 3.4.4
@@ -2379,8 +2379,8 @@ importers:
         specifier: 2.3.0
         version: 2.3.0
       mysql2:
-        specifier: 3.9.7
-        version: 3.9.7
+        specifier: 3.9.8
+        version: 3.9.8
       nanoid:
         specifier: 3.3.7
         version: 3.3.7
@@ -2725,7 +2725,7 @@ importers:
         version: 2.12.6(graphql@16.8.1)
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.9.7)
+        version: 3.1.0(mysql2@3.9.8)
       locutus:
         specifier: 2.0.32
         version: 2.0.32
@@ -2736,8 +2736,8 @@ importers:
         specifier: 3.4.4
         version: 3.4.4
       mysql2:
-        specifier: 3.9.7
-        version: 3.9.7
+        specifier: 3.9.8
+        version: 3.9.8
       tslib:
         specifier: 2.6.2
         version: 2.6.2
@@ -2908,8 +2908,8 @@ importers:
         specifier: 2.3.0
         version: 2.3.0
       mysql2:
-        specifier: 3.9.7
-        version: 3.9.7
+        specifier: 3.9.8
+        version: 3.9.8
       open-graph-scraper:
         specifier: ^6.5.1
         version: 6.5.1
@@ -2967,7 +2967,7 @@ importers:
         version: 29.7.0(@types/node@20.12.11)(ts-node@10.9.2(@types/node@20.12.11)(typescript@5.4.4))
       kysely-codegen:
         specifier: ^0.15.0
-        version: 0.15.0(kysely@0.27.3)(mysql2@3.9.7)(pg@8.11.5)(tarn@3.0.2)
+        version: 0.15.0(kysely@0.27.3)(mysql2@3.9.8)(pg@8.11.5)(tarn@3.0.2)
       nock:
         specifier: 14.0.0-beta.6
         version: 14.0.0-beta.6
@@ -3111,8 +3111,8 @@ importers:
         specifier: 0.27.3
         version: 0.27.3
       mysql2:
-        specifier: 3.9.7
-        version: 3.9.7
+        specifier: 3.9.8
+        version: 3.9.8
       prisma:
         specifier: 5.14.0
         version: 5.14.0
@@ -3400,13 +3400,13 @@ importers:
         version: 2.12.6(graphql@16.8.1)
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.9.7)
+        version: 3.1.0(mysql2@3.9.8)
       luxon:
         specifier: 3.4.4
         version: 3.4.4
       mysql2:
-        specifier: 3.9.7
-        version: 3.9.7
+        specifier: 3.9.8
+        version: 3.9.8
       tslib:
         specifier: 2.6.2
         version: 2.6.2
@@ -3509,13 +3509,13 @@ importers:
         version: 2.12.6(graphql@16.8.1)
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.9.7)
+        version: 3.1.0(mysql2@3.9.8)
       lodash:
         specifier: 4.17.21
         version: 4.17.21
       mysql2:
-        specifier: 3.9.7
-        version: 3.9.7
+        specifier: 3.9.8
+        version: 3.9.8
       nanoid:
         specifier: 3.3.7
         version: 3.3.7
@@ -8671,10 +8671,12 @@ packages:
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
+    deprecated: Glob versions prior to v9 are no longer supported
 
   glob@8.1.0:
     resolution: {integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==}
     engines: {node: '>=12'}
+    deprecated: Glob versions prior to v9 are no longer supported
 
   global-directory@4.0.1:
     resolution: {integrity: sha512-wHTUcDUoZ1H5/0iVqEudYW4/kAlN5cZ3j/bXn0Dpbizl9iaUVeWSHqiOjsgk6OW2bkLclbBjzewBz6weQ1zA2Q==}
@@ -10436,8 +10438,8 @@ packages:
     resolution: {integrity: sha512-avsJQhyd+680gKXyG/sQc0nXaC6rBkPOfyHYcFb9+hdkqQkR9bdnkJ0AMZhke0oesPqIO+mFFJ+IdBc7mst4IA==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  mysql2@3.9.7:
-    resolution: {integrity: sha512-KnJT8vYRcNAZv73uf9zpXqNbvBG7DJrs+1nACsjZP1HMJ1TgXEy8wnNilXAn/5i57JizXKtrUtwDB7HxT9DDpw==}
+  mysql2@3.9.8:
+    resolution: {integrity: sha512-+5JKNjPuks1FNMoy9TYpl77f+5frbTklz7eb3XDwbpsERRLEeXiW2PDEkakYF50UuKU2qwfGnyXpKYvukv8mGA==}
     engines: {node: '>= 8.0'}
 
   mz@2.7.0:
@@ -11605,6 +11607,7 @@ packages:
 
   rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
 
   rollup@4.17.2:
@@ -12569,8 +12572,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.5.0-dev.20240528:
-    resolution: {integrity: sha512-lF9CgEwbCTMnq59hkXeSQOzUmqSxkhlTk5DuPKenvpyEVd7r1uH8q8EAgPaKhp5SO5m764uWJvE4MpvyXDKuJw==}
+  typescript@5.5.0-dev.20240530:
+    resolution: {integrity: sha512-r/4r/a9tbtPRHfif0An0GLycB70C3ci3m9fhpgiv6Ekyl7mxYc4w8aX/R+vQ4OJlmPosJJUCjUbljH11g6C56g==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -13298,8 +13301,8 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 3.0.0
       '@aws-crypto/sha256-js': 3.0.0
-      '@aws-sdk/client-sso-oidc': 3.577.0(@aws-sdk/client-sts@3.577.0)
-      '@aws-sdk/client-sts': 3.577.0
+      '@aws-sdk/client-sso-oidc': 3.577.0
+      '@aws-sdk/client-sts': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)
       '@aws-sdk/core': 3.576.0
       '@aws-sdk/credential-provider-node': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)(@aws-sdk/client-sts@3.577.0)
       '@aws-sdk/middleware-host-header': 3.577.0
@@ -13346,8 +13349,8 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 3.0.0
       '@aws-crypto/sha256-js': 3.0.0
-      '@aws-sdk/client-sso-oidc': 3.577.0(@aws-sdk/client-sts@3.577.0)
-      '@aws-sdk/client-sts': 3.577.0
+      '@aws-sdk/client-sso-oidc': 3.577.0
+      '@aws-sdk/client-sts': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)
       '@aws-sdk/core': 3.576.0
       '@aws-sdk/credential-provider-node': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)(@aws-sdk/client-sts@3.577.0)
       '@aws-sdk/middleware-endpoint-discovery': 3.577.0
@@ -13395,8 +13398,8 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 3.0.0
       '@aws-crypto/sha256-js': 3.0.0
-      '@aws-sdk/client-sso-oidc': 3.577.0(@aws-sdk/client-sts@3.577.0)
-      '@aws-sdk/client-sts': 3.577.0
+      '@aws-sdk/client-sso-oidc': 3.577.0
+      '@aws-sdk/client-sts': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)
       '@aws-sdk/core': 3.576.0
       '@aws-sdk/credential-provider-node': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)(@aws-sdk/client-sts@3.577.0)
       '@aws-sdk/middleware-host-header': 3.577.0
@@ -13441,8 +13444,8 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 3.0.0
       '@aws-crypto/sha256-js': 3.0.0
-      '@aws-sdk/client-sso-oidc': 3.577.0(@aws-sdk/client-sts@3.577.0)
-      '@aws-sdk/client-sts': 3.577.0
+      '@aws-sdk/client-sso-oidc': 3.577.0
+      '@aws-sdk/client-sts': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)
       '@aws-sdk/core': 3.576.0
       '@aws-sdk/credential-provider-node': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)(@aws-sdk/client-sts@3.577.0)
       '@aws-sdk/middleware-host-header': 3.577.0
@@ -13487,8 +13490,8 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 3.0.0
       '@aws-crypto/sha256-js': 3.0.0
-      '@aws-sdk/client-sso-oidc': 3.577.0(@aws-sdk/client-sts@3.577.0)
-      '@aws-sdk/client-sts': 3.577.0
+      '@aws-sdk/client-sso-oidc': 3.577.0
+      '@aws-sdk/client-sts': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)
       '@aws-sdk/core': 3.576.0
       '@aws-sdk/credential-provider-node': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)(@aws-sdk/client-sts@3.577.0)
       '@aws-sdk/middleware-host-header': 3.577.0
@@ -13537,8 +13540,8 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 3.0.0
       '@aws-crypto/sha256-js': 3.0.0
-      '@aws-sdk/client-sso-oidc': 3.577.0(@aws-sdk/client-sts@3.577.0)
-      '@aws-sdk/client-sts': 3.577.0
+      '@aws-sdk/client-sso-oidc': 3.577.0
+      '@aws-sdk/client-sts': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)
       '@aws-sdk/core': 3.576.0
       '@aws-sdk/credential-provider-node': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)(@aws-sdk/client-sts@3.577.0)
       '@aws-sdk/middleware-host-header': 3.577.0
@@ -13588,8 +13591,8 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 3.0.0
       '@aws-crypto/sha256-js': 3.0.0
-      '@aws-sdk/client-sso-oidc': 3.577.0(@aws-sdk/client-sts@3.577.0)
-      '@aws-sdk/client-sts': 3.577.0
+      '@aws-sdk/client-sso-oidc': 3.577.0
+      '@aws-sdk/client-sts': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)
       '@aws-sdk/core': 3.576.0
       '@aws-sdk/credential-provider-node': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)(@aws-sdk/client-sts@3.577.0)
       '@aws-sdk/middleware-host-header': 3.577.0
@@ -13635,8 +13638,8 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 3.0.0
       '@aws-crypto/sha256-js': 3.0.0
-      '@aws-sdk/client-sso-oidc': 3.577.0(@aws-sdk/client-sts@3.577.0)
-      '@aws-sdk/client-sts': 3.577.0
+      '@aws-sdk/client-sso-oidc': 3.577.0
+      '@aws-sdk/client-sts': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)
       '@aws-sdk/core': 3.576.0
       '@aws-sdk/credential-provider-node': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)(@aws-sdk/client-sts@3.577.0)
       '@aws-sdk/middleware-host-header': 3.577.0
@@ -13683,8 +13686,8 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 3.0.0
       '@aws-crypto/sha256-js': 3.0.0
-      '@aws-sdk/client-sso-oidc': 3.577.0(@aws-sdk/client-sts@3.577.0)
-      '@aws-sdk/client-sts': 3.577.0
+      '@aws-sdk/client-sso-oidc': 3.577.0
+      '@aws-sdk/client-sts': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)
       '@aws-sdk/core': 3.576.0
       '@aws-sdk/credential-provider-node': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)(@aws-sdk/client-sts@3.577.0)
       '@aws-sdk/middleware-host-header': 3.577.0
@@ -13727,11 +13730,11 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@aws-sdk/client-sso-oidc@3.577.0(@aws-sdk/client-sts@3.577.0)':
+  '@aws-sdk/client-sso-oidc@3.577.0':
     dependencies:
       '@aws-crypto/sha256-browser': 3.0.0
       '@aws-crypto/sha256-js': 3.0.0
-      '@aws-sdk/client-sts': 3.577.0
+      '@aws-sdk/client-sts': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)
       '@aws-sdk/core': 3.576.0
       '@aws-sdk/credential-provider-node': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)(@aws-sdk/client-sts@3.577.0)
       '@aws-sdk/middleware-host-header': 3.577.0
@@ -13770,7 +13773,6 @@ snapshots:
       '@smithy/util-utf8': 3.0.0
       tslib: 2.6.2
     transitivePeerDependencies:
-      - '@aws-sdk/client-sts'
       - aws-crt
 
   '@aws-sdk/client-sso@3.577.0':
@@ -13816,11 +13818,11 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@aws-sdk/client-sts@3.577.0':
+  '@aws-sdk/client-sts@3.577.0(@aws-sdk/client-sso-oidc@3.577.0)':
     dependencies:
       '@aws-crypto/sha256-browser': 3.0.0
       '@aws-crypto/sha256-js': 3.0.0
-      '@aws-sdk/client-sso-oidc': 3.577.0(@aws-sdk/client-sts@3.577.0)
+      '@aws-sdk/client-sso-oidc': 3.577.0
       '@aws-sdk/core': 3.576.0
       '@aws-sdk/credential-provider-node': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)(@aws-sdk/client-sts@3.577.0)
       '@aws-sdk/middleware-host-header': 3.577.0
@@ -13859,6 +13861,7 @@ snapshots:
       '@smithy/util-utf8': 3.0.0
       tslib: 2.6.2
     transitivePeerDependencies:
+      - '@aws-sdk/client-sso-oidc'
       - aws-crt
 
   '@aws-sdk/core@3.576.0':
@@ -13892,7 +13895,7 @@ snapshots:
 
   '@aws-sdk/credential-provider-ini@3.577.0(@aws-sdk/client-sso-oidc@3.577.0)(@aws-sdk/client-sts@3.577.0)':
     dependencies:
-      '@aws-sdk/client-sts': 3.577.0
+      '@aws-sdk/client-sts': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)
       '@aws-sdk/credential-provider-env': 3.577.0
       '@aws-sdk/credential-provider-process': 3.577.0
       '@aws-sdk/credential-provider-sso': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)
@@ -13949,7 +13952,7 @@ snapshots:
 
   '@aws-sdk/credential-provider-web-identity@3.577.0(@aws-sdk/client-sts@3.577.0)':
     dependencies:
-      '@aws-sdk/client-sts': 3.577.0
+      '@aws-sdk/client-sts': 3.577.0(@aws-sdk/client-sso-oidc@3.577.0)
       '@aws-sdk/types': 3.577.0
       '@smithy/property-provider': 3.0.0
       '@smithy/types': 3.0.0
@@ -14056,7 +14059,7 @@ snapshots:
 
   '@aws-sdk/token-providers@3.577.0(@aws-sdk/client-sso-oidc@3.577.0)':
     dependencies:
-      '@aws-sdk/client-sso-oidc': 3.577.0(@aws-sdk/client-sts@3.577.0)
+      '@aws-sdk/client-sso-oidc': 3.577.0
       '@aws-sdk/types': 3.577.0
       '@smithy/property-provider': 3.0.0
       '@smithy/shared-ini-file-loader': 3.0.0
@@ -14715,11 +14718,11 @@ snapshots:
     dependencies:
       commander: 12.0.0
 
-  '@commitlint/cli@19.3.0(@types/node@20.12.12)(typescript@5.5.0-dev.20240528)':
+  '@commitlint/cli@19.3.0(@types/node@20.12.12)(typescript@5.5.0-dev.20240530)':
     dependencies:
       '@commitlint/format': 19.3.0
       '@commitlint/lint': 19.2.2
-      '@commitlint/load': 19.2.0(@types/node@20.12.12)(typescript@5.5.0-dev.20240528)
+      '@commitlint/load': 19.2.0(@types/node@20.12.12)(typescript@5.5.0-dev.20240530)
       '@commitlint/read': 19.2.1
       '@commitlint/types': 19.0.3
       execa: 8.0.1
@@ -14766,15 +14769,15 @@ snapshots:
       '@commitlint/rules': 19.0.3
       '@commitlint/types': 19.0.3
 
-  '@commitlint/load@19.2.0(@types/node@20.12.12)(typescript@5.5.0-dev.20240528)':
+  '@commitlint/load@19.2.0(@types/node@20.12.12)(typescript@5.5.0-dev.20240530)':
     dependencies:
       '@commitlint/config-validator': 19.0.3
       '@commitlint/execute-rule': 19.0.0
       '@commitlint/resolve-extends': 19.1.0
       '@commitlint/types': 19.0.3
       chalk: 5.3.0
-      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240528)
-      cosmiconfig-typescript-loader: 5.0.0(@types/node@20.12.12)(cosmiconfig@9.0.0(typescript@5.5.0-dev.20240528))(typescript@5.5.0-dev.20240528)
+      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240530)
+      cosmiconfig-typescript-loader: 5.0.0(@types/node@20.12.12)(cosmiconfig@9.0.0(typescript@5.5.0-dev.20240530))(typescript@5.5.0-dev.20240530)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -18911,12 +18914,12 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cosmiconfig-typescript-loader@5.0.0(@types/node@20.12.12)(cosmiconfig@9.0.0(typescript@5.5.0-dev.20240528))(typescript@5.5.0-dev.20240528):
+  cosmiconfig-typescript-loader@5.0.0(@types/node@20.12.12)(cosmiconfig@9.0.0(typescript@5.5.0-dev.20240530))(typescript@5.5.0-dev.20240530):
     dependencies:
       '@types/node': 20.12.12
-      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240528)
+      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240530)
       jiti: 1.21.0
-      typescript: 5.5.0-dev.20240528
+      typescript: 5.5.0-dev.20240530
 
   cosmiconfig@8.3.6(typescript@5.4.4):
     dependencies:
@@ -18936,14 +18939,14 @@ snapshots:
     optionalDependencies:
       typescript: 5.4.4
 
-  cosmiconfig@9.0.0(typescript@5.5.0-dev.20240528):
+  cosmiconfig@9.0.0(typescript@5.5.0-dev.20240530):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 5.5.0-dev.20240528
+      typescript: 5.5.0-dev.20240530
 
   cpu-features@0.0.2:
     dependencies:
@@ -19300,7 +19303,7 @@ snapshots:
     dependencies:
       semver: 7.6.2
       shelljs: 0.8.5
-      typescript: 5.5.0-dev.20240528
+      typescript: 5.5.0-dev.20240530
 
   dreamopt@0.8.0:
     dependencies:
@@ -21750,7 +21753,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  knex@3.1.0(mysql2@3.9.7):
+  knex@3.1.0(mysql2@3.9.8):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -21767,13 +21770,13 @@ snapshots:
       tarn: 3.0.2
       tildify: 2.0.0
     optionalDependencies:
-      mysql2: 3.9.7
+      mysql2: 3.9.8
     transitivePeerDependencies:
       - supports-color
 
   kuler@2.0.0: {}
 
-  kysely-codegen@0.15.0(kysely@0.27.3)(mysql2@3.9.7)(pg@8.11.5)(tarn@3.0.2):
+  kysely-codegen@0.15.0(kysely@0.27.3)(mysql2@3.9.8)(pg@8.11.5)(tarn@3.0.2):
     dependencies:
       chalk: 4.1.2
       dotenv: 16.4.5
@@ -21783,7 +21786,7 @@ snapshots:
       micromatch: 4.0.5
       minimist: 1.2.8
     optionalDependencies:
-      mysql2: 3.9.7
+      mysql2: 3.9.8
       pg: 8.11.5
       tarn: 3.0.2
 
@@ -22285,7 +22288,7 @@ snapshots:
 
   mute-stream@1.0.0: {}
 
-  mysql2@3.9.7:
+  mysql2@3.9.8:
     dependencies:
       denque: 2.1.0
       generate-function: 2.3.1
@@ -24152,13 +24155,13 @@ snapshots:
       '@pkgr/core': 0.1.1
       tslib: 2.6.2
 
-  syncpack@12.3.2(typescript@5.5.0-dev.20240528):
+  syncpack@12.3.2(typescript@5.5.0-dev.20240530):
     dependencies:
       '@effect/schema': 0.66.5(effect@3.0.3)(fast-check@3.17.2)
       chalk: 5.3.0
       chalk-template: 1.1.0
       commander: 12.0.0
-      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240528)
+      cosmiconfig: 9.0.0(typescript@5.5.0-dev.20240530)
       effect: 3.0.3
       enquirer: 2.4.1
       fast-check: 3.17.2
@@ -24552,7 +24555,7 @@ snapshots:
 
   typescript@5.4.4: {}
 
-  typescript@5.5.0-dev.20240528: {}
+  typescript@5.5.0-dev.20240530: {}
 
   ua-parser-js@1.0.37: {}
 
