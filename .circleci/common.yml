@@ -162,7 +162,7 @@ commands:
       - run:
           name: Install pnpm package manager
           command: |
-            corepack prepare pnpm@9.1.1 --activate
+            corepack prepare pnpm@9.1.4 --activate
             corepack pnpm config set store-dir .pnpm-store
       - when:
           # Only compile if we do not use raw hcl
@@ -211,7 +211,7 @@ commands:
           command: |
             nvm install
             nvm use
-            npm install -g pnpm@9.1.1
+            npm install -g pnpm@9.1.4
             pnpm config set store-dir .pnpm-store
             pnpm install --filter=<< parameters.scope >>... --frozen-lockfile
   install_codebuild_secrets:
