@@ -29,7 +29,7 @@
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "8.5.0",
+    "@sentry/node": "8.7.0",
     "elasticsearch": "^16.7.3",
     "express": "4.19.2",
     "express-validator": "^7.0.1",
@@ -38,7 +38,7 @@
     "graphql-tag": "2.12.6",
     "knex": "3.1.0",
     "lodash": "4.17.21",
-    "mysql2": "3.9.7",
+    "mysql2": "3.9.8",
     "nanoid": "3.3.7",
     "striptags": "^3.1.1",
     "tslib": "2.6.2"

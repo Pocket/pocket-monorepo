@@ -26,14 +26,14 @@
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "8.5.0",
+    "@sentry/node": "8.7.0",
     "dataloader": "2.2.2",
     "express": "4.19.2",
     "graphql": "16.8.1",
     "graphql-tag": "2.12.6",
     "knex": "3.1.0",
     "luxon": "3.4.4",
-    "mysql2": "3.9.7",
+    "mysql2": "3.9.8",
     "tslib": "2.6.2"
   },
   "devDependencies": {

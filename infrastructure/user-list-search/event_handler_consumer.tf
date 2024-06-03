@@ -62,6 +62,7 @@ resource "aws_lambda_event_source_mapping" "user_list_events_sqs" {
   event_source_arn = aws_sqs_queue.user_list_events.arn
   batch_size       = 1
   function_name    = aws_lambda_alias.user_list_events_sqs_processor.arn #We set the function to our alias
+  enabled          = true
 }
 
 resource "aws_iam_role" "user_list_events_lambda_role" {
