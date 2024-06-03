@@ -79,6 +79,10 @@ export function createDoc(payload: EventPayload): CorpusItemIndex[] {
             ? Math.round(new Date(event.datePublished).getTime() / 1000)
             : undefined,
           is_collection_story: false,
+          curation_source: event.source,
+          quality_rank: event.grade
+            ? config.gradeRankMap[event.grade.toLowerCase()]
+            : undefined,
         },
       },
     ];

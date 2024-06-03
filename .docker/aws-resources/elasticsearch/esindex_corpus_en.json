@@ -67,6 +67,14 @@
       "parent_collection_id": {
         "type": "keyword",
         "index": false
+      },
+      "curation_source": {
+        "type": "keyword",
+        "index": true
+      },
+      "quality_rank": {
+        "type": "byte",
+        "index": true
       }
     }
   }

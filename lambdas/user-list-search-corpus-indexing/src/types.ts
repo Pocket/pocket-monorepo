@@ -60,6 +60,8 @@ export type ApprovedItemPayload = {
   isCollection?: boolean;
   domainName?: string;
   isTimeSensitive?: boolean;
+  source?: string | null;
+  grade?: string | null;
 };
 
 // servers/shared-snowplow-consumer/src/eventConsumer/collectionEvents/types.ts
