@@ -81,7 +81,7 @@ export function createDoc(payload: EventPayload): CorpusItemIndex[] {
           is_collection_story: false,
           curation_source: event.source,
           quality_rank: event.grade
-            ? config.gradeRankMap[event.grade?.toLowerCase()]
+            ? config.gradeRankMap[event.grade.toLowerCase()]
             : undefined,
         },
       },
