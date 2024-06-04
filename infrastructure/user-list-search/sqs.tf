@@ -81,3 +81,19 @@ resource "aws_sqs_queue" "corpus_events" {
 resource "aws_sqs_queue" "corpus_events_deadletter" {
   name = "${local.prefix}-CorpusEvents-Deadletter"
 }
+
+resource "aws_sqs_queue" "corpus_events_hydration" {
+  name                      = "${local.prefix}-CorpusParserHydrator"
+  message_retention_seconds = 86400
+  tags                      = local.tags
+  redrive_policy = jsonencode({
+    deadLetterTargetArn = aws_sqs_queue.corpus_events_deadletter.arn,
+    maxReceiveCount     = 3
+  })
+  delay_seconds              = 500 # Delay to avoid concurrent document updates
+  visibility_timeout_seconds = 500
+}
+
+resource "aws_sqs_queue" "corpus_events_hydration_deadletter" {
+  name = "${local.prefix}-CorpusParserHydrator-Deadletter"
+}

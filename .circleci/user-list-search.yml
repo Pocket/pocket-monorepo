@@ -188,6 +188,23 @@ workflows:
           requires:
             - user-list-search_infrastructure_apply_dev
 
+      - build_lambda:
+          <<: *only_dev
+          context: pocket
+          for: user_list_search
+          name: user-list-search_corpus-parser-hydration_build_lambda_dev
+          aws-access-key-id: Dev_AWS_ACCESS_KEY
+          aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
+          aws-region: Dev_AWS_DEFAULT_REGION
+          scope: user-list-search-corpus-parser-hydration
+          sentry_project_name: user-list-search
+          sentry_env: development
+          sentry_org: pocket
+          s3-bucket: pocket-userlistsearch-dev-kinesis-consumer
+          s3-key: corpus-parser-hydration-$CIRCLE_SHA1.zip
+          requires:
+            - user-list-search_infrastructure_apply_dev
+
       - code_deploy_ecs:
           <<: *only_dev
           context: pocket
@@ -309,6 +326,20 @@ workflows:
           requires:
             - user-list-search_corpus-indexing_build_lambda_dev
 
+      - code_deploy_lambda:
+          <<: *only_dev
+          context: pocket
+          for: user_list_search
+          name: user-list-search_corpus-parser-hydration_code_deploy_lambda_dev
+          resource-class: pocket/default-dev
+          codedeploy-app-name: UserListSearch-Dev-CorpusParserHydrator
+          codedeploy-group-name: UserListSearch-Dev-CorpusParserHydrator
+          function-name: UserListSearch-Dev-CorpusParserHydrator
+          s3-bucket: pocket-userlistsearch-dev-kinesis-consumer
+          s3-key: corpus-parser-hydration-$CIRCLE_SHA1.zip
+          requires:
+            - user-list-search_corpus-parser-hydration_build_lambda_dev
+
       # Notify sentry of dev deployment
       - sentry_release_notification:
           <<: *only_dev
@@ -327,6 +358,8 @@ workflows:
             - user-list-search_item-update-backfill_code_deploy_lambda_dev
             - user-list-search_user-list-import_code_deploy_lambda_dev
             - user-list-search_user-list-import-backfill_code_deploy_lambda_dev
+            - user-list-search_corpus-indexing_code_deploy_lambda_dev
+            - user-list-search_corpus-parser-hydration_code_deploy_lambda_dev
 
       ######
       # Main Branch Deployment (Prod Environment)
@@ -425,6 +458,23 @@ workflows:
           sentry_org: pocket
           s3-bucket: pocket-userlistsearch-prod-kinesis-consumer
           s3-key: corpus-indexing-$CIRCLE_SHA1.zip
+          requires:
+            - user-list-search_infrastructure_apply_prod
+
+      - build_lambda:
+          <<: *only_main
+          context: pocket
+          for: user_list_search
+          name: user-list-search_corpus-parser-hydration_build_lambda_prod
+          aws-access-key-id: Prod_AWS_ACCESS_KEY
+          aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
+          aws-region: Prod_AWS_DEFAULT_REGION
+          scope: user-list-search-corpus-parser-hydration
+          sentry_project_name: user-list-search
+          sentry_env: production
+          sentry_org: pocket
+          s3-bucket: pocket-userlistsearch-prod-kinesis-consumer
+          s3-key: corpus-parser-hydration-$CIRCLE_SHA1.zip
           requires:
             - user-list-search_infrastructure_apply_prod
 
@@ -549,6 +599,20 @@ workflows:
           requires:
             - user-list-search_corpus-indexing_build_lambda_prod
 
+      - code_deploy_lambda:
+          <<: *only_main
+          context: pocket
+          for: user_list_search
+          name: user-list-search_corpus-parser-hydration_code_deploy_lambda_prod
+          resource-class: pocket/default-prod
+          codedeploy-app-name: UserListSearch-Prod-CorpusParserHydrator
+          codedeploy-group-name: UserListSearch-Prod-CorpusParserHydrator
+          function-name: UserListSearch-Prod-CorpusParserHydrator
+          s3-bucket: pocket-userlistsearch-prod-kinesis-consumer
+          s3-key: corpus-parser-hydration-$CIRCLE_SHA1.zip
+          requires:
+            - user-list-search_corpus-parser-hydration_build_lambda_prod
+
       # Notify sentry of main deployment
       - sentry_release_notification:
           <<: *only_main
@@ -567,3 +631,5 @@ workflows:
             - user-list-search_item-update-backfill_code_deploy_lambda_prod
             - user-list-search_user-list-import_code_deploy_lambda_prod
             - user-list-search_user-list-import-backfill_code_deploy_lambda_prod
+            - user-list-search_corpus-indexing_code_deploy_lambda_prod
+            - user-list-search_corpus-parser-hydration_code_deploy_lambda_prod
