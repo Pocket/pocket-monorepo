@@ -18,7 +18,7 @@
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "3.577.0",
+    "@aws-sdk/client-sqs": "3.588.0",
     "@sentry/aws-serverless": "8.7.0",
     "jsonwebtoken": "^9.0.0",
     "jwk-to-pem": "^2.0.5",

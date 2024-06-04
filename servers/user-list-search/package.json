@@ -22,7 +22,7 @@
   "dependencies": {
     "@apollo/server": "4.10.4",
     "@apollo/subgraph": "2.8.0",
-    "@aws-sdk/client-sqs": "3.577.0",
+    "@aws-sdk/client-sqs": "3.588.0",
     "@pocket-tools/apollo-cursor-pagination": "1.0.3",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/feature-flags-client": "workspace:*",
