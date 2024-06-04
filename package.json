@@ -34,7 +34,7 @@
     "@pocket-tools/eslint-config": "workspace:*",
     "syncpack": "^12.3.2",
     "tsconfig": "workspace:*",
-    "turbo": "^1.13.3"
+    "turbo": "^1.13.4"
   },
   "packageManager": "pnpm@9.1.4",
   "engines": {

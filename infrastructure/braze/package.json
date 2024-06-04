@@ -14,7 +14,7 @@
     "watch": "tsc -w"
   },
   "dependencies": {
-    "@cdktf/provider-aws": "19.18.0",
+    "@cdktf/provider-aws": "19.21.0",
     "@pocket-tools/terraform-modules": "workspace:*",
     "cdktf": "0.20.7",
     "cdktf-cli": "0.20.7",
