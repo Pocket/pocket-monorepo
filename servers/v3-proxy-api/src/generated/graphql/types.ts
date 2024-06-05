@@ -56,6 +56,13 @@ export type AdvancedSearchFilters = {
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
+/** Valid grade values for CorpusItem (public graph) and ApprovedItem (admin graph) */
+export enum ApprovedItemGrade {
+  A = 'A',
+  B = 'B',
+  C = 'C'
+}
+
 export type ArticleMarkdown = {
   __typename?: 'ArticleMarkdown';
   images?: Maybe<Array<MarkdownImagePosition>>;
@@ -278,6 +285,8 @@ export type CorpusItem = {
   datePublished?: Maybe<Scalars['Date']['output']>;
   /** The excerpt of the Approved Item. */
   excerpt: Scalars['String']['output'];
+  /** The quality grade associated with this CorpusItem. */
+  grade?: Maybe<ApprovedItemGrade>;
   /** The GUID that is stored on an approved corpus item */
   id: Scalars['ID']['output'];
   /** The image for this item's accompanying picture. */
@@ -301,7 +310,7 @@ export type CorpusItem = {
   timeToRead?: Maybe<Scalars['Int']['output']>;
   /** The title of the Approved Item. */
   title: Scalars['String']['output'];
-  /** The topic associated with the Approved Item. */
+  /** The topic associated with this CorpusItem. */
   topic?: Maybe<Scalars['String']['output']>;
   /** The URL of the Approved Item. */
   url: Scalars['Url']['output'];

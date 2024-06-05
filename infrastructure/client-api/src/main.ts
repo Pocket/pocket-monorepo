@@ -71,7 +71,7 @@ class ClientAPI extends TerraformStack {
       region,
       caller,
     });
- 
+
     new PocketAwsSyntheticChecks(this, 'synthetics', {
       // alarmTopicArn:
       //   config.environment === 'Prod'
@@ -151,10 +151,10 @@ class ClientAPI extends TerraformStack {
               statement: {
                 ip_set_reference_statement: {
                   arn: allowListIPs.arn,
-                }
-              }
-            }
-          }
+                },
+              },
+            },
+          },
         },
       },
       visibilityConfig: {
@@ -176,7 +176,7 @@ class ClientAPI extends TerraformStack {
       },
       rule: [ipAllowListRule, regionalRateLimitRule],
     });
-  };
+  }
 
   /**
    * Get the sns topic for code deploy

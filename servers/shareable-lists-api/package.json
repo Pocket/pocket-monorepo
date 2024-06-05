@@ -48,7 +48,7 @@
     "express": "4.19.2",
     "express-validator": "^7.1.0",
     "graphql": "16.8.1",
-    "graphql-constraint-directive": "5.4.3",
+    "graphql-constraint-directive": "5.4.2",
     "graphql-tag": "2.12.6",
     "keyv": "4.5.4",
     "kysely": "0.27.3",
