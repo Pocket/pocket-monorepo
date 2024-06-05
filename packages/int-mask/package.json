@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "lodash": "4.17.21",
-    "tslib": "2.6.2",
+    "tslib": "2.6.3",
     "underscore.string": "3.3.6"
   },
   "devDependencies": {

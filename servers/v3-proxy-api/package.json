@@ -22,10 +22,10 @@
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "8.7.0",
     "express": "4.19.2",
-    "express-validator": "^7.0.1",
+    "express-validator": "^7.1.0",
     "graphql-request": "^6.1.0",
     "luxon": "3.4.4",
-    "tslib": "2.6.2"
+    "tslib": "2.6.3"
   },
   "devDependencies": {
     "@graphql-codegen/add": "5.0.2",

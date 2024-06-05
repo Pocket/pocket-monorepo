@@ -32,16 +32,16 @@
     "@sentry/node": "8.7.0",
     "elasticsearch": "^16.7.3",
     "express": "4.19.2",
-    "express-validator": "^7.0.1",
+    "express-validator": "^7.1.0",
     "graphql": "16.8.1",
-    "graphql-constraint-directive": "5.4.2",
+    "graphql-constraint-directive": "5.4.3",
     "graphql-tag": "2.12.6",
     "knex": "3.1.0",
     "lodash": "4.17.21",
     "mysql2": "3.9.8",
     "nanoid": "3.3.7",
     "striptags": "^3.1.1",
-    "tslib": "2.6.2"
+    "tslib": "2.6.3"
   },
   "devDependencies": {
     "@faker-js/faker": "8.4.1",
@@ -65,6 +65,6 @@
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
     "typescript": "5.4.5",
-    "unleash-client": "5.5.2"
+    "unleash-client": "5.5.3"
   }
 }

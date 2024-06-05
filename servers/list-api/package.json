@@ -32,13 +32,13 @@
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "8.7.0",
-    "@snowplow/node-tracker": "3.23.0",
-    "@snowplow/tracker-core": "3.23.0",
+    "@snowplow/node-tracker": "3.23.1",
+    "@snowplow/tracker-core": "3.23.1",
     "dataloader": "2.2.2",
     "express": "4.19.2",
-    "express-validator": "^7.0.1",
+    "express-validator": "^7.1.0",
     "graphql": "16.8.1",
-    "graphql-constraint-directive": "5.4.2",
+    "graphql-constraint-directive": "5.4.3",
     "graphql-depth-limit": "1.1.0",
     "graphql-tag": "2.12.6",
     "knex": "3.1.0",
@@ -46,8 +46,8 @@
     "lodash": "4.17.21",
     "luxon": "3.4.4",
     "mysql2": "3.9.8",
-    "tslib": "2.6.2",
-    "unleash-client": "5.5.2"
+    "tslib": "2.6.3",
+    "unleash-client": "5.5.3"
   },
   "devDependencies": {
     "@jest/globals": "29.7.0",

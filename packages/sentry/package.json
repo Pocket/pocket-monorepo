@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@sentry/node": "8.7.0",
-    "tslib": "2.6.2"
+    "tslib": "2.6.3"
   },
   "devDependencies": {
     "@jest/globals": "29.7.0",

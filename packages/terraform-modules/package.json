@@ -78,7 +78,7 @@
     "cdktf-cli": "0.20.7",
     "constructs": "10.3.0",
     "parse-domain": "5.0.0",
-    "tslib": "2.6.2"
+    "tslib": "2.6.3"
   },
   "devDependencies": {
     "@pocket-tools/eslint-config": "workspace:*",

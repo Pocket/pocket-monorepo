@@ -69,7 +69,7 @@
   },
   "dependencies": {
     "morgan": "^1.10.0",
-    "tslib": "2.6.2",
+    "tslib": "2.6.3",
     "winston": "3.13.0"
   },
   "devDependencies": {

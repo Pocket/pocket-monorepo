@@ -19,7 +19,7 @@
   "dependencies": {
     "@sentry/aws-serverless": "8.7.0",
     "fetch-retry": "^5.0.6",
-    "tslib": "2.6.2"
+    "tslib": "2.6.3"
   },
   "devDependencies": {
     "@pocket-tools/eslint-config": "workspace:*",

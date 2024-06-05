@@ -21,7 +21,7 @@
     "@aws-sdk/lib-dynamodb": "3.588.0",
     "@sentry/aws-serverless": "8.7.0",
     "exponential-backoff": "^3.1.1",
-    "tslib": "2.6.2"
+    "tslib": "2.6.3"
   },
   "devDependencies": {
     "@pocket-tools/eslint-config": "workspace:*",

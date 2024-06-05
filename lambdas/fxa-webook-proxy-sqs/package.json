@@ -22,7 +22,7 @@
     "@sentry/aws-serverless": "8.7.0",
     "jsonwebtoken": "^9.0.0",
     "jwk-to-pem": "^2.0.5",
-    "tslib": "2.6.2"
+    "tslib": "2.6.3"
   },
   "devDependencies": {
     "@pocket-tools/eslint-config": "workspace:*",

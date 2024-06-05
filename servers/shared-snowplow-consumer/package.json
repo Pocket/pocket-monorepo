@@ -28,11 +28,11 @@
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "8.7.0",
-    "@snowplow/node-tracker": "3.23.0",
-    "@snowplow/tracker-core": "3.23.0",
+    "@snowplow/node-tracker": "3.23.1",
+    "@snowplow/tracker-core": "3.23.1",
     "express": "4.19.2",
-    "express-validator": "^7.0.1",
-    "tslib": "2.6.2"
+    "express-validator": "^7.1.0",
+    "tslib": "2.6.3"
   },
   "devDependencies": {
     "@faker-js/faker": "8.4.1",

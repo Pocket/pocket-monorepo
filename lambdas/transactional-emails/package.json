@@ -20,9 +20,9 @@
   "dependencies": {
     "@aws-sdk/client-ssm": "3.588.0",
     "@sentry/aws-serverless": "8.7.0",
-    "braze-api": "^2.6.0",
+    "braze-api": "^2.8.0",
     "fetch-retry": "^5.0.6",
-    "tslib": "2.6.2"
+    "tslib": "2.6.3"
   },
   "devDependencies": {
     "@pocket-tools/eslint-config": "workspace:*",
