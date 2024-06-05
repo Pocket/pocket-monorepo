@@ -1,41 +1,83 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env.*local", "packages/tsconfig/**"],
-  "globalEnv": ["NODE_ENV"],
-  "globalDotEnv": [".env", ".env.example"],
-  "pipeline": {
+  "globalDependencies": [
+    "**/.env.*local",
+    "packages/tsconfig/**",
+    ".env",
+    ".env.example"
+  ],
+  "globalEnv": [
+    "NODE_ENV"
+  ],
+  "tasks": {
     "build": {
-      "dependsOn": ["prebuild", "^build"],
-      "inputs": ["src/**/*", "tsconfig.json", "package.json"],
-      "outputs": ["dist/**"],
+      "dependsOn": [
+        "prebuild",
+        "^build"
+      ],
+      "inputs": [
+        "src/**/*",
+        "tsconfig.json",
+        "package.json"
+      ],
+      "outputs": [
+        "dist/**"
+      ],
       "cache": true
     },
     "synth": {
-      "dependsOn": ["@pocket-tools/terraform-modules#build"],
+      "dependsOn": [
+        "@pocket-tools/terraform-modules#build"
+      ],
       "inputs": [
         "src/**/*",
         "package.json",
         "cdktf.json",
         ".terraform-version"
       ],
-      "outputs": ["cdktf.out/**/*"]
+      "outputs": [
+        "cdktf.out/**/*"
+      ]
     },
     "lint": {
-      "inputs": ["src/**/*", "eslint.config.js", "package.json"]
+      "inputs": [
+        "src/**/*",
+        "eslint.config.js",
+        "package.json"
+      ]
     },
     "format": {
-      "inputs": ["src/**/*", "eslint.config.js", "package.json"]
+      "inputs": [
+        "src/**/*",
+        "eslint.config.js",
+        "package.json"
+      ]
     },
     "semantic-release": {
-      "dependsOn": ["^build", "build"]
+      "dependsOn": [
+        "^build",
+        "build"
+      ]
     },
     "test": {
-      "inputs": ["src/**/*", "package.json", "jest.config.js", "jest.setup.js"],
-      "dependsOn": ["^build", "prebuild"],
+      "inputs": [
+        "src/**/*",
+        "package.json",
+        "jest.config.js",
+        "jest.setup.js"
+      ],
+      "dependsOn": [
+        "^build",
+        "prebuild"
+      ],
       "cache": true
     },
     "test-integrations": {
-      "dependsOn": ["^build", "prebuild", "pretest-integrations"],
+      "dependsOn": [
+        "^build",
+        "prebuild",
+        "pretest-integrations"
+      ],
       "cache": false
     },
     "dev": {
