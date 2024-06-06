@@ -650,13 +650,13 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 ) => TResult | Promise<TResult>;
 
 /** Mapping of union types */
-export type ResolversUnionTypes<RefType extends Record<string, unknown>> = ResolversObject<{
+export type ResolversUnionTypes<_RefType extends Record<string, unknown>> = ResolversObject<{
   MarticleComponent: ( Image ) | ( MarticleBlockquote ) | ( MarticleBulletedList ) | ( MarticleCodeBlock ) | ( MarticleDivider ) | ( MarticleHeading ) | ( MarticleNumberedList ) | ( MarticleTable ) | ( MarticleText ) | ( UnMarseable ) | ( Video );
-  ReaderFallback: ( ItemNotFound ) | ( ReaderInterstitial );
+  ReaderFallback: ( ItemNotFound ) | ( Omit<ReaderInterstitial, 'itemCard'> & { itemCard?: Maybe<_RefType['PocketMetadata']> } );
 }>;
 
 /** Mapping of interface types */
-export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = ResolversObject<{
+export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = ResolversObject<{
   ListElement: ( BulletedListElement ) | ( NumberedListElement );
   PocketMetadata: ( ItemSummary ) | ( OEmbed );
 }>;
@@ -677,7 +677,7 @@ export type ResolversTypes = ResolversObject<{
   ISOString: ResolverTypeWrapper<Scalars['ISOString']['output']>;
   Image: ResolverTypeWrapper<Image>;
   Imageness: Imageness;
-  Item: ResolverTypeWrapper<Omit<Item, 'marticle'> & { marticle?: Maybe<Array<ResolversTypes['MarticleComponent']>> }>;
+  Item: ResolverTypeWrapper<Omit<Item, 'marticle' | 'preview'> & { marticle?: Maybe<Array<ResolversTypes['MarticleComponent']>>, preview?: Maybe<ResolversTypes['PocketMetadata']> }>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   ItemNotFound: ResolverTypeWrapper<ItemNotFound>;
   ItemSummary: ResolverTypeWrapper<ItemSummary>;
@@ -699,10 +699,10 @@ export type ResolversTypes = ResolversObject<{
   OEmbedType: OEmbedType;
   PocketMetadata: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['PocketMetadata']>;
   PocketMetadataSource: PocketMetadataSource;
-  PocketShare: ResolverTypeWrapper<PocketShare>;
+  PocketShare: ResolverTypeWrapper<Omit<PocketShare, 'preview'> & { preview?: Maybe<ResolversTypes['PocketMetadata']> }>;
   Query: ResolverTypeWrapper<{}>;
   ReaderFallback: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['ReaderFallback']>;
-  ReaderInterstitial: ResolverTypeWrapper<ReaderInterstitial>;
+  ReaderInterstitial: ResolverTypeWrapper<Omit<ReaderInterstitial, 'itemCard'> & { itemCard?: Maybe<ResolversTypes['PocketMetadata']> }>;
   ReaderViewResult: ResolverTypeWrapper<Omit<ReaderViewResult, 'fallbackPage'> & { fallbackPage?: Maybe<ResolversTypes['ReaderFallback']> }>;
   UnMarseable: ResolverTypeWrapper<UnMarseable>;
   Url: ResolverTypeWrapper<Scalars['Url']['output']>;
@@ -726,7 +726,7 @@ export type ResolversParentTypes = ResolversObject<{
   DomainMetadata: DomainMetadata;
   ISOString: Scalars['ISOString']['output'];
   Image: Image;
-  Item: Omit<Item, 'marticle'> & { marticle?: Maybe<Array<ResolversParentTypes['MarticleComponent']>> };
+  Item: Omit<Item, 'marticle' | 'preview'> & { marticle?: Maybe<Array<ResolversParentTypes['MarticleComponent']>>, preview?: Maybe<ResolversParentTypes['PocketMetadata']> };
   Boolean: Scalars['Boolean']['output'];
   ItemNotFound: ItemNotFound;
   ItemSummary: ItemSummary;
@@ -746,10 +746,10 @@ export type ResolversParentTypes = ResolversObject<{
   NumberedListElement: NumberedListElement;
   OEmbed: OEmbed;
   PocketMetadata: ResolversInterfaceTypes<ResolversParentTypes>['PocketMetadata'];
-  PocketShare: PocketShare;
+  PocketShare: Omit<PocketShare, 'preview'> & { preview?: Maybe<ResolversParentTypes['PocketMetadata']> };
   Query: {};
   ReaderFallback: ResolversUnionTypes<ResolversParentTypes>['ReaderFallback'];
-  ReaderInterstitial: ReaderInterstitial;
+  ReaderInterstitial: Omit<ReaderInterstitial, 'itemCard'> & { itemCard?: Maybe<ResolversParentTypes['PocketMetadata']> };
   ReaderViewResult: Omit<ReaderViewResult, 'fallbackPage'> & { fallbackPage?: Maybe<ResolversParentTypes['ReaderFallback']> };
   UnMarseable: UnMarseable;
   Url: Scalars['Url']['output'];

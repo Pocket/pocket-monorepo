@@ -18,19 +18,19 @@
   },
   "dependencies": {
     "lodash": "4.17.21",
-    "tslib": "2.6.2",
+    "tslib": "2.6.3",
     "underscore.string": "3.3.6"
   },
   "devDependencies": {
     "@jest/globals": "29.7.0",
     "@pocket-tools/eslint-config": "workspace:*",
     "@types/jest": "29.5.12",
-    "@types/node": "^20.12.6",
+    "@types/node": "^20.14.2",
     "jest": "29.7.0",
-    "ts-jest": "29.1.2",
+    "ts-jest": "29.1.4",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "tsup": "8.0.2",
-    "typescript": "5.4.4"
+    "tsup": "8.1.0",
+    "typescript": "5.4.5"
   }
 }
