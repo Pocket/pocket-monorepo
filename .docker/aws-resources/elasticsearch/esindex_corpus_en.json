@@ -75,6 +75,42 @@
       "quality_rank": {
         "type": "byte",
         "index": true
+      },
+      "pocket_parser_extracted_text": {
+        "type": "text",
+        "analyzer": "english"
+      },
+      "est_time_to_consume_minutes": {
+        "type": "integer",
+        "index": true
+      },
+      "content_type_parent": {
+        "type": "keyword",
+        "index": true
+      },
+      "content_type_children": {
+        "type": "keyword",
+        "index": true
+      },
+      "pocket_item_id": {
+        "type": "long",
+        "index": false
+      },
+      "pocket_resolved_id": {
+        "type": "long",
+        "index": false
+      },
+      "pocket_normal_url": {
+        "type": "keyword",
+        "index": false
+      },
+      "pocket_resolved_url": {
+        "type": "keyword",
+        "index": false
+      },
+      "pocket_parser_request_given_url": {
+        "type": "keyword",
+        "index": false
       }
     }
   }
