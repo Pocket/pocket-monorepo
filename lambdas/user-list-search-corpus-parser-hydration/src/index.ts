@@ -64,6 +64,8 @@ export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
   return { batchItemFailures };
 }
 
+export const handler = Sentry.wrapHandler(processor);
+
 /**
  * Unwrap messages into individual request payloads to be submitted to
  * the parser. This is because Collection events contain multiple stories,
