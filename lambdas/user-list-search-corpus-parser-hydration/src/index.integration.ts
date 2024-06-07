@@ -1,7 +1,6 @@
 import nock from 'nock';
 
 import { processor } from '.';
-import { ParserResult } from './types';
 import { config } from './config';
 
 /**

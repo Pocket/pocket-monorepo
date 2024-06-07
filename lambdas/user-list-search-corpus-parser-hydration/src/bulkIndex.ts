@@ -14,10 +14,10 @@ export async function bulkIndex(
   records: BulkRequestPayload[],
 ): Promise<string[]> {
   const failedMessageIds: string[] = [];
-  // The new elasticsearch client doesn't work on AWS
-  // The old one is honestly maybe more of a PITA than just making http
-  // requests, because the typing is just 'any' where it counts and the
-  // documentation is better for the http api anyway...
+  // We already had a method to create the bulk API
+  // request over HTTP -- since this is the only request
+  // in this service, it's not worth refactoring to use
+  // the client
   const bodyData = records
     .flatMap((docCommands) => [
       { update: docCommands.meta },

@@ -98,7 +98,7 @@ export function cleanExtractedText(
     return undefined;
   }
   // e.g. <!--IMG_1-->, <!--VIDEO_13-->
-  const mediaCommentRegex = /\<\!--(?:IMG|VIDEO)_\d+--\>/g;
+  const mediaCommentRegex = /<!--(?:IMG|VIDEO)_\d+-->/g;
   const noComments = article.replace(/\n/g, ' ').replace(mediaCommentRegex, '');
   // Process article: strip HTML and remove comments
   const stripped = stripHtml(noComments, {
@@ -162,7 +162,7 @@ export function contentType(
   } else {
     parent = undefined;
   }
-  let children = [];
+  const children = [];
   if (result.has_video == '1') {
     children.push('video');
   }
