@@ -145,13 +145,13 @@ export function timeToConsume(
 export function contentType(
   result: Pick<
     ParserResult,
-    'is_article' | 'is_index' | 'has_video' | 'has_image'
+    'isArticle' | 'isIndex' | 'has_video' | 'has_image'
   >,
 ): { parent: string | undefined; children: string[] | undefined } {
   let parent: string;
-  if (result.is_index == '1') {
+  if (result.isIndex == 1) {
     parent = 'index';
-  } else if (result.is_article == '1') {
+  } else if (result.isArticle == 1) {
     parent = 'article';
     // '2' = is an image (exclusive with other 'is_' fields)
   } else if (result.has_image == '2') {
