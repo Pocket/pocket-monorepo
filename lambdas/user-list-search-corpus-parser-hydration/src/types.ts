@@ -48,10 +48,10 @@ export type ParserResult = {
   resolved_normal_url: string;
   time_to_read: number;
   article: string | null;
-  is_article: string;
+  isArticle: number;
   has_video: string;
   has_image: string;
-  is_index: string;
+  isIndex: number;
   videos?: { [id: number]: { length: string } };
 };
 
