@@ -2705,7 +2705,7 @@ create index user_id
 create table `readitla_ril-tmp`.item_tags
 (
     user_id        int unsigned                           not null,
-    item_id        int unsigned                           not null,
+    item_id        bigint unsigned                        not null,
     tag            varchar(25) charset utf8mb4 default '' not null,
     entered_by     varchar(42) charset latin1             not null,
     status         tinyint unsigned            default 1  not null,
@@ -2807,8 +2807,8 @@ create index share_id
 create table list
 (
     user_id        int unsigned               not null,
-    item_id        int unsigned               not null,
-    resolved_id    int unsigned               not null,
+    item_id        bigint unsigned            not null,
+    resolved_id    bigint unsigned            not null,
     given_url      text                       not null,
     title          varchar(75)                not null,
     time_added     datetime                   not null,
@@ -2871,7 +2871,7 @@ create index userItemPending
 create table list_meta
 (
     user_id    int unsigned                        not null,
-    item_id    int unsigned                        not null,
+    item_id    bigint unsigned                     not null,
     meta_id    smallint unsigned                   not null,
     value      text collate utf8_unicode_ci        not null,
     api_id     mediumint unsigned                  not null,
@@ -5178,7 +5178,7 @@ create table user_annotations
     annotation_id varchar(50)                                not null
         primary key,
     user_id       int unsigned                               not null,
-    item_id       int unsigned                               not null,
+    item_id       bigint unsigned                            not null,
     quote         mediumtext                                 null,
     patch         mediumtext                                 null,
     version       int(10)          default 1                 not null,

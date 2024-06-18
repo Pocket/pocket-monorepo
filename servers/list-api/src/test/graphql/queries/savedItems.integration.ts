@@ -15,7 +15,7 @@ describe('getSavedItems', () => {
   const date1 = new Date('2020-10-03 10:20:30'); // Consistent date for seeding
   const date2 = new Date('2020-10-03 10:22:30'); // Consistent date for seeding
   const date3 = new Date('2020-10-03 10:25:30'); // Consistent date for seeding
-  const nullDate = new Date('0000-00-00 00:00:00');
+  const nullDate = '0000-00-00 00:00:00';
   let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;
@@ -203,6 +203,39 @@ describe('getSavedItems', () => {
     expect(
       res.body.data?._entities[0].savedItems.pageInfo.hasPreviousPage,
     ).toBe(false);
+  });
+  it('should work with bigint item_ids and resolved_ids', async () => {
+    await writeDb('list').insert([
+      {
+        user_id: 1,
+        item_id: 429496729510,
+        resolved_id: 429496729510,
+        given_url: 'http://eee',
+        title: 'mytitle',
+        time_added: new Date(date3.getTime() + 1000),
+        time_updated: new Date(date3.getTime() + 1000),
+        time_read: date1,
+        time_favorited: nullDate,
+        api_id: 'apiid',
+        status: 1,
+        favorite: 0,
+        api_id_updated: 'apiid',
+      },
+    ]);
+    const variables = {
+      id: '1',
+      pagination: {
+        // after: 'Ml8qXzE2MDE3Mzg1NTA=',
+        first: 1,
+      },
+    };
+    const res = await request(app).post(url).set(headers).send({
+      query: GET_SAVED_ITEMS_CURSOR,
+      variables,
+    });
+    expect(res.body.data?._entities[0].savedItems.edges[0].node).toMatchObject({
+      url: 'http://eee',
+    });
   });
   it('should finish the forward pagination from previous cursor, without overfetching', async () => {
     const variables = {
