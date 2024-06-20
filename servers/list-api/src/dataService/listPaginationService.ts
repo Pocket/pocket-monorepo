@@ -138,8 +138,8 @@ export class ListPaginationService {
         `CREATE TEMPORARY TABLE \`${ListPaginationService.LIST_TEMP_TABLE}\` ` +
           '(' +
           '`seq` int NOT NULL AUTO_INCREMENT PRIMARY KEY, ' +
-          '`item_id` int(10) unsigned NOT NULL, ' +
-          '`resolved_id` int(10) unsigned NOT NULL, ' +
+          '`item_id` bigint unsigned NOT NULL, ' +
+          '`resolved_id` bigint unsigned NOT NULL, ' +
           /*
            * Setting VARCHAR length for given_url to 5,000. This is a hack to get it
            * reasonably high to prevent url from getting truncated since the
@@ -169,7 +169,7 @@ export class ListPaginationService {
       .raw(
         `CREATE TEMPORARY TABLE \`${ListPaginationService.HIGHLIGHTS_TEMP_TABLE}\` ` +
           '(' +
-          '`item_id` int(10) unsigned NOT NULL PRIMARY KEY' +
+          '`item_id` bigint unsigned NOT NULL PRIMARY KEY' +
           ') ENGINE = MEMORY',
       )
       .connection(connection);
@@ -185,7 +185,7 @@ export class ListPaginationService {
       .raw(
         `CREATE TEMPORARY TABLE \`${ListPaginationService.TAGS_TEMP_TABLE}\` ` +
           '(' +
-          '`item_id` int(10) unsigned NOT NULL PRIMARY KEY' +
+          '`item_id` bigint unsigned NOT NULL PRIMARY KEY' +
           ') ENGINE = MEMORY',
       )
       .connection(connection);
