@@ -404,7 +404,7 @@ class ClientAPI extends TerraformStack {
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },
       autoscalingConfig: {
-        targetMinCapacity: config.isProd ? 4 : 2,
+        targetMinCapacity: config.isProd ? 4 : 1,
         targetMaxCapacity: config.isProd ? 20 : 10,
       },
       alarms: {

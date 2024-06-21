@@ -314,7 +314,7 @@ class FeatureFlags extends TerraformStack {
       },
 
       autoscalingConfig: {
-        targetMinCapacity: 2,
+        targetMinCapacity: config.isProd ? 2 : 1,
         targetMaxCapacity: 12,
       },
       alarms: {

@@ -463,7 +463,7 @@ class ListAPI extends TerraformStack {
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },
       autoscalingConfig: {
-        targetMinCapacity: config.environment === 'Prod' ? 2 : 2,
+        targetMinCapacity: config.environment === 'Prod' ? 2 : 1,
         targetMaxCapacity: config.environment === 'Prod' ? 10 : 10,
       },
       alarms: {
