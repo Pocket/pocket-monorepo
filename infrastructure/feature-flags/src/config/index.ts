@@ -1,6 +1,7 @@
 const name = 'FeatureFlags';
 const domainPrefix = 'featureflags';
 const isDev = process.env.NODE_ENV === 'development';
+const isProd = process.env.NODE_ENV === 'production';
 const environment = isDev ? 'Dev' : 'Prod';
 const domain = isDev
   ? `${domainPrefix}.getpocket.dev`
@@ -15,6 +16,7 @@ const releaseSha = process.env.CIRCLE_SHA1;
 export const config = {
   name,
   isDev,
+  isProd,
   prefix: `${name}-${environment}`,
   circleCIPrefix: `/${name}/CircleCI/${environment}`,
   shortName: 'FFLAGS',
