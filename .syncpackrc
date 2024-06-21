@@ -24,6 +24,7 @@
       "dependencies": [
         "@sentry/**"
       ],
+      "pinVersion": "8.11.0",
       "label": "Sentry Dependencies should all have the same version"
     },
     {

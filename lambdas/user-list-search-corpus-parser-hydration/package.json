@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/aws-serverless": "8.7.0",
+    "@sentry/aws-serverless": "8.11.0",
     "fetch-retry": "^5.0.6",
     "string-strip-html": "8.4.0",
     "tslib": "2.6.3"
