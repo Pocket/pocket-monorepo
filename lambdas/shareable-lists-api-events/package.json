@@ -17,7 +17,7 @@
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand"
   },
   "dependencies": {
-    "@sentry/aws-serverless": "8.7.0",
+    "@sentry/aws-serverless": "8.11.0",
     "fetch-retry": "^5.0.6",
     "tslib": "2.6.3"
   },
