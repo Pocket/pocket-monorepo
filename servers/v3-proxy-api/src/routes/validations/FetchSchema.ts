@@ -1,4 +1,5 @@
 import { Schema } from 'express-validator';
+import { timeSeconds } from './shared';
 
 /**
  * Note: this type is manually documented, since the
@@ -89,7 +90,10 @@ export const V3FetchSchema: Schema = {
       },
     },
     customSanitizer: {
-      options: (value) => (typeof value === 'string' ? parseInt(value) : value),
+      options: (value) =>
+        typeof value === 'string'
+          ? timeSeconds(parseInt(value))
+          : timeSeconds(value),
     },
   },
   shares: {
@@ -144,6 +148,9 @@ export const V3FetchSchema: Schema = {
       },
     },
     toInt: true,
+    customSanitizer: {
+      options: (value) => timeSeconds(value),
+    },
   },
   hasAnnotations: {
     optional: true,

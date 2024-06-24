@@ -1007,6 +1007,22 @@ describe('v3Get', () => {
       expect(apiSpy.mock.lastCall[3].filter.updatedSince).toEqual(123123);
       expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
+    it.each([1719263946000, 1719263946, '1719263946000', '1719263946'])(
+      'should convert since milliseconds to seconds, but leave seconds alone',
+      async (time) => {
+        const apiSpy = jest
+          .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+          .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+        const response = await request(app).get('/v3/get').query({
+          consumer_key: 'test',
+          access_token: 'test',
+          since: time,
+          detailType: 'complete',
+        });
+        expect(apiSpy.mock.lastCall[3].filter.updatedSince).toEqual(1719263946);
+        expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+      },
+    );
     it.each([
       { consumer_key: 'test', access_token: 'test', detailType: 'complete' },
       {
