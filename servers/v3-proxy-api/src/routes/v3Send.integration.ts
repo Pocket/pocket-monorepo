@@ -140,6 +140,51 @@ describe('v3/send', () => {
       });
     });
     describe('actions router', () => {
+      describe('processActions - unknown error', () => {
+        let addSpy;
+        beforeEach(
+          () =>
+            (addSpy = jest
+              .spyOn(ActionsRouter.prototype, 'add')
+              .mockRejectedValueOnce(
+                new ClientError(
+                  {
+                    data: null,
+                    status: 403,
+                    errors: [
+                      {
+                        extensions: { code: 'SOMETHING_ELSE' },
+                      } as unknown as GraphQLError,
+                    ],
+                  },
+                  {} as any,
+                ),
+              )),
+        );
+        afterEach(() => addSpy.mockRestore());
+        it('defaults to internal server error if error code has no mapping', async () => {
+          const response = await request(app)
+            .post('/v3/send')
+            .send({
+              consumer_key: 'test',
+              access_token: 'test',
+              actions: [{ action: 'add', url: 'http://domain.com/path' }],
+            });
+          const expected = {
+            status: 1,
+            action_results: [false],
+            action_errors: [
+              {
+                message: 'Something Went Wrong',
+                type: 'Internal Server Error',
+                code: 198,
+              },
+            ],
+          };
+          expect(response.status).toEqual(200);
+          expect(response.body).toEqual(expected);
+        });
+      });
       describe('processActions', () => {
         let addSpy;
         beforeEach(
