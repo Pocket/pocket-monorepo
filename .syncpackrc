@@ -15,17 +15,19 @@
   "versionGroups": [
     {
       "dependencies": [
+        "@aws-sdk/client-s3",
         "@aws-sdk/**"
       ],
       "pinVersion": "3.600.0",
-      "label": "AWS SDK Dependencies should all have the same version"
+      "label": "AWS SDK Dependencies should all have the same version (uses a specifc package as the first one for Renovate to latch to)"
     },
     {
       "dependencies": [
+        "@sentry/node",
         "@sentry/**"
       ],
       "pinVersion": "8.11.0",
-      "label": "Sentry Dependencies should all have the same version"
+      "label": "Sentry Dependencies should all have the same version (uses a specifc package as the first one for Renovate to latch to)"
     },
     {
       "dependencies": [
