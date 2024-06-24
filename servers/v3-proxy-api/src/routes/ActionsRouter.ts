@@ -162,7 +162,7 @@ export class ActionsRouter {
         } else {
           // If an error occurs that doesn't originate from the client request,
           // populate a default error and log to Cloudwatch/Sentry
-          const defaultError = customErrorHeaders('INTENAL_SERVER_ERROR');
+          const defaultError = customErrorHeaders('INTERNAL_SERVER_ERROR');
           const errorResult = {
             message: defaultMessage,
             type: defaultError['X-Error'],
