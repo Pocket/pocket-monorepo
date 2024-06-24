@@ -17,7 +17,7 @@ importers:
     devDependencies:
       '@commitlint/cli':
         specifier: 19.3.0
-        version: 19.3.0(@types/node@20.14.7)(typescript@5.6.0-dev.20240621)
+        version: 19.3.0(@types/node@20.14.7)(typescript@5.6.0-dev.20240624)
       '@commitlint/config-conventional':
         specifier: ^19.2.2
         version: 19.2.2
@@ -26,7 +26,7 @@ importers:
         version: link:packages/eslint-config
       syncpack:
         specifier: ^12.3.2
-        version: 12.3.2(typescript@5.6.0-dev.20240621)
+        version: 12.3.2(typescript@5.6.0-dev.20240624)
       tsconfig:
         specifier: workspace:*
         version: link:packages/tsconfig
@@ -1695,8 +1695,8 @@ importers:
         specifier: 4.1.3
         version: 4.1.3(@apollo/server@4.10.4(encoding@0.1.13)(graphql@16.8.1))(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.8.0
-        version: 2.8.0(graphql@16.8.1)
+        specifier: 2.8.1
+        version: 2.8.1(graphql@16.8.1)
       '@apollo/utils.keyvadapter':
         specifier: 3.1.0
         version: 3.1.0
@@ -2366,13 +2366,13 @@ importers:
         version: 1.0.3(graphql@16.8.1)
       '@apollo/datasource-rest':
         specifier: ^6.2.2
-        version: 6.2.2(encoding@0.1.13)(graphql@16.8.1)
+        version: 6.3.0(encoding@0.1.13)(graphql@16.8.1)
       '@apollo/server':
         specifier: 4.10.4
         version: 4.10.4(encoding@0.1.13)(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.8.0
-        version: 2.8.0(graphql@16.8.1)
+        specifier: 2.8.1
+        version: 2.8.1(graphql@16.8.1)
       '@aws-sdk/client-dynamodb':
         specifier: 3.600.0
         version: 3.600.0
@@ -2510,8 +2510,8 @@ importers:
         specifier: 4.10.4
         version: 4.10.4(encoding@0.1.13)(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.8.0
-        version: 2.8.0(graphql@16.8.1)
+        specifier: 2.8.1
+        version: 2.8.1(graphql@16.8.1)
       '@govtechsg/passport-openidconnect':
         specifier: 1.0.2
         version: 1.0.2
@@ -2619,8 +2619,8 @@ importers:
         specifier: 4.10.4
         version: 4.10.4(encoding@0.1.13)(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.8.0
-        version: 2.8.0(graphql@16.8.1)
+        specifier: 2.8.1
+        version: 2.8.1(graphql@16.8.1)
       '@apollo/utils.keyvadapter':
         specifier: 3.1.0
         version: 3.1.0
@@ -2716,8 +2716,8 @@ importers:
         specifier: 4.10.4
         version: 4.10.4(encoding@0.1.13)(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.8.0
-        version: 2.8.0(graphql@16.8.1)
+        specifier: 2.8.1
+        version: 2.8.1(graphql@16.8.1)
       '@aws-sdk/client-eventbridge':
         specifier: 3.600.0
         version: 3.600.0
@@ -2871,13 +2871,13 @@ importers:
         version: 1.0.3(graphql@16.8.1)
       '@apollo/datasource-rest':
         specifier: ^6.2.2
-        version: 6.2.2(encoding@0.1.13)(graphql@16.8.1)
+        version: 6.3.0(encoding@0.1.13)(graphql@16.8.1)
       '@apollo/server':
         specifier: 4.10.4
         version: 4.10.4(encoding@0.1.13)(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.8.0
-        version: 2.8.0(graphql@16.8.1)
+        specifier: 2.8.1
+        version: 2.8.1(graphql@16.8.1)
       '@apollo/utils.keyvadapter':
         specifier: 3.1.0
         version: 3.1.0
@@ -3109,8 +3109,8 @@ importers:
         specifier: 4.1.3
         version: 4.1.3(@apollo/server@4.10.4(encoding@0.1.13)(graphql@16.8.1))(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.8.0
-        version: 2.8.0(graphql@16.8.1)
+        specifier: 2.8.1
+        version: 2.8.1(graphql@16.8.1)
       '@apollo/utils.keyvadapter':
         specifier: 3.1.0
         version: 3.1.0
@@ -3303,8 +3303,8 @@ importers:
         specifier: 4.10.4
         version: 4.10.4(encoding@0.1.13)(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.8.0
-        version: 2.8.0(graphql@16.8.1)
+        specifier: 2.8.1
+        version: 2.8.1(graphql@16.8.1)
       '@aws-sdk/client-dynamodb':
         specifier: 3.600.0
         version: 3.600.0
@@ -3415,8 +3415,8 @@ importers:
         specifier: 4.10.4
         version: 4.10.4(encoding@0.1.13)(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.8.0
-        version: 2.8.0(graphql@16.8.1)
+        specifier: 2.8.1
+        version: 2.8.1(graphql@16.8.1)
       '@aws-sdk/client-eventbridge':
         specifier: 3.600.0
         version: 3.600.0
@@ -3515,8 +3515,8 @@ importers:
         specifier: 4.10.4
         version: 4.10.4(encoding@0.1.13)(graphql@16.8.1)
       '@apollo/subgraph':
-        specifier: 2.8.0
-        version: 2.8.0(graphql@16.8.1)
+        specifier: 2.8.1
+        version: 2.8.1(graphql@16.8.1)
       '@aws-sdk/client-sqs':
         specifier: 3.600.0
         version: 3.600.0
@@ -3770,14 +3770,14 @@ packages:
     peerDependencies:
       graphql: 14.x || 15.x || 16.x
 
-  '@apollo/datasource-rest@6.2.2':
-    resolution: {integrity: sha512-0rxlyAdlZ5n4zoPsME5TCzxZiyu/4m5dawatclr2ckwAewnGARcqdhFnckrhlOIgLQTtcl9lCmUit4DGoK47lw==}
+  '@apollo/datasource-rest@6.3.0':
+    resolution: {integrity: sha512-5YpAXY2VvkYySmaDl8G8Yt8qjOO89cqx7r+uchFjKGacS72L8nKxrLIzltjhQkLpyjwMLFLi2UDSCSMht+qGQA==}
     engines: {node: '>=16.14'}
     peerDependencies:
       graphql: ^16.5.0
 
-  '@apollo/federation-internals@2.8.0':
-    resolution: {integrity: sha512-xA/noFvUF1Na4pXNicTNu4wN61lOdDmI0MUAa2xHl2hawFBFFQCHQXnwRwFetGdq4wFdHrES4slA32bu5KdLmQ==}
+  '@apollo/federation-internals@2.8.1':
+    resolution: {integrity: sha512-UiWHNfZFESaYgR/STuyx9yzyFSmnpQkVWRBTMjsX6GN3fwbDZ0BHqn2ql2Lx+Jv6ezcdEYS6u6h3fcXNsVmMQw==}
     engines: {node: '>=14.15.0'}
     peerDependencies:
       graphql: ^16.5.0
@@ -3804,8 +3804,8 @@ packages:
     peerDependencies:
       graphql: ^16.6.0
 
-  '@apollo/subgraph@2.8.0':
-    resolution: {integrity: sha512-DbUmu8nN2mTFfE8MMEpDf7mYR2BQFCLzAD53o86gwzVTr/bzsUMCJerf2V3e8eUNchVvIbEUdEKFBCwtDVQc8Q==}
+  '@apollo/subgraph@2.8.1':
+    resolution: {integrity: sha512-zzYTjup7UEej4jLzPkARCm34yhZTP2PJBRYOkBtOsOdnYiZSjDkPcro2UnT68bLTCMg+Bvp6kPNPv5jZZACAaQ==}
     engines: {node: '>=14.15.0'}
     peerDependencies:
       graphql: ^16.5.0
@@ -6833,6 +6833,9 @@ packages:
   '@types/node@20.14.7':
     resolution: {integrity: sha512-uTr2m2IbJJucF3KUxgnGOZvYbN0QgkGyWxG6973HCpMYFy2KfcgYuIwkJQMQkt1VbBMlvWRbpshFTLxnxCZjKQ==}
 
+  '@types/node@20.14.8':
+    resolution: {integrity: sha512-DO+2/jZinXfROG7j7WKFn/3C6nFwxy2lLpgLjEXJz+0XKphZlTLJ14mo8Vfg8X5BWN6XjyESXq+LcYdT7tR3bA==}
+
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
 
@@ -8367,8 +8370,8 @@ packages:
   electron-to-chromium@1.4.757:
     resolution: {integrity: sha512-jftDaCknYSSt/+KKeXzH3LX5E2CvRLm75P3Hj+J/dv3CL0qUYcOt13d5FN1NiL5IJbbhzHrb3BomeG2tkSlZmw==}
 
-  electron-to-chromium@1.4.808:
-    resolution: {integrity: sha512-0ItWyhPYnww2VOuCGF4s1LTfbrdAV2ajy/TN+ZTuhR23AHI6rWHCrBXJ/uxoXOvRRqw8qjYVrG81HFI7x/2wdQ==}
+  electron-to-chromium@1.4.810:
+    resolution: {integrity: sha512-Kaxhu4T7SJGpRQx99tq216gCq2nMxJo+uuT6uzz9l8TVN2stL7M06MIIXAtr9jsrLs2Glflgf2vMQRepxawOdQ==}
 
   elliptic@6.5.5:
     resolution: {integrity: sha512-7EjbcmUm17NQFu4Pmgmq2olYMj8nwMnpcddByChSUjArp8F5DQWcIcpriwO4ZToLNAJig0yiyjswfyGNje/ixw==}
@@ -13104,8 +13107,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.6.0-dev.20240621:
-    resolution: {integrity: sha512-1JHiBIcEY9qrX/0coAIUIdH0XdDUuwIJ7VZGZ1CbksCWq2bztyvRX7YIcGvTkN/kFGEcrmyFIUEouq+pnLvQPw==}
+  typescript@5.6.0-dev.20240624:
+    resolution: {integrity: sha512-PPs1oU5IrlyMBmGLUdD8FpXSqE0O6XXVy1mGMBwVg+38QKe7JF6Ao/T4mlRJQgijMpv+Gn3wILodf0/6oH0cDA==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -13647,7 +13650,7 @@ snapshots:
     dependencies:
       graphql: 16.8.1
 
-  '@apollo/datasource-rest@6.2.2(encoding@0.1.13)(graphql@16.8.1)':
+  '@apollo/datasource-rest@6.3.0(encoding@0.1.13)(graphql@16.8.1)':
     dependencies:
       '@apollo/utils.fetcher': 3.1.0
       '@apollo/utils.keyvaluecache': 3.1.0
@@ -13662,7 +13665,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@apollo/federation-internals@2.8.0(graphql@16.8.1)':
+  '@apollo/federation-internals@2.8.1(graphql@16.8.1)':
     dependencies:
       '@types/uuid': 9.0.8
       chalk: 4.1.2
@@ -13732,10 +13735,10 @@ snapshots:
       - encoding
       - supports-color
 
-  '@apollo/subgraph@2.8.0(graphql@16.8.1)':
+  '@apollo/subgraph@2.8.1(graphql@16.8.1)':
     dependencies:
       '@apollo/cache-control-types': 1.0.3(graphql@16.8.1)
-      '@apollo/federation-internals': 2.8.0(graphql@16.8.1)
+      '@apollo/federation-internals': 2.8.1(graphql@16.8.1)
       graphql: 16.8.1
 
   '@apollo/usage-reporting-protobuf@4.1.1':
@@ -13899,7 +13902,7 @@ snapshots:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
       '@aws-sdk/client-sso-oidc': 3.600.0
-      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))(@aws-sdk/client-sts@3.600.0)
       '@aws-sdk/middleware-host-header': 3.598.0
@@ -13996,7 +13999,7 @@ snapshots:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
       '@aws-sdk/client-sso-oidc': 3.600.0
-      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))(@aws-sdk/client-sts@3.600.0)
       '@aws-sdk/middleware-host-header': 3.598.0
@@ -14042,7 +14045,7 @@ snapshots:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
       '@aws-sdk/client-sso-oidc': 3.600.0
-      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))(@aws-sdk/client-sts@3.600.0)
       '@aws-sdk/middleware-host-header': 3.598.0
@@ -14088,7 +14091,7 @@ snapshots:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
       '@aws-sdk/client-sso-oidc': 3.600.0
-      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))(@aws-sdk/client-sts@3.600.0)
       '@aws-sdk/middleware-host-header': 3.598.0
@@ -14138,9 +14141,9 @@ snapshots:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
       '@aws-sdk/client-sso-oidc': 3.600.0
-      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
-      '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)(@aws-sdk/client-sts@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))
+      '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))(@aws-sdk/client-sts@3.600.0)
       '@aws-sdk/middleware-host-header': 3.598.0
       '@aws-sdk/middleware-logger': 3.598.0
       '@aws-sdk/middleware-recursion-detection': 3.598.0
@@ -14189,7 +14192,7 @@ snapshots:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
       '@aws-sdk/client-sso-oidc': 3.600.0
-      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))(@aws-sdk/client-sts@3.600.0)
       '@aws-sdk/middleware-host-header': 3.598.0
@@ -14236,7 +14239,7 @@ snapshots:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
       '@aws-sdk/client-sso-oidc': 3.600.0
-      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))(@aws-sdk/client-sts@3.600.0)
       '@aws-sdk/middleware-host-header': 3.598.0
@@ -14284,7 +14287,7 @@ snapshots:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
       '@aws-sdk/client-sso-oidc': 3.600.0
-      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))(@aws-sdk/client-sts@3.600.0)
       '@aws-sdk/middleware-host-header': 3.598.0
@@ -14331,7 +14334,7 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
-      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)(@aws-sdk/client-sts@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))
       '@aws-sdk/middleware-host-header': 3.598.0
@@ -14376,7 +14379,7 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
-      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))(@aws-sdk/client-sts@3.600.0)
       '@aws-sdk/middleware-host-header': 3.598.0
@@ -14423,6 +14426,51 @@ snapshots:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
       '@aws-sdk/core': 3.598.0
+      '@aws-sdk/middleware-host-header': 3.598.0
+      '@aws-sdk/middleware-logger': 3.598.0
+      '@aws-sdk/middleware-recursion-detection': 3.598.0
+      '@aws-sdk/middleware-user-agent': 3.598.0
+      '@aws-sdk/region-config-resolver': 3.598.0
+      '@aws-sdk/types': 3.598.0
+      '@aws-sdk/util-endpoints': 3.598.0
+      '@aws-sdk/util-user-agent-browser': 3.598.0
+      '@aws-sdk/util-user-agent-node': 3.598.0
+      '@smithy/config-resolver': 3.0.3
+      '@smithy/core': 2.2.3
+      '@smithy/fetch-http-handler': 3.1.0
+      '@smithy/hash-node': 3.0.2
+      '@smithy/invalid-dependency': 3.0.2
+      '@smithy/middleware-content-length': 3.0.2
+      '@smithy/middleware-endpoint': 3.0.3
+      '@smithy/middleware-retry': 3.0.6
+      '@smithy/middleware-serde': 3.0.2
+      '@smithy/middleware-stack': 3.0.2
+      '@smithy/node-config-provider': 3.1.2
+      '@smithy/node-http-handler': 3.1.0
+      '@smithy/protocol-http': 4.0.2
+      '@smithy/smithy-client': 3.1.4
+      '@smithy/types': 3.2.0
+      '@smithy/url-parser': 3.0.2
+      '@smithy/util-base64': 3.0.0
+      '@smithy/util-body-length-browser': 3.0.0
+      '@smithy/util-body-length-node': 3.0.0
+      '@smithy/util-defaults-mode-browser': 3.0.6
+      '@smithy/util-defaults-mode-node': 3.0.6
+      '@smithy/util-endpoints': 2.0.3
+      '@smithy/util-middleware': 3.0.2
+      '@smithy/util-retry': 3.0.2
+      '@smithy/util-utf8': 3.0.0
+      tslib: 2.6.3
+    transitivePeerDependencies:
+      - aws-crt
+
+  '@aws-sdk/client-sts@3.600.0':
+    dependencies:
+      '@aws-crypto/sha256-browser': 5.2.0
+      '@aws-crypto/sha256-js': 5.2.0
+      '@aws-sdk/client-sso-oidc': 3.600.0
+      '@aws-sdk/core': 3.598.0
+      '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))(@aws-sdk/client-sts@3.600.0)
       '@aws-sdk/middleware-host-header': 3.598.0
       '@aws-sdk/middleware-logger': 3.598.0
       '@aws-sdk/middleware-recursion-detection': 3.598.0
@@ -14538,7 +14586,7 @@ snapshots:
 
   '@aws-sdk/credential-provider-ini@3.598.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))(@aws-sdk/client-sts@3.600.0)':
     dependencies:
-      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/credential-provider-env': 3.598.0
       '@aws-sdk/credential-provider-http': 3.598.0
       '@aws-sdk/credential-provider-process': 3.598.0
@@ -14561,7 +14609,7 @@ snapshots:
       '@aws-sdk/credential-provider-http': 3.598.0
       '@aws-sdk/credential-provider-process': 3.598.0
       '@aws-sdk/credential-provider-sso': 3.598.0(@aws-sdk/client-sso-oidc@3.600.0)
-      '@aws-sdk/credential-provider-web-identity': 3.598.0(@aws-sdk/client-sts@3.600.0)
+      '@aws-sdk/credential-provider-web-identity': 3.598.0(@aws-sdk/client-sts@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))
       '@aws-sdk/types': 3.598.0
       '@smithy/credential-provider-imds': 3.1.2
       '@smithy/property-provider': 3.1.2
@@ -14598,7 +14646,7 @@ snapshots:
       '@aws-sdk/credential-provider-ini': 3.598.0(@aws-sdk/client-sso-oidc@3.600.0)(@aws-sdk/client-sts@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))
       '@aws-sdk/credential-provider-process': 3.598.0
       '@aws-sdk/credential-provider-sso': 3.598.0(@aws-sdk/client-sso-oidc@3.600.0)
-      '@aws-sdk/credential-provider-web-identity': 3.598.0(@aws-sdk/client-sts@3.600.0)
+      '@aws-sdk/credential-provider-web-identity': 3.598.0(@aws-sdk/client-sts@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))
       '@aws-sdk/types': 3.598.0
       '@smithy/credential-provider-imds': 3.1.2
       '@smithy/property-provider': 3.1.2
@@ -14644,9 +14692,17 @@ snapshots:
       - '@aws-sdk/client-sso-oidc'
       - aws-crt
 
-  '@aws-sdk/credential-provider-web-identity@3.598.0(@aws-sdk/client-sts@3.600.0)':
+  '@aws-sdk/credential-provider-web-identity@3.598.0(@aws-sdk/client-sts@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))':
     dependencies:
       '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/types': 3.598.0
+      '@smithy/property-provider': 3.1.2
+      '@smithy/types': 3.2.0
+      tslib: 2.6.3
+
+  '@aws-sdk/credential-provider-web-identity@3.598.0(@aws-sdk/client-sts@3.600.0)':
+    dependencies:
+      '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/types': 3.598.0
       '@smithy/property-provider': 3.1.2
       '@smithy/types': 3.2.0
@@ -15643,11 +15699,11 @@ snapshots:
     dependencies:
       commander: 12.1.0
 
-  '@commitlint/cli@19.3.0(@types/node@20.14.7)(typescript@5.6.0-dev.20240621)':
+  '@commitlint/cli@19.3.0(@types/node@20.14.7)(typescript@5.6.0-dev.20240624)':
     dependencies:
       '@commitlint/format': 19.3.0
       '@commitlint/lint': 19.2.2
-      '@commitlint/load': 19.2.0(@types/node@20.14.7)(typescript@5.6.0-dev.20240621)
+      '@commitlint/load': 19.2.0(@types/node@20.14.7)(typescript@5.6.0-dev.20240624)
       '@commitlint/read': 19.2.1
       '@commitlint/types': 19.0.3
       execa: 8.0.1
@@ -15694,15 +15750,15 @@ snapshots:
       '@commitlint/rules': 19.0.3
       '@commitlint/types': 19.0.3
 
-  '@commitlint/load@19.2.0(@types/node@20.14.7)(typescript@5.6.0-dev.20240621)':
+  '@commitlint/load@19.2.0(@types/node@20.14.7)(typescript@5.6.0-dev.20240624)':
     dependencies:
       '@commitlint/config-validator': 19.0.3
       '@commitlint/execute-rule': 19.0.0
       '@commitlint/resolve-extends': 19.1.0
       '@commitlint/types': 19.0.3
       chalk: 5.3.0
-      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240621)
-      cosmiconfig-typescript-loader: 5.0.0(@types/node@20.14.7)(cosmiconfig@9.0.0(typescript@5.6.0-dev.20240621))(typescript@5.6.0-dev.20240621)
+      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240624)
+      cosmiconfig-typescript-loader: 5.0.0(@types/node@20.14.7)(cosmiconfig@9.0.0(typescript@5.6.0-dev.20240624))(typescript@5.6.0-dev.20240624)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -19147,7 +19203,7 @@ snapshots:
 
   '@types/ioredis-mock@8.2.5':
     dependencies:
-      '@types/node': 20.14.7
+      '@types/node': 20.14.8
       ioredis: 5.4.1
     transitivePeerDependencies:
       - supports-color
@@ -19282,6 +19338,10 @@ snapshots:
       undici-types: 5.26.5
 
   '@types/node@20.14.7':
+    dependencies:
+      undici-types: 5.26.5
+
+  '@types/node@20.14.8':
     dependencies:
       undici-types: 5.26.5
 
@@ -20066,7 +20126,7 @@ snapshots:
   browserslist@4.23.1:
     dependencies:
       caniuse-lite: 1.0.30001636
-      electron-to-chromium: 1.4.808
+      electron-to-chromium: 1.4.810
       node-releases: 2.0.14
       update-browserslist-db: 1.0.16(browserslist@4.23.1)
     optional: true
@@ -20743,12 +20803,12 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cosmiconfig-typescript-loader@5.0.0(@types/node@20.14.7)(cosmiconfig@9.0.0(typescript@5.6.0-dev.20240621))(typescript@5.6.0-dev.20240621):
+  cosmiconfig-typescript-loader@5.0.0(@types/node@20.14.7)(cosmiconfig@9.0.0(typescript@5.6.0-dev.20240624))(typescript@5.6.0-dev.20240624):
     dependencies:
       '@types/node': 20.14.7
-      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240621)
+      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240624)
       jiti: 1.21.0
-      typescript: 5.6.0-dev.20240621
+      typescript: 5.6.0-dev.20240624
 
   cosmiconfig@8.3.6(typescript@5.4.5):
     dependencies:
@@ -20768,14 +20828,14 @@ snapshots:
     optionalDependencies:
       typescript: 5.4.5
 
-  cosmiconfig@9.0.0(typescript@5.6.0-dev.20240621):
+  cosmiconfig@9.0.0(typescript@5.6.0-dev.20240624):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 5.6.0-dev.20240621
+      typescript: 5.6.0-dev.20240624
 
   cpu-features@0.0.2:
     dependencies:
@@ -21152,7 +21212,7 @@ snapshots:
     dependencies:
       semver: 7.6.2
       shelljs: 0.8.5
-      typescript: 5.6.0-dev.20240621
+      typescript: 5.6.0-dev.20240624
 
   dreamopt@0.8.0:
     dependencies:
@@ -21190,7 +21250,7 @@ snapshots:
 
   electron-to-chromium@1.4.757: {}
 
-  electron-to-chromium@1.4.808:
+  electron-to-chromium@1.4.810:
     optional: true
 
   elliptic@6.5.5:
@@ -26370,13 +26430,13 @@ snapshots:
       '@pkgr/core': 0.1.1
       tslib: 2.6.3
 
-  syncpack@12.3.2(typescript@5.6.0-dev.20240621):
+  syncpack@12.3.2(typescript@5.6.0-dev.20240624):
     dependencies:
       '@effect/schema': 0.66.5(effect@3.0.3)(fast-check@3.17.2)
       chalk: 5.3.0
       chalk-template: 1.1.0
       commander: 12.0.0
-      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240621)
+      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240624)
       effect: 3.0.3
       enquirer: 2.4.1
       fast-check: 3.17.2
@@ -26834,7 +26894,7 @@ snapshots:
 
   typescript@5.4.5: {}
 
-  typescript@5.6.0-dev.20240621: {}
+  typescript@5.6.0-dev.20240624: {}
 
   ua-parser-js@1.0.37: {}
 
