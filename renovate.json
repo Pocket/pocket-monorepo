@@ -1,12 +1,22 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "local>Pocket/renovate-config",
-    "group:monorepos"
+  "extends": ["github>Pocket/renovate-config", "group:monorepos"],
+  "packageRules": [
+    {
+      "managers": ["docker-compose"],
+      "updateTypes": ["digest", "pinDigest"],
+      "enabled": false
+    }
   ],
-  "packageRules": [{
-    "managers": ["docker-compose"],
-    "updateTypes": ["digest", "pinDigest"],
-    "enabled": false
-  }]
+  "customManagers": [
+    {
+      "customType": "regex",
+      "datasourceTemplate": "npm",
+      "versioningTemplate": "npm",
+      "fileMatch": ["^\\.syncpackrc$"],
+      "matchStrings": [
+        "\"dependencies\":\\s*\\[\\s*\"(?<depName>[^\"]+)\"[^\\]]*\\],\\s*\"pinVersion\":\\s*\"(?<currentValue>[^\"]+)\""
+      ]
+    }
+  ]
 }
