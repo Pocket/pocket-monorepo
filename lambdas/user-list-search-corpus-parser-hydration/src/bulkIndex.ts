@@ -39,6 +39,7 @@ export async function bulkIndex(
     body,
   });
   if (!res.ok) {
+    Sentry.addBreadcrumb({ data: { requestBody: body } });
     const data = await res.json();
     serverLogger.error({ message: 'Request failure', data: data });
     throw new Error(
