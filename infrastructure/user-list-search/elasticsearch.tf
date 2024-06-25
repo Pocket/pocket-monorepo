@@ -18,7 +18,7 @@ resource "aws_elasticsearch_domain" "user_search" {
   count = local.workspace.es_cluster_enable ? 1 : 0
 
   domain_name           = "${lower(local.prefix)}-v2"
-  elasticsearch_version = "OpenSearch_1.3"
+  elasticsearch_version = "OpenSearch_2.13"
 
   access_policies = <<CONFIG
 {
