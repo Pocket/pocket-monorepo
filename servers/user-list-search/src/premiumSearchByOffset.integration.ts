@@ -123,7 +123,6 @@ describe('premium search functional test (offset pagination)', () => {
     ({ app, server, url } = await startServer(0));
     await testEsClient.deleteByQuery({
       index: config.aws.elasticsearch.list.index,
-      type: config.aws.elasticsearch.list.type,
       body: {
         query: {
           match_all: {},

@@ -9,7 +9,6 @@ import { config } from '../../config';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 const index = config.aws.elasticsearch.list.index;
-const type = config.aws.elasticsearch.list.type;
 
 type BulkDeleteEntry = {
   delete: {
@@ -78,7 +77,7 @@ export const defaultDocConverter: BulkDocumentConverter = (
 export const defaultDocProcessor: BulkDocumentProcessor = async (
   docs: IndexDocument[],
 ) => {
-  return client.bulk({ body: defaultDocConverter(docs), index, type });
+  return client.bulk({ body: defaultDocConverter(docs), index });
 };
 
 /**

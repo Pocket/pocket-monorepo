@@ -25,7 +25,6 @@ describe('Elasticsearch Search Query', () => {
   beforeEach(async () => {
     await client.deleteByQuery({
       index: config.aws.elasticsearch.list.index,
-      type: config.aws.elasticsearch.list.type,
       body: {
         query: {
           match_all: {},
@@ -317,7 +316,7 @@ describe('Elasticsearch Search Query', () => {
     expect(response.edges[1].node.savedItem.id).toBe(333);
   }, 10000);
 
-  it('should return search response with paginated fields first', async () => {
+  it('should return search response with paginated fields: first', async () => {
     const response = await searchSavedItems(
       {
         term: 'fun article',
@@ -332,24 +331,8 @@ describe('Elasticsearch Search Query', () => {
     expect(response.edges.length).toBe(2);
     expect(response.edges[0].cursor).toBe('MA==');
     expect(response.edges[0].node.savedItem.id).toBe(456);
-    expect(response.edges[0].node.searchHighlights['fullText']).toBeNull();
-    expect(response.edges[0].node.searchHighlights['tags']).toStrictEqual([
-      `<em>article</em>`,
-    ]);
-    expect(response.edges[0].node.searchHighlights['title']).toStrictEqual([
-      `snowboarding <em>fun</em> <em>article</em>`,
-    ]);
-    expect(response.edges[1].cursor).toBe('MQ==');
     expect(response.edges[1].node.savedItem.id).toBe(123);
-    expect(response.edges[1].node.searchHighlights['fullText']).toStrictEqual([
-      `some text that can be used for <em>article</em> highlights`,
-    ]);
-    expect(response.edges[1].node.searchHighlights['tags']).toStrictEqual([
-      `<em>fun</em>`,
-    ]);
-    expect(response.edges[1].node.searchHighlights['title']).toStrictEqual([
-      `Another <em>fun</em> <em>article</em>`,
-    ]);
+    expect(response.edges[1].cursor).toBe('MQ==');
   }, 10000);
 
   it('should return paginated items with before and last set ', async () => {

@@ -71,10 +71,10 @@ describe('bulk indexer', () => {
     const result = await bulkIndex(payloads);
     expect(result.batchItemFailures).toEqual([]);
     const roundtrip = await getDocById('corpus_en', 'aaaaa');
+    expect(roundtrip.found).toEqual(true);
     expect(roundtrip._source).toMatchObject({
       url: 'http://some-url.com',
       language: 'en',
-      found: true,
     });
   });
   it('successfully indexes a batch of corpus items', async () => {

@@ -30,7 +30,7 @@ describe('itemUpdate', () => {
   beforeAll(async () => {
     await esClient.deleteByQuery({
       index: config.aws.elasticsearch.list.index,
-      type: config.aws.elasticsearch.list.type,
+
       body: {
         query: {
           match_all: {},
