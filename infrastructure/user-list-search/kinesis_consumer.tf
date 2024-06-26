@@ -50,10 +50,11 @@ resource "aws_lambda_alias" "unified_events_consumer" {
 resource "aws_lambda_event_source_mapping" "kinesis_consumer" {
   event_source_arn              = data.aws_kinesis_stream.unified.arn
   function_name                 = aws_lambda_alias.unified_events_consumer.arn #We set the function to our alias
-  starting_position             = "LATEST"
+  starting_position             = "AT_TIMESTAMP"
   batch_size                    = 10000
-  maximum_record_age_in_seconds = 60
+  maximum_record_age_in_seconds = -1
   enabled                       = true
+  starting_position_timestamp   = "2024-06-24T16:55:00.000Z"
   lifecycle {
     ignore_changes = [enabled]
   }
