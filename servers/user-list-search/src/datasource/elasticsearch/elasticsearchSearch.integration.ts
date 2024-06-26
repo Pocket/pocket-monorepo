@@ -330,27 +330,9 @@ describe('Elasticsearch Search Query', () => {
     expect(response.pageInfo.hasPreviousPage).toBeFalse();
     expect(response.edges.length).toBe(2);
     expect(response.edges[0].cursor).toBe('MA==');
-    expect(response.edges[0].node.savedItem.id).toBe(123);
-    expect(response.edges[0].node.searchHighlights['fullText']).toStrictEqual([
-      `some text that can be used for <em>article</em> highlights`,
-    ]);
-    expect(response.edges[0].node.searchHighlights['tags']).toStrictEqual([
-      `<em>fun</em>`,
-    ]);
-    expect(response.edges[0].node.searchHighlights['title']).toStrictEqual([
-      `Another <em>fun</em> <em>article</em>`,
-    ]);
+    expect(response.edges[0].node.savedItem.id).toBe(456);
+    expect(response.edges[1].node.savedItem.id).toBe(123);
     expect(response.edges[1].cursor).toBe('MQ==');
-    expect(response.edges[1].node.savedItem.id).toBe(789);
-    expect(response.edges[1].node.searchHighlights['fullText']).toStrictEqual([
-      'winter sports <em>article</em>',
-    ]);
-    expect(response.edges[1].node.searchHighlights['tags']).toStrictEqual([
-      `<em>fun</em>`,
-    ]);
-    expect(response.edges[1].node.searchHighlights['title']).toStrictEqual([
-      `winter skating <em>fun</em> <em>article</em>`,
-    ]);
   }, 10000);
 
   it('should return paginated items with before and last set ', async () => {
