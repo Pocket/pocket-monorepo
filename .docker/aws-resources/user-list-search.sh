@@ -14,8 +14,8 @@ for sqs_queue in "${SQS[@]}"; do
 done
 
 # Delete if exists
-awslocal es delete-elasticsearch-domain --domain-name 'user-list-search' || true
-awslocal es create-elasticsearch-domain --domain-name 'user-list-search' --domain-endpoint-options "{ \"CustomEndpoint\":\"http://localhost:4566/user-list-search\", \"CustomEndpointEnabled\": true }"
+awslocal opensearch delete-domain --domain-name 'user-list-search' || true
+awslocal opensearch create-domain --domain-name 'user-list-search' --domain-endpoint-options "{ \"CustomEndpoint\":\"http://localhost:4566/user-list-search\", \"CustomEndpointEnabled\": true }"
 
 
 health="none"

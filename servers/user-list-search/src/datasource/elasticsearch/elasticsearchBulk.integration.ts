@@ -21,7 +21,6 @@ describe('Elasticsearch Bulk', () => {
   beforeAll(async () => {
     await client.deleteByQuery({
       index: config.aws.elasticsearch.list.index,
-      type: config.aws.elasticsearch.list.type,
       body: {
         query: {
           match_all: {},
