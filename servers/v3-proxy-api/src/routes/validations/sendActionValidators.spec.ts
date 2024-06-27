@@ -20,6 +20,11 @@ describe('send validator', () => {
         input: { item_id: '12345', action: 'favorite' as const },
         expected: { itemId: 12345, action: 'favorite', time: now },
       },
+      // integer item_id
+      {
+        input: { item_id: 12345, action: 'favorite' as const },
+        expected: { itemId: 12345, action: 'favorite', time: now },
+      },
       {
         input: { item_id: '12345', action: 'unfavorite' as const },
         expected: { itemId: 12345, action: 'unfavorite', time: now },
