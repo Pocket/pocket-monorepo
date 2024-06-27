@@ -138,6 +138,19 @@ describe('v3/send', () => {
           });
         expect(response.status).toEqual(400);
       });
+      it('returns 400 if proper identifiers are not included', async () => {
+        const response = await request(app)
+          .post('/v3/send')
+          .send({
+            consumer_key: 'test',
+            access_token: 'test',
+            actions: [
+              { action: 'favorite' },
+              { action: 'favorite', item_id: 12345 },
+            ],
+          });
+        expect(response.status).toEqual(400);
+      });
     });
     describe('actions router', () => {
       describe('processActions - unknown ClientError', () => {

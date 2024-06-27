@@ -172,8 +172,14 @@ function HasItemIdOrUrl<TBase extends ActionSanitizable>(Base: TBase) {
           ('url' in this.input && this.input['url'] != null)
         )
       ) {
+        const error: ArrayFieldError = {
+          type: 'array_field',
+          path: 'actions',
+          msg: `Invalid action: must provide either item_id or url`,
+          value: this.input,
+        };
         // All other actions require one of item_id or url
-        throw Error('Action must have one of `item_id` or `url`');
+        throw new InputValidationError(error);
       }
       if ('item_id' in this.input && this.input['item_id'] != null) {
         // parseInt has some unexpected behavior for strings that
