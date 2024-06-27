@@ -179,7 +179,7 @@ function HasItemIdOrUrl<TBase extends ActionSanitizable>(Base: TBase) {
         // parseInt has some unexpected behavior for strings that
         // contain numerals + numbers, e.g. parseInt('123abc') returns 123.
         // In this case, these numeric strings only contain numerals
-        const hasNonNumeral = this.input.item_id.match(/\D/)?.length;
+        const hasNonNumeral = this.input.item_id.toString().match(/\D/)?.length;
         const itemId = parseInt(this.input.item_id);
         if (hasNonNumeral || isNaN(itemId) || itemId < 0) {
           const error: ArrayFieldError = {
