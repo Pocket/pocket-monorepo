@@ -25,6 +25,10 @@ locals {
     {
       name      = "UNLEASH_KEY"
       valueFrom = "${local.secret_path}UNLEASH_KEY"
+    },
+    {
+      name      = "PARSER_PRIVILEGED_SERVICE_ID"
+      valueFrom = "${local.ssm_path}PARSER_PRIVILEGED_SERVICE_ID"
     }
   ]
 }
