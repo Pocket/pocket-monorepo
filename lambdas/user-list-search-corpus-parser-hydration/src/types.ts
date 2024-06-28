@@ -59,7 +59,7 @@ export type ParserResult = {
 // and infrastructure/pocket-event-bridge/src/event-rules/collection-events/eventConfig.ts
 export const validDetailTypes = [
   'add-approved-item',
-  'updated-approved-item',
+  'update-approved-item',
   'collection-created',
   'collection-updated',
 ];
