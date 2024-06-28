@@ -1,5 +1,6 @@
 import config from '../config';
 import { setTimeout } from 'timers/promises';
+import * as Sentry from '@sentry/node';
 
 export type PartialGetItemResponse = {
   // This is modeling a subset of the response
@@ -29,11 +30,16 @@ export class ParserCaller {
         config.parserVersion
       }/getItemListApi?url=${encodeURIComponent(url)}&getItem=1`,
     );
-
+    Sentry.addBreadcrumb({ data: { method: 'internalGetOrCreateItem', url } });
+    if (!response.ok) {
+      const data = await response.text();
+      Sentry.addBreadcrumb({ data: { status: response.status, body: data } });
+      throw new Error(`Unable to parse and generate item for url`);
+    }
     const data: any = await response.json();
     const item = data.item;
     if (!item || (item && !item.item_id) || (item && !item.resolved_id)) {
-      throw new Error(`Unable to parse and generate item for ${url}`);
+      throw new Error(`Unable to parse and generate item for url`);
     }
 
     return {
