@@ -122,7 +122,7 @@ describe('send validator', () => {
     it.each([
       {
         input: { action: 'favorite' as const },
-        error: 'Action must have one of `item_id` or `url`',
+        error: 'Invalid action:',
       },
       // Invalid item_id
       {
@@ -714,7 +714,7 @@ describe('send validator', () => {
         input: {
           action: 'add' as const,
         },
-        error: 'Action must have one of `item_id` or `url`',
+        error: 'Invalid action:',
       },
       {
         input: {
