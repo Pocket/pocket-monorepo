@@ -94,7 +94,7 @@ const sendRequest = async (endpoint: string, postBody: any) => {
     body: JSON.stringify(postBody),
   });
   if (!res.ok) {
-    const data = (await res.json()) as any;
-    throw new Error(`${res.status}\n${JSON.stringify(data.errors)}`);
+    const data = await res.text();
+    throw new Error(`${res.status}\n${data}`);
   }
 };
