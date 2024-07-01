@@ -35,6 +35,7 @@ describe('getSavedItems', () => {
                 url
                 title
                 item {
+                  __typename
                   ... on Item {
                     givenUrl
                   }
@@ -455,6 +456,41 @@ describe('getSavedItems', () => {
 
     expect(res.body.data._entities[0].url).toBe('http://abc');
     expect(res.body.data._entities[1].url).toBe('http://def');
+  });
+
+  it('should return data if item_id is present and resolved_id is 0', async () => {
+    await writeDb('list').insert([
+      {
+        user_id: 1,
+        item_id: 98,
+        resolved_id: 0,
+        given_url: 'http://ijk1234',
+        title: '',
+        time_added: date1,
+        time_updated: date2,
+        time_read: date1,
+        time_favorited: nullDate,
+        api_id: 'apiid',
+        status: 1,
+        favorite: 0,
+        api_id_updated: 'apiid',
+      },
+    ]);
+    const variables = {
+      id: '1',
+      pagination: { first: 5 },
+    };
+    const res = await request(app).post(url).set(headers).send({
+      query: GET_SAVED_ITEMS_CURSOR,
+      variables,
+    });
+    expect(res.body.data?._entities[0].savedItems.totalCount).toBe(4);
+    expect(res.body.data?._entities[0].savedItems.edges[3].node.url).toBe(
+      'http://ijk1234',
+    );
+    expect(
+      res.body.data?._entities[0].savedItems.edges[3].node.item.__typename,
+    ).toBe('PendingItem');
   });
 
   describe('sort', () => {
