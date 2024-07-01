@@ -363,7 +363,7 @@ function ListItemTransformer<T extends SavedItemSimple>(
       return {
         ...baseFields,
         resolved_id: '',
-        given_url: '',
+        given_url: savedItem.url,
         given_title: savedItem.title ?? '',
         resolved_title: '',
         resolved_url: '',
