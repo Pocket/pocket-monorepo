@@ -40,8 +40,9 @@ locals {
     SQS_USER_ITEMS_UPDATE_URL = aws_sqs_queue.user_items_update.id
     SQS_USER_ITEMS_DELETE_URL = aws_sqs_queue.user_items_delete.id
     # The endpoint doesn't include protocol
-    ELASTICSEARCH_HOST = "https://${local.elastic.endpoint}"
-    PARSER_ENDPOINT    = data.aws_ssm_parameter.parser_endpoint.value
+    ELASTICSEARCH_HOST           = "https://${local.elastic.endpoint}"
+    PARSER_ENDPOINT              = data.aws_ssm_parameter.parser_endpoint.value
+    PARSER_PRIVILEGED_SERVICE_ID = data.aws_ssm_parameter.parser_privileged_service_id.value
   }
   sqsEndpoint = "https://sqs.us-east-1.amazonaws.com"
   snsTopicName = {

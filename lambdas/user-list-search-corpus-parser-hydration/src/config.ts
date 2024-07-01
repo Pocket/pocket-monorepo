@@ -11,6 +11,7 @@ export const config = {
   esEndpoint:
     process.env.ELASTICSEARCH_HOST || 'http://localhost:4566/user-list-search',
   parserEndpoint: process.env.PARSER_ENDPOINT || 'https://parser.com/text',
+  privilegedServiceId: process.env.PARSER_PRIVILEGED_SERVICE_ID || 'abc-123',
   indexLangMap: {
     en: 'corpus_en',
     it: 'corpus_it',
