@@ -63,6 +63,9 @@ resource "aws_lambda_event_source_mapping" "user_list_events_sqs" {
   batch_size       = 1
   function_name    = aws_lambda_alias.user_list_events_sqs_processor.arn #We set the function to our alias
   enabled          = true
+  scaling_config {
+    maximum_concurrency = 20
+  }
 }
 
 resource "aws_iam_role" "user_list_events_lambda_role" {
