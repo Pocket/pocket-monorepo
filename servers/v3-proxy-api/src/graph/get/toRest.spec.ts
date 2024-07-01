@@ -164,6 +164,7 @@ describe('GraphQL <> Rest convesion', () => {
         time_read,
         time_updated,
         status,
+        given_url,
       } = seedDataRest;
       const restResponse: GetResponseSimple = {
         cachetype: 'db',
@@ -182,7 +183,7 @@ describe('GraphQL <> Rest convesion', () => {
             status,
             excerpt: '',
             given_title: 'given title',
-            given_url: '',
+            given_url: given_url,
             has_image: '0',
             has_video: '0',
             is_article: '0',

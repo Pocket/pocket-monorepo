@@ -6,6 +6,7 @@ import { startServer } from '../../../server/apollo';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
+import { SavedItemStatus } from '../../../types';
 
 // Note -- additional pagination-related tests are included in savedItems* test files
 describe('getSavedItems pagination', () => {
@@ -48,6 +49,46 @@ describe('getSavedItems pagination', () => {
       }
     }
   `;
+
+  const GET_ARCHIVED_ITEMS = `
+  query getSavedItem(
+    $id: ID!
+    $filter: SavedItemsFilter
+    $pagination: PaginationInput
+    $sort: SavedItemsSort
+  ) {
+    _entities(representations: { id: $id, __typename: "User" }) {
+      ... on User {
+        savedItems(filter: $filter, sort: $sort, pagination: $pagination) {
+          totalCount
+          pageInfo {
+            startCursor
+            endCursor
+            hasNextPage
+            hasPreviousPage
+          }
+          edges {
+            cursor
+            node {
+              id
+              url
+              title
+              item {
+                __typename
+                ... on Item {
+                  givenUrl
+                }
+                ... on PendingItem {
+                  url
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
   beforeAll(async () => ({ app, server, url } = await startServer(0)));
 
   afterAll(async () => {
@@ -157,5 +198,46 @@ describe('getSavedItems pagination', () => {
         expect(actualTimestamp).toBeNull();
       });
     });
+  });
+  it('should return data if item_id is present and resolved_id is 0', async () => {
+    await writeDb('list').truncate();
+    const date1 = new Date('2020-10-03 10:20:30'); // Consistent date for seeding
+    const date2 = new Date('2020-10-03 10:22:30'); // Consistent date for seeding
+    const nullDate = '0000-00-00 00:00:00';
+    await writeDb('list').insert([
+      {
+        user_id: 1,
+        item_id: 508999,
+        resolved_id: 0,
+        given_url: 'http://ijk1234',
+        title: '',
+        time_added: date1,
+        time_updated: date2,
+        time_read: date1,
+        time_favorited: nullDate,
+        api_id: 'apiid',
+        status: SavedItemStatus.ARCHIVED,
+        favorite: 0,
+        api_id_updated: 'apiid',
+      },
+    ]);
+    const variables = {
+      sort: { sortBy: 'ARCHIVED_AT', sortOrder: 'DESC' },
+      pagination: {
+        first: 3,
+      },
+      ...baseVariables,
+    };
+    const res = await request(app).post(url).set(headers).send({
+      query: GET_ARCHIVED_ITEMS,
+      variables,
+    });
+    expect(res.body.data?._entities[0].savedItems.totalCount).toBe(1);
+    expect(res.body.data?._entities[0].savedItems.edges[0].node.url).toBe(
+      'http://ijk1234',
+    );
+    expect(
+      res.body.data?._entities[0].savedItems.edges[0].node.item.__typename,
+    ).toBe('PendingItem');
   });
 });
