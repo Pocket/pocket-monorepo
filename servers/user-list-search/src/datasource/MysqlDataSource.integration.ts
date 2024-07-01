@@ -2,7 +2,7 @@ import {
   seedDb,
   getArrayOfIds,
   seedItemWithDifferentResolvedId,
-} from '../test/_support/seeder';
+} from '../test/utils/saveSeeder';
 import { MysqlDataSource } from './MysqlDataSource';
 import {
   contentDb,

@@ -1,5 +1,5 @@
 import { SearchResponse } from 'elasticsearch';
-import { ElasticSearchSavedItem } from '../../types';
+import { ElasticSearchSavedItem } from '../../saves/types';
 import {
   SavedItemSearchResult,
   SavedItemSearchResultConnection,

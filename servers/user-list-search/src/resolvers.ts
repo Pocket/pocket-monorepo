@@ -29,7 +29,10 @@ import {
   UserSearchSavedItemsByOffsetArgs,
   RecentSearch,
   UserSearchSavedItemsArgs,
+  CorpusSearchConnection,
 } from './__generated__/types';
+import * as corpus from './corpus';
+import { CorpusSearchModel } from './corpus/CorpusSearchModel';
 
 /**
  * Custom type for FunctionalBoostValue coming from client.
@@ -202,6 +205,24 @@ export const resolvers: Resolvers = {
         );
       }
       return new MysqlDataSource().getRecentSearches(parseInt(context.userId));
+    },
+  },
+  Query: {
+    searchCorpus: async (
+      _,
+      args,
+      context: IContext,
+    ): Promise<CorpusSearchConnection> => {
+      if (args.pagination?.before || args.pagination?.last) {
+        throw new UserInputError(
+          'Pagination by "before"/"last" are not supported. ' +
+            'Use "first"/"after" instead.',
+        );
+      }
+      const res = (await new CorpusSearchModel(context).keywordSearch(
+        args,
+      )) as any;
+      return res;
     },
   },
   Mutation: {

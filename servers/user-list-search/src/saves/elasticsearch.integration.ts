@@ -1,6 +1,6 @@
-import { client } from './datasource/elasticsearch';
-import { config } from './config';
-import { bulkDocument } from './datasource/elasticsearch/elasticsearchBulk';
+import { client } from '../datasource/elasticsearch';
+import { config } from '../config';
+import { bulkDocument } from '../datasource/elasticsearch/elasticsearchBulk';
 import { deleteSearchIndexByUserId } from './elasticsearch';
 
 const defaultDocProps = {
@@ -19,7 +19,6 @@ describe('Elasticsearch - Integration', () => {
   beforeEach(async () => {
     await client.deleteByQuery({
       index: config.aws.elasticsearch.list.index,
-      type: config.aws.elasticsearch.list.type,
       body: {
         query: {
           match_all: {},

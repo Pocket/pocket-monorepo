@@ -1,4 +1,4 @@
-import { DefaultSortDirection, ValidPagination } from '../../types';
+import { DefaultSortDirection, ValidPagination } from '../../saves/types';
 import {
   ElasticSearchSortField,
   ElasticSearchSortDirection,

@@ -1,6 +1,6 @@
 import { receiveMessage, purgeQueue } from '../../sqs';
 import { config } from '../../config';
-import { seedDb, getArrayOfIds } from '../../test/_support/seeder';
+import { seedDb, getArrayOfIds } from '../../test/utils/saveSeeder';
 import { Application } from 'express';
 import { ContextManager } from '../context';
 import { ApolloServer } from '@apollo/server';

@@ -1,7 +1,7 @@
 import { GetResponse, SearchResponse } from 'elasticsearch';
 import { client } from './index';
 import { config } from '../../config';
-import { ElasticSearchSavedItem, Pagination } from '../../types';
+import { ElasticSearchSavedItem, Pagination } from '../../saves/types';
 import { UserInputError, validatePagination } from '@pocket-tools/apollo-utils';
 import { SearchQueryBuilder } from './searchQueryBuilder';
 import { Paginator } from './Paginator';

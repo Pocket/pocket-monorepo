@@ -1,20 +1,21 @@
-import { config } from './config';
-import { bulkDocument } from './datasource/elasticsearch/elasticsearchBulk';
-import { client } from './datasource/elasticsearch';
-import { startServer } from './server/serverUtils';
-import { ContextManager } from './server/context';
+import { config } from '../config';
+import { bulkDocument } from '../datasource/elasticsearch/elasticsearchBulk';
+import { client } from '../datasource/elasticsearch';
+import { startServer } from '../server/serverUtils';
+import { ContextManager } from '../server/context';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import {
   knexDbReadClient,
   knexDbWriteClient,
-} from './datasource/clients/knexClient';
+} from '../datasource/clients/knexClient';
 import { Knex } from 'knex';
-import { loadItemExtended, loadList } from './searchIntegrationTestHelpers';
+import {
+  loadItemExtended,
+  loadList,
+} from '../test/utils/searchIntegrationTestHelpers';
 import { SavedItemStatus } from './types';
-
-// These tests are lifted from premiumSearch.integration.ts
 
 const defaultDocProps = {
   resolved_id: 1,
@@ -74,7 +75,7 @@ async function loadUserItem(
   ]);
 }
 
-describe('premium search functional test (offset pagination)', () => {
+describe('premium search functional test', () => {
   const testEsClient = client;
   let app: Application;
   let server: ApolloServer<ContextManager>;
@@ -90,28 +91,35 @@ describe('premium search functional test (offset pagination)', () => {
       $term: String!
       $filter: SearchFilterInput
       $sort: SearchSortInput
-      $pagination: OffsetPaginationInput
+      $pagination: PaginationInput
     ) {
       _entities(representations: { id: $id, __typename: "User" }) {
         ... on User {
-          searchSavedItemsByOffset(
+          searchSavedItems(
             term: $term
             filter: $filter
             sort: $sort
             pagination: $pagination
           ) {
-            entries {
-              savedItem {
-                id
-              }
-              searchHighlights {
-                tags
-                fullText
-                title
+            edges {
+              cursor
+              node {
+                savedItem {
+                  id
+                }
+                searchHighlights {
+                  tags
+                  fullText
+                  title
+                }
               }
             }
-            limit
-            offset
+            pageInfo {
+              startCursor
+              endCursor
+              hasNextPage
+              hasPreviousPage
+            }
             totalCount
           }
         }
@@ -224,7 +232,9 @@ describe('premium search functional test (offset pagination)', () => {
         db,
       ),
     ];
+
     await Promise.all(items);
+
     // Takes a hot sec for the data to be available, otherwise test flakes
     await testEsClient.indices.refresh({
       index: config.aws.elasticsearch.list.index,
@@ -238,10 +248,66 @@ describe('premium search functional test (offset pagination)', () => {
     testEsClient.close();
   });
 
+  it('should search for Items under User entity', async () => {
+    const SEARCH_QUERY = `
+      query search(
+        $id: ID!
+        $term: String!
+        $fields: [String]!
+        $highlightFields: [SearchHighlightField]
+      ) {
+        _entities(representations: { id: $id, __typename: "User" }) {
+          ... on User {
+            search(
+              params: {
+                term: $term
+                fields: $fields
+                highlightFields: $highlightFields
+              }
+            ) {
+              results {
+                itemId
+                highlights {
+                  title
+                  tags
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+    const variables = {
+      id: '1',
+      term: 'super',
+      fields: ['title', 'tags'],
+      highlightFields: [
+        { field: 'title', size: 8 },
+        { field: 'tags', size: 10 },
+      ],
+    };
+    const res = await request(app).post(url).set(headers).send({
+      query: SEARCH_QUERY,
+      variables,
+    });
+    const expected = [
+      {
+        itemId: '12345',
+        highlights: {
+          title: ['A <em>super</em> fun'],
+          tags: ['<em>super</em>'],
+        },
+      },
+    ];
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?._entities[0].search.results).toIncludeSameMembers(
+      expected,
+    );
+  });
   it('should handle response that returns hits with no highlights object', async () => {
     const variables = {
       id: '1',
-      pagination: { limit: 1 },
+      pagination: { first: 1 },
       term: ' ',
       sort: {
         sortBy: `CREATED_AT`,
@@ -257,21 +323,20 @@ describe('premium search functional test (offset pagination)', () => {
       variables,
     });
     expect(res.body.errors).toBeUndefined();
-    const searchResult = res.body.data?._entities[0].searchSavedItemsByOffset;
-    const expected = expect.objectContaining({
-      entries: [
-        {
-          savedItem: { id: expect.toBeString() },
-          searchHighlights: { fullText: null, tags: null, title: null },
-        },
-      ],
+    const searchResult = res.body.data?._entities[0].searchSavedItems;
+    expect(searchResult).not.toBeNull();
+    expect(searchResult.edges.length).toEqual(1);
+    expect(searchResult.edges[0].node.savedItem.id).not.toBeNull();
+    expect(searchResult.edges[0].node.searchHighlights).toStrictEqual({
+      fullText: null,
+      tags: null,
+      title: null,
     });
-    expect(searchResult).toEqual(expected);
   });
   it('should handle response that returns no hits', async () => {
     const variables = {
       id: '1',
-      pagination: { limit: 1 },
+      pagination: { first: 1 },
       term: 'unangenehm',
       sort: {
         sortBy: `CREATED_AT`,
@@ -287,20 +352,22 @@ describe('premium search functional test (offset pagination)', () => {
       variables,
     });
     expect(res.body.errors).toBeUndefined();
-    const searchResult = res.body.data?._entities[0].searchSavedItemsByOffset;
-    const expected = {
-      entries: [],
-      limit: 1,
-      offset: 0,
-      totalCount: 0,
-    };
-    expect(searchResult).toEqual(expected);
+    const searchResult = res.body.data?._entities[0].searchSavedItems;
+    expect(searchResult).not.toBeNull();
+    expect(searchResult.edges.length).toEqual(0);
+    expect(searchResult.totalCount).toEqual(0);
+    expect(searchResult.pageInfo).toStrictEqual({
+      endCursor: null,
+      hasNextPage: false,
+      hasPreviousPage: false,
+      startCursor: null,
+    });
   });
   it('should search query term with pagination, filters and sort', async () => {
     const variables = {
       id: '1',
       term: 'super fun article',
-      pagination: { offset: 1, limit: 2 },
+      pagination: { after: `MA==`, first: 2 },
       sort: {
         sortBy: `CREATED_AT`,
         sortOrder: `DESC`,
@@ -314,38 +381,32 @@ describe('premium search functional test (offset pagination)', () => {
       query: SEARCH_SAVED_ITEM_QUERY,
       variables,
     });
-    const response = res.body.data?._entities[0].searchSavedItemsByOffset;
-    const expected = {
-      entries: [
-        {
-          savedItem: { id: '456' },
-          searchHighlights: {
-            fullText: null,
-            tags: [`<em>article</em>`],
-            title: [`snowboarding <em>fun</em> <em>article</em>`],
-          },
-        },
-        {
-          savedItem: { id: '12345' },
-          searchHighlights: expect.objectContaining({
-            fullText: [
-              `some text that can be used for <em>article</em> highlights`,
-            ],
-          }),
-        },
-      ],
-      limit: 2,
-      offset: 1,
-      totalCount: 3,
-    };
-    expect(response).toEqual(expected);
+    const response = res.body.data?._entities[0].searchSavedItems;
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toEqual(3);
+    expect(response.edges.length).toEqual(2);
+    expect(response.pageInfo.hasNextPage).toBeFalse();
+    expect(response.pageInfo.hasPreviousPage).toBeTrue();
+    expect(response.edges[0].node.savedItem.id).toEqual('456');
+    expect(response.edges[1].node.savedItem.id).toEqual('12345');
+    //fullText: not related to search
+    expect(response.edges[0].node.searchHighlights['fullText']).toBeNull();
+    expect(response.edges[0].node.searchHighlights['tags']).toStrictEqual([
+      `<em>article</em>`,
+    ]);
+    expect(response.edges[0].node.searchHighlights['title']).toStrictEqual([
+      `snowboarding <em>fun</em> <em>article</em>`,
+    ]);
+    expect(response.edges[1].node.searchHighlights['fullText']).toStrictEqual([
+      `some text that can be used for <em>article</em> highlights`,
+    ]);
   });
 
   it('should search with domain as filter', async () => {
     const variables = {
       id: '1',
       term: 'fun',
-      pagination: { limit: 2 },
+      pagination: { first: 2 },
       sort: {
         sortBy: `CREATED_AT`,
         sortOrder: `DESC`,
@@ -359,21 +420,16 @@ describe('premium search functional test (offset pagination)', () => {
       variables,
     });
 
-    const response = res.body.data?._entities[0].searchSavedItemsByOffset;
-    const expected = {
-      entries: [
-        {
-          savedItem: { id: '789' },
-          searchHighlights: expect.objectContaining({
-            title: [`winter skating <em>fun</em> article`],
-          }),
-        },
-      ],
-      totalCount: 1,
-      limit: 2,
-      offset: 0,
-    };
-    expect(response).toEqual(expected);
+    const response = res.body.data?._entities[0].searchSavedItems;
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toEqual(1);
+    expect(response.edges.length).toEqual(1);
+    expect(response.pageInfo.hasNextPage).toBeFalse();
+    expect(response.pageInfo.hasPreviousPage).toBeFalse();
+    expect(response.edges[0].node.savedItem.id).toEqual('789');
+    expect(response.edges[0].node.searchHighlights['title']).toStrictEqual([
+      `winter skating <em>fun</em> article`,
+    ]);
   });
 
   it('should properly filter multi-word search tags', async () => {
@@ -385,12 +441,11 @@ describe('premium search functional test (offset pagination)', () => {
       query: SEARCH_SAVED_ITEM_QUERY,
       variables,
     });
-    const response = res.body.data?._entities[0].searchSavedItemsByOffset;
-    const expected = expect.objectContaining({
-      entries: [expect.objectContaining({ savedItem: { id: '777' } })],
-      totalCount: 1,
-    });
-    expect(response).toEqual(expected);
+    const response = res.body.data?._entities[0].searchSavedItems;
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toEqual(1);
+    expect(response.edges.length).toEqual(1);
+    expect(response.edges[0].node.savedItem.id).toEqual('777');
   });
 
   it('should properly filter by tag combinations', async () => {
@@ -402,43 +457,88 @@ describe('premium search functional test (offset pagination)', () => {
       query: SEARCH_SAVED_ITEM_QUERY,
       variables,
     });
-    const response = res.body.data?._entities[0].searchSavedItemsByOffset;
-    const expected = expect.objectContaining({
-      entries: [expect.objectContaining({ savedItem: { id: '123' } })],
-      totalCount: 1,
-    });
-    expect(response).toEqual(expected);
+    const response = res.body.data?._entities[0].searchSavedItems;
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toEqual(1);
+    expect(response.edges.length).toEqual(1);
+    expect(response.edges[0].node.savedItem.id).toEqual('123');
   });
 
+  it('should use titleOnly search when requested', async () => {
+    const variables = {
+      id: '1',
+      term: 'snowboard', // only 1 article has snowboarding in the title
+      filter: {
+        onlyTitleAndURL: true,
+      },
+    };
+    const res = await request(app).post(url).set(headers).send({
+      query: SEARCH_SAVED_ITEM_QUERY,
+      variables,
+    });
+    const response = res.body.data?._entities[0].searchSavedItems;
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toEqual(1);
+    expect(response.edges.length).toEqual(1);
+    expect(response.edges[0].node.savedItem.id).toEqual('456');
+    expect(response.edges[0].node.searchHighlights).toBeNull();
+  });
+
+  it('should not use titleOnly search when told not to', async () => {
+    const variables = {
+      id: '1',
+      term: 'snowboard',
+      filter: {
+        onlyTitleAndURL: false,
+      },
+    };
+    const res = await request(app).post(url).set(headers).send({
+      query: SEARCH_SAVED_ITEM_QUERY,
+      variables,
+    });
+    const response = res.body.data?._entities[0].searchSavedItems;
+    expect(response).not.toBeNull();
+    expect(response.totalCount).toEqual(1);
+    expect(response.edges.length).toEqual(1);
+    expect(response.edges[0].node.savedItem.id).toEqual('456');
+    expect(response.edges[0].node.searchHighlights['fullText']).toBeNull();
+    expect(response.edges[0].node.searchHighlights['title']).toStrictEqual([
+      `<em>snowboarding</em> fun article`,
+    ]);
+  });
   describe('searchQuery', () => {
     const SEARCH_QUERY = `
-    query advancedSearchByOffset(
+    query advancedSearch(
       $id: ID!
       $queryString: String
       $filter: AdvancedSearchFilters
       $sort: SearchSortInput
-      $pagination: OffsetPaginationInput
+      $pagination: PaginationInput
     ) {
       _entities(representations: { id: $id, __typename: "User" }) {
         ... on User {
-          advancedSearchByOffset(
+          advancedSearch(
             queryString: $queryString
             filter: $filter
             sort: $sort
             pagination: $pagination
           ) {
-            entries {
-              savedItem {
-                id
-              }
-              searchHighlights {
-                tags
-                title
-                fullText
+            edges {
+              cursor
+              node {
+                savedItem {
+                  id
+                }
+                searchHighlights {
+                  tags
+                  fullText
+                  title
+                }
               }
             }
-            limit
-            offset
+            pageInfo {
+              startCursor
+            }
             totalCount
           }
         }
@@ -452,7 +552,7 @@ describe('premium search functional test (offset pagination)', () => {
       const variables = {
         id: '1',
         queryString: 'fun',
-        pagination: { limit: 2 },
+        pagination: { first: 2 },
         sort: {
           sortBy: `CREATED_AT`,
           sortOrder: `DESC`,
@@ -466,26 +566,42 @@ describe('premium search functional test (offset pagination)', () => {
         variables,
       });
 
-      const response = res.body.data?._entities[0].advancedSearchByOffset;
+      const response = res.body.data?._entities[0].advancedSearch;
       const expected = {
-        limit: 2,
-        offset: 0,
         totalCount: 1,
-        entries: [
+        edges: expect.toIncludeSameMembers([
           expect.objectContaining({
-            savedItem: {
-              id: '789',
-            },
-            searchHighlights: expect.objectContaining({
-              title: [`winter skating <em>fun</em> article`],
+            cursor: expect.toBeString(),
+            node: expect.objectContaining({
+              savedItem: {
+                id: '789',
+              },
+              searchHighlights: expect.objectContaining({
+                title: expect.toIncludeSameMembers([
+                  `winter skating <em>fun</em> article`,
+                ]),
+              }),
             }),
           }),
-        ],
+        ]),
+        pageInfo: expect.objectContaining({
+          startCursor: expect.toBeString(),
+        }),
       };
       expect(response).toEqual(expected);
     });
 
-    it.skip.each([
+    it.each([
+      {
+        name: 'before/last pagination',
+        overrides: { pagination: { before: 'abc', last: 2 } },
+        expectedMessage: 'Pagination by "before"/"last" are not supported',
+      },
+      {
+        name: 'last pagination',
+        overrides: { pagination: { last: 2 } },
+        expectedMessage: 'Pagination by "before"/"last" are not supported',
+      },
       {
         name: 'missing query string and no filters',
         overrides: { queryString: undefined, filter: undefined },

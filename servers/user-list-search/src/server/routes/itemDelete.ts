@@ -1,4 +1,4 @@
-import { deleteFromElasticSearch } from '../../elasticsearch';
+import { deleteFromElasticSearch } from '../../saves/elasticsearch';
 
 import { Request, Response, NextFunction, Router } from 'express';
 import { checkSchema, Schema, validationResult } from 'express-validator';

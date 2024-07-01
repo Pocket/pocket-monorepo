@@ -13,7 +13,7 @@ import { IContext } from '../server/context';
 import { validatePagination as externalValidatePagination } from '@pocket-tools/apollo-utils';
 import { config } from '../config';
 import { getCleanedupDomainName } from './elasticsearch/elasticsearchSearch';
-import { SavedItemStatus } from '../types';
+import { SavedItemStatus } from '../saves/types';
 
 export class SavedItemDataService {
   private db: Knex;

@@ -1,5 +1,5 @@
 import { config } from '../../config';
-import { seedDb } from '../../test/_support/seeder';
+import { seedDb } from '../../test/utils/saveSeeder';
 import { getDocument } from '../../datasource/elasticsearch/elasticsearchSearch';
 import { client } from '../../datasource/elasticsearch';
 import { Application } from 'express';

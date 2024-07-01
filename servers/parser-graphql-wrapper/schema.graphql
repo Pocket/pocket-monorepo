@@ -540,3 +540,11 @@ type PocketShare @key(fields: "targetUrl") {
   targetUrl: ValidUrl!
   preview: PocketMetadata
 }
+
+"""A node in a CorpusSearchConnection result"""
+type CorpusSearchNode @key (fields: "url") {
+  """For federation only"""
+  url: Url! @inaccessible
+  """The preview of the search result"""
+  preview: PocketMetadata!
+}

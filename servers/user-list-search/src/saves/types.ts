@@ -1,5 +1,8 @@
 import { PaginationInput } from '@pocket-tools/apollo-utils';
-import { SearchItemsSortBy, SearchItemsSortOrder } from './__generated__/types';
+import {
+  SearchItemsSortBy,
+  SearchItemsSortOrder,
+} from '../__generated__/types';
 
 export type Pagination = PaginationInput;
 export type ValidPagination = Omit<PaginationInput, 'last' | 'before'>;

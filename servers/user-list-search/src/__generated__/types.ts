@@ -19,6 +19,7 @@ export type Scalars = {
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
   FunctionalBoostValue: { input: any; output: any; }
+  HtmlString: { input: any; output: any; }
   ISOString: { input: any; output: any; }
   Url: { input: any; output: any; }
   _FieldSet: { input: any; output: any; }
@@ -35,6 +36,161 @@ export type AdvancedSearchFilters = {
    */
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
   title?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Content type classification for a corpus item */
+export enum CorpusContentType {
+  Article = 'ARTICLE',
+  Collection = 'COLLECTION',
+  Video = 'VIDEO'
+}
+
+/** Which corpus to search, by language */
+export enum CorpusLanguage {
+  De = 'DE',
+  En = 'EN',
+  Es = 'ES',
+  Fr = 'FR',
+  It = 'IT'
+}
+
+/** Paginated corpus search result connection */
+export type CorpusSearchConnection = {
+  __typename?: 'CorpusSearchConnection';
+  edges: Array<CorpusSearchEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+/** An edge in a CorpusSearchConnection result */
+export type CorpusSearchEdge = {
+  __typename?: 'CorpusSearchEdge';
+  cursor: Scalars['String']['output'];
+  node: CorpusSearchNode;
+};
+
+/** Fields that can be searched using query strings */
+export enum CorpusSearchFields {
+  /** Search all possible fields */
+  All = 'ALL',
+  /**
+   * (Default) Search the fields which relate to the content
+   * of the resource (title, article, excerpt, extracted content)
+   * rather than the metadata (publisher).
+   */
+  AllContentful = 'ALL_CONTENTFUL',
+  /** Search terms in excerpt fields */
+  Excerpt = 'EXCERPT',
+  /** Search terms in parsed, extracted content fields */
+  ExtractedContent = 'EXTRACTED_CONTENT',
+  /** Search terms in publisher fields */
+  Publisher = 'PUBLISHER',
+  /** Search terms in title fields */
+  Title = 'TITLE'
+}
+
+/** Filters to refine corpus search results. */
+export type CorpusSearchFilters = {
+  /** When the content was added to Pocket's corpus */
+  addedDateRange?: InputMaybe<DateFilter>;
+  /** The author's name */
+  author?: InputMaybe<Scalars['String']['input']>;
+  /**
+   * Filter to limit the result set to specific content types.
+   * Multiple types are combined with OR.
+   * Can use this to search collections only.
+   */
+  contentType?: InputMaybe<Array<CorpusContentType>>;
+  /** Set to true to exclude collections from the results. */
+  excludeCollections?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Set to true to exclude ML-generated recommendations from the results. */
+  excludeML?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The language of the corpus to search (letter code) */
+  language: CorpusLanguage;
+  /**
+   * Filter for when an article was published. Can provide
+   * upper/lower bounds with 'before' or 'after', or use both
+   * both to create a time range.
+   */
+  publishedDateRange?: InputMaybe<DateFilter>;
+  /**
+   * The publisher's name. This is an exact match for filtering.
+   * To use publisher in search, use the publisher field in the query
+   * string.
+   */
+  publisher?: InputMaybe<Scalars['String']['input']>;
+  /**
+   * The topic (use getTopics query to retrieve valid topics).
+   * Multiple topics are combined with OR.
+   */
+  topic?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+/**
+ * Highlighted snippets from fields in the search results
+ * so clients can show users where the query matches are.
+ * Each field, if available, contains an array of html text
+ * snippets that contain a match to the search term.
+ * The matching text is wrapped in <em> tags, e.g.
+ * ["Hiss at <em>vacuum</em> cleaner if it fits i sits"]
+ */
+export type CorpusSearchHighlights = {
+  __typename?: 'CorpusSearchHighlights';
+  excerpt?: Maybe<Array<Maybe<Scalars['HtmlString']['output']>>>;
+  fullText?: Maybe<Array<Maybe<Scalars['HtmlString']['output']>>>;
+  publisher?: Maybe<Array<Maybe<Scalars['HtmlString']['output']>>>;
+  title?: Maybe<Array<Maybe<Scalars['HtmlString']['output']>>>;
+};
+
+/** A node in a CorpusSearchConnection result */
+export type CorpusSearchNode = {
+  __typename?: 'CorpusSearchNode';
+  /** Search highlights */
+  searchHighlights?: Maybe<CorpusSearchHighlights>;
+  /** For federation only */
+  url: Scalars['Url']['output'];
+};
+
+/** A search query for the corpus */
+export type CorpusSearchQueryString = {
+  /**
+   * A specific field to search on (e.g. title),
+   * or ALL to search all available text content fields.
+   * If missing, defaults to 'ALL_CONTENTFUL'
+   */
+  field?: InputMaybe<CorpusSearchFields>;
+  /** The query string to search. */
+  query: Scalars['String']['input'];
+};
+
+/** Sort scheme for Corpus Search. Defaults to showing most relevant results first. */
+export type CorpusSearchSort = {
+  sortBy: CorpusSearchSortBy;
+  sortOrder?: InputMaybe<SearchItemsSortOrder>;
+};
+
+/** Sortable properties for Corpus Search */
+export enum CorpusSearchSortBy {
+  /** When the content was added to the corpus */
+  DateAddedToCorpus = 'DATE_ADDED_TO_CORPUS',
+  /**
+   * When the content was originally published
+   * (Note: this data is sparse/nullable)
+   */
+  DatePublished = 'DATE_PUBLISHED',
+  /** Relevance score computed by search algorithm */
+  Relevance = 'RELEVANCE'
+}
+
+/**
+ * Must provide at least one of before/after in order to be valid.
+ * Before is exclusive, after is inclusive.
+ */
+export type DateFilter = {
+  /** Inclusive date -- results must be at or after than this time. */
+  after?: InputMaybe<Scalars['ISOString']['input']>;
+  /** Exclusive date -- results must be before this time. */
+  before?: InputMaybe<Scalars['ISOString']['input']>;
 };
 
 /** Input field to boost the score of an elasticsearch document based on a specific field and value */
@@ -131,6 +287,20 @@ export type PaginationInput = {
    * this has to set with before/last combination.
    */
   last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type Query = {
+  __typename?: 'Query';
+  /** Search Pocket's corpus of recommendations and collections. */
+  searchCorpus?: Maybe<CorpusSearchConnection>;
+};
+
+
+export type QuerySearchCorpusArgs = {
+  filter: CorpusSearchFilters;
+  pagination?: InputMaybe<PaginationInput>;
+  search: CorpusSearchQueryString;
+  sort?: InputMaybe<CorpusSearchSort>;
 };
 
 export type RecentSearch = {
@@ -504,17 +674,31 @@ export type ResolversTypes = ResolversObject<{
   AdvancedSearchFilters: AdvancedSearchFilters;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  CorpusContentType: CorpusContentType;
+  CorpusLanguage: CorpusLanguage;
+  CorpusSearchConnection: ResolverTypeWrapper<CorpusSearchConnection>;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  CorpusSearchEdge: ResolverTypeWrapper<CorpusSearchEdge>;
+  CorpusSearchFields: CorpusSearchFields;
+  CorpusSearchFilters: CorpusSearchFilters;
+  CorpusSearchHighlights: ResolverTypeWrapper<CorpusSearchHighlights>;
+  CorpusSearchNode: ResolverTypeWrapper<CorpusSearchNode>;
+  CorpusSearchQueryString: CorpusSearchQueryString;
+  CorpusSearchSort: CorpusSearchSort;
+  CorpusSearchSortBy: CorpusSearchSortBy;
+  DateFilter: DateFilter;
   FunctionalBoostField: FunctionalBoostField;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   FunctionalBoostValue: ResolverTypeWrapper<Scalars['FunctionalBoostValue']['output']>;
+  HtmlString: ResolverTypeWrapper<Scalars['HtmlString']['output']>;
   ISOString: ResolverTypeWrapper<Scalars['ISOString']['output']>;
   Item: ResolverTypeWrapper<Item>;
   ItemHighlights: ResolverTypeWrapper<ItemHighlights>;
   Mutation: ResolverTypeWrapper<{}>;
   OffsetPaginationInput: OffsetPaginationInput;
-  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   PaginationInput: PaginationInput;
+  Query: ResolverTypeWrapper<{}>;
   RecentSearch: ResolverTypeWrapper<RecentSearch>;
   RecentSearchContext: ResolverTypeWrapper<RecentSearchContext>;
   RecentSearchInput: RecentSearchInput;
@@ -548,17 +732,27 @@ export type ResolversParentTypes = ResolversObject<{
   AdvancedSearchFilters: AdvancedSearchFilters;
   String: Scalars['String']['output'];
   Boolean: Scalars['Boolean']['output'];
+  CorpusSearchConnection: CorpusSearchConnection;
+  Int: Scalars['Int']['output'];
+  CorpusSearchEdge: CorpusSearchEdge;
+  CorpusSearchFilters: CorpusSearchFilters;
+  CorpusSearchHighlights: CorpusSearchHighlights;
+  CorpusSearchNode: CorpusSearchNode;
+  CorpusSearchQueryString: CorpusSearchQueryString;
+  CorpusSearchSort: CorpusSearchSort;
+  DateFilter: DateFilter;
   FunctionalBoostField: FunctionalBoostField;
   Float: Scalars['Float']['output'];
   FunctionalBoostValue: Scalars['FunctionalBoostValue']['output'];
+  HtmlString: Scalars['HtmlString']['output'];
   ISOString: Scalars['ISOString']['output'];
   Item: Item;
   ItemHighlights: ItemHighlights;
   Mutation: {};
   OffsetPaginationInput: OffsetPaginationInput;
-  Int: Scalars['Int']['output'];
   PageInfo: PageInfo;
   PaginationInput: PaginationInput;
+  Query: {};
   RecentSearch: RecentSearch;
   RecentSearchContext: RecentSearchContext;
   RecentSearchInput: RecentSearchInput;
@@ -580,8 +774,39 @@ export type ResolversParentTypes = ResolversObject<{
   User: User;
 }>;
 
+export type CorpusSearchConnectionResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['CorpusSearchConnection'] = ResolversParentTypes['CorpusSearchConnection']> = ResolversObject<{
+  edges?: Resolver<Array<ResolversTypes['CorpusSearchEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CorpusSearchEdgeResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['CorpusSearchEdge'] = ResolversParentTypes['CorpusSearchEdge']> = ResolversObject<{
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['CorpusSearchNode'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CorpusSearchHighlightsResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['CorpusSearchHighlights'] = ResolversParentTypes['CorpusSearchHighlights']> = ResolversObject<{
+  excerpt?: Resolver<Maybe<Array<Maybe<ResolversTypes['HtmlString']>>>, ParentType, ContextType>;
+  fullText?: Resolver<Maybe<Array<Maybe<ResolversTypes['HtmlString']>>>, ParentType, ContextType>;
+  publisher?: Resolver<Maybe<Array<Maybe<ResolversTypes['HtmlString']>>>, ParentType, ContextType>;
+  title?: Resolver<Maybe<Array<Maybe<ResolversTypes['HtmlString']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CorpusSearchNodeResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['CorpusSearchNode'] = ResolversParentTypes['CorpusSearchNode']> = ResolversObject<{
+  searchHighlights?: Resolver<Maybe<ResolversTypes['CorpusSearchHighlights']>, ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['Url'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export interface FunctionalBoostValueScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['FunctionalBoostValue'], any> {
   name: 'FunctionalBoostValue';
+}
+
+export interface HtmlStringScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['HtmlString'], any> {
+  name: 'HtmlString';
 }
 
 export interface IsoStringScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ISOString'], any> {
@@ -613,6 +838,10 @@ export type PageInfoResolvers<ContextType = IContext, ParentType extends Resolve
   hasPreviousPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   startCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type QueryResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
+  searchCorpus?: Resolver<Maybe<ResolversTypes['CorpusSearchConnection']>, ParentType, ContextType, RequireFields<QuerySearchCorpusArgs, 'filter' | 'search'>>;
 }>;
 
 export type RecentSearchResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['RecentSearch'] = ResolversParentTypes['RecentSearch']> = ResolversObject<{
@@ -694,12 +923,18 @@ export type UserResolvers<ContextType = IContext, ParentType extends ResolversPa
 }>;
 
 export type Resolvers<ContextType = IContext> = ResolversObject<{
+  CorpusSearchConnection?: CorpusSearchConnectionResolvers<ContextType>;
+  CorpusSearchEdge?: CorpusSearchEdgeResolvers<ContextType>;
+  CorpusSearchHighlights?: CorpusSearchHighlightsResolvers<ContextType>;
+  CorpusSearchNode?: CorpusSearchNodeResolvers<ContextType>;
   FunctionalBoostValue?: GraphQLScalarType;
+  HtmlString?: GraphQLScalarType;
   ISOString?: GraphQLScalarType;
   Item?: ItemResolvers<ContextType>;
   ItemHighlights?: ItemHighlightsResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   PageInfo?: PageInfoResolvers<ContextType>;
+  Query?: QueryResolvers<ContextType>;
   RecentSearch?: RecentSearchResolvers<ContextType>;
   RecentSearchContext?: RecentSearchContextResolvers<ContextType>;
   SaveItemSearchHighlights?: SaveItemSearchHighlightsResolvers<ContextType>;

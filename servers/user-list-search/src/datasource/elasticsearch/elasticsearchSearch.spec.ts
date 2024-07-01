@@ -14,7 +14,7 @@ import {
   generateSearchSavedItemsParams,
   getCleanedupDomainName,
 } from './elasticsearchSearch';
-import { Pagination } from '../../types';
+import { Pagination } from '../../saves/types';
 import {
   SearchFunctionalBoostOperation,
   UserSearchArgs,
