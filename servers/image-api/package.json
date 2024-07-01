@@ -30,7 +30,7 @@
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "8.13.0",
+    "@sentry/node": "8.12.0",
     "axios": "1.7.2",
     "axios-retry": "4.4.0",
     "dataloader": "2.2.2",

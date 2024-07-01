@@ -17,7 +17,7 @@ importers:
     devDependencies:
       '@commitlint/cli':
         specifier: 19.3.0
-        version: 19.3.0(@types/node@20.14.8)(typescript@5.6.0-dev.20240701)
+        version: 19.3.0(@types/node@20.14.8)(typescript@5.6.0-dev.20240627)
       '@commitlint/config-conventional':
         specifier: ^19.2.2
         version: 19.2.2
@@ -26,7 +26,7 @@ importers:
         version: link:packages/eslint-config
       syncpack:
         specifier: ^12.3.2
-        version: 12.3.2(typescript@5.6.0-dev.20240701)
+        version: 12.3.2(typescript@5.6.0-dev.20240627)
       tsconfig:
         specifier: workspace:*
         version: link:packages/tsconfig
@@ -59,7 +59,7 @@ importers:
         version: 0.20.7(constructs@10.3.0)
       cdktf-cli:
         specifier: 0.20.7
-        version: 0.20.7(encoding@0.1.13)(ink@5.0.1(react-devtools-core@4.28.5)(react@18.3.1))(react@18.3.1)
+        version: 0.20.7(encoding@0.1.13)(ink@3.2.0(react@18.3.1))(react@18.3.1)
       constructs:
         specifier: 10.3.0
         version: 10.3.0
@@ -105,7 +105,7 @@ importers:
         version: 0.20.7(constructs@10.3.0)
       cdktf-cli:
         specifier: 0.20.7
-        version: 0.20.7(encoding@0.1.13)(ink@3.2.0(react@18.3.1))(react@18.3.1)
+        version: 0.20.7(encoding@0.1.13)(ink@5.0.1(react-devtools-core@4.28.5)(react@18.3.1))(react@18.3.1)
       constructs:
         specifier: 10.3.0
         version: 10.3.0
@@ -939,8 +939,8 @@ importers:
         specifier: 3.600.0
         version: 3.600.0(@aws-sdk/client-dynamodb@3.600.0)
       '@sentry/aws-serverless':
-        specifier: 8.13.0
-        version: 8.13.0(@opentelemetry/api@1.9.0)
+        specifier: 8.12.0
+        version: 8.12.0(@opentelemetry/api@1.9.0)
       exponential-backoff:
         specifier: ^3.1.1
         version: 3.1.1
@@ -991,8 +991,8 @@ importers:
         specifier: 3.600.0
         version: 3.600.0
       '@sentry/aws-serverless':
-        specifier: 8.13.0
-        version: 8.13.0(@opentelemetry/api@1.9.0)
+        specifier: 8.12.0
+        version: 8.12.0(@opentelemetry/api@1.9.0)
       fetch-retry:
         specifier: ^5.0.6
         version: 5.0.6
@@ -1043,8 +1043,8 @@ importers:
         specifier: 3.600.0
         version: 3.600.0(@aws-sdk/client-dynamodb@3.600.0)
       '@sentry/aws-serverless':
-        specifier: 8.13.0
-        version: 8.13.0(@opentelemetry/api@1.9.0)
+        specifier: 8.12.0
+        version: 8.12.0(@opentelemetry/api@1.9.0)
       exponential-backoff:
         specifier: ^3.1.1
         version: 3.1.1
@@ -1086,8 +1086,8 @@ importers:
   lambdas/annotations-api-events:
     dependencies:
       '@sentry/aws-serverless':
-        specifier: 8.13.0
-        version: 8.13.0(@opentelemetry/api@1.9.0)
+        specifier: 8.12.0
+        version: 8.12.0(@opentelemetry/api@1.9.0)
       tslib:
         specifier: 2.6.3
         version: 2.6.3
@@ -1129,8 +1129,8 @@ importers:
         specifier: 3.600.0
         version: 3.600.0
       '@sentry/aws-serverless':
-        specifier: 8.13.0
-        version: 8.13.0(@opentelemetry/api@1.9.0)
+        specifier: 8.12.0
+        version: 8.12.0(@opentelemetry/api@1.9.0)
       jsonwebtoken:
         specifier: ^9.0.0
         version: 9.0.2
@@ -1193,8 +1193,8 @@ importers:
         specifier: 3.600.0
         version: 3.600.0
       '@sentry/aws-serverless':
-        specifier: 8.13.0
-        version: 8.13.0(@opentelemetry/api@1.9.0)
+        specifier: 8.12.0
+        version: 8.12.0(@opentelemetry/api@1.9.0)
       jsonwebtoken:
         specifier: ^9.0.0
         version: 9.0.2
@@ -1248,8 +1248,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/lambda-secrets
       '@sentry/aws-serverless':
-        specifier: 8.13.0
-        version: 8.13.0(@opentelemetry/api@1.9.0)
+        specifier: 8.12.0
+        version: 8.12.0(@opentelemetry/api@1.9.0)
       knex:
         specifier: 3.1.0
         version: 3.1.0(mysql2@3.9.8)
@@ -1306,8 +1306,8 @@ importers:
         specifier: ^8.0.0
         version: 8.1.3
       '@sentry/aws-serverless':
-        specifier: 8.13.0
-        version: 8.13.0(@opentelemetry/api@1.9.0)
+        specifier: 8.12.0
+        version: 8.12.0(@opentelemetry/api@1.9.0)
       tslib:
         specifier: 2.6.3
         version: 2.6.3
@@ -1343,8 +1343,8 @@ importers:
   lambdas/shareable-lists-api-events:
     dependencies:
       '@sentry/aws-serverless':
-        specifier: 8.13.0
-        version: 8.13.0(@opentelemetry/api@1.9.0)
+        specifier: 8.12.0
+        version: 8.12.0(@opentelemetry/api@1.9.0)
       fetch-retry:
         specifier: ^5.0.6
         version: 5.0.6
@@ -1392,8 +1392,8 @@ importers:
         specifier: 3.600.0
         version: 3.600.0
       '@sentry/aws-serverless':
-        specifier: 8.13.0
-        version: 8.13.0(@opentelemetry/api@1.9.0)
+        specifier: 8.12.0
+        version: 8.12.0(@opentelemetry/api@1.9.0)
       braze-api:
         specifier: ^2.8.0
         version: 2.8.0(encoding@0.1.13)
@@ -1444,8 +1444,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
-        specifier: 8.13.0
-        version: 8.13.0(@opentelemetry/api@1.9.0)
+        specifier: 8.12.0
+        version: 8.12.0(@opentelemetry/api@1.9.0)
       fetch-retry:
         specifier: ^5.0.6
         version: 5.0.6
@@ -1496,8 +1496,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
-        specifier: 8.13.0
-        version: 8.13.0(@opentelemetry/api@1.9.0)
+        specifier: 8.12.0
+        version: 8.12.0(@opentelemetry/api@1.9.0)
       fetch-retry:
         specifier: ^5.0.6
         version: 5.0.6
@@ -1545,8 +1545,8 @@ importers:
   lambdas/user-list-search-events:
     dependencies:
       '@sentry/aws-serverless':
-        specifier: 8.13.0
-        version: 8.13.0(@opentelemetry/api@1.9.0)
+        specifier: 8.12.0
+        version: 8.12.0(@opentelemetry/api@1.9.0)
       tslib:
         specifier: 2.6.3
         version: 2.6.3
@@ -1585,8 +1585,8 @@ importers:
   lambdas/user-list-search-indexing:
     dependencies:
       '@sentry/aws-serverless':
-        specifier: 8.13.0
-        version: 8.13.0(@opentelemetry/api@1.9.0)
+        specifier: 8.12.0
+        version: 8.12.0(@opentelemetry/api@1.9.0)
       nanoid:
         specifier: 3.3.7
         version: 3.3.7
@@ -1634,8 +1634,8 @@ importers:
         specifier: 3.600.0
         version: 3.600.0
       '@sentry/aws-serverless':
-        specifier: 8.13.0
-        version: 8.13.0(@opentelemetry/api@1.9.0)
+        specifier: 8.12.0
+        version: 8.12.0(@opentelemetry/api@1.9.0)
       highland:
         specifier: 2.13.5
         version: 2.13.5
@@ -1707,8 +1707,8 @@ importers:
         specifier: workspace:*
         version: link:../ts-logger
       '@sentry/node':
-        specifier: 8.13.0
-        version: 8.13.0
+        specifier: 8.12.0
+        version: 8.12.0
       express:
         specifier: 4.19.2
         version: 4.19.2
@@ -1973,8 +1973,8 @@ importers:
   packages/sentry:
     dependencies:
       '@sentry/node':
-        specifier: 8.13.0
-        version: 8.13.0
+        specifier: 8.12.0
+        version: 8.12.0
       tslib:
         specifier: 2.6.3
         version: 2.6.3
@@ -2161,11 +2161,11 @@ importers:
         specifier: 5.15.1
         version: 5.15.1
       '@sentry/node':
-        specifier: 8.13.0
-        version: 8.13.0
+        specifier: 8.12.0
+        version: 8.12.0
       '@sentry/opentelemetry':
-        specifier: 8.13.0
-        version: 8.13.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.25.1)
+        specifier: 8.12.0
+        version: 8.12.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.25.1)
       tslib:
         specifier: 2.6.3
         version: 2.6.3
@@ -2292,8 +2292,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.13.0
-        version: 8.13.0
+        specifier: 8.12.0
+        version: 8.12.0
       express:
         specifier: 4.19.2
         version: 4.19.2
@@ -2320,8 +2320,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/eslint-config
       '@sentry/types':
-        specifier: 8.13.0
-        version: 8.13.0
+        specifier: 8.12.0
+        version: 8.12.0
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
@@ -2395,8 +2395,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.13.0
-        version: 8.13.0
+        specifier: 8.12.0
+        version: 8.12.0
       cors:
         specifier: 2.8.5
         version: 2.8.5
@@ -2456,8 +2456,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/eslint-config
       '@sentry/types':
-        specifier: 8.13.0
-        version: 8.13.0
+        specifier: 8.12.0
+        version: 8.12.0
       '@types/chance':
         specifier: 1.1.6
         version: 1.1.6
@@ -2522,8 +2522,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/sentry
       '@sentry/node':
-        specifier: 8.13.0
-        version: 8.13.0
+        specifier: 8.12.0
+        version: 8.12.0
       body-parser:
         specifier: 1.20.2
         version: 1.20.2
@@ -2640,8 +2640,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.13.0
-        version: 8.13.0
+        specifier: 8.12.0
+        version: 8.12.0
       axios:
         specifier: 1.7.2
         version: 1.7.2
@@ -2746,8 +2746,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.13.0
-        version: 8.13.0
+        specifier: 8.12.0
+        version: 8.12.0
       '@snowplow/node-tracker':
         specifier: 3.23.1
         version: 3.23.1
@@ -2915,8 +2915,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.13.0
-        version: 8.13.0
+        specifier: 8.12.0
+        version: 8.12.0
       cors:
         specifier: 2.8.5
         version: 2.8.5
@@ -3048,8 +3048,8 @@ importers:
         specifier: 3.600.0
         version: 3.600.0
       '@sentry/node':
-        specifier: 8.13.0
-        version: 8.13.0
+        specifier: 8.12.0
+        version: 8.12.0
       apns2:
         specifier: 11.7.0
         version: 11.7.0
@@ -3136,8 +3136,8 @@ importers:
         specifier: 5.14.0
         version: 5.14.0(prisma@5.14.0)
       '@sentry/node':
-        specifier: 8.13.0
-        version: 8.13.0
+        specifier: 8.12.0
+        version: 8.12.0
       cors:
         specifier: 2.8.5
         version: 2.8.5
@@ -3242,8 +3242,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.13.0
-        version: 8.13.0
+        specifier: 8.12.0
+        version: 8.12.0
       '@snowplow/node-tracker':
         specifier: 3.23.1
         version: 3.23.1
@@ -3327,8 +3327,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.13.0
-        version: 8.13.0
+        specifier: 8.12.0
+        version: 8.12.0
       '@snowplow/tracker-core':
         specifier: 3.23.1
         version: 3.23.1
@@ -3436,8 +3436,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.13.0
-        version: 8.13.0
+        specifier: 8.12.0
+        version: 8.12.0
       dataloader:
         specifier: 2.2.2
         version: 2.2.2
@@ -3470,8 +3470,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/eslint-config
       '@sentry/types':
-        specifier: 8.13.0
-        version: 8.13.0
+        specifier: 8.12.0
+        version: 8.12.0
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
@@ -3539,8 +3539,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.13.0
-        version: 8.13.0
+        specifier: 8.12.0
+        version: 8.12.0
       elasticsearch:
         specifier: ^16.7.3
         version: 16.7.3
@@ -3663,8 +3663,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.13.0
-        version: 8.13.0
+        specifier: 8.12.0
+        version: 8.12.0
       express:
         specifier: 4.19.2
         version: 4.19.2
@@ -5639,6 +5639,10 @@ packages:
     resolution: {integrity: sha512-E3skn949Pk1z2XtXu/lxf6QAZpawuTM/IUEXcAzpiUkTd73Hmvw26FiN3cJuTmkpM5hZzHwkomVdtrh/n/zzwA==}
     engines: {node: '>=14'}
 
+  '@opentelemetry/api-logs@0.52.0':
+    resolution: {integrity: sha512-HxjD7xH9iAE4OyhNaaSec65i1H6QZYBWSwWkowFfsc5YAcDvJG30/J1sRKXEQqdmUcKTXEAnA66UciqZha/4+Q==}
+    engines: {node: '>=14'}
+
   '@opentelemetry/api-logs@0.52.1':
     resolution: {integrity: sha512-qnSqB2DQ9TPP96dl8cDubDvrUyWc0/sK81xHTK8eSUspzDM3bsewX903qclQFvVhgStjRWdC5bLb3kQqMkfV5A==}
     engines: {node: '>=14'}
@@ -5653,6 +5657,12 @@ packages:
 
   '@opentelemetry/context-async-hooks@1.25.1':
     resolution: {integrity: sha512-UW/ge9zjvAEmRWVapOP0qyCvPulWU6cQxGxDbWEFfGOj1VBBZAuOqTo3X6yWmDTD3Xe15ysCZChHncr2xFMIfQ==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      '@opentelemetry/api': '>=1.0.0 <1.10.0'
+
+  '@opentelemetry/core@1.25.0':
+    resolution: {integrity: sha512-n0B3s8rrqGrasTgNkXLKXzN0fXo+6IYP7M5b7AMsrZM33f/y6DS6kJ0Btd7SespASWq8bgL3taLo0oe0vB52IQ==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
@@ -5741,6 +5751,12 @@ packages:
     peerDependencies:
       '@opentelemetry/api': ^1.3.0
 
+  '@opentelemetry/instrumentation-http@0.52.0':
+    resolution: {integrity: sha512-E6ywZuxTa4LnVXZGwL1oj3e2Eog1yIaNqa8KjKXoGkDNKte9/SjQnePXOmhQYI0A9nf0UyFbP9aKd+yHrkJXUA==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      '@opentelemetry/api': ^1.3.0
+
   '@opentelemetry/instrumentation-http@0.52.1':
     resolution: {integrity: sha512-dG/aevWhaP+7OLv4BQQSEKMJv8GyeOp3Wxl31NHqE8xo9/fYMfEljiZphUHIfyg4gnZ9swMyWjfOQs5GUQe54Q==}
     engines: {node: '>=14'}
@@ -5821,6 +5837,12 @@ packages:
 
   '@opentelemetry/instrumentation@0.51.1':
     resolution: {integrity: sha512-JIrvhpgqY6437QIqToyozrUG1h5UhwHkaGK/WAX+fkrpyPtc+RO5FkRtUd9BH0MibabHHvqsnBGKfKVijbmp8w==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      '@opentelemetry/api': ^1.3.0
+
+  '@opentelemetry/instrumentation@0.52.0':
+    resolution: {integrity: sha512-LPwSIrw+60cheWaXsfGL8stBap/AppKQJFE+qqRvzYrgttXFH2ofoIMxWadeqPTq4BYOXM/C7Bdh/T+B60xnlQ==}
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': ^1.3.0
@@ -5918,6 +5940,10 @@ packages:
     engines: {node: '>=14'}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
+
+  '@opentelemetry/semantic-conventions@1.25.0':
+    resolution: {integrity: sha512-M+kkXKRAIAiAP6qYyesfrC5TOmDpDVtsxuGfPcqd9B/iBrac+E14jYwrgm0yZBUIbIP2OnqC3j+UgkXLm1vxUQ==}
+    engines: {node: '>=14'}
 
   '@opentelemetry/semantic-conventions@1.25.1':
     resolution: {integrity: sha512-ZDjMJJQRlyk8A1KZFCc+bCbsyrn1wTwdNt56F7twdfUfnHUZUq77/WfONCj8p72NZOyP7pNTdUWSTYC3GTbuuQ==}
@@ -6078,11 +6104,11 @@ packages:
   '@prisma/get-platform@5.3.1':
     resolution: {integrity: sha512-3IiZY2BUjKnAuZ0569zppZE6/rZbVAM09//c2nvPbbkGG9MqrirA8fbhhF7tfVmhyVfdmVCHnf/ujWPHJ8B46Q==}
 
+  '@prisma/instrumentation@5.15.0':
+    resolution: {integrity: sha512-fCWOOOajTKOUEp43gRmBqwt6oN9bPJcLiloi2OG/2ED0N5z62Cuza6FDrlm3SJHQAXYlXqLE0HLdEE5WcUkOzg==}
+
   '@prisma/instrumentation@5.15.1':
     resolution: {integrity: sha512-DTHsscTKZj1zn+N0HCj3iHF217ONNXKh9brNVQy2PGPNcCYkT2PddxrMWyvqJC2FtPXfivAV8s23sr0c4Qlt0w==}
-
-  '@prisma/instrumentation@5.16.0':
-    resolution: {integrity: sha512-MVzNRW2ikWvVNnMIEgQMcwWxpFD+XF2U2h0Qz7MjutRqJxrhWexWV2aSi2OXRaU8UL5wzWw7pnjdKUzYhWauLg==}
 
   '@prisma/internals@5.3.1':
     resolution: {integrity: sha512-zkW73hPHHNrMD21PeYgCTBfMu71vzJf+WtfydtJbS0JVJKyLfOel0iWSQg7wjNeQfccKp+NdHJ/5rTJ4NEUzgA==}
@@ -6260,8 +6286,8 @@ packages:
     resolution: {integrity: sha512-IIHHa9e/mE7uOMJfNELI8adyoELxOy6u6TNCn5t6fphmq84w8FTc9adXkG/FY2AQpglkIvlILojfMROFB2aaAQ==}
     engines: {node: '>=8'}
 
-  '@sentry/aws-serverless@8.13.0':
-    resolution: {integrity: sha512-W6YUNFe1ki4CF/xMg7nxJzcHjHAXrXpI9j1oTIpkdGBAuMFKLINm55QOtyniDSdmF5NJxd8EiulYfB2DUiyEaA==}
+  '@sentry/aws-serverless@8.12.0':
+    resolution: {integrity: sha512-i8gEzuoIigW5kJDlo3t9SvNQ6ghHYZutMX9BMX7riqQDnjRhaeRpWmw+yu40ZdWAmctaAdFncjj4xMGk+abv4Q==}
     engines: {node: '>=14.18'}
 
   '@sentry/core@7.109.0':
@@ -6272,8 +6298,8 @@ packages:
     resolution: {integrity: sha512-g4suCQO94mZsKVaAbyD1zLFC5YSuBQCIPHXx9fdgtfoPib7BWjWWePkllkrvsKAv4u8Oq05RfnKOhOMRHpOKqg==}
     engines: {node: '>=8'}
 
-  '@sentry/core@8.13.0':
-    resolution: {integrity: sha512-N9Qg4ZGxZWp8eb2eUUHVVKgjBLtFIjS805nG92s6yJmkvOpKm6mLtcUaT/iDf3Hta6nG+xRkhbE3r+Z4cbXG8w==}
+  '@sentry/core@8.12.0':
+    resolution: {integrity: sha512-y+5Hlf/E45nj2adJy4aUCNBefQbyWIX66Z9bOM6JjnVB0hxCm5H0sYqrFKldYqaeZx6/Q2cgAcGs61krUxNerQ==}
     engines: {node: '>=14.18'}
 
   '@sentry/node@7.109.0':
@@ -6284,19 +6310,19 @@ packages:
     resolution: {integrity: sha512-YPfweCSzo/omnx5q1xOEZfI8Em3jnPqj7OM4ObXmoSKEK+kM1oUF3BTRzw5BJOaOCSTBFY1RAsGyfVIyrwxWnA==}
     engines: {node: '>=8'}
 
-  '@sentry/node@8.13.0':
-    resolution: {integrity: sha512-OeZ7K90RhyxfwfreerIi4cszzHrPRRH36STJno2+p3sIGbG5VScOccqXzYEOAqHpByxnti4KQN34BLAT2BFOEA==}
+  '@sentry/node@8.12.0':
+    resolution: {integrity: sha512-NWuEAjq9iIxc0o78UtFUtUa2Xwb3iowWNzBD7Dz8yKe6EGHA+QnC6GJAYt6xuUuH3/RUbPveR4qJ2EhKo6lkjQ==}
     engines: {node: '>=14.18'}
 
-  '@sentry/opentelemetry@8.13.0':
-    resolution: {integrity: sha512-NYn/HNE/SxFXe8pfnxJknhrrRzYRMHNssCoi5M1CeR5G7F2BGxxVmaGsd8j0WyTCpUS4i97G4vhYtDGxHvWN6w==}
+  '@sentry/opentelemetry@8.12.0':
+    resolution: {integrity: sha512-CjMzd8ytyf2C6emkvIAmvAD45LCqcQl6Ygl8UEFX6USGywhUyqFIaNvYlb0RA7/eaQ7mcKMflQ1z7ptj0YxgEQ==}
     engines: {node: '>=14.18'}
     peerDependencies:
       '@opentelemetry/api': ^1.9.0
-      '@opentelemetry/core': ^1.25.1
-      '@opentelemetry/instrumentation': ^0.52.1
-      '@opentelemetry/sdk-trace-base': ^1.25.1
-      '@opentelemetry/semantic-conventions': ^1.25.1
+      '@opentelemetry/core': ^1.25.0
+      '@opentelemetry/instrumentation': ^0.52.0
+      '@opentelemetry/sdk-trace-base': ^1.25.0
+      '@opentelemetry/semantic-conventions': ^1.25.0
 
   '@sentry/types@7.109.0':
     resolution: {integrity: sha512-egCBnDv3YpVFoNzRLdP0soVrxVLCQ+rovREKJ1sw3rA2/MFH9WJ+DZZexsX89yeAFzy1IFsCp7/dEqudusml6g==}
@@ -6306,8 +6332,8 @@ packages:
     resolution: {integrity: sha512-DqYBLyE8thC5P5MuPn+sj8tL60nCd/f5cerFFPcudn5nJ4Zs1eI6lKlwwyHYTEu5c4KFjCB0qql6kXfwAHmTyA==}
     engines: {node: '>=8'}
 
-  '@sentry/types@8.13.0':
-    resolution: {integrity: sha512-r63s/H5gvQnQM9tTGBXz2xErUbxZALh4e2Lg/1aHj4zIvGLBjA2z5qWsh6TEZYbpmgAyGShLDr6+rWeUVf9yBQ==}
+  '@sentry/types@8.12.0':
+    resolution: {integrity: sha512-pKuW64IjgcklWAOHzPJ02Ej480hyL25TLnYCAfl2TDMrYc+N0bbbH1N7ZxqJpTSVK9IxZPY/t2TRxpQBiyPEcg==}
     engines: {node: '>=14.18'}
 
   '@sentry/utils@7.109.0':
@@ -6318,8 +6344,8 @@ packages:
     resolution: {integrity: sha512-VBsdLLN+5tf73fhf/Cm7JIsUJ6y9DkJj8h4I6Mxx0rszrvOyH6S5px40K+V4jdLBzMEvVinC7q2Cbf1YM18BSw==}
     engines: {node: '>=8'}
 
-  '@sentry/utils@8.13.0':
-    resolution: {integrity: sha512-PxV0v9VbGWH9zP37P5w2msLUFDr287nYjoY2XVF+RSolyiTs1CQNI5ZMUO3o4MsSac/dpXxjyrZXQd72t/jRYA==}
+  '@sentry/utils@8.12.0':
+    resolution: {integrity: sha512-pwYMoOmexz3vsNSOJGPvD2qwp/fsPcr8mkFk67wMM37Y+30KQ8pF4Aq1cc+HBRIn1tKmenzFDPTczSdVPFxm3Q==}
     engines: {node: '>=14.18'}
 
   '@sideway/address@4.1.5':
@@ -9391,6 +9417,9 @@ packages:
 
   import-in-the-middle@1.7.4:
     resolution: {integrity: sha512-Lk+qzWmiQuRPPulGQeK5qq0v32k2bHnWrRPFgqyvhw7Kkov5L6MOLOIU3pcWeujc9W4q54Cp3Q2WV16eQkc7Bg==}
+
+  import-in-the-middle@1.8.0:
+    resolution: {integrity: sha512-/xQjze8szLNnJ5rvHSzn+dcVXqCAU6Plbk4P24U/jwPmg1wy7IIp9OjKIO5tYue8GSPhDpPDiApQjvBUmWwhsQ==}
 
   import-in-the-middle@1.8.1:
     resolution: {integrity: sha512-yhRwoHtiLGvmSozNOALgjRPFI6uYsds60EoMqqnXyyv+JOIW/BrrLejuTGBt+bq0T5tLzOHrN0T7xYTm4Qt/ng==}
@@ -13075,8 +13104,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.6.0-dev.20240701:
-    resolution: {integrity: sha512-x8jIDJiBfgaT4/vpz3FwNKa2dYQsLZXKWsaCeyQWrXzkbKyirrGdVuOr3nbz0bcvteZNJ2BCZPDlAiwsX/pENw==}
+  typescript@5.6.0-dev.20240627:
+    resolution: {integrity: sha512-fP6zd/pZ8baYlr3jR1sdhUxcuRrbL4kAEpGD4sx9Gr/eBvxKbs5mQqWTKICgxwbtKOXJ4KdrEoJkbx8+3PaZpg==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -13869,7 +13898,7 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
-      '@aws-sdk/client-sso-oidc': 3.600.0(@aws-sdk/client-sts@3.600.0)
+      '@aws-sdk/client-sso-oidc': 3.600.0
       '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))(@aws-sdk/client-sts@3.600.0)
@@ -13917,10 +13946,10 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
-      '@aws-sdk/client-sso-oidc': 3.600.0(@aws-sdk/client-sts@3.600.0)
-      '@aws-sdk/client-sts': 3.600.0
+      '@aws-sdk/client-sso-oidc': 3.600.0
+      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
       '@aws-sdk/core': 3.598.0
-      '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))(@aws-sdk/client-sts@3.600.0)
+      '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)(@aws-sdk/client-sts@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))
       '@aws-sdk/middleware-endpoint-discovery': 3.598.0
       '@aws-sdk/middleware-host-header': 3.598.0
       '@aws-sdk/middleware-logger': 3.598.0
@@ -13966,7 +13995,7 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
-      '@aws-sdk/client-sso-oidc': 3.600.0(@aws-sdk/client-sts@3.600.0)
+      '@aws-sdk/client-sso-oidc': 3.600.0
       '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))(@aws-sdk/client-sts@3.600.0)
@@ -14012,7 +14041,7 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
-      '@aws-sdk/client-sso-oidc': 3.600.0(@aws-sdk/client-sts@3.600.0)
+      '@aws-sdk/client-sso-oidc': 3.600.0
       '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))(@aws-sdk/client-sts@3.600.0)
@@ -14058,7 +14087,7 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
-      '@aws-sdk/client-sso-oidc': 3.600.0(@aws-sdk/client-sts@3.600.0)
+      '@aws-sdk/client-sso-oidc': 3.600.0
       '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))(@aws-sdk/client-sts@3.600.0)
@@ -14108,7 +14137,7 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
-      '@aws-sdk/client-sso-oidc': 3.600.0(@aws-sdk/client-sts@3.600.0)
+      '@aws-sdk/client-sso-oidc': 3.600.0
       '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))(@aws-sdk/client-sts@3.600.0)
@@ -14159,7 +14188,7 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
-      '@aws-sdk/client-sso-oidc': 3.600.0(@aws-sdk/client-sts@3.600.0)
+      '@aws-sdk/client-sso-oidc': 3.600.0
       '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))(@aws-sdk/client-sts@3.600.0)
@@ -14206,7 +14235,7 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
-      '@aws-sdk/client-sso-oidc': 3.600.0(@aws-sdk/client-sts@3.600.0)
+      '@aws-sdk/client-sso-oidc': 3.600.0
       '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))(@aws-sdk/client-sts@3.600.0)
@@ -14254,7 +14283,7 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
-      '@aws-sdk/client-sso-oidc': 3.600.0(@aws-sdk/client-sts@3.600.0)
+      '@aws-sdk/client-sso-oidc': 3.600.0
       '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))(@aws-sdk/client-sts@3.600.0)
@@ -14295,6 +14324,51 @@ snapshots:
       '@smithy/util-waiter': 3.1.1
       tslib: 2.6.3
       uuid: 9.0.1
+    transitivePeerDependencies:
+      - aws-crt
+
+  '@aws-sdk/client-sso-oidc@3.600.0':
+    dependencies:
+      '@aws-crypto/sha256-browser': 5.2.0
+      '@aws-crypto/sha256-js': 5.2.0
+      '@aws-sdk/client-sts': 3.600.0
+      '@aws-sdk/core': 3.598.0
+      '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)(@aws-sdk/client-sts@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))
+      '@aws-sdk/middleware-host-header': 3.598.0
+      '@aws-sdk/middleware-logger': 3.598.0
+      '@aws-sdk/middleware-recursion-detection': 3.598.0
+      '@aws-sdk/middleware-user-agent': 3.598.0
+      '@aws-sdk/region-config-resolver': 3.598.0
+      '@aws-sdk/types': 3.598.0
+      '@aws-sdk/util-endpoints': 3.598.0
+      '@aws-sdk/util-user-agent-browser': 3.598.0
+      '@aws-sdk/util-user-agent-node': 3.598.0
+      '@smithy/config-resolver': 3.0.3
+      '@smithy/core': 2.2.3
+      '@smithy/fetch-http-handler': 3.1.0
+      '@smithy/hash-node': 3.0.2
+      '@smithy/invalid-dependency': 3.0.2
+      '@smithy/middleware-content-length': 3.0.2
+      '@smithy/middleware-endpoint': 3.0.3
+      '@smithy/middleware-retry': 3.0.6
+      '@smithy/middleware-serde': 3.0.2
+      '@smithy/middleware-stack': 3.0.2
+      '@smithy/node-config-provider': 3.1.2
+      '@smithy/node-http-handler': 3.1.0
+      '@smithy/protocol-http': 4.0.2
+      '@smithy/smithy-client': 3.1.4
+      '@smithy/types': 3.2.0
+      '@smithy/url-parser': 3.0.2
+      '@smithy/util-base64': 3.0.0
+      '@smithy/util-body-length-browser': 3.0.0
+      '@smithy/util-body-length-node': 3.0.0
+      '@smithy/util-defaults-mode-browser': 3.0.6
+      '@smithy/util-defaults-mode-node': 3.0.6
+      '@smithy/util-endpoints': 2.0.3
+      '@smithy/util-middleware': 3.0.2
+      '@smithy/util-retry': 3.0.2
+      '@smithy/util-utf8': 3.0.0
+      tslib: 2.6.3
     transitivePeerDependencies:
       - aws-crt
 
@@ -14391,7 +14465,7 @@ snapshots:
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
-      '@aws-sdk/client-sso-oidc': 3.600.0(@aws-sdk/client-sts@3.600.0)
+      '@aws-sdk/client-sso-oidc': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))(@aws-sdk/client-sts@3.600.0)
       '@aws-sdk/middleware-host-header': 3.598.0
@@ -14430,6 +14504,52 @@ snapshots:
       '@smithy/util-utf8': 3.0.0
       tslib: 2.6.3
     transitivePeerDependencies:
+      - aws-crt
+
+  '@aws-sdk/client-sts@3.600.0(@aws-sdk/client-sso-oidc@3.600.0)':
+    dependencies:
+      '@aws-crypto/sha256-browser': 5.2.0
+      '@aws-crypto/sha256-js': 5.2.0
+      '@aws-sdk/client-sso-oidc': 3.600.0
+      '@aws-sdk/core': 3.598.0
+      '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)(@aws-sdk/client-sts@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))
+      '@aws-sdk/middleware-host-header': 3.598.0
+      '@aws-sdk/middleware-logger': 3.598.0
+      '@aws-sdk/middleware-recursion-detection': 3.598.0
+      '@aws-sdk/middleware-user-agent': 3.598.0
+      '@aws-sdk/region-config-resolver': 3.598.0
+      '@aws-sdk/types': 3.598.0
+      '@aws-sdk/util-endpoints': 3.598.0
+      '@aws-sdk/util-user-agent-browser': 3.598.0
+      '@aws-sdk/util-user-agent-node': 3.598.0
+      '@smithy/config-resolver': 3.0.3
+      '@smithy/core': 2.2.3
+      '@smithy/fetch-http-handler': 3.1.0
+      '@smithy/hash-node': 3.0.2
+      '@smithy/invalid-dependency': 3.0.2
+      '@smithy/middleware-content-length': 3.0.2
+      '@smithy/middleware-endpoint': 3.0.3
+      '@smithy/middleware-retry': 3.0.6
+      '@smithy/middleware-serde': 3.0.2
+      '@smithy/middleware-stack': 3.0.2
+      '@smithy/node-config-provider': 3.1.2
+      '@smithy/node-http-handler': 3.1.0
+      '@smithy/protocol-http': 4.0.2
+      '@smithy/smithy-client': 3.1.4
+      '@smithy/types': 3.2.0
+      '@smithy/url-parser': 3.0.2
+      '@smithy/util-base64': 3.0.0
+      '@smithy/util-body-length-browser': 3.0.0
+      '@smithy/util-body-length-node': 3.0.0
+      '@smithy/util-defaults-mode-browser': 3.0.6
+      '@smithy/util-defaults-mode-node': 3.0.6
+      '@smithy/util-endpoints': 2.0.3
+      '@smithy/util-middleware': 3.0.2
+      '@smithy/util-retry': 3.0.2
+      '@smithy/util-utf8': 3.0.0
+      tslib: 2.6.3
+    transitivePeerDependencies:
+      - '@aws-sdk/client-sso-oidc'
       - aws-crt
 
   '@aws-sdk/core@3.598.0':
@@ -14479,6 +14599,24 @@ snapshots:
       - '@aws-sdk/client-sso-oidc'
       - aws-crt
 
+  '@aws-sdk/credential-provider-ini@3.598.0(@aws-sdk/client-sso-oidc@3.600.0)(@aws-sdk/client-sts@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))':
+    dependencies:
+      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/credential-provider-env': 3.598.0
+      '@aws-sdk/credential-provider-http': 3.598.0
+      '@aws-sdk/credential-provider-process': 3.598.0
+      '@aws-sdk/credential-provider-sso': 3.598.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/credential-provider-web-identity': 3.598.0(@aws-sdk/client-sts@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))
+      '@aws-sdk/types': 3.598.0
+      '@smithy/credential-provider-imds': 3.1.2
+      '@smithy/property-provider': 3.1.2
+      '@smithy/shared-ini-file-loader': 3.1.2
+      '@smithy/types': 3.2.0
+      tslib: 2.6.3
+    transitivePeerDependencies:
+      - '@aws-sdk/client-sso-oidc'
+      - aws-crt
+
   '@aws-sdk/credential-provider-node@3.600.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))(@aws-sdk/client-sts@3.600.0)':
     dependencies:
       '@aws-sdk/credential-provider-env': 3.598.0
@@ -14487,6 +14625,25 @@ snapshots:
       '@aws-sdk/credential-provider-process': 3.598.0
       '@aws-sdk/credential-provider-sso': 3.598.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))
       '@aws-sdk/credential-provider-web-identity': 3.598.0(@aws-sdk/client-sts@3.600.0)
+      '@aws-sdk/types': 3.598.0
+      '@smithy/credential-provider-imds': 3.1.2
+      '@smithy/property-provider': 3.1.2
+      '@smithy/shared-ini-file-loader': 3.1.2
+      '@smithy/types': 3.2.0
+      tslib: 2.6.3
+    transitivePeerDependencies:
+      - '@aws-sdk/client-sso-oidc'
+      - '@aws-sdk/client-sts'
+      - aws-crt
+
+  '@aws-sdk/credential-provider-node@3.600.0(@aws-sdk/client-sso-oidc@3.600.0)(@aws-sdk/client-sts@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))':
+    dependencies:
+      '@aws-sdk/credential-provider-env': 3.598.0
+      '@aws-sdk/credential-provider-http': 3.598.0
+      '@aws-sdk/credential-provider-ini': 3.598.0(@aws-sdk/client-sso-oidc@3.600.0)(@aws-sdk/client-sts@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))
+      '@aws-sdk/credential-provider-process': 3.598.0
+      '@aws-sdk/credential-provider-sso': 3.598.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/credential-provider-web-identity': 3.598.0(@aws-sdk/client-sts@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))
       '@aws-sdk/types': 3.598.0
       '@smithy/credential-provider-imds': 3.1.2
       '@smithy/property-provider': 3.1.2
@@ -14518,6 +14675,27 @@ snapshots:
     transitivePeerDependencies:
       - '@aws-sdk/client-sso-oidc'
       - aws-crt
+
+  '@aws-sdk/credential-provider-sso@3.598.0(@aws-sdk/client-sso-oidc@3.600.0)':
+    dependencies:
+      '@aws-sdk/client-sso': 3.598.0
+      '@aws-sdk/token-providers': 3.598.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/types': 3.598.0
+      '@smithy/property-provider': 3.1.2
+      '@smithy/shared-ini-file-loader': 3.1.2
+      '@smithy/types': 3.2.0
+      tslib: 2.6.3
+    transitivePeerDependencies:
+      - '@aws-sdk/client-sso-oidc'
+      - aws-crt
+
+  '@aws-sdk/credential-provider-web-identity@3.598.0(@aws-sdk/client-sts@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))':
+    dependencies:
+      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/types': 3.598.0
+      '@smithy/property-provider': 3.1.2
+      '@smithy/types': 3.2.0
+      tslib: 2.6.3
 
   '@aws-sdk/credential-provider-web-identity@3.598.0(@aws-sdk/client-sts@3.600.0)':
     dependencies:
@@ -14629,6 +14807,15 @@ snapshots:
   '@aws-sdk/token-providers@3.598.0(@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0))':
     dependencies:
       '@aws-sdk/client-sso-oidc': 3.600.0(@aws-sdk/client-sts@3.600.0)
+      '@aws-sdk/types': 3.598.0
+      '@smithy/property-provider': 3.1.2
+      '@smithy/shared-ini-file-loader': 3.1.2
+      '@smithy/types': 3.2.0
+      tslib: 2.6.3
+
+  '@aws-sdk/token-providers@3.598.0(@aws-sdk/client-sso-oidc@3.600.0)':
+    dependencies:
+      '@aws-sdk/client-sso-oidc': 3.600.0
       '@aws-sdk/types': 3.598.0
       '@smithy/property-provider': 3.1.2
       '@smithy/shared-ini-file-loader': 3.1.2
@@ -15509,11 +15696,11 @@ snapshots:
     dependencies:
       commander: 12.1.0
 
-  '@commitlint/cli@19.3.0(@types/node@20.14.8)(typescript@5.6.0-dev.20240701)':
+  '@commitlint/cli@19.3.0(@types/node@20.14.8)(typescript@5.6.0-dev.20240627)':
     dependencies:
       '@commitlint/format': 19.3.0
       '@commitlint/lint': 19.2.2
-      '@commitlint/load': 19.2.0(@types/node@20.14.8)(typescript@5.6.0-dev.20240701)
+      '@commitlint/load': 19.2.0(@types/node@20.14.8)(typescript@5.6.0-dev.20240627)
       '@commitlint/read': 19.2.1
       '@commitlint/types': 19.0.3
       execa: 8.0.1
@@ -15560,15 +15747,15 @@ snapshots:
       '@commitlint/rules': 19.0.3
       '@commitlint/types': 19.0.3
 
-  '@commitlint/load@19.2.0(@types/node@20.14.8)(typescript@5.6.0-dev.20240701)':
+  '@commitlint/load@19.2.0(@types/node@20.14.8)(typescript@5.6.0-dev.20240627)':
     dependencies:
       '@commitlint/config-validator': 19.0.3
       '@commitlint/execute-rule': 19.0.0
       '@commitlint/resolve-extends': 19.1.0
       '@commitlint/types': 19.0.3
       chalk: 5.3.0
-      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240701)
-      cosmiconfig-typescript-loader: 5.0.0(@types/node@20.14.8)(cosmiconfig@9.0.0(typescript@5.6.0-dev.20240701))(typescript@5.6.0-dev.20240701)
+      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240627)
+      cosmiconfig-typescript-loader: 5.0.0(@types/node@20.14.8)(cosmiconfig@9.0.0(typescript@5.6.0-dev.20240627))(typescript@5.6.0-dev.20240627)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -17051,7 +17238,7 @@ snapshots:
     dependencies:
       '@inquirer/type': 1.3.1
       '@types/mute-stream': 0.0.4
-      '@types/node': 20.14.8
+      '@types/node': 20.14.2
       '@types/wrap-ansi': 3.0.0
       ansi-escapes: 4.3.2
       chalk: 4.1.2
@@ -17493,6 +17680,10 @@ snapshots:
     dependencies:
       '@opentelemetry/api': 1.9.0
 
+  '@opentelemetry/api-logs@0.52.0':
+    dependencies:
+      '@opentelemetry/api': 1.9.0
+
   '@opentelemetry/api-logs@0.52.1':
     dependencies:
       '@opentelemetry/api': 1.9.0
@@ -17504,6 +17695,11 @@ snapshots:
   '@opentelemetry/context-async-hooks@1.25.1(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
+
+  '@opentelemetry/core@1.25.0(@opentelemetry/api@1.9.0)':
+    dependencies:
+      '@opentelemetry/api': 1.9.0
+      '@opentelemetry/semantic-conventions': 1.25.0
 
   '@opentelemetry/core@1.25.1(@opentelemetry/api@1.9.0)':
     dependencies:
@@ -17620,6 +17816,16 @@ snapshots:
       '@opentelemetry/core': 1.25.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation': 0.52.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.25.1
+    transitivePeerDependencies:
+      - supports-color
+
+  '@opentelemetry/instrumentation-http@0.52.0(@opentelemetry/api@1.9.0)':
+    dependencies:
+      '@opentelemetry/api': 1.9.0
+      '@opentelemetry/core': 1.25.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation': 0.52.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/semantic-conventions': 1.25.0
+      semver: 7.6.2
     transitivePeerDependencies:
       - supports-color
 
@@ -17757,6 +17963,18 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@opentelemetry/instrumentation@0.52.0(@opentelemetry/api@1.9.0)':
+    dependencies:
+      '@opentelemetry/api': 1.9.0
+      '@opentelemetry/api-logs': 0.52.0
+      '@types/shimmer': 1.0.5
+      import-in-the-middle: 1.8.0
+      require-in-the-middle: 7.3.0
+      semver: 7.6.2
+      shimmer: 1.2.1
+    transitivePeerDependencies:
+      - supports-color
+
   '@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
@@ -17877,6 +18095,8 @@ snapshots:
       '@opentelemetry/propagator-jaeger': 1.25.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-base': 1.25.1(@opentelemetry/api@1.9.0)
       semver: 7.6.2
+
+  '@opentelemetry/semantic-conventions@1.25.0': {}
 
   '@opentelemetry/semantic-conventions@1.25.1': {}
 
@@ -18060,7 +18280,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@prisma/instrumentation@5.15.1':
+  '@prisma/instrumentation@5.15.0':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/instrumentation': 0.51.1(@opentelemetry/api@1.9.0)
@@ -18068,10 +18288,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@prisma/instrumentation@5.16.0':
+  '@prisma/instrumentation@5.15.1':
     dependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/instrumentation': 0.52.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation': 0.51.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-base': 1.25.1(@opentelemetry/api@1.9.0)
     transitivePeerDependencies:
       - supports-color
@@ -18319,14 +18539,14 @@ snapshots:
       '@sentry/types': 7.110.0
       '@sentry/utils': 7.110.0
 
-  '@sentry/aws-serverless@8.13.0(@opentelemetry/api@1.9.0)':
+  '@sentry/aws-serverless@8.12.0(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/instrumentation-aws-lambda': 0.42.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation-aws-sdk': 0.42.0(@opentelemetry/api@1.9.0)
-      '@sentry/core': 8.13.0
-      '@sentry/node': 8.13.0
-      '@sentry/types': 8.13.0
-      '@sentry/utils': 8.13.0
+      '@sentry/core': 8.12.0
+      '@sentry/node': 8.12.0
+      '@sentry/types': 8.12.0
+      '@sentry/utils': 8.12.0
       '@types/aws-lambda': 8.10.138
     transitivePeerDependencies:
       - '@opentelemetry/api'
@@ -18342,10 +18562,10 @@ snapshots:
       '@sentry/types': 7.110.0
       '@sentry/utils': 7.110.0
 
-  '@sentry/core@8.13.0':
+  '@sentry/core@8.12.0':
     dependencies:
-      '@sentry/types': 8.13.0
-      '@sentry/utils': 8.13.0
+      '@sentry/types': 8.12.0
+      '@sentry/utils': 8.12.0
 
   '@sentry/node@7.109.0':
     dependencies:
@@ -18361,7 +18581,7 @@ snapshots:
       '@sentry/types': 7.110.0
       '@sentry/utils': 7.110.0
 
-  '@sentry/node@8.13.0':
+  '@sentry/node@8.12.0':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/context-async-hooks': 1.25.1(@opentelemetry/api@1.9.0)
@@ -18372,7 +18592,7 @@ snapshots:
       '@opentelemetry/instrumentation-fastify': 0.37.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation-graphql': 0.41.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation-hapi': 0.39.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/instrumentation-http': 0.52.1(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-http': 0.52.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation-ioredis': 0.41.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation-koa': 0.41.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation-mongodb': 0.45.0(@opentelemetry/api@1.9.0)
@@ -18385,32 +18605,32 @@ snapshots:
       '@opentelemetry/resources': 1.25.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-base': 1.25.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.25.1
-      '@prisma/instrumentation': 5.16.0
-      '@sentry/core': 8.13.0
-      '@sentry/opentelemetry': 8.13.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.25.1)
-      '@sentry/types': 8.13.0
-      '@sentry/utils': 8.13.0
+      '@prisma/instrumentation': 5.15.0
+      '@sentry/core': 8.12.0
+      '@sentry/opentelemetry': 8.12.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.25.1)
+      '@sentry/types': 8.12.0
+      '@sentry/utils': 8.12.0
     optionalDependencies:
       opentelemetry-instrumentation-fetch-node: 1.2.0
     transitivePeerDependencies:
       - supports-color
 
-  '@sentry/opentelemetry@8.13.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.25.1)':
+  '@sentry/opentelemetry@8.12.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.52.1(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.25.1(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.25.1)':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 1.25.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation': 0.52.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-base': 1.25.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.25.1
-      '@sentry/core': 8.13.0
-      '@sentry/types': 8.13.0
-      '@sentry/utils': 8.13.0
+      '@sentry/core': 8.12.0
+      '@sentry/types': 8.12.0
+      '@sentry/utils': 8.12.0
 
   '@sentry/types@7.109.0': {}
 
   '@sentry/types@7.110.0': {}
 
-  '@sentry/types@8.13.0': {}
+  '@sentry/types@8.12.0': {}
 
   '@sentry/utils@7.109.0':
     dependencies:
@@ -18420,9 +18640,9 @@ snapshots:
     dependencies:
       '@sentry/types': 7.110.0
 
-  '@sentry/utils@8.13.0':
+  '@sentry/utils@8.12.0':
     dependencies:
-      '@sentry/types': 8.13.0
+      '@sentry/types': 8.12.0
 
   '@sideway/address@4.1.5':
     dependencies:
@@ -18450,7 +18670,7 @@ snapshots:
 
   '@slack/logger@3.0.0':
     dependencies:
-      '@types/node': 20.14.8
+      '@types/node': 20.14.2
 
   '@slack/types@2.11.0': {}
 
@@ -18842,7 +19062,7 @@ snapshots:
 
   '@types/accepts@1.3.7':
     dependencies:
-      '@types/node': 20.14.8
+      '@types/node': 20.14.2
 
   '@types/aws-lambda@8.10.122': {}
 
@@ -18878,7 +19098,7 @@ snapshots:
     dependencies:
       '@types/http-cache-semantics': 4.0.4
       '@types/keyv': 3.1.4
-      '@types/node': 20.14.8
+      '@types/node': 20.14.2
       '@types/responselike': 1.0.3
 
   '@types/caseless@0.12.5':
@@ -18907,7 +19127,7 @@ snapshots:
       '@types/connect': 3.4.38
       '@types/express': 4.17.21
       '@types/keygrip': 1.0.6
-      '@types/node': 20.14.8
+      '@types/node': 20.14.2
 
   '@types/cors@2.8.17':
     dependencies:
@@ -18915,7 +19135,7 @@ snapshots:
 
   '@types/cross-spawn@6.0.2':
     dependencies:
-      '@types/node': 20.14.8
+      '@types/node': 20.14.2
 
   '@types/debug@4.1.8':
     dependencies:
@@ -18950,7 +19170,7 @@ snapshots:
 
   '@types/graceful-fs@4.1.9':
     dependencies:
-      '@types/node': 20.14.8
+      '@types/node': 20.14.2
 
   '@types/graphql-depth-limit@1.1.6':
     dependencies:
@@ -18987,7 +19207,7 @@ snapshots:
 
   '@types/is-stream@1.1.0':
     dependencies:
-      '@types/node': 20.14.8
+      '@types/node': 20.14.2
 
   '@types/istanbul-lib-coverage@2.0.6': {}
 
@@ -19080,7 +19300,7 @@ snapshots:
 
   '@types/mute-stream@0.0.1':
     dependencies:
-      '@types/node': 20.14.8
+      '@types/node': 20.14.2
 
   '@types/mute-stream@0.0.4':
     dependencies:
@@ -19160,7 +19380,7 @@ snapshots:
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 20.14.8
+      '@types/node': 20.14.2
 
   '@types/retry@0.12.0': {}
 
@@ -19208,7 +19428,7 @@ snapshots:
 
   '@types/ws@8.5.10':
     dependencies:
-      '@types/node': 20.14.8
+      '@types/node': 20.14.2
 
   '@types/yargs-parser@21.0.3': {}
 
@@ -19218,7 +19438,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 20.14.8
+      '@types/node': 20.14.2
     optional: true
 
   '@types/yoga-layout@1.9.2': {}
@@ -20576,12 +20796,12 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cosmiconfig-typescript-loader@5.0.0(@types/node@20.14.8)(cosmiconfig@9.0.0(typescript@5.6.0-dev.20240701))(typescript@5.6.0-dev.20240701):
+  cosmiconfig-typescript-loader@5.0.0(@types/node@20.14.8)(cosmiconfig@9.0.0(typescript@5.6.0-dev.20240627))(typescript@5.6.0-dev.20240627):
     dependencies:
       '@types/node': 20.14.8
-      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240701)
+      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240627)
       jiti: 1.21.0
-      typescript: 5.6.0-dev.20240701
+      typescript: 5.6.0-dev.20240627
 
   cosmiconfig@8.3.6(typescript@5.4.5):
     dependencies:
@@ -20601,14 +20821,14 @@ snapshots:
     optionalDependencies:
       typescript: 5.4.5
 
-  cosmiconfig@9.0.0(typescript@5.6.0-dev.20240701):
+  cosmiconfig@9.0.0(typescript@5.6.0-dev.20240627):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 5.6.0-dev.20240701
+      typescript: 5.6.0-dev.20240627
 
   cpu-features@0.0.2:
     dependencies:
@@ -20985,7 +21205,7 @@ snapshots:
     dependencies:
       semver: 7.6.2
       shelljs: 0.8.5
-      typescript: 5.6.0-dev.20240701
+      typescript: 5.6.0-dev.20240627
 
   dreamopt@0.8.0:
     dependencies:
@@ -22446,6 +22666,13 @@ snapshots:
 
   import-in-the-middle@1.7.4:
     dependencies:
+      acorn: 8.11.3
+      acorn-import-attributes: 1.9.5(acorn@8.11.3)
+      cjs-module-lexer: 1.3.1
+      module-details-from-path: 1.0.3
+
+  import-in-the-middle@1.8.0:
+    dependencies:
       acorn: 8.12.0
       acorn-import-attributes: 1.9.5(acorn@8.12.0)
       cjs-module-lexer: 1.3.1
@@ -22951,7 +23178,7 @@ snapshots:
       '@jest/expect': 29.7.0
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.14.8
+      '@types/node': 20.14.2
       chalk: 4.1.2
       co: 4.6.0
       dedent: 1.5.3
@@ -23141,7 +23368,7 @@ snapshots:
       '@jest/environment': 29.7.0
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.14.8
+      '@types/node': 20.14.2
       jest-mock: 29.7.0
       jest-util: 29.7.0
 
@@ -23345,7 +23572,7 @@ snapshots:
 
   jest-worker@29.7.0:
     dependencies:
-      '@types/node': 20.14.8
+      '@types/node': 20.14.2
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
@@ -25063,7 +25290,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 20.14.8
+      '@types/node': 20.14.2
       long: 5.2.3
 
   protobufjs@7.3.2:
@@ -25078,7 +25305,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 20.14.8
+      '@types/node': 20.14.2
       long: 5.2.3
 
   protocols@2.0.1: {}
@@ -26196,13 +26423,13 @@ snapshots:
       '@pkgr/core': 0.1.1
       tslib: 2.6.3
 
-  syncpack@12.3.2(typescript@5.6.0-dev.20240701):
+  syncpack@12.3.2(typescript@5.6.0-dev.20240627):
     dependencies:
       '@effect/schema': 0.66.5(effect@3.0.3)(fast-check@3.17.2)
       chalk: 5.3.0
       chalk-template: 1.1.0
       commander: 12.0.0
-      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240701)
+      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240627)
       effect: 3.0.3
       enquirer: 2.4.1
       fast-check: 3.17.2
@@ -26660,7 +26887,7 @@ snapshots:
 
   typescript@5.4.5: {}
 
-  typescript@5.6.0-dev.20240701: {}
+  typescript@5.6.0-dev.20240627: {}
 
   ua-parser-js@1.0.37: {}
 
