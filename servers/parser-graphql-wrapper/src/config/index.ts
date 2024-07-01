@@ -12,7 +12,7 @@ export default {
   serviceName: 'parser-graphql-wrapper',
   tracing: {
     graphQLDepth: 8, // very permissive limit on depth tracing
-    samplingRatio: 0.2,
+    samplingRatio: 1,
     grpcDefaultPort: 4317,
     httpDefaultPort: 4318,
     serviceName: 'parser-graphql-wrapper',
