@@ -14,6 +14,7 @@ import {
 } from './types';
 import { parserRequest } from './parserRequest';
 import { bulkIndex } from './bulkIndex';
+import { buildCollectionUrl } from './utils';
 
 /**
  * The main handler function which will be wrapped by Sentry prior to export.
@@ -65,7 +66,6 @@ export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
 }
 
 export const handler = Sentry.wrapHandler(processor);
-
 /**
  * Unwrap messages into individual request payloads to be submitted to
  * the parser. This is because Collection events contain multiple stories,
@@ -88,7 +88,15 @@ export function unwrapPayloads(payload: EventPayload): BulkRequestMeta[] {
       url: story.url,
       messageId: payload.messageId,
     }));
-    return stories;
+    const parent = {
+      meta: {
+        _id: collection.externalId,
+        _index,
+      },
+      url: buildCollectionUrl(collection.slug, collection.language),
+      messageId: payload.messageId,
+    };
+    return [parent, ...stories];
   } else {
     const _index = config.indexLangMap[payload.detail.language.toLowerCase()];
     return [

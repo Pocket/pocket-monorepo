@@ -81,6 +81,7 @@ describe('bulk indexer', () => {
       { id: '78d3d5f3-4bad-4214-bb27-5c2ea908422c', index: 'corpus_en' },
       { id: '676defd9-a947-4955-8433-c395750d8551', index: 'corpus_en' },
       { id: '3ab75776-42a1-4a54-a6d2-032fbec195eb', index: 'corpus_en' },
+      { id: '599b49e5-c91f-47d8-a6d3-1ce2cb520acc', index: 'corpus_en' },
     ];
     await seedDocuments(seed);
     // Setup (scope makes it easier to do inside function)
@@ -91,6 +92,8 @@ describe('bulk indexer', () => {
       'https://www.cntraveler.com/story/can-americans-travel-to-cuba',
       'https://www.barcablaugranes.com/2023/3/8/23629747/barcelona-trio-are-playing-for-their-camp-nou-futures-now',
       'https://snackstack.net/2024/05/25/uh-oh-a-story-of-spaghettios-and-forgotten-history/',
+      'https://getpocket.com/collections/herrajs-collection-test-labels',
+      'https://getpocket.com/collections/testing-snowplow-events-for-collection-creation',
     ];
     const nockEndpoint = (url: string) => {
       const params = new URLSearchParams({
@@ -141,6 +144,9 @@ describe('bulk indexer', () => {
   it('filters out failed parser responses and consolidates message ids', async () => {
     const seed = [
       { id: '78d3d5f3-4bad-4214-bb27-5c2ea908422c', index: 'corpus_en' },
+      { id: '3ab75776-42a1-4a54-a6d2-032fbec195eb', index: 'corpus_en' },
+      { id: '310b6ea8-9206-3e85-2b18-f3c936737182', index: 'corpus_en' },
+      { id: '599b49e5-c91f-47d8-a6d3-1ce2cb520acc', index: 'corpus_en' },
     ];
     await seedDocuments(seed);
     // Setup (scope makes it easier to do inside function)
@@ -164,6 +170,18 @@ describe('bulk indexer', () => {
       {
         url: 'https://www.barcablaugranes.com/2023/3/8/23629747/barcelona-trio-are-playing-for-their-camp-nou-futures-now',
         status: 500,
+      },
+      {
+        url: 'https://getpocket.com/collections/herrajs-collection-test-labels',
+        status: 200,
+      },
+      {
+        url: 'https://getpocket.com/collections/testing-snowplow-events-for-collection-creation',
+        status: 200,
+      },
+      {
+        url: 'https://snackstack.net/2024/05/25/uh-oh-a-story-of-spaghettios-and-forgotten-history/',
+        status: 200,
       },
     ];
     const nockEndpoint = (url: string, status: number) => {
