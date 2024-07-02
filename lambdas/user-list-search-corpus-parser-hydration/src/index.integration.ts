@@ -103,6 +103,7 @@ describe('bulk indexer', () => {
         createIfNone: '1',
         enableItemUrlFallback: '1',
         output: 'regular',
+        serviceId: config.privilegedServiceId,
         url,
       });
       const result = BaseParserResult(url);
@@ -192,6 +193,7 @@ describe('bulk indexer', () => {
         createIfNone: '1',
         enableItemUrlFallback: '1',
         output: 'regular',
+        serviceId: config.privilegedServiceId,
         url,
       });
       const result = BaseParserResult(url);
