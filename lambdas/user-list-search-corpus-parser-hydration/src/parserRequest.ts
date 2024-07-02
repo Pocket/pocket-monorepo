@@ -23,6 +23,7 @@ export async function parserRequest(
     createIfNone: '1',
     enableItemUrlFallback: '1',
     output: 'regular',
+    serviceId: config.privilegedServiceId,
   };
   const queryParams = new URLSearchParams({
     ...options,
