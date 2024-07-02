@@ -1,5 +1,6 @@
 import { EventPayload, CorpusItemIndex } from './types';
 import { config } from './config';
+import { buildCollectionUrl } from './utils';
 
 /**
  * Build elasticsearch documents from the event payload.
@@ -20,13 +21,13 @@ export function createDoc(payload: EventPayload): CorpusItemIndex[] {
       curation_category: collection.curationCategory?.name,
       iab_child: collection.IABChildCategory?.name,
       iab_parent: collection.IABParentCategory?.name,
-      status: collection.status,
+      status: collection.status.toLowerCase(),
     };
     const parent: CorpusItemIndex = {
       meta: { _id: collection.externalId, _index },
       fields: {
         title: collection.title,
-        url: collection.slug,
+        url: buildCollectionUrl(collection.slug, collection.language),
         excerpt: collection.excerpt,
         is_syndicated: false,
         publisher: 'Pocket',
