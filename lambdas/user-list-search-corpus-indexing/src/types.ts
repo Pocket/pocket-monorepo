@@ -8,6 +8,7 @@ export type EventPayload = {
 export type CorpusItemIndex = {
   meta: { _id: string; _index: string };
   fields: Partial<{
+    corpusId: string;
     title: string;
     url: string;
     excerpt: string;
