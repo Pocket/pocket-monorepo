@@ -8,6 +8,7 @@ export type EventPayload = {
 export type CorpusItemIndex = {
   meta: { _id: string; _index: string };
   fields: Partial<{
+    corpusId: string;
     title: string;
     url: string;
     excerpt: string;
@@ -32,7 +33,7 @@ export type CorpusItemIndex = {
 // and infrastructure/pocket-event-bridge/src/event-rules/collection-events/eventConfig.ts
 export const validDetailTypes = [
   'add-approved-item',
-  'updated-approved-item',
+  'update-approved-item',
   'collection-created',
   'collection-updated',
 ];

@@ -85,10 +85,11 @@ export async function bulkIndex(
     body,
   });
   if (!res.ok) {
+    Sentry.addBreadcrumb({ data: { requestBody: body } });
     const data = await res.json();
     serverLogger.error({ message: 'Request failure', data: data });
     throw new Error(
-      `user-list-search-corpus-index: ${res.status}\n${JSON.stringify(data.errors)}`,
+      `user-list-search-corpus-index: ${res.status}\n${JSON.stringify(data.error)}`,
     );
   } else {
     // Pull error data from response and log to Sentry

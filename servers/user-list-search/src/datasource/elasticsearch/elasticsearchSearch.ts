@@ -358,7 +358,10 @@ export const buildSearchBody = ({
 
   // default to sorting by search score
   //www.elastic.co/guide/en/elasticsearch/reference/8.0/sort-search-results.html
-  body['sort'] = sort ? [{ [sort.field]: sort.direction }] : ['_score'];
+  body['sort'] = sort
+    ? [{ [sort.field]: sort.direction }]
+    : // Sort on score with tiebreaker for determinism
+      [{ _score: 'desc' }, { item_id: 'asc' }];
 
   // TODO: set from and size defaults when making search improvements
   // suggested defaults are from = 0 and size = 25

@@ -130,8 +130,7 @@ export class ActionsRouter {
       } catch (err) {
         const defaultMessage = 'Something Went Wrong';
         if (err instanceof ClientError) {
-          const defaultError = customErrorHeaders('INTENAL_SERVER_ERROR');
-
+          const defaultError = customErrorHeaders('INTERNAL_SERVER_ERROR');
           // Log bad inputs because that indicates a bug in the proxy code
           // Anything else should be captured by the router/subgraphs
           if (err.response.status === 400) {
@@ -163,7 +162,7 @@ export class ActionsRouter {
         } else {
           // If an error occurs that doesn't originate from the client request,
           // populate a default error and log to Cloudwatch/Sentry
-          const defaultError = customErrorHeaders('INTENAL_SERVER_ERROR');
+          const defaultError = customErrorHeaders('INTERNAL_SERVER_ERROR');
           const errorResult = {
             message: defaultMessage,
             type: defaultError['X-Error'],

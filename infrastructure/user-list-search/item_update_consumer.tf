@@ -62,6 +62,9 @@ resource "aws_lambda_event_source_mapping" "item_update_sqs" {
   event_source_arn = aws_sqs_queue.user_items_update.arn
   function_name    = aws_lambda_alias.item_update_sqs_processor.arn #We set the function to our alias
   enabled          = true
+  scaling_config {
+    maximum_concurrency = 20
+  }
 }
 
 resource "aws_iam_role" "item_update_lambda_role" {

@@ -20,6 +20,11 @@ describe('send validator', () => {
         input: { item_id: '12345', action: 'favorite' as const },
         expected: { itemId: 12345, action: 'favorite', time: now },
       },
+      // integer item_id
+      {
+        input: { item_id: 12345, action: 'favorite' as const },
+        expected: { itemId: 12345, action: 'favorite', time: now },
+      },
       {
         input: { item_id: '12345', action: 'unfavorite' as const },
         expected: { itemId: 12345, action: 'unfavorite', time: now },
@@ -117,7 +122,7 @@ describe('send validator', () => {
     it.each([
       {
         input: { action: 'favorite' as const },
-        error: 'Action must have one of `item_id` or `url`',
+        error: 'Invalid action:',
       },
       // Invalid item_id
       {
@@ -709,7 +714,7 @@ describe('send validator', () => {
         input: {
           action: 'add' as const,
         },
-        error: 'Action must have one of `item_id` or `url`',
+        error: 'Invalid action:',
       },
       {
         input: {

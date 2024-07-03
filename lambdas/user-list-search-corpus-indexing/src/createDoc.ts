@@ -1,5 +1,6 @@
 import { EventPayload, CorpusItemIndex } from './types';
 import { config } from './config';
+import { buildCollectionUrl } from './utils';
 
 /**
  * Build elasticsearch documents from the event payload.
@@ -25,8 +26,9 @@ export function createDoc(payload: EventPayload): CorpusItemIndex[] {
     const parent: CorpusItemIndex = {
       meta: { _id: collection.externalId, _index },
       fields: {
+        corpusId: collection.externalId,
         title: collection.title,
-        url: collection.slug,
+        url: buildCollectionUrl(collection.slug, collection.language),
         excerpt: collection.excerpt,
         is_syndicated: false,
         publisher: 'Pocket',
@@ -43,6 +45,7 @@ export function createDoc(payload: EventPayload): CorpusItemIndex[] {
         _index,
       },
       fields: {
+        corpusId: story.collection_story_id,
         parent_collection_id: collection.externalId,
         url: story.url,
         title: story.title,
@@ -64,6 +67,7 @@ export function createDoc(payload: EventPayload): CorpusItemIndex[] {
           _index: config.indexLangMap[event.language.toLowerCase()],
         },
         fields: {
+          corpusId: event.approvedItemExternalId,
           title: event.title,
           url: event.url,
           excerpt: event.excerpt,

@@ -62,6 +62,9 @@ resource "aws_lambda_event_source_mapping" "user_list_import_sqs" {
   event_source_arn = aws_sqs_queue.user_list_import.arn
   function_name    = aws_lambda_alias.user_list_import_sqs_processor.arn #We set the function to our alias
   enabled          = true
+  scaling_config {
+    maximum_concurrency = 10
+  }
 }
 
 resource "aws_iam_role" "user_list_import_lambda_role" {

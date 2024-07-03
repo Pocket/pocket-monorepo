@@ -167,7 +167,7 @@ export class SearchQueryBuilder {
               input.sortOrder ?? DefaultSortDirection.get(input.sortBy)
             ],
         }
-      : '_score';
+      : { _score: 'desc' };
 
     return {
       sort: [

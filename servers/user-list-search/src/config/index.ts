@@ -25,6 +25,10 @@ export const config = {
       process.env.CONTENT_AURORA_DB ||
       '{"password":"","dbname":"content","engine":"mysql","port":"3306","host":"localhost","username":"pkt_listserch_r"}',
   },
+  parser: {
+    privilegedServiceId:
+      process.env.PARSER_PRIVILEGED_SERVICE_ID || 'my-needs-matter',
+  },
   aws: {
     region: process.env.AWS_REGION || 'us-east-1',
     elasticsearch: {

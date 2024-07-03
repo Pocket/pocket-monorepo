@@ -342,7 +342,7 @@ describe('SearchQueryBuilder', () => {
       };
       const actual = query.parse(input, userId);
       const expected = {
-        sort: ['_score', { item_id: 'asc' }],
+        sort: [{ _score: 'desc' }, { item_id: 'asc' }],
       };
       expect(actual).toMatchObject(expected);
     });

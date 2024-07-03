@@ -1,6 +1,6 @@
 import { receiveMessage, purgeQueue } from '../../sqs';
 import { config } from '../../config';
-import { seedDb, getArrayOfIds } from '../../test/utils/saveSeeder';
+import { seedDb } from '../../test/utils/saveSeeder';
 import { Application } from 'express';
 import { ContextManager } from '../context';
 import { ApolloServer } from '@apollo/server';
@@ -59,30 +59,31 @@ describe('User List Import User Search Processor', () => {
       expect(backfillMessages.Messages).toBeArrayOfSize(3);
 
       //Verify each message has the expected results.
-      expect(JSON.parse(backfillMessages.Messages[0].Body)).toStrictEqual({
-        userItems: [
-          { userId, itemIds: getArrayOfIds(1000).map((item) => item.itemId) },
-        ],
-      });
-
-      expect(JSON.parse(backfillMessages.Messages[1].Body)).toStrictEqual({
+      const messageBodies = backfillMessages.Messages.map((message) =>
+        JSON.parse(message.Body),
+      );
+      const messageKeyMatcher = {
         userItems: [
           {
-            userId,
-            itemIds: getArrayOfIds(1000, 1001).map((item) => item.itemId),
+            userId: expect.toBeNumber(),
+            itemIds: expect.toBeArray(),
           },
         ],
-      });
-
-      expect(JSON.parse(backfillMessages.Messages[2].Body)).toStrictEqual({
-        userItems: [
-          {
-            userId,
-            itemIds: getArrayOfIds(1, 2001).map((item) => item.itemId),
-          },
-        ],
-      });
-
+      };
+      expect(messageBodies).toEqual(Array(3).fill(messageKeyMatcher));
+      const itemsPerMessage = messageBodies.map(
+        (body) => body.userItems[0].itemIds.length,
+      );
+      // 2001 items should be chunked into 3 payloads
+      expect(itemsPerMessage).toIncludeSameMembers([1000, 1000, 1]);
+      // Ordering doesn't matter, but all ids should be present when combined
+      const combinedIdPayloads = messageBodies.flatMap(
+        (body) => body.userItems[0].itemIds,
+      );
+      expect(combinedIdPayloads).toIncludeSameMembers(
+        // numbers 1-2001
+        Array.from(Array(2001), (_, i) => i + 1),
+      );
       await purgeQueue(config.aws.sqs.userItemsUpdateUrl);
     }
   }, 2000000);

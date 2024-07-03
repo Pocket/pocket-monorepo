@@ -138,8 +138,98 @@ describe('v3/send', () => {
           });
         expect(response.status).toEqual(400);
       });
+      it('returns 400 if proper identifiers are not included', async () => {
+        const response = await request(app)
+          .post('/v3/send')
+          .send({
+            consumer_key: 'test',
+            access_token: 'test',
+            actions: [
+              { action: 'favorite' },
+              { action: 'favorite', item_id: 12345 },
+            ],
+          });
+        expect(response.status).toEqual(400);
+      });
     });
     describe('actions router', () => {
+      describe('processActions - unknown ClientError', () => {
+        let addSpy;
+        beforeEach(
+          () =>
+            (addSpy = jest
+              .spyOn(ActionsRouter.prototype, 'add')
+              .mockRejectedValueOnce(
+                new ClientError(
+                  {
+                    data: null,
+                    status: 403,
+                    errors: [
+                      {
+                        extensions: { code: 'SOMETHING_ELSE' },
+                      } as unknown as GraphQLError,
+                    ],
+                  },
+                  {} as any,
+                ),
+              )),
+        );
+        afterEach(() => addSpy.mockRestore());
+        it('defaults to internal server error if error code has no mapping', async () => {
+          const response = await request(app)
+            .post('/v3/send')
+            .send({
+              consumer_key: 'test',
+              access_token: 'test',
+              actions: [{ action: 'add', url: 'http://domain.com/path' }],
+            });
+          const expected = {
+            status: 1,
+            action_results: [false],
+            action_errors: [
+              {
+                message: 'Something Went Wrong',
+                type: 'Internal Server Error',
+                code: 198,
+              },
+            ],
+          };
+          expect(response.status).toEqual(200);
+          expect(response.body).toEqual(expected);
+        });
+      });
+      describe('processActions - unknown error', () => {
+        let addSpy;
+        beforeEach(
+          () =>
+            (addSpy = jest
+              .spyOn(ActionsRouter.prototype, 'add')
+              .mockRejectedValueOnce(new Error('random runtime error'))),
+        );
+        afterEach(() => addSpy.mockRestore());
+        it('defaults to internal server error if run into a non-graph-client error', async () => {
+          const response = await request(app)
+            .post('/v3/send')
+            .send({
+              consumer_key: 'test',
+              access_token: 'test',
+              actions: [{ action: 'add', url: 'http://domain.com/path' }],
+            });
+          const expected = {
+            status: 1,
+            action_results: [false],
+            action_errors: [
+              {
+                message: 'Something Went Wrong',
+                type: 'Internal Server Error',
+                code: 198,
+              },
+            ],
+          };
+          expect(response.status).toEqual(200);
+          expect(response.body).toEqual(expected);
+        });
+      });
       describe('processActions', () => {
         let addSpy;
         beforeEach(

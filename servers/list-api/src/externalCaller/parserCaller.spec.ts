@@ -30,7 +30,7 @@ describe('ParserCallerTest', function () {
 
     const res = ParserCaller.getOrCreateItem(urlToParse, 1);
     await expect(res).rejects.toEqual(
-      new Error(`Unable to parse and generate item for ${urlToParse}`),
+      new Error(`Unable to parse and generate item for url`),
     );
   });
 
@@ -44,7 +44,7 @@ describe('ParserCallerTest', function () {
 
     const res = ParserCaller.getOrCreateItem(urlToParse, 1);
     await expect(res).rejects.toEqual(
-      new Error(`Unable to parse and generate item for ${urlToParse}`),
+      new Error(`Unable to parse and generate item for url`),
     );
   });
 
@@ -58,7 +58,7 @@ describe('ParserCallerTest', function () {
 
     const res = ParserCaller.getOrCreateItem(urlToParse, 1);
     await expect(res).rejects.toEqual(
-      new Error(`Unable to parse and generate item for ${urlToParse}`),
+      new Error(`Unable to parse and generate item for url`),
     );
   });
 
@@ -85,6 +85,23 @@ describe('ParserCallerTest', function () {
     expect(res.itemId).toBe(8);
     expect(res.title).toBe('The Not Evil Search Engine');
     expect(res.resolvedId).toBe(9);
+  });
+  it('should throw error if request was not ok', async () => {
+    nock(config.parserDomain)
+      .get(`/${config.parserVersion}/getItemListApi`)
+      .query({ url: urlToParse, getItem: '1' })
+      .reply(200, {})
+      .get(`/${config.parserVersion}/getItemListApi`)
+      .query({ url: urlToParse, getItem: '1' })
+      .reply(503, {})
+      .get(`/${config.parserVersion}/getItemListApi`)
+      .query({ url: urlToParse, getItem: '1' })
+      .reply(500, {});
+
+    const res = ParserCaller.getOrCreateItem(urlToParse);
+    await expect(res).rejects.toEqual(
+      new Error(`Unable to parse and generate item for url`),
+    );
   });
   it('should retrieve item id from parser service', async () => {
     mockParserGetItemIdRequest(urlToParse, '22');

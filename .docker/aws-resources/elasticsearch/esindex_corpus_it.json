@@ -10,6 +10,10 @@
       "enabled": true
     },
     "properties": {
+      "corpusId": {
+        "type": "keyword",
+        "index": false
+      },
       "title": {
         "type": "text",
         "analyzer": "italian"

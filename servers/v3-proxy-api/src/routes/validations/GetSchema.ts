@@ -1,5 +1,5 @@
 import { Schema } from 'express-validator';
-
+import { timeSeconds } from './shared';
 /**
  * Note: this type is manually documented, since the
  * Schema validator doesn't infer types.
@@ -114,6 +114,9 @@ export const V3GetSchema: Schema = {
       },
     },
     toInt: true,
+    customSanitizer: {
+      options: (value) => timeSeconds(value),
+    },
   },
   updatedBefore: {
     optional: true,
