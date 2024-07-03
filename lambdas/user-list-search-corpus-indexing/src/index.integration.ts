@@ -77,6 +77,7 @@ describe('bulk indexer', () => {
     expect(roundtrip._source).toMatchObject({
       url: 'http://some-url.com',
       language: 'en',
+      corpusId: 'aaaaa',
     });
   });
   it('successfully indexes a batch of corpus items', async () => {
