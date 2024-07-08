@@ -259,7 +259,6 @@ class CorpusSearch {
     const zeroFragmentFields: Array<keyof CorpusDocumentProperties> = [
       'title',
       'excerpt',
-      'pocket_parser_extracted_text',
       'publisher',
     ];
     highlight = zeroFragmentFields.reduce((highlight, fieldName) => {

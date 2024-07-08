@@ -41,7 +41,7 @@ describe('Corpus search - keyword', () => {
               url: 'https://www.wired.com/story/get-rich-peeping-inside-fridges/',
               searchHighlights: {
                 fullText: [
-                  '“People make fun of me about the fridges,” said Tassos Stassopoulos. “I am fridge-obsessed.” As the founder and managing partner of Trinetra, a London-based investment firm, Stassopoulos has pioneered an unusual strategy: peeking inside <em>refrigerators</em> in homes around the world in order to predict the future—and monetize those insights.',
+                  'As the founder and managing partner of Trinetra, a London-based investment firm, Stassopoulos has pioneered an unusual strategy: peeking inside <em>refrigerators</em>',
                 ],
                 title: null,
                 excerpt: null,
