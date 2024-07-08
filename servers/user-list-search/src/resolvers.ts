@@ -31,7 +31,6 @@ import {
   UserSearchSavedItemsArgs,
   CorpusSearchConnection,
 } from './__generated__/types';
-import * as corpus from './corpus';
 import { CorpusSearchModel } from './corpus/CorpusSearchModel';
 
 /**

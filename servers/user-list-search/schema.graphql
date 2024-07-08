@@ -157,14 +157,10 @@ type RecentSearchContext {
 }
 
 type Query {
-  """Search Pocket's corpus of recommendations and collections."""
+  """
+  Search Pocket's corpus of recommendations and collections.
+  """
   searchCorpus(
-    """
-    Search query. Supports an array of multiple queries
-    e.g. `title:slime, publisher:"new york times"`
-    If multiple terms are provided they are combined
-    with AND.
-    """
     search: CorpusSearchQueryString!, 
     filter: CorpusSearchFilters!,
     sort: CorpusSearchSort,
@@ -503,11 +499,12 @@ enum CorpusContentType {
 }
 
 """
-Must provide at least one of before/after in order to be valid.
+Filter to get documents added/published before or after a date,
+or provide both for a range of [after, before)
 Before is exclusive, after is inclusive.
 """
 input DateFilter {
-  """Exclusive date -- results must be before this time."""
+  """Exclusive date -- results must be exclusively before this time."""
   before: ISOString
   """Inclusive date -- results must be at or after than this time."""
   after: ISOString

@@ -39,3 +39,17 @@ export type CorpusDocumentProperties = Partial<{
   topic: string;
   url: string;
 }>;
+
+export type DateRangeInput =
+  | {
+      after: Date;
+      before?: never;
+    }
+  | {
+      before: Date;
+      after?: never;
+    }
+  | {
+      after: Date;
+      before: Date;
+    };

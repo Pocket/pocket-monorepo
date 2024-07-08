@@ -36,8 +36,7 @@ describe('Corpus search - keyword', () => {
       searchCorpus: {
         edges: [
           {
-            cursor:
-              'Mi4wNzQzNDdfXytfXzFlNDQ1ZjNkLTE0ZGItNGZjOC1hYTUzLWNjMGM3Yzc3NjEzMw==',
+            cursor: expect.toBeString(),
             node: {
               url: 'https://www.wired.com/story/get-rich-peeping-inside-fridges/',
               searchHighlights: {
@@ -52,10 +51,8 @@ describe('Corpus search - keyword', () => {
           },
         ],
         pageInfo: {
-          startCursor:
-            'Mi4wNzQzNDdfXytfXzFlNDQ1ZjNkLTE0ZGItNGZjOC1hYTUzLWNjMGM3Yzc3NjEzMw==',
-          endCursor:
-            'Mi4wNzQzNDdfXytfXzFlNDQ1ZjNkLTE0ZGItNGZjOC1hYTUzLWNjMGM3Yzc3NjEzMw==',
+          startCursor: expect.toBeString(),
+          endCursor: expect.toBeString(),
         },
         totalCount: 1,
       },

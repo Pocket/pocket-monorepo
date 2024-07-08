@@ -8,7 +8,7 @@ import {
 import { config } from '../config';
 import { client } from '../datasource/clients/openSearch';
 import esb from 'elastic-builder';
-import { CorpusDocumentProperties } from './types';
+import { CorpusDocumentProperties, DateRangeInput } from './types';
 import { estypes } from '@elastic/elasticsearch';
 import { ValidPagination } from '../saves/types';
 import { Paginator } from '../datasource/elasticsearch/Paginator';
@@ -31,19 +31,34 @@ const CorpusSearchFieldsMap: Record<
 class CorpusSearch {
   private builder: esb.RequestBodySearch;
 
+  /**
+   * Utility for creating a query body that can be passed
+   * to opensearch/elasticsearch clients, from the GraphQL
+   * resolver arguments for corpus search
+   * @param opts Arguments passed to GraphQL search query
+   */
   constructor(private opts: QuerySearchCorpusArgs) {
-    this.builder = esb.requestBodySearch();
-  }
-  private build() {
     const query = esb.boolQuery().must(this.query()).filter(this.filter());
-    const builder = this.paginate(this.builder, this.opts.pagination);
-    return builder
+    const builder = this.paginate(this.opts.pagination);
+    const sortOrder = this.opts.sort?.sortOrder
+      ? ElasticSearchSortDirection[this.opts.sort.sortOrder]
+      : undefined;
+    this.builder = builder
       .query(query)
-      .sorts(
-        this.sort(this.opts.sort?.sortBy, 'desc' as ElasticSearchSortDirection),
-      ) // TODO: fix
+      .sorts(this.sort(this.opts.sort?.sortBy, sortOrder))
       .highlight(this.highlight());
   }
+  /**
+   * Serialize to a JSON-like object which can
+   * be used as a body in ES/opensearch client requests
+   */
+  public toJSON() {
+    return this.builder.toJSON();
+  }
+  /**
+   * Build the base simple query string from GraphQL
+   * request, in ES/opensearch syntax.
+   */
   private query(): esb.SimpleQueryStringQuery {
     return esb
       .simpleQueryStringQuery(this.opts.search.query)
@@ -51,18 +66,18 @@ class CorpusSearch {
         CorpusSearchFieldsMap[this.opts.search.field ?? 'ALL_CONTENTFUL'],
       );
   }
-  public toJSON() {
-    return this.build().toJSON();
-  }
+  /**
+   * Convert the pagination options passed into the GraphQL
+   * resolver into ES/opensearch request syntax.
+   */
   private paginate(
-    builder: esb.RequestBodySearch,
     pagination: ValidPagination | OffsetPaginationInput,
   ): esb.RequestBodySearch {
     const size =
       pagination?.['limit'] ??
       pagination?.['first'] ??
       config.pagination.defaultPageSize;
-    const sized = builder.size(size);
+    const sized = esb.requestBodySearch().size(size);
     if (pagination?.['after']) {
       const cursor = Paginator.decodeCursor(pagination['after']);
       return sized.searchAfter(cursor);
@@ -71,6 +86,10 @@ class CorpusSearch {
     }
     return sized;
   }
+  /**
+   * Convert the sort options passed into the GraphQL
+   * resolver into ES/opensearch request syntax.
+   */
   private sort(
     sortBy: CorpusSearchSortBy,
     sortOrder: ElasticSearchSortDirection,
@@ -85,6 +104,10 @@ class CorpusSearch {
       esb.sort('corpusId', 'asc'), // tiebreaker -- does not matter order
     ];
   }
+  /**
+   * Convert the filter options passed into the GraphQL
+   * resolver into ES/opensearch request syntax.
+   */
   private filter() {
     const filterOpts = this.opts.filter;
     // Always-on filters:
@@ -106,7 +129,7 @@ class CorpusSearch {
               ]),
           ]),
       ]);
-    // This is ugly but... I mean... it's straightforward...
+    // This set of statements feels inelegant but it's straightforward...
     // must-not top-level filters: excludeCollection and excludeML
     const mustNots: esb.Query[] = [];
     if (filterOpts.excludeML === true) {
@@ -124,21 +147,20 @@ class CorpusSearch {
     }
     if (filterOpts.publishedDateRange != null) {
       musts.push(
-        this.publishedDateRange(
-          filterOpts.publishedDateRange.before,
-          filterOpts.publishedDateRange.after,
-        ),
+        this.publishedDateRange({
+          before: filterOpts.publishedDateRange.before,
+          after: filterOpts.publishedDateRange.after,
+        }),
       );
     }
     if (filterOpts.addedDateRange != null) {
       musts.push(
-        this.addedDateRange(
-          filterOpts.addedDateRange.before,
-          filterOpts.addedDateRange.after,
-        ),
+        this.addedDateRange({
+          before: filterOpts.addedDateRange.before,
+          after: filterOpts.addedDateRange.after,
+        }),
       );
     }
-
     if (filterOpts.topic != null) {
       const topicFilters = this.topics(filterOpts.topic);
       if (topicFilters.length > 1) {
@@ -201,33 +223,27 @@ class CorpusSearch {
     };
     return contentType.map((t) => getTermMap(t));
   }
-  // TODO: Fix this call signature
-  private publishedDateRange(before: Date, after?: Date): esb.RangeQuery;
-  private publishedDateRange(before: undefined, after: Date): esb.RangeQuery;
-  private publishedDateRange(before?: Date, after?: Date): esb.RangeQuery {
+  private publishedDateRange(input: DateRangeInput): esb.RangeQuery {
     const base = esb.rangeQuery('published_at');
-    if (before != null) {
-      base.lt(toISODate(before));
+    if (input.before != null) {
+      base.lt(toISODate(input.before));
     }
-    if (after != null) {
-      base.gte(toISODate(after));
+    if (input.after != null) {
+      base.gte(toISODate(input.after));
     }
     return base;
   }
-  // TODO: Fix this call signature
-  private addedDateRange(before: Date, after?: Date): esb.RangeQuery;
-  private addedDateRange(before: undefined, after: Date): esb.RangeQuery;
-  private addedDateRange(before?: Date, after?: Date): esb.RangeQuery {
+  private addedDateRange(input: DateRangeInput): esb.RangeQuery {
     const base = esb.rangeQuery('created_at').format('strict_date_time');
-    if (before != null) {
-      base.lt(before.toISOString());
+    if (input.before != null) {
+      base.lt(input.before.toISOString());
     }
-    if (after != null) {
-      base.gte(after.toISOString());
+    if (input.after != null) {
+      base.gte(input.after.toISOString());
     }
     return base;
   }
-  public highlight(): esb.Highlight {
+  private highlight(): esb.Highlight {
     // Set default search field
     const searchField = this.opts.search.field ?? 'ALL_CONTENTFUL';
     const highlightFields = CorpusSearchFieldsMap[searchField];
@@ -260,16 +276,38 @@ class CorpusSearch {
   }
 }
 
+/**
+ * Make a request to elasticsearch/opensearch client to serve
+ * corpus search data.
+ */
 export async function keywordSearch(args: QuerySearchCorpusArgs) {
   const qb = new CorpusSearch(args);
   const body = qb.toJSON();
   const index =
     config.aws.elasticsearch.corpus.index[args.filter.language.toLowerCase()];
-  const res = await client.search<
-    estypes.SearchResponse<CorpusDocumentProperties>
-  >({
-    index,
-    body,
-  });
-  return res.body;
+  try {
+    const res = await client.search<
+      estypes.SearchResponse<CorpusDocumentProperties>
+    >({
+      index,
+      body,
+    });
+    return res.body;
+  } catch (error) {
+    // Since the error data might be not encapsulated in the
+    // message, add breadcrubms for easier tracking
+    if (error.meta && error.meta.body) {
+      Sentry.addBreadcrumb({
+        data: { error: error.meta.body.error, methodName: 'keywordSearch' },
+      });
+      throw error;
+    } else {
+      Sentry.addBreadcrumb({
+        data: {
+          error: error.message,
+          methodName: 'keywordSearch',
+        },
+      });
+    }
+  }
 }

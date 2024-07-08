@@ -183,13 +183,14 @@ export enum CorpusSearchSortBy {
 }
 
 /**
- * Must provide at least one of before/after in order to be valid.
+ * Filter to get documents added/published before or after a date,
+ * or provide both for a range of [after, before)
  * Before is exclusive, after is inclusive.
  */
 export type DateFilter = {
   /** Inclusive date -- results must be at or after than this time. */
   after?: InputMaybe<Scalars['ISOString']['input']>;
-  /** Exclusive date -- results must be before this time. */
+  /** Exclusive date -- results must be exclusively before this time. */
   before?: InputMaybe<Scalars['ISOString']['input']>;
 };
 
