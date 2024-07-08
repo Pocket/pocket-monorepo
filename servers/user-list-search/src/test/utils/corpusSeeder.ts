@@ -7,12 +7,12 @@ const bulkSeed = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '../data/corpusSeeds.json'), 'utf-8'),
 );
 
-let seeded = false;
-
 export async function seedCorpus() {
-  if (seeded) return;
+  const indices = Array.from(
+    Object.values(config.aws.elasticsearch.corpus.index),
+  );
   await client.bulk({ body: bulkSeed });
-  seeded = true;
+  await client.indices.refresh({ index: indices });
 }
 
 /**
@@ -22,10 +22,17 @@ export async function deleteDocuments() {
   for await (const index of Object.values(
     config.aws.elasticsearch.corpus.index,
   )) {
-    await client.deleteByQuery({
-      index,
-      body: { query: { match_all: {} } },
-      wait_for_completion: true,
-    });
+    try {
+      await client.deleteByQuery({
+        index,
+        body: { query: { match_all: {} } },
+        wait_for_completion: true,
+      });
+      await client.indices.refresh({
+        index,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
