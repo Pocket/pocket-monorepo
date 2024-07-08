@@ -2,7 +2,7 @@ import {
   DataSourceInterface,
   ListItemEnriched,
 } from '../../datasource/DataSourceInterface';
-import { indexInElasticSearch } from '../../elasticsearch';
+import { indexInElasticSearch } from '../../saves/elasticsearch';
 
 import { Request, Response, NextFunction, Router } from 'express';
 import { checkSchema, Schema, validationResult } from 'express-validator';

@@ -1,0 +1,461 @@
+[
+  {
+    "create": {
+      "_index": "corpus_en",
+      "_id": "1e445f3d-14db-4fc8-aa53-cc0c7c776133"
+    }
+  },
+  {
+    "corpusId": "1e445f3d-14db-4fc8-aa53-cc0c7c776133",
+    "title": "How to Get Rich From Peeping Inside People’s Fridges",
+    "url": "https://www.wired.com/story/get-rich-peeping-inside-fridges/",
+    "excerpt": "Forget the S&P 500. Look at the ice cream. This investor visits homes around the world to see where diets—and economies—will go next.",
+    "is_syndicated": false,
+    "language": "EN",
+    "publisher": "WIRED",
+    "topic": "PERSONAL_FINANCE",
+    "authors": ["Nicola Twilley"],
+    "created_at": 1719858522,
+    "published_at": 1719792000,
+    "is_collection_story": false,
+    "curation_source": "MANUAL",
+    "content_type_children": ["image"],
+    "pocket_parser_request_given_url": "https://www.wired.com/story/get-rich-peeping-inside-fridges/",
+    "pocket_parser_extracted_text": "“People make fun of me about the fridges,” said Tassos Stassopoulos. “I am fridge-obsessed.” As the founder and managing partner of Trinetra, a London-based investment firm, Stassopoulos has pioneered an unusual strategy: peeking inside refrigerators in homes around the world in order to predict the future—and monetize those insights.",
+    "content_type_parent": "article",
+    "pocket_resolved_id": "4070551564",
+    "pocket_normal_url": "http://wired.com/story/get-rich-peeping-inside-fridges",
+    "pocket_resolved_url": "http://wired.com/story/get-rich-peeping-inside-fridges",
+    "pocket_item_id": "4070551564",
+    "est_time_to_consume_minutes": 12
+  },
+  {
+    "create": {
+      "_index": "corpus_en",
+      "_id": "40a8c742-4af5-4891-9e34-835d24c77c97"
+    }
+  },
+  {
+    "corpusId": "40a8c742-4af5-4891-9e34-835d24c77c97",
+    "title": "Perplexity’s Origin Story: Scraping Twitter With Fake Academic Accounts",
+    "url": "https://www.404media.co/perplexitys-origin-story-scraping-twitter-with-fake-academic-accounts/",
+    "excerpt": "CEO Aravind Srinivas explained how the company took off after it created a demo by scraping twitter with fake academic accounts using fake AI-generated research proposals.",
+    "is_syndicated": false,
+    "language": "EN",
+    "publisher": "www.404media.co",
+    "topic": "TECHNOLOGY",
+    "authors": ["Emanuel Maiberg"],
+    "created_at": 1719847512,
+    "published_at": 1719446400,
+    "is_collection_story": false,
+    "curation_source": "ML",
+    "content_type_children": ["video", "image"],
+    "pocket_parser_request_given_url": "https://www.404media.co/perplexitys-origin-story-scraping-twitter-with-fake-academic-accounts/",
+    "pocket_parser_extracted_text": "For the last couple of weeks, Perplexity, the “AI-powered answer engine,” has been criticized for ignoring long held standards about what kind of data it can scrape to power its AI, not properly crediting sources, and lying about it. This is, by now, standard practice for the generative AI industry, but should be especially unsurprising given the origin story of Perplexity, which included creating a series of fake accounts and AI-generated research proposals to scrape Twitter, as CEO Aravind Srinivas recently explained on the Lex Fridman podcast.",
+    "content_type_parent": "article",
+    "pocket_resolved_id": "4069053875",
+    "pocket_normal_url": "http://404media.co/perplexitys-origin-story-scraping-twitter-with-fake-academic-accounts",
+    "pocket_resolved_url": "http://404media.co/perplexitys-origin-story-scraping-twitter-with-fake-academic-accounts",
+    "pocket_item_id": "4069053875",
+    "est_time_to_consume_minutes": 4
+  },
+  {
+    "create": {
+      "_index": "corpus_en",
+      "_id": "bcfda8e1-b4cf-4d15-a72e-605e1188119c"
+    }
+  },
+  {
+    "corpusId": "bcfda8e1-b4cf-4d15-a72e-605e1188119c",
+    "title": "Why Is This Shape so Terrible to Pack?",
+    "url": "https://www.quantamagazine.org/why-is-this-shape-so-terrible-to-pack-20240628/",
+    "excerpt": "Two mathematicians have proved a long-standing conjecture that is a step on the way toward finding the worst shape for packing the plane.",
+    "is_syndicated": false,
+    "language": "EN",
+    "publisher": "Quanta Magazine",
+    "topic": "SCIENCE",
+    "authors": ["Gregory Barber"],
+    "created_at": 1719847508,
+    "published_at": 1719532800,
+    "is_collection_story": false,
+    "curation_source": "ML",
+    "content_type_children": ["image"],
+    "pocket_parser_request_given_url": "https://www.quantamagazine.org/why-is-this-shape-so-terrible-to-pack-20240628/",
+    "pocket_parser_extracted_text": "Two mathematicians have proved a long-standing conjecture that is a step on the way toward finding the worst shape for packing the plane.",
+    "content_type_parent": "article",
+    "pocket_resolved_id": "4069476732",
+    "pocket_normal_url": "http://quantamagazine.org/why-is-this-shape-so-terrible-to-pack-20240628",
+    "pocket_resolved_url": "http://quantamagazine.org/why-is-this-shape-so-terrible-to-pack-20240628",
+    "pocket_item_id": "4069476732",
+    "est_time_to_consume_minutes": 8
+  },
+  {
+    "create": {
+      "_index": "corpus_de",
+      "_id": "7ffd0d58-0987-470c-b104-c9e08008820d"
+    }
+  },
+  {
+    "corpusId": "7ffd0d58-0987-470c-b104-c9e08008820d",
+    "title": "Wie sieht die Zukunft des Universums aus?",
+    "url": "https://www.spektrum.de/kolumne/wie-dunkel-wird-das-universum-in-zukunft-sein/2218091",
+    "excerpt": "Das, was das dunkle Universum zumindest stellenweise heller macht, ist das Licht der Sterne. Die waren aber nicht von Anfang an da. Es muss eine Zeit gegeben haben, als kein einziger Stern im Universum geleuchtet hat. Irgendwann gab es dann jede Menge Sterne in jeder Menge Galaxien.",
+    "is_syndicated": false,
+    "language": "DE",
+    "publisher": "Spektrum",
+    "topic": "SCIENCE",
+    "authors": ["Florian Freistetter"],
+    "created_at": 1719838663,
+    "is_collection_story": false,
+    "curation_source": "PROSPECT",
+    "pocket_parser_request_given_url": "https://www.spektrum.de/kolumne/wie-dunkel-wird-das-universum-in-zukunft-sein/2218091",
+    "pocket_parser_extracted_text": "Das, was das dunkle Universum zumindest stellenweise heller macht, ist das Licht der Sterne. Die waren aber nicht von Anfang an da.",
+    "content_type_parent": "article",
+    "pocket_resolved_id": "4070103533",
+    "pocket_normal_url": "http://spektrum.de/kolumne/wie-dunkel-wird-das-universum-in-zukunft-sein/2218091",
+    "pocket_resolved_url": "http://spektrum.de/kolumne/wie-dunkel-wird-das-universum-in-zukunft-sein/2218091",
+    "pocket_item_id": "4070103533"
+  },
+  {
+    "create": {
+      "_index": "corpus_de",
+      "_id": "0187ad4b-0110-4815-94fa-8626791020d1"
+    }
+  },
+  {
+    "corpusId": "0187ad4b-0110-4815-94fa-8626791020d1",
+    "title": "Rasenmähen als Computerspiel: „Nach 30 Minuten hatte ich das Gefühl, ich sterbe”",
+    "url": "https://www.freitag.de/autoren/the-guardian/rasenmaehen-als-computerspiel-nach-30-minuten-hatte-ich-das-gefuehl-ich-sterbe",
+    "excerpt": "Beim Computerspiel „Lawn Mowing Simulator“ macht man nichts anderes, als Rasen zu mähen. Worin liegt der Reiz, falsches Gras zu trimmen? Unser Autor fragte altgediente Spieleentwickler, einen Rasenmäher-Rennfahrer und eine Psychologin.",
+    "is_syndicated": false,
+    "language": "DE",
+    "publisher": "der Freitag",
+    "topic": "GAMING",
+    "authors": ["Rich Pelley"],
+    "created_at": 1719825874,
+    "is_collection_story": false,
+    "curation_source": "PROSPECT",
+    "content_type_children": ["image"],
+    "pocket_parser_request_given_url": "https://www.freitag.de/autoren/the-guardian/rasenmaehen-als-computerspiel-nach-30-minuten-hatte-ich-das-gefuehl-ich-sterbe",
+    "pocket_parser_extracted_text": "Es gibt die Theorie, dass Videospiele nichts weiter als Eskapismus vom Alltag sind. Wo sonst kann man so tun, als sei man Mitglied einer Spezialeinheit der US Marines (Call of Duty), ein heldenhafter Öko-Krieger, der eine zwielichtige Firma daran hindert, die spirituelle Energie eines Planeten auszubeuten (Final Fantasy) oder ein Fußballmanager (Football Manager) – und das alles bequem vom Sofa aus?",
+    "content_type_parent": "article",
+    "pocket_resolved_id": "4069848205",
+    "pocket_normal_url": "http://freitag.de/autoren/the-guardian/rasenmaehen-als-computerspiel-nach-30-minuten-hatte-ich-das-gefuehl-ich-sterbe",
+    "pocket_resolved_url": "http://freitag.de/autoren/the-guardian/rasenmaehen-als-computerspiel-nach-30-minuten-hatte-ich-das-gefuehl-ich-sterbe",
+    "pocket_item_id": "4069848205",
+    "est_time_to_consume_minutes": 8
+  },
+  {
+    "create": {
+      "_index": "corpus_de",
+      "_id": "c240364f-e73b-4407-a673-ba075bc62ec6"
+    }
+  },
+  {
+    "corpusId": "c240364f-e73b-4407-a673-ba075bc62ec6",
+    "title": "Architektur der Zukunft: Vom Ökowolkenkratzer bis zum „Lego“-Haus",
+    "url": "nachhaltige-architektur-der-zukunft-squirrel-news",
+    "excerpt": "Viele Neubauten sehen nicht nur öde aus, sondern sind regelrechte Umweltsünden. Doch es geht auch anders: Immer mehr Beispiele zeigen auf beeindruckende Weise, wie Architektur nicht nur schön, sondern ebenso nachhaltig werden kann.",
+    "is_syndicated": false,
+    "publisher": "Pocket",
+    "authors": ["Squirrel News"],
+    "published_at": 1719189505,
+    "is_collection": true,
+    "is_collection_story": false,
+    "created_at": 1718632785,
+    "collection_labels": ["collections-homepage"],
+    "language": "DE",
+    "curation_category": "Business",
+    "iab_child": "Green Solutions",
+    "iab_parent": "Business",
+    "status": "published"
+  },
+  {
+    "create": {
+      "_index": "corpus_en",
+      "_id": "5cd02276-00e0-4260-9aa0-8cb27f11c498"
+    }
+  },
+  {
+    "corpusId": "5cd02276-00e0-4260-9aa0-8cb27f11c498",
+    "title": "Spotlight on LGBTQIA+ Voices",
+    "url": "pocket-pride-reads",
+    "excerpt": "Explore fascinating profiles, thoughtful personal essays, and more great reads by LGBTQIA+ writers. ",
+    "is_syndicated": false,
+    "publisher": "Pocket",
+    "authors": ["Pocket Editors"],
+    "published_at": 1716507390,
+    "is_collection": true,
+    "is_collection_story": false,
+    "created_at": 1716505944,
+    "collection_labels": ["collections-homepage", "pride"],
+    "language": "EN",
+    "status": "published"
+  },
+  {
+    "create": {
+      "_index": "corpus_de",
+      "_id": "79c7891e-2081-4c77-b168-be2d3130bab6"
+    }
+  },
+  {
+    "corpusId": "79c7891e-2081-4c77-b168-be2d3130bab6",
+    "parent_collection_id": "19818299-b88c-44a4-94b5-4f642149f9ca",
+    "url": "https://www.ndr.de/kultur/buch/sachbuecher/Queere-Geschichte-vom-Kaiserreich-bis-heute-Historiker-im-Gespraech,queer128.html",
+    "title": "AUDIO: Queere Geschichte vom Kaiserreich bis heute",
+    "excerpt": "\"Queer\" ist mehr als ein Modewort. Das beweist Benno Gammerl in seinem gleichnamigen Sachbuch, in dem er eine queere Geschichte in Deutschland vom Kaiserreich bis heute nachzeichnet. NDR Kultur hat mit dem Historiker gesprochen.",
+    "publisher": "NDR Kultur",
+    "authors": ["Benno Gammerl"],
+    "is_collection_story": true,
+    "created_at": 1716508057,
+    "collection_labels": ["pride"],
+    "language": "DE",
+    "curation_category": "Entertainment",
+    "iab_child": "Gay Life",
+    "iab_parent": "Society",
+    "status": "published",
+    "content_type_children": ["image"],
+    "pocket_parser_request_given_url": "https://www.ndr.de/kultur/buch/sachbuecher/Queere-Geschichte-vom-Kaiserreich-bis-heute-Historiker-im-Gespraech,queer128.html",
+    "pocket_parser_extracted_text": "Dass unter den Hohenzollern nicht alles prüde und militaristisch zuging, beschreibt Historiker Benno Gammerl in seinem neuen Sachbuch \"Queer\". Im Kaiserreich wurde die erste homosexuelle Zeitschrift weltweit gedruckt.",
+    "content_type_parent": "article",
+    "pocket_resolved_id": "4056202614",
+    "pocket_normal_url": "http://ndr.de/kultur/buch/sachbuecher/Queere-Geschichte-vom-Kaiserreich-bis-heute-Historiker-im-Gespraech,queer128.html",
+    "pocket_resolved_url": "http://ndr.de/kultur/buch/sachbuecher/Queere-Geschichte-vom-Kaiserreich-bis-heute-Historiker-im-Gespraech,queer128.html",
+    "pocket_item_id": "4056202614",
+    "est_time_to_consume_minutes": 4
+  },
+  {
+    "create": {
+      "_index": "corpus_en",
+      "_id": "9b99858e-9247-4a37-ab78-91710a73927b"
+    }
+  },
+  {
+    "corpusId": "9b99858e-9247-4a37-ab78-91710a73927b",
+    "parent_collection_id": "5cd02276-00e0-4260-9aa0-8cb27f11c498",
+    "url": "https://www.esquire.com/entertainment/books/a60991747/last-gay-bookstore-autoerotica/",
+    "title": "The Last Gay Erotica Store",
+    "excerpt": "San Francisco’s AutoErotica is the last bookstore of its kind. For owner Patrick Batt and his customers, it’s an important bastion of forgotten histories.",
+    "publisher": "Esquire",
+    "authors": ["Nathan Tavares"],
+    "is_collection_story": true,
+    "created_at": 1716505944,
+    "collection_labels": ["collections-homepage", "pride"],
+    "language": "EN",
+    "status": "published",
+    "pocket_parser_request_given_url": "https://www.esquire.com/entertainment/books/a60991747/last-gay-bookstore-autoerotica/",
+    "pocket_parser_extracted_text": "By the cash register at AutoErotica in San Francisco’s historic Castro gayborhood, a little sign sticks out from a plastic container of Ferrero Rocher chocolates. Have One, it reads, written in pink marker.",
+    "pocket_resolved_id": "4060034491",
+    "pocket_normal_url": "http://esquire.com/entertainment/books/a60991747/last-gay-bookstore-autoerotica",
+    "pocket_resolved_url": "http://esquire.com/entertainment/books/a60991747/last-gay-bookstore-autoerotica",
+    "pocket_item_id": "4060034491",
+    "est_time_to_consume_minutes": 14
+  },
+  {
+    "create": {
+      "_index": "corpus_de",
+      "_id": "37a7a475-26cc-4673-b4c7-2f75d31a9056"
+    }
+  },
+  {
+    "corpusId": "37a7a475-26cc-4673-b4c7-2f75d31a9056",
+    "title": "100 Jahre alt und immer noch frisch",
+    "url": "https://sz-magazin.sueddeutsche.de/probier-doch-mal/caesar-salad-original-rezept-94075",
+    "excerpt": "Der Caesar Salad ist einer der berühmtesten Salate der Welt – und wird in diesem Jahr 100 Jahre alt. Zeit, sich dem Originialrezept aus dem „Caesar's Restaurant” im mexikanischen Tijuana zu widmen.",
+    "is_syndicated": false,
+    "language": "DE",
+    "publisher": "SZ Magazin",
+    "topic": "FOOD",
+    "authors": ["Hans Gerlach"],
+    "created_at": 1720035410,
+    "published_at": 1719964800,
+    "is_collection_story": false,
+    "curation_source": "MANUAL",
+    "content_type_children": ["image"],
+    "pocket_parser_request_given_url": "https://sz-magazin.sueddeutsche.de/probier-doch-mal/caesar-salad-original-rezept-94075",
+    "pocket_parser_extracted_text": "Der Caesar Salad ist einer der berühmtesten Salate der Welt – und wird in diesem Jahr 100 Jahre alt. Zeit, sich dem Originialrezept aus dem »Caesar's Restaurant« im mexikanischen Tijuana zu widmen.",
+    "content_type_parent": "article",
+    "pocket_resolved_id": "4071506049",
+    "pocket_normal_url": "http://sz-magazin.sueddeutsche.de/probier-doch-mal/caesar-salad-original-rezept-94075",
+    "pocket_resolved_url": "http://sz-magazin.sueddeutsche.de/probier-doch-mal/caesar-salad-original-rezept-94075",
+    "pocket_item_id": "4071506049",
+    "est_time_to_consume_minutes": 7
+  },
+  {
+    "create": {
+      "_index": "corpus_en",
+      "_id": "5e43ea9f-095b-48f0-8eb1-2ac6c594288b"
+    }
+  },
+  {
+    "corpusId": "5e43ea9f-095b-48f0-8eb1-2ac6c594288b",
+    "title": "Viruses Are Us",
+    "url": "https://www.noemamag.com/viruses-are-us",
+    "excerpt": "How the microbes that make us sick also helped us evolve.",
+    "is_syndicated": false,
+    "language": "EN",
+    "publisher": "Noema",
+    "topic": "SCIENCE",
+    "authors": ["Carrie Arnold"],
+    "created_at": 1720028805,
+    "published_at": 1719964800,
+    "is_collection_story": false,
+    "curation_source": "MANUAL",
+    "pocket_parser_request_given_url": "https://www.noemamag.com/viruses-are-us",
+    "pocket_parser_extracted_text": "Sixty-six million years ago, a massive space rock collided with Earth and turned our planet into a smoking hellscape. This millennia-spanning cataclysm spelled the end of the dinosaurs, creating an opening for a small group of survivors — a hairy, warm-blooded group of critters that we call mammals.",
+    "content_type_parent": "article",
+    "pocket_resolved_id": "4071545546",
+    "pocket_normal_url": "http://noemamag.com/viruses-are-us",
+    "pocket_resolved_url": "http://noemamag.com/viruses-are-us",
+    "pocket_item_id": "4071545546",
+    "est_time_to_consume_minutes": 15
+  },
+  {
+    "create": {
+      "_index": "corpus_en",
+      "_id": "0c7b3f3e-8a44-44d4-8667-b6fe220a297f"
+    }
+  },
+  {
+    "corpusId": "0c7b3f3e-8a44-44d4-8667-b6fe220a297f",
+    "title": "Six Misconceptions We Have About Romantic Love",
+    "url": "https://greatergood.berkeley.edu/article/item/six_misconceptions_we_have_about_romantic_love",
+    "excerpt": "Research suggests that not everything you have heard or read about romantic love is true.",
+    "is_syndicated": false,
+    "language": "EN",
+    "publisher": "Greater Good ",
+    "topic": "EDUCATION",
+    "authors": ["Sandra Langeslag"],
+    "created_at": 1720020073,
+    "published_at": 1719878400,
+    "is_collection_story": false,
+    "curation_source": "ML",
+    "content_type_children": ["image"],
+    "pocket_parser_request_given_url": "https://greatergood.berkeley.edu/article/item/six_misconceptions_we_have_about_romantic_love",
+    "pocket_parser_extracted_text": "Love is everywhere you look. People talk about love in pop songs, on TV, across social media, over dinner, at work, and in school hallways. There is also growing scientific interest in romantic love, as is evident from the increased number of publications on this topic, the organization of conferences—and the Greater Good Science Center’s new project on the science of love, which launches this month.",
+    "content_type_parent": "article",
+    "pocket_resolved_id": "4071067076",
+    "pocket_normal_url": "http://greatergood.berkeley.edu/article/item/six_misconceptions_we_have_about_romantic_love",
+    "pocket_resolved_url": "http://greatergood.berkeley.edu/article/item/six_misconceptions_we_have_about_romantic_love",
+    "pocket_item_id": "4071067076",
+    "est_time_to_consume_minutes": 11
+  },
+  {
+    "create": {
+      "_index": "corpus_en",
+      "_id": "53213fcb-e529-411e-a897-a9fc30314a3b"
+    }
+  },
+  {
+    "corpusId": "53213fcb-e529-411e-a897-a9fc30314a3b",
+    "title": "How the NDA Became the Defining Legal Document of Our Time",
+    "url": "https://www.thecut.com/article/nda-non-disclosure-agreement-popularity.html",
+    "excerpt": "Love and other negotiations in the time of the non-disclosure agreement.",
+    "is_syndicated": false,
+    "language": "EN",
+    "publisher": "The Cut",
+    "topic": "POLITICS",
+    "authors": ["Reeves Wiedeman"],
+    "created_at": 1719870437,
+    "published_at": 1719792000,
+    "is_collection_story": false,
+    "curation_source": "MANUAL",
+    "content_type_children": ["image"],
+    "pocket_parser_request_given_url": "https://www.thecut.com/article/nda-non-disclosure-agreement-popularity.html",
+    "pocket_parser_extracted_text": "The nondisclosure agreement is designed to live in the shadows. But earlier this year, I started to notice them everywhere. There was, of course, the NDA Donald Trump gave to Stormy Daniels, which was at the heart of his criminal trial and would now play a role in a second presidential election.",
+    "content_type_parent": "article",
+    "pocket_resolved_id": "4070551657",
+    "pocket_normal_url": "http://thecut.com/article/nda-non-disclosure-agreement-popularity.html",
+    "pocket_resolved_url": "http://thecut.com/article/nda-non-disclosure-agreement-popularity.html",
+    "pocket_item_id": "4070551657",
+    "est_time_to_consume_minutes": 36
+  },
+  {
+    "create": {
+      "_index": "corpus_en",
+      "_id": "c1f5b81c-3fef-4ea7-a4d1-5c931071b8f0"
+    }
+  },
+  {
+    "corpusId": "c1f5b81c-3fef-4ea7-a4d1-5c931071b8f0",
+    "title": "Diorama of Love",
+    "url": "https://www.newyorker.com/magazine/2024/07/08/diorama-of-love-addie-citchens",
+    "excerpt": "Love is wherever love is felt, and with love being a complete statement, well, that’s enough.",
+    "is_syndicated": false,
+    "language": "EN",
+    "publisher": "The New Yorker",
+    "topic": "ENTERTAINMENT",
+    "authors": ["Addie Citchens"],
+    "created_at": 1719847427,
+    "published_at": 1719792000,
+    "is_collection_story": false,
+    "curation_source": "ML",
+    "content_type_children": ["image"],
+    "pocket_parser_request_given_url": "https://www.newyorker.com/magazine/2024/07/08/diorama-of-love-addie-citchens",
+    "pocket_parser_extracted_text": "I don’t know shit about love. It’s the eighties and no one is doing it right, especially not my parents, or anyone else’s that I know. The women in church are pressed flat by love’s duties, its labor; the men, outwardly stern and inwardly duplicitous, eye anything that jiggles under a skirt.",
+    "content_type_parent": "article",
+    "pocket_resolved_id": "4070531617",
+    "pocket_normal_url": "http://newyorker.com/magazine/2024/07/08/diorama-of-love-addie-citchens",
+    "pocket_resolved_url": "http://newyorker.com/magazine/2024/07/08/diorama-of-love-addie-citchens",
+    "pocket_item_id": "4070531617",
+    "est_time_to_consume_minutes": 3
+  },
+  {
+    "create": {
+      "_index": "corpus_en",
+      "_id": "f577ba11-ccea-40e1-ada5-20d2bc41db14"
+    }
+  },
+  {
+    "corpusId": "f577ba11-ccea-40e1-ada5-20d2bc41db14",
+    "title": "The 50 Most Romantic Quotes From Books, Poetry and Plays",
+    "url": "https://getpocket.com/explore/item/the-50-most-romantic-quotes-from-books-poetry-and-plays",
+    "excerpt": "The most romantic quotes from historic and contemporary literature, love poems and romantic quotes from plays.",
+    "is_syndicated": true,
+    "language": "EN",
+    "publisher": "Stylist",
+    "topic": "ENTERTAINMENT",
+    "authors": ["Stylist Team"],
+    "created_at": 1719781832,
+    "published_at": 1593129600,
+    "is_collection_story": false,
+    "curation_source": "MANUAL",
+    "content_type_children": ["image"],
+    "pocket_parser_request_given_url": "https://getpocket.com/explore/item/the-50-most-romantic-quotes-from-books-poetry-and-plays",
+    "pocket_parser_extracted_text": "The most romantic quotes from historic and contemporary literature, love poems and romantic quotes from plays. Romance is threaded through our books, poetry and plays, from classic novels like Gone With the Wind to well-known plays such as Shakespeare’s Romeo and Juliet, and modern works like The Notebook.",
+    "content_type_parent": "article",
+    "pocket_resolved_id": "4068799171",
+    "pocket_normal_url": "http://getpocket.com/explore/item/the-50-most-romantic-quotes-from-books-poetry-and-plays",
+    "pocket_resolved_url": "http://getpocket.com/explore/item/the-50-most-romantic-quotes-from-books-poetry-and-plays",
+    "pocket_item_id": "4068799171",
+    "est_time_to_consume_minutes": 11
+  },
+  {
+    "index": {
+      "_index": "corpus_de",
+      "_id": "e73c169d-d553-4c61-ba64-60a4bf017fe3"
+    }
+  },
+  {
+    "corpusId": "e73c169d-d553-4c61-ba64-60a4bf017fe3",
+    "title": "Selfcare für LGBTQIA+-Personen: Ein:e Expert:in gibt Selfcare-Tipps für Betroffene von Queerfeindlichkeit",
+    "url": "https://www.glamour.de/artikel/selfcare-lgbtqia-experte",
+    "excerpt": "Queere Menschen sehen sich mit Diskriminierung konfrontiert, die einen ganz persönlichen Part von ihnen anspricht – gegen den sie nichts tun außer ihn verstecken können. Das ist eine ganz besondere Belastung.",
+    "is_syndicated": false,
+    "language": "DE",
+    "publisher": "Glamour",
+    "topic": "SELF_IMPROVEMENT",
+    "authors": ["Hannah Madlener"],
+    "created_at": 1718794810,
+    "is_collection_story": false,
+    "curation_source": "PROSPECT",
+    "pocket_parser_request_given_url": "https://www.glamour.de/artikel/selfcare-lgbtqia-experte",
+    "pocket_parser_extracted_text": "Queere Menschen sehen sich mit Diskriminierung konfrontiert, die einen ganz persönlichen Part von ihnen anspricht – gegen den sie nichts tun außer ihn verstecken können.",
+    "content_type_parent": "video",
+    "pocket_resolved_id": "4065525592",
+    "pocket_normal_url": "http://glamour.de/artikel/selfcare-lgbtqia-experte",
+    "pocket_resolved_url": "http://glamour.de/artikel/selfcare-lgbtqia-experte",
+    "pocket_item_id": "4065525592",
+    "est_time_to_consume_minutes": 8
+  }
+]

@@ -1,6 +1,6 @@
 import { config } from '../../config';
 import { getDocument } from '../../datasource/elasticsearch/elasticsearchSearch';
-import { IndexDocument } from '../../elasticsearch';
+import { IndexDocument } from '../../saves/elasticsearch';
 import { bulkDocument } from '../../datasource/elasticsearch/elasticsearchBulk';
 import { client } from '../../datasource/elasticsearch';
 import { Application } from 'express';

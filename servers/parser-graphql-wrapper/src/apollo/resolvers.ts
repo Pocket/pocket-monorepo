@@ -19,6 +19,21 @@ import { isInResolverChain } from './utils';
 
 export const resolvers: Resolvers = {
   ...PocketDefaultScalars,
+  CorpusSearchNode: {
+    __resolveReference: async (representation, context) => {
+      const item = await itemFromUrl(representation.url, context);
+      const preview =
+        await context.dataSources.pocketMetadataModel.derivePocketMetadata(
+          item,
+          context,
+          false,
+        );
+      return {
+        url: representation.url,
+        preview,
+      };
+    },
+  },
   Item: {
     __resolveReference: async (item, context, info) => {
       // Setting the cache hint manually here because when the gateway(Client API) resolves an item using this

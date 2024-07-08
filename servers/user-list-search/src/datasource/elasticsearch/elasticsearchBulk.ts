@@ -3,7 +3,7 @@ import {
   DeleteDocument,
   getId,
   IndexDocument,
-} from '../../elasticsearch';
+} from '../../saves/elasticsearch';
 import { client } from './index';
 import { config } from '../../config';
 import { serverLogger } from '@pocket-tools/ts-logger';

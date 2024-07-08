@@ -2,7 +2,7 @@ extend schema
   @link(url: "https://specs.apollo.dev/link/v1.0")
   @link(
     url: "https://specs.apollo.dev/federation/v2.3"
-    import: ["@key", "@composeDirective", "@tag", "@shareable"]
+    import: ["@key", "@composeDirective", "@tag", "@shareable", "@inaccessible"]
   )
   # The link directive is required to federate @constraint
   # It doesn't actually have to be a real spec, but it would be good
@@ -13,6 +13,7 @@ extend schema
 scalar Url
 scalar FunctionalBoostValue
 scalar ISOString
+scalar HtmlString
 
 """
 An index item can be in one of these states
@@ -153,6 +154,18 @@ type RecentSearch {
 type RecentSearchContext {
   key: String
   value: String
+}
+
+type Query {
+  """
+  Search Pocket's corpus of recommendations and collections.
+  """
+  searchCorpus(
+    search: CorpusSearchQueryString!, 
+    filter: CorpusSearchFilters!,
+    sort: CorpusSearchSort,
+    pagination: PaginationInput
+  ): CorpusSearchConnection
 }
 
 type User @key(fields: "id") {
@@ -434,4 +447,159 @@ type Mutation {
   Requires premium account (otherwise will send ForbiddenError).
   """
   saveSearch(search: RecentSearchInput!): RecentSearch
+}
+
+
+"""Fields that can be searched using query strings"""
+enum CorpusSearchFields {
+  """
+  (Default) Search the fields which relate to the content
+  of the resource (title, article, excerpt, extracted content)
+  rather than the metadata (publisher).
+  """
+  ALL_CONTENTFUL
+  """Search terms in title fields"""
+  TITLE
+  """Search terms in parsed, extracted content fields"""
+  EXTRACTED_CONTENT
+  """Search terms in excerpt fields"""
+  EXCERPT
+  """Search terms in publisher fields"""
+  PUBLISHER
+  """Search all possible fields"""
+  ALL
+}
+
+"""Which corpus to search, by language"""
+enum CorpusLanguage {
+  EN
+  DE
+  IT
+  ES
+  FR
+}
+
+"""A search query for the corpus"""
+input CorpusSearchQueryString {
+  """The query string to search."""
+  query: String!
+  """
+  A specific field to search on (e.g. title), 
+  or ALL to search all available text content fields.
+  If missing, defaults to 'ALL_CONTENTFUL'
+  """
+  field: CorpusSearchFields
+}
+
+"""Content type classification for a corpus item"""
+enum CorpusContentType {
+  ARTICLE
+  VIDEO
+  COLLECTION
+}
+
+"""
+Filter to get documents added/published before or after a date,
+or provide both for a range of [after, before)
+Before is exclusive, after is inclusive.
+"""
+input DateFilter {
+  """Exclusive date -- results must be exclusively before this time."""
+  before: ISOString
+  """Inclusive date -- results must be at or after than this time."""
+  after: ISOString
+}
+
+"""Filters to refine corpus search results."""
+input CorpusSearchFilters {
+  """The language of the corpus to search (letter code)"""
+  language: CorpusLanguage!
+  """The author's name"""
+  author: String
+  """
+  The topic (use getTopics query to retrieve valid topics).
+  Multiple topics are combined with OR.
+  """
+  topic: [String!]
+  """
+  The publisher's name. This is an exact match for filtering.
+  To use publisher in search, use the publisher field in the query
+  string.
+  """
+  publisher: String
+  """
+  Filter for when an article was published. Can provide
+  upper/lower bounds with 'before' or 'after', or use both
+  both to create a time range.
+  """
+  publishedDateRange: DateFilter
+  """When the content was added to Pocket's corpus"""
+  addedDateRange: DateFilter
+  """Set to true to exclude collections from the results."""
+  excludeCollections: Boolean
+  """Set to true to exclude ML-generated recommendations from the results."""
+  excludeML: Boolean
+  """
+  Filter to limit the result set to specific content types. 
+  Multiple types are combined with OR.
+  Can use this to search collections only.
+  """
+  contentType: [CorpusContentType!]
+}
+
+"""Sortable properties for Corpus Search"""
+enum CorpusSearchSortBy {
+  """Relevance score computed by search algorithm"""
+  RELEVANCE
+  """When the content was added to the corpus"""
+  DATE_ADDED_TO_CORPUS
+  """
+  When the content was originally published 
+  (Note: this data is sparse/nullable)
+  """
+  DATE_PUBLISHED
+}
+
+"""
+Sort scheme for Corpus Search. Defaults to showing most relevant results first.
+"""
+input CorpusSearchSort {
+  sortBy: CorpusSearchSortBy!
+  sortOrder: SearchItemsSortOrder
+}
+
+"""Paginated corpus search result connection"""
+type CorpusSearchConnection {
+  edges: [CorpusSearchEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"""
+Highlighted snippets from fields in the search results
+so clients can show users where the query matches are. 
+Each field, if available, contains an array of html text
+snippets that contain a match to the search term.
+The matching text is wrapped in <em> tags, e.g. 
+["Hiss at <em>vacuum</em> cleaner if it fits i sits"]
+"""
+type CorpusSearchHighlights {
+  fullText: [HtmlString]
+  title: [HtmlString]
+  excerpt: [HtmlString]
+  publisher: [HtmlString]
+}
+
+"""An edge in a CorpusSearchConnection result"""
+type CorpusSearchEdge {
+  cursor: String!
+  node: CorpusSearchNode!
+}
+
+"""A node in a CorpusSearchConnection result"""
+type CorpusSearchNode {
+  """For federation only"""
+  url: Url! @inaccessible
+  """Search highlights"""
+  searchHighlights: CorpusSearchHighlights
 }

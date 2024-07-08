@@ -1,6 +1,6 @@
-import { client } from './datasource/elasticsearch';
-import { config } from './config';
-import { bulkDocument } from './datasource/elasticsearch/elasticsearchBulk';
+import { client } from '../datasource/elasticsearch';
+import { config } from '../config';
+import { bulkDocument } from '../datasource/elasticsearch/elasticsearchBulk';
 import { deleteSearchIndexByUserId } from './elasticsearch';
 
 const defaultDocProps = {

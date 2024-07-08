@@ -4,8 +4,8 @@ import {
   ListItemEnriched,
   ParserItem,
   listItemStatusToString,
-} from './datasource/DataSourceInterface';
-import { normalizeDate, normalizeFullText } from './shared/util';
+} from '../datasource/DataSourceInterface';
+import { normalizeDate, normalizeFullText } from '../shared/util';
 
 describe('elasticsearch', () => {
   let dateCreated: Date;
