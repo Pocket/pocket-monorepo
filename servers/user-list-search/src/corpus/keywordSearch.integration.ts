@@ -1,4 +1,4 @@
-import { seedCorpus } from '../test/utils/corpusSeeder';
+import { deleteDocuments, seedCorpus } from '../test/utils/corpusSeeder';
 import { SEARCH_CORPUS } from '../test/queries/corpusSearch';
 import { startServer } from '../server/serverUtils';
 import { ContextManager } from '../server/context';
@@ -12,10 +12,12 @@ describe('Corpus search - keyword', () => {
   let server: ApolloServer<ContextManager>;
   let url: string;
   beforeAll(async () => {
+    await deleteDocuments();
     await seedCorpus();
     ({ app, server, url } = await startServer(0));
   });
   afterAll(async () => {
+    await deleteDocuments();
     await server.stop();
   });
   it.todo('should work for logged-out users using a pocket application');
