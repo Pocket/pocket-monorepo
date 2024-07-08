@@ -597,7 +597,7 @@ type CorpusSearchEdge {
 }
 
 """A node in a CorpusSearchConnection result"""
-type CorpusSearchNode {
+type CorpusSearchNode @key(fields: "url") {
   """For federation only"""
   url: Url! @inaccessible
   """Search highlights"""
