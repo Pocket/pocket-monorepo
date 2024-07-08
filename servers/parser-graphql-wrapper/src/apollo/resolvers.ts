@@ -8,7 +8,12 @@ import {
 import { SSMLModel } from '../models/SSMLModel';
 import { fallbackPage } from '../readerView';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
-import { Item, Resolvers, Videoness } from '../__generated__/resolvers-types';
+import {
+  Item,
+  Resolvers,
+  Videoness,
+  CorpusSearchNode,
+} from '../__generated__/resolvers-types';
 import { BoolStringParam, MediaTypeParam } from '../datasources/ParserAPI';
 import {
   extractSlugFromReadUrl,
@@ -19,6 +24,21 @@ import { isInResolverChain } from './utils';
 
 export const resolvers: Resolvers = {
   ...PocketDefaultScalars,
+  CorpusSearchNode: {
+    __resolveReference: async (representation, context) => {
+      const item = await itemFromUrl(representation.url, context);
+      const preview =
+        await context.dataSources.pocketMetadataModel.derivePocketMetadata(
+          item,
+          context,
+          false,
+        );
+      return {
+        url: representation.url,
+        preview,
+      };
+    },
+  },
   Item: {
     __resolveReference: async (item, context, info) => {
       // Setting the cache hint manually here because when the gateway(Client API) resolves an item using this

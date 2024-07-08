@@ -94,6 +94,15 @@ export type CorpusItem = {
   url: Scalars['Url']['output'];
 };
 
+/** A node in a CorpusSearchConnection result */
+export type CorpusSearchNode = {
+  __typename?: 'CorpusSearchNode';
+  /** The preview of the search result */
+  preview: PocketMetadata;
+  /** For federation only */
+  url: Scalars['Url']['output'];
+};
+
 /** Metadata from a domain, originally populated from ClearBit */
 export type DomainMetadata = {
   __typename?: 'DomainMetadata';
@@ -672,6 +681,7 @@ export type ResolversTypes = ResolversObject<{
   CacheControlScope: CacheControlScope;
   Collection: ResolverTypeWrapper<Collection>;
   CorpusItem: ResolverTypeWrapper<CorpusItem>;
+  CorpusSearchNode: ResolverTypeWrapper<Omit<CorpusSearchNode, 'preview'> & { preview: ResolversTypes['PocketMetadata'] }>;
   DateString: ResolverTypeWrapper<Scalars['DateString']['output']>;
   DomainMetadata: ResolverTypeWrapper<DomainMetadata>;
   ISOString: ResolverTypeWrapper<Scalars['ISOString']['output']>;
@@ -722,6 +732,7 @@ export type ResolversParentTypes = ResolversObject<{
   Int: Scalars['Int']['output'];
   Collection: Collection;
   CorpusItem: CorpusItem;
+  CorpusSearchNode: Omit<CorpusSearchNode, 'preview'> & { preview: ResolversParentTypes['PocketMetadata'] };
   DateString: Scalars['DateString']['output'];
   DomainMetadata: DomainMetadata;
   ISOString: Scalars['ISOString']['output'];
@@ -795,6 +806,13 @@ export type CorpusItemResolvers<ContextType = IContext, ParentType extends Resol
   shortUrl?: Resolver<Maybe<ResolversTypes['Url']>, { __typename: 'CorpusItem' } & GraphQLRecursivePick<ParentType, {"url":true}>, ContextType>;
   timeToRead?: Resolver<Maybe<ResolversTypes['Int']>, { __typename: 'CorpusItem' } & GraphQLRecursivePick<ParentType, {"url":true}>, ContextType>;
 
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CorpusSearchNodeResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['CorpusSearchNode'] = ResolversParentTypes['CorpusSearchNode']> = ResolversObject<{
+  __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['CorpusSearchNode']>, { __typename: 'CorpusSearchNode' } & GraphQLRecursivePick<ParentType, {"url":true}>, ContextType>;
+  preview?: Resolver<ResolversTypes['PocketMetadata'], ParentType, ContextType>;
+  url?: Resolver<ResolversTypes['Url'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -1057,6 +1075,7 @@ export type Resolvers<ContextType = IContext> = ResolversObject<{
   BulletedListElement?: BulletedListElementResolvers<ContextType>;
   Collection?: CollectionResolvers<ContextType>;
   CorpusItem?: CorpusItemResolvers<ContextType>;
+  CorpusSearchNode?: CorpusSearchNodeResolvers<ContextType>;
   DateString?: GraphQLScalarType;
   DomainMetadata?: DomainMetadataResolvers<ContextType>;
   ISOString?: GraphQLScalarType;
