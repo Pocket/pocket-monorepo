@@ -888,8 +888,8 @@ importers:
         specifier: 3.609.0
         version: 3.609.0
       '@aws-sdk/lib-dynamodb':
-        specifier: 3.610.0
-        version: 3.610.0(@aws-sdk/client-dynamodb@3.609.0)
+        specifier: 3.609.0
+        version: 3.609.0(@aws-sdk/client-dynamodb@3.609.0)
       '@sentry/aws-serverless':
         specifier: 8.12.0
         version: 8.12.0(@opentelemetry/api@1.9.0)
@@ -992,8 +992,8 @@ importers:
         specifier: 3.609.0
         version: 3.609.0
       '@aws-sdk/lib-dynamodb':
-        specifier: 3.610.0
-        version: 3.610.0(@aws-sdk/client-dynamodb@3.609.0)
+        specifier: 3.609.0
+        version: 3.609.0(@aws-sdk/client-dynamodb@3.609.0)
       '@sentry/aws-serverless':
         specifier: 8.12.0
         version: 8.12.0(@opentelemetry/api@1.9.0)
@@ -2332,8 +2332,8 @@ importers:
         specifier: 3.609.0
         version: 3.609.0
       '@aws-sdk/lib-dynamodb':
-        specifier: 3.610.0
-        version: 3.610.0(@aws-sdk/client-dynamodb@3.609.0)
+        specifier: 3.609.0
+        version: 3.609.0(@aws-sdk/client-dynamodb@3.609.0)
       '@pocket-tools/apollo-utils':
         specifier: workspace:*
         version: link:../../packages/apollo-utils
@@ -2840,8 +2840,8 @@ importers:
         specifier: 3.609.0
         version: 3.609.0
       '@aws-sdk/lib-dynamodb':
-        specifier: 3.610.0
-        version: 3.610.0(@aws-sdk/client-dynamodb@3.609.0)
+        specifier: 3.609.0
+        version: 3.609.0(@aws-sdk/client-dynamodb@3.609.0)
       '@extractus/oembed-extractor':
         specifier: ^3.2.1
         version: 3.2.1(encoding@0.1.13)
@@ -3264,8 +3264,8 @@ importers:
         specifier: 3.609.0
         version: 3.609.0
       '@aws-sdk/lib-dynamodb':
-        specifier: 3.610.0
-        version: 3.610.0(@aws-sdk/client-dynamodb@3.609.0)
+        specifier: 3.609.0
+        version: 3.609.0(@aws-sdk/client-dynamodb@3.609.0)
       '@pocket-tools/apollo-utils':
         specifier: workspace:*
         version: link:../../packages/apollo-utils
@@ -3967,8 +3967,8 @@ packages:
     resolution: {integrity: sha512-CzuRWMj/xtN9p9eP915nlPmlyniTzke732Ow/M60++gGgB3W+RtZyFftw3TEx+NzNhd1tH54dEcGiWdiNaBz3Q==}
     engines: {node: '>=16.0.0'}
 
-  '@aws-sdk/lib-dynamodb@3.610.0':
-    resolution: {integrity: sha512-hlzq36zVnimVO0qX9jZSEL+MowpC5iLH00sLZnW90Q88ZCf/rnCiiEcyHnQSS+YLFDLXMtqqI3b2JZfDJlCGUw==}
+  '@aws-sdk/lib-dynamodb@3.609.0':
+    resolution: {integrity: sha512-V7oWCktXvuZxcXhj3oKmSrkmIQg13yYpamgkAACUzuqUAG1ISPEUGTHYhSImkg4efHQkwHlfJgU5RL9Ya4wsLw==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       '@aws-sdk/client-dynamodb': ^3.609.0
@@ -14321,7 +14321,7 @@ snapshots:
       mnemonist: 0.38.3
       tslib: 2.6.3
 
-  '@aws-sdk/lib-dynamodb@3.610.0(@aws-sdk/client-dynamodb@3.609.0)':
+  '@aws-sdk/lib-dynamodb@3.609.0(@aws-sdk/client-dynamodb@3.609.0)':
     dependencies:
       '@aws-sdk/client-dynamodb': 3.609.0
       '@aws-sdk/util-dynamodb': 3.609.0(@aws-sdk/client-dynamodb@3.609.0)

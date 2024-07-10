@@ -26,7 +26,7 @@
     "@apollo/utils.keyvadapter": "3.1.0",
     "@apollo/utils.keyvaluecache": "3.1.0",
     "@aws-sdk/client-dynamodb": "3.609.0",
-    "@aws-sdk/lib-dynamodb": "3.610.0",
+    "@aws-sdk/lib-dynamodb": "3.609.0",
     "@extractus/oembed-extractor": "^3.2.1",
     "@keyv/redis": "2.8.5",
     "@pocket-tools/apollo-utils": "workspace:*",
