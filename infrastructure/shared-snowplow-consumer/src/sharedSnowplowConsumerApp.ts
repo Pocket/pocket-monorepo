@@ -1,8 +1,5 @@
 import { config } from './config';
-import {
-  PocketALBApplication,
-  PocketPagerDuty,
-} from '@pocket-tools/terraform-modules';
+import { PocketALBApplication } from '@pocket-tools/terraform-modules';
 import {
   dataAwsCallerIdentity,
   dataAwsKmsAlias,
@@ -15,7 +12,6 @@ import { Construct } from 'constructs';
 
 export type SharedSnowplowConsumerProps = {
   caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
-  pagerDuty?: PocketPagerDuty;
   region: dataAwsRegion.DataAwsRegion;
   secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
   snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
@@ -34,8 +30,7 @@ export class SharedSnowplowConsumerApp extends Construct {
   }
 
   private createPocketAlbApplication(): PocketALBApplication {
-    const { pagerDuty, region, caller, secretsManagerKmsAlias, snsTopic } =
-      this.config;
+    const { region, caller, secretsManagerKmsAlias, snsTopic } = this.config;
 
     const secretResources = [
       `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared`,
@@ -199,7 +194,7 @@ export class SharedSnowplowConsumerApp extends Construct {
           threshold: 25,
           evaluationPeriods: 4,
           period: 300, //5 mins each
-          actions: pagerDuty ? [pagerDuty.snsNonCriticalAlarmTopic.arn] : [],
+          actions: config.isDev ? [] : [snsTopic.arn],
         },
       },
     });

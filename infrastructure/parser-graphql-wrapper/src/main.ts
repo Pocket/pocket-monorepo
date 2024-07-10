@@ -12,13 +12,8 @@ import {
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import {
-  provider as pagerdutyProvider,
-  dataPagerdutyEscalationPolicy,
-} from '@cdktf/provider-pagerduty';
-import {
   ApplicationRDSCluster,
   PocketALBApplication,
-  PocketPagerDuty,
   PocketVPC,
   ApplicationServerlessRedis,
   ApplicationRedis,
@@ -35,9 +30,6 @@ class ParserGraphQLWrapper extends TerraformStack {
     new awsProvider.AwsProvider(this, 'aws', { region: 'us-east-1' });
     new localProvider.LocalProvider(this, 'local_provider');
     new nullProvider.NullProvider(this, 'null_provider');
-    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
-      token: undefined,
-    });
 
     new S3Backend(this, {
       bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
@@ -60,7 +52,6 @@ class ParserGraphQLWrapper extends TerraformStack {
     const dynamodb = new DynamoDB(this, 'dynamodb');
 
     this.createPocketAlbApplication({
-      pagerDuty: this.createPagerDuty(),
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
       primaryEndpoint,
@@ -92,31 +83,7 @@ class ParserGraphQLWrapper extends TerraformStack {
     });
   }
 
-  /**
-   * Create PagerDuty service for alerts
-   * @private
-   */
-  private createPagerDuty() {
-    const mozillaEscalation =
-      new dataPagerdutyEscalationPolicy.DataPagerdutyEscalationPolicy(
-        this,
-        'mozilla_sre_escalation_policy',
-        {
-          name: 'IT SRE: Escalation Policy',
-        },
-      );
-
-    return new PocketPagerDuty(this, 'pagerduty', {
-      prefix: config.prefix,
-      service: {
-        criticalEscalationPolicyId: mozillaEscalation.id,
-        nonCriticalEscalationPolicyId: mozillaEscalation.id,
-      },
-    });
-  }
-
   private createPocketAlbApplication(dependencies: {
-    pagerDuty: PocketPagerDuty;
     region: dataAwsRegion.DataAwsRegion;
     caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
@@ -127,7 +94,6 @@ class ParserGraphQLWrapper extends TerraformStack {
     dynamodb: DynamoDB;
   }): PocketALBApplication {
     const {
-      pagerDuty,
       region,
       caller,
       secretsManagerKmsAlias,
@@ -426,7 +392,7 @@ class ParserGraphQLWrapper extends TerraformStack {
           threshold: 25, //percent
           evaluationPeriods: 4,
           period: 300, //in seconds, 5 mins per period
-          actions: config.isProd ? [pagerDuty.snsCriticalAlarmTopic.arn] : [],
+          actions: config.isProd ? [snsTopic.arn] : [],
           alarmDescription:
             'Runbook: https://getpocket.atlassian.net/l/c/zsRAw0KV',
         },

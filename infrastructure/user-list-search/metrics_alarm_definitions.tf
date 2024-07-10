@@ -15,8 +15,8 @@ locals {
       period        = 1800
       breaches      = 3
       tags          = local.tags
-      ok_actions    = local.non_critical_alarm_actions
-      alarm_actions = local.non_critical_alarm_actions
+      ok_actions    = []
+      alarm_actions = []
     }
 
     user_item_list_import_processing = {
@@ -34,8 +34,8 @@ locals {
       period        = 1800
       breaches      = 3
       tags          = local.tags
-      ok_actions    = local.non_critical_alarm_actions
-      alarm_actions = local.non_critical_alarm_actions
+      ok_actions    = []
+      alarm_actions = []
     }
 
     alb_target_error_rate_critical = {
@@ -53,8 +53,8 @@ locals {
       period        = 300
       breaches      = 4
       tags          = local.tags
-      ok_actions    = local.non_critical_alarm_actions
-      alarm_actions = local.non_critical_alarm_actions
+      ok_actions    = []
+      alarm_actions = []
     }
 
     elasticsearch_write_block = {
@@ -70,8 +70,8 @@ locals {
       period        = 60
       breaches      = 15
       tags          = local.tags
-      ok_actions    = local.non_critical_alarm_actions
-      alarm_actions = local.non_critical_alarm_actions
+      ok_actions    = []
+      alarm_actions = []
     }
 
     list_item_update_errors = {
@@ -92,8 +92,8 @@ locals {
       period        = 300
       breaches      = 3
       tags          = local.tags
-      ok_actions    = local.non_critical_alarm_actions
-      alarm_actions = local.non_critical_alarm_actions
+      ok_actions    = []
+      alarm_actions = []
     }
 
     list_item_import_errors = {
@@ -115,8 +115,8 @@ locals {
       period        = 60
       breaches      = 3
       tags          = local.tags
-      ok_actions    = local.non_critical_alarm_actions
-      alarm_actions = local.non_critical_alarm_actions
+      ok_actions    = []
+      alarm_actions = []
     }
 
     event_consumer_lambda_errors = {
@@ -136,8 +136,8 @@ locals {
       period        = 60
       breaches      = 10
       tags          = local.tags
-      ok_actions    = local.non_critical_alarm_actions
-      alarm_actions = local.non_critical_alarm_actions
+      ok_actions    = []
+      alarm_actions = []
     }
   }
 

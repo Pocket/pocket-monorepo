@@ -8,13 +8,8 @@ import {
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import {
-  provider as pagerdutyProvider,
-  dataPagerdutyEscalationPolicy,
-} from '@cdktf/provider-pagerduty';
-import {
   ApplicationRDSCluster,
   PocketALBApplication,
-  PocketPagerDuty,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
 import { Construct } from 'constructs';
@@ -29,10 +24,6 @@ class FeatureFlags extends TerraformStack {
     new awsProvider.AwsProvider(this, 'aws', {
       region: 'us-east-1',
       defaultTags: [{ tags: config.tags }],
-    });
-
-    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
-      token: undefined,
     });
 
     new localProvider.LocalProvider(this, 'local_provider');
@@ -54,7 +45,6 @@ class FeatureFlags extends TerraformStack {
 
     this.createPocketAlbApplication({
       rds: this.createRds(pocketVpc),
-      pagerDuty: this.createPagerDuty(),
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
       region,
@@ -110,38 +100,8 @@ class FeatureFlags extends TerraformStack {
     });
   }
 
-  /**
-   * Create PagerDuty service for alerts
-   * @private
-   */
-  private createPagerDuty(): PocketPagerDuty | undefined {
-    // don't create any pagerduty resources if in dev
-    if (config.isDev) {
-      return undefined;
-    }
-
-    const nonCriticalEscalationPolicyId =
-      new dataPagerdutyEscalationPolicy.DataPagerdutyEscalationPolicy(
-        this,
-        'non_critical_escalation_policy',
-        {
-          name: 'Pocket On-Call: Default Non-Critical - Tier 2+ (Former Backend Temporary Holder)',
-        },
-      ).id;
-
-    return new PocketPagerDuty(this, 'pagerduty', {
-      prefix: config.prefix,
-      service: {
-        // This is a Tier 2 service and as such only raises non-critical alarms.
-        criticalEscalationPolicyId: nonCriticalEscalationPolicyId,
-        nonCriticalEscalationPolicyId: nonCriticalEscalationPolicyId,
-      },
-    });
-  }
-
   private createPocketAlbApplication(dependencies: {
     rds: ApplicationRDSCluster;
-    pagerDuty: PocketPagerDuty;
     region: dataAwsRegion.DataAwsRegion;
     caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
@@ -323,7 +283,7 @@ class FeatureFlags extends TerraformStack {
         //   threshold: 25, // 25%
         //   period: 300, // 5 minutes
         //   evaluationPeriods: 4, // 20 minutes total
-        //   actions: config.isDev ? [] : [pagerDuty.snsCriticalAlarmTopic.arn],
+        //   actions: config.isProd ? [snsTopic.arn] : [],
         // },
       },
     });
