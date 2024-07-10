@@ -10,6 +10,7 @@ import {
   snsTopic,
   dataAwsIamPolicyDocument,
   snsTopicPolicy,
+  dataAwsSnsTopic,
 } from '@cdktf/provider-aws';
 import { resource } from '@cdktf/provider-null';
 import { eventConfig } from './eventConfig';
@@ -21,7 +22,7 @@ export class UserRegistrationEventRule extends Construct {
   constructor(
     scope: Construct,
     private name: string,
-    private pagerDuty: PocketPagerDuty,
+    private snsAlarmTopic: dataAwsSnsTopic.DataAwsSnsTopic,
   ) {
     super(scope, name);
 

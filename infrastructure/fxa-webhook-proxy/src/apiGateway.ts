@@ -3,13 +3,12 @@ import {
   LAMBDA_RUNTIMES,
   PocketApiGateway,
   PocketApiGatewayProps,
-  PocketPagerDuty,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
 import { config } from './config';
 import { getEnvVariableValues } from './utilities';
 import { Construct } from 'constructs';
-import { sqsQueue } from '@cdktf/provider-aws';
+import { dataAwsSnsTopic, sqsQueue } from '@cdktf/provider-aws';
 
 export class ApiGateway extends Construct {
   constructor(
@@ -17,7 +16,7 @@ export class ApiGateway extends Construct {
     private name: string,
     private vpc: PocketVPC,
     private sqsQueue: sqsQueue.SqsQueue,
-    pagerDuty?: PocketPagerDuty,
+    alertSnsTopic: dataAwsSnsTopic.DataAwsSnsTopic,
   ) {
     super(scope, name);
     const { sentryDsn } = getEnvVariableValues(this);
@@ -59,9 +58,9 @@ export class ApiGateway extends Construct {
               evaluationPeriods: 3,
               period: 3600, // 1 hour
               threshold: 20,
-              actions: config.isDev
-                ? []
-                : [pagerDuty!.snsNonCriticalAlarmTopic.arn],
+              actions: config.isProd
+                ? [alertSnsTopic.arn]
+                : [],
             },
             */
           },

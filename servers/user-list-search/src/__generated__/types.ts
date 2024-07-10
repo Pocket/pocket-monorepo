@@ -797,6 +797,7 @@ export type CorpusSearchHighlightsResolvers<ContextType = IContext, ParentType e
 }>;
 
 export type CorpusSearchNodeResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['CorpusSearchNode'] = ResolversParentTypes['CorpusSearchNode']> = ResolversObject<{
+  __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['CorpusSearchNode']>, { __typename: 'CorpusSearchNode' } & GraphQLRecursivePick<ParentType, {"url":true}>, ContextType>;
   searchHighlights?: Resolver<Maybe<ResolversTypes['CorpusSearchHighlights']>, ParentType, ContextType>;
   url?: Resolver<ResolversTypes['Url'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

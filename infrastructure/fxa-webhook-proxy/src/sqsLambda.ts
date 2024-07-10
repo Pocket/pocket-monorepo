@@ -2,12 +2,11 @@ import { Construct } from 'constructs';
 import { config } from './config';
 import {
   LAMBDA_RUNTIMES,
-  PocketPagerDuty,
   PocketSQSWithLambdaTarget,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
 import { getEnvVariableValues } from './utilities';
-import { sqsQueue } from '@cdktf/provider-aws';
+import { dataAwsSnsTopic, sqsQueue } from '@cdktf/provider-aws';
 
 export class SqsLambda extends Construct {
   constructor(
@@ -15,7 +14,7 @@ export class SqsLambda extends Construct {
     private name: string,
     private vpc: PocketVPC,
     private sqsQueue: sqsQueue.SqsQueue,
-    pagerDuty?: PocketPagerDuty,
+    alertSnsTopic: dataAwsSnsTopic.DataAwsSnsTopic,
   ) {
     super(scope, name);
 
@@ -65,9 +64,9 @@ export class SqsLambda extends Construct {
             evaluationPeriods: 3,
             period: 3600, // 1 hour
             threshold: 20,
-            actions: config.isDev
-              ? []
-              : [pagerDuty!.snsNonCriticalAlarmTopic.arn],
+            actions: config.isProd
+              ? [alertSnsTopic.arn]
+              : [],
           },
           */
         },

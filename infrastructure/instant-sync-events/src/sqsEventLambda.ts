@@ -10,7 +10,6 @@ import {
 import {
   PocketSQSWithLambdaTarget,
   LAMBDA_RUNTIMES,
-  PocketPagerDuty,
   PocketVersionedLambdaProps,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
@@ -19,7 +18,6 @@ import { Construct } from 'constructs';
 
 export interface SqsLambdaProps {
   vpc: PocketVPC;
-  pagerDuty?: PocketPagerDuty;
   alarms?: PocketVersionedLambdaProps['lambda']['alarms'];
   pushQueue: dataAwsSqsQueue.DataAwsSqsQueue;
 }

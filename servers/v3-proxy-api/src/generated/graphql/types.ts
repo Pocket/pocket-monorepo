@@ -19,6 +19,7 @@ export type Scalars = {
   Date: { input: any; output: any; }
   DateString: { input: any; output: any; }
   FunctionalBoostValue: { input: any; output: any; }
+  HtmlString: { input: any; output: any; }
   ISOString: { input: any; output: any; }
   Markdown: { input: any; output: any; }
   Max300CharString: { input: any; output: any; }
@@ -273,6 +274,13 @@ export type CollectionsResult = {
   pagination: Pagination;
 };
 
+/** Content type classification for a corpus item */
+export enum CorpusContentType {
+  Article = 'ARTICLE',
+  Collection = 'COLLECTION',
+  Video = 'VIDEO'
+}
+
 /**
  * Represents an item that is in the Corpus and its associated manually edited metadata.
  * TODO: CorpusItem to implement PocketResource when it becomes available.
@@ -351,6 +359,134 @@ export type CorpusRecommendation = {
    */
   tileId: Scalars['Float']['output'];
 };
+
+/** Paginated corpus search result connection */
+export type CorpusSearchConnection = {
+  __typename?: 'CorpusSearchConnection';
+  edges: Array<CorpusSearchEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+/** An edge in a CorpusSearchConnection result */
+export type CorpusSearchEdge = {
+  __typename?: 'CorpusSearchEdge';
+  cursor: Scalars['String']['output'];
+  node: CorpusSearchNode;
+};
+
+/** Fields that can be searched using query strings */
+export enum CorpusSearchFields {
+  /** Search all possible fields */
+  All = 'ALL',
+  /**
+   * (Default) Search the fields which relate to the content
+   * of the resource (title, article, excerpt, extracted content)
+   * rather than the metadata (publisher).
+   */
+  AllContentful = 'ALL_CONTENTFUL',
+  /** Search terms in excerpt fields */
+  Excerpt = 'EXCERPT',
+  /** Search terms in parsed, extracted content fields */
+  ExtractedContent = 'EXTRACTED_CONTENT',
+  /** Search terms in publisher fields */
+  Publisher = 'PUBLISHER',
+  /** Search terms in title fields */
+  Title = 'TITLE'
+}
+
+/** Filters to refine corpus search results. */
+export type CorpusSearchFilters = {
+  /** When the content was added to Pocket's corpus */
+  addedDateRange?: InputMaybe<DateFilter>;
+  /** The author's name */
+  author?: InputMaybe<Scalars['String']['input']>;
+  /**
+   * Filter to limit the result set to specific content types.
+   * Multiple types are combined with OR.
+   * Can use this to search collections only.
+   */
+  contentType?: InputMaybe<Array<CorpusContentType>>;
+  /** Set to true to exclude collections from the results. */
+  excludeCollections?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Set to true to exclude ML-generated recommendations from the results. */
+  excludeML?: InputMaybe<Scalars['Boolean']['input']>;
+  /** The language of the corpus to search (letter code) */
+  language: CorpusLanguage;
+  /**
+   * Filter for when an article was published. Can provide
+   * upper/lower bounds with 'before' or 'after', or use both
+   * both to create a time range.
+   */
+  publishedDateRange?: InputMaybe<DateFilter>;
+  /**
+   * The publisher's name. This is an exact match for filtering.
+   * To use publisher in search, use the publisher field in the query
+   * string.
+   */
+  publisher?: InputMaybe<Scalars['String']['input']>;
+  /**
+   * The topic (use getTopics query to retrieve valid topics).
+   * Multiple topics are combined with OR.
+   */
+  topic?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+/**
+ * Highlighted snippets from fields in the search results
+ * so clients can show users where the query matches are.
+ * Each field, if available, contains an array of html text
+ * snippets that contain a match to the search term.
+ * The matching text is wrapped in <em> tags, e.g.
+ * ["Hiss at <em>vacuum</em> cleaner if it fits i sits"]
+ */
+export type CorpusSearchHighlights = {
+  __typename?: 'CorpusSearchHighlights';
+  excerpt?: Maybe<Array<Maybe<Scalars['HtmlString']['output']>>>;
+  fullText?: Maybe<Array<Maybe<Scalars['HtmlString']['output']>>>;
+  publisher?: Maybe<Array<Maybe<Scalars['HtmlString']['output']>>>;
+  title?: Maybe<Array<Maybe<Scalars['HtmlString']['output']>>>;
+};
+
+/** A node in a CorpusSearchConnection result */
+export type CorpusSearchNode = {
+  __typename?: 'CorpusSearchNode';
+  /** The preview of the search result */
+  preview: PocketMetadata;
+  /** Search highlights */
+  searchHighlights?: Maybe<CorpusSearchHighlights>;
+};
+
+/** A search query for the corpus */
+export type CorpusSearchQueryString = {
+  /**
+   * A specific field to search on (e.g. title),
+   * or ALL to search all available text content fields.
+   * If missing, defaults to 'ALL_CONTENTFUL'
+   */
+  field?: InputMaybe<CorpusSearchFields>;
+  /** The query string to search. */
+  query: Scalars['String']['input'];
+};
+
+/** Sort scheme for Corpus Search. Defaults to showing most relevant results first. */
+export type CorpusSearchSort = {
+  sortBy: CorpusSearchSortBy;
+  sortOrder?: InputMaybe<SearchItemsSortOrder>;
+};
+
+/** Sortable properties for Corpus Search */
+export enum CorpusSearchSortBy {
+  /** When the content was added to the corpus */
+  DateAddedToCorpus = 'DATE_ADDED_TO_CORPUS',
+  /**
+   * When the content was originally published
+   * (Note: this data is sparse/nullable)
+   */
+  DatePublished = 'DATE_PUBLISHED',
+  /** Relevance score computed by search algorithm */
+  Relevance = 'RELEVANCE'
+}
 
 /** This is the same as Slate but in this type all recommendations are backed by CorpusItems. This means that the editorial team has editorial control over the items served by this endpoint. */
 export type CorpusSlate = {
@@ -511,6 +647,18 @@ export type CurationCategory = {
   externalId: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   slug: Scalars['String']['output'];
+};
+
+/**
+ * Filter to get documents added/published before or after a date,
+ * or provide both for a range of [after, before)
+ * Before is exclusive, after is inclusive.
+ */
+export type DateFilter = {
+  /** Inclusive date -- results must be at or after than this time. */
+  after?: InputMaybe<Scalars['ISOString']['input']>;
+  /** Exclusive date -- results must be exclusively before this time. */
+  before?: InputMaybe<Scalars['ISOString']['input']>;
 };
 
 export type DeleteSavedItemTagsInput = {
@@ -2017,6 +2165,8 @@ export type Query = {
   /** List all topics that the user can express a preference for. */
   recommendationPreferenceTopics: Array<Topic>;
   scheduledSurface: ScheduledSurface;
+  /** Search Pocket's corpus of recommendations and collections. */
+  searchCorpus?: Maybe<CorpusSearchConnection>;
   /**
    * Resolve data for a Shared link, or return a Not Found
    * message if the share does not exist.
@@ -2177,6 +2327,18 @@ export type QueryReaderSlugArgs = {
  */
 export type QueryScheduledSurfaceArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+/**
+ * Default root level query type. All authorization checks are done in these queries.
+ * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
+ */
+export type QuerySearchCorpusArgs = {
+  filter: CorpusSearchFilters;
+  pagination?: InputMaybe<PaginationInput>;
+  search: CorpusSearchQueryString;
+  sort?: InputMaybe<CorpusSearchSort>;
 };
 
 

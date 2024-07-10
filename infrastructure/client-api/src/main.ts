@@ -12,12 +12,7 @@ import {
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import {
-  provider as pagerdutyProvider,
-  dataPagerdutyEscalationPolicy,
-} from '@cdktf/provider-pagerduty';
-import {
   PocketALBApplication,
-  PocketPagerDuty,
   PocketAwsSyntheticChecks,
   ApplicationServerlessRedis,
   PocketVPC,
@@ -42,9 +37,6 @@ class ClientAPI extends TerraformStack {
     });
     new localProvider.LocalProvider(this, 'local_provider');
     new nullProvider.NullProvider(this, 'null_provider');
-    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
-      token: undefined,
-    });
     new S3Backend(this, {
       bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
       dynamodbTable: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
@@ -58,14 +50,13 @@ class ClientAPI extends TerraformStack {
     );
     const region = new dataAwsRegion.DataAwsRegion(this, 'region');
 
-    const clientApiPagerduty = this.createPagerDuty();
     const pocketVPC = new PocketVPC(this, 'pocket-vpc');
     const cache = this.createElasticache(this, pocketVPC);
+    const alarmTopic = this.getCodeDeploySnsTopic();
 
     this.createPocketAlbApplication({
-      pagerDuty: clientApiPagerduty,
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
-      snsTopic: this.getCodeDeploySnsTopic(),
+      snsTopic: alarmTopic,
       wafAcl: this.createWafACL(),
       cache,
       region,
@@ -73,10 +64,7 @@ class ClientAPI extends TerraformStack {
     });
 
     new PocketAwsSyntheticChecks(this, 'synthetics', {
-      // alarmTopicArn:
-      //   config.environment === 'Prod'
-      //     ? clientApiPagerduty.snsCriticalAlarmTopic.arn // Tier 1
-      //     : '',
+      alarmTopicArn: config.isProd ? alarmTopic.arn : '',
       environment: config.environment,
       prefix: config.prefix,
       query: [],
@@ -198,36 +186,7 @@ class ClientAPI extends TerraformStack {
     });
   }
 
-  /**
-   * Create PagerDuty service for alerts
-   * @private
-   */
-  private createPagerDuty(): PocketPagerDuty | undefined {
-    if (config.isDev) {
-      //Dont create pagerduty services for a dev service.
-      return null;
-    }
-
-    const mozillaEscalation =
-      new dataPagerdutyEscalationPolicy.DataPagerdutyEscalationPolicy(
-        this,
-        'mozilla_sre_escalation_policy',
-        {
-          name: 'IT SRE: Escalation Policy',
-        },
-      );
-
-    return new PocketPagerDuty(this, 'pagerduty', {
-      prefix: config.prefix,
-      service: {
-        criticalEscalationPolicyId: mozillaEscalation.id,
-        nonCriticalEscalationPolicyId: mozillaEscalation.id,
-      },
-    });
-  }
-
   private createPocketAlbApplication(dependencies: {
-    pagerDuty?: PocketPagerDuty;
     region: dataAwsRegion.DataAwsRegion;
     caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
@@ -235,15 +194,8 @@ class ClientAPI extends TerraformStack {
     cache: string;
     wafAcl: Wafv2WebAcl;
   }): PocketALBApplication {
-    const {
-      pagerDuty,
-      region,
-      caller,
-      secretsManagerKmsAlias,
-      cache,
-      snsTopic,
-      wafAcl,
-    } = dependencies;
+    const { region, caller, secretsManagerKmsAlias, cache, snsTopic, wafAcl } =
+      dependencies;
 
     return new PocketALBApplication(this, 'application', {
       internal: false,
@@ -414,7 +366,7 @@ class ClientAPI extends TerraformStack {
           threshold: 50,
           evaluationPeriods: 4,
           period: 300, //in seconds, 5 mins per period
-          actions: config.isProd ? [pagerDuty.snsCriticalAlarmTopic.arn] : [],
+          actions: config.isProd ? [snsTopic.arn] : [],
           // TODO: Dead link
           alarmDescription:
             'Runbook: https://getpocket.atlassian.net/l/c/khqp5x57',
@@ -425,9 +377,7 @@ class ClientAPI extends TerraformStack {
           evaluationPeriods: 4,
           threshold: 500,
           period: 900, //in seconds, 15 mins per period
-          actions: config.isProd
-            ? [pagerDuty.snsNonCriticalAlarmTopic.arn]
-            : [],
+          actions: config.isProd ? [snsTopic.arn] : [],
           alarmDescription:
             // TODO: Dead link
             'Runbook: https://getpocket.atlassian.net/l/c/YnDN190b',

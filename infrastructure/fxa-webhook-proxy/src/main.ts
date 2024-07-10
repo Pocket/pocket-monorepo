@@ -6,11 +6,7 @@ import {
   PocketPagerDuty,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
-import { provider as awsProvider } from '@cdktf/provider-aws';
-import {
-  provider as pagerdutyProvider,
-  dataPagerdutyEscalationPolicy,
-} from '@cdktf/provider-pagerduty';
+import { provider as awsProvider, dataAwsSnsTopic } from '@cdktf/provider-aws';
 import { SqsLambda } from './sqsLambda';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
 import { provider as nullProvider } from '@cdktf/provider-null';
@@ -25,9 +21,6 @@ class FxAWebhookProxy extends TerraformStack {
       region: 'us-east-1',
       defaultTags: [{ tags: config.tags }],
     });
-    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
-      token: undefined,
-    });
     new archiveProvider.ArchiveProvider(this, 'archive-provider');
     new nullProvider.NullProvider(this, 'null-provider');
     new localProvider.LocalProvider(this, 'local-provider');
@@ -40,7 +33,6 @@ class FxAWebhookProxy extends TerraformStack {
     });
 
     const vpc = new PocketVPC(this, 'pocket-shared-vpc');
-    const pagerDuty = this.createPagerDuty();
 
     const sqs = new ApplicationSQSQueue(this, 'sqs-queue', {
       name: `${config.prefix}-Queue`,
@@ -49,36 +41,19 @@ class FxAWebhookProxy extends TerraformStack {
       messageRetentionSeconds: 604800, // Set retention to 7 days in case we get a lot of events to process.. unlikely, but safer.
     });
 
-    new SqsLambda(this, 'proxy-lambda', vpc, sqs.sqsQueue, pagerDuty);
-    new ApiGateway(this, 'apigateway-lambda', vpc, sqs.sqsQueue, pagerDuty);
+    const alertSNSTopic = this.getSlackSnsTopic();
+
+    new SqsLambda(this, 'proxy-lambda', vpc, sqs.sqsQueue, alertSNSTopic);
+    new ApiGateway(this, 'apigateway-lambda', vpc, sqs.sqsQueue, alertSNSTopic);
   }
 
   /**
-   * Create PagerDuty service for alerts
+   * Get the sns topic for slack
    * @private
    */
-  private createPagerDuty() {
-    // don't create any pagerduty resources if in dev
-    if (config.isDev) {
-      return undefined;
-    }
-
-    const nonCriticalEscalationPolicyId =
-      new dataPagerdutyEscalationPolicy.DataPagerdutyEscalationPolicy(
-        this,
-        'non_critical_escalation_policy',
-        {
-          name: 'Pocket On-Call: Default Non-Critical - Tier 2+ (Former Backend Temporary Holder)',
-        },
-      ).id;
-
-    return new PocketPagerDuty(this, 'pagerduty', {
-      prefix: config.prefix,
-      service: {
-        // This is a Tier 2 service and as such only raises non-critical alarms.
-        criticalEscalationPolicyId: nonCriticalEscalationPolicyId,
-        nonCriticalEscalationPolicyId: nonCriticalEscalationPolicyId,
-      },
+  private getSlackSnsTopic() {
+    return new dataAwsSnsTopic.DataAwsSnsTopic(this, 'backend_notifications', {
+      name: `Backend-${config.environment}-ChatBot`,
     });
   }
 }

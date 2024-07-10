@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import { config } from './config';
-import { dataAwsSsmParameter } from '@cdktf/provider-aws';
+import { dataAwsSnsTopic, dataAwsSsmParameter } from '@cdktf/provider-aws';
 import {
   PocketVPC,
   PocketSQSWithLambdaTarget,
@@ -14,7 +14,7 @@ export class TransactionalEmailSQSLambda extends Construct {
     scope: Construct,
     private name: string,
     vpc: PocketVPC,
-    pagerDuty?: PocketPagerDuty,
+    alarmSnsTopic: dataAwsSnsTopic.DataAwsSnsTopic,
   ) {
     super(scope, name);
 
@@ -71,9 +71,7 @@ export class TransactionalEmailSQSLambda extends Construct {
             evaluationPeriods: 4,
             period: 900, //15 minutes
             threshold: 150,
-            actions: config.isDev
-              ? []
-              : [pagerDuty!.snsNonCriticalAlarmTopic.arn],
+            actions: config.isDev ? [] : [alarmSnsTopic.arn],
           },
         },
       },

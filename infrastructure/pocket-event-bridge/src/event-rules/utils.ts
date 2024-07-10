@@ -1,6 +1,5 @@
 import { config } from '../config';
-import { PocketPagerDuty } from '@pocket-tools/terraform-modules';
-import { cloudwatchMetricAlarm } from '@cdktf/provider-aws';
+import { cloudwatchMetricAlarm, dataAwsSnsTopic } from '@cdktf/provider-aws';
 import { Construct } from 'constructs';
 
 /**
@@ -20,7 +19,7 @@ import { Construct } from 'constructs';
  */
 export function createDeadLetterQueueAlarm(
   stack: Construct,
-  pagerDuty: PocketPagerDuty,
+  snsTopic: dataAwsSnsTopic.DataAwsSnsTopic,
   queueName: string,
   alarmName: string,
   enabled: boolean = true,
@@ -42,10 +41,8 @@ export function createDeadLetterQueueAlarm(
       period: periodInSeconds,
       threshold: threshold,
       statistic: 'Sum',
-      alarmActions: config.isDev
-        ? []
-        : [pagerDuty.snsNonCriticalAlarmTopic.arn],
-      okActions: config.isDev ? [] : [pagerDuty.snsNonCriticalAlarmTopic.arn],
+      alarmActions: config.isDev ? [] : [snsTopic.arn],
+      okActions: config.isDev ? [] : [snsTopic.arn],
       actionsEnabled: enabled,
     },
   );

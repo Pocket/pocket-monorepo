@@ -13,6 +13,7 @@ import {
   dataAwsIamPolicyDocument,
   snsTopicPolicy,
   sqsQueue,
+  dataAwsSnsTopic,
 } from '@cdktf/provider-aws';
 import { Resource } from '@cdktf/provider-null/lib/resource';
 
@@ -24,7 +25,7 @@ export class AccountDeleteMonitorEvents extends Construct {
   constructor(
     scope: Construct,
     name: string,
-    private pagerDuty: PocketPagerDuty,
+    private alarmSnsTopic: dataAwsSnsTopic.DataAwsSnsTopic,
   ) {
     super(scope, name);
     // pre-existing queues (prod and dev) created by account-delete-monitor
@@ -58,7 +59,7 @@ export class AccountDeleteMonitorEvents extends Construct {
 
     createDeadLetterQueueAlarm(
       this,
-      pagerDuty,
+      alarmSnsTopic,
       this.sqsDlq.name,
       `${config.prefix}-Dlq-Alarm`,
     );

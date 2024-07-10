@@ -3,7 +3,6 @@ import {
   LAMBDA_RUNTIMES,
   PocketApiGateway,
   PocketApiGatewayProps,
-  PocketPagerDuty,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
 import { config } from './config';
@@ -15,7 +14,6 @@ export class ApiGateway extends Construct {
     scope: Construct,
     private name: string,
     private vpc: PocketVPC,
-    pagerDuty?: PocketPagerDuty,
   ) {
     super(scope, name);
     const { sentryDsn } = getEnvVariableValues(this);

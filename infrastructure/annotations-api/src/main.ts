@@ -12,10 +12,6 @@ import {
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
-import {
-  provider as pagerdutyProvider,
-  dataPagerdutyEscalationPolicy,
-} from '@cdktf/provider-pagerduty';
 import { config } from './config';
 import {
   ApplicationSQSQueue,
@@ -35,9 +31,6 @@ class AnnotationsAPI extends TerraformStack {
     new awsProvider.AwsProvider(this, 'aws', {
       region: 'us-east-1',
       defaultTags: [{ tags: config.tags }],
-    });
-    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
-      token: undefined,
     });
     new localProvider.LocalProvider(this, 'local_provider');
     new nullProvider.NullProvider(this, 'null_provider');
@@ -87,12 +80,11 @@ class AnnotationsAPI extends TerraformStack {
       maxReceiveCount: 2,
     });
 
-    const annotationsApiPagerduty = this.createPagerDuty();
+    const alarmTopic = this.getCodeDeploySnsTopic();
 
     this.createPocketAlbApplication({
-      pagerDuty: annotationsApiPagerduty,
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
-      snsTopic: this.getCodeDeploySnsTopic(),
+      snsTopic: alarmTopic,
       region,
       caller,
       dynamodb,
@@ -101,10 +93,7 @@ class AnnotationsAPI extends TerraformStack {
     const getAnnotationsQuery = `{"query": "query { _entities(representations: { id: \\"1\\", __typename: \\"SavedItem\\" }) { ... on SavedItem { annotations { highlights { id } } } } }"}`;
 
     new PocketAwsSyntheticChecks(this, 'synthetics', {
-      alarmTopicArn:
-        config.environment === 'Prod'
-          ? annotationsApiPagerduty.snsNonCriticalAlarmTopic.arn
-          : '',
+      alarmTopicArn: config.isProd ? alarmTopic.arn : '',
       environment: config.environment,
       prefix: config.prefix,
       query: [
@@ -148,37 +137,7 @@ class AnnotationsAPI extends TerraformStack {
     });
   }
 
-  /**
-   * Create PagerDuty service for alerts
-   * @private
-   */
-  private createPagerDuty() {
-    // don't create any pagerduty resources if in dev
-    if (config.isDev) {
-      return undefined;
-    }
-
-    const nonCriticalEscalationPolicyId =
-      new dataPagerdutyEscalationPolicy.DataPagerdutyEscalationPolicy(
-        this,
-        'non_critical_escalation_policy',
-        {
-          name: 'Pocket On-Call: Default Non-Critical - Tier 2+ (Former Backend Temporary Holder)',
-        },
-      ).id;
-
-    return new PocketPagerDuty(this, 'pagerduty', {
-      prefix: config.prefix,
-      service: {
-        // This is a Tier 2 service and as such only raises non-critical alarms.
-        criticalEscalationPolicyId: nonCriticalEscalationPolicyId,
-        nonCriticalEscalationPolicyId: nonCriticalEscalationPolicyId,
-      },
-    });
-  }
-
   private createPocketAlbApplication(dependencies: {
-    pagerDuty: PocketPagerDuty;
     region: dataAwsRegion.DataAwsRegion;
     caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
@@ -416,12 +375,11 @@ class AnnotationsAPI extends TerraformStack {
         targetMaxCapacity: config.isProd ? 10 : 1,
       },
       alarms: {
-        //TODO: When you start using the service add the pagerduty arns as an action `pagerDuty.snsNonCriticalAlarmTopic.arn`
         http5xxErrorPercentage: {
           threshold: 25,
           evaluationPeriods: 4,
           period: 300,
-          actions: config.isDev ? [] : [],
+          actions: config.isProd ? [snsTopic.arn] : [],
         },
       },
     });
