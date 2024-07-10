@@ -2,7 +2,6 @@ import { Construct } from 'constructs';
 import {
   PocketEventBridgeProps,
   PocketEventBridgeRuleWithMultipleTargets,
-  PocketPagerDuty,
 } from '@pocket-tools/terraform-modules';
 import { config } from '../../config';
 import {

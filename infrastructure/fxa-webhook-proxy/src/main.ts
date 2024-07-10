@@ -3,7 +3,6 @@ import { App, S3Backend, TerraformStack } from 'cdktf';
 import { config } from './config';
 import {
   ApplicationSQSQueue,
-  PocketPagerDuty,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
 import { provider as awsProvider, dataAwsSnsTopic } from '@cdktf/provider-aws';

@@ -17,7 +17,6 @@ import {
   ApplicationSQSQueue,
   PocketALBApplication,
   PocketAwsSyntheticChecks,
-  PocketPagerDuty,
   PocketVPC,
   ApplicationSqsSnsTopicSubscription,
 } from '@pocket-tools/terraform-modules';

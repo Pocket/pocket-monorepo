@@ -1,8 +1,5 @@
 import { config } from './config';
-import {
-  PocketALBApplication,
-  PocketPagerDuty,
-} from '@pocket-tools/terraform-modules';
+import { PocketALBApplication } from '@pocket-tools/terraform-modules';
 import {
   dataAwsCallerIdentity,
   dataAwsKmsAlias,

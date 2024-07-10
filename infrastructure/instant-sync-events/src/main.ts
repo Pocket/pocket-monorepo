@@ -15,7 +15,7 @@ import {
 
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
-import { PocketPagerDuty, PocketVPC } from '@pocket-tools/terraform-modules';
+import { PocketVPC } from '@pocket-tools/terraform-modules';
 import { App, S3Backend, TerraformStack } from 'cdktf';
 import { Construct } from 'constructs';
 

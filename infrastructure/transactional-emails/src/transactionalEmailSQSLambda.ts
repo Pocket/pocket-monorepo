@@ -4,7 +4,6 @@ import { dataAwsSnsTopic, dataAwsSsmParameter } from '@cdktf/provider-aws';
 import {
   PocketVPC,
   PocketSQSWithLambdaTarget,
-  PocketPagerDuty,
   LAMBDA_RUNTIMES,
 } from '@pocket-tools/terraform-modules';
 
