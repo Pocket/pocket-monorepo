@@ -17,8 +17,8 @@
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "3.600.0",
-    "@aws-sdk/lib-dynamodb": "3.600.0",
+    "@aws-sdk/client-dynamodb": "3.609.0",
+    "@aws-sdk/lib-dynamodb": "3.609.0",
     "@sentry/aws-serverless": "8.12.0",
     "exponential-backoff": "^3.1.1",
     "tslib": "2.6.3"
