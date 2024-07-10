@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@apollo/server": "4.10.4",
-    "@apollo/subgraph": "2.8.1",
+    "@apollo/subgraph": "2.8.2",
     "@aws-sdk/client-eventbridge": "3.600.0",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/int-mask": "workspace:*",
