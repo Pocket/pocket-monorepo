@@ -59,7 +59,7 @@ export class DataDeleterApp extends Construct {
     return new PocketALBApplication(this, 'application', {
       alarms: {
         http5xxErrorPercentage: {
-          actions: config.isProd ? [snsTopic.arn] : [],
+          actions: config.isProd ? [] : [],
           evaluationPeriods: 4,
           period: 300, //5 mins each
           threshold: 25,
