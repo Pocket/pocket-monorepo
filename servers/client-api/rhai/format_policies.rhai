@@ -11,8 +11,8 @@ fn process_request(request) {
             // Example policy: 'is_application_native:true'
             // checks for 'is_application_native' key in JWT claims
             // then checks if the value serializes to 'true'
-            if claims.contains_key(array[0]) {
-              policies[key] = claims[array[0]].to_string == array[1];
+            if array[0] in claims {
+              policies[key] = claims[array[0]].to_string() == array[1];
             }
           }
         }
