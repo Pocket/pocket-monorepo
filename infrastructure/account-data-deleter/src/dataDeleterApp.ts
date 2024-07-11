@@ -9,15 +9,11 @@ import {
   dataAwsSnsTopic,
 } from '@cdktf/provider-aws';
 
-import {
-  PocketALBApplication,
-  PocketPagerDuty,
-} from '@pocket-tools/terraform-modules';
+import { PocketALBApplication } from '@pocket-tools/terraform-modules';
 
 import { Construct } from 'constructs';
 
 export type DataDeleterAppConfig = {
-  pagerDuty?: PocketPagerDuty;
   region: dataAwsRegion.DataAwsRegion;
   caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
   secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
@@ -37,8 +33,7 @@ export class DataDeleterApp extends Construct {
   }
 
   private createPocketAlbApplication(): PocketALBApplication {
-    const { pagerDuty, region, caller, secretsManagerKmsAlias, snsTopic } =
-      this.config;
+    const { region, caller, secretsManagerKmsAlias, snsTopic } = this.config;
 
     const databaseSecretsArn = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/READITLA_DB`;
     // Set out the DB connection details for the production (legacy) database.
@@ -64,7 +59,7 @@ export class DataDeleterApp extends Construct {
     return new PocketALBApplication(this, 'application', {
       alarms: {
         http5xxErrorPercentage: {
-          actions: pagerDuty ? [pagerDuty.snsNonCriticalAlarmTopic.arn] : [],
+          actions: config.isProd ? [] : [],
           evaluationPeriods: 4,
           period: 300, //5 mins each
           threshold: 25,

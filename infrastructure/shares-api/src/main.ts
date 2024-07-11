@@ -11,15 +11,10 @@ import {
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
-import {
-  provider as pagerdutyProvider,
-  dataPagerdutyEscalationPolicy,
-} from '@cdktf/provider-pagerduty';
 import { config } from './config';
 import {
   PocketALBApplication,
   PocketAwsSyntheticChecks,
-  PocketPagerDuty,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
 import { DynamoDB } from './dynamodb';
@@ -31,9 +26,6 @@ class SharesAPI extends TerraformStack {
     new awsProvider.AwsProvider(this, 'aws', {
       region: 'us-east-1',
       defaultTags: [{ tags: config.tags }],
-    });
-    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
-      token: undefined,
     });
     new localProvider.LocalProvider(this, 'local_provider');
     new nullProvider.NullProvider(this, 'null_provider');
@@ -54,12 +46,11 @@ class SharesAPI extends TerraformStack {
     const pocketVPC = new PocketVPC(this, 'pocket-vpc');
     const dynamodb = new DynamoDB(this, 'dynamodb');
 
-    const sharesApiPagerduty = this.createPagerDuty();
+    const alarmSnsTopic = this.getCodeDeploySnsTopic();
 
     this.createPocketAlbApplication({
-      pagerDuty: sharesApiPagerduty,
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
-      snsTopic: this.getCodeDeploySnsTopic(),
+      snsTopic: alarmSnsTopic,
       region,
       caller,
       dynamodb,
@@ -68,10 +59,7 @@ class SharesAPI extends TerraformStack {
     const youUpQuery = `query { __typename }`;
 
     new PocketAwsSyntheticChecks(this, 'synthetics', {
-      alarmTopicArn:
-        config.environment === 'Prod'
-          ? sharesApiPagerduty.snsNonCriticalAlarmTopic.arn
-          : '',
+      alarmTopicArn: config.isProd ? alarmSnsTopic.arn : '',
       environment: config.environment,
       prefix: config.prefix,
       query: [
@@ -115,37 +103,7 @@ class SharesAPI extends TerraformStack {
     });
   }
 
-  /**
-   * Create PagerDuty service for alerts
-   * @private
-   */
-  private createPagerDuty() {
-    // don't create any pagerduty resources if in dev
-    if (config.isDev) {
-      return undefined;
-    }
-
-    const nonCriticalEscalationPolicyId =
-      new dataPagerdutyEscalationPolicy.DataPagerdutyEscalationPolicy(
-        this,
-        'non_critical_escalation_policy',
-        {
-          name: 'Pocket On-Call: Default Non-Critical - Tier 2+ (Former Backend Temporary Holder)',
-        },
-      ).id;
-
-    return new PocketPagerDuty(this, 'pagerduty', {
-      prefix: config.prefix,
-      service: {
-        // This is a Tier 2 service and as such only raises non-critical alarms.
-        criticalEscalationPolicyId: nonCriticalEscalationPolicyId,
-        nonCriticalEscalationPolicyId: nonCriticalEscalationPolicyId,
-      },
-    });
-  }
-
   private createPocketAlbApplication(dependencies: {
-    pagerDuty: PocketPagerDuty;
     region: dataAwsRegion.DataAwsRegion;
     caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;

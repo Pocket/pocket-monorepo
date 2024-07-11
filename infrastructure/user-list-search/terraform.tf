@@ -14,10 +14,6 @@ terraform {
       source  = "hashicorp/null"
       version = "~> 3.2.2"
     }
-    pagerduty = {
-      source  = "pagerduty/pagerduty"
-      version = "~> 3.11.0"
-    }
   }
 
   required_version = ">= 1.8.3"

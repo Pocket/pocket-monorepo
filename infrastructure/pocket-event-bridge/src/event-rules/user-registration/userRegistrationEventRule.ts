@@ -2,7 +2,6 @@ import { Construct } from 'constructs';
 import {
   PocketEventBridgeProps,
   PocketEventBridgeRuleWithMultipleTargets,
-  PocketPagerDuty,
 } from '@pocket-tools/terraform-modules';
 import { config } from '../../config';
 import {
@@ -10,6 +9,7 @@ import {
   snsTopic,
   dataAwsIamPolicyDocument,
   snsTopicPolicy,
+  dataAwsSnsTopic,
 } from '@cdktf/provider-aws';
 import { resource } from '@cdktf/provider-null';
 import { eventConfig } from './eventConfig';
@@ -21,7 +21,7 @@ export class UserRegistrationEventRule extends Construct {
   constructor(
     scope: Construct,
     private name: string,
-    private pagerDuty: PocketPagerDuty,
+    private snsAlarmTopic: dataAwsSnsTopic.DataAwsSnsTopic,
   ) {
     super(scope, name);
 

@@ -2,7 +2,6 @@ import { Construct } from 'constructs';
 import {
   PocketEventBridgeProps,
   PocketEventBridgeRuleWithMultipleTargets,
-  PocketPagerDuty,
 } from '@pocket-tools/terraform-modules';
 import { config } from '../../config';
 import {
@@ -10,6 +9,7 @@ import {
   snsTopic,
   dataAwsIamPolicyDocument,
   snsTopicPolicy,
+  dataAwsSnsTopic,
 } from '@cdktf/provider-aws';
 import { resource } from '@cdktf/provider-null';
 import { eventConfig } from './eventConfig';
@@ -22,7 +22,7 @@ export class CorpusEvents extends Construct {
   constructor(
     scope: Construct,
     private name: string,
-    private pagerDuty: PocketPagerDuty,
+    private snsAlarmTopic: dataAwsSnsTopic.DataAwsSnsTopic,
   ) {
     super(scope, name);
 
@@ -44,7 +44,7 @@ export class CorpusEvents extends Construct {
     //get alerted if we get 10 messages in DLQ in 4 evaluation period of 5 minutes (for shareable-list)
     createDeadLetterQueueAlarm(
       this,
-      pagerDuty,
+      snsAlarmTopic,
       this.snsTopicDlq.name,
       `${eventConfig.CorpusItem.name}-Rule-dlq-alarm`,
       true,

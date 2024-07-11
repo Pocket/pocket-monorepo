@@ -3,7 +3,6 @@ import {
   PocketEventBridgeProps,
   PocketEventBridgeRuleWithMultipleTargets,
   ApplicationEventBus,
-  PocketPagerDuty,
 } from '@pocket-tools/terraform-modules';
 import { config } from '../../config';
 import {
@@ -12,6 +11,7 @@ import {
   dataAwsRegion,
   dataAwsCallerIdentity,
   cloudwatchLogResourcePolicy,
+  dataAwsSnsTopic,
 } from '@cdktf/provider-aws';
 
 import { Resource } from '@cdktf/provider-null/lib/resource';
@@ -24,7 +24,7 @@ export class AllEventsRule extends Construct {
     scope: Construct,
     name: string,
     private sharedEventBus: ApplicationEventBus,
-    private pagerDuty: PocketPagerDuty,
+    private snsAlarmTopic: dataAwsSnsTopic.DataAwsSnsTopic,
   ) {
     super(scope, name);
 

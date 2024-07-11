@@ -11,15 +11,10 @@ import {
 import { config } from './config';
 import {
   PocketALBApplication,
-  PocketPagerDuty,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
-import {
-  provider as pagerdutyProvider,
-  dataPagerdutyEscalationPolicy,
-} from '@cdktf/provider-pagerduty';
 import * as fs from 'fs';
 
 class UserAPI extends TerraformStack {
@@ -31,9 +26,6 @@ class UserAPI extends TerraformStack {
       defaultTags: [{ tags: config.tags }],
     });
 
-    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
-      token: undefined,
-    });
     new localProvider.LocalProvider(this, 'local_provider');
     new nullProvider.NullProvider(this, 'null_provider');
 
@@ -52,7 +44,6 @@ class UserAPI extends TerraformStack {
     );
 
     this.createPocketAlbApplication({
-      pagerDuty: this.createPagerDuty(),
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
       region,
@@ -80,52 +71,13 @@ class UserAPI extends TerraformStack {
     });
   }
 
-  /**
-   * Create PagerDuty service for alerts
-   * @private
-   */
-  private createPagerDuty() {
-    // don't create any pagerduty resources if in dev
-    if (config.isDev) {
-      return undefined;
-    }
-
-    const nonCriticalEscalationPolicyId =
-      new dataPagerdutyEscalationPolicy.DataPagerdutyEscalationPolicy(
-        this,
-        'non_critical_escalation_policy',
-        {
-          name: 'Pocket On-Call: Default Non-Critical - Tier 2+ (Former Backend Temporary Holder)',
-        },
-      ).id;
-
-    const criticalEscalationPolicyId =
-      new dataPagerdutyEscalationPolicy.DataPagerdutyEscalationPolicy(
-        this,
-        'critical_escalation_policy',
-        {
-          name: 'Pocket On-Call: Default Critical - Tier 1 (Former Backend Temporary Holder)',
-        },
-      ).id;
-
-    return new PocketPagerDuty(this, 'pagerduty', {
-      prefix: config.prefix,
-      service: {
-        criticalEscalationPolicyId: criticalEscalationPolicyId,
-        nonCriticalEscalationPolicyId: nonCriticalEscalationPolicyId,
-      },
-    });
-  }
-
   private createPocketAlbApplication(dependencies: {
-    pagerDuty: PocketPagerDuty;
     region: dataAwsRegion.DataAwsRegion;
     caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
     snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
   }): PocketALBApplication {
-    const { pagerDuty, region, caller, secretsManagerKmsAlias, snsTopic } =
-      dependencies;
+    const { region, caller, secretsManagerKmsAlias, snsTopic } = dependencies;
 
     const databaseSecretsArn = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/READITLA_DB`;
     const intMaskSecretArn = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/IntMask`;
@@ -341,7 +293,7 @@ class UserAPI extends TerraformStack {
       },
       autoscalingConfig: {
         targetMinCapacity: config.environment === 'Prod' ? 2 : 1,
-        targetMaxCapacity: config.environment === 'Prod' ? 10 : 10,
+        targetMaxCapacity: config.environment === 'Prod' ? 10 : 1,
       },
       alarms: {
         //TODO: When we start using this more we will change from non-critical to critical
@@ -351,10 +303,7 @@ class UserAPI extends TerraformStack {
           threshold: 25, // This is a percentage
           evaluationPeriods: 4,
           period: 300, // 5 mins
-          actions:
-            config.environment === 'Prod'
-              ? [pagerDuty.snsNonCriticalAlarmTopic.arn]
-              : [],
+          actions: config.isDev ? [] : [snsTopic.arn],
         },
         httpLatency: {
           // If the latency is greater than 150 ms for 1 hour continuously i.e
@@ -363,10 +312,7 @@ class UserAPI extends TerraformStack {
           period: 900,
           evaluationPeriods: 4,
           threshold: 0.15,
-          actions:
-            config.environment === 'Prod'
-              ? [pagerDuty.snsNonCriticalAlarmTopic.arn]
-              : [],
+          actions: config.isDev ? [] : [snsTopic.arn],
         },
       },
     });

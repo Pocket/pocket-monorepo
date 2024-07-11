@@ -1,10 +1,7 @@
 import { Construct } from 'constructs';
 import { App, S3Backend, TerraformStack } from 'cdktf';
 import { config } from './config';
-import {
-  PocketECSApplication,
-  PocketPagerDuty,
-} from '@pocket-tools/terraform-modules';
+import { PocketECSApplication } from '@pocket-tools/terraform-modules';
 import * as fs from 'fs';
 
 import {
@@ -16,10 +13,6 @@ import {
   dataAwsSqsQueue,
   dataAwsSnsTopic,
 } from '@cdktf/provider-aws';
-import {
-  provider as pagerdutyProvider,
-  dataPagerdutyEscalationPolicy,
-} from '@cdktf/provider-pagerduty';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
@@ -32,9 +25,6 @@ class PushServer extends TerraformStack {
     new awsProvider.AwsProvider(this, 'aws', {
       region: 'us-east-1',
       defaultTags: [{ tags: config.tags }],
-    });
-    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
-      token: undefined,
     });
     new nullProvider.NullProvider(this, 'null-provider');
     new localProvider.LocalProvider(this, 'local-provider');
@@ -56,7 +46,6 @@ class PushServer extends TerraformStack {
     //NOTE: THis service uses CPU based autoscaling, this should move to SQS based autoscaling based on the Job queue in the future.
     // https://mozilla-hub.atlassian.net/browse/POCKET-9583
     this.createPocketECSApplication({
-      pagerDuty: this.createPagerDuty(),
       region,
       caller,
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
@@ -67,35 +56,6 @@ class PushServer extends TerraformStack {
         name: config.tokenQueueName,
       }),
       snsTopic: this.getCodeDeploySnsTopic(),
-    });
-  }
-
-  /**
-   * Create PagerDuty service for alerts
-   * @private
-   */
-  private createPagerDuty(): PocketPagerDuty | undefined {
-    // don't create any pagerduty resources if in dev
-    if (config.isDev) {
-      return undefined;
-    }
-
-    const nonCriticalEscalationPolicyId =
-      new dataPagerdutyEscalationPolicy.DataPagerdutyEscalationPolicy(
-        this,
-        'non_critical_escalation_policy',
-        {
-          name: 'Pocket On-Call: Default Non-Critical - Tier 2+ (Former Backend Temporary Holder)',
-        },
-      ).id;
-
-    return new PocketPagerDuty(this, 'pagerduty', {
-      prefix: config.prefix,
-      service: {
-        // This is a Tier 2 service and as such only raises non-critical alarms.
-        criticalEscalationPolicyId: nonCriticalEscalationPolicyId,
-        nonCriticalEscalationPolicyId: nonCriticalEscalationPolicyId,
-      },
     });
   }
 
@@ -120,7 +80,6 @@ class PushServer extends TerraformStack {
   }
 
   private createPocketECSApplication(dependencies: {
-    pagerDuty: PocketPagerDuty;
     region: dataAwsRegion.DataAwsRegion;
     caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
