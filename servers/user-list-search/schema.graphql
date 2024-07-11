@@ -165,7 +165,7 @@ type Query {
     filter: CorpusSearchFilters!,
     sort: CorpusSearchSort,
     pagination: PaginationInput
-  ): CorpusSearchConnection @policy(policies: [["application_is_native"]])
+  ): CorpusSearchConnection @policy(policies: [["application_is_native:true"]])
 }
 
 type User @key(fields: "id") {
