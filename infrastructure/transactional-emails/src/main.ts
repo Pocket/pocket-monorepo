@@ -8,16 +8,13 @@ import {
   sqsQueuePolicy,
   snsTopicSubscription,
   dataAwsIamPolicyDocument,
+  dataAwsSnsTopic,
 } from '@cdktf/provider-aws';
-import {
-  provider as pagerdutyProvider,
-  dataPagerdutyEscalationPolicy,
-} from '@cdktf/provider-pagerduty';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
 import { config } from './config';
-import { PocketPagerDuty, PocketVPC } from '@pocket-tools/terraform-modules';
+import { PocketVPC } from '@pocket-tools/terraform-modules';
 import * as fs from 'fs';
 import { TransactionalEmailSQSLambda } from './transactionalEmailSQSLambda';
 
@@ -28,9 +25,6 @@ class TransactionalEmails extends TerraformStack {
     new awsProvider.AwsProvider(this, 'aws', {
       region: 'us-east-1',
       defaultTags: [{ tags: config.tags }],
-    });
-    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
-      token: undefined,
     });
     new localProvider.LocalProvider(this, 'local_provider');
     new nullProvider.NullProvider(this, 'null_provider');
@@ -54,7 +48,7 @@ class TransactionalEmails extends TerraformStack {
       this,
       'events',
       pocketVpc,
-      this.createPagerDuty(),
+      this.getAlarmSnsTopic(),
     );
 
     //dlq for sqs-sns subscription
@@ -77,31 +71,12 @@ class TransactionalEmails extends TerraformStack {
   }
 
   /**
-   * Create PagerDuty service for alerts
+   * Get the sns topic for alarms
    * @private
    */
-  private createPagerDuty() {
-    // don't create any pagerduty resources if in dev
-    if (config.isDev) {
-      return undefined;
-    }
-
-    const nonCriticalEscalationPolicyId =
-      new dataPagerdutyEscalationPolicy.DataPagerdutyEscalationPolicy(
-        this,
-        'non_critical_escalation_policy',
-        {
-          name: 'Pocket On-Call: Default Non-Critical - Tier 2+ (Former Backend Temporary Holder)',
-        },
-      ).id;
-
-    return new PocketPagerDuty(this, 'pagerduty', {
-      prefix: config.prefix,
-      service: {
-        // This is a Tier 2 service and as such only raises non-critical alarms.
-        criticalEscalationPolicyId: nonCriticalEscalationPolicyId,
-        nonCriticalEscalationPolicyId: nonCriticalEscalationPolicyId,
-      },
+  private getAlarmSnsTopic() {
+    return new dataAwsSnsTopic.DataAwsSnsTopic(this, 'backend_notifications', {
+      name: `Backend-${config.environment}-ChatBot`,
     });
   }
 

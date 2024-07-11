@@ -2,7 +2,6 @@ import { Construct } from 'constructs';
 import {
   PocketEventBridgeProps,
   PocketEventBridgeRuleWithMultipleTargets,
-  PocketPagerDuty,
 } from '@pocket-tools/terraform-modules';
 import { config } from '../../config';
 import {
@@ -10,6 +9,7 @@ import {
   dataAwsIamPolicyDocument,
   snsTopicPolicy,
   sqsQueue,
+  dataAwsSnsTopic,
 } from '@cdktf/provider-aws';
 import { resource } from '@cdktf/provider-null';
 import { eventConfig } from './eventConfig';
@@ -22,7 +22,7 @@ export class ForgotPassword extends Construct {
   constructor(
     scope: Construct,
     private name: string,
-    private pagerDuty: PocketPagerDuty,
+    private snsAlarmTopic: dataAwsSnsTopic.DataAwsSnsTopic,
   ) {
     super(scope, name);
 
@@ -44,7 +44,7 @@ export class ForgotPassword extends Construct {
 
     createDeadLetterQueueAlarm(
       this,
-      pagerDuty,
+      snsAlarmTopic,
       this.snsTopicDlq.name,
       `${eventConfig.name}-rule-dlq-alarm`,
     );

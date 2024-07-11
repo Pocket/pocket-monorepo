@@ -18,12 +18,6 @@ import {
 } from '@cdktf/provider-aws';
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
-import {
-  provider as pagerdutyProvider,
-  dataPagerdutyEscalationPolicy,
-} from '@cdktf/provider-pagerduty';
-
-import { PocketPagerDuty } from '@pocket-tools/terraform-modules';
 import { Construct } from 'constructs';
 import { App, S3Backend, TerraformStack } from 'cdktf';
 
@@ -37,9 +31,6 @@ class SnowplowSharedConsumerStack extends TerraformStack {
     new awsProvider.AwsProvider(this, 'aws', {
       region: 'us-east-1',
       defaultTags: [{ tags: config.tags }],
-    });
-    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
-      token: undefined,
     });
     new localProvider.LocalProvider(this, 'local_provider');
     new nullProvider.NullProvider(this, 'null_provider');
@@ -57,7 +48,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
       this,
       'caller',
     );
-    const pagerDuty = this.createPagerDuty();
+    const alarmSnsTopic = this.getCodeDeploySnsTopic();
 
     // Consume Queue - receives all events from event-bridge
     const sqsConsumeQueue = new sqsQueue.SqsQueue(
@@ -78,7 +69,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
 
     // DLQ Alarm.
     this.createDeadLetterQueueAlarm(
-      pagerDuty,
+      alarmSnsTopic,
       snsTopicDlq.name,
       `${config.prefix}-Dlq-Alarm`,
     );
@@ -158,10 +149,9 @@ class SnowplowSharedConsumerStack extends TerraformStack {
     // ECS app creation.
     const appProps: SharedSnowplowConsumerProps = {
       caller: caller,
-      pagerDuty: pagerDuty,
       region: region,
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
-      snsTopic: this.getCodeDeploySnsTopic(),
+      snsTopic: alarmSnsTopic,
       sqsConsumeQueue: sqsConsumeQueue,
       sqsDLQ: snsTopicDlq,
     };
@@ -220,35 +210,6 @@ class SnowplowSharedConsumerStack extends TerraformStack {
         }),
       },
     );
-  }
-
-  /**
-   * Create PagerDuty service for alerts
-   * @private
-   */
-  private createPagerDuty() {
-    // don't create any pagerduty resources if in dev
-    if (config.isDev) {
-      return undefined;
-    }
-
-    const nonCriticalEscalationPolicyId =
-      new dataPagerdutyEscalationPolicy.DataPagerdutyEscalationPolicy(
-        this,
-        'non_critical_escalation_policy',
-        {
-          name: 'Pocket On-Call: Default Non-Critical - Tier 2+ (Former Backend Temporary Holder)',
-        },
-      ).id;
-
-    return new PocketPagerDuty(this, 'pagerduty', {
-      prefix: config.prefix,
-      service: {
-        // This is a Tier 2 service and as such only raises non-critical alarms.
-        criticalEscalationPolicyId: nonCriticalEscalationPolicyId,
-        nonCriticalEscalationPolicyId: nonCriticalEscalationPolicyId,
-      },
-    });
   }
 
   /**
@@ -311,7 +272,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
    * Create a non-critical alarm in prod environment for
    * SQS queue based on the number of messages visible.
    * Default is 15 alerts on 2 evaluation period of 15 minutes.
-   * @param pagerDuty
+   * @param alarmSnsTopic
    * @param queueName dead-letter queue name
    * @param alarmName alarm name (please pass event-rule name for a clear description)
    * @param evaluationPeriods
@@ -320,7 +281,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
    * @private
    */
   private createDeadLetterQueueAlarm(
-    pagerDuty: PocketPagerDuty,
+    alarmSnsTopic: dataAwsSnsTopic.DataAwsSnsTopic,
     queueName: string,
     alarmName: string,
     evaluationPeriods = 2,
@@ -331,9 +292,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
       this,
       alarmName.toLowerCase(),
       {
-        alarmActions: config.isDev
-          ? []
-          : [pagerDuty.snsNonCriticalAlarmTopic.arn],
+        alarmActions: config.isDev ? [] : [alarmSnsTopic.arn],
         alarmDescription: `Number of messages >= ${threshold}`,
         alarmName: `${config.prefix}-${alarmName}`,
         comparisonOperator: 'GreaterThanOrEqualToThreshold',
@@ -341,7 +300,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
         evaluationPeriods: evaluationPeriods,
         metricName: 'ApproximateNumberOfMessagesVisible',
         namespace: 'AWS/SQS',
-        okActions: config.isDev ? [] : [pagerDuty.snsNonCriticalAlarmTopic.arn],
+        okActions: config.isDev ? [] : [alarmSnsTopic.arn],
         period: periodInSeconds,
         statistic: 'Sum',
         threshold: threshold,

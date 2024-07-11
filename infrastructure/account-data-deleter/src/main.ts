@@ -14,12 +14,7 @@ import {
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import {
-  provider as pagerdutyProvider,
-  dataPagerdutyEscalationPolicy,
-} from '@cdktf/provider-pagerduty';
-import {
   ApplicationSQSQueue,
-  PocketPagerDuty,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
 
@@ -37,9 +32,6 @@ class AccountDataDeleter extends TerraformStack {
     });
     new localProvider.LocalProvider(this, 'local-provider');
     new nullProvider.NullProvider(this, 'null-provider');
-    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty-provider', {
-      token: undefined,
-    });
 
     new S3Backend(this, {
       bucket: `mozilla-pocket-team-${config.environment.toLowerCase()}-terraform-state`,
@@ -53,7 +45,6 @@ class AccountDataDeleter extends TerraformStack {
       'caller',
     );
     const region = new dataAwsRegion.DataAwsRegion(this, 'region');
-    const pagerDuty = this.createPagerDuty();
     const pocketVpc = new PocketVPC(this, 'pocket-vpc');
 
     const batchDeleteQueue = new ApplicationSQSQueue(
@@ -70,7 +61,6 @@ class AccountDataDeleter extends TerraformStack {
     );
 
     const dataDeleterAppConfig: DataDeleterAppConfig = {
-      pagerDuty: pagerDuty,
       region: region,
       caller: caller,
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
@@ -104,35 +94,6 @@ class AccountDataDeleter extends TerraformStack {
   private getCodeDeploySnsTopic() {
     return new dataAwsSnsTopic.DataAwsSnsTopic(this, 'backend_notifications', {
       name: `Backend-${config.environment}-ChatBot`,
-    });
-  }
-
-  /**
-   * Create PagerDuty service for alerts
-   * @private
-   */
-  private createPagerDuty() {
-    // don't create any pagerduty resources if in dev
-    if (config.isDev) {
-      return undefined;
-    }
-
-    const nonCriticalEscalationPolicyId =
-      new dataPagerdutyEscalationPolicy.DataPagerdutyEscalationPolicy(
-        this,
-        'non_critical_escalation_policy',
-        {
-          name: 'Pocket On-Call: Default Non-Critical - Tier 2+ (Former Backend Temporary Holder)',
-        },
-      ).id;
-
-    return new PocketPagerDuty(this, 'pagerduty', {
-      prefix: config.prefix,
-      service: {
-        // This is a Tier 2 service and as such only raises non-critical alarms.
-        criticalEscalationPolicyId: nonCriticalEscalationPolicyId,
-        nonCriticalEscalationPolicyId: nonCriticalEscalationPolicyId,
-      },
     });
   }
 }

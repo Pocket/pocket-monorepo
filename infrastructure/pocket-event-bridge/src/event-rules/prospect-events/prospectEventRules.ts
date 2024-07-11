@@ -4,7 +4,6 @@ import {
   PocketEventBridgeRuleWithMultipleTargets,
   ApplicationEventBus,
   PocketEventBridgeTargets,
-  PocketPagerDuty,
 } from '@pocket-tools/terraform-modules';
 import { config } from '../../config';
 import {
@@ -13,6 +12,7 @@ import {
   dataAwsIamPolicyDocument,
   snsTopicPolicy,
   sqsQueuePolicy,
+  dataAwsSnsTopic,
 } from '@cdktf/provider-aws';
 import { resource } from '@cdktf/provider-null';
 import { eventConfig } from './eventConfig';
@@ -54,7 +54,7 @@ export class ProspectEvents extends Construct {
     scope: Construct,
     private name: string,
     private sharedEventBus: ApplicationEventBus,
-    private pagerDuty: PocketPagerDuty,
+    private snsAlarmTopic: dataAwsSnsTopic.DataAwsSnsTopic,
   ) {
     super(scope, name);
 
@@ -93,7 +93,7 @@ export class ProspectEvents extends Construct {
     //prospect-alert triggering false alert for 1 message in the DLQ
     createDeadLetterQueueAlarm(
       this,
-      pagerDuty,
+      snsAlarmTopic,
       this.sqsDlq.name,
       `${eventConfig.name}-Rule-DLQ-Alarm`,
       false, // temporarily disabled, see note above

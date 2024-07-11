@@ -10,10 +10,6 @@ import {
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import {
-  provider as pagerdutyProvider,
-  dataPagerdutyEscalationPolicy,
-} from '@cdktf/provider-pagerduty';
-import {
   ApplicationRDSCluster,
   PocketALBApplication,
   PocketPagerDuty,
@@ -30,9 +26,6 @@ class ListAPI extends TerraformStack {
     new awsProvider.AwsProvider(this, 'aws', {
       region: 'us-east-1',
       defaultTags: [{ tags: config.tags }],
-    });
-    new pagerdutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
-      token: undefined,
     });
     new nullProvider.NullProvider(this, 'null-provider');
     new localProvider.LocalProvider(this, 'local-provider');
@@ -52,7 +45,6 @@ class ListAPI extends TerraformStack {
       'caller',
     );
     this.createPocketAlbApplication({
-      pagerDuty: this.createPagerDuty(),
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
       region,
@@ -78,35 +70,6 @@ class ListAPI extends TerraformStack {
   private getSecretsManagerKmsAlias() {
     return new dataAwsKmsAlias.DataAwsKmsAlias(this, 'kms_alias', {
       name: 'alias/aws/secretsmanager',
-    });
-  }
-
-  /**
-   * Create PagerDuty service for alerts
-   * @private
-   */
-  private createPagerDuty() {
-    // don't create any pagerduty resources if in dev
-    if (config.isDev) {
-      return undefined;
-    }
-
-    const nonCriticalEscalationPolicyId =
-      new dataPagerdutyEscalationPolicy.DataPagerdutyEscalationPolicy(
-        this,
-        'non_critical_escalation_policy',
-        {
-          name: 'Pocket On-Call: Default Non-Critical - Tier 2+ (Former Backend Temporary Holder)',
-        },
-      ).id;
-
-    return new PocketPagerDuty(this, 'pagerduty', {
-      prefix: config.prefix,
-      service: {
-        // This is a Tier 2 service and as such only raises non-critical alarms.
-        criticalEscalationPolicyId: nonCriticalEscalationPolicyId,
-        nonCriticalEscalationPolicyId: nonCriticalEscalationPolicyId,
-      },
     });
   }
 
@@ -145,7 +108,7 @@ class ListAPI extends TerraformStack {
     snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
     vpc: PocketVPC;
   }): PocketALBApplication {
-    const { pagerDuty, region, caller, secretsManagerKmsAlias, snsTopic, vpc } =
+    const { region, caller, secretsManagerKmsAlias, snsTopic, vpc } =
       dependencies;
 
     const databaseSecretsArn = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/READITLA_DB`;
@@ -471,7 +434,7 @@ class ListAPI extends TerraformStack {
           threshold: 25,
           evaluationPeriods: 4,
           period: 300,
-          actions: config.isDev ? [] : [pagerDuty.snsNonCriticalAlarmTopic.arn],
+          actions: config.isDev ? [] : [snsTopic.arn],
         },
       },
     });
