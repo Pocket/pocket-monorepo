@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "@graphql-codegen/cli": "5.0.2",
-    "@graphql-codegen/typescript": "4.0.7",
+    "@graphql-codegen/typescript": "4.0.9",
     "@graphql-codegen/typescript-resolvers": "^4.1.0",
     "@pocket-tools/eslint-config": "workspace:*",
     "@sentry/types": "8.17.0",
