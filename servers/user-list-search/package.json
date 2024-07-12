@@ -68,6 +68,6 @@
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
     "typescript": "5.4.5",
-    "unleash-client": "5.5.3"
+    "unleash-client": "5.6.1"
   }
 }
