@@ -2513,8 +2513,8 @@ importers:
         specifier: 5.6.1
         version: 5.6.1
       unleash-server:
-        specifier: 5.11.2
-        version: 5.11.2(core-js@3.37.1)(encoding@0.1.13)(mobx@6.13.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
+        specifier: 5.12.7
+        version: 5.12.7(core-js@3.37.1)(encoding@0.1.13)(mobx@6.13.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -7018,9 +7018,6 @@ packages:
 
   ajv@6.12.6:
     resolution: {integrity: sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==}
-
-  ajv@8.13.0:
-    resolution: {integrity: sha512-PRA911Blj99jR5RMeTunVbNXMF6Lp4vZXnk5GQjcnUWUTsrXtekg/pnmFFI2u/I36Y/2bITGS30GZCXei6uNkA==}
 
   ajv@8.16.0:
     resolution: {integrity: sha512-F0twR8U1ZU67JIEtekUcLkXkoO5mMMmgGD8sK/xUFzJ805jxHQl92hImFAqqXMyMYjSPOyUPAwHYhB72g5sTXw==}
@@ -11549,15 +11546,6 @@ packages:
     resolution: {integrity: sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==}
     engines: {node: '>=4'}
 
-  pg@8.11.5:
-    resolution: {integrity: sha512-jqgNHSKL5cbDjFlHyYsCXmQDrfIX/3RsNwYqpd4N0Kt8niLuNoRNH+aazv6cOd43gPh9Y4DjQCtb+X0MH0Hvnw==}
-    engines: {node: '>= 8.0.0'}
-    peerDependencies:
-      pg-native: '>=3.0.1'
-    peerDependenciesMeta:
-      pg-native:
-        optional: true
-
   pg@8.12.0:
     resolution: {integrity: sha512-A+LHUSnwnxrnL/tZ+OLfqR1SxLN3c/pgDztZ47Rpbsd4jUytsTtwQo/TLPRzPJMp/1pbhYVhH9cuSZLAajNfjQ==}
     engines: {node: '>= 8.0.0'}
@@ -13177,8 +13165,8 @@ packages:
     resolution: {integrity: sha512-ZmFDhnq0c3Y4CEp+S3ureS9jZFMG/mtyafv4zxW4pmG0vc7xgxE9zBX296lrrrINsc2G0/2uJeoO+9b0bks+mg==}
     engines: {node: '>=16'}
 
-  unleash-server@5.11.2:
-    resolution: {integrity: sha512-NkSR4bhlzVuLiZ1gttu/n+lFR2jckIDxkeZDq2QhFGzBXe6hhuo8Tx7xPxKUCFwqtvi418z9d/cae6NsuZhuHA==}
+  unleash-server@5.12.7:
+    resolution: {integrity: sha512-ABsNiNXXVRjGwjnk+iib4FtgBYN2kJy/ycZbO6QFXp7lEL4Cv8uI5LpMvlTXu6v75LW6/9IoGW8/DX7HCARrGA==}
     engines: {node: '>=18 <21'}
 
   unpipe@1.0.0:
@@ -18455,7 +18443,7 @@ snapshots:
 
   '@slack/logger@3.0.0':
     dependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.10
 
   '@slack/types@2.11.0': {}
 
@@ -18464,7 +18452,7 @@ snapshots:
       '@slack/logger': 3.0.0
       '@slack/types': 2.11.0
       '@types/is-stream': 1.1.0
-      '@types/node': 20.14.2
+      '@types/node': 20.14.10
       axios: 1.7.2
       eventemitter3: 3.1.2
       form-data: 2.5.1
@@ -18955,7 +18943,7 @@ snapshots:
 
   '@types/graceful-fs@4.1.9':
     dependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.10
 
   '@types/graphql-depth-limit@1.1.6':
     dependencies:
@@ -18992,7 +18980,7 @@ snapshots:
 
   '@types/is-stream@1.1.0':
     dependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.10
 
   '@types/istanbul-lib-coverage@2.0.6': {}
 
@@ -19296,8 +19284,8 @@ snapshots:
 
   '@wesleytodd/openapi@0.3.0(core-js@3.37.1)(encoding@0.1.13)(mobx@6.13.0)(openapi-types@12.1.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
     dependencies:
-      ajv: 8.13.0
-      ajv-formats: 2.1.1(ajv@8.13.0)
+      ajv: 8.16.0
+      ajv-formats: 2.1.1(ajv@8.16.0)
       http-errors: 2.0.0
       merge-deep: 3.0.3
       path-to-regexp: 6.2.2
@@ -19434,22 +19422,15 @@ snapshots:
       clean-stack: 5.2.0
       indent-string: 5.0.0
 
-  ajv-formats@2.1.1(ajv@8.13.0):
+  ajv-formats@2.1.1(ajv@8.16.0):
     optionalDependencies:
-      ajv: 8.13.0
+      ajv: 8.16.0
 
   ajv@6.12.6:
     dependencies:
       fast-deep-equal: 3.1.3
       fast-json-stable-stringify: 2.1.0
       json-schema-traverse: 0.4.1
-      uri-js: 4.4.1
-
-  ajv@8.13.0:
-    dependencies:
-      fast-deep-equal: 3.1.3
-      json-schema-traverse: 1.0.0
-      require-from-string: 2.0.2
       uri-js: 4.4.1
 
   ajv@8.16.0:
@@ -19944,7 +19925,7 @@ snapshots:
     dependencies:
       '@npmcli/fs': 3.1.0
       fs-minipass: 3.0.3
-      glob: 10.3.12
+      glob: 10.4.1
       lru-cache: 7.18.3
       minipass: 7.1.2
       minipass-collect: 1.0.2
@@ -20466,10 +20447,10 @@ snapshots:
       ini: 1.3.8
       proto-list: 1.2.4
 
-  connect-session-knex@3.0.1(pg@8.11.5):
+  connect-session-knex@3.0.1(pg@8.12.0):
     dependencies:
       bluebird: 3.7.2
-      knex: 2.5.1(pg@8.11.5)
+      knex: 2.5.1(pg@8.12.0)
     transitivePeerDependencies:
       - better-sqlite3
       - mysql
@@ -20762,7 +20743,7 @@ snapshots:
     dependencies:
       bluebird: 3.7.2
       db-migrate-base: 2.3.1
-      pg: 8.11.5
+      pg: 8.12.0
       semver: 7.6.2
     transitivePeerDependencies:
       - pg-native
@@ -21872,7 +21853,7 @@ snapshots:
   gaxios@6.5.0(encoding@0.1.13):
     dependencies:
       extend: 3.0.2
-      https-proxy-agent: 7.0.4
+      https-proxy-agent: 7.0.5
       is-stream: 2.0.1
       node-fetch: 2.7.0(encoding@0.1.13)
       uuid: 9.0.1
@@ -22976,7 +22957,7 @@ snapshots:
       '@jest/expect': 29.7.0
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.14.2
+      '@types/node': 20.14.10
       chalk: 4.1.2
       co: 4.6.0
       dedent: 1.5.3
@@ -23166,7 +23147,7 @@ snapshots:
       '@jest/environment': 29.7.0
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.14.2
+      '@types/node': 20.14.10
       jest-mock: 29.7.0
       jest-util: 29.7.0
 
@@ -23370,7 +23351,7 @@ snapshots:
 
   jest-worker@29.7.0:
     dependencies:
-      '@types/node': 20.14.2
+      '@types/node': 20.14.10
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
@@ -23464,7 +23445,7 @@ snapshots:
       whatwg-encoding: 2.0.0
       whatwg-mimetype: 3.0.0
       whatwg-url: 11.0.0
-      ws: 8.17.0
+      ws: 8.18.0
       xml-name-validator: 4.0.0
     transitivePeerDependencies:
       - bufferutil
@@ -23677,7 +23658,7 @@ snapshots:
 
   kleur@4.1.5: {}
 
-  knex@2.5.1(pg@8.11.5):
+  knex@2.5.1(pg@8.12.0):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -23694,7 +23675,7 @@ snapshots:
       tarn: 3.0.2
       tildify: 2.0.0
     optionalDependencies:
-      pg: 8.11.5
+      pg: 8.12.0
     transitivePeerDependencies:
       - supports-color
 
@@ -24878,14 +24859,9 @@ snapshots:
 
   pg-int8@1.0.1: {}
 
-  pg-pool@3.6.2(pg@8.11.5):
-    dependencies:
-      pg: 8.11.5
-
   pg-pool@3.6.2(pg@8.12.0):
     dependencies:
       pg: 8.12.0
-    optional: true
 
   pg-protocol@1.6.1: {}
 
@@ -24897,16 +24873,6 @@ snapshots:
       postgres-date: 1.0.7
       postgres-interval: 1.2.0
 
-  pg@8.11.5:
-    dependencies:
-      pg-connection-string: 2.6.4
-      pg-pool: 3.6.2(pg@8.11.5)
-      pg-protocol: 1.6.1
-      pg-types: 2.2.0
-      pgpass: 1.0.5
-    optionalDependencies:
-      pg-cloudflare: 1.1.1
-
   pg@8.12.0:
     dependencies:
       pg-connection-string: 2.6.4
@@ -24916,7 +24882,6 @@ snapshots:
       pgpass: 1.0.5
     optionalDependencies:
       pg-cloudflare: 1.1.1
-    optional: true
 
   pgpass@1.0.5:
     dependencies:
@@ -26801,16 +26766,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  unleash-server@5.11.2(core-js@3.37.1)(encoding@0.1.13)(mobx@6.13.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1)):
+  unleash-server@5.12.7(core-js@3.37.1)(encoding@0.1.13)(mobx@6.13.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1)):
     dependencies:
       '@slack/web-api': 6.12.0
       '@wesleytodd/openapi': 0.3.0(core-js@3.37.1)(encoding@0.1.13)(mobx@6.13.0)(openapi-types@12.1.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
-      ajv: 8.13.0
-      ajv-formats: 2.1.1(ajv@8.13.0)
+      ajv: 8.16.0
+      ajv-formats: 2.1.1(ajv@8.16.0)
       async: 3.2.5
       bcryptjs: 2.4.3
       compression: 1.7.4
-      connect-session-knex: 3.0.1(pg@8.11.5)
+      connect-session-knex: 3.0.1(pg@8.12.0)
       cookie-parser: 1.4.6
       cookie-session: 2.1.0
       cors: 2.8.5
@@ -26835,7 +26800,7 @@ snapshots:
       json-diff: 1.0.6
       json-schema-to-ts: 2.12.0
       json2csv: 5.0.7
-      knex: 2.5.1(pg@8.11.5)
+      knex: 2.5.1(pg@8.12.0)
       lodash.get: 4.4.2
       lodash.groupby: 4.6.0
       lodash.sortby: 4.7.0
@@ -26850,7 +26815,7 @@ snapshots:
       openapi-types: 12.1.3
       owasp-password-strength-test: 1.3.0
       parse-database-url: 0.3.0
-      pg: 8.11.5
+      pg: 8.12.0
       pg-connection-string: 2.6.4
       pkginfo: 0.4.1
       prom-client: 14.2.0
@@ -27255,7 +27220,7 @@ snapshots:
     dependencies:
       lodash.get: 4.4.2
       lodash.isequal: 4.5.0
-      validator: 13.11.0
+      validator: 13.12.0
     optionalDependencies:
       commander: 9.5.0
 
