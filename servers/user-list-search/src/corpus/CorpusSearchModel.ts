@@ -36,6 +36,7 @@ export class CorpusSearchModel {
     const edges: CorpusSearchEdge[] = body.hits.hits.map((doc) => ({
       cursor: Paginator.encodeCursor(doc.sort),
       node: {
+        id: doc._source.corpusId,
         url: doc._source.url,
         searchHighlights: {
           title: doc.highlight?.title ?? null,

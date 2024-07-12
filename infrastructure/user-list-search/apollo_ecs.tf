@@ -52,6 +52,10 @@ module "apollo" {
       value = local.elastic_index
     },
     {
+      name = "EVENT_BUS_NAME"
+      value = local.event_bus_name
+    },
+    {
       name  = "CORPUS_INDEX_EN"
       value = local.corpus_index_en
     },

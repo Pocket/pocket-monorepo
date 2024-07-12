@@ -13,6 +13,7 @@ export type CorpusDocumentProperties = Partial<{
   collection_labels: string | string[];
   content_type_children: string | string[];
   content_type_parent: string;
+  corpusId: string;
   created_at: Date;
   curation_category: string;
   curation_source: string;

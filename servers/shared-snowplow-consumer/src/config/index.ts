@@ -68,6 +68,7 @@ export const config = {
       // source or update the source field?
       // todo: kat - set this as the source field for events?
       sharesApi: 'pocket-shares-api',
+      searchApi: 'pocket-search-api',
     },
   },
 };

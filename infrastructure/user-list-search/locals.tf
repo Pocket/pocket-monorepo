@@ -17,6 +17,7 @@ locals {
   container_name       = "node"
   container_credential = "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:Shared/DockerHub"
   elastic_index        = "list"
+  event_bus_name       = "PocketEventBridge-${local.env}-Shared-Event-Bus"
   corpus_index_en      = "corpus_en"
   corpus_index_fr      = "corpus_fr"
   corpus_index_es      = "corpus_es"

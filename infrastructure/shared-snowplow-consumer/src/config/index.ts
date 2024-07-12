@@ -53,6 +53,7 @@ export const config = {
     shareableListItemEventTopic: 'ShareableListItemEventTopic',
     collectionEventTopic: 'CollectionEventTopic',
     sharesApiEventTopic: 'SharesApiEventTopic',
+    searchApiEventTopic: 'SearchApiEventTopic',
   },
   envVars: {
     snowplowEndpoint: snowplowEndpoint,

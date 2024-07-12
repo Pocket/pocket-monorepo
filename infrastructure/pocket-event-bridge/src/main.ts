@@ -28,6 +28,7 @@ import { UserRegistrationEventSchema } from './events-schema/userRegistrationEve
 import { AllEventsRule } from './event-rules/all-events/allEventRules';
 import { ForgotPassword as ForgotPasswordRequest } from './event-rules/forgot-password-request';
 import { SharesApiEvents } from './event-rules/shares-api-events/pocketShareEventRules';
+import { SearchApiEvents } from './event-rules/search-api-events/pocketSearchEventRules';
 import { CorpusEvents } from './event-rules/corpus-events/corpusEventRules';
 
 class PocketEventBus extends TerraformStack {
@@ -135,6 +136,13 @@ class PocketEventBus extends TerraformStack {
     new SharesApiEvents(
       this,
       'shares-api-events',
+      sharedPocketEventBus,
+      alarmSnsTopic,
+    );
+    // search-api events
+    new SearchApiEvents(
+      this,
+      'search-api-events',
       sharedPocketEventBus,
       alarmSnsTopic,
     );

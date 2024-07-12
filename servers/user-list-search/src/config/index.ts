@@ -69,6 +69,11 @@ export const config = {
         process.env.SQS_USER_LIST_IMPORT_BACKFILL_URL ||
         'http://localhost:4566/000000000000/UserListSearch-Dev-UserListImportBackfill',
     },
+    eventBus: {
+      name:
+        process.env.EVENT_BUS_NAME || 'PocketEventBridge-Dev-Shared-Event-Bus',
+      source: 'search-api-events',
+    },
   },
   sentry: {
     dsn: process.env.SENTRY_DSN || '',

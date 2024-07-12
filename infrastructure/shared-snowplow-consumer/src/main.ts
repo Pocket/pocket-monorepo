@@ -119,6 +119,15 @@ class SnowplowSharedConsumerStack extends TerraformStack {
       config.eventBridge.sharesApiEventTopic,
     );
 
+    // Consumer Queue should be able to listen to search result events from search-api
+    const searchApiEventTopicArn = `arn:aws:sns:${region.name}:${caller.accountId}:${config.eventBridge.prefix}-${config.environment}-${config.eventBridge.searchApiEventTopic}`;
+    this.subscribeSqsToSnsTopic(
+      sqsConsumeQueue,
+      snsTopicDlq,
+      searchApiEventTopicArn,
+      config.eventBridge.searchApiEventTopic,
+    );
+
     // Consumer Queue should be able to listen to collection-created and collection-updated events from collection-api.
     const collectionEventTopicArn = `arn:aws:sns:${region.name}:${caller.accountId}:${config.eventBridge.prefix}-${config.environment}-${config.eventBridge.collectionEventTopic}`;
     this.subscribeSqsToSnsTopic(
@@ -136,6 +145,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
       shareableListItemEventTopicArn,
       collectionEventTopicArn,
       sharesApiEventTopicArn,
+      searchApiEventTopicArn,
     ];
 
     // Assigns inline access policy for SQS and DLQ.
