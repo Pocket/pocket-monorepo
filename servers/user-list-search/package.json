@@ -49,7 +49,7 @@
   "devDependencies": {
     "@faker-js/faker": "8.4.1",
     "@graphql-codegen/cli": "5.0.2",
-    "@graphql-codegen/typescript": "4.0.7",
+    "@graphql-codegen/typescript": "4.0.9",
     "@graphql-codegen/typescript-resolvers": "^4.1.0",
     "@pocket-tools/eslint-config": "workspace:*",
     "@types/elasticsearch": "^5.0.37",
