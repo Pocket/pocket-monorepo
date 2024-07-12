@@ -38,7 +38,7 @@
     "passport": "0.7.0",
     "passport-jwt": "4.0.1",
     "tslib": "2.6.3",
-    "unleash-client": "5.5.3",
+    "unleash-client": "5.6.1",
     "unleash-server": "5.11.2"
   },
   "devDependencies": {
