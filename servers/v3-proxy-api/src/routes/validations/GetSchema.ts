@@ -7,7 +7,7 @@ import { timeSeconds } from './shared';
 export type V3GetParams = {
   access_token?: string;
   consumer_key: string;
-  contentType?: 'article' | 'image' | 'video';
+  contentType?: 'article' | 'image' | 'video' | 'all';
   count: number;
   detailType: 'simple' | 'complete';
   favorite?: boolean;
@@ -133,7 +133,7 @@ export const V3GetSchema: Schema = {
     optional: true,
     toLowerCase: true,
     isIn: {
-      options: [['article', 'image', 'video']],
+      options: [['article', 'image', 'video', 'all']],
     },
   },
   favorite: {

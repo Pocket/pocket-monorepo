@@ -111,6 +111,8 @@ export function SavedItemsFilterFactory(params: V3GetParams) {
         video: { contentType: SavedItemsContentType.HasVideoInclusive },
         article: { contentType: SavedItemsContentType.IsReadable },
         image: { contentType: SavedItemsContentType.IsImage },
+        // "all" is implicit -- the absence of a filter value
+        all: undefined,
       };
       return contentMap[val];
     },
