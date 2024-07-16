@@ -6,6 +6,18 @@ import {
 } from '../types';
 
 /**
+ * Returns a URl that will always have some kind of HTTP prefix if one does not exist.
+ * @param url URL that we want to update to have a prefix
+ */
+export function ensureHttpPrefix(url: string): string {
+  const urlPattern = /^(https?|ftp|mailto|file|data|ws|wss|tel):\/?\/?/i; // Regex to match common URL schemes
+  if (!urlPattern.test(url)) {
+    return 'http://' + url;
+  }
+  return url;
+}
+
+/**
  * Returns a savedItemMap from the list of tags.
  * @param tags list of tags from which savedItem keys are generated.
  */

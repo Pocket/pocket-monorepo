@@ -208,6 +208,56 @@ describe('UpsertSavedItem Mutation', () => {
       expect(data.favoritedAt).toBeNull();
     });
 
+    it('should add a valid item that does not have a http:// and return savedItem with http:// added', async () => {
+      const variables = {
+        url: 'getpocket.com',
+      };
+
+      const ADD_AN_ITEM = `
+        mutation addAnItem($url: String!) {
+          upsertSavedItem(input: { url: $url }) {
+            id
+            url
+            title
+            _createdAt
+            _updatedAt
+            favoritedAt
+            archivedAt
+            isFavorite
+            isArchived
+            _deletedAt
+            _version
+            item {
+              ... on Item {
+                givenUrl
+              }
+            }
+            tags {
+              name
+            }
+          }
+        }
+      `;
+
+      const mutationResult = await request(app).post(url).set(headers).send({
+        query: ADD_AN_ITEM,
+        variables,
+      });
+      expect(mutationResult).not.toBeNull();
+      const data = mutationResult.body.data?.upsertSavedItem;
+      expect(data.id).toEqual('8');
+      expect(data.title).toEqual(`http://${variables.url}`);
+      expect(data.url).toEqual(`http://${variables.url}`);
+      expect(data.isFavorite).toBeFalse();
+      expect(data.isArchived).toBeFalse();
+      expect(data._deletedAt).toBeNull();
+      expect(data._version).toBeNull();
+      expect(data.item.givenUrl).toEqual(`http://${variables.url}`);
+      expect(data.tags[0].name).toEqual('zebra');
+      expect(data.archivedAt).toBeNull();
+      expect(data.favoritedAt).toBeNull();
+    });
+
     it('should return user provided title on the returned savedItem', async () => {
       const variables = {
         url: 'http://getpocket.com',
