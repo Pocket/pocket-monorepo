@@ -1,9 +1,22 @@
 import { SavedItemTagsInput, Tag } from '../types';
 import {
   atLeastOneOf,
+  ensureHttpPrefix,
   getSavedItemMapFromTags,
   getSavedItemTagsMap,
 } from './utils';
+
+describe('ensureHttpPrefix', () => {
+  it.each([
+    { input: 'getpocket.com', expected: 'http://getpocket.com' },
+    { input: 'http://getpocket.com', expected: 'http://getpocket.com' },
+    { input: 'https://getpocket.com', expected: 'https://getpocket.com' },
+    { input: 'ftp://getpocket.com', expected: 'ftp://getpocket.com' },
+    { input: 'mailto:getpocket.com', expected: 'mailto:getpocket.com' },
+  ])('should always return a prefixed url', ({ input, expected }) => {
+    expect(ensureHttpPrefix(input)).toEqual(expected);
+  });
+});
 
 describe('getSavedItemMapFromTags', () => {
   it('should return a savedItem map from a list of tags', () => {
