@@ -623,7 +623,20 @@ describe('getSavedItems filter', () => {
       ),
     ).toContainAllValues(['1', '2', '4', '5', '6']); // Don't care about sort for this test
   });
-
+  it('should work with ridiculous future values for updatedSince', async () => {
+    const variables = {
+      id: '1',
+      filter: {
+        updatedSince: 63888163575,
+      },
+    };
+    const res = await request(app).post(url).set(headers).send({
+      query: GET_SAVED_ITEMS,
+      variables,
+    });
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?._entities[0].savedItems.edges.length).toBe(0);
+  });
   it('should be combined with other filters properly', async () => {
     const variables = {
       id: '1',
