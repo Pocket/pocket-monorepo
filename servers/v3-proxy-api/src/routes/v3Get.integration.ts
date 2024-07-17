@@ -1102,7 +1102,17 @@ describe('v3Get', () => {
         contentType: 'unsupported-pod',
         sort: 'gravity',
       },
-      // Duplicate query param case
+      // since < 0
+      {
+        consumer_key: 'test',
+        access_token: 'test',
+        since: '-1233',
+      },
+      {
+        consumer_key: 'test',
+        access_token: 'test',
+        since: '-1233.343',
+      },
       {
         tag: ['abc', '123'],
       },
