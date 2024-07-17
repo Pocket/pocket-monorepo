@@ -193,5 +193,6 @@ export class SnowplowHandler {
     this.tracker.setSessionId(data.request?.snowplowDomainSessionId);
     this.tracker.setIpAddress(data.request?.ipAddress); // get the remote address from teh x-forwarded-for header
     this.tracker.setUseragent(data.request?.userAgent);
+    this.tracker.setUserId(data.user.hashedId);
   }
 }
