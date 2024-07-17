@@ -50,7 +50,7 @@
     "lodash": "4.17.21",
     "luxon": "3.4.4",
     "md5": "2.3.0",
-    "mysql2": "3.9.8",
+    "mysql2": "3.10.3",
     "open-graph-scraper": "^6.5.2",
     "qs": "6.12.1",
     "reflect-metadata": "0.2.2",
