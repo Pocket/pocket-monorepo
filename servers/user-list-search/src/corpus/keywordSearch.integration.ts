@@ -11,6 +11,7 @@ describe('Corpus search - keyword', () => {
   let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;
+  const defaultHeaders = { userid: '1', applicationisnative: 'true' };
   beforeAll(async () => {
     await deleteDocuments();
     await seedCorpus();
@@ -58,7 +59,7 @@ describe('Corpus search - keyword', () => {
     };
     const res = await request(app)
       .post(url)
-      .set({ userid: '1' })
+      .set(defaultHeaders)
       .send({
         query: print(SEARCH_CORPUS),
         variables,
@@ -98,7 +99,7 @@ describe('Corpus search - keyword', () => {
       };
       const res = await request(app)
         .post(url)
-        .set({ userid: '1' })
+        .set(defaultHeaders)
         .send({
           query: print(SEARCH_CORPUS),
           variables,
@@ -146,7 +147,7 @@ describe('Corpus search - keyword', () => {
       };
       const res = await request(app)
         .post(url)
-        .set({ userid: '1' })
+        .set(defaultHeaders)
         .send({
           query: print(SEARCH_CORPUS),
           variables,
@@ -167,7 +168,7 @@ describe('Corpus search - keyword', () => {
       };
       const res = await request(app)
         .post(url)
-        .set({ userid: '1' })
+        .set(defaultHeaders)
         .send({
           query: print(SEARCH_CORPUS),
           variables,
@@ -188,7 +189,7 @@ describe('Corpus search - keyword', () => {
       };
       const res = await request(app)
         .post(url)
-        .set({ userid: '1' })
+        .set(defaultHeaders)
         .send({
           query: print(SEARCH_CORPUS),
           variables,
@@ -209,7 +210,7 @@ describe('Corpus search - keyword', () => {
       };
       const res = await request(app)
         .post(url)
-        .set({ userid: '1' })
+        .set(defaultHeaders)
         .send({
           query: print(SEARCH_CORPUS),
           variables,
@@ -233,7 +234,7 @@ describe('Corpus search - keyword', () => {
         };
         const res = await request(app)
           .post(url)
-          .set({ userid: '1' })
+          .set(defaultHeaders)
           .send({
             query: print(SEARCH_CORPUS),
             variables,
@@ -261,7 +262,7 @@ describe('Corpus search - keyword', () => {
         };
         const res = await request(app)
           .post(url)
-          .set({ userid: '1' })
+          .set(defaultHeaders)
           .send({
             query: print(SEARCH_CORPUS),
             variables,
@@ -288,7 +289,7 @@ describe('Corpus search - keyword', () => {
         };
         const res = await request(app)
           .post(url)
-          .set({ userid: '1' })
+          .set(defaultHeaders)
           .send({
             query: print(SEARCH_CORPUS),
             variables,
@@ -317,7 +318,7 @@ describe('Corpus search - keyword', () => {
         };
         const res = await request(app)
           .post(url)
-          .set({ userid: '1' })
+          .set(defaultHeaders)
           .send({
             query: print(SEARCH_CORPUS),
             variables,
@@ -344,7 +345,7 @@ describe('Corpus search - keyword', () => {
         };
         const res = await request(app)
           .post(url)
-          .set({ userid: '1' })
+          .set(defaultHeaders)
           .send({
             query: print(SEARCH_CORPUS),
             variables,
@@ -371,7 +372,7 @@ describe('Corpus search - keyword', () => {
         };
         const res = await request(app)
           .post(url)
-          .set({ userid: '1' })
+          .set(defaultHeaders)
           .send({
             query: print(SEARCH_CORPUS),
             variables,
@@ -393,7 +394,7 @@ describe('Corpus search - keyword', () => {
       };
       const res = await request(app)
         .post(url)
-        .set({ userid: '1' })
+        .set(defaultHeaders)
         .send({
           query: print(SEARCH_CORPUS),
           variables,
@@ -413,7 +414,7 @@ describe('Corpus search - keyword', () => {
       };
       const res = await request(app)
         .post(url)
-        .set({ userid: '1' })
+        .set(defaultHeaders)
         .send({
           query: print(SEARCH_CORPUS),
           variables,
@@ -434,7 +435,7 @@ describe('Corpus search - keyword', () => {
       };
       const res = await request(app)
         .post(url)
-        .set({ userid: '1' })
+        .set(defaultHeaders)
         .send({
           query: print(SEARCH_CORPUS),
           variables,
@@ -454,7 +455,7 @@ describe('Corpus search - keyword', () => {
       };
       const res = await request(app)
         .post(url)
-        .set({ userid: '1' })
+        .set(defaultHeaders)
         .send({
           query: print(SEARCH_CORPUS),
           variables,
@@ -473,7 +474,7 @@ describe('Corpus search - keyword', () => {
       };
       const res = await request(app)
         .post(url)
-        .set({ userid: '1' })
+        .set(defaultHeaders)
         .send({
           query: print(SEARCH_CORPUS),
           variables,
@@ -494,7 +495,7 @@ describe('Corpus search - keyword', () => {
       };
       const res = await request(app)
         .post(url)
-        .set({ userid: '1' })
+        .set(defaultHeaders)
         .send({
           query: print(SEARCH_CORPUS),
           variables,
@@ -521,7 +522,7 @@ describe('Corpus search - keyword', () => {
       };
       const res = await request(app)
         .post(url)
-        .set({ userid: '1' })
+        .set(defaultHeaders)
         .send({
           query: print(SEARCH_CORPUS),
           variables,
@@ -544,7 +545,7 @@ describe('Corpus search - keyword', () => {
       };
       const res = await request(app)
         .post(url)
-        .set({ userid: '1' })
+        .set(defaultHeaders)
         .send({
           query: print(SEARCH_CORPUS),
           variables,
@@ -574,7 +575,7 @@ describe('Corpus search - keyword', () => {
       };
       const firstRes = await request(app)
         .post(url)
-        .set({ userid: '1' })
+        .set(defaultHeaders)
         .send({
           query: print(SEARCH_CORPUS),
           variables,
@@ -582,7 +583,7 @@ describe('Corpus search - keyword', () => {
       const cursor = firstRes.body.data.searchCorpus.pageInfo.endCursor;
       const res = await request(app)
         .post(url)
-        .set({ userid: '1' })
+        .set(defaultHeaders)
         .send({
           query: print(SEARCH_CORPUS),
           variables: { ...variables, pagination: { first: 3, after: cursor } },
