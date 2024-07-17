@@ -975,6 +975,19 @@ describe('v3Get', () => {
         sort: 'shortest',
         since: '12345',
       },
+      {
+        consumer_key: 'test',
+        access_token: 'test',
+        detailType: 'complete',
+        contentType: 'all',
+        count: '10',
+        offset: '10',
+        state: 'read',
+        favorite: '0',
+        tag: 'tag',
+        sort: 'shortest',
+        since: '12345',
+      },
     ])('should work with valid query parameters (GET)', async (params) => {
       jest
         .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
@@ -1005,6 +1018,18 @@ describe('v3Get', () => {
         detailType: 'complete',
       });
       expect(apiSpy.mock.lastCall[3].filter.updatedSince).toEqual(123123);
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+    });
+    it('should not add contentType filter if value="all"', async () => {
+      const apiSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).get('/v3/get').query({
+        consumer_key: 'test',
+        access_token: 'test',
+        detailType: 'complete',
+      });
+      expect(apiSpy.mock.lastCall[3].filter).toBeUndefined();
       expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
     it.each([1719263946000, 1719263946, '1719263946000', '1719263946'])(

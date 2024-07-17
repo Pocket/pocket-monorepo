@@ -22,11 +22,11 @@
   },
   "dependencies": {
     "@apollo/server": "4.10.4",
-    "@apollo/subgraph": "2.8.2",
+    "@apollo/subgraph": "2.8.3",
     "@govtechsg/passport-openidconnect": "1.0.2",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
-    "@sentry/node": "8.16.0",
+    "@sentry/node": "8.17.0",
     "body-parser": "1.20.2",
     "cors": "2.8.5",
     "express": "4.19.2",
@@ -38,8 +38,8 @@
     "passport": "0.7.0",
     "passport-jwt": "4.0.1",
     "tslib": "2.6.3",
-    "unleash-client": "5.5.3",
-    "unleash-server": "5.11.2"
+    "unleash-client": "5.6.1",
+    "unleash-server": "5.12.7"
   },
   "devDependencies": {
     "@pocket-tools/eslint-config": "workspace:*",

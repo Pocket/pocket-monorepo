@@ -16,9 +16,9 @@
   },
   "dependencies": {
     "@pocket-tools/lambda-secrets": "workspace:*",
-    "@sentry/aws-serverless": "8.16.0",
+    "@sentry/aws-serverless": "8.17.0",
     "knex": "3.1.0",
-    "mysql2": "3.9.8",
+    "mysql2": "3.10.3",
     "nanoid": "3.3.7",
     "tslib": "2.6.3"
   },
