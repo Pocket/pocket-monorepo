@@ -248,8 +248,8 @@ class Stack extends TerraformStack {
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },
       autoscalingConfig: {
-        targetMinCapacity: config.isDev ? 1 : 2,
-        targetMaxCapacity: 10,
+        targetMinCapacity: config.isDev ? 1 : 4,
+        targetMaxCapacity: 20,
       },
       alarms: {
         //TODO: When you start using the service add the pagerduty arns as an action `pagerDuty.snsNonCriticalAlarmTopic.arn`

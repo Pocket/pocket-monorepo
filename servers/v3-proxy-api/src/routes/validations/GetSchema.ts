@@ -108,12 +108,10 @@ export const V3GetSchema: Schema = {
   },
   since: {
     optional: true,
-    isInt: {
-      options: {
-        min: 0,
-      },
-    },
     toInt: true,
+    custom: {
+      options: (since) => (since < 0 ? false : true),
+    },
     customSanitizer: {
       options: (value) => timeSeconds(value),
     },
