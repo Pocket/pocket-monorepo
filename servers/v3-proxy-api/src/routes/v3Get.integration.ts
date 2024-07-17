@@ -1032,7 +1032,14 @@ describe('v3Get', () => {
       expect(apiSpy.mock.lastCall[3].filter).toBeUndefined();
       expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
-    it.each([1719263946000, 1719263946, '1719263946000', '1719263946'])(
+    it.each([
+      1719263946000,
+      1719263946,
+      '1719263946000',
+      '1719263946',
+      '1719263946.129312',
+      1719263946.129312,
+    ])(
       'should convert since milliseconds to seconds, but leave seconds alone',
       async (time) => {
         const apiSpy = jest
