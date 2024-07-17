@@ -52,6 +52,9 @@ headers:
           named: 'X-Amzn-Trace-Id'
       - propagate:
           named: 'transfersub'
+      - propagate:
+          named: 'web-request-snowplow-session-user-id'
+          rename: 'gatewaySnowplowDomainSessionId'
 telemetry:
   apollo:
     send_variable_values:
