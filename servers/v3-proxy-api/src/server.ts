@@ -16,7 +16,7 @@ import v3SendRouter from './routes/v3Send';
 export async function startServer(port: number) {
   const app: Application = express();
   const httpServer: Server = createServer(app);
-  const sizeLimit = '600kb';
+  const sizeLimit = '15mb';
 
   app.use(json({ limit: sizeLimit }));
   app.use(urlencoded({ limit: sizeLimit, extended: true }));
