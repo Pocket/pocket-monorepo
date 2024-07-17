@@ -43,6 +43,7 @@ export type BasicItemEventPayloadContext = {
   request?: {
     language?: string;
     snowplowDomainUserId?: string;
+    snowplowDomainSessionId?: string;
     ipAddress?: string;
     userAgent?: string;
   };
