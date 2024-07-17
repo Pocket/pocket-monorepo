@@ -190,6 +190,7 @@ export class SnowplowHandler {
   private addRequestInfoToTracker(data: ItemEventPayload) {
     this.tracker.setLang(data.request?.language);
     this.tracker.setDomainUserId(data.request?.snowplowDomainUserId); // possibly grab from cookie else grab from context
+    this.tracker.setSessionId(data.request?.snowplowDomainSessionId);
     this.tracker.setIpAddress(data.request?.ipAddress); // get the remote address from teh x-forwarded-for header
     this.tracker.setUseragent(data.request?.userAgent);
   }
