@@ -20,7 +20,37 @@ describe('Corpus search - keyword', () => {
     await deleteDocuments();
     await server.stop();
   });
-  it.todo('should work for logged-out users using a pocket application');
+  it('should work for logged-out users using a pocket application', async () => {
+    const variables = {
+      search: { query: 'refrigerator' },
+      filter: { language: 'EN' },
+    };
+    const res = await request(app)
+      .post(url)
+      .set({ userid: 'anonymous', applicationisnative: 'true' })
+      .send({
+        query: print(SEARCH_CORPUS),
+        variables,
+      });
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data.searchCorpus).toBeTruthy();
+  });
+  it('should not work for logged-out users on a non-native app', async () => {
+    const variables = {
+      search: { query: 'refrigerator' },
+      filter: { language: 'EN' },
+    };
+    const res = await request(app)
+      .post(url)
+      .set({ userid: 'anonymous', applicationisnative: 'false' })
+      .send({
+        query: print(SEARCH_CORPUS),
+        variables,
+      });
+    expect(res.body.errors).toBeArrayOfSize(1);
+    expect(res.body.errors[0].extensions.code).toEqual('FORBIDDEN');
+    expect(res.body.data.searchCorpus).toBeNull();
+  });
   it('should return all expected fields and work with minimum required inputs', async () => {
     const variables = {
       search: { query: 'refrigerator' },
