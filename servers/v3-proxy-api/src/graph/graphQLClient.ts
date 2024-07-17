@@ -158,7 +158,8 @@ export class GraphQLClientFactory {
               error.path &&
               Array.isArray(error.path) &&
               error.path.indexOf('recentSearches') &&
-              error.extensions.code === 'FORBIDDEN'
+              (error.extensions.code === 'FORBIDDEN' ||
+                error.extensions.code === 'UNAUTHORIZED_FIELD_OR_TYPE')
             ),
         );
         // If there are still other kinds of errors, throw;
