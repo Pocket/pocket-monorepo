@@ -17,7 +17,7 @@ importers:
     devDependencies:
       '@commitlint/cli':
         specifier: 19.3.0
-        version: 19.3.0(@types/node@20.14.10)(typescript@5.6.0-dev.20240715)
+        version: 19.3.0(@types/node@20.14.10)(typescript@5.6.0-dev.20240716)
       '@commitlint/config-conventional':
         specifier: ^19.2.2
         version: 19.2.2
@@ -26,7 +26,7 @@ importers:
         version: link:packages/eslint-config
       syncpack:
         specifier: ^12.3.3
-        version: 12.3.3(typescript@5.6.0-dev.20240715)
+        version: 12.3.3(typescript@5.6.0-dev.20240716)
       tsconfig:
         specifier: workspace:*
         version: link:packages/tsconfig
@@ -1204,10 +1204,10 @@ importers:
         version: 8.17.0(@opentelemetry/api@1.9.0)
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.9.8)
+        version: 3.1.0(mysql2@3.10.3)
       mysql2:
-        specifier: 3.9.8
-        version: 3.9.8
+        specifier: 3.10.3
+        version: 3.10.3
       nanoid:
         specifier: 3.3.7
         version: 3.3.7
@@ -2254,10 +2254,10 @@ importers:
         version: 7.1.0
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.9.8)
+        version: 3.1.0(mysql2@3.10.3)
       mysql2:
-        specifier: 3.9.8
-        version: 3.9.8
+        specifier: 3.10.3
+        version: 3.10.3
       nanoid:
         specifier: 3.3.7
         version: 3.3.7
@@ -2375,7 +2375,7 @@ importers:
         version: 2.12.6(graphql@16.8.1)
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.9.8)
+        version: 3.1.0(mysql2@3.10.3)
       luxon:
         specifier: 3.4.4
         version: 3.4.4
@@ -2383,8 +2383,8 @@ importers:
         specifier: 2.3.0
         version: 2.3.0
       mysql2:
-        specifier: 3.9.8
-        version: 3.9.8
+        specifier: 3.10.3
+        version: 3.10.3
       nanoid:
         specifier: 3.3.7
         version: 3.3.7
@@ -2729,7 +2729,7 @@ importers:
         version: 2.12.6(graphql@16.8.1)
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.9.8)
+        version: 3.1.0(mysql2@3.10.3)
       locutus:
         specifier: 2.0.32
         version: 2.0.32
@@ -2740,8 +2740,8 @@ importers:
         specifier: 3.4.4
         version: 3.4.4
       mysql2:
-        specifier: 3.9.8
-        version: 3.9.8
+        specifier: 3.10.3
+        version: 3.10.3
       tslib:
         specifier: 2.6.3
         version: 2.6.3
@@ -2912,8 +2912,8 @@ importers:
         specifier: 2.3.0
         version: 2.3.0
       mysql2:
-        specifier: 3.9.8
-        version: 3.9.8
+        specifier: 3.10.3
+        version: 3.10.3
       open-graph-scraper:
         specifier: ^6.5.2
         version: 6.5.2
@@ -2971,7 +2971,7 @@ importers:
         version: 29.7.0(@types/node@20.14.2)(ts-node@10.9.2(@types/node@20.14.2)(typescript@5.4.5))
       kysely-codegen:
         specifier: ^0.15.0
-        version: 0.15.0(kysely@0.27.3)(mysql2@3.9.8)(pg@8.12.0)(tarn@3.0.2)
+        version: 0.15.0(kysely@0.27.3)(mysql2@3.10.3)(pg@8.12.0)(tarn@3.0.2)
       nock:
         specifier: 14.0.0-beta.6
         version: 14.0.0-beta.6
@@ -3115,8 +3115,8 @@ importers:
         specifier: 0.27.3
         version: 0.27.3
       mysql2:
-        specifier: 3.9.8
-        version: 3.9.8
+        specifier: 3.10.3
+        version: 3.10.3
       prisma:
         specifier: 5.14.0
         version: 5.14.0
@@ -3404,13 +3404,13 @@ importers:
         version: 2.12.6(graphql@16.8.1)
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.9.8)
+        version: 3.1.0(mysql2@3.10.3)
       luxon:
         specifier: 3.4.4
         version: 3.4.4
       mysql2:
-        specifier: 3.9.8
-        version: 3.9.8
+        specifier: 3.10.3
+        version: 3.10.3
       tslib:
         specifier: 2.6.3
         version: 2.6.3
@@ -3522,13 +3522,13 @@ importers:
         version: 2.12.6(graphql@16.8.1)
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.9.8)
+        version: 3.1.0(mysql2@3.10.3)
       lodash:
         specifier: 4.17.21
         version: 4.17.21
       mysql2:
-        specifier: 3.9.8
-        version: 3.9.8
+        specifier: 3.10.3
+        version: 3.10.3
       nanoid:
         specifier: 3.3.7
         version: 3.3.7
@@ -7199,6 +7199,10 @@ packages:
   aws-sdk@2.1614.0:
     resolution: {integrity: sha512-dsfoOk/1UBGfELJ9skBma1RzfYXalK+0QdStuwKCqrYHgpF/mlf7BqYOB0acNQHzxgVxEP0LOGjWZOzWWwdGhw==}
     engines: {node: '>= 10.0.0'}
+
+  aws-ssl-profiles@1.1.1:
+    resolution: {integrity: sha512-+H+kuK34PfMaI9PNU/NSjBKL5hh/KDM9J72kwYeYEm0A8B1AC4fuCy3qsjnA7lxklgyXsB68yn8Z2xoZEjgwCQ==}
+    engines: {node: '>= 6.0.0'}
 
   aws4@1.13.0:
     resolution: {integrity: sha512-3AungXC4I8kKsS9PuS4JH2nc+0bVY/mjgrephHTIi8fpEeGsTHBUJeosp0Wc1myYMElmD0B3Oc4XL/HVJ4PV2g==}
@@ -10874,8 +10878,8 @@ packages:
     resolution: {integrity: sha512-avsJQhyd+680gKXyG/sQc0nXaC6rBkPOfyHYcFb9+hdkqQkR9bdnkJ0AMZhke0oesPqIO+mFFJ+IdBc7mst4IA==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  mysql2@3.9.8:
-    resolution: {integrity: sha512-+5JKNjPuks1FNMoy9TYpl77f+5frbTklz7eb3XDwbpsERRLEeXiW2PDEkakYF50UuKU2qwfGnyXpKYvukv8mGA==}
+  mysql2@3.10.3:
+    resolution: {integrity: sha512-k43gmH9i79rZD4hGPdj7pDuT0UBiFjs4UzXEy1cJrV0QqcSABomoLwvejqdbcXN+Vd7gi999CVM6o9vCPKq29g==}
     engines: {node: '>= 8.0'}
 
   mz@2.7.0:
@@ -13071,8 +13075,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.6.0-dev.20240715:
-    resolution: {integrity: sha512-CLF8WFoqLgHgxQqjklkEOw3gT99Y2YNU4+TfkJurX5bfejAUYpb2jBjiYOn5Rq9HCew6ceZlRaG7Q++6/fBvVA==}
+  typescript@5.6.0-dev.20240716:
+    resolution: {integrity: sha512-2ggzBwkH7PNY9/nztA6f7Wid7lSP+ayfJqAzNfZcLHvDFQCuvaeE2B6G1dxUEJQtaQa60f/aJYLwh4tZaHZAig==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -15475,11 +15479,11 @@ snapshots:
     dependencies:
       commander: 12.1.0
 
-  '@commitlint/cli@19.3.0(@types/node@20.14.10)(typescript@5.6.0-dev.20240715)':
+  '@commitlint/cli@19.3.0(@types/node@20.14.10)(typescript@5.6.0-dev.20240716)':
     dependencies:
       '@commitlint/format': 19.3.0
       '@commitlint/lint': 19.2.2
-      '@commitlint/load': 19.2.0(@types/node@20.14.10)(typescript@5.6.0-dev.20240715)
+      '@commitlint/load': 19.2.0(@types/node@20.14.10)(typescript@5.6.0-dev.20240716)
       '@commitlint/read': 19.2.1
       '@commitlint/types': 19.0.3
       execa: 8.0.1
@@ -15526,15 +15530,15 @@ snapshots:
       '@commitlint/rules': 19.0.3
       '@commitlint/types': 19.0.3
 
-  '@commitlint/load@19.2.0(@types/node@20.14.10)(typescript@5.6.0-dev.20240715)':
+  '@commitlint/load@19.2.0(@types/node@20.14.10)(typescript@5.6.0-dev.20240716)':
     dependencies:
       '@commitlint/config-validator': 19.0.3
       '@commitlint/execute-rule': 19.0.0
       '@commitlint/resolve-extends': 19.1.0
       '@commitlint/types': 19.0.3
       chalk: 5.3.0
-      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240715)
-      cosmiconfig-typescript-loader: 5.0.0(@types/node@20.14.10)(cosmiconfig@9.0.0(typescript@5.6.0-dev.20240715))(typescript@5.6.0-dev.20240715)
+      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240716)
+      cosmiconfig-typescript-loader: 5.0.0(@types/node@20.14.10)(cosmiconfig@9.0.0(typescript@5.6.0-dev.20240716))(typescript@5.6.0-dev.20240716)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -19630,6 +19634,8 @@ snapshots:
       uuid: 8.0.0
       xml2js: 0.6.2
 
+  aws-ssl-profiles@1.1.1: {}
+
   aws4@1.13.0: {}
 
   axios-retry@4.4.0(axios@1.7.2):
@@ -20558,12 +20564,12 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cosmiconfig-typescript-loader@5.0.0(@types/node@20.14.10)(cosmiconfig@9.0.0(typescript@5.6.0-dev.20240715))(typescript@5.6.0-dev.20240715):
+  cosmiconfig-typescript-loader@5.0.0(@types/node@20.14.10)(cosmiconfig@9.0.0(typescript@5.6.0-dev.20240716))(typescript@5.6.0-dev.20240716):
     dependencies:
       '@types/node': 20.14.10
-      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240715)
+      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240716)
       jiti: 1.21.0
-      typescript: 5.6.0-dev.20240715
+      typescript: 5.6.0-dev.20240716
 
   cosmiconfig@8.3.6(typescript@5.4.5):
     dependencies:
@@ -20583,14 +20589,14 @@ snapshots:
     optionalDependencies:
       typescript: 5.4.5
 
-  cosmiconfig@9.0.0(typescript@5.6.0-dev.20240715):
+  cosmiconfig@9.0.0(typescript@5.6.0-dev.20240716):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 5.6.0-dev.20240715
+      typescript: 5.6.0-dev.20240716
 
   cpu-features@0.0.2:
     dependencies:
@@ -20966,7 +20972,7 @@ snapshots:
     dependencies:
       semver: 7.6.2
       shelljs: 0.8.5
-      typescript: 5.6.0-dev.20240715
+      typescript: 5.6.0-dev.20240716
 
   dreamopt@0.8.0:
     dependencies:
@@ -23679,7 +23685,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  knex@3.1.0(mysql2@3.9.8):
+  knex@3.1.0(mysql2@3.10.3):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -23696,13 +23702,13 @@ snapshots:
       tarn: 3.0.2
       tildify: 2.0.0
     optionalDependencies:
-      mysql2: 3.9.8
+      mysql2: 3.10.3
     transitivePeerDependencies:
       - supports-color
 
   kuler@2.0.0: {}
 
-  kysely-codegen@0.15.0(kysely@0.27.3)(mysql2@3.9.8)(pg@8.12.0)(tarn@3.0.2):
+  kysely-codegen@0.15.0(kysely@0.27.3)(mysql2@3.10.3)(pg@8.12.0)(tarn@3.0.2):
     dependencies:
       chalk: 4.1.2
       dotenv: 16.4.5
@@ -23712,7 +23718,7 @@ snapshots:
       micromatch: 4.0.5
       minimist: 1.2.8
     optionalDependencies:
-      mysql2: 3.9.8
+      mysql2: 3.10.3
       pg: 8.12.0
       tarn: 3.0.2
 
@@ -24274,8 +24280,9 @@ snapshots:
 
   mute-stream@1.0.0: {}
 
-  mysql2@3.9.8:
+  mysql2@3.10.3:
     dependencies:
+      aws-ssl-profiles: 1.1.1
       denque: 2.1.0
       generate-function: 2.3.1
       iconv-lite: 0.6.3
@@ -26215,13 +26222,13 @@ snapshots:
       '@pkgr/core': 0.1.1
       tslib: 2.6.3
 
-  syncpack@12.3.3(typescript@5.6.0-dev.20240715):
+  syncpack@12.3.3(typescript@5.6.0-dev.20240716):
     dependencies:
       '@effect/schema': 0.66.5(effect@3.0.3)(fast-check@3.17.2)
       chalk: 5.3.0
       chalk-template: 1.1.0
       commander: 12.0.0
-      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240715)
+      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240716)
       effect: 3.0.3
       enquirer: 2.4.1
       fast-check: 3.17.2
@@ -26675,7 +26682,7 @@ snapshots:
 
   typescript@5.4.5: {}
 
-  typescript@5.6.0-dev.20240715: {}
+  typescript@5.6.0-dev.20240716: {}
 
   ua-parser-js@1.0.37: {}
 

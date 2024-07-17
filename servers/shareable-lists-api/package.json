@@ -52,7 +52,7 @@
     "graphql-tag": "2.12.6",
     "keyv": "4.5.4",
     "kysely": "0.27.3",
-    "mysql2": "3.9.8",
+    "mysql2": "3.10.3",
     "prisma": "5.14.0",
     "prisma-kysely": "1.8.0",
     "slugify": "1.6.6",
