@@ -99,6 +99,11 @@ export function logAndCaptureErrors(
   }
   // Okay, now we actually log things
   serverLogger.error(`${req.method}: ${req.baseUrl + req.path}: ${err}`);
+  const query = { ...req.query };
+  delete query['access_token'];
+  Sentry.addBreadcrumb({
+    data: { body: req.body, query },
+  });
   Sentry.captureException(err);
   next(err);
 }
