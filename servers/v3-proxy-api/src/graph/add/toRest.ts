@@ -8,9 +8,9 @@ import * as tx from '../shared/transforms';
 export function AddItemTransformer(
   savedItem: SavedItemWithParserMetadata,
 ): AddResponse | PendingAddResponse {
-  let item: AddResponse['item'];
-  let pendingItem: PendingAddResponse['item'];
-  const nullKeys: Array<keyof PendingAddResponse['item']> = [
+  let item: AddResponse;
+  let pendingItem: PendingAddResponse;
+  const nullKeys: Array<keyof PendingAddResponse> = [
     'resolved_url',
     'domain_id',
     'origin_domain_id',
@@ -39,7 +39,7 @@ export function AddItemTransformer(
       return obj;
     },
     {} as Omit<
-      PendingAddResponse['item'],
+      PendingAddResponse,
       'item_id' | 'given_url' | 'normal_url' | 'resolved_id'
     >,
   );
@@ -52,9 +52,10 @@ export function AddItemTransformer(
         normal_url: savedItem.url,
         resolved_id: '0',
       };
-      return { item: pendingItem, status: 1 };
+      return { ...pendingItem, status: 1 };
     case 'Item':
       item = {
+        status: 1,
         item_id: savedItem.id,
         normal_url: savedItem.item.normalUrl,
         resolved_id: savedItem.item.resolvedId,
@@ -96,6 +97,6 @@ export function AddItemTransformer(
         (item['domain_metadata'] = tx.DomainMetadataTransformer(
           savedItem.item.domainMetadata,
         ));
-      return { item, status: 1 };
+      return item;
   }
 }

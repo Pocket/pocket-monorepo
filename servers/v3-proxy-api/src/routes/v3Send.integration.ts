@@ -555,7 +555,21 @@ describe('v3/send', () => {
               input: {
                 action: 'tags_replace',
                 item_id: '12345',
-                tags: 'supplemental',
+                tags: ['supplemental'],
+                suggestedCount: 0,
+                usedSuggestedCount: [],
+              },
+              expectedCall: {
+                savedItem: { id: '12345' },
+                timestamp: isoNow,
+                tagNames: ['supplemental'],
+              },
+            },
+            {
+              input: {
+                action: 'tags_replace',
+                item_id: '12345',
+                tags: ['supplemental'],
               },
               expectedCall: {
                 savedItem: { id: '12345' },
