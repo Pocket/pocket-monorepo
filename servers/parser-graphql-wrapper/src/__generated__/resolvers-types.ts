@@ -667,7 +667,7 @@ export type ResolversUnionTypes<_RefType extends Record<string, unknown>> = Reso
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = ResolversObject<{
   ListElement: ( BulletedListElement ) | ( NumberedListElement );
-  PocketMetadata: ( ItemSummary ) | ( OEmbed );
+  PocketMetadata: ( Omit<ItemSummary, 'item'> & { item?: Maybe<_RefType['Item']> } ) | ( Omit<OEmbed, 'item'> & { item?: Maybe<_RefType['Item']> } );
 }>;
 
 /** Mapping between all available schema types and the resolvers types */
@@ -690,7 +690,7 @@ export type ResolversTypes = ResolversObject<{
   Item: ResolverTypeWrapper<Omit<Item, 'marticle' | 'preview'> & { marticle?: Maybe<Array<ResolversTypes['MarticleComponent']>>, preview?: Maybe<ResolversTypes['PocketMetadata']> }>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   ItemNotFound: ResolverTypeWrapper<ItemNotFound>;
-  ItemSummary: ResolverTypeWrapper<ItemSummary>;
+  ItemSummary: ResolverTypeWrapper<Omit<ItemSummary, 'item'> & { item?: Maybe<ResolversTypes['Item']> }>;
   ListElement: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['ListElement']>;
   Markdown: ResolverTypeWrapper<Scalars['Markdown']['output']>;
   MarkdownImagePosition: ResolverTypeWrapper<MarkdownImagePosition>;
@@ -705,7 +705,7 @@ export type ResolversTypes = ResolversObject<{
   MarticleText: ResolverTypeWrapper<MarticleText>;
   Mutation: ResolverTypeWrapper<{}>;
   NumberedListElement: ResolverTypeWrapper<NumberedListElement>;
-  OEmbed: ResolverTypeWrapper<OEmbed>;
+  OEmbed: ResolverTypeWrapper<Omit<OEmbed, 'item'> & { item?: Maybe<ResolversTypes['Item']> }>;
   OEmbedType: OEmbedType;
   PocketMetadata: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['PocketMetadata']>;
   PocketMetadataSource: PocketMetadataSource;
@@ -740,7 +740,7 @@ export type ResolversParentTypes = ResolversObject<{
   Item: Omit<Item, 'marticle' | 'preview'> & { marticle?: Maybe<Array<ResolversParentTypes['MarticleComponent']>>, preview?: Maybe<ResolversParentTypes['PocketMetadata']> };
   Boolean: Scalars['Boolean']['output'];
   ItemNotFound: ItemNotFound;
-  ItemSummary: ItemSummary;
+  ItemSummary: Omit<ItemSummary, 'item'> & { item?: Maybe<ResolversParentTypes['Item']> };
   ListElement: ResolversInterfaceTypes<ResolversParentTypes>['ListElement'];
   Markdown: Scalars['Markdown']['output'];
   MarkdownImagePosition: MarkdownImagePosition;
@@ -755,7 +755,7 @@ export type ResolversParentTypes = ResolversObject<{
   MarticleText: MarticleText;
   Mutation: {};
   NumberedListElement: NumberedListElement;
-  OEmbed: OEmbed;
+  OEmbed: Omit<OEmbed, 'item'> & { item?: Maybe<ResolversParentTypes['Item']> };
   PocketMetadata: ResolversInterfaceTypes<ResolversParentTypes>['PocketMetadata'];
   PocketShare: Omit<PocketShare, 'preview'> & { preview?: Maybe<ResolversParentTypes['PocketMetadata']> };
   Query: {};
