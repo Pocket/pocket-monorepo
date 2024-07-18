@@ -154,7 +154,7 @@ export const V3GetSchema: Schema = {
     toLowerCase: true,
     customSanitizer: {
       options: (value, { req }) => {
-        const isSearch = req.body.search || req.query.search ? true : false;
+        const isSearch = req.body.search || req.query?.search ? true : false;
         // No value was passed
         if (value == null) {
           // If searching, default to relevance

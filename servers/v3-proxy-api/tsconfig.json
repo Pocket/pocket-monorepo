@@ -2,7 +2,7 @@
   "extends": "tsconfig/graphql.json",
   "compilerOptions": {
     "outDir": "dist",
-    "rootDir": "src",
+    "rootDir": "src"
   },
   "exclude": ["node_modules", "dist", "**/.pnpm/*", "src/test"],
   "include": ["src/**/*.ts", "src/config"]

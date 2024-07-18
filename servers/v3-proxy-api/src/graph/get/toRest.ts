@@ -534,7 +534,7 @@ export function savedItemsCompleteTotalToRest(
   options?: { withAnnotations?: boolean },
 ): GetResponseCompleteTotal {
   return {
-    total: response.user.savedItemsByOffset.totalCount.toString(),
+    total: response.user?.savedItemsByOffset.totalCount.toString(),
     ...savedItemsCompleteToRest(response, options),
   };
 }

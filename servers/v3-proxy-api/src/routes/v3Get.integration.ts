@@ -1017,7 +1017,7 @@ describe('v3Get', () => {
         since: '123123',
         detailType: 'complete',
       });
-      expect(apiSpy.mock.lastCall[3].filter.updatedSince).toEqual(123123);
+      expect(apiSpy.mock.lastCall?.[3].filter?.updatedSince).toEqual(123123);
       expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
     it('should not add contentType filter if value="all"', async () => {
@@ -1029,7 +1029,7 @@ describe('v3Get', () => {
         access_token: 'test',
         detailType: 'complete',
       });
-      expect(apiSpy.mock.lastCall[3].filter).toBeUndefined();
+      expect(apiSpy.mock.lastCall?.[3].filter).toBeUndefined();
       expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
     it.each([
@@ -1051,7 +1051,9 @@ describe('v3Get', () => {
           since: time,
           detailType: 'complete',
         });
-        expect(apiSpy.mock.lastCall[3].filter.updatedSince).toEqual(1719263946);
+        expect(apiSpy.mock.lastCall?.[3].filter?.updatedSince).toEqual(
+          1719263946,
+        );
         expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
       },
     );
@@ -1259,8 +1261,8 @@ describe('v3Get', () => {
         access_token: 'test',
         search: 'abc',
       });
-      expect(apiSpy.mock.lastCall[3].sort.sortBy).toEqual('RELEVANCE');
-      expect(apiSpy.mock.lastCall[3].sort.sortOrder).toEqual('DESC');
+      expect(apiSpy.mock.lastCall?.[3].sort?.sortBy).toEqual('RELEVANCE');
+      expect(apiSpy.mock.lastCall?.[3].sort?.sortOrder).toEqual('DESC');
       expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
     it('defaults to newest sort for non-search', async () => {
@@ -1271,8 +1273,8 @@ describe('v3Get', () => {
         consumer_key: 'test',
         access_token: 'test',
       });
-      expect(apiSpy.mock.lastCall[3].sort.sortBy).toEqual('CREATED_AT');
-      expect(apiSpy.mock.lastCall[3].sort.sortOrder).toEqual('DESC');
+      expect(apiSpy.mock.lastCall?.[3].sort?.sortBy).toEqual('CREATED_AT');
+      expect(apiSpy.mock.lastCall?.[3].sort?.sortOrder).toEqual('DESC');
       expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
   });
