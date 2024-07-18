@@ -170,8 +170,8 @@ class ListAPI extends TerraformStack {
         existingBucket: config.s3LogsBucket,
       },
       taskSize: {
-        cpu: 1024,
-        memory: 2048,
+        cpu: config.isDev ? 2048 : 4096,
+        memory: config.isDev ? 4096 : 8192,
       },
       containerConfigs: [
         {
