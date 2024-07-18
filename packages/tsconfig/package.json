@@ -12,7 +12,7 @@
     "typescript": "5.5.3"
   },
   "engines": {
-    "node": "^20.14"
+    "node": "^20.15"
   },
   "publishConfig": {
     "access": "public"
