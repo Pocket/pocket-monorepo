@@ -293,7 +293,7 @@ export class SavedItemDataService {
   ) {
     const input = rows.map((row) =>
       Object.keys(row).reduce((obj, key) => {
-        if (row[key] instanceof Date && isNaN(row[key])) {
+        if (isNaN(row[key]) && row[key] instanceof Date) {
           // Convert "Invalid Date" into the mysql zero-date
           obj[key] = '0000-00-00 00:00:00';
         } else {
@@ -315,7 +315,7 @@ export class SavedItemDataService {
     trx: Knex.Transaction,
   ) {
     const input = Object.keys(row).reduce((obj, key) => {
-      if (row[key] instanceof Date && isNaN(row[key])) {
+      if (isNaN(row[key]) && row[key] instanceof Date) {
         // Convert "Invalid Date" into the mysql zero-date
         obj[key] = '0000-00-00 00:00:00';
       } else {
