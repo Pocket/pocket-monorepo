@@ -87,7 +87,7 @@ import { InvalidActionError } from '../errors/InvalidActionError';
 type SendActionError = {
   message: string;
   type: string;
-  code: string;
+  code: number;
 };
 
 type SendActionResult = {
@@ -115,6 +115,7 @@ export class ActionsRouter {
       action_results: Array(actions.length).fill(false),
     };
     let i = 0;
+
     for await (const action of actions) {
       try {
         Sentry.addBreadcrumb({ data: action });
@@ -130,19 +131,30 @@ export class ActionsRouter {
       } catch (err) {
         const defaultMessage = 'Something Went Wrong';
         if (err instanceof ClientError) {
-          const defaultError = customErrorHeaders('INTERNAL_SERVER_ERROR');
+          const data = {
+            action,
+            status: err.response.status,
+            request: {
+              query: err.request.query,
+              variables: err.request.variables,
+            },
+            response: err.response.data,
+          };
+          serverLogger.debug(data);
+          Sentry.addBreadcrumb({ data });
+          const defaultError = customErrorHeaders('INTERNAL_SERVER_ERROR')!;
           // Log bad inputs because that indicates a bug in the proxy code
           // Anything else should be captured by the router/subgraphs
           if (err.response.status === 400) {
             serverLogger.error(`/v3/send: ${err}`);
             Sentry.captureException(err);
           }
-          const primaryError = err.response.errors[0];
+          const primaryError = err.response.errors?.[0];
           const primaryErrorData = customErrorHeaders(
-            primaryError.extensions.code,
+            primaryError?.extensions?.code,
           );
           const errorResult = {
-            message: primaryError.message ?? defaultMessage,
+            message: primaryError?.message ?? defaultMessage,
             type: primaryErrorData
               ? primaryErrorData['X-Error']
               : defaultError['X-Error'],
@@ -152,7 +164,7 @@ export class ActionsRouter {
           } as SendActionError;
           result['action_errors'][i] = errorResult;
         } else if (err instanceof InvalidActionError) {
-          const defaultError = customErrorHeaders('BAD_USER_INPUT');
+          const defaultError = customErrorHeaders('BAD_USER_INPUT')!;
           const errorResult = {
             message: err.message,
             type: defaultError['X-Error'],
@@ -162,7 +174,7 @@ export class ActionsRouter {
         } else {
           // If an error occurs that doesn't originate from the client request,
           // populate a default error and log to Cloudwatch/Sentry
-          const defaultError = customErrorHeaders('INTERNAL_SERVER_ERROR');
+          const defaultError = customErrorHeaders('INTERNAL_SERVER_ERROR')!;
           const errorResult = {
             message: defaultMessage,
             type: defaultError['X-Error'],
@@ -186,16 +198,19 @@ export class ActionsRouter {
   public async add(
     input: ItemAddAction,
   ): Promise<AddResponse | PendingAddResponse> {
-    const addVars: {
-      input: SavedItemUpsertInput;
-    } = {
-      input: {
-        url: input.url,
-        timestamp: input.time,
-        ...(input.title && { title: input.title }),
-      },
-    };
-    return await processV3Add(this.client, addVars, input.tags);
+    if (input.url != null) {
+      const addVars: {
+        input: SavedItemUpsertInput;
+      } = {
+        input: {
+          url: input.url,
+          timestamp: input.time,
+          ...(input.title && { title: input.title }),
+        },
+      };
+      return await processV3Add(this.client, addVars, input.tags);
+    }
+    this.invalidAction({ action: 'add (item_id only)' });
   }
   /**
    * Process the 'readd' action from a batch of actions sent to /v3/send.
@@ -214,13 +229,15 @@ export class ActionsRouter {
         ReAddByIdMutation,
         ReAddByIdMutationVariables
       >(ReAddByIdDocument, variables);
-      return AddItemTransformer(result['reAddById']);
+      // TODO: Technically this is nullable, but is it ever
+      // in the case that the client does not throw an error?
+      return AddItemTransformer(result['reAddById']!);
     } else {
       const addVars: {
         input: SavedItemUpsertInput;
       } = {
         input: {
-          url: input.url,
+          url: input.url!, // This value is validated to be non-null if itemId is null
           timestamp: input.time,
         },
       };
