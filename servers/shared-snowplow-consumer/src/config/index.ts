@@ -19,7 +19,7 @@ export const config = {
   },
   tracing: {
     graphQLDepth: 8, // very permissive limit on depth tracing
-    samplingRatio: 0.2,
+    samplingRatio: 0.01,
     grpcDefaultPort: 4317,
     httpDefaultPort: 4318,
     serviceName: 'shared-snowplow-consumer',

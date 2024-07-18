@@ -132,7 +132,7 @@ export default {
     host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
     serviceName: 'list-api',
     graphQLDepth: 8,
-    samplingRatio: 0.2,
+    samplingRatio: 0.01,
     grpcDefaultPort: 4317,
     httpDEfaultPort: 4318,
   },
