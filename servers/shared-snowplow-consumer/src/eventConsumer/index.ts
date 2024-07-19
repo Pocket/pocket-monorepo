@@ -55,5 +55,5 @@ export const eventConsumer: {
   [EventType.SHAREABLE_LIST_ITEM_DELETED]: shareableListItemEventConsumer,
   [EventType.POCKET_SHARE_CREATED]: pocketShareEventConsumer,
   [EventType.POCKET_SHARE_CONTEXT_UPDATED]: pocketShareEventConsumer,
-  [EventType.POCKET_SEARCH_RESPONSE]: pocketSearchEventConsumer,
+  [EventType.SEARCH_RESPONSE_GENERATED]: pocketSearchEventConsumer,
 };

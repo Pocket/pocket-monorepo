@@ -777,7 +777,7 @@ export type SearchResponseEvent = {
     /**
      * The search query
      */
-    search_query: SearchQueryObject;
+    search_query: SearchQuery;
     /**
      * Identifies the corpus that was searched
      */
@@ -787,127 +787,11 @@ export type SearchResponseEvent = {
 /**
  * The search query
  */
-export type SearchQueryObject = {
+export type SearchQuery = {
     /**
      * Identifies the filters which were applied to the search, if applicable.
      */
-    filter?: PurpleFilter[];
-    query?:  string;
-    /**
-     * Identifies the fields which were searched.
-     */
-    scope?: Scope;
-    [property: string]: any;
-}
-
-export type PurpleFilter = "domain" | "title" | "tags" | "contentType" | "status" | "isFavorite" | "publishedDateRange" | "topic" | "language" | "excludeML" | "excludeCollections" | "addedDateRange" | "publisher" | "author";
-
-/**
- * Identifies the fields which were searched.
- */
-export type Scope = "all" | "all_contentful" | "title" | "excerpt" | "content" | "publisher";
-
-/**
- * Identifies the corpus that was searched
- */
-export type SearchType = "saves" | "corpus_en" | "corpus_es" | "corpus_de" | "corpus_it" | "corpus_fr";
-
-/**
- * Event triggered when the backend updates the state of a saved item for a user. Entities
- * included: list_item (one new and one old), api_user, and user.
- */
-export type ListItemUpdate1 = {
-    /**
-     * The action performed on the user-item.
-     */
-    trigger: ListItemUpdate1_Trigger;
-}
-
-/**
- * The action performed on the user-item.
- */
-export type ListItemUpdate1_Trigger = "save" | "archive" | "delete" | "favorite" | "unfavorite" | "tags_update" | "unarchive" | "title_update";
-
-/**
- * Entity to describe an item that has been saved to a user’s list. Expected (new and old)
- * on all list_item_update events.
- */
-export type ListItem1 = {
-    /**
-     * The UTC unix timestamp (in seconds) for when the list item was created (list.time_added).
-     */
-    created_at: number;
-    /**
-     * Indicates whether the item is favorited by the user.
-     */
-    is_favorited: boolean;
-    /**
-     * The backend identifier for the URL.
-     */
-    item_id: number;
-    /**
-     * Indication of whether the version of the entity is before or after the modifications were
-     * made.
-     */
-    object_version: ObjectVersion;
-    /**
-     * The status of the list item.
-     */
-    status: ListItemStatus;
-    /**
-     * The set of tags the user has added to the item.
-     */
-    tags: string[];
-    /**
-     * The title of the list item, as defined by the user. If null, then unchanged from the
-     * parser default.
-     */
-    title?: string;
-    /**
-     * The URL of the list item.
-     */
-    url: string;
-}
-
-/**
- * Event triggered when SearchResults are returned from Pocket's search api (for saves and
- * corpus). Entities included: api_user; sometimes user, feature_flag.
- */
-export type SearchResponseEvent1 = {
-    /**
-     * A unique ID for this result
-     */
-    id: string;
-    /**
-     * Number of results in the result set.
-     */
-    result_count_total: number;
-    /**
-     * Ordered result of urls in the search result connection
-     */
-    result_urls: string[];
-    /**
-     * UNIX time in seconds when the results were sent by the Search API.
-     */
-    returned_at: number;
-    /**
-     * The search query
-     */
-    search_query: SearchQueryClass;
-    /**
-     * Identifies the corpus that was searched
-     */
-    search_type: SearchType;
-}
-
-/**
- * The search query
- */
-export type SearchQueryClass = {
-    /**
-     * Identifies the filters which were applied to the search, if applicable.
-     */
-    filter: FluffyFilter[];
+    filter: Filter[];
     /**
      * 2-5 character language code to indicate the language the search was performed in
      */
@@ -919,7 +803,17 @@ export type SearchQueryClass = {
     scope: Scope;
 }
 
-export type FluffyFilter = "domain" | "title" | "tags" | "contentType" | "status" | "isFavorite" | "publishedDateRange" | "topic" | "excludeML" | "excludeCollections" | "addedDateRange" | "publisher" | "author";
+export type Filter = "domain" | "title" | "tags" | "contentType" | "status" | "isFavorite" | "publishedDateRange" | "topic" | "excludeML" | "excludeCollections" | "addedDateRange" | "publisher" | "author";
+
+/**
+ * Identifies the fields which were searched.
+ */
+export type Scope = "all" | "all_contentful" | "title" | "excerpt" | "content" | "publisher";
+
+/**
+ * Identifies the corpus that was searched
+ */
+export type SearchType = "saves" | "corpus_en" | "corpus_es" | "corpus_de" | "corpus_it" | "corpus_fr";
 
 interface CommonEventProperties<T = Record<string, unknown>> {
     /** Add context to an event by setting an Array of Self Describing JSON */
@@ -949,12 +843,14 @@ interface EventSpecification {
     data_product_name: string;
 }
 
+type ContextsOrTimestamp<T = any> = Omit<CommonEventProperties<T>, 'context'> & { context?: SelfDescribingJson<T>[] | null | undefined }
+
 /**
  * Track a Snowplow event for ObjectUpdate.
  * Event triggered when the backend updates the properties of an object. Entities included: a new and an old entity for the object being updated, api_user, and [sometimes] user.
  */
-export function trackObjectUpdate<T extends {} = any>(tracker: Tracker, objectUpdate: ObjectUpdate & CommonEventProperties<T>){
-    const { context, timestamp, ...data } = objectUpdate;
+export function trackObjectUpdate<T extends {} = any>(tracker: Tracker, objectUpdate: ObjectUpdate & ContextsOrTimestamp<T>){
+    const { context, timestamp, ...data } = objectUpdate; 
     tracker.track(buildSelfDescribingEvent({
         event: {
             schema: 'iglu:com.pocket/object_update/jsonschema/1-0-20',
@@ -976,8 +872,8 @@ export function createObjectUpdate(objectUpdate: ObjectUpdate){
  * Track a Snowplow event for ShareableListItem.
  * Entity that describes the concept of an item within a shareable list. This item must be added by a logged-in user to the shareable list, which also saves the item to the user&#x27;s Saves (For the time being, any item that is able to be added to the shareable list must already have been saved to the user&#x27;s list).
  */
-export function trackShareableListItem<T extends {} = any>(tracker: Tracker, shareableListItem: ShareableListItem & CommonEventProperties<T>){
-    const { context, timestamp, ...data } = shareableListItem;
+export function trackShareableListItem<T extends {} = any>(tracker: Tracker, shareableListItem: ShareableListItem & ContextsOrTimestamp<T>){
+    const { context, timestamp, ...data } = shareableListItem; 
     tracker.track(buildSelfDescribingEvent({
         event: {
             schema: 'iglu:com.pocket/shareable_list_item/jsonschema/1-0-5',
@@ -999,8 +895,8 @@ export function createShareableListItem(shareableListItem: ShareableListItem){
  * Track a Snowplow event for ShareableList.
  * Entity that describes the concept list that can be created then shared with other users regardless of logged-in status.
  */
-export function trackShareableList<T extends {} = any>(tracker: Tracker, shareableList: ShareableList & CommonEventProperties<T>){
-    const { context, timestamp, ...data } = shareableList;
+export function trackShareableList<T extends {} = any>(tracker: Tracker, shareableList: ShareableList & ContextsOrTimestamp<T>){
+    const { context, timestamp, ...data } = shareableList; 
     tracker.track(buildSelfDescribingEvent({
         event: {
             schema: 'iglu:com.pocket/shareable_list/jsonschema/1-0-6',
@@ -1022,8 +918,8 @@ export function createShareableList(shareableList: ShareableList){
  * Track a Snowplow event for APIUser.
  * Entity to describe an app using the Pocket API that triggers (not executes) updates on the backend. Expected to be included on all events.
  */
-export function trackAPIUser<T extends {} = any>(tracker: Tracker, aPIUser: APIUser & CommonEventProperties<T>){
-    const { context, timestamp, ...data } = aPIUser;
+export function trackAPIUser<T extends {} = any>(tracker: Tracker, aPIUser: APIUser & ContextsOrTimestamp<T>){
+    const { context, timestamp, ...data } = aPIUser; 
     tracker.track(buildSelfDescribingEvent({
         event: {
             schema: 'iglu:com.pocket/api_user/jsonschema/1-0-2',
@@ -1045,8 +941,8 @@ export function createAPIUser(aPIUser: APIUser){
  * Track a Snowplow event for User.
  * Entity to describe a user based on available identifiers. Expected to be included in all events that are [theoretically] initiated by a human.
  */
-export function trackUser<T extends {} = any>(tracker: Tracker, user: User & CommonEventProperties<T>){
-    const { context, timestamp, ...data } = user;
+export function trackUser<T extends {} = any>(tracker: Tracker, user: User & ContextsOrTimestamp<T>){
+    const { context, timestamp, ...data } = user; 
     tracker.track(buildSelfDescribingEvent({
         event: {
             schema: 'iglu:com.pocket/user/jsonschema/1-0-1',
@@ -1068,8 +964,8 @@ export function createUser(user: User){
  * Track a Snowplow event for Account.
  * A unique user within the Pocket backend (always represented by an email address, sometimes by a user ID). Expected (new and old) on all object_update events where object &#x3D; account.
  */
-export function trackAccount<T extends {} = any>(tracker: Tracker, account: Account & CommonEventProperties<T>){
-    const { context, timestamp, ...data } = account;
+export function trackAccount<T extends {} = any>(tracker: Tracker, account: Account & ContextsOrTimestamp<T>){
+    const { context, timestamp, ...data } = account; 
     tracker.track(buildSelfDescribingEvent({
         event: {
             schema: 'iglu:com.pocket/account/jsonschema/1-0-3',
@@ -1091,8 +987,8 @@ export function createAccount(account: Account){
  * Track a Snowplow event for ListItemUpdate.
  * Event triggered when the backend updates the state of a saved item for a user. Entities included: list_item (one new and one old), api_user, and user.
  */
-export function trackListItemUpdate<T extends {} = any>(tracker: Tracker, listItemUpdate: ListItemUpdate & CommonEventProperties<T>){
-    const { context, timestamp, ...data } = listItemUpdate;
+export function trackListItemUpdate<T extends {} = any>(tracker: Tracker, listItemUpdate: ListItemUpdate & ContextsOrTimestamp<T>){
+    const { context, timestamp, ...data } = listItemUpdate; 
     tracker.track(buildSelfDescribingEvent({
         event: {
             schema: 'iglu:com.pocket/list_item_update/jsonschema/1-0-1',
@@ -1114,8 +1010,8 @@ export function createListItemUpdate(listItemUpdate: ListItemUpdate){
  * Track a Snowplow event for ListItem.
  * Entity to describe an item that has been saved to a user’s list. Expected (new and old) on all list_item_update events.
  */
-export function trackListItem<T extends {} = any>(tracker: Tracker, listItem: ListItem & CommonEventProperties<T>){
-    const { context, timestamp, ...data } = listItem;
+export function trackListItem<T extends {} = any>(tracker: Tracker, listItem: ListItem & ContextsOrTimestamp<T>){
+    const { context, timestamp, ...data } = listItem; 
     tracker.track(buildSelfDescribingEvent({
         event: {
             schema: 'iglu:com.pocket/list_item/jsonschema/1-0-1',
@@ -1137,8 +1033,8 @@ export function createListItem(listItem: ListItem){
  * Track a Snowplow event for Collection.
  * Entity containing the meta data for curated collections. Expected (new and old) on all object_update events where object &#x3D; collection.
  */
-export function trackCollection<T extends {} = any>(tracker: Tracker, collection: Collection & CommonEventProperties<T>){
-    const { context, timestamp, ...data } = collection;
+export function trackCollection<T extends {} = any>(tracker: Tracker, collection: Collection & ContextsOrTimestamp<T>){
+    const { context, timestamp, ...data } = collection; 
     tracker.track(buildSelfDescribingEvent({
         event: {
             schema: 'iglu:com.pocket/collection/jsonschema/1-0-3',
@@ -1160,8 +1056,8 @@ export function createCollection(collection: Collection){
  * Track a Snowplow event for Prospect.
  * Candidate corpus item awaiting review
  */
-export function trackProspect<T extends {} = any>(tracker: Tracker, prospect: Prospect & CommonEventProperties<T>){
-    const { context, timestamp, ...data } = prospect;
+export function trackProspect<T extends {} = any>(tracker: Tracker, prospect: Prospect & ContextsOrTimestamp<T>){
+    const { context, timestamp, ...data } = prospect; 
     tracker.track(buildSelfDescribingEvent({
         event: {
             schema: 'iglu:com.pocket/prospect/jsonschema/1-0-1',
@@ -1183,8 +1079,8 @@ export function createProspect(prospect: Prospect){
  * Track a Snowplow event for PocketShare.
  * Entity to describe an Item that has been shared from the Pocket Share button.
  */
-export function trackPocketShare<T extends {} = any>(tracker: Tracker, pocketShare: PocketShare & CommonEventProperties<T>){
-    const { context, timestamp, ...data } = pocketShare;
+export function trackPocketShare<T extends {} = any>(tracker: Tracker, pocketShare: PocketShare & ContextsOrTimestamp<T>){
+    const { context, timestamp, ...data } = pocketShare; 
     tracker.track(buildSelfDescribingEvent({
         event: {
             schema: 'iglu:com.pocket/pocket_share/jsonschema/1-0-1',
@@ -1206,11 +1102,11 @@ export function createPocketShare(pocketShare: PocketShare){
  * Track a Snowplow event for SearchResponseEvent.
  * Event triggered when SearchResults are returned from Pocket&#x27;s search api (for saves and corpus). Entities included: api_user; sometimes user, feature_flag.
  */
-export function trackSearchResponseEvent<T extends {} = any>(tracker: Tracker, searchResponseEvent: SearchResponseEvent & CommonEventProperties<T>){
-    const { context, timestamp, ...data } = searchResponseEvent;
+export function trackSearchResponseEvent<T extends {} = any>(tracker: Tracker, searchResponseEvent: SearchResponseEvent & ContextsOrTimestamp<T>){
+    const { context, timestamp, ...data } = searchResponseEvent; 
     tracker.track(buildSelfDescribingEvent({
         event: {
-            schema: 'iglu:com.pocket/search_response_event/jsonschema/1-0-1',
+            schema: 'iglu:com.pocket/search_response_event/jsonschema/1-0-4',
             data
         }
     }), context, timestamp);
@@ -1221,77 +1117,8 @@ export function trackSearchResponseEvent<T extends {} = any>(tracker: Tracker, s
  */
 export function createSearchResponseEvent(searchResponseEvent: SearchResponseEvent){
     return {
-        schema: 'iglu:com.pocket/search_response_event/jsonschema/1-0-1',
-        data: searchResponseEvent
-    }
-}
-/**
- * Track a Snowplow event for ListItemUpdate1.
- * Event triggered when the backend updates the state of a saved item for a user. Entities included: list_item (one new and one old), api_user, and user.
- */
-export function trackListItemUpdate1<T extends {} = any>(tracker: Tracker, listItemUpdate1: ListItemUpdate1 & CommonEventProperties<T>){
-    const { context, timestamp, ...data } = listItemUpdate1;
-    tracker.track(buildSelfDescribingEvent({
-        event: {
-            schema: 'iglu:com.pocket/list_item_update/jsonschema/1-0-2',
-            data
-        }
-    }), context, timestamp);
-}
-
-/**
- * Creates a Snowplow ListItemUpdate1 entity.
- */
-export function createListItemUpdate1(listItemUpdate1: ListItemUpdate1){
-    return {
-        schema: 'iglu:com.pocket/list_item_update/jsonschema/1-0-2',
-        data: listItemUpdate1
-    }
-}
-/**
- * Track a Snowplow event for ListItem1.
- * Entity to describe an item that has been saved to a user’s list. Expected (new and old) on all list_item_update events.
- */
-export function trackListItem1<T extends {} = any>(tracker: Tracker, listItem1: ListItem1 & CommonEventProperties<T>){
-    const { context, timestamp, ...data } = listItem1;
-    tracker.track(buildSelfDescribingEvent({
-        event: {
-            schema: 'iglu:com.pocket/list_item/jsonschema/1-0-2',
-            data
-        }
-    }), context, timestamp);
-}
-
-/**
- * Creates a Snowplow ListItem1 entity.
- */
-export function createListItem1(listItem1: ListItem1){
-    return {
-        schema: 'iglu:com.pocket/list_item/jsonschema/1-0-2',
-        data: listItem1
-    }
-}
-/**
- * Track a Snowplow event for SearchResponseEvent1.
- * Event triggered when SearchResults are returned from Pocket&#x27;s search api (for saves and corpus). Entities included: api_user; sometimes user, feature_flag.
- */
-export function trackSearchResponseEvent1<T extends {} = any>(tracker: Tracker, searchResponseEvent1: SearchResponseEvent1 & CommonEventProperties<T>){
-    const { context, timestamp, ...data } = searchResponseEvent1;
-    tracker.track(buildSelfDescribingEvent({
-        event: {
-            schema: 'iglu:com.pocket/search_response_event/jsonschema/1-0-4',
-            data
-        }
-    }), context, timestamp);
-}
-
-/**
- * Creates a Snowplow SearchResponseEvent1 entity.
- */
-export function createSearchResponseEvent1(searchResponseEvent1: SearchResponseEvent1){
-    return {
         schema: 'iglu:com.pocket/search_response_event/jsonschema/1-0-4',
-        data: searchResponseEvent1
+        data: searchResponseEvent
     }
 }
 
@@ -1299,7 +1126,7 @@ export function createSearchResponseEvent1(searchResponseEvent1: SearchResponseE
  * Tracks a ItemSave event specification.
  * ID: 2565192a-4600-45db-861d-d9b9378ed87e
  */
-export function trackItemSaveSpec(tracker: Tracker, itemSave: ListItemUpdate1 & CommonEventProperties<APIUser | ListItem1 | User>){
+export function trackItemSaveSpec(tracker: Tracker, itemSave: ListItemUpdate & ContextsOrTimestamp<APIUser | ListItem | User>){
     const eventSpecificationContext: SelfDescribingJson<EventSpecification> = createEventSpecification({ 
         id: '2565192a-4600-45db-861d-d9b9378ed87e',
         name: 'Item Save',
@@ -1311,18 +1138,18 @@ export function trackItemSaveSpec(tracker: Tracker, itemSave: ListItemUpdate1 & 
         ? [...itemSave.context, eventSpecificationContext]
         : [eventSpecificationContext];
 
-    const modifiedItemSave = {
+    const modifiedItemSave: ListItemUpdate & ContextsOrTimestamp<APIUser | ListItem | User | EventSpecification> = {
         ...itemSave,
         context,
     };
 
-    trackListItemUpdate1<APIUser | ListItem1 | User> (tracker, modifiedItemSave);
+    trackListItemUpdate(tracker, modifiedItemSave);
 }
 /**
  * Tracks a CreateShareLink event specification.
  * ID: 3dbe5b4a-333c-4798-83f4-4ef30dfe84be
  */
-export function trackCreateShareLinkSpec(tracker: Tracker, createShareLink: ObjectUpdate & CommonEventProperties<APIUser | PocketShare | User>){
+export function trackCreateShareLinkSpec(tracker: Tracker, createShareLink: ObjectUpdate & ContextsOrTimestamp<APIUser | PocketShare | User>){
     const eventSpecificationContext: SelfDescribingJson<EventSpecification> = createEventSpecification({ 
         id: '3dbe5b4a-333c-4798-83f4-4ef30dfe84be',
         name: 'Create Share Link',
@@ -1334,18 +1161,18 @@ export function trackCreateShareLinkSpec(tracker: Tracker, createShareLink: Obje
         ? [...createShareLink.context, eventSpecificationContext]
         : [eventSpecificationContext];
 
-    const modifiedCreateShareLink = {
+    const modifiedCreateShareLink: ObjectUpdate & ContextsOrTimestamp<APIUser | PocketShare | User | EventSpecification> = {
         ...createShareLink,
         context,
     };
 
-    trackObjectUpdate<APIUser | PocketShare | User> (tracker, modifiedCreateShareLink);
+    trackObjectUpdate(tracker, modifiedCreateShareLink);
 }
 /**
  * Tracks a UpdateShareLink event specification.
  * ID: 6d541fdc-440e-4873-afd2-fe522806157b
  */
-export function trackUpdateShareLinkSpec(tracker: Tracker, updateShareLink: ObjectUpdate & CommonEventProperties<APIUser | PocketShare | User>){
+export function trackUpdateShareLinkSpec(tracker: Tracker, updateShareLink: ObjectUpdate & ContextsOrTimestamp<APIUser | PocketShare | User>){
     const eventSpecificationContext: SelfDescribingJson<EventSpecification> = createEventSpecification({ 
         id: '6d541fdc-440e-4873-afd2-fe522806157b',
         name: 'Update Share Link',
@@ -1357,18 +1184,18 @@ export function trackUpdateShareLinkSpec(tracker: Tracker, updateShareLink: Obje
         ? [...updateShareLink.context, eventSpecificationContext]
         : [eventSpecificationContext];
 
-    const modifiedUpdateShareLink = {
+    const modifiedUpdateShareLink: ObjectUpdate & ContextsOrTimestamp<APIUser | PocketShare | User | EventSpecification> = {
         ...updateShareLink,
         context,
     };
 
-    trackObjectUpdate<APIUser | PocketShare | User> (tracker, modifiedUpdateShareLink);
+    trackObjectUpdate(tracker, modifiedUpdateShareLink);
 }
 /**
  * Tracks a SearchResult event specification.
  * ID: 8bde42c4-659f-40b6-9a95-865bde7f05c3
  */
-export function trackSearchResultSpec(tracker: Tracker, searchResult: SearchResponseEvent1 & CommonEventProperties<APIUser | User>){
+export function trackSearchResultSpec(tracker: Tracker, searchResult: SearchResponseEvent & ContextsOrTimestamp<APIUser | User>){
     const eventSpecificationContext: SelfDescribingJson<EventSpecification> = createEventSpecification({ 
         id: '8bde42c4-659f-40b6-9a95-865bde7f05c3',
         name: 'Search Result',
@@ -1380,11 +1207,11 @@ export function trackSearchResultSpec(tracker: Tracker, searchResult: SearchResp
         ? [...searchResult.context, eventSpecificationContext]
         : [eventSpecificationContext];
 
-    const modifiedSearchResult = {
+    const modifiedSearchResult: SearchResponseEvent & ContextsOrTimestamp<APIUser | User | EventSpecification> = {
         ...searchResult,
         context,
     };
 
-    trackSearchResponseEvent1<APIUser | User> (tracker, modifiedSearchResult);
+    trackSearchResponseEvent(tracker, modifiedSearchResult);
 }
 

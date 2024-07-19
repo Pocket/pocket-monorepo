@@ -12,7 +12,7 @@ import { serverLogger } from '@pocket-tools/ts-logger';
 import { config } from '../config';
 import {
   Scope,
-  SearchResponseEvent1 as SearchResponseEvent,
+  SearchResponseEvent,
   User,
   APIUser,
 } from '../snowtype/snowplow';

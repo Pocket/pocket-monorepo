@@ -1,9 +1,5 @@
 import { PocketSearchEventHandler } from '../../snowplow/search/searchHandler';
-import {
-  APIUser,
-  SearchResponseEvent1 as SearchResponseEvent,
-  User,
-} from '../../snowtype/snowplow';
+import { APIUser, SearchResponseEvent, User } from '../../snowtype/snowplow';
 
 export type PocketSearchPayload = {
   detail: { event: PocketSearchEvent };

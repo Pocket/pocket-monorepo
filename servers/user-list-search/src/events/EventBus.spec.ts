@@ -8,7 +8,7 @@ import {
   CorpusSearchConnection,
   QuerySearchCorpusArgs,
 } from '../__generated__/types';
-import { SearchResponseEvent1 } from '../snowtype/snowplow';
+import { SearchResponseEvent } from '../snowtype/snowplow';
 import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
 import * as Sentry from '@sentry/node';
 import { serverLogger } from '@pocket-tools/ts-logger';
@@ -127,7 +127,7 @@ describe('EventBus', () => {
         },
       },
     ])('builds event out of context info', ({ context, expected }) => {
-      const search: SearchResponseEvent1 = {
+      const search: SearchResponseEvent = {
         id: expect.toBeString(),
         result_count_total: 2,
         result_urls: [

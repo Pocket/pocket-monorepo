@@ -3,7 +3,7 @@
   "dataStructures": [
     "iglu:com.pocket/api_user/jsonschema/1-0-2",
     "iglu:com.pocket/user/jsonschema/1-0-1",
-    "iglu:com.pocket/search_response_event/jsonschema/1-0-1"
+    "iglu:com.pocket/search_response_event/jsonschema/1-0-4"
   ],
   "eventSpecificationIds": [],
   "dataProductIds": ["4a1a7785-38d7-432d-8453-01ddc046450f"],
