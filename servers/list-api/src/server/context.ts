@@ -194,6 +194,7 @@ export class ContextManager implements IContext {
       request: {
         language: this.headers.gatewaylanguage,
         snowplowDomainUserId: this.headers.gatewaysnowplowdomainuserid,
+        snowplowDomainSessionId: this.headers.gatewaysnowplowdomainsessionid,
         ipAddress: this.headers.gatewayipaddress,
         userAgent: this.headers.gatewayuseragent,
       },

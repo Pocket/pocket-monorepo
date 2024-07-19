@@ -170,8 +170,8 @@ class ListAPI extends TerraformStack {
         existingBucket: config.s3LogsBucket,
       },
       taskSize: {
-        cpu: 1024,
-        memory: 2048,
+        cpu: config.isDev ? 2048 : 4096,
+        memory: config.isDev ? 4096 : 8192,
       },
       containerConfigs: [
         {
@@ -426,8 +426,8 @@ class ListAPI extends TerraformStack {
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },
       autoscalingConfig: {
-        targetMinCapacity: config.environment === 'Prod' ? 2 : 1,
-        targetMaxCapacity: config.environment === 'Prod' ? 10 : 10,
+        targetMinCapacity: config.environment === 'Prod' ? 6 : 1,
+        targetMaxCapacity: config.environment === 'Prod' ? 20 : 10,
       },
       alarms: {
         http5xxErrorPercentage: {

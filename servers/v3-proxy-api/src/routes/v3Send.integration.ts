@@ -153,6 +153,28 @@ describe('v3/send', () => {
       });
     });
     describe('actions router', () => {
+      it('throws Unimplemented Action error for adding by item_id alone', async () => {
+        const response = await request(app)
+          .post('/v3/send')
+          .send({
+            consumer_key: 'test',
+            access_token: 'test',
+            actions: [{ action: 'add', item_id: '12345' }],
+          });
+        const expected = {
+          status: 1,
+          action_results: [false],
+          action_errors: [
+            {
+              message: `Invalid Action: 'add (item_id only)'`,
+              type: 'Bad request',
+              code: 130,
+            },
+          ],
+        };
+        expect(response.status).toEqual(200);
+        expect(response.body).toEqual(expected);
+      });
       describe('processActions - unknown ClientError', () => {
         let addSpy;
         beforeEach(
@@ -533,7 +555,21 @@ describe('v3/send', () => {
               input: {
                 action: 'tags_replace',
                 item_id: '12345',
-                tags: 'supplemental',
+                tags: ['supplemental'],
+                suggestedCount: 0,
+                usedSuggestedCount: [],
+              },
+              expectedCall: {
+                savedItem: { id: '12345' },
+                timestamp: isoNow,
+                tagNames: ['supplemental'],
+              },
+            },
+            {
+              input: {
+                action: 'tags_replace',
+                item_id: '12345',
+                tags: ['supplemental'],
               },
               expectedCall: {
                 savedItem: { id: '12345' },

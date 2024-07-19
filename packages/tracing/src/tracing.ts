@@ -78,7 +78,7 @@ export type TracingConfig = {
 const tracingDefaults: TracingConfig = {
   serviceName: 'unknown',
   release: 'unknown',
-  samplingRatio: 1.0,
+  samplingRatio: 0.01,
   graphQLDepth: 8,
   grpcDefaultPort: 4317,
   httpDefaultPort: 4318,

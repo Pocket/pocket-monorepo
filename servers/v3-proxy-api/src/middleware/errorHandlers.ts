@@ -23,6 +23,11 @@ const errorHeaders = {
   },
 };
 
+export type WebErrorMap = {
+  'X-Error-Code': number;
+  'X-Error': string;
+};
+
 /**
  * (Partial) implementation of v3 API's custom error headers.
  * See public_html/localization/dict-errors-*.json in Web repo.
@@ -39,7 +44,7 @@ export function customErrorHeaders(errorCode: unknown, language = 'en') {
   return {
     'X-Error-Code': errorHeaders[errorCode]['X-Error-Code'],
     'X-Error': errorHeaders[errorCode][language],
-  };
+  } as WebErrorMap;
 }
 /**
  * Handle errors thrown by GraphQL Client (returned by pocket-graph)
@@ -57,11 +62,11 @@ export function clientErrorHandler(
     res.status(err.response.status);
     // There might be more than 1 error, but we will just return the first
     const primaryError = err.response.errors?.[0];
-    const headers = customErrorHeaders(primaryError.extensions.code);
+    const headers = customErrorHeaders(primaryError?.extensions.code);
     // Set headers if they're not undefined
     headers && res.set(headers);
     // Set error data
-    const message = primaryError.message ?? defaultMessage;
+    const message = primaryError?.message ?? defaultMessage;
     res.send({ error: message });
   } else if (err instanceof InputValidationError) {
     res
@@ -99,6 +104,11 @@ export function logAndCaptureErrors(
   }
   // Okay, now we actually log things
   serverLogger.error(`${req.method}: ${req.baseUrl + req.path}: ${err}`);
+  const query = { ...req.query };
+  delete query['access_token'];
+  Sentry.addBreadcrumb({
+    data: { body: req.body, query },
+  });
   Sentry.captureException(err);
   next(err);
 }

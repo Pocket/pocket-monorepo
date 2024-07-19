@@ -13,7 +13,7 @@ import { ParserCaller } from '../externalCaller/parserCaller';
 import { SavedItemDataService } from '../dataService';
 import * as Sentry from '@sentry/node';
 import { EventType } from '../businessEvents';
-import { getSavedItemTagsMap, atLeastOneOf } from './utils';
+import { getSavedItemTagsMap, atLeastOneOf, ensureHttpPrefix } from './utils';
 import { TagModel } from '../models';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { NotFoundError, UserInputError } from '@pocket-tools/apollo-utils';
@@ -38,8 +38,9 @@ export async function upsertSavedItem(
   const savedItemDataService = new SavedItemDataService(context);
 
   try {
+    const url = ensureHttpPrefix(savedItemUpsertInput.url);
     //TODO do we need the resolved id @Herraj
-    let item = await ParserCaller.getOrCreateItem(savedItemUpsertInput.url);
+    let item = await ParserCaller.getOrCreateItem(url);
     const existingItem = await savedItemDataService.getSavedItemById(
       item.itemId.toString(),
     );
@@ -56,14 +57,15 @@ export async function upsertSavedItem(
     if (existingItem != null && !savedItemUpsertInput.isFavorite) {
       savedItemUpsertInput.isFavorite = existingItem.isFavorite;
     }
-    const upsertedItem = await savedItemDataService.upsertSavedItem(
-      item,
-      savedItemUpsertInput,
-    );
+    const upsertedItem = await savedItemDataService.upsertSavedItem(item, {
+      ...savedItemUpsertInput,
+      url,
+    });
 
     if (upsertedItem == undefined) {
       serverLogger.error('Could not save item', {
         url: savedItemUpsertInput.url,
+        modifedUrl: url,
       });
       Sentry.addBreadcrumb({
         message: `Saved url ${savedItemUpsertInput.url}`,

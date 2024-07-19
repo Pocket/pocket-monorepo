@@ -7,7 +7,7 @@ import { timeSeconds } from './shared';
 export type V3GetParams = {
   access_token?: string;
   consumer_key: string;
-  contentType?: 'article' | 'image' | 'video';
+  contentType?: 'article' | 'image' | 'video' | 'all';
   count: number;
   detailType: 'simple' | 'complete';
   favorite?: boolean;
@@ -108,12 +108,10 @@ export const V3GetSchema: Schema = {
   },
   since: {
     optional: true,
-    isInt: {
-      options: {
-        min: 0,
-      },
-    },
     toInt: true,
+    custom: {
+      options: (since) => (since < 0 ? false : true),
+    },
     customSanitizer: {
       options: (value) => timeSeconds(value),
     },
@@ -133,7 +131,7 @@ export const V3GetSchema: Schema = {
     optional: true,
     toLowerCase: true,
     isIn: {
-      options: [['article', 'image', 'video']],
+      options: [['article', 'image', 'video', 'all']],
     },
   },
   favorite: {
@@ -156,7 +154,7 @@ export const V3GetSchema: Schema = {
     toLowerCase: true,
     customSanitizer: {
       options: (value, { req }) => {
-        const isSearch = req.body.search || req.query.search ? true : false;
+        const isSearch = req.body.search || req.query?.search ? true : false;
         // No value was passed
         if (value == null) {
           // If searching, default to relevance

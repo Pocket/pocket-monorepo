@@ -17,6 +17,7 @@ import { getRedis, getRedisCache } from '../cache';
 import { ContextManager, IContext } from './context';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 import { unleash } from '../unleash';
+import config from '../config';
 
 export async function startServer(port: number): Promise<{
   app: Application;
@@ -83,7 +84,7 @@ export async function startServer(port: number): Promise<{
     url,
     cors<cors.CorsRequest>(),
     // JSON parser to enable POST body with JSON
-    json(),
+    json({ limit: config.app.maxRequestSize }),
     sentryPocketMiddleware,
     // Logging Setup, Express app-specific
     setMorgan(serverLogger),

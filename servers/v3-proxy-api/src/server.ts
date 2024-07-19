@@ -16,9 +16,10 @@ import v3SendRouter from './routes/v3Send';
 export async function startServer(port: number) {
   const app: Application = express();
   const httpServer: Server = createServer(app);
+  const sizeLimit = '15mb';
 
-  app.use(json());
-  app.use(urlencoded({ extended: true }));
+  app.use(json({ limit: sizeLimit }));
+  app.use(urlencoded({ limit: sizeLimit, extended: true }));
   app.set('query parser', 'simple');
   app.get('/.well-known/server-health', (req, res) => {
     res.status(200).send('ok');

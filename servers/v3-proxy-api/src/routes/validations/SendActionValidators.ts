@@ -238,7 +238,7 @@ function HasTimeOrDefault<TBase extends ActionSanitizable>(Base: TBase) {
     readonly time: number;
     constructor(...args: any[]) {
       super(...args);
-      if ('time' in this.input) {
+      if ('time' in this.input && this.input.time != null) {
         // parseInt has some unexpected behavior for strings that
         // contain numerals + numbers, e.g. parseInt('123abc') returns 123.
         // Also, it will parse date timestamps that just have numerals
@@ -286,7 +286,7 @@ function MaybeHasTags<TBase extends ActionSanitizable>(Base: TBase) {
     readonly tags: string[] | undefined;
     constructor(...args: any[]) {
       super(...args);
-      if ('tags' in this.input) {
+      if ('tags' in this.input && this.input.tags != null) {
         let tags: string[];
         if (typeof this.input.tags === 'string') {
           tags = this.input.tags.split(',');
@@ -322,7 +322,7 @@ function HasValidTags<TBase extends ActionSanitizable>(Base: TBase) {
     tags: string[];
     constructor(...args: any[]) {
       super(...args);
-      if (!('tags' in this.input)) {
+      if (!('tags' in this.input) || this.input.tags == null) {
         const error: ArrayFieldError = {
           type: 'array_field',
           path: 'tags',
@@ -362,8 +362,8 @@ function HasNewTag<TBase extends ActionSanitizable>(Base: TBase) {
     readonly newTag: string;
     constructor(...args: any[]) {
       super(...args);
-      nonEmptyStringPropOrError(this.input, 'new_tag');
-      this.newTag = this.input.new_tag;
+      const validated = nonEmptyStringPropOrError(this.input, 'new_tag');
+      this.newTag = validated;
     }
   };
 }
@@ -387,8 +387,8 @@ function HasOldTag<TBase extends ActionSanitizable>(Base: TBase) {
     readonly oldTag: string;
     constructor(...args: any[]) {
       super(...args);
-      nonEmptyStringPropOrError(this.input, 'old_tag');
-      this.oldTag = this.input.old_tag;
+      const validated = nonEmptyStringPropOrError(this.input, 'old_tag');
+      this.oldTag = validated;
     }
   };
 }
@@ -412,8 +412,8 @@ function HasTag<TBase extends ActionSanitizable>(Base: TBase) {
     readonly tag: string;
     constructor(...args: any[]) {
       super(...args);
-      nonEmptyStringPropOrError(this.input, 'tag');
-      this.tag = this.input.tag;
+      const validated = nonEmptyStringPropOrError(this.input, 'tag');
+      this.tag = validated;
     }
   };
 }
@@ -437,8 +437,8 @@ function HasSearchTerm<TBase extends ActionSanitizable>(Base: TBase) {
     readonly term: string;
     constructor(...args: any[]) {
       super(...args);
-      nonEmptyStringPropOrError(this.input, 'search');
-      this.term = this.input.search;
+      const validated = nonEmptyStringPropOrError(this.input, 'search');
+      this.term = validated;
     }
   };
 }
@@ -460,7 +460,7 @@ function HasSearchTerm<TBase extends ActionSanitizable>(Base: TBase) {
  */
 function MaybeHasTitle<TBase extends ActionSanitizable>(Base: TBase) {
   return class MaybeHasTitle extends Base {
-    readonly title: string;
+    readonly title: string | undefined;
     constructor(...args: any[]) {
       super(...args);
       if (
@@ -488,11 +488,12 @@ function MaybeHasTitle<TBase extends ActionSanitizable>(Base: TBase) {
 /**
  * Throws if the property `key` is in the object `input` and is an empty string.
  */
-function nonEmptyStringPropOrError(input: MaybeAction, key: string): void {
+function nonEmptyStringPropOrError(input: MaybeAction, key: string): string {
   if (
     !(key in input) ||
     !(typeof input[key] === 'string') ||
-    input[key] === ''
+    input[key] === '' ||
+    input[key] == null
   ) {
     const error: ArrayFieldError = {
       type: 'array_field',
@@ -502,6 +503,7 @@ function nonEmptyStringPropOrError(input: MaybeAction, key: string): void {
     };
     throw new InputValidationError(error);
   }
+  return input[key] as string;
 }
 
 /**
@@ -606,8 +608,8 @@ function HasAnnotationId<TBase extends ActionSanitizable>(Base: TBase) {
     readonly id: string;
     constructor(...args: any[]) {
       super(...args);
-      nonEmptyStringPropOrError(this.input, 'annotation_id');
-      this.id = this.input.annotation_id;
+      const validated = nonEmptyStringPropOrError(this.input, 'annotation_id');
+      this.id = validated;
     }
   };
 }

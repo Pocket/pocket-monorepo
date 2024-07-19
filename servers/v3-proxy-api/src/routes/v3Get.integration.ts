@@ -975,6 +975,19 @@ describe('v3Get', () => {
         sort: 'shortest',
         since: '12345',
       },
+      {
+        consumer_key: 'test',
+        access_token: 'test',
+        detailType: 'complete',
+        contentType: 'all',
+        count: '10',
+        offset: '10',
+        state: 'read',
+        favorite: '0',
+        tag: 'tag',
+        sort: 'shortest',
+        since: '12345',
+      },
     ])('should work with valid query parameters (GET)', async (params) => {
       jest
         .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
@@ -1004,10 +1017,29 @@ describe('v3Get', () => {
         since: '123123',
         detailType: 'complete',
       });
-      expect(apiSpy.mock.lastCall[3].filter.updatedSince).toEqual(123123);
+      expect(apiSpy.mock.lastCall?.[3].filter?.updatedSince).toEqual(123123);
       expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
-    it.each([1719263946000, 1719263946, '1719263946000', '1719263946'])(
+    it('should not add contentType filter if value="all"', async () => {
+      const apiSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).get('/v3/get').query({
+        consumer_key: 'test',
+        access_token: 'test',
+        detailType: 'complete',
+      });
+      expect(apiSpy.mock.lastCall?.[3].filter).toBeUndefined();
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+    });
+    it.each([
+      1719263946000,
+      1719263946,
+      '1719263946000',
+      '1719263946',
+      '1719263946.129312',
+      1719263946.129312,
+    ])(
       'should convert since milliseconds to seconds, but leave seconds alone',
       async (time) => {
         const apiSpy = jest
@@ -1019,7 +1051,9 @@ describe('v3Get', () => {
           since: time,
           detailType: 'complete',
         });
-        expect(apiSpy.mock.lastCall[3].filter.updatedSince).toEqual(1719263946);
+        expect(apiSpy.mock.lastCall?.[3].filter?.updatedSince).toEqual(
+          1719263946,
+        );
         expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
       },
     );
@@ -1070,7 +1104,17 @@ describe('v3Get', () => {
         contentType: 'unsupported-pod',
         sort: 'gravity',
       },
-      // Duplicate query param case
+      // since < 0
+      {
+        consumer_key: 'test',
+        access_token: 'test',
+        since: '-1233',
+      },
+      {
+        consumer_key: 'test',
+        access_token: 'test',
+        since: '-1233.343',
+      },
       {
         tag: ['abc', '123'],
       },
@@ -1217,8 +1261,8 @@ describe('v3Get', () => {
         access_token: 'test',
         search: 'abc',
       });
-      expect(apiSpy.mock.lastCall[3].sort.sortBy).toEqual('RELEVANCE');
-      expect(apiSpy.mock.lastCall[3].sort.sortOrder).toEqual('DESC');
+      expect(apiSpy.mock.lastCall?.[3].sort?.sortBy).toEqual('RELEVANCE');
+      expect(apiSpy.mock.lastCall?.[3].sort?.sortOrder).toEqual('DESC');
       expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
     it('defaults to newest sort for non-search', async () => {
@@ -1229,8 +1273,8 @@ describe('v3Get', () => {
         consumer_key: 'test',
         access_token: 'test',
       });
-      expect(apiSpy.mock.lastCall[3].sort.sortBy).toEqual('CREATED_AT');
-      expect(apiSpy.mock.lastCall[3].sort.sortOrder).toEqual('DESC');
+      expect(apiSpy.mock.lastCall?.[3].sort?.sortBy).toEqual('CREATED_AT');
+      expect(apiSpy.mock.lastCall?.[3].sort?.sortOrder).toEqual('DESC');
       expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
   });
