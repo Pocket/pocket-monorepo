@@ -22,6 +22,7 @@ export default {
     environment: process.env.NODE_ENV || 'development',
     defaultMaxAge: 21100, // ~6 hours
     serverPort: 4001,
+    maxRequestSize: '1mb',
   },
   aws: {
     region: process.env.AWS_REGION || 'us-east-1',
