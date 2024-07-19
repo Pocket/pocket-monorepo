@@ -165,33 +165,31 @@ export type FetchResponse = {
 // cannot be null but instead default to empty strings or other
 // default vaules (see AddResponse)
 export type PendingAddResponse = {
-  item: {
-    item_id: string;
-    normal_url: string;
-    resolved_id: string;
-    resolved_url: null;
-    domain_id: null;
-    origin_domain_id: null;
-    response_code: null;
-    mime_type: null;
-    content_length: null;
-    encoding: null;
-    date_resolved: null;
-    date_published: null;
-    title: null;
-    excerpt: null;
-    word_count: null;
-    innerdomain_redirect: null;
-    login_required: null;
-    has_image: null;
-    has_video: null;
-    is_index: null;
-    is_article: null;
-    used_fallback: null;
-    lang: null;
-    time_first_parsed: null;
-    given_url: string;
-  };
+  item_id: string;
+  normal_url: string;
+  resolved_id: string;
+  resolved_url: null;
+  domain_id: null;
+  origin_domain_id: null;
+  response_code: null;
+  mime_type: null;
+  content_length: null;
+  encoding: null;
+  date_resolved: null;
+  date_published: null;
+  title: null;
+  excerpt: null;
+  word_count: null;
+  innerdomain_redirect: null;
+  login_required: null;
+  has_image: null;
+  has_video: null;
+  is_index: null;
+  is_article: null;
+  used_fallback: null;
+  lang: null;
+  time_first_parsed: null;
+  given_url: string;
   status: 1;
 };
 
@@ -199,39 +197,37 @@ export type AddResponse = {
   // There is some overlap with GetResponse but enough is different to warrant
   // defining them without composition (the differences aren't along an obvious
   // domain boundary)
-  item: {
-    item_id: string;
-    normal_url: string;
-    resolved_id: string;
-    resolved_url: string;
-    domain_id: string;
-    origin_domain_id: string;
-    response_code: string;
-    mime_type: string; // MIME_TYPES
-    content_length: string;
-    encoding: string;
-    date_resolved: string; // timestamp string without timezone
-    date_published: string; // not nullable (deafult='0000-00-00 00:00:00')
-    title: string;
-    excerpt: string; // not nullable (deafult='')
-    word_count: string; // stringified int; not nullable (default='0')
-    innerdomain_redirect: '0' | '1';
-    login_required: '0' | '1';
-    has_image: '0' | '1' | '2';
-    has_video: '0' | '1' | '2';
-    is_index: '0' | '1';
-    is_article: '0' | '1';
-    used_fallback: '0' | '1';
-    lang: string; // 2-letter lang code
-    time_first_parsed: string; // epoch time in seconds as string
-    authors: AddAuthorsObject | []; // non-nullable, non-optional (default=[])
-    images: ImagesItemObject | []; // non-nullable, non-optional (default=[])
-    videos: VideosItemObject | []; // non-nullable, non-optional (default=[])
-    top_image_url?: string;
-    resolved_normal_url: string;
-    domain_metadata?: DomainMetadataItemObject;
-    given_url: string;
-  };
+  item_id: string;
+  normal_url: string;
+  resolved_id: string;
+  resolved_url: string;
+  domain_id: string;
+  origin_domain_id: string;
+  response_code: string;
+  mime_type: string; // MIME_TYPES
+  content_length: string;
+  encoding: string;
+  date_resolved: string; // timestamp string without timezone
+  date_published: string; // not nullable (deafult='0000-00-00 00:00:00')
+  title: string;
+  excerpt: string; // not nullable (deafult='')
+  word_count: string; // stringified int; not nullable (default='0')
+  innerdomain_redirect: '0' | '1';
+  login_required: '0' | '1';
+  has_image: '0' | '1' | '2';
+  has_video: '0' | '1' | '2';
+  is_index: '0' | '1';
+  is_article: '0' | '1';
+  used_fallback: '0' | '1';
+  lang: string; // 2-letter lang code
+  time_first_parsed: string; // epoch time in seconds as string
+  authors: AddAuthorsObject | []; // non-nullable, non-optional (default=[])
+  images: ImagesItemObject | []; // non-nullable, non-optional (default=[])
+  videos: VideosItemObject | []; // non-nullable, non-optional (default=[])
+  top_image_url?: string;
+  resolved_normal_url: string;
+  domain_metadata?: DomainMetadataItemObject;
+  given_url: string;
   // what does this mean
   status: 1;
 };
