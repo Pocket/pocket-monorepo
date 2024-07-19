@@ -57,7 +57,7 @@ Generate an API Key at <https://console.snowplowanalytics.com/credentials> then 
 ```bash
 export SNOWPLOW_CONSOLE_API_KEY=<key here>
 cd shared-snowplow-consumer
-pnpm snowtype:generate
+pnpm snowplow:generate
 ```
 
-You need to also add the structures you want to the snowtype.config.json See https://docs.snowplow.io/docs/collecting-data/code-generation/using-the-cli/
+You need to also add the structures you want to the snowtype.config.json See <https://docs.snowplow.io/docs/collecting-data/code-generation/using-the-cli/>

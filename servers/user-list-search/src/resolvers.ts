@@ -31,6 +31,8 @@ import {
   CorpusSearchConnection,
 } from './__generated__/types';
 import { CorpusSearchModel } from './corpus/CorpusSearchModel';
+import { EventBus } from './events/EventBus';
+import * as Sentry from '@sentry/node';
 
 /**
  * Custom type for FunctionalBoostValue coming from client.
@@ -228,6 +230,11 @@ export const resolvers: Resolvers = {
       const res = (await new CorpusSearchModel(context).keywordSearch(
         args,
       )) as any;
+      // Async event emission
+      new EventBus()
+        .sendCorpusSearchResultEvent(res, context, args)
+        // Shouldn't need to catch since errors should be handled, but just in case
+        .catch((e) => Sentry.captureException(e));
       return res;
     },
   },

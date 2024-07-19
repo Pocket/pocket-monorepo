@@ -1,7 +1,11 @@
 import { config } from '../../config';
 import { EventHandler } from '../EventHandler';
 import { getTracker } from '../tracker';
-import { SearchResult, createSearchResult } from '../../snowtype/snowplow';
+import {
+  createAPIUser,
+  createUser,
+  trackSearchResultSpec,
+} from '../../snowtype/snowplow';
 import { PocketSearchPayload } from '../../eventConsumer/searchEvents/searchEventconsumer';
 
 /**
@@ -19,11 +23,11 @@ export class PocketSearchEventHandler extends EventHandler {
    * @param data
    */
   process(data: PocketSearchPayload): void {
-    const searchData = createSearchResult(data.detail.search);
-    this.trackObjectUpdate<SearchResult>(this.tracker, {
-      trigger: data['detail-type'],
-      object: 'pocket_search_result',
-      context: [searchData],
-    });
+    const context = [
+      createAPIUser(data.detail.event.apiUser),
+      createUser(data.detail.event.user),
+    ];
+    const searchPayload = { ...data.detail.event.search, context };
+    trackSearchResultSpec(this.tracker, searchPayload);
   }
 }
