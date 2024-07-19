@@ -141,8 +141,8 @@ class ParserGraphQLWrapper extends TerraformStack {
         existingBucket: config.s3LogsBucket,
       },
       taskSize: {
-        cpu: 2048,
-        memory: 4096,
+        cpu: config.isDev ? 2048 : 4096,
+        memory: config.isDev ? 4096 : 8192,
       },
       containerConfigs: [
         {

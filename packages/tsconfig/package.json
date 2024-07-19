@@ -5,14 +5,14 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "@types/node": "^20.14.2",
+    "@types/node": "^20.14.11",
     "ts-node": "10.9.2",
     "tslib": "2.6.3",
-    "tsup": "8.1.0",
-    "typescript": "5.4.5"
+    "tsup": "8.1.2",
+    "typescript": "5.5.3"
   },
   "engines": {
-    "node": "^20.14"
+    "node": "^20.15"
   },
   "publishConfig": {
     "access": "public"
