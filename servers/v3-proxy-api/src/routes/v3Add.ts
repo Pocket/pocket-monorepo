@@ -12,6 +12,7 @@ import { V3AddSchema, V3AddParams } from './validations';
 import { InputValidationError } from '../errors/InputValidationError';
 import { AddItemTransformer } from '../graph/add/toRest';
 import { GraphQLClient } from 'graphql-request';
+import { asyncHandler } from '../middleware/asyncHandler';
 
 const router: Router = Router();
 
@@ -28,28 +29,33 @@ const v3AddController = async (
   const result = validationResult(req);
   const data = matchedData(req, { includeOptionals: false }) as V3AddParams;
   if (!result.isEmpty()) {
-    // Send validation error to error handling middleware
-    return next(
-      new InputValidationError(result.array({ onlyFirstError: true })[0]),
-    );
+    throw new InputValidationError(result.array({ onlyFirstError: true })[0]);
   }
-  try {
-    const variables = buildVariables(data);
-    const headers = req.headers;
-    const accessToken = (data.access_token as string) ?? null;
-    const consumerKey = (data.consumer_key as string) ?? null;
-    const client = getClient(accessToken, consumerKey, headers);
-    const graphResponse = await processV3Add(client, variables, data.tags);
-    return res.json(graphResponse);
-  } catch (err) {
-    // Pass along to error handling middleware
-    // Has to be in a try/catch block due to async call
-    return next(err);
-  }
+  const variables = buildVariables(data);
+  const headers = req.headers;
+  const accessToken = (data.access_token as string) ?? null;
+  const consumerKey = (data.consumer_key as string) ?? null;
+  const client = getClient(accessToken, consumerKey, headers);
+  const graphResponse = await processV3Add(client, variables, data.tags);
+  return graphResponse;
 };
 
-router.get('/', checkSchema(V3AddSchema, ['query']), v3AddController);
-router.post('/', checkSchema(V3AddSchema, ['body']), v3AddController);
+router.get(
+  '/',
+  checkSchema(V3AddSchema, ['query']),
+  asyncHandler(async (req, res, next) => {
+    const result = await v3AddController(req, res, next);
+    res.json(result);
+  }),
+);
+router.post(
+  '/',
+  checkSchema(V3AddSchema, ['body']),
+  asyncHandler(async (req, res, next) => {
+    const result = await v3AddController(req, res, next);
+    res.json(result);
+  }),
+);
 
 /**
  * Set variables for the initial 'upsert' query

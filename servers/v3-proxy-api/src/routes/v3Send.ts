@@ -7,8 +7,8 @@ import {
   V3SendSchemaPost,
 } from './validations';
 import { InputValidationError } from '../errors/InputValidationError';
-import { SendAction } from './validations/SendActionValidators';
 import { ActionsRouter } from './ActionsRouter';
+import { asyncHandler } from '../middleware/asyncHandler';
 
 const router: Router = Router();
 
@@ -26,34 +26,34 @@ const v3SendController = async (
   const result = validationResult(req);
   const data = matchedData(req, { includeOptionals: false }) as V3SendParams;
   if (!result.isEmpty()) {
-    // Send validation error to error handling middleware
-    return next(
-      new InputValidationError(result.array({ onlyFirstError: true })[0]),
-    );
+    throw new InputValidationError(result.array({ onlyFirstError: true })[0]);
   }
   // Additional per-action validation, since validating heterogenous
   // arrays with non-intersecting types is hard
-  let actions: SendAction[];
-  try {
-    actions = data.actions.map((action) => ActionSanitizer(action));
-  } catch (err) {
-    return next(err);
-  }
-  try {
-    const result = await new ActionsRouter(
-      data.access_token,
-      data.consumer_key,
-      req.headers,
-    ).processActions(actions);
-    return res.json(result);
-  } catch (err) {
-    // Pass along to error handling middleware
-    // Has to be in a try/catch block due to async call
-    return next(err);
-  }
+  const actions = data.actions.map((action) => ActionSanitizer(action));
+  const response = await new ActionsRouter(
+    data.access_token,
+    data.consumer_key,
+    req.headers,
+  ).processActions(actions);
+  return response;
 };
 
-router.get('/', checkSchema(V3SendSchemaGet, ['query']), v3SendController);
-router.post('/', checkSchema(V3SendSchemaPost, ['body']), v3SendController);
+router.get(
+  '/',
+  checkSchema(V3SendSchemaGet, ['query']),
+  asyncHandler(async (req, res, next) => {
+    const result = await v3SendController(req, res, next);
+    res.json(result);
+  }),
+);
+router.post(
+  '/',
+  checkSchema(V3SendSchemaPost, ['body']),
+  asyncHandler(async (req, res, next) => {
+    const result = await v3SendController(req, res, next);
+    res.json(result);
+  }),
+);
 
 export default router;

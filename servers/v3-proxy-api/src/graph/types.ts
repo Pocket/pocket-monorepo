@@ -132,7 +132,7 @@ export type GetTopLevelDefaultResponse = {
   complete: number; // 0 if preg_match('/^[0-9]*$/', $since) && $since > 0, else 1
   status: number; // 1 if no error & list > 0, 2 if no error & list == 0, 0 if error
   since: number; // unix timestamp of the last updated at in the response of items
-  error: number; // maps to pocket error codes or null if no error
+  error: number | null; // maps to pocket error codes or null if no error
 };
 
 export type GetResponseComplete = {
