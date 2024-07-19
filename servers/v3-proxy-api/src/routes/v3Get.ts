@@ -22,6 +22,7 @@ import {
 import { checkSchema, validationResult, matchedData } from 'express-validator';
 import { V3GetParams, V3GetSchema } from './validations';
 import { InputValidationError } from '../errors/InputValidationError';
+import { asyncHandler } from '../middleware/asyncHandler';
 
 const router: Router = Router();
 
@@ -39,31 +40,36 @@ const v3GetController = async (
   const result = validationResult(req);
   const data = matchedData(req, { includeOptionals: false }) as V3GetParams;
   if (!result.isEmpty()) {
-    // Send validation error to error handling middleware
-    return next(
-      new InputValidationError(result.array({ onlyFirstError: true })[0]),
-    );
+    throw new InputValidationError(result.array({ onlyFirstError: true })[0]);
   }
-  try {
-    const headers = req.headers;
-    const accessToken = (data.access_token as string) ?? null;
-    const consumerKey = (data.consumer_key as string) ?? null;
-    const graphResponse = await processV3call(
-      accessToken,
-      consumerKey,
-      headers,
-      data,
-    );
-    return res.json(graphResponse);
-  } catch (err) {
-    // Pass along to error handling middleware
-    // Has to be in a try/catch block due to async call
-    return next(err);
-  }
+  const headers = req.headers;
+  const accessToken = (data.access_token as string) ?? null;
+  const consumerKey = (data.consumer_key as string) ?? null;
+  const graphResponse = await processV3call(
+    accessToken,
+    consumerKey,
+    headers,
+    data,
+  );
+  return graphResponse;
 };
 
-router.get('/', checkSchema(V3GetSchema, ['query']), v3GetController);
-router.post('/', checkSchema(V3GetSchema, ['body']), v3GetController);
+router.get(
+  '/',
+  checkSchema(V3GetSchema, ['query']),
+  asyncHandler(async (req, res, next) => {
+    const result = await v3GetController(req, res, next);
+    res.json(result);
+  }),
+);
+router.post(
+  '/',
+  checkSchema(V3GetSchema, ['body']),
+  asyncHandler(async (req, res, next) => {
+    const result = await v3GetController(req, res, next);
+    res.json(result);
+  }),
+);
 
 /**
  * function call to get saves from graphQL and convert it to v3 Get response

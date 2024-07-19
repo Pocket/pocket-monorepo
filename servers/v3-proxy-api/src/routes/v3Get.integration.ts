@@ -895,6 +895,27 @@ describe('v3Get', () => {
         },
         expected: {
           error: 'Unauthorized',
+          headers: {
+            'x-source': 'Pocket',
+            'x-error-code': '5200',
+            'x-error': 'Forbidden',
+          },
+        },
+      },
+      // Fallback to generic report
+      {
+        errData: {
+          status: 504,
+          message: "HTTP fetch failed from 'parser': 504: Gateway Timeout",
+          code: 'SUBREQUEST_HTTP_ERROR',
+        },
+        expected: {
+          error: "HTTP fetch failed from 'parser': 504: Gateway Timeout",
+          headers: {
+            'x-source': 'Pocket',
+            'x-error': 'Internal Server Error',
+            'x-error-code': '198',
+          },
         },
       },
     ])(
@@ -925,9 +946,9 @@ describe('v3Get', () => {
           consumer_key: 'test',
           access_token: 'test',
         });
-        expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+        expect(response.headers).toMatchObject(expected.headers);
         expect(response.status).toEqual(errData.status);
-        expect(response.body).toEqual(expected);
+        expect(response.body.error).toEqual(expected.error);
         expect(consoleSpy).not.toHaveBeenCalled();
         expect(sentrySpy).not.toHaveBeenCalled();
       },
