@@ -10,6 +10,7 @@ import { V3FetchParams, V3FetchSchema } from './validations/FetchSchema';
 import { InputValidationError } from '../errors/InputValidationError';
 import { V3GetParams } from './validations';
 import { FetchResponse, GetSharesResponse } from '../graph/types';
+import { asyncHandler } from '../middleware/asyncHandler';
 
 const router: Router = Router();
 
@@ -27,31 +28,36 @@ const v3FetchController = async (
   const result = validationResult(req);
   const data = matchedData(req, { includeOptionals: false }) as V3FetchParams;
   if (!result.isEmpty()) {
-    // Send validation error to error handling middleware
-    return next(
-      new InputValidationError(result.array({ onlyFirstError: true })[0]),
-    );
+    throw new InputValidationError(result.array({ onlyFirstError: true })[0]);
   }
-  try {
-    const headers = req.headers;
-    const accessToken = (data.access_token as string) ?? null;
-    const consumerKey = (data.consumer_key as string) ?? null;
-    const graphResponse = await processV3call(
-      accessToken,
-      consumerKey,
-      headers,
-      data,
-    );
-    return res.json(graphResponse);
-  } catch (err) {
-    // Pass along to error handling middleware
-    // Has to be in a try/catch block due to async call
-    return next(err);
-  }
+  const headers = req.headers;
+  const accessToken = (data.access_token as string) ?? null;
+  const consumerKey = (data.consumer_key as string) ?? null;
+  const graphResponse = await processV3call(
+    accessToken,
+    consumerKey,
+    headers,
+    data,
+  );
+  return graphResponse;
 };
 
-router.get('/', checkSchema(V3FetchSchema, ['query']), v3FetchController);
-router.post('/', checkSchema(V3FetchSchema, ['body']), v3FetchController);
+router.get(
+  '/',
+  checkSchema(V3FetchSchema, ['query']),
+  asyncHandler(async (req, res, next) => {
+    const result = await v3FetchController(req, res, next);
+    res.json(result);
+  }),
+);
+router.post(
+  '/',
+  checkSchema(V3FetchSchema, ['body']),
+  asyncHandler(async (req, res, next) => {
+    const result = await v3FetchController(req, res, next);
+    res.json(result);
+  }),
+);
 
 /**
  * function call to get saves from graphQL and convert it to v3 Fetch response

@@ -58,13 +58,14 @@ export function clientErrorHandler(
   next: NextFunction,
 ) {
   const defaultMessage = 'Something Went Wrong';
+  const defaultHeaders = customErrorHeaders('INTERNAL_SERVER_ERROR');
   if (err instanceof ClientError) {
     res.status(err.response.status);
     // There might be more than 1 error, but we will just return the first
     const primaryError = err.response.errors?.[0];
-    const headers = customErrorHeaders(primaryError?.extensions.code);
-    // Set headers if they're not undefined
-    headers && res.set(headers);
+    const headers =
+      customErrorHeaders(primaryError?.extensions.code) ?? defaultHeaders;
+    res.set(headers);
     // Set error data
     const message = primaryError?.message ?? defaultMessage;
     res.send({ error: message });
@@ -75,10 +76,7 @@ export function clientErrorHandler(
       .send({ error: err.message });
   } else {
     // Catchall
-    res
-      .status(500)
-      .set(customErrorHeaders('INTERNAL_SERVER_ERROR'))
-      .send({ error: err.message });
+    res.status(500).set(defaultHeaders).send({ error: err.message });
   }
 }
 
@@ -96,6 +94,10 @@ export function logAndCaptureErrors(
   if (err instanceof InputValidationError) {
     return next(err);
   } else if (err instanceof ClientError) {
+    Sentry.addBreadcrumb({
+      message: 'Encountered ClientError',
+      data: { status: err.response.status },
+    });
     // Just log bad inputs, because that indicates a bug in the proxy code
     // Anything else should already be captured by the router/subgraphs
     if (err.response.status !== 400) {
@@ -103,11 +105,12 @@ export function logAndCaptureErrors(
     }
   }
   // Okay, now we actually log things
-  serverLogger.error(`${req.method}: ${req.baseUrl + req.path}: ${err}`);
-  const query = { ...req.query };
-  delete query['access_token'];
-  Sentry.addBreadcrumb({
-    data: { body: req.body, query },
+  serverLogger.error({
+    message: err.message,
+    method: req.method,
+    path: req.baseUrl + req.path,
+    status: req.statusCode,
+    error: err,
   });
   Sentry.captureException(err);
   next(err);
