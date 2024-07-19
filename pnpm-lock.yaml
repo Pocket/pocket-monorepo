@@ -926,7 +926,7 @@ importers:
         version: 14.0.0-beta.6
       ts-jest:
         specifier: 29.2.3
-        version: 29.2.3(@babel/core@7.24.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.24.8))(esbuild@0.23.0)(jest@29.7.0(@types/node@20.14.11)(ts-node@10.9.2(@types/node@20.14.11)(typescript@5.5.3)))(typescript@5.5.3)
+        version: 29.2.3(@babel/core@7.24.5)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.24.5))(jest@29.7.0(@types/node@20.14.11)(ts-node@10.9.2(@types/node@20.14.11)(typescript@5.5.3)))(typescript@5.5.3)
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@types/node@20.14.11)(typescript@5.5.3)
@@ -3561,8 +3561,8 @@ importers:
         specifier: 3.23.1
         version: 3.23.1
       '@snowplow/snowtype':
-        specifier: ^0.4.1
-        version: 0.4.2(commander@12.1.0)(encoding@0.1.13)
+        specifier: ^0.7.1
+        version: 0.7.1(commander@12.1.0)(encoding@0.1.13)
       '@types/elasticsearch':
         specifier: ^5.0.37
         version: 5.0.43
@@ -3604,7 +3604,7 @@ importers:
         version: 7.0.0
       ts-jest:
         specifier: 29.2.3
-        version: 29.2.3(@babel/core@7.24.5)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.24.5))(jest@29.7.0(@types/node@20.14.11)(ts-node@10.9.2(@types/node@20.14.11)(typescript@5.5.3)))(typescript@5.5.3)
+        version: 29.2.3(@babel/core@7.24.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.24.8))(esbuild@0.23.0)(jest@29.7.0(@types/node@20.14.11)(ts-node@10.9.2(@types/node@20.14.11)(typescript@5.5.3)))(typescript@5.5.3)
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@types/node@20.14.11)(typescript@5.5.3)
@@ -6532,18 +6532,9 @@ packages:
   '@snowplow/node-tracker@3.23.1':
     resolution: {integrity: sha512-MkmGdkKethmW2VBA1RXrC7OLeDWdZZXkUvmiGc0Z3fDKSoBFmburu69ocYFIkFMSBLzUdc1QXtrAACoiitaArA==}
 
-  '@snowplow/snowtype-core@0.4.2':
-    resolution: {integrity: sha512-NmVwvZ1epnkSdMA/OmpoM99yNSskxTFsKgtyIhpeCZOC3OxT0ZgeToLs2Xs+EqeJGDQAhBOQeaUmbhoY1fcb5A==}
-    engines: {node: '>=18'}
-
   '@snowplow/snowtype-core@0.7.1':
     resolution: {integrity: sha512-9VYLeM/2V4CQOH0JcrO5GS9hLrnJxU3AKIIoS/hpSETfX+ZicgsTweFz0FwkhQv8rIQrAw/ok6YpENHEbgELrg==}
     engines: {node: '>=18'}
-
-  '@snowplow/snowtype@0.4.2':
-    resolution: {integrity: sha512-ywyZpT3+u0pvwDWF6G4qwCTVwO+7RxpBv1rv2yxL0PgSUS9assP+gtKL8hZEdogTg/haqUTmTt7v+j6AYgIrNw==}
-    engines: {node: '>=18'}
-    hasBin: true
 
   '@snowplow/snowtype@0.7.1':
     resolution: {integrity: sha512-waYGYartZhf3tUFmg+GuWk1Wip356J/BxCvb0xxYkYEWhTFY9YcyMDDVmYXGLaiaJjxxWdp/d19N6XY7kLZ6Mw==}
@@ -18670,39 +18661,12 @@ snapshots:
       got: 11.8.6
       tslib: 2.6.3
 
-  '@snowplow/snowtype-core@0.4.2(encoding@0.1.13)':
-    dependencies:
-      handlebars: 4.7.8
-      json-pointer: 0.6.2
-      quicktype-core: 23.0.158(encoding@0.1.13)
-    transitivePeerDependencies:
-      - encoding
-
   '@snowplow/snowtype-core@0.7.1(encoding@0.1.13)':
     dependencies:
       handlebars: 4.7.8
       json-pointer: 0.6.2
       quicktype-core: 23.0.158(encoding@0.1.13)
     transitivePeerDependencies:
-      - encoding
-
-  '@snowplow/snowtype@0.4.2(commander@12.1.0)(encoding@0.1.13)':
-    dependencies:
-      '@commander-js/extra-typings': 11.1.0(commander@12.1.0)
-      '@inquirer/prompts': 3.3.2
-      '@snowplow/snowtype-core': 0.4.2(encoding@0.1.13)
-      chalk: 4.1.2
-      cli-spinner: 0.2.10
-      dotenv: 16.4.5
-      fs-extra: 11.2.0
-      got: 11.8.6
-      joi: 17.13.1
-      js-sha256: 0.10.1
-      mime-types: 2.1.35
-      mkdirp: 3.0.1
-      tsx: 4.13.2
-    transitivePeerDependencies:
-      - commander
       - encoding
 
   '@snowplow/snowtype@0.7.1(commander@12.1.0)(encoding@0.1.13)':

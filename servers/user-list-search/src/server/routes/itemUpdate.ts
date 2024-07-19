@@ -11,7 +11,7 @@ import * as Sentry from '@sentry/node';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { legacyMysqlInterface } from '../../datasource/MysqlDataSource';
 
-export const router = Router();
+export const router: Router = Router();
 
 const itemUpdateSchema: Schema = {
   traceId: {
