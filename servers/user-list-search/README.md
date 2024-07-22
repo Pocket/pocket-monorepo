@@ -49,3 +49,21 @@ Currently, events originate with the kinesis unified events stream. This stream 
 The Pocket Corpus describes human-curated/approved recommendations (e.g. for new tab), collections, and the individual "stories" in a collection. We curate content in a number of different languages, for which we provide language-specific indices. This allows us to leverage elasticsearch's automatic language analyzers (which implements features like stemming, stopword removal, etc.) for more effective and relevant search results.
 
 Corpus data originates at the (default) event bus in AWS. The corpus service emits events as curators make changes to the corpus (e.g. adding new collections, recommendations, or making changes to existing recommendations). Through event rules we fan out these events with an SNS/SQS pattern. Once the events are pushed onto the SQS queue, they are consumed by lamba functions which perform bulk index actions.
+
+## Even emission
+
+### Generate Snowtypes
+
+We use the types generated from snowtype to make sure our events adhere to a single schema (events emitted here are consumed by others downstream). We decided to just use snowplow event schema because the main consumer of events is snowplow (and we can generate the types from a central source of truth), but technically any consistent schema would do (e.g. the event bridge schema registry used in some other services).
+
+The generated files contain trackers we don't use, but it's a fine tradeoff until perhaps snowplow adds support for just generating types.
+
+To build the types, generate an API Key at <https://console.snowplowanalytics.com/credentials> then do the following:
+
+```bash
+export SNOWPLOW_CONSOLE_API_KEY=<key here>
+cd user-list-search
+pnpm snowtype:generate
+```
+
+If new event structures are added they need to be included in the snowtype.config.json; See <https://docs.snowplow.io/docs/collecting-data/code-generation/using-the-cli/>. We include the minimum required structures for this repository, although more exist in snowplow.

@@ -11,10 +11,11 @@
     "iglu:com.pocket/list_item/jsonschema/1-0-1",
     "iglu:com.pocket/collection/jsonschema/1-0-3",
     "iglu:com.pocket/prospect/jsonschema/1-0-1",
-    "iglu:com.pocket/pocket_share/jsonschema/1-0-1"
+    "iglu:com.pocket/pocket_share/jsonschema/1-0-1",
+    "iglu:com.pocket/search_response_event/jsonschema/1-0-4"
   ],
   "eventSpecificationIds": [],
-  "dataProductIds": [],
+  "dataProductIds": ["4a1a7785-38d7-432d-8453-01ddc046450f"],
   "organizationId": "cf0fba6b-23b3-49a0-9d79-7ce18b8f9618",
   "tracker": "@snowplow/node-tracker",
   "language": "typescript",

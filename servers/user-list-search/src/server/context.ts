@@ -1,13 +1,18 @@
 import { Knex } from 'knex';
 import { AuthenticationError } from '@pocket-tools/apollo-utils';
+import type { Request } from 'express';
 
 export type IContext = {
   userId: string;
   userIsPremium: boolean;
   knexDbClient: Knex;
   isNative: boolean;
+  request: Request;
 };
-export type ContextFactory = (req, dbClient: Knex) => ContextManager | null;
+export type ContextFactory = (
+  req: Request,
+  dbClient: Knex,
+) => ContextManager | null;
 
 /**
  * Used to determine if a query is an introspection query so
@@ -48,9 +53,11 @@ export class ContextManager implements IContext {
   public readonly userIsPremium: boolean;
   public readonly knexDbClient: Knex<any, any[]>;
   public readonly isNative: boolean;
-  constructor(request, dbClient: Knex) {
-    const userId = request.headers.userid;
-    this.userId = userId;
+  constructor(
+    public readonly request: Request,
+    dbClient: Knex,
+  ) {
+    this.userId = request.headers.userid as string;
     this.userIsPremium = request.headers.premium === 'true';
     this.knexDbClient = dbClient;
     this.isNative = request.headers.applicationisnative === 'true';

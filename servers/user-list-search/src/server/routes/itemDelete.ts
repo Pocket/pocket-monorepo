@@ -6,7 +6,7 @@ import { nanoid } from 'nanoid';
 import * as Sentry from '@sentry/node';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
-export const router = Router();
+export const router: Router = Router();
 
 const itemDeleteSchema: Schema = {
   traceId: {

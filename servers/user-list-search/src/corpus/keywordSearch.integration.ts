@@ -6,20 +6,42 @@ import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import { print } from 'graphql';
+import { EventBus } from '../events/EventBus';
 
 describe('Corpus search - keyword', () => {
   let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;
   const defaultHeaders = { userid: '1', applicationisnative: 'true' };
+  const eventSpy = jest
+    .spyOn(EventBus.prototype, 'sendCorpusSearchResultEvent')
+    .mockResolvedValue();
+
   beforeAll(async () => {
     await deleteDocuments();
     await seedCorpus();
     ({ app, server, url } = await startServer(0));
   });
   afterAll(async () => {
+    jest.restoreAllMocks();
     await deleteDocuments();
     await server.stop();
+  });
+  it('should call event emitter with result', async () => {
+    const variables = {
+      search: { query: 'refrigerator' },
+      filter: { language: 'EN' },
+    };
+    const res = await request(app)
+      .post(url)
+      .set({ userid: 'anonymous', applicationisnative: 'true' })
+      .send({
+        query: print(SEARCH_CORPUS),
+        variables,
+      });
+    expect(eventSpy).toHaveBeenCalledOnce();
+    expect(eventSpy.mock.calls[0][0]).toMatchObject(res.body.data.searchCorpus);
+    expect(eventSpy.mock.calls[0][2]).toEqual(variables); // same structure as args
   });
   it('should work for logged-out users using a pocket application', async () => {
     const variables = {
