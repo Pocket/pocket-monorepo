@@ -47,6 +47,16 @@ import {
 } from '@sentry/opentelemetry';
 import { AsyncLocalStorageContextManager } from '@opentelemetry/context-async-hooks';
 
+import {
+  Detector,
+  DetectorSync,
+  IResource,
+  ResourceDetectionConfig,
+  envDetectorSync,
+  hostDetectorSync,
+  processDetectorSync,
+} from '@opentelemetry/resources';
+
 import * as Sentry from '@sentry/node';
 
 // instrumentations available to be added by implementing services
@@ -93,6 +103,25 @@ const tracingDefaults: TracingConfig = {
 const SentryContextManager = wrapContextManagerClass(
   AsyncLocalStorageContextManager,
 );
+
+// TODO: Remove after issue is fixed
+// https://github.com/open-telemetry/opentelemetry-js/issues/4638
+/**
+ * A detector that returns attributes from the environment.
+ */
+function awaitAttributes(detector: DetectorSync): Detector {
+  return {
+    /**
+     * A function that returns a promise that resolves with the attributes
+     */
+    async detect(config: ResourceDetectionConfig): Promise<IResource> {
+      const resource = detector.detect(config);
+      await resource.waitForAsyncAttributes?.();
+
+      return resource;
+    },
+  };
+}
 
 /**
  * function to setup open-telemetry tracing config
@@ -173,10 +202,18 @@ export async function nodeSDKBuilder(config: TracingConfig) {
     spanProcessors: _spanProcessors,
     traceExporter: _traceExporter,
     idGenerator: _idGenerator,
+    // TODO: Remove after issue is fixed
+    // https://github.com/open-telemetry/opentelemetry-js/issues/4638
+    resourceDetectors: [
+      awaitAttributes(envDetectorSync),
+      awaitAttributes(hostDetectorSync),
+      awaitAttributes(processDetectorSync),
+    ],
   });
 
   // this enables the API to record telemetry
   sdk.start();
+  diag.info('Tracer successfully started');
 
   // gracefully shut down the SDK on process exit
   process.on('SIGTERM', () => {
