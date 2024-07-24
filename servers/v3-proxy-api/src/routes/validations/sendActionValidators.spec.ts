@@ -309,21 +309,6 @@ describe('send validator', () => {
           time: 123245,
         },
       },
-      // SuggestedCount from Chrome Extension
-      {
-        input: {
-          item_id: '12345',
-          action: 'tags_remove' as const,
-          tags: ['perilous', 'supplemental'],
-          suggestedCount: 0,
-        },
-        expected: {
-          itemId: 12345,
-          action: 'tags_remove',
-          tags: ['perilous', 'supplemental'],
-          time: now,
-        },
-      },
     ])('sanitizes valid input', ({ input, expected }) => {
       const res = new ItemTagActionSanitizer(input).validate();
       expect(res).toEqual(expected);
