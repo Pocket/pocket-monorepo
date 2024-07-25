@@ -21,8 +21,8 @@ workflows:
           fed_graph_name: pocket-admin-api
           graph_name: shareable-lists-api
           schema_file_path: servers/shareable-lists-api/schema-admin-api.graphql
-          prod_graph_url: https://shareablelistsapi.readitlater.com
-          dev_graph_url: https://shareablelistsapi.getpocket.dev
+          prod_graph_url: https://shareablelistsapi.readitlater.com/admin
+          dev_graph_url: https://shareablelistsapi.getpocket.dev/admin
           build_command: pnpm run build --filter=shareable-lists-api...
           apollo_key_env: APOLLO_ADMIN_KEY
           scope: shareable-lists-api
