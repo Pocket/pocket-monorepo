@@ -50,6 +50,7 @@ To develop all apps and packages, run the following commands:
 cd pocket-monorepo
 cp .env.example .env
 docker compose up --wait
+pnpm install
 pnpm dev
 ```
 
@@ -63,6 +64,7 @@ To run a specific server, run the following:
 cd pocket-monorepo
 cp .env.example .env
 docker compose up --wait
+pnpm install
 pnpm dev --filter=annotations-api...
 ```
 
