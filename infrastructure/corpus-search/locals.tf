@@ -48,7 +48,7 @@ locals {
       os_dedicated_master_count = 3
       nodeEnv                   = "development"
       sagemaker_endpoint_type   = "serverless"
-      os_ebs_volume_size           = 10
+      os_ebs_volume_size        = 10
     }
 
     CorpusEmbeddings-Prod = {
@@ -61,7 +61,7 @@ locals {
       nodeEnv                   = "production"
       sagemaker_endpoint_type   = "real_time"
       model_instance_type       = "ml.inf1.xlarge"
-      os_ebs_volume_size           = 10
+      os_ebs_volume_size        = 10
     }
   }
 

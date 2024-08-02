@@ -12,7 +12,7 @@ module "sagemaker" {
     max_capacity               = local.env == "Dev" ? 1 : 2 # The max capacity of the scalable target
     scaling_target_invocations = 200                        # The scaling target invocations (requests/minute)
   }
-  tags                = local.tags
+  tags = local.tags
 }
 
 # # ----
