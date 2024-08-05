@@ -230,6 +230,12 @@ data "aws_iam_policy_document" "create_ml_connector_lambda_execution_policy" {
 
   statement {
     effect    = "Allow"
+    actions   = ["iam:PassRole"]
+    resources = [aws_iam_role.search_sagemaker_inference_role.arn]
+  }
+
+  statement {
+    effect    = "Allow"
     actions   = ["es:ESHttpPost"]
     resources = ["${aws_opensearch_domain.corpus_search[0].arn}/*"]
   }

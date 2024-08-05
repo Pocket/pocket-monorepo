@@ -37,7 +37,7 @@ type EventPayload = {
  * @returns
  */
 export const processor: Handler<EventPayload> = async (event, context) => {
-  serverLogger.debug({ message: 'Event received by lambda', data: event });
+  serverLogger.debug('Event received by lambda', { data: event });
   const region = context.invokedFunctionArn.split(':')[3];
   const connectorId = await createConnector(
     event.osHost,
@@ -112,7 +112,7 @@ async function createConnector(
     message: 'Create connector response',
     data: connectorResponse,
   };
-  serverLogger.debug(data);
+  serverLogger.debug(data['message'], { response: data.data });
   Sentry.addBreadcrumb({ data });
   if (!connectorResponse.ok) {
     const error = new Error('Failed to create connector');
@@ -147,7 +147,7 @@ async function registerModel(
   });
   const modelResponse = await result.json();
   const data = { message: 'Create model response', data: modelResponse };
-  serverLogger.debug(data);
+  serverLogger.debug(data['message'], { response: data.data });
   Sentry.addBreadcrumb({ data });
   if (result.ok) {
     const taskId = modelResponse['task_id'];
@@ -233,7 +233,7 @@ async function createPipeline(
   });
   const response = await result.json();
   const data = { message: 'Create pipeline response', data: response };
-  serverLogger.debug(data);
+  serverLogger.debug(data['message'], { response: data.data });
   Sentry.addBreadcrumb({ data });
   if (result.ok) {
     return;
@@ -401,7 +401,7 @@ async function createIndex(
   });
   const response = await result.json();
   const data = { message: 'Create index response', data: response, indexName };
-  serverLogger.debug(data);
+  serverLogger.debug(data['message'], { data: data.data });
   Sentry.addBreadcrumb({ data });
   if (result.ok) {
     return;
