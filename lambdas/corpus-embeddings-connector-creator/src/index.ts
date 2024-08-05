@@ -1,12 +1,15 @@
-import { serverLogger } from '@pocket-tools/ts-logger';
 import { config } from './config';
-import { setTimeout } from 'timers/promises';
 import * as Sentry from '@sentry/aws-serverless';
 Sentry.init({
   dsn: config.sentry.dsn,
   release: config.sentry.release,
   environment: config.sentry.environment,
+  // Capture 100% of transactions
+  tracesSampleRate: 1.0,
 });
+
+import { serverLogger } from '@pocket-tools/ts-logger';
+import { setTimeout } from 'timers/promises';
 import { Handler } from 'aws-lambda';
 
 type EventPayload = {
@@ -36,8 +39,9 @@ type EventPayload = {
  * @param event
  * @returns
  */
-export const processor: Handler<EventPayload> = async (event, context) => {
+const processor: Handler<EventPayload> = async (event, context) => {
   serverLogger.debug('Event received by lambda', { data: event });
+  console.log(JSON.stringify(event));
   const region = context.invokedFunctionArn.split(':')[3];
   const connectorId = await createConnector(
     event.osHost,
@@ -113,6 +117,7 @@ async function createConnector(
     data: connectorResponse,
   };
   serverLogger.debug(data['message'], { response: data.data });
+  console.log(JSON.stringify(data.data));
   Sentry.addBreadcrumb({ data });
   if (!connectorResponse.ok) {
     const error = new Error('Failed to create connector');
