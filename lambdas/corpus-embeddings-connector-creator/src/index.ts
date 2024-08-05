@@ -7,7 +7,7 @@ Sentry.init({
   // Capture 100% of transactions
   tracesSampleRate: 1.0,
 });
-
+import fetch from 'node-fetch';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { setTimeout } from 'timers/promises';
 import { Handler } from 'aws-lambda';
@@ -120,7 +120,7 @@ async function createConnector(
   console.log(JSON.stringify(data.data));
   Sentry.addBreadcrumb({ data });
   if (!connectorResponse.ok) {
-    const error = new Error('Failed to create connector');
+    const error = Error('Failed to create connector');
     serverLogger.error(error.message);
     Sentry.captureException(error);
     throw error;
@@ -160,7 +160,7 @@ async function registerModel(
     await setTimeout(1000);
     return modelByTask(taskId, host);
   } else {
-    const error = new Error('Failed to create model');
+    const error = Error('Failed to create model');
     Sentry.captureException(error);
     serverLogger.error(error.message);
     throw error;
@@ -178,7 +178,7 @@ async function modelByTask(taskId: string, host: string): Promise<string> {
   if (result.ok) {
     return (await result.json())['model_id'];
   } else {
-    const error = new Error(
+    const error = Error(
       `Failed to get model_id from task (status=${result.status})`,
     );
     Sentry.captureException(error);
@@ -243,7 +243,7 @@ async function createPipeline(
   if (result.ok) {
     return;
   } else {
-    const error = new Error(`Failed to create pipeline`);
+    const error = Error(`Failed to create pipeline`);
     Sentry.captureException(error);
     serverLogger.error(error.message);
     throw error;
@@ -411,7 +411,7 @@ async function createIndex(
   if (result.ok) {
     return;
   } else {
-    const error = new Error(`Failed to create index`);
+    const error = Error(`Failed to create index`);
     Sentry.captureException(error);
     serverLogger.error(error.message);
     throw error;
