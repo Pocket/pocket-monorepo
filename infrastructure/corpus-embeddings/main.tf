@@ -10,9 +10,9 @@ data "aws_ssm_parameter" "private_subnets" {
   name = "/Shared/PrivateSubnets"
 }
 
-# data "aws_ssm_parameter" "sentry_dsn" {
-#   name = "/${local.name}/${local.env}/SENTRY_DSN"
-# }
+data "aws_ssm_parameter" "sentry_dsn" {
+  name = "/${local.name}/${local.env}/SENTRY_DSN"
+}
 
 data "aws_ssm_parameter" "vpc" {
   name = "/Shared/Vpc"

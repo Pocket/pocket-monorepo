@@ -1,3 +1,45 @@
+# --
+# Default
+# -- 
+
+data "archive_file" "lambda_zip" {
+  type        = "zip"
+  source_file = "index.js"
+  output_path = "index.js.zip"
+}
+
+data "aws_sns_topic" "backend-deploy-topic" {
+  name = "Backend-${local.workspace.environment}-ChatBot"
+}
+
+# -- Deploy bucket
+# Resource to avoid error "AccessControlListNotSupported: The bucket does not allow ACLs"
+resource "aws_s3_bucket_ownership_controls" "corpus_connector_bucket_acl_ownership" {
+  bucket = aws_s3_bucket.corpus_connector_code_bucket.id
+  rule {
+    object_ownership = "ObjectWriter"
+  }
+}
+
+resource "aws_s3_bucket" "corpus_connector_code_bucket" {
+  bucket = "pocket-${lower(local.prefix)}-lambdas"
+  tags   = local.tags
+}
+
+
+resource "aws_s3_bucket_acl" "corpus_connector_code_bucket" {
+  acl    = "private"
+  bucket = aws_s3_bucket.corpus_connector_code_bucket.id
+  depends_on = [aws_s3_bucket_ownership_controls.corpus_connector_bucket_acl_ownership]
+}
+
+resource "aws_s3_bucket_public_access_block" "corpus_connector_code_bucket" {
+  bucket              = aws_s3_bucket.corpus_connector_code_bucket.id
+  block_public_acls   = true
+  block_public_policy = true
+}
+
+
 # -----
 # CodeDeploy
 # -----
@@ -46,12 +88,6 @@ resource "aws_iam_role" "lambda_role" {
 resource "aws_iam_role_policy_attachment" "lambda_role_xray_write" {
   role       = aws_iam_role.lambda_role.name
   policy_arn = data.aws_iam_policy.aws_xray_write_only_access.arn
-}
-
-resource "aws_iam_role_policy" "lambda_execution_policy" {
-  name   = "${local.prefix}-LambdaAccessPolicy"
-  role   = aws_iam_role.lambda_role.id
-  policy = data.aws_iam_policy_document.lambda_execution_policy.json
 }
 
 data "aws_iam_policy_document" "lambda_assume" {
@@ -144,7 +180,7 @@ resource "aws_lambda_function" "create_ml_connector" {
   vpc_config {
     subnet_ids = split(",", data.aws_ssm_parameter.private_subnets.value)
     security_group_ids = [
-      aws_security_group.ecs_security_group.id
+      aws_security_group.os.id
     ]
   }
 

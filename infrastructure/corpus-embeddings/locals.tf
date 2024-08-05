@@ -30,6 +30,11 @@ locals {
   ssm_path           = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${local.name}/${local.env}/"
   ssm_path_shared    = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/Shared/${local.env}/"
 
+  lambda_env = {
+    NODE_ENV   = local.workspace.nodeEnv
+    SENTRY_DSN = data.aws_ssm_parameter.sentry_dsn.value
+  }
+
   # environment or workspace-specific local variables go here.
   # this will response without using tfvars files with the workspace-specific value (if relevant)
   # references to these values are made via local.workspace.{environment-specific key}.

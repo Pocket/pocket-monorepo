@@ -41,7 +41,7 @@ jobs:
             ".circleci/push-server.yml"
             ".circleci/instant-sync-events.yml"
             ".circleci/shares-api.yml"
-            ".circleci/corpus-search.yml"
+            ".circleci/corpus-embeddings.yml"
             )       
             touch /tmp/configs.txt
 
@@ -93,7 +93,7 @@ jobs:
             ((servers|infrastructure)/push-server/.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile)|(.circleci/push-server.yml)|(.circleci/common.yml) push_server true
             ((lambda|infrastructure)/instant-sync-events/.*)|(packages/.*)|(pnpm-lock\.yaml)|(.circleci/instant-sync-events.yml)|(.circleci/common.yml) instant_sync_events true
             ((servers|infrastructure)/shares-api.*)|(packages/.*)|(pnpm-lock\.yaml)|(Dockerfile)|(.circleci/common.yml) shares_api true
-            ((infrastructure)/corpus-search.*)|(.circleci/corpus-search.yml)|(.circleci/common.yml) corpus_search true
+            ((infrastructure|lambdas)/corpus-embeddings.*)|(.circleci/corpus-embeddings.yml)|(.circleci/common.yml) corpus_embeddings true
 
       - continuation/continue:
           configuration_path: /tmp/generated-config.yml

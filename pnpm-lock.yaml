@@ -1075,7 +1075,7 @@ importers:
         specifier: 5.5.3
         version: 5.5.3
 
-  lambdas/corpus-search-connector-creator:
+  lambdas/corpus-embeddings-connector-creator:
     dependencies:
       '@pocket-tools/ts-logger':
         specifier: workspace:*

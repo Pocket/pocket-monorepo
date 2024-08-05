@@ -30,7 +30,7 @@ repo_for_enum: &repo_for_enum
       - shareable_lists_api
       - pocket_event_bridge
       - user_list_search
-      - corpus_search
+      - corpus_embeddings
       - braze
       - v3_proxy_api
       - push_server
@@ -71,7 +71,7 @@ parameters:
   client_api:
     type: boolean
     default: false
-  corpus_search:
+  corpus_embeddings:
     type: boolean
     default: false
   list_api:
@@ -143,7 +143,7 @@ commands:
             user_api: << pipeline.parameters.user_api >>
             list_api: << pipeline.parameters.list_api >>
             client_api: << pipeline.parameters.client_api >>
-            corpus_search: << pipeline.parameters.corpus_search >>
+            corpus_embeddings: << pipeline.parameters.corpus_embeddings >>
             feature_flags: << pipeline.parameters.feature_flags >>
             sendgrid_data: << pipeline.parameters.sendgrid_data >>
             account_data_deleter: << pipeline.parameters.account_data_deleter >>
