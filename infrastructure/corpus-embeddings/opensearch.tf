@@ -46,7 +46,7 @@ CONFIG
     dedicated_master_type    = local.workspace.os_master_instance_type
     zone_awareness_enabled   = true
     zone_awareness_config {
-      availability_zone_count = 2
+      availability_zone_count = 3
     }
   }
 
@@ -70,7 +70,7 @@ CONFIG
     subnet_ids = [
       local.private_subnet_ids[0],
       local.private_subnet_ids[1],
-      # local.private_subnet_ids[2]
+      local.private_subnet_ids[2]
     ]
     security_group_ids = [
     aws_security_group.os.id]
