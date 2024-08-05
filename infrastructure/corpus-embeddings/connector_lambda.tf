@@ -28,8 +28,8 @@ resource "aws_s3_bucket" "corpus_connector_code_bucket" {
 
 
 resource "aws_s3_bucket_acl" "corpus_connector_code_bucket" {
-  acl    = "private"
-  bucket = aws_s3_bucket.corpus_connector_code_bucket.id
+  acl        = "private"
+  bucket     = aws_s3_bucket.corpus_connector_code_bucket.id
   depends_on = [aws_s3_bucket_ownership_controls.corpus_connector_bucket_acl_ownership]
 }
 

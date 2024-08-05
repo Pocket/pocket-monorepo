@@ -77,6 +77,19 @@ workflows:
           s3-key: corpus-embeddings-connector-creator-$CIRCLE_SHA1.zip
           requires:
             - corpus-embeddings-connector_build_lambda_dev
+      
+            # Notify sentry of dev deployment
+      - sentry_release_notification:
+          <<: *only_dev
+          name: corpus-embeddings_sentry-release-notification-dev
+          context: pocket
+          for: corpus_embeddings
+          sentry_project_name: corpus-embeddings
+          sentry_env: development
+          sentry_org: pocket
+          requires:
+            - corpus-embeddings-connector_code_deploy_lambda_dev
+
 
       ######
       # Main Branch Deployment (Prod Environment)
@@ -123,3 +136,15 @@ workflows:
           s3-key: corpus-embeddings-connector-creator-$CIRCLE_SHA1.zip
           requires:
             -  corpus-embeddings-connector_build_lambda_prod
+
+      # Notify sentry of main deployment
+      - sentry_release_notification:
+          <<: *only_main
+          name: corpus-embeddings_sentry-release-notification-prod
+          context: pocket
+          for: corpus_embeddings
+          sentry_project_name: corpus-embeddings
+          sentry_env: production
+          sentry_org: pocket
+          requires:
+            - corpus-embeddings-connector_code_deploy_lambda_prod
