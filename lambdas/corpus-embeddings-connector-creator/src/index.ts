@@ -236,7 +236,7 @@ async function createPipeline(
     ],
   };
   const result = await signedFetch(url, {
-    method: 'POST',
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -404,7 +404,7 @@ async function createIndex(
     },
   };
   const result = await signedFetch(url, {
-    method: 'POST',
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
