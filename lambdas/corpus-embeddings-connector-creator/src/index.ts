@@ -125,7 +125,7 @@ async function createConnector(
   serverLogger.debug(data['message'], { response: data.data });
   console.log(JSON.stringify(data.data));
   Sentry.addBreadcrumb({ data });
-  if (!connectorResponse.ok) {
+  if (!result.ok) {
     const error = Error('Failed to create connector');
     serverLogger.error(error.message);
     Sentry.captureException(error);
