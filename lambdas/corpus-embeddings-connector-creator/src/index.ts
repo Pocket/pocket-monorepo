@@ -7,7 +7,7 @@ Sentry.init({
   // Capture 100% of transactions
   tracesSampleRate: 1.0,
 });
-import fetch from 'node-fetch';
+import { createSignedFetcher } from 'aws-sigv4-fetch';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { setTimeout } from 'timers/promises';
 import { Handler } from 'aws-lambda';
@@ -32,6 +32,11 @@ type EventPayload = {
   indices: [{ name: string; analyzer: string }];
 };
 
+const signedFetch = createSignedFetcher({
+  service: 'es',
+  region: config.aws.region,
+});
+
 /**
  * The main handler function which will be wrapped by Sentry prior to export.
  * Processes messages originating from event bridge. The detail-type field in
@@ -43,6 +48,7 @@ const processor: Handler<EventPayload> = async (event, context) => {
   serverLogger.debug('Event received by lambda', { data: event });
   console.log(JSON.stringify(event));
   const region = context.invokedFunctionArn.split(':')[3];
+
   const connectorId = await createConnector(
     event.osHost,
     event.sagemakerEndpoint,
@@ -104,7 +110,7 @@ async function createConnector(
     parameters: { region: region, service_name: 'sagemaker' },
     actions: [connectorAction(modelEndpoint)],
   };
-  const result = await fetch(connectorUrl, {
+  const result = await signedFetch(connectorUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -143,7 +149,7 @@ async function registerModel(
     description: `"Sagemaker Model for connector ${connectorId}"`,
     connector_id: connectorId,
   };
-  const result = await fetch(url, {
+  const result = await signedFetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -169,7 +175,7 @@ async function registerModel(
 
 async function modelByTask(taskId: string, host: string): Promise<string> {
   const url = new URL(`_plugins/_ml/tasks/${taskId}`, host).toString();
-  const result = await fetch(url, {
+  const result = await signedFetch(url, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -229,7 +235,7 @@ async function createPipeline(
       },
     ],
   };
-  const result = await fetch(url, {
+  const result = await signedFetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -252,7 +258,7 @@ async function createPipeline(
 
 async function indexExists(name: string, host: string): Promise<boolean> {
   const url = new URL(name, host).toString();
-  const result = await fetch(url, {
+  const result = await signedFetch(url, {
     method: 'HEAD',
   });
   if (result.ok) {
@@ -397,7 +403,7 @@ async function createIndex(
       },
     },
   };
-  const result = await fetch(url, {
+  const result = await signedFetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

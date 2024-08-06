@@ -926,7 +926,7 @@ importers:
         version: 14.0.0-beta.6
       ts-jest:
         specifier: 29.2.3
-        version: 29.2.3(@babel/core@7.24.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.24.8))(esbuild@0.23.0)(jest@29.7.0(@types/node@20.14.11)(ts-node@10.9.2(@types/node@20.14.11)(typescript@5.5.3)))(typescript@5.5.3)
+        version: 29.2.3(@babel/core@7.24.5)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.24.5))(jest@29.7.0(@types/node@20.14.11)(ts-node@10.9.2(@types/node@20.14.11)(typescript@5.5.3)))(typescript@5.5.3)
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@types/node@20.14.11)(typescript@5.5.3)
@@ -1083,6 +1083,9 @@ importers:
       '@sentry/aws-serverless':
         specifier: 8.18.0
         version: 8.18.0(@opentelemetry/api@1.9.0)
+      aws-sigv4-fetch:
+        specifier: ^4.0.0
+        version: 4.0.0(@aws-sdk/client-sts@3.609.0)
       node-fetch:
         specifier: '2'
         version: 2.7.0(encoding@0.1.13)
@@ -1113,7 +1116,7 @@ importers:
         version: 14.0.0-beta.6
       ts-jest:
         specifier: 29.2.3
-        version: 29.2.3(@babel/core@7.24.5)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.24.5))(jest@29.7.0(@types/node@20.14.11)(ts-node@10.9.2(@types/node@20.14.11)(typescript@5.5.3)))(typescript@5.5.3)
+        version: 29.2.3(@babel/core@7.24.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.24.8))(esbuild@0.23.0)(jest@29.7.0(@types/node@20.14.11)(ts-node@10.9.2(@types/node@20.14.11)(typescript@5.5.3)))(typescript@5.5.3)
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@types/node@20.14.11)(typescript@5.5.3)
@@ -7267,6 +7270,10 @@ packages:
   aws-sdk@2.1614.0:
     resolution: {integrity: sha512-dsfoOk/1UBGfELJ9skBma1RzfYXalK+0QdStuwKCqrYHgpF/mlf7BqYOB0acNQHzxgVxEP0LOGjWZOzWWwdGhw==}
     engines: {node: '>= 10.0.0'}
+
+  aws-sigv4-fetch@4.0.0:
+    resolution: {integrity: sha512-8PiJYgjQE7RbtGhAPejtVUMgR3GU9GSNwog4Fy7Ry5J80OX94Hnyp051JiAJE3tdlQVfsrzPTXJHpTl5pmsyAA==}
+    engines: {node: '>=18'}
 
   aws-ssl-profiles@1.1.1:
     resolution: {integrity: sha512-+H+kuK34PfMaI9PNU/NSjBKL5hh/KDM9J72kwYeYEm0A8B1AC4fuCy3qsjnA7lxklgyXsB68yn8Z2xoZEjgwCQ==}
@@ -19538,6 +19545,18 @@ snapshots:
       util: 0.12.5
       uuid: 8.0.0
       xml2js: 0.6.2
+
+  aws-sigv4-fetch@4.0.0(@aws-sdk/client-sts@3.609.0):
+    dependencies:
+      '@aws-crypto/sha256-js': 5.2.0
+      '@aws-sdk/credential-provider-node': 3.609.0(@aws-sdk/client-sso-oidc@3.609.0(@aws-sdk/client-sts@3.609.0))(@aws-sdk/client-sts@3.609.0)
+      '@aws-sdk/types': 3.609.0
+      '@smithy/protocol-http': 4.0.3
+      '@smithy/signature-v4': 3.1.2
+    transitivePeerDependencies:
+      - '@aws-sdk/client-sso-oidc'
+      - '@aws-sdk/client-sts'
+      - aws-crt
 
   aws-ssl-profiles@1.1.1: {}
 

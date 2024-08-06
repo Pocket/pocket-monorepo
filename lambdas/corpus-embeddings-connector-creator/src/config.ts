@@ -6,4 +6,7 @@ export const config = {
     release: process.env.GIT_SHA || '',
     environment: process.env.NODE_ENV || 'development',
   },
+  aws: {
+    region: 'us-east-1', // TODO: Configure
+  },
 };
