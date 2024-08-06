@@ -47,7 +47,7 @@ locals {
     CorpusEmbeddings-Dev = {
       environment               = "Dev"
       os_cluster_enable         = true
-      os_instance_count         = 2
+      os_instance_count         = 3
       os_instance_type          = "t2.small.search"
       os_master_instance_type   = "t2.small.search"
       os_dedicated_master_count = 3

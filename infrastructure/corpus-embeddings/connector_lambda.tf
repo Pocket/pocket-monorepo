@@ -12,6 +12,67 @@ data "aws_sns_topic" "backend-deploy-topic" {
   name = "Backend-${local.workspace.environment}-ChatBot"
 }
 
+## -- SGS
+#
+
+resource "aws_security_group" "alb_security_group" {
+  name        = "${local.prefix}-HTTP/S Security Group"
+  description = "Internal security group"
+  vpc_id      = data.aws_vpc.vpc.id
+
+  ingress {
+    from_port = 443
+    to_port   = 443
+    protocol  = "TCP"
+    // TODO: Limit access to only what needs it.
+    // For now lets only do the default security groups
+    # security_groups = data.aws_security_groups.default.ids
+    cidr_blocks = [
+      "0.0.0.0/0"
+    ]
+  }
+
+  ingress {
+    from_port = 80
+    to_port   = 80
+    protocol  = "TCP"
+    # security_groups = data.aws_security_groups.default.ids
+    cidr_blocks = [
+      "0.0.0.0/0"
+    ]
+  }
+
+  egress {
+    from_port = 0
+    to_port   = 0
+    protocol  = -1
+    cidr_blocks = [
+      "0.0.0.0/0"
+    ]
+  }
+
+  tags = merge(local.tags, {
+    Name = "${local.prefix}-HTTP/S Security Group"
+  })
+}
+
+resource "aws_security_group" "ecs_security_group" {
+  name        = "${local.prefix}-ECSSecurityGroup"
+  description = "Internal security group"
+  vpc_id      = data.aws_vpc.vpc.id
+
+  egress {
+    from_port   = 0
+    protocol    = -1
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = local.tags
+
+  depends_on = [aws_security_group.alb_security_group]
+}
+
 # -- Deploy bucket
 # Resource to avoid error "AccessControlListNotSupported: The bucket does not allow ACLs"
 resource "aws_s3_bucket_ownership_controls" "corpus_connector_bucket_acl_ownership" {
@@ -180,7 +241,7 @@ resource "aws_lambda_function" "create_ml_connector" {
   vpc_config {
     subnet_ids = split(",", data.aws_ssm_parameter.private_subnets.value)
     security_group_ids = [
-      aws_security_group.os.id
+      aws_security_group.ecs_security_group.id
     ]
   }
 
@@ -236,7 +297,7 @@ data "aws_iam_policy_document" "create_ml_connector_lambda_execution_policy" {
 
   statement {
     effect    = "Allow"
-    actions   = ["es:ESHttpPost"]
+    actions   = ["es:ESHttp*"]
     resources = ["${aws_opensearch_domain.corpus_search[0].arn}/*"]
   }
 
