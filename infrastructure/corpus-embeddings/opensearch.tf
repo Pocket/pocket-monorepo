@@ -246,7 +246,7 @@ resource "aws_iam_role" "search_sagemaker_inference_role" {
     "Sid": "",
     "Effect": "Allow",
     "Principal": {
-      "Service": "opensearch.amazonaws.com"
+      "Service": "opensearchservice.amazonaws.com"
     },
     "Action": "sts:AssumeRole"
   }]
