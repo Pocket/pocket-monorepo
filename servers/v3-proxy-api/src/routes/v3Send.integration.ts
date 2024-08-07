@@ -258,7 +258,7 @@ describe('v3/send', () => {
           () =>
             (addSpy = jest
               .spyOn(ActionsRouter.prototype, 'add')
-              .mockResolvedValueOnce(expectedAddResponses[0])
+              .mockResolvedValueOnce(expectedAddResponses[0]['item'])
               .mockRejectedValueOnce(
                 new ClientError(
                   {
@@ -273,7 +273,7 @@ describe('v3/send', () => {
                   {} as any,
                 ),
               )
-              .mockResolvedValueOnce(expectedAddResponses[1])),
+              .mockResolvedValueOnce(expectedAddResponses[1]['item'])),
         );
         afterEach(() => addSpy.mockRestore());
         it('sends an array of responses and errors', async () => {
@@ -291,9 +291,9 @@ describe('v3/send', () => {
           const expected = {
             status: 1,
             action_results: [
-              expectedAddResponses[0],
+              expectedAddResponses[0]['item'],
               false,
-              expectedAddResponses[1],
+              expectedAddResponses[1]['item'],
             ],
             action_errors: [
               null,
@@ -322,7 +322,7 @@ describe('v3/send', () => {
             });
           const expected = {
             status: 1,
-            action_results: [false, expectedAddResponses[0], false],
+            action_results: [false, expectedAddResponses[0]['item'], false],
             action_errors: [
               {
                 message: `Invalid Action: 'action_imposter'`,
@@ -1019,7 +1019,7 @@ describe('v3/send', () => {
               expect(clientSpy.mock.calls[0][1]).toEqual(expectedCall);
               expect(res.body).toEqual({
                 status: 1,
-                action_results: [expectedAddResponses[0]],
+                action_results: [expectedAddResponses[0]['item']],
                 action_errors: [null],
               });
             },
