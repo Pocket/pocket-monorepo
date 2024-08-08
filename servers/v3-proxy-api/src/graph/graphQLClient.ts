@@ -34,6 +34,9 @@ import {
   SearchSavedItemsCompleteQuery,
   SearchSavedItemsCompleteDocument,
   SearchSavedItemsSimpleDocument,
+  TagsListQueryVariables,
+  TagsListQuery,
+  TagsListDocument,
 } from '../generated/graphql';
 import config from '../config';
 import * as Sentry from '@sentry/node';
@@ -315,4 +318,26 @@ export async function addSavedItem(
       AddSavedItemCompleteMutationVariables
     >(AddSavedItemCompleteDocument, variables);
   }
+}
+
+/**
+ * function call to get saves (detailType=simple)
+ *
+ * @param accessToken accessToken of the user
+ * @param consumerKey consumerKey associated with the user
+ * @param headers any headers received by proxy is just pass through to web graphQL proxy.
+ * @param variables input variables required for the query
+ */
+export async function getTagList(
+  accessToken: string,
+  consumerKey: string,
+  headers: any,
+  variables: TagsListQueryVariables,
+): Promise<TagsListQuery> {
+  Sentry.addBreadcrumb({ message: 'invoking getTagList' });
+  const client = new GraphQLClientFactory(accessToken, consumerKey, headers);
+  return client.request<TagsListQuery, TagsListQueryVariables>(
+    TagsListDocument,
+    variables,
+  );
 }
