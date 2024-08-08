@@ -9,6 +9,7 @@ import {
   RecentSearchFieldsFragment,
   SavedItemsCompleteQuery,
   SavedItemsSimpleQuery,
+  SavedItemStatus,
   SearchSavedItemsCompleteQuery,
   SearchSavedItemsSimpleQuery,
 } from '../../generated/graphql';
@@ -37,6 +38,7 @@ import {
   AccountResponse,
   PremiumFeatures,
   RecentSearchResponse,
+  DeletedItem,
 } from '../types';
 import * as tx from '../shared/transforms';
 import { DateTime } from 'luxon';
@@ -261,7 +263,10 @@ export function SearchResultTransformerSimple(
   index: number,
 ): ListItemWithSearchHighlights {
   return {
-    ...ListItemTransformerSimple(searchResult.savedItem, index),
+    ...(ListItemTransformerSimple(
+      searchResult.savedItem,
+      index,
+    ) as ListItemObject), // We do not search deleted items; simplify with type annotation for now
     ...HighlightsTransformer(searchResult.searchHighlights),
   };
 }
@@ -274,7 +279,10 @@ export function SearchResultTransformerComplete(
   index: number,
 ): ListItemCompleteWithSearchHighlights {
   return {
-    ...ListItemTransformerComplete(searchResult.savedItem, index),
+    ...(ListItemTransformerComplete(
+      searchResult.savedItem,
+      index,
+    ) as ListItemObjectComplete), // We do not search deleted items; simplify with type annotation for now
     ...HighlightsTransformer(searchResult.searchHighlights),
   };
 }
@@ -286,7 +294,7 @@ export function SearchResultTransformerComplete(
 export function ListItemTransformerSimple(
   savedItem: SavedItemSimple,
   index: number,
-): ListItemObject {
+): ListItemObject | DeletedItem {
   return ListItemTransformer(savedItem, index);
 }
 /**
@@ -296,9 +304,13 @@ export function ListItemTransformerSimple(
 export function ListItemTransformerComplete(
   savedItem: SavedItemComplete,
   index: number,
-): ListItemObjectComplete {
+): ListItemObjectComplete | DeletedItem {
   const simple = ListItemTransformer(savedItem, index);
-  if (savedItem.item.__typename === 'PendingItem') {
+  // Don't need to continue processing if pending or deleted
+  if (
+    savedItem.item.__typename === 'PendingItem' ||
+    savedItem.status === SavedItemStatus.Deleted
+  ) {
     return simple;
   }
   const completeFieldMap = {
@@ -336,7 +348,7 @@ export function ListItemTransformerComplete(
 function ListItemTransformer<T extends SavedItemSimple>(
   savedItem: T,
   index: number,
-): ListItemObject | ListItemObjectComplete {
+): ListItemObject | ListItemObjectComplete | DeletedItem {
   const statusMap = {
     UNREAD: '0' as const,
     ARCHIVED: '1' as const,
@@ -353,6 +365,14 @@ function ListItemTransformer<T extends SavedItemSimple>(
     time_favorited: (savedItem.favoritedAt ?? '0').toString(),
     sort_id: index,
   };
+  // Redact information from deleted items, and return early
+  // just need item_id and status
+  if (baseFields.status === statusMap['DELETED']) {
+    return {
+      item_id: baseFields.item_id,
+      status: baseFields.status,
+    };
+  }
   const conditionalFields = {};
   const tags = tx.TagsReducer(savedItem.tags, savedItem.id);
   tags != null && (conditionalFields['tags'] = tags);
