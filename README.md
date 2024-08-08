@@ -47,9 +47,10 @@ pnpm build
 To develop all apps and packages, run the following commands:
 
 ```bash
-cp .env.example .env
 cd pocket-monorepo
+cp .env.example .env
 docker compose up --wait
+pnpm install
 pnpm dev
 ```
 
@@ -60,9 +61,10 @@ This will bring up the docker shared services (MySQL, Memcached, Redis) and then
 To run a specific server, run the following:
 
 ```bash
-cp .env.example .env
 cd pocket-monorepo
+cp .env.example .env
 docker compose up --wait
+pnpm install
 pnpm dev --filter=annotations-api...
 ```
 
