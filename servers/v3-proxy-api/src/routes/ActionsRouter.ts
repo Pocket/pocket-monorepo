@@ -93,11 +93,13 @@ type SendActionError = {
 type SendActionResult = {
   status: 1;
   action_errors: Array<SendActionError | null>;
-  action_results: Array<AddResponse | PendingAddResponse | boolean>;
+  action_results: Array<
+    AddResponse['item'] | PendingAddResponse['item'] | boolean
+  >;
 };
 
 export class ActionsRouter {
-  private client: GraphQLClient;
+  protected client: GraphQLClient;
   constructor(
     accessToken: string,
     consumerKey: string,
@@ -190,6 +192,7 @@ export class ActionsRouter {
     }
     return result;
   }
+
   /**
    * Process the 'add' action from a batch of actions sent to /v3/send.
    * The actions should be validated and sanitized before this is invoked.
@@ -197,7 +200,7 @@ export class ActionsRouter {
    */
   public async add(
     input: ItemAddAction,
-  ): Promise<AddResponse | PendingAddResponse> {
+  ): Promise<AddResponse['item'] | PendingAddResponse['item']> {
     if (input.url != null) {
       const addVars: {
         input: SavedItemUpsertInput;
@@ -208,7 +211,8 @@ export class ActionsRouter {
           ...(input.title && { title: input.title }),
         },
       };
-      return await processV3Add(this.client, addVars, input.tags);
+      const result = await processV3Add(this.client, addVars, input.tags);
+      return result['item'];
     }
     this.invalidAction({ action: 'add (item_id only)' });
   }
@@ -219,7 +223,7 @@ export class ActionsRouter {
    */
   public async readd(
     input: Omit<ItemAction, 'action'> & { action: 'readd' },
-  ): Promise<AddResponse | PendingAddResponse> {
+  ): Promise<AddResponse['item'] | PendingAddResponse['item']> {
     if (input.itemId != null) {
       const variables: ReAddByIdMutationVariables = {
         id: input.itemId.toString(),
@@ -231,7 +235,8 @@ export class ActionsRouter {
       >(ReAddByIdDocument, variables);
       // TODO: Technically this is nullable, but is it ever
       // in the case that the client does not throw an error?
-      return AddItemTransformer(result['reAddById']!);
+      const added = AddItemTransformer(result['reAddById']!);
+      return added['item'];
     } else {
       const addVars: {
         input: SavedItemUpsertInput;
@@ -241,7 +246,8 @@ export class ActionsRouter {
           timestamp: input.time,
         },
       };
-      return await processV3Add(this.client, addVars);
+      const added = await processV3Add(this.client, addVars);
+      return added['item'];
     }
   }
   /**
@@ -299,7 +305,7 @@ export class ActionsRouter {
    * @returns true (operation is successful unless error is thrown)
    * @throws ClientError if operation fails
    */
-  private async favorite(
+  public async favorite(
     input: Omit<ItemAction, 'action'> & { action: 'favorite' },
   ): Promise<true> {
     if (input.itemId) {
