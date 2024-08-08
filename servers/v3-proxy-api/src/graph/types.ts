@@ -22,7 +22,7 @@ export type ToStringParams<T> = {
 export type GetResponseSimple = {
   //todo: add top level fields
   //e.g status, complete - as they are not mapped by developer portal docs
-  list: { [key: string]: ListItemObject };
+  list: { [key: string]: ListItemObject | DeletedItem };
 } & GetStaticResponse &
   GetTopLevelDefaultResponse &
   TagsList;
@@ -137,7 +137,7 @@ export type GetTopLevelDefaultResponse = {
 
 export type GetResponseComplete = {
   // search_meta: { search_type: 'normal' };
-  list: { [key: string]: ListItemObjectComplete };
+  list: { [key: string]: ListItemObjectComplete | DeletedItem };
 } & GetStaticResponse &
   GetTopLevelDefaultResponse &
   TagsList;
@@ -156,7 +156,7 @@ export type PassthroughResponse = {
 };
 
 export type FetchResponse = {
-  list: { [key: string]: ListItemObjectComplete };
+  list: { [key: string]: ListItemObjectComplete | DeletedItem };
   passthrough: PassthroughResponse;
 } & GetResponseCompleteTotal;
 
@@ -347,6 +347,8 @@ export type ListItemObject = {
   // Zero if estimate is unavailable
   listen_duration_estimate: number;
 };
+
+export type DeletedItem = { item_id: string; status: '2' };
 
 export type ListItemObjectComplete = ListItemObject & ListItemObjectAdditional;
 

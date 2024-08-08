@@ -150,6 +150,7 @@ export function DomainMetadataTransformer(
   metadata: DomainMetadata | undefined,
 ): DomainMetadataItemObject {
   const metadataResponse = {} as DomainMetadataItemObject;
+  if (metadata == null) return metadataResponse;
   metadata.name && (metadataResponse['name'] = metadata.name);
   metadata.logo && (metadataResponse['logo'] = metadata.logo);
   metadata.logoGreyscale &&

@@ -1,4 +1,5 @@
 import {
+  SavedItemsCompleteQuery,
   SavedItemsSimpleQuery,
   SavedItemStatus,
 } from '../../generated/graphql';
@@ -137,6 +138,39 @@ describe('GraphQL <> Rest convesion', () => {
       expect(res['id3'].status).toEqual('2');
       expect(res['id4'].status).toEqual('3');
     });
+    it('redacts metadata except item_id for deleted status', () => {
+      const entries = [
+        { id: 'id1', status: SavedItemStatus.Unread },
+        { id: 'id3', status: SavedItemStatus.Deleted },
+      ].map((data) => ({
+        __typename: 'SavedItem' as const,
+        ...testSavedItemFragment({
+          ...mockSavedItemFragment,
+          ...data,
+        }),
+        item: {
+          ...testItemFragment({
+            ...mockItemFragment,
+            itemId: data.id,
+          }),
+        },
+      }));
+      const graphResponse: SavedItemsSimpleQuery = {
+        user: {
+          savedItemsByOffset: {
+            totalCount: 10,
+            entries,
+          },
+        },
+      };
+      const res = savedItemsSimpleToRest(graphResponse).list;
+      expect(res['id3']).toEqual({ item_id: 'id3', status: '2' });
+      expect(res['id1']).toMatchObject({
+        item_id: 'id1',
+        given_title: 'given title',
+        given_url: 'https://test.com',
+      });
+    });
     it('should return defaults for pending items', () => {
       const graphResponse: SavedItemsSimpleQuery = {
         user: {
@@ -231,6 +265,40 @@ describe('GraphQL <> Rest convesion', () => {
         withAnnotations: true,
       });
       expect(res).toEqual(expectedGetCompleteAnnotations);
+    });
+    it('redacts metadata except item_id for deleted status', () => {
+      const entries = [
+        { id: 'id1', status: SavedItemStatus.Unread },
+        { id: 'id3', status: SavedItemStatus.Deleted },
+      ].map((data) => ({
+        __typename: 'SavedItem' as const,
+        ...testSavedItemFragment({
+          ...mockSavedItemFragment,
+          ...data,
+        }),
+        item: {
+          ...testItemFragment({
+            ...mockItemFragment,
+            itemId: data.id,
+          }),
+        },
+      }));
+      const graphResponse: SavedItemsCompleteQuery = {
+        user: {
+          savedItemsByOffset: {
+            totalCount: 10,
+            entries,
+          },
+        },
+      };
+      const res = savedItemsCompleteToRest(graphResponse).list;
+      expect(res['id3']).toEqual({ item_id: 'id3', status: '2' });
+      expect(res['id1']).toMatchObject({
+        item_id: 'id1',
+        given_title: 'given title',
+        given_url: 'https://test.com',
+        domain_metadata: {},
+      });
     });
   });
   describe('convertSearchSavedItemSimple', () => {
