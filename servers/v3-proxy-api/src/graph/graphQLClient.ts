@@ -157,7 +157,7 @@ export class GraphQLClientFactory {
             !(
               error.path &&
               Array.isArray(error.path) &&
-              error.path.indexOf('recentSearches') &&
+              error.path.indexOf('recentSearches') >= 0 &&
               error.extensions.code === 'FORBIDDEN'
             ),
         );

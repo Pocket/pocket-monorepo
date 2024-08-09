@@ -6,6 +6,12 @@ export default {
     defaultMaxAge: 86400,
     port: 4030,
   },
+  // IDs of native extensions which have special routing/handling
+  // (the response and request params are mutated after receiving request
+  // and differ from other client behavior)
+  extensionApiIds: [
+    9346, 7035, 15449, 22931, 23283, 53720, 60289, 70018, 73360,
+  ],
   tracing: {
     host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
     serviceName: 'v3-api-proxy',
