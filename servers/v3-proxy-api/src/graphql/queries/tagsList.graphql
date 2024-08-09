@@ -1,0 +1,9 @@
+query tagsList(
+  $withAccountData: Boolean!
+  $tagListSince: ISOString
+) {
+  user {
+    tagsList(syncSince: $tagListSince)
+    ...AccountFields @include(if: $withAccountData)
+  }
+}

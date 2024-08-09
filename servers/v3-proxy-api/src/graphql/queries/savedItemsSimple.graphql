@@ -6,12 +6,12 @@ query savedItemsSimple(
   $withTagsList: Boolean!
   $withAccountData: Boolean!
   $withRecentSearches: Boolean!
-  $tagsListSince: ISOString
+  $tagListSince: ISOString
 ) {
   user {
     ...AccountFields @include(if: $withAccountData)
     ...RecentSearchFields @include(if: $withRecentSearches)
-    tagsList(syncSince: $tagsListSince) @include(if: $withTagsList)
+    tagsList(syncSince: $tagListSince) @include(if: $withTagsList)
     savedItemsByOffset(pagination: $pagination, filter: $filter, sort: $sort) {
       entries {
         ...SavedItemSimple
