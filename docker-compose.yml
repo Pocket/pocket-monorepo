@@ -80,7 +80,7 @@ services:
         - CMD
         - bash
         - -c
-        - curl --write-out '%{http_code}' --silent --output /dev/null http://localhost:4566/_localstack/health
+        - curl --silent --fail /dev/null http://localhost:4566/_localstack/init/ready | jq -e '.completed == true' > /dev/null || exit 1
       interval: 5s
       timeout: 10s
       start_period: 10s

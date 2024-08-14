@@ -33,5 +33,17 @@ jobs:
     # Step 4: Wait for the services to be healthy
     - name: Wait for services to be healthy
       run: docker compose up --wait
+
+    # Step 4: Wait for the services to be healthy
+    - name: Wait for services to be healthy
+      run: docker compose up --wait
+    
+    # TODO: In the future, we should figure out how to pass a scope to the Localstack startup routine
+    # in circleci, we had to do it all manually so we passed it in then.
+
+    # Wait for Localstack to have init'd all of our services: https://docs.localstack.cloud/references/init-hooks/
+    - name: Wait for Localstack to be ready
+      run: curl -s localhost:4566/_localstack/init/ready | jq .completed
+
     - name: Run service integration tests
       run: pnpm run test-integrations --filter=${{ inputs['scope'] }}
