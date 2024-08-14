@@ -17,7 +17,7 @@
     "lint": "eslint --fix-dry-run"
   },
   "dependencies": {
-    "@sentry/node": "8.18.0",
+    "@sentry/node": "8.26.0",
     "tslib": "2.6.3"
   },
   "devDependencies": {
@@ -34,6 +34,6 @@
     "typescript": "5.5.3"
   },
   "peerDependencies": {
-    "@sentry/node": "8.18.0"
+    "@sentry/node": "8.26.0"
   }
 }
