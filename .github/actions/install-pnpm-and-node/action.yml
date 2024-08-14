@@ -3,17 +3,17 @@ description: 'Install dependencies using pnpm'
 runs:
   using: 'composite'
   steps:
-    - name: Install Node.js
-      uses: actions/setup-node@v4
-      with:
-        # Use .nvmrc to determine our Node Version
-        node-version-file: '.nvmrc'
-    
     - uses: pnpm/action-setup@v4
       name: Install pnpm
       with:
         # Don't specify a pnpm version, to use the one defined in the top level package.json
         run_install: false
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        # Use .nvmrc to determine our Node Version
+        node-version-file: '.nvmrc'
+        cache: 'pnpm'
 
     - name: Install dependencies
       shell: bash
