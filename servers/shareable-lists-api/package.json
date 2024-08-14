@@ -37,7 +37,7 @@
     "@apollo/subgraph": "2.8.3",
     "@apollo/utils.keyvadapter": "3.1.0",
     "@apollo/utils.keyvaluecache": "3.1.0",
-    "@aws-sdk/client-eventbridge": "3.609.0",
+    "@aws-sdk/client-eventbridge": "3.629.0",
     "@keyv/redis": "2.8.5",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
