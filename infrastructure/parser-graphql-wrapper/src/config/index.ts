@@ -31,9 +31,6 @@ export const config = {
     component_code: `pocket-content-shared-${name.toLowerCase()}`,
     env_code: isDev ? 'dev' : 'prod',
   },
-  tracing: {
-    host: 'localhost',
-  },
   dynamodb: {
     itemSummaryTable: {
       key: 'urlHash',

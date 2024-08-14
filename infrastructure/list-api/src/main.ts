@@ -229,10 +229,6 @@ class ListAPI extends TerraformStack {
               name: 'EVENT_BUS_NAME',
               value: config.envVars.eventBusName,
             },
-            {
-              name: 'OTLP_COLLECTOR_HOST',
-              value: config.tracing.host,
-            },
           ],
           secretEnvVars: [
             {
@@ -306,31 +302,6 @@ class ListAPI extends TerraformStack {
           ],
           logGroup: this.createCustomLogGroup('app'),
           logMultilinePattern: '^\\S.+',
-        },
-        {
-          name: 'aws-otel-collector',
-          containerImage: 'amazon/aws-otel-collector',
-          essential: true,
-          repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
-          //Used default config as stated here:
-          // Available configs here: - https://github.com/aws-observability/aws-otel-collector/tree/main/config
-          command: [
-            '--config=/etc/ecs/ecs-xray.yaml',
-            //enable for debugging
-            //'--set=service.telemetry.logs.level=debug',
-          ],
-          portMappings: [
-            {
-              //default http port
-              hostPort: 4138,
-              containerPort: 4138,
-            },
-            {
-              //default grpc port
-              hostPort: 4137,
-              containerPort: 4137,
-            },
-          ],
         },
       ],
       codeDeploy: {

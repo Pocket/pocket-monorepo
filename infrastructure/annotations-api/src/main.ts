@@ -210,10 +210,6 @@ class AnnotationsAPI extends TerraformStack {
               name: 'SQS_BATCH_DELETE_QUEUE_URL',
               value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.envVars.sqsBatchDeleteQueueName}`,
             },
-            {
-              name: 'OTLP_COLLECTOR_HOST',
-              value: config.tracing.host,
-            },
           ],
           logGroup: this.createCustomLogGroup('app'),
           logMultilinePattern: '^\\S.+',
@@ -251,25 +247,6 @@ class AnnotationsAPI extends TerraformStack {
               valueFrom: `${PocketSSMPrefix}/PARSER_CONFIG`,
             },
           ],
-        },
-        {
-          name: 'aws-otel-collector',
-          command: ['--config=/etc/ecs/ecs-xray.yaml'],
-          containerImage: 'amazon/aws-otel-collector',
-          essential: true,
-          logMultilinePattern: '^\\S.+',
-          logGroup: this.createCustomLogGroup('aws-otel-collector'),
-          portMappings: [
-            {
-              hostPort: 4138,
-              containerPort: 4138,
-            },
-            {
-              hostPort: 4137,
-              containerPort: 4137,
-            },
-          ],
-          repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
         },
       ],
       codeDeploy: {

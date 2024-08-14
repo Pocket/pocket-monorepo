@@ -91,10 +91,6 @@ export class SharedSnowplowConsumerApp extends Construct {
               name: 'SNOWPLOW_EVENTS_DLQ_URL',
               value: this.config.sqsDLQ.url,
             },
-            {
-              name: 'OTLP_COLLECTOR_HOST',
-              value: config.tracing.host,
-            },
           ],
           secretEnvVars: [
             {
@@ -102,25 +98,6 @@ export class SharedSnowplowConsumerApp extends Construct {
               valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/SENTRY_DSN`,
             },
           ],
-        },
-        {
-          name: 'aws-otel-collector',
-          command: ['--config=/etc/ecs/ecs-xray.yaml'],
-          containerImage: 'amazon/aws-otel-collector',
-          essential: true,
-          logMultilinePattern: '^\\S.+',
-          logGroup: this.createCustomLogGroup('aws-otel-collector'),
-          portMappings: [
-            {
-              hostPort: 4138,
-              containerPort: 4138,
-            },
-            {
-              hostPort: 4137,
-              containerPort: 4137,
-            },
-          ],
-          repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
         },
       ],
       codeDeploy: {

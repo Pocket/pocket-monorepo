@@ -153,10 +153,6 @@ class ParserGraphQLWrapper extends TerraformStack {
               value: process.env.NODE_ENV,
             },
             {
-              name: 'OTLP_COLLECTOR_HOST',
-              value: config.tracing.host,
-            },
-            {
               name: 'REDIS_PRIMARY_ENDPOINT',
               value: primaryEndpoint,
             },
@@ -281,25 +277,6 @@ class ParserGraphQLWrapper extends TerraformStack {
               valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/UNLEASH_KEY`,
             },
           ],
-        },
-        {
-          name: 'aws-otel-collector',
-          command: ['--config=/etc/ecs/ecs-xray.yaml'],
-          containerImage: 'amazon/aws-otel-collector',
-          essential: true,
-          logMultilinePattern: '^\\S.+',
-          logGroup: this.createCustomLogGroup('aws-otel-collector'),
-          portMappings: [
-            {
-              hostPort: 4138,
-              containerPort: 4138,
-            },
-            {
-              hostPort: 4137,
-              containerPort: 4137,
-            },
-          ],
-          repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
         },
       ],
       codeDeploy: {

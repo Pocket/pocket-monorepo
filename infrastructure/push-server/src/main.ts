@@ -170,25 +170,6 @@ class PushServer extends TerraformStack {
             },
           ],
         },
-        {
-          name: 'aws-otel-collector',
-          command: ['--config=/etc/ecs/ecs-xray.yaml'],
-          containerImage: 'amazon/aws-otel-collector',
-          essential: true,
-          logMultilinePattern: '^\\S.+',
-          logGroup: this.createCustomLogGroup('aws-otel-collector'),
-          portMappings: [
-            {
-              hostPort: 4138,
-              containerPort: 4138,
-            },
-            {
-              hostPort: 4137,
-              containerPort: 4137,
-            },
-          ],
-          repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
-        },
       ],
       ecsIamConfig: {
         prefix: config.prefix,
