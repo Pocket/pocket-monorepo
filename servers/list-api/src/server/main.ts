@@ -7,10 +7,11 @@ initSentry({
 });
 
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { startServer } from './apollo';
+
 startServer(config.app.port).then(() => {
   serverLogger.info(
     `🚀 Public server ready at http://localhost:${config.app.port}`,
   );
 });
 
-import { startServer } from './apollo';
