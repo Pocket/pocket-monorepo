@@ -1,17 +1,7 @@
 version: '3'
 services:
   ## Start Common Processes Config
-  # Note this is not the collector we use in Prod, but works for local testing
-  otlpcollector:
-    image: grafana/otel-lgtm
-    platform: linux/amd64
-    environment:
-      OTEL_METRIC_EXPORT_INTERVAL: 1
-    ports:
-      - 4317:4317 # OTLP gRPC receiver
-      - 4318:4318 # OTLP http receiver
-      - 3000:3000 # Grafana UI admin:admin, use localhost:3000 to view traces
-
+  # Note this is not the collector we use in Prod, but works for local testing & github actions
   memcached:
     image: memcached:latest
     ports:
