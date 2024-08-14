@@ -1,0 +1,22 @@
+name: List API
+on:
+  # Only run the tests for this service when any of the following file paths change
+  pull_request:
+    paths:
+      - 'infrastructure/list-api/**'
+      - 'packages/**'
+      - 'servers/list-api/**'
+      - 'pnpm-lock.yaml'
+      - '.github/actions/**'
+      - '.github/workflows/list-api.yml'
+
+jobs:
+  # Let's test the service against some real life and mocked docker services.
+  test-integrations:
+    # Use our re-usable test integrations workflow which will use our docker compose file
+    uses: ./.github/workflows/test-integrations.yml
+    with:
+      # Only run the tests for our service
+      scope: 'list-api'
+    # Ensure the re-usable workflow is allowed to access the secrets
+    secrets: inherit
