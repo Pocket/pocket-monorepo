@@ -1,18 +1,18 @@
-name: User API
+name: List API
 on:
   pull_request:
     paths:
-      - 'infrastructure/user-api/**'
+      - 'infrastructure/list-api/**'
       - 'packages/**'
-      - 'servers/user-api/**'
+      - 'servers/list-api/**'
       - 'pnpm-lock.yaml'
       - '.github/actions/**'
-      - '.github/workflows/user_api.yml'
+      - '.github/workflows/list_api.yml'
 
 jobs:
   test-integrations:
     uses: ./.github/workflows/test_integrations.yml
     with:
-      scope: 'user-api'
+      scope: 'list-api'
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
