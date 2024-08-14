@@ -13,6 +13,8 @@ on:
 jobs:
   # Let's test the service against some real life and mocked docker services.
   test-integrations:
+    # Only run this job on a pull request event
+    if: github.event_name == 'pull_request'
     # Use our re-usable test integrations workflow which will use our docker compose file
     uses: ./.github/workflows/test-integrations.yml
     with:

@@ -1,3 +1,4 @@
+# A set of jobs that should always run no matter what on all Pull Requests in this repo
 name: Pull Request
 on:
   - pull_request
