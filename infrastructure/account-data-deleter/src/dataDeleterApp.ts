@@ -88,14 +88,6 @@ export class DataDeleterApp extends Construct {
           name: 'app',
           envVars: [
             {
-              name: 'AWS_XRAY_CONTEXT_MISSING',
-              value: 'IGNORE_ERROR',
-            },
-            {
-              name: 'AWS_XRAY_LOG_LEVEL',
-              value: 'silent',
-            },
-            {
               name: 'DATABASE_READ_PORT',
               value: config.envVars.databasePort,
             },
