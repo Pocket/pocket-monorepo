@@ -6,7 +6,8 @@ on:
       - 'packages/**'
       - 'servers/user-api/**'
       - 'pnpm-lock.yaml'
-      - 'workflows/user_api.yml'
+      - '.github/actions/**'
+      - '.github/workflows/user_api.yml'
 
 jobs:
   test-integrations:
