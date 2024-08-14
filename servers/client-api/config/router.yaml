@@ -65,9 +65,6 @@ telemetry:
         - slug # collectionBySlug
   exporters:
     tracing:
-      otlp:
-        enabled: true
-        endpoint: 'http://${env.OTLP_COLLECTOR_HOST}:4317'
       common:
         resource:
           'environment.name': '${env.APP_ENVIRONMENT}'
