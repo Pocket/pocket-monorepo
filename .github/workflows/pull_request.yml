@@ -24,10 +24,10 @@ jobs:
       - name: Install pnpm & node
         uses: ./.github/actions/install-pnpm-and-node
 
-      - name: Check for mismatched dependencies
+      - name: Lint code
         run: pnpm run lint
 
-  test:
+  unit-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -37,6 +37,6 @@ jobs:
       - name: Install pnpm & node
         uses: ./.github/actions/install-pnpm-and-node
       
-      - name: Unit Tests
+      - name: Unit tests
         # Following uses a 2 concurrency because terraform modules seems to fail with an OOM error on CI if we do more.
         run: pnpm run test --concurrency=2 

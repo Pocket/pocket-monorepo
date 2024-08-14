@@ -1,5 +1,11 @@
 name: 'Checkout & Install pnpm and node'
 description: 'Install dependencies using pnpm'
+inputs:
+  scope:
+    description: 'Package scope to use from turbo repo'
+    default: ''  # Empty string as default value
+    required: false
+
 runs:
   using: 'composite'
   steps:
@@ -17,4 +23,11 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      run: pnpm install
+      run: |
+        if [ -z "${{ inputs.scope }}" ]; then
+          echo "No scope provided. Using default behavior."
+          pnpm install
+        else
+          echo "Scope provided: ${{ inputs.scope }}, only installing packages needed for it."
+          pnpm install --filter=${{inputs.scope}}...
+        fi

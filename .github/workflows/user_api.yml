@@ -1,0 +1,22 @@
+name: User API
+on:
+  pull_request:
+    paths:
+      - 'infrastructure/user-api/**'
+      - 'packages/**'
+      - 'servers/user-api/**'
+      - 'pnpm-lock.yaml'
+      - 'workflows/user_api.yml'
+
+jobs:
+  test-integrations:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Install pnpm & node
+      uses: ./.github/actions/install-pnpm-and-node
+      with:
+        scope: user-api
+    - name: Check for mismatched dependencies
+      run: pnpm run build --filter=user-api...
