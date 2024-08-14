@@ -17,7 +17,7 @@ importers:
     devDependencies:
       '@commitlint/cli':
         specifier: 19.3.0
-        version: 19.3.0(@types/node@20.14.11)(typescript@5.6.0-dev.20240719)
+        version: 19.3.0(@types/node@20.14.11)(typescript@5.6.0-dev.20240813)
       '@commitlint/config-conventional':
         specifier: ^19.2.2
         version: 19.2.2
@@ -26,7 +26,7 @@ importers:
         version: link:packages/eslint-config
       syncpack:
         specifier: ^12.3.3
-        version: 12.3.3(typescript@5.6.0-dev.20240719)
+        version: 12.3.3(typescript@5.6.0-dev.20240813)
       tsconfig:
         specifier: workspace:*
         version: link:packages/tsconfig
@@ -2595,11 +2595,11 @@ importers:
         specifier: 8.18.0
         version: 8.18.0
       axios:
-        specifier: 1.7.2
-        version: 1.7.2
+        specifier: 1.7.4
+        version: 1.7.4
       axios-retry:
         specifier: 4.4.0
-        version: 4.4.0(axios@1.7.2)
+        version: 4.4.0(axios@1.7.4)
       dataloader:
         specifier: 2.2.2
         version: 2.2.2
@@ -7234,8 +7234,8 @@ packages:
   axios@1.6.8:
     resolution: {integrity: sha512-v/ZHtJDU39mDpyBoFVkETcd/uNdxrWRrg3bKpOKzXFA6Bvqopts6ALSMU3y6ijYxbw2B+wPrIv46egTzJXCLGQ==}
 
-  axios@1.7.2:
-    resolution: {integrity: sha512-2A8QhOMrbomlDuiLeK9XibIBzuHeRcqqNOHp0Cyp5EoJ1IFDh+XZH3A6BkXtv0K4gFGCI0Y4BM7B1wOEi0Rmgw==}
+  axios@1.7.4:
+    resolution: {integrity: sha512-DukmaFRnY6AzAALSH4J2M3k6PkaC+MfaAGdEERRWcC9q3/TWQwLpHR8ZRLKTdQ3aBDL64EdluRDjJqKw+BPZEw==}
 
   babel-jest@29.7.0:
     resolution: {integrity: sha512-BrvGY3xZSwEcCzKvKsCi2GgHqDqsYkOP4/by5xCgIwGXQxIEh+8ew3gmrE1y7XRR6LHZIj6yLYnUi/mm2KXKBg==}
@@ -13101,8 +13101,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.6.0-dev.20240719:
-    resolution: {integrity: sha512-gwHt3fdLbe+LLgZJnPaGZ7v9MHTkjrqjf4NpxznO0SmFVSu7cEd8IwEsePtmQQZAX3FtPdgfwDmeNktid848Hw==}
+  typescript@5.6.0-dev.20240813:
+    resolution: {integrity: sha512-McNeLEHipa5j8HBxMoN8geftDXyyMHKiN0fGefa+4KzUTR/ZhDbIskwMhYxB159cFZ/sXfy7mzyPhLWyN5IQ5Q==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -15505,11 +15505,11 @@ snapshots:
     dependencies:
       commander: 12.1.0
 
-  '@commitlint/cli@19.3.0(@types/node@20.14.11)(typescript@5.6.0-dev.20240719)':
+  '@commitlint/cli@19.3.0(@types/node@20.14.11)(typescript@5.6.0-dev.20240813)':
     dependencies:
       '@commitlint/format': 19.3.0
       '@commitlint/lint': 19.2.2
-      '@commitlint/load': 19.2.0(@types/node@20.14.11)(typescript@5.6.0-dev.20240719)
+      '@commitlint/load': 19.2.0(@types/node@20.14.11)(typescript@5.6.0-dev.20240813)
       '@commitlint/read': 19.2.1
       '@commitlint/types': 19.0.3
       execa: 8.0.1
@@ -15556,15 +15556,15 @@ snapshots:
       '@commitlint/rules': 19.0.3
       '@commitlint/types': 19.0.3
 
-  '@commitlint/load@19.2.0(@types/node@20.14.11)(typescript@5.6.0-dev.20240719)':
+  '@commitlint/load@19.2.0(@types/node@20.14.11)(typescript@5.6.0-dev.20240813)':
     dependencies:
       '@commitlint/config-validator': 19.0.3
       '@commitlint/execute-rule': 19.0.0
       '@commitlint/resolve-extends': 19.1.0
       '@commitlint/types': 19.0.3
       chalk: 5.3.0
-      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240719)
-      cosmiconfig-typescript-loader: 5.0.0(@types/node@20.14.11)(cosmiconfig@9.0.0(typescript@5.6.0-dev.20240719))(typescript@5.6.0-dev.20240719)
+      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240813)
+      cosmiconfig-typescript-loader: 5.0.0(@types/node@20.14.11)(cosmiconfig@9.0.0(typescript@5.6.0-dev.20240813))(typescript@5.6.0-dev.20240813)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -18327,7 +18327,7 @@ snapshots:
       '@slack/types': 2.11.0
       '@types/is-stream': 1.1.0
       '@types/node': 20.14.11
-      axios: 1.7.2
+      axios: 1.7.4
       eventemitter3: 3.1.2
       form-data: 2.5.1
       is-electron: 2.2.2
@@ -19504,9 +19504,9 @@ snapshots:
 
   aws4@1.13.0: {}
 
-  axios-retry@4.4.0(axios@1.7.2):
+  axios-retry@4.4.0(axios@1.7.4):
     dependencies:
-      axios: 1.7.2
+      axios: 1.7.4
       is-retry-allowed: 2.2.0
 
   axios@1.6.8:
@@ -19517,7 +19517,7 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  axios@1.7.2:
+  axios@1.7.4:
     dependencies:
       follow-redirects: 1.15.6
       form-data: 4.0.0
@@ -20432,12 +20432,12 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cosmiconfig-typescript-loader@5.0.0(@types/node@20.14.11)(cosmiconfig@9.0.0(typescript@5.6.0-dev.20240719))(typescript@5.6.0-dev.20240719):
+  cosmiconfig-typescript-loader@5.0.0(@types/node@20.14.11)(cosmiconfig@9.0.0(typescript@5.6.0-dev.20240813))(typescript@5.6.0-dev.20240813):
     dependencies:
       '@types/node': 20.14.11
-      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240719)
+      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240813)
       jiti: 1.21.0
-      typescript: 5.6.0-dev.20240719
+      typescript: 5.6.0-dev.20240813
 
   cosmiconfig@8.3.6(typescript@5.5.3):
     dependencies:
@@ -20457,14 +20457,14 @@ snapshots:
     optionalDependencies:
       typescript: 5.5.3
 
-  cosmiconfig@9.0.0(typescript@5.6.0-dev.20240719):
+  cosmiconfig@9.0.0(typescript@5.6.0-dev.20240813):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 5.6.0-dev.20240719
+      typescript: 5.6.0-dev.20240813
 
   cpu-features@0.0.2:
     dependencies:
@@ -20825,7 +20825,7 @@ snapshots:
     dependencies:
       semver: 7.6.2
       shelljs: 0.8.5
-      typescript: 5.6.0-dev.20240719
+      typescript: 5.6.0-dev.20240813
 
   dreamopt@0.8.0:
     dependencies:
@@ -25942,13 +25942,13 @@ snapshots:
       '@pkgr/core': 0.1.1
       tslib: 2.6.3
 
-  syncpack@12.3.3(typescript@5.6.0-dev.20240719):
+  syncpack@12.3.3(typescript@5.6.0-dev.20240813):
     dependencies:
       '@effect/schema': 0.66.5(effect@3.0.3)(fast-check@3.17.2)
       chalk: 5.3.0
       chalk-template: 1.1.0
       commander: 12.0.0
-      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240719)
+      cosmiconfig: 9.0.0(typescript@5.6.0-dev.20240813)
       effect: 3.0.3
       enquirer: 2.4.1
       fast-check: 3.17.2
@@ -26373,7 +26373,7 @@ snapshots:
 
   typescript@5.5.3: {}
 
-  typescript@5.6.0-dev.20240719: {}
+  typescript@5.6.0-dev.20240813: {}
 
   ua-parser-js@1.0.37: {}
 
