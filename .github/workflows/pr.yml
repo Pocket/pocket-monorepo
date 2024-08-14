@@ -4,48 +4,40 @@ on:
   - pull_request
 
 jobs:
-  cache-and-install:
+  check-packages:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          # Don't specify a pnpm version, to use the one defined in the top level package.json
-          run_install: false
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          # Use .nvmrc to determine our Node Version
-          node-version-file: '.nvmrc'
-
-      - name: Install dependencies
-        run: pnpm install
-  
-  check-packages:
-    runs-on: ubuntu-latest
-    needs:
-      - cache-and-install
-    steps:
+      
+      - name: Install pnpm & node
+        uses: ./.github/actions/install-pnpm-and-node
+      
       - name: Check for mismatched dependencies
         run: pnpm list-mismatches
 
   lint:
     runs-on: ubuntu-latest
-    needs:
-      - cache-and-install
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+    
+      - name: Install pnpm & node
+        uses: ./.github/actions/install-pnpm-and-node
+
       - name: Check for mismatched dependencies
         run: pnpm lint
 
   test:
     runs-on: ubuntu-latest
-    needs:
-      - cache-and-install
+
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Install pnpm & node
+        uses: ./.github/actions/install-pnpm-and-node
+      
       - name: Unit Tests
         # Following uses a 2 concurrency because terraform modules seems to fail with an OOM error on CI if we do more.
         run: pnpm test --concurrency=2 
