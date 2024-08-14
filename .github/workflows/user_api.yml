@@ -15,9 +15,25 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+    
+    - name: Set up Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
+
+    # Kick off starting docker compose first, since it can take a bit
+    - name: Start Docker Compose services
+      run: docker-compose up -d
+    
+    # While we wait for docker compose to be healthy we install node and needed packages.
     - name: Install pnpm & node
       uses: ./.github/actions/install-pnpm-and-node
       with:
         scope: user-api
-    - name: Check for mismatched dependencies
-      run: pnpm run build --filter=user-api...
+    
+    # Step 4: Wait for the services to be healthy
+    - name: Wait for services to be healthy
+      run: |
+        docker-compose wait
+    - name: Run service integration tests
+      run: pnpm run test-integrations --filter=user-api...
