@@ -19,7 +19,6 @@ jobs:
             # Generate a list of all the circleci configs we want to run
             file_list=(
             ".circleci/common.yml" 
-            ".circleci/repo-jobs.yml" 
             ".circleci/image-api.yml" 
             ".circleci/annotations-api.yml" 
             ".circleci/shared-snowplow-consumer.yml" 
