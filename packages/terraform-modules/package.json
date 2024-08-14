@@ -67,12 +67,12 @@
     ]
   },
   "dependencies": {
-    "@cdktf/provider-archive": "10.0.1",
-    "@cdktf/provider-aws": "19.26.0",
+    "@cdktf/provider-archive": "10.1.0",
+    "@cdktf/provider-aws": "19.30.0",
     "@cdktf/provider-local": "10.1.0",
-    "@cdktf/provider-newrelic": "12.10.3",
+    "@cdktf/provider-newrelic": "12.12.0",
     "@cdktf/provider-null": "10.0.0",
-    "@cdktf/provider-pagerduty": "13.10.2",
+    "@cdktf/provider-pagerduty": "13.11.2",
     "@cdktf/provider-time": "10.2.0",
     "cdktf": "0.20.8",
     "cdktf-cli": "0.20.8",
