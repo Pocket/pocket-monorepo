@@ -28,17 +28,13 @@ jobs:
     secrets: inherit
 
   # Let's test the service against some real life and mocked docker services.
-  build-image:
-    # Only run this job on a pull request event
-    if: github.event_name == 'pull_request'
-    # Use our re-usable test integrations workflow which will use our docker compose file
-    uses: ./.github/workflows/containerize.yml
+  build-and-push-image:
+    uses: ./.github/workflows/build-and-push-image.yml
     with:
-      # Only run the tests for our service
-      scope: 'user-api'
-      docker-repo-name: 410318598490.dkr.ecr.us-east-1.amazonaws.com/listapi-dev-app
-      app-path: servers/list-api
-      app-port: 4005
-      sentry-project: list-api
+      scope: user-api
+      app-path: servers/user-api
+      app-port: 4006
+      sentry-project: user-api
+      docker-repo-name-short-hand: userapi
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit

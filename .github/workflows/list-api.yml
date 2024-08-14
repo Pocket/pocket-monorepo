@@ -22,3 +22,15 @@ jobs:
       scope: 'list-api'
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
+  
+  # Let's test the service against some real life and mocked docker services.
+  build-and-push-image:
+    uses: ./.github/workflows/build-and-push-image.yml
+    with:
+      scope: list-api
+      app-path: servers/list-api
+      app-port: 4005
+      sentry-project: list-api
+      docker-repo-name-short-hand: listapi
+    # Ensure the re-usable workflow is allowed to access the secrets
+    secrets: inherit

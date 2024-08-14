@@ -1,0 +1,106 @@
+name: 'Re-usable Docker Build Flow'
+on:
+  workflow_call:
+    inputs:
+      scope:
+        description: 'Turbo Repo scope to run the build for'
+        required: true
+        type: string
+      docker-repo-name-short-hand:
+        description: 'Docker name of the repo  <account-id>.dkr.ecr.us-east-1.amazonaws.com/<name>'
+        required: true
+        type: string
+      development-aws-registry:
+        description: 'AWS Development Account Id'
+        type: string
+        default: 410318598490.dkr.ecr.us-east-1.amazonaws.com
+      production-aws-registry:
+        description: 'AWS Development Account Id'
+        type: string
+        default: 410318598490.dkr.ecr.us-east-1.amazonaws.com
+      app-path:
+        description: 'The path of where the application is located in the monorepo ie servers/<app-name>'
+        required: true
+        type: string
+      app-port:
+        description: 'The port the application runs on ie 4006'
+        required: true
+        type: number
+      sentry-org:
+        description: 'The org name used in sentry. Used to upload source maps'
+        required: false
+        type: string
+        default: pocket
+      sentry-project:
+        description: 'The project name used in sentry. Used to upload source maps'
+        required: true
+        type: string
+  
+jobs:
+    # Let's build the image on every pull request just like we would on production
+    pull-request:
+      # Only run this job on a pull request event
+      if: github.event_name == 'pull_request'
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+        - name: Build Docker Image
+          # Use our re-usable containerize action
+          uses: ./.github/actions/containerize
+          with:
+            docker-repo-name: ${{inputs['development-aws-registry']}}/${{inputs['docker-repo-name-short-hand']}}-prod-app
+            app-path: ${{inputs['app-path']}}
+            app-port: ${{inputs['app-port']}}
+            sentry-project: ${{inputs['sentry-project']}}
+            sentry-org: ${{inputs['sentry-org']}}
+            sentry-token: ${{secrets.SENTRY_BEARER}}
+            dockerhub-username: ${{secrets.DOCKERHUB_USERNAME}}
+            dockerhub-token: ${{secrets.DOCKERHUB_TOKEN}}
+            scope: ${{inputs['scope']}}
+    
+    development:
+      if: github.ref == 'refs/heads/dev'
+      runs-on: ubuntu-latest
+      steps:        
+        - name: Checkout
+          uses: actions/checkout@v4
+        
+        - name: Build and Push Development Docker Image
+          # Use our re-usable containerize action
+          uses: ./.github/actions/containerize
+          with:
+            docker-repo-name: ${{inputs['development-aws-registry']}}/${{inputs['docker-repo-name-short-hand']}}-dev-app
+            app-path: ${{inputs['app-path']}}
+            app-port: ${{inputs['app-port']}}
+            sentry-project: ${{inputs['sentry-project']}}
+            sentry-org: ${{inputs['sentry-org']}}
+            sentry-token: ${{secrets.SENTRY_BEARER}}
+            dockerhub-username: ${{secrets.DOCKERHUB_USERNAME}}
+            dockerhub-token: ${{secrets.DOCKERHUB_TOKEN}}
+            scope: ${{inputs['scope']}}
+            push: false
+
+
+    production:
+      if: github.ref == 'refs/heads/main'
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+
+        # While we wait for docker compose to be healthy we install node and needed packages for this service
+        - name: Build and Push Production Docker Image
+          # Use our re-usable containerize action
+          uses: ./.github/actions/containerize
+          with:
+            docker-repo-name: ${{inputs['development-aws-registry']}}/${{inputs['docker-repo-name-short-hand']}}-prod-app
+            app-path: ${{inputs['app-path']}}
+            app-port: ${{inputs['app-port']}}
+            sentry-project: ${{inputs['sentry-project']}}
+            sentry-org: ${{inputs['sentry-org']}}
+            sentry-token: ${{secrets.SENTRY_BEARER}}
+            dockerhub-username: ${{secrets.DOCKERHUB_USERNAME}}
+            dockerhub-token: ${{secrets.DOCKERHUB_TOKEN}}
+            scope: ${{inputs['scope']}}
+          # Ensure the re-usable workflow is allowed to access the secrets
