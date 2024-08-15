@@ -1,16 +1,28 @@
-name: 'Re-usable Docker Build Flow'
+name: 'Re-usable Infrastructure Workflow'
 on:
   workflow_call:
     inputs:
       scope:
         description: 'Turbo Repo scope to run the build for'
-        required: true
+        required: false
         type: string
       stack-output-path:
         description: 'The path where CDKTF outputs the terraform json'
-        required: true
+        required: false
         type: string
-      
+      raw-terraform:
+        description: 'Whether or not this service uses raw terraform'
+        required: false
+        default: false
+        type: boolean
+    outputs:
+      terraform-output:
+        description: "The output of terraform apply"
+        value: ${{ jobs.apply.outputs.terraform-output }}
+
+# Allow Terraform Comment to write to PRs
+permissions:
+  pull-requests: write  
   
 jobs:
 
@@ -24,38 +36,69 @@ jobs:
           uses: actions/checkout@v4
 
         - name: Execute CDKTF
+          if: inputs.raw-terraform == false
           uses: ./.github/actions/cdktf
           with:
             stack-output-path: ${{inputs['stack-output-path']}}
             scope: ${{inputs['scope']}}
             environment: production
+            behavior: plan
+        - name: Execute Raw Terraform
+          if: inputs.raw-terraform == true
+          uses: ./.github/actions/raw-terraform
+          with:
+            stack-output-path: ${{inputs['stack-output-path']}}
+            scope: ${{inputs['scope']}}
+            environment: production
+            behavior: plan
 
-
-    development:
-      if: github.ref == 'refs/heads/dev'
+    apply:
+      if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
       runs-on: ubuntu-latest
+      outputs:
+        terraform-output: ${{ steps.set_output.outputs.terraform-output }}
       steps:        
         - name: Checkout
           uses: actions/checkout@v4
-        - name: Execute CDKTF
+        
+        - name: Execute Development CDKTF
+          if: inputs.raw-terraform == false && github.ref == 'refs/heads/dev'
           uses: ./.github/actions/cdktf
           with:
             stack-output-path: ${{inputs['stack-output-path']}}
             scope: ${{inputs['scope']}}
             environment: development
-      
+            behavior: apply
+        - name: Execute Developement Raw Terraform
+          if: inputs.raw-terraform == true && github.ref == 'refs/heads/dev'
+          uses: ./.github/actions/raw-terraform
+          with:
+            stack-output-path: ${{inputs['stack-output-path']}}
+            scope: ${{inputs['scope']}}
+            environment: development
+            behavior: apply
 
-
-    production:
-      if: github.ref == 'refs/heads/main'
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v4
-
-        - name: Execute CDKTF
+        - name: Execute Production CDKTF
+          if: inputs.raw-terraform == false && github.ref == 'refs/heads/main'
           uses: ./.github/actions/cdktf
           with:
             stack-output-path: ${{inputs['stack-output-path']}}
             scope: ${{inputs['scope']}}
             environment: production
+            behavior: apply
+        - name: Execute Production Raw Terraform
+          if: inputs.raw-terraform == true && github.ref == 'refs/heads/main'
+          uses: ./.github/actions/raw-terraform
+          with:
+            stack-output-path: ${{inputs['stack-output-path']}}
+            scope: ${{inputs['scope']}}
+            environment: production
+            behavior: apply
+        - name: Set Output Based on Condition
+          id: set_output
+          run: |
+            echo "Grabbing Terraform Output"
+            cd ${{inputs['stack-output-path']}}
+            echo "terraform-output=$(terraform output -json)" >> $GITHUB_OUTPUT
+            echo '::set-output name=terraform-output::'
+    

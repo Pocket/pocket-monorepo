@@ -1,5 +1,5 @@
-name: 'Execute CDKTF'
-description: 'Builds and either plans or applies a CDKTF environment'
+name: 'Execute Raw Terraform'
+description: 'Builds and either plans or applies a terraform environment'
 inputs:
   scope:
     description: 'Turbo Repo scope to run the build for'
@@ -22,7 +22,6 @@ runs:
       shell: bash
       run: |
         git clone --depth=1 https://github.com/tfutils/tfenv.git ~/.tfenv
-        echo "PATH=$HOME/.tfenv/bin:$PATH" >> $GITHUB_ENV
 
     # Setup Terraform Comment
     - uses: shmokmt/actions-setup-tfcmt@v2
@@ -41,16 +40,17 @@ runs:
   # TODO: These need to request AWS credentials to run terraform
   # It may be best to not do AWS credentials here and do it in the calling workflow.. TBD
 
-    - name: Install pnpm & node
-      uses: ./.github/actions/install-pnpm-and-node
-      with:
-        scope: ${{ inputs['scope'] }}
-
-    - name: Build CDKTF
+    - name: Copy Terraform Vars
       shell: bash
       run: |
-          export NODE_ENV=${{ inputs['environment'] }}
-          pnpm run synth --filter=${{ inputs['scope'] }}...
+        cd ${{ inputs.stack-output-path }}
+        if [ "${{ inputs.environment }}" = "development" ]; then
+          echo "Development environment specified, copying development tf vars"
+          cp dev_backend.tfvars backend.tf
+        else
+          echo "Production environment specified, copying production tf vars"
+          cp prod_backend.tfvars backend.tf    
+        fi
 
     - name: Init Terraform
       shell: bash

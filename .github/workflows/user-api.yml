@@ -27,18 +27,6 @@ jobs:
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
 
-  # Let's try building and conidtionally pushing our docker image to the necessary account.
-  build-and-push-image:
-    uses: ./.github/workflows/build-and-push-image.yml
-    with:
-      scope: user-api
-      app-path: servers/user-api
-      app-port: 4006
-      sentry-project: user-api
-      docker-repo-name-short-hand: userapi
-    # Ensure the re-usable workflow is allowed to access the secrets
-    secrets: inherit
-
   # It's infrastructure time, run the infrastructure update commands
   infrastructure:
     uses: ./.github/workflows/infrastructure.yml
@@ -48,6 +36,21 @@ jobs:
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
 
+  # Let's try building and conidtionally pushing our docker image to the necessary account.
+  build-and-push-image:
+    uses: ./.github/workflows/build-and-push-image.yml
+    #needs: [infrastructure]
+    with:
+      scope: user-api
+      app-path: servers/user-api
+      app-port: 4006
+      sentry-project: user-api
+      docker-repo-name-short-hand: userapi
+    # Ensure the re-usable workflow is allowed to access the secrets
+    secrets: inherit
+
   # deploy:
   #  needs: [infrastructure]
+  #   with:
+  #      terraform-output: ${{ needs.infrastructure.outputs.terraform-output }}
   
