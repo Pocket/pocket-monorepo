@@ -40,13 +40,13 @@ jobs:
   # Let's try building and conidtionally pushing our docker image to the necessary account.
   build-and-push-image:
     uses: ./.github/workflows/reuse-build-and-push-image.yml
-    #needs: [infrastructure]
+    needs: [infrastructure]
     with:
       scope: user-api
       app-path: servers/user-api
       app-port: 4006
       sentry-project: user-api
-      docker-repo-name-short-hand: userapi
+      docker-repo-name-pattern: userapi-{0}-app
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
 

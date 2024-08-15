@@ -6,8 +6,8 @@ on:
         description: 'Turbo Repo scope to run the build for'
         required: true
         type: string
-      docker-repo-name-short-hand:
-        description: 'Docker name of the repo  <account-id>.dkr.ecr.us-east-1.amazonaws.com/<name>'
+      docker-repo-name-pattern:
+        description: 'Docker name of the repo, usually: servicename-{0}-app. {0} is replaced with dev or prod'
         required: true
         type: string
       development-aws-registry:
@@ -49,18 +49,25 @@ jobs:
       steps:
         - name: Checkout
           uses: actions/checkout@v4
+        - name: AWS Credentials
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+            aws-region: us-east-1
+            # TODO: Change this to the right roles when setup
+            role-to-assume: arn:aws:iam::410318598490:role/GithubTesting-Daniel        
         - name: Build Docker Image
           uses: ./.github/actions/containerize
           with:
-            docker-repo-name: ${{inputs['development-aws-registry']}}/${{inputs['docker-repo-name-short-hand']}}-prod-app
-            app-path: ${{inputs['app-path']}}
-            app-port: ${{inputs['app-port']}}
-            sentry-project: ${{inputs['sentry-project']}}
-            sentry-org: ${{inputs['sentry-org']}}
+            docker-repo-name: "${{inputs.development-aws-registry }}/${{ format(inputs.docker-repo-name-pattern, 'dev') }}"
+            app-path: ${{inputs.app-path}}
+            app-port: ${{inputs.app-port}}
+            sentry-project: ${{inputs.sentry-project}}
+            sentry-org: ${{inputs.sentry-org}}
             sentry-token: ${{secrets.SENTRY_BEARER}}
             dockerhub-username: ${{secrets.DOCKERHUB_USERNAME}}
             dockerhub-token: ${{secrets.DOCKERHUB_TOKEN}}
-            scope: ${{inputs['scope']}}
+            scope: ${{inputs.scope}}
+            push: true
 
 
     development:
@@ -79,16 +86,16 @@ jobs:
         - name: Build and Push Development Docker Image
           uses: ./.github/actions/containerize
           with:
-            docker-repo-name: ${{inputs['development-aws-registry']}}/${{inputs['docker-repo-name-short-hand']}}-dev-app
-            app-path: ${{inputs['app-path']}}
-            app-port: ${{inputs['app-port']}}
-            sentry-project: ${{inputs['sentry-project']}}
-            sentry-org: ${{inputs['sentry-org']}}
+            docker-repo-name: "${{inputs.development-aws-registry }}/${{ format(inputs.docker-repo-name-pattern, 'dev') }}"
+            app-path: ${{inputs.app-path}}
+            app-port: ${{inputs.app-port}}
+            sentry-project: ${{inputs.sentry-project}}
+            sentry-org: ${{inputs.sentry-org}}
             sentry-token: ${{secrets.SENTRY_BEARER}}
             dockerhub-username: ${{secrets.DOCKERHUB_USERNAME}}
             dockerhub-token: ${{secrets.DOCKERHUB_TOKEN}}
-            scope: ${{inputs['scope']}}
-            push: false
+            scope: ${{inputs.scope}}
+            push: true
 
 
     production:
@@ -107,12 +114,13 @@ jobs:
         - name: Build and Push Production Docker Image
           uses: ./.github/actions/containerize
           with:
-            docker-repo-name: ${{inputs['development-aws-registry']}}/${{inputs['docker-repo-name-short-hand']}}-prod-app
-            app-path: ${{inputs['app-path']}}
-            app-port: ${{inputs['app-port']}}
-            sentry-project: ${{inputs['sentry-project']}}
-            sentry-org: ${{inputs['sentry-org']}}
+            docker-repo-name: "${{inputs.production-aws-registry }}/${{ format(inputs.docker-repo-name-pattern, 'prod') }}"
+            app-path: ${{inputs.app-path}}
+            app-port: ${{inputs.app-port}}
+            sentry-project: ${{inputs.sentry-project}}
+            sentry-org: ${{inputs.sentry-org}}
             sentry-token: ${{secrets.SENTRY_BEARER}}
             dockerhub-username: ${{secrets.DOCKERHUB_USERNAME}}
             dockerhub-token: ${{secrets.DOCKERHUB_TOKEN}}
-            scope: ${{inputs['scope']}}
+            scope: ${{inputs.scope}}
+            push: true

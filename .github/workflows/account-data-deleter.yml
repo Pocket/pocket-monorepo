@@ -42,13 +42,13 @@ jobs:
   # Let's try building and conidtionally pushing our docker image to the necessary account.
   build-and-push-image:
     uses: ./.github/workflows/reuse-build-and-push-image.yml
-    #needs: [infrastructure]
+    needs: [infrastructure]
     with:
       scope: account-data-deleter
       app-path: servers/account-data-deleter
       app-port: 4015
       sentry-project: account-data-deleter
-      docker-repo-name-short-hand: accountdatadeleter
+      docker-repo-name-pattern: accountdatadeleter-{0}-app
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
 
