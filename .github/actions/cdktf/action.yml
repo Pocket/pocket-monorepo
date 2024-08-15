@@ -1,0 +1,44 @@
+name: 'Execute CDKTF'
+description: 'Builds and either plans or applies a CDKTF environment'
+inputs:
+  scope:
+    description: 'Turbo Repo scope to run the build for'
+    required: true
+  stack-output-path:
+    description: 'The path where CDKTF outputs the terraform json'
+    required: true
+  environment:
+    description: 'The node environment to build for'
+    required: true
+    default: 'development'
+  
+runs:
+  using: 'composite'
+  steps:
+  # TODO: These need to request AWS credentials to run terraform
+  # Since this is a composite step, it may be easier to request these in the calling workflow
+    - name: Install tfenv
+      shell: bash
+      # NOTE: May want to cache TFENV in the future.. TBD
+      run: |
+        git clone https://github.com/tfutils/tfenv.git ~/.tfenv
+        echo "PATH=$HOME/.tfenv/bin:$PATH" >> $GITHUB_ENV
+
+    - name: Install pnpm & node
+      uses: ./.github/actions/install-pnpm-and-node
+      with:
+        scope: ${{ inputs['scope'] }}
+
+    - name: Build CDKTF
+      shell: bash
+      run: |
+          export NODE_ENV=${{ inputs['environment'] }}
+          pnpm run synth --filter=${{ inputs['scope'] }}...
+
+    - name: Plan CDKTF
+      shell: bash
+      run: |
+          cd ${{ inputs['stack-output-path'] }}
+          tfenv install
+          tfenv use
+          terraform init

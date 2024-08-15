@@ -26,8 +26,8 @@ runs:
       run: |
         if [ -z "${{ inputs.scope }}" ]; then
           echo "No scope provided. Using default behavior."
-          pnpm install
+          pnpm install --frozen-lockfile
         else
           echo "Scope provided: ${{ inputs.scope }}, only installing packages needed for it."
-          pnpm install --filter=${{inputs.scope}}...
+          pnpm install --filter=${{inputs.scope}}... --frozen-lockfile
         fi

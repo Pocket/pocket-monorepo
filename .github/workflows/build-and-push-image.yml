@@ -17,7 +17,7 @@ on:
       production-aws-registry:
         description: 'AWS Development Account Id'
         type: string
-        default: 410318598490.dkr.ecr.us-east-1.amazonaws.com
+        default: 996905175585.dkr.ecr.us-east-1.amazonaws.com
       app-path:
         description: 'The path of where the application is located in the monorepo ie servers/<app-name>'
         required: true
@@ -58,7 +58,8 @@ jobs:
             dockerhub-username: ${{secrets.DOCKERHUB_USERNAME}}
             dockerhub-token: ${{secrets.DOCKERHUB_TOKEN}}
             scope: ${{inputs['scope']}}
-    
+
+# TODO: These need to request AWS ECR Credentials to push the Docker Image
     development:
       if: github.ref == 'refs/heads/dev'
       runs-on: ubuntu-latest

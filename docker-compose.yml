@@ -1,4 +1,3 @@
-version: '3'
 services:
   ## Start Common Processes Config
   # Note this is not the collector we use in Prod, but works for local testing & github actions

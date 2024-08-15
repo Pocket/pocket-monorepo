@@ -34,3 +34,12 @@ jobs:
       docker-repo-name-short-hand: listapi
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
+
+  # It's infrastructure time, run the infrastructure update commands
+  infrastructure:
+    uses: ./.github/workflows/infrastructure.yml
+    with:
+      scope: user-api-cdk
+      stack-output-path: infrastructure/list-api/cdktf.out/stacks/list-api
+    # Ensure the re-usable workflow is allowed to access the secrets
+    secrets: inherit

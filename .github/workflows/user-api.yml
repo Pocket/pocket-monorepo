@@ -27,7 +27,7 @@ jobs:
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
 
-  # Let's test the service against some real life and mocked docker services.
+  # Let's try building and conidtionally pushing our docker image to the necessary account.
   build-and-push-image:
     uses: ./.github/workflows/build-and-push-image.yml
     with:
@@ -38,3 +38,16 @@ jobs:
       docker-repo-name-short-hand: userapi
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
+
+  # It's infrastructure time, run the infrastructure update commands
+  infrastructure:
+    uses: ./.github/workflows/infrastructure.yml
+    with:
+      scope: user-api-cdk
+      stack-output-path: infrastructure/user-api/cdktf.out/stacks/user-api
+    # Ensure the re-usable workflow is allowed to access the secrets
+    secrets: inherit
+
+  # deploy:
+  #  needs: [infrastructure]
+  

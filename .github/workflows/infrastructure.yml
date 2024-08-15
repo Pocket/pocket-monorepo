@@ -1,0 +1,61 @@
+name: 'Re-usable Docker Build Flow'
+on:
+  workflow_call:
+    inputs:
+      scope:
+        description: 'Turbo Repo scope to run the build for'
+        required: true
+        type: string
+      stack-output-path:
+        description: 'The path where CDKTF outputs the terraform json'
+        required: true
+        type: string
+      
+  
+jobs:
+
+  # TODO: These need to request AWS credentials to run terraform
+    pull-request:
+      # Only run this job on a pull request event
+      if: github.event_name == 'pull_request'
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+
+        - name: Execute CDKTF
+          uses: ./.github/actions/cdktf
+          with:
+            stack-output-path: ${{inputs['stack-output-path']}}
+            scope: ${{inputs['scope']}}
+            environment: production
+
+
+    development:
+      if: github.ref == 'refs/heads/dev'
+      runs-on: ubuntu-latest
+      steps:        
+        - name: Checkout
+          uses: actions/checkout@v4
+        - name: Execute CDKTF
+          uses: ./.github/actions/cdktf
+          with:
+            stack-output-path: ${{inputs['stack-output-path']}}
+            scope: ${{inputs['scope']}}
+            environment: development
+      
+
+
+    production:
+      if: github.ref == 'refs/heads/main'
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+
+        - name: Execute CDKTF
+          uses: ./.github/actions/cdktf
+          with:
+            stack-output-path: ${{inputs['stack-output-path']}}
+            scope: ${{inputs['scope']}}
+            environment: production
