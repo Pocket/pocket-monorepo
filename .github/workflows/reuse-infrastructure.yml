@@ -27,7 +27,7 @@ permissions:
 
 jobs:
 
-    pull-request:
+    plan:
       # Only run this job on a pull request event
       if: github.event_name == 'pull_request'
       runs-on: ubuntu-latest

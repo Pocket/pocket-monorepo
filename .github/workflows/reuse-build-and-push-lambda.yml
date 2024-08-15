@@ -1,0 +1,76 @@
+name: 'Re-usable Lambda Build Flow'
+on:
+  workflow_call:
+    inputs:
+      scope:
+        description: 'Turbo Repo scope to run the build for'
+        required: true
+        type: string
+      s3-bucket-pattern:
+        description: 'Lambda S3 bucket pattern to use'
+        required: true
+        type: string
+      sentry-org:
+        description: 'The org name used in sentry. Used to upload source maps'
+        required: false
+        type: string
+        default: pocket
+      sentry-project:
+        description: 'The project name used in sentry. Used to upload source maps'
+        required: true
+        type: string
+
+permissions:
+  contents: read  # This is required for actions/checkout
+  id-token: write  # Access the Github JWT for AWS access
+        
+
+jobs:
+    # Let's build the image on every pull request just like we would on production
+    pull-request:
+      # Only run this job on a pull request event
+      if: github.event_name == 'pull_request'
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+       
+        - name: Build Lambda
+          uses: ./.github/actions/build-lambda
+          with:
+            sentry-project: ${{inputs['sentry-project']}}
+            sentry-org: ${{inputs['sentry-org']}}
+            sentry-token: ${{secrets.SENTRY_BEARER}}
+            scope: ${{inputs['scope']}}
+
+# TODO: These need to request AWS ECR Credentials to push the Docker Image
+    development:
+      if: github.ref == 'refs/heads/dev'
+      runs-on: ubuntu-latest
+      steps:        
+        - name: Checkout
+          uses: actions/checkout@v4
+        
+        - name: Build Lambda
+          uses: ./.github/actions/build-lambda
+          with:
+            sentry-project: ${{inputs['sentry-project']}}
+            sentry-org: ${{inputs['sentry-org']}}
+            sentry-token: ${{secrets.SENTRY_BEARER}}
+            scope: ${{inputs['scope']}}
+
+
+    production:
+      if: github.ref == 'refs/heads/main'
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+
+        - name: Build Lambda
+          uses: ./.github/actions/build-lambda
+          with:
+            sentry-project: ${{inputs['sentry-project']}}
+            sentry-org: ${{inputs['sentry-org']}}
+            sentry-token: ${{secrets.SENTRY_BEARER}}
+            scope: ${{inputs['scope']}}

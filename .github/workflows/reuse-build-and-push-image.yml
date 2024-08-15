@@ -35,7 +35,11 @@ on:
         description: 'The project name used in sentry. Used to upload source maps'
         required: true
         type: string
-  
+ 
+permissions:
+  contents: read  # This is required for actions/checkout
+  id-token: write  # Access the Github JWT for AWS access        
+
 jobs:
     # Let's build the image on every pull request just like we would on production
     pull-request:
@@ -46,7 +50,6 @@ jobs:
         - name: Checkout
           uses: actions/checkout@v4
         - name: Build Docker Image
-          # Use our re-usable containerize action
           uses: ./.github/actions/containerize
           with:
             docker-repo-name: ${{inputs['development-aws-registry']}}/${{inputs['docker-repo-name-short-hand']}}-prod-app
@@ -59,16 +62,21 @@ jobs:
             dockerhub-token: ${{secrets.DOCKERHUB_TOKEN}}
             scope: ${{inputs['scope']}}
 
-# TODO: These need to request AWS ECR Credentials to push the Docker Image
+
     development:
       if: github.ref == 'refs/heads/dev'
       runs-on: ubuntu-latest
       steps:        
         - name: Checkout
           uses: actions/checkout@v4
-        
+        # Get the AWS credentials
+        - name: AWS Credentials
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+            aws-region: us-east-1
+            # TODO: Change this to the right roles when setup
+            role-to-assume: arn:aws:iam::410318598490:role/GithubTesting-Daniel
         - name: Build and Push Development Docker Image
-          # Use our re-usable containerize action
           uses: ./.github/actions/containerize
           with:
             docker-repo-name: ${{inputs['development-aws-registry']}}/${{inputs['docker-repo-name-short-hand']}}-dev-app
@@ -89,10 +97,14 @@ jobs:
       steps:
         - name: Checkout
           uses: actions/checkout@v4
-
-        # While we wait for docker compose to be healthy we install node and needed packages for this service
+        # Get the AWS credentials
+        - name: AWS Credentials
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+            aws-region: us-east-1
+            # TODO: Change this to the right roles when setup
+            role-to-assume: arn:aws:iam::410318598490:role/GithubTesting-Daniel
         - name: Build and Push Production Docker Image
-          # Use our re-usable containerize action
           uses: ./.github/actions/containerize
           with:
             docker-repo-name: ${{inputs['development-aws-registry']}}/${{inputs['docker-repo-name-short-hand']}}-prod-app
@@ -104,4 +116,3 @@ jobs:
             dockerhub-username: ${{secrets.DOCKERHUB_USERNAME}}
             dockerhub-token: ${{secrets.DOCKERHUB_TOKEN}}
             scope: ${{inputs['scope']}}
-          # Ensure the re-usable workflow is allowed to access the secrets

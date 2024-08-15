@@ -9,6 +9,7 @@ on:
       - 'pnpm-lock.yaml'
       - '.github/actions/**'
       - '.github/workflows/list-api.yml'
+      - '.github/workflows/reuse-*.yml'
 
 jobs:
   # Let's test the service against some real life and mocked docker services.
@@ -16,7 +17,7 @@ jobs:
     # Only run this job on a pull request event
     if: github.event_name == 'pull_request'
     # Use our re-usable test integrations workflow which will use our docker compose file
-    uses: ./.github/workflows/test-integrations.yml
+    uses: ./.github/workflows/reuse-test-integrations.yml
     with:
       # Only run the tests for our service
       scope: 'list-api'
@@ -25,7 +26,7 @@ jobs:
   
   # Let's test the service against some real life and mocked docker services.
   build-and-push-image:
-    uses: ./.github/workflows/build-and-push-image.yml
+    uses: ./.github/workflows/reuse-build-and-push-image.yml
     with:
       scope: list-api
       app-path: servers/list-api
@@ -37,7 +38,7 @@ jobs:
 
   # It's infrastructure time, run the infrastructure update commands
   infrastructure:
-    uses: ./.github/workflows/infrastructure.yml
+    uses: ./.github/workflows/reuse-infrastructure.yml
     with:
       scope: list-api-cdk
       stack-output-path: infrastructure/list-api/cdktf.out/stacks/list-api

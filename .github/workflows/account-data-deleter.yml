@@ -1,14 +1,16 @@
-name: User API
+name: Account Data Deleter
 on:
   # Only run the tests for this service when any of the following file paths change
   pull_request:
     paths:
-      - 'infrastructure/user-api/**'
+      - 'infrastructure/account-data-deleter/**'
       - 'packages/**'
-      - 'servers/user-api/**'
+      - 'servers/account-data-deleter/**'
+      - 'lambdas/account-data-deleter-batch-delete/**'
+      - 'lambdas/account-data-deleter-events/**'
       - 'pnpm-lock.yaml'
       - '.github/actions/**'
-      - '.github/workflows/user-api.yml'
+      - '.github/workflows/account-data-deleter.yml'
       - '.github/workflows/reuse-*.yml'
   push:
     branches:
@@ -24,7 +26,7 @@ jobs:
     uses: ./.github/workflows/reuse-test-integrations.yml
     with:
       # Only run the tests for our service
-      scope: 'user-api'
+      scope: 'account-data-deleter'
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
 
@@ -32,7 +34,7 @@ jobs:
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
     with:
-      scope: user-api-cdk
+      scope: account-data-deleter-api-cdk
       stack-output-path: infrastructure/user-api/cdktf.out/stacks/user-api
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
@@ -42,11 +44,31 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-image.yml
     #needs: [infrastructure]
     with:
-      scope: user-api
-      app-path: servers/user-api
-      app-port: 4006
-      sentry-project: user-api
-      docker-repo-name-short-hand: userapi
+      scope: account-data-deleter
+      app-path: servers/account-data-deleter
+      app-port: 4015
+      sentry-project: account-data-deleter
+      docker-repo-name-short-hand: accountdatadeleter
+    # Ensure the re-usable workflow is allowed to access the secrets
+    secrets: inherit
+
+  build-and-push-lambda-events:
+    uses: ./.github/workflows/reuse-build-and-push-lambda.yml
+    #needs: [infrastructure]
+    with:
+      scope: account-data-deleter-events
+      sentry-project: account-data-deleter
+      s3-bucket-pattern: pocket-accountdatadeleter-<<environment>>-sqs-event-consumer
+    # Ensure the re-usable workflow is allowed to access the secrets
+    secrets: inherit
+
+  build-and-push-lambda-batch-delete:
+    uses: ./.github/workflows/reuse-build-and-push-lambda.yml
+    #needs: [infrastructure]
+    with:
+      scope: account-data-deleter-batch-delete
+      sentry-project: account-data-deleter
+      s3-bucket-pattern: pocket-accountdatadeleter-<<environment>>-batchdeletelambda
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
 
