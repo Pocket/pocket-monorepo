@@ -54,7 +54,7 @@ jobs:
 
   build-and-push-lambda-events:
     uses: ./.github/workflows/reuse-build-and-push-lambda.yml
-    #needs: [infrastructure]
+    needs: [infrastructure]
     with:
       scope: account-data-deleter-events
       sentry-project: account-data-deleter
@@ -64,16 +64,10 @@ jobs:
 
   build-and-push-lambda-batch-delete:
     uses: ./.github/workflows/reuse-build-and-push-lambda.yml
-    #needs: [infrastructure]
+    needs: [infrastructure]
     with:
       scope: account-data-deleter-batch-delete
       sentry-project: account-data-deleter
       s3-bucket-pattern: pocket-accountdatadeleter-{0}-batchdeletelambda
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
-
-  # deploy:
-  #  needs: [infrastructure]
-  #   with:
-  #      terraform-output: ${{ needs.infrastructure.outputs.terraform-output }}
-  

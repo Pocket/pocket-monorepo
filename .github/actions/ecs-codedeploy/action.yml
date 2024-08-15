@@ -1,0 +1,70 @@
+name: 'Re-usable ECS Codedeploy Flow'
+description: 'Used to code deploy a docker image'
+inputs:
+  terraform-output:
+    description: 'Output from Terraform in previous step used to get the ECS Service, Task Defintion'
+    required: true
+  docker-image-name:
+    required: true
+    description: Docker path/name of the image to deploy
+
+runs:
+  using: 'composite'
+  steps:
+    # Pulls out the terraform params needed for CodeDeploy and then re-saves them to be used in the CodeDeploy ORB
+    # - name: Load CodeDeploy Params from Terraform Output
+    #   shell: bash
+    #   run: |
+    #     TF_OUTPUT=${{inputs.terraform-output}}
+    #     ECS_TASK_ARN=$(echo "$TF_OUTPUT" | jq -r '.["ecs-task-arn"].value')
+    #     ECS_TASK_CONTAINER_NAME=$(echo "$TF_OUTPUT" | jq -r '.["ecs-task-containerName"].value')
+    #     ECS_TASK_CONTAINER_PORT=$(echo "$TF_OUTPUT" | jq -r '.["ecs-task-containerPort"].value')
+    #     ECS_TASK_FAMILY=$(echo "$TF_OUTPUT" | jq -r '.["ecs-task-family"].value')
+    #     ECS_CODEDEPLOY_GROUP=$(echo "$TF_OUTPUT" | jq -r '.["ecs-codedeploy-group"].value')
+    #     ECS_CODEDEPLOY_APP=$(echo "$TF_OUTPUT" | jq -r '.["ecs-codedeploy-app"].value')
+
+    #     echo "export ECS_TASK_ARN=$ECS_TASK_ARN" >> $GITHUB_ENV
+    #     echo "export ECS_TASK_CONTAINER_NAME=$ECS_TASK_CONTAINER_NAME" >> $GITHUB_ENV
+    #     echo "export ECS_TASK_CONTAINER_PORT=$ECS_TASK_CONTAINER_PORT" >> $GITHUB_ENV
+    #     echo "export ECS_TASK_FAMILY=$ECS_TASK_FAMILY" >> $GITHUB_ENV
+    #     echo "export ECS_CODEDEPLOY_GROUP=$ECS_CODEDEPLOY_GROUP" >> $GITHUB_ENV
+    #     echo "export ECS_CODEDEPLOY_APP=$ECS_CODEDEPLOY_APP" >> $GITHUB_ENV
+    
+    - name: Render Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition-family: ${{ fromJSON(inputs.terraform-output).ecs-task-family }}
+        container-name: ${{ fromJSON(inputs.terraform-output).ecs-task-containerName }}
+        image: ${{ inputs.docker-image-name }}    
+    - name: Render Amazon ECS App Spec
+      shell: bash
+      run: |
+        cat <<EOT >> appspec.json
+        {
+          "version": 0.0,
+          "Resources": [
+            {
+              "TargetService": {
+                "Type": "AWS::ECS::Service",
+                "Properties": {
+                  "TaskDefinition": "",
+                  "LoadBalancerInfo": {
+                    "ContainerName": "${{ fromJSON(inputs.terraform-output).ecs-task-containerName }}",
+                    "ContainerPort": ${{ fromJSON(inputs.terraform-output).ecs-task-containerPort }}
+                  }
+                }
+              }
+            }
+          ]
+        }
+        EOT
+    - name: Deploy to Amazon ECS
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        wait-for-service-stability: true
+        wait-for-task-stopped: false
+        codedeploy-appspec: appspec.json
+        codedeploy-application: ${{ fromJSON(inputs.terraform-output).ecs-codedeploy-app }}
+        codedeploy-deployment-group: ${{ env.ecs-codedeploy-group }}

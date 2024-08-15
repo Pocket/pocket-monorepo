@@ -39,7 +39,7 @@ runs:
     # Let's tell github actions we want to cache all the terraform verisons we install.
     # We do this to speed up terraform installing, as the cache will cache the terraform versions we download.
     - name: Cache tfenv installations
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: |
           ~/.tfenv/versions

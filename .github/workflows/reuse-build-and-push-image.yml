@@ -35,6 +35,10 @@ on:
         description: 'The project name used in sentry. Used to upload source maps'
         required: true
         type: string
+      terraform-output:
+        description: 'The terraform output which is used to get the ECS_Service and Task Defintion arns for codedeploy'
+        required: false
+        type: string
  
 permissions:
   contents: read  # This is required for actions/checkout
@@ -77,6 +81,7 @@ jobs:
             # TODO: Change this to the right roles when setup
             role-to-assume: arn:aws:iam::410318598490:role/GithubTesting-Daniel
         - name: Build and Push Development Docker Image
+          id: dev-docker-build
           uses: ./.github/actions/containerize
           with:
             docker-repo-name: "${{inputs.development-aws-registry }}/${{ format(inputs.docker-repo-name-pattern, 'dev') }}"
@@ -89,7 +94,11 @@ jobs:
             dockerhub-token: ${{secrets.DOCKERHUB_TOKEN}}
             scope: ${{inputs.scope}}
             push: true
-
+        - name: Code Deploy Docker Image
+          uses: ./.github/actions/ecs-codedeploy
+          with:
+            docker-image-name: ${{steps.dev-docker-build.outputs.docker-image-name}}
+            terraform-output: ${{ inputs.terraform-output }}
 
     production:
       if: github.ref == 'refs/heads/main'

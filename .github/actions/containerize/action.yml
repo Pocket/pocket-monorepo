@@ -34,6 +34,11 @@ inputs:
     description: Dockerhub Token
     required: true
 
+outputs:
+  docker-image-name: 
+    description: The full name with registry of the built docker image
+    value: ${{ steps.get-build-name.outputs.docker-image-name }}
+
 runs:
   using: 'composite'
   steps:
@@ -57,6 +62,7 @@ runs:
       uses: aws-actions/amazon-ecr-login@v2
     
     - name: Build docker image
+      id: docker-build-push
       uses: docker/build-push-action@v6
       with:
         push: ${{inputs.push}}
@@ -69,3 +75,9 @@ runs:
           SENTRY_ORG=${{inputs.sentry-org}} 
           SENTRY_PROJECT=${{inputs.sentry-project}} 
           PORT=${{inputs.app-port}}
+    - name: Output Build Name 
+      id: get-build-name
+      shell: bash
+      run: |
+        imageName=${{ fromJSON(steps.docker-build-push.outputs.metadata)['image.name'] }}
+        echo "::set-output name=docker-image-name::$imageName"
