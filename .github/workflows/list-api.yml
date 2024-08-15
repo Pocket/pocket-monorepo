@@ -33,13 +33,15 @@ jobs:
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
 
-  build-and-push-image:
+  api:
     uses: ./.github/workflows/reuse-build-and-push-image.yml
+    needs: [infrastructure]
     with:
       scope: list-api
       app-path: servers/list-api
       app-port: 4005
       sentry-project: list-api
       docker-repo-name-pattern: listapi-{0}-app
+      terraform-output: ${{needs.infrastructure.outputs.terraform-output}}
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit

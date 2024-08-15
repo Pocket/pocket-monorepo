@@ -141,6 +141,21 @@ output "ecs-task-arn" {
   value       = aws_ecs_task_definition.apollo.arn
 }
 
+output "ecs-serviceName" {
+  description = "ECS Service Name"
+  value       = aws_ecs_service.apollo.name
+}
+
+output "ecs-task-arn" {
+  description = "ECS Task Arn"
+  value       = aws_ecs_task_definition.apollo.arn
+}
+
+output "ecs-clusterName" {
+  description = "ECS Cluster Name"
+  value       = aws_ecs_service.apollo.cluster.name
+}
+
 resource "aws_ecs_service" "apollo" {
   name            = "Apollo"
   task_definition = aws_ecs_task_definition.apollo.arn

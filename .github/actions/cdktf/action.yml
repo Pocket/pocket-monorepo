@@ -90,7 +90,7 @@ runs:
         cd ${{ inputs.stack-output-path }}
         if [ "${{ inputs.behavior }}" = "apply" ]; then
           echo "Apply behavior specified, applying terraform configuration in ${{ inputs.environment }}."
-          terraform apply
+          terraform apply --auto-approve
         else
           echo "Plan behavior specified, planning terraform configuration in ${{ inputs.environment }}."
           tfcmt --var target:${{ inputs.scope }}-${{ inputs.environment }} plan --skip-no-changes --patch -- terraform plan -lock-timeout=10m

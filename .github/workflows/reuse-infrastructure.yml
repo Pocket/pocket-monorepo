@@ -135,11 +135,10 @@ jobs:
             pagerduty-token: ${{ secrets.PAGERDUTY_TOKEN }}
             terraform-token: ${{ secrets.TERRAFORM_TOKEN }}
 
-        - name: Set Output Based on Condition
+        - name: Set terraform output
           id: set_output
           run: |
             echo "Grabbing Terraform Output"
             cd ${{inputs['stack-output-path']}}
-            echo "terraform-output=$(terraform output -json)" >> $GITHUB_OUTPUT
-            echo '::set-output name=terraform-output::'
+            echo "terraform-output=$(terraform output -json | jq -c)" >> $GITHUB_OUTPUT
     

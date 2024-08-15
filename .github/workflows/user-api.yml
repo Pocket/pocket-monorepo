@@ -38,7 +38,7 @@ jobs:
     secrets: inherit
 
   # Let's try building and conidtionally pushing our docker image to the necessary account.
-  build-and-push-image:
+  api:
     uses: ./.github/workflows/reuse-build-and-push-image.yml
     needs: [infrastructure]
     with:
@@ -47,6 +47,7 @@ jobs:
       app-port: 4006
       sentry-project: user-api
       docker-repo-name-pattern: userapi-{0}-app
+      terraform-output: ${{needs.infrastructure.outputs.terraform-output}}
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
 

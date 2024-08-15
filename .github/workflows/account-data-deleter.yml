@@ -40,7 +40,7 @@ jobs:
     secrets: inherit
 
   # Let's try building and conidtionally pushing our docker image to the necessary account.
-  build-and-push-image:
+  api:
     uses: ./.github/workflows/reuse-build-and-push-image.yml
     needs: [infrastructure]
     with:
@@ -49,10 +49,11 @@ jobs:
       app-port: 4015
       sentry-project: account-data-deleter
       docker-repo-name-pattern: accountdatadeleter-{0}-app
+      terraform-output: ${{needs.infrastructure.outputs.terraform-output}}
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
 
-  build-and-push-lambda-events:
+  events-lambda:
     uses: ./.github/workflows/reuse-build-and-push-lambda.yml
     needs: [infrastructure]
     with:
@@ -62,7 +63,7 @@ jobs:
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
 
-  build-and-push-lambda-batch-delete:
+  batch-delete-lambda:
     uses: ./.github/workflows/reuse-build-and-push-lambda.yml
     needs: [infrastructure]
     with:

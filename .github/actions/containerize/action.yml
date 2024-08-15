@@ -79,5 +79,4 @@ runs:
       id: get-build-name
       shell: bash
       run: |
-        imageName=${{ fromJSON(steps.docker-build-push.outputs.metadata)['image.name'] }}
-        echo "::set-output name=docker-image-name::$imageName"
+        echo "docker-image-name=${{inputs.docker-repo-name}}:${{ github.sha }}" >> $GITHUB_OUTPUT
