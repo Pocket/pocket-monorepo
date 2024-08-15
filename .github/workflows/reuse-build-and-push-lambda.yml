@@ -34,12 +34,6 @@ jobs:
       steps:
         - name: Checkout
           uses: actions/checkout@v4
-        - name: AWS Credentials
-          uses: aws-actions/configure-aws-credentials@v4
-          with:
-            aws-region: us-east-1
-            # TODO: Change this to the right roles when setup
-            role-to-assume: arn:aws:iam::410318598490:role/GithubTesting-Daniel
         - name: Build Lambda
           uses: ./.github/actions/build-lambda
           with:
@@ -47,7 +41,6 @@ jobs:
             sentry-org: ${{inputs['sentry-org']}}
             sentry-token: ${{secrets.SENTRY_BEARER}}
             scope: ${{inputs['scope']}}
-            s3-bucket: ${{ format(inputs.s3-bucket-pattern, 'dev') }}
 
 # TODO: These need to request AWS ECR Credentials to push the Docker Image
     development:

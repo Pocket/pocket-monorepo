@@ -48,13 +48,7 @@ jobs:
       runs-on: ubuntu-latest
       steps:
         - name: Checkout
-          uses: actions/checkout@v4
-        - name: AWS Credentials
-          uses: aws-actions/configure-aws-credentials@v4
-          with:
-            aws-region: us-east-1
-            # TODO: Change this to the right roles when setup
-            role-to-assume: arn:aws:iam::410318598490:role/GithubTesting-Daniel        
+          uses: actions/checkout@v4    
         - name: Build Docker Image
           uses: ./.github/actions/containerize
           with:
@@ -67,7 +61,6 @@ jobs:
             dockerhub-username: ${{secrets.DOCKERHUB_USERNAME}}
             dockerhub-token: ${{secrets.DOCKERHUB_TOKEN}}
             scope: ${{inputs.scope}}
-            push: true
 
 
     development:
