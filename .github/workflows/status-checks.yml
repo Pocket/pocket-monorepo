@@ -1,0 +1,15 @@
+# Because we use conditional path filtering on all our workflows, but want to Require status checks to pass on Github, 
+# we use a special status check job that we can require and will do the checking for us.
+name: Status Checks
+on:
+  workflow_run:
+    workflows: [ Pull Request, User API, List API ]
+    types: [ completed ]
+
+jobs:
+  xyz:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ahmadnassri/action-workflow-run-wait@v1

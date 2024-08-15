@@ -1,7 +1,8 @@
 # A set of jobs that should always run no matter what on all Pull Requests in this repo
 name: Pull Request
 on:
-  - pull_request
+  pull_request:
+  merge_group:
 
 jobs:
   check-packages:
@@ -41,3 +42,17 @@ jobs:
       - name: Unit tests
         # Following uses a 2 concurrency because terraform modules seems to fail with an OOM error on CI if we do more.
         run: pnpm run test --concurrency=2 
+  
+
+  # workflow-checks:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Wait for workflows
+  #       id: wait
+  #       uses: smartcontractkit/chainlink-github-actions/utils/wait-for-workflows@main
+  #       with:
+  #         max-timeout: "900"
+  #         polling-interval: "15"
+  #         exclude-workflow-names: ""
+  #         exclude-workflow-ids: ""
+  #         github-token: ${{ secrets.GITHUB_TOKEN }}
