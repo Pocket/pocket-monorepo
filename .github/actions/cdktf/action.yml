@@ -14,7 +14,16 @@ inputs:
   behavior:
     description: The behavior that Terraform should use, either plan or apply
     required: true
-  
+  pagerduty-token:
+    description: Pagerduty Token to use in terraform
+    required: true
+  terraform-token:
+    description: Terraform Token to use in terraform
+    required: true
+  github-token:
+    description: Github Token to use for terraform comment
+    required: true 
+
 runs:
   using: 'composite'
   steps:
@@ -59,12 +68,24 @@ runs:
           tfenv install
           tfenv use
           terraform init
+    - name: Save off terraform token
+      shell: bash
+      env:
+        TERRAFORM_TOKEN: ${{ inputs.terraform-token }}
+      run: |
+        rc="credentials \"app.terraform.io\" { "
+        rc="${rc} token=\"$TERRAFORM_TOKEN\" "
+        rc="${rc}}"
+        echo "$rc" > ~/.terraformrc
 
     # Once TFCMT supports no change applies, change terraform apply to
     # tfcmt --var target:${{ inputs.scope }}-${{ inputs.environment }} apply -- terraform apply -auto-approve -lock-timeout=10m
     # https://github.com/suzuki-shunsuke/tfcmt/issues/1184
     - name: Plan/Apply CDKTF
       shell: bash
+      env:
+        TERRAFORM_TOKEN: ${{ inputs.pagerduty-token }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
       run: |
         cd ${{ inputs.stack-output-path }}
         if [ "${{ inputs.behavior }}" = "apply" ]; then

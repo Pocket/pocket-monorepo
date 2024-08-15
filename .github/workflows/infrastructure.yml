@@ -20,13 +20,13 @@ on:
         description: "The output of terraform apply"
         value: ${{ jobs.apply.outputs.terraform-output }}
 
-# Allow Terraform Comment to write to PRs
 permissions:
-  pull-requests: write  
-  
+  pull-requests: write   # Allow Terraform Comment to write to PRs
+  contents: read  # This is required for actions/checkout
+  id-token: write  # Access the Github JWT for AWS access
+
 jobs:
 
-  # TODO: These need to request AWS credentials to run terraform
     pull-request:
       # Only run this job on a pull request event
       if: github.event_name == 'pull_request'
@@ -34,15 +34,26 @@ jobs:
       steps:
         - name: Checkout
           uses: actions/checkout@v4
-
+        # Get the AWS credentials
+        - name: AWS Credentials
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+            aws-region: us-east-1
+            # TODO: Change this to the right roles when setup
+            role-to-assume: arn:aws:iam::410318598490:role/GithubTesting-Daniel
         - name: Execute CDKTF
           if: inputs.raw-terraform == false
           uses: ./.github/actions/cdktf
           with:
             stack-output-path: ${{inputs['stack-output-path']}}
             scope: ${{inputs['scope']}}
-            environment: production
+            # TODO: Change this to production when ready
+            environment: development #production
             behavior: plan
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            pagerduty-token: ${{ secrets.PAGERDUTY_TOKEN }}
+            terraform-token: ${{ secrets.TERRAFORM_TOKEN }}
+
         - name: Execute Raw Terraform
           if: inputs.raw-terraform == true
           uses: ./.github/actions/raw-terraform
@@ -51,6 +62,9 @@ jobs:
             scope: ${{inputs['scope']}}
             environment: production
             behavior: plan
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            pagerduty-token: ${{ secrets.PAGERDUTY_TOKEN }}
+            terraform-token: ${{ secrets.TERRAFORM_TOKEN }}
 
     apply:
       if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
@@ -60,7 +74,20 @@ jobs:
       steps:        
         - name: Checkout
           uses: actions/checkout@v4
-        
+        - name: Development AWS Credentials
+          if: github.ref == 'refs/heads/dev'
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+            aws-region: us-east-1
+            # TODO: Change this to the right roles when setup
+            role-to-assume: arn:aws:iam::410318598490:role/GithubTesting-Daniel   
+        - name: Production AWS Credentials
+          if: github.ref == 'refs/heads/main' 
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+            aws-region: us-east-1
+            # TODO: Change this to the right roles when setup
+            role-to-assume: arn:aws:iam::410318598490:role/GithubTesting-Daniel      
         - name: Execute Development CDKTF
           if: inputs.raw-terraform == false && github.ref == 'refs/heads/dev'
           uses: ./.github/actions/cdktf
@@ -69,6 +96,9 @@ jobs:
             scope: ${{inputs['scope']}}
             environment: development
             behavior: apply
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            pagerduty-token: ${{ secrets.PAGERDUTY_TOKEN }}
+            terraform-token: ${{ secrets.TERRAFORM_TOKEN }}
         - name: Execute Developement Raw Terraform
           if: inputs.raw-terraform == true && github.ref == 'refs/heads/dev'
           uses: ./.github/actions/raw-terraform
@@ -77,6 +107,9 @@ jobs:
             scope: ${{inputs['scope']}}
             environment: development
             behavior: apply
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            pagerduty-token: ${{ secrets.PAGERDUTY_TOKEN }}
+            terraform-token: ${{ secrets.TERRAFORM_TOKEN }}
 
         - name: Execute Production CDKTF
           if: inputs.raw-terraform == false && github.ref == 'refs/heads/main'
@@ -86,6 +119,10 @@ jobs:
             scope: ${{inputs['scope']}}
             environment: production
             behavior: apply
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            pagerduty-token: ${{ secrets.PAGERDUTY_TOKEN }}
+            terraform-token: ${{ secrets.TERRAFORM_TOKEN }}
+
         - name: Execute Production Raw Terraform
           if: inputs.raw-terraform == true && github.ref == 'refs/heads/main'
           uses: ./.github/actions/raw-terraform
@@ -94,6 +131,10 @@ jobs:
             scope: ${{inputs['scope']}}
             environment: production
             behavior: apply
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            pagerduty-token: ${{ secrets.PAGERDUTY_TOKEN }}
+            terraform-token: ${{ secrets.TERRAFORM_TOKEN }}
+
         - name: Set Output Based on Condition
           id: set_output
           run: |

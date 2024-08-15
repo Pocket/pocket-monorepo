@@ -39,7 +39,7 @@ jobs:
   infrastructure:
     uses: ./.github/workflows/infrastructure.yml
     with:
-      scope: user-api-cdk
+      scope: list-api-cdk
       stack-output-path: infrastructure/list-api/cdktf.out/stacks/list-api
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
