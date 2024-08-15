@@ -26,7 +26,7 @@ jobs:
     uses: ./.github/workflows/reuse-test-integrations.yml
     with:
       # Only run the tests for our service
-      scope: 'account-data-deleter'
+      scope: account-data-deleter
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
 
@@ -34,8 +34,8 @@ jobs:
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
     with:
-      scope: account-data-deleter-api-cdk
-      stack-output-path: infrastructure/user-api/cdktf.out/stacks/user-api
+      scope: account-data-deleter-cdk
+      stack-output-path: infrastructure/account-data-deleter/cdktf.out/stacks/account-data-deleter
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
 
@@ -58,7 +58,7 @@ jobs:
     with:
       scope: account-data-deleter-events
       sentry-project: account-data-deleter
-      s3-bucket-pattern: pocket-accountdatadeleter-<<environment>>-sqs-event-consumer
+      s3-bucket-pattern: pocket-accountdatadeleter-{0}-sqs-event-consumer
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
 
@@ -68,7 +68,7 @@ jobs:
     with:
       scope: account-data-deleter-batch-delete
       sentry-project: account-data-deleter
-      s3-bucket-pattern: pocket-accountdatadeleter-<<environment>>-batchdeletelambda
+      s3-bucket-pattern: pocket-accountdatadeleter-{0}-batchdeletelambda
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
 

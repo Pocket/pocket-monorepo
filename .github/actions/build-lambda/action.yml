@@ -74,3 +74,7 @@ runs:
             s3Key="${{ github.sha }}.zip"
         fi
         aws s3 cp ~/${{ github.sha }}.zip s3://${{inputs.s3-bucket}}/${s3Key}
+    - uses: actions/upload-artifact@v4
+      with:
+        name: ${{inputs.scope}}
+        path: ~/${{ github.sha }}.zip

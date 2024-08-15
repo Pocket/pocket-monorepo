@@ -20,7 +20,7 @@ jobs:
     uses: ./.github/workflows/reuse-test-integrations.yml
     with:
       # Only run the tests for our service
-      scope: 'list-api'
+      scope: list-api
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
   

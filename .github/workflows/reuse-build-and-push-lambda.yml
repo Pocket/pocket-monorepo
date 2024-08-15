@@ -7,7 +7,7 @@ on:
         required: true
         type: string
       s3-bucket-pattern:
-        description: 'Lambda S3 bucket pattern to use'
+        description: 'Lambda S3 bucket pattern to use. {0} will be replaced with either dev or prod'
         required: true
         type: string
       sentry-org:
@@ -34,7 +34,12 @@ jobs:
       steps:
         - name: Checkout
           uses: actions/checkout@v4
-       
+        - name: AWS Credentials
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+            aws-region: us-east-1
+            # TODO: Change this to the right roles when setup
+            role-to-assume: arn:aws:iam::410318598490:role/GithubTesting-Daniel
         - name: Build Lambda
           uses: ./.github/actions/build-lambda
           with:
@@ -42,6 +47,7 @@ jobs:
             sentry-org: ${{inputs['sentry-org']}}
             sentry-token: ${{secrets.SENTRY_BEARER}}
             scope: ${{inputs['scope']}}
+            s3-bucket: ${{ format(inputs.s3-bucket-pattern, 'dev') }}
 
 # TODO: These need to request AWS ECR Credentials to push the Docker Image
     development:
@@ -50,7 +56,12 @@ jobs:
       steps:        
         - name: Checkout
           uses: actions/checkout@v4
-        
+        - name: AWS Credentials
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+            aws-region: us-east-1
+            # TODO: Change this to the right roles when setup
+            role-to-assume: arn:aws:iam::410318598490:role/GithubTesting-Daniel       
         - name: Build Lambda
           uses: ./.github/actions/build-lambda
           with:
@@ -58,6 +69,7 @@ jobs:
             sentry-org: ${{inputs['sentry-org']}}
             sentry-token: ${{secrets.SENTRY_BEARER}}
             scope: ${{inputs['scope']}}
+            s3-bucket: ${{ format(inputs.s3-bucket-pattern, 'dev') }}
 
 
     production:
@@ -66,7 +78,12 @@ jobs:
       steps:
         - name: Checkout
           uses: actions/checkout@v4
-
+        - name: AWS Credentials
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+            aws-region: us-east-1
+            # TODO: Change this to the right roles when setup
+            role-to-assume: arn:aws:iam::410318598490:role/GithubTesting-Daniel
         - name: Build Lambda
           uses: ./.github/actions/build-lambda
           with:
@@ -74,3 +91,4 @@ jobs:
             sentry-org: ${{inputs['sentry-org']}}
             sentry-token: ${{secrets.SENTRY_BEARER}}
             scope: ${{inputs['scope']}}
+            s3-bucket: ${{ format(inputs.s3-bucket-pattern, 'prod') }}
