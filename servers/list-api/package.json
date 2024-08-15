@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@apollo/server": "4.10.4",
-    "@apollo/subgraph": "2.8.3",
+    "@apollo/subgraph": "2.8.4",
     "@aws-sdk/client-eventbridge": "3.629.0",
     "@aws-sdk/client-kinesis": "3.629.0",
     "@aws-sdk/client-sqs": "3.629.0",
