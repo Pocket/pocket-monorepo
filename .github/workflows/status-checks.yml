@@ -21,6 +21,7 @@ on:
       - Parser GraphQL Wrapper
       - Pocket Event Bridge
       - Push Server
+      - Sendgrid Data
     types: [ completed ]
 
 jobs:
