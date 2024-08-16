@@ -10,6 +10,10 @@ inputs:
   app-path:
     description: 'The path of where the application is located in the monorepo ie servers/<app-name>'
     required: true
+  context:
+    description: 'The path of where to build from'
+    required: true
+    default: '.'
   app-port:
     description: 'The port the application runs on ie 4006'
     required: true
@@ -67,6 +71,7 @@ runs:
       with:
         push: ${{inputs.push}}
         tags: ${{inputs.docker-repo-name}}:${{ github.sha }}
+        context: ${{ inputs.context }}
         build-args: |
           GIT_SHA=${{ github.sha }}
           SCOPE=${{inputs.scope}}

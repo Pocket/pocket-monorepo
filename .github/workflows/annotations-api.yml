@@ -28,7 +28,7 @@ jobs:
     uses: ./.github/workflows/reuse-apollo-federation.yml
     with:
       federated-graph-name: pocket-client-api
-      graph-name: list
+      graph-name: annotations-api
       schema-file-path: servers/annotations-api/dist/schema-generated.graphql
       prod-graph-url: https://annotations-api.readitlater.com
       dev-graph-url: https://annotations-api.getpocket.dev

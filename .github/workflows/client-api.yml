@@ -1,0 +1,34 @@
+name: Client API
+on:
+  pull_request:
+    paths:
+      - 'infrastructure/client-api/**'
+      - 'packages/**'
+      - 'servers/client-api/**'
+      - 'pnpm-lock.yaml'
+      - '.github/actions/**'
+      - '.github/workflows/client-api.yml'
+      - '.github/workflows/reuse-*.yml'
+  push:
+    branches:
+      - main
+      - dev
+    
+jobs:
+
+  infrastructure:
+    uses: ./.github/workflows/reuse-infrastructure.yml
+    with:
+      scope: client-api-cdk
+      stack-output-path: infrastructure/client-api/cdktf.out/stacks/client-api
+    secrets: inherit
+
+  api:
+    uses: ./.github/workflows/reuse-build-and-push-image.yml
+    needs: [infrastructure]
+    with:
+      docker-repo-name-pattern: clientapi-{0}-app
+      context: servers/client-api
+      app-path: servers/client-api
+      terraform-output: ${{needs.infrastructure.outputs.terraform-output}}
+    secrets: inherit

@@ -1,6 +1,5 @@
 name: Account Data Deleter
 on:
-  # Only run the tests for this service when any of the following file paths change
   pull_request:
     paths:
       - 'infrastructure/account-data-deleter/**'
@@ -18,17 +17,13 @@ on:
       - dev
 
 jobs:
-  # Let's test the service against some real life and mocked docker services.
   test-integrations:
-    # Only run this job on a pull request event
     if: github.event_name == 'pull_request'
-    # Use our re-usable test integrations workflow which will use our docker compose file
     uses: ./.github/workflows/reuse-test-integrations.yml
     with:
       scope: account-data-deleter
     secrets: inherit
 
-  # It's infrastructure time, run the infrastructure update commands
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
     with:
@@ -36,7 +31,6 @@ jobs:
       stack-output-path: infrastructure/account-data-deleter/cdktf.out/stacks/account-data-deleter
     secrets: inherit
 
-  # Let's try building and conidtionally pushing our docker image to the necessary account.
   api:
     uses: ./.github/workflows/reuse-build-and-push-image.yml
     needs: [infrastructure]

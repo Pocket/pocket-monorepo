@@ -1,6 +1,5 @@
 name: List API
 on:
-  # Only run the tests for this service when any of the following file paths change
   pull_request:
     paths:
       - 'infrastructure/list-api/**'
@@ -16,10 +15,8 @@ on:
       - dev
     
 jobs:
-  # Let's test the service against some real life and mocked docker services.
   test-integrations:
     if: github.event_name == 'pull_request'
-    # Use our re-usable test integrations workflow which will use our docker compose file
     uses: ./.github/workflows/reuse-test-integrations.yml
     with:
       scope: list-api
@@ -37,7 +34,6 @@ jobs:
     secrets:
       apollo-key: ${{ secrets.APOLLO_CLIENT_API_KEY }}
 
-  # It's infrastructure time, run the infrastructure update commands
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
     with:

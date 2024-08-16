@@ -4,7 +4,8 @@ on:
     inputs:
       scope:
         description: 'Turbo Repo scope to run the build for'
-        required: true
+        required: false
+        default: ''
         type: string
       docker-repo-name-pattern:
         description: 'Docker name of the repo, usually: servicename-{0}-app. {0} is replaced with dev or prod'
@@ -18,13 +19,20 @@ on:
         description: 'AWS Development Account Id'
         type: string
         default: 996905175585.dkr.ecr.us-east-1.amazonaws.com
+      context:
+        description: 'The path of where the application should be built from'
+        required: false
+        default: '.'
+        type: string
       app-path:
         description: 'The path of where the application is located in the monorepo ie servers/<app-name>'
-        required: true
+        required: false
+        default: ''
         type: string
       app-port:
         description: 'The port the application runs on ie 4006'
-        required: true
+        required: false
+        default: 80
         type: number
       sentry-org:
         description: 'The org name used in sentry. Used to upload source maps'
@@ -33,7 +41,8 @@ on:
         default: pocket
       sentry-project:
         description: 'The project name used in sentry. Used to upload source maps'
-        required: true
+        required: false
+        default: ''
         type: string
       terraform-output:
         description: 'The terraform output which is used to get the ECS_Service and Task Defintion arns for codedeploy'
@@ -60,6 +69,7 @@ jobs:
             docker-repo-name: "${{inputs.development-aws-registry }}/${{ format(inputs.docker-repo-name-pattern, 'dev') }}"
             app-path: ${{inputs.app-path}}
             app-port: ${{inputs.app-port}}
+            context: ${{inputs.context}}
             sentry-project: ${{inputs.sentry-project}}
             sentry-org: ${{inputs.sentry-org}}
             sentry-token: ${{secrets.SENTRY_BEARER}}
