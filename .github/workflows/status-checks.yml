@@ -16,6 +16,7 @@ on:
       - Client API
       - Feature Flags
       - FxA Webhook Proxy
+      - Image API
     types: [ completed ]
 
 jobs:
