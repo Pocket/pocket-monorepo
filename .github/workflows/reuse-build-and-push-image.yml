@@ -42,7 +42,8 @@ on:
  
 permissions:
   contents: read  # This is required for actions/checkout
-  id-token: write  # Access the Github JWT for AWS access        
+  id-token: write  # Access the Github JWT for AWS access
+  deployments: write
 
 jobs:
     # Let's build the image on every pull request just like we would on production
@@ -99,6 +100,7 @@ jobs:
           with:
             docker-image-name: ${{steps.dev-docker-build.outputs.docker-image-name}}
             terraform-output: ${{ inputs.terraform-output }}
+            name: ${{inputs.scope}}
 
     production:
       if: github.ref == 'refs/heads/main'
@@ -114,6 +116,7 @@ jobs:
             # TODO: Change this to the right roles when setup
             role-to-assume: arn:aws:iam::410318598490:role/GithubTesting-Daniel
         - name: Build and Push Production Docker Image
+          id: prod-docker-build
           uses: ./.github/actions/containerize
           with:
             docker-repo-name: "${{inputs.production-aws-registry }}/${{ format(inputs.docker-repo-name-pattern, 'prod') }}"
@@ -126,3 +129,9 @@ jobs:
             dockerhub-token: ${{secrets.DOCKERHUB_TOKEN}}
             scope: ${{inputs.scope}}
             push: true
+        - name: Code Deploy Docker Image
+          uses: ./.github/actions/ecs-codedeploy
+          with:
+            docker-image-name: ${{steps.prod-docker-build.outputs.docker-image-name}}
+            terraform-output: ${{ inputs.terraform-output }}
+            name: ${{inputs.scope}}

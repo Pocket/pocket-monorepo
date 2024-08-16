@@ -7,10 +7,13 @@ inputs:
   docker-image-name:
     required: true
     description: Docker path/name of the image to deploy
+  name:
+    required: true
+    description: The name of the service to use with Github Deployments
 
 runs:
   using: 'composite'
-  steps:  
+  steps:
     - name: Render Amazon ECS task definition
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
@@ -40,13 +43,60 @@ runs:
           ]
         }
         EOT
+    # Create the Deployment within Github for Status Monitoring
+    - uses: chrnorm/deployment-action@v2
+      name: Create GitHub deployment
+      id: deployment
+      with:
+        token: ${{ github.token }}
+        environment-url: https://${{ fromJSON(inputs.terraform-output).ecs-application-url.value }}
+        environment: ${{ inputs.name }}${{ github.ref == 'refs/heads/dev' && '-dev' }}
+        transient-environment: ${{ github.ref == 'refs/heads/main' && 'false' || 'true' }}
+        production-environment: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
+        initial-status: pending
+    
+    # Trigger CodeDeploy to start deploying
     - name: Deploy to Amazon ECS
+      id: deploy-ecs
       uses: aws-actions/amazon-ecs-deploy-task-definition@v2
       with:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
         service: ${{ fromJSON(inputs.terraform-output).ecs-serviceName.value }}
         cluster: ${{ fromJSON(inputs.terraform-output).ecs-clusterName.value }}
-        wait-for-service-stability: false
+        # TODO: Discuss with @kschelonka if we want to have CI wait for codedeploy to finish, and if so should it still be 5 minute termination???
+        wait-for-service-stability: true
         codedeploy-appspec: appspec.json
         codedeploy-application: ${{ fromJSON(inputs.terraform-output).ecs-codedeploy-app.value }}
         codedeploy-deployment-group: ${{ fromJSON(inputs.terraform-output).ecs-codedeploy-group.value }}
+
+    # Now that we have our Deployment ID, lets use it to add the logs to the Github Deployment
+    - name: Add logs to deployment status
+      uses: chrnorm/deployment-status@v2
+      with:
+        token: ${{ github.token }}
+        deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+        state: 'in_progress'
+        ## NOTE: Hard coded to us-east 1 for now.
+        log-url: https://console.aws.amazon.com/codesuite/codedeploy/deployments/${{ steps.deploy-ecs.outputs.codedeploy-deployment-id }}?region=us-east-1
+    
+    # Now lets Wait for ECS Blue/Green Deployment, so we can report on the status to Github after
+    - name: Wait for blue instances to be ready
+      uses: geekcell/github-action-aws-codedeploy-wait@v1.0.0
+      with:
+        codedeploy-deployment-id: ${{ steps.deploy-ecs.outputs.codedeploy-deployment-id }}
+
+    - name: Update deployment status (success)
+      if: success()
+      uses: chrnorm/deployment-status@v2
+      with:
+        token: ${{ github.token }}
+        deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+        state: 'success'
+
+    - name: Update deployment status (failure)
+      if: failure()
+      uses: chrnorm/deployment-status@v2
+      with:
+        token: ${{ github.token }}
+        deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+        state: 'failure'

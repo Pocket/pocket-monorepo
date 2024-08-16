@@ -130,6 +130,12 @@ exports[`PocketALBApplication renders a Pocket App with attached persistent stor
       }
     }
   },
+  "output": {
+    "ecs-application-url": {
+      "description": "ECS Application URL",
+      "value": "testing.bowling.gov"
+    }
+  },
   "resource": {
     "aws_acm_certificate": {
       "testPocketApp_alb_certificate_417C14FF": {
@@ -815,6 +821,12 @@ exports[`PocketALBApplication renders a Pocket App with attached waf 1`] = `
       }
     }
   },
+  "output": {
+    "ecs-application-url": {
+      "description": "ECS Application URL",
+      "value": "testing.bowling.gov"
+    }
+  },
   "resource": {
     "aws_acm_certificate": {
       "testPocketApp_alb_certificate_417C14FF": {
@@ -1418,6 +1430,10 @@ exports[`PocketALBApplication renders an Pocket App with code deploy 1`] = `
     }
   },
   "output": {
+    "ecs-application-url": {
+      "description": "ECS Application URL",
+      "value": "testing.bowling.gov"
+    },
     "ecs-clusterName": {
       "description": "ECS Cluster Name",
       "value": "\${aws_ecs_cluster.testPocketApp_ecs_cluster_C3960066.name}"
@@ -2160,6 +2176,10 @@ exports[`PocketALBApplication renders an Pocket App with code deploy and creates
     }
   },
   "output": {
+    "ecs-application-url": {
+      "description": "ECS Application URL",
+      "value": "testing.bowling.gov"
+    },
     "ecs-clusterName": {
       "description": "ECS Cluster Name",
       "value": "\${aws_ecs_cluster.testPocketApp_ecs_cluster_C3960066.name}"
@@ -2900,6 +2920,10 @@ exports[`PocketALBApplication renders an Pocket App with code deploy notificatio
     }
   },
   "output": {
+    "ecs-application-url": {
+      "description": "ECS Application URL",
+      "value": "testing.bowling.gov"
+    },
     "ecs-clusterName": {
       "description": "ECS Cluster Name",
       "value": "\${aws_ecs_cluster.testPocketApp_ecs_cluster_C3960066.name}"
@@ -3623,6 +3647,12 @@ exports[`PocketALBApplication renders an Pocket App with custom Alarm Descriptio
       }
     }
   },
+  "output": {
+    "ecs-application-url": {
+      "description": "ECS Application URL",
+      "value": "testing.bowling.gov"
+    }
+  },
   "resource": {
     "aws_acm_certificate": {
       "testPocketApp_alb_certificate_417C14FF": {
@@ -4270,6 +4300,12 @@ exports[`PocketALBApplication renders an Pocket App with logs and dashboard in a
       }
     }
   },
+  "output": {
+    "ecs-application-url": {
+      "description": "ECS Application URL",
+      "value": "testing.bowling.gov"
+    }
+  },
   "resource": {
     "aws_acm_certificate": {
       "testPocketApp_alb_certificate_417C14FF": {
@@ -4846,6 +4882,12 @@ exports[`PocketALBApplication renders an application alarms 1`] = `
           }
         ]
       }
+    }
+  },
+  "output": {
+    "ecs-application-url": {
+      "description": "ECS Application URL",
+      "value": "testing.bowling.gov"
     }
   },
   "resource": {
@@ -5449,6 +5491,12 @@ exports[`PocketALBApplication renders an application custom default alarms 1`] =
       }
     }
   },
+  "output": {
+    "ecs-application-url": {
+      "description": "ECS Application URL",
+      "value": "testing.bowling.gov"
+    }
+  },
   "resource": {
     "aws_acm_certificate": {
       "testPocketApp_alb_certificate_417C14FF": {
@@ -6038,6 +6086,12 @@ exports[`PocketALBApplication renders an application with autoscaling group and 
           }
         ]
       }
+    }
+  },
+  "output": {
+    "ecs-application-url": {
+      "description": "ECS Application URL",
+      "value": "testing.bowling.gov"
     }
   },
   "resource": {
@@ -6678,6 +6732,12 @@ exports[`PocketALBApplication renders an application with custom task sizes 1`] 
       }
     }
   },
+  "output": {
+    "ecs-application-url": {
+      "description": "ECS Application URL",
+      "value": "testing.bowling.gov"
+    }
+  },
   "resource": {
     "aws_acm_certificate": {
       "testPocketApp_alb_certificate_417C14FF": {
@@ -7254,6 +7314,12 @@ exports[`PocketALBApplication renders an application with default autoscaling gr
           }
         ]
       }
+    }
+  },
+  "output": {
+    "ecs-application-url": {
+      "description": "ECS Application URL",
+      "value": "testing.bowling.gov"
     }
   },
   "resource": {
@@ -7894,6 +7960,12 @@ exports[`PocketALBApplication renders an application with minimal config 1`] = `
       }
     }
   },
+  "output": {
+    "ecs-application-url": {
+      "description": "ECS Application URL",
+      "value": "testing.bowling.gov"
+    }
+  },
   "resource": {
     "aws_acm_certificate": {
       "testPocketApp_alb_certificate_417C14FF": {
@@ -8470,6 +8542,12 @@ exports[`PocketALBApplication renders an application with modified container def
           }
         ]
       }
+    }
+  },
+  "output": {
+    "ecs-application-url": {
+      "description": "ECS Application URL",
+      "value": "testing.bowling.gov"
     }
   },
   "resource": {
@@ -9073,6 +9151,12 @@ exports[`PocketALBApplication renders an external application 1`] = `
           }
         ]
       }
+    }
+  },
+  "output": {
+    "ecs-application-url": {
+      "description": "ECS Application URL",
+      "value": "testing.bowling.gov"
     }
   },
   "resource": {
@@ -9769,6 +9853,12 @@ exports[`PocketALBApplication renders an internal application 1`] = `
       }
     }
   },
+  "output": {
+    "ecs-application-url": {
+      "description": "ECS Application URL",
+      "value": "testing.bowling.gov"
+    }
+  },
   "resource": {
     "aws_acm_certificate": {
       "testPocketApp_alb_certificate_417C14FF": {
@@ -10345,6 +10435,12 @@ exports[`PocketALBApplication renders an internal application with tags 1`] = `
           }
         ]
       }
+    }
+  },
+  "output": {
+    "ecs-application-url": {
+      "description": "ECS Application URL",
+      "value": "testing.bowling.gov"
     }
   },
   "resource": {

@@ -156,6 +156,11 @@ output "ecs-clusterName" {
   value       = aws_ecs_service.apollo.cluster.name
 }
 
+output "ecs-application-url" {
+  description = "ECS Application URL"
+  value       = local.workspace.userApiUri
+}
+
 resource "aws_ecs_service" "apollo" {
   name            = "Apollo"
   task_definition = aws_ecs_task_definition.apollo.arn

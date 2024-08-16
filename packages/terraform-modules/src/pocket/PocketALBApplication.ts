@@ -8,7 +8,7 @@ import {
   route53Record,
   wafv2WebAclAssociation,
 } from '@cdktf/provider-aws';
-import { TerraformMetaArguments } from 'cdktf';
+import { TerraformMetaArguments, TerraformOutput } from 'cdktf';
 import { Construct } from 'constructs';
 import {
   ApplicationAutoscaling,
@@ -276,6 +276,12 @@ export class PocketALBApplication extends Construct {
     );
 
     this.createCloudwatchAlarms();
+
+    new TerraformOutput(this, 'ecs-application-url', {
+      description: 'ECS Application URL',
+      value: this.config.domain,
+      staticId: true,
+    });
   }
 
   /**
