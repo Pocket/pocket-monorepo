@@ -121,4 +121,4 @@ ENV GIT_SHA=${GIT_SHA}
 ENV RELEASE_SHA=${GIT_SHA}
 
 EXPOSE $PORT
-CMD npm run start
+CMD [ "npm", "run", "start" ]
