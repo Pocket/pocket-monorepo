@@ -24,6 +24,7 @@ on:
       - Sendgrid Data
       - Shareable Lists API
       - Shared Snowplow Consumer
+      - Shares API
     types: [ completed ]
 
 jobs:
