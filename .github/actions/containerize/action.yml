@@ -76,10 +76,11 @@ runs:
           GIT_SHA=${{ github.sha }}
           SCOPE=${{inputs.scope}}
           APP_PATH=${{inputs.app-path}}
-          SENTRY_AUTH_TOKEN=${{ inputs.sentry-token }}
           SENTRY_ORG=${{inputs.sentry-org}} 
           SENTRY_PROJECT=${{inputs.sentry-project}} 
           PORT=${{inputs.app-port}}
+        secrets: |
+          sentry_token=${{ inputs.sentry-token }}
     - name: Output Build Name 
       id: get-build-name
       shell: bash
