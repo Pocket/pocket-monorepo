@@ -25,6 +25,7 @@ on:
       - Shareable Lists API
       - Shared Snowplow Consumer
       - Shares API
+      - Transactional Emails
     types: [ completed ]
 
 jobs:
