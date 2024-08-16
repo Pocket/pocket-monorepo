@@ -25,9 +25,7 @@ jobs:
     # Use our re-usable test integrations workflow which will use our docker compose file
     uses: ./.github/workflows/reuse-test-integrations.yml
     with:
-      # Only run the tests for our service
       scope: account-data-deleter
-    # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
 
   # It's infrastructure time, run the infrastructure update commands
@@ -36,7 +34,6 @@ jobs:
     with:
       scope: account-data-deleter-cdk
       stack-output-path: infrastructure/account-data-deleter/cdktf.out/stacks/account-data-deleter
-    # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
 
   # Let's try building and conidtionally pushing our docker image to the necessary account.
@@ -50,7 +47,6 @@ jobs:
       sentry-project: account-data-deleter
       docker-repo-name-pattern: accountdatadeleter-{0}-app
       terraform-output: ${{needs.infrastructure.outputs.terraform-output}}
-    # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
 
   events-lambda:
@@ -60,7 +56,9 @@ jobs:
       scope: account-data-deleter-events
       sentry-project: account-data-deleter
       s3-bucket-pattern: pocket-accountdatadeleter-{0}-sqs-event-consumer
-    # Ensure the re-usable workflow is allowed to access the secrets
+      codedeploy-app-name-pattern: AccountDataDeleter-{0}-Sqs-Event-Consumer-Lambda
+      codedeploy-group-name-pattern: AccountDataDeleter-{0}-Sqs-Event-Consumer-Lambda
+      function-name-pattern: AccountDataDeleter-{0}-Sqs-Event-Consumer-Function
     secrets: inherit
 
   batch-delete-lambda:
@@ -70,5 +68,7 @@ jobs:
       scope: account-data-deleter-batch-delete
       sentry-project: account-data-deleter
       s3-bucket-pattern: pocket-accountdatadeleter-{0}-batchdeletelambda
-    # Ensure the re-usable workflow is allowed to access the secrets
+      codedeploy-app-name-pattern: AccountDataDeleter-{0}-BatchDeleteLambda-Lambda
+      codedeploy-group-name-pattern: AccountDataDeleter-{0}-BatchDeleteLambda-Lambda
+      function-name-pattern: AccountDataDeleter-{0}-BatchDeleteLambda-Function
     secrets: inherit

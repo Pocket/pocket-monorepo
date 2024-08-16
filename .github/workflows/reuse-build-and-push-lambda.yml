@@ -10,6 +10,18 @@ on:
         description: 'Lambda S3 bucket pattern to use. {0} will be replaced with either dev or prod'
         required: true
         type: string
+      codedeploy-app-name-pattern:
+        description: CodeDeploy app name pattern to use. {0} will be replaced with either Dev or Prod'
+        required: true
+        type: string
+      codedeploy-group-name-pattern:
+        description: CodeDeploy group name pattern to use. {0} will be replaced with either Dev or Prod'
+        required: true
+        type: string
+      function-name-pattern:
+        description: The name pattern of the Lambda Function to deploy t. {0} will be replaced with either Dev or Prod'
+        required: true
+        type: string
       sentry-org:
         description: 'The org name used in sentry. Used to upload source maps'
         required: false
@@ -63,7 +75,13 @@ jobs:
             sentry-token: ${{secrets.SENTRY_BEARER}}
             scope: ${{inputs['scope']}}
             s3-bucket: ${{ format(inputs.s3-bucket-pattern, 'dev') }}
-
+        - name: CodeDeploy Lambda
+          uses: ./.github/actions/lambda-codedeploy
+          with:
+            s3-bucket: ${{ format(inputs.s3-bucket-pattern, 'dev') }}
+            codedeploy-app-name: ${{ format(inputs.codedeploy-app-name-pattern, 'Dev') }}
+            codedeploy-group-name: ${{ format(inputs.codedeploy-group-name-pattern, 'Dev') }}
+            function-name: ${{ format(inputs.function-name-pattern, 'Dev') }}
 
     production:
       if: github.ref == 'refs/heads/main'
@@ -85,3 +103,10 @@ jobs:
             sentry-token: ${{secrets.SENTRY_BEARER}}
             scope: ${{inputs['scope']}}
             s3-bucket: ${{ format(inputs.s3-bucket-pattern, 'prod') }}
+        - name: CodeDeploy Lambda
+          uses: ./.github/actions/lambda-codedeploy
+          with:
+            s3-bucket: ${{ format(inputs.s3-bucket-pattern, 'prod') }}
+            codedeploy-app-name: ${{ format(inputs.codedeploy-app-name-pattern, 'Prod') }}
+            codedeploy-group-name: ${{ format(inputs.codedeploy-group-name-pattern, 'Prod') }}
+            function-name: ${{ format(inputs.function-name-pattern, 'Prod') }}
