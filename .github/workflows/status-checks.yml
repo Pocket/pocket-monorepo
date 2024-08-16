@@ -6,7 +6,7 @@
 name: Status Checks
 on:
   workflow_run:
-    workflows: [ Pull Request, User API, List API ]
+    workflows: [ Pull Request, User API, List API, Account Delete Monitor, Annotations API ]
     types: [ completed ]
 
 jobs:

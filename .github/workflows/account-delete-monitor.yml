@@ -1,4 +1,4 @@
-name: Account Data Deleter
+name: Account Delete Monitor
 on:
   # Only run the tests for this service when any of the following file paths change
   pull_request:
