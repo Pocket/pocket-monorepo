@@ -32,7 +32,7 @@ jobs:
       sentry-project: fxa-webhook-proxy
       s3-bucket-pattern: pocket-fxawebhookproxy-{0}-sqs-fxa-events
       codedeploy-app-name-pattern: FxAWebhookProxy-{0}-Sqs-FxA-Events-Lambda
-      codedeploy-group-name-pattern:  FxAWebhookProxy-{0}-Sqs-FxA-Events-Lambda
+      codedeploy-group-name-pattern: FxAWebhookProxy-{0}-Sqs-FxA-Events-Lambda
       function-name-pattern: FxAWebhookProxy-{0}-Sqs-FxA-Events-Function
     secrets: inherit
 
@@ -44,7 +44,7 @@ jobs:
       sentry-project: fxa-webhook-proxy
       s3-bucket-pattern: pocket-fxawebhookproxy-{0}-apigateway-fxa-events
       codedeploy-app-name-pattern: FxAWebhookProxy-{0}-ApiGateway-FxA-Events-Lambda
-      codedeploy-group-name-pattern:  FxAWebhookProxy-{0}-ApiGateway-FxA-Events-Lambda
+      codedeploy-group-name-pattern: FxAWebhookProxy-{0}-ApiGateway-FxA-Events-Lambda
       function-name-pattern: FxAWebhookProxy-{0}-ApiGateway-FxA-Events-Function
     secrets: inherit
   

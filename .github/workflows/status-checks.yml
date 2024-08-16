@@ -17,6 +17,7 @@ on:
       - Feature Flags
       - FxA Webhook Proxy
       - Image API
+      - Instant Sync Events
     types: [ completed ]
 
 jobs:
