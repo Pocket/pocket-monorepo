@@ -63,8 +63,7 @@ runs:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
         service: ${{ fromJSON(inputs.terraform-output).ecs-serviceName.value }}
         cluster: ${{ fromJSON(inputs.terraform-output).ecs-clusterName.value }}
-        # TODO: Discuss with @kschelonka if we want to have CI wait for codedeploy to finish, and if so should it still be 5 minute termination???
-        wait-for-service-stability: true
+        wait-for-service-stability: false
         codedeploy-appspec: appspec.json
         codedeploy-application: ${{ fromJSON(inputs.terraform-output).ecs-codedeploy-app.value }}
         codedeploy-deployment-group: ${{ fromJSON(inputs.terraform-output).ecs-codedeploy-group.value }}
@@ -80,10 +79,11 @@ runs:
         log-url: https://console.aws.amazon.com/codesuite/codedeploy/deployments/${{ steps.deploy-ecs.outputs.codedeploy-deployment-id }}?region=us-east-1
     
     # Now lets Wait for ECS Blue/Green Deployment, so we can report on the status to Github after
-    - name: Wait for blue instances to be ready
-      uses: geekcell/github-action-aws-codedeploy-wait@v1.0.0
-      with:
-        codedeploy-deployment-id: ${{ steps.deploy-ecs.outputs.codedeploy-deployment-id }}
+    # TODO: Discuss with @kschelonka if we want to have CI wait for codedeploy to finish, and if so should it still be 5 minute termination???
+    # - name: Wait for blue instances to be ready
+    #   uses: geekcell/github-action-aws-codedeploy-wait@v1.0.0
+    #   with:
+    #     codedeploy-deployment-id: ${{ steps.deploy-ecs.outputs.codedeploy-deployment-id }}
 
     - name: Update deployment status (success)
       if: success()

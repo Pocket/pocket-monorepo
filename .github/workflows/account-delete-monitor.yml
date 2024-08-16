@@ -35,7 +35,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-lambda.yml
     needs: [infrastructure]
     with:
-      scope: account-delete-monitor-events
+      scope: account-delete-monitor
       sentry-project: account-delete-monitor
       s3-bucket-pattern: pocket-accountdeletemonitor-{0}-eventtracker
       codedeploy-app-name-pattern: AccountDeleteMonitor-{0}-EventTracker-Lambda
