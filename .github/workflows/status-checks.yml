@@ -27,6 +27,7 @@ on:
       - Shares API
       - Transactional Emails
       - V3 Proxy API
+      - User List Search
     types: [ completed ]
 
 jobs:

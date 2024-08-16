@@ -10,6 +10,11 @@ on:
         description: 'Lambda S3 bucket pattern to use. {0} will be replaced with either dev or prod'
         required: true
         type: string
+      s3-key:
+        description: 'Lambda S3 key to use. Defaults to git sha'
+        required: false
+        default: ''
+        type: string
       codedeploy-app-name-pattern:
         description: CodeDeploy app name pattern to use. {0} will be replaced with either Dev or Prod'
         required: true
@@ -75,10 +80,12 @@ jobs:
             sentry-token: ${{secrets.SENTRY_BEARER}}
             scope: ${{inputs['scope']}}
             s3-bucket: ${{ format(inputs.s3-bucket-pattern, 'dev') }}
+            s3-key: ${{ inputs.s3-key }}
         - name: CodeDeploy Lambda
           uses: ./.github/actions/lambda-codedeploy
           with:
             s3-bucket: ${{ format(inputs.s3-bucket-pattern, 'dev') }}
+            s3-key: ${{ inputs.s3-key }}
             codedeploy-app-name: ${{ format(inputs.codedeploy-app-name-pattern, 'Dev') }}
             codedeploy-group-name: ${{ format(inputs.codedeploy-group-name-pattern, 'Dev') }}
             function-name: ${{ format(inputs.function-name-pattern, 'Dev') }}
@@ -103,10 +110,12 @@ jobs:
             sentry-token: ${{secrets.SENTRY_BEARER}}
             scope: ${{inputs['scope']}}
             s3-bucket: ${{ format(inputs.s3-bucket-pattern, 'prod') }}
+            s3-key: ${{ inputs.s3-key }}
         - name: CodeDeploy Lambda
           uses: ./.github/actions/lambda-codedeploy
           with:
             s3-bucket: ${{ format(inputs.s3-bucket-pattern, 'prod') }}
+            s3-key: ${{ inputs.s3-key }}
             codedeploy-app-name: ${{ format(inputs.codedeploy-app-name-pattern, 'Prod') }}
             codedeploy-group-name: ${{ format(inputs.codedeploy-group-name-pattern, 'Prod') }}
             function-name: ${{ format(inputs.function-name-pattern, 'Prod') }}
