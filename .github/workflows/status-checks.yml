@@ -23,6 +23,7 @@ on:
       - Push Server
       - Sendgrid Data
       - Shareable Lists API
+      - Shared Snowplow Consumer
     types: [ completed ]
 
 jobs:
