@@ -19,6 +19,7 @@ on:
       - Image API
       - Instant Sync Events
       - Parser GraphQL Wrapper
+      - Pocket Event Bridge
     types: [ completed ]
 
 jobs:
