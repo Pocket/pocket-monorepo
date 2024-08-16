@@ -40,6 +40,7 @@ jobs:
     with:
       raw-terraform: true
       stack-output-path: infrastructure/user-list-search
+      scope: user-list-search
     secrets: inherit
 
   api:

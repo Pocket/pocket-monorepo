@@ -58,6 +58,7 @@ jobs:
             sentry-org: ${{inputs['sentry-org']}}
             sentry-token: ${{secrets.SENTRY_BEARER}}
             scope: ${{inputs['scope']}}
+            s3-key: ${{ inputs.s3-key }}
 
 # TODO: These need to request AWS ECR Credentials to push the Docker Image
     development:

@@ -145,20 +145,14 @@ output "ecs-serviceName" {
   description = "ECS Service Name"
   value       = aws_ecs_service.apollo.name
 }
-
-output "ecs-task-arn" {
-  description = "ECS Task Arn"
-  value       = aws_ecs_task_definition.apollo.arn
-}
-
 output "ecs-clusterName" {
   description = "ECS Cluster Name"
-  value       = aws_ecs_service.apollo.cluster.name
+  value       = aws_ecs_cluster.ecs_cluster.name
 }
 
 output "ecs-application-url" {
   description = "ECS Application URL"
-  value       = local.workspace.userApiUri
+  value       = local.workspace.domain
 }
 
 resource "aws_ecs_service" "apollo" {

@@ -31,6 +31,7 @@ runs:
       shell: bash
       run: |
         git clone --depth=1 https://github.com/tfutils/tfenv.git ~/.tfenv
+        echo "PATH=$HOME/.tfenv/bin:$PATH" >> $GITHUB_ENV
 
     # Setup Terraform Comment
     - uses: shmokmt/actions-setup-tfcmt@v2
@@ -45,9 +46,6 @@ runs:
         key: ${{ runner.os }}-tfenv-${{ hashFiles('**/.terraform-version') }}
         restore-keys: |
           ${{ runner.os }}-tfenv-
-
-  # TODO: These need to request AWS credentials to run terraform
-  # It may be best to not do AWS credentials here and do it in the calling workflow.. TBD
 
     - name: Copy Terraform Vars
       shell: bash

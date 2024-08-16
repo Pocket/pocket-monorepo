@@ -60,7 +60,8 @@ jobs:
           with:
             stack-output-path: ${{inputs['stack-output-path']}}
             scope: ${{inputs['scope']}}
-            environment: production
+            # TODO: Change this to production when ready
+            environment: development #production
             behavior: plan
             github-token: ${{ secrets.GITHUB_TOKEN }}
             pagerduty-token: ${{ secrets.PAGERDUTY_TOKEN }}
