@@ -1,0 +1,84 @@
+# Runs Apollo rover schema check on the production graphql federated schema.
+# If it is the production branch will deploy the subgraph to the production federated graph.
+# If the branch is the development branch, will deploy the subgraph to the development federated graph.
+name: 'Re-usable Apollo Studio Schema Workflow'
+on:
+  workflow_call:
+    inputs:
+      federated-graph-name:
+        type: string
+        description: The name of federated graph to check
+      graph-name:
+        type: string
+        description: The name of this subgraph
+      schema-file-path:
+        type: string
+        description: The path to the schema file
+        default: ./schema.graphql
+      prod-graph-url:
+        type: string
+        description: The production subgraph url
+      dev-graph-url:
+        type: string
+        description: The development subgraph url
+      prod-graph-variant-name:
+        type: string
+        description: The production variant graph name
+        default: "current"
+      dev-graph-variant-name:
+        type: string
+        required: false
+        description: The development variant graph name
+        default: "development"
+      scope:
+        description: The pnpm scope to build for if we need to build before we push a schema
+        type: string
+        default: ""
+    secrets:
+      apollo-key:
+        description: The apollo studio key to use
+        required: true
+      github-token:
+        description: The github token to use for commenting on schema checks
+        required: true
+jobs:
+    check-or-publish:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
+        - name: Install pnpm & node
+          if: ${{ inputs.scope != '' }}
+          uses: ./.github/actions/install-pnpm-and-node
+          with:
+            scope: ${{ inputs['scope'] }}
+        - name: Build schema
+          if: ${{ inputs.scope != '' }}
+          shell: bash
+          run: pnpm run build --filter=${{ inputs.scope }}...
+        - name: Schema Check
+          if: github.event_name == 'pull_request'
+          uses: iansu/apollo-schema-check-action@v2
+          with:
+            title: ${{ inputs.federated-graph-name }}/${{ inputs.graph-name }}
+            graph: ${{ inputs.federated-graph-name }}
+            variant: ${{ inputs.prod-graph-variant-name }}
+            localSchemaFile: ${{ inputs.schema-file-path }}
+            serviceName: ${{ inputs.graph-name }}
+            validationPeriod: P2W
+            key: ${{ secrets.apollo-key }}
+          env:
+            GITHUB_TOKEN: ${{ secrets.github-token }}
+        - uses: danielsinclair/rover-publish@v1
+          if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
+          with:
+            graph: ${{ inputs.federated-graph-name }}
+            federated: true
+            variant: ${{ github.ref == 'refs/heads/main' && inputs.prod-graph-variant-name || inputs.dev-graph-variant-name }}
+            subgraph: ${{ inputs.graph-name }}
+            artifact: ${{ inputs.schema-file-path }}
+            routing_url: ${{ github.ref == 'refs/heads/main' && inputs.prod-graph-url || inputs.dev-graph-url }}
+          env:
+            APOLLO_KEY: ${{ secrets.apollo-key }}

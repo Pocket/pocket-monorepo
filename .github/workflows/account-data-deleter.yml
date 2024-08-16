@@ -72,3 +72,11 @@ jobs:
       codedeploy-group-name-pattern: AccountDataDeleter-{0}-BatchDeleteLambda-Lambda
       function-name-pattern: AccountDataDeleter-{0}-BatchDeleteLambda-Function
     secrets: inherit
+
+  sentry:
+    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/reuse-sentry-release.yml
+    needs: [api, events-lambda, batch-delete-lambda]
+    with:
+      sentry-project: account-data-deleter
+      sentry-environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}

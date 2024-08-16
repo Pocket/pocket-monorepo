@@ -14,15 +14,25 @@ on:
 jobs:
   # Let's test the service against some real life and mocked docker services.
   test-integrations:
-    # Only run this job on a pull request event
     if: github.event_name == 'pull_request'
     # Use our re-usable test integrations workflow which will use our docker compose file
     uses: ./.github/workflows/reuse-test-integrations.yml
     with:
-      # Only run the tests for our service
       scope: list-api
-    # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
+
+  apollo:
+    uses: ./.github/workflows/reuse-apollo-federation.yml
+    with:
+      federated-graph-name: pocket-client-api
+      graph-name: list
+      schema-file-path: servers/list-api/dist/schema-generated.graphql
+      prod-graph-url: https://list-api.readitlater.com
+      dev-graph-url: https://list-api.getpocket.dev
+      scope: list-api
+    secrets:
+      apollo-key: ${{ secrets.APOLLO_CLIENT_API_KEY }}
+      github-token: ${{ secrets.GITHUB_TOKEN }}
 
   # It's infrastructure time, run the infrastructure update commands
   infrastructure:
@@ -30,7 +40,6 @@ jobs:
     with:
       scope: list-api-cdk
       stack-output-path: infrastructure/list-api/cdktf.out/stacks/list-api
-    # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
 
   api:
@@ -43,5 +52,12 @@ jobs:
       sentry-project: list-api
       docker-repo-name-pattern: listapi-{0}-app
       terraform-output: ${{needs.infrastructure.outputs.terraform-output}}
-    # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
+
+  sentry:
+    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/reuse-sentry-release.yml
+    needs: [api]
+    with:
+      sentry-project: list-api
+      sentry-environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}

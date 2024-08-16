@@ -28,6 +28,18 @@ jobs:
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
 
+  apollo:
+    uses: ./.github/workflows/reuse-apollo-federation.yml
+    with:
+      federated-graph-name: pocket-client-api
+      graph-name: user
+      schema-file-path: servers/user-api/schema.graphql
+      prod-graph-url: https://user-api.readitlater.com
+      dev-graph-url: https://user-api.getpocket.dev
+    secrets:
+      apollo-key: ${{ secrets.APOLLO_CLIENT_API_KEY }}
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+
   # It's infrastructure time, run the infrastructure update commands
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
@@ -51,8 +63,11 @@ jobs:
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
 
-  # deploy:
-  #  needs: [infrastructure]
-  #   with:
-  #      terraform-output: ${{ needs.infrastructure.outputs.terraform-output }}
+  sentry:
+    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/reuse-sentry-release.yml
+    needs: [api]
+    with:
+      sentry-project: user-api
+      sentry-environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
   
