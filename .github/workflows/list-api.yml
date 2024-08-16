@@ -10,7 +10,11 @@ on:
       - '.github/actions/**'
       - '.github/workflows/list-api.yml'
       - '.github/workflows/reuse-*.yml'
-
+  push:
+    branches:
+      - main
+      - dev
+    
 jobs:
   # Let's test the service against some real life and mocked docker services.
   test-integrations:
@@ -32,7 +36,6 @@ jobs:
       scope: list-api
     secrets:
       apollo-key: ${{ secrets.APOLLO_CLIENT_API_KEY }}
-      github-token: ${{ secrets.GITHUB_TOKEN }}
 
   # It's infrastructure time, run the infrastructure update commands
   infrastructure:
@@ -61,3 +64,4 @@ jobs:
     with:
       sentry-project: list-api
       sentry-environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+    secrets: inherit

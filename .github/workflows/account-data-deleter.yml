@@ -80,3 +80,4 @@ jobs:
     with:
       sentry-project: account-data-deleter
       sentry-environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+    secrets: inherit

@@ -38,13 +38,18 @@ on:
       apollo-key:
         description: The apollo studio key to use
         required: true
-      github-token:
-        description: The github token to use for commenting on schema checks
-        required: true
 jobs:
     check-or-publish:
       runs-on: ubuntu-latest
       steps:
+        - name: Install rover
+          shell: bash
+          run: |
+            # download and install Rover
+            curl -sSL https://rover.apollo.dev/nix/latest | sh
+
+            # This allows the PATH changes to persist to the next `run` step
+            echo "PATH=$HOME/.rover/bin:$PATH" >> "$GITHUB_ENV"
         - name: Checkout
           uses: actions/checkout@v4
           with:
@@ -58,27 +63,17 @@ jobs:
           if: ${{ inputs.scope != '' }}
           shell: bash
           run: pnpm run build --filter=${{ inputs.scope }}...
-        - name: Schema Check
+        - name: Check Schema
           if: github.event_name == 'pull_request'
-          uses: iansu/apollo-schema-check-action@v2
-          with:
-            title: ${{ inputs.federated-graph-name }}/${{ inputs.graph-name }}
-            graph: ${{ inputs.federated-graph-name }}
-            variant: ${{ inputs.prod-graph-variant-name }}
-            localSchemaFile: ${{ inputs.schema-file-path }}
-            serviceName: ${{ inputs.graph-name }}
-            validationPeriod: P2W
-            key: ${{ secrets.apollo-key }}
+          shell: bash
+          run: |
+            rover subgraph check ${{ inputs.federated-graph-name }}@${{ inputs.prod-graph-variant-name }} --schema  ${{ inputs.schema-file-path }} --name=${{ inputs.graph-name }}
           env:
-            GITHUB_TOKEN: ${{ secrets.github-token }}
-        - uses: danielsinclair/rover-publish@v1
+            APOLLO_KEY: ${{ secrets.apollo-key }}
+        - name: Publish Schema
           if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
-          with:
-            graph: ${{ inputs.federated-graph-name }}
-            federated: true
-            variant: ${{ github.ref == 'refs/heads/main' && inputs.prod-graph-variant-name || inputs.dev-graph-variant-name }}
-            subgraph: ${{ inputs.graph-name }}
-            artifact: ${{ inputs.schema-file-path }}
-            routing_url: ${{ github.ref == 'refs/heads/main' && inputs.prod-graph-url || inputs.dev-graph-url }}
+          shell: bash
+          run: |
+            rover subgraph publish ${{ inputs.federated-graph-name }}@${{ github.ref == 'refs/heads/main' && inputs.prod-graph-variant-name || inputs.dev-graph-variant-name }} --schema ${{ inputs.schema-file-path }} --routing-url ${{ github.ref == 'refs/heads/main' && inputs.prod-graph-url || inputs.dev-graph-url }} --name=${{ inputs.graph-name }}
           env:
             APOLLO_KEY: ${{ secrets.apollo-key }}
