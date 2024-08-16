@@ -15,6 +15,7 @@ on:
       - Braze
       - Client API
       - Feature Flags
+      - FxA Webhook Proxy
     types: [ completed ]
 
 jobs:
