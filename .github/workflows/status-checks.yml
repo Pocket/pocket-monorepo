@@ -26,6 +26,7 @@ on:
       - Shared Snowplow Consumer
       - Shares API
       - Transactional Emails
+      - V3 Proxy API
     types: [ completed ]
 
 jobs:
