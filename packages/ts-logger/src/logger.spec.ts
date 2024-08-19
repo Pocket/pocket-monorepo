@@ -19,7 +19,7 @@ describe('createLogger', () => {
 
   it('Local environment does not write to file', async () => {
     process.env.NODE_ENV = 'development';
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+
     const createLogger = require('./logger').createLogger;
 
     const testLogger = createLogger();
@@ -28,7 +28,7 @@ describe('createLogger', () => {
   });
   it('Test environment writes to files only', async () => {
     process.env.NODE_ENV = 'test';
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+
     const createLogger = require('./logger').createLogger;
 
     const testLogger = createLogger();
@@ -41,7 +41,7 @@ describe('createLogger', () => {
 
   it('Dev environment does not write to file', async () => {
     process.env.NODE_ENV = 'development';
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+
     const createLogger = require('./logger').createLogger;
 
     const testLogger = createLogger();
@@ -52,7 +52,7 @@ describe('createLogger', () => {
   describe('level', () => {
     it('level is LOG_LEVEL when LOG_LEVEL is defined', () => {
       process.env.LOG_LEVEL = 'debug';
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+
       const logger = require('./logger').createLogger();
       expect(logger.level).toEqual('debug');
     });
@@ -65,7 +65,7 @@ describe('createLogger', () => {
 
       it('level is debug when NODE_ENV is development', async () => {
         process.env.NODE_ENV = 'development';
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
+
         const createLogger = require('./logger').createLogger;
 
         const testLogger = createLogger();
@@ -79,7 +79,7 @@ describe('createLogger', () => {
 
       it('level is debug when NODE_ENV is local ', async () => {
         process.env.NODE_ENV = 'local';
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
+
         const createLogger = require('./logger').createLogger;
 
         const testLogger = createLogger();
@@ -90,7 +90,7 @@ describe('createLogger', () => {
 
   it('Non-dev and non-local do not write to file', async () => {
     process.env.NODE_ENV = 'production';
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+
     const createLogger = require('./logger').createLogger;
 
     const testLogger = createLogger();
@@ -105,7 +105,7 @@ describe('createLogger', () => {
     expect(logger.defaultMeta.releaseSha).toBeNull();
 
     process.env.RELEASE_SHA = '12345678910';
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+
     const createLogger = require('./logger').createLogger;
     const testLogger = createLogger();
     testLogger.info('test');
@@ -122,7 +122,7 @@ describe('createLogger', () => {
 
   it('has a release sha when RELEASE_SHA is not null', () => {
     process.env.RELEASE_SHA = '12345678910';
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+
     const createLogger = require('./logger').createLogger;
     const testLogger = createLogger();
     testLogger.info('test');

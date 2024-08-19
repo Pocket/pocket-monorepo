@@ -143,8 +143,8 @@ describe('item', () => {
       query: GET_TWO_SAVED_ITEMS,
       variables,
     });
-    expect(res.body.errors).toBeUndefined;
-    expect(res.body.data).not.toBeUndefined;
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data).not.toBeUndefined();
     const entities = res.body.data._entities;
     expect(entities.length).toEqual(2);
     expect(entities).toEqual(expect.arrayContaining(expected));
@@ -169,8 +169,8 @@ describe('item', () => {
       variables,
     });
 
-    expect(res.body.errors).toBeUndefined;
-    expect(res.body.data).not.toBeUndefined;
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data).not.toBeUndefined();
     const entities = res.body.data._entities;
     expect(entities.length).toEqual(1);
     expect(entities[0]).toEqual(expected);
@@ -185,13 +185,13 @@ describe('item', () => {
       query: GET_SAVED_ITEM,
       variables,
     });
-    expect(res.body.data).not.toBeUndefined;
-    expect(res.body.errors).toBeUndefined;
+    expect(res.body.data).not.toBeUndefined();
+    expect(res.body.errors).toBeUndefined();
     const entities = res.body.data._entities;
     expect(entities.length).toEqual(1);
     expect(entities[0].givenUrl).toEqual(
       'https://www.youtube.com/watch?v=Tpbo25iBvfU',
     );
-    expect(entities[0].savedItem).toBeNull;
+    expect(entities[0].savedItem).toBeNull();
   });
 });

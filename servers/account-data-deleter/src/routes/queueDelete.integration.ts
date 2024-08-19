@@ -150,7 +150,7 @@ describe('enqueueTablesForDeletion', () => {
       });
       for (let i = 0; i < expectedMessages.length; i++) {
         expect(actualMessages[i]).toMatchObject(expectedMessages[i]);
-        expect(actualMessages[i].traceId).not.toBeNull;
+        expect(actualMessages[i].traceId).not.toBeNull();
       }
     });
   });
@@ -236,7 +236,7 @@ describe('enqueueTablesForDeletion', () => {
       });
       for (let i = 0; i < expectedMessages.length; i++) {
         expect(actualMessages[i]).toMatchObject(expectedMessages[i]);
-        expect(actualMessages[i].traceId).not.toBeNull;
+        expect(actualMessages[i].traceId).not.toBeNull();
       }
     });
   });
@@ -376,7 +376,7 @@ describe('enqueueTablesForDeletion', () => {
       for (let i = 0; i < expectedMessages.length; i++) {
         // Stupid timezone
         expect(actualMessages[i]).toMatchObject(expectedMessages[i]);
-        expect(actualMessages[i].traceId).not.toBeNull;
+        expect(actualMessages[i].traceId).not.toBeNull();
       }
     });
   });

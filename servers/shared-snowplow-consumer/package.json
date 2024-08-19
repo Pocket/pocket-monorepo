@@ -36,15 +36,15 @@
   "devDependencies": {
     "@faker-js/faker": "8.4.1",
     "@pocket-tools/eslint-config": "workspace:*",
-    "@snowplow/snowtype": "^0.7.1",
+    "@snowplow/snowtype": "^0.8.2",
     "@types/jest": "29.5.12",
     "@types/node": "^20.16",
     "jest": "29.7.0",
     "nock": "14.0.0-beta.11",
     "nodemon": "3.1.4",
-    "ts-jest": "29.2.3",
+    "ts-jest": "29.2.4",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "typescript": "5.5.3"
+    "typescript": "5.5.4"
   }
 }

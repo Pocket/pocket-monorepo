@@ -202,7 +202,7 @@ function HasItemIdOrUrl<TBase extends ActionSanitizable>(Base: TBase) {
         try {
           new URL(this.input.url);
           this.url = this.input.url;
-        } catch (e) {
+        } catch {
           const error: ArrayFieldError = {
             type: 'array_field',
             path: 'url',

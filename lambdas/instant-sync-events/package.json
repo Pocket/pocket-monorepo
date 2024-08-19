@@ -25,13 +25,13 @@
   "devDependencies": {
     "@aws-sdk/client-sqs": "3.629.0",
     "@pocket-tools/eslint-config": "workspace:*",
-    "@types/aws-lambda": "8.10.141",
+    "@types/aws-lambda": "8.10.143",
     "@types/jest": "29.5.12",
     "@types/node": "^20.16",
     "jest": "29.7.0",
-    "ts-jest": "29.2.3",
+    "ts-jest": "29.2.4",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "typescript": "5.5.3"
+    "typescript": "5.5.4"
   }
 }
