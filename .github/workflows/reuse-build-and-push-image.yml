@@ -98,6 +98,7 @@ jobs:
             docker-repo-name: "${{inputs.development-aws-registry }}/${{ format(inputs.docker-repo-name-pattern, 'dev') }}"
             app-path: ${{inputs.app-path}}
             app-port: ${{inputs.app-port}}
+            context: ${{inputs.context}}
             sentry-project: ${{inputs.sentry-project}}
             sentry-org: ${{inputs.sentry-org}}
             sentry-token: ${{secrets.SENTRY_BEARER}}
@@ -107,6 +108,7 @@ jobs:
             push: true
         - name: Code Deploy Docker Image
           uses: ./.github/actions/ecs-codedeploy
+          if: fromJSON(inputs.terraform-output).ecs-task-containerName.value != ''
           with:
             docker-image-name: ${{steps.dev-docker-build.outputs.docker-image-name}}
             terraform-output: ${{ inputs.terraform-output }}
@@ -132,6 +134,7 @@ jobs:
             docker-repo-name: "${{inputs.production-aws-registry }}/${{ format(inputs.docker-repo-name-pattern, 'prod') }}"
             app-path: ${{inputs.app-path}}
             app-port: ${{inputs.app-port}}
+            context: ${{inputs.context}}
             sentry-project: ${{inputs.sentry-project}}
             sentry-org: ${{inputs.sentry-org}}
             sentry-token: ${{secrets.SENTRY_BEARER}}
@@ -141,6 +144,7 @@ jobs:
             push: true
         - name: Code Deploy Docker Image
           uses: ./.github/actions/ecs-codedeploy
+          if: fromJSON(inputs.terraform-output).ecs-task-containerName.value != ''
           with:
             docker-image-name: ${{steps.prod-docker-build.outputs.docker-image-name}}
             terraform-output: ${{ inputs.terraform-output }}

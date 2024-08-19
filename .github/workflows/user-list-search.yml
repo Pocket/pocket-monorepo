@@ -117,7 +117,7 @@ jobs:
       s3-key: item-update-backfill-${{ github.sha }}.zip
       codedeploy-app-name-pattern: UserListSearch-{0}-ItemUpdateBackfill
       codedeploy-group-name-pattern: UserListSearch-{0}-ItemUpdateBackfill
-      function-name-pattern: UserListSearch-{0}-ItemUpdateBackfills
+      function-name-pattern: UserListSearch-{0}-ItemUpdateBackfill
     secrets: inherit
 
   user-list-import-lambda:
