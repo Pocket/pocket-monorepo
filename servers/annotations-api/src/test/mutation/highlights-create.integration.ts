@@ -287,7 +287,7 @@ describe('Highlights creation', () => {
         .post(graphQLUrl)
         .set(headers)
         .send({ query: print(CREATE_HIGHLIGHTS), variables });
-      expect(res.body.errors).not.toBeUndefined;
+      expect(res.body.errors).not.toBeUndefined();
       expect(res.body.errors.length).toEqual(1);
       expect(res.body.errors[0].extensions?.code).toEqual('BAD_USER_INPUT');
       expect(res.body.errors[0].message).toContain('Too many highlights');
@@ -313,7 +313,7 @@ describe('Highlights creation', () => {
         .post(graphQLUrl)
         .set(headers)
         .send({ query: print(CREATE_HIGHLIGHTS), variables });
-      expect(res.body.errors).not.toBeUndefined;
+      expect(res.body.errors).not.toBeUndefined();
       expect(res.body.errors.length).toEqual(1);
       expect(res.body.errors[0].extensions?.code).toEqual('BAD_USER_INPUT');
       expect(res.body.errors[0].message).toContain('Too many highlights');
@@ -333,7 +333,7 @@ describe('Highlights creation', () => {
         .post(graphQLUrl)
         .set(headers)
         .send({ query: print(CREATE_HIGHLIGHTS), variables });
-      expect(res.body.errors).toBeUndefined;
+      expect(res.body.errors).toBeUndefined();
       expect(res.body.data).toBeTruthy();
       expect(res.body.data?.createSavedItemHighlights.length).toEqual(1);
     });

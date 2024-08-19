@@ -36,7 +36,7 @@ export async function deleteUsers(dynamoUtils: BatchDeleteDyanmoClient) {
     try {
       const deletedId = await deleteUserMutationCaller(userId.toString());
       deletedUserIds.push(parseInt(deletedId));
-    } catch (e) {
+    } catch {
       Sentry.captureException({ message: `unable to delete userId ${userId}` });
       console.log(`unable to delete userId ${userId}`);
     }

@@ -40,12 +40,8 @@ export function mockUnleash(
         return compiled;
       }, {});
     }
-    stop(): void {
-      true;
-    }
-    async start(): Promise<void> {
-      true;
-    }
+    stop(): void {}
+    async start(): Promise<void> {}
     getToggles(): FeatureInterface[] {
       return this.data;
     }

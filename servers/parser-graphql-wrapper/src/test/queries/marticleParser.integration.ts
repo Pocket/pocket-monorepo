@@ -149,7 +149,7 @@ describe('Marticle integration ', () => {
       },
     ];
 
-    expect(res.body.data).not.toBeUndefined;
+    expect(res.body.data).not.toBeUndefined();
     const marticle = res.body.data.itemByUrl.marticle;
     expect(marticle.length).toBeGreaterThan(0);
     expect(marticle).toStrictEqual(expected);
@@ -197,7 +197,7 @@ describe('Marticle integration ', () => {
     const res = await request(app)
       .post(graphQLUrl)
       .send({ query: print(GET_ITEMS_BY_URL), variables });
-    expect(res.body.data).not.toBeUndefined;
+    expect(res.body.data).not.toBeUndefined();
     const marticle = res.body.data.itemByUrl.marticle;
     expect(marticle.length).toBeGreaterThan(0);
     expect(marticle).toStrictEqual([
@@ -264,7 +264,7 @@ describe('Marticle integration ', () => {
     const res = await request(app)
       .post(graphQLUrl)
       .send({ query: print(GET_ITEMS_BY_URL), variables });
-    expect(res.body.data).not.toBeUndefined;
+    expect(res.body.data).not.toBeUndefined();
     const marticle = res.body.data.itemByUrl.marticle;
     expect(marticle.length).toBeGreaterThan(0);
     expect(marticle).toStrictEqual([
@@ -320,7 +320,7 @@ describe('Marticle integration ', () => {
       .post(graphQLUrl)
       .send({ query: print(GET_ITEMS_BY_URL), variables });
 
-    expect(res.body.data).not.toBeUndefined;
+    expect(res.body.data).not.toBeUndefined();
     const marticle = res.body.data.itemByUrl.marticle;
     expect(marticle).toStrictEqual([]);
   });
@@ -359,7 +359,7 @@ describe('Marticle integration ', () => {
     const res = await request(app)
       .post(graphQLUrl)
       .send({ query: print(GET_ITEMS_BY_URL), variables });
-    expect(res.body.data).not.toBeUndefined;
+    expect(res.body.data).not.toBeUndefined();
     const marticle = res.body.data.itemByUrl.marticle;
     expect(marticle.length).toBeGreaterThan(0);
     expect(marticle).toStrictEqual([

@@ -206,7 +206,7 @@ export const resolvers: Resolvers = {
       try {
         const item = await dataSources.parserAPI.getItemData(url);
         return item.timeToRead || null;
-      } catch (e) {
+      } catch {
         return null;
       }
     },

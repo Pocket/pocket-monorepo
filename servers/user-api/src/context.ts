@@ -130,7 +130,7 @@ class ContextManager implements IContext {
           this.fxaUserId,
         );
         this._userId = userDataService.userId;
-      } catch (e) {
+      } catch {
         serverLogger.error('Could not find user with FxA userId', {
           fxaUserId: this.fxaUserId,
         });
