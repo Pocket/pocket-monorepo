@@ -17,5 +17,3 @@ startServer(config.app.port).then(async () => {
   new BatchDeleteHandler(new EventEmitter());
   serverLogger.info(`🚀 Server ready at http://localhost:${config.app.port}`);
 });
-
-

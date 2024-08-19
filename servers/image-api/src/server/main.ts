@@ -14,4 +14,3 @@ startServer(config.app.serverPort).then(() => {
     `🚀 Public server ready at http://localhost:${config.app.serverPort}`,
   );
 });
-
