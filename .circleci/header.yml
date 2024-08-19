@@ -2,9 +2,9 @@
 # Anything in this file will be added to all the yaml files, before CircleCI merges them.
 # This is because yaml files need to be valid before merge and that means things like anchors must be defined in each file.
 
-node_image: &node_image cimg/node:20.15
-node_version: &node_version 20.15
-base_image: &base_image cimg/base:2024.07
+node_image: &node_image cimg/node:20.16
+node_version: &node_version 20.16
+base_image: &base_image cimg/base:2024.08
 
 not_main: &not_main
   filters:
