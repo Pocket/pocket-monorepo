@@ -7,6 +7,7 @@ import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 import request from 'supertest';
 import { mockParserGetItemIdRequest } from '../../../utils/parserMocks';
+import { cleanAll, restore } from 'nock';
 
 describe('savedItemFavorite mutation', function () {
   const writeDb = writeClient();
@@ -64,6 +65,8 @@ describe('savedItemFavorite mutation', function () {
     await server.stop();
     await writeDb.destroy();
     await readDb.destroy();
+    restore();
+    cleanAll();
     jest.restoreAllMocks();
   });
 

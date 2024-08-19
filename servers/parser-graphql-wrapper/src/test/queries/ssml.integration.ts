@@ -1,4 +1,4 @@
-import { cleanAll } from 'nock';
+import { cleanAll, restore } from 'nock';
 import { getRedis } from '../../cache';
 import { startServer } from '../../apollo/server';
 import { ApolloServer } from '@apollo/server';
@@ -32,6 +32,7 @@ describe('SSML integration ', () => {
     await server.stop();
     await getRedis().disconnect();
     cleanAll();
+    restore();
     await readitlabConn().destroy();
     await sharesConn().destroy();
     jest.restoreAllMocks();

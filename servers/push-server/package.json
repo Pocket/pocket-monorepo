@@ -37,7 +37,7 @@
   "devDependencies": {
     "@pocket-tools/eslint-config": "workspace:*",
     "@types/jest": "29.5.12",
-    "@types/node": "^20.14.11",
+    "@types/node": "^20.16",
     "@types/node-gcm": "^1.0.5",
     "jest": "29.7.0",
     "nodemon": "3.1.4",

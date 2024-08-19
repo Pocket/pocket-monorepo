@@ -1,13 +1,18 @@
 import { ParserCaller } from './parserCaller';
-import nock from 'nock';
 import config from '../config';
 import {
   mockParserGetItemRequest,
   mockParserGetItemIdRequest,
 } from '../test/utils/parserMocks';
+import nock, { cleanAll, restore } from 'nock';
 
 describe('ParserCallerTest', function () {
   const urlToParse = 'https://igiveyou.a.test';
+
+  afterAll(() => {
+    cleanAll();
+    restore();
+  });
 
   it('should retrieve item from parser service', async () => {
     mockParserGetItemRequest(urlToParse, {

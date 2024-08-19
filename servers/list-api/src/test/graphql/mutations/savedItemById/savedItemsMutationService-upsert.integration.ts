@@ -1,5 +1,4 @@
 import { readClient, writeClient } from '../../../../database/client';
-import nock, { cleanAll } from 'nock';
 import config from '../../../../config';
 import {
   EventType,
@@ -23,6 +22,7 @@ import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import type { Knex } from 'knex';
+import nock, { cleanAll, restore } from 'nock';
 
 function mockParserGetItemRequest(urlToParse: string, data: any) {
   nock(config.parserDomain)
@@ -84,11 +84,12 @@ describe('UpsertSavedItem Mutation', () => {
   });
 
   afterAll(async () => {
+    restore();
+    cleanAll();
     await writeDb.destroy();
     await readDb.destroy();
     jest.useRealTimers();
     jest.restoreAllMocks();
-    cleanAll();
     await server.stop();
   });
 

@@ -14,6 +14,7 @@ import {
   nockResponseForParser,
   nockThreeStandardParserResponses,
 } from '../utils/parserResponse';
+import { cleanAll, restore } from 'nock';
 import { BoolStringParam } from '../../datasources/ParserAPI';
 import Keyv from 'keyv';
 import { conn as sharesInit } from '../../databases/readitlaShares';
@@ -35,6 +36,8 @@ describe('refresh mutation', () => {
     await readitlbInit().destroy();
     await sharesInit().destroy();
     cache.disconnect();
+    restore();
+    cleanAll();
   });
 
   beforeAll(async () => {

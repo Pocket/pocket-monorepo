@@ -8,6 +8,7 @@ import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 import request from 'supertest';
 import { EventType } from '../../../../businessEvents';
+import { restore, cleanAll } from 'nock';
 
 describe('savedItemTag mutation', () => {
   const writeDb = writeClient();
@@ -92,6 +93,8 @@ describe('savedItemTag mutation', () => {
     await server.stop();
     await writeDb.destroy();
     await readDb.destroy();
+    restore();
+    cleanAll();
     jest.restoreAllMocks();
   });
   it('should add tags to a SavedItem with no tags', async () => {

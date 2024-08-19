@@ -6,7 +6,7 @@
  * - CircleCI config - Create a job to the function test npm script from above
  */
 
-import nock, { cleanAll } from 'nock';
+import nock, { cleanAll, restore } from 'nock';
 import { getRedis } from '../../cache';
 import { VideoType, Videoness } from '../../__generated__/resolvers-types';
 import { startServer } from '../../apollo/server';
@@ -104,6 +104,7 @@ describe('Marticle integration ', () => {
     await server.stop();
     await getRedis().disconnect();
     cleanAll();
+    restore();
   });
 
   it('should return marticle text for the given url', async () => {

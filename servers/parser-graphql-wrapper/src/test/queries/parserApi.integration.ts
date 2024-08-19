@@ -3,7 +3,7 @@ import { ApolloServer } from '@apollo/server';
 import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 import request from 'supertest';
-import { cleanAll } from 'nock';
+import { cleanAll, restore } from 'nock';
 import { getRedis } from '../../cache';
 import { IContext } from '../../apollo/context';
 import Keyv from 'keyv';
@@ -46,6 +46,7 @@ describe('ParserAPI DataSource', () => {
   afterAll(async () => {
     await cache.disconnect();
     await server.stop();
+    restore();
   });
   it('should retrieve item from cache if it exists and is not expired', async () => {
     // Nock a new article to ensure no refreshing
