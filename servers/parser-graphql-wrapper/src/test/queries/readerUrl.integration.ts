@@ -6,6 +6,7 @@ import { gql } from 'graphql-tag';
 import request from 'supertest';
 import { Application } from 'express';
 import { nockResponseForParser } from '../utils/parserResponse';
+import { restore, cleanAll } from 'nock';
 import { getRedis } from '../../cache';
 import { ParserResponse } from '../../datasources/ParserAPITypes';
 import { Kysely } from 'kysely';
@@ -56,6 +57,8 @@ describe('referenceResolver', () => {
   afterAll(async () => {
     await server.stop();
     await readitlabDB.destroy();
+    restore();
+    cleanAll();
   });
 
   it('should return resolved item for reader url', async () => {

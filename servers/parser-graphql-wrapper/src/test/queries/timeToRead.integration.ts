@@ -8,6 +8,7 @@ import { Application } from 'express';
 import { nockResponseForParser } from '../utils/parserResponse';
 import { getRedis } from '../../cache';
 import { ParserResponse } from '../../datasources/ParserAPITypes';
+import { cleanAll, restore } from 'nock';
 
 describe('timeToRead', () => {
   const testUrl = 'https://someurl.com';
@@ -42,6 +43,8 @@ describe('timeToRead', () => {
 
   afterAll(async () => {
     await server.stop();
+    cleanAll();
+    restore();
   });
 
   it('should return timeToRead for a CorpusItem when parser item has time_to_read property', async () => {
