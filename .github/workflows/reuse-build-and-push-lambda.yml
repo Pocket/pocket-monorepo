@@ -60,7 +60,6 @@ jobs:
             scope: ${{inputs['scope']}}
             s3-key: ${{ inputs.s3-key }}
 
-# TODO: These need to request AWS ECR Credentials to push the Docker Image
     development:
       if: github.ref == 'refs/heads/dev'
       runs-on: ubuntu-latest
@@ -71,8 +70,7 @@ jobs:
           uses: aws-actions/configure-aws-credentials@v4
           with:
             aws-region: us-east-1
-            # TODO: Change this to the right roles when setup
-            role-to-assume: arn:aws:iam::410318598490:role/GithubTesting-Daniel       
+            role-to-assume: arn:aws:iam::410318598490:role/PocketGHARole
         - name: Build Lambda
           uses: ./.github/actions/build-lambda
           with:
@@ -101,8 +99,7 @@ jobs:
           uses: aws-actions/configure-aws-credentials@v4
           with:
             aws-region: us-east-1
-            # TODO: Change this to the right roles when setup
-            role-to-assume: arn:aws:iam::410318598490:role/GithubTesting-Daniel
+            role-to-assume: arn:aws:iam::996905175585:role/PocketGHARole
         - name: Build Lambda
           uses: ./.github/actions/build-lambda
           with:

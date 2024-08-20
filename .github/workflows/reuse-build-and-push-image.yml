@@ -106,8 +106,7 @@ jobs:
           uses: aws-actions/configure-aws-credentials@v4
           with:
             aws-region: us-east-1
-            # TODO: Change this to the right roles when setup
-            role-to-assume: arn:aws:iam::410318598490:role/GithubTesting-Daniel
+            role-to-assume: arn:aws:iam::410318598490:role/PocketGHARole
         - name: Build and Push Development Docker Image
           id: dev-docker-build
           uses: ./.github/actions/containerize
@@ -143,13 +142,11 @@ jobs:
           uses: actions/download-artifact@v4
           with:
               name: ${{inputs.archive-download-name}}
-        # Get the AWS credentials
         - name: AWS Credentials
           uses: aws-actions/configure-aws-credentials@v4
           with:
             aws-region: us-east-1
-            # TODO: Change this to the right roles when setup
-            role-to-assume: arn:aws:iam::410318598490:role/GithubTesting-Daniel
+            role-to-assume: arn:aws:iam::996905175585:role/PocketGHARole
         - name: Build and Push Production Docker Image
           id: prod-docker-build
           uses: ./.github/actions/containerize
