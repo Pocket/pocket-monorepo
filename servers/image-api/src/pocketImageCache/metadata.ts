@@ -25,7 +25,7 @@ export const getImageMetadata = async (url: string): Promise<Image> => {
       width: response.data.thumbor.source.width,
       height: response.data.thumbor.source.height,
     };
-  } catch (error: any) {
+  } catch {
     console.log('Error requesting metadata', { metadata: metadataUrl });
     throw new Error('Could not get image metadata');
   }

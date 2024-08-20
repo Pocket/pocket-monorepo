@@ -21,6 +21,8 @@ export default tseslint.config(
       ],
       // allows 'any' typehint
       '@typescript-eslint/no-explicit-any': 0,
+      // allows shorthands
+      '@typescript-eslint/no-unused-expressions': 0,
     },
   },
   {

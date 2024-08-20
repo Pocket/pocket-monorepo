@@ -1,6 +1,6 @@
 import { config } from '../config';
 import { deleteUserMutationCaller, userApiCalls } from './deleteMutation';
-import nock = require('nock');
+import nock from 'nock';
 
 describe('deleteUser mutation test', () => {
   const testUserId = '1001';

@@ -47,11 +47,8 @@ runs:
         restore-keys: |
           ${{ runner.os }}-tfenv-
 
-  # TODO: These need to request AWS credentials to run terraform
-  # It may be best to not do AWS credentials here and do it in the calling workflow.. TBD
-
     - name: Install pnpm & node
-      uses: ./.github/actions/install-pnpm-and-node
+      uses: pocket/pocket-monorepo/.github/actions/install-pnpm-and-node@github-actions
       with:
         scope: ${{ inputs['scope'] }}
 
@@ -86,6 +83,7 @@ runs:
       env:
         TERRAFORM_TOKEN: ${{ inputs.pagerduty-token }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
+        PAGERDUTY_TOKEN: ${{ inputs.pagerduty-token }}
       run: |
         cd ${{ inputs.stack-output-path }}
         if [ "${{ inputs.behavior }}" = "apply" ]; then

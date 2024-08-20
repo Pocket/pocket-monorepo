@@ -154,7 +154,7 @@ describe('isoStringScalar ApolloServer usage', () => {
       expect(result.data.somethingDeleted.deletedAt).toBe(isoUTCDateStr);
       expect(result.data.somethingDeleted.createdAt).toBe(isoUTCDateStr);
       expect(result.data.somethingDeleted.id).toBe('2');
-      expect(result.errors).toBeUndefined;
+      expect(result.errors).toBeUndefined();
     });
     it('valid null in, valid response out', async () => {
       const response = await server.executeOperation({
@@ -165,7 +165,7 @@ describe('isoStringScalar ApolloServer usage', () => {
       expect(result.data.somethingDeleted.deletedAt).toBe(null);
       expect(result.data.somethingDeleted.createdAt).toBe(isoUTCDateStr);
       expect(result.data.somethingDeleted.id).toBe('1');
-      expect(result.errors).toBeUndefined;
+      expect(result.errors).toBeUndefined();
     });
     it('invalid date format in, error out', async () => {
       const response = await server.executeOperation({
@@ -221,7 +221,7 @@ describe('isoStringScalar ApolloServer usage', () => {
       expect(result.data.somethingDeleted.deletedAt).toBe(isoUTCDateStr);
       expect(result.data.somethingDeleted.createdAt).toBe(isoUTCDateStr);
       expect(result.data.somethingDeleted.id).toBe('2');
-      expect(result.errors).toBeUndefined;
+      expect(result.errors).toBeUndefined();
     });
     it('valid null in, valid response out', async () => {
       const response = await server.executeOperation({
@@ -239,7 +239,7 @@ describe('isoStringScalar ApolloServer usage', () => {
       expect(result.data.somethingDeleted.deletedAt).toBe(null);
       expect(result.data.somethingDeleted.createdAt).toBe(isoUTCDateStr);
       expect(result.data.somethingDeleted.id).toBe('1');
-      expect(result.errors).toBeUndefined;
+      expect(result.errors).toBeUndefined();
     });
     it('invalid date format in, error out', async () => {
       const response = await server.executeOperation({

@@ -84,6 +84,7 @@ runs:
       env:
         TERRAFORM_TOKEN: ${{ inputs.pagerduty-token }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
+        PAGERDUTY_TOKEN: ${{ inputs.pagerduty-token }}
       run: |
         cd ${{ inputs.stack-output-path }}
         if [ "${{ inputs.behavior }}" = "apply" ]; then

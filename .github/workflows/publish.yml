@@ -28,7 +28,7 @@ jobs:
           fetch-depth: 2
 
       - name: Install pnpm & node
-        uses: ./.github/actions/install-pnpm-and-node
+        uses: pocket/pocket-monorepo/.github/actions/install-pnpm-and-node@github-actions
 
       - name: Semantic Release
         run: pnpm run semantic-release
