@@ -5,49 +5,19 @@
 # We also use this because re-usable workflows can not be targeted for Github Required Status Checks as of 8/15/2024 
 name: Status Checks
 on:
-  workflow_run:
-    workflows: 
-      - Pull Request
-      - User API
-      - List API
-      - Account Delete Monitor
-      - Annotations API
-      - Braze
-      - Client API
-      - Feature Flags
-      - FxA Webhook Proxy
-      - Image API
-      - Instant Sync Events
-      - Parser GraphQL Wrapper
-      - Pocket Event Bridge
-      - Push Server
-      - Sendgrid Data
-      - Shareable Lists API
-      - Shared Snowplow Consumer
-      - Shares API
-      - Transactional Emails
-      - V3 Proxy API
-      - User List Search
-    types: [ completed ]
+  pull_request:
 
 jobs:
   status-check:
     runs-on: ubuntu-latest
-
+    if: always()
     steps:
-      - uses: actions/checkout@v2
-      - uses: ahmadnassri/action-workflow-run-wait@v1
-
-  # Note: If the workflow_run trigger does not work out, this can be used instead with a pull_request event to trigger a long polling job.
-  # status-check:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Wait for workflows
-  #       id: wait
-  #       uses: smartcontractkit/chainlink-github-actions/utils/wait-for-workflows@main
-  #       with:
-  #         max-timeout: "900"
-  #         polling-interval: "15"
-  #         exclude-workflow-names: ""
-  #         exclude-workflow-ids: ""
-  #         github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Wait for workflows
+        id: wait
+        uses: smartcontractkit/chainlink-github-actions/utils/wait-for-workflows@main
+        with:
+          max-timeout: "900"
+          polling-interval: "15"
+          exclude-workflow-names: ""
+          exclude-workflow-ids: ""
+          github-token: ${{ secrets.GITHUB_TOKEN }}
