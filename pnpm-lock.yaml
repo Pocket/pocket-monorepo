@@ -940,8 +940,8 @@ importers:
   lambdas/account-data-deleter-events:
     dependencies:
       '@aws-sdk/client-lambda':
-        specifier: 3.634.0
-        version: 3.634.0
+        specifier: 3.632.0
+        version: 3.632.0
       '@sentry/aws-serverless':
         specifier: 8.26.0
         version: 8.26.0(@opentelemetry/api@1.9.0)
@@ -2665,8 +2665,8 @@ importers:
         specifier: 2.8.4
         version: 2.8.4(graphql@16.8.1)
       '@aws-sdk/client-eventbridge':
-        specifier: 3.633.0
-        version: 3.633.0
+        specifier: 3.632.0
+        version: 3.632.0
       '@aws-sdk/client-kinesis':
         specifier: 3.632.0
         version: 3.632.0
@@ -3058,8 +3058,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0
       '@aws-sdk/client-eventbridge':
-        specifier: 3.633.0
-        version: 3.633.0
+        specifier: 3.632.0
+        version: 3.632.0
       '@keyv/redis':
         specifier: 2.8.5
         version: 2.8.5
@@ -3246,8 +3246,8 @@ importers:
         specifier: 3.632.0
         version: 3.632.0
       '@aws-sdk/client-eventbridge':
-        specifier: 3.633.0
-        version: 3.633.0
+        specifier: 3.632.0
+        version: 3.632.0
       '@aws-sdk/lib-dynamodb':
         specifier: 3.632.0
         version: 3.632.0(@aws-sdk/client-dynamodb@3.632.0)
@@ -3352,8 +3352,8 @@ importers:
         specifier: 2.8.4
         version: 2.8.4(graphql@16.8.1)
       '@aws-sdk/client-eventbridge':
-        specifier: 3.633.0
-        version: 3.633.0
+        specifier: 3.632.0
+        version: 3.632.0
       '@pocket-tools/apollo-utils':
         specifier: workspace:*
         version: link:../../packages/apollo-utils
@@ -3449,8 +3449,8 @@ importers:
         specifier: 2.8.4
         version: 2.8.4(graphql@16.8.1)
       '@aws-sdk/client-eventbridge':
-        specifier: 3.633.0
-        version: 3.633.0
+        specifier: 3.632.0
+        version: 3.632.0
       '@aws-sdk/client-sqs':
         specifier: 3.632.0
         version: 3.632.0
@@ -3877,8 +3877,8 @@ packages:
     resolution: {integrity: sha512-Y7u/B/lyLdLZBrBSXjYZviyck0e3dZLL/Va6HIShNlDG8FyWuArefWr57/bu9Q8smdqpEduldprSRSWI7MPykg==}
     engines: {node: '>=16.0.0'}
 
-  '@aws-sdk/client-eventbridge@3.633.0':
-    resolution: {integrity: sha512-IqBaTKvOxcgMx7cU2tVMTXhehcl/M5Lkl9pVKyS8yu2OH6Fa/C9s7Hk5LArERX9+qrPG4Ro3KNMQ3+rLAXV8tA==}
+  '@aws-sdk/client-eventbridge@3.632.0':
+    resolution: {integrity: sha512-G/0TXGgNFKcKLWI83w9v85ORrKpL3+5QKolruNA7qTX0XmMejO82+lkgZ7woEwP9PGMwS73mQli1ltrt5aqHTQ==}
     engines: {node: '>=16.0.0'}
 
   '@aws-sdk/client-firehose@3.632.0':
@@ -3889,8 +3889,8 @@ packages:
     resolution: {integrity: sha512-4CVhckeqvpWKATFwKdwysbnaJY9e9+zmJnnH8fQqqfOqijoH2KNkygPCFoiRKwYl+UHl99KDu1Vt8+/3M490Ug==}
     engines: {node: '>=16.0.0'}
 
-  '@aws-sdk/client-lambda@3.634.0':
-    resolution: {integrity: sha512-usQhHRkJ9etWUIDusS2DK/UP1PlEP1XoeXJpnMDTTQGT2XPMtWlLaa5OYOrVqUiZbVE3FJNCS7K2ReIex/JciQ==}
+  '@aws-sdk/client-lambda@3.632.0':
+    resolution: {integrity: sha512-vF4KRuHGr6EfW+dssm56S6b+jAa8dKqdWduHNms1TQFah0iOkjc9Dpo4p4j6bobZcuricGko/OZy9ynb1Dwldg==}
     engines: {node: '>=16.0.0'}
 
   '@aws-sdk/client-secrets-manager@3.632.0':
@@ -3981,8 +3981,8 @@ packages:
     resolution: {integrity: sha512-nh91S7aGK3e/o1ck64sA/CyoFw+gAYj2BDOnoNa6ouyCrVJED96ZXWbhye/fz9SgmNUZR2g7GdVpiLpMKZoI5w==}
     engines: {node: '>=16.0.0'}
 
-  '@aws-sdk/middleware-sdk-s3@3.633.0':
-    resolution: {integrity: sha512-7jjmWVw28wIHOdrHyTCvwKr1EYGrZI13DviwAOwRC0y9dB8gGCdRiA4fNczripUBxolCCE9mpqLrqy5pXtTzvA==}
+  '@aws-sdk/middleware-sdk-s3@3.629.0':
+    resolution: {integrity: sha512-FRXLcnPWXBoq/T9mnGnrpqhrSKNSm22rqJ0L7P14KESmbGuwhF/7ELYYxXIpgnIpb/CIUVmIU5EE8lsW1VTe8A==}
     engines: {node: '>=16.0.0'}
 
   '@aws-sdk/middleware-sdk-sqs@3.622.0':
@@ -3997,8 +3997,8 @@ packages:
     resolution: {integrity: sha512-vDCeMXvic/LU0KFIUjpC3RiSTIkkvESsEfbVHiHH0YINfl8HnEqR5rj+L8+phsCeVg2+LmYwYxd5NRz4PHxt5g==}
     engines: {node: '>=16.0.0'}
 
-  '@aws-sdk/signature-v4-multi-region@3.633.0':
-    resolution: {integrity: sha512-96F7Mx4lybMZdE0TTEkw6EKpeB0hxqp3J8fUJasesekTnO7jsklc47GHL5R3whyS/L4/JaPazm0Pi2DEH3kw1w==}
+  '@aws-sdk/signature-v4-multi-region@3.629.0':
+    resolution: {integrity: sha512-GPX6dnmuLGDFp7CsGqGCzleEoNyr9ekgOzSBtcL5nKX++NruxO7f1QzJAbcYvz0gdKvz958UO0EKsGM6hnkTSg==}
     engines: {node: '>=16.0.0'}
 
   '@aws-sdk/token-providers@3.614.0':
@@ -13923,7 +13923,7 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@aws-sdk/client-eventbridge@3.633.0':
+  '@aws-sdk/client-eventbridge@3.632.0':
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
@@ -13936,7 +13936,7 @@ snapshots:
       '@aws-sdk/middleware-recursion-detection': 3.620.0
       '@aws-sdk/middleware-user-agent': 3.632.0
       '@aws-sdk/region-config-resolver': 3.614.0
-      '@aws-sdk/signature-v4-multi-region': 3.633.0
+      '@aws-sdk/signature-v4-multi-region': 3.629.0
       '@aws-sdk/types': 3.609.0
       '@aws-sdk/util-endpoints': 3.632.0
       '@aws-sdk/util-user-agent-browser': 3.609.0
@@ -14066,7 +14066,7 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@aws-sdk/client-lambda@3.634.0':
+  '@aws-sdk/client-lambda@3.632.0':
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
@@ -14534,7 +14534,7 @@ snapshots:
       '@smithy/types': 3.3.0
       tslib: 2.6.3
 
-  '@aws-sdk/middleware-sdk-s3@3.633.0':
+  '@aws-sdk/middleware-sdk-s3@3.629.0':
     dependencies:
       '@aws-sdk/core': 3.629.0
       '@aws-sdk/types': 3.609.0
@@ -14577,9 +14577,9 @@ snapshots:
       '@smithy/util-middleware': 3.0.3
       tslib: 2.6.3
 
-  '@aws-sdk/signature-v4-multi-region@3.633.0':
+  '@aws-sdk/signature-v4-multi-region@3.629.0':
     dependencies:
-      '@aws-sdk/middleware-sdk-s3': 3.633.0
+      '@aws-sdk/middleware-sdk-s3': 3.629.0
       '@aws-sdk/types': 3.609.0
       '@smithy/protocol-http': 4.1.0
       '@smithy/signature-v4': 4.1.0
