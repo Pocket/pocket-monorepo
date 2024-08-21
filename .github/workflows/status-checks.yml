@@ -8,16 +8,12 @@ on:
   pull_request:
 
 jobs:
-  status-check:
+  enforce-all-checks:
     runs-on: ubuntu-latest
-    if: always()
+    permissions:
+      checks: read
     steps:
-      - name: Wait for workflows
-        id: wait
-        uses: smartcontractkit/chainlink-github-actions/utils/wait-for-workflows@main
+      - name: GitHub Checks
+        uses: poseidon/wait-for-status-checks@v0.4.1
         with:
-          max-timeout: "900"
-          polling-interval: "15"
-          exclude-workflow-names: ""
-          exclude-workflow-ids: ""
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
