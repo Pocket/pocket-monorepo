@@ -18,7 +18,7 @@
         "@aws-sdk/client-s3",
         "@aws-sdk/**"
       ],
-      "pinVersion": "3.629.0",
+      "pinVersion": "3.633.0",
       "label": "AWS SDK Dependencies should all have the same version (uses a specifc package as the first one for Renovate to latch to)"
     },
     {
