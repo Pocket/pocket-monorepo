@@ -13,7 +13,14 @@ on:
     branches:
       - main
       - dev
-
+    paths:
+      - 'infrastructure/instant-sync-events/**'
+      - 'packages/**'
+      - 'lambdas/instant-sync-events/**'
+      - 'pnpm-lock.yaml'
+      - '.github/actions/**'
+      - '.github/workflows/instant-sync-events.yml'
+      - '.github/workflows/reuse-*.yml'
 jobs:
 
   infrastructure:

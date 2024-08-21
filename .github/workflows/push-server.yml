@@ -6,6 +6,7 @@ on:
       - 'packages/**'
       - 'servers/push-server/**'
       - 'pnpm-lock.yaml'
+      - 'Dockerfile'
       - '.github/actions/**'
       - '.github/workflows/push-server.yml'
       - '.github/workflows/reuse-*.yml'
@@ -13,7 +14,15 @@ on:
     branches:
       - main
       - dev
-    
+    paths:
+      - 'infrastructure/push-server/**'
+      - 'packages/**'
+      - 'servers/push-server/**'
+      - 'pnpm-lock.yaml'
+      - 'Dockerfile'
+      - '.github/actions/**'
+      - '.github/workflows/push-server.yml'
+      - '.github/workflows/reuse-*.yml'    
 jobs:
   test-integrations:
     if: github.event_name == 'pull_request'

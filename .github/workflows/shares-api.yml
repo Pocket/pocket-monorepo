@@ -4,16 +4,26 @@ on:
     paths:
       - 'infrastructure/shares-api/**'
       - 'packages/**'
-      - 'servers/list-api/**'
+      - 'servers/shares-api/**'
       - 'pnpm-lock.yaml'
+      - 'Dockerfile'
       - '.github/actions/**'
-      - '.github/workflows/list-api.yml'
+      - '.github/workflows/shares-api.yml'
       - '.github/workflows/reuse-*.yml'
   push:
     branches:
       - main
       - dev
-    
+    paths:
+      - 'infrastructure/shares-api/**'
+      - 'packages/**'
+      - 'servers/shares-api/**'
+      - 'pnpm-lock.yaml'
+      - 'Dockerfile'
+      - '.github/actions/**'
+      - '.github/workflows/shares-api.yml'
+      - '.github/workflows/reuse-*.yml'
+      
 jobs:
   test-integrations:
     if: github.event_name == 'pull_request'

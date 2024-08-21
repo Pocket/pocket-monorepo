@@ -14,7 +14,15 @@ on:
     branches:
       - main
       - dev
-
+    paths:
+      - 'infrastructure/fxa-webhook-proxy/**'
+      - 'packages/**'
+      - 'lambdas/fxa-webhook-proxy-gateway/**'
+      - 'lambdas/fxa-webhook-proxy-sqs/**'
+      - 'pnpm-lock.yaml'
+      - '.github/actions/**'
+      - '.github/workflows/fxa-webhook-proxy.yml'
+      - '.github/workflows/reuse-*.yml'
 jobs:
 
   infrastructure:

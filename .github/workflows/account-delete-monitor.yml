@@ -14,7 +14,14 @@ on:
     branches:
       - main
       - dev
-
+    paths:
+      - 'infrastructure/account-delete-monitor/**'
+      - 'packages/**'
+      - 'lambdas/account-delete-monitor/**'
+      - 'pnpm-lock.yaml'
+      - '.github/actions/**'
+      - '.github/workflows/account-delete-monitor.yml'
+      - '.github/workflows/reuse-*.yml'
 jobs:
   test-integrations:
     if: github.event_name == 'pull_request'

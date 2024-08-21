@@ -6,6 +6,7 @@ on:
       - 'packages/**'
       - 'servers/list-api/**'
       - 'pnpm-lock.yaml'
+      - 'Dockerfile'
       - '.github/actions/**'
       - '.github/workflows/list-api.yml'
       - '.github/workflows/reuse-*.yml'
@@ -13,6 +14,16 @@ on:
     branches:
       - main
       - dev
+    paths:
+      - 'infrastructure/list-api/**'
+      - 'packages/**'
+      - 'servers/list-api/**'
+      - 'pnpm-lock.yaml'
+      - 'Dockerfile'
+      - '.github/actions/**'
+      - '.github/workflows/list-api.yml'
+      - '.github/workflows/reuse-*.yml'    
+    
     
 jobs:
   test-integrations:
