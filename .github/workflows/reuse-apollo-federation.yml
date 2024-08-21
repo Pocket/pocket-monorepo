@@ -56,7 +56,7 @@ jobs:
             fetch-depth: 0
         - name: Install pnpm & node
           if: ${{ inputs.scope != '' }}
-          uses: pocket/pocket-monorepo/.github/actions/install-pnpm-and-node@github-actions
+          uses: pocket/pocket-monorepo/.github/actions/install-pnpm-and-node@main
           with:
             scope: ${{ inputs['scope'] }}
         - name: Build schema
