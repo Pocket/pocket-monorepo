@@ -27,22 +27,9 @@ jobs:
         with:
           fetch-depth: 2
 
-      - name: Setup Node.js environment
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
-        with:
-          node-version: 20.14
-          registry-url: 'https://registry.npmjs.org'
+      - name: Install pnpm & node
+        uses: pocket/pocket-monorepo/.github/actions/install-pnpm-and-node@main
 
-      - name: PNPM Setup
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.1.4
-
-      - name: Install dependencies
-        run: pnpm i
-      # Need to update sendgrid to enable this
-      #   - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
-      #     run: pnpm audit signatures
       - name: Semantic Release
         run: pnpm run semantic-release
         env:

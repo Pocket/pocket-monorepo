@@ -1,0 +1,63 @@
+name: Shares API
+on:
+  pull_request:
+    paths:
+      - 'infrastructure/shares-api/**'
+      - 'packages/**'
+      - 'servers/list-api/**'
+      - 'pnpm-lock.yaml'
+      - '.github/actions/**'
+      - '.github/workflows/list-api.yml'
+      - '.github/workflows/reuse-*.yml'
+  push:
+    branches:
+      - main
+      - dev
+    
+jobs:
+  test-integrations:
+    if: github.event_name == 'pull_request'
+    uses: ./.github/workflows/reuse-test-integrations.yml
+    with:
+      scope: shares-api
+    secrets: inherit
+
+  apollo:
+    uses: ./.github/workflows/reuse-apollo-federation.yml
+    with:
+      federated-graph-name: pocket-client-api
+      graph-name: shares-api
+      schema-file-path: servers/shares-api/dist/schema-generated.graphql
+      prod-graph-url: https://shares-api.readitlater.com
+      dev-graph-url: https://shares-api.getpocket.dev
+      scope: shares-api
+    secrets:
+      apollo-key: ${{ secrets.APOLLO_CLIENT_API_KEY }}
+
+  infrastructure:
+    uses: ./.github/workflows/reuse-infrastructure.yml
+    with:
+      scope: shares-api-cdk
+      stack-output-path: infrastructure/shares-api/cdktf.out/stacks/shares-api
+    secrets: inherit
+
+  api:
+    uses: ./.github/workflows/reuse-build-and-push-image.yml
+    needs: [infrastructure]
+    with:
+      scope: shares-api
+      app-path: servers/shares-api
+      app-port: 4031
+      sentry-project: shares-api
+      docker-repo-name-pattern: sharesapi-{0}-app
+      terraform-output: ${{needs.infrastructure.outputs.terraform-output}}
+    secrets: inherit
+
+  sentry:
+    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/reuse-sentry-release.yml
+    needs: [api]
+    with:
+      sentry-project: shares-api
+      sentry-environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+    secrets: inherit

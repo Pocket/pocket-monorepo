@@ -11,7 +11,6 @@ ARG SCOPE
 ARG APP_PATH
 ARG PORT
 ARG GIT_SHA
-ARG SENTRY_AUTH_TOKEN
 ARG SENTRY_ORG
 ARG SENTRY_PROJECT
 
@@ -36,7 +35,6 @@ ARG SCOPE
 ARG APP_PATH
 ARG PORT
 ARG GIT_SHA
-ARG SENTRY_AUTH_TOKEN
 ARG SENTRY_ORG
 ARG SENTRY_PROJECT
 
@@ -60,7 +58,6 @@ ARG SCOPE
 ARG APP_PATH
 ARG PORT
 ARG GIT_SHA
-ARG SENTRY_AUTH_TOKEN
 ARG SENTRY_ORG
 ARG SENTRY_PROJECT
 
@@ -95,7 +92,8 @@ RUN pnpx @sentry/cli sourcemaps inject pruned/dist
 RUN mv ./.prisma.tmp pruned/node_modules/.prisma | true
 
 # If sentry project was passed, upload the source maps
-RUN if [ -n "$SENTRY_PROJECT" ] ; then pnpx @sentry/cli sourcemaps upload pruned/dist --release ${GIT_SHA} --auth-token ${SENTRY_AUTH_TOKEN} --org ${SENTRY_ORG} --project ${SENTRY_PROJECT} ; fi
+RUN --mount=type=secret,id=sentry_token \
+      if [ -n "$SENTRY_PROJECT" ] ; then pnpx @sentry/cli sourcemaps upload pruned/dist --release ${GIT_SHA} --auth-token $(cat /run/secrets/sentry_token) --org ${SENTRY_ORG} --project ${SENTRY_PROJECT} ; fi
 
 #----------------------------------------
 # Docker build step that:
@@ -118,9 +116,9 @@ RUN chown -R nodejs:nodejs /app
 USER nodejs
 
 ENV NODE_ENV=production
-ENV PORT $PORT
+ENV PORT=${PORT}
 ENV GIT_SHA=${GIT_SHA}
 ENV RELEASE_SHA=${GIT_SHA}
 
 EXPOSE $PORT
-CMD npm run start
+CMD [ "npm", "run", "start" ]

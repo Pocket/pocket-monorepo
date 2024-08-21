@@ -1,0 +1,53 @@
+## Note that since this workflow uses Workflow Run changes will only be reflected once it is on the default branch
+
+# Because we use conditional path filtering on all our workflows, but want to Require status checks to pass on Github, 
+# we use a special status check job that we can require and will do the checking for us.
+# We also use this because re-usable workflows can not be targeted for Github Required Status Checks as of 8/15/2024 
+name: Status Checks
+on:
+  workflow_run:
+    workflows: 
+      - Pull Request
+      - User API
+      - List API
+      - Account Delete Monitor
+      - Annotations API
+      - Braze
+      - Client API
+      - Feature Flags
+      - FxA Webhook Proxy
+      - Image API
+      - Instant Sync Events
+      - Parser GraphQL Wrapper
+      - Pocket Event Bridge
+      - Push Server
+      - Sendgrid Data
+      - Shareable Lists API
+      - Shared Snowplow Consumer
+      - Shares API
+      - Transactional Emails
+      - V3 Proxy API
+      - User List Search
+    types: [ completed ]
+
+jobs:
+  status-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ahmadnassri/action-workflow-run-wait@v1
+
+  # Note: If the workflow_run trigger does not work out, this can be used instead with a pull_request event to trigger a long polling job.
+  # status-check:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Wait for workflows
+  #       id: wait
+  #       uses: smartcontractkit/chainlink-github-actions/utils/wait-for-workflows@main
+  #       with:
+  #         max-timeout: "900"
+  #         polling-interval: "15"
+  #         exclude-workflow-names: ""
+  #         exclude-workflow-ids: ""
+  #         github-token: ${{ secrets.GITHUB_TOKEN }}

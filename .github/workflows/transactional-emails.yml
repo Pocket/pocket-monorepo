@@ -1,0 +1,44 @@
+name: Transactional Emails
+on:
+  pull_request:
+    paths:
+      - 'infrastructure/transactional-emails/**'
+      - 'packages/**'
+      - 'lambdas/transactional-emails/**'
+      - 'pnpm-lock.yaml'
+      - '.github/actions/**'
+      - '.github/workflows/transactional-emails.yml'
+      - '.github/workflows/reuse-*.yml'
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  infrastructure:
+    uses: ./.github/workflows/reuse-infrastructure.yml
+    with:
+      scope: transactional-emails-cdk
+      stack-output-path: infrastructure/transactional-emails/cdktf.out/stacks/transactional-emails
+    secrets: inherit
+
+  lambda:
+    uses: ./.github/workflows/reuse-build-and-push-lambda.yml
+    needs: [infrastructure]
+    with:
+      scope: transactional-emails
+      sentry-project: transactional-emails
+      s3-bucket-pattern: pocket-transactionalemails-{0}-sqs-event-consumer
+      codedeploy-app-name-pattern: TransactionalEmails-{0}-Sqs-Event-Consumer-Lambda
+      codedeploy-group-name-pattern: TransactionalEmails-{0}-Sqs-Event-Consumer-Lambda
+      function-name-pattern: TransactionalEmails-{0}-Sqs-Event-Consumer-Function
+    secrets: inherit
+
+  sentry:
+    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/reuse-sentry-release.yml
+    needs: [lambda]
+    with:
+      sentry-project: transactional-emails
+      sentry-environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+    secrets: inherit

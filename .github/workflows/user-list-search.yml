@@ -1,0 +1,192 @@
+name: User List Search
+on:
+  pull_request:
+    paths:
+      - 'infrastructure/user-list-search/**'
+      - 'packages/**'
+      - 'servers/user-list-search/**'
+      - 'lambdas/user-list-search-*/**'
+      - 'pnpm-lock.yaml'
+      - '.github/actions/**'
+      - '.github/workflows/user-list-search.yml'
+      - '.github/workflows/reuse-*.yml'
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  test-integrations:
+    if: github.event_name == 'pull_request'
+    uses: ./.github/workflows/reuse-test-integrations.yml
+    with:
+      scope: user-list-search
+    secrets: inherit
+
+  apollo:
+    uses: ./.github/workflows/reuse-apollo-federation.yml
+    with:
+      federated-graph-name: pocket-client-api
+      graph-name: user-list-search
+      schema-file-path: servers/user-list-search/dist/schema-generated.graphql
+      prod-graph-url: https://user-list-search.readitlater.com/graphql
+      dev-graph-url: https://user-list-search.getpocket.dev/graphql
+      scope: user-list-search
+    secrets:
+      apollo-key: ${{ secrets.APOLLO_CLIENT_API_KEY }}
+
+  infrastructure:
+    uses: ./.github/workflows/reuse-infrastructure.yml
+    with:
+      raw-terraform: true
+      stack-output-path: infrastructure/user-list-search
+      scope: user-list-search
+    secrets: inherit
+
+  api:
+    uses: ./.github/workflows/reuse-build-and-push-image.yml
+    needs: [infrastructure]
+    with:
+      scope: user-list-search
+      app-path: servers/user-list-search
+      app-port: 4000
+      sentry-project: user-list-search
+      docker-repo-name-pattern: userlistsearch-{0}
+      terraform-output: ${{needs.infrastructure.outputs.terraform-output}}
+    secrets: inherit
+
+  events-lambda:
+    uses: ./.github/workflows/reuse-build-and-push-lambda.yml
+    needs: [infrastructure]
+    with:
+      scope: user-list-search-events
+      sentry-project: user-list-search
+      s3-bucket-pattern: pocket-userlistsearch-{0}-kinesis-consumer
+      s3-key: events-${{ github.sha }}.zip
+      codedeploy-app-name-pattern: UserListSearch-{0}-EventHandler
+      codedeploy-group-name-pattern: UserListSearch-{0}-EventHandler
+      function-name-pattern: UserListSearch-{0}-EventHandler
+    secrets: inherit
+
+  kinesis-lambda:
+    uses: ./.github/workflows/reuse-build-and-push-lambda.yml
+    needs: [infrastructure]
+    with:
+      scope: user-list-search-kinesis-to-sqs
+      sentry-project: user-list-search
+      s3-bucket-pattern: pocket-userlistsearch-{0}-kinesis-consumer
+      s3-key: kinesis-${{ github.sha }}.zip
+      codedeploy-app-name-pattern: UserListSearch-{0}-UnifiedEventsConsumer
+      codedeploy-group-name-pattern: UserListSearch-{0}-UnifiedEventsConsumer
+      function-name-pattern: UserListSearch-{0}-UnifiedEventsConsumer
+    secrets: inherit
+  
+  item-update-lambda:
+    uses: ./.github/workflows/reuse-build-and-push-lambda.yml
+    needs: [infrastructure]
+    with:
+      scope: user-list-search-indexing
+      sentry-project: user-list-search
+      s3-bucket-pattern: pocket-userlistsearch-{0}-kinesis-consumer
+      s3-key: item-update-${{ github.sha }}.zip
+      codedeploy-app-name-pattern: UserListSearch-{0}-ItemUpdate
+      codedeploy-group-name-pattern: UserListSearch-{0}-ItemUpdate
+      function-name-pattern: UserListSearch-{0}-ItemUpdate
+    secrets: inherit
+
+  item-delete-lambda:
+    uses: ./.github/workflows/reuse-build-and-push-lambda.yml
+    needs: [infrastructure]
+    with:
+      scope: user-list-search-indexing
+      sentry-project: user-list-search
+      s3-bucket-pattern: pocket-userlistsearch-{0}-kinesis-consumer
+      s3-key: item-delete-${{ github.sha }}.zip
+      codedeploy-app-name-pattern: UserListSearch-{0}-ItemDelete
+      codedeploy-group-name-pattern: UserListSearch-{0}-ItemDelete
+      function-name-pattern: UserListSearch-{0}-ItemDelete
+    secrets: inherit
+
+  item-update-backfill-lambda:
+    uses: ./.github/workflows/reuse-build-and-push-lambda.yml
+    needs: [infrastructure]
+    with:
+      scope: user-list-search-indexing
+      sentry-project: user-list-search
+      s3-bucket-pattern: pocket-userlistsearch-{0}-kinesis-consumer
+      s3-key: item-update-backfill-${{ github.sha }}.zip
+      codedeploy-app-name-pattern: UserListSearch-{0}-ItemUpdateBackfill
+      codedeploy-group-name-pattern: UserListSearch-{0}-ItemUpdateBackfill
+      function-name-pattern: UserListSearch-{0}-ItemUpdateBackfill
+    secrets: inherit
+
+  user-list-import-lambda:
+    uses: ./.github/workflows/reuse-build-and-push-lambda.yml
+    needs: [infrastructure]
+    with:
+      scope: user-list-search-indexing
+      sentry-project: user-list-search
+      s3-bucket-pattern: pocket-userlistsearch-{0}-kinesis-consumer
+      s3-key: user-list-import-${{ github.sha }}.zip
+      codedeploy-app-name-pattern: UserListSearch-{0}-UserListImport
+      codedeploy-group-name-pattern: UserListSearch-{0}-UserListImport
+      function-name-pattern: UserListSearch-{0}-UserListImport
+    secrets: inherit
+
+  user-list-import-backfill-lambda:
+    uses: ./.github/workflows/reuse-build-and-push-lambda.yml
+    needs: [infrastructure]
+    with:
+      scope: user-list-search-indexing
+      sentry-project: user-list-search
+      s3-bucket-pattern: pocket-userlistsearch-{0}-kinesis-consumer
+      s3-key: user-list-import-backfill-${{ github.sha }}.zip
+      codedeploy-app-name-pattern: UserListSearch-{0}-UserListImportBackfill
+      codedeploy-group-name-pattern: UserListSearch-{0}-UserListImportBackfill
+      function-name-pattern: UserListSearch-{0}-UserListImportBackfill
+    secrets: inherit
+
+  corpus-indexing-lambda:
+    uses: ./.github/workflows/reuse-build-and-push-lambda.yml
+    needs: [infrastructure]
+    with:
+      scope: user-list-search-corpus-indexing
+      sentry-project: user-list-search
+      s3-bucket-pattern: pocket-userlistsearch-{0}-kinesis-consumer
+      s3-key: corpus-indexing-${{ github.sha }}.zip
+      codedeploy-app-name-pattern: UserListSearch-{0}-CorpusIndexer
+      codedeploy-group-name-pattern: UserListSearch-{0}-CorpusIndexer
+      function-name-pattern: UserListSearch-{0}-CorpusIndexer
+    secrets: inherit
+
+  corpus-parser-hydration-lambda:
+    uses: ./.github/workflows/reuse-build-and-push-lambda.yml
+    needs: [infrastructure]
+    with:
+      scope: user-list-search-corpus-parser-hydration
+      sentry-project: user-list-search
+      s3-bucket-pattern: pocket-userlistsearch-{0}-kinesis-consumer
+      s3-key: corpus-parser-hydration-${{ github.sha }}.zip
+      codedeploy-app-name-pattern: UserListSearch-{0}-CorpusParserHydrator
+      codedeploy-group-name-pattern: UserListSearch-{0}-CorpusParserHydrator
+      function-name-pattern: UserListSearch-{0}-CorpusParserHydrator
+    secrets: inherit
+
+  sentry:
+    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/reuse-sentry-release.yml
+    needs:
+      - api
+      - events-lambda
+      - kinesis-lambda
+      - item-update-lambda
+      - item-delete-lambda
+      - item-update-backfill-lambda
+      - user-list-import-lambda
+      - user-list-import-backfill-lambda
+      - corpus-indexing-lambda
+      - corpus-parser-hydration-lambda
+    with:
+      sentry-project: user-list-search
+      sentry-environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+    secrets: inherit

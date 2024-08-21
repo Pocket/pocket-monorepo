@@ -1,0 +1,96 @@
+name: 'Execute Raw Terraform'
+description: 'Builds and either plans or applies a terraform environment'
+inputs:
+  scope:
+    description: 'Turbo Repo scope to run the build for'
+    required: true
+  stack-output-path:
+    description: 'The path where CDKTF outputs the terraform json'
+    required: true
+  environment:
+    description: 'The node environment to build for'
+    required: true
+    default: 'development'
+  behavior:
+    description: The behavior that Terraform should use, either plan or apply
+    required: true
+  pagerduty-token:
+    description: Pagerduty Token to use in terraform
+    required: true
+  terraform-token:
+    description: Terraform Token to use in terraform
+    required: true
+  github-token:
+    description: Github Token to use for terraform comment
+    required: true 
+  
+runs:
+  using: 'composite'
+  steps:
+    - name: Install tfenv
+      shell: bash
+      run: |
+        git clone --depth=1 https://github.com/tfutils/tfenv.git ~/.tfenv
+        echo "PATH=$HOME/.tfenv/bin:$PATH" >> $GITHUB_ENV
+
+    # Setup Terraform Comment
+    - uses: shmokmt/actions-setup-tfcmt@v2
+
+    # Let's tell github actions we want to cache all the terraform verisons we install.
+    # We do this to speed up terraform installing, as the cache will cache the terraform versions we download.
+    - name: Cache tfenv installations
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.tfenv/versions
+        key: ${{ runner.os }}-tfenv-${{ hashFiles('**/.terraform-version') }}
+        restore-keys: |
+          ${{ runner.os }}-tfenv-
+
+    - name: Copy Terraform Vars
+      shell: bash
+      run: |
+        cd ${{ inputs.stack-output-path }}
+        if [ "${{ inputs.environment }}" = "development" ]; then
+          echo "Development environment specified, copying development tf vars"
+          cp dev_backend.tfvars backend.tf
+        else
+          echo "Production environment specified, copying production tf vars"
+          cp prod_backend.tfvars backend.tf    
+        fi
+
+    - name: Init Terraform
+      shell: bash
+      run: |
+          cd ${{ inputs['stack-output-path'] }}
+          tfenv install
+          tfenv use
+          terraform init
+    - name: Save off terraform token
+      shell: bash
+      env:
+        TERRAFORM_TOKEN: ${{ inputs.terraform-token }}
+      run: |
+        rc="credentials \"app.terraform.io\" { "
+        rc="${rc} token=\"$TERRAFORM_TOKEN\" "
+        rc="${rc}}"
+        echo "$rc" > ~/.terraformrc
+
+    # Once TFCMT supports no change applies, change terraform apply to
+    # tfcmt --var target:${{ inputs.scope }}-${{ inputs.environment }} apply -- terraform apply -auto-approve -lock-timeout=10m
+    # https://github.com/suzuki-shunsuke/tfcmt/issues/1184
+    - name: Plan/Apply CDKTF
+      shell: bash
+      env:
+        TERRAFORM_TOKEN: ${{ inputs.pagerduty-token }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        PAGERDUTY_TOKEN: ${{ inputs.pagerduty-token }}
+      run: |
+        cd ${{ inputs.stack-output-path }}
+        if [ "${{ inputs.behavior }}" = "apply" ]; then
+          echo "Apply behavior specified, applying terraform configuration in ${{ inputs.environment }}."
+          terraform apply --auto-approve
+        else
+          echo "Plan behavior specified, planning terraform configuration in ${{ inputs.environment }}."
+          tfcmt --var target:${{ inputs.scope }}-${{ inputs.environment }} plan --skip-no-changes --patch -- terraform plan -lock-timeout=10m
+        fi

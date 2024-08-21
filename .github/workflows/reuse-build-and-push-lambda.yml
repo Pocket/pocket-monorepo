@@ -1,0 +1,119 @@
+name: 'Re-usable Lambda Build Flow'
+on:
+  workflow_call:
+    inputs:
+      scope:
+        description: 'Turbo Repo scope to run the build for'
+        required: true
+        type: string
+      s3-bucket-pattern:
+        description: 'Lambda S3 bucket pattern to use. {0} will be replaced with either dev or prod'
+        required: true
+        type: string
+      s3-key:
+        description: 'Lambda S3 key to use. Defaults to git sha'
+        required: false
+        default: ''
+        type: string
+      codedeploy-app-name-pattern:
+        description: CodeDeploy app name pattern to use. {0} will be replaced with either Dev or Prod'
+        required: true
+        type: string
+      codedeploy-group-name-pattern:
+        description: CodeDeploy group name pattern to use. {0} will be replaced with either Dev or Prod'
+        required: true
+        type: string
+      function-name-pattern:
+        description: The name pattern of the Lambda Function to deploy t. {0} will be replaced with either Dev or Prod'
+        required: true
+        type: string
+      sentry-org:
+        description: 'The org name used in sentry. Used to upload source maps'
+        required: false
+        type: string
+        default: pocket
+      sentry-project:
+        description: 'The project name used in sentry. Used to upload source maps'
+        required: true
+        type: string
+
+permissions:
+  contents: read  # This is required for actions/checkout
+  id-token: write  # Access the Github JWT for AWS access
+        
+
+jobs:
+    # Let's build the image on every pull request just like we would on production
+    pull-request:
+      # Only run this job on a pull request event
+      if: github.event_name == 'pull_request'
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+        - name: Build Lambda
+          uses: pocket/pocket-monorepo/.github/actions/build-lambda@main
+          with:
+            sentry-project: ${{inputs['sentry-project']}}
+            sentry-org: ${{inputs['sentry-org']}}
+            sentry-token: ${{secrets.SENTRY_BEARER}}
+            scope: ${{inputs['scope']}}
+            s3-key: ${{ inputs.s3-key }}
+
+    development:
+      if: github.ref == 'refs/heads/dev'
+      runs-on: ubuntu-latest
+      steps:        
+        - name: Checkout
+          uses: actions/checkout@v4
+        - name: AWS Credentials
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+            aws-region: us-east-1
+            role-to-assume: arn:aws:iam::410318598490:role/PocketGHARole
+        - name: Build Lambda
+          uses: pocket/pocket-monorepo/.github/actions/build-lambda@main
+          with:
+            sentry-project: ${{inputs['sentry-project']}}
+            sentry-org: ${{inputs['sentry-org']}}
+            sentry-token: ${{secrets.SENTRY_BEARER}}
+            scope: ${{inputs['scope']}}
+            s3-bucket: ${{ format(inputs.s3-bucket-pattern, 'dev') }}
+            s3-key: ${{ inputs.s3-key }}
+        - name: CodeDeploy Lambda
+          uses: pocket/pocket-monorepo/.github/actions/lambda-codedeploy@main
+          with:
+            s3-bucket: ${{ format(inputs.s3-bucket-pattern, 'dev') }}
+            s3-key: ${{ inputs.s3-key }}
+            codedeploy-app-name: ${{ format(inputs.codedeploy-app-name-pattern, 'Dev') }}
+            codedeploy-group-name: ${{ format(inputs.codedeploy-group-name-pattern, 'Dev') }}
+            function-name: ${{ format(inputs.function-name-pattern, 'Dev') }}
+
+    production:
+      if: github.ref == 'refs/heads/main'
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+        - name: AWS Credentials
+          uses: aws-actions/configure-aws-credentials@v4
+          with:
+            aws-region: us-east-1
+            role-to-assume: arn:aws:iam::996905175585:role/PocketGHARole
+        - name: Build Lambda
+          uses: pocket/pocket-monorepo/.github/actions/build-lambda@main
+          with:
+            sentry-project: ${{inputs['sentry-project']}}
+            sentry-org: ${{inputs['sentry-org']}}
+            sentry-token: ${{secrets.SENTRY_BEARER}}
+            scope: ${{inputs['scope']}}
+            s3-bucket: ${{ format(inputs.s3-bucket-pattern, 'prod') }}
+            s3-key: ${{ inputs.s3-key }}
+        - name: CodeDeploy Lambda
+          uses: pocket/pocket-monorepo/.github/actions/lambda-codedeploy@main
+          with:
+            s3-bucket: ${{ format(inputs.s3-bucket-pattern, 'prod') }}
+            s3-key: ${{ inputs.s3-key }}
+            codedeploy-app-name: ${{ format(inputs.codedeploy-app-name-pattern, 'Prod') }}
+            codedeploy-group-name: ${{ format(inputs.codedeploy-group-name-pattern, 'Prod') }}
+            function-name: ${{ format(inputs.function-name-pattern, 'Prod') }}

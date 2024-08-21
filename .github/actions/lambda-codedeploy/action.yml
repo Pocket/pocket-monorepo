@@ -1,0 +1,67 @@
+name: 'Re-usable Lambda Codedeploy Flow'
+description: 'Used to code deploy a lambda'
+inputs:
+  codedeploy-app-name:
+    description: CodeDeploy app name
+    required: true
+  codedeploy-group-name:
+    description: CodeDeploy group name
+    required: true
+  function-name:
+    description: The name of the Lambda Function to deploy to
+    required: true
+  s3-bucket:
+    description: The name of the bucket to deploy from
+    required: true
+  s3-key:
+    description: The name of the s3 key that contains the code to deploy
+    default: ""
+    required: false
+  function-alias:
+    description: The name of the lambda alias to use
+    required: false
+    default: DEPLOYED
+
+runs:
+  using: 'composite'
+  steps:  
+    - name: Codedeploy AWS Lambda
+      shell: bash
+      run: |
+        aws lambda wait function-updated --function-name '${{ inputs.function-name }}'
+
+        s3Key="${{ inputs.s3-key }}"
+        if [[ -z $s3Key ]]; then
+            s3Key="${{ github.sha }}.zip"
+        fi
+
+        aws lambda update-function-code \
+            --function-name '${{ inputs.function-name }}' \
+            --s3-bucket '${{ inputs.s3-bucket }}' \
+            --s3-key "$s3Key"
+
+        aws lambda wait function-updated --function-name '${{ inputs.function-name }}'
+
+        NEW_ENVVARS=$(aws lambda get-function-configuration --function-name '${{ inputs.function-name }}' --query "Environment.Variables | merge(@, \`{\"GIT_SHA\":\"${{ github.sha }}\"}\`)")
+        aws lambda update-function-configuration --function-name '${{ inputs.function-name }}' --environment "{ \"Variables\": $NEW_ENVVARS }"
+        aws lambda wait function-updated --function-name '${{ inputs.function-name }}'
+
+        versionId=$(aws lambda publish-version \
+            --function-name '${{ inputs.function-name }}' | jq -r .Version)
+
+        currentVersion=$(aws lambda get-alias \
+            --function-name '${{ inputs.function-name }}' \
+            --name DEPLOYED | jq -r .FunctionVersion)
+
+        app_spec_content_string="{'version':0.0,'Resources':[{'${{ inputs.function-name }}':{'Type':'AWS::Lambda::Function','Properties':{'Name':'${{ inputs.function-name }}','Alias':'${{ inputs.function-alias }}','TargetVersion':'$versionId', 'CurrentVersion': '$currentVersion'}}}]}"
+        echo "$app_spec_content_string"
+        app_spec_content_sha256=$(echo -n "$app_spec_content_string" | shasum -a 256 | sed 's/ .*$//')
+        revision="revisionType=AppSpecContent,appSpecContent={content=\"$app_spec_content_string\",sha256=$app_spec_content_sha256}"
+
+        aws lambda wait function-updated --function-name '${{ inputs.function-name }}'
+
+        aws deploy create-deployment \
+          --application-name="${{ inputs.codedeploy-app-name }}" \
+          --deployment-group-name="${{ inputs.codedeploy-group-name }}" \
+          --description="Triggered build ${{ github.sha }} from Github Actions" \
+          --revision="$revision"

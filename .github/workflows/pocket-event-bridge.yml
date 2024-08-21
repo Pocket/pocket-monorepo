@@ -1,0 +1,23 @@
+name: Pocket Event Bridge
+on:
+  pull_request:
+    paths:
+      - 'infrastructure/pocket-event-bridge/**'
+      - 'packages/**'
+      - 'pnpm-lock.yaml'
+      - '.github/actions/**'
+      - '.github/workflows/pocket-event-bridge.yml'
+      - '.github/workflows/reuse-*.yml'
+  push:
+    branches:
+      - main
+      - dev
+    
+jobs:
+
+  infrastructure:
+    uses: ./.github/workflows/reuse-infrastructure.yml
+    with:
+      scope: pocket-event-bridge-cdk
+      stack-output-path: infrastructure/pocket-event-bridge/cdktf.out/stacks/pocket-event-bridge
+    secrets: inherit
