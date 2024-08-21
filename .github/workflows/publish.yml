@@ -34,6 +34,6 @@ jobs:
         run: pnpm run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_TOKEN: ${{secrets.NPM_TOKEN}}
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
           # Need to update sendgrid to enable this
           #        NPM_CONFIG_PROVENANCE: true
