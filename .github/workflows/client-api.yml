@@ -13,7 +13,14 @@ on:
     branches:
       - main
       - dev
-    
+    paths:
+      - 'infrastructure/client-api/**'
+      - 'packages/**'
+      - 'servers/client-api/**'
+      - 'pnpm-lock.yaml'
+      - '.github/actions/**'
+      - '.github/workflows/client-api.yml'
+      - '.github/workflows/reuse-*.yml'
 jobs:
 
   infrastructure:

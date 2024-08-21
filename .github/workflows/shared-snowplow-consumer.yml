@@ -6,6 +6,7 @@ on:
       - 'packages/**'
       - 'servers/shared-snowplow-consumer/**'
       - 'pnpm-lock.yaml'
+      - 'Dockerfile'
       - '.github/actions/**'
       - '.github/workflows/shared-snowplow-consumer.yml'
       - '.github/workflows/reuse-*.yml'
@@ -13,7 +14,16 @@ on:
     branches:
       - main
       - dev
-    
+    paths:
+      - 'infrastructure/shared-snowplow-consumer/**'
+      - 'packages/**'
+      - 'servers/shared-snowplow-consumer/**'
+      - 'pnpm-lock.yaml'
+      - 'Dockerfile'
+      - '.github/actions/**'
+      - '.github/workflows/shared-snowplow-consumer.yml'
+      - '.github/workflows/reuse-*.yml'
+      
 jobs:
   test-integrations:
     if: github.event_name == 'pull_request'

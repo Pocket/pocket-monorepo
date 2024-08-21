@@ -13,6 +13,14 @@ on:
     branches:
       - main
       - dev
+    paths:
+      - 'infrastructure/sendgrid-data/**'
+      - 'packages/**'
+      - 'lambdas/sendgrid-data/**'
+      - 'pnpm-lock.yaml'
+      - '.github/actions/**'
+      - '.github/workflows/sendgrid-data.yml'
+      - '.github/workflows/reuse-*.yml'
 
 jobs:
   infrastructure:

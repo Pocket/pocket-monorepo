@@ -6,6 +6,7 @@ on:
       - 'packages/**'
       - 'servers/v3-proxy-api/**'
       - 'pnpm-lock.yaml'
+      - 'Dockerfile'
       - '.github/actions/**'
       - '.github/workflows/v3-proxy-api.yml'
       - '.github/workflows/reuse-*.yml'
@@ -13,7 +14,15 @@ on:
     branches:
       - main
       - dev
-    
+    paths:
+      - 'infrastructure/v3-proxy-api/**'
+      - 'packages/**'
+      - 'servers/v3-proxy-api/**'
+      - 'pnpm-lock.yaml'
+      - 'Dockerfile'
+      - '.github/actions/**'
+      - '.github/workflows/v3-proxy-api.yml'
+      - '.github/workflows/reuse-*.yml'    
 jobs:
   test-integrations:
     if: github.event_name == 'pull_request'

@@ -8,6 +8,7 @@ on:
       - 'servers/annotations-api/**'
       - 'lambdas/annotations-api-events/**'
       - 'pnpm-lock.yaml'
+      - 'Dockerfile'
       - '.github/actions/**'
       - '.github/workflows/annotations-api.yml'
       - '.github/workflows/reuse-*.yml'
@@ -15,7 +16,16 @@ on:
     branches:
       - main
       - dev
-
+    paths:
+      - 'infrastructure/annotations-api/**'
+      - 'packages/**'
+      - 'servers/annotations-api/**'
+      - 'lambdas/annotations-api-events/**'
+      - 'pnpm-lock.yaml'
+      - 'Dockerfile'
+      - '.github/actions/**'
+      - '.github/workflows/annotations-api.yml'
+      - '.github/workflows/reuse-*.yml'
 jobs:
   test-integrations:
     if: github.event_name == 'pull_request'

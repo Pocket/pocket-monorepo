@@ -6,6 +6,7 @@ on:
       - 'packages/**'
       - 'servers/feature-flags/**'
       - 'pnpm-lock.yaml'
+      - 'Dockerfile'
       - '.github/actions/**'
       - '.github/workflows/feature-flags.yml'
       - '.github/workflows/reuse-*.yml'
@@ -13,7 +14,15 @@ on:
     branches:
       - main
       - dev
-    
+    paths:
+      - 'infrastructure/feature-flags/**'
+      - 'packages/**'
+      - 'servers/feature-flags/**'
+      - 'pnpm-lock.yaml'
+      - 'Dockerfile'
+      - '.github/actions/**'
+      - '.github/workflows/feature-flags.yml'
+      - '.github/workflows/reuse-*.yml'
 jobs:
   apollo:
     uses: ./.github/workflows/reuse-apollo-federation.yml

@@ -8,6 +8,7 @@ on:
       - 'lambdas/account-data-deleter-batch-delete/**'
       - 'lambdas/account-data-deleter-events/**'
       - 'pnpm-lock.yaml'
+      - 'Dockerfile'
       - '.github/actions/**'
       - '.github/workflows/account-data-deleter.yml'
       - '.github/workflows/reuse-*.yml'
@@ -15,7 +16,17 @@ on:
     branches:
       - main
       - dev
-
+    paths:
+      - 'infrastructure/account-data-deleter/**'
+      - 'packages/**'
+      - 'servers/account-data-deleter/**'
+      - 'lambdas/account-data-deleter-batch-delete/**'
+      - 'lambdas/account-data-deleter-events/**'
+      - 'pnpm-lock.yaml'
+      - 'Dockerfile'
+      - '.github/actions/**'
+      - '.github/workflows/account-data-deleter.yml'
+      - '.github/workflows/reuse-*.yml'
 jobs:
   test-integrations:
     if: github.event_name == 'pull_request'

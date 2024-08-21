@@ -13,6 +13,14 @@ on:
     branches:
       - main
       - dev
+    paths:
+      - 'infrastructure/transactional-emails/**'
+      - 'packages/**'
+      - 'lambdas/transactional-emails/**'
+      - 'pnpm-lock.yaml'
+      - '.github/actions/**'
+      - '.github/workflows/transactional-emails.yml'
+      - '.github/workflows/reuse-*.yml'
 
 jobs:
   infrastructure:
