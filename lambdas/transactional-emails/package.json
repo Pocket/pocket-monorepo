@@ -18,7 +18,7 @@
     "test:watch": "npm test -- --watchAll"
   },
   "dependencies": {
-    "@aws-sdk/client-ssm": "3.629.0",
+    "@aws-sdk/client-ssm": "3.632.0",
     "@sentry/aws-serverless": "8.26.0",
     "braze-api": "^2.9.1",
     "fetch-retry": "^5.0.6",
