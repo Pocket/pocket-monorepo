@@ -50,7 +50,7 @@ runs:
       with:
         token: ${{ github.token }}
         environment-url: https://${{ fromJSON(inputs.terraform-output).ecs-application-url.value }}
-        environment: ${{ inputs.name }}${{ github.ref == 'refs/heads/dev' && '-dev' }}
+        environment: ${{ inputs.name }}${{ github.ref == 'refs/heads/dev' && '-dev' || '' }}
         transient-environment: ${{ github.ref == 'refs/heads/main' && 'false' || 'true' }}
         production-environment: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
         initial-status: pending
