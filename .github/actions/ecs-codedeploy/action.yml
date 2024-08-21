@@ -24,7 +24,7 @@ runs:
     - name: Render Amazon ECS App Spec
       shell: bash
       run: |
-        cat <<EOT >> appspec.json
+        cat <<EOT > appspec.json
         {
           "version": 0.0,
           "Resources": [
