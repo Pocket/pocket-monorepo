@@ -1,11 +1,19 @@
-import { expect } from 'chai';
-import { app } from '../main';
 import request from 'supertest';
+import { Server } from 'http';
+import { Application } from 'express';
 import config from '../config';
 import { stories } from './scheduledItems';
+import { startServer } from '../server';
 
 describe('/scheduled-items/:scheduledSurfaceID?date=date&apikey=apikey', () => {
-  const requestAgent = request.agent(app);
+  let app: Application;
+  let server: Server;
+  beforeAll(async () => {
+    ({ app, server } = await startServer(0));
+  });
+  afterAll(async () => {
+    server.close();
+  });
 
   const testNewTab = 'POCKET_HITS_EN_US';
   const testDate = '2050-01-01';
@@ -39,51 +47,49 @@ describe('/scheduled-items/:scheduledSurfaceID?date=date&apikey=apikey', () => {
   };
 
   it('should return 200 OK and correct headers when valid query params are provided', async () => {
-    const response = await requestAgent.get(validUrl);
+    const response = await request(app).get(validUrl);
 
-    expect(response.statusCode).equals(200);
+    expect(response.statusCode).toBe(200);
     // checking if the cache-control header has been set correctly
-    expect(response.headers['cache-control']).to.not.be.undefined;
-    expect(response.headers['cache-control']).to.equal('public, max-age=120');
+    expect(response.headers['cache-control']).not.toBeUndefined();
+    expect(response.headers['cache-control']).toBe('public, max-age=120');
   });
 
   it('should return correct data when valid query params are provided', async () => {
     // spying on the getStories function to make it return a mock response
     jest.spyOn(stories, 'getStories').mockResolvedValue(testStories as any);
 
-    const response = await requestAgent.get(validUrl);
+    const response = await request(app).get(validUrl);
 
-    expect(response.statusCode).equals(200);
-    expect(response.body).to.deep.equal(testStories);
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toEqual(testStories);
   });
 
   it('should return 404 for non-existent url ', async () => {
-    const response = await requestAgent.get('/not-found');
+    const response = await request(app).get('/not-found');
 
-    expect(response.statusCode).equals(404);
+    expect(response.statusCode).toBe(404);
   });
 
   it('should return 500 if incorrect date format is provided ', async () => {
-    const response = await requestAgent.get(
+    const response = await request(app).get(
       `/scheduled-items/${testNewTab}?date=20220524`,
     );
 
-    expect(response.statusCode).equals(500);
-    expect(response.body.error).to.not.be.undefined;
-    expect(response.body.error).to.equal(
+    expect(response.statusCode).toBe(500);
+    expect(response.body.error).not.toBeUndefined();
+    expect(response.body.error).toBe(
       'Not a valid date. Please provide a date in YYYY-MM-DD format.',
     );
   });
 
   it('should return 500 if invalid api key is provided ', async () => {
-    const response = await requestAgent.get(
+    const response = await request(app).get(
       `/scheduled-items/${testNewTab}?date=${testDate}&apikey=invalid-key`,
     );
 
-    expect(response.statusCode).equals(500);
-    expect(response.body.error).to.not.be.undefined;
-    expect(response.body.error).to.equal(
-      config.app.INVALID_API_KEY_ERROR_MESSAGE,
-    );
+    expect(response.statusCode).toBe(500);
+    expect(response.body.error).not.toBeUndefined();
+    expect(response.body.error).toBe(config.app.INVALID_API_KEY_ERROR_MESSAGE);
   });
 });

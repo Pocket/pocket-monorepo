@@ -1,10 +1,10 @@
 {
   "name": "braze-content-proxy-cdk",
   "version": "1.0.0",
+  "private": true,
+  "license": "MPL-2.0",
   "main": "dist/main.js",
   "types": "dist/main.ts",
-  "license": "MPL-2.0",
-  "private": true,
   "scripts": {
     "build": "rm -rf dist && tsc",
     "compile": "tsc --pretty",
@@ -17,6 +17,7 @@
     "@cdktf/provider-aws": "19.31.0",
     "@cdktf/provider-local": "10.1.0",
     "@cdktf/provider-null": "10.0.0",
+    "@cdktf/provider-pagerduty": "13.11.4",
     "@pocket-tools/terraform-modules": "workspace:*",
     "cdktf": "0.20.8",
     "cdktf-cli": "0.20.8",
