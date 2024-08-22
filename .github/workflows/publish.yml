@@ -5,6 +5,12 @@ on:
   pull_request:
     branches: ['main']
   merge_group:
+
+permissions:
+  pull-requests: write   # Allow to write to prs
+  contents: read  # This is required for actions/checkout
+  packages: write  # This is required for actions/checkout
+
 jobs:
   ##
   # Runs semantic release in a regular
