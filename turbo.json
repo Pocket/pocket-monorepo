@@ -1,13 +1,37 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env.*local", "packages/tsconfig/**"],
-  "globalEnv": ["NODE_ENV"],
-  "globalDotEnv": [".env", ".env.example"],
-  "pipeline": {
+  "globalDependencies": [
+    "**/.env.*local",
+    "packages/tsconfig/**",
+    ".env",
+    ".env.example"
+  ],
+  "globalEnv": [
+    "NODE_ENV"
+  ],
+  "tasks": {
     "build": {
-      "dependsOn": ["prebuild", "^build"],
-      "inputs": ["src/**/*", "tsconfig.json", "package.json"],
-      "outputs": ["dist/**"],
+      "dependsOn": ["^build"],
+      "inputs": [
+        "src/**/*",
+        "tsconfig.json",
+        "package.json",
+        "schema-public.graphql",
+        "schema-shared.graphql",
+        "schema-admin.graphql",
+        "schema.graphql",
+        "prisma/schema.prisma",
+        "src/graphql/**/*.graphql",
+        "codegen.ts"
+      ],
+      "outputs": [
+        "dist/**",
+        "schema-admin-api.graphql",
+        "schema-client-api.graphql",
+        "prisma/src/**/*",
+        "src/generated/**/*",
+        "src/__generated__/**/*"
+      ],
       "cache": true
     },
     "synth": {
@@ -31,38 +55,16 @@
     },
     "test": {
       "inputs": ["src/**/*", "package.json", "jest.config.js", "jest.setup.js"],
-      "dependsOn": ["^build", "prebuild"],
+      "dependsOn": ["^build"],
       "cache": true
     },
     "test-integrations": {
-      "dependsOn": ["^build", "prebuild", "pretest-integrations"],
+      "dependsOn": ["^build"],
       "cache": false
     },
     "dev": {
       "cache": false,
       "persistent": true
-    },
-    "prebuild": {
-      "inputs": [
-        "schema-public.graphql",
-        "schema-shared.graphql",
-        "schema-admin.graphql",
-        "schema.graphql",
-        "prisma/schema.prisma",
-        "src/graphql/**/*.graphql",
-        "codegen.ts"
-      ],
-      "outputs": [
-        "schema-admin-api.graphql",
-        "schema-client-api.graphql",
-        "prisma/src/**/*",
-        "src/generated/**/*",
-        "src/__generated__/**/*"
-      ],
-      "cache": true
-    },
-    "pretest-integrations": {
-      "cache": false
     }
   }
 }
