@@ -11,81 +11,11 @@
   ],
   "tasks": {
     "build": {
-      "dependsOn": [
-        "prebuild",
-        "^build"
-      ],
+      "dependsOn": ["^build"],
       "inputs": [
         "src/**/*",
         "tsconfig.json",
-        "package.json"
-      ],
-      "outputs": [
-        "dist/**"
-      ],
-      "cache": true
-    },
-    "synth": {
-      "dependsOn": [
-        "@pocket-tools/terraform-modules#build"
-      ],
-      "inputs": [
-        "src/**/*",
         "package.json",
-        "cdktf.json",
-        ".terraform-version"
-      ],
-      "outputs": [
-        "cdktf.out/**/*"
-      ]
-    },
-    "lint": {
-      "inputs": [
-        "src/**/*",
-        "eslint.config.js",
-        "package.json"
-      ]
-    },
-    "format": {
-      "inputs": [
-        "src/**/*",
-        "eslint.config.js",
-        "package.json"
-      ]
-    },
-    "semantic-release": {
-      "dependsOn": [
-        "^build",
-        "build"
-      ]
-    },
-    "test": {
-      "inputs": [
-        "src/**/*",
-        "package.json",
-        "jest.config.js",
-        "jest.setup.js"
-      ],
-      "dependsOn": [
-        "^build",
-        "prebuild"
-      ],
-      "cache": true
-    },
-    "test-integrations": {
-      "dependsOn": [
-        "^build",
-        "prebuild",
-        "pretest-integrations"
-      ],
-      "cache": false
-    },
-    "dev": {
-      "cache": false,
-      "persistent": true
-    },
-    "prebuild": {
-      "inputs": [
         "schema-public.graphql",
         "schema-shared.graphql",
         "schema-admin.graphql",
@@ -95,6 +25,7 @@
         "codegen.ts"
       ],
       "outputs": [
+        "dist/**",
         "schema-admin-api.graphql",
         "schema-client-api.graphql",
         "prisma/src/**/*",
@@ -103,8 +34,37 @@
       ],
       "cache": true
     },
-    "pretest-integrations": {
+    "synth": {
+      "dependsOn": ["@pocket-tools/terraform-modules#build"],
+      "inputs": [
+        "src/**/*",
+        "package.json",
+        "cdktf.json",
+        ".terraform-version"
+      ],
+      "outputs": ["cdktf.out/**/*"]
+    },
+    "lint": {
+      "inputs": ["src/**/*", "eslint.config.js", "package.json"]
+    },
+    "format": {
+      "inputs": ["src/**/*", "eslint.config.js", "package.json"]
+    },
+    "semantic-release": {
+      "dependsOn": ["^build", "build"]
+    },
+    "test": {
+      "inputs": ["src/**/*", "package.json", "jest.config.js", "jest.setup.js"],
+      "dependsOn": ["^build"],
+      "cache": true
+    },
+    "test-integrations": {
+      "dependsOn": ["^build"],
       "cache": false
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
     }
   }
 }

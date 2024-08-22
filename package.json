@@ -2,7 +2,6 @@
   "name": "pocket-monorepo",
   "private": true,
   "scripts": {
-    "prebuild": "dotenv -- turbo run prebuild",
     "build": "dotenv -- turbo run build",
     "clean": "rm -rf .turbo node_modules packages/**/.turbo packages/**/dist packages/**/node_modules servers/**/logs servers/**/.turbo servers/**/dist servers/**/node_modules lambdas/**/logs lambdas/**/.turbo lambdas/**/dist lambdas/**/node_modules infrastructure/**/dist infrastructure/**/node_modules infrastructure/**/.turbo infrastructure/**/cdktf.out",
     "dev": "dotenv -- turbo run dev --concurrency 50",
@@ -15,7 +14,6 @@
     "prepare": "husky",
     "semantic-release": "dotenv -- turbo run semantic-release",
     "synth": "dotenv -- turbo run synth",
-    "pretest-integrations": "dotenv -- turbo run pretest-integrations",
     "test": "dotenv -- turbo run test",
     "test-integrations": "dotenv -- turbo run test-integrations"
   },
