@@ -3,6 +3,10 @@
   "extends": ["github>Pocket/renovate-config", "group:monorepos"],
   "packageRules": [
     {
+      "matchDepTypes": ["action"],
+      "pinDigests": false
+    },
+    {
       "managers": ["docker-compose"],
       "updateTypes": ["digest", "pinDigest"],
       "enabled": false
