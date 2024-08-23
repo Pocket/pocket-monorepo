@@ -28,7 +28,10 @@ class BrazeContentProxy extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
-    new awsProvider.AwsProvider(this, 'aws', { region: 'us-east-1' });
+    new awsProvider.AwsProvider(this, 'aws', {
+      region: 'us-east-1',
+      defaultTags: [{ tags: config.tags }],
+    });
     new pagerDutyProvider.PagerdutyProvider(this, 'pagerduty_provider', {
       token: undefined,
     });
@@ -130,7 +133,6 @@ class BrazeContentProxy extends TerraformStack {
       internal: false,
       prefix: config.prefix,
       alb6CharacterPrefix: config.shortName,
-      tags: config.tags,
       cdn: true,
       domain: config.domain,
       containerConfigs: [
