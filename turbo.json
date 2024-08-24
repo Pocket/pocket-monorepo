@@ -6,7 +6,21 @@
     ".env",
     ".env.example"
   ],
-  "globalEnv": ["NODE_ENV", "GITHUB_TOKEN", "NPM_TOKEN", "GH_TOKEN"],
+  "globalEnv": [
+    "NODE_ENV",
+    "GITHUB_TOKEN",
+    "NPM_TOKEN",
+    "GH_TOKEN",
+    "PARSER_BASE_ENDPOINT",
+    "PARSER_DATA_PATH",
+    "LOG_LEVEL",
+    "CHARACTER_MAP",
+    "POSITION_MAP",
+    "MD5_RANDOMIZER",
+    "LETTER_INDEX",
+    "SALT_1",
+    "SALT_2"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
