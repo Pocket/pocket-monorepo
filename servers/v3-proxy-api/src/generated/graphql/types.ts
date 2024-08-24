@@ -3438,7 +3438,7 @@ export type Topic = {
   displayName: Scalars['String']['output'];
   /** If returned a note to show to the user about the topic */
   displayNote?: Maybe<Scalars['String']['output']>;
-  /** The id of the topic */
+  /** The legacy UUID id of the topic */
   id: Scalars['ID']['output'];
   /** Whether or not clients should show this topic ot users */
   isDisplayed: Scalars['Boolean']['output'];

@@ -47,7 +47,7 @@ export const resolvers: Resolvers = {
       }
 
       if ('givenUrl' in item) {
-        return itemFromUrl(item.givenUrl, context);
+        return { ...item, ...itemFromUrl(item.givenUrl, context) };
       } else if ('itemId' in item) {
         const itemLoaderType = await context.dataLoaders.itemIdLoader.load(
           item.itemId,
@@ -55,10 +55,11 @@ export const resolvers: Resolvers = {
         if (!itemLoaderType.url) {
           throw new Error(`No url found for itemId: ${item.itemId}`);
         }
-        return itemFromUrl(itemLoaderType.url, context);
+        return { ...item, ...itemFromUrl(itemLoaderType.url, context) };
       }
     },
-    article: async (parent, args, { dataSources }, info) => {
+    article: async (uncastParent, args, { dataSources }, info) => {
+      const parent = uncastParent as Item;
       if (parent.article) {
         // Use the parent resolver for article content if available
         // (e.g. via refreshArticle mutation), otherwise load the article
@@ -78,7 +79,8 @@ export const resolvers: Resolvers = {
 
       return item.article || null;
     },
-    marticle: async (parent, args, { dataSources }, info) => {
+    marticle: async (uncastParent, args, { dataSources }, info) => {
+      const parent = uncastParent as Item;
       // Note: When the Web & Android teams switch to MArticle, make all the parser article call use
       // MediaTypeParam.AS_COMMENTS and add back this optimization:
       //
@@ -106,12 +108,13 @@ export const resolvers: Resolvers = {
         : ([] as MarticleElement[]);
     },
     ssml: async (parent, args, { dataSources }, info) => {
-      if (!parent.article && parent.isArticle) {
+      const castParent = parent as Item;
+      if (!castParent.article && castParent.isArticle) {
         // If the field was requested via refreshArticle we need to clear the cache before we request data
         const clearCache = isInResolverChain('refreshItemArticle', info.path);
-        parent.article = (
+        castParent.article = (
           await dataSources.parserAPI.getItemData(
-            parent.givenUrl,
+            castParent.givenUrl,
             {
               videos: MediaTypeParam.DIV_TAG,
               images: MediaTypeParam.DIV_TAG,
@@ -121,12 +124,14 @@ export const resolvers: Resolvers = {
           )
         ).article;
       }
-      if (!parent.article) {
+      if (!castParent.article) {
         return null;
       }
-      return SSMLModel.generateSSML(parent);
+      return SSMLModel.generateSSML(parent as Item);
     },
-    shortUrl: async (parent, args, context) => {
+    shortUrl: async (uncastParent, args, context) => {
+      const parent = uncastParent as Item;
+
       // If the givenUrl is already a short share url, or there is a
       // short url key on the parent from a previous step, return the
       // same value to avoid another db trip
@@ -147,11 +152,11 @@ export const resolvers: Resolvers = {
       const clearCache = isInResolverChain('refreshItemArticle', info.path);
       const preview =
         await context.dataSources.pocketMetadataModel.derivePocketMetadata(
-          parent,
+          parent as Item,
           context,
           clearCache,
         );
-      return { ...preview, item: parent };
+      return { ...preview, item: parent as Item };
     },
   },
   MarticleComponent: {
@@ -209,6 +214,18 @@ export const resolvers: Resolvers = {
       } catch {
         return null;
       }
+    },
+    preview: async (parent: { url: string }, _, context) => {
+      console.log(parent);
+      const item = await context.dataSources.parserAPI.getItemData(parent.url);
+
+      const preview =
+        await context.dataSources.pocketMetadataModel.derivePocketMetadata(
+          item,
+          context,
+          false,
+        );
+      return { ...preview, item };
     },
   },
   Collection: {

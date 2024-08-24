@@ -40,11 +40,29 @@ export class PocketMetadataModel {
     const url = item.givenUrl; // the url we are going to key everything on.
     const fallbackParserPocketMetadata: ItemSummary = {
       id: item.id,
-      image: item.topImage ?? item.images?.[0],
-      excerpt: item.excerpt,
-      title: item.title ?? item.givenUrl,
-      authors: item.authors,
-      domain: item.domainMetadata,
+      image: item.syndicatedArticle?.mainImage
+        ? {
+            url: item.syndicatedArticle?.mainImage,
+            imageId: 0,
+            src: item.syndicatedArticle?.mainImage,
+          }
+        : (item.topImage ?? item.images?.[0]),
+      excerpt: item.syndicatedArticle?.excerpt ?? item.excerpt,
+      title: item.syndicatedArticle?.title ?? item.title ?? item.givenUrl,
+      authors: item.syndicatedArticle?.authorNames
+        ? item.syndicatedArticle.authorNames.map((author, index) => {
+            return {
+              name: author,
+              id: index.toFixed(),
+            };
+          })
+        : item.authors,
+      domain: item.syndicatedArticle?.publisher
+        ? {
+            logo: item.syndicatedArticle.publisher.logo,
+            name: item.syndicatedArticle.publisher.name,
+          }
+        : item.domainMetadata,
       datePublished: item.datePublished
         ? DateTime.fromSQL(item.datePublished, {
             zone: config.mysql.tz,

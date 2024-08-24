@@ -20,6 +20,11 @@ See Section 5.6 of the RFC 3339 profile of the ISO 8601 standard: https://www.ie
 scalar ISOString
 
 """
+A date in the YYYY-MM-DD format.
+"""
+scalar Date
+
+"""
 A string formatted with CommonMark markdown,
 plus the strikethrough extension from GFM.
 This Scalar is for documentation purposes; otherwise
@@ -169,6 +174,12 @@ type Item
 
   "The client preview/display logic for this url"
   preview: PocketMetadata
+    @requires(
+      fields: "syndicatedArticle { title excerpt mainImage publishedAt authorNames publisherUrl publisher { logo name } } "
+    )
+
+  "If the item has a syndicated counterpart the syndication information"
+  syndicatedArticle: SyndicatedArticle @external
 }
 
 type ArticleMarkdown {
@@ -440,6 +451,33 @@ extend type CorpusItem @key(fields: "url") {
   Time to read in minutes. Is nullable.
   """
   timeToRead: Int
+
+  """
+  The title of the Approved Item.
+  """
+  title: String! @external
+  """
+  The excerpt of the Approved Item.
+  """
+  excerpt: String! @external
+  """
+  The publication date for this story.
+  """
+  datePublished: Date @external
+  """
+  The name of the online publication that published this story.
+  """
+  publisher: String! @external
+  """
+  The image for this item's accompanying picture.
+  """
+  image: Image! @external
+
+  """
+  The preview of the search result
+  """
+  preview: PocketMetadata!
+    @requires(fields: "title excerpt datePublished publisher image { url }")
 }
 extend type Collection @key(fields: "slug") {
   """
@@ -524,7 +562,7 @@ Card preview data for Items resolved from reader view
 
 Should be used to create a view if Reader Mode cannot
 be rendered (e.g. the link is visited by an anonymous
-Pocket user, or a Pocket User that does not have the 
+Pocket user, or a Pocket User that does not have the
 underlying Item in their Saves). Due to legal obligations
 we can only display Reader Mode for SavedItems.
 """
@@ -541,10 +579,46 @@ type PocketShare @key(fields: "targetUrl") {
   preview: PocketMetadata
 }
 
-"""A node in a CorpusSearchConnection result"""
-type CorpusSearchNode @key (fields: "url") {
-  """For federation only"""
+"""
+A node in a CorpusSearchConnection result
+"""
+type CorpusSearchNode @key(fields: "url") {
+  """
+  For federation only
+  """
   url: Url! @inaccessible
-  """The preview of the search result"""
+  """
+  The preview of the search result
+  """
   preview: PocketMetadata!
+}
+
+extend type SyndicatedArticle @external {
+  "Title of syndicated article"
+  title: String!
+  "Array of author names in string format"
+  authorNames: [String]!
+
+  "AWSDateTime — Format: YYYY-MM-DDThh:mm:ss.sssZ"
+  publishedAt: String!
+
+  "Primary image to use in surfacing this content"
+  mainImage: String
+
+  "Excerpt "
+  excerpt: String
+
+  "The canonical publisher URL. Automatically set at time of creation but can be changed by editor."
+  publisherUrl: String!
+
+  "The manually set publisher information for this article"
+  publisher: Publisher
+}
+
+
+extend type Publisher @external {
+  "Square logo to use for the publisher"
+  logo: String
+  "Name of the publisher of the article"
+  name: String
 }
