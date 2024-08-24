@@ -479,6 +479,7 @@ extend type CorpusItem @key(fields: "url") {
   preview: PocketMetadata!
     @requires(fields: "title excerpt datePublished publisher image { url }")
 }
+
 extend type Collection @key(fields: "slug") {
   """
   Provides short url for the given_url in the format: https://pocket.co/<identifier>.

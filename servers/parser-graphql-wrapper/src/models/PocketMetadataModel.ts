@@ -3,6 +3,9 @@ import {
   PocketMetadataSource,
   PocketMetadata,
   ItemSummary,
+  SyndicatedArticle,
+  CorpusItem,
+  Collection,
 } from '../__generated__/resolvers-types';
 import config from '../config';
 import { DateTime } from 'luxon';
@@ -36,31 +39,42 @@ export class PocketMetadataModel {
     item: Item,
     context: IContext,
     refresh: boolean,
+    extraData: {
+      corpusItem?: CorpusItem;
+      syndicatedArticle?: SyndicatedArticle;
+      collection?: Collection;
+    } = {},
   ): Promise<PocketMetadata> {
+    const { corpusItem, syndicatedArticle, collection } = extraData;
     const url = item.givenUrl; // the url we are going to key everything on.
     const fallbackParserPocketMetadata: ItemSummary = {
       id: item.id,
-      image: item.syndicatedArticle?.mainImage
+      image: syndicatedArticle?.mainImage
         ? {
-            url: item.syndicatedArticle?.mainImage,
+            url: syndicatedArticle?.mainImage,
             imageId: 0,
-            src: item.syndicatedArticle?.mainImage,
+            src: syndicatedArticle?.mainImage,
           }
         : (item.topImage ?? item.images?.[0]),
-      excerpt: item.syndicatedArticle?.excerpt ?? item.excerpt,
-      title: item.syndicatedArticle?.title ?? item.title ?? item.givenUrl,
-      authors: item.syndicatedArticle?.authorNames
-        ? item.syndicatedArticle.authorNames.map((author, index) => {
+      excerpt:
+        syndicatedArticle?.excerpt ?? corpusItem?.excerpt ?? item.excerpt,
+      title:
+        syndicatedArticle?.title ??
+        corpusItem?.title ??
+        item.title ??
+        item.givenUrl,
+      authors: syndicatedArticle?.authorNames
+        ? syndicatedArticle.authorNames.map((author, index) => {
             return {
               name: author,
               id: index.toFixed(),
             };
           })
         : item.authors,
-      domain: item.syndicatedArticle?.publisher
+      domain: syndicatedArticle?.publisher
         ? {
-            logo: item.syndicatedArticle.publisher.logo,
-            name: item.syndicatedArticle.publisher.name,
+            logo: syndicatedArticle.publisher.logo,
+            name: syndicatedArticle.publisher.name,
           }
         : item.domainMetadata,
       datePublished: item.datePublished
@@ -69,9 +83,12 @@ export class PocketMetadataModel {
           }).toJSDate()
         : null,
       url: url,
+      //TODO: when we have a native pocket type, change the type and source
       source: PocketMetadataSource.PocketParser,
       __typename: 'ItemSummary',
     };
+    //TODO: re-enable the other parsers once the main data is setup
+    return fallbackParserPocketMetadata;
 
     // First we filter to our sources.
     // We do this first because some sources could be behind a feature flag or not enabled

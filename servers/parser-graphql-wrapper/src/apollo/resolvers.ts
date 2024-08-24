@@ -8,7 +8,12 @@ import {
 import { SSMLModel } from '../models/SSMLModel';
 import { fallbackPage } from '../readerView';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
-import { Item, Resolvers, Videoness } from '../__generated__/resolvers-types';
+import {
+  CorpusItem,
+  Item,
+  Resolvers,
+  Videoness,
+} from '../__generated__/resolvers-types';
 import { BoolStringParam, MediaTypeParam } from '../datasources/ParserAPI';
 import {
   extractSlugFromReadUrl,
@@ -27,6 +32,7 @@ export const resolvers: Resolvers = {
           item,
           context,
           false,
+          { syndicatedArticle: item.syndicatedArticle },
         );
       return {
         url: representation.url,
@@ -155,6 +161,7 @@ export const resolvers: Resolvers = {
           parent as Item,
           context,
           clearCache,
+          { syndicatedArticle: parent.syndicatedArticle },
         );
       return { ...preview, item: parent as Item };
     },
@@ -215,8 +222,7 @@ export const resolvers: Resolvers = {
         return null;
       }
     },
-    preview: async (parent: { url: string }, _, context) => {
-      console.log(parent);
+    preview: async (parent, _, context) => {
       const item = await context.dataSources.parserAPI.getItemData(parent.url);
 
       const preview =
@@ -224,6 +230,7 @@ export const resolvers: Resolvers = {
           item,
           context,
           false,
+          { corpusItem: parent as CorpusItem },
         );
       return { ...preview, item };
     },
