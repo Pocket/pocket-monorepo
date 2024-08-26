@@ -240,7 +240,7 @@ class ImageAPI extends TerraformStack {
           threshold: 25,
           evaluationPeriods: 4,
           period: 300,
-          actions: config.isProd ? [snsTopic.arn] : [],
+          actions: config.isProd ? [] : [],
         },
       },
     });
