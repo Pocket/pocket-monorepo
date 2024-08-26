@@ -1,7 +1,7 @@
 import { Strategy } from 'unleash-client';
 import { UnleashContext } from '../../graphql/typeDefs';
 import { normalizedStrategyValue } from 'unleash-client/lib/strategy/util';
-import { AccountAgeError, SessionIdError } from '../../utils/customErrors';
+import { AccountAgeError } from '../../utils/customErrors';
 import * as Sentry from '@sentry/node';
 
 const DAY_IN_MILLISECONDS = 86400000;
@@ -15,12 +15,7 @@ export class AccountAgeStrategy extends Strategy {
     try {
       const groupId = parameters.groupId || context.featureToggle || '';
       const percentage = Number(parameters.rollout);
-      const stickinessId = context.userId || context.sessionId;
-
-      // If there is no sticky id
-      if (!stickinessId || !stickinessId?.length) {
-        throw new SessionIdError('No Stickiness ID Provided');
-      }
+      const stickinessId = context.userId || context.sessionId || '';
 
       // Check for valid start date
       const accountAge = parameters?.accountAge;
