@@ -19,7 +19,9 @@
     "MD5_RANDOMIZER",
     "LETTER_INDEX",
     "SALT_1",
-    "SALT_2"
+    "SALT_2",
+    "UNLEASH_ENDPOINT",
+    "UNLEASH_KEY"
   ],
   "tasks": {
     "build": {

@@ -32,7 +32,10 @@ export const resolvers: Resolvers = {
           item,
           context,
           false,
-          { syndicatedArticle: item.syndicatedArticle },
+          {
+            syndicatedArticle: item.syndicatedArticle,
+            collection: item.collection,
+          },
         );
       return {
         url: representation.url,
@@ -161,7 +164,10 @@ export const resolvers: Resolvers = {
           parent as Item,
           context,
           clearCache,
-          { syndicatedArticle: parent.syndicatedArticle },
+          {
+            syndicatedArticle: parent.syndicatedArticle,
+            collection: parent.collection,
+          },
         );
       return { ...preview, item: parent as Item };
     },

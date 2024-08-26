@@ -175,11 +175,15 @@ type Item
   "The client preview/display logic for this url"
   preview: PocketMetadata
     @requires(
-      fields: "syndicatedArticle { title excerpt mainImage publishedAt authorNames publisherUrl publisher { logo name } } "
+      fields: "syndicatedArticle { title excerpt mainImage publishedAt authorNames publisherUrl publisher { logo name } } collection { title slug excerpt publishedAt authors { name } imageUrl } "
     )
 
   "If the item has a syndicated counterpart the syndication information"
   syndicatedArticle: SyndicatedArticle @external
+
+  collection: Collection @external
+
+  #  corpusItem: CorpusItem @external
 }
 
 type ArticleMarkdown {
@@ -487,6 +491,15 @@ extend type Collection @key(fields: "slug") {
   """
   shortUrl: Url @tag(name: "beta")
   slug: String! @external
+  title: String! @external
+  authors: [CollectionAuthor!]! @external
+  excerpt: Markdown @external
+  publishedAt: DateString @external
+  imageUrl: Url @external
+}
+
+extend type CollectionAuthor @external {
+  name: String!
 }
 
 """
@@ -507,6 +520,9 @@ enum PocketMetadataSource {
   POCKET_PARSER
   OPENGRAPH
   OEMBED
+  CURATED_CORPUS
+  COLLECTION
+  SYNDICATION
 }
 
 interface PocketMetadata {

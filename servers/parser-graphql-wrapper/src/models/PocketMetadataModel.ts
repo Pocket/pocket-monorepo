@@ -45,50 +45,20 @@ export class PocketMetadataModel {
       collection?: Collection;
     } = {},
   ): Promise<PocketMetadata> {
-    const { corpusItem, syndicatedArticle, collection } = extraData;
+    const { syndicatedArticle, collection } = extraData;
     const url = item.givenUrl; // the url we are going to key everything on.
-    const fallbackParserPocketMetadata: ItemSummary = {
-      id: item.id,
-      image: syndicatedArticle?.mainImage
-        ? {
-            url: syndicatedArticle?.mainImage,
-            imageId: 0,
-            src: syndicatedArticle?.mainImage,
-          }
-        : (item.topImage ?? item.images?.[0]),
-      excerpt:
-        syndicatedArticle?.excerpt ?? corpusItem?.excerpt ?? item.excerpt,
-      title:
-        syndicatedArticle?.title ??
-        corpusItem?.title ??
-        item.title ??
-        item.givenUrl,
-      authors: syndicatedArticle?.authorNames
-        ? syndicatedArticle.authorNames.map((author, index) => {
-            return {
-              name: author,
-              id: index.toFixed(),
-            };
-          })
-        : item.authors,
-      domain: syndicatedArticle?.publisher
-        ? {
-            logo: syndicatedArticle.publisher.logo,
-            name: syndicatedArticle.publisher.name,
-          }
-        : item.domainMetadata,
-      datePublished: item.datePublished
-        ? DateTime.fromSQL(item.datePublished, {
-            zone: config.mysql.tz,
-          }).toJSDate()
-        : null,
-      url: url,
-      //TODO: when we have a native pocket type, change the type and source
-      source: PocketMetadataSource.PocketParser,
-      __typename: 'ItemSummary',
-    };
-    //TODO: re-enable the other parsers once the main data is setup
-    return fallbackParserPocketMetadata;
+    const fallbackParserPocketMetadata = this.transformParserFallback(item);
+    const syndicatedArticlePocketMetadata = this.transformSyndicatedArticle(
+      item,
+      syndicatedArticle,
+    );
+    const collectionPocketMetadata = this.transformCollection(item, collection);
+    if (syndicatedArticlePocketMetadata) {
+      return syndicatedArticlePocketMetadata;
+    }
+    if (collectionPocketMetadata) {
+      return collectionPocketMetadata;
+    }
 
     // First we filter to our sources.
     // We do this first because some sources could be behind a feature flag or not enabled
@@ -206,5 +176,99 @@ export class PocketMetadataModel {
     }
 
     return res == null ? null : this.fromEntity(res);
+  }
+
+  transformCollection(
+    item: Item,
+    collection: Collection,
+  ): ItemSummary | undefined {
+    if (!collection) {
+      return;
+    }
+    return {
+      id: item.id,
+      image: {
+        url: collection.imageUrl,
+        imageId: 0,
+        src: collection.imageUrl,
+      },
+      excerpt: collection.excerpt, // TODO: Convert from markdown
+      title: collection.title,
+      authors: collection.authors.map((author, index) => {
+        return {
+          name: author.name,
+          id: index.toFixed(),
+        };
+      }),
+      domain: {
+        logo: 'https://getpocket.com/favicon.ico',
+        name: 'Pocket',
+      },
+      datePublished: item.datePublished
+        ? DateTime.fromSQL(item.datePublished, {
+            zone: config.mysql.tz,
+          }).toJSDate()
+        : null,
+      url: item.givenUrl,
+      source: PocketMetadataSource.Collection,
+      __typename: 'ItemSummary',
+    };
+  }
+
+  transformSyndicatedArticle(
+    item: Item,
+    syndicatedArticle?: SyndicatedArticle,
+  ): ItemSummary | undefined {
+    if (!syndicatedArticle) {
+      return;
+    }
+
+    return {
+      id: item.id,
+      image: {
+        url: syndicatedArticle.mainImage,
+        imageId: 0,
+        src: syndicatedArticle.mainImage,
+      },
+      excerpt: syndicatedArticle.excerpt,
+      title: syndicatedArticle.title,
+      authors: syndicatedArticle.authorNames.map((author, index) => {
+        return {
+          name: author,
+          id: index.toFixed(),
+        };
+      }),
+      domain: {
+        logo: syndicatedArticle.publisher.logo,
+        name: syndicatedArticle.publisher.name,
+      },
+      datePublished: item.datePublished
+        ? DateTime.fromSQL(item.datePublished, {
+            zone: config.mysql.tz,
+          }).toJSDate()
+        : null,
+      url: item.givenUrl,
+      source: PocketMetadataSource.Syndication,
+      __typename: 'ItemSummary',
+    };
+  }
+
+  transformParserFallback(item: Item): ItemSummary | undefined {
+    return {
+      id: item.id,
+      image: item.topImage ?? item.images?.[0],
+      excerpt: item.excerpt,
+      title: item.title ?? item.givenUrl,
+      authors: item.authors,
+      domain: item.domainMetadata,
+      datePublished: item.datePublished
+        ? DateTime.fromSQL(item.datePublished, {
+            zone: config.mysql.tz,
+          }).toJSDate()
+        : null,
+      url: item.givenUrl,
+      source: PocketMetadataSource.PocketParser,
+      __typename: 'ItemSummary',
+    };
   }
 }
