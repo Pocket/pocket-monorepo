@@ -2,7 +2,7 @@ import { Strategy } from 'unleash-client';
 import { UnleashContext } from '../../graphql/typeDefs';
 import { normalizedStrategyValue } from 'unleash-client/lib/strategy/util';
 import { pocketSupportedLocales } from '../../utils/pocketSupportedLocales';
-import { StartDateError, SessionIdError } from '../../utils/customErrors';
+import { StartDateError } from '../../utils/customErrors';
 import * as Sentry from '@sentry/node';
 
 export class NewUserInLocaleStrategy extends Strategy {
@@ -14,12 +14,7 @@ export class NewUserInLocaleStrategy extends Strategy {
     try {
       const groupId = parameters.groupId || context.featureToggle || '';
       const percentage = Number(parameters.rollout);
-      const stickinessId = context.userId || context.sessionId;
-
-      // If there is no sticky id
-      if (!stickinessId || !stickinessId?.length) {
-        throw new SessionIdError('No Stickiness ID Provided');
-      }
+      const stickinessId = context.userId || context.sessionId || '';
 
       // Check for language
       const passedLocale = context?.properties?.locale || 'en';
