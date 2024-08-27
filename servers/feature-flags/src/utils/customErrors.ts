@@ -18,10 +18,3 @@ export class AccountCreatedAtError extends Error {
     this.name = 'AccountCreatedAtError';
   }
 }
-
-export class SessionIdError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'SessionIdError';
-  }
-}
