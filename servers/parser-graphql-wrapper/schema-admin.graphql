@@ -1,0 +1,556 @@
+extend schema
+  @link(
+    url: "https://specs.apollo.dev/federation/v2.0"
+    import: [
+      "@key"
+      "@shareable"
+      "@requires"
+      "@external"
+      "@tag"
+      "@inaccessible"
+    ]
+  )
+"A String representing a date in the format of `yyyy-MM-dd HH:mm:ss`"
+scalar DateString
+"""
+ISOString scalar - all datetimes fields are Typescript Date objects on this server &
+returned as ISO-8601 encoded date strings (e.g. ISOString scalars) to GraphQL clients.
+See Section 5.6 of the RFC 3339 profile of the ISO 8601 standard: https://www.ietf.org/rfc/rfc3339.txt.
+"""
+scalar ISOString
+
+"""
+A string formatted with CommonMark markdown,
+plus the strikethrough extension from GFM.
+This Scalar is for documentation purposes; otherwise
+not treated differently from String in the API.
+"""
+scalar Markdown
+
+"A String in the format of a url."
+scalar Url
+scalar ValidUrl
+
+enum CacheControlScope {
+  PUBLIC
+  PRIVATE
+}
+
+"""
+We need to manually implement cacheControl in the schema for now
+https://stackoverflow.com/questions/52922080/how-to-implement-caching-on-apollo-server-hapi-graphql
+https://github.com/apollographql/federation/issues/356
+"""
+directive @cacheControl(
+  maxAge: Int
+  scope: CacheControlScope
+) on FIELD_DEFINITION | OBJECT | INTERFACE
+
+"""
+The heart of Pocket
+A url and meta data related to it.
+"""
+type Item
+  @key(fields: "givenUrl")
+  @key(fields: "itemId")
+  @cacheControl(maxAge: 86400) {
+  "A server generated unique id for this item. Item's whose normalUrl are the same will have the same item_id. Most likely numeric, but to ensure future proofing this can be treated as a String in apps."
+  itemId: String!
+  "A server generated unique id for this item based on itemId"
+  id: ID!
+  "A server generated unique reader slug for this item based on itemId"
+  readerSlug: String!
+  """
+  A normalized value of the givenUrl.
+  It will look like a url but is not guaranteed to be a valid url, just a unique string that is used to eliminate common duplicates.
+  Item's that share a normal_url should be considered the same item. For example https://getpocket.com and http://getpocket.com will be considered the same since they both normalize to http://getpocket.com
+  This is technically the true identity of an item, since this is what the backend uses to tell if two items are the same.
+  However, for the clients to use this, they would all have to ship an implementation of the normalization function that the backend has exactly.
+  And even if it did that, some items, some of the earliest saves, use a legacy normalize function and the client would have no way to know when to use which normalizing function.
+  """
+  normalUrl: String!
+  "If available, the url to an AMP version of this article"
+  ampUrl: Url
+  """
+  Provides short url for the given_url in the format: https://pocket.co/<identifier>.
+  marked as beta because it's not ready yet for large client request.
+  """
+  shortUrl: Url @tag(name: "beta")
+  "List of Authors involved with this article"
+  authors: [Author]
+  "The domain, such as 'getpocket.com' of the resolved_url"
+  domain: String
+  "Additional information about the item domain, when present, use this for displaying the domain name"
+  domainMetadata: DomainMetadata
+  "The string encoding code of this item's web page"
+  encoding: String
+  "A snippet of text from the article"
+  excerpt: String
+  "0=no images, 1=contains images, 2=is an image"
+  hasImage: Imageness
+  "0=no videos, 1=contains video, 2=is a video"
+  hasVideo: Videoness
+  "Array of images within an article"
+  images: [Image]
+  "true if the item is an article"
+  isArticle: Boolean
+  "true if the item is an index / home page, rather than a specific single piece of content"
+  isIndex: Boolean
+  "The mime type of this item's web page"
+  mimeType: String
+  "The item id of the resolved_url"
+  resolvedId: String
+  "If the givenUrl redirects (once or many times), this is the final url. Otherwise, same as givenUrl"
+  resolvedUrl: Url
+  "The title as determined by the parser."
+  title: String
+  "The page's / publisher's preferred thumbnail image"
+  topImageUrl: Url @deprecated(reason: "use the topImage object")
+  "The page's / publisher's preferred thumbnail image"
+  topImage: Image
+  "Array of videos within the item If the item is a video, this will likely just contain one video"
+  videos: [Video]
+  "Number of words in the article"
+  wordCount: Int
+  "The date the parser resolved this item"
+  dateResolved: DateString
+  "The date the article was published"
+  datePublished: DateString
+  "The detected language of the article"
+  language: String
+  "How long it will take to read the article (TODO in what time unit? and by what calculation?)"
+  timeToRead: Int
+  "Estimated time to listen to the article, in seconds"
+  listenDuration: Int
+  """
+  The url as provided by the user when saving. Only http or https schemes allowed.
+
+  CAUTION: this value will *likely* (but not always) change depending on which query is used.
+  itemByItemId will return the normalUrl value here (which is a bug?). itemByUrl will return
+  the URL value passed in to the query. As if that weren't complicated enough, sometimes
+  normalUrl and givenUrl are the same (but not usually).
+  """
+  givenUrl: Url!
+  "Indicates that the item was stored via a different search_hash (using the old method), we'll need to look up a different id"
+  hasOldDupes: Boolean @deprecated(reason: "Most new items use a new hash")
+  "The primary database id of the domain this article is from"
+  domainId: String @deprecated(reason: "Use a domain as the identifier instead")
+  "If a the domainId is a subdomain this is the primary domain id"
+  originDomainId: String
+    @deprecated(reason: "Use a domain as the identifier instead")
+  "The http response code of the given url"
+  responseCode: Int @deprecated(reason: "Clients should not use this")
+  "The length in bytes of the content"
+  contentLength: Int @deprecated(reason: "Clients should not use this")
+  "Indicates if the text of the url is a redirect to another url"
+  innerDomainRedirect: Boolean
+    @deprecated(reason: "Clients should not use this")
+  "Indicates if the url requires a login"
+  loginRequired: Boolean @deprecated(reason: "Clients should not use this")
+  "Indicates if the parser used fallback methods"
+  usedFallback: Int @deprecated(reason: "Clients should not use this")
+  "Date this item was first parsed in Pocket"
+  timeFirstParsed: DateString @deprecated(reason: "Clients should not use this")
+  "The resolved url, but ran through the normalized function"
+  resolvedNormalUrl: Url @deprecated(reason: "Use the resolved url instead")
+  """
+  The pocket HTML string of the article.
+  Note: Web and Android as of 3/4/2022 use the Article field, any improvements made
+  within MArticle for parsing will not be reflected in the article field.
+  When that happens, the clients will work to move to MArticle.
+  """
+  article: String
+
+  "If the url is an Article, the text in SSML format for speaking, i.e. Listen"
+  ssml: String @tag(name: "beta")
+
+  "The Marticle format of the article, used by clients for native article view."
+  marticle: [MarticleComponent!]
+
+  "The client preview/display logic for this url"
+  preview: PocketMetadata
+}
+
+type ArticleMarkdown {
+  text: String!
+  images: [MarkdownImagePosition!]
+}
+
+type MarkdownImagePosition {
+  index: Int!
+  position: Int!
+  """
+  Fallback is to use the images field in the Item entity
+  """
+  src: String
+}
+
+"""
+Metadata from a domain, originally populated from ClearBit
+"""
+type DomainMetadata @cacheControl(maxAge: 86400) {
+  "The name of the domain (e.g., The New York Times)"
+  name: String
+  "Url for the logo image"
+  logo: Url
+  "Url for the greyscale logo image"
+  logoGreyscale: Url
+}
+
+"""
+An image, typically a thumbnail or article view image for an Item
+"""
+type Image @cacheControl(maxAge: 86400) @key(fields: "url") {
+  "Absolute url to the image"
+  url: Url!
+  "A caption or description of the image"
+  caption: String
+  "A credit for the image, typically who the image belongs to / created by"
+  credit: String
+  "If known, the height of the image in px"
+  height: Int @shareable
+  "The id for placing within an Article View. Item.article will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view."
+  imageId: Int!
+  "Absolute url to the image"
+  src: String! @deprecated(reason: "use url property moving forward")
+  "If known, the width of the image in px"
+  width: Int @shareable
+  "If the image is also a link, the destination url"
+  targetUrl: String
+}
+
+enum Imageness {
+  "No images (v3 value is 0)"
+  NO_IMAGES
+  "Contains images (v3 value is 1)"
+  HAS_IMAGES
+  "Is an image (v3 value is 2)"
+  IS_IMAGE
+}
+
+"""
+A Video, typically within an Article View of an Item or if the Item is a video itself.
+"""
+type Video @cacheControl(maxAge: 86400) {
+  "If known, the height of the video in px"
+  height: Int
+  "Absolute url to the video"
+  src: String!
+  "The type of video"
+  type: VideoType!
+  "The video's id within the service defined by type"
+  vid: String
+  "The id of the video within Article View. Item.article will have placeholders of <div id='RIL_VID_X' /> where X is this id. Apps can download those images as needed and populate them in their article view."
+  videoId: Int!
+  "If known, the width of the video in px"
+  width: Int
+  "If known, the length of the video in seconds"
+  length: Int
+}
+
+enum VideoType {
+  "Youtube (v3 value is 1)"
+  YOUTUBE
+  "Vimeo Link (v3 value is 2)"
+  VIMEO_LINK
+  "Vimeo Moogaloop (v3 value is 3)"
+  VIMEO_MOOGALOOP
+  "video iframe (v3 value is 4)"
+  VIMEO_IFRAME
+  "html5 (v3 value is 5)"
+  HTML5
+  "Flash (v3 value is 6)"
+  FLASH
+  "iframe (v3 value is 7)"
+  IFRAME
+  "Brightcove (v3 value is 8)"
+  BRIGHTCOVE
+}
+
+enum Videoness {
+  "No videos (v3 value is 0)"
+  NO_VIDEOS
+  "Contains videos (v3 value is 1)"
+  HAS_VIDEOS
+  "Is a video (v3 value is 2)"
+  IS_VIDEO
+}
+
+union MarticleComponent =
+  | MarticleText
+  | Image
+  | MarticleDivider
+  | MarticleTable
+  | MarticleHeading
+  | MarticleCodeBlock
+  | Video
+  | MarticleBulletedList
+  | MarticleNumberedList
+  | MarticleBlockquote
+  | UnMarseable
+
+"""
+Represents content that could not be parsed into a valid Marticle* component.
+"""
+type UnMarseable {
+  "The html that could not be parsed into a Marticle* component."
+  html: String!
+}
+
+"""
+A section of the article's text content, in markdown.
+A subset of gfm is supported. See README.md for more information.
+"""
+type MarticleText {
+  "Markdown text content. Typically, a paragraph."
+  content: Markdown!
+}
+
+type MarticleDivider {
+  "Always '---'; provided for convenience if building a markdown string"
+  content: Markdown!
+}
+
+"""
+Content in a table.
+"""
+type MarticleTable {
+  "Raw HTML representation of the table."
+  html: String!
+}
+
+"""
+A heading in an article, with markdown formatting.
+"""
+type MarticleHeading {
+  "Heading text, in markdown."
+  content: Markdown!
+  "Heading level. Restricted to values 1-6."
+  level: Int!
+}
+
+"""
+A pre formatted text in the HTML content.
+"""
+type MarticleCodeBlock {
+  "Content of a pre tag"
+  text: String!
+  "Assuming the codeblock was a programming language, this field is used to identify it."
+  language: Int
+}
+
+interface ListElement {
+  "Row in a list."
+  content: Markdown!
+  "Zero-indexed level, for handling nested lists."
+  level: Int!
+}
+
+"""
+Row in a bulleted (unordered list)
+"""
+type BulletedListElement implements ListElement {
+  "Row in a list."
+  content: Markdown!
+  "Zero-indexed level, for handling nested lists."
+  level: Int!
+}
+
+type NumberedListElement implements ListElement {
+  "Row in a list"
+  content: Markdown!
+  "Zero-indexed level, for handling nested lists."
+  level: Int!
+  "Numeric index. If a nested item, the index is zero-indexed from the first child."
+  index: Int!
+}
+
+"""
+Content in a bulleted (unordered) list.
+"""
+type MarticleBulletedList {
+  rows: [BulletedListElement!]!
+}
+
+"""
+Content in a bulleted (unordered) list.
+"""
+type MarticleNumberedList {
+  rows: [NumberedListElement!]!
+}
+
+"""
+Content of a blockquote
+"""
+type MarticleBlockquote {
+  "Markdown text content."
+  content: Markdown!
+}
+
+"""
+Information about an Author of an article or some content
+"""
+type Author @cacheControl(maxAge: 86400) {
+  "Unique id for that Author"
+  id: ID!
+  "Display name"
+  name: String
+  "A url to that Author's site"
+  url: String
+}
+
+type Query {
+  """
+  Look up Item info by a url.
+  """
+  getItemByUrl(url: String!): Item
+    @cacheControl(maxAge: 86400)
+    @deprecated(reason: "Use itemByUrl instead")
+
+  """
+  Look up Item info by a url.
+  """
+  itemByUrl(url: String!): Item @cacheControl(maxAge: 86400)
+
+  """
+  Resolve Reader View links which might point to SavedItems that do not
+  exist, aren't in the Pocket User's list, or are requested by a logged-out
+  user (or user without a Pocket Account).
+  Fetches data which clients can use to generate an appropriate fallback view
+  that allows users to preview the content and access the original source site.
+  """
+  readerSlug(slug: ID!): ReaderViewResult!
+}
+
+type Mutation {
+  """
+  Refresh an Item's article content.
+  """
+  refreshItemArticle(url: String!): Item!
+}
+
+extend type CorpusItem @key(fields: "url") {
+  """
+  Provides short url for the given_url in the format: https://pocket.co/<identifier>.
+  marked as beta because it's not ready yet for large client request.
+  """
+  shortUrl: Url @tag(name: "beta")
+  url: Url! @external
+  """
+  Time to read in minutes. Is nullable.
+  """
+  timeToRead: Int
+}
+extend type Collection @key(fields: "slug") {
+  """
+  Provides short url for the given_url in the format: https://pocket.co/<identifier>.
+  marked as beta because it's not ready yet for large client request.
+  """
+  shortUrl: Url @tag(name: "beta")
+  slug: String! @external
+}
+
+"""
+Result for resolving a getpocket.com/read/<slug> link.
+"""
+type ReaderViewResult @key(fields: "slug") {
+  slug: ID!
+  fallbackPage: ReaderFallback
+}
+
+"""
+Metadata of an Item in Pocket for preview purposes,
+or an ItemNotFound result if the record does not exist.
+"""
+union ReaderFallback = ReaderInterstitial | ItemNotFound
+
+enum PocketMetadataSource {
+  POCKET_PARSER
+  OPENGRAPH
+  OEMBED
+}
+
+interface PocketMetadata {
+  id: ID!
+  image: Image
+  excerpt: String
+  title: String
+  authors: [Author!]
+  domain: DomainMetadata
+  datePublished: ISOString
+  url: Url!
+  source: PocketMetadataSource!
+  item: Item
+}
+
+type ItemSummary implements PocketMetadata {
+  id: ID!
+  image: Image
+  excerpt: String
+  title: String
+  authors: [Author!]
+  domain: DomainMetadata
+  datePublished: ISOString
+  url: Url!
+  source: PocketMetadataSource!
+  item: Item
+}
+
+enum OEmbedType {
+  RICH
+  VIDEO
+  PHOTO
+  LINK
+}
+
+type OEmbed implements PocketMetadata {
+  id: ID!
+  image: Image
+  excerpt: String
+  title: String
+  authors: [Author!]
+  domain: DomainMetadata
+  datePublished: ISOString
+  url: Url!
+  source: PocketMetadataSource!
+  item: Item
+  htmlEmbed: String
+  type: OEmbedType
+}
+
+"""
+Card preview data for Items resolved from reader view
+(getpocket.com/read/) links.
+
+Should be used to create a view if Reader Mode cannot
+be rendered (e.g. the link is visited by an anonymous
+Pocket user, or a Pocket User that does not have the
+underlying Item in their Saves). Due to legal obligations
+we can only display Reader Mode for SavedItems.
+"""
+type ReaderInterstitial {
+  itemCard: PocketMetadata
+}
+
+type ItemNotFound {
+  message: String
+}
+
+type PocketShare @key(fields: "targetUrl") {
+  targetUrl: ValidUrl!
+  preview: PocketMetadata
+}
+
+"""
+A node in a CorpusSearchConnection result
+"""
+type CorpusSearchNode @key(fields: "url") {
+  """
+  For federation only
+  """
+  url: Url! @inaccessible
+  """
+  The preview of the search result
+  """
+  preview: PocketMetadata!
+}
