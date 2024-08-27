@@ -15,7 +15,7 @@ import {
   PocketMetadataEntity,
 } from '../databases/pocketMetadataStore';
 import md5 from 'md5';
-
+import { getOriginalUrlIfPocketImageCached } from '@pocket-tools/image-utils';
 export interface IPocketMetadataDataSource {
   matcher: RegExp;
   ttl: number; // The ttl of the data in seconds
@@ -185,12 +185,13 @@ export class PocketMetadataModel {
     if (!collection) {
       return;
     }
+    const imageUrl = getOriginalUrlIfPocketImageCached(collection.imageUrl);
     return {
       id: item.id,
       image: {
-        url: collection.imageUrl,
+        url: imageUrl,
         imageId: 0,
-        src: collection.imageUrl,
+        src: imageUrl,
       },
       excerpt: collection.excerpt, // TODO: Convert from markdown
       title: collection.title,
@@ -222,13 +223,16 @@ export class PocketMetadataModel {
     if (!syndicatedArticle) {
       return;
     }
+    const imageUrl = getOriginalUrlIfPocketImageCached(
+      syndicatedArticle.mainImage,
+    );
 
     return {
       id: item.id,
       image: {
-        url: syndicatedArticle.mainImage,
+        url: imageUrl,
         imageId: 0,
-        src: syndicatedArticle.mainImage,
+        src: imageUrl,
       },
       excerpt: syndicatedArticle.excerpt,
       title: syndicatedArticle.title,
