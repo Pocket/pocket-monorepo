@@ -45,21 +45,28 @@ export class PocketMetadataModel {
       collection?: Collection;
     } = {},
   ): Promise<PocketMetadata> {
-    const { syndicatedArticle, collection } = extraData;
+    const { syndicatedArticle, collection, corpusItem } = extraData;
     const url = item.givenUrl; // the url we are going to key everything on.
-    const fallbackParserPocketMetadata = this.transformParserFallback(item);
+
     const syndicatedArticlePocketMetadata = this.transformSyndicatedArticle(
       item,
       syndicatedArticle,
     );
-    const collectionPocketMetadata = this.transformCollection(item, collection);
     if (syndicatedArticlePocketMetadata) {
       return syndicatedArticlePocketMetadata;
     }
+
+    const collectionPocketMetadata = this.transformCollection(item, collection);
     if (collectionPocketMetadata) {
       return collectionPocketMetadata;
     }
 
+    const corpusItemMetadata = this.transformCorpusItem(item, corpusItem);
+    if (corpusItemMetadata) {
+      return corpusItemMetadata;
+    }
+
+    const fallbackParserPocketMetadata = this.transformParserFallback(item);
     // First we filter to our sources.
     // We do this first because some sources could be behind a feature flag or not enabled
     // We also only store other data sources beyond our parser in the datastore, \
@@ -178,6 +185,12 @@ export class PocketMetadataModel {
     return res == null ? null : this.fromEntity(res);
   }
 
+  /**
+   *
+   * @param item Item object from the Graph
+   * @param collection Collection object from the graph
+   * @returns ItemSummary data to be shown to the user
+   */
   transformCollection(
     item: Item,
     collection: Collection,
@@ -205,17 +218,25 @@ export class PocketMetadataModel {
         logo: 'https://getpocket.com/favicon.ico',
         name: 'Pocket',
       },
-      datePublished: item.datePublished
-        ? DateTime.fromSQL(item.datePublished, {
-            zone: config.mysql.tz,
-          }).toJSDate()
-        : null,
+      datePublished: collection.publishedAt
+        ? DateTime.fromISO(collection.publishedAt).toJSDate()
+        : item.datePublished
+          ? DateTime.fromSQL(item.datePublished, {
+              zone: config.mysql.tz,
+            }).toJSDate()
+          : null,
       url: item.givenUrl,
       source: PocketMetadataSource.Collection,
       __typename: 'ItemSummary',
     };
   }
 
+  /**
+   *
+   * @param item Item object from the Graph
+   * @param syndicatedArticle Syndication object from the graph
+   * @returns ItemSummary data to be shown to the user
+   */
   transformSyndicatedArticle(
     item: Item,
     syndicatedArticle?: SyndicatedArticle,
@@ -246,17 +267,74 @@ export class PocketMetadataModel {
         logo: syndicatedArticle.publisher.logo,
         name: syndicatedArticle.publisher.name,
       },
-      datePublished: item.datePublished
-        ? DateTime.fromSQL(item.datePublished, {
-            zone: config.mysql.tz,
-          }).toJSDate()
-        : null,
+      datePublished: syndicatedArticle.publishedAt
+        ? DateTime.fromISO(syndicatedArticle.publishedAt).toJSDate()
+        : item.datePublished
+          ? DateTime.fromSQL(item.datePublished, {
+              zone: config.mysql.tz,
+            }).toJSDate()
+          : null,
       url: item.givenUrl,
       source: PocketMetadataSource.Syndication,
       __typename: 'ItemSummary',
     };
   }
 
+  /**
+   *
+   * @param item Item object from the Graph
+   * @param syndicatedArticle Syndication object from the graph
+   * @returns ItemSummary data to be shown to the user
+   */
+  transformCorpusItem(
+    item: Item,
+    corpusItem?: CorpusItem,
+  ): ItemSummary | undefined {
+    if (!corpusItem) {
+      return;
+    }
+    const imageUrl = getOriginalUrlIfPocketImageCached(corpusItem.image.url);
+
+    return {
+      id: item.id,
+      image: {
+        url: imageUrl,
+        imageId: 0,
+        src: imageUrl,
+      },
+      excerpt: corpusItem.excerpt,
+      title: corpusItem.title,
+      authors: corpusItem.authors
+        .map((author) => {
+          return {
+            name: author.name,
+            id: author.sortOrder.toFixed(),
+          };
+        })
+        .sort((author1, author2) =>
+          author1.id < author2.id ? -1 : author1.id > author2.id ? 1 : 0,
+        ),
+      domain: {
+        name: corpusItem.publisher,
+      },
+      datePublished: corpusItem.datePublished
+        ? DateTime.fromISO(corpusItem.datePublished).toJSDate()
+        : item.datePublished
+          ? DateTime.fromSQL(item.datePublished, {
+              zone: config.mysql.tz,
+            }).toJSDate()
+          : null,
+      url: item.givenUrl,
+      source: PocketMetadataSource.CuratedCorpus,
+      __typename: 'ItemSummary',
+    };
+  }
+
+  /**
+   * Transforms the item into ItemSummary
+   * @param item The item that we need to transform
+   * @returns
+   */
   transformParserFallback(item: Item): ItemSummary | undefined {
     return {
       id: item.id,

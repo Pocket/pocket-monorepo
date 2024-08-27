@@ -172,18 +172,20 @@ type Item
   "The Marticle format of the article, used by clients for native article view."
   marticle: [MarticleComponent!]
 
-  "The client preview/display logic for this url"
+  "The client preview/display logic for this url. The requires for each object should be kept in sync with the sub objects requires field."
   preview: PocketMetadata
     @requires(
-      fields: "syndicatedArticle { title excerpt mainImage publishedAt authorNames publisherUrl publisher { logo name } } collection { title slug excerpt publishedAt authors { name } imageUrl } "
+      fields: "syndicatedArticle { title excerpt mainImage publishedAt authorNames publisherUrl publisher { logo name } } collection { title slug excerpt publishedAt authors { name } imageUrl } corpusItem { title excerpt datePublished publisher image { url } }"
     )
 
-  "If the item has a syndicated counterpart the syndication information"
+  "If the item is a syndicated article, then the syndication information"
   syndicatedArticle: SyndicatedArticle @external
 
+  "If the item is a collection, then the collection information"
   collection: Collection @external
 
-  #  corpusItem: CorpusItem @external
+  "If the item is in the Pocket Corpus, then the corpus information"
+  corpusItem: CorpusItem @external
 }
 
 type ArticleMarkdown {
@@ -478,10 +480,25 @@ extend type CorpusItem @key(fields: "url") {
   image: Image! @external
 
   """
+  The author names and sort orders associated with this CorpusItem.
+  """
+  authors: [CorpusItemAuthor!]! @external
+
+  """
   The preview of the search result
   """
   preview: PocketMetadata!
-    @requires(fields: "title excerpt datePublished publisher image { url }")
+    @requires(
+      fields: "title excerpt datePublished publisher image { url } authors { name sortOrder }"
+    )
+}
+
+"""
+An author associated with a CorpusItem.
+"""
+type CorpusItemAuthor @external {
+  name: String!
+  sortOrder: Int!
 }
 
 extend type Collection @key(fields: "slug") {
@@ -496,6 +513,12 @@ extend type Collection @key(fields: "slug") {
   excerpt: Markdown @external
   publishedAt: DateString @external
   imageUrl: Url @external
+
+  """
+  The preview of the collection
+  """
+  preview: PocketMetadata!
+    @requires(fields: "title excerpt publishedAt authors { name } imageUrl")
 }
 
 extend type CollectionAuthor @external {
@@ -610,26 +633,37 @@ type CorpusSearchNode @key(fields: "url") {
   preview: PocketMetadata!
 }
 
-extend type SyndicatedArticle @external {
+extend type SyndicatedArticle @key(fields: "slug") {
+  "Slug that pocket uses for this article in the url"
+  slug: String
+
   "Title of syndicated article"
-  title: String!
+  title: String! @external
   "Array of author names in string format"
-  authorNames: [String]!
+  authorNames: [String]! @external
 
   "AWSDateTime — Format: YYYY-MM-DDThh:mm:ss.sssZ"
-  publishedAt: String!
+  publishedAt: String! @external
 
   "Primary image to use in surfacing this content"
-  mainImage: String
+  mainImage: String @external
 
   "Excerpt "
-  excerpt: String
+  excerpt: String @external
 
   "The canonical publisher URL. Automatically set at time of creation but can be changed by editor."
-  publisherUrl: String!
+  publisherUrl: String! @external
 
   "The manually set publisher information for this article"
-  publisher: Publisher
+  publisher: Publisher @external
+
+  """
+  The preview of the syndicated article
+  """
+  preview: PocketMetadata!
+    @requires(
+      fields: "title excerpt mainImage publishedAt authorNames publisherUrl publisher { logo name }"
+    )
 }
 
 

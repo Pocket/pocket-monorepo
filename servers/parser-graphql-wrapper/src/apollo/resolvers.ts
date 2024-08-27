@@ -9,9 +9,11 @@ import { SSMLModel } from '../models/SSMLModel';
 import { fallbackPage } from '../readerView';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
 import {
+  Collection,
   CorpusItem,
   Item,
   Resolvers,
+  SyndicatedArticle,
   Videoness,
 } from '../__generated__/resolvers-types';
 import { BoolStringParam, MediaTypeParam } from '../datasources/ParserAPI';
@@ -35,6 +37,7 @@ export const resolvers: Resolvers = {
           {
             syndicatedArticle: item.syndicatedArticle,
             collection: item.collection,
+            corpusItem: item.corpusItem,
           },
         );
       return {
@@ -56,7 +59,7 @@ export const resolvers: Resolvers = {
       }
 
       if ('givenUrl' in item) {
-        return { ...item, ...itemFromUrl(item.givenUrl, context) };
+        return { ...item, ...(await itemFromUrl(item.givenUrl, context)) };
       } else if ('itemId' in item) {
         const itemLoaderType = await context.dataLoaders.itemIdLoader.load(
           item.itemId,
@@ -64,7 +67,7 @@ export const resolvers: Resolvers = {
         if (!itemLoaderType.url) {
           throw new Error(`No url found for itemId: ${item.itemId}`);
         }
-        return { ...item, ...itemFromUrl(itemLoaderType.url, context) };
+        return { ...item, ...(await itemFromUrl(itemLoaderType.url, context)) };
       }
     },
     article: async (uncastParent, args, { dataSources }, info) => {
@@ -165,8 +168,9 @@ export const resolvers: Resolvers = {
           context,
           clearCache,
           {
-            syndicatedArticle: parent.syndicatedArticle,
-            collection: parent.collection,
+            syndicatedArticle: parent.syndicatedArticle as SyndicatedArticle,
+            collection: parent.collection as Collection,
+            corpusItem: parent.corpusItem as CorpusItem,
           },
         );
       return { ...preview, item: parent as Item };
@@ -256,6 +260,36 @@ export const resolvers: Resolvers = {
         resolvedId: parseInt(item.resolvedId),
         givenUrl: item.givenUrl,
       });
+    },
+    preview: async (parent, args, context) => {
+      const item = await context.dataSources.parserAPI.getItemData(
+        `${config.shortUrl.collectionUrl}/${parent.slug}`,
+      );
+
+      const preview =
+        await context.dataSources.pocketMetadataModel.derivePocketMetadata(
+          item,
+          context,
+          false,
+          { collection: parent as Collection },
+        );
+      return { ...preview, item };
+    },
+  },
+  SyndicatedArticle: {
+    preview: async (parent, args, context) => {
+      const item = await context.dataSources.parserAPI.getItemData(
+        `${config.shortUrl.syndicationUrl}/${parent.slug}`,
+      );
+
+      const preview =
+        await context.dataSources.pocketMetadataModel.derivePocketMetadata(
+          item,
+          context,
+          false,
+          { syndicatedArticle: parent as SyndicatedArticle },
+        );
+      return { ...preview, item };
     },
   },
   PocketMetadata: {
