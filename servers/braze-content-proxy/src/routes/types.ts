@@ -1,31 +1,28 @@
 /**
- * The properties of curated items that we need to fetch from Client API.
- */
-export type CorpusItem = {
-  url: string;
-  shortUrl: string;
-  title: string;
-  excerpt: string;
-  imageUrl: string;
-  authors: { name: string };
-  publisher: string;
-  topic: string;
-};
-
-export interface ScheduledSurfaceItem {
-  id: string;
-  corpusItem: CorpusItem;
-}
-
-/**
  * A very lean Corpus Item type with just the data Pocket Hits emails need.
  */
-export type TransformedCorpusItem = Omit<CorpusItem, 'authors'> & {
+export type TransformedCorpusItem = {
   // Unlike in the Client API response, the Braze Content Proxy response contains
   // a string that lists all the authors for each story, not an object.
   authors: string;
   // This value is the id of the Scheduled Surface Item, rather than the Corpus Item
   id: string;
+
+  url: string;
+
+  shortUrl: string;
+
+  title: string;
+
+  topic: string;
+
+  excerpt: string;
+
+  publisher: string;
+
+  imageUrl: string;
+
+  __typename: string;
 };
 
 /**
@@ -44,10 +41,11 @@ export type BrazeCollections = {
   imageUrl: string;
   intro: string;
   publishedAt: string;
+  externalId: string;
   stories: BrazeCollectionStory[];
 };
 
-type BrazeCollectionStory = {
+export type BrazeCollectionStory = {
   title: string;
   url: string;
   shortUrl: string;
@@ -55,4 +53,5 @@ type BrazeCollectionStory = {
   imageUrl: string;
   publisher: string;
   authors: string[];
+  externalId: string;
 };
