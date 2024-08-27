@@ -16,6 +16,8 @@ import {
 } from '../databases/pocketMetadataStore';
 import md5 from 'md5';
 import { getOriginalUrlIfPocketImageCached } from '@pocket-tools/image-utils';
+import markdownToTxt from 'markdown-to-txt';
+
 export interface IPocketMetadataDataSource {
   matcher: RegExp;
   ttl: number; // The ttl of the data in seconds
@@ -206,7 +208,7 @@ export class PocketMetadataModel {
         imageId: 0,
         src: imageUrl,
       },
-      excerpt: collection.excerpt, // TODO: Convert from markdown
+      excerpt: markdownToTxt(collection.excerpt),
       title: collection.title,
       authors: collection.authors.map((author, index) => {
         return {

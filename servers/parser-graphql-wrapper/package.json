@@ -49,6 +49,7 @@
     "kysely": "0.27.3",
     "lodash": "4.17.21",
     "luxon": "3.4.4",
+    "markdown-to-txt": "2.0.1",
     "md5": "2.3.0",
     "mysql2": "3.10.3",
     "open-graph-scraper": "6.5.2",
