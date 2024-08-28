@@ -7,18 +7,19 @@
     "dev": "npm run build && npm run watch",
     "format": "eslint --fix",
     "lint": "eslint --fix-dry-run",
+    "prebuild": "graphql-codegen",
     "start": "node dist/main.js",
     "test": "jest \"\\.spec\\.ts\"",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",
     "test:watch": "npm test -- --watchAll",
-    "watch": "tsc -w & nodemon"
+    "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json"
   },
   "dependencies": {
     "@apollo/client": "3.7.17",
+    "@graphql-typed-document-node/core": "3.2.0",
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "8.26.0",
-    "aws-xray-sdk-express": "3.5.1",
     "cross-fetch": "4.0.0",
     "dataloader": "2.2.2",
     "express": "4.19.2",
@@ -26,8 +27,14 @@
     "tslib": "2.6.3"
   },
   "devDependencies": {
+    "@graphql-codegen/add": "5.0.3",
+    "@graphql-codegen/cli": "5.0.2",
+    "@graphql-codegen/typed-document-node": "5.0.9",
+    "@graphql-codegen/typescript": "4.0.9",
+    "@graphql-codegen/typescript-operations": "4.2.3",
     "@jest/globals": "29.7.0",
     "@pocket-tools/eslint-config": "workspace:*",
+    "@types/express": "4.17.21",
     "@types/jest": "29.5.12",
     "@types/node": "^20.16",
     "@types/supertest": "^6.0.2",

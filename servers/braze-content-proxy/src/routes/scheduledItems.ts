@@ -1,11 +1,10 @@
 import { BrazeContentProxyResponse, TransformedCorpusItem } from './types';
-import { ClientApiResponse } from '../graphql/types';
 import { getResizedImageUrl, validateApiKey, validateDate } from '../utils';
 import { getScheduledSurfaceStories } from '../graphql/client-api-proxy';
 import config from '../config';
 import { Router } from 'express';
 
-const router = Router();
+const router: Router = Router();
 
 router.get('/:scheduledSurfaceID', async (req, res, next) => {
   // Enable two minute cache when in AWS.
@@ -45,30 +44,29 @@ export const stories = {
     date: string,
     scheduledSurfaceId: string,
   ): Promise<BrazeContentProxyResponse> => {
-    const data: ClientApiResponse | null = await getScheduledSurfaceStories(
-      date,
-      scheduledSurfaceId,
-    );
+    const data = await getScheduledSurfaceStories(date, scheduledSurfaceId);
 
     const stories = data ? data.data.scheduledSurface.items : [];
 
-    const transformedStories: TransformedCorpusItem[] = stories.map(function (
-      item,
-      index,
-    ) {
+    const transformedStories: TransformedCorpusItem[] = stories.map((item) => {
       return {
         // The id of the Scheduled Surface Item
         id: item.id,
-        // Properties of the Corpus Item the proxy needs to make available for Braze
-        ...item.corpusItem,
+        url: item.corpusItem.url,
+        shortUrl: item.corpusItem.shortUrl,
+        title: item.corpusItem.title,
+        topic: item.corpusItem.topic,
+        excerpt: item.corpusItem.excerpt,
+        publisher: item.corpusItem.publisher,
         // Resize images on the fly so that they don't distort emails when sent out.
-        imageUrl: getResizedImageUrl(this[index].corpusItem.imageUrl),
+        imageUrl: getResizedImageUrl(item.corpusItem.imageUrl),
         // Flatten the authors into a comma-separated string.
-        authors: this[index].corpusItem.authors
+        authors: item.corpusItem.authors
           ?.map((author) => author.name)
           .join(', '),
+        __typename: 'CorpusItem',
       };
-    }, stories);
+    });
 
     return {
       stories: transformedStories,

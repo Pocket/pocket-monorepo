@@ -1,0 +1,19 @@
+query PocketHits($date: Date!, $scheduledSurfaceId: ID!) {
+  scheduledSurface(id: $scheduledSurfaceId) {
+    items(date: $date) {
+      id
+      corpusItem {
+        url
+        shortUrl
+        title
+        topic
+        excerpt
+        imageUrl
+        authors {
+          name
+        }
+        publisher
+      }
+    }
+  }
+}
