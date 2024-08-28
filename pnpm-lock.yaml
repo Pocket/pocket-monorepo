@@ -1152,7 +1152,7 @@ importers:
         specifier: ^9.0.5
         version: 9.0.6
       '@types/jwk-to-pem':
-        specifier: ^2.0.1
+        specifier: 2.0.3
         version: 2.0.3
       '@types/node':
         specifier: ^20.16

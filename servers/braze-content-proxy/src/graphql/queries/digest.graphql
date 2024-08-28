@@ -1,0 +1,28 @@
+query UserDigest(
+  $pagination: PaginationInput
+  $imageOptions: [CachedImageInput!]!
+  $filter: SavedItemsFilter
+) {
+  user {
+    savedItems(pagination: $pagination, filter: $filter) {
+      edges {
+        node {
+          item {
+            ... on Item {
+              preview {
+                title
+                url
+                image {
+                  cachedImages(imageOptions: $imageOptions) {
+                    id
+                    url
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

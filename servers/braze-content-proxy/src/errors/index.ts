@@ -19,3 +19,13 @@ export class InvalidDateError extends Error {
     Object.setPrototypeOf(this, InvalidAPIKeyError.prototype);
   }
 }
+
+export class InvalidUserId extends Error {
+  status: 400;
+  constructor() {
+    super('Not a valid user id');
+    this.status = 400;
+    // Set prototype chain for instance checks
+    Object.setPrototypeOf(this, InvalidUserId.prototype);
+  }
+}

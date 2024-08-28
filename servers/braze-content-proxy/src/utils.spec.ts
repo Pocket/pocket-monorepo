@@ -11,35 +11,33 @@ describe('function validateDate', () => {
   it('Disallows an empty date value', () => {
     expect(() => {
       validateDate('');
-    }).toThrowError(
-      'Not a valid date. Please provide a date in YYYY-MM-DD format.',
-    );
+    }).toThrow('Not a valid date. Please provide a date in YYYY-MM-DD format.');
   });
 
   it('Disallows a date in invalid format', () => {
     expect(() => {
       validateDate('29 Jan, 1900');
-    }).toThrowError(
-      'Not a valid date. Please provide a date in YYYY-MM-DD format.',
-    );
+    }).toThrow('Not a valid date. Please provide a date in YYYY-MM-DD format.');
   });
 });
 
 describe('function validateApiKey', () => {
-  it('should NOT throw an error when correct api key is provided', async () => {
-    await expect(validateApiKey(config.aws.brazeApiKey)).resolves.not.toThrow();
+  it('should NOT throw an error when correct api key is provided', () => {
+    expect(() => {
+      validateApiKey(config.aws.brazeApiKey);
+    }).not.toThrow();
   });
 
-  it('should throw an error when an empty string is provided', async () => {
-    await expect(validateApiKey('')).rejects.toThrowError(
-      config.app.INVALID_API_KEY_ERROR_MESSAGE,
-    );
+  it('should throw an error when an empty string is provided', () => {
+    expect(() => {
+      validateApiKey('');
+    }).toThrow(config.app.INVALID_API_KEY_ERROR_MESSAGE);
   });
 
-  it('should throw an error when provided key does not match braze api key', async () => {
-    await expect(validateApiKey('incorrect-api-key')).rejects.toThrowError(
-      config.app.INVALID_API_KEY_ERROR_MESSAGE,
-    );
+  it('should throw an error when provided key does not match braze api key', () => {
+    expect(() => {
+      validateApiKey('incorrect-api-key');
+    }).toThrow(config.app.INVALID_API_KEY_ERROR_MESSAGE);
   });
 });
 

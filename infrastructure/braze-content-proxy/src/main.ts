@@ -112,6 +112,10 @@ class BrazeContentProxy extends TerraformStack {
               name: 'BRAZE_API_KEY',
               valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/BRAZE_API_KEY:key::`,
             },
+            {
+              name: 'BRAZE_PRIVATE_KEY',
+              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/BRAZE_PRIVATE_KEY:`,
+            },
           ],
         },
       ],

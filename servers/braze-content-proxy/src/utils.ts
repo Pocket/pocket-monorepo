@@ -5,7 +5,7 @@
  * @param name
  */
 import config from './config';
-import { InvalidAPIKeyError, InvalidDateError } from './errors';
+import { InvalidAPIKeyError, InvalidDateError, InvalidUserId } from './errors';
 
 /**
  * Check if the date string provided is in YYYY-MM-DD format.
@@ -45,6 +45,13 @@ export function validateApiKey(key: string): void {
   }
 
   return;
+}
+
+export function validateUserId(userId: string): void {
+  // Fail early on no userId provided.
+  if (!userId) {
+    throw new InvalidUserId();
+  }
 }
 
 /**

@@ -1,6 +1,8 @@
+import { dummyJWK, PocketJWK } from '@pocket-tools/jwt-utils';
 const clientApiUri = `https://client-api.getpocket.${
   process.env.NODE_ENV === 'production' ? 'com' : 'dev'
 }`;
+
 export default {
   app: {
     environment: process.env.NODE_ENV || 'development',
@@ -13,15 +15,16 @@ export default {
   },
   aws: {
     region: process.env.REGION || 'us-east-1',
-    brazeApiKey:
-      process.env.BRAZE_API_KEY || 'BrazeContentProxy/Dev/BRAZE_API_KEY',
+    brazeApiKey: process.env.BRAZE_API_KEY || 'super-secret-key',
   },
   // The URL to query data from.
   clientApi: {
     uri: clientApiUri,
   },
   jwt: {
-    key: process.env.JWT_KEY || 'some-private-key',
+    key: process.env.JWT_KEY
+      ? (JSON.parse(process.env.JWT_KEY) as PocketJWK)
+      : dummyJWK,
     iss: process.env.JWT_ISS || 'braze-content-proxy',
     aud: process.env.JWT_AUD || clientApiUri,
   },
