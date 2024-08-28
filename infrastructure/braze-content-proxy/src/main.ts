@@ -1,9 +1,7 @@
 import { Construct } from 'constructs';
 import {
   App,
-  Aspects,
   DataTerraformRemoteState,
-  MigrateIds,
   S3Backend,
   TerraformStack,
 } from 'cdktf';
@@ -13,6 +11,8 @@ import {
   dataAwsRegion,
   dataAwsKmsAlias,
   dataAwsSnsTopic,
+  wafv2WebAcl,
+  wafv2IpSet,
 } from '@cdktf/provider-aws';
 import { config } from './config';
 import {
@@ -57,11 +57,77 @@ class BrazeContentProxy extends TerraformStack {
       snsTopic: this.getCodeDeploySnsTopic(),
       region,
       caller,
+      wafAcl: this.createWafACL(),
+    });
+  }
+
+  /**
+   * Ensure that only internal IPs from the VPN or from Braze are allowed to access
+   * @returns Waf ACL
+   */
+  private createWafACL() {
+    // Braze IPs
+    // We are on US-05
+    // https://www.braze.com/docs/user_guide/personalization_and_dynamic_content/connected_content/making_an_api_call/#connected-content-ip-allowlisting
+    const brazeIPList = [
+      '23.21.118.191/32',
+      '34.206.23.173/32',
+      '50.16.249.9/32',
+      '52.4.160.214/32',
+      '54.87.8.34/32',
+      '54.156.35.251/32',
+      '52.54.89.238/32',
+      '18.205.178.15/32',
+    ];
+
+    const allowListIPs = new wafv2IpSet.Wafv2IpSet(this, 'AllowlistIPs', {
+      name: `${config.name}-${config.environment}-AllowList`,
+      ipAddressVersion: 'IPV4',
+      scope: 'REGIONAL',
+      tags: config.tags,
+      addresses: brazeIPList,
     });
 
-    // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
-    // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
-    Aspects.of(this).add(new MigrateIds());
+    const ipAllowListRule = <wafv2WebAcl.Wafv2WebAclRule>{
+      name: `${config.name}-${config.environment}-ipAllowList`,
+      priority: 1,
+      action: { allow: {} },
+      statement: {
+        ip_set_reference_statement: {
+          arn: allowListIPs.arn,
+        },
+      },
+      visibilityConfig: {
+        cloudwatchMetricsEnabled: true,
+        metricName: `${config.name}-${config.environment}-ipAllowList`,
+        sampledRequestsEnabled: true,
+      },
+    };
+
+    const blockAllIps = <wafv2WebAcl.Wafv2WebAclRule>{
+      name: `${config.name}-${config.environment}-ipBlockAll`,
+      priority: 2,
+      action: { count: {} }, //doing a count before we do a block.
+      statement: {},
+      visibilityConfig: {
+        cloudwatchMetricsEnabled: true,
+        metricName: `${config.name}-${config.environment}-ipBlockAll`,
+        sampledRequestsEnabled: true,
+      },
+    };
+
+    return new wafv2WebAcl.Wafv2WebAcl(this, `${config.name}-waf`, {
+      description: `Waf for ${config.name} ${config.environment} environment`,
+      name: `${config.name}-waf-${config.environment}`,
+      scope: 'REGIONAL',
+      defaultAction: { allow: {} },
+      visibilityConfig: {
+        cloudwatchMetricsEnabled: true,
+        metricName: `${config.name}-waf-${config.environment}`,
+        sampledRequestsEnabled: true,
+      },
+      rule: [ipAllowListRule, blockAllIps],
+    });
   }
 
   /**
@@ -125,15 +191,25 @@ class BrazeContentProxy extends TerraformStack {
     caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
     snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
+    wafAcl: wafv2WebAcl.Wafv2WebAcl;
   }): PocketALBApplication {
-    const { pagerDuty, region, caller, secretsManagerKmsAlias, snsTopic } =
-      dependencies;
+    const {
+      pagerDuty,
+      region,
+      caller,
+      secretsManagerKmsAlias,
+      snsTopic,
+      wafAcl,
+    } = dependencies;
 
     return new PocketALBApplication(this, 'application', {
       internal: false,
       prefix: config.prefix,
       alb6CharacterPrefix: config.shortName,
       cdn: true,
+      wafConfig: {
+        aclArn: wafAcl.arn,
+      },
       domain: config.domain,
       containerConfigs: [
         {
