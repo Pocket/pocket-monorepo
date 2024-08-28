@@ -1,4 +1,3 @@
-import { NotFoundError } from '@pocket-tools/apollo-utils';
 import { getOriginalUrlIfPocketImageCached } from './utils';
 
 describe('getOriginalUrlIfPocketImageCached', () => {
@@ -29,8 +28,6 @@ describe('getOriginalUrlIfPocketImageCached', () => {
     const url = 'https://pocket-image-cache.com/direct?resize=2000w';
     expect(() => {
       getOriginalUrlIfPocketImageCached(url);
-    }).toThrowError(
-      new NotFoundError('Pocket image cache url is missing a source url'),
-    );
+    }).toThrow(new Error('Source URL Missing'));
   });
 });

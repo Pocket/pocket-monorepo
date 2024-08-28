@@ -47,7 +47,7 @@ jobs:
     with:
       federated-graph-name: pocket-admin-api
       graph-name: parser
-      schema-file-path: servers/parser-graphql-wrapper/schema.graphql
+      schema-file-path: servers/parser-graphql-wrapper/schema-admin.graphql
       prod-graph-url: https://parser-graphql-wrapper.readitlater.com
       dev-graph-url: https://parser-graphql-wrapper.getpocket.dev
     secrets:
