@@ -1,12 +1,5 @@
 import { Construct } from 'constructs';
-import {
-  App,
-  Aspects,
-  DataTerraformRemoteState,
-  MigrateIds,
-  S3Backend,
-  TerraformStack,
-} from 'cdktf';
+import { App, S3Backend, TerraformStack } from 'cdktf';
 import {
   provider as awsProvider,
   dataAwsCallerIdentity,
@@ -15,10 +8,7 @@ import {
   dataAwsSnsTopic,
 } from '@cdktf/provider-aws';
 import { config } from './config';
-import {
-  PocketALBApplication,
-  PocketPagerDuty,
-} from '@pocket-tools/terraform-modules';
+import { PocketALBApplication } from '@pocket-tools/terraform-modules';
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import { provider as pagerDutyProvider } from '@cdktf/provider-pagerduty';
@@ -57,10 +47,6 @@ class BrazeContentProxy extends TerraformStack {
       region,
       caller,
     });
-
-    // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
-    // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
-    Aspects.of(this).add(new MigrateIds());
   }
 
   /**
@@ -127,18 +113,6 @@ class BrazeContentProxy extends TerraformStack {
               valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/BRAZE_API_KEY:key::`,
             },
           ],
-        },
-        {
-          name: 'xray-daemon',
-          containerImage: 'public.ecr.aws/xray/aws-xray-daemon:latest',
-          portMappings: [
-            {
-              hostPort: 2000,
-              containerPort: 2000,
-              protocol: 'udp',
-            },
-          ],
-          command: ['--region', 'us-east-1', '--local-mode'],
         },
       ],
       codeDeploy: {
