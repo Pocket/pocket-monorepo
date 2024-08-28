@@ -255,11 +255,7 @@ export class PocketALBApplication extends Construct {
     this.alb = alb;
 
     if (config.cdn) {
-      const cdn = this.createCDN(albRecord);
-      // If we have a CDN, add the WAF to the CDN
-      if (config.wafConfig) {
-        this.createWAFCDN(cdn, config.wafConfig.aclArn);
-      }
+      this.createCDN(albRecord);
     }
 
     // If we don't have a CDN add the WAF to the ALB
@@ -407,20 +403,6 @@ export class PocketALBApplication extends Construct {
     );
   }
 
-  private createWAFCDN(
-    cdn: cloudfrontDistribution.CloudfrontDistribution,
-    webAclArn: string,
-  ) {
-    new wafv2WebAclAssociation.Wafv2WebAclAssociation(
-      this,
-      'application_waf_association',
-      {
-        webAclArn: webAclArn,
-        resourceArn: cdn.arn,
-      },
-    );
-  }
-
   /**
    * Creates the ALB stack and certificates
    * @private
@@ -510,6 +492,7 @@ export class PocketALBApplication extends Construct {
         aliases: [this.config.domain],
         priceClass: 'PriceClass_200',
         tags: this.config.tags,
+        webAclId: this.config.wafConfig?.aclArn ?? undefined,
         origin: [
           {
             domainName: albRecord.fqdn,

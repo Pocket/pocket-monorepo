@@ -9413,7 +9413,8 @@ exports[`PocketALBApplication renders an external application with a CDN and a w
           "acm_certificate_arn": "\${aws_acm_certificate.testPocketApp_cdn_certificate_F1CBB9BB.arn}",
           "minimum_protocol_version": "TLSv1.1_2016",
           "ssl_support_method": "sni-only"
-        }
+        },
+        "web_acl_id": "some-arn"
       }
     },
     "aws_cloudwatch_dashboard": {
@@ -9722,12 +9723,6 @@ exports[`PocketALBApplication renders an external application with a CDN and a w
         },
         "name_prefix": "testapp-ECSSecurityGroup",
         "vpc_id": "\${data.aws_vpc.testPocketApp_pocket_vpc_C4E157E3.id}"
-      }
-    },
-    "aws_wafv2_web_acl_association": {
-      "testPocketApp_application_waf_association_03F7C3FB": {
-        "resource_arn": "\${aws_cloudfront_distribution.testPocketApp_cloudfront_distribution_FD7F01BF.arn}",
-        "web_acl_arn": "some-arn"
       }
     }
   }

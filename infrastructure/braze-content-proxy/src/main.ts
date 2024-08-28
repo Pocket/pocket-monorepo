@@ -74,7 +74,7 @@ class BrazeContentProxy extends TerraformStack {
     const allowListIPs = new wafv2IpSet.Wafv2IpSet(this, 'AllowlistIPs', {
       name: `${config.name}-${config.environment}-AllowList`,
       ipAddressVersion: 'IPV4',
-      scope: 'REGIONAL',
+      scope: 'CLOUDFRONT',
       tags: config.tags,
       addresses: brazeIPList,
     });
@@ -95,11 +95,20 @@ class BrazeContentProxy extends TerraformStack {
       },
     };
 
+    // When we are ready to block, make the default action block and remove this.
     const blockAllIps = <wafv2WebAcl.Wafv2WebAclRule>{
       name: `${config.name}-${config.environment}-ipBlockAll`,
       priority: 2,
       action: { count: {} }, //doing a count before we do a block.
-      statement: {},
+      statement: {
+        not_statement: {
+          statement: {
+            ip_set_reference_statement: {
+              arn: allowListIPs.arn,
+            },
+          },
+        },
+      },
       visibilityConfig: {
         cloudwatchMetricsEnabled: true,
         metricName: `${config.name}-${config.environment}-ipBlockAll`,
@@ -110,7 +119,7 @@ class BrazeContentProxy extends TerraformStack {
     return new wafv2WebAcl.Wafv2WebAcl(this, `${config.name}-waf`, {
       description: `Waf for ${config.name} ${config.environment} environment`,
       name: `${config.name}-waf-${config.environment}`,
-      scope: 'REGIONAL',
+      scope: 'CLOUDFRONT',
       defaultAction: { allow: {} },
       visibilityConfig: {
         cloudwatchMetricsEnabled: true,
