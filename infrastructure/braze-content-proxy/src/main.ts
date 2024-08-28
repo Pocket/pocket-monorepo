@@ -52,7 +52,6 @@ class BrazeContentProxy extends TerraformStack {
     );
 
     this.createPocketAlbApplication({
-      pagerDuty: this.createPagerDuty(),
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
       region,
@@ -84,50 +83,13 @@ class BrazeContentProxy extends TerraformStack {
     });
   }
 
-  /**
-   * Create PagerDuty service for alerts
-   * @private
-   */
-  private createPagerDuty() {
-    // don't create any pagerduty resources if in dev
-    if (config.isDev) {
-      return undefined;
-    }
-
-    const incidentManagement = new DataTerraformRemoteState(
-      this,
-      'incident_management',
-      {
-        organization: 'Pocket',
-        workspaces: {
-          name: 'incident-management',
-        },
-      },
-    );
-
-    return new PocketPagerDuty(this, 'pagerduty', {
-      prefix: config.prefix,
-      service: {
-        // This is a Tier 2 service and as such only raises non-critical alarms.
-        criticalEscalationPolicyId: incidentManagement
-          .get('policy_default_non_critical_id')
-          .toString(),
-        nonCriticalEscalationPolicyId: incidentManagement
-          .get('policy_default_non_critical_id')
-          .toString(),
-      },
-    });
-  }
-
   private createPocketAlbApplication(dependencies: {
-    pagerDuty: PocketPagerDuty;
     region: dataAwsRegion.DataAwsRegion;
     caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
     snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
   }): PocketALBApplication {
-    const { pagerDuty, region, caller, secretsManagerKmsAlias, snsTopic } =
-      dependencies;
+    const { region, caller, secretsManagerKmsAlias, snsTopic } = dependencies;
 
     return new PocketALBApplication(this, 'application', {
       internal: false,
@@ -248,7 +210,7 @@ class BrazeContentProxy extends TerraformStack {
           threshold: 25,
           evaluationPeriods: 4,
           period: 300,
-          actions: config.isDev ? [] : [pagerDuty.snsNonCriticalAlarmTopic.arn],
+          actions: config.isDev ? [] : [snsTopic.arn],
         },
       },
     });
