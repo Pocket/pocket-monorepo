@@ -1,10 +1,12 @@
 import { getCollectionsFromGraph } from '../graphql/client-api-proxy';
 import { getResizedImageUrl, validateApiKey } from '../utils';
-import { BrazeCollections } from './types';
+import { BrazeCollections, BrazeCollectionStory } from './types';
 import config from '../config';
 import { Router } from 'express';
+import { PocketCollectionsQuery } from '../generated/graphql/types';
+import type { ApolloQueryResult } from '@apollo/client/core/types';
 
-const router = Router();
+const router: Router = Router();
 
 /**
  * GET endpoint to receive collection metadata and its stories information from client
@@ -41,22 +43,29 @@ export async function getCollection(slug: string) {
   return transformToBrazePayload(response);
 }
 
-function transformToBrazePayload(response): BrazeCollections {
+function transformToBrazePayload(
+  response: ApolloQueryResult<PocketCollectionsQuery>,
+): BrazeCollections {
   const collection = response.data.getCollectionBySlug;
-  const stories = collection.stories.map((story) => {
-    const res = {
-      ...story,
+  const stories: BrazeCollectionStory[] = collection.stories.map((story) => {
+    return {
+      title: story.title,
+      url: story.url,
+      excerpt: story.excerpt,
       imageUrl: getResizedImageUrl(story.imageUrl),
       authors: story.authors.map((author) => author.name),
       shortUrl: story.item.shortUrl,
+      publisher: story.publisher,
+      externalId: story.externalId,
     };
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { item: _, ...rest } = res;
-    return rest;
   });
   return {
-    ...collection,
+    title: collection.title,
+    intro: collection.intro,
+    excerpt: collection.excerpt,
+    publishedAt: collection.publishedAt,
     imageUrl: getResizedImageUrl(collection.imageUrl),
+    externalId: collection.externalId,
     stories: stories,
   };
 }

@@ -1,8 +1,18 @@
-import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client/core';
+import {
+  ApolloClient,
+  ApolloQueryResult,
+  HttpLink,
+  InMemoryCache,
+} from '@apollo/client/core';
 import fetch from 'cross-fetch';
 import config from '../config';
-import gql from 'graphql-tag';
-import { ClientApiResponse } from './types';
+import {
+  PocketCollectionsDocument,
+  PocketCollectionsQuery,
+  PocketCollectionsQueryVariables,
+  PocketHitsDocument,
+  PocketHitsQuery,
+} from '../generated/graphql/types';
 
 export const client = new ApolloClient({
   link: new HttpLink({ fetch, uri: config.clientApi.uri }),
@@ -24,34 +34,14 @@ export const client = new ApolloClient({
  * @param slug slug identifier of the collction
  * @returns collections and its story details required by braze
  */
-export async function getCollectionsFromGraph(slug: string): Promise<any> {
-  const response = await client.query({
-    query: gql`
-      query PocketCollections($slug: String!) {
-        getCollectionBySlug(slug: $slug) {
-          externalId
-          title
-          excerpt
-          imageUrl
-          intro
-          publishedAt
-          stories {
-            externalId
-            title
-            excerpt
-            imageUrl
-            publisher
-            authors {
-              name
-            }
-            item {
-              shortUrl
-            }
-            url
-          }
-        }
-      }
-    `,
+export async function getCollectionsFromGraph(
+  slug: string,
+): Promise<ApolloQueryResult<PocketCollectionsQuery>> {
+  const response = await client.query<
+    PocketCollectionsQuery,
+    PocketCollectionsQueryVariables
+  >({
+    query: PocketCollectionsDocument,
     variables: {
       slug: slug,
     },
@@ -76,29 +66,9 @@ export async function getCollectionsFromGraph(slug: string): Promise<any> {
 export async function getScheduledSurfaceStories(
   date: string,
   scheduledSurfaceId: string,
-): Promise<ClientApiResponse | null> {
+): Promise<ApolloQueryResult<PocketHitsQuery>> {
   const data = await client.query({
-    query: gql`
-      query PocketHits($date: Date!, $scheduledSurfaceId: ID!) {
-        scheduledSurface(id: $scheduledSurfaceId) {
-          items(date: $date) {
-            id
-            corpusItem {
-              url
-              shortUrl
-              title
-              topic
-              excerpt
-              imageUrl
-              authors {
-                name
-              }
-              publisher
-            }
-          }
-        }
-      }
-    `,
+    query: PocketHitsDocument,
     variables: {
       date,
       scheduledSurfaceId,
