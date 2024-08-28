@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
+import type jwkToBuffer from 'jwk-to-pem';
 import jwkToPem from 'jwk-to-pem';
-import config from './config';
 
 type JwtPayload = {
   iss: string;
@@ -12,23 +12,38 @@ type JwtPayload = {
   application_name?: string;
 };
 
+export type PocketJWK = jwkToBuffer.JWK & {
+  kid: string;
+  use: 'sig';
+  alg: 'RS256';
+};
+
 /**
  * Generates jwt token from the given private key.
  * @param privateKey
- * @param fxaId
+ * @param options The options to request user data on
  * https://www.npmjs.com/package/jsonwebtoken
  */
-export function generateJwt(privateKey, fxaId: string) {
+export const generateJwt = (
+  privateKey: PocketJWK,
+  options: {
+    sub: string;
+    issuer: string;
+    aud: string;
+    apiId: string;
+    applicationName: string;
+  },
+) => {
   const now = Math.round(Date.now() / 1000);
 
   const payload: JwtPayload = {
-    iss: config.jwt.iss,
-    aud: config.jwt.aud,
+    iss: options.issuer,
+    aud: options.aud,
     iat: now,
     exp: now + 60 * 10, //expires in 10 mins
-    sub: fxaId,
-    api_id: config.app.apiId,
-    application_name: config.app.applicationName,
+    sub: options.sub,
+    api_id: options.apiId,
+    application_name: options.applicationName,
   };
 
   return jwt.sign(payload, jwkToPem(privateKey, { private: true }), {
@@ -36,4 +51,4 @@ export function generateJwt(privateKey, fxaId: string) {
     // Required by client-api to disambiguate from other key(s)
     keyid: privateKey.kid,
   });
-}
+};

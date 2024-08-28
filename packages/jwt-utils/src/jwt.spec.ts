@@ -1,9 +1,9 @@
-import { generateJwt } from './jwt';
+import { generateJwt, PocketJWK } from './jwt';
 import jwt from 'jsonwebtoken';
 import jwkToPem from 'jwk-to-pem';
 
 describe('jwt test', function () {
-  const testPrivateKey = {
+  const testPrivateKey: PocketJWK = {
     p: '2NE9Yskv7kZaM_OMvKElEWRKi6peRae3JkMp-TvjqMIO69kV3zQfpb0gfIdcC54_BuGUUUjL9IEDApWas-IBbG33bKoGTzCzNbfML0aQvAHpuvZI6pGAq3OdHgC-kGjb5wyK3tDaP-rS8aVYjrB9jQY7Go-F4xWyikNm-99BJg0',
     kty: 'RSA',
     q: 't8a8oOBF-MGnIuQBYlMzUa0YdpnQY2zLOfkocEoRbUNtaUZW-UEwaqy2q9rbQksM6j9LVY8jAzb0YvAag8TorCZlbhvmlZONqq5I_Reto1FPRNXLGJjHVMTonLRboCiSm_EFisZHPvgqAxln00MNAqRQnUnbP5CbCY4RrdNXjTU',
@@ -40,8 +40,13 @@ describe('jwt test', function () {
   afterAll(() => jest.useRealTimers());
 
   it('should generate jwt from given private key', () => {
-    const token = generateJwt(testPrivateKey, '1');
-    console.log(token);
+    const token = generateJwt(testPrivateKey, {
+      sub: '1',
+      issuer: 'fxa-webhook-proxy',
+      aud: 'https://client-api.getpocket.com/',
+      applicationName: 'FxA',
+      apiId: '1',
+    });
     const result = jwt.verify(token, jwkToPem(testPublicKey as jwkToPem.RSA), {
       complete: true,
     }) as jwt.Jwt;

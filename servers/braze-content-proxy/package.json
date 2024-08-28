@@ -17,6 +17,7 @@
   "dependencies": {
     "@apollo/client": "3.7.17",
     "@graphql-typed-document-node/core": "3.2.0",
+    "@pocket-tools/jwt-utils": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "8.26.0",
