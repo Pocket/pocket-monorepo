@@ -1,12 +1,5 @@
 import { Construct } from 'constructs';
-import {
-  App,
-  Aspects,
-  DataTerraformRemoteState,
-  MigrateIds,
-  S3Backend,
-  TerraformStack,
-} from 'cdktf';
+import { App, S3Backend, TerraformStack } from 'cdktf';
 import {
   provider as awsProvider,
   dataAwsCallerIdentity,
@@ -15,10 +8,7 @@ import {
   dataAwsSnsTopic,
 } from '@cdktf/provider-aws';
 import { config } from './config';
-import {
-  PocketALBApplication,
-  PocketPagerDuty,
-} from '@pocket-tools/terraform-modules';
+import { PocketALBApplication } from '@pocket-tools/terraform-modules';
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import { provider as pagerDutyProvider } from '@cdktf/provider-pagerduty';
@@ -52,16 +42,11 @@ class BrazeContentProxy extends TerraformStack {
     );
 
     this.createPocketAlbApplication({
-      pagerDuty: this.createPagerDuty(),
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
       region,
       caller,
     });
-
-    // Pre cdktf 0.17 ids were generated differently so we need to apply a migration aspect
-    // https://developer.hashicorp.com/terraform/cdktf/concepts/aspects
-    Aspects.of(this).add(new MigrateIds());
   }
 
   /**
@@ -84,50 +69,13 @@ class BrazeContentProxy extends TerraformStack {
     });
   }
 
-  /**
-   * Create PagerDuty service for alerts
-   * @private
-   */
-  private createPagerDuty() {
-    // don't create any pagerduty resources if in dev
-    if (config.isDev) {
-      return undefined;
-    }
-
-    const incidentManagement = new DataTerraformRemoteState(
-      this,
-      'incident_management',
-      {
-        organization: 'Pocket',
-        workspaces: {
-          name: 'incident-management',
-        },
-      },
-    );
-
-    return new PocketPagerDuty(this, 'pagerduty', {
-      prefix: config.prefix,
-      service: {
-        // This is a Tier 2 service and as such only raises non-critical alarms.
-        criticalEscalationPolicyId: incidentManagement
-          .get('policy_default_non_critical_id')
-          .toString(),
-        nonCriticalEscalationPolicyId: incidentManagement
-          .get('policy_default_non_critical_id')
-          .toString(),
-      },
-    });
-  }
-
   private createPocketAlbApplication(dependencies: {
-    pagerDuty: PocketPagerDuty;
     region: dataAwsRegion.DataAwsRegion;
     caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
     snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
   }): PocketALBApplication {
-    const { pagerDuty, region, caller, secretsManagerKmsAlias, snsTopic } =
-      dependencies;
+    const { region, caller, secretsManagerKmsAlias, snsTopic } = dependencies;
 
     return new PocketALBApplication(this, 'application', {
       internal: false,
@@ -165,18 +113,6 @@ class BrazeContentProxy extends TerraformStack {
               valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/BRAZE_API_KEY:key::`,
             },
           ],
-        },
-        {
-          name: 'xray-daemon',
-          containerImage: 'public.ecr.aws/xray/aws-xray-daemon:latest',
-          portMappings: [
-            {
-              hostPort: 2000,
-              containerPort: 2000,
-              protocol: 'udp',
-            },
-          ],
-          command: ['--region', 'us-east-1', '--local-mode'],
         },
       ],
       codeDeploy: {
@@ -248,7 +184,7 @@ class BrazeContentProxy extends TerraformStack {
           threshold: 25,
           evaluationPeriods: 4,
           period: 300,
-          actions: config.isDev ? [] : [pagerDuty.snsNonCriticalAlarmTopic.arn],
+          actions: config.isDev ? [] : [snsTopic.arn],
         },
       },
     });

@@ -20,6 +20,7 @@
     "example:synth": "cdktf synth",
     "format": "eslint --fix",
     "lint": "eslint --fix-dry-run",
+    "presemantic-release": "pnpm run build",
     "semantic-release": "semantic-release",
     "test": "jest --ci --maxWorkers=4 --logHeapUsage",
     "test:watch": "npm test -- --watch --watch-extensions ts -R min --watch-files src"

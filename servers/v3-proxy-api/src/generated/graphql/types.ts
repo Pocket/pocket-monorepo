@@ -828,6 +828,8 @@ export type Item = {
    * @deprecated Clients should not use this
    */
   contentLength?: Maybe<Scalars['Int']['output']>;
+  /** If the item is in corpus allow the item to reference it.  Exposing curated info for consistent UX */
+  corpusItem?: Maybe<CorpusItem>;
   /** The date the article was published */
   datePublished?: Maybe<Scalars['DateString']['output']>;
   /** The date the parser resolved this item */

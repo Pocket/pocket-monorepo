@@ -19,6 +19,7 @@
     "dev": "pnpm run build --watch",
     "format": "eslint --fix",
     "lint": "eslint --fix-dry-run",
+    "presemantic-release": "pnpm run build",
     "semantic-release": "semantic-release"
   },
   "release": {
