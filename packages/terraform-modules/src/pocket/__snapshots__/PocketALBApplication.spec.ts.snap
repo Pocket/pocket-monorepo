@@ -9023,11 +9023,16 @@ exports[`PocketALBApplication renders an application with modified container def
 }"
 `;
 
-exports[`PocketALBApplication renders an external application 1`] = `
+exports[`PocketALBApplication renders an external application with a CDN and a waf 1`] = `
 "{
   "data": {
     "aws_caller_identity": {
       "testPocketApp_pocket_vpc_current_identity_06D87057": {
+      }
+    },
+    "aws_ec2_managed_prefix_list": {
+      "testPocketApp_application_load_balancer_alb_cloudfront_security_A2C68D99": {
+        "name": "com.amazonaws.global.cloudfront.origin-facing"
       }
     },
     "aws_iam_policy_document": {
@@ -9609,6 +9614,1891 @@ exports[`PocketALBApplication renders an external application 1`] = `
           "weight": 1
         },
         "zone_id": "\${aws_route53_zone.testPocketApp_base_dns_subhosted_zone_1E1E3243.zone_id}"
+      }
+    },
+    "aws_route53_zone": {
+      "testPocketApp_base_dns_subhosted_zone_1E1E3243": {
+        "name": "testing.bowling.gov"
+      }
+    },
+    "aws_security_group": {
+      "testPocketApp_application_load_balancer_alb_security_group_91A27046": {
+        "description": "External security group  (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+          {
+            "cidr_blocks": null,
+            "description": null,
+            "from_port": 443,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": [
+              "\${data.aws_ec2_managed_prefix_list.testPocketApp_application_load_balancer_alb_cloudfront_security_A2C68D99.id}"
+            ],
+            "protocol": "TCP",
+            "security_groups": null,
+            "self": null,
+            "to_port": 443
+          },
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": null,
+            "from_port": 80,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "TCP",
+            "security_groups": null,
+            "self": null,
+            "to_port": 80
+          }
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "testapp-HTTP/S Security Group",
+        "tags": {
+          "Name": "testapp-HTTP/S Security Group"
+        },
+        "vpc_id": "\${data.aws_vpc.testPocketApp_pocket_vpc_C4E157E3.id}"
+      },
+      "testPocketApp_ecs_service_ecs_security_group_9C016FA8": {
+        "description": "Internal ECS Security Group (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+          {
+            "cidr_blocks": [
+            ],
+            "description": "required",
+            "from_port": 80,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "TCP",
+            "security_groups": [
+              "\${aws_security_group.testPocketApp_application_load_balancer_alb_security_group_91A27046.id}"
+            ],
+            "self": null,
+            "to_port": 8675309
+          }
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "testapp-ECSSecurityGroup",
+        "vpc_id": "\${data.aws_vpc.testPocketApp_pocket_vpc_C4E157E3.id}"
+      }
+    },
+    "aws_wafv2_web_acl_association": {
+      "testPocketApp_application_waf_association_03F7C3FB": {
+        "resource_arn": "\${aws_cloudfront_distribution.testPocketApp_cloudfront_distribution_FD7F01BF.arn}",
+        "web_acl_arn": "some-arn"
+      }
+    }
+  }
+}"
+`;
+
+exports[`PocketALBApplication renders an external application with a cdn 1`] = `
+"{
+  "data": {
+    "aws_caller_identity": {
+      "testPocketApp_pocket_vpc_current_identity_06D87057": {
+      }
+    },
+    "aws_ec2_managed_prefix_list": {
+      "testPocketApp_application_load_balancer_alb_cloudfront_security_A2C68D99": {
+        "name": "com.amazonaws.global.cloudfront.origin-facing"
+      }
+    },
+    "aws_iam_policy_document": {
+      "testPocketApp_ecs_service_ecs-iam_ecs-task-assume_ABB81680": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "ecs-tasks.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    },
+    "aws_kms_alias": {
+      "testPocketApp_pocket_vpc_secrets_manager_key_9FD2BC93": {
+        "name": "alias/aws/secretsmanager"
+      }
+    },
+    "aws_region": {
+      "testPocketApp_pocket_vpc_current_region_8ED435E7": {
+      }
+    },
+    "aws_route53_zone": {
+      "testPocketApp_base_dns_main_hosted_zone_9442EEB0": {
+        "name": "bowling.gov"
+      }
+    },
+    "aws_security_groups": {
+      "testPocketApp_pocket_vpc_default_security_groups_40B4FC48": {
+        "filter": [
+          {
+            "name": "group-name",
+            "values": [
+              "default"
+            ]
+          },
+          {
+            "name": "vpc-id",
+            "values": [
+              "\${data.aws_vpc.testPocketApp_pocket_vpc_C4E157E3.id}"
+            ]
+          }
+        ]
+      },
+      "testPocketApp_pocket_vpc_internal_security_groups_12F7F666": {
+        "filter": [
+          {
+            "name": "group-name",
+            "values": [
+              "pocket-vpc-internal"
+            ]
+          },
+          {
+            "name": "vpc-id",
+            "values": [
+              "\${data.aws_vpc.testPocketApp_pocket_vpc_C4E157E3.id}"
+            ]
+          }
+        ]
+      }
+    },
+    "aws_ssm_parameter": {
+      "testPocketApp_pocket_vpc_private_subnets_9D449563": {
+        "name": "/Shared/PrivateSubnets"
+      },
+      "testPocketApp_pocket_vpc_public_subnets_B0B3A6AB": {
+        "name": "/Shared/PublicSubnets"
+      },
+      "testPocketApp_pocket_vpc_vpc_ssm_param_235525D4": {
+        "name": "/Shared/Vpc"
+      }
+    },
+    "aws_subnets": {
+      "testPocketApp_pocket_vpc_private_subnet_ids_EB1E3A65": {
+        "filter": [
+          {
+            "name": "subnet-id",
+            "values": "\${split(\\",\\", data.aws_ssm_parameter.testPocketApp_pocket_vpc_private_subnets_9D449563.value)}"
+          },
+          {
+            "name": "vpc-id",
+            "values": [
+              "\${data.aws_vpc.testPocketApp_pocket_vpc_C4E157E3.id}"
+            ]
+          }
+        ]
+      },
+      "testPocketApp_pocket_vpc_public_subnet_ids_01F0B902": {
+        "filter": [
+          {
+            "name": "subnet-id",
+            "values": "\${split(\\",\\", data.aws_ssm_parameter.testPocketApp_pocket_vpc_public_subnets_B0B3A6AB.value)}"
+          },
+          {
+            "name": "vpc-id",
+            "values": [
+              "\${data.aws_vpc.testPocketApp_pocket_vpc_C4E157E3.id}"
+            ]
+          }
+        ]
+      }
+    },
+    "aws_vpc": {
+      "testPocketApp_pocket_vpc_C4E157E3": {
+        "filter": [
+          {
+            "name": "vpc-id",
+            "values": [
+              "\${data.aws_ssm_parameter.testPocketApp_pocket_vpc_vpc_ssm_param_235525D4.value}"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "output": {
+    "ecs-application-url": {
+      "description": "ECS Application URL",
+      "value": "testing.bowling.gov"
+    }
+  },
+  "resource": {
+    "aws_acm_certificate": {
+      "testPocketApp_alb_certificate_417C14FF": {
+        "domain_name": "direct.testing.bowling.gov",
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "validation_method": "DNS"
+      },
+      "testPocketApp_cdn_certificate_F1CBB9BB": {
+        "domain_name": "testing.bowling.gov",
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "validation_method": "DNS"
+      }
+    },
+    "aws_acm_certificate_validation": {
+      "testPocketApp_alb_certificate_certificate_validation_7D899C6A": {
+        "certificate_arn": "\${aws_acm_certificate.testPocketApp_alb_certificate_417C14FF.arn}",
+        "depends_on": [
+          "aws_route53_record.testPocketApp_alb_certificate_certificate_record_3C49201F",
+          "aws_acm_certificate.testPocketApp_alb_certificate_417C14FF"
+        ],
+        "validation_record_fqdns": [
+          "\${aws_route53_record.testPocketApp_alb_certificate_certificate_record_3C49201F.fqdn}"
+        ]
+      },
+      "testPocketApp_cdn_certificate_certificate_validation_BA2932DC": {
+        "certificate_arn": "\${aws_acm_certificate.testPocketApp_cdn_certificate_F1CBB9BB.arn}",
+        "depends_on": [
+          "aws_route53_record.testPocketApp_cdn_certificate_certificate_record_63BAB662",
+          "aws_acm_certificate.testPocketApp_cdn_certificate_F1CBB9BB"
+        ],
+        "validation_record_fqdns": [
+          "\${aws_route53_record.testPocketApp_cdn_certificate_certificate_record_63BAB662.fqdn}"
+        ]
+      }
+    },
+    "aws_alb": {
+      "testPocketApp_application_load_balancer_alb_D538DEEE": {
+        "internal": false,
+        "name_prefix": "TSTAPP",
+        "security_groups": [
+          "\${aws_security_group.testPocketApp_application_load_balancer_alb_security_group_91A27046.id}"
+        ],
+        "subnets": "\${data.aws_subnets.testPocketApp_pocket_vpc_public_subnet_ids_01F0B902.ids}"
+      }
+    },
+    "aws_alb_listener": {
+      "testPocketApp_listener_http_A9E227C2": {
+        "default_action": [
+          {
+            "redirect": {
+              "port": "443",
+              "protocol": "HTTPS",
+              "status_code": "HTTP_301"
+            },
+            "type": "redirect"
+          }
+        ],
+        "load_balancer_arn": "\${aws_alb.testPocketApp_application_load_balancer_alb_D538DEEE.arn}",
+        "port": 80,
+        "protocol": "HTTP"
+      },
+      "testPocketApp_listener_https_7F49DE83": {
+        "certificate_arn": "\${aws_acm_certificate.testPocketApp_alb_certificate_417C14FF.arn}",
+        "default_action": [
+          {
+            "fixed_response": {
+              "content_type": "text/plain",
+              "message_body": "",
+              "status_code": "503"
+            },
+            "type": "fixed-response"
+          }
+        ],
+        "load_balancer_arn": "\${aws_alb.testPocketApp_application_load_balancer_alb_D538DEEE.arn}",
+        "port": 443,
+        "protocol": "HTTPS",
+        "ssl_policy": "ELBSecurityPolicy-TLS-1-1-2017-01"
+      }
+    },
+    "aws_alb_listener_rule": {
+      "testPocketApp_ecs_service_listener_rule_C03BB04D": {
+        "action": [
+          {
+            "target_group_arn": "\${aws_alb_target_group.testPocketApp_ecs_service_blue_target_group_ecs_target_group_A4B85885.arn}",
+            "type": "forward"
+          }
+        ],
+        "condition": [
+          {
+            "path_pattern": {
+              "values": [
+                "*"
+              ]
+            }
+          }
+        ],
+        "lifecycle": {
+          "ignore_changes": [
+            "action"
+          ]
+        },
+        "listener_arn": "\${aws_alb_listener.testPocketApp_listener_https_7F49DE83.arn}",
+        "priority": 1
+      }
+    },
+    "aws_alb_target_group": {
+      "testPocketApp_ecs_service_blue_target_group_ecs_target_group_A4B85885": {
+        "deregistration_delay": "120",
+        "health_check": {
+          "healthy_threshold": 5,
+          "interval": 15,
+          "path": "/test",
+          "protocol": "HTTP",
+          "unhealthy_threshold": 3
+        },
+        "name_prefix": "TSTAPP",
+        "port": 80,
+        "protocol": "HTTP",
+        "tags": {
+          "type": "blue"
+        },
+        "target_type": "ip",
+        "vpc_id": "\${data.aws_vpc.testPocketApp_pocket_vpc_C4E157E3.id}"
+      }
+    },
+    "aws_appautoscaling_policy": {
+      "testPocketApp_autoscaling_scale_in_policy_A163A235": {
+        "depends_on": [
+          "aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1"
+        ],
+        "name": "testapp-ScaleInPolicy",
+        "policy_type": "StepScaling",
+        "resource_id": "\${aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1.resource_id}",
+        "scalable_dimension": "\${aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1.scalable_dimension}",
+        "service_namespace": "\${aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1.service_namespace}",
+        "step_scaling_policy_configuration": {
+          "adjustment_type": "ChangeInCapacity",
+          "cooldown": 60,
+          "metric_aggregation_type": "Average",
+          "step_adjustment": [
+            {
+              "metric_interval_upper_bound": "0",
+              "scaling_adjustment": -1
+            }
+          ]
+        },
+        "target_tracking_scaling_policy_configuration": null
+      },
+      "testPocketApp_autoscaling_scale_out_policy_075BFAC4": {
+        "depends_on": [
+          "aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1"
+        ],
+        "name": "testapp-ScaleOutPolicy",
+        "policy_type": "StepScaling",
+        "resource_id": "\${aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1.resource_id}",
+        "scalable_dimension": "\${aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1.scalable_dimension}",
+        "service_namespace": "\${aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1.service_namespace}",
+        "step_scaling_policy_configuration": {
+          "adjustment_type": "ChangeInCapacity",
+          "cooldown": 60,
+          "metric_aggregation_type": "Average",
+          "step_adjustment": [
+            {
+              "metric_interval_lower_bound": "0",
+              "scaling_adjustment": 2
+            }
+          ]
+        },
+        "target_tracking_scaling_policy_configuration": null
+      }
+    },
+    "aws_appautoscaling_target": {
+      "testPocketApp_autoscaling_autoscaling_target_505E4EA1": {
+        "max_capacity": 2,
+        "min_capacity": 1,
+        "resource_id": "service/\${aws_ecs_cluster.testPocketApp_ecs_cluster_C3960066.name}/\${aws_ecs_service.testPocketApp_ecs_service_ecs-service_182DEA4C.name}",
+        "scalable_dimension": "ecs:service:DesiredCount",
+        "service_namespace": "ecs"
+      }
+    },
+    "aws_cloudfront_distribution": {
+      "testPocketApp_cloudfront_distribution_FD7F01BF": {
+        "aliases": [
+          "testing.bowling.gov"
+        ],
+        "comment": "CDN for direct.testing.bowling.gov",
+        "default_cache_behavior": {
+          "allowed_methods": [
+            "GET",
+            "HEAD",
+            "OPTIONS",
+            "PUT",
+            "POST",
+            "PATCH",
+            "DELETE"
+          ],
+          "cached_methods": [
+            "GET",
+            "HEAD",
+            "OPTIONS"
+          ],
+          "compress": true,
+          "default_ttl": 0,
+          "forwarded_values": {
+            "cookies": {
+              "forward": "none"
+            },
+            "headers": [
+              "Accept",
+              "Origin",
+              "Authorization"
+            ],
+            "query_string": true
+          },
+          "max_ttl": 31536000,
+          "min_ttl": 0,
+          "target_origin_id": "Alb",
+          "viewer_protocol_policy": "redirect-to-https"
+        },
+        "enabled": true,
+        "origin": [
+          {
+            "custom_origin_config": {
+              "http_port": 80,
+              "https_port": 443,
+              "origin_protocol_policy": "https-only",
+              "origin_ssl_protocols": [
+                "TLSv1.1",
+                "TLSv1.2"
+              ]
+            },
+            "domain_name": "\${aws_route53_record.testPocketApp_alb_record_7B56ED33.fqdn}",
+            "origin_id": "Alb"
+          }
+        ],
+        "price_class": "PriceClass_200",
+        "restrictions": {
+          "geo_restriction": {
+            "restriction_type": "none"
+          }
+        },
+        "viewer_certificate": {
+          "acm_certificate_arn": "\${aws_acm_certificate.testPocketApp_cdn_certificate_F1CBB9BB.arn}",
+          "minimum_protocol_version": "TLSv1.1_2016",
+          "ssl_support_method": "sni-only"
+        }
+      }
+    },
+    "aws_cloudwatch_dashboard": {
+      "testPocketApp_cloudwatch-dashboard_26E9F70C": {
+        "dashboard_body": "{\\"widgets\\":[{\\"type\\":\\"metric\\",\\"x\\":0,\\"y\\":0,\\"width\\":12,\\"height\\":6,\\"properties\\":{\\"metrics\\":[[\\"AWS/ApplicationELB\\",\\"HTTPCode_Target_4XX_Count\\",\\"LoadBalancer\\",\\"\${aws_alb.testPocketApp_application_load_balancer_alb_D538DEEE.arn_suffix}\\",{\\"yAxis\\":\\"left\\",\\"color\\":\\"#ff7f0e\\"}],[\\".\\",\\"RequestCount\\",\\".\\",\\".\\",{\\"yAxis\\":\\"right\\",\\"color\\":\\"#1f77b4\\"}],[\\".\\",\\"HTTPCode_Target_5XX_Count\\",\\".\\",\\".\\",{\\"color\\":\\"#d62728\\"}],[\\".\\",\\"HTTPCode_Target_2XX_Count\\",\\".\\",\\".\\",{\\"yAxis\\":\\"right\\",\\"color\\":\\"#2ca02c\\"}]],\\"view\\":\\"timeSeries\\",\\"stacked\\":false,\\"region\\":\\"us-east-1\\",\\"period\\":60,\\"stat\\":\\"Sum\\",\\"title\\":\\"Target Requests\\"}},{\\"type\\":\\"metric\\",\\"x\\":12,\\"y\\":0,\\"width\\":12,\\"height\\":6,\\"properties\\":{\\"metrics\\":[[\\"AWS/ApplicationELB\\",\\"HTTPCode_ELB_4XX_Count\\",\\"LoadBalancer\\",\\"\${aws_alb.testPocketApp_application_load_balancer_alb_D538DEEE.arn_suffix}\\",{\\"yAxis\\":\\"left\\",\\"color\\":\\"#ff7f0e\\"}],[\\".\\",\\"RequestCount\\",\\".\\",\\".\\",{\\"yAxis\\":\\"right\\",\\"color\\":\\"#1f77b4\\"}],[\\".\\",\\"HTTPCode_ELB_5XX_Count\\",\\".\\",\\".\\",{\\"color\\":\\"#d62728\\"}]],\\"view\\":\\"timeSeries\\",\\"stacked\\":false,\\"region\\":\\"us-east-1\\",\\"period\\":60,\\"stat\\":\\"Sum\\",\\"title\\":\\"ALB Requests\\"}},{\\"type\\":\\"metric\\",\\"x\\":12,\\"y\\":6,\\"width\\":12,\\"height\\":6,\\"properties\\":{\\"metrics\\":[[\\"AWS/ApplicationELB\\",\\"TargetResponseTime\\",\\"LoadBalancer\\",\\"\${aws_alb.testPocketApp_application_load_balancer_alb_D538DEEE.arn_suffix}\\",{\\"label\\":\\"Average\\",\\"color\\":\\"#aec7e8\\"}],[\\"...\\",{\\"stat\\":\\"p95\\",\\"label\\":\\"p95\\",\\"color\\":\\"#ffbb78\\"}],[\\"...\\",{\\"stat\\":\\"p99\\",\\"label\\":\\"p99\\",\\"color\\":\\"#98df8a\\"}]],\\"view\\":\\"timeSeries\\",\\"stacked\\":false,\\"region\\":\\"us-east-1\\",\\"stat\\":\\"Average\\",\\"period\\":60}},{\\"type\\":\\"metric\\",\\"x\\":0,\\"y\\":6,\\"width\\":12,\\"height\\":6,\\"properties\\":{\\"metrics\\":[[\\"ECS/ContainerInsights\\",\\"RunningTaskCount\\",\\"ServiceName\\",\\"\${aws_ecs_service.testPocketApp_ecs_service_ecs-service_182DEA4C.name}\\",\\"ClusterName\\",\\"\${aws_ecs_cluster.testPocketApp_ecs_cluster_C3960066.name}\\",{\\"yAxis\\":\\"right\\",\\"color\\":\\"#c49c94\\"}],[\\"AWS/ECS\\",\\"CPUUtilization\\",\\".\\",\\".\\",\\".\\",\\".\\",{\\"color\\":\\"#f7b6d2\\"}],[\\".\\",\\"MemoryUtilization\\",\\".\\",\\".\\",\\".\\",\\".\\",{\\"color\\":\\"#c7c7c7\\"}]],\\"view\\":\\"timeSeries\\",\\"stacked\\":false,\\"region\\":\\"us-east-1\\",\\"stat\\":\\"Average\\",\\"period\\":60,\\"annotations\\":{\\"horizontal\\":[{\\"color\\":\\"#e377c2\\",\\"label\\":\\"CPU scale out\\",\\"value\\":45},{\\"color\\":\\"#c5b0d5\\",\\"label\\":\\"CPU scale in\\",\\"value\\":30}]},\\"title\\":\\"Service Load\\"}}]}",
+        "dashboard_name": "testapp",
+        "lifecycle": {
+          "ignore_changes": [
+            "dashboard_body"
+          ]
+        }
+      }
+    },
+    "aws_cloudwatch_metric_alarm": {
+      "testPocketApp_autoscaling_scale_in_alarm_69B5F00D": {
+        "alarm_actions": [
+          "\${aws_appautoscaling_policy.testPocketApp_autoscaling_scale_in_policy_A163A235.arn}"
+        ],
+        "alarm_description": "Alarm to reduce capacity if container CPU is low",
+        "alarm_name": "testapp Service Low CPU",
+        "comparison_operator": "LessThanThreshold",
+        "dimensions": {
+          "ClusterName": "\${aws_ecs_cluster.testPocketApp_ecs_cluster_C3960066.name}",
+          "ServiceName": "\${aws_ecs_service.testPocketApp_ecs_service_ecs-service_182DEA4C.name}"
+        },
+        "evaluation_periods": 2,
+        "metric_name": "CPUUtilization",
+        "namespace": "AWS/ECS",
+        "period": 60,
+        "statistic": "Average",
+        "threshold": 30,
+        "treat_missing_data": "notBreaching"
+      },
+      "testPocketApp_autoscaling_scale_out_alarm_4313FBE9": {
+        "alarm_actions": [
+          "\${aws_appautoscaling_policy.testPocketApp_autoscaling_scale_out_policy_075BFAC4.arn}"
+        ],
+        "alarm_description": "Alarm to add capacity if container CPU is high",
+        "alarm_name": "testapp Service High CPU",
+        "comparison_operator": "GreaterThanThreshold",
+        "dimensions": {
+          "ClusterName": "\${aws_ecs_cluster.testPocketApp_ecs_cluster_C3960066.name}",
+          "ServiceName": "\${aws_ecs_service.testPocketApp_ecs_service_ecs-service_182DEA4C.name}"
+        },
+        "evaluation_periods": 2,
+        "metric_name": "CPUUtilization",
+        "namespace": "AWS/ECS",
+        "period": 60,
+        "statistic": "Average",
+        "threshold": 45,
+        "treat_missing_data": "notBreaching"
+      }
+    },
+    "aws_ecs_cluster": {
+      "testPocketApp_ecs_cluster_C3960066": {
+        "name": "testapp",
+        "setting": [
+          {
+            "name": "containerInsights",
+            "value": "enabled"
+          }
+        ]
+      }
+    },
+    "aws_ecs_service": {
+      "testPocketApp_ecs_service_ecs-service_182DEA4C": {
+        "cluster": "\${aws_ecs_cluster.testPocketApp_ecs_cluster_C3960066.arn}",
+        "depends_on": [
+          "aws_alb_target_group.testPocketApp_ecs_service_blue_target_group_ecs_target_group_A4B85885",
+          "aws_alb_listener_rule.testPocketApp_ecs_service_listener_rule_C03BB04D"
+        ],
+        "deployment_controller": {
+          "type": "ECS"
+        },
+        "deployment_maximum_percent": 200,
+        "deployment_minimum_healthy_percent": 100,
+        "desired_count": 2,
+        "launch_type": "FARGATE",
+        "lifecycle": {
+          "ignore_changes": [
+            "desired_count",
+            "load_balancer"
+          ]
+        },
+        "load_balancer": [
+          {
+            "container_name": "main_container",
+            "container_port": 8675309,
+            "target_group_arn": "\${aws_alb_target_group.testPocketApp_ecs_service_blue_target_group_ecs_target_group_A4B85885.arn}"
+          }
+        ],
+        "name": "testapp",
+        "network_configuration": {
+          "security_groups": [
+            "\${aws_security_group.testPocketApp_ecs_service_ecs_security_group_9C016FA8.id}"
+          ],
+          "subnets": "\${data.aws_subnets.testPocketApp_pocket_vpc_private_subnet_ids_EB1E3A65.ids}"
+        },
+        "propagate_tags": "SERVICE",
+        "task_definition": "\${aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45.arn}"
+      }
+    },
+    "aws_ecs_task_definition": {
+      "testPocketApp_ecs_service_ecs-task_A7E74E45": {
+        "container_definitions": "[]",
+        "cpu": "512",
+        "depends_on": [
+        ],
+        "execution_role_arn": "\${aws_iam_role.testPocketApp_ecs_service_ecs-iam_ecs-execution-role_EB461A0C.arn}",
+        "family": "testapp",
+        "memory": "2048",
+        "network_mode": "awsvpc",
+        "requires_compatibilities": [
+          "FARGATE"
+        ],
+        "skip_destroy": true,
+        "task_role_arn": "\${aws_iam_role.testPocketApp_ecs_service_ecs-iam_ecs-task-role_7DB93963.arn}",
+        "volume": [
+        ]
+      }
+    },
+    "aws_iam_role": {
+      "testPocketApp_ecs_service_ecs-iam_ecs-execution-role_EB461A0C": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testPocketApp_ecs_service_ecs-iam_ecs-task-assume_ABB81680.json}",
+        "name": "testapp-TaskExecutionRole"
+      },
+      "testPocketApp_ecs_service_ecs-iam_ecs-task-role_7DB93963": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testPocketApp_ecs_service_ecs-iam_ecs-task-assume_ABB81680.json}",
+        "name": "testapp-TaskRole"
+      }
+    },
+    "aws_route53_record": {
+      "testPocketApp_alb_certificate_certificate_record_3C49201F": {
+        "depends_on": [
+          "aws_acm_certificate.testPocketApp_alb_certificate_417C14FF"
+        ],
+        "name": "\${tolist(aws_acm_certificate.testPocketApp_alb_certificate_417C14FF.domain_validation_options).0.resource_record_name}",
+        "records": [
+          "\${tolist(aws_acm_certificate.testPocketApp_alb_certificate_417C14FF.domain_validation_options).0.resource_record_value}"
+        ],
+        "ttl": 60,
+        "type": "\${tolist(aws_acm_certificate.testPocketApp_alb_certificate_417C14FF.domain_validation_options).0.resource_record_type}",
+        "zone_id": "\${aws_route53_zone.testPocketApp_base_dns_subhosted_zone_1E1E3243.zone_id}"
+      },
+      "testPocketApp_alb_record_7B56ED33": {
+        "alias": {
+          "evaluate_target_health": true,
+          "name": "\${aws_alb.testPocketApp_application_load_balancer_alb_D538DEEE.dns_name}",
+          "zone_id": "\${aws_alb.testPocketApp_application_load_balancer_alb_D538DEEE.zone_id}"
+        },
+        "lifecycle": {
+          "ignore_changes": [
+            "weighted_routing_policy[0].weight"
+          ]
+        },
+        "name": "direct.testing.bowling.gov",
+        "set_identifier": "1",
+        "type": "A",
+        "weighted_routing_policy": {
+          "weight": 1
+        },
+        "zone_id": "\${aws_route53_zone.testPocketApp_base_dns_subhosted_zone_1E1E3243.zone_id}"
+      },
+      "testPocketApp_base_dns_subhosted_zone_ns_497FFB83": {
+        "name": "testing.bowling.gov",
+        "records": "\${aws_route53_zone.testPocketApp_base_dns_subhosted_zone_1E1E3243.name_servers}",
+        "ttl": 86400,
+        "type": "NS",
+        "zone_id": "\${data.aws_route53_zone.testPocketApp_base_dns_main_hosted_zone_9442EEB0.zone_id}"
+      },
+      "testPocketApp_cdn_certificate_certificate_record_63BAB662": {
+        "depends_on": [
+          "aws_acm_certificate.testPocketApp_cdn_certificate_F1CBB9BB"
+        ],
+        "name": "\${tolist(aws_acm_certificate.testPocketApp_cdn_certificate_F1CBB9BB.domain_validation_options).0.resource_record_name}",
+        "records": [
+          "\${tolist(aws_acm_certificate.testPocketApp_cdn_certificate_F1CBB9BB.domain_validation_options).0.resource_record_value}"
+        ],
+        "ttl": 60,
+        "type": "\${tolist(aws_acm_certificate.testPocketApp_cdn_certificate_F1CBB9BB.domain_validation_options).0.resource_record_type}",
+        "zone_id": "\${aws_route53_zone.testPocketApp_base_dns_subhosted_zone_1E1E3243.zone_id}"
+      },
+      "testPocketApp_cdn_record_DD10AA15": {
+        "alias": {
+          "evaluate_target_health": true,
+          "name": "\${aws_cloudfront_distribution.testPocketApp_cloudfront_distribution_FD7F01BF.domain_name}",
+          "zone_id": "\${aws_cloudfront_distribution.testPocketApp_cloudfront_distribution_FD7F01BF.hosted_zone_id}"
+        },
+        "lifecycle": {
+          "ignore_changes": [
+            "weighted_routing_policy[0].weight"
+          ]
+        },
+        "name": "testing.bowling.gov",
+        "set_identifier": "2",
+        "type": "A",
+        "weighted_routing_policy": {
+          "weight": 1
+        },
+        "zone_id": "\${aws_route53_zone.testPocketApp_base_dns_subhosted_zone_1E1E3243.zone_id}"
+      }
+    },
+    "aws_route53_zone": {
+      "testPocketApp_base_dns_subhosted_zone_1E1E3243": {
+        "name": "testing.bowling.gov"
+      }
+    },
+    "aws_security_group": {
+      "testPocketApp_application_load_balancer_alb_security_group_91A27046": {
+        "description": "External security group  (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+          {
+            "cidr_blocks": null,
+            "description": null,
+            "from_port": 443,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": [
+              "\${data.aws_ec2_managed_prefix_list.testPocketApp_application_load_balancer_alb_cloudfront_security_A2C68D99.id}"
+            ],
+            "protocol": "TCP",
+            "security_groups": null,
+            "self": null,
+            "to_port": 443
+          },
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": null,
+            "from_port": 80,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "TCP",
+            "security_groups": null,
+            "self": null,
+            "to_port": 80
+          }
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "testapp-HTTP/S Security Group",
+        "tags": {
+          "Name": "testapp-HTTP/S Security Group"
+        },
+        "vpc_id": "\${data.aws_vpc.testPocketApp_pocket_vpc_C4E157E3.id}"
+      },
+      "testPocketApp_ecs_service_ecs_security_group_9C016FA8": {
+        "description": "Internal ECS Security Group (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+          {
+            "cidr_blocks": [
+            ],
+            "description": "required",
+            "from_port": 80,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "TCP",
+            "security_groups": [
+              "\${aws_security_group.testPocketApp_application_load_balancer_alb_security_group_91A27046.id}"
+            ],
+            "self": null,
+            "to_port": 8675309
+          }
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "testapp-ECSSecurityGroup",
+        "vpc_id": "\${data.aws_vpc.testPocketApp_pocket_vpc_C4E157E3.id}"
+      }
+    }
+  }
+}"
+`;
+
+exports[`PocketALBApplication renders an external application with a waf 1`] = `
+"{
+  "data": {
+    "aws_caller_identity": {
+      "testPocketApp_pocket_vpc_current_identity_06D87057": {
+      }
+    },
+    "aws_iam_policy_document": {
+      "testPocketApp_ecs_service_ecs-iam_ecs-task-assume_ABB81680": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "ecs-tasks.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    },
+    "aws_kms_alias": {
+      "testPocketApp_pocket_vpc_secrets_manager_key_9FD2BC93": {
+        "name": "alias/aws/secretsmanager"
+      }
+    },
+    "aws_region": {
+      "testPocketApp_pocket_vpc_current_region_8ED435E7": {
+      }
+    },
+    "aws_route53_zone": {
+      "testPocketApp_base_dns_main_hosted_zone_9442EEB0": {
+        "name": "bowling.gov"
+      }
+    },
+    "aws_security_groups": {
+      "testPocketApp_pocket_vpc_default_security_groups_40B4FC48": {
+        "filter": [
+          {
+            "name": "group-name",
+            "values": [
+              "default"
+            ]
+          },
+          {
+            "name": "vpc-id",
+            "values": [
+              "\${data.aws_vpc.testPocketApp_pocket_vpc_C4E157E3.id}"
+            ]
+          }
+        ]
+      },
+      "testPocketApp_pocket_vpc_internal_security_groups_12F7F666": {
+        "filter": [
+          {
+            "name": "group-name",
+            "values": [
+              "pocket-vpc-internal"
+            ]
+          },
+          {
+            "name": "vpc-id",
+            "values": [
+              "\${data.aws_vpc.testPocketApp_pocket_vpc_C4E157E3.id}"
+            ]
+          }
+        ]
+      }
+    },
+    "aws_ssm_parameter": {
+      "testPocketApp_pocket_vpc_private_subnets_9D449563": {
+        "name": "/Shared/PrivateSubnets"
+      },
+      "testPocketApp_pocket_vpc_public_subnets_B0B3A6AB": {
+        "name": "/Shared/PublicSubnets"
+      },
+      "testPocketApp_pocket_vpc_vpc_ssm_param_235525D4": {
+        "name": "/Shared/Vpc"
+      }
+    },
+    "aws_subnets": {
+      "testPocketApp_pocket_vpc_private_subnet_ids_EB1E3A65": {
+        "filter": [
+          {
+            "name": "subnet-id",
+            "values": "\${split(\\",\\", data.aws_ssm_parameter.testPocketApp_pocket_vpc_private_subnets_9D449563.value)}"
+          },
+          {
+            "name": "vpc-id",
+            "values": [
+              "\${data.aws_vpc.testPocketApp_pocket_vpc_C4E157E3.id}"
+            ]
+          }
+        ]
+      },
+      "testPocketApp_pocket_vpc_public_subnet_ids_01F0B902": {
+        "filter": [
+          {
+            "name": "subnet-id",
+            "values": "\${split(\\",\\", data.aws_ssm_parameter.testPocketApp_pocket_vpc_public_subnets_B0B3A6AB.value)}"
+          },
+          {
+            "name": "vpc-id",
+            "values": [
+              "\${data.aws_vpc.testPocketApp_pocket_vpc_C4E157E3.id}"
+            ]
+          }
+        ]
+      }
+    },
+    "aws_vpc": {
+      "testPocketApp_pocket_vpc_C4E157E3": {
+        "filter": [
+          {
+            "name": "vpc-id",
+            "values": [
+              "\${data.aws_ssm_parameter.testPocketApp_pocket_vpc_vpc_ssm_param_235525D4.value}"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "output": {
+    "ecs-application-url": {
+      "description": "ECS Application URL",
+      "value": "testing.bowling.gov"
+    }
+  },
+  "resource": {
+    "aws_acm_certificate": {
+      "testPocketApp_alb_certificate_417C14FF": {
+        "domain_name": "testing.bowling.gov",
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "validation_method": "DNS"
+      }
+    },
+    "aws_acm_certificate_validation": {
+      "testPocketApp_alb_certificate_certificate_validation_7D899C6A": {
+        "certificate_arn": "\${aws_acm_certificate.testPocketApp_alb_certificate_417C14FF.arn}",
+        "depends_on": [
+          "aws_route53_record.testPocketApp_alb_certificate_certificate_record_3C49201F",
+          "aws_acm_certificate.testPocketApp_alb_certificate_417C14FF"
+        ],
+        "validation_record_fqdns": [
+          "\${aws_route53_record.testPocketApp_alb_certificate_certificate_record_3C49201F.fqdn}"
+        ]
+      }
+    },
+    "aws_alb": {
+      "testPocketApp_application_load_balancer_alb_D538DEEE": {
+        "internal": false,
+        "name_prefix": "TSTAPP",
+        "security_groups": [
+          "\${aws_security_group.testPocketApp_application_load_balancer_alb_security_group_91A27046.id}"
+        ],
+        "subnets": "\${data.aws_subnets.testPocketApp_pocket_vpc_public_subnet_ids_01F0B902.ids}"
+      }
+    },
+    "aws_alb_listener": {
+      "testPocketApp_listener_http_A9E227C2": {
+        "default_action": [
+          {
+            "redirect": {
+              "port": "443",
+              "protocol": "HTTPS",
+              "status_code": "HTTP_301"
+            },
+            "type": "redirect"
+          }
+        ],
+        "load_balancer_arn": "\${aws_alb.testPocketApp_application_load_balancer_alb_D538DEEE.arn}",
+        "port": 80,
+        "protocol": "HTTP"
+      },
+      "testPocketApp_listener_https_7F49DE83": {
+        "certificate_arn": "\${aws_acm_certificate.testPocketApp_alb_certificate_417C14FF.arn}",
+        "default_action": [
+          {
+            "fixed_response": {
+              "content_type": "text/plain",
+              "message_body": "",
+              "status_code": "503"
+            },
+            "type": "fixed-response"
+          }
+        ],
+        "load_balancer_arn": "\${aws_alb.testPocketApp_application_load_balancer_alb_D538DEEE.arn}",
+        "port": 443,
+        "protocol": "HTTPS",
+        "ssl_policy": "ELBSecurityPolicy-TLS-1-1-2017-01"
+      }
+    },
+    "aws_alb_listener_rule": {
+      "testPocketApp_ecs_service_listener_rule_C03BB04D": {
+        "action": [
+          {
+            "target_group_arn": "\${aws_alb_target_group.testPocketApp_ecs_service_blue_target_group_ecs_target_group_A4B85885.arn}",
+            "type": "forward"
+          }
+        ],
+        "condition": [
+          {
+            "path_pattern": {
+              "values": [
+                "*"
+              ]
+            }
+          }
+        ],
+        "lifecycle": {
+          "ignore_changes": [
+            "action"
+          ]
+        },
+        "listener_arn": "\${aws_alb_listener.testPocketApp_listener_https_7F49DE83.arn}",
+        "priority": 1
+      }
+    },
+    "aws_alb_target_group": {
+      "testPocketApp_ecs_service_blue_target_group_ecs_target_group_A4B85885": {
+        "deregistration_delay": "120",
+        "health_check": {
+          "healthy_threshold": 5,
+          "interval": 15,
+          "path": "/test",
+          "protocol": "HTTP",
+          "unhealthy_threshold": 3
+        },
+        "name_prefix": "TSTAPP",
+        "port": 80,
+        "protocol": "HTTP",
+        "tags": {
+          "type": "blue"
+        },
+        "target_type": "ip",
+        "vpc_id": "\${data.aws_vpc.testPocketApp_pocket_vpc_C4E157E3.id}"
+      }
+    },
+    "aws_appautoscaling_policy": {
+      "testPocketApp_autoscaling_scale_in_policy_A163A235": {
+        "depends_on": [
+          "aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1"
+        ],
+        "name": "testapp-ScaleInPolicy",
+        "policy_type": "StepScaling",
+        "resource_id": "\${aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1.resource_id}",
+        "scalable_dimension": "\${aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1.scalable_dimension}",
+        "service_namespace": "\${aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1.service_namespace}",
+        "step_scaling_policy_configuration": {
+          "adjustment_type": "ChangeInCapacity",
+          "cooldown": 60,
+          "metric_aggregation_type": "Average",
+          "step_adjustment": [
+            {
+              "metric_interval_upper_bound": "0",
+              "scaling_adjustment": -1
+            }
+          ]
+        },
+        "target_tracking_scaling_policy_configuration": null
+      },
+      "testPocketApp_autoscaling_scale_out_policy_075BFAC4": {
+        "depends_on": [
+          "aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1"
+        ],
+        "name": "testapp-ScaleOutPolicy",
+        "policy_type": "StepScaling",
+        "resource_id": "\${aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1.resource_id}",
+        "scalable_dimension": "\${aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1.scalable_dimension}",
+        "service_namespace": "\${aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1.service_namespace}",
+        "step_scaling_policy_configuration": {
+          "adjustment_type": "ChangeInCapacity",
+          "cooldown": 60,
+          "metric_aggregation_type": "Average",
+          "step_adjustment": [
+            {
+              "metric_interval_lower_bound": "0",
+              "scaling_adjustment": 2
+            }
+          ]
+        },
+        "target_tracking_scaling_policy_configuration": null
+      }
+    },
+    "aws_appautoscaling_target": {
+      "testPocketApp_autoscaling_autoscaling_target_505E4EA1": {
+        "max_capacity": 2,
+        "min_capacity": 1,
+        "resource_id": "service/\${aws_ecs_cluster.testPocketApp_ecs_cluster_C3960066.name}/\${aws_ecs_service.testPocketApp_ecs_service_ecs-service_182DEA4C.name}",
+        "scalable_dimension": "ecs:service:DesiredCount",
+        "service_namespace": "ecs"
+      }
+    },
+    "aws_cloudwatch_dashboard": {
+      "testPocketApp_cloudwatch-dashboard_26E9F70C": {
+        "dashboard_body": "{\\"widgets\\":[{\\"type\\":\\"metric\\",\\"x\\":0,\\"y\\":0,\\"width\\":12,\\"height\\":6,\\"properties\\":{\\"metrics\\":[[\\"AWS/ApplicationELB\\",\\"HTTPCode_Target_4XX_Count\\",\\"LoadBalancer\\",\\"\${aws_alb.testPocketApp_application_load_balancer_alb_D538DEEE.arn_suffix}\\",{\\"yAxis\\":\\"left\\",\\"color\\":\\"#ff7f0e\\"}],[\\".\\",\\"RequestCount\\",\\".\\",\\".\\",{\\"yAxis\\":\\"right\\",\\"color\\":\\"#1f77b4\\"}],[\\".\\",\\"HTTPCode_Target_5XX_Count\\",\\".\\",\\".\\",{\\"color\\":\\"#d62728\\"}],[\\".\\",\\"HTTPCode_Target_2XX_Count\\",\\".\\",\\".\\",{\\"yAxis\\":\\"right\\",\\"color\\":\\"#2ca02c\\"}]],\\"view\\":\\"timeSeries\\",\\"stacked\\":false,\\"region\\":\\"us-east-1\\",\\"period\\":60,\\"stat\\":\\"Sum\\",\\"title\\":\\"Target Requests\\"}},{\\"type\\":\\"metric\\",\\"x\\":12,\\"y\\":0,\\"width\\":12,\\"height\\":6,\\"properties\\":{\\"metrics\\":[[\\"AWS/ApplicationELB\\",\\"HTTPCode_ELB_4XX_Count\\",\\"LoadBalancer\\",\\"\${aws_alb.testPocketApp_application_load_balancer_alb_D538DEEE.arn_suffix}\\",{\\"yAxis\\":\\"left\\",\\"color\\":\\"#ff7f0e\\"}],[\\".\\",\\"RequestCount\\",\\".\\",\\".\\",{\\"yAxis\\":\\"right\\",\\"color\\":\\"#1f77b4\\"}],[\\".\\",\\"HTTPCode_ELB_5XX_Count\\",\\".\\",\\".\\",{\\"color\\":\\"#d62728\\"}]],\\"view\\":\\"timeSeries\\",\\"stacked\\":false,\\"region\\":\\"us-east-1\\",\\"period\\":60,\\"stat\\":\\"Sum\\",\\"title\\":\\"ALB Requests\\"}},{\\"type\\":\\"metric\\",\\"x\\":12,\\"y\\":6,\\"width\\":12,\\"height\\":6,\\"properties\\":{\\"metrics\\":[[\\"AWS/ApplicationELB\\",\\"TargetResponseTime\\",\\"LoadBalancer\\",\\"\${aws_alb.testPocketApp_application_load_balancer_alb_D538DEEE.arn_suffix}\\",{\\"label\\":\\"Average\\",\\"color\\":\\"#aec7e8\\"}],[\\"...\\",{\\"stat\\":\\"p95\\",\\"label\\":\\"p95\\",\\"color\\":\\"#ffbb78\\"}],[\\"...\\",{\\"stat\\":\\"p99\\",\\"label\\":\\"p99\\",\\"color\\":\\"#98df8a\\"}]],\\"view\\":\\"timeSeries\\",\\"stacked\\":false,\\"region\\":\\"us-east-1\\",\\"stat\\":\\"Average\\",\\"period\\":60}},{\\"type\\":\\"metric\\",\\"x\\":0,\\"y\\":6,\\"width\\":12,\\"height\\":6,\\"properties\\":{\\"metrics\\":[[\\"ECS/ContainerInsights\\",\\"RunningTaskCount\\",\\"ServiceName\\",\\"\${aws_ecs_service.testPocketApp_ecs_service_ecs-service_182DEA4C.name}\\",\\"ClusterName\\",\\"\${aws_ecs_cluster.testPocketApp_ecs_cluster_C3960066.name}\\",{\\"yAxis\\":\\"right\\",\\"color\\":\\"#c49c94\\"}],[\\"AWS/ECS\\",\\"CPUUtilization\\",\\".\\",\\".\\",\\".\\",\\".\\",{\\"color\\":\\"#f7b6d2\\"}],[\\".\\",\\"MemoryUtilization\\",\\".\\",\\".\\",\\".\\",\\".\\",{\\"color\\":\\"#c7c7c7\\"}]],\\"view\\":\\"timeSeries\\",\\"stacked\\":false,\\"region\\":\\"us-east-1\\",\\"stat\\":\\"Average\\",\\"period\\":60,\\"annotations\\":{\\"horizontal\\":[{\\"color\\":\\"#e377c2\\",\\"label\\":\\"CPU scale out\\",\\"value\\":45},{\\"color\\":\\"#c5b0d5\\",\\"label\\":\\"CPU scale in\\",\\"value\\":30}]},\\"title\\":\\"Service Load\\"}}]}",
+        "dashboard_name": "testapp",
+        "lifecycle": {
+          "ignore_changes": [
+            "dashboard_body"
+          ]
+        }
+      }
+    },
+    "aws_cloudwatch_metric_alarm": {
+      "testPocketApp_autoscaling_scale_in_alarm_69B5F00D": {
+        "alarm_actions": [
+          "\${aws_appautoscaling_policy.testPocketApp_autoscaling_scale_in_policy_A163A235.arn}"
+        ],
+        "alarm_description": "Alarm to reduce capacity if container CPU is low",
+        "alarm_name": "testapp Service Low CPU",
+        "comparison_operator": "LessThanThreshold",
+        "dimensions": {
+          "ClusterName": "\${aws_ecs_cluster.testPocketApp_ecs_cluster_C3960066.name}",
+          "ServiceName": "\${aws_ecs_service.testPocketApp_ecs_service_ecs-service_182DEA4C.name}"
+        },
+        "evaluation_periods": 2,
+        "metric_name": "CPUUtilization",
+        "namespace": "AWS/ECS",
+        "period": 60,
+        "statistic": "Average",
+        "threshold": 30,
+        "treat_missing_data": "notBreaching"
+      },
+      "testPocketApp_autoscaling_scale_out_alarm_4313FBE9": {
+        "alarm_actions": [
+          "\${aws_appautoscaling_policy.testPocketApp_autoscaling_scale_out_policy_075BFAC4.arn}"
+        ],
+        "alarm_description": "Alarm to add capacity if container CPU is high",
+        "alarm_name": "testapp Service High CPU",
+        "comparison_operator": "GreaterThanThreshold",
+        "dimensions": {
+          "ClusterName": "\${aws_ecs_cluster.testPocketApp_ecs_cluster_C3960066.name}",
+          "ServiceName": "\${aws_ecs_service.testPocketApp_ecs_service_ecs-service_182DEA4C.name}"
+        },
+        "evaluation_periods": 2,
+        "metric_name": "CPUUtilization",
+        "namespace": "AWS/ECS",
+        "period": 60,
+        "statistic": "Average",
+        "threshold": 45,
+        "treat_missing_data": "notBreaching"
+      }
+    },
+    "aws_ecs_cluster": {
+      "testPocketApp_ecs_cluster_C3960066": {
+        "name": "testapp",
+        "setting": [
+          {
+            "name": "containerInsights",
+            "value": "enabled"
+          }
+        ]
+      }
+    },
+    "aws_ecs_service": {
+      "testPocketApp_ecs_service_ecs-service_182DEA4C": {
+        "cluster": "\${aws_ecs_cluster.testPocketApp_ecs_cluster_C3960066.arn}",
+        "depends_on": [
+          "aws_alb_target_group.testPocketApp_ecs_service_blue_target_group_ecs_target_group_A4B85885",
+          "aws_alb_listener_rule.testPocketApp_ecs_service_listener_rule_C03BB04D"
+        ],
+        "deployment_controller": {
+          "type": "ECS"
+        },
+        "deployment_maximum_percent": 200,
+        "deployment_minimum_healthy_percent": 100,
+        "desired_count": 2,
+        "launch_type": "FARGATE",
+        "lifecycle": {
+          "ignore_changes": [
+            "desired_count",
+            "load_balancer"
+          ]
+        },
+        "load_balancer": [
+          {
+            "container_name": "main_container",
+            "container_port": 8675309,
+            "target_group_arn": "\${aws_alb_target_group.testPocketApp_ecs_service_blue_target_group_ecs_target_group_A4B85885.arn}"
+          }
+        ],
+        "name": "testapp",
+        "network_configuration": {
+          "security_groups": [
+            "\${aws_security_group.testPocketApp_ecs_service_ecs_security_group_9C016FA8.id}"
+          ],
+          "subnets": "\${data.aws_subnets.testPocketApp_pocket_vpc_private_subnet_ids_EB1E3A65.ids}"
+        },
+        "propagate_tags": "SERVICE",
+        "task_definition": "\${aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45.arn}"
+      }
+    },
+    "aws_ecs_task_definition": {
+      "testPocketApp_ecs_service_ecs-task_A7E74E45": {
+        "container_definitions": "[]",
+        "cpu": "512",
+        "depends_on": [
+        ],
+        "execution_role_arn": "\${aws_iam_role.testPocketApp_ecs_service_ecs-iam_ecs-execution-role_EB461A0C.arn}",
+        "family": "testapp",
+        "memory": "2048",
+        "network_mode": "awsvpc",
+        "requires_compatibilities": [
+          "FARGATE"
+        ],
+        "skip_destroy": true,
+        "task_role_arn": "\${aws_iam_role.testPocketApp_ecs_service_ecs-iam_ecs-task-role_7DB93963.arn}",
+        "volume": [
+        ]
+      }
+    },
+    "aws_iam_role": {
+      "testPocketApp_ecs_service_ecs-iam_ecs-execution-role_EB461A0C": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testPocketApp_ecs_service_ecs-iam_ecs-task-assume_ABB81680.json}",
+        "name": "testapp-TaskExecutionRole"
+      },
+      "testPocketApp_ecs_service_ecs-iam_ecs-task-role_7DB93963": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testPocketApp_ecs_service_ecs-iam_ecs-task-assume_ABB81680.json}",
+        "name": "testapp-TaskRole"
+      }
+    },
+    "aws_route53_record": {
+      "testPocketApp_alb_certificate_certificate_record_3C49201F": {
+        "depends_on": [
+          "aws_acm_certificate.testPocketApp_alb_certificate_417C14FF"
+        ],
+        "name": "\${tolist(aws_acm_certificate.testPocketApp_alb_certificate_417C14FF.domain_validation_options).0.resource_record_name}",
+        "records": [
+          "\${tolist(aws_acm_certificate.testPocketApp_alb_certificate_417C14FF.domain_validation_options).0.resource_record_value}"
+        ],
+        "ttl": 60,
+        "type": "\${tolist(aws_acm_certificate.testPocketApp_alb_certificate_417C14FF.domain_validation_options).0.resource_record_type}",
+        "zone_id": "\${aws_route53_zone.testPocketApp_base_dns_subhosted_zone_1E1E3243.zone_id}"
+      },
+      "testPocketApp_alb_record_7B56ED33": {
+        "alias": {
+          "evaluate_target_health": true,
+          "name": "\${aws_alb.testPocketApp_application_load_balancer_alb_D538DEEE.dns_name}",
+          "zone_id": "\${aws_alb.testPocketApp_application_load_balancer_alb_D538DEEE.zone_id}"
+        },
+        "lifecycle": {
+          "ignore_changes": [
+            "weighted_routing_policy[0].weight"
+          ]
+        },
+        "name": "testing.bowling.gov",
+        "set_identifier": "1",
+        "type": "A",
+        "weighted_routing_policy": {
+          "weight": 1
+        },
+        "zone_id": "\${aws_route53_zone.testPocketApp_base_dns_subhosted_zone_1E1E3243.zone_id}"
+      },
+      "testPocketApp_base_dns_subhosted_zone_ns_497FFB83": {
+        "name": "testing.bowling.gov",
+        "records": "\${aws_route53_zone.testPocketApp_base_dns_subhosted_zone_1E1E3243.name_servers}",
+        "ttl": 86400,
+        "type": "NS",
+        "zone_id": "\${data.aws_route53_zone.testPocketApp_base_dns_main_hosted_zone_9442EEB0.zone_id}"
+      }
+    },
+    "aws_route53_zone": {
+      "testPocketApp_base_dns_subhosted_zone_1E1E3243": {
+        "name": "testing.bowling.gov"
+      }
+    },
+    "aws_security_group": {
+      "testPocketApp_application_load_balancer_alb_security_group_91A27046": {
+        "description": "External security group  (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": null,
+            "from_port": 443,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "TCP",
+            "security_groups": null,
+            "self": null,
+            "to_port": 443
+          },
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": null,
+            "from_port": 80,
+            "ipv6_cidr_blocks": null,
+            "prefix_list_ids": null,
+            "protocol": "TCP",
+            "security_groups": null,
+            "self": null,
+            "to_port": 80
+          }
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "testapp-HTTP/S Security Group",
+        "tags": {
+          "Name": "testapp-HTTP/S Security Group"
+        },
+        "vpc_id": "\${data.aws_vpc.testPocketApp_pocket_vpc_C4E157E3.id}"
+      },
+      "testPocketApp_ecs_service_ecs_security_group_9C016FA8": {
+        "description": "Internal ECS Security Group (Managed by Terraform)",
+        "egress": [
+          {
+            "cidr_blocks": [
+              "0.0.0.0/0"
+            ],
+            "description": "required",
+            "from_port": 0,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "-1",
+            "security_groups": [
+            ],
+            "self": null,
+            "to_port": 0
+          }
+        ],
+        "ingress": [
+          {
+            "cidr_blocks": [
+            ],
+            "description": "required",
+            "from_port": 80,
+            "ipv6_cidr_blocks": [
+            ],
+            "prefix_list_ids": [
+            ],
+            "protocol": "TCP",
+            "security_groups": [
+              "\${aws_security_group.testPocketApp_application_load_balancer_alb_security_group_91A27046.id}"
+            ],
+            "self": null,
+            "to_port": 8675309
+          }
+        ],
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "name_prefix": "testapp-ECSSecurityGroup",
+        "vpc_id": "\${data.aws_vpc.testPocketApp_pocket_vpc_C4E157E3.id}"
+      }
+    },
+    "aws_wafv2_web_acl_association": {
+      "testPocketApp_application_waf_association_03F7C3FB": {
+        "resource_arn": "\${aws_alb.testPocketApp_application_load_balancer_alb_D538DEEE.arn}",
+        "web_acl_arn": "some-arn"
+      }
+    }
+  }
+}"
+`;
+
+exports[`PocketALBApplication renders an external application without a cdn 1`] = `
+"{
+  "data": {
+    "aws_caller_identity": {
+      "testPocketApp_pocket_vpc_current_identity_06D87057": {
+      }
+    },
+    "aws_iam_policy_document": {
+      "testPocketApp_ecs_service_ecs-iam_ecs-task-assume_ABB81680": {
+        "statement": [
+          {
+            "actions": [
+              "sts:AssumeRole"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "ecs-tasks.amazonaws.com"
+                ],
+                "type": "Service"
+              }
+            ]
+          }
+        ],
+        "version": "2012-10-17"
+      }
+    },
+    "aws_kms_alias": {
+      "testPocketApp_pocket_vpc_secrets_manager_key_9FD2BC93": {
+        "name": "alias/aws/secretsmanager"
+      }
+    },
+    "aws_region": {
+      "testPocketApp_pocket_vpc_current_region_8ED435E7": {
+      }
+    },
+    "aws_route53_zone": {
+      "testPocketApp_base_dns_main_hosted_zone_9442EEB0": {
+        "name": "bowling.gov"
+      }
+    },
+    "aws_security_groups": {
+      "testPocketApp_pocket_vpc_default_security_groups_40B4FC48": {
+        "filter": [
+          {
+            "name": "group-name",
+            "values": [
+              "default"
+            ]
+          },
+          {
+            "name": "vpc-id",
+            "values": [
+              "\${data.aws_vpc.testPocketApp_pocket_vpc_C4E157E3.id}"
+            ]
+          }
+        ]
+      },
+      "testPocketApp_pocket_vpc_internal_security_groups_12F7F666": {
+        "filter": [
+          {
+            "name": "group-name",
+            "values": [
+              "pocket-vpc-internal"
+            ]
+          },
+          {
+            "name": "vpc-id",
+            "values": [
+              "\${data.aws_vpc.testPocketApp_pocket_vpc_C4E157E3.id}"
+            ]
+          }
+        ]
+      }
+    },
+    "aws_ssm_parameter": {
+      "testPocketApp_pocket_vpc_private_subnets_9D449563": {
+        "name": "/Shared/PrivateSubnets"
+      },
+      "testPocketApp_pocket_vpc_public_subnets_B0B3A6AB": {
+        "name": "/Shared/PublicSubnets"
+      },
+      "testPocketApp_pocket_vpc_vpc_ssm_param_235525D4": {
+        "name": "/Shared/Vpc"
+      }
+    },
+    "aws_subnets": {
+      "testPocketApp_pocket_vpc_private_subnet_ids_EB1E3A65": {
+        "filter": [
+          {
+            "name": "subnet-id",
+            "values": "\${split(\\",\\", data.aws_ssm_parameter.testPocketApp_pocket_vpc_private_subnets_9D449563.value)}"
+          },
+          {
+            "name": "vpc-id",
+            "values": [
+              "\${data.aws_vpc.testPocketApp_pocket_vpc_C4E157E3.id}"
+            ]
+          }
+        ]
+      },
+      "testPocketApp_pocket_vpc_public_subnet_ids_01F0B902": {
+        "filter": [
+          {
+            "name": "subnet-id",
+            "values": "\${split(\\",\\", data.aws_ssm_parameter.testPocketApp_pocket_vpc_public_subnets_B0B3A6AB.value)}"
+          },
+          {
+            "name": "vpc-id",
+            "values": [
+              "\${data.aws_vpc.testPocketApp_pocket_vpc_C4E157E3.id}"
+            ]
+          }
+        ]
+      }
+    },
+    "aws_vpc": {
+      "testPocketApp_pocket_vpc_C4E157E3": {
+        "filter": [
+          {
+            "name": "vpc-id",
+            "values": [
+              "\${data.aws_ssm_parameter.testPocketApp_pocket_vpc_vpc_ssm_param_235525D4.value}"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "output": {
+    "ecs-application-url": {
+      "description": "ECS Application URL",
+      "value": "testing.bowling.gov"
+    }
+  },
+  "resource": {
+    "aws_acm_certificate": {
+      "testPocketApp_alb_certificate_417C14FF": {
+        "domain_name": "testing.bowling.gov",
+        "lifecycle": {
+          "create_before_destroy": true
+        },
+        "validation_method": "DNS"
+      }
+    },
+    "aws_acm_certificate_validation": {
+      "testPocketApp_alb_certificate_certificate_validation_7D899C6A": {
+        "certificate_arn": "\${aws_acm_certificate.testPocketApp_alb_certificate_417C14FF.arn}",
+        "depends_on": [
+          "aws_route53_record.testPocketApp_alb_certificate_certificate_record_3C49201F",
+          "aws_acm_certificate.testPocketApp_alb_certificate_417C14FF"
+        ],
+        "validation_record_fqdns": [
+          "\${aws_route53_record.testPocketApp_alb_certificate_certificate_record_3C49201F.fqdn}"
+        ]
+      }
+    },
+    "aws_alb": {
+      "testPocketApp_application_load_balancer_alb_D538DEEE": {
+        "internal": false,
+        "name_prefix": "TSTAPP",
+        "security_groups": [
+          "\${aws_security_group.testPocketApp_application_load_balancer_alb_security_group_91A27046.id}"
+        ],
+        "subnets": "\${data.aws_subnets.testPocketApp_pocket_vpc_public_subnet_ids_01F0B902.ids}"
+      }
+    },
+    "aws_alb_listener": {
+      "testPocketApp_listener_http_A9E227C2": {
+        "default_action": [
+          {
+            "redirect": {
+              "port": "443",
+              "protocol": "HTTPS",
+              "status_code": "HTTP_301"
+            },
+            "type": "redirect"
+          }
+        ],
+        "load_balancer_arn": "\${aws_alb.testPocketApp_application_load_balancer_alb_D538DEEE.arn}",
+        "port": 80,
+        "protocol": "HTTP"
+      },
+      "testPocketApp_listener_https_7F49DE83": {
+        "certificate_arn": "\${aws_acm_certificate.testPocketApp_alb_certificate_417C14FF.arn}",
+        "default_action": [
+          {
+            "fixed_response": {
+              "content_type": "text/plain",
+              "message_body": "",
+              "status_code": "503"
+            },
+            "type": "fixed-response"
+          }
+        ],
+        "load_balancer_arn": "\${aws_alb.testPocketApp_application_load_balancer_alb_D538DEEE.arn}",
+        "port": 443,
+        "protocol": "HTTPS",
+        "ssl_policy": "ELBSecurityPolicy-TLS-1-1-2017-01"
+      }
+    },
+    "aws_alb_listener_rule": {
+      "testPocketApp_ecs_service_listener_rule_C03BB04D": {
+        "action": [
+          {
+            "target_group_arn": "\${aws_alb_target_group.testPocketApp_ecs_service_blue_target_group_ecs_target_group_A4B85885.arn}",
+            "type": "forward"
+          }
+        ],
+        "condition": [
+          {
+            "path_pattern": {
+              "values": [
+                "*"
+              ]
+            }
+          }
+        ],
+        "lifecycle": {
+          "ignore_changes": [
+            "action"
+          ]
+        },
+        "listener_arn": "\${aws_alb_listener.testPocketApp_listener_https_7F49DE83.arn}",
+        "priority": 1
+      }
+    },
+    "aws_alb_target_group": {
+      "testPocketApp_ecs_service_blue_target_group_ecs_target_group_A4B85885": {
+        "deregistration_delay": "120",
+        "health_check": {
+          "healthy_threshold": 5,
+          "interval": 15,
+          "path": "/test",
+          "protocol": "HTTP",
+          "unhealthy_threshold": 3
+        },
+        "name_prefix": "TSTAPP",
+        "port": 80,
+        "protocol": "HTTP",
+        "tags": {
+          "type": "blue"
+        },
+        "target_type": "ip",
+        "vpc_id": "\${data.aws_vpc.testPocketApp_pocket_vpc_C4E157E3.id}"
+      }
+    },
+    "aws_appautoscaling_policy": {
+      "testPocketApp_autoscaling_scale_in_policy_A163A235": {
+        "depends_on": [
+          "aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1"
+        ],
+        "name": "testapp-ScaleInPolicy",
+        "policy_type": "StepScaling",
+        "resource_id": "\${aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1.resource_id}",
+        "scalable_dimension": "\${aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1.scalable_dimension}",
+        "service_namespace": "\${aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1.service_namespace}",
+        "step_scaling_policy_configuration": {
+          "adjustment_type": "ChangeInCapacity",
+          "cooldown": 60,
+          "metric_aggregation_type": "Average",
+          "step_adjustment": [
+            {
+              "metric_interval_upper_bound": "0",
+              "scaling_adjustment": -1
+            }
+          ]
+        },
+        "target_tracking_scaling_policy_configuration": null
+      },
+      "testPocketApp_autoscaling_scale_out_policy_075BFAC4": {
+        "depends_on": [
+          "aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1"
+        ],
+        "name": "testapp-ScaleOutPolicy",
+        "policy_type": "StepScaling",
+        "resource_id": "\${aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1.resource_id}",
+        "scalable_dimension": "\${aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1.scalable_dimension}",
+        "service_namespace": "\${aws_appautoscaling_target.testPocketApp_autoscaling_autoscaling_target_505E4EA1.service_namespace}",
+        "step_scaling_policy_configuration": {
+          "adjustment_type": "ChangeInCapacity",
+          "cooldown": 60,
+          "metric_aggregation_type": "Average",
+          "step_adjustment": [
+            {
+              "metric_interval_lower_bound": "0",
+              "scaling_adjustment": 2
+            }
+          ]
+        },
+        "target_tracking_scaling_policy_configuration": null
+      }
+    },
+    "aws_appautoscaling_target": {
+      "testPocketApp_autoscaling_autoscaling_target_505E4EA1": {
+        "max_capacity": 2,
+        "min_capacity": 1,
+        "resource_id": "service/\${aws_ecs_cluster.testPocketApp_ecs_cluster_C3960066.name}/\${aws_ecs_service.testPocketApp_ecs_service_ecs-service_182DEA4C.name}",
+        "scalable_dimension": "ecs:service:DesiredCount",
+        "service_namespace": "ecs"
+      }
+    },
+    "aws_cloudwatch_dashboard": {
+      "testPocketApp_cloudwatch-dashboard_26E9F70C": {
+        "dashboard_body": "{\\"widgets\\":[{\\"type\\":\\"metric\\",\\"x\\":0,\\"y\\":0,\\"width\\":12,\\"height\\":6,\\"properties\\":{\\"metrics\\":[[\\"AWS/ApplicationELB\\",\\"HTTPCode_Target_4XX_Count\\",\\"LoadBalancer\\",\\"\${aws_alb.testPocketApp_application_load_balancer_alb_D538DEEE.arn_suffix}\\",{\\"yAxis\\":\\"left\\",\\"color\\":\\"#ff7f0e\\"}],[\\".\\",\\"RequestCount\\",\\".\\",\\".\\",{\\"yAxis\\":\\"right\\",\\"color\\":\\"#1f77b4\\"}],[\\".\\",\\"HTTPCode_Target_5XX_Count\\",\\".\\",\\".\\",{\\"color\\":\\"#d62728\\"}],[\\".\\",\\"HTTPCode_Target_2XX_Count\\",\\".\\",\\".\\",{\\"yAxis\\":\\"right\\",\\"color\\":\\"#2ca02c\\"}]],\\"view\\":\\"timeSeries\\",\\"stacked\\":false,\\"region\\":\\"us-east-1\\",\\"period\\":60,\\"stat\\":\\"Sum\\",\\"title\\":\\"Target Requests\\"}},{\\"type\\":\\"metric\\",\\"x\\":12,\\"y\\":0,\\"width\\":12,\\"height\\":6,\\"properties\\":{\\"metrics\\":[[\\"AWS/ApplicationELB\\",\\"HTTPCode_ELB_4XX_Count\\",\\"LoadBalancer\\",\\"\${aws_alb.testPocketApp_application_load_balancer_alb_D538DEEE.arn_suffix}\\",{\\"yAxis\\":\\"left\\",\\"color\\":\\"#ff7f0e\\"}],[\\".\\",\\"RequestCount\\",\\".\\",\\".\\",{\\"yAxis\\":\\"right\\",\\"color\\":\\"#1f77b4\\"}],[\\".\\",\\"HTTPCode_ELB_5XX_Count\\",\\".\\",\\".\\",{\\"color\\":\\"#d62728\\"}]],\\"view\\":\\"timeSeries\\",\\"stacked\\":false,\\"region\\":\\"us-east-1\\",\\"period\\":60,\\"stat\\":\\"Sum\\",\\"title\\":\\"ALB Requests\\"}},{\\"type\\":\\"metric\\",\\"x\\":12,\\"y\\":6,\\"width\\":12,\\"height\\":6,\\"properties\\":{\\"metrics\\":[[\\"AWS/ApplicationELB\\",\\"TargetResponseTime\\",\\"LoadBalancer\\",\\"\${aws_alb.testPocketApp_application_load_balancer_alb_D538DEEE.arn_suffix}\\",{\\"label\\":\\"Average\\",\\"color\\":\\"#aec7e8\\"}],[\\"...\\",{\\"stat\\":\\"p95\\",\\"label\\":\\"p95\\",\\"color\\":\\"#ffbb78\\"}],[\\"...\\",{\\"stat\\":\\"p99\\",\\"label\\":\\"p99\\",\\"color\\":\\"#98df8a\\"}]],\\"view\\":\\"timeSeries\\",\\"stacked\\":false,\\"region\\":\\"us-east-1\\",\\"stat\\":\\"Average\\",\\"period\\":60}},{\\"type\\":\\"metric\\",\\"x\\":0,\\"y\\":6,\\"width\\":12,\\"height\\":6,\\"properties\\":{\\"metrics\\":[[\\"ECS/ContainerInsights\\",\\"RunningTaskCount\\",\\"ServiceName\\",\\"\${aws_ecs_service.testPocketApp_ecs_service_ecs-service_182DEA4C.name}\\",\\"ClusterName\\",\\"\${aws_ecs_cluster.testPocketApp_ecs_cluster_C3960066.name}\\",{\\"yAxis\\":\\"right\\",\\"color\\":\\"#c49c94\\"}],[\\"AWS/ECS\\",\\"CPUUtilization\\",\\".\\",\\".\\",\\".\\",\\".\\",{\\"color\\":\\"#f7b6d2\\"}],[\\".\\",\\"MemoryUtilization\\",\\".\\",\\".\\",\\".\\",\\".\\",{\\"color\\":\\"#c7c7c7\\"}]],\\"view\\":\\"timeSeries\\",\\"stacked\\":false,\\"region\\":\\"us-east-1\\",\\"stat\\":\\"Average\\",\\"period\\":60,\\"annotations\\":{\\"horizontal\\":[{\\"color\\":\\"#e377c2\\",\\"label\\":\\"CPU scale out\\",\\"value\\":45},{\\"color\\":\\"#c5b0d5\\",\\"label\\":\\"CPU scale in\\",\\"value\\":30}]},\\"title\\":\\"Service Load\\"}}]}",
+        "dashboard_name": "testapp",
+        "lifecycle": {
+          "ignore_changes": [
+            "dashboard_body"
+          ]
+        }
+      }
+    },
+    "aws_cloudwatch_metric_alarm": {
+      "testPocketApp_autoscaling_scale_in_alarm_69B5F00D": {
+        "alarm_actions": [
+          "\${aws_appautoscaling_policy.testPocketApp_autoscaling_scale_in_policy_A163A235.arn}"
+        ],
+        "alarm_description": "Alarm to reduce capacity if container CPU is low",
+        "alarm_name": "testapp Service Low CPU",
+        "comparison_operator": "LessThanThreshold",
+        "dimensions": {
+          "ClusterName": "\${aws_ecs_cluster.testPocketApp_ecs_cluster_C3960066.name}",
+          "ServiceName": "\${aws_ecs_service.testPocketApp_ecs_service_ecs-service_182DEA4C.name}"
+        },
+        "evaluation_periods": 2,
+        "metric_name": "CPUUtilization",
+        "namespace": "AWS/ECS",
+        "period": 60,
+        "statistic": "Average",
+        "threshold": 30,
+        "treat_missing_data": "notBreaching"
+      },
+      "testPocketApp_autoscaling_scale_out_alarm_4313FBE9": {
+        "alarm_actions": [
+          "\${aws_appautoscaling_policy.testPocketApp_autoscaling_scale_out_policy_075BFAC4.arn}"
+        ],
+        "alarm_description": "Alarm to add capacity if container CPU is high",
+        "alarm_name": "testapp Service High CPU",
+        "comparison_operator": "GreaterThanThreshold",
+        "dimensions": {
+          "ClusterName": "\${aws_ecs_cluster.testPocketApp_ecs_cluster_C3960066.name}",
+          "ServiceName": "\${aws_ecs_service.testPocketApp_ecs_service_ecs-service_182DEA4C.name}"
+        },
+        "evaluation_periods": 2,
+        "metric_name": "CPUUtilization",
+        "namespace": "AWS/ECS",
+        "period": 60,
+        "statistic": "Average",
+        "threshold": 45,
+        "treat_missing_data": "notBreaching"
+      }
+    },
+    "aws_ecs_cluster": {
+      "testPocketApp_ecs_cluster_C3960066": {
+        "name": "testapp",
+        "setting": [
+          {
+            "name": "containerInsights",
+            "value": "enabled"
+          }
+        ]
+      }
+    },
+    "aws_ecs_service": {
+      "testPocketApp_ecs_service_ecs-service_182DEA4C": {
+        "cluster": "\${aws_ecs_cluster.testPocketApp_ecs_cluster_C3960066.arn}",
+        "depends_on": [
+          "aws_alb_target_group.testPocketApp_ecs_service_blue_target_group_ecs_target_group_A4B85885",
+          "aws_alb_listener_rule.testPocketApp_ecs_service_listener_rule_C03BB04D"
+        ],
+        "deployment_controller": {
+          "type": "ECS"
+        },
+        "deployment_maximum_percent": 200,
+        "deployment_minimum_healthy_percent": 100,
+        "desired_count": 2,
+        "launch_type": "FARGATE",
+        "lifecycle": {
+          "ignore_changes": [
+            "desired_count",
+            "load_balancer"
+          ]
+        },
+        "load_balancer": [
+          {
+            "container_name": "main_container",
+            "container_port": 8675309,
+            "target_group_arn": "\${aws_alb_target_group.testPocketApp_ecs_service_blue_target_group_ecs_target_group_A4B85885.arn}"
+          }
+        ],
+        "name": "testapp",
+        "network_configuration": {
+          "security_groups": [
+            "\${aws_security_group.testPocketApp_ecs_service_ecs_security_group_9C016FA8.id}"
+          ],
+          "subnets": "\${data.aws_subnets.testPocketApp_pocket_vpc_private_subnet_ids_EB1E3A65.ids}"
+        },
+        "propagate_tags": "SERVICE",
+        "task_definition": "\${aws_ecs_task_definition.testPocketApp_ecs_service_ecs-task_A7E74E45.arn}"
+      }
+    },
+    "aws_ecs_task_definition": {
+      "testPocketApp_ecs_service_ecs-task_A7E74E45": {
+        "container_definitions": "[]",
+        "cpu": "512",
+        "depends_on": [
+        ],
+        "execution_role_arn": "\${aws_iam_role.testPocketApp_ecs_service_ecs-iam_ecs-execution-role_EB461A0C.arn}",
+        "family": "testapp",
+        "memory": "2048",
+        "network_mode": "awsvpc",
+        "requires_compatibilities": [
+          "FARGATE"
+        ],
+        "skip_destroy": true,
+        "task_role_arn": "\${aws_iam_role.testPocketApp_ecs_service_ecs-iam_ecs-task-role_7DB93963.arn}",
+        "volume": [
+        ]
+      }
+    },
+    "aws_iam_role": {
+      "testPocketApp_ecs_service_ecs-iam_ecs-execution-role_EB461A0C": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testPocketApp_ecs_service_ecs-iam_ecs-task-assume_ABB81680.json}",
+        "name": "testapp-TaskExecutionRole"
+      },
+      "testPocketApp_ecs_service_ecs-iam_ecs-task-role_7DB93963": {
+        "assume_role_policy": "\${data.aws_iam_policy_document.testPocketApp_ecs_service_ecs-iam_ecs-task-assume_ABB81680.json}",
+        "name": "testapp-TaskRole"
+      }
+    },
+    "aws_route53_record": {
+      "testPocketApp_alb_certificate_certificate_record_3C49201F": {
+        "depends_on": [
+          "aws_acm_certificate.testPocketApp_alb_certificate_417C14FF"
+        ],
+        "name": "\${tolist(aws_acm_certificate.testPocketApp_alb_certificate_417C14FF.domain_validation_options).0.resource_record_name}",
+        "records": [
+          "\${tolist(aws_acm_certificate.testPocketApp_alb_certificate_417C14FF.domain_validation_options).0.resource_record_value}"
+        ],
+        "ttl": 60,
+        "type": "\${tolist(aws_acm_certificate.testPocketApp_alb_certificate_417C14FF.domain_validation_options).0.resource_record_type}",
+        "zone_id": "\${aws_route53_zone.testPocketApp_base_dns_subhosted_zone_1E1E3243.zone_id}"
+      },
+      "testPocketApp_alb_record_7B56ED33": {
+        "alias": {
+          "evaluate_target_health": true,
+          "name": "\${aws_alb.testPocketApp_application_load_balancer_alb_D538DEEE.dns_name}",
+          "zone_id": "\${aws_alb.testPocketApp_application_load_balancer_alb_D538DEEE.zone_id}"
+        },
+        "lifecycle": {
+          "ignore_changes": [
+            "weighted_routing_policy[0].weight"
+          ]
+        },
+        "name": "testing.bowling.gov",
+        "set_identifier": "1",
+        "type": "A",
+        "weighted_routing_policy": {
+          "weight": 1
+        },
+        "zone_id": "\${aws_route53_zone.testPocketApp_base_dns_subhosted_zone_1E1E3243.zone_id}"
+      },
+      "testPocketApp_base_dns_subhosted_zone_ns_497FFB83": {
+        "name": "testing.bowling.gov",
+        "records": "\${aws_route53_zone.testPocketApp_base_dns_subhosted_zone_1E1E3243.name_servers}",
+        "ttl": 86400,
+        "type": "NS",
+        "zone_id": "\${data.aws_route53_zone.testPocketApp_base_dns_main_hosted_zone_9442EEB0.zone_id}"
       }
     },
     "aws_route53_zone": {

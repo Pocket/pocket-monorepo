@@ -6,6 +6,7 @@ import {
   alb,
   dataAwsElbServiceAccount,
   dataAwsS3Bucket,
+  dataAwsEc2ManagedPrefixList,
 } from '@cdktf/provider-aws';
 import { TerraformMetaArguments, TerraformProvider } from 'cdktf';
 import { Construct } from 'constructs';
@@ -16,6 +17,7 @@ export interface ApplicationLoadBalancerProps extends TerraformMetaArguments {
   vpcId: string;
   subnetIds: string[];
   internal?: boolean;
+  useCloudfrontManagedPrefixList?: boolean;
   /**
    * Optional config to dump alb logs to a bucket.
    */
@@ -53,6 +55,28 @@ export class ApplicationLoadBalancer extends Construct {
   ) {
     super(scope, name);
 
+    let ingress: securityGroup.SecurityGroupIngress = {
+      fromPort: 443,
+      toPort: 443,
+      protocol: 'TCP',
+      cidrBlocks: ['0.0.0.0/0'],
+    };
+
+    if (config.useCloudfrontManagedPrefixList) {
+      const prefixList =
+        new dataAwsEc2ManagedPrefixList.DataAwsEc2ManagedPrefixList(
+          this,
+          'alb_cloudfront_security',
+          { name: 'com.amazonaws.global.cloudfront.origin-facing' },
+        );
+      ingress = {
+        fromPort: 443,
+        toPort: 443,
+        protocol: 'TCP',
+        prefixListIds: [prefixList.id],
+      };
+    }
+
     this.securityGroup = new securityGroup.SecurityGroup(
       this,
       `alb_security_group`,
@@ -61,13 +85,9 @@ export class ApplicationLoadBalancer extends Construct {
         description: 'External security group  (Managed by Terraform)',
         vpcId: config.vpcId,
         ingress: [
+          ingress,
           {
-            fromPort: 443,
-            toPort: 443,
-            protocol: 'TCP',
-            cidrBlocks: ['0.0.0.0/0'],
-          },
-          {
+            // Allow anything on Port 80 because its always a redirect to 443 which could have blocks for Cloudfront only
             fromPort: 80,
             toPort: 80,
             protocol: 'TCP',

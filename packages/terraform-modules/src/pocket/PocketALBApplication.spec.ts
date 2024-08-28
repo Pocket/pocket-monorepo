@@ -38,10 +38,42 @@ describe('PocketALBApplication', () => {
     expect(synthed).toMatchSnapshot();
   });
 
-  it('renders an external application', () => {
+  it('renders an external application with a cdn', () => {
     const synthed = Testing.synthScope((stack) => {
       BASE_CONFIG.internal = false;
       BASE_CONFIG.cdn = true;
+
+      new PocketALBApplication(stack, 'testPocketApp', BASE_CONFIG);
+    });
+    expect(synthed).toMatchSnapshot();
+  });
+
+  it('renders an external application with a waf', () => {
+    const synthed = Testing.synthScope((stack) => {
+      BASE_CONFIG.internal = false;
+      BASE_CONFIG.cdn = false;
+      BASE_CONFIG.wafConfig = { aclArn: 'some-arn' };
+
+      new PocketALBApplication(stack, 'testPocketApp', BASE_CONFIG);
+    });
+    expect(synthed).toMatchSnapshot();
+  });
+
+  it('renders an external application without a cdn', () => {
+    const synthed = Testing.synthScope((stack) => {
+      BASE_CONFIG.internal = false;
+      BASE_CONFIG.cdn = false;
+
+      new PocketALBApplication(stack, 'testPocketApp', BASE_CONFIG);
+    });
+    expect(synthed).toMatchSnapshot();
+  });
+
+  it('renders an external application with a CDN and a waf', () => {
+    const synthed = Testing.synthScope((stack) => {
+      BASE_CONFIG.internal = false;
+      BASE_CONFIG.cdn = true;
+      BASE_CONFIG.wafConfig = { aclArn: 'some-arn' };
 
       new PocketALBApplication(stack, 'testPocketApp', BASE_CONFIG);
     });

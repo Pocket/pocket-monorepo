@@ -256,12 +256,14 @@ export class PocketALBApplication extends Construct {
 
     if (config.cdn) {
       const cdn = this.createCDN(albRecord);
+      // If we have a CDN, add the WAF to the CDN
       if (config.wafConfig) {
         this.createWAFCDN(cdn, config.wafConfig.aclArn);
       }
     }
 
-    if (config.wafConfig) {
+    // If we don't have a CDN add the WAF to the ALB
+    if (config.wafConfig && !config.cdn) {
       this.createWAF(alb, config.wafConfig.aclArn);
     }
 
@@ -405,7 +407,10 @@ export class PocketALBApplication extends Construct {
     );
   }
 
-  private createWAFCDN(cdn: CloudfrontDistribution, webAclArn: string) {
+  private createWAFCDN(
+    cdn: cloudfrontDistribution.CloudfrontDistribution,
+    webAclArn: string,
+  ) {
     new wafv2WebAclAssociation.Wafv2WebAclAssociation(
       this,
       'application_waf_association',
@@ -433,6 +438,8 @@ export class PocketALBApplication extends Construct {
       tags: this.config.tags,
       accessLogs: this.config.accessLogs,
       provider: this.config.provider,
+      useCloudfrontManagedPrefixList:
+        this.config.cdn && this.config.wafConfig !== null,
     });
 
     //When the app uses a CDN we set the ALB to be direct.app-domain

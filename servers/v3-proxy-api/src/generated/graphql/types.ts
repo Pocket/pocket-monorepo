@@ -828,6 +828,8 @@ export type Item = {
    * @deprecated Clients should not use this
    */
   contentLength?: Maybe<Scalars['Int']['output']>;
+  /** If the item is in corpus allow the item to reference it.  Exposing curated info for consistent UX */
+  corpusItem?: Maybe<CorpusItem>;
   /** The date the article was published */
   datePublished?: Maybe<Scalars['DateString']['output']>;
   /** The date the parser resolved this item */
@@ -3438,7 +3440,7 @@ export type Topic = {
   displayName: Scalars['String']['output'];
   /** If returned a note to show to the user about the topic */
   displayNote?: Maybe<Scalars['String']['output']>;
-  /** The id of the topic */
+  /** The legacy UUID id of the topic */
   id: Scalars['ID']['output'];
   /** Whether or not clients should show this topic ot users */
   isDisplayed: Scalars['Boolean']['output'];
