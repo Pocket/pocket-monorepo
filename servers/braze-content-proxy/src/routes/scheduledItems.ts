@@ -4,7 +4,7 @@ import { getScheduledSurfaceStories } from '../graphql/client-api-proxy';
 import config from '../config';
 import { Router } from 'express';
 
-const router = Router();
+const router: Router = Router();
 
 router.get('/:scheduledSurfaceID', async (req, res, next) => {
   // Enable two minute cache when in AWS.
