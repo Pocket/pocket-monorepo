@@ -159,6 +159,7 @@ class BrazeContentProxy extends TerraformStack {
   }): PocketALBApplication {
     const { region, caller, secretsManagerKmsAlias, snsTopic, wafAcl } =
       dependencies;
+    const intMaskSecretArn = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/IntMask`;
 
     return new PocketALBApplication(this, 'application', {
       internal: false,
@@ -197,6 +198,38 @@ class BrazeContentProxy extends TerraformStack {
             {
               name: 'BRAZE_API_KEY',
               valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/BRAZE_API_KEY:key::`,
+            },
+            {
+              name: 'BRAZE_PRIVATE_KEY',
+              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/PRIVATE_KEY:::`,
+            },
+            {
+              name: 'CONTACT_HASH',
+              valueFrom: `${intMaskSecretArn}:contactHash::`,
+            },
+            {
+              name: 'CHARACTER_MAP',
+              valueFrom: `${intMaskSecretArn}:characterMap::`,
+            },
+            {
+              name: 'POSITION_MAP',
+              valueFrom: `${intMaskSecretArn}:positionMap::`,
+            },
+            {
+              name: 'MD5_RANDOMIZER',
+              valueFrom: `${intMaskSecretArn}:md5Randomizer::`,
+            },
+            {
+              name: 'LETTER_INDEX',
+              valueFrom: `${intMaskSecretArn}:letterIndex::`,
+            },
+            {
+              name: 'SALT_1',
+              valueFrom: `${intMaskSecretArn}:salt1::`,
+            },
+            {
+              name: 'SALT_2',
+              valueFrom: `${intMaskSecretArn}:salt2::`,
             },
           ],
         },

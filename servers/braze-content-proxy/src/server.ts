@@ -2,31 +2,42 @@ import express, { Application, json } from 'express';
 import * as Sentry from '@sentry/node';
 import collectionRouter from './routes/collection';
 import scheduledStoriesRouter from './routes/scheduledItems';
+import digestRouter from './routes/digest';
+
 import { Server, createServer } from 'http';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { validateBrazeApiKey } from './middleware/validateBrazeAPIKey';
+import { cache } from './middleware/cache';
+import { InvalidAPIKeyError, InvalidDateError } from './errors';
 
 export async function startServer(port: number) {
   const app: Application = express();
   const httpServer: Server = createServer(app);
 
   app.use(json());
-  app.get('/.well-known/server-health', (req, res) => {
-    res.status(200).send('ok');
-  });
-
-  app.use('/collection/', collectionRouter);
-  app.use('/scheduled-items/', scheduledStoriesRouter);
-
   app.set('query parser', 'simple');
   app.get('/.well-known/server-health', (req, res) => {
     res.status(200).send('ok');
   });
+
+  // Put the validate API Key middle ware before our routes that require it.
+  app.use(validateBrazeApiKey);
+  app.use(cache);
+  app.use('/collection/', collectionRouter);
+  app.use('/scheduled-items/', scheduledStoriesRouter);
+  app.use('/digest/', digestRouter);
 
   app.use((err, req, res, next) => {
     if (res.headersSent) {
       return next(err);
     }
 
+    if (err instanceof InvalidAPIKeyError || err instanceof InvalidDateError) {
+      // While I would like to return a proper error status code, Braze does not support it.
+      // So we hard code to 500
+      // https://www.braze.com/docs/user_guide/personalization_and_dynamic_content/connected_content/making_an_api_call/
+      return res.status(500).json({ error: err.message });
+    }
     // Log error to CloudWatch
     serverLogger.error(err);
 

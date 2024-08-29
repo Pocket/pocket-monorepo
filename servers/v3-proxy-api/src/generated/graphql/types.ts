@@ -183,6 +183,8 @@ export type Collection = {
    */
   language: CollectionLanguage;
   partnership?: Maybe<CollectionPartnership>;
+  /** The preview of the collection */
+  preview: PocketMetadata;
   publishedAt?: Maybe<Scalars['DateString']['output']>;
   /**
    * Provides short url for the given_url in the format: https://pocket.co/<identifier>.
@@ -303,6 +305,8 @@ export type CorpusItem = {
   imageUrl: Scalars['Url']['output'];
   /** What language this item is in. This is a two-letter code, for example, 'EN' for English. */
   language: CorpusLanguage;
+  /** The preview of the search result */
+  preview: PocketMetadata;
   /** The name of the online publication that published this story. */
   publisher: Scalars['String']['output'];
   /** The user's saved item, from the Corpus Item, if the corpus item was saved to the user's saves */
@@ -906,7 +910,7 @@ export type Item = {
    * @deprecated Use a domain as the identifier instead
    */
   originDomainId?: Maybe<Scalars['String']['output']>;
-  /** The client preview/display logic for this url */
+  /** The client preview/display logic for this url. The requires for each object should be kept in sync with the sub objects requires field. */
   preview?: Maybe<PocketMetadata>;
   /** A server generated unique reader slug for this item based on itemId */
   readerSlug: Scalars['String']['output'];
@@ -1963,9 +1967,12 @@ export type PocketMetadata = {
 };
 
 export enum PocketMetadataSource {
+  Collection = 'COLLECTION',
+  CuratedCorpus = 'CURATED_CORPUS',
   Oembed = 'OEMBED',
   Opengraph = 'OPENGRAPH',
-  PocketParser = 'POCKET_PARSER'
+  PocketParser = 'POCKET_PARSER',
+  Syndication = 'SYNDICATION'
 }
 
 /**
@@ -3307,6 +3314,8 @@ export type SyndicatedArticle = {
   mainImage?: Maybe<Scalars['String']['output']>;
   /** The item id of the article we cloned */
   originalItemId: Scalars['ID']['output'];
+  /** The preview of the syndicated article */
+  preview: PocketMetadata;
   /** AWSDateTime — Format: YYYY-MM-DDThh:mm:ss.sssZ */
   publishedAt: Scalars['String']['output'];
   /** The manually set publisher information for this article */

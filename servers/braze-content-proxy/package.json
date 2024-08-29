@@ -4,19 +4,21 @@
   "main": "dist/main.js",
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "dev": "npm run build && npm run watch",
+    "dev": "pnpm run build && pnpm run watch",
     "format": "eslint --fix",
     "lint": "eslint --fix-dry-run",
     "prebuild": "graphql-codegen",
     "start": "node dist/main.js",
     "test": "jest \"\\.spec\\.ts\"",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",
-    "test:watch": "npm test -- --watchAll",
+    "test:watch": "pnpm test -- --watchAll",
     "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json"
   },
   "dependencies": {
     "@apollo/client": "3.7.17",
     "@graphql-typed-document-node/core": "3.2.0",
+    "@pocket-tools/int-mask": "workspace:*",
+    "@pocket-tools/jwt-utils": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "8.27.0",

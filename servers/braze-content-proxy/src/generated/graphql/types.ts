@@ -183,6 +183,8 @@ export type Collection = {
    */
   language: CollectionLanguage;
   partnership?: Maybe<CollectionPartnership>;
+  /** The preview of the collection */
+  preview: PocketMetadata;
   publishedAt?: Maybe<Scalars['DateString']['output']>;
   /**
    * Provides short url for the given_url in the format: https://pocket.co/<identifier>.
@@ -303,6 +305,8 @@ export type CorpusItem = {
   imageUrl: Scalars['Url']['output'];
   /** What language this item is in. This is a two-letter code, for example, 'EN' for English. */
   language: CorpusLanguage;
+  /** The preview of the search result */
+  preview: PocketMetadata;
   /** The name of the online publication that published this story. */
   publisher: Scalars['String']['output'];
   /** The user's saved item, from the Corpus Item, if the corpus item was saved to the user's saves */
@@ -906,7 +910,7 @@ export type Item = {
    * @deprecated Use a domain as the identifier instead
    */
   originDomainId?: Maybe<Scalars['String']['output']>;
-  /** The client preview/display logic for this url */
+  /** The client preview/display logic for this url. The requires for each object should be kept in sync with the sub objects requires field. */
   preview?: Maybe<PocketMetadata>;
   /** A server generated unique reader slug for this item based on itemId */
   readerSlug: Scalars['String']['output'];
@@ -1963,9 +1967,12 @@ export type PocketMetadata = {
 };
 
 export enum PocketMetadataSource {
+  Collection = 'COLLECTION',
+  CuratedCorpus = 'CURATED_CORPUS',
   Oembed = 'OEMBED',
   Opengraph = 'OPENGRAPH',
-  PocketParser = 'POCKET_PARSER'
+  PocketParser = 'POCKET_PARSER',
+  Syndication = 'SYNDICATION'
 }
 
 /**
@@ -3307,6 +3314,8 @@ export type SyndicatedArticle = {
   mainImage?: Maybe<Scalars['String']['output']>;
   /** The item id of the article we cloned */
   originalItemId: Scalars['ID']['output'];
+  /** The preview of the syndicated article */
+  preview: PocketMetadata;
   /** AWSDateTime — Format: YYYY-MM-DDThh:mm:ss.sssZ */
   publishedAt: Scalars['String']['output'];
   /** The manually set publisher information for this article */
@@ -3805,6 +3814,15 @@ export type PocketCollectionsQueryVariables = Exact<{
 
 export type PocketCollectionsQuery = { __typename?: 'Query', getCollectionBySlug?: { __typename?: 'Collection', externalId: string, title: string, excerpt?: any | null, imageUrl?: any | null, intro?: any | null, publishedAt?: any | null, stories: Array<{ __typename?: 'CollectionStory', externalId: string, title: string, excerpt: any, imageUrl?: any | null, publisher?: string | null, url: any, authors: Array<{ __typename?: 'CollectionStoryAuthor', name: string }>, item?: { __typename?: 'Item', shortUrl?: any | null } | null }> } | null };
 
+export type UserDigestQueryVariables = Exact<{
+  pagination?: InputMaybe<PaginationInput>;
+  imageOptions: Array<CachedImageInput> | CachedImageInput;
+  filter?: InputMaybe<SavedItemsFilter>;
+}>;
+
+
+export type UserDigestQuery = { __typename?: 'Query', user?: { __typename?: 'User', savedItems?: { __typename?: 'SavedItemConnection', edges?: Array<{ __typename?: 'SavedItemEdge', node?: { __typename?: 'SavedItem', item: { __typename?: 'Item', preview?: { __typename?: 'ItemSummary', title?: string | null, url: any, image?: { __typename?: 'Image', cachedImages?: Array<{ __typename?: 'CachedImage', id: string, url?: any | null } | null> | null } | null } | { __typename?: 'OEmbed', title?: string | null, url: any, image?: { __typename?: 'Image', cachedImages?: Array<{ __typename?: 'CachedImage', id: string, url?: any | null } | null> | null } | null } | null } | { __typename?: 'PendingItem' } } | null } | null> | null } | null } | null };
+
 export type PocketHitsQueryVariables = Exact<{
   date: Scalars['Date']['input'];
   scheduledSurfaceId: Scalars['ID']['input'];
@@ -3815,4 +3833,5 @@ export type PocketHitsQuery = { __typename?: 'Query', scheduledSurface: { __type
 
 
 export const PocketCollectionsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"PocketCollections"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"slug"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getCollectionBySlug"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"slug"},"value":{"kind":"Variable","name":{"kind":"Name","value":"slug"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"externalId"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"excerpt"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"intro"}},{"kind":"Field","name":{"kind":"Name","value":"publishedAt"}},{"kind":"Field","name":{"kind":"Name","value":"stories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"externalId"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"excerpt"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"publisher"}},{"kind":"Field","name":{"kind":"Name","value":"authors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"shortUrl"}}]}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}}]}}]}}]} as unknown as DocumentNode<PocketCollectionsQuery, PocketCollectionsQueryVariables>;
+export const UserDigestDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"UserDigest"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"PaginationInput"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"imageOptions"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CachedImageInput"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"SavedItemsFilter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"savedItems"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pagination"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pagination"}}},{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"item"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Item"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"preview"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"image"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cachedImages"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"imageOptions"},"value":{"kind":"Variable","name":{"kind":"Name","value":"imageOptions"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}}]}}]}}]}}]}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<UserDigestQuery, UserDigestQueryVariables>;
 export const PocketHitsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"PocketHits"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"date"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Date"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"scheduledSurfaceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"scheduledSurface"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"scheduledSurfaceId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"items"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"date"},"value":{"kind":"Variable","name":{"kind":"Name","value":"date"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"corpusItem"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"shortUrl"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"topic"}},{"kind":"Field","name":{"kind":"Name","value":"excerpt"}},{"kind":"Field","name":{"kind":"Name","value":"imageUrl"}},{"kind":"Field","name":{"kind":"Name","value":"authors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"publisher"}}]}}]}}]}}]}}]} as unknown as DocumentNode<PocketHitsQuery, PocketHitsQueryVariables>;

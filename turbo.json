@@ -6,6 +6,7 @@
     ".env",
     ".env.example"
   ],
+  "envMode": "loose",
   "globalEnv": [
     "NODE_ENV",
     "GITHUB_TOKEN",
@@ -21,7 +22,8 @@
     "SALT_1",
     "SALT_2",
     "UNLEASH_ENDPOINT",
-    "UNLEASH_KEY"
+    "UNLEASH_KEY",
+    "BRAZE_PRIVATE_KEY"
   ],
   "tasks": {
     "build": {
