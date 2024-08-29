@@ -6,7 +6,7 @@ supergraph:
   query_planning:
     cache:
       redis:
-        urls: ['rediss-cluster://${env.REDIS_ENDPOINT}']
+        urls: ['${env.REDIS_PROTOCOL:-rediss-cluster}://${env.REDIS_ENDPOINT}']
         ttl: 48h # optional, by default no expiration
 include_subgraph_errors:
   all: true # Propagate errors from all subgraphs
@@ -80,5 +80,5 @@ apq:
   router:
     cache:
       redis:
-        urls: ['rediss-cluster://${env.REDIS_ENDPOINT}']
+        urls: ['${env.REDIS_PROTOCOL:-rediss-cluster}://${env.REDIS_ENDPOINT}']
         ttl: 24h # optional, by default no expiration

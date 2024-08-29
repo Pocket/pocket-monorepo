@@ -1,10 +1,76 @@
-federation_version: =2.4.7
+federation_version: =2.7.0
 subgraphs:
-  products:
+  # Pocket Monorepo
+  annotations-api:
+    routing_url: https://annotations-api.readitlater.com
+  #   schema:
+  #     subgraph_url: https://annotations-api.readitlater.com
+    schema:  # Schema downloaded from GraphOS registry, does not poll for updates
+      graphref: pocket-client-api@current
+      subgraph: annotations-api
+  featureflags:
+    routing_url: https://featureflags.readitlater.com/graphql
+    schema:
+      subgraph_url: https://featureflags.readitlater.com/graphql
+  image-api:
+    routing_url: https://image-api.readitlater.com
+    schema:
+      subgraph_url: https://image-api.readitlater.com
+  list-api:
+    routing_url: https://list-api.readitlater.com
+    schema:
+      subgraph_url: https://list-api.readitlater.com
+  parser:
+    #routing_url: https://parser-graphql-wrapper.readitlater.com
+    #schema:
+    #  subgraph_url: https://parser-graphql-wrapper.readitlater.com
     routing_url: http://localhost:4001
     schema:
       subgraph_url: http://localhost:4001
-  users:
-    routing_url: http://localhost:4002
+  shareable-lists-api:
+    routing_url: https://shareablelistsapi.readitlater.com
     schema:
-      subgraph_url: http://localhost:4002
+      subgraph_url: https://shareablelistsapi.readitlater.com
+  shares-api:
+    routing_url: https://shares-api.readitlater.com
+    schema:
+      subgraph_url: https://shares-api.readitlater.com
+  user:
+    routing_url: https://user-api.readitlater.com
+    schema:
+      subgraph_url: https://user-api.readitlater.com
+  user-list-search:
+    routing_url: https://user-list-search.readitlater.com/graphql
+    schema:
+      subgraph_url: https://user-list-search.readitlater.com/graphql
+
+  # # Content Monorepo
+  collection:
+    routing_url: https://collection-api.readitlater.com
+    # schema:
+    #   subgraph_url: https://collection-api.readitlater.com
+    schema:  # Schema downloaded from GraphOS registry, does not poll for updates
+      graphref: pocket-client-api@current
+      subgraph: collection
+  curated-corpus:
+    routing_url: https://curated-corpus-api.readitlater.com
+    # schema:
+    #   subgraph_url: https://curated-corpus-api.readitlater.com
+    schema:  # Schema downloaded from GraphOS registry, does not poll for updates
+      graphref: pocket-client-api@current
+      subgraph: curated-corpus
+  # curation-tools:
+  #   routing_url: 	https://curation-tools-api.readitlater.com
+  #   schema:
+  #     subgraph_url: 	https://curation-tools-api.readitlater.com
+  recommendation-api:
+    routing_url: https://recommendation-api.readitlater.com/
+    schema:
+      subgraph_url: https://recommendation-api.readitlater.com/
+  syndication:
+    routing_url: https://syndication-api-wrapper.readitlater.com/
+    # schema:
+    #   subgraph_url: https://syndication-api-wrapper.readitlater.com/
+    schema:  # Schema downloaded from GraphOS registry, does not poll for updates
+      graphref: pocket-client-api@current
+      subgraph: syndication

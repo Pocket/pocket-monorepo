@@ -20,6 +20,8 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  /** A date in the YYYY-MM-DD format. */
+  Date: { input: any; output: any; }
   /** A String representing a date in the format of `yyyy-MM-dd HH:mm:ss` */
   DateString: { input: any; output: any; }
   /**
@@ -74,16 +76,40 @@ export enum CacheControlScope {
 
 export type Collection = {
   __typename?: 'Collection';
+  authors: Array<CollectionAuthor>;
+  excerpt?: Maybe<Scalars['Markdown']['output']>;
+  imageUrl?: Maybe<Scalars['Url']['output']>;
+  /** The preview of the collection */
+  preview: PocketMetadata;
+  publishedAt?: Maybe<Scalars['DateString']['output']>;
   /**
    * Provides short url for the given_url in the format: https://pocket.co/<identifier>.
    * marked as beta because it's not ready yet for large client request.
    */
   shortUrl?: Maybe<Scalars['Url']['output']>;
   slug: Scalars['String']['output'];
+  title: Scalars['String']['output'];
+};
+
+export type CollectionAuthor = {
+  __typename?: 'CollectionAuthor';
+  name: Scalars['String']['output'];
 };
 
 export type CorpusItem = {
   __typename?: 'CorpusItem';
+  /** The author names and sort orders associated with this CorpusItem. */
+  authors: Array<CorpusItemAuthor>;
+  /** The publication date for this story. */
+  datePublished?: Maybe<Scalars['Date']['output']>;
+  /** The excerpt of the Approved Item. */
+  excerpt: Scalars['String']['output'];
+  /** The image for this item's accompanying picture. */
+  image: Image;
+  /** The preview of the search result */
+  preview: PocketMetadata;
+  /** The name of the online publication that published this story. */
+  publisher: Scalars['String']['output'];
   /**
    * Provides short url for the given_url in the format: https://pocket.co/<identifier>.
    * marked as beta because it's not ready yet for large client request.
@@ -91,7 +117,16 @@ export type CorpusItem = {
   shortUrl?: Maybe<Scalars['Url']['output']>;
   /** Time to read in minutes. Is nullable. */
   timeToRead?: Maybe<Scalars['Int']['output']>;
+  /** The title of the Approved Item. */
+  title: Scalars['String']['output'];
   url: Scalars['Url']['output'];
+};
+
+/** An author associated with a CorpusItem. */
+export type CorpusItemAuthor = {
+  __typename?: 'CorpusItemAuthor';
+  name: Scalars['String']['output'];
+  sortOrder: Scalars['Int']['output'];
 };
 
 /** A node in a CorpusSearchConnection result */
@@ -164,11 +199,15 @@ export type Item = {
   article?: Maybe<Scalars['String']['output']>;
   /** List of Authors involved with this article */
   authors?: Maybe<Array<Maybe<Author>>>;
+  /** If the item is a collection, then the collection information */
+  collection?: Maybe<Collection>;
   /**
    * The length in bytes of the content
    * @deprecated Clients should not use this
    */
   contentLength?: Maybe<Scalars['Int']['output']>;
+  /** If the item is in the Pocket Corpus, then the corpus information */
+  corpusItem?: Maybe<CorpusItem>;
   /** The date the article was published */
   datePublished?: Maybe<Scalars['DateString']['output']>;
   /** The date the parser resolved this item */
@@ -246,7 +285,7 @@ export type Item = {
    * @deprecated Use a domain as the identifier instead
    */
   originDomainId?: Maybe<Scalars['String']['output']>;
-  /** The client preview/display logic for this url */
+  /** The client preview/display logic for this url. The requires for each object should be kept in sync with the sub objects requires field. */
   preview?: Maybe<PocketMetadata>;
   /** A server generated unique reader slug for this item based on itemId */
   readerSlug: Scalars['String']['output'];
@@ -271,6 +310,8 @@ export type Item = {
   shortUrl?: Maybe<Scalars['Url']['output']>;
   /** If the url is an Article, the text in SSML format for speaking, i.e. Listen */
   ssml?: Maybe<Scalars['String']['output']>;
+  /** If the item is a syndicated article, then the syndication information */
+  syndicatedArticle?: Maybe<SyndicatedArticle>;
   /**
    * Date this item was first parsed in Pocket
    * @deprecated Clients should not use this
@@ -452,15 +493,26 @@ export type PocketMetadata = {
 };
 
 export enum PocketMetadataSource {
+  Collection = 'COLLECTION',
+  CuratedCorpus = 'CURATED_CORPUS',
   Oembed = 'OEMBED',
   Opengraph = 'OPENGRAPH',
-  PocketParser = 'POCKET_PARSER'
+  PocketParser = 'POCKET_PARSER',
+  Syndication = 'SYNDICATION'
 }
 
 export type PocketShare = {
   __typename?: 'PocketShare';
   preview?: Maybe<PocketMetadata>;
   targetUrl: Scalars['ValidUrl']['output'];
+};
+
+export type Publisher = {
+  __typename?: 'Publisher';
+  /** Square logo to use for the publisher */
+  logo?: Maybe<Scalars['String']['output']>;
+  /** Name of the publisher of the article */
+  name?: Maybe<Scalars['String']['output']>;
 };
 
 export type Query = {
@@ -523,6 +575,28 @@ export type ReaderViewResult = {
   __typename?: 'ReaderViewResult';
   fallbackPage?: Maybe<ReaderFallback>;
   slug: Scalars['ID']['output'];
+};
+
+export type SyndicatedArticle = {
+  __typename?: 'SyndicatedArticle';
+  /** Array of author names in string format */
+  authorNames: Array<Maybe<Scalars['String']['output']>>;
+  /** Excerpt  */
+  excerpt?: Maybe<Scalars['String']['output']>;
+  /** Primary image to use in surfacing this content */
+  mainImage?: Maybe<Scalars['String']['output']>;
+  /** The preview of the syndicated article */
+  preview: PocketMetadata;
+  /** AWSDateTime — Format: YYYY-MM-DDThh:mm:ss.sssZ */
+  publishedAt: Scalars['String']['output'];
+  /** The manually set publisher information for this article */
+  publisher?: Maybe<Publisher>;
+  /** The canonical publisher URL. Automatically set at time of creation but can be changed by editor. */
+  publisherUrl: Scalars['String']['output'];
+  /** Slug that pocket uses for this article in the url */
+  slug?: Maybe<Scalars['String']['output']>;
+  /** Title of syndicated article */
+  title: Scalars['String']['output'];
 };
 
 /** Represents content that could not be parsed into a valid Marticle* component. */
@@ -679,15 +753,18 @@ export type ResolversTypes = ResolversObject<{
   BulletedListElement: ResolverTypeWrapper<BulletedListElement>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   CacheControlScope: CacheControlScope;
-  Collection: ResolverTypeWrapper<Collection>;
-  CorpusItem: ResolverTypeWrapper<CorpusItem>;
+  Collection: ResolverTypeWrapper<Omit<Collection, 'preview'> & { preview: ResolversTypes['PocketMetadata'] }>;
+  CollectionAuthor: ResolverTypeWrapper<CollectionAuthor>;
+  CorpusItem: ResolverTypeWrapper<Omit<CorpusItem, 'preview'> & { preview: ResolversTypes['PocketMetadata'] }>;
+  CorpusItemAuthor: ResolverTypeWrapper<CorpusItemAuthor>;
   CorpusSearchNode: ResolverTypeWrapper<Omit<CorpusSearchNode, 'preview'> & { preview: ResolversTypes['PocketMetadata'] }>;
+  Date: ResolverTypeWrapper<Scalars['Date']['output']>;
   DateString: ResolverTypeWrapper<Scalars['DateString']['output']>;
   DomainMetadata: ResolverTypeWrapper<DomainMetadata>;
   ISOString: ResolverTypeWrapper<Scalars['ISOString']['output']>;
   Image: ResolverTypeWrapper<Image>;
   Imageness: Imageness;
-  Item: ResolverTypeWrapper<Omit<Item, 'marticle' | 'preview'> & { marticle?: Maybe<Array<ResolversTypes['MarticleComponent']>>, preview?: Maybe<ResolversTypes['PocketMetadata']> }>;
+  Item: ResolverTypeWrapper<Omit<Item, 'collection' | 'corpusItem' | 'marticle' | 'preview' | 'syndicatedArticle'> & { collection?: Maybe<ResolversTypes['Collection']>, corpusItem?: Maybe<ResolversTypes['CorpusItem']>, marticle?: Maybe<Array<ResolversTypes['MarticleComponent']>>, preview?: Maybe<ResolversTypes['PocketMetadata']>, syndicatedArticle?: Maybe<ResolversTypes['SyndicatedArticle']> }>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   ItemNotFound: ResolverTypeWrapper<ItemNotFound>;
   ItemSummary: ResolverTypeWrapper<Omit<ItemSummary, 'item'> & { item?: Maybe<ResolversTypes['Item']> }>;
@@ -710,10 +787,12 @@ export type ResolversTypes = ResolversObject<{
   PocketMetadata: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['PocketMetadata']>;
   PocketMetadataSource: PocketMetadataSource;
   PocketShare: ResolverTypeWrapper<Omit<PocketShare, 'preview'> & { preview?: Maybe<ResolversTypes['PocketMetadata']> }>;
+  Publisher: ResolverTypeWrapper<Publisher>;
   Query: ResolverTypeWrapper<{}>;
   ReaderFallback: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['ReaderFallback']>;
   ReaderInterstitial: ResolverTypeWrapper<Omit<ReaderInterstitial, 'itemCard'> & { itemCard?: Maybe<ResolversTypes['PocketMetadata']> }>;
   ReaderViewResult: ResolverTypeWrapper<Omit<ReaderViewResult, 'fallbackPage'> & { fallbackPage?: Maybe<ResolversTypes['ReaderFallback']> }>;
+  SyndicatedArticle: ResolverTypeWrapper<Omit<SyndicatedArticle, 'preview'> & { preview: ResolversTypes['PocketMetadata'] }>;
   UnMarseable: ResolverTypeWrapper<UnMarseable>;
   Url: ResolverTypeWrapper<Scalars['Url']['output']>;
   ValidUrl: ResolverTypeWrapper<Scalars['ValidUrl']['output']>;
@@ -730,14 +809,17 @@ export type ResolversParentTypes = ResolversObject<{
   ID: Scalars['ID']['output'];
   BulletedListElement: BulletedListElement;
   Int: Scalars['Int']['output'];
-  Collection: Collection;
-  CorpusItem: CorpusItem;
+  Collection: Omit<Collection, 'preview'> & { preview: ResolversParentTypes['PocketMetadata'] };
+  CollectionAuthor: CollectionAuthor;
+  CorpusItem: Omit<CorpusItem, 'preview'> & { preview: ResolversParentTypes['PocketMetadata'] };
+  CorpusItemAuthor: CorpusItemAuthor;
   CorpusSearchNode: Omit<CorpusSearchNode, 'preview'> & { preview: ResolversParentTypes['PocketMetadata'] };
+  Date: Scalars['Date']['output'];
   DateString: Scalars['DateString']['output'];
   DomainMetadata: DomainMetadata;
   ISOString: Scalars['ISOString']['output'];
   Image: Image;
-  Item: Omit<Item, 'marticle' | 'preview'> & { marticle?: Maybe<Array<ResolversParentTypes['MarticleComponent']>>, preview?: Maybe<ResolversParentTypes['PocketMetadata']> };
+  Item: Omit<Item, 'collection' | 'corpusItem' | 'marticle' | 'preview' | 'syndicatedArticle'> & { collection?: Maybe<ResolversParentTypes['Collection']>, corpusItem?: Maybe<ResolversParentTypes['CorpusItem']>, marticle?: Maybe<Array<ResolversParentTypes['MarticleComponent']>>, preview?: Maybe<ResolversParentTypes['PocketMetadata']>, syndicatedArticle?: Maybe<ResolversParentTypes['SyndicatedArticle']> };
   Boolean: Scalars['Boolean']['output'];
   ItemNotFound: ItemNotFound;
   ItemSummary: Omit<ItemSummary, 'item'> & { item?: Maybe<ResolversParentTypes['Item']> };
@@ -758,10 +840,12 @@ export type ResolversParentTypes = ResolversObject<{
   OEmbed: Omit<OEmbed, 'item'> & { item?: Maybe<ResolversParentTypes['Item']> };
   PocketMetadata: ResolversInterfaceTypes<ResolversParentTypes>['PocketMetadata'];
   PocketShare: Omit<PocketShare, 'preview'> & { preview?: Maybe<ResolversParentTypes['PocketMetadata']> };
+  Publisher: Publisher;
   Query: {};
   ReaderFallback: ResolversUnionTypes<ResolversParentTypes>['ReaderFallback'];
   ReaderInterstitial: Omit<ReaderInterstitial, 'itemCard'> & { itemCard?: Maybe<ResolversParentTypes['PocketMetadata']> };
   ReaderViewResult: Omit<ReaderViewResult, 'fallbackPage'> & { fallbackPage?: Maybe<ResolversParentTypes['ReaderFallback']> };
+  SyndicatedArticle: Omit<SyndicatedArticle, 'preview'> & { preview: ResolversParentTypes['PocketMetadata'] };
   UnMarseable: UnMarseable;
   Url: Scalars['Url']['output'];
   ValidUrl: Scalars['ValidUrl']['output'];
@@ -796,16 +880,40 @@ export type BulletedListElementResolvers<ContextType = IContext, ParentType exte
 
 export type CollectionResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Collection'] = ResolversParentTypes['Collection']> = ResolversObject<{
   __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['Collection']>, { __typename: 'Collection' } & GraphQLRecursivePick<ParentType, {"slug":true}>, ContextType>;
+
+
+
+  preview?: Resolver<ResolversTypes['PocketMetadata'], { __typename: 'Collection' } & GraphQLRecursivePick<ParentType, {"slug":true}> & GraphQLRecursivePick<ParentType, {"title":true,"excerpt":true,"publishedAt":true,"authors":{"name":true},"imageUrl":true}>, ContextType>;
+
   shortUrl?: Resolver<Maybe<ResolversTypes['Url']>, { __typename: 'Collection' } & GraphQLRecursivePick<ParentType, {"slug":true}>, ContextType>;
 
+
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CollectionAuthorResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['CollectionAuthor'] = ResolversParentTypes['CollectionAuthor']> = ResolversObject<{
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type CorpusItemResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['CorpusItem'] = ResolversParentTypes['CorpusItem']> = ResolversObject<{
   __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['CorpusItem']>, { __typename: 'CorpusItem' } & GraphQLRecursivePick<ParentType, {"url":true}>, ContextType>;
+
+
+
+
+  preview?: Resolver<ResolversTypes['PocketMetadata'], { __typename: 'CorpusItem' } & GraphQLRecursivePick<ParentType, {"url":true}> & GraphQLRecursivePick<ParentType, {"title":true,"excerpt":true,"datePublished":true,"publisher":true,"image":{"url":true},"authors":{"name":true,"sortOrder":true}}>, ContextType>;
+
   shortUrl?: Resolver<Maybe<ResolversTypes['Url']>, { __typename: 'CorpusItem' } & GraphQLRecursivePick<ParentType, {"url":true}>, ContextType>;
   timeToRead?: Resolver<Maybe<ResolversTypes['Int']>, { __typename: 'CorpusItem' } & GraphQLRecursivePick<ParentType, {"url":true}>, ContextType>;
 
+
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CorpusItemAuthorResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['CorpusItemAuthor'] = ResolversParentTypes['CorpusItemAuthor']> = ResolversObject<{
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  sortOrder?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -815,6 +923,10 @@ export type CorpusSearchNodeResolvers<ContextType = IContext, ParentType extends
   url?: Resolver<ResolversTypes['Url'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
+
+export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
+  name: 'Date';
+}
 
 export interface DateStringScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateString'], any> {
   name: 'DateString';
@@ -846,50 +958,53 @@ export type ImageResolvers<ContextType = IContext, ParentType extends ResolversP
 
 export type ItemResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Item'] = ResolversParentTypes['Item']> = ResolversObject<{
   __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['Item']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
-  ampUrl?: Resolver<Maybe<ResolversTypes['Url']>, ParentType, ContextType>;
-  article?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  authors?: Resolver<Maybe<Array<Maybe<ResolversTypes['Author']>>>, ParentType, ContextType>;
-  contentLength?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  datePublished?: Resolver<Maybe<ResolversTypes['DateString']>, ParentType, ContextType>;
-  dateResolved?: Resolver<Maybe<ResolversTypes['DateString']>, ParentType, ContextType>;
-  domain?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  domainId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  domainMetadata?: Resolver<Maybe<ResolversTypes['DomainMetadata']>, ParentType, ContextType>;
-  encoding?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  excerpt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  givenUrl?: Resolver<ResolversTypes['Url'], ParentType, ContextType>;
-  hasImage?: Resolver<Maybe<ResolversTypes['Imageness']>, ParentType, ContextType>;
-  hasOldDupes?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  hasVideo?: Resolver<Maybe<ResolversTypes['Videoness']>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  images?: Resolver<Maybe<Array<Maybe<ResolversTypes['Image']>>>, ParentType, ContextType>;
-  innerDomainRedirect?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  isArticle?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  isIndex?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  itemId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  language?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  listenDuration?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  loginRequired?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  marticle?: Resolver<Maybe<Array<ResolversTypes['MarticleComponent']>>, ParentType, ContextType>;
-  mimeType?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  normalUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  originDomainId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  preview?: Resolver<Maybe<ResolversTypes['PocketMetadata']>, ParentType, ContextType>;
-  readerSlug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  resolvedId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  resolvedNormalUrl?: Resolver<Maybe<ResolversTypes['Url']>, ParentType, ContextType>;
-  resolvedUrl?: Resolver<Maybe<ResolversTypes['Url']>, ParentType, ContextType>;
-  responseCode?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  shortUrl?: Resolver<Maybe<ResolversTypes['Url']>, ParentType, ContextType>;
-  ssml?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  timeFirstParsed?: Resolver<Maybe<ResolversTypes['DateString']>, ParentType, ContextType>;
-  timeToRead?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  topImage?: Resolver<Maybe<ResolversTypes['Image']>, ParentType, ContextType>;
-  topImageUrl?: Resolver<Maybe<ResolversTypes['Url']>, ParentType, ContextType>;
-  usedFallback?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  videos?: Resolver<Maybe<Array<Maybe<ResolversTypes['Video']>>>, ParentType, ContextType>;
-  wordCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  ampUrl?: Resolver<Maybe<ResolversTypes['Url']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  article?: Resolver<Maybe<ResolversTypes['String']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  authors?: Resolver<Maybe<Array<Maybe<ResolversTypes['Author']>>>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+
+  contentLength?: Resolver<Maybe<ResolversTypes['Int']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+
+  datePublished?: Resolver<Maybe<ResolversTypes['DateString']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  dateResolved?: Resolver<Maybe<ResolversTypes['DateString']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  domain?: Resolver<Maybe<ResolversTypes['String']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  domainId?: Resolver<Maybe<ResolversTypes['String']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  domainMetadata?: Resolver<Maybe<ResolversTypes['DomainMetadata']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  encoding?: Resolver<Maybe<ResolversTypes['String']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  excerpt?: Resolver<Maybe<ResolversTypes['String']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  givenUrl?: Resolver<ResolversTypes['Url'], { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  hasImage?: Resolver<Maybe<ResolversTypes['Imageness']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  hasOldDupes?: Resolver<Maybe<ResolversTypes['Boolean']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  hasVideo?: Resolver<Maybe<ResolversTypes['Videoness']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  id?: Resolver<ResolversTypes['ID'], { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  images?: Resolver<Maybe<Array<Maybe<ResolversTypes['Image']>>>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  innerDomainRedirect?: Resolver<Maybe<ResolversTypes['Boolean']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  isArticle?: Resolver<Maybe<ResolversTypes['Boolean']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  isIndex?: Resolver<Maybe<ResolversTypes['Boolean']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  itemId?: Resolver<ResolversTypes['String'], { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  language?: Resolver<Maybe<ResolversTypes['String']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  listenDuration?: Resolver<Maybe<ResolversTypes['Int']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  loginRequired?: Resolver<Maybe<ResolversTypes['Boolean']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  marticle?: Resolver<Maybe<Array<ResolversTypes['MarticleComponent']>>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  mimeType?: Resolver<Maybe<ResolversTypes['String']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  normalUrl?: Resolver<ResolversTypes['String'], { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  originDomainId?: Resolver<Maybe<ResolversTypes['String']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  preview?: Resolver<Maybe<ResolversTypes['PocketMetadata']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>) & GraphQLRecursivePick<ParentType, {"syndicatedArticle":{"title":true,"excerpt":true,"mainImage":true,"publishedAt":true,"authorNames":true,"publisherUrl":true,"publisher":{"logo":true,"name":true}},"collection":{"title":true,"slug":true,"excerpt":true,"publishedAt":true,"authors":{"name":true},"imageUrl":true},"corpusItem":{"title":true,"excerpt":true,"datePublished":true,"publisher":true,"image":{"url":true}}}>, ContextType>;
+  readerSlug?: Resolver<ResolversTypes['String'], { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  resolvedId?: Resolver<Maybe<ResolversTypes['String']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  resolvedNormalUrl?: Resolver<Maybe<ResolversTypes['Url']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  resolvedUrl?: Resolver<Maybe<ResolversTypes['Url']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  responseCode?: Resolver<Maybe<ResolversTypes['Int']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  shortUrl?: Resolver<Maybe<ResolversTypes['Url']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  ssml?: Resolver<Maybe<ResolversTypes['String']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+
+  timeFirstParsed?: Resolver<Maybe<ResolversTypes['DateString']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  timeToRead?: Resolver<Maybe<ResolversTypes['Int']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  title?: Resolver<Maybe<ResolversTypes['String']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  topImage?: Resolver<Maybe<ResolversTypes['Image']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  topImageUrl?: Resolver<Maybe<ResolversTypes['Url']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  usedFallback?: Resolver<Maybe<ResolversTypes['Int']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  videos?: Resolver<Maybe<Array<Maybe<ResolversTypes['Video']>>>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
+  wordCount?: Resolver<Maybe<ResolversTypes['Int']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -1023,6 +1138,12 @@ export type PocketShareResolvers<ContextType = IContext, ParentType extends Reso
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type PublisherResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Publisher'] = ResolversParentTypes['Publisher']> = ResolversObject<{
+  logo?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type QueryResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   getItemByUrl?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType, RequireFields<QuerygetItemByUrlArgs, 'url'>>;
   itemByUrl?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType, RequireFields<QueryitemByUrlArgs, 'url'>>;
@@ -1042,6 +1163,20 @@ export type ReaderViewResultResolvers<ContextType = IContext, ParentType extends
   __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['ReaderViewResult']>, { __typename: 'ReaderViewResult' } & GraphQLRecursivePick<ParentType, {"slug":true}>, ContextType>;
   fallbackPage?: Resolver<Maybe<ResolversTypes['ReaderFallback']>, ParentType, ContextType>;
   slug?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type SyndicatedArticleResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['SyndicatedArticle'] = ResolversParentTypes['SyndicatedArticle']> = ResolversObject<{
+  __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['SyndicatedArticle']>, { __typename: 'SyndicatedArticle' } & GraphQLRecursivePick<ParentType, {"slug":true}>, ContextType>;
+
+
+
+  preview?: Resolver<ResolversTypes['PocketMetadata'], { __typename: 'SyndicatedArticle' } & GraphQLRecursivePick<ParentType, {"slug":true}> & GraphQLRecursivePick<ParentType, {"title":true,"excerpt":true,"mainImage":true,"publishedAt":true,"authorNames":true,"publisherUrl":true,"publisher":{"logo":true,"name":true}}>, ContextType>;
+
+
+
+  slug?: Resolver<Maybe<ResolversTypes['String']>, { __typename: 'SyndicatedArticle' } & GraphQLRecursivePick<ParentType, {"slug":true}>, ContextType>;
+
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -1074,8 +1209,11 @@ export type Resolvers<ContextType = IContext> = ResolversObject<{
   Author?: AuthorResolvers<ContextType>;
   BulletedListElement?: BulletedListElementResolvers<ContextType>;
   Collection?: CollectionResolvers<ContextType>;
+  CollectionAuthor?: CollectionAuthorResolvers<ContextType>;
   CorpusItem?: CorpusItemResolvers<ContextType>;
+  CorpusItemAuthor?: CorpusItemAuthorResolvers<ContextType>;
   CorpusSearchNode?: CorpusSearchNodeResolvers<ContextType>;
+  Date?: GraphQLScalarType;
   DateString?: GraphQLScalarType;
   DomainMetadata?: DomainMetadataResolvers<ContextType>;
   ISOString?: GraphQLScalarType;
@@ -1100,10 +1238,12 @@ export type Resolvers<ContextType = IContext> = ResolversObject<{
   OEmbed?: OEmbedResolvers<ContextType>;
   PocketMetadata?: PocketMetadataResolvers<ContextType>;
   PocketShare?: PocketShareResolvers<ContextType>;
+  Publisher?: PublisherResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   ReaderFallback?: ReaderFallbackResolvers<ContextType>;
   ReaderInterstitial?: ReaderInterstitialResolvers<ContextType>;
   ReaderViewResult?: ReaderViewResultResolvers<ContextType>;
+  SyndicatedArticle?: SyndicatedArticleResolvers<ContextType>;
   UnMarseable?: UnMarseableResolvers<ContextType>;
   Url?: GraphQLScalarType;
   ValidUrl?: GraphQLScalarType;

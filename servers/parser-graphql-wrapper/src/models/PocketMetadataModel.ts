@@ -3,6 +3,9 @@ import {
   PocketMetadataSource,
   PocketMetadata,
   ItemSummary,
+  SyndicatedArticle,
+  CorpusItem,
+  Collection,
 } from '../__generated__/resolvers-types';
 import config from '../config';
 import { DateTime } from 'luxon';
@@ -12,6 +15,8 @@ import {
   PocketMetadataEntity,
 } from '../databases/pocketMetadataStore';
 import md5 from 'md5';
+import { getOriginalUrlIfPocketImageCached } from '@pocket-tools/image-utils';
+import markdownToTxt from 'markdown-to-txt';
 
 export interface IPocketMetadataDataSource {
   matcher: RegExp;
@@ -36,25 +41,34 @@ export class PocketMetadataModel {
     item: Item,
     context: IContext,
     refresh: boolean,
+    extraData: {
+      corpusItem?: CorpusItem;
+      syndicatedArticle?: SyndicatedArticle;
+      collection?: Collection;
+    } = {},
   ): Promise<PocketMetadata> {
+    const { syndicatedArticle, collection, corpusItem } = extraData;
     const url = item.givenUrl; // the url we are going to key everything on.
-    const fallbackParserPocketMetadata: ItemSummary = {
-      id: item.id,
-      image: item.topImage ?? item.images?.[0],
-      excerpt: item.excerpt,
-      title: item.title ?? item.givenUrl,
-      authors: item.authors,
-      domain: item.domainMetadata,
-      datePublished: item.datePublished
-        ? DateTime.fromSQL(item.datePublished, {
-            zone: config.mysql.tz,
-          }).toJSDate()
-        : null,
-      url: url,
-      source: PocketMetadataSource.PocketParser,
-      __typename: 'ItemSummary',
-    };
 
+    const syndicatedArticlePocketMetadata = this.transformSyndicatedArticle(
+      item,
+      syndicatedArticle,
+    );
+    if (syndicatedArticlePocketMetadata) {
+      return syndicatedArticlePocketMetadata;
+    }
+
+    const collectionPocketMetadata = this.transformCollection(item, collection);
+    if (collectionPocketMetadata) {
+      return collectionPocketMetadata;
+    }
+
+    const corpusItemMetadata = this.transformCorpusItem(item, corpusItem);
+    if (corpusItemMetadata) {
+      return corpusItemMetadata;
+    }
+
+    const fallbackParserPocketMetadata = this.transformParserFallback(item);
     // First we filter to our sources.
     // We do this first because some sources could be behind a feature flag or not enabled
     // We also only store other data sources beyond our parser in the datastore, \
@@ -171,5 +185,174 @@ export class PocketMetadataModel {
     }
 
     return res == null ? null : this.fromEntity(res);
+  }
+
+  /**
+   *
+   * @param item Item object from the Graph
+   * @param collection Collection object from the graph
+   * @returns ItemSummary data to be shown to the user
+   */
+  transformCollection(
+    item: Item,
+    collection: Collection,
+  ): ItemSummary | undefined {
+    if (!collection) {
+      return;
+    }
+    const imageUrl = getOriginalUrlIfPocketImageCached(collection.imageUrl);
+    return {
+      id: item.id,
+      image: {
+        url: imageUrl,
+        imageId: 0,
+        src: imageUrl,
+      },
+      excerpt: markdownToTxt(collection.excerpt),
+      title: collection.title,
+      authors: collection.authors.map((author, index) => {
+        return {
+          name: author.name,
+          id: index.toFixed(),
+        };
+      }),
+      domain: {
+        logo: 'https://getpocket.com/favicon.ico',
+        name: 'Pocket',
+      },
+      datePublished: collection.publishedAt
+        ? DateTime.fromISO(collection.publishedAt).toJSDate()
+        : item.datePublished
+          ? DateTime.fromSQL(item.datePublished, {
+              zone: config.mysql.tz,
+            }).toJSDate()
+          : null,
+      url: item.givenUrl,
+      source: PocketMetadataSource.Collection,
+      __typename: 'ItemSummary',
+    };
+  }
+
+  /**
+   *
+   * @param item Item object from the Graph
+   * @param syndicatedArticle Syndication object from the graph
+   * @returns ItemSummary data to be shown to the user
+   */
+  transformSyndicatedArticle(
+    item: Item,
+    syndicatedArticle?: SyndicatedArticle,
+  ): ItemSummary | undefined {
+    if (!syndicatedArticle) {
+      return;
+    }
+    const imageUrl = getOriginalUrlIfPocketImageCached(
+      syndicatedArticle.mainImage,
+    );
+
+    return {
+      id: item.id,
+      image: {
+        url: imageUrl,
+        imageId: 0,
+        src: imageUrl,
+      },
+      excerpt: syndicatedArticle.excerpt,
+      title: syndicatedArticle.title,
+      authors: syndicatedArticle.authorNames.map((author, index) => {
+        return {
+          name: author,
+          id: index.toFixed(),
+        };
+      }),
+      domain: {
+        logo: syndicatedArticle.publisher.logo,
+        name: syndicatedArticle.publisher.name,
+      },
+      datePublished: syndicatedArticle.publishedAt
+        ? DateTime.fromISO(syndicatedArticle.publishedAt).toJSDate()
+        : item.datePublished
+          ? DateTime.fromSQL(item.datePublished, {
+              zone: config.mysql.tz,
+            }).toJSDate()
+          : null,
+      url: item.givenUrl,
+      source: PocketMetadataSource.Syndication,
+      __typename: 'ItemSummary',
+    };
+  }
+
+  /**
+   *
+   * @param item Item object from the Graph
+   * @param syndicatedArticle Syndication object from the graph
+   * @returns ItemSummary data to be shown to the user
+   */
+  transformCorpusItem(
+    item: Item,
+    corpusItem?: CorpusItem,
+  ): ItemSummary | undefined {
+    if (!corpusItem) {
+      return;
+    }
+    const imageUrl = getOriginalUrlIfPocketImageCached(corpusItem.image.url);
+
+    return {
+      id: item.id,
+      image: {
+        url: imageUrl,
+        imageId: 0,
+        src: imageUrl,
+      },
+      excerpt: corpusItem.excerpt,
+      title: corpusItem.title,
+      authors: corpusItem.authors
+        .map((author) => {
+          return {
+            name: author.name,
+            id: author.sortOrder.toFixed(),
+          };
+        })
+        .sort((author1, author2) =>
+          author1.id < author2.id ? -1 : author1.id > author2.id ? 1 : 0,
+        ),
+      domain: {
+        name: corpusItem.publisher,
+      },
+      datePublished: corpusItem.datePublished
+        ? DateTime.fromISO(corpusItem.datePublished).toJSDate()
+        : item.datePublished
+          ? DateTime.fromSQL(item.datePublished, {
+              zone: config.mysql.tz,
+            }).toJSDate()
+          : null,
+      url: item.givenUrl,
+      source: PocketMetadataSource.CuratedCorpus,
+      __typename: 'ItemSummary',
+    };
+  }
+
+  /**
+   * Transforms the item into ItemSummary
+   * @param item The item that we need to transform
+   * @returns
+   */
+  transformParserFallback(item: Item): ItemSummary | undefined {
+    return {
+      id: item.id,
+      image: item.topImage ?? item.images?.[0],
+      excerpt: item.excerpt,
+      title: item.title ?? item.givenUrl,
+      authors: item.authors,
+      domain: item.domainMetadata,
+      datePublished: item.datePublished
+        ? DateTime.fromSQL(item.datePublished, {
+            zone: config.mysql.tz,
+          }).toJSDate()
+        : null,
+      url: item.givenUrl,
+      source: PocketMetadataSource.PocketParser,
+      __typename: 'ItemSummary',
+    };
   }
 }

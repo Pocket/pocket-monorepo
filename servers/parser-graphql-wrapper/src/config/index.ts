@@ -58,6 +58,8 @@ export default {
       'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ123456789_',
     collectionUrl:
       process.env.COLLECTIONS_URL || 'https://getpocket.com/collections',
+    syndicationUrl:
+      process.env.SYNDICATION_URL || 'https://getpocket.com/explore/item',
   },
   mysql: {
     host: process.env.DB_HOST || 'localhost',

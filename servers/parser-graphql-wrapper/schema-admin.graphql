@@ -20,11 +20,6 @@ See Section 5.6 of the RFC 3339 profile of the ISO 8601 standard: https://www.ie
 scalar ISOString
 
 """
-A date in the YYYY-MM-DD format.
-"""
-scalar Date
-
-"""
 A string formatted with CommonMark markdown,
 plus the strikethrough extension from GFM.
 This Scalar is for documentation purposes; otherwise
@@ -172,20 +167,8 @@ type Item
   "The Marticle format of the article, used by clients for native article view."
   marticle: [MarticleComponent!]
 
-  "The client preview/display logic for this url. The requires for each object should be kept in sync with the sub objects requires field."
+  "The client preview/display logic for this url"
   preview: PocketMetadata
-    @requires(
-      fields: "syndicatedArticle { title excerpt mainImage publishedAt authorNames publisherUrl publisher { logo name } } collection { title excerpt publishedAt authors { name } imageUrl } corpusItem { title excerpt datePublished publisher image { url } }"
-    )
-
-  "If the item is a syndicated article, then the syndication information"
-  syndicatedArticle: SyndicatedArticle @external
-
-  "If the item is a collection, then the collection information"
-  collection: Collection @external
-
-  "If the item is in the Pocket Corpus, then the corpus information"
-  corpusItem: CorpusItem @external
 }
 
 type ArticleMarkdown {
@@ -457,50 +440,7 @@ extend type CorpusItem @key(fields: "url") {
   Time to read in minutes. Is nullable.
   """
   timeToRead: Int
-
-  """
-  The title of the Approved Item.
-  """
-  title: String! @external
-  """
-  The excerpt of the Approved Item.
-  """
-  excerpt: String! @external
-  """
-  The publication date for this story.
-  """
-  datePublished: Date @external
-  """
-  The name of the online publication that published this story.
-  """
-  publisher: String! @external
-  """
-  The image for this item's accompanying picture.
-  """
-  image: Image! @external
-
-  """
-  The author names and sort orders associated with this CorpusItem.
-  """
-  authors: [CorpusItemAuthor!]! @external
-
-  """
-  The preview of the search result
-  """
-  preview: PocketMetadata!
-    @requires(
-      fields: "title excerpt datePublished publisher image { url } authors { name sortOrder }"
-    )
 }
-
-"""
-An author associated with a CorpusItem.
-"""
-type CorpusItemAuthor @external {
-  name: String!
-  sortOrder: Int!
-}
-
 extend type Collection @key(fields: "slug") {
   """
   Provides short url for the given_url in the format: https://pocket.co/<identifier>.
@@ -508,21 +448,6 @@ extend type Collection @key(fields: "slug") {
   """
   shortUrl: Url @tag(name: "beta")
   slug: String! @external
-  title: String! @external
-  authors: [CollectionAuthor!]! @external
-  excerpt: Markdown @external
-  publishedAt: DateString @external
-  imageUrl: Url @external
-
-  """
-  The preview of the collection
-  """
-  preview: PocketMetadata!
-    @requires(fields: "title excerpt publishedAt authors { name } imageUrl")
-}
-
-extend type CollectionAuthor @external {
-  name: String!
 }
 
 """
@@ -543,9 +468,6 @@ enum PocketMetadataSource {
   POCKET_PARSER
   OPENGRAPH
   OEMBED
-  CURATED_CORPUS
-  COLLECTION
-  SYNDICATION
 }
 
 interface PocketMetadata {
@@ -631,45 +553,4 @@ type CorpusSearchNode @key(fields: "url") {
   The preview of the search result
   """
   preview: PocketMetadata!
-}
-
-extend type SyndicatedArticle @key(fields: "slug") {
-  "Slug that pocket uses for this article in the url"
-  slug: String
-
-  "Title of syndicated article"
-  title: String! @external
-  "Array of author names in string format"
-  authorNames: [String]! @external
-
-  "AWSDateTime — Format: YYYY-MM-DDThh:mm:ss.sssZ"
-  publishedAt: String! @external
-
-  "Primary image to use in surfacing this content"
-  mainImage: String @external
-
-  "Excerpt "
-  excerpt: String @external
-
-  "The canonical publisher URL. Automatically set at time of creation but can be changed by editor."
-  publisherUrl: String! @external
-
-  "The manually set publisher information for this article"
-  publisher: Publisher @external
-
-  """
-  The preview of the syndicated article
-  """
-  preview: PocketMetadata!
-    @requires(
-      fields: "title excerpt mainImage publishedAt authorNames publisherUrl publisher { logo name }"
-    )
-}
-
-
-extend type Publisher @external {
-  "Square logo to use for the publisher"
-  logo: String
-  "Name of the publisher of the article"
-  name: String
 }

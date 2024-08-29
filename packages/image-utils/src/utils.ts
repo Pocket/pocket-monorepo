@@ -1,4 +1,3 @@
-import { NotFoundError } from '@pocket-tools/apollo-utils';
 import parseUrl from 'parse-url';
 
 //Functions on this page taken from Web Client.
@@ -19,7 +18,7 @@ export const getOriginalUrlIfPocketImageCached = (url: string): string => {
   if (isEncoded) {
     const urlToUse = extractImageCacheUrl(url);
     if (!urlToUse) {
-      throw new NotFoundError('Pocket image cache url is missing a source url');
+      throw new Error('Source URL Missing');
     }
     return decodeURIComponent(urlToUse);
   }

@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@apollo/server": "4.10.4",
-    "@apollo/subgraph": "2.8.4",
+    "@apollo/subgraph": "2.9.0",
     "@aws-sdk/client-dynamodb": "3.632.0",
     "@aws-sdk/client-eventbridge": "3.632.0",
     "@aws-sdk/lib-dynamodb": "3.632.0",

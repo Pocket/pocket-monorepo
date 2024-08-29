@@ -23,10 +23,11 @@
   },
   "dependencies": {
     "@apollo/server": "4.10.4",
-    "@apollo/subgraph": "2.8.4",
+    "@apollo/subgraph": "2.9.0",
     "@apollo/utils.keyvadapter": "3.1.0",
     "@keyv/redis": "2.8.5",
     "@pocket-tools/apollo-utils": "workspace:*",
+    "@pocket-tools/image-utils": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "8.26.0",
@@ -37,7 +38,6 @@
     "graphql": "16.8.1",
     "graphql-tag": "2.12.6",
     "keyv": "4.5.4",
-    "parse-url": "9.2.0",
     "tslib": "2.6.3"
   },
   "devDependencies": {
