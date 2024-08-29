@@ -4,7 +4,7 @@ import { mysqlDateConvert, mysqlTimeString, setDifference } from './utils';
 import { PocketSaveStatus } from '../types';
 import { NotFoundError } from '@pocket-tools/apollo-utils';
 import config from '../config';
-import { SavedItemDataService } from './savedItemsService';
+
 import {
   ListResult,
   RawListResult,
@@ -84,13 +84,7 @@ export class PocketSaveDataService {
     this.apiId = context.apiId;
     this.db = context.dbClient;
     this.userId = context.userId;
-    this.flags = {
-      mirrorWrites: this.context.unleash.isEnabled(
-        config.unleash.flags.mirrorWrites.name,
-        undefined,
-        config.unleash.flags.mirrorWrites.fallback,
-      ),
-    };
+    this.flags = {};
   }
 
   public static convertListResult(listResult: null): null;
@@ -284,14 +278,6 @@ export class PocketSaveDataService {
         // being present
         if (updated.length !== ids.length) {
           throw new NotFoundError('At least one ID was not found');
-        }
-        // Mirror writes to "shadow" table for itemId overflow mitigation
-        if (this.flags.mirrorWrites) {
-          await Promise.all(
-            updated.map((row) =>
-              SavedItemDataService.syncShadowTable(row, trx),
-            ),
-          );
         }
       });
     } catch (error) {
