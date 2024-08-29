@@ -101,7 +101,7 @@ module "apollo" {
     },
     {
       name  = "EMBEDDINGS_ENDPOINT"
-      value = module.sagemaker.sagemaker_endpoint_name
+      value = data.aws_sagemaker_endpoint.model.name
     }
   ]
 }

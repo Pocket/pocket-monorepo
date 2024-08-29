@@ -25,15 +25,14 @@ locals {
     endpoint    = local.workspace.os_cluster_enable ? aws_opensearch_domain.corpus_search[0].endpoint : null
     domain_name = local.workspace.os_cluster_enable ? aws_opensearch_domain.corpus_search[0].domain_name : null
   }
+  sagemaker = {
+    transformers_version = "4.12.3"
+    pytorch_version = "1.9.1"
+  }
   private_subnet_ids = split(",", data.aws_ssm_parameter.private_subnets.value)
   secret_path        = "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${local.name}/${local.env}/"
   ssm_path           = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${local.name}/${local.env}/"
   ssm_path_shared    = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/Shared/${local.env}/"
-
-  lambda_env = {
-    NODE_ENV   = local.workspace.nodeEnv
-    SENTRY_DSN = data.aws_ssm_parameter.sentry_dsn.value
-  }
 
   # environment or workspace-specific local variables go here.
   # this will response without using tfvars files with the workspace-specific value (if relevant)
@@ -52,8 +51,9 @@ locals {
       os_master_instance_type   = "t2.small.search"
       os_dedicated_master_count = 3
       nodeEnv                   = "development"
-      sagemaker_endpoint_type   = "serverless"
       os_ebs_volume_size        = 10
+      hf_task = "feature-extraction"
+      hf_model_id = "sentence-transformers/msmarco-distilbert-base-tas-b"
     }
 
     CorpusEmbeddings-Prod = {
@@ -64,9 +64,9 @@ locals {
       os_dedicated_master_count = 3
       os_master_instance_type   = "c5.large.search"
       nodeEnv                   = "production"
-      sagemaker_endpoint_type   = "real_time"
-      model_instance_type       = "ml.inf1.xlarge"
       os_ebs_volume_size        = 10
+      hf_task = "feature-extraction"
+      hf_model_id = "sentence-transformers/msmarco-distilbert-base-tas-b"
     }
   }
 

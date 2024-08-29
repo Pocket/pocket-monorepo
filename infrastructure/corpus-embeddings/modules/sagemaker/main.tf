@@ -7,7 +7,7 @@
 locals {
   framework_version = var.pytorch_version != null ? var.pytorch_version : var.tensorflow_version
   repository_name   = var.pytorch_version != null ? "huggingface-pytorch-inference" : "huggingface-tensorflow-inference"
-  device            = length(regexall("^ml\\.[g|p{1,3}\\.$]", var.instance_type)) > 0 ? "gpu" : "cpu"
+  device            = var.instance_type != null ? (length(regexall("^ml\\.[g|p{1,3}\\.$]", var.instance_type)) > 0 ? "gpu" : "cpu") : "cpu"
   image_key         = "${local.framework_version}-${local.device}"
   pytorch_image_tag = {
     "1.7.1-gpu"  = "1.7.1-transformers${var.transformers_version}-gpu-py36-cu110-ubuntu18.04"
@@ -36,14 +36,6 @@ locals {
   }
 }
 
-# random lowercase string used for naming
-resource "random_string" "resource_id" {
-  length  = 8
-  lower   = true
-  special = false
-  upper   = false
-  numeric = false
-}
 
 # ------------------------------------------------------------------------------
 # Container Image
@@ -61,7 +53,7 @@ data "aws_sagemaker_prebuilt_ecr_image" "deploy_image" {
 
 resource "aws_iam_role" "new_role" {
   count = var.sagemaker_execution_role == null ? 1 : 0 # Creates IAM role if not provided
-  name  = "${var.name_prefix}-sagemaker-execution-role-${random_string.resource_id.result}"
+  name  = "${var.name_prefix}-sagemaker-execution-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -151,7 +143,7 @@ resource "aws_security_group" "sagemaker_security_group" {
 
 resource "aws_sagemaker_model" "model_with_model_artifact" {
   count              = var.model_data != null && var.hf_model_id == null ? 1 : 0
-  name               = "${var.name_prefix}-model-${random_string.resource_id.result}${local.model_slug}"
+  name               = "${var.name_prefix}-model-${local.model_slug}"
   execution_role_arn = local.role_arn
   tags               = var.tags
  
@@ -178,7 +170,7 @@ resource "aws_sagemaker_model" "model_with_model_artifact" {
 
 resource "aws_sagemaker_model" "model_with_hub_model" {
   count              = var.model_data == null && var.hf_model_id != null ? 1 : 0
-  name               = "${var.name_prefix}-model-${random_string.resource_id.result}${local.model_slug}"
+  name               = "${var.name_prefix}-model-${local.model_slug}"
   execution_role_arn = local.role_arn
   tags               = var.tags
 
@@ -199,7 +191,6 @@ resource "aws_sagemaker_model" "model_with_hub_model" {
 
 locals {
   sagemaker_model = var.model_data != null && var.hf_model_id == null ? aws_sagemaker_model.model_with_model_artifact[0] : aws_sagemaker_model.model_with_hub_model[0]
-  # sagemaker_model = aws_sagemaker_model.model_with_model_artifact[0]
 }
 
 # ------------------------------------------------------------------------------
@@ -208,7 +199,7 @@ locals {
 
 resource "aws_sagemaker_endpoint_configuration" "model" {
   count = local.sagemaker_endpoint_type.real_time ? 1 : 0
-  name  = "${var.name_prefix}-ep-config-${random_string.resource_id.result}"
+  name  = "${var.name_prefix}-ep-config"
   tags  = var.tags
 
 
@@ -223,7 +214,7 @@ resource "aws_sagemaker_endpoint_configuration" "model" {
 
 resource "aws_sagemaker_endpoint_configuration" "model_async" {
   count = local.sagemaker_endpoint_type.asynchronous ? 1 : 0
-  name  = "${var.name_prefix}-ep-config-${random_string.resource_id.result}"
+  name  = "${var.name_prefix}-ep-config"
   tags  = var.tags
 
 
@@ -249,7 +240,7 @@ resource "aws_sagemaker_endpoint_configuration" "model_async" {
 
 resource "aws_sagemaker_endpoint_configuration" "model_serverless" {
   count = local.sagemaker_endpoint_type.serverless ? 1 : 0
-  name  = "${var.name_prefix}-ep-config-${random_string.resource_id.result}"
+  name  = "${var.name_prefix}-ep-config"
   tags  = var.tags
 
 
@@ -284,7 +275,7 @@ locals {
 
 
 resource "aws_sagemaker_endpoint" "model" {
-  name = "${var.name_prefix}-ep-${random_string.resource_id.result}"
+  name = "${var.name_prefix}-ep"
   tags = var.tags
 
   endpoint_config_name = local.sagemaker_endpoint_config.name
@@ -310,7 +301,7 @@ resource "aws_appautoscaling_target" "sagemaker_target" {
 
 resource "aws_appautoscaling_policy" "sagemaker_policy" {
   count              = local.use_autoscaling
-  name               = "${var.name_prefix}-scaling-target-${random_string.resource_id.result}"
+  name               = "${var.name_prefix}-scaling-target"
   policy_type        = "TargetTrackingScaling"
   resource_id        = aws_appautoscaling_target.sagemaker_target[0].resource_id
   scalable_dimension = aws_appautoscaling_target.sagemaker_target[0].scalable_dimension

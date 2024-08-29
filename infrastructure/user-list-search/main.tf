@@ -38,26 +38,6 @@ data "aws_vpc" "vpc" {
   id = data.aws_ssm_parameter.vpc.value
 }
 
-module "sagemaker" {
-  source               = "./modules/sagemaker"
-  name_prefix          = "distilbert"
-  pytorch_version      = "1.9.1"
-  transformers_version = "4.12.3"
-  hf_model_id          = "sentence-transformers/msmarco-distilbert-base-tas-b"
-  hf_task              = "feature-extraction"
-  tags                 = local.tags
-
-  # Development use serverless
-  serverless_config = local.workspace.environment == "Dev" ? {
-    max_concurrency   = 1
-    memory_size_in_mb = 1024
-  } : null
-
-  # Production use autoscaling and defined instance type
-  instance_type = local.workspace.environment == "Prod" ? "ml.inf1.xlarge" : null
-  autoscaling = local.workspace.environment == "Prod" ? {
-    min_capacity               = 1
-    max_capacity               = 2   # The max capacity of the scalable target
-    scaling_target_invocations = 200 # The scaling target invocations (requests/minute)
-  } : null
+data "aws_sagemaker_endpoint" "model" {
+  name = "CorpusEmbeddings-${local.env}-ep"
 }

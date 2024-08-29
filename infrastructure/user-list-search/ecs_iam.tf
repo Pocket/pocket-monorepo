@@ -107,7 +107,7 @@ data "aws_iam_policy_document" "ecs_task_role_policy" {
       "sagemaker:InvokeEndpointAsync",
       "sagemaker:InvokeEndpoint"
     ]
-    resources = [module.sagemaker.sagemaker_endpoint.arn]
+    resources = [data.aws_sagemaker_endpoint.model.arn]
   }
 }
 

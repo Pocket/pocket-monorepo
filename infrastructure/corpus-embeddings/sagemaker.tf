@@ -1,30 +1,42 @@
-
-module "sagemaker" {
+module "sagemaker_serverless" {
+  count                = local.workspace.environment == "Dev" ? 1 : 0
   source               = "./modules/sagemaker"
-  name_prefix          = "distilbert"
-  pytorch_version      = "1.9.1"
-  transformers_version = "4.12.3"
-  instance_type        = "ml.g4dn.xlarge"
-  hf_model_id          = "sentence-transformers/msmarco-distilbert-base-tas-b"
-  hf_task              = "feature-extraction"
-  autoscaling = {
-    min_capacity               = 1
-    max_capacity               = local.env == "Dev" ? 1 : 2 # The max capacity of the scalable target
-    scaling_target_invocations = 200                        # The scaling target invocations (requests/minute)
+  name_prefix          = "${local.prefix}"
+  pytorch_version      = local.sagemaker.pytorch_version
+  transformers_version = local.sagemaker.transformers_version
+  hf_model_id          = local.workspace.hf_model_id
+  hf_task              = local.workspace.hf_task
+  tags                 = local.tags
+
+  # Development use serverless
+  serverless_config = {
+    max_concurrency   = 1
+    memory_size_in_mb = 1024
   }
-  tags = local.tags
 }
 
-# # ----
-# # | Model upload
-# # ---
+module "sagemaker_real_time" {
+  count                = local.workspace.environment == "Prod" ? 1 : 0
+  source               = "./modules/sagemaker"
+  name_prefix          = "${local.prefix}"
+  pytorch_version      = local.sagemaker.pytorch_version
+  transformers_version = local.sagemaker.transformers_version
+  hf_model_id          = local.workspace.hf_model_id
+  hf_task              = local.workspace.hf_task
+  tags                 = local.tags
+  # Production use autoscaling and defined instance type
+  instance_type = "ml.inf1.xlarge"
+  autoscaling = {
+    min_capacity               = 1
+    max_capacity               = 2   # The max capacity of the scalable target
+    scaling_target_invocations = 200 # The scaling target invocations (requests/minute)
+  }
+}
 
-# resource "aws_s3_bucket" "search_model_bucket" {
-#   bucket = "pocket-${lower(local.prefix)}-models"
-#   tags   = local.tags
-# }
+output "sagemaker_endpoint" {
+  value = local.workspace.environment == "Prod" ? module.sagemaker_real_time.sagemaker_endpoint : module.sagemaker_serverless[0].sagemaker_endpoint
+}
 
-# resource "aws_s3_bucket_acl" "search_model_bucket" {
-#   acl        = "private"
-#   bucket     = aws_s3_bucket.search_model_bucket.id
-# }
+output "sagemaker_endpoint_name" {
+  value = local.workspace.environment == "Prod" ? module.sagemaker_real_time.sagemaker_endpoint_name : module.sagemaker_serverless[0].sagemaker_endpoint_name
+}
