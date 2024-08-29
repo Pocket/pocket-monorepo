@@ -38,6 +38,6 @@ data "aws_vpc" "vpc" {
   id = data.aws_ssm_parameter.vpc.value
 }
 
-data "aws_sagemaker_endpoint" "model" {
-  name = "CorpusEmbeddings-${local.env}-ep"
+module "corpus_embeddings" {
+    source               = "./corpus-embeddings"
 }

@@ -221,6 +221,7 @@ data "aws_iam_policy_document" "snapshot_access_policy" {
     ]
     resources = [
       "${aws_elasticsearch_domain.user_search[0].arn}/*",
+      "${module.corpus_embeddings.opensearch_domain_arn}/*"
     ]
   }
 }
