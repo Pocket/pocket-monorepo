@@ -65,12 +65,12 @@ describe('/scheduled-items/:scheduledSurfaceID?date=date&apikey=apikey', () => {
     expect(response.body).toEqual(testStories);
   });
 
-  it('should return 403 for non-existent url', async () => {
+  it('should return 500 for non-existent url', async () => {
     const response = await request(app).get('/not-found');
     expect(response.statusCode).toBe(500);
   });
 
-  it('should return 400 if incorrect date format is provided ', async () => {
+  it('should return 500 if incorrect date format is provided ', async () => {
     const response = await request(app).get(
       `/scheduled-items/${testNewTab}?date=20220524&apikey=${config.aws.brazeApiKey}`,
     );
@@ -82,7 +82,7 @@ describe('/scheduled-items/:scheduledSurfaceID?date=date&apikey=apikey', () => {
     );
   });
 
-  it('should return 403 if invalid api key is provided ', async () => {
+  it('should return 500 if invalid api key is provided ', async () => {
     const response = await request(app).get(
       `/scheduled-items/${testNewTab}?date=${testDate}&apikey=invalid-key`,
     );

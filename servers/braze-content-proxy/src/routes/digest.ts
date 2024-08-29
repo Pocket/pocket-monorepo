@@ -35,7 +35,10 @@ export async function getUserDigest(userId: string) {
 function transformToBrazePayload(
   response: ApolloQueryResult<UserDigestQuery>,
 ): BrazeSavedItem[] {
-  const edges = response.data.user.savedItems.edges;
+  const edges = response.data.user?.savedItems?.edges;
+  if (!edges) {
+    return [];
+  }
   const savedItems: BrazeSavedItem[] = edges
     .filter((edge) => edge.node.item.__typename == 'Item')
     .map((edge) => {
