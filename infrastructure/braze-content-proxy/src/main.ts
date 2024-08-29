@@ -303,7 +303,7 @@ class BrazeContentProxy extends TerraformStack {
           threshold: 25,
           evaluationPeriods: 4,
           period: 300,
-          actions: config.isDev ? [] : [snsTopic.arn],
+          actions: config.isDev ? [] : [], // Disabling for now since this is not really a valid metric for a low volume service. 1 500 can cause this to alarm
         },
       },
     });
