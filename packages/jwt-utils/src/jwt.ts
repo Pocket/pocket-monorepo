@@ -27,11 +27,12 @@ export type PocketJWK = jwkToBuffer.JWK & {
 export const generateJwt = (
   privateKey: PocketJWK,
   options: {
-    sub: string;
+    sub?: string;
     issuer: string;
     aud: string;
     apiId: string;
     applicationName: string;
+    extraOptions?: Record<string, string>;
   },
 ) => {
   const now = Math.round(Date.now() / 1000);
@@ -41,9 +42,10 @@ export const generateJwt = (
     aud: options.aud,
     iat: now,
     exp: now + 60 * 10, //expires in 10 mins
-    sub: options.sub,
+    sub: options.sub ?? undefined,
     api_id: options.apiId,
     application_name: options.applicationName,
+    ...options.extraOptions,
   };
 
   return jwt.sign(payload, jwkToPem(privateKey, { private: true }), {

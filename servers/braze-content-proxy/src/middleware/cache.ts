@@ -10,4 +10,5 @@ export function cache(req: Request, res: Response, next: NextFunction) {
   if (config.app.environment !== 'development') {
     res.set('Cache-control', 'public, max-age=120');
   }
+  next();
 }

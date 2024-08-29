@@ -11,9 +11,8 @@ const router: Router = Router();
  * GET endpoint to receive user digest data for a given user
  * Note: will throw only 500 to prevent braze from sending the email if call fails.
  */
-router.get('/:userid', async (req, res, next) => {
-  const userid = req.params.userid;
-
+router.get('/:userId', async (req, res, next) => {
+  const userid = req.params.userId;
   try {
     validateUserId(userid);
     // Fetch data to build a users digest
@@ -44,7 +43,7 @@ function transformToBrazePayload(
       if (item.__typename == 'Item') {
         return {
           title: item.preview.title,
-          imageUrl: item.preview.image.cachedImages[0].url,
+          imageUrl: item.preview.image?.cachedImages[0].url,
           url: item.preview.url,
         };
       }

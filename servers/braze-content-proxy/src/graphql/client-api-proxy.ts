@@ -19,6 +19,7 @@ import {
   UserDigestQueryVariables,
 } from '../generated/graphql/types';
 import { generateJwt, PocketJWK } from '@pocket-tools/jwt-utils';
+import { IntMask } from '@pocket-tools/int-mask';
 
 export const client = new ApolloClient({
   link: new HttpLink({ fetch, uri: config.clientApi.uri }),
@@ -97,7 +98,6 @@ export async function getScheduledSurfaceStories(
 export async function getUserDigestFromGraph(
   userId: string,
 ): Promise<ApolloQueryResult<UserDigestQuery>> {
-  const daysToLookBack = 4;
   const response = await client.query<
     UserDigestQuery,
     UserDigestQueryVariables
@@ -123,14 +123,9 @@ export async function getUserDigestFromGraph(
       ],
       filter: {
         statuses: [SavedItemStatusFilter.Unread],
-        updatedSince:
-          new Date(
-            Date.now() - 1000 * 60 * 60 * 24 * daysToLookBack,
-          ).getUTCMilliseconds() / 1000,
       },
     },
   });
-
   return response;
 }
 
@@ -139,9 +134,10 @@ export async function getUserDigestFromGraph(
  * @param userId User id to generate a jwt for
  * @returns a jwt
  */
-const generateBrazeJWT = async (userId: string) => {
+const generateBrazeJWT = (userId: string) => {
   return generateJwt(config.jwt.key as unknown as PocketJWK, {
-    sub: userId,
+    sub: IntMask.decode(userId).toString(),
+    extraOptions: { encoded_id: userId },
     issuer: config.jwt.iss,
     apiId: config.app.apiId,
     applicationName: config.app.applicationName,

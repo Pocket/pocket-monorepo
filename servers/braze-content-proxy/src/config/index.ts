@@ -22,11 +22,11 @@ export default {
     uri: clientApiUri,
   },
   jwt: {
-    key: process.env.JWT_KEY
-      ? (JSON.parse(process.env.JWT_KEY) as PocketJWK)
+    key: process.env.BRAZE_PRIVATE_KEY
+      ? (JSON.parse(process.env.BRAZE_PRIVATE_KEY) as PocketJWK)
       : dummyJWK,
-    iss: process.env.JWT_ISS || 'braze-content-proxy',
-    aud: process.env.JWT_AUD || clientApiUri,
+    iss: process.env.BRAZE_JWT_ISS || 'braze-content-proxy',
+    aud: process.env.BRAZE_JWT_AUD || clientApiUri,
   },
   // Params we call Pocket Image Cache with to resize story thumbnails on the fly.
   images: {
