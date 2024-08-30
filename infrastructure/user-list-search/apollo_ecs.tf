@@ -99,10 +99,14 @@ module "apollo" {
       name  = "SQS_USER_ITEMS_UPDATE_BACKFILL_URL"
       value = aws_sqs_queue.user_items_update_backfill.id
     },
-    # {
-    #   name  = "EMBEDDINGS_ENDPOINT"
-    #   value = data.aws_sagemaker_endpoint.model.name
-    # }
+    {
+      name  = "EMBEDDINGS_ENDPOINT"
+      value = module.corpus_embeddings.sagemaker_endpoint_name
+    },
+    {
+      name  = "CORPUS_SEARCH_DOMAIN"
+      value = module.corpus_embeddings.opensearch_domain_name
+    }
   ]
 }
 

@@ -39,5 +39,5 @@ data "aws_vpc" "vpc" {
 }
 
 module "corpus_embeddings" {
-    source               = "./corpus-embeddings"
+  source = "./corpus-embeddings"
 }
