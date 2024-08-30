@@ -35,6 +35,7 @@ resource "aws_opensearch_domain" "corpus_search" {
 CONFIG
 
   auto_tune_options {
+    rollback_on_disable = "DEFAULT_ROLLBACK"
     desired_state = local.workspace.environment == "Prod" ? "ENABLED" : "DISABLED"
   }
 
@@ -89,7 +90,7 @@ CONFIG
       # let gp3 defaults work here, changes ignored in terraform
       ebs_options[0].iops
     ]
-    prevent_destroy = true
+    # prevent_destroy = true
   }
 
   tags = local.tags
