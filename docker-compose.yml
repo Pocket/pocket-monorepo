@@ -1,17 +1,6 @@
-version: '3'
 services:
   ## Start Common Processes Config
-  # Note this is not the collector we use in Prod, but works for local testing
-  otlpcollector:
-    image: grafana/otel-lgtm
-    platform: linux/amd64
-    environment:
-      OTEL_METRIC_EXPORT_INTERVAL: 1
-    ports:
-      - 4317:4317 # OTLP gRPC receiver
-      - 4318:4318 # OTLP http receiver
-      - 3000:3000 # Grafana UI admin:admin, use localhost:3000 to view traces
-
+  # Note this is not the collector we use in Prod, but works for local testing & github actions
   memcached:
     image: memcached:latest
     ports:
@@ -90,10 +79,12 @@ services:
         - CMD
         - bash
         - -c
-        - curl --write-out '%{http_code}' --silent --output /dev/null http://localhost:4566/_localstack/health
+        # Wait for Localstack to have init'd all of our services: https://docs.localstack.cloud/references/init-hooks/
+        - curl --silent --fail /dev/null http://localhost:4566/_localstack/init/ready | jq -e '.completed == true' > /dev/null || exit 1
       interval: 5s
       timeout: 10s
       start_period: 10s
+      retries: 60
 
   snowplow:
     image: pocket/snowplow-micro:dev

@@ -2,7 +2,7 @@ import { ApolloServer } from '@apollo/server';
 import { IContext } from '../../apollo/context';
 import { startServer } from '../../apollo/server';
 import { getRedis } from '../../cache';
-import { cleanAll } from 'nock';
+import { cleanAll, restore } from 'nock';
 import { print } from 'graphql/index';
 import { gql } from 'graphql-tag';
 import request from 'supertest';
@@ -36,6 +36,7 @@ describe('ShortUrl', () => {
     await sharesConnection.destroy();
     await getRedis().disconnect();
     cleanAll();
+    restore();
   });
   afterEach(() => jest.clearAllMocks());
 

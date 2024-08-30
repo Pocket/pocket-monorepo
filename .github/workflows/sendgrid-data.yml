@@ -1,0 +1,53 @@
+name: Sendgrid Data
+on:
+  pull_request:
+    paths:
+      - 'infrastructure/sendgrid-data/**'
+      - 'packages/**'
+      - 'lambdas/sendgrid-data/**'
+      - 'pnpm-lock.yaml'
+      - '.github/actions/**'
+      - '.github/workflows/sendgrid-data.yml'
+      - '.github/workflows/reuse-*.yml'
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'infrastructure/sendgrid-data/**'
+      - 'packages/**'
+      - 'lambdas/sendgrid-data/**'
+      - 'pnpm-lock.yaml'
+      - '.github/actions/**'
+      - '.github/workflows/sendgrid-data.yml'
+      - '.github/workflows/reuse-*.yml'
+
+jobs:
+  infrastructure:
+    uses: ./.github/workflows/reuse-infrastructure.yml
+    with:
+      scope: sendgrid-data-cdk
+      stack-output-path: infrastructure/sendgrid-data/cdktf.out/stacks/sendgrid-data
+    secrets: inherit
+
+
+  lambda:
+    uses: ./.github/workflows/reuse-build-and-push-lambda.yml
+    needs: [infrastructure]
+    with:
+      scope: sendgrid-data
+      sentry-project: sendgrid-data
+      s3-bucket-pattern: pocket-sendgriddata-{0}-apigateway
+      codedeploy-app-name-pattern: SendGridData-{0}-ApiGateway-Lambda
+      codedeploy-group-name-pattern: SendGridData-{0}-ApiGateway-Lambda
+      function-name-pattern: SendGridData-{0}-ApiGateway-Function
+    secrets: inherit
+
+  sentry:
+    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/reuse-sentry-release.yml
+    needs: [lambda]
+    with:
+      sentry-project: sendgrid-data
+      sentry-environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+    secrets: inherit

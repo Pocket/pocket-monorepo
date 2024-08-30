@@ -5,6 +5,7 @@ on:
   pull_request:
     branches: ['main']
   merge_group:
+
 jobs:
   ##
   # Runs semantic release in a regular
@@ -23,30 +24,18 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@v4
         with:
           fetch-depth: 2
 
-      - name: Setup Node.js environment
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
-        with:
-          node-version: 20.14
-          registry-url: 'https://registry.npmjs.org'
+      - name: Install pnpm & node
+        uses: pocket/pocket-monorepo/.github/actions/install-pnpm-and-node@main
 
-      - name: PNPM Setup
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.1.4
-
-      - name: Install dependencies
-        run: pnpm i
-      # Need to update sendgrid to enable this
-      #   - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
-      #     run: pnpm audit signatures
       - name: Semantic Release
         run: pnpm run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
           # Need to update sendgrid to enable this
           #        NPM_CONFIG_PROVENANCE: true

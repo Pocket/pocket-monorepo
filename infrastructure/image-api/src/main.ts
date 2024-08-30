@@ -152,10 +152,6 @@ class ImageAPI extends TerraformStack {
               value: readerEndpoint,
             },
             {
-              name: 'OTLP_COLLECTOR_HOST',
-              value: config.tracing.host,
-            },
-            {
               name: 'REDIS_IS_CLUSTER',
               value: 'true',
             },
@@ -176,31 +172,6 @@ class ImageAPI extends TerraformStack {
           ],
           logGroup: this.createCustomLogGroup('app'),
           logMultilinePattern: '^\\S.+',
-        },
-        {
-          name: 'aws-otel-collector',
-          containerImage: 'amazon/aws-otel-collector',
-          essential: true,
-          repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
-          //Used default config as stated here:
-          // Available configs here: - https://github.com/aws-observability/aws-otel-collector/tree/main/config
-          command: [
-            '--config=/etc/ecs/ecs-xray.yaml',
-            //enable for debugging
-            //'--set=service.telemetry.logs.level=debug',
-          ],
-          portMappings: [
-            {
-              //default http port
-              hostPort: 4138,
-              containerPort: 4138,
-            },
-            {
-              //default grpc port
-              hostPort: 4137,
-              containerPort: 4137,
-            },
-          ],
         },
       ],
       codeDeploy: {
@@ -269,7 +240,7 @@ class ImageAPI extends TerraformStack {
           threshold: 25,
           evaluationPeriods: 4,
           period: 300,
-          actions: config.isProd ? [snsTopic.arn] : [],
+          actions: config.isProd ? [] : [],
         },
       },
     });

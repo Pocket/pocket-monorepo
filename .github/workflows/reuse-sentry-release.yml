@@ -1,0 +1,35 @@
+name: 'Re-usable Sentry Release Workflow'
+on:
+  workflow_call:
+    inputs:
+      sentry-project:
+        description: 'The sentry project name'
+        required: true
+        type: string
+      sentry-organization:
+        description: 'The sentry organization'
+        required: false
+        default: pocket
+        type: string
+      sentry-environment:
+        description: 'The sentry environment to release on'
+        required: false
+        default: pocket
+        type: string
+jobs:
+
+    release:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
+        - name: Create Sentry Release
+          uses: getsentry/action-release@v1
+          env:
+            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_BEARER }}
+            SENTRY_ORG: ${{ inputs.sentry-organization }}
+            SENTRY_PROJECT: ${{ inputs.sentry-project }}
+          with:
+            environment: ${{ inputs.sentry-environment }}

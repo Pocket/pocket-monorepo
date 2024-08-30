@@ -1,0 +1,43 @@
+# A set of jobs that should always run no matter what on all Pull Requests in this repo
+name: Pull Request
+on:
+  pull_request:
+
+jobs:
+  check-packages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Install pnpm & node
+        uses: pocket/pocket-monorepo/.github/actions/install-pnpm-and-node@main
+      
+      - name: Check for mismatched dependencies
+        run: pnpm run list-mismatches
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+    
+      - name: Install pnpm & node
+        uses: pocket/pocket-monorepo/.github/actions/install-pnpm-and-node@main
+
+      - name: Lint code
+        run: pnpm run lint
+
+  unit-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Install pnpm & node
+        uses: pocket/pocket-monorepo/.github/actions/install-pnpm-and-node@main
+      
+      - name: Unit tests
+        # Following uses a 2 concurrency because terraform modules seems to fail with an OOM error on CI if we do more.
+        run: pnpm run test --concurrency=2 

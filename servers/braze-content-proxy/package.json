@@ -1,0 +1,51 @@
+{
+  "name": "braze-content-proxy",
+  "version": "1.0.0",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "dev": "npm run build && npm run watch",
+    "format": "eslint --fix",
+    "lint": "eslint --fix-dry-run",
+    "prebuild": "graphql-codegen",
+    "start": "node dist/main.js",
+    "test": "jest \"\\.spec\\.ts\"",
+    "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",
+    "test:watch": "npm test -- --watchAll",
+    "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json"
+  },
+  "dependencies": {
+    "@apollo/client": "3.7.17",
+    "@graphql-typed-document-node/core": "3.2.0",
+    "@pocket-tools/sentry": "workspace:*",
+    "@pocket-tools/ts-logger": "workspace:*",
+    "@sentry/node": "8.27.0",
+    "cross-fetch": "4.0.0",
+    "dataloader": "2.2.2",
+    "express": "4.19.2",
+    "graphql-tag": "2.12.6",
+    "tslib": "2.6.3"
+  },
+  "devDependencies": {
+    "@graphql-codegen/add": "5.0.3",
+    "@graphql-codegen/cli": "5.0.2",
+    "@graphql-codegen/typed-document-node": "5.0.9",
+    "@graphql-codegen/typescript": "4.0.9",
+    "@graphql-codegen/typescript-operations": "4.2.3",
+    "@jest/globals": "29.7.0",
+    "@pocket-tools/eslint-config": "workspace:*",
+    "@types/express": "4.17.21",
+    "@types/jest": "29.5.12",
+    "@types/node": "^20.16",
+    "@types/supertest": "^6.0.2",
+    "jest": "29.7.0",
+    "jest-extended": "4.0.2",
+    "nock": "14.0.0-beta.11",
+    "nodemon": "3.1.4",
+    "supertest": "7.0.0",
+    "ts-jest": "29.2.4",
+    "ts-node": "10.9.2",
+    "tsconfig": "workspace:*",
+    "typescript": "5.5.4"
+  }
+}

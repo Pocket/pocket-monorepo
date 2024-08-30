@@ -1299,4 +1299,98 @@ describe('v3Get', () => {
       expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
   });
+  describe('for extensions', () => {
+    // Weird but intentional prod behavior:
+    //  * search + taglist will discard search results
+    //  * taglist + total does not return total field
+    // We won't bother faithfully replicating and testing this,
+    // since it's for extensions and really doesn't make sense;
+    // they shouldn't make requests like this (and we have control)
+    let clientSpy;
+    afterEach(() => clientSpy.mockRestore());
+    it.each([
+      {
+        requestData: {
+          detailType: 'simple',
+        },
+        fixture: {
+          requestData: mockGraphGetSimpleTagsList,
+        },
+        responseData: expectedGetSimpleTagslist,
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+        },
+        fixture: {
+          requestData: mockGraphGetCompleteTagsList,
+        },
+        responseData: expectedGetCompleteTagslist,
+      },
+    ])(
+      "doesn't return list data if taglist is specified",
+      async ({ requestData, fixture, responseData }) => {
+        clientSpy = jest
+          .spyOn(GraphQLClient.prototype, 'request')
+          .mockResolvedValueOnce(fixture.requestData);
+        const response = await request(app)
+          .get('/v3/get')
+          .query({
+            ...requestData,
+            consumer_key: '7035-test',
+            access_token: 'test',
+            taglist: '1',
+            since: 1712766000,
+          });
+        delete responseData['list'];
+        expect(response.body).toEqual(responseData);
+      },
+    );
+    it.each([
+      {
+        requestData: {
+          detailType: 'simple',
+          forcetaglist: '1',
+        },
+        fixture: {
+          requestData: mockGraphGetSimple,
+        },
+        responseData: expectedGetSimple,
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+        },
+        fixture: {
+          requestData: mockGraphGetComplete,
+        },
+        responseData: expectedGetComplete,
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          forceaccount: '1',
+        },
+        fixture: {
+          requestData: mockGraphGetSimpleFreeAccount,
+        },
+        responseData: expectedGetSimpleFreeAccount,
+      },
+    ])(
+      'returns list data if taglist is not specified (including forcetaglist... yes...)',
+      async ({ requestData, fixture, responseData }) => {
+        clientSpy = jest
+          .spyOn(GraphQLClient.prototype, 'request')
+          .mockResolvedValueOnce(fixture.requestData);
+        const response = await request(app)
+          .get('/v3/get')
+          .query({
+            ...requestData,
+            consumer_key: '7035-test',
+            access_token: 'test',
+          });
+        expect(response.body).toEqual(responseData);
+      },
+    );
+  });
 });

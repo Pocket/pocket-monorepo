@@ -8,7 +8,14 @@ import {
 import { SSMLModel } from '../models/SSMLModel';
 import { fallbackPage } from '../readerView';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
-import { Item, Resolvers, Videoness } from '../__generated__/resolvers-types';
+import {
+  Collection,
+  CorpusItem,
+  Item,
+  Resolvers,
+  SyndicatedArticle,
+  Videoness,
+} from '../__generated__/resolvers-types';
 import { BoolStringParam, MediaTypeParam } from '../datasources/ParserAPI';
 import {
   extractSlugFromReadUrl,
@@ -27,6 +34,11 @@ export const resolvers: Resolvers = {
           item,
           context,
           false,
+          {
+            syndicatedArticle: item.syndicatedArticle,
+            collection: item.collection,
+            corpusItem: item.corpusItem,
+          },
         );
       return {
         url: representation.url,
@@ -47,7 +59,7 @@ export const resolvers: Resolvers = {
       }
 
       if ('givenUrl' in item) {
-        return itemFromUrl(item.givenUrl, context);
+        return { ...item, ...(await itemFromUrl(item.givenUrl, context)) };
       } else if ('itemId' in item) {
         const itemLoaderType = await context.dataLoaders.itemIdLoader.load(
           item.itemId,
@@ -55,10 +67,11 @@ export const resolvers: Resolvers = {
         if (!itemLoaderType.url) {
           throw new Error(`No url found for itemId: ${item.itemId}`);
         }
-        return itemFromUrl(itemLoaderType.url, context);
+        return { ...item, ...(await itemFromUrl(itemLoaderType.url, context)) };
       }
     },
-    article: async (parent, args, { dataSources }, info) => {
+    article: async (uncastParent, args, { dataSources }, info) => {
+      const parent = uncastParent as Item;
       if (parent.article) {
         // Use the parent resolver for article content if available
         // (e.g. via refreshArticle mutation), otherwise load the article
@@ -78,7 +91,8 @@ export const resolvers: Resolvers = {
 
       return item.article || null;
     },
-    marticle: async (parent, args, { dataSources }, info) => {
+    marticle: async (uncastParent, args, { dataSources }, info) => {
+      const parent = uncastParent as Item;
       // Note: When the Web & Android teams switch to MArticle, make all the parser article call use
       // MediaTypeParam.AS_COMMENTS and add back this optimization:
       //
@@ -106,12 +120,13 @@ export const resolvers: Resolvers = {
         : ([] as MarticleElement[]);
     },
     ssml: async (parent, args, { dataSources }, info) => {
-      if (!parent.article && parent.isArticle) {
+      const castParent = parent as Item;
+      if (!castParent.article && castParent.isArticle) {
         // If the field was requested via refreshArticle we need to clear the cache before we request data
         const clearCache = isInResolverChain('refreshItemArticle', info.path);
-        parent.article = (
+        castParent.article = (
           await dataSources.parserAPI.getItemData(
-            parent.givenUrl,
+            castParent.givenUrl,
             {
               videos: MediaTypeParam.DIV_TAG,
               images: MediaTypeParam.DIV_TAG,
@@ -121,12 +136,14 @@ export const resolvers: Resolvers = {
           )
         ).article;
       }
-      if (!parent.article) {
+      if (!castParent.article) {
         return null;
       }
-      return SSMLModel.generateSSML(parent);
+      return SSMLModel.generateSSML(parent as Item);
     },
-    shortUrl: async (parent, args, context) => {
+    shortUrl: async (uncastParent, args, context) => {
+      const parent = uncastParent as Item;
+
       // If the givenUrl is already a short share url, or there is a
       // short url key on the parent from a previous step, return the
       // same value to avoid another db trip
@@ -147,11 +164,16 @@ export const resolvers: Resolvers = {
       const clearCache = isInResolverChain('refreshItemArticle', info.path);
       const preview =
         await context.dataSources.pocketMetadataModel.derivePocketMetadata(
-          parent,
+          parent as Item,
           context,
           clearCache,
+          {
+            syndicatedArticle: parent.syndicatedArticle as SyndicatedArticle,
+            collection: parent.collection as Collection,
+            corpusItem: parent.corpusItem as CorpusItem,
+          },
         );
-      return { ...preview, item: parent };
+      return { ...preview, item: parent as Item };
     },
   },
   MarticleComponent: {
@@ -206,9 +228,21 @@ export const resolvers: Resolvers = {
       try {
         const item = await dataSources.parserAPI.getItemData(url);
         return item.timeToRead || null;
-      } catch (e) {
+      } catch {
         return null;
       }
+    },
+    preview: async (parent, _, context) => {
+      const item = await context.dataSources.parserAPI.getItemData(parent.url);
+
+      const preview =
+        await context.dataSources.pocketMetadataModel.derivePocketMetadata(
+          item,
+          context,
+          false,
+          { corpusItem: parent as CorpusItem },
+        );
+      return { ...preview, item };
     },
   },
   Collection: {
@@ -226,6 +260,36 @@ export const resolvers: Resolvers = {
         resolvedId: parseInt(item.resolvedId),
         givenUrl: item.givenUrl,
       });
+    },
+    preview: async (parent, args, context) => {
+      const item = await context.dataSources.parserAPI.getItemData(
+        `${config.shortUrl.collectionUrl}/${parent.slug}`,
+      );
+
+      const preview =
+        await context.dataSources.pocketMetadataModel.derivePocketMetadata(
+          item,
+          context,
+          false,
+          { collection: parent as Collection },
+        );
+      return { ...preview, item };
+    },
+  },
+  SyndicatedArticle: {
+    preview: async (parent, args, context) => {
+      const item = await context.dataSources.parserAPI.getItemData(
+        `${config.shortUrl.syndicationUrl}/${parent.slug}`,
+      );
+
+      const preview =
+        await context.dataSources.pocketMetadataModel.derivePocketMetadata(
+          item,
+          context,
+          false,
+          { syndicatedArticle: parent as SyndicatedArticle },
+        );
+      return { ...preview, item };
     },
   },
   PocketMetadata: {

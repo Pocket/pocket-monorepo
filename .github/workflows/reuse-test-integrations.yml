@@ -1,0 +1,45 @@
+name: 'Re-usable Test Integrations'
+on:
+  workflow_call:
+    inputs:
+      scope:
+        description: 'Turbo Repo scope to run tests for'
+        required: true
+        type: string
+
+jobs:
+  # naming this main, so that when this is called in Github Actions UI it shows up as:
+  # Service/test-integrations/main
+  main:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    
+    # Log into Docker Hub so we bypass any rate limits and can pull our private Snowplow Micro Image
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    # Kick off starting docker compose first, since it can take a bit and can run in the background
+    - name: Start Docker Compose services
+      run: docker compose up -d
+    
+    # While we wait for docker compose to be healthy we install node and needed packages for this service
+    - name: Install pnpm & node
+      uses: pocket/pocket-monorepo/.github/actions/install-pnpm-and-node@main
+      with:
+        scope: ${{ inputs['scope'] }}
+    
+    # Wait for the docker services we started earlier to all be healthy
+    # TODO: In the future, we should figure out how to pass a scope to the Localstack startup routine via docker compose (perhaps a docker env..), 
+    # because right now this will init and wait for all the localstack services in use in this repo.
+    # in circleci, we had to do it all manually so we passed it in then.
+    - name: Wait for services to be healthy
+      run: docker compose up --wait
+
+    # Let's run those integration tests!
+    - name: Run service integration tests
+      run: pnpm run test-integrations --filter=${{ inputs['scope'] }}

@@ -161,10 +161,6 @@ class SharesAPI extends TerraformStack {
               value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.envVars.sqsBatchDeleteQueueName}`,
             },
             {
-              name: 'OTLP_COLLECTOR_HOST',
-              value: config.tracing.host,
-            },
-            {
               name: 'SHARE_URL',
               value: 'https://pocket.co/share',
             },
@@ -185,25 +181,6 @@ class SharesAPI extends TerraformStack {
               valueFrom: `${UserContextSaltArn}:guid_salt::`,
             },
           ],
-        },
-        {
-          name: 'aws-otel-collector',
-          command: ['--config=/etc/ecs/ecs-xray.yaml'],
-          containerImage: 'amazon/aws-otel-collector',
-          essential: true,
-          logMultilinePattern: '^\\S.+',
-          logGroup: this.createCustomLogGroup('aws-otel-collector'),
-          portMappings: [
-            {
-              hostPort: 4138,
-              containerPort: 4138,
-            },
-            {
-              hostPort: 4137,
-              containerPort: 4137,
-            },
-          ],
-          repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
         },
       ],
       codeDeploy: {

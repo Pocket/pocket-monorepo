@@ -51,7 +51,7 @@ describe('clearUserData for Notes data', () => {
     expect(res['$metadata'].httpStatusCode).toEqual(200);
     expect(res.Count).toEqual(0);
     expect(res.Items.length).toEqual(0);
-    expect(res.LastEvaluatedKey).toBeUndefined;
+    expect(res.LastEvaluatedKey).toBeUndefined();
   });
   it('deletes multiple batches of records for a user id', async () => {
     const notesService = new NotesDataService(client, bigUser);
@@ -60,7 +60,7 @@ describe('clearUserData for Notes data', () => {
     expect(res['$metadata'].httpStatusCode).toEqual(200);
     expect(res.Count).toEqual(0);
     expect(res.Items.length).toEqual(0);
-    expect(res.LastEvaluatedKey).toBeUndefined;
+    expect(res.LastEvaluatedKey).toBeUndefined();
   });
   it('does not throw an error if there are no records to delete', async () => {
     const notesService = new NotesDataService(client, noUser);
@@ -69,6 +69,6 @@ describe('clearUserData for Notes data', () => {
     expect(res['$metadata'].httpStatusCode).toEqual(200);
     expect(res.Count).toEqual(0);
     expect(res.Items.length).toEqual(0);
-    expect(res.LastEvaluatedKey).toBeUndefined;
+    expect(res.LastEvaluatedKey).toBeUndefined();
   });
 });

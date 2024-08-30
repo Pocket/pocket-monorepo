@@ -13,6 +13,7 @@ import { InputValidationError } from '../errors/InputValidationError';
 import { AddItemTransformer } from '../graph/add/toRest';
 import { GraphQLClient } from 'graphql-request';
 import { asyncHandler } from '../middleware/asyncHandler';
+import { AddResponse, PendingAddResponse } from '../graph/types';
 
 const router: Router = Router();
 
@@ -86,7 +87,7 @@ export async function processV3Add(
     | AddSavedItemCompleteMutationVariables // these are the same
     | AddSavedItemBeforeTagMutationVariables,
   tags?: string[],
-) {
+): Promise<AddResponse | PendingAddResponse> {
   if (tags == null) {
     const result = await addSavedItem(client, variables);
     return AddItemTransformer(result['upsertSavedItem']);

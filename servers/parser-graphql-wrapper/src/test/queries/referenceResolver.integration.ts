@@ -1,3 +1,4 @@
+import { cleanAll, restore } from 'nock';
 import { ApolloServer } from '@apollo/server';
 import { IContext } from '../../apollo/context';
 import { startServer } from '../../apollo/server';
@@ -55,6 +56,8 @@ describe('referenceResolver', () => {
   afterAll(async () => {
     await server.stop();
     await readitlabDB.destroy();
+    cleanAll();
+    restore();
   });
 
   it('should return item for a single item id', async () => {

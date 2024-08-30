@@ -1,0 +1,60 @@
+name: V3 Proxy API
+on:
+  pull_request:
+    paths:
+      - 'infrastructure/v3-proxy-api/**'
+      - 'packages/**'
+      - 'servers/v3-proxy-api/**'
+      - 'pnpm-lock.yaml'
+      - 'Dockerfile'
+      - '.github/actions/**'
+      - '.github/workflows/v3-proxy-api.yml'
+      - '.github/workflows/reuse-*.yml'
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'infrastructure/v3-proxy-api/**'
+      - 'packages/**'
+      - 'servers/v3-proxy-api/**'
+      - 'pnpm-lock.yaml'
+      - 'Dockerfile'
+      - '.github/actions/**'
+      - '.github/workflows/v3-proxy-api.yml'
+      - '.github/workflows/reuse-*.yml'    
+jobs:
+  test-integrations:
+    if: github.event_name == 'pull_request'
+    uses: ./.github/workflows/reuse-test-integrations.yml
+    with:
+      scope: v3-proxy-api
+    secrets: inherit
+
+  infrastructure:
+    uses: ./.github/workflows/reuse-infrastructure.yml
+    with:
+      scope: v3-proxy-api-cdk
+      stack-output-path: infrastructure/v3-proxy-api/cdktf.out/stacks/v3-proxy-api
+    secrets: inherit
+
+  api:
+    uses: ./.github/workflows/reuse-build-and-push-image.yml
+    needs: [infrastructure]
+    with:
+      scope: v3-proxy-api
+      app-path: servers/v3-proxy-api
+      app-port: 4030
+      sentry-project: v3-proxy-api
+      docker-repo-name-pattern: v3proxyapi-{0}-app
+      terraform-output: ${{needs.infrastructure.outputs.terraform-output}}
+    secrets: inherit
+
+  sentry:
+    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/reuse-sentry-release.yml
+    needs: [api]
+    with:
+      sentry-project: v3-proxy-api
+      sentry-environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+    secrets: inherit

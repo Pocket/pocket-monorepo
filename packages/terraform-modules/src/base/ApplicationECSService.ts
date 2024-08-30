@@ -368,6 +368,18 @@ export class ApplicationECSService extends Construct {
       value: taskDef.family,
       staticId: true,
     });
+
+    new TerraformOutput(this, 'ecs-clusterName', {
+      description: 'ECS Cluster Name',
+      value: config.ecsClusterName,
+      staticId: true,
+    });
+
+    new TerraformOutput(this, 'ecs-serviceName', {
+      description: 'ECS Service Name',
+      value: this.service.name,
+      staticId: true,
+    });
   }
 
   /**

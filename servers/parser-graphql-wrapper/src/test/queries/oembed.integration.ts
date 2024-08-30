@@ -1,4 +1,4 @@
-import { cleanAll } from 'nock';
+import { cleanAll, restore } from 'nock';
 import { getRedis } from '../../cache';
 import { startServer } from '../../apollo/server';
 import { ApolloServer } from '@apollo/server';
@@ -117,6 +117,7 @@ describe('oembedPreview', () => {
     await server.stop();
     await getRedis().disconnect();
     cleanAll();
+    restore();
     await readitlabDB.destroy();
     await sharesInit().destroy();
     jest.restoreAllMocks();

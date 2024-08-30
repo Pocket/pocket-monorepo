@@ -1,0 +1,19 @@
+## Note that since this workflow uses Workflow Run changes will only be reflected once it is on the default branch
+
+# Because we use conditional path filtering on all our workflows, but want to Require status checks to pass on Github, 
+# we use a special status check job that we can require and will do the checking for us.
+# We also use this because re-usable workflows can not be targeted for Github Required Status Checks as of 8/15/2024 
+name: Status Checks
+on:
+  pull_request:
+
+jobs:
+  enforce-all-checks:
+    runs-on: ubuntu-latest
+    permissions:
+      checks: read
+    steps:
+      - name: GitHub Checks
+        uses: poseidon/wait-for-status-checks@v0.4.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}

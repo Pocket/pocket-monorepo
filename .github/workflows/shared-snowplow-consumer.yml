@@ -1,0 +1,61 @@
+name: Shared Snowplow Consumer
+on:
+  pull_request:
+    paths:
+      - 'infrastructure/shared-snowplow-consumer/**'
+      - 'packages/**'
+      - 'servers/shared-snowplow-consumer/**'
+      - 'pnpm-lock.yaml'
+      - 'Dockerfile'
+      - '.github/actions/**'
+      - '.github/workflows/shared-snowplow-consumer.yml'
+      - '.github/workflows/reuse-*.yml'
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'infrastructure/shared-snowplow-consumer/**'
+      - 'packages/**'
+      - 'servers/shared-snowplow-consumer/**'
+      - 'pnpm-lock.yaml'
+      - 'Dockerfile'
+      - '.github/actions/**'
+      - '.github/workflows/shared-snowplow-consumer.yml'
+      - '.github/workflows/reuse-*.yml'
+      
+jobs:
+  test-integrations:
+    if: github.event_name == 'pull_request'
+    uses: ./.github/workflows/reuse-test-integrations.yml
+    with:
+      scope: shared-snowplow-consumer
+    secrets: inherit
+
+  infrastructure:
+    uses: ./.github/workflows/reuse-infrastructure.yml
+    with:
+      scope: shared-snowplow-consumer-cdk
+      stack-output-path: infrastructure/shared-snowplow-consumer/cdktf.out/stacks/shared-snowplow-consumer
+    secrets: inherit
+
+  api:
+    uses: ./.github/workflows/reuse-build-and-push-image.yml
+    needs: [infrastructure]
+    with:
+      scope: shared-snowplow-consumer
+      app-path: servers/shared-snowplow-consumer
+      app-port: 4015
+      sentry-project: shared-snowplow-consumer
+      docker-repo-name-pattern: sharedsnowplowconsumer-{0}-app
+      terraform-output: ${{needs.infrastructure.outputs.terraform-output}}
+    secrets: inherit
+
+  sentry:
+    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/reuse-sentry-release.yml
+    needs: [api]
+    with:
+      sentry-project: shareable-lists-api
+      sentry-environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+    secrets: inherit

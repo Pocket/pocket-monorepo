@@ -1,0 +1,60 @@
+name: Account Delete Monitor
+on:
+  # Only run the tests for this service when any of the following file paths change
+  pull_request:
+    paths:
+      - 'infrastructure/account-delete-monitor/**'
+      - 'packages/**'
+      - 'lambdas/account-delete-monitor/**'
+      - 'pnpm-lock.yaml'
+      - '.github/actions/**'
+      - '.github/workflows/account-delete-monitor.yml'
+      - '.github/workflows/reuse-*.yml'
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'infrastructure/account-delete-monitor/**'
+      - 'packages/**'
+      - 'lambdas/account-delete-monitor/**'
+      - 'pnpm-lock.yaml'
+      - '.github/actions/**'
+      - '.github/workflows/account-delete-monitor.yml'
+      - '.github/workflows/reuse-*.yml'
+jobs:
+  test-integrations:
+    if: github.event_name == 'pull_request'
+    uses: ./.github/workflows/reuse-test-integrations.yml
+    with:
+      scope: account-delete-monitor
+    secrets: inherit
+
+  infrastructure:
+    uses: ./.github/workflows/reuse-infrastructure.yml
+    with:
+      scope: account-delete-monitor-cdk
+      stack-output-path: infrastructure/account-delete-monitor/cdktf.out/stacks/account-delete-monitor
+    secrets: inherit
+
+
+  lambda:
+    uses: ./.github/workflows/reuse-build-and-push-lambda.yml
+    needs: [infrastructure]
+    with:
+      scope: account-delete-monitor
+      sentry-project: account-delete-monitor
+      s3-bucket-pattern: pocket-accountdeletemonitor-{0}-eventtracker
+      codedeploy-app-name-pattern: AccountDeleteMonitor-{0}-EventTracker-Lambda
+      codedeploy-group-name-pattern: AccountDeleteMonitor-{0}-EventTracker-Lambda
+      function-name-pattern: AccountDeleteMonitor-{0}-EventTracker-Function
+    secrets: inherit
+
+  sentry:
+    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/reuse-sentry-release.yml
+    needs: [lambda]
+    with:
+      sentry-project: account-delete-monitor
+      sentry-environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+    secrets: inherit

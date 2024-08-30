@@ -8,6 +8,7 @@ import {
   callSavedItemsByOffsetComplete,
   callSearchByOffsetComplete,
   callSearchByOffsetSimple,
+  getTagList,
 } from '../graph/graphQLClient';
 import {
   savedItemsSimpleToRest,
@@ -23,6 +24,7 @@ import { checkSchema, validationResult, matchedData } from 'express-validator';
 import { V3GetParams, V3GetSchema } from './validations';
 import { InputValidationError } from '../errors/InputValidationError';
 import { asyncHandler } from '../middleware/asyncHandler';
+import { isExtension, parseApiId } from '../utils';
 
 const router: Router = Router();
 
@@ -97,6 +99,24 @@ export async function processV3call(
       ? new Date(data.since * 1000).toISOString()
       : undefined;
   if (tagListSince) options['tagListSince'] = tagListSince;
+  // First check if it's an extension... if it is, and the taglist field
+  // is passed, ignore everything else and just return the taglist query
+  // (eyy, I don't make the rules)
+  if (isExtension(parseApiId(consumerKey)) && data.taglist) {
+    const tagListVariables = {
+      withAccountData: options.withAccountData,
+      tagListSince,
+    };
+    const response = await getTagList(
+      accessToken,
+      consumerKey,
+      headers,
+      tagListVariables,
+    );
+    const result = savedItemsSimpleToRest(response);
+    delete result['list']; // empty array result
+    return result;
+  }
   // Search takes precedence -- if search term is passed, call search api
   if (data.search) {
     const variables = setSearchVariables(data);

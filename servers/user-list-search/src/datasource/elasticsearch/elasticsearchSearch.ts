@@ -728,7 +728,7 @@ export const search = async (
       results: searchResults,
       totalResults: total.value,
     };
-  } catch (e) {
+  } catch {
     // query_string returns an error for invalid syntax, catch this error and return an empty result
     // replicate the same behavior as simple_query_string which is less strict on syntax
     return {

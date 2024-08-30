@@ -1,0 +1,86 @@
+name: 'Re-usable Lambda Build and Upload Flow'
+description: 'Used to setup and build a docker image'
+inputs:
+  scope:
+    description: 'Turbo Repo scope to run the build for'
+    required: true
+  sentry-org:
+    description: 'The org name used in sentry. Used to upload source maps'
+    required: false
+    default: pocket
+  sentry-project:
+    description: 'The project name used in sentry. Used to upload source maps'
+    required: false
+    default: ''
+  sentry-token:
+    description: 'The token used for sentry. Used to upload source maps'
+    required: true
+  s3-bucket:
+    description: 'The s3 bucket to upload to'
+    required: false
+    default: ''
+  s3-key:
+    description: 'The s3 bucket key to upload to'
+    required: false
+    default: ''
+runs:
+  using: 'composite'
+  steps:
+    - name: Install pnpm & node
+      uses: pocket/pocket-monorepo/.github/actions/install-pnpm-and-node@main
+      with:
+        scope: ${{ inputs['scope'] }}
+    # Theres a really annoying bug in PNPM deploy command that will try and create a folder at /home/pruned which we are not allowed to do, 
+    # so we move it under 1 directory to let it do its thing.
+    # https://github.com/pnpm/pnpm/issues/5086
+    - name: Build lambda
+      shell: bash
+      run: |
+        pnpm run build --filter=${{inputs.scope}}...
+        mkdir -p ~/bug/project
+        cp -R . ~/bug/project/
+        cd ~/bug/project/
+        pnpm deploy --filter=${{inputs.scope}} --prod pruned
+    - name: Upload Sentry Source maps
+      if: inputs.sentry-project != ''
+      shell: bash
+      run: |
+        cd ~/bug/project/
+        pnpx @sentry/cli sourcemaps inject pruned/dist
+        pnpx @sentry/cli sourcemaps upload pruned/dist --release ${{ github.sha }} --auth-token ${{ inputs.sentry-token }} --org ${{ inputs.sentry-org }} --project ${{ inputs.sentry-project }}
+    - name: Package Lambda
+      shell: bash
+      run: |
+        cd ~/bug/project/pruned
+        cp -r package.json dist/
+        cp -r node_modules/ dist/node_modules/
+
+        cd dist
+        zip --symlinks -r9 ~/${{ github.sha }}.zip .
+        cd ..
+        maxFileSize=256000 # Get the size of the directory in kilobytes
+        export dirSize=$(du -s dist | cut -f1) 
+        echo "Size is: $dirSize"
+        if ((dirSize > maxFileSize)); then
+          echo "Directory size is equal to or larger than $maxFileSize KB. which is the lambda limit"
+          exit 1
+        fi 
+    - name: Upload to S3
+      if: inputs.s3-bucket != ''
+      shell: bash
+      run: |
+        s3Key="${{inputs.s3-key}}"
+        if [[ -z $s3Key ]]; then
+            s3Key="${{ github.sha }}.zip"
+        fi
+        aws s3 cp ~/${{ github.sha }}.zip s3://${{inputs.s3-bucket}}/${s3Key}
+    - uses: actions/upload-artifact@v4
+      if: inputs.s3-key == ''
+      with:
+        name: ${{inputs.scope}}
+        path: ~/${{ github.sha }}.zip
+    - uses: actions/upload-artifact@v4
+      if: inputs.s3-key != ''
+      with:
+        name: ${{ inputs.s3-key }}
+        path: ~/${{ github.sha }}.zip

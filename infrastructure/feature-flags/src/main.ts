@@ -197,19 +197,6 @@ class FeatureFlags extends TerraformStack {
             },
           ],
         },
-        {
-          name: 'xray-daemon',
-          containerImage: 'amazon/aws-xray-daemon',
-          repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
-          portMappings: [
-            {
-              hostPort: 2000,
-              containerPort: 2000,
-              protocol: 'udp',
-            },
-          ],
-          command: ['--region', 'us-east-1', '--local-mode'],
-        },
       ],
       codeDeploy: {
         useCodeDeploy: true,

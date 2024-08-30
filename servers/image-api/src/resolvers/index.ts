@@ -1,6 +1,6 @@
 import { IContext } from '../server/context';
 import { Image, CachedImageInput, CachedImage } from '../types';
-import { getOriginalUrlIfPocketImageCached } from '../pocketImageCache/utils';
+import { getOriginalUrlIfPocketImageCached } from '@pocket-tools/image-utils';
 import { getPocketImageCachePath } from '../pocketImageCache';
 import config from '../config';
 

@@ -1,0 +1,67 @@
+name: FxA Webhook Proxy
+on:
+  pull_request:
+    paths:
+      - 'infrastructure/fxa-webhook-proxy/**'
+      - 'packages/**'
+      - 'lambdas/fxa-webhook-proxy-gateway/**'
+      - 'lambdas/fxa-webhook-proxy-sqs/**'
+      - 'pnpm-lock.yaml'
+      - '.github/actions/**'
+      - '.github/workflows/fxa-webhook-proxy.yml'
+      - '.github/workflows/reuse-*.yml'
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'infrastructure/fxa-webhook-proxy/**'
+      - 'packages/**'
+      - 'lambdas/fxa-webhook-proxy-gateway/**'
+      - 'lambdas/fxa-webhook-proxy-sqs/**'
+      - 'pnpm-lock.yaml'
+      - '.github/actions/**'
+      - '.github/workflows/fxa-webhook-proxy.yml'
+      - '.github/workflows/reuse-*.yml'
+jobs:
+
+  infrastructure:
+    uses: ./.github/workflows/reuse-infrastructure.yml
+    with:
+      scope: fxa-webhook-proxy-cdk
+      stack-output-path: infrastructure/fxa-webhook-proxy/cdktf.out/stacks/fxa-webhook-proxy
+    secrets: inherit
+
+  sqs-lambda:
+    uses: ./.github/workflows/reuse-build-and-push-lambda.yml
+    needs: [infrastructure]
+    with:
+      scope: fxa-webhook-proxy-sqs
+      sentry-project: fxa-webhook-proxy
+      s3-bucket-pattern: pocket-fxawebhookproxy-{0}-sqs-fxa-events
+      codedeploy-app-name-pattern: FxAWebhookProxy-{0}-Sqs-FxA-Events-Lambda
+      codedeploy-group-name-pattern: FxAWebhookProxy-{0}-Sqs-FxA-Events-Lambda
+      function-name-pattern: FxAWebhookProxy-{0}-Sqs-FxA-Events-Function
+    secrets: inherit
+
+  gateway-lambda:
+    uses: ./.github/workflows/reuse-build-and-push-lambda.yml
+    needs: [infrastructure]
+    with:
+      scope: fxa-webhook-proxy-gateway
+      sentry-project: fxa-webhook-proxy
+      s3-bucket-pattern: pocket-fxawebhookproxy-{0}-apigateway-fxa-events
+      codedeploy-app-name-pattern: FxAWebhookProxy-{0}-ApiGateway-FxA-Events-Lambda
+      codedeploy-group-name-pattern: FxAWebhookProxy-{0}-ApiGateway-FxA-Events-Lambda
+      function-name-pattern: FxAWebhookProxy-{0}-ApiGateway-FxA-Events-Function
+    secrets: inherit
+  
+
+  sentry:
+    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/reuse-sentry-release.yml
+    needs: [sqs-lambda, gateway-lambda]
+    with:
+      sentry-project: annotations-api
+      sentry-environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
+    secrets: inherit

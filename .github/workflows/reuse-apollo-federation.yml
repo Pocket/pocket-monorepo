@@ -1,0 +1,79 @@
+# Runs Apollo rover schema check on the production graphql federated schema.
+# If it is the production branch will deploy the subgraph to the production federated graph.
+# If the branch is the development branch, will deploy the subgraph to the development federated graph.
+name: 'Re-usable Apollo Studio Schema Workflow'
+on:
+  workflow_call:
+    inputs:
+      federated-graph-name:
+        type: string
+        description: The name of federated graph to check
+      graph-name:
+        type: string
+        description: The name of this subgraph
+      schema-file-path:
+        type: string
+        description: The path to the schema file
+        default: ./schema.graphql
+      prod-graph-url:
+        type: string
+        description: The production subgraph url
+      dev-graph-url:
+        type: string
+        description: The development subgraph url
+      prod-graph-variant-name:
+        type: string
+        description: The production variant graph name
+        default: "current"
+      dev-graph-variant-name:
+        type: string
+        required: false
+        description: The development variant graph name
+        default: "development"
+      scope:
+        description: The pnpm scope to build for if we need to build before we push a schema
+        type: string
+        default: ""
+    secrets:
+      apollo-key:
+        description: The apollo studio key to use
+        required: true
+jobs:
+    check-or-publish:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Install rover
+          shell: bash
+          run: |
+            # download and install Rover
+            curl -sSL https://rover.apollo.dev/nix/latest | sh
+
+            # This allows the PATH changes to persist to the next `run` step
+            echo "PATH=$HOME/.rover/bin:$PATH" >> "$GITHUB_ENV"
+        - name: Checkout
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
+        - name: Install pnpm & node
+          if: ${{ inputs.scope != '' }}
+          uses: pocket/pocket-monorepo/.github/actions/install-pnpm-and-node@main
+          with:
+            scope: ${{ inputs['scope'] }}
+        - name: Build schema
+          if: ${{ inputs.scope != '' }}
+          shell: bash
+          run: pnpm run build --filter=${{ inputs.scope }}...
+        - name: Check Schema
+          if: github.event_name == 'pull_request'
+          shell: bash
+          run: |
+            rover subgraph check ${{ inputs.federated-graph-name }}@${{ inputs.prod-graph-variant-name }} --schema  ${{ inputs.schema-file-path }} --name=${{ inputs.graph-name }}
+          env:
+            APOLLO_KEY: ${{ secrets.apollo-key }}
+        - name: Publish Schema
+          if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
+          shell: bash
+          run: |
+            rover subgraph publish ${{ inputs.federated-graph-name }}@${{ github.ref == 'refs/heads/main' && inputs.prod-graph-variant-name || inputs.dev-graph-variant-name }} --schema ${{ inputs.schema-file-path }} --routing-url ${{ github.ref == 'refs/heads/main' && inputs.prod-graph-url || inputs.dev-graph-url }} --name=${{ inputs.graph-name }}
+          env:
+            APOLLO_KEY: ${{ secrets.apollo-key }}

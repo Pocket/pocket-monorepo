@@ -13,10 +13,10 @@
     "watch": "tsc -w"
   },
   "dependencies": {
-    "@cdktf/provider-aws": "19.26.0",
+    "@cdktf/provider-aws": "19.31.0",
     "@cdktf/provider-local": "10.1.0",
     "@cdktf/provider-null": "10.0.0",
-    "@cdktf/provider-pagerduty": "13.10.2",
+    "@cdktf/provider-pagerduty": "13.11.4",
     "@pocket-tools/terraform-modules": "workspace:*",
     "cdktf": "0.20.8",
     "cdktf-cli": "0.20.8",
@@ -24,9 +24,9 @@
   },
   "devDependencies": {
     "@pocket-tools/eslint-config": "workspace:*",
-    "@types/node": "^20.14.11",
+    "@types/node": "^20.16",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "typescript": "5.5.3"
+    "typescript": "5.5.4"
   }
 }

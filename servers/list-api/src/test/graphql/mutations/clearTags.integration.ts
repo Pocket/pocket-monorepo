@@ -5,6 +5,7 @@ import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import { mockParserGetItemIdRequest } from '../../utils/parserMocks';
+import { restore, cleanAll } from 'nock';
 
 describe('clearTags mutation', () => {
   //using write client as mutation will use write client to read as well.
@@ -93,6 +94,8 @@ describe('clearTags mutation', () => {
     await readDb.destroy();
     jest.restoreAllMocks();
     jest.useRealTimers();
+    restore();
+    cleanAll();
     await server.stop();
   });
   afterEach(() => eventSpy.mockClear());
