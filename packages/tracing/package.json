@@ -88,8 +88,8 @@
     "@opentelemetry/sdk-trace-node": "1.26.0",
     "@opentelemetry/semantic-conventions": "1.27.0",
     "@prisma/instrumentation": "5.19.1",
-    "@sentry/node": "8.27.0",
-    "@sentry/opentelemetry": "8.27.0",
+    "@sentry/node": "8.28.0",
+    "@sentry/opentelemetry": "8.28.0",
     "tslib": "2.7.0"
   },
   "devDependencies": {
