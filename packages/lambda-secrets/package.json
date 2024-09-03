@@ -70,7 +70,7 @@
     ]
   },
   "dependencies": {
-    "tslib": "2.6.3"
+    "tslib": "2.7.0"
   },
   "devDependencies": {
     "@jest/globals": "29.7.0",

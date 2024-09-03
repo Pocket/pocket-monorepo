@@ -33,7 +33,7 @@
     "mysql2": "3.10.3",
     "nanoid": "3.3.7",
     "stripe": "14.24.0",
-    "tslib": "2.6.3"
+    "tslib": "2.7.0"
   },
   "devDependencies": {
     "@pocket-tools/eslint-config": "workspace:*",

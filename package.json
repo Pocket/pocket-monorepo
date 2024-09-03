@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "dotenv-cli": "latest",
-    "husky": "9.1.4"
+    "husky": "9.1.5"
   },
   "devDependencies": {
     "@commitlint/cli": "19.4.1",

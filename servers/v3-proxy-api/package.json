@@ -23,8 +23,8 @@
     "express": "4.19.2",
     "express-validator": "^7.1.0",
     "graphql-request": "^6.1.0",
-    "luxon": "3.4.4",
-    "tslib": "2.6.3"
+    "luxon": "3.5.0",
+    "tslib": "2.7.0"
   },
   "devDependencies": {
     "@graphql-codegen/add": "5.0.3",

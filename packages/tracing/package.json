@@ -90,7 +90,7 @@
     "@prisma/instrumentation": "5.19.1",
     "@sentry/node": "8.27.0",
     "@sentry/opentelemetry": "8.27.0",
-    "tslib": "2.6.3"
+    "tslib": "2.7.0"
   },
   "devDependencies": {
     "@jest/globals": "29.7.0",

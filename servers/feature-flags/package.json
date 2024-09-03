@@ -21,7 +21,7 @@
     "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json"
   },
   "dependencies": {
-    "@apollo/server": "4.10.4",
+    "@apollo/server": "4.11.0",
     "@apollo/subgraph": "2.9.0",
     "@govtechsg/passport-openidconnect": "1.0.2",
     "@pocket-tools/apollo-utils": "workspace:*",
@@ -30,14 +30,14 @@
     "body-parser": "1.20.2",
     "cors": "2.8.5",
     "express": "4.19.2",
-    "graphql": "16.8.1",
+    "graphql": "16.9.0",
     "graphql-tag": "2.12.6",
     "jsonwebtoken": "^9.0.0",
     "jwk-to-pem": "^2.0.5",
     "jwks-rsa": "3.1.0",
     "passport": "0.7.0",
     "passport-jwt": "4.0.1",
-    "tslib": "2.6.3",
+    "tslib": "2.7.0",
     "unleash-client": "5.6.1",
     "unleash-server": "5.12.7"
   },

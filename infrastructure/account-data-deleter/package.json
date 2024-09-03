@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@cdktf/provider-archive": "10.1.0",
-    "@cdktf/provider-aws": "19.31.0",
+    "@cdktf/provider-aws": "19.33.0",
     "@cdktf/provider-local": "10.1.0",
     "@cdktf/provider-null": "10.0.0",
     "@pocket-tools/terraform-modules": "workspace:*",

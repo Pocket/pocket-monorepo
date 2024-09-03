@@ -22,7 +22,7 @@
     "watch": "tsc -w --preserveWatchOutput & nodemon -r dotenv/config --config ../../nodemon.json"
   },
   "dependencies": {
-    "@apollo/server": "4.10.4",
+    "@apollo/server": "4.11.0",
     "@apollo/subgraph": "2.9.0",
     "@apollo/utils.keyvadapter": "3.1.0",
     "@keyv/redis": "2.8.5",
@@ -31,14 +31,14 @@
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "8.27.0",
-    "axios": "1.7.4",
-    "axios-retry": "4.4.0",
+    "axios": "1.7.7",
+    "axios-retry": "4.5.0",
     "dataloader": "2.2.2",
     "express": "4.19.2",
-    "graphql": "16.8.1",
+    "graphql": "16.9.0",
     "graphql-tag": "2.12.6",
     "keyv": "4.5.4",
-    "tslib": "2.6.3"
+    "tslib": "2.7.0"
   },
   "devDependencies": {
     "@jest/globals": "29.7.0",
