@@ -35,6 +35,7 @@ locals {
   lambda_env = {
     NODE_ENV                  = local.workspace.nodeEnv
     SENTRY_DSN                = data.aws_ssm_parameter.sentry_dsn.value
+    CORPUS_SEARCH_SENTRY_DSN  = data.aws_ssm_parameter.corpus_sentry_dsn.value
     USER_LIST_SEARCH_URI      = local.workspace.userApiUri
     SQS_USER_ITEMS_UPDATE_URL = aws_sqs_queue.user_items_update.id
     SQS_USER_LIST_IMPORT_URL  = aws_sqs_queue.user_list_import.id
