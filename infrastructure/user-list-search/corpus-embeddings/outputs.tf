@@ -11,6 +11,10 @@ output "opensearch_domain_arn" {
   value = aws_opensearch_domain.corpus_search[0].arn
 }
 
+output "opensearch_endpoint" {
+  value = aws_opensearch_domain.corpus_search[0].endpoint
+}
+
 output "opensearch_domain_name" {
   value = aws_opensearch_domain.corpus_search[0].domain_name
 }

@@ -106,6 +106,10 @@ module "apollo" {
     {
       name  = "CORPUS_SEARCH_DOMAIN"
       value = module.corpus_embeddings.opensearch_domain_name
+    },
+    {
+      name  = "CORPUS_SEARCH_ENDPOINT"
+      value = module.corpus_embeddings.opensearch_endpoint
     }
   ]
 }

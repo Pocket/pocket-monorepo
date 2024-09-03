@@ -13,9 +13,7 @@ const newFetch = fetchRetry(fetch);
  * @returns fields which can be indexed in the language-specific corpus
  * indices
  */
-export async function parserRequest(
-  url: string,
-): Promise<ParserDocumentFields | undefined> {
+export async function parserRequest(url: string): Promise<ParserResult> {
   const options = {
     refresh: '0',
     images: '0',
@@ -81,7 +79,7 @@ export async function parserRequest(
     });
     return undefined;
   }
-  return parserResultToDoc(parserResult);
+  return parserResult;
 }
 
 /**
