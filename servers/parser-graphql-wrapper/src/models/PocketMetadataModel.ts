@@ -342,7 +342,7 @@ export class PocketMetadataModel {
       id: item.id,
       image: item.topImage ?? item.images?.[0],
       excerpt: item.excerpt,
-      title: item.title ?? item.givenUrl,
+      title: item.title && item.title != '' ? item.title : item.givenUrl,
       authors: item.authors,
       domain: item.domainMetadata,
       datePublished: item.datePublished
