@@ -21,7 +21,7 @@
     "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "3.632.0",
+    "@aws-sdk/client-sqs": "3.637.0",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/feature-flags-client": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
