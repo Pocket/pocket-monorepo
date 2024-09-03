@@ -3643,9 +3643,6 @@ importers:
       '@aws-sdk/client-eventbridge':
         specifier: 3.632.0
         version: 3.632.0
-      '@aws-sdk/client-sagemaker-runtime':
-        specifier: ^3.637.0
-        version: 3.637.0
       '@aws-sdk/client-sqs':
         specifier: 3.632.0
         version: 3.632.0
