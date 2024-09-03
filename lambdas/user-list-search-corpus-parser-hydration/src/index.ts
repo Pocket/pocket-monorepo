@@ -64,7 +64,7 @@ export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
       };
       const embeddings = await getEmbeddings(embeddingsRequest);
       if (embeddings != null) {
-        fields['passage_embedddings'] = embeddings;
+        fields['passage_embeddings'] = embeddings;
       }
     }
     if (fields == null) {
