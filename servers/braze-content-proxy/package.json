@@ -15,7 +15,7 @@
     "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json"
   },
   "dependencies": {
-    "@apollo/client": "3.7.17",
+    "@apollo/client": "3.11.6",
     "@graphql-typed-document-node/core": "3.2.0",
     "@pocket-tools/int-mask": "workspace:*",
     "@pocket-tools/jwt-utils": "workspace:*",

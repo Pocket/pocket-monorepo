@@ -25,7 +25,7 @@
     "@apollo/server": "4.11.0",
     "@apollo/subgraph": "2.9.0",
     "@apollo/utils.keyvadapter": "3.1.0",
-    "@keyv/redis": "2.8.5",
+    "@keyv/redis": "3.0.1",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/image-utils": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
@@ -37,7 +37,7 @@
     "express": "4.19.2",
     "graphql": "16.9.0",
     "graphql-tag": "2.12.6",
-    "keyv": "4.5.4",
+    "keyv": "5.0.1",
     "tslib": "2.7.0"
   },
   "devDependencies": {
