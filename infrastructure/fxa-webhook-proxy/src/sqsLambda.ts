@@ -48,6 +48,7 @@ export class SqsLambda extends Construct {
           region: vpc.region,
           accountId: vpc.accountId,
         },
+        addParameterStoreAndSecretsLayer: true,
         executionPolicyStatements: [
           {
             actions: ['secretsmanager:GetSecretValue', 'kms:Decrypt'],
