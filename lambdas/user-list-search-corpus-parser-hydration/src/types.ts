@@ -14,10 +14,12 @@ export type IndexMeta = {
 export interface BulkRequestMeta extends IndexMeta {
   url: string;
   messageId: string;
+  title?: string;
+  excerpt?: string;
 }
 
 export interface BulkRequestPayload extends BulkRequestMeta {
-  fields: ParserDocumentFields;
+  fields: ParserDocumentFields & { passage_embeddings?: number[] };
 }
 
 // See indices .docker/aws-resources/elasticsearch
@@ -52,6 +54,8 @@ export type ParserResult = {
   has_video: string;
   has_image: string;
   isIndex: number;
+  title: string | null;
+  excerpt: string | null;
   videos?: { [id: number]: { length: string } };
 };
 

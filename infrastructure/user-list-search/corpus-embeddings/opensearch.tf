@@ -1,5 +1,5 @@
-resource "aws_security_group" "es" {
-  name        = "${local.prefix}-elasticsearch"
+resource "aws_security_group" "os" {
+  name        = "${local.prefix}-opensearch"
   description = "Managed by Terraform"
   vpc_id      = data.aws_vpc.vpc.id
 
@@ -14,11 +14,11 @@ resource "aws_security_group" "es" {
   }
 }
 
-resource "aws_elasticsearch_domain" "user_search" {
-  count = local.workspace.es_cluster_enable ? 1 : 0
+resource "aws_opensearch_domain" "corpus_search" {
+  count = local.workspace.os_cluster_enable ? 1 : 0
 
-  domain_name           = "${lower(local.prefix)}-v2"
-  elasticsearch_version = "OpenSearch_2.13"
+  domain_name    = lower(local.prefix)
+  engine_version = "OpenSearch_2.13"
 
   access_policies = <<CONFIG
 {
@@ -28,56 +28,41 @@ resource "aws_elasticsearch_domain" "user_search" {
             "Action": "es:*",
             "Principal": "*",
             "Effect": "Allow",
-            "Resource": "arn:aws:es:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:domain/${lower(local.prefix)}-v2/*"
+            "Resource": "arn:aws:es:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:domain/${lower(local.prefix)}/*"
         }
     ]
 }
 CONFIG
 
   auto_tune_options {
-    desired_state = "ENABLED"
+    rollback_on_disable = "DEFAULT_ROLLBACK"
+    desired_state = local.workspace.environment == "Prod" ? "ENABLED" : "DISABLED"
   }
 
   cluster_config {
-    instance_count           = local.workspace.es_instance_count
-    instance_type            = local.workspace.es_instance_type
-    dedicated_master_count   = 3
+    instance_count           = local.workspace.os_instance_count
+    instance_type            = local.workspace.os_instance_type
+    dedicated_master_count   = local.workspace.os_dedicated_master_count
     dedicated_master_enabled = true
-    dedicated_master_type    = local.workspace.es_master_instance_type
+    dedicated_master_type    = local.workspace.os_master_instance_type
     zone_awareness_enabled   = true
     zone_awareness_config {
       availability_zone_count = 3
     }
   }
 
-  ebs_options {
-    ebs_enabled = true
-    volume_type = "gp3"
-    # General Purpose (SSD)
-    volume_size = local.workspace.es_ebs_volume_size
-  }
-
-  # Do not destroy this OS instance unless YOU MEAN IT!
-  lifecycle {
-    ignore_changes = [
-      # let gp3 defaults work here, changes ignored in terraform
-      ebs_options[0].iops
-    ]
-    prevent_destroy = true
-  }
-
   log_publishing_options {
-    cloudwatch_log_group_arn = aws_cloudwatch_log_group.elasticsearch_slow_index.arn
+    cloudwatch_log_group_arn = aws_cloudwatch_log_group.opensearch_slow_index.arn
     enabled                  = true
     log_type                 = "INDEX_SLOW_LOGS"
   }
   log_publishing_options {
-    cloudwatch_log_group_arn = aws_cloudwatch_log_group.elasticsearch_slow_query.arn
+    cloudwatch_log_group_arn = aws_cloudwatch_log_group.opensearch_slow_query.arn
     enabled                  = true
     log_type                 = "SEARCH_SLOW_LOGS"
   }
   log_publishing_options {
-    cloudwatch_log_group_arn = aws_cloudwatch_log_group.elasticsearch_error.arn
+    cloudwatch_log_group_arn = aws_cloudwatch_log_group.opensearch_error.arn
     enabled                  = true
     log_type                 = "ES_APPLICATION_LOGS"
   }
@@ -89,13 +74,29 @@ CONFIG
       local.private_subnet_ids[2]
     ]
     security_group_ids = [
-    aws_security_group.es.id]
+    aws_security_group.os.id]
+  }
+
+  ebs_options {
+    ebs_enabled = true
+    volume_type = local.workspace.environment == "Dev" ? "gp2" : "gp3"
+    # General Purpose (SSD)
+    volume_size = local.workspace.os_ebs_volume_size
+  }
+
+  # Do not destroy this OS instance unless YOU MEAN IT!
+  lifecycle {
+    ignore_changes = [
+      # let gp3 defaults work here, changes ignored in terraform
+      ebs_options[0].iops
+    ]
+    # prevent_destroy = true
   }
 
   tags = local.tags
 }
 
-data "aws_iam_policy_document" "elasticsearch_log_publishing" {
+data "aws_iam_policy_document" "opensearch_log_publishing" {
   statement {
     actions = [
       "logs:CreateLogStream",
@@ -114,22 +115,22 @@ data "aws_iam_policy_document" "elasticsearch_log_publishing" {
   }
 }
 
-resource "aws_cloudwatch_log_resource_policy" "elasticsearch_log_publishing" {
-  policy_document = data.aws_iam_policy_document.elasticsearch_log_publishing.json
+resource "aws_cloudwatch_log_resource_policy" "opensearch_log_publishing" {
+  policy_document = data.aws_iam_policy_document.opensearch_log_publishing.json
   policy_name     = "${local.prefix}-AesLogPublish"
 }
 
-resource "aws_cloudwatch_log_group" "elasticsearch_slow_query" {
+resource "aws_cloudwatch_log_group" "opensearch_slow_query" {
   name              = "/aws/aes/domains/${lower(local.prefix)}/slowquery"
   retention_in_days = 14
 }
 
-resource "aws_cloudwatch_log_group" "elasticsearch_slow_index" {
+resource "aws_cloudwatch_log_group" "opensearch_slow_index" {
   name              = "/aws/aes/domains/${lower(local.prefix)}/slowindex"
   retention_in_days = 14
 }
 
-resource "aws_cloudwatch_log_group" "elasticsearch_error" {
+resource "aws_cloudwatch_log_group" "opensearch_error" {
   name              = "/aws/aes/domains/${lower(local.prefix)}/error"
   retention_in_days = 14
 }
@@ -220,8 +221,7 @@ data "aws_iam_policy_document" "snapshot_access_policy" {
       "es:ESHttpPut",
     ]
     resources = [
-      "${aws_elasticsearch_domain.user_search[0].arn}/*",
-      "${module.corpus_embeddings.opensearch_domain_arn}/*"
+      "${aws_opensearch_domain.corpus_search[0].arn}/*",
     ]
   }
 }

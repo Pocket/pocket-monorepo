@@ -1,11 +1,11 @@
 export const config = {
   sentry: {
-    dsn: process.env.SENTRY_DSN || '',
+    dsn: process.env.CORPUS_SEARCH_SENTRY_DSN || '',
     release: process.env.GIT_SHA || '',
     environment: process.env.NODE_ENV || 'development',
   },
   apiEndpoint:
-    process.env.ELASTICSEARCH_HOST || 'http://localhost:4566/user-list-search',
+    process.env.CORPUS_SEARCH_HOST || 'http://localhost:4566/user-list-search',
   indexLangMap: {
     en: 'corpus_en',
     it: 'corpus_it',

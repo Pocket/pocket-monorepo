@@ -35,6 +35,7 @@ locals {
   lambda_env = {
     NODE_ENV                  = local.workspace.nodeEnv
     SENTRY_DSN                = data.aws_ssm_parameter.sentry_dsn.value
+    CORPUS_SEARCH_SENTRY_DSN  = data.aws_ssm_parameter.corpus_sentry_dsn.value
     USER_LIST_SEARCH_URI      = local.workspace.userApiUri
     SQS_USER_ITEMS_UPDATE_URL = aws_sqs_queue.user_items_update.id
     SQS_USER_LIST_IMPORT_URL  = aws_sqs_queue.user_list_import.id
@@ -42,8 +43,10 @@ locals {
     SQS_USER_ITEMS_DELETE_URL = aws_sqs_queue.user_items_delete.id
     # The endpoint doesn't include protocol
     ELASTICSEARCH_HOST           = "https://${local.elastic.endpoint}"
+    CORPUS_SEARCH_HOST           = "https://${module.corpus_embeddings.opensearch_endpoint}"
     PARSER_ENDPOINT              = data.aws_ssm_parameter.parser_endpoint.value
     PARSER_PRIVILEGED_SERVICE_ID = data.aws_ssm_parameter.parser_privileged_service_id.value
+    EMBEDDINGS_ENDPOINT          = module.corpus_embeddings.sagemaker_endpoint_name
   }
   sqsEndpoint = "https://sqs.us-east-1.amazonaws.com"
   snsTopicName = {

@@ -2,7 +2,8 @@
   "settings": {
     "index": {
       "number_of_shards": 1,
-      "number_of_replicas": 1
+      "number_of_replicas": 1,
+      "knn": true
     }
   },
   "mappings": {
@@ -115,6 +116,10 @@
       "pocket_parser_request_given_url": {
         "type": "keyword",
         "index": false
+      },
+      "passage_embeddings": {
+        "type": "knn_vector",
+        "dimension": 768
       }
     }
   }
