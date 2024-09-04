@@ -17,7 +17,7 @@ importers:
     devDependencies:
       '@commitlint/cli':
         specifier: 19.4.1
-        version: 19.4.1(@types/node@22.5.2)(typescript@5.7.0-dev.20240903)
+        version: 19.4.1(@types/node@22.5.3)(typescript@5.7.0-dev.20240904)
       '@commitlint/config-conventional':
         specifier: ^19.4.1
         version: 19.4.1
@@ -26,7 +26,7 @@ importers:
         version: link:packages/eslint-config
       syncpack:
         specifier: ^13.0.0
-        version: 13.0.0(typescript@5.7.0-dev.20240903)
+        version: 13.0.0(typescript@5.7.0-dev.20240904)
       tsconfig:
         specifier: workspace:*
         version: link:packages/tsconfig
@@ -3147,8 +3147,8 @@ importers:
         specifier: 3.11.0
         version: 3.11.0
       open-graph-scraper:
-        specifier: 6.8.1
-        version: 6.8.1
+        specifier: 6.5.2
+        version: 6.5.2
       qs:
         specifier: 6.13.0
         version: 6.13.0
@@ -6846,6 +6846,9 @@ packages:
 
   '@types/node@22.5.2':
     resolution: {integrity: sha512-acJsPTEqYqulZS/Yp/S3GgeE6GZ0qYODUR8aVr/DkhHQ8l9nd4j5x1/ZJy9/gHrRlFMqkO6i0I3E27Alu4jjPg==}
+
+  '@types/node@22.5.3':
+    resolution: {integrity: sha512-njripolh85IA9SQGTAqbmnNZTdxv7X/4OYGPz8tgy5JDr8MP+uDBa921GpYEoDDnwm0Hmn5ZPeJgiiSTPoOzkQ==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -11299,8 +11302,8 @@ packages:
     resolution: {integrity: sha512-SNcZNfqtov0Af+6hx+qnliUhTOIxPUfboX/zQnc2EdmGHLXKQ3eSPQ40NopCgv4canzl5EvKGlCJaMCvk2viCQ==}
     engines: {node: '>= 14.17.0'}
 
-  open-graph-scraper@6.8.1:
-    resolution: {integrity: sha512-uy9tHm80ir9AnEQclmnlpxU80SBQkwZfWFq0lzRxpNAY1Grcyn7tuOu354XhnfA7C3wNuZ0/j94LNQY5XP7ZRg==}
+  open-graph-scraper@6.5.2:
+    resolution: {integrity: sha512-eBNOrjLrbsn882aJg7IgymLstWw5eGaqn+0a+CenroTu+xKlvzuU0LFfy4lQ6ngDZINu+h0iqfWm6dYThUBonw==}
     engines: {node: '>=18.0.0'}
 
   open@7.4.2:
@@ -13189,8 +13192,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.7.0-dev.20240903:
-    resolution: {integrity: sha512-XTUc5uVwBbLlT0v3FqTx9sDN1MLQnT5mwSC3JefCrcKT6Zv+rPcQE7HLKM9IsrNiM1tiaQvamJTgVH0S+UMH2A==}
+  typescript@5.7.0-dev.20240904:
+    resolution: {integrity: sha512-iGi6VWFGOuxPvDfwfK1/8C172NWzC5gtC4G2dxqCQehrr86WTfFkc9aWucynaxZdwQNMqG1Iu83bmXD7CNHCmg==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -15346,11 +15349,11 @@ snapshots:
     dependencies:
       commander: 12.1.0
 
-  '@commitlint/cli@19.4.1(@types/node@22.5.2)(typescript@5.7.0-dev.20240903)':
+  '@commitlint/cli@19.4.1(@types/node@22.5.3)(typescript@5.7.0-dev.20240904)':
     dependencies:
       '@commitlint/format': 19.3.0
       '@commitlint/lint': 19.4.1
-      '@commitlint/load': 19.4.0(@types/node@22.5.2)(typescript@5.7.0-dev.20240903)
+      '@commitlint/load': 19.4.0(@types/node@22.5.3)(typescript@5.7.0-dev.20240904)
       '@commitlint/read': 19.4.0
       '@commitlint/types': 19.0.3
       execa: 8.0.1
@@ -15397,15 +15400,15 @@ snapshots:
       '@commitlint/rules': 19.4.1
       '@commitlint/types': 19.0.3
 
-  '@commitlint/load@19.4.0(@types/node@22.5.2)(typescript@5.7.0-dev.20240903)':
+  '@commitlint/load@19.4.0(@types/node@22.5.3)(typescript@5.7.0-dev.20240904)':
     dependencies:
       '@commitlint/config-validator': 19.0.3
       '@commitlint/execute-rule': 19.0.0
       '@commitlint/resolve-extends': 19.1.0
       '@commitlint/types': 19.0.3
       chalk: 5.3.0
-      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20240903)
-      cosmiconfig-typescript-loader: 5.0.0(@types/node@22.5.2)(cosmiconfig@9.0.0(typescript@5.7.0-dev.20240903))(typescript@5.7.0-dev.20240903)
+      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20240904)
+      cosmiconfig-typescript-loader: 5.0.0(@types/node@22.5.3)(cosmiconfig@9.0.0(typescript@5.7.0-dev.20240904))(typescript@5.7.0-dev.20240904)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -18178,7 +18181,7 @@ snapshots:
 
   '@types/conventional-commits-parser@5.0.0':
     dependencies:
-      '@types/node': 22.5.2
+      '@types/node': 22.5.3
 
   '@types/cookiejar@2.1.5': {}
 
@@ -18260,7 +18263,7 @@ snapshots:
 
   '@types/ioredis-mock@8.2.5':
     dependencies:
-      '@types/node': 22.5.2
+      '@types/node': 22.5.3
       ioredis: 5.4.1
     transitivePeerDependencies:
       - supports-color
@@ -18374,6 +18377,10 @@ snapshots:
       undici-types: 6.19.8
 
   '@types/node@22.5.2':
+    dependencies:
+      undici-types: 6.19.8
+
+  '@types/node@22.5.3':
     dependencies:
       undici-types: 6.19.8
 
@@ -19816,12 +19823,12 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cosmiconfig-typescript-loader@5.0.0(@types/node@22.5.2)(cosmiconfig@9.0.0(typescript@5.7.0-dev.20240903))(typescript@5.7.0-dev.20240903):
+  cosmiconfig-typescript-loader@5.0.0(@types/node@22.5.3)(cosmiconfig@9.0.0(typescript@5.7.0-dev.20240904))(typescript@5.7.0-dev.20240904):
     dependencies:
-      '@types/node': 22.5.2
-      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20240903)
+      '@types/node': 22.5.3
+      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20240904)
       jiti: 1.21.6
-      typescript: 5.7.0-dev.20240903
+      typescript: 5.7.0-dev.20240904
 
   cosmiconfig@8.3.6(typescript@5.5.4):
     dependencies:
@@ -19841,14 +19848,14 @@ snapshots:
     optionalDependencies:
       typescript: 5.5.4
 
-  cosmiconfig@9.0.0(typescript@5.7.0-dev.20240903):
+  cosmiconfig@9.0.0(typescript@5.7.0-dev.20240904):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 5.7.0-dev.20240903
+      typescript: 5.7.0-dev.20240904
 
   cpu-features@0.0.2:
     dependencies:
@@ -20191,7 +20198,7 @@ snapshots:
     dependencies:
       semver: 7.6.3
       shelljs: 0.8.5
-      typescript: 5.7.0-dev.20240903
+      typescript: 5.7.0-dev.20240904
 
   dreamopt@0.8.0:
     dependencies:
@@ -23574,12 +23581,13 @@ snapshots:
 
   oo-ascii-tree@1.102.0: {}
 
-  open-graph-scraper@6.8.1:
+  open-graph-scraper@6.5.2:
     dependencies:
       chardet: 2.0.0
       cheerio: 1.0.0
       iconv-lite: 0.6.3
       undici: 6.19.8
+      validator: 13.12.0
 
   open@7.4.2:
     dependencies:
@@ -25251,13 +25259,13 @@ snapshots:
       '@pkgr/core': 0.1.1
       tslib: 2.7.0
 
-  syncpack@13.0.0(typescript@5.7.0-dev.20240903):
+  syncpack@13.0.0(typescript@5.7.0-dev.20240904):
     dependencies:
       '@effect/schema': 0.71.1(effect@3.6.5)
       chalk: 5.3.0
       chalk-template: 1.1.0
       commander: 12.1.0
-      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20240903)
+      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20240904)
       effect: 3.6.5
       enquirer: 2.4.1
       fast-check: 3.21.0
@@ -25644,7 +25652,7 @@ snapshots:
 
   typescript@5.5.4: {}
 
-  typescript@5.7.0-dev.20240903: {}
+  typescript@5.7.0-dev.20240904: {}
 
   ua-parser-js@1.0.38: {}
 
