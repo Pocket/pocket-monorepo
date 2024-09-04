@@ -3789,9 +3789,6 @@ importers:
       '@types/express':
         specifier: 4.17.21
         version: 4.17.21
-      '@types/graphql':
-        specifier: ^14.5.0
-        version: 14.5.0
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
@@ -6728,10 +6725,6 @@ packages:
 
   '@types/graphql-upload@16.0.7':
     resolution: {integrity: sha512-7vCoxIv2pVTvV8n+miYyfkINdguWsYomAkPlOfHoM6z/qzsiBAdfRb6lNc8PvEUhe7TXaxX4+LHubejw1og1DQ==}
-
-  '@types/graphql@14.5.0':
-    resolution: {integrity: sha512-MOkzsEp1Jk5bXuAsHsUi6BVv0zCO+7/2PTiZMXWDSsMXvNU6w/PLMQT2vHn8hy2i0JqojPz1Sz6rsFjHtsU0lA==}
-    deprecated: This is a stub types definition. graphql provides its own type definitions, so you do not need this installed.
 
   '@types/highland@2.13.0':
     resolution: {integrity: sha512-ZB4u9dUDnBmqGtbY4t7gAiW9L5oHWfP1TknVzlucd9se+AYXhcr3/5V51ViNBj8lqmRC0xvTRSBmSPU4hkPGAQ==}
@@ -18245,10 +18238,6 @@ snapshots:
       '@types/koa': 2.15.0
       '@types/node': 22.5.2
       fs-capacitor: 8.0.0
-      graphql: 16.9.0
-
-  '@types/graphql@14.5.0':
-    dependencies:
       graphql: 16.9.0
 
   '@types/highland@2.13.0':

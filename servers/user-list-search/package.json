@@ -57,7 +57,6 @@
     "@snowplow/snowtype": "^0.8.2",
     "@types/elasticsearch": "^5.0.37",
     "@types/express": "4.17.21",
-    "@types/graphql": "^14.5.0",
     "@types/jest": "29.5.12",
     "@types/mysql": "2.15.26",
     "@types/node": "^22.5.2",
