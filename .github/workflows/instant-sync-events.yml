@@ -4,6 +4,7 @@ on:
     paths:
       - 'infrastructure/instant-sync-events/**'
       - 'packages/**'
+      - 'docker-compose.yml'
       - 'lambdas/instant-sync-events/**'
       - 'pnpm-lock.yaml'
       - '.github/actions/**'

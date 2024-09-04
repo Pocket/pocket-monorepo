@@ -4,6 +4,7 @@ on:
     paths:
       - 'infrastructure/shared-snowplow-consumer/**'
       - 'packages/**'
+      - 'docker-compose.yml'
       - 'servers/shared-snowplow-consumer/**'
       - 'pnpm-lock.yaml'
       - 'Dockerfile'

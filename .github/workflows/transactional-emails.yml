@@ -4,6 +4,7 @@ on:
     paths:
       - 'infrastructure/transactional-emails/**'
       - 'packages/**'
+      - 'docker-compose.yml'
       - 'lambdas/transactional-emails/**'
       - 'pnpm-lock.yaml'
       - '.github/actions/**'

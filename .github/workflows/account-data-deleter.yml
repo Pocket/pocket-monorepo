@@ -4,6 +4,7 @@ on:
     paths:
       - 'infrastructure/account-data-deleter/**'
       - 'packages/**'
+      - 'docker-compose.yml'
       - 'servers/account-data-deleter/**'
       - 'lambdas/account-data-deleter-batch-delete/**'
       - 'lambdas/account-data-deleter-events/**'

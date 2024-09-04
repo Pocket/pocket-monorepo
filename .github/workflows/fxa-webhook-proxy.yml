@@ -4,6 +4,7 @@ on:
     paths:
       - 'infrastructure/fxa-webhook-proxy/**'
       - 'packages/**'
+      - 'docker-compose.yml'
       - 'lambdas/fxa-webhook-proxy-gateway/**'
       - 'lambdas/fxa-webhook-proxy-sqs/**'
       - 'pnpm-lock.yaml'

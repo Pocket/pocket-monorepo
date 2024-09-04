@@ -4,6 +4,7 @@ on:
     paths:
       - 'infrastructure/list-api/**'
       - 'packages/**'
+      - 'docker-compose.yml'
       - 'servers/list-api/**'
       - 'pnpm-lock.yaml'
       - 'Dockerfile'
