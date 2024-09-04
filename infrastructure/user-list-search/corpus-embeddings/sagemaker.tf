@@ -1,6 +1,6 @@
 module "sagemaker_serverless" {
   count                = local.workspace.environment == "Dev" ? 1 : 0
-  source               = "./modules/sagemaker"
+  source               = "github.com/Pocket/terraform-aws-sagemaker-huggingface"
   name_prefix          = "${local.prefix}"
   pytorch_version      = local.sagemaker.pytorch_version
   transformers_version = local.sagemaker.transformers_version
@@ -17,7 +17,7 @@ module "sagemaker_serverless" {
 
 module "sagemaker_real_time" {
   count                = local.workspace.environment == "Prod" ? 1 : 0
-  source               = "./modules/sagemaker"
+  source               = "github.com/Pocket/terraform-aws-sagemaker-huggingface"
   name_prefix          = "${local.prefix}"
   pytorch_version      = local.sagemaker.pytorch_version
   transformers_version = local.sagemaker.transformers_version
