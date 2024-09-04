@@ -42,6 +42,6 @@
     "jsonc-eslint-parser": "^2.4.0",
     "prettier": "^3.3.3",
     "typescript": "5.5.4",
-    "typescript-eslint": "^8.2.0"
+    "typescript-eslint": "^8.4.0"
   }
 }
