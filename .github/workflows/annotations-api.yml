@@ -5,6 +5,7 @@ on:
     paths:
       - 'infrastructure/annotations-api/**'
       - 'packages/**'
+      - 'docker-compose.yml'
       - 'servers/annotations-api/**'
       - 'lambdas/annotations-api-events/**'
       - 'pnpm-lock.yaml'

@@ -4,6 +4,7 @@ on:
     paths:
       - 'infrastructure/sendgrid-data/**'
       - 'packages/**'
+      - 'docker-compose.yml'
       - 'lambdas/sendgrid-data/**'
       - 'pnpm-lock.yaml'
       - '.github/actions/**'

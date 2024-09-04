@@ -4,6 +4,7 @@ on:
     paths:
       - 'infrastructure/parser-graphql-wrapper/**'
       - 'packages/**'
+      - 'docker-compose.yml'
       - 'servers/parser-graphql-wrapper/**'
       - 'pnpm-lock.yaml'
       - 'Dockerfile'

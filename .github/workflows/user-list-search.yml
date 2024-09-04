@@ -4,6 +4,7 @@ on:
     paths:
       - 'infrastructure/user-list-search/**'
       - 'packages/**'
+      - 'docker-compose.yml'
       - 'servers/user-list-search/**'
       - 'lambdas/user-list-search-*/**'
       - 'pnpm-lock.yaml'

@@ -4,6 +4,7 @@ on:
     paths:
       - 'infrastructure/braze-content-proxy/**'
       - 'packages/**'
+      - 'docker-compose.yml'
       - 'servers/braze-content-proxy/**'
       - 'pnpm-lock.yaml'
       - 'Dockerfile'
