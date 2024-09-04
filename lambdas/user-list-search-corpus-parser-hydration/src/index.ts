@@ -12,9 +12,10 @@ import {
   BulkRequestMeta,
   BulkRequestPayload,
 } from './types';
-import { parserRequest } from './parserRequest';
+import { parserRequest, parserResultToDoc } from './parserRequest';
 import { bulkIndex } from './bulkIndex';
 import { buildCollectionUrl } from './utils';
+import { getEmbeddings } from './embeddingsRequest';
 
 /**
  * The main handler function which will be wrapped by Sentry prior to export.
@@ -47,17 +48,33 @@ export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
         : false;
     });
   const parserRequests = validPayloads.flatMap((_) => unwrapPayloads(_));
-  const parserResults: BulkRequestPayload[] = [];
+  const docsToIndex: BulkRequestPayload[] = [];
   for await (const request of parserRequests) {
-    const fields = await parserRequest(request.url);
+    const parserResult = await parserRequest(request.url);
+    const fields: BulkRequestPayload['fields'] =
+      parserResultToDoc(parserResult);
+    // Get embeddings
+    if (config.embeddingsEnabled) {
+      const embeddingsRequest = {
+        given_url: request.url,
+        title: request.title?.length ? request.title : parserResult.title,
+        excerpt: request.excerpt?.length
+          ? request.excerpt
+          : parserResult.excerpt,
+      };
+      const embeddings = await getEmbeddings(embeddingsRequest);
+      if (embeddings != null) {
+        fields['passage_embeddings'] = embeddings;
+      }
+    }
     if (fields == null) {
       failedMessageIds.push(request.messageId);
     } else {
-      parserResults.push({ ...request, fields });
+      docsToIndex.push({ ...request, fields });
     }
   }
   // Deduplicate failed messages since collections have multiple requests by same ID
-  const indexFailures = await bulkIndex(parserResults);
+  const indexFailures = await bulkIndex(docsToIndex);
   failedMessageIds.push(...indexFailures);
   const batchItemFailures = [...new Set(failedMessageIds)].map((id) => ({
     itemIdentifier: id,
@@ -86,6 +103,8 @@ export function unwrapPayloads(payload: EventPayload): BulkRequestMeta[] {
         _index,
       },
       url: story.url,
+      title: story.title,
+      excerpt: story.excerpt,
       messageId: payload.messageId,
     }));
     const parent = {
@@ -94,6 +113,8 @@ export function unwrapPayloads(payload: EventPayload): BulkRequestMeta[] {
         _index,
       },
       url: buildCollectionUrl(collection.slug, collection.language),
+      title: collection.title,
+      excerpt: collection.excerpt,
       messageId: payload.messageId,
     };
     return [parent, ...stories];
@@ -106,6 +127,8 @@ export function unwrapPayloads(payload: EventPayload): BulkRequestMeta[] {
           _index,
         },
         url: payload.detail.url,
+        title: payload.detail.title,
+        excerpt: payload.detail.excerpt,
         messageId: payload.messageId,
       },
     ];

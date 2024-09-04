@@ -98,8 +98,18 @@ data "aws_iam_policy_document" "ecs_task_role_policy" {
       aws_sqs_queue.user_list_import_backfill.arn
     ]
   }
-}
 
+  ## Allow invoking Sagemaker endpoint
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "sagemaker:InvokeEndpointAsync",
+      "sagemaker:InvokeEndpoint"
+    ]
+    resources = [module.corpus_embeddings.sagemaker_endpoint.arn]
+  }
+}
 
 resource "aws_iam_role" "ecs_task_role" {
   name               = "${local.prefix}-TaskRole"

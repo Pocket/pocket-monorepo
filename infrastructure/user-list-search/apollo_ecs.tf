@@ -52,7 +52,7 @@ module "apollo" {
       value = local.elastic_index
     },
     {
-      name = "EVENT_BUS_NAME"
+      name  = "EVENT_BUS_NAME"
       value = local.event_bus_name
     },
     {
@@ -99,6 +99,18 @@ module "apollo" {
       name  = "SQS_USER_ITEMS_UPDATE_BACKFILL_URL"
       value = aws_sqs_queue.user_items_update_backfill.id
     },
+    {
+      name  = "EMBEDDINGS_ENDPOINT"
+      value = module.corpus_embeddings.sagemaker_endpoint_name
+    },
+    {
+      name  = "CORPUS_SEARCH_DOMAIN"
+      value = module.corpus_embeddings.opensearch_domain_name
+    },
+    {
+      name  = "CORPUS_SEARCH_ENDPOINT"
+      value = module.corpus_embeddings.opensearch_endpoint
+    }
   ]
 }
 
