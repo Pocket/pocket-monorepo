@@ -2,7 +2,8 @@ import { SQSRecord } from 'aws-lambda';
 
 import config from './config';
 import { getFxaPrivateKey } from './secretManager';
-import { generateJwt } from './jwt';
+
+import { generateJwt, PocketJWK } from '@pocket-tools/jwt-utils';
 import { FxaEvent } from '.';
 
 // should match the reasons defined in user-api subgraph schema:
@@ -11,6 +12,22 @@ enum ExpireUserWebSessionReason {
   PASSWORD_CHANGED = 'PASSWORD_CHANGED',
   LOGOUT = 'LOGOUT',
 }
+
+/**
+ *
+ * @param userId User id to generate a jwt for
+ * @returns a jwt
+ */
+const generateFxAJWT = async (userId: string) => {
+  const privateKey = (await getFxaPrivateKey()) as unknown as PocketJWK;
+  return generateJwt(privateKey, {
+    sub: userId,
+    issuer: config.jwt.iss,
+    apiId: config.app.apiId,
+    applicationName: config.app.applicationName,
+    aud: config.jwt.aud,
+  });
+};
 
 /**
  * If a request to client-api was made, handle any potential errors
@@ -45,8 +62,7 @@ export function handleMutationErrors(
  * @param id FxA account ID to delete from Pocket's database
  */
 export async function submitDeleteMutation(id: string): Promise<any> {
-  const privateKey = await getFxaPrivateKey();
-
+  const jwt = await generateFxAJWT(id);
   const deleteMutation = `
   mutation deleteUser($id: ID!) {
     deleteUserByFxaId(id: $id)
@@ -58,7 +74,7 @@ export async function submitDeleteMutation(id: string): Promise<any> {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${generateJwt(privateKey, id)}`,
+      Authorization: `Bearer ${jwt}`,
       'apollographql-client-name': config.app.applicationName,
       'apollographql-client-version': config.app.version,
     },
@@ -77,7 +93,7 @@ export async function migrateAppleUserMutation(
   email: string,
   transferSub: string,
 ): Promise<any> {
-  const privateKey = await getFxaPrivateKey();
+  const jwt = await generateFxAJWT(id);
 
   const migrateAppleUser = `
   mutation migrateAppleUser($fxaId: ID!, $email: String!) {
@@ -90,7 +106,7 @@ export async function migrateAppleUserMutation(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${generateJwt(privateKey, id)}`,
+      Authorization: `Bearer ${jwt}`,
       transfersub: transferSub,
       'apollographql-client-name': config.app.applicationName,
       'apollographql-client-version': config.app.version,
@@ -109,7 +125,7 @@ export async function submitEmailUpdatedMutation(
   id: string,
   email: string,
 ): Promise<any> {
-  const privateKey = await getFxaPrivateKey();
+  const jwt = await generateFxAJWT(id);
 
   const updateUserEmailMutation = `mutation UpdateUserEmailByFxaId($id: ID!, $email: String!) {updateUserEmailByFxaId(id: $id, email: $email) {
       email
@@ -122,7 +138,7 @@ export async function submitEmailUpdatedMutation(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${generateJwt(privateKey, id)}`,
+      Authorization: `Bearer ${jwt}`,
       'apollographql-client-name': config.app.applicationName,
       'apollographql-client-version': config.app.version,
     },
@@ -136,7 +152,7 @@ export async function submitEmailUpdatedMutation(
  * @param id FxA account ID
  */
 export async function passwordChangeMutation(id: string): Promise<any> {
-  const privateKey = await getFxaPrivateKey();
+  const jwt = await generateFxAJWT(id);
 
   const expireUserWebSessionByFxaId = `
     mutation ExpireUserWebSessionByFxaId($id: ID!, $reason: ExpireUserWebSessionReason!) {
@@ -152,7 +168,7 @@ export async function passwordChangeMutation(id: string): Promise<any> {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${generateJwt(privateKey, id)}`,
+      Authorization: `Bearer ${jwt}`,
       'apollographql-client-name': config.app.applicationName,
       'apollographql-client-version': config.app.version,
     },

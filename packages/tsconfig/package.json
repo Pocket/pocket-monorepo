@@ -5,9 +5,9 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "@types/node": "^20.16",
+    "@types/node": "^22.5.2",
     "ts-node": "10.9.2",
-    "tslib": "2.6.3",
+    "tslib": "2.7.0",
     "tsup": "8.2.4",
     "typescript": "5.5.4"
   },

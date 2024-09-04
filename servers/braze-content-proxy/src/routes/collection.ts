@@ -1,7 +1,6 @@
 import { getCollectionsFromGraph } from '../graphql/client-api-proxy';
-import { getResizedImageUrl, validateApiKey } from '../utils';
+import { getResizedImageUrl } from '../utils';
 import { BrazeCollections, BrazeCollectionStory } from './types';
-import config from '../config';
 import { Router } from 'express';
 import { PocketCollectionsQuery } from '../generated/graphql/types';
 import type { ApolloQueryResult } from '@apollo/client/core/types';
@@ -13,19 +12,9 @@ const router: Router = Router();
  * Note: will throw only 500 to prevent braze from sending the email if call fails.
  */
 router.get('/:slug', async (req, res, next) => {
-  // Enable two minute cache when in AWS.
-  // The short-lived cache is to speed up the curators' workflow
-  // if they need to make last-minute updates.
-  if (config.app.environment !== 'development') {
-    res.set('Cache-control', 'public, max-age=120');
-  }
-
   const slug = req.params.slug;
-  // Get the API key
-  const apiKey = req.query.apikey as string;
 
   try {
-    await validateApiKey(apiKey);
     // Fetch data
     return res.json(await getCollection(slug));
   } catch (err) {

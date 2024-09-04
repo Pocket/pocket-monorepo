@@ -55,3 +55,9 @@ export type BrazeCollectionStory = {
   authors: string[];
   externalId: string;
 };
+
+export type BrazeSavedItem = {
+  title: string;
+  url: string;
+  imageUrl: string;
+};

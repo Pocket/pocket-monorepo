@@ -8,6 +8,8 @@ import {
   dataAwsKmsAlias,
   dataAwsSnsTopic,
   dataAwsSubnets,
+  wafv2IpSet,
+  wafv2WebAcl,
 } from '@cdktf/provider-aws';
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
@@ -22,11 +24,6 @@ import { App, S3Backend, TerraformStack } from 'cdktf';
 import { Construct } from 'constructs';
 import fs from 'fs';
 
-import { Wafv2IpSet } from '@cdktf/provider-aws/lib/wafv2-ip-set';
-import {
-  Wafv2WebAclRule,
-  Wafv2WebAcl,
-} from '@cdktf/provider-aws/lib/wafv2-web-acl';
 class ClientAPI extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
@@ -102,15 +99,15 @@ class ClientAPI extends TerraformStack {
 
     const ipList = config.environment === 'Prod' ? ipListProd : ipListDev;
 
-    const allowListIPs = new Wafv2IpSet(this, 'AllowlistIPs', {
+    const allowListIPs = new wafv2IpSet.Wafv2IpSet(this, 'AllowlistIPs', {
       name: `${config.name}-${config.environment}-AllowList`,
       ipAddressVersion: 'IPV4',
-      scope: 'REGIONAL',
+      scope: 'CLOUDFRONT',
       tags: config.tags,
       addresses: ipList,
     });
 
-    const ipAllowListRule = <Wafv2WebAclRule>{
+    const ipAllowListRule = <wafv2WebAcl.Wafv2WebAclRule>{
       name: `${config.name}-${config.environment}-ipAllowList`,
       priority: 1,
       action: { allow: {} },
@@ -126,8 +123,8 @@ class ClientAPI extends TerraformStack {
       },
     };
 
-    const regionalRateLimitRule = <Wafv2WebAclRule>{
-      name: `${config.name}-${config.environment}-RegionalRateLimit`,
+    const cloudfrontRateLimitRule = <wafv2WebAcl.Wafv2WebAclRule>{
+      name: `${config.name}-${config.environment}-CloudfrontRateLimit`,
       priority: 2,
       action: { count: {} },
       statement: {
@@ -147,22 +144,22 @@ class ClientAPI extends TerraformStack {
       },
       visibilityConfig: {
         cloudwatchMetricsEnabled: true,
-        metricName: `${config.name}-${config.environment}-RegionalRateLimit`,
+        metricName: `${config.name}-${config.environment}-CloudfrontRateLimit`,
         sampledRequestsEnabled: true,
       },
     };
 
-    return new Wafv2WebAcl(this, `${config.name}-waf`, {
+    return new wafv2WebAcl.Wafv2WebAcl(this, `${config.name}-waf`, {
       description: `Waf for client-api-proxy ${config.environment} environment`,
       name: `${config.name}-waf-${config.environment}`,
-      scope: 'REGIONAL',
+      scope: 'CLOUDFRONT',
       defaultAction: { allow: {} },
       visibilityConfig: {
         cloudwatchMetricsEnabled: true,
         metricName: `${config.name}-waf-${config.environment}`,
         sampledRequestsEnabled: true,
       },
-      rule: [ipAllowListRule, regionalRateLimitRule],
+      rule: [ipAllowListRule, cloudfrontRateLimitRule],
     });
   }
 
@@ -192,7 +189,7 @@ class ClientAPI extends TerraformStack {
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
     snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
     cache: string;
-    wafAcl: Wafv2WebAcl;
+    wafAcl: wafv2WebAcl.Wafv2WebAcl;
   }): PocketALBApplication {
     const { region, caller, secretsManagerKmsAlias, cache, snsTopic, wafAcl } =
       dependencies;

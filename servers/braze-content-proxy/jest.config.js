@@ -5,5 +5,6 @@ module.exports = {
   testPathIgnorePatterns: ['/dist/', '/lambda/'],
   testTimeout: 10000,
   displayName: 'braze-content-proxy',
+  setupFiles: ['./jest.setup.js'],
   setupFilesAfterEnv: ['jest-extended/all'],
 };

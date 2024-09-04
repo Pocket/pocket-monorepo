@@ -1,31 +1,19 @@
 import { BrazeContentProxyResponse, TransformedCorpusItem } from './types';
-import { getResizedImageUrl, validateApiKey, validateDate } from '../utils';
+import { getResizedImageUrl, validateDate } from '../utils';
 import { getScheduledSurfaceStories } from '../graphql/client-api-proxy';
-import config from '../config';
 import { Router } from 'express';
 
 const router: Router = Router();
 
 router.get('/:scheduledSurfaceID', async (req, res, next) => {
-  // Enable two minute cache when in AWS.
-  // The short-lived cache is to speed up the curators' workflow
-  // if they need to make last-minute updates.
-  if (config.app.environment !== 'development') {
-    res.set('Cache-control', 'public, max-age=120');
-  }
-
   // Get the scheduled surface GUID
   const scheduledSurfaceID = req.params.scheduledSurfaceID;
   // Get the date the stories are scheduled for
   const date = req.query.date as string;
-  // Get the API key
-  const apiKey = req.query.apikey as string;
 
   try {
     // Validate inputs
     validateDate(date);
-    await validateApiKey(apiKey);
-
     // Fetch data
     return res.json(await stories.getStories(date, scheduledSurfaceID));
   } catch (err) {

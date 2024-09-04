@@ -104,14 +104,7 @@ export default {
   unleash: {
     clientKey: process.env.UNLEASH_KEY || 'unleash-key-fake',
     endpoint: process.env.UNLEASH_ENDPOINT || 'http://localhost:4242/api',
-    flags: {
-      mirrorWrites: {
-        name: 'temp.backend.list_table_mirror_writes_enabled',
-        // TODO(@kschelon): Change this before rollout
-        // POCKET-9216
-        fallback: false,
-      },
-    },
+    flags: {},
   },
   snowplow: {
     endpoint: process.env.SNOWPLOW_ENDPOINT || 'localhost:9090',

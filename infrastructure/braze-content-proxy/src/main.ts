@@ -6,6 +6,8 @@ import {
   dataAwsRegion,
   dataAwsKmsAlias,
   dataAwsSnsTopic,
+  wafv2WebAcl,
+  wafv2IpSet,
 } from '@cdktf/provider-aws';
 import { config } from './config';
 import { PocketALBApplication } from '@pocket-tools/terraform-modules';
@@ -46,6 +48,64 @@ class BrazeContentProxy extends TerraformStack {
       snsTopic: this.getCodeDeploySnsTopic(),
       region,
       caller,
+      wafAcl: this.createWafACL(),
+    });
+  }
+
+  /**
+   * Ensure that only internal IPs from the VPN or from Braze are allowed to access
+   * @returns Waf ACL
+   */
+  private createWafACL() {
+    // Braze IPs
+    // We are on US-05
+    // https://www.braze.com/docs/user_guide/personalization_and_dynamic_content/connected_content/making_an_api_call/#connected-content-ip-allowlisting
+    const brazeIPList = [
+      '23.21.118.191/32',
+      '34.206.23.173/32',
+      '50.16.249.9/32',
+      '52.4.160.214/32',
+      '54.87.8.34/32',
+      '54.156.35.251/32',
+      '52.54.89.238/32',
+      '18.205.178.15/32',
+    ];
+
+    const allowListIPs = new wafv2IpSet.Wafv2IpSet(this, 'AllowlistIPs', {
+      name: `${config.name}-${config.environment}-AllowList`,
+      ipAddressVersion: 'IPV4',
+      scope: 'CLOUDFRONT',
+      tags: config.tags,
+      addresses: brazeIPList,
+    });
+
+    const ipAllowListRule = <wafv2WebAcl.Wafv2WebAclRule>{
+      name: `${config.name}-${config.environment}-ipAllowList`,
+      priority: 1,
+      action: { allow: {} },
+      statement: {
+        ip_set_reference_statement: {
+          arn: allowListIPs.arn,
+        },
+      },
+      visibilityConfig: {
+        cloudwatchMetricsEnabled: true,
+        metricName: `${config.name}-${config.environment}-ipAllowList`,
+        sampledRequestsEnabled: true,
+      },
+    };
+
+    return new wafv2WebAcl.Wafv2WebAcl(this, `${config.name}-waf`, {
+      description: `Waf for ${config.name} ${config.environment} environment`,
+      name: `${config.name}-waf-${config.environment}`,
+      scope: 'CLOUDFRONT',
+      defaultAction: { block: {} },
+      visibilityConfig: {
+        cloudwatchMetricsEnabled: true,
+        metricName: `${config.name}-waf-${config.environment}`,
+        sampledRequestsEnabled: true,
+      },
+      rule: [ipAllowListRule],
     });
   }
 
@@ -74,14 +134,20 @@ class BrazeContentProxy extends TerraformStack {
     caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
     snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
+    wafAcl: wafv2WebAcl.Wafv2WebAcl;
   }): PocketALBApplication {
-    const { region, caller, secretsManagerKmsAlias, snsTopic } = dependencies;
+    const { region, caller, secretsManagerKmsAlias, snsTopic, wafAcl } =
+      dependencies;
+    const intMaskSecretArn = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/IntMask`;
 
     return new PocketALBApplication(this, 'application', {
       internal: false,
       prefix: config.prefix,
       alb6CharacterPrefix: config.shortName,
       cdn: true,
+      wafConfig: {
+        aclArn: wafAcl.arn,
+      },
       domain: config.domain,
       containerConfigs: [
         {
@@ -111,6 +177,38 @@ class BrazeContentProxy extends TerraformStack {
             {
               name: 'BRAZE_API_KEY',
               valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/BRAZE_API_KEY:key::`,
+            },
+            {
+              name: 'BRAZE_PRIVATE_KEY',
+              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/PRIVATE_KEY:::`,
+            },
+            {
+              name: 'CONTACT_HASH',
+              valueFrom: `${intMaskSecretArn}:contactHash::`,
+            },
+            {
+              name: 'CHARACTER_MAP',
+              valueFrom: `${intMaskSecretArn}:characterMap::`,
+            },
+            {
+              name: 'POSITION_MAP',
+              valueFrom: `${intMaskSecretArn}:positionMap::`,
+            },
+            {
+              name: 'MD5_RANDOMIZER',
+              valueFrom: `${intMaskSecretArn}:md5Randomizer::`,
+            },
+            {
+              name: 'LETTER_INDEX',
+              valueFrom: `${intMaskSecretArn}:letterIndex::`,
+            },
+            {
+              name: 'SALT_1',
+              valueFrom: `${intMaskSecretArn}:salt1::`,
+            },
+            {
+              name: 'SALT_2',
+              valueFrom: `${intMaskSecretArn}:salt2::`,
             },
           ],
         },
@@ -184,7 +282,7 @@ class BrazeContentProxy extends TerraformStack {
           threshold: 25,
           evaluationPeriods: 4,
           period: 300,
-          actions: config.isDev ? [] : [snsTopic.arn],
+          actions: config.isDev ? [] : [], // Disabling for now since this is not really a valid metric for a low volume service. 1 500 can cause this to alarm
         },
       },
     });
