@@ -4,6 +4,7 @@ on:
     paths:
       - 'infrastructure/client-api/**'
       - 'packages/**'
+      - 'docker-compose.yml'
       - 'servers/client-api/**'
       - 'pnpm-lock.yaml'
       - '.github/actions/**'

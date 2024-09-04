@@ -64,7 +64,7 @@ services:
       start_period: 80s
 
   localstack:
-    image: localstack/localstack:3.2.0
+    image: localstack/localstack:3.7.1@sha256:7f4f51bbfcfb42c661b9c02716a3cfcb53433f3c066905329aa911178835b300
     ports:
       - '4566:4566'
     volumes:

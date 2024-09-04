@@ -4,6 +4,7 @@ on:
     paths:
       - 'infrastructure/feature-flags/**'
       - 'packages/**'
+      - 'docker-compose.yml'
       - 'servers/feature-flags/**'
       - 'pnpm-lock.yaml'
       - 'Dockerfile'

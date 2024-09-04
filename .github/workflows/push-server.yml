@@ -4,6 +4,7 @@ on:
     paths:
       - 'infrastructure/push-server/**'
       - 'packages/**'
+      - 'docker-compose.yml'
       - 'servers/push-server/**'
       - 'pnpm-lock.yaml'
       - 'Dockerfile'

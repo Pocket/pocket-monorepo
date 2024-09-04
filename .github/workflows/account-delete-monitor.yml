@@ -5,6 +5,7 @@ on:
     paths:
       - 'infrastructure/account-delete-monitor/**'
       - 'packages/**'
+      - 'docker-compose.yml'
       - 'lambdas/account-delete-monitor/**'
       - 'pnpm-lock.yaml'
       - '.github/actions/**'

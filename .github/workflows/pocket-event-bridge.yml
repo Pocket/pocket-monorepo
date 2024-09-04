@@ -4,6 +4,7 @@ on:
     paths:
       - 'infrastructure/pocket-event-bridge/**'
       - 'packages/**'
+      - 'docker-compose.yml'
       - 'pnpm-lock.yaml'
       - '.github/actions/**'
       - '.github/workflows/pocket-event-bridge.yml'

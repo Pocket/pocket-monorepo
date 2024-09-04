@@ -4,6 +4,7 @@ on:
     paths:
       - 'infrastructure/braze/**'
       - 'packages/**'
+      - 'docker-compose.yml'
       - 'pnpm-lock.yaml'
       - '.github/actions/**'
       - '.github/workflows/braze.yml'

@@ -4,6 +4,7 @@ on:
     paths:
       - 'infrastructure/v3-proxy-api/**'
       - 'packages/**'
+      - 'docker-compose.yml'
       - 'servers/v3-proxy-api/**'
       - 'pnpm-lock.yaml'
       - 'Dockerfile'
