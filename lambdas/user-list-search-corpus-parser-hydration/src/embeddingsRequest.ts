@@ -6,11 +6,17 @@ import {
 import { config } from './config';
 import * as Sentry from '@sentry/aws-serverless';
 import { ParserResult } from './types';
+import { ConfiguredRetryStrategy } from '@smithy/util-retry';
 
 let _sagemakerClient: SageMakerRuntimeClient;
 const sagemakerClient = () => {
   if (_sagemakerClient == null) {
-    _sagemakerClient = new SageMakerRuntimeClient();
+    _sagemakerClient = new SageMakerRuntimeClient({
+      retryStrategy: new ConfiguredRetryStrategy(
+        4, // max attempts
+        (attempt: number) => 100 + attempt * 1000, // backoff
+      ),
+    });
     return _sagemakerClient;
   } else {
     return _sagemakerClient;
