@@ -90,7 +90,7 @@ CONFIG
       # let gp3 defaults work here, changes ignored in terraform
       ebs_options[0].iops
     ]
-    # prevent_destroy = true
+    prevent_destroy = true
   }
 
   tags = local.tags
