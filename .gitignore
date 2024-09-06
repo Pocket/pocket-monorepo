@@ -40,3 +40,7 @@ scripts/states
 scripts/main.tf
 
 servers/v3-proxy-api/schema.graphql
+
+
+# notebooks
+.ipynb_checkpoints
