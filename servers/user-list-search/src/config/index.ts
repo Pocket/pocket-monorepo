@@ -45,6 +45,9 @@ export const config = {
         },
       },
       corpus: {
+        host:
+          process.env.CORPUS_SEARCH_HOST ||
+          'http://localhost:4566/user-list-search',
         index: {
           // language-specific corpus indices
           en: process.env.CORPUS_INDEX_EN || 'corpus_en',

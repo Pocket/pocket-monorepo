@@ -14,3 +14,7 @@ const getHost = (host: string): string => {
 export const client = new Client({
   node: getHost(config.aws.elasticsearch.host),
 });
+
+export const corpusClient = new Client({
+  node: getHost(config.aws.elasticsearch.corpus.host),
+});
