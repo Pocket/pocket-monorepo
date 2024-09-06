@@ -60,7 +60,7 @@ locals {
       environment               = "Prod"
       os_cluster_enable         = true
       os_instance_count         = 4
-      os_instance_type          = "t3.medium.search"
+      os_instance_type          = "m5.large.search"
       os_dedicated_master_count = 3
       os_master_instance_type   = "c5.large.search"
       nodeEnv                   = "production"
