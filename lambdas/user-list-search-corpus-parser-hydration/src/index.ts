@@ -58,7 +58,10 @@ export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
     const fields: BulkRequestPayload['fields'] =
       parserResultToDoc(parserResult);
     // Get embeddings
-    if (config.embeddingsEnabled) {
+    if (
+      config.embeddingsEnabled &&
+      config.indexSupportsEmbeddings[request.meta._index]
+    ) {
       const embeddingsRequest = {
         given_url: request.url,
         title: request.title?.length ? request.title : parserResult.title,

@@ -23,12 +23,12 @@ export const config = {
   embeddingsEnabled:
     process.env.EMBEDDINGS_ENDPOINT != null &&
     process.env.EMBEDDINGS_ENDPOINT.length > 0,
-  langSupportsEmbeddings: {
-    en: true,
-    it: false,
-    es: false,
-    fr: false,
-    de: false,
+  indexSupportsEmbeddings: {
+    corpus_en: true,
+    corpus_it: false,
+    corpus_es: false,
+    corpus_fr: false,
+    corpus_de: false,
   },
   // Mapping of letter grade to numeric
   gradeRankMap: {
