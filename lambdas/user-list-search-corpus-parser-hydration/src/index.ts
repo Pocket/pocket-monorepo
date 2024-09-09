@@ -51,6 +51,10 @@ export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
   const docsToIndex: BulkRequestPayload[] = [];
   for await (const request of parserRequests) {
     const parserResult = await parserRequest(request.url);
+    if (parserResult == null) {
+      failedMessageIds.push(request.messageId);
+      continue;
+    }
     const fields: BulkRequestPayload['fields'] =
       parserResultToDoc(parserResult);
     // Get embeddings
@@ -67,11 +71,7 @@ export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
         fields['passage_embeddings'] = embeddings;
       }
     }
-    if (fields == null) {
-      failedMessageIds.push(request.messageId);
-    } else {
-      docsToIndex.push({ ...request, fields });
-    }
+    docsToIndex.push({ ...request, fields });
   }
   // Deduplicate failed messages since collections have multiple requests by same ID
   const indexFailures = await bulkIndex(docsToIndex);
