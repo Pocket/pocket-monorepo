@@ -35,7 +35,7 @@ resource "aws_opensearch_domain" "corpus_search" {
 CONFIG
 
   auto_tune_options {
-    rollback_on_disable = "DEFAULT_ROLLBACK"
+    rollback_on_disable = "NO_ROLLBACK"
     desired_state = local.workspace.environment == "Prod" ? "ENABLED" : "DISABLED"
   }
 
