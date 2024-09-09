@@ -52,7 +52,7 @@ module "apollo" {
       value = local.elastic_index
     },
     {
-      name = "EVENT_BUS_NAME"
+      name  = "EVENT_BUS_NAME"
       value = local.event_bus_name
     },
     {
@@ -99,6 +99,18 @@ module "apollo" {
       name  = "SQS_USER_ITEMS_UPDATE_BACKFILL_URL"
       value = aws_sqs_queue.user_items_update_backfill.id
     },
+    {
+      name  = "EMBEDDINGS_ENDPOINT"
+      value = module.corpus_embeddings.sagemaker_endpoint_name
+    },
+    {
+      name  = "CORPUS_SEARCH_DOMAIN"
+      value = module.corpus_embeddings.opensearch_domain_name
+    },
+    {
+      name  = "CORPUS_SEARCH_ENDPOINT"
+      value = module.corpus_embeddings.opensearch_endpoint
+    }
   ]
 }
 
@@ -205,45 +217,4 @@ resource "aws_ecs_service" "apollo" {
     aws_alb_listener.listener_https,
     aws_ecs_cluster.ecs_cluster
   ]
-}
-
-/**
- * If you make any changes to the Task Definition this must be called since we ignore changes to it.
- *
- * We typically ignore changes to the following since we rely on BlueGreen Deployments:
- * ALB Default Action Target Group ARN
- * ECS Service LoadBalancer Config
- * ECS Task Definition
- * ECS Placement Strategy Config
- */
-resource "null_resource" "apollo_update-task-definition" {
-  triggers = {
-    task_arn = aws_ecs_task_definition.apollo.arn
-  }
-
-  provisioner "local-exec" {
-    command = <<EOF
-    app_spec_content_string=$(jq -nc \
-  --arg container_name "${local.container_name}" \
-  --arg container_port "${local.container_port}" \
-  --arg task_definition_arn "${aws_ecs_task_definition.apollo.arn}" \
-  '{version: 1, Resources: [{TargetService: {Type: "AWS::ECS::Service", Properties: {TaskDefinition: "${aws_ecs_task_definition.apollo.arn}", LoadBalancerInfo: {ContainerName: "${local.container_name}", ContainerPort: ${local.container_port}}}}}]}')
-
-    app_spec_content_sha256=$(echo -n "$app_spec_content_string" | shasum -a 256 | sed 's/ .*$//')
-
-    revision="revisionType=AppSpecContent,appSpecContent={content='$app_spec_content_string',sha256=$app_spec_content_sha256}"
-
-    aws deploy create-deployment \
-      --application-name="${aws_codedeploy_app.ecs_codedeploy_app.name}" \
-      --deployment-group-name="${aws_codedeploy_deployment_group.apollo_codedeploy_group.deployment_group_name}" \
-      --description="Triggered from Terraform/CodeBuild due to a task defintion update" \
-      --revision="$revision"
-EOF
-  }
-
-  depends_on = [
-    aws_ecs_service.apollo,
-    aws_ecs_task_definition.apollo
-  ]
-
 }

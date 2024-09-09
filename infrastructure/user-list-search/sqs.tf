@@ -75,7 +75,7 @@ resource "aws_sqs_queue" "corpus_events" {
     maxReceiveCount     = 3
   })
 
-  visibility_timeout_seconds = 500
+  visibility_timeout_seconds = 90
 }
 
 resource "aws_sqs_queue" "corpus_events_deadletter" {
@@ -90,7 +90,7 @@ resource "aws_sqs_queue" "corpus_events_hydration" {
     deadLetterTargetArn = aws_sqs_queue.corpus_events_deadletter.arn,
     maxReceiveCount     = 3
   })
-  delay_seconds              = 500 # Delay to avoid concurrent document updates
+  delay_seconds              = 300 # Delay to avoid concurrent document updates
   visibility_timeout_seconds = 500
 }
 
