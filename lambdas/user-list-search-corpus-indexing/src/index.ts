@@ -87,7 +87,7 @@ export async function bulkIndex(
   if (!res.ok) {
     Sentry.addBreadcrumb({ data: { requestBody: body } });
     const data = await res.json();
-    serverLogger.error({ message: 'Request failure', data: data });
+    serverLogger.error({ message: 'Request failure', errorData: data });
     throw new Error(
       `user-list-search-corpus-index: ${res.status}\n${JSON.stringify(data.error)}`,
     );
@@ -104,14 +104,12 @@ export async function bulkIndex(
             error: item['index'].error,
           };
         }
-        Sentry.captureEvent({
-          message: 'Error indexing corpus item(s)',
-          breadcrumbs: [{ data: errorData }],
-        });
-        serverLogger.error({
-          message: 'Error indexing corpus item(s)',
-          data: errorData,
-        });
+      });
+      Sentry.addBreadcrumb({ data: errorData });
+      Sentry.captureException('Error indexing corpus item(s)');
+      serverLogger.error({
+        message: 'Error indexing corpus item(s)',
+        errorData,
       });
     }
   }
