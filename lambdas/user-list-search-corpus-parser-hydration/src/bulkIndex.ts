@@ -41,7 +41,7 @@ export async function bulkIndex(
   if (!res.ok) {
     Sentry.addBreadcrumb({ data: { requestBody: body } });
     const data = await res.json();
-    serverLogger.error({ message: 'Request failure', data: data });
+    serverLogger.error({ message: 'Request failure', errorData: data });
     throw new Error(
       `user-list-search-corpus-parser-hydrator: ${res.status}\n${JSON.stringify(data.error)}`,
     );
@@ -64,7 +64,7 @@ export async function bulkIndex(
         });
         serverLogger.error({
           message: 'Error updating corpus item(s)',
-          data: errorData,
+          errorData,
         });
       });
     }
