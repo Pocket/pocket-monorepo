@@ -45,4 +45,5 @@ data "aws_vpc" "vpc" {
 
 module "corpus_embeddings" {
   source = "./corpus-embeddings"
+  env    = local.env
 }

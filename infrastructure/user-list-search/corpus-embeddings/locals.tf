@@ -1,6 +1,6 @@
 locals {
   name   = "CorpusEmbeddings"
-  env    = local.workspace.environment
+  env    = var.env
   prefix = "${local.name}-${local.env}"
   tags = {
     service        = local.name
@@ -70,9 +70,9 @@ locals {
     }
   }
 
-  workspace = merge(local.envs["defaults"], local.envs[local.old_workspace])
+  workspace = merge(local.envs["defaults"], local.envs[local.prefix])
 }
 
 output "workspace" {
-  value = local.old_workspace
+  value = local.workspace
 }
