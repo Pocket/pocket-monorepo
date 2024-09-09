@@ -13,7 +13,10 @@ import v3AddRouter from './routes/v3Add';
 import v3FetchRouter from './routes/v3Fetch';
 import v3SendRouter from './routes/v3Send';
 
-export async function startServer(port: number) {
+export async function startServer(port: number): Promise<{
+  server: Server;
+  app: Application;
+}> {
   const app: Application = express();
   const httpServer: Server = createServer(app);
   const sizeLimit = '15mb';
