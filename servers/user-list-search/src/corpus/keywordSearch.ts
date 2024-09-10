@@ -6,7 +6,7 @@ import {
   QuerySearchCorpusArgs,
 } from '../__generated__/types';
 import { config } from '../config';
-import { client } from '../datasource/clients/openSearch';
+import { corpusClient as client } from '../datasource/clients/openSearch';
 import esb from 'elastic-builder';
 import { CorpusDocumentProperties, DateRangeInput } from './types';
 import { estypes } from '@elastic/elasticsearch';
