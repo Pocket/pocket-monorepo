@@ -3,6 +3,8 @@ import {
   InvokeEndpointCommand,
   InvokeEndpointInput,
 } from '@aws-sdk/client-sagemaker-runtime'; // ES Modules import
+import { Agent } from 'http';
+import { NodeHttpHandler } from '@smithy/node-http-handler';
 import { config } from './config';
 import * as Sentry from '@sentry/aws-serverless';
 import { ParserResult } from './types';
@@ -12,6 +14,16 @@ let _sagemakerClient: SageMakerRuntimeClient;
 const sagemakerClient = () => {
   if (_sagemakerClient == null) {
     _sagemakerClient = new SageMakerRuntimeClient({
+      requestHandler: new NodeHttpHandler({
+        // Reuse connections to reduce overhead;
+        // Lambda is bounded and ephemeral
+        httpAgent: new Agent({
+          keepAlive: true,
+          maxSockets: Infinity,
+        }),
+        socketTimeout: 70 * 1000, // ms
+        connectionTimeout: 70 * 1000, // ms
+      }),
       retryStrategy: new ConfiguredRetryStrategy(
         4, // max attempts
         (attempt: number) => 100 + attempt * 1000, // backoff
