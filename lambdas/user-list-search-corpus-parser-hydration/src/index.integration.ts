@@ -56,6 +56,8 @@ const BaseParserResult = (url: string) => ({
   normal_url: url,
   resolved_normal_url: url,
   time_to_read: 10,
+  title: 'Brene and Barrett on Living into our Values',
+  excerpt: `We're back, and we are starting the year with a deep dive into values. I'm not a fan of resolutions, but I absolutely believe in the power of resetting. I can’t think of a more powerful way to double down on ourselves than getting clear on our values and the behaviors that support them — and the shit that gets in the way.`,
   article:
     `'<div  lang="en">\n<div nodeIndex="668">\n<p nodeIndex="669"><b nodeIndex="805">` +
     `Brown: </b> Hi, everyone, I&rsquo;m Bren&eacute; Brown, and this is Unlocking Us.</p >\n</ div >'`,

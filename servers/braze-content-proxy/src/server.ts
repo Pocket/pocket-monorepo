@@ -10,7 +10,10 @@ import { validateBrazeApiKey } from './middleware/validateBrazeAPIKey';
 import { cache } from './middleware/cache';
 import { InvalidAPIKeyError, InvalidDateError } from './errors';
 
-export async function startServer(port: number) {
+export async function startServer(port: number): Promise<{
+  server: Server;
+  app: Application;
+}> {
   const app: Application = express();
   const httpServer: Server = createServer(app);
 

@@ -27,7 +27,7 @@
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
     "@sentry/node": "8.28.0",
-    "body-parser": "1.20.2",
+    "body-parser": "1.20.3",
     "cors": "2.8.5",
     "express": "4.19.2",
     "graphql": "16.9.0",

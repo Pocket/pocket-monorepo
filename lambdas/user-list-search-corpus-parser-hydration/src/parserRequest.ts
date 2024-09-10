@@ -3,6 +3,7 @@ import { config } from './config';
 import fetchRetry from 'fetch-retry';
 import * as Sentry from '@sentry/aws-serverless';
 import { stripHtml } from 'string-strip-html';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 const newFetch = fetchRetry(fetch);
 
@@ -15,7 +16,7 @@ const newFetch = fetchRetry(fetch);
  */
 export async function parserRequest(
   url: string,
-): Promise<ParserDocumentFields | undefined> {
+): Promise<ParserResult | undefined> {
   const options = {
     refresh: '0',
     images: '0',
@@ -52,36 +53,48 @@ export async function parserRequest(
     },
   );
   if (!response.ok) {
-    Sentry.captureEvent({
-      message: 'Request to parser not ok',
-      request: {
-        url: config.parserEndpoint,
-        query_string: queryParams.toString(),
-        method: 'get',
-        data: {
-          status: response.status,
-          statusText: response.statusText,
-        },
+    const message = 'Request to parser not ok';
+    const requestData = {
+      url: config.parserEndpoint,
+      query_string: queryParams.toString(),
+      method: 'get',
+      data: {
+        status: response.status,
+        statusText: response.statusText,
       },
+    };
+    Sentry.captureEvent({
+      message,
+      request: requestData,
+    });
+    serverLogger.error({
+      message,
+      errorData: requestData,
     });
     return undefined;
   }
   const parserResult = await response.json();
   if (!parserResult.item_id) {
-    Sentry.captureEvent({
-      message: 'Request to parser returned null item_id',
-      request: {
-        url: config.parserEndpoint,
-        query_string: queryParams.toString(),
-        method: 'get',
-        data: {
-          result: parserResult,
-        },
+    const requestData = {
+      url: config.parserEndpoint,
+      query_string: queryParams.toString(),
+      method: 'get',
+      data: {
+        result: parserResult,
       },
+    };
+    const message = 'Request to parser returned null item_id';
+    Sentry.captureEvent({
+      message,
+      request: requestData,
+    });
+    serverLogger.error({
+      message,
+      errorData: requestData,
     });
     return undefined;
   }
-  return parserResultToDoc(parserResult);
+  return parserResult;
 }
 
 /**
