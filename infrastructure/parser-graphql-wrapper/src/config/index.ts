@@ -37,8 +37,8 @@ export const config = {
     },
   },
   pocketSharedRds: {
-    minCapacity: 1,
-    maxCapacity: isDev ? 1 : undefined,
+    minCapacity: 0.5,
+    maxCapacity: isDev ? 1 : 16,
     databaseName: 'readitla_shares',
     masterUsername: 'share_urls',
   },

@@ -20,8 +20,8 @@ export const config = {
   environment,
   s3LogsBucket,
   rds: {
-    minCapacity: 1,
-    maxCapacity: isDev ? 1 : undefined,
+    minCapacity: 0.5,
+    maxCapacity: isDev ? 1 : 16,
     databaseName: 'listapi',
     masterUsername: 'pkt_listapi',
   },
