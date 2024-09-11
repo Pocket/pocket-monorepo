@@ -80,7 +80,7 @@ class ListAPI extends TerraformStack {
    */
   private createRds(vpc: PocketVPC) {
     return new ApplicationRDSCluster(this, 'dev-aurora', {
-      prefix: `${config.prefix}`,
+      prefix: config.prefix,
       vpcId: vpc.vpc.id,
       subnetIds: vpc.privateSubnetIds,
       rdsConfig: {
@@ -88,12 +88,13 @@ class ListAPI extends TerraformStack {
         masterUsername: config.rds.masterUsername,
         skipFinalSnapshot: true,
         engine: 'aurora-mysql',
-        engineMode: 'serverless',
-        scalingConfiguration: {
+        engineMode: 'provisioned',
+        engineVersion: '8.0.mysql_aurora.3.06.0',
+        serverlessv2ScalingConfiguration: {
           minCapacity: config.rds.minCapacity,
           maxCapacity: config.rds.maxCapacity,
-          autoPause: false,
         },
+        createServerlessV2Instance: true,
         deletionProtection: false,
       },
       tags: config.tags,

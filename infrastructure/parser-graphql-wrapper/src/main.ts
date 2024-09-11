@@ -496,11 +496,11 @@ class ParserGraphQLWrapper extends TerraformStack {
         masterUsername: config.pocketSharedRds.masterUsername,
         skipFinalSnapshot: true,
         engine: 'aurora-mysql',
-        engineMode: 'serverless',
-        scalingConfiguration: {
+        engineMode: 'provisioned',
+        engineVersion: '8.0.mysql_aurora.3.06.0',
+        serverlessv2ScalingConfiguration: {
           minCapacity: config.pocketSharedRds.minCapacity,
           maxCapacity: config.pocketSharedRds.maxCapacity,
-          autoPause: false,
         },
         deletionProtection: false,
       },
