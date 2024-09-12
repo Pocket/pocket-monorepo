@@ -1,17 +1,18 @@
 import { QuerySearchCorpusArgs } from '../__generated__/types';
 import { config } from '../config';
-import { corpusClient as client } from '../datasource/clients/openSearch';
+import { client } from '../datasource/clients/openSearch';
 import { CorpusDocumentProperties } from './types';
 import { estypes } from '@elastic/elasticsearch';
 import * as Sentry from '@sentry/node';
-import { SimpleQueryStringBuilder } from './CorpusSearchQueryBuilder';
+import { SemanticSearchQueryBuilder } from './CorpusSearchQueryBuilder';
 
 /**
  * Make a request to elasticsearch/opensearch client to serve
  * corpus search data.
  */
-export async function keywordSearch(args: QuerySearchCorpusArgs) {
-  const body = new SimpleQueryStringBuilder(args).toJSON();
+export async function semanticSearch(args: QuerySearchCorpusArgs) {
+  const qb = await SemanticSearchQueryBuilder.fromQueryString(args);
+  const body = qb.toJSON();
   const index =
     config.aws.elasticsearch.corpus.index[args.filter.language.toLowerCase()];
   try {
@@ -27,14 +28,14 @@ export async function keywordSearch(args: QuerySearchCorpusArgs) {
     // message, add breadcrubms for easier tracking
     if (error.meta && error.meta.body) {
       Sentry.addBreadcrumb({
-        data: { error: error.meta.body.error, methodName: 'keywordSearch' },
+        data: { error: error.meta.body.error, methodName: 'semanticSearch' },
       });
       throw error;
     } else {
       Sentry.addBreadcrumb({
         data: {
           error: error.message,
-          methodName: 'keywordSearch',
+          methodName: 'semanticSearch',
         },
       });
     }

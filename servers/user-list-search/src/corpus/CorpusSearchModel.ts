@@ -9,6 +9,9 @@ import { estypes } from '@elastic/elasticsearch';
 import { CorpusDocumentProperties } from './types';
 import { IContext } from '../server/context';
 import { Paginator } from '../datasource/elasticsearch/Paginator';
+import { config } from '../config';
+import { unleash } from '../datasource/clients';
+import { semanticSearch } from './semanticSearch';
 
 export const CorpusSearchFieldsMap: Record<
   CorpusSearchFields,
@@ -23,13 +26,39 @@ export const CorpusSearchFieldsMap: Record<
 };
 
 export class CorpusSearchModel {
-  constructor(context: IContext) {}
+  constructor(private context: IContext) {}
 
-  async keywordSearch(args: QuerySearchCorpusArgs) {
-    const res = await keywordSearch(args);
-    return this.toGraphQl(res);
+  /**
+   * Execute search. Handles the business logic for choosing
+   * between keyword search and semantic search (depends on
+   * language and feature flag). Converts to the expected GraphQL
+   * response.
+   */
+  async search(args: QuerySearchCorpusArgs) {
+    const embeddingsConfig = config.aws.elasticsearch.corpus.embeddings;
+    const lang = args.filter.language.toLowerCase();
+    const semanticEnabled = unleash().isEnabled(
+      config.unleash.flags.semanticSearch.name,
+      {
+        userId: this.context.userId,
+        remoteAddress: this.context.ip,
+      },
+      config.unleash.flags.semanticSearch.fallback,
+    );
+
+    // Requires language to be supported at baseline
+    if (embeddingsConfig.langSupported[lang] && semanticEnabled) {
+      const res = await semanticSearch(args);
+      return this.toGraphQl(res);
+    } else {
+      const res = await keywordSearch(args);
+      return this.toGraphQl(res);
+    }
   }
 
+  /**
+   * Convert search response body from ES/Opensearch to GraphQL types
+   */
   private toGraphQl(
     body: estypes.SearchResponseBody<CorpusDocumentProperties>,
   ): CorpusSearchConnection {

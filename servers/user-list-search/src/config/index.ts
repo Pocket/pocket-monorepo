@@ -48,6 +48,19 @@ export const config = {
         host:
           process.env.CORPUS_SEARCH_ENDPOINT ||
           'http://localhost:4566/user-list-search',
+
+        embeddings: {
+          enabled: process.env.EMBEDDINGS_ENABLED || true,
+          endpoint: process.env.EMBEDDINGS_ENDPOINT,
+          propertyName: 'passage_embeddings',
+          langSupported: {
+            en: true,
+            es: false,
+            de: false,
+            fr: false,
+            it: false,
+          },
+        },
         index: {
           // language-specific corpus indices
           en: process.env.CORPUS_INDEX_EN || 'corpus_en',
@@ -98,6 +111,10 @@ export const config = {
     flags: {
       corpusExplore: {
         name: 'temp.backend.explore_the_corpus',
+        fallback: false,
+      },
+      semanticSearch: {
+        name: 'temp.backend.corpus_semantic_search',
         fallback: false,
       },
     },
