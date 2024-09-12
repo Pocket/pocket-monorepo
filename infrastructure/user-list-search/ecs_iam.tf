@@ -109,6 +109,15 @@ data "aws_iam_policy_document" "ecs_task_role_policy" {
     ]
     resources = [module.corpus_embeddings.sagemaker_endpoint.arn]
   }
+
+  ## Allow putting events on EventBridge
+  statement {
+    effect = "Allow"
+    actions = [
+      "events:PutEvent*",
+    ]
+    resources = [data.aws_cloudwatch_event_bus.shared.arn]
+  }
 }
 
 resource "aws_iam_role" "ecs_task_role" {
