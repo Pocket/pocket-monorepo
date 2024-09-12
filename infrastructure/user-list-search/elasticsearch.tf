@@ -29,12 +29,6 @@ resource "aws_elasticsearch_domain" "user_search" {
             "Principal": "*",
             "Effect": "Allow",
             "Resource": "arn:aws:es:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:domain/${lower(local.prefix)}-v2/*"
-        },
-        {
-            "Action": "events:PutEvents",
-            "Principal": "*",
-            "Effect": "Allow",
-            "Resource": "${data.aws_cloudwatch_event_bus.shared.arn}"
         }
     ]
 }
