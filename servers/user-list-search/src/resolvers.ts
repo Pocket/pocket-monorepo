@@ -30,7 +30,7 @@ import {
   UserSearchSavedItemsArgs,
   CorpusSearchConnection,
 } from './__generated__/types';
-import { CorpusSearchModel } from './corpus/CorpusSearchModel';
+import { CorpusSearchModel } from './corpus';
 import { EventBus } from './events/EventBus';
 import * as Sentry from '@sentry/node';
 
@@ -227,9 +227,7 @@ export const resolvers: Resolvers = {
             'Use "first"/"after" instead.',
         );
       }
-      const res = (await new CorpusSearchModel(context).keywordSearch(
-        args,
-      )) as any;
+      const res = (await new CorpusSearchModel(context).search(args)) as any;
       // Async event emission
       new EventBus()
         .sendCorpusSearchResultEvent(res, context, args)

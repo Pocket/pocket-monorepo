@@ -3704,6 +3704,9 @@ importers:
       '@aws-sdk/client-eventbridge':
         specifier: 3.637.0
         version: 3.637.0
+      '@aws-sdk/client-sagemaker-runtime':
+        specifier: 3.637.0
+        version: 3.637.0
       '@aws-sdk/client-sqs':
         specifier: 3.637.0
         version: 3.637.0
@@ -3731,6 +3734,12 @@ importers:
       '@sentry/node':
         specifier: 8.28.0
         version: 8.28.0
+      '@smithy/node-http-handler':
+        specifier: 3.2.0
+        version: 3.2.0
+      '@smithy/util-retry':
+        specifier: 3.0.3
+        version: 3.0.3
       elastic-builder:
         specifier: ^2.29.0
         version: 2.29.0

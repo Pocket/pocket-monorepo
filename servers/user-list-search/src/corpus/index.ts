@@ -1,1 +1,1 @@
-export * from './keywordSearch';
+export * from './CorpusSearchModel';
