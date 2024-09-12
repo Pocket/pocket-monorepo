@@ -9,6 +9,7 @@ export type IContext = {
   isNative: boolean;
   request: Request;
   ip: string | undefined;
+  encodedId: string | undefined;
 };
 export type ContextFactory = (
   req: Request,
@@ -55,6 +56,7 @@ export class ContextManager implements IContext {
   public readonly knexDbClient: Knex<any, any[]>;
   public readonly isNative: boolean;
   public readonly ip: string | undefined;
+  public readonly encodedId: string | undefined;
   constructor(
     public readonly request: Request,
     dbClient: Knex,
@@ -67,6 +69,7 @@ export class ContextManager implements IContext {
       (request.headers.gatewayipaddress as string) ||
       (request.headers['origin-client-ip'] as string) ||
       undefined;
+    this.encodedId = (request.headers.encodedid as string) || undefined;
   }
 }
 
