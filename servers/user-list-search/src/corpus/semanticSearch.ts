@@ -1,6 +1,6 @@
 import { QuerySearchCorpusArgs } from '../__generated__/types';
 import { config } from '../config';
-import { client } from '../datasource/clients/openSearch';
+import { corpusClient as client } from '../datasource/clients/openSearch';
 import { CorpusDocumentProperties } from './types';
 import { estypes } from '@elastic/elasticsearch';
 import * as Sentry from '@sentry/node';
