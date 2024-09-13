@@ -9,7 +9,11 @@ import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import { print } from 'graphql';
 import { SemanticSearchQueryBuilder } from './CorpusSearchQueryBuilder';
+import { Client } from '@opensearch-project/opensearch';
 
+// Since keyword search query builder uses the same methods
+// and is tested more exhaustively, didn't repeat all the
+// filters, pagination schemes, etc. for this file
 describe('Corpus search - semantic', () => {
   let app: Application;
   let server: ApolloServer<ContextManager>;
@@ -22,12 +26,15 @@ describe('Corpus search - semantic', () => {
     ),
   );
   const queryVec = jest.spyOn(SemanticSearchQueryBuilder, 'getQueryVec');
+  const clientMock: any = jest.spyOn(Client.prototype, 'search');
 
   beforeAll(async () => {
     await deleteDocuments();
     await seedCorpus();
     ({ app, server, url } = await startServer(0));
   });
+
+  afterEach(() => jest.clearAllMocks());
 
   afterAll(async () => {
     await deleteDocuments();
@@ -52,5 +59,42 @@ describe('Corpus search - semantic', () => {
     // localstack or just how small the dataset is
     // For now, just check for errors
     expect(res.body.errors).toBeUndefined();
+  });
+  it('performs semantic search with search_after', async () => {
+    const { query, vector } = embeddings[0];
+    queryVec.mockResolvedValueOnce(vector);
+    // I can't get this to return results, so we'll mock a response body
+    // pulled from a real query executed directly
+    const body = JSON.parse(
+      fs.readFileSync(
+        path.resolve(__dirname, '../test/data/searchBodyResponse.json'),
+        'utf-8',
+      ),
+    );
+    clientMock.mockResolvedValueOnce({ body }).mockResolvedValueOnce({ body });
+    const variables = {
+      search: { query: query },
+      filter: { language: 'EN' },
+    };
+    const initialRes = await request(app)
+      .post(url)
+      .set(defaultHeaders)
+      .send({
+        query: print(SEARCH_CORPUS),
+        variables,
+      });
+    const after = initialRes.body.data.searchCorpus.pageInfo.endCursor;
+    const res = await request(app)
+      .post(url)
+      .set(defaultHeaders)
+      .send({
+        query: print(SEARCH_CORPUS),
+        variables: { ...variables, pagination: { first: 1, after } },
+      });
+    expect(res.body.errors).toBeUndefined();
+    expect(clientMock.mock.calls[1][0].body).toMatchObject({
+      search_after: ['0.91273504', '36da877e-4573-45cf-92da-f5c26213fdfe'],
+      size: 1,
+    });
   });
 });

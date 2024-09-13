@@ -159,6 +159,9 @@ type RecentSearchContext {
 type Query {
   """
   Search Pocket's corpus of recommendations and collections.
+  Note that sort will have no effect unless using keyword
+  semantic search will always be returned in relevance order
+  (most relevant first).
   """
   searchCorpus(
     search: CorpusSearchQueryString!, 
@@ -562,6 +565,8 @@ enum CorpusSearchSortBy {
 
 """
 Sort scheme for Corpus Search. Defaults to showing most relevant results first.
+Only relevant for indices which use keyword search.
+**Semantic search will ignore any inputs and use default only.**
 """
 input CorpusSearchSort {
   sortBy: CorpusSearchSortBy!

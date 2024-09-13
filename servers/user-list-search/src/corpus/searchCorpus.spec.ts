@@ -6,7 +6,6 @@ import {
 } from './CorpusSearchQueryBuilder';
 import { CorpusSearchModel } from './CorpusSearchModel';
 import { CorpusLanguage } from '../__generated__/types';
-import { unleash } from '../datasource/clients';
 import { config } from '../config';
 
 describe('searchCorpus', () => {
@@ -30,7 +29,6 @@ describe('searchCorpus', () => {
     jest.restoreAllMocks();
     // Restore value
     config.unleash.flags.semanticSearch.fallback = semanticFallback;
-    unleash().destroy();
   });
   afterEach(() => jest.clearAllMocks());
   it('falls back to keyword search if embeddings are not received', async () => {

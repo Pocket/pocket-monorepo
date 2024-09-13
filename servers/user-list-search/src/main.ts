@@ -7,9 +7,6 @@ initSentry({
 
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { startServer } from './server/serverUtils';
-import { unleash } from './datasource/clients';
-
-unleash();
 
 startServer(config.app.port).then(({ url }) => {
   serverLogger.info(

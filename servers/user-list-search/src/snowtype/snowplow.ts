@@ -83,17 +83,17 @@ export type SearchResponseEvent = {
   /**
    * The search query
    */
-  search_query: SearchQuery;
+  search_query: SearchResponseEventSearchQuery;
   /**
    * Identifies the corpus that was searched
    */
-  search_type: SearchType;
+  search_type: string;
 };
 
 /**
  * The search query
  */
-export type SearchQuery = {
+export type SearchResponseEventSearchQuery = {
   /**
    * Identifies the filters which were applied to the search, if applicable.
    */
@@ -134,14 +134,3 @@ export type Scope =
   | 'excerpt'
   | 'content'
   | 'publisher';
-
-/**
- * Identifies the corpus that was searched
- */
-export type SearchType =
-  | 'saves'
-  | 'corpus_en'
-  | 'corpus_es'
-  | 'corpus_de'
-  | 'corpus_it'
-  | 'corpus_fr';

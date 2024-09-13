@@ -41,7 +41,7 @@ do
 done
 
 corpus_langs=(
-  en
+  en_luc
   de
   es
   fr

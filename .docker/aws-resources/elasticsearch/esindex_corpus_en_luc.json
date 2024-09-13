@@ -1,7 +1,7 @@
 {
   "settings": {
     "index": {
-      "number_of_shards": 1,
+      "number_of_shards": 2,
       "number_of_replicas": 1,
       "knn": true
     }
@@ -119,7 +119,16 @@
       },
       "passage_embeddings": {
         "type": "knn_vector",
-        "dimension": 768
+        "dimension": 768,
+        "method": {
+          "name": "hnsw",
+          "engine": "lucene",
+          "space_type": "cosinesimil",
+          "parameters": {
+            "ef_construction": 150,
+            "m": 32
+          }
+        }
       }
     }
   }

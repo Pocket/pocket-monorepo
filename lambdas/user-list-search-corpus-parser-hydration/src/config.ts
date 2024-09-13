@@ -14,21 +14,17 @@ export const config = {
   parserEndpoint: process.env.PARSER_ENDPOINT || 'https://parser.com/text',
   privilegedServiceId: process.env.PARSER_PRIVILEGED_SERVICE_ID || 'abc-123',
   indexLangMap: {
-    en: 'corpus_en',
-    it: 'corpus_it',
-    es: 'corpus_es',
-    fr: 'corpus_fr',
-    de: 'corpus_de',
+    en: process.env.CORPUS_INDEX_EN || 'corpus_en',
+    it: process.env.CORPUS_INDEX_IT || 'corpus_it',
+    es: process.env.CORPUS_INDEX_ES || 'corpus_es',
+    fr: process.env.CORPUS_INDEX_FR || 'corpus_fr',
+    de: process.env.CORPUS_INDEX_DE || 'corpus_de',
   },
   embeddingsEnabled:
     process.env.EMBEDDINGS_ENDPOINT != null &&
     process.env.EMBEDDINGS_ENDPOINT.length > 0,
   indexSupportsEmbeddings: {
-    corpus_en: true,
-    corpus_it: false,
-    corpus_es: false,
-    corpus_fr: false,
-    corpus_de: false,
+    corpus_en_luc: true,
   },
   // Mapping of letter grade to numeric
   gradeRankMap: {

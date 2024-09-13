@@ -39,19 +39,6 @@ export class EventBus {
     }
   }
   /**
-   * Get the corpus that was searched from the language code
-   */
-  private getCorpus(langCode: string) {
-    const langMap = {
-      en: 'corpus_en',
-      fr: 'corpus_fr',
-      it: 'corpus_it',
-      es: 'corpus_es',
-      de: 'corpus_de',
-    };
-    return langMap[langCode.toLowerCase()];
-  }
-  /**
    * Build the snowplow user context for the event
    */
   private buildUserData(context: IContext): SearchResultEvent['user'] {
@@ -95,7 +82,8 @@ export class EventBus {
   ): SearchResultEvent | undefined {
     // Special logging to Sentry if we're fielding requests for invalid
     // languages (these shouldn't get this far)
-    const corpus = this.getCorpus(args.filter.language);
+    const corpus =
+      config.aws.elasticsearch.corpus.index[args.filter.language.toLowerCase()];
     if (corpus == null) {
       Sentry.addBreadcrumb({ data: { language: args.filter.language } });
       const message = 'Attempted to log search for invalid language';

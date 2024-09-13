@@ -178,6 +178,44 @@ class SearchQueryFilters {
     }
     return base;
   }
+  /**
+   * Convert the sort options passed into the GraphQL
+   * resolver into ES/opensearch request syntax.
+   */
+  public sort(
+    sortBy: CorpusSearchSortBy,
+    sortOrder: ElasticSearchSortDirection,
+  ): esb.Sort[] {
+    const sortByMap: Record<CorpusSearchSortBy, string> = {
+      [CorpusSearchSortBy.Relevance]: '_score',
+      [CorpusSearchSortBy.DateAddedToCorpus]: 'created_at',
+      [CorpusSearchSortBy.DatePublished]: 'published_at',
+    };
+    return [
+      esb.sort(sortByMap[sortBy] ?? '_score', sortOrder ?? 'desc'), // default to descending for all sorts
+      esb.sort('corpusId', 'asc'), // tiebreaker -- does not matter order
+    ];
+  }
+  /**
+   * Convert the pagination options passed into the GraphQL
+   * resolver into ES/opensearch request syntax.
+   */
+  public paginate(
+    pagination: ValidPagination | OffsetPaginationInput,
+  ): esb.RequestBodySearch {
+    const size =
+      pagination?.['limit'] ??
+      pagination?.['first'] ??
+      config.pagination.defaultPageSize;
+    const sized = esb.requestBodySearch().size(size);
+    if (pagination?.['after']) {
+      const cursor = Paginator.decodeCursor(pagination['after']);
+      return sized.searchAfter(cursor);
+    } else if (pagination?.['offset']) {
+      return sized.searchAfter(pagination['offset']);
+    }
+    return sized;
+  }
 }
 
 /**
@@ -273,21 +311,23 @@ export class SemanticSearchQueryBuilder extends SearchQueryFilters {
     // esb doesn't support hybrid or knn queries
     // for opensearch, since the APIs diverge
     // For now, just do this semi-manually
-    const filter = this.filter();
     return {
+      _source: {
+        exclude: embeddingsConfig.propertyName,
+      },
+      ...this.paginate(this.opts.pagination).toJSON(),
+      sort: this.sort(
+        CorpusSearchSortBy.Relevance,
+        ElasticSearchSortDirection.DESC,
+      ).map((s) => s.toJSON()),
       query: {
-        bool: {
-          filter: filter.toJSON(),
-          must: [
-            {
-              knn: {
-                [embeddingsConfig.propertyName]: {
-                  vector: this.opts.search.query,
-                  k,
-                },
-              },
-            },
-          ],
+        knn: {
+          [embeddingsConfig.propertyName]: {
+            vector: this.opts.search.query,
+            // Getting a large enough neighborhood for reasonable pagination
+            k: k * 3,
+            filter: this.filter().toJSON(),
+          },
         },
       },
     };
@@ -340,45 +380,6 @@ export class SimpleQueryStringBuilder extends SearchQueryFilters {
       .query(query)
       .sorts(this.sort(this.opts.sort?.sortBy, sortOrder))
       .highlight(this.highlight());
-  }
-
-  /**
-   * Convert the pagination options passed into the GraphQL
-   * resolver into ES/opensearch request syntax.
-   */
-  private paginate(
-    pagination: ValidPagination | OffsetPaginationInput,
-  ): esb.RequestBodySearch {
-    const size =
-      pagination?.['limit'] ??
-      pagination?.['first'] ??
-      config.pagination.defaultPageSize;
-    const sized = esb.requestBodySearch().size(size);
-    if (pagination?.['after']) {
-      const cursor = Paginator.decodeCursor(pagination['after']);
-      return sized.searchAfter(cursor);
-    } else if (pagination?.['offset']) {
-      return sized.searchAfter(pagination['offset']);
-    }
-    return sized;
-  }
-  /**
-   * Convert the sort options passed into the GraphQL
-   * resolver into ES/opensearch request syntax.
-   */
-  private sort(
-    sortBy: CorpusSearchSortBy,
-    sortOrder: ElasticSearchSortDirection,
-  ): esb.Sort[] {
-    const sortByMap: Record<CorpusSearchSortBy, string> = {
-      [CorpusSearchSortBy.Relevance]: '_score',
-      [CorpusSearchSortBy.DateAddedToCorpus]: 'created_at',
-      [CorpusSearchSortBy.DatePublished]: 'published_at',
-    };
-    return [
-      esb.sort(sortByMap[sortBy] ?? '_score', sortOrder ?? 'desc'), // default to descending for all sorts
-      esb.sort('corpusId', 'asc'), // tiebreaker -- does not matter order
-    ];
   }
 
   private highlight(): esb.Highlight {

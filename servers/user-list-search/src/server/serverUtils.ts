@@ -18,6 +18,7 @@ import { router as itemUpdateRouter } from './routes/itemUpdate';
 import { router as userListImportRouter } from './routes/userListImport';
 
 import { knexDbReadClient } from '../datasource/clients/knexClient';
+import { unleash } from '../datasource/clients';
 
 /**
  * Create and start the apollo server.
@@ -27,6 +28,8 @@ export async function startServer(port: number): Promise<{
   server: ApolloServer<ContextManager>;
   url: string;
 }> {
+  await unleash();
+
   const app = express();
   const httpServer: Server = createServer(app);
 

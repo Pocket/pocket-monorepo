@@ -53,17 +53,15 @@ export const config = {
           enabled: process.env.EMBEDDINGS_ENABLED || true,
           endpoint: process.env.EMBEDDINGS_ENDPOINT,
           propertyName: 'passage_embeddings',
-          langSupported: {
-            en: true,
-            es: false,
-            de: false,
-            fr: false,
-            it: false,
+          enabledForIndex: {
+            // Other indices exist but are omitted
+            // unless embeddings are enabled
+            corpus_en_luc: true,
           },
         },
         index: {
           // language-specific corpus indices
-          en: process.env.CORPUS_INDEX_EN || 'corpus_en',
+          en: process.env.CORPUS_INDEX_EN || 'corpus_en_luc',
           es: process.env.CORPUS_INDEX_ES || 'corpus_es',
           de: process.env.CORPUS_INDEX_DE || 'corpus_de',
           fr: process.env.CORPUS_INDEX_FR || 'corpus_fr',

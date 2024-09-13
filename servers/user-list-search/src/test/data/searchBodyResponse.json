@@ -1,0 +1,50 @@
+{
+  "took": 112,
+  "timed_out": false,
+  "_shards": {
+    "total": 2,
+    "successful": 2,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 180,
+      "relation": "eq"
+    },
+    "max_score": null,
+    "hits": [
+      {
+        "_index": "corpus_en_luc",
+        "_id": "36da877e-4573-45cf-92da-f5c26213fdfe",
+        "_score": 0.91273504,
+        "_source": {
+          "corpusId": "36da877e-4573-45cf-92da-f5c26213fdfe",
+          "is_syndicated": false,
+          "content_type_children": ["image"],
+          "is_collection_story": false,
+          "created_at": 1683482676,
+          "pocket_resolved_id": "3854630076",
+          "language": "EN",
+          "title": "AI and Politics: How Will We Know What—and Who—Is Real?",
+          "is_collection": false,
+          "url": "https://thewalrus.ca/ai-and-politics-how-will-we-know-what-and-who-is-real/",
+          "pocket_item_id": "3854630076",
+          "pocket_parser_request_given_url": "https://thewalrus.ca/ai-and-politics-how-will-we-know-what-and-who-is-real/",
+          "pocket_parser_extracted_text": "In January, the Alberta Party, a centrist provincial party, posted a video on its official Instagram account. The since deleted video, which is still available on their Twitter feed, was of a man in a blue sweater facing the camera, with the Calgary skyline behind him. But something about him was off.",
+          "content_type_parent": "article",
+          "publisher": "The Walrus",
+          "topic": "POLITICS",
+          "pocket_normal_url": "http://thewalrus.ca/ai-and-politics-how-will-we-know-what-and-who-is-real",
+          "pocket_resolved_url": "http://thewalrus.ca/ai-and-politics-how-will-we-know-what-and-who-is-real",
+          "excerpt": "If we’re lucky, new technologies will only cause brief confusion. If we’re not, our political sphere could be changed forever.",
+          "published_at": null,
+          "est_time_to_consume_minutes": 12,
+          "authors": ["Colin Horgan"],
+          "status": "RECOMMENDATION"
+        },
+        "sort": [0.91273504, "36da877e-4573-45cf-92da-f5c26213fdfe"]
+      }
+    ]
+  }
+}

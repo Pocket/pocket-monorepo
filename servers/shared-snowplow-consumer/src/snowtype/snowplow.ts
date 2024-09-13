@@ -781,7 +781,7 @@ export type SearchResponseEvent = {
     /**
      * Identifies the corpus that was searched
      */
-    search_type: SearchType;
+    search_type: string;
 }
 
 /**
@@ -809,11 +809,6 @@ export type Filter = "domain" | "title" | "tags" | "contentType" | "status" | "i
  * Identifies the fields which were searched.
  */
 export type Scope = "all" | "all_contentful" | "title" | "excerpt" | "content" | "publisher";
-
-/**
- * Identifies the corpus that was searched
- */
-export type SearchType = "saves" | "corpus_en" | "corpus_es" | "corpus_de" | "corpus_it" | "corpus_fr";
 
 interface CommonEventProperties<T = Record<string, unknown>> {
     /** Add context to an event by setting an Array of Self Describing JSON */
@@ -1106,7 +1101,7 @@ export function trackSearchResponseEvent<T extends {} = any>(tracker: Tracker, s
     const { context, timestamp, ...data } = searchResponseEvent; 
     tracker.track(buildSelfDescribingEvent({
         event: {
-            schema: 'iglu:com.pocket/search_response_event/jsonschema/1-0-4',
+            schema: 'iglu:com.pocket/search_response_event/jsonschema/1-0-5',
             data
         }
     }), context, timestamp);
@@ -1117,12 +1112,13 @@ export function trackSearchResponseEvent<T extends {} = any>(tracker: Tracker, s
  */
 export function createSearchResponseEvent(searchResponseEvent: SearchResponseEvent){
     return {
-        schema: 'iglu:com.pocket/search_response_event/jsonschema/1-0-4',
+        schema: 'iglu:com.pocket/search_response_event/jsonschema/1-0-5',
         data: searchResponseEvent
     }
 }
 
 /**
+ * @deprecated Outdated data structure detected.
  * Tracks a ItemSave event specification.
  * ID: 2565192a-4600-45db-861d-d9b9378ed87e
  */
