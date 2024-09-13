@@ -42,11 +42,11 @@ describe('bulk indexer', () => {
   it('parses and makes request for example SQS message successfully from root handler', async () => {
     const processorRes = await processor(exampleInvocationPayload);
     const roundtrip = await Promise.all([
-      getDocById('corpus_en', '599b49e5-c91f-47d8-a6d3-1ce2cb520acc'), // root-level collection
-      getDocById('corpus_en', 'fe67c4a0-ed4d-4489-a79a-9380dd8a2576'), // root-level collection
-      getDocById('corpus_en', '78d3d5f3-4bad-4214-bb27-5c2ea908422c'), // the only collection story in first collection
-      getDocById('corpus_en', '676defd9-a947-4955-8433-c395750d8551'), // the third collection story in second collection (spot-check)
-      getDocById('corpus_en', '3ab75776-42a1-4a54-a6d2-032fbec195eb'), // The approved item update
+      getDocById('corpus_en_luc', '599b49e5-c91f-47d8-a6d3-1ce2cb520acc'), // root-level collection
+      getDocById('corpus_en_luc', 'fe67c4a0-ed4d-4489-a79a-9380dd8a2576'), // root-level collection
+      getDocById('corpus_en_luc', '78d3d5f3-4bad-4214-bb27-5c2ea908422c'), // the only collection story in first collection
+      getDocById('corpus_en_luc', '676defd9-a947-4955-8433-c395750d8551'), // the third collection story in second collection (spot-check)
+      getDocById('corpus_en_luc', '3ab75776-42a1-4a54-a6d2-032fbec195eb'), // The approved item update
     ]);
     expect(roundtrip).toEqual([
       expect.objectContaining({ found: true }),
@@ -72,7 +72,7 @@ describe('bulk indexer', () => {
     ];
     const result = await bulkIndex(payloads);
     expect(result.batchItemFailures).toEqual([]);
-    const roundtrip = await getDocById('corpus_en', 'aaaaa');
+    const roundtrip = await getDocById('corpus_en_luc', 'aaaaa');
     expect(roundtrip.found).toEqual(true);
     expect(roundtrip._source).toMatchObject({
       url: 'http://some-url.com',
@@ -147,7 +147,7 @@ describe('bulk indexer', () => {
     const result = await bulkIndex(payloads);
     expect(result.batchItemFailures).toEqual([]);
     const docs = await Promise.all([
-      getDocById('corpus_en', 'bbbbbbb'),
+      getDocById('corpus_en_luc', 'bbbbbbb'),
       getDocById('corpus_de', 'ccccccc'),
       getDocById('corpus_de', '999rsk'),
       getDocById('corpus_de', '888jsn'),
@@ -215,11 +215,11 @@ describe('bulk indexer', () => {
     beforeAll(() =>
       jest.spyOn(cd, 'createDoc').mockImplementation(() => [
         {
-          meta: { _id: 'abc123', _index: 'corpus_en' },
+          meta: { _id: 'abc123', _index: 'corpus_en_luc' },
           fields: { url: 'http://something.com', _id: 'badfield' } as any,
         },
         {
-          meta: { _id: 'def192', _index: 'corpus_en' },
+          meta: { _id: 'def192', _index: 'corpus_en_luc' },
           fields: { url: 'http://another-thing.com' } as any,
         },
       ]),
@@ -243,7 +243,7 @@ describe('bulk indexer', () => {
       expect(result).toEqual({
         batchItemFailures: [{ itemIdentifier: '123abc' }],
       });
-      const roundtrip = await getDocById('corpus_en', 'def192');
+      const roundtrip = await getDocById('corpus_en_luc', 'def192');
       expect(roundtrip).toMatchObject({
         _id: 'def192',
         found: true,

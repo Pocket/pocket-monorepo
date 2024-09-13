@@ -37,7 +37,8 @@ export class CorpusSearchModel {
   async search(args: QuerySearchCorpusArgs) {
     const embeddingsConfig = config.aws.elasticsearch.corpus.embeddings;
     const lang = args.filter.language.toLowerCase();
-    const semanticEnabled = unleash().isEnabled(
+    const index = config.aws.elasticsearch.corpus.index[lang];
+    const semanticEnabled = (await unleash()).isEnabled(
       config.unleash.flags.semanticSearch.name,
       {
         userId: this.context.encodedId,
@@ -47,7 +48,7 @@ export class CorpusSearchModel {
     );
 
     // Requires language to be supported at baseline
-    if (embeddingsConfig.langSupported[lang] && semanticEnabled) {
+    if (embeddingsConfig.enabledForIndex[index] && semanticEnabled) {
       const res = await semanticSearch(args);
       return this.toGraphQl(res);
     } else {
@@ -65,7 +66,7 @@ export class CorpusSearchModel {
     const edges: CorpusSearchEdge[] = body.hits.hits.map((doc) => ({
       cursor: Paginator.encodeCursor(doc.sort),
       node: {
-        id: doc._source.corpusId,
+        id: doc._id,
         url: doc._source.url,
         searchHighlights: {
           title: doc.highlight?.title ?? null,

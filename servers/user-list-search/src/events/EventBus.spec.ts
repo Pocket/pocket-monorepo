@@ -140,7 +140,7 @@ describe('EventBus', () => {
           scope: 'all_contentful',
           filter: ['excludeCollections'],
         },
-        search_type: 'corpus_en',
+        search_type: 'corpus_en_luc',
       };
       const event = new EventBus(client).buildCorpusSearchResultEvent(
         result,

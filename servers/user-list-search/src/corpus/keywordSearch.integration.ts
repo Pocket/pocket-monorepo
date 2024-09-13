@@ -7,6 +7,8 @@ import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import { print } from 'graphql';
 import { EventBus } from '../events/EventBus';
+import { unleash } from '../datasource/clients';
+import { mockFlags } from '../test/utils/mockUnleashFlags';
 import { config } from '../config';
 
 describe('Corpus search - keyword', () => {
@@ -17,17 +19,18 @@ describe('Corpus search - keyword', () => {
   const eventSpy = jest
     .spyOn(EventBus.prototype, 'sendCorpusSearchResultEvent')
     .mockResolvedValue();
-  // Force keyword search
-  const embeddingsEnabled = config.aws.elasticsearch.corpus.embeddings.enabled;
 
   beforeAll(async () => {
-    config.aws.elasticsearch.corpus.embeddings.enabled = false;
     await deleteDocuments();
     await seedCorpus();
+    await unleash(
+      mockFlags([
+        { name: config.unleash.flags.semanticSearch.name, enabled: false },
+      ]),
+    );
     ({ app, server, url } = await startServer(0));
   });
   afterAll(async () => {
-    config.aws.elasticsearch.corpus.embeddings.enabled = embeddingsEnabled;
     jest.restoreAllMocks();
     await deleteDocuments();
     await server.stop();

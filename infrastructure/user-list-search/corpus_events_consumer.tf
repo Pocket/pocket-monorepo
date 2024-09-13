@@ -108,11 +108,11 @@ data "aws_iam_policy_document" "corpus_events_lambda_execution_policy" {
     # Access to the bulk APIs for the corpus indices
     resources = [
       "${module.corpus_embeddings.opensearch_domain_arn}/_bulk",
-      "${module.corpus_embeddings.opensearch_domain_arn}/corpus_en/_bulk",
-      "${module.corpus_embeddings.opensearch_domain_arn}/corpus_de/_bulk",
-      "${module.corpus_embeddings.opensearch_domain_arn}/corpus_es/_bulk",
-      "${module.corpus_embeddings.opensearch_domain_arn}/corpus_it/_bulk",
-      "${module.corpus_embeddings.opensearch_domain_arn}/corpus_fr/_bulk",
+      "${module.corpus_embeddings.opensearch_domain_arn}/${local.corpus_index_en}/_bulk",
+      "${module.corpus_embeddings.opensearch_domain_arn}/${local.corpus_index_de}/_bulk",
+      "${module.corpus_embeddings.opensearch_domain_arn}/${local.corpus_index_fr}/_bulk",
+      "${module.corpus_embeddings.opensearch_domain_arn}/${local.corpus_index_it}/_bulk",
+      "${module.corpus_embeddings.opensearch_domain_arn}/${local.corpus_index_es}/_bulk",
     ]
   }
 
