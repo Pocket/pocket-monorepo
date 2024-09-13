@@ -7,7 +7,7 @@ export const config = {
   apiEndpoint:
     process.env.CORPUS_SEARCH_HOST || 'http://localhost:4566/user-list-search',
   indexLangMap: {
-    en: process.env.CORPUS_INDEX_EN || 'corpus_en',
+    en: process.env.CORPUS_INDEX_EN || 'corpus_en_luc',
     it: process.env.CORPUS_INDEX_IT || 'corpus_it',
     es: process.env.CORPUS_INDEX_ES || 'corpus_es',
     fr: process.env.CORPUS_INDEX_FR || 'corpus_fr',

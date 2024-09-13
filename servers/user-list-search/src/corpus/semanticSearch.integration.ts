@@ -10,6 +10,9 @@ import request from 'supertest';
 import { print } from 'graphql';
 import { SemanticSearchQueryBuilder } from './CorpusSearchQueryBuilder';
 import { Client } from '@opensearch-project/opensearch';
+import { unleash } from '../datasource/clients';
+import { mockFlags } from '../test/utils/mockUnleashFlags';
+import { config } from '../config';
 
 // Since keyword search query builder uses the same methods
 // and is tested more exhaustively, didn't repeat all the
@@ -29,6 +32,11 @@ describe('Corpus search - semantic', () => {
   const clientMock: any = jest.spyOn(Client.prototype, 'search');
 
   beforeAll(async () => {
+    await unleash(
+      mockFlags([
+        { name: config.unleash.flags.semanticSearch.name, enabled: true },
+      ]),
+    );
     await deleteDocuments();
     await seedCorpus();
     ({ app, server, url } = await startServer(0));

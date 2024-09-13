@@ -14,7 +14,7 @@ export const config = {
   parserEndpoint: process.env.PARSER_ENDPOINT || 'https://parser.com/text',
   privilegedServiceId: process.env.PARSER_PRIVILEGED_SERVICE_ID || 'abc-123',
   indexLangMap: {
-    en: process.env.CORPUS_INDEX_EN || 'corpus_en',
+    en: process.env.CORPUS_INDEX_EN || 'corpus_en_luc',
     it: process.env.CORPUS_INDEX_IT || 'corpus_it',
     es: process.env.CORPUS_INDEX_ES || 'corpus_es',
     fr: process.env.CORPUS_INDEX_FR || 'corpus_fr',

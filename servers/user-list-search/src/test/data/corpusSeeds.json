@@ -1,7 +1,7 @@
 [
   {
     "create": {
-      "_index": "corpus_en",
+      "_index": "corpus_en_luc",
       "_id": "1e445f3d-14db-4fc8-aa53-cc0c7c776133"
     }
   },
@@ -31,7 +31,7 @@
   },
   {
     "create": {
-      "_index": "corpus_en",
+      "_index": "corpus_en_luc",
       "_id": "40a8c742-4af5-4891-9e34-835d24c77c97"
     }
   },
@@ -61,7 +61,7 @@
   },
   {
     "create": {
-      "_index": "corpus_en",
+      "_index": "corpus_en_luc",
       "_id": "bcfda8e1-b4cf-4d15-a72e-605e1188119c"
     }
   },
@@ -172,7 +172,7 @@
   },
   {
     "create": {
-      "_index": "corpus_en",
+      "_index": "corpus_en_luc",
       "_id": "5cd02276-00e0-4260-9aa0-8cb27f11c498"
     }
   },
@@ -226,7 +226,7 @@
   },
   {
     "create": {
-      "_index": "corpus_en",
+      "_index": "corpus_en_luc",
       "_id": "9b99858e-9247-4a37-ab78-91710a73927b"
     }
   },
@@ -283,7 +283,7 @@
   },
   {
     "create": {
-      "_index": "corpus_en",
+      "_index": "corpus_en_luc",
       "_id": "5e43ea9f-095b-48f0-8eb1-2ac6c594288b"
     }
   },
@@ -312,7 +312,7 @@
   },
   {
     "create": {
-      "_index": "corpus_en",
+      "_index": "corpus_en_luc",
       "_id": "0c7b3f3e-8a44-44d4-8667-b6fe220a297f"
     }
   },
@@ -342,7 +342,7 @@
   },
   {
     "create": {
-      "_index": "corpus_en",
+      "_index": "corpus_en_luc",
       "_id": "53213fcb-e529-411e-a897-a9fc30314a3b"
     }
   },
@@ -372,7 +372,7 @@
   },
   {
     "create": {
-      "_index": "corpus_en",
+      "_index": "corpus_en_luc",
       "_id": "c1f5b81c-3fef-4ea7-a4d1-5c931071b8f0"
     }
   },
@@ -402,7 +402,7 @@
   },
   {
     "create": {
-      "_index": "corpus_en",
+      "_index": "corpus_en_luc",
       "_id": "f577ba11-ccea-40e1-ada5-20d2bc41db14"
     }
   },

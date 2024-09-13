@@ -80,10 +80,10 @@ describe('bulk indexer', () => {
   });
   it('parses and makes request for example SQS message successfully from root handler, with partial success', async () => {
     const seed = [
-      { id: '78d3d5f3-4bad-4214-bb27-5c2ea908422c', index: 'corpus_en' },
-      { id: '676defd9-a947-4955-8433-c395750d8551', index: 'corpus_en' },
-      { id: '3ab75776-42a1-4a54-a6d2-032fbec195eb', index: 'corpus_en' },
-      { id: '599b49e5-c91f-47d8-a6d3-1ce2cb520acc', index: 'corpus_en' },
+      { id: '78d3d5f3-4bad-4214-bb27-5c2ea908422c', index: 'corpus_en_luc' },
+      { id: '676defd9-a947-4955-8433-c395750d8551', index: 'corpus_en_luc' },
+      { id: '3ab75776-42a1-4a54-a6d2-032fbec195eb', index: 'corpus_en_luc' },
+      { id: '599b49e5-c91f-47d8-a6d3-1ce2cb520acc', index: 'corpus_en_luc' },
     ];
     await seedDocuments(seed);
     // Setup (scope makes it easier to do inside function)
@@ -118,9 +118,9 @@ describe('bulk indexer', () => {
     // Test invocation
     const processorRes = await processor(exampleInvocationPayload);
     const roundtrip = await Promise.all([
-      getDocById('corpus_en', '78d3d5f3-4bad-4214-bb27-5c2ea908422c'), // the only collection story in first collection
-      getDocById('corpus_en', '676defd9-a947-4955-8433-c395750d8551'), // the third collection story in second collection (spot-check)
-      getDocById('corpus_en', '3ab75776-42a1-4a54-a6d2-032fbec195eb'), // the approved item
+      getDocById('corpus_en_luc', '78d3d5f3-4bad-4214-bb27-5c2ea908422c'), // the only collection story in first collection
+      getDocById('corpus_en_luc', '676defd9-a947-4955-8433-c395750d8551'), // the third collection story in second collection (spot-check)
+      getDocById('corpus_en_luc', '3ab75776-42a1-4a54-a6d2-032fbec195eb'), // the approved item
     ]);
     expect(roundtrip).toEqual([
       expect.objectContaining({
@@ -146,10 +146,10 @@ describe('bulk indexer', () => {
   });
   it('filters out failed parser responses and consolidates message ids', async () => {
     const seed = [
-      { id: '78d3d5f3-4bad-4214-bb27-5c2ea908422c', index: 'corpus_en' },
-      { id: '3ab75776-42a1-4a54-a6d2-032fbec195eb', index: 'corpus_en' },
-      { id: '310b6ea8-9206-3e85-2b18-f3c936737182', index: 'corpus_en' },
-      { id: '599b49e5-c91f-47d8-a6d3-1ce2cb520acc', index: 'corpus_en' },
+      { id: '78d3d5f3-4bad-4214-bb27-5c2ea908422c', index: 'corpus_en_luc' },
+      { id: '3ab75776-42a1-4a54-a6d2-032fbec195eb', index: 'corpus_en_luc' },
+      { id: '310b6ea8-9206-3e85-2b18-f3c936737182', index: 'corpus_en_luc' },
+      { id: '599b49e5-c91f-47d8-a6d3-1ce2cb520acc', index: 'corpus_en_luc' },
     ];
     await seedDocuments(seed);
     // Setup (scope makes it easier to do inside function)
@@ -208,7 +208,7 @@ describe('bulk indexer', () => {
     // Test invocation
     const processorRes = await processor(exampleInvocationPayload);
     const roundtrip = await Promise.all([
-      getDocById('corpus_en', '78d3d5f3-4bad-4214-bb27-5c2ea908422c'), // the only collection story in first collection
+      getDocById('corpus_en_luc', '78d3d5f3-4bad-4214-bb27-5c2ea908422c'), // the only collection story in first collection
     ]);
     expect(roundtrip).toEqual([
       expect.objectContaining({
