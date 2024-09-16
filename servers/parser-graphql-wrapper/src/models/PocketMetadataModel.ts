@@ -49,7 +49,6 @@ export class PocketMetadataModel {
   ): Promise<PocketMetadata> {
     const { syndicatedArticle, collection, corpusItem } = extraData;
     const url = item.givenUrl; // the url we are going to key everything on.
-
     const syndicatedArticlePocketMetadata = this.transformSyndicatedArticle(
       item,
       syndicatedArticle,
