@@ -28,7 +28,13 @@ export const resolvers: Resolvers = {
   ...PocketDefaultScalars,
   CorpusSearchNode: {
     __resolveReference: async (representation, context) => {
-      const item = await itemFromUrl(representation.url, context);
+      const item = {
+        ...(await itemFromUrl(representation.url, context)),
+        // If the item comes in via representation, via Federation, lets spread its contents into the data we got from the parser
+        // this item will have curation, synidcation, collection, corpusItem, etc.
+        ...('item' in representation ? (representation.item as Item) : {}),
+      };
+
       const preview =
         await context.dataSources.pocketMetadataModel.derivePocketMetadata(
           item,
@@ -41,6 +47,7 @@ export const resolvers: Resolvers = {
           },
         );
       return {
+        item,
         url: representation.url,
         preview,
       };

@@ -132,7 +132,9 @@ export type CorpusItemAuthor = {
 /** A node in a CorpusSearchConnection result */
 export type CorpusSearchNode = {
   __typename?: 'CorpusSearchNode';
-  /** The preview of the search result */
+  /** Attaches the item so we can use the preview field */
+  item?: Maybe<Item>;
+  /** The preview of the search result, the @requires fields must be kept in sync with the preview field in the Item entity */
   preview: PocketMetadata;
   /** For federation only */
   url: Scalars['Url']['output'];
@@ -741,7 +743,7 @@ export type ResolversUnionTypes<_RefType extends Record<string, unknown>> = Reso
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = ResolversObject<{
   ListElement: ( BulletedListElement ) | ( NumberedListElement );
-  PocketMetadata: ( Omit<ItemSummary, 'item'> & { item?: Maybe<_RefType['Item']> } ) | ( Omit<OEmbed, 'item'> & { item?: Maybe<_RefType['Item']> } );
+  PocketMetadata: ( Omit<ItemSummary, 'authors' | 'item'> & { authors?: Maybe<Array<_RefType['Author']>>, item?: Maybe<_RefType['Item']> } ) | ( Omit<OEmbed, 'authors' | 'item'> & { authors?: Maybe<Array<_RefType['Author']>>, item?: Maybe<_RefType['Item']> } );
 }>;
 
 /** Mapping between all available schema types and the resolvers types */
@@ -757,17 +759,17 @@ export type ResolversTypes = ResolversObject<{
   CollectionAuthor: ResolverTypeWrapper<CollectionAuthor>;
   CorpusItem: ResolverTypeWrapper<Omit<CorpusItem, 'preview'> & { preview: ResolversTypes['PocketMetadata'] }>;
   CorpusItemAuthor: ResolverTypeWrapper<CorpusItemAuthor>;
-  CorpusSearchNode: ResolverTypeWrapper<Omit<CorpusSearchNode, 'preview'> & { preview: ResolversTypes['PocketMetadata'] }>;
+  CorpusSearchNode: ResolverTypeWrapper<Omit<CorpusSearchNode, 'item' | 'preview'> & { item?: Maybe<ResolversTypes['Item']>, preview: ResolversTypes['PocketMetadata'] }>;
   Date: ResolverTypeWrapper<Scalars['Date']['output']>;
   DateString: ResolverTypeWrapper<Scalars['DateString']['output']>;
   DomainMetadata: ResolverTypeWrapper<DomainMetadata>;
   ISOString: ResolverTypeWrapper<Scalars['ISOString']['output']>;
   Image: ResolverTypeWrapper<Image>;
   Imageness: Imageness;
-  Item: ResolverTypeWrapper<Omit<Item, 'collection' | 'corpusItem' | 'marticle' | 'preview' | 'syndicatedArticle'> & { collection?: Maybe<ResolversTypes['Collection']>, corpusItem?: Maybe<ResolversTypes['CorpusItem']>, marticle?: Maybe<Array<ResolversTypes['MarticleComponent']>>, preview?: Maybe<ResolversTypes['PocketMetadata']>, syndicatedArticle?: Maybe<ResolversTypes['SyndicatedArticle']> }>;
+  Item: ResolverTypeWrapper<Omit<Item, 'authors' | 'collection' | 'corpusItem' | 'marticle' | 'preview' | 'syndicatedArticle'> & { authors?: Maybe<Array<Maybe<ResolversTypes['Author']>>>, collection?: Maybe<ResolversTypes['Collection']>, corpusItem?: Maybe<ResolversTypes['CorpusItem']>, marticle?: Maybe<Array<ResolversTypes['MarticleComponent']>>, preview?: Maybe<ResolversTypes['PocketMetadata']>, syndicatedArticle?: Maybe<ResolversTypes['SyndicatedArticle']> }>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   ItemNotFound: ResolverTypeWrapper<ItemNotFound>;
-  ItemSummary: ResolverTypeWrapper<Omit<ItemSummary, 'item'> & { item?: Maybe<ResolversTypes['Item']> }>;
+  ItemSummary: ResolverTypeWrapper<Omit<ItemSummary, 'authors' | 'item'> & { authors?: Maybe<Array<ResolversTypes['Author']>>, item?: Maybe<ResolversTypes['Item']> }>;
   ListElement: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['ListElement']>;
   Markdown: ResolverTypeWrapper<Scalars['Markdown']['output']>;
   MarkdownImagePosition: ResolverTypeWrapper<MarkdownImagePosition>;
@@ -782,7 +784,7 @@ export type ResolversTypes = ResolversObject<{
   MarticleText: ResolverTypeWrapper<MarticleText>;
   Mutation: ResolverTypeWrapper<{}>;
   NumberedListElement: ResolverTypeWrapper<NumberedListElement>;
-  OEmbed: ResolverTypeWrapper<Omit<OEmbed, 'item'> & { item?: Maybe<ResolversTypes['Item']> }>;
+  OEmbed: ResolverTypeWrapper<Omit<OEmbed, 'authors' | 'item'> & { authors?: Maybe<Array<ResolversTypes['Author']>>, item?: Maybe<ResolversTypes['Item']> }>;
   OEmbedType: OEmbedType;
   PocketMetadata: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['PocketMetadata']>;
   PocketMetadataSource: PocketMetadataSource;
@@ -813,16 +815,16 @@ export type ResolversParentTypes = ResolversObject<{
   CollectionAuthor: CollectionAuthor;
   CorpusItem: Omit<CorpusItem, 'preview'> & { preview: ResolversParentTypes['PocketMetadata'] };
   CorpusItemAuthor: CorpusItemAuthor;
-  CorpusSearchNode: Omit<CorpusSearchNode, 'preview'> & { preview: ResolversParentTypes['PocketMetadata'] };
+  CorpusSearchNode: Omit<CorpusSearchNode, 'item' | 'preview'> & { item?: Maybe<ResolversParentTypes['Item']>, preview: ResolversParentTypes['PocketMetadata'] };
   Date: Scalars['Date']['output'];
   DateString: Scalars['DateString']['output'];
   DomainMetadata: DomainMetadata;
   ISOString: Scalars['ISOString']['output'];
   Image: Image;
-  Item: Omit<Item, 'collection' | 'corpusItem' | 'marticle' | 'preview' | 'syndicatedArticle'> & { collection?: Maybe<ResolversParentTypes['Collection']>, corpusItem?: Maybe<ResolversParentTypes['CorpusItem']>, marticle?: Maybe<Array<ResolversParentTypes['MarticleComponent']>>, preview?: Maybe<ResolversParentTypes['PocketMetadata']>, syndicatedArticle?: Maybe<ResolversParentTypes['SyndicatedArticle']> };
+  Item: Omit<Item, 'authors' | 'collection' | 'corpusItem' | 'marticle' | 'preview' | 'syndicatedArticle'> & { authors?: Maybe<Array<Maybe<ResolversParentTypes['Author']>>>, collection?: Maybe<ResolversParentTypes['Collection']>, corpusItem?: Maybe<ResolversParentTypes['CorpusItem']>, marticle?: Maybe<Array<ResolversParentTypes['MarticleComponent']>>, preview?: Maybe<ResolversParentTypes['PocketMetadata']>, syndicatedArticle?: Maybe<ResolversParentTypes['SyndicatedArticle']> };
   Boolean: Scalars['Boolean']['output'];
   ItemNotFound: ItemNotFound;
-  ItemSummary: Omit<ItemSummary, 'item'> & { item?: Maybe<ResolversParentTypes['Item']> };
+  ItemSummary: Omit<ItemSummary, 'authors' | 'item'> & { authors?: Maybe<Array<ResolversParentTypes['Author']>>, item?: Maybe<ResolversParentTypes['Item']> };
   ListElement: ResolversInterfaceTypes<ResolversParentTypes>['ListElement'];
   Markdown: Scalars['Markdown']['output'];
   MarkdownImagePosition: MarkdownImagePosition;
@@ -837,7 +839,7 @@ export type ResolversParentTypes = ResolversObject<{
   MarticleText: MarticleText;
   Mutation: {};
   NumberedListElement: NumberedListElement;
-  OEmbed: Omit<OEmbed, 'item'> & { item?: Maybe<ResolversParentTypes['Item']> };
+  OEmbed: Omit<OEmbed, 'authors' | 'item'> & { authors?: Maybe<Array<ResolversParentTypes['Author']>>, item?: Maybe<ResolversParentTypes['Item']> };
   PocketMetadata: ResolversInterfaceTypes<ResolversParentTypes>['PocketMetadata'];
   PocketShare: Omit<PocketShare, 'preview'> & { preview?: Maybe<ResolversParentTypes['PocketMetadata']> };
   Publisher: Publisher;
@@ -919,6 +921,7 @@ export type CorpusItemAuthorResolvers<ContextType = IContext, ParentType extends
 
 export type CorpusSearchNodeResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['CorpusSearchNode'] = ResolversParentTypes['CorpusSearchNode']> = ResolversObject<{
   __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['CorpusSearchNode']>, { __typename: 'CorpusSearchNode' } & GraphQLRecursivePick<ParentType, {"url":true}>, ContextType>;
+  item?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType>;
   preview?: Resolver<ResolversTypes['PocketMetadata'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['Url'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

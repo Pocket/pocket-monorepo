@@ -627,10 +627,18 @@ type CorpusSearchNode @key(fields: "url") {
   For federation only
   """
   url: Url! @inaccessible
+
   """
-  The preview of the search result
+  Attaches the item so we can use the preview field
   """
-  preview: PocketMetadata!
+  item: Item
+
+  """
+  The preview of the search result, the @requires fields must be kept in sync with the preview field in the Item entity
+  """
+  preview: PocketMetadata! @requires(
+      fields: "item { syndicatedArticle { title excerpt mainImage publishedAt authorNames publisherUrl publisher { logo name } } collection { title excerpt publishedAt authors { name } imageUrl } corpusItem { title excerpt datePublished publisher image { url } authors { name sortOrder } } }"
+    )
 }
 
 extend type SyndicatedArticle @key(fields: "slug") {
