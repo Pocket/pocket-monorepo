@@ -41,6 +41,7 @@ export const resolvers: Resolvers = {
           },
         );
       return {
+        item,
         url: representation.url,
         preview,
       };
