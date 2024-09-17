@@ -585,6 +585,11 @@ export type SyndicatedArticle = {
   authorNames: Array<Maybe<Scalars['String']['output']>>;
   /** Excerpt  */
   excerpt?: Maybe<Scalars['String']['output']>;
+  /**
+   * The Item entity representing the original content this was
+   * syndicated from.
+   */
+  item: Item;
   /** Primary image to use in surfacing this content */
   mainImage?: Maybe<Scalars['String']['output']>;
   /** The preview of the syndicated article */
@@ -794,7 +799,7 @@ export type ResolversTypes = ResolversObject<{
   ReaderFallback: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['ReaderFallback']>;
   ReaderInterstitial: ResolverTypeWrapper<Omit<ReaderInterstitial, 'itemCard'> & { itemCard?: Maybe<ResolversTypes['PocketMetadata']> }>;
   ReaderViewResult: ResolverTypeWrapper<Omit<ReaderViewResult, 'fallbackPage'> & { fallbackPage?: Maybe<ResolversTypes['ReaderFallback']> }>;
-  SyndicatedArticle: ResolverTypeWrapper<Omit<SyndicatedArticle, 'preview'> & { preview: ResolversTypes['PocketMetadata'] }>;
+  SyndicatedArticle: ResolverTypeWrapper<Omit<SyndicatedArticle, 'item' | 'preview'> & { item: ResolversTypes['Item'], preview: ResolversTypes['PocketMetadata'] }>;
   UnMarseable: ResolverTypeWrapper<UnMarseable>;
   Url: ResolverTypeWrapper<Scalars['Url']['output']>;
   ValidUrl: ResolverTypeWrapper<Scalars['ValidUrl']['output']>;
@@ -847,7 +852,7 @@ export type ResolversParentTypes = ResolversObject<{
   ReaderFallback: ResolversUnionTypes<ResolversParentTypes>['ReaderFallback'];
   ReaderInterstitial: Omit<ReaderInterstitial, 'itemCard'> & { itemCard?: Maybe<ResolversParentTypes['PocketMetadata']> };
   ReaderViewResult: Omit<ReaderViewResult, 'fallbackPage'> & { fallbackPage?: Maybe<ResolversParentTypes['ReaderFallback']> };
-  SyndicatedArticle: Omit<SyndicatedArticle, 'preview'> & { preview: ResolversParentTypes['PocketMetadata'] };
+  SyndicatedArticle: Omit<SyndicatedArticle, 'item' | 'preview'> & { item: ResolversParentTypes['Item'], preview: ResolversParentTypes['PocketMetadata'] };
   UnMarseable: UnMarseable;
   Url: Scalars['Url']['output'];
   ValidUrl: Scalars['ValidUrl']['output'];
@@ -1170,15 +1175,16 @@ export type ReaderViewResultResolvers<ContextType = IContext, ParentType extends
 }>;
 
 export type SyndicatedArticleResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['SyndicatedArticle'] = ResolversParentTypes['SyndicatedArticle']> = ResolversObject<{
-  __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['SyndicatedArticle']>, { __typename: 'SyndicatedArticle' } & GraphQLRecursivePick<ParentType, {"slug":true}>, ContextType>;
+  __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['SyndicatedArticle']>, { __typename: 'SyndicatedArticle' } & GraphQLRecursivePick<ParentType, {"slug":true,"publisherUrl":true}>, ContextType>;
 
 
+  item?: Resolver<ResolversTypes['Item'], { __typename: 'SyndicatedArticle' } & GraphQLRecursivePick<ParentType, {"slug":true,"publisherUrl":true}>, ContextType>;
 
-  preview?: Resolver<ResolversTypes['PocketMetadata'], { __typename: 'SyndicatedArticle' } & GraphQLRecursivePick<ParentType, {"slug":true}> & GraphQLRecursivePick<ParentType, {"title":true,"excerpt":true,"mainImage":true,"publishedAt":true,"authorNames":true,"publisherUrl":true,"publisher":{"logo":true,"name":true}}>, ContextType>;
+  preview?: Resolver<ResolversTypes['PocketMetadata'], { __typename: 'SyndicatedArticle' } & GraphQLRecursivePick<ParentType, {"slug":true,"publisherUrl":true}> & GraphQLRecursivePick<ParentType, {"title":true,"excerpt":true,"mainImage":true,"publishedAt":true,"authorNames":true,"publisherUrl":true,"publisher":{"logo":true,"name":true}}>, ContextType>;
 
 
-
-  slug?: Resolver<Maybe<ResolversTypes['String']>, { __typename: 'SyndicatedArticle' } & GraphQLRecursivePick<ParentType, {"slug":true}>, ContextType>;
+  publisherUrl?: Resolver<ResolversTypes['String'], { __typename: 'SyndicatedArticle' } & GraphQLRecursivePick<ParentType, {"slug":true,"publisherUrl":true}>, ContextType>;
+  slug?: Resolver<Maybe<ResolversTypes['String']>, { __typename: 'SyndicatedArticle' } & GraphQLRecursivePick<ParentType, {"slug":true,"publisherUrl":true}>, ContextType>;
 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;

@@ -641,9 +641,12 @@ type CorpusSearchNode @key(fields: "url") {
     )
 }
 
-extend type SyndicatedArticle @key(fields: "slug") {
+extend type SyndicatedArticle @key(fields: "slug publisherUrl") {
   "Slug that pocket uses for this article in the url"
   slug: String
+
+  "The canonical publisher URL. Automatically set at time of creation but can be changed by editor."
+  publisherUrl: String!
 
   "Title of syndicated article"
   title: String! @external
@@ -659,9 +662,6 @@ extend type SyndicatedArticle @key(fields: "slug") {
   "Excerpt "
   excerpt: String @external
 
-  "The canonical publisher URL. Automatically set at time of creation but can be changed by editor."
-  publisherUrl: String! @external
-
   "The manually set publisher information for this article"
   publisher: Publisher @external
 
@@ -670,8 +670,14 @@ extend type SyndicatedArticle @key(fields: "slug") {
   """
   preview: PocketMetadata!
     @requires(
-      fields: "title excerpt mainImage publishedAt authorNames publisherUrl publisher { logo name }"
+      fields: "title excerpt mainImage publishedAt authorNames publisher { logo name }"
     )
+  
+  """
+  The Item entity representing the original content this was
+  syndicated from.
+  """
+  item: Item!
 }
 
 
