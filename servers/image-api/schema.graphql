@@ -35,7 +35,7 @@ enum ImageFileType {
 Set of parameters that will be used to change an image
 """
 input CachedImageInput {
-  "Id of the image in the returned result set"
+  "ID that will be added to the generated response object so you can find it. NOTE: Can be any string that you like, it will be added to the response so you can use it when consuming it"
   id: ID!
 
   "Quality of the image in whole percentage, 100 = full, quality 50 = half quality"
