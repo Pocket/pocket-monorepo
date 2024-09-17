@@ -677,7 +677,7 @@ extend type SyndicatedArticle @key(fields: "slug publisherUrl") {
   The Item entity representing the original content this was
   syndicated from.
   """
-  item: Item!
+  originalItem: Item!
 }
 
 

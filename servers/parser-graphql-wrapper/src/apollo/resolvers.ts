@@ -298,7 +298,7 @@ export const resolvers: Resolvers = {
         );
       return { ...preview, item };
     },
-    item: async (parent, args, context, info) => {
+    originalItem: async (parent, args, context, info) => {
       // Setting the cache hint manually here because when the gateway(Client API) resolves an item using this
       // Parser service, it does not respect the cacheHints on the schema types.
       // NOTE: The cache hint value for resolving the reference should always be the same as the cache hint on the type
