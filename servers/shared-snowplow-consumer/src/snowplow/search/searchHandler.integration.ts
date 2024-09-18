@@ -50,7 +50,7 @@ describe('PocketSearchEventHandler', () => {
   });
   it.each([
     {
-      detail: { event },
+      detail: event,
       source: 'search-api-events' as const,
       'detail-type': 'search_response_generated' as const,
     },
@@ -67,9 +67,9 @@ describe('PocketSearchEventHandler', () => {
     expect(goodEvent.event.app_id).toEqual('pocket-search-api');
     expect(goodEvent.event.event_name).toEqual('search_response_event');
     const description = parseSnowplowData(goodEvent.rawEvent.parameters.ue_px);
-    expect(description.data.data).toEqual(event.detail.event.search);
+    expect(description.data.data).toEqual(event.detail.search);
     const eventContext = parseSnowplowData(goodEvent.rawEvent.parameters.cx);
-    expect(eventContext.data[0].data).toEqual(event.detail.event.apiUser);
-    expect(eventContext.data[1].data).toEqual(event.detail.event.user);
+    expect(eventContext.data[0].data).toEqual(event.detail.apiUser);
+    expect(eventContext.data[1].data).toEqual(event.detail.user);
   });
 });

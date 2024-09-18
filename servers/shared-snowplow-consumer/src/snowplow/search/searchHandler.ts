@@ -24,10 +24,10 @@ export class PocketSearchEventHandler extends EventHandler {
    */
   process(data: PocketSearchPayload): void {
     const context = [
-      createAPIUser(data.detail.event.apiUser),
-      createUser(data.detail.event.user),
+      createAPIUser(data.detail.apiUser),
+      createUser(data.detail.user),
     ];
-    const searchPayload = { ...data.detail.event.search, context };
+    const searchPayload = { ...data.detail.search, context };
     trackSearchResultSpec(this.tracker, searchPayload);
   }
 }
