@@ -550,7 +550,7 @@ type CorpusSearchNode @key(fields: "url") {
   """
   url: Url! @inaccessible
   """
-  The preview of the search result
+  Attaches the item so we can use the preview field
   """
-  preview: PocketMetadata!
+  item: Item
 }

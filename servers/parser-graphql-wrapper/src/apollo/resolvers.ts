@@ -26,33 +26,6 @@ import { isInResolverChain } from './utils';
 
 export const resolvers: Resolvers = {
   ...PocketDefaultScalars,
-  CorpusSearchNode: {
-    __resolveReference: async (representation, context) => {
-      const item = {
-        ...(await itemFromUrl(representation.url, context)),
-        // If the item comes in via representation, via Federation, lets spread its contents into the data we got from the parser
-        // this item will have curation, synidcation, collection, corpusItem, etc.
-        ...('item' in representation ? (representation.item as Item) : {}),
-      };
-
-      const preview =
-        await context.dataSources.pocketMetadataModel.derivePocketMetadata(
-          item,
-          context,
-          false,
-          {
-            syndicatedArticle: item.syndicatedArticle,
-            collection: item.collection,
-            corpusItem: item.corpusItem,
-          },
-        );
-      return {
-        item,
-        url: representation.url,
-        preview,
-      };
-    },
-  },
   Item: {
     __resolveReference: async (item, context, info) => {
       // Setting the cache hint manually here because when the gateway(Client API) resolves an item using this
@@ -181,6 +154,11 @@ export const resolvers: Resolvers = {
           },
         );
       return { ...preview, item: parent as Item };
+    },
+  },
+  CorpusSearchNode: {
+    item: async ({ url }, args, context) => {
+      return await itemFromUrl(url, context);
     },
   },
   MarticleComponent: {
