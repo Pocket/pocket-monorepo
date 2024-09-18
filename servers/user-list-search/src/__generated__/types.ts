@@ -163,7 +163,11 @@ export type CorpusSearchQueryString = {
   query: Scalars['String']['input'];
 };
 
-/** Sort scheme for Corpus Search. Defaults to showing most relevant results first. */
+/**
+ * Sort scheme for Corpus Search. Defaults to showing most relevant results first.
+ * Only relevant for indices which use keyword search.
+ * **Semantic search will ignore any inputs and use default only.**
+ */
 export type CorpusSearchSort = {
   sortBy: CorpusSearchSortBy;
   sortOrder?: InputMaybe<SearchItemsSortOrder>;
@@ -292,7 +296,12 @@ export type PaginationInput = {
 
 export type Query = {
   __typename?: 'Query';
-  /** Search Pocket's corpus of recommendations and collections. */
+  /**
+   * Search Pocket's corpus of recommendations and collections.
+   * Note that sort will have no effect unless using keyword
+   * semantic search will always be returned in relevance order
+   * (most relevant first).
+   */
   searchCorpus?: Maybe<CorpusSearchConnection>;
 };
 

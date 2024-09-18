@@ -154,7 +154,7 @@ export type CachedImageInput = {
   fileType?: InputMaybe<ImageFileType>;
   /** Height of the image */
   height?: InputMaybe<Scalars['Int']['input']>;
-  /** Id of the image in the returned result set */
+  /** ID that will be added to the generated response object so you can find it. NOTE: Can be any string that you like, it will be added to the response so you can use it when consuming it */
   id: Scalars['ID']['input'];
   /** Quality of the image in whole percentage, 100 = full, quality 50 = half quality */
   qualityPercentage?: InputMaybe<Scalars['Int']['input']>;
@@ -303,6 +303,8 @@ export type CorpusItem = {
   image: Image;
   /** The image URL for this item's accompanying picture. */
   imageUrl: Scalars['Url']['output'];
+  /** Experimental data point that could imply either an expiry date or an urgency to be shown. */
+  isTimeSensitive: Scalars['Boolean']['output'];
   /** What language this item is in. This is a two-letter code, for example, 'EN' for English. */
   language: CorpusLanguage;
   /** The preview of the search result */
@@ -455,7 +457,9 @@ export type CorpusSearchHighlights = {
 /** A node in a CorpusSearchConnection result */
 export type CorpusSearchNode = {
   __typename?: 'CorpusSearchNode';
-  /** The preview of the search result */
+  /** Attaches the item so we can use the preview field */
+  item?: Maybe<Item>;
+  /** The preview of the search result, the @requires fields must be kept in sync with the preview field in the Item entity */
   preview: PocketMetadata;
   /** Search highlights */
   searchHighlights?: Maybe<CorpusSearchHighlights>;
@@ -473,7 +477,11 @@ export type CorpusSearchQueryString = {
   query: Scalars['String']['input'];
 };
 
-/** Sort scheme for Corpus Search. Defaults to showing most relevant results first. */
+/**
+ * Sort scheme for Corpus Search. Defaults to showing most relevant results first.
+ * Only relevant for indices which use keyword search.
+ * **Semantic search will ignore any inputs and use default only.**
+ */
 export type CorpusSearchSort = {
   sortBy: CorpusSearchSortBy;
   sortOrder?: InputMaybe<SearchItemsSortOrder>;
@@ -2174,7 +2182,12 @@ export type Query = {
   /** List all topics that the user can express a preference for. */
   recommendationPreferenceTopics: Array<Topic>;
   scheduledSurface: ScheduledSurface;
-  /** Search Pocket's corpus of recommendations and collections. */
+  /**
+   * Search Pocket's corpus of recommendations and collections.
+   * Note that sort will have no effect unless using keyword
+   * semantic search will always be returned in relevance order
+   * (most relevant first).
+   */
   searchCorpus?: Maybe<CorpusSearchConnection>;
   /**
    * Resolve data for a Shared link, or return a Not Found
@@ -3312,6 +3325,11 @@ export type SyndicatedArticle = {
   localeLanguage?: Maybe<Scalars['String']['output']>;
   /** Primary image to use in surfacing this content */
   mainImage?: Maybe<Scalars['String']['output']>;
+  /**
+   * The Item entity representing the original content this was
+   * syndicated from.
+   */
+  originalItem: Item;
   /** The item id of the article we cloned */
   originalItemId: Scalars['ID']['output'];
   /** The preview of the syndicated article */
@@ -3320,6 +3338,7 @@ export type SyndicatedArticle = {
   publishedAt: Scalars['String']['output'];
   /** The manually set publisher information for this article */
   publisher?: Maybe<Publisher>;
+  /** The canonical publisher URL. Automatically set at time of creation but can be changed by editor. */
   publisherUrl: Scalars['String']['output'];
   /** Recommend similar syndicated articles. */
   relatedEndOfArticle: Array<CorpusRecommendation>;
