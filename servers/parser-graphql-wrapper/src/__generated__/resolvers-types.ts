@@ -134,8 +134,6 @@ export type CorpusSearchNode = {
   __typename?: 'CorpusSearchNode';
   /** Attaches the item so we can use the preview field */
   item?: Maybe<Item>;
-  /** The preview of the search result, the @requires fields must be kept in sync with the preview field in the Item entity */
-  preview: PocketMetadata;
   /** For federation only */
   url: Scalars['Url']['output'];
 };
@@ -764,7 +762,7 @@ export type ResolversTypes = ResolversObject<{
   CollectionAuthor: ResolverTypeWrapper<CollectionAuthor>;
   CorpusItem: ResolverTypeWrapper<Omit<CorpusItem, 'preview'> & { preview: ResolversTypes['PocketMetadata'] }>;
   CorpusItemAuthor: ResolverTypeWrapper<CorpusItemAuthor>;
-  CorpusSearchNode: ResolverTypeWrapper<Omit<CorpusSearchNode, 'item' | 'preview'> & { item?: Maybe<ResolversTypes['Item']>, preview: ResolversTypes['PocketMetadata'] }>;
+  CorpusSearchNode: ResolverTypeWrapper<Omit<CorpusSearchNode, 'item'> & { item?: Maybe<ResolversTypes['Item']> }>;
   Date: ResolverTypeWrapper<Scalars['Date']['output']>;
   DateString: ResolverTypeWrapper<Scalars['DateString']['output']>;
   DomainMetadata: ResolverTypeWrapper<DomainMetadata>;
@@ -820,7 +818,7 @@ export type ResolversParentTypes = ResolversObject<{
   CollectionAuthor: CollectionAuthor;
   CorpusItem: Omit<CorpusItem, 'preview'> & { preview: ResolversParentTypes['PocketMetadata'] };
   CorpusItemAuthor: CorpusItemAuthor;
-  CorpusSearchNode: Omit<CorpusSearchNode, 'item' | 'preview'> & { item?: Maybe<ResolversParentTypes['Item']>, preview: ResolversParentTypes['PocketMetadata'] };
+  CorpusSearchNode: Omit<CorpusSearchNode, 'item'> & { item?: Maybe<ResolversParentTypes['Item']> };
   Date: Scalars['Date']['output'];
   DateString: Scalars['DateString']['output'];
   DomainMetadata: DomainMetadata;
@@ -927,7 +925,6 @@ export type CorpusItemAuthorResolvers<ContextType = IContext, ParentType extends
 export type CorpusSearchNodeResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['CorpusSearchNode'] = ResolversParentTypes['CorpusSearchNode']> = ResolversObject<{
   __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['CorpusSearchNode']>, { __typename: 'CorpusSearchNode' } & GraphQLRecursivePick<ParentType, {"url":true}>, ContextType>;
   item?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType>;
-  preview?: Resolver<ResolversTypes['PocketMetadata'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['Url'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
