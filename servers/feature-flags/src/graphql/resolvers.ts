@@ -73,7 +73,7 @@ const convertToUnleashAssignment = (
       name: toggle.name,
       assigned: variant.enabled,
       variant: variant.name,
-      payload: variant.payload.value,
+      payload: variant.payload?.value,
     };
   });
 };
