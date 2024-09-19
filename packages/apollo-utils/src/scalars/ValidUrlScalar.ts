@@ -29,7 +29,7 @@ export const GraphQLValidUrl = /*#__PURE__*/ new GraphQLScalarType({
       );
     }
 
-    if (ast.value === null) {
+    if (ast.value == null) {
       return null;
     } else {
       return new URL(ast.value.toString());

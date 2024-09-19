@@ -10,7 +10,7 @@ const defaultLogger: Logger = createLogger();
 // if userid header used, inject it into HTTP request logs
 token('req-userid', function (req, _res) {
   const userid: string | string[] | null = req.headers.userid || null;
-  if (userid === null) {
+  if (userid == null) {
     return undefined;
   }
   return userid.toString();
@@ -20,7 +20,7 @@ token('req-userid', function (req, _res) {
 token('req-requestId', function (req, _res) {
   const requestId: string | string[] | null =
     req.headers['x-graph-request-id'] || null;
-  if (requestId === null) {
+  if (requestId == null) {
     return undefined;
   }
   return requestId.toString();
@@ -29,7 +29,7 @@ token('req-requestId', function (req, _res) {
 // if traceId header used, inject it into HTTP request logs
 token('req-traceId', function (req, _res) {
   const traceId: string | string[] | null = req.headers['x-amzn-trace'] || null;
-  if (traceId === null) {
+  if (traceId == null) {
     return undefined;
   }
   return traceId.toString();
