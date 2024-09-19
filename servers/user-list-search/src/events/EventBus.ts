@@ -109,7 +109,7 @@ export class EventBus {
           scope:
             (args.search.field?.toLowerCase() as Scope) ?? 'all_contentful',
           filter: Object.keys(args.filter)
-            .filter((_: keyof CorpusSearchFilters) => _ != 'language')
+            .filter((_: keyof CorpusSearchFilters) => _ !== 'language')
             .map((_) => _),
         },
       },

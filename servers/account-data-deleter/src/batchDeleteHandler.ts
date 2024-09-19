@@ -146,7 +146,7 @@ export class BatchDeleteHandler {
     const limitOverridesConfig = config.queueDelete.limitOverrides;
 
     try {
-      if (body.tableName == 'readitla_ril-tmp.campaign_target') {
+      if (body.tableName === 'readitla_ril-tmp.campaign_target') {
         //`id`s are same for both tables.
         //select * from `readitla_ril-tmp`.campaign_target_vars ctv
         //join `readitla_ril-tmp`.campaign_target ct

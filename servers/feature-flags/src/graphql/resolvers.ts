@@ -62,7 +62,7 @@ const convertToUnleashAssignment = (
   return toggles.map((toggle: FeatureInterface) => {
     const variant = instance.forceGetVariant(toggle.name, context);
 
-    if (!variant || variant.name == 'disabled') {
+    if (!variant || variant.name === 'disabled') {
       return {
         name: toggle.name,
         assigned: instance.isEnabled(toggle.name, context),

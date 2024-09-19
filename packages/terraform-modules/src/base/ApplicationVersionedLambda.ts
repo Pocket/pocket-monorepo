@@ -219,7 +219,7 @@ export class ApplicationVersionedLambda extends Construct {
       environment: this.config.environment
         ? { variables: this.config.environment }
         : undefined,
-      layers: layers.length == 0 ? undefined : layers,
+      layers: layers.length === 0 ? undefined : layers,
       provider: this.config.provider,
     };
 

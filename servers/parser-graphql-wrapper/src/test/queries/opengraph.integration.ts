@@ -148,7 +148,7 @@ describe('preview', () => {
   ])(
     'should return opengraph display data if enabled',
     async ({ parserData, openGraphData, expected }) => {
-      if (openGraphData == undefined) {
+      if (openGraphData === undefined) {
         repo.setToggle(config.unleash.flags.openGraphParser.name, {
           ...openGraphFeatureToggle,
           enabled: false,

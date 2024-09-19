@@ -75,7 +75,7 @@ export const instantSyncHandler = async (
     .whereIn('user_id', userIds)
     .andWhere('expires_at', '>', new Date());
 
-  if (tokens.length == 0) {
+  if (tokens.length === 0) {
     console.info(`No tokens for users to process`);
     return { batchItemFailures: batchFailures };
   }
@@ -139,7 +139,7 @@ function convertToSqsEntry(entry: TokenEntry): SendMessageBatchRequestEntry {
     MessageBody: JSON.stringify({
       user_id: entry.user_id,
       message: 'Ping',
-      target: entry.platform == 'ios' ? 7 : 5,
+      target: entry.platform === 'ios' ? 7 : 5,
       recipient: `${entry.push_type}::${entry.token}`,
     }),
   };

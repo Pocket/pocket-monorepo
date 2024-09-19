@@ -339,7 +339,7 @@ export class MysqlDataSource implements DataSourceInterface {
 
     // if there are no resolved ids found (meaning the parser failed
     // or is taking way too long), we return no content
-    if (resolvedIds.length == 0) {
+    if (resolvedIds.length === 0) {
       return result;
     }
 

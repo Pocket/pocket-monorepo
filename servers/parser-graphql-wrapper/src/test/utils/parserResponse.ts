@@ -71,7 +71,7 @@ export const nockResponseForParser = (
   const data = merge(fakerParserResponse(), options?.data);
   data.given_url = testUrl;
   data.normal_url = testUrl;
-  if (params.queryParams.get('noArticle') == BoolStringParam.TRUE) {
+  if (params.queryParams.get('noArticle') === BoolStringParam.TRUE) {
     delete data.article;
   }
 

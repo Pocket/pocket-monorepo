@@ -10,7 +10,7 @@ export const createReaderSlug = (itemId: string) => {
 export const itemIdFromSlug = (slug: string) => {
   const [encodedId, md5Hash] = slug.split(ITEM_ID_DELIMENTATOR);
   const id = IntMask.decode(encodedId).toString();
-  if (md5(id) != md5Hash) {
+  if (md5(id) !== md5Hash) {
     return null;
   }
 

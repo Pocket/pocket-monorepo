@@ -55,8 +55,8 @@ export class ItemSummaryDataStoreBase implements IPocketMetadataDataStore {
     const response = await this.conn.send(getPreviewCommand);
     if (
       response.Item != null &&
-      response.Item.source == source &&
-      response.Item.version == version
+      response.Item.source === source &&
+      response.Item.version === version
     ) {
       return response.Item as PocketMetadataEntity;
     }

@@ -62,7 +62,7 @@ export async function upsertSavedItem(
       url,
     });
 
-    if (upsertedItem == undefined) {
+    if (upsertedItem === undefined) {
       serverLogger.error('Could not save item', {
         url: savedItemUpsertInput.url,
         modifedUrl: url,

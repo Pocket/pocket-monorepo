@@ -139,7 +139,7 @@ export class EmailSendDomain extends Construct {
     const records: route53Record.Route53Record[] = [];
     for (const [name, value] of Object.entries(config.textRecords)) {
       const recordName =
-        name == '' ? config.subdomain : `${name}.${config.subdomain}`;
+        name === '' ? config.subdomain : `${name}.${config.subdomain}`;
       records.push(
         new route53Record.Route53Record(
           this,
@@ -167,7 +167,7 @@ export class EmailSendDomain extends Construct {
     const records: route53Record.Route53Record[] = [];
     for (const [name, value] of Object.entries(config.aRecords)) {
       const recordName =
-        name == '' ? config.subdomain : `${name}.${config.subdomain}`;
+        name === '' ? config.subdomain : `${name}.${config.subdomain}`;
       records.push(
         new route53Record.Route53Record(this, `${records.length}_a_records`, {
           zoneId: config.baseDNS.zoneId,
