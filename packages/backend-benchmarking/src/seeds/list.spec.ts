@@ -4,8 +4,8 @@ describe('mockList', () => {
   it('should produce data when total count is divisible by batch size', () => {
     const mockListGenerator = mockList('abc123', { count: 10, batchSize: 2 });
     let batch = mockListGenerator.next();
-    const results = [];
-    const ids = [];
+    const results: number[] = [];
+    const ids: number[] = [];
     while (!batch.done) {
       // Keep track of batch size
       results.push(batch.value['list'].length);
@@ -19,7 +19,7 @@ describe('mockList', () => {
   it('should produce data when total count is not divisible by batch size', () => {
     const mockListGenerator = mockList('abc123', { count: 10, batchSize: 3 });
     let batch = mockListGenerator.next();
-    const results = [];
+    const results: number[] = [];
     while (!batch.done) {
       // Keep track of batch size
       results.push(batch.value['list'].length);
@@ -33,10 +33,10 @@ describe('mockList', () => {
       maxTimestamp: 1646182692000,
     });
     let batch = mockListGenerator.next();
-    const archive = [];
-    const favorite = [];
-    const article = [];
-    const timestamps = [];
+    const archive: any[] = [];
+    const favorite: any[] = [];
+    const article: number[] = [];
+    const timestamps: any[] = [];
     function flatMapKey<T>(objects: T[], key: keyof T): T[keyof T][] {
       return objects.map((obj) => obj[key]);
     }

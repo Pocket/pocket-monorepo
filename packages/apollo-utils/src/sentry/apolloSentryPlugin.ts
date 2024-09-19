@@ -52,7 +52,7 @@ export const sentryPlugin: ApolloServerPlugin<BaseContext> = {
         for (const err of ctx.errors) {
           // Only report internal server errors,
           // errors extending ApolloError should be user-facing
-          if (NO_REPORT_ERRORS.has(err.extensions?.code?.toString())) {
+          if (NO_REPORT_ERRORS.has(err.extensions?.code?.toString() ?? '')) {
             continue;
           }
 

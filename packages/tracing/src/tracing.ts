@@ -85,18 +85,6 @@ export type TracingConfig = {
   additionalInstrumentations?: AdditionalInstrumentation[];
 };
 
-const tracingDefaults: TracingConfig = {
-  serviceName: 'unknown',
-  release: 'unknown',
-  samplingRatio: 0.01,
-  graphQLDepth: 8,
-  grpcDefaultPort: 4317,
-  httpDefaultPort: 4318,
-  host: 'otlpcollector',
-  logger: new DiagConsoleLogger(),
-  addSentry: false,
-  additionalInstrumentations: [],
-};
 /**
  * Init a sentry context manager to be used for request isolation
  */
@@ -129,7 +117,6 @@ function awaitAttributes(detector: DetectorSync): Detector {
  * server start and import to patch all libraries
  */
 export async function nodeSDKBuilder(config: TracingConfig) {
-  config = { ...tracingDefaults, ...config };
   /**
    * documentation:https://aws-otel.github.io/docs/getting-started/js-sdk/trace-manual-instr#instrumenting-the-aws-sdk
    * and https://github.com/open-telemetry/opentelemetry-js
@@ -137,7 +124,7 @@ export async function nodeSDKBuilder(config: TracingConfig) {
    */
 
   //tracing level set for open-telemetry
-  diag.setLogger(config.logger, DiagLogLevel.WARN);
+  diag.setLogger(config.logger ?? new DiagConsoleLogger(), DiagLogLevel.WARN);
 
   const _resource = Resource.default().merge(
     new Resource({
@@ -151,11 +138,15 @@ export async function nodeSDKBuilder(config: TracingConfig) {
     url: `http://${config.host}:${config.grpcDefaultPort}`,
   });
   const _spanProcessors: SpanProcessor[] = [
-    new CustomAWSXraySpanProcessor(_traceExporter, config.samplingRatio, {
-      // only force 100ms between 2 batch exports.
-      // Default is 5000ms which is 5 seconds and causes us to lose spans
-      scheduledDelayMillis: 100,
-    }),
+    new CustomAWSXraySpanProcessor(
+      _traceExporter,
+      config.samplingRatio ?? 0.01,
+      {
+        // only force 100ms between 2 batch exports.
+        // Default is 5000ms which is 5 seconds and causes us to lose spans
+        scheduledDelayMillis: 100,
+      },
+    ),
   ];
   if (config.addSentry) {
     _spanProcessors.push(new CustomSentrySpanProcessor());
@@ -184,7 +175,7 @@ export async function nodeSDKBuilder(config: TracingConfig) {
   ];
 
   // add any instrumentations specified by the implementing service
-  config.additionalInstrumentations.forEach((instrumentation) => {
+  (config.additionalInstrumentations ?? []).forEach((instrumentation) => {
     instrumentations.push(
       new additionalInstrumentationConstructors[instrumentation](),
     );
@@ -297,7 +288,11 @@ export class CustomSentrySpanProcessor extends SentrySpanProcessor {
   constructor() {
     super();
     this.contextMap = new Map();
-    this.sampler = new SentrySampler(Sentry.getClient());
+    const sentryClient = Sentry.getClient();
+    if (!sentryClient) {
+      throw new Error('Sentry client is not initialized');
+    }
+    this.sampler = new SentrySampler(sentryClient);
   }
   onStart(span: Span, parentContext: Context) {
     this.contextMap.set(span.spanContext().traceId, parentContext);

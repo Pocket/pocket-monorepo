@@ -459,8 +459,6 @@ export type CorpusSearchNode = {
   __typename?: 'CorpusSearchNode';
   /** Attaches the item so we can use the preview field */
   item?: Maybe<Item>;
-  /** The preview of the search result, the @requires fields must be kept in sync with the preview field in the Item entity */
-  preview: PocketMetadata;
   /** Search highlights */
   searchHighlights?: Maybe<CorpusSearchHighlights>;
 };
