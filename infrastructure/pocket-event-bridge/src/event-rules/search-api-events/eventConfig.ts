@@ -2,6 +2,6 @@ export const eventConfig = {
   PocketSearch: {
     name: 'SearchApiEvents',
     source: 'search-api-events',
-    detailType: ['corpus_search_result'],
+    detailType: ['search_response_generated'],
   },
 };
