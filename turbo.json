@@ -38,7 +38,8 @@
         "schema.graphql",
         "prisma/schema.prisma",
         "src/graphql/**/*.graphql",
-        "codegen.ts"
+        "codegen.ts",
+        "*.json"
       ],
       "outputs": [
         "dist/**",

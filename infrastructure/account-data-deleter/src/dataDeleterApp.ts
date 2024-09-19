@@ -19,7 +19,7 @@ export type DataDeleterAppConfig = {
   secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
   snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
   batchDeleteQueue: sqsQueue.SqsQueue;
-  batchDeleteDLQ: sqsQueue.SqsQueue;
+  batchDeleteDLQ: sqsQueue.SqsQueue | undefined;
 };
 
 export class DataDeleterApp extends Construct {
@@ -101,7 +101,7 @@ export class DataDeleterApp extends Construct {
             },
             {
               name: 'NODE_ENV',
-              value: process.env.NODE_ENV,
+              value: process.env.NODE_ENV ?? 'development',
             },
             {
               name: 'SQS_BATCH_DELETE_QUEUE_URL',

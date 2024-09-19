@@ -149,6 +149,7 @@ class ShareableListsAPI extends TerraformStack {
         //So instead we set it to null and allow anything within the vpc to access it.
         //This is not ideal..
         //Ideally we need to be able to add security groups to the ALB application.
+        // @ts-expect-error - we need to set the security group ids to undefined
         allowedIngressSecurityGroupIds: undefined,
         subnetIds: privateSubnets.ids,
         tags: config.tags,
@@ -253,7 +254,7 @@ class ShareableListsAPI extends TerraformStack {
           envVars: [
             {
               name: 'ENVIRONMENT',
-              value: process.env.NODE_ENV,
+              value: process.env.NODE_ENV ?? 'development',
             },
             {
               name: 'EVENT_BUS_NAME',
@@ -261,7 +262,7 @@ class ShareableListsAPI extends TerraformStack {
             },
             {
               name: 'NODE_ENV',
-              value: process.env.NODE_ENV,
+              value: process.env.NODE_ENV ?? 'development',
             },
             {
               name: 'REDIS_PRIMARY_ENDPOINT',

@@ -147,7 +147,7 @@ class ListAPI extends TerraformStack {
     if (config.isDev) {
       rdsCluster = this.createRds(vpc);
       // Add Dev RDS-specific secrets if in Dev environment
-      secretResources.push(rdsCluster.secretARN);
+      if (rdsCluster.secretARN) secretResources.push(rdsCluster.secretARN);
 
       // Specify DB connection details for the RDS cluster on Dev
       databaseSecretEnvVars = {
@@ -196,7 +196,7 @@ class ListAPI extends TerraformStack {
           envVars: [
             {
               name: 'NODE_ENV',
-              value: process.env.NODE_ENV,
+              value: process.env.NODE_ENV ?? 'development',
             },
             {
               name: 'DATABASE_READ_PORT',
