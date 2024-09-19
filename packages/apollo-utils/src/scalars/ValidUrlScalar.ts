@@ -10,15 +10,14 @@ export const GraphQLValidUrl = /*#__PURE__*/ new GraphQLScalarType({
     'A field whose value conforms to the standard URL format as specified in RFC3986: https://www.ietf.org/rfc/rfc3986.txt.',
 
   serialize(value) {
-    if (value === null || value === undefined) {
+    if (value == null) {
       return value;
     }
 
     return new URL(value.toString()).toString();
   },
 
-  parseValue: (value) =>
-    value === null || value === undefined ? value : new URL(value.toString()),
+  parseValue: (value) => (value == null ? value : new URL(value.toString())),
 
   parseLiteral(ast: ValueNode) {
     if (ast.kind !== Kind.STRING) {

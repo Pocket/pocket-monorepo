@@ -83,7 +83,7 @@ export class SavedItemDataService {
     baseQuery: Knex,
     contentType: SearchItemsContentType,
   ): Knex {
-    if (contentType == 'VIDEO') {
+    if (contentType === 'VIDEO') {
       baseQuery.where('readitla_b.items_extended.video', 1);
     } else {
       baseQuery.where('readitla_b.items_extended.is_article', 1);
@@ -158,7 +158,7 @@ export class SavedItemDataService {
     };
     const sortOrder = params.sort ? params.sort.sortOrder : 'DESC';
     const sortColumn =
-      params.sort?.sortBy == `TIME_TO_READ` ? `word_count` : 'time_added';
+      params.sort?.sortBy === `TIME_TO_READ` ? `word_count` : 'time_added';
     const term = params.term.toLowerCase();
     let baseQuery = this.buildQuery(term).andWhere(
       'readitla_ril-tmp.list.user_id',
@@ -204,7 +204,7 @@ export class SavedItemDataService {
 
     const sortOrder = params.sort ? params.sort.sortOrder : 'DESC';
     const sortColumn =
-      params.sort?.sortBy == `TIME_TO_READ` ? `word_count` : 'time_added';
+      params.sort?.sortBy === `TIME_TO_READ` ? `word_count` : 'time_added';
     const term = params.term.toLowerCase();
     let baseQuery = this.buildQuery(term).andWhere(
       'readitla_ril-tmp.list.user_id',

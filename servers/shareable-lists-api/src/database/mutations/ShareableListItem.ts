@@ -454,7 +454,7 @@ export async function deleteShareableListItem(
   if (
     !listItem ||
     Number(listItem.list.userId) !== userId ||
-    listItem.list.moderationStatus == 'HIDDEN'
+    listItem.list.moderationStatus === 'HIDDEN'
   ) {
     throw new NotFoundError('A list item by that ID could not be found');
   }

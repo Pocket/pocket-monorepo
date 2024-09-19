@@ -61,8 +61,8 @@ export async function handlerFn(
 
 function validateEvent(event: EventBridgeEvent<any, any>) {
   if (
-    event['detail-type'] != 'Scheduled Event' ||
-    event['source'] != 'aws.events'
+    event['detail-type'] !== 'Scheduled Event' ||
+    event['source'] !== 'aws.events'
   ) {
     throw new Error(`unknown trigger ${event}`);
   }

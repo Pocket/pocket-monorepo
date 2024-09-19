@@ -1,4 +1,4 @@
-const debug = process.env.PARAMETERS_SECRETS_EXTENSION_LOG_LEVEL == 'debug';
+const debug = process.env.PARAMETERS_SECRETS_EXTENSION_LOG_LEVEL === 'debug';
 
 /**
  * Requests and parses a secret from the Lambda Layer extension
@@ -33,7 +33,7 @@ const fetchFromLambda = async (
 ): Promise<Record<string, any>> => {
   if (
     !process.env.AWS_SESSION_TOKEN ||
-    process.env.AWS_SESSION_TOKEN == 'undefined'
+    process.env.AWS_SESSION_TOKEN === 'undefined'
   ) {
     throw new Error(`No AWS_SESSION_TOKEN to access the lambda secret layer`);
   }
@@ -55,14 +55,14 @@ const fetchFromLambda = async (
         headers: secret.headers,
       });
     }
-    if (secret.status != 200) {
+    if (secret.status !== 200) {
       throw new Error(`Failed fetching ${url} from lambda secret layer`);
     }
 
     // endpoint does not return json headers, so we grab the text and then parse it.
     return JSON.parse(await secret.text());
   } catch (err) {
-    if (tries == 0) {
+    if (tries === 0) {
       console.error(err);
       throw err;
     }

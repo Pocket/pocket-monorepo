@@ -251,7 +251,7 @@ export class CustomAWSXraySpanProcessor extends BatchSpanProcessor {
       span.attributes,
       span.links,
     );
-    if (sampleResult.decision == SamplingDecision.RECORD_AND_SAMPLED) {
+    if (sampleResult.decision === SamplingDecision.RECORD_AND_SAMPLED) {
       super.onStart(span, parentContext);
     }
   }
@@ -270,7 +270,7 @@ export class CustomAWSXraySpanProcessor extends BatchSpanProcessor {
       );
       // After processing, clean up the context from the map
       this.contextMap.delete(span.spanContext().traceId);
-      if (sampleResult.decision == SamplingDecision.RECORD_AND_SAMPLED) {
+      if (sampleResult.decision === SamplingDecision.RECORD_AND_SAMPLED) {
         super.onEnd(span);
       }
     }
@@ -304,7 +304,7 @@ export class CustomSentrySpanProcessor extends SentrySpanProcessor {
       span.attributes,
       span.links,
     );
-    if (sampleResult.decision == SamplingDecision.RECORD_AND_SAMPLED) {
+    if (sampleResult.decision === SamplingDecision.RECORD_AND_SAMPLED) {
       super.onStart(span, parentContext);
     }
   }
@@ -323,7 +323,7 @@ export class CustomSentrySpanProcessor extends SentrySpanProcessor {
       );
       // After processing, clean up the context from the map
       this.contextMap.delete(span.spanContext().traceId);
-      if (sampleResult.decision == SamplingDecision.RECORD_AND_SAMPLED) {
+      if (sampleResult.decision === SamplingDecision.RECORD_AND_SAMPLED) {
         super.onEnd(span);
       }
     }

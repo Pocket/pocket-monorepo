@@ -23,6 +23,7 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 0,
       // allows shorthands
       '@typescript-eslint/no-unused-expressions': 0,
+      eqeqeq: ['error', 'smart'],
     },
   },
   {

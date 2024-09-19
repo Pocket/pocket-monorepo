@@ -58,7 +58,7 @@ async function loadUserItem(
     itemId: merged.item_id,
     // The use case here only needs to support queued and archived, so not getting fancy.
     status:
-      merged.status == 'queued'
+      merged.status === 'queued'
         ? SavedItemStatus.UNREAD
         : SavedItemStatus.ARCHIVED,
     title: merged.title,

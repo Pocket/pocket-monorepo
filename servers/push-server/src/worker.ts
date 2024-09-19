@@ -25,7 +25,7 @@ const processMessage = async (fullMessage: Message): Promise<void> => {
 
   if (
     target === TARGET_APNS_SILENT ||
-    (target === TARGET_APNS && contents == 'Ping')
+    (target === TARGET_APNS && contents === 'Ping')
   ) {
     console.log('APNS SILENT push', token);
     await apns.sendNotificationToDevice(contents, token, true);

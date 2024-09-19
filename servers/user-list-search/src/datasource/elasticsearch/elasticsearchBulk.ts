@@ -55,7 +55,7 @@ export const defaultDocConverter: BulkDocumentConverter = (
   docs: (DeleteDocument | IndexDocument)[],
 ): BulkEntry[] => {
   return docs.flatMap((doc): BulkEntry[] => {
-    if (doc.action == 'index') {
+    if (doc.action === 'index') {
       //Clone the doc so we can remove the action value.
       const docToIndex = { ...doc };
       delete docToIndex.action;
