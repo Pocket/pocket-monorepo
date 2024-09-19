@@ -114,7 +114,7 @@ class UserAPI extends TerraformStack {
           envVars: [
             {
               name: 'NODE_ENV',
-              value: process.env.NODE_ENV,
+              value: process.env.NODE_ENV ?? 'development',
             },
             {
               name: 'DATABASE_READ_PORT',

@@ -388,6 +388,7 @@ class ClientAPI extends TerraformStack {
         //So instead we set it to null and allow anything within the vpc to access it.
         //This is not ideal..
         //Ideally we need to be able to add security groups to the ALB application.
+        // @ts-expect-error - needed for the security group to be null
         allowedIngressSecurityGroupIds: undefined,
         subnetIds: privateSubnets.ids,
         tags: config.tags,

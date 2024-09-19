@@ -8,10 +8,7 @@ import {
 } from '@cdktf/provider-aws';
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
-import {
-  PocketALBApplication,
-  PocketPagerDuty,
-} from '@pocket-tools/terraform-modules';
+import { PocketALBApplication } from '@pocket-tools/terraform-modules';
 import { Construct } from 'constructs';
 import { App, S3Backend, TerraformStack } from 'cdktf';
 import fs from 'fs';
@@ -42,7 +39,6 @@ class Stack extends TerraformStack {
     );
 
     this.createPocketAlbApplication({
-      pagerDuty: this.createPagerDuty(),
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
       region,
@@ -71,38 +67,18 @@ class Stack extends TerraformStack {
   }
 
   /**
-   * Create PagerDuty service for alerts
-   * @private
-   */
-  private createPagerDuty() {
-    // don't create any pagerduty resources if in dev
-    if (config.isDev) {
-      return undefined;
-    }
-
-    return undefined;
-  }
-
-  /**
    * method to set up ALB, ECS cluster, relevant IAM permissions,
    * and inject environment variables for ecs
    * @param dependencies
    * @private
    */
   private createPocketAlbApplication(dependencies: {
-    pagerDuty: PocketPagerDuty;
     region: dataAwsRegion.DataAwsRegion;
     caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
     snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
   }): PocketALBApplication {
-    const {
-      //  pagerDuty, // enable if necessary
-      region,
-      caller,
-      secretsManagerKmsAlias,
-      snsTopic,
-    } = dependencies;
+    const { region, caller, secretsManagerKmsAlias, snsTopic } = dependencies;
 
     return new PocketALBApplication(this, 'application', {
       // TODO: "internal: true" deploys service behind VPN, set false or remove this comment
@@ -130,11 +106,11 @@ class Stack extends TerraformStack {
           envVars: [
             {
               name: 'NODE_ENV',
-              value: process.env.NODE_ENV,
+              value: process.env.NODE_ENV ?? 'development',
             },
             {
               name: 'ENVIRONMENT',
-              value: process.env.NODE_ENV, // this gives us a nice lowercase production and development
+              value: process.env.NODE_ENV ?? 'development', // this gives us a nice lowercase production and development
             },
           ],
           secretEnvVars: [

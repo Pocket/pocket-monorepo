@@ -141,7 +141,7 @@ class ImageAPI extends TerraformStack {
           envVars: [
             {
               name: 'NODE_ENV',
-              value: process.env.NODE_ENV,
+              value: process.env.NODE_ENV ?? 'development',
             },
             {
               name: 'REDIS_PRIMARY_ENDPOINT',
@@ -284,6 +284,7 @@ class ImageAPI extends TerraformStack {
         //So instead we set it to null and allow anything within the vpc to access it.
         //This is not ideal..
         //Ideally we need to be able to add security groups to the ALB application.
+        // @ts-expect-error - we need to set the security group ids to null
         allowedIngressSecurityGroupIds: undefined,
         subnetIds: privateSubnets.ids,
         tags: config.tags,

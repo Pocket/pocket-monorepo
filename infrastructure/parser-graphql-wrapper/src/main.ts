@@ -127,7 +127,7 @@ class ParserGraphQLWrapper extends TerraformStack {
     if (config.isDev) {
       rdsCluster = this.createSharedUrlsRds(vpc);
       // Add Dev RDS-specific secrets if in Dev environment
-      secretResources.push(rdsCluster.secretARN);
+      if (rdsCluster.secretARN) secretResources.push(rdsCluster.secretARN);
     }
 
     return new PocketALBApplication(this, 'application', {
@@ -150,7 +150,7 @@ class ParserGraphQLWrapper extends TerraformStack {
           envVars: [
             {
               name: 'ENVIRONMENT',
-              value: process.env.NODE_ENV,
+              value: process.env.NODE_ENV ?? 'development',
             },
             {
               name: 'REDIS_PRIMARY_ENDPOINT',
@@ -427,6 +427,7 @@ class ParserGraphQLWrapper extends TerraformStack {
         //So instead we set it to null and allow anything within the vpc to access it.
         //This is not ideal..
         //Ideally we need to be able to add security groups to the ALB application.
+        // @ts-expect-error - we need to allow undefined for the secruity groups
         allowedIngressSecurityGroupIds: undefined,
         subnetIds: privateSubnets.ids,
         tags: config.tags,
@@ -465,6 +466,7 @@ class ParserGraphQLWrapper extends TerraformStack {
       //So instead we set it to null and allow anything within the vpc to access it.
       //This is not ideal..
       //Ideally we need to be able to add security groups to the ALB application.
+      // @ts-expect-error - we need to allow undefined for the secruity groups
       allowedIngressSecurityGroupIds: undefined,
       subnetIds: pocketVPC.privateSubnetIds,
       tags: config.tags,
