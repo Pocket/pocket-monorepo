@@ -60,20 +60,28 @@ const convertToUnleashAssignment = (
   context: UnleashContext,
 ): UnleashAssignment[] => {
   return toggles.map((toggle: FeatureInterface) => {
-    const variant = instance.forceGetVariant(toggle.name, context);
-
-    if (!variant || variant.name == 'disabled') {
+    // Unleash in a recent update returns null or an empty array for variants in the API response
+    // We need to check for both
+    if (
+      !toggle.variants ||
+      (toggle.variants instanceof Array && toggle.variants.length === 0)
+    ) {
       return {
         name: toggle.name,
         assigned: instance.isEnabled(toggle.name, context),
       };
     }
 
+    const { enabled, name, payload } = instance.getVariant(
+      toggle.name,
+      context,
+    );
+
     return {
       name: toggle.name,
-      assigned: variant.enabled,
-      variant: variant.name,
-      payload: variant.payload.value,
+      assigned: enabled,
+      variant: name,
+      payload: payload?.value,
     };
   });
 };
