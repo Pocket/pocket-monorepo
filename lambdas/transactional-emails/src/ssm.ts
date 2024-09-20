@@ -3,7 +3,7 @@ import { config } from './config';
 
 const client = new SSM({ region: config.aws.region });
 
-const brazeApiKey: string = null;
+const brazeApiKey: string | null = null;
 
 export async function getBrazeApiKey() {
   if (brazeApiKey) return brazeApiKey;
@@ -15,5 +15,5 @@ export async function getBrazeApiKey() {
 
   const response = await client.send(command);
 
-  return response.Parameter.Value;
+  return response.Parameter?.Value;
 }

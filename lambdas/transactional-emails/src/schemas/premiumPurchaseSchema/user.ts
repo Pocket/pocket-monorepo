@@ -1,7 +1,7 @@
 export class User {
-  'email': string;
-  'encodedId': string;
-  'id': number;
+  'email': string | null;
+  'encodedId': string | null;
+  'id': number | null;
 
   private static discriminator: string | undefined = undefined;
 

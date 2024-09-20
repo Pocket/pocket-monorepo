@@ -5,7 +5,7 @@ export class Purchase {
   'isTrial': boolean;
   'planInterval': string;
   'planType': string;
-  'receiptId': string;
+  'receiptId': string | null;
   'renewDate': string;
 
   private static discriminator: string | undefined = undefined;

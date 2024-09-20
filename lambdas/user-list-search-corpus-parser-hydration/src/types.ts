@@ -24,7 +24,7 @@ export interface BulkRequestPayload extends BulkRequestMeta {
 
 // See indices .docker/aws-resources/elasticsearch
 export type ParserDocumentFields = Partial<{
-  pocket_parser_extracted_text: string;
+  pocket_parser_extracted_text: string | null;
   est_time_to_consume_minutes: number;
   // Overall categorization for the content (e.g. article/index/video)
   content_type_parent: string;

@@ -16,6 +16,7 @@ import { parserRequest, parserResultToDoc } from './parserRequest';
 import { bulkIndex } from './bulkIndex';
 import { buildCollectionUrl } from './utils';
 import { getEmbeddings } from './embeddingsRequest';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 /**
  * The main handler function which will be wrapped by Sentry prior to export.
@@ -121,7 +122,11 @@ export function unwrapPayloads(payload: EventPayload): BulkRequestMeta[] {
       messageId: payload.messageId,
     };
     return [parent, ...stories];
-  } else {
+  } else if (
+    payload.detail.title != null &&
+    payload.detail.language != null &&
+    payload.detail.excerpt != null
+  ) {
     const _index = config.indexLangMap[payload.detail.language.toLowerCase()];
     return [
       {
@@ -135,5 +140,11 @@ export function unwrapPayloads(payload: EventPayload): BulkRequestMeta[] {
         messageId: payload.messageId,
       },
     ];
+  } else {
+    serverLogger.error(
+      'Invalid payload, no title, excerpt or language',
+      payload,
+    );
+    return [];
   }
 }

@@ -22,7 +22,7 @@ function generateRecord(eventPayload: UserRegistrationEvent) {
   };
 }
 describe('user registration event handler', () => {
-  const testPayload = {
+  const testPayload: UserRegistrationEvent = {
     userId: '1',
     email: '1@2.com',
     encodedUserId: '1ab',
@@ -154,7 +154,7 @@ describe('user registration event handler', () => {
   });
 
   it('should throw error if one of the payload field is missing', async () => {
-    testPayload.encodedUserId = null;
+    testPayload.encodedUserId = undefined;
     const record = generateRecord(testPayload);
 
     try {

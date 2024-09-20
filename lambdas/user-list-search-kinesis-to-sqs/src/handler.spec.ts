@@ -18,7 +18,7 @@ const createEvent = (msg: Record<string, unknown>): KinesisEvent => {
 const sendMessageBatchSuccess: SendMessageBatchCommandOutput = {
   Failed: [],
   Successful: [],
-  $metadata: undefined,
+  $metadata: {},
 };
 
 describe('kinesis', () => {

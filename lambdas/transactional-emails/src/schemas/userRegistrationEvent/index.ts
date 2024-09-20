@@ -3,7 +3,7 @@
  */
 export class UserRegistrationEvent {
   'email': string;
-  'encodedUserId': string;
+  'encodedUserId': string | undefined;
   'userId': string;
   'locale': string;
 

@@ -13,10 +13,10 @@ type SQSWritableStreamOptions = {
 };
 
 export default class SqsWritable extends Writable {
-  sqsClient: null | SQS = null;
-  queueUrl: null | string = null;
+  sqsClient: SQS;
+  queueUrl: string;
   sqsBatchSize = 10;
-  buffer = [];
+  buffer: SendMessageBatchRequestEntry[] = [];
 
   constructor(options: SQSWritableStreamOptions) {
     super({ objectMode: true });

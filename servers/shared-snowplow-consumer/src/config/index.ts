@@ -1,8 +1,8 @@
 const awsEnvironments = ['production', 'development'];
-let localAwsEndpoint;
-if (!awsEnvironments.includes(process.env.NODE_ENV)) {
-  localAwsEndpoint = process.env.AWS_ENDPOINT || 'http://localhost:4566';
-}
+const localAwsEndpoint =
+  process.env.NODE_ENV && !awsEnvironments.includes(process.env.NODE_ENV)
+    ? process.env.AWS_ENDPOINT || 'http://localhost:4566'
+    : undefined;
 
 let snowplowHttpProtocol = 'https';
 if (!awsEnvironments.includes(process.env.NODE_ENV)) {

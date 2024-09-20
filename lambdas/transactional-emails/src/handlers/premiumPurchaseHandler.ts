@@ -17,6 +17,7 @@ export function validateEventPayload(payload: PremiumPurchaseEvent) {
   });
 
   const user = payload['user'];
+  if (user == null) throw new Error('User does not exist in the message');
   User.getAttributeTypeMap().forEach((type) => {
     if (user[type.name] == null) {
       throw new Error(
@@ -67,7 +68,7 @@ function generateUserTrackRequestBody(
   return {
     events: [
       {
-        external_id: payload.user.encodedId,
+        external_id: payload.user?.encodedId,
         name: 'premium_purchase',
         time: new Date(eventTime),
         properties: {

@@ -1,7 +1,7 @@
 import {
   SageMakerRuntimeClient,
   InvokeEndpointCommand,
-  InvokeEndpointInput,
+  InvokeEndpointCommandInput,
 } from '@aws-sdk/client-sagemaker-runtime'; // ES Modules import
 import { Agent } from 'http';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
@@ -50,7 +50,7 @@ export async function getEmbeddings(
   if (joinedDoc.length === 0) {
     return undefined;
   }
-  const input: InvokeEndpointInput = {
+  const input: InvokeEndpointCommandInput = {
     EndpointName: config.sagemakerEndpoint,
     ContentType: 'application/json',
     Body: Buffer.from(JSON.stringify({ inputs: joinedDoc })),

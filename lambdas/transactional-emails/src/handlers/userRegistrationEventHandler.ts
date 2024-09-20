@@ -9,6 +9,7 @@ import {
 } from '../braze';
 import { SQSRecord } from 'aws-lambda';
 import type {
+  UsersAliasObject,
   UsersTrackObject,
   V2SubscriptionStatusSetObject,
 } from 'braze-api';
@@ -69,7 +70,6 @@ export async function userRegistrationEventHandler(record: SQSRecord) {
       `Error ${userTrackResponse.status}: Failed to create user profile`,
     );
   }
-
   //creating alias for the user registered
   await sendCreateUserAlias(generateUserAliasRequestBody(payload));
 
@@ -149,7 +149,9 @@ function validateLocale(locale: string) {
   return `en-US`;
 }
 
-export function generateUserAliasRequestBody(payload: UserRegistrationEvent) {
+export function generateUserAliasRequestBody(
+  payload: UserRegistrationEvent,
+): UsersAliasObject {
   return {
     user_aliases: [
       {

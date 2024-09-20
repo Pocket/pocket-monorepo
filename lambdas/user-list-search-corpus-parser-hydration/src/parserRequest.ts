@@ -41,7 +41,7 @@ export async function parserRequest(
         // Could still be resolving
         if (error == null) {
           try {
-            const res = await response.clone().json();
+            const res = await response?.clone().json();
             if (res.resolved_id === '0' || res.resolved_id == null) {
               return true;
             }
@@ -49,6 +49,7 @@ export async function parserRequest(
             return true;
           }
         }
+        return false;
       },
     },
   );
@@ -106,7 +107,7 @@ export async function parserRequest(
  * article was passed.
  */
 export function cleanExtractedText(
-  article: string | undefined,
+  article: string | undefined | null,
 ): string | undefined {
   if (article == null || article === '') {
     return undefined;
@@ -162,7 +163,7 @@ export function contentType(
     'isArticle' | 'isIndex' | 'has_video' | 'has_image'
   >,
 ): { parent: string | undefined; children: string[] | undefined } {
-  let parent: string;
+  let parent: string | undefined;
   if (result.isIndex === 1) {
     parent = 'index';
   } else if (result.isArticle === 1) {
@@ -176,7 +177,7 @@ export function contentType(
   } else {
     parent = undefined;
   }
-  const children = [];
+  const children: string[] = [];
   if (result.has_video === '1') {
     children.push('video');
   }

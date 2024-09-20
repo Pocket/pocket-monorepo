@@ -104,7 +104,7 @@ describe('premium purchase handler', () => {
   });
 
   it('should throw error if User is not present', async () => {
-    const errorEvent = {
+    const errorEvent: PremiumPurchaseEvent = {
       user: {
         ...testPremiumPurchaseEvent.user,
       },
@@ -123,15 +123,15 @@ describe('premium purchase handler', () => {
   });
 
   it('should throw error if any field in Purchase is not present', async () => {
-    const purchaseErrorEvent = {
+    const purchaseErrorEvent: PremiumPurchaseEvent = {
       user: {
         ...testPremiumPurchaseEvent.user,
       },
       purchase: {
         ...testPremiumPurchaseEvent.purchase,
+        receiptId: null,
       },
     };
-    purchaseErrorEvent.purchase.receiptId = null;
     const record = generateRecord(purchaseErrorEvent);
 
     try {
@@ -144,15 +144,15 @@ describe('premium purchase handler', () => {
   });
 
   it('should throw error if any field in User is not present', async () => {
-    const errorEvent = {
+    const errorEvent: PremiumPurchaseEvent = {
       user: {
         ...testPremiumPurchaseEvent.user,
+        encodedId: null,
       },
       purchase: {
         ...testPremiumPurchaseEvent.purchase,
       },
     };
-    errorEvent.user.encodedId = null;
     const record = generateRecord(errorEvent);
 
     try {
