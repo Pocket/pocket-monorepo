@@ -1,5 +1,4 @@
 import fetchRetry from 'fetch-retry';
-import { config } from './config';
 const newFetch = fetchRetry(fetch);
 
 /**
