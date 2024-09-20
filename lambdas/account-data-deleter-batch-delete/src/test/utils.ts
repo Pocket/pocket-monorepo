@@ -54,15 +54,16 @@ export async function truncateTable(table: string, client: DynamoDBClient) {
   const tableInfo = await client.send(
     new DescribeTableCommand({ TableName: table }),
   );
+  if (tableInfo?.Table?.KeySchema == null) return;
   const keyAttributes = tableInfo.Table.KeySchema.map(
     (key) => key.AttributeName,
   );
   for await (const res of paginator) {
-    if (res.Count === 0) return;
+    if (res.Count === 0 || res.Items == null) return;
 
     const deleteRequests = res.Items.map((item) => {
       const itemKeys = keyAttributes.reduce(
-        (keyMap, key) => {
+        (keyMap, key: string) => {
           keyMap[key] = item[key];
           return keyMap;
         },

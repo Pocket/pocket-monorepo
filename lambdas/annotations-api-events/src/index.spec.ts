@@ -55,7 +55,7 @@ describe('event handlers', () => {
         ],
       };
       const res = await processor(records as SQSEvent);
-      expect(res.batchItemFailures).toEqual([{ itemIdentifier: 'abc' }]);
+      expect(res?.batchItemFailures).toEqual([{ itemIdentifier: 'abc' }]);
       expect(sentryStub).toHaveBeenCalledTimes(1);
       expect(sentryStub.mock.calls[0][0].message).toEqual('got an error');
     });

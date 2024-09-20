@@ -21,14 +21,16 @@ import { handlers } from './handlers';
  * @param event
  * @returns
  */
-export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
+export async function processor(
+  event: SQSEvent,
+): Promise<SQSBatchResponse | null> {
   const batchFailures: SQSBatchItemFailure[] = [];
   for await (const record of event.Records) {
     try {
       const message = JSON.parse(JSON.parse(record.body).Message);
       if (handlers[message['detail-type']] == null) {
         console.info(`No handler for detail-type='${message['detail-type']}'`);
-        return;
+        return null;
       }
       await handlers[message['detail-type']](record);
     } catch (error) {

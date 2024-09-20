@@ -34,6 +34,7 @@ export class BatchDeleteDyanmoClient {
       Limit: limit,
     };
     const res = await this.dynamo.send(new ScanCommand(command));
+    if (res.Items == null) return [];
     return res.Items?.map(
       (item) => item[config.dynamo.pendingUsers.keyColumn] as any as number, // I know... but it's defined in the schema
     );
@@ -98,6 +99,11 @@ export class BatchDeleteDyanmoClient {
       {
         deleteRequests: [],
         putRequests: [],
+      } as {
+        deleteRequests: { DeleteRequest: { Key: { [x: string]: number } } }[];
+        putRequests: {
+          PutRequest: { Item: { [x: string]: number | string } };
+        }[];
       },
     );
 

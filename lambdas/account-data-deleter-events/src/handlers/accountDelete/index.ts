@@ -59,7 +59,7 @@ export async function accountDeleteHandler(record: SQSRecord): Promise<void> {
   const postBody = validatePostBody(message);
   const queueRes = await callQueueDeleteEndpoint(postBody);
   const stripeRes = await callStripeDeleteEndpoint(postBody);
-  const errors = [];
+  const errors: Error[] = [];
   for await (const { endpoint, res } of [
     { endpoint: 'queueDelete', res: queueRes },
     { endpoint: 'stripeDelete', res: stripeRes },

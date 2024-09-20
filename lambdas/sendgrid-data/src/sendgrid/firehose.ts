@@ -1,6 +1,7 @@
 import {
   FirehoseClient,
   PutRecordBatchCommand,
+  PutRecordBatchCommandOutput,
   _Record,
 } from '@aws-sdk/client-firehose';
 import config from '../config';
@@ -30,11 +31,11 @@ export const deliver = async (
 ): Promise<boolean> => {
   const firehoseClient = new FirehoseClient();
   const generator = chunkArray(events, batchSize);
-  const promises = [];
+  const promises: Promise<PutRecordBatchCommandOutput>[] = [];
   const { accountId } = parameters;
 
   let encodedRecords;
-  let request;
+  let request: Promise<PutRecordBatchCommandOutput>;
   let current = generator.next();
 
   while (!current.done) {

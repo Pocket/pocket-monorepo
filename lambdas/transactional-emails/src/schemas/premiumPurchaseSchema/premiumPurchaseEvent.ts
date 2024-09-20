@@ -3,7 +3,7 @@ import { User } from './user';
 
 export class PremiumPurchaseEvent {
   'purchase': Purchase;
-  'user': User;
+  'user': User | null;
 
   private static discriminator: string | undefined = undefined;
   private static attributeTypeMap: Array<{

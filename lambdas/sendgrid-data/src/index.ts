@@ -55,6 +55,12 @@ const eventHandler = async (
   event: APIGatewayEvent,
 ): Promise<APIGatewayProxyResult> => {
   try {
+    if (event.body == null) {
+      throw new Error('Invalid event body');
+    }
+    if (event.queryStringParameters == null) {
+      throw new Error('Invalid query string parameters');
+    }
     const events = JSON.parse(event.body);
     logEventsReceived(events);
     await deliverEvents(events, event.queryStringParameters);

@@ -1,13 +1,14 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
     "compilerOptions": {
-        "target": "es2017",
-        "module": "commonjs",
-        "outDir": "dist",
-        "sourceMap": true,
-        "esModuleInterop": true,
-        "noEmitHelpers": true,
-        "importHelpers": true,
-        "removeComments": true
+      "target": "es2017",
+      "module": "commonjs",
+      "outDir": "dist",
+      "sourceMap": true,
+      "esModuleInterop": true,
+      "noEmitHelpers": true,
+      "importHelpers": true,
+      "removeComments": true,
+      "strictNullChecks": true
     }
 }

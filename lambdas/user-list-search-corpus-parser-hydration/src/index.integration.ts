@@ -2,6 +2,7 @@ import nock from 'nock';
 
 import { processor } from '.';
 import { config } from './config';
+import { SQSEvent } from 'aws-lambda';
 
 /**
  * Test cleanup: delete all documents in corpus indices
@@ -229,7 +230,7 @@ describe('bulk indexer', () => {
 // Real invocation payload sent to the dev lambda -- this is
 // very difficult to track and determine as it flows through
 // AWS services like EventBridge, SQS, Lambda, etc.
-const exampleInvocationPayload = {
+const exampleInvocationPayload: SQSEvent = {
   Records: [
     {
       attributes: {
@@ -244,7 +245,6 @@ const exampleInvocationPayload = {
       eventSourceARN:
         'arn:aws:sqs:us-east-1:410318598490:UserListSearch-Dev-CorpusEvents',
       md5OfBody: 'd54ac57950edefc81f8abc805a64164b',
-      md5OfMessageAttributes: null,
       messageAttributes: {},
       messageId: '2e725b1c-40fa-4384-bd7a-837a0ad66074',
       receiptHandle:
@@ -263,7 +263,6 @@ const exampleInvocationPayload = {
       eventSourceARN:
         'arn:aws:sqs:us-east-1:410318598490:UserListSearch-Dev-CorpusEvents',
       md5OfBody: 'd6e99259971d8a7f6055fa612580811b',
-      md5OfMessageAttributes: null,
       messageAttributes: {},
       messageId: 'a89c0ea2-7231-4347-889b-8d456812d4a0',
       receiptHandle:
@@ -281,7 +280,6 @@ const exampleInvocationPayload = {
         ApproximateFirstReceiveTimestamp: '1719600803092',
       },
       messageAttributes: {},
-      md5OfMessageAttributes: null,
       md5OfBody: '09fb67b7b9f0899db20fbec34d77092e',
       eventSource: 'aws:sqs',
       eventSourceARN:
