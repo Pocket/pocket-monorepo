@@ -9,10 +9,10 @@ import {
 } from '@aws-sdk/client-sqs';
 
 const awsEnvironments = ['production', 'development'];
-let localAwsEndpoint: string = process.env.SQS_ENDPOINT;
-if (!awsEnvironments.includes(process.env.NODE_ENV)) {
-  localAwsEndpoint = process.env.AWS_ENDPOINT || 'http://localhost:4566';
-}
+const localAwsEndpoint =
+  process.env.NODE_ENV && !awsEnvironments.includes(process.env.NODE_ENV)
+    ? process.env.AWS_ENDPOINT || 'http://localhost:4566'
+    : undefined;
 
 export const config = {
   jobQueueUrl:

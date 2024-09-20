@@ -1,10 +1,10 @@
 // Environment variables below are set in .aws/src/main.ts
 
 const awsEnvironments = ['production', 'development'];
-let localAwsEndpoint: string = undefined;
-if (!awsEnvironments.includes(process.env.NODE_ENV)) {
-  localAwsEndpoint = process.env.AWS_ENDPOINT || 'http://localhost:4566';
-}
+const localAwsEndpoint =
+  process.env.NODE_ENV && !awsEnvironments.includes(process.env.NODE_ENV)
+    ? process.env.AWS_ENDPOINT || 'http://localhost:4566'
+    : undefined;
 
 const parserConfig: { parser_base_endpoint: string; parser_data_path: string } =
   JSON.parse(
