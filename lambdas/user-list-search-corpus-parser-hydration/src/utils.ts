@@ -1,3 +1,5 @@
+import { BulkRequestMeta } from './types';
+
 /**
  * This method is copied in user-list-search-corpus-indexing
  * (sharing lambda code is really annoying and not worth it for just this)
@@ -22,4 +24,11 @@ export function buildCollectionUrl(slug: string, langCode: string): string {
       .join('/');
   }
   return slug;
+}
+
+export function hasExcerptOrIsCollection(request: BulkRequestMeta): boolean {
+  return (
+    request.isCollection ||
+    !(request.excerpt == null || request.excerpt?.trim().length === 0)
+  );
 }

@@ -14,7 +14,7 @@ import {
 } from './types';
 import { parserRequest, parserResultToDoc } from './parserRequest';
 import { bulkIndex } from './bulkIndex';
-import { buildCollectionUrl } from './utils';
+import { buildCollectionUrl, hasExcerptOrIsCollection } from './utils';
 import { getEmbeddings } from './embeddingsRequest';
 
 /**
@@ -67,8 +67,7 @@ export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
       // aren't collections. This is a proxy indicator for quality
       // and review, as articles without excerpts tend to be poorly
       // parsed (e.g. have urls for titles)
-      ((request.isCollection && request.excerpt == null) ||
-        request.excerpt?.trim().length === 0)
+      hasExcerptOrIsCollection(request)
     ) {
       const embeddingsRequest = {
         given_url: request.url,
