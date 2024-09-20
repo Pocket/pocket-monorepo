@@ -34,7 +34,7 @@ export async function deleteUserByFxaId(
   args: { id: string },
   context: IContext,
 ): Promise<string> {
-  if (context.fxaUserId != args.id) {
+  if (context.fxaUserId !== args.id) {
     serverLogger.error('FxA user id mismatch in deletion', {
       header: context.fxaUserId,
       input: args.id,
@@ -59,7 +59,7 @@ export async function updateUserEmailByFxaId(
   args: { id: string; email: string },
   context: IContext,
 ): Promise<UserModel> {
-  if (context.fxaUserId != args.id) {
+  if (context.fxaUserId !== args.id) {
     serverLogger.error('FxA user id mismatch in update email', {
       header: context.fxaUserId,
       input: args.id,
@@ -74,7 +74,7 @@ export async function expireUserWebSessionByFxaId(
   args: { id: string; reason: ExpireUserWebSessionReason },
   context: IContext,
 ): Promise<string> {
-  if (context.fxaUserId != args.id) {
+  if (context.fxaUserId !== args.id) {
     serverLogger.error('FxA user id mismatch in expiring web session tokens', {
       header: context.fxaUserId,
       input: args.id,

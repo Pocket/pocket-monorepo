@@ -91,7 +91,7 @@ export class OffsetPagination<TB extends keyof DB, O> {
     // If offset is -1 (the default for 'last' pagination, recompute it based on count),
     // ensuring the offset is never negative
     const offset =
-      givenOffset == -1 ? Math.max(totalCount - limit, 0) : givenOffset;
+      givenOffset === -1 ? Math.max(totalCount - limit, 0) : givenOffset;
     // Attempt to overfetch by 1 to find out if there are more
     const qb = query.offset(offset).limit(limit + 1);
     const rows = await qb.execute();

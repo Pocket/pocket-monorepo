@@ -17,6 +17,7 @@
       "sourceMap": true,
       "inlineSources": true,
       "sourceRoot": "/",
-      "declaration": true
+      "declaration": true,
+      "strictNullChecks": true
     }
   }

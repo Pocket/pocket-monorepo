@@ -108,7 +108,7 @@ export async function parserRequest(
 export function cleanExtractedText(
   article: string | undefined,
 ): string | undefined {
-  if (article == null || article == '') {
+  if (article == null || article === '') {
     return undefined;
   }
   // e.g. <!--IMG_1-->, <!--VIDEO_13-->
@@ -163,24 +163,24 @@ export function contentType(
   >,
 ): { parent: string | undefined; children: string[] | undefined } {
   let parent: string;
-  if (result.isIndex == 1) {
+  if (result.isIndex === 1) {
     parent = 'index';
-  } else if (result.isArticle == 1) {
+  } else if (result.isArticle === 1) {
     parent = 'article';
     // '2' = is an image (exclusive with other 'is_' fields)
-  } else if (result.has_image == '2') {
+  } else if (result.has_image === '2') {
     parent = 'image';
     // '2' = is a video (exclusive with other 'is_' fields)
-  } else if (result.has_video == '2') {
+  } else if (result.has_video === '2') {
     parent = 'video';
   } else {
     parent = undefined;
   }
   const children = [];
-  if (result.has_video == '1') {
+  if (result.has_video === '1') {
     children.push('video');
   }
-  if (result.has_image == '1') {
+  if (result.has_image === '1') {
     children.push('image');
   }
   return { parent, children: children.length > 0 ? children : undefined };

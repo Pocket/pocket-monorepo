@@ -69,8 +69,8 @@ class ContextManager implements IContext {
   ) {
     if (
       this.headers.transfersub != null &&
-      this.headers.transfersub != undefined &&
-      this.headers.transfersub != 'undefined'
+      this.headers.transfersub !== undefined &&
+      this.headers.transfersub !== 'undefined'
     ) {
       this.transferSub = this.headers.transfersub;
     } else if (this.headers.fxauserid != null) {
@@ -140,7 +140,7 @@ class ContextManager implements IContext {
 
     // This shouldn't need to be in a if block, but it is possible to have a null userId at this point if the the userid header was empty.
     // Also some service is passing through anonymous to user-api, however this service always should have a user...
-    if (this._userId != null && this._userId != 'anonymous') {
+    if (this._userId != null && this._userId !== 'anonymous') {
       // If we have a user, lets identify them and the error
       // We encode the error because we identifiy users in sentry with encoded user ids across all the clients and services
       // This is in a try catch in case the IntMask function values on a weird or invalid value, for now we dont want to halt execution, or throw an error.

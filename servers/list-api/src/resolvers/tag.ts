@@ -25,7 +25,10 @@ export async function tagsSavedItems(
   let foundArray = false;
   let parentResolver = info.path.prev; // skip current
   while (!(foundArray || parentResolver == null)) {
-    if (parentResolver.typename == 'TagEdge' || parentResolver.key == 'tags') {
+    if (
+      parentResolver.typename === 'TagEdge' ||
+      parentResolver.key === 'tags'
+    ) {
       foundArray = true;
     }
     parentResolver = parentResolver.prev;

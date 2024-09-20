@@ -11,8 +11,7 @@ import { GraphQLError } from 'graphql';
 
 // Fake resolvers that throw errors
 async function badSql() {
-  const db = null;
-  return db.data;
+  throw new Error(`Cannot read properties of null (reading 'data')`);
 }
 
 function notFound() {

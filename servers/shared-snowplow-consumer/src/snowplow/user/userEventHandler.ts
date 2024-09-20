@@ -85,7 +85,7 @@ export class UserEventHandler extends EventHandler {
       UserEventHandler.generateApiUserContext(data.detail),
     ];
 
-    if (data['detail-type'] == 'account-deletion') {
+    if (data['detail-type'] === 'account-deletion') {
       context.push(
         UserEventHandler.generateDeleteEventAccountContext(data.detail),
       );

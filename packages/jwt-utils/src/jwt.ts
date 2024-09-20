@@ -7,7 +7,7 @@ type JwtPayload = {
   aud: string;
   iat: number; //timestamp
   exp: number;
-  sub: string;
+  sub?: string;
   api_id?: string;
   application_name?: string;
 };

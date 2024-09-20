@@ -2,7 +2,7 @@ import { config } from './config';
 import * as Sentry from '@sentry/aws-serverless';
 Sentry.init({
   ...config.sentry,
-  debug: config.sentry.environment == 'development',
+  debug: config.sentry.environment === 'development',
 });
 import type { SQSEvent } from 'aws-lambda';
 import { instantSyncHandler } from './handlerFn';

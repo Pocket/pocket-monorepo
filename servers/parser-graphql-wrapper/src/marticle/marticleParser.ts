@@ -122,7 +122,7 @@ const transformers = {
     const subtree = createSubtree('p', children) as TurndownService.Node;
     const content = turndownService.turndown(subtree);
     // Don't return empty content; this can sometimes happen for text nodes
-    if (content != '') {
+    if (content !== '') {
       return {
         __typename: blockquoteAncestor ? 'MarticleBlockquote' : 'MarticleText',
         content: turndownService.turndown(subtree),
@@ -137,7 +137,7 @@ const transformers = {
     const subtree = createSubtree('p', children) as TurndownService.Node;
     // Don't return empty content; this can sometimes happen for text nodes
     const content = turndownService.turndown(subtree);
-    if (content != '') {
+    if (content !== '') {
       return {
         __typename: 'MarticleText',
         content: content,
@@ -150,7 +150,7 @@ const transformers = {
     const subtree = createSubtree('p', children) as TurndownService.Node;
     // Don't return empty content; this can sometimes happen for text nodes
     const content = turndownService.turndown(subtree);
-    if (content != '') {
+    if (content !== '') {
       return {
         __typename: 'MarticleBlockquote',
         content: content,
@@ -229,21 +229,21 @@ const transformers = {
     const parentNode = children[0].parentNode as HTMLLIElement;
     // Slightly different response depending on ordered or unordered list
     const parentType =
-      children[0].parentNode.parentNode.nodeName == 'OL' ? 'OL' : 'UL';
+      children[0].parentNode.parentNode.nodeName === 'OL' ? 'OL' : 'UL';
     // Can have nested list types so need to count both ancestors
     const level =
       countAncestors(children[0], 'OL') + countAncestors(children[0], 'UL');
     children.forEach((child) => child.parentNode.removeChild(child));
     // Don't include 'ul/ol' nodes since they will have already been processed
     const childrenToProcess = children.filter(
-      (child) => child.nodeName != parentType,
+      (child) => child.nodeName !== parentType,
     );
     if (childrenToProcess.length > 0) {
       const subtree = createSubtree(
         'div',
         childrenToProcess,
       ) as TurndownService.Node;
-      if (parentType == 'OL') {
+      if (parentType === 'OL') {
         return {
           index: countPreviousSiblings(parentNode, 'LI'),
           level: level - 1,
@@ -607,9 +607,9 @@ function getParserMediaFromComment(
   const mediaElement = media
     ? (media.filter((value) => {
         if ('imageId' in value) {
-          return value.imageId == mediaId;
+          return value.imageId === mediaId;
         } else if ('videoId' in value) {
-          return value.videoId == mediaId;
+          return value.videoId === mediaId;
         }
       })[0] as unknown as SrcRecord)
     : null;

@@ -680,12 +680,12 @@ export async function searchSavedItems(
   const response = {
     edges: searchResultsEdges,
     pageInfo: {
-      endCursor: searchResultsEdges.length == 0 ? null : endCursor,
+      endCursor: searchResultsEdges.length === 0 ? null : endCursor,
       hasNextPage:
         result.hits.total['value'] > searchParams.from + searchParams.size,
       hasPreviousPage: searchParams.from > 0,
       startCursor:
-        searchResultsEdges.length == 0
+        searchResultsEdges.length === 0
           ? null
           : Buffer.from(searchParams.from.toString()).toString('base64'),
     },

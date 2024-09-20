@@ -3,7 +3,7 @@ import { initSentry } from '@pocket-tools/sentry';
 // Initialize sentry
 initSentry({
   ...config.sentry,
-  debug: config.sentry.environment == 'development',
+  debug: config.sentry.environment === 'development',
 });
 
 import { startServer } from './express';

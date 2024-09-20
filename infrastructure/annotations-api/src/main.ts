@@ -172,11 +172,11 @@ class AnnotationsAPI extends TerraformStack {
           envVars: [
             {
               name: 'NODE_ENV',
-              value: process.env.NODE_ENV,
+              value: process.env.NODE_ENV ?? 'development',
             },
             {
               name: 'ENVIRONMENT',
-              value: process.env.NODE_ENV, // this gives us a nice lowercase production and development
+              value: process.env.NODE_ENV ?? 'development', // this gives us a nice lowercase production and development
             },
             {
               name: 'DATABASE_READ_PORT',

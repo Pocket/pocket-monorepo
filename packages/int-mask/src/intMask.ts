@@ -130,12 +130,14 @@ export class IntMask {
   }
 
   unmerge(encodedString): number {
-    const result = [];
+    const result: any[] = [];
 
     // Remove encoded at specific points of the mask.
-    this.options.positionMap.forEach((decodedIndex, encodedIndex: any) => {
-      result[decodedIndex] = encodedString.charAt(encodedIndex);
-    });
+    this.options.positionMap.forEach(
+      (decodedIndex: number, encodedIndex: any) => {
+        result[decodedIndex] = encodedString.charAt(encodedIndex);
+      },
+    );
 
     const result1 = result.join('').replace(/^0*/, '');
 
