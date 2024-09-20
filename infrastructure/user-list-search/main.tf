@@ -23,6 +23,10 @@ data "aws_ssm_parameter" "corpus_sentry_dsn" {
   name = "/CorpusSearchLambdas/${local.env}/SENTRY_DSN"
 }
 
+data "aws_ssm_parameter" "corpus_search_services_consumer_key" {
+  name = "/CorpusSearchLambdas/${local.env}/CONSUMER_KEY"
+}
+
 data "aws_ssm_parameter" "parser_privileged_service_id" {
   name = "/${local.name}/${local.env}/PARSER_PRIVILEGED_SERVICE_ID"
 }

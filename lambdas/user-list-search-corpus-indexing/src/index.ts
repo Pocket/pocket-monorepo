@@ -10,11 +10,11 @@ import type {
   SQSBatchItemFailure,
   SQSEvent,
 } from 'aws-lambda';
-import { EventPayload, validDetailTypes } from './types';
-import { createDoc } from './createDoc';
-import fetchRetry from 'fetch-retry';
+import { EventPayload, ValidatedEventPayload, validDetailTypes } from './types';
+import { createDoc, deleteDoc } from './docCommands';
+import { postRetry } from './postRetry';
 import { serverLogger } from '@pocket-tools/ts-logger';
-const newFetch = fetchRetry(fetch);
+import { syndicationDupes } from './syndication';
 
 /**
  * The main handler function which will be wrapped by Sentry prior to export.
@@ -47,21 +47,36 @@ export const handler = Sentry.wrapHandler(processor);
 export async function bulkIndex(
   records: EventPayload[],
 ): Promise<SQSBatchResponse> {
-  const invalidLanguage = (item: EventPayload) => {
+  const validLanguage = (item: EventPayload): item is ValidatedEventPayload => {
     const language =
       'collection' in item.detail
         ? item.detail.collection.language
         : item.detail.language;
     return language == null ||
       config.indexLangMap[language.toLowerCase()] == null
-      ? true
-      : false;
+      ? false
+      : true;
   };
   // Filter out any invalid languages
   const failures: SQSBatchItemFailure[] = records
-    .filter((item) => invalidLanguage(item))
+    .filter((item) => !validLanguage(item))
     .map((failure) => ({ itemIdentifier: failure.messageId }));
-  const validItems = records.filter((item) => !invalidLanguage(item));
+  const validItems: ValidatedEventPayload[] = records.filter((item) =>
+    validLanguage(item),
+  );
+  // Delete syndication duplicates
+  // This assumes that for a given syndicated article, the
+  // original article existed in the corpus *before* it was
+  // was syndicated. We do not check for a possible syndication
+  // duplicate whenever a new article is added, because that would
+  // be resource-intensive and generally doesn't make sense with the
+  // curation workflow. We'll take the very small risk of duplicates
+  // which can be deleted manually.
+  const duplicates = await syndicationDupes(validItems);
+  const deletes = duplicates
+    .flatMap((doc) => deleteDoc(doc.id, doc.index))
+    .map((line) => JSON.stringify(line))
+    .join('\n');
   // The new elasticsearch client doesn't work on AWS
   // The old one is honestly maybe more of a PITA than just making http
   // requests, because the typing is just 'any' where it counts and the
@@ -71,19 +86,8 @@ export async function bulkIndex(
     .flatMap((docCommands) => [{ index: docCommands.meta }, docCommands.fields])
     .map((line) => JSON.stringify(line))
     .join('\n');
-  const body = `${bodyData}\n`; // must be terminated by a newline...
-  const res = await newFetch(`${config.apiEndpoint}/_bulk`, {
-    retryOn: [500, 502, 503],
-    retryDelay: (attempt) => {
-      return Math.pow(2, attempt) * 500;
-    },
-    retries: 3,
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body,
-  });
+  const body = `${bodyData}\n${deletes}\n`; // must be terminated by a newline...
+  const res = await postRetry(`${config.apiEndpoint}/_bulk`, body);
   if (!res.ok) {
     Sentry.addBreadcrumb({ data: { requestBody: body } });
     const data = await res.json();
