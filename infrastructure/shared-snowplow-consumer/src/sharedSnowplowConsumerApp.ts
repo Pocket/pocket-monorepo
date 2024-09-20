@@ -76,7 +76,7 @@ export class SharedSnowplowConsumerApp extends Construct {
           envVars: [
             {
               name: 'NODE_ENV',
-              value: process.env.NODE_ENV,
+              value: process.env.NODE_ENV ?? 'development',
             },
 
             {

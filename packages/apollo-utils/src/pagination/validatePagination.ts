@@ -50,4 +50,6 @@ export function validatePagination(
   } else if (pagination.last) {
     return { last: constrain(pagination.last) };
   }
+
+  return { first: defaultPageSize };
 }

@@ -170,7 +170,7 @@ const seedUsers = async (
     await knexDbReadClient().table('users').insert(user);
     const timeOpts = { min: 12846124, max: new Date().getTime() / 1000 };
 
-    if (user.premium_status == true) {
+    if (user.premium_status === true) {
       // Only premium users can have recent searches
       // create 2 entries for each user -- this allows our tests to ensure premium backfill query selects the most recent login for each user
       const userSearch = {

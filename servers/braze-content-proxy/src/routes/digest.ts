@@ -40,10 +40,10 @@ function transformToBrazePayload(
     return [];
   }
   const savedItems: BrazeSavedItem[] = edges
-    .filter((edge) => edge.node.item.__typename == 'Item')
+    .filter((edge) => edge.node.item.__typename === 'Item')
     .map((edge) => {
       const item = edge.node.item;
-      if (item.__typename == 'Item') {
+      if (item.__typename === 'Item') {
         return {
           title: item.preview.title,
           imageUrl: item.preview.image?.cachedImages[0].url,

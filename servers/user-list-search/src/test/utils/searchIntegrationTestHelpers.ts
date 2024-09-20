@@ -59,7 +59,7 @@ export async function loadList(db: Knex, seedData: SeedData) {
     title: title,
     time_added: date,
     time_updated: date,
-    time_read: status == 1 ? date : '0000-00-00 00:00:00',
+    time_read: status === 1 ? date : '0000-00-00 00:00:00',
     time_favorited: date,
     api_id: 'apiid',
     api_id_updated: 'apiid',

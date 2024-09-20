@@ -3,7 +3,7 @@ import { initSentry } from '@pocket-tools/sentry';
 // Sentry Setup
 initSentry({
   ...config.sentry,
-  debug: config.sentry.environment == 'development',
+  debug: config.sentry.environment === 'development',
 });
 
 import * as Sentry from '@sentry/node';

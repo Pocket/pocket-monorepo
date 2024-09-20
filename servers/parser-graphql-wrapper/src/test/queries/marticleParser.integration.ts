@@ -44,7 +44,7 @@ function makeResponseForParserTextEndpoint(options: {
     data: {
       item_id: itemId,
       isArticle: +isArticle,
-      isVideo: videoness == Videoness.HasVideos ? 1 : 0,
+      isVideo: videoness === Videoness.HasVideos ? 1 : 0,
       has_video: videonessToParser(videoness),
       images: {
         1: {

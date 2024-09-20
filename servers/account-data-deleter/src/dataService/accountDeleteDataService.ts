@@ -78,7 +78,7 @@ export class AccountDeleteDataService {
     limit = config.queueDelete.queryLimit,
   ): Promise<TablePrimaryKeyModel> {
     let keyColumns: string[] = await this.getPrimaryKey(table);
-    if (keyColumns.length == 0) {
+    if (keyColumns.length === 0) {
       // if the table doesn't have a primary key,
       // then fetch index column
       // The `where` condition must always be added if not PK,

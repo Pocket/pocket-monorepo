@@ -146,7 +146,7 @@ export class TagModel {
     const sanitizedIds = sanitized.map(({ savedItemId }) => savedItemId);
     // Validate just in case
     const deleteFromSaveId = new Set(sanitizedIds);
-    if (deleteFromSaveId.size != 1) {
+    if (deleteFromSaveId.size !== 1) {
       throw new UserInputError('Cannot update Tags on multiple Saves');
     }
     return this.tagService.updateSavedItemTags(sanitized, timestamp);

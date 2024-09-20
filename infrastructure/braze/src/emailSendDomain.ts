@@ -8,7 +8,7 @@ export interface EmailSendDomainConfig {
   subdomain: string;
   cname: string;
   mx: string;
-  textRecords: { [key: string]: string[] };
+  textRecords: { [key: string]: string[] } | { [key: string]: undefined };
   aRecords: { [key: string]: string };
   // When verifying domains initially with Braze we need to setup Root CNAMES.
   // However after we verify a CNAME we then need to remove it and replace it with text and mx records
@@ -24,7 +24,7 @@ interface RootZoneConfig {
 interface TextRecordsConfig {
   baseDNS: dataAwsRoute53Zone.DataAwsRoute53Zone;
   subdomain: string;
-  textRecords: { [key: string]: string[] };
+  textRecords: { [key: string]: string[] } | { [key: string]: undefined };
 }
 
 interface ARecordsConfig {
@@ -139,7 +139,7 @@ export class EmailSendDomain extends Construct {
     const records: route53Record.Route53Record[] = [];
     for (const [name, value] of Object.entries(config.textRecords)) {
       const recordName =
-        name == '' ? config.subdomain : `${name}.${config.subdomain}`;
+        name === '' ? config.subdomain : `${name}.${config.subdomain}`;
       records.push(
         new route53Record.Route53Record(
           this,
@@ -167,7 +167,7 @@ export class EmailSendDomain extends Construct {
     const records: route53Record.Route53Record[] = [];
     for (const [name, value] of Object.entries(config.aRecords)) {
       const recordName =
-        name == '' ? config.subdomain : `${name}.${config.subdomain}`;
+        name === '' ? config.subdomain : `${name}.${config.subdomain}`;
       records.push(
         new route53Record.Route53Record(this, `${records.length}_a_records`, {
           zoneId: config.baseDNS.zoneId,

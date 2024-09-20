@@ -113,5 +113,8 @@
     "express": "4.19.2",
     "graphql": "16.9.0",
     "graphql-tag": "2.12.6"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

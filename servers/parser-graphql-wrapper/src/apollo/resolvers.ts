@@ -94,8 +94,8 @@ export const resolvers: Resolvers = {
       // Only extract Marticle data from article string if Parser
       // extracted valid data (isArticle or isVideo is 1)
       return article.isArticle ||
-        article.hasVideo == Videoness.IsVideo ||
-        article.hasVideo == Videoness.HasVideos
+        article.hasVideo === Videoness.IsVideo ||
+        article.hasVideo === Videoness.HasVideos
         ? parseArticle(article)
         : ([] as MarticleElement[]);
     },

@@ -92,7 +92,7 @@ export async function lazyParentLoad<T extends object, K, A extends keyof T>(
   parent: T,
   attr: A,
 ): Promise<T[A]> {
-  if (attr in parent && parent[attr] != undefined) {
+  if (attr in parent && parent[attr] !== undefined) {
     return Promise.resolve(parent[attr]);
   } else {
     const fetched = await loader.load(key);

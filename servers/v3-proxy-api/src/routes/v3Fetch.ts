@@ -72,7 +72,7 @@ export async function processV3call(
   headers: any,
   data: V3FetchParams,
 ): Promise<FetchResponse | (FetchResponse & GetSharesResponse)> {
-  if (data.offset == 0) {
+  if (data.offset === 0) {
     data.count = 25; // set the intial page size to a smaller value to allow the user to see something as quickly as possible
   }
   const options = {

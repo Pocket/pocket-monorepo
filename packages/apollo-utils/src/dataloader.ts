@@ -55,7 +55,9 @@ export const multiGetCachedValues = async <T, U>(
     )
   ).map((value) => (value !== undefined ? value : null)); // filter the undefined values to null to mimic the old mget behavior from redis;
 
-  return cacheValues.map((value) => JSON.parse(value)).filter(Boolean);
+  return cacheValues
+    .map((value) => JSON.parse(value as string))
+    .filter(Boolean);
 };
 
 /**

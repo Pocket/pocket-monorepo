@@ -465,7 +465,7 @@ function MaybeHasTitle<TBase extends ActionSanitizable>(Base: TBase) {
       super(...args);
       if (
         'title' in this.input &&
-        (this.input.title == null || this.input.title == 'null')
+        (this.input.title == null || this.input.title === 'null')
       )
         return;
       if (
