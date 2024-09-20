@@ -1,6 +1,10 @@
-import { EventPayload, CorpusItemIndex } from './types';
+import { CorpusItemIndex, ValidatedEventPayload } from './types';
 import { config } from './config';
 import { buildCollectionUrl } from './utils';
+
+export function deleteDoc(corpusId: string, index: string) {
+  return { delete: { _index: index, _id: corpusId } };
+}
 
 /**
  * Build elasticsearch documents from the event payload.
@@ -10,7 +14,7 @@ import { buildCollectionUrl } from './utils';
  * @param payload EventPayload
  * @returns index documents for the bulk elasticsearch api
  */
-export function createDoc(payload: EventPayload): CorpusItemIndex[] {
+export function createDoc(payload: ValidatedEventPayload): CorpusItemIndex[] {
   if ('collection' in payload.detail) {
     const { collection } = payload.detail;
     const _index = config.indexLangMap[collection.language.toLowerCase()];
