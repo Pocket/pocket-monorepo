@@ -1,7 +1,8 @@
 import { bulkIndex, processor } from '.';
 import { EventPayload } from './types';
 import { config } from './config';
-import * as cd from './createDoc';
+import * as cd from './docCommands';
+import * as synd from './syndication/syndicationDupes';
 
 /**
  * Test cleanup: delete all documents in corpus indices
@@ -19,6 +20,17 @@ async function deleteDocuments() {
       },
     );
   }
+}
+/**
+ * Test cleanup: delete all documents in corpus indices
+ */
+async function deleteDocument(index: string, id: string) {
+  await fetch(`${config.apiEndpoint}/${index}/_doc/${id}`, {
+    method: 'delete',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 }
 
 /**
@@ -56,6 +68,102 @@ describe('bulk indexer', () => {
       expect.objectContaining({ found: true }),
     ]);
     expect(processorRes).toEqual({ batchItemFailures: [] });
+  });
+  it('removes a syndicated duplicate article', async () => {
+    jest
+      .spyOn(synd, 'syndicationDupes')
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([
+        {
+          id: '492ca986-b2b9-492c-a63d-0b0a713a5885',
+          index: 'corpus_en_luc',
+        },
+      ]);
+    // Seed first
+    await processor(exampleInvocationPayload);
+    // Fake a syndicated article 1234-abcd-8888-fjgh
+    const records = {
+      Records: [
+        {
+          messageId: '9f9792df-ab70-4884-8b72-cee0b8340afa',
+          receiptHandle:
+            'AQEBN1gA3AxoGK5y86v2mQGNkUJaBIl6K7KtdyEOnBmKgktdTL0fLppwhXWkgq/jrb5nr/uxvMCCFioPbfv5OaBgcSo/yRgj1PLet17pTKmEkczuIqF4MNH/SsiwmgyuG6lKMla53r8qzOoxmckb/Zie3gQ414Bok0AJc4+ts8MvKvwFmCUZgu9aeIzVzDuL1nOpJMda+Q0RxTEltZCmEJKr8cO8oZsy3po5wg9rFk6ITi0k19B76qlq3UTqXj6jB6BokL8z7Qq0JASfXGAxDGFRHg5riK1U5SG+pgfoFGJMfl/bwq+ZR9PrMTAE3+zmMcIZNVxAWeIljrAbgoUw7P5klYQScEsx9hjLn1TnYmHgYxEKQRSCoQv+K1OtaOBIG1xHQkSSakQ0HjkI/5nsrakIfZMsM0GuYrPKFF8QWCCSiyg=',
+          body: '{\n  "Type" : "Notification",\n  "MessageId" : "fe2cd9e6-4978-5680-84e0-8712b3052acf",\n  "TopicArn" : "arn:aws:sns:us-east-1:996905175585:PocketEventBridge-Prod-CorpusEventsTopic",\n  "Message" : "{\\"version\\":\\"0\\",\\"id\\":\\"ad060d80-ac54-cc42-5902-b3e4aef2a6dd\\",\\"detail-type\\":\\"update-approved-item\\",\\"source\\":\\"curation-migration-datasync\\",\\"account\\":\\"996905175585\\",\\"time\\":\\"2024-06-25T17:02:53Z\\",\\"region\\":\\"us-east-1\\",\\"resources\\":[],\\"detail\\":{\\"eventType\\":\\"update-approved-item\\",\\"approvedItemExternalId\\":\\"1234-abcd-8888-fjgh\\",\\"url\\":\\"https://getpocket.com/explore/uh-oh-a-story-of-spaghettios-and-forgotten-history/\\",\\"title\\":\\"Uh-Oh: A Story of SpaghettiOs and Forgotten History\\",\\"excerpt\\":\\"In which a pasta-filled rabbit hole leads to an unexpected place.\\",\\"language\\":\\"EN\\",\\"publisher\\":\\"Snack Stack\\",\\"imageUrl\\":\\"https://s3.us-east-1.amazonaws.com/pocket-curatedcorpusapi-prod-images/b853f9bf-ea90-4280-b738-4feef27a4630.jpeg\\",\\"topic\\":\\"FOOD\\",\\"isSyndicated\\":true,\\"createdAt\\":\\"Tue, 25 Jun 2024 16:01:19 GMT\\",\\"createdBy\\":\\"ad|Mozilla-LDAP|mjeltsen\\",\\"updatedAt\\":\\"Tue, 25 Jun 2024 17:02:52 GMT\\",\\"authors\\":[{\\"externalId\\":\\"492ca986-b2b9-492c-a63d-0b0a713a5885\\",\\"name\\":\\"Doug Mack\\",\\"approvedItemId\\":175874,\\"sortOrder\\":0}],\\"isCollection\\":false,\\"domainName\\":\\"snackstack.net\\",\\"datePublished\\":\\"Sat, 25 May 2024 00:00:00 GMT\\",\\"isTimeSensitive\\":false,\\"source\\":\\"MANUAL\\"}}",\n  "Timestamp" : "2024-06-25T17:02:53.154Z",\n  "SignatureVersion" : "1",\n  "Signature" : "BTyAyJAO53xzanvuF5MAopx839LZJgVtUBym1fBn6nCjs7IhonSheqt1T3Afq4TWB3y8VV5hBcaTFqQqSlLCWjPzM8xbfBYL1gP6Ddasxnv2VR77qdhY8c8HmsYEuXO4WvJxqe8YOWVQHVgpegjuyTScaaCWxVztoDYC7O55KUG7hc/oJJw+RoxYNshtyTfEYVHQuV23zbWaNvp4GsbjEjOGcBb7BLTA10H2HPW9SxrU4IhMitgvuJm83Q57z0/6glheWL/aqYyjokaEgyAMTmypJNRflxv6OlVg1TTdcz31gozbIyg8P+q+LgNmUrxq+7NdgB0bp+fA9OFUSkPktQ==",\n  "SigningCertURL" : "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-60eadc530605d63b8e62a523676ef735.pem",\n  "UnsubscribeURL" : "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:996905175585:PocketEventBridge-Prod-CorpusEventsTopic:95ac785f-1b3b-48e1-bf91-4f8583bd6ebd"\n}',
+          attributes: {
+            ApproximateReceiveCount: '1',
+            SentTimestamp: '1719600803083',
+            SenderId: 'AROAV7CHE6FNH4IKR3U2R:kschelonka@mozilla.com',
+            ApproximateFirstReceiveTimestamp: '1719600803092',
+          },
+          messageAttributes: {},
+          md5OfMessageAttributes: undefined,
+          md5OfBody: '09fb67b7b9f0899db20fbec34d77092e',
+          eventSource: 'aws:sqs',
+          eventSourceARN:
+            'arn:aws:sqs:us-east-1:410318598490:UserListSearch-Dev-CorpusEvents',
+          awsRegion: 'us-east-1',
+        },
+      ],
+    };
+    const processorRes = await processor(records);
+    expect(processorRes).toEqual({ batchItemFailures: [] });
+    const original = await getDocById(
+      'corpus_en_luc',
+      '492ca986-b2b9-492c-a63d-0b0a713a5885',
+    );
+    expect(original.found).toEqual(false);
+    const syndicated = await getDocById('corpus_en_luc', '1234-abcd-8888-fjgh');
+    expect(syndicated.found).toEqual(true);
+  });
+  it('works even if the original article is not indexed', async () => {
+    jest
+      .spyOn(synd, 'syndicationDupes')
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([
+        {
+          id: '492ca986-b2b9-492c-a63d-0b0a713a5885',
+          index: 'corpus_en_luc',
+        },
+      ]);
+    // Seed first
+    await processor(exampleInvocationPayload);
+    await deleteDocument(
+      'corpus_en_luc',
+      '492ca986-b2b9-492c-a63d-0b0a713a5885',
+    );
+    const ensureDelete = await getDocById(
+      'corpus_en_luc',
+      '492ca986-b2b9-492c-a63d-0b0a713a5885',
+    );
+    expect(ensureDelete.found).toEqual(false);
+    // Fake a syndicated article 1234-abcd-8888-fjgh
+    const records = {
+      Records: [
+        {
+          messageId: '9f9792df-ab70-4884-8b72-cee0b8340afa',
+          receiptHandle:
+            'AQEBN1gA3AxoGK5y86v2mQGNkUJaBIl6K7KtdyEOnBmKgktdTL0fLppwhXWkgq/jrb5nr/uxvMCCFioPbfv5OaBgcSo/yRgj1PLet17pTKmEkczuIqF4MNH/SsiwmgyuG6lKMla53r8qzOoxmckb/Zie3gQ414Bok0AJc4+ts8MvKvwFmCUZgu9aeIzVzDuL1nOpJMda+Q0RxTEltZCmEJKr8cO8oZsy3po5wg9rFk6ITi0k19B76qlq3UTqXj6jB6BokL8z7Qq0JASfXGAxDGFRHg5riK1U5SG+pgfoFGJMfl/bwq+ZR9PrMTAE3+zmMcIZNVxAWeIljrAbgoUw7P5klYQScEsx9hjLn1TnYmHgYxEKQRSCoQv+K1OtaOBIG1xHQkSSakQ0HjkI/5nsrakIfZMsM0GuYrPKFF8QWCCSiyg=',
+          body: '{\n  "Type" : "Notification",\n  "MessageId" : "fe2cd9e6-4978-5680-84e0-8712b3052acf",\n  "TopicArn" : "arn:aws:sns:us-east-1:996905175585:PocketEventBridge-Prod-CorpusEventsTopic",\n  "Message" : "{\\"version\\":\\"0\\",\\"id\\":\\"ad060d80-ac54-cc42-5902-b3e4aef2a6dd\\",\\"detail-type\\":\\"update-approved-item\\",\\"source\\":\\"curation-migration-datasync\\",\\"account\\":\\"996905175585\\",\\"time\\":\\"2024-06-25T17:02:53Z\\",\\"region\\":\\"us-east-1\\",\\"resources\\":[],\\"detail\\":{\\"eventType\\":\\"update-approved-item\\",\\"approvedItemExternalId\\":\\"1234-abcd-8888-fjgh\\",\\"url\\":\\"https://getpocket.com/explore/uh-oh-a-story-of-spaghettios-and-forgotten-history/\\",\\"title\\":\\"Uh-Oh: A Story of SpaghettiOs and Forgotten History\\",\\"excerpt\\":\\"In which a pasta-filled rabbit hole leads to an unexpected place.\\",\\"language\\":\\"EN\\",\\"publisher\\":\\"Snack Stack\\",\\"imageUrl\\":\\"https://s3.us-east-1.amazonaws.com/pocket-curatedcorpusapi-prod-images/b853f9bf-ea90-4280-b738-4feef27a4630.jpeg\\",\\"topic\\":\\"FOOD\\",\\"isSyndicated\\":true,\\"createdAt\\":\\"Tue, 25 Jun 2024 16:01:19 GMT\\",\\"createdBy\\":\\"ad|Mozilla-LDAP|mjeltsen\\",\\"updatedAt\\":\\"Tue, 25 Jun 2024 17:02:52 GMT\\",\\"authors\\":[{\\"externalId\\":\\"492ca986-b2b9-492c-a63d-0b0a713a5885\\",\\"name\\":\\"Doug Mack\\",\\"approvedItemId\\":175874,\\"sortOrder\\":0}],\\"isCollection\\":false,\\"domainName\\":\\"snackstack.net\\",\\"datePublished\\":\\"Sat, 25 May 2024 00:00:00 GMT\\",\\"isTimeSensitive\\":false,\\"source\\":\\"MANUAL\\"}}",\n  "Timestamp" : "2024-06-25T17:02:53.154Z",\n  "SignatureVersion" : "1",\n  "Signature" : "BTyAyJAO53xzanvuF5MAopx839LZJgVtUBym1fBn6nCjs7IhonSheqt1T3Afq4TWB3y8VV5hBcaTFqQqSlLCWjPzM8xbfBYL1gP6Ddasxnv2VR77qdhY8c8HmsYEuXO4WvJxqe8YOWVQHVgpegjuyTScaaCWxVztoDYC7O55KUG7hc/oJJw+RoxYNshtyTfEYVHQuV23zbWaNvp4GsbjEjOGcBb7BLTA10H2HPW9SxrU4IhMitgvuJm83Q57z0/6glheWL/aqYyjokaEgyAMTmypJNRflxv6OlVg1TTdcz31gozbIyg8P+q+LgNmUrxq+7NdgB0bp+fA9OFUSkPktQ==",\n  "SigningCertURL" : "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-60eadc530605d63b8e62a523676ef735.pem",\n  "UnsubscribeURL" : "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:996905175585:PocketEventBridge-Prod-CorpusEventsTopic:95ac785f-1b3b-48e1-bf91-4f8583bd6ebd"\n}',
+          attributes: {
+            ApproximateReceiveCount: '1',
+            SentTimestamp: '1719600803083',
+            SenderId: 'AROAV7CHE6FNH4IKR3U2R:kschelonka@mozilla.com',
+            ApproximateFirstReceiveTimestamp: '1719600803092',
+          },
+          messageAttributes: {},
+          md5OfMessageAttributes: undefined,
+          md5OfBody: '09fb67b7b9f0899db20fbec34d77092e',
+          eventSource: 'aws:sqs',
+          eventSourceARN:
+            'arn:aws:sqs:us-east-1:410318598490:UserListSearch-Dev-CorpusEvents',
+          awsRegion: 'us-east-1',
+        },
+      ],
+    };
+    const processorRes = await processor(records);
+    expect(processorRes).toEqual({ batchItemFailures: [] });
+    const syndicated = await getDocById('corpus_en_luc', '1234-abcd-8888-fjgh');
+    expect(syndicated.found).toEqual(true);
   });
   it('successfully indexes a single corpus item', async () => {
     const payloads: EventPayload[] = [
@@ -270,7 +378,7 @@ const exampleInvocationPayload = {
       eventSourceARN:
         'arn:aws:sqs:us-east-1:410318598490:UserListSearch-Dev-CorpusEvents',
       md5OfBody: 'd54ac57950edefc81f8abc805a64164b',
-      md5OfMessageAttributes: null,
+      md5OfMessageAttributes: undefined,
       messageAttributes: {},
       messageId: '2e725b1c-40fa-4384-bd7a-837a0ad66074',
       receiptHandle:
@@ -289,7 +397,7 @@ const exampleInvocationPayload = {
       eventSourceARN:
         'arn:aws:sqs:us-east-1:410318598490:UserListSearch-Dev-CorpusEvents',
       md5OfBody: 'd6e99259971d8a7f6055fa612580811b',
-      md5OfMessageAttributes: null,
+      md5OfMessageAttributes: undefined,
       messageAttributes: {},
       messageId: 'a89c0ea2-7231-4347-889b-8d456812d4a0',
       receiptHandle:
@@ -307,7 +415,7 @@ const exampleInvocationPayload = {
         ApproximateFirstReceiveTimestamp: '1719600803092',
       },
       messageAttributes: {},
-      md5OfMessageAttributes: null,
+      md5OfMessageAttributes: undefined,
       md5OfBody: '09fb67b7b9f0899db20fbec34d77092e',
       eventSource: 'aws:sqs',
       eventSourceARN:

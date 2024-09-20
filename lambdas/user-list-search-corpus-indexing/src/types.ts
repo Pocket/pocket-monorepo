@@ -4,28 +4,33 @@ export type EventPayload = {
   detail: ApprovedItemPayload | CollectionPayload;
 };
 
+export type ValidatedEventPayload = Omit<EventPayload, 'detail'> & {
+  detail: ValidLanguageApprovedItemPayload | CollectionPayload;
+};
+
 // See indices .docker/aws-resources/elasticsearch
 export type CorpusItemIndex = {
   meta: { _id: string; _index: string };
   fields: Partial<{
     corpusId: string;
-    title: string;
+    title: string | null;
     url: string;
-    excerpt: string;
+    excerpt: string | null;
     is_syndicated: boolean;
     language: string;
-    publisher: string;
-    topic: string;
+    publisher: string | null;
+    topic: string | null;
     authors: string | string[];
     created_at: number; // seconds from epoch
-    published_at: number; // seconds from epoch
+    published_at: number | null; // seconds from epoch
     is_collection: boolean;
-    collection_labels: string | string[];
-    curation_category: string;
-    iab_parent: string;
-    iab_child: string;
+    collection_labels: string | string[] | null;
+    curation_category: string | null;
+    iab_parent: string | null;
+    iab_child: string | null;
     is_collection_story?: boolean;
     parent_collection_id?: string;
+    isTimeSensitive?: boolean | null;
   }>;
 };
 
@@ -64,6 +69,11 @@ export type ApprovedItemPayload = {
   source?: string | null;
   grade?: string | null;
 };
+
+export type ValidLanguageApprovedItemPayload = Omit<
+  ApprovedItemPayload,
+  'language'
+> & { language: string };
 
 // servers/shared-snowplow-consumer/src/eventConsumer/collectionEvents/types.ts
 export type CollectionPayload = {

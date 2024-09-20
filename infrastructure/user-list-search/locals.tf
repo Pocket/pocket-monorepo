@@ -47,6 +47,8 @@ locals {
     PARSER_ENDPOINT              = data.aws_ssm_parameter.parser_endpoint.value
     PARSER_PRIVILEGED_SERVICE_ID = data.aws_ssm_parameter.parser_privileged_service_id.value
     EMBEDDINGS_ENDPOINT          = module.corpus_embeddings.sagemaker_endpoint_name
+    CORPUS_SEARCH_SERVICES_CONSUMER_KEY = data.aws_ssm_parameter.corpus_search_services_consumer_key
+    CORPUS_SEARCH_SERVICES_APP_NAME = "Corpus Search Services"
   }
   sqsEndpoint = "https://sqs.us-east-1.amazonaws.com"
   snsTopicName = {
