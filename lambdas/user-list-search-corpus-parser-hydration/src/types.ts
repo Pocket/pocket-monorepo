@@ -7,6 +7,17 @@ export type EventPayload = {
   detail: ApprovedItemPayload | CollectionPayload;
 };
 
+export type ValidLangEventPayload = Omit<EventPayload, 'detail'> & {
+  detail: ValidLangApprovedItemPayload | CollectionPayload;
+};
+
+export type ValidLangApprovedItemPayload = Omit<
+  ApprovedItemPayload,
+  'language'
+> & {
+  language: string;
+};
+
 export type IndexMeta = {
   meta: { _id: string; _index: string };
 };
@@ -14,8 +25,9 @@ export type IndexMeta = {
 export interface BulkRequestMeta extends IndexMeta {
   url: string;
   messageId: string;
-  title?: string;
-  excerpt?: string;
+  title?: string | null;
+  excerpt?: string | null;
+  isCollection: boolean;
 }
 
 export interface BulkRequestPayload extends BulkRequestMeta {

@@ -7,16 +7,15 @@ Sentry.init({
 });
 import type { SQSBatchResponse, SQSEvent } from 'aws-lambda';
 import {
-  EventPayload,
   validDetailTypes,
   BulkRequestMeta,
   BulkRequestPayload,
+  ValidLangEventPayload,
 } from './types';
 import { parserRequest, parserResultToDoc } from './parserRequest';
 import { bulkIndex } from './bulkIndex';
 import { buildCollectionUrl } from './utils';
 import { getEmbeddings } from './embeddingsRequest';
-import { serverLogger } from '@pocket-tools/ts-logger';
 
 /**
  * The main handler function which will be wrapped by Sentry prior to export.
@@ -28,14 +27,16 @@ import { serverLogger } from '@pocket-tools/ts-logger';
 export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
   const failedMessageIds: string[] = [];
 
-  const validPayloads: Array<EventPayload> = event.Records.map((record) => {
-    const message = JSON.parse(JSON.parse(record.body).Message);
-    return {
-      messageId: record.messageId,
-      detailType: message['detail-type'],
-      detail: message['detail'],
-    };
-  })
+  const validPayloads: Array<ValidLangEventPayload> = event.Records.map(
+    (record) => {
+      const message = JSON.parse(JSON.parse(record.body).Message);
+      return {
+        messageId: record.messageId,
+        detailType: message['detail-type'],
+        detail: message['detail'],
+      };
+    },
+  )
     .filter((message) => validDetailTypes.includes(message['detailType']))
     .filter((message) => {
       const language =
@@ -61,7 +62,13 @@ export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
     // Get embeddings
     if (
       config.embeddingsEnabled &&
-      config.indexSupportsEmbeddings[request.meta._index]
+      config.indexSupportsEmbeddings[request.meta._index] &&
+      // Don't index embeddings for articles without excerpts that
+      // aren't collections. This is a proxy indicator for quality
+      // and review, as articles without excerpts tend to be poorly
+      // parsed (e.g. have urls for titles)
+      ((request.isCollection && request.excerpt == null) ||
+        request.excerpt?.trim().length === 0)
     ) {
       const embeddingsRequest = {
         given_url: request.url,
@@ -97,7 +104,9 @@ export const handler = Sentry.wrapHandler(processor);
  * required for downstream request processing (the url for making the parser
  * request, and the messageId for reporting message processing failures)
  */
-export function unwrapPayloads(payload: EventPayload): BulkRequestMeta[] {
+export function unwrapPayloads(
+  payload: ValidLangEventPayload,
+): BulkRequestMeta[] {
   if ('collection' in payload.detail) {
     const { collection } = payload.detail;
     const _index = config.indexLangMap[collection.language.toLowerCase()];
@@ -110,6 +119,7 @@ export function unwrapPayloads(payload: EventPayload): BulkRequestMeta[] {
       title: story.title,
       excerpt: story.excerpt,
       messageId: payload.messageId,
+      isCollection: false,
     }));
     const parent = {
       meta: {
@@ -120,13 +130,10 @@ export function unwrapPayloads(payload: EventPayload): BulkRequestMeta[] {
       title: collection.title,
       excerpt: collection.excerpt,
       messageId: payload.messageId,
+      isCollection: true,
     };
     return [parent, ...stories];
-  } else if (
-    payload.detail.title != null &&
-    payload.detail.language != null &&
-    payload.detail.excerpt != null
-  ) {
+  } else {
     const _index = config.indexLangMap[payload.detail.language.toLowerCase()];
     return [
       {
@@ -138,13 +145,8 @@ export function unwrapPayloads(payload: EventPayload): BulkRequestMeta[] {
         title: payload.detail.title,
         excerpt: payload.detail.excerpt,
         messageId: payload.messageId,
+        isCollection: false,
       },
     ];
-  } else {
-    serverLogger.error(
-      'Invalid payload, no title, excerpt or language',
-      payload,
-    );
-    return [];
   }
 }
