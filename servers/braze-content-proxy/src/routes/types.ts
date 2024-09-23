@@ -57,7 +57,7 @@ export type BrazeCollectionStory = {
 };
 
 export type BrazeSavedItem = {
-  title: string;
-  url: string;
-  imageUrl: string;
+  title: string | null;
+  url: string | null;
+  imageUrl: string | null;
 };

@@ -120,6 +120,7 @@ describe(`get digest`, () => {
         url: 'https://www.item1.com',
       },
       {
+        imageUrl: null,
         title: '',
         url: 'https://item2.com',
       },
