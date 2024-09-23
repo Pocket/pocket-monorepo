@@ -52,8 +52,7 @@ describe('SavedItemsService', () => {
       request: {
         headers: { userid: '1', apiid: '0' },
       },
-      writeClient: writeClient(),
-      readClient: readClient(),
+      dbClient: readClient(),
       eventEmitter: null,
     });
 
@@ -70,8 +69,7 @@ describe('SavedItemsService', () => {
       request: {
         headers: { userid: '1', apiid: '0' },
       },
-      writeClient: writeClient(),
-      readClient: readClient(),
+      dbClient: readClient(),
       eventEmitter: null,
     });
 
@@ -88,8 +86,7 @@ describe('SavedItemsService', () => {
       request: {
         headers: { userid: '1', apiid: '0' },
       },
-      writeClient: writeClient(),
-      readClient: readClient(),
+      dbClient: readClient(),
       eventEmitter: null,
     });
 
@@ -105,8 +102,7 @@ describe('SavedItemsService', () => {
       request: {
         headers: { userid: '1', apiid: '0' },
       },
-      writeClient: writeClient(),
-      readClient: readClient(),
+      dbClient: readClient(),
       eventEmitter: null,
     });
 
@@ -122,8 +118,7 @@ describe('SavedItemsService', () => {
       request: {
         headers: { userid: '1', apiid: '0' },
       },
-      writeClient: writeClient(),
-      readClient: readClient(),
+      dbClient: readClient(),
       eventEmitter: null,
     });
 
@@ -167,8 +162,7 @@ describe('SavedItemsService', () => {
         request: {
           headers: { userid: '1', apiid: '0' },
         },
-        writeClient: writeClient(),
-        readClient: readClient(),
+        dbClient: writeClient(),
         eventEmitter: null,
       });
       await new SavedItemDataService(context).deleteSavedItem(itemId);

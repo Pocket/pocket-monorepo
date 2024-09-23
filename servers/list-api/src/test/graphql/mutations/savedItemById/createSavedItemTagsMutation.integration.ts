@@ -5,6 +5,7 @@ import { startServer } from '../../../../server/apollo';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
+import * as Client from '../../../../database/client';
 
 describe('createSavedItemTags mutation', function () {
   const writeDb = writeClient();
@@ -204,6 +205,23 @@ describe('createSavedItemTags mutation', function () {
     expect(eventData[0]).toBe(EventType.ADD_TAGS);
     expect(eventData[1].id).toBe(1);
     expect(eventData[2]).toContainAllValues(['tofino', 'victoria']);
+  });
+
+  it('mutations resolver chains should call only writeClient()', async () => {
+    const variables = {
+      input: [{ savedItemId: '1', tags: ['tag', 'added'] }],
+    };
+
+    const readClientSpy = jest.spyOn(Client, 'readClient').mockClear();
+    const writeClientSpy = jest.spyOn(Client, 'writeClient').mockClear();
+    const res = await request(app)
+      .post(url)
+      .set(headers)
+      .send({ query: createSavedItemTags, variables });
+
+    expect(res.body.errors).toBeUndefined();
+    expect(readClientSpy).toHaveBeenCalledTimes(0);
+    expect(writeClientSpy).toHaveBeenCalledTimes(1);
   });
   it('createSavedItemTags should set SavedItem._updatedAt to provided timestamp', async () => {
     const variables = {

@@ -45,8 +45,7 @@ describe('context', () => {
           request: {
             headers: { userid: '1', ...headers },
           },
-          writeClient: jest.fn() as unknown as Knex,
-          readClient: jest.fn() as unknown as Knex,
+          dbClient: jest.fn() as unknown as Knex,
           eventEmitter: new ItemsEventEmitter(),
         });
         // Mock out the scope methods used in the configureScope callback
@@ -69,8 +68,7 @@ describe('context', () => {
       request: {
         headers: { userid: '1', apiid: '0' },
       } as unknown as Request,
-      writeClient: jest.fn() as unknown as Knex,
-      readClient: jest.fn() as unknown as Knex,
+      dbClient: jest.fn() as unknown as Knex,
       eventEmitter: new ItemsEventEmitter(),
     });
     beforeEach(() => {
@@ -142,8 +140,7 @@ describe('context', () => {
         request: {
           headers: { userid: '1', apiid: '0' },
         },
-        writeClient: jest.fn() as unknown as Knex,
-        readClient: jest.fn() as unknown as Knex,
+        dbClient: jest.fn() as unknown as Knex,
         eventEmitter: null,
       });
     });

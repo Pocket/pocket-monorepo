@@ -26,8 +26,7 @@ export interface IContext {
   headers: IncomingHttpHeaders;
   apiId: string;
   userIsPremium: boolean;
-  writeClient: Knex;
-  readClient: Knex;
+  dbClient: Knex;
   eventEmitter: ItemsEventEmitter;
   unleash: Unleash;
   models: {
@@ -55,21 +54,18 @@ export interface IContext {
 export class ContextManager implements IContext {
   public readonly dataLoaders: IContext['dataLoaders'];
   public readonly unleash: Unleash;
-  private _writeClient: Knex;
-  private _readClient: Knex;
+  private _dbClient: Knex;
 
   constructor(
     private config: {
       request: any;
-      readClient: Knex;
-      writeClient: Knex;
+      dbClient: Knex;
       eventEmitter: ItemsEventEmitter;
       unleash?: Unleash;
     },
   ) {
     this.unleash = config.unleash || getClient();
-    this._readClient = config.readClient;
-    this._writeClient = config.writeClient;
+    this._dbClient = config.dbClient;
     this.dataLoaders = {
       ...createTagDataLoaders(this),
       ...createSavedItemDataLoaders(this),
@@ -131,12 +127,8 @@ export class ContextManager implements IContext {
     return this.config.eventEmitter;
   }
 
-  get readClient(): Knex {
-    return this._readClient;
-  }
-
-  get writeClient(): Knex {
-    return this._writeClient;
+  get dbClient(): Knex {
+    return this._dbClient;
   }
 
   /**
