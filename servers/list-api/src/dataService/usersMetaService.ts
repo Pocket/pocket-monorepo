@@ -38,7 +38,7 @@ export class UsersMetaService {
     property: number,
     timestamp: Date,
   ): Knex.QueryBuilder {
-    return this.db.insert({
+    return this.db.upsert({
       user_id: this.userId,
       property: property,
       value: mysqlTimeString(timestamp, config.database.tz),
@@ -77,9 +77,7 @@ export class UsersMetaService {
     await this.insertTimestampByProperty(
       UsersMetaService.propertiesMap.tag,
       timestamp,
-    )
-      .onConflict()
-      .merge();
+    );
   }
 
   /**
