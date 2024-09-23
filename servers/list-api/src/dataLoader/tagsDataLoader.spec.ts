@@ -1,5 +1,5 @@
 import { batchGetTagsByItemIds } from './tagsDataLoader';
-import { readClient, writeClient } from '../database/client';
+import { writeClient } from '../database/client';
 import { SavedItemDataService, TagDataService } from '../dataService';
 import { ContextManager, IContext } from '../server/context';
 import { Tag } from '../types';
@@ -34,12 +34,13 @@ describe('tags dataloader', function () {
 
   it('batchGetTagsByItemIds should return empty array of Tags for non-existant Items', async () => {
     const promiseTags = Promise.resolve(testTags);
+    const db = writeClient();
     const context: IContext = new ContextManager({
       request: {
         headers: { userid: '1', apiid: '0', premium: 'true' },
       },
-      writeClient: writeClient(),
-      readClient: readClient(),
+      dbClient: db,
+      writeClient: db,
       eventEmitter: null,
     });
     const savedItemService = new SavedItemDataService(context);
@@ -62,12 +63,13 @@ describe('tags dataloader', function () {
 
   it('batchGetTagsByItemIds should return array of Tags & empty array for mix of existing & non-existing Item IDs', async () => {
     const promiseTags = Promise.resolve(testTags);
+    const db = writeClient();
     const context: IContext = new ContextManager({
       request: {
         headers: { userid: '1', apiid: '0', premium: 'true' },
       },
-      writeClient: writeClient(),
-      readClient: readClient(),
+      dbClient: db,
+      writeClient: db,
       eventEmitter: null,
     });
     const savedItemService = new SavedItemDataService(context);
@@ -98,12 +100,13 @@ describe('tags dataloader', function () {
 
   it('batchGetTagsByItemIds can handle ItemIDs given as int or number instead of string', async () => {
     const promiseTags = Promise.resolve(testTags);
+    const db = writeClient();
     const context: IContext = new ContextManager({
       request: {
         headers: { userid: '1', apiid: '0', premium: 'true' },
       },
-      writeClient: writeClient(),
-      readClient: readClient(),
+      dbClient: db,
+      writeClient: db,
       eventEmitter: null,
     });
     const savedItemService = new SavedItemDataService(context);

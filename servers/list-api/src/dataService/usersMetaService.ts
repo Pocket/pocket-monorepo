@@ -10,18 +10,14 @@ export class UsersMetaService {
   };
   private static tableName = 'users_meta';
 
-  private readQueryBuilder: Knex.QueryBuilder;
-  private writeQueryBuilder: Knex.QueryBuilder;
-  private readClient: Knex;
-  private writeClient: Knex;
+  private db: Knex.QueryBuilder;
+  private knex: Knex;
   private readonly userId: string;
 
   constructor(context: IContext) {
     this.userId = context.userId;
-    this.readClient = context.readClient;
-    this.writeClient = context.writeClient;
-    this.readQueryBuilder = this.readClient(UsersMetaService.tableName);
-    this.writeQueryBuilder = this.writeClient(UsersMetaService.tableName);
+    this.knex = context.writeClient;
+    this.db = context.writeClient(UsersMetaService.tableName);
   }
 
   /**
@@ -30,9 +26,7 @@ export class UsersMetaService {
    * @param property numerical code that identifies the tracked property
    */
   private deleteByProperty(property: number): Knex.QueryBuilder {
-    return this.writeQueryBuilder
-      .where({ user_id: this.userId, property: property })
-      .del();
+    return this.db.where({ user_id: this.userId, property: property }).del();
   }
 
   /**
@@ -44,11 +38,11 @@ export class UsersMetaService {
     property: number,
     timestamp: Date,
   ): Knex.QueryBuilder {
-    return this.writeQueryBuilder.upsert({
+    return this.db.upsert({
       user_id: this.userId,
       property: property,
       value: mysqlTimeString(timestamp, config.database.tz),
-      time_updated: this.writeClient.fn.now(), // Web repo uses NOW() instead of server timestamp
+      time_updated: this.knex.fn.now(), // Web repo uses NOW() instead of server timestamp
     });
   }
 
@@ -92,7 +86,7 @@ export class UsersMetaService {
    * for the user (e.g. they don't have any)
    */
   public async lastTagMutationTime(): Promise<Date | undefined> {
-    const row = await this.readQueryBuilder
+    const row = await this.db
       .where({
         user_id: this.userId,
         property: UsersMetaService.propertiesMap.tag,

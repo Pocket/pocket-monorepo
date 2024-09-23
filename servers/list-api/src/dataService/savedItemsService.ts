@@ -34,8 +34,7 @@ export class SavedItemDataService {
     [SavedItemStatus.DELETED]: 'DELETED',
     [SavedItemStatus.HIDDEN]: 'HIDDEN',
   };
-  private readClient: Knex;
-  private writeClient: Knex;
+  private db: Knex;
   private readonly userId: string;
   private readonly apiId: string;
   // For toggle/release flags
@@ -43,11 +42,10 @@ export class SavedItemDataService {
   constructor(
     private readonly context: Pick<
       IContext,
-      'writeClient' | 'readClient' | 'userId' | 'apiId' | 'unleash'
+      'dbClient' | 'userId' | 'apiId' | 'unleash'
     >,
   ) {
-    this.readClient = context.readClient;
-    this.writeClient = context.writeClient;
+    this.db = context.dbClient;
     this.userId = context.userId;
     this.apiId = context.apiId;
     this.flags = {};
@@ -102,29 +100,29 @@ export class SavedItemDataService {
    * For now just to reuse the same query and reduce testing burden :)
    */
   public buildQuery(): any {
-    return this.readClient('list').select(
+    return this.db('list').select(
       'given_url AS url',
       'item_id AS id',
       'resolved_id AS resolvedId', // for determining if an item is pending
       'favorite as isFavorite',
       'title',
-      this.readClient.raw(
+      this.db.raw(
         'CASE WHEN favorite = 1 THEN UNIX_TIMESTAMP(time_favorited) ELSE null END as favoritedAt ',
       ),
       'time_favorited', // for pagination sort
       'status',
-      this.readClient.raw(
+      this.db.raw(
         `CASE WHEN status = ${SavedItemStatus.ARCHIVED} THEN true ELSE false END as isArchived`,
       ),
-      this.readClient.raw('UNIX_TIMESTAMP(time_added) as _createdAt'),
+      this.db.raw('UNIX_TIMESTAMP(time_added) as _createdAt'),
       'time_added', // for pagination sort
       'item_id',
-      this.readClient.raw('UNIX_TIMESTAMP(time_updated) as _updatedAt'),
+      this.db.raw('UNIX_TIMESTAMP(time_updated) as _updatedAt'),
       'time_updated', // for pagination sort
-      this.readClient.raw(
+      this.db.raw(
         `CASE WHEN status = ${SavedItemStatus.DELETED} THEN UNIX_TIMESTAMP(time_updated) ELSE null END as _deletedAt`,
       ),
-      this.readClient.raw(
+      this.db.raw(
         `CASE WHEN status = ${SavedItemStatus.ARCHIVED} THEN UNIX_TIMESTAMP(time_read) ELSE null END as archivedAt`,
       ),
     );
@@ -199,11 +197,9 @@ export class SavedItemDataService {
    * @param itemId
    */
   public async getSavedItemTimeRead(itemId: string): Promise<any> {
-    return this.readClient('list')
+    return this.db('list')
       .select(
-        this.readClient.raw(
-          'SQL_NO_CACHE UNIX_TIMESTAMP(time_read) as time_read',
-        ),
+        this.db.raw('SQL_NO_CACHE UNIX_TIMESTAMP(time_read) as time_read'),
       )
       .where({ item_id: itemId, user_id: this.userId })
       .first();
@@ -225,7 +221,7 @@ export class SavedItemDataService {
   ): Promise<SavedItem | null> {
     const timestamp = updatedAt ?? SavedItemDataService.formatDate(new Date());
     const timeFavorited = favorite ? timestamp : '0000-00-00 00:00:00';
-    await this.writeClient.transaction(async (trx) => {
+    await this.db.transaction(async (trx) => {
       await trx('list')
         .update({
           favorite: +favorite,
@@ -258,7 +254,7 @@ export class SavedItemDataService {
     // TODO: Do we care if this makes an update that doesn't change the status?
     // e.g. archiving an already archived item will update
     //    time_read, time_upated, api_id_updated; but not status
-    await this.writeClient.transaction(async (trx) => {
+    await this.db.transaction(async (trx) => {
       await trx('list')
         .update({
           status: status,
@@ -282,7 +278,7 @@ export class SavedItemDataService {
    */
   public async deleteSavedItem(itemId, deletedAt?: Date) {
     const timestamp = deletedAt ?? SavedItemDataService.formatDate(new Date());
-    const transaction = await this.writeClient.transaction();
+    const transaction = await this.db.transaction();
     try {
       // remove tags for saved item
       await transaction('item_tags').delete().where({
@@ -338,7 +334,7 @@ export class SavedItemDataService {
     const status =
       query.time_read === 0 ? SavedItemStatus.UNREAD : SavedItemStatus.ARCHIVED;
 
-    await this.writeClient.transaction(async (trx) => {
+    await this.db.transaction(async (trx) => {
       await trx('list')
         .update({
           status,
@@ -368,7 +364,7 @@ export class SavedItemDataService {
     timestamp: Date,
     title: string,
   ): Promise<SavedItem | null> {
-    await this.writeClient.transaction(async (trx) => {
+    await this.db.transaction(async (trx) => {
       await trx('list')
         .update({
           title: title,
@@ -395,7 +391,7 @@ export class SavedItemDataService {
       ? SavedItemDataService.formatDate(givenTimestamp)
       : currentDate;
     //`returning` is not supported for mysql in knex
-    await this.writeClient.transaction(async (trx) => {
+    await this.db.transaction(async (trx) => {
       await trx('list')
         .insert({
           user_id: parseInt(this.userId),
@@ -433,7 +429,7 @@ export class SavedItemDataService {
     timestamp: Date,
   ): Promise<SavedItem | null> {
     const date = SavedItemDataService.formatDate(timestamp);
-    await this.writeClient('list')
+    await this.db('list')
       .update({
         time_added: date,
         time_updated: date,
@@ -485,7 +481,7 @@ export class SavedItemDataService {
    * @param limit
    */
   public getSavedItemIds(offset: number, limit: number) {
-    return this.readClient('list')
+    return this.db('list')
       .where('user_id', this.userId)
       .orderBy('time_added', 'ASC')
       .limit(limit)
@@ -503,7 +499,7 @@ export class SavedItemDataService {
    * queries.
    */
   public listItemUpdateBuilder(timestamp?: Date): Knex.QueryBuilder {
-    return this.writeClient
+    return this.db
       .update({
         time_updated: SavedItemDataService.formatDate(timestamp ?? new Date()),
         api_id_updated: this.apiId,

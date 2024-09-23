@@ -14,8 +14,8 @@ describe('UsersMetaService ', () => {
         apiid: '0',
       },
     },
+    dbClient: readDb,
     writeClient: writeDb,
-    readClient: readDb,
     eventEmitter: null,
   });
   const currentTime = new Date();

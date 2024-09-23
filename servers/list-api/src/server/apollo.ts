@@ -20,10 +20,31 @@ import {
   sqsEventHandler,
   unifiedEventHandler,
 } from '../businessEvents';
+import { Knex } from 'knex';
 import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4';
 import { schema } from './schema';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 import * as unleash from '../featureFlags';
+
+/**
+ * Stopgap method to set global db connection in context,
+ * depending on whether the request is a query or mutation.
+ * It's not possible to run both a mutation and query at the
+ * same time according to the graphql spec.
+ * This is a fragile regex which depends on the `mutation` keyword
+ * being present or not at the beginning of the request
+ * (part of the graphql request spec).
+ * This method should just be used in the context factory function
+ * but is exported from this file for unit testing.
+ * @param query a graphql request body
+ * @returns either a read or write connection to the database,
+ * depending on if query or mutation.
+ */
+export const contextConnection = (query: string): Knex => {
+  const isMutationRegex = /^[\n\r\s]*(mutation)/;
+  const isMutation = isMutationRegex.test(query);
+  return isMutation ? writeClient() : readClient();
+};
 
 export async function startServer(port: number): Promise<{
   app: Application;
@@ -60,10 +81,11 @@ export async function startServer(port: number): Promise<{
       // Bypass auth (ie, the userId() function throwing auth errors) for introspection
       return null;
     }
+    const dbClient = contextConnection(req.body.query);
     return new ContextManager({
       request: req,
+      dbClient,
       writeClient: writeClient(),
-      readClient: readClient(),
       eventEmitter: itemsEventEmitter,
       unleash: unleashClient,
     });
