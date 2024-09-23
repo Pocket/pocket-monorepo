@@ -127,8 +127,8 @@ export class SnowplowHandler {
         item_id: parseInt(savedItem.id),
         status: SnowplowSavedItemStatusMap[savedItem.status],
         is_favorited: !!savedItem.isFavorite,
-        tags: await data.tags,
-        created_at: savedItem._createdAt,
+        tags: (await data.tags) ?? [],
+        created_at: savedItem._createdAt ?? Date.now(),
       },
     };
   }
@@ -188,11 +188,19 @@ export class SnowplowHandler {
    * @private
    */
   private addRequestInfoToTracker(data: ItemEventPayload) {
-    this.tracker.setLang(data.request?.language);
-    this.tracker.setDomainUserId(data.request?.snowplowDomainUserId); // possibly grab from cookie else grab from context
-    this.tracker.setSessionId(data.request?.snowplowDomainSessionId);
-    this.tracker.setIpAddress(data.request?.ipAddress); // get the remote address from teh x-forwarded-for header
-    this.tracker.setUseragent(data.request?.userAgent);
-    this.tracker.setUserId(data.user.hashedId);
+    if (data.request?.language) this.tracker.setLang(data.request.language);
+
+    if (data.request?.snowplowDomainUserId)
+      this.tracker.setDomainUserId(data.request.snowplowDomainUserId); // possibly grab from cookie else grab from context
+
+    if (data.request?.snowplowDomainSessionId)
+      this.tracker.setSessionId(data.request.snowplowDomainSessionId);
+    if (data.request?.ipAddress)
+      this.tracker.setIpAddress(data.request.ipAddress); // get the remote address from teh x-forwarded-for header
+
+    if (data.request?.userAgent)
+      this.tracker.setUseragent(data.request.userAgent);
+
+    if (data.user.hashedId) this.tracker.setUserId(data.user.hashedId);
   }
 }

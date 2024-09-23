@@ -33,7 +33,7 @@ export type SavedItemEdge = {
 };
 
 export type RemoteEntity = {
-  id?: string;
+  id: string;
   _createdAt?: number;
   _updatedAt?: number;
   _version?: number;

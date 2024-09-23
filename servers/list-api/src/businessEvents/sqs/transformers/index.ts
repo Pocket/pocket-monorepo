@@ -56,10 +56,12 @@ export async function permLibSqsTransformer(data: ItemEventPayload) {
     userId: parseInt(data.user.id),
     itemId: parseInt(savedItem.id),
     givenUrl: savedItem.url,
-    timeAdded: mysqlTimeString(
-      new Date(savedItem._createdAt * 1000),
-      config.database.tz,
-    ),
+    timeAdded: savedItem._createdAt
+      ? mysqlTimeString(
+          new Date(savedItem._createdAt * 1000),
+          config.database.tz,
+        )
+      : null,
     resolvedId: savedItem.resolvedId,
   };
 }
