@@ -26,7 +26,8 @@ describe('tag model', () => {
         request: {
           headers: { userid: '1', apiid: '0', premium: 'true' },
         },
-        dbClient: jest.fn() as unknown as Knex,
+        writeClient: jest.fn() as unknown as Knex,
+        readClient: jest.fn() as unknown as Knex,
         eventEmitter: null,
       });
       const resp = context.models.tag.getSuggestedBySaveId(parent);
@@ -39,7 +40,8 @@ describe('tag model', () => {
         request: {
           headers: { userid: '1', apiid: '0', premium: 'false' },
         },
-        dbClient: jest.fn() as unknown as Knex,
+        writeClient: jest.fn() as unknown as Knex,
+        readClient: jest.fn() as unknown as Knex,
         eventEmitter: null,
       });
       const resp = context.models.tag.getSuggestedBySaveId(parent);

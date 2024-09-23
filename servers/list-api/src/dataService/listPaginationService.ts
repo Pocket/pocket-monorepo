@@ -704,34 +704,34 @@ export class ListPaginationService {
       ...(pagination ?? {}),
     };
 
-    const connection = await this.context.dbClient.client.acquireConnection();
+    const connection = await this.context.readClient.client.acquireConnection();
     //Define these outside the try statement to be used later
     let totalCount: number;
     let pageResult: ListEntity[];
     try {
       // Drop temp tables if exists.
-      await this.dropTempTables(this.context.dbClient, connection);
+      await this.dropTempTables(this.context.readClient, connection);
 
-      await this.listTempTableQuery(this.context.dbClient, connection);
+      await this.listTempTableQuery(this.context.readClient, connection);
       const baseQuery = this.context
-        .dbClient('list')
+        .readClient('list')
         .where('list.user_id', this.context.userId);
       if (filter != null) {
         await this.buildFilterQuery(
           baseQuery,
-          this.context.dbClient,
+          this.context.readClient,
           filter,
           connection,
         );
       }
-      totalCount = (await this.context.dbClient
+      totalCount = (await this.context.readClient
         .count('* as count')
         .from(baseQuery.clone().select('list.*').limit(5000).as('countQuery'))
         .first()
         .connection(connection)
         .then((_) => _?.count ?? 0)) as number;
       pageResult = await this.pageOffsetLimit(
-        this.context.dbClient,
+        this.context.readClient,
         baseQuery as any,
         sort,
         pageInput,
@@ -739,7 +739,7 @@ export class ListPaginationService {
       );
     } finally {
       //ensure we always release the connection back to the rest of the pool to play with its friends
-      await this.context.dbClient.client.releaseConnection(connection);
+      await this.context.readClient.client.releaseConnection(connection);
     }
     return {
       entries: ListPaginationService.toGraphql(pageResult),
@@ -769,18 +769,18 @@ export class ListPaginationService {
       pagination = { first: config.pagination.defaultPageSize };
     }
 
-    const connection = await this.context.dbClient.client.acquireConnection();
+    const connection = await this.context.readClient.client.acquireConnection();
 
     //Define these outside the try statement to be used later
     let totalCount;
     let pageResult;
     try {
       // Drop temp tables if exists.
-      await this.dropTempTables(this.context.dbClient, connection);
+      await this.dropTempTables(this.context.readClient, connection);
 
-      await this.listTempTableQuery(this.context.dbClient, connection);
+      await this.listTempTableQuery(this.context.readClient, connection);
       const baseQuery = this.context
-        .dbClient('list')
+        .readClient('list')
         .where('list.user_id', this.context.userId);
       if (savedItemIds?.length) {
         baseQuery.whereIn('list.item_id', savedItemIds);
@@ -788,12 +788,12 @@ export class ListPaginationService {
       if (filter != null) {
         await this.buildFilterQuery(
           baseQuery,
-          this.context.dbClient,
+          this.context.readClient,
           filter,
           connection,
         );
       }
-      totalCount = (await this.context.dbClient
+      totalCount = (await this.context.readClient
         .count('* as count')
         .from(baseQuery.clone().select('list.*').limit(5000).as('countQuery'))
         .first()
@@ -801,14 +801,14 @@ export class ListPaginationService {
         .then((_) => _?.count ?? 0)) as number;
       pageResult = await this.paginatedResult(
         baseQuery as any,
-        this.context.dbClient,
+        this.context.readClient,
         pagination,
         sort,
         connection,
       );
     } finally {
       //ensure we always release the connection back to the rest of the pool to play with its friends
-      await this.context.dbClient.client.releaseConnection(connection);
+      await this.context.readClient.client.releaseConnection(connection);
     }
 
     const pageInfo: any = this.hydratePageInfo(pageResult, pagination);

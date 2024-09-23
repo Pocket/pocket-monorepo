@@ -813,7 +813,7 @@ describe('UpsertSavedItem Mutation', () => {
 
       const contextStub = jest
         // @ts-expect-error ts(2345)
-        .spyOn(ContextManager.prototype, 'dbClient', 'get')
+        .spyOn(ContextManager.prototype, 'writeClient', 'get')
         // @ts-expect-error ts(2339)
         .mockImplementation(() => {
           return (() => undefined) as Knex;
