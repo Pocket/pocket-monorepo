@@ -44,7 +44,7 @@
     "locutus": "2.0.32",
     "lodash": "4.17.21",
     "luxon": "3.5.0",
-    "mysql2": "3.11.0",
+    "mysql2": "3.11.3",
     "tslib": "2.7.0",
     "unleash-client": "6.1.1"
   },
