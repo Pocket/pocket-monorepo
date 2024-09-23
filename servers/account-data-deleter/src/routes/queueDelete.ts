@@ -87,22 +87,15 @@ export async function enqueueTablesForDeletion(
 
   for (const { table, where } of tableNames) {
     try {
-      let whereCond;
-      let limit: number;
-      const limitOverrideExists = limitOverrides.some(
-        (lo) => lo.table === table,
-      );
-      if (limitOverrideExists) {
-        const limitOverride = limitOverrides.find((lo) => lo.table === table);
-        limit = limitOverride.limit;
-      } else {
-        limit = limitDefault;
-      }
-      if (where === 'user_id') {
-        whereCond = { user_id: userId };
-      } else if (where.includes('email')) {
-        whereCond = { [where]: email };
-      } else {
+      const whereCond =
+        where === 'user_id'
+          ? { user_id: userId }
+          : where.includes('email')
+            ? { [where]: email }
+            : null;
+      const limit =
+        limitOverrides.find((lo) => lo.table === table)?.limit ?? limitDefault;
+      if (whereCond == null) {
         throw new Error(
           `Unexpected where condition encountered -- logic for column ${where} not implemented`,
         );

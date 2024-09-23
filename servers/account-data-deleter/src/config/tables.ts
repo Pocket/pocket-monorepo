@@ -18,7 +18,10 @@ const nonUserTables = [
 //excludes any table that is handled by list-api,
 //annotations-api, and user-api
 //delete by `user_id`
-const tablesWithUserId = {
+const tablesWithUserId: {
+  tablesWithSensitivePii: string[];
+  tablesWithUserIdAlone: string[];
+} = {
   //tables with column patterns: name, username, first_name, last_name,
   // email, ip and device_name
   tablesWithSensitivePii: [
@@ -193,9 +196,10 @@ const tablesWithUserId = {
   ],
 };
 
-const userTables = []
-  .concat(tablesWithUserId.tablesWithSensitivePii)
-  .concat(tablesWithUserId.tablesWithUserIdAlone);
+const userTables: string[] = [
+  ...tablesWithUserId.tablesWithSensitivePii,
+  ...tablesWithUserId.tablesWithUserIdAlone,
+];
 
 export const tables = [
   ...nonUserTables,

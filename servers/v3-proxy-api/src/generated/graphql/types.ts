@@ -2642,7 +2642,7 @@ export type SavedItem = RemoteEntity & {
   tags?: Maybe<Array<Tag>>;
   /** The title for user saved item. Set by the user and if not, set by the parser. */
   title?: Maybe<Scalars['String']['output']>;
-  /** The url the user saved to their list */
+  /** key field to identify the SavedItem entity in the ListApi service */
   url: Scalars['String']['output'];
 };
 
