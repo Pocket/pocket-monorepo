@@ -63,6 +63,5 @@ function transformToBrazePayload(
       stories: stories,
     };
   }
-  
 }
 export default router;

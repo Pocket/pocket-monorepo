@@ -24,7 +24,8 @@ import { PocketSaveDataService } from './pocketSavesService';
  * note: for mutations, please pass the writeClient, otherwise there will be replication lags.
  */
 export class TagDataService {
-  private db: Knex;
+  private readClient: Knex;
+  private writeClient: Knex;
   private readonly userId: string;
   private readonly apiId: string;
   private tagGroupQuery: Knex.QueryBuilder;
@@ -38,7 +39,8 @@ export class TagDataService {
     //note: for mutations, please pass the writeClient,
     //otherwise there will be replication lags.
   ) {
-    this.db = context.dbClient;
+    this.readClient = context.readClient;
+    this.writeClient = context.writeClient;
     this.userId = context.userId;
     this.apiId = context.apiId;
     this.savedItemService = savedItemDataService;
@@ -47,13 +49,13 @@ export class TagDataService {
   }
 
   private getTagsByUserSubQuery(): any {
-    return this.db('item_tags')
+    return this.readClient('item_tags')
       .select(
         'tag as name',
         'tag',
-        this.db.raw('MAX(id) as _cursor'),
-        this.db.raw('NULL as _deletedAt'),
-        this.db.raw('NULL as _version'),
+        this.readClient.raw('MAX(id) as _cursor'),
+        this.readClient.raw('NULL as _deletedAt'),
+        this.readClient.raw('NULL as _version'),
         //TODO: add version and deletedAt feature to tag
       )
       .where({ user_id: parseInt(this.userId) })
@@ -61,7 +63,7 @@ export class TagDataService {
   }
 
   private getItemsByTagsAndUser(): any {
-    return this.db
+    return this.readClient
       .select('*')
       .from(this.getTagsByUserSubQuery().as('subQuery_tags'));
   }
@@ -71,11 +73,11 @@ export class TagDataService {
    * @param itemId
    */
   public async getTagsByUserItem(itemId: string): Promise<Tag[]> {
-    const tags = await this.db('item_tags')
+    const tags = await this.readClient('item_tags')
       .select(
         'tag as name',
-        this.db.raw('NULL as _deletedAt'),
-        this.db.raw('NULL as _version'),
+        this.readClient.raw('NULL as _deletedAt'),
+        this.readClient.raw('NULL as _version'),
         //TODO: add version and deletedAt feature to tag
       )
       .orderBy('id', 'desc')
@@ -93,12 +95,12 @@ export class TagDataService {
   public async batchGetTagsByUserItems(
     itemIds: string[],
   ): Promise<{ [savedItemId: string]: Tag[] }> {
-    const tags = await this.db('item_tags')
+    const tags = await this.readClient('item_tags')
       .select(
         'tag as name',
         'item_id',
-        this.db.raw('NULL as _deletedAt'),
-        this.db.raw('NULL as _version'),
+        this.readClient.raw('NULL as _deletedAt'),
+        this.readClient.raw('NULL as _version'),
         //TODO: add version and deletedAt feature to tag
       )
       .orderBy('id', 'desc')
@@ -128,11 +130,11 @@ export class TagDataService {
    TODO: DataLoader
    */
   public async getSuggestedTags(save: SavedItem | PocketSave): Promise<Tag[]> {
-    const existingTags = this.db('item_tags')
+    const existingTags = this.readClient('item_tags')
       .select('tag')
       .where({ user_id: parseInt(this.userId), item_id: parseInt(save.id) });
 
-    const latestTags = await this.db('item_tags')
+    const latestTags = await this.readClient('item_tags')
       .select('tag')
       .leftJoin('readitla_ril-tmp.list', function () {
         this.on('item_tags.item_id', 'readitla_ril-tmp.list.item_id').on(
@@ -217,7 +219,7 @@ export class TagDataService {
     timestamp?: Date,
   ): Promise<void> {
     const updatedTime = timestamp ?? new Date();
-    await this.db.transaction(async (trx: Knex.Transaction) => {
+    await this.writeClient.transaction(async (trx: Knex.Transaction) => {
       await this.insertTagAndUpdateSavedItem(tagInputs, trx, updatedTime);
       await this.usersMetaService.logTagMutation(updatedTime, trx);
     });
@@ -261,7 +263,7 @@ export class TagDataService {
     input: SaveTagNameConnection[],
     timestamp?: Date,
   ): Promise<SaveTagNameConnection[]> {
-    await this.db.transaction(async (trx: Knex.Transaction) => {
+    await this.writeClient.transaction(async (trx: Knex.Transaction) => {
       const tagDeleteSubquery = trx('item_tags')
         .andWhere('user_id', this.userId)
         .delete();
@@ -291,11 +293,11 @@ export class TagDataService {
     tagName: string,
     timestamp?: Date,
   ): Promise<void> {
-    const affectedItems = await this.db('item_tags')
+    const affectedItems = await this.writeClient('item_tags')
       .where({ user_id: this.userId, tag: tagName })
       .pluck('item_id');
     if (affectedItems.length > 0) {
-      await this.db.transaction(async (trx: Knex.Transaction) => {
+      await this.writeClient.transaction(async (trx: Knex.Transaction) => {
         await this.deleteTagsByName(tagName).transacting(trx);
         await this.savedItemService.updateListItemMany(
           affectedItems,
@@ -321,7 +323,7 @@ export class TagDataService {
     itemIds: string[],
     timestamp?: Date,
   ): Promise<void> {
-    await this.db.transaction(async (trx: Knex.Transaction) => {
+    await this.writeClient.transaction(async (trx: Knex.Transaction) => {
       await trx.raw(
         `update ignore item_tags
          set tag=:newTagName,
@@ -366,7 +368,7 @@ export class TagDataService {
         `SavedItem ID ${inserts[0].savedItemId} does not exist.`,
       );
     }
-    await this.db.transaction(async (trx: Knex.Transaction) => {
+    await this.writeClient.transaction(async (trx: Knex.Transaction) => {
       await this.deleteTagsByItemId(inserts[0].savedItemId).transacting(trx);
 
       await this.insertTagAndUpdateSavedItem(inserts, trx, timestamp);
@@ -387,7 +389,7 @@ export class TagDataService {
     timestamp?: Date,
   ): Promise<any> {
     //clear first, so we can get rid of noisy data if savedItem doesn't exist.
-    await this.db.transaction(async (trx: Knex.Transaction) => {
+    await this.writeClient.transaction(async (trx: Knex.Transaction) => {
       const count = await this.deleteTagsByItemId(savedItemId).transacting(trx);
       if (count) {
         await this.savedItemService.updateListItemOne(
@@ -415,7 +417,7 @@ export class TagDataService {
     const savedItemIds = Array.from(
       new Set(tagInputs.map((input) => input.savedItemId)),
     );
-    await this.db.transaction(async (trx) => {
+    await this.writeClient.transaction(async (trx) => {
       await Promise.all(
         savedItemIds.map(async (id) => {
           await this.deleteTagsByItemId(id).transacting(trx);
@@ -440,7 +442,7 @@ export class TagDataService {
    * have happened since syncSince
    */
   public async tagsList(syncSince?: Date): Promise<string[] | undefined> {
-    const tags = this.db('item_tags')
+    const tags = this.readClient('item_tags')
       .select('tag')
       .distinct()
       .where('user_id', this.userId)
@@ -494,7 +496,7 @@ export class TagDataService {
     }
     // Otherwise we can proceed with the write
     // We won't throw error if trying to delete a nonexistent tag (no-op)
-    await this.db.transaction(async (trx) => {
+    await this.writeClient.transaction(async (trx) => {
       await this.deleteTagsByNameAndItemId(deletes).transacting(trx);
       await this.insertTagAndUpdateSavedItem(creates, trx, timestamp);
       await this.usersMetaService.logTagMutation(timestamp, trx);
@@ -503,7 +505,7 @@ export class TagDataService {
   }
 
   public async fetchItemIdAssociations(tag: string): Promise<string[]> {
-    const res = await this.db('item_tags')
+    const res = await this.readClient('item_tags')
       .select('item_id')
       .where({ tag, user_id: this.userId })
       .pluck('item_id');
@@ -518,7 +520,7 @@ export class TagDataService {
     itemId: string,
     timestamp?: Date,
   ): Promise<Knex.QueryBuilder> {
-    await this.db.transaction(async (trx) => {
+    await this.writeClient.transaction(async (trx) => {
       await trx('item_tags')
         .whereIn('tag', tagNames)
         .andWhere({ user_id: this.userId, item_id: itemId })
@@ -530,13 +532,13 @@ export class TagDataService {
   }
 
   private deleteTagsByItemId(itemId: string): Knex.QueryBuilder {
-    return this.db('item_tags')
+    return this.writeClient('item_tags')
       .where({ user_id: this.userId, item_id: itemId })
       .del();
   }
 
   private deleteTagsByName(tagName: string): Knex.QueryBuilder {
-    return this.db('item_tags')
+    return this.writeClient('item_tags')
       .where({ user_id: this.userId, tag: tagName })
       .del();
   }
@@ -548,7 +550,7 @@ export class TagDataService {
     const tuples = association.map(({ savedItemId, name }) => {
       return [parseInt(savedItemId), name, this.userId];
     });
-    return this.db('item_tags')
+    return this.writeClient('item_tags')
       .del()
       .whereIn(['item_id', 'tag', 'user_id'], tuples);
   }

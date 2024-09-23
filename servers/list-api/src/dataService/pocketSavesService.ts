@@ -54,7 +54,8 @@ const convert = (row: RawListResult) => {
  * note: for mutations, please pass the writeClient, otherwise there will be replication lags.
  */
 export class PocketSaveDataService {
-  private db: Knex;
+  private writeClient: Knex;
+  private readClient: Knex;
   private readonly apiId: string;
   private readonly userId: string;
   private readonly selectCols: Array<keyof RawListResult> = [
@@ -78,11 +79,12 @@ export class PocketSaveDataService {
   constructor(
     private context: Pick<
       IContext,
-      'apiId' | 'dbClient' | 'userId' | 'unleash'
+      'apiId' | 'writeClient' | 'readClient' | 'userId' | 'unleash'
     >,
   ) {
     this.apiId = context.apiId;
-    this.db = context.dbClient;
+    this.writeClient = context.writeClient;
+    this.readClient = context.readClient;
     this.userId = context.userId;
     this.flags = {};
   }
@@ -114,7 +116,7 @@ export class PocketSaveDataService {
    * For now just to reuse the same query and reduce testing burden :)
    */
   public buildQuery(): Knex.QueryBuilder<RawListResult, RawListResult[]> {
-    return this.db('list').select(this.selectCols);
+    return this.readClient('list').select(this.selectCols);
   }
 
   /**
@@ -260,7 +262,7 @@ export class PocketSaveDataService {
     let missing: string[] = [];
 
     try {
-      await this.db.transaction(async (trx) => {
+      await this.writeClient.transaction(async (trx) => {
         await trx('list')
           .update(updateValues)
           .whereIn('item_id', ids)
@@ -306,7 +308,7 @@ export class PocketSaveDataService {
    * @param ids
    */
   public async checkIdExists(ids: number[]): Promise<number[]> {
-    const extantIds: number[] = await this.db('list')
+    const extantIds: number[] = await this.readClient('list')
       .select('item_id')
       .whereIn('item_id', ids)
       .andWhere('user_id', this.userId)
