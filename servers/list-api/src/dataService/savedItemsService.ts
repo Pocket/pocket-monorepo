@@ -101,8 +101,8 @@ export class SavedItemDataService {
    * Will eventually be extended for building filter, sorts, etc. for different pagination, etc.
    * For now just to reuse the same query and reduce testing burden :)
    */
-  public buildQuery(): any {
-    return this.readClient('list').select(
+  public buildQuery(dbClient?: Knex): any {
+    return (dbClient ?? this.readClient)('list').select(
       'given_url AS url',
       'item_id AS id',
       'resolved_id AS resolvedId', // for determining if an item is pending
@@ -134,8 +134,11 @@ export class SavedItemDataService {
    * Fetch a single SavedItem from a User's list
    * @param itemId the savedItem ID to fetch
    */
-  public getSavedItemById(itemId: string): Promise<SavedItem | null> {
-    const query = this.buildQuery()
+  public getSavedItemById(
+    itemId: string,
+    dbClient?: Knex,
+  ): Promise<SavedItem | null> {
+    const query = this.buildQuery(dbClient)
       .where({ user_id: this.userId, item_id: itemId })
       .first();
 
@@ -235,7 +238,7 @@ export class SavedItemDataService {
         })
         .where({ item_id: itemId, user_id: this.userId });
     });
-    return await this.getSavedItemById(itemId);
+    return await this.getSavedItemById(itemId, this.writeClient);
   }
 
   /**
@@ -268,7 +271,7 @@ export class SavedItemDataService {
         })
         .where({ item_id: itemId, user_id: this.userId });
     });
-    return await this.getSavedItemById(itemId);
+    return await this.getSavedItemById(itemId, this.writeClient);
   }
 
   /**
@@ -348,7 +351,7 @@ export class SavedItemDataService {
         .where({ item_id: itemId, user_id: this.userId });
       await this.getSavedItemByIdRaw(itemId, trx);
     });
-    return await this.getSavedItemById(itemId);
+    return await this.getSavedItemById(itemId, this.writeClient);
   }
 
   /**
@@ -377,7 +380,7 @@ export class SavedItemDataService {
         })
         .where({ item_id: itemId, user_id: this.userId });
     });
-    return await this.getSavedItemById(itemId);
+    return await this.getSavedItemById(itemId, this.writeClient);
   }
 
   /**
@@ -417,7 +420,10 @@ export class SavedItemDataService {
         .onConflict()
         .merge();
     });
-    return await this.getSavedItemById(item.itemId.toString());
+    return await this.getSavedItemById(
+      item.itemId.toString(),
+      this.writeClient,
+    );
   }
 
   /**
@@ -443,7 +449,7 @@ export class SavedItemDataService {
         api_id_updated: this.apiId,
       })
       .where({ user_id: this.userId, item_id: itemId });
-    return await this.getSavedItemById(itemId);
+    return await this.getSavedItemById(itemId, this.writeClient);
   }
 
   /**
