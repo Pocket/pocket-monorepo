@@ -19,7 +19,7 @@
   "dependencies": {
     "@aws-sdk/client-sagemaker-runtime": "3.637.0",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/aws-serverless": "8.28.0",
+    "@sentry/aws-serverless": "8.30.0",
     "@smithy/node-http-handler": "3.2.0",
     "@smithy/util-retry": "3.0.3",
     "fetch-retry": "^5.0.6",
