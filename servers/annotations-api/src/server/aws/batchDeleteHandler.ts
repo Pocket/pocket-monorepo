@@ -142,13 +142,13 @@ export class BatchDeleteHandler {
       WaitTimeSeconds: config.aws.sqs.annotationsDeleteQueue.waitTimeSeconds,
     };
 
-    let data: ReceiveMessageCommandOutput;
-    let body: BatchDeleteMessage;
+    let data: ReceiveMessageCommandOutput | null = null;
+    let body: BatchDeleteMessage | null = null;
 
     serverLogger.info('fetching messages from the sqs queue');
     try {
       data = await this.sqsClient.send(new ReceiveMessageCommand(params));
-      if (data.Messages && data.Messages.length > 0) {
+      if (data.Messages && data.Messages.length > 0 && data.Messages[0].Body) {
         body = JSON.parse(data.Messages[0].Body);
         serverLogger.info('fetched message ->' + JSON.stringify(body));
       }
@@ -161,7 +161,7 @@ export class BatchDeleteHandler {
     // Process any messages received and schedule next poll
     if (body != null) {
       const wasSuccess = await this.handleMessage(body);
-      if (wasSuccess) {
+      if (wasSuccess && data?.Messages) {
         await this.deleteMessage(data.Messages[0]);
       }
       // Schedule next message poll
