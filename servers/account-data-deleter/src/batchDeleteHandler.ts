@@ -215,8 +215,8 @@ export class BatchDeleteHandler {
       `Begining polling of ${config.aws.sqs.accountDeleteQueue.url}`,
     );
 
-    let data: ReceiveMessageCommandOutput;
-    let body: SqsMessage;
+    let data: ReceiveMessageCommandOutput | null = null;
+    let body: SqsMessage | null = null;
 
     // Short-circuit if killswitch is on
     // The unleash client is configured to check for new
@@ -242,9 +242,12 @@ export class BatchDeleteHandler {
     // If short-circuit isn't triggered, check for messages and process them
     try {
       data = await this.sqsClient.send(new ReceiveMessageCommand(params));
-      if (data.Messages && data.Messages.length > 0) {
-        body = JSON.parse(data.Messages[0].Body);
-      }
+      body =
+        data.Messages &&
+        data.Messages.length > 0 &&
+        data.Messages[0].Body != null
+          ? JSON.parse(data.Messages[0].Body)
+          : null;
     } catch (error) {
       const receiveError = 'PollQueue: Error receiving messages from queue';
       serverLogger.error({ message: receiveError, error: error });
@@ -254,7 +257,7 @@ export class BatchDeleteHandler {
     // Process any messages received and schedule next poll
     if (body != null) {
       const wasSuccess = await this.handleMessage(body);
-      if (wasSuccess) {
+      if (wasSuccess && data?.Messages != null) {
         await this.deleteMessage(data.Messages[0]);
       }
       // Schedule next message poll

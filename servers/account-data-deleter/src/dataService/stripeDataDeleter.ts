@@ -45,7 +45,7 @@ export class StripeDataDeleter {
    * if a transient error is encountered (unusual).
    */
   async deleteStripeCustomers(stripeIds: string[]): Promise<string[]> {
-    const successes = [];
+    const successes: string[] = [];
     for await (const id of stripeIds) {
       try {
         const subcription = await this.stripeClient.subscriptions.retrieve(id);

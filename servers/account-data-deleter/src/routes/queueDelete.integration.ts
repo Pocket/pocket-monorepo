@@ -31,9 +31,17 @@ describe('enqueueTablesForDeletion', () => {
       await db('readitla_ril-tmp.feed_user_recommendations').truncate();
       await db('readitla_ril-tmp.suggested_tags_user_grouping_tags').truncate();
 
-      const userIp = [];
-      const feedUserRecommendations = [];
-      const suggestedTagsUserGroupingTags = [];
+      const userIp: { id: number; user_id: number; event_type: string }[] = [];
+      const feedUserRecommendations: {
+        user_rec_id: number;
+        user_id: number;
+        resolved_id: number;
+      }[] = [];
+      const suggestedTagsUserGroupingTags: {
+        grouping_id: number;
+        user_id: number;
+        tag: string;
+      }[] = [];
       for (let i = 1; i <= 6; i++) {
         userIp.push({
           id: i,
@@ -164,8 +172,8 @@ describe('enqueueTablesForDeletion', () => {
     beforeAll(async () => {
       await db('readitla_ril-tmp.bundle_users').truncate();
       await db('readitla_ril-tmp.paypal_transaction_log').truncate();
-      const bundleData = [];
-      const paypalData = [];
+      const bundleData: { bundle_user_id: number; email: string }[] = [];
+      const paypalData: { log_id: number; payer_email: string }[] = [];
       for (let i = 1; i <= 6; i++) {
         bundleData.push({
           bundle_user_id: i,
@@ -286,7 +294,11 @@ describe('enqueueTablesForDeletion', () => {
           date: 1417730426,
         },
       ];
-      const trackErrors = [];
+      const trackErrors: {
+        api_id: number;
+        user_id: number;
+        time_happened: string;
+      }[] = [];
       let j = 0;
       for (let i = 0; i <= 9; i++) {
         j = Math.floor(i / 2);
