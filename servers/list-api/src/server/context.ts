@@ -27,6 +27,7 @@ export interface IContext {
   apiId: string;
   userIsPremium: boolean;
   dbClient: Knex;
+  writeClient: Knex;
   eventEmitter: ItemsEventEmitter;
   unleash: Unleash;
   models: {
@@ -55,17 +56,20 @@ export class ContextManager implements IContext {
   public readonly dataLoaders: IContext['dataLoaders'];
   public readonly unleash: Unleash;
   private _dbClient: Knex;
+  private _writeClient: Knex;
 
   constructor(
     private config: {
       request: any;
       dbClient: Knex;
+      writeClient: Knex;
       eventEmitter: ItemsEventEmitter;
       unleash?: Unleash;
     },
   ) {
     this.unleash = config.unleash || getClient();
     this._dbClient = config.dbClient;
+    this._writeClient = config.writeClient;
     this.dataLoaders = {
       ...createTagDataLoaders(this),
       ...createSavedItemDataLoaders(this),
@@ -129,6 +133,10 @@ export class ContextManager implements IContext {
 
   get dbClient(): Knex {
     return this._dbClient;
+  }
+
+  get writeClient(): Knex {
+    return this._writeClient;
   }
 
   /**

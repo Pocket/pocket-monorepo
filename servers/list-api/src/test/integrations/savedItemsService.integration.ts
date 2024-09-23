@@ -53,6 +53,7 @@ describe('SavedItemsService', () => {
         headers: { userid: '1', apiid: '0' },
       },
       dbClient: readClient(),
+      writeClient: writeClient(),
       eventEmitter: null,
     });
 
@@ -70,6 +71,7 @@ describe('SavedItemsService', () => {
         headers: { userid: '1', apiid: '0' },
       },
       dbClient: readClient(),
+      writeClient: writeClient(),
       eventEmitter: null,
     });
 
@@ -87,6 +89,7 @@ describe('SavedItemsService', () => {
         headers: { userid: '1', apiid: '0' },
       },
       dbClient: readClient(),
+      writeClient: writeClient(),
       eventEmitter: null,
     });
 
@@ -103,6 +106,7 @@ describe('SavedItemsService', () => {
         headers: { userid: '1', apiid: '0' },
       },
       dbClient: readClient(),
+      writeClient: writeClient(),
       eventEmitter: null,
     });
 
@@ -119,6 +123,7 @@ describe('SavedItemsService', () => {
         headers: { userid: '1', apiid: '0' },
       },
       dbClient: readClient(),
+      writeClient: writeClient(),
       eventEmitter: null,
     });
 
@@ -163,6 +168,7 @@ describe('SavedItemsService', () => {
           headers: { userid: '1', apiid: '0' },
         },
         dbClient: writeClient(),
+        writeClient: writeClient(),
         eventEmitter: null,
       });
       await new SavedItemDataService(context).deleteSavedItem(itemId);
