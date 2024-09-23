@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { getUserDigestFromGraph } from '../graphql/client-api-proxy';
-import { UserDigestQuery } from '../generated/graphql/types';
+import { Item, UserDigestQuery } from '../generated/graphql/types';
 import { BrazeSavedItem } from './types';
 import { ApolloQueryResult } from '@apollo/client/core';
 import { validateUserId } from '../utils';
@@ -40,16 +40,17 @@ function transformToBrazePayload(
     return [];
   }
   const savedItems: BrazeSavedItem[] = edges
-    .filter((edge) => edge.node.item.__typename === 'Item')
+    .filter(
+      (edge) =>
+        edge?.node?.item != null && edge?.node?.item.__typename === 'Item',
+    )
     .map((edge) => {
-      const item = edge.node.item;
-      if (item.__typename === 'Item') {
-        return {
-          title: item.preview.title,
-          imageUrl: item.preview.image?.cachedImages[0].url,
-          url: item.preview.url,
-        };
-      }
+      const item = edge?.node?.item as Item; // force cast to Item because map can't infer type from the above filter.
+      return {
+        title: item.preview?.title ?? null,
+        imageUrl: item.preview?.image?.cachedImages?.at(0)?.url ?? null,
+        url: item.preview?.url ?? null,
+      };
     });
   return savedItems;
 }
