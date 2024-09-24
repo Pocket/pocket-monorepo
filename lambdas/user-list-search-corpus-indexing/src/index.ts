@@ -10,11 +10,19 @@ import type {
   SQSBatchItemFailure,
   SQSEvent,
 } from 'aws-lambda';
-import { EventPayload, ValidatedEventPayload, validDetailTypes } from './types';
-import { createDoc, deleteDoc } from './docCommands';
+import {
+  EventPayload,
+  ValidatedEventPayload,
+  validDetailTypes,
+  CollectionApprovedItemPayload,
+  SyndicatedItemPayload,
+} from './types';
+import { upsertCollection } from './commands/Collection';
+import { mergeCollection } from './commands/ApprovedItemCollection';
+import { upsertSyndicatedItem } from './commands/Syndicated';
+import { upsertApprovedItem } from './commands/ApprovedItem';
 import { postRetry } from './postRetry';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { syndicationDupes } from './syndication';
 
 /**
  * The main handler function which will be wrapped by Sentry prior to export.
@@ -64,29 +72,43 @@ export async function bulkIndex(
   const validItems: ValidatedEventPayload[] = records.filter((item) =>
     validLanguage(item),
   );
-  // Delete syndication duplicates
-  // This assumes that for a given syndicated article, the
-  // original article existed in the corpus *before* it was
-  // was syndicated. We do not check for a possible syndication
-  // duplicate whenever a new article is added, because that would
-  // be resource-intensive and generally doesn't make sense with the
-  // curation workflow. We'll take the very small risk of duplicates
-  // which can be deleted manually.
-  const duplicates = await syndicationDupes(validItems);
-  const deletes = duplicates
-    .flatMap((doc) => deleteDoc(doc.id, doc.index))
-    .map((line) => JSON.stringify(line))
+
+  // Build commands for bulk request in opensearch
+  const commands: any[] = [];
+  for await (const validItem of validItems) {
+    // Special cases - Collections
+    if ('collection' in validItem.detail) {
+      commands.push(...upsertCollection(validItem.detail));
+    }
+    // Copies of Collections added to the Corpus
+    else if (validItem.detail.isCollection === true) {
+      commands.push(
+        ...(await mergeCollection(
+          // Narrowing/inference isn't working quite right
+          validItem.detail as CollectionApprovedItemPayload,
+        )),
+      );
+    }
+    // Syndicated articles (which might be duplicated)
+    else if (validItem.detail.isSyndicated === true) {
+      commands.push(
+        ...(await upsertSyndicatedItem(
+          validItem.detail as SyndicatedItemPayload,
+        )),
+      );
+    }
+    // Default corpus item
+    else {
+      commands.push(...upsertApprovedItem(validItem.detail));
+    }
+  }
+
+  // The REST API is better documented than the javascript client,
+  // which doesn't have enough info about response errors
+  const bodyData = commands
+    .map((command) => JSON.stringify(command))
     .join('\n');
-  // The new elasticsearch client doesn't work on AWS
-  // The old one is honestly maybe more of a PITA than just making http
-  // requests, because the typing is just 'any' where it counts and the
-  // documentation is better for the http api anyway...
-  const bodyData = validItems
-    .flatMap((item) => createDoc(item))
-    .flatMap((docCommands) => [{ index: docCommands.meta }, docCommands.fields])
-    .map((line) => JSON.stringify(line))
-    .join('\n');
-  const body = `${bodyData}\n${deletes}\n`; // must be terminated by a newline...
+  const body = `${bodyData}\n`; // must be terminated by a newline...
   const res = await postRetry(`${config.apiEndpoint}/_bulk`, body);
   if (!res.ok) {
     Sentry.addBreadcrumb({ data: { requestBody: body } });
@@ -101,13 +123,18 @@ export async function bulkIndex(
     if (response.errors === true) {
       const errorData = {};
       response.items.forEach((item, ix) => {
-        if (item['index'].error != null) {
-          failures.push({ itemIdentifier: validItems[ix].messageId });
-          errorData[validItems[ix].messageId] = {
-            payload: validItems[ix],
-            error: item['index'].error,
-          };
-        }
+        // Notify SQS of failure result
+        failures.push({ itemIdentifier: validItems[ix].messageId });
+        // Build error data for debugging
+        Object.keys(item).forEach((operation) => {
+          if (item[operation].error != null) {
+            errorData[validItems[ix].messageId] = {
+              payload: validItems[ix],
+              operation,
+              error: item[operation].error,
+            };
+          }
+        });
       });
       Sentry.addBreadcrumb({ data: errorData });
       Sentry.captureException('Error indexing corpus item(s)');
