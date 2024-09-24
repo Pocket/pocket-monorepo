@@ -30,6 +30,7 @@ export async function mergeCollection(event: CollectionApprovedItemPayload) {
           quality_rank: event.grade
             ? config.gradeRankMap[event.grade.toLowerCase()]
             : undefined,
+          is_time_sensitive: event.isTimeSensitive,
         },
       },
     ];

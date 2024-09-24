@@ -165,6 +165,7 @@ describe('bulk indexer', () => {
           url: 'http://some-url.com',
           approvedItemExternalId: 'aaaaa',
           language: 'en',
+          isTimeSensitive: true,
         },
       },
     ];
@@ -176,6 +177,7 @@ describe('bulk indexer', () => {
       url: 'http://some-url.com',
       language: 'en',
       corpusId: 'aaaaa',
+      is_time_sensitive: true,
     });
   });
   it('successfully indexes a batch of corpus items', async () => {
