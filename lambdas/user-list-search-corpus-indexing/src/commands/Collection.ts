@@ -3,9 +3,9 @@ import { config } from '../config';
 import { buildCollectionUrl } from '../utils';
 
 /**
- *
- * @param event
- * @returns
+ * Index a Collection object in the search cluster.
+ * Returns the commands for a bulk operation
+ * of the Collection and all Stories it contains.
  */
 export function upsertCollection(event: CollectionPayload): any[] {
   const { collection } = event;

@@ -1,6 +1,10 @@
 import { ValidLanguageApprovedItemPayload } from '../types';
 import { config } from '../config';
 
+/**
+ * Index an "Approved Item" in the search cluster.
+ * Returns commands for bulk operation.
+ */
 export function upsertApprovedItem(event: ValidLanguageApprovedItemPayload) {
   const index = config.indexLangMap[event.language.toLowerCase()];
   return [

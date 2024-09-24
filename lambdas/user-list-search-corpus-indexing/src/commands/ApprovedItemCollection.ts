@@ -3,6 +3,8 @@ import { config } from '../config';
 import { collectionIdFromCorpus } from '../queries';
 
 /**
+ * Update a Collection entry with additional metadata from
+ * the "ApprovedItem" copy of it in the Curated Corpus.
  * Making an assumption that the Corpus entry for a Collection
  * is added after the Collection is created, since the Collection
  * is the source of truth.

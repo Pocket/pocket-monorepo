@@ -3,6 +3,13 @@ import { config } from '../config';
 import { upsertApprovedItem } from './ApprovedItem';
 import { originalCorpusId } from '../queries';
 
+/**
+ * Index a Syndicated Item in the search corpus.
+ * Returns commands to index the item in bulk
+ * operation, plus any delete operations required
+ * (if the syndicated item duplicates an existing
+ * record).
+ */
 export async function upsertSyndicatedItem(
   event: SyndicatedItemPayload,
 ): Promise<Array<any>> {
