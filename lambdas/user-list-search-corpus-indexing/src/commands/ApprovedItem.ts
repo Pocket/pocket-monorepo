@@ -31,6 +31,7 @@ export function upsertApprovedItem(event: ValidLanguageApprovedItemPayload) {
       quality_rank: event.grade
         ? config.gradeRankMap[event.grade.toLowerCase()]
         : undefined,
+      is_time_sensitive: event.isTimeSensitive,
     },
   ];
 }
