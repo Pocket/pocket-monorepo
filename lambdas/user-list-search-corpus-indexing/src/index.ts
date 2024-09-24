@@ -23,6 +23,7 @@ import { upsertSyndicatedItem } from './commands/Syndicated';
 import { upsertApprovedItem } from './commands/ApprovedItem';
 import { postRetry } from './postRetry';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { removeApprovedItem } from './commands/RemoveItem';
 
 /**
  * The main handler function which will be wrapped by Sentry prior to export.
@@ -76,8 +77,17 @@ export async function bulkIndex(
   // Build commands for bulk request in opensearch
   const commands: any[] = [];
   for await (const validItem of validItems) {
+    // Deleting
+    if (
+      validItem.detailType === 'remove-approved-item' &&
+      // Not possible, but just for typescript...
+      !('collection' in validItem.detail)
+    ) {
+      commands.push(...removeApprovedItem(validItem.detail));
+    }
+    // Indexing (create/update/replace)
     // Special cases - Collections
-    if ('collection' in validItem.detail) {
+    else if ('collection' in validItem.detail) {
       commands.push(...upsertCollection(validItem.detail));
     }
     // Copies of Collections added to the Corpus

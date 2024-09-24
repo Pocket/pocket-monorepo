@@ -41,6 +41,7 @@ export const validDetailTypes = [
   'update-approved-item',
   'collection-created',
   'collection-updated',
+  'remove-approved-item',
 ];
 
 type Author = { name: string; sortOrder: number };
