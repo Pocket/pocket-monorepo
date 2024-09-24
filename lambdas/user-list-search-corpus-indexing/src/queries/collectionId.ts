@@ -2,6 +2,7 @@ import { serverLogger } from '@pocket-tools/ts-logger';
 import { postRetry } from '../postRetry';
 import * as Sentry from '@sentry/aws-serverless';
 import { config } from '../config';
+import { extractCollectionSlug } from '../utils';
 
 /**
  * Fetch the Collection "external ID" representing the
@@ -14,11 +15,7 @@ export async function collectionIdFromCorpus(
   url: string,
 ): Promise<string | undefined> {
   const operation = 'CorpusCollectionIdBySlug';
-  const slugRegex = new RegExp(
-    '^(?:https?://)?getpocket.com/(?:[a-z]{2}/)?collections/([dw-]+)$',
-  );
-
-  const slug = url.match(slugRegex)?.[0];
+  const slug = extractCollectionSlug(url);
   if (slug == null) {
     Sentry.addBreadcrumb({ data: { query: operation, url } });
     Sentry.captureException('Could not extract slug from collection url');

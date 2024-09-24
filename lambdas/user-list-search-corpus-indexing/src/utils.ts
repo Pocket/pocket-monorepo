@@ -23,3 +23,15 @@ export function buildCollectionUrl(slug: string, langCode: string): string {
   }
   return slug;
 }
+
+/**
+ * Extract a slug from a Pocket collection URL (any language)
+ * @param url a collection URL
+ * @returns undefined if the URL is not in the proper format or does
+ * not have a slug
+ */
+export function extractCollectionSlug(url: string): string | undefined {
+  const slugRegex =
+    /^(?:https?:\/\/)?getpocket.com\/(?:[a-z]{2}\/)?collections\/([\d\w-]+)$/;
+  return url.match(slugRegex)?.[1];
+}
