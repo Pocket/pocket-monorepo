@@ -9,8 +9,6 @@ import { resolvers } from '../resolvers';
 import { ContextManager } from './context';
 import {
   errorHandler,
-  isSubgraphIntrospection,
-  isIntrospection,
   defaultPlugins,
   sentryPocketMiddleware,
 } from '@pocket-tools/apollo-utils';
@@ -24,14 +22,6 @@ import { getRedis } from '../cache';
  * @returns ContextManager
  */
 const contextFactory = (req: express.Request) => {
-  if (
-    isIntrospection(req.body.query) ||
-    isSubgraphIntrospection(req.body.query)
-  ) {
-    // Bypass context function throwing auth errors) for introspection
-    return null;
-  }
-
   return new ContextManager({
     request: req,
   });
@@ -79,7 +69,7 @@ export async function startServer(port: number): Promise<{
     json(),
     sentryPocketMiddleware,
     setMorgan(serverLogger),
-    expressMiddleware(server, {
+    expressMiddleware<ContextManager>(server, {
       context: async ({ req }) => contextFactory(req),
     }),
   );

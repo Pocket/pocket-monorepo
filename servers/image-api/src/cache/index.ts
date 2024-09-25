@@ -8,8 +8,8 @@ import {
 } from '@pocket-tools/apollo-utils';
 import KeyvRedis from '@keyv/redis';
 
-let cache: DataloaderKeyValueCache = undefined;
-let redis: Keyv = undefined;
+let cache: DataloaderKeyValueCache | null = null;
+let redis: Keyv | null = null;
 
 /**
  * Sets up the connection to the Redis cluster. ErrorsAreMissesCache wrapper provides error tolerance for cache backends.
