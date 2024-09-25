@@ -3,6 +3,7 @@ import { IContext } from '../server/context';
 import { mysqlTimeString } from './utils';
 import config from '../config';
 import { DateTime } from 'luxon';
+import { readClient, writeClient } from '../database/client';
 
 export class UsersMetaService {
   private static propertiesMap = {
@@ -12,12 +13,17 @@ export class UsersMetaService {
 
   private db: Knex.QueryBuilder;
   private knex: Knex;
+  // readonly connection
+  private roDb: Knex.QueryBuilder;
   private readonly userId: string;
 
   constructor(context: IContext) {
     this.userId = context.userId;
-    this.knex = context.writeClient;
-    this.db = context.writeClient(UsersMetaService.tableName);
+    // DB Connection is handled manually in this service due to
+    // how it can be written to as a side-effect of reads ('tagslist'... sigh)
+    this.knex = context.dbClient;
+    this.db = writeClient()(UsersMetaService.tableName);
+    this.roDb = readClient()(UsersMetaService.tableName);
   }
 
   /**
@@ -83,10 +89,14 @@ export class UsersMetaService {
   /**
    * Fetch the last time a change to tags was recorded.
    * Returns undefined if no changes to tags have occurred
-   * for the user (e.g. they don't have any)
+   * for the user (e.g. they don't have any).
+   * Since this is used for sync, and we don't need to update
+   * and return the value like other mutations (where we need to
+   * be concerned with replication delay and eventual consistency),
+   * we force to the read-only connection.
    */
   public async lastTagMutationTime(): Promise<Date | undefined> {
-    const row = await this.db
+    const row = await this.roDb
       .where({
         user_id: this.userId,
         property: UsersMetaService.propertiesMap.tag,

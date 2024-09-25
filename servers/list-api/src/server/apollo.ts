@@ -85,7 +85,6 @@ export async function startServer(port: number): Promise<{
     return new ContextManager({
       request: req,
       dbClient,
-      writeClient: writeClient(),
       eventEmitter: itemsEventEmitter,
       unleash: unleashClient,
     });

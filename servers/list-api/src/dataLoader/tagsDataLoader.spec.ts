@@ -40,7 +40,6 @@ describe('tags dataloader', function () {
         headers: { userid: '1', apiid: '0', premium: 'true' },
       },
       dbClient: db,
-      writeClient: db,
       eventEmitter: null,
     });
     const savedItemService = new SavedItemDataService(context);
@@ -69,7 +68,6 @@ describe('tags dataloader', function () {
         headers: { userid: '1', apiid: '0', premium: 'true' },
       },
       dbClient: db,
-      writeClient: db,
       eventEmitter: null,
     });
     const savedItemService = new SavedItemDataService(context);
@@ -106,7 +104,6 @@ describe('tags dataloader', function () {
         headers: { userid: '1', apiid: '0', premium: 'true' },
       },
       dbClient: db,
-      writeClient: db,
       eventEmitter: null,
     });
     const savedItemService = new SavedItemDataService(context);
