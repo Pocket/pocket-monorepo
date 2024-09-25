@@ -35,6 +35,7 @@ export class NewUserInLocaleStrategy extends Strategy {
 
       // Check for valid accountCreatedAt
       const passedAccountCreatedAt = context?.properties?.accountCreatedAt;
+      if (!passedAccountCreatedAt) return false;
       const accountCreatedAt = Date.parse(passedAccountCreatedAt); //prettier-ignore
       if (isNaN(accountCreatedAt)) return false; // assume a logged out user
 

@@ -52,6 +52,10 @@ export const enableJwtAuth = (
         done: VerifyCallback,
       ) => {
         const jwtClaims = decode(params.id_token);
+        if (!jwtClaims) {
+          done(null, false);
+          return;
+        }
 
         //Custom claim attributes are in the OIDC payload, not in our jwtAccessTokenPayload.
         const isInMozillaIAMGroup =
@@ -59,7 +63,11 @@ export const enableJwtAuth = (
           JSON.parse(jwtClaims['custom:groups']).indexOf(
             appConfig.mozillaIAMAccessGroup,
           ) > 0;
-        if (isInMozillaIAMGroup) {
+        if (
+          isInMozillaIAMGroup &&
+          idProfile.emails &&
+          idProfile.emails.length
+        ) {
           // TODO: once we start wanting to use new Unleash 4 RBAC we should get more specific and
           // map cognito user groups to Unleash roles and persist it back with the userService.
           const user = await userService.loginUserSSO({
@@ -79,7 +87,7 @@ export const enableJwtAuth = (
   app.use(passport.initialize());
   app.use(passport.session());
   passport.serializeUser((user, done) => done(null, user));
-  passport.deserializeUser((user, done) => done(null, user));
+  passport.deserializeUser((user: Express.User, done) => done(null, user));
 
   //Setup a route that can display an error message if JWT auth fails.
   app.get(

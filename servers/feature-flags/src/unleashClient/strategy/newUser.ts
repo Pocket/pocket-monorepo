@@ -23,6 +23,7 @@ export class NewUserStrategy extends Strategy {
 
       // Check for valid account created at
       const passedAccountCreatedAt = context?.properties?.accountCreatedAt;
+      if (!passedAccountCreatedAt) return false;
       const accountCreatedAt = Date.parse(passedAccountCreatedAt);
       if (isNaN(accountCreatedAt)) return false; // assume a logged out user
 
