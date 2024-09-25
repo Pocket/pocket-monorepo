@@ -29,7 +29,7 @@ export const resolvers: Resolvers = {
       parent: Highlight,
       _,
       context: IContext,
-    ): Promise<HighlightNote | undefined> => {
+    ): Promise<HighlightNote | null> => {
       return context.dataLoaders.noteByHighlightId.load(parent.id);
     },
   },

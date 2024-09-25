@@ -16,8 +16,8 @@ export class UsersMetaService {
 
   constructor(context: IContext) {
     this.userId = context.userId;
-    this.knex = context.dbClient;
-    this.db = context.dbClient(UsersMetaService.tableName);
+    this.knex = context.writeClient;
+    this.db = context.writeClient(UsersMetaService.tableName);
   }
 
   /**

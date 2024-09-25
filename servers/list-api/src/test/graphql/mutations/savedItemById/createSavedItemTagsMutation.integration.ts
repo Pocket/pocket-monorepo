@@ -221,7 +221,7 @@ describe('createSavedItemTags mutation', function () {
 
     expect(res.body.errors).toBeUndefined();
     expect(readClientSpy).toHaveBeenCalledTimes(0);
-    expect(writeClientSpy).toHaveBeenCalledTimes(1);
+    expect(writeClientSpy).toHaveBeenCalledTimes(2);
   });
   it('createSavedItemTags should set SavedItem._updatedAt to provided timestamp', async () => {
     const variables = {
