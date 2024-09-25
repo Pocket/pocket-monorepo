@@ -2,7 +2,6 @@ import config from './config';
 import { initSentry } from '@pocket-tools/sentry';
 initSentry({
   ...config.sentry,
-  tracesSampleRate: 0.01,
   debug: config.sentry.environment === 'development',
 });
 
