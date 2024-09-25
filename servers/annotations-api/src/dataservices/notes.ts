@@ -279,7 +279,7 @@ export class NotesDataService {
       const highlightResult: QueryCommandOutput = await this.client.send(
         new QueryCommand(queryCommandInput),
       );
-      if (highlightResult.Items?.length > 0) {
+      if (highlightResult.Items && highlightResult.Items?.length > 0) {
         const deleteRequests = highlightResult.Items.map((res) => ({
           DeleteRequest: {
             Key: {

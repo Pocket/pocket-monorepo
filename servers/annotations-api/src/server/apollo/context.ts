@@ -23,7 +23,7 @@ export interface IContext {
   parserApi: ParserAPI;
   HighlightsModel: HighlightsModel;
   dataLoaders: {
-    noteByHighlightId: DataLoader<string, HighlightNote | undefined>;
+    noteByHighlightId: DataLoader<string, HighlightNote | null>;
   };
 }
 

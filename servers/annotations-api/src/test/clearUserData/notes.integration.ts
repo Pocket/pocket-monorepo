@@ -50,7 +50,7 @@ describe('clearUserData for Notes data', () => {
     const res = await dynamodb.send(new QueryCommand(queryCommand(smallUser)));
     expect(res['$metadata'].httpStatusCode).toEqual(200);
     expect(res.Count).toEqual(0);
-    expect(res.Items.length).toEqual(0);
+    expect(res.Items?.length).toEqual(0);
     expect(res.LastEvaluatedKey).toBeUndefined();
   });
   it('deletes multiple batches of records for a user id', async () => {
@@ -59,7 +59,7 @@ describe('clearUserData for Notes data', () => {
     const res = await dynamodb.send(new QueryCommand(queryCommand(bigUser)));
     expect(res['$metadata'].httpStatusCode).toEqual(200);
     expect(res.Count).toEqual(0);
-    expect(res.Items.length).toEqual(0);
+    expect(res.Items?.length).toEqual(0);
     expect(res.LastEvaluatedKey).toBeUndefined();
   });
   it('does not throw an error if there are no records to delete', async () => {
@@ -68,7 +68,7 @@ describe('clearUserData for Notes data', () => {
     const res = await dynamodb.send(new QueryCommand(queryCommand(noUser)));
     expect(res['$metadata'].httpStatusCode).toEqual(200);
     expect(res.Count).toEqual(0);
-    expect(res.Items.length).toEqual(0);
+    expect(res.Items?.length).toEqual(0);
     expect(res.LastEvaluatedKey).toBeUndefined();
   });
 });

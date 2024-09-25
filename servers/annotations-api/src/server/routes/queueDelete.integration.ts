@@ -16,7 +16,15 @@ describe('/queueDelete', () => {
     db = writeClient();
 
     await db('user_annotations').truncate();
-    const data = [];
+    const data: {
+      user_id: number;
+      annotation_id: string;
+      item_id: number;
+      version: number;
+      status: number;
+      created_at: Date;
+      updated_at: Date;
+    }[] = [];
     for (let i = 1; i <= 6; i++) {
       const date = new Date(`2020-10-0${i} 10:20:30`);
 

@@ -12,8 +12,8 @@ import { NotesDataService } from './notes';
  */
 export function createNotesLoader(
   notesService: NotesDataService,
-): DataLoader<string, HighlightNote | undefined> {
-  return new DataLoader<string, HighlightNote | undefined>(
+): DataLoader<string, HighlightNote | null> {
+  return new DataLoader<string, HighlightNote | null>(
     async (keys: string[]) => {
       const notes = await notesService.getMany(keys);
       // there might be missing/different ordered keys
@@ -35,7 +35,7 @@ export function createNotesLoader(
 export function orderAndMapNotes(
   keys: string[],
   notesResponse: HighlightNote[],
-): Array<HighlightNote | undefined> {
+): Array<HighlightNote | null> {
   const noteKeyMap = notesResponse.reduce((keyMap, currentNote) => {
     keyMap[currentNote.highlightId] = currentNote;
     return keyMap;
