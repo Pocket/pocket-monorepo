@@ -65,7 +65,7 @@ describe('Strategy: hasUserModel', () => {
   it('should not assign user with null user profile', async () => {
     const strategy = await new HasUserModel();
     const properties: UnleashProperties = {
-      recItUserProfile: null,
+      recItUserProfile: undefined,
     };
     const context: UnleashContext = { ...defaultContext, properties };
     const activation = strategy.isEnabled(params, context);

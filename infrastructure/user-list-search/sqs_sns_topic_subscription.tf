@@ -53,9 +53,18 @@ resource "aws_sns_topic_subscription" "collection_events_sns_topic_subscription"
 }
 
 resource "aws_sns_topic_subscription" "corpus_events_hydration_sns_topic_subscription" {
-  topic_arn = local.corpusEventsSnsTopicArn
-  protocol  = "sqs"
-  endpoint  = aws_sqs_queue.corpus_events_hydration.arn
+  topic_arn           = local.corpusEventsSnsTopicArn
+  protocol            = "sqs"
+  endpoint            = aws_sqs_queue.corpus_events_hydration.arn
+  # Don't need removed events in the hydration queue -- just index-related ones
+  filter_policy_scope = "MessageBody"
+  filter_policy = jsonencode({
+    detail-type = [
+      {
+        anything-but = "remove-approved-item"
+      }
+    ]
+  })
   # Need to do some more work to get this policy to work. It fails with
   # permissions error.
   # redrive_policy = jsonencode({

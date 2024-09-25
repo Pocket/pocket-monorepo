@@ -41,6 +41,7 @@ export const validDetailTypes = [
   'update-approved-item',
   'collection-created',
   'collection-updated',
+  'remove-approved-item',
 ];
 
 type Author = { name: string; sortOrder: number };
@@ -151,3 +152,20 @@ export type IABChildCategory = {
 };
 
 export type Label = { collection_label_id: string; name: string };
+
+// Corpus items which are not collections, to be indexed
+export type CollectionApprovedItemPayload = Omit<
+  ValidLanguageApprovedItemPayload,
+  'isCollection'
+> & {
+  isCollection: true;
+};
+
+// Corpus items which are not collections, to be indexed
+export type SyndicatedItemPayload = Omit<
+  ValidLanguageApprovedItemPayload,
+  'isSyndicated'
+> & {
+  isSyndicated: true;
+  isCollection: false | undefined;
+};
