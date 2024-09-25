@@ -32,6 +32,9 @@
       "is_syndicated": {
         "type": "boolean"
       },
+      "is_time_sensitive": {
+        "type": "boolean"
+      },
       "language": {
         "type": "keyword"
       },

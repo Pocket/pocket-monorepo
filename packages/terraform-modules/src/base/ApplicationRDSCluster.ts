@@ -221,14 +221,17 @@ export class ApplicationRDSCluster extends Construct {
     const secretValues: {
       engine: string;
       host: string;
+      read_host: string;
       username: string;
       password: string;
       dbname: string;
       port: number;
       database_url?: string;
+      reader_database_url?: string;
     } = {
       engine: engine,
       host: rds.endpoint,
+      read_host: rds.readerEndpoint,
       username: rds.masterUsername,
       password: rds.masterPassword,
       dbname: rds.databaseName,
@@ -238,6 +241,7 @@ export class ApplicationRDSCluster extends Construct {
     // Add a database URL to a MySQL-compatible Aurora instance
     if (engine && engine === 'aurora-mysql') {
       secretValues.database_url = `mysql://${rds.masterUsername}:${rds.masterPassword}@${rds.endpoint}:${rdsPort}/${rds.databaseName}`;
+      secretValues.reader_database_url = `mysql://${rds.masterUsername}:${rds.masterPassword}@${rds.readerEndpoint}:${rdsPort}/${rds.databaseName}`;
     }
 
     //Create the initial secret version
