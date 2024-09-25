@@ -1,11 +1,14 @@
 import { readClient, writeClient } from '../../../../database/client';
 import { EventType } from '../../../../businessEvents';
-import { ContextManager } from '../../../../server/context';
+import { ContextManager as CMClass } from '../../../../server/context';
 import { startServer } from '../../../../server/apollo';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
-import * as Client from '../../../../database/client';
+
+// For constructor spying in connection management block
+import * as ContextModule from '../../../../server/context';
+const ContextManager = ContextModule.ContextManager;
 
 describe('createSavedItemTags mutation', function () {
   const writeDb = writeClient();
@@ -16,7 +19,7 @@ describe('createSavedItemTags mutation', function () {
   const date1 = new Date('2020-10-03 10:30:30'); // Consistent date for seeding
   const updateDate = new Date(2021, 1, 1, 0, 0); // mock date for insert
   let app: Application;
-  let server: ApolloServer<ContextManager>;
+  let server: ApolloServer<CMClass>;
   let url: string;
 
   beforeAll(async () => {
@@ -206,23 +209,6 @@ describe('createSavedItemTags mutation', function () {
     expect(eventData[1].id).toBe(1);
     expect(eventData[2]).toContainAllValues(['tofino', 'victoria']);
   });
-
-  it('mutations resolver chains should call only writeClient()', async () => {
-    const variables = {
-      input: [{ savedItemId: '1', tags: ['tag', 'added'] }],
-    };
-
-    const readClientSpy = jest.spyOn(Client, 'readClient').mockClear();
-    const writeClientSpy = jest.spyOn(Client, 'writeClient').mockClear();
-    const res = await request(app)
-      .post(url)
-      .set(headers)
-      .send({ query: createSavedItemTags, variables });
-
-    expect(res.body.errors).toBeUndefined();
-    expect(readClientSpy).toHaveBeenCalledTimes(0);
-    expect(writeClientSpy).toHaveBeenCalledTimes(2);
-  });
   it('createSavedItemTags should set SavedItem._updatedAt to provided timestamp', async () => {
     const variables = {
       input: [{ savedItemId: '1', tags: ['tofino', 'victoria'] }],
@@ -234,5 +220,30 @@ describe('createSavedItemTags mutation', function () {
       .send({ query: createSavedItemTags, variables });
     const data = res.body.data.createSavedItemTags;
     expect(data[0]._updatedAt).toEqual(1711064114);
+  });
+  describe('connection management', () => {
+    let contextConstructorSpy;
+    beforeAll(() => {
+      contextConstructorSpy = jest.spyOn(ContextModule, 'ContextManager');
+    });
+    afterAll(() => {
+      contextConstructorSpy.mockRestore();
+    });
+    it('mutations resolver should initialize context with writeClient', async () => {
+      const variables = {
+        input: [{ savedItemId: '1', tags: ['tag', 'added'] }],
+      };
+
+      await request(app)
+        .post(url)
+        .set(headers)
+        .send({ query: createSavedItemTags, variables });
+
+      expect(contextConstructorSpy.mock.calls).toHaveLength(1);
+      expect(
+        contextConstructorSpy.mock.calls[0][0].dbClient.client.config
+          .connection,
+      ).toMatchObject({ user: 'pkt_listapi_w' });
+    });
   });
 });
