@@ -68,7 +68,7 @@
           }
         }
       ],
-      "@semantic-release/npm",
+      "@anolilab/semantic-release-pnpm",
       "@semantic-release/github"
     ]
   },
@@ -89,6 +89,7 @@
     "md5": "2.3.0"
   },
   "devDependencies": {
+    "@anolilab/semantic-release-pnpm": "1.1.3",
     "@jest/globals": "29.7.0",
     "@pocket-tools/eslint-config": "workspace:*",
     "@types/jest": "29.5.12",

@@ -63,7 +63,7 @@
           }
         }
       ],
-      "@semantic-release/npm",
+      "@anolilab/semantic-release-pnpm",
       "@semantic-release/github"
     ]
   },
@@ -82,6 +82,7 @@
     "tslib": "2.7.0"
   },
   "devDependencies": {
+    "@anolilab/semantic-release-pnpm": "1.1.3",
     "@pocket-tools/eslint-config": "workspace:*",
     "@types/jest": "29.5.12",
     "@types/node": "^22.5.2",
