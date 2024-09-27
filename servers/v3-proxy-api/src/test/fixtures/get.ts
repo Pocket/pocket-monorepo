@@ -41,31 +41,41 @@ export const mockGraphGetComplete: {
             resolvedId: '11231399273',
             wordCount: 4410,
             listenDuration: 1707,
-            topImage: {
-              url: 'https://static.scientificamerican.com/sciam/cache/file/0B155646-0D3C-4284-A0AB8EE80631BBA1_source.jpg?w=1200',
+            preview: {
+              __typename: 'ItemSummary' as const,
+              image: {
+                url: 'https://static.scientificamerican.com/sciam/cache/file/0B155646-0D3C-4284-A0AB8EE80631BBA1_source.jpg?w=1200',
+              },
+              title:
+                'Brains Are Not Required When It Comes to Thinking and Solving Problems—Simple Cells Can Do It',
+              url: 'https://www.scientificamerican.com/article/brains-are-not-required-when-it-comes-to-thinking-and-solving-problems-simple-cells-can-do-it/',
+              excerpt:
+                "The planarian is nobody's idea of a genius. A flatworm shaped like a comma, it can be found wriggling through the muck of lakes and ponds worldwide. Its pin-size head has a microscopic structure that passes for a brain.",
+              authors: [
+                {
+                  id: '49293842',
+                  name: 'Rowan Jacobsen',
+                  url: 'https://www.scientificamerican.com/author/rowan-jacobsen/',
+                },
+              ],
+              domain: {
+                logo: 'https://logo.clearbit.com/scientificamerican.com?size=800',
+                logoGreyscale:
+                  'https://logo.clearbit.com/scientificamerican.com?size=800&greyscale=true',
+                name: 'Scientific American',
+              },
             },
-            title:
-              'Brains Are Not Required When It Comes to Thinking and Solving Problems—Simple Cells Can Do It',
             timeToRead: 20,
             resolvedUrl:
               'https://www.scientificamerican.com/article/brains-are-not-required-when-it-comes-to-thinking-and-solving-problems-simple-cells-can-do-it/',
             givenUrl:
               'https://www.scientificamerican.com/article/brains-are-not-required-when-it-comes-to-thinking-and-solving-problems-simple-cells-can-do-it/',
-            excerpt:
-              "The planarian is nobody's idea of a genius. A flatworm shaped like a comma, it can be found wriggling through the muck of lakes and ponds worldwide. Its pin-size head has a microscopic structure that passes for a brain.",
             domain: null,
             isArticle: true,
             isIndex: false,
             hasVideo: Videoness.HasVideos,
             hasImage: Imageness.HasImages,
             language: 'en',
-            authors: [
-              {
-                id: '49293842',
-                name: 'Rowan Jacobsen',
-                url: 'https://www.scientificamerican.com/author/rowan-jacobsen/',
-              },
-            ],
             images: [
               {
                 imageId: 1,
@@ -104,12 +114,6 @@ export const mockGraphGetComplete: {
                 height: 315,
               },
             ],
-            domainMetadata: {
-              logo: 'https://logo.clearbit.com/scientificamerican.com?size=800',
-              logoGreyscale:
-                'https://logo.clearbit.com/scientificamerican.com?size=800&greyscale=true',
-              name: 'Scientific American',
-            },
           },
           tags: [{ name: 'science' }, { name: 'research' }],
         },
@@ -132,25 +136,29 @@ export const mockGraphGetComplete: {
             resolvedId: '2344395952',
             wordCount: 46,
             listenDuration: 18,
-            topImage: null,
-            title: 'Supergraph Architecture Framework',
+            preview: {
+              __typename: 'ItemSummary' as const,
+              image: null,
+              title: 'Supergraph Architecture Framework',
+              url: 'https://saf.apollographql.com/',
+              excerpt:
+                "The Supergraph Architecture Framework (SAF) is a set of best practices for building a reliable, secure, performant, and developer-friendly graph. By answering the questions in the SAF assessment, you will quantify your graph's current state and identify areas for improvement.",
+              authors: [],
+              domain: {
+                name: 'saf.apollographql.com',
+              },
+            },
             timeToRead: 20,
             resolvedUrl: 'https://saf.apollographql.com/',
             givenUrl: 'https://saf.apollographql.com/',
-            excerpt:
-              "The Supergraph Architecture Framework (SAF) is a set of best practices for building a reliable, secure, performant, and developer-friendly graph. By answering the questions in the SAF assessment, you will quantify your graph's current state and identify areas for improvement.",
             domain: null,
             isArticle: false,
             isIndex: true,
             hasVideo: Videoness.NoVideos,
             hasImage: Imageness.NoImages,
             language: 'en',
-            authors: [],
             images: null,
             videos: null,
-            domainMetadata: {
-              name: 'saf.apollographql.com',
-            },
           },
         },
         {
@@ -199,18 +207,21 @@ export const mockGraphGetSimple: {
             resolvedId: '11231399273',
             wordCount: 4410,
             listenDuration: 1707,
-            topImage: {
-              url: 'https://static.scientificamerican.com/sciam/cache/file/0B155646-0D3C-4284-A0AB8EE80631BBA1_source.jpg?w=1200',
+            preview: {
+              image: {
+                url: 'https://static.scientificamerican.com/sciam/cache/file/0B155646-0D3C-4284-A0AB8EE80631BBA1_source.jpg?w=1200',
+              },
+              title:
+                'Brains Are Not Required When It Comes to Thinking and Solving Problems—Simple Cells Can Do It',
+              url: 'https://www.scientificamerican.com/article/brains-are-not-required-when-it-comes-to-thinking-and-solving-problems-simple-cells-can-do-it/',
+              excerpt:
+                "The planarian is nobody's idea of a genius. A flatworm shaped like a comma, it can be found wriggling through the muck of lakes and ponds worldwide. Its pin-size head has a microscopic structure that passes for a brain.",
             },
-            title:
-              'Brains Are Not Required When It Comes to Thinking and Solving Problems—Simple Cells Can Do It',
             timeToRead: 20,
             resolvedUrl:
               'https://www.scientificamerican.com/article/brains-are-not-required-when-it-comes-to-thinking-and-solving-problems-simple-cells-can-do-it/',
             givenUrl:
               'https://www.scientificamerican.com/article/brains-are-not-required-when-it-comes-to-thinking-and-solving-problems-simple-cells-can-do-it/',
-            excerpt:
-              "The planarian is nobody's idea of a genius. A flatworm shaped like a comma, it can be found wriggling through the muck of lakes and ponds worldwide. Its pin-size head has a microscopic structure that passes for a brain.",
             domain: null,
             isArticle: true,
             isIndex: false,
@@ -235,13 +246,16 @@ export const mockGraphGetSimple: {
             resolvedId: '2344395952',
             wordCount: 46,
             listenDuration: 18,
-            topImage: null,
-            title: 'Supergraph Architecture Framework',
+            preview: {
+              image: null,
+              title: 'Supergraph Architecture Framework',
+              url: 'https://saf.apollographql.com/',
+              excerpt:
+                "The Supergraph Architecture Framework (SAF) is a set of best practices for building a reliable, secure, performant, and developer-friendly graph. By answering the questions in the SAF assessment, you will quantify your graph's current state and identify areas for improvement.",
+            },
             timeToRead: 20,
             resolvedUrl: 'https://saf.apollographql.com/',
             givenUrl: 'https://saf.apollographql.com/',
-            excerpt:
-              "The Supergraph Architecture Framework (SAF) is a set of best practices for building a reliable, secure, performant, and developer-friendly graph. By answering the questions in the SAF assessment, you will quantify your graph's current state and identify areas for improvement.",
             domain: null,
             isArticle: false,
             isIndex: true,

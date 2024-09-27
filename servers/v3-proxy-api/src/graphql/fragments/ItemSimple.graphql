@@ -3,15 +3,18 @@ fragment ItemSimple on Item {
   itemId
   resolvedId
   wordCount
-  topImage {
+  preview {
+    image {
+      url
+    }
     url
+    title
+    excerpt
   }
-  title
   timeToRead
   listenDuration
   resolvedUrl
   givenUrl
-  excerpt
   domain
   isArticle
   isIndex

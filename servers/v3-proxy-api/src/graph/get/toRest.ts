@@ -315,11 +315,11 @@ export function ListItemTransformerComplete(
   }
   const completeFieldMap = {
     authors: tx.AuthorsReducer(
-      savedItem.item.authors,
+      savedItem.item.preview?.authors,
       savedItem.item.resolvedId,
     ),
     domain_metadata: tx.DomainMetadataTransformer(
-      savedItem.item.domainMetadata,
+      savedItem.item.preview?.domain,
     ),
     images: tx.ImagesReducer(savedItem.item.images, savedItem.item.resolvedId),
     videos: tx.VideosReducer(savedItem.item.videos, savedItem.item.resolvedId),
@@ -398,8 +398,9 @@ function ListItemTransformer<T extends SavedItemSimple>(
         listen_duration_estimate: 0,
       };
     case 'Item':
-      savedItem.item.topImage?.url &&
-        (conditionalFields['top_image_url'] = savedItem.item.topImage.url);
+      savedItem.item.preview?.image?.url &&
+        (conditionalFields['top_image_url'] =
+          savedItem.item.preview?.image.url);
       return {
         ...baseFields,
         ...conditionalFields,
@@ -408,10 +409,10 @@ function ListItemTransformer<T extends SavedItemSimple>(
         // properly conform to expected type
         resolved_id: savedItem.item.resolvedId ?? '',
         given_url: savedItem.item.givenUrl ?? '',
-        given_title: savedItem.title ?? savedItem.item.title ?? '', // fall back to resolved_title if not provided and null
-        resolved_title: savedItem.item.title ?? '',
+        given_title: savedItem.title ?? savedItem.item.preview?.title ?? '', // fall back to resolved_title if not provided and null
+        resolved_title: savedItem.item.preview?.title ?? '',
         resolved_url: savedItem.item.resolvedUrl ?? '',
-        excerpt: savedItem.item.excerpt ?? '',
+        excerpt: savedItem.item.preview?.excerpt ?? '',
         is_article: savedItem.item.isArticle ? ('1' as const) : ('0' as const),
         is_index: savedItem.item.isIndex ? ('1' as const) : ('0' as const),
         has_video: tx.convertHasVideo(savedItem.item.hasVideo),

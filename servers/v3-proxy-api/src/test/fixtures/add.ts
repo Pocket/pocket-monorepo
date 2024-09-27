@@ -407,29 +407,39 @@ export const mockGraphAddResponses: SavedItemWithParserMetadata[] = [
       itemId: '1192348383',
       resolvedId: '1192348383',
       wordCount: 0,
-      topImage: {
-        url: 'https://pocket-image-cache.com/1200x/filters:format(jpg):extract_focal()/https%3A%2F%2Fs3.amazonaws.com%2Fpocket-collectionapi-prod-images%2F1d6a8d83-477e-411b-b9ab-4b4c788571c3.jpeg',
+      preview: {
+        __typename: 'ItemSummary' as const,
+        title: 'Math Hacks for Math Haters',
+        image: {
+          url: 'https://pocket-image-cache.com/1200x/filters:format(jpg):extract_focal()/https%3A%2F%2Fs3.amazonaws.com%2Fpocket-collectionapi-prod-images%2F1d6a8d83-477e-411b-b9ab-4b4c788571c3.jpeg',
+        },
+        excerpt: '',
+        authors: [
+          {
+            id: '12385532',
+            name: 'Pocket Editors',
+            url: '',
+          },
+        ],
+        url: 'https://getpocket.com/collections/math-hacks-for-people-who-dont-like-math',
+        domain: {
+          logo: 'https://logo.clearbit.com/getpocket.com?size=800',
+          logoGreyscale:
+            'https://logo.clearbit.com/getpocket.com?size=800&greyscale=true',
+          name: 'Pocket',
+        },
       },
-      title: 'Math Hacks for Math Haters',
       timeToRead: null,
       resolvedUrl:
         'https://getpocket.com/collections/math-hacks-for-people-who-dont-like-math',
       givenUrl:
         'https://getpocket.com/collections/math-hacks-for-people-who-dont-like-math?utm_source=pocket-newtab',
-      excerpt: '',
       domain: null,
       isArticle: false,
       isIndex: false,
       hasVideo: Videoness.NoVideos,
       hasImage: Imageness.HasImages,
       language: 'en',
-      authors: [
-        {
-          id: '12385532',
-          name: 'Pocket Editors',
-          url: '',
-        },
-      ],
       images: [
         {
           imageId: 1,
@@ -529,12 +539,6 @@ export const mockGraphAddResponses: SavedItemWithParserMetadata[] = [
         },
       ],
       videos: null,
-      domainMetadata: {
-        logo: 'https://logo.clearbit.com/getpocket.com?size=800',
-        logoGreyscale:
-          'https://logo.clearbit.com/getpocket.com?size=800&greyscale=true',
-        name: 'Pocket',
-      },
       normalUrl:
         'http://getpocket.com/collections/math-hacks-for-people-who-dont-like-math',
       domainId: '5813580',
@@ -567,29 +571,39 @@ export const mockGraphAddResponses: SavedItemWithParserMetadata[] = [
       itemId: '12391912034',
       resolvedId: '12391912034',
       wordCount: 0,
-      topImage: null,
-      title: 'Ridiculous Safety TikToks',
+      preview: {
+        __typename: 'ItemSummary' as const,
+        title: 'Ridiculous Safety TikToks',
+        image: null,
+        excerpt:
+          'everything danger be careful\n\nGAMING CHANNEL: \n► https://www.youtube.com/channel/UCG1CpMuKazt5wJxy3AwMfpw\n\nTWITCH:\n► https://www.twitch.tv/kurtisconner  \n\nFOLLOW ME:\n► https://instagram.com/kurtisconner/\n► https://twitter.com/kurtisconner\n\nSUBSCRIBE TO MY PODCAST CHANNEL:\n► https://www.you',
+        authors: [
+          {
+            id: '123569825',
+            name: 'Kurtis Conner',
+            url: 'https://www.youtube.com/channel/UC7zsxKqd5MicTf4VhS9Y74g',
+          },
+        ],
+        domain: {
+          logo: 'https://logo.clearbit.com/youtube.com?size=800',
+          logoGreyscale:
+            'https://logo.clearbit.com/youtube.com?size=800&greyscale=true',
+          name: 'YouTube',
+        },
+        url: 'http://www.youtube.com/watch?v=EnruyTb_ij4',
+      },
       timeToRead: null,
       // TODO: Fix the bug where resolved_url is not correct
       // This is what it should be
       resolvedUrl: 'http://www.youtube.com/watch?v=EnruyTb_ij4',
       // resolvedUrl: 'https://www.youtube.com/watch?v=EnruyTb_ij4',
       givenUrl: 'https://www.youtube.com/watch?v=EnruyTb_ij4',
-      excerpt:
-        'everything danger be careful\n\nGAMING CHANNEL: \n► https://www.youtube.com/channel/UCG1CpMuKazt5wJxy3AwMfpw\n\nTWITCH:\n► https://www.twitch.tv/kurtisconner  \n\nFOLLOW ME:\n► https://instagram.com/kurtisconner/\n► https://twitter.com/kurtisconner\n\nSUBSCRIBE TO MY PODCAST CHANNEL:\n► https://www.you',
       domain: null,
       isArticle: false,
       isIndex: false,
       hasVideo: Videoness.IsVideo,
       hasImage: Imageness.HasImages,
       language: 'en',
-      authors: [
-        {
-          id: '123569825',
-          name: 'Kurtis Conner',
-          url: 'https://www.youtube.com/channel/UC7zsxKqd5MicTf4VhS9Y74g',
-        },
-      ],
       images: [
         {
           imageId: 1,
@@ -611,12 +625,6 @@ export const mockGraphAddResponses: SavedItemWithParserMetadata[] = [
           height: 0,
         },
       ],
-      domainMetadata: {
-        logo: 'https://logo.clearbit.com/youtube.com?size=800',
-        logoGreyscale:
-          'https://logo.clearbit.com/youtube.com?size=800&greyscale=true',
-        name: 'YouTube',
-      },
       normalUrl: 'http://youtube.com/watch?v=EnruyTb_ij4',
       domainId: '123',
       originDomainId: '123',
@@ -648,21 +656,31 @@ export const mockGraphAddResponses: SavedItemWithParserMetadata[] = [
       itemId: '843929211',
       resolvedId: '843929211',
       wordCount: 0,
-      topImage: null,
-      title: '',
+      preview: {
+        __typename: 'ItemSummary' as const,
+        title: '',
+        image: null,
+        url: 'https://i.pinimg.com/564x/31/1b/31/311b31e121b00eb2b34944cc41464b88.jpg',
+        excerpt: '',
+        authors: [],
+        domain: {
+          logo: 'https://logo.clearbit.com/pinterest.com?size=800',
+          logoGreyscale:
+            'https://logo.clearbit.com/pinterest.com?size=800&greyscale=true',
+          name: 'Pinterest',
+        },
+      },
       timeToRead: null,
       resolvedUrl:
         'https://i.pinimg.com/564x/31/1b/31/311b31e121b00eb2b34944cc41464b88.jpg',
       givenUrl:
         'https://i.pinimg.com/564x/31/1b/31/311b31e121b00eb2b34944cc41464b88.jpg',
-      excerpt: '',
       domain: null,
       isArticle: false,
       isIndex: false,
       hasVideo: Videoness.NoVideos,
       hasImage: Imageness.IsImage,
       language: '',
-      authors: [],
       images: [
         {
           imageId: 1,
@@ -674,12 +692,6 @@ export const mockGraphAddResponses: SavedItemWithParserMetadata[] = [
         },
       ],
       videos: null,
-      domainMetadata: {
-        logo: 'https://logo.clearbit.com/pinterest.com?size=800',
-        logoGreyscale:
-          'https://logo.clearbit.com/pinterest.com?size=800&greyscale=true',
-        name: 'Pinterest',
-      },
       normalUrl:
         'http://i.pinimg.com/564x/31/1b/31/311b31e121b00eb2b34944cc41464b88.jpg',
       domainId: '83821373',
@@ -713,26 +725,30 @@ export const mockGraphAddResponses: SavedItemWithParserMetadata[] = [
       itemId: '3201484843',
       resolvedId: '3201484843',
       wordCount: 0,
-      topImage: null,
-      title: '',
+      preview: {
+        __typename: 'ItemSummary' as const,
+        title: '',
+        image: null,
+        url: 'https://www.isithalloweenyet.com/',
+        excerpt: '',
+        authors: null,
+        domain: {
+          logo: null,
+          logoGreyscale: null,
+          name: 'isithalloweenyet.com',
+        },
+      },
       timeToRead: null,
       resolvedUrl: 'https://www.isithalloweenyet.com/',
       givenUrl: 'https://isithalloweenyet.com/',
-      excerpt: '',
       domain: null,
       isArticle: false,
       isIndex: false,
       hasVideo: Videoness.NoVideos,
       hasImage: Imageness.NoImages,
       language: '',
-      authors: null,
       images: null,
       videos: null,
-      domainMetadata: {
-        logo: null,
-        logoGreyscale: null,
-        name: 'isithalloweenyet.com',
-      },
       normalUrl: 'http://isithalloweenyet.com',
       domainId: '52432135',
       originDomainId: '52432135',
