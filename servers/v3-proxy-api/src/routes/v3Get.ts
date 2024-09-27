@@ -95,7 +95,7 @@ export async function processV3call(
   // This time is only set if taglist is requested and 'since' is provided;
   // 'forcetaglist' overrides the 'since' check
   const tagListSince =
-    data.taglist && data.since
+    data.taglist && data.since && !data.forcetaglist
       ? new Date(data.since * 1000).toISOString()
       : undefined;
   if (tagListSince) options['tagListSince'] = tagListSince;
