@@ -4,6 +4,7 @@ import { strings } from 'locutus/php';
 import { ContextManager, IContext } from '../server/context';
 import { Knex } from 'knex';
 import { TagDataService } from '../dataService';
+import { ItemsEventEmitter } from '../businessEvents';
 
 const tagServiceResp: Tag[] = [
   { name: 'zebra', id: 'emVicmFfX3hwa3R4dGFneF9f' },
@@ -21,26 +22,26 @@ describe('tag model', () => {
       jest.restoreAllMocks();
     });
     it('premium user gets tags', async () => {
-      let parent: PocketSave;
+      const parent: PocketSave = {} as PocketSave;
       const context: IContext = new ContextManager({
         request: {
           headers: { userid: '1', apiid: '0', premium: 'true' },
         },
         dbClient: jest.fn() as unknown as Knex,
-        eventEmitter: null,
+        eventEmitter: jest.fn() as unknown as ItemsEventEmitter,
       });
       const resp = context.models.tag.getSuggestedBySaveId(parent);
       const data = await resp;
       return expect(data).toEqual(tagServiceResp);
     });
     it('non-premium user gets no tags', async () => {
-      let parent: PocketSave;
+      const parent: PocketSave = {} as PocketSave;
       const context: IContext = new ContextManager({
         request: {
           headers: { userid: '1', apiid: '0', premium: 'false' },
         },
         dbClient: jest.fn() as unknown as Knex,
-        eventEmitter: null,
+        eventEmitter: jest.fn() as unknown as ItemsEventEmitter,
       });
       const resp = context.models.tag.getSuggestedBySaveId(parent);
       const data = await resp;

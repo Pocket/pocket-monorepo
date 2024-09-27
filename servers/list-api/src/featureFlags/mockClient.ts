@@ -20,7 +20,7 @@ const client = (bootstrap?: FeatureInterface[]) => {
   // bootstrapped data with fallback if provided
   class LocalRepo extends EventEmitter implements RepositoryInterface {
     private toggleData: { [key: string]: FeatureInterface };
-    constructor(private data: FeatureInterface[]) {
+    constructor(private data: FeatureInterface[] = []) {
       super();
       this.toggleData = data.reduce((compiled, curr) => {
         compiled[curr.name] = curr;

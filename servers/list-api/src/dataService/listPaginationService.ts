@@ -11,17 +11,20 @@ import {
   OffsetPaginationInput,
   SavedItemsPage,
   SavedItemResult,
+  SavedItemsSortBy,
+  SavedItemsSortOrder,
 } from '../types';
 import * as tag from '../models/tag';
 import { mysqlTimeString } from './utils';
 import config from '../config';
 import { PaginationInput, UserInputError } from '@pocket-tools/apollo-utils';
+import { c } from 'locutus';
 
 interface ListEntity {
   user_id?: number;
-  item_id?: number;
+  item_id: number;
   resolved_id?: number;
-  given_url?: string;
+  given_url: string;
   title?: string;
   time_added?: number;
   time_updated?: number;
@@ -39,16 +42,18 @@ const statusMap = {
 };
 
 class Sort {
-  public readonly order;
-  public readonly column;
+  public readonly order: SavedItemsSortOrder;
+  public readonly column: SavedItemsSortBy;
 
-  constructor(sort: SavedItemsSort) {
-    this.order = sort?.sortOrder.toLowerCase() ?? 'desc';
-    this.column = sort?.sortBy ?? 'CREATED_AT';
+  constructor(sort: SavedItemsSort | null) {
+    this.order = sort?.sortOrder ?? SavedItemsSortOrder.DESC;
+    this.column = sort?.sortBy ?? SavedItemsSortBy.CREATED_AT;
   }
 
   get opposite() {
-    return this.order === 'desc' ? 'asc' : 'desc';
+    return this.order === SavedItemsSortOrder.DESC
+      ? SavedItemsSortOrder.ASC
+      : SavedItemsSortOrder.DESC;
   }
 }
 
@@ -113,13 +118,19 @@ export class ListPaginationService {
     return {
       url: entity.given_url,
       id: entity.item_id.toString(),
-      resolvedId: entity.resolved_id.toString(),
+      resolvedId: entity.resolved_id?.toString() ?? '0', // Default for unresolved items is 0
       title: entity.title,
-      isFavorite: entity.favorite,
-      favoritedAt: entity.time_favorited > 0 ? entity.time_favorited : null,
-      status: statusMap[entity.status],
+      isFavorite: entity.favorite ?? false,
+      favoritedAt:
+        entity.time_favorited && entity.time_favorited > 0
+          ? entity.time_favorited
+          : null,
+      status: entity.status != null ? statusMap[entity.status] : null,
       isArchived: entity.status === SavedItemStatus.ARCHIVED,
-      archivedAt: entity.time_read > 0 ? entity.time_read : null,
+      archivedAt:
+        entity.time_read != null && entity.time_read > 0
+          ? entity.time_read
+          : null,
       _createdAt: entity.time_added,
       _updatedAt: entity.time_updated,
       _deletedAt:
@@ -261,7 +272,7 @@ export class ListPaginationService {
   private async pageOffsetLimit(
     dbClient: Knex,
     query: Knex.QueryBuilder,
-    sort: SavedItemsSort,
+    sort: SavedItemsSort | null,
     pagination: OffsetPaginationInput,
     connection: any,
   ) {
@@ -312,14 +323,10 @@ export class ListPaginationService {
     pagination: PaginationInput,
     connection: any,
   ) {
-    const pageSize = pagination.first ?? pagination.last;
+    const pageSize =
+      pagination.first ?? pagination.last ?? config.pagination.defaultPageSize;
     const sortOrder = new Sort(sort);
-    let order;
-    if (pagination.first) {
-      order = sortOrder.order;
-    } else {
-      order = sortOrder.opposite;
-    }
+    const order = pagination.first ? sortOrder.order : sortOrder.opposite;
     const sortColumn = this.dbSortByMap[sortOrder.column];
     const queryString = query
       .clone()
@@ -358,7 +365,8 @@ export class ListPaginationService {
     sort: SavedItemsSort,
     connection: any,
   ) {
-    const pageSize = pagination.first ?? pagination.last;
+    const pageSize =
+      pagination.first ?? pagination.last ?? config.pagination.defaultPageSize;
     // Since we don't have a unique sequential column for cursor-based pagination
     // We have to get the old cursor element + any colliding keys
     // Set a high (default of 5000 from the web repo) on this, but hopefully
@@ -371,12 +379,7 @@ export class ListPaginationService {
     // The trick to before pagination is to do after pagination with opposite sort
     // then reverse the ordering before returning result
     const sortOrder = new Sort(sort);
-    let order;
-    if (pagination.first) {
-      order = sortOrder.order;
-    } else {
-      order = sortOrder.opposite;
-    }
+    const order = pagination.first ? sortOrder.order : sortOrder.opposite;
     const sortColumn = this.dbSortByMap[sortOrder.column];
     // Add the sort to the filter query
     baseQuery.orderBy([
@@ -425,7 +428,11 @@ export class ListPaginationService {
       // If the timestamp is sorted by ascending, the 'next' page is > time cursor
       const restOfQuery = baseQuery
         .clone()
-        .andWhere(sortColumn, order === 'desc' ? '<' : '>', timeCursor)
+        .andWhere(
+          sortColumn,
+          order === SavedItemsSortOrder.DESC ? '<' : '>',
+          timeCursor,
+        )
         .limit(limit)
         .toString();
       await dbClient
@@ -691,8 +698,8 @@ export class ListPaginationService {
    * @returns
    */
   public async getSavedItemsPage(
-    filter: SavedItemsFilter,
-    sort: SavedItemsSort,
+    filter: SavedItemsFilter | null,
+    sort: SavedItemsSort | null,
     pagination?: OffsetPaginationInput,
   ): Promise<SavedItemsPage> {
     const defaultPagination = {
@@ -772,8 +779,8 @@ export class ListPaginationService {
     const connection = await this.context.dbClient.client.acquireConnection();
 
     //Define these outside the try statement to be used later
-    let totalCount;
-    let pageResult;
+    let totalCount: number;
+    let pageResult: ListEntity[];
     try {
       // Drop temp tables if exists.
       await this.dropTempTables(this.context.dbClient, connection);
@@ -823,10 +830,11 @@ export class ListPaginationService {
       // conditionally strip off sentinel row if it exists (hasPreviousPage)
       const startIx = pageInfo.hasPreviousPage ? 1 : 0;
       nodes = ListPaginationService.toGraphql(
-        pageResult.slice(startIx, pagination.last + startIx),
+        pageResult.slice(startIx, pagination.last ?? 0 + startIx),
       );
     }
-    const sortColumn = this.nodeSortByMap[sort?.sortBy ?? 'CREATED_AT'];
+    const sortColumn =
+      this.nodeSortByMap[sort?.sortBy ?? SavedItemsSortBy.CREATED_AT];
     const edges = nodes.map((node) => {
       return {
         node: node as SavedItem,

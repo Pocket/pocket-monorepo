@@ -39,10 +39,10 @@ const convert = (row: RawListResult) => {
     item_id: row.item_id,
     resolved_id: row.resolved_id,
     status: statusMap[row.status],
-    time_added: mysqlDateConvert(row.time_added),
+    time_added: mysqlDateConvert(row.time_added) ?? new Date(),
     time_favorited: mysqlDateConvert(row.time_favorited),
     time_read: mysqlDateConvert(row.time_read),
-    time_updated: mysqlDateConvert(row.time_updated),
+    time_updated: mysqlDateConvert(row.time_updated) ?? new Date(),
     title: row.title,
     user_id: row.user_id,
   };

@@ -21,10 +21,7 @@ export class SavedItemModel {
    * @returns The updated SavedItem if it exists, or null if it doesn't
    * @throws NotFound if the SavedItem doesn't exist
    */
-  public async archiveById(
-    id: string,
-    timestamp?: Date,
-  ): Promise<SavedItem | null> {
+  public async archiveById(id: string, timestamp?: Date): Promise<SavedItem> {
     const savedItem = await this.saveService.updateSavedItemArchiveProperty(
       id,
       true,
@@ -69,10 +66,7 @@ export class SavedItemModel {
    * @returns The updated SavedItem if it exists, or null if it doesn't
    * @throws NotFound if the SavedItem doesn't exist
    */
-  public async favoriteById(
-    id: string,
-    timestamp?: Date,
-  ): Promise<SavedItem | null> {
+  public async favoriteById(id: string, timestamp?: Date): Promise<SavedItem> {
     const savedItem = await this.saveService.updateSavedItemFavoriteProperty(
       id,
       true,
@@ -97,7 +91,7 @@ export class SavedItemModel {
   public async unfavoriteById(
     id: string,
     timestamp?: Date,
-  ): Promise<SavedItem | null> {
+  ): Promise<SavedItem> {
     const savedItem = await this.saveService.updateSavedItemFavoriteProperty(
       id,
       false,
@@ -122,10 +116,7 @@ export class SavedItemModel {
    * @returns The ID of the deleted SavedItem, or null if it does not exist
    * @throws NotFound if the SavedItem doesn't exist
    */
-  public async deleteById(
-    id: string,
-    timestamp?: Date,
-  ): Promise<string | null> {
+  public async deleteById(id: string, timestamp?: Date): Promise<string> {
     // TODO: setup a process to delete saved items X number of days after deleted
     await this.saveService.deleteSavedItem(id, timestamp);
     const savedItem = await this.saveService.getSavedItemById(id);
@@ -148,10 +139,7 @@ export class SavedItemModel {
    * @returns The restored SavedItem, or null if it does not exist
    * @throws NotFound if the SavedItem doesn't exist
    */
-  public async undeleteById(
-    id: string,
-    timestamp?: Date,
-  ): Promise<SavedItem | null> {
+  public async undeleteById(id: string, timestamp?: Date): Promise<SavedItem> {
     const savedItem = await this.saveService.updateSavedItemUnDelete(
       id,
       timestamp,
@@ -169,10 +157,7 @@ export class SavedItemModel {
    * @returns The updated SavedItem if it exists, or null if it doesn't
    * @throws NotFound if the SavedItem doesn't exist
    */
-  public async archiveByUrl(
-    url: string,
-    timestamp: Date,
-  ): Promise<SavedItem | null> {
+  public async archiveByUrl(url: string, timestamp: Date): Promise<SavedItem> {
     const id = await this.fetchIdFromUrl(url);
     return this.archiveById(id, timestamp);
   }
@@ -186,7 +171,7 @@ export class SavedItemModel {
   public async unarchiveByUrl(
     url: string,
     timestamp: Date,
-  ): Promise<SavedItem | null> {
+  ): Promise<SavedItem> {
     const id = await this.fetchIdFromUrl(url);
     return this.unarchiveById(id, timestamp);
   }
@@ -198,10 +183,7 @@ export class SavedItemModel {
    * @returns The updated SavedItem if it exists, or null if it doesn't
    * @throws NotFound if the SavedItem doesn't exist
    */
-  public async favoriteByUrl(
-    url: string,
-    timestamp: Date,
-  ): Promise<SavedItem | null> {
+  public async favoriteByUrl(url: string, timestamp: Date): Promise<SavedItem> {
     const id = await this.fetchIdFromUrl(url);
     return this.favoriteById(id, timestamp);
   }
@@ -215,7 +197,7 @@ export class SavedItemModel {
   public async unfavoriteByUrl(
     url: string,
     timestamp: Date,
-  ): Promise<SavedItem | null> {
+  ): Promise<SavedItem> {
     const id = await this.fetchIdFromUrl(url);
     return this.unfavoriteById(id, timestamp);
   }
@@ -229,10 +211,7 @@ export class SavedItemModel {
    * @returns The url of the deleted SavedItem, or null if it does not exist
    * @throws NotFound if the SavedItem doesn't exist
    */
-  public async deleteByUrl(
-    url: string,
-    timestamp: Date,
-  ): Promise<string | null> {
+  public async deleteByUrl(url: string, timestamp: Date): Promise<string> {
     const id = await this.fetchIdFromUrl(url);
     // Will throw if fails or returns null
     await this.deleteById(id, timestamp);
@@ -253,7 +232,7 @@ export class SavedItemModel {
   public async undeleteByUrl(
     url: string,
     timestamp?: Date,
-  ): Promise<SavedItem | null> {
+  ): Promise<SavedItem> {
     const id = await this.fetchIdFromUrl(url);
     // Will throw if fails or returns null
     return this.undeleteById(id, timestamp);
@@ -270,7 +249,7 @@ export class SavedItemModel {
     id: string,
     timestamp: Date,
     title: string,
-  ): Promise<SavedItem | null> {
+  ): Promise<SavedItem> {
     const savedItem = await this.saveService.updateTitle(id, timestamp, title);
     if (savedItem == null) {
       throw new NotFoundError(this.defaultNotFoundMessage);
@@ -291,7 +270,7 @@ export class SavedItemModel {
       id,
       timestamp,
     );
-    if (removed.length) {
+    if (removed.length && save != null) {
       this.context.emitItemEvent(EventType.CLEAR_TAGS, save, removed);
     }
     return save;
@@ -313,7 +292,12 @@ export class SavedItemModel {
         tags,
         timestamp,
       );
-    this.context.emitItemEvent(EventType.REMOVE_TAGS, save, removed);
+    if (save == null) {
+      throw new NotFoundError(this.defaultNotFoundMessage);
+    }
+    if (removed.length) {
+      this.context.emitItemEvent(EventType.REMOVE_TAGS, save, removed);
+    }
     return save;
   }
   /** Remove tag names from a single Saved Item, identified by Url */
@@ -365,6 +349,9 @@ export class SavedItemModel {
       );
     }
     const updated = await this.saveService.reAdd(id, timestamp);
+    if (updated == null) {
+      throw new Error('Failed to re-add SavedItem');
+    }
     // "Re-add" event depends on the state of the item
     if (extantSave.status === 'ARCHIVED') {
       this.context.emitItemEvent(EventType.UNARCHIVE_ITEM, updated);
