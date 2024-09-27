@@ -849,6 +849,81 @@ describe('v3Get', () => {
       },
     );
   });
+  describe('with forced taglist option', () => {
+    let clientSpy;
+    afterEach(() => clientSpy.mockRestore());
+    it.each([
+      {
+        requestData: {
+          detailType: 'complete',
+          total: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteTagsList,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: { ...expectedGetCompleteTagslist, total: '10' },
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          total: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleTagsList,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: { ...expectedGetSimpleTagslist, total: '10' },
+        },
+      },
+    ])(
+      'makes request with taglist',
+      async ({ requestData, fixture, expected }) => {
+        const requestSpy = jest.spyOn(GraphQLCalls, fixture.requestName);
+        clientSpy = jest
+          .spyOn(GraphQLClient.prototype, 'request')
+          .mockResolvedValueOnce(fixture.requestData)
+          .mockResolvedValueOnce(fixture.requestData);
+        const response = await request(app)
+          .get('/v3/get')
+          .query({
+            ...requestData,
+            consumer_key: 'test',
+            access_token: 'test',
+            taglist: '1',
+            forcetaglist: '1',
+            since: 1712766000,
+          });
+        expect(response.body).toEqual(expected.response);
+        expect(requestSpy).toHaveBeenCalledTimes(1);
+        expect(requestSpy.mock.calls[0][3]).toMatchObject({
+          withTagsList: true,
+        });
+        const forceResponse = await request(app)
+          .get('/v3/get')
+          .query({
+            ...requestData,
+            consumer_key: 'test',
+            access_token: 'test',
+            forcetaglist: '1',
+            since: 1712766000,
+          });
+        expect(forceResponse.body).toEqual(expected.response);
+        expect(requestSpy).toHaveBeenCalledTimes(2);
+        expect(requestSpy.mock.calls[1][3]).toMatchObject({
+          withTagsList: true,
+        });
+        expect(clientSpy.mock.calls[0][0]['definitions'][0].name.value).toEqual(
+          expected.name,
+        );
+      },
+    );
+  });
   describe('Graphql error handler', () => {
     it('Returns 400 status code, with logging and sentry, for bad input errors', async () => {
       const consoleSpy = jest.spyOn(serverLogger, 'error');
