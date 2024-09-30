@@ -38,7 +38,7 @@ export class CorpusSearchModel {
     const embeddingsConfig = config.aws.elasticsearch.corpus.embeddings;
     const lang = args.filter.language.toLowerCase();
     const index = config.aws.elasticsearch.corpus.index[lang];
-    const semanticEnabled = (await unleash()).isEnabled(
+    const semanticEnabled = unleash().isEnabled(
       config.unleash.flags.semanticSearch.name,
       {
         userId: this.context.encodedId,
