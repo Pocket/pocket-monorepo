@@ -30,6 +30,8 @@ export async function startServer(port: number): Promise<{
   });
 
   app.use(sourceHeaderHandler);
+  app.use(sentryPocketMiddleware);
+  app.use(sentryTagHandler);
 
   // register public API routes
   app.use('/v3/get', v3GetRouter);
@@ -41,9 +43,6 @@ export async function startServer(port: number): Promise<{
   Sentry.setupExpressErrorHandler(app);
 
   // Error handling middleware (must be defined last)
-  // Sentry middleware must come first
-  app.use(sentryPocketMiddleware);
-  app.use(sentryTagHandler);
   app.use(logAndCaptureErrors);
   app.use(clientErrorHandler);
 
