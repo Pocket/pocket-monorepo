@@ -17,6 +17,7 @@
   "dependencies": {
     "@graphql-typed-document-node/core": "3.2.0",
     "@pocket-tools/apollo-utils": "workspace:*",
+    "@pocket-tools/feature-flags-client": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "8.32.0",
