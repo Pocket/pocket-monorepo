@@ -23,6 +23,7 @@
   "devDependencies": {
     "@jest/globals": "29.7.0",
     "@pocket-tools/eslint-config": "workspace:*",
+    "@sentry/types": "8.30.0",
     "@types/express": "4.17.21",
     "@types/jest": "29.5.12",
     "@types/node": "^22.5.2",
@@ -31,7 +32,8 @@
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
     "tsup": "8.2.4",
-    "typescript": "5.5.4"
+    "typescript": "5.5.4",
+    "unleash-client": "6.1.1"
   },
   "peerDependencies": {
     "@sentry/node": "8.30.0"
