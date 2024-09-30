@@ -17,7 +17,7 @@ importers:
     devDependencies:
       '@commitlint/cli':
         specifier: 19.4.1
-        version: 19.4.1(@types/node@22.5.5)(typescript@5.7.0-dev.20240927)
+        version: 19.4.1(@types/node@22.5.5)(typescript@5.7.0-dev.20240930)
       '@commitlint/config-conventional':
         specifier: ^19.4.1
         version: 19.4.1
@@ -26,7 +26,7 @@ importers:
         version: link:packages/eslint-config
       syncpack:
         specifier: ^13.0.0
-        version: 13.0.0(typescript@5.7.0-dev.20240927)
+        version: 13.0.0(typescript@5.7.0-dev.20240930)
       tsconfig:
         specifier: workspace:*
         version: link:packages/tsconfig
@@ -2087,6 +2087,9 @@ importers:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@sentry/types':
+        specifier: 8.30.0
+        version: 8.30.0
       '@types/express':
         specifier: 4.17.21
         version: 4.17.21
@@ -2114,6 +2117,9 @@ importers:
       typescript:
         specifier: 5.5.4
         version: 5.5.4
+      unleash-client:
+        specifier: 6.1.1
+        version: 6.1.1
 
   packages/terraform-modules:
     dependencies:
@@ -13404,8 +13410,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.7.0-dev.20240927:
-    resolution: {integrity: sha512-IWKZHTHAlS8BglLp8iM4rUHhy0h79B9r9vj6b6zpa8U38ofctFS1fLiKY7okZ3JYeG15kUHuOwsLwOmvc5+e1Q==}
+  typescript@5.7.0-dev.20240930:
+    resolution: {integrity: sha512-mGW96cpbwcYuc264UPqGpKBLNebFFtVEXRLPwSwxVEub9tSyMI+XGFGxsznop7pU8E1ntx4OC4cN1n5MnzO0+Q==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -15943,11 +15949,11 @@ snapshots:
     dependencies:
       commander: 12.1.0
 
-  '@commitlint/cli@19.4.1(@types/node@22.5.5)(typescript@5.7.0-dev.20240927)':
+  '@commitlint/cli@19.4.1(@types/node@22.5.5)(typescript@5.7.0-dev.20240930)':
     dependencies:
       '@commitlint/format': 19.3.0
       '@commitlint/lint': 19.4.1
-      '@commitlint/load': 19.4.0(@types/node@22.5.5)(typescript@5.7.0-dev.20240927)
+      '@commitlint/load': 19.4.0(@types/node@22.5.5)(typescript@5.7.0-dev.20240930)
       '@commitlint/read': 19.4.0
       '@commitlint/types': 19.0.3
       execa: 8.0.1
@@ -15994,15 +16000,15 @@ snapshots:
       '@commitlint/rules': 19.4.1
       '@commitlint/types': 19.0.3
 
-  '@commitlint/load@19.4.0(@types/node@22.5.5)(typescript@5.7.0-dev.20240927)':
+  '@commitlint/load@19.4.0(@types/node@22.5.5)(typescript@5.7.0-dev.20240930)':
     dependencies:
       '@commitlint/config-validator': 19.0.3
       '@commitlint/execute-rule': 19.0.0
       '@commitlint/resolve-extends': 19.1.0
       '@commitlint/types': 19.0.3
       chalk: 5.3.0
-      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20240927)
-      cosmiconfig-typescript-loader: 5.0.0(@types/node@22.5.5)(cosmiconfig@9.0.0(typescript@5.7.0-dev.20240927))(typescript@5.7.0-dev.20240927)
+      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20240930)
+      cosmiconfig-typescript-loader: 5.0.0(@types/node@22.5.5)(cosmiconfig@9.0.0(typescript@5.7.0-dev.20240930))(typescript@5.7.0-dev.20240930)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -18230,7 +18236,7 @@ snapshots:
       read-pkg: 9.0.1
       registry-auth-token: 5.0.2
       semantic-release: 24.1.0(typescript@5.5.4)
-      semver: 7.6.2
+      semver: 7.6.3
       tempy: 3.1.0
 
   '@semantic-release/release-notes-generator@14.0.0(semantic-release@24.1.0(typescript@5.5.4))':
@@ -20555,12 +20561,12 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cosmiconfig-typescript-loader@5.0.0(@types/node@22.5.5)(cosmiconfig@9.0.0(typescript@5.7.0-dev.20240927))(typescript@5.7.0-dev.20240927):
+  cosmiconfig-typescript-loader@5.0.0(@types/node@22.5.5)(cosmiconfig@9.0.0(typescript@5.7.0-dev.20240930))(typescript@5.7.0-dev.20240930):
     dependencies:
       '@types/node': 22.5.5
-      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20240927)
+      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20240930)
       jiti: 1.21.0
-      typescript: 5.7.0-dev.20240927
+      typescript: 5.7.0-dev.20240930
 
   cosmiconfig@8.3.6(typescript@5.5.4):
     dependencies:
@@ -20580,14 +20586,14 @@ snapshots:
     optionalDependencies:
       typescript: 5.5.4
 
-  cosmiconfig@9.0.0(typescript@5.7.0-dev.20240927):
+  cosmiconfig@9.0.0(typescript@5.7.0-dev.20240930):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 5.7.0-dev.20240927
+      typescript: 5.7.0-dev.20240930
 
   cpu-features@0.0.2:
     dependencies:
@@ -20918,7 +20924,7 @@ snapshots:
     dependencies:
       semver: 7.6.3
       shelljs: 0.8.5
-      typescript: 5.7.0-dev.20240927
+      typescript: 5.7.0-dev.20240930
 
   dreamopt@0.8.0:
     dependencies:
@@ -25306,7 +25312,7 @@ snapshots:
 
   semver-diff@4.0.0:
     dependencies:
-      semver: 7.6.2
+      semver: 7.6.3
 
   semver-intersect@1.5.0:
     dependencies:
@@ -25851,13 +25857,13 @@ snapshots:
       '@pkgr/core': 0.1.1
       tslib: 2.7.0
 
-  syncpack@13.0.0(typescript@5.7.0-dev.20240927):
+  syncpack@13.0.0(typescript@5.7.0-dev.20240930):
     dependencies:
       '@effect/schema': 0.71.1(effect@3.6.5)
       chalk: 5.3.0
       chalk-template: 1.1.0
       commander: 12.1.0
-      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20240927)
+      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20240930)
       effect: 3.6.5
       enquirer: 2.4.1
       fast-check: 3.21.0
@@ -26302,7 +26308,7 @@ snapshots:
 
   typescript@5.5.4: {}
 
-  typescript@5.7.0-dev.20240927: {}
+  typescript@5.7.0-dev.20240930: {}
 
   ua-parser-js@1.0.37: {}
 
