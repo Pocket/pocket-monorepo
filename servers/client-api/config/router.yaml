@@ -55,6 +55,8 @@ headers:
       - propagate:
           named: 'web-request-snowplow-session-user-id'
           rename: 'gatewaySnowplowDomainSessionId'
+      - propagate:
+          named: 'sentry-trace'
 telemetry:
   apollo:
     send_variable_values:
