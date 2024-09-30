@@ -19,7 +19,7 @@
   "dependencies": {
     "@opensearch-project/opensearch": "^2.10.0",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/aws-serverless": "8.30.0",
+    "@sentry/aws-serverless": "8.32.0",
     "fetch-retry": "^5.0.6",
     "tslib": "2.7.0"
   },
