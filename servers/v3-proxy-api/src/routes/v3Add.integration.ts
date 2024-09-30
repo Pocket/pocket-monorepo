@@ -139,4 +139,31 @@ describe('v3Add', () => {
       expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
   });
+
+  describe('with enable_cors', () => {
+    let requestSpy;
+    beforeAll(() => {
+      requestSpy = jest
+        .spyOn(GraphQLClient.prototype, 'request')
+        .mockResolvedValue({
+          upsertSavedItem: mockGraphAddResponses[0],
+        });
+    });
+    afterEach(() => requestSpy.mockClear());
+    it('calls upsert once, with enabled_cors=1 and no access_token', async () => {
+      const response = await request(app).post('/v3/add').send({
+        consumer_key: 'test',
+        enable_cors: '1',
+        url: 'https://isithalloween.com',
+      });
+      expect(requestSpy).toHaveBeenCalledTimes(1);
+      // Struggling with a matcher for toHaveBeenCalledWith... the call signature is nasty
+      // on these functions
+      expect(requestSpy.mock.calls[0].length).toEqual(2);
+      expect((requestSpy.mock.calls[0] as any)[1]).toEqual({
+        input: { timestamp: now / 1000, url: 'https://isithalloween.com' },
+      });
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+    });
+  });
 });
