@@ -4,6 +4,7 @@ import * as Sentry from '@sentry/node';
 import {
   clientErrorHandler,
   logAndCaptureErrors,
+  sentryTagHandler,
   sourceHeaderHandler,
 } from './middleware';
 import { Server, createServer } from 'http';
@@ -42,6 +43,7 @@ export async function startServer(port: number): Promise<{
   // Error handling middleware (must be defined last)
   // Sentry middleware must come first
   app.use(sentryPocketMiddleware);
+  app.use(sentryTagHandler);
   app.use(logAndCaptureErrors);
   app.use(clientErrorHandler);
 
