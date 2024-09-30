@@ -1,8 +1,12 @@
 import config from '../config';
-import { initSentry } from '@pocket-tools/sentry';
+import { initSentry, featureFlagTraceSampler } from '@pocket-tools/sentry';
+import { getClient } from '../featureFlags';
+
+const unleash = getClient();
 // Initialize sentry
 initSentry({
   ...config.sentry,
+  tracesSampler: featureFlagTraceSampler(unleash, config.sentry.samplerFlag),
   debug: config.sentry.environment === 'development',
 });
 

@@ -28,7 +28,7 @@ export async function startServer(port: number): Promise<{
   server: ApolloServer<ContextManager>;
   url: string;
 }> {
-  await unleash();
+  unleash();
 
   const app = express();
   const httpServer: Server = createServer(app);
