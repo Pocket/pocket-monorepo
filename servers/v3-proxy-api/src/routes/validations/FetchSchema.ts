@@ -30,6 +30,7 @@ export type V3FetchParams = {
  */
 export const V3FetchSchema: Schema = {
   access_token: {
+    optional: true,
     isString: true,
     notEmpty: {
       errorMessage: '`access_token` cannot be empty',
