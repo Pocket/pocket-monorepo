@@ -93,6 +93,7 @@ export const config = {
     dsn: process.env.SENTRY_DSN || '',
     release: process.env.GIT_SHA || '',
     environment: process.env.NODE_ENV || 'development',
+    samplerFlag: 'perm.backend.sentry-trace-sampler-rate',
   },
   isProduction: process.env.NODE_ENV === 'production',
   environment: process.env.NODE_ENV || 'development',

@@ -1,11 +1,17 @@
 //this must run before all imports and server start
 //so open-telemetry can patch all libraries that we use
 import config from './config';
-import { initSentry } from '@pocket-tools/sentry';
+import { initSentry, featureFlagTraceSampler } from '@pocket-tools/sentry';
+import { unleash } from './unleash';
 
+const unleashClient = unleash();
 // Initialize sentry
 initSentry({
   ...config.sentry,
+  tracesSampler: featureFlagTraceSampler(
+    unleashClient,
+    config.sentry.samplerFlag,
+  ),
   debug: config.sentry.environment === 'development',
 });
 import { serverLogger } from '@pocket-tools/ts-logger';
