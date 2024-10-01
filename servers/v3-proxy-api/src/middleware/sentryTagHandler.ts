@@ -15,13 +15,13 @@ export function sentryTagHandler(
   res: Response,
   next: NextFunction,
 ) {
+  const scope = Sentry.getCurrentScope();
   const consumerKey = req.query.consumer_key;
   if (consumerKey == null || typeof consumerKey !== 'string') {
+    scope.setTag('pocket-api-id', undefined);
     next();
     return;
   }
-  const scope = Sentry.getCurrentScope();
-  scope.setTag('pocket-api-id', parseApiId(consumerKey));
-
+  scope.setTag('pocket-api-id', parseApiId(consumerKey)?.toString());
   next();
 }

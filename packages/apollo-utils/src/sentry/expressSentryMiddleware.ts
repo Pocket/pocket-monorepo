@@ -29,6 +29,6 @@ export const sentryPocketMiddleware = (
       (req.headers['origin-client-ip'] as string) ||
       undefined,
   });
-  scope.setTag('pocket-api-id', (req.headers.apiid || '0') as string);
+  scope.setTag('pocket-api-id', (req.headers.apiid || undefined) as string);
   next();
 };
