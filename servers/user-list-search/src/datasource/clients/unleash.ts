@@ -15,7 +15,6 @@ export function unleash(localMocks?: FeatureInterface[]): Unleash {
       appName: config.serviceName,
       customHeaders: { Authorization: config.unleash.clientKey },
       timeout: config.unleash.timeout,
-      namePrefix: config.unleash.namePrefix,
       refreshInterval: config.unleash.refreshInterval,
     });
   }

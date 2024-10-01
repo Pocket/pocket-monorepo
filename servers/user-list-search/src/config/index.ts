@@ -106,7 +106,6 @@ export const config = {
     endpoint: process.env.UNLEASH_ENDPOINT || 'http://localhost:4242/api',
     refreshInterval: 60 * 1000, // ms
     timeout: 2 * 1000, // ms
-    namePrefix: 'temp.backend',
     flags: {
       corpusExplore: {
         name: 'temp.backend.explore_the_corpus',
