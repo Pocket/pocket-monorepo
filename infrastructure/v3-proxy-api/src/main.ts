@@ -118,6 +118,14 @@ class Stack extends TerraformStack {
               name: 'SENTRY_DSN',
               valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/SENTRY_DSN`,
             },
+            {
+              name: 'UNLEASH_ENDPOINT',
+              valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Shared/${config.environment}/UNLEASH_ENDPOINT`,
+            },
+            {
+              name: 'UNLEASH_KEY',
+              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/UNLEASH_KEY`,
+            },
           ],
         },
         {
@@ -180,6 +188,8 @@ class Stack extends TerraformStack {
             resources: [
               `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}`,
               `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/*`,
+              `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Shared/${config.environment}/*`,
+              `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Shared/${config.environment}`,
             ],
             effect: 'Allow',
           },

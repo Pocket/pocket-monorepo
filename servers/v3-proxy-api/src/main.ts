@@ -1,7 +1,14 @@
 import config from './config';
-import { initSentry } from '@pocket-tools/sentry';
+import { initSentry, featureFlagTraceSampler } from '@pocket-tools/sentry';
+import { unleash } from './unleash';
+
+const unleashClient = unleash();
 initSentry({
   ...config.sentry,
+  tracesSampler: featureFlagTraceSampler(
+    unleashClient,
+    config.sentry.samplerFlag,
+  ),
   debug: config.sentry.environment === 'development',
 });
 
