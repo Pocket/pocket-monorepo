@@ -61,8 +61,10 @@ export const V3GetSchema: Schema = {
     },
   },
   state: {
-    optional: true,
     toLowerCase: true,
+    default: {
+      options: 'unread',
+    },
     isIn: {
       // The following legacy filters for state are omitted
       // (0-1 requests in past year as of 2024-02 - 23)

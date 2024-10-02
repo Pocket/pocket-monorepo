@@ -1124,6 +1124,7 @@ describe('v3Get', () => {
         consumer_key: 'test',
         access_token: 'test',
         detailType: 'complete',
+        state: 'all',
       });
       expect(apiSpy.mock.lastCall?.[3].filter).toBeUndefined();
       expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
