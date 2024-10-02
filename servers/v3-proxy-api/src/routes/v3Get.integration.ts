@@ -1176,6 +1176,81 @@ describe('v3Get', () => {
       expect(callSpy).toHaveBeenCalledTimes(1);
       expect(response.status).toBe(200);
     });
+    it('should work with query strings in a POST request', async () => {
+      const params = {
+        consumer_key: 'test',
+        detailType: 'complete',
+        contentType: 'article',
+        count: '10',
+        offset: '10',
+        state: 'read',
+        favorite: '0',
+        tag: 'tag',
+        sort: 'newest',
+        since: '12345',
+      };
+      const callSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).post('/v3/get').query(params);
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+      expect(callSpy).toHaveBeenCalledTimes(1);
+      expect(response.status).toBe(200);
+    });
+    it('should work with body in a GET reuest', async () => {
+      const params = {
+        consumer_key: 'test',
+        detailType: 'complete',
+        contentType: 'article',
+        count: '10',
+        offset: '10',
+        state: 'read',
+        favorite: '0',
+        tag: 'tag',
+        sort: 'newest',
+        since: '12345',
+      };
+      const callSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).get('/v3/get').send(params);
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+      expect(callSpy).toHaveBeenCalledTimes(1);
+      expect(response.status).toBe(200);
+    });
+    it('merges query strings and body params', async () => {
+      const qs = {
+        consumer_key: 'test-ck',
+      };
+      const body = {
+        detailType: 'complete',
+        contentType: 'article',
+        count: '10',
+        offset: '10',
+        state: 'read',
+        favorite: '0',
+        tag: 'tag',
+        sort: 'newest',
+        since: '12345',
+      };
+      const callSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).get('/v3/get').query(qs).send(body);
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+      expect(callSpy).toHaveBeenCalledTimes(1);
+      expect(callSpy.mock.calls[0][1]).toEqual('test-ck');
+      expect(callSpy.mock.calls[0][3]).toMatchObject({
+        filter: {
+          status: 'ARCHIVED',
+          tagNames: ['tag'],
+          updatedSince: 12345,
+          contentType: 'IS_READABLE',
+          isFavorite: false,
+        },
+      });
+      expect(response.status).toBe(200);
+    });
     it.each([
       {
         consumer_key: '',
