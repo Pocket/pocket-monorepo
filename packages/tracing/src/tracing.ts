@@ -72,7 +72,7 @@ const tracingDefaults: TracingConfig = {
   graphQLDepth: 8,
   grpcDefaultPort: 4317,
   httpDefaultPort: 4318,
-  host: 'otlpcollector',
+  host: 'localhost',
   logger: new DiagConsoleLogger(),
   additionalInstrumentations: [],
 };

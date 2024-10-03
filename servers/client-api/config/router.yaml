@@ -93,7 +93,7 @@ telemetry:
         resource:
           'environment.name': '${env.APP_ENVIRONMENT:-local}'
         service_name: 'client-api'
-        sampler: always_on #0.1 # (default) all requests are sampled (always_on|always_off|<0.0-1.0>)
+        sampler: 0.1 # (default) all requests are sampled (always_on|always_off|<0.0-1.0>)
         parent_based_sampler: true
       propagation:
         aws_xray: true

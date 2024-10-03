@@ -272,6 +272,11 @@ class ClientAPI extends TerraformStack {
           essential: true,
           logMultilinePattern: '^\\S.+',
           logGroup: this.createCustomLogGroup('otel-collector'),
+          entryPoint: [
+            'sh',
+            '-c',
+            'echo "$OTEL_CONFIG" > /etc/otelcol-contrib/config.yaml && echo "$GOOGLE_APPLICATION_CREDENTIALS" > /etc/otelcol-contrib/key.json && /otelcontribcol',
+          ],
           portMappings: [
             {
               hostPort: 4138,
@@ -286,12 +291,22 @@ class ClientAPI extends TerraformStack {
               containerPort: 55681,
             },
           ],
-          // secretEnvVars: [
-          //   {
-          //     name: 'GOOGLE_APPLICATION_CREDENTIALS',
-          //     valueFrom: '',
-          //   },
-          // ],
+          envVars: [
+            {
+              name: 'GOOGLE_APPLICATION_CREDENTIALS',
+              value: `/etc/otelcol-contrib/key.json`,
+            },
+          ],
+          secretEnvVars: [
+            {
+              name: 'GOOGLE_APPLICATION_CREDENTIALS_JSON',
+              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Pocket/${config.environment}/GCP-SA-Traces`,
+            },
+            {
+              name: 'OTEL_CONFIG',
+              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/GCPOtelConfig`,
+            },
+          ],
           repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
         },
       ],
@@ -323,6 +338,8 @@ class ClientAPI extends TerraformStack {
             resources: [
               `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared`,
               `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/*`,
+              `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Pocket`,
+              `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Pocket/*`,
               secretsManagerKmsAlias.targetKeyArn,
             ],
             effect: 'Allow',
