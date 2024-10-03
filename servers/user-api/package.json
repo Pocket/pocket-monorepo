@@ -25,7 +25,7 @@
     "@pocket-tools/int-mask": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "8.32.0",
+    "@sentry/node": "8.33.0",
     "dataloader": "2.2.2",
     "express": "4.20.0",
     "graphql": "16.9.0",
@@ -38,7 +38,7 @@
   "devDependencies": {
     "@faker-js/faker": "8.4.1",
     "@pocket-tools/eslint-config": "workspace:*",
-    "@sentry/types": "8.32.0",
+    "@sentry/types": "8.33.0",
     "@types/jest": "29.5.12",
     "@types/node": "^22.5.2",
     "@types/supertest": "^6.0.2",

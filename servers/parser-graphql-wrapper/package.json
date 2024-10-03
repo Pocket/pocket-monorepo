@@ -35,7 +35,7 @@
     "@pocket-tools/int-mask": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "8.32.0",
+    "@sentry/node": "8.33.0",
     "cors": "2.8.5",
     "dataloader": "2.2.2",
     "domino": "2.1.6",
