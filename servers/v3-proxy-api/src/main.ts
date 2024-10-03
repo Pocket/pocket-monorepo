@@ -6,11 +6,11 @@ import { nodeSDKBuilder } from '@pocket-tools/tracing';
 const unleashClient = unleash();
 const sentry = initSentry({
   ...config.sentry,
+  skipOpenTelemetrySetup: true,
   tracesSampler: featureFlagTraceSampler(
     unleashClient,
     config.sentry.samplerFlag,
   ),
-  skipOpenTelemetrySetup: true,
   debug: config.sentry.environment === 'development',
 });
 

@@ -1,20 +1,27 @@
 import config from '../config';
 import { initSentry, featureFlagTraceSampler } from '@pocket-tools/sentry';
 import { getClient } from '../featureFlags';
+import { nodeSDKBuilder } from '@pocket-tools/tracing';
 
-const unleash = getClient();
+const unleashClient = getClient();
 // Initialize sentry
-initSentry({
+const sentry = initSentry({
   ...config.sentry,
-  tracesSampler: featureFlagTraceSampler(unleash, config.sentry.samplerFlag),
+  skipOpenTelemetrySetup: true,
+  tracesSampler: featureFlagTraceSampler(
+    unleashClient,
+    config.sentry.samplerFlag,
+  ),
   debug: config.sentry.environment === 'development',
 });
 
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { startServer } from './apollo';
 
-startServer(config.app.port).then(() => {
-  serverLogger.info(
-    `🚀 Public server ready at http://localhost:${config.app.port}`,
-  );
+nodeSDKBuilder({ ...config.tracing, sentry: sentry }).then(() => {
+  startServer(config.app.port).then(() => {
+    serverLogger.info(
+      `🚀 Public server ready at http://localhost:${config.app.port}`,
+    );
+  });
 });

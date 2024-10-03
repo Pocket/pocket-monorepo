@@ -16,7 +16,7 @@ import {
   ATTR_SERVICE_VERSION,
 } from '@opentelemetry/semantic-conventions';
 
-import { SentryPropagator, SentrySampler } from '@sentry/opentelemetry';
+import { SentrySampler } from '@sentry/opentelemetry';
 import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-grpc';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
@@ -32,7 +32,12 @@ import {
 
 import * as Sentry from '@sentry/node';
 import type { NodeClient } from '@sentry/node';
-import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
+import {
+  BatchSpanProcessor,
+  ParentBasedSampler,
+} from '@opentelemetry/sdk-trace-base';
+import { AWSXRayPropagator } from '@opentelemetry/propagator-aws-xray';
+import { AWSXRayIdGenerator } from '@opentelemetry/id-generator-aws-xray';
 
 // instrumentations available to be added by implementing services
 export enum AdditionalInstrumentation {
@@ -136,7 +141,13 @@ export async function nodeSDKBuilder(config: TracingConfig) {
       },
       '@opentelemetry/instrumentation-undici': {
         headersToSpanAttributes: {
-          requestHeaders: ['sentry-trace', 'baggage'],
+          requestHeaders: [
+            'sentry-trace',
+            'baggage',
+            'x-amzn-trace-id',
+            'encodedid',
+            'applicationname',
+          ],
         },
       },
     }),
@@ -150,11 +161,14 @@ export async function nodeSDKBuilder(config: TracingConfig) {
   });
 
   const sdk = new NodeSDK({
-    textMapPropagator: new SentryPropagator(),
+    textMapPropagator: new AWSXRayPropagator(),
     instrumentations,
-    sampler: config.sentry ? new SentrySampler(config.sentry) : undefined,
+    sampler: config.sentry
+      ? new ParentBasedSampler({ root: new SentrySampler(config.sentry) })
+      : undefined,
     contextManager: new Sentry.SentryContextManager(),
     resource: _resource,
+    idGenerator: new AWSXRayIdGenerator(),
     spanProcessors: [new BatchSpanProcessor(_traceExporter)],
     traceExporter: _traceExporter,
     metricReader: _metricReader,
