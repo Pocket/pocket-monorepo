@@ -314,11 +314,11 @@ class ParserGraphQLWrapper extends TerraformStack {
           secretEnvVars: [
             {
               name: 'GOOGLE_APPLICATION_CREDENTIALS_JSON',
-              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Pocket/${config.environment}/GCP-SA-Traces`,
+              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Pocket/${config.environment}/GCP-SA-Traces:::`,
             },
             {
               name: 'OTEL_CONFIG',
-              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/GCPOtelConfig`,
+              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/GCPOtelConfig:::`,
             },
           ],
           repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
