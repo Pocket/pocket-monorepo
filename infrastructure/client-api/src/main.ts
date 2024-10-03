@@ -300,7 +300,7 @@ class ClientAPI extends TerraformStack {
           secretEnvVars: [
             {
               name: 'GOOGLE_APPLICATION_CREDENTIALS_JSON',
-              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Pocket/${config.environment}/GCP-SA-Traces:::`,
+              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/GCP_SA_Traces`,
             },
             {
               name: 'OTEL_CONFIG',
@@ -338,9 +338,6 @@ class ClientAPI extends TerraformStack {
             resources: [
               `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared`,
               `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/*`,
-              `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Pocket`,
-              `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Pocket/*`,
-              `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Pocket/${config.environment}/*`,
               secretsManagerKmsAlias.targetKeyArn,
             ],
             effect: 'Allow',
