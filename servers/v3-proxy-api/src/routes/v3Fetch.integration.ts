@@ -342,6 +342,19 @@ describe('v3Fetch', () => {
       const response = await request(app).get('/v3/fetch').query(params);
       expect(response.status).toBe(200);
     });
+    it('should work with query parameters for POST request', async () => {
+      const params = {
+        consumer_key: 'test',
+        access_token: 'test',
+        offset: '6',
+        count: '28',
+      };
+      jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).post('/v3/fetch').query(params);
+      expect(response.status).toBe(200);
+    });
     it('should not log input validation errors to sentry or cloudwatch', async () => {
       const consoleSpy = jest.spyOn(serverLogger, 'error');
       const sentrySpy = jest.spyOn(Sentry, 'captureException');
@@ -418,5 +431,15 @@ describe('v3Fetch', () => {
         expect(response.status).toBe(400);
       },
     );
+    it('should work with body in GET request', async () => {
+      const params = { consumer_key: 'test', access_token: 'test' };
+      const callSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).get('/v3/fetch').send(params);
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+      expect(callSpy).toHaveBeenCalledTimes(1);
+      expect(response.status).toBe(200);
+    });
   });
 });

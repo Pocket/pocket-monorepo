@@ -44,7 +44,7 @@ const v3FetchController = async (
 
 router.get(
   '/',
-  checkSchema(V3FetchSchema, ['query']),
+  checkSchema(V3FetchSchema, ['query', 'body']),
   asyncHandler(async (req, res, next) => {
     const result = await v3FetchController(req, res, next);
     res.json(result);
@@ -52,7 +52,7 @@ router.get(
 );
 router.post(
   '/',
-  checkSchema(V3FetchSchema, ['body']),
+  checkSchema(V3FetchSchema, ['body', 'query']),
   asyncHandler(async (req, res, next) => {
     const result = await v3FetchController(req, res, next);
     res.json(result);
