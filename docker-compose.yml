@@ -96,3 +96,16 @@ services:
       retries: 30
     ports:
       - '9090:9090'
+  
+  otlpcollector:
+    image: grafana/otel-lgtm
+
+    # If we want to set a custom config we would do it by mounting the file below.
+    # volumes:
+    #   - ./otel-collector-config.yaml:/etc/otelcol-contrib/config.yaml
+    ports:
+      # there are lots more ports available, but these are the only one's
+      # currently being used
+      - 4317:4317 # OTLP gRPC receiver
+      - 4318:4318 # OTLP http receiver
+      - 3000:3000 # Grafana

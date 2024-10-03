@@ -15,10 +15,12 @@ export default {
   tracing: {
     host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
     serviceName: 'v3-api-proxy',
+    release: process.env.GIT_SHA || '',
   },
   sentry: {
     dsn: process.env.SENTRY_DSN || '',
     release: process.env.GIT_SHA || '',
+    release: process.env.GIT_SHA || 'local',
     environment: process.env.NODE_ENV || 'development',
     samplerFlag: 'perm.backend.sentry-trace-sampler-rate',
   },

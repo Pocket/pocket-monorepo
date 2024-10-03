@@ -1,8 +1,10 @@
 import { type NodeOptions } from '@sentry/node';
 import * as Sentry from '@sentry/node';
 
-export const initSentry = (options?: NodeOptions) => {
-  Sentry.init({
+export const initSentry = (
+  options?: NodeOptions,
+): Sentry.NodeClient | undefined => {
+  return Sentry.init({
     ...options,
     tracesSampler: (context) => {
       // Continue trace decision if there is any parentSampled information
