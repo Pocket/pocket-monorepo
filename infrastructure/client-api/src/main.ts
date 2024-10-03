@@ -266,6 +266,34 @@ class ClientAPI extends TerraformStack {
             startPeriod: 0,
           },
         },
+        {
+          name: 'otel-collector',
+          containerImage: 'otel/opentelemetry-collector-contrib',
+          essential: true,
+          logMultilinePattern: '^\\S.+',
+          logGroup: this.createCustomLogGroup('otel-collector'),
+          portMappings: [
+            {
+              hostPort: 4138,
+              containerPort: 4138,
+            },
+            {
+              hostPort: 4137,
+              containerPort: 4137,
+            },
+            {
+              hostPort: 55681,
+              containerPort: 55681,
+            },
+          ],
+          // secretEnvVars: [
+          //   {
+          //     name: 'GOOGLE_APPLICATION_CREDENTIALS',
+          //     valueFrom: '',
+          //   },
+          // ],
+          repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
+        },
       ],
       codeDeploy: {
         useCodeDeploy: true,
@@ -309,19 +337,7 @@ class ClientAPI extends TerraformStack {
             effect: 'Allow',
           },
         ],
-        taskRolePolicyStatements: [
-          {
-            actions: [
-              'xray:PutTraceSegments',
-              'xray:PutTelemetryRecords',
-              'xray:GetSamplingRules',
-              'xray:GetSamplingTargets',
-              'xray:GetSamplingStatisticSummaries',
-            ],
-            resources: ['*'],
-            effect: 'Allow',
-          },
-        ],
+        taskRolePolicyStatements: [],
         taskExecutionDefaultAttachmentArn:
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },
