@@ -8,6 +8,8 @@ exporters:
   googlecloud:
     log:
       default_log_name: opentelemetry.io/collector-exported-log
+  # debug:
+  #   verbosity: detailed
 processors:
   memory_limiter:
     check_interval: 1s
@@ -18,30 +20,34 @@ processors:
       detectors: [env, ecs]
       timeout: 2s
       override: false
-  attributes:
+      ecs:
+        resource_attributes:
+          # These are reserved in GCP, so we need to remove them
+          cloud.region:
+            enabled: false
+          cloud.availability_zone:
+            enabled: false
+  attributes/cleanup_for_google:
     actions:
-      - key: "service.namespace"
+      - key: service.namespace
+        value: pocket
+        action: insert
+      - key: g.co/r/generic_node/namespace
         value: "pocket"
         action: insert
-      - key: "g.co/r/generic_node/namespace"
-        value: "pocket"
-        action: insert
-      # This is reserved in GCP and our code sets it to us-east1d which is unknown to google.
-      - key: "location"
-        value: "us-east1"
-        action: update
         
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [resourcedetection/ecs, attributes, memory_limiter, batch]
+      processors: [resourcedetection/ecs, attributes/cleanup_for_google, memory_limiter, batch]
       exporters: [googlecloud]
     metrics:
       receivers: [otlp]
-      processors: [resourcedetection/ecs, attributes, memory_limiter, batch]
-      exporters: [googlecloud]
+      processors: [resourcedetection/ecs, attributes/cleanup_for_google, memory_limiter, batch]
+      # Disabling for now. They get dropped based on intervals in GCP. More research is required.
+      # exporters: [googlecloud]
     logs:
       receivers: [otlp]
-      processors: [resourcedetection/ecs, attributes, memory_limiter, batch]
+      processors: [resourcedetection/ecs, attributes/cleanup_for_google, memory_limiter, batch]
       exporters: [googlecloud]

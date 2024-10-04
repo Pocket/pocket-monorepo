@@ -150,6 +150,9 @@ export async function nodeSDKBuilder(config: TracingConfig) {
           ],
         },
       },
+      '@opentelemetry/instrumentation-http': {
+        ignoreIncomingPaths: ['/.well-known/apollo/server-health'],
+      },
     }),
   ];
 
