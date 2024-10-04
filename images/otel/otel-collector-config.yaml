@@ -4,6 +4,8 @@ receivers:
     protocols:
       grpc:
         endpoint: "0.0.0.0:4317" # gRPC port for receiving traces, metrics, and logs over gRPC
+      http:
+        endpoint: "0.0.0.0:4318" # http port for receiving traces, metrics, and logs over http
 exporters:
   googlecloud:
     log:

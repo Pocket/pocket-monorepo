@@ -53,6 +53,13 @@ headers:
       - propagate:
           named: 'web-request-snowplow-session-user-id'
           rename: 'gatewaySnowplowDomainSessionId'
+demand_control:
+  enabled: true
+  mode: measure
+  strategy:
+    static_estimated:
+      list_size: 10
+      max: 1000
 telemetry:
   instrumentation:
     instruments:
@@ -64,6 +71,43 @@ telemetry:
         http.client.request.body.size: true # (default false)
         http.client.request.duration: true # (default false)
         http.client.response.body.size: true # (default false)
+      # Costs are from https://www.apollographql.com/docs/graphos/routing/security/demand-control#examples
+      supergraph:
+        cost.estimated:
+          attributes:
+            cost.result: true
+            graphql.operation.name: true
+        cost.rejected.operations:
+          type: histogram
+          value:
+            # Estimated cost is used to populate the histogram
+            cost: estimated
+          description: "Estimated cost per rejected operation."
+          unit: delta
+          condition:
+            eq:
+              # Only show rejected operations.
+              - cost: result
+              - "COST_ESTIMATED_TOO_EXPENSIVE"
+          attributes:
+            graphql.operation.name: true # Graphql operation name is added as an attribute
+    events:
+      supergraph:
+        COST_DELTA_TOO_HIGH:
+          message: "cost delta high"
+          on: event_response
+          level: error
+          condition:
+            gt:
+              - cost: delta
+              - 1000
+          attributes:
+            graphql.operation.name: true
+            cost.delta: true
+    spans:
+      supergraph:
+        attributes:
+          cost.estimated: true
 
   apollo:
     send_variable_values:
@@ -85,6 +129,20 @@ telemetry:
             'environment.name': '${env.APP_ENVIRONMENT}'
             'service.name': 'client-api'
             'environment.namespace': pocket
+          views:
+            # https://www.apollographql.com/docs/graphos/routing/security/demand-control#configuring-instrument-output
+            # Define a custom view because cost is different than the default latency-oriented view of OpenTelemetry
+            - name: cost.*
+              aggregation:
+                histogram:
+                  buckets:
+                    - 0
+                    - 10
+                    - 100
+                    - 1000
+                    - 10000
+                    - 100000
+                    - 1000000
         otlp:
           enabled: true
           endpoint: 'http://${env.OTLP_COLLECTOR_HOST:-localhost}:4317'
