@@ -73,26 +73,34 @@ telemetry:
         - perPage # getCollections
         - slug # collectionBySlug
   exporters:
-    metrics:
+    logging:
       common:
         resource:
           'environment.name': '${env.APP_ENVIRONMENT}'
-        service_name: 'client-api'
-      otlp:
-        enabled: true
-        endpoint: 'http://${env.OTLP_COLLECTOR_HOST:-localhost}:4317'
-        protocol: grpc
-        batch_processor:
-          scheduled_delay: 100ms
-          max_concurrent_exports: 1000
-          max_export_batch_size: 10000
-          max_export_timeout: 100s
-          max_queue_size: 10000
+          'service.name': 'client-api'
+          'environment.namespace': pocket
+    metrics:
+        common:
+          resource:
+            'environment.name': '${env.APP_ENVIRONMENT}'
+            'service.name': 'client-api'
+            'environment.namespace': pocket
+        otlp:
+          enabled: true
+          endpoint: 'http://${env.OTLP_COLLECTOR_HOST:-localhost}:4317'
+          protocol: grpc
+          batch_processor:
+            scheduled_delay: 10000ms # 10 secs export due to google cloud rate limits
+            max_concurrent_exports: 1000
+            max_export_batch_size: 10000
+            max_export_timeout: 100s
+            max_queue_size: 10000
     tracing:
       common:
         resource:
-          'environment.name': '${env.APP_ENVIRONMENT:-local}'
-        service_name: 'client-api'
+          'environment.name': '${env.APP_ENVIRONMENT}'
+          'service.name': 'client-api'
+          'environment.namespace': pocket
         sampler: 0.1 # (default) all requests are sampled (always_on|always_off|<0.0-1.0>)
         parent_based_sampler: true
       propagation:

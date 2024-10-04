@@ -129,7 +129,7 @@ export async function nodeSDKBuilder(config: TracingConfig) {
     exporter: new OTLPMetricExporter({
       url: `http://${config.host}:${config.grpcDefaultPort}`,
     }),
-    exportIntervalMillis: 1000,
+    exportIntervalMillis: 10000, // once every 10 seconds, GCP supports 1 every 5 seconds for custom metrics https://cloud.google.com/monitoring/quotas#custom_metrics_quotas
   });
 
   // set up the default instrumentations for all implementors

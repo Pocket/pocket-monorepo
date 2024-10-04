@@ -16,38 +16,42 @@ processors:
     limit_percentage: 65
     spike_limit_percentage: 20
   batch:
+    # batch metrics before sending to reduce API usage
+    send_batch_max_size: 200
+    send_batch_size: 200
+    timeout: 5s
   resourcedetection/ecs:
       detectors: [env, ecs]
       timeout: 2s
       override: false
-      ecs:
-        resource_attributes:
-          # These are reserved in GCP, so we need to remove them
-          cloud.region:
-            enabled: false
-          cloud.availability_zone:
-            enabled: false
-  attributes/cleanup_for_google:
-    actions:
+  resource/cleanup_for_google:
+    attributes:
       - key: service.namespace
         value: pocket
         action: insert
-      - key: g.co/r/generic_node/namespace
-        value: "pocket"
-        action: insert
-        
+      # We must set the region to us-east1, as the google exporter uses this to know where to send data to.
+      - key: cloud.region
+        value: us-east1
+        action: upsert
+      - key: cloud.availability_zone
+        value: us-east1-b
+        action: upsert
+      # set this to the ecs task id
+      - key: host.id
+        from_attribute: aws.ecs.task.id
+        action: upsert
+
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [resourcedetection/ecs, attributes/cleanup_for_google, memory_limiter, batch]
+      processors: [resourcedetection/ecs, resource/cleanup_for_google, memory_limiter, batch]
       exporters: [googlecloud]
     metrics:
       receivers: [otlp]
-      processors: [resourcedetection/ecs, attributes/cleanup_for_google, memory_limiter, batch]
-      # Disabling for now. They get dropped based on intervals in GCP. More research is required.
-      # exporters: [googlecloud]
+      processors: [resourcedetection/ecs, resource/cleanup_for_google, memory_limiter, batch]
+      exporters: [googlecloud]
     logs:
       receivers: [otlp]
-      processors: [resourcedetection/ecs, attributes/cleanup_for_google, memory_limiter, batch]
+      processors: [resourcedetection/ecs, resource/cleanup_for_google, memory_limiter, batch]
       exporters: [googlecloud]
