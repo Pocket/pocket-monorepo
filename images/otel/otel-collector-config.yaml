@@ -14,20 +14,34 @@ processors:
     limit_percentage: 65
     spike_limit_percentage: 20
   batch:
-  resourcedetection:
-    detectors: [gcp]
-    timeout: 10s
+  resourcedetection/ecs:
+      detectors: [env, ecs]
+      timeout: 2s
+      override: false
+  attributes:
+    actions:
+      - key: "service.namespace"
+        value: "pocket"
+        action: insert
+      - key: "g.co/r/generic_node/namespace"
+        value: "pocket"
+        action: insert
+      # This is reserved in GCP and our code sets it to us-east1d which is unknown to google.
+      - key: "location"
+        value: "us-east1"
+        action: update
+        
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [memory_limiter, batch]
+      processors: [resourcedetection/ecs, attributes, memory_limiter, batch]
       exporters: [googlecloud]
     metrics:
       receivers: [otlp]
-      processors: [memory_limiter, batch]
+      processors: [resourcedetection/ecs, attributes, memory_limiter, batch]
       exporters: [googlecloud]
     logs:
       receivers: [otlp]
-      processors: [memory_limiter, batch]
+      processors: [resourcedetection/ecs, attributes, memory_limiter, batch]
       exporters: [googlecloud]
