@@ -15,9 +15,6 @@ const sentry = initSentry({
   debug: config.sentry.environment === 'development',
 });
 
-import { serverLogger } from '@pocket-tools/ts-logger';
-import { startServer } from './apollo';
-
 nodeSDKBuilder({ ...config.tracing, sentry: sentry }).then(() => {
   startServer(config.app.port).then(() => {
     serverLogger.info(
@@ -25,3 +22,5 @@ nodeSDKBuilder({ ...config.tracing, sentry: sentry }).then(() => {
     );
   });
 });
+import { serverLogger } from '@pocket-tools/ts-logger';
+import { startServer } from './apollo';

@@ -306,7 +306,7 @@ class ListAPI extends TerraformStack {
         },
         {
           name: 'otel-collector',
-          containerImage: 'otel/opentelemetry-collector-contrib',
+          containerImage: 'pocket/opentelemetry-collector-contrib',
           essential: true,
           logMultilinePattern: '^\\S.+',
           logGroup: this.createCustomLogGroup('otel-collector'),
@@ -324,12 +324,12 @@ class ListAPI extends TerraformStack {
               containerPort: 55681,
             },
           ],
-          // secretEnvVars: [
-          //   {
-          //     name: 'GOOGLE_APPLICATION_CREDENTIALS',
-          //     valueFrom: '',
-          //   },
-          // ],
+          secretEnvVars: [
+            {
+              name: 'GOOGLE_APPLICATION_CREDENTIALS_JSON',
+              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/GCP_SA_TRACES:::`,
+            },
+          ],
           repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
         },
       ],

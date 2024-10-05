@@ -112,7 +112,7 @@ module "otel" {
 
   essential       = true
   container_name  = "otel-collector"
-  container_image = "otel/opentelemetry-collector-contrib"
+  container_image = "pocket/opentelemetry-collector-contrib"
 
   repository_credentials = {
     credentialsParameter : local.container_credential
@@ -127,6 +127,11 @@ module "otel" {
       awslogs-stream-prefix = "ecs"
     }
   }
+
+  secrets = [{
+      name      = "GOOGLE_APPLICATION_CREDENTIALS_JSON"
+      valueFrom = "${local.secret_path_shared}GCP_SA_TRACES:::"
+    }]
 
   port_mappings = [
     {
