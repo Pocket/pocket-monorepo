@@ -111,7 +111,7 @@ export async function startServer(port: number): Promise<{
     json(),
     sentryPocketMiddleware,
     setMorgan(serverLogger),
-    expressMiddleware(server, {
+    expressMiddleware<ContextManager>(server, {
       context: async ({ req }) => contextFactory(req),
     }),
   );

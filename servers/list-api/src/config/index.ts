@@ -3,12 +3,14 @@ import { EventType } from '../businessEvents/types';
 
 const serviceName = 'list-api';
 const awsEnvironments = ['production', 'development'];
-let localAwsEndpoint;
-let snowplowHttpProtocol = 'https';
-if (!awsEnvironments.includes(process.env.NODE_ENV)) {
-  localAwsEndpoint = process.env.AWS_ENDPOINT || 'http://localhost:4566';
-  snowplowHttpProtocol = 'http';
-}
+const localAwsEndpoint =
+  process.env.NODE_ENV && !awsEnvironments.includes(process.env.NODE_ENV)
+    ? process.env.AWS_ENDPOINT || 'http://localhost:4566'
+    : undefined;
+const snowplowHttpProtocol =
+  process.env.NODE_ENV && !awsEnvironments.includes(process.env.NODE_ENV)
+    ? 'http'
+    : 'https';
 
 export default {
   serviceName,
@@ -72,7 +74,7 @@ export default {
     },
     dbName: process.env.DATABASE || 'readitla_ril-tmp',
     tz: process.env.DATABASE_TZ || 'US/Central',
-    maxTransactionSize: parseInt(process.env.MAX_TRX_SIZE) || 1000,
+    maxTransactionSize: parseInt(process.env.MAX_TRX_SIZE ?? '') || 1000,
   },
   dataloaderDefaults: {
     // TBD: batchScheduleFn: (callback) => setTimeout(callback, 10) // every 10 ms

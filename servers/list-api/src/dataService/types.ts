@@ -25,8 +25,8 @@ export type ListResult = {
   resolved_id: number;
   status: keyof typeof PocketSaveStatus;
   time_added: Date;
-  time_favorited: Date;
-  time_read: Date;
+  time_favorited: Date | null;
+  time_read: Date | null;
   time_updated: Date;
   title: string;
   user_id: number;
@@ -44,7 +44,7 @@ export type ListArchiveUpdate = UpdateField & {
 
 export type ListFavoriteUpdate = UpdateField & {
   favorite: FavoriteStatus;
-  time_favorited: string; // Timestamp string
+  time_favorited: string | null; // Timestamp string
 };
 
 export enum FavoriteStatus {

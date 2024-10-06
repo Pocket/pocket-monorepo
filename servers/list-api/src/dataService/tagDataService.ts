@@ -166,11 +166,9 @@ export class TagDataService {
     return tags.map(TagModel.toGraphqlEntity);
   }
 
-  public async getTagByName(tagName: string): Promise<Tag | undefined> {
+  public async getTagByName(tagName: string): Promise<Tag | null> {
     const result = await this.getTagsByUserSubQuery().where('tag', tagName);
-    return result.length > 0
-      ? result.map(TagModel.toGraphqlEntity)[0]
-      : undefined;
+    return result.length > 0 ? result.map(TagModel.toGraphqlEntity)[0] : null;
   }
 
   public async getTagsByUser(

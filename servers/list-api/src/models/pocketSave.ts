@@ -50,7 +50,7 @@ export class PocketSaveModel {
     const missingErrors = missingIds.map((id) =>
       this.context.models.notFound.message('id', id, true),
     );
-    return [].concat(pocketSaves, missingErrors);
+    return [...pocketSaves, ...missingErrors];
   }
 
   /**

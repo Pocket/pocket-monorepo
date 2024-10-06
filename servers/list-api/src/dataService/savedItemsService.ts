@@ -66,7 +66,8 @@ export class SavedItemDataService {
     dbResult: T | T[],
   ):
     | (T & { status: Pick<ListResult, 'status'> })
-    | Array<T & { status: Pick<ListResult, 'status'> }> {
+    | Array<T & { status: Pick<ListResult, 'status'> }>
+    | undefined {
     if (dbResult == null) {
       return undefined;
     }
@@ -384,11 +385,12 @@ export class SavedItemDataService {
   public async upsertSavedItem(
     item: ItemResponse,
     savedItemUpsertInput: SavedItemUpsertInput,
-  ): Promise<SavedItem> {
+  ): Promise<SavedItem | null> {
     const currentDate = SavedItemDataService.formatDate(new Date());
-    const givenTimestamp = new Date(savedItemUpsertInput.timestamp * 1000);
     const givenDate = savedItemUpsertInput.timestamp
-      ? SavedItemDataService.formatDate(givenTimestamp)
+      ? SavedItemDataService.formatDate(
+          new Date(savedItemUpsertInput.timestamp * 1000),
+        )
       : currentDate;
     //`returning` is not supported for mysql in knex
     await this.db.transaction(async (trx) => {

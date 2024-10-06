@@ -124,6 +124,11 @@ export class TagModel {
     );
     await this.tagService.insertTags(creates, timestamp);
     const savedItem = await this.saveService.getSavedItemById(savedItemId);
+    if (savedItem == null) {
+      throw new Error(
+        `SavedItem with savedItemId='${savedItemId}' does not exist.`,
+      );
+    }
     // Emit events
     this.context.emitItemEvent(EventType.ADD_TAGS, savedItem, tagNames);
     return savedItem;
@@ -135,7 +140,7 @@ export class TagModel {
   public updateTagSaveConnections(
     updates: SavedItemTagUpdateInput,
     timestamp?: Date,
-  ): Promise<SavedItem> {
+  ): Promise<SavedItem | null> {
     const creates: TagSaveAssociation[] = updates.tagIds.map((tagId) => {
       return {
         name: TagModel.decodeId(tagId),
@@ -170,9 +175,9 @@ export class TagModel {
    * @throws NotFoundError if the record does not exist
    * @returns the Tag entity
    */
-  public getById(id: string): Promise<Tag> {
+  public async getById(id: string): Promise<Tag> {
     const name = TagModel.decodeId(id);
-    const tag = this.tagService.getTagByName(name);
+    const tag = await this.tagService.getTagByName(name);
     if (tag == null) {
       throw new NotFoundError(`Tag with ID=${id} does not exist.`);
     }
@@ -220,7 +225,8 @@ export class TagModel {
     const saves = await this.saveService.batchGetSavedItemsByGivenIds(saveIds);
     return deletes.map((del) => ({
       removed: del.tagIds.map(TagModel.decodeId),
-      save: saves.find((save) => del.savedItemId === save.id.toString()),
+      save:
+        saves.find((save) => del.savedItemId === save.id.toString()) ?? null,
     }));
   }
 
@@ -245,7 +251,7 @@ export class TagModel {
    * @param tag the ID of the tag and its new name
    * @returns the updated Tag
    */
-  public async renameTag(tag: TagUpdateInput): Promise<Tag> {
+  public async renameTag(tag: TagUpdateInput): Promise<Tag | null> {
     const oldTag = await this.getById(tag.id);
     if (oldTag == null) {
       throw new NotFoundError(`Tag Id ${tag.id} does not exist`);
@@ -503,7 +509,7 @@ const validateTag = (tag: any): true => {
     { field: '_deletedAt', required: false },
   ];
 
-  let err: string;
+  let err: string | null = null;
   for (const property of tagModelFields) {
     if (!Object.prototype.hasOwnProperty.call(tag, property.field)) {
       err = `unable to find the property : ${property.field} from the database query}`;
