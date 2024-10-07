@@ -111,11 +111,8 @@ module "otel" {
   version = "0.61.1"
 
   essential       = true
-  container_name  = "aws-otel-collector"
-  container_image = "amazon/aws-otel-collector"
-  command = [
-    "--config=/etc/ecs/ecs-xray.yaml",
-  ]
+  container_name  = "otel-collector"
+  container_image = "pocket/opentelemetry-collector-contrib"
 
   repository_credentials = {
     credentialsParameter : local.container_credential
@@ -131,6 +128,16 @@ module "otel" {
     }
   }
 
+  environment = [{
+        name = "DEPLOYMENT_ENVIRONMENT_NAME",
+        value =    local.tags.env_code,
+    }]
+
+  secrets = [{
+      name      = "GOOGLE_APPLICATION_CREDENTIALS_JSON"
+      valueFrom = "${local.secret_path_shared}GCP_SA_TRACES:::"
+    }]
+
   port_mappings = [
     {
       containerPort = 4138
@@ -139,6 +146,10 @@ module "otel" {
     {
       containerPort = 4137
       hostPort      = 4137
+    },
+    {
+      containerPort = 55681
+      hostPort      = 55681
     }
   ]
   container_cpu                = null
