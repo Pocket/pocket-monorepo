@@ -15,8 +15,8 @@ exporters:
 processors:
   memory_limiter:
     check_interval: 1s
-    limit_percentage: 65
-    spike_limit_percentage: 20
+    limit_percentage: 30
+    spike_limit_percentage: 10
   batch:
     # batch metrics before sending to reduce API usage
     send_batch_max_size: 200
@@ -53,10 +53,10 @@ service:
       receivers: [otlp]
       processors: [resourcedetection/ecs, resource/cleanup_for_google, memory_limiter, batch]
       exporters: [googlecloud]
-    metrics:
-      receivers: [otlp]
-      processors: [resourcedetection/ecs, resource/cleanup_for_google, memory_limiter, batch]
-      exporters: [googlecloud]
+    # metrics:
+    #   receivers: [otlp]
+    #   processors: [resourcedetection/ecs, resource/cleanup_for_google, memory_limiter, batch]
+    #   exporters: [googlecloud]
     logs:
       receivers: [otlp]
       processors: [resourcedetection/ecs, resource/cleanup_for_google, memory_limiter, batch]

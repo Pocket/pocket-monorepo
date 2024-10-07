@@ -17,8 +17,8 @@ import {
 } from '@opentelemetry/semantic-conventions';
 
 import { SentrySampler } from '@sentry/opentelemetry';
-import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
-import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-grpc';
+// import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
+// import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-grpc';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 
 import {
@@ -125,12 +125,12 @@ export async function nodeSDKBuilder(config: TracingConfig) {
     url: `http://${config.host}:${config.grpcDefaultPort}`,
   });
 
-  const _metricReader = new PeriodicExportingMetricReader({
-    exporter: new OTLPMetricExporter({
-      url: `http://${config.host}:${config.grpcDefaultPort}`,
-    }),
-    exportIntervalMillis: 10000, // once every 10 seconds, GCP supports 1 every 5 seconds for custom metrics https://cloud.google.com/monitoring/quotas#custom_metrics_quotas
-  });
+  // const _metricReader = new PeriodicExportingMetricReader({
+  //   exporter: new OTLPMetricExporter({
+  //     url: `http://${config.host}:${config.grpcDefaultPort}`,
+  //   }),
+  //   exportIntervalMillis: 10000, // once every 10 seconds, GCP supports 1 every 5 seconds for custom metrics https://cloud.google.com/monitoring/quotas#custom_metrics_quotas
+  // });
 
   // set up the default instrumentations for all implementors
   const instrumentations: any[] = [
@@ -174,7 +174,7 @@ export async function nodeSDKBuilder(config: TracingConfig) {
     idGenerator: new AWSXRayIdGenerator(),
     spanProcessors: [new BatchSpanProcessor(_traceExporter)],
     traceExporter: _traceExporter,
-    metricReader: _metricReader,
+    // metricReader: _metricReader,
     // TODO: Remove after issue is fixed
     // https://github.com/open-telemetry/opentelemetry-js/issues/4638
     resourceDetectors: [
