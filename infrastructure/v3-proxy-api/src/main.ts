@@ -129,11 +129,12 @@ class Stack extends TerraformStack {
           ],
         },
         {
-          name: 'otel-collector',
-          containerImage: 'pocket/opentelemetry-collector-contrib',
+          name: 'aws-otel-collector',
+          command: ['--config=/etc/ecs/ecs-xray.yaml'],
+          containerImage: 'amazon/aws-otel-collector',
           essential: true,
           logMultilinePattern: '^\\S.+',
-          logGroup: this.createCustomLogGroup('otel-collector'),
+          logGroup: this.createCustomLogGroup('aws-otel-collector'),
           portMappings: [
             {
               hostPort: 4138,
@@ -142,22 +143,6 @@ class Stack extends TerraformStack {
             {
               hostPort: 4137,
               containerPort: 4137,
-            },
-            {
-              hostPort: 55681,
-              containerPort: 55681,
-            },
-          ],
-          envVars: [
-            {
-              name: 'DEPLOYMENT_ENVIRONMENT_NAME',
-              value: config.tags.env_code,
-            },
-          ],
-          secretEnvVars: [
-            {
-              name: 'GOOGLE_APPLICATION_CREDENTIALS_JSON',
-              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/GCP_SA_TRACES:::`,
             },
           ],
           repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
@@ -209,7 +194,19 @@ class Stack extends TerraformStack {
             effect: 'Allow',
           },
         ],
-        taskRolePolicyStatements: [],
+        taskRolePolicyStatements: [
+          {
+            actions: [
+              'xray:PutTraceSegments',
+              'xray:PutTelemetryRecords',
+              'xray:GetSamplingRules',
+              'xray:GetSamplingTargets',
+              'xray:GetSamplingStatisticSummaries',
+            ],
+            resources: ['*'],
+            effect: 'Allow',
+          },
+        ],
         taskExecutionDefaultAttachmentArn:
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },
