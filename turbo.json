@@ -23,7 +23,8 @@
     "SALT_2",
     "UNLEASH_ENDPOINT",
     "UNLEASH_KEY",
-    "BRAZE_PRIVATE_KEY"
+    "BRAZE_PRIVATE_KEY",
+    "SENTRY_DSN"
   ],
   "tasks": {
     "build": {
