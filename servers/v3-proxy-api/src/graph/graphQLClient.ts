@@ -104,7 +104,7 @@ export class GraphQLClientFactory {
   }
   public createClient(responseMiddleware?: ResponseMiddleware) {
     return new GraphQLClient(this.url, {
-      headers: { ...this.headers, ...Sentry.getTraceData() },
+      headers: this.headers,
       fetch,
       responseMiddleware,
       errorPolicy: 'all',
