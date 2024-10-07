@@ -128,6 +128,11 @@ module "otel" {
     }
   }
 
+  environment = [{
+        name = "DEPLOYMENT_ENVIRONMENT_NAME",
+        value =    local.tags.env_code,
+    }]
+
   secrets = [{
       name      = "GOOGLE_APPLICATION_CREDENTIALS_JSON"
       valueFrom = "${local.secret_path_shared}GCP_SA_TRACES:::"

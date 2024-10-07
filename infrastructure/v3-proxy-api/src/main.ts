@@ -148,6 +148,12 @@ class Stack extends TerraformStack {
               containerPort: 55681,
             },
           ],
+          envVars: [
+            {
+              name: 'DEPLOYMENT_ENVIRONMENT_NAME',
+              value: config.tags.env_code,
+            },
+          ],
           secretEnvVars: [
             {
               name: 'GOOGLE_APPLICATION_CREDENTIALS_JSON',

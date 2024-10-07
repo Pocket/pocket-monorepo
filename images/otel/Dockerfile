@@ -1,14 +1,17 @@
-FROM alpine:latest
+# Use an alpine image as our base image, this allows us to define our own entry point script and have access to sh or bash, which the otel image does not have
+FROM alpine:3
 
-COPY --from=otel/opentelemetry-collector-contrib:latest /otelcol-contrib /otelcol-contrib
+# Copy the otelcol-contrib binary from the official image
+COPY --from=otel/opentelemetry-collector-contrib:0.111.0 /otelcol-contrib /otelcol-contrib
 
 COPY otel-collector-config.yaml /etc/otelcol-contrib/config.yaml
-COPY entrypont.sh /entrypont.sh
-RUN chmod a+x /entrypont.sh
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod a+x /entrypoint.sh
 
+#Set the ENV variable for the google credentials that will be used by the google cloud exporter and mounted via an environment variable that will be saved to this file via our entrypoint script
 ENV GOOGLE_APPLICATION_CREDENTIALS=/etc/otelcol-contrib/key.json
 WORKDIR /
 
-ENTRYPOINT [ "./entrypont.sh" ]
+ENTRYPOINT [ "./entrypoint.sh" ]
 
 CMD [ "/otelcol-contrib", "--config", "/etc/otelcol-contrib/config.yaml" ]

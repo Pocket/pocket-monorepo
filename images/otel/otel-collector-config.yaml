@@ -42,6 +42,10 @@ processors:
       - key: host.id
         from_attribute: aws.ecs.task.id
         action: upsert
+      #  https://opentelemetry.io/docs/specs/semconv/resource/deployment-environment/
+      - key: deployment.environment.name
+        value: ${env:DEPLOYMENT_ENVIRONMENT_NAME}
+        action: upsert
 
 service:
   pipelines:
