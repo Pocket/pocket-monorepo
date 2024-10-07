@@ -1,12 +1,11 @@
 import { config } from './config';
 import { initSentry, featureFlagTraceSampler } from '@pocket-tools/sentry';
 import { unleash } from './datasource/clients';
-import { nodeSDKBuilder } from '@pocket-tools/tracing';
 
 const unleashClient = unleash();
 
 // Initialize Sentry
-const sentry = initSentry({
+initSentry({
   ...config.sentry,
   tracesSampler: featureFlagTraceSampler(
     unleashClient,
@@ -15,12 +14,14 @@ const sentry = initSentry({
   debug: config.sentry.environment === 'development',
 });
 
-nodeSDKBuilder({ ...config.tracing, sentry: sentry }).then(() => {
-  startServer(config.app.port).then(() => {
-    serverLogger.info(
-      `🚀 Public server ready at http://localhost:${config.app.port}`,
-    );
-  });
-});
-import { serverLogger } from '@pocket-tools/ts-logger';
 import { startServer } from './server/serverUtils';
+import { serverLogger } from '@pocket-tools/ts-logger';
+
+// Wait to start the server until unleash client is initialized
+unleashClient.once('synchronized', () =>
+  startServer(config.app.port).then(({ url }) => {
+    serverLogger.info(
+      `🚀 Public server ready at http://localhost:${config.app.port}${url}`,
+    );
+  }),
+);

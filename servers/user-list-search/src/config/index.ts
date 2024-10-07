@@ -8,8 +8,6 @@ export const config = {
   serviceName: 'user-list-search',
   tracing: {
     host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
-    release: process.env.GIT_SHA || '',
-    serviceName: 'user-list-search',
   },
   app: {
     environment: process.env.NODE_ENV || 'development',
