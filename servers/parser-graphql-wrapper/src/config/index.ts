@@ -12,7 +12,9 @@ export default {
   serviceName: 'parser-graphql-wrapper',
   tracing: {
     graphQLDepth: 8, // very permissive limit on depth tracing
-    release: process.env.GIT_SHA || 'local',
+    samplingRatio: 0.01,
+    grpcDefaultPort: 4317,
+    httpDefaultPort: 4318,
     serviceName: 'parser-graphql-wrapper',
     host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
   },
