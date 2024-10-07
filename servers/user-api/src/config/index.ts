@@ -39,6 +39,7 @@ const localAwsEndpoint =
 
 export default {
   app: {
+    serviceName,
     environment: process.env.NODE_ENV || 'development',
     port: 4006,
   },
@@ -76,11 +77,19 @@ export default {
     dsn: process.env.SENTRY_DSN || '',
     release: process.env.GIT_SHA || '',
     environment: process.env.NODE_ENV || 'development',
+    samplerFlag: 'perm.backend.sentry-trace-sampler-rate',
   },
   serviceName,
   tracing: {
     host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
     serviceName: serviceName,
+    release: process.env.GIT_SHA || 'local',
+  },
+  unleash: {
+    clientKey: process.env.UNLEASH_KEY || 'unleash-key-fake',
+    endpoint: process.env.UNLEASH_ENDPOINT || 'http://localhost:4242/api',
+    refreshInterval: 60 * 1000, // ms
+    timeout: 2 * 1000, // ms
   },
   secrets: {
     contactHash: process.env.CONTACT_HASH || 'abcdefghijklmnop',

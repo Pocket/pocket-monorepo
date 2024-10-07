@@ -96,3 +96,25 @@ services:
       retries: 30
     ports:
       - '9090:9090'
+  
+  otlpcollector:
+    image: grafana/otel-lgtm
+    ports:
+      # there are lots more ports available, but these are the only one's
+      # currently being used
+      - 4317:4317 # OTLP gRPC receiver
+      - 4318:4318 # OTLP http receiver
+      - 3000:3000 # Grafana
+
+  # Uncomment this if you want to run the collector locally and send to GCP instead of the one used for local development
+  # Make sure to have a service json in GOOGLE_APPLICATION_CREDENTIALS_JSON in the .env file
+  # otlpcollector:
+  #   image: pocket/opentelemetry-collector-contrib
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     # there are lots more ports available, but these are the only one's
+  #     # currently being used
+  #     - 4317:4317 # OTLP gRPC receiver
+  #     - 4318:4318 # OTLP http receiver
+  #     - 3000:3000 # Grafana
