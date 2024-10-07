@@ -24,6 +24,7 @@
     "test:watch": "pnpm run test -- --watch"
   },
   "dependencies": {
+    "@pocket-tools/ts-logger": "workspace:*",
     "tslib": "2.7.0",
     "unleash-client": "6.1.1"
   },
