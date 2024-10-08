@@ -27,7 +27,7 @@ export const config = {
     env_code: isDev ? 'dev' : 'prod',
   },
   healthCheck: {
-    command: ['CMD-SHELL', 'curl -f http://localhost/status || exit 1'],
+    command: ['CMD-SHELL', 'curl -f http://localhost:3000/status || exit 1'],
     interval: 15,
     retries: 3,
     timeout: 5,

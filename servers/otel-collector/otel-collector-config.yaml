@@ -6,13 +6,7 @@ receivers:
       # grpc:
       #   endpoint: "0.0.0.0:4317" # gRPC port for receiving traces, metrics, and logs over gRPC
       http:
-        endpoint: "localhost:4318" # http port for receiving traces, metrics, and logs over http
-
-extensions:
-  health_check:
-    endpoint: localhost:13133
-   
-
+        endpoint: '0.0.0.0:4318' # http port for receiving traces, metrics, and logs over http
 
 exporters:
   googlecloud:
@@ -23,7 +17,7 @@ exporters:
 processors:
   memory_limiter:
     check_interval: 1s
-    limit_percentage: 30
+    limit_percentage: 70
     spike_limit_percentage: 10
   batch:
     # batch metrics before sending to reduce API usage
@@ -31,11 +25,11 @@ processors:
     send_batch_size: 10000
     timeout: 5s
   resourcedetection/ecs:
-      detectors: [env, ecs]
-      timeout: 2s
-      # Ensures that anything coming from the ECS detector in code will not override any existing attributes.
-      # Otherwise, note, that the ECS detector will be that of where the collector is running, not the service.
-      override: false
+    detectors: [env, ecs]
+    timeout: 2s
+    # Ensures that anything coming from the ECS detector in code will not override any existing attributes.
+    # Otherwise, note, that the ECS detector will be that of where the collector is running, not the service.
+    override: false
   resource/cleanup_for_google:
     attributes:
       - key: service.namespace
@@ -61,13 +55,31 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [resourcedetection/ecs, resource/cleanup_for_google, memory_limiter, batch]
-      exporters: [debug]
+      processors:
+        [
+          resourcedetection/ecs,
+          resource/cleanup_for_google,
+          memory_limiter,
+          batch,
+        ]
+      exporters: [googlecloud]
     metrics:
       receivers: [otlp]
-      processors: [resourcedetection/ecs, resource/cleanup_for_google, memory_limiter, batch]
+      processors:
+        [
+          resourcedetection/ecs,
+          resource/cleanup_for_google,
+          memory_limiter,
+          batch,
+        ]
       exporters: [googlecloud]
     logs:
       receivers: [otlp]
-      processors: [resourcedetection/ecs, resource/cleanup_for_google, memory_limiter, batch]
-      exporters: [debug]
+      processors:
+        [
+          resourcedetection/ecs,
+          resource/cleanup_for_google,
+          memory_limiter,
+          batch,
+        ]
+      exporters: [googlecloud]

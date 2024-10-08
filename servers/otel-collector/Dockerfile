@@ -1,13 +1,10 @@
 # Use an alpine image as our base image, this allows us to define our own entry point script and have access to sh or bash, which the otel image does not have
 FROM alpine:3
+RUN apk add nginx curl
 
 # Copy the otelcol-contrib binary from the official image
 COPY --from=otel/opentelemetry-collector-contrib:0.111.0 /otelcol-contrib /otelcol-contrib
-
 COPY otel-collector-config.yaml /etc/otelcol-contrib/config.yaml
-
-
-RUN apk add nginx curl
 COPY httpd.conf /etc/nginx/http.d/default.conf
 
 COPY entrypoint.sh /entrypoint.sh

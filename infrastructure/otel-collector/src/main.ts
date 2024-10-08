@@ -91,8 +91,7 @@ class OTELCollector extends TerraformStack {
       containerConfigs: [
         {
           healthCheck: config.healthCheck,
-          name: 'otel-collector',
-          containerImage: 'pocket/opentelemetry-collector-contrib',
+          name: 'app',
           essential: true,
           portMappings: [{ containerPort: 3000, hostPort: 3000 }],
           logMultilinePattern: '^\\S.+',
@@ -109,7 +108,6 @@ class OTELCollector extends TerraformStack {
               valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/GCP_SA_TRACES:::`,
             },
           ],
-          repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
         },
       ],
       codeDeploy: {
