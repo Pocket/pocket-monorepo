@@ -93,7 +93,7 @@ function awaitAttributes(detector: DetectorSync): Detector {
     async detect(config: ResourceDetectionConfig): Promise<IResource> {
       const resource = detector.detect(config);
       await resource.waitForAsyncAttributes?.();
-
+      console.log('Detected resource: ', resource);
       return resource;
     },
   };
@@ -173,6 +173,9 @@ export async function nodeSDKBuilder(config: TracingConfig) {
       },
       '@opentelemetry/instrumentation-http': {
         ignoreIncomingPaths: ['/.well-known/apollo/server-health'],
+      },
+      '@opentelemetry/instrumentation-graphql': {
+        ignoreTrivialResolveSpans: true,
       },
     }),
   ];

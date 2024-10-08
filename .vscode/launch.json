@@ -13,6 +13,18 @@
       "sourceMaps": true,
       "localRoot": "${workspaceFolder}/servers/v3-proxy-api/src",
       "outFiles": ["${workspaceFolder}/servers/v3-proxy-api/dist/**/*.js"]
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to parser-graphql-wrapper",
+      "remoteRoot": null,
+      "port": 9229,
+      "sourceMaps": true,
+      "localRoot": "${workspaceFolder}/servers/parser-graphql-wrapper/src",
+      "outFiles": [
+        "${workspaceFolder}/servers/parser-graphql-wrapper/dist/**/*.js"
+      ]
     }
   ]
 }
