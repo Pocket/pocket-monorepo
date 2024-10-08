@@ -123,36 +123,36 @@ telemetry:
           'environment.name': '${env.APP_ENVIRONMENT}'
           'service.name': 'client-api'
           'environment.namespace': pocket
-    # metrics:
-    #     common:
-    #       resource:
-    #         'environment.name': '${env.APP_ENVIRONMENT}'
-    #         'service.name': 'client-api'
-    #         'environment.namespace': pocket
-    #       views:
-    #         # https://www.apollographql.com/docs/graphos/routing/security/demand-control#configuring-instrument-output
-    #         # Define a custom view because cost is different than the default latency-oriented view of OpenTelemetry
-    #         - name: cost.*
-    #           aggregation:
-    #             histogram:
-    #               buckets:
-    #                 - 0
-    #                 - 10
-    #                 - 100
-    #                 - 1000
-    #                 - 10000
-    #                 - 100000
-    #                 - 1000000
-    #     otlp:
-    #       enabled: false
-    #       endpoint: 'http://${env.OTLP_COLLECTOR_HOST:-localhost}:4317'
-    #       protocol: grpc
-    #       batch_processor:
-    #         scheduled_delay: 10000ms # 10 secs export due to google cloud rate limits
-    #         max_concurrent_exports: 1000
-    #         max_export_batch_size: 10000
-    #         max_export_timeout: 100s
-    #         max_queue_size: 10000
+    metrics:
+      common:
+        resource:
+          'environment.name': '${env.APP_ENVIRONMENT}'
+          'service.name': 'client-api'
+          'environment.namespace': pocket
+        views:
+          # https://www.apollographql.com/docs/graphos/routing/security/demand-control#configuring-instrument-output
+          # Define a custom view because cost is different than the default latency-oriented view of OpenTelemetry
+          - name: cost.*
+            aggregation:
+              histogram:
+                buckets:
+                  - 0
+                  - 10
+                  - 100
+                  - 1000
+                  - 10000
+                  - 100000
+                  - 1000000
+      otlp:
+        enabled: false
+        endpoint: '${env.OTLP_COLLECTOR_URL:-http://localhost:4318}'
+        protocol: http
+        batch_processor:
+          scheduled_delay: 10000ms # 10 secs export due to google cloud rate limits
+          max_concurrent_exports: 1000
+          max_export_batch_size: 10000
+          max_export_timeout: 100s
+          max_queue_size: 10000
     tracing:
       common:
         resource:
@@ -169,13 +169,13 @@ telemetry:
         header_name: 'pocket-trace-id'
       otlp:
         enabled: true
-        endpoint: 'http://${env.OTLP_COLLECTOR_HOST:-localhost}:4317'
-        protocol: grpc
+        endpoint: '${env.OTLP_COLLECTOR_URL:-http://localhost:4318}'
+        protocol: http
         batch_processor:
           scheduled_delay: 100ms
           max_concurrent_exports: 1000
           max_export_batch_size: 10000
-          max_export_timeout: 100s
+          max_export_timeout: 2s
           max_queue_size: 10000
 apq:
   router:

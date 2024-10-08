@@ -81,7 +81,7 @@ export default {
   },
   serviceName,
   tracing: {
-    host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
+    url: process.env.OTLP_COLLECTOR_URL || 'http://localhost:4318',
     serviceName: serviceName,
     release: process.env.GIT_SHA || 'local',
   },

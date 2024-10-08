@@ -81,6 +81,7 @@ locals {
       sns_topic_corpus_events     = "PocketEventBridge-Dev-CorpusEventsTopic"
       sns_topic_collection_events = "PocketEventBridge-Dev-CollectionEventTopic"
       userApiUri                  = "https://user-list-search.getpocket.dev"
+      otlpCollectorUrl            = "https://otel-collector.getpocket.dev:443"
     }
 
     UserListSearch-Prod = {
@@ -97,6 +98,7 @@ locals {
       sns_topic_corpus_events     = "PocketEventBridge-Prod-CorpusEventsTopic"
       sns_topic_collection_events = "PocketEventBridge-Prod-CollectionEventTopic"
       userApiUri                  = "https://user-list-search.readitlater.com"
+      otlpCollectorUrl            = "https://otel-collector.readitlater.com:443"
     }
   }
 

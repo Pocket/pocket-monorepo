@@ -123,7 +123,7 @@ export default {
     },
   },
   tracing: {
-    host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
+    url: process.env.OTLP_COLLECTOR_URL || 'http://localhost:4318',
     release: process.env.GIT_SHA || '',
     serviceName,
     graphQLDepth: 8,

@@ -13,7 +13,7 @@ export default {
     9346, 7035, 15449, 22931, 23283, 53720, 60289, 70018, 73360,
   ],
   tracing: {
-    host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
+    url: process.env.OTLP_COLLECTOR_URL || 'http://localhost:4318',
     serviceName: 'v3-api-proxy',
     release: process.env.GIT_SHA || 'local',
   },

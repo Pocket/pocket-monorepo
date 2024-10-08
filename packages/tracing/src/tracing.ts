@@ -1,14 +1,14 @@
 import process from 'process';
-import { NodeSDK } from '@opentelemetry/sdk-node';
-import {
-  DiagConsoleLogger,
-  DiagLogLevel,
-  DiagLogger,
-  diag,
-} from '@opentelemetry/api';
+import { NodeSDK, logs } from '@opentelemetry/sdk-node';
+import { DiagLogLevel, DiagLogger, diag } from '@opentelemetry/api';
 import { KnexInstrumentation } from '@opentelemetry/instrumentation-knex';
 
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
+import { OTLPTraceExporter as HTTPOTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
+import { OTLPTraceExporter as GRPCOTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
+
+import { OTLPLogExporter as HTTPOTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
+import { OTLPLogExporter as GRPCOTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-grpc';
+
 import { PrismaInstrumentation } from '@prisma/instrumentation';
 import { Detector, Resource } from '@opentelemetry/resources';
 import {
@@ -17,8 +17,10 @@ import {
 } from '@opentelemetry/semantic-conventions';
 
 import { SentrySampler } from '@sentry/opentelemetry';
-// import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
-// import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-grpc';
+import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
+import { OTLPMetricExporter as HTTPOTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
+import { OTLPMetricExporter as GRPCOTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-grpc';
+
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 
 import {
@@ -29,11 +31,15 @@ import {
   hostDetectorSync,
   processDetectorSync,
 } from '@opentelemetry/resources';
+import { awsEcsDetectorSync } from '@opentelemetry/resource-detector-aws';
 
 import * as Sentry from '@sentry/node';
 import type { NodeClient } from '@sentry/node';
+
+import { serverLogger } from '@pocket-tools/ts-logger';
 import {
   BatchSpanProcessor,
+  BufferConfig,
   ParentBasedSampler,
 } from '@opentelemetry/sdk-trace-base';
 import { AWSXRayPropagator } from '@opentelemetry/propagator-aws-xray';
@@ -57,9 +63,8 @@ export type TracingConfig = {
   release: string;
   samplingRatio?: number;
   graphQLDepth?: number;
-  grpcDefaultPort?: number;
-  httpDefaultPort?: number;
-  host?: string;
+  url?: string;
+  protocol?: 'GRPC' | 'HTTP';
   logger?: DiagLogger;
   sentry: NodeClient | undefined;
   additionalInstrumentations?: AdditionalInstrumentation[];
@@ -70,10 +75,8 @@ const tracingDefaults: TracingConfig = {
   release: 'unknown',
   sentry: undefined,
   graphQLDepth: 8,
-  grpcDefaultPort: 4317,
-  httpDefaultPort: 4318,
-  host: 'localhost',
-  logger: new DiagConsoleLogger(),
+  url: 'http://localhost:4318',
+  protocol: 'HTTP',
   additionalInstrumentations: [],
 };
 
@@ -96,6 +99,13 @@ function awaitAttributes(detector: DetectorSync): Detector {
   };
 }
 
+const batchConfig: BufferConfig = {
+  maxQueueSize: 4096,
+  maxExportBatchSize: 1000,
+  scheduledDelayMillis: 1000,
+  exportTimeoutMillis: 5000,
+};
+
 /**
  * function to setup open-telemetry tracing config
  * Note: this function has to run before initial
@@ -110,9 +120,6 @@ export async function nodeSDKBuilder(config: TracingConfig) {
    * sample apps: https://github.com/aws-observability/aws-otel-community/blob/master/sample-apps/javascript-sample-app/nodeSDK.js
    */
 
-  //tracing level set for open-telemetry
-  diag.setLogger(config.logger ?? new DiagConsoleLogger(), DiagLogLevel.WARN);
-
   const _resource = Resource.default().merge(
     new Resource({
       [ATTR_SERVICE_NAME]: config.serviceName,
@@ -120,22 +127,36 @@ export async function nodeSDKBuilder(config: TracingConfig) {
     }),
   );
 
-  const _traceExporter = new OTLPTraceExporter({
-    //collector url
-    url: `http://${config.host}:${config.grpcDefaultPort}`,
+  const _traceExporter =
+    config.protocol === 'HTTP'
+      ? new HTTPOTLPTraceExporter({
+          //collector url
+          url: `${config.url}/v1/traces`,
+        })
+      : new GRPCOTLPTraceExporter({ url: config.url });
+
+  const _metricReader = new PeriodicExportingMetricReader({
+    exporter:
+      config.protocol === 'HTTP'
+        ? new HTTPOTLPMetricExporter({
+            url: `${config.url}/v1/metrics`,
+          })
+        : new GRPCOTLPMetricExporter({ url: config.url }),
+    // once every 60 seconds, GCP supports 1 every 5 seconds for custom metrics https://cloud.google.com/monitoring/quotas#custom_metrics_quotas
+    // But lets just do 60 seconds for now as we figure it out
+    exportIntervalMillis: 60000,
   });
 
-  // const _metricReader = new PeriodicExportingMetricReader({
-  //   exporter: new OTLPMetricExporter({
-  //     url: `http://${config.host}:${config.grpcDefaultPort}`,
-  //   }),
-  //   exportIntervalMillis: 10000, // once every 10 seconds, GCP supports 1 every 5 seconds for custom metrics https://cloud.google.com/monitoring/quotas#custom_metrics_quotas
-  // });
+  const _logExporter =
+    config.protocol === 'HTTP'
+      ? new HTTPOTLPLogExporter({ url: `${config.url}/v1/logs` })
+      : new GRPCOTLPLogExporter({ url: config.url });
 
   // set up the default instrumentations for all implementors
   const instrumentations: any[] = [
     getNodeAutoInstrumentations({
       '@opentelemetry/instrumentation-fs': {
+        // Disabling Filesystem instrumentation because it is very noisey and memory intense.
         enabled: false,
         requireParentSpan: true,
       },
@@ -162,7 +183,6 @@ export async function nodeSDKBuilder(config: TracingConfig) {
       new additionalInstrumentationConstructors[instrumentation](),
     );
   });
-
   const sdk = new NodeSDK({
     textMapPropagator: new AWSXRayPropagator(),
     instrumentations,
@@ -172,20 +192,26 @@ export async function nodeSDKBuilder(config: TracingConfig) {
     contextManager: new Sentry.SentryContextManager(),
     resource: _resource,
     idGenerator: new AWSXRayIdGenerator(),
-    spanProcessors: [new BatchSpanProcessor(_traceExporter)],
-    traceExporter: _traceExporter,
-    // metricReader: _metricReader,
+    spanProcessors: [new BatchSpanProcessor(_traceExporter, batchConfig)],
+    metricReader: _metricReader,
+    logRecordProcessors: [
+      new logs.BatchLogRecordProcessor(_logExporter, batchConfig),
+    ],
     // TODO: Remove after issue is fixed
     // https://github.com/open-telemetry/opentelemetry-js/issues/4638
     resourceDetectors: [
       awaitAttributes(envDetectorSync),
       awaitAttributes(hostDetectorSync),
       awaitAttributes(processDetectorSync),
+      awaitAttributes(awsEcsDetectorSync),
     ],
   });
 
   // this enables the API to record telemetry
   sdk.start();
+  //tracing level set for open-telemetry
+  // this has to happen after the OTEL is setup so that the ts-logger is patched
+  diag.setLogger(config.logger ?? serverLogger, DiagLogLevel.WARN);
   diag.info('Tracer successfully started');
 
   // Validate that the setup is correct
