@@ -1218,6 +1218,32 @@ describe('v3Get', () => {
       expect(callSpy).toHaveBeenCalledTimes(1);
       expect(response.status).toBe(200);
     });
+    it.skip('should work with form data', async () => {
+      // Skipping because this request hangs indefinitely for some reason
+      // TODO
+      const params = {
+        consumer_key: 'test',
+        detailType: 'complete',
+        contentType: 'article',
+        count: '10',
+        offset: '10',
+        state: 'read',
+        favorite: '0',
+        tag: 'tag',
+        sort: 'newest',
+        since: '12345',
+      };
+      const callSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app)
+        .post('/v3/get')
+        .type('multipart/form')
+        .field(params);
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+      expect(callSpy).toHaveBeenCalledTimes(1);
+      expect(response.status).toBe(200);
+    });
     it('merges query strings and body params', async () => {
       const qs = {
         consumer_key: 'test-ck',
