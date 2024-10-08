@@ -7,7 +7,9 @@ const localAwsEndpoint =
 export const config = {
   serviceName: 'user-list-search',
   tracing: {
-    host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
+    url: process.env.OTLP_COLLECTOR_URL || 'http://localhost:4318',
+    release: process.env.GIT_SHA || '',
+    serviceName: 'user-list-search',
   },
   app: {
     environment: process.env.NODE_ENV || 'development',

@@ -1,5 +1,4 @@
 import { initialize, Unleash, UnleashConfig } from 'unleash-client';
-import { serverLogger } from '@pocket-tools/ts-logger';
 export { mockUnleash } from './mockClient';
 export type { Unleash } from 'unleash-client';
 
@@ -24,8 +23,8 @@ export function getUnleash(config: UnleashConfig): Unleash {
   // on startup (defaults to any fallback values provided to `isEnabled`,
   // etc. until client is marked as ready).
   const unleash = initialize(config);
-  unleash.on('error', (err) =>
-    serverLogger.error('Unleash errror', { data: err }),
-  );
+  // we use console.error instead of our usual server logger,
+  // because unleash can be init'd before our logger is and it interferes with tracing
+  unleash.on('error', (err) => console.error('Unleash errror', { data: err }));
   return unleash;
 }

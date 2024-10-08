@@ -123,11 +123,9 @@ export default {
     },
   },
   tracing: {
-    host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
-    serviceName: 'list-api',
+    url: process.env.OTLP_COLLECTOR_URL || 'http://localhost:4318',
+    release: process.env.GIT_SHA || '',
+    serviceName,
     graphQLDepth: 8,
-    samplingRatio: 0.01,
-    grpcDefaultPort: 4317,
-    httpDEfaultPort: 4318,
   },
 };

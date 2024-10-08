@@ -235,8 +235,8 @@ class ClientAPI extends TerraformStack {
               value: config.isProd ? 'production' : 'development',
             },
             {
-              name: 'OTLP_COLLECTOR_HOST',
-              value: `${config.tracing.host}`,
+              name: 'OTLP_COLLECTOR_URL',
+              value: `${config.tracing.url}`,
             },
             {
               name: 'REDIS_ENDPOINT',
@@ -309,19 +309,7 @@ class ClientAPI extends TerraformStack {
             effect: 'Allow',
           },
         ],
-        taskRolePolicyStatements: [
-          {
-            actions: [
-              'xray:PutTraceSegments',
-              'xray:PutTelemetryRecords',
-              'xray:GetSamplingRules',
-              'xray:GetSamplingTargets',
-              'xray:GetSamplingStatisticSummaries',
-            ],
-            resources: ['*'],
-            effect: 'Allow',
-          },
-        ],
+        taskRolePolicyStatements: [],
         taskExecutionDefaultAttachmentArn:
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },

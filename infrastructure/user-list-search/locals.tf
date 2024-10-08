@@ -29,6 +29,7 @@ locals {
   }
   private_subnet_ids = split(",", data.aws_ssm_parameter.private_subnets.value)
   secret_path        = "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${local.name}/${local.env}/"
+  secret_path_shared = "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:Shared/"
   ssm_path           = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${local.name}/${local.env}/"
   ssm_path_shared    = "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/Shared/${local.env}/"
 
@@ -80,6 +81,7 @@ locals {
       sns_topic_corpus_events     = "PocketEventBridge-Dev-CorpusEventsTopic"
       sns_topic_collection_events = "PocketEventBridge-Dev-CollectionEventTopic"
       userApiUri                  = "https://user-list-search.getpocket.dev"
+      otlpCollectorUrl            = "https://otel-collector.getpocket.dev:443"
     }
 
     UserListSearch-Prod = {
@@ -96,6 +98,7 @@ locals {
       sns_topic_corpus_events     = "PocketEventBridge-Prod-CorpusEventsTopic"
       sns_topic_collection_events = "PocketEventBridge-Prod-CollectionEventTopic"
       userApiUri                  = "https://user-list-search.readitlater.com"
+      otlpCollectorUrl            = "https://otel-collector.readitlater.com:443"
     }
   }
 

@@ -50,4 +50,9 @@ export const config = {
       userEvents: `PocketEventBridge-${environment}-UserEventTopic`,
     },
   },
+  tracing: {
+    url: isDev
+      ? 'https://otel-collector.getpocket.dev:443'
+      : 'https://otel-collector.readitlater.com:443',
+  },
 };

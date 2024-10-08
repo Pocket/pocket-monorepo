@@ -15,6 +15,10 @@ export function featureFlagTraceSampler(
   flagName: string,
 ): NodeOptions['tracesSampler'] {
   return (context: SamplingContext) => {
+    // Continue trace decision, if there is any parentSampled information
+    if (context.parentSampled !== undefined) {
+      return context.parentSampled;
+    }
     const variant = client.getVariant(flagName, context);
     if (variant.payload != null) {
       if (variant.payload.type === 'number') {

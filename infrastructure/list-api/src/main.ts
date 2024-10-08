@@ -230,6 +230,10 @@ class ListAPI extends TerraformStack {
               name: 'EVENT_BUS_NAME',
               value: config.envVars.eventBusName,
             },
+            {
+              name: 'OTLP_COLLECTOR_URL',
+              value: config.tracing.url,
+            },
           ],
           secretEnvVars: [
             {
@@ -349,11 +353,6 @@ class ListAPI extends TerraformStack {
               'logs:CreateLogStream',
               'logs:DescribeLogStreams',
               'logs:DescribeLogGroups',
-              'xray:PutTraceSegments',
-              'xray:PutTelemetryRecords',
-              'xray:GetSamplingRules',
-              'xray:GetSamplingTargets',
-              'xray:GetSamplingStatisticSummaries',
             ],
             resources: ['*'],
             effect: 'Allow',

@@ -112,6 +112,10 @@ class Stack extends TerraformStack {
               name: 'ENVIRONMENT',
               value: process.env.NODE_ENV ?? 'development', // this gives us a nice lowercase production and development
             },
+            {
+              name: 'OTLP_COLLECTOR_URL',
+              value: config.tracing.url,
+            },
           ],
           secretEnvVars: [
             {
@@ -127,25 +131,6 @@ class Stack extends TerraformStack {
               valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/UNLEASH_KEY`,
             },
           ],
-        },
-        {
-          name: 'aws-otel-collector',
-          command: ['--config=/etc/ecs/ecs-xray.yaml'],
-          containerImage: 'amazon/aws-otel-collector',
-          essential: true,
-          logMultilinePattern: '^\\S.+',
-          logGroup: this.createCustomLogGroup('aws-otel-collector'),
-          portMappings: [
-            {
-              hostPort: 4138,
-              containerPort: 4138,
-            },
-            {
-              hostPort: 4137,
-              containerPort: 4137,
-            },
-          ],
-          repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
         },
       ],
       codeDeploy: {
@@ -194,19 +179,7 @@ class Stack extends TerraformStack {
             effect: 'Allow',
           },
         ],
-        taskRolePolicyStatements: [
-          {
-            actions: [
-              'xray:PutTraceSegments',
-              'xray:PutTelemetryRecords',
-              'xray:GetSamplingRules',
-              'xray:GetSamplingTargets',
-              'xray:GetSamplingStatisticSummaries',
-            ],
-            resources: ['*'],
-            effect: 'Allow',
-          },
-        ],
+        taskRolePolicyStatements: [],
         taskExecutionDefaultAttachmentArn:
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },
