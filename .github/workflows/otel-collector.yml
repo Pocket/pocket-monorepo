@@ -1,0 +1,41 @@
+name: OTEL Collector
+on:
+  pull_request:
+    paths:
+      - 'infrastructure/otel-collector/**'
+      - 'packages/**'
+      - 'docker-compose.yml'
+      - 'servers/otel-collector/**'
+      - '.github/actions/**'
+      - '.github/workflows/otel-collector.yml'
+      - '.github/workflows/reuse-*.yml'
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'infrastructure/otel-collector/**'
+      - 'packages/**'
+      - 'servers/otel-collector/**'
+      - '.github/actions/**'
+      - '.github/workflows/otel-collector.yml'
+      - '.github/workflows/reuse-*.yml'
+jobs:
+
+  infrastructure:
+    uses: ./.github/workflows/reuse-infrastructure.yml
+    with:
+      scope: otel-collector-cdk
+      stack-output-path: infrastructure/otel-collector/cdktf.out/stacks/otel-collector
+    secrets: inherit
+
+  api:
+    uses: ./.github/workflows/reuse-build-and-push-image.yml
+    needs: [infrastructure]
+    with:
+      scope: otel-collector
+      docker-repo-name-pattern: otelcollector-{0}-app
+      context: servers/otel-collector
+      app-path: servers/otel-collector
+      terraform-output: ${{needs.infrastructure.outputs.terraform-output}}
+    secrets: inherit
