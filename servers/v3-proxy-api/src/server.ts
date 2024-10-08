@@ -13,6 +13,7 @@ import v3GetRouter from './routes/v3Get';
 import v3AddRouter from './routes/v3Add';
 import v3FetchRouter from './routes/v3Fetch';
 import v3SendRouter from './routes/v3Send';
+import multer from 'multer';
 
 export async function startServer(port: number): Promise<{
   server: Server;
@@ -24,6 +25,7 @@ export async function startServer(port: number): Promise<{
 
   app.use(json({ limit: sizeLimit }));
   app.use(urlencoded({ limit: sizeLimit, extended: true }));
+  app.use(multer().none());
   app.set('query parser', 'simple');
   app.get('/.well-known/server-health', (req, res) => {
     res.status(200).send('ok');
