@@ -125,7 +125,7 @@ class OTELCollector extends TerraformStack {
         },
       },
       exposedContainer: {
-        name: 'otel-collector',
+        name: 'app',
         port: 3000,
         healthCheckPath: '/status',
       },
