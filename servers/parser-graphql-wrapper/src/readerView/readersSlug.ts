@@ -1,4 +1,4 @@
-import { itemIdFromSlug } from './idUtils';
+import { itemIdFromSlug } from '@pocket-tools/int-mask';
 import DataLoader from 'dataloader';
 import { ItemLoaderType } from '../dataLoaders';
 

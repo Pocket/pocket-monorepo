@@ -1,6 +1,6 @@
 import { IContext } from '../apollo/context';
 import { ReaderFallback } from '../__generated__/resolvers-types';
-import { itemIdFromSlug } from './idUtils';
+import { itemIdFromSlug } from '@pocket-tools/int-mask';
 
 const notFound = { message: "We couldn't find that page." };
 

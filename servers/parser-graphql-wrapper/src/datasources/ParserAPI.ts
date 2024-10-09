@@ -19,7 +19,7 @@ import type {
 } from '@apollo/utils.keyvaluecache';
 import { ParserResponse } from './ParserAPITypes';
 import { backOff } from 'exponential-backoff';
-import { createReaderSlug } from '../readerView/idUtils';
+import { createReaderSlug } from '@pocket-tools/int-mask';
 import type { FetcherResponse } from '@apollo/utils.fetcher';
 export enum MediaTypeParam {
   AS_COMMENTS = '0',
