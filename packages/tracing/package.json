@@ -86,7 +86,6 @@
     "@opentelemetry/sdk-trace-node": "1.26.0",
     "@opentelemetry/semantic-conventions": "1.27.0",
     "@opentelemetry/winston-transport": "0.6.0",
-    "@pocket-tools/ts-logger": "workspace:*",
     "@prisma/instrumentation": "5.19.1",
     "@sentry/node": "8.33.0",
     "@sentry/opentelemetry": "8.33.0",
