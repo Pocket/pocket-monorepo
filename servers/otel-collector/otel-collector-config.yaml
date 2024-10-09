@@ -24,8 +24,8 @@ processors:
     send_batch_max_size: 10100
     send_batch_size: 10000
     timeout: 30s
-  resourcedetection:
-    detectors: [env]
+  resourcedetection/ecs:
+    detectors: [env, ecs]
     timeout: 2s
     # Ensures that anything coming from the ECS detector in code will not override any existing attributes.
     # Otherwise, note, that the ECS detector will be that of where the collector is running, not the service.
