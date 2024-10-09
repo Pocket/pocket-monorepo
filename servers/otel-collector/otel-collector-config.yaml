@@ -12,6 +12,8 @@ exporters:
   googlecloud:
     log:
       default_log_name: opentelemetry.io/collector-exported-log
+    # https://www.googlecloudcommunity.com/gc/Data-Analytics/OpenTelemetry-and-GKE/m-p/674090/highlight/true#M3861
+    timeout: 45s
   # debug:
   #   verbosity: detailed
 processors:
