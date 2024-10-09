@@ -1,6 +1,6 @@
 import process from 'process';
 import { NodeSDK, logs } from '@opentelemetry/sdk-node';
-import { DiagLogLevel, DiagLogger, diag } from '@opentelemetry/api';
+import { DiagConsoleLogger, DiagLogLevel, diag } from '@opentelemetry/api';
 import { KnexInstrumentation } from '@opentelemetry/instrumentation-knex';
 
 import { OTLPTraceExporter as HTTPOTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
@@ -17,9 +17,9 @@ import {
 } from '@opentelemetry/semantic-conventions';
 
 import { SentrySampler } from '@sentry/opentelemetry';
-import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
-import { OTLPMetricExporter as HTTPOTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
-import { OTLPMetricExporter as GRPCOTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-grpc';
+// import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
+// import { OTLPMetricExporter as HTTPOTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
+// import { OTLPMetricExporter as GRPCOTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-grpc';
 
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 
@@ -36,7 +36,6 @@ import { awsEcsDetectorSync } from '@opentelemetry/resource-detector-aws';
 import * as Sentry from '@sentry/node';
 import type { NodeClient } from '@sentry/node';
 
-import { serverLogger } from '@pocket-tools/ts-logger';
 import {
   BatchSpanProcessor,
   BufferConfig,
@@ -65,7 +64,6 @@ export type TracingConfig = {
   graphQLDepth?: number;
   url?: string;
   protocol?: 'GRPC' | 'HTTP';
-  logger?: DiagLogger;
   sentry: NodeClient | undefined;
   additionalInstrumentations?: AdditionalInstrumentation[];
 };
@@ -102,7 +100,7 @@ function awaitAttributes(detector: DetectorSync): Detector {
 const batchConfig: BufferConfig = {
   maxQueueSize: 4096,
   maxExportBatchSize: 1000,
-  scheduledDelayMillis: 1000,
+  scheduledDelayMillis: 500,
   exportTimeoutMillis: 5000,
 };
 
@@ -113,6 +111,7 @@ const batchConfig: BufferConfig = {
  */
 export async function nodeSDKBuilder(config: TracingConfig) {
   config = { ...tracingDefaults, ...config };
+  diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.WARN);
 
   /**
    * documentation:https://aws-otel.github.io/docs/getting-started/js-sdk/trace-manual-instr#instrumenting-the-aws-sdk
@@ -135,17 +134,18 @@ export async function nodeSDKBuilder(config: TracingConfig) {
         })
       : new GRPCOTLPTraceExporter({ url: config.url });
 
-  const _metricReader = new PeriodicExportingMetricReader({
-    exporter:
-      config.protocol === 'HTTP'
-        ? new HTTPOTLPMetricExporter({
-            url: `${config.url}/v1/metrics`,
-          })
-        : new GRPCOTLPMetricExporter({ url: config.url }),
-    // once every 60 seconds, GCP supports 1 every 5 seconds for custom metrics https://cloud.google.com/monitoring/quotas#custom_metrics_quotas
-    // But lets just do 60 seconds for now as we figure it out
-    exportIntervalMillis: 60000,
-  });
+  // const _metricReader = new PeriodicExportingMetricReader({
+  //   exporter:
+  //     config.protocol === 'HTTP'
+  //       ? new HTTPOTLPMetricExporter({
+  //           url: `${config.url}/v1/metrics`,
+  //         })
+  //       : new GRPCOTLPMetricExporter({ url: config.url }),
+  //   // once every 60 seconds, GCP supports 1 every 5 seconds for custom metrics https://cloud.google.com/monitoring/quotas#custom_metrics_quotas
+  //   // But lets just do 60 seconds for now as we figure it out
+  //   exportIntervalMillis: 60000,
+  //   exportTimeoutMillis: 5000,
+  // });
 
   const _logExporter =
     config.protocol === 'HTTP'
@@ -196,7 +196,8 @@ export async function nodeSDKBuilder(config: TracingConfig) {
     resource: _resource,
     idGenerator: new AWSXRayIdGenerator(),
     spanProcessors: [new BatchSpanProcessor(_traceExporter, batchConfig)],
-    metricReader: _metricReader,
+    // Disabling metrics until traces feel in the right space.
+    // metricReader: _metricReader,
     logRecordProcessors: [
       new logs.BatchLogRecordProcessor(_logExporter, batchConfig),
     ],
@@ -214,7 +215,6 @@ export async function nodeSDKBuilder(config: TracingConfig) {
   sdk.start();
   //tracing level set for open-telemetry
   // this has to happen after the OTEL is setup so that the ts-logger is patched
-  diag.setLogger(config.logger ?? serverLogger, DiagLogLevel.WARN);
   diag.info('Tracer successfully started');
 
   // Validate that the setup is correct
