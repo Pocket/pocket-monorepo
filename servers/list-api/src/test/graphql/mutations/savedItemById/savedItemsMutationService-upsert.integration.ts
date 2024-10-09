@@ -23,6 +23,7 @@ import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
 import type { Knex } from 'knex';
 import nock, { cleanAll, restore } from 'nock';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 function mockParserGetItemRequest(urlToParse: string, data: any) {
   nock(config.parserDomain)
@@ -48,7 +49,7 @@ async function getSqsMessages(
   try {
     return await sqs.send(receiveCommand);
   } catch (err) {
-    console.log('unable to read message from the queue', err);
+    serverLogger.error('unable to read message from the queue', err);
   }
 }
 

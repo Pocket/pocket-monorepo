@@ -17,6 +17,7 @@
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand"
   },
   "dependencies": {
+    "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/aws-serverless": "8.33.0",
     "fetch-retry": "^5.0.6",
     "tslib": "2.7.0"

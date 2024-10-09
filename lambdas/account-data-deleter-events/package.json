@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-lambda": "3.637.0",
+    "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/aws-serverless": "8.33.0",
     "fetch-retry": "^5.0.6",
     "stripe": "16.9.0",

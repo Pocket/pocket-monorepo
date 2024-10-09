@@ -3,6 +3,7 @@ import axiosRetry, { exponentialDelay } from 'axios-retry';
 import config from '../config';
 import { Image } from '../types';
 import { getEncodedImageUrl } from './index';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 // Retry requests 3 times
 axiosRetry(axios, { retries: 3 });
@@ -26,7 +27,7 @@ export const getImageMetadata = async (url: string): Promise<Image> => {
       height: response.data.thumbor.source.height,
     };
   } catch {
-    console.log('Error requesting metadata', { metadata: metadataUrl });
+    serverLogger.error('Error requesting metadata', { metadata: metadataUrl });
     throw new Error('Could not get image metadata');
   }
 };

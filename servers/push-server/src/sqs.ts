@@ -7,6 +7,7 @@ import {
   SendMessageCommand,
   SendMessageCommandOutput,
 } from '@aws-sdk/client-sqs';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 const awsEnvironments = ['production', 'development'];
 const localAwsEndpoint =
@@ -55,7 +56,7 @@ export const sqs = {
     tokenType: number,
     token: string,
   ): Promise<SendMessageCommandOutput> => {
-    console.log('Invalidating device token', token);
+    serverLogger.info('Invalidating device token', token);
 
     return client.send(
       new SendMessageCommand({

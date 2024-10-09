@@ -13,7 +13,7 @@ import type {
   SQSBatchItemFailure,
 } from 'aws-lambda';
 import { handlers } from './handlers';
-
+import { serverLogger } from '@pocket-tools/ts-logger';
 /**
  * The main handler function which will be wrapped by Sentry prior to export.
  * Processes messages originating from event bridge. The detail-type field in
@@ -34,7 +34,7 @@ export async function processor(
       }
       await handlers[message['detail-type']](record);
     } catch (error) {
-      console.log(error);
+      serverLogger.error(error);
       Sentry.captureException(error);
       batchFailures.push({ itemIdentifier: record.messageId });
     }
