@@ -20,12 +20,12 @@ processors:
     limit_percentage: 70
     spike_limit_percentage: 10
   batch:
-    # batch metrics before sending to reduce API usage
+    # batch before sending to reduce API usage
     send_batch_max_size: 10100
     send_batch_size: 10000
-    timeout: 5s
-  resourcedetection/ecs:
-    detectors: [env, ecs]
+    timeout: 30s
+  resourcedetection:
+    detectors: [env]
     timeout: 2s
     # Ensures that anything coming from the ECS detector in code will not override any existing attributes.
     # Otherwise, note, that the ECS detector will be that of where the collector is running, not the service.
@@ -42,9 +42,9 @@ processors:
       - key: cloud.availability_zone
         value: us-east1-b
         action: upsert
-      # set this to the ecs task id
+      # set this to the container id
       - key: host.id
-        from_attribute: aws.ecs.task.id
+        from_attribute: container.id
         action: upsert
       # https://opentelemetry.io/docs/specs/semconv/resource/deployment-environment/
       - key: deployment.environment.name
@@ -57,8 +57,8 @@ service:
       receivers: [otlp]
       processors:
         [
-          resourcedetection/ecs,
           resource/cleanup_for_google,
+          resourcedetection/ecs,
           memory_limiter,
           batch,
         ]
@@ -67,8 +67,8 @@ service:
       receivers: [otlp]
       processors:
         [
-          resourcedetection/ecs,
           resource/cleanup_for_google,
+          resourcedetection/ecs,
           memory_limiter,
           batch,
         ]
@@ -77,8 +77,8 @@ service:
       receivers: [otlp]
       processors:
         [
-          resourcedetection/ecs,
           resource/cleanup_for_google,
+          resourcedetection/ecs,
           memory_limiter,
           batch,
         ]
