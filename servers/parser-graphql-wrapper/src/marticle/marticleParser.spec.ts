@@ -6,7 +6,7 @@ import {
   Videoness,
 } from '../__generated__/resolvers-types';
 import { faker } from '@faker-js/faker';
-import { createReaderSlug } from '../readerView/idUtils';
+import { createReaderSlug } from '@pocket-tools/int-mask';
 
 /**
  * Returns data in the format of an API response from the legacy Parser service.

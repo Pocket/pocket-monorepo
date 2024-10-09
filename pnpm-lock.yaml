@@ -2003,6 +2003,9 @@ importers:
       lodash:
         specifier: 4.17.21
         version: 4.17.21
+      md5:
+        specifier: 2.3.0
+        version: 2.3.0
       tslib:
         specifier: 2.7.0
         version: 2.7.0
@@ -2019,6 +2022,9 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/md5':
+        specifier: 2.3.5
+        version: 2.3.5
       '@types/node':
         specifier: ^22.5.2
         version: 22.5.3
@@ -3283,6 +3289,9 @@ importers:
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
+      '@types/md5':
+        specifier: 2.3.5
+        version: 2.3.5
       '@types/node':
         specifier: ^22.5.2
         version: 22.5.3
