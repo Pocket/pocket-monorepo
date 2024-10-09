@@ -1,4 +1,4 @@
-import { createReaderSlug, itemIdFromSlug } from './idUtils';
+import { createReaderSlug, itemIdFromSlug } from './intMaskSlug';
 
 describe('ID Utils', () => {
   afterAll(() => {
