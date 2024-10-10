@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-lambda": "3.637.0",
-    "@sentry/aws-serverless": "8.33.0",
+    "@sentry/aws-serverless": "8.33.1",
     "fetch-retry": "^5.0.6",
     "stripe": "16.9.0",
     "tslib": "2.7.0"

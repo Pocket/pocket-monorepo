@@ -91,8 +91,8 @@ export class GraphQLClientFactory {
     delete headers['host'];
     delete headers['accept-encoding'];
     delete headers['connection'];
-    // delete this header so that Fetch will overwrite it with a new one for this span
-    // delete headers['x-amzn-trace-id'];
+    // Delete the header so that Fetch will auto add its own from the instrumentation with the right span.
+    delete headers['x-amzn-trace-id'];
 
     // add in that this is the proxy to the graphql call
     headers['apollographql-client-name'] = config.app.serviceName;
