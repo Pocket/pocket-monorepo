@@ -162,17 +162,25 @@ export async function nodeSDKBuilder(config: TracingConfig) {
       },
       '@opentelemetry/instrumentation-undici': {
         headersToSpanAttributes: {
-          requestHeaders: [
-            'sentry-trace',
-            'baggage',
-            'x-amzn-trace-id',
-            'encodedid',
-            'applicationname',
-          ],
+          // Outgoing fetch headers to capture on the span
+          requestHeaders: ['sentry-trace', 'baggage', 'x-amzn-trace-id'],
         },
       },
       '@opentelemetry/instrumentation-http': {
         ignoreIncomingPaths: ['/.well-known/apollo/server-health'],
+        headersToSpanAttributes: {
+          server: {
+            // Incoming request headers to be added as span attributes for debugging
+            requestHeaders: [
+              'encodedid',
+              'applicationname',
+              'apiId',
+              'gatewayUserAgent',
+              'premium',
+              'content-type',
+            ],
+          },
+        },
       },
       '@opentelemetry/instrumentation-graphql': {
         ignoreTrivialResolveSpans: true,
