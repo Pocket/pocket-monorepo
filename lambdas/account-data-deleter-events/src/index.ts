@@ -8,6 +8,7 @@ Sentry.init({
 });
 import { SQSBatchItemFailure, SQSEvent } from 'aws-lambda';
 import { handlers } from './handlers';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export async function handlerFn(event: SQSEvent): Promise<any> {
   const batchFailures: SQSBatchItemFailure[] = [];
@@ -22,7 +23,7 @@ export async function handlerFn(event: SQSEvent): Promise<any> {
 
       await handlers[message['detail-type']](record);
     } catch (error) {
-      console.log(error);
+      serverLogger.error(error);
       Sentry.captureException(error);
       batchFailures.push({ itemIdentifier: record.messageId });
     }

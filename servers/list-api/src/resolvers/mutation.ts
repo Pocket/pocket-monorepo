@@ -376,7 +376,7 @@ export async function removeTagsByName(
       args.tagNames,
       args.timestamp,
     );
-    console.log(JSON.stringify(updatedSave));
+    serverLogger.info(JSON.stringify(updatedSave));
   } else {
     updatedSave = await context.models.savedItem.removeTagsFromSaveByUrl(
       args.savedItem.url,

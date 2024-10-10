@@ -10,6 +10,7 @@ import config from '../../config';
 import { eventMap } from './config';
 import { EventHandlerInterface } from '../interfaces';
 import { EventHandlerCallbackMap } from './types';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 /**
  * This class MUST be initialized using the EventBusHandler.init() method.
@@ -50,8 +51,8 @@ export class EventBusHandler implements EventHandlerInterface {
           // Don't halt program, but capture the failure in Sentry and Cloudwatch
           Sentry.addBreadcrumb(failedEventError);
           Sentry.captureException(error);
-          console.log(failedEventError);
-          console.log(error);
+          serverLogger.error(failedEventError);
+          serverLogger.error(error);
         }
       });
     });
@@ -87,7 +88,7 @@ export class EventBusHandler implements EventHandlerInterface {
       );
       // Don't halt program, but capture the failure in Sentry and Cloudwatch
       Sentry.captureException(failedEventError);
-      console.log(failedEventError);
+      serverLogger.error(failedEventError);
     }
   }
 }

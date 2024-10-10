@@ -3,6 +3,7 @@ import { checkSchema, Schema, validationResult } from 'express-validator';
 import { nanoid } from 'nanoid';
 import * as Sentry from '@sentry/node';
 import { deleteSearchIndexByUserId } from '../../saves/elasticsearch';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export const router: Router = Router();
 
@@ -48,8 +49,8 @@ router.post(
       const message = `BatchDelete: Error - Failed to delete search index for User ID: ${userId} (requestId='${requestId}')`;
       Sentry.addBreadcrumb({ message });
       Sentry.captureException(error);
-      console.log(message);
-      console.log(error);
+      serverLogger.error(message);
+      serverLogger.error(error);
     });
 
     return res.send({

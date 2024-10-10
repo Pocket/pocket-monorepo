@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/aws-serverless';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 interface Map {
   [key: string]: Map | any;
@@ -38,7 +39,7 @@ export const addBreadcrumbs = (breadcrumbs: Map): void => {
 };
 
 export const captureException = async (exception: any, breadcrumbs?: Map) => {
-  console.log(exception, breadcrumbs);
+  serverLogger.error(exception, breadcrumbs);
 
   if (breadcrumbs) {
     Sentry.addBreadcrumb(scrubData(breadcrumbs));

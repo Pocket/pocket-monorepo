@@ -18,6 +18,7 @@ import {
   SearchSortInput,
   UserSearchSavedItemsByOffsetArgs,
 } from '../../__generated__/types';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 const { index, type, defaultQueryScore } = config.aws.elasticsearch.list;
 
@@ -306,7 +307,7 @@ export const buildSearchBody = ({
   highlightFields,
   functionalBoosts,
 }: ElasticSearchParams): Record<string, unknown> => {
-  console.log(
+  serverLogger.info(
     'elasticsearch.buildSearchBody',
     JSON.stringify({
       term,
@@ -702,7 +703,7 @@ export const search = async (
   params: ElasticSearchParams,
 ): Promise<PocketSearchResponse> => {
   const body = buildSearchBody(params);
-  console.log('elasticsearch.search.body', JSON.stringify(body));
+  serverLogger.info('elasticsearch.search.body', JSON.stringify(body));
 
   try {
     const result = await client.search({

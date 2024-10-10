@@ -95,8 +95,8 @@ router.post(
         const message = `itemUpdate: Error - Failed to update items User ID: ${userId} items: ${listItems} (requestId='${requestId}')`;
         Sentry.addBreadcrumb({ message });
         Sentry.captureException(error);
-        console.log(message);
-        console.error(error);
+        serverLogger.error(message);
+        serverLogger.error(error);
       }
     }
 

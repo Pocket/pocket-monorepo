@@ -7,7 +7,6 @@ This package is used to obtain a secret or parameter from the [Lambda Layer cach
 ```typescript
 import {fetchSecret} from '@pocket-tools/lambda-secrets';
 const secret = fetchSecret('/Lambda/Super/Secret');
-console.log(secret.superSecretValue);
 ```
 
 This also assumes that the secret stored in Secrets Manager is a JSON based value, which it almost always is.
@@ -17,5 +16,4 @@ This also assumes that the secret stored in Secrets Manager is a JSON based valu
 ```typescript
 import {fetchParameter} from '@pocket-tools/lambda-secrets';
 const parameter = fetchParameter('/Lambda/Super/SecretParameter');
-console.log(parameter);
 ```

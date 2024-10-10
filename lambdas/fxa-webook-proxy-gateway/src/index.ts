@@ -11,7 +11,7 @@ import type { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { FxaJwt } from './jwt';
 import { sendMessage } from './sqs';
 import { SqsEvent, FxaPayload } from './types';
-
+import { serverLogger } from '@pocket-tools/ts-logger';
 /**
  * Format the response data
  * Source: https://docs.aws.amazon.com/lambda/latest/dg/services-apigateway.html#apigateway-types-transforms
@@ -126,7 +126,7 @@ export async function eventHandler(
     } catch (error) {
       // Catch the errors but continue to send any remaining events
       failedEventCount += 1;
-      console.log(
+      serverLogger.error(
         `Failed to send event with data: ${JSON.stringify(event)} with error: ${
           error.message
         }`,
