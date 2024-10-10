@@ -1,4 +1,3 @@
-import { AuthenticationError } from '@pocket-tools/apollo-utils';
 import {
   BasicItemEventPayloadWithContext,
   EventType,
@@ -102,13 +101,6 @@ export class ContextManager implements IContext {
 
   get userId(): string {
     const userId = this.headers.userid;
-
-    if (!userId || userId === 'anonymous') {
-      throw new AuthenticationError(
-        'You must be logged in to use this service',
-      );
-    }
-
     return userId instanceof Array ? userId[0] : userId;
   }
 

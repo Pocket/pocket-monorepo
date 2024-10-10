@@ -1,8 +1,8 @@
 extend schema
   @link(url: "https://specs.apollo.dev/link/v1.0")
   @link(
-    url: "https://specs.apollo.dev/federation/v2.3"
-    import: ["@key", "@composeDirective", "@tag", "@shareable", "@inaccessible"]
+    url: "https://specs.apollo.dev/federation/v2.6"
+    import: ["@key", "@composeDirective", "@tag", "@shareable", "@inaccessible", "@policy", "@requiresScopes"]
   )
   # The link directive is required to federate @constraint
   # It doesn't actually have to be a real spec, but it would be good
@@ -168,7 +168,7 @@ type Query {
     filter: CorpusSearchFilters!,
     sort: CorpusSearchSort,
     pagination: PaginationInput
-  ): CorpusSearchConnection
+  ): CorpusSearchConnection @policy(policies: [["application_is_native:true"]])
 }
 
 type User @key(fields: "id") {
@@ -185,26 +185,26 @@ type User @key(fields: "id") {
     filter: SearchFilterInput
     sort: SearchSortInput
     pagination: PaginationInput
-  ): SavedItemSearchResultConnection
+  ): SavedItemSearchResultConnection @requiresScopes(scopes: [["ROLE_USER"]])
   advancedSearch(
     queryString: String
     filter: AdvancedSearchFilters
     sort: SearchSortInput
     pagination: PaginationInput
-  ): SavedItemSearchResultConnection
+  ): SavedItemSearchResultConnection @requiresScopes(scopes: [["ROLE_USER"]])
   searchSavedItemsByOffset(
     term: String!
     filter: SearchFilterInput
     sort: SearchSortInput
     pagination: OffsetPaginationInput
-  ): SavedItemSearchResultPage @tag(name: "internal")
+  ): SavedItemSearchResultPage @tag(name: "internal") @requiresScopes(scopes: [["ROLE_USER"]])
   advancedSearchByOffset(
     queryString: String
     filter: AdvancedSearchFilters
     sort: SearchSortInput
     pagination: OffsetPaginationInput
   ): SavedItemSearchResultPage @tag(name: "internal")
-  recentSearches: [RecentSearch!]
+  recentSearches: [RecentSearch!] @requiresScopes(scopes: [["ROLE_USER", "ROLE_PREMIUM"]])
 }
 
 """
@@ -449,7 +449,7 @@ type Mutation {
   Save search to potentially appear in recentSearches response.
   Requires premium account (otherwise will send ForbiddenError).
   """
-  saveSearch(search: RecentSearchInput!): RecentSearch
+  saveSearch(search: RecentSearchInput!): RecentSearch @requiresScopes(scopes: [["ROLE_USER", "ROLE_PREMIUM"]])
 }
 
 

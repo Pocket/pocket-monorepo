@@ -107,18 +107,4 @@ describe('getPocketSaveByItemId', () => {
     };
     expect(res.body.data._entities[0]).toEqual(expected);
   });
-  it(`should not return data if the user is not logged in`, async () => {
-    const variables = {
-      slug: createReaderSlug('55'),
-    };
-
-    const res = await request(app)
-      .post(url)
-      .send({
-        query: print(SAVE_FROM_READER),
-        variables,
-      });
-    expect(res.body.data).toBeUndefined();
-    expect(res.body.errors[0].extensions.code).toEqual('UNAUTHENTICATED');
-  });
 });
