@@ -1,10 +1,12 @@
 import knex, { Knex } from 'knex';
 import { config } from '../config';
 import Stripe from 'stripe';
+import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
 
 let readDb: Knex;
 let writeDb: Knex;
 let stripe: Stripe;
+let eventBridge: EventBridgeClient;
 
 /**
  * Create a stripe client for handling Stripe data
@@ -37,6 +39,16 @@ export function writeClient(): Knex {
   writeDb = createConnection(config.database.write);
 
   return writeDb;
+}
+
+export function eventBridgeClient(): EventBridgeClient {
+  if (eventBridge) return eventBridge;
+  eventBridge = new EventBridgeClient({
+    endpoint: config.aws.endpoint,
+    region: config.aws.region,
+    maxAttempts: config.aws.maxRetries,
+  });
+  return eventBridge;
 }
 
 /**

@@ -44,6 +44,8 @@ export class TransactionalEmailSQSLambda extends Construct {
             config.lambda.braze.marketingEmailSubscription,
           BRAZE_FORGOT_PASSWORD_CAMPAIGN_ID:
             config.lambda.braze.forgotPasswordCampaignId,
+          BRAZE_LIST_EXPORT_READY_CAMPAIGN_ID:
+            config.lambda.braze.listExportReadyCampaignId,
         },
         ignoreEnvironmentVars: ['GIT_SHA'],
         vpcConfig: {

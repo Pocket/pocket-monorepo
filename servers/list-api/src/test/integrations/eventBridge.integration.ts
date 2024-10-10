@@ -23,7 +23,7 @@ const testSavedItem: SavedItem = {
 };
 
 const eventData: Omit<ItemEventPayload, 'eventType'> = {
-  user: { id: '1', isPremium: false },
+  user: { id: '1', hashedId: 'abc123', isPremium: false },
   apiUser: { apiId: '1' },
   savedItem: testSavedItem,
   tags: ['this', 'not', 'that'],

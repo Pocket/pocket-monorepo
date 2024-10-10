@@ -5,6 +5,7 @@ import {
   sqsQueuePolicy,
   dataAwsSqsQueue,
 } from '@cdktf/provider-aws';
+import { type SnsTopicSubscriptionConfig } from '@cdktf/provider-aws/lib/sns-topic-subscription';
 import { TerraformMetaArguments, TerraformResource } from 'cdktf';
 import { Construct } from 'constructs';
 
@@ -16,6 +17,8 @@ export interface ApplicationSqsSnsTopicSubscriptionProps
   snsDlq?: sqsQueue.SqsQueue;
   tags?: { [key: string]: string };
   dependsOn?: TerraformResource[];
+  filterPolicy?: SnsTopicSubscriptionConfig['filterPolicy'];
+  filterPolicyScope?: SnsTopicSubscriptionConfig['filterPolicyScope'];
 }
 
 /**
@@ -66,6 +69,8 @@ export class ApplicationSqsSnsTopicSubscription extends Construct {
         redrivePolicy: JSON.stringify({
           deadLetterTargetArn: snsTopicDlq.arn,
         }),
+        filterPolicy: this.config.filterPolicy,
+        filterPolicyScope: this.config.filterPolicyScope,
         dependsOn: [
           snsTopicDlq,
           ...(this.config.dependsOn ? this.config.dependsOn : []),

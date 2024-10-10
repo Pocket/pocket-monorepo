@@ -1,4 +1,5 @@
 import {
+  BasicItemEventPayloadContext,
   BasicItemEventPayloadWithContext,
   EventType,
   ItemsEventEmitter,
@@ -28,6 +29,7 @@ export interface IContext {
   dbClient: Knex;
   eventEmitter: ItemsEventEmitter;
   unleash: Unleash;
+  eventContext: BasicItemEventPayloadContext;
   models: {
     tag: TagModel;
     pocketSave: PocketSaveModel;
@@ -124,6 +126,33 @@ export class ContextManager implements IContext {
     return this._dbClient;
   }
 
+  public get eventContext(): BasicItemEventPayloadContext {
+    return {
+      user: {
+        id: this.userId,
+        hashedId: this.headers.encodedid as string,
+        email: this.headers.email,
+        guid: parseInt(this.headers.guid),
+        hashedGuid: this.headers.encodedguid,
+        isPremium: this.userIsPremium,
+      },
+      apiUser: {
+        apiId: this.apiId,
+        name: this.headers.applicationname,
+        isNative: this.headers.applicationisnative === 'true', // boolean value in header as string
+        isTrusted: this.headers.applicationistrusted === 'true', // boolean value in header as string
+        clientVersion: this.headers.clientversion,
+      },
+      request: {
+        language: this.headers.gatewaylanguage,
+        snowplowDomainUserId: this.headers.gatewaysnowplowdomainuserid,
+        snowplowDomainSessionId: this.headers.gatewaysnowplowdomainsessionid,
+        ipAddress: this.headers.gatewayipaddress,
+        userAgent: this.headers.gatewayuseragent,
+      },
+    };
+  }
+
   /**
    * Emit item events
    * @param event
@@ -169,28 +198,7 @@ export class ContextManager implements IContext {
       savedItem: save,
       tags,
       tagsUpdated,
-      user: {
-        id: this.userId,
-        hashedId: this.headers.encodedid,
-        email: this.headers.email,
-        guid: parseInt(this.headers.guid),
-        hashedGuid: this.headers.encodedguid,
-        isPremium: this.userIsPremium,
-      },
-      apiUser: {
-        apiId: this.apiId,
-        name: this.headers.applicationname,
-        isNative: this.headers.applicationisnative === 'true', // boolean value in header as string
-        isTrusted: this.headers.applicationistrusted === 'true', // boolean value in header as string
-        clientVersion: this.headers.clientversion,
-      },
-      request: {
-        language: this.headers.gatewaylanguage,
-        snowplowDomainUserId: this.headers.gatewaysnowplowdomainuserid,
-        snowplowDomainSessionId: this.headers.gatewaysnowplowdomainsessionid,
-        ipAddress: this.headers.gatewayipaddress,
-        userAgent: this.headers.gatewayuseragent,
-      },
+      ...this.eventContext,
     };
   }
 }

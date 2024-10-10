@@ -21,6 +21,7 @@ export const config = {
   constructName,
   domain,
   releaseSha,
+  eventBusName: `PocketEventBridge-${environment}-Shared-Event-Bus`,
   dynamodb: {
     historicalDeletedUsers: {
       tableName: 'HistoricalDeletedUsers-Pending',
@@ -35,13 +36,16 @@ export const config = {
   envVars: {
     databasePort: '3306',
     sqsBatchDeleteQueueName: `${prefix}-Sqs-Batch-Delete-Consumer-Queue`,
+    listExportQueueName: `${prefix}-List-Export-Consumer-Queue`,
     databaseTz: 'US/Central',
+    eventBusName: `PocketEventBridge-${environment}-Shared-Event-Bus`,
   },
   isDev,
   isProd,
   lambda: {
     snsTopicName: {
       userEvents: `PocketEventBridge-${environment}-UserEventTopic`,
+      listEvents: `PocketEventBridge-${environment}-ListEventTopic`,
     },
     batchDeleteLambda: {
       name: 'BatchDeleteLambda',
