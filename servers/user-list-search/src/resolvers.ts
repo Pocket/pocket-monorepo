@@ -9,10 +9,11 @@ import {
   advancedSearchByOffset,
 } from './datasource/elasticsearch/elasticsearchSearch';
 import {
+  ForbiddenError,
   PocketDefaultScalars,
   UserInputError,
 } from '@pocket-tools/apollo-utils';
-import { IContext } from './server/context';
+import { assertLoggedIn, IContext } from './server/context';
 import { SavedItemDataService } from './datasource/SavedItemsDataSource';
 import { config } from './config';
 import { MysqlDataSource } from './datasource/MysqlDataSource';
@@ -70,6 +71,7 @@ function elasticSearch(
   { params }: { params: SearchParams },
   context: IContext,
 ): Promise<SearchResult> {
+  assertLoggedIn(context);
   const searchFilter: ElasticSearchFilter = {
     userId: context.userId,
     ...params['filters'],
@@ -91,6 +93,7 @@ export const resolvers: Resolvers = {
       params: UserAdvancedSearchArgs,
       context: IContext,
     ): Promise<SavedItemSearchResultConnection> => {
+      assertLoggedIn(context);
       if (params.pagination?.before || params.pagination?.last) {
         throw new UserInputError(
           'Pagination by "before"/"last" are not supported. ' +
@@ -125,6 +128,7 @@ export const resolvers: Resolvers = {
       params,
       context: IContext,
     ): Promise<SavedItemSearchResultConnection> => {
+      assertLoggedIn(context);
       // If the user is premium, and they did not select onlyTitleAndURL
       // send them down the premium search path
       // Note that this will note return search highlights
@@ -140,6 +144,7 @@ export const resolvers: Resolvers = {
       params,
       context: IContext,
     ): Promise<SavedItemSearchResultPage> => {
+      assertLoggedIn(context);
       // Set up default to ensure pagination fields are always present
       params.pagination = {
         limit: config.pagination.defaultPageSize,
@@ -161,6 +166,7 @@ export const resolvers: Resolvers = {
       params: UserAdvancedSearchByOffsetArgs,
       context: IContext,
     ): Promise<SavedItemSearchResultPage> => {
+      assertLoggedIn(context);
       // Set up default to ensure pagination fields are always present
       params.pagination = {
         limit: config.pagination.defaultPageSize,
@@ -195,6 +201,12 @@ export const resolvers: Resolvers = {
       params,
       context: IContext,
     ): Promise<RecentSearch[]> => {
+      assertLoggedIn(context);
+      if (!context.userIsPremium) {
+        throw new ForbiddenError(
+          'Recent searches are only available for premium users',
+        );
+      }
       return new MysqlDataSource().getRecentSearches(parseInt(context.userId));
     },
   },
@@ -204,6 +216,11 @@ export const resolvers: Resolvers = {
       args,
       context: IContext,
     ): Promise<CorpusSearchConnection> => {
+      if (!context.isNative) {
+        throw new ForbiddenError(
+          'Corpus search is restricted to native Pocket applications',
+        );
+      }
       if (args.pagination?.before || args.pagination?.last) {
         throw new UserInputError(
           'Pagination by "before"/"last" are not supported. ' +
@@ -225,6 +242,12 @@ export const resolvers: Resolvers = {
       { search }: { search: { term: string; timestamp: Date } },
       context: IContext,
     ): Promise<RecentSearch> => {
+      assertLoggedIn(context);
+      if (!context.userIsPremium) {
+        throw new ForbiddenError(
+          'Recent searches are only available for premium users',
+        );
+      }
       await new MysqlDataSource().insertRecentSearch(
         parseInt(context.userId),
         search.term,
