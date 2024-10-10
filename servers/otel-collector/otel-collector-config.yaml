@@ -34,9 +34,15 @@ processors:
     override: false
   resource/cleanup_for_google:
     attributes:
+        # https://opentelemetry.io/docs/specs/semconv/resource/#service-experimental
       - key: service.namespace
         value: pocket
         action: insert
+      - key: service.instance.id
+        from_attribute: container.id
+        action: upsert
+
+
       # We must set the region to us-east1, as the google exporter uses this to know where to send data to.
       - key: cloud.region
         value: us-east1
