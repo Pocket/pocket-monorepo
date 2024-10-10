@@ -13,10 +13,6 @@ const errorHeaders = {
     'X-Error-Code': 5200,
     en: 'Forbidden',
   },
-  UNAUTHORIZED_FIELD_OR_TYPE: {
-    'X-Error-Code': 5200,
-    en: 'Forbidden',
-  },
   BAD_USER_INPUT: {
     'X-Error-Code': 130,
     en: 'Bad request',
