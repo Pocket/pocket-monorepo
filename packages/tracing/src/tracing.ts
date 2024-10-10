@@ -176,6 +176,7 @@ export async function nodeSDKBuilder(config: TracingConfig) {
       },
       '@opentelemetry/instrumentation-graphql': {
         ignoreTrivialResolveSpans: true,
+        allowValues: true,
       },
     }),
   ];
