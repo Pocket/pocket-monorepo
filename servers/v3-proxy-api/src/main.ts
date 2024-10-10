@@ -7,6 +7,8 @@ const unleashClient = unleash();
 const sentry = initSentry({
   ...config.sentry,
   skipOpenTelemetrySetup: true,
+  // turn off default integrations because we use otel for this data
+  defaultIntegrations: false,
   tracesSampler: featureFlagTraceSampler(
     unleashClient,
     config.sentry.samplerFlag,

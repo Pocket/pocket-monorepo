@@ -16,7 +16,7 @@ import {
   ATTR_SERVICE_VERSION,
 } from '@opentelemetry/semantic-conventions';
 
-import { SentrySampler } from '@sentry/opentelemetry';
+import { SentryPropagator, SentrySampler } from '@sentry/opentelemetry';
 // import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 // import { OTLPMetricExporter as HTTPOTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
 // import { OTLPMetricExporter as GRPCOTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-grpc';
@@ -43,6 +43,7 @@ import {
 } from '@opentelemetry/sdk-trace-base';
 import { AWSXRayPropagator } from '@opentelemetry/propagator-aws-xray';
 import { AWSXRayIdGenerator } from '@opentelemetry/id-generator-aws-xray';
+import { CompositePropagator } from '@opentelemetry/core';
 
 // instrumentations available to be added by implementing services
 export enum AdditionalInstrumentation {
@@ -64,14 +65,13 @@ export type TracingConfig = {
   graphQLDepth?: number;
   url?: string;
   protocol?: 'GRPC' | 'HTTP';
-  sentry: NodeClient | undefined;
+  sentry?: NodeClient;
   additionalInstrumentations?: AdditionalInstrumentation[];
 };
 
 const tracingDefaults: TracingConfig = {
   serviceName: 'unknown',
   release: 'unknown',
-  sentry: undefined,
   graphQLDepth: 8,
   url: 'http://localhost:4318',
   protocol: 'HTTP',
@@ -165,7 +165,6 @@ export async function nodeSDKBuilder(config: TracingConfig) {
           requestHeaders: [
             'sentry-trace',
             'baggage',
-            'x-amzn-trace-id',
             'encodedid',
             'applicationname',
           ],
@@ -187,7 +186,9 @@ export async function nodeSDKBuilder(config: TracingConfig) {
     );
   });
   const sdk = new NodeSDK({
-    textMapPropagator: new AWSXRayPropagator(),
+    textMapPropagator: new CompositePropagator({
+      propagators: [new AWSXRayPropagator(), new SentryPropagator()],
+    }),
     instrumentations,
     sampler: config.sentry
       ? new ParentBasedSampler({ root: new SentrySampler(config.sentry) })
