@@ -333,7 +333,7 @@ class UnleashSampler implements Sampler {
   }
 
   toString() {
-    return SentryParentSampler.name;
+    return UnleashSampler.name;
   }
 
   private _normalize(ratio: number): number {
