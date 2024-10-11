@@ -1,6 +1,6 @@
 fn process_request(request) {
     let claims = request.context[Router.APOLLO_AUTHENTICATION_JWT_CLAIMS];
-    if claims ==() {
+    if claims == () {
       return;
     }
     // Add claims from JWT, renaming to appropriate header value per contract
