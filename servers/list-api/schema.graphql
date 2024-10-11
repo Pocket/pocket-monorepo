@@ -1,8 +1,8 @@
 extend schema
   @link(url: "https://specs.apollo.dev/link/v1.0")
   @link(
-    url: "https://specs.apollo.dev/federation/v2.3"
-    import: ["@key", "@composeDirective", "@tag", "@shareable"]
+    url: "https://specs.apollo.dev/federation/v2.6"
+    import: ["@key", "@composeDirective", "@tag", "@shareable", "@requiresScopes"]
   )
   # The link directive is required to federate @constraint
   # It doesn't actually have to be a real spec, but it would be good
@@ -159,7 +159,10 @@ type CorpusItem @key(fields: "url") {
 Represents a Pocket Item that a user has saved to their list.
 (Said otherways, indicates a saved url to a users list and associated user specific information.)
 """
-type SavedItem implements RemoteEntity @key(fields: "id") @key(fields: "url") {
+type SavedItem implements RemoteEntity
+  @key(fields: "id")
+  @key(fields: "url")
+  @requiresScopes(scopes: [["ROLE_USER"]]) {
   """
   The url the user saved to their list
   """
@@ -230,7 +233,7 @@ enum SavedItemStatus {
 """
 Represents a Tag that a User has created for their list
 """
-type Tag {
+type Tag @requiresScopes(scopes: [["ROLE_USER"]]) {
   """
   The actual tag string the user created for their list
   """
@@ -606,7 +609,7 @@ type User @key(fields: "id") {
     filter: SavedItemsFilter
     sort: SavedItemsSort
     pagination: PaginationInput
-  ): SavedItemConnection
+  ): SavedItemConnection @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Fetch SavedItems with offset pagination. Internal backend use only.
@@ -615,12 +618,15 @@ type User @key(fields: "id") {
     filter: SavedItemsFilter
     sort: SavedItemsSort
     pagination: OffsetPaginationInput
-  ): SavedItemsPage @tag(name: "v3proxy")
+  ): SavedItemsPage
+    @tag(name: "v3proxy")
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Get a paginated listing of all a user's Tags
   """
   tags(pagination: PaginationInput): TagConnection
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Get all tag names for a user.
@@ -633,17 +639,23 @@ type User @key(fields: "id") {
   make it possible to request every associated SavedItem
   node on a tag object. Just biting the bullet on this one.
   """
-  tagsList(syncSince: ISOString): [String!] @tag(name: "v3proxy")
+  tagsList(syncSince: ISOString): [String!]
+    @tag(name: "v3proxy")
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Get a SavedItem by its id
   """
-  savedItemById(id: ID!): SavedItem @deprecated(reason: "Use saveById instead")
+  savedItemById(id: ID!): SavedItem
+    @deprecated(reason: "Use saveById instead")
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Get a PocketSave(s) by its id(s)
   """
-  saveById(ids: [ID!]!): [SaveByIdResult!]! @constraint(maxItems: 30)
+  saveById(ids: [ID!]!): [SaveByIdResult!]!
+    @constraint(maxItems: 30)
+    @requiresScopes(scopes: [["ROLE_USER"]])
 }
 """
 Union type for saveById - retrieving either PocketSaves or NotFound errors
@@ -703,31 +715,37 @@ type Mutation {
   and creates it if it doesn't.
   """
   upsertSavedItem(input: SavedItemUpsertInput!): SavedItem!
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Archives a SavedItem
   """
   updateSavedItemArchive(id: ID!, timestamp: ISOString): SavedItem!
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Unarchives a SavedItem
   """
   updateSavedItemUnArchive(id: ID!, timestamp: ISOString): SavedItem!
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Undo the delete operation for a SavedItem
   """
   updateSavedItemUnDelete(id: ID!, timestamp: ISOString): SavedItem!
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Favorites a SavedItem
   """
   updateSavedItemFavorite(id: ID!, timestamp: ISOString): SavedItem!
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Unfavorites a SavedItem
   """
   updateSavedItemUnFavorite(id: ID!, timestamp: ISOString): SavedItem!
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Update the title display of a Saved Item, retrieved by ID.
@@ -740,7 +758,7 @@ type Mutation {
     id: ID!
     timestamp: ISOString!
     title: String! @constraint(minLength: 1, maxLength: 75)
-  ): SavedItem
+  ): SavedItem @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Set the Tags that are associated with a SavedItem.
@@ -749,6 +767,7 @@ type Mutation {
   """
   updateSavedItemTags(input: SavedItemTagUpdateInput!): SavedItem!
     @deprecated(reason: "use saveBatchUpdateTags")
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Removes all Tag associations from a SavedItem. Returns the
@@ -758,12 +777,14 @@ type Mutation {
   """
   updateSavedItemRemoveTags(savedItemId: ID, timestamp: ISOString): SavedItem!
     @deprecated(reason: "use saveBatchUpdateTags")
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Deletes a SavedItem from the users list. Returns ID of the
   deleted SavedItem
   """
   deleteSavedItem(id: ID!, timestamp: ISOString): ID!
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Updates a Tag (renames the tag), and returns the updated Tag.
@@ -772,17 +793,19 @@ type Mutation {
   a duplicate Tag object.
   """
   updateTag(input: TagUpdateInput!): Tag!
+    @requiresScopes(scopes: [["ROLE_USER"]])
   """
   Deletes a Tag object. This is deletes the Tag and all SavedItem associations
   (removes the Tag from all SavedItems). Returns ID of the deleted Tag.
   """
-  deleteTag(id: ID!): ID!
+  deleteTag(id: ID!): ID! @requiresScopes(scopes: [["ROLE_USER"]])
   """
   Delete one or more tags from one or more SavedItems.
   Note that if this operation results in a Tag having no associations
   to a SavedItem, the Tag object will be deleted.
   """
   deleteSavedItemTags(input: [DeleteSavedItemTagsInput!]!): [SavedItem!]!
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Add tags to the savedItems
@@ -792,7 +815,7 @@ type Mutation {
   createSavedItemTags(
     input: [SavedItemTagsInput!]!
     timestamp: ISOString
-  ): [SavedItem!]!
+  ): [SavedItem!]! @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Replaces the old tags associated with the savedItem to the new tag list
@@ -805,19 +828,23 @@ type Mutation {
   replaceSavedItemTags(
     input: [SavedItemTagsInput!]!
     timestamp: ISOString
-  ): [SavedItem!]! @deprecated(reason: "use saveBatchUpdateTags")
+  ): [SavedItem!]!
+    @deprecated(reason: "use saveBatchUpdateTags")
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Archives PocketSaves
   """
   saveArchive(id: [ID!]!, timestamp: ISOString!): SaveWriteMutationPayload
     @tag(name: "alpha")
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Unarchives PocketSaves
   """
   saveUnArchive(id: [ID!]!, timestamp: ISOString!): SaveWriteMutationPayload
     @tag(name: "alpha")
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Favorites PocketSaves
@@ -825,6 +852,7 @@ type Mutation {
   """
   saveFavorite(id: [ID!]!, timestamp: ISOString!): SaveWriteMutationPayload
     @tag(name: "alpha")
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Unfavorites PocketSaves
@@ -832,6 +860,7 @@ type Mutation {
   """
   saveUnFavorite(id: [ID!]!, timestamp: ISOString!): SaveWriteMutationPayload
     @tag(name: "alpha")
+    @requiresScopes(scopes: [["ROLE_USER"]])
   """
   Batch update the Tags associated with a Save
   by adding new tags and deleting existing tags.
@@ -840,7 +869,9 @@ type Mutation {
   saveBatchUpdateTags(
     input: [SaveUpdateTagsInput!]! @constraint(minItems: 1, maxItems: 30)
     timestamp: ISOString!
-  ): SaveWriteMutationPayload! @tag(name: "alpha")
+  ): SaveWriteMutationPayload!
+    @tag(name: "alpha")
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Creates a new Save; if the Save already exists (either in List or Archive), "re-add" it.
@@ -850,37 +881,45 @@ type Mutation {
   saveUpsert(
     input: [SaveUpsertInput!]! @constraint(minItems: 1, maxItems: 30)
     timestamp: ISOString!
-  ): SaveWriteMutationPayload! @tag(name: "alpha")
+  ): SaveWriteMutationPayload!
+    @tag(name: "alpha")
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Associate Tag(s) with a Save
   """
   savedItemTag(input: SavedItemTagInput!, timestamp: ISOString!): SavedItem
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Archive a SavedItem (identified by URL)
   """
   savedItemArchive(givenUrl: Url!, timestamp: ISOString!): SavedItem
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Unarchive a SavedItem (identified by URL)
   """
   savedItemUnArchive(givenUrl: Url!, timestamp: ISOString!): SavedItem
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Favorite a SavedItem (identified by URL)
   """
   savedItemFavorite(givenUrl: Url!, timestamp: ISOString!): SavedItem
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   'Unfavorite' a 'favorite' SavedItem (identified by URL)
   """
   savedItemUnFavorite(givenUrl: Url!, timestamp: ISOString!): SavedItem
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   'Soft-delete' a SavedItem (identified by URL)
   """
   savedItemDelete(givenUrl: Url!, timestamp: ISOString!): Url
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Undo the 'soft-delete' operation on a SavedItem (identified by URL).
@@ -888,6 +927,7 @@ type Mutation {
   'hard-deleted' (record removed from the database entirely).
   """
   savedItemUnDelete(givenUrl: Url!, timestamp: ISOString!): SavedItem
+    @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Update the title display of a Saved Item, retrieved by URL.
@@ -900,12 +940,13 @@ type Mutation {
     givenUrl: Url!
     timestamp: ISOString!
     title: String! @constraint(minLength: 1, maxLength: 75)
-  ): SavedItem
+  ): SavedItem @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   Remove all tags associated to a SavedItem (included for v3 proxy).
   """
   clearTags(savedItem: SavedItemRef!, timestamp: ISOString): SavedItem
+    @requiresScopes(scopes: [["ROLE_USER"]])
     @tag(name: "v3proxy")
   """
   Rename a tag identified by name (rather than ID), to support v3 proxy.
@@ -914,13 +955,14 @@ type Mutation {
     oldName: String!
     newName: String!
     timestamp: ISOString
-  ): Tag @tag(name: "v3proxy")
+  ): Tag @tag(name: "v3proxy") @requiresScopes(scopes: [["ROLE_USER"]])
   """
   Delete a tag entity identified by name (rather than ID), to support v3 proxy.
   Disassociates this tag from all SavedItems.
   """
   deleteTagByName(tagName: String!, timestamp: ISOString): String
     @tag(name: "v3proxy")
+    @requiresScopes(scopes: [["ROLE_USER"]])
   """
   Removes specific tags associated to a SavedItem,
   referenced by name, to support v3 proxy.
@@ -929,7 +971,7 @@ type Mutation {
     savedItem: SavedItemRef!
     tagNames: [String!]!
     timestamp: ISOString
-  ): SavedItem @tag(name: "v3proxy")
+  ): SavedItem @tag(name: "v3proxy") @requiresScopes(scopes: [["ROLE_USER"]])
   """
   Replace specific tags associated to a SavedItem, to support v3 proxy.
   """
@@ -937,13 +979,15 @@ type Mutation {
     savedItem: SavedItemRef!
     tagNames: [String!]!
     timestamp: ISOString
-  ): SavedItem @tag(name: "v3proxy")
+  ): SavedItem @tag(name: "v3proxy") @requiresScopes(scopes: [["ROLE_USER"]])
 
   """
   'Re-add' a SavedItem by id. Unarchives and undeletes the SavedItem
   as applicable, and refreshes the "createdAt" timestamp.
   """
-  reAddById(id: ID!, timestamp: ISOString!): SavedItem @tag(name: "v3proxy")
+  reAddById(id: ID!, timestamp: ISOString!): SavedItem
+    @tag(name: "v3proxy")
+    @requiresScopes(scopes: [["ROLE_USER"]])
 }
 
 """
