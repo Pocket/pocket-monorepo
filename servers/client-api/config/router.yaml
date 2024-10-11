@@ -28,6 +28,11 @@ authentication:
         - url: https://getpocket.com/.well-known/jwk
 authorization:
   require_authentication: false
+  # We allow clients to request and get some things as unauthorized
+  # https://www.apollographql.com/docs/graphos/routing/security/authorization#log
+  directives:
+    errors:
+      log: false
 rhai:
   scripts: './rhai'
   main: 'main.rhai'
