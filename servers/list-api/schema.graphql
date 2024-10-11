@@ -984,19 +984,15 @@ type Mutation {
   'Re-add' a SavedItem by id. Unarchives and undeletes the SavedItem
   as applicable, and refreshes the "createdAt" timestamp.
   """
-<<<<<<< HEAD
   reAddById(id: ID!, timestamp: ISOString!): SavedItem
     @tag(name: "v3proxy")
     @requiresScopes(scopes: [["ROLE_USER"]])
-=======
-  reAddById(id: ID!, timestamp: ISOString!): SavedItem @tag(name: "v3proxy")
 
   """
   Request for an asynchronous export of a user's list.
   Returns the request ID associated with the request.
   """
   exportList: String @requiresScopes(scopes: [["ROLE_USER"]])
->>>>>>> a7766985 (feat(export): asynchronous export service for user list)
 }
 
 """
