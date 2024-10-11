@@ -31,7 +31,7 @@
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "8.33.1",
+    "@sentry/node": "8.34.0",
     "@snowplow/node-tracker": "3.24.3",
     "@snowplow/tracker-core": "3.24.3",
     "dataloader": "2.2.2",
