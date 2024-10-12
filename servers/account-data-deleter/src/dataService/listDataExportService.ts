@@ -22,10 +22,10 @@ type ListExportEntry = {
 /**
  * Export a User's list data.
  * Data will be exported in chunks and saved in s3, keyed under
- * the user's encodedId (e.g. <export-bucket>/<encodedId>/part_0000.csv)
+ * the user's encodedId (e.g. <export-bucket>/<parts-prefix>/<encodedId>/part_0000.csv)
  * When all data has been exported, the individual CSVs will be compiled
- * into one zip archive in a separate bucket, keyed with their encodedId
- * (e.g. <archive-bucket>/encodedId/pocket.zip)
+ * into one zip archive, keyed with their encodedId
+ * (e.g. <export-bucket>/<archive-prefix>/<encodedId/pocket.zip)
  */
 export class ListDataExportService {
   constructor(

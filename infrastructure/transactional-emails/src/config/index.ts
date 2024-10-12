@@ -31,7 +31,6 @@ export const config = {
       marketingEmailSubscription: isDev
         ? '99fbeac9-2fa3-496d-ab94-4e869d42e52c'
         : '3aeb7440-8865-4b80-bf13-7600bee96a59',
-      // TODO - KAT kschelonka
       listExportReadyCampaignId: isDev
         ? '45b2e986-d80b-f068-ce9f-5781296e91a4'
         : '8a5f66b9-6e28-48e9-af99-e44e2a16a81a',
