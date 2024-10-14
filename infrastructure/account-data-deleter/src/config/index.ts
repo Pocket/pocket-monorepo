@@ -36,7 +36,7 @@ export const config = {
   envVars: {
     databasePort: '3306',
     sqsBatchDeleteQueueName: `${prefix}-Sqs-Batch-Delete-Consumer-Queue`,
-    listExportQueueName: `${prefix}-List-Export-Consumer-Queue`,
+    listExportQueueName: `${prefix}-List-Export`,
     databaseTz: 'US/Central',
     eventBusName: `PocketEventBridge-${environment}-Shared-Event-Bus`,
   },

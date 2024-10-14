@@ -80,7 +80,7 @@ class AccountDataDeleter extends TerraformStack {
       this,
       'list-events-sns-subscription',
       {
-        name: `${config.envVars.listExportQueueName}-SNS-Subscription`,
+        name: `${config.envVars.listExportQueueName}-SNS`,
         snsTopicArn: `arn:aws:sns:${pocketVpc.region}:${pocketVpc.accountId}:${config.lambda.snsTopicName.listEvents}`,
         sqsQueue: listExportQueue.sqsQueue,
         filterPolicyScope: 'MessageBody',
