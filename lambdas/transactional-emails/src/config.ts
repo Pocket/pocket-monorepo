@@ -30,5 +30,8 @@ export const config = {
     marketingSubscriptionId:
       process.env.BRAZE_MARKETING_SUBSCRIPTION_ID ||
       'asdasd-asdasd-asdasd-asdasdasd-asdas',
+    listExportReadyCampaignId:
+      process.env.BRAZE_LIST_EXPORT_READY_CAMPAIGN_ID ||
+      'asdasd-asdasd-asdasd-asdasdasd-asdas',
   },
 };

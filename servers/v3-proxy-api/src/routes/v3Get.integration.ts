@@ -345,6 +345,36 @@ describe('v3Get', () => {
           response: { ...expectedGetSimpleAnnotations, total: '10' },
         },
       },
+      {
+        requestData: {
+          detailType: 'simple',
+          total: '1',
+          annotations: 'true',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleAnnotations,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: { ...expectedGetSimpleAnnotations, total: '10' },
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          total: '1',
+          annotations: true,
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleAnnotations,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: { ...expectedGetSimpleAnnotations, total: '10' },
+        },
+      },
     ])(
       'makes request with annotations',
       async ({ requestData, fixture, expected }) => {
@@ -355,10 +385,10 @@ describe('v3Get', () => {
         const response = await request(app)
           .get('/v3/get')
           .query({
-            ...requestData,
             consumer_key: 'test',
             access_token: 'test',
             annotations: '1',
+            ...requestData,
           });
         expect(response.body).toEqual(expected.response);
         expect(requestSpy).toHaveBeenCalledTimes(1);
@@ -495,6 +525,34 @@ describe('v3Get', () => {
         fixture: {
           requestName: 'callSavedItemsByOffsetSimple' as const,
           requestData: mockGraphGetSimpleFreeAccountNullFeatures,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimpleFreeAccount,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          forceaccount: 'true',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleFreeAccount,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimpleFreeAccount,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          forceaccount: true,
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleFreeAccount,
         },
         expected: {
           name: 'savedItemsSimple',
@@ -656,6 +714,34 @@ describe('v3Get', () => {
           response: { ...expectedGetSimple, recent_searches: [] },
         },
       },
+      {
+        requestData: {
+          detailType: 'simple',
+          forcepremium: true,
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleFreeRecentSearches,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimple,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          forcepremium: 'true',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleFreeRecentSearches,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimple,
+        },
+      },
     ])(
       'makes request with recent searches data',
       async ({ requestData, fixture, expected }) => {
@@ -806,6 +892,38 @@ describe('v3Get', () => {
           response: { ...expectedGetSimpleTagslist, total: '10' },
         },
       },
+      {
+        requestData: {
+          detailType: 'simple',
+          search: 'abc',
+          sort: 'relevance',
+          taglist: true,
+        },
+        fixture: {
+          requestName: 'callSearchByOffsetSimple' as const,
+          requestData: freeTierSearchGraphSimpleTagList,
+        },
+        expected: {
+          name: 'searchSavedItemsSimple',
+          response: expectedFreeTierResponseSimpleTaglist,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          search: 'abc',
+          sort: 'relevance',
+          taglist: 'true',
+        },
+        fixture: {
+          requestName: 'callSearchByOffsetSimple' as const,
+          requestData: freeTierSearchGraphSimpleTagList,
+        },
+        expected: {
+          name: 'searchSavedItemsSimple',
+          response: expectedFreeTierResponseSimpleTaglist,
+        },
+      },
     ])(
       'makes request with taglist',
       async ({ requestData, fixture, expected }) => {
@@ -817,11 +935,11 @@ describe('v3Get', () => {
         const response = await request(app)
           .get('/v3/get')
           .query({
-            ...requestData,
             consumer_key: 'test',
             access_token: 'test',
             taglist: '1',
             since: 1712766000,
+            ...requestData,
           });
         expect(response.body).toEqual(expected.response);
         expect(requestSpy).toHaveBeenCalledTimes(1);
@@ -881,6 +999,38 @@ describe('v3Get', () => {
           response: { ...expectedGetSimpleTagslist, total: '10' },
         },
       },
+      {
+        requestData: {
+          detailType: 'complete',
+          total: true,
+          taglist: true,
+          forcetaglist: true,
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteTagsList,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: { ...expectedGetCompleteTagslist, total: '10' },
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          total: 'true',
+          taglist: 'true',
+          forcetaglist: 'true',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteTagsList,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: { ...expectedGetCompleteTagslist, total: '10' },
+        },
+      },
     ])(
       'makes request with taglist',
       async ({ requestData, fixture, expected }) => {
@@ -892,12 +1042,12 @@ describe('v3Get', () => {
         const response = await request(app)
           .get('/v3/get')
           .query({
-            ...requestData,
             consumer_key: 'test',
             access_token: 'test',
             taglist: '1',
             forcetaglist: '1',
             since: 1712766000,
+            ...requestData,
           });
         expect(response.body).toEqual(expected.response);
         expect(requestSpy).toHaveBeenCalledTimes(1);

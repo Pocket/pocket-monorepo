@@ -10,7 +10,7 @@ import * as Sentry from '@sentry/node';
 import express, { Application, json } from 'express';
 import { queueDeleteRouter, stripeDeleteRouter } from './routes';
 import { EventEmitter } from 'events';
-import { BatchDeleteHandler } from './batchDeleteHandler';
+import { BatchDeleteHandler, ExportListHandler } from './queueHandlers';
 import { serverLogger, setMorgan } from '@pocket-tools/ts-logger';
 import { sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
 import { unleash } from './unleash';
@@ -39,6 +39,7 @@ Sentry.setupExpressErrorHandler(app);
 
 // Start batch delete event handler
 new BatchDeleteHandler(new EventEmitter());
+new ExportListHandler(new EventEmitter());
 
 // Start Express app
 app

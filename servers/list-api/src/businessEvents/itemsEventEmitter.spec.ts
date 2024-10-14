@@ -25,7 +25,7 @@ describe('ItemsEventEmitter', () => {
 
   const payload: BasicItemEventPayloadWithContext = {
     savedItem: testSavedItem,
-    user: { id: '1', isPremium: false },
+    user: { id: '1', hashedId: '123abc', isPremium: false },
     apiUser: { apiId: '2' },
   };
 

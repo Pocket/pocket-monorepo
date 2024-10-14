@@ -1,21 +1,22 @@
 import { config } from './config';
-import { initSentry, featureFlagTraceSampler } from '@pocket-tools/sentry';
-import { unleash } from './datasource/clients';
-import { nodeSDKBuilder } from '@pocket-tools/tracing';
+import { initSentry } from '@pocket-tools/sentry';
 
-const unleashClient = unleash();
-
-// Initialize Sentry
-const sentry = initSentry({
+// Init sentry MUST come before any other imports for auto instrumentation to kick in (request isolation)
+initSentry({
   ...config.sentry,
-  tracesSampler: featureFlagTraceSampler(
-    unleashClient,
-    config.sentry.samplerFlag,
-  ),
+  skipOpenTelemetrySetup: true,
+  // Bug in Sentry SDK causes NodeFetch to add extra trace headers, Sentry is looking into it.
+  integrations(integrations) {
+    return integrations.filter((integration) => {
+      return integration.name !== 'NodeFetch';
+    });
+  },
   debug: config.sentry.environment === 'development',
 });
 
-nodeSDKBuilder({ ...config.tracing, sentry: sentry }).then(() => {
+import { nodeSDKBuilder } from '@pocket-tools/tracing';
+import { unleash } from './datasource/clients';
+nodeSDKBuilder({ ...config.tracing, unleash: unleash() }).then(() => {
   startServer(config.app.port).then(() => {
     serverLogger.info(
       `🚀 Public server ready at http://localhost:${config.app.port}`,

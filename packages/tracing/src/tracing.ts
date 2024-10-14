@@ -1,6 +1,15 @@
 import process from 'process';
 import { NodeSDK, logs } from '@opentelemetry/sdk-node';
-import { DiagConsoleLogger, DiagLogLevel, diag } from '@opentelemetry/api';
+import {
+  Context,
+  DiagConsoleLogger,
+  DiagLogLevel,
+  Link,
+  SpanAttributes,
+  SpanKind,
+  diag,
+  isValidTraceId,
+} from '@opentelemetry/api';
 import { KnexInstrumentation } from '@opentelemetry/instrumentation-knex';
 
 import { OTLPTraceExporter as HTTPOTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
@@ -16,7 +25,7 @@ import {
   ATTR_SERVICE_VERSION,
 } from '@opentelemetry/semantic-conventions';
 
-import { SentrySampler } from '@sentry/opentelemetry';
+import { SentryPropagator, wrapSamplingDecision } from '@sentry/opentelemetry';
 // import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 // import { OTLPMetricExporter as HTTPOTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
 // import { OTLPMetricExporter as GRPCOTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-grpc';
@@ -34,15 +43,20 @@ import {
 import { awsEcsDetectorSync } from '@opentelemetry/resource-detector-aws';
 
 import * as Sentry from '@sentry/node';
-import type { NodeClient } from '@sentry/node';
 
 import {
   BatchSpanProcessor,
   BufferConfig,
   ParentBasedSampler,
+  Sampler,
+  SamplingDecision,
+  SamplingResult,
 } from '@opentelemetry/sdk-trace-base';
 import { AWSXRayPropagator } from '@opentelemetry/propagator-aws-xray';
 import { AWSXRayIdGenerator } from '@opentelemetry/id-generator-aws-xray';
+import { CompositePropagator } from '@opentelemetry/core';
+
+import { type Unleash } from 'unleash-client';
 
 // instrumentations available to be added by implementing services
 export enum AdditionalInstrumentation {
@@ -64,17 +78,19 @@ export type TracingConfig = {
   graphQLDepth?: number;
   url?: string;
   protocol?: 'GRPC' | 'HTTP';
-  sentry: NodeClient | undefined;
+  unleash: Unleash;
+  flagName?: string;
   additionalInstrumentations?: AdditionalInstrumentation[];
 };
 
 const tracingDefaults: TracingConfig = {
   serviceName: 'unknown',
   release: 'unknown',
-  sentry: undefined,
   graphQLDepth: 8,
   url: 'http://localhost:4318',
   protocol: 'HTTP',
+  unleash: {} as Unleash, // no-op cause its required in the config
+  flagName: 'perm.backend.sentry-trace-sampler-rate',
   additionalInstrumentations: [],
 };
 
@@ -196,11 +212,21 @@ export async function nodeSDKBuilder(config: TracingConfig) {
     );
   });
   const sdk = new NodeSDK({
-    textMapPropagator: new AWSXRayPropagator(),
+    textMapPropagator: new CompositePropagator({
+      // The Propogators are run in the order they are added, and since we want the AWSXRAY to win,
+      // it must come last because it writes the parent context "sampled" data from the trace into the contexts
+      // We Keep Sentry in here, because it adds data that Sentry needs, we just don't want it to control the sample value.
+      propagators: [new SentryPropagator(), new AWSXRayPropagator()],
+    }),
     instrumentations,
-    sampler: config.sentry
-      ? new ParentBasedSampler({ root: new SentrySampler(config.sentry) })
-      : undefined,
+    sampler: new SentryParentSampler({
+      root: new ParentBasedSampler({
+        root: new UnleashSampler({
+          unleash: config.unleash,
+          flagName: config.flagName as string, // will never be null cause of defaults
+        }),
+      }),
+    }),
     contextManager: new Sentry.SentryContextManager(),
     resource: _resource,
     idGenerator: new AWSXRayIdGenerator(),
@@ -240,4 +266,142 @@ export async function nodeSDKBuilder(config: TracingConfig) {
       .finally(() => process.exit(0));
   });
   //todo: export tracer object to enable/test custom tracing
+}
+
+/**
+ * Given an unleash flag and client will make a sampling decision based on the flag value.
+ *
+ * Majority copied from https://github.com/open-telemetry/opentelemetry-js/blob/main/packages/opentelemetry-sdk-trace-base/src/sampler/TraceIdRatioBasedSampler.ts
+ */
+class UnleashSampler implements Sampler {
+  private _unleash: Unleash;
+  private _flagName: string;
+
+  private _upperBound: number;
+  private _ratio: number;
+
+  constructor(config: { unleash: Unleash; flagName: string }) {
+    this._flagName = config.flagName;
+    this._unleash = config.unleash;
+    this.setRatio(0);
+  }
+
+  /**
+   * Checks whether span needs to be created and tracked.
+   *
+   * @param context Parent Context which may contain a span.
+   * @param traceId of the span to be created. It can be different from the
+   *     traceId in the {@link SpanContext}. Typically in situations when the
+   *     span to be created starts a new trace.
+   * @param spanName of the span to be created.
+   * @param spanKind of the span to be created.
+   * @param attributes Initial set of SpanAttributes for the Span being constructed.
+   * @param links Collection of links that will be associated with the Span to
+   *     be created. Typically useful for batch operations.
+   * @returns a {@link SamplingResult}.
+   */
+  shouldSample(
+    context: Context,
+    traceId: string,
+    spanName: string,
+    spanKind: SpanKind,
+    attributes: SpanAttributes,
+    links: Link[],
+  ): SamplingResult {
+    this.updateFlagValue();
+    return {
+      decision:
+        isValidTraceId(traceId) && this._accumulate(traceId) < this._upperBound
+          ? SamplingDecision.RECORD_AND_SAMPLED
+          : SamplingDecision.NOT_RECORD,
+    };
+  }
+
+  updateFlagValue() {
+    const variant = this._unleash.getVariant(this._flagName);
+    if (variant.payload != null) {
+      if (variant.payload.type === 'number') {
+        this.setRatio(parseFloat(variant.payload.value));
+      } else {
+        this.setRatio(0);
+      }
+    } else {
+      this.setRatio(0);
+    }
+  }
+
+  setRatio(ratio: number) {
+    this._ratio = this._normalize(ratio);
+    this._upperBound = Math.floor(this._ratio * 0xffffffff);
+  }
+
+  toString() {
+    return UnleashSampler.name;
+  }
+
+  private _normalize(ratio: number): number {
+    if (typeof ratio !== 'number' || isNaN(ratio)) return 0;
+    return ratio >= 1 ? 1 : ratio <= 0 ? 0 : ratio;
+  }
+
+  private _accumulate(traceId: string): number {
+    let accumulation = 0;
+    for (let i = 0; i < traceId.length / 8; i++) {
+      const pos = i * 8;
+      const part = parseInt(traceId.slice(pos, pos + 8), 16);
+      accumulation = (accumulation ^ part) >>> 0;
+    }
+    return accumulation;
+  }
+}
+
+/**
+ * Class to wrap all our sampling logic because sentry wants to know about our decision.
+ */
+class SentryParentSampler implements Sampler {
+  private _root: Sampler;
+  constructor(config: { root: Sampler }) {
+    this._root = config.root;
+  }
+
+  /**
+   * Checks whether span needs to be created and tracked.
+   *
+   * @param context Parent Context which may contain a span.
+   * @param traceId of the span to be created. It can be different from the
+   *     traceId in the {@link SpanContext}. Typically in situations when the
+   *     span to be created starts a new trace.
+   * @param spanName of the span to be created.
+   * @param spanKind of the span to be created.
+   * @param attributes Initial set of SpanAttributes for the Span being constructed.
+   * @param links Collection of links that will be associated with the Span to
+   *     be created. Typically useful for batch operations.
+   * @returns a {@link SamplingResult}.
+   */
+  shouldSample(
+    context: Context,
+    traceId: string,
+    spanName: string,
+    spanKind: SpanKind,
+    attributes: SpanAttributes,
+    links: Link[],
+  ): SamplingResult {
+    const decision = this._root.shouldSample(
+      context,
+      traceId,
+      spanName,
+      spanKind,
+      attributes,
+      links,
+    );
+    return wrapSamplingDecision({
+      decision: decision.decision,
+      context,
+      spanAttributes: attributes,
+    });
+  }
+
+  toString() {
+    return SentryParentSampler.name;
+  }
 }

@@ -30,6 +30,7 @@ import { ForgotPassword as ForgotPasswordRequest } from './event-rules/forgot-pa
 import { SharesApiEvents } from './event-rules/shares-api-events/pocketShareEventRules';
 import { SearchApiEvents } from './event-rules/search-api-events/pocketSearchEventRules';
 import { CorpusEvents } from './event-rules/corpus-events/corpusEventRules';
+import { ListExportReady } from './event-rules/list-export-request-ready';
 
 class PocketEventBus extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -149,6 +150,14 @@ class PocketEventBus extends TerraformStack {
     // Corpus Events (uses the default bus, not the shared event bus)
     new CorpusEvents(this, 'corpus-events', alarmSnsTopic);
 
+    // List export is available
+    new ListExportReady(
+      this,
+      'list-export-ready-event',
+      sharedPocketEventBus,
+      alarmSnsTopic,
+    );
+
     //Schema
     new UserEventsSchema(this, 'user-api-events-schema');
     new QueueCheckDeleteSchema(this, 'queue-delete-schema');
@@ -158,6 +167,7 @@ class PocketEventBus extends TerraformStack {
       this,
       'forgot-password-request-event-schema',
     );
+
     new UserRegistrationEventSchema(this, `user-registration-event-schema`);
   }
 

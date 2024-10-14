@@ -11,10 +11,13 @@ import {
   dataAwsRegion,
   dataAwsSnsTopic,
 } from '@cdktf/provider-aws';
+import { S3Bucket } from '@cdktf/provider-aws/lib/s3-bucket';
+import { S3BucketLifecycleConfiguration } from '@cdktf/provider-aws/lib/s3-bucket-lifecycle-configuration';
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import {
   ApplicationSQSQueue,
+  ApplicationSqsSnsTopicSubscription,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
 
@@ -60,6 +63,67 @@ class AccountDataDeleter extends TerraformStack {
       },
     );
 
+    const listExportQueue = new ApplicationSQSQueue(
+      this,
+      'list-export-consumer-queue',
+      {
+        name: config.envVars.listExportQueueName,
+        tags: config.tags,
+        visibilityTimeoutSeconds: 1800,
+        messageRetentionSeconds: 1209600, //14 days
+        //need to set maxReceiveCount to enable DLQ
+        maxReceiveCount: 3,
+      },
+    );
+
+    new ApplicationSqsSnsTopicSubscription(
+      this,
+      'list-events-sns-subscription',
+      {
+        name: `${config.envVars.listExportQueueName}-SNS`,
+        snsTopicArn: `arn:aws:sns:${pocketVpc.region}:${pocketVpc.accountId}:${config.lambda.snsTopicName.listEvents}`,
+        sqsQueue: listExportQueue.sqsQueue,
+        filterPolicyScope: 'MessageBody',
+        filterPolicy: JSON.stringify({
+          'detail-type': ['list-export-requested'],
+        }),
+        tags: config.tags,
+      },
+    );
+
+    // Bucket for exports plus auto-expiry rules
+    const exportBucket = new S3Bucket(this, 'list-export-bucket', {
+      bucket: `com.getpocket-${config.environment.toLowerCase()}.list-exports`,
+      tags: config.tags,
+    });
+    const partsPrefix = 'parts';
+    const archivesPrefix = 'archives';
+    new S3BucketLifecycleConfiguration(
+      this,
+      'list-export-parts-lifecycle-rule',
+      {
+        bucket: exportBucket.bucket,
+        rule: [
+          {
+            filter: {
+              prefix: `${partsPrefix}/`,
+            },
+            id: 'list-export-part-15days-expire',
+            status: 'Enabled',
+            expiration: { days: 15 },
+          },
+          {
+            filter: {
+              prefix: `${archivesPrefix}/`,
+            },
+            id: 'list-export-archive-30days-expire',
+            status: 'Enabled',
+            expiration: { days: 30 },
+          },
+        ],
+      },
+    );
+
     const dataDeleterAppConfig: DataDeleterAppConfig = {
       region: region,
       caller: caller,
@@ -67,6 +131,11 @@ class AccountDataDeleter extends TerraformStack {
       snsTopic: this.getCodeDeploySnsTopic(),
       batchDeleteQueue: batchDeleteQueue.sqsQueue,
       batchDeleteDLQ: batchDeleteQueue.deadLetterQueue,
+      listExportQueue: listExportQueue.sqsQueue,
+      listExportDLQ: listExportQueue.deadLetterQueue,
+      listExportBucket: exportBucket.bucket,
+      listExportPartsPrefix: partsPrefix,
+      listExportArchivesPrefix: archivesPrefix,
     };
     new DataDeleterApp(this, 'data-deleter-app', dataDeleterAppConfig);
 

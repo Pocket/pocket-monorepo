@@ -132,7 +132,7 @@ export async function enqueueTablesForDeletion(
         );
 
         // a batch would contain 5*config.queueDelete.queryLimit records
-        if (sqsEntries.length === config.aws.sqs.batchSize) {
+        if (sqsEntries.length === config.aws.sqs.accountDeleteQueue.batchSize) {
           sqsSendBatchCommands.push(createSqsSendBatchCommand(sqsEntries));
           sqsEntries = [];
         }
