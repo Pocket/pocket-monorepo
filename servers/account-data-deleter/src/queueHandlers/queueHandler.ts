@@ -132,12 +132,14 @@ export abstract class QueueHandler {
 
     try {
       data = await this.sqsClient.send(new ReceiveMessageCommand(params));
+      serverLogger.info({ message: 'Poll data received', data });
       body =
         data.Messages &&
         data.Messages.length > 0 &&
         data.Messages[0].Body != null
           ? JSON.parse(data.Messages[0].Body)
           : null;
+      serverLogger.info({ message: 'Poll body received', body });
     } catch (error) {
       const receiveError = 'PollQueue: Error receiving messages from queue';
       serverLogger.error({ message: receiveError, error: error });
