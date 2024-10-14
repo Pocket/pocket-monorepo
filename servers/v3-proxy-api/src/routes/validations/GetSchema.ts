@@ -137,10 +137,11 @@ export const V3GetSchema: Schema = {
   favorite: {
     optional: true,
     isIn: {
-      options: [['0', '1', true, false]],
+      options: [['0', '1', true, false, 'true', 'false']],
     },
     customSanitizer: {
-      options: (value) => (value === '1' || value === true ? true : false),
+      options: (value) =>
+        value === '1' || value === true || value === 'true' ? true : false,
     },
   },
   search: {
@@ -187,10 +188,11 @@ export const V3GetSchema: Schema = {
       options: '0',
     },
     isIn: {
-      options: [['0', '1', true, false]],
+      options: [['0', '1', true, false, 'true', 'false']],
     },
     customSanitizer: {
-      options: (value) => (value === '1' || value === true ? true : false),
+      options: (value) =>
+        value === '1' || value === true || value === 'true' ? true : false,
     },
   },
   annotations: {
@@ -198,10 +200,11 @@ export const V3GetSchema: Schema = {
       options: '0',
     },
     isIn: {
-      options: [['0', '1', true, false]],
+      options: [['0', '1', true, false, 'true', 'false']],
     },
     customSanitizer: {
-      options: (value) => (value === '1' || value === true ? true : false),
+      options: (value) =>
+        value === '1' || value === true || value === 'true' ? true : false,
     },
   },
   taglist: {
@@ -209,10 +212,11 @@ export const V3GetSchema: Schema = {
       options: '0',
     },
     isIn: {
-      options: [['0', '1', true, false]],
+      options: [['0', '1', true, false, 'true', 'false']],
     },
     customSanitizer: {
-      options: (value) => (value === '1' || value === true ? true : false),
+      options: (value) =>
+        value === '1' || value === true || value === 'true' ? true : false,
     },
   },
   forcetaglist: {
@@ -220,19 +224,21 @@ export const V3GetSchema: Schema = {
       options: '0',
     },
     isIn: {
-      options: [['0', '1', true, false]],
+      options: [['0', '1', true, false, 'true', 'false']],
     },
     customSanitizer: {
-      options: (value) => (value === '1' || value === true ? true : false),
+      options: (value) =>
+        value === '1' || value === true || value === 'true' ? true : false,
     },
   },
   hasAnnotations: {
     optional: true,
     isIn: {
-      options: [['0', '1', true, false]],
+      options: [['0', '1', true, false, 'true', 'false']],
     },
     customSanitizer: {
-      options: (value) => (value === '1' || value === true ? true : false),
+      options: (value) =>
+        value === '1' || value === true || value === 'true' ? true : false,
     },
   },
   account: {
@@ -240,10 +246,11 @@ export const V3GetSchema: Schema = {
       options: '0',
     },
     isIn: {
-      options: [['0', '1', true, false]],
+      options: [['0', '1', true, false, 'true', 'false']],
     },
     customSanitizer: {
-      options: (value) => (value === '1' || value === true ? true : false),
+      options: (value) =>
+        value === '1' || value === true || value === 'true' ? true : false,
     },
   },
   forceaccount: {
@@ -251,10 +258,11 @@ export const V3GetSchema: Schema = {
       options: '0',
     },
     isIn: {
-      options: [['0', '1', true, false]],
+      options: [['0', '1', true, false, 'true', 'false']],
     },
     customSanitizer: {
-      options: (value) => (value === '1' || value === true ? true : false),
+      options: (value) =>
+        value === '1' || value === true || value === 'true' ? true : false,
     },
   },
   premium: {
@@ -262,10 +270,11 @@ export const V3GetSchema: Schema = {
       options: '0',
     },
     isIn: {
-      options: [['0', '1', true, false]],
+      options: [['0', '1', true, false, 'true', 'false']],
     },
     customSanitizer: {
-      options: (value) => (value === '1' || value === true ? true : false),
+      options: (value) =>
+        value === '1' || value === true || value === 'true' ? true : false,
     },
   },
   forcepremium: {
@@ -273,10 +282,11 @@ export const V3GetSchema: Schema = {
       options: '0',
     },
     isIn: {
-      options: [['0', '1', true, false]],
+      options: [['0', '1', true, false, 'true', 'false']],
     },
     customSanitizer: {
-      options: (value) => (value === '1' || value === true ? true : false),
+      options: (value) =>
+        value === '1' || value === true || value === 'true' ? true : false,
     },
   },
 };
