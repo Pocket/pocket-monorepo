@@ -88,6 +88,10 @@ class Stack extends TerraformStack {
       tags: config.tags,
       cdn: false,
       domain: config.domain,
+      taskSize: {
+        cpu: config.isDev ? 2048 : 4096,
+        memory: config.isDev ? 4096 : 8192,
+      },
       accessLogs: {
         existingBucket: config.s3LogsBucket,
       },
@@ -184,7 +188,7 @@ class Stack extends TerraformStack {
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },
       autoscalingConfig: {
-        targetMinCapacity: config.isDev ? 1 : 4,
+        targetMinCapacity: config.isDev ? 1 : 8,
         targetMaxCapacity: 20,
       },
       alarms: {
