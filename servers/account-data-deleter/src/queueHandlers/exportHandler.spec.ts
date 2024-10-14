@@ -16,11 +16,15 @@ describe('exportHandler', () => {
       .spyOn(ListDataExportService.prototype, 'notifyUser')
       .mockResolvedValue();
     await exportListHandler.handleMessage({
-      requestId: 'abc123',
-      userId: 12345,
-      encodedId: '12345a',
-      cursor: -1,
-      part: 0,
+      Message: JSON.stringify({
+        detail: {
+          requestId: 'abc123',
+          userId: 12345,
+          encodedId: '12345a',
+          cursor: -1,
+          part: 0,
+        },
+      }),
     });
     expect(notifySpy).toHaveBeenCalledExactlyOnceWith(
       '12345a',
@@ -36,11 +40,15 @@ describe('exportHandler', () => {
       .spyOn(ListDataExportService.prototype, 'exportListChunk')
       .mockResolvedValue();
     await exportListHandler.handleMessage({
-      requestId: 'abc123',
-      userId: 12345,
-      encodedId: '12345a',
-      cursor: -1,
-      part: 0,
+      Message: JSON.stringify({
+        detail: {
+          requestId: 'abc123',
+          userId: 12345,
+          encodedId: '12345a',
+          cursor: -1,
+          part: 0,
+        },
+      }),
     });
     expect(exportSpy).toHaveBeenCalledExactlyOnceWith(
       'abc123',
