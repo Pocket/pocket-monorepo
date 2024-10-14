@@ -1,5 +1,6 @@
 import { deliver as deliverFirehose } from './firehose';
 import { deliver as deliverMetrics } from './cloudwatch-metrics';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export const logEventsReceived = (events: any) => {
   let _ev = events;
@@ -7,7 +8,7 @@ export const logEventsReceived = (events: any) => {
     _ev = [events];
   }
 
-  console.log(
+  serverLogger.info(
     `sendgridData: received ${_ev.length} events; 0.id = ${_ev[0].sg_event_id}`,
   );
 };
@@ -18,7 +19,9 @@ export const logEventsError = (events: any) => {
     _ev = [events];
   }
 
-  console.error(`sendgridData: error detected; 0.id = ${_ev[0].sg_event_id}`);
+  serverLogger.error(
+    `sendgridData: error detected; 0.id = ${_ev[0].sg_event_id}`,
+  );
 };
 
 export const deliverEvents = async (
