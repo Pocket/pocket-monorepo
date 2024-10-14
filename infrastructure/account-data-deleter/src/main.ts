@@ -93,7 +93,7 @@ class AccountDataDeleter extends TerraformStack {
 
     // Bucket for exports plus auto-expiry rules
     const exportBucket = new S3Bucket(this, 'list-export-bucket', {
-      bucket: 'com.getpocket.list-exports',
+      bucket: `com.getpocket-${config.environment.toLowerCase()}.list-exports`,
       tags: config.tags,
     });
     const partsPrefix = 'parts';

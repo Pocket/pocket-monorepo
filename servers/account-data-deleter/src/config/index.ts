@@ -88,7 +88,7 @@ export const config = {
   },
   listExport: {
     exportBucket:
-      process.env.LIST_EXPORT_PARTS_BUCKET || 'com.getpocket.list-exports',
+      process.env.LIST_EXPORT_BUCKET || 'com.getpocket.list-exports',
     partsPrefix: process.env.LIST_EXPORT_PARTS_PREFIX || '',
     archivePrefix: process.env.LIST_EXPORT_ARCHIVE_PREFIX || '',
     queryLimit: 10000,
