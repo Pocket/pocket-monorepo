@@ -13,6 +13,7 @@ import type {
 } from 'aws-lambda';
 
 import { handlers } from './handlers';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 /**
  * The main handler function which will be wrapped by Sentry prior to export.
@@ -31,13 +32,13 @@ export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
           'detail-type': message['detail-type'],
           source: message['source'],
         };
-        console.log(`Missing handler.`, { message, data: errorData });
+        serverLogger.info(`Missing handler.`, { message, data: errorData });
         batchFailures.push({ itemIdentifier: record.messageId });
         continue;
       }
       await handlers[message['detail-type']](record);
     } catch (error) {
-      console.log(error);
+      serverLogger.error(error);
       Sentry.captureException(error);
       batchFailures.push({ itemIdentifier: record.messageId });
     }
