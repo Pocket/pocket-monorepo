@@ -54,8 +54,8 @@ export class ExportListHandler extends QueueHandler {
    */
   async handleMessage(body: ExportMessage): Promise<boolean> {
     try {
-      serverLogger.debug({
-        message: 'handleMessage: Starting export.',
+      serverLogger.info({
+        message: 'ExportListHandler: Starting export.',
         data: {
           body: body,
         },
@@ -69,15 +69,25 @@ export class ExportListHandler extends QueueHandler {
         exportBucket,
         eventBridgeClient(),
       );
+      serverLogger.info({
+        message: 'ExportListHandler: Checking for last good export',
+      });
       // First check if there is an unexpired export
       const lastGoodExport = await exportService.lastGoodExport();
       if (lastGoodExport) {
+        serverLogger.info({
+          message: 'ExportListHandler: Valid export found - notifying user',
+        });
         exportService.notifyUser(
           body.encodedId,
           body.requestId,
           lastGoodExport,
         );
       } else {
+        serverLogger.info({
+          message: 'ExportListHandler: Exporting chunk',
+          body,
+        });
         // If not, then kick off the export process
         await exportService.exportListChunk(
           body.requestId,
