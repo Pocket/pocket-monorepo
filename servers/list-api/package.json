@@ -47,7 +47,8 @@
     "luxon": "3.5.0",
     "mysql2": "3.11.3",
     "tslib": "2.7.0",
-    "unleash-client": "6.1.1"
+    "unleash-client": "6.1.1",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@jest/globals": "29.7.0",

@@ -27,7 +27,7 @@ export type BasicItemEventPayload = {
 export type BasicItemEventPayloadContext = {
   user: {
     id: string;
-    hashedId?: string;
+    hashedId: string;
     email?: string;
     guid?: number;
     hashedGuid?: string;
