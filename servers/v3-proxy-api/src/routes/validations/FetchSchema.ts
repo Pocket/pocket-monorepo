@@ -102,10 +102,10 @@ export const V3FetchSchema: Schema = {
       options: '0',
     },
     isIn: {
-      options: [['0', '1']],
+      options: [['0', '1', true, false]],
     },
     customSanitizer: {
-      options: (value) => (value === '1' ? true : false),
+      options: (value) => (value === '1' || value === true ? true : false),
     },
   },
   annotations: {
@@ -113,10 +113,10 @@ export const V3FetchSchema: Schema = {
       options: '1',
     },
     isIn: {
-      options: [['0', '1']],
+      options: [['0', '1', true, false]],
     },
     customSanitizer: {
-      options: (value) => (value === '1' ? true : false),
+      options: (value) => (value === '1' || value === true ? true : false),
     },
   },
   taglist: {
@@ -124,10 +124,10 @@ export const V3FetchSchema: Schema = {
       options: '0',
     },
     isIn: {
-      options: [['0', '1']],
+      options: [['0', '1', true, false]],
     },
     customSanitizer: {
-      options: (value) => (value === '1' ? true : false),
+      options: (value) => (value === '1' || value === true ? true : false),
     },
   },
   forcetaglist: {
@@ -135,10 +135,10 @@ export const V3FetchSchema: Schema = {
       options: '0',
     },
     isIn: {
-      options: [['0', '1']],
+      options: [['0', '1', true, false]],
     },
     customSanitizer: {
-      options: (value) => (value === '1' ? true : false),
+      options: (value) => (value === '1' || value === true ? true : false),
     },
   },
   since: {
@@ -156,10 +156,10 @@ export const V3FetchSchema: Schema = {
   hasAnnotations: {
     optional: true,
     isIn: {
-      options: [['0', '1']],
+      options: [['0', '1', true, false]],
     },
     customSanitizer: {
-      options: (value) => (value === '1' ? true : false),
+      options: (value) => (value === '1' || value === true ? true : false),
     },
   },
 };
