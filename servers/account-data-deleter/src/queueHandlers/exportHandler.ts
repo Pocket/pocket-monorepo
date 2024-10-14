@@ -3,7 +3,6 @@ import { config } from '../config';
 import { ExportMessage } from '../types';
 import { eventBridgeClient, readClient } from '../dataService/clients';
 import { type Unleash } from 'unleash-client';
-import { serverLogger } from '@pocket-tools/ts-logger';
 import { QueueHandler } from './queueHandler';
 import { ListDataExportService } from '../dataService/listDataExportService';
 import { S3Bucket } from '../dataService/s3Service';
