@@ -14,6 +14,7 @@ import {
 import { resource } from '@cdktf/provider-null';
 import { eventConfig } from './eventConfig';
 import { createDeadLetterQueueAlarm } from '../utils';
+import type { ApplicationEventBus } from '@pocket-tools/terraform-modules';
 
 export class ListExportReady extends Construct {
   public readonly snsTopic: snsTopic.SnsTopic;
@@ -22,6 +23,7 @@ export class ListExportReady extends Construct {
   constructor(
     scope: Construct,
     private name: string,
+    private sharedEventBus: ApplicationEventBus,
     private snsAlarmTopic: dataAwsSnsTopic.DataAwsSnsTopic,
   ) {
     super(scope, name);
@@ -72,7 +74,7 @@ export class ListExportReady extends Construct {
           source: [eventConfig.source],
           'detail-type': eventConfig.detailType,
         },
-        eventBusName: eventConfig.bus,
+        eventBusName: this.sharedEventBus.bus.name,
         preventDestroy: true,
       },
       targets: [
