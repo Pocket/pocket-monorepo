@@ -7,6 +7,7 @@ import { serverLogger } from '@pocket-tools/ts-logger';
 import { QueueHandler } from './queueHandler';
 import { ListDataExportService } from '../dataService/listDataExportService';
 import { S3Bucket } from '../dataService/s3Service';
+import { type SNSMessage } from '@aws-sdk/client-sns';
 
 export class ExportListHandler extends QueueHandler {
   /**
@@ -52,7 +53,9 @@ export class ExportListHandler extends QueueHandler {
    * @returns whether or not the message was successfully handled
    * (underlying call to AccountDeleteDataService completed without error)
    */
-  async handleMessage(body: ExportMessage): Promise<boolean> {
+  async handleMessage(message: SNSMessage): Promise<boolean> {
+    const body: ExportMessage = JSON.parse(message.Message);
+    serverLogger.info({ message: 'parsed message body', body });
     try {
       serverLogger.info({
         message: 'ExportListHandler: Starting export.',

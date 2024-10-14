@@ -132,7 +132,7 @@ export abstract class QueueHandler {
 
     try {
       data = await this.sqsClient.send(new ReceiveMessageCommand(params));
-      serverLogger.info({ message: 'Poll data received', data });
+      serverLogger.info({ message: 'Poll data received', result: data });
       body =
         data.Messages &&
         data.Messages.length > 0 &&

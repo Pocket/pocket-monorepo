@@ -43,6 +43,7 @@
     "tslib": "2.7.0"
   },
   "devDependencies": {
+    "@aws-sdk/client-sns": "^3.670.0",
     "@pocket-tools/eslint-config": "workspace:*",
     "@sentry/types": "8.34.0",
     "@smithy/types": "3.5.0",
