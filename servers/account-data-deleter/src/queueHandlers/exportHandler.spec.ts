@@ -1,6 +1,5 @@
 import { config } from '../config';
 import { ListDataExportService } from '../dataService/listDataExportService';
-import { S3Bucket } from '../dataService/s3Service';
 import { ExportListHandler } from './exportHandler';
 import { EventEmitter } from 'node:stream';
 
