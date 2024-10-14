@@ -10,8 +10,8 @@ import config from './config';
  * format is prefixed by "<api_id>-"
  */
 export function parseApiId(consumerKey: string): number | undefined {
-  const re = new RegExp(/^(\d+)-[\w\d]+/);
-  const apiId = consumerKey.match(re)?.[0];
+  const re = new RegExp(/^(?<apiId>\d+)-[\w\d]+/i);
+  const apiId = consumerKey.match(re)?.groups?.apiId;
   return apiId != null ? parseInt(apiId) : undefined;
 }
 
