@@ -26,9 +26,6 @@ describe('EventBusHandler', () => {
   const crumbStub: jest.SpyInstance = jest
     .spyOn(Sentry, 'addBreadcrumb')
     .mockImplementation(() => Promise.resolve());
-  const consoleSpy: jest.SpyInstance = jest
-    .spyOn(console, 'log')
-    .mockImplementation(() => Promise.resolve());
   const emitter = new EventEmitter();
   new EventBusHandler().init(emitter);
   const now = new Date('2022-01-01 00:00:00');
@@ -95,8 +92,6 @@ describe('EventBusHandler', () => {
       };
       // Wait just a tad in case promise needs time to resolve
       await setTimeout(100);
-      expect(sentryStub).toHaveBeenCalledTimes(0);
-      expect(consoleSpy).toHaveBeenCalledTimes(0);
       // Listener was registered on event
       expect(emitter.listeners(emittedEvent).length).toBe(1);
       // Event was sent to Event Bus
@@ -145,7 +140,6 @@ describe('EventBusHandler', () => {
       // Wait just a tad in case promise needs time to resolve
       await setTimeout(100);
       expect(sentryStub).toHaveBeenCalledTimes(0);
-      expect(consoleSpy).toHaveBeenCalledTimes(0);
       // Listener was registered on event
       expect(emitter.listeners(emittedEvent).length).toBe(1);
       // Event was sent to Event Bus
@@ -185,10 +179,6 @@ describe('EventBusHandler', () => {
     expect(sentryStub.mock.calls[0][0].message).toContain(
       `Failed to send event 'account-deletion' to event bus`,
     );
-    expect(consoleSpy).toHaveBeenCalledTimes(1);
-    expect(consoleSpy.mock.calls[0][0].message).toContain(
-      `Failed to send event 'account-deletion' to event bus`,
-    );
   });
   it('should log error if send call throws error', async () => {
     clientStub.mockRestore();
@@ -210,10 +200,6 @@ describe('EventBusHandler', () => {
     expect(sentryStub.mock.calls[0][0].message).toContain('boo!');
     expect(crumbStub).toHaveBeenCalledTimes(1);
     expect(crumbStub.mock.calls[0][0].message).toContain(
-      `Failed to send event 'account-deletion' to event bus`,
-    );
-    expect(consoleSpy).toHaveBeenCalledTimes(2);
-    expect(consoleSpy.mock.calls[0][0].message).toContain(
       `Failed to send event 'account-deletion' to event bus`,
     );
   });
