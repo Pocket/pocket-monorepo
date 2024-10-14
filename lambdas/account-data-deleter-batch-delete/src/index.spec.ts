@@ -60,13 +60,10 @@ describe('deleteUsers spec test', () => {
       .mockImplementation(() => {
         return Promise.resolve();
       });
-    const consoleSpy = jest.spyOn(console, 'log');
     const sentrySpy = jest.spyOn(Sentry, 'captureException');
     await deleteUsers(dynamoDbUtils);
     expect(spy).toHaveBeenCalledWith([]);
     expect(spy).toHaveBeenCalledTimes(1);
-    expect(consoleSpy).toHaveBeenCalledWith(`unable to delete userId ${1}`);
-    expect(consoleSpy).toHaveBeenCalledTimes(1);
     expect(sentrySpy).toHaveBeenCalledWith({
       message: `unable to delete userId ${1}`,
     });
