@@ -23,6 +23,7 @@ import {
   updateSavedItemUnFavorite,
   updateTag,
   upsertSavedItem,
+  exportList,
 } from './mutation';
 import { tagsSavedItems } from './tag';
 import {
@@ -162,6 +163,7 @@ const resolvers = {
     clearTags,
     replaceTags,
     removeTagsByName,
+    exportList,
     deleteTagByName: async (
       _,
       args: { tagName: string; timestamp?: Date },

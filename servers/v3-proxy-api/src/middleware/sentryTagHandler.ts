@@ -16,7 +16,7 @@ export function sentryTagHandler(
   next: NextFunction,
 ) {
   const scope = Sentry.getCurrentScope();
-  const consumerKey = req.query.consumer_key;
+  const consumerKey = req.query.consumer_key ?? req.body.consumer_key;
   if (consumerKey == null || typeof consumerKey !== 'string') {
     scope.setTag('pocket-api-id', undefined);
     next();

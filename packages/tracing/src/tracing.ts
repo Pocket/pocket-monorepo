@@ -213,7 +213,10 @@ export async function nodeSDKBuilder(config: TracingConfig) {
   });
   const sdk = new NodeSDK({
     textMapPropagator: new CompositePropagator({
-      propagators: [new AWSXRayPropagator(), new SentryPropagator()],
+      // The Propogators are run in the order they are added, and since we want the AWSXRAY to win,
+      // it must come last because it writes the parent context "sampled" data from the trace into the contexts
+      // We Keep Sentry in here, because it adds data that Sentry needs, we just don't want it to control the sample value.
+      propagators: [new SentryPropagator(), new AWSXRayPropagator()],
     }),
     instrumentations,
     sampler: new SentryParentSampler({
