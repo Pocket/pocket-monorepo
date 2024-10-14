@@ -3,7 +3,6 @@ import { config } from '../config';
 import { ExportMessage } from '../types';
 import { eventBridgeClient, readClient } from '../dataService/clients';
 import { type Unleash } from 'unleash-client';
-import { serverLogger } from '@pocket-tools/ts-logger';
 import { QueueHandler } from './queueHandler';
 import { ListDataExportService } from '../dataService/listDataExportService';
 import { S3Bucket } from '../dataService/s3Service';
@@ -45,23 +44,16 @@ export class ExportListHandler extends QueueHandler {
   }
 
   /**
-   * Handle messages from the batchDelete queue. Calls
-   * AccountDeleteDataService and forwards any errors to
-   * Cloudwatch and Sentry.
-   * @param body the body of the SQS message in the BatchDelete queue
+   * Handle messages from the ListExport queue.
+   * @param body the body of the SQS message in the ListExport queue,
+   * which is actually JSON-stringified body of another message...
    * @returns whether or not the message was successfully handled
    * (underlying call to AccountDeleteDataService completed without error)
    */
-  async handleMessage(body: ExportMessage): Promise<boolean> {
+  async handleMessage(message: { Message: string }): Promise<boolean> {
     try {
-      serverLogger.debug({
-        message: 'handleMessage: Starting export.',
-        data: {
-          body: body,
-        },
-      });
+      const body: ExportMessage = JSON.parse(message.Message)['detail'];
       const exportBucket = new S3Bucket(config.listExport.exportBucket);
-
       const exportService = new ListDataExportService(
         body.userId,
         body.encodedId,
