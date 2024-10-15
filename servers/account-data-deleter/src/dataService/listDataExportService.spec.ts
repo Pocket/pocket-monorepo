@@ -20,6 +20,9 @@ describe('ListDataExportService', () => {
     expect(notifySpy).toHaveBeenCalledExactlyOnceWith('1a234d', '12345');
   });
   it('notifies that the request is finished if there is no more data left', async () => {
+    const writeSpy = jest
+      .spyOn(S3Bucket.prototype, 'writeCsv')
+      .mockResolvedValue(true);
     jest.spyOn(exporter, 'fetchListData').mockResolvedValue([
       {
         cursor: 1,
@@ -45,6 +48,7 @@ describe('ListDataExportService', () => {
       '12345',
       'http://your-archive.zip',
     );
+    expect(writeSpy).toHaveBeenCalledOnce();
   });
   it('requests the next chunk using the cursor, incrementing the part', async () => {
     jest.spyOn(exporter, 'fetchListData').mockResolvedValue([
