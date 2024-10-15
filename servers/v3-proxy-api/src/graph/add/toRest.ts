@@ -67,8 +67,8 @@ export function AddItemTransformer(
         encoding: savedItem.item.encoding ?? '',
         date_resolved: savedItem.item.dateResolved,
         date_published: savedItem.item.datePublished ?? '0000-00-00 00:00:00',
-        title: savedItem.item.title ?? '',
-        excerpt: savedItem.item.excerpt ?? '',
+        title: savedItem.item.preview?.title ?? '',
+        excerpt: savedItem.item.preview?.excerpt ?? '',
         word_count: (savedItem.item.wordCount ?? 0).toString(),
         innerdomain_redirect: savedItem.item.innerDomainRedirect ? '1' : '0',
         login_required: savedItem.item.loginRequired ? '1' : '0',
@@ -79,7 +79,7 @@ export function AddItemTransformer(
         used_fallback: savedItem.item.usedFallback ? '1' : '0',
         lang: savedItem.item.language,
         time_first_parsed: savedItem.item.timeFirstParsed,
-        authors: tx.AuthorsReducer(savedItem.item.authors) ?? [],
+        authors: tx.AuthorsReducer(savedItem.item.preview?.authors) ?? [],
         images:
           tx.ImagesReducer(savedItem.item.images, savedItem.item.resolvedId) ??
           [],
@@ -90,11 +90,11 @@ export function AddItemTransformer(
         given_url: savedItem.url,
       };
       // Optional fields -- not present if data does not exist
-      savedItem.item.topImage &&
-        (item['top_image_url'] = savedItem.item.topImage.url);
-      savedItem.item.domainMetadata &&
+      savedItem.item.preview?.image &&
+        (item['top_image_url'] = savedItem.item.preview?.image?.url);
+      savedItem.item.preview?.domain &&
         (item['domain_metadata'] = tx.DomainMetadataTransformer(
-          savedItem.item.domainMetadata,
+          savedItem.item.preview?.domain,
         ));
       return { item, status: 1 };
   }
