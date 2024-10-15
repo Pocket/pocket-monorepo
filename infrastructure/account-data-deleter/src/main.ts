@@ -133,7 +133,7 @@ class AccountDataDeleter extends TerraformStack {
       batchDeleteDLQ: batchDeleteQueue.deadLetterQueue,
       listExportQueue: listExportQueue.sqsQueue,
       listExportDLQ: listExportQueue.deadLetterQueue,
-      listExportBucket: exportBucket.bucket,
+      listExportBucket: exportBucket,
       listExportPartsPrefix: partsPrefix,
       listExportArchivesPrefix: archivesPrefix,
     };
