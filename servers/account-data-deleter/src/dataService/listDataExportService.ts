@@ -103,44 +103,85 @@ export class ListDataExportService {
     size: number,
     part: number,
   ) {
-    const entries = await this.fetchListData(fromId, size);
-    // There's no data
-    if (entries.length === 0) {
-      if (part === 0) {
-        await this.notifyUser(this.encodedId, requestId);
-      } else {
-        serverLogger.warning('Export returned no results');
+    Sentry.addBreadcrumb({ data: { cursor: fromId, part, requestId } });
+    try {
+      const entries = await this.fetchListData(fromId, size);
+      // There's no data
+      if (entries.length === 0) {
+        if (part === 0) {
+          serverLogger.info({
+            message:
+              'ListDataExportService - export complete, notifying user (no data)',
+            requestId,
+          });
+          await this.notifyUser(this.encodedId, requestId);
+        } else {
+          serverLogger.warning('Export returned no results');
+        }
       }
-    }
-    // We're finished!
-    else if (entries.length <= size) {
-      const zipResponse = await this.exportBucket.zipFilesByPrefix(
-        this.encodedId,
-        this.zipFileKey,
-      );
-      if (zipResponse != null) {
-        const { Key: zipKey } = zipResponse;
-        const signedUrl = await this.exportBucket.getSignedUrl(
-          zipKey,
-          config.listExport.signedUrlExpiry,
+      // We're finished!
+      else if (entries.length <= size) {
+        await this.exportBucket.writeCsv(
+          entries,
+          `${this.partsPrefix}/part_${part.toString().padStart(6, '0')}`,
         );
-        await this.notifyUser(this.encodedId, requestId, signedUrl);
-      } else {
-        const errorMessage = 'Expected a zipfile but did not find any data';
-        Sentry.captureException(errorMessage, {
-          data: { requestId, fromId, part },
+        serverLogger.info({
+          message: 'ListDataExportService - zipping files',
+          requestId,
         });
-        serverLogger.error({ message: errorMessage, requestId, fromId, part });
-        throw new Error(errorMessage);
+        const zipResponse = await this.exportBucket.zipFilesByPrefix(
+          this.encodedId,
+          this.zipFileKey,
+        );
+        if (zipResponse != null) {
+          const { Key: zipKey } = zipResponse;
+          const signedUrl = await this.exportBucket.getSignedUrl(
+            zipKey,
+            config.listExport.signedUrlExpiry,
+          );
+          serverLogger.info({
+            message: 'ListDataExportService - export complete, notifying user',
+            requestId,
+            zipKey,
+          });
+          await this.notifyUser(this.encodedId, requestId, signedUrl);
+        } else {
+          const errorMessage = 'Expected a zipfile but did not find any data';
+          Sentry.captureException(errorMessage, {
+            data: { requestId, fromId, part },
+          });
+          serverLogger.error({
+            message: errorMessage,
+            requestId,
+            fromId,
+            part,
+          });
+          throw new Error(errorMessage);
+        }
+      } else {
+        // Will pull in greater than or equal to cursor
+        const cursor = entries.splice(size)[0].cursor;
+        await this.exportBucket.writeCsv(
+          entries,
+          `${this.partsPrefix}/part_${part.toString().padStart(6, '0')}`,
+        );
+        serverLogger.info({
+          message: 'ListDataExportService - Requesting next chunk',
+          requestId,
+          cursor,
+          part: part + 1,
+        });
+        await this.requestNextChunk(requestId, cursor, part + 1);
       }
-    } else {
-      // Will pull in greater than or equal to cursor
-      const cursor = entries.splice(size)[0].cursor;
-      await this.exportBucket.writeCsv(
-        entries,
-        `${this.partsPrefix}/part_${part.toString().padStart(6, '0')}`,
-      );
-      await this.requestNextChunk(requestId, cursor, part + 1);
+    } catch (err) {
+      serverLogger.error({
+        message: 'Unhandled error occurred during export',
+        errorData: err,
+        cursor: fromId,
+        part,
+        requestId: requestId,
+      });
+      Sentry.captureException(err);
     }
   }
   // Put a message onto the queue to trigger the next batch

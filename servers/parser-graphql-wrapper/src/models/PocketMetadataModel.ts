@@ -297,7 +297,7 @@ export class PocketMetadataModel {
     const imageUrl = getOriginalUrlIfPocketImageCached(corpusItem.image.url);
 
     return {
-      id: item.id,
+      id: corpusItem.id,
       image: {
         url: imageUrl,
         imageId: 0,

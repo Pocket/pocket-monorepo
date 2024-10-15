@@ -76,7 +76,7 @@ importers:
         version: 0.20.8(constructs@10.3.0)
       cdktf-cli:
         specifier: 0.20.8
-        version: 0.20.8(encoding@0.1.13)(ink@3.2.0(react@18.3.1))(react@18.3.1)
+        version: 0.20.8(encoding@0.1.13)(ink@5.0.1(react-devtools-core@4.28.5)(react@18.3.1))(react@18.3.1)
       constructs:
         specifier: 10.3.0
         version: 10.3.0
@@ -119,7 +119,7 @@ importers:
         version: 0.20.8(constructs@10.3.0)
       cdktf-cli:
         specifier: 0.20.8
-        version: 0.20.8(encoding@0.1.13)(ink@5.0.1(react-devtools-core@4.28.5)(react@18.3.1))(react@18.3.1)
+        version: 0.20.8(encoding@0.1.13)(ink@3.2.0(react@18.3.1))(react@18.3.1)
       constructs:
         specifier: 10.3.0
         version: 10.3.0
@@ -996,6 +996,9 @@ importers:
       '@aws-sdk/lib-dynamodb':
         specifier: 3.637.0
         version: 3.637.0(@aws-sdk/client-dynamodb@3.637.0)
+      '@pocket-tools/ts-logger':
+        specifier: workspace:*
+        version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
         specifier: 8.34.0
         version: 8.34.0(@opentelemetry/api@1.9.0)
@@ -1048,6 +1051,9 @@ importers:
       '@aws-sdk/client-lambda':
         specifier: 3.637.0
         version: 3.637.0
+      '@pocket-tools/ts-logger':
+        specifier: workspace:*
+        version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
         specifier: 8.34.0
         version: 8.34.0(@opentelemetry/api@1.9.0)
@@ -1100,6 +1106,9 @@ importers:
       '@aws-sdk/lib-dynamodb':
         specifier: 3.637.0
         version: 3.637.0(@aws-sdk/client-dynamodb@3.637.0)
+      '@pocket-tools/ts-logger':
+        specifier: workspace:*
+        version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
         specifier: 8.34.0
         version: 8.34.0(@opentelemetry/api@1.9.0)
@@ -1143,6 +1152,9 @@ importers:
 
   lambdas/annotations-api-events:
     dependencies:
+      '@pocket-tools/ts-logger':
+        specifier: workspace:*
+        version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
         specifier: 8.34.0
         version: 8.34.0(@opentelemetry/api@1.9.0)
@@ -1186,6 +1198,9 @@ importers:
       '@aws-sdk/client-sqs':
         specifier: 3.637.0
         version: 3.637.0
+      '@pocket-tools/ts-logger':
+        specifier: workspace:*
+        version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
         specifier: 8.34.0
         version: 8.34.0(@opentelemetry/api@1.9.0)
@@ -1354,6 +1369,9 @@ importers:
       '@aws-sdk/client-firehose':
         specifier: 3.637.0
         version: 3.637.0
+      '@pocket-tools/ts-logger':
+        specifier: workspace:*
+        version: link:../../packages/ts-logger
       '@sendgrid/client':
         specifier: ^8.0.0
         version: 8.1.3
@@ -1394,6 +1412,9 @@ importers:
 
   lambdas/shareable-lists-api-events:
     dependencies:
+      '@pocket-tools/ts-logger':
+        specifier: workspace:*
+        version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
         specifier: 8.34.0
         version: 8.34.0(@opentelemetry/api@1.9.0)
@@ -1443,6 +1464,9 @@ importers:
       '@aws-sdk/client-ssm':
         specifier: 3.637.0
         version: 3.637.0
+      '@pocket-tools/ts-logger':
+        specifier: workspace:*
+        version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
         specifier: 8.34.0
         version: 8.34.0(@opentelemetry/api@1.9.0)
@@ -1608,6 +1632,9 @@ importers:
 
   lambdas/user-list-search-events:
     dependencies:
+      '@pocket-tools/ts-logger':
+        specifier: workspace:*
+        version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
         specifier: 8.34.0
         version: 8.34.0(@opentelemetry/api@1.9.0)
@@ -1697,6 +1724,9 @@ importers:
       '@aws-sdk/client-sqs':
         specifier: 3.637.0
         version: 3.637.0
+      '@pocket-tools/ts-logger':
+        specifier: workspace:*
+        version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
         specifier: 8.34.0
         version: 8.34.0(@opentelemetry/api@1.9.0)
@@ -2819,6 +2849,9 @@ importers:
       '@pocket-tools/sentry':
         specifier: workspace:*
         version: link:../../packages/sentry
+      '@pocket-tools/ts-logger':
+        specifier: workspace:*
+        version: link:../../packages/ts-logger
       '@sentry/node':
         specifier: 8.34.0
         version: 8.34.0
@@ -3354,6 +3387,9 @@ importers:
       '@aws-sdk/client-sqs':
         specifier: 3.637.0
         version: 3.637.0
+      '@pocket-tools/ts-logger':
+        specifier: workspace:*
+        version: link:../../packages/ts-logger
       '@sentry/node':
         specifier: 8.34.0
         version: 8.34.0

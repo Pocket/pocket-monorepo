@@ -83,7 +83,6 @@ async function getSqsMessages(): Promise<any[]> {
 describe('API Gateway successful event handler', () => {
   const now = Date.now();
   let sqsSpy: any;
-  let consoleSpy: any;
   let sentrySpy: any;
 
   beforeAll(() => {
@@ -100,7 +99,6 @@ describe('API Gateway successful event handler', () => {
 
     // Set up spies 👀
     sqsSpy = jest.spyOn(sqsClient, 'send');
-    consoleSpy = jest.spyOn(console, 'log');
     sentrySpy = jest.spyOn(Sentry, 'captureException');
   });
 
@@ -262,9 +260,6 @@ describe('API Gateway successful event handler', () => {
         timestamp: Math.round(now / 1000),
         transfer_sub: null,
       });
-      expect(consoleSpy.mock.calls[0][0]).toEqual(
-        expect.arrayContaining(['error: no send']),
-      );
       expect(sentrySpy.mock.calls[0][0].message).toBe('no send');
       expect(JSON.parse(handlerResponse.body).message).toEqual(
         expect.arrayContaining(['Successfully sent 1 out of 2 events to SQS']),

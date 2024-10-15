@@ -40,6 +40,7 @@ import {
 } from '../generated/graphql';
 import config from '../config';
 import * as Sentry from '@sentry/node';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export function getClient(
   accessToken: string,
@@ -180,9 +181,21 @@ export class GraphQLClientFactory {
           };
           throw new ClientError(gqlResponse, context);
         }
+      } else if (
+        response instanceof ClientError &&
+        response.response?.error === '' &&
+        response.response?.status === 200
+      ) {
+        serverLogger.error('Received an empty 200 error from Client API', {
+          responseError: response,
+        });
+        throw response;
         // There are unskipped errors; re-throw so that the request
         // evaluates to an error
       } else if (response instanceof Error) {
+        serverLogger.error('rethrowing an unskipped error', {
+          responseError: response,
+        });
         throw response;
       }
     };

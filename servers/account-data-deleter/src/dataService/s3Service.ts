@@ -97,7 +97,7 @@ export class S3Bucket {
       const fileKeys = await this.listAllObjects(prefix);
       if (fileKeys != null && fileKeys.length > 0) {
         const archive = await this.streamObjectsArchive(fileKeys);
-        serverLogger.debug({
+        serverLogger.info({
           message: 'Archiving export files',
           archiveLen: fileKeys.length,
           prefix,
@@ -134,6 +134,7 @@ export class S3Bucket {
         message: 'Error encountered during archive',
         prefix: prefix,
         errorData: err,
+        errorMessage: err.message,
       });
       Sentry.captureException(err, { data: { prefix } });
       throw err;
@@ -168,11 +169,24 @@ export class S3Bucket {
   }
   async getSignedUrl(key: string, expiresInSeconds?: number): Promise<string> {
     const expiresIn = expiresInSeconds ?? 60 * 60 * 24 * 7; // 7 days in seconds
-    const command = new GetObjectCommand({ Bucket: this.bucket, Key: key });
-    const url = await getSignedUrl(this.s3, command, {
-      expiresIn,
-    });
-    return url;
+    try {
+      const command = new GetObjectCommand({ Bucket: this.bucket, Key: key });
+      const url = await getSignedUrl(this.s3, command, {
+        expiresIn,
+      });
+      return url;
+    } catch (error) {
+      serverLogger.error({
+        message: 'Error generating signedUrl',
+        key,
+        expiresIn,
+        bucket: this.bucket,
+        errorData: error,
+      });
+      Sentry.addBreadcrumb({ data: { key, expiresIn, bucket: this.bucket } });
+      Sentry.captureException(error);
+      throw error;
+    }
   }
   /**
    * Check whether object exists in a Bucket with the given key.
