@@ -5,6 +5,8 @@ import { initSentry } from '@pocket-tools/sentry';
 initSentry({
   ...config.sentry,
   skipOpenTelemetrySetup: true,
+  // Filter out GraphQL 200 errors from sentry
+  ignoreErrors: ['GraphQL Error (Code: 200)'],
   integrations(integrations) {
     return integrations.filter((integration) => {
       return integration.name !== 'NodeFetch';

@@ -107,6 +107,18 @@ export abstract class QueueHandler {
   }
 
   /**
+   * Wrap poll queue method to have manual Sentry isolation,
+   * for background jobs.
+   * https://docs.sentry.io/platforms/javascript/guides/node/configuration/async-context/
+   * @returns
+   */
+  async pollQueue() {
+    return await Sentry.withIsolationScope(async () => {
+      await this.__pollQueue();
+    });
+  }
+
+  /**
    * Event-driven polling of SQS queue (listener on event emitter).
    * If a message is received from the queue, process it and schedule
    * the next poll event. Does not throw -- any errors that occur
@@ -114,7 +126,7 @@ export abstract class QueueHandler {
    * Ensures messages are processed in a synchronous, blocking way,
    * to minimize database load.
    */
-  async pollQueue() {
+  private async __pollQueue() {
     const params = {
       // https://github.com/aws/aws-sdk/issues/233
       AttributeNames: ['SentTimestamp'] as any, // see issue above - bug in the SDK
