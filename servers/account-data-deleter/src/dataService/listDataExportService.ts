@@ -121,6 +121,10 @@ export class ListDataExportService {
       }
       // We're finished!
       else if (entries.length <= size) {
+        await this.exportBucket.writeCsv(
+          entries,
+          `${this.partsPrefix}/part_${part.toString().padStart(6, '0')}`,
+        );
         serverLogger.info({
           message: 'ListDataExportService - zipping files',
           requestId,
