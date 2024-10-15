@@ -40,6 +40,7 @@ import {
 } from '../generated/graphql';
 import config from '../config';
 import * as Sentry from '@sentry/node';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export function getClient(
   accessToken: string,
@@ -183,6 +184,13 @@ export class GraphQLClientFactory {
         // There are unskipped errors; re-throw so that the request
         // evaluates to an error
       } else if (response instanceof Error) {
+        Sentry.addBreadcrumb({
+          message: 'Rethrowing an unskipped error',
+          data: { responseError: response },
+        });
+        serverLogger.error('rethrowing an unskipped error', {
+          responseError: response,
+        });
         throw response;
       }
     };

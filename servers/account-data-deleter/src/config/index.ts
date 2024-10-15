@@ -39,7 +39,7 @@ export const config = {
         url:
           process.env.SQS_LIST_EXPORT_QUEUE_URL ||
           'http://localhost:4566/000000000000/pocket-list-export-queue',
-        visibilityTimeout: 100,
+        visibilityTimeout: 1000,
         maxMessages: 1, // Must be 1
         waitTimeSeconds: 0,
         defaultPollIntervalSeconds: 60,

@@ -168,11 +168,24 @@ export class S3Bucket {
   }
   async getSignedUrl(key: string, expiresInSeconds?: number): Promise<string> {
     const expiresIn = expiresInSeconds ?? 60 * 60 * 24 * 7; // 7 days in seconds
-    const command = new GetObjectCommand({ Bucket: this.bucket, Key: key });
-    const url = await getSignedUrl(this.s3, command, {
-      expiresIn,
-    });
-    return url;
+    try {
+      const command = new GetObjectCommand({ Bucket: this.bucket, Key: key });
+      const url = await getSignedUrl(this.s3, command, {
+        expiresIn,
+      });
+      return url;
+    } catch (error) {
+      serverLogger.error({
+        message: 'Error generating signedUrl',
+        key,
+        expiresIn,
+        bucket: this.bucket,
+        errorData: error,
+      });
+      Sentry.addBreadcrumb({ data: { key, expiresIn, bucket: this.bucket } });
+      Sentry.captureException(error);
+      throw error;
+    }
   }
   /**
    * Check whether object exists in a Bucket with the given key.

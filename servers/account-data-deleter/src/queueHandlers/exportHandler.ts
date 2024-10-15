@@ -3,10 +3,10 @@ import { config } from '../config';
 import { ExportMessage } from '../types';
 import { eventBridgeClient, readClient } from '../dataService/clients';
 import { type Unleash } from 'unleash-client';
-import { serverLogger } from '@pocket-tools/ts-logger';
 import { QueueHandler } from './queueHandler';
 import { ListDataExportService } from '../dataService/listDataExportService';
 import { S3Bucket } from '../dataService/s3Service';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export class ExportListHandler extends QueueHandler {
   /**
@@ -45,23 +45,20 @@ export class ExportListHandler extends QueueHandler {
   }
 
   /**
-   * Handle messages from the batchDelete queue. Calls
-   * AccountDeleteDataService and forwards any errors to
-   * Cloudwatch and Sentry.
-   * @param body the body of the SQS message in the BatchDelete queue
+   * Handle messages from the ListExport queue.
+   * @param body the body of the SQS message in the ListExport queue,
+   * which is actually JSON-stringified body of another message...
    * @returns whether or not the message was successfully handled
    * (underlying call to AccountDeleteDataService completed without error)
    */
-  async handleMessage(body: ExportMessage): Promise<boolean> {
+  async handleMessage(message: { Message: string }): Promise<boolean> {
+    serverLogger.info({
+      message: 'ExportListHandler - received request',
+      body: message,
+    });
     try {
-      serverLogger.debug({
-        message: 'handleMessage: Starting export.',
-        data: {
-          body: body,
-        },
-      });
+      const body: ExportMessage = JSON.parse(message.Message)['detail'];
       const exportBucket = new S3Bucket(config.listExport.exportBucket);
-
       const exportService = new ListDataExportService(
         body.userId,
         body.encodedId,
@@ -72,12 +69,22 @@ export class ExportListHandler extends QueueHandler {
       // First check if there is an unexpired export
       const lastGoodExport = await exportService.lastGoodExport();
       if (lastGoodExport) {
+        serverLogger.info({
+          message: 'ExportListHandler - Found valid export',
+          export: lastGoodExport,
+        });
         exportService.notifyUser(
           body.encodedId,
           body.requestId,
           lastGoodExport,
         );
       } else {
+        serverLogger.info({
+          message: 'ExportListHandler - Exporting list data',
+          requestId: body.requestId,
+          cursor: body.cursor,
+          part: body.part,
+        });
         // If not, then kick off the export process
         await exportService.exportListChunk(
           body.requestId,
@@ -86,7 +93,12 @@ export class ExportListHandler extends QueueHandler {
           body.part,
         );
       }
-    } catch {
+    } catch (error) {
+      serverLogger.error({
+        message:
+          'Error encountered while handling export. Returning message to the queue',
+        errorData: error,
+      });
       // Underlying services handle logging and observability of their errors
       return false;
     }

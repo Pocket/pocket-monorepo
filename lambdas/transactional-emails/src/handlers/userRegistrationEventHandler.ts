@@ -13,6 +13,7 @@ import type {
   UsersTrackObject,
   V2SubscriptionStatusSetObject,
 } from 'braze-api';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export type AttributeForUserRegistration = {
   external_id: string;
@@ -56,7 +57,9 @@ export async function userRegistrationEventHandler(record: SQSRecord) {
   const eventTime = new Date(
     JSON.parse(JSON.parse(record.body).Message)['time'],
   ).toISOString();
-  console.log(`received user registration event for userId: ${payload.userId}`);
+  serverLogger.info(
+    `received user registration event for userId: ${payload.userId}`,
+  );
 
   //creating user profile in braze for the user registered
   const requestBody = generateUserTrackBody(payload, eventTime);
@@ -75,7 +78,7 @@ export async function userRegistrationEventHandler(record: SQSRecord) {
 
   //add marketing subscription to user profile
   //set subscription to pocket hits daily for registered user
-  console.log(
+  serverLogger.info(
     `logging marketing subscription id: ${config.braze.marketingSubscriptionId}`,
   );
   const marketingSubscription: V2SubscriptionStatusSetObject =
