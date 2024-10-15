@@ -8,6 +8,7 @@ import type {
   V2SubscriptionStatusSetObject,
   CampaignsTriggerSendObject,
 } from 'braze-api';
+import { serverLogger } from '@pocket-tools/ts-logger';
 export const fetchWithBackoff = fetchRetry(fetch);
 
 export async function sendForgotPasswordEmail(forgotPasswordOptions: {
@@ -67,6 +68,10 @@ export async function sendListExportReadyEmail(options: {
   archiveUrl?: string;
   requestId: string;
 }) {
+  serverLogger.info({
+    message: 'Sending list export campaign',
+    request: options,
+  });
   const brazeApiKey = await getBrazeApiKey();
 
   const campaignData: CampaignsTriggerSendObject = {
@@ -102,6 +107,10 @@ export async function sendListExportReadyEmail(options: {
   if (!res.ok) {
     throw new Error(`Error ${res.status}: Failed to send email`);
   }
+  serverLogger.info({
+    message: 'Braze response for list export',
+    status: res.status,
+  });
 
   return res;
 }
