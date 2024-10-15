@@ -97,7 +97,7 @@ export class S3Bucket {
       const fileKeys = await this.listAllObjects(prefix);
       if (fileKeys != null && fileKeys.length > 0) {
         const archive = await this.streamObjectsArchive(fileKeys);
-        serverLogger.debug({
+        serverLogger.info({
           message: 'Archiving export files',
           archiveLen: fileKeys.length,
           prefix,
@@ -123,7 +123,7 @@ export class S3Bucket {
         await uploads.done();
         return { Bucket: destBucket, Key: zipKey };
       } else {
-        serverLogger.warning({
+        serverLogger.warn({
           message: 'Archive requested, but no files matched prefix',
           prefix,
         });
@@ -134,6 +134,7 @@ export class S3Bucket {
         message: 'Error encountered during archive',
         prefix: prefix,
         errorData: err,
+        errorMessage: err.message,
       });
       Sentry.captureException(err, { data: { prefix } });
       throw err;

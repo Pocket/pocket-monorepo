@@ -116,17 +116,23 @@ export class ListDataExportService {
           });
           await this.notifyUser(this.encodedId, requestId);
         } else {
-          serverLogger.warning('Export returned no results');
+          serverLogger.warn('Export returned no results');
         }
       }
       // We're finished!
       else if (entries.length <= size) {
+        await this.exportBucket.writeCsv(
+          entries,
+          `${this.partsPrefix}/part_${part.toString().padStart(6, '0')}`,
+        );
         serverLogger.info({
           message: 'ListDataExportService - zipping files',
           requestId,
+          prefix: this.partsPrefix,
+          file: this.zipFileKey,
         });
         const zipResponse = await this.exportBucket.zipFilesByPrefix(
-          this.encodedId,
+          this.partsPrefix,
           this.zipFileKey,
         );
         if (zipResponse != null) {

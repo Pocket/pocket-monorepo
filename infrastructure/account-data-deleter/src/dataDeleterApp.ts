@@ -8,6 +8,7 @@ import {
   sqsQueue,
   dataAwsSnsTopic,
 } from '@cdktf/provider-aws';
+import { S3Bucket } from '@cdktf/provider-aws/lib/s3-bucket';
 
 import { PocketALBApplication } from '@pocket-tools/terraform-modules';
 
@@ -22,7 +23,7 @@ export type DataDeleterAppConfig = {
   batchDeleteDLQ: sqsQueue.SqsQueue | undefined;
   listExportQueue: sqsQueue.SqsQueue;
   listExportDLQ: sqsQueue.SqsQueue | undefined;
-  listExportBucket: string;
+  listExportBucket: S3Bucket;
   listExportPartsPrefix: string;
   listExportArchivesPrefix: string;
 };
@@ -118,7 +119,7 @@ export class DataDeleterApp extends Construct {
             },
             {
               name: 'LIST_EXPORT_BUCKET',
-              value: this.config.listExportBucket,
+              value: this.config.listExportBucket.bucket,
             },
             {
               name: 'LIST_EXPORT_PARTS_PREFIX',
@@ -240,13 +241,15 @@ export class DataDeleterApp extends Construct {
             effect: 'Allow',
           },
           {
-            actions: [
-              's3:PutObject',
-              's3:GetObject',
-              's3:DeleteObject',
-              's3:ListBucket',
-            ],
-            resources: [`arn:aws:s3:::${this.config.listExportBucket}`],
+            // Bucket actions
+            actions: ['s3:ListBucket'],
+            resources: [this.config.listExportBucket.arn],
+            effect: 'Allow',
+          },
+          {
+            // Object actions
+            actions: ['s3:*Object'],
+            resources: [`${this.config.listExportBucket.arn}/*`],
             effect: 'Allow',
           },
           {

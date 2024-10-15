@@ -81,8 +81,7 @@ class Stack extends TerraformStack {
     const { region, caller, secretsManagerKmsAlias, snsTopic } = dependencies;
 
     return new PocketALBApplication(this, 'application', {
-      // TODO: "internal: true" deploys service behind VPN, set false or remove this comment
-      internal: true,
+      internal: false,
       prefix: config.prefix,
       alb6CharacterPrefix: config.shortName,
       tags: config.tags,
