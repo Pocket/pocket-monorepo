@@ -16,6 +16,7 @@ export default {
     url: process.env.OTLP_COLLECTOR_URL || 'http://localhost:4318',
     serviceName: 'v3-api-proxy',
     release: process.env.GIT_SHA || 'local',
+    flagName: 'perm.backend.sentry-trace-sampler-rate.v3-proxy',
   },
   sentry: {
     dsn: process.env.SENTRY_DSN || '',
