@@ -30,6 +30,7 @@ describe('ListDataExportService', () => {
         time_added: 12345,
         url: 'http://',
         title: 'never',
+        status: 'archive',
       },
     ]);
     jest.spyOn(S3Bucket.prototype, 'zipFilesByPrefix').mockResolvedValue({
@@ -58,6 +59,7 @@ describe('ListDataExportService', () => {
         time_added: 12345,
         url: 'http://',
         title: 'never',
+        status: 'unread',
       },
       {
         cursor: 2,
@@ -65,6 +67,7 @@ describe('ListDataExportService', () => {
         time_added: 12345,
         url: 'http://',
         title: 'never',
+        status: 'archive',
       },
     ]);
     jest.spyOn(S3Bucket.prototype, 'writeCsv').mockResolvedValue(true);
