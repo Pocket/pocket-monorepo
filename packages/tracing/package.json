@@ -93,6 +93,7 @@
     "unleash-client": "6.1.1"
   },
   "devDependencies": {
+    "@anolilab/semantic-release-pnpm": "1.1.3",
     "@jest/globals": "29.7.0",
     "@pocket-tools/eslint-config": "workspace:*",
     "@types/jest": "29.5.12",

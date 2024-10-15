@@ -37,5 +37,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{secrets.NPM_TOKEN}}
-          # Need to update sendgrid to enable this
-          #        NPM_CONFIG_PROVENANCE: true
+          NPM_CONFIG_PROVENANCE: true
