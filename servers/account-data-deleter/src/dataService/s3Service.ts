@@ -123,7 +123,7 @@ export class S3Bucket {
         await uploads.done();
         return { Bucket: destBucket, Key: zipKey };
       } else {
-        serverLogger.warning({
+        serverLogger.warn({
           message: 'Archive requested, but no files matched prefix',
           prefix,
         });
