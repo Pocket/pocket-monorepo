@@ -8,6 +8,7 @@ import { sendNotificationToDevice } from './gcm';
 import Sentry from './sentry';
 import { sqs } from './sqs';
 import { Message } from '@aws-sdk/client-sqs';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 const processMessage = async (fullMessage: Message): Promise<void> => {
   const message = JSON.parse(fullMessage.Body || '');
@@ -27,10 +28,10 @@ const processMessage = async (fullMessage: Message): Promise<void> => {
     target === TARGET_APNS_SILENT ||
     (target === TARGET_APNS && contents === 'Ping')
   ) {
-    console.log('APNS SILENT push', token);
+    serverLogger.info('APNS SILENT push', token);
     await apns.sendNotificationToDevice(contents, token, true);
   } else if (target === TARGET_GCM) {
-    console.log('GCM push', token);
+    serverLogger.info('GCM push', token);
     try {
       await sendNotificationToDevice(contents, token);
     } catch (err) {
@@ -39,7 +40,7 @@ const processMessage = async (fullMessage: Message): Promise<void> => {
       }
     }
   } else {
-    console.warn(`Unhandled target ${target}`, { message });
+    serverLogger.warn(`Unhandled target ${target}`, { message });
   }
 };
 
@@ -63,9 +64,9 @@ export const worker = {
   work: async (count = 1000) => {
     for (let i = 0; i < count; i++) {
       await doBatch();
-      console.log('Completed iteration', { i });
+      serverLogger.info('Completed iteration', { i });
     }
     Sentry.flush();
-    console.log('Completed all iterations');
+    serverLogger.info('Completed all iterations');
   },
 };

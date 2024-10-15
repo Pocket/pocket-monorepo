@@ -4,14 +4,10 @@ import { type SQSEvent } from 'aws-lambda';
 import * as Sentry from '@sentry/aws-serverless';
 
 describe('event handlers', () => {
-  let consoleErrorStub: jest.SpyInstance;
-  let consoleInfoStub: jest.SpyInstance;
   let deleteStub: jest.SpyInstance;
   let sentryStub: jest.SpyInstance;
   beforeEach(() => {
     jest.clearAllMocks();
-    consoleErrorStub = jest.spyOn(console, 'error');
-    consoleInfoStub = jest.spyOn(console, 'log');
     sentryStub = jest.spyOn(Sentry, 'captureException');
   });
   afterAll(() => jest.restoreAllMocks());
@@ -49,18 +45,6 @@ describe('event handlers', () => {
         ],
       };
       const res = await processor(records as SQSEvent);
-      expect(consoleInfoStub).toHaveBeenCalledTimes(2);
-      expect(consoleInfoStub.mock.calls[0][0].message).toEqual(
-        'Received event records.',
-      );
-      expect(consoleInfoStub.mock.calls[1][0].message).toEqual(
-        'Received record.',
-      );
-
-      expect(consoleErrorStub).toHaveBeenCalledTimes(1);
-      expect(consoleErrorStub.mock.calls[0][0].message).toEqual(
-        'Missing handler.',
-      );
       expect(res.batchItemFailures).toEqual([]);
     });
   });

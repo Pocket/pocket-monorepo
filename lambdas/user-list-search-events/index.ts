@@ -6,6 +6,7 @@ Sentry.init({
 });
 import { SQSEvent } from 'aws-lambda';
 import { handlerMap } from './handlerMap';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 /**
  * Processes messages originating from event bridge. The detail-type field in
@@ -22,7 +23,7 @@ async function __handler(event: SQSEvent): Promise<any> {
         await handlerMap[message['detail-type']](record);
       }
     } catch (error) {
-      console.log(error);
+      serverLogger.error(error);
       Sentry.captureException(error, {
         data: {
           type: 'userListSearchEventHandler',

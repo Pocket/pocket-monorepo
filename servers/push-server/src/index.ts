@@ -2,9 +2,10 @@ import Sentry from './sentry';
 import { Worker, isMainThread } from 'worker_threads';
 import { worker } from './worker';
 import { numWorkers, msBetweenStarts } from './config';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 if (isMainThread) {
-  console.log('Starting main');
+  serverLogger.info('Starting main');
   const exitHandler = (code: number) => {
     startWorker();
   };
@@ -24,7 +25,7 @@ if (isMainThread) {
   // TODO: jesh 2019-09-18 - Prevent memory leak so that this is not required.
   // setTimeout(() => process.exit(), msRestart)
 } else {
-  console.log('Starting worker');
+  serverLogger.info('Starting worker');
   worker
     .work()
     .then(() => process.exit(0))
@@ -34,7 +35,7 @@ if (isMainThread) {
       return Sentry.flush();
     })
     .finally(() => {
-      console.log('Shutting down workers');
+      serverLogger.info('Shutting down workers');
       process.exit(1);
     });
 }

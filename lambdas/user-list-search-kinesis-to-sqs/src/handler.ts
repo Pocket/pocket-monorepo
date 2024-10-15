@@ -6,6 +6,7 @@ import {
   UserItemsSqsMessage,
   UserListImportSqsMessage,
 } from './sqs/types';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 const MAX_JOBS_PER_MESSAGE = 1000;
 
@@ -115,7 +116,7 @@ const getUserListImportSqsMessage = (
 const getUserItemsUpdateSqsMessage = (
   msgs: (UserItemEvent | UserItemTagsEvent)[],
 ): UserItemsSqsMessage => {
-  console.log('Processing messages', {
+  serverLogger.info('Processing messages', {
     messages: JSON.stringify(msgs),
   });
   return {
