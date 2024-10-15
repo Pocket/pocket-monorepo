@@ -109,6 +109,11 @@ export class ListDataExportService {
       // There's no data
       if (entries.length === 0) {
         if (part === 0) {
+          serverLogger.info({
+            message:
+              'ListDataExportService - export complete, notifying user (no data)',
+            requestId,
+          });
           await this.notifyUser(this.encodedId, requestId);
         } else {
           serverLogger.warning('Export returned no results');
@@ -116,6 +121,10 @@ export class ListDataExportService {
       }
       // We're finished!
       else if (entries.length <= size) {
+        serverLogger.info({
+          message: 'ListDataExportService - zipping files',
+          requestId,
+        });
         const zipResponse = await this.exportBucket.zipFilesByPrefix(
           this.encodedId,
           this.zipFileKey,
@@ -126,6 +135,11 @@ export class ListDataExportService {
             zipKey,
             config.listExport.signedUrlExpiry,
           );
+          serverLogger.info({
+            message: 'ListDataExportService - export complete, notifying user',
+            requestId,
+            zipKey,
+          });
           await this.notifyUser(this.encodedId, requestId, signedUrl);
         } else {
           const errorMessage = 'Expected a zipfile but did not find any data';
@@ -147,6 +161,12 @@ export class ListDataExportService {
           entries,
           `${this.partsPrefix}/part_${part.toString().padStart(6, '0')}`,
         );
+        serverLogger.info({
+          message: 'ListDataExportService - Requesting next chunk',
+          requestId,
+          cursor,
+          part: part + 1,
+        });
         await this.requestNextChunk(requestId, cursor, part + 1);
       }
     } catch (err) {

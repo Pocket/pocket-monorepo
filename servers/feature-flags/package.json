@@ -26,6 +26,7 @@
     "@govtechsg/passport-openidconnect": "1.0.2",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
+    "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "8.34.0",
     "body-parser": "1.20.3",
     "cors": "2.8.5",
