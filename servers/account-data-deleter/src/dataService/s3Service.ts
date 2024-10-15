@@ -97,7 +97,7 @@ export class S3Bucket {
       const fileKeys = await this.listAllObjects(prefix);
       if (fileKeys != null && fileKeys.length > 0) {
         const archive = await this.streamObjectsArchive(fileKeys);
-        serverLogger.debug({
+        serverLogger.info({
           message: 'Archiving export files',
           archiveLen: fileKeys.length,
           prefix,
