@@ -181,13 +181,18 @@ export class GraphQLClientFactory {
           };
           throw new ClientError(gqlResponse, context);
         }
+      } else if (
+        response instanceof ClientError &&
+        response.response?.error === '' &&
+        response.response?.status === 200
+      ) {
+        serverLogger.error('Received an empty 200 error from Client API', {
+          responseError: response,
+        });
+        throw response;
         // There are unskipped errors; re-throw so that the request
         // evaluates to an error
       } else if (response instanceof Error) {
-        Sentry.addBreadcrumb({
-          message: 'Rethrowing an unskipped error',
-          data: { responseError: response },
-        });
         serverLogger.error('rethrowing an unskipped error', {
           responseError: response,
         });
