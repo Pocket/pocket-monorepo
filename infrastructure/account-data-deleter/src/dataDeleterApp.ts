@@ -133,6 +133,10 @@ export class DataDeleterApp extends Construct {
               name: 'EVENT_BUS_NAME',
               value: config.envVars.eventBusName,
             },
+            {
+              name: 'OTLP_COLLECTOR_URL',
+              value: config.tracing.url,
+            },
           ],
           healthCheck: {
             command: [

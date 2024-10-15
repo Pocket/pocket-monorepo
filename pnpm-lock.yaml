@@ -2521,6 +2521,9 @@ importers:
       '@pocket-tools/sentry':
         specifier: workspace:*
         version: link:../../packages/sentry
+      '@pocket-tools/tracing':
+        specifier: workspace:*
+        version: link:../../packages/tracing
       '@pocket-tools/ts-logger':
         specifier: workspace:*
         version: link:../../packages/ts-logger

@@ -15,6 +15,11 @@ export const config = {
     defaultMaxAge: 86400,
     port: 4015,
   },
+  tracing: {
+    url: process.env.OTLP_COLLECTOR_URL || 'http://localhost:4318',
+    serviceName: 'account-data-deleter',
+    release: process.env.GIT_SHA || 'local',
+  },
   aws: {
     region: process.env.AWS_REGION || 'us-east-1',
     endpoint: localAwsEndpoint,
