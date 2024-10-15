@@ -16,6 +16,7 @@ type ListExportEntry = {
   url: string;
   title: string;
   time_added: number; // seconds from epoch
+  status: 'archive' | 'unread';
   tags: string; // concatenated array of tags, pipe-separated
 };
 
@@ -69,9 +70,13 @@ export class ListDataExportService {
         this.db.raw('UNIX_TIMESTAMP(time_added) as time_added'),
         'id as cursor',
         'it.tags',
+        this.db.raw(`IF(status = 1, 'archive', 'unread') as status`),
       )
       .where('user_id', this.userId)
       .andWhere('id', '>=', from)
+      .andWhere(function () {
+        this.where('status', '=', 1).orWhere('status', '=', 0);
+      })
       .orderBy('id', 'asc')
       .leftJoin(
         this.db('item_tags')
