@@ -134,6 +134,7 @@ export class S3Bucket {
         message: 'Error encountered during archive',
         prefix: prefix,
         errorData: err,
+        errorMessage: err.message,
       });
       Sentry.captureException(err, { data: { prefix } });
       throw err;
