@@ -38,7 +38,12 @@ export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
       }
       await handlers[message['detail-type']](record);
     } catch (error) {
-      serverLogger.error(error);
+      serverLogger.error({
+        message: 'Failed to send request to Braze',
+        errorData: error,
+        errorMessage: error.mesage,
+        request: record,
+      });
       Sentry.captureException(error);
       batchFailures.push({ itemIdentifier: record.messageId });
     }
