@@ -6,6 +6,7 @@ import * as Sentry from '@sentry/node';
 import { SeverityLevel } from '@sentry/types';
 import config from '../../config';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import * as otel from '@opentelemetry/api';
 
 describe('batchDeleteHandler', () => {
   const emitter = new EventEmitter();
@@ -48,7 +49,7 @@ describe('batchDeleteHandler', () => {
     jest.spyOn(SQSClient.prototype, 'send').mockReturnValue();
     await batchDeleteHandler.pollQueue();
     expect(scheduleStub).toHaveBeenCalledWith(300000);
-    expect(scheduleStub).toBeCalledTimes(1);
+    expect(scheduleStub).toHaveBeenCalledTimes(1);
   });
 
   it('logs critical error if could not receive messages, and reschedules', async () => {
@@ -138,7 +139,10 @@ describe('batchDeleteHandler', () => {
         jest
           .spyOn(HighlightsDataService.prototype, 'deleteByAnnotationIds')
           .mockRejectedValue(error);
-        await batchDeleteHandler.handleMessage(fakeMessageBody);
+        await batchDeleteHandler.handleMessage(
+          fakeMessageBody,
+          otel.trace.getTracer('test').startSpan('test'),
+        );
         expect(sentryStub).toHaveBeenCalledWith(error);
         expect(sentryStub).toHaveBeenCalledTimes(1);
         expect(serverLoggerStub).toHaveBeenCalledTimes(2);
