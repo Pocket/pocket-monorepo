@@ -4,7 +4,7 @@
   "description": "",
   "license": "ISC",
   "author": "",
-  "main": "dist/server.js",
+  "main": "dist/main.js",
   "files": [
     "dist",
     "package.json"
@@ -14,7 +14,7 @@
     "dev": "npm run build && npm run watch",
     "format": "eslint --fix",
     "lint": "eslint --fix-dry-run",
-    "start": "node dist/server.js",
+    "start": "node dist/main.js",
     "test": "jest \"\\.spec\\.ts\"",
     "test-integrations": "jest \"\\.integration\\.ts\" --forceExit",
     "test:watch": "npm test -- --watchAll",
