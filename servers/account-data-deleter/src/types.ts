@@ -7,6 +7,7 @@ export type QueueConfig = {
   defaultPollIntervalSeconds: number;
   afterMessagePollIntervalSeconds: number;
   messageRetentionSeconds: number;
+  name: string;
 };
 
 /**

@@ -29,6 +29,7 @@ export const config = {
     },
     sqs: {
       accountDeleteQueue: {
+        name: 'account-delete',
         url:
           process.env.SQS_BATCH_DELETE_QUEUE_URL ||
           'http://localhost:4566/000000000000/pocket-account-data-delete-queue',
@@ -41,6 +42,7 @@ export const config = {
         batchSize: 1, // TODO(?): Must be 1
       },
       exportQueue: {
+        name: 'list-export',
         url:
           process.env.SQS_LIST_EXPORT_QUEUE_URL ||
           'http://localhost:4566/000000000000/pocket-list-export-queue',
