@@ -22,7 +22,6 @@ export default {
     dsn: process.env.SENTRY_DSN || '',
     release: process.env.GIT_SHA || 'local',
     environment: process.env.NODE_ENV || 'development',
-    samplerFlag: 'perm.backend.sentry-trace-sampler-rate',
   },
   unleash: {
     clientKey: process.env.UNLEASH_KEY || 'unleash-key-fake',
