@@ -58,7 +58,7 @@ describe('savedItem data loader', function () {
     const items = await batchGetSavedItemsByIds(service, ['3', '1']);
     expect(items.length).toEqual(2);
     expect(items[0]).toEqual(undefined);
-    expect(items[1].id).toEqual('1');
+    expect(items[1]?.id).toEqual('1');
   });
 
   it('batchGetSavedItemsByUrls should return undefined in the batch for non-existent items', async () => {
@@ -81,6 +81,6 @@ describe('savedItem data loader', function () {
     ]);
     expect(items.length).toEqual(2);
     expect(items[0]).toEqual(undefined);
-    expect(items[1].url).toEqual('abc.com');
+    expect(items[1]?.url).toEqual('abc.com');
   });
 });

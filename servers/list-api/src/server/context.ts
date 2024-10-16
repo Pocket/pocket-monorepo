@@ -38,8 +38,8 @@ export interface IContext {
     savedItem: SavedItemModel;
   };
   dataLoaders: {
-    savedItemsById: DataLoader<string, SavedItem>;
-    savedItemsByUrl: DataLoader<string, SavedItem>;
+    savedItemsById: DataLoader<string, SavedItem | undefined>;
+    savedItemsByUrl: DataLoader<string, SavedItem | undefined>;
     tagsById: DataLoader<string, Tag>;
     tagsByName: DataLoader<string, Tag>;
     tagsByItemId: DataLoader<string, Tag[]>;

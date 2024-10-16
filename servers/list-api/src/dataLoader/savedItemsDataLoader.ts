@@ -12,7 +12,7 @@ import { reorderResultByKey } from './utils';
 export async function batchGetSavedItemsByUrls(
   savedItemService: SavedItemDataService,
   urls: string[],
-): Promise<SavedItem[]> {
+): Promise<(SavedItem | undefined)[]> {
   const savedItems: SavedItem[] =
     await savedItemService.batchGetSavedItemsByGivenUrls(urls);
 
@@ -33,7 +33,7 @@ export async function batchGetSavedItemsByUrls(
 export async function batchGetSavedItemsByIds(
   savedItemService: SavedItemDataService,
   ids: string[],
-): Promise<SavedItem[]> {
+): Promise<(SavedItem | undefined)[]> {
   const savedItems: SavedItem[] =
     await savedItemService.batchGetSavedItemsByGivenIds(ids);
 

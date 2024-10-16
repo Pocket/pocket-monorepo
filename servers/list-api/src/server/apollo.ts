@@ -6,8 +6,6 @@ import { ApolloServer } from '@apollo/server';
 import {
   defaultPlugins,
   errorHandler,
-  isIntrospection,
-  isSubgraphIntrospection,
   sentryPocketMiddleware,
 } from '@pocket-tools/apollo-utils';
 import { ContextManager } from './context';
@@ -74,13 +72,6 @@ export async function startServer(port: number): Promise<{
 
   // Inject initialized event emittter to create context factory function
   const contextFactory = (req: express.Request) => {
-    if (
-      isIntrospection(req.body.query) ||
-      isSubgraphIntrospection(req.body.query)
-    ) {
-      // Bypass auth (ie, the userId() function throwing auth errors) for introspection
-      return null;
-    }
     const dbClient = contextConnection(req.body.query);
     return new ContextManager({
       request: req,
