@@ -15,9 +15,11 @@ import { unleash } from '../unleash';
 import { type Unleash } from 'unleash-client';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { QueueConfig } from '../types';
+import * as otel from '@opentelemetry/api';
 
 export abstract class QueueHandler {
   readonly sqsClient: SQSClient;
+  private tracer: otel.Tracer;
   protected unleashClient: Unleash;
 
   /**
@@ -53,6 +55,7 @@ export abstract class QueueHandler {
       maxAttempts: 3,
     });
     this.unleashClient = unleashClient ?? unleash();
+    this.tracer = otel.trace.getTracer('queue-tracer');
     emitter.on(this.eventName, async () => await this.pollQueue());
     // Start the polling by emitting an initial event
     if (pollOnInit) {
@@ -114,7 +117,14 @@ export abstract class QueueHandler {
    */
   async pollQueue() {
     return await Sentry.withIsolationScope(async () => {
-      await this.__pollQueue();
+      return await this.tracer.startActiveSpan(
+        `poll-queue-${this.queueConfig.name}`,
+        { root: true },
+        async (span: otel.Span) => {
+          await this.__pollQueue(span);
+          span.end();
+        },
+      );
     });
   }
 
@@ -126,7 +136,7 @@ export abstract class QueueHandler {
    * Ensures messages are processed in a synchronous, blocking way,
    * to minimize database load.
    */
-  private async __pollQueue() {
+  private async __pollQueue(span: otel.Span) {
     const params = {
       // https://github.com/aws/aws-sdk/issues/233
       AttributeNames: ['SentTimestamp'] as any, // see issue above - bug in the SDK
@@ -155,6 +165,8 @@ export abstract class QueueHandler {
       serverLogger.error({ message: receiveError, error: error });
       Sentry.addBreadcrumb({ message: receiveError });
       Sentry.captureException(error, { level: 'fatal' as SeverityLevel });
+      span.recordException(error);
+      span.setStatus({ code: otel.SpanStatusCode.ERROR });
     }
     // Process any messages received and schedule next poll
     if (body != null) {

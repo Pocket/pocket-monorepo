@@ -1,9 +1,10 @@
 {
   "extends": "tsconfig/graphql.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "src",
-    "strictNullChecks": true
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strictNullChecks": true,
+    "sourceRoot": ""
   },
   "exclude": ["node_modules/", "dist/"],
   "include": ["src/**/*.ts"],
