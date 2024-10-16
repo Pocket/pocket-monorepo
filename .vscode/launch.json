@@ -25,6 +25,30 @@
       "outFiles": [
         "${workspaceFolder}/servers/parser-graphql-wrapper/dist/**/*.js"
       ]
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to account-data-deleter",
+      "remoteRoot": null,
+      "port": 9229,
+      "sourceMaps": true,
+      "localRoot": "${workspaceFolder}/servers/account-data-deleter/src",
+      "outFiles": [
+        "${workspaceFolder}/servers/account-data-deleter/dist/**/*.js"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch account-data-deleter",
+      "sourceMaps": true,
+      "cwd": "${workspaceFolder}/servers/account-data-deleter",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run-script", "dev"],
+      "outFiles": [
+        "${workspaceFolder}/servers/account-data-deleter/dist/**/*.js"
+      ]
     }
   ]
 }

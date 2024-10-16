@@ -35,10 +35,11 @@ export async function startServer(port: number): Promise<{
 
   Sentry.setupExpressErrorHandler(app);
 
+  await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
+
   // Start batch delete event handler
   new BatchDeleteHandler(new EventEmitter());
   new ExportListHandler(new EventEmitter());
 
-  await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
   return { server: httpServer, app };
 }
