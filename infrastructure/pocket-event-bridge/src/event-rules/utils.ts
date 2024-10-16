@@ -41,6 +41,8 @@ export function createDeadLetterQueueAlarm(
       period: periodInSeconds,
       threshold: threshold,
       statistic: 'Sum',
+      // At some point on 10/11/2024, AWS changed the behavior for our dlq alarms and they flop from having 0 messages to missing data.
+      treatMissingData: 'notBreaching',
       alarmActions: config.isDev ? [] : [snsTopic.arn],
       okActions: config.isDev ? [] : [snsTopic.arn],
       actionsEnabled: enabled,
