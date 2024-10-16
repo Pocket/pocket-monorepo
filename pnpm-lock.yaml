@@ -36,7 +36,7 @@ importers:
     devDependencies:
       '@commitlint/cli':
         specifier: 19.4.1
-        version: 19.4.1(@types/node@22.7.5)(typescript@5.7.0-dev.20241015)
+        version: 19.4.1(@types/node@22.7.5)(typescript@5.7.0-dev.20241016)
       '@commitlint/config-conventional':
         specifier: ^19.5.0
         version: 19.5.0
@@ -45,7 +45,7 @@ importers:
         version: link:packages/eslint-config
       syncpack:
         specifier: ^13.0.0
-        version: 13.0.0(typescript@5.7.0-dev.20241015)
+        version: 13.0.0(typescript@5.7.0-dev.20241016)
       tsconfig:
         specifier: workspace:*
         version: link:packages/tsconfig
@@ -2639,9 +2639,15 @@ importers:
       '@pocket-tools/apollo-utils':
         specifier: workspace:*
         version: link:../../packages/apollo-utils
+      '@pocket-tools/feature-flags-client':
+        specifier: workspace:*
+        version: link:../../packages/feature-flags-client
       '@pocket-tools/sentry':
         specifier: workspace:*
         version: link:../../packages/sentry
+      '@pocket-tools/tracing':
+        specifier: workspace:*
+        version: link:../../packages/tracing
       '@pocket-tools/ts-logger':
         specifier: workspace:*
         version: link:../../packages/ts-logger
@@ -2744,7 +2750,7 @@ importers:
         version: 7.0.0
       ts-jest:
         specifier: 29.2.5
-        version: 29.2.5(@babel/core@7.24.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.24.8))(jest@29.7.0(@types/node@22.5.3)(ts-node@10.9.2(@types/node@22.5.3)(typescript@5.5.4)))(typescript@5.5.4)
+        version: 29.2.5(@babel/core@7.25.7)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.7))(esbuild@0.23.0)(jest@29.7.0(@types/node@22.5.3)(ts-node@10.9.2(@types/node@22.5.3)(typescript@5.5.4)))(typescript@5.5.4)
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@types/node@22.5.3)(typescript@5.5.4)
@@ -2844,7 +2850,7 @@ importers:
         version: 7.0.0
       ts-jest:
         specifier: 29.2.5
-        version: 29.2.5(@babel/core@7.25.7)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.25.7))(esbuild@0.23.0)(jest@29.7.0(@types/node@22.5.3)(ts-node@10.9.2(@types/node@22.5.3)(typescript@5.5.4)))(typescript@5.5.4)
+        version: 29.2.5(@babel/core@7.24.8)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.24.8))(jest@29.7.0(@types/node@22.5.3)(ts-node@10.9.2(@types/node@22.5.3)(typescript@5.5.4)))(typescript@5.5.4)
       ts-node:
         specifier: 10.9.2
         version: 10.9.2(@types/node@22.5.3)(typescript@5.5.4)
@@ -14077,8 +14083,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.7.0-dev.20241015:
-    resolution: {integrity: sha512-nBl/xbQGBZrOmLVFbywn5KVStnsVqGsdjU7jVU+wMAp+bpF0iSrF2ts9pUVFyHdP702zINLxfhlnPr66yXB/ew==}
+  typescript@5.7.0-dev.20241016:
+    resolution: {integrity: sha512-rbZrQidxikK2ilvAFVxwy0DP6137GOlFhUvdW+zoJSDfi/jvUBWlcpSuwHH4ZPrlOTno+ZsJkUMiik2gKXz1zg==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -16820,11 +16826,11 @@ snapshots:
     dependencies:
       commander: 12.1.0
 
-  '@commitlint/cli@19.4.1(@types/node@22.7.5)(typescript@5.7.0-dev.20241015)':
+  '@commitlint/cli@19.4.1(@types/node@22.7.5)(typescript@5.7.0-dev.20241016)':
     dependencies:
       '@commitlint/format': 19.5.0
       '@commitlint/lint': 19.5.0
-      '@commitlint/load': 19.5.0(@types/node@22.7.5)(typescript@5.7.0-dev.20241015)
+      '@commitlint/load': 19.5.0(@types/node@22.7.5)(typescript@5.7.0-dev.20241016)
       '@commitlint/read': 19.5.0
       '@commitlint/types': 19.5.0
       execa: 8.0.1
@@ -16871,15 +16877,15 @@ snapshots:
       '@commitlint/rules': 19.5.0
       '@commitlint/types': 19.5.0
 
-  '@commitlint/load@19.5.0(@types/node@22.7.5)(typescript@5.7.0-dev.20241015)':
+  '@commitlint/load@19.5.0(@types/node@22.7.5)(typescript@5.7.0-dev.20241016)':
     dependencies:
       '@commitlint/config-validator': 19.5.0
       '@commitlint/execute-rule': 19.5.0
       '@commitlint/resolve-extends': 19.5.0
       '@commitlint/types': 19.5.0
       chalk: 5.3.0
-      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20241015)
-      cosmiconfig-typescript-loader: 5.0.0(@types/node@22.7.5)(cosmiconfig@9.0.0(typescript@5.7.0-dev.20241015))(typescript@5.7.0-dev.20241015)
+      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20241016)
+      cosmiconfig-typescript-loader: 5.0.0(@types/node@22.7.5)(cosmiconfig@9.0.0(typescript@5.7.0-dev.20241016))(typescript@5.7.0-dev.20241016)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -21988,12 +21994,12 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cosmiconfig-typescript-loader@5.0.0(@types/node@22.7.5)(cosmiconfig@9.0.0(typescript@5.7.0-dev.20241015))(typescript@5.7.0-dev.20241015):
+  cosmiconfig-typescript-loader@5.0.0(@types/node@22.7.5)(cosmiconfig@9.0.0(typescript@5.7.0-dev.20241016))(typescript@5.7.0-dev.20241016):
     dependencies:
       '@types/node': 22.7.5
-      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20241015)
+      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20241016)
       jiti: 1.21.6
-      typescript: 5.7.0-dev.20241015
+      typescript: 5.7.0-dev.20241016
 
   cosmiconfig@8.3.6(typescript@5.5.4):
     dependencies:
@@ -22013,14 +22019,14 @@ snapshots:
     optionalDependencies:
       typescript: 5.5.4
 
-  cosmiconfig@9.0.0(typescript@5.7.0-dev.20241015):
+  cosmiconfig@9.0.0(typescript@5.7.0-dev.20241016):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 5.7.0-dev.20241015
+      typescript: 5.7.0-dev.20241016
 
   cpu-features@0.0.2:
     dependencies:
@@ -22358,7 +22364,7 @@ snapshots:
     dependencies:
       semver: 7.6.3
       shelljs: 0.8.5
-      typescript: 5.7.0-dev.20241015
+      typescript: 5.7.0-dev.20241016
 
   dreamopt@0.8.0:
     dependencies:
@@ -27339,13 +27345,13 @@ snapshots:
       '@pkgr/core': 0.1.1
       tslib: 2.7.0
 
-  syncpack@13.0.0(typescript@5.7.0-dev.20241015):
+  syncpack@13.0.0(typescript@5.7.0-dev.20241016):
     dependencies:
       '@effect/schema': 0.71.1(effect@3.6.5)
       chalk: 5.3.0
       chalk-template: 1.1.0
       commander: 12.1.0
-      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20241015)
+      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20241016)
       effect: 3.6.5
       enquirer: 2.4.1
       fast-check: 3.21.0
@@ -27824,7 +27830,7 @@ snapshots:
 
   typescript@5.5.4: {}
 
-  typescript@5.7.0-dev.20241015: {}
+  typescript@5.7.0-dev.20241016: {}
 
   ua-parser-js@1.0.37: {}
 
