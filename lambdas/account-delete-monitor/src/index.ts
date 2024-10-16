@@ -26,19 +26,19 @@ export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
   const batchFailures: SQSBatchItemFailure[] = [];
   serverLogger.info({
     message: 'Received event records.',
-    data: { record: JSON.stringify(event.Records) },
+    records: { record: JSON.stringify(event.Records) },
   });
   for await (const record of event.Records) {
     try {
       const message = JSON.parse(JSON.parse(record.body).Message);
       serverLogger.info({
         message: 'Received record.',
-        data: { record: JSON.stringify(message) },
+        record: { record: JSON.stringify(message) },
       });
       if (handlers[message['detail-type']] == null) {
         serverLogger.error({
           message: 'Missing handler.',
-          data: {
+          record: {
             'detail-type': message['detail-type'],
             record: JSON.stringify(message),
           },
@@ -47,10 +47,10 @@ export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
       }
       await handlers[message['detail-type']](record);
     } catch (error) {
-      console.error({
+      serverLogger.error({
         message: 'Errored record.',
         error,
-        data: {
+        record: {
           error,
           record: JSON.stringify(record),
         },
