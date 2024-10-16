@@ -57,4 +57,26 @@ describe('exportHandler', () => {
       0,
     );
   });
+  it('works for non-nested SQS messages', async () => {
+    const message = {
+      userId: '12345',
+      requestId: '25be3f55',
+      encodedId: '9324jdfazlsdfljk',
+      cursor: 1186237110,
+      part: 1,
+    };
+    jest
+      .spyOn(ListDataExportService.prototype, 'lastGoodExport')
+      .mockResolvedValueOnce(false);
+    const exportSpy = jest
+      .spyOn(ListDataExportService.prototype, 'exportListChunk')
+      .mockResolvedValue();
+    await exportListHandler.handleMessage(message);
+    expect(exportSpy).toHaveBeenCalledExactlyOnceWith(
+      '25be3f55',
+      1186237110,
+      config.listExport.queryLimit,
+      1,
+    );
+  });
 });

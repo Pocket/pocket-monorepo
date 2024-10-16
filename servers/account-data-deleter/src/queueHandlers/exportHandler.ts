@@ -51,16 +51,28 @@ export class ExportListHandler extends QueueHandler {
    * @returns whether or not the message was successfully handled
    * (underlying call to AccountDeleteDataService completed without error)
    */
-  async handleMessage(message: { Message: string }): Promise<boolean> {
+  async handleMessage(
+    message: { Message: string } | ExportMessage,
+  ): Promise<boolean> {
     serverLogger.info({
       message: 'ExportListHandler - received request',
       body: message,
     });
     try {
-      const body: ExportMessage = JSON.parse(message.Message)['detail'];
+      let body: ExportMessage;
+      // The initial message is nested in layers of SNS/SQS overhead
+      if ('Message' in message && message.Message != null) {
+        body = JSON.parse(message.Message)['detail'];
+        // Subsequent chunk requests do not have those layers
+        // and can be parsed directly
+      } else if ('cursor' in message) {
+        body = message;
+      } else {
+        throw new Error('Invalid message body');
+      }
       const exportBucket = new S3Bucket(config.listExport.exportBucket);
       const exportService = new ListDataExportService(
-        body.userId,
+        parseInt(body.userId),
         body.encodedId,
         readClient(),
         exportBucket,
@@ -98,6 +110,8 @@ export class ExportListHandler extends QueueHandler {
         message:
           'Error encountered while handling export. Returning message to the queue',
         errorData: error,
+        request: message,
+        errorMessage: error.message,
       });
       // Underlying services handle logging and observability of their errors
       return false;

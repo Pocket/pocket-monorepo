@@ -108,7 +108,7 @@ export abstract class QueueHandler {
 
   /**
    * Wrap poll queue method to have manual Sentry isolation,
-   * for background jobs.
+   * and open telemetry context, for background jobs.
    * https://docs.sentry.io/platforms/javascript/guides/node/configuration/async-context/
    * @returns
    */
