@@ -30,7 +30,13 @@ jobs:
 
       - name: Install pnpm & node
         uses: pocket/pocket-monorepo/.github/actions/install-pnpm-and-node@main
-
+      
+      # https://github.com/pnpm/pnpm/issues/3141#issuecomment-1305563972
+      - name: Set publishing config
+        run: pnpm config set '//registry.npmjs.org/:_authToken' "${NODE_AUTH_TOKEN}"
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      
       - name: Semantic Release
         run: pnpm run semantic-release
         env:
