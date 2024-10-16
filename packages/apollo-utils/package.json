@@ -68,7 +68,13 @@
           }
         }
       ],
-      "@anolilab/semantic-release-pnpm",
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "pnpm version ${nextRelease.version} --git-tag-version=false",
+          "publishCmd": "pnpm publish --no-git-checks"
+        }
+      ],
       "@semantic-release/github"
     ]
   },
@@ -89,9 +95,9 @@
     "md5": "2.3.0"
   },
   "devDependencies": {
-    "@anolilab/semantic-release-pnpm": "1.1.3",
     "@jest/globals": "29.7.0",
     "@pocket-tools/eslint-config": "workspace:*",
+    "@semantic-release/exec": "6.0.3",
     "@types/jest": "29.5.12",
     "@types/md5": "2.3.5",
     "@types/node": "^22.5.2",
