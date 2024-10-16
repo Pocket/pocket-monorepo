@@ -194,7 +194,7 @@ export class ListDataExportService {
   // Put a message onto the queue to trigger the next batch
   async requestNextChunk(requestId: string, fromId: number, part: number) {
     const body: ExportMessage = {
-      userId: this.userId,
+      userId: this.userId.toString(),
       requestId,
       encodedId: this.encodedId,
       cursor: fromId,

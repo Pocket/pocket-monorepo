@@ -19,6 +19,7 @@ export default {
   app: {
     environment: process.env.NODE_ENV || 'development',
     defaultMaxAge: 86400,
+    serviceName: 'annotations-api',
     port: 4008,
   },
   basicHighlightLimit: 3, // non-premium users are limited to 3 highlights per item
@@ -83,13 +84,20 @@ export default {
     deleteDelayInMilliSec: 20000,
   },
   tracing: {
-    host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
+    url: process.env.OTLP_COLLECTOR_URL || 'http://localhost:4318',
     serviceName: 'annotations-api',
+    release: process.env.GIT_SHA || 'local',
   },
   parser: {
     baseEndpoint: parserConfig.parser_base_endpoint,
     dataPath: parserConfig.parser_data_path,
     retries: 3,
     timeout: 5,
+  },
+  unleash: {
+    clientKey: process.env.UNLEASH_KEY || 'unleash-key-fake',
+    endpoint: process.env.UNLEASH_ENDPOINT || 'http://localhost:4242/api',
+    refreshInterval: 60 * 1000, // ms
+    timeout: 2 * 1000, // ms
   },
 };
