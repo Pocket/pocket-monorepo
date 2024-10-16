@@ -63,7 +63,13 @@
           }
         }
       ],
-      "@anolilab/semantic-release-pnpm",
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "pnpm version ${nextRelease.version} --git-tag-version=false",
+          "publishCmd": "pnpm publish --no-git-checks"
+        }
+      ],
       "@semantic-release/github"
     ]
   },
@@ -82,8 +88,8 @@
     "tslib": "2.7.0"
   },
   "devDependencies": {
-    "@anolilab/semantic-release-pnpm": "1.1.3",
     "@pocket-tools/eslint-config": "workspace:*",
+    "@semantic-release/exec": "6.0.3",
     "@types/jest": "29.5.12",
     "@types/node": "^22.5.2",
     "conventional-changelog-conventionalcommits": "8.0.0",

@@ -65,7 +65,13 @@
           }
         }
       ],
-      "@anolilab/semantic-release-pnpm",
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "pnpm version ${nextRelease.version} --git-tag-version=false",
+          "publishCmd": "pnpm publish --no-git-checks"
+        }
+      ],
       "@semantic-release/github"
     ]
   },
@@ -74,9 +80,9 @@
     "jwk-to-pem": "^2.0.5"
   },
   "devDependencies": {
-    "@anolilab/semantic-release-pnpm": "1.1.3",
     "@jest/globals": "29.7.0",
     "@pocket-tools/eslint-config": "workspace:*",
+    "@semantic-release/exec": "6.0.3",
     "@types/jest": "29.5.12",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/jwk-to-pem": "2.0.3",

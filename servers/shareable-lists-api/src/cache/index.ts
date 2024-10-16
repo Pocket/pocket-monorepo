@@ -34,7 +34,6 @@ export function getRedis(): Keyv {
     isCluster: config.redis.isCluster,
   }).on('error', function (message) {
     serverLogger.error({
-      data: {},
       error: message,
       message: `getRedisCache: Redis cache error.`,
     });

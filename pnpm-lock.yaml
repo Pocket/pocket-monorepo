@@ -1821,15 +1821,15 @@ importers:
         specifier: 2.3.0
         version: 2.3.0
     devDependencies:
-      '@anolilab/semantic-release-pnpm':
-        specifier: 1.1.3
-        version: 1.1.3(yaml@2.5.1)
       '@jest/globals':
         specifier: 29.7.0
         version: 29.7.0
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@semantic-release/exec':
+        specifier: 6.0.3
+        version: 6.0.3(semantic-release@24.1.0(typescript@5.5.4))
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
@@ -1980,15 +1980,15 @@ importers:
         specifier: 9.2.0
         version: 9.2.0
     devDependencies:
-      '@anolilab/semantic-release-pnpm':
-        specifier: 1.1.3
-        version: 1.1.3(yaml@2.5.1)
       '@jest/globals':
         specifier: 29.7.0
         version: 29.7.0
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@semantic-release/exec':
+        specifier: 6.0.3
+        version: 6.0.3(semantic-release@24.1.0(typescript@5.5.4))
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
@@ -2081,15 +2081,15 @@ importers:
         specifier: ^2.0.5
         version: 2.0.5
     devDependencies:
-      '@anolilab/semantic-release-pnpm':
-        specifier: 1.1.3
-        version: 1.1.3(yaml@2.5.1)
       '@jest/globals':
         specifier: 29.7.0
         version: 29.7.0
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@semantic-release/exec':
+        specifier: 6.0.3
+        version: 6.0.3(semantic-release@24.1.0(typescript@5.5.4))
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
@@ -2136,15 +2136,15 @@ importers:
         specifier: 2.7.0
         version: 2.7.0
     devDependencies:
-      '@anolilab/semantic-release-pnpm':
-        specifier: 1.1.3
-        version: 1.1.3(yaml@2.5.1)
       '@jest/globals':
         specifier: 29.7.0
         version: 29.7.0
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@semantic-release/exec':
+        specifier: 6.0.3
+        version: 6.0.3(semantic-release@24.1.0(typescript@5.5.4))
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
@@ -2264,12 +2264,12 @@ importers:
         specifier: 2.7.0
         version: 2.7.0
     devDependencies:
-      '@anolilab/semantic-release-pnpm':
-        specifier: 1.1.3
-        version: 1.1.3(yaml@2.5.1)
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@semantic-release/exec':
+        specifier: 6.0.3
+        version: 6.0.3(semantic-release@24.1.0(typescript@5.5.4))
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
@@ -2385,15 +2385,15 @@ importers:
         specifier: 6.1.1
         version: 6.1.1
     devDependencies:
-      '@anolilab/semantic-release-pnpm':
-        specifier: 1.1.3
-        version: 1.1.3(yaml@2.5.1)
       '@jest/globals':
         specifier: 29.7.0
         version: 29.7.0
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@semantic-release/exec':
+        specifier: 6.0.3
+        version: 6.0.3(semantic-release@24.1.0(typescript@5.5.4))
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
@@ -2437,12 +2437,12 @@ importers:
         specifier: 3.14.2
         version: 3.14.2
     devDependencies:
-      '@anolilab/semantic-release-pnpm':
-        specifier: 1.1.3
-        version: 1.1.3(yaml@2.5.1)
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@semantic-release/exec':
+        specifier: 6.0.3
+        version: 6.0.3(semantic-release@24.1.0(typescript@5.5.4))
       '@types/jest':
         specifier: 29.5.12
         version: 29.5.12
@@ -4154,14 +4154,6 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@anolilab/rc@1.1.2':
-    resolution: {integrity: sha512-rCIUynBi6D6P0ox6Vt1aSYLJgDGXAj0341hDd/EKYg0KptOGwr/RUmg9N6nq3nW/a8AU3LS3PkI26tjAqD81LA==}
-    engines: {node: '>=18.* <=22.*'}
-
-  '@anolilab/semantic-release-pnpm@1.1.3':
-    resolution: {integrity: sha512-K04XyqHFEZsU1U9xFWZ65afpeBLZFRrOdSsdJnExej+LDJ+2YpX9NvbB8CNfc+oA/gHSV8/Tw/8xBsXiSGfBgA==}
-    engines: {node: '>=18.* <=22.*'}
-
   '@antfu/ni@0.21.8':
     resolution: {integrity: sha512-90X8pU2szlvw0AJo9EZMbYc2eQKkmO7mAdC4tD4r5co2Mm56MT37MIG8EyB7p4WRheuzGxuLDxJ63mF6+Zajiw==}
     hasBin: true
@@ -4578,14 +4570,6 @@ packages:
     resolution: {integrity: sha512-l9XxNcA4HX98rwCC2/KoiWcmEiRfZe4G+mYwDbCFT87JIMj6GBhLDkAzr/W8KAaA2IDr8Vc6J8fZPgVulxxfMA==}
     engines: {node: '>=16.0.0'}
 
-  '@babel/code-frame@7.24.2':
-    resolution: {integrity: sha512-y5+tLQyV8pg3fsiln67BVLD1P13Eg4lh5RW9mF0zUuvLrv9uIQ4MCL+CRT+FTsBlBjcIan6PGsLcBN0m3ClUyQ==}
-    engines: {node: '>=6.9.0'}
-
-  '@babel/code-frame@7.24.7':
-    resolution: {integrity: sha512-BcYH1CVJBO9tvyIZ2jVeXgSIMvGZ2FDRvDdOIVQyuklNKSsx+eppDEBq/g47Ayw+RqNFE+URvOShmf+f/qwAlA==}
-    engines: {node: '>=6.9.0'}
-
   '@babel/code-frame@7.25.7':
     resolution: {integrity: sha512-0xZJFNE5XMpENsgfHYTw8FbX4kv53mFLn2i3XPoq69LyhYSCBJtitaHx9QnsVTrsogI4Z3+HtEfZ2/GFPOtf5g==}
     engines: {node: '>=6.9.0'}
@@ -4794,14 +4778,6 @@ packages:
 
   '@babel/helpers@7.25.7':
     resolution: {integrity: sha512-Sv6pASx7Esm38KQpF/U/OXLwPPrdGHNKoeblRxgZRLXnAtnkEe4ptJPDtAZM7fBLadbc1Q07kQpSiGQ0Jg6tRA==}
-    engines: {node: '>=6.9.0'}
-
-  '@babel/highlight@7.24.5':
-    resolution: {integrity: sha512-8lLmua6AVh/8SLJRRVD6V8p73Hir9w5mJrhE+IPpILG31KKlI9iz5zmBYKcWPS59qSfgP9RaSBQSHHE81WKuEw==}
-    engines: {node: '>=6.9.0'}
-
-  '@babel/highlight@7.24.7':
-    resolution: {integrity: sha512-EStJpq4OuY8xYfhGVXngigBJRWxftKX9ksiGDnmlY3o7B/V7KIAc9X4oiK87uPJSc/vs5L869bem5fhZa8caZw==}
     engines: {node: '>=6.9.0'}
 
   '@babel/highlight@7.25.7':
@@ -7089,9 +7065,19 @@ packages:
     peerDependencies:
       semantic-release: '>=20.1.0'
 
+  '@semantic-release/error@3.0.0':
+    resolution: {integrity: sha512-5hiM4Un+tpl4cKw3lV4UgzJj+SmfNIDCLLw0TepzQxz9ZGV5ixnqkzIVF+3tp0ZHgcMKE+VNGHJjEeyFG2dcSw==}
+    engines: {node: '>=14.17'}
+
   '@semantic-release/error@4.0.0':
     resolution: {integrity: sha512-mgdxrHTLOjOddRVYIYDo0fR3/v61GNN1YGkfbrjuIKg/uMgCd+Qzo3UAXJ+woLQQpos4pl5Esuw5A7AoNlzjUQ==}
     engines: {node: '>=18'}
+
+  '@semantic-release/exec@6.0.3':
+    resolution: {integrity: sha512-bxAq8vLOw76aV89vxxICecEa8jfaWwYITw6X74zzlO0mc/Bgieqx9kBRz9z96pHectiTAtsCwsQcUyLYWnp3VQ==}
+    engines: {node: '>=14.17'}
+    peerDependencies:
+      semantic-release: '>=18.0.0'
 
   '@semantic-release/github@10.0.3':
     resolution: {integrity: sha512-nSJQboKrG4xBn7hHpRMrK8lt5DgqJg50ZMz9UbrsfTxuRk55XVoQEadbGZ2L9M0xZAC6hkuwkDhQJKqfPU35Fw==}
@@ -7959,40 +7945,6 @@ packages:
   '@typescript-eslint/visitor-keys@8.4.0':
     resolution: {integrity: sha512-zTQD6WLNTre1hj5wp09nBIDiOc2U5r/qmzo7wxPn4ZgAjHql09EofqhF9WF+fZHzL5aCyaIpPcT2hyxl73kr9A==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
-  '@visulima/fs@2.1.7':
-    resolution: {integrity: sha512-zrdAoYrjayGWLVZgxbBvumxMeBgXyh3TPpyyZXKYkllCn2+9lTjYmBUhHyq8IwnDFWMBD6/04I2CaWzTJvW48g==}
-    engines: {node: '>=18.* <=22.*'}
-    os: [darwin, linux, win32]
-    peerDependencies:
-      yaml: ^2.4.0
-    peerDependenciesMeta:
-      yaml:
-        optional: true
-
-  '@visulima/fs@2.2.2':
-    resolution: {integrity: sha512-AlJGc2M1jsGSnsO5oO8AJUW/gndpJBQup1ZJ4Kac8yOzUB9sm/Ch0izkFypx5HNVEzCxQ+xZw4CWdxNnkzkQcA==}
-    engines: {node: '>=18.* <=22.*'}
-    os: [darwin, linux, win32]
-    peerDependencies:
-      yaml: ^2.4.0
-    peerDependenciesMeta:
-      yaml:
-        optional: true
-
-  '@visulima/package@1.10.3':
-    resolution: {integrity: sha512-ckuhAjkLqnalawTxpTgLSbT7FSlkv7UUEi69jZevFrg63+U23wcM8TEOrQqRbGIfgBUlwSYIdRxPGOgDM0fsiQ==}
-    engines: {node: '>=18.* <=22.*'}
-    os: [darwin, linux, win32]
-
-  '@visulima/path@1.0.2':
-    resolution: {integrity: sha512-swUmYnU83E9KTMXCIkatLlsyMLZfIKG0r6EByYVuJPoZu58MTyOFHWu+nMwIVr04VFYAkoFUTHzmzgU0F1HbyA==}
-    engines: {node: '>=18.* <=22.*'}
-
-  '@visulima/path@1.1.1':
-    resolution: {integrity: sha512-QWw3HAr7M8gVjSx7K/ACn9C+0qx8+UxxGQP1cq2Ae5Mf1jaxghhpvpZikGV0RBY9bu4BMoyF3MdSev5uu2y1Vg==}
-    engines: {node: '>=18.* <=22.*'}
-    os: [darwin, linux, win32]
 
   '@wesleytodd/openapi@1.1.0':
     resolution: {integrity: sha512-lklG2WR31FLIBz77SlBkWLe2FP1e2eGHoRnWYeOonDk7rdX5QWgXIiOl07ryTV0jD4OkIgyJUgss9YiGyvzG8g==}
@@ -10523,10 +10475,6 @@ packages:
     resolution: {integrity: sha512-QQnnxNyfvmHFIsj7gkPcYymR8Jdw/o7mp5ZFihxn6h8Ci6fh3Dx4E1gPjpQEpIuPo9XVNY/ZUwh4BPMjGyL01g==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  ini@4.1.3:
-    resolution: {integrity: sha512-X7rqawQBvfdjS10YU1y1YVreA3SsLrW9dX2CewP2EbBJM4ypVNLDkO5y04gejPwKIY9lR+7r9gn3rFPt/kmWFg==}
-    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-
   ink-select-input@4.2.2:
     resolution: {integrity: sha512-E5AS2Vnd4CSzEa7Rm+hG47wxRQo1ASfh4msKxO7FHmn/ym+GKSSsFIfR+FonqjKNDPXYJClw8lM47RdN3Pi+nw==}
     engines: {node: '>=10'}
@@ -11910,10 +11858,6 @@ packages:
     resolution: {integrity: sha512-AbegBVI4sh6El+1gNwvD5YIck7nSA36weD7xvIxG4in80j/UoK8AEGaWnnz8v1GxonMCltmlNs5ZKbGvl9b1XQ==}
     engines: {node: '>= 0.8.0'}
 
-  move-file@3.1.0:
-    resolution: {integrity: sha512-4aE3U7CCBWgrQlQDMq8da4woBWDGHioJFiOZ8Ie6Yq2uwYQ9V2kGhTz4x3u6Wc+OU17nw0yc3rJ/lQ4jIiPe3A==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
-
   ms@2.0.0:
     resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
 
@@ -12598,9 +12542,6 @@ packages:
 
   pgpass@1.0.5:
     resolution: {integrity: sha512-FdW9r/jQZhSeohs1Z3sI1yxFQNFvMcnmfuj4WBMUTxOrAyLMaTcE1aAMBiTlbMNaXvBCQuVi0R7hd8udDSP7ug==}
-
-  picocolors@1.0.0:
-    resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}
 
   picocolors@1.0.1:
     resolution: {integrity: sha512-anP1Z8qwhkbmu7MFP5iTt+wQKXgwzf7zTyGlcdzabySa9vd0Xt392U0rVmz9poOaBj0uHJKyyo9/upk0HrEQew==}
@@ -13847,10 +13788,6 @@ packages:
     peerDependencies:
       typescript: '>=4.2.0'
 
-  ts-deepmerge@7.0.1:
-    resolution: {integrity: sha512-JBFCmNenZdUCc+TRNCtXVM6N8y/nDQHAcpj5BlwXG/gnogjam1NunulB9ia68mnqYI446giMfpqeBFFkOleh+g==}
-    engines: {node: '>=14.13.1'}
-
   ts-interface-checker@0.1.13:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
 
@@ -14561,31 +14498,6 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
-
-  '@anolilab/rc@1.1.2(yaml@2.5.1)':
-    dependencies:
-      '@visulima/fs': 2.2.2(yaml@2.5.1)
-      ini: 4.1.3
-      ts-deepmerge: 7.0.1
-    transitivePeerDependencies:
-      - yaml
-
-  '@anolilab/semantic-release-pnpm@1.1.3(yaml@2.5.1)':
-    dependencies:
-      '@anolilab/rc': 1.1.2(yaml@2.5.1)
-      '@semantic-release/error': 4.0.0
-      '@visulima/fs': 2.2.2(yaml@2.5.1)
-      '@visulima/package': 1.10.3(yaml@2.5.1)
-      '@visulima/path': 1.1.1
-      aggregate-error: 5.0.0
-      execa: 9.2.0
-      ini: 4.1.3
-      move-file: 3.1.0
-      normalize-url: 8.0.1
-      registry-auth-token: 5.0.2
-      semver: 7.6.3
-    transitivePeerDependencies:
-      - yaml
 
   '@antfu/ni@0.21.8': {}
 
@@ -15828,16 +15740,6 @@ snapshots:
       '@smithy/types': 3.5.0
       tslib: 2.7.0
 
-  '@babel/code-frame@7.24.2':
-    dependencies:
-      '@babel/highlight': 7.24.5
-      picocolors: 1.0.0
-
-  '@babel/code-frame@7.24.7':
-    dependencies:
-      '@babel/highlight': 7.24.7
-      picocolors: 1.0.1
-
   '@babel/code-frame@7.25.7':
     dependencies:
       '@babel/highlight': 7.25.7
@@ -16036,7 +15938,7 @@ snapshots:
       '@babel/helper-module-imports': 7.24.3
       '@babel/helper-simple-access': 7.24.5
       '@babel/helper-split-export-declaration': 7.24.5
-      '@babel/helper-validator-identifier': 7.24.7
+      '@babel/helper-validator-identifier': 7.25.7
 
   '@babel/helper-module-transforms@7.24.8(@babel/core@7.24.8)':
     dependencies:
@@ -16045,7 +15947,7 @@ snapshots:
       '@babel/helper-module-imports': 7.24.7
       '@babel/helper-simple-access': 7.24.7
       '@babel/helper-split-export-declaration': 7.24.7
-      '@babel/helper-validator-identifier': 7.24.7
+      '@babel/helper-validator-identifier': 7.25.7
     transitivePeerDependencies:
       - supports-color
 
@@ -16142,20 +16044,6 @@ snapshots:
       '@babel/template': 7.25.7
       '@babel/types': 7.25.8
     optional: true
-
-  '@babel/highlight@7.24.5':
-    dependencies:
-      '@babel/helper-validator-identifier': 7.24.7
-      chalk: 2.4.2
-      js-tokens: 4.0.0
-      picocolors: 1.0.0
-
-  '@babel/highlight@7.24.7':
-    dependencies:
-      '@babel/helper-validator-identifier': 7.24.7
-      chalk: 2.4.2
-      js-tokens: 4.0.0
-      picocolors: 1.0.1
 
   '@babel/highlight@7.25.7':
     dependencies:
@@ -16543,13 +16431,13 @@ snapshots:
 
   '@babel/template@7.24.0':
     dependencies:
-      '@babel/code-frame': 7.24.2
+      '@babel/code-frame': 7.25.7
       '@babel/parser': 7.24.5
       '@babel/types': 7.24.5
 
   '@babel/template@7.24.7':
     dependencies:
-      '@babel/code-frame': 7.24.7
+      '@babel/code-frame': 7.25.7
       '@babel/parser': 7.24.8
       '@babel/types': 7.24.7
 
@@ -16618,7 +16506,7 @@ snapshots:
   '@babel/types@7.24.8':
     dependencies:
       '@babel/helper-string-parser': 7.24.8
-      '@babel/helper-validator-identifier': 7.24.7
+      '@babel/helper-validator-identifier': 7.25.7
       to-fast-properties: 2.0.0
 
   '@babel/types@7.25.8':
@@ -19310,7 +19198,21 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@semantic-release/error@3.0.0': {}
+
   '@semantic-release/error@4.0.0': {}
+
+  '@semantic-release/exec@6.0.3(semantic-release@24.1.0(typescript@5.5.4))':
+    dependencies:
+      '@semantic-release/error': 3.0.0
+      aggregate-error: 3.1.0
+      debug: 4.3.7
+      execa: 5.1.1
+      lodash: 4.17.21
+      parse-json: 5.2.0
+      semantic-release: 24.1.0(typescript@5.5.4)
+    transitivePeerDependencies:
+      - supports-color
 
   '@semantic-release/github@10.0.3(semantic-release@24.1.0(typescript@5.5.4))':
     dependencies:
@@ -20634,32 +20536,6 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 8.4.0
       eslint-visitor-keys: 3.4.3
-
-  '@visulima/fs@2.1.7(yaml@2.5.1)':
-    dependencies:
-      '@visulima/path': 1.0.2
-    optionalDependencies:
-      yaml: 2.5.1
-
-  '@visulima/fs@2.2.2(yaml@2.5.1)':
-    dependencies:
-      '@visulima/path': 1.1.1
-    optionalDependencies:
-      yaml: 2.5.1
-
-  '@visulima/package@1.10.3(yaml@2.5.1)':
-    dependencies:
-      '@visulima/fs': 2.1.7(yaml@2.5.1)
-      '@visulima/path': 1.0.2
-      jsonc-parser: 3.3.1
-      normalize-package-data: 6.0.1
-      resolve-pkg-maps: 1.0.0
-    transitivePeerDependencies:
-      - yaml
-
-  '@visulima/path@1.0.2': {}
-
-  '@visulima/path@1.1.1': {}
 
   '@wesleytodd/openapi@1.1.0(openapi-types@12.1.3)':
     dependencies:
@@ -23915,8 +23791,6 @@ snapshots:
 
   ini@4.1.1: {}
 
-  ini@4.1.3: {}
-
   ink-select-input@4.2.2(ink@3.2.0(react@18.3.1))(react@18.3.1):
     dependencies:
       arr-rotate: 1.0.0
@@ -24557,7 +24431,7 @@ snapshots:
 
   jest-message-util@29.7.0:
     dependencies:
-      '@babel/code-frame': 7.24.7
+      '@babel/code-frame': 7.25.7
       '@jest/types': 29.6.3
       '@types/stack-utils': 2.0.3
       chalk: 4.1.2
@@ -25522,10 +25396,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  move-file@3.1.0:
-    dependencies:
-      path-exists: 5.0.0
-
   ms@2.0.0: {}
 
   ms@2.1.1: {}
@@ -26119,8 +25989,6 @@ snapshots:
   pgpass@1.0.5:
     dependencies:
       split2: 4.2.0
-
-  picocolors@1.0.0: {}
 
   picocolors@1.0.1: {}
 
@@ -27539,8 +27407,6 @@ snapshots:
   ts-api-utils@1.3.0(typescript@5.5.4):
     dependencies:
       typescript: 5.5.4
-
-  ts-deepmerge@7.0.1: {}
 
   ts-interface-checker@0.1.13: {}
 

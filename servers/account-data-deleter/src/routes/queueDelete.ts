@@ -202,7 +202,7 @@ async function sqsSendBatch(
     serverLogger.error({
       message: errorMessage,
       error: error,
-      data: {
+      errorData: {
         userId: userId,
         requestId: requestId,
         tableName: tableName,

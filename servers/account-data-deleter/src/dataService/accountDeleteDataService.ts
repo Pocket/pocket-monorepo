@@ -51,7 +51,7 @@ export class AccountDeleteDataService {
 
     serverLogger.error({
       message: 'getIndexColumnForTables: lookup failed.',
-      data: {
+      errorData: {
         table: table,
         indexedTables: indexedTables,
       },
