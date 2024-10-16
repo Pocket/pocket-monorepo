@@ -175,7 +175,7 @@ type Item
   "The client preview/display logic for this url. The requires for each object should be kept in sync with the sub objects requires field."
   preview: PocketMetadata
     @requires(
-      fields: "syndicatedArticle { title excerpt mainImage publishedAt authorNames publisherUrl publisher { logo name } } collection { title excerpt publishedAt authors { name } imageUrl } corpusItem { title excerpt datePublished publisher image { url } authors { name sortOrder } }"
+      fields: "syndicatedArticle { title excerpt mainImage publishedAt authorNames publisherUrl publisher { logo name } } collection { title excerpt publishedAt authors { name } imageUrl } corpusItem { id title excerpt datePublished publisher image { url } authors { name sortOrder } }"
     )
 
   "If the item is a syndicated article, then the syndication information"
@@ -448,6 +448,10 @@ type Mutation {
 
 extend type CorpusItem @key(fields: "url") {
   """
+  The GUID that is stored on an approved corpus item
+  """
+  id: ID! @external
+  """
   Provides short url for the given_url in the format: https://pocket.co/<identifier>.
   marked as beta because it's not ready yet for large client request.
   """
@@ -489,7 +493,7 @@ extend type CorpusItem @key(fields: "url") {
   """
   preview: PocketMetadata!
     @requires(
-      fields: "title excerpt datePublished publisher image { url } authors { name sortOrder }"
+      fields: "id title excerpt datePublished publisher image { url } authors { name sortOrder }"
     )
 }
 

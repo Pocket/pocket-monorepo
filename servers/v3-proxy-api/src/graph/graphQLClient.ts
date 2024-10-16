@@ -40,6 +40,7 @@ import {
 } from '../generated/graphql';
 import config from '../config';
 import * as Sentry from '@sentry/node';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export function getClient(
   accessToken: string,
@@ -91,6 +92,8 @@ export class GraphQLClientFactory {
     delete headers['host'];
     delete headers['accept-encoding'];
     delete headers['connection'];
+    // Delete the header so that Fetch will auto add its own from the instrumentation with the right span.
+    delete headers['x-amzn-trace-id'];
 
     // add in that this is the proxy to the graphql call
     headers['apollographql-client-name'] = config.app.serviceName;
@@ -161,7 +164,8 @@ export class GraphQLClientFactory {
               error.path &&
               Array.isArray(error.path) &&
               error.path.indexOf('recentSearches') >= 0 &&
-              error.extensions.code === 'FORBIDDEN'
+              (error.extensions.code === 'FORBIDDEN' ||
+                error.extensions.code === 'UNAUTHORIZED_FIELD_OR_TYPE')
             ),
         );
         // If there are still other kinds of errors, throw;
@@ -177,9 +181,21 @@ export class GraphQLClientFactory {
           };
           throw new ClientError(gqlResponse, context);
         }
+      } else if (
+        response instanceof ClientError &&
+        response.response?.error === '' &&
+        response.response?.status === 200
+      ) {
+        serverLogger.error('Received an empty 200 error from Client API', {
+          responseError: response,
+        });
+        throw response;
         // There are unskipped errors; re-throw so that the request
         // evaluates to an error
       } else if (response instanceof Error) {
+        serverLogger.error('rethrowing an unskipped error', {
+          responseError: response,
+        });
         throw response;
       }
     };

@@ -78,8 +78,8 @@ router.post(
         const message = `itemDelete: Error - Failed to delete user items User ID: ${userId} items: ${listItems} (requestId='${requestId}')`;
         Sentry.addBreadcrumb({ message });
         Sentry.captureException(error);
-        console.log(message);
-        console.error(error);
+        serverLogger.error(message);
+        serverLogger.error(error);
       }
     }
 

@@ -7,7 +7,9 @@ const localAwsEndpoint =
 export const config = {
   serviceName: 'user-list-search',
   tracing: {
-    host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
+    url: process.env.OTLP_COLLECTOR_URL || 'http://localhost:4318',
+    release: process.env.GIT_SHA || '',
+    serviceName: 'user-list-search',
   },
   app: {
     environment: process.env.NODE_ENV || 'development',
@@ -93,6 +95,7 @@ export const config = {
     dsn: process.env.SENTRY_DSN || '',
     release: process.env.GIT_SHA || '',
     environment: process.env.NODE_ENV || 'development',
+    samplerFlag: 'perm.backend.sentry-trace-sampler-rate',
   },
   isProduction: process.env.NODE_ENV === 'production',
   environment: process.env.NODE_ENV || 'development',
@@ -105,7 +108,6 @@ export const config = {
     endpoint: process.env.UNLEASH_ENDPOINT || 'http://localhost:4242/api',
     refreshInterval: 60 * 1000, // ms
     timeout: 2 * 1000, // ms
-    namePrefix: 'temp.backend',
     flags: {
       corpusExplore: {
         name: 'temp.backend.explore_the_corpus',

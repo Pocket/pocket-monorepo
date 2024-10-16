@@ -19,7 +19,8 @@
   },
   "dependencies": {
     "@aws-sdk/client-ssm": "3.637.0",
-    "@sentry/aws-serverless": "8.30.0",
+    "@pocket-tools/ts-logger": "workspace:*",
+    "@sentry/aws-serverless": "8.34.0",
     "braze-api": "^2.9.1",
     "fetch-retry": "^5.0.6",
     "tslib": "2.7.0"

@@ -1,0 +1,32 @@
+{
+  "name": "otel-collector-cdk",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/main.js",
+  "types": "src/main.ts",
+  "scripts": {
+    "build": "rm -rf dist && tsc",
+    "compile": "tsc --pretty",
+    "format": "eslint --fix",
+    "lint": "eslint --fix-dry-run",
+    "synth": "cdktf synth",
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "@cdktf/provider-aws": "19.33.0",
+    "@cdktf/provider-local": "10.1.0",
+    "@cdktf/provider-null": "10.0.0",
+    "@cdktf/provider-pagerduty": "13.11.6",
+    "@pocket-tools/terraform-modules": "workspace:*",
+    "cdktf": "0.20.8",
+    "cdktf-cli": "0.20.8",
+    "constructs": "10.3.0"
+  },
+  "devDependencies": {
+    "@pocket-tools/eslint-config": "workspace:*",
+    "@types/node": "^22.5.2",
+    "ts-node": "10.9.2",
+    "tsconfig": "workspace:*",
+    "typescript": "5.5.4"
+  }
+}

@@ -4,6 +4,7 @@ import * as Sentry from '@sentry/node';
 import {
   clientErrorHandler,
   logAndCaptureErrors,
+  sentryTagHandler,
   sourceHeaderHandler,
 } from './middleware';
 import { Server, createServer } from 'http';
@@ -12,6 +13,7 @@ import v3GetRouter from './routes/v3Get';
 import v3AddRouter from './routes/v3Add';
 import v3FetchRouter from './routes/v3Fetch';
 import v3SendRouter from './routes/v3Send';
+import multer from 'multer';
 
 export async function startServer(port: number): Promise<{
   server: Server;
@@ -23,12 +25,15 @@ export async function startServer(port: number): Promise<{
 
   app.use(json({ limit: sizeLimit }));
   app.use(urlencoded({ limit: sizeLimit, extended: true }));
+  app.use(multer().none());
   app.set('query parser', 'simple');
   app.get('/.well-known/server-health', (req, res) => {
     res.status(200).send('ok');
   });
 
   app.use(sourceHeaderHandler);
+  app.use(sentryPocketMiddleware);
+  app.use(sentryTagHandler);
 
   // register public API routes
   app.use('/v3/get', v3GetRouter);
@@ -40,8 +45,6 @@ export async function startServer(port: number): Promise<{
   Sentry.setupExpressErrorHandler(app);
 
   // Error handling middleware (must be defined last)
-  // Sentry middleware must come first
-  app.use(sentryPocketMiddleware);
   app.use(logAndCaptureErrors);
   app.use(clientErrorHandler);
 

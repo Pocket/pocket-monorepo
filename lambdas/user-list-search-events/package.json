@@ -14,7 +14,8 @@
     "test": "jest \"\\.spec\\.ts\" --runInBand --forceExit"
   },
   "dependencies": {
-    "@sentry/aws-serverless": "8.30.0",
+    "@pocket-tools/ts-logger": "workspace:*",
+    "@sentry/aws-serverless": "8.34.0",
     "tslib": "2.7.0"
   },
   "devDependencies": {

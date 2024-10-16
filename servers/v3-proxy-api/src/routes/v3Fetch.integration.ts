@@ -93,6 +93,7 @@ describe('v3Fetch', () => {
         requestData: {
           detailType: 'complete',
           shares: '1',
+          annotations: '1',
         },
         fixture: {
           requestName: 'callSavedItemsByOffsetComplete' as const,
@@ -112,6 +113,7 @@ describe('v3Fetch', () => {
       {
         requestData: {
           detailType: 'complete',
+          annotations: '1',
         },
         fixture: {
           requestName: 'callSavedItemsByOffsetComplete' as const,
@@ -120,6 +122,48 @@ describe('v3Fetch', () => {
         expected: {
           name: 'savedItemsComplete',
           response: { ...expectedGetCompleteAnnotations, total: '10' },
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          shares: true,
+          annotations: true,
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteAnnotations,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: {
+            ...expectedGetCompleteAnnotations,
+            recent_friends: [],
+            auto_complete_emails: [],
+            unconfirmed_shares: [],
+            total: '10',
+          },
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          shares: 'true',
+          annotations: 'true',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteAnnotations,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: {
+            ...expectedGetCompleteAnnotations,
+            recent_friends: [],
+            auto_complete_emails: [],
+            unconfirmed_shares: [],
+            total: '10',
+          },
         },
       },
     ])(
@@ -135,7 +179,6 @@ describe('v3Fetch', () => {
             ...requestData,
             consumer_key: 'test',
             access_token: 'test',
-            annotations: '1',
           });
         const passthrough = {
           chunk: '0',
@@ -161,6 +204,7 @@ describe('v3Fetch', () => {
         requestData: {
           detailType: 'complete',
           shares: '1',
+          taglist: '1',
         },
         fixture: {
           requestName: 'callSavedItemsByOffsetComplete' as const,
@@ -181,6 +225,37 @@ describe('v3Fetch', () => {
         requestData: {
           detailType: 'complete',
           total: '1',
+          taglist: '1',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteTagsList,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: { ...expectedGetCompleteTagslist, total: '10' },
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          total: 'true',
+          taglist: 'true',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteTagsList,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: { ...expectedGetCompleteTagslist, total: '10' },
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          total: true,
+          taglist: true,
         },
         fixture: {
           requestName: 'callSavedItemsByOffsetComplete' as const,
@@ -205,7 +280,6 @@ describe('v3Fetch', () => {
             ...requestData,
             consumer_key: 'test',
             access_token: 'test',
-            taglist: '1',
             since: 1712766000,
           });
         const passthrough = {
@@ -342,6 +416,19 @@ describe('v3Fetch', () => {
       const response = await request(app).get('/v3/fetch').query(params);
       expect(response.status).toBe(200);
     });
+    it('should work with query parameters for POST request', async () => {
+      const params = {
+        consumer_key: 'test',
+        access_token: 'test',
+        offset: '6',
+        count: '28',
+      };
+      jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).post('/v3/fetch').query(params);
+      expect(response.status).toBe(200);
+    });
     it('should not log input validation errors to sentry or cloudwatch', async () => {
       const consoleSpy = jest.spyOn(serverLogger, 'error');
       const sentrySpy = jest.spyOn(Sentry, 'captureException');
@@ -418,5 +505,15 @@ describe('v3Fetch', () => {
         expect(response.status).toBe(400);
       },
     );
+    it('should work with body in GET request', async () => {
+      const params = { consumer_key: 'test', access_token: 'test' };
+      const callSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).get('/v3/fetch').send(params);
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+      expect(callSpy).toHaveBeenCalledTimes(1);
+      expect(response.status).toBe(200);
+    });
   });
 });

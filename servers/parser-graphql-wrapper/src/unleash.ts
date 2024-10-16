@@ -11,7 +11,6 @@ export function unleash(): Unleash {
     appName: config.serviceName,
     customHeaders: { Authorization: config.unleash.clientKey },
     timeout: config.unleash.timeout,
-    namePrefix: config.unleash.namePrefix,
     refreshInterval: config.unleash.refreshInterval,
   });
   return _unleash;

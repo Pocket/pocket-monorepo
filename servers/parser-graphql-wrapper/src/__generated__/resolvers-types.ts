@@ -104,6 +104,8 @@ export type CorpusItem = {
   datePublished?: Maybe<Scalars['Date']['output']>;
   /** The excerpt of the Approved Item. */
   excerpt: Scalars['String']['output'];
+  /** The GUID that is stored on an approved corpus item */
+  id: Scalars['ID']['output'];
   /** The image for this item's accompanying picture. */
   image: Image;
   /** The preview of the search result */
@@ -907,7 +909,8 @@ export type CorpusItemResolvers<ContextType = IContext, ParentType extends Resol
 
 
 
-  preview?: Resolver<ResolversTypes['PocketMetadata'], { __typename: 'CorpusItem' } & GraphQLRecursivePick<ParentType, {"url":true}> & GraphQLRecursivePick<ParentType, {"title":true,"excerpt":true,"datePublished":true,"publisher":true,"image":{"url":true},"authors":{"name":true,"sortOrder":true}}>, ContextType>;
+
+  preview?: Resolver<ResolversTypes['PocketMetadata'], { __typename: 'CorpusItem' } & GraphQLRecursivePick<ParentType, {"url":true}> & GraphQLRecursivePick<ParentType, {"id":true,"title":true,"excerpt":true,"datePublished":true,"publisher":true,"image":{"url":true},"authors":{"name":true,"sortOrder":true}}>, ContextType>;
 
   shortUrl?: Resolver<Maybe<ResolversTypes['Url']>, { __typename: 'CorpusItem' } & GraphQLRecursivePick<ParentType, {"url":true}>, ContextType>;
   timeToRead?: Resolver<Maybe<ResolversTypes['Int']>, { __typename: 'CorpusItem' } & GraphQLRecursivePick<ParentType, {"url":true}>, ContextType>;
@@ -993,7 +996,7 @@ export type ItemResolvers<ContextType = IContext, ParentType extends ResolversPa
   mimeType?: Resolver<Maybe<ResolversTypes['String']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
   normalUrl?: Resolver<ResolversTypes['String'], { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
   originDomainId?: Resolver<Maybe<ResolversTypes['String']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
-  preview?: Resolver<Maybe<ResolversTypes['PocketMetadata']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>) & GraphQLRecursivePick<ParentType, {"syndicatedArticle":{"title":true,"excerpt":true,"mainImage":true,"publishedAt":true,"authorNames":true,"publisherUrl":true,"publisher":{"logo":true,"name":true}},"collection":{"title":true,"excerpt":true,"publishedAt":true,"authors":{"name":true},"imageUrl":true},"corpusItem":{"title":true,"excerpt":true,"datePublished":true,"publisher":true,"image":{"url":true},"authors":{"name":true,"sortOrder":true}}}>, ContextType>;
+  preview?: Resolver<Maybe<ResolversTypes['PocketMetadata']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>) & GraphQLRecursivePick<ParentType, {"syndicatedArticle":{"title":true,"excerpt":true,"mainImage":true,"publishedAt":true,"authorNames":true,"publisherUrl":true,"publisher":{"logo":true,"name":true}},"collection":{"title":true,"excerpt":true,"publishedAt":true,"authors":{"name":true},"imageUrl":true},"corpusItem":{"id":true,"title":true,"excerpt":true,"datePublished":true,"publisher":true,"image":{"url":true},"authors":{"name":true,"sortOrder":true}}}>, ContextType>;
   readerSlug?: Resolver<ResolversTypes['String'], { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
   resolvedId?: Resolver<Maybe<ResolversTypes['String']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;
   resolvedNormalUrl?: Resolver<Maybe<ResolversTypes['Url']>, { __typename: 'Item' } & (GraphQLRecursivePick<ParentType, {"givenUrl":true}> | GraphQLRecursivePick<ParentType, {"itemId":true}>), ContextType>;

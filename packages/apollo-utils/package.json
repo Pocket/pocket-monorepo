@@ -68,7 +68,7 @@
           }
         }
       ],
-      "@semantic-release/npm",
+      "@anolilab/semantic-release-pnpm",
       "@semantic-release/github"
     ]
   },
@@ -76,11 +76,11 @@
     "@apollo/cache-control-types": "1.0.3",
     "@apollo/server": "4.11.0",
     "@apollo/server-plugin-response-cache": "4.1.3",
-    "@apollo/subgraph": "2.9.0",
+    "@apollo/subgraph": "2.9.2",
     "@apollo/utils.keyvadapter": "3.1.0",
     "@apollo/utils.keyvaluecache": "3.1.0",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "8.30.0",
+    "@sentry/node": "8.34.0",
     "express": "4.20.0",
     "graphql": "16.9.0",
     "graphql-tag": "2.12.6",
@@ -89,6 +89,7 @@
     "md5": "2.3.0"
   },
   "devDependencies": {
+    "@anolilab/semantic-release-pnpm": "1.1.3",
     "@jest/globals": "29.7.0",
     "@pocket-tools/eslint-config": "workspace:*",
     "@types/jest": "29.5.12",
@@ -107,7 +108,7 @@
   },
   "peerDependencies": {
     "@apollo/server": "4.11.0",
-    "@apollo/subgraph": "2.9.0",
+    "@apollo/subgraph": "2.9.2",
     "@apollo/utils.keyvadapter": "3.1.0",
     "@apollo/utils.keyvaluecache": "3.1.0",
     "express": "4.20.0",

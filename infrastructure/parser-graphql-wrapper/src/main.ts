@@ -176,6 +176,10 @@ class ParserGraphQLWrapper extends TerraformStack {
               name: 'ITEM_SUMMARY_TABLE',
               value: dynamodb.itemSummaryTable.dynamodb.name,
             },
+            {
+              name: 'OTLP_COLLECTOR_URL',
+              value: config.tracing.url,
+            },
           ],
           healthCheck: {
             command: [
@@ -326,11 +330,6 @@ class ParserGraphQLWrapper extends TerraformStack {
               'logs:CreateLogStream',
               'logs:DescribeLogStreams',
               'logs:DescribeLogGroups',
-              'xray:PutTraceSegments',
-              'xray:PutTelemetryRecords',
-              'xray:GetSamplingRules',
-              'xray:GetSamplingTargets',
-              'xray:GetSamplingStatisticSummaries',
             ],
             resources: ['*'],
             effect: 'Allow',

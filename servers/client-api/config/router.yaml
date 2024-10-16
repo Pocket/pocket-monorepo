@@ -28,6 +28,11 @@ authentication:
         - url: https://getpocket.com/.well-known/jwk
 authorization:
   require_authentication: false
+  # We allow clients to request and get some things as unauthorized
+  # https://www.apollographql.com/docs/graphos/routing/security/authorization#log
+  directives:
+    errors:
+      log: false
 rhai:
   scripts: './rhai'
   main: 'main.rhai'
@@ -49,13 +54,66 @@ headers:
           named: 'web-request-user-agent'
           rename: 'gatwayUserAgent'
       - propagate:
-          named: 'X-Amzn-Trace-Id'
-      - propagate:
           named: 'transfersub'
       - propagate:
           named: 'web-request-snowplow-session-user-id'
           rename: 'gatewaySnowplowDomainSessionId'
+demand_control:
+  enabled: false
+  mode: measure
+  strategy:
+    static_estimated:
+      list_size: 10
+      max: 1000
 telemetry:
+  # instrumentation:
+  #   instruments:
+  #     router:
+  #       http.server.active_requests: true # (default false)
+  #       http.server.request.body.size: true # (default false)
+  #       http.server.request.duration: true # (default false)
+  #     subgraph:
+  #       http.client.request.body.size: true # (default false)
+  #       http.client.request.duration: true # (default false)
+  #       http.client.response.body.size: true # (default false)
+  #     # Costs are from https://www.apollographql.com/docs/graphos/routing/security/demand-control#examples
+  #     supergraph:
+  #       cost.estimated:
+  #         attributes:
+  #           cost.result: true
+  #           graphql.operation.name: true
+  #       cost.rejected.operations:
+  #         type: histogram
+  #         value:
+  #           # Estimated cost is used to populate the histogram
+  #           cost: estimated
+  #         description: "Estimated cost per rejected operation."
+  #         unit: delta
+  #         condition:
+  #           eq:
+  #             # Only show rejected operations.
+  #             - cost: result
+  #             - "COST_ESTIMATED_TOO_EXPENSIVE"
+  #         attributes:
+  #           graphql.operation.name: true # Graphql operation name is added as an attribute
+  #   events:
+  #     supergraph:
+  #       COST_DELTA_TOO_HIGH:
+  #         message: "cost delta high"
+  #         on: event_response
+  #         level: error
+  #         condition:
+  #           gt:
+  #             - cost: delta
+  #             - 1000
+  #         attributes:
+  #           graphql.operation.name: true
+  #           cost.delta: true
+    # spans:
+    #   supergraph:
+    #     attributes:
+    #       cost.estimated: true
+
   apollo:
     send_variable_values:
       only:
@@ -64,18 +122,66 @@ telemetry:
         - perPage # getCollections
         - slug # collectionBySlug
   exporters:
+    logging:
+      common:
+        resource:
+          'environment.name': '${env.APP_ENVIRONMENT}'
+          'service.name': 'client-api'
+          'environment.namespace': pocket
+    metrics:
+      common:
+        resource:
+          'environment.name': '${env.APP_ENVIRONMENT}'
+          'service.name': 'client-api'
+          'environment.namespace': pocket
+        views:
+          # https://www.apollographql.com/docs/graphos/routing/security/demand-control#configuring-instrument-output
+          # Define a custom view because cost is different than the default latency-oriented view of OpenTelemetry
+          - name: cost.*
+            aggregation:
+              histogram:
+                buckets:
+                  - 0
+                  - 10
+                  - 100
+                  - 1000
+                  - 10000
+                  - 100000
+                  - 1000000
+      otlp:
+        enabled: false
+        endpoint: '${env.OTLP_COLLECTOR_URL:-http://localhost:4318}'
+        protocol: http
+        batch_processor:
+          scheduled_delay: 10000ms # 10 secs export due to google cloud rate limits
+          max_concurrent_exports: 1000
+          max_export_batch_size: 10000
+          max_export_timeout: 100s
+          max_queue_size: 10000
     tracing:
       common:
         resource:
           'environment.name': '${env.APP_ENVIRONMENT}'
-        service_name: 'client-api'
-        sampler: always_on # (default) all requests are sampled (always_on|always_off|<0.0-1.0>)
-        parent_based_sampler: false
+          'service.name': 'client-api'
+          'environment.namespace': pocket
+        sampler: 0.01 # (default) all requests are sampled (always_on|always_off|<0.0-1.0>)
+        parent_based_sampler: true
       propagation:
         aws_xray: true
+
       experimental_response_trace_id:
         enabled: true
         header_name: 'pocket-trace-id'
+      otlp:
+        enabled: true
+        endpoint: '${env.OTLP_COLLECTOR_URL:-http://localhost:4318}'
+        protocol: http
+        batch_processor:
+          scheduled_delay: 100ms
+          max_concurrent_exports: 1000
+          max_export_batch_size: 10000
+          max_export_timeout: 2s
+          max_queue_size: 10000
 apq:
   router:
     cache:

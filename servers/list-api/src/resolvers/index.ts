@@ -23,6 +23,7 @@ import {
   updateSavedItemUnFavorite,
   updateTag,
   upsertSavedItem,
+  exportList,
 } from './mutation';
 import { tagsSavedItems } from './tag';
 import {
@@ -42,7 +43,7 @@ import {
 import { IContext } from '../server/context';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
 import { GraphQLResolveInfo } from 'graphql';
-import { IntMask } from '@pocket-tools/int-mask';
+import { itemIdFromSlug } from '@pocket-tools/int-mask';
 
 const resolvers = {
   ...PocketDefaultScalars,
@@ -132,7 +133,7 @@ const resolvers = {
       _,
       context: IContext,
     ): Promise<SavedItem | null> {
-      const id = IntMask.decode(parent.slug).toString();
+      const id = itemIdFromSlug(parent.slug);
       return await context.dataLoaders.savedItemsById.load(id);
     },
   },
@@ -162,6 +163,7 @@ const resolvers = {
     clearTags,
     replaceTags,
     removeTagsByName,
+    exportList,
     deleteTagByName: async (
       _,
       args: { tagName: string; timestamp?: Date },

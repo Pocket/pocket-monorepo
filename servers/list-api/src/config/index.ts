@@ -102,6 +102,7 @@ export default {
     dsn: process.env.SENTRY_DSN || '',
     release: process.env.GIT_SHA || '',
     environment: process.env.NODE_ENV || 'development',
+    samplerFlag: 'perm.backend.sentry-trace-sampler-rate',
   },
   unleash: {
     clientKey: process.env.UNLEASH_KEY || 'unleash-key-fake',
@@ -124,11 +125,9 @@ export default {
     },
   },
   tracing: {
-    host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
-    serviceName: 'list-api',
+    url: process.env.OTLP_COLLECTOR_URL || 'http://localhost:4318',
+    release: process.env.GIT_SHA || '',
+    serviceName,
     graphQLDepth: 8,
-    samplingRatio: 0.01,
-    grpcDefaultPort: 4317,
-    httpDEfaultPort: 4318,
   },
 };

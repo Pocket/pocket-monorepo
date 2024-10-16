@@ -1233,6 +1233,11 @@ export type Mutation = {
    */
   expireUserWebSessionByFxaId: Scalars['ID']['output'];
   /**
+   * Request for an asynchronous export of a user's list.
+   * Returns the request ID associated with the request.
+   */
+  exportList?: Maybe<Scalars['String']['output']>;
+  /**
    * temporary mutation for apple user migration.
    * called by fxa-webhook proxy to update the fxaId and email of the user.
    * Returns the pocket userId on success

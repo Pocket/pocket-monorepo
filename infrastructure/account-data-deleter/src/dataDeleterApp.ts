@@ -8,6 +8,7 @@ import {
   sqsQueue,
   dataAwsSnsTopic,
 } from '@cdktf/provider-aws';
+import { S3Bucket } from '@cdktf/provider-aws/lib/s3-bucket';
 
 import { PocketALBApplication } from '@pocket-tools/terraform-modules';
 
@@ -20,6 +21,11 @@ export type DataDeleterAppConfig = {
   snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
   batchDeleteQueue: sqsQueue.SqsQueue;
   batchDeleteDLQ: sqsQueue.SqsQueue | undefined;
+  listExportQueue: sqsQueue.SqsQueue;
+  listExportDLQ: sqsQueue.SqsQueue | undefined;
+  listExportBucket: S3Bucket;
+  listExportPartsPrefix: string;
+  listExportArchivesPrefix: string;
 };
 
 export class DataDeleterApp extends Construct {
@@ -106,6 +112,30 @@ export class DataDeleterApp extends Construct {
             {
               name: 'SQS_BATCH_DELETE_QUEUE_URL',
               value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.envVars.sqsBatchDeleteQueueName}`,
+            },
+            {
+              name: 'SQS_LIST_EXPORT_QUEUE_URL',
+              value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.envVars.listExportQueueName}`,
+            },
+            {
+              name: 'LIST_EXPORT_BUCKET',
+              value: this.config.listExportBucket.bucket,
+            },
+            {
+              name: 'LIST_EXPORT_PARTS_PREFIX',
+              value: this.config.listExportPartsPrefix,
+            },
+            {
+              name: 'LIST_EXPORT_ARCHIVE_PREFIX',
+              value: this.config.listExportArchivesPrefix,
+            },
+            {
+              name: 'EVENT_BUS_NAME',
+              value: config.envVars.eventBusName,
+            },
+            {
+              name: 'OTLP_COLLECTOR_URL',
+              value: config.tracing.url,
             },
           ],
           healthCheck: {
@@ -208,7 +238,29 @@ export class DataDeleterApp extends Construct {
               'sqs:SendMessage',
               'sqs:SendMessageBatch',
             ],
-            resources: [this.config.batchDeleteQueue.arn],
+            resources: [
+              this.config.batchDeleteQueue.arn,
+              this.config.listExportQueue.arn,
+            ],
+            effect: 'Allow',
+          },
+          {
+            // Bucket actions
+            actions: ['s3:ListBucket'],
+            resources: [this.config.listExportBucket.arn],
+            effect: 'Allow',
+          },
+          {
+            // Object actions
+            actions: ['s3:*Object'],
+            resources: [`${this.config.listExportBucket.arn}/*`],
+            effect: 'Allow',
+          },
+          {
+            actions: ['events:PutEvents'],
+            resources: [
+              `arn:aws:events:${region.name}:${caller.accountId}:event-bus/${config.eventBusName}`,
+            ],
             effect: 'Allow',
           },
         ],
