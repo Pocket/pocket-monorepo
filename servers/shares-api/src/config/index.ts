@@ -9,6 +9,7 @@ const localAwsEndpoint =
 
 export const config = {
   app: {
+    serviceName: 'shares-api',
     environment: process.env.NODE_ENV || 'development',
     defaultMaxAge: 86400,
     port: 4031,
@@ -37,10 +38,17 @@ export const config = {
     },
   },
   tracing: {
-    host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
+    url: process.env.OTLP_COLLECTOR_URL || 'http://localhost:4318',
     serviceName: 'shares-api',
+    release: process.env.GIT_SHA || 'local',
   },
   share: {
     url: process.env.SHARE_URL || 'https://pocket.co/share',
+  },
+  unleash: {
+    clientKey: process.env.UNLEASH_KEY || 'unleash-key-fake',
+    endpoint: process.env.UNLEASH_ENDPOINT || 'http://localhost:4242/api',
+    refreshInterval: 60 * 1000, // ms
+    timeout: 2 * 1000, // ms
   },
 };
