@@ -11,9 +11,9 @@ describe('SqsListener spec test', function () {
     throw new Error('some SQS error');
   }
 
-  let stub = null;
+  let stub: jest.SpyInstance | null = null;
   afterAll(() => {
-    stub.mockReset();
+    stub?.mockReset();
   });
 
   it('should log error when sqs send fails', async () => {
@@ -38,7 +38,7 @@ describe('SqsListener spec test', function () {
       isFavorite: false,
       isArchived: false,
       status: 'UNREAD',
-      item: null,
+      item: { givenUrl: 'itemurl' },
     };
 
     const eventData = {

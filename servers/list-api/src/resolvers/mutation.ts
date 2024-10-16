@@ -63,7 +63,7 @@ export async function upsertSavedItem(
       url,
     });
 
-    if (upsertedItem === undefined) {
+    if (upsertedItem == null) {
       serverLogger.error('Could not save item', {
         url: savedItemUpsertInput.url,
         modifedUrl: url,
@@ -199,6 +199,9 @@ export async function updateSavedItemTags(
     args.input,
     args.timestamp,
   );
+  if (savedItem == null) {
+    throw new NotFoundError('SavedItem not found');
+  }
   context.emitItemEvent(
     EventType.REPLACE_TAGS,
     savedItem,
@@ -225,6 +228,9 @@ export async function updateSavedItemRemoveTags(
     args.savedItemId,
     args.timestamp,
   );
+  if (save == null) {
+    throw new NotFoundError('SavedItem not found');
+  }
   context.emitItemEvent(EventType.CLEAR_TAGS, save, removed);
   return save;
 }
@@ -271,10 +277,15 @@ export async function deleteSavedItemTags(
     args.input,
     args.timestamp,
   );
-  const saves = deleteOperations.map(({ save, removed }) => {
-    context.emitItemEvent(EventType.REMOVE_TAGS, save, removed);
-    return save;
-  });
+  const saves = deleteOperations
+    .map(({ save, removed }) => {
+      if (save == null) {
+        return null;
+      }
+      context.emitItemEvent(EventType.REMOVE_TAGS, save, removed);
+      return save;
+    })
+    .filter((_) => _ != null);
   return saves;
 }
 
@@ -322,7 +333,11 @@ export async function updateTag(
   args: { input: TagUpdateInput },
   context: IContext,
 ): Promise<Tag> {
-  return context.models.tag.renameTag(args.input);
+  const tag = await context.models.tag.renameTag(args.input);
+  if (tag == null) {
+    throw new NotFoundError('Tag not found');
+  }
+  return tag;
 }
 
 /** Replace all tags on a single SavedItem with a new set of tags */
@@ -331,9 +346,6 @@ export async function replaceTags(
   args: { savedItem: SavedItemRefInput; tagNames: string[]; timestamp: Date },
   context: IContext,
 ): Promise<SavedItem> {
-  if (!atLeastOneOf(args.savedItem, ['id', 'url'])) {
-    throw new UserInputError('SavedItemRef must have one of `id` or `url`');
-  }
   // Previously clients have used this to clear tags by passing an
   // empty replacement array, so reroute to clearTags mutation if
   // if the array of tagNames is empty
@@ -343,11 +355,13 @@ export async function replaceTags(
   let replacement: SavedItemTagsInput;
   if (args.savedItem.id != null) {
     replacement = { savedItemId: args.savedItem.id, tags: args.tagNames };
-  } else {
+  } else if (args.savedItem.url != null) {
     const id = await context.models.savedItem.fetchIdFromUrl(
       args.savedItem.url,
     );
     replacement = { savedItemId: id, tags: args.tagNames };
+  } else {
+    throw new UserInputError('SavedItemRef must have one of `id` or `url`');
   }
   const savedItem = (
     await context.models.tag.replaceSaveTagConnections(
@@ -367,9 +381,6 @@ export async function removeTagsByName(
   args: { savedItem: SavedItemRefInput; tagNames: string[]; timestamp: Date },
   context: IContext,
 ): Promise<SavedItem> {
-  if (!atLeastOneOf(args.savedItem, ['id', 'url'])) {
-    throw new UserInputError('SavedItemRef must have one of `id` or `url`');
-  }
   let updatedSave: SavedItem;
   if (args.savedItem.id != null) {
     updatedSave = await context.models.savedItem.removeTagsFromSaveById(
@@ -378,12 +389,14 @@ export async function removeTagsByName(
       args.timestamp,
     );
     serverLogger.info(JSON.stringify(updatedSave));
-  } else {
+  } else if (args.savedItem.url != null) {
     updatedSave = await context.models.savedItem.removeTagsFromSaveByUrl(
       args.savedItem.url,
       args.tagNames,
       args.timestamp,
     );
+  } else {
+    throw new UserInputError('SavedItemRef must have one of `id` or `url`');
   }
   if (updatedSave == null) {
     throw new NotFoundError('SavedItem not found');
@@ -396,20 +409,24 @@ export async function clearTags(
   args: { savedItem: SavedItemRefInput; timestamp: Date },
   context: IContext,
 ): Promise<SavedItem> {
-  if (!atLeastOneOf(args.savedItem, ['id', 'url'])) {
-    throw new UserInputError('SavedItemRef must have one of `id` or `url`');
-  }
+  let updatedSave: SavedItem | null;
   if (args.savedItem.id != null) {
-    return context.models.savedItem.clearTagsById(
+    updatedSave = await context.models.savedItem.clearTagsById(
       args.savedItem.id,
       args.timestamp,
     );
-  } else {
-    return context.models.savedItem.clearTagsByUrl(
+  } else if (args.savedItem.url != null) {
+    updatedSave = await context.models.savedItem.clearTagsByUrl(
       args.savedItem.url,
       args.timestamp,
     );
+  } else {
+    throw new UserInputError('SavedItemRef must have one of `id` or `url`');
   }
+  if (updatedSave == null) {
+    throw new NotFoundError('SavedItem not found');
+  }
+  return updatedSave;
 }
 
 export async function exportList(
