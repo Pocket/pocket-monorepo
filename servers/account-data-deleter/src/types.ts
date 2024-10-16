@@ -13,7 +13,7 @@ export type QueueConfig = {
  * Payload of an export request message sent to SQS
  */
 export type ExportMessage = {
-  userId: number;
+  userId: string;
   encodedId: string;
   requestId: string;
   cursor: number;
