@@ -312,6 +312,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
         namespace: 'AWS/SQS',
         okActions: config.isDev ? [] : [alarmSnsTopic.arn],
         period: periodInSeconds,
+        treatMissingData: 'notBreaching',
         statistic: 'Sum',
         threshold: threshold,
       },
