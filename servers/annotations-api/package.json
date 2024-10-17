@@ -31,6 +31,7 @@
     "@aws-sdk/client-dynamodb": "3.637.0",
     "@aws-sdk/client-sqs": "3.637.0",
     "@aws-sdk/lib-dynamodb": "3.637.0",
+    "@opentelemetry/api": "1.9.0",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/feature-flags-client": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
