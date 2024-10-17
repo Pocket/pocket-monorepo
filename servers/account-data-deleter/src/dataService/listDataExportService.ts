@@ -248,6 +248,7 @@ export class ListDataExportService {
       return await this.exportBucket.getSignedUrl(
         this.zipFileKey,
         config.listExport.signedUrlExpiry,
+        config.listExport.presignedIamUserCredentials,
       );
     } else {
       return false;

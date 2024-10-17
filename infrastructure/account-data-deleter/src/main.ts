@@ -10,9 +10,10 @@ import {
   dataAwsKmsAlias,
   dataAwsRegion,
   dataAwsSnsTopic,
+  s3Bucket,
+  s3BucketLifecycleConfiguration,
 } from '@cdktf/provider-aws';
-import { S3Bucket } from '@cdktf/provider-aws/lib/s3-bucket';
-import { S3BucketLifecycleConfiguration } from '@cdktf/provider-aws/lib/s3-bucket-lifecycle-configuration';
+
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import {
@@ -92,13 +93,13 @@ class AccountDataDeleter extends TerraformStack {
     );
 
     // Bucket for exports plus auto-expiry rules
-    const exportBucket = new S3Bucket(this, 'list-export-bucket', {
+    const exportBucket = new s3Bucket.S3Bucket(this, 'list-export-bucket', {
       bucket: `com.getpocket-${config.environment.toLowerCase()}.list-exports`,
       tags: config.tags,
     });
     const partsPrefix = 'parts';
     const archivesPrefix = 'archives';
-    new S3BucketLifecycleConfiguration(
+    new s3BucketLifecycleConfiguration.S3BucketLifecycleConfiguration(
       this,
       'list-export-parts-lifecycle-rule',
       {
@@ -123,6 +124,49 @@ class AccountDataDeleter extends TerraformStack {
         ],
       },
     );
+
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // NOTE  - This is click ops because we're running into circular import/dependency
+    // issues when trying to grant assume role access to the task execution role,
+    // to assume this user. And we also need to use a user (not a role) in order
+    // to create more long-lived signed urls for user exports
+    // see https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-presigned-url.html#who-presigned-url
+    // Create IAM user to generate a signedUrl which has up to 7 days
+    // expiry (otherwise it's limited to the ssion token)
+    // const signedUrlUser = new iamUser.IamUser(
+    //   this,
+    //   'export-signedurl-iam-user',
+    //   {
+    //     name: 'export-signedurl',
+    //     tags: config.tags,
+    //   },
+    // );
+
+    // // Allow the task role to assume the role for getting s3 signed urls
+    // const s3GetPolicy = new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
+    //   this,
+    //   's3-export-read',
+    //   {
+    //     statement: [
+    //       {
+    //         effect: 'Allow',
+    //         actions: ['s3:GetObject'],
+    //         resources: [`${exportBucket.arn}/*`],
+    //       },
+    //     ],
+    //   },
+    // );
+
+    // new iamUserPolicy.IamUserPolicy(this, 'export-signedurl-policy', {
+    //   name: 'export-signedurl-access-policy',
+    //   user: signedUrlUser.name,
+    //   policy: s3GetPolicy.json,
+    // });
+    // const accessKey = new iamAccessKey.IamAccessKey(this, 'signedurl-user', {
+    //   user: signedUrlUser.name,
+    // });
+    // So instead we are going to clickops save this into secrets manager and retrieve
+    // it via encrypted environment variables
 
     const dataDeleterAppConfig: DataDeleterAppConfig = {
       region: region,

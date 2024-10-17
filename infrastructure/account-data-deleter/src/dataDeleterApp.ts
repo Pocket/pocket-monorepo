@@ -62,7 +62,7 @@ export class DataDeleterApp extends Construct {
       `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.prefix}/*`,
     ];
 
-    return new PocketALBApplication(this, 'application', {
+    const app = new PocketALBApplication(this, 'application', {
       alarms: {
         http5xxErrorPercentage: {
           actions: config.isProd ? [] : [],
@@ -196,6 +196,14 @@ export class DataDeleterApp extends Construct {
               name: 'UNLEASH_KEY',
               valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/UNLEASH_KEY`,
             },
+            {
+              name: 'EXPORT_SIGNEDURL_USER_ACCESS_KEY_ID',
+              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/EXPORT_USER_CREDS:accessKeyId::`,
+            },
+            {
+              name: 'EXPORT_SIGNEDURL_USER_SECRET_KEY',
+              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/EXPORT_USER_CREDS:secretAccessKey::`,
+            },
           ],
         },
       ],
@@ -276,6 +284,8 @@ export class DataDeleterApp extends Construct {
       prefix: config.prefix,
       tags: config.tags,
     });
+
+    return app;
   }
 
   /**
