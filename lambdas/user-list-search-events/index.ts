@@ -2,7 +2,6 @@ import { config } from './config';
 import * as Sentry from '@sentry/aws-serverless';
 Sentry.init({
   ...config.sentry,
-  debug: config.sentry.environment === 'development',
 });
 import { SQSEvent } from 'aws-lambda';
 import { handlerMap } from './handlerMap';

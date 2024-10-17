@@ -14,8 +14,6 @@ exporters:
       default_log_name: opentelemetry.io/collector-exported-log
     # https://www.googlecloudcommunity.com/gc/Data-Analytics/OpenTelemetry-and-GKE/m-p/674090/highlight/true#M3861
     timeout: 45s
-  debug:
-    verbosity: detailed
 processors:
   memory_limiter:
     check_interval: 1s
@@ -91,7 +89,7 @@ service:
           memory_limiter,
           batch/metrics,
         ]
-      exporters: [googlecloud, debug]
+      exporters: [googlecloud]
     logs:
       receivers: [otlp]
       processors:
