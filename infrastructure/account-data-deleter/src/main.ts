@@ -7,13 +7,9 @@ import { provider as archiveProvider } from '@cdktf/provider-archive';
 import {
   provider as awsProvider,
   dataAwsCallerIdentity,
-  dataAwsIamPolicyDocument,
   dataAwsKmsAlias,
   dataAwsRegion,
   dataAwsSnsTopic,
-  iamAccessKey,
-  iamUser,
-  iamUserPolicy,
   s3Bucket,
   s3BucketLifecycleConfiguration,
 } from '@cdktf/provider-aws';
