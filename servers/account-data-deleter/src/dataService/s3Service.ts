@@ -167,14 +167,45 @@ export class S3Bucket {
     archive.finalize();
     return archive;
   }
-  async getSignedUrl(key: string, expiresInSeconds?: number): Promise<string> {
+  /**
+   * Get a signed URL for downloading an object from s3.
+   * @param key the key of the object in s3 to provide a signed url for
+   * @param expiresInSeconds the expiration time. See
+   * https://docs.aws.amazon.com/AmazonS3/latest/userguide/using-presigned-url.html#who-presigned-url
+   * for more information about how the role affects the maximum
+   * expiration time allowed for a presigned url.
+   * If not provided, will set the expiration to 7 days, but it
+   * may be less depending on service role (see link above).
+   * @param iamUser an IAM User role to assume to create
+   * the presigned url (optional, otherwise uses the role
+   * retrieved using the default credential manager).
+   * @returns
+   */
+  async getSignedUrl(
+    key: string,
+    expiresInSeconds?: number,
+    credentials?: { accessKeyId: string; secretAccessKey: string },
+  ): Promise<string> {
     const expiresIn = expiresInSeconds ?? 60 * 60 * 24 * 7; // 7 days in seconds
     try {
-      const command = new GetObjectCommand({ Bucket: this.bucket, Key: key });
-      const url = await getSignedUrl(this.s3, command, {
-        expiresIn,
+      const command = new GetObjectCommand({
+        Bucket: this.bucket,
+        Key: key,
       });
-      return url;
+      if (credentials) {
+        const assumedS3 = new S3Client({
+          endpoint: config.aws.endpoint,
+          region: config.aws.region,
+          maxAttempts: 3,
+          forcePathStyle: config.aws.endpoint != null ? true : false,
+          credentials,
+        });
+        return await getSignedUrl(assumedS3, command, { expiresIn });
+      } else {
+        return await getSignedUrl(this.s3, command, {
+          expiresIn,
+        });
+      }
     } catch (error) {
       serverLogger.error({
         message: 'Error generating signedUrl',
@@ -182,6 +213,7 @@ export class S3Bucket {
         expiresIn,
         bucket: this.bucket,
         errorData: error,
+        errorMessage: error.message,
       });
       Sentry.addBreadcrumb({ data: { key, expiresIn, bucket: this.bucket } });
       Sentry.captureException(error);
