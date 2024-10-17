@@ -7,6 +7,9 @@ import {
   dataAwsRegion,
   sqsQueue,
   dataAwsSnsTopic,
+  iamUserPolicy,
+  type iamUser,
+  dataAwsIamPolicyDocument,
 } from '@cdktf/provider-aws';
 import { S3Bucket } from '@cdktf/provider-aws/lib/s3-bucket';
 
@@ -26,6 +29,7 @@ export type DataDeleterAppConfig = {
   listExportBucket: S3Bucket;
   listExportPartsPrefix: string;
   listExportArchivesPrefix: string;
+  signedUrlUser: iamUser.IamUser;
 };
 
 export class DataDeleterApp extends Construct {
@@ -62,7 +66,7 @@ export class DataDeleterApp extends Construct {
       `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.prefix}/*`,
     ];
 
-    return new PocketALBApplication(this, 'application', {
+    const app = new PocketALBApplication(this, 'application', {
       alarms: {
         http5xxErrorPercentage: {
           actions: config.isProd ? [] : [],
@@ -263,6 +267,11 @@ export class DataDeleterApp extends Construct {
             ],
             effect: 'Allow',
           },
+          {
+            effect: 'Allow',
+            actions: ['sts:AssumeRole'],
+            resources: [this.config.signedUrlUser.arn],
+          },
         ],
         taskExecutionDefaultAttachmentArn:
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
@@ -276,6 +285,39 @@ export class DataDeleterApp extends Construct {
       prefix: config.prefix,
       tags: config.tags,
     });
+
+    // Allow the task role to assume the role for getting s3 signed urls
+    const s3GetPolicy = new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
+      this,
+      's3-export-read',
+      {
+        statement: [
+          {
+            effect: 'Allow',
+            actions: ['s3:GetObject'],
+            resources: [`${this.config.listExportBucket.arn}/*`],
+          },
+          {
+            effect: 'Allow',
+            actions: ['sts:AssumeRole'],
+            principals: [
+              {
+                type: 'AWS',
+                identifiers: [app.ecsService.ecsIam.taskExecutionRoleArn],
+              },
+            ],
+          },
+        ],
+      },
+    );
+
+    new iamUserPolicy.IamUserPolicy(this, 'export-signedurl-policy', {
+      name: 'export-signedurl-access-policy',
+      user: this.config.signedUrlUser.name,
+      policy: s3GetPolicy.json,
+    });
+
+    return app;
   }
 
   /**
