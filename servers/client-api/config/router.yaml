@@ -66,53 +66,53 @@ demand_control:
       list_size: 10
       max: 1000
 telemetry:
-  # instrumentation:
-  #   instruments:
-  #     router:
-  #       http.server.active_requests: true # (default false)
-  #       http.server.request.body.size: true # (default false)
-  #       http.server.request.duration: true # (default false)
-  #     subgraph:
-  #       http.client.request.body.size: true # (default false)
-  #       http.client.request.duration: true # (default false)
-  #       http.client.response.body.size: true # (default false)
-  #     # Costs are from https://www.apollographql.com/docs/graphos/routing/security/demand-control#examples
-  #     supergraph:
-  #       cost.estimated:
-  #         attributes:
-  #           cost.result: true
-  #           graphql.operation.name: true
-  #       cost.rejected.operations:
-  #         type: histogram
-  #         value:
-  #           # Estimated cost is used to populate the histogram
-  #           cost: estimated
-  #         description: "Estimated cost per rejected operation."
-  #         unit: delta
-  #         condition:
-  #           eq:
-  #             # Only show rejected operations.
-  #             - cost: result
-  #             - "COST_ESTIMATED_TOO_EXPENSIVE"
-  #         attributes:
-  #           graphql.operation.name: true # Graphql operation name is added as an attribute
-  #   events:
-  #     supergraph:
-  #       COST_DELTA_TOO_HIGH:
-  #         message: "cost delta high"
-  #         on: event_response
-  #         level: error
-  #         condition:
-  #           gt:
-  #             - cost: delta
-  #             - 1000
-  #         attributes:
-  #           graphql.operation.name: true
-  #           cost.delta: true
-    # spans:
-    #   supergraph:
-    #     attributes:
-    #       cost.estimated: true
+  instrumentation:
+    instruments:
+      router:
+        http.server.active_requests: true # (default false)
+        http.server.request.body.size: true # (default false)
+        http.server.request.duration: true # (default false)
+      subgraph:
+        http.client.request.body.size: true # (default false)
+        http.client.request.duration: true # (default false)
+        http.client.response.body.size: true # (default false)
+      # Costs are from https://www.apollographql.com/docs/graphos/routing/security/demand-control#examples
+      supergraph:
+        cost.estimated:
+          attributes:
+            cost.result: true
+            graphql.operation.name: true
+        cost.rejected.operations:
+          type: histogram
+          value:
+            # Estimated cost is used to populate the histogram
+            cost: estimated
+          description: "Estimated cost per rejected operation."
+          unit: delta
+          condition:
+            eq:
+              # Only show rejected operations.
+              - cost: result
+              - "COST_ESTIMATED_TOO_EXPENSIVE"
+          attributes:
+            graphql.operation.name: true # Graphql operation name is added as an attribute
+    events:
+      supergraph:
+        COST_DELTA_TOO_HIGH:
+          message: "cost delta high"
+          on: event_response
+          level: error
+          condition:
+            gt:
+              - cost: delta
+              - 1000
+          attributes:
+            graphql.operation.name: true
+            cost.delta: true
+    spans:
+      supergraph:
+        attributes:
+          cost.estimated: true
 
   apollo:
     send_variable_values:
@@ -149,7 +149,7 @@ telemetry:
                   - 100000
                   - 1000000
       otlp:
-        enabled: false
+        enabled: true
         endpoint: '${env.OTLP_COLLECTOR_URL:-http://localhost:4318}'
         protocol: http
         batch_processor:
