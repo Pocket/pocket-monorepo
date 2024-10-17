@@ -157,8 +157,8 @@ export async function nodeSDKBuilder(config: TracingConfig) {
             url: `${config.url}/v1/metrics`,
           })
         : new GRPCOTLPMetricExporter({ url: config.url }),
-    // once every 60 seconds, GCP supports 1 every 5 seconds for custom metrics https://cloud.google.com/monitoring/quotas#custom_metrics_quotas
-    // But lets just do 60 seconds for now as we figure it out
+    // once every 10 seconds, GCP supports 1 every 5 seconds for custom metrics https://cloud.google.com/monitoring/quotas#custom_metrics_quotas
+    // But lets just do 10 seconds for now
     exportIntervalMillis: 10000,
     exportTimeoutMillis: 5000,
   });
