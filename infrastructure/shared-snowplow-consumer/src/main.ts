@@ -313,6 +313,8 @@ class SnowplowSharedConsumerStack extends TerraformStack {
         okActions: config.isDev ? [] : [alarmSnsTopic.arn],
         period: periodInSeconds,
         statistic: 'Sum',
+        // At some point on 10/11/2024, AWS changed the behavior for our dlq alarms and they flop from having 0 messages to missing data.
+        treatMissingData: 'notBreaching',
         threshold: threshold,
       },
     );
