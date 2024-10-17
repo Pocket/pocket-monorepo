@@ -11,7 +11,6 @@ initSentry({
       return integration.name !== 'NodeFetch';
     });
   },
-  debug: config.sentry.environment === 'development',
 });
 
 import { nodeSDKBuilder } from '@pocket-tools/tracing';

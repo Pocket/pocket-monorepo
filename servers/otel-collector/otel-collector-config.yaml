@@ -14,8 +14,6 @@ exporters:
       default_log_name: opentelemetry.io/collector-exported-log
     # https://www.googlecloudcommunity.com/gc/Data-Analytics/OpenTelemetry-and-GKE/m-p/674090/highlight/true#M3861
     timeout: 45s
-  # debug:
-  #   verbosity: detailed
 processors:
   memory_limiter:
     check_interval: 1s
@@ -26,6 +24,12 @@ processors:
     send_batch_max_size: 10100
     send_batch_size: 10000
     timeout: 30s
+  batch/metrics:
+    # https://cloud.google.com/stackdriver/docs/managed-prometheus/setup-otel#batch_processing
+    # batch metrics before sending to reduce API usage
+    send_batch_max_size: 200
+    send_batch_size: 200
+    timeout: 5s
   resourcedetection/ecs:
     detectors: [env, ecs]
     timeout: 2s
@@ -34,9 +38,17 @@ processors:
     override: false
   resource/cleanup_for_google:
     attributes:
+      # Cleaning up attributes to  to prevent duplicate time series errors in Google Cloud by formatting our resources to what google expects
+      # https://cloud.google.com/stackdriver/docs/managed-prometheus/setup-otel#detect-resource-attributes
       - key: service.namespace
         value: pocket
-        action: insert
+        action: upsert
+      - key: namespace
+        value: pocket
+        action: upsert
+      - key: cluster
+        from_attribute: aws.ecs.cluster.arn
+        action: upsert
       # We must set the region to us-east1, as the google exporter uses this to know where to send data to.
       - key: cloud.region
         value: us-east1
@@ -46,6 +58,9 @@ processors:
         action: upsert
       # set this to the container id
       - key: host.id
+        from_attribute: container.id
+        action: upsert
+      - key: service.instance.id
         from_attribute: container.id
         action: upsert
       # https://opentelemetry.io/docs/specs/semconv/resource/deployment-environment/
@@ -72,7 +87,7 @@ service:
           resource/cleanup_for_google,
           resourcedetection/ecs,
           memory_limiter,
-          batch,
+          batch/metrics,
         ]
       exporters: [googlecloud]
     logs:

@@ -5,7 +5,6 @@ import { serverLogger } from '@pocket-tools/ts-logger';
 // Initialize sentry
 initSentry({
   ...config.sentry,
-  debug: config.sentry.environment === 'development',
 });
 
 import { start } from './';
