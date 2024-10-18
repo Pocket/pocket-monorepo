@@ -6,7 +6,7 @@ initSentry({
   ...config.sentry,
   skipOpenTelemetrySetup: true,
   // Filter out GraphQL 200 errors from sentry
-  ignoreErrors: ['GraphQL Error (Code: 200)'],
+  ignoreErrors: ['GraphQL Error (Code: 200)', 'UnsupportedMediaTypeError'],
   integrations(integrations) {
     return integrations.filter((integration) => {
       return integration.name !== 'NodeFetch';
