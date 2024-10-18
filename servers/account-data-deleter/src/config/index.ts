@@ -99,7 +99,15 @@ export const config = {
     partsPrefix: process.env.LIST_EXPORT_PARTS_PREFIX || '',
     archivePrefix: process.env.LIST_EXPORT_ARCHIVE_PREFIX || '',
     queryLimit: 10000,
-    signedUrlExpiry: 60 * 60 * 24 * 7, // 7 days in seconds
+    signedUrlExpiry: 60 * 60 * 24 * 7, // 7 days in seconds,
+    presignedIamUserCredentials:
+      process.env.EXPORT_SIGNEDURL_USER_ACCESS_KEY_ID &&
+      process.env.EXPORT_SIGNEDURL_USER_SECRET_KEY
+        ? {
+            accessKeyId: process.env.EXPORT_SIGNEDURL_USER_ACCESS_KEY_ID,
+            secretAccessKey: process.env.EXPORT_SIGNEDURL_USER_SECRET_KEY,
+          }
+        : undefined,
   },
   unleash: {
     clientKey: process.env.UNLEASH_KEY || 'unleash-key-fake',
