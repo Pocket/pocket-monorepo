@@ -1,4 +1,5 @@
 import express, { Application, json, urlencoded } from 'express';
+import cors from 'cors';
 import { sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
 import {
   clientErrorHandler,
@@ -23,6 +24,16 @@ export async function startServer(port: number): Promise<{
   const sizeLimit = '15mb';
 
   app.use(json({ limit: sizeLimit }));
+
+  app.use(
+    cors({
+      credentials: true,
+      origin: function (origin, callback) {
+        // Put the requester in the Allow origin header.
+        callback(null, origin);
+      },
+    }),
+  );
   app.use(urlencoded({ limit: sizeLimit, extended: true }));
   app.use(multer().none());
   app.set('query parser', 'simple');
