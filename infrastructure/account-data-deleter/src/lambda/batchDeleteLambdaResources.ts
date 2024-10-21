@@ -108,7 +108,7 @@ export class BatchDeleteLambdaResources extends Construct {
         description: 'event to trigger AccountDeletion- batchDeleteLambda',
         name: `${config.prefix}-BatchDelete-Lambda-Trigger`,
         //todo: set proper limit after testing
-        scheduleExpression: `rate(${config.lambda.batchDeleteLambda.triggerInHours} hours)`,
+        scheduleExpression: `rate(${config.lambda.batchDeleteLambda.trigger})`,
         targets: [
           {
             arn: this.batchDeleteLambda.lambda.defaultLambda.arn,
