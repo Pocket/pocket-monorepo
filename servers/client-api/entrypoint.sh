@@ -1,22 +1,22 @@
 #!/bin/sh
 
 # Fetch ECS metadata
-ECS_METADATA=$(curl -s http://169.254.170.2/v4/task)
+ECS_METADATA=$(curl -s ${ECS_CONTAINER_METADATA_URI_V4}/task)
+echo "$ECS_METADATA"
 
 # Extract specific values from the metadata (example)
-ECS_TASK_ARN=$(echo "$ECS_METADATA" | jq -r '.TaskARN')
+ECS_TASK_ARN=$(echo "$ECS_METADATA" | jq -r '.TaskArn')
 ECS_CLUSTER=$(echo "$ECS_METADATA" | jq -r '.Cluster')
 ECS_CONTAINER_ARN=$(echo "$ECS_METADATA" | jq -r '.Containers[0].ContainerARN')
+ECS_ACCOUNT_ID=$(echo "$ECS_CONTAINER_ARN" | cut -d':' -f5)
 ECS_CONTAINER_NAME=$(echo "$ECS_METADATA" | jq -r '.Containers[0].Name')
 ECS_CONTAINER_ID=$(echo "$ECS_METADATA" | jq -r '.Containers[0].DockerId')
 ECS_LAUNCH_TYPE=$(echo "$ECS_METADATA" | jq -r '.LaunchType')
 ECS_TASK_FAMILY=$(echo "$ECS_METADATA" | jq -r '.Family')
 ECS_TASK_REVISION=$(echo "$ECS_METADATA" | jq -r '.Revision')
-ECS_AVAILABILITY_ZONE=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
-ECS_REGION=$(echo "$ECS_AVAILABILITY_ZONE" | sed 's/[a-z]$//')
-ECS_ACCOUNT_ID=$(echo "$ECS_CONTAINER_ARN" | cut -d':' -f5)
-ECS_LOG_GROUP_NAME="/Backend/ParserGraphQLWrapper-Dev/ecs/app"
-ECS_LOG_STREAM_NAME="ecs/app/$ECS_CONTAINER_ID"
+ECS_REGION=$(echo "$ECS_METADATA" | jq -r '.AvailabilityZone')
+ECS_LOG_GROUP_NAME=$(echo "$ECS_METADATA" | jq -r '.Containers[0].LogOptions."awslogs-group"')
+ECS_LOG_STREAM_NAME=$(echo "$ECS_METADATA" | jq -r '.Containers[0].LogOptions."awslogs-stream"')
 
 # Export these values as environment variables
 export CLOUD_PROVIDER="aws"
