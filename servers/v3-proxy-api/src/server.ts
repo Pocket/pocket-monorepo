@@ -6,6 +6,7 @@ import {
   logAndCaptureErrors,
   sentryTagHandler,
   sourceHeaderHandler,
+  charsetFixHandler,
 } from './middleware';
 import { Server, createServer } from 'http';
 
@@ -23,6 +24,7 @@ export async function startServer(port: number): Promise<{
   const httpServer: Server = createServer(app);
   const sizeLimit = '15mb';
 
+  app.use(charsetFixHandler);
   app.use(json({ limit: sizeLimit }));
 
   app.use(

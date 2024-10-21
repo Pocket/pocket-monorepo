@@ -1719,4 +1719,66 @@ describe('v3Get', () => {
       },
     );
   });
+  describe('Charset Handler', () => {
+    it('rewrites bad utf8', async () => {
+      const requestSpy = jest.spyOn(
+        GraphQLCalls,
+        'callSavedItemsByOffsetComplete' as const,
+      );
+      jest
+        .spyOn(GraphQLClient.prototype, 'request')
+        .mockResolvedValueOnce(mockGraphGetComplete);
+      const response = await request(app)
+        .post('/v3/get')
+        .send({
+          consumer_key: 'test',
+          access_token: 'test',
+          since: 1712766000,
+          detailType: 'complete',
+        })
+        .set('Content-Type', 'application/json; charset=UTF8');
+      expect(response.body).toEqual(expectedGetComplete);
+      expect(requestSpy).toHaveBeenCalledTimes(1);
+      expect(requestSpy.mock.calls[0][3]).toMatchObject({
+        withTagsList: false,
+      });
+    });
+    it('ignores no utf8', async () => {
+      const requestSpy = jest.spyOn(
+        GraphQLCalls,
+        'callSavedItemsByOffsetComplete' as const,
+      );
+      jest
+        .spyOn(GraphQLClient.prototype, 'request')
+        .mockResolvedValueOnce(mockGraphGetComplete);
+      const response = await request(app)
+        .post('/v3/get')
+        .send({
+          consumer_key: 'test',
+          access_token: 'test',
+          since: 1712766000,
+          detailType: 'complete',
+        })
+        .set('Content-Type', 'application/json');
+      expect(response.body).toEqual(expectedGetComplete);
+      expect(requestSpy).toHaveBeenCalledTimes(1);
+      expect(requestSpy.mock.calls[0][3]).toMatchObject({
+        withTagsList: false,
+      });
+    });
+    it('ignores somethingElse charset', async () => {
+      const response = await request(app)
+        .post('/v3/get')
+        .send({
+          consumer_key: 'test',
+          access_token: 'test',
+          since: 1712766000,
+          detailType: 'complete',
+        })
+        .set('Content-Type', 'application/json; charset=somethingElse');
+      expect(response.body).toEqual({
+        error: 'unsupported charset "SOMETHINGELSE"',
+      });
+    });
+  });
 });
