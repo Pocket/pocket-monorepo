@@ -80,6 +80,31 @@ describe('Delete user mutations', () => {
         expect((await readDb(tableName).select()).length).toBe(0);
       }
       expect(eventObj.user.id).toBe(`1`);
+      expect(eventObj.user.email).not.toBeUndefined();
+    });
+
+    it('should send a message to delete a user, even if they do not exist in the user table', async () => {
+      //historical users will not have user profile table
+
+      const DELETE_USER = gql`
+        mutation deleteUser {
+          deleteUser
+        }
+      `;
+
+      const res = await request(app)
+        .post(url)
+        .set({
+          apiid: '1',
+          userid: '13034983489',
+        })
+        .send({
+          query: print(DELETE_USER),
+        });
+
+      expect(res.body.data.deleteUser).toBe('13034983489');
+      expect(eventObj.user.id).toBe(`13034983489`);
+      expect(eventObj.user.email).toBeUndefined();
     });
 
     it('should delete all PII data for user without apple auth', async () => {
