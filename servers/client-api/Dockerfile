@@ -19,4 +19,4 @@ COPY ./rhai ./rhai
 # Set the entrypoint to the script
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-CMD ["--config", "/config/router.yaml"]
+CMD ["/dist/router_wrapper.sh", "--config", "/config/router.yaml"]

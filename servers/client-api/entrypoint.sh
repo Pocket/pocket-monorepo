@@ -5,18 +5,19 @@ ECS_METADATA=$(curl -s ${ECS_CONTAINER_METADATA_URI_V4}/task)
 echo "$ECS_METADATA"
 
 # Extract specific values from the metadata (example)
-ECS_TASK_ARN=$(echo "$ECS_METADATA" | jq -r '.TaskArn')
-ECS_CLUSTER=$(echo "$ECS_METADATA" | jq -r '.Cluster')
-ECS_CONTAINER_ARN=$(echo "$ECS_METADATA" | jq -r '.Containers[0].ContainerARN')
-ECS_ACCOUNT_ID=$(echo "$ECS_CONTAINER_ARN" | cut -d':' -f5)
-ECS_CONTAINER_NAME=$(echo "$ECS_METADATA" | jq -r '.Containers[0].Name')
-ECS_CONTAINER_ID=$(echo "$ECS_METADATA" | jq -r '.Containers[0].DockerId')
-ECS_LAUNCH_TYPE=$(echo "$ECS_METADATA" | jq -r '.LaunchType')
-ECS_TASK_FAMILY=$(echo "$ECS_METADATA" | jq -r '.Family')
-ECS_TASK_REVISION=$(echo "$ECS_METADATA" | jq -r '.Revision')
-ECS_REGION=$(echo "$ECS_METADATA" | jq -r '.AvailabilityZone')
-ECS_LOG_GROUP_NAME=$(echo "$ECS_METADATA" | jq -r '.Containers[0].LogOptions."awslogs-group"')
-ECS_LOG_STREAM_NAME=$(echo "$ECS_METADATA" | jq -r '.Containers[0].LogOptions."awslogs-stream"')
+# Note: For some reason we can't save the sed cleanup into a variable, so we just copy pasta it everywhere.
+ECS_TASK_ARN=$(echo $ECS_METADATA | sed 's/\\/\\\\/g'| jq -r '.TaskARN')
+ECS_CLUSTER=$(echo "$ECS_METADATA" | sed 's/\\/\\\\/g' | jq -r '.Cluster')
+ECS_CONTAINER_ARN=$(echo "$ECS_METADATA"| sed 's/\\/\\\\/g' | jq -r '.Containers[0].ContainerARN')
+ECS_ACCOUNT_ID=$(echo "$ECS_CONTAINER_ARN" | cut -d ':' -f5)
+ECS_CONTAINER_NAME=$(echo "$ECS_METADATA" | sed 's/\\/\\\\/g' | jq -r '.Containers[0].Name')
+ECS_CONTAINER_ID=$(echo "$ECS_METADATA"| sed 's/\\/\\\\/g' | jq -r '.Containers[0].DockerId')
+ECS_LAUNCH_TYPE=$(echo "$ECS_METADATA" | sed 's/\\/\\\\/g'| jq -r '.LaunchType')
+ECS_TASK_FAMILY=$(echo "$ECS_METADATA" | sed 's/\\/\\\\/g'| jq -r '.Family')
+ECS_TASK_REVISION=$(echo "$ECS_METADATA" | sed 's/\\/\\\\/g'| jq -r '.Revision')
+ECS_REGION=$(echo "$ECS_METADATA" | sed 's/\\/\\\\/g' | jq -r '.AvailabilityZone')
+ECS_LOG_GROUP_NAME=$(echo "$ECS_METADATA" | sed 's/\\/\\\\/g' | jq -r '.Containers[0].LogOptions."awslogs-group"')
+ECS_LOG_STREAM_NAME=$(echo "$ECS_METADATA"| sed 's/\\/\\\\/g' | jq -r '.Containers[0].LogOptions."awslogs-stream"')
 
 # Export these values as environment variables
 export CLOUD_PROVIDER="aws"
