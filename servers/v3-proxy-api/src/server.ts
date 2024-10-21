@@ -1,11 +1,12 @@
 import express, { Application, json, urlencoded } from 'express';
+import cors from 'cors';
 import { sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
-import * as Sentry from '@sentry/node';
 import {
   clientErrorHandler,
   logAndCaptureErrors,
   sentryTagHandler,
   sourceHeaderHandler,
+  charsetFixHandler,
 } from './middleware';
 import { Server, createServer } from 'http';
 
@@ -23,7 +24,18 @@ export async function startServer(port: number): Promise<{
   const httpServer: Server = createServer(app);
   const sizeLimit = '15mb';
 
+  app.use(charsetFixHandler);
   app.use(json({ limit: sizeLimit }));
+
+  app.use(
+    cors({
+      credentials: true,
+      origin: function (origin, callback) {
+        // Put the requester in the Allow origin header.
+        callback(null, origin);
+      },
+    }),
+  );
   app.use(urlencoded({ limit: sizeLimit, extended: true }));
   app.use(multer().none());
   app.set('query parser', 'simple');
@@ -41,8 +53,7 @@ export async function startServer(port: number): Promise<{
   app.use('/v3/fetch', v3FetchRouter);
   app.use('/v3/send', v3SendRouter);
 
-  // The error handler must be before any other error middleware and after all controllers
-  Sentry.setupExpressErrorHandler(app);
+  // NOTE: we on purpose do not setup the sentry middleware in this service since it is a proxy and we log our own errors.
 
   // Error handling middleware (must be defined last)
   app.use(logAndCaptureErrors);
