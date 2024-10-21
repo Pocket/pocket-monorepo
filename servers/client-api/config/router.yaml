@@ -25,7 +25,7 @@ limits:
 traffic_shaping:
   all:
     ### Note: Recs api does not support gzip compression as of 10/16/2024, so this can not be turned on.
-    # compression: gzip # Enable gzip compression for all subgraphs. 
+    # compression: gzip # Enable gzip compression for all subgraphs.
 
     # We enable experimental retry for all subgraphs because our parser can cause things to fail the first time and succeed the second time.
     # Also, it doesn't hurt to have this enabled for all subgraphs, just adds latency for any requests that may fail.
@@ -101,19 +101,19 @@ telemetry:
           value:
             # Estimated cost is used to populate the histogram
             cost: estimated
-          description: "Estimated cost per rejected operation."
+          description: 'Estimated cost per rejected operation.'
           unit: delta
           condition:
             eq:
               # Only show rejected operations.
               - cost: result
-              - "COST_ESTIMATED_TOO_EXPENSIVE"
+              - 'COST_ESTIMATED_TOO_EXPENSIVE'
           attributes:
             graphql.operation.name: true # Graphql operation name is added as an attribute
     events:
       supergraph:
         COST_DELTA_TOO_HIGH:
-          message: "cost delta high"
+          message: 'cost delta high'
           on: event_response
           level: error
           condition:
