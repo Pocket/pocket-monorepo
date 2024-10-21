@@ -142,8 +142,8 @@ telemetry:
           'environment.name': '${env.APP_ENVIRONMENT}'
           'service.name': 'client-api'
           'environment.namespace': pocket
-          'cloud.provider': '${env.CLOUID_PROVIDER}'
-          'cloud.platform': '${env.CLOUID_PLATFORM}'
+          'cloud.provider': '${env.CLOUD_PROVIDER}'
+          'cloud.platform': '${env.CLOUD_PLATFORM}'
           'container.name': '${env.CONTAINER_NAME}'
           'container.id': '${env.CONTAINER_ID}'
           'aws.ecs.container.arn': '${env.AWS_ECS_CONTAINER_ARN}'
@@ -160,14 +160,16 @@ telemetry:
           'aws.log.group.arns': '${env.AWS_LOG_GROUP_ARNS}'
           'aws.log.stream.names': '${env.AWS_LOG_STREAM_NAMES}'
           'aws.log.stream.arns': '${env.AWS_LOG_STREAM_ARNS}'
+          'host.name': '${env.CONTAINER_NAME}'
+
     metrics:
       common:
         resource:
           'environment.name': '${env.APP_ENVIRONMENT}'
           'service.name': 'client-api'
           'environment.namespace': pocket
-          'cloud.provider': '${env.CLOUID_PROVIDER}'
-          'cloud.platform': '${env.CLOUID_PLATFORM}'
+          'cloud.provider': '${env.CLOUD_PROVIDER}'
+          'cloud.platform': '${env.CLOUD_PLATFORM}'
           'container.name': '${env.CONTAINER_NAME}'
           'container.id': '${env.CONTAINER_ID}'
           'aws.ecs.container.arn': '${env.AWS_ECS_CONTAINER_ARN}'
@@ -184,6 +186,7 @@ telemetry:
           'aws.log.group.arns': '${env.AWS_LOG_GROUP_ARNS}'
           'aws.log.stream.names': '${env.AWS_LOG_STREAM_NAMES}'
           'aws.log.stream.arns': '${env.AWS_LOG_STREAM_ARNS}'
+          'host.name': '${env.CONTAINER_NAME}'
 
         views:
           # https://www.apollographql.com/docs/graphos/routing/security/demand-control#configuring-instrument-output
@@ -215,8 +218,8 @@ telemetry:
           'environment.name': '${env.APP_ENVIRONMENT}'
           'service.name': 'client-api'
           'environment.namespace': pocket
-          'cloud.p~rovider': '${env.CLOUID_PROVIDER}'
-          'cloud.platform': '${env.CLOUID_PLATFORM}'
+          'cloud.p~rovider': '${env.CLOUD_PROVIDER}'
+          'cloud.platform': '${env.CLOUD_PLATFORM}'
           'container.name': '${env.CONTAINER_NAME}'
           'container.id': '${env.CONTAINER_ID}'
           'aws.ecs.container.arn': '${env.AWS_ECS_CONTAINER_ARN}'
@@ -233,6 +236,7 @@ telemetry:
           'aws.log.group.arns': '${env.AWS_LOG_GROUP_ARNS}'
           'aws.log.stream.names': '${env.AWS_LOG_STREAM_NAMES}'
           'aws.log.stream.arns': '${env.AWS_LOG_STREAM_ARNS}'
+          'host.name': '${env.CONTAINER_NAME}'
         sampler: 0.01 # (default) all requests are sampled (always_on|always_off|<0.0-1.0>)
         parent_based_sampler: true
       propagation:
