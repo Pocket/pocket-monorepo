@@ -142,12 +142,49 @@ telemetry:
           'environment.name': '${env.APP_ENVIRONMENT}'
           'service.name': 'client-api'
           'environment.namespace': pocket
+          'cloud.provider': '${env.CLOUID_PROVIDER}'
+          'cloud.platform': '${env.CLOUID_PLATFORM}'
+          'container.name': '${env.CONTAINER_NAME}'
+          'container.id': '${env.CONTAINER_ID}'
+          'aws.ecs.container.arn': '${env.AWS_ECS_CONTAINER_ARN}'
+          'aws.ecs.cluster.arn': '${env.AWS_ECS_CLUSTER_ARN}'
+          'aws.ecs.launchtype': '${env.AWS_ECS_LAUNCHTYPE}'
+          'aws.ecs.task.arn': '${env.AWS_ECS_TASK_ARN}'
+          'aws.ecs.task.family': '${env.ECS_TASK_FAMILY}'
+          'aws.ecs.task.revision': '${env.ECS_TASK_REVISION}'
+          'cloud.account_id': '${env.CLOUD_ACCOUNT_ID}'
+          'cloud.region': '${env.CLOUD_REGION}'
+          'cloud.resource_id': '${env.CLOUD_RESOURCE_ID}'
+          'cloud.availability_zone': '${env.CLOUD_AVAILABILITY_ZONE}'
+          'aws.log.group.names': '${env.AWS_LOG_GROUP_NAMES}'
+          'aws.log.group.arns': '${env.AWS_LOG_GROUP_ARNS}'
+          'aws.log.stream.names': '${env.AWS_LOG_STREAM_NAMES}'
+          'aws.log.stream.arns': '${env.AWS_LOG_STREAM_ARNS}'
     metrics:
       common:
         resource:
           'environment.name': '${env.APP_ENVIRONMENT}'
           'service.name': 'client-api'
           'environment.namespace': pocket
+          'cloud.provider': '${env.CLOUID_PROVIDER}'
+          'cloud.platform': '${env.CLOUID_PLATFORM}'
+          'container.name': '${env.CONTAINER_NAME}'
+          'container.id': '${env.CONTAINER_ID}'
+          'aws.ecs.container.arn': '${env.AWS_ECS_CONTAINER_ARN}'
+          'aws.ecs.cluster.arn': '${env.AWS_ECS_CLUSTER_ARN}'
+          'aws.ecs.launchtype': '${env.AWS_ECS_LAUNCHTYPE}'
+          'aws.ecs.task.arn': '${env.AWS_ECS_TASK_ARN}'
+          'aws.ecs.task.family': '${env.ECS_TASK_FAMILY}'
+          'aws.ecs.task.revision': '${env.ECS_TASK_REVISION}'
+          'cloud.account_id': '${env.CLOUD_ACCOUNT_ID}'
+          'cloud.region': '${env.CLOUD_REGION}'
+          'cloud.resource_id': '${env.CLOUD_RESOURCE_ID}'
+          'cloud.availability_zone': '${env.CLOUD_AVAILABILITY_ZONE}'
+          'aws.log.group.names': '${env.AWS_LOG_GROUP_NAMES}'
+          'aws.log.group.arns': '${env.AWS_LOG_GROUP_ARNS}'
+          'aws.log.stream.names': '${env.AWS_LOG_STREAM_NAMES}'
+          'aws.log.stream.arns': '${env.AWS_LOG_STREAM_ARNS}'
+
         views:
           # https://www.apollographql.com/docs/graphos/routing/security/demand-control#configuring-instrument-output
           # Define a custom view because cost is different than the default latency-oriented view of OpenTelemetry
@@ -178,6 +215,24 @@ telemetry:
           'environment.name': '${env.APP_ENVIRONMENT}'
           'service.name': 'client-api'
           'environment.namespace': pocket
+          'cloud.p~rovider': '${env.CLOUID_PROVIDER}'
+          'cloud.platform': '${env.CLOUID_PLATFORM}'
+          'container.name': '${env.CONTAINER_NAME}'
+          'container.id': '${env.CONTAINER_ID}'
+          'aws.ecs.container.arn': '${env.AWS_ECS_CONTAINER_ARN}'
+          'aws.ecs.cluster.arn': '${env.AWS_ECS_CLUSTER_ARN}'
+          'aws.ecs.launchtype': '${env.AWS_ECS_LAUNCHTYPE}'
+          'aws.ecs.task.arn': '${env.AWS_ECS_TASK_ARN}'
+          'aws.ecs.task.family': '${env.ECS_TASK_FAMILY}'
+          'aws.ecs.task.revision': '${env.ECS_TASK_REVISION}'
+          'cloud.account_id': '${env.CLOUD_ACCOUNT_ID}'
+          'cloud.region': '${env.CLOUD_REGION}'
+          'cloud.resource_id': '${env.CLOUD_RESOURCE_ID}'
+          'cloud.availability_zone': '${env.CLOUD_AVAILABILITY_ZONE}'
+          'aws.log.group.names': '${env.AWS_LOG_GROUP_NAMES}'
+          'aws.log.group.arns': '${env.AWS_LOG_GROUP_ARNS}'
+          'aws.log.stream.names': '${env.AWS_LOG_STREAM_NAMES}'
+          'aws.log.stream.arns': '${env.AWS_LOG_STREAM_ARNS}'
         sampler: 0.01 # (default) all requests are sampled (always_on|always_off|<0.0-1.0>)
         parent_based_sampler: true
       propagation:
