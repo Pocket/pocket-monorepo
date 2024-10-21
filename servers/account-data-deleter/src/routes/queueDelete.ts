@@ -20,7 +20,7 @@ import { serverLogger } from '@pocket-tools/ts-logger';
 
 export type SqsMessage = {
   userId: number;
-  email: string;
+  email: string | undefined;
   isPremium: boolean;
   primaryKeyValues: any[][];
   primaryKeyNames: string[];
@@ -86,6 +86,13 @@ export async function enqueueTablesForDeletion(
   const tableNames = tables ?? config.queueDelete.tableNames;
 
   for (const { table, where } of tableNames) {
+    if (where.includes('email') && email == null) {
+      serverLogger.info({
+        message:
+          'Skipping delete of table with email where clause, due to no email',
+      });
+      continue;
+    }
     try {
       const whereCond =
         where === 'user_id'
@@ -98,6 +105,11 @@ export async function enqueueTablesForDeletion(
       if (whereCond == null) {
         throw new Error(
           `Unexpected where condition encountered -- logic for column ${where} not implemented`,
+        );
+      }
+      if (whereCond.user_id == null) {
+        throw new Error(
+          `Unexpected where condition encountered -- no user id found in where condition`,
         );
       }
       let offset = 0;
