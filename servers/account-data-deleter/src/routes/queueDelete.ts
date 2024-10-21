@@ -107,11 +107,6 @@ export async function enqueueTablesForDeletion(
           `Unexpected where condition encountered -- logic for column ${where} not implemented`,
         );
       }
-      if (whereCond.user_id == null) {
-        throw new Error(
-          `Unexpected where condition encountered -- no user id found in where condition`,
-        );
-      }
       let offset = 0;
       const sqsSendBatchCommands: SendMessageBatchCommand[] = [];
       let sqsEntries: SendMessageBatchRequestEntry[] = [];
@@ -123,7 +118,8 @@ export async function enqueueTablesForDeletion(
           await accountDeleteDataService.getTableIds(
             table,
             offset,
-            whereCond,
+            // force casting due to type error
+            whereCond as Record<string, string | number>,
             limit,
           );
         if (!ids.primaryKeyValues.length) break;
@@ -174,7 +170,7 @@ export async function enqueueTablesForDeletion(
       serverLogger.error({
         message: errorMessage,
         error: error,
-        data: errorData,
+        errorData,
       });
       Sentry.addBreadcrumb({ message: errorMessage, data: errorData });
       Sentry.captureException(error);
