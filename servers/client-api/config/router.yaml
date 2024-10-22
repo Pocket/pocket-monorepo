@@ -25,7 +25,7 @@ limits:
 traffic_shaping:
   all:
     ### Note: Recs api does not support gzip compression as of 10/16/2024, so this can not be turned on.
-    # compression: gzip # Enable gzip compression for all subgraphs. 
+    # compression: gzip # Enable gzip compression for all subgraphs.
 
     # We enable experimental retry for all subgraphs because our parser can cause things to fail the first time and succeed the second time.
     # Also, it doesn't hurt to have this enabled for all subgraphs, just adds latency for any requests that may fail.
@@ -80,53 +80,53 @@ demand_control:
       list_size: 10
       max: 1000
 telemetry:
-  # instrumentation:
-  #   instruments:
-  #     router:
-  #       http.server.active_requests: true # (default false)
-  #       http.server.request.body.size: true # (default false)
-  #       http.server.request.duration: true # (default false)
-  #     subgraph:
-  #       http.client.request.body.size: true # (default false)
-  #       http.client.request.duration: true # (default false)
-  #       http.client.response.body.size: true # (default false)
-  #     # Costs are from https://www.apollographql.com/docs/graphos/routing/security/demand-control#examples
-  #     supergraph:
-  #       cost.estimated:
-  #         attributes:
-  #           cost.result: true
-  #           graphql.operation.name: true
-  #       cost.rejected.operations:
-  #         type: histogram
-  #         value:
-  #           # Estimated cost is used to populate the histogram
-  #           cost: estimated
-  #         description: "Estimated cost per rejected operation."
-  #         unit: delta
-  #         condition:
-  #           eq:
-  #             # Only show rejected operations.
-  #             - cost: result
-  #             - "COST_ESTIMATED_TOO_EXPENSIVE"
-  #         attributes:
-  #           graphql.operation.name: true # Graphql operation name is added as an attribute
-  #   events:
-  #     supergraph:
-  #       COST_DELTA_TOO_HIGH:
-  #         message: "cost delta high"
-  #         on: event_response
-  #         level: error
-  #         condition:
-  #           gt:
-  #             - cost: delta
-  #             - 1000
-  #         attributes:
-  #           graphql.operation.name: true
-  #           cost.delta: true
-    # spans:
-    #   supergraph:
-    #     attributes:
-    #       cost.estimated: true
+  instrumentation:
+    instruments:
+      router:
+        http.server.active_requests: true # (default false)
+        http.server.request.body.size: true # (default false)
+        http.server.request.duration: true # (default false)
+      subgraph:
+        http.client.request.body.size: true # (default false)
+        http.client.request.duration: true # (default false)
+        http.client.response.body.size: true # (default false)
+      # Costs are from https://www.apollographql.com/docs/graphos/routing/security/demand-control#examples
+      supergraph:
+        cost.estimated:
+          attributes:
+            cost.result: true
+            graphql.operation.name: true
+        cost.rejected.operations:
+          type: histogram
+          value:
+            # Estimated cost is used to populate the histogram
+            cost: estimated
+          description: 'Estimated cost per rejected operation.'
+          unit: delta
+          condition:
+            eq:
+              # Only show rejected operations.
+              - cost: result
+              - 'COST_ESTIMATED_TOO_EXPENSIVE'
+          attributes:
+            graphql.operation.name: true # Graphql operation name is added as an attribute
+    events:
+      supergraph:
+        COST_DELTA_TOO_HIGH:
+          message: 'cost delta high'
+          on: event_response
+          level: error
+          condition:
+            gt:
+              - cost: delta
+              - 1000
+          attributes:
+            graphql.operation.name: true
+            cost.delta: true
+    spans:
+      supergraph:
+        attributes:
+          cost.estimated: true
 
   apollo:
     send_variable_values:
@@ -142,12 +142,52 @@ telemetry:
           'environment.name': '${env.APP_ENVIRONMENT}'
           'service.name': 'client-api'
           'environment.namespace': pocket
+          'cloud.provider': '${env.CLOUD_PROVIDER}'
+          'cloud.platform': '${env.CLOUD_PLATFORM}'
+          'container.name': '${env.CONTAINER_NAME}'
+          'container.id': '${env.CONTAINER_ID}'
+          'aws.ecs.container.arn': '${env.AWS_ECS_CONTAINER_ARN}'
+          'aws.ecs.cluster.arn': '${env.AWS_ECS_CLUSTER_ARN}'
+          'aws.ecs.launchtype': '${env.AWS_ECS_LAUNCHTYPE}'
+          'aws.ecs.task.arn': '${env.AWS_ECS_TASK_ARN}'
+          'aws.ecs.task.family': '${env.AWS_ECS_TASK_FAMILY}'
+          'aws.ecs.task.revision': '${env.AWS_ECS_TASK_REVISION}'
+          'cloud.account_id': '${env.CLOUD_ACCOUNT_ID}'
+          'cloud.region': '${env.CLOUD_REGION}'
+          'cloud.resource_id': '${env.CLOUD_RESOURCE_ID}'
+          'cloud.availability_zone': '${env.CLOUD_AVAILABILITY_ZONE}'
+          'aws.log.group.names': '${env.AWS_LOG_GROUP_NAMES}'
+          'aws.log.group.arns': '${env.AWS_LOG_GROUP_ARNS}'
+          'aws.log.stream.names': '${env.AWS_LOG_STREAM_NAMES}'
+          'aws.log.stream.arns': '${env.AWS_LOG_STREAM_ARNS}'
+          'host.name': '${env.CONTAINER_NAME}'
+
     metrics:
       common:
         resource:
           'environment.name': '${env.APP_ENVIRONMENT}'
           'service.name': 'client-api'
           'environment.namespace': pocket
+          'cloud.provider': '${env.CLOUD_PROVIDER}'
+          'cloud.platform': '${env.CLOUD_PLATFORM}'
+          'container.name': '${env.CONTAINER_NAME}'
+          'container.id': '${env.CONTAINER_ID}'
+          'aws.ecs.container.arn': '${env.AWS_ECS_CONTAINER_ARN}'
+          'aws.ecs.cluster.arn': '${env.AWS_ECS_CLUSTER_ARN}'
+          'aws.ecs.launchtype': '${env.AWS_ECS_LAUNCHTYPE}'
+          'aws.ecs.task.arn': '${env.AWS_ECS_TASK_ARN}'
+          'aws.ecs.task.family': '${env.AWS_ECS_TASK_FAMILY}'
+          'aws.ecs.task.revision': '${env.AWS_ECS_TASK_REVISION}'
+          'cloud.account_id': '${env.CLOUD_ACCOUNT_ID}'
+          'cloud.region': '${env.CLOUD_REGION}'
+          'cloud.resource_id': '${env.CLOUD_RESOURCE_ID}'
+          'cloud.availability_zone': '${env.CLOUD_AVAILABILITY_ZONE}'
+          'aws.log.group.names': '${env.AWS_LOG_GROUP_NAMES}'
+          'aws.log.group.arns': '${env.AWS_LOG_GROUP_ARNS}'
+          'aws.log.stream.names': '${env.AWS_LOG_STREAM_NAMES}'
+          'aws.log.stream.arns': '${env.AWS_LOG_STREAM_ARNS}'
+          'host.name': '${env.CONTAINER_NAME}'
+
         views:
           # https://www.apollographql.com/docs/graphos/routing/security/demand-control#configuring-instrument-output
           # Define a custom view because cost is different than the default latency-oriented view of OpenTelemetry
@@ -163,7 +203,7 @@ telemetry:
                   - 100000
                   - 1000000
       otlp:
-        enabled: false
+        enabled: true
         endpoint: '${env.OTLP_COLLECTOR_URL:-http://localhost:4318}'
         protocol: http
         batch_processor:
@@ -178,6 +218,25 @@ telemetry:
           'environment.name': '${env.APP_ENVIRONMENT}'
           'service.name': 'client-api'
           'environment.namespace': pocket
+          'cloud.provider': '${env.CLOUD_PROVIDER}'
+          'cloud.platform': '${env.CLOUD_PLATFORM}'
+          'container.name': '${env.CONTAINER_NAME}'
+          'container.id': '${env.CONTAINER_ID}'
+          'aws.ecs.container.arn': '${env.AWS_ECS_CONTAINER_ARN}'
+          'aws.ecs.cluster.arn': '${env.AWS_ECS_CLUSTER_ARN}'
+          'aws.ecs.launchtype': '${env.AWS_ECS_LAUNCHTYPE}'
+          'aws.ecs.task.arn': '${env.AWS_ECS_TASK_ARN}'
+          'aws.ecs.task.family': '${env.AWS_ECS_TASK_FAMILY}'
+          'aws.ecs.task.revision': '${env.AWS_ECS_TASK_REVISION}'
+          'cloud.account_id': '${env.CLOUD_ACCOUNT_ID}'
+          'cloud.region': '${env.CLOUD_REGION}'
+          'cloud.resource_id': '${env.CLOUD_RESOURCE_ID}'
+          'cloud.availability_zone': '${env.CLOUD_AVAILABILITY_ZONE}'
+          'aws.log.group.names': '${env.AWS_LOG_GROUP_NAMES}'
+          'aws.log.group.arns': '${env.AWS_LOG_GROUP_ARNS}'
+          'aws.log.stream.names': '${env.AWS_LOG_STREAM_NAMES}'
+          'aws.log.stream.arns': '${env.AWS_LOG_STREAM_ARNS}'
+          'host.name': '${env.CONTAINER_NAME}'
         sampler: 0.01 # (default) all requests are sampled (always_on|always_off|<0.0-1.0>)
         parent_based_sampler: true
       propagation:
