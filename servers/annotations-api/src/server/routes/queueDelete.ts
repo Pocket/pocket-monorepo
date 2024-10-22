@@ -17,8 +17,8 @@ import { serverLogger } from '@pocket-tools/ts-logger';
 
 export type SqsMessage = {
   userId: number;
-  email: string;
-  isPremium: boolean;
+  email?: string;
+  isPremium?: boolean;
   annotationIds: number[];
   traceId: string;
 };
@@ -40,6 +40,7 @@ const queueDeleteSchema: Schema = {
   },
   isPremium: {
     in: ['body'],
+    optional: true,
     errorMessage: 'Must provide valid isPremium (true | false)',
     isBoolean: true,
   },
@@ -52,7 +53,8 @@ router.post(
   (req: Request, res: Response) => {
     const requestId = req.body.traceId ?? nanoid();
     const userId = req.body.userId;
-    const isPremium = req.body.isPremium;
+    // if no premium, default to false, premium is really only used for allowing more then 3 highlights and does not affect the deletion process
+    const isPremium = req.body.isPremium ?? false;
     new NotesDataService(dynamoClient(), userId.toString())
       .clearUserData()
       .then(() => successCallback('Notes', userId, requestId))
