@@ -73,12 +73,12 @@ headers:
           named: 'web-request-snowplow-session-user-id'
           rename: 'gatewaySnowplowDomainSessionId'
 demand_control:
-  enabled: false
+  enabled: true
   mode: measure
   strategy:
     static_estimated:
-      list_size: 10
-      max: 1000
+      list_size: 50
+      max: 5000
 telemetry:
   instrumentation:
     instruments:
@@ -110,20 +110,23 @@ telemetry:
               - 'COST_ESTIMATED_TOO_EXPENSIVE'
           attributes:
             graphql.operation.name: true # Graphql operation name is added as an attribute
-    events:
-      supergraph:
-        COST_DELTA_TOO_HIGH:
-          message: 'cost delta high'
-          on: event_response
-          level: error
-          condition:
-            gt:
-              - cost: delta
-              - 1000
-          attributes:
-            graphql.operation.name: true
-            cost.delta: true
+    # Events will trigger an error trace if the condition is met, right now we just want the measurement aspect
+    #    Note: if not set right this will cause load on Client API.
+    # events:
+    #   supergraph:
+    #     COST_DELTA_TOO_HIGH:
+    #       message: 'cost delta high'
+    #       on: event_response
+    #       level: error
+    #       condition:
+    #         gt:
+    #           - cost: delta
+    #           - 1000
+    #       attributes:
+    #         graphql.operation.name: true
+    #         cost.delta: true
     spans:
+      mode: 'spec_compliant'
       supergraph:
         attributes:
           cost.estimated: true
