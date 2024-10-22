@@ -9,7 +9,7 @@ import { AggregateError } from '../../errors/AggregateError';
 type AccountDeleteBody = {
   userId: string;
   email?: string;
-  isPremium: boolean;
+  isPremium?: boolean;
   traceId?: string;
 };
 
