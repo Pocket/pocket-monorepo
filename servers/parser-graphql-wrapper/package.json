@@ -22,7 +22,7 @@
     "@apollo/cache-control-types": "1.0.3",
     "@apollo/datasource-rest": "^6.2.2",
     "@apollo/server": "4.11.0",
-    "@apollo/subgraph": "2.9.2",
+    "@apollo/subgraph": "2.9.3",
     "@apollo/utils.keyvadapter": "3.1.0",
     "@apollo/utils.keyvaluecache": "3.1.0",
     "@aws-sdk/client-dynamodb": "3.637.0",
