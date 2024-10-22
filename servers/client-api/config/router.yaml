@@ -73,7 +73,7 @@ headers:
           named: 'web-request-snowplow-session-user-id'
           rename: 'gatewaySnowplowDomainSessionId'
 demand_control:
-  enabled: false
+  enabled: true
   mode: measure
   strategy:
     static_estimated:
