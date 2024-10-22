@@ -20,7 +20,7 @@ import { serverLogger } from '@pocket-tools/ts-logger';
 
 export type SqsMessage = {
   userId: number;
-  email: string;
+  email: string | undefined;
   isPremium: boolean;
   primaryKeyValues: any[][];
   primaryKeyNames: string[];
@@ -86,6 +86,13 @@ export async function enqueueTablesForDeletion(
   const tableNames = tables ?? config.queueDelete.tableNames;
 
   for (const { table, where } of tableNames) {
+    if (where.includes('email') && email == null) {
+      serverLogger.info({
+        message:
+          'Skipping delete of table with email where clause, due to no email',
+      });
+      continue;
+    }
     try {
       const whereCond =
         where === 'user_id'
@@ -111,7 +118,8 @@ export async function enqueueTablesForDeletion(
           await accountDeleteDataService.getTableIds(
             table,
             offset,
-            whereCond,
+            // force casting due to type error
+            whereCond as Record<string, string | number>,
             limit,
           );
         if (!ids.primaryKeyValues.length) break;
@@ -162,7 +170,7 @@ export async function enqueueTablesForDeletion(
       serverLogger.error({
         message: errorMessage,
         error: error,
-        data: errorData,
+        errorData,
       });
       Sentry.addBreadcrumb({ message: errorMessage, data: errorData });
       Sentry.captureException(error);
