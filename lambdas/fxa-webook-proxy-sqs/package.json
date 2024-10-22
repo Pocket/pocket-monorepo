@@ -20,7 +20,7 @@
     "@aws-sdk/client-sqs": "3.637.0",
     "@pocket-tools/jwt-utils": "workspace:*",
     "@pocket-tools/lambda-secrets": "workspace:*",
-    "@sentry/aws-serverless": "8.34.0",
+    "@sentry/aws-serverless": "8.35.0",
     "tslib": "2.7.0"
   },
   "devDependencies": {
