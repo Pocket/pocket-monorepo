@@ -20,7 +20,7 @@ limits:
   max_depth: 100 # Must be 15 or larger to support standard introspection query
   max_height: 225
   max_aliases: 30
-  max_root_fields: 20
+  max_root_fields: 30
 
 traffic_shaping:
   all:
