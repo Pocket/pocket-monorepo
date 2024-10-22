@@ -204,7 +204,7 @@ telemetry:
                   - 1000000
       otlp:
         enabled: true
-        endpoint: '${env.OTLP_COLLECTOR_URL:-http://localhost:4318}'
+        endpoint: '${env.OTLP_COLLECTOR_URL:-http://localhost:4318}/v1/metrics'
         protocol: http
         batch_processor:
           scheduled_delay: 10000ms # 10 secs export due to google cloud rate limits
