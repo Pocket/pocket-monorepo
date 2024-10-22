@@ -30,7 +30,7 @@ export function validatePostBody(
 
   const postBody = {
     userId: message['userId'],
-    email: message['email'] ?? null,
+    email: message['email'] ?? undefined,
     isPremium: message['isPremium'],
   };
   if (message['traceId']) {
