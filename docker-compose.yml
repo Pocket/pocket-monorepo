@@ -109,9 +109,13 @@ services:
   # Uncomment this if you want to run the collector locally and send to GCP instead of the one used for local development
   # Make sure to have a service json in GOOGLE_APPLICATION_CREDENTIALS_JSON in the .env file
   # otlpcollector:
-  #   image: pocket/opentelemetry-collector-contrib
+  #   build:
+  #     context: ./servers/otel-collector
+  #     dockerfile: Dockerfile
   #   env_file:
   #     - .env
+  #   environment:
+  #     - DEPLOYMENT_ENVIRONMENT_NAME=local
   #   ports:
   #     # there are lots more ports available, but these are the only one's
   #     # currently being used
