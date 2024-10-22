@@ -31,7 +31,7 @@ describe('accountDelete handler', () => {
       body: JSON.stringify({
         Message: JSON.stringify({
           detail: {
-            userId: 1,
+            email: 'test@test.com',
             isPremium: false,
           },
         }),
@@ -41,7 +41,7 @@ describe('accountDelete handler', () => {
     try {
       await accountDeleteHandler(recordWithoutEmail as SQSRecord);
     } catch (e) {
-      expect(e.message).toContain('email does not exist in message');
+      expect(e.message).toContain('userId does not exist in message');
     }
   });
   it('throws an error if queueDelete response is not 200 OK', async () => {

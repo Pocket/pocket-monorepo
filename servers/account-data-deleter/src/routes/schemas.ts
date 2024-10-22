@@ -14,6 +14,7 @@ export const accountDeleteSchema: Schema = {
     toInt: true,
   },
   email: {
+    optional: true,
     in: ['body'],
     errorMessage: 'Must provide valid email',
   },

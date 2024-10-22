@@ -23,14 +23,14 @@ export function validatePostBody(
   message: AccountDeleteEvent,
 ): AccountDeleteBody {
   AccountDeleteEvent.getAttributeTypeMap().forEach((type) => {
-    if (message[type.name] == null) {
+    if (message[type.name] == null && type.name !== 'email') {
       throw new Error(`${type.name} does not exist in message`);
     }
   });
 
   const postBody = {
     userId: message['userId'],
-    email: message['email'],
+    email: message['email'] ?? undefined,
     isPremium: message['isPremium'],
   };
   if (message['traceId']) {
