@@ -11,21 +11,25 @@ export class AccountDeleteEvent {
     name: string;
     baseName: string;
     type: string;
+    optional: boolean;
   }> = [
     {
       name: 'email',
       baseName: 'email',
       type: 'string',
+      optional: true,
     },
     {
       name: 'isPremium',
       baseName: 'isPremium',
       type: 'boolean',
+      optional: true,
     },
     {
       name: 'userId',
       baseName: 'userId',
       type: 'string',
+      optional: false,
     },
   ];
 
