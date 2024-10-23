@@ -132,8 +132,11 @@ const resolvers = {
       parent: { slug: string },
       _,
       context: IContext,
-    ): Promise<SavedItem | null> {
+    ): Promise<SavedItem | undefined> {
       const id = itemIdFromSlug(parent.slug);
+      if (id === null) {
+        return undefined;
+      }
       return await context.dataLoaders.savedItemsById.load(id);
     },
   },
