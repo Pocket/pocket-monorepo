@@ -3,7 +3,7 @@ FROM alpine:3
 RUN apk add nginx curl
 
 # Copy the otelcol-contrib binary from the official image
-COPY --from=otel/opentelemetry-collector-contrib:0.112.0@sha256:2203eea06554f892c765d6eff8069cdf64ae8d4516526d03cab4a70e82775495 /otelcol-contrib /otelcol-contrib
+COPY --from=otel/opentelemetry-collector-contrib:0.112.0 /otelcol-contrib /otelcol-contrib
 COPY otel-collector-config.yaml /etc/otelcol-contrib/config.yaml
 COPY httpd.conf /etc/nginx/http.d/default.conf
 
