@@ -72,7 +72,7 @@
   },
   "dependencies": {
     "@opentelemetry/api": "1.9.0",
-    "@opentelemetry/auto-instrumentations-node": "0.50.2",
+    "@opentelemetry/auto-instrumentations-node": "0.51.0",
     "@opentelemetry/context-async-hooks": "1.26.0",
     "@opentelemetry/core": "1.26.0",
     "@opentelemetry/exporter-logs-otlp-grpc": "0.53.0",
@@ -93,8 +93,8 @@
     "@opentelemetry/semantic-conventions": "1.27.0",
     "@opentelemetry/winston-transport": "0.6.0",
     "@prisma/instrumentation": "5.19.1",
-    "@sentry/node": "8.34.0",
-    "@sentry/opentelemetry": "8.34.0",
+    "@sentry/node": "8.35.0",
+    "@sentry/opentelemetry": "8.35.0",
     "tslib": "2.7.0",
     "unleash-client": "6.1.1"
   },
