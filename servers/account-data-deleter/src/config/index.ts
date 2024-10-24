@@ -36,7 +36,7 @@ export const config = {
         visibilityTimeout: 10000,
         maxMessages: 1, // TODO(?): Must be 1
         waitTimeSeconds: 0,
-        defaultPollIntervalSeconds: 300,
+        defaultPollIntervalSeconds: 60,
         afterMessagePollIntervalSeconds: 0.5,
         messageRetentionSeconds: 1209600, //14 days
         batchSize: 1, // TODO(?): Must be 1

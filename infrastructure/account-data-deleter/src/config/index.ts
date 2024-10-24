@@ -50,7 +50,7 @@ export const config = {
     batchDeleteLambda: {
       name: 'BatchDeleteLambda',
       reservedConcurrencyLimit: 1,
-      trigger: '30 minutes',
+      trigger: '2 minute',
     },
   },
   tags: {
