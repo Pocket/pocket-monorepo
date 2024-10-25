@@ -7,6 +7,7 @@ import {
 } from '@aws-sdk/client-sqs';
 import { config } from './config';
 import { nanoid } from 'nanoid';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export const eventTypes = [
   'ADD_ITEM',
@@ -66,7 +67,7 @@ export const instantSyncHandler = async (
 ): Promise<SQSBatchResponse> => {
   const batchFailures: SQSBatchItemFailure[] = [];
 
-  console.info(`Received ${records.length} records to process`);
+  serverLogger.info(`Received ${records.length} records to process`);
   const userIds = filterUserIds(records);
 
   const db = await readClient();
@@ -76,7 +77,7 @@ export const instantSyncHandler = async (
     .andWhere('expires_at', '>', new Date());
 
   if (tokens.length === 0) {
-    console.info(`No tokens for users to process`);
+    serverLogger.info(`No tokens for users to process`);
     return { batchItemFailures: batchFailures };
   }
 
@@ -84,7 +85,7 @@ export const instantSyncHandler = async (
     convertToSqsEntry(tokenEntry),
   );
 
-  console.info(`Sending ${userIds.length} to instant sync`);
+  serverLogger.info(`Sending ${userIds.length} to instant sync`);
 
   await client.send(
     new SendMessageBatchCommand({
@@ -92,14 +93,14 @@ export const instantSyncHandler = async (
       Entries: entries,
     }),
   );
-  console.info(`Sent ${userIds.length} to instant sync`);
+  serverLogger.info(`Sent ${userIds.length} to instant sync`);
 
   const writeDb = await writeClient();
   const cleanedUpRecords = await writeDb('push_tokens')
     .delete()
     .whereIn('user_id', userIds)
     .andWhere('expires_at', '<', new Date());
-  console.info(`Cleaning up ${cleanedUpRecords}`);
+  serverLogger.info(`Cleaning up ${cleanedUpRecords}`);
 
   await writeDb.destroy();
   await db.destroy();

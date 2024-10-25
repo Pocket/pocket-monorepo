@@ -1,4 +1,6 @@
 const debug = process.env.PARAMETERS_SECRETS_EXTENSION_LOG_LEVEL === 'debug';
+import fetchRetry from 'fetch-retry';
+export const fetchWithBackoff = fetchRetry(fetch);
 
 /**
  * Requests and parses a secret from the Lambda Layer extension
@@ -9,7 +11,7 @@ export const fetchSecret = async (
   secretName: string,
 ): Promise<Record<string, string>> => {
   const secretExtensionEndpoint: string = `/secretsmanager/get?secretId=${encodeURIComponent(secretName)}`;
-  const secret = await fetchFromLambda(secretExtensionEndpoint, 3);
+  const secret = await fetchFromLambda(secretExtensionEndpoint);
   // Secret string is itself a JSON string that needs to be decoded
   return JSON.parse(secret.SecretString);
 };
@@ -23,14 +25,11 @@ export const fetchParameter = async (
   parameterName: string,
 ): Promise<string> => {
   const secretExtensionEndpoint: string = `/systemsmanager/parameters/get?name=${encodeURIComponent(parameterName)}`;
-  const secret = await fetchFromLambda(secretExtensionEndpoint, 3);
+  const secret = await fetchFromLambda(secretExtensionEndpoint);
   return secret.Parameter.Value;
 };
 
-const fetchFromLambda = async (
-  url: string,
-  tries: number,
-): Promise<Record<string, any>> => {
+const fetchFromLambda = async (url: string): Promise<Record<string, any>> => {
   if (
     !process.env.AWS_SESSION_TOKEN ||
     process.env.AWS_SESSION_TOKEN === 'undefined'
@@ -44,7 +43,11 @@ const fetchFromLambda = async (
   // Grabs a secret according to https://docs.aws.amazon.com/secretsmanager/latest/userguide/retrieving-secrets_lambda.html from the lambda layer
   // https://aws.amazon.com/blogs/compute/using-the-aws-parameter-and-secrets-lambda-extension-to-cache-parameters-and-secrets/
   try {
-    const secret = await fetch(`http://localhost:${port}${url}`, {
+    const secret = await fetchWithBackoff(`http://localhost:${port}${url}`, {
+      retryOn: [500, 502, 503],
+      retries: 3,
+      retryDelay: 1000,
+      method: 'GET',
       headers: {
         'X-Aws-Parameters-Secrets-Token': process.env.AWS_SESSION_TOKEN,
       },
@@ -62,12 +65,7 @@ const fetchFromLambda = async (
     // endpoint does not return json headers, so we grab the text and then parse it.
     return JSON.parse(await secret.text());
   } catch (err) {
-    if (tries === 0) {
-      console.error(err);
-      throw err;
-    }
-    // adding some retry logic because lambda layer seems to have some socket issues
-    tries = tries - 1;
-    return await fetchFromLambda(url, tries);
+    console.error(err);
+    throw err;
   }
 };
