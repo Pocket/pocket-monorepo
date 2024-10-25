@@ -67,7 +67,9 @@ export const instantSyncHandler = async (
 ): Promise<SQSBatchResponse> => {
   const batchFailures: SQSBatchItemFailure[] = [];
 
-  serverLogger.info(`Received ${records.length} records to process`);
+  serverLogger.info(`Received records to process`, {
+    recordCount: records.length,
+  });
   const userIds = filterUserIds(records);
 
   const db = await readClient();
@@ -85,7 +87,7 @@ export const instantSyncHandler = async (
     convertToSqsEntry(tokenEntry),
   );
 
-  serverLogger.info(`Sending ${userIds.length} to instant sync`);
+  serverLogger.info(`Sending to instant sync`, { entryCount: entries.length });
 
   await client.send(
     new SendMessageBatchCommand({
@@ -93,7 +95,7 @@ export const instantSyncHandler = async (
       Entries: entries,
     }),
   );
-  serverLogger.info(`Sent ${userIds.length} to instant sync`);
+  serverLogger.info(`Sent to instant sync`, { entryCount: entries.length });
 
   const writeDb = await writeClient();
   const cleanedUpRecords = await writeDb('push_tokens')

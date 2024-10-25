@@ -25,6 +25,7 @@ export enum LAMBDA_RUNTIMES {
   PYTHON39 = 'python3.9',
   PYTHON310 = 'python3.10',
   PYTHON311 = 'python3.11',
+  PYTHON312 = 'python3.12',
   NODEJS14 = 'nodejs14.x',
   NODEJS16 = 'nodejs16.x',
   NODEJS18 = 'nodejs18.x',
