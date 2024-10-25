@@ -76,6 +76,7 @@
     ]
   },
   "dependencies": {
+    "fetch-retry": "^5.0.6",
     "tslib": "2.7.0"
   },
   "devDependencies": {
