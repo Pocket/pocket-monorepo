@@ -1,4 +1,4 @@
-export type QueueConfig = {
+export interface QueueConfig {
   batchSize: number;
   url: string;
   visibilityTimeout: number;
@@ -8,7 +8,7 @@ export type QueueConfig = {
   afterMessagePollIntervalSeconds: number;
   messageRetentionSeconds: number;
   name: string;
-};
+}
 
 /**
  * Payload of an export request message sent to SQS

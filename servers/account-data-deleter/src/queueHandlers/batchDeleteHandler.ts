@@ -8,6 +8,55 @@ import { AccountDeleteDataService } from '../dataService/accountDeleteDataServic
 import { type Unleash } from 'unleash-client';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { QueueHandler } from './queueHandler';
+import { QueueConfig } from '../types';
+import { unleash } from '../unleash';
+
+class BatchDeleteHandlerQueueConfig implements QueueConfig {
+  batchSize: number;
+  url: string;
+  visibilityTimeout: number;
+  maxMessages: number;
+  waitTimeSeconds: number;
+  messageRetentionSeconds: number;
+  name: string;
+  constructor(
+    private config: QueueConfig,
+    private unleash: Unleash,
+    private overrides: {
+      defaultPollIntervalSeconds: string;
+      afterMessagePollIntervalSeconds: string;
+    },
+  ) {
+    this.batchSize = config.batchSize;
+    this.url = config.url;
+    this.visibilityTimeout = config.visibilityTimeout;
+    this.maxMessages = config.maxMessages;
+    this.waitTimeSeconds = config.waitTimeSeconds;
+    this.messageRetentionSeconds = config.messageRetentionSeconds;
+    this.name = config.name;
+  }
+  private variantOrDefault(flag: string, defaultValue: number) {
+    const variant = this.unleash.getVariant(flag);
+    if (variant.payload != null) {
+      if (variant.payload.type === 'number') {
+        return parseFloat(variant.payload.value);
+      }
+    }
+    return defaultValue;
+  }
+  get defaultPollIntervalSeconds(): number {
+    return this.variantOrDefault(
+      this.overrides.defaultPollIntervalSeconds,
+      this.config.defaultPollIntervalSeconds,
+    );
+  }
+  get afterMessagePollIntervalSeconds(): number {
+    return this.variantOrDefault(
+      this.overrides.afterMessagePollIntervalSeconds,
+      this.config.afterMessagePollIntervalSeconds,
+    );
+  }
+}
 
 export class BatchDeleteHandler extends QueueHandler {
   private oldPollQueue: () => Promise<void>;
@@ -36,13 +85,18 @@ export class BatchDeleteHandler extends QueueHandler {
     pollOnInit = true,
     unleashClient?: Unleash,
   ) {
-    super(
-      emitter,
-      'pollBatchDelete',
+    const _unleashClient = unleashClient ?? unleash();
+    const queueConfig = new BatchDeleteHandlerQueueConfig(
       config.aws.sqs.accountDeleteQueue,
-      pollOnInit,
-      unleashClient,
+      _unleashClient,
+      {
+        defaultPollIntervalSeconds:
+          'perm.backend.account-delete-empty-queue-poll-interval',
+        afterMessagePollIntervalSeconds:
+          'perm.backend.account-delete-post-message-poll-interval',
+      },
     );
+    super(emitter, 'pollBatchDelete', queueConfig, pollOnInit, unleashClient);
     this.oldPollQueue = super.pollQueue;
     this.pollQueue = this.pollQueueHook;
   }
