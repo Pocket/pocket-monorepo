@@ -6,7 +6,6 @@ import {
 } from './postRequest';
 import { SQSRecord } from 'aws-lambda';
 import { AggregateError } from '../../errors/AggregateError';
-import { serverLogger } from '@pocket-tools/ts-logger';
 
 type AccountDeleteBody = {
   userId: string;
