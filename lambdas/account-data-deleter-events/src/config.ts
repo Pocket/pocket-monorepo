@@ -8,6 +8,7 @@ export const config = {
     'https://account-data-deleter-api.getpocket.dev',
   queueDeletePath: '/queueDelete',
   stripeDeletePath: '/stripeDelete',
+  fxaRevokePath: '/revokeFxa',
   sentry: {
     // these values are inserted into the environment in
     // .aws/src/.ts
