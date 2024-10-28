@@ -17,7 +17,7 @@
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand"
   },
   "dependencies": {
-    "@aws-sdk/client-lambda": "3.637.0",
+    "@aws-sdk/client-lambda": "3.679.0",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/aws-serverless": "8.35.0",
     "fetch-retry": "^5.0.6",
