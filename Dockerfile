@@ -24,7 +24,7 @@ RUN corepack enable && corepack prepare pnpm@9.12.2 --activate
 # home location environment variable to a location already in $PATH
 # https://github.com/pnpm/pnpm/issues/784#issuecomment-1518582235
 ENV PNPM_HOME=/usr/local/bin
-RUN pnpm add -g turbo@2.1.0
+RUN pnpm add -g turbo@2.2.3
 
 #----------------------------------------
 # Docker build step that prunes down to 
