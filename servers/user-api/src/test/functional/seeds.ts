@@ -4,9 +4,9 @@ import { writeClient as conn } from '../../database/client';
 import config from '../../config';
 
 export async function truncatePiiTables() {
-  const allTables = Object.entries(config.database.userPIITables).flatMap(
-    ([_, tables]) => tables,
-  );
+  const allTables = Object.entries(
+    config.database.userPIITestSeedTables,
+  ).flatMap(([_, tables]) => tables);
   await Promise.all(
     allTables.map((table: string) => {
       return conn()(table).truncate();
@@ -26,15 +26,17 @@ export async function PiiTableSeed(user_id: number, firefox_uid: string) {
   };
 
   await Promise.all(
-    Object.entries(config.database.userPIITables).flatMap(([key, tables]) => {
-      return tables.map((tableName) => {
-        if (!(tableName in specialTablesSeeds)) {
-          return conn()(tableName).insert({ [key]: user_id });
-        } else {
-          return conn()(tableName).insert(specialTablesSeeds[tableName]);
-        }
-      });
-    }),
+    Object.entries(config.database.userPIITestSeedTables).flatMap(
+      ([key, tables]) => {
+        return tables.map((tableName) => {
+          if (!(tableName in specialTablesSeeds)) {
+            return conn()(tableName).insert({ [key]: user_id });
+          } else {
+            return conn()(tableName).insert(specialTablesSeeds[tableName]);
+          }
+        });
+      },
+    ),
   );
 }
 

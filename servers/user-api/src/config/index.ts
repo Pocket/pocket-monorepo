@@ -71,6 +71,11 @@ export default {
       user_id: [...tables.tablesWithSensitivePii],
       created_by_user_id: ['channels'],
     },
+    // For test seeds
+    userPIITestSeedTables: {
+      user_id: [...tables.tablesWithSensitivePii, 'user_firefox_account'],
+      created_by_user_id: ['channels'],
+    },
   },
   sentry: {
     dsn: process.env.SENTRY_DSN || '',
