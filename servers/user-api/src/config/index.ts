@@ -7,7 +7,6 @@ const tables = {
   tablesWithSensitivePii: [
     'users',
     'user_google_account',
-    'user_firefox_account',
     'user_twitter_auth',
     'users_social_tokens',
     'users_tokens',
