@@ -1,6 +1,9 @@
 import knex, { Knex } from 'knex';
 import { fetchSecret } from '@pocket-tools/lambda-secrets';
 import { config } from './config';
+import knexServerlessMysql from 'knex-serverless-mysql';
+import serverlessMysql from 'serverless-mysql';
+import * as mysql2 from 'mysql2';
 
 let readDb: Knex;
 let writeDb: Knex;
@@ -58,9 +61,11 @@ export function createConnection(dbConfig: {
 }): Knex {
   const { host, port, user, password } = dbConfig;
 
-  return knex({
-    client: 'mysql2',
-    connection: {
+  const mysql = serverlessMysql({
+    // @ts-expect-error - serverless-mysql types are incorrect and their doc states to do this.
+    // https://github.com/jeremydaly/serverless-mysql?tab=readme-ov-file#consideration-when-using-typescript
+    library: mysql2,
+    config: {
       host: host,
       port: port,
       user: user,
@@ -68,15 +73,12 @@ export function createConnection(dbConfig: {
       database: config.database.dbName,
       charset: 'utf8mb4',
     },
-    pool: {
-      /**
-       * Explicitly set the session timezone. We don't want to take any chances with this
-       */
-      afterCreate: (connection, callback) => {
-        connection.query(`SET time_zone = '${config.database.tz}';`, (err) => {
-          callback(err, connection);
-        });
-      },
-    },
+  });
+
+  return knex({
+    client: knexServerlessMysql,
+    // @ts-expect-error - knex-serverless-mysql types are incorrect and their doc states to do this.
+    // https://github.com/MatissJanis/knex-serverless-mysql?tab=readme-ov-file#simple-example
+    mysql,
   });
 }
