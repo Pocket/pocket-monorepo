@@ -3,11 +3,13 @@ import { readClient, writeClient } from './clients';
 import { client } from './sqs';
 import {
   SendMessageBatchCommand,
+  SendMessageBatchCommandOutput,
   SendMessageBatchRequestEntry,
 } from '@aws-sdk/client-sqs';
 import { config } from './config';
 import { nanoid } from 'nanoid';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { chunk } from 'lodash';
 
 export const eventTypes = [
   'ADD_ITEM',
@@ -87,22 +89,37 @@ export const instantSyncHandler = async (
     convertToSqsEntry(tokenEntry),
   );
 
-  serverLogger.info(`Sending to instant sync`, { entryCount: entries.length });
+  // SendMessageBatchCommand only allows 10 entries at a time
+  const chunkedEntries = chunk(entries, 10);
 
-  await client.send(
-    new SendMessageBatchCommand({
-      QueueUrl: config.pushQueueUrl,
-      Entries: entries,
-    }),
-  );
-  serverLogger.info(`Sent to instant sync`, { entryCount: entries.length });
+  serverLogger.info(`Sending chunks to instant sync`, {
+    entryCount: chunkedEntries.length,
+  });
+
+  const sqsPromises: Promise<SendMessageBatchCommandOutput>[] = [];
+  for (const chunk of chunkedEntries) {
+    sqsPromises.push(
+      client.send(
+        new SendMessageBatchCommand({
+          QueueUrl: config.pushQueueUrl,
+          Entries: chunk,
+        }),
+      ),
+    );
+  }
+
+  await Promise.all(sqsPromises);
+
+  serverLogger.info(`Sent chunks to instant sync`, {
+    entryCount: chunkedEntries.length,
+  });
 
   const writeDb = await writeClient();
   const cleanedUpRecords = await writeDb('push_tokens')
     .delete()
     .whereIn('user_id', userIds)
     .andWhere('expires_at', '<', new Date());
-  serverLogger.info(`Cleaning up ${cleanedUpRecords}`);
+  serverLogger.info(`Cleaning up`, { cleanedUpRecords });
 
   await writeDb.destroy();
   await db.destroy();
