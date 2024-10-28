@@ -8,6 +8,7 @@ import { SeverityLevel } from '@sentry/types';
 import { config } from '../config';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { mockUnleash } from '@pocket-tools/feature-flags-client';
+import { PayloadType } from 'unleash-client';
 
 describe('batchDeleteHandler', () => {
   const { unleash: mockClient, repo } = mockUnleash([]);
@@ -36,6 +37,32 @@ describe('batchDeleteHandler', () => {
     impressionData: false,
   };
 
+  const intervalSecondsToggle = {
+    name: 'perm.backend.account-delete-empty-queue-poll-interval',
+    enabled: true,
+    stale: false,
+    impressionData: false,
+    variants: [
+      {
+        name: 'intervalSeconds',
+        weight: 1000,
+        payload: {
+          type: PayloadType.NUMBER,
+          value: '27',
+        },
+      },
+    ],
+    strategies: [
+      {
+        name: 'default',
+        parameters: {
+          rollout: 100,
+        },
+        constraints: [],
+      },
+    ],
+  };
+
   beforeEach(() => {
     jest.restoreAllMocks();
     scheduleStub = jest
@@ -54,6 +81,13 @@ describe('batchDeleteHandler', () => {
           ...deleteFeatureToggle,
           enabled: true,
         });
+        repo.setToggle(
+          'perm.backend.account-delete-empty-queue-poll-interval',
+          {
+            ...intervalSecondsToggle,
+            enabled: false,
+          },
+        );
       });
       it('does not process any messages if kill switch is enabled, and schedules new poll', async () => {
         const sendSpy = jest
@@ -64,11 +98,58 @@ describe('batchDeleteHandler', () => {
         expect(scheduleStub).toHaveBeenCalledOnce();
       });
     });
+    describe('with interval overrides', () => {
+      beforeAll(() => {
+        repo.setToggle(config.unleash.flags.deletesDisabled.name, {
+          ...deleteFeatureToggle,
+          enabled: false,
+        });
+        repo.setToggle(
+          'perm.backend.account-delete-empty-queue-poll-interval',
+          intervalSecondsToggle,
+        );
+        repo.setToggle(
+          'perm.backend.account-delete-post-message-poll-interval',
+          {
+            ...intervalSecondsToggle,
+            name: 'perm.backend.account-delete-post-message-poll-interval',
+          },
+        );
+      });
+      it('schedules a new poll with value from unleash, if enabled', async () => {
+        const sendSpy = jest
+          .spyOn(SQSClient.prototype, 'send')
+          .mockImplementation(() => Promise.resolve());
+        await batchDeleteHandler.pollQueue();
+        expect(sendSpy).toHaveBeenCalled();
+        expect(scheduleStub).toHaveBeenCalledExactlyOnceWith(27000);
+      });
+      it('schedules a new poll with value from unleash after message received', async () => {
+        jest.spyOn(SQSClient.prototype, 'send').mockImplementation(() =>
+          Promise.resolve({
+            Messages: [{ Body: JSON.stringify(fakeMessageBody) }],
+          }),
+        );
+        jest.spyOn(batchDeleteHandler, 'handleMessage').mockResolvedValue(true);
+        jest.spyOn(batchDeleteHandler, 'deleteMessage').mockResolvedValue();
+        await batchDeleteHandler.pollQueue();
+        expect(scheduleStub).toHaveBeenCalledExactlyOnceWith(27000);
+      });
+    });
   });
   describe('without feature flags', () => {
     beforeAll(() => {
       repo.setToggle(config.unleash.flags.deletesDisabled.name, {
         ...deleteFeatureToggle,
+        enabled: false,
+      });
+      repo.setToggle('perm.backend.account-delete-empty-queue-poll-interval', {
+        ...intervalSecondsToggle,
+        enabled: false,
+      });
+      repo.setToggle('perm.backend.account-delete-post-message-poll-interval', {
+        ...intervalSecondsToggle,
+        name: 'perm.backend.account-delete-post-message-poll-interval',
         enabled: false,
       });
     });
