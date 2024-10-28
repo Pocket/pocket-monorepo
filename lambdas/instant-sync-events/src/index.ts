@@ -17,5 +17,5 @@ async function __handler(event: SQSEvent): Promise<any> {
 }
 
 export const handler = Sentry.wrapHandler(__handler, {
-  captureTimeoutWarning: false,
+  captureTimeoutWarning: true,
 });
