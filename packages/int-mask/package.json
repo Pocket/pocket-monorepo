@@ -19,20 +19,20 @@
   "dependencies": {
     "lodash": "4.17.21",
     "md5": "2.3.0",
-    "tslib": "2.7.0",
+    "tslib": "2.8.0",
     "underscore.string": "3.3.6"
   },
   "devDependencies": {
     "@jest/globals": "29.7.0",
     "@pocket-tools/eslint-config": "workspace:*",
-    "@types/jest": "29.5.12",
+    "@types/jest": "29.5.14",
     "@types/md5": "2.3.5",
-    "@types/node": "^22.5.2",
+    "@types/node": "^22.8.2",
     "jest": "29.7.0",
     "ts-jest": "29.2.5",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "tsup": "8.2.4",
-    "typescript": "5.5.4"
+    "tsup": "8.3.5",
+    "typescript": "5.6.3"
   }
 }

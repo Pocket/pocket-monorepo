@@ -3,7 +3,6 @@ import { initSentry } from '@pocket-tools/sentry';
 // Initialize sentry
 initSentry({
   ...config.sentry,
-
 });
 
 import { startServer } from './express';

@@ -5,11 +5,11 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "@types/node": "^22.5.2",
+    "@types/node": "^22.8.2",
     "ts-node": "10.9.2",
-    "tslib": "2.7.0",
-    "tsup": "8.2.4",
-    "typescript": "5.5.4"
+    "tslib": "2.8.0",
+    "tsup": "8.3.5",
+    "typescript": "5.6.3"
   },
   "engines": {
     "node": "^20.16"
