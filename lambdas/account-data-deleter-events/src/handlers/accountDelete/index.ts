@@ -8,8 +8,8 @@ import { AggregateError } from '../../errors/AggregateError';
 
 type AccountDeleteBody = {
   userId: string;
-  email: string;
-  isPremium: boolean;
+  email?: string;
+  isPremium?: boolean;
   traceId?: string;
 };
 
@@ -23,15 +23,15 @@ export function validatePostBody(
   message: AccountDeleteEvent,
 ): AccountDeleteBody {
   AccountDeleteEvent.getAttributeTypeMap().forEach((type) => {
-    if (message[type.name] == null) {
+    if (message[type.name] == null && type.optional === false) {
       throw new Error(`${type.name} does not exist in message`);
     }
   });
 
   const postBody = {
     userId: message['userId'],
-    email: message['email'],
-    isPremium: message['isPremium'],
+    email: message['email'] ?? undefined,
+    isPremium: message['isPremium'] ?? false, // we don't have a user so we default to false
   };
   if (message['traceId']) {
     postBody['traceId'] = message['traceId'];

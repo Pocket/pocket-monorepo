@@ -85,7 +85,6 @@ export async function startServer(port: number): Promise<{
     cors<cors.CorsRequest>(),
     // JSON parser to enable POST body with JSON
     json({ limit: config.app.maxRequestSize }),
-    sentryPocketMiddleware,
     // Logging Setup, Express app-specific
     setMorgan(serverLogger),
     expressMiddleware(server, {

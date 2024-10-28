@@ -41,7 +41,7 @@ const v3SendController = async (
 
 router.get(
   '/',
-  checkSchema(V3SendSchemaGet, ['query']),
+  checkSchema(V3SendSchemaGet, ['query', 'body']),
   asyncHandler(async (req, res, next) => {
     const result = await v3SendController(req, res, next);
     res.json(result);
@@ -49,7 +49,7 @@ router.get(
 );
 router.post(
   '/',
-  checkSchema(V3SendSchemaPost, ['body']),
+  checkSchema(V3SendSchemaPost, ['body', 'query']),
   asyncHandler(async (req, res, next) => {
     const result = await v3SendController(req, res, next);
     res.json(result);

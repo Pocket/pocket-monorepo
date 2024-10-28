@@ -10,6 +10,7 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { chunk } from 'lodash';
 import { setTimeout } from 'timers/promises';
 import * as Sentry from '@sentry/aws-serverless';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export class BatchDeleteDyanmoClient {
   private dynamo: DynamoDBDocumentClient;
@@ -126,7 +127,7 @@ export class BatchDeleteDyanmoClient {
       Sentry.captureException(
         'Unprocessed keys detected when moving historical deleted user batch',
       );
-      console.log(
+      serverLogger.error(
         `Error: Unprocessed Keys Detected:\n\n${JSON.stringify(
           res.UnprocessedItems,
         )}`,

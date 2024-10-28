@@ -20,13 +20,16 @@ subgraphs:
     routing_url: https://list-api.readitlater.com
     schema:
       subgraph_url: https://list-api.readitlater.com
+    # routing_url: http://localhost:4005
+    # schema:
+    #    subgraph_url: http://localhost:4005
   parser:
-    #routing_url: https://parser-graphql-wrapper.readitlater.com
-    #schema:
-    #  subgraph_url: https://parser-graphql-wrapper.readitlater.com
-    routing_url: http://localhost:4001
+    routing_url: https://parser-graphql-wrapper.readitlater.com
     schema:
-      subgraph_url: http://localhost:4001
+      subgraph_url: https://parser-graphql-wrapper.readitlater.com
+    # routing_url: http://localhost:4001
+    # schema:
+    #   subgraph_url: http://localhost:4001
   shareable-lists-api:
     routing_url: https://shareablelistsapi.readitlater.com
     schema:

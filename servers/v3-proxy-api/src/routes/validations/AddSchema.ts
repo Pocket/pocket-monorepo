@@ -22,6 +22,7 @@ export type V3AddParams = {
  */
 export const V3AddSchema: Schema = {
   access_token: {
+    optional: true,
     isString: true,
     notEmpty: {
       errorMessage: '`access_token` cannot be empty',

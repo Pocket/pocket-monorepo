@@ -13,13 +13,27 @@ export default {
     9346, 7035, 15449, 22931, 23283, 53720, 60289, 70018, 73360,
   ],
   tracing: {
-    host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
+    url: process.env.OTLP_COLLECTOR_URL || 'http://localhost:4318',
     serviceName: 'v3-api-proxy',
+    release: process.env.GIT_SHA || 'local',
+    flagName: 'perm.backend.sentry-trace-sampler-rate.v3-proxy',
   },
   sentry: {
     dsn: process.env.SENTRY_DSN || '',
-    release: process.env.GIT_SHA || '',
+    release: process.env.GIT_SHA || 'local',
     environment: process.env.NODE_ENV || 'development',
+  },
+  unleash: {
+    clientKey: process.env.UNLEASH_KEY || 'unleash-key-fake',
+    endpoint: process.env.UNLEASH_ENDPOINT || 'http://localhost:4242/api',
+    refreshInterval: 60 * 1000, // ms
+    timeout: 2 * 1000, // ms
+    flags: {
+      openGraphParser: {
+        name: 'temp.backend.open_graph_parser',
+        fallback: false,
+      },
+    },
   },
   graphQLProxy: process.env.GRAPHQL_PROXY || 'https://getpocket.com/graphql',
 };

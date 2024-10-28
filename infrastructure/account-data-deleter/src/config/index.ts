@@ -21,6 +21,7 @@ export const config = {
   constructName,
   domain,
   releaseSha,
+  eventBusName: `PocketEventBridge-${environment}-Shared-Event-Bus`,
   dynamodb: {
     historicalDeletedUsers: {
       tableName: 'HistoricalDeletedUsers-Pending',
@@ -35,18 +36,21 @@ export const config = {
   envVars: {
     databasePort: '3306',
     sqsBatchDeleteQueueName: `${prefix}-Sqs-Batch-Delete-Consumer-Queue`,
+    listExportQueueName: `${prefix}-List-Export`,
     databaseTz: 'US/Central',
+    eventBusName: `PocketEventBridge-${environment}-Shared-Event-Bus`,
   },
   isDev,
   isProd,
   lambda: {
     snsTopicName: {
       userEvents: `PocketEventBridge-${environment}-UserEventTopic`,
+      listEvents: `PocketEventBridge-${environment}-ListEventTopic`,
     },
     batchDeleteLambda: {
       name: 'BatchDeleteLambda',
       reservedConcurrencyLimit: 1,
-      triggerInHours: 5,
+      trigger: '30 minutes',
     },
   },
   tags: {
@@ -57,6 +61,11 @@ export const config = {
     app_code: 'pocket',
     component_code: `pocket-${name.toLowerCase()}`,
     env_code: isDev ? 'dev' : 'prod',
+  },
+  tracing: {
+    url: isDev
+      ? 'https://otel-collector.getpocket.dev:443'
+      : 'https://otel-collector.readitlater.com:443',
   },
   userApiDomain,
 };

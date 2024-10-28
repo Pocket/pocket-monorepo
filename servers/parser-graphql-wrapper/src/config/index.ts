@@ -12,11 +12,9 @@ export default {
   serviceName: 'parser-graphql-wrapper',
   tracing: {
     graphQLDepth: 8, // very permissive limit on depth tracing
-    samplingRatio: 0.01,
-    grpcDefaultPort: 4317,
-    httpDefaultPort: 4318,
+    release: process.env.GIT_SHA || 'local',
     serviceName: 'parser-graphql-wrapper',
-    host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
+    url: process.env.OTLP_COLLECTOR_URL || 'http://localhost:4318',
   },
   app: {
     environment: process.env.NODE_ENV || 'development',
@@ -44,6 +42,7 @@ export default {
     dsn: process.env.SENTRY_DSN || '',
     release: process.env.GIT_SHA || '',
     environment: process.env.NODE_ENV || 'development',
+    samplerFlag: 'perm.backend.sentry-trace-sampler-rate',
   },
   shortUrl: {
     apiId: 106698, //braze consumer
@@ -92,7 +91,6 @@ export default {
     endpoint: process.env.UNLEASH_ENDPOINT || 'http://localhost:4242/api',
     refreshInterval: 60 * 1000, // ms
     timeout: 2 * 1000, // ms
-    namePrefix: 'temp.backend',
     flags: {
       openGraphParser: {
         name: 'temp.backend.open_graph_parser',

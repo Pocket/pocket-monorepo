@@ -1,0 +1,54 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to v3proxy",
+      "remoteRoot": null,
+      "port": 9229,
+      "sourceMaps": true,
+      "localRoot": "${workspaceFolder}/servers/v3-proxy-api/src",
+      "outFiles": ["${workspaceFolder}/servers/v3-proxy-api/dist/**/*.js"]
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to parser-graphql-wrapper",
+      "remoteRoot": null,
+      "port": 9229,
+      "sourceMaps": true,
+      "localRoot": "${workspaceFolder}/servers/parser-graphql-wrapper/src",
+      "outFiles": [
+        "${workspaceFolder}/servers/parser-graphql-wrapper/dist/**/*.js"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach to account-data-deleter",
+      "remoteRoot": null,
+      "port": 9229,
+      "sourceMaps": true,
+      "localRoot": "${workspaceFolder}/servers/account-data-deleter/src",
+      "outFiles": [
+        "${workspaceFolder}/servers/account-data-deleter/dist/**/*.js"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch account-data-deleter",
+      "sourceMaps": true,
+      "cwd": "${workspaceFolder}/servers/account-data-deleter",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run-script", "dev"],
+      "outFiles": [
+        "${workspaceFolder}/servers/account-data-deleter/dist/**/*.js"
+      ]
+    }
+  ]
+}

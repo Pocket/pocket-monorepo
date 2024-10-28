@@ -4,6 +4,7 @@ import { IContext } from '../context';
 import { EventType } from '../events/eventType';
 import { User, UserProfile, ExpireUserWebSessionReason } from '../types';
 import { IntMask } from '@pocket-tools/int-mask';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 // The Entity corresponding to GraphQL Schema
 interface UserEntity {
@@ -120,8 +121,20 @@ export class UserModel implements UserEntity {
 
   /** Delete this User from database */
   async delete(): Promise<string> {
-    const email = await this.email;
-    const isPremium = await this.isPremium;
+    let email: string;
+    let isPremium: boolean;
+    try {
+      email = await this.email;
+      isPremium = await this.isPremium;
+    } catch (error) {
+      if (error instanceof TypeError)
+        // Workaround for now because the lazy loader, but we don't want
+        // to just catch every error
+        serverLogger.info({
+          message: 'User is already deleted/absent from database.',
+          userId: this.context.userId,
+        });
+    }
     await this.userDataService.deletePIIUserInfo(this.context.userId);
     this.context.emitUserEvent(EventType.ACCOUNT_DELETE, {
       userId: this.context.userId,

@@ -35,7 +35,8 @@ export async function startServer(port: number): Promise<{
   app.use(
     // JSON parser to enable POST body with JSON
     json(),
-    // JSON parser to enable POST body with JSON
+    // Sentry middleware
+    sentryPocketMiddleware,
     setMorgan(serverLogger),
   );
   app.use('/queueDelete', queueDeleteRouter);
@@ -57,7 +58,6 @@ export async function startServer(port: number): Promise<{
   app.use(
     url,
     cors<cors.CorsRequest>(),
-    sentryPocketMiddleware,
     expressMiddleware<IContext>(server, {
       context: getContext,
     }),

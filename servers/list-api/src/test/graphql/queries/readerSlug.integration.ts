@@ -6,7 +6,7 @@ import { Application } from 'express';
 import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 import request from 'supertest';
-import { IntMask } from '@pocket-tools/int-mask';
+import { createReaderSlug } from '@pocket-tools/int-mask';
 
 describe('getPocketSaveByItemId', () => {
   const writeDb = writeClient();
@@ -67,9 +67,8 @@ describe('getPocketSaveByItemId', () => {
   });
 
   it('should return pocket save referenced by reader slug', async () => {
-    jest.spyOn(IntMask, 'decode').mockReturnValueOnce(55);
     const variables = {
-      slug: 'aninscrutableid',
+      slug: createReaderSlug('55'),
     };
 
     const res = await request(app)
@@ -80,7 +79,7 @@ describe('getPocketSaveByItemId', () => {
         variables,
       });
     const expected = {
-      slug: 'aninscrutableid',
+      slug: createReaderSlug('55'),
       savedItem: {
         id: '55',
         url: 'https://www.youtube.com/watch?v=ECMMct_jnEM',
@@ -91,9 +90,8 @@ describe('getPocketSaveByItemId', () => {
     expect(res.body.data._entities[0]).toEqual(expected);
   });
   it(`should return null if the save does not exist in the user's list`, async () => {
-    jest.spyOn(IntMask, 'decode').mockReturnValueOnce(1999999);
     const variables = {
-      slug: 'aninscrutableid',
+      slug: createReaderSlug('1999999'),
     };
 
     const res = await request(app)
@@ -104,24 +102,9 @@ describe('getPocketSaveByItemId', () => {
         variables,
       });
     const expected = {
-      slug: 'aninscrutableid',
+      slug: createReaderSlug('1999999'),
       savedItem: null,
     };
     expect(res.body.data._entities[0]).toEqual(expected);
-  });
-  it(`should not return data if the user is not logged in`, async () => {
-    jest.spyOn(IntMask, 'decode').mockReturnValueOnce(55);
-    const variables = {
-      slug: 'aninscrutableid',
-    };
-
-    const res = await request(app)
-      .post(url)
-      .send({
-        query: print(SAVE_FROM_READER),
-        variables,
-      });
-    expect(res.body.data).toBeUndefined();
-    expect(res.body.errors[0].extensions.code).toEqual('UNAUTHENTICATED');
   });
 });

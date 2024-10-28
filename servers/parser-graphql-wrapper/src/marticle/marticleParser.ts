@@ -624,7 +624,7 @@ function getParserMediaFromComment(
       } catch (err) {
         serverLogger.error({
           message: 'Not a valid image url for Marticle',
-          data: { ...err, src: mediaElement.src },
+          errorData: { ...err, src: mediaElement.src },
         });
         return false;
       }

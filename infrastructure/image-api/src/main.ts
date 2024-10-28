@@ -159,6 +159,10 @@ class ImageAPI extends TerraformStack {
               name: 'REDIS_IS_TLS',
               value: 'true',
             },
+            {
+              name: 'OTLP_COLLECTOR_URL',
+              value: config.tracing.url,
+            },
           ],
           secretEnvVars: [
             {
@@ -168,6 +172,14 @@ class ImageAPI extends TerraformStack {
             {
               name: 'SENTRY_DSN',
               valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/SENTRY_DSN`,
+            },
+            {
+              name: 'UNLEASH_ENDPOINT',
+              valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Shared/${config.environment}/UNLEASH_ENDPOINT`,
+            },
+            {
+              name: 'UNLEASH_KEY',
+              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/UNLEASH_KEY`,
             },
           ],
           logGroup: this.createCustomLogGroup('app'),
@@ -206,6 +218,8 @@ class ImageAPI extends TerraformStack {
             resources: [
               `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}`,
               `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/*`,
+              `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Shared/${config.environment}/*`,
+              `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Shared/${config.environment}`,
             ],
             effect: 'Allow',
           },
@@ -218,11 +232,6 @@ class ImageAPI extends TerraformStack {
               'logs:CreateLogStream',
               'logs:DescribeLogStreams',
               'logs:DescribeLogGroups',
-              'xray:PutTraceSegments',
-              'xray:PutTelemetryRecords',
-              'xray:GetSamplingRules',
-              'xray:GetSamplingTargets',
-              'xray:GetSamplingStatisticSummaries',
             ],
             resources: ['*'],
             effect: 'Allow',

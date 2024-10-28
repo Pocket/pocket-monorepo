@@ -17,7 +17,8 @@ import { getSavedItemTagsMap, atLeastOneOf, ensureHttpPrefix } from './utils';
 import { TagModel } from '../models';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { NotFoundError, UserInputError } from '@pocket-tools/apollo-utils';
-
+import { v4 as uuidv4 } from 'uuid';
+import { exportListEvent } from '../businessEvents/exportListEvent';
 /**
  * Create or re-add a saved item in a user's list.
  * Note that if the item already exists in a user's list, the item's 'favorite'
@@ -376,7 +377,7 @@ export async function removeTagsByName(
       args.tagNames,
       args.timestamp,
     );
-    console.log(JSON.stringify(updatedSave));
+    serverLogger.info(JSON.stringify(updatedSave));
   } else {
     updatedSave = await context.models.savedItem.removeTagsFromSaveByUrl(
       args.savedItem.url,
@@ -409,4 +410,14 @@ export async function clearTags(
       args.timestamp,
     );
   }
+}
+
+export async function exportList(
+  root,
+  args,
+  context: IContext,
+): Promise<string> {
+  const requestId = uuidv4();
+  await exportListEvent(requestId, context.eventContext);
+  return requestId;
 }

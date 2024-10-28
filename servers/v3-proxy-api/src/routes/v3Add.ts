@@ -43,7 +43,7 @@ const v3AddController = async (
 
 router.get(
   '/',
-  checkSchema(V3AddSchema, ['query']),
+  checkSchema(V3AddSchema, ['query', 'body']),
   asyncHandler(async (req, res, next) => {
     const result = await v3AddController(req, res, next);
     res.json(result);
@@ -51,7 +51,7 @@ router.get(
 );
 router.post(
   '/',
-  checkSchema(V3AddSchema, ['body']),
+  checkSchema(V3AddSchema, ['body', 'query']),
   asyncHandler(async (req, res, next) => {
     const result = await v3AddController(req, res, next);
     res.json(result);

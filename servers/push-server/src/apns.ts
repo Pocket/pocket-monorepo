@@ -9,6 +9,7 @@ import {
 import { sqs } from './sqs';
 import { TARGET_APNS, TARGET_APNS_SILENT } from './notificationTypes';
 import * as config from './config';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 const prodProvider = new ApnsClient({
   team: config.apns.token.teamId,
@@ -67,14 +68,14 @@ export const apns = {
 
     if (tokenGroup.includes('prod')) {
       noteOptions.topic = config.apns.prodBundleId;
-      console.log('APNS Production topic');
+      serverLogger.info('APNS Production topic');
     } else if (tokenGroup.includes('enterprise')) {
-      //Per Nik Z. Enterprise is gone and should be invalidated
-      console.log('APNS Enterprise topic, destroying this token');
+      //Per Nicole Z. Enterprise is gone and should be invalidated
+      serverLogger.info('APNS Enterprise topic, destroying this token');
       await sqs.destroyToken(target, token);
       return;
     } else {
-      console.log('APNS Alpha topic');
+      serverLogger.info('APNS Alpha topic');
       noteOptions.topic = config.apns.betaBundleId;
     }
 

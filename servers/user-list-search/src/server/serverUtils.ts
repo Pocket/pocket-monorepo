@@ -28,7 +28,7 @@ export async function startServer(port: number): Promise<{
   server: ApolloServer<ContextManager>;
   url: string;
 }> {
-  await unleash();
+  unleash();
 
   const app = express();
   const httpServer: Server = createServer(app);
@@ -56,16 +56,18 @@ export async function startServer(port: number): Promise<{
   const dbClient = knexDbReadClient();
 
   app.use(
-    url,
     // JSON parser to enable POST body with JSON
     json(),
-    setMorgan(serverLogger),
     sentryPocketMiddleware,
+  );
+
+  app.use(
+    url,
+    setMorgan(serverLogger),
     expressMiddleware(server, {
       context: async ({ req }) => getContextFactory(req, dbClient),
     }),
   );
-  app.use(json());
   // Batch delete route
   app.use('/batchDelete', batchDeleteRouter);
 

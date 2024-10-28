@@ -34,6 +34,7 @@ export async function startServer(port: number): Promise<{
   app.use(
     // JSON parser to enable POST body with JSON
     json(),
+    sentryPocketMiddleware,
     // JSON parser to enable POST body with JSON
     setMorgan(serverLogger),
   );
@@ -55,7 +56,6 @@ export async function startServer(port: number): Promise<{
   app.use(
     url,
     cors<cors.CorsRequest>(),
-    sentryPocketMiddleware,
     expressMiddleware<ContextManager>(server, {
       context: getContext,
     }),

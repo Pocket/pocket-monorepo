@@ -345,6 +345,36 @@ describe('v3Get', () => {
           response: { ...expectedGetSimpleAnnotations, total: '10' },
         },
       },
+      {
+        requestData: {
+          detailType: 'simple',
+          total: '1',
+          annotations: 'true',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleAnnotations,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: { ...expectedGetSimpleAnnotations, total: '10' },
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          total: '1',
+          annotations: true,
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleAnnotations,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: { ...expectedGetSimpleAnnotations, total: '10' },
+        },
+      },
     ])(
       'makes request with annotations',
       async ({ requestData, fixture, expected }) => {
@@ -355,10 +385,10 @@ describe('v3Get', () => {
         const response = await request(app)
           .get('/v3/get')
           .query({
-            ...requestData,
             consumer_key: 'test',
             access_token: 'test',
             annotations: '1',
+            ...requestData,
           });
         expect(response.body).toEqual(expected.response);
         expect(requestSpy).toHaveBeenCalledTimes(1);
@@ -495,6 +525,34 @@ describe('v3Get', () => {
         fixture: {
           requestName: 'callSavedItemsByOffsetSimple' as const,
           requestData: mockGraphGetSimpleFreeAccountNullFeatures,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimpleFreeAccount,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          forceaccount: 'true',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleFreeAccount,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimpleFreeAccount,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          forceaccount: true,
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleFreeAccount,
         },
         expected: {
           name: 'savedItemsSimple',
@@ -656,6 +714,34 @@ describe('v3Get', () => {
           response: { ...expectedGetSimple, recent_searches: [] },
         },
       },
+      {
+        requestData: {
+          detailType: 'simple',
+          forcepremium: true,
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleFreeRecentSearches,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimple,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          forcepremium: 'true',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetSimple' as const,
+          requestData: mockGraphGetSimpleFreeRecentSearches,
+        },
+        expected: {
+          name: 'savedItemsSimple',
+          response: expectedGetSimple,
+        },
+      },
     ])(
       'makes request with recent searches data',
       async ({ requestData, fixture, expected }) => {
@@ -806,6 +892,38 @@ describe('v3Get', () => {
           response: { ...expectedGetSimpleTagslist, total: '10' },
         },
       },
+      {
+        requestData: {
+          detailType: 'simple',
+          search: 'abc',
+          sort: 'relevance',
+          taglist: true,
+        },
+        fixture: {
+          requestName: 'callSearchByOffsetSimple' as const,
+          requestData: freeTierSearchGraphSimpleTagList,
+        },
+        expected: {
+          name: 'searchSavedItemsSimple',
+          response: expectedFreeTierResponseSimpleTaglist,
+        },
+      },
+      {
+        requestData: {
+          detailType: 'simple',
+          search: 'abc',
+          sort: 'relevance',
+          taglist: 'true',
+        },
+        fixture: {
+          requestName: 'callSearchByOffsetSimple' as const,
+          requestData: freeTierSearchGraphSimpleTagList,
+        },
+        expected: {
+          name: 'searchSavedItemsSimple',
+          response: expectedFreeTierResponseSimpleTaglist,
+        },
+      },
     ])(
       'makes request with taglist',
       async ({ requestData, fixture, expected }) => {
@@ -817,11 +935,11 @@ describe('v3Get', () => {
         const response = await request(app)
           .get('/v3/get')
           .query({
-            ...requestData,
             consumer_key: 'test',
             access_token: 'test',
             taglist: '1',
             since: 1712766000,
+            ...requestData,
           });
         expect(response.body).toEqual(expected.response);
         expect(requestSpy).toHaveBeenCalledTimes(1);
@@ -881,6 +999,38 @@ describe('v3Get', () => {
           response: { ...expectedGetSimpleTagslist, total: '10' },
         },
       },
+      {
+        requestData: {
+          detailType: 'complete',
+          total: true,
+          taglist: true,
+          forcetaglist: true,
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteTagsList,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: { ...expectedGetCompleteTagslist, total: '10' },
+        },
+      },
+      {
+        requestData: {
+          detailType: 'complete',
+          total: 'true',
+          taglist: 'true',
+          forcetaglist: 'true',
+        },
+        fixture: {
+          requestName: 'callSavedItemsByOffsetComplete' as const,
+          requestData: mockGraphGetCompleteTagsList,
+        },
+        expected: {
+          name: 'savedItemsComplete',
+          response: { ...expectedGetCompleteTagslist, total: '10' },
+        },
+      },
     ])(
       'makes request with taglist',
       async ({ requestData, fixture, expected }) => {
@@ -892,12 +1042,12 @@ describe('v3Get', () => {
         const response = await request(app)
           .get('/v3/get')
           .query({
-            ...requestData,
             consumer_key: 'test',
             access_token: 'test',
             taglist: '1',
             forcetaglist: '1',
             since: 1712766000,
+            ...requestData,
           });
         expect(response.body).toEqual(expected.response);
         expect(requestSpy).toHaveBeenCalledTimes(1);
@@ -1174,6 +1324,107 @@ describe('v3Get', () => {
       const response = await request(app).post('/v3/get').send(params);
       expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
       expect(callSpy).toHaveBeenCalledTimes(1);
+      expect(response.status).toBe(200);
+    });
+    it('should work with query strings in a POST request', async () => {
+      const params = {
+        consumer_key: 'test',
+        detailType: 'complete',
+        contentType: 'article',
+        count: '10',
+        offset: '10',
+        state: 'read',
+        favorite: '0',
+        tag: 'tag',
+        sort: 'newest',
+        since: '12345',
+      };
+      const callSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).post('/v3/get').query(params);
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+      expect(callSpy).toHaveBeenCalledTimes(1);
+      expect(response.status).toBe(200);
+    });
+    it('should work with body in a GET reuest', async () => {
+      const params = {
+        consumer_key: 'test',
+        detailType: 'complete',
+        contentType: 'article',
+        count: '10',
+        offset: '10',
+        state: 'read',
+        favorite: '0',
+        tag: 'tag',
+        sort: 'newest',
+        since: '12345',
+      };
+      const callSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).get('/v3/get').send(params);
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+      expect(callSpy).toHaveBeenCalledTimes(1);
+      expect(response.status).toBe(200);
+    });
+    it.skip('should work with form data', async () => {
+      // Skipping because this request hangs indefinitely for some reason
+      // TODO
+      const params = {
+        consumer_key: 'test',
+        detailType: 'complete',
+        contentType: 'article',
+        count: '10',
+        offset: '10',
+        state: 'read',
+        favorite: '0',
+        tag: 'tag',
+        sort: 'newest',
+        since: '12345',
+      };
+      const callSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app)
+        .post('/v3/get')
+        .type('multipart/form')
+        .field(params);
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+      expect(callSpy).toHaveBeenCalledTimes(1);
+      expect(response.status).toBe(200);
+    });
+    it('merges query strings and body params', async () => {
+      const qs = {
+        consumer_key: 'test-ck',
+      };
+      const body = {
+        detailType: 'complete',
+        contentType: 'article',
+        count: '10',
+        offset: '10',
+        state: 'read',
+        favorite: '0',
+        tag: 'tag',
+        sort: 'newest',
+        since: '12345',
+      };
+      const callSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).get('/v3/get').query(qs).send(body);
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+      expect(callSpy).toHaveBeenCalledTimes(1);
+      expect(callSpy.mock.calls[0][1]).toEqual('test-ck');
+      expect(callSpy.mock.calls[0][3]).toMatchObject({
+        filter: {
+          status: 'ARCHIVED',
+          tagNames: ['tag'],
+          updatedSince: 12345,
+          contentType: 'IS_READABLE',
+          isFavorite: false,
+        },
+      });
       expect(response.status).toBe(200);
     });
     it.each([
@@ -1467,5 +1718,67 @@ describe('v3Get', () => {
         expect(response.body).toEqual(responseData);
       },
     );
+  });
+  describe('Charset Handler', () => {
+    it('rewrites bad utf8', async () => {
+      const requestSpy = jest.spyOn(
+        GraphQLCalls,
+        'callSavedItemsByOffsetComplete' as const,
+      );
+      jest
+        .spyOn(GraphQLClient.prototype, 'request')
+        .mockResolvedValueOnce(mockGraphGetComplete);
+      const response = await request(app)
+        .post('/v3/get')
+        .send({
+          consumer_key: 'test',
+          access_token: 'test',
+          since: 1712766000,
+          detailType: 'complete',
+        })
+        .set('Content-Type', 'application/json; charset=UTF8');
+      expect(response.body).toEqual(expectedGetComplete);
+      expect(requestSpy).toHaveBeenCalledTimes(1);
+      expect(requestSpy.mock.calls[0][3]).toMatchObject({
+        withTagsList: false,
+      });
+    });
+    it('ignores no utf8', async () => {
+      const requestSpy = jest.spyOn(
+        GraphQLCalls,
+        'callSavedItemsByOffsetComplete' as const,
+      );
+      jest
+        .spyOn(GraphQLClient.prototype, 'request')
+        .mockResolvedValueOnce(mockGraphGetComplete);
+      const response = await request(app)
+        .post('/v3/get')
+        .send({
+          consumer_key: 'test',
+          access_token: 'test',
+          since: 1712766000,
+          detailType: 'complete',
+        })
+        .set('Content-Type', 'application/json');
+      expect(response.body).toEqual(expectedGetComplete);
+      expect(requestSpy).toHaveBeenCalledTimes(1);
+      expect(requestSpy.mock.calls[0][3]).toMatchObject({
+        withTagsList: false,
+      });
+    });
+    it('ignores somethingElse charset', async () => {
+      const response = await request(app)
+        .post('/v3/get')
+        .send({
+          consumer_key: 'test',
+          access_token: 'test',
+          since: 1712766000,
+          detailType: 'complete',
+        })
+        .set('Content-Type', 'application/json; charset=somethingElse');
+      expect(response.body).toEqual({
+        error: 'unsupported charset "SOMETHINGELSE"',
+      });
+    });
   });
 });

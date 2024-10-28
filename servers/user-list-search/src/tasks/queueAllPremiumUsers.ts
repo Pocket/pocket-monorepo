@@ -2,6 +2,7 @@ import { DataSourceInterface } from '../datasource/DataSourceInterface';
 import { sendMessage } from '../sqs';
 import { UserListImportSqsMessage } from '../shared';
 import { config } from '../config';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 const USERS_CHUNK_SIZE = 500;
 
@@ -38,11 +39,11 @@ export const queueUserIds = async (
     usersChunk = userIds.splice(0, batchSize);
 
     // cutting-edge logging technology
-    console.log(
+    serverLogger.info(
       `sending ${usersChunk.length} premium users into the backfill queue! ids in this chunk in the next log:`,
     );
 
-    console.log(usersChunk);
+    serverLogger.info(usersChunk);
 
     // create a message with a max of 500 userids
     message = createUserListImportQueueMessage(usersChunk);

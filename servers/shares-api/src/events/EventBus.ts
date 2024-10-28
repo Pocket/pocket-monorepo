@@ -55,7 +55,7 @@ export class EventBus {
       serverLogger.error({
         error: 'Failed to send event to event bus',
         message: err.message,
-        data: err,
+        errorData: err,
       });
     }
   }

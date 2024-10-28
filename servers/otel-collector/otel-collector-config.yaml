@@ -1,0 +1,102 @@
+# Note this is only built nightly and will take effect on the next deploy after being built.
+receivers:
+  otlp:
+    protocols:
+      # Disabling GRPC until we take the time to do it in a good way in our AWS environment. (Mainly we need to update our TF Modules to support it and create a proxy that has a health check for the ALB, theres a few github issues on OTELs repo for this.)
+      # grpc:
+      #   endpoint: "0.0.0.0:4317" # gRPC port for receiving traces, metrics, and logs over gRPC
+      http:
+        endpoint: '0.0.0.0:4318' # http port for receiving traces, metrics, and logs over http
+
+exporters:
+  googlecloud:
+    log:
+      default_log_name: opentelemetry.io/collector-exported-log
+    # https://www.googlecloudcommunity.com/gc/Data-Analytics/OpenTelemetry-and-GKE/m-p/674090/highlight/true#M3861
+    timeout: 45s
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_percentage: 70
+    spike_limit_percentage: 10
+  batch:
+    # batch before sending to reduce API usage
+    send_batch_max_size: 10100
+    send_batch_size: 10000
+    timeout: 30s
+  batch/metrics:
+    # https://cloud.google.com/stackdriver/docs/managed-prometheus/setup-otel#batch_processing
+    # batch metrics before sending to reduce API usage
+    send_batch_max_size: 200
+    send_batch_size: 200
+    timeout: 5s
+  resourcedetection/ecs:
+    detectors: [env, ecs]
+    timeout: 2s
+    # Ensures that anything coming from the ECS detector in code will not override any existing attributes.
+    # Otherwise, note, that the ECS detector will be that of where the collector is running, not the service.
+    override: false
+  resource/cleanup_for_google:
+    attributes:
+      # Cleaning up attributes to  to prevent duplicate time series errors in Google Cloud by formatting our resources to what google expects
+      # https://cloud.google.com/stackdriver/docs/managed-prometheus/setup-otel#detect-resource-attributes
+      - key: service.namespace
+        value: pocket
+        action: upsert
+      - key: namespace
+        value: pocket
+        action: upsert
+      - key: cluster
+        from_attribute: aws.ecs.cluster.arn
+        action: upsert
+      # We must set the region to us-east1, as the google exporter uses this to know where to send data to.
+      - key: cloud.region
+        value: us-east1
+        action: upsert
+      - key: cloud.availability_zone
+        value: us-east1-b
+        action: upsert
+      # set this to the container id
+      - key: host.id
+        from_attribute: container.id
+        action: upsert
+      - key: service.instance.id
+        from_attribute: container.id
+        action: upsert
+      # https://opentelemetry.io/docs/specs/semconv/resource/deployment-environment/
+      - key: deployment.environment.name
+        value: ${env:DEPLOYMENT_ENVIRONMENT_NAME}
+        action: upsert
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors:
+        [
+          resource/cleanup_for_google,
+          resourcedetection/ecs,
+          memory_limiter,
+          batch,
+        ]
+      exporters: [googlecloud]
+    metrics:
+      receivers: [otlp]
+      processors:
+        [
+          resource/cleanup_for_google,
+          resourcedetection/ecs,
+          memory_limiter,
+          batch/metrics,
+        ]
+      exporters: [googlecloud]
+    logs:
+      receivers: [otlp]
+      processors:
+        [
+          resource/cleanup_for_google,
+          resourcedetection/ecs,
+          memory_limiter,
+          batch,
+        ]
+      exporters: [googlecloud]

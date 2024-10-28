@@ -91,7 +91,7 @@ let bulkChain: BulkDocumentProcessor[] = [defaultDocProcessor];
  * @param processors
  */
 export const setBulkChain = (processors: BulkDocumentProcessor[]): void => {
-  console.log({ setBulkChain: processors });
+  serverLogger.info({ setBulkChain: processors });
   bulkChain = processors;
 };
 

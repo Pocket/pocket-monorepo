@@ -42,4 +42,9 @@ export const config = {
     databaseName: 'readitla_shares',
     masterUsername: 'share_urls',
   },
+  tracing: {
+    url: isDev
+      ? 'https://otel-collector.getpocket.dev:443'
+      : 'https://otel-collector.readitlater.com:443',
+  },
 };

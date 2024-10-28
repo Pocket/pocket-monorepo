@@ -121,6 +121,54 @@ describe('/queueDelete', () => {
         annotationIds: ['4', '5', '6'],
       });
     });
+    it('sends batches of messages to sqs if email is not defined', async () => {
+      config.queueDelete.queryLimit = 3;
+      config.queueDelete.itemIdChunkSize = 3;
+      config.aws.sqs.batchSize = 1;
+      const userId = 1;
+      const highlightsDataService = new HighlightsDataService({
+        userId: '1',
+        db: {
+          writeClient: writeClient(),
+          readClient: readClient(),
+        },
+        apiId: 'service', // unused but required for inheritance
+        isPremium: false,
+      });
+
+      const data = {
+        userId,
+        isPremium: false,
+      };
+
+      await enqueueAnnotationIds(
+        data as SqsMessage,
+        highlightsDataService,
+        '123',
+      );
+
+      expect(sqsSendMock).toHaveBeenCalledTimes(2);
+      // No exceptions
+      expect(sentrySpy).toHaveBeenCalledTimes(0);
+      const firstMessage = JSON.parse(
+        sqsSendMock.mock.calls[0][0].input.Entries[0].MessageBody,
+      );
+      const secondMessage = JSON.parse(
+        sqsSendMock.mock.calls[1][0].input.Entries[0].MessageBody,
+      );
+      expect(firstMessage.traceId).toBeDefined();
+      expect(firstMessage).toEqual({
+        ...data,
+        traceId: firstMessage.traceId, // no easy way to do a shallow equal, so we cheat.
+        annotationIds: ['1', '2', '3'],
+      });
+      expect(secondMessage.traceId).toBeDefined();
+      expect(secondMessage).toEqual({
+        ...data,
+        traceId: secondMessage.traceId, // no easy way to do a shallow equal, so we cheat.
+        annotationIds: ['4', '5', '6'],
+      });
+    });
   });
 
   describe('enqueueAnnotationIds failure', () => {

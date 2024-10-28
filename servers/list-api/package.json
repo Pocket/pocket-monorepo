@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@apollo/server": "4.11.0",
-    "@apollo/subgraph": "2.9.0",
+    "@apollo/subgraph": "2.9.3",
     "@aws-sdk/client-eventbridge": "3.637.0",
     "@aws-sdk/client-kinesis": "3.637.0",
     "@aws-sdk/client-sqs": "3.637.0",
@@ -29,12 +29,13 @@
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/int-mask": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
+    "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "8.30.0",
+    "@sentry/node": "8.35.0",
     "@snowplow/node-tracker": "3.24.3",
     "@snowplow/tracker-core": "3.24.3",
     "dataloader": "2.2.2",
-    "express": "4.19.2",
+    "express": "4.20.0",
     "express-validator": "^7.1.0",
     "graphql": "16.9.0",
     "graphql-constraint-directive": "5.4.2",
@@ -46,7 +47,8 @@
     "luxon": "3.5.0",
     "mysql2": "3.11.3",
     "tslib": "2.7.0",
-    "unleash-client": "6.1.1"
+    "unleash-client": "6.1.1",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@jest/globals": "29.7.0",

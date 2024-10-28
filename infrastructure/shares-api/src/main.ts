@@ -164,6 +164,10 @@ class SharesAPI extends TerraformStack {
               name: 'SHARE_URL',
               value: 'https://pocket.co/share',
             },
+            {
+              name: 'OTLP_COLLECTOR_URL',
+              value: config.tracing.url,
+            },
           ],
           logGroup: this.createCustomLogGroup('app'),
           logMultilinePattern: '^\\S.+',
@@ -179,6 +183,14 @@ class SharesAPI extends TerraformStack {
             {
               name: 'GUID_SALT',
               valueFrom: `${UserContextSaltArn}:guid_salt::`,
+            },
+            {
+              name: 'UNLEASH_ENDPOINT',
+              valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Shared/${config.environment}/UNLEASH_ENDPOINT`,
+            },
+            {
+              name: 'UNLEASH_KEY',
+              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/UNLEASH_KEY`,
             },
           ],
         },
@@ -224,6 +236,8 @@ class SharesAPI extends TerraformStack {
             resources: [
               `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}`,
               `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/*`,
+              `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Shared/${config.environment}/*`,
+              `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Shared/${config.environment}`,
             ],
             effect: 'Allow',
           },
@@ -236,11 +250,6 @@ class SharesAPI extends TerraformStack {
               'logs:CreateLogStream',
               'logs:DescribeLogStreams',
               'logs:DescribeLogGroups',
-              'xray:PutTraceSegments',
-              'xray:PutTelemetryRecords',
-              'xray:GetSamplingRules',
-              'xray:GetSamplingTargets',
-              'xray:GetSamplingStatisticSummaries',
             ],
             resources: ['*'],
             effect: 'Allow',

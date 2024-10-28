@@ -28,7 +28,6 @@ export function getClient() {
       appName: config.serviceName,
       customHeaders: { Authorization: config.unleash.clientKey },
       timeout: 2000, // ms
-      namePrefix: 'temp.backend',
       refreshInterval: 60000, //ms
     });
     unleash.on('error', (err) =>

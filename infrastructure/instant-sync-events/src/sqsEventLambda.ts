@@ -56,7 +56,8 @@ export class SQSEventLambda extends Construct {
       lambda: {
         runtime: LAMBDA_RUNTIMES.NODEJS20,
         handler: 'index.handler',
-        timeout: 300,
+        memorySizeInMb: 1024, // AWS Secret Store Layer requires at least 1024MB to work, no idea why, but AWS support had us increase it to this value, and it worked way better and stopped erroring.
+        timeout: 900,
         reservedConcurrencyLimit: 10,
         environment: {
           SENTRY_DSN: sentryDsn,

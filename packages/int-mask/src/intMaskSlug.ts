@@ -1,4 +1,4 @@
-import { IntMask } from '@pocket-tools/int-mask';
+import { IntMask } from './intMask';
 import md5 from 'md5';
 
 const ITEM_ID_DELIMENTATOR = '_';

@@ -64,7 +64,13 @@
           }
         }
       ],
-      "@semantic-release/npm",
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "pnpm version ${nextRelease.version} --git-tag-version=false",
+          "publishCmd": "pnpm publish --no-git-checks"
+        }
+      ],
       "@semantic-release/github"
     ]
   },
@@ -75,6 +81,7 @@
   },
   "devDependencies": {
     "@pocket-tools/eslint-config": "workspace:*",
+    "@semantic-release/exec": "6.0.3",
     "@types/jest": "29.5.12",
     "@types/morgan": "1.9.9",
     "@types/node": "^22.5.2",

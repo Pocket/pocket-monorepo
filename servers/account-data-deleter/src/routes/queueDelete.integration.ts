@@ -10,13 +10,13 @@ describe('enqueueTablesForDeletion', () => {
   let sqsSendMock: jest.SpyInstance, queryLimit, sqsBatchSize;
   beforeEach(() => {
     queryLimit = config.queueDelete.queryLimit;
-    sqsBatchSize = config.aws.sqs.batchSize;
+    sqsBatchSize = config.aws.sqs.accountDeleteQueue.batchSize;
     sqsSendMock = jest.spyOn(SQS.prototype, 'send');
   });
 
   afterEach(() => {
     config.queueDelete.queryLimit = queryLimit;
-    config.aws.sqs.batchSize = sqsBatchSize;
+    config.aws.sqs.accountDeleteQueue.batchSize = sqsBatchSize;
     jest.restoreAllMocks();
   });
 
@@ -77,7 +77,7 @@ describe('enqueueTablesForDeletion', () => {
     ];
     it('sends batches of messages to sqs', async () => {
       config.queueDelete.queryLimit = 3;
-      config.aws.sqs.batchSize = 1;
+      config.aws.sqs.accountDeleteQueue.batchSize = 1;
       const userId = 1;
       const savedItemService = new AccountDeleteDataService(
         userId,
@@ -196,7 +196,7 @@ describe('enqueueTablesForDeletion', () => {
         },
       ];
       config.queueDelete.queryLimit = 3;
-      config.aws.sqs.batchSize = 1;
+      config.aws.sqs.accountDeleteQueue.batchSize = 1;
       const savedItemService = new AccountDeleteDataService(
         userId,
         readClient(),
@@ -319,7 +319,7 @@ describe('enqueueTablesForDeletion', () => {
       ];
 
       config.queueDelete.queryLimit = 2;
-      config.aws.sqs.batchSize = 1;
+      config.aws.sqs.accountDeleteQueue.batchSize = 1;
       const savedItemService = new AccountDeleteDataService(
         userId,
         readClient(),

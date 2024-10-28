@@ -18,6 +18,7 @@ import { failCallback } from '../routes/helper';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { SeverityLevel } from '@sentry/types';
 import { sqs } from './sqs';
+import * as otel from '@opentelemetry/api';
 
 export type BatchDeleteMessage = {
   traceId: string;
@@ -27,6 +28,7 @@ export type BatchDeleteMessage = {
 
 export class BatchDeleteHandler {
   readonly sqsClient: SQSClient;
+  private tracer: otel.Tracer;
   static readonly eventName = 'pollBatchDelete';
 
   /**
@@ -50,6 +52,7 @@ export class BatchDeleteHandler {
     pollOnInit = true,
   ) {
     this.sqsClient = sqs;
+    this.tracer = otel.trace.getTracer('queue-tracer');
     emitter.on(
       BatchDeleteHandler.eventName,
       async () => await this.pollQueue(),
@@ -89,7 +92,10 @@ export class BatchDeleteHandler {
    * @returns whether or not the message was successfully handled
    * (underlying call to AccountDeleteDataService completed without error)
    */
-  async handleMessage(body: BatchDeleteMessage): Promise<boolean> {
+  async handleMessage(
+    body: BatchDeleteMessage,
+    span: otel.Span,
+  ): Promise<boolean> {
     serverLogger.info(`handling message` + JSON.stringify(body));
     const traceId = body.traceId ?? nanoid();
     const userId = body.userId.toString();
@@ -105,6 +111,8 @@ export class BatchDeleteHandler {
       }).deleteByAnnotationIds(body.annotationIds, traceId);
     } catch (error) {
       failCallback('batchDelete', error, 'Annotations', userId, traceId);
+      span.recordException(error);
+      span.setStatus({ code: otel.SpanStatusCode.ERROR });
       return false;
     }
     return true;
@@ -123,6 +131,25 @@ export class BatchDeleteHandler {
   }
 
   /**
+   * Wrap poll queue method to have manual Sentry isolation,
+   * and open telemetry context, for background jobs.
+   * https://docs.sentry.io/platforms/javascript/guides/node/configuration/async-context/
+   * @returns
+   */
+  async pollQueue() {
+    return await Sentry.withIsolationScope(async () => {
+      return await this.tracer.startActiveSpan(
+        `poll-queue-${BatchDeleteHandler.eventName}`,
+        { root: true },
+        async (span: otel.Span) => {
+          await this.__pollQueue(span);
+          span.end();
+        },
+      );
+    });
+  }
+
+  /**
    * Event-driven polling of SQS queue (listener on event emitter).
    * If a message is received from the queue, process it and schedule
    * the next poll event. Does not throw -- any errors that occur
@@ -130,7 +157,7 @@ export class BatchDeleteHandler {
    * Ensures messages are processed in a synchronous, blocking way,
    * to minimize database load.
    */
-  async pollQueue() {
+  async __pollQueue(span: otel.Span) {
     serverLogger.info('emitter on');
     const params: ReceiveMessageCommandInput = {
       AttributeNames: [QueueAttributeName.CreatedTimestamp],
@@ -157,10 +184,12 @@ export class BatchDeleteHandler {
       serverLogger.error(receiveError, error);
       Sentry.addBreadcrumb({ message: receiveError });
       Sentry.captureException(error, { level: 'fatal' as SeverityLevel });
+      span.recordException(error);
+      span.setStatus({ code: otel.SpanStatusCode.ERROR });
     }
     // Process any messages received and schedule next poll
     if (body != null) {
-      const wasSuccess = await this.handleMessage(body);
+      const wasSuccess = await this.handleMessage(body, span);
       if (wasSuccess && data?.Messages) {
         await this.deleteMessage(data.Messages[0]);
       }

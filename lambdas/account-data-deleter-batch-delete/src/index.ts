@@ -1,5 +1,6 @@
 import { config } from './config';
 import * as Sentry from '@sentry/aws-serverless';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 //Init needs to come first.
 Sentry.init({
@@ -38,7 +39,7 @@ export async function deleteUsers(dynamoUtils: BatchDeleteDyanmoClient) {
       deletedUserIds.push(parseInt(deletedId));
     } catch {
       Sentry.captureException({ message: `unable to delete userId ${userId}` });
-      console.log(`unable to delete userId ${userId}`);
+      serverLogger.error(`unable to delete userId ${userId}`);
     }
   }
   await dynamoUtils.moveBatch(deletedUserIds);
@@ -53,7 +54,7 @@ export async function deleteUsers(dynamoUtils: BatchDeleteDyanmoClient) {
 export async function handlerFn(
   event: EventBridgeEvent<any, any>,
 ): Promise<any> {
-  console.log(`received cloudwatch event, ${JSON.stringify(event)}`);
+  serverLogger.info(`received cloudwatch event, ${JSON.stringify(event)}`);
   validateEvent(event);
   const dynamoUtils = new BatchDeleteDyanmoClient(dynamoDBClient);
   return await deleteUsers(dynamoUtils);

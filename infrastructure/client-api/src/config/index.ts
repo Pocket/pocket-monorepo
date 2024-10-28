@@ -47,6 +47,8 @@ export const config = {
     },
   },
   tracing: {
-    host: 'localhost',
+    url: isDev
+      ? 'https://otel-collector.getpocket.dev:443'
+      : 'https://otel-collector.readitlater.com:443',
   },
 };

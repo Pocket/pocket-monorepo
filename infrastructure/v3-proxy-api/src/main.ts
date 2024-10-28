@@ -81,13 +81,16 @@ class Stack extends TerraformStack {
     const { region, caller, secretsManagerKmsAlias, snsTopic } = dependencies;
 
     return new PocketALBApplication(this, 'application', {
-      // TODO: "internal: true" deploys service behind VPN, set false or remove this comment
-      internal: true,
+      internal: false,
       prefix: config.prefix,
       alb6CharacterPrefix: config.shortName,
       tags: config.tags,
       cdn: false,
       domain: config.domain,
+      taskSize: {
+        cpu: config.isDev ? 2048 : 4096,
+        memory: config.isDev ? 4096 : 8192,
+      },
       accessLogs: {
         existingBucket: config.s3LogsBucket,
       },
@@ -112,32 +115,25 @@ class Stack extends TerraformStack {
               name: 'ENVIRONMENT',
               value: process.env.NODE_ENV ?? 'development', // this gives us a nice lowercase production and development
             },
+            {
+              name: 'OTLP_COLLECTOR_URL',
+              value: config.tracing.url,
+            },
           ],
           secretEnvVars: [
             {
               name: 'SENTRY_DSN',
               valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/SENTRY_DSN`,
             },
-          ],
-        },
-        {
-          name: 'aws-otel-collector',
-          command: ['--config=/etc/ecs/ecs-xray.yaml'],
-          containerImage: 'amazon/aws-otel-collector',
-          essential: true,
-          logMultilinePattern: '^\\S.+',
-          logGroup: this.createCustomLogGroup('aws-otel-collector'),
-          portMappings: [
             {
-              hostPort: 4138,
-              containerPort: 4138,
+              name: 'UNLEASH_ENDPOINT',
+              valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Shared/${config.environment}/UNLEASH_ENDPOINT`,
             },
             {
-              hostPort: 4137,
-              containerPort: 4137,
+              name: 'UNLEASH_KEY',
+              valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/UNLEASH_KEY`,
             },
           ],
-          repositoryCredentialsParam: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:Shared/DockerHub`,
         },
       ],
       codeDeploy: {
@@ -180,28 +176,18 @@ class Stack extends TerraformStack {
             resources: [
               `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}`,
               `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/*`,
+              `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Shared/${config.environment}/*`,
+              `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Shared/${config.environment}`,
             ],
             effect: 'Allow',
           },
         ],
-        taskRolePolicyStatements: [
-          {
-            actions: [
-              'xray:PutTraceSegments',
-              'xray:PutTelemetryRecords',
-              'xray:GetSamplingRules',
-              'xray:GetSamplingTargets',
-              'xray:GetSamplingStatisticSummaries',
-            ],
-            resources: ['*'],
-            effect: 'Allow',
-          },
-        ],
+        taskRolePolicyStatements: [],
         taskExecutionDefaultAttachmentArn:
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },
       autoscalingConfig: {
-        targetMinCapacity: config.isDev ? 1 : 4,
+        targetMinCapacity: config.isDev ? 1 : 8,
         targetMaxCapacity: 20,
       },
       alarms: {

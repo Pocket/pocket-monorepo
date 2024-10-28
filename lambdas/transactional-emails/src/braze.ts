@@ -8,6 +8,7 @@ import type {
   V2SubscriptionStatusSetObject,
   CampaignsTriggerSendObject,
 } from 'braze-api';
+import { serverLogger } from '@pocket-tools/ts-logger';
 export const fetchWithBackoff = fetchRetry(fetch);
 
 export async function sendForgotPasswordEmail(forgotPasswordOptions: {
@@ -58,6 +59,58 @@ export async function sendForgotPasswordEmail(forgotPasswordOptions: {
   if (!res.ok) {
     throw new Error(`Error ${res.status}: Failed to send email`);
   }
+
+  return res;
+}
+
+export async function sendListExportReadyEmail(options: {
+  encodedId: string;
+  archiveUrl?: string;
+  requestId: string;
+}) {
+  serverLogger.info({
+    message: 'Sending list export campaign',
+    request: options,
+  });
+  const brazeApiKey = await getBrazeApiKey();
+
+  const campaignData: CampaignsTriggerSendObject = {
+    campaign_id: config.braze.listExportReadyCampaignId,
+    recipients: [
+      {
+        external_user_id: options.encodedId,
+        trigger_properties: {
+          archive_url: options.archiveUrl,
+          request_id: options.requestId,
+        },
+      },
+    ],
+  };
+
+  const res = await fetchWithBackoff(
+    config.braze.endpoint + config.braze.campaignTriggerPath,
+    {
+      retryOn: [500, 502, 503],
+      retries: 3,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${brazeApiKey}`,
+      },
+      // https://www.braze.com/docs/api/endpoints/messaging/send_messages/post_send_triggered_campaigns/
+      body: JSON.stringify(campaignData),
+    },
+  );
+
+  Sentry.addBreadcrumb({ data: { campaign: 'ListExportReady', campaignData } });
+
+  if (!res.ok) {
+    throw new Error(`Error ${res.status}: Failed to send email`);
+  }
+  serverLogger.info({
+    message: 'Braze response for list export',
+    status: res.status,
+  });
 
   return res;
 }

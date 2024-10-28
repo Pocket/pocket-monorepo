@@ -194,7 +194,7 @@ export class UserDataService {
       .select('auth_user_id')
       .where({ user_id: id })
       .first()
-      .then((row) => row.auth_user_id);
+      .then((row) => row?.auth_user_id);
     await this.writeDb.transaction(async (trx) => {
       await this.deleteAuthPII(authId, trx);
       await Promise.all(
