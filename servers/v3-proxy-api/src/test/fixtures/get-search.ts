@@ -192,7 +192,7 @@ export const expectedFreeTierSearchNoResults: GetSearchResponseSimple = {
   },
 };
 
-export const graphSearchNoResults = {
+export const graphSearchNoResults: SearchSavedItemsCompleteQuery = {
   user: {
     searchSavedItemsByOffset: {
       entries: [],
@@ -203,7 +203,7 @@ export const graphSearchNoResults = {
   },
 };
 
-export const freeTierSearchGraphSimple = {
+export const freeTierSearchGraphSimple: SearchSavedItemsSimpleQuery = {
   user: {
     searchSavedItemsByOffset: {
       entries: [
@@ -224,12 +224,16 @@ export const freeTierSearchGraphSimple = {
               resolvedId: '282381128',
               wordCount: 5,
               listenDuration: 2,
-              topImage: null,
-              title: 'No.',
+              preview: {
+                __typename: 'ItemSummary' as const,
+                image: null,
+                url: 'http://isithalloween.com',
+                title: 'No.',
+                excerpt: 'No. Go about your business.',
+              },
               timeToRead: null,
               resolvedUrl: 'http://isithalloween.com',
               givenUrl: 'https://isithalloween.com/',
-              excerpt: 'No. Go about your business.',
               domain: null,
               isArticle: false,
               isIndex: true,
@@ -257,12 +261,16 @@ export const freeTierSearchGraphSimple = {
               resolvedId: '3833727237',
               wordCount: 0,
               listenDuration: 0,
-              topImage: null,
-              title: '',
+              preview: {
+                __typename: 'ItemSummary' as const,
+                image: null,
+                url: 'https://www.isithalloweenyet.com/',
+                title: '',
+                excerpt: '',
+              },
               timeToRead: null,
               resolvedUrl: 'https://www.isithalloweenyet.com/',
               givenUrl: 'https://isithalloweenyet.com/',
-              excerpt: '',
               domain: null,
               isArticle: false,
               isIndex: false,
@@ -281,7 +289,7 @@ export const freeTierSearchGraphSimple = {
   },
 };
 
-export const freeTierSearchGraphComplete = {
+export const freeTierSearchGraphComplete: SearchSavedItemsCompleteQuery = {
   user: {
     searchSavedItemsByOffset: {
       entries: [
@@ -302,32 +310,36 @@ export const freeTierSearchGraphComplete = {
               resolvedId: '282381128',
               wordCount: 5,
               listenDuration: 2,
-              topImage: null,
-              title: 'No.',
+              preview: {
+                __typename: 'ItemSummary' as const,
+                image: null,
+                url: 'https://www.isithalloweenyet.com/',
+                title: 'No.',
+                excerpt: 'No. Go about your business.',
+                authors: [
+                  {
+                    id: '1992929',
+                    name: 'Satan',
+                    url: '',
+                  },
+                ],
+                domain: {
+                  logo: null,
+                  logoGreyscale: null,
+                  name: 'isithalloween.com',
+                },
+              },
               timeToRead: null,
               resolvedUrl: 'http://isithalloween.com',
               givenUrl: 'https://isithalloween.com/',
-              excerpt: 'No. Go about your business.',
               domain: null,
               isArticle: false,
               isIndex: true,
               hasVideo: Videoness.NoVideos,
               hasImage: Imageness.NoImages,
               language: '',
-              authors: [
-                {
-                  id: '1992929',
-                  name: 'Satan',
-                  url: '',
-                },
-              ],
               images: null,
               videos: null,
-              domainMetadata: {
-                logo: null,
-                logoGreyscale: null,
-                name: 'isithalloween.com',
-              },
             },
           },
           searchHighlights: null,
@@ -349,26 +361,30 @@ export const freeTierSearchGraphComplete = {
               resolvedId: '3833727237',
               wordCount: 0,
               listenDuration: 0,
-              topImage: null,
-              title: '',
+              preview: {
+                __typename: 'ItemSummary' as const,
+                image: null,
+                url: 'https://www.isithalloweenyet.com/',
+                title: '',
+                excerpt: '',
+                authors: null,
+                domain: {
+                  logo: null,
+                  logoGreyscale: null,
+                  name: 'isithalloweenyet.com',
+                },
+              },
               timeToRead: null,
               resolvedUrl: 'https://www.isithalloweenyet.com/',
               givenUrl: 'https://isithalloweenyet.com/',
-              excerpt: '',
               domain: null,
               isArticle: false,
               isIndex: false,
               hasVideo: Videoness.NoVideos,
               hasImage: Imageness.NoImages,
               language: '',
-              authors: null,
               images: null,
               videos: null,
-              domainMetadata: {
-                logo: null,
-                logoGreyscale: null,
-                name: 'isithalloweenyet.com',
-              },
             },
             tags: [
               {
@@ -890,30 +906,39 @@ export const premiumSearchGraphComplete: SearchSavedItemsCompleteQuery = {
               resolvedId: '3670270094',
               wordCount: 2288,
               listenDuration: 886,
-              topImage: {
-                url: 'https://www.musicalwriters.com/wp-content/uploads/2022/01/Opening-Numbers-interview-with-Stephen-Schwartz.jpg',
+              preview: {
+                __typename: 'ItemSummary' as const,
+                title: 'How Opening Numbers Reveal a World or Launch the Story',
+                excerpt:
+                  'When musical theatre aficionados list favorite opening numbers, they often include Pippin’s “Magic to Do” with its alluring, break-the-fourth-wall invitation into the world of the show.',
+                image: {
+                  url: 'https://www.musicalwriters.com/wp-content/uploads/2022/01/Opening-Numbers-interview-with-Stephen-Schwartz.jpg',
+                },
+                authors: [
+                  {
+                    id: '108109059',
+                    name: 'Carol de Giere',
+                    url: 'https://www.musicalwriters.com/author/carol-de-giere/',
+                  },
+                ],
+                domain: {
+                  logo: null,
+                  logoGreyscale: null,
+                  name: 'musicalwriters.com',
+                },
+                url: 'https://www.musicalwriters.com/writing-a-musical/how-opening-numbers-reveal-a-world-or-launch-the-story/',
               },
-              title: 'How Opening Numbers Reveal a World or Launch the Story',
               timeToRead: 10,
               resolvedUrl:
                 'https://www.musicalwriters.com/writing-a-musical/how-opening-numbers-reveal-a-world-or-launch-the-story/',
               givenUrl:
                 'https://www.musicalwriters.com/writing-a-musical/how-opening-numbers-reveal-a-world-or-launch-the-story/',
-              excerpt:
-                'When musical theatre aficionados list favorite opening numbers, they often include Pippin’s “Magic to Do” with its alluring, break-the-fourth-wall invitation into the world of the show.',
               domain: null,
               isArticle: true,
               isIndex: false,
               hasVideo: Videoness.HasVideos,
               hasImage: Imageness.HasImages,
               language: 'en',
-              authors: [
-                {
-                  id: '108109059',
-                  name: 'Carol de Giere',
-                  url: 'https://www.musicalwriters.com/author/carol-de-giere/',
-                },
-              ],
               images: [
                 {
                   imageId: 1,
@@ -971,11 +996,6 @@ export const premiumSearchGraphComplete: SearchSavedItemsCompleteQuery = {
                   height: 315,
                 },
               ],
-              domainMetadata: {
-                logo: null,
-                logoGreyscale: null,
-                name: 'musicalwriters.com',
-              },
             },
             tags: [
               {
@@ -1015,31 +1035,40 @@ export const premiumSearchGraphComplete: SearchSavedItemsCompleteQuery = {
               resolvedId: '3670270497',
               wordCount: 1843,
               listenDuration: 713,
-              topImage: {
-                url: 'https://www.musicalwriters.com/wp-content/uploads/2021/10/Montage-Backstory-Memories-and-Ticking-Clocks.jpg',
+              preview: {
+                __typename: 'ItemSummary' as const,
+                image: {
+                  url: 'https://www.musicalwriters.com/wp-content/uploads/2021/10/Montage-Backstory-Memories-and-Ticking-Clocks.jpg',
+                },
+                title:
+                  'How Musicals Make the Most of Time: Montage, Backstory, Memories, and Ticking Clocks',
+                url: 'https://www.musicalwriters.com/writing-a-musical/montages-backstory-memories-and-ticking-clocks/',
+                excerpt:
+                  'Two young lovers in the musical Children of Eden face each other in front of Noah’s Ark just before the rain begins—one is scheduled to get on the boat and the other is not. The fictional moment set up in the musical is precarious and precious.',
+                authors: [
+                  {
+                    id: '108109059',
+                    name: 'Carol de Giere',
+                    url: 'https://www.musicalwriters.com/author/carol-de-giere/',
+                  },
+                ],
+                domain: {
+                  logo: null,
+                  logoGreyscale: null,
+                  name: 'musicalwriters.com',
+                },
               },
-              title:
-                'How Musicals Make the Most of Time: Montage, Backstory, Memories, and Ticking Clocks',
               timeToRead: 8,
               resolvedUrl:
                 'https://www.musicalwriters.com/writing-a-musical/montages-backstory-memories-and-ticking-clocks/',
               givenUrl:
                 'https://www.musicalwriters.com/writing-a-musical/montages-backstory-memories-and-ticking-clocks/',
-              excerpt:
-                'Two young lovers in the musical Children of Eden face each other in front of Noah’s Ark just before the rain begins—one is scheduled to get on the boat and the other is not. The fictional moment set up in the musical is precarious and precious.',
               domain: null,
               isArticle: true,
               isIndex: false,
               hasVideo: Videoness.HasVideos,
               hasImage: Imageness.HasImages,
               language: 'en',
-              authors: [
-                {
-                  id: '108109059',
-                  name: 'Carol de Giere',
-                  url: 'https://www.musicalwriters.com/author/carol-de-giere/',
-                },
-              ],
               images: [
                 {
                   imageId: 1,
@@ -1088,11 +1117,6 @@ export const premiumSearchGraphComplete: SearchSavedItemsCompleteQuery = {
                   height: 810,
                 },
               ],
-              domainMetadata: {
-                logo: null,
-                logoGreyscale: null,
-                name: 'musicalwriters.com',
-              },
             },
             tags: [
               {
@@ -1134,31 +1158,40 @@ export const premiumSearchGraphComplete: SearchSavedItemsCompleteQuery = {
               resolvedId: '3457459746',
               wordCount: 2722,
               listenDuration: 1054,
-              topImage: {
-                url: 'https://www.musicalwriters.com/wp-content/uploads/2021/10/How-Musicals-Make-the-Most-of-Time-part-one.jpg',
+              preview: {
+                __typename: 'ItemSummary' as const,
+                image: {
+                  url: 'https://www.musicalwriters.com/wp-content/uploads/2021/10/How-Musicals-Make-the-Most-of-Time-part-one.jpg',
+                },
+                title:
+                  'How Musicals Make the Most of Time – A Conversation with Stephen Schwartz',
+                authors: [
+                  {
+                    id: '108109059',
+                    name: 'Carol de Giere',
+                    url: 'https://www.musicalwriters.com/author/carol-de-giere/',
+                  },
+                ],
+                excerpt:
+                  'We enjoy sharing content and resources that we know and love. MusicalWriters.com is an Amazon Associate and earns from qualifying purchases, so if you take action from an Amazon link, we earn a small percentage that helps keep MusicalWriters running.',
+                url: 'https://www.musicalwriters.com/writing-a-musical/musicals-make-the-most-of-time-stephen-schwartz/',
+                domain: {
+                  logo: null,
+                  logoGreyscale: null,
+                  name: 'musicalwriters.com',
+                },
               },
-              title:
-                'How Musicals Make the Most of Time – A Conversation with Stephen Schwartz',
               timeToRead: 12,
               resolvedUrl:
                 'https://www.musicalwriters.com/writing-a-musical/musicals-make-the-most-of-time-stephen-schwartz/',
               givenUrl:
                 'https://www.musicalwriters.com/writing-a-musical/musicals-make-the-most-of-time-stephen-schwartz/',
-              excerpt:
-                'We enjoy sharing content and resources that we know and love. MusicalWriters.com is an Amazon Associate and earns from qualifying purchases, so if you take action from an Amazon link, we earn a small percentage that helps keep MusicalWriters running.',
               domain: null,
               isArticle: true,
               isIndex: false,
               hasVideo: Videoness.HasVideos,
               hasImage: Imageness.HasImages,
               language: 'en',
-              authors: [
-                {
-                  id: '108109059',
-                  name: 'Carol de Giere',
-                  url: 'https://www.musicalwriters.com/author/carol-de-giere/',
-                },
-              ],
               images: [
                 {
                   imageId: 1,
@@ -1189,11 +1222,6 @@ export const premiumSearchGraphComplete: SearchSavedItemsCompleteQuery = {
                   height: 608,
                 },
               ],
-              domainMetadata: {
-                logo: null,
-                logoGreyscale: null,
-                name: 'musicalwriters.com',
-              },
             },
             tags: [
               {
@@ -1247,17 +1275,21 @@ export const premiumSearchGraphSimple: SearchSavedItemsSimpleQuery = {
               resolvedId: '3670270094',
               wordCount: 2288,
               listenDuration: 886,
-              topImage: {
-                url: 'https://www.musicalwriters.com/wp-content/uploads/2022/01/Opening-Numbers-interview-with-Stephen-Schwartz.jpg',
+              preview: {
+                __typename: 'ItemSummary' as const,
+                excerpt:
+                  'When musical theatre aficionados list favorite opening numbers, they often include Pippin’s “Magic to Do” with its alluring, break-the-fourth-wall invitation into the world of the show.',
+                image: {
+                  url: 'https://www.musicalwriters.com/wp-content/uploads/2022/01/Opening-Numbers-interview-with-Stephen-Schwartz.jpg',
+                },
+                title: 'How Opening Numbers Reveal a World or Launch the Story',
+                url: 'https://www.musicalwriters.com/writing-a-musical/how-opening-numbers-reveal-a-world-or-launch-the-story/',
               },
-              title: 'How Opening Numbers Reveal a World or Launch the Story',
               timeToRead: 10,
               resolvedUrl:
                 'https://www.musicalwriters.com/writing-a-musical/how-opening-numbers-reveal-a-world-or-launch-the-story/',
               givenUrl:
                 'https://www.musicalwriters.com/writing-a-musical/how-opening-numbers-reveal-a-world-or-launch-the-story/',
-              excerpt:
-                'When musical theatre aficionados list favorite opening numbers, they often include Pippin’s “Magic to Do” with its alluring, break-the-fourth-wall invitation into the world of the show.',
               domain: null,
               isArticle: true,
               isIndex: false,
@@ -1298,18 +1330,23 @@ export const premiumSearchGraphSimple: SearchSavedItemsSimpleQuery = {
               resolvedId: '3670270497',
               wordCount: 1843,
               listenDuration: 713,
-              topImage: {
-                url: 'https://www.musicalwriters.com/wp-content/uploads/2021/10/Montage-Backstory-Memories-and-Ticking-Clocks.jpg',
+              preview: {
+                __typename: 'ItemSummary' as const,
+                excerpt:
+                  'Two young lovers in the musical Children of Eden face each other in front of Noah’s Ark just before the rain begins—one is scheduled to get on the boat and the other is not. The fictional moment set up in the musical is precarious and precious.',
+                image: {
+                  url: 'https://www.musicalwriters.com/wp-content/uploads/2021/10/Montage-Backstory-Memories-and-Ticking-Clocks.jpg',
+                },
+                title:
+                  'How Musicals Make the Most of Time: Montage, Backstory, Memories, and Ticking Clocks',
+                url: 'https://www.musicalwriters.com/writing-a-musical/montages-backstory-memories-and-ticking-clocks/',
               },
-              title:
-                'How Musicals Make the Most of Time: Montage, Backstory, Memories, and Ticking Clocks',
               timeToRead: 8,
+
               resolvedUrl:
                 'https://www.musicalwriters.com/writing-a-musical/montages-backstory-memories-and-ticking-clocks/',
               givenUrl:
                 'https://www.musicalwriters.com/writing-a-musical/montages-backstory-memories-and-ticking-clocks/',
-              excerpt:
-                'Two young lovers in the musical Children of Eden face each other in front of Noah’s Ark just before the rain begins—one is scheduled to get on the boat and the other is not. The fictional moment set up in the musical is precarious and precious.',
               domain: null,
               isArticle: true,
               isIndex: false,
@@ -1352,18 +1389,23 @@ export const premiumSearchGraphSimple: SearchSavedItemsSimpleQuery = {
               resolvedId: '3457459746',
               wordCount: 2722,
               listenDuration: 1054,
-              topImage: {
-                url: 'https://www.musicalwriters.com/wp-content/uploads/2021/10/How-Musicals-Make-the-Most-of-Time-part-one.jpg',
+              preview: {
+                __typename: 'ItemSummary' as const,
+                image: {
+                  url: 'https://www.musicalwriters.com/wp-content/uploads/2021/10/How-Musicals-Make-the-Most-of-Time-part-one.jpg',
+                },
+                title:
+                  'How Musicals Make the Most of Time – A Conversation with Stephen Schwartz',
+                url: 'https://www.musicalwriters.com/writing-a-musical/musicals-make-the-most-of-time-stephen-schwartz/',
+                excerpt:
+                  'We enjoy sharing content and resources that we know and love. MusicalWriters.com is an Amazon Associate and earns from qualifying purchases, so if you take action from an Amazon link, we earn a small percentage that helps keep MusicalWriters running.',
               },
-              title:
-                'How Musicals Make the Most of Time – A Conversation with Stephen Schwartz',
               timeToRead: 12,
               resolvedUrl:
                 'https://www.musicalwriters.com/writing-a-musical/musicals-make-the-most-of-time-stephen-schwartz/',
               givenUrl:
                 'https://www.musicalwriters.com/writing-a-musical/musicals-make-the-most-of-time-stephen-schwartz/',
-              excerpt:
-                'We enjoy sharing content and resources that we know and love. MusicalWriters.com is an Amazon Associate and earns from qualifying purchases, so if you take action from an Amazon link, we earn a small percentage that helps keep MusicalWriters running.',
+
               domain: null,
               isArticle: true,
               isIndex: false,

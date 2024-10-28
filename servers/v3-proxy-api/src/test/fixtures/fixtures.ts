@@ -51,22 +51,26 @@ export const mockSavedItemFragment: SavedItemFragment = {
 export const mockItemFragment: ItemSimpleFragment = {
   __typename: 'Item',
   itemId: `item-${seedDataRest.ids[0]}`,
-  title: 'title',
+  preview: {
+    __typename: 'ItemSummary',
+    title: 'title',
+    url: seedDataRest.resolved_url,
+    excerpt: seedDataRest.excerpt,
+    image: {
+      url: seedDataRest.top_image_url,
+    },
+  },
   resolvedId: `resolved-${seedDataRest.ids[0]}`,
   wordCount: parseInt(seedDataRest.word_count),
   timeToRead: seedDataRest.time_to_read,
   resolvedUrl: seedDataRest.resolved_url,
   givenUrl: seedDataRest.given_url,
-  excerpt: seedDataRest.excerpt,
   domain: 'test.com', // mock to seedDataRest when needed
   isArticle: seedDataRest.is_article === '1',
   isIndex: seedDataRest.is_index === '1',
   hasVideo: Videoness.HasVideos,
   hasImage: Imageness.HasImages,
   language: seedDataRest.lang,
-  topImage: {
-    url: seedDataRest.top_image_url,
-  },
 };
 
 /**
