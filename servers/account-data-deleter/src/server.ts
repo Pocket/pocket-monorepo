@@ -36,6 +36,7 @@ export async function startServer(port: number): Promise<{
   });
   app.use('/queueDelete', queueDeleteRouter);
   app.use('/stripeDelete', stripeDeleteRouter);
+  app.use('/revokeFxa', revokeFxaRouter);
 
   Sentry.setupExpressErrorHandler(app);
 
