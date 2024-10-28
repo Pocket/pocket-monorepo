@@ -57,6 +57,7 @@ import { AWSXRayIdGenerator } from '@opentelemetry/id-generator-aws-xray';
 import { CompositePropagator } from '@opentelemetry/core';
 
 import { type Unleash } from 'unleash-client';
+import { IncomingMessage } from 'http';
 
 // instrumentations available to be added by implementing services
 export enum AdditionalInstrumentation {
@@ -183,7 +184,12 @@ export async function nodeSDKBuilder(config: TracingConfig) {
         },
       },
       '@opentelemetry/instrumentation-http': {
-        ignoreIncomingPaths: ['/.well-known/apollo/server-health'],
+        ignoreIncomingRequestHook: (request: IncomingMessage) => {
+          if (request.url?.includes('.well-known/apollo/server-health')) {
+            return true;
+          }
+          return false;
+        },
         headersToSpanAttributes: {
           server: {
             // Incoming request headers to be added as span attributes for debugging
