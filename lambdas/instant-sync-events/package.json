@@ -19,9 +19,11 @@
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/aws-serverless": "8.35.0",
     "knex": "3.1.0",
+    "knex-serverless-mysql": "1.1.0",
     "lodash": "4.17.21",
     "mysql2": "3.11.3",
     "nanoid": "3.3.7",
+    "serverless-mysql": "1.5.5",
     "tslib": "2.7.0"
   },
   "devDependencies": {
