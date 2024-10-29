@@ -2945,8 +2945,8 @@ importers:
         specifier: 6.1.1
         version: 6.1.1
       unleash-server:
-        specifier: 6.2.3
-        version: 6.2.3
+        specifier: 6.3.0
+        version: 6.3.0
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -5044,10 +5044,6 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
-
-  '@babel/runtime@7.25.6':
-    resolution: {integrity: sha512-VBj9MYyDb9tuLq7yzqjgzt6Q+IBQLrGZfdjOekyEirZPHxXWoTSGUTMrpsfi58Up73d13NfYLv8HT9vmznjzhQ==}
-    engines: {node: '>=6.9.0'}
 
   '@babel/runtime@7.26.0':
     resolution: {integrity: sha512-FDSOghenHTiToteC/QRlv2q3DhPZ/oOXTBoirfWNx1Cx3TMVcGWQtMMmQcSvb/JjpNeGzx8Pq/b4fKEJuWm1sw==}
@@ -7276,17 +7272,17 @@ packages:
   '@sinonjs/fake-timers@10.3.0':
     resolution: {integrity: sha512-V4BG07kuYSUkTCSBHG8G8TNhM+F19jXFWnQtzj+we8DrkpSBCee9Z3Ms8yiGer/dlmhe35/Xdgyo3/0rQKg7YA==}
 
-  '@slack/logger@3.0.0':
-    resolution: {integrity: sha512-DTuBFbqu4gGfajREEMrkq5jBhcnskinhr4+AnfJEk48zhVeEv3XnUKGIX98B74kxhYsIMfApGGySTn7V3b5yBA==}
-    engines: {node: '>= 12.13.0', npm: '>= 6.12.0'}
+  '@slack/logger@4.0.0':
+    resolution: {integrity: sha512-Wz7QYfPAlG/DR+DfABddUZeNgoeY7d1J39OCR2jR+v7VBsB8ezulDK5szTnDDPDwLH5IWhLvXIHlCFZV7MSKgA==}
+    engines: {node: '>= 18', npm: '>= 8.6.0'}
 
   '@slack/types@2.14.0':
     resolution: {integrity: sha512-n0EGm7ENQRxlXbgKSrQZL69grzg1gHLAVd+GlRVQJ1NSORo0FrApR7wql/gaKdu2n4TO83Sq/AmeUOqD60aXUA==}
     engines: {node: '>= 12.13.0', npm: '>= 6.12.0'}
 
-  '@slack/web-api@6.12.1':
-    resolution: {integrity: sha512-dXHyHkvvziqkDdZlPRnUl/H2uvnUmdJ5B7kxiH1HIgHe18vcbUk1zjU/XCZgJFhxGeq5Zwa95Z+SbNW9mbRhtw==}
-    engines: {node: '>= 12.13.0', npm: '>= 6.12.0'}
+  '@slack/web-api@7.7.0':
+    resolution: {integrity: sha512-DtRyjgQi0mObA2uC6H8nL2OhAISKDhvtOXgRjGRBnBhiaWb6df5vPmKHsOHjpweYALBMHtiqE5ajZFkDW/ag8Q==}
+    engines: {node: '>= 18', npm: '>= 8.6.0'}
 
   '@smithy/abort-controller@3.1.5':
     resolution: {integrity: sha512-DhNPnqTqPoG8aZ5dWkFOgsuY+i0GQ3CI6hMmvCoduNsnU9gUZWZBwGfDQsTTB7NvFPkom1df7jMIJWU90kuXXg==}
@@ -7703,9 +7699,6 @@ packages:
 
   '@types/ioredis-mock@8.2.5':
     resolution: {integrity: sha512-cZyuwC9LGtg7s5G9/w6rpy3IOZ6F/hFR0pQlWYZESMo1xQUYbDpa6haqB4grTePjsGzcB/YLBFCjqRunK5wieg==}
-
-  '@types/is-stream@1.1.0':
-    resolution: {integrity: sha512-jkZatu4QVbR60mpIzjINmtS1ZF4a/FqdTUTBeQDVOQ2PYyidtwFKr0B5G6ERukKwliq+7mIXvxyppwzG5EgRYg==}
 
   '@types/istanbul-lib-coverage@2.0.6':
     resolution: {integrity: sha512-2QF/t/auWm0lsy8XtKVPG19v3sSOQlJe/YHZgfjb/KBBHOGSV+J2q/S671rcq9uTBrLAXmZpqJiaQbMT+zNU1w==}
@@ -9589,11 +9582,11 @@ packages:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
     engines: {node: '>=6'}
 
-  eventemitter3@3.1.2:
-    resolution: {integrity: sha512-tvtQIeLVHjDkJYnzf2dgVMxfuSGJeM/7UCG17TT4EumTfNtF+0nebF/4zWOIkCreAbtNqhGEboB6BWrwqNaw4Q==}
-
   eventemitter3@4.0.7:
     resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
+
+  eventemitter3@5.0.1:
+    resolution: {integrity: sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==}
 
   events@1.1.1:
     resolution: {integrity: sha512-kEcvvCBByWXGnZy6JUlgAp2gBIUjfCAV6P6TgT1/aaQKcmuAEC4OZTV1I4EWQLz2gxZw76atuVyvHhTxvi0Flw==}
@@ -10758,10 +10751,6 @@ packages:
   is-shared-array-buffer@1.0.3:
     resolution: {integrity: sha512-nA2hv5XIhLR3uVzDDfCIknerhx8XUKnstuOERPNNIinXG7v9u+ohXF67vxm4TPTEPU6lm61ZkwP3c9PCB97rhg==}
     engines: {node: '>= 0.4'}
-
-  is-stream@1.1.0:
-    resolution: {integrity: sha512-uQPm8kcs47jx38atAcWTVxyltQYoPT68y9aWYdV6yWXSyW8mzSat0TL6CiWdZeCdF3KrAvpVtnHbTv4RN+rqdQ==}
-    engines: {node: '>=0.10.0'}
 
   is-stream@2.0.1:
     resolution: {integrity: sha512-hFoiJiTl63nn+kstHGBtewWSKnQLpyb155KHheA1l39uvtO9nWIop1p3udqPcUd/xbF1VLMO4n7OI6p7RbngDg==}
@@ -12504,15 +12493,6 @@ packages:
     resolution: {integrity: sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA==}
     engines: {node: '>=4'}
 
-  pg@8.13.0:
-    resolution: {integrity: sha512-34wkUTh3SxTClfoHB3pQ7bIMvw9dpFU1audQQeZG837fmHfHpr14n/AELVDoOYVDW2h5RDWU78tFjkD+erSBsw==}
-    engines: {node: '>= 8.0.0'}
-    peerDependencies:
-      pg-native: '>=3.0.1'
-    peerDependenciesMeta:
-      pg-native:
-        optional: true
-
   pg@8.13.1:
     resolution: {integrity: sha512-OUir1A0rPNZlX//c7ksiu7crsGZTKSOXJPgtNiHGIlC9H0lO+NC6ZDYksSgBYY/thSWhnSRBv8w1lieNNGATNQ==}
     engines: {node: '>= 8.0.0'}
@@ -14093,8 +14073,8 @@ packages:
     resolution: {integrity: sha512-nAQw4SDjPd1J7JN6KD9o+5R1zhGOVhdbAWbpwXwhCi25ofpQVLpsVMpJvaztog1EZUrRd7oZcS21zvrrqZpP9A==}
     engines: {node: '>=16'}
 
-  unleash-server@6.2.3:
-    resolution: {integrity: sha512-pajych22xx3xUCzJhBGKmAQ9+weedOk+oC2Cz+j7UU/1tlUBlapQF0Xth88Mkpfy/tOvaAA2pV9NDMuan+OMHw==}
+  unleash-server@6.3.0:
+    resolution: {integrity: sha512-etmUgG1SsSNic7y7zUe9Kow0OLTxWdMSji8lZAcDBD/HrxNR46HMx+bSmndAY5l9SxRWCa/z4XsXMxlw5vAg/w==}
     engines: {node: '>=18 <21'}
 
   unpipe@1.0.0:
@@ -16385,10 +16365,6 @@ snapshots:
     dependencies:
       '@babel/core': 7.26.0
       '@babel/helper-plugin-utils': 7.25.9
-
-  '@babel/runtime@7.25.6':
-    dependencies:
-      regenerator-runtime: 0.14.1
 
   '@babel/runtime@7.26.0':
     dependencies:
@@ -19543,25 +19519,26 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 3.0.1
 
-  '@slack/logger@3.0.0':
+  '@slack/logger@4.0.0':
     dependencies:
       '@types/node': 22.8.2
 
   '@slack/types@2.14.0': {}
 
-  '@slack/web-api@6.12.1':
+  '@slack/web-api@7.7.0':
     dependencies:
-      '@slack/logger': 3.0.0
+      '@slack/logger': 4.0.0
       '@slack/types': 2.14.0
-      '@types/is-stream': 1.1.0
       '@types/node': 22.8.2
+      '@types/retry': 0.12.0
       axios: 1.7.7
-      eventemitter3: 3.1.2
-      form-data: 2.5.1
+      eventemitter3: 5.0.1
+      form-data: 4.0.0
       is-electron: 2.2.2
-      is-stream: 1.1.0
+      is-stream: 2.0.1
       p-queue: 6.6.2
       p-retry: 4.6.2
+      retry: 0.13.1
     transitivePeerDependencies:
       - debug
 
@@ -20218,10 +20195,6 @@ snapshots:
       ioredis: 5.4.1
     transitivePeerDependencies:
       - supports-color
-
-  '@types/is-stream@1.1.0':
-    dependencies:
-      '@types/node': 22.8.2
 
   '@types/istanbul-lib-coverage@2.0.6': {}
 
@@ -21715,9 +21688,9 @@ snapshots:
       ini: 1.3.8
       proto-list: 1.2.4
 
-  connect-session-knex@5.0.0(pg@8.13.0):
+  connect-session-knex@5.0.0(pg@8.13.1):
     dependencies:
-      knex: 3.1.0(pg@8.13.0)
+      knex: 3.1.0(pg@8.13.1)
     transitivePeerDependencies:
       - better-sqlite3
       - mysql
@@ -21972,7 +21945,7 @@ snapshots:
 
   date-fns@2.30.0:
     dependencies:
-      '@babel/runtime': 7.25.6
+      '@babel/runtime': 7.26.0
 
   date-format@4.0.14: {}
 
@@ -21984,7 +21957,7 @@ snapshots:
     dependencies:
       bluebird: 3.7.2
       db-migrate-base: 2.3.1
-      pg: 8.13.0
+      pg: 8.13.1
       semver: 7.6.3
     transitivePeerDependencies:
       - pg-native
@@ -22617,9 +22590,9 @@ snapshots:
 
   event-target-shim@5.0.1: {}
 
-  eventemitter3@3.1.2: {}
-
   eventemitter3@4.0.7: {}
+
+  eventemitter3@5.0.1: {}
 
   events@1.1.1: {}
 
@@ -23051,6 +23024,7 @@ snapshots:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       mime-types: 2.1.35
+    optional: true
 
   form-data@4.0.0:
     dependencies:
@@ -24040,8 +24014,6 @@ snapshots:
     dependencies:
       call-bind: 1.0.7
 
-  is-stream@1.1.0: {}
-
   is-stream@2.0.1: {}
 
   is-stream@3.0.0: {}
@@ -24629,7 +24601,7 @@ snapshots:
 
   json-schema-to-ts@2.12.0:
     dependencies:
-      '@babel/runtime': 7.25.6
+      '@babel/runtime': 7.26.0
       '@types/json-schema': 7.0.15
       ts-algebra: 1.2.2
 
@@ -24776,7 +24748,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  knex@3.1.0(pg@8.13.0):
+  knex@3.1.0(pg@8.13.1):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -24793,7 +24765,7 @@ snapshots:
       tarn: 3.0.2
       tildify: 2.0.0
     optionalDependencies:
-      pg: 8.13.0
+      pg: 8.13.1
     transitivePeerDependencies:
       - supports-color
 
@@ -25841,14 +25813,9 @@ snapshots:
 
   pg-int8@1.0.1: {}
 
-  pg-pool@3.7.0(pg@8.13.0):
-    dependencies:
-      pg: 8.13.0
-
   pg-pool@3.7.0(pg@8.13.1):
     dependencies:
       pg: 8.13.1
-    optional: true
 
   pg-protocol@1.7.0: {}
 
@@ -25860,16 +25827,6 @@ snapshots:
       postgres-date: 1.0.7
       postgres-interval: 1.2.0
 
-  pg@8.13.0:
-    dependencies:
-      pg-connection-string: 2.7.0
-      pg-pool: 3.7.0(pg@8.13.0)
-      pg-protocol: 1.7.0
-      pg-types: 2.2.0
-      pgpass: 1.0.5
-    optionalDependencies:
-      pg-cloudflare: 1.1.1
-
   pg@8.13.1:
     dependencies:
       pg-connection-string: 2.7.0
@@ -25879,7 +25836,6 @@ snapshots:
       pgpass: 1.0.5
     optionalDependencies:
       pg-cloudflare: 1.1.1
-    optional: true
 
   pgpass@1.0.5:
     dependencies:
@@ -27643,16 +27599,16 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  unleash-server@6.2.3:
+  unleash-server@6.3.0:
     dependencies:
-      '@slack/web-api': 6.12.1
+      '@slack/web-api': 7.7.0
       '@wesleytodd/openapi': 1.1.0(openapi-types@12.1.3)
       ajv: 8.17.1
       ajv-formats: 2.1.1(ajv@8.17.1)
       async: 3.2.6
       bcryptjs: 2.4.3
       compression: 1.7.4
-      connect-session-knex: 5.0.0(pg@8.13.0)
+      connect-session-knex: 5.0.0(pg@8.13.1)
       cookie-parser: 1.4.6
       cookie-session: 2.1.0
       cors: 2.8.5
@@ -27677,7 +27633,7 @@ snapshots:
       json-diff: 1.0.6
       json-schema-to-ts: 2.12.0
       json2csv: 5.0.7
-      knex: 3.1.0(pg@8.13.0)
+      knex: 3.1.0(pg@8.13.1)
       lodash.get: 4.4.2
       lodash.groupby: 4.6.0
       lodash.sortby: 4.7.0
@@ -27691,7 +27647,7 @@ snapshots:
       openapi-types: 12.1.3
       owasp-password-strength-test: 1.3.0
       parse-database-url: 0.3.0
-      pg: 8.13.0
+      pg: 8.13.1
       pg-connection-string: 2.7.0
       pkginfo: 0.4.1
       prom-client: 14.2.0
