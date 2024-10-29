@@ -1958,8 +1958,8 @@ importers:
         specifier: 2.8.0
         version: 2.8.0
       unleash-client:
-        specifier: 6.1.1
-        version: 6.1.1
+        specifier: 6.1.2
+        version: 6.1.2
     devDependencies:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
@@ -2400,8 +2400,8 @@ importers:
         specifier: 2.8.0
         version: 2.8.0
       unleash-client:
-        specifier: 6.1.1
-        version: 6.1.1
+        specifier: 6.1.2
+        version: 6.1.2
     devDependencies:
       '@jest/globals':
         specifier: 29.7.0
@@ -2631,8 +2631,8 @@ importers:
         specifier: 5.6.3
         version: 5.6.3
       unleash-client:
-        specifier: 6.1.1
-        version: 6.1.1
+        specifier: 6.1.2
+        version: 6.1.2
 
   servers/annotations-api:
     dependencies:
@@ -2942,8 +2942,8 @@ importers:
         specifier: 2.8.0
         version: 2.8.0
       unleash-client:
-        specifier: 6.1.1
-        version: 6.1.1
+        specifier: 6.1.2
+        version: 6.1.2
       unleash-server:
         specifier: 6.3.0
         version: 6.3.0
@@ -3181,8 +3181,8 @@ importers:
         specifier: 2.8.0
         version: 2.8.0
       unleash-client:
-        specifier: 6.1.1
-        version: 6.1.1
+        specifier: 6.1.2
+        version: 6.1.2
       uuid:
         specifier: ^10.0.0
         version: 10.0.0
@@ -4004,8 +4004,8 @@ importers:
         specifier: 2.8.0
         version: 2.8.0
       unleash-client:
-        specifier: 6.1.1
-        version: 6.1.1
+        specifier: 6.1.2
+        version: 6.1.2
     devDependencies:
       '@faker-js/faker':
         specifier: 9.1.0
@@ -9877,10 +9877,6 @@ packages:
   foreach@2.0.6:
     resolution: {integrity: sha512-k6GAGDyqLe9JaebCsFCoudPPWfihKu8pylYXRlqP1J7ms39iPoTtk2fviNglIeQEwdh0bQeKJ01ZPyuyQvKzwg==}
 
-  foreground-child@3.1.1:
-    resolution: {integrity: sha512-TMKDUnIte6bfb5nWv7V/caI169OHgvwjb7V4WkeUvbQQdjr5rWKqHFiKWb/fcOwB+CzBT+qbWjvj+DVwRskpIg==}
-    engines: {node: '>=14'}
-
   foreground-child@3.3.0:
     resolution: {integrity: sha512-Ld2g8rrAyMYFXBhEqMz8ZAHBi4J4uS1i/CxGMDnjyFWddMXLVcDp051DZfu+t7+ab7Wv6SMqpWmyFIj5UbfFvg==}
     engines: {node: '>=14'}
@@ -14071,6 +14067,10 @@ packages:
 
   unleash-client@6.1.1:
     resolution: {integrity: sha512-nAQw4SDjPd1J7JN6KD9o+5R1zhGOVhdbAWbpwXwhCi25ofpQVLpsVMpJvaztog1EZUrRd7oZcS21zvrrqZpP9A==}
+    engines: {node: '>=16'}
+
+  unleash-client@6.1.2:
+    resolution: {integrity: sha512-pWvaM8LhwpLtCTDYCVwY1tdHAWFUX9XtQymw4Ln6173+i2zhfdmyyg+ZFFBaET96iSjqvLMKCfte92VWeaNsDA==}
     engines: {node: '>=16'}
 
   unleash-server@6.3.0:
@@ -23009,11 +23009,6 @@ snapshots:
 
   foreach@2.0.6: {}
 
-  foreground-child@3.1.1:
-    dependencies:
-      cross-spawn: 7.0.3
-      signal-exit: 4.1.0
-
   foreground-child@3.3.0:
     dependencies:
       cross-spawn: 7.0.3
@@ -23238,7 +23233,7 @@ snapshots:
 
   glob@10.4.1:
     dependencies:
-      foreground-child: 3.1.1
+      foreground-child: 3.3.0
       jackspeak: 3.4.3
       minimatch: 9.0.5
       minipass: 7.1.2
@@ -23530,7 +23525,7 @@ snapshots:
 
   hosted-git-info@7.0.2:
     dependencies:
-      lru-cache: 10.2.2
+      lru-cache: 10.4.3
 
   hosted-git-info@8.0.0:
     dependencies:
@@ -27589,6 +27584,17 @@ snapshots:
       normalize-path: 2.1.1
 
   unleash-client@6.1.1:
+    dependencies:
+      http-proxy-agent: 7.0.2
+      https-proxy-agent: 7.0.5
+      ip-address: 9.0.5
+      make-fetch-happen: 13.0.1
+      murmurhash3js: 3.0.1
+      semver: 7.6.3
+    transitivePeerDependencies:
+      - supports-color
+
+  unleash-client@6.1.2:
     dependencies:
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.5
