@@ -54,8 +54,8 @@
   },
   "devDependencies": {
     "@faker-js/faker": "9.1.0",
-    "@graphql-codegen/cli": "5.0.2",
-    "@graphql-codegen/typescript": "4.0.9",
+    "@graphql-codegen/cli": "5.0.3",
+    "@graphql-codegen/typescript": "4.1.1",
     "@graphql-codegen/typescript-resolvers": "^4.1.0",
     "@pocket-tools/eslint-config": "workspace:*",
     "@snowplow/node-tracker": "3.24.3",
