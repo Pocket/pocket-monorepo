@@ -7,8 +7,8 @@
       "pinDigests": false
     },
     {
-      "managers": ["docker-compose"],
-      "updateTypes": ["digest", "pinDigest"],
+      "matchManagers": ["docker-compose"],
+      "matchUpdateTypes": ["digest", "pinDigest"],
       "enabled": false
     }
   ],
