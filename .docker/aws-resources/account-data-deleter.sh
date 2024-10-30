@@ -4,10 +4,13 @@ set -x
 SQS=(
 pocket-account-data-delete-queue
 pocket-list-export-queue
+pocket-list-import-batch-queue
+pocket-list-import-file-queue
 )
 
 S3=(
 com.getpocket.list-exports
+com.getpocket.list-imports
 )
 
 for sqs_queue in "${SQS[@]}"; do

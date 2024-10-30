@@ -3,15 +3,18 @@ import { DataDeleterApp, DataDeleterAppConfig } from './dataDeleterApp';
 import { BatchDeleteLambdaResources } from './lambda/batchDeleteLambdaResources';
 import { EventLambda } from './lambda/eventLambda';
 
-import { provider as archiveProvider } from '@cdktf/provider-archive';
+import { provider as archiveProvider, file } from '@cdktf/provider-archive';
 import {
   provider as awsProvider,
   dataAwsCallerIdentity,
+  dataAwsIamPolicyDocument,
   dataAwsKmsAlias,
   dataAwsRegion,
   dataAwsSnsTopic,
   s3Bucket,
   s3BucketLifecycleConfiguration,
+  s3BucketNotification,
+  sqsQueuePolicy,
 } from '@cdktf/provider-aws';
 
 import { provider as localProvider } from '@cdktf/provider-local';
@@ -22,7 +25,7 @@ import {
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
 
-import { App, S3Backend, TerraformStack } from 'cdktf';
+import { App, S3Backend, TerraformStack, Token } from 'cdktf';
 import { Construct } from 'constructs';
 
 class AccountDataDeleter extends TerraformStack {
@@ -168,18 +171,34 @@ class AccountDataDeleter extends TerraformStack {
     // So instead we are going to clickops save this into secrets manager and retrieve
     // it via encrypted environment variables
 
+    const listBatchImport = new ApplicationSQSQueue(
+      this,
+      'batch-import-queue',
+      {
+        name: config.envVars.listImportBatchQueue,
+        tags: config.tags,
+        visibilityTimeoutSeconds: 600,
+        messageRetentionSeconds: 1209600, //14 days
+        //need to set maxReceiveCount to enable DLQ
+        maxReceiveCount: 3,
+      },
+    );
+
+    const fileImportResources = this.createFileImportPipeline();
+
     const dataDeleterAppConfig: DataDeleterAppConfig = {
       region: region,
       caller: caller,
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
       batchDeleteQueue: batchDeleteQueue.sqsQueue,
-      batchDeleteDLQ: batchDeleteQueue.deadLetterQueue,
       listExportQueue: listExportQueue.sqsQueue,
-      listExportDLQ: listExportQueue.deadLetterQueue,
       listExportBucket: exportBucket,
       listExportPartsPrefix: partsPrefix,
       listExportArchivesPrefix: archivesPrefix,
+      importFileQueue: fileImportResources.queue.sqsQueue,
+      importBatchQueue: listBatchImport.sqsQueue,
+      listImportBucket: fileImportResources.bucket,
     };
     new DataDeleterApp(this, 'data-deleter-app', dataDeleterAppConfig);
 
@@ -208,6 +227,90 @@ class AccountDataDeleter extends TerraformStack {
     return new dataAwsSnsTopic.DataAwsSnsTopic(this, 'backend_notifications', {
       name: `Backend-${config.environment}-ChatBot`,
     });
+  }
+
+  /**
+   * Create bucket for file imports, with notifications
+   * on upload to an SQS queue
+   */
+  private createFileImportPipeline() {
+    // Bucket for exports plus auto-expiry rules
+    const importBucket = new s3Bucket.S3Bucket(this, 'list-import-bucket', {
+      bucket: `com.getpocket-${config.environment.toLowerCase()}.list-imports`,
+      tags: config.tags,
+    });
+    new s3BucketLifecycleConfiguration.S3BucketLifecycleConfiguration(
+      this,
+      'list-imports-lifecycle-rule',
+      {
+        bucket: importBucket.bucket,
+        rule: [
+          {
+            id: 'list-import-file-7-days-expire',
+            status: 'Enabled',
+            expiration: { days: 7 },
+          },
+        ],
+      },
+    );
+    const listImportQueue = new ApplicationSQSQueue(
+      this,
+      'list-import-file-queue',
+      {
+        name: config.envVars.listImportFileQueue,
+        tags: config.tags,
+        visibilityTimeoutSeconds: 1800,
+        messageRetentionSeconds: 1209600, //14 days
+        //need to set maxReceiveCount to enable DLQ
+        maxReceiveCount: 3,
+      },
+    );
+    const queuePolicy = new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
+      this,
+      'enqueue-from-import-bucket',
+      {
+        statement: [
+          {
+            actions: ['sqs:SendMessage'],
+            condition: [
+              {
+                test: 'ArnEquals',
+                values: [importBucket.arn],
+                variable: 'aws:SourceArn',
+              },
+            ],
+            effect: 'Allow',
+            principals: [
+              {
+                identifiers: ['*'],
+                type: '*',
+              },
+            ],
+            resources: [listImportQueue.sqsQueue.arn],
+          },
+        ],
+      },
+    );
+
+    new sqsQueuePolicy.SqsQueuePolicy(
+      this,
+      'enqueue-from-import-bucket-policy-atttachment',
+      {
+        policy: Token.asString(queuePolicy.json),
+        queueUrl: listImportQueue.sqsQueue.id,
+      },
+    );
+
+    new s3BucketNotification.S3BucketNotification(this, 'bucket_notification', {
+      bucket: importBucket.id,
+      queue: [
+        {
+          events: ['s3:ObjectCreated:*'],
+          queueArn: Token.asString(listImportQueue.sqsQueue.arn),
+        },
+      ],
+    });
+    return { bucket: importBucket, queue: listImportQueue };
   }
 }
 
