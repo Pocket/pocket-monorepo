@@ -36,7 +36,7 @@ importers:
     devDependencies:
       '@commitlint/cli':
         specifier: 19.5.0
-        version: 19.5.0(@types/node@22.8.2)(typescript@5.7.0-dev.20241030)
+        version: 19.5.0(@types/node@22.8.4)(typescript@5.7.0-dev.20241030)
       '@commitlint/config-conventional':
         specifier: ^19.5.0
         version: 19.5.0
@@ -2554,6 +2554,9 @@ importers:
       '@smithy/node-http-handler':
         specifier: 3.2.0
         version: 3.2.0
+      adm-zip:
+        specifier: 0.5.16
+        version: 0.5.16
       archiver:
         specifier: ^7.0.1
         version: 7.0.1
@@ -2569,6 +2572,9 @@ importers:
       knex:
         specifier: 3.1.0
         version: 3.1.0(mysql2@3.11.3)
+      lodash:
+        specifier: 4.17.21
+        version: 4.17.21
       mysql2:
         specifier: 3.11.3
         version: 3.11.3
@@ -2597,12 +2603,12 @@ importers:
       '@types/jest':
         specifier: 29.5.14
         version: 29.5.14
+      '@types/lodash':
+        specifier: 4.17.12
+        version: 4.17.12
       '@types/node':
         specifier: ^22.8.2
         version: 22.8.2
-      adm-zip:
-        specifier: 0.5.16
-        version: 0.5.16
       jest:
         specifier: 29.7.0
         version: 29.7.0(@types/node@22.8.2)(ts-node@10.9.2(@types/node@22.8.2)(typescript@5.6.3))
@@ -7801,6 +7807,9 @@ packages:
 
   '@types/node@22.8.2':
     resolution: {integrity: sha512-NzaRNFV+FZkvK/KLCsNdTvID0SThyrs5SHB6tsD/lajr22FGC73N2QeDPM2wHtVde8mgcXuSsHQkH5cX1pbPLw==}
+
+  '@types/node@22.8.4':
+    resolution: {integrity: sha512-SpNNxkftTJOPk0oN+y2bIqurEXHTA2AOZ3EJDDKeJ5VzkvvORSvmQXGQarcOzWV1ac7DCaPBEdMDxBsM+d8jWw==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -16636,11 +16645,11 @@ snapshots:
     dependencies:
       commander: 12.1.0
 
-  '@commitlint/cli@19.5.0(@types/node@22.8.2)(typescript@5.7.0-dev.20241030)':
+  '@commitlint/cli@19.5.0(@types/node@22.8.4)(typescript@5.7.0-dev.20241030)':
     dependencies:
       '@commitlint/format': 19.5.0
       '@commitlint/lint': 19.5.0
-      '@commitlint/load': 19.5.0(@types/node@22.8.2)(typescript@5.7.0-dev.20241030)
+      '@commitlint/load': 19.5.0(@types/node@22.8.4)(typescript@5.7.0-dev.20241030)
       '@commitlint/read': 19.5.0
       '@commitlint/types': 19.5.0
       tinyexec: 0.3.1
@@ -16687,7 +16696,7 @@ snapshots:
       '@commitlint/rules': 19.5.0
       '@commitlint/types': 19.5.0
 
-  '@commitlint/load@19.5.0(@types/node@22.8.2)(typescript@5.7.0-dev.20241030)':
+  '@commitlint/load@19.5.0(@types/node@22.8.4)(typescript@5.7.0-dev.20241030)':
     dependencies:
       '@commitlint/config-validator': 19.5.0
       '@commitlint/execute-rule': 19.5.0
@@ -16695,7 +16704,7 @@ snapshots:
       '@commitlint/types': 19.5.0
       chalk: 5.3.0
       cosmiconfig: 9.0.0(typescript@5.7.0-dev.20241030)
-      cosmiconfig-typescript-loader: 5.1.0(@types/node@22.8.2)(cosmiconfig@9.0.0(typescript@5.7.0-dev.20241030))(typescript@5.7.0-dev.20241030)
+      cosmiconfig-typescript-loader: 5.1.0(@types/node@22.8.4)(cosmiconfig@9.0.0(typescript@5.7.0-dev.20241030))(typescript@5.7.0-dev.20241030)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -18798,7 +18807,7 @@ snapshots:
       '@opentelemetry/api-logs': 0.53.0
       '@types/shimmer': 1.2.0
       import-in-the-middle: 1.11.2
-      require-in-the-middle: 7.3.0
+      require-in-the-middle: 7.4.0
       semver: 7.6.3
       shimmer: 1.2.1
     transitivePeerDependencies:
@@ -20124,7 +20133,7 @@ snapshots:
 
   '@types/conventional-commits-parser@5.0.0':
     dependencies:
-      '@types/node': 22.8.2
+      '@types/node': 22.8.4
 
   '@types/cookiejar@2.1.5': {}
 
@@ -20202,7 +20211,7 @@ snapshots:
 
   '@types/ioredis-mock@8.2.5':
     dependencies:
-      '@types/node': 22.8.2
+      '@types/node': 22.8.4
       ioredis: 5.4.1
     transitivePeerDependencies:
       - supports-color
@@ -20316,6 +20325,10 @@ snapshots:
       undici-types: 6.19.8
 
   '@types/node@22.8.2':
+    dependencies:
+      undici-types: 6.19.8
+
+  '@types/node@22.8.4':
     dependencies:
       undici-types: 6.19.8
 
@@ -21811,9 +21824,9 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cosmiconfig-typescript-loader@5.1.0(@types/node@22.8.2)(cosmiconfig@9.0.0(typescript@5.7.0-dev.20241030))(typescript@5.7.0-dev.20241030):
+  cosmiconfig-typescript-loader@5.1.0(@types/node@22.8.4)(cosmiconfig@9.0.0(typescript@5.7.0-dev.20241030))(typescript@5.7.0-dev.20241030):
     dependencies:
-      '@types/node': 22.8.2
+      '@types/node': 22.8.4
       cosmiconfig: 9.0.0(typescript@5.7.0-dev.20241030)
       jiti: 1.21.6
       typescript: 5.7.0-dev.20241030

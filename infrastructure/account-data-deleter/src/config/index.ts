@@ -37,6 +37,8 @@ export const config = {
     databasePort: '3306',
     sqsBatchDeleteQueueName: `${prefix}-Sqs-Batch-Delete-Consumer-Queue`,
     listExportQueueName: `${prefix}-List-Export`,
+    listImportFileQueue: `${prefix}-List-Import-Files`,
+    listImportBatchQueue: `${prefix}-List-Import-Batches`,
     databaseTz: 'US/Central',
     eventBusName: `PocketEventBridge-${environment}-Shared-Event-Bus`,
   },

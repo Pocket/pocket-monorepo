@@ -1,7 +1,11 @@
 import express, { Application, json } from 'express';
 import { queueDeleteRouter, stripeDeleteRouter } from './routes';
 import { EventEmitter } from 'events';
-import { BatchDeleteHandler, ExportListHandler } from './queueHandlers';
+import {
+  BatchDeleteHandler,
+  ExportListHandler,
+  ImportListHandler,
+} from './queueHandlers';
 import { serverLogger, setMorgan } from '@pocket-tools/ts-logger';
 import { sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
 import { unleash } from './unleash';
@@ -37,9 +41,10 @@ export async function startServer(port: number): Promise<{
 
   await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
 
-  // Start batch delete event handler
+  // Start queue handlers (background polling)
   new BatchDeleteHandler(new EventEmitter());
   new ExportListHandler(new EventEmitter());
+  new ImportListHandler(new EventEmitter());
 
   return { server: httpServer, app };
 }
