@@ -1,4 +1,4 @@
-export enum Event {
+export enum PocketEventType {
   // ACCOUNT_DELETION = 'account-deletion', //source: user-event
   // PREMIUM_PURCHASE = 'Premium Purchase', //source: web-repo
   // USER_REGISTRATION = 'User Registration', //source: web-repo

@@ -23,6 +23,7 @@
     "dev": "pnpm run build --watch",
     "format": "eslint --fix",
     "lint": "eslint --fix-dry-run",
+    "prebuild": "pnpm ts-json-schema-generator --path './src/events/types/index.ts' > ./src/events/generated/schema.json",
     "semantic-release": "semantic-release",
     "test": "jest",
     "test:watch": "pnpm run test -- --watch"
@@ -75,7 +76,10 @@
       "@semantic-release/github"
     ]
   },
-  "dependencies": {},
+  "dependencies": {
+    "ajv": "8.17.1",
+    "ajv-formats": "3.0.1"
+  },
   "devDependencies": {
     "@jest/globals": "29.7.0",
     "@pocket-tools/eslint-config": "workspace:*",
@@ -88,6 +92,7 @@
     "semantic-release": "24.2.0",
     "semantic-release-monorepo": "8.0.2",
     "ts-jest": "29.2.5",
+    "ts-json-schema-generator": "2.3.0",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
     "tsup": "8.3.5",

@@ -1,10 +1,10 @@
-import { ForgotPasswordRequest } from './forgotPasswordRequest';
-import { Event } from './events';
-export * from './forgotPasswordRequest';
+import { ForgotPasswordRequest } from './types/forgotPasswordRequest';
+import { PocketEventType } from './events';
+export * from './types/forgotPasswordRequest';
 export * from './events';
 
 export type PocketEvent = ForgotPasswordRequest;
 
 export type PocketEventTypeMap = {
-  [Event.FORGOT_PASSWORD]: ForgotPasswordRequest;
+  [PocketEventType.FORGOT_PASSWORD]: ForgotPasswordRequest;
 };

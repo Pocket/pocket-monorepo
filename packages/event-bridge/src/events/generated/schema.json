@@ -1,0 +1,95 @@
+{
+  "$ref": "#/definitions/ForgotPasswordRequest",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "ForgotPasswordRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "account": {
+          "type": "string"
+        },
+        "detail": {
+          "additionalProperties": false,
+          "properties": {
+            "passwordResetInfo": {
+              "additionalProperties": false,
+              "properties": {
+                "resetPasswordToken": {
+                  "type": "string"
+                },
+                "resetPasswordUsername": {
+                  "type": "string"
+                },
+                "timestamp": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "resetPasswordToken",
+                "resetPasswordUsername",
+                "timestamp"
+              ],
+              "type": "object"
+            },
+            "user": {
+              "additionalProperties": false,
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "encodedId": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "id",
+                "encodedId",
+                "email"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "passwordResetInfo",
+            "user"
+          ],
+          "type": "object"
+        },
+        "detail-type": {
+          "const": "Forgot Password Request",
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "time": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "account",
+        "detail",
+        "detail-type",
+        "id",
+        "region",
+        "source",
+        "time",
+        "version"
+      ],
+      "type": "object"
+    }
+  }
+}

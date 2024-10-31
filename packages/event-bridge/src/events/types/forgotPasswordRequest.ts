@@ -1,9 +1,9 @@
-import { EventBridgeBase } from './eventBridgeBase';
-import { Event } from './events';
+import { EventBridgeBase } from '../eventBridgeBase';
+import { PocketEventType } from '../events';
 
 export interface ForgotPasswordRequest extends EventBridgeBase {
   // 'source': 'web-repo';
-  'detail-type': Event.FORGOT_PASSWORD;
+  'detail-type': PocketEventType.FORGOT_PASSWORD;
   detail: {
     passwordResetInfo: PasswordResetInfo;
     user: User;

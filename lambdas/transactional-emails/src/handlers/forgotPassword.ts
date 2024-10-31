@@ -1,6 +1,9 @@
 import { SQSRecord } from 'aws-lambda';
 import { sendForgotPasswordEmail } from '../braze';
-import { sqsEventBridgeEvent, Event } from '@pocket-tools/event-bridge';
+import {
+  sqsEventBridgeEvent,
+  PocketEventType,
+} from '@pocket-tools/event-bridge';
 
 /**
  * Given an account delete event, make a request to send the account deletion
@@ -10,7 +13,10 @@ import { sqsEventBridgeEvent, Event } from '@pocket-tools/event-bridge';
  */
 export async function forgotPasswordHandler(record: SQSRecord) {
   const event = sqsEventBridgeEvent(record);
-  if (event === null || !(event?.['detail-type'] !== Event.FORGOT_PASSWORD)) {
+  if (
+    event === null ||
+    !(event?.['detail-type'] !== PocketEventType.FORGOT_PASSWORD)
+  ) {
     return;
   }
   await sendForgotPasswordEmail({
