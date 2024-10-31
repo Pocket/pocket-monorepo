@@ -262,7 +262,14 @@ export class DataDeleterApp extends Construct {
             resources: [
               this.config.batchDeleteQueue.arn,
               this.config.listExportQueue.arn,
+              this.config.importFileQueue.arn,
             ],
+            effect: 'Allow',
+          },
+          {
+            // write-only permissions
+            actions: ['sqs:SendMessage', 'sqs:SendMessageBatch'],
+            resources: [this.config.importBatchQueue.arn],
             effect: 'Allow',
           },
           {
@@ -275,6 +282,12 @@ export class DataDeleterApp extends Construct {
             // Object actions
             actions: ['s3:*Object'],
             resources: [`${this.config.listExportBucket.arn}/*`],
+            effect: 'Allow',
+          },
+          {
+            // Object actions
+            actions: ['s3:GetObject'],
+            resources: [`${this.config.listImportBucket.arn}/*`],
             effect: 'Allow',
           },
           {
