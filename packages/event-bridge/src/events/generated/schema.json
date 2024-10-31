@@ -2,86 +2,96 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
     "AccountDelete": {
-      "additionalProperties": false,
       "properties": {
-        "account": {
-          "type": "string"
-        },
         "detail": {
-          "additionalProperties": false,
-          "properties": {
-            "email": {
-              "type": "string"
-            },
-            "isPremium": {
-              "type": "boolean"
-            },
-            "userId": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "email",
-            "userId"
-          ],
-          "type": "object"
+          "$ref": "#/definitions/AccountPayload"
         },
         "detail-type": {
           "const": "account-deletion",
           "type": "string"
         },
-        "id": {
-          "type": "string"
-        },
-        "region": {
-          "type": "string"
-        },
         "source": {
-          "type": "string"
-        },
-        "time": {
-          "format": "date-time",
-          "type": "string"
-        },
-        "version": {
           "type": "string"
         }
       },
       "required": [
-        "account",
         "detail",
         "detail-type",
-        "id",
-        "region",
-        "source",
-        "time",
-        "version"
+        "source"
       ],
       "type": "object"
     },
-    "EventBridgeBase": {
-      "additionalProperties": false,
+    "AccountEmailUpdated": {
       "properties": {
-        "account": {
-          "type": "string"
-        },
         "detail": {
-          "type": "object"
+          "$ref": "#/definitions/AccountPayload"
         },
         "detail-type": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        },
-        "region": {
+          "const": "account-email-updated",
           "type": "string"
         },
         "source": {
           "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "AccountPayload": {
+      "properties": {
+        "apiId": {
+          "type": "string"
         },
-        "time": {
-          "format": "date-time",
+        "clientVersion": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "eventType": {
+          "type": "string"
+        },
+        "guid": {
+          "type": "number"
+        },
+        "hashedGuid": {
+          "type": "string"
+        },
+        "hashedId": {
+          "type": "string"
+        },
+        "ipAddress": {
+          "type": "string"
+        },
+        "isNative": {
+          "type": "boolean"
+        },
+        "isPremium": {
+          "type": "boolean"
+        },
+        "isTrusted": {
+          "type": "boolean"
+        },
+        "language": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "snowplowDomainUserId": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "number"
+        },
+        "userAgent": {
+          "type": "string"
+        },
+        "userId": {
           "type": "string"
         },
         "version": {
@@ -89,28 +99,38 @@
         }
       },
       "required": [
-        "account",
-        "id",
-        "region",
-        "time",
+        "email",
+        "isPremium",
+        "userId",
+        "apiId",
+        "timestamp",
         "version",
-        "source",
+        "eventType"
+      ],
+      "type": "object"
+    },
+    "BaseEvent": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
         "detail-type",
+        "source",
         "detail"
       ],
       "type": "object"
     },
     "ForgotPasswordRequest": {
-      "additionalProperties": false,
       "properties": {
-        "account": {
-          "type": "string"
-        },
         "detail": {
-          "additionalProperties": false,
           "properties": {
             "passwordResetInfo": {
-              "additionalProperties": false,
               "properties": {
                 "resetPasswordToken": {
                   "type": "string"
@@ -130,7 +150,6 @@
               "type": "object"
             },
             "user": {
-              "additionalProperties": false,
               "properties": {
                 "email": {
                   "type": "string"
@@ -160,32 +179,14 @@
           "const": "Forgot Password Request",
           "type": "string"
         },
-        "id": {
-          "type": "string"
-        },
-        "region": {
-          "type": "string"
-        },
         "source": {
-          "type": "string"
-        },
-        "time": {
-          "format": "date-time",
-          "type": "string"
-        },
-        "version": {
           "type": "string"
         }
       },
       "required": [
-        "account",
         "detail",
         "detail-type",
-        "id",
-        "region",
-        "source",
-        "time",
-        "version"
+        "source"
       ],
       "type": "object"
     }

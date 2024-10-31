@@ -13,20 +13,20 @@ import { MissingFieldsError } from './errors';
  * @returns A schema to validate against
  */
 const validationSchemaForDetailType = (detailType: string) => {
-  let validationSchema = null;
+  let validationSchemaName: string | null = null;
   for (const key in schema.definitions) {
     if (
-      schema.definitions[key].properties['detail-type'].const === detailType
+      schema.definitions[key].properties['detail-type']?.const === detailType
     ) {
-      validationSchema = schema.definitions[key];
+      validationSchemaName = `#/definitions/${key}`;
     }
   }
 
-  if (validationSchema === null) {
+  if (validationSchemaName === null) {
     throw new Error(`No type for: ${detailType}`);
   }
 
-  return validationSchema;
+  return validationSchemaName;
 };
 
 /**
@@ -41,15 +41,15 @@ const parsePocketEvent = <T extends keyof PocketEventTypeMap>(
     throw new Error(`Unsupported type: ${json['detail-type']}`);
   }
 
-  const ajv = new Ajv({ strict: true, strictSchema: true, strictTypes: true });
+  const ajv = new Ajv();
   addFormats(ajv);
 
-  const validationFn = ajv.compile(
-    validationSchemaForDetailType(json['detail-type']),
-  );
+  const schemaName = validationSchemaForDetailType(json['detail-type']);
+  ajv.compile(schema);
+  const valid = ajv.validate(schemaName, json);
 
-  if (!validationFn(json)) {
-    throw new MissingFieldsError(ajv.errorsText(validationFn.errors));
+  if (!valid) {
+    throw new MissingFieldsError(ajv.errorsText(ajv.errors));
   }
 
   return json as PocketEventTypeMap[T];

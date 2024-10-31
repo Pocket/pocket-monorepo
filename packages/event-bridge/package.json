@@ -23,7 +23,7 @@
     "dev": "pnpm run build --watch",
     "format": "eslint --fix",
     "lint": "eslint --fix-dry-run",
-    "prebuild": "pnpm ts-json-schema-generator --path './src/events/types/index.ts' > ./src/events/generated/schema.json",
+    "prebuild": "pnpm ts-json-schema-generator --additional-properties --path './src/events/types/index.ts' > ./src/events/generated/schema.json",
     "semantic-release": "semantic-release",
     "test": "jest",
     "test:watch": "pnpm run test -- --watch"

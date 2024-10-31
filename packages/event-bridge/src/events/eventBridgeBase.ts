@@ -1,12 +1,17 @@
-export interface EventBridgeBase {
+/**
+ * A base event that all events should extend from when they are Received only, not sent.
+ */
+export interface IncomingBaseEvent extends BaseEvent {
   account: string;
   id: string;
   region: string;
   time: Date;
   version: string;
+}
 
-  // Theses are overriden by the actual events with their types
-  source: string;
+export interface BaseEvent {
+  // These get overriden by the extending event
   'detail-type': string;
-  detail: object;
+  source: string;
+  detail: any;
 }

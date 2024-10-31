@@ -4,8 +4,8 @@ import config from '../../config';
 import { setTimeout } from 'timers/promises';
 import EventEmitter from 'events';
 import { EventType } from '../eventType';
-import { UserEventsPayload, EventBridgeEventType } from './types';
 import { EventBusHandler } from './eventBusHandler';
+import { AccountPayload, PocketEventType } from '@pocket-tools/event-bridge';
 
 /**
  * Mock event payload
@@ -65,7 +65,7 @@ describe('EventBusHandler', () => {
   });
 
   describe('user account delete event', () => {
-    const partialExpectedEvent: Omit<UserEventsPayload, 'eventType'> = {
+    const partialExpectedEvent: Omit<AccountPayload, 'eventType'> = {
       userId: '1',
       email: 'test@email.com',
       isPremium: false,
@@ -75,7 +75,7 @@ describe('EventBusHandler', () => {
     };
 
     it('should send event to event bus with proper event data', async () => {
-      const eventType = EventBridgeEventType.ACCOUNT_DELETION;
+      const eventType = PocketEventType.ACCOUNT_DELETION;
       const emittedEvent = EventType.ACCOUNT_DELETE;
       emitter.emit(emittedEvent, {
         user: {
@@ -86,7 +86,7 @@ describe('EventBusHandler', () => {
         },
         eventType: emittedEvent,
       });
-      const expectedEvent: UserEventsPayload = {
+      const expectedEvent: AccountPayload = {
         eventType,
         ...partialExpectedEvent,
       };
@@ -112,7 +112,7 @@ describe('EventBusHandler', () => {
   });
 
   describe('user email updated event', () => {
-    const partialExpectedEvent: Omit<UserEventsPayload, 'eventType'> = {
+    const partialExpectedEvent: Omit<AccountPayload, 'eventType'> = {
       userId: '1',
       email: 'test@email.com',
       isPremium: false,
@@ -122,7 +122,7 @@ describe('EventBusHandler', () => {
     };
 
     it('should send event to event bus with proper event data', async () => {
-      const eventType = EventBridgeEventType.ACCOUNT_EMAIL_UPDATED;
+      const eventType = PocketEventType.ACCOUNT_EMAIL_UPDATED;
       const emittedEvent = EventType.ACCOUNT_EMAIL_UPDATED;
       emitter.emit(emittedEvent, {
         user: {
@@ -133,7 +133,7 @@ describe('EventBusHandler', () => {
         },
         eventType: emittedEvent,
       });
-      const expectedEvent: UserEventsPayload = {
+      const expectedEvent: AccountPayload = {
         eventType,
         ...partialExpectedEvent,
       };

@@ -5,6 +5,7 @@
  */
 export enum PocketEventType {
   ACCOUNT_DELETION = 'account-deletion', //source: user-event
+  ACCOUNT_EMAIL_UPDATED = 'account-email-updated', // source: user-event
   // PREMIUM_PURCHASE = 'Premium Purchase', //source: web-repo
   // USER_REGISTRATION = 'User Registration', //source: web-repo
   FORGOT_PASSWORD = 'Forgot Password Request', //source: web-repo

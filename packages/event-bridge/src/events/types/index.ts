@@ -1,2 +1,2 @@
 export * from './forgotPasswordRequest';
-export * from './accountDelete';
+export * from './account';

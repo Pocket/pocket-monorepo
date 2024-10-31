@@ -11,6 +11,7 @@ import { eventMap } from './config';
 import { EventHandlerInterface } from '../interfaces';
 import { EventHandlerCallbackMap } from './types';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { PocketEvent } from '@pocket-tools/event-bridge';
 
 /**
  * This class MUST be initialized using the EventBusHandler.init() method.
@@ -36,7 +37,7 @@ export class EventBusHandler implements EventHandlerInterface {
 
     Object.entries(handlerMap).forEach(([event, method]) => {
       emitter.on(event, async (data) => {
-        let eventPayload = undefined;
+        let eventPayload: PocketEvent = undefined;
         try {
           eventPayload = method(data);
           await this.sendEvent(eventPayload);
@@ -45,7 +46,7 @@ export class EventBusHandler implements EventHandlerInterface {
           // log to Sentry and Cloudwatch but don't halt program
           const failedEventError = new Error(
             `Failed to send event '${
-              eventPayload.eventType
+              eventPayload['detail-type']
             }' to event bus. Event Body:\n ${JSON.stringify(eventPayload)}`,
           );
           // Don't halt program, but capture the failure in Sentry and Cloudwatch
@@ -67,14 +68,14 @@ export class EventBusHandler implements EventHandlerInterface {
    * and add to Cloudwatch logs.
    * @param eventPayload the payload to send to event bus
    */
-  async sendEvent(eventPayload: any) {
+  async sendEvent(eventPayload: PocketEvent) {
     const putEventCommand = new PutEventsCommand({
       Entries: [
         {
           EventBusName: config.aws.eventBus.name,
-          Detail: JSON.stringify(eventPayload),
-          Source: config.aws.eventBus.eventBridge.source,
-          DetailType: eventPayload.eventType,
+          Detail: JSON.stringify(eventPayload.detail),
+          Source: eventPayload.source,
+          DetailType: eventPayload['detail-type'],
         },
       ],
     });
@@ -83,7 +84,7 @@ export class EventBusHandler implements EventHandlerInterface {
     if (output.FailedEntryCount) {
       const failedEventError = new Error(
         `Failed to send event '${
-          eventPayload.eventType
+          eventPayload['detail-type']
         }' to event bus. Event Body:\n ${JSON.stringify(eventPayload)}`,
       );
       // Don't halt program, but capture the failure in Sentry and Cloudwatch
