@@ -24,6 +24,7 @@ import {
   updateTag,
   upsertSavedItem,
   exportList,
+  batchImport,
 } from './mutation';
 import { tagsSavedItems } from './tag';
 import {
@@ -164,6 +165,7 @@ const resolvers = {
     replaceTags,
     removeTagsByName,
     exportList,
+    batchImport,
     deleteTagByName: async (
       _,
       args: { tagName: string; timestamp?: Date },

@@ -10,6 +10,8 @@ import {
   TagSaveAssociation,
   TagEdge,
   SaveUpdateTagsInputDb,
+  SavedItemImportHydrated,
+  SavedItemImportInput,
 } from '../types';
 import { mysqlTimeString, uniqueArray } from './utils';
 import config from '../config';
@@ -18,6 +20,8 @@ import { SavedItemDataService } from './savedItemsService';
 import { TagModel } from '../models';
 import { NotFoundError } from '@pocket-tools/apollo-utils';
 import { PocketSaveDataService } from './pocketSavesService';
+import { serverLogger } from '@pocket-tools/ts-logger';
+import { sanitizeTagName } from '../models/tag';
 
 /***
  * class that handles the read and write from `readitla-temp.item_tags` table.
@@ -221,6 +225,47 @@ export class TagDataService {
       await this.insertTagAndUpdateSavedItem(tagInputs, trx, updatedTime);
       await this.usersMetaService.logTagMutation(updatedTime, trx);
     });
+  }
+
+  /**
+   * Add imported tags to items -- avoid re-updating
+   * SavedItems since they are added at the same time
+   * (the main difference from the existing batchInsert method,
+   * other than the input type)
+   * It's a little duplicative but easier to keep it separated
+   * since adding tags to an item is a bit different than
+   * importing both at once.
+   * @param records
+   * @param trx
+   * @param updatedAt
+   */
+  public async importTags(
+    records: SavedItemImportHydrated[],
+    trx: Knex.Transaction<any, any[]>,
+  ) {
+    const now = new Date();
+    const updatedAt = mysqlTimeString(now, config.database.tz);
+    const itemTags = records
+      .flatMap((record) => {
+        return record.import.tags.map((tag) => {
+          try {
+            return {
+              user_id: parseInt(this.userId),
+              item_id: record.item.itemId,
+              tag: sanitizeTagName(tag),
+              time_added: updatedAt,
+              time_updated: updatedAt,
+              api_id: parseInt(this.apiId),
+            };
+          } catch {
+            serverLogger.warn({ message: 'Invalid tag skipped', tag });
+            return null;
+          }
+        });
+      })
+      .filter((input) => input != null);
+    await trx('item_tags').insert(itemTags).onConflict().merge();
+    await this.usersMetaService.logTagMutation(now, trx);
   }
 
   private async insertTagAndUpdateSavedItem(

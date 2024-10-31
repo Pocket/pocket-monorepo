@@ -1,4 +1,5 @@
 import { PaginationInput } from '@pocket-tools/apollo-utils';
+import { ItemResponse } from '../externalCaller/parserCaller';
 
 export type User = {
   id: string;
@@ -139,6 +140,19 @@ export type SavedItemUpsertInput = {
   isFavorite?: boolean;
   timestamp?: number;
   title?: string;
+};
+
+export type SavedItemImportInput = {
+  url: string;
+  createdAt: string; // ISO-formatted timestamp
+  title: string;
+  tags: string[];
+  status: 'UNREAD' | 'ARCHIVED';
+};
+
+export type SavedItemImportHydrated = {
+  item: ItemResponse;
+  import: SavedItemImportInput;
 };
 
 /**

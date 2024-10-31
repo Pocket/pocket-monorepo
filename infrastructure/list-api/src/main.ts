@@ -44,6 +44,7 @@ class ListAPI extends TerraformStack {
       this,
       'caller',
     );
+
     this.createPocketAlbApplication({
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: this.getCodeDeploySnsTopic(),
@@ -211,12 +212,12 @@ class ListAPI extends TerraformStack {
               value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.envVars.sqsPublisherDataQueueName}`,
             },
             {
-              name: 'SQS_BATCH_DELETE_QUEUE_URL',
-              value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.envVars.sqsBatchDeleteQueueName}`,
-            },
-            {
               name: 'SQS_PERMLIB_ITEMMAIN_QUEUE_URL',
               value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.envVars.sqsPermLibItemMainQueueName}`,
+            },
+            {
+              name: 'SQS_IMPORT_BATCH_QUEUE_URL',
+              value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.envVars.sqsBatchImportQueueName}`,
             },
             {
               name: 'KINESIS_UNIFIED_EVENT_STREAM',
@@ -374,7 +375,7 @@ class ListAPI extends TerraformStack {
               'sqs:SendMessageBatch',
             ],
             resources: [
-              `arn:aws:sqs:${region.name}:${caller.accountId}:${config.envVars.sqsBatchDeleteQueueName}`,
+              `arn:aws:sqs:${region.name}:${caller.accountId}:${config.envVars.sqsBatchImportQueueName}`,
             ],
             effect: 'Allow',
           },

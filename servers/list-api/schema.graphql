@@ -1,7 +1,7 @@
 extend schema
   @link(
     url: "https://specs.apollo.dev/federation/v2.6"
-    import: ["@key", "@composeDirective", "@tag", "@shareable", "@requiresScopes"]
+    import: ["@key", "@composeDirective", "@tag", "@shareable", "@requiresScopes", "@inaccessible"]
   )
   # The link directive is required to federate @constraint
   # It doesn't actually have to be a real spec, but it would be good
@@ -519,6 +519,17 @@ input TagUpdateInput {
   """
   name: String!
 }
+
+"""
+Input for batch imports
+"""
+input BatchImportInput {
+  url: Url!
+  createdAt: ISOString!
+  title: String!
+  tags: [String!]
+  status: ImportableStatus
+}
 """
 Enum to specify the sort order of SavedItems fetched
 """
@@ -993,6 +1004,18 @@ type Mutation {
   Returns the request ID associated with the request.
   """
   exportList: String @requiresScopes(scopes: [["ROLE_USER"]])
+  """
+  Import a batch of items and (optional) tags into a user's list.
+  Duplicate entries will be ignored. Returns true if the import
+  succeeded, false otherwise. Either all succeed or all fail.
+  For now intended to be internal-only and not federated to the
+  supergraph.
+  """
+  batchImport(
+    input: [BatchImportInput!]! @constraint(minLength: 1, maxLength: 100)
+  ): Boolean! @inaccessible
+  # @policy(policies: [["application_is_native:true"]])
+  # @requiresScopes(scopes: [["ROLE_USER"]])
 }
 
 """
@@ -1019,6 +1042,11 @@ enum PocketSaveStatus {
   ARCHIVED
   DELETED
   HIDDEN
+  UNREAD
+}
+
+enum ImportableStatus {
+  ARCHIVED
   UNREAD
 }
 

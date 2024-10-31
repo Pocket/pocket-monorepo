@@ -7,6 +7,8 @@ import {
   SavedItemTagsInput,
   Tag,
   SavedItemRefInput,
+  SavedItemImportHydrated,
+  SavedItemImportInput,
 } from '../types';
 import { IContext } from '../server/context';
 import { ParserCaller } from '../externalCaller/parserCaller';
@@ -97,6 +99,62 @@ export async function upsertSavedItem(
     Sentry.captureException(e);
     throw new Error(`unable to add item with url: ${savedItemUpsertInput.url}`);
   }
+}
+
+/**
+ * Import from another service
+ */
+export async function batchImport(
+  root,
+  args: { input: SavedItemImportInput[] },
+  context: IContext,
+): Promise<boolean> {
+  try {
+    const input: SavedItemImportHydrated[] = [];
+    for await (const record of args.input) {
+      // Copied from upsertSavedItem
+      const url = ensureHttpPrefix(record.url);
+      const item = await ParserCaller.getOrCreateItem(url);
+      input.push({ item, import: { ...record, url } });
+    }
+    const saveService = new SavedItemDataService(context);
+    await context.dbClient.transaction(async (trx) => {
+      await saveService.batchImportSavedItems(input, trx);
+      await context.models.tag.importTags(input, trx);
+    });
+    // We can reconstruct this from the input data, but
+    // for now let's just read it back in for the event emitter
+    // and we can optimize if we need to later
+    const savedItems = await saveService.batchGetSavedItemsByGivenIds(
+      input.map((record) => record.item.itemId),
+    );
+    const tagsById = input.reduce(
+      (mapping, record) => {
+        mapping[record.item.itemId] = record.import.tags;
+        return mapping;
+      },
+      {} as Record<string, string[]>,
+    );
+    await Promise.all(
+      savedItems.map((item) =>
+        context.emitItemEvent(
+          EventType.ADD_ITEM,
+          item,
+          tagsById[item.id!.toString()],
+        ),
+      ),
+    );
+  } catch (error) {
+    serverLogger.error({
+      message: 'Encountered error during batch import',
+      errorMessage: error.message,
+      errorData: error,
+      import: args.input,
+    });
+    Sentry.captureException(error);
+    return false;
+  }
+  return true;
 }
 
 /**
