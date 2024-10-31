@@ -142,7 +142,7 @@ export const config = {
         fallback: true,
       },
       importsDisabled: {
-        name: 'perm.backend.perm.backend.list-import-disabled',
+        name: 'perm.backend.list-import-disabled',
         fallback: true,
       },
     },
