@@ -20,12 +20,13 @@ export type DataDeleterAppConfig = {
   secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
   snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
   batchDeleteQueue: sqsQueue.SqsQueue;
-  batchDeleteDLQ: sqsQueue.SqsQueue | undefined;
   listExportQueue: sqsQueue.SqsQueue;
-  listExportDLQ: sqsQueue.SqsQueue | undefined;
   listExportBucket: S3Bucket;
   listExportPartsPrefix: string;
   listExportArchivesPrefix: string;
+  importFileQueue: sqsQueue.SqsQueue;
+  importBatchQueue: sqsQueue.SqsQueue;
+  listImportBucket: S3Bucket;
 };
 
 export class DataDeleterApp extends Construct {
@@ -116,6 +117,18 @@ export class DataDeleterApp extends Construct {
             {
               name: 'SQS_LIST_EXPORT_QUEUE_URL',
               value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.envVars.listExportQueueName}`,
+            },
+            {
+              name: 'SQS_IMPORT_BATCH_QUEUE_URL',
+              value: this.config.importBatchQueue.url,
+            },
+            {
+              name: 'SQS_IMPORT_FILE_QUEUE_URL',
+              value: this.config.importFileQueue.url,
+            },
+            {
+              name: 'LIST_IMPORTS_BUCKET',
+              value: this.config.listImportBucket.bucket,
             },
             {
               name: 'LIST_EXPORT_BUCKET',
@@ -249,7 +262,14 @@ export class DataDeleterApp extends Construct {
             resources: [
               this.config.batchDeleteQueue.arn,
               this.config.listExportQueue.arn,
+              this.config.importFileQueue.arn,
             ],
+            effect: 'Allow',
+          },
+          {
+            // write-only permissions
+            actions: ['sqs:SendMessage', 'sqs:SendMessageBatch'],
+            resources: [this.config.importBatchQueue.arn],
             effect: 'Allow',
           },
           {
@@ -262,6 +282,12 @@ export class DataDeleterApp extends Construct {
             // Object actions
             actions: ['s3:*Object'],
             resources: [`${this.config.listExportBucket.arn}/*`],
+            effect: 'Allow',
+          },
+          {
+            // Object actions
+            actions: ['s3:GetObject'],
+            resources: [`${this.config.listImportBucket.arn}/*`],
             effect: 'Allow',
           },
           {
