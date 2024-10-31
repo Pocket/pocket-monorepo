@@ -1957,6 +1957,15 @@ importers:
 
   packages/event-bridge:
     dependencies:
+      '@aws-sdk/client-eventbridge':
+        specifier: 3.679.0
+        version: 3.679.0
+      '@pocket-tools/ts-logger':
+        specifier: workspace:*
+        version: link:../ts-logger
+      '@sentry/node':
+        specifier: 8.36.0
+        version: 8.36.0
       ajv:
         specifier: 8.17.1
         version: 8.17.1
@@ -3880,9 +3889,6 @@ importers:
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
-      '@aws-sdk/client-eventbridge':
-        specifier: 3.679.0
-        version: 3.679.0
       '@pocket-tools/apollo-utils':
         specifier: workspace:*
         version: link:../../packages/apollo-utils
@@ -7157,6 +7163,10 @@ packages:
     resolution: {integrity: sha512-Ci0Nmtw5ETWLqQJGY4dyF+iWh7PWKy6k303fCEoEmqj2czDrKJCp7yHBNV0XYbo00prj2ZTbCr6I7albYiyONA==}
     engines: {node: '>=14.18'}
 
+  '@sentry/core@8.36.0':
+    resolution: {integrity: sha512-cbq1WQyRqc/+YpPhjwQxfniUM3ZxmO3Pm1oisTB8dw6mlbgQfGD6aznEIjXWWJY6k6acewJlMUx09N7DnprtBw==}
+    engines: {node: '>=14.18'}
+
   '@sentry/integrations@7.118.0':
     resolution: {integrity: sha512-C2rR4NvIMjokF8jP5qzSf1o2zxDx7IeYnr8u15Kb2+HdZtX559owALR0hfgwnfeElqMhGlJBaKUWZ48lXJMzCQ==}
     engines: {node: '>=8'}
@@ -7169,8 +7179,22 @@ packages:
     resolution: {integrity: sha512-B0FLOcZEfYe3CJ2t0l1N0HJcHXcIrLlGENQ2kf5HqR2zcOcOzRxyITJTSV5brCnmzVNgkz9PG8VWo3w0HXZQpA==}
     engines: {node: '>=14.18'}
 
+  '@sentry/node@8.36.0':
+    resolution: {integrity: sha512-2RRbSck90TGpVz8F3OaNbq5Q9RXgeRlq5leGWHU7NfQOl3LmkG+vkzTbOqPDPZLtiYcw5KQ3G5G+vybrDS6AGg==}
+    engines: {node: '>=14.18'}
+
   '@sentry/opentelemetry@8.35.0':
     resolution: {integrity: sha512-2mWMpEiIFop/omia9BqTJa+0Khe+tSsiZSUrxbnSpxM0zgw8DFIzJMHbiqw/I7Qaluz9pnO2HZXqgUTwNPsU8A==}
+    engines: {node: '>=14.18'}
+    peerDependencies:
+      '@opentelemetry/api': ^1.9.0
+      '@opentelemetry/core': ^1.25.1
+      '@opentelemetry/instrumentation': ^0.53.0
+      '@opentelemetry/sdk-trace-base': ^1.26.0
+      '@opentelemetry/semantic-conventions': ^1.27.0
+
+  '@sentry/opentelemetry@8.36.0':
+    resolution: {integrity: sha512-pMKMphH0j1Mh8zknLWEEUaaaxeYn76rniGOxKLoQVk1pCUhhzkFEJdxKC41aR8yin/uN8X3CGWQb9vp/przwSg==}
     engines: {node: '>=14.18'}
     peerDependencies:
       '@opentelemetry/api': ^1.9.0
@@ -7187,12 +7211,20 @@ packages:
     resolution: {integrity: sha512-AVEZjb16MlYPifiDDvJ19dPQyDn0jlrtC1PHs6ZKO+Rzyz+2EX2BRdszvanqArldexPoU1p5Bn2w81XZNXThBA==}
     engines: {node: '>=14.18'}
 
+  '@sentry/types@8.36.0':
+    resolution: {integrity: sha512-K1pVFfdGHw115RzGHpwSOqoEPeayn4N1F9IfM0kxrYpQSbFT1X29eak88GBfC8gPiLEF0iFGlSaQ4ERmF7oRcA==}
+    engines: {node: '>=14.18'}
+
   '@sentry/utils@7.118.0':
     resolution: {integrity: sha512-43qItc/ydxZV1Zb3Kn2M54RwL9XXFa3IAYBO8S82Qvq5YUYmU2AmJ1jgg7DabXlVSWgMA1HntwqnOV3JLaEnTQ==}
     engines: {node: '>=8'}
 
   '@sentry/utils@8.35.0':
     resolution: {integrity: sha512-MdMb6+uXjqND7qIPWhulubpSeHzia6HtxeJa8jYI09OCvIcmNGPydv/Gx/LZBwosfMHrLdTWcFH7Y7aCxrq7cg==}
+    engines: {node: '>=14.18'}
+
+  '@sentry/utils@8.36.0':
+    resolution: {integrity: sha512-oJ3EDPj0I00z+AwC3EWBpSidXYUoKW0Id8MfMQP5Hflniz3gif7UEReblT+FJgPEVo6+6uNzAncY0MuNMxmDKQ==}
     engines: {node: '>=14.18'}
 
   '@sideway/address@4.1.5':
@@ -7796,9 +7828,6 @@ packages:
 
   '@types/serve-static@1.15.7':
     resolution: {integrity: sha512-W8Ym+h8nhuRwaKPaDw34QUkwsGi6Rc4yYqvKFo5rm2FUEhCFbzVWrxXUxuKK8TASjWsysJY0nsmNCGhCOIsrOw==}
-
-  '@types/shimmer@1.0.5':
-    resolution: {integrity: sha512-9Hp0ObzwwO57DpLFF0InUjUm/II8GmKAvzbefxQTihCb7KI6yc9yzf0nLc4mVdby5N4DRCgQM2wCup9KTieeww==}
 
   '@types/shimmer@1.2.0':
     resolution: {integrity: sha512-UE7oxhQLLd9gub6JKIAhDq06T0F6FnztwMNRvYgjeQSBeMc1ZG/tA47EwfduvkuQS8apbkM/lpLpWsaCeYsXVg==}
@@ -14672,18 +14701,18 @@ snapshots:
       '@aws-sdk/util-user-agent-browser': 3.679.0
       '@aws-sdk/util-user-agent-node': 3.679.0
       '@smithy/config-resolver': 3.0.9
-      '@smithy/core': 2.4.8
+      '@smithy/core': 2.5.1
       '@smithy/fetch-http-handler': 3.2.9
       '@smithy/hash-node': 3.0.7
       '@smithy/invalid-dependency': 3.0.7
       '@smithy/middleware-content-length': 3.0.9
       '@smithy/middleware-endpoint': 3.1.4
       '@smithy/middleware-retry': 3.0.23
-      '@smithy/middleware-serde': 3.0.7
+      '@smithy/middleware-serde': 3.0.8
       '@smithy/middleware-stack': 3.0.7
-      '@smithy/node-config-provider': 3.1.8
-      '@smithy/node-http-handler': 3.2.4
-      '@smithy/protocol-http': 4.1.4
+      '@smithy/node-config-provider': 3.1.9
+      '@smithy/node-http-handler': 3.2.5
+      '@smithy/protocol-http': 4.1.5
       '@smithy/smithy-client': 3.4.0
       '@smithy/types': 3.5.0
       '@smithy/url-parser': 3.0.7
@@ -14693,7 +14722,7 @@ snapshots:
       '@smithy/util-defaults-mode-browser': 3.0.23
       '@smithy/util-defaults-mode-node': 3.0.23
       '@smithy/util-endpoints': 2.1.3
-      '@smithy/util-middleware': 3.0.7
+      '@smithy/util-middleware': 3.0.8
       '@smithy/util-retry': 3.0.7
       '@smithy/util-utf8': 3.0.0
       tslib: 2.8.0
@@ -15254,8 +15283,8 @@ snapshots:
       '@aws-sdk/credential-provider-web-identity': 3.679.0(@aws-sdk/client-sts@3.679.0)
       '@aws-sdk/types': 3.679.0
       '@smithy/credential-provider-imds': 3.2.4
-      '@smithy/property-provider': 3.1.7
-      '@smithy/shared-ini-file-loader': 3.1.8
+      '@smithy/property-provider': 3.1.8
+      '@smithy/shared-ini-file-loader': 3.1.9
       '@smithy/types': 3.5.0
       tslib: 2.8.0
     transitivePeerDependencies:
@@ -15364,7 +15393,7 @@ snapshots:
   '@aws-sdk/middleware-host-header@3.679.0':
     dependencies:
       '@aws-sdk/types': 3.679.0
-      '@smithy/protocol-http': 4.1.4
+      '@smithy/protocol-http': 4.1.5
       '@smithy/types': 3.5.0
       tslib: 2.8.0
 
@@ -15383,7 +15412,7 @@ snapshots:
   '@aws-sdk/middleware-recursion-detection@3.679.0':
     dependencies:
       '@aws-sdk/types': 3.679.0
-      '@smithy/protocol-http': 4.1.4
+      '@smithy/protocol-http': 4.1.5
       '@smithy/types': 3.5.0
       tslib: 2.8.0
 
@@ -15424,18 +15453,18 @@ snapshots:
       '@aws-sdk/core': 3.679.0
       '@aws-sdk/types': 3.679.0
       '@aws-sdk/util-endpoints': 3.679.0
-      '@smithy/core': 2.4.8
-      '@smithy/protocol-http': 4.1.4
+      '@smithy/core': 2.5.1
+      '@smithy/protocol-http': 4.1.5
       '@smithy/types': 3.5.0
       tslib: 2.8.0
 
   '@aws-sdk/region-config-resolver@3.679.0':
     dependencies:
       '@aws-sdk/types': 3.679.0
-      '@smithy/node-config-provider': 3.1.8
+      '@smithy/node-config-provider': 3.1.9
       '@smithy/types': 3.5.0
       '@smithy/util-config-provider': 3.0.0
-      '@smithy/util-middleware': 3.0.7
+      '@smithy/util-middleware': 3.0.8
       tslib: 2.8.0
 
   '@aws-sdk/s3-request-presigner@3.679.0':
@@ -15510,7 +15539,7 @@ snapshots:
     dependencies:
       '@aws-sdk/middleware-user-agent': 3.679.0
       '@aws-sdk/types': 3.679.0
-      '@smithy/node-config-provider': 3.1.8
+      '@smithy/node-config-provider': 3.1.9
       '@smithy/types': 3.5.0
       tslib: 2.8.0
 
@@ -18282,9 +18311,9 @@ snapshots:
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/api-logs': 0.52.1
-      '@types/shimmer': 1.0.5
+      '@types/shimmer': 1.2.0
       import-in-the-middle: 1.11.2
-      require-in-the-middle: 7.3.0
+      require-in-the-middle: 7.4.0
       semver: 7.6.3
       shimmer: 1.2.1
     transitivePeerDependencies:
@@ -18479,7 +18508,7 @@ snapshots:
   '@opentelemetry/sql-common@0.40.1(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
-      '@opentelemetry/core': 1.26.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/core': 1.27.0(@opentelemetry/api@1.9.0)
 
   '@opentelemetry/winston-transport@0.7.0':
     dependencies:
@@ -18915,6 +18944,11 @@ snapshots:
       '@sentry/types': 8.35.0
       '@sentry/utils': 8.35.0
 
+  '@sentry/core@8.36.0':
+    dependencies:
+      '@sentry/types': 8.36.0
+      '@sentry/utils': 8.36.0
+
   '@sentry/integrations@7.118.0':
     dependencies:
       '@sentry/core': 7.118.0
@@ -18970,6 +19004,46 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@sentry/node@8.36.0':
+    dependencies:
+      '@opentelemetry/api': 1.9.0
+      '@opentelemetry/context-async-hooks': 1.27.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/core': 1.27.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-amqplib': 0.42.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-connect': 0.40.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-dataloader': 0.12.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-express': 0.44.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-fastify': 0.40.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-fs': 0.16.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-generic-pool': 0.39.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-graphql': 0.43.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-hapi': 0.41.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-http': 0.53.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-ioredis': 0.43.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-kafkajs': 0.4.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-koa': 0.43.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-lru-memoizer': 0.40.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-mongodb': 0.47.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-mongoose': 0.42.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-mysql': 0.41.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-mysql2': 0.41.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-nestjs-core': 0.40.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-pg': 0.44.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-redis-4': 0.42.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation-undici': 0.6.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/resources': 1.27.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-trace-base': 1.27.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/semantic-conventions': 1.27.0
+      '@prisma/instrumentation': 5.19.1
+      '@sentry/core': 8.36.0
+      '@sentry/opentelemetry': 8.36.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.27.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.53.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.27.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.27.0)
+      '@sentry/types': 8.36.0
+      '@sentry/utils': 8.36.0
+      import-in-the-middle: 1.11.2
+    transitivePeerDependencies:
+      - supports-color
+
   '@sentry/opentelemetry@8.35.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.53.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.26.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.27.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
@@ -18992,9 +19066,22 @@ snapshots:
       '@sentry/types': 8.35.0
       '@sentry/utils': 8.35.0
 
+  '@sentry/opentelemetry@8.36.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.27.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.53.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.27.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.27.0)':
+    dependencies:
+      '@opentelemetry/api': 1.9.0
+      '@opentelemetry/core': 1.27.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/sdk-trace-base': 1.27.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/semantic-conventions': 1.27.0
+      '@sentry/core': 8.36.0
+      '@sentry/types': 8.36.0
+      '@sentry/utils': 8.36.0
+
   '@sentry/types@7.118.0': {}
 
   '@sentry/types@8.35.0': {}
+
+  '@sentry/types@8.36.0': {}
 
   '@sentry/utils@7.118.0':
     dependencies:
@@ -19003,6 +19090,10 @@ snapshots:
   '@sentry/utils@8.35.0':
     dependencies:
       '@sentry/types': 8.35.0
+
+  '@sentry/utils@8.36.0':
+    dependencies:
+      '@sentry/types': 8.36.0
 
   '@sideway/address@4.1.5':
     dependencies:
@@ -19876,8 +19967,6 @@ snapshots:
       '@types/node': 22.8.2
       '@types/send': 0.17.4
 
-  '@types/shimmer@1.0.5': {}
-
   '@types/shimmer@1.2.0': {}
 
   '@types/stack-utils@2.0.3': {}
@@ -20073,9 +20162,9 @@ snapshots:
       mime-types: 2.1.35
       negotiator: 0.6.3
 
-  acorn-import-attributes@1.9.5(acorn@8.12.1):
+  acorn-import-attributes@1.9.5(acorn@8.14.0):
     dependencies:
-      acorn: 8.12.1
+      acorn: 8.14.0
 
   acorn-jsx@5.3.2(acorn@8.12.1):
     dependencies:
@@ -22944,8 +23033,8 @@ snapshots:
 
   import-in-the-middle@1.11.2:
     dependencies:
-      acorn: 8.12.1
-      acorn-import-attributes: 1.9.5(acorn@8.12.1)
+      acorn: 8.14.0
+      acorn-import-attributes: 1.9.5(acorn@8.14.0)
       cjs-module-lexer: 1.4.1
       module-details-from-path: 1.0.3
 
