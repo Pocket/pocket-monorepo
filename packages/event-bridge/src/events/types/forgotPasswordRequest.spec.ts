@@ -1,7 +1,6 @@
 import { SQSRecord } from 'aws-lambda';
 import { sqsEventBridgeEvent } from '../../utils';
 import { PocketEventType } from '../events';
-import exp from 'constants';
 import { ForgotPasswordRequest } from './forgotPasswordRequest';
 
 describe('forgotPasswordRequest event', () => {
