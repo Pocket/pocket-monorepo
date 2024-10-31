@@ -41,7 +41,9 @@ const parsePocketEvent = <T extends keyof PocketEventTypeMap>(
     throw new Error(`Unsupported type: ${json['detail-type']}`);
   }
 
-  const ajv = new Ajv();
+  // https://ajv.js.org/coercion.html
+  // Some data comes from Web repo which.. treats everything as a string or bools as 0/1
+  const ajv = new Ajv({ coerceTypes: true });
   addFormats(ajv);
 
   const schemaName = validationSchemaForDetailType(json['detail-type']);
