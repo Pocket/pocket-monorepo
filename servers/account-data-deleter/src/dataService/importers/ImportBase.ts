@@ -71,6 +71,8 @@ export abstract class ImportBase {
     formatter: (records: ImportMapping[T]) => ImportMessage<T>,
     metadata: { fileKey: string; userId: string; type: T },
   ) {
+    // Can send a maximum of 10 messages per SQS batch
+    // Sending in batches when we can reduces costs
     const batches = chunk(chunk(records, config.listImport.chunkSize), 10);
     let batchIx = 0;
     for await (const batch of batches) {
