@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-ssm": "3.679.0",
+    "@pocket-tools/event-bridge": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/aws-serverless": "8.35.0",
     "braze-api": "^2.9.1",
