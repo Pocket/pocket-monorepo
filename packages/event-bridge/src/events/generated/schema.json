@@ -47,7 +47,10 @@
           "type": "string"
         },
         "clientVersion": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "email": {
           "type": "string"
@@ -56,40 +59,70 @@
           "type": "string"
         },
         "guid": {
-          "type": "number"
+          "type": [
+            "number",
+            "null"
+          ]
         },
         "hashedGuid": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "hashedId": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "ipAddress": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "isNative": {
-          "type": "boolean"
+          "type": [
+            "boolean",
+            "null"
+          ]
         },
         "isPremium": {
           "type": "boolean"
         },
         "isTrusted": {
-          "type": "boolean"
+          "type": [
+            "boolean",
+            "null"
+          ]
         },
         "language": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "name": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "snowplowDomainUserId": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "timestamp": {
           "type": "number"
         },
         "userAgent": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "userId": {
           "type": "string"
