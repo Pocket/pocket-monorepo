@@ -1,0 +1,34 @@
+import { SQSRecord } from 'aws-lambda';
+import { sqsEventBridgeEvent } from '../../utils';
+import { PocketEventType } from '../events';
+
+describe('account delete event', () => {
+  it('throw an error if account delete event payload is missing email', async () => {
+    const recordWithoutEmail = {
+      body: JSON.stringify({
+        Message: JSON.stringify({
+          account: '12345',
+          id: '12345',
+          region: 'us-west-2',
+          time: '2021-08-12T20:05:00Z',
+          version: '1.0',
+          source: 'user-event',
+          'detail-type': PocketEventType.ACCOUNT_DELETION,
+          detail: {
+            userId: 1,
+            isPremium: false,
+          },
+        }),
+      }),
+    };
+    expect.assertions(1); // since it's in a try/catch, make sure we assert
+    try {
+      const event = sqsEventBridgeEvent(recordWithoutEmail as SQSRecord);
+      console.log(event);
+    } catch (e) {
+      expect(e.message).toContain(
+        "data/detail must have required property 'email'",
+      );
+    }
+  });
+});

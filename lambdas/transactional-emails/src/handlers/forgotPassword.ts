@@ -13,16 +13,14 @@ import {
  */
 export async function forgotPasswordHandler(record: SQSRecord) {
   const event = sqsEventBridgeEvent(record);
-  if (
-    event === null ||
-    !(event?.['detail-type'] !== PocketEventType.FORGOT_PASSWORD)
-  ) {
-    return;
+  if (event?.['detail-type'] === PocketEventType.FORGOT_PASSWORD) {
+    return await sendForgotPasswordEmail({
+      resetPasswordToken: event.detail.passwordResetInfo.resetPasswordToken,
+      resetTimeStamp: event.detail.passwordResetInfo.timestamp.toFixed(0),
+      encodedId: event.detail.user.encodedId,
+      resetPasswordUsername:
+        event.detail.passwordResetInfo.resetPasswordUsername,
+    });
   }
-  await sendForgotPasswordEmail({
-    resetPasswordToken: event.detail.passwordResetInfo.resetPasswordToken,
-    resetTimeStamp: event.detail.passwordResetInfo.timestamp.toFixed(0),
-    encodedId: event.detail.user.encodedId,
-    resetPasswordUsername: event.detail.passwordResetInfo.resetPasswordUsername,
-  });
+  return;
 }

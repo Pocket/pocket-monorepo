@@ -1,7 +1,105 @@
 {
-  "$ref": "#/definitions/ForgotPasswordRequest",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
+    "AccountDelete": {
+      "additionalProperties": false,
+      "properties": {
+        "account": {
+          "type": "string"
+        },
+        "detail": {
+          "additionalProperties": false,
+          "properties": {
+            "email": {
+              "type": "string"
+            },
+            "isPremium": {
+              "type": "boolean"
+            },
+            "userId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "email",
+            "userId"
+          ],
+          "type": "object"
+        },
+        "detail-type": {
+          "const": "account-deletion",
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "time": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "account",
+        "detail",
+        "detail-type",
+        "id",
+        "region",
+        "source",
+        "time",
+        "version"
+      ],
+      "type": "object"
+    },
+    "EventBridgeBase": {
+      "additionalProperties": false,
+      "properties": {
+        "account": {
+          "type": "string"
+        },
+        "detail": {
+          "type": "object"
+        },
+        "detail-type": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "time": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "account",
+        "id",
+        "region",
+        "time",
+        "version",
+        "source",
+        "detail-type",
+        "detail"
+      ],
+      "type": "object"
+    },
     "ForgotPasswordRequest": {
       "additionalProperties": false,
       "properties": {
