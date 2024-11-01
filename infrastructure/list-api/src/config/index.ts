@@ -39,11 +39,12 @@ export const config = {
   envVars: {
     databasePort: '3306',
     sqsPublisherDataQueueName: 'pocket-publisher-data-queue',
-    sqsBatchDeleteQueueName: `${prefix}-Sqs-Batch-Delete-Consumer-Queue`,
+    sqsBatchImportQueueName: `AccountDataDeleter-${environment}-List-Import-Batches`,
     sqsPermLibItemMainQueueName: `PermLib-${environment}-ItemMain`,
     unifiedEventStreamName: 'unified_event',
     databaseTz: 'US/Central',
     eventBusName: `PocketEventBridge-${environment}-Shared-Event-Bus`,
+    listImportBucket: `com.getpocket-${environment.toLowerCase()}.list-imports`,
   },
   lambda: {
     snsTopicName: {

@@ -126,7 +126,9 @@ export const config = {
     importBucket:
       process.env.LIST_IMPORTS_BUCKET || 'com.getpocket.list-imports',
     signedUrlExpiry: 120, // 2 minutes
-    chunkSize: 30,
+    chunkSize: process.env.IMPORT_CHUNK_SIZE
+      ? parseInt(process.env.IMPORT_CHUNK_SIZE)
+      : 100,
     batchImportQueue:
       process.env.SQS_IMPORT_BATCH_QUEUE_URL ||
       'http://localhost:4566/000000000000/pocket-list-import-batch-queue',

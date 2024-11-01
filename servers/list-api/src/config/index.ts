@@ -46,8 +46,27 @@ export default {
           process.env.SQS_PERMLIB_ITEMMAIN_QUEUE_URL ||
           'http://localhost:4566/000000000000/PermLib-ItemMain',
       },
+      batchImportQueue: {
+        url:
+          process.env.SQS_IMPORT_BATCH_QUEUE_URL ||
+          'http://localhost:4566/000000000000/pocket-list-import-batch-queue',
+        name: 'list-batch-import',
+        visibilityTimeout: 300,
+        maxMessages: 1, // Must be 1
+        waitTimeSeconds: 0,
+        defaultPollIntervalSeconds: 300,
+        afterMessagePollIntervalSeconds: 0.1,
+        messageRetentionSeconds: 1209600, //14 days
+        batchSize: 1, // Must be 1
+      },
       waitTimeSeconds: 20,
       batchSize: 10,
+    },
+    s3: {
+      importBucket:
+        process.env.LIST_IMPORTS_BUCKET || 'com.getpocket.list-imports',
+      presignedTtl: 300,
+      endpoint: undefined,
     },
   },
   awsEnvironments,
@@ -105,7 +124,12 @@ export default {
   unleash: {
     clientKey: process.env.UNLEASH_KEY || 'unleash-key-fake',
     endpoint: process.env.UNLEASH_ENDPOINT || 'http://localhost:4242/api',
-    flags: {},
+    flags: {
+      importDisabled: {
+        name: 'perm.backend.list-import-disabled',
+        fallback: true,
+      },
+    },
   },
   snowplow: {
     endpoint: process.env.SNOWPLOW_ENDPOINT || 'localhost:9090',
