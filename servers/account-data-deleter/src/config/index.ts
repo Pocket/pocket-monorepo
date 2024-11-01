@@ -54,6 +54,19 @@ export const config = {
         messageRetentionSeconds: 1209600, //14 days
         batchSize: 1, // Must be 1
       },
+      importFileQueue: {
+        name: 'list-import',
+        url:
+          process.env.SQS_IMPORT_FILE_QUEUE_URL ||
+          'http://localhost:4566/000000000000/ADD-Import-File-Processing-Queue',
+        visibilityTimeout: 600,
+        maxMessages: 1, // Must be 1
+        waitTimeSeconds: 0,
+        defaultPollIntervalSeconds: 300,
+        afterMessagePollIntervalSeconds: 30,
+        messageRetentionSeconds: 1209600, //14 days
+        batchSize: 1, // Must be 1
+      },
     },
   },
   sentry: {
@@ -109,6 +122,17 @@ export const config = {
           }
         : undefined,
   },
+  listImport: {
+    importBucket:
+      process.env.LIST_IMPORTS_BUCKET || 'com.getpocket.list-imports',
+    signedUrlExpiry: 120, // 2 minutes
+    chunkSize: process.env.IMPORT_CHUNK_SIZE
+      ? parseInt(process.env.IMPORT_CHUNK_SIZE)
+      : 100,
+    batchImportQueue:
+      process.env.SQS_IMPORT_BATCH_QUEUE_URL ||
+      'http://localhost:4566/000000000000/pocket-list-import-batch-queue',
+  },
   unleash: {
     clientKey: process.env.UNLEASH_KEY || 'unleash-key-fake',
     endpoint: process.env.UNLEASH_ENDPOINT || 'http://localhost:4242/api',
@@ -117,6 +141,10 @@ export const config = {
     flags: {
       deletesDisabled: {
         name: 'temp.backend.account_delete_disabled',
+        fallback: true,
+      },
+      importsDisabled: {
+        name: 'perm.backend.list-import-disabled',
         fallback: true,
       },
     },

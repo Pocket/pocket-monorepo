@@ -20,8 +20,8 @@
   "dependencies": {
     "@apollo/server": "4.11.0",
     "@apollo/subgraph": "2.9.3",
-    "@aws-sdk/client-eventbridge": "3.679.0",
     "@pocket-tools/apollo-utils": "workspace:*",
+    "@pocket-tools/event-bridge": "workspace:*",
     "@pocket-tools/feature-flags-client": "workspace:*",
     "@pocket-tools/int-mask": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",

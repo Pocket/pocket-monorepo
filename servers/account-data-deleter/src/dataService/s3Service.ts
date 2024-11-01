@@ -1,5 +1,6 @@
 import {
   GetObjectCommand,
+  GetObjectCommandOutput,
   HeadObjectCommand,
   ListObjectsV2Command,
   S3Client,
@@ -218,6 +219,40 @@ export class S3Bucket {
       Sentry.addBreadcrumb({ data: { key, expiresIn, bucket: this.bucket } });
       Sentry.captureException(error);
       throw error;
+    }
+  }
+
+  /**
+   * Get the body of an object stored in S3. This is a convenience
+   * method on top of the native S3 GetObjectCommand that has
+   * logging and error reporting built in, handles not found errors,
+   * and only returns the body from the response.
+   * @param key the key of the object
+   * @returns the object's Body, can be undefined if the key is not found
+   */
+  async getObjectBody(
+    key: string,
+  ): Promise<GetObjectCommandOutput['Body'] | undefined> {
+    try {
+      const command = new GetObjectCommand({
+        Bucket: this.bucket,
+        Key: key,
+      });
+      const result = await this.s3.send<GetObjectCommand>(command);
+      return result.Body;
+    } catch (err) {
+      if (err instanceof ResourceNotFoundException || err.name === 'NotFound') {
+        return undefined;
+      } else {
+        serverLogger.error({
+          message: 'Encountered error while fetching object from S3',
+          errorData: err,
+          bucket: this.bucket,
+          key: key,
+        });
+        Sentry.captureException(err, { data: { bucket: this.bucket, key } });
+        throw err;
+      }
     }
   }
   /**

@@ -20,7 +20,11 @@ nodeSDKBuilder({ ...config.tracing, unleash: getClient() }).then(() => {
     serverLogger.info(
       `🚀 Public server ready at http://localhost:${config.app.port}`,
     );
+    // Start the background job processor
+    new BatchImportHandler(new EventEmitter(), true, getClient());
   });
 });
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { startServer } from './apollo';
+import { BatchImportHandler } from '../background';
+import { EventEmitter } from 'stream';

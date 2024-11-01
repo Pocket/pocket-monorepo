@@ -13,6 +13,7 @@ import {
   SaveUpdateTagsInputDb,
   SaveWriteMutationPayload,
   SavedItemTagInput,
+  SavedItemImportHydrated,
 } from '../types';
 import config from '../config';
 import { IContext } from '../server/context';
@@ -23,6 +24,7 @@ import * as Sentry from '@sentry/node';
 import { GraphQLResolveInfo } from 'graphql';
 import { ParserCaller } from '../externalCaller/parserCaller';
 import { EventType } from '../businessEvents';
+import { Knex } from 'knex';
 
 export class TagModel {
   private tagService: TagDataService;
@@ -449,6 +451,13 @@ export class TagModel {
 
   public async tagsList(syncSince?: Date): Promise<string[] | undefined> {
     return await this.tagService.tagsList(syncSince);
+  }
+
+  public async importTags(
+    records: SavedItemImportHydrated[],
+    trx: Knex.Transaction<any, any[]>, // Bad but we need to be able to inject this
+  ) {
+    return await this.tagService.importTags(records, trx);
   }
 }
 

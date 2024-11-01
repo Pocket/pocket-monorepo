@@ -1,7 +1,7 @@
 extend schema
   @link(
     url: "https://specs.apollo.dev/federation/v2.6"
-    import: ["@key", "@composeDirective", "@tag", "@shareable", "@requiresScopes"]
+    import: ["@key", "@composeDirective", "@tag", "@shareable", "@requiresScopes", "@inaccessible", "@policy"]
   )
   # The link directive is required to federate @constraint
   # It doesn't actually have to be a real spec, but it would be good
@@ -33,6 +33,11 @@ type NotFound implements BaseError {
 interface BaseError {
   path: String!
   message: String!
+}
+
+type ImportLimited {
+  message: String!
+  refreshInHours: Int!
 }
 
 """
@@ -519,6 +524,17 @@ input TagUpdateInput {
   """
   name: String!
 }
+
+"""
+Input for batch imports
+"""
+input BatchImportInput {
+  url: Url!
+  createdAt: ISOString!
+  title: String!
+  tags: [String!]
+  status: ImportableStatus
+}
 """
 Enum to specify the sort order of SavedItems fetched
 """
@@ -534,6 +550,13 @@ enum SavedItemsSortBy {
   UPDATED_AT
   FAVORITED_AT
   ARCHIVED_AT
+}
+
+"""
+Services we support file upload imports from.
+"""
+enum ImportType {
+  omnivore
 }
 
 """
@@ -681,6 +704,18 @@ union SavedItemMutationError = NotFound | SyncConflict # hypothetically others i
 enum PendingItemStatus {
   RESOLVED
   UNRESOLVED
+}
+
+union ImportUploadResponse = PreSignedUrl | ImportLimited
+
+"""
+A presigned URL for uploading to S3
+"""
+type PreSignedUrl {
+  """The presigned URL"""
+  url: Url!
+  """Time until expiry in seconds after grant"""
+  ttl: Int!
 }
 
 type PendingItem @key(fields: "url") {
@@ -993,6 +1028,26 @@ type Mutation {
   Returns the request ID associated with the request.
   """
   exportList: String @requiresScopes(scopes: [["ROLE_USER"]])
+  """
+  Import a batch of items and (optional) tags into a user's list.
+  Duplicate entries will be replaced. Returns true if the import
+  succeeded, false otherwise. Either all succeed or all fail.
+  For now intended to be internal-only and not federated to the
+  supergraph.
+  """
+  batchImport(
+    input: [BatchImportInput!]! @constraint(minLength: 1, maxLength: 100)
+  ): Boolean! @inaccessible
+  # @policy(policies: [["application_is_native:true"]])
+  # @requiresScopes(scopes: [["ROLE_USER"]])
+  
+  """
+  Get a presigned URL to upload an export from another service
+  to S3, to be imported into Pocket.
+  """
+  importUploadUrl(importType: ImportType!): ImportUploadResponse
+    @policy(policies: [["application_is_native:true"]])
+    @requiresScopes(scopes: [["ROLE_USER"]])
 }
 
 """
@@ -1019,6 +1074,11 @@ enum PocketSaveStatus {
   ARCHIVED
   DELETED
   HIDDEN
+  UNREAD
+}
+
+enum ImportableStatus {
+  ARCHIVED
   UNREAD
 }
 

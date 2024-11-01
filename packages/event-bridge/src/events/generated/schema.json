@@ -1,0 +1,228 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "AccountDelete": {
+      "properties": {
+        "detail": {
+          "$ref": "#/definitions/AccountPayload"
+        },
+        "detail-type": {
+          "const": "account-deletion",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "AccountEmailUpdated": {
+      "properties": {
+        "detail": {
+          "$ref": "#/definitions/AccountPayload"
+        },
+        "detail-type": {
+          "const": "account-email-updated",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "AccountPayload": {
+      "properties": {
+        "apiId": {
+          "type": "string"
+        },
+        "clientVersion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "email": {
+          "type": "string"
+        },
+        "eventType": {
+          "type": "string"
+        },
+        "guid": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "hashedGuid": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "hashedId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ipAddress": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "isNative": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "isPremium": {
+          "type": "boolean"
+        },
+        "isTrusted": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "language": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "snowplowDomainUserId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "timestamp": {
+          "type": "number"
+        },
+        "userAgent": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "userId": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "email",
+        "isPremium",
+        "userId",
+        "apiId",
+        "timestamp",
+        "version",
+        "eventType"
+      ],
+      "type": "object"
+    },
+    "BaseEvent": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail-type",
+        "source",
+        "detail"
+      ],
+      "type": "object"
+    },
+    "ForgotPasswordRequest": {
+      "properties": {
+        "detail": {
+          "properties": {
+            "passwordResetInfo": {
+              "properties": {
+                "resetPasswordToken": {
+                  "type": "string"
+                },
+                "resetPasswordUsername": {
+                  "type": "string"
+                },
+                "timestamp": {
+                  "description": "Note this is not a timestamp... its a formatted date string..",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "resetPasswordToken",
+                "resetPasswordUsername",
+                "timestamp"
+              ],
+              "type": "object"
+            },
+            "user": {
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "encodedId": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "id",
+                "encodedId",
+                "email"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "passwordResetInfo",
+            "user"
+          ],
+          "type": "object"
+        },
+        "detail-type": {
+          "const": "Forgot Password Request",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    }
+  }
+}
