@@ -52,7 +52,12 @@ export class ParserCaller {
         (!item.resolved_id || item.resolved_id === null) &&
         (!data.resolved_id || data.resolved_id === null))
     ) {
-      throw new Error(`Unable to parse and generate item for url`);
+      serverLogger.error({
+        message: 'Parser responded with null item data',
+        url,
+        response: data,
+      });
+      throw new Error(`Parser responded with null item data`);
     }
 
     return {
