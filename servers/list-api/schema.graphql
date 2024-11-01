@@ -1030,7 +1030,7 @@ type Mutation {
   exportList: String @requiresScopes(scopes: [["ROLE_USER"]])
   """
   Import a batch of items and (optional) tags into a user's list.
-  Duplicate entries will be ignored. Returns true if the import
+  Duplicate entries will be replaced. Returns true if the import
   succeeded, false otherwise. Either all succeed or all fail.
   For now intended to be internal-only and not federated to the
   supergraph.

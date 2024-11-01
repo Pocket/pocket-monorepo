@@ -11,7 +11,6 @@ import {
   TagEdge,
   SaveUpdateTagsInputDb,
   SavedItemImportHydrated,
-  SavedItemImportInput,
 } from '../types';
 import { mysqlTimeString, uniqueArray } from './utils';
 import config from '../config';
