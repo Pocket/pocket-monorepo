@@ -1,5 +1,9 @@
 import { SQSRecord } from 'aws-lambda';
-import { PocketEventType, PocketEventTypeMap } from './events';
+import {
+  IncomingBaseEvent,
+  PocketEventType,
+  PocketEventTypeMap,
+} from './events';
 import { Ajv } from 'ajv';
 import addFormats from 'ajv-formats';
 import schema from './events/generated/schema.json';
@@ -36,7 +40,7 @@ const validationSchemaForDetailType = (detailType: string) => {
  */
 const parsePocketEvent = <T extends keyof PocketEventTypeMap>(
   json: PocketEventTypeMap[T],
-): PocketEventTypeMap[T] => {
+): PocketEventTypeMap[T] & IncomingBaseEvent => {
   if (!json || !Object.values(PocketEventType).includes(json['detail-type'])) {
     throw new Error(`Unsupported type: ${json['detail-type']}`);
   }
@@ -48,13 +52,27 @@ const parsePocketEvent = <T extends keyof PocketEventTypeMap>(
 
   const schemaName = validationSchemaForDetailType(json['detail-type']);
   ajv.compile(schema);
-  const valid = ajv.validate(schemaName, json);
+  const valid = ajv.validate<PocketEventTypeMap[T] & IncomingBaseEvent>(
+    schemaName,
+    json,
+  );
 
-  if (!valid) {
+  if (!valid) throw new MissingFieldsError(ajv.errorsText(ajv.errors));
+
+  const validBaseEventFields = ajv.validate(
+    '#/definitions/IncomingBaseEvent',
+    json,
+  );
+  if (!validBaseEventFields)
     throw new MissingFieldsError(ajv.errorsText(ajv.errors));
-  }
 
-  return json as PocketEventTypeMap[T];
+  // Hack to convert a known EventBridge field to a Date object.
+  // In the future we should probably use JSON JTD to define our schema with discrimantor fields, and then convert it to TypeScript types, which we then use the ajv jtd parser with.
+  // However it seems the jtd-codegen package does not know how to handle the $ref field in the schema, so it would end up duplicating fields in the schema, which is not ideal.
+  // We really need to do this with DateTime objects, since thats the only thing Typescript can't automatically coerce with `as`.
+  // There is a probably a fancy way to do this by traversing the schema and finding all the date fields, but this is a quick and dirty way to do it for the only field that needs it.
+  return { ...json, time: new Date(json.time) } as PocketEventTypeMap[T] &
+    IncomingBaseEvent;
 };
 
 /**
@@ -64,7 +82,7 @@ const parsePocketEvent = <T extends keyof PocketEventTypeMap>(
  */
 export const sqsEventBridgeEvent = <T extends keyof PocketEventTypeMap>(
   record: SQSRecord,
-): PocketEventTypeMap[T] | null => {
+): (PocketEventTypeMap[T] & IncomingBaseEvent) | null => {
   const message = JSON.parse(JSON.parse(record.body).Message);
-  return parsePocketEvent(message);
+  return parsePocketEvent(message) as PocketEventTypeMap[T] & IncomingBaseEvent;
 };

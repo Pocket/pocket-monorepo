@@ -222,6 +222,135 @@
         "source"
       ],
       "type": "object"
+    },
+    "IncomingBaseEvent": {
+      "description": "A base event that all events should extend from when they are Received only, not sent.",
+      "properties": {
+        "account": {
+          "type": "string"
+        },
+        "detail": {},
+        "detail-type": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "time": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "account",
+        "detail",
+        "detail-type",
+        "id",
+        "region",
+        "source",
+        "time",
+        "version"
+      ],
+      "type": "object"
+    },
+    "PremiumPurchaseEvent": {
+      "properties": {
+        "detail": {
+          "properties": {
+            "purchase": {
+              "$ref": "#/definitions/Purchase"
+            },
+            "user": {
+              "$ref": "#/definitions/PremiumUser"
+            }
+          },
+          "required": [
+            "purchase",
+            "user"
+          ],
+          "type": "object"
+        },
+        "detail-type": {
+          "const": "Premium Purchase",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "PremiumUser": {
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "encodedId": {
+          "type": "string"
+        },
+        "id": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "email",
+        "encodedId",
+        "id"
+      ],
+      "type": "object"
+    },
+    "Purchase": {
+      "properties": {
+        "amount": {
+          "type": "string"
+        },
+        "cancelAtPeriodEnd": {
+          "type": "boolean"
+        },
+        "isFree": {
+          "type": "boolean"
+        },
+        "isTrial": {
+          "type": "boolean"
+        },
+        "planInterval": {
+          "type": "string"
+        },
+        "planType": {
+          "type": "string"
+        },
+        "receiptId": {
+          "type": "string"
+        },
+        "renewDate": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "amount",
+        "cancelAtPeriodEnd",
+        "isFree",
+        "isTrial",
+        "planInterval",
+        "planType",
+        "receiptId",
+        "renewDate"
+      ],
+      "type": "object"
     }
   }
 }
