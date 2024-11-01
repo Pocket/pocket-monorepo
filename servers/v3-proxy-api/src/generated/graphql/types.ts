@@ -97,6 +97,15 @@ export type BaseError = {
   path: Scalars['String']['output'];
 };
 
+/** Input for batch imports */
+export type BatchImportInput = {
+  createdAt: Scalars['ISOString']['input'];
+  status?: InputMaybe<ImportableStatus>;
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  title: Scalars['String']['input'];
+  url: Scalars['Url']['input'];
+};
+
 /** Input object for creating and deleting highlights using bulk mutation. */
 export type BatchWriteHighlightsInput = {
   create?: InputMaybe<Array<CreateHighlightInput>>;
@@ -814,6 +823,24 @@ export enum Imageness {
   NoImages = 'NO_IMAGES'
 }
 
+export type ImportLimited = {
+  __typename?: 'ImportLimited';
+  message: Scalars['String']['output'];
+  refreshInHours: Scalars['Int']['output'];
+};
+
+/** Services we support file upload imports from. */
+export enum ImportType {
+  Omnivore = 'omnivore'
+}
+
+export type ImportUploadResponse = ImportLimited | PreSignedUrl;
+
+export enum ImportableStatus {
+  Archived = 'ARCHIVED',
+  Unread = 'UNREAD'
+}
+
 /**
  * The heart of Pocket
  * A url and meta data related to it.
@@ -1238,6 +1265,11 @@ export type Mutation = {
    */
   exportList?: Maybe<Scalars['String']['output']>;
   /**
+   * Get a presigned URL to upload an export from another service
+   * to S3, to be imported into Pocket.
+   */
+  importUploadUrl?: Maybe<ImportUploadResponse>;
+  /**
    * temporary mutation for apple user migration.
    * called by fxa-webhook proxy to update the fxaId and email of the user.
    * Returns the pocket userId on success
@@ -1555,6 +1587,12 @@ export type MutationDeleteUserByFxaIdArgs = {
 export type MutationExpireUserWebSessionByFxaIdArgs = {
   id: Scalars['ID']['input'];
   reason: ExpireUserWebSessionReason;
+};
+
+
+/** Default Mutation Type */
+export type MutationImportUploadUrlArgs = {
+  importType: ImportType;
 };
 
 
@@ -2045,6 +2083,15 @@ export type PocketShare = {
   shareUrl: Scalars['ValidUrl']['output'];
   slug: Scalars['ID']['output'];
   targetUrl: Scalars['ValidUrl']['output'];
+};
+
+/** A presigned URL for uploading to S3 */
+export type PreSignedUrl = {
+  __typename?: 'PreSignedUrl';
+  /** Time until expiry in seconds after grant */
+  ttl: Scalars['Int']['output'];
+  /** The presigned URL */
+  url: Scalars['Url']['output'];
 };
 
 export enum PremiumFeature {

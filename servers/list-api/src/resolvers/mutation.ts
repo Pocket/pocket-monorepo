@@ -156,7 +156,7 @@ export async function batchImport(
     await Promise.all(
       savedItems.map((item) =>
         context.emitItemEvent(
-          EventType.ADD_ITEM,
+          PocketEventType.ADD_ITEM,
           item,
           tagsById[item.id!.toString()],
         ),
