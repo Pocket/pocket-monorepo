@@ -17,6 +17,14 @@ export function ensureHttpPrefix(url: string): string {
   return url;
 }
 
+export function isHttpUrl(url: string): boolean {
+  const urlPattern = /^(ftp|mailto|file|data|ws|wss|tel):\/?\/?/i; // Regex to match common URL schemes
+  if (urlPattern.test(url)) {
+    return false;
+  }
+  return true;
+}
+
 /**
  * Returns a savedItemMap from the list of tags.
  * @param tags list of tags from which savedItem keys are generated.

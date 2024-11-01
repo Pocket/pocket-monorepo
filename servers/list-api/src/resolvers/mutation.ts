@@ -15,7 +15,12 @@ import { ParserCaller } from '../externalCaller/parserCaller';
 import { SavedItemDataService } from '../dataService';
 import * as Sentry from '@sentry/node';
 import { EventType } from '../businessEvents';
-import { getSavedItemTagsMap, atLeastOneOf, ensureHttpPrefix } from './utils';
+import {
+  getSavedItemTagsMap,
+  atLeastOneOf,
+  ensureHttpPrefix,
+  isHttpUrl,
+} from './utils';
 import { TagModel } from '../models';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { NotFoundError, UserInputError } from '@pocket-tools/apollo-utils';
@@ -49,10 +54,12 @@ export async function upsertSavedItem(
 ): Promise<SavedItem> {
   const savedItemUpsertInput: SavedItemUpsertInput = args.input;
   const savedItemDataService = new SavedItemDataService(context);
+  const url = ensureHttpPrefix(savedItemUpsertInput.url);
 
+  if (!isHttpUrl(url)) {
+    throw new UserInputError('URL must be a valid HTTP(s) url');
+  }
   try {
-    const url = ensureHttpPrefix(savedItemUpsertInput.url);
-    //TODO do we need the resolved id @Herraj
     let item = await ParserCaller.getOrCreateItem(url);
     const existingItem = await savedItemDataService.getSavedItemById(
       item.itemId.toString(),

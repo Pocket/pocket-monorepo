@@ -774,6 +774,31 @@ describe('UpsertSavedItem Mutation', () => {
       );
     });
 
+    it('should return error for invalid url thats a file url', async () => {
+      const variables = {
+        url: 'file://abcde1234',
+      };
+
+      const ADD_AN_ITEM = `
+        mutation addAnItem($url: String!) {
+          upsertSavedItem(input: { url: $url }) {
+            id
+            url
+            _createdAt
+            _updatedAt
+          }
+        }
+      `;
+
+      const mutationResult = await request(app).post(url).set(headers).send({
+        query: ADD_AN_ITEM,
+        variables,
+      });
+      expect(mutationResult.body.errors[0].message).toEqual(
+        'URL must be a valid HTTP(s) url',
+      );
+    });
+
     it('should fail to save an item shorter then 4 characters', async () => {
       const variables = {
         url: 't.y',
