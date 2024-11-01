@@ -67,6 +67,33 @@ describe('ParserCallerTest', function () {
     );
   });
 
+  it('should not throw error if resolved_id is missing, item resolved id is null, but we have a higher level resolved_id', async () => {
+    mockParserGetItemRequest(urlToParse, {
+      resolved_id: '1',
+      item: {
+        item_id: '2',
+        given_url: urlToParse,
+        resolved_id: null,
+      },
+    });
+
+    const res = await ParserCaller.getOrCreateItem(urlToParse, 1);
+    expect(res.resolvedId).toBe('1');
+  });
+
+  it('should not throw error if resolved_id is missing, but we have a higher level resolved_id', async () => {
+    mockParserGetItemRequest(urlToParse, {
+      resolved_id: '1',
+      item: {
+        item_id: '2',
+        given_url: urlToParse,
+      },
+    });
+
+    const res = await ParserCaller.getOrCreateItem(urlToParse, 1);
+    expect(res.resolvedId).toBe('1');
+  });
+
   it('should retry parser request 3 times when fails', async () => {
     nock(config.parserDomain)
       .get(`/${config.parserVersion}/getItemListApi`)

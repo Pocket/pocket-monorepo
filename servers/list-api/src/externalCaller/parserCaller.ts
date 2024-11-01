@@ -45,18 +45,19 @@ export class ParserCaller {
     }
     const data: any = await response.json();
     const item = data.item;
-    if (!item || (item && !item.item_id) || (item && !item.resolved_id)) {
-      serverLogger.error({
-        message: 'Parser responded with null item data',
-        url,
-        response: item,
-      });
-      throw new Error(`Parser responded with null item data`);
+    if (
+      !item ||
+      (item && (!item.item_id || item.item_id === null)) ||
+      (item &&
+        (!item.resolved_id || item.resolved_id === null) &&
+        (!data.resolved_id || data.resolved_id === null))
+    ) {
+      throw new Error(`Unable to parse and generate item for url`);
     }
 
     return {
       itemId: item.item_id,
-      resolvedId: item.resolved_id,
+      resolvedId: item.resolved_id ?? data.resolved_id,
       title: item.title ?? '',
     };
   }

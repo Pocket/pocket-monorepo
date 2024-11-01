@@ -13,7 +13,10 @@ export interface ForgotPasswordRequest extends BaseEvent {
 interface PasswordResetInfo {
   resetPasswordToken: string;
   resetPasswordUsername: string;
-  timestamp: number;
+  /**
+   * Note this is not a timestamp... its a formatted date string..
+   */
+  timestamp: string;
 }
 
 interface User {

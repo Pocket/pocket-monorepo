@@ -172,7 +172,8 @@
                   "type": "string"
                 },
                 "timestamp": {
-                  "type": "number"
+                  "description": "Note this is not a timestamp... its a formatted date string..",
+                  "type": "string"
                 }
               },
               "required": [
