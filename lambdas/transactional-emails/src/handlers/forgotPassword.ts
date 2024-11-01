@@ -16,7 +16,7 @@ export async function forgotPasswordHandler(record: SQSRecord) {
   if (event?.['detail-type'] === PocketEventType.FORGOT_PASSWORD) {
     return await sendForgotPasswordEmail({
       resetPasswordToken: event.detail.passwordResetInfo.resetPasswordToken,
-      resetTimeStamp: event.detail.passwordResetInfo.timestamp.toFixed(0),
+      resetTimeStamp: event.detail.passwordResetInfo.timestamp,
       encodedId: event.detail.user.encodedId,
       resetPasswordUsername:
         event.detail.passwordResetInfo.resetPasswordUsername,
