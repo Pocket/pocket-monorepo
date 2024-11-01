@@ -7,6 +7,6 @@ export interface ExportReady extends BaseEvent {
   detail: {
     encodedId: string;
     requestId: string;
-    archiveUrl: string;
+    archiveUrl?: string | null;
   };
 }

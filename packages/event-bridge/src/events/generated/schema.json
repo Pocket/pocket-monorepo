@@ -204,7 +204,10 @@
         "detail": {
           "properties": {
             "archiveUrl": {
-              "type": "string"
+              "type": [
+                "string",
+                "null"
+              ]
             },
             "encodedId": {
               "type": "string"
@@ -215,8 +218,7 @@
           },
           "required": [
             "encodedId",
-            "requestId",
-            "archiveUrl"
+            "requestId"
           ],
           "type": "object"
         },

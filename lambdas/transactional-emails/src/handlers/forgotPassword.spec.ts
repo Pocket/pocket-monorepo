@@ -4,11 +4,19 @@ import { config } from '../config';
 import * as ssm from '../ssm';
 import { sendForgotPasswordEmail } from '../braze';
 import { forgotPasswordHandler } from './forgotPassword';
+import { PocketEventType } from '@pocket-tools/event-bridge';
 
 describe('forgotPassword handler', () => {
   const record = {
     body: JSON.stringify({
       Message: JSON.stringify({
+        id: '1234567890',
+        version: '0',
+        account: '123456789012',
+        region: 'us-east-2',
+        time: new Date(),
+        'detail-type': PocketEventType.FORGOT_PASSWORD,
+        source: 'web-repo',
         detail: {
           user: {
             email: '1@2.com',
@@ -36,7 +44,7 @@ describe('forgotPassword handler', () => {
     jest.restoreAllMocks();
   });
 
-  it.skip('throws an error if email send response is not 200 OK', async () => {
+  it('throws an error if email send response is not 200 OK', async () => {
     nock(config.braze.endpoint)
       .post(config.braze.campaignTriggerPath)
       .reply(400, { errors: ['this is an error'] });
@@ -48,7 +56,7 @@ describe('forgotPassword handler', () => {
     }
   });
 
-  it.skip('should retry 3 times if post fails', async () => {
+  it('should retry 3 times if post fails', async () => {
     nock(config.braze.endpoint)
       .post(config.braze.campaignTriggerPath)
       .times(2)
