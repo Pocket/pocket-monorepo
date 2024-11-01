@@ -1,6 +1,7 @@
 import config from '../config';
 import { setTimeout } from 'timers/promises';
 import * as Sentry from '@sentry/node';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export type PartialGetItemResponse = {
   // This is modeling a subset of the response
@@ -33,13 +34,24 @@ export class ParserCaller {
     Sentry.addBreadcrumb({ data: { method: 'internalGetOrCreateItem', url } });
     if (!response.ok) {
       const data = await response.text();
+      serverLogger.error({
+        message: 'Unable to parse and generate item for url',
+        status: response.status,
+        statusText: response.statusText,
+        url: url,
+      });
       Sentry.addBreadcrumb({ data: { status: response.status, body: data } });
       throw new Error(`Unable to parse and generate item for url`);
     }
     const data: any = await response.json();
     const item = data.item;
     if (!item || (item && !item.item_id) || (item && !item.resolved_id)) {
-      throw new Error(`Unable to parse and generate item for url`);
+      serverLogger.error({
+        message: 'Parser responded with null item data',
+        url,
+        response: item,
+      });
+      throw new Error(`Parser responded with null item data`);
     }
 
     return {

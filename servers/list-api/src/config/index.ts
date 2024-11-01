@@ -62,6 +62,12 @@ export default {
       waitTimeSeconds: 20,
       batchSize: 10,
     },
+    s3: {
+      importBucket:
+        process.env.LIST_IMPORTS_BUCKET || 'com.getpocket.list-imports',
+      presignedTtl: 300,
+      endpoint: undefined,
+    },
   },
   awsEnvironments,
   data: {

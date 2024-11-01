@@ -35,7 +35,7 @@ describe('ParserCallerTest', function () {
 
     const res = ParserCaller.getOrCreateItem(urlToParse, 1);
     await expect(res).rejects.toEqual(
-      new Error(`Unable to parse and generate item for url`),
+      new Error(`Parser responded with null item data`),
     );
   });
 
@@ -49,7 +49,7 @@ describe('ParserCallerTest', function () {
 
     const res = ParserCaller.getOrCreateItem(urlToParse, 1);
     await expect(res).rejects.toEqual(
-      new Error(`Unable to parse and generate item for url`),
+      new Error(`Parser responded with null item data`),
     );
   });
 
@@ -63,7 +63,7 @@ describe('ParserCallerTest', function () {
 
     const res = ParserCaller.getOrCreateItem(urlToParse, 1);
     await expect(res).rejects.toEqual(
-      new Error(`Unable to parse and generate item for url`),
+      new Error(`Parser responded with null item data`),
     );
   });
 

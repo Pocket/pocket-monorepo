@@ -1,7 +1,7 @@
 extend schema
   @link(
     url: "https://specs.apollo.dev/federation/v2.6"
-    import: ["@key", "@composeDirective", "@tag", "@shareable", "@requiresScopes", "@inaccessible"]
+    import: ["@key", "@composeDirective", "@tag", "@shareable", "@requiresScopes", "@inaccessible", "@policy"]
   )
   # The link directive is required to federate @constraint
   # It doesn't actually have to be a real spec, but it would be good
@@ -33,6 +33,11 @@ type NotFound implements BaseError {
 interface BaseError {
   path: String!
   message: String!
+}
+
+type ImportLimited {
+  message: String!
+  refreshInHours: Int!
 }
 
 """
@@ -548,6 +553,13 @@ enum SavedItemsSortBy {
 }
 
 """
+Services we support file upload imports from.
+"""
+enum ImportType {
+  omnivore
+}
+
+"""
 Input to sort fetched SavedItems. If unspecified, defaults to CREATED_AT, ASC.
 """
 input SavedItemsSort {
@@ -692,6 +704,18 @@ union SavedItemMutationError = NotFound | SyncConflict # hypothetically others i
 enum PendingItemStatus {
   RESOLVED
   UNRESOLVED
+}
+
+union ImportUploadResponse = PreSignedUrl | ImportLimited
+
+"""
+A presigned URL for uploading to S3
+"""
+type PreSignedUrl {
+  """The presigned URL"""
+  url: Url!
+  """Time until expiry in seconds after grant"""
+  ttl: Int!
 }
 
 type PendingItem @key(fields: "url") {
@@ -1016,6 +1040,14 @@ type Mutation {
   ): Boolean! @inaccessible
   # @policy(policies: [["application_is_native:true"]])
   # @requiresScopes(scopes: [["ROLE_USER"]])
+  
+  """
+  Get a presigned URL to upload an export from another service
+  to S3, to be imported into Pocket.
+  """
+  importUploadUrl(importType: ImportType!): ImportUploadResponse
+    @policy(policies: [["application_is_native:true"]])
+    @requiresScopes(scopes: [["ROLE_USER"]])
 }
 
 """

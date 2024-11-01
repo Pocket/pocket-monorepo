@@ -25,6 +25,7 @@ import {
   upsertSavedItem,
   exportList,
   batchImport,
+  importUploadUrl,
 } from './mutation';
 import { tagsSavedItems } from './tag';
 import {
@@ -146,6 +147,15 @@ const resolvers = {
       return context.models.tag.resolveId(parent);
     },
   },
+  ImportUploadResponse: {
+    __resolveType(obj: any) {
+      if (obj.url) {
+        return 'PreSignedUrl';
+      } else {
+        return 'ImportLimited';
+      }
+    },
+  },
   Mutation: {
     upsertSavedItem,
     updateSavedItemFavorite,
@@ -166,6 +176,7 @@ const resolvers = {
     removeTagsByName,
     exportList,
     batchImport,
+    importUploadUrl,
     deleteTagByName: async (
       _,
       args: { tagName: string; timestamp?: Date },

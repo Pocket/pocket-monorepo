@@ -235,6 +235,10 @@ class ListAPI extends TerraformStack {
               name: 'OTLP_COLLECTOR_URL',
               value: config.tracing.url,
             },
+            {
+              name: 'LIST_IMPORTS_BUCKET',
+              value: config.envVars.listImportBucket,
+            },
           ],
           secretEnvVars: [
             {
@@ -391,6 +395,11 @@ class ListAPI extends TerraformStack {
             resources: [
               `arn:aws:events:${region.name}:${caller.accountId}:event-bus/${config.envVars.eventBusName}`,
             ],
+            effect: 'Allow',
+          },
+          {
+            actions: ['s3:PutObject', 's3:GetObject'],
+            resources: [`arn:aws:s3:::${config.envVars.listImportBucket}/*`],
             effect: 'Allow',
           },
         ],

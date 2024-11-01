@@ -44,6 +44,7 @@ export const config = {
     unifiedEventStreamName: 'unified_event',
     databaseTz: 'US/Central',
     eventBusName: `PocketEventBridge-${environment}-Shared-Event-Bus`,
+    listImportBucket: `com.getpocket-${environment.toLowerCase()}.list-imports`,
   },
   lambda: {
     snsTopicName: {

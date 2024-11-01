@@ -299,3 +299,8 @@ export type SaveUpdateTagsInputDb = {
 export type SaveByIdResult = NotFound | PocketSave;
 
 export type SavedItemRefInput = { id?: string; url?: string };
+
+export type ImportLimited = {
+  message: string;
+  refreshInHours: number;
+};
