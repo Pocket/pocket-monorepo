@@ -1,7 +1,12 @@
 import { Knex } from 'knex';
 import { IContext } from '../server/context';
 import { mysqlTimeString } from './utils';
-import { SavedItem, SavedItemStatus, SavedItemUpsertInput } from '../types';
+import {
+  SavedItem,
+  SavedItemImportHydrated,
+  SavedItemStatus,
+  SavedItemUpsertInput,
+} from '../types';
 import config from '../config';
 import { ItemResponse } from '../externalCaller/parserCaller';
 import { chunk } from 'lodash';
@@ -414,6 +419,45 @@ export class SavedItemDataService {
         .merge();
     });
     return await this.getSavedItemById(item.itemId.toString());
+  }
+
+  /**
+   * We receive the tags with the import records, so just
+   * including that here to avoid more complicated error/partial
+   * success states.
+   * Also, we want to avoid emitting unnecessary events and updating
+   * save records if we're importing it all together.
+   * @param records
+   * @returns true if transaction was successful, false otherwise
+   */
+  public async batchImportSavedItems(
+    records: Array<SavedItemImportHydrated>,
+    trx: Knex.Transaction,
+  ): Promise<void> {
+    const updatedAt = SavedItemDataService.formatDate(new Date());
+    const list = records.map((record) => {
+      const savedAt = SavedItemDataService.formatDate(
+        new Date(record.import.createdAt),
+      );
+      return {
+        user_id: parseInt(this.userId),
+        item_id: record.item.itemId,
+        given_url: record.import.url,
+        status: SavedItemStatus[record.import.status],
+        resolved_id: record.item.resolvedId,
+        title: record.import.title || record.item.title,
+        time_added: savedAt,
+        time_updated: updatedAt,
+        time_favorited: '0000-00-00 00:00:00',
+        time_read:
+          record.import.status === 'ARCHIVED' ? savedAt : '0000-00-00 00:00:00',
+        favorite: 0,
+        api_id: parseInt(this.apiId),
+        api_id_updated: parseInt(this.apiId),
+      };
+    });
+    // Transaction because of analytics/event emitting logic
+    await trx('list').insert(list).onConflict().merge();
   }
 
   /**

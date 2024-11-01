@@ -7,6 +7,8 @@ import {
   SavedItemTagsInput,
   Tag,
   SavedItemRefInput,
+  SavedItemImportHydrated,
+  SavedItemImportInput,
 } from '../types';
 import { IContext } from '../server/context';
 import { ParserCaller } from '../externalCaller/parserCaller';
@@ -19,6 +21,16 @@ import { serverLogger } from '@pocket-tools/ts-logger';
 import { NotFoundError, UserInputError } from '@pocket-tools/apollo-utils';
 import { v4 as uuidv4 } from 'uuid';
 import { exportListEvent } from '../businessEvents/exportListEvent';
+import { ImportMapping } from '../background/types';
+import {
+  HeadObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
+import path from 'path';
+import config from '../config';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import type { NodeJsClient } from '@smithy/types';
 /**
  * Create or re-add a saved item in a user's list.
  * Note that if the item already exists in a user's list, the item's 'favorite'
@@ -97,6 +109,62 @@ export async function upsertSavedItem(
     Sentry.captureException(e);
     throw new Error(`unable to add item with url: ${savedItemUpsertInput.url}`);
   }
+}
+
+/**
+ * Import from another service
+ */
+export async function batchImport(
+  root,
+  args: { input: SavedItemImportInput[] },
+  context: IContext,
+): Promise<boolean> {
+  try {
+    const input: SavedItemImportHydrated[] = [];
+    for await (const record of args.input) {
+      // Copied from upsertSavedItem
+      const url = ensureHttpPrefix(record.url);
+      const item = await ParserCaller.getOrCreateItem(url);
+      input.push({ item, import: { ...record, url } });
+    }
+    const saveService = new SavedItemDataService(context);
+    await context.dbClient.transaction(async (trx) => {
+      await saveService.batchImportSavedItems(input, trx);
+      await context.models.tag.importTags(input, trx);
+    });
+    // We can reconstruct this from the input data, but
+    // for now let's just read it back in for the event emitter
+    // and we can optimize if we need to later
+    const savedItems = await saveService.batchGetSavedItemsByGivenIds(
+      input.map((record) => record.item.itemId),
+    );
+    const tagsById = input.reduce(
+      (mapping, record) => {
+        mapping[record.item.itemId] = record.import.tags;
+        return mapping;
+      },
+      {} as Record<string, string[]>,
+    );
+    await Promise.all(
+      savedItems.map((item) =>
+        context.emitItemEvent(
+          EventType.ADD_ITEM,
+          item,
+          tagsById[item.id!.toString()],
+        ),
+      ),
+    );
+  } catch (error) {
+    serverLogger.error({
+      message: 'Encountered error during batch import',
+      errorMessage: error.message,
+      errorData: error,
+      import: args.input,
+    });
+    Sentry.captureException(error);
+    return false;
+  }
+  return true;
 }
 
 /**
@@ -420,4 +488,71 @@ export async function exportList(
   const requestId = uuidv4();
   await exportListEvent(requestId, context.eventContext);
   return requestId;
+}
+
+/**
+ * Get a presigned url for uploading to a specific file key.
+ * Expires 5 minutes after grant.
+ * Requires PUT request to upload.
+ */
+export async function importUploadUrl(
+  _,
+  { importType }: { importType: keyof ImportMapping },
+  context: IContext,
+): Promise<
+  { url: string; ttl: number } | { message: string; refreshInHours: number }
+> {
+  // Once per day, use the date as key
+  // Hard-coded to a zipfile for now (omnivore) - TODO
+  const filename = `${new Date().toISOString().split('T')[0]}.zip`;
+  const fileKey = path.join(context.userId, importType, filename);
+
+  const s3: NodeJsClient<S3Client> = new S3Client({
+    endpoint: config.aws.endpoint,
+    region: config.aws.region,
+    maxAttempts: 3,
+    forcePathStyle: config.aws.endpoint != null ? true : false,
+  });
+  let importExists = false;
+  // Lifted partly from the nicer s3 bucket utility in account-data-deleter
+  // Consider s3 utility package for reuse
+  try {
+    await s3.send<HeadObjectCommand>(
+      new HeadObjectCommand({
+        Bucket: config.aws.s3.importBucket,
+        Key: fileKey,
+      }),
+    );
+    importExists = true;
+  } catch (err) {
+    if (err.name !== 'NotFound') {
+      serverLogger.error({
+        message: 'Encountered error while checking for object existence in s3',
+        errorData: err,
+        bucket: config.aws.s3.importBucket,
+        key: fileKey,
+      });
+      Sentry.captureException(err, {
+        data: { bucket: config.aws.s3.importBucket, key: fileKey },
+      });
+      throw err;
+    }
+  }
+  if (!importExists) {
+    const command = new PutObjectCommand({
+      Bucket: config.aws.s3.importBucket,
+      Key: fileKey,
+    });
+
+    const url = await getSignedUrl(s3, command, {
+      expiresIn: config.aws.s3.presignedTtl,
+    });
+    return { url, ttl: config.aws.s3.presignedTtl };
+  } else {
+    return {
+      message: 'You must wait before uploading again',
+      // TODO
+      refreshInHours: 24,
+    };
+  }
 }
