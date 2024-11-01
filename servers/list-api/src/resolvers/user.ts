@@ -13,7 +13,7 @@ import {
   TagDataService,
   ListPaginationService,
 } from '../dataService';
-import { validatePagination } from '@pocket-tools/apollo-utils';
+import { NotFoundError, validatePagination } from '@pocket-tools/apollo-utils';
 import { IContext } from '../server/context';
 import config from '../config';
 
@@ -23,12 +23,18 @@ import config from '../config';
  * @param args
  * @param context
  */
-export function savedItemById(
+export async function savedItemById(
   parent: User,
   args: { id: string },
   context: IContext,
 ): Promise<SavedItem> {
-  return new SavedItemDataService(context).getSavedItemById(args.id);
+  const savedItem = await new SavedItemDataService(context).getSavedItemById(
+    args.id,
+  );
+  if (savedItem == null) {
+    throw new NotFoundError('Saved item not found');
+  }
+  return savedItem;
 }
 
 /**
@@ -65,9 +71,9 @@ export function savedItems(
 export function savedItemsPage(
   parent: User,
   args: {
-    filter?: SavedItemsFilter;
-    sort?: SavedItemsSort;
-    pagination?: OffsetPaginationInput;
+    filter: SavedItemsFilter | null;
+    sort: SavedItemsSort | null;
+    pagination: OffsetPaginationInput;
   },
   context: IContext,
 ) {

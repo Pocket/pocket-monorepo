@@ -34,11 +34,11 @@ export type SavedItemEdge = {
 };
 
 export type RemoteEntity = {
-  id?: string;
+  id: string;
   _createdAt?: number;
   _updatedAt?: number;
   _version?: number;
-  _deletedAt?: number;
+  _deletedAt?: number | null;
 };
 
 export type Item = {
@@ -66,9 +66,9 @@ export type SavedItem = RemoteEntity & {
   title?: string;
   isFavorite: boolean;
   status: keyof typeof SavedItemStatus;
-  favoritedAt?: number;
+  favoritedAt?: number | null;
   isArchived: boolean;
-  archivedAt?: number;
+  archivedAt?: number | null;
   item: {
     givenUrl: string;
   };
@@ -210,7 +210,7 @@ export type SavedItemTagsMap = {
 };
 
 export type DeleteSaveTagResponse = {
-  save: SavedItem;
+  save: SavedItem | null;
   removed: string[]; // Names
 };
 

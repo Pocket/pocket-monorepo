@@ -3,6 +3,7 @@ import { writeClient } from '../database/client';
 import { SavedItemDataService, TagDataService } from '../dataService';
 import { ContextManager, IContext } from '../server/context';
 import { Tag } from '../types';
+import { ItemsEventEmitter } from '../businessEvents';
 
 describe('tags dataloader', function () {
   const testTags: { [savedItemId: string]: Tag[] } = {
@@ -40,7 +41,7 @@ describe('tags dataloader', function () {
         headers: { userid: '1', apiid: '0', premium: 'true' },
       },
       dbClient: db,
-      eventEmitter: null,
+      eventEmitter: jest.fn() as unknown as ItemsEventEmitter,
     });
     const savedItemService = new SavedItemDataService(context);
     const service = new TagDataService(context, savedItemService);
@@ -68,7 +69,7 @@ describe('tags dataloader', function () {
         headers: { userid: '1', apiid: '0', premium: 'true' },
       },
       dbClient: db,
-      eventEmitter: null,
+      eventEmitter: jest.fn() as unknown as ItemsEventEmitter,
     });
     const savedItemService = new SavedItemDataService(context);
     const service = new TagDataService(context, savedItemService);
@@ -104,7 +105,7 @@ describe('tags dataloader', function () {
         headers: { userid: '1', apiid: '0', premium: 'true' },
       },
       dbClient: db,
-      eventEmitter: null,
+      eventEmitter: jest.fn() as unknown as ItemsEventEmitter,
     });
     const savedItemService = new SavedItemDataService(context);
     const service = new TagDataService(context, savedItemService);

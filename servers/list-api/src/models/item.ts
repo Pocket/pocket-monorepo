@@ -19,13 +19,16 @@ export class ItemModel {
       | Pick<SavedItem, 'url' | 'id' | 'resolvedId'>
       | Pick<PocketSave, 'givenUrl' | 'id' | 'resolvedId'>,
   ): Item | PendingItem {
-    let url: string;
-    if ('url' in parent) {
-      url = parent.url;
-    } else if ('givenUrl' in parent) {
-      url = parent.givenUrl;
-    }
-    if (parseInt(parent.resolvedId)) {
+    const url: string | null =
+      'url' in parent
+        ? parent.url
+        : 'givenUrl' in parent
+          ? parent.givenUrl
+          : null;
+
+    if (url == null) throw new Error('Invalid parent entity, missing a url');
+
+    if (parent.resolvedId != null && parseInt(parent.resolvedId)) {
       return {
         __typename: 'Item',
         givenUrl: url,
