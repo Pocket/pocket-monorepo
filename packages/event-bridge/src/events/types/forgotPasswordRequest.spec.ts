@@ -56,7 +56,7 @@ describe('forgotPasswordRequest event', () => {
             user: {
               encodedId: 'someencodedid',
               email: 'asd@me.com',
-              id: 1,
+              id: '1',
             },
             passwordResetInfo: {
               resetPasswordToken: 'atoken',
@@ -70,7 +70,7 @@ describe('forgotPasswordRequest event', () => {
     const event = sqsEventBridgeEvent(recordWithBadTypes as SQSRecord);
     expect(event?.['detail-type']).toBe(PocketEventType.FORGOT_PASSWORD);
     const castEvent = event as ForgotPasswordRequest;
-    expect(castEvent.detail.passwordResetInfo.timestamp).toBe(12312312333);
+    expect(castEvent.detail.user.id).toBe(1);
   });
 
   it('coerces time field to a date', async () => {
