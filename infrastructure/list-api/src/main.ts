@@ -398,6 +398,11 @@ class ListAPI extends TerraformStack {
             effect: 'Allow',
           },
           {
+            actions: ['s3:ListBucket'],
+            resources: [`arn:aws:s3:::${config.envVars.listImportBucket}`],
+            effect: 'Allow',
+          },
+          {
             actions: ['s3:PutObject', 's3:GetObject'],
             resources: [`arn:aws:s3:::${config.envVars.listImportBucket}/*`],
             effect: 'Allow',
