@@ -22,7 +22,6 @@ import {
   BasicListItemEventPayloadContext,
   ListPocketEventType,
 } from '@pocket-tools/event-bridge';
-import { List } from 'lodash';
 
 export interface IContext {
   userId: string;
