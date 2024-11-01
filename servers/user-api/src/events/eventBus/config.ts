@@ -1,9 +1,12 @@
 import { BasicUserEventPayloadWithContext, EventType } from '../eventType';
 import {
-  UserEventsPayload,
-  EventBridgeEventType,
-  EventHandlerCallbackMap,
-} from './types';
+  PocketEventType,
+  AccountDelete,
+  AccountEmailUpdated,
+  AccountPayload,
+} from '@pocket-tools/event-bridge';
+import { EventHandlerCallbackMap } from './types';
+import config from '../../config';
 
 /**
  * Mapping for events
@@ -11,21 +14,25 @@ import {
 export const eventMap: EventHandlerCallbackMap = {
   [EventType.ACCOUNT_DELETE]: (
     data: BasicUserEventPayloadWithContext,
-  ): UserEventsPayload => {
+  ): AccountDelete => {
     return {
-      ...generateBaseUserEventBusPayload(
+      source: config.aws.eventBus.eventBridge.source,
+      'detail-type': PocketEventType.ACCOUNT_DELETION,
+      detail: generateBaseUserEventBusPayload(
         data,
-        EventBridgeEventType.ACCOUNT_DELETION,
+        PocketEventType.ACCOUNT_DELETION,
       ),
     };
   },
   [EventType.ACCOUNT_EMAIL_UPDATED]: (
     data: BasicUserEventPayloadWithContext,
-  ): UserEventsPayload => {
+  ): AccountEmailUpdated => {
     return {
-      ...generateBaseUserEventBusPayload(
+      source: config.aws.eventBus.eventBridge.source,
+      'detail-type': PocketEventType.ACCOUNT_EMAIL_UPDATED,
+      detail: generateBaseUserEventBusPayload(
         data,
-        EventBridgeEventType.ACCOUNT_EMAIL_UPDATED,
+        PocketEventType.ACCOUNT_EMAIL_UPDATED,
       ),
     };
   },
@@ -39,8 +46,8 @@ export const eventMap: EventHandlerCallbackMap = {
  */
 const generateBaseUserEventBusPayload = (
   data: BasicUserEventPayloadWithContext,
-  eventType: EventBridgeEventType,
-): UserEventsPayload => {
+  eventType: PocketEventType,
+): AccountPayload => {
   return {
     userId: data.user.id,
     email: data.user.email,

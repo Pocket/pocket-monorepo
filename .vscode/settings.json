@@ -20,15 +20,13 @@
           "*/**/logs/",
           "*/**/node_modules/",
           "node_modules/",
-          ".turbo/",
+          ".turbo/"
         ]
       },
       {
         "name": "Strict",
         "detail": "Hide everything not immediately required",
-        "hidden": [
-          "$Default"
-        ]
+        "hidden": ["$Default"]
       }
     ]
   },
@@ -37,14 +35,7 @@
     "**/.svn": true,
     "**/.hg": true,
     "**/CVS": true,
-    "**/.DS_Store": true,
-    ".vscode/": true,
-    "*/**/.turbo/": true,
-    "*/**/dist/": true,
-    "*/**/logs/": true,
-    "*/**/node_modules/": true,
-    "node_modules/": true,
-    ".turbo/": true
+    "**/.DS_Store": true
   },
-  "hidefiles.selectedProfile": "Default"
+  "hidefiles.selectedProfile": "Show All Files"
 }

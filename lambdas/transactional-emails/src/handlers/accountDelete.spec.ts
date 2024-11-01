@@ -9,10 +9,16 @@ describe('accountDelete handler', () => {
   const record = {
     body: JSON.stringify({
       Message: JSON.stringify({
+        'detail-type': 'account-deletion',
+        source: 'user-event',
         detail: {
-          userId: 1,
+          apiId: '1',
+          userId: '1',
           email: '1@2.com',
           isPremium: true,
+          timestamp: 123456789,
+          version: '1.0.0',
+          eventType: 'account-deletion',
         },
       }),
     }),
@@ -37,8 +43,11 @@ describe('accountDelete handler', () => {
     const recordWithoutEmail = {
       body: JSON.stringify({
         Message: JSON.stringify({
+          'detail-type': 'account-deletion',
+          source: 'user-event',
           detail: {
-            userId: 1,
+            apiId: '1',
+            userId: '1',
             isPremium: false,
           },
         }),
@@ -48,7 +57,9 @@ describe('accountDelete handler', () => {
     try {
       await accountDeleteHandler(recordWithoutEmail as SQSRecord);
     } catch (e) {
-      expect(e.message).toContain('email is required in event payload');
+      expect(e.message).toContain(
+        "data/detail must have required property 'email'",
+      );
     }
   });
 

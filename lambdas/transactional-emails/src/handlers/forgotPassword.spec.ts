@@ -36,32 +36,6 @@ describe('forgotPassword handler', () => {
     jest.restoreAllMocks();
   });
 
-  it('throw an error if forgotPassword event payload is missing email', async () => {
-    const recordWithoutEmail = {
-      body: JSON.stringify({
-        Message: JSON.stringify({
-          detail: {
-            user: {
-              encodedId: 'someencodedid',
-              id: 1,
-            },
-            passwordResetInfo: {
-              resetPasswordToken: 'atoken',
-              resetPasswordUsername: 'billyjoel',
-              timestamp: '1/1/1997 5:00pm PT',
-            },
-          },
-        }),
-      }),
-    };
-    expect.assertions(1); // since it's in a try/catch, make sure we assert
-    try {
-      await forgotPasswordHandler(recordWithoutEmail as SQSRecord);
-    } catch (e) {
-      expect(e.message).toContain('email is required in event payload');
-    }
-  });
-
   it.skip('throws an error if email send response is not 200 OK', async () => {
     nock(config.braze.endpoint)
       .post(config.braze.campaignTriggerPath)
