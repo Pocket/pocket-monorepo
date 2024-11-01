@@ -9,5 +9,5 @@ export enum PocketEventType {
   PREMIUM_PURCHASE = 'Premium Purchase', //source: web-repo
   ACCOUNT_REGISTRATION = 'User Registration', //source: web-repo
   FORGOT_PASSWORD = 'Forgot Password Request', //source: web-repo
-  // EXPORT_READY = 'list-export-ready', // source: account-data-deleter
+  EXPORT_READY = 'list-export-ready', // source: account-data-deleter
 }

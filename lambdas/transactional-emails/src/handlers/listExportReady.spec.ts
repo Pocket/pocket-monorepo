@@ -4,6 +4,7 @@ import { SQSRecord } from 'aws-lambda';
 import { config } from '../config';
 import * as ssm from '../ssm';
 import { sendListExportReadyEmail } from '../braze';
+import { PocketEventType } from '@pocket-tools/event-bridge';
 
 describe('listExportReady handler', () => {
   beforeEach(() => {
@@ -25,6 +26,13 @@ describe('listExportReady handler', () => {
     const recordWithoutId = {
       body: JSON.stringify({
         Message: JSON.stringify({
+          id: '1234567890',
+          version: '0',
+          account: '123456789012',
+          region: 'us-east-2',
+          time: new Date(),
+          'detail-type': PocketEventType.EXPORT_READY,
+          source: 'web-repo',
           detail: {
             requestId: 'abc123',
           },
@@ -35,7 +43,9 @@ describe('listExportReady handler', () => {
     try {
       await exportReadyHandler(recordWithoutId as SQSRecord);
     } catch (e) {
-      expect(e.message).toContain('encodedId is required in event payload');
+      expect(e.message).toContain(
+        "data/detail must have required property 'encodedId'",
+      );
     }
   });
 
@@ -43,6 +53,13 @@ describe('listExportReady handler', () => {
     const record = {
       body: JSON.stringify({
         Message: JSON.stringify({
+          id: '1234567890',
+          version: '0',
+          account: '123456789012',
+          region: 'us-east-2',
+          time: new Date(),
+          'detail-type': PocketEventType.EXPORT_READY,
+          source: 'web-repo',
           detail: {
             encodedId: 'abc-123',
             requestId: '000-111',

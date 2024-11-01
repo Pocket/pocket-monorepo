@@ -5,6 +5,7 @@ import {
   AccountEmailUpdated,
   PremiumPurchaseEvent,
   AccountRegistration,
+  ExportReady,
 } from './types';
 export * from './types';
 export * from './events';
@@ -14,6 +15,7 @@ export type PocketEvent =
   | AccountDelete
   | AccountEmailUpdated
   | AccountRegistration
+  | ExportReady
   | PremiumPurchaseEvent;
 
 export type PocketEventTypeMap = {
@@ -22,4 +24,5 @@ export type PocketEventTypeMap = {
   [PocketEventType.ACCOUNT_EMAIL_UPDATED]: AccountEmailUpdated;
   [PocketEventType.ACCOUNT_REGISTRATION]: AccountRegistration;
   [PocketEventType.PREMIUM_PURCHASE]: PremiumPurchaseEvent;
+  [PocketEventType.EXPORT_READY]: ExportReady;
 };

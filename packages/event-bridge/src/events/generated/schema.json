@@ -199,6 +199,42 @@
       ],
       "type": "object"
     },
+    "ExportReady": {
+      "properties": {
+        "detail": {
+          "properties": {
+            "archiveUrl": {
+              "type": "string"
+            },
+            "encodedId": {
+              "type": "string"
+            },
+            "requestId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "encodedId",
+            "requestId",
+            "archiveUrl"
+          ],
+          "type": "object"
+        },
+        "detail-type": {
+          "const": "list-export-ready",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
     "ForgotPasswordRequest": {
       "properties": {
         "detail": {
