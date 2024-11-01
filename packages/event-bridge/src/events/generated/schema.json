@@ -142,6 +142,46 @@
       ],
       "type": "object"
     },
+    "AccountRegistration": {
+      "properties": {
+        "detail": {
+          "properties": {
+            "email": {
+              "type": "string"
+            },
+            "encodedUserId": {
+              "type": "string"
+            },
+            "locale": {
+              "type": "string"
+            },
+            "userId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "email",
+            "encodedUserId",
+            "userId",
+            "locale"
+          ],
+          "type": "object"
+        },
+        "detail-type": {
+          "const": "User Registration",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
     "BaseEvent": {
       "properties": {
         "detail": {},

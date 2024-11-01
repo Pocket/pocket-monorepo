@@ -13,6 +13,17 @@ export interface AccountEmailUpdated extends BaseEvent {
   detail: AccountPayload;
 }
 
+export interface AccountRegistration extends BaseEvent {
+  // 'source': 'web-repo';
+  'detail-type': PocketEventType.ACCOUNT_REGISTRATION;
+  detail: {
+    email: string;
+    encodedUserId: string;
+    userId: string;
+    locale: string;
+  };
+}
+
 export interface AccountPayload {
   email: string;
   isPremium: boolean;

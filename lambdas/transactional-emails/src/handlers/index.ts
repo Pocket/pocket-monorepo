@@ -7,9 +7,6 @@ import { exportReadyHandler } from './listExportReady';
 import { PocketEventType } from '@pocket-tools/event-bridge';
 
 export enum Event {
-  ACCOUNT_DELETION = 'account-deletion', //source: user-event
-  PREMIUM_PURCHASE = 'Premium Purchase', //source: web-repo
-  USER_REGISTRATION = 'User Registration', //source: web-repo
   EXPORT_READY = 'list-export-ready', // source: account-data-deleter
 }
 
@@ -18,9 +15,9 @@ export enum Event {
 export const handlers: {
   [key: string]: (message: SQSRecord) => Promise<any>;
 } = {
-  [Event.ACCOUNT_DELETION]: accountDeleteHandler,
-  [Event.PREMIUM_PURCHASE]: premiumPurchaseHandler,
-  [Event.USER_REGISTRATION]: userRegistrationEventHandler,
+  [PocketEventType.ACCOUNT_DELETION]: accountDeleteHandler,
+  [PocketEventType.PREMIUM_PURCHASE]: premiumPurchaseHandler,
+  [PocketEventType.ACCOUNT_REGISTRATION]: userRegistrationEventHandler,
   [PocketEventType.FORGOT_PASSWORD]: forgotPasswordHandler,
   [Event.EXPORT_READY]: exportReadyHandler,
 };
