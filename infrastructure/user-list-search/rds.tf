@@ -36,8 +36,22 @@ resource "aws_rds_cluster" "mysql" {
   vpc_security_group_ids      = [aws_security_group.mysql[0].id]
   db_subnet_group_name        = aws_db_subnet_group.mysql_subnet[0].name
   engine                      = "aurora-mysql"
-  engine_mode                 = "serverless"
-  engine_version              = "5.7.mysql_aurora.2.11.4"
+  engine_mode                 = "provisioned"
+  engine_version              = "8.0.mysql_aurora.3.07.1"
   allow_major_version_upgrade = true
   apply_immediately           = true
+  storage_encrypted           = true
+
+  serverlessv2_scaling_configuration {
+    max_capacity = 1.0
+    min_capacity = 0.5
+  }
+}
+
+resource "aws_rds_cluster_instance" "mysql_instance" {
+  count                   = local.env == "Dev" ? 1 : 0
+  cluster_identifier = aws_rds_cluster.mysql[0].id
+  instance_class     = "db.serverless"
+  engine             = aws_rds_cluster.mysql[0].engine
+  engine_version     = aws_rds_cluster.mysql[0].engine_version
 }
