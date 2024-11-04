@@ -8,7 +8,8 @@ import {
 import { IContext } from '../../apollo/context';
 import { IPocketMetadataDataSource } from '../PocketMetadataModel';
 import { merge } from 'lodash';
-import { extract } from '@extractus/oembed-extractor';
+import { extract, hasProvider } from '@extractus/oembed-extractor';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export class OEmbedModel implements IPocketMetadataDataSource {
   // Use oEmbed for TikTok, and others in the future
@@ -22,10 +23,15 @@ export class OEmbedModel implements IPocketMetadataDataSource {
     fallbackParserPocketMetadata: PocketMetadata,
     context: IContext,
   ): Promise<OEmbed> {
-    const oembedData = await this.parseOEmbed(item);
-    // If we have data from oembed, let's overwrite the Parser content
-    // Also uses lodash for a deep merge with the fallback data ignoring undefined
-    return merge(fallbackParserPocketMetadata, oembedData);
+    try {
+      const oembedData = await this.parseOEmbed(item);
+      // If we have data from oembed, let's overwrite the Parser content
+      // Also uses lodash for a deep merge with the fallback data ignoring undefined
+      return merge(fallbackParserPocketMetadata, oembedData);
+    } catch (e) {
+      serverLogger.error('Error parsing oembed', { error: e });
+      return fallbackParserPocketMetadata;
+    }
   }
 
   isEnabled(context: IContext): boolean {
@@ -33,6 +39,13 @@ export class OEmbedModel implements IPocketMetadataDataSource {
   }
 
   async parseOEmbed(item: Item): Promise<Partial<OEmbed>> {
+    if (!hasProvider(item.givenUrl)) {
+      serverLogger.debug('No oembed provider found for url', {
+        url: item.givenUrl,
+      });
+      return {};
+    }
+
     const userAgent =
       'PocketParser/2.0 (+https://getpocket.com/pocketparser_ua)';
     const result = await extract(item.givenUrl, null, {
