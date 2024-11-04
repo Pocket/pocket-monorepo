@@ -90,7 +90,7 @@ class ListAPI extends TerraformStack {
         skipFinalSnapshot: true,
         engine: 'aurora-mysql',
         engineMode: 'provisioned',
-        engineVersion: '8.0.mysql_aurora.3.06.0',
+        engineVersion: '8.0.mysql_aurora.3.07.1',
         serverlessv2ScalingConfiguration: {
           minCapacity: config.rds.minCapacity,
           maxCapacity: config.rds.maxCapacity,
