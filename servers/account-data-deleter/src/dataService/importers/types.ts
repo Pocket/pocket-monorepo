@@ -1,4 +1,4 @@
-import { OmnivoreImportRecord } from './OmnivoreImport';
+import { OmnivoreImportRecord } from './validation';
 
 // Supported imports and their types
 // Mostly for documentation of SQS message schemas

@@ -2,24 +2,8 @@ import { SQSClient } from '@aws-sdk/client-sqs';
 import { S3Bucket } from '../s3Service';
 import { ImportBase } from './ImportBase';
 import { ImportMessage } from './types';
-
-// A record in the omnivore metadata json export
-export type OmnivoreImportRecord = {
-  id: string;
-  // Used as the key for highlights markdown files (<slug>.md)
-  slug: string;
-  title: string;
-  description: string | null;
-  author: string | null;
-  url: string;
-  state: 'Active' | 'Archived';
-  readingProgress: number;
-  thumbnail: string | null;
-  labels: string[]; // empty if no labels exist
-  savedAt: string; // ISO timestamp e.g. "2024-10-30T12:39:28.023Z"
-  updatedAt: string; // ISO timestamp
-  publishedAt: string | null; // ISO timestamp
-};
+import { ImportValidator, OmnivoreImportRecord } from './validation';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export class OmnivoreImporter extends ImportBase {
   readonly userId: string;
@@ -44,9 +28,25 @@ export class OmnivoreImporter extends ImportBase {
    */
   async loadImport(): Promise<OmnivoreImportRecord[]> {
     const metadataFiles = await this.loadArchive(this.fileKey, 'metadata');
-    const jsonRecords = metadataFiles.flatMap((entry) => {
-      return JSON.parse(entry.getData().toString('utf8'));
-    });
+    const jsonRecords = metadataFiles
+      .flatMap((entry) => {
+        const entryRecords = JSON.parse(entry.getData().toString('utf8'));
+        const validator = ImportValidator.omnivore();
+        return entryRecords.map((record: any) => {
+          if (validator.validate(record)) {
+            return record;
+          } else {
+            serverLogger.debug({
+              message: 'Skipping import for invalid record',
+              importer: 'omnivore',
+              errors: validator.validate.errors,
+              record,
+            });
+            return undefined;
+          }
+        });
+      })
+      .filter((x) => x != null);
     return jsonRecords;
   }
   /**
