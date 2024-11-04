@@ -27,7 +27,7 @@
   "dependencies": {
     "@aws-sdk/client-sqs": "3.679.0",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "8.35.0",
+    "@sentry/node": "8.36.0",
     "apns2": "11.7.0",
     "dotenv": "16.4.5",
     "firebase-admin": "^12.0.0",
