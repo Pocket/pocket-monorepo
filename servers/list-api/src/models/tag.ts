@@ -23,8 +23,8 @@ import { addslashes } from 'locutus/php/strings';
 import * as Sentry from '@sentry/node';
 import { GraphQLResolveInfo } from 'graphql';
 import { ParserCaller } from '../externalCaller/parserCaller';
-import { EventType } from '../businessEvents';
 import { Knex } from 'knex';
+import { PocketEventType } from '@pocket-tools/event-bridge';
 
 export class TagModel {
   private tagService: TagDataService;
@@ -127,7 +127,7 @@ export class TagModel {
     await this.tagService.insertTags(creates, timestamp);
     const savedItem = await this.saveService.getSavedItemById(savedItemId);
     // Emit events
-    this.context.emitItemEvent(EventType.ADD_TAGS, savedItem, tagNames);
+    this.context.emitItemEvent(PocketEventType.ADD_TAGS, savedItem, tagNames);
     return savedItem;
   }
 

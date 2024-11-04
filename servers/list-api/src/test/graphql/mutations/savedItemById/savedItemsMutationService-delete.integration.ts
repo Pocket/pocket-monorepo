@@ -1,11 +1,11 @@
 import { readClient, writeClient } from '../../../../database/client';
 import { Knex } from 'knex';
-import { EventType } from '../../../../businessEvents';
 import { ContextManager } from '../../../../server/context';
 import { startServer } from '../../../../server/apollo';
 import request from 'supertest';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
+import { PocketEventType } from '@pocket-tools/event-bridge';
 
 async function upsertSavedItem(
   db: Knex,
@@ -201,7 +201,7 @@ describe('Delete/Undelete SavedItem: ', () => {
       // Check for delete event
       expect(eventSpy).toHaveBeenCalledTimes(1);
       const eventData = eventSpy.mock.calls[0];
-      expect(eventData[0]).toBe(EventType.DELETE_ITEM);
+      expect(eventData[0]).toBe(PocketEventType.DELETE_ITEM);
       expect(eventData[1].id).toBe(1);
     });
     it('should set _deletedAt to be the given timestamp if provided', async () => {

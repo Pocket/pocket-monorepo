@@ -1,13 +1,16 @@
 import {
-  EventType,
   ItemEventPayload,
   ItemsEventEmitter,
   initItemEventHandlers,
   eventBridgeEventHandler,
 } from '../../businessEvents';
 import { SavedItem } from '../../types';
-import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
+import { PocketEventBridgeClient } from '@pocket-tools/event-bridge';
 import config from '../../config';
+import {
+  ListPocketEventTypeEnum,
+  PocketEventType,
+} from '@pocket-tools/event-bridge';
 
 const testSavedItem: SavedItem = {
   id: '2',
@@ -33,7 +36,10 @@ const eventData: Omit<ItemEventPayload, 'eventType'> = {
 };
 
 describe('EventBridgeHandler', () => {
-  const clientSpy = jest.spyOn(EventBridgeClient.prototype, 'send');
+  const clientSpy = jest.spyOn(
+    PocketEventBridgeClient.prototype,
+    'sendPocketEvent',
+  );
   const emitter = new ItemsEventEmitter();
   beforeAll(() => {
     initItemEventHandlers(emitter, [eventBridgeEventHandler]);
@@ -46,60 +52,41 @@ describe('EventBridgeHandler', () => {
   it('should emit events to event bridge successfully', async () => {
     const addEvent: ItemEventPayload = {
       ...eventData,
-      eventType: EventType.ADD_ITEM,
+      eventType: PocketEventType.ADD_ITEM,
     };
-    emitter.emit(EventType.ADD_ITEM, addEvent);
-    const res = await clientSpy.mock.results[0].value;
-    const expected = {
-      $metadata: expect.objectContaining({
-        httpStatusCode: 200,
-        requestId: expect.toBeString(),
-      }),
-      Entries:
-        expect.toBeArrayOfSize(1) &&
-        expect.toIncludeSameMembers([
-          {
-            ErrorCode: undefined,
-            ErrorMessage: undefined,
-            EventId: expect.toBeString(),
-          },
-        ]),
-      FailedEntryCount: 0,
-    };
+    emitter.emit(PocketEventType.ADD_ITEM, addEvent);
     expect(clientSpy).toHaveBeenCalledTimes(1);
-    expect(res).toMatchObject(expected);
   });
   it('should contain the proper payload', async () => {
     const addEvent: ItemEventPayload = {
       ...eventData,
-      eventType: EventType.ADD_ITEM,
+      eventType: PocketEventType.ADD_ITEM,
     };
-    emitter.emit(EventType.ADD_ITEM, addEvent);
+    emitter.emit(PocketEventType.ADD_ITEM, addEvent);
     const expected = {
-      EventBusName: config.aws.eventBus.name,
-      Detail: JSON.stringify(addEvent),
-      Source: config.serviceName,
-      DetailType: EventType.ADD_ITEM,
+      detail: addEvent,
+      source: config.serviceName,
+      'detail-type': PocketEventType.ADD_ITEM,
     };
     expect(clientSpy).toHaveBeenCalledTimes(1);
-    expect(clientSpy.mock.calls[0][0].input['Entries']).toIncludeSameMembers([
-      expected,
-    ]);
+    expect(clientSpy.mock.calls[0][0]).toMatchObject(expected);
   });
   it('should work for every event type', async () => {
-    const eventTypes = Object.keys(EventType) as Array<keyof typeof EventType>;
+    const eventTypes = Object.keys(ListPocketEventTypeEnum) as Array<
+      keyof typeof ListPocketEventTypeEnum
+    >;
     const eventBuilder = (
-      eventType: keyof typeof EventType,
+      eventType: keyof typeof ListPocketEventTypeEnum,
     ): ItemEventPayload => ({
       ...eventData,
-      eventType: EventType[eventType],
+      eventType: PocketEventType[eventType],
     });
     // Ensure that the proper number of assertions were called
     // So that there isn't a false positive if the for loop breaks
     expect.assertions(eventTypes.length);
     let callCount = 0;
     eventTypes.forEach((eventType) => {
-      emitter.emit(EventType[eventType], eventBuilder(eventType));
+      emitter.emit(PocketEventType[eventType], eventBuilder(eventType));
       callCount += 1;
       expect(clientSpy).toHaveBeenCalledTimes(callCount);
     });

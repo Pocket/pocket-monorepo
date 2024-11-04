@@ -3,19 +3,18 @@ import { startServer } from '../../../server/apollo';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
-import config from '../../../config';
 import { SavedItemImportInput } from '../../../types';
 import { mockParserGetItemRequest } from '../../utils/parserMocks';
 import { restore, cleanAll } from 'nock';
 import { writeClient } from '../../../database/client';
-import { EventBridgeBase } from '../../../aws/eventBridgeBase';
+import { PocketEventBridgeClient } from '@pocket-tools/event-bridge';
 
 describe('batchImport mutation', () => {
   let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;
   const eventMock = jest
-    .spyOn(EventBridgeBase.prototype, 'putEvents')
+    .spyOn(PocketEventBridgeClient.prototype, 'sendPocketEvent')
     .mockResolvedValue();
   const db = writeClient();
   const headers = {
@@ -106,12 +105,11 @@ describe('batchImport mutation', () => {
     expect(res.body.errors).toBeUndefined();
     expect(res.body.data.batchImport).toBeTrue();
     expect(eventMock).toHaveBeenCalledTimes(2);
-    const eventPayload = eventMock.mock.calls[0][0].input.Entries[0];
-    const eventDetail = JSON.parse(eventPayload.Detail);
+    const eventPayload = eventMock.mock.calls[0][0];
+    const eventDetail = eventPayload.detail;
     expect(eventPayload).toMatchObject({
-      Source: 'list-api',
-      DetailType: 'ADD_ITEM',
-      EventBusName: config.aws.eventBus.name,
+      source: 'list-api',
+      'detail-type': 'ADD_ITEM',
     });
     expect(eventDetail).toMatchObject({
       savedItem: {

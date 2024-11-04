@@ -14,7 +14,6 @@ import { IContext } from '../server/context';
 import { ParserCaller } from '../externalCaller/parserCaller';
 import { SavedItemDataService } from '../dataService';
 import * as Sentry from '@sentry/node';
-import { EventType } from '../businessEvents';
 import {
   getSavedItemTagsMap,
   atLeastOneOf,
@@ -36,6 +35,8 @@ import path from 'path';
 import config from '../config';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import type { NodeJsClient } from '@smithy/types';
+
+import { PocketEventType } from '@pocket-tools/event-bridge';
 /**
  * Create or re-add a saved item in a user's list.
  * Note that if the item already exists in a user's list, the item's 'favorite'
@@ -96,14 +97,14 @@ export async function upsertSavedItem(
     if (existingItem != null) {
       // was an update, not a new insert
       if (existingItem.isArchived) {
-        context.emitItemEvent(EventType.UNARCHIVE_ITEM, upsertedItem);
+        context.emitItemEvent(PocketEventType.UNARCHIVE_ITEM, upsertedItem);
       }
     } else {
       // Was a new add
-      context.emitItemEvent(EventType.ADD_ITEM, upsertedItem);
+      context.emitItemEvent(PocketEventType.ADD_ITEM, upsertedItem);
     }
     if (shouldSendFavoriteEvent) {
-      context.emitItemEvent(EventType.FAVORITE_ITEM, upsertedItem);
+      context.emitItemEvent(PocketEventType.FAVORITE_ITEM, upsertedItem);
     }
     return upsertedItem;
   } catch (e) {
@@ -155,7 +156,7 @@ export async function batchImport(
     await Promise.all(
       savedItems.map((item) =>
         context.emitItemEvent(
-          EventType.ADD_ITEM,
+          PocketEventType.ADD_ITEM,
           item,
           tagsById[item.id!.toString()],
         ),
@@ -275,7 +276,7 @@ export async function updateSavedItemTags(
     args.timestamp,
   );
   context.emitItemEvent(
-    EventType.REPLACE_TAGS,
+    PocketEventType.REPLACE_TAGS,
     savedItem,
     args.input.tagIds.map((id) => TagModel.decodeId(id)),
   );
@@ -300,7 +301,7 @@ export async function updateSavedItemRemoveTags(
     args.savedItemId,
     args.timestamp,
   );
-  context.emitItemEvent(EventType.CLEAR_TAGS, save, removed);
+  context.emitItemEvent(PocketEventType.CLEAR_TAGS, save, removed);
   return save;
 }
 
@@ -324,7 +325,7 @@ export async function createSavedItemTags(
 
   for (const savedItem of savedItems) {
     context.emitItemEvent(
-      EventType.ADD_TAGS,
+      PocketEventType.ADD_TAGS,
       savedItem,
       savedItemTagsMap[savedItem.id],
     );
@@ -347,7 +348,7 @@ export async function deleteSavedItemTags(
     args.timestamp,
   );
   const saves = deleteOperations.map(({ save, removed }) => {
-    context.emitItemEvent(EventType.REMOVE_TAGS, save, removed);
+    context.emitItemEvent(PocketEventType.REMOVE_TAGS, save, removed);
     return save;
   });
   return saves;
@@ -384,7 +385,7 @@ export async function replaceSavedItemTags(
 
   for (const savedItem of savedItems) {
     context.emitItemEvent(
-      EventType.REPLACE_TAGS,
+      PocketEventType.REPLACE_TAGS,
       savedItem,
       savedItemTagsMap[savedItem.id],
     );
@@ -433,7 +434,7 @@ export async function replaceTags(
   if (savedItem == null) {
     throw new NotFoundError(`SavedItem does not exist`);
   }
-  context.emitItemEvent(EventType.REPLACE_TAGS, savedItem, args.tagNames);
+  context.emitItemEvent(PocketEventType.REPLACE_TAGS, savedItem, args.tagNames);
   return savedItem;
 }
 /** Remove specific tags from a single SavedItem */

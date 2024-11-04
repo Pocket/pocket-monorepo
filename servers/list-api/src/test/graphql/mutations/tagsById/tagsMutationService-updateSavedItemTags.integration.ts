@@ -2,13 +2,13 @@ import { readClient, writeClient } from '../../../../database/client';
 import { UsersMetaService } from '../../../../dataService';
 import { mysqlTimeString } from '../../../../dataService/utils';
 import config from '../../../../config';
-import { EventType } from '../../../../businessEvents';
 import { getUnixTimestamp } from '../../../../utils';
 import { ContextManager } from '../../../../server/context';
 import { startServer } from '../../../../server/apollo';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
+import { PocketEventType } from '@pocket-tools/event-bridge';
 
 describe('tags mutation update: ', () => {
   const writeDb = writeClient();
@@ -203,7 +203,7 @@ describe('tags mutation update: ', () => {
 
     expect(eventSpy).toHaveBeenCalledTimes(1);
     const eventData = eventSpy.mock.calls[0];
-    expect(eventData[0]).toEqual(EventType.REPLACE_TAGS);
+    expect(eventData[0]).toEqual(PocketEventType.REPLACE_TAGS);
     expect(eventData[1].id).toEqual(1);
     expect(eventData[2]).toContainAllValues(['tofino', 'victoria']);
   });
@@ -375,7 +375,7 @@ describe('tags mutation update: ', () => {
 
     expect(eventSpy).toHaveBeenCalledTimes(1);
     const eventData = eventSpy.mock.calls[0];
-    expect(eventData[0]).toEqual(EventType.CLEAR_TAGS);
+    expect(eventData[0]).toEqual(PocketEventType.CLEAR_TAGS);
     expect(eventData[1].id).toEqual(1);
     expect(eventData[2]).toContainAllValues([
       'summer',

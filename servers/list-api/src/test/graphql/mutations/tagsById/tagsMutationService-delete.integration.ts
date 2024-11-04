@@ -1,11 +1,11 @@
 import { readClient, writeClient } from '../../../../database/client';
 import { UsersMetaService } from '../../../../dataService';
-import { EventType } from '../../../../businessEvents';
 import { ContextManager } from '../../../../server/context';
 import { startServer } from '../../../../server/apollo';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
+import { PocketEventType } from '@pocket-tools/event-bridge';
 
 describe('Mutation for Tag deletions: ', () => {
   const writeDb = writeClient();
@@ -159,10 +159,10 @@ describe('Mutation for Tag deletions: ', () => {
       expect(res.body.errors).toBeUndefined();
       expect(eventSpy).toHaveBeenCalledTimes(2);
       const eventData = eventSpy.mock.calls.map((_) => _);
-      expect(eventData[0][0]).toEqual(EventType.REMOVE_TAGS);
+      expect(eventData[0][0]).toEqual(PocketEventType.REMOVE_TAGS);
       expect(eventData[0][1].id).toEqual(0);
       expect(eventData[0][2]).toContainAllValues(['colin', 'nadja']);
-      expect(eventData[1][0]).toEqual(EventType.REMOVE_TAGS);
+      expect(eventData[1][0]).toEqual(PocketEventType.REMOVE_TAGS);
       expect(eventData[1][1].id).toEqual(1);
       expect(eventData[1][2]).toContainAllValues(['deacon']);
     });

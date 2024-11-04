@@ -1,7 +1,8 @@
 import config from '../config';
-import { EventType, unifiedEventTransformer } from '.';
+import { unifiedEventTransformer } from '.';
 import { SavedItem } from '../types';
 import { getUnixTimestamp } from '../utils';
+import { ListPocketEventTypeEnum } from '@pocket-tools/event-bridge';
 
 describe('UnifiedEventHandler', () => {
   afterEach(() => {
@@ -27,7 +28,7 @@ describe('UnifiedEventHandler', () => {
       user: { id: '1', hashedId: 'abc123', isPremium: false },
       tagsUpdated: ['tagA', 'tagB'],
       apiUser: { apiId: '1' },
-      eventType: EventType.ADD_TAGS,
+      eventType: ListPocketEventTypeEnum.ADD_TAGS,
       data: { abc: '123' },
       savedItem: testSavedItem,
       timestamp: Date.now(),
@@ -56,7 +57,7 @@ describe('UnifiedEventHandler', () => {
       version: config.events.version,
       user: { id: '1', hashedId: 'abc123', isPremium: false },
       apiUser: { apiId: '1' },
-      eventType: EventType.ADD_ITEM,
+      eventType: ListPocketEventTypeEnum.ADD_ITEM,
       tagsUpdated: ['tagA', 'tagB'],
       data: { abc: '123' },
       savedItem: testSavedItem,

@@ -1,8 +1,10 @@
-import { PutEventsCommand } from '@aws-sdk/client-eventbridge';
-import { BasicItemEventPayloadContext } from './types';
 import config from '../config';
 import { eventBridgeClient } from '../aws/eventBridgeClient';
-import { EventBridgeBase } from '../aws/eventBridgeBase';
+import {
+  BasicListItemEventPayloadContext,
+  ExportRequested,
+  PocketEventType,
+} from '@pocket-tools/event-bridge';
 
 /**
  * The way that the event handlers were set up previously
@@ -14,27 +16,20 @@ import { EventBridgeBase } from '../aws/eventBridgeBase';
  */
 export async function exportListEvent(
   requestId: string,
-  context: BasicItemEventPayloadContext,
+  context: BasicListItemEventPayloadContext,
 ) {
-  const payload = {
-    ...context,
-    userId: context.user.id,
-    encodedId: context.user.hashedId,
-    requestId,
-    // Initial values for requesting first chunk
-    part: 0,
-    cursor: -1,
+  const payload: ExportRequested = {
+    'detail-type': PocketEventType.EXPORT_REQUESTED,
+    source: config.serviceName,
+    detail: {
+      ...context,
+      userId: context.user.id,
+      encodedId: context.user.hashedId,
+      requestId,
+      // Initial values for requesting first chunk
+      part: 0,
+      cursor: -1,
+    },
   };
-  const command = new PutEventsCommand({
-    Entries: [
-      {
-        EventBusName: config.aws.eventBus.name,
-        Detail: JSON.stringify(payload),
-        Source: config.serviceName,
-        DetailType: 'list-export-requested',
-      },
-    ],
-  });
-  const client = new EventBridgeBase(eventBridgeClient);
-  await client.putEvents(command);
+  await eventBridgeClient.sendPocketEvent(payload);
 }

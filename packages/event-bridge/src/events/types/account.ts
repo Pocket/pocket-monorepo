@@ -24,6 +24,16 @@ export interface AccountRegistration extends BaseEvent {
   };
 }
 
+export interface ExportReady extends BaseEvent {
+  // 'source': 'account-data-deleter';
+  'detail-type': PocketEventType.EXPORT_READY;
+  detail: {
+    encodedId: string;
+    requestId: string;
+    archiveUrl?: string | null;
+  };
+}
+
 export interface AccountPayload {
   email: string;
   isPremium: boolean;

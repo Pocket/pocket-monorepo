@@ -1,5 +1,4 @@
 import { readClient, writeClient } from '../../../../database/client';
-import { EventType } from '../../../../businessEvents';
 import { ContextManager as CMClass } from '../../../../server/context';
 import { startServer } from '../../../../server/apollo';
 import { Application } from 'express';
@@ -8,6 +7,7 @@ import request from 'supertest';
 
 // For constructor spying in connection management block
 import * as ContextModule from '../../../../server/context';
+import { PocketEventType } from '@pocket-tools/event-bridge';
 const ContextManager = ContextModule.ContextManager;
 
 describe('createSavedItemTags mutation', function () {
@@ -205,7 +205,7 @@ describe('createSavedItemTags mutation', function () {
     expect(res.body.errors).toBeUndefined();
     expect(eventSpy).toHaveBeenCalledTimes(1);
     const eventData = eventSpy.mock.calls[0];
-    expect(eventData[0]).toBe(EventType.ADD_TAGS);
+    expect(eventData[0]).toBe(PocketEventType.ADD_TAGS);
     expect(eventData[1].id).toBe(1);
     expect(eventData[2]).toContainAllValues(['tofino', 'victoria']);
   });

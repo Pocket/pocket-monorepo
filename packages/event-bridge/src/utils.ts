@@ -20,6 +20,8 @@ const validationSchemaForDetailType = (detailType: string) => {
   let validationSchemaName: string | null = null;
   for (const key in schema.definitions) {
     if (
+      'properties' in schema.definitions[key] &&
+      'detail-type' in schema.definitions[key].properties &&
       schema.definitions[key].properties['detail-type']?.const === detailType
     ) {
       validationSchemaName = `#/definitions/${key}`;

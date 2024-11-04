@@ -1,21 +1,9 @@
 import { SavedItem, SavedItemStatus } from '../types';
 import { ListItem } from '../snowplow/schema';
-
-export enum EventType {
-  ADD_ITEM = 'ADD_ITEM',
-  DELETE_ITEM = 'DELETE_ITEM',
-  FAVORITE_ITEM = 'FAVORITE_ITEM',
-  UNFAVORITE_ITEM = 'UNFAVORITE_ITEM',
-  ARCHIVE_ITEM = 'ARCHIVE_ITEM',
-  UNARCHIVE_ITEM = 'UNARCHIVE_ITEM',
-  ADD_TAGS = 'ADD_TAGS',
-  REPLACE_TAGS = 'REPLACE_TAGS',
-  CLEAR_TAGS = 'CLEAR_TAGS',
-  REMOVE_TAGS = 'REMOVE_TAGS',
-  RENAME_TAG = 'RENAME_TAG',
-  DELETE_TAG = 'DELETE_TAG',
-  UPDATE_TITLE = 'UPDATE_TITLE',
-}
+import {
+  BasicListItemEventPayloadContext,
+  ListPocketEventTypeEnum,
+} from '@pocket-tools/event-bridge';
 
 // Data fields required for all events
 export type BasicItemEventPayload = {
@@ -24,33 +12,8 @@ export type BasicItemEventPayload = {
   tagsUpdated?: string[]; //unified event requires tags that are modified in mutation
 };
 
-export type BasicItemEventPayloadContext = {
-  user: {
-    id: string;
-    hashedId: string;
-    email?: string;
-    guid?: number;
-    hashedGuid?: string;
-    isPremium: boolean;
-  };
-  apiUser: {
-    apiId: string;
-    name?: string;
-    isNative?: boolean;
-    isTrusted?: boolean;
-    clientVersion?: string;
-  };
-  request?: {
-    language?: string;
-    snowplowDomainUserId?: string;
-    snowplowDomainSessionId?: string;
-    ipAddress?: string;
-    userAgent?: string;
-  };
-};
-
 export type BasicItemEventPayloadWithContext = BasicItemEventPayload &
-  BasicItemEventPayloadContext;
+  BasicListItemEventPayloadContext;
 
 // Data common to all events
 export type BasicEventData = {
@@ -60,7 +23,7 @@ export type BasicEventData = {
 };
 
 export type ItemEventPayload = BasicItemEventPayload &
-  BasicItemEventPayloadContext &
+  BasicListItemEventPayloadContext &
   BasicEventData & { eventType: EventTypeString };
 
 export enum SQSEvents {
@@ -82,10 +45,19 @@ export type UnifiedEventType =
   | 'user-item-unfavorited'
   | 'user-item-unarchived';
 
-export type EventTypeString = keyof typeof EventType;
-export type RequiredEvents = Exclude<
+export type EventTypeString = keyof typeof ListPocketEventTypeEnum;
+export type RequiredEvents = Extract<
   EventTypeString,
-  'DELETE_TAG' | 'RENAME_TAG' | 'UPDATE_TITLE'
+  | 'ADD_ITEM'
+  | 'DELETE_ITEM'
+  | 'ARCHIVE_ITEM'
+  | 'UNARCHIVE_ITEM'
+  | 'FAVORITE_ITEM'
+  | 'UNFAVORITE_ITEM'
+  | 'ADD_TAGS'
+  | 'REPLACE_TAGS'
+  | 'REMOVE_TAGS'
+  | 'CLEAR_TAGS'
 >;
 export const UnifiedEventMap: Record<RequiredEvents, UnifiedEventType> = {
   ADD_ITEM: 'user-list-item-created',

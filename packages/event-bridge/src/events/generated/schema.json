@@ -182,6 +182,60 @@
       ],
       "type": "object"
     },
+    "AddItem": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "ADD_ITEM",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "AddTags": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "ADD_TAGS",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ArchiveItem": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "ARCHIVE_ITEM",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
     "BaseEvent": {
       "properties": {
         "detail": {},
@@ -196,6 +250,140 @@
         "detail-type",
         "source",
         "detail"
+      ],
+      "type": "object"
+    },
+    "BasicListItemEventPayloadContext": {
+      "properties": {
+        "apiUser": {
+          "properties": {
+            "apiId": {
+              "type": "string"
+            },
+            "clientVersion": {
+              "type": "string"
+            },
+            "isNative": {
+              "type": "boolean"
+            },
+            "isTrusted": {
+              "type": "boolean"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "apiId"
+          ],
+          "type": "object"
+        },
+        "request": {
+          "properties": {
+            "ipAddress": {
+              "type": "string"
+            },
+            "language": {
+              "type": "string"
+            },
+            "snowplowDomainSessionId": {
+              "type": "string"
+            },
+            "snowplowDomainUserId": {
+              "type": "string"
+            },
+            "userAgent": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "user": {
+          "properties": {
+            "email": {
+              "type": "string"
+            },
+            "guid": {
+              "type": "number"
+            },
+            "hashedGuid": {
+              "type": "string"
+            },
+            "hashedId": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "isPremium": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "hashedId",
+            "isPremium"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "user",
+        "apiUser"
+      ],
+      "type": "object"
+    },
+    "ClearTags": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "CLEAR_TAGS",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "DeleteItem": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "DELETE_ITEM",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "DeleteTag": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "DELETE_TAG",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
       ],
       "type": "object"
     },
@@ -224,6 +412,42 @@
         },
         "detail-type": {
           "const": "list-export-ready",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ExportRequested": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "list-export-requested",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "FavoriteItem": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "FAVORITE_ITEM",
           "type": "string"
         },
         "source": {
@@ -341,6 +565,62 @@
       ],
       "type": "object"
     },
+    "ListPocketEventType": {
+      "anyOf": [
+        {
+          "const": "ADD_ITEM",
+          "type": "string"
+        },
+        {
+          "const": "DELETE_ITEM",
+          "type": "string"
+        },
+        {
+          "const": "FAVORITE_ITEM",
+          "type": "string"
+        },
+        {
+          "const": "UNFAVORITE_ITEM",
+          "type": "string"
+        },
+        {
+          "const": "ARCHIVE_ITEM",
+          "type": "string"
+        },
+        {
+          "const": "UNARCHIVE_ITEM",
+          "type": "string"
+        },
+        {
+          "const": "ADD_TAGS",
+          "type": "string"
+        },
+        {
+          "const": "REPLACE_TAGS",
+          "type": "string"
+        },
+        {
+          "const": "CLEAR_TAGS",
+          "type": "string"
+        },
+        {
+          "const": "REMOVE_TAGS",
+          "type": "string"
+        },
+        {
+          "const": "RENAME_TAG",
+          "type": "string"
+        },
+        {
+          "const": "DELETE_TAG",
+          "type": "string"
+        },
+        {
+          "const": "UPDATE_TITLE",
+          "type": "string"
+        }
+      ]
+    },
     "PremiumPurchaseEvent": {
       "properties": {
         "detail": {
@@ -428,6 +708,114 @@
         "planType",
         "receiptId",
         "renewDate"
+      ],
+      "type": "object"
+    },
+    "RemoveTags": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "REMOVE_TAGS",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "RenameTag": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "RENAME_TAG",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ReplaceTags": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "REPLACE_TAGS",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "UnarchiveItem": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "UNARCHIVE_ITEM",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "UnfavoriteItem": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "UNFAVORITE_ITEM",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "UpdateTitle": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "UPDATE_TITLE",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
       ],
       "type": "object"
     }
