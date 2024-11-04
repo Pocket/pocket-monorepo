@@ -21,7 +21,6 @@
     "watch": "tsc -w --preserveWatchOutput & nodemon --inspect --config ../../nodemon.json"
   },
   "dependencies": {
-    "@aws-sdk/client-eventbridge": "3.679.0",
     "@aws-sdk/client-s3": "3.679.0",
     "@aws-sdk/client-sqs": "3.679.0",
     "@aws-sdk/lib-storage": "3.679.0",

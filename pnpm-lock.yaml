@@ -75,7 +75,7 @@ importers:
         version: 0.20.9(constructs@10.4.2)
       cdktf-cli:
         specifier: 0.20.9
-        version: 0.20.9(encoding@0.1.13)(ink@3.2.0(react@18.3.1))(react@18.3.1)
+        version: 0.20.9(encoding@0.1.13)(ink@5.0.1(react-devtools-core@4.28.5)(react@18.3.1))(react@18.3.1)
       constructs:
         specifier: 10.4.2
         version: 10.4.2
@@ -118,7 +118,7 @@ importers:
         version: 0.20.9(constructs@10.4.2)
       cdktf-cli:
         specifier: 0.20.9
-        version: 0.20.9(encoding@0.1.13)(ink@5.0.1(react-devtools-core@4.28.5)(react@18.3.1))(react@18.3.1)
+        version: 0.20.9(encoding@0.1.13)(ink@3.2.0(react@18.3.1))(react@18.3.1)
       constructs:
         specifier: 10.4.2
         version: 10.4.2
@@ -2591,9 +2591,6 @@ importers:
 
   servers/account-data-deleter:
     dependencies:
-      '@aws-sdk/client-eventbridge':
-        specifier: 3.679.0
-        version: 3.679.0
       '@aws-sdk/client-s3':
         specifier: 3.679.0
         version: 3.679.0
