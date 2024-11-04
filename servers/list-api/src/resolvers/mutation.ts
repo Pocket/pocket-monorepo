@@ -510,6 +510,11 @@ export async function importUploadUrl(
 ): Promise<
   { url: string; ttl: number } | { message: string; refreshInHours: number }
 > {
+  const overrideEnabled = context.unleash.isEnabled(
+    'temp.backend.import-limit-override',
+    { userId: context.eventContext.user.hashedId },
+    false,
+  );
   // Once per day, use the date as key
   // Hard-coded to a zipfile for now (omnivore) - TODO
   const filename = `${new Date().toISOString().split('T')[0]}.zip`;
@@ -546,7 +551,7 @@ export async function importUploadUrl(
       throw err;
     }
   }
-  if (!importExists) {
+  if (!importExists || overrideEnabled) {
     const command = new PutObjectCommand({
       Bucket: config.aws.s3.importBucket,
       Key: fileKey,
