@@ -1,7 +1,3 @@
-import {
-  PutEventsCommand,
-  PutEventsCommandOutput,
-} from '@aws-sdk/client-eventbridge';
 import * as Sentry from '@sentry/node';
 import config from '../config/';
 import { eventBridgeClient } from '../aws/eventBridgeClient';
