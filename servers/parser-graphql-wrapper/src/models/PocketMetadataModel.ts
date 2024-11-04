@@ -199,14 +199,12 @@ export class PocketMetadataModel {
     if (!collection) {
       return;
     }
-    const imageUrl = getOriginalUrlIfPocketImageCached(collection.imageUrl);
+    const imageUrl = collection.imageUrl
+      ? getOriginalUrlIfPocketImageCached(collection.imageUrl)
+      : null;
     return {
       id: item.id,
-      image: {
-        url: imageUrl,
-        imageId: 0,
-        src: imageUrl,
-      },
+      image: imageUrl ? { url: imageUrl, imageId: 0, src: imageUrl } : null,
       excerpt: markdownToTxt(collection.excerpt),
       title: collection.title,
       authors: collection.authors.map((author, index) => {
@@ -245,17 +243,13 @@ export class PocketMetadataModel {
     if (!syndicatedArticle) {
       return;
     }
-    const imageUrl = getOriginalUrlIfPocketImageCached(
-      syndicatedArticle.mainImage,
-    );
+    const imageUrl = syndicatedArticle.mainImage
+      ? getOriginalUrlIfPocketImageCached(syndicatedArticle.mainImage)
+      : null;
 
     return {
       id: item.id,
-      image: {
-        url: imageUrl,
-        imageId: 0,
-        src: imageUrl,
-      },
+      image: imageUrl ? { url: imageUrl, imageId: 0, src: imageUrl } : null,
       excerpt: syndicatedArticle.excerpt,
       title: syndicatedArticle.title,
       authors: syndicatedArticle.authorNames.map((author, index) => {
@@ -265,8 +259,8 @@ export class PocketMetadataModel {
         };
       }),
       domain: {
-        logo: syndicatedArticle.publisher.logo,
-        name: syndicatedArticle.publisher.name,
+        logo: syndicatedArticle.publisher?.logo,
+        name: syndicatedArticle.publisher?.name,
       },
       datePublished: syndicatedArticle.publishedAt
         ? DateTime.fromISO(syndicatedArticle.publishedAt).toJSDate()
