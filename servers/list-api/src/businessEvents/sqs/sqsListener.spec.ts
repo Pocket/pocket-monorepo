@@ -1,10 +1,10 @@
 import { SqsListener } from './sqsListener';
 import { ItemsEventEmitter } from '../itemsEventEmitter';
 import { SavedItem } from '../../types';
-import { EventType } from '../types';
 import config from '../../config';
 import { sqs } from '../../aws/sqs';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { PocketEventType } from '@pocket-tools/event-bridge';
 
 describe('SqsListener spec test', function () {
   function fakeSendError() {
@@ -26,7 +26,7 @@ describe('SqsListener spec test', function () {
       {
         transformer: async (data) => data,
         queueUrl: config.aws.sqs.publisherQueue.url,
-        events: [EventType.ADD_ITEM],
+        events: [PocketEventType.ADD_ITEM],
       },
     ]);
     const consoleSpy = jest.spyOn(serverLogger, 'error');
@@ -45,7 +45,7 @@ describe('SqsListener spec test', function () {
       user: { id: '1' },
       savedItem: Promise.resolve(testSavedItem),
       apiUser: { apiId: '1' },
-      eventType: EventType.ADD_ITEM,
+      eventType: PocketEventType.ADD_ITEM,
     };
 
     await sqsListener.process(config.aws.sqs.publisherQueue.url, eventData);

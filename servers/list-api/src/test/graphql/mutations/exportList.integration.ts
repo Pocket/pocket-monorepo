@@ -3,8 +3,7 @@ import { startServer } from '../../../server/apollo';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
-import { EventBridgeBase } from '../../../aws/eventBridgeBase';
-import config from '../../../config';
+import { PocketEventBridgeClient } from '@pocket-tools/event-bridge';
 
 describe('exportList mutation', () => {
   let app: Application;
@@ -20,7 +19,7 @@ describe('exportList mutation', () => {
       }
     `;
   const eventMock = jest
-    .spyOn(EventBridgeBase.prototype, 'putEvents')
+    .spyOn(PocketEventBridgeClient.prototype, 'sendPocketEvent')
     .mockResolvedValue();
 
   beforeAll(async () => {
@@ -40,12 +39,11 @@ describe('exportList mutation', () => {
     expect(res.body.errors).toBeUndefined();
     expect(res.body.data.exportList).toBeString();
     expect(eventMock).toHaveBeenCalledOnce();
-    const eventPayload = eventMock.mock.calls[0][0].input.Entries[0];
-    const eventDetail = JSON.parse(eventPayload.Detail);
+    const eventPayload = eventMock.mock.calls[0][0];
+    const eventDetail = eventPayload.detail;
     expect(eventPayload).toMatchObject({
-      Source: 'list-api',
-      DetailType: 'list-export-requested',
-      EventBusName: config.aws.eventBus.name,
+      source: 'list-api',
+      'detail-type': 'list-export-requested',
     });
     expect(eventDetail).toMatchObject({
       part: 0,

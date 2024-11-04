@@ -3,7 +3,6 @@ import config from '../config';
 import { KinesisClient, PutRecordCommand } from '@aws-sdk/client-kinesis';
 import * as Sentry from '@sentry/node';
 import {
-  EventType,
   EventTypeString,
   ItemEventPayload,
   UnifiedEventMap,
@@ -11,18 +10,22 @@ import {
 } from './types';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { ItemsEventEmitter } from './itemsEventEmitter';
+import {
+  ListPocketEventTypeEnum,
+  PocketEventType,
+} from '@pocket-tools/event-bridge';
 
 export class UnifiedEventKinesisHandler {
   private readonly kinesis: KinesisClient;
   constructor(
     emitter: ItemsEventEmitter,
-    events: Array<keyof typeof EventType>,
+    events: Array<keyof typeof ListPocketEventTypeEnum>,
   ) {
     this.kinesis = kinesis;
     // register handler for item events
     events.forEach((event) =>
       emitter.on(
-        EventType[event],
+        ListPocketEventTypeEnum[event],
         async (data: ItemEventPayload) => await this.process(data),
       ),
     );
@@ -82,11 +85,11 @@ export async function unifiedEventTransformer(
  */
 function isSupportedTagEventType(eventType: EventTypeString) {
   return [
-    EventType.ADD_TAGS,
-    EventType.CLEAR_TAGS,
-    EventType.REMOVE_TAGS,
-    EventType.REPLACE_TAGS,
-  ].includes(EventType[eventType]);
+    PocketEventType.ADD_TAGS,
+    PocketEventType.CLEAR_TAGS,
+    PocketEventType.REMOVE_TAGS,
+    PocketEventType.REPLACE_TAGS,
+  ].includes(PocketEventType[eventType]);
 }
 
 /**

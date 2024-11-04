@@ -1,7 +1,5 @@
 import {
-  BasicItemEventPayloadContext,
   BasicItemEventPayloadWithContext,
-  EventType,
   ItemsEventEmitter,
 } from '../businessEvents';
 import { IncomingHttpHeaders } from 'http';
@@ -20,6 +18,11 @@ import {
 import { SavedItemModel } from '../models/SavedItem';
 import { Unleash } from 'unleash-client';
 import { getClient } from '../featureFlags';
+import {
+  BasicListItemEventPayloadContext,
+  ListPocketEventType,
+} from '@pocket-tools/event-bridge';
+import { List } from 'lodash';
 
 export interface IContext {
   userId: string;
@@ -29,7 +32,7 @@ export interface IContext {
   dbClient: Knex;
   eventEmitter: ItemsEventEmitter;
   unleash: Unleash;
-  eventContext: BasicItemEventPayloadContext;
+  eventContext: BasicListItemEventPayloadContext;
   models: {
     tag: TagModel;
     pocketSave: PocketSaveModel;
@@ -46,7 +49,7 @@ export interface IContext {
   };
 
   emitItemEvent(
-    event: EventType,
+    event: ListPocketEventType,
     savedItem: SavedItem,
     tags?: string[],
   ): Promise<void>;
@@ -126,7 +129,7 @@ export class ContextManager implements IContext {
     return this._dbClient;
   }
 
-  public get eventContext(): BasicItemEventPayloadContext {
+  public get eventContext(): BasicListItemEventPayloadContext {
     return {
       user: {
         id: this.userId,
@@ -160,7 +163,7 @@ export class ContextManager implements IContext {
    * @param tagsUpdated tags updated during mutation
    */
   async emitItemEvent(
-    event: EventType,
+    event: ListPocketEventType,
     savedItem: SavedItem,
     tagsUpdated?: string[],
   ): Promise<void> {

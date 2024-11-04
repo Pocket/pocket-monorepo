@@ -1,10 +1,10 @@
 import { readClient, writeClient } from '../../../../database/client';
-import { EventType } from '../../../../businessEvents';
 import { ContextManager } from '../../../../server/context';
 import { startServer } from '../../../../server/apollo';
 import { Application } from 'express';
 import { ApolloServer } from '@apollo/server';
 import request from 'supertest';
+import { PocketEventType } from '@pocket-tools/event-bridge';
 
 describe('Update Mutation for SavedItem: ', () => {
   //using write client as mutation will use write client to read as well.
@@ -124,7 +124,7 @@ describe('Update Mutation for SavedItem: ', () => {
     it('should emit an archive event', async () => {
       expect(eventSpy).toHaveBeenCalledTimes(1);
       const eventData = eventSpy.mock.calls[0];
-      expect(eventData[0]).toBe(EventType.ARCHIVE_ITEM);
+      expect(eventData[0]).toBe(PocketEventType.ARCHIVE_ITEM);
       expect(eventData[1].id).toBe(parseInt(variables.itemId));
     });
   });
@@ -166,7 +166,7 @@ describe('Update Mutation for SavedItem: ', () => {
     it('should emit an unarchive event', async () => {
       expect(eventSpy).toHaveBeenCalledTimes(1);
       const eventData = eventSpy.mock.calls[0];
-      expect(eventData[0]).toBe(EventType.UNARCHIVE_ITEM);
+      expect(eventData[0]).toBe(PocketEventType.UNARCHIVE_ITEM);
       expect(eventData[1].id).toBe(parseInt(variables.itemId));
     });
     it('should unarchive an item and set updatedAt to provided timestamp', async () => {
@@ -240,7 +240,7 @@ describe('Update Mutation for SavedItem: ', () => {
     it('should emit a favorite event', async () => {
       expect(eventSpy).toHaveBeenCalledTimes(1);
       const eventData = eventSpy.mock.calls[0];
-      expect(eventData[0]).toBe(EventType.FAVORITE_ITEM);
+      expect(eventData[0]).toBe(PocketEventType.FAVORITE_ITEM);
       expect(eventData[1].id).toBe(parseInt(variables.itemId));
     });
   });
@@ -294,7 +294,7 @@ describe('Update Mutation for SavedItem: ', () => {
     it('should emit an unfavorite event', async () => {
       expect(eventSpy).toHaveBeenCalledTimes(1);
       const eventData = eventSpy.mock.calls[0];
-      expect(eventData[0]).toBe(EventType.UNFAVORITE_ITEM);
+      expect(eventData[0]).toBe(PocketEventType.UNFAVORITE_ITEM);
       expect(eventData[1].id).toBe(parseInt(variables.itemId));
     });
   });

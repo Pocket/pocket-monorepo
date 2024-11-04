@@ -1,16 +1,13 @@
 import EventEmitter from 'events';
 import config from '../config';
-import {
-  BasicItemEventPayloadWithContext,
-  EventType,
-  ItemEventPayload,
-} from './types';
+import { BasicItemEventPayloadWithContext, ItemEventPayload } from './types';
 import { getUnixTimestamp } from '../utils';
+import { ListPocketEventType } from '@pocket-tools/event-bridge';
 
 export class ItemsEventEmitter extends EventEmitter {
   private static buildEvent(
     eventData: BasicItemEventPayloadWithContext,
-    eventType: EventType,
+    eventType: ListPocketEventType,
   ): ItemEventPayload {
     return {
       ...eventData,
@@ -22,7 +19,7 @@ export class ItemsEventEmitter extends EventEmitter {
   }
 
   emitItemEvent(
-    event: EventType,
+    event: ListPocketEventType,
     data: BasicItemEventPayloadWithContext,
   ): void {
     this.emit(event, ItemsEventEmitter.buildEvent(data, event));

@@ -3,9 +3,10 @@ import { Knex } from 'knex';
 import DataLoader from 'dataloader';
 import { SavedItemDataService } from '../dataService';
 import { SavedItem } from '../types';
-import { EventType, ItemsEventEmitter } from '../businessEvents';
+import { ItemsEventEmitter } from '../businessEvents';
 import * as Sentry from '@sentry/node';
 import { Request } from 'express';
+import { PocketEventType } from '@pocket-tools/event-bridge';
 
 jest.mock('../dataService');
 
@@ -78,14 +79,14 @@ describe('context', () => {
     });
     afterAll(() => jest.restoreAllMocks());
     it('should log a warning to Sentry if save is undefined', async () => {
-      await context.emitItemEvent(EventType.ARCHIVE_ITEM, undefined);
+      await context.emitItemEvent(PocketEventType.ARCHIVE_ITEM, undefined);
       expect(sentryEventSpy).toHaveBeenCalledTimes(1);
       const event = sentryEventSpy.mock.calls[0][0];
       expect(event.message).toContain('Save was null or undefined');
       expect(event.level).toStrictEqual('warning');
     });
     it('should log a warning to Sentry if save is null', async () => {
-      await context.emitItemEvent(EventType.ARCHIVE_ITEM, null);
+      await context.emitItemEvent(PocketEventType.ARCHIVE_ITEM, null);
       expect(sentryEventSpy).toHaveBeenCalledTimes(1);
       const event = sentryEventSpy.mock.calls[0][0];
       expect(event.message).toContain('Save was null or undefined');
@@ -98,24 +99,24 @@ describe('context', () => {
       jest
         .spyOn(context.models.tag, 'getBySaveId')
         .mockImplementation(() => Promise.resolve([]));
-      await context.emitItemEvent(EventType.ARCHIVE_ITEM, savedItem);
+      await context.emitItemEvent(PocketEventType.ARCHIVE_ITEM, savedItem);
       expect(emitStub).toHaveBeenCalledTimes(1);
     });
     it('should emit event to listener', async () => {
       const listenerFn = jest.fn();
       // listener
-      context.eventEmitter.on(EventType.ARCHIVE_ITEM, listenerFn);
+      context.eventEmitter.on(PocketEventType.ARCHIVE_ITEM, listenerFn);
       jest
         .spyOn(context.models.tag, 'getBySaveId')
         .mockImplementation(() => Promise.resolve([]));
-      await context.emitItemEvent(EventType.ARCHIVE_ITEM, savedItem);
+      await context.emitItemEvent(PocketEventType.ARCHIVE_ITEM, savedItem);
       expect(listenerFn).toHaveBeenCalledTimes(1);
     });
     it('should send exception with warning level to Sentry if payload generation fails', async () => {
       jest.spyOn(context.models.tag, 'getBySaveId').mockImplementation(() => {
         throw new Error('my error');
       });
-      await context.emitItemEvent(EventType.ARCHIVE_ITEM, savedItem);
+      await context.emitItemEvent(PocketEventType.ARCHIVE_ITEM, savedItem);
       expect(sentryExceptionSpy).toHaveBeenCalledTimes(1);
       const event = sentryExceptionSpy.mock.calls[0];
       expect(event[0].message).toContain('my error');

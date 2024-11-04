@@ -5,8 +5,11 @@ import { SnowplowHandler } from './snowplowHandler';
 import { tracker } from '../snowplow/tracker';
 import config from '../config';
 import { transformers } from './sqs/transformers';
-import { EventType } from './types';
 import { EventBridgeHandler } from './eventBridgeHandler';
+import {
+  ListPocketEventType,
+  PocketEventType,
+} from '@pocket-tools/event-bridge';
 
 export type ItemEventHandlerFn = (emitter: ItemsEventEmitter) => void;
 
@@ -18,7 +21,7 @@ export function unifiedEventHandler(emitter: ItemsEventEmitter): void {
   // batch kinesis listener for unified event stream
   const unifiedEventsToListen = Object.keys(
     config.aws.kinesis.unifiedEvents.events,
-  ) as Array<keyof typeof EventType>;
+  ) as Array<ListPocketEventType>;
   new UnifiedEventKinesisHandler(emitter, unifiedEventsToListen);
 }
 
@@ -41,9 +44,6 @@ export function snowplowEventHandler(emitter: ItemsEventEmitter): void {
 }
 
 export function eventBridgeEventHandler(emitter: ItemsEventEmitter): void {
-  const eventsToListen = Object.keys(EventType);
-  new EventBridgeHandler(
-    emitter,
-    eventsToListen as Array<keyof typeof EventType>,
-  );
+  const eventsToListen = Object.keys(PocketEventType);
+  new EventBridgeHandler(emitter, eventsToListen as Array<ListPocketEventType>);
 }

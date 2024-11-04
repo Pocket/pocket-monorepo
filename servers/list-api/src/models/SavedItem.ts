@@ -2,8 +2,8 @@ import { NotFoundError } from '@pocket-tools/apollo-utils';
 import { SavedItemDataService } from '../dataService';
 import { ParserCaller } from '../externalCaller/parserCaller';
 import { IContext } from '../server/context';
-import { EventType } from '../businessEvents';
 import { SavedItem } from '../types';
+import { PocketEventType } from '@pocket-tools/event-bridge';
 
 export class SavedItemModel {
   private readonly defaultNotFoundMessage = 'SavedItem does not exist';
@@ -33,7 +33,7 @@ export class SavedItemModel {
     if (savedItem == null) {
       throw new NotFoundError(this.defaultNotFoundMessage);
     } else {
-      this.context.emitItemEvent(EventType.ARCHIVE_ITEM, savedItem);
+      this.context.emitItemEvent(PocketEventType.ARCHIVE_ITEM, savedItem);
     }
     return savedItem;
   }
@@ -55,7 +55,7 @@ export class SavedItemModel {
     if (savedItem == null) {
       throw new NotFoundError(this.defaultNotFoundMessage);
     } else {
-      this.context.emitItemEvent(EventType.UNARCHIVE_ITEM, savedItem);
+      this.context.emitItemEvent(PocketEventType.UNARCHIVE_ITEM, savedItem);
     }
     return savedItem;
   }
@@ -81,7 +81,7 @@ export class SavedItemModel {
     if (savedItem == null) {
       throw new NotFoundError(this.defaultNotFoundMessage);
     } else {
-      this.context.emitItemEvent(EventType.FAVORITE_ITEM, savedItem);
+      this.context.emitItemEvent(PocketEventType.FAVORITE_ITEM, savedItem);
     }
     return savedItem;
   }
@@ -106,7 +106,7 @@ export class SavedItemModel {
     if (savedItem == null) {
       throw new NotFoundError(this.defaultNotFoundMessage);
     } else {
-      this.context.emitItemEvent(EventType.UNFAVORITE_ITEM, savedItem);
+      this.context.emitItemEvent(PocketEventType.UNFAVORITE_ITEM, savedItem);
     }
     return savedItem;
   }
@@ -132,7 +132,7 @@ export class SavedItemModel {
     if (savedItem == null) {
       throw new NotFoundError(this.defaultNotFoundMessage);
     } else {
-      this.context.emitItemEvent(EventType.DELETE_ITEM, savedItem);
+      this.context.emitItemEvent(PocketEventType.DELETE_ITEM, savedItem);
     }
     return id;
   }
@@ -275,7 +275,7 @@ export class SavedItemModel {
     if (savedItem == null) {
       throw new NotFoundError(this.defaultNotFoundMessage);
     } else {
-      this.context.emitItemEvent(EventType.UPDATE_TITLE, savedItem);
+      this.context.emitItemEvent(PocketEventType.UPDATE_TITLE, savedItem);
     }
     return savedItem;
   }
@@ -292,7 +292,7 @@ export class SavedItemModel {
       timestamp,
     );
     if (removed.length) {
-      this.context.emitItemEvent(EventType.CLEAR_TAGS, save, removed);
+      this.context.emitItemEvent(PocketEventType.CLEAR_TAGS, save, removed);
     }
     return save;
   }
@@ -313,7 +313,7 @@ export class SavedItemModel {
         tags,
         timestamp,
       );
-    this.context.emitItemEvent(EventType.REMOVE_TAGS, save, removed);
+    this.context.emitItemEvent(PocketEventType.REMOVE_TAGS, save, removed);
     return save;
   }
   /** Remove tag names from a single Saved Item, identified by Url */
@@ -367,9 +367,9 @@ export class SavedItemModel {
     const updated = await this.saveService.reAdd(id, timestamp);
     // "Re-add" event depends on the state of the item
     if (extantSave.status === 'ARCHIVED') {
-      this.context.emitItemEvent(EventType.UNARCHIVE_ITEM, updated);
+      this.context.emitItemEvent(PocketEventType.UNARCHIVE_ITEM, updated);
     } else {
-      this.context.emitItemEvent(EventType.ADD_ITEM, updated);
+      this.context.emitItemEvent(PocketEventType.ADD_ITEM, updated);
     }
     return updated;
   }

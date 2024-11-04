@@ -1,5 +1,7 @@
-// DO NOT CHANGE: circular dependency if simplified to "import { EventType } from '../businessEvents'"
-import { EventType } from '../businessEvents/types';
+import {
+  ListPocketEventTypeEnum,
+  PocketEventType,
+} from '@pocket-tools/event-bridge';
 
 const serviceName = 'list-api';
 const awsEnvironments = ['production', 'development'];
@@ -24,7 +26,7 @@ export default {
     kinesis: {
       unifiedEvents: {
         streamName: 'unified_event',
-        events: EventType,
+        events: PocketEventType,
       },
       maxBatch: 500, // maximum batch size for kinesis
       interval: 1000, // ms (approx) between processing batches
@@ -35,13 +37,13 @@ export default {
     },
     sqs: {
       publisherQueue: {
-        events: Object.values(EventType) as string[],
+        events: Object.values(ListPocketEventTypeEnum) as string[],
         url:
           process.env.SQS_PUBLISHER_DATA_QUEUE_URL ||
           'http://localhost:4566/000000000000/pocket-publisher-data-queue',
       },
       permLibItemMainQueue: {
-        events: [EventType.ADD_ITEM],
+        events: [PocketEventType.ADD_ITEM],
         url:
           process.env.SQS_PERMLIB_ITEMMAIN_QUEUE_URL ||
           'http://localhost:4566/000000000000/PermLib-ItemMain',
@@ -137,7 +139,7 @@ export default {
     bufferSize: 1,
     retries: 3,
     appId: 'pocket-backend-list-api',
-    events: EventType,
+    events: ListPocketEventTypeEnum,
     schemas: {
       listItemUpdate: 'iglu:com.pocket/list_item_update/jsonschema/1-0-1',
       listItem: 'iglu:com.pocket/list_item/jsonschema/1-0-1',

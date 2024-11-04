@@ -1,13 +1,10 @@
-import {
-  EventType,
-  ItemsEventEmitter,
-  SnowplowHandler,
-} from '../../businessEvents';
+import { ItemsEventEmitter, SnowplowHandler } from '../../businessEvents';
 import { tracker } from '../../snowplow/tracker';
 import config from '../../config';
 import { ListItemUpdate } from '../../snowplow/schema';
 import { SavedItem } from '../../types';
 import { forEach } from 'lodash';
+import { PocketEventType } from '@pocket-tools/event-bridge';
 
 async function snowplowRequest(path: string, post = false): Promise<any> {
   const response = await fetch(`http://${config.snowplow.endpoint}${path}`, {
@@ -113,16 +110,16 @@ describe('SnowplowHandler', () => {
   it('should send good events to snowplow', async () => {
     const emitter = new ItemsEventEmitter();
     new SnowplowHandler(emitter, tracker, [
-      EventType.ADD_ITEM,
-      EventType.FAVORITE_ITEM,
+      PocketEventType.ADD_ITEM,
+      PocketEventType.FAVORITE_ITEM,
     ]);
-    emitter.emit(EventType.ADD_ITEM, {
+    emitter.emit(PocketEventType.ADD_ITEM, {
       ...eventData,
-      eventType: EventType.ADD_ITEM,
+      eventType: PocketEventType.ADD_ITEM,
     });
-    emitter.emit(EventType.FAVORITE_ITEM, {
+    emitter.emit(PocketEventType.FAVORITE_ITEM, {
       ...eventData,
-      eventType: EventType.FAVORITE_ITEM,
+      eventType: PocketEventType.FAVORITE_ITEM,
     });
 
     // wait a sec * 3
@@ -147,26 +144,26 @@ describe('SnowplowHandler', () => {
   it('should capture tag-update events', async () => {
     const emitter = new ItemsEventEmitter();
     new SnowplowHandler(emitter, tracker, [
-      EventType.ADD_TAGS,
-      EventType.REPLACE_TAGS,
-      EventType.REMOVE_TAGS,
-      EventType.CLEAR_TAGS,
+      PocketEventType.ADD_TAGS,
+      PocketEventType.REPLACE_TAGS,
+      PocketEventType.REMOVE_TAGS,
+      PocketEventType.CLEAR_TAGS,
     ]);
-    emitter.emit(EventType.ADD_TAGS, {
+    emitter.emit(PocketEventType.ADD_TAGS, {
       ...eventData,
-      eventType: EventType.ADD_TAGS,
+      eventType: PocketEventType.ADD_TAGS,
     });
-    emitter.emit(EventType.REPLACE_TAGS, {
+    emitter.emit(PocketEventType.REPLACE_TAGS, {
       ...eventData,
-      eventType: EventType.REPLACE_TAGS,
+      eventType: PocketEventType.REPLACE_TAGS,
     });
-    emitter.emit(EventType.REMOVE_TAGS, {
+    emitter.emit(PocketEventType.REMOVE_TAGS, {
       ...eventData,
-      eventType: EventType.REMOVE_TAGS,
+      eventType: PocketEventType.REMOVE_TAGS,
     });
-    emitter.emit(EventType.CLEAR_TAGS, {
+    emitter.emit(PocketEventType.CLEAR_TAGS, {
       ...eventData,
-      eventType: EventType.CLEAR_TAGS,
+      eventType: PocketEventType.CLEAR_TAGS,
     });
 
     // wait a sec * 3

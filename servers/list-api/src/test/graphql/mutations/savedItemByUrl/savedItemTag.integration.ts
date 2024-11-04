@@ -7,8 +7,8 @@ import { Application } from 'express';
 import { gql } from 'graphql-tag';
 import { print } from 'graphql';
 import request from 'supertest';
-import { EventType } from '../../../../businessEvents';
 import { restore, cleanAll } from 'nock';
+import { PocketEventType } from '@pocket-tools/event-bridge';
 
 describe('savedItemTag mutation', () => {
   const writeDb = writeClient();
@@ -278,7 +278,7 @@ describe('savedItemTag mutation', () => {
     expect(eventSpy).toHaveBeenCalledTimes(1);
     const eventData = eventSpy.mock.calls[0];
     const expectedEventCall = [
-      EventType.ADD_TAGS,
+      PocketEventType.ADD_TAGS,
       expect.objectContaining({ id: 1, url: 'http://abc' }),
       expect.toIncludeSameMembers(['sugawara', 'daiichi']),
     ];

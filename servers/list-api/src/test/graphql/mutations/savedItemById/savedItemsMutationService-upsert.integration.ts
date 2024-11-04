@@ -1,7 +1,6 @@
 import { readClient, writeClient } from '../../../../database/client';
 import config from '../../../../config';
 import {
-  EventType,
   ItemsEventEmitter,
   SQSEvents,
   SqsListener,
@@ -24,6 +23,7 @@ import request from 'supertest';
 import type { Knex } from 'knex';
 import nock, { cleanAll, restore } from 'nock';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { PocketEventType } from '@pocket-tools/event-bridge';
 
 function mockParserGetItemRequest(urlToParse: string, data: any) {
   nock(config.parserDomain)
@@ -424,7 +424,7 @@ describe('UpsertSavedItem Mutation', () => {
 
       expect(eventSpy).toHaveBeenCalledTimes(1);
       const eventData = eventSpy.mock.calls[0];
-      expect(eventData[0]).toEqual(EventType.ADD_ITEM);
+      expect(eventData[0]).toEqual(PocketEventType.ADD_ITEM);
       expect(eventData[1].url).toEqual(variables.url);
       expect(mutationResult.body.data?.upsertSavedItem.url).toEqual(
         variables.url,
@@ -639,7 +639,7 @@ describe('UpsertSavedItem Mutation', () => {
         });
         expect(eventSpy.mock.calls.length).toBeGreaterThan(0);
         const events = eventSpy.mock.calls.map((call) => call[0]);
-        expect(events).not.toContain(EventType.ADD_ITEM);
+        expect(events).not.toContain(PocketEventType.ADD_ITEM);
       });
       it('should emit favorite event if item is favorited', async () => {
         const variables = {
@@ -653,7 +653,7 @@ describe('UpsertSavedItem Mutation', () => {
         });
         expect(eventSpy.mock.calls.length).toBeGreaterThan(0);
         const events = eventSpy.mock.calls.map((call) => call[0]);
-        expect(events).toContain(EventType.FAVORITE_ITEM);
+        expect(events).toContain(PocketEventType.FAVORITE_ITEM);
       });
       it('should not unfavorite a previously favorited item, and should not send favorite event', async () => {
         const faveVariables = {
@@ -720,7 +720,7 @@ describe('UpsertSavedItem Mutation', () => {
           variables,
         });
         const events = eventSpy.mock.calls.map((call) => call[0]);
-        expect(events).toContain(EventType.UNARCHIVE_ITEM);
+        expect(events).toContain(PocketEventType.UNARCHIVE_ITEM);
       });
 
       it('should not emit unarchive event if item was not archived', async () => {
@@ -737,7 +737,7 @@ describe('UpsertSavedItem Mutation', () => {
           variables,
         });
         const events = eventSpy.mock.calls.map((call) => call[0]);
-        expect(events).not.toContain(EventType.UNARCHIVE_ITEM);
+        expect(events).not.toContain(PocketEventType.UNARCHIVE_ITEM);
       });
     });
   });
