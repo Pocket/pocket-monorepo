@@ -36,7 +36,7 @@ importers:
     devDependencies:
       '@commitlint/cli':
         specifier: 19.5.0
-        version: 19.5.0(@types/node@22.8.4)(typescript@5.7.0-dev.20241031)
+        version: 19.5.0(@types/node@22.8.4)(typescript@5.7.0-dev.20241101)
       '@commitlint/config-conventional':
         specifier: ^19.5.0
         version: 19.5.0
@@ -45,7 +45,7 @@ importers:
         version: link:packages/eslint-config
       syncpack:
         specifier: ^13.0.0
-        version: 13.0.0(typescript@5.7.0-dev.20241031)
+        version: 13.0.0(typescript@5.7.0-dev.20241101)
       tsconfig:
         specifier: workspace:*
         version: link:packages/tsconfig
@@ -1021,8 +1021,8 @@ importers:
         specifier: 29.5.14
         version: 29.5.14
       '@types/lodash':
-        specifier: 4.17.12
-        version: 4.17.12
+        specifier: 4.17.13
+        version: 4.17.13
       '@types/node':
         specifier: ^22.8.2
         version: 22.8.2
@@ -1354,8 +1354,8 @@ importers:
         specifier: 29.5.14
         version: 29.5.14
       '@types/lodash':
-        specifier: 4.17.12
-        version: 4.17.12
+        specifier: 4.17.13
+        version: 4.17.13
       '@types/node':
         specifier: ^22.8.2
         version: 22.8.2
@@ -1506,12 +1506,18 @@ importers:
       '@types/jest':
         specifier: 29.5.14
         version: 29.5.14
+      '@types/lodash':
+        specifier: 4.17.13
+        version: 4.17.13
       '@types/node':
         specifier: ^22.8.2
         version: 22.8.2
       jest:
         specifier: 29.7.0
         version: 29.7.0(@types/node@22.8.2)(ts-node@10.9.2(@types/node@22.8.2)(typescript@5.6.3))
+      lodash:
+        specifier: 4.17.21
+        version: 4.17.21
       nock:
         specifier: 14.0.0-beta.11
         version: 14.0.0-beta.11
@@ -2606,6 +2612,9 @@ importers:
       '@pocket-tools/apollo-utils':
         specifier: workspace:*
         version: link:../../packages/apollo-utils
+      '@pocket-tools/event-bridge':
+        specifier: workspace:*
+        version: link:../../packages/event-bridge
       '@pocket-tools/feature-flags-client':
         specifier: workspace:*
         version: link:../../packages/feature-flags-client
@@ -2674,8 +2683,8 @@ importers:
         specifier: 29.5.14
         version: 29.5.14
       '@types/lodash':
-        specifier: 4.17.12
-        version: 4.17.12
+        specifier: 4.17.13
+        version: 4.17.13
       '@types/node':
         specifier: ^22.8.2
         version: 22.8.2
@@ -3306,8 +3315,8 @@ importers:
         specifier: 0.0.8
         version: 0.0.8
       '@types/lodash':
-        specifier: 4.17.12
-        version: 4.17.12
+        specifier: 4.17.13
+        version: 4.17.13
       '@types/luxon':
         specifier: 3.4.2
         version: 3.4.2
@@ -7818,8 +7827,8 @@ packages:
   '@types/locutus@0.0.8':
     resolution: {integrity: sha512-96nd8Rx7DmcBuCYQ1PPNsBgo85VUV23yRO4twnFkvNUoqvm+yjlu+g9xsBBX5IlDitsEQmoMH0W5NBPLYvpgAw==}
 
-  '@types/lodash@4.17.12':
-    resolution: {integrity: sha512-sviUmCE8AYdaF/KIHLDJBQgeYzPBI0vf/17NaYehBJfYD1j6/L95Slh07NlyK2iNyBNaEkb3En2jRt+a8y3xZQ==}
+  '@types/lodash@4.17.13':
+    resolution: {integrity: sha512-lfx+dftrEZcdBPczf9d0Qv0x+j/rfNCMuC6OcfXmO8gkfeNAY88PgKUbvG56whcN23gc27yenwF6oJZXGFpYxg==}
 
   '@types/long@4.0.2':
     resolution: {integrity: sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==}
@@ -13954,8 +13963,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.7.0-dev.20241031:
-    resolution: {integrity: sha512-CR0uSMNCzLCXjptJ38ESiEpTMEYJiplIe9jmZLQuTp5nrxwOE2ljMg5z1XyPI+Uss1saZOdpwkPxXU3mDIASEg==}
+  typescript@5.7.0-dev.20241101:
+    resolution: {integrity: sha512-nwq/uxhhQwhRqmjC7n4OOEf97fp8cXLinCtywgOm4YFzF2ZKchSWxfl8RpkXOFQdE9Bw1yHfySy2wJOm9H8ekw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -16609,11 +16618,11 @@ snapshots:
     dependencies:
       commander: 12.1.0
 
-  '@commitlint/cli@19.5.0(@types/node@22.8.4)(typescript@5.7.0-dev.20241031)':
+  '@commitlint/cli@19.5.0(@types/node@22.8.4)(typescript@5.7.0-dev.20241101)':
     dependencies:
       '@commitlint/format': 19.5.0
       '@commitlint/lint': 19.5.0
-      '@commitlint/load': 19.5.0(@types/node@22.8.4)(typescript@5.7.0-dev.20241031)
+      '@commitlint/load': 19.5.0(@types/node@22.8.4)(typescript@5.7.0-dev.20241101)
       '@commitlint/read': 19.5.0
       '@commitlint/types': 19.5.0
       tinyexec: 0.3.1
@@ -16660,15 +16669,15 @@ snapshots:
       '@commitlint/rules': 19.5.0
       '@commitlint/types': 19.5.0
 
-  '@commitlint/load@19.5.0(@types/node@22.8.4)(typescript@5.7.0-dev.20241031)':
+  '@commitlint/load@19.5.0(@types/node@22.8.4)(typescript@5.7.0-dev.20241101)':
     dependencies:
       '@commitlint/config-validator': 19.5.0
       '@commitlint/execute-rule': 19.5.0
       '@commitlint/resolve-extends': 19.5.0
       '@commitlint/types': 19.5.0
       chalk: 5.3.0
-      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20241031)
-      cosmiconfig-typescript-loader: 5.1.0(@types/node@22.8.4)(cosmiconfig@9.0.0(typescript@5.7.0-dev.20241031))(typescript@5.7.0-dev.20241031)
+      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20241101)
+      cosmiconfig-typescript-loader: 5.1.0(@types/node@22.8.4)(cosmiconfig@9.0.0(typescript@5.7.0-dev.20241101))(typescript@5.7.0-dev.20241101)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -20246,7 +20255,7 @@ snapshots:
 
   '@types/locutus@0.0.8': {}
 
-  '@types/lodash@4.17.12': {}
+  '@types/lodash@4.17.13': {}
 
   '@types/long@4.0.2': {}
 
@@ -21797,12 +21806,12 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cosmiconfig-typescript-loader@5.1.0(@types/node@22.8.4)(cosmiconfig@9.0.0(typescript@5.7.0-dev.20241031))(typescript@5.7.0-dev.20241031):
+  cosmiconfig-typescript-loader@5.1.0(@types/node@22.8.4)(cosmiconfig@9.0.0(typescript@5.7.0-dev.20241101))(typescript@5.7.0-dev.20241101):
     dependencies:
       '@types/node': 22.8.4
-      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20241031)
+      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20241101)
       jiti: 1.21.6
-      typescript: 5.7.0-dev.20241031
+      typescript: 5.7.0-dev.20241101
 
   cosmiconfig@8.3.6(typescript@5.6.3):
     dependencies:
@@ -21822,14 +21831,14 @@ snapshots:
     optionalDependencies:
       typescript: 5.6.3
 
-  cosmiconfig@9.0.0(typescript@5.7.0-dev.20241031):
+  cosmiconfig@9.0.0(typescript@5.7.0-dev.20241101):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 5.7.0-dev.20241031
+      typescript: 5.7.0-dev.20241101
 
   cpu-features@0.0.2:
     dependencies:
@@ -22166,7 +22175,7 @@ snapshots:
     dependencies:
       semver: 7.6.3
       shelljs: 0.8.5
-      typescript: 5.7.0-dev.20241031
+      typescript: 5.7.0-dev.20241101
 
   dreamopt@0.8.0:
     dependencies:
@@ -27009,13 +27018,13 @@ snapshots:
       '@pkgr/core': 0.1.1
       tslib: 2.8.0
 
-  syncpack@13.0.0(typescript@5.7.0-dev.20241031):
+  syncpack@13.0.0(typescript@5.7.0-dev.20241101):
     dependencies:
       '@effect/schema': 0.71.1(effect@3.6.5)
       chalk: 5.3.0
       chalk-template: 1.1.0
       commander: 12.1.0
-      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20241031)
+      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20241101)
       effect: 3.6.5
       enquirer: 2.4.1
       fast-check: 3.21.0
@@ -27451,7 +27460,7 @@ snapshots:
 
   typescript@5.6.3: {}
 
-  typescript@5.7.0-dev.20241031: {}
+  typescript@5.7.0-dev.20241101: {}
 
   ua-parser-js@1.0.39: {}
 

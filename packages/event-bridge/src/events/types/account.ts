@@ -1,4 +1,4 @@
-import { BaseEvent } from '../eventBridgeBase';
+import { BaseEvent } from './base';
 import { PocketEventType } from '../events';
 
 export interface AccountDelete extends BaseEvent {
@@ -11,6 +11,17 @@ export interface AccountEmailUpdated extends BaseEvent {
   // 'source': 'user-event';
   'detail-type': PocketEventType.ACCOUNT_EMAIL_UPDATED;
   detail: AccountPayload;
+}
+
+export interface AccountRegistration extends BaseEvent {
+  // 'source': 'web-repo';
+  'detail-type': PocketEventType.ACCOUNT_REGISTRATION;
+  detail: {
+    email: string;
+    encodedUserId: string;
+    userId: string;
+    locale: string;
+  };
 }
 
 export interface AccountPayload {

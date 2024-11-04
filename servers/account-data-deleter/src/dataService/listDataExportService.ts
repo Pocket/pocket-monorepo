@@ -1,8 +1,4 @@
 import { SendMessageCommand } from '@aws-sdk/client-sqs';
-import {
-  EventBridgeClient,
-  PutEventsCommand,
-} from '@aws-sdk/client-eventbridge';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import type { Knex } from 'knex';
 import { S3Bucket } from './s3Service';
@@ -11,6 +7,11 @@ import { sqs } from '../aws/sqs';
 import { ExportMessage } from '../types';
 import path from 'path';
 import * as Sentry from '@sentry/node';
+import {
+  ExportReady,
+  PocketEventBridgeClient,
+  PocketEventType,
+} from '@pocket-tools/event-bridge';
 
 type ListExportEntry = {
   url: string;
@@ -34,7 +35,7 @@ export class ListDataExportService {
     private readonly encodedId: string,
     private readonly db: Knex,
     private readonly exportBucket: S3Bucket,
-    private readonly eventBridge: EventBridgeClient,
+    private readonly eventBridge: PocketEventBridgeClient,
   ) {}
 
   /**
@@ -209,23 +210,18 @@ export class ListDataExportService {
   }
   // Emit an event to event bridge to notify user
   async notifyUser(encodedId: string, requestId: string, signedUrl?: string) {
-    const payload = {
-      encodedId,
-      requestId,
-      archiveUrl: signedUrl,
+    const payload: ExportReady = {
+      'detail-type': PocketEventType.EXPORT_READY,
+      source: 'web-repo',
+      detail: {
+        encodedId,
+        requestId,
+        archiveUrl: signedUrl,
+      },
     };
-    const command = new PutEventsCommand({
-      Entries: [
-        {
-          EventBusName: config.aws.eventBus.name,
-          Detail: JSON.stringify(payload),
-          Source: config.app.serviceName.toLowerCase(),
-          DetailType: 'list-export-ready',
-        },
-      ],
-    });
+
     try {
-      await this.eventBridge.send(command);
+      await this.eventBridge.sendPocketEvent(payload);
     } catch (err) {
       serverLogger.error({
         message: 'Error sending list-export-ready event',

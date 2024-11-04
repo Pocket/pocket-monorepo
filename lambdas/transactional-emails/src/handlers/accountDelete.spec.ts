@@ -4,12 +4,18 @@ import { SQSRecord } from 'aws-lambda';
 import { config } from '../config';
 import * as ssm from '../ssm';
 import { sendAccountDeletionEmail } from '../braze';
+import { PocketEventType } from '@pocket-tools/event-bridge';
 
 describe('accountDelete handler', () => {
   const record = {
     body: JSON.stringify({
       Message: JSON.stringify({
-        'detail-type': 'account-deletion',
+        id: '1234567890',
+        version: '0',
+        account: '123456789012',
+        region: 'us-east-2',
+        time: new Date(),
+        'detail-type': PocketEventType.ACCOUNT_DELETION,
         source: 'user-event',
         detail: {
           apiId: '1',
