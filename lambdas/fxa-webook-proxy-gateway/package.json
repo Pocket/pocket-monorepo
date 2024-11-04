@@ -20,7 +20,7 @@
   "dependencies": {
     "@aws-sdk/client-sqs": "3.679.0",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/aws-serverless": "8.35.0",
+    "@sentry/aws-serverless": "8.36.0",
     "jsonwebtoken": "^9.0.0",
     "jwk-to-pem": "^2.0.5",
     "jwks-rsa": "3.1.0",
