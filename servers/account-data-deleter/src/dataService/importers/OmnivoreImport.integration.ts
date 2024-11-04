@@ -38,6 +38,7 @@ async function cleanupS3Bucket(s3: S3Bucket) {
 describe('importer', () => {
   const client = new S3Bucket(config.listImport.importBucket);
   const omnivoreKey = 'abc123/omnivore/import.zip';
+  const omnivoreInvalid = 'abc123/omnivore/import-invalid.zip';
   const sendSpy = jest.spyOn(SQSClient.prototype, 'send');
 
   beforeEach(() => sendSpy.mockReset());
@@ -50,6 +51,17 @@ describe('importer', () => {
         Key: omnivoreKey,
         Body: fs.readFileSync(
           path.resolve(__dirname, '../../../test/imports/omnivore-test.zip'),
+        ),
+      }),
+    );
+    // All records are invalid (required field missing/null, wrong type,
+    // extra field added, invalid timestamp format, invalid enum value)
+    await client.s3.send<PutObjectCommand>(
+      new PutObjectCommand({
+        Bucket: client.bucket,
+        Key: omnivoreInvalid,
+        Body: fs.readFileSync(
+          path.resolve(__dirname, '../../../test/imports/omnivore-invalid.zip'),
         ),
       }),
     );
@@ -86,6 +98,13 @@ describe('importer', () => {
       'updatedAt',
       'publishedAt',
     ]);
+  });
+  it('Removes data that does not pass validation', async () => {
+    const entries = await new OmnivoreImporter(
+      client,
+      omnivoreInvalid,
+    ).loadImport();
+    expect(entries).toHaveLength(0);
   });
   it('sends records to sqs', async () => {
     await new OmnivoreImporter(client, omnivoreKey).start();
