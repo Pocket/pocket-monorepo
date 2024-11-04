@@ -125,6 +125,7 @@ describe('oembedPreview', () => {
 
   it.each([
     {
+      hasProvider: true,
       parserData: {},
       oembedData: {
         title: 'oembed video title',
@@ -139,6 +140,7 @@ describe('oembedPreview', () => {
       },
     },
     {
+      hasProvider: true,
       parserData: {},
       oembedData: undefined,
       expected: {
@@ -147,6 +149,7 @@ describe('oembedPreview', () => {
       },
     },
     {
+      hasProvider: true,
       parserData: {},
       oembedData: {
         type: 'video',
@@ -161,9 +164,18 @@ describe('oembedPreview', () => {
         htmlEmbed: 'embeded html',
       },
     },
+    {
+      hasProvider: false,
+      parserData: {},
+      oembedData: undefined,
+      expected: {
+        title: 'parser test',
+        source: PocketMetadataSource.PocketParser,
+      },
+    },
   ])(
     'should return opengraph display data if enabled',
-    async ({ parserData, oembedData, expected }) => {
+    async ({ hasProvider, parserData, oembedData, expected }) => {
       if (oembedData) {
         jest.spyOn(oembed, 'extract').mockImplementation(() => {
           return Promise.resolve({
@@ -172,6 +184,9 @@ describe('oembedPreview', () => {
           });
         });
       }
+      jest.spyOn(oembed, 'hasProvider').mockImplementation(() => {
+        return hasProvider;
+      });
 
       nockResponseForParser(testUrl, {
         data: {
