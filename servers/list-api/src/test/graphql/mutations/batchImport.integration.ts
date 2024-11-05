@@ -46,10 +46,10 @@ describe('batchImport mutation', () => {
 
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
+  });
+  beforeEach(async () => {
     await db('list').truncate();
     await db('item_tags').truncate();
-  });
-  beforeEach(() => {
     mockParserGetItemRequest(importUrls[0], {
       item: {
         given_url: importUrls[0],
@@ -76,6 +76,35 @@ describe('batchImport mutation', () => {
     await db('list').truncate();
     await db('item_tags').truncate();
     await db.destroy();
+  });
+  it('works for a user with no tags', async () => {
+    const noTags: SavedItemImportInput[] = [
+      {
+        url: importUrls[0],
+        createdAt: '2024-10-30T12:39:28.023Z',
+        title: 'this title',
+        tags: [],
+        status: 'UNREAD',
+      },
+      {
+        url: importUrls[1],
+        createdAt: '2024-10-30T12:39:28.023Z',
+        title: 'this title',
+        tags: [],
+        status: 'UNREAD',
+      },
+    ];
+    const res = await request(app)
+      .post(url)
+      .set(headers)
+      .send({ query: batchImportMutation, variables: { input: noTags } });
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data.batchImport).toBeTrue();
+    const list = await db('list').where('user_id', '1');
+    expect(list).toIncludeSameMembers([
+      expect.objectContaining({ given_url: importUrls[0] }),
+      expect.objectContaining({ given_url: importUrls[1] }),
+    ]);
   });
   it('imports data into the list', async () => {
     const res = await request(app)
