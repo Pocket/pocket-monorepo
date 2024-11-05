@@ -16,6 +16,21 @@ export type ListPocketEventType =
   | PocketEventType.DELETE_TAG
   | PocketEventType.UPDATE_TITLE;
 
+export type ListEvent =
+  | AddItem
+  | DeleteItem
+  | FavoriteItem
+  | UnfavoriteItem
+  | ArchiveItem
+  | UnarchiveItem
+  | AddTags
+  | ReplaceTags
+  | ClearTags
+  | RemoveTags
+  | RenameTag
+  | DeleteTag
+  | UpdateTitle;
+
 export const ListPocketEventTypeEnum = {
   ADD_ITEM: PocketEventType.ADD_ITEM,
   DELETE_ITEM: PocketEventType.DELETE_ITEM,

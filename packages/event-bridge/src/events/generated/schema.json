@@ -565,6 +565,49 @@
       ],
       "type": "object"
     },
+    "ListEvent": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/AddItem"
+        },
+        {
+          "$ref": "#/definitions/DeleteItem"
+        },
+        {
+          "$ref": "#/definitions/FavoriteItem"
+        },
+        {
+          "$ref": "#/definitions/UnfavoriteItem"
+        },
+        {
+          "$ref": "#/definitions/ArchiveItem"
+        },
+        {
+          "$ref": "#/definitions/UnarchiveItem"
+        },
+        {
+          "$ref": "#/definitions/AddTags"
+        },
+        {
+          "$ref": "#/definitions/ReplaceTags"
+        },
+        {
+          "$ref": "#/definitions/ClearTags"
+        },
+        {
+          "$ref": "#/definitions/RemoveTags"
+        },
+        {
+          "$ref": "#/definitions/RenameTag"
+        },
+        {
+          "$ref": "#/definitions/DeleteTag"
+        },
+        {
+          "$ref": "#/definitions/UpdateTitle"
+        }
+      ]
+    },
     "ListPocketEventType": {
       "anyOf": [
         {
@@ -764,6 +807,399 @@
         "source"
       ],
       "type": "object"
+    },
+    "ShareableList": {
+      "properties": {
+        "created_at": {
+          "description": "The timestamp in seconds when the item was created",
+          "type": "number"
+        },
+        "description": {
+          "type": "string"
+        },
+        "list_item_note_visibility": {
+          "$ref": "#/definitions/ShareableListVisibility"
+        },
+        "moderated_by": {
+          "type": "string"
+        },
+        "moderation_details": {
+          "type": "string"
+        },
+        "moderation_reason": {
+          "type": "string"
+        },
+        "moderation_status": {
+          "$ref": "#/definitions/ShareableListModerationVisibility"
+        },
+        "restoration_reason": {
+          "type": "string"
+        },
+        "shareable_list_external_id": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/ShareableListVisibility"
+        },
+        "title": {
+          "type": "string"
+        },
+        "updated_at": {
+          "description": "The timestamp in seconds when the item was last updated",
+          "type": "number"
+        },
+        "user_id": {
+          "type": [
+            "number"
+          ]
+        }
+      },
+      "required": [
+        "shareable_list_external_id",
+        "user_id",
+        "title",
+        "status",
+        "list_item_note_visibility",
+        "moderation_status",
+        "created_at"
+      ],
+      "type": "object"
+    },
+    "ShareableListCreated": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "shareable_list_created",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareableListDeleted": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "shareable_list_deleted",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareableListEvent": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/ShareableListCreated"
+        },
+        {
+          "$ref": "#/definitions/ShareableListUpdated"
+        },
+        {
+          "$ref": "#/definitions/ShareableListDeleted"
+        },
+        {
+          "$ref": "#/definitions/ShareableListHidden"
+        },
+        {
+          "$ref": "#/definitions/ShareableListUnhidden"
+        },
+        {
+          "$ref": "#/definitions/ShareableListPublished"
+        },
+        {
+          "$ref": "#/definitions/ShareableListUnpublished"
+        }
+      ]
+    },
+    "ShareableListHidden": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "shareable_list_hidden",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareableListItem": {
+      "properties": {
+        "authors": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "created_at": {
+          "description": "The timestamp in seconds when the item was created",
+          "type": "number"
+        },
+        "excerpt": {
+          "type": "string"
+        },
+        "given_url": {
+          "type": "string"
+        },
+        "image_url": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "publisher": {
+          "type": "string"
+        },
+        "shareable_list_external_id": {
+          "type": "string"
+        },
+        "shareable_list_item_external_id": {
+          "type": "string"
+        },
+        "sort_order": {
+          "type": "number"
+        },
+        "title": {
+          "type": "string"
+        },
+        "updated_at": {
+          "description": "The timestamp in seconds when the item was last updated",
+          "type": "number"
+        }
+      },
+      "required": [
+        "shareable_list_item_external_id",
+        "shareable_list_external_id",
+        "given_url",
+        "sort_order",
+        "created_at"
+      ],
+      "type": "object"
+    },
+    "ShareableListItemCreated": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "shareable_list_item_created",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareableListItemDeleted": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "shareable_list_item_deleted",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareableListItemEvent": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/ShareableListItemCreated"
+        },
+        {
+          "$ref": "#/definitions/ShareableListItemUpdated"
+        },
+        {
+          "$ref": "#/definitions/ShareableListItemDeleted"
+        }
+      ]
+    },
+    "ShareableListItemPocketEventType": {
+      "anyOf": [
+        {
+          "const": "shareable_list_item_created",
+          "type": "string"
+        },
+        {
+          "const": "shareable_list_item_updated",
+          "type": "string"
+        },
+        {
+          "const": "shareable_list_item_deleted",
+          "type": "string"
+        }
+      ]
+    },
+    "ShareableListItemUpdated": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "shareable_list_item_updated",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareableListModerationVisibility": {
+      "enum": [
+        "VISIBLE",
+        "HIDDEN"
+      ],
+      "type": "string"
+    },
+    "ShareableListPocketEventType": {
+      "anyOf": [
+        {
+          "const": "shareable_list_created",
+          "type": "string"
+        },
+        {
+          "const": "shareable_list_updated",
+          "type": "string"
+        },
+        {
+          "const": "shareable_list_deleted",
+          "type": "string"
+        },
+        {
+          "const": "shareable_list_hidden",
+          "type": "string"
+        },
+        {
+          "const": "shareable_list_unhidden",
+          "type": "string"
+        },
+        {
+          "const": "shareable_list_published",
+          "type": "string"
+        },
+        {
+          "const": "shareable_list_unpublished",
+          "type": "string"
+        }
+      ]
+    },
+    "ShareableListPublished": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "shareable_list_published",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareableListUnhidden": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "shareable_list_unhidden",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareableListUnpublished": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "shareable_list_unpublished",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareableListUpdated": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "shareable_list_updated",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareableListVisibility": {
+      "enum": [
+        "PRIVATE",
+        "PUBLIC"
+      ],
+      "type": "string"
     },
     "UnarchiveItem": {
       "properties": {
