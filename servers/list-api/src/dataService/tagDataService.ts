@@ -263,8 +263,10 @@ export class TagDataService {
         });
       })
       .filter((input) => input != null);
-    await trx('item_tags').insert(itemTags).onConflict().merge();
-    await this.usersMetaService.logTagMutation(now, trx);
+    if (itemTags.length > 0) {
+      await trx('item_tags').insert(itemTags).onConflict().merge();
+      await this.usersMetaService.logTagMutation(now, trx);
+    }
   }
 
   private async insertTagAndUpdateSavedItem(
