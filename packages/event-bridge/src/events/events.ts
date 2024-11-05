@@ -41,4 +41,6 @@ export enum PocketEventType {
   // Share Events
   SHARE_CREATED = 'pocket_share_created',
   SHARE_CONTEXT_UPDATED = 'pocket_share_context_updated',
+
+  SEARCH_RESPONSE_GENERATED = 'search_response_generated',
 }

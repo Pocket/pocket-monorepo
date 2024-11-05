@@ -37,6 +37,8 @@ import {
   ShareCreated,
   ShareContextUpdated,
   AccountEvent,
+  SearchEvent,
+  SearchResponseGenerated,
 } from './types';
 export * from './types';
 export * from './events';
@@ -50,7 +52,8 @@ export type PocketEvent =
   | ListEvent
   | ShareableListEvent
   | ShareableListItemEvent
-  | ShareEvent;
+  | ShareEvent
+  | SearchEvent;
 
 export type PocketEventTypeMap = {
   [PocketEventType.FORGOT_PASSWORD]: ForgotPasswordRequest;
@@ -85,4 +88,5 @@ export type PocketEventTypeMap = {
   [PocketEventType.SHAREABLE_LIST_ITEM_UPDATED]: ShareableListItemUpdated;
   [PocketEventType.SHARE_CREATED]: ShareCreated;
   [PocketEventType.SHARE_CONTEXT_UPDATED]: ShareContextUpdated;
+  [PocketEventType.SEARCH_RESPONSE_GENERATED]: SearchResponseGenerated;
 };

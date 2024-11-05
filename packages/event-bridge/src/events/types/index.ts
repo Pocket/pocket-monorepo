@@ -5,3 +5,4 @@ export * from './base';
 export * from './list';
 export * from './shareableList';
 export * from './share';
+export * from './search';

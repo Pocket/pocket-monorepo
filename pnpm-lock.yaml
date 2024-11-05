@@ -4034,9 +4034,6 @@ importers:
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
-      '@aws-sdk/client-eventbridge':
-        specifier: 3.679.0
-        version: 3.679.0
       '@aws-sdk/client-sagemaker-runtime':
         specifier: 3.679.0
         version: 3.679.0
@@ -4055,6 +4052,9 @@ importers:
       '@pocket-tools/apollo-utils':
         specifier: workspace:*
         version: link:../../packages/apollo-utils
+      '@pocket-tools/event-bridge':
+        specifier: workspace:*
+        version: link:../../packages/event-bridge
       '@pocket-tools/feature-flags-client':
         specifier: workspace:*
         version: link:../../packages/feature-flags-client
