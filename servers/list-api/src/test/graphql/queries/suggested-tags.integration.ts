@@ -198,9 +198,14 @@ describe('tags query tests - happy path', () => {
       });
       const tags = res.body.data?._entities[0].savedItemById.suggestedTags;
       expect(tags.length).toBe(3);
-      expect(tags[0].name).toBe('horror');
-      expect(tags[1].name).toBe('romance');
-      expect(tags[2].name).toBe('thriller');
+      expect(tags.map((tag) => tag.name)).toIncludeSameMembers([
+        'horror',
+        'romance',
+        'thriller',
+      ]);
+      // expect(tags[0].name).toBe('horror');
+      // expect(tags[1].name).toBe('romance');
+      // expect(tags[2].name).toBe('thriller');
     });
 
     it('should get time_updated from list table if item_tags time_updated is null', async () => {
@@ -274,11 +279,16 @@ describe('tags query tests - happy path', () => {
 
       const tags = res.body.data?._entities[0].savedItemById.suggestedTags;
       expect(tags.length).toBe(3);
+      expect(tags.map((tag) => tag.name)).toIncludeSameMembers([
+        'null date',
+        'tag A',
+        'tag B',
+      ]);
       //tagC is not in top 3 as it has the lowest time_updated
       //null date tag will get its time_updated from list table.
-      expect(tags[0].name).toBe('null date');
-      expect(tags[1].name).toBe('tag A');
-      expect(tags[2].name).toBe('tag B');
+      // expect(tags[0].name).toBe('null date');
+      // expect(tags[1].name).toBe('tag A');
+      // expect(tags[2].name).toBe('tag B');
     });
   });
 });

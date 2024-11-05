@@ -76,6 +76,8 @@ describe('clearTags mutation', () => {
     const tagData = [
       { item_id: 0, tag: 'simon' },
       { item_id: 0, tag: 'garfunkel' },
+      { item_id: 0, tag: 'simon' },
+      { item_id: 0, tag: 'garfunkel' },
     ].map((row) => {
       return {
         ...row,

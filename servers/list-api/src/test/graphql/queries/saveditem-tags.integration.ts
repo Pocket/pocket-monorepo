@@ -50,7 +50,10 @@ describe('tags on saved items', () => {
       api_id_updated: '0',
     }));
     await writeDb.batchInsert('list', listData);
-    await writeDb.batchInsert('item_tags', tagData);
+    await writeDb.batchInsert('item_tags', [
+      ...tagData,
+      ...tagData.slice(-count / 2),
+    ]);
   };
 
   const GET_SAVES = gql`
