@@ -132,6 +132,14 @@ export async function batchImport(
     for await (const record of args.input) {
       // Copied from upsertSavedItem
       const url = ensureHttpPrefix(record.url);
+      if (!isHttpUrl(url)) {
+        serverLogger.warn({
+          message: 'Attempted to import invalid url',
+          url,
+          userId: context.userId,
+        });
+        continue;
+      }
       const item = await ParserCaller.getOrCreateItem(url);
       input.push({ item, import: { ...record, url } });
     }
