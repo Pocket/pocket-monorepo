@@ -16,9 +16,9 @@ import { PRISMA_RECORD_NOT_FOUND } from '../../shared/constants';
 import { validateItemId } from '../../public/resolvers/utils';
 import { v4 as uuid } from 'uuid';
 
-import { sendEventHelper as sendEvent } from '../../snowplow/events';
-import { EventBridgeEventType } from '../../snowplow/types';
+import { sendEventHelper } from '../../events/events';
 import { BaseContext } from '../../shared/types';
+import { PocketEventType } from '@pocket-tools/event-bridge';
 
 /**
  * What can actually go into the database vs. client-provided type
@@ -120,7 +120,7 @@ export async function createShareableListItem(
   const [listItem] = await db.$transaction([listItemUpdate, listUpdate]);
 
   //send event bridge event for shareable-list-item-created event type
-  sendEvent(EventBridgeEventType.SHAREABLE_LIST_ITEM_CREATED, {
+  sendEventHelper(PocketEventType.SHAREABLE_LIST_ITEM_CREATED, {
     shareableListItem: listItem,
     shareableListItemExternalId: listItem.externalId,
     listExternalId: list.externalId,
@@ -249,7 +249,7 @@ export async function addToShareableList(
   //send event bridge event for shareable-list-item-created event type
   inserts.forEach((item) => {
     if (item != null) {
-      sendEvent(EventBridgeEventType.SHAREABLE_LIST_ITEM_CREATED, {
+      sendEventHelper(PocketEventType.SHAREABLE_LIST_ITEM_CREATED, {
         // "bigint" headaches
         // https://github.com/prisma/prisma/issues/7570
         // Dealing with this properly is more work than the type safety is worth
@@ -318,7 +318,7 @@ export async function updateShareableListItem(
   });
 
   //send event bridge event for shareable-list-item-updated event type
-  sendEvent(EventBridgeEventType.SHAREABLE_LIST_ITEM_UPDATED, {
+  sendEventHelper(PocketEventType.SHAREABLE_LIST_ITEM_UPDATED, {
     shareableListItem: updatedListItem,
     shareableListItemExternalId: updatedListItem.externalId,
     listExternalId: listItem.list.externalId,
@@ -411,7 +411,7 @@ export async function updateShareableListItems(
   // updates sent to snowplow as entire transaction call should be failed
   updatedShareableListItems.forEach((item) => {
     //send event bridge event for shareable-list-item-updated event type
-    sendEvent(EventBridgeEventType.SHAREABLE_LIST_ITEM_UPDATED, {
+    sendEventHelper(PocketEventType.SHAREABLE_LIST_ITEM_UPDATED, {
       shareableListItem: item,
       shareableListItemExternalId: item.externalId,
       listExternalId: item.list.externalId,
@@ -487,7 +487,7 @@ export async function deleteShareableListItem(
   });
 
   // send event bridge event for shareable-list-item-deleted event type
-  sendEvent(EventBridgeEventType.SHAREABLE_LIST_ITEM_DELETED, {
+  sendEventHelper(PocketEventType.SHAREABLE_LIST_ITEM_DELETED, {
     shareableListItem: listItem,
     shareableListItemExternalId: listItem.externalId,
     listExternalId: listItem.list.externalId,

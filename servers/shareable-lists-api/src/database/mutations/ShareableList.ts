@@ -31,10 +31,10 @@ import {
 } from '..';
 // import config from '../../config';
 import { validateItemId } from '../../public/resolvers/utils';
-import { sendEventHelper } from '../../snowplow/events';
-import { EventBridgeEventType } from '../../snowplow/types';
+import { sendEventHelper } from '../../events/events';
 import { BaseContext } from '../../shared/types';
 import { v4 as uuid } from 'uuid';
+import { PocketEventType } from '@pocket-tools/event-bridge';
 
 /**
  * This mutation creates a shareable list, and _only_ a shareable list
@@ -94,7 +94,7 @@ export async function createShareableList(
   }
 
   //send event bridge event for shareable-list-created event type
-  sendEventHelper(EventBridgeEventType.SHAREABLE_LIST_CREATED, {
+  sendEventHelper(PocketEventType.SHAREABLE_LIST_CREATED, {
     shareableList: list as ShareableListComplete,
     isShareableListEventType: true,
   });
@@ -178,13 +178,13 @@ export async function createAndAddToShareableList(
     listItems: items as any, // nested bigints
   };
   //send event bridge event for shareable-list-created event type
-  sendEventHelper(EventBridgeEventType.SHAREABLE_LIST_CREATED, {
+  sendEventHelper(PocketEventType.SHAREABLE_LIST_CREATED, {
     shareableList: completeList as ShareableListComplete,
     isShareableListEventType: true,
   });
   //send event bridge event for shareable-list-item-created event type
   items.forEach((item) => {
-    sendEventHelper(EventBridgeEventType.SHAREABLE_LIST_ITEM_CREATED, {
+    sendEventHelper(PocketEventType.SHAREABLE_LIST_ITEM_CREATED, {
       // "bigint" headaches
       // https://github.com/prisma/prisma/issues/7570
       // Dealing with this properly is more work than the type safety is worth
@@ -359,13 +359,13 @@ export async function moderateShareableList(
 
   // for now, we only support snowplow events for taking down a list (shareable-list-hidden trigger)
   if (data.moderationStatus === ModerationStatus.HIDDEN) {
-    sendEventHelper(EventBridgeEventType.SHAREABLE_LIST_HIDDEN, {
+    sendEventHelper(PocketEventType.SHAREABLE_LIST_HIDDEN, {
       shareableList: list as ShareableListComplete,
       isShareableListEventType: true,
     });
   }
   if (data.moderationStatus === ModerationStatus.VISIBLE) {
-    sendEventHelper(EventBridgeEventType.SHAREABLE_LIST_UNHIDDEN, {
+    sendEventHelper(PocketEventType.SHAREABLE_LIST_UNHIDDEN, {
       shareableList: list as ShareableListComplete,
       isShareableListEventType: true,
     });
@@ -443,7 +443,7 @@ export async function deleteShareableList(
     });
 
   //send event bridge event for shareable-list-deleted event type
-  sendEventHelper(EventBridgeEventType.SHAREABLE_LIST_DELETED, {
+  sendEventHelper(PocketEventType.SHAREABLE_LIST_DELETED, {
     shareableList: deleteList as ShareableListComplete,
     isShareableListEventType: true,
   });
@@ -463,14 +463,14 @@ function updateShareableListBridgeEventHelper(
   if (data.status !== list.status) {
     // if list was published, send event bridge event for shareable-list-published event type
     if (data.status === Visibility.PUBLIC) {
-      sendEventHelper(EventBridgeEventType.SHAREABLE_LIST_PUBLISHED, {
+      sendEventHelper(PocketEventType.SHAREABLE_LIST_PUBLISHED, {
         shareableList: updatedList as ShareableListComplete,
         isShareableListEventType: true,
       });
     }
     // else if list was unpublished, send event bridge event for shareable-list-unpublished event type
     else if (data.status === Visibility.PRIVATE) {
-      sendEventHelper(EventBridgeEventType.SHAREABLE_LIST_UNPUBLISHED, {
+      sendEventHelper(PocketEventType.SHAREABLE_LIST_UNPUBLISHED, {
         shareableList: updatedList as ShareableListComplete,
         isShareableListEventType: true,
       });
@@ -481,7 +481,7 @@ function updateShareableListBridgeEventHelper(
     (data.title && data.title !== list.title) ||
     (data.description && data.description !== list.description)
   ) {
-    sendEventHelper(EventBridgeEventType.SHAREABLE_LIST_UPDATED, {
+    sendEventHelper(PocketEventType.SHAREABLE_LIST_UPDATED, {
       shareableList: updatedList as ShareableListComplete,
       isShareableListEventType: true,
     });

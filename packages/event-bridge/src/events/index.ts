@@ -20,6 +20,19 @@ import {
   RenameTag,
   DeleteTag,
   UpdateTitle,
+  ShareableListItemEvent,
+  ShareableListEvent,
+  ShareableListCreated,
+  ShareableListDeleted,
+  ShareableListHidden,
+  ShareableListUnhidden,
+  ShareableListUpdated,
+  ShareableListPublished,
+  ShareableListUnpublished,
+  ShareableListItemCreated,
+  ShareableListItemDeleted,
+  ShareableListItemUpdated,
+  ListEvent,
 } from './types';
 export * from './types';
 export * from './events';
@@ -32,19 +45,9 @@ export type PocketEvent =
   | ExportReady
   | ExportRequested
   | PremiumPurchaseEvent
-  | AddItem
-  | DeleteItem
-  | FavoriteItem
-  | UnfavoriteItem
-  | ArchiveItem
-  | UnarchiveItem
-  | AddTags
-  | ReplaceTags
-  | ClearTags
-  | RemoveTags
-  | RenameTag
-  | DeleteTag
-  | UpdateTitle;
+  | ListEvent
+  | ShareableListEvent
+  | ShareableListItemEvent;
 
 export type PocketEventTypeMap = {
   [PocketEventType.FORGOT_PASSWORD]: ForgotPasswordRequest;
@@ -67,4 +70,14 @@ export type PocketEventTypeMap = {
   [PocketEventType.RENAME_TAG]: RenameTag;
   [PocketEventType.DELETE_TAG]: DeleteTag;
   [PocketEventType.UPDATE_TITLE]: UpdateTitle;
+  [PocketEventType.SHAREABLE_LIST_CREATED]: ShareableListCreated;
+  [PocketEventType.SHAREABLE_LIST_DELETED]: ShareableListDeleted;
+  [PocketEventType.SHAREABLE_LIST_UPDATED]: ShareableListUpdated;
+  [PocketEventType.SHAREABLE_LIST_HIDDEN]: ShareableListHidden;
+  [PocketEventType.SHAREABLE_LIST_UNHIDDEN]: ShareableListUnhidden;
+  [PocketEventType.SHAREABLE_LIST_PUBLISHED]: ShareableListPublished;
+  [PocketEventType.SHAREABLE_LIST_UNPUBLISHED]: ShareableListUnpublished;
+  [PocketEventType.SHAREABLE_LIST_ITEM_CREATED]: ShareableListItemCreated;
+  [PocketEventType.SHAREABLE_LIST_ITEM_DELETED]: ShareableListItemDeleted;
+  [PocketEventType.SHAREABLE_LIST_ITEM_UPDATED]: ShareableListItemUpdated;
 };
