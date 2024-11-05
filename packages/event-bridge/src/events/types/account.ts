@@ -1,19 +1,24 @@
 import { BaseEvent } from './base';
 import { PocketEventType } from '../events';
 
-export interface AccountDelete extends BaseEvent {
+export type AccountEvent =
+  | AccountDelete
+  | AccountEmailUpdated
+  | AccountRegistration;
+
+export type AccountDelete = BaseEvent & {
   // 'source': 'user-event';
   'detail-type': PocketEventType.ACCOUNT_DELETION;
   detail: AccountPayload;
-}
+};
 
-export interface AccountEmailUpdated extends BaseEvent {
+export type AccountEmailUpdated = BaseEvent & {
   // 'source': 'user-event';
   'detail-type': PocketEventType.ACCOUNT_EMAIL_UPDATED;
   detail: AccountPayload;
-}
+};
 
-export interface AccountRegistration extends BaseEvent {
+export type AccountRegistration = BaseEvent & {
   // 'source': 'web-repo';
   'detail-type': PocketEventType.ACCOUNT_REGISTRATION;
   detail: {
@@ -22,9 +27,9 @@ export interface AccountRegistration extends BaseEvent {
     userId: string;
     locale: string;
   };
-}
+};
 
-export interface ExportReady extends BaseEvent {
+export type ExportReady = BaseEvent & {
   // 'source': 'account-data-deleter';
   'detail-type': PocketEventType.EXPORT_READY;
   detail: {
@@ -32,7 +37,7 @@ export interface ExportReady extends BaseEvent {
     requestId: string;
     archiveUrl?: string | null;
   };
-}
+};
 
 export interface AccountPayload {
   email: string;

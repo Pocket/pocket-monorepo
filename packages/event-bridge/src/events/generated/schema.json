@@ -3,9 +3,7 @@
   "definitions": {
     "AccountDelete": {
       "properties": {
-        "detail": {
-          "$ref": "#/definitions/AccountPayload"
-        },
+        "detail": {},
         "detail-type": {
           "const": "account-deletion",
           "type": "string"
@@ -23,9 +21,7 @@
     },
     "AccountEmailUpdated": {
       "properties": {
-        "detail": {
-          "$ref": "#/definitions/AccountPayload"
-        },
+        "detail": {},
         "detail-type": {
           "const": "account-email-updated",
           "type": "string"
@@ -40,6 +36,19 @@
         "source"
       ],
       "type": "object"
+    },
+    "AccountEvent": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/AccountDelete"
+        },
+        {
+          "$ref": "#/definitions/AccountEmailUpdated"
+        },
+        {
+          "$ref": "#/definitions/AccountRegistration"
+        }
+      ]
     },
     "AccountPayload": {
       "properties": {
@@ -144,29 +153,7 @@
     },
     "AccountRegistration": {
       "properties": {
-        "detail": {
-          "properties": {
-            "email": {
-              "type": "string"
-            },
-            "encodedUserId": {
-              "type": "string"
-            },
-            "locale": {
-              "type": "string"
-            },
-            "userId": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "email",
-            "encodedUserId",
-            "userId",
-            "locale"
-          ],
-          "type": "object"
-        },
+        "detail": {},
         "detail-type": {
           "const": "User Registration",
           "type": "string"
@@ -389,27 +376,7 @@
     },
     "ExportReady": {
       "properties": {
-        "detail": {
-          "properties": {
-            "archiveUrl": {
-              "type": [
-                "string",
-                "null"
-              ]
-            },
-            "encodedId": {
-              "type": "string"
-            },
-            "requestId": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "encodedId",
-            "requestId"
-          ],
-          "type": "object"
-        },
+        "detail": {},
         "detail-type": {
           "const": "list-export-ready",
           "type": "string"
@@ -807,6 +774,64 @@
         "source"
       ],
       "type": "object"
+    },
+    "ShareContextUpdated": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "pocket_share_context_updated",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareCreated": {
+      "properties": {
+        "detail": {},
+        "detail-type": {
+          "const": "pocket_share_created",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareEvent": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/ShareCreated"
+        },
+        {
+          "$ref": "#/definitions/ShareContextUpdated"
+        }
+      ]
+    },
+    "SharePocketEventType": {
+      "anyOf": [
+        {
+          "const": "pocket_share_created",
+          "type": "string"
+        },
+        {
+          "const": "pocket_share_context_updated",
+          "type": "string"
+        }
+      ]
     },
     "ShareableList": {
       "properties": {
