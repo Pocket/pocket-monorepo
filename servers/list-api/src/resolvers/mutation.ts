@@ -309,7 +309,11 @@ export async function updateSavedItemRemoveTags(
     args.savedItemId,
     args.timestamp,
   );
-  context.emitItemEvent(PocketEventType.CLEAR_TAGS, save, removed);
+  context.emitItemEvent(
+    PocketEventType.CLEAR_TAGS,
+    save,
+    Array.from(new Set(removed)),
+  );
   return save;
 }
 
@@ -356,7 +360,11 @@ export async function deleteSavedItemTags(
     args.timestamp,
   );
   const saves = deleteOperations.map(({ save, removed }) => {
-    context.emitItemEvent(PocketEventType.REMOVE_TAGS, save, removed);
+    context.emitItemEvent(
+      PocketEventType.REMOVE_TAGS,
+      save,
+      Array.from(new Set(removed)),
+    );
     return save;
   });
   return saves;

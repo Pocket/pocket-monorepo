@@ -191,6 +191,22 @@ describe('createSavedItemTags mutation', function () {
       expect(data[1].tags).toContainAllValues(expectedTagsForSavedItemOne);
     },
   );
+  it('deduplicates based on item_id, user_id, and tag', async () => {
+    const variables = {
+      // dupe
+      input: [{ savedItemId: '1', tags: ['summer'] }],
+    };
+    const res = await request(app)
+      .post(url)
+      .set(headers)
+      .send({ query: createSavedItemTags, variables });
+    expect(res.body.data.createSavedItemTags.length).toBe(1);
+    const { count } = await writeDb('item_tags')
+      .count('*', { as: 'count' })
+      .where({ user_id: headers.userid, item_id: '1', tag: 'summer' })
+      .first();
+    expect(count).toEqual(1);
+  });
 
   it('createSavedItemTags should emit ADD_TAGS event on success', async () => {
     const variables = {

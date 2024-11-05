@@ -75,6 +75,9 @@ describe('removeTagsByName mutation', () => {
       { item_id: 0, tag: 'ketheric' },
       { item_id: 0, tag: 'gortash' },
       { item_id: 1, tag: 'ketheric' },
+      { item_id: 0, tag: 'ketheric' },
+      { item_id: 0, tag: 'gortash' },
+      { item_id: 1, tag: 'ketheric' },
     ].map((row) => {
       return {
         ...row,

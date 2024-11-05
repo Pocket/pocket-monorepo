@@ -11,6 +11,7 @@ import {
   TagEdge,
   SaveUpdateTagsInputDb,
   SavedItemImportHydrated,
+  TagSaveAssociationHotfix,
 } from '../types';
 import { mysqlTimeString, uniqueArray } from './utils';
 import config from '../config';
@@ -81,7 +82,8 @@ export class TagDataService {
         this.db.raw('NULL as _version'),
         //TODO: add version and deletedAt feature to tag
       )
-      .orderBy('id', 'desc')
+      .groupBy('tag')
+      .max('id', { as: 'id' })
       .where({ user_id: this.userId, item_id: itemId });
     return tags.map(TagModel.toGraphqlEntity);
   }
@@ -104,7 +106,8 @@ export class TagDataService {
         this.db.raw('NULL as _version'),
         //TODO: add version and deletedAt feature to tag
       )
-      .orderBy('id', 'desc')
+      .groupBy('tag', 'item_id')
+      .max('id', { as: 'id' })
       .whereIn('item_id', itemIds)
       .andWhere({ user_id: parseInt(this.userId) });
 
@@ -216,7 +219,7 @@ export class TagDataService {
    * @param tagInputs
    */
   public async insertTags(
-    tagInputs: TagSaveAssociation[],
+    tagInputs: TagSaveAssociationHotfix[],
     timestamp?: Date,
   ): Promise<void> {
     const updatedTime = timestamp ?? new Date();
@@ -270,7 +273,7 @@ export class TagDataService {
   }
 
   private async insertTagAndUpdateSavedItem(
-    tagInputs: TagSaveAssociation[],
+    tagInputs: TagSaveAssociationHotfix[],
     trx: Knex.Transaction<any, any[]>,
     timestamp?: Date,
   ) {
@@ -289,6 +292,7 @@ export class TagDataService {
         time_added: updateTimestamp,
         time_updated: updateTimestamp,
         api_id: parseInt(this.apiId),
+        ...(tagInput.id != null && { id: tagInput.id }),
       };
     });
     await trx('item_tags').insert(inputData).onConflict().ignore();
@@ -400,7 +404,7 @@ export class TagDataService {
    * todo: make a check if savedItemId exist before deleting.
    */
   public async updateSavedItemTags(
-    inserts: TagSaveAssociation[],
+    inserts: TagSaveAssociationHotfix[],
     timestamp?: Date,
   ): Promise<SavedItem | null> {
     // No FK constraints so check in data service layer
@@ -455,7 +459,7 @@ export class TagDataService {
    * @param tagsInputs : list of TagSaveAssociation
    */
   public async replaceSavedItemTags(
-    tagInputs: TagSaveAssociation[],
+    tagInputs: TagSaveAssociationHotfix[],
     timestamp?: Date,
   ): Promise<SavedItem[]> {
     const savedItemIds = Array.from(
@@ -538,11 +542,12 @@ export class TagDataService {
     if (missing.length) {
       return { updated: [], missing: missing.map((id) => id.toString()) };
     }
+    const hotfixed = await this.deduplicateTagHotfix(creates);
     // Otherwise we can proceed with the write
     // We won't throw error if trying to delete a nonexistent tag (no-op)
     await this.db.transaction(async (trx) => {
       await this.deleteTagsByNameAndItemId(deletes).transacting(trx);
-      await this.insertTagAndUpdateSavedItem(creates, trx, timestamp);
+      await this.insertTagAndUpdateSavedItem(hotfixed, trx, timestamp);
       await this.usersMetaService.logTagMutation(timestamp, trx);
     });
     return { updated: saveIds, missing: [] };
@@ -597,5 +602,30 @@ export class TagDataService {
     return this.db('item_tags')
       .del()
       .whereIn(['item_id', 'tag', 'user_id'], tuples);
+  }
+
+  /**
+   * Revert after POCKET-10777
+   */
+  async deduplicateTagHotfix(tags: TagSaveAssociation[]) {
+    const tuples = tags.map(({ savedItemId, name }) => {
+      return [parseInt(savedItemId), name, this.userId];
+    });
+    const extantTags = await this.db('item_tags')
+      .select('tag', 'item_id')
+      .max('id', { as: 'cursor' })
+      .groupBy('tag', 'item_id')
+      .whereIn(['item_id', 'tag', 'user_id'], tuples);
+    const tagsMapping = extantTags.reduce(
+      (mapping, row) => {
+        mapping[`${row.tag}-${row.item_id}`] = row.cursor;
+        return mapping;
+      },
+      {} as Record<string, number>,
+    );
+    return tags.map((tag) => {
+      const cursor = tagsMapping[`${tag.name}-${tag.savedItemId}`];
+      return { ...tag, id: cursor };
+    });
   }
 }
