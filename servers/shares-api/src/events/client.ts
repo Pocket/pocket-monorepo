@@ -1,12 +1,16 @@
-import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
+import { PocketEventBridgeClient } from '@pocket-tools/event-bridge';
 import { config } from '../config';
 
-let client: EventBridgeClient;
+let client: PocketEventBridgeClient;
 
 export function eventBridgeClient() {
   if (client) return client;
-  client = new EventBridgeClient({
-    region: config.aws.region,
+  client = new PocketEventBridgeClient({
+    eventBus: { name: config.aws.eventBus.name },
+    aws: {
+      endpoint: config.aws.endpoint,
+      region: config.aws.region,
+    },
   });
   return client;
 }

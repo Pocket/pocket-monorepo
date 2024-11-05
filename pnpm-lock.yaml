@@ -3813,15 +3813,15 @@ importers:
       '@aws-sdk/client-dynamodb':
         specifier: 3.679.0
         version: 3.679.0
-      '@aws-sdk/client-eventbridge':
-        specifier: 3.679.0
-        version: 3.679.0
       '@aws-sdk/lib-dynamodb':
         specifier: 3.679.0
         version: 3.679.0(@aws-sdk/client-dynamodb@3.679.0)
       '@pocket-tools/apollo-utils':
         specifier: workspace:*
         version: link:../../packages/apollo-utils
+      '@pocket-tools/event-bridge':
+        specifier: workspace:*
+        version: link:../../packages/event-bridge
       '@pocket-tools/feature-flags-client':
         specifier: workspace:*
         version: link:../../packages/feature-flags-client
@@ -3880,12 +3880,18 @@ importers:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@types/express':
+        specifier: 4.17.21
+        version: 4.17.21
       '@types/jest':
         specifier: 29.5.14
         version: 29.5.14
       '@types/node':
         specifier: ^22.8.2
         version: 22.8.2
+      '@types/supertest':
+        specifier: ^6.0.2
+        version: 6.0.2
       concurrently:
         specifier: ^8.2.2
         version: 8.2.2

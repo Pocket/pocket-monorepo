@@ -37,4 +37,8 @@ export enum PocketEventType {
   SHAREABLE_LIST_ITEM_CREATED = 'shareable_list_item_created',
   SHAREABLE_LIST_ITEM_UPDATED = 'shareable_list_item_updated',
   SHAREABLE_LIST_ITEM_DELETED = 'shareable_list_item_deleted',
+
+  // Share Events
+  SHARE_CREATED = 'pocket_share_created',
+  SHARE_CONTEXT_UPDATED = 'pocket_share_context_updated',
 }

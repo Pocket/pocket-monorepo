@@ -1,6 +1,11 @@
 import { BaseEvent } from './base';
 import { PocketEventType } from '../events';
 
+export type AccountEvent =
+  | AccountDelete
+  | AccountEmailUpdated
+  | AccountRegistration;
+
 export interface AccountDelete extends BaseEvent {
   // 'source': 'user-event';
   'detail-type': PocketEventType.ACCOUNT_DELETION;

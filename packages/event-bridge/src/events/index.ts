@@ -33,21 +33,24 @@ import {
   ShareableListItemDeleted,
   ShareableListItemUpdated,
   ListEvent,
+  ShareEvent,
+  ShareCreated,
+  ShareContextUpdated,
+  AccountEvent,
 } from './types';
 export * from './types';
 export * from './events';
 
 export type PocketEvent =
   | ForgotPasswordRequest
-  | AccountDelete
-  | AccountEmailUpdated
-  | AccountRegistration
+  | AccountEvent
   | ExportReady
   | ExportRequested
   | PremiumPurchaseEvent
   | ListEvent
   | ShareableListEvent
-  | ShareableListItemEvent;
+  | ShareableListItemEvent
+  | ShareEvent;
 
 export type PocketEventTypeMap = {
   [PocketEventType.FORGOT_PASSWORD]: ForgotPasswordRequest;
@@ -80,4 +83,6 @@ export type PocketEventTypeMap = {
   [PocketEventType.SHAREABLE_LIST_ITEM_CREATED]: ShareableListItemCreated;
   [PocketEventType.SHAREABLE_LIST_ITEM_DELETED]: ShareableListItemDeleted;
   [PocketEventType.SHAREABLE_LIST_ITEM_UPDATED]: ShareableListItemUpdated;
+  [PocketEventType.SHARE_CREATED]: ShareCreated;
+  [PocketEventType.SHARE_CONTEXT_UPDATED]: ShareContextUpdated;
 };

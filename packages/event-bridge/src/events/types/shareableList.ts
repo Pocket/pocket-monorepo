@@ -38,7 +38,7 @@ export enum ShareableListModerationVisibility {
   HIDDEN = 'HIDDEN',
 }
 
-export type ShareableListItem = {
+export interface ShareableListItem {
   shareable_list_item_external_id: string;
   shareable_list_external_id: string;
   given_url: string;
@@ -57,9 +57,9 @@ export type ShareableListItem = {
    * The timestamp in seconds when the item was last updated
    */
   updated_at?: number;
-};
+}
 
-export type ShareableList = {
+export interface ShareableList {
   shareable_list_external_id: string;
   user_id: bigint | number;
   slug?: string;
@@ -80,60 +80,60 @@ export type ShareableList = {
    * The timestamp in seconds when the item was last updated
    */
   updated_at?: number;
-};
+}
 
-type BaseShareableList = BaseEvent & {
+interface BaseShareableList extends BaseEvent {
   detail: {
     shareableList: ShareableList;
     eventType: ShareableListPocketEventType;
   };
   'detail-type': ShareableListPocketEventType;
-};
+}
 
-type BaseShareableListItem = BaseEvent & {
+interface BaseShareableListItem extends BaseEvent {
   detail: {
     shareableListItem: ShareableListItem;
     eventType: ShareableListItemPocketEventType;
   };
   'detail-type': ShareableListItemPocketEventType;
-};
+}
 
-export type ShareableListCreated = BaseShareableList & {
+export interface ShareableListCreated extends BaseShareableList {
   'detail-type': PocketEventType.SHAREABLE_LIST_CREATED;
-};
+}
 
-export type ShareableListUpdated = BaseShareableList & {
+export interface ShareableListUpdated extends BaseShareableList {
   'detail-type': PocketEventType.SHAREABLE_LIST_UPDATED;
-};
+}
 
-export type ShareableListDeleted = BaseShareableList & {
+export interface ShareableListDeleted extends BaseShareableList {
   'detail-type': PocketEventType.SHAREABLE_LIST_DELETED;
-};
+}
 
-export type ShareableListHidden = BaseShareableList & {
+export interface ShareableListHidden extends BaseShareableList {
   'detail-type': PocketEventType.SHAREABLE_LIST_HIDDEN;
-};
+}
 
-export type ShareableListUnhidden = BaseShareableList & {
+export interface ShareableListUnhidden extends BaseShareableList {
   'detail-type': PocketEventType.SHAREABLE_LIST_UNHIDDEN;
-};
+}
 
-export type ShareableListPublished = BaseShareableList & {
+export interface ShareableListPublished extends BaseShareableList {
   'detail-type': PocketEventType.SHAREABLE_LIST_PUBLISHED;
-};
+}
 
-export type ShareableListUnpublished = BaseShareableList & {
+export interface ShareableListUnpublished extends BaseShareableList {
   'detail-type': PocketEventType.SHAREABLE_LIST_UNPUBLISHED;
-};
+}
 
-export type ShareableListItemCreated = BaseShareableListItem & {
+export interface ShareableListItemCreated extends BaseShareableListItem {
   'detail-type': PocketEventType.SHAREABLE_LIST_ITEM_CREATED;
-};
+}
 
-export type ShareableListItemUpdated = BaseShareableListItem & {
+export interface ShareableListItemUpdated extends BaseShareableListItem {
   'detail-type': PocketEventType.SHAREABLE_LIST_ITEM_UPDATED;
-};
+}
 
-export type ShareableListItemDeleted = BaseShareableListItem & {
+export interface ShareableListItemDeleted extends BaseShareableListItem {
   'detail-type': PocketEventType.SHAREABLE_LIST_ITEM_DELETED;
-};
+}
