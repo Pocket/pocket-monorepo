@@ -124,7 +124,6 @@ export async function createShareableListItem(
     shareableListItem: listItem,
     shareableListItemExternalId: listItem.externalId,
     listExternalId: list.externalId,
-    isShareableListItemEventType: true,
   });
 
   return listItem;
@@ -256,7 +255,6 @@ export async function addToShareableList(
         shareableListItem: item as any,
         shareableListItemExternalId: item.externalId,
         listExternalId: updatedList.externalId,
-        isShareableListItemEventType: true,
       });
     }
   });
@@ -322,7 +320,6 @@ export async function updateShareableListItem(
     shareableListItem: updatedListItem,
     shareableListItemExternalId: updatedListItem.externalId,
     listExternalId: listItem.list.externalId,
-    isShareableListItemEventType: true,
   });
 
   return updatedListItem;
@@ -415,7 +412,6 @@ export async function updateShareableListItems(
       shareableListItem: item,
       shareableListItemExternalId: item.externalId,
       listExternalId: item.list.externalId,
-      isShareableListItemEventType: true,
     });
   });
 
@@ -491,7 +487,6 @@ export async function deleteShareableListItem(
     shareableListItem: listItem,
     shareableListItemExternalId: listItem.externalId,
     listExternalId: listItem.list.externalId,
-    isShareableListItemEventType: true,
   });
 
   return listItem;

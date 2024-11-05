@@ -96,7 +96,6 @@ export async function createShareableList(
   //send event bridge event for shareable-list-created event type
   sendEventHelper(PocketEventType.SHAREABLE_LIST_CREATED, {
     shareableList: list as ShareableListComplete,
-    isShareableListEventType: true,
   });
 
   return list;
@@ -180,7 +179,6 @@ export async function createAndAddToShareableList(
   //send event bridge event for shareable-list-created event type
   sendEventHelper(PocketEventType.SHAREABLE_LIST_CREATED, {
     shareableList: completeList as ShareableListComplete,
-    isShareableListEventType: true,
   });
   //send event bridge event for shareable-list-item-created event type
   items.forEach((item) => {
@@ -191,7 +189,6 @@ export async function createAndAddToShareableList(
       shareableListItem: item as any,
       shareableListItemExternalId: item.externalId,
       listExternalId: list.externalId,
-      isShareableListItemEventType: true,
     });
   });
   return completeList;
@@ -361,13 +358,11 @@ export async function moderateShareableList(
   if (data.moderationStatus === ModerationStatus.HIDDEN) {
     sendEventHelper(PocketEventType.SHAREABLE_LIST_HIDDEN, {
       shareableList: list as ShareableListComplete,
-      isShareableListEventType: true,
     });
   }
   if (data.moderationStatus === ModerationStatus.VISIBLE) {
     sendEventHelper(PocketEventType.SHAREABLE_LIST_UNHIDDEN, {
       shareableList: list as ShareableListComplete,
-      isShareableListEventType: true,
     });
   }
   return list;
@@ -445,7 +440,6 @@ export async function deleteShareableList(
   //send event bridge event for shareable-list-deleted event type
   sendEventHelper(PocketEventType.SHAREABLE_LIST_DELETED, {
     shareableList: deleteList as ShareableListComplete,
-    isShareableListEventType: true,
   });
   return deleteList;
 }
@@ -465,14 +459,12 @@ function updateShareableListBridgeEventHelper(
     if (data.status === Visibility.PUBLIC) {
       sendEventHelper(PocketEventType.SHAREABLE_LIST_PUBLISHED, {
         shareableList: updatedList as ShareableListComplete,
-        isShareableListEventType: true,
       });
     }
     // else if list was unpublished, send event bridge event for shareable-list-unpublished event type
     else if (data.status === Visibility.PRIVATE) {
       sendEventHelper(PocketEventType.SHAREABLE_LIST_UNPUBLISHED, {
         shareableList: updatedList as ShareableListComplete,
-        isShareableListEventType: true,
       });
     }
   }
@@ -483,7 +475,6 @@ function updateShareableListBridgeEventHelper(
   ) {
     sendEventHelper(PocketEventType.SHAREABLE_LIST_UPDATED, {
       shareableList: updatedList as ShareableListComplete,
-      isShareableListEventType: true,
     });
   }
 }

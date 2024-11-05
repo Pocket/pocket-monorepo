@@ -1,6 +1,6 @@
 import { ApolloServer } from '@apollo/server';
 import { PrismaClient } from '.prisma/client';
-import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
+import { PocketEventBridgeClient } from '@pocket-tools/event-bridge';
 import { print } from 'graphql';
 import request from 'supertest';
 import { IAdminContext } from '../../context';
@@ -38,9 +38,9 @@ describe('admin mutations: ShareableList', () => {
     db = client();
     // we mock the send method on EventBridgeClient
     jest
-      .spyOn(EventBridgeClient.prototype, 'send')
+      .spyOn(PocketEventBridgeClient.prototype, 'sendPocketEvent')
       .mockClear()
-      .mockImplementation(() => Promise.resolve({ FailedEntryCount: 0 }));
+      .mockImplementation(() => Promise.resolve());
     await clearDb(db);
   });
 
