@@ -292,7 +292,11 @@ export class SavedItemModel {
       timestamp,
     );
     if (removed.length) {
-      this.context.emitItemEvent(PocketEventType.CLEAR_TAGS, save, removed);
+      this.context.emitItemEvent(
+        PocketEventType.CLEAR_TAGS,
+        save,
+        Array.from(new Set(removed)),
+      );
     }
     return save;
   }
@@ -313,7 +317,11 @@ export class SavedItemModel {
         tags,
         timestamp,
       );
-    this.context.emitItemEvent(PocketEventType.REMOVE_TAGS, save, removed);
+    this.context.emitItemEvent(
+      PocketEventType.REMOVE_TAGS,
+      save,
+      Array.from(new Set(removed)),
+    );
     return save;
   }
   /** Remove tag names from a single Saved Item, identified by Url */

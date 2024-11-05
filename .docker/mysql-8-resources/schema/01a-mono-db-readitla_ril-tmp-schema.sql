@@ -2714,7 +2714,7 @@ create table `readitla_ril-tmp`.item_tags
     time_updated   datetime                               null,
     api_id_updated mediumint unsigned                     null,
     id             bigint                                 auto_increment,
-    primary key (user_id, item_id, tag),
+    primary key (user_id, item_id, tag, id),
     constraint id
         unique (id)
 )

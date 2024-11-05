@@ -67,6 +67,16 @@ describe('tags mutation: replace savedItem tags', () => {
       {
         user_id: 1,
         item_id: 1,
+        tag: 'summer',
+        status: 1,
+        time_added: date,
+        time_updated: date,
+        api_id: 'second_id',
+        api_id_updated: 'updated_api_id',
+      },
+      {
+        user_id: 1,
+        item_id: 1,
         tag: 'zebra',
         status: 1,
         time_added: date1,
@@ -77,6 +87,16 @@ describe('tags mutation: replace savedItem tags', () => {
       {
         user_id: 1,
         item_id: 1,
+        tag: 'existing_tag',
+        status: 1,
+        time_added: date1,
+        time_updated: date1,
+        api_id: 'apiid',
+        api_id_updated: 'updated_api_id',
+      },
+      {
+        user_id: 1,
+        item_id: 0,
         tag: 'existing_tag',
         status: 1,
         time_added: date1,

@@ -93,7 +93,8 @@ export class TagModel {
         })),
       ),
     );
-    await this.tagService.insertTags(creates, timestamp);
+    const hotfixed = await this.tagService.deduplicateTagHotfix(creates);
+    await this.tagService.insertTags(hotfixed, timestamp);
     const saveIds = creates.map((_) => _.savedItemId);
     return this.saveService.batchGetSavedItemsByGivenIds(saveIds);
   }
@@ -124,7 +125,8 @@ export class TagModel {
         name,
       })),
     );
-    await this.tagService.insertTags(creates, timestamp);
+    const hotfixed = await this.tagService.deduplicateTagHotfix(creates);
+    await this.tagService.insertTags(hotfixed, timestamp);
     const savedItem = await this.saveService.getSavedItemById(savedItemId);
     // Emit events
     this.context.emitItemEvent(PocketEventType.ADD_TAGS, savedItem, tagNames);
@@ -134,7 +136,7 @@ export class TagModel {
   /**
    * Replace the tags associated with a save
    */
-  public updateTagSaveConnections(
+  public async updateTagSaveConnections(
     updates: SavedItemTagUpdateInput,
     timestamp?: Date,
   ): Promise<SavedItem> {
@@ -151,19 +153,21 @@ export class TagModel {
     if (deleteFromSaveId.size !== 1) {
       throw new UserInputError('Cannot update Tags on multiple Saves');
     }
-    return this.tagService.updateSavedItemTags(sanitized, timestamp);
+    const hotfixed = await this.tagService.deduplicateTagHotfix(sanitized);
+    return await this.tagService.updateSavedItemTags(hotfixed, timestamp);
   }
 
   /**
    * Replace the tags associated with one or more saves in
    * in a single batch.
    */
-  public replaceTagSaveConnections(
+  public async replaceTagSaveConnections(
     tags: TagSaveAssociation[],
     timestamp?: Date,
   ) {
     const sanitizedInput = sanitizeTagSaveAssociation(tags);
-    return this.tagService.replaceSavedItemTags(sanitizedInput, timestamp);
+    const hotfixed = await this.tagService.deduplicateTagHotfix(sanitizedInput);
+    return await this.tagService.replaceSavedItemTags(hotfixed, timestamp);
   }
 
   /**
@@ -339,7 +343,8 @@ export class TagModel {
           name: sanitizeTagName(tag),
         })),
     );
-    return await this.tagService.replaceSavedItemTags(tagCreates, timestamp);
+    const hotfixed = await this.tagService.deduplicateTagHotfix(tagCreates);
+    return await this.tagService.replaceSavedItemTags(hotfixed, timestamp);
   }
   // TODO: These weren't required for the ID thing
   //   public getPage(pagination: Pagination): Promise<TagConnection> {}
