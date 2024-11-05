@@ -8,8 +8,11 @@ import {
   CorpusSearchConnection,
   QuerySearchCorpusArgs,
 } from '../__generated__/types';
-import { SearchResponseEvent } from '../snowtype/snowplow';
-import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
+import {
+  PocketEventBridgeClient,
+  PocketEventType,
+  SearchEvent,
+} from '@pocket-tools/event-bridge';
 import * as Sentry from '@sentry/node';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
@@ -127,7 +130,7 @@ describe('EventBus', () => {
         },
       },
     ])('builds event out of context info', ({ context, expected }) => {
-      const search: SearchResponseEvent = {
+      const search: SearchEvent['detail']['event']['search'] = {
         id: expect.toBeString(),
         result_count_total: 2,
         result_urls: [
@@ -146,8 +149,9 @@ describe('EventBus', () => {
         result,
         context,
         args,
+        PocketEventType.SEARCH_RESPONSE_GENERATED,
       );
-      expect(event).toEqual({ search, ...expected });
+      expect(event.detail.event).toEqual({ search, ...expected });
     });
     describe('unhappy paths', () => {
       let clientSpy: jest.SpyInstance;
@@ -157,8 +161,8 @@ describe('EventBus', () => {
         sentrySpy = jest.spyOn(Sentry, 'captureException');
         loggerSpy = jest.spyOn(serverLogger, 'error');
         clientSpy = jest
-          .spyOn(EventBridgeClient.prototype, 'send')
-          .mockImplementation(() => Promise.reject(new Error('sike')));
+          .spyOn(PocketEventBridgeClient.prototype, 'sendPocketEvent')
+          .mockImplementation(() => Promise.resolve());
       });
       afterEach(() => {
         clientSpy.mockRestore();
@@ -179,6 +183,7 @@ describe('EventBus', () => {
             ...args,
             filter: { language: 'zz' as unknown as CorpusLanguage },
           },
+          PocketEventType.SEARCH_RESPONSE_GENERATED,
         );
         expect(sentrySpy).toHaveBeenCalledOnce();
         expect(loggerSpy).toHaveBeenCalledOnce();
@@ -186,24 +191,6 @@ describe('EventBus', () => {
           'Attempted to log search for invalid language',
         );
         expect(loggerSpy.mock.calls[0][0].language).toEqual('zz');
-      });
-      it('logs error if event fails to send', async () => {
-        const client = new EventBridgeClient();
-        const context = new ContextManager(
-          { headers } as unknown as Request,
-          dbClient,
-        );
-        await new EventBus(client).sendCorpusSearchResultEvent(
-          result,
-          context,
-          args,
-        );
-        expect(sentrySpy).toHaveBeenCalledOnce();
-        expect(loggerSpy).toHaveBeenCalledOnce();
-        expect(loggerSpy.mock.calls[0][0].error).toEqual(
-          'Failed to send event to event bus',
-        );
-        expect(loggerSpy.mock.calls[0][0].message).toEqual('sike');
       });
     });
   });

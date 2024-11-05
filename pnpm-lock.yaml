@@ -75,7 +75,7 @@ importers:
         version: 0.20.9(constructs@10.4.2)
       cdktf-cli:
         specifier: 0.20.9
-        version: 0.20.9(encoding@0.1.13)(ink@3.2.0(react@18.3.1))(react@18.3.1)
+        version: 0.20.9(encoding@0.1.13)(ink@5.0.1(react-devtools-core@4.28.5)(react@18.3.1))(react@18.3.1)
       constructs:
         specifier: 10.4.2
         version: 10.4.2
@@ -118,7 +118,7 @@ importers:
         version: 0.20.9(constructs@10.4.2)
       cdktf-cli:
         specifier: 0.20.9
-        version: 0.20.9(encoding@0.1.13)(ink@5.0.1(react-devtools-core@4.28.5)(react@18.3.1))(react@18.3.1)
+        version: 0.20.9(encoding@0.1.13)(ink@3.2.0(react@18.3.1))(react@18.3.1)
       constructs:
         specifier: 10.4.2
         version: 10.4.2
@@ -3773,7 +3773,7 @@ importers:
         version: link:../../packages/eslint-config
       '@snowplow/snowtype':
         specifier: ^0.10.0
-        version: 0.10.0(commander@12.1.0)(encoding@0.1.13)
+        version: 0.10.0(commander@12.1.0)
       '@types/jest':
         specifier: 29.5.14
         version: 29.5.14
@@ -4034,9 +4034,6 @@ importers:
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
-      '@aws-sdk/client-eventbridge':
-        specifier: 3.679.0
-        version: 3.679.0
       '@aws-sdk/client-sagemaker-runtime':
         specifier: 3.679.0
         version: 3.679.0
@@ -4055,6 +4052,9 @@ importers:
       '@pocket-tools/apollo-utils':
         specifier: workspace:*
         version: link:../../packages/apollo-utils
+      '@pocket-tools/event-bridge':
+        specifier: workspace:*
+        version: link:../../packages/event-bridge
       '@pocket-tools/feature-flags-client':
         specifier: workspace:*
         version: link:../../packages/feature-flags-client
@@ -4134,12 +4134,6 @@ importers:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
-      '@snowplow/node-tracker':
-        specifier: 3.24.3
-        version: 3.24.3
-      '@snowplow/snowtype':
-        specifier: ^0.10.0
-        version: 0.10.0(commander@12.1.0)(encoding@0.1.13)
       '@types/elasticsearch':
         specifier: ^5.0.37
         version: 5.0.43
@@ -19930,20 +19924,20 @@ snapshots:
       got: 11.8.6
       tslib: 2.8.0
 
-  '@snowplow/snowtype-core@0.10.0(encoding@0.1.13)':
+  '@snowplow/snowtype-core@0.10.0':
     dependencies:
       '@fastify/merge-json-schemas': 0.2.0
       handlebars: 4.7.8
       json-pointer: 0.6.2
-      quicktype-core: 23.0.170(encoding@0.1.13)
+      quicktype-core: 23.0.170
     transitivePeerDependencies:
       - encoding
 
-  '@snowplow/snowtype@0.10.0(commander@12.1.0)(encoding@0.1.13)':
+  '@snowplow/snowtype@0.10.0(commander@12.1.0)':
     dependencies:
       '@commander-js/extra-typings': 11.1.0(commander@12.1.0)
       '@inquirer/prompts': 3.3.2
-      '@snowplow/snowtype-core': 0.10.0(encoding@0.1.13)
+      '@snowplow/snowtype-core': 0.10.0
       chalk: 4.1.2
       cli-spinner: 0.2.10
       dotenv: 16.4.5
@@ -25986,7 +25980,7 @@ snapshots:
 
   quick-lru@5.1.1: {}
 
-  quicktype-core@23.0.170(encoding@0.1.13):
+  quicktype-core@23.0.170:
     dependencies:
       '@glideapps/ts-necessities': 2.2.3
       browser-or-node: 3.0.0

@@ -2057,6 +2057,24 @@
       ],
       "type": "object"
     },
+    "Filter": {
+      "enum": [
+        "domain",
+        "title",
+        "tags",
+        "contentType",
+        "status",
+        "isFavorite",
+        "publishedDateRange",
+        "topic",
+        "excludeML",
+        "excludeCollections",
+        "addedDateRange",
+        "publisher",
+        "author"
+      ],
+      "type": "string"
+    },
     "ForgotPasswordRequest": {
       "properties": {
         "detail": {
@@ -3027,6 +3045,162 @@
         },
         "detail-type": {
           "const": "REPLACE_TAGS",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "Scope": {
+      "description": "Identifies the fields which were searched.",
+      "enum": [
+        "all",
+        "all_contentful",
+        "title",
+        "excerpt",
+        "content",
+        "publisher"
+      ],
+      "type": "string"
+    },
+    "SearchEvent": {
+      "$ref": "#/definitions/SearchResponseGenerated"
+    },
+    "SearchPocketEventType": {
+      "const": "search_response_generated",
+      "type": "string"
+    },
+    "SearchResponseGenerated": {
+      "properties": {
+        "detail": {
+          "properties": {
+            "event": {
+              "properties": {
+                "apiUser": {
+                  "properties": {
+                    "api_id": {
+                      "type": "number"
+                    },
+                    "is_native": {
+                      "type": "boolean"
+                    },
+                    "is_trusted": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "api_id",
+                    "is_native",
+                    "is_trusted"
+                  ],
+                  "type": "object"
+                },
+                "search": {
+                  "description": "Event triggered when SearchResults are returned from Pocket's search api (for saves and corpus). Entities included: api_user; sometimes user, feature_flag.",
+                  "properties": {
+                    "id": {
+                      "description": "A unique ID for this result",
+                      "type": "string"
+                    },
+                    "result_count_total": {
+                      "description": "Number of results in the result set.",
+                      "type": "number"
+                    },
+                    "result_urls": {
+                      "description": "Ordered result of urls in the search result connection",
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "returned_at": {
+                      "description": "UNIX time in seconds when the results were sent by the Search API.",
+                      "type": "number"
+                    },
+                    "search_query": {
+                      "description": "The search query",
+                      "properties": {
+                        "filter": {
+                          "description": "Identifies the filters which were applied to the search, if applicable.",
+                          "items": {
+                            "$ref": "#/definitions/Filter"
+                          },
+                          "type": "array"
+                        },
+                        "language": {
+                          "description": "2-5 character language code to indicate the language the search was performed in",
+                          "type": "string"
+                        },
+                        "query": {
+                          "type": "string"
+                        },
+                        "scope": {
+                          "$ref": "#/definitions/Scope",
+                          "description": "Identifies the fields which were searched."
+                        }
+                      },
+                      "required": [
+                        "filter",
+                        "query",
+                        "scope"
+                      ],
+                      "type": "object"
+                    },
+                    "search_type": {
+                      "description": "Identifies the corpus that was searched",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "result_count_total",
+                    "result_urls",
+                    "returned_at",
+                    "search_query",
+                    "search_type"
+                  ],
+                  "type": "object"
+                },
+                "user": {
+                  "properties": {
+                    "guid": {
+                      "type": "number"
+                    },
+                    "hashed_guid": {
+                      "type": "string"
+                    },
+                    "hashed_user_id": {
+                      "type": "string"
+                    },
+                    "user_id": {
+                      "type": "number"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "required": [
+                "search",
+                "user",
+                "apiUser"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "event"
+          ],
+          "type": "object"
+        },
+        "detail-type": {
+          "const": "search_response_generated",
           "type": "string"
         },
         "source": {
@@ -4391,4 +4565,3 @@
     }
   }
 }
-
