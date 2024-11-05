@@ -7,7 +7,7 @@ export type SharePocketEventType =
 
 export type ShareEvent = ShareCreated | ShareContextUpdated;
 
-type Share = BaseEvent & {
+interface Share extends BaseEvent {
   detail: {
     pocketShare: {
       target_url: string;
@@ -17,12 +17,12 @@ type Share = BaseEvent & {
       quote_count: number;
     };
   };
-};
+}
 
-export type ShareCreated = Share & {
+export interface ShareCreated extends Share {
   'detail-type': PocketEventType.SHARE_CREATED;
-};
+}
 
-export type ShareContextUpdated = Share & {
+export interface ShareContextUpdated extends Share {
   'detail-type': PocketEventType.SHARE_CONTEXT_UPDATED;
-};
+}

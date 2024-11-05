@@ -3,9 +3,9 @@ import { ItemEventPayload } from './types';
 import config from '../config';
 import { eventBridgeClient } from '../aws/eventBridgeClient';
 import {
-  PocketEvent,
   ListPocketEventType,
   PocketEventType,
+  ListEvent,
 } from '@pocket-tools/event-bridge';
 
 export class EventBridgeHandler {
@@ -26,10 +26,11 @@ export class EventBridgeHandler {
    * @param eventPayload the payload to send to event bus
    */
   public async process(data: ItemEventPayload) {
-    const pocketEvent: PocketEvent = {
+    const pocketEvent: ListEvent = {
       'detail-type': PocketEventType[data.eventType],
       source: config.serviceName,
-      detail: data,
+      // Hack until we are using consistent event types and list api is simplified.
+      detail: { ...data, eventType: data.eventType as ListPocketEventType },
     };
 
     eventBridgeClient.sendPocketEvent(pocketEvent);

@@ -113,7 +113,7 @@ interface Tag {
   savedItems?: string[];
 }
 
-type ListItemEventPayload = BasicListItemEventPayloadContext & {
+interface ListItemEventPayload extends BasicListItemEventPayloadContext {
   savedItem: SavedItem;
   tags?: string[];
   tagsUpdated?: string[]; //unified event requires tags that are modified in mutation
@@ -121,9 +121,9 @@ type ListItemEventPayload = BasicListItemEventPayloadContext & {
   source: string;
   version: string; // semver (e.g. 1.2.33)
   eventType: ListPocketEventType;
-};
+}
 
-export type ExportRequested = BaseEvent & {
+export interface ExportRequested extends BaseEvent {
   // 'source': 'list-api';
   'detail-type': PocketEventType.EXPORT_REQUESTED;
   detail: {
@@ -133,82 +133,82 @@ export type ExportRequested = BaseEvent & {
     part: number;
     cursor: number;
   } & BasicListItemEventPayloadContext;
-};
+}
 
-export type AddItem = BaseEvent & {
+export interface AddItem extends BaseEvent {
   // 'source': 'list-api';
   'detail-type': PocketEventType.ADD_ITEM;
   detail: ListItemEventPayload;
-};
+}
 
-export type DeleteItem = BaseEvent & {
+export interface DeleteItem extends BaseEvent {
   // 'source': 'list-api';
   'detail-type': PocketEventType.DELETE_ITEM;
   detail: ListItemEventPayload;
-};
+}
 
-export type FavoriteItem = BaseEvent & {
+export interface FavoriteItem extends BaseEvent {
   // 'source': 'list-api';
   'detail-type': PocketEventType.FAVORITE_ITEM;
   detail: ListItemEventPayload;
-};
+}
 
-export type UnfavoriteItem = BaseEvent & {
+export interface UnfavoriteItem extends BaseEvent {
   // 'source': 'list-api';
   'detail-type': PocketEventType.UNFAVORITE_ITEM;
   detail: ListItemEventPayload;
-};
+}
 
-export type ArchiveItem = BaseEvent & {
+export interface ArchiveItem extends BaseEvent {
   // 'source': 'list-api';
   'detail-type': PocketEventType.ARCHIVE_ITEM;
   detail: ListItemEventPayload;
-};
+}
 
-export type UnarchiveItem = BaseEvent & {
+export interface UnarchiveItem extends BaseEvent {
   // 'source': 'list-api';
   'detail-type': PocketEventType.UNARCHIVE_ITEM;
   detail: ListItemEventPayload;
-};
+}
 
-export type AddTags = BaseEvent & {
+export interface AddTags extends BaseEvent {
   // 'source': 'list-api';
   'detail-type': PocketEventType.ADD_TAGS;
   detail: ListItemEventPayload;
-};
+}
 
-export type ReplaceTags = BaseEvent & {
+export interface ReplaceTags extends BaseEvent {
   // 'source': 'list-api';
   'detail-type': PocketEventType.REPLACE_TAGS;
   detail: ListItemEventPayload;
-};
+}
 
-export type ClearTags = BaseEvent & {
+export interface ClearTags extends BaseEvent {
   // 'source': 'list-api';
   'detail-type': PocketEventType.CLEAR_TAGS;
   detail: ListItemEventPayload;
-};
+}
 
-export type RemoveTags = BaseEvent & {
+export interface RemoveTags extends BaseEvent {
   // 'source': 'list-api';
   'detail-type': PocketEventType.REMOVE_TAGS;
   detail: ListItemEventPayload;
-};
+}
 
-export type RenameTag = BaseEvent & {
+export interface RenameTag extends BaseEvent {
   // 'source': 'list-api';
   'detail-type': PocketEventType.RENAME_TAG;
   detail: ListItemEventPayload;
-};
+}
 
-export type DeleteTag = BaseEvent & {
+export interface DeleteTag extends BaseEvent {
   // 'source': 'list-api';
   'detail-type': PocketEventType.DELETE_TAG;
   detail: ListItemEventPayload;
-};
+}
 
-export type UpdateTitle = BaseEvent & {
+export interface UpdateTitle extends BaseEvent {
   // 'source': 'list-api';
   'detail-type': PocketEventType.UPDATE_TITLE;
   detail: ListItemEventPayload;
-};
+}
