@@ -8,6 +8,7 @@ import { Ajv } from 'ajv';
 import addFormats from 'ajv-formats';
 import schema from './events/generated/schema.json';
 import { MissingFieldsError } from './errors';
+import { removeEmptyObjects } from './jsonUtils';
 
 /**
  * For a given detail type, return the validation schema from our schema.json file
@@ -47,6 +48,10 @@ const parsePocketEvent = <T extends keyof PocketEventTypeMap>(
     throw new Error(`Unsupported type: ${json['detail-type']}`);
   }
 
+  // Note we are removing empty objects because the schema does not allow them, but some services (cough.. collections) send empty objects.
+  // We could do this data modifiation within AJV but AJV ends up validating sub schemas before we are able to remove the empty objects, hence the removal will never occur.
+  json.detail = removeEmptyObjects(json.detail);
+
   // https://ajv.js.org/coercion.html
   // Some data comes from Web repo which.. treats everything as a string or bools as 0/1
   const ajv = new Ajv({ coerceTypes: true });
@@ -85,6 +90,7 @@ const parsePocketEvent = <T extends keyof PocketEventTypeMap>(
 export const sqsEventBridgeEvent = <T extends keyof PocketEventTypeMap>(
   record: SQSRecord,
 ): (PocketEventTypeMap[T] & IncomingBaseEvent) | null => {
+  // Note: We have to double parse the record body because it is a stringified JSON object when it comes via SNS from Event Bridge to SQS.
   const message = JSON.parse(JSON.parse(record.body).Message);
   return parsePocketEvent(message) as PocketEventTypeMap[T] & IncomingBaseEvent;
 };

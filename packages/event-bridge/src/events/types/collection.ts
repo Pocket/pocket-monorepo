@@ -35,7 +35,6 @@ export interface CollectionPayload {
     stories: CollectionStory[];
     createdAt: number; // in seconds
     updatedAt: number; // in seconds
-
     imageUrl?: string;
     labels?: Label[];
     intro?: string;

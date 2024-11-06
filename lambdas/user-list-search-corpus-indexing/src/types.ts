@@ -52,7 +52,10 @@ export type CorpusItemIndex = {
   }>;
 };
 
-export type ValidLanguageApprovedItemPayload = Omit<CorpusItemPayload, 'language'> & {
+export type ValidLanguageApprovedItemPayload = Omit<
+  CorpusItemPayload,
+  'language'
+> & {
   language: string;
 };
 
