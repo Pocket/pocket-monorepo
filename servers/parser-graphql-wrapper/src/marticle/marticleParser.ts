@@ -243,6 +243,13 @@ const transformers = {
         'div',
         childrenToProcess,
       ) as TurndownService.Node;
+
+      // Some reason on some urls the returned level could be less then 0, which is not valid.
+      // This happens when the the LI is not nested in a OL or UL
+      if (level - 1 < 0) {
+        return null;
+      }
+
       if (parentType === 'OL') {
         return {
           index: countPreviousSiblings(parentNode, 'LI'),

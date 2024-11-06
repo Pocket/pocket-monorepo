@@ -338,6 +338,40 @@ describe('MarticleParser', () => {
     ];
     expect(res).toEqual(expected);
   });
+
+  it('should ignore rogue <li>s', () => {
+    const input =
+      '<div>' +
+      '    <li>Coffee</li>' +
+      '    <li>Tea' +
+      '    <ol>' +
+      '      <li>BlackTea</li>' +
+      '      <li>GreenTea</li>' +
+      '    </ol>' +
+      '  </li>' +
+      '  <li>Milk</li>' +
+      '</div>';
+    const minified = input.replace(/\s+/g, '');
+    const res = marticleParser.parse(minified);
+    const expected = [
+      {
+        __typename: 'MarticleNumberedList',
+        rows: [
+          {
+            index: 0,
+            level: 0,
+            content: 'BlackTea',
+          },
+          {
+            index: 1,
+            level: 0,
+            content: 'GreenTea',
+          },
+        ],
+      },
+    ];
+    expect(res).toEqual(expected);
+  });
   it('should parse nested ordered list', () => {
     const input =
       '<ul>' +
