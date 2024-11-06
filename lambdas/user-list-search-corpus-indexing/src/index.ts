@@ -11,11 +11,11 @@ import type {
   SQSEvent,
 } from 'aws-lambda';
 import {
-  EventPayload,
   ValidatedEventPayload,
   validDetailTypes,
   CollectionApprovedItemPayload,
   SyndicatedItemPayload,
+  EventPayload,
 } from './types';
 import { upsertCollection } from './commands/Collection';
 import { mergeCollection } from './commands/ApprovedItemCollection';
@@ -24,6 +24,10 @@ import { upsertApprovedItem } from './commands/ApprovedItem';
 import { postRetry } from './postRetry';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { removeApprovedItem } from './commands/RemoveItem';
+import {
+  PocketEventType,
+  sqsEventBridgeEvent,
+} from '@pocket-tools/event-bridge';
 
 /**
  * The main handler function which will be wrapped by Sentry prior to export.
@@ -34,13 +38,16 @@ import { removeApprovedItem } from './commands/RemoveItem';
  */
 export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
   const validPayloads: Array<EventPayload> = event.Records.map((record) => {
-    const message = JSON.parse(JSON.parse(record.body).Message);
+    const event = sqsEventBridgeEvent(record);
+    if (event == null || !validDetailTypes.includes(event['detail-type'])) {
+      return null;
+    }
     return {
       messageId: record.messageId,
-      detailType: message['detail-type'],
-      detail: message['detail'],
+      detailType: event['detail-type'],
+      detail: event.detail,
     };
-  }).filter((message) => validDetailTypes.includes(message['detailType']));
+  }).filter((message) => message != null);
   const result = await bulkIndex(validPayloads);
   return result;
 }
@@ -79,7 +86,7 @@ export async function bulkIndex(
   for await (const validItem of validItems) {
     // Deleting
     if (
-      validItem.detailType === 'remove-approved-item' &&
+      validItem.detailType === PocketEventType.CORPUS_ITEM_REMOVED &&
       // Not possible, but just for typescript...
       !('collection' in validItem.detail)
     ) {

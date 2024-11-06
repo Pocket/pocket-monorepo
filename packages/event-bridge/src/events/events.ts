@@ -43,4 +43,11 @@ export enum PocketEventType {
   SHARE_CONTEXT_UPDATED = 'pocket_share_context_updated',
 
   SEARCH_RESPONSE_GENERATED = 'search_response_generated',
+
+  CORPUS_ITEM_ADDED = 'add-approved-item',
+  CORPUS_ITEM_UPDATED = 'update-approved-item',
+  CORPUS_ITEM_REMOVED = 'remove-approved-item',
+
+  COLLECTION_CREATED = 'collection-created',
+  COLLECTION_UPDATED = 'collection-updated',
 }
