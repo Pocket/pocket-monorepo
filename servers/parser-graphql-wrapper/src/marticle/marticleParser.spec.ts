@@ -339,11 +339,11 @@ describe('MarticleParser', () => {
     expect(res).toEqual(expected);
   });
 
-  it('should ignore rogue <li>s', () => {
+  it('should parse rogue <li>s', () => {
     const input =
       '<div>' +
       '    <li>Coffee</li>' +
-      '    <li>Tea' +
+      '    <li>Tea</li>' +
       '    <ol>' +
       '      <li>BlackTea</li>' +
       '      <li>GreenTea</li>' +
@@ -354,6 +354,14 @@ describe('MarticleParser', () => {
     const minified = input.replace(/\s+/g, '');
     const res = marticleParser.parse(minified);
     const expected = [
+      {
+        __typename: 'MarticleBulletedList',
+        rows: [{ content: 'Coffee', level: 0 }],
+      },
+      {
+        __typename: 'MarticleBulletedList',
+        rows: [{ content: 'Tea', level: 0 }],
+      },
       {
         __typename: 'MarticleNumberedList',
         rows: [
@@ -368,6 +376,10 @@ describe('MarticleParser', () => {
             content: 'GreenTea',
           },
         ],
+      },
+      {
+        __typename: 'MarticleBulletedList',
+        rows: [{ content: 'Milk', level: 0 }],
       },
     ];
     expect(res).toEqual(expected);
