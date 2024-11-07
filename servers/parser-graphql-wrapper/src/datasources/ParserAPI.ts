@@ -189,7 +189,11 @@ export class ParserAPI extends RESTDataSource {
       hasOldDupes: !!parseInt(parserResponse.has_old_dupes),
       domainId: parserResponse.domain_id,
       originDomainId: parserResponse.origin_domain_id,
-      responseCode: parseInt(parserResponse.responseCode),
+      responseCode:
+        // The parser can return '' for responseCode, when the item is an image or video, assume 200.
+        parserResponse.responseCode && parserResponse.responseCode !== ''
+          ? parseInt(parserResponse.responseCode)
+          : 200,
       contentLength: parserResponse.content_length,
       innerDomainRedirect: !!parserResponse.innerdomain_redirect,
       loginRequired: !!parserResponse.requiresLogin,

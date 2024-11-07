@@ -33,6 +33,7 @@ export const videoTypeMap = {
   6: VideoType.Flash,
   7: VideoType.Iframe,
   8: VideoType.Brightcove,
+  9: VideoType.Dailymotion,
 };
 
 interface SrcRecord {
