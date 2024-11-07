@@ -1,5 +1,5 @@
-import { ClientError, GraphQLClient } from 'graphql-request';
-import { getClient } from '../graph/graphQLClient';
+import { ClientError } from 'graphql-request';
+import { getClient, GraphQLClientFactory } from '../graph/graphQLClient';
 import {
   AddAnnotationAction,
   DeleteAnnotationAction,
@@ -99,7 +99,7 @@ type SendActionResult = {
 };
 
 export class ActionsRouter {
-  protected client: GraphQLClient;
+  protected client: GraphQLClientFactory;
   constructor(
     accessToken: string,
     consumerKey: string,

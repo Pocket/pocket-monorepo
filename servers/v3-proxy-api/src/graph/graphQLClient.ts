@@ -47,11 +47,7 @@ export function getClient(
   consumerKey: string,
   headers: any,
 ) {
-  return new GraphQLClientFactory(
-    accessToken,
-    consumerKey,
-    headers,
-  ).createClient();
+  return new GraphQLClientFactory(accessToken, consumerKey, headers);
 }
 
 /**
@@ -188,6 +184,7 @@ export class GraphQLClientFactory {
       ) {
         serverLogger.error('Received an empty 200 error from Client API', {
           responseError: response,
+          ...context,
         });
         throw response;
         // There are unskipped errors; re-throw so that the request
@@ -195,6 +192,7 @@ export class GraphQLClientFactory {
       } else if (response instanceof Error) {
         serverLogger.error('rethrowing an unskipped error', {
           responseError: response,
+          ...context,
         });
         throw response;
       }
@@ -298,16 +296,16 @@ export async function callSearchByOffsetComplete(
  * @param tags tags to associate to the saved item (optional)
  */
 export async function addSavedItem(
-  client: GraphQLClient,
+  client: GraphQLClientFactory,
   variables: AddSavedItemCompleteMutationVariables,
 ): Promise<AddSavedItemCompleteMutation>;
 export async function addSavedItem(
-  client: GraphQLClient,
+  client: GraphQLClientFactory,
   variables: AddSavedItemBeforeTagMutationVariables,
   tags: string[],
 ): Promise<AddTagsToSavedItemMutation>;
 export async function addSavedItem(
-  client: GraphQLClient,
+  client: GraphQLClientFactory,
   variables: // These are the same types...
   | AddSavedItemBeforeTagMutationVariables
     | AddSavedItemCompleteMutationVariables,

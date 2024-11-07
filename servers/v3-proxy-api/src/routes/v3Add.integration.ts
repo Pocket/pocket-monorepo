@@ -4,7 +4,7 @@ import { mockGraphAddResponses } from '../test/fixtures/add';
 import { Application } from 'express';
 import { Server } from 'http';
 import { startServer } from '../server';
-import nock from 'nock';
+import nock, { cleanAll, restore } from 'nock';
 import config from '../config';
 
 describe('v3Add', () => {
@@ -170,7 +170,10 @@ describe('v3Add', () => {
   });
 
   describe('with UNAUTHORIZED_FIELD_OR_TYPE returned', () => {
-    beforeAll(() => {
+    beforeEach(() => {
+      jest.restoreAllMocks();
+      jest.useRealTimers();
+      cleanAll();
       nock(config.graphQLProxy)
         .post('?consumer_key=test')
         .reply(200, {
@@ -186,14 +189,16 @@ describe('v3Add', () => {
           ],
         });
     });
+    afterEach(() => {
+      restore();
+    });
     it('calls upsert once, and returns a Forbidden error', async () => {
       const response = await request(app).post('/v3/add').send({
         consumer_key: 'test',
         enable_cors: '1',
         url: 'https://isithalloween.com',
       });
-
-      expect(response.headers['x-error-code']).toBe(5200);
+      expect(response.headers['x-error-code']).toBe('5200');
     });
   });
 });
