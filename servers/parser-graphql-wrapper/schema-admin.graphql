@@ -265,6 +265,8 @@ enum VideoType {
   IFRAME
   "Brightcove (v3 value is 8)"
   BRIGHTCOVE
+  "Dailymotion (v3 value is 9)"
+  DAILYMOTION
 }
 
 enum Videoness {
