@@ -4,6 +4,8 @@ import { mockGraphAddResponses } from '../test/fixtures/add';
 import { Application } from 'express';
 import { Server } from 'http';
 import { startServer } from '../server';
+import nock from 'nock';
+import config from '../config';
 
 describe('v3Add', () => {
   let app: Application;
@@ -164,6 +166,34 @@ describe('v3Add', () => {
         input: { timestamp: now / 1000, url: 'https://isithalloween.com' },
       });
       expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+    });
+  });
+
+  describe('with UNAUTHORIZED_FIELD_OR_TYPE returned', () => {
+    beforeAll(() => {
+      nock(config.graphQLProxy)
+        .post('?consumer_key=test')
+        .reply(200, {
+          data: {},
+          errors: [
+            {
+              message: 'Unauthorized field or type',
+              path: ['upsertSavedItem'],
+              extensions: {
+                code: 'UNAUTHORIZED_FIELD_OR_TYPE',
+              },
+            },
+          ],
+        });
+    });
+    it('calls upsert once, and returns a Forbidden error', async () => {
+      const response = await request(app).post('/v3/add').send({
+        consumer_key: 'test',
+        enable_cors: '1',
+        url: 'https://isithalloween.com',
+      });
+
+      expect(response.headers['x-error-code']).toBe(5200);
     });
   });
 });
