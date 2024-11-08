@@ -36,7 +36,7 @@ importers:
     devDependencies:
       '@commitlint/cli':
         specifier: 19.5.0
-        version: 19.5.0(@types/node@22.9.0)(typescript@5.8.0-dev.20241106)
+        version: 19.5.0(@types/node@22.9.0)(typescript@5.8.0-dev.20241108)
       '@commitlint/config-conventional':
         specifier: ^19.5.0
         version: 19.5.0
@@ -45,7 +45,7 @@ importers:
         version: link:packages/eslint-config
       syncpack:
         specifier: ^13.0.0
-        version: 13.0.0(typescript@5.8.0-dev.20241106)
+        version: 13.0.0(typescript@5.8.0-dev.20241108)
       tsconfig:
         specifier: workspace:*
         version: link:packages/tsconfig
@@ -2040,6 +2040,9 @@ importers:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@semantic-release/exec':
+        specifier: 6.0.3
+        version: 6.0.3(semantic-release@24.2.0(typescript@5.6.3))
       '@types/jest':
         specifier: 29.5.14
         version: 29.5.14
@@ -2049,6 +2052,12 @@ importers:
       jest:
         specifier: 29.7.0
         version: 29.7.0(@types/node@22.9.0)(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))
+      semantic-release:
+        specifier: 24.2.0
+        version: 24.2.0(typescript@5.6.3)
+      semantic-release-monorepo:
+        specifier: 8.0.2
+        version: 8.0.2(semantic-release@24.2.0(typescript@5.6.3))
       ts-jest:
         specifier: 29.2.5
         version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(esbuild@0.24.0)(jest@29.7.0(@types/node@22.9.0)(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(typescript@5.6.3)
@@ -2288,6 +2297,9 @@ importers:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@semantic-release/exec':
+        specifier: 6.0.3
+        version: 6.0.3(semantic-release@24.2.0(typescript@5.6.3))
       '@sentry/types':
         specifier: 8.37.1
         version: 8.37.1
@@ -2303,6 +2315,12 @@ importers:
       jest:
         specifier: 29.7.0
         version: 29.7.0(@types/node@22.9.0)(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3))
+      semantic-release:
+        specifier: 24.2.0
+        version: 24.2.0(typescript@5.6.3)
+      semantic-release-monorepo:
+        specifier: 8.0.2
+        version: 8.0.2(semantic-release@24.2.0(typescript@5.6.3))
       ts-jest:
         specifier: 29.2.5
         version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(esbuild@0.24.0)(jest@29.7.0(@types/node@22.9.0)(ts-node@10.9.2(@types/node@22.9.0)(typescript@5.6.3)))(typescript@5.6.3)
@@ -3773,7 +3791,7 @@ importers:
         version: link:../../packages/eslint-config
       '@snowplow/snowtype':
         specifier: ^0.10.0
-        version: 0.10.0(commander@12.1.0)(encoding@0.1.13)
+        version: 0.10.0(commander@12.1.0)
       '@types/jest':
         specifier: 29.5.14
         version: 29.5.14
@@ -4723,10 +4741,6 @@ packages:
     resolution: {integrity: sha512-nPmhVZb39ty5bcQ7mAwtjezBcsBqTYZ9A2D9v/lE92KCLdu5RhSkPH7O71ZqbZx1mUSg9fAOxHPiG79U5VlpLQ==}
     engines: {node: '>=16.0.0'}
 
-  '@babel/code-frame@7.25.7':
-    resolution: {integrity: sha512-0xZJFNE5XMpENsgfHYTw8FbX4kv53mFLn2i3XPoq69LyhYSCBJtitaHx9QnsVTrsogI4Z3+HtEfZ2/GFPOtf5g==}
-    engines: {node: '>=6.9.0'}
-
   '@babel/code-frame@7.26.0':
     resolution: {integrity: sha512-INCKxTtbXtcNbUZ3YXutwMpEleqttcswhAdee7dhuoVrD2cnuc3PqtERBtxkX5nziX9vnBL8WXmSGwv8CuPV6g==}
     engines: {node: '>=6.9.0'}
@@ -4915,10 +4929,6 @@ packages:
 
   '@babel/helpers@7.26.0':
     resolution: {integrity: sha512-tbhNuIxNcVb21pInl3ZSjksLCvgdZy9KwJ8brv993QtIVKJBBkYXz4q4ZbAv31GdnC+R90np23L5FbEBlthAEw==}
-    engines: {node: '>=6.9.0'}
-
-  '@babel/highlight@7.25.7':
-    resolution: {integrity: sha512-iYyACpW3iW8Fw+ZybQK+drQre+ns/tKpXbNESfrhNnPLIklLbXr7MYJ6gPEd0iETGLOK+SxMjVvKb/ffmk+FEw==}
     engines: {node: '>=6.9.0'}
 
   '@babel/parser@7.26.1':
@@ -13919,8 +13929,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.8.0-dev.20241106:
-    resolution: {integrity: sha512-oFqIoJnR/s4hq5I2MBDdeJThRVyyhRV5eo2EmxllNkSe76ycucq2h4QgWnq0g4Opf4KQjpi1m/jhgMoiwDc8CQ==}
+  typescript@5.8.0-dev.20241108:
+    resolution: {integrity: sha512-4QncqXkNRtmod3q92DswLBXVX8Cc+FV2BEH4KZnP8bzqPTjUAZBq/qXl0u7pXEhH+hZOxeDqI3vvn8ry8lMt3Q==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -15643,11 +15653,6 @@ snapshots:
       '@smithy/types': 3.5.0
       tslib: 2.8.0
 
-  '@babel/code-frame@7.25.7':
-    dependencies:
-      '@babel/highlight': 7.25.7
-      picocolors: 1.1.1
-
   '@babel/code-frame@7.26.0':
     dependencies:
       '@babel/helper-validator-identifier': 7.25.9
@@ -15931,13 +15936,6 @@ snapshots:
     dependencies:
       '@babel/template': 7.25.9
       '@babel/types': 7.26.0
-
-  '@babel/highlight@7.25.7':
-    dependencies:
-      '@babel/helper-validator-identifier': 7.25.9
-      chalk: 2.4.2
-      js-tokens: 4.0.0
-      picocolors: 1.1.1
 
   '@babel/parser@7.26.1':
     dependencies:
@@ -16574,11 +16572,11 @@ snapshots:
     dependencies:
       commander: 12.1.0
 
-  '@commitlint/cli@19.5.0(@types/node@22.9.0)(typescript@5.8.0-dev.20241106)':
+  '@commitlint/cli@19.5.0(@types/node@22.9.0)(typescript@5.8.0-dev.20241108)':
     dependencies:
       '@commitlint/format': 19.5.0
       '@commitlint/lint': 19.5.0
-      '@commitlint/load': 19.5.0(@types/node@22.9.0)(typescript@5.8.0-dev.20241106)
+      '@commitlint/load': 19.5.0(@types/node@22.9.0)(typescript@5.8.0-dev.20241108)
       '@commitlint/read': 19.5.0
       '@commitlint/types': 19.5.0
       tinyexec: 0.3.1
@@ -16625,15 +16623,15 @@ snapshots:
       '@commitlint/rules': 19.5.0
       '@commitlint/types': 19.5.0
 
-  '@commitlint/load@19.5.0(@types/node@22.9.0)(typescript@5.8.0-dev.20241106)':
+  '@commitlint/load@19.5.0(@types/node@22.9.0)(typescript@5.8.0-dev.20241108)':
     dependencies:
       '@commitlint/config-validator': 19.5.0
       '@commitlint/execute-rule': 19.5.0
       '@commitlint/resolve-extends': 19.5.0
       '@commitlint/types': 19.5.0
       chalk: 5.3.0
-      cosmiconfig: 9.0.0(typescript@5.8.0-dev.20241106)
-      cosmiconfig-typescript-loader: 5.1.0(@types/node@22.9.0)(cosmiconfig@9.0.0(typescript@5.8.0-dev.20241106))(typescript@5.8.0-dev.20241106)
+      cosmiconfig: 9.0.0(typescript@5.8.0-dev.20241108)
+      cosmiconfig-typescript-loader: 5.1.0(@types/node@22.9.0)(cosmiconfig@9.0.0(typescript@5.8.0-dev.20241108))(typescript@5.8.0-dev.20241108)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -19869,20 +19867,20 @@ snapshots:
       got: 11.8.6
       tslib: 2.8.0
 
-  '@snowplow/snowtype-core@0.10.0(encoding@0.1.13)':
+  '@snowplow/snowtype-core@0.10.0':
     dependencies:
       '@fastify/merge-json-schemas': 0.2.0
       handlebars: 4.7.8
       json-pointer: 0.6.2
-      quicktype-core: 23.0.170(encoding@0.1.13)
+      quicktype-core: 23.0.170
     transitivePeerDependencies:
       - encoding
 
-  '@snowplow/snowtype@0.10.0(commander@12.1.0)(encoding@0.1.13)':
+  '@snowplow/snowtype@0.10.0(commander@12.1.0)':
     dependencies:
       '@commander-js/extra-typings': 11.1.0(commander@12.1.0)
       '@inquirer/prompts': 3.3.2
-      '@snowplow/snowtype-core': 0.10.0(encoding@0.1.13)
+      '@snowplow/snowtype-core': 0.10.0
       chalk: 4.1.2
       cli-spinner: 0.2.10
       dotenv: 16.4.5
@@ -21665,12 +21663,12 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cosmiconfig-typescript-loader@5.1.0(@types/node@22.9.0)(cosmiconfig@9.0.0(typescript@5.8.0-dev.20241106))(typescript@5.8.0-dev.20241106):
+  cosmiconfig-typescript-loader@5.1.0(@types/node@22.9.0)(cosmiconfig@9.0.0(typescript@5.8.0-dev.20241108))(typescript@5.8.0-dev.20241108):
     dependencies:
       '@types/node': 22.9.0
-      cosmiconfig: 9.0.0(typescript@5.8.0-dev.20241106)
+      cosmiconfig: 9.0.0(typescript@5.8.0-dev.20241108)
       jiti: 1.21.6
-      typescript: 5.8.0-dev.20241106
+      typescript: 5.8.0-dev.20241108
 
   cosmiconfig@8.3.6(typescript@5.6.3):
     dependencies:
@@ -21690,14 +21688,14 @@ snapshots:
     optionalDependencies:
       typescript: 5.6.3
 
-  cosmiconfig@9.0.0(typescript@5.8.0-dev.20241106):
+  cosmiconfig@9.0.0(typescript@5.8.0-dev.20241108):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 5.8.0-dev.20241106
+      typescript: 5.8.0-dev.20241108
 
   cpu-features@0.0.2:
     dependencies:
@@ -22019,7 +22017,7 @@ snapshots:
     dependencies:
       semver: 7.6.3
       shelljs: 0.8.5
-      typescript: 5.8.0-dev.20241106
+      typescript: 5.8.0-dev.20241108
 
   dreamopt@0.8.0:
     dependencies:
@@ -24034,7 +24032,7 @@ snapshots:
 
   jest-message-util@29.7.0:
     dependencies:
-      '@babel/code-frame': 7.25.7
+      '@babel/code-frame': 7.26.0
       '@jest/types': 29.6.3
       '@types/stack-utils': 2.0.3
       chalk: 4.1.2
@@ -25806,7 +25804,7 @@ snapshots:
 
   quick-lru@5.1.1: {}
 
-  quicktype-core@23.0.170(encoding@0.1.13):
+  quicktype-core@23.0.170:
     dependencies:
       '@glideapps/ts-necessities': 2.2.3
       browser-or-node: 3.0.0
@@ -26762,13 +26760,13 @@ snapshots:
       '@pkgr/core': 0.1.1
       tslib: 2.8.0
 
-  syncpack@13.0.0(typescript@5.8.0-dev.20241106):
+  syncpack@13.0.0(typescript@5.8.0-dev.20241108):
     dependencies:
       '@effect/schema': 0.71.1(effect@3.6.5)
       chalk: 5.3.0
       chalk-template: 1.1.0
       commander: 12.1.0
-      cosmiconfig: 9.0.0(typescript@5.8.0-dev.20241106)
+      cosmiconfig: 9.0.0(typescript@5.8.0-dev.20241108)
       effect: 3.6.5
       enquirer: 2.4.1
       fast-check: 3.21.0
@@ -27167,7 +27165,7 @@ snapshots:
 
   typescript@5.6.3: {}
 
-  typescript@5.8.0-dev.20241106: {}
+  typescript@5.8.0-dev.20241108: {}
 
   ua-parser-js@1.0.39: {}
 
