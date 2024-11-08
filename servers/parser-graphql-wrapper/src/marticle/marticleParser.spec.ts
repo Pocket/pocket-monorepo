@@ -339,6 +339,56 @@ describe('MarticleParser', () => {
     expect(res).toEqual(expected);
   });
 
+  it('should minify and parse unorded lists within a div, that has invalid data in the ul', () => {
+    const input = `<div lang="en">
+              <ul>
+                  <li>1-2.</li>
+                  <span>test</span>
+                  <li>2-2.</li>
+                  <li>3-2.</li>
+                  <li>4-2.</li>
+                  <li>5-2.</li>
+                  <li>6-2.</li>
+              </ul>
+            </div>`;
+    const res = marticleParser.parse(input);
+    const expected = [
+      {
+        __typename: 'MarticleBulletedList',
+        rows: [
+          {
+            level: 0,
+            content: '1-2.',
+          },
+          {
+            level: 0,
+            content: '2-2.',
+          },
+          {
+            level: 0,
+            content: '3-2.',
+          },
+          {
+            level: 0,
+            content: '4-2.',
+          },
+          {
+            level: 0,
+            content: '5-2.',
+          },
+          {
+            level: 0,
+            content: '6-2.',
+          },
+        ],
+      },
+      {
+        __typename: 'MarticleText',
+        content: 'test',
+      },
+    ];
+    expect(res).toEqual(expected);
+  });
   it('should parse rogue <li>s', () => {
     const input =
       '<div>' +
