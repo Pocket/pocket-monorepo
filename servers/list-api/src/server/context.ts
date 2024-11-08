@@ -130,7 +130,7 @@ export class ContextManager extends PocketContextManager implements IContext {
         language: this.gatewayLanguage,
         snowplowDomainUserId: this.gatewaySnowplowDomainUserId,
         snowplowDomainSessionId: this.gatewaySnowplowDomainSessionId,
-        ipAddress: this.gatewayIpAddress,
+        ipAddress: this.ip,
         userAgent: this.gatewayUserAgent,
       },
     };
