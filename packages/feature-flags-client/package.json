@@ -1,7 +1,7 @@
 {
   "name": "@pocket-tools/feature-flags-client",
   "version": "0.0.0-development",
-  "description": "Basic Unleash client for feature flags",
+  "description": "Basic Unleash client for pocket feature flags",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Pocket/pocket-monorepo.git"
@@ -20,8 +20,58 @@
     "dev": "pnpm run build --watch",
     "format": "eslint --fix",
     "lint": "eslint --fix-dry-run",
+    "presemantic-release": "pnpm run build",
+    "semantic-release": "semantic-release",
     "test": "jest",
     "test:watch": "pnpm run test -- --watch"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "extends": "semantic-release-monorepo",
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "conventionalcommits",
+          "parserOpts": {
+            "noteKeywords": [
+              "BREAKING CHANGE",
+              "BREAKING CHANGES",
+              "BREAKING"
+            ]
+          }
+        }
+      ],
+      [
+        "@semantic-release/release-notes-generator",
+        {
+          "preset": "conventionalcommits",
+          "parserOpts": {
+            "noteKeywords": [
+              "BREAKING CHANGE",
+              "BREAKING CHANGES",
+              "BREAKING"
+            ]
+          },
+          "writerOpts": {
+            "commitsSort": [
+              "subject",
+              "scope"
+            ]
+          }
+        }
+      ],
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "pnpm version ${nextRelease.version} --git-tag-version=false",
+          "publishCmd": "pnpm publish --no-git-checks"
+        }
+      ],
+      "@semantic-release/github"
+    ]
   },
   "dependencies": {
     "tslib": "2.8.0",
@@ -37,5 +87,8 @@
     "tsconfig": "workspace:*",
     "tsup": "8.3.5",
     "typescript": "5.6.3"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
