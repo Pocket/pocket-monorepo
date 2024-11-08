@@ -38,7 +38,7 @@ export class OpenGraphModel implements IPocketMetadataDataSource {
     const enabled = unleash().isEnabled(
       config.unleash.flags.openGraphParser.name,
       {
-        userId: context.userId,
+        userId: context.encodedUserId,
         remoteAddress: context.ip,
       },
       config.unleash.flags.openGraphParser.fallback,

@@ -45,7 +45,7 @@ export class OEmbedModel implements IPocketMetadataDataSource {
     const enabled = unleash().isEnabled(
       config.unleash.flags.allOEmbedParser.name,
       {
-        userId: context.userId,
+        userId: context.encodedUserId,
         remoteAddress: context.ip,
       },
       config.unleash.flags.allOEmbedParser.fallback,
