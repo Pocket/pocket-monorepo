@@ -30,12 +30,15 @@ export class OpenGraphModel implements IPocketMetadataDataSource {
     return merge(fallbackParserPocketMetadata, openGraphData);
   }
 
-  isEnabled(context: IContext): boolean {
+  isEnabled(context: IContext, url: string): boolean {
+    if (!this.matcher.test(url)) {
+      return false;
+    }
     // If the open graph parser is enabled lets use it
     const enabled = unleash().isEnabled(
       config.unleash.flags.openGraphParser.name,
       {
-        userId: context.userId,
+        userId: context.encodedUserId,
         remoteAddress: context.ip,
       },
       config.unleash.flags.openGraphParser.fallback,
