@@ -23,6 +23,7 @@ import { Detector, Resource } from '@opentelemetry/resources';
 import {
   ATTR_SERVICE_NAME,
   ATTR_SERVICE_VERSION,
+  SEMRESATTRS_DEPLOYMENT_ENVIRONMENT,
 } from '@opentelemetry/semantic-conventions';
 
 import { SentryPropagator, wrapSamplingDecision } from '@sentry/opentelemetry';
@@ -140,6 +141,8 @@ export async function nodeSDKBuilder(config: TracingConfig) {
     new Resource({
       [ATTR_SERVICE_NAME]: config.serviceName,
       [ATTR_SERVICE_VERSION]: config.release,
+      [SEMRESATTRS_DEPLOYMENT_ENVIRONMENT]:
+        process.env.ENVIRONMENT ?? process.env.NODE_ENV ?? 'unknown',
     }),
   );
 
