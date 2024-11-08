@@ -22,8 +22,8 @@ export const config = {
     environment,
     owner: 'Pocket',
     costCenter: 'Shared',
-    app_code: 'pocket',
-    component_code: `pocket-${name.toLowerCase()}`,
+    app_code: 'pocke-content-shared',
+    component_code: `pocket-content-shared-${name.toLowerCase()}`,
     env_code: isDev ? 'dev' : 'prod',
   },
   healthCheck: {
