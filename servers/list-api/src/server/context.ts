@@ -83,13 +83,10 @@ export class ContextManager extends PocketContextManager implements IContext {
       savedItem: new SavedItemModel(this),
     };
     // Set tracking data for Sentry
-    Sentry.getCurrentScope().setTag(
-      'pocket-api-id',
-      (this.headers.apiid || '0') as string,
-    );
+    Sentry.getCurrentScope().setTag('pocket-api-id', super.apiId);
     Sentry.getCurrentScope().setUser({
-      id: this.headers.encodedid as string,
-      ip_address: this.headers.gatewayipaddress as string,
+      id: super.encodedUserId,
+      ip_address: super.ip,
     });
   }
   headers: IncomingHttpHeaders;

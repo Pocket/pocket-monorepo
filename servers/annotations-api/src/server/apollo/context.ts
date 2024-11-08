@@ -1,7 +1,11 @@
 import { Knex } from 'knex';
 import { HighlightNote } from '../../types';
 import DataLoader from 'dataloader';
-import { AuthenticationError } from '@pocket-tools/apollo-utils';
+import {
+  AuthenticationError,
+  PocketContext,
+  PocketContextManager,
+} from '@pocket-tools/apollo-utils';
 import express from 'express';
 import { dynamoClient, readClient, writeClient } from '../../database/client';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
@@ -11,10 +15,8 @@ import { HighlightsModel } from '../../models/HighlightsModel';
 import { ParserAPI } from '../../dataservices/parserApi';
 import { HighlightsDataService } from '../../dataservices/highlights';
 
-export interface IContext {
-  apiId: string;
+export interface IContext extends PocketContext {
   userId: string;
-  isPremium: boolean;
   db: {
     readClient: Knex;
     writeClient: Knex;
@@ -27,7 +29,7 @@ export interface IContext {
   };
 }
 
-export class ContextManager implements IContext {
+export class ContextManager extends PocketContextManager implements IContext {
   public readonly db: IContext['db'];
   public readonly dataLoaders: IContext['dataLoaders'];
   HighlightsModel: HighlightsModel;
@@ -41,6 +43,7 @@ export class ContextManager implements IContext {
       dynamoClient: DynamoDBClient;
     },
   ) {
+    super(config.request.headers);
     this.db = config.db;
     this.config = config;
     this.dynamoClient = config.dynamoClient;
@@ -54,17 +57,12 @@ export class ContextManager implements IContext {
       highlightService,
       noteService,
       this.parserApi,
-      this.isPremium,
+      super.userIsPremium,
     );
   }
 
-  get isPremium(): boolean {
-    // Using getter to make it easier to stub in tests
-    return this.config.request?.headers.premium === 'true';
-  }
-
   get userId(): string {
-    const userId = this.config.request.headers.userid;
+    const userId = super.userId;
 
     if (!userId || userId === 'anonymous') {
       throw new AuthenticationError(

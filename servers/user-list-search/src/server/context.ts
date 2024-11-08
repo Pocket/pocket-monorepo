@@ -1,14 +1,13 @@
 import { Knex } from 'knex';
 import type { Request } from 'express';
+import {
+  PocketContext,
+  PocketContextManager,
+} from '@pocket-tools/apollo-utils';
 
-export type IContext = {
-  userId: string;
-  userIsPremium: boolean;
+export type IContext = PocketContext & {
   knexDbClient: Knex;
-  isNative: boolean;
   request: Request;
-  ip: string | undefined;
-  encodedId: string | undefined;
 };
 export type ContextFactory = (
   req: Request,
@@ -33,26 +32,14 @@ export const isSubgraphIntrospection = (query: string): boolean => {
   return typeof query === 'string' && isSubgraphIntrospectionRegex.test(query);
 };
 
-export class ContextManager implements IContext {
-  public readonly userId: string;
-  public readonly userIsPremium: boolean;
+export class ContextManager extends PocketContextManager implements IContext {
   public readonly knexDbClient: Knex<any, any[]>;
-  public readonly isNative: boolean;
-  public readonly ip: string | undefined;
-  public readonly encodedId: string | undefined;
   constructor(
     public readonly request: Request,
     dbClient: Knex,
   ) {
-    this.userId = request.headers.userid as string;
-    this.userIsPremium = request.headers.premium === 'true';
+    super(request.headers);
     this.knexDbClient = dbClient;
-    this.isNative = request.headers.applicationisnative === 'true';
-    this.ip =
-      (request.headers.gatewayipaddress as string) ||
-      (request.headers['origin-client-ip'] as string) ||
-      undefined;
-    this.encodedId = (request.headers.encodedid as string) || undefined;
   }
 }
 

@@ -13,12 +13,12 @@ import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive
 
 import { schema } from './schema';
 import { config } from '../config';
-import { getContext, ContextManager } from './context';
+import { getContext, IContext } from './context';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 
 export async function startServer(port: number): Promise<{
   app: Application;
-  server: ApolloServer<ContextManager>;
+  server: ApolloServer<IContext>;
   url: string;
 }> {
   // initialize express with exposed httpServer so that it may be
@@ -39,7 +39,7 @@ export async function startServer(port: number): Promise<{
     setMorgan(serverLogger),
   );
 
-  const server = new ApolloServer<ContextManager>({
+  const server = new ApolloServer<IContext>({
     schema,
     plugins: [
       ...defaultPlugins(httpServer),
@@ -56,7 +56,7 @@ export async function startServer(port: number): Promise<{
   app.use(
     url,
     cors<cors.CorsRequest>(),
-    expressMiddleware<ContextManager>(server, {
+    expressMiddleware<IContext>(server, {
       context: getContext,
     }),
   );
