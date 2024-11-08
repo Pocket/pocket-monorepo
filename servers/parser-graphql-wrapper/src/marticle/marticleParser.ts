@@ -223,7 +223,9 @@ const transformers = {
     }
     return output as MarticleElement[];
   },
-  LI: (children: Node[]): ListElement | NumberedListElement => {
+  LI: (
+    children: Node[],
+  ): ListElement | NumberedListElement | MarticleBulletedList => {
     // The parent element is LI if at this function
     // I can definitely get the index with respect to its siblings,
     // but for some reason the type doesn't have it there... so cast to any
@@ -244,6 +246,14 @@ const transformers = {
         'div',
         childrenToProcess,
       ) as TurndownService.Node;
+
+      if (level === 0) {
+        return {
+          __typename: 'MarticleBulletedList',
+          rows: [{ content: turndownService.turndown(subtree), level: 0 }],
+        };
+      }
+
       if (parentType === 'OL') {
         return {
           index: countPreviousSiblings(parentNode, 'LI'),
