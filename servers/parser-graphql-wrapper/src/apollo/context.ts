@@ -35,6 +35,7 @@ export interface IContext {
   };
   headers: { [key: string]: any };
   userId: string | undefined;
+  encodedUserId: string | undefined;
   apiId: string;
   ip: string | undefined;
 }
@@ -87,6 +88,11 @@ export class ContextManager implements IContext {
       },
       config.headers,
     );
+  }
+
+  get encodedUserId(): string | undefined {
+    const encodedUserId = this.headers.encodedid;
+    return encodedUserId instanceof Array ? encodedUserId[0] : encodedUserId;
   }
 
   get userId(): string | undefined {
