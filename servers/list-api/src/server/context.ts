@@ -22,12 +22,12 @@ import {
   BasicListItemEventPayloadContext,
   ListPocketEventType,
 } from '@pocket-tools/event-bridge';
+import {
+  PocketContext,
+  PocketContextManager,
+} from '@pocket-tools/apollo-utils';
 
-export interface IContext {
-  userId: string;
-  headers: IncomingHttpHeaders;
-  apiId: string;
-  userIsPremium: boolean;
+export interface IContext extends PocketContext {
   dbClient: Knex;
   eventEmitter: ItemsEventEmitter;
   unleash: Unleash;
@@ -54,7 +54,7 @@ export interface IContext {
   ): Promise<void>;
 }
 
-export class ContextManager implements IContext {
+export class ContextManager extends PocketContextManager implements IContext {
   public readonly dataLoaders: IContext['dataLoaders'];
   public readonly unleash: Unleash;
   private _dbClient: Knex;
@@ -68,6 +68,7 @@ export class ContextManager implements IContext {
       unleash?: Unleash;
     },
   ) {
+    super(config.request.headers);
     this.unleash = config.unleash || getClient();
     this._dbClient = config.dbClient;
     this.dataLoaders = {
@@ -84,13 +85,14 @@ export class ContextManager implements IContext {
     // Set tracking data for Sentry
     Sentry.getCurrentScope().setTag(
       'pocket-api-id',
-      (config.request.headers.apiid || '0') as string,
+      (this.headers.apiid || '0') as string,
     );
     Sentry.getCurrentScope().setUser({
-      id: config.request.headers.encodedid as string,
-      ip_address: config.request.headers.gatewayipaddress as string,
+      id: this.headers.encodedid as string,
+      ip_address: this.headers.gatewayipaddress as string,
     });
   }
+  headers: IncomingHttpHeaders;
   models: {
     item: ItemModel;
     tag: TagModel;
@@ -98,27 +100,6 @@ export class ContextManager implements IContext {
     notFound: NotFoundErrorModel;
     savedItem: SavedItemModel;
   };
-
-  get headers(): { [key: string]: any } {
-    return this.config.request.headers;
-  }
-
-  get userId(): string {
-    const userId = this.headers.userid;
-    return userId instanceof Array ? userId[0] : userId;
-  }
-
-  get userIsPremium(): boolean {
-    const userIsPremium = this.headers.premium;
-    //check that we have a premium header, and if it is set to true
-    return userIsPremium !== undefined && userIsPremium === 'true';
-  }
-
-  get apiId(): string {
-    const apiId = this.headers.apiid || '0';
-
-    return apiId instanceof Array ? apiId[0] : apiId;
-  }
 
   get eventEmitter(): ItemsEventEmitter {
     return this.config.eventEmitter;
@@ -132,25 +113,25 @@ export class ContextManager implements IContext {
     return {
       user: {
         id: this.userId,
-        hashedId: this.headers.encodedid as string,
-        email: this.headers.email,
-        guid: parseInt(this.headers.guid),
-        hashedGuid: this.headers.encodedguid,
+        hashedId: this.encodedUserId as string,
+        email: this.email,
+        guid: parseInt(this.guid),
+        hashedGuid: this.encodedGuid,
         isPremium: this.userIsPremium,
       },
       apiUser: {
         apiId: this.apiId,
-        name: this.headers.applicationname,
-        isNative: this.headers.applicationisnative === 'true', // boolean value in header as string
-        isTrusted: this.headers.applicationistrusted === 'true', // boolean value in header as string
-        clientVersion: this.headers.clientversion,
+        name: this.applicationName,
+        isNative: this.applicationIsNative,
+        isTrusted: this.applicationIsTrusted,
+        clientVersion: this.clientVersion,
       },
       request: {
-        language: this.headers.gatewaylanguage,
-        snowplowDomainUserId: this.headers.gatewaysnowplowdomainuserid,
-        snowplowDomainSessionId: this.headers.gatewaysnowplowdomainsessionid,
-        ipAddress: this.headers.gatewayipaddress,
-        userAgent: this.headers.gatewayuseragent,
+        language: this.gatewayLanguage,
+        snowplowDomainUserId: this.gatewaySnowplowDomainUserId,
+        snowplowDomainSessionId: this.gatewaySnowplowDomainSessionId,
+        ipAddress: this.gatewayIpAddress,
+        userAgent: this.gatewayUserAgent,
       },
     };
   }
