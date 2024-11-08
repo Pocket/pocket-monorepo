@@ -92,7 +92,7 @@ const immediateComponents = [
 // way around. So if a 'p' tree contains children: [text, image, text],
 // then we need 3 components (MarticleText, Image, MarticleText)
 // to represent it in a flat list ('splitting' the 'p' node into 2).
-const eventualComponents = ['P', 'BLOCKQUOTE', 'LI', 'DIV', 'SPAN'];
+const eventualComponents = ['P', 'BLOCKQUOTE', 'LI', 'DIV'];
 
 function unMarseableTransformer(root: Node): UnMarseable {
   return {
@@ -116,21 +116,6 @@ const unMarseableTransformers = unMarseableComponents.reduce(
 // Additional transformers should be added to this map.
 const transformers = {
   ...unMarseableTransformers,
-  SPAN: (children: Node[]): MarticleText | MarticleBlockquote => {
-    //if ancestor is bquote
-    const blockquoteAncestor = children[0].parentElement.closest('blockquote');
-    children.forEach((child) => child.parentNode.removeChild(child));
-    const subtree = createSubtree('p', children) as TurndownService.Node;
-    const content = turndownService.turndown(subtree);
-    // Don't return empty content; this can sometimes happen for text nodes
-    if (content !== '') {
-      return {
-        __typename: blockquoteAncestor ? 'MarticleBlockquote' : 'MarticleText',
-        content: turndownService.turndown(subtree),
-      };
-    }
-    return null;
-  },
   P: (children: Node[]): MarticleText | MarticleBlockquote => {
     //if ancestor is bquote
     const blockquoteAncestor = children[0].parentElement.closest('blockquote');
@@ -552,6 +537,12 @@ function listTransformer(
   output: Array<MarticleElement | NumberedListElement | ListElement>;
   aggFrom: number | null;
 } {
+  if (node.childNodes === undefined) {
+    // No child nodes so there is some weird data here.
+    // Likely a span within a list item or something similar.
+    return { output: null, aggFrom: null };
+  }
+
   // Since the parent may have its child nodes updated dynamically,
   // iterate over a copy of the original child nodes
   const childNodes = Array.from(node.childNodes);
