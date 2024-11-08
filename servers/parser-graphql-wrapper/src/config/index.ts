@@ -96,6 +96,10 @@ export default {
         name: 'temp.backend.open_graph_parser',
         fallback: false,
       },
+      allOEmbedParser: {
+        name: 'temp.backend.all_oembed_parser',
+        fallback: false,
+      },
     },
   },
 };

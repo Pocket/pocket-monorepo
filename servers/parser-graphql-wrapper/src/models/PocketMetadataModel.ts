@@ -19,7 +19,6 @@ import { getOriginalUrlIfPocketImageCached } from '@pocket-tools/image-utils';
 import markdownToTxt from 'markdown-to-txt';
 
 export interface IPocketMetadataDataSource {
-  matcher: RegExp;
   ttl: number; // The ttl of the data in seconds
   source: PocketMetadataSource;
   version: number; // the version of the source parser
@@ -28,7 +27,7 @@ export interface IPocketMetadataDataSource {
     fallbackParserPocketMetadata: PocketMetadata,
     context: IContext,
   ): Promise<PocketMetadata>;
-  isEnabled(context: IContext): boolean;
+  isEnabled(context: IContext, url: string): boolean;
 }
 
 export class PocketMetadataModel {
@@ -73,8 +72,7 @@ export class PocketMetadataModel {
     // We also only store other data sources beyond our parser in the datastore, \
     // since the parser is cached elsewhere in Pocket
     const sources = this.datasources.filter((datasource) => {
-      const pass =
-        datasource.isEnabled(context) && datasource.matcher.test(url);
+      const pass = datasource.isEnabled(context, url);
       return pass;
     });
     if (sources.length === 0) return fallbackParserPocketMetadata;
