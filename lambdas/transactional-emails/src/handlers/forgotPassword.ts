@@ -1,7 +1,7 @@
 import { SQSRecord } from 'aws-lambda';
 import { sendForgotPasswordEmail } from '../braze';
 import {
-  sqsEventBridgeEvent,
+  sqsLambdaEventBridgeEvent,
   PocketEventType,
 } from '@pocket-tools/event-bridge';
 
@@ -12,7 +12,7 @@ import {
  * @throws Error if response is not ok
  */
 export async function forgotPasswordHandler(record: SQSRecord) {
-  const event = sqsEventBridgeEvent(record);
+  const event = sqsLambdaEventBridgeEvent(record);
   if (event?.['detail-type'] === PocketEventType.FORGOT_PASSWORD) {
     return await sendForgotPasswordEmail({
       resetPasswordToken: event.detail.passwordResetInfo.resetPasswordToken,

@@ -46,6 +46,7 @@ import {
   CollectionEvent,
   CollectionCreated,
   CollectionUpdated,
+  IncomingBaseEvent,
 } from './types';
 export * from './types';
 export * from './events';
@@ -63,6 +64,8 @@ export type PocketEvent =
   | SearchEvent
   | CorpusEvent
   | CollectionEvent;
+
+export type IncomingPocketEvent = PocketEvent & IncomingBaseEvent;
 
 export type PocketEventTypeMap = {
   [PocketEventType.FORGOT_PASSWORD]: ForgotPasswordRequest;

@@ -123,7 +123,6 @@ export class SqsConsumer {
         );
       }
 
-      await eventConsumer[detailType](event);
       return true;
     } catch (error) {
       const errorMessage = 'Error processing message from queue';

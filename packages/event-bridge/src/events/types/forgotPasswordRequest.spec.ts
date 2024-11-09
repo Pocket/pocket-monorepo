@@ -1,5 +1,5 @@
 import { SQSRecord } from 'aws-lambda';
-import { sqsEventBridgeEvent } from '../../utils';
+import { sqsLambdaEventBridgeEvent } from '../../utils';
 import { PocketEventType } from '../events';
 import { ForgotPasswordRequest } from './forgotPasswordRequest';
 import { IncomingBaseEvent } from './base';
@@ -32,7 +32,7 @@ describe('forgotPasswordRequest event', () => {
     };
     expect.assertions(1); // since it's in a try/catch, make sure we assert
     try {
-      const event = sqsEventBridgeEvent(recordWithoutEmail as SQSRecord);
+      const event = sqsLambdaEventBridgeEvent(recordWithoutEmail as SQSRecord);
       console.log(event);
     } catch (e) {
       expect(e.message).toContain(
@@ -67,7 +67,7 @@ describe('forgotPasswordRequest event', () => {
         }),
       }),
     };
-    const event = sqsEventBridgeEvent(recordWithBadTypes as SQSRecord);
+    const event = sqsLambdaEventBridgeEvent(recordWithBadTypes as SQSRecord);
     expect(event?.['detail-type']).toBe(PocketEventType.FORGOT_PASSWORD);
     const castEvent = event as ForgotPasswordRequest;
     expect(castEvent.detail.user.id).toBe(1);
@@ -99,7 +99,7 @@ describe('forgotPasswordRequest event', () => {
         }),
       }),
     };
-    const event = sqsEventBridgeEvent(recordWithBadTypes as SQSRecord);
+    const event = sqsLambdaEventBridgeEvent(recordWithBadTypes as SQSRecord);
     expect(event?.['detail-type']).toBe(PocketEventType.FORGOT_PASSWORD);
     const castEvent = event as ForgotPasswordRequest & IncomingBaseEvent;
     expect(castEvent.time.getTime()).toBe(1628798700000);
