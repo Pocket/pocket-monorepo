@@ -1,4 +1,4 @@
-import { CollectionPayload } from '../types';
+import { CollectionPayload } from '@pocket-tools/event-bridge';
 import { config } from '../config';
 import { buildCollectionUrl } from '../utils';
 

@@ -39,6 +39,13 @@ import {
   AccountEvent,
   SearchEvent,
   SearchResponseGenerated,
+  CorpusItemAdded,
+  CorpusItemUpdated,
+  CorpusItemRemoved,
+  CorpusEvent,
+  CollectionEvent,
+  CollectionCreated,
+  CollectionUpdated,
 } from './types';
 export * from './types';
 export * from './events';
@@ -53,7 +60,9 @@ export type PocketEvent =
   | ShareableListEvent
   | ShareableListItemEvent
   | ShareEvent
-  | SearchEvent;
+  | SearchEvent
+  | CorpusEvent
+  | CollectionEvent;
 
 export type PocketEventTypeMap = {
   [PocketEventType.FORGOT_PASSWORD]: ForgotPasswordRequest;
@@ -89,4 +98,9 @@ export type PocketEventTypeMap = {
   [PocketEventType.SHARE_CREATED]: ShareCreated;
   [PocketEventType.SHARE_CONTEXT_UPDATED]: ShareContextUpdated;
   [PocketEventType.SEARCH_RESPONSE_GENERATED]: SearchResponseGenerated;
+  [PocketEventType.CORPUS_ITEM_ADDED]: CorpusItemAdded;
+  [PocketEventType.CORPUS_ITEM_UPDATED]: CorpusItemUpdated;
+  [PocketEventType.CORPUS_ITEM_REMOVED]: CorpusItemRemoved;
+  [PocketEventType.COLLECTION_CREATED]: CollectionCreated;
+  [PocketEventType.COLLECTION_UPDATED]: CollectionUpdated;
 };

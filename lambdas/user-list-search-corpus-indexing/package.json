@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@opensearch-project/opensearch": "^2.10.0",
+    "@pocket-tools/event-bridge": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/aws-serverless": "8.37.1",
     "fetch-retry": "^5.0.6",

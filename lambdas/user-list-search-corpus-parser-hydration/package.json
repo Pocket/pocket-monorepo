@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-sagemaker-runtime": "3.679.0",
+    "@pocket-tools/event-bridge": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/aws-serverless": "8.37.1",
     "@smithy/node-http-handler": "3.2.0",

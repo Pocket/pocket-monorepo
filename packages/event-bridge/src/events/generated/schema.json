@@ -1212,6 +1212,499 @@
       ],
       "type": "object"
     },
+    "CollectionAuthor": {
+      "properties": {
+        "active": {
+          "type": "boolean"
+        },
+        "bio": {
+          "type": "string"
+        },
+        "collection_author_id": {
+          "type": "string"
+        },
+        "image_url": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "collection_author_id",
+        "name",
+        "active"
+      ],
+      "type": "object"
+    },
+    "CollectionCreated": {
+      "properties": {
+        "detail": {
+          "$ref": "#/definitions/CollectionPayload"
+        },
+        "detail-type": {
+          "const": "collection-created",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "CollectionEvent": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/CollectionCreated"
+        },
+        {
+          "$ref": "#/definitions/CollectionUpdated"
+        }
+      ]
+    },
+    "CollectionPartnership": {
+      "properties": {
+        "blurb": {
+          "type": "string"
+        },
+        "collection_partnership_id": {
+          "type": "string"
+        },
+        "image_url": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "collection_partnership_id",
+        "name",
+        "blurb",
+        "image_url",
+        "type",
+        "url"
+      ],
+      "type": "object"
+    },
+    "CollectionPayload": {
+      "description": "NOTE: The following is from the Content monorepo",
+      "properties": {
+        "collection": {
+          "properties": {
+            "IABChildCategory": {
+              "$ref": "#/definitions/IABChildCategory"
+            },
+            "IABParentCategory": {
+              "$ref": "#/definitions/IABParentCategory"
+            },
+            "authors": {
+              "items": {
+                "$ref": "#/definitions/CollectionAuthor"
+              },
+              "type": "array"
+            },
+            "createdAt": {
+              "type": "number"
+            },
+            "curationCategory": {
+              "$ref": "#/definitions/CurationCategory"
+            },
+            "excerpt": {
+              "type": "string"
+            },
+            "externalId": {
+              "type": "string"
+            },
+            "imageUrl": {
+              "type": "string"
+            },
+            "intro": {
+              "type": "string"
+            },
+            "labels": {
+              "items": {
+                "$ref": "#/definitions/Label"
+              },
+              "type": "array"
+            },
+            "language": {
+              "type": "string"
+            },
+            "partnership": {
+              "$ref": "#/definitions/CollectionPartnership"
+            },
+            "publishedAt": {
+              "type": "number"
+            },
+            "slug": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            },
+            "stories": {
+              "items": {
+                "$ref": "#/definitions/CollectionStory"
+              },
+              "type": "array"
+            },
+            "title": {
+              "type": "string"
+            },
+            "updatedAt": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "externalId",
+            "slug",
+            "title",
+            "status",
+            "language",
+            "authors",
+            "stories",
+            "createdAt",
+            "updatedAt"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "collection"
+      ],
+      "type": "object"
+    },
+    "CollectionPocketEventType": {
+      "anyOf": [
+        {
+          "const": "collection-created",
+          "type": "string"
+        },
+        {
+          "const": "collection-updated",
+          "type": "string"
+        }
+      ]
+    },
+    "CollectionStory": {
+      "properties": {
+        "authors": {
+          "items": {
+            "$ref": "#/definitions/CollectionStoryAuthor"
+          },
+          "type": "array"
+        },
+        "collection_story_id": {
+          "type": "string"
+        },
+        "excerpt": {
+          "type": "string"
+        },
+        "image_url": {
+          "type": "string"
+        },
+        "is_from_partner": {
+          "type": "boolean"
+        },
+        "publisher": {
+          "type": "string"
+        },
+        "sort_order": {
+          "type": "number"
+        },
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "collection_story_id",
+        "url",
+        "title",
+        "excerpt",
+        "authors",
+        "is_from_partner"
+      ],
+      "type": "object"
+    },
+    "CollectionStoryAuthor": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "sort_order": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "name",
+        "sort_order"
+      ],
+      "type": "object"
+    },
+    "CollectionUpdated": {
+      "properties": {
+        "detail": {
+          "$ref": "#/definitions/CollectionPayload"
+        },
+        "detail-type": {
+          "const": "collection-updated",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "CorpusEvent": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/CorpusItemAdded"
+        },
+        {
+          "$ref": "#/definitions/CorpusItemUpdated"
+        },
+        {
+          "$ref": "#/definitions/CorpusItemRemoved"
+        }
+      ]
+    },
+    "CorpusItemAdded": {
+      "properties": {
+        "detail": {
+          "$ref": "#/definitions/CorpusItemPayload"
+        },
+        "detail-type": {
+          "const": "add-approved-item",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "CorpusItemPayload": {
+      "properties": {
+        "approvedItemExternalId": {
+          "type": "string"
+        },
+        "authors": {
+          "items": {
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "sortOrder": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "name",
+              "sortOrder"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "createdAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "createdBy": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "datePublished": {
+          "type": "string"
+        },
+        "domainName": {
+          "type": "string"
+        },
+        "eventType": {
+          "type": "string"
+        },
+        "excerpt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "grade": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "imageUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "isCollection": {
+          "type": "boolean"
+        },
+        "isSyndicated": {
+          "type": "boolean"
+        },
+        "isTimeSensitive": {
+          "type": "boolean"
+        },
+        "language": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "publisher": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "topic": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "updatedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "eventType",
+        "approvedItemExternalId",
+        "url"
+      ],
+      "type": "object"
+    },
+    "CorpusItemRemoved": {
+      "properties": {
+        "detail": {
+          "$ref": "#/definitions/CorpusItemPayload"
+        },
+        "detail-type": {
+          "const": "remove-approved-item",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "CorpusItemUpdated": {
+      "properties": {
+        "detail": {
+          "$ref": "#/definitions/CorpusItemPayload"
+        },
+        "detail-type": {
+          "const": "update-approved-item",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "CorpusPocketEventType": {
+      "anyOf": [
+        {
+          "const": "add-approved-item",
+          "type": "string"
+        },
+        {
+          "const": "update-approved-item",
+          "type": "string"
+        },
+        {
+          "const": "remove-approved-item",
+          "type": "string"
+        }
+      ]
+    },
+    "CurationCategory": {
+      "properties": {
+        "collection_curation_category_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "collection_curation_category_id",
+        "name",
+        "slug"
+      ],
+      "type": "object"
+    },
     "DeleteItem": {
       "properties": {
         "detail": {
@@ -2140,6 +2633,44 @@
       ],
       "type": "object"
     },
+    "IABChildCategory": {
+      "properties": {
+        "collection_iab_child_category_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "collection_iab_child_category_id",
+        "name",
+        "slug"
+      ],
+      "type": "object"
+    },
+    "IABParentCategory": {
+      "properties": {
+        "collection_iab_parent_category_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "collection_iab_parent_category_id",
+        "name",
+        "slug"
+      ],
+      "type": "object"
+    },
     "IncomingBaseEvent": {
       "description": "A base event that all events should extend from when they are Received only, not sent.",
       "properties": {
@@ -2176,6 +2707,21 @@
         "source",
         "time",
         "version"
+      ],
+      "type": "object"
+    },
+    "Label": {
+      "properties": {
+        "collection_label_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "collection_label_id",
+        "name"
       ],
       "type": "object"
     },
