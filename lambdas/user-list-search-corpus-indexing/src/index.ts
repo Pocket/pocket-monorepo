@@ -38,14 +38,17 @@ import {
  */
 export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
   const validPayloads: Array<EventPayload> = event.Records.map((record) => {
-    const event = sqsEventBridgeEvent(record);
-    if (event == null || !validDetailTypes.includes(event['detail-type'])) {
+    const pocketEvent = sqsEventBridgeEvent(record);
+    if (
+      pocketEvent == null ||
+      !validDetailTypes.includes(pocketEvent['detail-type'])
+    ) {
       return null;
     }
     return {
       messageId: record.messageId,
       detailType: event['detail-type'],
-      detail: event.detail,
+      detail: pocketEvent.detail,
     };
   }).filter((message) => message != null);
   const result = await bulkIndex(validPayloads);
