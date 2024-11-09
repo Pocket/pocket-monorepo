@@ -8,8 +8,9 @@ import { IContext } from '../../apollo/context';
 import config from '../../config';
 import { unleash } from '../../unleash';
 import { IPocketMetadataDataSource } from '../PocketMetadataModel';
-import ogs from 'open-graph-scraper';
+import ogs, { ErrorResult, SuccessResult } from 'open-graph-scraper';
 import { merge } from 'lodash';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 export class OpenGraphModel implements IPocketMetadataDataSource {
   // Use OpenGraph for all domains except for youtube.com and reddit.
@@ -30,12 +31,15 @@ export class OpenGraphModel implements IPocketMetadataDataSource {
     return merge(fallbackParserPocketMetadata, openGraphData);
   }
 
-  isEnabled(context: IContext): boolean {
+  isEnabled(context: IContext, url: string): boolean {
+    if (!this.matcher.test(url)) {
+      return false;
+    }
     // If the open graph parser is enabled lets use it
     const enabled = unleash().isEnabled(
       config.unleash.flags.openGraphParser.name,
       {
-        userId: context.userId,
+        userId: context.encodedUserId,
         remoteAddress: context.ip,
       },
       config.unleash.flags.openGraphParser.fallback,
@@ -46,13 +50,21 @@ export class OpenGraphModel implements IPocketMetadataDataSource {
   async openGraphMetadata(item: Item): Promise<Partial<ItemSummary>> {
     const userAgent =
       'PocketParser/2.0 (+https://getpocket.com/pocketparser_ua)';
-
-    const openGraphData = await ogs({
-      url: item.givenUrl,
-      onlyGetOpenGraphInfo: false,
-      fetchOptions: { headers: { 'user-agent': userAgent } },
-      timeout: 3, // timeout after 3 seconds
-    });
+    let openGraphData: ErrorResult | SuccessResult;
+    try {
+      openGraphData = await ogs({
+        url: item.givenUrl,
+        onlyGetOpenGraphInfo: false,
+        fetchOptions: { headers: { 'user-agent': userAgent } },
+        timeout: 3, // timeout after 3 seconds
+      });
+    } catch (error) {
+      serverLogger.error('Could not fetch OpenGraph data', {
+        error,
+        url: item.givenUrl,
+      });
+      return {};
+    }
 
     if (!openGraphData || openGraphData.error) {
       return {};

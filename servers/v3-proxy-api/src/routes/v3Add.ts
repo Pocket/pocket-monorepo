@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response, Router } from 'express';
 
-import { addSavedItem, getClient } from '../graph/graphQLClient';
+import {
+  addSavedItem,
+  getClient,
+  GraphQLClientFactory,
+} from '../graph/graphQLClient';
 
 import {
   AddSavedItemBeforeTagMutationVariables,
@@ -11,7 +15,6 @@ import { checkSchema, validationResult, matchedData } from 'express-validator';
 import { V3AddSchema, V3AddParams } from './validations';
 import { InputValidationError } from '../errors/InputValidationError';
 import { AddItemTransformer } from '../graph/add/toRest';
-import { GraphQLClient } from 'graphql-request';
 import { asyncHandler } from '../middleware/asyncHandler';
 import { AddResponse, PendingAddResponse } from '../graph/types';
 
@@ -82,7 +85,7 @@ function buildVariables(
  * @param headers request headers. treated as blackbox pass through for proxy
  */
 export async function processV3Add(
-  client: GraphQLClient,
+  client: GraphQLClientFactory,
   variables:
     | AddSavedItemCompleteMutationVariables // these are the same
     | AddSavedItemBeforeTagMutationVariables,

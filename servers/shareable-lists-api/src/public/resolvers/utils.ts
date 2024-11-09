@@ -19,9 +19,9 @@ export async function executeMutation<T, U>(
   data: T,
   callback: (db, data: T, userId?: number | bigint) => Promise<U>,
 ): Promise<U> {
-  const { db, userId } = context;
+  const { db, intUserId } = context;
 
-  const validatedUserId = await validateUserId(db, userId);
+  const validatedUserId = await validateUserId(db, intUserId);
 
   return await callback(context, sanitizeMutationInput(data), validatedUserId);
 }

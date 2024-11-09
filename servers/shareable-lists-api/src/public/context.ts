@@ -2,27 +2,36 @@ import { PrismaClient } from '.prisma/client';
 import { client, conn } from '../database/client';
 import { Kysely } from 'kysely';
 import { DB } from '.kysely/client/types';
-import { BaseContext } from '../shared/types';
+import {
+  PocketContext,
+  PocketContextManager,
+} from '@pocket-tools/apollo-utils';
 
 /**
  * Context components specifically for the public graph.
  */
 
-export interface IPublicContext extends BaseContext {
+export interface IPublicContext extends PocketContext {
   db: PrismaClient;
   conn: Kysely<DB>;
   // Pocket userId coming in from the http headers
-  userId: number | bigint;
+  intUserId: number | bigint;
 }
 
-export class PublicContextManager implements IPublicContext {
+export class PublicContextManager
+  extends PocketContextManager
+  implements IPublicContext
+{
   constructor(
     private config: {
       db: PrismaClient;
       conn: Kysely<DB>;
       request: any;
     },
-  ) {}
+  ) {
+    super(config.request.headers);
+  }
+
   get conn(): IPublicContext['conn'] {
     return this.config.conn;
   }
@@ -31,10 +40,9 @@ export class PublicContextManager implements IPublicContext {
     return this.config.db;
   }
 
-  get userId(): IPublicContext['userId'] {
-    const userId = this.config.request.headers.userid;
-
-    return userId instanceof Array ? parseInt(userId[0]) : parseInt(userId);
+  get intUserId(): IPublicContext['intUserId'] {
+    const userId = this.userId;
+    return parseInt(userId);
   }
 }
 

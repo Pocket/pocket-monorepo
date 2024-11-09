@@ -54,7 +54,7 @@ router.post(
     const requestId = req.body.traceId ?? nanoid();
     const userId = req.body.userId;
     // if no premium, default to false, premium is really only used for allowing more then 3 highlights and does not affect the deletion process
-    const isPremium = req.body.isPremium ?? false;
+    const userIsPremium = req.body.isPremium ?? false;
     new NotesDataService(dynamoClient(), userId.toString())
       .clearUserData()
       .then(() => successCallback('Notes', userId, requestId))
@@ -69,7 +69,7 @@ router.post(
         readClient: readClient(),
       },
       apiId: 'service', // unused but required for inheritance
-      isPremium,
+      userIsPremium,
     });
 
     enqueueAnnotationIds(req.body, highlightDataService, requestId);

@@ -15,12 +15,17 @@ import { ItemSummaryDataStoreBase } from '../databases/pocketMetadataStore';
 import { dynamoClient } from '../datasources/dynamoClient';
 import { OpenGraphModel } from '../models/pocketMetadataModels/OpenGraphModel';
 import { OEmbedModel } from '../models/pocketMetadataModels/OEmbedModel';
+import { IncomingHttpHeaders } from 'http';
+import {
+  PocketContextManager,
+  PocketContext,
+} from '@pocket-tools/apollo-utils';
 
 /**
  * Change this to `extends BaseContext` once LegacyDataSourcesPlugin
  * can be deprecated.
  */
-export interface IContext {
+export interface IContext extends PocketContext {
   dataLoaders: {
     itemIdLoader: DataLoader<string, ItemLoaderType>;
     shortUrlLoader: DataLoader<BatchAddShareUrlInput, string>;
@@ -33,10 +38,6 @@ export interface IContext {
     parserAPI: ParserAPI;
     pocketMetadataModel: PocketMetadataModel;
   };
-  headers: { [key: string]: any };
-  userId: string | undefined;
-  apiId: string;
-  ip: string | undefined;
 }
 
 /**
@@ -45,22 +46,21 @@ export interface IContext {
  * Connections to ItemResolverRepository and SharedUrlsResolverRepository
  * will be reused for subsequent initializations after the first.
  */
-export class ContextManager implements IContext {
+export class ContextManager extends PocketContextManager implements IContext {
   public readonly dataLoaders: IContext['dataLoaders'];
   public readonly dataSources: IContext['dataSources'];
   public readonly databases: IContext['databases'];
-  public readonly headers: IContext['headers'];
 
   private constructor(
     dataloaders: IContext['dataLoaders'],
     dataSources: IContext['dataSources'],
     databases: IContext['databases'],
-    headers: { [key: string]: any },
+    headers: IncomingHttpHeaders,
   ) {
+    super(headers);
     this.dataLoaders = dataloaders;
     this.dataSources = dataSources;
     this.databases = databases;
-    this.headers = headers;
   }
   static async initialize(config: {
     headers: { [key: string]: any };
@@ -86,24 +86,6 @@ export class ContextManager implements IContext {
         shares: sharesConn(),
       },
       config.headers,
-    );
-  }
-
-  get userId(): string | undefined {
-    const userId = this.headers.userid;
-    return userId instanceof Array ? userId[0] : userId;
-  }
-
-  get apiId(): string {
-    const apiId = this.headers.apiid || '0';
-    return apiId instanceof Array ? apiId[0] : apiId;
-  }
-
-  get ip(): string | undefined {
-    return (
-      (this.headers.gatewayipaddress as string) ||
-      (this.headers['origin-client-ip'] as string) ||
-      undefined
     );
   }
 }

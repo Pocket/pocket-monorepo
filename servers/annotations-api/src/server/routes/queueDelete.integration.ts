@@ -84,7 +84,7 @@ describe('/queueDelete', () => {
           readClient: readClient(),
         },
         apiId: 'service', // unused but required for inheritance
-        isPremium: false,
+        userIsPremium: false,
       });
 
       const data = {
@@ -133,7 +133,7 @@ describe('/queueDelete', () => {
           readClient: readClient(),
         },
         apiId: 'service', // unused but required for inheritance
-        isPremium: false,
+        userIsPremium: false,
       });
 
       const data = {
@@ -197,7 +197,7 @@ describe('/queueDelete', () => {
           readClient: readClient(),
         },
         apiId: 'service', // unused but required for inheritance
-        isPremium: false,
+        userIsPremium: false,
       });
 
       const data = {

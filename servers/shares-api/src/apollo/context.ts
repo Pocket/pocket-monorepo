@@ -9,6 +9,10 @@ import { dynamoClient } from '../datasources/dynamoClient';
 import { UserContext, UserContextFactory } from '../models/UserContext';
 import { config } from '../config';
 import { eventBridgeClient, EventBus } from '../events';
+import {
+  PocketContext,
+  PocketContextManager,
+} from '@pocket-tools/apollo-utils';
 /**
  * Context factory function. Creates a new context upon
  * every request
@@ -25,15 +29,16 @@ export async function getContext({
   });
 }
 
-export interface IContext {
+export interface IContext extends PocketContext {
   PocketShareModel: PocketShareModel;
   User: UserContext;
 }
 
-export class ContextManager implements IContext {
+export class ContextManager extends PocketContextManager implements IContext {
   PocketShareModel: PocketShareModel;
   User: UserContext;
   constructor(options: { request: Request }) {
+    super(options.request.headers);
     const rawUserId = options.request.headers.userid;
     const rawGuid = options.request.headers.guid;
     const isNative =
