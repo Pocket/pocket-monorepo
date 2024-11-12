@@ -10,6 +10,7 @@ import schema from './events/generated/schema.json';
 import { MissingFieldsError } from './errors';
 import { removeEmptyObjects } from './jsonUtils';
 import { Message } from '@aws-sdk/client-sqs';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 /**
  * For a given detail type, return the validation schema from our schema.json file
@@ -89,7 +90,16 @@ export const sqsPollerEventBridgeEvent = <T extends keyof PocketEventTypeMap>(
   if (record.Body === undefined) {
     return null;
   }
-  const message = JSON.parse(JSON.parse(record.Body).Message);
+  let message: any = null;
+  try {
+    message = JSON.parse(JSON.parse(record.Body).Message);
+  } catch (error) {
+    serverLogger.error('Could not json parse pocket event', {
+      error,
+      originalMessage: message,
+    });
+    throw new Error('Could not json parse pocket event');
+  }
   return parsePocketEvent(message) as PocketEventTypeMap[T] & IncomingBaseEvent;
 };
 
