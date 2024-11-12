@@ -46,8 +46,8 @@ export const config = {
   isProd,
   lambda: {
     snsTopicName: {
-      userEvents: `PocketEventBridge-${environment}-UserEventTopic`,
-      listEvents: `PocketEventBridge-${environment}-ListEventTopic`,
+      userEvents: `PocketEventBridge-${environment}-UserEvents`,
+      listEvents: `PocketEventBridge-${environment}-ListEvents`,
     },
     batchDeleteLambda: {
       name: 'BatchDeleteLambda',

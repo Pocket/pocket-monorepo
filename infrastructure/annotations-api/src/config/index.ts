@@ -64,7 +64,7 @@ export const config = {
   },
   lambda: {
     snsTopicName: {
-      userEvents: `PocketEventBridge-${environment}-UserEventTopic`,
+      userEvents: `PocketEventBridge-${environment}-UserEvents`,
     },
   },
   tracing: {
