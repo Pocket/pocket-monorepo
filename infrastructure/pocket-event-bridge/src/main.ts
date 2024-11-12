@@ -86,7 +86,7 @@ class PocketEventBus extends TerraformStack {
     alarmSnsTopic: dataAwsSnsTopic.DataAwsSnsTopic,
   ) {
     // Collection Events
-    new PocketEventToTopic(this, 'collection-events', {
+    new PocketEventToTopic(this, 'collection-events-topic', {
       eventBusName: sharedPocketEventBus.bus.name,
       prefix: config.prefix,
       name: 'CollectionEvents',
@@ -97,6 +97,34 @@ class PocketEventBus extends TerraformStack {
           PocketEventType.COLLECTION_CREATED,
         ],
         source: 'collection-events',
+      },
+    });
+
+    // User Account Events
+    new PocketEventToTopic(this, 'user-events-topic', {
+      eventBusName: sharedPocketEventBus.bus.name,
+      prefix: config.prefix,
+      name: 'UserEvents',
+      tags: config.tags,
+      eventPattern: {
+        'detail-type': [
+          PocketEventType.ACCOUNT_DELETION,
+          PocketEventType.ACCOUNT_EMAIL_UPDATED,
+          PocketEventType.ACCOUNT_PASSWORD_CHANGED,
+        ],
+        source: 'user-events',
+      },
+    });
+
+    // Premium Purchase Events
+    new PocketEventToTopic(this, 'premium-purchase-topic', {
+      eventBusName: sharedPocketEventBus.bus.name,
+      prefix: config.prefix,
+      name: 'PremiumPurchase',
+      tags: config.tags,
+      eventPattern: {
+        'detail-type': [PocketEventType.PREMIUM_PURCHASE],
+        source: 'web-repo',
       },
     });
   }
@@ -143,8 +171,6 @@ class PocketEventBus extends TerraformStack {
       sharedPocketEventBus,
       alarmSnsTopic,
     );
-
-    //TODO add collection events open api schema from aws
 
     // Shareable List Events for Shareable Lists API service
     new ShareableListEvents(

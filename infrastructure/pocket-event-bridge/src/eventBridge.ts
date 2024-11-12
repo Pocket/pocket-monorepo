@@ -37,7 +37,7 @@ export class PocketEventToTopic extends Construct {
     super(scope, id);
 
     this.snsTopic = new snsTopic.SnsTopic(this, 'events-topic', {
-      name: config.topicName ?? `${config.prefix}-${config.name}-EventTopic`,
+      name: config.topicName ?? `${config.prefix}-${config.name}`,
     });
 
     this.snsTopicDlq = new sqsQueue.SqsQueue(this, 'sns-topic-dql', {
