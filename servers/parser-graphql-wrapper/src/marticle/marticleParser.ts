@@ -23,6 +23,8 @@ import turndownService from './turndown';
 import TurndownService from 'turndown';
 import { config } from './config';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { r } from '@faker-js/faker/dist/airline-WjISwexU';
+import { isArray } from 'util';
 
 export const videoTypeMap = {
   1: VideoType.Youtube,
@@ -109,6 +111,12 @@ const unMarseableTransformers = unMarseableComponents.reduce(
   {},
 );
 
+function listErrorTransformer(root: Node): UnMarseable {
+  const node: Node = isArray(root) ? (root[0] as Node) : root;
+  node.parentNode.removeChild(node);
+  return unMarseableTransformer(node);
+}
+
 // Methods for transforming a subtree of the DOM that represents
 // an article into one or more MarticleComponents.
 // To avoid many if/else statements, create a map of root tag
@@ -187,41 +195,51 @@ const transformers = {
   // Lists can be broken up, so the transformer can return any kind
   // of Marticle* component ( + lists).
   // Kind of cheating on types for documentation purposes
-  UL: (root: Node, article: Item): MarticleElement[] => {
-    const { output, aggFrom } = listTransformer(
-      root,
-      [],
-      'UL',
-      undefined,
-      article,
-    );
-    // Result might contain rows that need to be aggregated into a single
-    // MarticleBulletedList
-    if (aggFrom != null) {
-      const aggOutput = output.splice(aggFrom) as ListElement[];
-      output.push({
-        __typename: 'MarticleBulletedList',
-        rows: aggOutput,
-      });
+  UL: (root: Node, article: Item): MarticleElement[] | UnMarseable => {
+    try {
+      const { output, aggFrom } = listTransformer(
+        root,
+        [],
+        'UL',
+        undefined,
+        article,
+      );
+      // Result might contain rows that need to be aggregated into a single
+      // MarticleBulletedList
+      if (aggFrom != null) {
+        const aggOutput = output.splice(aggFrom) as ListElement[];
+        output.push({
+          __typename: 'MarticleBulletedList',
+          rows: aggOutput,
+        });
+      }
+      return output as MarticleElement[];
+    } catch (err) {
+      serverLogger.error('Error processing UL list', { item: article, err });
+      return listErrorTransformer(root);
     }
-    return output as MarticleElement[];
   },
-  OL: (root: Node, article: Item): MarticleElement[] => {
-    const { output, aggFrom } = listTransformer(
-      root,
-      [],
-      'OL',
-      undefined,
-      article,
-    );
-    if (aggFrom != null) {
-      const aggOutput = output.splice(aggFrom) as NumberedListElement[];
-      output.push({
-        __typename: 'MarticleNumberedList',
-        rows: aggOutput,
-      });
+  OL: (root: Node, article: Item): MarticleElement[] | UnMarseable => {
+    try {
+      const { output, aggFrom } = listTransformer(
+        root,
+        [],
+        'OL',
+        undefined,
+        article,
+      );
+      if (aggFrom != null) {
+        const aggOutput = output.splice(aggFrom) as NumberedListElement[];
+        output.push({
+          __typename: 'MarticleNumberedList',
+          rows: aggOutput,
+        });
+      }
+      return output as MarticleElement[];
+    } catch (err) {
+      serverLogger.error('Error processing OL list', { item: article, err });
+      return listErrorTransformer(root);
     }
-    return output as MarticleElement[];
   },
   LI: (
     children: Node[],
@@ -537,12 +555,6 @@ function listTransformer(
   output: Array<MarticleElement | NumberedListElement | ListElement>;
   aggFrom: number | null;
 } {
-  if (node.childNodes === undefined) {
-    // No child nodes so there is some weird data here.
-    // Likely a span within a list item or something similar.
-    return { output: null, aggFrom: null };
-  }
-
   // Since the parent may have its child nodes updated dynamically,
   // iterate over a copy of the original child nodes
   const childNodes = Array.from(node.childNodes);

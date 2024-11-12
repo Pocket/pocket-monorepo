@@ -339,7 +339,7 @@ describe('MarticleParser', () => {
     expect(res).toEqual(expected);
   });
 
-  it('should parse unorded lists within a div, that has invalid data in the ul and ignore the invalid data', () => {
+  it('should parse unorded lists within a div, that has invalid data in the ul and return unmarseable', () => {
     const input = `<div lang="en">
               <ul>
                   <li>1-2.</li>
@@ -381,6 +381,10 @@ describe('MarticleParser', () => {
             content: '6-2.',
           },
         ],
+      },
+      {
+        __typename: 'UnMarseable',
+        html: '<span>test</span>',
       },
     ];
     expect(res).toEqual(expected);
