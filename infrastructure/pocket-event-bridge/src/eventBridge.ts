@@ -4,14 +4,25 @@ import {
   PocketEventBridgeProps,
   PocketEventBridgeRuleWithMultipleTargets,
 } from '@pocket-tools/terraform-modules';
-import { snsTopic, sqsQueue } from '@cdktf/provider-aws';
+import {
+  dataAwsIamPolicyDocument,
+  dataAwsSnsTopic,
+  snsTopic,
+  snsTopicPolicy,
+  sqsQueue,
+} from '@cdktf/provider-aws';
+import { createDeadLetterQueueAlarm } from './event-rules/utils';
+import { config } from './config';
 
 export interface PocketEventToTopicProps {
   eventBusName: string;
   prefix: string;
   name: string;
   tags: { [key: string]: string };
-  eventPattern: { 'detail-type': PocketEventType[]; source: string };
+  // Used to create a specific topic name, mainly used because there could be other infra depending on a specific name.
+  topicName?: string;
+  snsAlarmTopic?: dataAwsSnsTopic.DataAwsSnsTopic;
+  eventPattern: { 'detail-type': PocketEventType[]; source?: string };
 }
 
 export class PocketEventToTopic extends Construct {
@@ -26,16 +37,30 @@ export class PocketEventToTopic extends Construct {
     super(scope, id);
 
     this.snsTopic = new snsTopic.SnsTopic(this, 'events-topic', {
-      name: `${config.prefix}-EventsTopic`,
-      lifecycle: {
-        preventDestroy: true,
-      },
+      name: config.topicName ?? `${config.prefix}-${config.name}-EventTopic`,
     });
 
     this.snsTopicDlq = new sqsQueue.SqsQueue(this, 'sns-topic-dql', {
       name: `${config.prefix}-SNS-${config.name}-Event-Rule-DLQ`,
       tags: config.tags,
     });
+
+    this.createEventRules();
+    this.createPolicyForEventBridgeToSns();
+
+    if (config.snsAlarmTopic) {
+      //get alerted if we get 10 messages in DLQ in 4 evaluation period of 5 minutes
+      createDeadLetterQueueAlarm(
+        this,
+        config.snsAlarmTopic,
+        this.snsTopicDlq.name,
+        `${config.name}-Rule-dlq-alarm`,
+        true,
+        4,
+        300,
+        10,
+      );
+    }
   }
 
   /**
@@ -64,5 +89,33 @@ export class PocketEventToTopic extends Construct {
       `${this.config.prefix}-${this.config.name}-EventBridge-Rule`,
       eventRuleProps,
     );
+  }
+
+  private createPolicyForEventBridgeToSns() {
+    const eventBridgeSnsPolicy =
+      new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
+        this,
+        `${config.prefix}-${config.name}-EventBridge-SNS-Policy`,
+        {
+          statement: [
+            {
+              effect: 'Allow',
+              actions: ['sns:Publish'],
+              resources: [this.snsTopic.arn],
+              principals: [
+                {
+                  identifiers: ['events.amazonaws.com'],
+                  type: 'Service',
+                },
+              ],
+            },
+          ],
+        },
+      ).json;
+
+    return new snsTopicPolicy.SnsTopicPolicy(this, 'events-sns-topic-policy', {
+      arn: this.snsTopic.arn,
+      policy: eventBridgeSnsPolicy,
+    });
   }
 }

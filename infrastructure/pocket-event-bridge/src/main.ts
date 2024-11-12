@@ -10,7 +10,6 @@ import {
 } from '@pocket-tools/terraform-modules';
 import { UserApiEvents } from './event-rules/user-api-events/userApiEventRules';
 import { ProspectEvents } from './event-rules/prospect-events/prospectEventRules';
-import { CollectionApiEvents } from './event-rules/collection-events/collectionApiEventRules';
 import { ShareableListEvents } from './event-rules/shareable-lists-api-events/shareableListEventRules';
 import { ShareableListItemEvents } from './event-rules/shareable-lists-api-events/shareableListItemEventRules';
 import { ListApiEvents } from './event-rules/list-api-events/listApiEventRules';
@@ -25,6 +24,9 @@ import { SharesApiEvents } from './event-rules/shares-api-events/pocketShareEven
 import { SearchApiEvents } from './event-rules/search-api-events/pocketSearchEventRules';
 import { CorpusEvents } from './event-rules/corpus-events/corpusEventRules';
 import { ListExportReady } from './event-rules/list-export-request-ready';
+import { PocketEventToTopic } from './eventBridge';
+import { PocketEventType } from '@pocket-tools/event-bridge';
+import { CollectionApiEvents } from './event-rules/collection-events/collectionApiEventRules';
 
 class PocketEventBus extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -102,6 +104,19 @@ class PocketEventBus extends TerraformStack {
       sharedPocketEventBus,
       alarmSnsTopic,
     );
+    new PocketEventToTopic(this, 'collection-events', {
+      eventBusName: sharedPocketEventBus.bus.name,
+      prefix: config.prefix,
+      name: 'CollectionEvents',
+      tags: config.tags,
+      eventPattern: {
+        'detail-type': [
+          PocketEventType.COLLECTION_UPDATED,
+          PocketEventType.COLLECTION_CREATED,
+        ],
+        source: 'collection-events',
+      },
+    });
     //TODO add collection events open api schema from aws
 
     // Shareable List Events for Shareable Lists API service
