@@ -3,6 +3,7 @@ import { initSentry } from '@pocket-tools/sentry';
 initSentry({
   ...config.sentry,
 });
+import { startServer } from './server';
 
 //this must run before all imports and server start but after sentry
 //so open-telemetry can patch all libraries that we use
@@ -24,7 +25,6 @@ startServer(config.app.port).then(() => {
     },
   }).start();
 });
-import { startServer } from './server';
 import {
   PocketEvent,
   PocketEventBridgeSQSConsumer,
