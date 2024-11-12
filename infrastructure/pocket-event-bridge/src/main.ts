@@ -116,7 +116,7 @@ class PocketEventBus extends TerraformStack {
           PocketEventType.ACCOUNT_EMAIL_UPDATED,
           PocketEventType.ACCOUNT_PASSWORD_CHANGED,
         ],
-        source: 'user-events',
+        source: ['user-events'],
       },
     });
 
@@ -129,7 +129,7 @@ class PocketEventBus extends TerraformStack {
       tags: config.tags,
       eventPattern: {
         'detail-type': [PocketEventType.PREMIUM_PURCHASE],
-        source: 'web-repo',
+        source: ['web-repo'],
       },
     });
 
@@ -142,7 +142,7 @@ class PocketEventBus extends TerraformStack {
       tags: config.tags,
       eventPattern: {
         'detail-type': [PocketEventType.ACCOUNT_REGISTRATION],
-        source: 'web-repo',
+        source: ['web-repo'],
       },
     });
 
@@ -155,7 +155,7 @@ class PocketEventBus extends TerraformStack {
       tags: config.tags,
       eventPattern: {
         'detail-type': [PocketEventType.FORGOT_PASSWORD],
-        source: 'web-repo',
+        source: ['web-repo'],
       },
     });
 
@@ -171,7 +171,7 @@ class PocketEventBus extends TerraformStack {
           PocketEventType.COLLECTION_UPDATED,
           PocketEventType.COLLECTION_CREATED,
         ],
-        source: 'collection-events',
+        source: ['collection-events'],
       },
     });
 
@@ -192,11 +192,11 @@ class PocketEventBus extends TerraformStack {
           PocketEventType.SHAREABLE_LIST_PUBLISHED,
           PocketEventType.SHAREABLE_LIST_UNPUBLISHED,
         ],
-        source: 'shareable-list-events',
+        source: ['shareable-list-events'],
       },
     });
 
-    new PocketEventToTopic(this, 'shareable-list-events-topic', {
+    new PocketEventToTopic(this, 'shareable-list-item-events-topic', {
       eventBusName: sharedPocketEventBus.bus.name,
       snsAlarmTopic: alarmSnsTopic,
       prefix: config.prefix,
@@ -208,7 +208,7 @@ class PocketEventBus extends TerraformStack {
           PocketEventType.SHAREABLE_LIST_ITEM_UPDATED,
           PocketEventType.SHAREABLE_LIST_ITEM_DELETED,
         ],
-        source: 'shareable-list-item-events',
+        source: ['shareable-list-item-events'],
       },
     });
 
@@ -216,7 +216,7 @@ class PocketEventBus extends TerraformStack {
       eventBusName: sharedPocketEventBus.bus.name,
       snsAlarmTopic: alarmSnsTopic,
       prefix: config.prefix,
-      name: 'ListAPIEvents',
+      name: 'ListEvents',
       tags: config.tags,
       eventPattern: {
         'detail-type': [
@@ -234,7 +234,7 @@ class PocketEventBus extends TerraformStack {
           PocketEventType.DELETE_TAG,
           PocketEventType.EXPORT_REQUESTED,
         ],
-        source: 'list-api',
+        source: ['list-api'],
       },
     });
 
@@ -249,7 +249,7 @@ class PocketEventBus extends TerraformStack {
           PocketEventType.SHARE_CREATED,
           PocketEventType.SHARE_CONTEXT_UPDATED,
         ],
-        source: 'shares-api-events',
+        source: ['shares-api-events'],
       },
     });
 
@@ -261,7 +261,7 @@ class PocketEventBus extends TerraformStack {
       tags: config.tags,
       eventPattern: {
         'detail-type': [PocketEventType.SEARCH_RESPONSE_GENERATED],
-        source: 'search-api-events',
+        source: ['search-api-events'],
       },
     });
 
@@ -277,7 +277,7 @@ class PocketEventBus extends TerraformStack {
           PocketEventType.CORPUS_ITEM_REMOVED,
           PocketEventType.CORPUS_ITEM_UPDATED,
         ],
-        source: 'curation-migration-datasync', // ??
+        source: ['curation-migration-datasync'], // ??
       },
     });
 
@@ -285,11 +285,11 @@ class PocketEventBus extends TerraformStack {
       eventBusName: sharedPocketEventBus.bus.name,
       snsAlarmTopic: alarmSnsTopic,
       prefix: config.prefix,
-      name: 'ListExportReadyEvent',
+      name: 'ListExportReadyEvents',
       tags: config.tags,
       eventPattern: {
         'detail-type': [PocketEventType.EXPORT_READY],
-        source: 'account-data-deleter', // ??
+        source: ['account-data-deleter'],
       },
     });
   }

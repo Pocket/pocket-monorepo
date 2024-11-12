@@ -22,7 +22,7 @@ export interface PocketEventToTopicProps {
   // Used to create a specific topic name, mainly used because there could be other infra depending on a specific name.
   topicName?: string;
   snsAlarmTopic?: dataAwsSnsTopic.DataAwsSnsTopic;
-  eventPattern: { 'detail-type': PocketEventType[]; source?: string };
+  eventPattern: { 'detail-type': PocketEventType[]; source?: string[] };
 }
 
 export class PocketEventToTopic extends Construct {
