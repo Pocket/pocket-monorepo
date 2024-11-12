@@ -64,8 +64,47 @@ class PocketEventBus extends TerraformStack {
       eventBusProps,
     );
 
-    // CUSTOM EVENTS & CONSUMERS
+    // We are deploying to sets of the same event rules, one for old way of creating event consumers, and one for the new way.
+    // We are doing it this way so that we can rename the topics to a standard naming convention and not break existing infra.
+    // Also all topics must be created before anything can consumer it.
+    this.createOldEventRules(sharedPocketEventBus, alarmSnsTopic);
+    this.createEventRules(sharedPocketEventBus, alarmSnsTopic);
+  }
 
+  /**
+   * Get the sns topic for alarm
+   * @private
+   */
+  private getAlarmSnsTopic() {
+    return new dataAwsSnsTopic.DataAwsSnsTopic(this, 'backend_notifications', {
+      name: `Backend-${config.environment}-ChatBot`,
+    });
+  }
+
+  private createEventRules(
+    sharedPocketEventBus: ApplicationEventBus,
+    alarmSnsTopic: dataAwsSnsTopic.DataAwsSnsTopic,
+  ) {
+    // Collection Events
+    new PocketEventToTopic(this, 'collection-events', {
+      eventBusName: sharedPocketEventBus.bus.name,
+      prefix: config.prefix,
+      name: 'CollectionEvents',
+      tags: config.tags,
+      eventPattern: {
+        'detail-type': [
+          PocketEventType.COLLECTION_UPDATED,
+          PocketEventType.COLLECTION_CREATED,
+        ],
+        source: 'collection-events',
+      },
+    });
+  }
+
+  private createOldEventRules(
+    sharedPocketEventBus: ApplicationEventBus,
+    alarmSnsTopic: dataAwsSnsTopic.DataAwsSnsTopic,
+  ) {
     // user-api events
     new UserApiEvents(
       this,
@@ -104,19 +143,7 @@ class PocketEventBus extends TerraformStack {
       sharedPocketEventBus,
       alarmSnsTopic,
     );
-    new PocketEventToTopic(this, 'collection-events', {
-      eventBusName: sharedPocketEventBus.bus.name,
-      prefix: config.prefix,
-      name: 'CollectionEvents',
-      tags: config.tags,
-      eventPattern: {
-        'detail-type': [
-          PocketEventType.COLLECTION_UPDATED,
-          PocketEventType.COLLECTION_CREATED,
-        ],
-        source: 'collection-events',
-      },
-    });
+
     //TODO add collection events open api schema from aws
 
     // Shareable List Events for Shareable Lists API service
@@ -166,16 +193,6 @@ class PocketEventBus extends TerraformStack {
       sharedPocketEventBus,
       alarmSnsTopic,
     );
-  }
-
-  /**
-   * Get the sns topic for alarm
-   * @private
-   */
-  private getAlarmSnsTopic() {
-    return new dataAwsSnsTopic.DataAwsSnsTopic(this, 'backend_notifications', {
-      name: `Backend-${config.environment}-ChatBot`,
-    });
   }
 }
 
