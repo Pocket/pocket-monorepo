@@ -16,15 +16,9 @@ import { ShareableListItemEvents } from './event-rules/shareable-lists-api-event
 import { ListApiEvents } from './event-rules/list-api-events/listApiEventRules';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
 import { config } from './config';
-import { UserEventsSchema } from './events-schema/userEvents';
 import { AccountDeleteMonitorEvents } from './event-rules/account-delete-monitor';
-import { QueueCheckDeleteSchema } from './events-schema/queueCheckDelete';
-import { UserMergeEventSchema } from './events-schema/userMergeEvent';
-import { PremiumPurchaseEvent } from './events-schema/premiumPurchaseEvent';
-import { ForgotPasswordRequestEvent } from './events-schema/ForgotPasswordRequestEvent';
 import { PremiumPurchase } from './event-rules/premium-purchase';
 import { UserRegistrationEventRule } from './event-rules/user-registration/userRegistrationEventRule';
-import { UserRegistrationEventSchema } from './events-schema/userRegistrationEventSchema';
 import { AllEventsRule } from './event-rules/all-events/allEventRules';
 import { ForgotPassword as ForgotPasswordRequest } from './event-rules/forgot-password-request';
 import { SharesApiEvents } from './event-rules/shares-api-events/pocketShareEventRules';
@@ -157,18 +151,6 @@ class PocketEventBus extends TerraformStack {
       sharedPocketEventBus,
       alarmSnsTopic,
     );
-
-    //Schema
-    new UserEventsSchema(this, 'user-api-events-schema');
-    new QueueCheckDeleteSchema(this, 'queue-delete-schema');
-    new UserMergeEventSchema(this, 'user-merge-event-shema');
-    new PremiumPurchaseEvent(this, 'premium-purchase-event-schema');
-    new ForgotPasswordRequestEvent(
-      this,
-      'forgot-password-request-event-schema',
-    );
-
-    new UserRegistrationEventSchema(this, `user-registration-event-schema`);
   }
 
   /**
