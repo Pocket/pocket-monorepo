@@ -23,8 +23,7 @@ import turndownService from './turndown';
 import TurndownService from 'turndown';
 import { config } from './config';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { r } from '@faker-js/faker/dist/airline-WjISwexU';
-import { isArray } from 'util';
+import { isArray } from 'node:util';
 
 export const videoTypeMap = {
   1: VideoType.Youtube,
@@ -111,6 +110,7 @@ const unMarseableTransformers = unMarseableComponents.reduce(
   {},
 );
 
+// Transformer for when there is an error processing a list element
 function listErrorTransformer(root: Node): UnMarseable {
   const node: Node = isArray(root) ? (root[0] as Node) : root;
   node.parentNode.removeChild(node);

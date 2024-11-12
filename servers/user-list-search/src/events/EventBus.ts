@@ -31,20 +31,12 @@ export class EventBus {
     context: IContext,
   ): SearchEvent['detail']['event']['user'] {
     const hasUserId = Number.isInteger(parseInt(context.userId));
-    const hasGuid = Number.isInteger(
-      parseInt(context.request.headers['guid'] as string),
-    );
+    const hasGuid = Number.isInteger(parseInt(context.guid));
     return {
       user_id: hasUserId ? parseInt(context.userId) : undefined,
-      guid: hasGuid
-        ? parseInt(context.request.headers['guid'] as string)
-        : undefined,
-      hashed_user_id: hasUserId
-        ? (context.request.headers['encodedid'] as string)
-        : undefined,
-      hashed_guid: hasGuid
-        ? (context.request.headers['encodedguid'] as string)
-        : undefined,
+      guid: hasGuid ? parseInt(context.guid) : undefined,
+      hashed_user_id: context.encodedUserId,
+      hashed_guid: context.encodedGuid,
     };
   }
   /**
@@ -54,12 +46,9 @@ export class EventBus {
     context: IContext,
   ): SearchEvent['detail']['event']['apiUser'] {
     return {
-      api_id: parseInt(context.request.headers['apiid'] as string),
-      is_native: context.isNative,
-      is_trusted:
-        context.request.headers['applicationistrusted'] === 'true'
-          ? true
-          : false,
+      api_id: parseInt(context.apiId),
+      is_native: context.applicationIsNative,
+      is_trusted: context.applicationIsTrusted,
     };
   }
   /**

@@ -32,7 +32,7 @@ describe('clearUserData for Highlights data', () => {
     const highlightService = new HighlightsDataService({
       db: { readClient: db, writeClient: db },
       userId: userId.toString(),
-      isPremium: true,
+      userIsPremium: true,
       apiId: '123',
     });
     await highlightService.deleteByAnnotationIds(
@@ -56,7 +56,7 @@ describe('clearUserData for Highlights data', () => {
     const highlightService = new HighlightsDataService({
       db: { readClient: db, writeClient: db },
       userId: randomId.toString(),
-      isPremium: true,
+      userIsPremium: true,
       apiId: '123',
     });
     const res = await db('user_annotations')

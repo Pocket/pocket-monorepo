@@ -1542,6 +1542,9 @@ importers:
       '@opensearch-project/opensearch':
         specifier: ^2.10.0
         version: 2.10.0
+      '@pocket-tools/event-bridge':
+        specifier: workspace:*
+        version: link:../../packages/event-bridge
       '@pocket-tools/ts-logger':
         specifier: workspace:*
         version: link:../../packages/ts-logger
@@ -1597,6 +1600,9 @@ importers:
       '@aws-sdk/client-sagemaker-runtime':
         specifier: 3.679.0
         version: 3.679.0
+      '@pocket-tools/event-bridge':
+        specifier: workspace:*
+        version: link:../../packages/event-bridge
       '@pocket-tools/ts-logger':
         specifier: workspace:*
         version: link:../../packages/ts-logger
@@ -1978,6 +1984,9 @@ importers:
       ajv-formats:
         specifier: 3.0.1
         version: 3.0.1(ajv@8.17.1)
+      lodash:
+        specifier: 4.17.21
+        version: 4.17.21
     devDependencies:
       '@jest/globals':
         specifier: 29.7.0
@@ -1994,6 +2003,9 @@ importers:
       '@types/jest':
         specifier: 29.5.14
         version: 29.5.14
+      '@types/lodash':
+        specifier: 4.17.13
+        version: 4.17.13
       '@types/node':
         specifier: ^22.8.2
         version: 22.9.0

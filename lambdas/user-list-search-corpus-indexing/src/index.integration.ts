@@ -4,6 +4,7 @@ import { config } from './config';
 import * as oci from './queries/originalCorpusId';
 import * as ci from './queries/collectionId';
 import * as api from './commands/ApprovedItem';
+import { PocketEventType } from '@pocket-tools/event-bridge';
 
 /**
  * Test cleanup: delete all documents in corpus indices
@@ -159,9 +160,9 @@ describe('bulk indexer', () => {
     const payloads: EventPayload[] = [
       {
         messageId: '123abc',
-        detailType: 'add-approved-item',
+        detailType: PocketEventType.CORPUS_ITEM_ADDED,
         detail: {
-          eventType: 'add-approved-item',
+          eventType: PocketEventType.CORPUS_ITEM_ADDED,
           url: 'http://some-url.com',
           approvedItemExternalId: 'aaaaa',
           language: 'en',
@@ -184,9 +185,9 @@ describe('bulk indexer', () => {
     const payloads: EventPayload[] = [
       {
         messageId: '123abc',
-        detailType: 'add-approved-item',
+        detailType: PocketEventType.CORPUS_ITEM_ADDED,
         detail: {
-          eventType: 'add-approved-item',
+          eventType: PocketEventType.CORPUS_ITEM_ADDED,
           url: 'http://some-url.com',
           approvedItemExternalId: 'bbbbbbb',
           language: 'en',
@@ -194,9 +195,9 @@ describe('bulk indexer', () => {
       },
       {
         messageId: '456def',
-        detailType: 'add-approved-item',
+        detailType: PocketEventType.CORPUS_ITEM_ADDED,
         detail: {
-          eventType: 'add-approved-item',
+          eventType: PocketEventType.CORPUS_ITEM_ADDED,
           url: 'http://eine-url.de',
           approvedItemExternalId: 'ccccccc',
           language: 'de',
@@ -205,7 +206,7 @@ describe('bulk indexer', () => {
       // Collection
       {
         messageId: '456def',
-        detailType: 'add-collection',
+        detailType: PocketEventType.COLLECTION_CREATED,
         detail: {
           collection: {
             externalId: '999rsk',
@@ -215,6 +216,7 @@ describe('bulk indexer', () => {
             language: 'de',
             createdAt: 123456,
             updatedAt: 123456,
+            collection_iab_child_category_id: '1',
             authors: [
               {
                 name: 'anonym anonym',
@@ -287,9 +289,9 @@ describe('bulk indexer', () => {
     const payloads: EventPayload[] = [
       {
         messageId: '123abc',
-        detailType: 'add-approved-item',
+        detailType: PocketEventType.CORPUS_ITEM_ADDED,
         detail: {
-          eventType: 'add-approved-item',
+          eventType: PocketEventType.CORPUS_ITEM_ADDED,
           url: 'http://some-url.com',
           approvedItemExternalId: 'dddddd',
           language: 'not-language-code',
@@ -297,9 +299,9 @@ describe('bulk indexer', () => {
       },
       {
         messageId: '456def',
-        detailType: 'add-approved-item',
+        detailType: PocketEventType.CORPUS_ITEM_ADDED,
         detail: {
-          eventType: 'add-approved-item',
+          eventType: PocketEventType.CORPUS_ITEM_ADDED,
           url: 'http://eine-url.de',
           approvedItemExternalId: 'eeeee',
           language: 'de',
@@ -444,10 +446,10 @@ describe('bulk indexer', () => {
       const payloads: EventPayload[] = [
         {
           messageId: '123abc',
-          detailType: 'add-approved-item',
+          detailType: PocketEventType.CORPUS_ITEM_ADDED,
           detail: {
             // Doesn't matter, overwritten by mock
-            eventType: 'add-approved-item',
+            eventType: PocketEventType.CORPUS_ITEM_ADDED,
             url: 'http://some-url.com',
             approvedItemExternalId: 'aaaaa',
             language: 'en',
@@ -455,10 +457,10 @@ describe('bulk indexer', () => {
         },
         {
           messageId: 'xijk-kel',
-          detailType: 'add-approved-item',
+          detailType: PocketEventType.CORPUS_ITEM_ADDED,
           detail: {
             // Doesn't matter, overwritten by mock
-            eventType: 'add-approved-item',
+            eventType: PocketEventType.CORPUS_ITEM_ADDED,
             url: 'http://some-url.com',
             approvedItemExternalId: 'aaaaa',
             language: 'en',
