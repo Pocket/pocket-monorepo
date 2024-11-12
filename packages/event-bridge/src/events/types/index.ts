@@ -8,3 +8,4 @@ export * from './share';
 export * from './search';
 export * from './corpus';
 export * from './collection';
+export * from './prospect';

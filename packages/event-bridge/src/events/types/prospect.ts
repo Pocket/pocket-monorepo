@@ -1,10 +1,18 @@
-export type ProspectEventBridgePayload = {
-  detail: Prospect;
-  source: 'prospect-events' | string;
-  'detail-type': EventType;
-};
+import { PocketEventType } from '../events';
+import { BaseEvent } from './base';
 
-export type EventType = 'prospect-dismiss';
+export type ProspectPocketEventType = PocketEventType.PROSPECT_DISMISSED;
+
+export type ProspectEvent = ProspectDismissed;
+
+export interface ProspectBaseEvent extends BaseEvent {
+  'detail-type': ProspectPocketEventType;
+  detail: Prospect;
+}
+
+export interface ProspectDismissed extends ProspectBaseEvent {
+  'detail-type': PocketEventType.PROSPECT_DISMISSED;
+}
 
 export type Prospect = {
   // a GUID we generate prior to inserting into dynamo
@@ -40,9 +48,9 @@ export type Prospect = {
 };
 
 export enum ProspectReviewStatus {
-  Created = 'created',
-  Recommendation = 'recommendation',
-  Corpus = 'corpus',
-  Rejected = 'rejected',
-  Dismissed = 'dismissed',
+  CREATED = 'created',
+  RECOMMENDATION = 'recommendation',
+  CORPUS = 'corpus',
+  REJECTED = 'rejected',
+  DISMISSED = 'dismissed',
 }

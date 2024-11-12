@@ -51,8 +51,31 @@
         },
         {
           "$ref": "#/definitions/AccountRegistration"
+        },
+        {
+          "$ref": "#/definitions/AccountPasswordChanged"
         }
       ]
+    },
+    "AccountPasswordChanged": {
+      "properties": {
+        "detail": {
+          "$ref": "#/definitions/AccountPayload"
+        },
+        "detail-type": {
+          "const": "account-password-changed",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
     },
     "AccountPayload": {
       "properties": {
@@ -154,6 +177,26 @@
         "eventType"
       ],
       "type": "object"
+    },
+    "AccountPocketEventType": {
+      "anyOf": [
+        {
+          "const": "account-deletion",
+          "type": "string"
+        },
+        {
+          "const": "account-email-updated",
+          "type": "string"
+        },
+        {
+          "const": "User Registration",
+          "type": "string"
+        },
+        {
+          "const": "account-password-changed",
+          "type": "string"
+        }
+      ]
     },
     "AccountRegistration": {
       "properties": {
@@ -1270,6 +1313,13 @@
         }
       ]
     },
+    "CollectionLanguage": {
+      "enum": [
+        "DE",
+        "EN"
+      ],
+      "type": "string"
+    },
     "CollectionPartnership": {
       "properties": {
         "blurb": {
@@ -1285,7 +1335,7 @@
           "type": "string"
         },
         "type": {
-          "type": "string"
+          "$ref": "#/definitions/CollectionPartnershipType"
         },
         "url": {
           "type": "string"
@@ -1300,6 +1350,13 @@
         "url"
       ],
       "type": "object"
+    },
+    "CollectionPartnershipType": {
+      "enum": [
+        "PARTNERED",
+        "SPONSORED"
+      ],
+      "type": "string"
     },
     "CollectionPayload": {
       "description": "NOTE: The following is from the Content monorepo",
@@ -1343,7 +1400,7 @@
               "type": "array"
             },
             "language": {
-              "type": "string"
+              "$ref": "#/definitions/CollectionLanguage"
             },
             "partnership": {
               "$ref": "#/definitions/CollectionPartnership"
@@ -1355,7 +1412,7 @@
               "type": "string"
             },
             "status": {
-              "type": "string"
+              "$ref": "#/definitions/CollectionStatus"
             },
             "stories": {
               "items": {
@@ -1400,6 +1457,15 @@
           "type": "string"
         }
       ]
+    },
+    "CollectionStatus": {
+      "enum": [
+        "draft",
+        "review",
+        "published",
+        "archived"
+      ],
+      "type": "string"
     },
     "CollectionStory": {
       "properties": {
@@ -2874,6 +2940,165 @@
         "id"
       ],
       "type": "object"
+    },
+    "Prospect": {
+      "properties": {
+        "approvedCorpusItem": {
+          "properties": {
+            "url": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "url"
+          ],
+          "type": "object"
+        },
+        "authors": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "number"
+        },
+        "curated": {
+          "type": "boolean"
+        },
+        "domain": {
+          "type": "string"
+        },
+        "excerpt": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "imageUrl": {
+          "type": "string"
+        },
+        "isCollection": {
+          "type": "boolean"
+        },
+        "isSyndicated": {
+          "type": "boolean"
+        },
+        "language": {
+          "type": "string"
+        },
+        "prospectId": {
+          "type": "string"
+        },
+        "prospectReviewStatus": {
+          "$ref": "#/definitions/ProspectReviewStatus"
+        },
+        "prospectType": {
+          "type": "string"
+        },
+        "publisher": {
+          "type": "string"
+        },
+        "rank": {
+          "type": "number"
+        },
+        "rejectedCorpusItem": {
+          "properties": {
+            "url": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "url"
+          ],
+          "type": "object"
+        },
+        "reviewedAt": {
+          "type": "number"
+        },
+        "reviewedBy": {
+          "type": "string"
+        },
+        "saveCount": {
+          "type": "number"
+        },
+        "scheduledSurfaceGuid": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "topic": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "prospectId",
+        "scheduledSurfaceGuid",
+        "prospectType",
+        "url",
+        "saveCount",
+        "rank",
+        "prospectReviewStatus"
+      ],
+      "type": "object"
+    },
+    "ProspectBaseEvent": {
+      "properties": {
+        "detail": {
+          "$ref": "#/definitions/Prospect"
+        },
+        "detail-type": {
+          "$ref": "#/definitions/ProspectPocketEventType"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ProspectDismissed": {
+      "properties": {
+        "detail": {
+          "$ref": "#/definitions/Prospect"
+        },
+        "detail-type": {
+          "const": "prospect-dismiss",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ProspectEvent": {
+      "$ref": "#/definitions/ProspectDismissed"
+    },
+    "ProspectPocketEventType": {
+      "const": "prospect-dismiss",
+      "type": "string"
+    },
+    "ProspectReviewStatus": {
+      "enum": [
+        "created",
+        "recommendation",
+        "corpus",
+        "rejected",
+        "dismissed"
+      ],
+      "type": "string"
     },
     "Purchase": {
       "properties": {

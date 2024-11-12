@@ -1,8 +1,6 @@
+import { ShareableListItemEvent } from '@pocket-tools/event-bridge';
 import { ShareableListItemEventHandler } from '../../snowplow/shareableListItem/shareableListItemEventHandler';
-import { ShareableListItemEventBridgePayload } from './types';
 
-export function shareableListItemEventConsumer(
-  requestBody: ShareableListItemEventBridgePayload,
-) {
-  new ShareableListItemEventHandler().process(requestBody);
+export function shareableListItemEventConsumer(event: ShareableListItemEvent) {
+  new ShareableListItemEventHandler().process(event);
 }
