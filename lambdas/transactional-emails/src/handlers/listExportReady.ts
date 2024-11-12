@@ -2,7 +2,7 @@ import { SQSRecord } from 'aws-lambda';
 import { sendListExportReadyEmail } from '../braze';
 import {
   PocketEventType,
-  sqsEventBridgeEvent,
+  sqsLambdaEventBridgeEvent,
 } from '@pocket-tools/event-bridge';
 
 /**
@@ -12,7 +12,7 @@ import {
  * @throws Error if response is not ok
  */
 export async function exportReadyHandler(record: SQSRecord) {
-  const event = sqsEventBridgeEvent(record);
+  const event = sqsLambdaEventBridgeEvent(record);
   if (event?.['detail-type'] === PocketEventType.EXPORT_READY) {
     await sendListExportReadyEmail({
       archiveUrl: event.detail.archiveUrl,

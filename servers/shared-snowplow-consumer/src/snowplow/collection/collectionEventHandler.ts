@@ -9,11 +9,14 @@ import {
   createCollection,
 } from '../../snowtype/snowplow';
 import {
-  CollectionEventBridgePayload,
-  EventType,
-} from '../../eventConsumer/collectionEvents/types';
+  CollectionEvent,
+  CollectionPocketEventType,
+} from '@pocket-tools/event-bridge';
 
-export const SnowplowEventMap: Record<EventType, ObjectUpdateTrigger> = {
+export const SnowplowEventMap: Record<
+  CollectionPocketEventType,
+  ObjectUpdateTrigger
+> = {
   'collection-created': 'collection_created',
   'collection-updated': 'collection_updated',
 };
@@ -32,12 +35,12 @@ export class CollectionEventHandler extends EventHandler {
    * method to create and process event data
    * @param data
    */
-  process(data: CollectionEventBridgePayload): void {
+  process(event: CollectionEvent): void {
     const context: SelfDescribingJson[] =
-      CollectionEventHandler.generateEventContext(data);
+      CollectionEventHandler.generateEventContext(event);
 
     this.trackObjectUpdate(this.tracker, {
-      ...CollectionEventHandler.generateCollectionEvent(data),
+      ...CollectionEventHandler.generateCollectionEvent(event),
       context,
     });
   }
@@ -46,22 +49,20 @@ export class CollectionEventHandler extends EventHandler {
    * Builds the Snowplow object_update event object. Extracts the event trigger type from the received payload.
    * Two possible trigger values are: collection_created and collection_updated
    */
-  private static generateCollectionEvent(
-    data: CollectionEventBridgePayload,
-  ): ObjectUpdate {
+  private static generateCollectionEvent(event: CollectionEvent): ObjectUpdate {
     return {
-      trigger: SnowplowEventMap[data['detail-type']],
+      trigger: SnowplowEventMap[event['detail-type']],
       object: 'collection',
     };
   }
 
   private static generateEventContext(
-    data: CollectionEventBridgePayload,
+    event: CollectionEvent,
   ): SelfDescribingJson[] {
     return [
       createCollection(
         CollectionEventHandler.generateSnowplowCollectionEvent(
-          data.detail.collection,
+          event.detail.collection,
         ),
       ) as unknown as SelfDescribingJson,
     ];
@@ -71,7 +72,7 @@ export class CollectionEventHandler extends EventHandler {
    * Static method to generate an object that maps properties received in the event payload object to the snowplow collection object schema.
    */
   private static generateSnowplowCollectionEvent(
-    data: CollectionEventBridgePayload['detail']['collection'],
+    data: CollectionEvent['detail']['collection'],
   ): Collection {
     return {
       object_version: 'new',

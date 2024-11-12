@@ -1,5 +1,5 @@
 import { SQSRecord } from 'aws-lambda';
-import { sqsEventBridgeEvent } from '../../utils';
+import { sqsLambdaEventBridgeEvent } from '../../utils';
 import { PocketEventType } from '../events';
 import { AccountDelete } from './account';
 
@@ -24,7 +24,7 @@ describe('account delete event', () => {
     };
     expect.assertions(1); // since it's in a try/catch, make sure we assert
     try {
-      const event = sqsEventBridgeEvent(recordWithoutEmail as SQSRecord);
+      const event = sqsLambdaEventBridgeEvent(recordWithoutEmail as SQSRecord);
       console.log(event);
     } catch (e) {
       expect(e.message).toContain(
@@ -56,7 +56,7 @@ describe('account delete event', () => {
         }),
       }),
     };
-    const event: AccountDelete = sqsEventBridgeEvent(
+    const event: AccountDelete = sqsLambdaEventBridgeEvent(
       recordWithNumberBool as SQSRecord,
     ) as AccountDelete;
     expect(event.detail.isPremium).toBe(false);

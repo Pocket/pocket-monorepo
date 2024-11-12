@@ -17,7 +17,7 @@ import {
   AccountRegistration,
   IncomingBaseEvent,
   PocketEventType,
-  sqsEventBridgeEvent,
+  sqsLambdaEventBridgeEvent,
 } from '@pocket-tools/event-bridge';
 
 export type AttributeForUserRegistration = {
@@ -45,7 +45,7 @@ export type AttributeForUserSubscription = {
 export async function userRegistrationEventHandler(
   record: SQSRecord,
 ): Promise<Response | null> {
-  const event = sqsEventBridgeEvent(record);
+  const event = sqsLambdaEventBridgeEvent(record);
   if (event?.['detail-type'] === PocketEventType.ACCOUNT_REGISTRATION) {
     serverLogger.info(`received user registration event`, {
       userId: event.detail.encodedUserId,

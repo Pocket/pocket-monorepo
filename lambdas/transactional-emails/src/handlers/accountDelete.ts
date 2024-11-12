@@ -2,7 +2,7 @@ import { SQSRecord } from 'aws-lambda';
 import { sendAccountDeletionEmail } from '../braze';
 import {
   PocketEventType,
-  sqsEventBridgeEvent,
+  sqsLambdaEventBridgeEvent,
 } from '@pocket-tools/event-bridge';
 
 /**
@@ -12,7 +12,7 @@ import {
  * @throws Error if response is not ok
  */
 export async function accountDeleteHandler(record: SQSRecord) {
-  const event = sqsEventBridgeEvent(record);
+  const event = sqsLambdaEventBridgeEvent(record);
   if (event?.['detail-type'] === PocketEventType.ACCOUNT_DELETION) {
     return await sendAccountDeletionEmail(event.detail.email);
   }

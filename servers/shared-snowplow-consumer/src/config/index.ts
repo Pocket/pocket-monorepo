@@ -18,10 +18,6 @@ export const config = {
     port: 4015,
   },
   tracing: {
-    graphQLDepth: 8, // very permissive limit on depth tracing
-    samplingRatio: 0.01,
-    grpcDefaultPort: 4317,
-    httpDefaultPort: 4318,
     serviceName: 'shared-snowplow-consumer',
     host: process.env.OTLP_COLLECTOR_HOST || 'localhost',
   },
@@ -34,15 +30,6 @@ export const config = {
         url:
           process.env.SNOWPLOW_EVENTS_SQS_QUEUE ||
           'http://localhost:4566/000000000000/SharedSnowplowConsumer-Prod-SharedEventConsumer-Queue',
-        dlqUrl:
-          process.env.SNOWPLOW_EVENTS_DLQ_URL ||
-          'http://localhost:4566/000000000000/SharedSnowplowConsumer-Prod-SharedEventConsumer-Queue-Deadletter',
-        visibilityTimeout: 10000,
-        maxMessages: 1,
-        waitTimeSeconds: 0,
-        defaultPollIntervalSeconds: 300,
-        afterMessagePollIntervalSeconds: 0.1, // every 100ms
-        messageRetentionSeconds: 1209600, //14 days
       },
     },
   },

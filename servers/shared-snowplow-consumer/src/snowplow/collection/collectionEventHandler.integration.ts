@@ -7,8 +7,7 @@ import {
   parseSnowplowData,
 } from '../testUtils';
 import { ObjectUpdate } from '../../snowtype/snowplow';
-import { CollectionEventBridgePayload } from '../../eventConsumer/collectionEvents/types';
-
+import { CollectionEvent, PocketEventType } from '@pocket-tools/event-bridge';
 export const collectionEventSchema = {
   objectUpdate: expect.stringMatching(
     'iglu:com.pocket/object_update/jsonschema',
@@ -63,14 +62,14 @@ function assertCollectionSchema(eventContext) {
   );
 }
 
-const testEventData: CollectionEventBridgePayload = {
+const testEventData: CollectionEvent = {
   detail: {
     collection: {
       ...testCollectionData,
     },
   },
   source: 'collection-created',
-  'detail-type': 'collection-created',
+  'detail-type': PocketEventType.COLLECTION_CREATED,
 };
 
 describe('CollectionEventHandler', () => {
@@ -81,7 +80,7 @@ describe('CollectionEventHandler', () => {
   it('should send collection created event to snowplow ', async () => {
     new CollectionEventHandler().process({
       ...testEventData,
-      'detail-type': 'collection-created',
+      'detail-type': PocketEventType.COLLECTION_CREATED,
     });
 
     // wait a sec * 3
@@ -110,7 +109,7 @@ describe('CollectionEventHandler', () => {
   it('should send collection updated event to snowplow ', async () => {
     new CollectionEventHandler().process({
       ...testEventData,
-      'detail-type': 'collection-updated',
+      'detail-type': PocketEventType.COLLECTION_UPDATED,
     });
 
     // wait a sec * 3

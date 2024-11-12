@@ -1,7 +1,4 @@
-import {
-  Prospect,
-  ProspectReviewStatus,
-} from '../../eventConsumer/prospectEvents/types';
+import { Prospect, ProspectReviewStatus } from '@pocket-tools/event-bridge';
 
 export const testProspectData: Prospect = {
   // a GUID we generate prior to inserting into dynamo
@@ -26,7 +23,7 @@ export const testProspectData: Prospect = {
   isSyndicated: true,
   isCollection: false,
   authors: 'Charles Dickens, Mark Twain',
-  prospectReviewStatus: ProspectReviewStatus.Dismissed,
+  prospectReviewStatus: ProspectReviewStatus.DISMISSED,
   // The LDAP string of the curator who reviewed this prospect - for now, only dismissing prospect.
   reviewedBy: 'user|ldap',
   // The Unix timestamp in seconds.

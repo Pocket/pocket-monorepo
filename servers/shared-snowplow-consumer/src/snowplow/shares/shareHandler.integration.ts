@@ -1,10 +1,10 @@
+import { ShareEvent } from '@pocket-tools/event-bridge';
 import {
   resetSnowplowEvents,
   getAllSnowplowEvents,
   getGoodSnowplowEvents,
   parseSnowplowData,
 } from '../testUtils';
-import { PocketShareEvent } from '../../eventConsumer/sharesEvents/sharesEventConsumer';
 import { PocketShareEventHandler } from './shareHandler';
 
 export const shareableListItemEventSchema = {
@@ -17,7 +17,7 @@ export const shareableListItemEventSchema = {
 };
 
 describe('ShareableListItemEventHandler', () => {
-  const pocketShare: PocketShareEvent = {
+  const pocketShare: ShareEvent['detail']['pocketShare'] = {
     target_url: 'https://chess.com',
     created_at: 12345,
     slug: 'abc-123',
@@ -39,7 +39,7 @@ describe('ShareableListItemEventHandler', () => {
       'detail-type': 'pocket_share_context_updated' as const,
     },
   ])('sends event to snowplow', async (event) => {
-    new PocketShareEventHandler().process(event);
+    new PocketShareEventHandler().process(event as ShareEvent);
     await new Promise((resolve) => setTimeout(resolve, 3000));
     // make sure we only have good events
     const allEvents = await getAllSnowplowEvents();

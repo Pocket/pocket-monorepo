@@ -16,14 +16,13 @@
     "lint": "eslint --fix-dry-run",
     "snowplow:generate": "snowtype generate",
     "start": "node dist/main.js",
-    "test": "jest \"\\.spec\\.ts\"",
     "test-integrations": "jest \"\\.integration\\.ts\" --forceExit --runInBand",
-    "test:watch": "npm test -- --watchAll",
     "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json"
   },
   "dependencies": {
     "@aws-sdk/client-sqs": "3.679.0",
     "@pocket-tools/apollo-utils": "workspace:*",
+    "@pocket-tools/event-bridge": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "8.37.1",
@@ -36,7 +35,7 @@
   "devDependencies": {
     "@faker-js/faker": "9.1.0",
     "@pocket-tools/eslint-config": "workspace:*",
-    "@snowplow/snowtype": "^0.10.0",
+    "@snowplow/snowtype": "^0.10.1",
     "@types/jest": "29.5.14",
     "@types/node": "^22.8.2",
     "jest": "29.7.0",

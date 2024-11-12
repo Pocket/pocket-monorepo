@@ -1975,6 +1975,9 @@ importers:
       '@aws-sdk/client-eventbridge':
         specifier: 3.679.0
         version: 3.679.0
+      '@aws-sdk/client-sqs':
+        specifier: 3.679.0
+        version: 3.679.0
       '@pocket-tools/ts-logger':
         specifier: workspace:*
         version: link:../ts-logger
@@ -1990,6 +1993,9 @@ importers:
       lodash:
         specifier: 4.17.21
         version: 4.17.21
+      sqs-consumer:
+        specifier: 11.2.0
+        version: 11.2.0(@aws-sdk/client-sqs@3.679.0)
     devDependencies:
       '@jest/globals':
         specifier: 29.7.0
@@ -3773,6 +3779,9 @@ importers:
       '@pocket-tools/apollo-utils':
         specifier: workspace:*
         version: link:../../packages/apollo-utils
+      '@pocket-tools/event-bridge':
+        specifier: workspace:*
+        version: link:../../packages/event-bridge
       '@pocket-tools/sentry':
         specifier: workspace:*
         version: link:../../packages/sentry
@@ -3805,8 +3814,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/eslint-config
       '@snowplow/snowtype':
-        specifier: ^0.10.0
-        version: 0.10.0(commander@12.1.0)
+        specifier: ^0.10.1
+        version: 0.10.1(commander@12.1.0)
       '@types/jest':
         specifier: 29.5.14
         version: 29.5.14
@@ -7629,12 +7638,12 @@ packages:
   '@snowplow/node-tracker@3.24.3':
     resolution: {integrity: sha512-tkRtfceJIm6SmY1E+z84vj2TanvKWiKmHbP5BlknyZ8tFF1ScFAvku4uNVmWd/L0Mvh5AFJ5cn5hYTtRLriaqA==}
 
-  '@snowplow/snowtype-core@0.10.0':
-    resolution: {integrity: sha512-CaKSXm/Q5mpSiRb/q8yU4u/yg+rlc8EjufBjlrJ8iTVMW490/LhNPacpedOr2Z1ro3HPrccO7SEYF+uuXdYRJw==}
+  '@snowplow/snowtype-core@0.10.1':
+    resolution: {integrity: sha512-V00yJksFvoMmsMIVzPKc9gEQKoZneo4xJ7U6sCTXKtHzcM2clZbvJZddoNOG8xrPRWdKFhGpMSO57rRQ42aoQQ==}
     engines: {node: '>=18'}
 
-  '@snowplow/snowtype@0.10.0':
-    resolution: {integrity: sha512-hqVnA60DVxhgeDZCJ1qFlcl/dXCqm2cfxUpFBehzM/esGUuG7otNGE7KUcqLa1vScWajYZyfmio5/Id3+5UNlQ==}
+  '@snowplow/snowtype@0.10.1':
+    resolution: {integrity: sha512-SZbsJv8Ahn+adeP32NcxDuT5g1CSo7QDqNQFT3n9uqqJxk1wfJwe81QPNtfh7QRTa8hMaSRb9BxUamxE5C3fWQ==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -13347,6 +13356,12 @@ packages:
     resolution: {integrity: sha512-qC9iz2FlN7DQl3+wjwn3802RTyjCx7sDvfQEXchwa6CWOx07/WVfh91gBmQ9fahw8snwGEWU3xGzOt4tFyHLxg==}
     engines: {node: '>= 0.6'}
 
+  sqs-consumer@11.2.0:
+    resolution: {integrity: sha512-vummgDxhKjqehGNolER42SpU05mU9CdckVwcMVmQXrrGRqDCI9pSAiarnH/GryQIqYr9nEuoUSewcHSg52lAEA==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      '@aws-sdk/client-sqs': ^3.632.0
+
   sscaff@1.2.274:
     resolution: {integrity: sha512-sztRa50SL1LVxZnF1au6QT1SC2z0S1oEOyi2Kpnlg6urDns93aL32YxiJcNkLcY+VHFtVqm/SRv4cb+6LeoBQA==}
     engines: {node: '>= 12.13.0'}
@@ -15128,7 +15143,7 @@ snapshots:
       '@aws-sdk/util-user-agent-browser': 3.679.0
       '@aws-sdk/util-user-agent-node': 3.679.0
       '@smithy/config-resolver': 3.0.9
-      '@smithy/core': 2.4.8
+      '@smithy/core': 2.5.1
       '@smithy/fetch-http-handler': 3.2.9
       '@smithy/hash-node': 3.0.7
       '@smithy/invalid-dependency': 3.0.7
@@ -15136,11 +15151,11 @@ snapshots:
       '@smithy/middleware-content-length': 3.0.9
       '@smithy/middleware-endpoint': 3.1.4
       '@smithy/middleware-retry': 3.0.23
-      '@smithy/middleware-serde': 3.0.7
+      '@smithy/middleware-serde': 3.0.8
       '@smithy/middleware-stack': 3.0.7
-      '@smithy/node-config-provider': 3.1.8
-      '@smithy/node-http-handler': 3.2.4
-      '@smithy/protocol-http': 4.1.4
+      '@smithy/node-config-provider': 3.1.9
+      '@smithy/node-http-handler': 3.2.5
+      '@smithy/protocol-http': 4.1.5
       '@smithy/smithy-client': 3.4.0
       '@smithy/types': 3.5.0
       '@smithy/url-parser': 3.0.7
@@ -15150,7 +15165,7 @@ snapshots:
       '@smithy/util-defaults-mode-browser': 3.0.23
       '@smithy/util-defaults-mode-node': 3.0.23
       '@smithy/util-endpoints': 2.1.3
-      '@smithy/util-middleware': 3.0.7
+      '@smithy/util-middleware': 3.0.8
       '@smithy/util-retry': 3.0.7
       '@smithy/util-utf8': 3.0.0
       tslib: 2.8.0
@@ -15403,8 +15418,8 @@ snapshots:
       '@aws-sdk/credential-provider-web-identity': 3.679.0(@aws-sdk/client-sts@3.679.0)
       '@aws-sdk/types': 3.679.0
       '@smithy/credential-provider-imds': 3.2.4
-      '@smithy/property-provider': 3.1.7
-      '@smithy/shared-ini-file-loader': 3.1.8
+      '@smithy/property-provider': 3.1.8
+      '@smithy/shared-ini-file-loader': 3.1.9
       '@smithy/types': 3.5.0
       tslib: 2.8.0
     transitivePeerDependencies:
@@ -15513,7 +15528,7 @@ snapshots:
   '@aws-sdk/middleware-host-header@3.679.0':
     dependencies:
       '@aws-sdk/types': 3.679.0
-      '@smithy/protocol-http': 4.1.4
+      '@smithy/protocol-http': 4.1.5
       '@smithy/types': 3.5.0
       tslib: 2.8.0
 
@@ -15532,7 +15547,7 @@ snapshots:
   '@aws-sdk/middleware-recursion-detection@3.679.0':
     dependencies:
       '@aws-sdk/types': 3.679.0
-      '@smithy/protocol-http': 4.1.4
+      '@smithy/protocol-http': 4.1.5
       '@smithy/types': 3.5.0
       tslib: 2.8.0
 
@@ -15573,18 +15588,18 @@ snapshots:
       '@aws-sdk/core': 3.679.0
       '@aws-sdk/types': 3.679.0
       '@aws-sdk/util-endpoints': 3.679.0
-      '@smithy/core': 2.4.8
-      '@smithy/protocol-http': 4.1.4
+      '@smithy/core': 2.5.1
+      '@smithy/protocol-http': 4.1.5
       '@smithy/types': 3.5.0
       tslib: 2.8.0
 
   '@aws-sdk/region-config-resolver@3.679.0':
     dependencies:
       '@aws-sdk/types': 3.679.0
-      '@smithy/node-config-provider': 3.1.8
+      '@smithy/node-config-provider': 3.1.9
       '@smithy/types': 3.5.0
       '@smithy/util-config-provider': 3.0.0
-      '@smithy/util-middleware': 3.0.7
+      '@smithy/util-middleware': 3.0.8
       tslib: 2.8.0
 
   '@aws-sdk/s3-request-presigner@3.679.0':
@@ -15659,7 +15674,7 @@ snapshots:
     dependencies:
       '@aws-sdk/middleware-user-agent': 3.679.0
       '@aws-sdk/types': 3.679.0
-      '@smithy/node-config-provider': 3.1.8
+      '@smithy/node-config-provider': 3.1.9
       '@smithy/types': 3.5.0
       tslib: 2.8.0
 
@@ -19882,7 +19897,7 @@ snapshots:
       got: 11.8.6
       tslib: 2.8.0
 
-  '@snowplow/snowtype-core@0.10.0':
+  '@snowplow/snowtype-core@0.10.1':
     dependencies:
       '@fastify/merge-json-schemas': 0.2.0
       handlebars: 4.7.8
@@ -19891,11 +19906,11 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@snowplow/snowtype@0.10.0(commander@12.1.0)':
+  '@snowplow/snowtype@0.10.1(commander@12.1.0)':
     dependencies:
       '@commander-js/extra-typings': 11.1.0(commander@12.1.0)
       '@inquirer/prompts': 3.3.2
-      '@snowplow/snowtype-core': 0.10.0
+      '@snowplow/snowtype-core': 0.10.1
       chalk: 4.1.2
       cli-spinner: 0.2.10
       dotenv: 16.4.5
@@ -26538,6 +26553,13 @@ snapshots:
   sqlstring@2.3.1: {}
 
   sqlstring@2.3.3: {}
+
+  sqs-consumer@11.2.0(@aws-sdk/client-sqs@3.679.0):
+    dependencies:
+      '@aws-sdk/client-sqs': 3.679.0
+      debug: 4.3.7(supports-color@5.5.0)
+    transitivePeerDependencies:
+      - supports-color
 
   sscaff@1.2.274: {}
 

@@ -50,6 +50,22 @@ class SnowplowSharedConsumerStack extends TerraformStack {
     );
     const alarmSnsTopic = this.getCodeDeploySnsTopic();
 
+    const sqsDLQConsumeQueue = new sqsQueue.SqsQueue(
+      this,
+      'shared-event-consumer-dlq',
+      {
+        name: `${config.prefix}-SharedEventConsumer-Queue-DLQ`,
+        tags: config.tags,
+      },
+    );
+
+    // DLQ Alarm.
+    this.createDeadLetterQueueAlarm(
+      alarmSnsTopic,
+      sqsDLQConsumeQueue.name,
+      `${config.prefix}-ConsumeQueue-Dlq-Alarm`,
+    );
+
     // Consume Queue - receives all events from event-bridge
     const sqsConsumeQueue = new sqsQueue.SqsQueue(
       this,
@@ -57,6 +73,10 @@ class SnowplowSharedConsumerStack extends TerraformStack {
       {
         name: `${config.prefix}-SharedEventConsumer-Queue`,
         tags: config.tags,
+        redrivePolicy: JSON.stringify({
+          deadLetterTargetArn: sqsDLQConsumeQueue.arn,
+          maxReceiveCounts: 3,
+        }),
       },
     );
 
@@ -71,7 +91,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
     this.createDeadLetterQueueAlarm(
       alarmSnsTopic,
       snsTopicDlq.name,
-      `${config.prefix}-Dlq-Alarm`,
+      `${config.prefix}-Topics-Dlq-Alarm`,
     );
 
     // Consumer Queue should be able to listen to user events.

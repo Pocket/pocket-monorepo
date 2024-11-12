@@ -3,7 +3,7 @@ import { sendUserTrack } from '../braze';
 import {
   PocketEventType,
   PremiumPurchaseEvent,
-  sqsEventBridgeEvent,
+  sqsLambdaEventBridgeEvent,
 } from '@pocket-tools/event-bridge';
 
 /**
@@ -13,7 +13,7 @@ import {
 export async function premiumPurchaseHandler(
   record: SQSRecord,
 ): Promise<Response | null> {
-  const event = sqsEventBridgeEvent(record);
+  const event = sqsLambdaEventBridgeEvent(record);
   if (event?.['detail-type'] === PocketEventType.PREMIUM_PURCHASE) {
     const requestBody = generateUserTrackRequestBody(event, event.time);
     const res = await sendUserTrack(requestBody);

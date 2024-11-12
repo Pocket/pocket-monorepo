@@ -1,5 +1,5 @@
 import { SQSRecord } from 'aws-lambda';
-import { sqsEventBridgeEvent } from '../../utils';
+import { sqsLambdaEventBridgeEvent } from '../../utils';
 import { PocketEventType } from '../events';
 import { CollectionCreated } from './collection';
 
@@ -21,7 +21,7 @@ describe('collection event', () => {
     };
     expect.assertions(1); // since it's in a try/catch, make sure we assert
     try {
-      const event = sqsEventBridgeEvent(recordWithoutEmail as SQSRecord);
+      const event = sqsLambdaEventBridgeEvent(recordWithoutEmail as SQSRecord);
       console.log(event);
     } catch (e) {
       expect(e.message).toContain(
@@ -47,7 +47,7 @@ describe('collection event', () => {
               slug: 'a-cool-slug',
               title: 'A cool title',
               status: 'published',
-              language: 'en',
+              language: 'EN',
               authors: [],
               stories: [],
               createdAt: 123456789,
@@ -58,7 +58,7 @@ describe('collection event', () => {
         }),
       }),
     };
-    const event: CollectionCreated = sqsEventBridgeEvent(
+    const event: CollectionCreated = sqsLambdaEventBridgeEvent(
       recordWithNumberBool as SQSRecord,
     ) as CollectionCreated;
     expect(event.detail.collection.IABChildCategory).toBe(undefined);

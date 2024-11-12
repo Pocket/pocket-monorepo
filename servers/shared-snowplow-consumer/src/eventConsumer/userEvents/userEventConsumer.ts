@@ -1,6 +1,8 @@
+import { AccountEvent, AccountRegistration } from '@pocket-tools/event-bridge';
 import { UserEventHandler } from '../../snowplow/user/userEventHandler';
-import { UserEventBridgePaylod } from './types';
 
-export function userEventConsumer(requestBody: UserEventBridgePaylod) {
-  new UserEventHandler().process(requestBody);
+export function userEventConsumer(
+  event: Exclude<AccountEvent, AccountRegistration>,
+) {
+  new UserEventHandler().process(event);
 }

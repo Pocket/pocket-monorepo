@@ -3,6 +3,7 @@ import {
   ForgotPasswordRequest,
   AccountDelete,
   AccountEmailUpdated,
+  AccountPasswordChanged,
   PremiumPurchaseEvent,
   AccountRegistration,
   ExportReady,
@@ -46,7 +47,10 @@ import {
   CollectionEvent,
   CollectionCreated,
   CollectionUpdated,
+  ProspectDismissed,
+  IncomingBaseEvent,
 } from './types';
+import { ProspectEvent } from './types/prospect';
 export * from './types';
 export * from './events';
 
@@ -62,13 +66,17 @@ export type PocketEvent =
   | ShareEvent
   | SearchEvent
   | CorpusEvent
+  | ProspectEvent
   | CollectionEvent;
+
+export type IncomingPocketEvent = PocketEvent & IncomingBaseEvent;
 
 export type PocketEventTypeMap = {
   [PocketEventType.FORGOT_PASSWORD]: ForgotPasswordRequest;
   [PocketEventType.ACCOUNT_DELETION]: AccountDelete;
   [PocketEventType.ACCOUNT_EMAIL_UPDATED]: AccountEmailUpdated;
   [PocketEventType.ACCOUNT_REGISTRATION]: AccountRegistration;
+  [PocketEventType.ACCOUNT_PASSWORD_CHANGED]: AccountPasswordChanged;
   [PocketEventType.PREMIUM_PURCHASE]: PremiumPurchaseEvent;
   [PocketEventType.EXPORT_READY]: ExportReady;
   [PocketEventType.EXPORT_REQUESTED]: ExportRequested;
@@ -103,4 +111,5 @@ export type PocketEventTypeMap = {
   [PocketEventType.CORPUS_ITEM_REMOVED]: CorpusItemRemoved;
   [PocketEventType.COLLECTION_CREATED]: CollectionCreated;
   [PocketEventType.COLLECTION_UPDATED]: CollectionUpdated;
+  [PocketEventType.PROSPECT_DISMISSED]: ProspectDismissed;
 };
