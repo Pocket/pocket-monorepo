@@ -46,8 +46,10 @@ import { IContext } from '../server/context';
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
 import { GraphQLResolveInfo } from 'graphql';
 import { itemIdFromSlug } from '@pocket-tools/int-mask';
+import { scalarResolvers } from 'graphql-scalars';
 
 const resolvers = {
+  ...scalarResolvers,
   ...PocketDefaultScalars,
   BaseError: {
     __resolveType(parent: BaseError) {

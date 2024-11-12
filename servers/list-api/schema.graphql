@@ -18,6 +18,9 @@ scalar ISOString
 
 scalar Url
 
+scalar BigInt
+
+
 type SyncConflict implements BaseError {
   path: String!
   message: String!
@@ -53,11 +56,11 @@ interface RemoteEntity {
   """
   Unix timestamp of when the entity was created
   """
-  _createdAt: Int
+  _createdAt: BigInt
   """
   Unix timestamp of when the entity was last updated, if any property on the entity is modified this timestamp is set to the modified time
   """
-  _updatedAt: Int
+  _updatedAt: BigInt
   """
   Version of the entity, this will increment with each modification of the entity's field
   """
@@ -65,7 +68,7 @@ interface RemoteEntity {
   """
   Unix timestamp of when the entity was deleted, 30 days after this date this entity will be HARD deleted from the database and no longer exist
   """
-  _deletedAt: Int
+  _deletedAt: BigInt
 }
 
 """
@@ -182,7 +185,7 @@ type SavedItem implements RemoteEntity
   """
   Timestamp that the SavedItem became favorited, null if not favorited
   """
-  favoritedAt: Int
+  favoritedAt: BigInt
   """
   Helper property to indicate if the SavedItem is archived
   """
@@ -190,7 +193,7 @@ type SavedItem implements RemoteEntity
   """
   Timestamp that the SavedItem became archied, null if not archived
   """
-  archivedAt: Int
+  archivedAt: BigInt
   """
   Link to the underlying Pocket Item for the URL
   """
@@ -214,11 +217,11 @@ type SavedItem implements RemoteEntity
   """
   Unix timestamp of when the entity was created
   """
-  _createdAt: Int!
+  _createdAt: BigInt!
   """
   Unix timestamp of when the entity was last updated, if any property on the entity is modified this timestamp is set to the modified time
   """
-  _updatedAt: Int
+  _updatedAt: BigInt
   """
   Version of the entity, this will increment with each modification of the entity's field
   """
@@ -226,7 +229,7 @@ type SavedItem implements RemoteEntity
   """
   Unix timestamp of when the entity was deleted, 30 days after this date this entity will be HARD deleted from the database and no longer exist
   """
-  _deletedAt: Int
+  _deletedAt: BigInt
 }
 enum SavedItemStatus {
   ARCHIVED
@@ -262,7 +265,7 @@ type Tag @requiresScopes(scopes: [["ROLE_USER"]]) {
   """
   Unix timestamp of when the entity was deleted, 30 days after this date this entity will be HARD deleted from the database and no longer exist
   """
-  _deletedAt: Int
+  _deletedAt: BigInt
 }
 """
 Input field for upserting a SavedItem
@@ -280,7 +283,7 @@ input SavedItemUpsertInput {
   """
   Optional, time that request was submitted by client epoch/unix time
   """
-  timestamp: Int
+  timestamp: BigInt
   """
   Optional, title of the SavedItem
   """
@@ -359,12 +362,12 @@ input SavedItemsFilter {
   Optional, filter to get SavedItems updated since a unix timestamp.
   Mutually exclusive with `updatedBefore` option.
   """
-  updatedSince: Int
+  updatedSince: BigInt
   """
   Optional, filter to get SavedItems updated before a unix timestamp.
   Mutually exclusive with `updatedSince` option.
   """
-  updatedBefore: Int
+  updatedBefore: BigInt
   """
   Optional, filter to get SavedItems that have been favorited
   """
