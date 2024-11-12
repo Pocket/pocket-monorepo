@@ -75,6 +75,7 @@ class SnowplowSharedConsumerStack extends TerraformStack {
         tags: config.tags,
         redrivePolicy: JSON.stringify({
           deadLetterTargetArn: sqsDLQConsumeQueue.arn,
+          maxReceiveCounts: 3,
         }),
       },
     );
