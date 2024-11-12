@@ -8,6 +8,7 @@ export enum PocketEventType {
   ACCOUNT_EMAIL_UPDATED = 'account-email-updated', // source: user-event
   PREMIUM_PURCHASE = 'Premium Purchase', //source: web-repo
   ACCOUNT_REGISTRATION = 'User Registration', //source: web-repo
+  ACCOUNT_PASSWORD_CHANGED = 'account-password-changed', //source: user-event
   FORGOT_PASSWORD = 'Forgot Password Request', //source: web-repo
   EXPORT_READY = 'list-export-ready', // source: account-data-deleter
   EXPORT_REQUESTED = 'list-export-requested', // source: list-api
@@ -50,4 +51,6 @@ export enum PocketEventType {
 
   COLLECTION_CREATED = 'collection-created',
   COLLECTION_UPDATED = 'collection-updated',
+
+  PROSPECT_DISMISSED = 'prospect-dismiss', // source: prospect-events
 }

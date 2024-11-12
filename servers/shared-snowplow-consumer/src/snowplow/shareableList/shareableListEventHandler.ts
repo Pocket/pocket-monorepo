@@ -7,7 +7,7 @@ import {
   ShareableList,
   createShareableList,
 } from '../../snowtype/snowplow';
-import { ShareableListEventBridgePayload } from '../../eventConsumer/shareableListEvents/types';
+import { ShareableListEvent } from '@pocket-tools/event-bridge';
 
 /**
  * class to send `shareable-list-event` to snowplow
@@ -23,12 +23,12 @@ export class ShareableListEventHandler extends EventHandler {
    * method to create and process event data
    * @param data
    */
-  process(data: ShareableListEventBridgePayload): void {
+  process(event: ShareableListEvent): void {
     const context: SelfDescribingJson[] =
-      ShareableListEventHandler.generateEventContext(data);
+      ShareableListEventHandler.generateEventContext(event);
 
     this.trackObjectUpdate(this.tracker, {
-      ...ShareableListEventHandler.generateShareableListEvent(data),
+      ...ShareableListEventHandler.generateShareableListEvent(event),
       context,
     });
   }
@@ -37,21 +37,21 @@ export class ShareableListEventHandler extends EventHandler {
    * Builds the Snowplow object_update event object. Extracts the event trigger type from the received payload.
    */
   private static generateShareableListEvent(
-    data: ShareableListEventBridgePayload,
+    event: ShareableListEvent,
   ): ObjectUpdate {
     return {
-      trigger: data['detail-type'],
+      trigger: event['detail-type'],
       object: 'shareable_list',
     };
   }
 
   private static generateEventContext(
-    data: ShareableListEventBridgePayload,
+    event: ShareableListEvent,
   ): SelfDescribingJson[] {
     return [
       createShareableList(
         ShareableListEventHandler.generateSnowplowShareableListEvent(
-          data.detail.shareableList,
+          event.detail.shareableList,
         ),
       ) as unknown as SelfDescribingJson,
     ];
@@ -61,11 +61,12 @@ export class ShareableListEventHandler extends EventHandler {
    * Static method to generate an object that maps properties received in the event payload object to the snowplow shareable_list object schema.
    */
   private static generateSnowplowShareableListEvent(
-    data: ShareableListEventBridgePayload['detail']['shareableList'],
+    data: ShareableListEvent['detail']['shareableList'],
   ): ShareableList {
     return {
       shareable_list_external_id: data.shareable_list_external_id,
-      user_id: data.user_id ?? undefined,
+      // user_id can be a big int, so we convert to a Number
+      user_id: data.user_id ? Number(data.user_id) : undefined,
       slug: data.slug,
       title: data.title,
       description: data.description ?? undefined,

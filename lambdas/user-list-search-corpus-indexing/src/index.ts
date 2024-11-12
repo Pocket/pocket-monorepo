@@ -26,7 +26,7 @@ import { serverLogger } from '@pocket-tools/ts-logger';
 import { removeApprovedItem } from './commands/RemoveItem';
 import {
   PocketEventType,
-  sqsEventBridgeEvent,
+  sqsLambdaEventBridgeEvent,
 } from '@pocket-tools/event-bridge';
 
 /**
@@ -38,7 +38,7 @@ import {
  */
 export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
   const validPayloads: Array<EventPayload> = event.Records.map((record) => {
-    const pocketEvent = sqsEventBridgeEvent(record);
+    const pocketEvent = sqsLambdaEventBridgeEvent(record);
     if (
       pocketEvent == null ||
       !validDetailTypes.includes(pocketEvent['detail-type'])

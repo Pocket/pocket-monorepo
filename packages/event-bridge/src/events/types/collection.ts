@@ -29,8 +29,8 @@ export interface CollectionPayload {
     externalId: string;
     slug: string;
     title: string;
-    status: string;
-    language: string;
+    status: CollectionStatus;
+    language: CollectionLanguage;
     authors: CollectionAuthor[];
     stories: CollectionStory[];
     createdAt: number; // in seconds
@@ -63,7 +63,7 @@ export interface CollectionPartnership {
   name: string;
   blurb: string;
   image_url: string;
-  type: string;
+  type: CollectionPartnershipType;
   url: string;
 }
 
@@ -103,4 +103,21 @@ export interface IABChildCategory {
 export interface Label {
   collection_label_id: string;
   name: string;
+}
+
+export enum CollectionLanguage {
+  DE = 'DE',
+  EN = 'EN',
+}
+
+export enum CollectionPartnershipType {
+  PARTNERED = 'PARTNERED',
+  SPONSORED = 'SPONSORED',
+}
+
+export enum CollectionStatus {
+  DRAFT = 'draft',
+  REVIEW = 'review',
+  PUBLISHED = 'published',
+  ARCHIVED = 'archived',
 }

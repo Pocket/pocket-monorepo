@@ -7,7 +7,7 @@ import {
   parseSnowplowData,
 } from '../testUtils';
 import { ObjectUpdate } from '../../snowtype/snowplow';
-import { ProspectEventBridgePayload } from '../../eventConsumer/prospectEvents/types';
+import { PocketEventType, ProspectEvent } from '@pocket-tools/event-bridge';
 
 export const prospectEventSchema = {
   objectUpdate: expect.stringMatching(
@@ -63,12 +63,12 @@ function assertProspectSchema(eventContext) {
   );
 }
 
-const testEventData: ProspectEventBridgePayload = {
+const testEventData: ProspectEvent = {
   source: 'prospect-events',
   detail: {
     ...testProspectData,
   },
-  'detail-type': 'prospect-dismiss',
+  'detail-type': PocketEventType.PROSPECT_DISMISSED,
 };
 
 describe('ProspectEventHandler', () => {

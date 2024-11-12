@@ -6,6 +6,7 @@ import {
   parseSnowplowData,
 } from '../testUtils';
 import { ObjectUpdate } from '../../snowtype/snowplow';
+import { PocketEventType } from '@pocket-tools/event-bridge';
 
 export const userEventsSchema = {
   account: expect.stringMatching('iglu:com.pocket/account/jsonschema'),
@@ -87,6 +88,9 @@ const testEventData = {
     email: 'test@pocket.com',
     isPremium: true,
     apiId: '1',
+    timestamp: 12332123123,
+    version: '1.0.0',
+    eventType: PocketEventType.ACCOUNT_DELETION,
   },
 };
 
@@ -99,7 +103,7 @@ describe('UserEventHandler', () => {
     new UserEventHandler().process({
       ...testEventData,
       source: 'user-events',
-      'detail-type': 'account-deletion',
+      'detail-type': PocketEventType.ACCOUNT_DELETION,
     });
 
     // wait a sec * 3
@@ -127,7 +131,7 @@ describe('UserEventHandler', () => {
     new UserEventHandler().process({
       ...testEventData,
       source: 'user-events',
-      'detail-type': 'account-email-updated',
+      'detail-type': PocketEventType.ACCOUNT_EMAIL_UPDATED,
     });
 
     // wait a sec * 3
@@ -155,7 +159,7 @@ describe('UserEventHandler', () => {
     new UserEventHandler().process({
       ...testEventData,
       source: 'user-events',
-      'detail-type': 'account-password-changed',
+      'detail-type': PocketEventType.ACCOUNT_PASSWORD_CHANGED,
     });
 
     // wait a sec * 3

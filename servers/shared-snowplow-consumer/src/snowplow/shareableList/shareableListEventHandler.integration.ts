@@ -10,6 +10,10 @@ import {
   parseSnowplowData,
 } from '../testUtils';
 import { ObjectUpdate } from '../../snowtype/snowplow';
+import {
+  PocketEventType,
+  ShareableListPocketEventTypeEnum,
+} from '@pocket-tools/event-bridge';
 
 export const shareableListEventSchema = {
   objectUpdate: expect.stringMatching(
@@ -87,12 +91,14 @@ function assertPartialShareableListSchema(eventContext) {
 
 const testEventData = {
   detail: {
+    eventType: ShareableListPocketEventTypeEnum.SHAREABLE_LIST_CREATED,
     shareableList: testShareableListData,
   },
 };
 
 const testPartialEventData = {
   detail: {
+    eventType: ShareableListPocketEventTypeEnum.SHAREABLE_LIST_CREATED,
     shareableList: testPartialShareableListData,
   },
 };
@@ -105,7 +111,7 @@ describe('ShareableListEventHandler', () => {
   it('should send shareable_list_created event to snowplow', async () => {
     new ShareableListEventHandler().process({
       ...testEventData,
-      'detail-type': 'shareable_list_created',
+      'detail-type': PocketEventType.SHAREABLE_LIST_CREATED,
       source: 'shareable-list-events',
     });
 
@@ -135,7 +141,7 @@ describe('ShareableListEventHandler', () => {
   it('should send shareable_list_updated event to snowplow', async () => {
     new ShareableListEventHandler().process({
       ...testEventData,
-      'detail-type': 'shareable_list_updated',
+      'detail-type': PocketEventType.SHAREABLE_LIST_UPDATED,
       source: 'shareable-list-events',
     });
 
@@ -165,7 +171,7 @@ describe('ShareableListEventHandler', () => {
   it('should send shareable_list_deleted event to snowplow', async () => {
     new ShareableListEventHandler().process({
       ...testEventData,
-      'detail-type': 'shareable_list_deleted',
+      'detail-type': PocketEventType.SHAREABLE_LIST_DELETED,
       source: 'shareable-list-events',
     });
 
@@ -195,7 +201,7 @@ describe('ShareableListEventHandler', () => {
   it('should send shareable_list_published event to snowplow', async () => {
     new ShareableListEventHandler().process({
       ...testEventData,
-      'detail-type': 'shareable_list_published',
+      'detail-type': PocketEventType.SHAREABLE_LIST_PUBLISHED,
       source: 'shareable-list-events',
     });
 
@@ -225,7 +231,7 @@ describe('ShareableListEventHandler', () => {
   it('should send shareable_list_unpublished event to snowplow', async () => {
     new ShareableListEventHandler().process({
       ...testEventData,
-      'detail-type': 'shareable_list_unpublished',
+      'detail-type': PocketEventType.SHAREABLE_LIST_UNPUBLISHED,
       source: 'shareable-list-events',
     });
 
@@ -255,7 +261,7 @@ describe('ShareableListEventHandler', () => {
   it('should send shareable_list_hidden event to snowplow', async () => {
     new ShareableListEventHandler().process({
       ...testEventData,
-      'detail-type': 'shareable_list_hidden',
+      'detail-type': PocketEventType.SHAREABLE_LIST_HIDDEN,
       source: 'shareable-list-events',
     });
 
@@ -285,7 +291,7 @@ describe('ShareableListEventHandler', () => {
   it('should send shareable_list_unhidden event to snowplow', async () => {
     new ShareableListEventHandler().process({
       ...testEventData,
-      'detail-type': 'shareable_list_unhidden',
+      'detail-type': PocketEventType.SHAREABLE_LIST_UNHIDDEN,
       source: 'shareable-list-events',
     });
 
@@ -315,7 +321,7 @@ describe('ShareableListEventHandler', () => {
   it('should send shareable_list_created event with missing non-required fields to snowplow', async () => {
     new ShareableListEventHandler().process({
       ...testPartialEventData,
-      'detail-type': 'shareable_list_created',
+      'detail-type': PocketEventType.SHAREABLE_LIST_CREATED,
       source: 'shareable-list-events',
     });
 

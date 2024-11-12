@@ -1,16 +1,17 @@
 import {
   CollectionAuthor,
-  CollectionStoryAuthor,
-  CollectionStory,
-  Label,
-  CurationCategory,
-  CollectionPartnershipType,
-  CollectionPartnership,
-  IABParentCategory,
-  Collection,
+  CollectionEvent,
   CollectionLanguage,
+  CollectionPartnership,
+  CollectionPartnershipType,
+  CollectionStatus,
+  CollectionStory,
+  CollectionStoryAuthor,
+  CurationCategory,
   IABChildCategory,
-} from '../../eventConsumer/collectionEvents/types';
+  IABParentCategory,
+  Label,
+} from '@pocket-tools/event-bridge';
 
 const testAuthor: CollectionAuthor = {
   active: true,
@@ -58,23 +59,23 @@ const testPartnership: CollectionPartnership = {
   url: 'www.test-partnership-url.com',
 };
 
-const IABParentCategory: IABParentCategory = {
+const testIABParentCategory: IABParentCategory = {
   collection_iab_parent_category_id: 'test-iab-category-id',
   name: 'test-iab-category-name',
   slug: 'test-iab-category-slug',
 };
 
-const IABChildCategory: IABChildCategory = {
+const testIABChildCategory: IABChildCategory = {
   collection_iab_child_category_id: 'test-iab-category-id',
   name: 'test-iab-category-name',
   slug: 'test-iab-category-slug',
 };
 
-export const testCollectionData: Collection = {
+export const testCollectionData: CollectionEvent['detail']['collection'] = {
   externalId: 'test-collection-id',
   slug: 'test-collection-slug',
   title: 'test-collection-title',
-  status: 'published',
+  status: CollectionStatus.PUBLISHED,
   language: CollectionLanguage.EN,
   authors: [testAuthor],
   stories: [testStory],
@@ -88,6 +89,6 @@ export const testCollectionData: Collection = {
   excerpt: 'test-collection-excerpt',
   partnership: testPartnership,
   publishedAt: 1675978338,
-  IABParentCategory: IABParentCategory,
-  IABChildCategory: IABChildCategory,
+  IABParentCategory: testIABParentCategory,
+  IABChildCategory: testIABChildCategory,
 };
