@@ -151,7 +151,7 @@ describe('EventBus', () => {
         args,
         PocketEventType.SEARCH_RESPONSE_GENERATED,
       );
-      expect(event.detail).toEqual({ search, ...expected });
+      expect(event.detail.event).toEqual({ search, ...expected });
     });
     describe('unhappy paths', () => {
       let clientSpy: jest.SpyInstance;

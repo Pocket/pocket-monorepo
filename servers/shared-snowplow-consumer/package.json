@@ -16,9 +16,7 @@
     "lint": "eslint --fix-dry-run",
     "snowplow:generate": "snowtype generate",
     "start": "node dist/main.js",
-    "test": "jest \"\\.spec\\.ts\"",
     "test-integrations": "jest \"\\.integration\\.ts\" --forceExit --runInBand",
-    "test:watch": "npm test -- --watchAll",
     "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json"
   },
   "dependencies": {
