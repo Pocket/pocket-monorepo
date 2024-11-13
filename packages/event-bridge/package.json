@@ -24,6 +24,7 @@
     "format": "eslint --fix",
     "lint": "eslint --fix-dry-run",
     "prebuild": "pnpm ts-json-schema-generator --additional-properties --validation-keywords removeEmptyObject --path './src/events/types/index.ts' > ./src/events/generated/schema.json",
+    "presemantic-release": "pnpm run build",
     "semantic-release": "semantic-release",
     "test": "jest",
     "test:watch": "pnpm run test -- --watch"
