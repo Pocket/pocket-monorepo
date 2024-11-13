@@ -7,7 +7,7 @@ import {
   ShareableListItem,
   createShareableListItem,
 } from '../../snowtype/snowplow';
-import { ShareableListItemEventBridgePayload } from '../../eventConsumer/shareableListItemEvents/types';
+import { ShareableListItemEvent } from '@pocket-tools/event-bridge';
 
 /**
  * class to send `shareable-list-item-event` to snowplow
@@ -21,14 +21,14 @@ export class ShareableListItemEventHandler extends EventHandler {
 
   /**
    * method to create and process event data
-   * @param data
+   * @param event
    */
-  process(data: ShareableListItemEventBridgePayload): void {
+  process(event: ShareableListItemEvent): void {
     const context: SelfDescribingJson[] =
-      ShareableListItemEventHandler.generateEventContext(data);
+      ShareableListItemEventHandler.generateEventContext(event);
 
     this.trackObjectUpdate(this.tracker, {
-      ...ShareableListItemEventHandler.generateShareableListItemEvent(data),
+      ...ShareableListItemEventHandler.generateShareableListItemEvent(event),
       context,
     });
   }
@@ -37,21 +37,21 @@ export class ShareableListItemEventHandler extends EventHandler {
    * Builds the Snowplow object_update event object. Extracts the event trigger type from the received payload.
    */
   private static generateShareableListItemEvent(
-    data: ShareableListItemEventBridgePayload,
+    event: ShareableListItemEvent,
   ): ObjectUpdate {
     return {
-      trigger: data['detail-type'],
+      trigger: event['detail-type'],
       object: 'shareable_list_item',
     };
   }
 
   private static generateEventContext(
-    data: ShareableListItemEventBridgePayload,
+    event: ShareableListItemEvent,
   ): SelfDescribingJson[] {
     return [
       createShareableListItem(
         ShareableListItemEventHandler.generateSnowplowShareableListItemEvent(
-          data.detail.shareableListItem,
+          event.detail.shareableListItem,
         ),
       ) as unknown as SelfDescribingJson,
     ];
@@ -61,7 +61,7 @@ export class ShareableListItemEventHandler extends EventHandler {
    * Static method to generate an object that maps properties received in the event payload object to the snowplow shareable_list_item object schema.
    */
   private static generateSnowplowShareableListItemEvent(
-    data: ShareableListItemEventBridgePayload['detail']['shareableListItem'],
+    data: ShareableListItemEvent['detail']['shareableListItem'],
   ): ShareableListItem {
     return {
       shareable_list_item_external_id: data.shareable_list_item_external_id,

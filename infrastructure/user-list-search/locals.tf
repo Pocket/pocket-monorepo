@@ -77,9 +77,9 @@ locals {
       es_ebs_volume_size          = 35
       nodeEnv                     = "development"
       root_domain                 = "getpocket.dev"
-      sns_topic_user_events       = "PocketEventBridge-Dev-UserEventTopic"
-      sns_topic_corpus_events     = "PocketEventBridge-Dev-CorpusEventsTopic"
-      sns_topic_collection_events = "PocketEventBridge-Dev-CollectionEventTopic"
+      sns_topic_user_events       = "PocketEventBridge-Dev-UserEvents"
+      sns_topic_corpus_events     = "PocketEventBridge-Dev-CorpusEvents"
+      sns_topic_collection_events = "PocketEventBridge-Dev-CollectionEvents"
       userApiUri                  = "https://user-list-search.getpocket.dev"
       otlpCollectorUrl            = "https://otel-collector.getpocket.dev:443"
     }
@@ -94,9 +94,9 @@ locals {
       es_ebs_volume_size          = 1500
       nodeEnv                     = "production"
       root_domain                 = "readitlater.com"
-      sns_topic_user_events       = "PocketEventBridge-Prod-UserEventTopic"
-      sns_topic_corpus_events     = "PocketEventBridge-Prod-CorpusEventsTopic"
-      sns_topic_collection_events = "PocketEventBridge-Prod-CollectionEventTopic"
+      sns_topic_user_events       = "PocketEventBridge-Prod-UserEvents"
+      sns_topic_corpus_events     = "PocketEventBridge-Prod-CorpusEvents"
+      sns_topic_collection_events = "PocketEventBridge-Prod-CollectionEvents"
       userApiUri                  = "https://user-list-search.readitlater.com"
       otlpCollectorUrl            = "https://otel-collector.readitlater.com:443"
     }

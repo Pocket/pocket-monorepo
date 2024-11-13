@@ -8,7 +8,7 @@ import {
   // PilotUser,
   PrismaClient,
 } from '.prisma/client';
-import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
+import { PocketEventBridgeClient } from '@pocket-tools/event-bridge';
 import { faker } from '@faker-js/faker';
 // import slugify from 'slugify';
 import { startServer } from '../../../express';
@@ -76,9 +76,9 @@ describe('public mutations: ShareableList', () => {
     con = conn();
     // we mock the send method on EventBridgeClient
     jest
-      .spyOn(EventBridgeClient.prototype, 'send')
+      .spyOn(PocketEventBridgeClient.prototype, 'sendPocketEvent')
       .mockClear()
-      .mockImplementation(() => Promise.resolve({ FailedEntryCount: 0 }));
+      .mockImplementation(() => Promise.resolve());
   });
 
   afterAll(async () => {

@@ -8,6 +8,9 @@ import { Ajv } from 'ajv';
 import addFormats from 'ajv-formats';
 import schema from './events/generated/schema.json';
 import { MissingFieldsError } from './errors';
+import { removeEmptyObjects } from './jsonUtils';
+import { Message } from '@aws-sdk/client-sqs';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 /**
  * For a given detail type, return the validation schema from our schema.json file
@@ -47,6 +50,10 @@ const parsePocketEvent = <T extends keyof PocketEventTypeMap>(
     throw new Error(`Unsupported type: ${json['detail-type']}`);
   }
 
+  // Note we are removing empty objects because the schema does not allow them, but some services (cough.. collections) send empty objects.
+  // We could do this data modifiation within AJV but AJV ends up validating sub schemas before we are able to remove the empty objects, hence the removal will never occur.
+  json.detail = removeEmptyObjects(json.detail);
+
   // https://ajv.js.org/coercion.html
   // Some data comes from Web repo which.. treats everything as a string or bools as 0/1
   const ajv = new Ajv({ coerceTypes: true });
@@ -77,14 +84,34 @@ const parsePocketEvent = <T extends keyof PocketEventTypeMap>(
     IncomingBaseEvent;
 };
 
+export const sqsPollerEventBridgeEvent = <T extends keyof PocketEventTypeMap>(
+  record: Message,
+): (PocketEventTypeMap[T] & IncomingBaseEvent) | null => {
+  if (record.Body === undefined) {
+    return null;
+  }
+  let message: any = null;
+  try {
+    message = JSON.parse(JSON.parse(record.Body).Message);
+  } catch (error) {
+    serverLogger.error('Could not json parse pocket event', {
+      error,
+      originalMessage: message,
+    });
+    throw new Error('Could not json parse pocket event');
+  }
+  return parsePocketEvent(message) as PocketEventTypeMap[T] & IncomingBaseEvent;
+};
+
 /**
  * Given an SQS Record that came from the PocketEventBridge via SNS, parse it into a PocketEvent Type
  * @param record The SQS Record to parse
  * @returns PocketEvent Type
  */
-export const sqsEventBridgeEvent = <T extends keyof PocketEventTypeMap>(
+export const sqsLambdaEventBridgeEvent = <T extends keyof PocketEventTypeMap>(
   record: SQSRecord,
 ): (PocketEventTypeMap[T] & IncomingBaseEvent) | null => {
+  // Note: We have to double parse the record body because it is a stringified JSON object when it comes via SNS from Event Bridge to SQS.
   const message = JSON.parse(JSON.parse(record.body).Message);
   return parsePocketEvent(message) as PocketEventTypeMap[T] & IncomingBaseEvent;
 };

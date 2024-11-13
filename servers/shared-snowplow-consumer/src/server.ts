@@ -3,8 +3,6 @@ import express, { Application, json } from 'express';
 import { Server, createServer } from 'http';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 
-import { EventEmitter } from 'events';
-import { SqsConsumer } from './SqsConsumer';
 import { sentryPocketMiddleware } from '@pocket-tools/apollo-utils';
 
 export async function startServer(port: number): Promise<{
@@ -15,9 +13,6 @@ export async function startServer(port: number): Promise<{
   // provided to drain plugin for graceful shutdown.
   const app: Application = express();
   const httpServer: Server = createServer(app);
-
-  // Start polling for messages from snowplow event queue
-  new SqsConsumer(new EventEmitter());
 
   // Expose health check url
   app.get('/health', (req, res) => {

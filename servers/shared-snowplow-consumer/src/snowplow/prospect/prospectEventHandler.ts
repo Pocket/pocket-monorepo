@@ -9,11 +9,14 @@ import {
   ObjectUpdateTrigger,
 } from '../../snowtype/snowplow';
 import {
-  EventType,
-  ProspectEventBridgePayload,
-} from '../../eventConsumer/prospectEvents/types';
+  ProspectEvent,
+  ProspectPocketEventType,
+} from '@pocket-tools/event-bridge';
 
-export const SnowplowEventMap: Record<EventType, ObjectUpdateTrigger> = {
+export const SnowplowEventMap: Record<
+  ProspectPocketEventType,
+  ObjectUpdateTrigger
+> = {
   'prospect-dismiss': 'prospect_reviewed',
 };
 
@@ -28,15 +31,15 @@ export class ProspectEventHandler extends EventHandler {
   }
 
   /**
-   * method to create and process event data
-   * @param data
+   * method to create and process event event
+   * @param event
    */
-  process(data: ProspectEventBridgePayload): void {
+  process(event: ProspectEvent): void {
     const context: SelfDescribingJson[] =
-      ProspectEventHandler.generateEventContext(data);
+      ProspectEventHandler.generateEventContext(event);
 
     this.trackObjectUpdate(this.tracker, {
-      ...ProspectEventHandler.generateProspectUpdateEvent(data),
+      ...ProspectEventHandler.generateProspectUpdateEvent(event),
       context,
     });
   }
@@ -45,10 +48,10 @@ export class ProspectEventHandler extends EventHandler {
    * @private
    */
   private static generateProspectUpdateEvent(
-    data: ProspectEventBridgePayload,
+    event: ProspectEvent,
   ): ObjectUpdate {
     return {
-      trigger: SnowplowEventMap[data['detail-type']],
+      trigger: SnowplowEventMap[event['detail-type']],
       object: 'prospect',
     };
   }
@@ -57,37 +60,37 @@ export class ProspectEventHandler extends EventHandler {
    * @private to build event context for PROSPECT_REVIEWED event.
    */
   private static generateReviewedEventAccountContext(
-    data: ProspectEventBridgePayload['detail'],
+    event: ProspectEvent['detail'],
   ): Prospect {
     return {
       object_version: 'new',
-      prospect_id: data.prospectId,
-      url: data.url,
-      title: data.title,
-      excerpt: data.excerpt,
-      image_url: data.imageUrl,
-      language: data.language,
-      topic: data.topic,
-      is_collection: data.isCollection,
-      is_syndicated: data.isSyndicated,
-      authors: data.authors.split(','),
-      publisher: data.publisher,
-      domain: data.domain,
-      prospect_source: data.prospectType,
-      scheduled_surface_id: data.scheduledSurfaceGuid,
-      created_at: data.createdAt,
-      prospect_review_status: data.prospectReviewStatus,
-      reviewed_by: data.reviewedBy,
-      reviewed_at: data.reviewedAt,
+      prospect_id: event.prospectId,
+      url: event.url,
+      title: event.title,
+      excerpt: event.excerpt,
+      image_url: event.imageUrl,
+      language: event.language,
+      topic: event.topic,
+      is_collection: event.isCollection,
+      is_syndicated: event.isSyndicated,
+      authors: event.authors.split(','),
+      publisher: event.publisher,
+      domain: event.domain,
+      prospect_source: event.prospectType,
+      scheduled_surface_id: event.scheduledSurfaceGuid,
+      created_at: event.createdAt,
+      prospect_review_status: event.prospectReviewStatus,
+      reviewed_by: event.reviewedBy,
+      reviewed_at: event.reviewedAt,
     };
   }
 
   private static generateEventContext(
-    data: ProspectEventBridgePayload,
+    event: ProspectEvent,
   ): SelfDescribingJson[] {
     return [
       createProspect(
-        ProspectEventHandler.generateReviewedEventAccountContext(data.detail),
+        ProspectEventHandler.generateReviewedEventAccountContext(event.detail),
       ) as unknown as SelfDescribingJson,
     ];
   }

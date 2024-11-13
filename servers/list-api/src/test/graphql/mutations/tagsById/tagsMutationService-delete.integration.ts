@@ -11,7 +11,10 @@ describe('Mutation for Tag deletions: ', () => {
   const writeDb = writeClient();
   const readDb = readClient();
   let eventSpy = jest.spyOn(ContextManager.prototype, 'emitItemEvent');
-  const dbTagsQuery = writeDb('item_tags').select('tag').pluck('tag');
+  const dbTagsQuery = writeDb('item_tags')
+    .select('tag')
+    .pluck('tag')
+    .groupBy('tag');
   const listUpdatedQuery = readDb('list').select('time_updated');
   const listStateQuery = readDb('list').select();
   const tagStateQuery = readDb('item_tags').select();
@@ -81,6 +84,14 @@ describe('Mutation for Tag deletions: ', () => {
       // Shared data for describe case
       await writeDb('item_tags').truncate();
       const tagData = [
+        { item_id: 0, tag: 'nandor' },
+        { item_id: 0, tag: 'nadja' },
+        { item_id: 0, tag: 'colin' },
+        { item_id: 0, tag: 'laszlo' },
+        { item_id: 0, tag: 'guillermo' },
+        { item_id: 1, tag: 'viago' },
+        { item_id: 1, tag: 'deacon' },
+        { item_id: 1, tag: 'vladislav' },
         { item_id: 0, tag: 'nandor' },
         { item_id: 0, tag: 'nadja' },
         { item_id: 0, tag: 'colin' },

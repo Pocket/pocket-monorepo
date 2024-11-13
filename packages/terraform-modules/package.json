@@ -75,14 +75,14 @@
   },
   "dependencies": {
     "@cdktf/provider-archive": "10.2.0",
-    "@cdktf/provider-aws": "19.39.0",
+    "@cdktf/provider-aws": "19.41.1",
     "@cdktf/provider-local": "10.1.1",
     "@cdktf/provider-newrelic": "12.20.0",
     "@cdktf/provider-null": "10.0.1",
     "@cdktf/provider-pagerduty": "13.12.0",
     "@cdktf/provider-time": "10.2.1",
-    "cdktf": "0.20.9",
-    "cdktf-cli": "0.20.9",
+    "cdktf": "0.20.10",
+    "cdktf-cli": "0.20.10",
     "constructs": "10.4.2",
     "parse-domain": "5.0.0",
     "tslib": "2.8.0"

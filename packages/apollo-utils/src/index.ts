@@ -9,6 +9,7 @@ export * from './pagination/';
 export * from './plugins/defaultPlugin';
 export * from './sentry/expressSentryMiddleware';
 export * from './utils';
+export * from './context';
 
 // export a generic object with all Pocket Custom Scalars
 import { GraphQLValidUrl, isoStringScalar } from './scalars';

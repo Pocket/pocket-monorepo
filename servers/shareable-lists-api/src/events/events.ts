@@ -1,20 +1,19 @@
-import {
-  PutEventsCommand,
-  PutEventsCommandOutput,
-} from '@aws-sdk/client-eventbridge';
 import * as Sentry from '@sentry/node';
-import config from '../config/';
 import { eventBridgeClient } from '../aws/eventBridgeClient';
 import { ShareableListComplete, ShareableListItem } from '../database/types';
 import {
-  EventBridgeEventType,
-  EventBridgeEventOptions,
-  SnowplowShareableList,
-  SnowplowShareableListItem,
-  ShareableListEventBusPayload,
-  ShareableListItemEventBusPayload,
-} from './types';
-import { serverLogger } from '@pocket-tools/ts-logger';
+  ShareableListItem as EventBridgeShareableListItem,
+  ShareableList as EventBridgeShareableList,
+  ShareableListItemEvent,
+  ShareableListEvent,
+  ShareableListPocketEventType,
+  ShareableListItemPocketEventType,
+} from '@pocket-tools/event-bridge';
+import {
+  shareableListModerationMapper,
+  shareableListVisibilityMapper,
+} from './utils';
+import config from '../config';
 
 /**
  * This function takes in the API Shareable List object and transforms it into a Snowplow Shareable List object
@@ -22,13 +21,13 @@ import { serverLogger } from '@pocket-tools/ts-logger';
  */
 function transformAPIShareableListToSnowplowShareableList(
   shareableList: ShareableListComplete,
-): SnowplowShareableList {
+): EventBridgeShareableList {
   // userId should always be present, but if for some reason it cannot be parsed,
   // return undefined as userId is not required in Snowplow schema. Log to Sentry.
-  let userId;
+  let userId: number | undefined;
   if (isNaN(parseInt(shareableList.userId as unknown as string))) {
     userId = undefined;
-    Sentry.captureException('Snowplow: Failed to parse userId');
+    Sentry.captureException('Events: Failed to parse userId');
   } else {
     userId = parseInt(shareableList.userId as unknown as string);
   }
@@ -40,9 +39,13 @@ function transformAPIShareableListToSnowplowShareableList(
     description: shareableList.description
       ? shareableList.description
       : undefined,
-    status: shareableList.status,
-    list_item_note_visibility: shareableList.listItemNoteVisibility,
-    moderation_status: shareableList.moderationStatus,
+    status: shareableListVisibilityMapper(shareableList.status),
+    list_item_note_visibility: shareableListVisibilityMapper(
+      shareableList.listItemNoteVisibility,
+    ),
+    moderation_status: shareableListModerationMapper(
+      shareableList.moderationStatus,
+    ),
     moderated_by: shareableList.moderatedBy
       ? shareableList.moderatedBy
       : undefined,
@@ -72,7 +75,7 @@ function transformAPIShareableListItemToSnowplowShareableListItem(
   shareableListItem: ShareableListItem,
   externalId: string,
   listExternalId: string,
-): SnowplowShareableListItem {
+): EventBridgeShareableListItem {
   return {
     shareable_list_item_external_id: externalId,
     shareable_list_external_id: listExternalId,
@@ -104,13 +107,17 @@ function transformAPIShareableListItemToSnowplowShareableListItem(
  * @param shareableList
  */
 export function generateShareableListEventBridgePayload(
-  eventType: EventBridgeEventType,
+  eventType: ShareableListPocketEventType,
   shareableList: ShareableListComplete,
-): ShareableListEventBusPayload {
+): ShareableListEvent {
   return {
-    shareableList:
-      transformAPIShareableListToSnowplowShareableList(shareableList),
-    eventType: eventType,
+    detail: {
+      shareableList:
+        transformAPIShareableListToSnowplowShareableList(shareableList),
+      eventType: eventType,
+    },
+    source: config.aws.eventBus.eventBridge.shareableList.source,
+    'detail-type': eventType,
   };
 }
 
@@ -123,18 +130,23 @@ export function generateShareableListEventBridgePayload(
  * @param listExternalId
  */
 export function generateShareableListItemEventBridgePayload(
-  eventType: EventBridgeEventType,
+  eventType: ShareableListItemPocketEventType,
   shareableListItem: ShareableListItem,
   externalId: string,
   listExternalId: string,
-): ShareableListItemEventBusPayload {
+): ShareableListItemEvent {
   return {
-    shareableListItem: transformAPIShareableListItemToSnowplowShareableListItem(
-      shareableListItem,
-      externalId,
-      listExternalId,
-    ),
-    eventType: eventType,
+    detail: {
+      shareableListItem:
+        transformAPIShareableListItemToSnowplowShareableListItem(
+          shareableListItem,
+          externalId,
+          listExternalId,
+        ),
+      eventType: eventType,
+    },
+    source: config.aws.eventBus.eventBridge.shareableListItem.source,
+    'detail-type': eventType,
   };
 }
 
@@ -145,101 +157,30 @@ export function generateShareableListItemEventBridgePayload(
  * @param options
  */
 export async function sendEventHelper(
-  eventType: EventBridgeEventType,
-  options: EventBridgeEventOptions,
+  eventType: ShareableListItemPocketEventType | ShareableListPocketEventType,
+  options: {
+    shareableList?: ShareableListComplete;
+    shareableListItem?: ShareableListItem;
+    shareableListItemExternalId?: string;
+    listExternalId?: string;
+  },
 ) {
-  let payload;
+  let event: ShareableListItemEvent | ShareableListEvent;
   if (options.shareableList) {
-    payload = generateShareableListEventBridgePayload(
-      eventType,
+    event = generateShareableListEventBridgePayload(
+      eventType as ShareableListPocketEventType,
       options.shareableList,
     );
   }
 
   if (options.shareableListItem) {
-    payload = generateShareableListItemEventBridgePayload(
-      eventType,
+    event = generateShareableListItemEventBridgePayload(
+      eventType as ShareableListItemPocketEventType,
       options.shareableListItem,
       options.shareableListItemExternalId,
       options.listExternalId,
     );
   }
-  // Send payload to Event Bridge.
-  try {
-    await sendEvent(
-      payload,
-      options.isShareableListEventType,
-      options.isShareableListItemEventType,
-    );
-  } catch (error) {
-    // In the unlikely event that the payload generator throws an error,
-    // log to Sentry and Cloudwatch but don't halt program
-    const failedEventError = new Error(
-      `Failed to send event '${
-        payload.eventType
-      }' to event bus. Event Body:\n ${JSON.stringify(payload)}`,
-    );
-    // Don't halt program, but capture the failure in Sentry and Cloudwatch
-    Sentry.addBreadcrumb(failedEventError);
-    Sentry.captureException(error);
-    serverLogger.error({
-      error: failedEventError,
-      message: failedEventError.message,
-      data: error,
-    });
-  }
-}
 
-/**
- * Send event to Event Bus, pulling the event bus and the event source
- * from the config.
- * Will not throw errors if event fails; instead, log exception to Sentry
- * and add to Cloudwatch logs.
- *
- *
- * @param eventPayload the payload to send to event bus
- * @param isShareableListEventType
- * @param isShareableListItemEventType
- */
-export async function sendEvent(
-  eventPayload: any,
-  isShareableListEventType: boolean,
-  isShareableListItemEventType: boolean,
-) {
-  let eventBridgeSource;
-  if (isShareableListEventType) {
-    eventBridgeSource = config.aws.eventBus.eventBridge.shareableList.source;
-  }
-  if (isShareableListItemEventType) {
-    eventBridgeSource =
-      config.aws.eventBus.eventBridge.shareableListItem.source;
-  }
-  const putEventCommand = new PutEventsCommand({
-    Entries: [
-      {
-        EventBusName: config.aws.eventBus.name,
-        Detail: JSON.stringify(eventPayload),
-        Source: eventBridgeSource,
-        DetailType: eventPayload.eventType,
-      },
-    ],
-  });
-
-  const output: PutEventsCommandOutput =
-    await eventBridgeClient.send(putEventCommand);
-
-  if (output.FailedEntryCount) {
-    const failedEventError = new Error(
-      `Failed to send event '${
-        eventPayload.eventType
-      }' to event bus. Event Body:\n ${JSON.stringify(eventPayload)}`,
-    );
-
-    // Don't halt program, but capture the failure in Sentry and Cloudwatch
-    Sentry.captureException(failedEventError);
-    serverLogger.error({
-      error: failedEventError,
-      message: failedEventError.message,
-    });
-  }
+  await eventBridgeClient.sendPocketEvent(event);
 }

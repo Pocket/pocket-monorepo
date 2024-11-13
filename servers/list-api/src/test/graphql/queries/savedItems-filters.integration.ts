@@ -304,8 +304,8 @@ describe('getSavedItems filter', () => {
     const actualTags = res.body.data._entities[0].savedItems.edges.map(
       (edge) => edge.node.item.savedItem.tags,
     );
-    expect(actualTags).toContainAllValues([
-      [{ name: 'tofu' }, { name: 'recipe' }],
+    expect(actualTags).toIncludeSameMembers([
+      expect.toIncludeSameMembers([{ name: 'tofu' }, { name: 'recipe' }]),
       [{ name: 'recipe' }],
     ]);
   });

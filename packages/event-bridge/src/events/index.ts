@@ -3,6 +3,7 @@ import {
   ForgotPasswordRequest,
   AccountDelete,
   AccountEmailUpdated,
+  AccountPasswordChanged,
   PremiumPurchaseEvent,
   AccountRegistration,
   ExportReady,
@@ -20,37 +21,62 @@ import {
   RenameTag,
   DeleteTag,
   UpdateTitle,
+  ShareableListItemEvent,
+  ShareableListEvent,
+  ShareableListCreated,
+  ShareableListDeleted,
+  ShareableListHidden,
+  ShareableListUnhidden,
+  ShareableListUpdated,
+  ShareableListPublished,
+  ShareableListUnpublished,
+  ShareableListItemCreated,
+  ShareableListItemDeleted,
+  ShareableListItemUpdated,
+  ListEvent,
+  ShareEvent,
+  ShareCreated,
+  ShareContextUpdated,
+  AccountEvent,
+  SearchEvent,
+  SearchResponseGenerated,
+  CorpusItemAdded,
+  CorpusItemUpdated,
+  CorpusItemRemoved,
+  CorpusEvent,
+  CollectionEvent,
+  CollectionCreated,
+  CollectionUpdated,
+  ProspectDismissed,
+  IncomingBaseEvent,
 } from './types';
+import { ProspectEvent } from './types/prospect';
 export * from './types';
 export * from './events';
 
 export type PocketEvent =
   | ForgotPasswordRequest
-  | AccountDelete
-  | AccountEmailUpdated
-  | AccountRegistration
+  | AccountEvent
   | ExportReady
   | ExportRequested
   | PremiumPurchaseEvent
-  | AddItem
-  | DeleteItem
-  | FavoriteItem
-  | UnfavoriteItem
-  | ArchiveItem
-  | UnarchiveItem
-  | AddTags
-  | ReplaceTags
-  | ClearTags
-  | RemoveTags
-  | RenameTag
-  | DeleteTag
-  | UpdateTitle;
+  | ListEvent
+  | ShareableListEvent
+  | ShareableListItemEvent
+  | ShareEvent
+  | SearchEvent
+  | CorpusEvent
+  | ProspectEvent
+  | CollectionEvent;
+
+export type IncomingPocketEvent = PocketEvent & IncomingBaseEvent;
 
 export type PocketEventTypeMap = {
   [PocketEventType.FORGOT_PASSWORD]: ForgotPasswordRequest;
   [PocketEventType.ACCOUNT_DELETION]: AccountDelete;
   [PocketEventType.ACCOUNT_EMAIL_UPDATED]: AccountEmailUpdated;
   [PocketEventType.ACCOUNT_REGISTRATION]: AccountRegistration;
+  [PocketEventType.ACCOUNT_PASSWORD_CHANGED]: AccountPasswordChanged;
   [PocketEventType.PREMIUM_PURCHASE]: PremiumPurchaseEvent;
   [PocketEventType.EXPORT_READY]: ExportReady;
   [PocketEventType.EXPORT_REQUESTED]: ExportRequested;
@@ -67,4 +93,23 @@ export type PocketEventTypeMap = {
   [PocketEventType.RENAME_TAG]: RenameTag;
   [PocketEventType.DELETE_TAG]: DeleteTag;
   [PocketEventType.UPDATE_TITLE]: UpdateTitle;
+  [PocketEventType.SHAREABLE_LIST_CREATED]: ShareableListCreated;
+  [PocketEventType.SHAREABLE_LIST_DELETED]: ShareableListDeleted;
+  [PocketEventType.SHAREABLE_LIST_UPDATED]: ShareableListUpdated;
+  [PocketEventType.SHAREABLE_LIST_HIDDEN]: ShareableListHidden;
+  [PocketEventType.SHAREABLE_LIST_UNHIDDEN]: ShareableListUnhidden;
+  [PocketEventType.SHAREABLE_LIST_PUBLISHED]: ShareableListPublished;
+  [PocketEventType.SHAREABLE_LIST_UNPUBLISHED]: ShareableListUnpublished;
+  [PocketEventType.SHAREABLE_LIST_ITEM_CREATED]: ShareableListItemCreated;
+  [PocketEventType.SHAREABLE_LIST_ITEM_DELETED]: ShareableListItemDeleted;
+  [PocketEventType.SHAREABLE_LIST_ITEM_UPDATED]: ShareableListItemUpdated;
+  [PocketEventType.SHARE_CREATED]: ShareCreated;
+  [PocketEventType.SHARE_CONTEXT_UPDATED]: ShareContextUpdated;
+  [PocketEventType.SEARCH_RESPONSE_GENERATED]: SearchResponseGenerated;
+  [PocketEventType.CORPUS_ITEM_ADDED]: CorpusItemAdded;
+  [PocketEventType.CORPUS_ITEM_UPDATED]: CorpusItemUpdated;
+  [PocketEventType.CORPUS_ITEM_REMOVED]: CorpusItemRemoved;
+  [PocketEventType.COLLECTION_CREATED]: CollectionCreated;
+  [PocketEventType.COLLECTION_UPDATED]: CollectionUpdated;
+  [PocketEventType.PROSPECT_DISMISSED]: ProspectDismissed;
 };

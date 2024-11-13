@@ -116,8 +116,13 @@ const resolvers = {
     },
   },
   SavedItem: {
-    tags(parent: SavedItem, _args: any, context: IContext): Promise<Tag[]> {
-      return context.dataLoaders.tagsByItemId.load(parent.id);
+    async tags(
+      parent: SavedItem,
+      _args: any,
+      context: IContext,
+    ): Promise<Tag[]> {
+      const tags = await context.dataLoaders.tagsByItemId.load(parent.id);
+      return tags;
     },
     suggestedTags: savedItemSuggestedTags,
     item,

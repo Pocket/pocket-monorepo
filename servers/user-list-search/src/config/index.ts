@@ -32,6 +32,7 @@ export const config = {
       process.env.PARSER_PRIVILEGED_SERVICE_ID || 'my-needs-matter',
   },
   aws: {
+    endpoint: localAwsEndpoint,
     region: process.env.AWS_REGION || 'us-east-1',
     elasticsearch: {
       host:

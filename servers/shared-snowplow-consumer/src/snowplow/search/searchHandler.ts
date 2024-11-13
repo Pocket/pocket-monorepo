@@ -6,7 +6,7 @@ import {
   createUser,
   trackSearchResultSpec,
 } from '../../snowtype/snowplow';
-import { PocketSearchPayload } from '../../eventConsumer/searchEvents/searchEventconsumer';
+import { SearchEvent } from '@pocket-tools/event-bridge';
 
 /**
  * class to send search-api events to snowplow
@@ -22,12 +22,12 @@ export class PocketSearchEventHandler extends EventHandler {
    * method to create and process event data
    * @param data
    */
-  process(data: PocketSearchPayload): void {
+  process(event: SearchEvent): void {
     const context = [
-      createAPIUser(data.detail.apiUser),
-      createUser(data.detail.user),
+      createAPIUser(event.detail.event.apiUser),
+      createUser(event.detail.event.user),
     ];
-    const searchPayload = { ...data.detail.search, context };
+    const searchPayload = { ...event.detail.event.search, context };
     trackSearchResultSpec(this.tracker, searchPayload);
   }
 }

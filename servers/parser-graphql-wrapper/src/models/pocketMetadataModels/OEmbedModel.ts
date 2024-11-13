@@ -10,6 +10,8 @@ import { IPocketMetadataDataSource } from '../PocketMetadataModel';
 import { merge } from 'lodash';
 import { extract, hasProvider } from '@extractus/oembed-extractor';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { unleash } from '../../unleash';
+import config from '../../config';
 
 export class OEmbedModel implements IPocketMetadataDataSource {
   // Use oEmbed for TikTok, and others in the future
@@ -34,8 +36,21 @@ export class OEmbedModel implements IPocketMetadataDataSource {
     }
   }
 
-  isEnabled(context: IContext): boolean {
-    return true;
+  isEnabled(context: IContext, url: string): boolean {
+    if (this.matcher.test(url)) {
+      return true;
+    }
+
+    // If the oembed is turned on for all domains, let's use it
+    const enabled = unleash().isEnabled(
+      config.unleash.flags.allOEmbedParser.name,
+      {
+        userId: context.encodedUserId,
+        remoteAddress: context.ip,
+      },
+      config.unleash.flags.allOEmbedParser.fallback,
+    );
+    return enabled && hasProvider(url);
   }
 
   async parseOEmbed(item: Item): Promise<Partial<OEmbed>> {

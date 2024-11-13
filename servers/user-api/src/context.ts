@@ -1,4 +1,3 @@
-import { IncomingHttpHeaders } from 'http';
 import { Knex } from 'knex';
 import { UserEventEmitter } from './events/userEventEmitter';
 import {
@@ -9,15 +8,18 @@ import {
 import { IntMask } from '@pocket-tools/int-mask';
 import { UserDataService } from './dataService/userDataService';
 import { UserModel } from './models/User';
-import { NotFoundError } from '@pocket-tools/apollo-utils';
+import {
+  NotFoundError,
+  PocketContext,
+  PocketContextManager,
+} from '@pocket-tools/apollo-utils';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import * as Sentry from '@sentry/node';
 
-export interface IContext {
+export interface IContext extends PocketContext {
   userId: string | undefined;
   fxaUserId?: string;
   transferSub?: string;
-  headers: IncomingHttpHeaders;
   db: {
     readClient: Knex;
     writeClient: Knex;
@@ -55,7 +57,7 @@ export const ContextFactory = async (config: {
  * to the database might be required to fetch appropriate IDs (e.g. initialiizing
  * UserModel with FxA ID rather than internal Pocket User ID).
  */
-class ContextManager implements IContext {
+class ContextManager extends PocketContextManager implements IContext {
   private _userId: string | undefined = undefined;
   public fxaUserId: string | undefined = undefined;
   public transferSub: string | undefined = undefined;
@@ -67,29 +69,29 @@ class ContextManager implements IContext {
       eventEmitter: UserEventEmitter;
     },
   ) {
+    super(config.request.headers);
     if (
       this.headers.transfersub != null &&
       this.headers.transfersub !== undefined &&
       this.headers.transfersub !== 'undefined'
     ) {
-      this.transferSub = this.headers.transfersub;
+      this.transferSub =
+        this.headers.transfersub instanceof Array
+          ? this.headers.transfersub[0]
+          : this.headers.transfersub;
     } else if (this.headers.fxauserid != null) {
       const fxaUserId = this.headers.fxauserid;
       this.fxaUserId = fxaUserId instanceof Array ? fxaUserId[0] : fxaUserId;
     } //try to capture userId for other cases
     else {
-      const userId = this.headers.userid;
-      this._userId = userId instanceof Array ? userId[0] : userId;
+      this._userId = super.userId;
     }
 
     // Set tracking data for Sentry
-    Sentry.getCurrentScope().setTag(
-      'pocket-api-id',
-      (this.headers.apiid || '0') as string,
-    );
-    if (this.headers.encodedid) {
+    Sentry.getCurrentScope().setTag('pocket-api-id', super.apiId);
+    if (super.encodedUserId) {
       Sentry.getCurrentScope().setUser({
-        id: this.headers.encodedid as string,
+        id: super.encodedUserId,
       });
     }
   }
@@ -168,16 +170,8 @@ class ContextManager implements IContext {
     return this;
   }
 
-  get headers(): { [key: string]: any } {
-    return this.config.request.headers;
-  }
-
   get userId(): string | undefined {
     return this._userId;
-  }
-  get apiId(): string {
-    const apiId = this.headers.apiid || '0';
-    return apiId instanceof Array ? apiId[0] : apiId;
   }
 
   get db(): IContext['db'] {
@@ -208,26 +202,24 @@ class ContextManager implements IContext {
     return {
       user: {
         id: this.userId ?? data.userId,
-        hashedId: this.headers.encodedid ?? IntMask.encode(data.userId),
-        email: this.headers.email ?? data.email,
-        guid: parseInt(this.headers.guid),
-        hashedGuid: this.headers.encodedguid,
-        isPremium: this.headers.premium
-          ? this.headers.premium === 'true'
-          : data.isPremium,
+        hashedId: this.encodedUserId ?? IntMask.encode(data.userId),
+        email: this.email ?? data.email,
+        guid: parseInt(this.guid),
+        hashedGuid: this.encodedGuid,
+        isPremium: this.userIsPremium,
       },
       apiUser: {
         apiId: this.apiId,
-        name: this.headers.applicationname,
-        isNative: this.headers.applicationisnative === 'true', // boolean value in header as string
-        isTrusted: this.headers.applicationistrusted === 'true', // boolean value in header as string
-        clientVersion: this.headers.clientversion,
+        name: this.applicationName,
+        isNative: this.applicationIsNative,
+        isTrusted: this.applicationIsTrusted,
+        clientVersion: this.clientVersion,
       },
       request: {
-        language: this.headers.gatewaylanguage,
-        snowplowDomainUserId: this.headers.gatewaysnowplowdomainuserid,
-        ipAddress: this.headers.gatewayipaddress,
-        userAgent: this.headers.gatewayuseragent,
+        language: this.gatewayLanguage,
+        snowplowDomainUserId: this.gatewaySnowplowDomainUserId,
+        ipAddress: this.ip,
+        userAgent: this.gatewayUserAgent,
       },
     };
   }

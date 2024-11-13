@@ -90,6 +90,8 @@ const parseVideoType = (videoType) => {
       return VideoType.Iframe;
     case 8:
       return VideoType.Brightcove;
+    case 9:
+      return VideoType.Dailymotion;
   }
 };
 

@@ -132,6 +132,14 @@ export async function batchImport(
     for await (const record of args.input) {
       // Copied from upsertSavedItem
       const url = ensureHttpPrefix(record.url);
+      if (!isHttpUrl(url)) {
+        serverLogger.warn({
+          message: 'Attempted to import invalid url',
+          url,
+          userId: context.userId,
+        });
+        continue;
+      }
       const item = await ParserCaller.getOrCreateItem(url);
       input.push({ item, import: { ...record, url } });
     }
@@ -301,7 +309,11 @@ export async function updateSavedItemRemoveTags(
     args.savedItemId,
     args.timestamp,
   );
-  context.emitItemEvent(PocketEventType.CLEAR_TAGS, save, removed);
+  context.emitItemEvent(
+    PocketEventType.CLEAR_TAGS,
+    save,
+    Array.from(new Set(removed)),
+  );
   return save;
 }
 
@@ -348,7 +360,11 @@ export async function deleteSavedItemTags(
     args.timestamp,
   );
   const saves = deleteOperations.map(({ save, removed }) => {
-    context.emitItemEvent(PocketEventType.REMOVE_TAGS, save, removed);
+    context.emitItemEvent(
+      PocketEventType.REMOVE_TAGS,
+      save,
+      Array.from(new Set(removed)),
+    );
     return save;
   });
   return saves;
@@ -510,6 +526,11 @@ export async function importUploadUrl(
 ): Promise<
   { url: string; ttl: number } | { message: string; refreshInHours: number }
 > {
+  const overrideEnabled = context.unleash.isEnabled(
+    'temp.backend.import-limit-override',
+    { userId: context.eventContext.user.hashedId },
+    false,
+  );
   // Once per day, use the date as key
   // Hard-coded to a zipfile for now (omnivore) - TODO
   const filename = `${new Date().toISOString().split('T')[0]}.zip`;
@@ -546,7 +567,7 @@ export async function importUploadUrl(
       throw err;
     }
   }
-  if (!importExists) {
+  if (!importExists || overrideEnabled) {
     const command = new PutObjectCommand({
       Bucket: config.aws.s3.importBucket,
       Key: fileKey,

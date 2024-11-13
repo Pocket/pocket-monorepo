@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { print } from 'graphql';
 import request from 'supertest';
 import { ApolloServer } from '@apollo/server';
-import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
+import { PocketEventBridgeClient } from '@pocket-tools/event-bridge';
 import { List, ListItem, ModerationStatus, PrismaClient } from '.prisma/client';
 import { startServer } from '../../../express';
 import { IPublicContext } from '../../context';
@@ -75,9 +75,9 @@ describe('public mutations: ShareableListItem', () => {
 
     // we mock the send method on EventBridgeClient
     jest
-      .spyOn(EventBridgeClient.prototype, 'send')
+      .spyOn(PocketEventBridgeClient.prototype, 'sendPocketEvent')
       .mockClear()
-      .mockImplementation(() => Promise.resolve({ FailedEntryCount: 0 }));
+      .mockImplementation(() => Promise.resolve());
   });
 
   afterAll(async () => {

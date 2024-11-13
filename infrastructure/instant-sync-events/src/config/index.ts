@@ -16,7 +16,7 @@ export const config = {
   environment,
   eventBridge: {
     prefix: 'PocketEventBridge',
-    listEventTopic: 'ListEventTopic',
+    listEventTopic: 'ListEvents',
   },
   tags: {
     service: name,

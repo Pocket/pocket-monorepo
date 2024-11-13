@@ -16,6 +16,7 @@ import { parserRequest, parserResultToDoc } from './parserRequest';
 import { bulkIndex } from './bulkIndex';
 import { buildCollectionUrl, hasExcerptOrIsCollection } from './utils';
 import { getEmbeddings } from './embeddingsRequest';
+import { sqsLambdaEventBridgeEvent } from '@pocket-tools/event-bridge';
 
 /**
  * The main handler function which will be wrapped by Sentry prior to export.
@@ -29,15 +30,18 @@ export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
 
   const validPayloads: Array<ValidLangEventPayload> = event.Records.map(
     (record) => {
-      const message = JSON.parse(JSON.parse(record.body).Message);
+      const event = sqsLambdaEventBridgeEvent(record);
+      if (event == null || !validDetailTypes.includes(event['detail-type'])) {
+        return null;
+      }
       return {
         messageId: record.messageId,
-        detailType: message['detail-type'],
-        detail: message['detail'],
+        detailType: event['detail-type'],
+        detail: event['detail'],
       };
     },
   )
-    .filter((message) => validDetailTypes.includes(message['detailType']))
+    .filter((message) => message != null)
     .filter((message) => {
       const language =
         'collection' in message.detail

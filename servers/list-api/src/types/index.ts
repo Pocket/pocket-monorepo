@@ -170,6 +170,12 @@ export type TagSaveAssociation = {
   savedItemId: string;
 };
 
+export type TagSaveAssociationHotfix = {
+  name: string;
+  savedItemId: string;
+  id: number;
+};
+
 export type DeleteSavedItemTagsInput = {
   savedItemId: string;
   tagIds: string[];

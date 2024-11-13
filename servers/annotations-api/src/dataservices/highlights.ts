@@ -26,7 +26,10 @@ export class HighlightsDataService {
   private readonly savedItemService: SavedItem;
 
   constructor(
-    private context: Pick<IContext, 'db' | 'userId' | 'isPremium' | 'apiId'>,
+    private context: Pick<
+      IContext,
+      'db' | 'userId' | 'userIsPremium' | 'apiId'
+    >,
   ) {
     this.userId = context.userId;
     this.readDb = context.db.readClient;
@@ -134,7 +137,7 @@ export class HighlightsDataService {
   ): Promise<Highlight[]> {
     // Ensure non-premium users don't exceed highlight limits
     // Will throw error here if validation fails
-    if (!this.context.isPremium) {
+    if (!this.context.userIsPremium) {
       await this.checkHighlightLimit(highlightInput);
     }
     const transaction = trx ?? (await this.writeDb.transaction());

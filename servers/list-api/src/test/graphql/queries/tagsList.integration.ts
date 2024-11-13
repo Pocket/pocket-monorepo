@@ -76,7 +76,10 @@ describe('tagsList query', () => {
         api_id: 'apiid',
         api_id_updated: 'updated_api_id',
       }));
-      await writeDb('item_tags').insert(insertTags).onConflict().ignore();
+      await writeDb('item_tags')
+        .insert([...insertTags, ...insertTags.slice(10)])
+        .onConflict()
+        .ignore();
     });
     it('returns a list of all tags for a user (no syncSince)', async () => {
       const variables = {

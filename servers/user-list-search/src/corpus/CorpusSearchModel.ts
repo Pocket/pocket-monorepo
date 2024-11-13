@@ -41,7 +41,7 @@ export class CorpusSearchModel {
     const semanticEnabled = unleash().isEnabled(
       config.unleash.flags.semanticSearch.name,
       {
-        userId: this.context.encodedId,
+        userId: this.context.encodedUserId,
         remoteAddress: this.context.ip,
       },
       config.unleash.flags.semanticSearch.fallback,

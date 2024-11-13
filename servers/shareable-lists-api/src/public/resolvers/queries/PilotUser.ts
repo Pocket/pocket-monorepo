@@ -8,10 +8,14 @@ import { isPilotUser as dbIsPilotUser } from '../../../database';
  * @param userId // in context
  * @param db // in context
  */
-export async function isPilotUser(parent, _, { userId, db }): Promise<boolean> {
-  if (isNaN(userId)) {
+export async function isPilotUser(
+  parent,
+  _,
+  { intUserId, db },
+): Promise<boolean> {
+  if (isNaN(intUserId)) {
     return false;
   }
 
-  return (await dbIsPilotUser(db, userId)) > 0 ? true : false;
+  return (await dbIsPilotUser(db, intUserId)) > 0 ? true : false;
 }

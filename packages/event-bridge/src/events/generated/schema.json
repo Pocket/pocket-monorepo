@@ -41,6 +41,42 @@
       ],
       "type": "object"
     },
+    "AccountEvent": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/AccountDelete"
+        },
+        {
+          "$ref": "#/definitions/AccountEmailUpdated"
+        },
+        {
+          "$ref": "#/definitions/AccountRegistration"
+        },
+        {
+          "$ref": "#/definitions/AccountPasswordChanged"
+        }
+      ]
+    },
+    "AccountPasswordChanged": {
+      "properties": {
+        "detail": {
+          "$ref": "#/definitions/AccountPayload"
+        },
+        "detail-type": {
+          "const": "account-password-changed",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
     "AccountPayload": {
       "properties": {
         "apiId": {
@@ -142,6 +178,26 @@
       ],
       "type": "object"
     },
+    "AccountPocketEventType": {
+      "anyOf": [
+        {
+          "const": "account-deletion",
+          "type": "string"
+        },
+        {
+          "const": "account-email-updated",
+          "type": "string"
+        },
+        {
+          "const": "User Registration",
+          "type": "string"
+        },
+        {
+          "const": "account-password-changed",
+          "type": "string"
+        }
+      ]
+    },
     "AccountRegistration": {
       "properties": {
         "detail": {
@@ -184,7 +240,219 @@
     },
     "AddItem": {
       "properties": {
-        "detail": {},
+        "detail": {
+          "properties": {
+            "apiUser": {
+              "properties": {
+                "apiId": {
+                  "type": "string"
+                },
+                "clientVersion": {
+                  "type": "string"
+                },
+                "isNative": {
+                  "type": "boolean"
+                },
+                "isTrusted": {
+                  "type": "boolean"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "apiId"
+              ],
+              "type": "object"
+            },
+            "eventType": {
+              "$ref": "#/definitions/ListPocketEventType"
+            },
+            "request": {
+              "properties": {
+                "ipAddress": {
+                  "type": "string"
+                },
+                "language": {
+                  "type": "string"
+                },
+                "snowplowDomainSessionId": {
+                  "type": "string"
+                },
+                "snowplowDomainUserId": {
+                  "type": "string"
+                },
+                "userAgent": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "savedItem": {
+              "properties": {
+                "_createdAt": {
+                  "type": "number"
+                },
+                "_deletedAt": {
+                  "type": "number"
+                },
+                "_updatedAt": {
+                  "type": "number"
+                },
+                "_version": {
+                  "type": "number"
+                },
+                "archivedAt": {
+                  "type": "number"
+                },
+                "favoritedAt": {
+                  "type": "number"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isArchived": {
+                  "type": "boolean"
+                },
+                "isFavorite": {
+                  "type": "boolean"
+                },
+                "item": {
+                  "properties": {
+                    "givenUrl": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "givenUrl"
+                  ],
+                  "type": "object"
+                },
+                "resolvedId": {
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "UNREAD",
+                    "ARCHIVED",
+                    "DELETED",
+                    "HIDDEN"
+                  ],
+                  "type": "string"
+                },
+                "tags": {
+                  "items": {
+                    "properties": {
+                      "_createdAt": {
+                        "type": "number"
+                      },
+                      "_deletedAt": {
+                        "type": "number"
+                      },
+                      "_updatedAt": {
+                        "type": "number"
+                      },
+                      "_version": {
+                        "type": "number"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "savedItems": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "resolvedId",
+                "url",
+                "isFavorite",
+                "status",
+                "isArchived",
+                "item"
+              ],
+              "type": "object"
+            },
+            "source": {
+              "type": "string"
+            },
+            "tags": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "tagsUpdated": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "timestamp": {
+              "type": "number"
+            },
+            "user": {
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "guid": {
+                  "type": "number"
+                },
+                "hashedGuid": {
+                  "type": "string"
+                },
+                "hashedId": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isPremium": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "hashedId",
+                "isPremium"
+              ],
+              "type": "object"
+            },
+            "version": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "apiUser",
+            "eventType",
+            "savedItem",
+            "source",
+            "timestamp",
+            "user",
+            "version"
+          ],
+          "type": "object"
+        },
         "detail-type": {
           "const": "ADD_ITEM",
           "type": "string"
@@ -202,7 +470,219 @@
     },
     "AddTags": {
       "properties": {
-        "detail": {},
+        "detail": {
+          "properties": {
+            "apiUser": {
+              "properties": {
+                "apiId": {
+                  "type": "string"
+                },
+                "clientVersion": {
+                  "type": "string"
+                },
+                "isNative": {
+                  "type": "boolean"
+                },
+                "isTrusted": {
+                  "type": "boolean"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "apiId"
+              ],
+              "type": "object"
+            },
+            "eventType": {
+              "$ref": "#/definitions/ListPocketEventType"
+            },
+            "request": {
+              "properties": {
+                "ipAddress": {
+                  "type": "string"
+                },
+                "language": {
+                  "type": "string"
+                },
+                "snowplowDomainSessionId": {
+                  "type": "string"
+                },
+                "snowplowDomainUserId": {
+                  "type": "string"
+                },
+                "userAgent": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "savedItem": {
+              "properties": {
+                "_createdAt": {
+                  "type": "number"
+                },
+                "_deletedAt": {
+                  "type": "number"
+                },
+                "_updatedAt": {
+                  "type": "number"
+                },
+                "_version": {
+                  "type": "number"
+                },
+                "archivedAt": {
+                  "type": "number"
+                },
+                "favoritedAt": {
+                  "type": "number"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isArchived": {
+                  "type": "boolean"
+                },
+                "isFavorite": {
+                  "type": "boolean"
+                },
+                "item": {
+                  "properties": {
+                    "givenUrl": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "givenUrl"
+                  ],
+                  "type": "object"
+                },
+                "resolvedId": {
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "UNREAD",
+                    "ARCHIVED",
+                    "DELETED",
+                    "HIDDEN"
+                  ],
+                  "type": "string"
+                },
+                "tags": {
+                  "items": {
+                    "properties": {
+                      "_createdAt": {
+                        "type": "number"
+                      },
+                      "_deletedAt": {
+                        "type": "number"
+                      },
+                      "_updatedAt": {
+                        "type": "number"
+                      },
+                      "_version": {
+                        "type": "number"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "savedItems": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "resolvedId",
+                "url",
+                "isFavorite",
+                "status",
+                "isArchived",
+                "item"
+              ],
+              "type": "object"
+            },
+            "source": {
+              "type": "string"
+            },
+            "tags": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "tagsUpdated": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "timestamp": {
+              "type": "number"
+            },
+            "user": {
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "guid": {
+                  "type": "number"
+                },
+                "hashedGuid": {
+                  "type": "string"
+                },
+                "hashedId": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isPremium": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "hashedId",
+                "isPremium"
+              ],
+              "type": "object"
+            },
+            "version": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "apiUser",
+            "eventType",
+            "savedItem",
+            "source",
+            "timestamp",
+            "user",
+            "version"
+          ],
+          "type": "object"
+        },
         "detail-type": {
           "const": "ADD_TAGS",
           "type": "string"
@@ -220,7 +700,219 @@
     },
     "ArchiveItem": {
       "properties": {
-        "detail": {},
+        "detail": {
+          "properties": {
+            "apiUser": {
+              "properties": {
+                "apiId": {
+                  "type": "string"
+                },
+                "clientVersion": {
+                  "type": "string"
+                },
+                "isNative": {
+                  "type": "boolean"
+                },
+                "isTrusted": {
+                  "type": "boolean"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "apiId"
+              ],
+              "type": "object"
+            },
+            "eventType": {
+              "$ref": "#/definitions/ListPocketEventType"
+            },
+            "request": {
+              "properties": {
+                "ipAddress": {
+                  "type": "string"
+                },
+                "language": {
+                  "type": "string"
+                },
+                "snowplowDomainSessionId": {
+                  "type": "string"
+                },
+                "snowplowDomainUserId": {
+                  "type": "string"
+                },
+                "userAgent": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "savedItem": {
+              "properties": {
+                "_createdAt": {
+                  "type": "number"
+                },
+                "_deletedAt": {
+                  "type": "number"
+                },
+                "_updatedAt": {
+                  "type": "number"
+                },
+                "_version": {
+                  "type": "number"
+                },
+                "archivedAt": {
+                  "type": "number"
+                },
+                "favoritedAt": {
+                  "type": "number"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isArchived": {
+                  "type": "boolean"
+                },
+                "isFavorite": {
+                  "type": "boolean"
+                },
+                "item": {
+                  "properties": {
+                    "givenUrl": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "givenUrl"
+                  ],
+                  "type": "object"
+                },
+                "resolvedId": {
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "UNREAD",
+                    "ARCHIVED",
+                    "DELETED",
+                    "HIDDEN"
+                  ],
+                  "type": "string"
+                },
+                "tags": {
+                  "items": {
+                    "properties": {
+                      "_createdAt": {
+                        "type": "number"
+                      },
+                      "_deletedAt": {
+                        "type": "number"
+                      },
+                      "_updatedAt": {
+                        "type": "number"
+                      },
+                      "_version": {
+                        "type": "number"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "savedItems": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "resolvedId",
+                "url",
+                "isFavorite",
+                "status",
+                "isArchived",
+                "item"
+              ],
+              "type": "object"
+            },
+            "source": {
+              "type": "string"
+            },
+            "tags": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "tagsUpdated": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "timestamp": {
+              "type": "number"
+            },
+            "user": {
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "guid": {
+                  "type": "number"
+                },
+                "hashedGuid": {
+                  "type": "string"
+                },
+                "hashedId": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isPremium": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "hashedId",
+                "isPremium"
+              ],
+              "type": "object"
+            },
+            "version": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "apiUser",
+            "eventType",
+            "savedItem",
+            "source",
+            "timestamp",
+            "user",
+            "version"
+          ],
+          "type": "object"
+        },
         "detail-type": {
           "const": "ARCHIVE_ITEM",
           "type": "string"
@@ -335,7 +1027,219 @@
     },
     "ClearTags": {
       "properties": {
-        "detail": {},
+        "detail": {
+          "properties": {
+            "apiUser": {
+              "properties": {
+                "apiId": {
+                  "type": "string"
+                },
+                "clientVersion": {
+                  "type": "string"
+                },
+                "isNative": {
+                  "type": "boolean"
+                },
+                "isTrusted": {
+                  "type": "boolean"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "apiId"
+              ],
+              "type": "object"
+            },
+            "eventType": {
+              "$ref": "#/definitions/ListPocketEventType"
+            },
+            "request": {
+              "properties": {
+                "ipAddress": {
+                  "type": "string"
+                },
+                "language": {
+                  "type": "string"
+                },
+                "snowplowDomainSessionId": {
+                  "type": "string"
+                },
+                "snowplowDomainUserId": {
+                  "type": "string"
+                },
+                "userAgent": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "savedItem": {
+              "properties": {
+                "_createdAt": {
+                  "type": "number"
+                },
+                "_deletedAt": {
+                  "type": "number"
+                },
+                "_updatedAt": {
+                  "type": "number"
+                },
+                "_version": {
+                  "type": "number"
+                },
+                "archivedAt": {
+                  "type": "number"
+                },
+                "favoritedAt": {
+                  "type": "number"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isArchived": {
+                  "type": "boolean"
+                },
+                "isFavorite": {
+                  "type": "boolean"
+                },
+                "item": {
+                  "properties": {
+                    "givenUrl": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "givenUrl"
+                  ],
+                  "type": "object"
+                },
+                "resolvedId": {
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "UNREAD",
+                    "ARCHIVED",
+                    "DELETED",
+                    "HIDDEN"
+                  ],
+                  "type": "string"
+                },
+                "tags": {
+                  "items": {
+                    "properties": {
+                      "_createdAt": {
+                        "type": "number"
+                      },
+                      "_deletedAt": {
+                        "type": "number"
+                      },
+                      "_updatedAt": {
+                        "type": "number"
+                      },
+                      "_version": {
+                        "type": "number"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "savedItems": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "resolvedId",
+                "url",
+                "isFavorite",
+                "status",
+                "isArchived",
+                "item"
+              ],
+              "type": "object"
+            },
+            "source": {
+              "type": "string"
+            },
+            "tags": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "tagsUpdated": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "timestamp": {
+              "type": "number"
+            },
+            "user": {
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "guid": {
+                  "type": "number"
+                },
+                "hashedGuid": {
+                  "type": "string"
+                },
+                "hashedId": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isPremium": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "hashedId",
+                "isPremium"
+              ],
+              "type": "object"
+            },
+            "version": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "apiUser",
+            "eventType",
+            "savedItem",
+            "source",
+            "timestamp",
+            "user",
+            "version"
+          ],
+          "type": "object"
+        },
         "detail-type": {
           "const": "CLEAR_TAGS",
           "type": "string"
@@ -351,9 +1255,737 @@
       ],
       "type": "object"
     },
+    "CollectionAuthor": {
+      "properties": {
+        "active": {
+          "type": "boolean"
+        },
+        "bio": {
+          "type": "string"
+        },
+        "collection_author_id": {
+          "type": "string"
+        },
+        "image_url": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "collection_author_id",
+        "name",
+        "active"
+      ],
+      "type": "object"
+    },
+    "CollectionCreated": {
+      "properties": {
+        "detail": {
+          "$ref": "#/definitions/CollectionPayload"
+        },
+        "detail-type": {
+          "const": "collection-created",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "CollectionEvent": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/CollectionCreated"
+        },
+        {
+          "$ref": "#/definitions/CollectionUpdated"
+        }
+      ]
+    },
+    "CollectionLanguage": {
+      "enum": [
+        "DE",
+        "EN"
+      ],
+      "type": "string"
+    },
+    "CollectionPartnership": {
+      "properties": {
+        "blurb": {
+          "type": "string"
+        },
+        "collection_partnership_id": {
+          "type": "string"
+        },
+        "image_url": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/CollectionPartnershipType"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "collection_partnership_id",
+        "name",
+        "blurb",
+        "image_url",
+        "type",
+        "url"
+      ],
+      "type": "object"
+    },
+    "CollectionPartnershipType": {
+      "enum": [
+        "PARTNERED",
+        "SPONSORED"
+      ],
+      "type": "string"
+    },
+    "CollectionPayload": {
+      "description": "NOTE: The following is from the Content monorepo",
+      "properties": {
+        "collection": {
+          "properties": {
+            "IABChildCategory": {
+              "$ref": "#/definitions/IABChildCategory"
+            },
+            "IABParentCategory": {
+              "$ref": "#/definitions/IABParentCategory"
+            },
+            "authors": {
+              "items": {
+                "$ref": "#/definitions/CollectionAuthor"
+              },
+              "type": "array"
+            },
+            "createdAt": {
+              "type": "number"
+            },
+            "curationCategory": {
+              "$ref": "#/definitions/CurationCategory"
+            },
+            "excerpt": {
+              "type": "string"
+            },
+            "externalId": {
+              "type": "string"
+            },
+            "imageUrl": {
+              "type": "string"
+            },
+            "intro": {
+              "type": "string"
+            },
+            "labels": {
+              "items": {
+                "$ref": "#/definitions/Label"
+              },
+              "type": "array"
+            },
+            "language": {
+              "$ref": "#/definitions/CollectionLanguage"
+            },
+            "partnership": {
+              "$ref": "#/definitions/CollectionPartnership"
+            },
+            "publishedAt": {
+              "type": "number"
+            },
+            "slug": {
+              "type": "string"
+            },
+            "status": {
+              "$ref": "#/definitions/CollectionStatus"
+            },
+            "stories": {
+              "items": {
+                "$ref": "#/definitions/CollectionStory"
+              },
+              "type": "array"
+            },
+            "title": {
+              "type": "string"
+            },
+            "updatedAt": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "externalId",
+            "slug",
+            "title",
+            "status",
+            "language",
+            "authors",
+            "stories",
+            "createdAt",
+            "updatedAt"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "collection"
+      ],
+      "type": "object"
+    },
+    "CollectionPocketEventType": {
+      "anyOf": [
+        {
+          "const": "collection-created",
+          "type": "string"
+        },
+        {
+          "const": "collection-updated",
+          "type": "string"
+        }
+      ]
+    },
+    "CollectionStatus": {
+      "enum": [
+        "draft",
+        "review",
+        "published",
+        "archived"
+      ],
+      "type": "string"
+    },
+    "CollectionStory": {
+      "properties": {
+        "authors": {
+          "items": {
+            "$ref": "#/definitions/CollectionStoryAuthor"
+          },
+          "type": "array"
+        },
+        "collection_story_id": {
+          "type": "string"
+        },
+        "excerpt": {
+          "type": "string"
+        },
+        "image_url": {
+          "type": "string"
+        },
+        "is_from_partner": {
+          "type": "boolean"
+        },
+        "publisher": {
+          "type": "string"
+        },
+        "sort_order": {
+          "type": "number"
+        },
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "collection_story_id",
+        "url",
+        "title",
+        "excerpt",
+        "authors",
+        "is_from_partner"
+      ],
+      "type": "object"
+    },
+    "CollectionStoryAuthor": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "sort_order": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "name",
+        "sort_order"
+      ],
+      "type": "object"
+    },
+    "CollectionUpdated": {
+      "properties": {
+        "detail": {
+          "$ref": "#/definitions/CollectionPayload"
+        },
+        "detail-type": {
+          "const": "collection-updated",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "CorpusEvent": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/CorpusItemAdded"
+        },
+        {
+          "$ref": "#/definitions/CorpusItemUpdated"
+        },
+        {
+          "$ref": "#/definitions/CorpusItemRemoved"
+        }
+      ]
+    },
+    "CorpusItemAdded": {
+      "properties": {
+        "detail": {
+          "$ref": "#/definitions/CorpusItemPayload"
+        },
+        "detail-type": {
+          "const": "add-approved-item",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "CorpusItemPayload": {
+      "properties": {
+        "approvedItemExternalId": {
+          "type": "string"
+        },
+        "authors": {
+          "items": {
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "sortOrder": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "name",
+              "sortOrder"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "createdAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "createdBy": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "datePublished": {
+          "type": "string"
+        },
+        "domainName": {
+          "type": "string"
+        },
+        "eventType": {
+          "type": "string"
+        },
+        "excerpt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "grade": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "imageUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "isCollection": {
+          "type": "boolean"
+        },
+        "isSyndicated": {
+          "type": "boolean"
+        },
+        "isTimeSensitive": {
+          "type": "boolean"
+        },
+        "language": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "publisher": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "topic": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "updatedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "eventType",
+        "approvedItemExternalId",
+        "url"
+      ],
+      "type": "object"
+    },
+    "CorpusItemRemoved": {
+      "properties": {
+        "detail": {
+          "$ref": "#/definitions/CorpusItemPayload"
+        },
+        "detail-type": {
+          "const": "remove-approved-item",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "CorpusItemUpdated": {
+      "properties": {
+        "detail": {
+          "$ref": "#/definitions/CorpusItemPayload"
+        },
+        "detail-type": {
+          "const": "update-approved-item",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "CorpusPocketEventType": {
+      "anyOf": [
+        {
+          "const": "add-approved-item",
+          "type": "string"
+        },
+        {
+          "const": "update-approved-item",
+          "type": "string"
+        },
+        {
+          "const": "remove-approved-item",
+          "type": "string"
+        }
+      ]
+    },
+    "CurationCategory": {
+      "properties": {
+        "collection_curation_category_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "collection_curation_category_id",
+        "name",
+        "slug"
+      ],
+      "type": "object"
+    },
     "DeleteItem": {
       "properties": {
-        "detail": {},
+        "detail": {
+          "properties": {
+            "apiUser": {
+              "properties": {
+                "apiId": {
+                  "type": "string"
+                },
+                "clientVersion": {
+                  "type": "string"
+                },
+                "isNative": {
+                  "type": "boolean"
+                },
+                "isTrusted": {
+                  "type": "boolean"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "apiId"
+              ],
+              "type": "object"
+            },
+            "eventType": {
+              "$ref": "#/definitions/ListPocketEventType"
+            },
+            "request": {
+              "properties": {
+                "ipAddress": {
+                  "type": "string"
+                },
+                "language": {
+                  "type": "string"
+                },
+                "snowplowDomainSessionId": {
+                  "type": "string"
+                },
+                "snowplowDomainUserId": {
+                  "type": "string"
+                },
+                "userAgent": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "savedItem": {
+              "properties": {
+                "_createdAt": {
+                  "type": "number"
+                },
+                "_deletedAt": {
+                  "type": "number"
+                },
+                "_updatedAt": {
+                  "type": "number"
+                },
+                "_version": {
+                  "type": "number"
+                },
+                "archivedAt": {
+                  "type": "number"
+                },
+                "favoritedAt": {
+                  "type": "number"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isArchived": {
+                  "type": "boolean"
+                },
+                "isFavorite": {
+                  "type": "boolean"
+                },
+                "item": {
+                  "properties": {
+                    "givenUrl": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "givenUrl"
+                  ],
+                  "type": "object"
+                },
+                "resolvedId": {
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "UNREAD",
+                    "ARCHIVED",
+                    "DELETED",
+                    "HIDDEN"
+                  ],
+                  "type": "string"
+                },
+                "tags": {
+                  "items": {
+                    "properties": {
+                      "_createdAt": {
+                        "type": "number"
+                      },
+                      "_deletedAt": {
+                        "type": "number"
+                      },
+                      "_updatedAt": {
+                        "type": "number"
+                      },
+                      "_version": {
+                        "type": "number"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "savedItems": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "resolvedId",
+                "url",
+                "isFavorite",
+                "status",
+                "isArchived",
+                "item"
+              ],
+              "type": "object"
+            },
+            "source": {
+              "type": "string"
+            },
+            "tags": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "tagsUpdated": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "timestamp": {
+              "type": "number"
+            },
+            "user": {
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "guid": {
+                  "type": "number"
+                },
+                "hashedGuid": {
+                  "type": "string"
+                },
+                "hashedId": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isPremium": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "hashedId",
+                "isPremium"
+              ],
+              "type": "object"
+            },
+            "version": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "apiUser",
+            "eventType",
+            "savedItem",
+            "source",
+            "timestamp",
+            "user",
+            "version"
+          ],
+          "type": "object"
+        },
         "detail-type": {
           "const": "DELETE_ITEM",
           "type": "string"
@@ -371,7 +2003,219 @@
     },
     "DeleteTag": {
       "properties": {
-        "detail": {},
+        "detail": {
+          "properties": {
+            "apiUser": {
+              "properties": {
+                "apiId": {
+                  "type": "string"
+                },
+                "clientVersion": {
+                  "type": "string"
+                },
+                "isNative": {
+                  "type": "boolean"
+                },
+                "isTrusted": {
+                  "type": "boolean"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "apiId"
+              ],
+              "type": "object"
+            },
+            "eventType": {
+              "$ref": "#/definitions/ListPocketEventType"
+            },
+            "request": {
+              "properties": {
+                "ipAddress": {
+                  "type": "string"
+                },
+                "language": {
+                  "type": "string"
+                },
+                "snowplowDomainSessionId": {
+                  "type": "string"
+                },
+                "snowplowDomainUserId": {
+                  "type": "string"
+                },
+                "userAgent": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "savedItem": {
+              "properties": {
+                "_createdAt": {
+                  "type": "number"
+                },
+                "_deletedAt": {
+                  "type": "number"
+                },
+                "_updatedAt": {
+                  "type": "number"
+                },
+                "_version": {
+                  "type": "number"
+                },
+                "archivedAt": {
+                  "type": "number"
+                },
+                "favoritedAt": {
+                  "type": "number"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isArchived": {
+                  "type": "boolean"
+                },
+                "isFavorite": {
+                  "type": "boolean"
+                },
+                "item": {
+                  "properties": {
+                    "givenUrl": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "givenUrl"
+                  ],
+                  "type": "object"
+                },
+                "resolvedId": {
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "UNREAD",
+                    "ARCHIVED",
+                    "DELETED",
+                    "HIDDEN"
+                  ],
+                  "type": "string"
+                },
+                "tags": {
+                  "items": {
+                    "properties": {
+                      "_createdAt": {
+                        "type": "number"
+                      },
+                      "_deletedAt": {
+                        "type": "number"
+                      },
+                      "_updatedAt": {
+                        "type": "number"
+                      },
+                      "_version": {
+                        "type": "number"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "savedItems": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "resolvedId",
+                "url",
+                "isFavorite",
+                "status",
+                "isArchived",
+                "item"
+              ],
+              "type": "object"
+            },
+            "source": {
+              "type": "string"
+            },
+            "tags": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "tagsUpdated": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "timestamp": {
+              "type": "number"
+            },
+            "user": {
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "guid": {
+                  "type": "number"
+                },
+                "hashedGuid": {
+                  "type": "string"
+                },
+                "hashedId": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isPremium": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "hashedId",
+                "isPremium"
+              ],
+              "type": "object"
+            },
+            "version": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "apiUser",
+            "eventType",
+            "savedItem",
+            "source",
+            "timestamp",
+            "user",
+            "version"
+          ],
+          "type": "object"
+        },
         "detail-type": {
           "const": "DELETE_TAG",
           "type": "string"
@@ -427,7 +2271,106 @@
     },
     "ExportRequested": {
       "properties": {
-        "detail": {},
+        "detail": {
+          "properties": {
+            "apiUser": {
+              "properties": {
+                "apiId": {
+                  "type": "string"
+                },
+                "clientVersion": {
+                  "type": "string"
+                },
+                "isNative": {
+                  "type": "boolean"
+                },
+                "isTrusted": {
+                  "type": "boolean"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "apiId"
+              ],
+              "type": "object"
+            },
+            "cursor": {
+              "type": "number"
+            },
+            "encodedId": {
+              "type": "string"
+            },
+            "part": {
+              "type": "number"
+            },
+            "request": {
+              "properties": {
+                "ipAddress": {
+                  "type": "string"
+                },
+                "language": {
+                  "type": "string"
+                },
+                "snowplowDomainSessionId": {
+                  "type": "string"
+                },
+                "snowplowDomainUserId": {
+                  "type": "string"
+                },
+                "userAgent": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "requestId": {
+              "type": "string"
+            },
+            "user": {
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "guid": {
+                  "type": "number"
+                },
+                "hashedGuid": {
+                  "type": "string"
+                },
+                "hashedId": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isPremium": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "hashedId",
+                "isPremium"
+              ],
+              "type": "object"
+            },
+            "userId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "apiUser",
+            "cursor",
+            "encodedId",
+            "part",
+            "requestId",
+            "user",
+            "userId"
+          ],
+          "type": "object"
+        },
         "detail-type": {
           "const": "list-export-requested",
           "type": "string"
@@ -445,7 +2388,219 @@
     },
     "FavoriteItem": {
       "properties": {
-        "detail": {},
+        "detail": {
+          "properties": {
+            "apiUser": {
+              "properties": {
+                "apiId": {
+                  "type": "string"
+                },
+                "clientVersion": {
+                  "type": "string"
+                },
+                "isNative": {
+                  "type": "boolean"
+                },
+                "isTrusted": {
+                  "type": "boolean"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "apiId"
+              ],
+              "type": "object"
+            },
+            "eventType": {
+              "$ref": "#/definitions/ListPocketEventType"
+            },
+            "request": {
+              "properties": {
+                "ipAddress": {
+                  "type": "string"
+                },
+                "language": {
+                  "type": "string"
+                },
+                "snowplowDomainSessionId": {
+                  "type": "string"
+                },
+                "snowplowDomainUserId": {
+                  "type": "string"
+                },
+                "userAgent": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "savedItem": {
+              "properties": {
+                "_createdAt": {
+                  "type": "number"
+                },
+                "_deletedAt": {
+                  "type": "number"
+                },
+                "_updatedAt": {
+                  "type": "number"
+                },
+                "_version": {
+                  "type": "number"
+                },
+                "archivedAt": {
+                  "type": "number"
+                },
+                "favoritedAt": {
+                  "type": "number"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isArchived": {
+                  "type": "boolean"
+                },
+                "isFavorite": {
+                  "type": "boolean"
+                },
+                "item": {
+                  "properties": {
+                    "givenUrl": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "givenUrl"
+                  ],
+                  "type": "object"
+                },
+                "resolvedId": {
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "UNREAD",
+                    "ARCHIVED",
+                    "DELETED",
+                    "HIDDEN"
+                  ],
+                  "type": "string"
+                },
+                "tags": {
+                  "items": {
+                    "properties": {
+                      "_createdAt": {
+                        "type": "number"
+                      },
+                      "_deletedAt": {
+                        "type": "number"
+                      },
+                      "_updatedAt": {
+                        "type": "number"
+                      },
+                      "_version": {
+                        "type": "number"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "savedItems": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "resolvedId",
+                "url",
+                "isFavorite",
+                "status",
+                "isArchived",
+                "item"
+              ],
+              "type": "object"
+            },
+            "source": {
+              "type": "string"
+            },
+            "tags": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "tagsUpdated": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "timestamp": {
+              "type": "number"
+            },
+            "user": {
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "guid": {
+                  "type": "number"
+                },
+                "hashedGuid": {
+                  "type": "string"
+                },
+                "hashedId": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isPremium": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "hashedId",
+                "isPremium"
+              ],
+              "type": "object"
+            },
+            "version": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "apiUser",
+            "eventType",
+            "savedItem",
+            "source",
+            "timestamp",
+            "user",
+            "version"
+          ],
+          "type": "object"
+        },
         "detail-type": {
           "const": "FAVORITE_ITEM",
           "type": "string"
@@ -460,6 +2615,24 @@
         "source"
       ],
       "type": "object"
+    },
+    "Filter": {
+      "enum": [
+        "domain",
+        "title",
+        "tags",
+        "contentType",
+        "status",
+        "isFavorite",
+        "publishedDateRange",
+        "topic",
+        "excludeML",
+        "excludeCollections",
+        "addedDateRange",
+        "publisher",
+        "author"
+      ],
+      "type": "string"
     },
     "ForgotPasswordRequest": {
       "properties": {
@@ -526,6 +2699,44 @@
       ],
       "type": "object"
     },
+    "IABChildCategory": {
+      "properties": {
+        "collection_iab_child_category_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "collection_iab_child_category_id",
+        "name",
+        "slug"
+      ],
+      "type": "object"
+    },
+    "IABParentCategory": {
+      "properties": {
+        "collection_iab_parent_category_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "collection_iab_parent_category_id",
+        "name",
+        "slug"
+      ],
+      "type": "object"
+    },
     "IncomingBaseEvent": {
       "description": "A base event that all events should extend from when they are Received only, not sent.",
       "properties": {
@@ -564,6 +2775,64 @@
         "version"
       ],
       "type": "object"
+    },
+    "Label": {
+      "properties": {
+        "collection_label_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "collection_label_id",
+        "name"
+      ],
+      "type": "object"
+    },
+    "ListEvent": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/AddItem"
+        },
+        {
+          "$ref": "#/definitions/DeleteItem"
+        },
+        {
+          "$ref": "#/definitions/FavoriteItem"
+        },
+        {
+          "$ref": "#/definitions/UnfavoriteItem"
+        },
+        {
+          "$ref": "#/definitions/ArchiveItem"
+        },
+        {
+          "$ref": "#/definitions/UnarchiveItem"
+        },
+        {
+          "$ref": "#/definitions/AddTags"
+        },
+        {
+          "$ref": "#/definitions/ReplaceTags"
+        },
+        {
+          "$ref": "#/definitions/ClearTags"
+        },
+        {
+          "$ref": "#/definitions/RemoveTags"
+        },
+        {
+          "$ref": "#/definitions/RenameTag"
+        },
+        {
+          "$ref": "#/definitions/DeleteTag"
+        },
+        {
+          "$ref": "#/definitions/UpdateTitle"
+        }
+      ]
     },
     "ListPocketEventType": {
       "anyOf": [
@@ -672,6 +2941,165 @@
       ],
       "type": "object"
     },
+    "Prospect": {
+      "properties": {
+        "approvedCorpusItem": {
+          "properties": {
+            "url": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "url"
+          ],
+          "type": "object"
+        },
+        "authors": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "number"
+        },
+        "curated": {
+          "type": "boolean"
+        },
+        "domain": {
+          "type": "string"
+        },
+        "excerpt": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "imageUrl": {
+          "type": "string"
+        },
+        "isCollection": {
+          "type": "boolean"
+        },
+        "isSyndicated": {
+          "type": "boolean"
+        },
+        "language": {
+          "type": "string"
+        },
+        "prospectId": {
+          "type": "string"
+        },
+        "prospectReviewStatus": {
+          "$ref": "#/definitions/ProspectReviewStatus"
+        },
+        "prospectType": {
+          "type": "string"
+        },
+        "publisher": {
+          "type": "string"
+        },
+        "rank": {
+          "type": "number"
+        },
+        "rejectedCorpusItem": {
+          "properties": {
+            "url": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "url"
+          ],
+          "type": "object"
+        },
+        "reviewedAt": {
+          "type": "number"
+        },
+        "reviewedBy": {
+          "type": "string"
+        },
+        "saveCount": {
+          "type": "number"
+        },
+        "scheduledSurfaceGuid": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "topic": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "prospectId",
+        "scheduledSurfaceGuid",
+        "prospectType",
+        "url",
+        "saveCount",
+        "rank",
+        "prospectReviewStatus"
+      ],
+      "type": "object"
+    },
+    "ProspectBaseEvent": {
+      "properties": {
+        "detail": {
+          "$ref": "#/definitions/Prospect"
+        },
+        "detail-type": {
+          "$ref": "#/definitions/ProspectPocketEventType"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ProspectDismissed": {
+      "properties": {
+        "detail": {
+          "$ref": "#/definitions/Prospect"
+        },
+        "detail-type": {
+          "const": "prospect-dismiss",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ProspectEvent": {
+      "$ref": "#/definitions/ProspectDismissed"
+    },
+    "ProspectPocketEventType": {
+      "const": "prospect-dismiss",
+      "type": "string"
+    },
+    "ProspectReviewStatus": {
+      "enum": [
+        "created",
+        "recommendation",
+        "corpus",
+        "rejected",
+        "dismissed"
+      ],
+      "type": "string"
+    },
     "Purchase": {
       "properties": {
         "amount": {
@@ -713,7 +3141,219 @@
     },
     "RemoveTags": {
       "properties": {
-        "detail": {},
+        "detail": {
+          "properties": {
+            "apiUser": {
+              "properties": {
+                "apiId": {
+                  "type": "string"
+                },
+                "clientVersion": {
+                  "type": "string"
+                },
+                "isNative": {
+                  "type": "boolean"
+                },
+                "isTrusted": {
+                  "type": "boolean"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "apiId"
+              ],
+              "type": "object"
+            },
+            "eventType": {
+              "$ref": "#/definitions/ListPocketEventType"
+            },
+            "request": {
+              "properties": {
+                "ipAddress": {
+                  "type": "string"
+                },
+                "language": {
+                  "type": "string"
+                },
+                "snowplowDomainSessionId": {
+                  "type": "string"
+                },
+                "snowplowDomainUserId": {
+                  "type": "string"
+                },
+                "userAgent": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "savedItem": {
+              "properties": {
+                "_createdAt": {
+                  "type": "number"
+                },
+                "_deletedAt": {
+                  "type": "number"
+                },
+                "_updatedAt": {
+                  "type": "number"
+                },
+                "_version": {
+                  "type": "number"
+                },
+                "archivedAt": {
+                  "type": "number"
+                },
+                "favoritedAt": {
+                  "type": "number"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isArchived": {
+                  "type": "boolean"
+                },
+                "isFavorite": {
+                  "type": "boolean"
+                },
+                "item": {
+                  "properties": {
+                    "givenUrl": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "givenUrl"
+                  ],
+                  "type": "object"
+                },
+                "resolvedId": {
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "UNREAD",
+                    "ARCHIVED",
+                    "DELETED",
+                    "HIDDEN"
+                  ],
+                  "type": "string"
+                },
+                "tags": {
+                  "items": {
+                    "properties": {
+                      "_createdAt": {
+                        "type": "number"
+                      },
+                      "_deletedAt": {
+                        "type": "number"
+                      },
+                      "_updatedAt": {
+                        "type": "number"
+                      },
+                      "_version": {
+                        "type": "number"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "savedItems": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "resolvedId",
+                "url",
+                "isFavorite",
+                "status",
+                "isArchived",
+                "item"
+              ],
+              "type": "object"
+            },
+            "source": {
+              "type": "string"
+            },
+            "tags": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "tagsUpdated": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "timestamp": {
+              "type": "number"
+            },
+            "user": {
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "guid": {
+                  "type": "number"
+                },
+                "hashedGuid": {
+                  "type": "string"
+                },
+                "hashedId": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isPremium": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "hashedId",
+                "isPremium"
+              ],
+              "type": "object"
+            },
+            "version": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "apiUser",
+            "eventType",
+            "savedItem",
+            "source",
+            "timestamp",
+            "user",
+            "version"
+          ],
+          "type": "object"
+        },
         "detail-type": {
           "const": "REMOVE_TAGS",
           "type": "string"
@@ -731,7 +3371,219 @@
     },
     "RenameTag": {
       "properties": {
-        "detail": {},
+        "detail": {
+          "properties": {
+            "apiUser": {
+              "properties": {
+                "apiId": {
+                  "type": "string"
+                },
+                "clientVersion": {
+                  "type": "string"
+                },
+                "isNative": {
+                  "type": "boolean"
+                },
+                "isTrusted": {
+                  "type": "boolean"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "apiId"
+              ],
+              "type": "object"
+            },
+            "eventType": {
+              "$ref": "#/definitions/ListPocketEventType"
+            },
+            "request": {
+              "properties": {
+                "ipAddress": {
+                  "type": "string"
+                },
+                "language": {
+                  "type": "string"
+                },
+                "snowplowDomainSessionId": {
+                  "type": "string"
+                },
+                "snowplowDomainUserId": {
+                  "type": "string"
+                },
+                "userAgent": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "savedItem": {
+              "properties": {
+                "_createdAt": {
+                  "type": "number"
+                },
+                "_deletedAt": {
+                  "type": "number"
+                },
+                "_updatedAt": {
+                  "type": "number"
+                },
+                "_version": {
+                  "type": "number"
+                },
+                "archivedAt": {
+                  "type": "number"
+                },
+                "favoritedAt": {
+                  "type": "number"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isArchived": {
+                  "type": "boolean"
+                },
+                "isFavorite": {
+                  "type": "boolean"
+                },
+                "item": {
+                  "properties": {
+                    "givenUrl": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "givenUrl"
+                  ],
+                  "type": "object"
+                },
+                "resolvedId": {
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "UNREAD",
+                    "ARCHIVED",
+                    "DELETED",
+                    "HIDDEN"
+                  ],
+                  "type": "string"
+                },
+                "tags": {
+                  "items": {
+                    "properties": {
+                      "_createdAt": {
+                        "type": "number"
+                      },
+                      "_deletedAt": {
+                        "type": "number"
+                      },
+                      "_updatedAt": {
+                        "type": "number"
+                      },
+                      "_version": {
+                        "type": "number"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "savedItems": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "resolvedId",
+                "url",
+                "isFavorite",
+                "status",
+                "isArchived",
+                "item"
+              ],
+              "type": "object"
+            },
+            "source": {
+              "type": "string"
+            },
+            "tags": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "tagsUpdated": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "timestamp": {
+              "type": "number"
+            },
+            "user": {
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "guid": {
+                  "type": "number"
+                },
+                "hashedGuid": {
+                  "type": "string"
+                },
+                "hashedId": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isPremium": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "hashedId",
+                "isPremium"
+              ],
+              "type": "object"
+            },
+            "version": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "apiUser",
+            "eventType",
+            "savedItem",
+            "source",
+            "timestamp",
+            "user",
+            "version"
+          ],
+          "type": "object"
+        },
         "detail-type": {
           "const": "RENAME_TAG",
           "type": "string"
@@ -749,7 +3601,219 @@
     },
     "ReplaceTags": {
       "properties": {
-        "detail": {},
+        "detail": {
+          "properties": {
+            "apiUser": {
+              "properties": {
+                "apiId": {
+                  "type": "string"
+                },
+                "clientVersion": {
+                  "type": "string"
+                },
+                "isNative": {
+                  "type": "boolean"
+                },
+                "isTrusted": {
+                  "type": "boolean"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "apiId"
+              ],
+              "type": "object"
+            },
+            "eventType": {
+              "$ref": "#/definitions/ListPocketEventType"
+            },
+            "request": {
+              "properties": {
+                "ipAddress": {
+                  "type": "string"
+                },
+                "language": {
+                  "type": "string"
+                },
+                "snowplowDomainSessionId": {
+                  "type": "string"
+                },
+                "snowplowDomainUserId": {
+                  "type": "string"
+                },
+                "userAgent": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "savedItem": {
+              "properties": {
+                "_createdAt": {
+                  "type": "number"
+                },
+                "_deletedAt": {
+                  "type": "number"
+                },
+                "_updatedAt": {
+                  "type": "number"
+                },
+                "_version": {
+                  "type": "number"
+                },
+                "archivedAt": {
+                  "type": "number"
+                },
+                "favoritedAt": {
+                  "type": "number"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isArchived": {
+                  "type": "boolean"
+                },
+                "isFavorite": {
+                  "type": "boolean"
+                },
+                "item": {
+                  "properties": {
+                    "givenUrl": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "givenUrl"
+                  ],
+                  "type": "object"
+                },
+                "resolvedId": {
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "UNREAD",
+                    "ARCHIVED",
+                    "DELETED",
+                    "HIDDEN"
+                  ],
+                  "type": "string"
+                },
+                "tags": {
+                  "items": {
+                    "properties": {
+                      "_createdAt": {
+                        "type": "number"
+                      },
+                      "_deletedAt": {
+                        "type": "number"
+                      },
+                      "_updatedAt": {
+                        "type": "number"
+                      },
+                      "_version": {
+                        "type": "number"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "savedItems": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "resolvedId",
+                "url",
+                "isFavorite",
+                "status",
+                "isArchived",
+                "item"
+              ],
+              "type": "object"
+            },
+            "source": {
+              "type": "string"
+            },
+            "tags": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "tagsUpdated": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "timestamp": {
+              "type": "number"
+            },
+            "user": {
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "guid": {
+                  "type": "number"
+                },
+                "hashedGuid": {
+                  "type": "string"
+                },
+                "hashedId": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isPremium": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "hashedId",
+                "isPremium"
+              ],
+              "type": "object"
+            },
+            "version": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "apiUser",
+            "eventType",
+            "savedItem",
+            "source",
+            "timestamp",
+            "user",
+            "version"
+          ],
+          "type": "object"
+        },
         "detail-type": {
           "const": "REPLACE_TAGS",
           "type": "string"
@@ -765,9 +3829,1036 @@
       ],
       "type": "object"
     },
+    "Scope": {
+      "description": "Identifies the fields which were searched.",
+      "enum": [
+        "all",
+        "all_contentful",
+        "title",
+        "excerpt",
+        "content",
+        "publisher"
+      ],
+      "type": "string"
+    },
+    "SearchEvent": {
+      "$ref": "#/definitions/SearchResponseGenerated"
+    },
+    "SearchPocketEventType": {
+      "const": "search_response_generated",
+      "type": "string"
+    },
+    "SearchResponseGenerated": {
+      "properties": {
+        "detail": {
+          "properties": {
+            "event": {
+              "properties": {
+                "apiUser": {
+                  "properties": {
+                    "api_id": {
+                      "type": "number"
+                    },
+                    "is_native": {
+                      "type": "boolean"
+                    },
+                    "is_trusted": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "api_id",
+                    "is_native",
+                    "is_trusted"
+                  ],
+                  "type": "object"
+                },
+                "search": {
+                  "description": "Event triggered when SearchResults are returned from Pocket's search api (for saves and corpus). Entities included: api_user; sometimes user, feature_flag.",
+                  "properties": {
+                    "id": {
+                      "description": "A unique ID for this result",
+                      "type": "string"
+                    },
+                    "result_count_total": {
+                      "description": "Number of results in the result set.",
+                      "type": "number"
+                    },
+                    "result_urls": {
+                      "description": "Ordered result of urls in the search result connection",
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    },
+                    "returned_at": {
+                      "description": "UNIX time in seconds when the results were sent by the Search API.",
+                      "type": "number"
+                    },
+                    "search_query": {
+                      "description": "The search query",
+                      "properties": {
+                        "filter": {
+                          "description": "Identifies the filters which were applied to the search, if applicable.",
+                          "items": {
+                            "$ref": "#/definitions/Filter"
+                          },
+                          "type": "array"
+                        },
+                        "language": {
+                          "description": "2-5 character language code to indicate the language the search was performed in",
+                          "type": "string"
+                        },
+                        "query": {
+                          "type": "string"
+                        },
+                        "scope": {
+                          "$ref": "#/definitions/Scope",
+                          "description": "Identifies the fields which were searched."
+                        }
+                      },
+                      "required": [
+                        "filter",
+                        "query",
+                        "scope"
+                      ],
+                      "type": "object"
+                    },
+                    "search_type": {
+                      "description": "Identifies the corpus that was searched",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "result_count_total",
+                    "result_urls",
+                    "returned_at",
+                    "search_query",
+                    "search_type"
+                  ],
+                  "type": "object"
+                },
+                "user": {
+                  "properties": {
+                    "guid": {
+                      "type": "number"
+                    },
+                    "hashed_guid": {
+                      "type": "string"
+                    },
+                    "hashed_user_id": {
+                      "type": "string"
+                    },
+                    "user_id": {
+                      "type": "number"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "required": [
+                "search",
+                "user",
+                "apiUser"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "event"
+          ],
+          "type": "object"
+        },
+        "detail-type": {
+          "const": "search_response_generated",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareContextUpdated": {
+      "properties": {
+        "detail": {
+          "properties": {
+            "pocketShare": {
+              "properties": {
+                "created_at": {
+                  "type": "number"
+                },
+                "note_length": {
+                  "type": "number"
+                },
+                "quote_count": {
+                  "type": "number"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "target_url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "target_url",
+                "created_at",
+                "slug",
+                "note_length",
+                "quote_count"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "pocketShare"
+          ],
+          "type": "object"
+        },
+        "detail-type": {
+          "const": "pocket_share_context_updated",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareCreated": {
+      "properties": {
+        "detail": {
+          "properties": {
+            "pocketShare": {
+              "properties": {
+                "created_at": {
+                  "type": "number"
+                },
+                "note_length": {
+                  "type": "number"
+                },
+                "quote_count": {
+                  "type": "number"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "target_url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "target_url",
+                "created_at",
+                "slug",
+                "note_length",
+                "quote_count"
+              ],
+              "type": "object"
+            }
+          },
+          "required": [
+            "pocketShare"
+          ],
+          "type": "object"
+        },
+        "detail-type": {
+          "const": "pocket_share_created",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareEvent": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/ShareCreated"
+        },
+        {
+          "$ref": "#/definitions/ShareContextUpdated"
+        }
+      ]
+    },
+    "SharePocketEventType": {
+      "anyOf": [
+        {
+          "const": "pocket_share_created",
+          "type": "string"
+        },
+        {
+          "const": "pocket_share_context_updated",
+          "type": "string"
+        }
+      ]
+    },
+    "ShareableList": {
+      "properties": {
+        "created_at": {
+          "description": "The timestamp in seconds when the item was created",
+          "type": "number"
+        },
+        "description": {
+          "type": "string"
+        },
+        "list_item_note_visibility": {
+          "$ref": "#/definitions/ShareableListVisibility"
+        },
+        "moderated_by": {
+          "type": "string"
+        },
+        "moderation_details": {
+          "type": "string"
+        },
+        "moderation_reason": {
+          "type": "string"
+        },
+        "moderation_status": {
+          "$ref": "#/definitions/ShareableListModerationVisibility"
+        },
+        "restoration_reason": {
+          "type": "string"
+        },
+        "shareable_list_external_id": {
+          "type": "string"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/ShareableListVisibility"
+        },
+        "title": {
+          "type": "string"
+        },
+        "updated_at": {
+          "description": "The timestamp in seconds when the item was last updated",
+          "type": "number"
+        },
+        "user_id": {
+          "type": [
+            "number"
+          ]
+        }
+      },
+      "required": [
+        "shareable_list_external_id",
+        "user_id",
+        "title",
+        "status",
+        "list_item_note_visibility",
+        "moderation_status",
+        "created_at"
+      ],
+      "type": "object"
+    },
+    "ShareableListCreated": {
+      "properties": {
+        "detail": {
+          "properties": {
+            "eventType": {
+              "$ref": "#/definitions/ShareableListPocketEventType"
+            },
+            "shareableList": {
+              "$ref": "#/definitions/ShareableList"
+            }
+          },
+          "required": [
+            "shareableList",
+            "eventType"
+          ],
+          "type": "object"
+        },
+        "detail-type": {
+          "const": "shareable_list_created",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareableListDeleted": {
+      "properties": {
+        "detail": {
+          "properties": {
+            "eventType": {
+              "$ref": "#/definitions/ShareableListPocketEventType"
+            },
+            "shareableList": {
+              "$ref": "#/definitions/ShareableList"
+            }
+          },
+          "required": [
+            "shareableList",
+            "eventType"
+          ],
+          "type": "object"
+        },
+        "detail-type": {
+          "const": "shareable_list_deleted",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareableListEvent": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/ShareableListCreated"
+        },
+        {
+          "$ref": "#/definitions/ShareableListUpdated"
+        },
+        {
+          "$ref": "#/definitions/ShareableListDeleted"
+        },
+        {
+          "$ref": "#/definitions/ShareableListHidden"
+        },
+        {
+          "$ref": "#/definitions/ShareableListUnhidden"
+        },
+        {
+          "$ref": "#/definitions/ShareableListPublished"
+        },
+        {
+          "$ref": "#/definitions/ShareableListUnpublished"
+        }
+      ]
+    },
+    "ShareableListHidden": {
+      "properties": {
+        "detail": {
+          "properties": {
+            "eventType": {
+              "$ref": "#/definitions/ShareableListPocketEventType"
+            },
+            "shareableList": {
+              "$ref": "#/definitions/ShareableList"
+            }
+          },
+          "required": [
+            "shareableList",
+            "eventType"
+          ],
+          "type": "object"
+        },
+        "detail-type": {
+          "const": "shareable_list_hidden",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareableListItem": {
+      "properties": {
+        "authors": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "created_at": {
+          "description": "The timestamp in seconds when the item was created",
+          "type": "number"
+        },
+        "excerpt": {
+          "type": "string"
+        },
+        "given_url": {
+          "type": "string"
+        },
+        "image_url": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "publisher": {
+          "type": "string"
+        },
+        "shareable_list_external_id": {
+          "type": "string"
+        },
+        "shareable_list_item_external_id": {
+          "type": "string"
+        },
+        "sort_order": {
+          "type": "number"
+        },
+        "title": {
+          "type": "string"
+        },
+        "updated_at": {
+          "description": "The timestamp in seconds when the item was last updated",
+          "type": "number"
+        }
+      },
+      "required": [
+        "shareable_list_item_external_id",
+        "shareable_list_external_id",
+        "given_url",
+        "sort_order",
+        "created_at"
+      ],
+      "type": "object"
+    },
+    "ShareableListItemCreated": {
+      "properties": {
+        "detail": {
+          "properties": {
+            "eventType": {
+              "$ref": "#/definitions/ShareableListItemPocketEventType"
+            },
+            "shareableListItem": {
+              "$ref": "#/definitions/ShareableListItem"
+            }
+          },
+          "required": [
+            "shareableListItem",
+            "eventType"
+          ],
+          "type": "object"
+        },
+        "detail-type": {
+          "const": "shareable_list_item_created",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareableListItemDeleted": {
+      "properties": {
+        "detail": {
+          "properties": {
+            "eventType": {
+              "$ref": "#/definitions/ShareableListItemPocketEventType"
+            },
+            "shareableListItem": {
+              "$ref": "#/definitions/ShareableListItem"
+            }
+          },
+          "required": [
+            "shareableListItem",
+            "eventType"
+          ],
+          "type": "object"
+        },
+        "detail-type": {
+          "const": "shareable_list_item_deleted",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareableListItemEvent": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/ShareableListItemCreated"
+        },
+        {
+          "$ref": "#/definitions/ShareableListItemUpdated"
+        },
+        {
+          "$ref": "#/definitions/ShareableListItemDeleted"
+        }
+      ]
+    },
+    "ShareableListItemPocketEventType": {
+      "anyOf": [
+        {
+          "const": "shareable_list_item_created",
+          "type": "string"
+        },
+        {
+          "const": "shareable_list_item_updated",
+          "type": "string"
+        },
+        {
+          "const": "shareable_list_item_deleted",
+          "type": "string"
+        }
+      ]
+    },
+    "ShareableListItemUpdated": {
+      "properties": {
+        "detail": {
+          "properties": {
+            "eventType": {
+              "$ref": "#/definitions/ShareableListItemPocketEventType"
+            },
+            "shareableListItem": {
+              "$ref": "#/definitions/ShareableListItem"
+            }
+          },
+          "required": [
+            "shareableListItem",
+            "eventType"
+          ],
+          "type": "object"
+        },
+        "detail-type": {
+          "const": "shareable_list_item_updated",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareableListModerationVisibility": {
+      "enum": [
+        "VISIBLE",
+        "HIDDEN"
+      ],
+      "type": "string"
+    },
+    "ShareableListPocketEventType": {
+      "anyOf": [
+        {
+          "const": "shareable_list_created",
+          "type": "string"
+        },
+        {
+          "const": "shareable_list_updated",
+          "type": "string"
+        },
+        {
+          "const": "shareable_list_deleted",
+          "type": "string"
+        },
+        {
+          "const": "shareable_list_hidden",
+          "type": "string"
+        },
+        {
+          "const": "shareable_list_unhidden",
+          "type": "string"
+        },
+        {
+          "const": "shareable_list_published",
+          "type": "string"
+        },
+        {
+          "const": "shareable_list_unpublished",
+          "type": "string"
+        }
+      ]
+    },
+    "ShareableListPublished": {
+      "properties": {
+        "detail": {
+          "properties": {
+            "eventType": {
+              "$ref": "#/definitions/ShareableListPocketEventType"
+            },
+            "shareableList": {
+              "$ref": "#/definitions/ShareableList"
+            }
+          },
+          "required": [
+            "shareableList",
+            "eventType"
+          ],
+          "type": "object"
+        },
+        "detail-type": {
+          "const": "shareable_list_published",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareableListUnhidden": {
+      "properties": {
+        "detail": {
+          "properties": {
+            "eventType": {
+              "$ref": "#/definitions/ShareableListPocketEventType"
+            },
+            "shareableList": {
+              "$ref": "#/definitions/ShareableList"
+            }
+          },
+          "required": [
+            "shareableList",
+            "eventType"
+          ],
+          "type": "object"
+        },
+        "detail-type": {
+          "const": "shareable_list_unhidden",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareableListUnpublished": {
+      "properties": {
+        "detail": {
+          "properties": {
+            "eventType": {
+              "$ref": "#/definitions/ShareableListPocketEventType"
+            },
+            "shareableList": {
+              "$ref": "#/definitions/ShareableList"
+            }
+          },
+          "required": [
+            "shareableList",
+            "eventType"
+          ],
+          "type": "object"
+        },
+        "detail-type": {
+          "const": "shareable_list_unpublished",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareableListUpdated": {
+      "properties": {
+        "detail": {
+          "properties": {
+            "eventType": {
+              "$ref": "#/definitions/ShareableListPocketEventType"
+            },
+            "shareableList": {
+              "$ref": "#/definitions/ShareableList"
+            }
+          },
+          "required": [
+            "shareableList",
+            "eventType"
+          ],
+          "type": "object"
+        },
+        "detail-type": {
+          "const": "shareable_list_updated",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
+    "ShareableListVisibility": {
+      "enum": [
+        "PRIVATE",
+        "PUBLIC"
+      ],
+      "type": "string"
+    },
     "UnarchiveItem": {
       "properties": {
-        "detail": {},
+        "detail": {
+          "properties": {
+            "apiUser": {
+              "properties": {
+                "apiId": {
+                  "type": "string"
+                },
+                "clientVersion": {
+                  "type": "string"
+                },
+                "isNative": {
+                  "type": "boolean"
+                },
+                "isTrusted": {
+                  "type": "boolean"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "apiId"
+              ],
+              "type": "object"
+            },
+            "eventType": {
+              "$ref": "#/definitions/ListPocketEventType"
+            },
+            "request": {
+              "properties": {
+                "ipAddress": {
+                  "type": "string"
+                },
+                "language": {
+                  "type": "string"
+                },
+                "snowplowDomainSessionId": {
+                  "type": "string"
+                },
+                "snowplowDomainUserId": {
+                  "type": "string"
+                },
+                "userAgent": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "savedItem": {
+              "properties": {
+                "_createdAt": {
+                  "type": "number"
+                },
+                "_deletedAt": {
+                  "type": "number"
+                },
+                "_updatedAt": {
+                  "type": "number"
+                },
+                "_version": {
+                  "type": "number"
+                },
+                "archivedAt": {
+                  "type": "number"
+                },
+                "favoritedAt": {
+                  "type": "number"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isArchived": {
+                  "type": "boolean"
+                },
+                "isFavorite": {
+                  "type": "boolean"
+                },
+                "item": {
+                  "properties": {
+                    "givenUrl": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "givenUrl"
+                  ],
+                  "type": "object"
+                },
+                "resolvedId": {
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "UNREAD",
+                    "ARCHIVED",
+                    "DELETED",
+                    "HIDDEN"
+                  ],
+                  "type": "string"
+                },
+                "tags": {
+                  "items": {
+                    "properties": {
+                      "_createdAt": {
+                        "type": "number"
+                      },
+                      "_deletedAt": {
+                        "type": "number"
+                      },
+                      "_updatedAt": {
+                        "type": "number"
+                      },
+                      "_version": {
+                        "type": "number"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "savedItems": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "resolvedId",
+                "url",
+                "isFavorite",
+                "status",
+                "isArchived",
+                "item"
+              ],
+              "type": "object"
+            },
+            "source": {
+              "type": "string"
+            },
+            "tags": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "tagsUpdated": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "timestamp": {
+              "type": "number"
+            },
+            "user": {
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "guid": {
+                  "type": "number"
+                },
+                "hashedGuid": {
+                  "type": "string"
+                },
+                "hashedId": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isPremium": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "hashedId",
+                "isPremium"
+              ],
+              "type": "object"
+            },
+            "version": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "apiUser",
+            "eventType",
+            "savedItem",
+            "source",
+            "timestamp",
+            "user",
+            "version"
+          ],
+          "type": "object"
+        },
         "detail-type": {
           "const": "UNARCHIVE_ITEM",
           "type": "string"
@@ -785,7 +4876,219 @@
     },
     "UnfavoriteItem": {
       "properties": {
-        "detail": {},
+        "detail": {
+          "properties": {
+            "apiUser": {
+              "properties": {
+                "apiId": {
+                  "type": "string"
+                },
+                "clientVersion": {
+                  "type": "string"
+                },
+                "isNative": {
+                  "type": "boolean"
+                },
+                "isTrusted": {
+                  "type": "boolean"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "apiId"
+              ],
+              "type": "object"
+            },
+            "eventType": {
+              "$ref": "#/definitions/ListPocketEventType"
+            },
+            "request": {
+              "properties": {
+                "ipAddress": {
+                  "type": "string"
+                },
+                "language": {
+                  "type": "string"
+                },
+                "snowplowDomainSessionId": {
+                  "type": "string"
+                },
+                "snowplowDomainUserId": {
+                  "type": "string"
+                },
+                "userAgent": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "savedItem": {
+              "properties": {
+                "_createdAt": {
+                  "type": "number"
+                },
+                "_deletedAt": {
+                  "type": "number"
+                },
+                "_updatedAt": {
+                  "type": "number"
+                },
+                "_version": {
+                  "type": "number"
+                },
+                "archivedAt": {
+                  "type": "number"
+                },
+                "favoritedAt": {
+                  "type": "number"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isArchived": {
+                  "type": "boolean"
+                },
+                "isFavorite": {
+                  "type": "boolean"
+                },
+                "item": {
+                  "properties": {
+                    "givenUrl": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "givenUrl"
+                  ],
+                  "type": "object"
+                },
+                "resolvedId": {
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "UNREAD",
+                    "ARCHIVED",
+                    "DELETED",
+                    "HIDDEN"
+                  ],
+                  "type": "string"
+                },
+                "tags": {
+                  "items": {
+                    "properties": {
+                      "_createdAt": {
+                        "type": "number"
+                      },
+                      "_deletedAt": {
+                        "type": "number"
+                      },
+                      "_updatedAt": {
+                        "type": "number"
+                      },
+                      "_version": {
+                        "type": "number"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "savedItems": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "resolvedId",
+                "url",
+                "isFavorite",
+                "status",
+                "isArchived",
+                "item"
+              ],
+              "type": "object"
+            },
+            "source": {
+              "type": "string"
+            },
+            "tags": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "tagsUpdated": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "timestamp": {
+              "type": "number"
+            },
+            "user": {
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "guid": {
+                  "type": "number"
+                },
+                "hashedGuid": {
+                  "type": "string"
+                },
+                "hashedId": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isPremium": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "hashedId",
+                "isPremium"
+              ],
+              "type": "object"
+            },
+            "version": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "apiUser",
+            "eventType",
+            "savedItem",
+            "source",
+            "timestamp",
+            "user",
+            "version"
+          ],
+          "type": "object"
+        },
         "detail-type": {
           "const": "UNFAVORITE_ITEM",
           "type": "string"
@@ -803,7 +5106,219 @@
     },
     "UpdateTitle": {
       "properties": {
-        "detail": {},
+        "detail": {
+          "properties": {
+            "apiUser": {
+              "properties": {
+                "apiId": {
+                  "type": "string"
+                },
+                "clientVersion": {
+                  "type": "string"
+                },
+                "isNative": {
+                  "type": "boolean"
+                },
+                "isTrusted": {
+                  "type": "boolean"
+                },
+                "name": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "apiId"
+              ],
+              "type": "object"
+            },
+            "eventType": {
+              "$ref": "#/definitions/ListPocketEventType"
+            },
+            "request": {
+              "properties": {
+                "ipAddress": {
+                  "type": "string"
+                },
+                "language": {
+                  "type": "string"
+                },
+                "snowplowDomainSessionId": {
+                  "type": "string"
+                },
+                "snowplowDomainUserId": {
+                  "type": "string"
+                },
+                "userAgent": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "savedItem": {
+              "properties": {
+                "_createdAt": {
+                  "type": "number"
+                },
+                "_deletedAt": {
+                  "type": "number"
+                },
+                "_updatedAt": {
+                  "type": "number"
+                },
+                "_version": {
+                  "type": "number"
+                },
+                "archivedAt": {
+                  "type": "number"
+                },
+                "favoritedAt": {
+                  "type": "number"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isArchived": {
+                  "type": "boolean"
+                },
+                "isFavorite": {
+                  "type": "boolean"
+                },
+                "item": {
+                  "properties": {
+                    "givenUrl": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "givenUrl"
+                  ],
+                  "type": "object"
+                },
+                "resolvedId": {
+                  "type": "string"
+                },
+                "status": {
+                  "enum": [
+                    "UNREAD",
+                    "ARCHIVED",
+                    "DELETED",
+                    "HIDDEN"
+                  ],
+                  "type": "string"
+                },
+                "tags": {
+                  "items": {
+                    "properties": {
+                      "_createdAt": {
+                        "type": "number"
+                      },
+                      "_deletedAt": {
+                        "type": "number"
+                      },
+                      "_updatedAt": {
+                        "type": "number"
+                      },
+                      "_version": {
+                        "type": "number"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "savedItems": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "resolvedId",
+                "url",
+                "isFavorite",
+                "status",
+                "isArchived",
+                "item"
+              ],
+              "type": "object"
+            },
+            "source": {
+              "type": "string"
+            },
+            "tags": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "tagsUpdated": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "timestamp": {
+              "type": "number"
+            },
+            "user": {
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "guid": {
+                  "type": "number"
+                },
+                "hashedGuid": {
+                  "type": "string"
+                },
+                "hashedId": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "isPremium": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "hashedId",
+                "isPremium"
+              ],
+              "type": "object"
+            },
+            "version": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "apiUser",
+            "eventType",
+            "savedItem",
+            "source",
+            "timestamp",
+            "user",
+            "version"
+          ],
+          "type": "object"
+        },
         "detail-type": {
           "const": "UPDATE_TITLE",
           "type": "string"

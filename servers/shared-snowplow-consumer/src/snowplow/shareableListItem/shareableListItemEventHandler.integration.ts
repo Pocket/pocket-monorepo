@@ -10,6 +10,10 @@ import {
   parseSnowplowData,
 } from '../testUtils';
 import { ObjectUpdate } from '../../snowtype/snowplow';
+import {
+  PocketEventType,
+  ShareableListItemPocketEventTypeEnum,
+} from '@pocket-tools/event-bridge';
 
 export const shareableListItemEventSchema = {
   objectUpdate: expect.stringMatching(
@@ -82,12 +86,14 @@ function assertPartialShareableListItemSchema(eventContext) {
 }
 
 const testEventData = {
+  eventType: ShareableListItemPocketEventTypeEnum.SHAREABLE_LIST_ITEM_CREATED,
   shareableListItem: {
     ...testShareableListItemData,
   },
 };
 
 const testPartialEventData = {
+  eventType: ShareableListItemPocketEventTypeEnum.SHAREABLE_LIST_ITEM_CREATED,
   shareableListItem: {
     ...testPartialShareableListItemData,
   },
@@ -104,7 +110,7 @@ describe('ShareableListItemEventHandler', () => {
         ...testEventData,
       },
       source: 'shareable-list-item-events',
-      'detail-type': 'shareable_list_item_created',
+      'detail-type': PocketEventType.SHAREABLE_LIST_ITEM_CREATED,
     });
 
     // wait a sec * 3
@@ -136,7 +142,7 @@ describe('ShareableListItemEventHandler', () => {
         ...testEventData,
       },
       source: 'shareable-list-item-events',
-      'detail-type': 'shareable_list_item_deleted',
+      'detail-type': PocketEventType.SHAREABLE_LIST_ITEM_DELETED,
     });
 
     // wait a sec * 3
@@ -168,7 +174,7 @@ describe('ShareableListItemEventHandler', () => {
         ...testEventData,
       },
       source: 'shareable-list-item-events',
-      'detail-type': 'shareable_list_item_updated',
+      'detail-type': PocketEventType.SHAREABLE_LIST_ITEM_UPDATED,
     });
 
     // wait a sec * 3
@@ -200,7 +206,7 @@ describe('ShareableListItemEventHandler', () => {
         ...testPartialEventData,
       },
       source: 'shareable-list-item-events',
-      'detail-type': 'shareable_list_item_deleted',
+      'detail-type': PocketEventType.SHAREABLE_LIST_ITEM_DELETED,
     });
 
     // wait a sec * 3
