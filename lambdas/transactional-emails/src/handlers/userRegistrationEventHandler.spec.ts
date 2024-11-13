@@ -1,5 +1,5 @@
 import * as ssm from '../ssm';
-import nock, { cleanAll } from 'nock';
+import nock, { cleanAll, disableNetConnect, enableNetConnect } from 'nock';
 import { config } from '../config';
 import { SQSEvent, SQSRecord } from 'aws-lambda';
 import {
@@ -46,6 +46,7 @@ describe('user registration event handler', () => {
   let serverLoggerSpy: jest.SpyInstance;
 
   beforeEach(() => {
+    disableNetConnect();
     jest
       .spyOn(ssm, 'getBrazeApiKey')
       .mockImplementation(() => Promise.resolve('api-key'));
@@ -54,6 +55,7 @@ describe('user registration event handler', () => {
 
   afterEach(() => {
     cleanAll();
+    enableNetConnect();
     jest.restoreAllMocks();
   });
 
@@ -158,7 +160,7 @@ describe('user registration event handler', () => {
     } as SQSEvent);
     expect(nock.isDone()).toBeTruthy();
     expect(serverLoggerSpy).toHaveBeenCalled();
-    expect(serverLoggerSpy.mock.calls[0][0]['errorData']['message']).toContain(
+    expect(serverLoggerSpy.mock.calls[1][0]['errorData']['message']).toContain(
       'Error 500: Failed to create user profile',
     );
   });
@@ -173,7 +175,7 @@ describe('user registration event handler', () => {
     } as SQSEvent);
     expect(nock.isDone()).toBeTruthy();
     expect(serverLoggerSpy).toHaveBeenCalled();
-    expect(serverLoggerSpy.mock.calls[0][0]['errorData']['message']).toContain(
+    expect(serverLoggerSpy.mock.calls[1][0]['errorData']['message']).toContain(
       'Error 400: Failed to create user profile',
     );
   });
