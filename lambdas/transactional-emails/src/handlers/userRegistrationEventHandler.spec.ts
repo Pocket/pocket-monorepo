@@ -1,11 +1,10 @@
 import * as ssm from '../ssm';
 import nock, { cleanAll } from 'nock';
 import { config } from '../config';
-import { SQSRecord } from 'aws-lambda';
+import { SQSEvent, SQSRecord } from 'aws-lambda';
 import {
   generateUserAliasRequestBody,
   generateUserTrackBody,
-  userRegistrationEventHandler,
 } from './userRegistrationEventHandler';
 import {
   AccountRegistration,
@@ -13,6 +12,8 @@ import {
   PocketEventType,
 } from '@pocket-tools/event-bridge';
 import { cloneDeep } from 'lodash';
+import { serverLogger } from '@pocket-tools/ts-logger';
+import { processor } from '..';
 
 function generateRecord(eventPayload: AccountRegistration) {
   return {
@@ -42,11 +43,13 @@ describe('user registration event handler', () => {
   };
 
   const record = generateRecord(testPayload);
+  let serverLoggerSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest
       .spyOn(ssm, 'getBrazeApiKey')
       .mockImplementation(() => Promise.resolve('api-key'));
+    serverLoggerSpy = jest.spyOn(serverLogger, 'error');
   });
 
   afterEach(() => {
@@ -68,9 +71,10 @@ describe('user registration event handler', () => {
       .post(config.braze.userTrackPath)
       .reply(200, { data: ['this is a data'] });
 
-    const res = await userRegistrationEventHandler(record as SQSRecord);
-    const result = (await res?.json()) as any;
-    expect(result.data).toEqual(['this is a data']);
+    await processor({
+      Records: [record] as SQSRecord[],
+    } as SQSEvent);
+    expect(nock.isDone()).toBeTruthy();
   });
 
   it('should throw error if user-alias creation failed', async () => {
@@ -84,11 +88,13 @@ describe('user registration event handler', () => {
       .post(config.braze.userAliasPath)
       .reply(400, { error: ['user-alas creation error'] });
 
-    try {
-      await userRegistrationEventHandler(record as SQSRecord);
-    } catch (e) {
-      expect(e.message).toContain('Error 400: Failed to create user alias');
-    }
+    await processor({
+      Records: [record] as SQSRecord[],
+    } as SQSEvent);
+    expect(serverLoggerSpy).toHaveBeenCalled();
+    expect(serverLoggerSpy.mock.calls[0][0]['errorData']['message']).toContain(
+      'Error 400: Failed to create user alias',
+    );
   });
 
   it('should throw error if subscription failed', async () => {
@@ -107,13 +113,13 @@ describe('user registration event handler', () => {
       .post(config.braze.setSubscriptionPath)
       .reply(400, { error: ['subscription failed'] });
 
-    try {
-      await userRegistrationEventHandler(record as SQSRecord);
-    } catch (e) {
-      expect(e.message).toContain(
-        `Error 400: Failed to set subscription for id: ${config.braze.marketingSubscriptionId}`,
-      );
-    }
+    await processor({
+      Records: [record] as SQSRecord[],
+    } as SQSEvent);
+    expect(serverLoggerSpy).toHaveBeenCalled();
+    expect(serverLoggerSpy.mock.calls[0][0]['errorData']['message']).toContain(
+      `Error 400: Failed to set subscription for id: ${config.braze.marketingSubscriptionId}`,
+    );
   });
 
   it('should return data if retry succeed', async () => {
@@ -135,9 +141,10 @@ describe('user registration event handler', () => {
       .times(1)
       .reply(200, { data: ['this is subscription'] });
 
-    const res = await userRegistrationEventHandler(record as SQSRecord);
-    const result = (await res?.json()) as any;
-    expect(result.data).toEqual(['this is a data']);
+    await processor({
+      Records: [record] as SQSRecord[],
+    } as SQSEvent);
+    expect(nock.isDone()).toBeTruthy();
   });
 
   it('should throw server error if all 3 retries fails', async () => {
@@ -146,11 +153,14 @@ describe('user registration event handler', () => {
       .times(3)
       .reply(500, { errors: ['this is server error'] });
 
-    try {
-      await userRegistrationEventHandler(record as SQSRecord);
-    } catch (e) {
-      expect(e.message).toContain('Error 500: Failed to create user profile');
-    }
+    await processor({
+      Records: [record] as SQSRecord[],
+    } as SQSEvent);
+    expect(nock.isDone()).toBeTruthy();
+    expect(serverLoggerSpy).toHaveBeenCalled();
+    expect(serverLoggerSpy.mock.calls[0][0]['errorData']['message']).toContain(
+      'Error 500: Failed to create user profile',
+    );
   });
 
   it('should return status and error for braze client error', async () => {
@@ -158,25 +168,27 @@ describe('user registration event handler', () => {
       .post(config.braze.userTrackPath)
       .reply(400, { errors: ['this is an error'] });
 
-    try {
-      await userRegistrationEventHandler(record as SQSRecord);
-    } catch (e) {
-      expect(e.message).toContain('Error 400: Failed to create user profile');
-    }
+    await processor({
+      Records: [record] as SQSRecord[],
+    } as SQSEvent);
+    expect(nock.isDone()).toBeTruthy();
+    expect(serverLoggerSpy).toHaveBeenCalled();
+    expect(serverLoggerSpy.mock.calls[0][0]['errorData']['message']).toContain(
+      'Error 400: Failed to create user profile',
+    );
   });
 
   it('should throw error if one of the payload field is missing', async () => {
     const errorEvent = cloneDeep(testPayload) as any;
     errorEvent.detail.encodedUserId = undefined;
     const record = generateRecord(errorEvent);
-
-    try {
-      await userRegistrationEventHandler(record as SQSRecord);
-    } catch (e) {
-      expect(e.message).toContain(
-        "data/detail must have required property 'encodedUserId'",
-      );
-    }
+    await processor({
+      Records: [record] as SQSRecord[],
+    } as SQSEvent);
+    expect(serverLoggerSpy).toHaveBeenCalled();
+    expect(serverLoggerSpy.mock.calls[0][0]['errorData']['message']).toContain(
+      "data/detail must have required property 'encodedUserId'",
+    );
   });
 
   describe('generateUserTrackBody', () => {

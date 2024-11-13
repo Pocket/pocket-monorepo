@@ -1,19 +1,18 @@
-import { SQSRecord } from 'aws-lambda';
 import { sendUserTrack } from '../braze';
 import {
+  PocketEvent,
   PocketEventType,
   PremiumPurchaseEvent,
-  sqsLambdaEventBridgeEvent,
+  IncomingPocketEvent,
 } from '@pocket-tools/event-bridge';
 
 /**
  * function to validate payload and send the event to braze
- * @param record contains premium purchase event from event-bridge
+ * @param event contains premium purchase event from event-bridge
  */
 export async function premiumPurchaseHandler(
-  record: SQSRecord,
+  event: PocketEvent & IncomingPocketEvent,
 ): Promise<Response | null> {
-  const event = sqsLambdaEventBridgeEvent(record);
   if (event?.['detail-type'] === PocketEventType.PREMIUM_PURCHASE) {
     const requestBody = generateUserTrackRequestBody(event, event.time);
     const res = await sendUserTrack(requestBody);
