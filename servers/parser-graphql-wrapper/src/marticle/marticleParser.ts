@@ -95,10 +95,10 @@ const immediateComponents = [
 // to represent it in a flat list ('splitting' the 'p' node into 2).
 const eventualComponents = ['P', 'BLOCKQUOTE', 'LI', 'DIV'];
 
-function unMarseableTransformer(html: string): UnMarseable {
+function unMarseableTransformer(root: Node): UnMarseable {
   return {
     __typename: 'UnMarseable',
-    html,
+    html: (root as Element).outerHTML,
   };
 }
 // Assign UnMarseable transformer to all UnMarseable tags
@@ -122,7 +122,10 @@ function listErrorTransformer(root: Node): UnMarseable {
     html += (root as Element).outerHTML;
     root.parentNode.removeChild(root);
   }
-  return unMarseableTransformer(html.trim());
+  return {
+    __typename: 'UnMarseable',
+    html: html.trim(),
+  };
 }
 
 // Methods for transforming a subtree of the DOM that represents
@@ -218,7 +221,9 @@ const transformers = {
         const aggOutput = output.splice(aggFrom) as ListElement[];
         output.push({
           __typename: 'MarticleBulletedList',
-          rows: aggOutput,
+          rows: aggOutput.filter(
+            (row) => !Object.keys(row).includes('__typename'), // remove unmarseable rows
+          ),
         });
       }
       return output as MarticleElement[];
@@ -240,7 +245,9 @@ const transformers = {
         const aggOutput = output.splice(aggFrom) as NumberedListElement[];
         output.push({
           __typename: 'MarticleNumberedList',
-          rows: aggOutput,
+          rows: aggOutput.filter(
+            (row) => !Object.keys(row).includes('__typename'), // remove unmarseable rows
+          ),
         });
       }
       return output as MarticleElement[];

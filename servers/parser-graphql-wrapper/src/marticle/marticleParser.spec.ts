@@ -415,10 +415,6 @@ describe('MarticleParser', () => {
             content: '1-2.',
           },
           {
-            __typename: 'UnMarseable',
-            html: `<li></li>`,
-          },
-          {
             level: 1,
             content: '1-2-a',
           },
@@ -471,10 +467,6 @@ describe('MarticleParser', () => {
           {
             level: 0,
             content: '1-2.',
-          },
-          {
-            __typename: 'UnMarseable',
-            html: `<li></li>`,
           },
           {
             level: 1,
@@ -579,7 +571,6 @@ describe('MarticleParser', () => {
         __typename: 'MarticleBulletedList',
         rows: [
           { level: 0, content: '1-2.' },
-          { __typename: 'UnMarseable', html: '<li></li>' },
           { level: 1, content: '1-2-a-i' },
           { level: 1, content: '1-2-a' },
           { level: 0, content: '2-2.' },
