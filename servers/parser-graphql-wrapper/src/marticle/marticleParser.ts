@@ -95,10 +95,10 @@ const immediateComponents = [
 // to represent it in a flat list ('splitting' the 'p' node into 2).
 const eventualComponents = ['P', 'BLOCKQUOTE', 'LI', 'DIV'];
 
-function unMarseableTransformer(root: Node): UnMarseable {
+function unMarseableTransformer(html: string): UnMarseable {
   return {
     __typename: 'UnMarseable',
-    html: (root as Element).outerHTML,
+    html,
   };
 }
 // Assign UnMarseable transformer to all UnMarseable tags
@@ -112,9 +112,17 @@ const unMarseableTransformers = unMarseableComponents.reduce(
 
 // Transformer for when there is an error processing a list element
 function listErrorTransformer(root: Node): UnMarseable {
-  const node: Node = isArray(root) ? (root[0] as Node) : root;
-  node.parentNode.removeChild(node);
-  return unMarseableTransformer(node);
+  let html = '';
+  if (isArray(root)) {
+    root.forEach((node: Node) => {
+      html += (node as Element).outerHTML;
+      node.parentNode.removeChild(node);
+    });
+  } else {
+    html += (root as Element).outerHTML;
+    root.parentNode.removeChild(root);
+  }
+  return unMarseableTransformer(html.trim());
 }
 
 // Methods for transforming a subtree of the DOM that represents

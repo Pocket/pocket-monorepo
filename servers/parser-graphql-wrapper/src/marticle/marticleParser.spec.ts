@@ -389,6 +389,210 @@ describe('MarticleParser', () => {
     ];
     expect(res).toEqual(expected);
   });
+
+  it('should parse unorded lists within a div, that has invalid data in a nested ul and span after li and return unmarseable', () => {
+    const input = `<div lang="en">
+              <ul>
+                  <li>1-2.</li>
+                  <ul>
+                    <li>1-2-a</li>
+                    <span>test</span>
+                  </ul>
+                  <li>2-2.</li>
+                  <li>3-2.</li>
+                  <li>4-2.</li>
+                  <li>5-2.</li>
+                  <li>6-2.</li>
+              </ul>
+            </div>`;
+    const res = marticleParser.parse(input);
+    const expected = [
+      {
+        __typename: 'MarticleBulletedList',
+        rows: [
+          {
+            level: 0,
+            content: '1-2.',
+          },
+          {
+            __typename: 'UnMarseable',
+            html: `<li></li>`,
+          },
+          {
+            level: 1,
+            content: '1-2-a',
+          },
+          {
+            level: 0,
+            content: '2-2.',
+          },
+          {
+            level: 0,
+            content: '3-2.',
+          },
+          {
+            level: 0,
+            content: '4-2.',
+          },
+          {
+            level: 0,
+            content: '5-2.',
+          },
+          {
+            level: 0,
+            content: '6-2.',
+          },
+        ],
+      },
+    ];
+    expect(res).toEqual(expected);
+  });
+
+  it('should parse unorded lists within a div, that has invalid data in a nested ul and span before li and return unmarseable', () => {
+    const input = `<div lang="en">
+              <ul>
+                  <li>1-2.</li>
+                  <ul>
+                    <span>test</span>
+                    <li>1-2-a</li>
+                  </ul>
+                  <li>2-2.</li>
+                  <li>3-2.</li>
+                  <li>4-2.</li>
+                  <li>5-2.</li>
+                  <li>6-2.</li>
+              </ul>
+            </div>`;
+    const res = marticleParser.parse(input);
+    const expected = [
+      {
+        __typename: 'MarticleBulletedList',
+        rows: [
+          {
+            level: 0,
+            content: '1-2.',
+          },
+          {
+            __typename: 'UnMarseable',
+            html: `<li></li>`,
+          },
+          {
+            level: 1,
+            content: '1-2-a',
+          },
+          {
+            level: 0,
+            content: '2-2.',
+          },
+          {
+            level: 0,
+            content: '3-2.',
+          },
+          {
+            level: 0,
+            content: '4-2.',
+          },
+          {
+            level: 0,
+            content: '5-2.',
+          },
+          {
+            level: 0,
+            content: '6-2.',
+          },
+        ],
+      },
+    ];
+    expect(res).toEqual(expected);
+  });
+
+  it('should parse unorded lists within a div, that has invalid data in a ul and return unmarseable', () => {
+    const input = `<div lang="en">
+              <ul>
+                  <span>test</span>
+                  <li>1-2.</li>
+                  <li>2-2.</li>
+                  <li>3-2.</li>
+                  <li>4-2.</li>
+                  <li>5-2.</li>
+                  <li>6-2.</li>
+              </ul>
+            </div>`;
+    const res = marticleParser.parse(input);
+    const expected = [
+      {
+        __typename: 'MarticleBulletedList',
+        rows: [
+          {
+            level: 0,
+            content: '1-2.',
+          },
+          {
+            level: 0,
+            content: '2-2.',
+          },
+          {
+            level: 0,
+            content: '3-2.',
+          },
+          {
+            level: 0,
+            content: '4-2.',
+          },
+          {
+            level: 0,
+            content: '5-2.',
+          },
+          {
+            level: 0,
+            content: '6-2.',
+          },
+        ],
+      },
+      {
+        __typename: 'UnMarseable',
+        html: '<span>test</span>',
+      },
+    ];
+    expect(res).toEqual(expected);
+  });
+
+  it('should parse unorded lists within a div, that has invalid data in a nested ul and return unmarseable', () => {
+    const input = `<div lang="en">
+              <ul>
+                  <li>1-2.</li>
+                  <ul>
+                    <li>1-2-a-i</li>
+                    <span>test</span>
+                    <li>1-2-a</li>
+                  </ul>
+                  <li>2-2.</li>
+                  <li>3-2.</li>
+                  <li>4-2.</li>
+                  <li>5-2.</li>
+                  <li>6-2.</li>
+              </ul>
+            </div>`;
+    const res = marticleParser.parse(input);
+    const expected = [
+      {
+        __typename: 'MarticleBulletedList',
+        rows: [
+          { level: 0, content: '1-2.' },
+          { __typename: 'UnMarseable', html: '<li></li>' },
+          { level: 1, content: '1-2-a-i' },
+          { level: 1, content: '1-2-a' },
+          { level: 0, content: '2-2.' },
+          { level: 0, content: '3-2.' },
+          { level: 0, content: '4-2.' },
+          { level: 0, content: '5-2.' },
+          { level: 0, content: '6-2.' },
+        ],
+      },
+    ];
+    expect(res).toEqual(expected);
+  });
+
   it('should parse rogue <li>s', () => {
     const input =
       '<div>' +
