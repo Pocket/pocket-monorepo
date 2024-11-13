@@ -15,12 +15,13 @@
   },
   "dependencies": {
     "@cdktf/provider-archive": "10.2.0",
-    "@cdktf/provider-aws": "19.39.0",
+    "@cdktf/provider-aws": "19.41.1",
     "@cdktf/provider-local": "10.1.1",
     "@cdktf/provider-null": "10.0.1",
+    "@pocket-tools/event-bridge": "workspace:*",
     "@pocket-tools/terraform-modules": "workspace:*",
-    "cdktf": "0.20.9",
-    "cdktf-cli": "0.20.9",
+    "cdktf": "0.20.10",
+    "cdktf-cli": "0.20.10",
     "constructs": "10.4.2"
   },
   "devDependencies": {

@@ -12,7 +12,7 @@
     "list-mismatches": "syncpack list-mismatches",
     "list-packages": "syncpack list",
     "prepare": "husky",
-    "semantic-release": "dotenv -- turbo run semantic-release",
+    "semantic-release": "dotenv -- turbo run semantic-release --concurrency 1",
     "synth": "dotenv -- turbo run synth",
     "test": "dotenv -- turbo run test",
     "test-integrations": "dotenv -- turbo run test-integrations"

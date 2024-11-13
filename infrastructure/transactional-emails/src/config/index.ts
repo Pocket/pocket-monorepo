@@ -39,11 +39,11 @@ export const config = {
   eventBridge: {
     prefix: 'PocketEventBridge',
     topics: [
-      'UserEventTopic',
-      'PremiumPurchase-Topic',
-      'UserRegistrationTopic',
-      'ForgotPasswordRequest-Topic',
-      'ListExportReady-Topic',
+      'UserEvents',
+      'PremiumPurchaseEvents',
+      'UserRegistrationEvents',
+      'ForgotPasswordEvents',
+      'ListExportReadyEvents',
     ],
   },
 };
