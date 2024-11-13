@@ -17,7 +17,7 @@ export const config = {
   },
   eventBridge: {
     prefix: 'PocketEventBridge',
-    userTopic: 'UserEventTopic',
+    userTopic: 'UserEvents',
     //already created in pocket-event-bridge repo
     userMergeTopic: 'UserMerge-Topic',
   },
