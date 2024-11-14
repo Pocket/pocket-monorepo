@@ -1664,6 +1664,9 @@ importers:
 
   lambdas/user-list-search-events:
     dependencies:
+      '@pocket-tools/event-bridge':
+        specifier: workspace:*
+        version: link:../../packages/event-bridge
       '@pocket-tools/ts-logger':
         specifier: workspace:*
         version: link:../../packages/ts-logger

@@ -1,10 +1,11 @@
 import nock, { cleanAll } from 'nock';
-import { SQSRecord } from 'aws-lambda';
+import { SQSEvent, SQSRecord } from 'aws-lambda';
 import { config } from '../config';
 import * as ssm from '../ssm';
 import { sendForgotPasswordEmail } from '../braze';
-import { forgotPasswordHandler } from './forgotPassword';
 import { PocketEventType } from '@pocket-tools/event-bridge';
+import { processor } from '..';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 describe('forgotPassword handler', () => {
   const record = {
@@ -33,10 +34,13 @@ describe('forgotPassword handler', () => {
     }),
   };
 
+  let serverLoggerSpy: jest.SpyInstance;
+
   beforeEach(() => {
     jest
       .spyOn(ssm, 'getBrazeApiKey')
       .mockImplementation(() => Promise.resolve('api-key'));
+    serverLoggerSpy = jest.spyOn(serverLogger, 'error');
   });
 
   afterEach(() => {
@@ -48,12 +52,15 @@ describe('forgotPassword handler', () => {
     nock(config.braze.endpoint)
       .post(config.braze.campaignTriggerPath)
       .reply(400, { errors: ['this is an error'] });
-    expect.assertions(1); // since it's in a try/catch, make sure we assert
-    try {
-      await forgotPasswordHandler(record as SQSRecord);
-    } catch (e) {
-      expect(e.message).toContain('Error 400: Failed to send email');
-    }
+
+    await processor({
+      Records: [record] as SQSRecord[],
+    } as SQSEvent);
+
+    expect(serverLoggerSpy).toHaveBeenCalled();
+    expect(serverLoggerSpy.mock.calls[0][0]['errorData']['message']).toContain(
+      'Error 400: Failed to send email',
+    );
   });
 
   it('should retry 3 times if post fails', async () => {
