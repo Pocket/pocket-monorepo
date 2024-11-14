@@ -1,6 +1,6 @@
 {
   "name": "@pocket-tools/jwt-utils",
-  "version": "0.0.0-development",
+  "version": "1.0.4",
   "description": "Utilities for working with pocket jwts",
   "keywords": [
     "jwt"
@@ -68,7 +68,7 @@
       [
         "@semantic-release/exec",
         {
-          "analyzeCommitsCmd": "pnpm version ${lastRelease.version} --git-tag-version=false --silent || true",
+          "analyzeCommitsCmd": "pnpm version ${lastRelease.version} --git-tag-version=false > /dev/null 2>&1 || true",
           "prepareCmd": "pnpm version ${nextRelease.version} --git-tag-version=false",
           "publishCmd": "pnpm publish --no-git-checks"
         }
