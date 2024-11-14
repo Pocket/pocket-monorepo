@@ -70,7 +70,7 @@
       [
         "@semantic-release/exec",
         {
-          "analyzeCommitsCmd": "pnpm version ${lastRelease.version} --git-tag-version=false &> /dev/null",
+          "analyzeCommitsCmd": "pnpm version ${lastRelease.version} --git-tag-version=false --silent || true",
           "prepareCmd": "pnpm version ${nextRelease.version} --git-tag-version=false",
           "publishCmd": "pnpm publish --no-git-checks"
         }
