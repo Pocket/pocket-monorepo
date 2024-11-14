@@ -69,7 +69,7 @@
       "inputs": ["src/**/*", "eslint.config.js", "package.json"]
     },
     "semantic-release": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build", "^semantic-release"]
     },
     "test": {
       "inputs": ["src/**/*", "package.json", "jest.config.js", "jest.setup.js"],
