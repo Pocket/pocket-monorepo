@@ -8,8 +8,14 @@ import { AccountDelete } from '@pocket-tools/event-bridge';
  * @throws Error if response is not ok
  */
 export async function accountDeleteHandler(
-  event: AccountDelete,
+  event: AccountDelete[],
 ): Promise<void> {
+  for await (const e of event) {
+    await proccessAccountDeleteEvent(e);
+  }
+}
+
+async function proccessAccountDeleteEvent(event: AccountDelete): Promise<void> {
   const postBody = {
     userId: event.detail.userId,
   };
