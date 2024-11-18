@@ -1664,6 +1664,9 @@ importers:
 
   lambdas/user-list-search-events:
     dependencies:
+      '@aws-sdk/client-sqs':
+        specifier: 3.679.0
+        version: 3.679.0
       '@pocket-tools/event-bridge':
         specifier: workspace:*
         version: link:../../packages/event-bridge
@@ -3818,7 +3821,7 @@ importers:
         version: link:../../packages/eslint-config
       '@snowplow/snowtype':
         specifier: ^0.10.1
-        version: 0.10.1(commander@12.1.0)(encoding@0.1.13)
+        version: 0.10.1(commander@12.1.0)
       '@types/jest':
         specifier: 29.5.14
         version: 29.5.14
@@ -19922,20 +19925,20 @@ snapshots:
       got: 11.8.6
       tslib: 2.8.0
 
-  '@snowplow/snowtype-core@0.10.1(encoding@0.1.13)':
+  '@snowplow/snowtype-core@0.10.1':
     dependencies:
       '@fastify/merge-json-schemas': 0.2.0
       handlebars: 4.7.8
       json-pointer: 0.6.2
-      quicktype-core: 23.0.170(encoding@0.1.13)
+      quicktype-core: 23.0.170
     transitivePeerDependencies:
       - encoding
 
-  '@snowplow/snowtype@0.10.1(commander@12.1.0)(encoding@0.1.13)':
+  '@snowplow/snowtype@0.10.1(commander@12.1.0)':
     dependencies:
       '@commander-js/extra-typings': 11.1.0(commander@12.1.0)
       '@inquirer/prompts': 3.3.2
-      '@snowplow/snowtype-core': 0.10.1(encoding@0.1.13)
+      '@snowplow/snowtype-core': 0.10.1
       chalk: 4.1.2
       cli-spinner: 0.2.10
       dotenv: 16.4.5
@@ -25865,7 +25868,7 @@ snapshots:
 
   quick-lru@5.1.1: {}
 
-  quicktype-core@23.0.170(encoding@0.1.13):
+  quicktype-core@23.0.170:
     dependencies:
       '@glideapps/ts-necessities': 2.2.3
       browser-or-node: 3.0.0
