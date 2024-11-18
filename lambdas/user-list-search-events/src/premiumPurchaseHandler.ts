@@ -1,4 +1,12 @@
-import { PremiumPurchaseEvent } from '@pocket-tools/event-bridge';
+import {
+  PremiumPurchaseEvent as BaseEvent,
+  IncomingBaseEvent,
+} from '@pocket-tools/event-bridge';
+import { PocketEventRecord } from './handlerMap';
+
+type PremiumPurchaseEvent = Exclude<PocketEventRecord, 'pocketEvent'> & {
+  pocketEvent: BaseEvent & IncomingBaseEvent;
+};
 
 /**
  * Given an account delete event, call the batchDelete endpoint on the
@@ -8,4 +16,6 @@ import { PremiumPurchaseEvent } from '@pocket-tools/event-bridge';
  */
 export async function premiumPurchaseHandler(
   event: PremiumPurchaseEvent[],
-): Promise<void> {}
+): Promise<string[]> {
+  return [];
+}

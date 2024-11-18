@@ -3,13 +3,9 @@ import * as Sentry from '@sentry/aws-serverless';
 Sentry.init({
   ...config.sentry,
 });
-import { SQSEvent, SQSRecord } from 'aws-lambda';
-import { handlerMap } from './handlerMap';
-import {
-  PocketEvent,
-  PocketEventType,
-  sqsLambdaEventBridgeEvent,
-} from '@pocket-tools/event-bridge';
+import { SQSBatchResponse, SQSEvent } from 'aws-lambda';
+import { handlerMap, PocketEventRecord } from './handlerMap';
+import { sqsLambdaEventBridgeEvent } from '@pocket-tools/event-bridge';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 /**
@@ -18,34 +14,56 @@ import { serverLogger } from '@pocket-tools/ts-logger';
  * @param event
  * @returns
  */
-export async function __handler(event: SQSEvent): Promise<any> {
-  const failedRecords: SQSRecord[] = [];
-  const parsedPocketEvents: PocketEvent[] = event.Records.map((record) => {
-    try {
-      return sqsLambdaEventBridgeEvent(record);
-    } catch (error) {
-      serverLogger.error('Failed to parse record', error);
-      failedRecords.push(record);
-      return null;
-    }
-  })
-    .filter((pocketEvent) => pocketEvent !== null)
-    .filter((pocketEvent) =>
-      Object.keys(handlerMap).includes(pocketEvent['detail-type']),
-    );
+export async function __handler(event: SQSEvent): Promise<SQSBatchResponse> {
+  const failedRecordEventIds: string[] = [];
 
-  const events: Record<PocketEventType, PocketEvent[]> =
-    parsedPocketEvents.reduce((keyedObject, pocketEvent) => {
-      if (!keyedObject[pocketEvent['detail-type']]) {
-        keyedObject[pocketEvent['detail-type']] = [];
+  // Reduce the events in the record to a map of detail-type to PocketEventRecord[] that we can then mass pass to the appropriate handler
+  // string is actually PocketEventType but type enums didn't work here
+  const parsedPocketEvents: Record<string, PocketEventRecord[]> =
+    event.Records.map((record) => {
+      try {
+        const pocketEvent = sqsLambdaEventBridgeEvent(record);
+        if (pocketEvent === null) {
+          return null;
+        }
+        return {
+          pocketEvent,
+          messageId: record.messageId,
+        };
+      } catch (error) {
+        serverLogger.error('Failed to parse record', error);
+        failedRecordEventIds.push(record.messageId);
+        return null;
       }
-      keyedObject[pocketEvent['detail-type']].push(pocketEvent);
-      return keyedObject;
-    });
+    })
+      .filter((record) => record !== null)
+      .filter((record) =>
+        Object.keys(handlerMap).includes(record.pocketEvent['detail-type']),
+      )
+      .reduce((acc, eventRecord: PocketEventRecord) => {
+        const detailType = eventRecord.pocketEvent['detail-type'];
+        if (!acc[detailType]) {
+          acc[detailType] = [];
+        }
+        acc[detailType].push(eventRecord);
+        return acc;
+      }, {});
 
-  for (const eventType of Object.keys(events)) {
-    const failedEvents = await handlerMap[eventType](events[eventType]);
+  // For each detail-type, call the appropriate handler and save it to a list of promises we should await
+  const promises: Promise<string[]>[] = [];
+  for (const eventType of Object.keys(parsedPocketEvents)) {
+    promises.push(handlerMap[eventType](parsedPocketEvents[eventType]));
   }
+
+  // Await all the promises and collect any failed record event ids
+  const responses = await Promise.all(promises);
+  failedRecordEventIds.push(...responses.flat());
+
+  return {
+    batchItemFailures: failedRecordEventIds.map((id) => ({
+      itemIdentifier: id,
+    })),
+  };
 }
 
 export const handler = Sentry.wrapHandler(__handler, {

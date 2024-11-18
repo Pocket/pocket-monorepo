@@ -1,5 +1,12 @@
 import { config } from './config';
-import { AccountDelete } from '@pocket-tools/event-bridge';
+import { AccountDelete, IncomingBaseEvent } from '@pocket-tools/event-bridge';
+import { PocketEventRecord } from './handlerMap';
+import * as Sentry from '@sentry/aws-serverless';
+import { serverLogger } from '@pocket-tools/ts-logger';
+
+type AccountDeleteEvent = Exclude<PocketEventRecord, 'pocketEvent'> & {
+  pocketEvent: AccountDelete & IncomingBaseEvent;
+};
 
 /**
  * Given an account delete event, call the batchDelete endpoint on the
@@ -8,19 +15,24 @@ import { AccountDelete } from '@pocket-tools/event-bridge';
  * @throws Error if response is not ok
  */
 export async function accountDeleteHandler(
-  event: AccountDelete[],
-): Promise<void> {
-  for await (const e of event) {
-    await proccessAccountDeleteEvent(e);
-  }
+  event: AccountDeleteEvent[],
+): Promise<string[]> {
+  const promises = event.map((e) => {
+    return proccessAccountDeleteEvent(e);
+  });
+
+  const failedEventIds = await Promise.all(promises);
+  return failedEventIds.filter((id) => id !== null) as string[];
 }
 
-async function proccessAccountDeleteEvent(event: AccountDelete): Promise<void> {
+async function proccessAccountDeleteEvent(
+  event: AccountDeleteEvent,
+): Promise<string | null> {
   const postBody = {
-    userId: event.detail.userId,
+    userId: event.pocketEvent.detail.userId,
   };
-  if (event.detail.traceId !== null) {
-    postBody['traceId'] = event.detail.traceId;
+  if (event.pocketEvent.detail.traceId !== null) {
+    postBody['traceId'] = event.pocketEvent.detail.traceId;
   }
   const res = await fetch(config.endpoint + config.accountDeletePath, {
     method: 'post',
@@ -31,8 +43,12 @@ async function proccessAccountDeleteEvent(event: AccountDelete): Promise<void> {
   });
   if (!res.ok) {
     const data = (await res.json()) as any;
-    throw new Error(
+    const error = new Error(
       `batchDelete - ${res.status}\n${JSON.stringify(data.errors)}`,
     );
+    Sentry.captureException(error);
+    serverLogger.error(error);
+    return event.messageId;
   }
+  return null;
 }

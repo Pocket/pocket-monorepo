@@ -1,13 +1,22 @@
-import { PocketEvent, PocketEventType } from '@pocket-tools/event-bridge';
+import {
+  IncomingBaseEvent,
+  PocketEvent,
+  PocketEventType,
+} from '@pocket-tools/event-bridge';
 import { accountDeleteHandler } from './accountDeleteHandler';
 import { premiumPurchaseHandler } from './premiumPurchaseHandler';
 import { itemUpdateHandler } from './itemUpdateHandler';
 import { itemDeleteHandler } from './itemDeleteHandler';
 
+export interface PocketEventRecord {
+  messageId: string;
+  pocketEvent: PocketEvent & IncomingBaseEvent;
+}
+
 // Mapping of detail-type (via event bridge message)
 // to function that should be invoked to process the message
 export const handlerMap: {
-  [key: string]: (event: PocketEvent[]) => Promise<void>;
+  [key: string]: (event: PocketEventRecord[]) => Promise<string[]>;
 } = {
   [PocketEventType.ACCOUNT_DELETION]: accountDeleteHandler,
   [PocketEventType.PREMIUM_PURCHASE]: premiumPurchaseHandler,

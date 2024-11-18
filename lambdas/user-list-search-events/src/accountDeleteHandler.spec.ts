@@ -1,7 +1,7 @@
 import { config } from './config';
 import nock from 'nock';
 import { SQSRecord } from 'aws-lambda';
-import { __handler } from '../dist';
+import { __handler } from './index';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { PocketEventType } from '@pocket-tools/event-bridge';
 
@@ -13,8 +13,9 @@ describe('accountDelete handler', () => {
       .post(config.accountDeletePath)
       .reply(400, { errors: ['this is an error'] });
   });
-  it('throws an error if response is not ok', async () => {
+  it('return a failed message if response is not ok', async () => {
     const record = {
+      messageId: '123',
       body: JSON.stringify({
         Message: JSON.stringify({
           'detail-type': PocketEventType.ACCOUNT_DELETION,
@@ -36,14 +37,11 @@ describe('accountDelete handler', () => {
         }),
       }),
     };
-    expect.assertions(4);
 
-    try {
-      await __handler({ Records: [record] as SQSRecord[] });
-    } catch (e) {
-      expect(e.message).toContain('batchDelete - 400');
-      expect(e.message).toContain('this is an error');
-    }
+    const messages = await __handler({ Records: [record] as SQSRecord[] });
+
+    expect(messages.batchItemFailures).toHaveLength(1);
+    expect(messages.batchItemFailures[0].itemIdentifier).toEqual('123');
     expect(nock.isDone()).toBeTruthy();
     expect(serverLoggerSpy).toHaveBeenCalledTimes(1);
   });
