@@ -4,7 +4,7 @@ import { gql } from 'graphql-tag';
 
 export const getSchemaFile = () => {
   return fs
-    .readFileSync(path.join(__dirname, '..', '..', 'schema.graphql'))
+    .readFileSync(path.join(__dirname, '../../..', 'schema.graphql'))
     .toString();
 };
 

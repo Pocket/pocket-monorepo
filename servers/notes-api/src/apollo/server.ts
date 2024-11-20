@@ -11,7 +11,7 @@ import {
 } from '@pocket-tools/apollo-utils';
 import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4';
 
-import { schema } from './schema/buildSchema';
+import { schema } from './schema';
 import { config } from '../config';
 import { getContext, IContext } from './context';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
