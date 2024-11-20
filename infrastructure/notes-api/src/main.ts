@@ -50,7 +50,8 @@ class NotesAPI extends TerraformStack {
 
     const alarmSnsTopic = this.getCodeDeploySnsTopic();
     const rds = this.createRds(pocketVPC);
-    const sqs = this.deleteNotificationQueue(pocketVPC);
+    // TODO: Uncomment when ready to implement data deletion
+    // const sqs = this.deleteNotificationQueue(pocketVPC);
 
     this.createPocketAlbApplication({
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
@@ -58,7 +59,7 @@ class NotesAPI extends TerraformStack {
       region,
       caller,
       rds,
-      sqs,
+      // sqs,
     });
 
     const youUpQuery = `query { __typename }`;
@@ -165,9 +166,15 @@ class NotesAPI extends TerraformStack {
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
     snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
     rds: ApplicationRDSCluster;
-    sqs: ApplicationSQSQueue;
+    // sqs: ApplicationSQSQueue;
   }): PocketALBApplication {
-    const { region, caller, secretsManagerKmsAlias, snsTopic, rds, sqs } =
+    const {
+      region,
+      caller,
+      secretsManagerKmsAlias,
+      snsTopic,
+      rds,
+    } = //, sqs } =
       dependencies;
 
     return new PocketALBApplication(this, 'application', {
