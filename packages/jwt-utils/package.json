@@ -1,6 +1,6 @@
 {
   "name": "@pocket-tools/jwt-utils",
-  "version": "0.0.0-development",
+  "version": "1.0.4",
   "description": "Utilities for working with pocket jwts",
   "keywords": [
     "jwt"
@@ -68,6 +68,7 @@
       [
         "@semantic-release/exec",
         {
+          "analyzeCommitsCmd": "pnpm version ${lastRelease.version} --git-tag-version=false > /dev/null 2>&1 || true",
           "prepareCmd": "pnpm version ${nextRelease.version} --git-tag-version=false",
           "publishCmd": "pnpm publish --no-git-checks"
         }
@@ -95,7 +96,7 @@
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
     "tsup": "8.3.5",
-    "typescript": "5.6.3"
+    "typescript": "5.5.4"
   },
   "publishConfig": {
     "access": "public"

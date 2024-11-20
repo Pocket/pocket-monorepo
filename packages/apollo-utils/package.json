@@ -71,6 +71,7 @@
       [
         "@semantic-release/exec",
         {
+          "analyzeCommitsCmd": "pnpm version ${lastRelease.version} --git-tag-version=false > /dev/null 2>&1 || true",
           "prepareCmd": "pnpm version ${nextRelease.version} --git-tag-version=false",
           "publishCmd": "pnpm publish --no-git-checks"
         }
@@ -86,7 +87,7 @@
     "@apollo/utils.keyvadapter": "3.1.0",
     "@apollo/utils.keyvaluecache": "3.1.0",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "8.37.1",
+    "@sentry/node": "8.38.0",
     "express": "4.20.0",
     "graphql": "16.9.0",
     "graphql-tag": "2.12.6",
@@ -110,7 +111,7 @@
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
     "tsup": "8.3.5",
-    "typescript": "5.6.3"
+    "typescript": "5.5.4"
   },
   "peerDependencies": {
     "@apollo/server": "4.11.0",

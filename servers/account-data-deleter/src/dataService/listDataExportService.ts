@@ -212,7 +212,7 @@ export class ListDataExportService {
   async notifyUser(encodedId: string, requestId: string, signedUrl?: string) {
     const payload: ExportReady = {
       'detail-type': PocketEventType.EXPORT_READY,
-      source: 'web-repo',
+      source: 'account-data-deleter',
       detail: {
         encodedId,
         requestId,

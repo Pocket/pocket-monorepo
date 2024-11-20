@@ -1,8 +1,7 @@
 import * as ssm from '../ssm';
 import nock from 'nock';
 import { config } from '../config';
-import { premiumPurchaseHandler } from './premiumPurchaseHandler';
-import { SQSRecord } from 'aws-lambda';
+import { SQSEvent, SQSRecord } from 'aws-lambda';
 import {
   IncomingBaseEvent,
   PocketEventType,
@@ -10,6 +9,8 @@ import {
 } from '@pocket-tools/event-bridge';
 
 import { cloneDeep } from 'lodash';
+import { serverLogger } from '@pocket-tools/ts-logger';
+import { processor } from '..';
 
 function generateRecord(eventPayload: PremiumPurchaseEvent) {
   return {
@@ -50,11 +51,13 @@ describe('premium purchase handler', () => {
   };
 
   const record = generateRecord(testPremiumPurchaseEvent);
+  let serverLoggerSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest
       .spyOn(ssm, 'getBrazeApiKey')
       .mockImplementation(() => Promise.resolve('api-key'));
+    serverLoggerSpy = jest.spyOn(serverLogger, 'error');
   });
 
   afterEach(() => {
@@ -67,9 +70,11 @@ describe('premium purchase handler', () => {
       .post(config.braze.userTrackPath)
       .reply(200, { data: ['this is a data'] });
 
-    const res = await premiumPurchaseHandler(record as SQSRecord);
-    const result = (await res?.json()) as any;
-    expect(result.data).toEqual(['this is a data']);
+    await processor({
+      Records: [record] as SQSRecord[],
+    } as SQSEvent);
+
+    expect(nock.isDone()).toBeTruthy();
   });
 
   it('should return data if retry succeed', async () => {
@@ -82,9 +87,10 @@ describe('premium purchase handler', () => {
       .post(config.braze.userTrackPath)
       .reply(200, { data: ['this is a data'] });
 
-    const res = await premiumPurchaseHandler(record as SQSRecord);
-    const result = (await res?.json()) as any;
-    expect(result.data).toEqual(['this is a data']);
+    await processor({
+      Records: [record] as SQSRecord[],
+    } as SQSEvent);
+    expect(nock.isDone()).toBeTruthy();
   });
 
   it('should throw server error if all 3 retries fails', async () => {
@@ -93,27 +99,28 @@ describe('premium purchase handler', () => {
       .times(3)
       .reply(500, { errors: ['this is server error'] });
 
-    try {
-      await premiumPurchaseHandler(record as SQSRecord);
-    } catch (e) {
-      expect(e.message).toContain(
-        'Error 500: Failed to send premium purchase event',
-      );
-    }
+    await processor({
+      Records: [record] as SQSRecord[],
+    } as SQSEvent);
+    expect(nock.isDone()).toBeTruthy();
+    expect(serverLoggerSpy).toHaveBeenCalled();
+    expect(serverLoggerSpy.mock.calls[0][0]['errorData']['message']).toContain(
+      'Error 500: Failed to send premium purchase event',
+    );
   });
 
   it('should return status and error for braze client error', async () => {
     nock(config.braze.endpoint)
       .post(config.braze.userTrackPath)
       .reply(400, { errors: ['this is an error'] });
-
-    try {
-      await premiumPurchaseHandler(record as SQSRecord);
-    } catch (e) {
-      expect(e.message).toContain(
-        'Error 400: Failed to send premium purchase event',
-      );
-    }
+    await processor({
+      Records: [record] as SQSRecord[],
+    } as SQSEvent);
+    expect(nock.isDone()).toBeTruthy();
+    expect(serverLoggerSpy).toHaveBeenCalled();
+    expect(serverLoggerSpy.mock.calls[0][0]['errorData']['message']).toContain(
+      'Error 400: Failed to send premium purchase event',
+    );
   });
 
   it('should throw error if User is not present', async () => {
@@ -121,29 +128,26 @@ describe('premium purchase handler', () => {
     delete errorEvent.detail.user;
     const record = generateRecord(errorEvent);
 
-    expect.assertions(1); // since it's in a try/catch, make sure we assert
-    try {
-      await premiumPurchaseHandler(record as SQSRecord);
-    } catch (e) {
-      expect(e.message).toContain(
-        "data/detail must have required property 'user'",
-      );
-    }
+    await processor({
+      Records: [record] as SQSRecord[],
+    } as SQSEvent);
+    expect(serverLoggerSpy).toHaveBeenCalled();
+    expect(serverLoggerSpy.mock.calls[0][0]['errorData']['message']).toContain(
+      "data/detail must have required property 'user'",
+    );
   });
 
   it('should throw error if any field in Purchase is not present', async () => {
     const purchaseErrorEvent = cloneDeep(testPremiumPurchaseEvent) as any;
     delete purchaseErrorEvent.detail.purchase.receiptId;
     const record = generateRecord(purchaseErrorEvent);
-
-    expect.assertions(1); // since it's in a try/catch, make sure we assert
-    try {
-      await premiumPurchaseHandler(record as SQSRecord);
-    } catch (e) {
-      expect(e.message).toContain(
-        "data/detail/purchase must have required property 'receiptId'",
-      );
-    }
+    await processor({
+      Records: [record] as SQSRecord[],
+    } as SQSEvent);
+    expect(serverLoggerSpy).toHaveBeenCalled();
+    expect(serverLoggerSpy.mock.calls[0][0]['errorData']['message']).toContain(
+      "data/detail/purchase must have required property 'receiptId'",
+    );
   });
 
   it('should throw error if any field in User is not present', async () => {
@@ -151,12 +155,12 @@ describe('premium purchase handler', () => {
     delete purchaseErrorEvent.detail.user.encodedId;
     const record = generateRecord(purchaseErrorEvent);
 
-    try {
-      await premiumPurchaseHandler(record as SQSRecord);
-    } catch (e) {
-      expect(e.message).toContain(
-        "data/detail/user must have required property 'encodedId'",
-      );
-    }
+    await processor({
+      Records: [record] as SQSRecord[],
+    } as SQSEvent);
+    expect(serverLoggerSpy).toHaveBeenCalled();
+    expect(serverLoggerSpy.mock.calls[0][0]['errorData']['message']).toContain(
+      "data/detail/user must have required property 'encodedId'",
+    );
   });
 });

@@ -20,7 +20,7 @@
     "@aws-sdk/client-sagemaker-runtime": "3.679.0",
     "@pocket-tools/event-bridge": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/aws-serverless": "8.37.1",
+    "@sentry/aws-serverless": "8.38.0",
     "@smithy/node-http-handler": "3.2.0",
     "@smithy/util-retry": "3.0.3",
     "fetch-retry": "^5.0.6",
@@ -38,6 +38,6 @@
     "ts-jest": "29.2.5",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "typescript": "5.6.3"
+    "typescript": "5.5.4"
   }
 }

@@ -1,5 +1,5 @@
-import { SQSRecord } from 'aws-lambda';
 import { config } from './config';
+import { AccountDelete } from '@pocket-tools/event-bridge';
 
 /**
  * Given an account delete event, call the batchDelete endpoint on the
@@ -7,13 +7,14 @@ import { config } from './config';
  * @param record SQSRecord containing forwarded event from eventbridge
  * @throws Error if response is not ok
  */
-export async function accountDeleteHandler(record: SQSRecord): Promise<void> {
-  const message = JSON.parse(JSON.parse(record.body).Message)['detail'];
+export async function accountDeleteHandler(
+  event: AccountDelete,
+): Promise<void> {
   const postBody = {
-    userId: message['userId'],
+    userId: event.detail.userId,
   };
-  if (message['traceId']) {
-    postBody['traceId'] = message['traceId'];
+  if (event.detail.traceId !== null) {
+    postBody['traceId'] = event.detail.traceId;
   }
   const res = await fetch(config.endpoint + config.accountDeletePath, {
     method: 'post',

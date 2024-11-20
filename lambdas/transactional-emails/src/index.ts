@@ -14,6 +14,7 @@ import type {
 
 import { handlers } from './handlers';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { sqsLambdaEventBridgeEvent } from '@pocket-tools/event-bridge';
 
 /**
  * The main handler function which will be wrapped by Sentry prior to export.
@@ -26,17 +27,20 @@ export async function processor(event: SQSEvent): Promise<SQSBatchResponse> {
   const batchFailures: SQSBatchItemFailure[] = [];
   for await (const record of event.Records) {
     try {
-      const message = JSON.parse(JSON.parse(record.body).Message);
-      if (handlers[message['detail-type']] == null) {
-        const errorData = {
-          'detail-type': message['detail-type'],
-          source: message['source'],
-        };
-        serverLogger.info(`Missing handler.`, { message, data: errorData });
+      const pocketEvent = sqsLambdaEventBridgeEvent(record);
+      if (
+        pocketEvent === null ||
+        (pocketEvent !== null &&
+          !Object.keys(handlers).includes(pocketEvent['detail-type']))
+      ) {
+        serverLogger.info(`Missing handler.`, {
+          pocketEvent,
+          data: record.body,
+        });
         batchFailures.push({ itemIdentifier: record.messageId });
         continue;
       }
-      await handlers[message['detail-type']](record);
+      await handlers[pocketEvent['detail-type']](pocketEvent);
     } catch (error) {
       serverLogger.error({
         message: 'Failed to send request to Braze',

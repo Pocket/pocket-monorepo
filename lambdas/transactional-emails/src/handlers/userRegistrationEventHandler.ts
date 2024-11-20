@@ -6,7 +6,6 @@ import {
   sendUserTrack,
   setSubscription,
 } from '../braze';
-import { SQSRecord } from 'aws-lambda';
 import type {
   UsersAliasObject,
   UsersTrackObject,
@@ -16,8 +15,9 @@ import { serverLogger } from '@pocket-tools/ts-logger';
 import {
   AccountRegistration,
   IncomingBaseEvent,
+  IncomingPocketEvent,
+  PocketEvent,
   PocketEventType,
-  sqsLambdaEventBridgeEvent,
 } from '@pocket-tools/event-bridge';
 
 export type AttributeForUserRegistration = {
@@ -43,9 +43,8 @@ export type AttributeForUserSubscription = {
  * @returns response from braze
  */
 export async function userRegistrationEventHandler(
-  record: SQSRecord,
+  event: PocketEvent & IncomingPocketEvent,
 ): Promise<Response | null> {
-  const event = sqsLambdaEventBridgeEvent(record);
   if (event?.['detail-type'] === PocketEventType.ACCOUNT_REGISTRATION) {
     serverLogger.info(`received user registration event`, {
       userId: event.detail.encodedUserId,

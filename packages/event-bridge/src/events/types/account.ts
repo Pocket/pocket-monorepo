@@ -74,4 +74,5 @@ export interface AccountPayload {
   timestamp: number;
   version: string;
   eventType: string;
+  traceId?: string | null;
 }

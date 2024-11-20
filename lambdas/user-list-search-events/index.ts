@@ -6,6 +6,7 @@ Sentry.init({
 import { SQSEvent } from 'aws-lambda';
 import { handlerMap } from './handlerMap';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { sqsLambdaEventBridgeEvent } from '@pocket-tools/event-bridge';
 
 /**
  * Processes messages originating from event bridge. The detail-type field in
@@ -13,13 +14,16 @@ import { serverLogger } from '@pocket-tools/ts-logger';
  * @param event
  * @returns
  */
-async function __handler(event: SQSEvent): Promise<any> {
+export async function __handler(event: SQSEvent): Promise<any> {
   for await (const record of event.Records) {
     try {
-      const message = JSON.parse(JSON.parse(record.body).Message);
+      const pocketEvent = sqsLambdaEventBridgeEvent(record);
       // Ignore messages we don't have handlers for -- they can just pass through
-      if (handlerMap[message['detail-type']] != null) {
-        await handlerMap[message['detail-type']](record);
+      if (
+        pocketEvent !== null &&
+        Object.keys(handlerMap).includes(pocketEvent['detail-type'])
+      ) {
+        await handlerMap[pocketEvent['detail-type']](pocketEvent);
       }
     } catch (error) {
       serverLogger.error(error);

@@ -1,10 +1,11 @@
 import nock, { cleanAll } from 'nock';
-import { accountDeleteHandler } from './accountDelete';
-import { SQSRecord } from 'aws-lambda';
+import { SQSEvent, SQSRecord } from 'aws-lambda';
 import { config } from '../config';
 import * as ssm from '../ssm';
 import { sendAccountDeletionEmail } from '../braze';
 import { PocketEventType } from '@pocket-tools/event-bridge';
+import { processor } from '..';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 describe('accountDelete handler', () => {
   const record = {
@@ -30,10 +31,13 @@ describe('accountDelete handler', () => {
     }),
   };
 
+  let serverLoggerSpy: jest.SpyInstance;
+
   beforeEach(() => {
     jest
       .spyOn(ssm, 'getBrazeApiKey')
       .mockImplementation(() => Promise.resolve('api-key'));
+    serverLoggerSpy = jest.spyOn(serverLogger, 'error');
   });
 
   afterEach(() => {
@@ -42,10 +46,6 @@ describe('accountDelete handler', () => {
   });
 
   it('throw an error if accountDelete event payload is missing email', async () => {
-    nock(config.braze.endpoint)
-      .post(config.braze.campaignTriggerPath)
-      .reply(400, { errors: ['this is an error'] });
-
     const recordWithoutEmail = {
       body: JSON.stringify({
         Message: JSON.stringify({
@@ -59,26 +59,27 @@ describe('accountDelete handler', () => {
         }),
       }),
     };
-    expect.assertions(1); // since it's in a try/catch, make sure we assert
-    try {
-      await accountDeleteHandler(recordWithoutEmail as SQSRecord);
-    } catch (e) {
-      expect(e.message).toContain(
-        "data/detail must have required property 'email'",
-      );
-    }
+    await processor({
+      Records: [recordWithoutEmail] as SQSRecord[],
+    } as SQSEvent);
+    expect(serverLoggerSpy).toHaveBeenCalled();
+    expect(serverLoggerSpy.mock.calls[0][0]['errorData']['message']).toContain(
+      "data/detail must have required property 'email'",
+    );
   });
 
   it('throws an error if email send response is not 200 OK', async () => {
     nock(config.braze.endpoint)
       .post(config.braze.campaignTriggerPath)
       .reply(400, { errors: ['this is an error'] });
-    expect.assertions(1); // since it's in a try/catch, make sure we assert
-    try {
-      await accountDeleteHandler(record as SQSRecord);
-    } catch (e) {
-      expect(e.message).toContain('Error 400: Failed to send email');
-    }
+    await processor({
+      Records: [record] as SQSRecord[],
+    } as SQSEvent);
+
+    expect(serverLoggerSpy).toHaveBeenCalled();
+    expect(serverLoggerSpy.mock.calls[0][0]['errorData']['message']).toContain(
+      'Error 400: Failed to send email',
+    );
   });
 
   it('should retry 3 times if post fails', async () => {

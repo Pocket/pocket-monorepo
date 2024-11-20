@@ -154,6 +154,12 @@
         "timestamp": {
           "type": "number"
         },
+        "traceId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "userAgent": {
           "type": [
             "string",
