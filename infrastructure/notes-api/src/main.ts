@@ -324,17 +324,17 @@ class NotesAPI extends TerraformStack {
             resources: ['*'],
             effect: 'Allow',
           },
-          {
-            //no permission for batchReceive as we want only one message polled at a time
-            actions: [
-              'sqs:ReceiveMessage',
-              'sqs:DeleteMessage',
-              'sqs:SendMessage',
-              'sqs:SendMessageBatch',
-            ],
-            resources: [sqs.sqsQueue.arn],
-            effect: 'Allow',
-          },
+          // {
+          //   //no permission for batchReceive as we want only one message polled at a time
+          //   actions: [
+          //     'sqs:ReceiveMessage',
+          //     'sqs:DeleteMessage',
+          //     'sqs:SendMessage',
+          //     'sqs:SendMessageBatch',
+          //   ],
+          //   resources: [sqs.sqsQueue.arn],
+          //   effect: 'Allow',
+          // },
           {
             actions: ['events:PutEvents'],
             resources: [

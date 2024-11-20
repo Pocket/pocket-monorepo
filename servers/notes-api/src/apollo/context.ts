@@ -21,10 +21,13 @@ export async function getContext({
   });
 }
 
-export interface IContext extends PocketContext {}
+export interface IContext extends PocketContext {
+  hello: string;
+}
 
 export class ContextManager extends PocketContextManager implements IContext {
   constructor(options: { request: Request }) {
     super(options.request.headers);
   }
+  hello = 'hello';
 }
