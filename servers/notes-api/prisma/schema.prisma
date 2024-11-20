@@ -1,0 +1,44 @@
+generator kysely {
+  provider = "prisma-kysely"
+  output   = "../node_modules/.kysely/client"
+  fileName = "types.ts"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Clipping {
+  id         Int      @id @default(autoincrement())
+  clippingId String?  @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId     String   @db.VarChar(300)
+  noteId     String   @unique @db.Uuid
+  sourceUrl  String
+  createdAt  DateTime @default(dbgenerated("CURRENT_TIMESTAMP(0)")) @db.Timestamptz(0)
+  anchors    Json?
+  html       String
+  deleted    Boolean  @default(false)
+  Note       Note     @relation(fields: [noteId], references: [noteId], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([createdAt], map: "ClippingCreated")
+  @@index([sourceUrl], map: "ClippingUrl", type: Hash)
+  @@index([userId], map: "ClippingUser", type: Hash)
+}
+
+model Note {
+  id         Int       @id @default(autoincrement())
+  noteId     String?   @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId     String    @db.VarChar(300)
+  title      String    @db.VarChar(300)
+  sourceUrl  String?
+  createdAt  DateTime  @default(dbgenerated("CURRENT_TIMESTAMP(0)")) @db.Timestamptz(0)
+  updatedAt  DateTime  @db.Timestamptz(3)
+  docContent Json?
+  deleted    Boolean   @default(false)
+  Clipping   Clipping?
+
+  @@index([updatedAt], map: "NoteUpdated")
+  @@index([sourceUrl], map: "NoteUrl", type: Hash)
+  @@index([userId], map: "NoteUser", type: Hash)
+}
