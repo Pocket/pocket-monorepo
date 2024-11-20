@@ -1,3 +1,5 @@
 describe('spec test', () => {
-  it.todo('needs a placeholder');
+  it('needs a placeholder', () => {
+    expect(true).toBeTruthy();
+  });
 });
