@@ -124,7 +124,7 @@ class NotesAPI extends TerraformStack {
         masterUsername: 'pkt_notes',
         engine: 'aurora-postgresql',
         engineMode: 'provisioned',
-        engineVersion: '17.1',
+        engineVersion: '16.4',
         serverlessv2ScalingConfiguration: {
           minCapacity: config.rds.minCapacity,
           maxCapacity: config.rds.maxCapacity,
