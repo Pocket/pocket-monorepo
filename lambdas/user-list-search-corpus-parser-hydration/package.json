@@ -17,7 +17,7 @@
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand"
   },
   "dependencies": {
-    "@aws-sdk/client-sagemaker-runtime": "3.679.0",
+    "@aws-sdk/client-sagemaker-runtime": "3.693.0",
     "@pocket-tools/event-bridge": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/aws-serverless": "8.38.0",

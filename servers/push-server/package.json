@@ -25,7 +25,7 @@
     "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "3.679.0",
+    "@aws-sdk/client-sqs": "3.693.0",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "8.38.0",
     "apns2": "11.7.0",
