@@ -1,9 +1,11 @@
 /**
  * Function for reordering keys in case the order is not preserved when loading,
  * or some keys are missing.
- * @param keys keys passed to the dataloader
- * @param notesResponse the response from the server/cache containing the data
- * @returns an array of notes (or undefined) that match the shape of the keys input
+ * @param keys keys passed to the dataloader (must be string or numeric)
+ * @param results the response from the server/cache containing the data
+ * @param keyColumn the column in the response array which corresponds to
+ * the key values passed
+ * @returns an results (or null) that match the shape of the keys input
  */
 export function orderAndMap<
   T extends number | string,
