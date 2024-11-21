@@ -4,8 +4,10 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "sourceRoot": "",
-    "strict": true
+    "strict": true,
+    "resolveJsonModule": true
   },
   "exclude": ["node_modules/", "dist/"],
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts"],
+  "files": ["node_modules/jest-extended/types/index.d.ts"]
 }

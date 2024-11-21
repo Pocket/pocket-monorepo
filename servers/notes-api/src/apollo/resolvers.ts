@@ -1,5 +1,11 @@
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
+import { Resolvers } from '../__generated__/graphql';
 
-export const resolvers = {
+export const resolvers: Resolvers = {
   ...PocketDefaultScalars,
+  Query: {
+    note(root, { id }, context) {
+      return context.NoteModel.load(id);
+    },
+  },
 };

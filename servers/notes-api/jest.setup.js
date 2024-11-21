@@ -5,7 +5,7 @@ process.env.AWS_DEFAULT_REGION = 'us-east-1';
 process.env.DATABASE_URL =
   'postgresql://pocket:password@localhost:5432/pocketnotes';
 process.env.DATABASE_NAME = 'pocketnotes';
-process.env.DATABASE_USER = 'pkt_notes';
+process.env.DATABASE_USER = 'pocket';
 process.env.DATABASE_PASSWORD = 'password';
 process.env.DATABASE_HOST = 'localhost';
 process.env.DATABASE_PORT = '5432';
