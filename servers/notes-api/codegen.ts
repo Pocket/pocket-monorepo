@@ -3,7 +3,7 @@ import { CodegenConfig } from '@graphql-codegen/cli';
 const config: CodegenConfig = {
   schema: './schema.graphql',
   generates: {
-    './src/__generated__/types.ts': {
+    './src/__generated__/graphql.d.ts': {
       config: {
         federation: true,
         useIndexSignature: true,

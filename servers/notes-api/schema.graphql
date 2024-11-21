@@ -4,6 +4,8 @@ extend schema
  @composeDirective(name: "@constraint")
 
 scalar ISOString
+scalar ValidUrl
+scalar Markdown
 
 """
 A Note is an entity which may contain extracted components
@@ -12,7 +14,7 @@ and may be linked to a source url.
 """
 type Note @key(fields: "id") {
   """
-  The Note's ID
+  This Note's identifier
   """
   id: ID!
   """
@@ -26,7 +28,7 @@ type Note @key(fields: "id") {
   """
   Markdown preview of the note content for summary view.
   """
-  contentPreview: String
+  contentPreview: Markdown
   """
   When this note was created
   """
@@ -40,6 +42,21 @@ type Note @key(fields: "id") {
   or via a Clipping, if applicable)
   """
   savedItem: SavedItem
+  """
+  The URL this entity was created from (either directly or via
+  a Clipping, if applicable).
+  """
+  source: ValidUrl
+  """
+  Whether this Note has been marked as archived (hide from default view).
+  """
+  archived: Boolean!
+  """
+  Whether this Note has been marked for deletion (will be eventually
+  removed from the server). Clients should delete Notes from their local
+  storage if this value is true.
+  """
+  deleted: Boolean!
 }
 
 type SavedItem @key(fields: "url") {

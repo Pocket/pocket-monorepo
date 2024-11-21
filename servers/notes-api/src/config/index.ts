@@ -42,9 +42,10 @@ export const config = {
   },
   database: {
     host: process.env.DATABASE_HOST || 'localhost',
-    username: process.env.DATABASE_USER || 'pkt_notes',
+    username: process.env.DATABASE_USER || 'pocket',
     password: process.env.DATABASE_PASSWORD || 'password',
     dbname: process.env.DATABASE_NAME || 'pocketnotes',
     port: parseInt(process.env.DATABASE_PORT || '5432') || 5432,
+    maxPool: 10,
   },
 };
