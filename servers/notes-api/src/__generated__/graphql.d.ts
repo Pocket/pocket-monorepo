@@ -196,6 +196,7 @@ export interface MarkdownScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 }
 
 export type NoteResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Note'] = ResolversParentTypes['Note']> = ResolversObject<{
+  __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['Note']>, { __typename: 'Note' } & GraphQLRecursivePick<ParentType, {"id":true}>, ContextType>;
   archived?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   contentPreview?: Resolver<Maybe<ResolversTypes['Markdown']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['ISOString'], ParentType, ContextType>;

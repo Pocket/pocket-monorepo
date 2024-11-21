@@ -9,7 +9,6 @@ import { Kysely } from 'kysely';
 import { DB } from '../__generated__/db';
 import { db } from '../datasources/db';
 import { NoteModel } from '../models/Note';
-import { Note } from '../test/fakes/Note';
 
 /**
  * Context factory function. Creates a new context upon
