@@ -12,7 +12,7 @@ export class NotesService {
    * @returns
    */
   async get(noteId: string) {
-    const result = await this.context.db
+    const result = await this.context.roDb
       .selectFrom('Note')
       .selectAll()
       .where('noteId', '=', noteId)
@@ -28,7 +28,7 @@ export class NotesService {
    * @returns
    */
   async getMany(noteIds: readonly string[]) {
-    const result = await this.context.db
+    const result = await this.context.roDb
       .selectFrom('Note')
       .selectAll()
       .where('userId', '=', this.context.userId)
