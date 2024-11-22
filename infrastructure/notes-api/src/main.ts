@@ -243,7 +243,11 @@ class NotesAPI extends TerraformStack {
               valueFrom: `${rds.secretARN}:database_url::`,
             },
             {
-              name: 'DATABASE_HOST',
+              name: 'DB_WRITE_HOST',
+              valueFrom: `${rds.secretARN}:host::`,
+            },
+            {
+              name: 'DB_READ_HOST',
               valueFrom: `${rds.secretARN}:host::`,
             },
             {

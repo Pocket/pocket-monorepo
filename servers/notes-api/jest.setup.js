@@ -7,5 +7,6 @@ process.env.DATABASE_URL =
 process.env.DATABASE_NAME = 'pocketnotes';
 process.env.DATABASE_USER = 'pocket';
 process.env.DATABASE_PASSWORD = 'password';
-process.env.DATABASE_HOST = 'localhost';
+process.env.DB_WRITE_HOST = 'localhost';
+process.env.DB_READ_HOST = 'localhost';
 process.env.DATABASE_PORT = '5432';

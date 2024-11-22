@@ -41,7 +41,8 @@ export const config = {
     timeout: 2 * 1000, // ms
   },
   database: {
-    host: process.env.DATABASE_HOST || 'localhost',
+    readHost: process.env.DB_READ_HOST || 'localhost',
+    writeHost: process.env.DB_WRITE_HOST || 'localhost',
     username: process.env.DATABASE_USER || 'pocket',
     password: process.env.DATABASE_PASSWORD || 'password',
     dbname: process.env.DATABASE_NAME || 'pocketnotes',
