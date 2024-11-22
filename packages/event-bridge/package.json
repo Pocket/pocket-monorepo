@@ -82,7 +82,7 @@
     "@aws-sdk/client-eventbridge": "3.696.0",
     "@aws-sdk/client-sqs": "3.696.0",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "8.38.0",
+    "@sentry/node": "8.39.0",
     "ajv": "8.17.1",
     "ajv-formats": "3.0.1",
     "lodash": "4.17.21",
