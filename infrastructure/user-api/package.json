@@ -13,7 +13,7 @@
     "watch": "tsc -w"
   },
   "dependencies": {
-    "@cdktf/provider-aws": "19.41.1",
+    "@cdktf/provider-aws": "19.43.0",
     "@cdktf/provider-local": "10.1.1",
     "@cdktf/provider-null": "10.0.1",
     "@pocket-tools/terraform-modules": "workspace:*",
