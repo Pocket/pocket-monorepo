@@ -42,7 +42,7 @@ router.post(
     const requestId = req.body.traceId ?? nanoid();
     const userId = req.body.userId;
 
-    deleteSearchIndexByUserId(userId.toString(), requestId).catch((error) => {
+    deleteSearchIndexByUserId(userId.toString()).catch((error) => {
       const message = `BatchDelete: Error - Failed to delete search index for User ID: ${userId} (requestId='${requestId}')`;
       Sentry.addBreadcrumb({ message });
       Sentry.captureException(error);
