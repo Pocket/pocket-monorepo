@@ -323,8 +323,8 @@ describe('Elasticsearch Search Query', () => {
     expect(response.pageInfo.hasPreviousPage).toBeFalse();
     expect(response.edges.length).toBe(2);
     expect(response.edges[0].cursor).toBe('MA==');
-    expect(response.edges[0].node.savedItem.id).toBe(123);
-    expect(response.edges[1].node.savedItem.id).toBe(789);
+    expect(response.edges[0].node.savedItem.id).toBe(456);
+    expect(response.edges[1].node.savedItem.id).toBe(123);
     expect(response.edges[1].cursor).toBe('MQ==');
   }, 10000);
 

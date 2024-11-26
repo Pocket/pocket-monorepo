@@ -28,6 +28,13 @@ export async function deleteDocuments() {
         },
       },
       waitForCompletion: true,
+      conflicts: 'proceed',
+    });
+
+    // Forcemerge the index because with our updates and number of documents the score can change when it should not.
+    // https://kulekci.medium.com/understanding-and-resolving-elasticsearch-score-changes-after-document-updates-a9f426b76e38
+    await client.indices.forcemerge({
+      index: config.aws.elasticsearch.list.index,
     });
 
     // Wait for delete to finish
