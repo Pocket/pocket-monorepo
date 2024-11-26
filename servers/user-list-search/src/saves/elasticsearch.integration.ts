@@ -3,7 +3,6 @@ import { config } from '../config';
 import { bulkDocument } from '../datasource/elasticsearch/elasticsearchBulk';
 import { deleteSearchIndexByUserId } from './elasticsearch';
 import { deleteDocuments } from '../test/utils/searchIntegrationTestHelpers';
-import { tr } from '@faker-js/faker/.';
 
 const defaultDocProps = {
   resolved_id: 1,
