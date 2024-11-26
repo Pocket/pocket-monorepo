@@ -3,6 +3,7 @@ import { config } from '../config';
 import { bulkDocument } from '../datasource/elasticsearch/elasticsearchBulk';
 import { deleteSearchIndexByUserId } from './elasticsearch';
 import { deleteDocuments } from '../test/utils/searchIntegrationTestHelpers';
+import { tr } from '@faker-js/faker/.';
 
 const defaultDocProps = {
   resolved_id: 1,
@@ -106,7 +107,7 @@ describe('Elasticsearch - Integration', () => {
     const baseRes = await search('1');
     expect(baseRes.hits.total['value']).toBe(3);
 
-    await deleteSearchIndexByUserId('1');
+    await deleteSearchIndexByUserId('1', true);
 
     // Wait for delete to finish
     await client.indices.refresh({
