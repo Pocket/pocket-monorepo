@@ -17,7 +17,7 @@
   "dependencies": {
     "@pocket-tools/lambda-secrets": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/aws-serverless": "8.39.0",
+    "@sentry/aws-serverless": "8.40.0",
     "knex": "3.1.0",
     "knex-serverless-mysql": "1.1.0",
     "lodash": "4.17.21",

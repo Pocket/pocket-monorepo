@@ -21,7 +21,7 @@
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "8.39.0",
+    "@sentry/node": "8.40.0",
     "content-type": "1.0.5",
     "cors": "2.8.5",
     "express": "4.20.0",
