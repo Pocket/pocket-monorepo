@@ -32,7 +32,7 @@ describe('Corpus search - semantic', () => {
   const clientMock: any = jest.spyOn(Client.prototype, 'search');
 
   beforeAll(async () => {
-    await unleash(
+    unleash(
       mockFlags([
         { name: config.unleash.flags.semanticSearch.name, enabled: true },
       ]),

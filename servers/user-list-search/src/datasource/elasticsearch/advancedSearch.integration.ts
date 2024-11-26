@@ -1,7 +1,5 @@
 import { advancedSearch } from './elasticsearchSearch';
 import { bulkDocument } from './elasticsearchBulk';
-import { client } from './index';
-import { config } from '../../config';
 import { faker } from '@faker-js/faker';
 import {
   SearchItemsContentType,
@@ -9,6 +7,9 @@ import {
   SearchItemsSortOrder,
   SearchItemsStatusFilter,
 } from '../../__generated__/types';
+import { deleteDocuments } from '../../test/utils/searchIntegrationTestHelpers';
+import { client } from '.';
+import { config } from '../../config';
 
 const defaultDocProps = {
   resolved_id: 1,
@@ -25,20 +26,7 @@ const defaultDocProps = {
 
 describe('Elasticsearch Search Query', () => {
   beforeEach(async () => {
-    await client.deleteByQuery({
-      index: config.aws.elasticsearch.list.index,
-      body: {
-        query: {
-          match_all: {},
-        },
-      },
-    });
-
-    // Wait for delete to finish
-    await client.indices.refresh({
-      index: config.aws.elasticsearch.list.index,
-    });
-
+    await deleteDocuments();
     await bulkDocument([
       {
         ...defaultDocProps,
@@ -100,9 +88,14 @@ describe('Elasticsearch Search Query', () => {
       },
     ]);
 
-    // wait for 1 second. I noticed test wasn't passing if run took quickly after inserting. There may be more to do
-    // here to make sure this does not become brittle.
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Wait for index to finish
+    await client.indices.refresh({
+      index: config.aws.elasticsearch.list.index,
+    });
+  });
+
+  afterAll(async () => {
+    await deleteDocuments();
   });
   it.each([
     {

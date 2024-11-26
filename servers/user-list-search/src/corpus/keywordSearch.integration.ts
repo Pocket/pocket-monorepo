@@ -23,7 +23,7 @@ describe('Corpus search - keyword', () => {
   beforeAll(async () => {
     await deleteDocuments();
     await seedCorpus();
-    await unleash(
+    unleash(
       mockFlags([
         { name: config.unleash.flags.semanticSearch.name, enabled: false },
       ]),

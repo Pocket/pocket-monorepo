@@ -12,6 +12,7 @@ import {
 } from '../datasource/clients/knexClient';
 import { Knex } from 'knex';
 import {
+  deleteDocuments,
   loadItemExtended,
   loadList,
 } from '../test/utils/searchIntegrationTestHelpers';
@@ -76,7 +77,6 @@ async function loadUserItem(
 }
 
 describe('premium search functional test', () => {
-  const testEsClient = client;
   let app: Application;
   let server: ApolloServer<ContextManager>;
   let url: string;
@@ -129,20 +129,7 @@ describe('premium search functional test', () => {
 
   beforeAll(async () => {
     ({ app, server, url } = await startServer(0));
-    await testEsClient.deleteByQuery({
-      index: config.aws.elasticsearch.list.index,
-      type: config.aws.elasticsearch.list.type,
-      body: {
-        query: {
-          match_all: {},
-        },
-      },
-    });
-
-    // Wait for delete to finish
-    await testEsClient.indices.refresh({
-      index: config.aws.elasticsearch.list.index,
-    });
+    await deleteDocuments();
 
     await db('readitla_ril-tmp.list').truncate();
     await db('readitla_b.items_extended').truncate();
@@ -236,7 +223,7 @@ describe('premium search functional test', () => {
     await Promise.all(items);
 
     // Takes a hot sec for the data to be available, otherwise test flakes
-    await testEsClient.indices.refresh({
+    await client.indices.refresh({
       index: config.aws.elasticsearch.list.index,
     });
   });
@@ -245,7 +232,8 @@ describe('premium search functional test', () => {
     await server.stop();
     await db.destroy();
     await knexDbWriteClient().destroy();
-    testEsClient.close();
+    await deleteDocuments();
+    client.close();
   });
 
   it('should search for Items under User entity', async () => {
