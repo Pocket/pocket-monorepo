@@ -8,6 +8,7 @@ import {
 } from '../../__generated__/types';
 import { client } from './index';
 import { config } from '../../config';
+import { deleteDocuments } from '../../test/utils/searchIntegrationTestHelpers';
 
 const defaultDocProps = {
   resolved_id: 1,
@@ -23,19 +24,7 @@ const defaultDocProps = {
 
 describe('Elasticsearch Search Query', () => {
   beforeEach(async () => {
-    await client.deleteByQuery({
-      index: config.aws.elasticsearch.list.index,
-      body: {
-        query: {
-          match_all: {},
-        },
-      },
-    });
-
-    // Wait for delete to finish
-    await client.indices.refresh({
-      index: config.aws.elasticsearch.list.index,
-    });
+    await deleteDocuments();
 
     await bulkDocument([
       {
@@ -137,6 +126,10 @@ describe('Elasticsearch Search Query', () => {
     await client.indices.refresh({
       index: config.aws.elasticsearch.list.index,
     });
+  });
+
+  afterAll(async () => {
+    await deleteDocuments();
   });
 
   // For now this gives us confidence that basic search is not
@@ -330,8 +323,8 @@ describe('Elasticsearch Search Query', () => {
     expect(response.pageInfo.hasPreviousPage).toBeFalse();
     expect(response.edges.length).toBe(2);
     expect(response.edges[0].cursor).toBe('MA==');
-    expect(response.edges[0].node.savedItem.id).toBe(456);
-    expect(response.edges[1].node.savedItem.id).toBe(123);
+    expect(response.edges[0].node.savedItem.id).toBe(123);
+    expect(response.edges[1].node.savedItem.id).toBe(789);
     expect(response.edges[1].cursor).toBe('MQ==');
   }, 10000);
 

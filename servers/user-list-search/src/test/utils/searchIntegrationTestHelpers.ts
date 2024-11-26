@@ -1,4 +1,6 @@
 import { Knex } from 'knex';
+import { client } from '../../datasource/elasticsearch';
+import { config } from '../../config';
 
 export type SeedData = {
   favorite: number;
@@ -12,6 +14,30 @@ export type SeedData = {
   isImage?: number;
   isVideo?: number;
 };
+
+/**
+ * Test cleanup: delete all documents in search indices
+ */
+export async function deleteDocuments() {
+  try {
+    await client.deleteByQuery({
+      index: config.aws.elasticsearch.list.index,
+      body: {
+        query: {
+          match_all: {},
+        },
+      },
+      waitForCompletion: true,
+    });
+
+    // Wait for delete to finish
+    await client.indices.refresh({
+      index: config.aws.elasticsearch.list.index,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 export async function loadItemExtended(db, seedData: SeedData) {
   const optionalDefaults = {
