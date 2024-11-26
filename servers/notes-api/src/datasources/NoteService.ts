@@ -1,6 +1,7 @@
 import { Insertable, UpdateQueryBuilder, UpdateResult } from 'kysely';
 import { IContext } from '../apollo/context';
 import { DB, Note as NoteEntity } from '../__generated__/db';
+import { NoteFilterInput } from '../__generated__/graphql';
 
 /**
  * Database methods for retrieving and creating Notes
@@ -127,5 +128,44 @@ export class NotesService {
       .returning('noteId')
       .executeTakeFirstOrThrow();
     return result.noteId;
+  }
+
+  filterQuery(filters: NoteFilterInput | undefined) {
+    let qb = this.context.db
+      .selectFrom('Note')
+      .selectAll()
+      .where('userId', '=', this.context.userId);
+    if (filters != null) {
+      qb = qb.where(({ and, eb }) => {
+        const conditions = Object.entries(filters).map(([key, value]) => {
+          switch (key) {
+            case 'archived': {
+              return typeof value === 'boolean'
+                ? eb(key, '=', value)
+                : undefined;
+            }
+            case 'isAttachedToSave': {
+              return value === true
+                ? eb('sourceUrl', 'is not', null)
+                : eb('sourceUrl', 'is', null);
+            }
+            case 'since': {
+              if (value instanceof Date) {
+                return eb('updatedAt', '>', value);
+              } else if (typeof value === 'string') {
+                return eb('updatedAt', '>', new Date(value));
+              } else {
+                return undefined;
+              }
+            }
+            case 'excludeDeleted': {
+              return value === true ? eb('deleted', '=', false) : undefined;
+            }
+          }
+        });
+        return and(conditions.filter((_) => _ != null));
+      });
+    }
+    return qb;
   }
 }

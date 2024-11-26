@@ -7,14 +7,40 @@ import {
   EditNoteContentInput,
   DeleteNoteInput,
 } from '../__generated__/graphql';
-import { Note as NoteEntity } from '../__generated__/db';
+import { DB, Note as NoteEntity } from '../__generated__/db';
 import { Insertable, NoResultError, Selectable } from 'kysely';
 import { orderAndMap } from '../utils/dataloader';
 import { IContext } from '../apollo/context';
 import { NotesService } from '../datasources/NoteService';
 import { ProseMirrorDoc, wrapDocInBlockQuote } from './ProseMirrorDoc';
-import { NotFoundError, UserInputError } from '@pocket-tools/apollo-utils';
 import { DatabaseError } from 'pg';
+import {
+  NoteFilterInput,
+  NoteSortBy,
+  NoteSortInput,
+  NoteSortOrder,
+} from '../__generated__/graphql';
+import {
+  UserInputError,
+  NotFoundError,
+  validatePagination,
+  PaginationInput,
+} from '@pocket-tools/apollo-utils';
+import { config } from '../config';
+import {
+  CursorField,
+  CursorFields,
+  DecodedCursor,
+  executeWithCursorPagination,
+  ExtractFieldKey,
+  ExtractOutputType,
+  PaginationResult,
+} from '../utils/Paginator';
+import { AllSelection } from 'kysely/dist/cjs/parser/select-parser';
+
+type AllNote = AllSelection<DB, 'Note'>;
+
+export type NoteConnectionModel = PaginationResult<Note>;
 
 /**
  * Model for retrieving and creating Notes
@@ -57,6 +83,20 @@ export class NoteModel {
       deleted: note.deleted,
     };
   }
+
+  /**
+   * Given NoteSortBy field input, get the corresponding DB column
+   */
+  sortColumn<O extends AllNote>(
+    noteField: NoteSortBy,
+  ): CursorField<DB, 'Note', O> {
+    const mapping: { [f in NoteSortBy]: CursorField<DB, 'Note', O> } = {
+      UPDATED_AT: 'updatedAt',
+      CREATED_AT: 'createdAt',
+    };
+    return mapping[noteField];
+  }
+
   /**
    * Get multiple Notes by IDs. Prefer using `load`
    * unless you need to bypass cache behavior.
@@ -216,5 +256,144 @@ export class NoteModel {
         throw error;
       }
     }
+  }
+
+  async paginate(opts: {
+    sort?: NoteSortInput;
+    filter?: NoteFilterInput;
+    pagination?: PaginationInput;
+  }) {
+    const { sort, filter, pagination } = opts;
+    const defaultPagination = { first: config.database.defaultPageSize };
+    const pageInput =
+      pagination != null
+        ? validatePagination(
+            pagination,
+            config.database.defaultPageSize,
+            config.database.maxPageSize,
+          )
+        : defaultPagination;
+    const sortInput: NoteSortInput =
+      sort != null
+        ? sort
+        : { sortBy: NoteSortBy.UpdatedAt, sortOrder: NoteSortOrder.Desc };
+
+    const baseQuery = this.service.filterQuery(filter);
+
+    // The passed sort + 'id' as the tiebreaker
+    // TODO - if createdAt, just use 'id'
+    const cursorFields = [
+      this.sortColumn<AllNote>(sortInput.sortBy),
+      'id',
+    ] as CursorFields<DB, 'Note', ExtractOutputType<typeof baseQuery>>;
+    const result = await executeWithCursorPagination<
+      DB,
+      'Note',
+      ExtractOutputType<typeof baseQuery>,
+      typeof cursorFields
+    >(baseQuery, {
+      ...pageInput,
+      sortBy: cursorFields,
+      order: sortInput.sortOrder === NoteSortOrder.Asc ? 'asc' : 'desc',
+      encodeCursor: (row) =>
+        NoteModel.encodeCursor<
+          ExtractOutputType<typeof baseQuery>,
+          typeof cursorFields
+        >(row, cursorFields),
+      decodeCursor: (cursor) =>
+        NoteModel.decodeCursor<
+          ExtractOutputType<typeof baseQuery>,
+          typeof cursorFields
+        >(cursor, cursorFields),
+    });
+    const edges = result.edges.map((edge) => ({
+      cursor: edge.cursor,
+      node: this.toGraphql(edge.node),
+    }));
+    return { ...result, edges };
+  }
+
+  public static decodeCursor<O, TCursor extends CursorFields<DB, 'Note', O>>(
+    cursor: string,
+    fields: TCursor,
+  ): DecodedCursor<DB, 'Note', O, TCursor> {
+    let parsed;
+    try {
+      parsed = [
+        ...new URLSearchParams(
+          Buffer.from(cursor, 'base64url').toString('utf8'),
+        ).entries(),
+      ];
+    } catch {
+      throw new UserInputError('Unparsable cursor');
+    }
+    // Validation
+    if (fields.length !== parsed.length) {
+      throw new UserInputError('Sort fields did not match cursor');
+    }
+    fields.forEach((field, index) => {
+      if (field !== parsed[index][0]) {
+        throw new UserInputError('Sort fields did not match cursor');
+      }
+    });
+
+    const serializer = (
+      field: ExtractFieldKey<DB, 'Note', O, TCursor[number]>,
+      value: string,
+    ) => {
+      switch (field) {
+        case 'updatedAt':
+        case 'createdAt':
+          return new Date(value) as O[ExtractFieldKey<
+            DB,
+            'Note',
+            O,
+            TCursor[number]
+          >];
+        default:
+          return value as O[ExtractFieldKey<DB, 'Note', O, TCursor[number]>];
+      }
+    };
+
+    return fields.reduce(
+      (decoded, field: CursorField<DB, 'Note', O>, index) => {
+        decoded[field as ExtractFieldKey<DB, 'Note', O, typeof field>] =
+          serializer(
+            field as ExtractFieldKey<DB, 'Note', O, typeof field>,
+            parsed[index][1],
+          );
+        return decoded;
+      },
+      {} as DecodedCursor<DB, 'Note', O, TCursor>,
+    );
+  }
+
+  public static encodeCursor<O, T extends CursorFields<DB, 'Note', O>>(
+    row: {
+      [Field in ExtractFieldKey<DB, 'Note', O, T[number]>]: O[ExtractFieldKey<
+        DB,
+        'Note',
+        O,
+        T[number]
+      >];
+    },
+    fields: T,
+  ): string {
+    const cursorValues = fields.map((field) => {
+      const fieldName = field as ExtractFieldKey<DB, 'Note', O, typeof field>;
+      if (row[fieldName] instanceof Date) {
+        return `${fieldName}=${row[fieldName].toISOString()}`;
+      } else if (
+        typeof row[fieldName] === 'boolean' ||
+        typeof row[fieldName] === 'bigint' ||
+        typeof row[fieldName] === 'number' ||
+        typeof row[fieldName] === 'string'
+      ) {
+        return `${fieldName}=${row[fieldName].toString()}`;
+      } else {
+        throw Error(`Invalid field used for cursor: ${fieldName}`);
+      }
+    });
+    return Buffer.from(cursorValues.join('&')).toString('base64url');
   }
 }
