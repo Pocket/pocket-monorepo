@@ -22,7 +22,7 @@
     "watch": "tsc -w --preserveWatchOutput & nodemon -r dotenv/config --config ../../nodemon.json"
   },
   "dependencies": {
-    "@apollo/server": "4.11.0",
+    "@apollo/server": "4.11.2",
     "@apollo/subgraph": "2.9.3",
     "@apollo/utils.keyvadapter": "3.1.0",
     "@keyv/redis": "2.8.5",

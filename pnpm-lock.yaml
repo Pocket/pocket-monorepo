@@ -1864,11 +1864,11 @@ importers:
         specifier: 1.0.3
         version: 1.0.3(graphql@16.9.0)
       '@apollo/server':
-        specifier: 4.11.0
-        version: 4.11.0(encoding@0.1.13)(graphql@16.9.0)
+        specifier: 4.11.2
+        version: 4.11.2(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/server-plugin-response-cache':
         specifier: 4.1.3
-        version: 4.1.3(@apollo/server@4.11.0(encoding@0.1.13)(graphql@16.9.0))(graphql@16.9.0)
+        version: 4.1.3(@apollo/server@4.11.2(encoding@0.1.13)(graphql@16.9.0))(graphql@16.9.0)
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
@@ -2816,8 +2816,8 @@ importers:
         specifier: ^6.2.2
         version: 6.3.0(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/server':
-        specifier: 4.11.0
-        version: 4.11.0(encoding@0.1.13)(graphql@16.9.0)
+        specifier: 4.11.2
+        version: 4.11.2(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
@@ -3061,8 +3061,8 @@ importers:
   servers/feature-flags:
     dependencies:
       '@apollo/server':
-        specifier: 4.11.0
-        version: 4.11.0(encoding@0.1.13)(graphql@16.9.0)
+        specifier: 4.11.2
+        version: 4.11.2(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
@@ -3173,8 +3173,8 @@ importers:
   servers/image-api:
     dependencies:
       '@apollo/server':
-        specifier: 4.11.0
-        version: 4.11.0(encoding@0.1.13)(graphql@16.9.0)
+        specifier: 4.11.2
+        version: 4.11.2(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
@@ -3273,8 +3273,8 @@ importers:
   servers/list-api:
     dependencies:
       '@apollo/server':
-        specifier: 4.11.0
-        version: 4.11.0(encoding@0.1.13)(graphql@16.9.0)
+        specifier: 4.11.2
+        version: 4.11.2(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
@@ -3448,8 +3448,8 @@ importers:
   servers/notes-api:
     dependencies:
       '@apollo/server':
-        specifier: 4.11.0
-        version: 4.11.0(encoding@0.1.13)(graphql@16.9.0)
+        specifier: 4.11.2
+        version: 4.11.2(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
@@ -3599,8 +3599,8 @@ importers:
         specifier: ^6.2.2
         version: 6.3.0(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/server':
-        specifier: 4.11.0
-        version: 4.11.0(encoding@0.1.13)(graphql@16.9.0)
+        specifier: 4.11.2
+        version: 4.11.2(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
@@ -3841,11 +3841,11 @@ importers:
   servers/shareable-lists-api:
     dependencies:
       '@apollo/server':
-        specifier: 4.11.0
-        version: 4.11.0(encoding@0.1.13)(graphql@16.9.0)
+        specifier: 4.11.2
+        version: 4.11.2(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/server-plugin-response-cache':
         specifier: 4.1.3
-        version: 4.1.3(@apollo/server@4.11.0(encoding@0.1.13)(graphql@16.9.0))(graphql@16.9.0)
+        version: 4.1.3(@apollo/server@4.11.2(encoding@0.1.13)(graphql@16.9.0))(graphql@16.9.0)
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
@@ -4041,8 +4041,8 @@ importers:
   servers/shares-api:
     dependencies:
       '@apollo/server':
-        specifier: 4.11.0
-        version: 4.11.0(encoding@0.1.13)(graphql@16.9.0)
+        specifier: 4.11.2
+        version: 4.11.2(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
@@ -4162,8 +4162,8 @@ importers:
   servers/user-api:
     dependencies:
       '@apollo/server':
-        specifier: 4.11.0
-        version: 4.11.0(encoding@0.1.13)(graphql@16.9.0)
+        specifier: 4.11.2
+        version: 4.11.2(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
@@ -4265,8 +4265,8 @@ importers:
   servers/user-list-search:
     dependencies:
       '@apollo/server':
-        specifier: 4.11.0
-        version: 4.11.0(encoding@0.1.13)(graphql@16.9.0)
+        specifier: 4.11.2
+        version: 4.11.2(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
@@ -4617,8 +4617,8 @@ packages:
       '@apollo/server': ^4.0.1
       graphql: ^16.6.0
 
-  '@apollo/server@4.11.0':
-    resolution: {integrity: sha512-SWDvbbs0wl2zYhKG6aGLxwTJ72xpqp0awb2lotNpfezd9VcAvzaUizzKQqocephin2uMoaA8MguoyBmgtPzNWw==}
+  '@apollo/server@4.11.2':
+    resolution: {integrity: sha512-WUTHY7DDek8xAMn4Woa9Bl8duQUDzRYQkosX/d1DtCsBWESZyApR7ndnI5d6+W4KSTtqBHhJFkusEI7CWuIJXg==}
     engines: {node: '>=14.16.0'}
     peerDependencies:
       graphql: ^16.6.0
@@ -12086,11 +12086,6 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanoid@3.3.8:
-    resolution: {integrity: sha512-WNLf5Sd8oZxOm+TzppcYk8gVOgP+l58xNy58D0nbUnOxOWRWvlcCV4kUF7ltmI6PsrLl/BgKEyS4mqsGChFN0w==}
-    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
-    hasBin: true
-
   napi-build-utils@1.0.2:
     resolution: {integrity: sha512-ONmRUqK7zj7DWX0D9ADe03wbwOBZxNAfF20PlGfCWQcD3+/MakShIHrMqx9YwPTfxDdF1zLeL+RGZiR9kGMLdg==}
 
@@ -14758,14 +14753,14 @@ snapshots:
       '@apollo/utils.logger': 2.0.1
       graphql: 16.9.0
 
-  '@apollo/server-plugin-response-cache@4.1.3(@apollo/server@4.11.0(encoding@0.1.13)(graphql@16.9.0))(graphql@16.9.0)':
+  '@apollo/server-plugin-response-cache@4.1.3(@apollo/server@4.11.2(encoding@0.1.13)(graphql@16.9.0))(graphql@16.9.0)':
     dependencies:
-      '@apollo/server': 4.11.0(encoding@0.1.13)(graphql@16.9.0)
+      '@apollo/server': 4.11.2(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/utils.createhash': 2.0.1
       '@apollo/utils.keyvaluecache': 2.1.1
       graphql: 16.9.0
 
-  '@apollo/server@4.11.0(encoding@0.1.13)(graphql@16.9.0)':
+  '@apollo/server@4.11.2(encoding@0.1.13)(graphql@16.9.0)':
     dependencies:
       '@apollo/cache-control-types': 1.0.3(graphql@16.9.0)
       '@apollo/server-gateway-interface': 1.1.1(graphql@16.9.0)
@@ -14783,7 +14778,7 @@ snapshots:
       '@types/node-fetch': 2.6.11
       async-retry: 1.3.3
       cors: 2.8.5
-      express: 4.20.0
+      express: 4.21.1
       graphql: 16.9.0
       loglevel: 1.9.1
       lru-cache: 7.18.3
@@ -17077,7 +17072,7 @@ snapshots:
     dependencies:
       '@graphql-codegen/plugin-helpers': 5.1.0(graphql@16.9.0)
       '@graphql-codegen/visitor-plugin-common': 5.5.0(encoding@0.1.13)(graphql@16.9.0)
-      '@graphql-tools/utils': 10.5.5(graphql@16.9.0)
+      '@graphql-tools/utils': 10.6.0(graphql@16.9.0)
       auto-bind: 4.0.0
       graphql: 16.9.0
       tslib: 2.6.3
@@ -17156,7 +17151,7 @@ snapshots:
       '@graphql-codegen/plugin-helpers': 5.1.0(graphql@16.9.0)
       '@graphql-tools/optimize': 2.0.0(graphql@16.9.0)
       '@graphql-tools/relay-operation-optimizer': 7.0.2(encoding@0.1.13)(graphql@16.9.0)
-      '@graphql-tools/utils': 10.5.5(graphql@16.9.0)
+      '@graphql-tools/utils': 10.6.0(graphql@16.9.0)
       auto-bind: 4.0.0
       change-case-all: 1.0.15
       dependency-graph: 0.11.0
@@ -17197,7 +17192,7 @@ snapshots:
 
   '@graphql-tools/batch-execute@9.0.4(graphql@16.9.0)':
     dependencies:
-      '@graphql-tools/utils': 10.5.5(graphql@16.9.0)
+      '@graphql-tools/utils': 10.6.0(graphql@16.9.0)
       dataloader: 2.2.2
       graphql: 16.9.0
       tslib: 2.8.0
@@ -17219,7 +17214,7 @@ snapshots:
       '@graphql-tools/batch-execute': 9.0.4(graphql@16.9.0)
       '@graphql-tools/executor': 1.2.6(graphql@16.9.0)
       '@graphql-tools/schema': 10.0.3(graphql@16.9.0)
-      '@graphql-tools/utils': 10.5.5(graphql@16.9.0)
+      '@graphql-tools/utils': 10.6.0(graphql@16.9.0)
       dataloader: 2.2.2
       graphql: 16.9.0
       tslib: 2.8.0
@@ -17232,7 +17227,7 @@ snapshots:
 
   '@graphql-tools/executor-graphql-ws@1.1.2(graphql@16.9.0)':
     dependencies:
-      '@graphql-tools/utils': 10.5.5(graphql@16.9.0)
+      '@graphql-tools/utils': 10.6.0(graphql@16.9.0)
       '@types/ws': 8.5.10
       graphql: 16.9.0
       graphql-ws: 5.16.0(graphql@16.9.0)
@@ -17245,7 +17240,7 @@ snapshots:
 
   '@graphql-tools/executor-http@1.0.9(@types/node@22.9.0)(graphql@16.9.0)':
     dependencies:
-      '@graphql-tools/utils': 10.5.5(graphql@16.9.0)
+      '@graphql-tools/utils': 10.6.0(graphql@16.9.0)
       '@repeaterjs/repeater': 3.0.5
       '@whatwg-node/fetch': 0.9.22
       extract-files: 11.0.0
@@ -17258,7 +17253,7 @@ snapshots:
 
   '@graphql-tools/executor-legacy-ws@1.0.6(graphql@16.9.0)':
     dependencies:
-      '@graphql-tools/utils': 10.5.5(graphql@16.9.0)
+      '@graphql-tools/utils': 10.6.0(graphql@16.9.0)
       '@types/ws': 8.5.10
       graphql: 16.9.0
       isomorphic-ws: 5.0.0(ws@8.18.0)
@@ -17270,7 +17265,7 @@ snapshots:
 
   '@graphql-tools/executor@1.2.6(graphql@16.9.0)':
     dependencies:
-      '@graphql-tools/utils': 10.5.5(graphql@16.9.0)
+      '@graphql-tools/utils': 10.6.0(graphql@16.9.0)
       '@graphql-typed-document-node/core': 3.2.0(graphql@16.9.0)
       '@repeaterjs/repeater': 3.0.5
       graphql: 16.9.0
@@ -17320,7 +17315,7 @@ snapshots:
       '@babel/plugin-syntax-import-assertions': 7.24.1(@babel/core@7.26.0)
       '@babel/traverse': 7.25.9
       '@babel/types': 7.26.0
-      '@graphql-tools/utils': 10.5.5(graphql@16.9.0)
+      '@graphql-tools/utils': 10.6.0(graphql@16.9.0)
       graphql: 16.9.0
       tslib: 2.8.0
     transitivePeerDependencies:
@@ -17328,7 +17323,7 @@ snapshots:
 
   '@graphql-tools/import@7.0.1(graphql@16.9.0)':
     dependencies:
-      '@graphql-tools/utils': 10.5.5(graphql@16.9.0)
+      '@graphql-tools/utils': 10.6.0(graphql@16.9.0)
       graphql: 16.9.0
       resolve-from: 5.0.0
       tslib: 2.8.0
@@ -17357,7 +17352,7 @@ snapshots:
 
   '@graphql-tools/merge@9.0.4(graphql@16.9.0)':
     dependencies:
-      '@graphql-tools/utils': 10.5.5(graphql@16.9.0)
+      '@graphql-tools/utils': 10.6.0(graphql@16.9.0)
       graphql: 16.9.0
       tslib: 2.8.0
 
@@ -17395,7 +17390,7 @@ snapshots:
   '@graphql-tools/relay-operation-optimizer@7.0.2(encoding@0.1.13)(graphql@16.9.0)':
     dependencies:
       '@ardatan/relay-compiler': 12.0.0(encoding@0.1.13)(graphql@16.9.0)
-      '@graphql-tools/utils': 10.5.5(graphql@16.9.0)
+      '@graphql-tools/utils': 10.6.0(graphql@16.9.0)
       graphql: 16.9.0
       tslib: 2.8.0
     transitivePeerDependencies:
@@ -17415,7 +17410,7 @@ snapshots:
   '@graphql-tools/schema@10.0.3(graphql@16.9.0)':
     dependencies:
       '@graphql-tools/merge': 9.0.4(graphql@16.9.0)
-      '@graphql-tools/utils': 10.5.5(graphql@16.9.0)
+      '@graphql-tools/utils': 10.6.0(graphql@16.9.0)
       graphql: 16.9.0
       tslib: 2.8.0
       value-or-promise: 1.0.12
@@ -17476,7 +17471,7 @@ snapshots:
     dependencies:
       '@graphql-tools/delegate': 10.0.9(graphql@16.9.0)
       '@graphql-tools/schema': 10.0.3(graphql@16.9.0)
-      '@graphql-tools/utils': 10.5.5(graphql@16.9.0)
+      '@graphql-tools/utils': 10.6.0(graphql@16.9.0)
       graphql: 16.9.0
       tslib: 2.8.0
       value-or-promise: 1.0.12
@@ -19532,7 +19527,7 @@ snapshots:
 
   '@slack/logger@4.0.0':
     dependencies:
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
 
   '@slack/types@2.14.0': {}
 
@@ -19997,7 +19992,7 @@ snapshots:
 
   '@types/accepts@1.3.7':
     dependencies:
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
 
   '@types/adm-zip@0.5.5':
     dependencies:
@@ -20035,13 +20030,13 @@ snapshots:
 
   '@types/bunyan@1.8.9':
     dependencies:
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
 
   '@types/cacheable-request@6.0.3':
     dependencies:
       '@types/http-cache-semantics': 4.0.4
       '@types/keyv': 3.1.4
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
       '@types/responselike': 1.0.3
 
   '@types/caseless@0.12.5':
@@ -20051,11 +20046,11 @@ snapshots:
 
   '@types/connect@3.4.36':
     dependencies:
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
 
   '@types/content-disposition@0.5.8': {}
 
@@ -20072,7 +20067,7 @@ snapshots:
       '@types/connect': 3.4.38
       '@types/express': 4.17.21
       '@types/keygrip': 1.0.6
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
 
   '@types/cors@2.8.17':
     dependencies:
@@ -20092,7 +20087,7 @@ snapshots:
 
   '@types/express-serve-static-core@4.19.0':
     dependencies:
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
       '@types/qs': 6.9.15
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -20111,11 +20106,11 @@ snapshots:
   '@types/glob@7.2.0':
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
 
   '@types/graceful-fs@4.1.9':
     dependencies:
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
 
   '@types/graphql-depth-limit@1.1.6':
     dependencies:
@@ -20175,7 +20170,7 @@ snapshots:
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
 
   '@types/koa-compose@3.2.8':
     dependencies:
@@ -20213,7 +20208,7 @@ snapshots:
 
   '@types/memcached@2.2.10':
     dependencies:
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
 
   '@types/methods@1.1.4': {}
 
@@ -20233,11 +20228,11 @@ snapshots:
 
   '@types/mute-stream@0.0.1':
     dependencies:
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
 
   '@types/mute-stream@0.0.4':
     dependencies:
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
 
   '@types/mysql@2.15.26':
     dependencies:
@@ -20245,7 +20240,7 @@ snapshots:
 
   '@types/node-fetch@2.6.11':
     dependencies:
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
       form-data: 4.0.0
 
   '@types/node-fetch@2.6.6':
@@ -20301,7 +20296,7 @@ snapshots:
 
   '@types/pg@8.6.1':
     dependencies:
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
       pg-protocol: 1.7.0
       pg-types: 2.2.0
 
@@ -20319,7 +20314,7 @@ snapshots:
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
 
   '@types/retry@0.12.0': {}
 
@@ -20328,7 +20323,7 @@ snapshots:
   '@types/send@0.17.4':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
 
   '@types/serve-static@1.15.7':
     dependencies:
@@ -20353,7 +20348,7 @@ snapshots:
 
   '@types/tedious@4.0.14':
     dependencies:
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
 
   '@types/tough-cookie@4.0.5':
     optional: true
@@ -20370,7 +20365,7 @@ snapshots:
 
   '@types/ws@8.5.10':
     dependencies:
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
 
   '@types/yargs-parser@21.0.3': {}
 
@@ -20380,7 +20375,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
     optional: true
 
   '@types/yoga-layout@1.9.2': {}
@@ -23886,7 +23881,7 @@ snapshots:
       '@jest/expect': 29.7.0
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
       chalk: 4.1.2
       co: 4.6.0
       dedent: 1.5.3
@@ -23980,7 +23975,7 @@ snapshots:
       '@jest/environment': 29.7.0
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
       jest-mock: 29.7.0
       jest-util: 29.7.0
 
@@ -24177,7 +24172,7 @@ snapshots:
 
   jest-worker@29.7.0:
     dependencies:
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
@@ -25080,9 +25075,6 @@ snapshots:
 
   nanoid@3.3.7: {}
 
-  nanoid@3.3.8:
-    optional: true
-
   napi-build-utils@1.0.2: {}
 
   natural-compare@1.4.0: {}
@@ -25679,7 +25671,7 @@ snapshots:
 
   postcss@8.4.49:
     dependencies:
-      nanoid: 3.3.8
+      nanoid: 3.3.7
       picocolors: 1.1.1
       source-map-js: 1.2.1
     optional: true
@@ -25845,7 +25837,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 22.9.0
+      '@types/node': 22.10.0
       long: 5.2.3
 
   protocols@2.0.1: {}
