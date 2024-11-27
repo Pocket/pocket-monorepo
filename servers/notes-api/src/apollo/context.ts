@@ -7,7 +7,7 @@ import {
 } from '@pocket-tools/apollo-utils';
 import { Kysely } from 'kysely';
 import { DB } from '../__generated__/db';
-import { roDb } from '../datasources/db';
+import { roDb, db } from '../datasources/db';
 import { NoteModel } from '../models/Note';
 
 /**
@@ -28,12 +28,14 @@ export async function getContext({
 
 export interface IContext extends PocketContext {
   roDb: Kysely<DB>;
+  db: Kysely<DB>;
   userId: string;
   NoteModel: NoteModel;
 }
 
 export class ContextManager extends PocketContextManager implements IContext {
   roDb: Kysely<DB>;
+  db: Kysely<DB>;
   _userId: string;
   NoteModel: NoteModel;
   constructor(options: { request: Request }) {
@@ -48,6 +50,7 @@ export class ContextManager extends PocketContextManager implements IContext {
       this._userId = super.userId;
     }
     this.roDb = roDb;
+    this.db = db;
     this.NoteModel = new NoteModel(this);
   }
   /** Override because userId is guaranteed in this Context */

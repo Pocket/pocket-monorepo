@@ -18,10 +18,41 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  ISOString: { input: any; output: any; }
-  Markdown: { input: any; output: any; }
-  ValidUrl: { input: any; output: any; }
+  ISOString: { input: Date | string; output: Date | string; }
+  Markdown: { input: string; output: string; }
+  ValidUrl: { input: URL | string; output: URL | string; }
   _FieldSet: { input: any; output: any; }
+};
+
+/** Input to create a new Note */
+export type CreateNoteInput = {
+  /**
+   * When this note was created. If not provided, defaults to server time upon
+   * receiving request.
+   */
+  createdAt?: InputMaybe<Scalars['ISOString']['input']>;
+  /** JSON representation of a ProseMirror document */
+  docContent: Scalars['String']['input'];
+  /**
+   * Client-provided UUID for the new Note.
+   * If not provided, will be generated on the server.
+   */
+  id?: InputMaybe<Scalars['ID']['input']>;
+  /** Optional URL to link this Note to. */
+  source?: InputMaybe<Scalars['ValidUrl']['input']>;
+  /** Optional title for this Note */
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  /** Create a new note, optionally with title and content */
+  createNote: Note;
+};
+
+
+export type MutationCreateNoteArgs = {
+  input: CreateNoteInput;
 };
 
 /**
@@ -163,12 +194,14 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
-  ISOString: ResolverTypeWrapper<Scalars['ISOString']['output']>;
-  Markdown: ResolverTypeWrapper<Scalars['Markdown']['output']>;
-  Note: ResolverTypeWrapper<Note>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  CreateNoteInput: CreateNoteInput;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  ISOString: ResolverTypeWrapper<Scalars['ISOString']['output']>;
+  Markdown: ResolverTypeWrapper<Scalars['Markdown']['output']>;
+  Mutation: ResolverTypeWrapper<{}>;
+  Note: ResolverTypeWrapper<Note>;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Query: ResolverTypeWrapper<{}>;
   SavedItem: ResolverTypeWrapper<SavedItem>;
   ValidUrl: ResolverTypeWrapper<Scalars['ValidUrl']['output']>;
@@ -176,12 +209,14 @@ export type ResolversTypes = ResolversObject<{
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
-  ISOString: Scalars['ISOString']['output'];
-  Markdown: Scalars['Markdown']['output'];
-  Note: Note;
-  Boolean: Scalars['Boolean']['output'];
+  CreateNoteInput: CreateNoteInput;
   String: Scalars['String']['output'];
   ID: Scalars['ID']['output'];
+  ISOString: Scalars['ISOString']['output'];
+  Markdown: Scalars['Markdown']['output'];
+  Mutation: {};
+  Note: Note;
+  Boolean: Scalars['Boolean']['output'];
   Query: {};
   SavedItem: SavedItem;
   ValidUrl: Scalars['ValidUrl']['output'];
@@ -194,6 +229,10 @@ export interface IsoStringScalarConfig extends GraphQLScalarTypeConfig<Resolvers
 export interface MarkdownScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Markdown'], any> {
   name: 'Markdown';
 }
+
+export type MutationResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  createNote?: Resolver<ResolversTypes['Note'], ParentType, ContextType, RequireFields<MutationCreateNoteArgs, 'input'>>;
+}>;
 
 export type NoteResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Note'] = ResolversParentTypes['Note']> = ResolversObject<{
   __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['Note']>, { __typename: 'Note' } & GraphQLRecursivePick<ParentType, {"id":true}>, ContextType>;
@@ -227,6 +266,7 @@ export interface ValidUrlScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 export type Resolvers<ContextType = IContext> = ResolversObject<{
   ISOString?: GraphQLScalarType;
   Markdown?: GraphQLScalarType;
+  Mutation?: MutationResolvers<ContextType>;
   Note?: NoteResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   SavedItem?: SavedItemResolvers<ContextType>;

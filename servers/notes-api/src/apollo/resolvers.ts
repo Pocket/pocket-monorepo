@@ -8,4 +8,9 @@ export const resolvers: Resolvers = {
       return context.NoteModel.load(id);
     },
   },
+  Mutation: {
+    createNote(root, { input }, context) {
+      return context.NoteModel.create(input);
+    },
+  },
 };

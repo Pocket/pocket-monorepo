@@ -1,11 +1,13 @@
 import DataLoader from 'dataloader';
-import { Note } from '../__generated__/graphql';
+import { Note, CreateNoteInput } from '../__generated__/graphql';
 import { Note as NoteEntity } from '../__generated__/db';
-import { Selectable } from 'kysely';
+import { Insertable, Selectable } from 'kysely';
 import { orderAndMap } from '../utils/dataloader';
 import { IContext } from '../apollo/context';
 import { NotesService } from '../datasources/NoteService';
 import { ProseMirrorDoc } from './ProseMirrorDoc';
+import { UserInputError } from '@pocket-tools/apollo-utils';
+import { DatabaseError } from 'pg';
 
 /**
  * Model for retrieving and creating Notes
@@ -13,7 +15,7 @@ import { ProseMirrorDoc } from './ProseMirrorDoc';
 export class NoteModel {
   loader: DataLoader<string, Selectable<NoteEntity> | null>;
   service: NotesService;
-  constructor(context: IContext) {
+  constructor(public readonly context: IContext) {
     this.service = new NotesService(context);
     this.loader = new DataLoader<string, Selectable<NoteEntity> | null>(
       async (keys: readonly string[]) => {
@@ -76,5 +78,43 @@ export class NoteModel {
   async load(id: string): Promise<Note | null> {
     const note = await this.loader.load(id);
     return note != null ? this.toGraphql(note) : null;
+  }
+  /**
+   * Create a new Note.
+   */
+  async create(input: CreateNoteInput) {
+    try {
+      // At some point do more validation
+      // We can move this to a scalar
+      const docContent = JSON.parse(input.docContent);
+      const entity: Insertable<NoteEntity> = {
+        createdAt: input.createdAt ?? undefined,
+        docContent,
+        noteId: input.id ?? undefined,
+        sourceUrl: input.source?.toString() ?? undefined,
+        title: input.title ?? undefined,
+        userId: this.context.userId,
+        updatedAt: input.createdAt ?? undefined,
+      };
+      const note = await this.service.create(entity);
+      return this.toGraphql(note);
+    } catch (error) {
+      if (error instanceof SyntaxError) {
+        throw new UserInputError(
+          `Received malformed JSON for docContent: ${error.message}`,
+        );
+      } else if (error instanceof DatabaseError) {
+        if (error.code === '23505' && error.constraint === 'Note_noteId_key') {
+          throw new UserInputError(
+            `Received duplicate value for note ID. ` +
+              `Ensure you are generating v4 UUIDs and try again.`,
+          );
+        } else {
+          throw error;
+        }
+      } else {
+        throw error;
+      }
+    }
   }
 }

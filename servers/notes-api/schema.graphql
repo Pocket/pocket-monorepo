@@ -68,3 +68,38 @@ type Query {
   """Retrieve a specific Note"""
   note(id: ID!): Note @requiresScopes(scopes: [["ROLE_USER"]])
 }
+
+
+"""
+Input to create a new Note
+"""
+input CreateNoteInput {
+  """Optional title for this Note"""
+  title: String
+  """
+  Client-provided UUID for the new Note.
+  If not provided, will be generated on the server.
+  """
+  id: ID
+  """
+  Optional URL to link this Note to.
+  """
+  source: ValidUrl
+  """
+  JSON representation of a ProseMirror document
+  """
+  docContent: String!
+  """
+  When this note was created. If not provided, defaults to server time upon
+  receiving request.
+  """
+  createdAt: ISOString
+}
+
+
+type Mutation {
+  """
+  Create a new note, optionally with title and content
+  """
+  createNote(input: CreateNoteInput!): Note! @requiresScopes(scopes: [["ROLE_USER"]])
+}

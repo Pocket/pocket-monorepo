@@ -55,7 +55,7 @@ export interface Note {
   noteId: Generated<string>;
   sourceUrl: string | null;
   title: string | null;
-  updatedAt: Timestamp;
+  updatedAt: Generated<Timestamp>;
   userId: string;
 }
 
