@@ -14,6 +14,7 @@ const config: CodegenConfig = {
           ISOString:
             PocketDefaultScalars.ISOString.extensions.codegenScalarType,
           Markdown: 'string',
+          ProseMirrorJson: 'string',
         },
       },
       plugins: [

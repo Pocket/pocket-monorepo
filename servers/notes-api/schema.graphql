@@ -6,6 +6,7 @@ extend schema
 scalar ISOString
 scalar ValidUrl
 scalar Markdown
+scalar ProseMirrorJson
 
 """
 A Note is an entity which may contain extracted components
@@ -24,7 +25,7 @@ type Note @key(fields: "id") {
   """
   JSON representation of a ProseMirror document
   """
-  docContent: String
+  docContent: ProseMirrorJson
   """
   Markdown preview of the note content for summary view.
   """
@@ -88,7 +89,7 @@ input CreateNoteInput {
   """
   JSON representation of a ProseMirror document
   """
-  docContent: String!
+  docContent: ProseMirrorJson!
   """
   When this note was created. If not provided, defaults to server time upon
   receiving request.
