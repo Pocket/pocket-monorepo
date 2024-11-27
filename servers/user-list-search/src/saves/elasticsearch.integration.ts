@@ -106,7 +106,7 @@ describe('Elasticsearch - Integration', () => {
     const baseRes = await search('1');
     expect(baseRes.hits.total['value']).toBe(3);
 
-    await deleteSearchIndexByUserId('1');
+    await deleteSearchIndexByUserId('1', true);
 
     // Wait for delete to finish
     await client.indices.refresh({
