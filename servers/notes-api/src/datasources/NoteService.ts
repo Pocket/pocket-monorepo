@@ -1,4 +1,6 @@
+import { Insertable } from 'kysely';
 import { IContext } from '../apollo/context';
+import { Note as NoteEntity } from '../__generated__/db';
 
 /**
  * Database methods for retrieving and creating Notes
@@ -34,6 +36,17 @@ export class NotesService {
       .where('userId', '=', this.context.userId)
       .where('noteId', 'in', noteIds)
       .execute();
+    return result;
+  }
+  /**
+   * Create a new Note and return the row.
+   */
+  async create(entity: Insertable<NoteEntity>) {
+    const result = await this.context.db
+      .insertInto('Note')
+      .values(entity)
+      .returningAll()
+      .executeTakeFirstOrThrow();
     return result;
   }
 }

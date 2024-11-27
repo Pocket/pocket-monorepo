@@ -36,7 +36,7 @@ export const GraphQLValidUrl = /*#__PURE__*/ new GraphQLScalarType({
     }
   },
   extensions: {
-    codegenScalarType: 'ValidUrl | string',
+    codegenScalarType: 'URL | string',
     jsonSchema: {
       type: 'string',
       format: 'uri',

@@ -1,4 +1,5 @@
 import { CodegenConfig } from '@graphql-codegen/cli';
+import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
 
 const config: CodegenConfig = {
   schema: './schema.graphql',
@@ -8,6 +9,13 @@ const config: CodegenConfig = {
         federation: true,
         useIndexSignature: true,
         contextType: '../apollo/context#IContext',
+        scalars: {
+          ValidUrl: PocketDefaultScalars.ValidUrl.extensions.codegenScalarType,
+          ISOString:
+            PocketDefaultScalars.ISOString.extensions.codegenScalarType,
+          Markdown: 'string',
+          ProseMirrorJson: 'string',
+        },
       },
       plugins: [
         //generated types do not conform to ts/lint rules, disable them for these files

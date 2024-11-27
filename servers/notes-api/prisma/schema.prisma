@@ -27,7 +27,7 @@ model Note {
   title      String?   @db.VarChar(300)
   sourceUrl  String?
   createdAt  DateTime  @default(dbgenerated("CURRENT_TIMESTAMP(0)")) @db.Timestamptz(0)
-  updatedAt  DateTime  @db.Timestamptz(3)
+  updatedAt  DateTime  @default(dbgenerated("CURRENT_TIMESTAMP(3)")) @db.Timestamptz(3)
   docContent Json?
   deleted    Boolean   @default(false)
   archived   Boolean   @default(false)
