@@ -21,7 +21,7 @@
     "watch": "concurrently  --names \"CodeGen,TS,Nodemon\" -c \"bgYellow,bgBlue,bgMagenta\" \"graphql-codegen --watch 'src/**/*.ts'\"  \"tsc -w --preserveWatchOutput\" \"nodemon  --config ../../nodemon.json ./dist/main.js\""
   },
   "dependencies": {
-    "@apollo/server": "4.11.0",
+    "@apollo/server": "4.11.2",
     "@apollo/subgraph": "2.9.3",
     "@aws-sdk/client-sagemaker-runtime": "3.696.0",
     "@aws-sdk/client-sqs": "3.696.0",
