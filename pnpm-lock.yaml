@@ -1048,8 +1048,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
-        specifier: 8.40.0
-        version: 8.40.0(@opentelemetry/api@1.9.0)
+        specifier: 8.41.0
+        version: 8.41.0(@opentelemetry/api@1.9.0)
       exponential-backoff:
         specifier: ^3.1.1
         version: 3.1.1
@@ -1103,8 +1103,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
-        specifier: 8.40.0
-        version: 8.40.0(@opentelemetry/api@1.9.0)
+        specifier: 8.41.0
+        version: 8.41.0(@opentelemetry/api@1.9.0)
       fetch-retry:
         specifier: ^5.0.6
         version: 5.0.6
@@ -1158,8 +1158,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
-        specifier: 8.40.0
-        version: 8.40.0(@opentelemetry/api@1.9.0)
+        specifier: 8.41.0
+        version: 8.41.0(@opentelemetry/api@1.9.0)
       exponential-backoff:
         specifier: ^3.1.1
         version: 3.1.1
@@ -1204,8 +1204,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
-        specifier: 8.40.0
-        version: 8.40.0(@opentelemetry/api@1.9.0)
+        specifier: 8.41.0
+        version: 8.41.0(@opentelemetry/api@1.9.0)
       tslib:
         specifier: 2.8.0
         version: 2.8.0
@@ -1250,8 +1250,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
-        specifier: 8.40.0
-        version: 8.40.0(@opentelemetry/api@1.9.0)
+        specifier: 8.41.0
+        version: 8.41.0(@opentelemetry/api@1.9.0)
       jsonwebtoken:
         specifier: ^9.0.0
         version: 9.0.2
@@ -1317,8 +1317,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/lambda-secrets
       '@sentry/aws-serverless':
-        specifier: 8.40.0
-        version: 8.40.0(@opentelemetry/api@1.9.0)
+        specifier: 8.41.0
+        version: 8.41.0(@opentelemetry/api@1.9.0)
       tslib:
         specifier: 2.8.0
         version: 2.8.0
@@ -1366,8 +1366,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
-        specifier: 8.40.0
-        version: 8.40.0(@opentelemetry/api@1.9.0)
+        specifier: 8.41.0
+        version: 8.41.0(@opentelemetry/api@1.9.0)
       knex:
         specifier: 3.1.0
         version: 3.1.0(mysql2@3.11.3)
@@ -1439,8 +1439,8 @@ importers:
         specifier: ^8.0.0
         version: 8.1.3
       '@sentry/aws-serverless':
-        specifier: 8.40.0
-        version: 8.40.0(@opentelemetry/api@1.9.0)
+        specifier: 8.41.0
+        version: 8.41.0(@opentelemetry/api@1.9.0)
       tslib:
         specifier: 2.8.0
         version: 2.8.0
@@ -1479,8 +1479,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
-        specifier: 8.40.0
-        version: 8.40.0(@opentelemetry/api@1.9.0)
+        specifier: 8.41.0
+        version: 8.41.0(@opentelemetry/api@1.9.0)
       fetch-retry:
         specifier: ^5.0.6
         version: 5.0.6
@@ -1534,8 +1534,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
-        specifier: 8.40.0
-        version: 8.40.0(@opentelemetry/api@1.9.0)
+        specifier: 8.41.0
+        version: 8.41.0(@opentelemetry/api@1.9.0)
       braze-api:
         specifier: ^2.9.1
         version: 2.9.1(encoding@0.1.13)
@@ -1598,8 +1598,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
-        specifier: 8.40.0
-        version: 8.40.0(@opentelemetry/api@1.9.0)
+        specifier: 8.41.0
+        version: 8.41.0(@opentelemetry/api@1.9.0)
       fetch-retry:
         specifier: ^5.0.6
         version: 5.0.6
@@ -1656,8 +1656,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
-        specifier: 8.40.0
-        version: 8.40.0(@opentelemetry/api@1.9.0)
+        specifier: 8.41.0
+        version: 8.41.0(@opentelemetry/api@1.9.0)
       '@smithy/node-http-handler':
         specifier: 3.2.0
         version: 3.2.0
@@ -1717,8 +1717,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
-        specifier: 8.40.0
-        version: 8.40.0(@opentelemetry/api@1.9.0)
+        specifier: 8.41.0
+        version: 8.41.0(@opentelemetry/api@1.9.0)
       tslib:
         specifier: 2.8.0
         version: 2.8.0
@@ -1757,8 +1757,8 @@ importers:
   lambdas/user-list-search-indexing:
     dependencies:
       '@sentry/aws-serverless':
-        specifier: 8.40.0
-        version: 8.40.0(@opentelemetry/api@1.9.0)
+        specifier: 8.41.0
+        version: 8.41.0(@opentelemetry/api@1.9.0)
       nanoid:
         specifier: 3.3.7
         version: 3.3.7
@@ -1809,8 +1809,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/aws-serverless':
-        specifier: 8.40.0
-        version: 8.40.0(@opentelemetry/api@1.9.0)
+        specifier: 8.41.0
+        version: 8.41.0(@opentelemetry/api@1.9.0)
       highland:
         specifier: 2.13.5
         version: 2.13.5
@@ -1882,8 +1882,8 @@ importers:
         specifier: workspace:*
         version: link:../ts-logger
       '@sentry/node':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       express:
         specifier: 4.20.0
         version: 4.20.0
@@ -2031,8 +2031,8 @@ importers:
         specifier: workspace:*
         version: link:../ts-logger
       '@sentry/node':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       ajv:
         specifier: 8.17.1
         version: 8.17.1
@@ -2355,8 +2355,8 @@ importers:
   packages/sentry:
     dependencies:
       '@sentry/node':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       tslib:
         specifier: 2.8.0
         version: 2.8.0
@@ -2371,8 +2371,8 @@ importers:
         specifier: 6.0.3
         version: 6.0.3(semantic-release@24.2.0(typescript@5.5.4))
       '@sentry/types':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       '@types/express':
         specifier: 4.17.21
         version: 4.17.21
@@ -2555,11 +2555,11 @@ importers:
         specifier: 5.21.1
         version: 5.21.1
       '@sentry/node':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       '@sentry/opentelemetry':
-        specifier: 8.40.0
-        version: 8.40.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.28.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.55.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.28.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.28.0)
+        specifier: 8.41.0
+        version: 8.41.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.28.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.55.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.28.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.28.0)
       tslib:
         specifier: 2.8.0
         version: 2.8.0
@@ -2713,8 +2713,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       '@smithy/node-http-handler':
         specifier: 3.2.0
         version: 3.2.0
@@ -2759,8 +2759,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/eslint-config
       '@sentry/types':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       '@smithy/types':
         specifier: 3.5.0
         version: 3.5.0
@@ -2849,8 +2849,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       cors:
         specifier: 2.8.5
         version: 2.8.5
@@ -2910,8 +2910,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/eslint-config
       '@sentry/types':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       '@types/chance':
         specifier: 1.1.6
         version: 1.1.6
@@ -2979,8 +2979,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       cross-fetch:
         specifier: 4.0.0
         version: 4.0.0(encoding@0.1.13)
@@ -3079,8 +3079,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       body-parser:
         specifier: 1.20.3
         version: 1.20.3
@@ -3203,8 +3203,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       axios:
         specifier: 1.7.7
         version: 1.7.7
@@ -3318,8 +3318,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       '@snowplow/node-tracker':
         specifier: 3.24.3
         version: 3.24.3
@@ -3382,8 +3382,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/eslint-config
       '@sentry/types':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       '@smithy/types':
         specifier: 3.5.0
         version: 3.5.0
@@ -3472,8 +3472,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       cors:
         specifier: 2.8.5
         version: 2.8.5
@@ -3644,8 +3644,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       cors:
         specifier: 2.8.5
         version: 2.8.5
@@ -3786,8 +3786,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       apns2:
         specifier: 11.7.0
         version: 11.7.0
@@ -3874,8 +3874,8 @@ importers:
         specifier: 5.21.1
         version: 5.21.1(prisma@5.21.1)
       '@sentry/node':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       cors:
         specifier: 2.8.5
         version: 2.8.5
@@ -3983,8 +3983,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       '@snowplow/node-tracker':
         specifier: 3.24.3
         version: 3.24.3
@@ -4071,8 +4071,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       '@snowplow/tracker-core':
         specifier: 3.24.3
         version: 3.24.3
@@ -4189,8 +4189,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       dataloader:
         specifier: 2.2.2
         version: 2.2.2
@@ -4223,8 +4223,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/eslint-config
       '@sentry/types':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       '@types/jest':
         specifier: 29.5.14
         version: 29.5.14
@@ -4304,8 +4304,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       '@smithy/node-http-handler':
         specifier: 3.2.0
         version: 3.2.0
@@ -4443,8 +4443,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ts-logger
       '@sentry/node':
-        specifier: 8.40.0
-        version: 8.40.0
+        specifier: 8.41.0
+        version: 8.41.0
       content-type:
         specifier: 1.0.5
         version: 1.0.5
@@ -6974,12 +6974,6 @@ packages:
     peerDependencies:
       '@opentelemetry/api': ^1.3.0
 
-  '@opentelemetry/propagation-utils@0.30.12':
-    resolution: {integrity: sha512-bgab3q/4dYUutUpQCEaSDa+mLoQJG3vJKeSiGuhM4iZaSpkz8ov0fs1MGil5PfxCo6Hhw3bB3bFYhUtnsfT/Pg==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@opentelemetry/api': ^1.0.0
-
   '@opentelemetry/propagation-utils@0.30.13':
     resolution: {integrity: sha512-gE61ANH84XLOU2HwXeWw1b83exxdEaTY98HxTecmuJ1nSrBNaoM/tWt4u4+2MoCZUhdmP088+wbT5oUq1pF79Q==}
     engines: {node: '>=14'}
@@ -7500,16 +7494,16 @@ packages:
     resolution: {integrity: sha512-V2W+STWrafyGJhQv3ulMFXYDwWHiU6wHQAQBShsHVACiFaDrJ2kPRet38FKv4dMLlLlP2xN+ss2e5zv3tYlTiQ==}
     engines: {node: '>=8'}
 
-  '@sentry/aws-serverless@8.40.0':
-    resolution: {integrity: sha512-mehC0E8IlXtNzy+ysZLUxyUZJp1imivbeh/KVzMlO7WAr8i1YL98cb7PaAsRrjTVUxpsvftaqLh+D5HZwpuZdw==}
+  '@sentry/aws-serverless@8.41.0':
+    resolution: {integrity: sha512-fZNMhzOBE8wDsX73emMCLbN848vPOmgqzJp8Lmw4FfQd9SKYtl5lF49cJ7V/OaRpkQKWjxUkAFzoaXvL6us28w==}
     engines: {node: '>=14.18'}
 
   '@sentry/core@7.119.2':
     resolution: {integrity: sha512-hQr3d2yWq/2lMvoyBPOwXw1IHqTrCjOsU1vYKhAa6w9vGbJZFGhKGGE2KEi/92c3gqGn+gW/PC7cV6waCTDuVA==}
     engines: {node: '>=8'}
 
-  '@sentry/core@8.40.0':
-    resolution: {integrity: sha512-u/U2CJpG/+SmTR2bPM4ZZoPYTJAOUuxzj/0IURnvI0v9+rNu939J/fzrO9huA5IJVxS5TiYykhQm7o6I3Zuo3Q==}
+  '@sentry/core@8.41.0':
+    resolution: {integrity: sha512-3v7u3t4LozCA5SpZY4yqUN2U3jSrkXNoLgz6L2SUUiydyCuSwXZIFEwpLJfgQyidpNDifeQbBI5E1O910XkPsA==}
     engines: {node: '>=14.18'}
 
   '@sentry/integrations@7.119.2':
@@ -7520,12 +7514,12 @@ packages:
     resolution: {integrity: sha512-TPNnqxh+Myooe4jTyRiXrzrM2SH08R4+nrmBls4T7lKp2E5R/3mDSe/YTn5rRcUt1k1hPx1NgO/taG0DoS5cXA==}
     engines: {node: '>=8'}
 
-  '@sentry/node@8.40.0':
-    resolution: {integrity: sha512-UO1jWuO+z4DnK2NYCvQQfpNbfFYgeV//cNS83QIPkj9hPIEOpUR2DAfPmI9bj2Yjdh7WE8IN9Can9xDcfJquMQ==}
+  '@sentry/node@8.41.0':
+    resolution: {integrity: sha512-eYD5S8Lti9efBHFSIhZ/0C5uI1DQtGqjuNWQ62CKC47G2qgJddBtb2HgqRFAnMajYL9FXEtiDT6uqQhKQnmLcQ==}
     engines: {node: '>=14.18'}
 
-  '@sentry/opentelemetry@8.40.0':
-    resolution: {integrity: sha512-kW9EBRESjNnBdj2zCqNMv8x0VIsmiALIOMpi25Dpm38IKtRg/ckQ7YOWx1lnT3iOFebO2GXUvOu+gPmuzIY2WQ==}
+  '@sentry/opentelemetry@8.41.0':
+    resolution: {integrity: sha512-Ld6KdBQsmSk2IfFSoZ7CMpmuQbfb3viV6nTDCz6+11wL9S+1b+hadCN+38yBW4CmI4/hEpYfwwWQPseQQTvBCg==}
     engines: {node: '>=14.18'}
     peerDependencies:
       '@opentelemetry/api': ^1.9.0
@@ -7538,8 +7532,8 @@ packages:
     resolution: {integrity: sha512-ydq1tWsdG7QW+yFaTp0gFaowMLNVikIqM70wxWNK+u98QzKnVY/3XTixxNLsUtnAB4Y+isAzFhrc6Vb5GFdFeg==}
     engines: {node: '>=8'}
 
-  '@sentry/types@8.40.0':
-    resolution: {integrity: sha512-nuCf3U3deolPM9BjNnwCc33UtFl9ec15/r74ngAkNccn+A2JXdIAsDkGJMO/9mgSFykLe1QyeJ0pQFRisCGOiA==}
+  '@sentry/types@8.41.0':
+    resolution: {integrity: sha512-eqdnGr9k9H++b9CjVUoTNUVahPVWeNnMy0YGkqS5+cjWWC+x43p56202oidGFmWo6702ub/xwUNH6M5PC4kq6A==}
     engines: {node: '>=14.18'}
 
   '@sentry/utils@7.119.2':
@@ -18163,7 +18157,7 @@ snapshots:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 1.28.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation': 0.54.2(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
+      '@opentelemetry/semantic-conventions': 1.28.0
     transitivePeerDependencies:
       - supports-color
 
@@ -18201,7 +18195,7 @@ snapshots:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 1.28.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation': 0.54.2(@opentelemetry/api@1.9.0)
-      '@opentelemetry/propagation-utils': 0.30.12(@opentelemetry/api@1.9.0)
+      '@opentelemetry/propagation-utils': 0.30.13(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.28.0
     transitivePeerDependencies:
       - supports-color
@@ -18238,7 +18232,7 @@ snapshots:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 1.28.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation': 0.54.2(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
+      '@opentelemetry/semantic-conventions': 1.28.0
       '@types/connect': 3.4.36
     transitivePeerDependencies:
       - supports-color
@@ -18287,7 +18281,7 @@ snapshots:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 1.28.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation': 0.54.2(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
+      '@opentelemetry/semantic-conventions': 1.28.0
     transitivePeerDependencies:
       - supports-color
 
@@ -18305,7 +18299,7 @@ snapshots:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 1.28.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation': 0.54.2(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
+      '@opentelemetry/semantic-conventions': 1.28.0
     transitivePeerDependencies:
       - supports-color
 
@@ -18375,7 +18369,7 @@ snapshots:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 1.28.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
+      '@opentelemetry/semantic-conventions': 1.28.0
     transitivePeerDependencies:
       - supports-color
 
@@ -18414,7 +18408,7 @@ snapshots:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/redis-common': 0.36.2
-      '@opentelemetry/semantic-conventions': 1.27.0
+      '@opentelemetry/semantic-conventions': 1.28.0
     transitivePeerDependencies:
       - supports-color
 
@@ -18431,7 +18425,7 @@ snapshots:
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/instrumentation': 0.54.2(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
+      '@opentelemetry/semantic-conventions': 1.28.0
     transitivePeerDependencies:
       - supports-color
 
@@ -18447,7 +18441,7 @@ snapshots:
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/instrumentation': 0.54.2(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
+      '@opentelemetry/semantic-conventions': 1.28.0
     transitivePeerDependencies:
       - supports-color
 
@@ -18464,7 +18458,7 @@ snapshots:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 1.28.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
+      '@opentelemetry/semantic-conventions': 1.28.0
     transitivePeerDependencies:
       - supports-color
 
@@ -18504,7 +18498,7 @@ snapshots:
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/instrumentation': 0.54.2(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
+      '@opentelemetry/semantic-conventions': 1.28.0
     transitivePeerDependencies:
       - supports-color
 
@@ -18521,7 +18515,7 @@ snapshots:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 1.28.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
+      '@opentelemetry/semantic-conventions': 1.28.0
     transitivePeerDependencies:
       - supports-color
 
@@ -18538,7 +18532,7 @@ snapshots:
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
+      '@opentelemetry/semantic-conventions': 1.28.0
       '@opentelemetry/sql-common': 0.40.1(@opentelemetry/api@1.9.0)
     transitivePeerDependencies:
       - supports-color
@@ -18556,7 +18550,7 @@ snapshots:
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
+      '@opentelemetry/semantic-conventions': 1.28.0
       '@types/mysql': 2.15.26
     transitivePeerDependencies:
       - supports-color
@@ -18574,7 +18568,7 @@ snapshots:
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
+      '@opentelemetry/semantic-conventions': 1.28.0
     transitivePeerDependencies:
       - supports-color
 
@@ -18598,7 +18592,7 @@ snapshots:
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
+      '@opentelemetry/semantic-conventions': 1.28.0
       '@opentelemetry/sql-common': 0.40.1(@opentelemetry/api@1.9.0)
       '@types/pg': 8.6.1
       '@types/pg-pool': 2.0.6
@@ -18631,7 +18625,7 @@ snapshots:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/instrumentation': 0.53.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/redis-common': 0.36.2
-      '@opentelemetry/semantic-conventions': 1.27.0
+      '@opentelemetry/semantic-conventions': 1.28.0
     transitivePeerDependencies:
       - supports-color
 
@@ -18682,7 +18676,7 @@ snapshots:
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/instrumentation': 0.54.2(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
+      '@opentelemetry/semantic-conventions': 1.28.0
       '@types/tedious': 4.0.14
     transitivePeerDependencies:
       - supports-color
@@ -18792,10 +18786,6 @@ snapshots:
       '@opentelemetry/sdk-metrics': 1.28.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-base': 1.28.0(@opentelemetry/api@1.9.0)
       protobufjs: 7.3.2
-
-  '@opentelemetry/propagation-utils@0.30.12(@opentelemetry/api@1.9.0)':
-    dependencies:
-      '@opentelemetry/api': 1.9.0
 
   '@opentelemetry/propagation-utils@0.30.13(@opentelemetry/api@1.9.0)':
     dependencies:
@@ -19396,13 +19386,13 @@ snapshots:
       '@sentry/types': 7.119.2
       '@sentry/utils': 7.119.2
 
-  '@sentry/aws-serverless@8.40.0(@opentelemetry/api@1.9.0)':
+  '@sentry/aws-serverless@8.41.0(@opentelemetry/api@1.9.0)':
     dependencies:
       '@opentelemetry/instrumentation-aws-lambda': 0.44.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation-aws-sdk': 0.45.0(@opentelemetry/api@1.9.0)
-      '@sentry/core': 8.40.0
-      '@sentry/node': 8.40.0
-      '@sentry/types': 8.40.0
+      '@sentry/core': 8.41.0
+      '@sentry/node': 8.41.0
+      '@sentry/types': 8.41.0
       '@types/aws-lambda': 8.10.145
     transitivePeerDependencies:
       - '@opentelemetry/api'
@@ -19413,9 +19403,9 @@ snapshots:
       '@sentry/types': 7.119.2
       '@sentry/utils': 7.119.2
 
-  '@sentry/core@8.40.0':
+  '@sentry/core@8.41.0':
     dependencies:
-      '@sentry/types': 8.40.0
+      '@sentry/types': 8.41.0
 
   '@sentry/integrations@7.119.2':
     dependencies:
@@ -19432,7 +19422,7 @@ snapshots:
       '@sentry/types': 7.119.2
       '@sentry/utils': 7.119.2
 
-  '@sentry/node@8.40.0':
+  '@sentry/node@8.41.0':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/context-async-hooks': 1.28.0(@opentelemetry/api@1.9.0)
@@ -19464,38 +19454,38 @@ snapshots:
       '@opentelemetry/instrumentation-undici': 0.6.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/resources': 1.28.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-base': 1.28.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
+      '@opentelemetry/semantic-conventions': 1.28.0
       '@prisma/instrumentation': 5.19.1
-      '@sentry/core': 8.40.0
-      '@sentry/opentelemetry': 8.40.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.28.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.54.2(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.28.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.27.0)
-      '@sentry/types': 8.40.0
+      '@sentry/core': 8.41.0
+      '@sentry/opentelemetry': 8.41.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.28.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.54.2(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.28.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.28.0)
+      '@sentry/types': 8.41.0
       import-in-the-middle: 1.11.2
     transitivePeerDependencies:
       - supports-color
 
-  '@sentry/opentelemetry@8.40.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.28.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.54.2(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.28.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.27.0)':
+  '@sentry/opentelemetry@8.41.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.28.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.54.2(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.28.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.28.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 1.28.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation': 0.54.2(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-base': 1.28.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/semantic-conventions': 1.27.0
-      '@sentry/core': 8.40.0
-      '@sentry/types': 8.40.0
+      '@opentelemetry/semantic-conventions': 1.28.0
+      '@sentry/core': 8.41.0
+      '@sentry/types': 8.41.0
 
-  '@sentry/opentelemetry@8.40.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.28.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.55.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.28.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.28.0)':
+  '@sentry/opentelemetry@8.41.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@1.28.0(@opentelemetry/api@1.9.0))(@opentelemetry/instrumentation@0.55.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@1.28.0(@opentelemetry/api@1.9.0))(@opentelemetry/semantic-conventions@1.28.0)':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 1.28.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/instrumentation': 0.55.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-base': 1.28.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.28.0
-      '@sentry/core': 8.40.0
-      '@sentry/types': 8.40.0
+      '@sentry/core': 8.41.0
+      '@sentry/types': 8.41.0
 
   '@sentry/types@7.119.2': {}
 
-  '@sentry/types@8.40.0': {}
+  '@sentry/types@8.41.0': {}
 
   '@sentry/utils@7.119.2':
     dependencies:
@@ -20286,7 +20276,7 @@ snapshots:
 
   '@types/pg-pool@2.0.6':
     dependencies:
-      '@types/pg': 8.6.1
+      '@types/pg': 8.11.10
 
   '@types/pg@8.11.10':
     dependencies:
