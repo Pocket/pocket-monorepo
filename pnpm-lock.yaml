@@ -36,7 +36,7 @@ importers:
     devDependencies:
       '@commitlint/cli':
         specifier: 19.6.0
-        version: 19.6.0(@types/node@22.10.0)(typescript@5.8.0-dev.20241127)
+        version: 19.6.0(@types/node@22.10.0)(typescript@5.8.0-dev.20241202)
       '@commitlint/config-conventional':
         specifier: ^19.5.0
         version: 19.6.0
@@ -45,7 +45,7 @@ importers:
         version: link:packages/eslint-config
       syncpack:
         specifier: ^13.0.0
-        version: 13.0.0(typescript@5.8.0-dev.20241127)
+        version: 13.0.0(typescript@5.8.0-dev.20241202)
       tsconfig:
         specifier: workspace:*
         version: link:packages/tsconfig
@@ -2493,7 +2493,7 @@ importers:
         version: 1.9.0
       '@opentelemetry/auto-instrumentations-node':
         specifier: 0.53.0
-        version: 0.53.0(@opentelemetry/api@1.9.0)
+        version: 0.53.0(@opentelemetry/api@1.9.0)(encoding@0.1.13)
       '@opentelemetry/context-async-hooks':
         specifier: 1.28.0
         version: 1.28.0(@opentelemetry/api@1.9.0)
@@ -3510,6 +3510,12 @@ importers:
       prosemirror-model:
         specifier: 1.23.0
         version: 1.23.0
+      prosemirror-state:
+        specifier: 1.4.3
+        version: 1.4.3
+      prosemirror-transform:
+        specifier: 1.10.2
+        version: 1.10.2
       tslib:
         specifier: 2.8.0
         version: 2.8.0
@@ -4009,7 +4015,7 @@ importers:
         version: link:../../packages/eslint-config
       '@snowplow/snowtype':
         specifier: ^0.10.1
-        version: 0.10.1(commander@12.1.0)(encoding@0.1.13)
+        version: 0.10.1(commander@12.1.0)
       '@types/jest':
         specifier: 29.5.14
         version: 29.5.14
@@ -12919,6 +12925,15 @@ packages:
   prosemirror-model@1.23.0:
     resolution: {integrity: sha512-Q/fgsgl/dlOAW9ILu4OOhYWQbc7TQd4BwKH/RwmUjyVf8682Be4zj3rOYdLnYEcGzyg8LL9Q5IWYKD8tdToreQ==}
 
+  prosemirror-state@1.4.3:
+    resolution: {integrity: sha512-goFKORVbvPuAQaXhpbemJFRKJ2aixr+AZMGiquiqKxaucC6hlpHNZHWgz5R7dS4roHiwq9vDctE//CZ++o0W1Q==}
+
+  prosemirror-transform@1.10.2:
+    resolution: {integrity: sha512-2iUq0wv2iRoJO/zj5mv8uDUriOHWzXRnOTVgCzSXnktS/2iQRa3UUQwVlkBlYZFtygw6Nh1+X4mGqoYBINn5KQ==}
+
+  prosemirror-view@1.37.0:
+    resolution: {integrity: sha512-z2nkKI1sJzyi7T47Ji/ewBPuIma1RNvQCCYVdV+MqWBV7o4Sa1n94UJCJJ1aQRF/xRkFfyqLGlGFWitIcCOtbg==}
+
   proto-list@1.2.4:
     resolution: {integrity: sha512-vtK/94akxsTMhe0/cbfpR+syPuszcuwhqVjJq26CuNDgFGj682oRBXOP5MJpv2r7JtE8MsiepGIqvvOTBwn2vA==}
 
@@ -14182,8 +14197,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.8.0-dev.20241127:
-    resolution: {integrity: sha512-TGb4/mmMCY5GOBuEry4xaOcDonyPwnxPc2zaR/8jgA6twK+iGEPsB6EeT+lSSrpOP906WPlFAn3XVQfQm4d7TQ==}
+  typescript@5.8.0-dev.20241202:
+    resolution: {integrity: sha512-4b4+FbKk5Wp51uwCztSyh68rdK1rv4afoC/P/g8HOmWmfHIdCgZNxzLS6TvjBU7e8XVzmW3jE/CJl1n59lcIhg==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -16488,11 +16503,11 @@ snapshots:
     dependencies:
       commander: 12.1.0
 
-  '@commitlint/cli@19.6.0(@types/node@22.10.0)(typescript@5.8.0-dev.20241127)':
+  '@commitlint/cli@19.6.0(@types/node@22.10.0)(typescript@5.8.0-dev.20241202)':
     dependencies:
       '@commitlint/format': 19.5.0
       '@commitlint/lint': 19.6.0
-      '@commitlint/load': 19.5.0(@types/node@22.10.0)(typescript@5.8.0-dev.20241127)
+      '@commitlint/load': 19.5.0(@types/node@22.10.0)(typescript@5.8.0-dev.20241202)
       '@commitlint/read': 19.5.0
       '@commitlint/types': 19.5.0
       tinyexec: 0.3.1
@@ -16539,15 +16554,15 @@ snapshots:
       '@commitlint/rules': 19.6.0
       '@commitlint/types': 19.5.0
 
-  '@commitlint/load@19.5.0(@types/node@22.10.0)(typescript@5.8.0-dev.20241127)':
+  '@commitlint/load@19.5.0(@types/node@22.10.0)(typescript@5.8.0-dev.20241202)':
     dependencies:
       '@commitlint/config-validator': 19.5.0
       '@commitlint/execute-rule': 19.5.0
       '@commitlint/resolve-extends': 19.5.0
       '@commitlint/types': 19.5.0
       chalk: 5.3.0
-      cosmiconfig: 9.0.0(typescript@5.8.0-dev.20241127)
-      cosmiconfig-typescript-loader: 5.1.0(@types/node@22.10.0)(cosmiconfig@9.0.0(typescript@5.8.0-dev.20241127))(typescript@5.8.0-dev.20241127)
+      cosmiconfig: 9.0.0(typescript@5.8.0-dev.20241202)
+      cosmiconfig-typescript-loader: 5.1.0(@types/node@22.10.0)(cosmiconfig@9.0.0(typescript@5.8.0-dev.20241202))(typescript@5.8.0-dev.20241202)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -17993,7 +18008,7 @@ snapshots:
 
   '@opentelemetry/api@1.9.0': {}
 
-  '@opentelemetry/auto-instrumentations-node@0.53.0(@opentelemetry/api@1.9.0)':
+  '@opentelemetry/auto-instrumentations-node@0.53.0(@opentelemetry/api@1.9.0)(encoding@0.1.13)':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/instrumentation': 0.55.0(@opentelemetry/api@1.9.0)
@@ -18040,7 +18055,7 @@ snapshots:
       '@opentelemetry/resource-detector-aws': 1.8.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/resource-detector-azure': 0.3.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/resource-detector-container': 0.5.1(@opentelemetry/api@1.9.0)
-      '@opentelemetry/resource-detector-gcp': 0.30.0(@opentelemetry/api@1.9.0)
+      '@opentelemetry/resource-detector-gcp': 0.30.0(@opentelemetry/api@1.9.0)(encoding@0.1.13)
       '@opentelemetry/resources': 1.28.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-node': 0.55.0(@opentelemetry/api@1.9.0)
     transitivePeerDependencies:
@@ -18836,7 +18851,7 @@ snapshots:
       '@opentelemetry/resources': 1.28.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.28.0
 
-  '@opentelemetry/resource-detector-gcp@0.30.0(@opentelemetry/api@1.9.0)':
+  '@opentelemetry/resource-detector-gcp@0.30.0(@opentelemetry/api@1.9.0)(encoding@0.1.13)':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 1.28.0(@opentelemetry/api@1.9.0)
@@ -19930,20 +19945,20 @@ snapshots:
       got: 11.8.6
       tslib: 2.8.0
 
-  '@snowplow/snowtype-core@0.10.1(encoding@0.1.13)':
+  '@snowplow/snowtype-core@0.10.1':
     dependencies:
       '@fastify/merge-json-schemas': 0.2.0
       handlebars: 4.7.8
       json-pointer: 0.6.2
-      quicktype-core: 23.0.170(encoding@0.1.13)
+      quicktype-core: 23.0.170
     transitivePeerDependencies:
       - encoding
 
-  '@snowplow/snowtype@0.10.1(commander@12.1.0)(encoding@0.1.13)':
+  '@snowplow/snowtype@0.10.1(commander@12.1.0)':
     dependencies:
       '@commander-js/extra-typings': 11.1.0(commander@12.1.0)
       '@inquirer/prompts': 3.3.2
-      '@snowplow/snowtype-core': 0.10.1(encoding@0.1.13)
+      '@snowplow/snowtype-core': 0.10.1
       chalk: 4.1.2
       cli-spinner: 0.2.10
       dotenv: 16.4.5
@@ -21647,12 +21662,12 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cosmiconfig-typescript-loader@5.1.0(@types/node@22.10.0)(cosmiconfig@9.0.0(typescript@5.8.0-dev.20241127))(typescript@5.8.0-dev.20241127):
+  cosmiconfig-typescript-loader@5.1.0(@types/node@22.10.0)(cosmiconfig@9.0.0(typescript@5.8.0-dev.20241202))(typescript@5.8.0-dev.20241202):
     dependencies:
       '@types/node': 22.10.0
-      cosmiconfig: 9.0.0(typescript@5.8.0-dev.20241127)
+      cosmiconfig: 9.0.0(typescript@5.8.0-dev.20241202)
       jiti: 1.21.6
-      typescript: 5.8.0-dev.20241127
+      typescript: 5.8.0-dev.20241202
 
   cosmiconfig@8.3.6(typescript@5.5.4):
     dependencies:
@@ -21672,14 +21687,14 @@ snapshots:
     optionalDependencies:
       typescript: 5.5.4
 
-  cosmiconfig@9.0.0(typescript@5.8.0-dev.20241127):
+  cosmiconfig@9.0.0(typescript@5.8.0-dev.20241202):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 5.8.0-dev.20241127
+      typescript: 5.8.0-dev.20241202
 
   cpu-features@0.0.2:
     dependencies:
@@ -22009,7 +22024,7 @@ snapshots:
     dependencies:
       semver: 7.6.3
       shelljs: 0.8.5
-      typescript: 5.8.0-dev.20241127
+      typescript: 5.8.0-dev.20241202
 
   dreamopt@0.8.0:
     dependencies:
@@ -25792,6 +25807,22 @@ snapshots:
     dependencies:
       orderedmap: 2.1.1
 
+  prosemirror-state@1.4.3:
+    dependencies:
+      prosemirror-model: 1.23.0
+      prosemirror-transform: 1.10.2
+      prosemirror-view: 1.37.0
+
+  prosemirror-transform@1.10.2:
+    dependencies:
+      prosemirror-model: 1.23.0
+
+  prosemirror-view@1.37.0:
+    dependencies:
+      prosemirror-model: 1.23.0
+      prosemirror-state: 1.4.3
+      prosemirror-transform: 1.10.2
+
   proto-list@1.2.4: {}
 
   proto3-json-serializer@2.0.1:
@@ -25872,7 +25903,7 @@ snapshots:
 
   quick-lru@5.1.1: {}
 
-  quicktype-core@23.0.170(encoding@0.1.13):
+  quicktype-core@23.0.170:
     dependencies:
       '@glideapps/ts-necessities': 2.2.3
       browser-or-node: 3.0.0
@@ -26833,13 +26864,13 @@ snapshots:
       '@pkgr/core': 0.1.1
       tslib: 2.8.0
 
-  syncpack@13.0.0(typescript@5.8.0-dev.20241127):
+  syncpack@13.0.0(typescript@5.8.0-dev.20241202):
     dependencies:
       '@effect/schema': 0.71.1(effect@3.6.5)
       chalk: 5.3.0
       chalk-template: 1.1.0
       commander: 12.1.0
-      cosmiconfig: 9.0.0(typescript@5.8.0-dev.20241127)
+      cosmiconfig: 9.0.0(typescript@5.8.0-dev.20241202)
       effect: 3.6.5
       enquirer: 2.4.1
       fast-check: 3.21.0
@@ -27219,7 +27250,7 @@ snapshots:
 
   typescript@5.5.4: {}
 
-  typescript@5.8.0-dev.20241127: {}
+  typescript@5.8.0-dev.20241202: {}
 
   ua-parser-js@1.0.39: {}
 

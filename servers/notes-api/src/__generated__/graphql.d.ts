@@ -20,8 +20,42 @@ export type Scalars = {
   Float: { input: number; output: number; }
   ISOString: { input: Date | string; output: Date | string; }
   Markdown: { input: string; output: string; }
+  ProseMirrorJson: { input: string; output: string; }
   ValidUrl: { input: URL | string; output: URL | string; }
   _FieldSet: { input: any; output: any; }
+};
+
+/**
+ * Input to create a new Note seeded with copied content from a page.
+ * The entire content becomes editable and is not able to be "reattached"
+ * like a traditional highlight.
+ */
+export type CreateNoteFromQuoteInput = {
+  /**
+   * When this note was created. If not provided, defaults to server time upon
+   * receiving request.
+   */
+  createdAt?: InputMaybe<Scalars['ISOString']['input']>;
+  /**
+   * Client-provided UUID for the new Note.
+   * If not provided, will be generated on the server.
+   */
+  id?: InputMaybe<Scalars['ID']['input']>;
+  /**
+   * JSON representation of a ProseMirror document, which
+   * contains the formatted snipped text. This is used to seed
+   * the initial Note document state, and will become editable.
+   */
+  quote: Scalars['String']['input'];
+  /**
+   * The Web Resource where the quote is taken from.
+   * This should always be sent by the client where possible,
+   * but in some cases (e.g. copying from mobile apps) there may
+   * not be an accessible source url.
+   */
+  source?: InputMaybe<Scalars['ValidUrl']['input']>;
+  /** Optional title for this Note */
+  title?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Input to create a new Note */
@@ -32,7 +66,7 @@ export type CreateNoteInput = {
    */
   createdAt?: InputMaybe<Scalars['ISOString']['input']>;
   /** JSON representation of a ProseMirror document */
-  docContent: Scalars['String']['input'];
+  docContent: Scalars['ProseMirrorJson']['input'];
   /**
    * Client-provided UUID for the new Note.
    * If not provided, will be generated on the server.
@@ -48,11 +82,21 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Create a new note, optionally with title and content */
   createNote: Note;
+  /**
+   * Create a new note, with a pre-populated block that contains the quoted and cited text
+   * selected by a user.
+   */
+  createNoteFromQuote: Note;
 };
 
 
 export type MutationCreateNoteArgs = {
   input: CreateNoteInput;
+};
+
+
+export type MutationCreateNoteFromQuoteArgs = {
+  input: CreateNoteFromQuoteInput;
 };
 
 /**
@@ -75,7 +119,7 @@ export type Note = {
    */
   deleted: Scalars['Boolean']['output'];
   /** JSON representation of a ProseMirror document */
-  docContent?: Maybe<Scalars['String']['output']>;
+  docContent?: Maybe<Scalars['ProseMirrorJson']['output']>;
   /** This Note's identifier */
   id: Scalars['ID']['output'];
   /**
@@ -194,14 +238,16 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
-  CreateNoteInput: CreateNoteInput;
-  String: ResolverTypeWrapper<Scalars['String']['output']>;
+  CreateNoteFromQuoteInput: CreateNoteFromQuoteInput;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  String: ResolverTypeWrapper<Scalars['String']['output']>;
+  CreateNoteInput: CreateNoteInput;
   ISOString: ResolverTypeWrapper<Scalars['ISOString']['output']>;
   Markdown: ResolverTypeWrapper<Scalars['Markdown']['output']>;
   Mutation: ResolverTypeWrapper<{}>;
   Note: ResolverTypeWrapper<Note>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  ProseMirrorJson: ResolverTypeWrapper<Scalars['ProseMirrorJson']['output']>;
   Query: ResolverTypeWrapper<{}>;
   SavedItem: ResolverTypeWrapper<SavedItem>;
   ValidUrl: ResolverTypeWrapper<Scalars['ValidUrl']['output']>;
@@ -209,14 +255,16 @@ export type ResolversTypes = ResolversObject<{
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
-  CreateNoteInput: CreateNoteInput;
-  String: Scalars['String']['output'];
+  CreateNoteFromQuoteInput: CreateNoteFromQuoteInput;
   ID: Scalars['ID']['output'];
+  String: Scalars['String']['output'];
+  CreateNoteInput: CreateNoteInput;
   ISOString: Scalars['ISOString']['output'];
   Markdown: Scalars['Markdown']['output'];
   Mutation: {};
   Note: Note;
   Boolean: Scalars['Boolean']['output'];
+  ProseMirrorJson: Scalars['ProseMirrorJson']['output'];
   Query: {};
   SavedItem: SavedItem;
   ValidUrl: Scalars['ValidUrl']['output'];
@@ -232,6 +280,7 @@ export interface MarkdownScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 
 export type MutationResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createNote?: Resolver<ResolversTypes['Note'], ParentType, ContextType, RequireFields<MutationCreateNoteArgs, 'input'>>;
+  createNoteFromQuote?: Resolver<ResolversTypes['Note'], ParentType, ContextType, RequireFields<MutationCreateNoteFromQuoteArgs, 'input'>>;
 }>;
 
 export type NoteResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Note'] = ResolversParentTypes['Note']> = ResolversObject<{
@@ -240,7 +289,7 @@ export type NoteResolvers<ContextType = IContext, ParentType extends ResolversPa
   contentPreview?: Resolver<Maybe<ResolversTypes['Markdown']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['ISOString'], ParentType, ContextType>;
   deleted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  docContent?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  docContent?: Resolver<Maybe<ResolversTypes['ProseMirrorJson']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   savedItem?: Resolver<Maybe<ResolversTypes['SavedItem']>, ParentType, ContextType>;
   source?: Resolver<Maybe<ResolversTypes['ValidUrl']>, ParentType, ContextType>;
@@ -248,6 +297,10 @@ export type NoteResolvers<ContextType = IContext, ParentType extends ResolversPa
   updatedAt?: Resolver<ResolversTypes['ISOString'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
+
+export interface ProseMirrorJsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ProseMirrorJson'], any> {
+  name: 'ProseMirrorJson';
+}
 
 export type QueryResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   note?: Resolver<Maybe<ResolversTypes['Note']>, ParentType, ContextType, RequireFields<QueryNoteArgs, 'id'>>;
@@ -268,6 +321,7 @@ export type Resolvers<ContextType = IContext> = ResolversObject<{
   Markdown?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   Note?: NoteResolvers<ContextType>;
+  ProseMirrorJson?: GraphQLScalarType;
   Query?: QueryResolvers<ContextType>;
   SavedItem?: SavedItemResolvers<ContextType>;
   ValidUrl?: GraphQLScalarType;

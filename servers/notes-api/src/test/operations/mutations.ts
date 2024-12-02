@@ -26,3 +26,12 @@ export const CREATE_NOTE = print(gql`
     }
   }
 `);
+
+export const CREATE_NOTE_QUOTE = print(gql`
+  ${NoteFragment}
+  mutation CreateNoteFromQuote($input: CreateNoteFromQuoteInput!) {
+    createNoteFromQuote(input: $input) {
+      ...NoteFields
+    }
+  }
+`);
