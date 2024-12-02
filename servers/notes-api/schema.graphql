@@ -97,10 +97,48 @@ input CreateNoteInput {
   createdAt: ISOString
 }
 
+"""
+Input to create a new Note seeded with copied content from a page.
+The entire content becomes editable and is not able to be "reattached"
+like a traditional highlight.
+"""
+input CreateNoteFromQuoteInput {
+  """Optional title for this Note"""
+  title: String
+  """
+  Client-provided UUID for the new Note.
+  If not provided, will be generated on the server.
+  """
+  id: ID
+  """
+  The Web Resource where the quote is taken from.
+  This should always be sent by the client where possible,
+  but in some cases (e.g. copying from mobile apps) there may
+  not be an accessible source url.
+  """
+  source: ValidUrl
+  """
+  JSON representation of a ProseMirror document, which
+  contains the formatted snipped text. This is used to seed
+  the initial Note document state, and will become editable.
+  """
+  quote: ProseMirrorJson!
+  """
+  When this note was created. If not provided, defaults to server time upon
+  receiving request.
+  """
+  createdAt: ISOString
+}
+
 
 type Mutation {
   """
   Create a new note, optionally with title and content
   """
   createNote(input: CreateNoteInput!): Note! @requiresScopes(scopes: [["ROLE_USER"]])
+  """
+  Create a new note, with a pre-populated block that contains the quoted and cited text
+  selected by a user.
+  """
+  createNoteFromQuote(input: CreateNoteFromQuoteInput!): Note! @requiresScopes(scopes: [["ROLE_USER"]])
 }

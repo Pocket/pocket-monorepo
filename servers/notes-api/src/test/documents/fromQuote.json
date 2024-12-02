@@ -1,0 +1,204 @@
+{
+  "input": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "paragraph",
+        "content": [
+          {
+            "type": "text",
+            "text": "This is something I’m copying from somewhere else"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          { "type": "text", "text": "I want to make everything a blockquote" }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [{ "type": "text", "text": "Here’s a list:" }]
+      },
+      {
+        "type": "bullet_list",
+        "content": [
+          {
+            "type": "list_item",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [{ "type": "text", "text": "abc" }]
+              }
+            ]
+          },
+          {
+            "type": "list_item",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [{ "type": "text", "text": "123" }]
+              }
+            ]
+          },
+          {
+            "type": "list_item",
+            "content": [
+              {
+                "type": "paragraph",
+                "content": [{ "type": "text", "text": "def" }]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "expectedSource": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "blockquote",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "This is something I’m copying from somewhere else"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "I want to make everything a blockquote"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [{ "type": "text", "text": "Here’s a list:" }]
+          },
+          {
+            "type": "bullet_list",
+            "attrs": { "tight": false },
+            "content": [
+              {
+                "type": "list_item",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [{ "type": "text", "text": "abc" }]
+                  }
+                ]
+              },
+              {
+                "type": "list_item",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [{ "type": "text", "text": "123" }]
+                  }
+                ]
+              },
+              {
+                "type": "list_item",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [{ "type": "text", "text": "def" }]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": [
+          { "type": "text", "text": "Source: " },
+          {
+            "type": "text",
+            "marks": [
+              {
+                "type": "link",
+                "attrs": { "href": "localhost:3001", "title": null }
+              }
+            ],
+            "text": "localhost:3001"
+          }
+        ]
+      }
+    ]
+  },
+  "expectedNoSource": {
+    "type": "doc",
+    "content": [
+      {
+        "type": "blockquote",
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "This is something I’m copying from somewhere else"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "I want to make everything a blockquote"
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "content": [{ "type": "text", "text": "Here’s a list:" }]
+          },
+          {
+            "type": "bullet_list",
+            "attrs": { "tight": false },
+            "content": [
+              {
+                "type": "list_item",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [{ "type": "text", "text": "abc" }]
+                  }
+                ]
+              },
+              {
+                "type": "list_item",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [{ "type": "text", "text": "123" }]
+                  }
+                ]
+              },
+              {
+                "type": "list_item",
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "content": [{ "type": "text", "text": "def" }]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
