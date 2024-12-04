@@ -4,6 +4,7 @@ import {
   CreateNoteInput,
   CreateNoteFromQuoteInput,
   EditNoteTitleInput,
+  EditNoteContentInput,
 } from '../__generated__/graphql';
 import { Note as NoteEntity } from '../__generated__/db';
 import { Insertable, NoResultError, Selectable } from 'kysely';
@@ -89,6 +90,7 @@ export class NoteModel {
    */
   async create(input: CreateNoteInput) {
     try {
+      // TODO
       // At some point do more validation
       // We can move this to a scalar
       const docContent = JSON.parse(input.docContent);
@@ -165,6 +167,35 @@ export class NoteModel {
       if (error instanceof NoResultError) {
         throw new NotFoundError(
           `Note with id=${input.id} does not exist or is forbidden`,
+        );
+      } else {
+        throw error;
+      }
+    }
+  }
+  /**
+   * Edit a note's content
+   */
+  async editContent(input: EditNoteContentInput) {
+    try {
+      // TODO
+      // At some point do more validation
+      // We can move this to a scalar
+      const docContent = JSON.parse(input.docContent);
+      const result = await this.service.updateDocContent(
+        input.noteId,
+        docContent,
+        input.updatedAt,
+      );
+      return this.toGraphql(result);
+    } catch (error) {
+      if (error instanceof NoResultError) {
+        throw new NotFoundError(
+          `Note with id=${input.noteId} does not exist or is forbidden`,
+        );
+      } else if (error instanceof SyntaxError) {
+        throw new UserInputError(
+          `Received malformed JSON for docContent: ${error.message}`,
         );
       } else {
         throw error;

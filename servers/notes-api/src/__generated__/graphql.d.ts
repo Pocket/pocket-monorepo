@@ -78,6 +78,16 @@ export type CreateNoteInput = {
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
+/** Input for editing the content of a Note (user-generated) */
+export type EditNoteContentInput = {
+  /** JSON representation of a ProseMirror document */
+  docContent: Scalars['ProseMirrorJson']['input'];
+  /** The ID of the note to edit */
+  noteId: Scalars['ID']['input'];
+  /** The time this update was made (defaults to server time) */
+  updatedAt?: InputMaybe<Scalars['ISOString']['input']>;
+};
+
 export type EditNoteTitleInput = {
   /** The ID of the note to edit */
   id: Scalars['ID']['input'];
@@ -99,7 +109,19 @@ export type Mutation = {
    * selected by a user.
    */
   createNoteFromQuote: Note;
-  /** Edit the title of a Note. */
+  /**
+   * Edit the content of a Note.
+   * If the Note does not exist or is inaccessible for the current user,
+   * response will be null and a NOT_FOUND error will be included in the
+   * errors array.
+   */
+  editNoteContent?: Maybe<Note>;
+  /**
+   * Edit the title of a Note.
+   * If the Note does not exist or is inaccessible for the current user,
+   * response will be null and a NOT_FOUND error will be included in the
+   * errors array.
+   */
   editNoteTitle?: Maybe<Note>;
 };
 
@@ -111,6 +133,11 @@ export type MutationCreateNoteArgs = {
 
 export type MutationCreateNoteFromQuoteArgs = {
   input: CreateNoteFromQuoteInput;
+};
+
+
+export type MutationEditNoteContentArgs = {
+  input: EditNoteContentInput;
 };
 
 
@@ -261,6 +288,7 @@ export type ResolversTypes = ResolversObject<{
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   CreateNoteInput: CreateNoteInput;
+  EditNoteContentInput: EditNoteContentInput;
   EditNoteTitleInput: EditNoteTitleInput;
   ISOString: ResolverTypeWrapper<Scalars['ISOString']['output']>;
   Markdown: ResolverTypeWrapper<Scalars['Markdown']['output']>;
@@ -279,6 +307,7 @@ export type ResolversParentTypes = ResolversObject<{
   ID: Scalars['ID']['output'];
   String: Scalars['String']['output'];
   CreateNoteInput: CreateNoteInput;
+  EditNoteContentInput: EditNoteContentInput;
   EditNoteTitleInput: EditNoteTitleInput;
   ISOString: Scalars['ISOString']['output'];
   Markdown: Scalars['Markdown']['output'];
@@ -302,6 +331,7 @@ export interface MarkdownScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 export type MutationResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createNote?: Resolver<ResolversTypes['Note'], ParentType, ContextType, RequireFields<MutationCreateNoteArgs, 'input'>>;
   createNoteFromQuote?: Resolver<ResolversTypes['Note'], ParentType, ContextType, RequireFields<MutationCreateNoteFromQuoteArgs, 'input'>>;
+  editNoteContent?: Resolver<Maybe<ResolversTypes['Note']>, ParentType, ContextType, RequireFields<MutationEditNoteContentArgs, 'input'>>;
   editNoteTitle?: Resolver<Maybe<ResolversTypes['Note']>, ParentType, ContextType, RequireFields<MutationEditNoteTitleArgs, 'input'>>;
 }>;
 

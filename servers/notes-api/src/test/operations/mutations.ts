@@ -44,3 +44,12 @@ export const EDIT_NOTE_TITLE = print(gql`
     }
   }
 `);
+
+export const EDIT_NOTE_CONTENT = print(gql`
+  ${NoteFragment}
+  mutation EditNoteContent($input: EditNoteContentInput!) {
+    editNoteContent(input: $input) {
+      ...NoteFields
+    }
+  }
+`);
