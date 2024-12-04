@@ -14,8 +14,8 @@
     "test": "jest \"\\.spec\\.ts\""
   },
   "dependencies": {
-    "@aws-sdk/client-cloudwatch": "3.696.0",
-    "@aws-sdk/client-firehose": "3.696.0",
+    "@aws-sdk/client-cloudwatch": "3.705.0",
+    "@aws-sdk/client-firehose": "3.699.0",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sendgrid/client": "^8.0.0",
     "@sentry/aws-serverless": "8.41.0",

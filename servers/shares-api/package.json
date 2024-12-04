@@ -26,8 +26,8 @@
   "dependencies": {
     "@apollo/server": "4.11.2",
     "@apollo/subgraph": "2.9.3",
-    "@aws-sdk/client-dynamodb": "3.696.0",
-    "@aws-sdk/lib-dynamodb": "3.696.0",
+    "@aws-sdk/client-dynamodb": "3.705.0",
+    "@aws-sdk/lib-dynamodb": "3.705.0",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/event-bridge": "workspace:*",
     "@pocket-tools/feature-flags-client": "workspace:*",

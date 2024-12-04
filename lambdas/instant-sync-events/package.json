@@ -27,7 +27,7 @@
     "tslib": "2.8.0"
   },
   "devDependencies": {
-    "@aws-sdk/client-sqs": "3.696.0",
+    "@aws-sdk/client-sqs": "3.699.0",
     "@pocket-tools/eslint-config": "workspace:*",
     "@types/aws-lambda": "8.10.145",
     "@types/jest": "29.5.14",
