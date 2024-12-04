@@ -62,6 +62,7 @@ export class NotesService {
       .where('noteId', '=', noteId)
       .where('userId', '=', this.context.userId);
   }
+
   /**
    * Update the title field in a Note
    * @param noteId the UUID of the Note entity to update
@@ -108,5 +109,26 @@ export class NotesService {
       .returningAll()
       .executeTakeFirstOrThrow();
     return result;
+  }
+  /**
+   * Update the title field in a Note
+   * @param noteId the UUID of the Note entity to update
+   * @param title the new title (can be empty string)
+   * @param updatedAt when the update was performed
+   * @returns
+   */
+  async delete(noteId: string, deletedAt?: Date | string | null) {
+    const setUpdate =
+      deletedAt != null
+        ? { deleted: true, updatedAt: deletedAt }
+        : { deleted: true, updatedAt: new Date(Date.now()) };
+    const result = await this.updateBase(noteId)
+      .set(setUpdate)
+      .executeTakeFirstOrThrow();
+    if (result.numUpdatedRows > 0) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

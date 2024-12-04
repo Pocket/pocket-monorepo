@@ -5,6 +5,7 @@ import {
   CreateNoteFromQuoteInput,
   EditNoteTitleInput,
   EditNoteContentInput,
+  DeleteNoteInput,
 } from '../__generated__/graphql';
 import { Note as NoteEntity } from '../__generated__/db';
 import { Insertable, NoResultError, Selectable } from 'kysely';
@@ -201,5 +202,12 @@ export class NoteModel {
         throw error;
       }
     }
+  }
+  /**
+   * Delete a Note
+   */
+  async deleteNote(input: DeleteNoteInput) {
+    const result = await this.service.delete(input.id, input.deletedAt);
+    return result;
   }
 }

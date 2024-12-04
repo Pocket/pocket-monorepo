@@ -21,5 +21,8 @@ export const resolvers: Resolvers = {
     editNoteContent(root, { input }, context) {
       return context.NoteModel.editContent(input);
     },
+    deleteNote(root, { input }, context) {
+      return context.NoteModel.deleteNote(input);
+    },
   },
 };
