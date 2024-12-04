@@ -3,14 +3,15 @@ import {
   Note,
   CreateNoteInput,
   CreateNoteFromQuoteInput,
+  EditNoteTitleInput,
 } from '../__generated__/graphql';
 import { Note as NoteEntity } from '../__generated__/db';
-import { Insertable, Selectable } from 'kysely';
+import { Insertable, NoResultError, Selectable } from 'kysely';
 import { orderAndMap } from '../utils/dataloader';
 import { IContext } from '../apollo/context';
 import { NotesService } from '../datasources/NoteService';
 import { ProseMirrorDoc, wrapDocInBlockQuote } from './ProseMirrorDoc';
-import { UserInputError } from '@pocket-tools/apollo-utils';
+import { NotFoundError, UserInputError } from '@pocket-tools/apollo-utils';
 import { DatabaseError } from 'pg';
 
 /**
@@ -143,6 +144,27 @@ export class NoteModel {
       if (error instanceof SyntaxError) {
         throw new UserInputError(
           `Received malformed JSON for docContent: ${error.message}`,
+        );
+      } else {
+        throw error;
+      }
+    }
+  }
+  /**
+   * Edit a note's title
+   */
+  async editTitle(input: EditNoteTitleInput) {
+    try {
+      const result = await this.service.updateTitle(
+        input.id,
+        input.title,
+        input.updatedAt,
+      );
+      return this.toGraphql(result);
+    } catch (error) {
+      if (error instanceof NoResultError) {
+        throw new NotFoundError(
+          `Note with id=${input.id} does not exist or is forbidden`,
         );
       } else {
         throw error;

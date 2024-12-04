@@ -49,4 +49,29 @@ export class NotesService {
       .executeTakeFirstOrThrow();
     return result;
   }
+  /**
+   * Update the title field in a Note
+   * @param noteId the UUID of the Note entity to update
+   * @param title the new title (can be empty string)
+   * @param updatedAt when the update was performed
+   * @returns
+   */
+  async updateTitle(
+    noteId: string,
+    title: string,
+    updatedAt?: Date | string | null,
+  ) {
+    const setUpdate =
+      updatedAt != null
+        ? { title, updatedAt }
+        : { title, updatedAt: new Date(Date.now()) };
+    const result = await this.context.db
+      .updateTable('Note')
+      .set(setUpdate)
+      .where('noteId', '=', noteId)
+      .where('userId', '=', this.context.userId)
+      .returningAll()
+      .executeTakeFirstOrThrow();
+    return result;
+  }
 }

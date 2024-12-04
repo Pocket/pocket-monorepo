@@ -15,5 +15,8 @@ export const resolvers: Resolvers = {
     createNoteFromQuote(root, { input }, context) {
       return context.NoteModel.fromQuote(input);
     },
+    editNoteTitle(root, { input }, context) {
+      return context.NoteModel.editTitle(input);
+    },
   },
 };

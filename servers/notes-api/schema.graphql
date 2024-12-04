@@ -130,6 +130,18 @@ input CreateNoteFromQuoteInput {
   createdAt: ISOString
 }
 
+input EditNoteTitleInput {
+  """The ID of the note to edit"""
+  id: ID!
+  """The new title for the note (can be an empty string)"""
+  title: String! @constraint(maxLength: 100)
+  """
+  When the update was made. If not provided, defaults to the server
+  time upon receiving request.
+  """
+  updatedAt: ISOString
+}
+
 
 type Mutation {
   """
@@ -141,4 +153,11 @@ type Mutation {
   selected by a user.
   """
   createNoteFromQuote(input: CreateNoteFromQuoteInput!): Note! @requiresScopes(scopes: [["ROLE_USER"]])
+  """
+  Edit the title of a Note.
+  If the Note does not exist or is inaccessible for the current user,
+  response will be null and a NOT_FOUND error will be included in the
+  errors array.
+  """
+  editNoteTitle(input: EditNoteTitleInput!): Note @requiresScopes(scopes: [["ROLE_USER"]])
 }

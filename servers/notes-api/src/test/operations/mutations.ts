@@ -35,3 +35,12 @@ export const CREATE_NOTE_QUOTE = print(gql`
     }
   }
 `);
+
+export const EDIT_NOTE_TITLE = print(gql`
+  ${NoteFragment}
+  mutation EditNoteTitle($input: EditNoteTitleInput!) {
+    editNoteTitle(input: $input) {
+      ...NoteFields
+    }
+  }
+`);
