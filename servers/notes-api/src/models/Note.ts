@@ -5,6 +5,7 @@ import {
   CreateNoteFromQuoteInput,
   EditNoteTitleInput,
   EditNoteContentInput,
+  DeleteNoteInput,
 } from '../__generated__/graphql';
 import { Note as NoteEntity } from '../__generated__/db';
 import { Insertable, NoResultError, Selectable } from 'kysely';
@@ -197,6 +198,20 @@ export class NoteModel {
         throw new UserInputError(
           `Received malformed JSON for docContent: ${error.message}`,
         );
+      } else {
+        throw error;
+      }
+    }
+  }
+  /**
+   * Delete a Note
+   */
+  async deleteNote(input: DeleteNoteInput) {
+    try {
+      return await this.service.delete(input.id, input.deletedAt);
+    } catch (error) {
+      if (error instanceof NoResultError) {
+        return input.id;
       } else {
         throw error;
       }

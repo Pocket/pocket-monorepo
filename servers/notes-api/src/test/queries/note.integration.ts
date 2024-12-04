@@ -3,7 +3,7 @@ import request from 'supertest';
 import { IContext, startServer } from '../../apollo';
 import { type Application } from 'express';
 import { GET_NOTE } from '../operations';
-import { db } from '../../datasources/db';
+import { db, roDb } from '../../datasources/db';
 import { Note as NoteFaker } from '../fakes/Note';
 import { Chance } from 'chance';
 import { sql } from 'kysely';
@@ -26,6 +26,7 @@ afterAll(async () => {
   await sql`truncate table ${sql.table('Note')} CASCADE`.execute(db);
   await server.stop();
   await db.destroy();
+  await roDb.destroy();
 });
 
 describe('note', () => {

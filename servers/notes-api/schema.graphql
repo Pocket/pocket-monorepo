@@ -159,6 +159,16 @@ input EditNoteContentInput {
   updatedAt: ISOString
 }
 
+input DeleteNoteInput {
+  """The ID of the note to delete"""
+  id: ID!
+  """
+  When the note was deleted was made. If not provided, defaults to
+  the server time upon receiving request.
+  """
+  deletedAt: ISOString
+}
+
 type Mutation {
   """
   Create a new note, optionally with title and content
@@ -183,4 +193,10 @@ type Mutation {
   errors array.
   """
   editNoteContent(input: EditNoteContentInput!): Note @requiresScopes(scopes: [["ROLE_USER"]])
+  """
+  Delete a note and all attachments. Returns True if the note was successfully
+  deleted. If the note cannot be deleted or does not exist, returns False. 
+  Errors will be included in the errors array if applicable.
+  """
+  deleteNote(input: DeleteNoteInput!): ID! @requiresScopes(scopes: [["ROLE_USER"]])
 }

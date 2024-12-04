@@ -53,3 +53,9 @@ export const EDIT_NOTE_CONTENT = print(gql`
     }
   }
 `);
+
+export const DELETE_NOTE = print(gql`
+  mutation DeleteNote($input: DeleteNoteInput!) {
+    deleteNote(input: $input)
+  }
+`);
