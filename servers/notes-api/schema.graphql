@@ -141,7 +141,23 @@ input EditNoteTitleInput {
   """
   updatedAt: ISOString
 }
-
+"""
+Input for editing the content of a Note (user-generated)
+"""
+input EditNoteContentInput {
+  """
+  The ID of the note to edit
+  """
+  noteId: ID!
+  """
+  JSON representation of a ProseMirror document
+  """
+  docContent: ProseMirrorJson!
+  """
+  The time this update was made (defaults to server time)
+  """
+  updatedAt: ISOString
+}
 
 type Mutation {
   """
@@ -160,4 +176,11 @@ type Mutation {
   errors array.
   """
   editNoteTitle(input: EditNoteTitleInput!): Note @requiresScopes(scopes: [["ROLE_USER"]])
+  """
+  Edit the content of a Note.
+  If the Note does not exist or is inaccessible for the current user,
+  response will be null and a NOT_FOUND error will be included in the
+  errors array.
+  """
+  editNoteContent(input: EditNoteContentInput!): Note @requiresScopes(scopes: [["ROLE_USER"]])
 }

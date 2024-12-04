@@ -1,6 +1,6 @@
-import { Insertable } from 'kysely';
+import { Insertable, UpdateQueryBuilder, UpdateResult } from 'kysely';
 import { IContext } from '../apollo/context';
-import { Note as NoteEntity } from '../__generated__/db';
+import { DB, Note as NoteEntity } from '../__generated__/db';
 
 /**
  * Database methods for retrieving and creating Notes
@@ -49,12 +49,26 @@ export class NotesService {
       .executeTakeFirstOrThrow();
     return result;
   }
+
+  /**
+   * Basic update builder with where statements for userId
+   * and noteId baked in (avoids some repetition)
+   */
+  private updateBase(
+    noteId: string,
+  ): UpdateQueryBuilder<DB, 'Note', 'Note', UpdateResult> {
+    return this.context.db
+      .updateTable('Note')
+      .where('noteId', '=', noteId)
+      .where('userId', '=', this.context.userId);
+  }
   /**
    * Update the title field in a Note
    * @param noteId the UUID of the Note entity to update
    * @param title the new title (can be empty string)
    * @param updatedAt when the update was performed
-   * @returns
+   * @returns the updated Note entity
+   * @throws error if the query returned no result
    */
   async updateTitle(
     noteId: string,
@@ -65,11 +79,32 @@ export class NotesService {
       updatedAt != null
         ? { title, updatedAt }
         : { title, updatedAt: new Date(Date.now()) };
-    const result = await this.context.db
-      .updateTable('Note')
+    const result = await this.updateBase(noteId)
       .set(setUpdate)
-      .where('noteId', '=', noteId)
-      .where('userId', '=', this.context.userId)
+      .returningAll()
+      .executeTakeFirstOrThrow();
+    return result;
+  }
+  /**
+   * Update the docContent field in a Note
+   * @param noteId the UUID of the Note entity to update
+   * @param docContent JSON representation of ProseMirror document
+   * (pre-validated).
+   * @param updatedAt when the update was performed
+   * @returns the updated Note entity
+   * @throws error if the query returned no result
+   */
+  async updateDocContent(
+    noteId: string,
+    docContent: any,
+    updatedAt?: Date | string | null,
+  ) {
+    const setUpdate =
+      updatedAt != null
+        ? { docContent, updatedAt }
+        : { docContent, updatedAt: new Date(Date.now()) };
+    const result = await this.updateBase(noteId)
+      .set(setUpdate)
       .returningAll()
       .executeTakeFirstOrThrow();
     return result;
