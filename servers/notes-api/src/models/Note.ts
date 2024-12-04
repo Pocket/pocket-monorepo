@@ -207,7 +207,14 @@ export class NoteModel {
    * Delete a Note
    */
   async deleteNote(input: DeleteNoteInput) {
-    const result = await this.service.delete(input.id, input.deletedAt);
-    return result;
+    try {
+      return await this.service.delete(input.id, input.deletedAt);
+    } catch (error) {
+      if (error instanceof NoResultError) {
+        return input.id;
+      } else {
+        throw error;
+      }
+    }
   }
 }

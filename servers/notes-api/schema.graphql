@@ -198,5 +198,5 @@ type Mutation {
   deleted. If the note cannot be deleted or does not exist, returns False. 
   Errors will be included in the errors array if applicable.
   """
-  deleteNote(input: DeleteNoteInput!): Boolean! @requiresScopes(scopes: [["ROLE_USER"]])
+  deleteNote(input: DeleteNoteInput!): ID! @requiresScopes(scopes: [["ROLE_USER"]])
 }

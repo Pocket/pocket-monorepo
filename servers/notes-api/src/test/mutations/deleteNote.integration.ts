@@ -45,7 +45,7 @@ describe('note', () => {
       .set({ userid: userId })
       .send({ query: DELETE_NOTE, variables: { input } });
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data?.deleteNote).toBeTrue();
+    expect(res.body.data?.deleteNote).toEqual(noteId);
     // Do a roundtrip and query back the note
     const noteRoundtrip = await request(app)
       .post(graphQLUrl)
@@ -66,7 +66,7 @@ describe('note', () => {
       .set({ userid: userId })
       .send({ query: DELETE_NOTE, variables: { input } });
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data?.deleteNote).toBeTrue();
+    expect(res.body.data?.deleteNote).toEqual(noteId);
     // Do a roundtrip and query back the Note
     const noteRoundtrip = await request(app)
       .post(graphQLUrl)
@@ -77,7 +77,7 @@ describe('note', () => {
     const updatedAt = new Date(note.updatedAt);
     expect(updatedAt.getTime() - now.getTime()).toBeLessThanOrEqual(10000); // within 10 seconds of when this test started
   });
-  it('Returns false for nonexistent note (no errors)', async () => {
+  it('Returns ID for nonexistent note (no errors)', async () => {
     const input: DeleteNoteInput = {
       id: 'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa',
     };
@@ -86,6 +86,6 @@ describe('note', () => {
       .set({ userid: '1' })
       .send({ query: DELETE_NOTE, variables: { input } });
     expect(res.body.errors).toBeUndefined();
-    expect(res.body.data?.deleteNote).toBeFalse();
+    expect(res.body.data?.deleteNote).toEqual(input.id);
   });
 });

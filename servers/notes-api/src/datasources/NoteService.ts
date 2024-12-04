@@ -124,11 +124,8 @@ export class NotesService {
         : { deleted: true, updatedAt: new Date(Date.now()) };
     const result = await this.updateBase(noteId)
       .set(setUpdate)
+      .returning('noteId')
       .executeTakeFirstOrThrow();
-    if (result.numUpdatedRows > 0) {
-      return true;
-    } else {
-      return false;
-    }
+    return result.noteId;
   }
 }

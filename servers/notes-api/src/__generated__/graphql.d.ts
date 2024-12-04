@@ -124,7 +124,7 @@ export type Mutation = {
    * deleted. If the note cannot be deleted or does not exist, returns False.
    * Errors will be included in the errors array if applicable.
    */
-  deleteNote: Scalars['Boolean']['output'];
+  deleteNote: Scalars['ID']['output'];
   /**
    * Edit the content of a Note.
    * If the Note does not exist or is inaccessible for the current user,
@@ -315,8 +315,8 @@ export type ResolversTypes = ResolversObject<{
   ISOString: ResolverTypeWrapper<Scalars['ISOString']['output']>;
   Markdown: ResolverTypeWrapper<Scalars['Markdown']['output']>;
   Mutation: ResolverTypeWrapper<{}>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Note: ResolverTypeWrapper<Note>;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   ProseMirrorJson: ResolverTypeWrapper<Scalars['ProseMirrorJson']['output']>;
   Query: ResolverTypeWrapper<{}>;
   SavedItem: ResolverTypeWrapper<SavedItem>;
@@ -335,8 +335,8 @@ export type ResolversParentTypes = ResolversObject<{
   ISOString: Scalars['ISOString']['output'];
   Markdown: Scalars['Markdown']['output'];
   Mutation: {};
-  Boolean: Scalars['Boolean']['output'];
   Note: Note;
+  Boolean: Scalars['Boolean']['output'];
   ProseMirrorJson: Scalars['ProseMirrorJson']['output'];
   Query: {};
   SavedItem: SavedItem;
@@ -354,7 +354,7 @@ export interface MarkdownScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 export type MutationResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createNote?: Resolver<ResolversTypes['Note'], ParentType, ContextType, RequireFields<MutationCreateNoteArgs, 'input'>>;
   createNoteFromQuote?: Resolver<ResolversTypes['Note'], ParentType, ContextType, RequireFields<MutationCreateNoteFromQuoteArgs, 'input'>>;
-  deleteNote?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteNoteArgs, 'input'>>;
+  deleteNote?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteNoteArgs, 'input'>>;
   editNoteContent?: Resolver<Maybe<ResolversTypes['Note']>, ParentType, ContextType, RequireFields<MutationEditNoteContentArgs, 'input'>>;
   editNoteTitle?: Resolver<Maybe<ResolversTypes['Note']>, ParentType, ContextType, RequireFields<MutationEditNoteTitleArgs, 'input'>>;
 }>;
