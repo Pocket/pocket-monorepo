@@ -258,11 +258,16 @@ export class NoteModel {
     }
   }
 
+  /**
+   * Paginate over a note connection
+   * @param opts pagination options
+   * @returns NoteConnectionModel
+   */
   async paginate(opts: {
     sort?: NoteSortInput;
     filter?: NoteFilterInput;
     pagination?: PaginationInput;
-  }) {
+  }): Promise<NoteConnectionModel> {
     const { sort, filter, pagination } = opts;
     const defaultPagination = { first: config.database.defaultPageSize };
     const pageInput =
@@ -281,7 +286,6 @@ export class NoteModel {
     const baseQuery = this.service.filterQuery(filter);
 
     // The passed sort + 'id' as the tiebreaker
-    // TODO - if createdAt, just use 'id'
     const cursorFields = [
       this.sortColumn<AllNote>(sortInput.sortBy),
       'id',
@@ -313,6 +317,13 @@ export class NoteModel {
     return { ...result, edges };
   }
 
+  /**
+   * Decode a cursor string from a NoteConnection
+   * @param cursor the cursor string to decode
+   * @param fields the fields used to create the cursor
+   * @returns a decoded cursor object with key, value pairs
+   * corresponding to the field name and value
+   */
   public static decodeCursor<O, TCursor extends CursorFields<DB, 'Note', O>>(
     cursor: string,
     fields: TCursor,
@@ -337,7 +348,9 @@ export class NoteModel {
       }
     });
 
-    const serializer = (
+    // Deserialize acceptable fields from string representations to
+    // Typescript objects
+    const deserializer = (
       field: ExtractFieldKey<DB, 'Note', O, TCursor[number]>,
       value: string,
     ) => {
@@ -358,7 +371,7 @@ export class NoteModel {
     return fields.reduce(
       (decoded, field: CursorField<DB, 'Note', O>, index) => {
         decoded[field as ExtractFieldKey<DB, 'Note', O, typeof field>] =
-          serializer(
+          deserializer(
             field as ExtractFieldKey<DB, 'Note', O, typeof field>,
             parsed[index][1],
           );
@@ -368,6 +381,12 @@ export class NoteModel {
     );
   }
 
+  /**
+   * Encode a cursor string from a Note response
+   * @param row the data returned from the Note query
+   * @param fields the fields used to create the cursor
+   * @returns a cursor for the given row
+   */
   public static encodeCursor<O, T extends CursorFields<DB, 'Note', O>>(
     row: {
       [Field in ExtractFieldKey<DB, 'Note', O, T[number]>]: O[ExtractFieldKey<

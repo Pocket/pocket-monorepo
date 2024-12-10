@@ -6,6 +6,10 @@ export const resolvers: Resolvers = {
   ...PocketDefaultScalars,
   NoteConnection: {
     async totalCount(parent, _, context) {
+      // Lazily evaluate, because counting can be expensive
+      // If totalCount is already there, return it; otherwise
+      // invoke the count query returned on the internal connection
+      // object
       if (parent.totalCount != null) {
         return parent.totalCount;
       } else if ('__totalCount' in parent && parent.__totalCount != null) {

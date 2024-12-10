@@ -23,6 +23,7 @@ export type PaginationResult<O> = {
   __totalCount?: CompiledQuery<{ count: number }>;
 };
 
+// TODO - Can any of these types be streamlined?
 export type CursorField<DB, TB extends keyof DB, O> =
   | (StringReference<DB, TB> & keyof O & string)
   | (StringReference<DB, TB> & `${string}.${keyof O & string}`);
@@ -95,10 +96,17 @@ type SharedPaginationOptions<
   O,
   TCursor extends CursorFields<DB, TB, O>,
 > = {
+  // Maximum value for calculating totalCount in the
+  // connection object
+  // Defaults to 5000
   countLimit?: number;
+  // Array of fields in the entity to sort by
   sortBy: TCursor;
+  // Order of results when paginating
   order: OrderByDirection;
+  // Function to encode cursor key,value pairs into strings
   encodeCursor: CursorEncoder<DB, TB, O, TCursor>;
+  // Function to decode cursor string into key, value pairs
   decodeCursor: CursorDecoder<DB, TB, O, TCursor>;
 };
 
@@ -135,6 +143,13 @@ export type PaginationOptions<
       }
   );
 
+/**
+ * Execute a query with cursor-based pagination
+ * @param qb the base query to execute
+ * @param opts pagination options
+ * @returns a page from the query connection according
+ * to pagination options
+ */
 export async function executeWithCursorPagination<
   DB,
   TB extends keyof DB,

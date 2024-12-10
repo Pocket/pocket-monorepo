@@ -130,6 +130,12 @@ export class NotesService {
     return result.noteId;
   }
 
+  /**
+   * Build a base kysely query with filters applied from
+   * NoteFilterInput, e.g. for paginating notes from a user
+   * @param filters filters to apply to query
+   * @returns SelectQueryBuilder with filters applied in where statement(s)
+   */
   filterQuery(filters: NoteFilterInput | undefined) {
     let qb = this.context.db
       .selectFrom('Note')
