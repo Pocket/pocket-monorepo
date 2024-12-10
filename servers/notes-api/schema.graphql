@@ -65,9 +65,129 @@ type SavedItem @key(fields: "url") {
   url: String!
 }
 
+"""Information about pagination in a connection."""
+type PageInfo
+  @shareable
+{
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+}
+
+
+"""The connection type for Note."""
+type NoteConnection {
+  """A list of edges."""
+  edges: [NoteEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of Notes in the connection."""
+  totalCount: Int!
+}
+
+"""An edge in a connection."""
+type NoteEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+  """The Note at the end of the edge."""
+  node: Note
+}
+
+"""
+Pagination request. To determine which edges to return, the connection
+evaluates the `before` and `after` cursors (if given) to filter the
+edges, then evaluates `first`/`last` to slice the edges (only include a
+value for either `first` or `last`, not both).
+The max allowed limit for `first`/`last` is 100. The server would reset
+this values to 100 if the request has `first`/`last` set greater than 100.
+If all fields are null, by default will return a page with the first 30 elements.
+"""
+input PaginationInput {
+  """
+  Returns the elements in the list that come after the specified cursor.
+  The specified cursor is not included in the result.
+  """
+  after: String
+  """
+  Returns the elements in the list that come before the specified cursor.
+  The specified cursor is not included in the result.
+  """
+  before: String
+  """
+  Returns the first _n_ elements from the list. Must be a non-negative integer.
+  If `first` contains a value, `last` should be null/omitted in the input.
+  """
+  first: Int
+  """
+  Returns the last _n_ elements from the list. Must be a non-negative integer.
+  If `last` contains a value, `first` should be null/omitted in the input.
+  """
+  last: Int
+}
+
+"""
+Possible values for sort ordering (ascending/descending)
+"""
+enum NoteSortOrder {
+ ASC
+ DESC
+}
+
+
+"""
+Enum to specify the sort by field (these are the current options, we could add more in the future)
+"""
+enum NoteSortBy {
+ CREATED_AT
+ UPDATED_AT
+}
+
+
+"""
+Input to sort fetched Notes. If unspecified, defaults to UPDATED_AT, DESC.
+"""
+input NoteSortInput {
+ """The field by which to sort Notes"""
+ sortBy: NoteSortBy!
+ """The order in which to sort Notes"""
+ sortOrder: NoteSortOrder!
+}
+
+"""Filter for retrieving Notes"""
+input NoteFilterInput {
+  """
+  Filter to show notes which are attached to a source URL
+  directly or via clipping, or are standalone
+  notes. If not provided, notes will not be filtered by source url.
+  """
+  isAttachedToSave: Boolean
+  """
+  Filter to retrieve Notes by archived status (true/false).
+  If not provided, notes will not be filtered by archived status.
+  """
+  archived: Boolean
+  """
+  Filter to retrieve notes after a timestamp, e.g. for syncing.
+  """
+  since: ISOString
+  """
+  Filter to choose whether to include notes marked for server-side
+  deletion in the response (defaults to false).
+  """
+  excludeDeleted: Boolean
+}
+
+
 type Query {
   """Retrieve a specific Note"""
   note(id: ID!): Note @requiresScopes(scopes: [["ROLE_USER"]])
+  """Retrieve a user's Notes"""
+  notes(sort: NoteSortInput, filter: NoteFilterInput, pagination: PaginationInput): NoteConnection @requiresScopes(scopes: [["ROLE_USER"]])
 }
 
 
