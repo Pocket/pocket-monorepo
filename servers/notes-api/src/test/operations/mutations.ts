@@ -6,6 +6,7 @@ const NoteFragment = gql`
     id
     title
     docContent
+    docMarkdown
     contentPreview
     createdAt
     updatedAt

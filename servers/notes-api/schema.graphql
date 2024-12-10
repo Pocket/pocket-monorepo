@@ -24,8 +24,13 @@ type Note @key(fields: "id") {
   title: String
   """
   JSON representation of a ProseMirror document
+  (compatible with Markdown)
   """
   docContent: ProseMirrorJson
+  """
+  Markdown representation of the note content
+  """
+  docMarkdown: Markdown
   """
   Markdown preview of the note content for summary view.
   """
