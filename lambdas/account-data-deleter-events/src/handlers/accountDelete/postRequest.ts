@@ -51,3 +51,12 @@ export async function callQueueDeleteEndpoint(body: any): Promise<any> {
 export async function callStripeDeleteEndpoint(body: any): Promise<any> {
   return postRequest(body, config.stripeDeletePath, config.endpoint);
 }
+
+/**
+ * Revoke FxA Access Token when a user deletes their account
+ * @param body
+ * @returns
+ */
+export async function callFxARevokeEndpoint(body: any): Promise<any> {
+  return postRequest(body, config.fxaRevokePath, config.endpoint);
+}
