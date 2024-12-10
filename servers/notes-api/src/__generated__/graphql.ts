@@ -26,6 +26,20 @@ export type Scalars = {
   _FieldSet: { input: any; output: any; }
 };
 
+export type ArchiveNoteInput = {
+  /**
+   * The ID of the note to archive or unarchive
+   * (depends on mutation).
+   */
+  id: Scalars['ID']['input'];
+  /**
+   * When the note was archived or unarchived.
+   * If not provided, defaults to the server time upon
+   * receiving request.
+   */
+  updatedAt?: InputMaybe<Scalars['ISOString']['input']>;
+};
+
 /**
  * Input to create a new Note seeded with copied content from a page.
  * The entire content becomes editable and is not able to be "reattached"
@@ -113,6 +127,13 @@ export type EditNoteTitleInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /**
+   * Archive a note.
+   * If the Note does not exist or is inaccessible for the current user,
+   * response will be null and a NOT_FOUND error will be included in the
+   * errors array.
+   */
+  archiveNote?: Maybe<Note>;
   /** Create a new note, optionally with title and content */
   createNote: Note;
   /**
@@ -140,6 +161,18 @@ export type Mutation = {
    * errors array.
    */
   editNoteTitle?: Maybe<Note>;
+  /**
+   * Unarchive a note.
+   * If the Note does not exist or is inaccessible for the current user,
+   * response will be null and a NOT_FOUND error will be included in the
+   * errors array.
+   */
+  unArchiveNote?: Maybe<Note>;
+};
+
+
+export type MutationArchiveNoteArgs = {
+  input: ArchiveNoteInput;
 };
 
 
@@ -165,6 +198,11 @@ export type MutationEditNoteContentArgs = {
 
 export type MutationEditNoteTitleArgs = {
   input: EditNoteTitleInput;
+};
+
+
+export type MutationUnArchiveNoteArgs = {
+  input: ArchiveNoteInput;
 };
 
 /**
@@ -422,8 +460,9 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
-  CreateNoteFromQuoteInput: CreateNoteFromQuoteInput;
+  ArchiveNoteInput: ArchiveNoteInput;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  CreateNoteFromQuoteInput: CreateNoteFromQuoteInput;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   CreateNoteInput: CreateNoteInput;
   DeleteNoteInput: DeleteNoteInput;
@@ -451,8 +490,9 @@ export type ResolversTypes = ResolversObject<{
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
-  CreateNoteFromQuoteInput: CreateNoteFromQuoteInput;
+  ArchiveNoteInput: ArchiveNoteInput;
   ID: Scalars['ID']['output'];
+  CreateNoteFromQuoteInput: CreateNoteFromQuoteInput;
   String: Scalars['String']['output'];
   CreateNoteInput: CreateNoteInput;
   DeleteNoteInput: DeleteNoteInput;
@@ -485,11 +525,13 @@ export interface MarkdownScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 }
 
 export type MutationResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  archiveNote?: Resolver<Maybe<ResolversTypes['Note']>, ParentType, ContextType, RequireFields<MutationArchiveNoteArgs, 'input'>>;
   createNote?: Resolver<ResolversTypes['Note'], ParentType, ContextType, RequireFields<MutationCreateNoteArgs, 'input'>>;
   createNoteFromQuote?: Resolver<ResolversTypes['Note'], ParentType, ContextType, RequireFields<MutationCreateNoteFromQuoteArgs, 'input'>>;
   deleteNote?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteNoteArgs, 'input'>>;
   editNoteContent?: Resolver<Maybe<ResolversTypes['Note']>, ParentType, ContextType, RequireFields<MutationEditNoteContentArgs, 'input'>>;
   editNoteTitle?: Resolver<Maybe<ResolversTypes['Note']>, ParentType, ContextType, RequireFields<MutationEditNoteTitleArgs, 'input'>>;
+  unArchiveNote?: Resolver<Maybe<ResolversTypes['Note']>, ParentType, ContextType, RequireFields<MutationUnArchiveNoteArgs, 'input'>>;
 }>;
 
 export type NoteResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Note'] = ResolversParentTypes['Note']> = ResolversObject<{
