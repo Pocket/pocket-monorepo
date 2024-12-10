@@ -59,3 +59,21 @@ export const DELETE_NOTE = print(gql`
     deleteNote(input: $input)
   }
 `);
+
+export const ARCHIVE_NOTE = print(gql`
+  ${NoteFragment}
+  mutation ArchiveNote($input: ArchiveNoteInput!) {
+    archiveNote(input: $input) {
+      ...NoteFields
+    }
+  }
+`);
+
+export const UNARCHIVE_NOTE = print(gql`
+  ${NoteFragment}
+  mutation ArchiveNote($input: ArchiveNoteInput!) {
+    unArchiveNote(input: $input) {
+      ...NoteFields
+    }
+  }
+`);

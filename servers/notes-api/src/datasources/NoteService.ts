@@ -131,6 +131,46 @@ export class NotesService {
   }
 
   /**
+   * Update the archive field in a Note to true.
+   * Does not throw error if it is already true.
+   * @param noteId the UUID of the Note entity to update
+   * @param updatedAt when the update was performed
+   * @returns the updated Note entity
+   * @throws error if the query returned no result
+   */
+  async archive(noteId: string, updatedAt?: Date | string | null) {
+    const setUpdate =
+      updatedAt != null
+        ? { archived: true, updatedAt }
+        : { archived: true, updatedAt: new Date(Date.now()) };
+    const result = await this.updateBase(noteId)
+      .set(setUpdate)
+      .returningAll()
+      .executeTakeFirstOrThrow();
+    return result;
+  }
+
+  /**
+   * Update the archive field in a Note to false.
+   * Does not throw error if it is already false.
+   * @param noteId the UUID of the Note entity to update
+   * @param updatedAt when the update was performed
+   * @returns the updated Note entity
+   * @throws error if the query returned no result
+   */
+  async unarchive(noteId: string, updatedAt?: Date | string | null) {
+    const setUpdate =
+      updatedAt != null
+        ? { archived: false, updatedAt }
+        : { archived: false, updatedAt: new Date(Date.now()) };
+    const result = await this.updateBase(noteId)
+      .set(setUpdate)
+      .returningAll()
+      .executeTakeFirstOrThrow();
+    return result;
+  }
+
+  /**
    * Build a base kysely query with filters applied from
    * NoteFilterInput, e.g. for paginating notes from a user
    * @param filters filters to apply to query
