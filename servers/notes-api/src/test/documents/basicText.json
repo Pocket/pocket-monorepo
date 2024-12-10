@@ -3,14 +3,12 @@
   "content": [
     {
       "type": "paragraph",
-      "attrs": { "textAlign": "left" },
       "content": [
         { "type": "text", "text": "“We should rewrite it all,” said Pham." }
       ]
     },
     {
       "type": "paragraph",
-      "attrs": { "textAlign": "left" },
       "content": [
         {
           "type": "text",
@@ -20,7 +18,6 @@
     },
     {
       "type": "paragraph",
-      "attrs": { "textAlign": "left" },
       "content": [
         {
           "type": "text",
@@ -30,7 +27,6 @@
     },
     {
       "type": "paragraph",
-      "attrs": { "textAlign": "left" },
       "content": [
         {
           "type": "text",

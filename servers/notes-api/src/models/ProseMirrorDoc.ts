@@ -3,6 +3,7 @@ import { EditorState, AllSelection } from 'prosemirror-state';
 import { findWrapping } from 'prosemirror-transform';
 import {
   defaultMarkdownSerializer,
+  defaultMarkdownParser,
   schema as commonMarkSchema,
 } from 'prosemirror-markdown';
 import { UserInputError } from '@pocket-tools/apollo-utils';
@@ -36,6 +37,15 @@ export class ProseMirrorDoc {
   get markdown() {
     return defaultMarkdownSerializer.serialize(this.document);
   }
+}
+
+/**
+ * Create a new Prosemirror editor state from a markdown string.
+ * If the string cannot be serialized into a markdown mark,
+ * it will just be parsed as a string literal.
+ */
+export function docFromMarkdown(doc: string) {
+  return defaultMarkdownParser.parse(doc);
 }
 
 /**
