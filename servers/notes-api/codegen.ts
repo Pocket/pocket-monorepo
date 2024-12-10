@@ -4,7 +4,7 @@ import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
 const config: CodegenConfig = {
   schema: './schema.graphql',
   generates: {
-    './src/__generated__/graphql.d.ts': {
+    './src/__generated__/graphql.ts': {
       config: {
         federation: true,
         useIndexSignature: true,
@@ -15,6 +15,9 @@ const config: CodegenConfig = {
             PocketDefaultScalars.ISOString.extensions.codegenScalarType,
           Markdown: 'string',
           ProseMirrorJson: 'string',
+        },
+        mappers: {
+          NoteConnection: '../models/Note#NoteConnectionModel',
         },
       },
       plugins: [

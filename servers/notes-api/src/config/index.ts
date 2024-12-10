@@ -48,5 +48,9 @@ export const config = {
     dbname: process.env.DATABASE_NAME || 'pocketnotes',
     port: parseInt(process.env.DATABASE_PORT || '5432') || 5432,
     maxPool: 10,
+    // Limit for retrieving total count (e.g. in pagination)
+    countLimit: 5000,
+    defaultPageSize: 30,
+    maxPageSize: 50,
   },
 };

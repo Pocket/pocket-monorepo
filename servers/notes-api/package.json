@@ -18,7 +18,7 @@
     "db:push": "prisma db push --skip-generate",
     "dev": "dotenv -e .env.ci -- pnpm run migrate:deploy && pnpm run build && pnpm run watch",
     "format": "eslint --fix",
-    "kysely:generate": "dotenv -e .env.ci -- kysely-codegen --out-file ./src/__generated__/db.d.ts",
+    "kysely:generate": "dotenv -e .env.ci -- kysely-codegen --out-file ./src/__generated__/db.ts",
     "lint": "eslint --fix-dry-run",
     "migrate:create": "dotenv -e .env.ci -- prisma migrate dev --create-only",
     "migrate:deploy": "prisma migrate deploy",

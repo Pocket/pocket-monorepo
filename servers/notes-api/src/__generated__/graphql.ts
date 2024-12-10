@@ -2,6 +2,7 @@
 /* eslint-disable */
 /* tslint:disable */
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
+import { NoteConnectionModel } from '../models/Note';
 import { IContext } from '../apollo/context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -205,15 +206,131 @@ export type Note = {
   updatedAt: Scalars['ISOString']['output'];
 };
 
+/** The connection type for Note. */
+export type NoteConnection = {
+  __typename?: 'NoteConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<NoteEdge>>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of Notes in the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+/** An edge in a connection. */
+export type NoteEdge = {
+  __typename?: 'NoteEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The Note at the end of the edge. */
+  node?: Maybe<Note>;
+};
+
+/** Filter for retrieving Notes */
+export type NoteFilterInput = {
+  /**
+   * Filter to retrieve Notes by archived status (true/false).
+   * If not provided, notes will not be filtered by archived status.
+   */
+  archived?: InputMaybe<Scalars['Boolean']['input']>;
+  /**
+   * Filter to choose whether to include notes marked for server-side
+   * deletion in the response (defaults to false).
+   */
+  excludeDeleted?: InputMaybe<Scalars['Boolean']['input']>;
+  /**
+   * Filter to show notes which are attached to a source URL
+   * directly or via clipping, or are standalone
+   * notes. If not provided, notes will not be filtered by source url.
+   */
+  isAttachedToSave?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter to retrieve notes after a timestamp, e.g. for syncing. */
+  since?: InputMaybe<Scalars['ISOString']['input']>;
+};
+
+/** Enum to specify the sort by field (these are the current options, we could add more in the future) */
+export enum NoteSortBy {
+  CreatedAt = 'CREATED_AT',
+  UpdatedAt = 'UPDATED_AT'
+}
+
+/** Input to sort fetched Notes. If unspecified, defaults to UPDATED_AT, DESC. */
+export type NoteSortInput = {
+  /** The field by which to sort Notes */
+  sortBy: NoteSortBy;
+  /** The order in which to sort Notes */
+  sortOrder: NoteSortOrder;
+};
+
+/** Possible values for sort ordering (ascending/descending) */
+export enum NoteSortOrder {
+  Asc = 'ASC',
+  Desc = 'DESC'
+}
+
+/** Information about pagination in a connection. */
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  /** When paginating forwards, the cursor to continue. */
+  endCursor?: Maybe<Scalars['String']['output']>;
+  /** When paginating forwards, are there more items? */
+  hasNextPage: Scalars['Boolean']['output'];
+  /** When paginating backwards, are there more items? */
+  hasPreviousPage: Scalars['Boolean']['output'];
+  /** When paginating backwards, the cursor to continue. */
+  startCursor?: Maybe<Scalars['String']['output']>;
+};
+
+/**
+ * Pagination request. To determine which edges to return, the connection
+ * evaluates the `before` and `after` cursors (if given) to filter the
+ * edges, then evaluates `first`/`last` to slice the edges (only include a
+ * value for either `first` or `last`, not both).
+ * The max allowed limit for `first`/`last` is 100. The server would reset
+ * this values to 100 if the request has `first`/`last` set greater than 100.
+ * If all fields are null, by default will return a page with the first 30 elements.
+ */
+export type PaginationInput = {
+  /**
+   * Returns the elements in the list that come after the specified cursor.
+   * The specified cursor is not included in the result.
+   */
+  after?: InputMaybe<Scalars['String']['input']>;
+  /**
+   * Returns the elements in the list that come before the specified cursor.
+   * The specified cursor is not included in the result.
+   */
+  before?: InputMaybe<Scalars['String']['input']>;
+  /**
+   * Returns the first _n_ elements from the list. Must be a non-negative integer.
+   * If `first` contains a value, `last` should be null/omitted in the input.
+   */
+  first?: InputMaybe<Scalars['Int']['input']>;
+  /**
+   * Returns the last _n_ elements from the list. Must be a non-negative integer.
+   * If `last` contains a value, `first` should be null/omitted in the input.
+   */
+  last?: InputMaybe<Scalars['Int']['input']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   /** Retrieve a specific Note */
   note?: Maybe<Note>;
+  /** Retrieve a user's Notes */
+  notes?: Maybe<NoteConnection>;
 };
 
 
 export type QueryNoteArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryNotesArgs = {
+  filter?: InputMaybe<NoteFilterInput>;
+  pagination?: InputMaybe<PaginationInput>;
+  sort?: InputMaybe<NoteSortInput>;
 };
 
 export type SavedItem = {
@@ -317,6 +434,15 @@ export type ResolversTypes = ResolversObject<{
   Mutation: ResolverTypeWrapper<{}>;
   Note: ResolverTypeWrapper<Note>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  NoteConnection: ResolverTypeWrapper<NoteConnectionModel>;
+  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  NoteEdge: ResolverTypeWrapper<NoteEdge>;
+  NoteFilterInput: NoteFilterInput;
+  NoteSortBy: NoteSortBy;
+  NoteSortInput: NoteSortInput;
+  NoteSortOrder: NoteSortOrder;
+  PageInfo: ResolverTypeWrapper<PageInfo>;
+  PaginationInput: PaginationInput;
   ProseMirrorJson: ResolverTypeWrapper<Scalars['ProseMirrorJson']['output']>;
   Query: ResolverTypeWrapper<{}>;
   SavedItem: ResolverTypeWrapper<SavedItem>;
@@ -337,6 +463,13 @@ export type ResolversParentTypes = ResolversObject<{
   Mutation: {};
   Note: Note;
   Boolean: Scalars['Boolean']['output'];
+  NoteConnection: NoteConnectionModel;
+  Int: Scalars['Int']['output'];
+  NoteEdge: NoteEdge;
+  NoteFilterInput: NoteFilterInput;
+  NoteSortInput: NoteSortInput;
+  PageInfo: PageInfo;
+  PaginationInput: PaginationInput;
   ProseMirrorJson: Scalars['ProseMirrorJson']['output'];
   Query: {};
   SavedItem: SavedItem;
@@ -374,12 +507,34 @@ export type NoteResolvers<ContextType = IContext, ParentType extends ResolversPa
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type NoteConnectionResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['NoteConnection'] = ResolversParentTypes['NoteConnection']> = ResolversObject<{
+  edges?: Resolver<Maybe<Array<Maybe<ResolversTypes['NoteEdge']>>>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type NoteEdgeResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['NoteEdge'] = ResolversParentTypes['NoteEdge']> = ResolversObject<{
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['Note']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type PageInfoResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = ResolversObject<{
+  endCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  hasNextPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  hasPreviousPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  startCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export interface ProseMirrorJsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ProseMirrorJson'], any> {
   name: 'ProseMirrorJson';
 }
 
 export type QueryResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   note?: Resolver<Maybe<ResolversTypes['Note']>, ParentType, ContextType, RequireFields<QueryNoteArgs, 'id'>>;
+  notes?: Resolver<Maybe<ResolversTypes['NoteConnection']>, ParentType, ContextType, Partial<QueryNotesArgs>>;
 }>;
 
 export type SavedItemResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['SavedItem'] = ResolversParentTypes['SavedItem']> = ResolversObject<{
@@ -397,6 +552,9 @@ export type Resolvers<ContextType = IContext> = ResolversObject<{
   Markdown?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   Note?: NoteResolvers<ContextType>;
+  NoteConnection?: NoteConnectionResolvers<ContextType>;
+  NoteEdge?: NoteEdgeResolvers<ContextType>;
+  PageInfo?: PageInfoResolvers<ContextType>;
   ProseMirrorJson?: GraphQLScalarType;
   Query?: QueryResolvers<ContextType>;
   SavedItem?: SavedItemResolvers<ContextType>;
