@@ -52,9 +52,11 @@ describe('note', () => {
     if (noteSeed.docContent != null) {
       expect(JSON.parse(note.docContent)).toEqual(noteSeed.docContent);
       expect(note.contentPreview).toBeString();
+      expect(note.docMarkdown).toBeString();
     } else {
       expect(note.docContent).toBeNull();
       expect(note.contentPreview).toBeNull();
+      expect(note.docMarkdown).toBeNull();
     }
     if (noteSeed.sourceUrl != null) {
       expect(note.savedItem).toEqual({

@@ -28,6 +28,14 @@ export class ProseMirrorDoc {
   get preview() {
     return defaultMarkdownSerializer.serialize(this.document);
   }
+  /**
+   * Markdown representation of the document content.
+   * Returns the document serialized
+   * to [CommonMark](http://commonmark.org/).
+   */
+  get markdown() {
+    return defaultMarkdownSerializer.serialize(this.document);
+  }
 }
 
 /**
