@@ -1,8 +1,20 @@
 import basicText from '../test/documents/basicText.json';
-import { ProseMirrorDoc, wrapDocInBlockQuote } from './ProseMirrorDoc';
+import {
+  docFromMarkdown,
+  ProseMirrorDoc,
+  wrapDocInBlockQuote,
+} from './ProseMirrorDoc';
 import { schema } from 'prosemirror-markdown';
 import fromQuote from '../test/documents/fromQuote.json';
+import badMd from '../test/documents/badMd.json';
 import { UserInputError } from '@pocket-tools/apollo-utils';
+import * as fs from 'fs';
+import path from 'path';
+
+const basicTextMd = fs.readFileSync(
+  path.resolve(__dirname, '../test/documents/basicTextMD.txt'),
+  'utf8',
+);
 
 describe('ProseMirrorDoc', () => {
   // TODO - Improve specificity when preview format is decided
@@ -48,6 +60,24 @@ describe('ProseMirrorDoc', () => {
         UserInputError,
         /.*Invalid Document.*/,
       );
+    });
+  });
+  describe('markdown parser', () => {
+    it('parses plain text paragraphs', () => {
+      const doc = docFromMarkdown(basicTextMd);
+      expect(doc.toJSON()).toEqual(basicText);
+    });
+    it('passes invalid markdown as literal string content', () => {
+      const doc = docFromMarkdown(badMd.md);
+      expect(doc.toJSON()).toEqual(badMd.pm);
+    });
+    it('works for empty string', () => {
+      const doc = docFromMarkdown('');
+      const expected = {
+        type: 'doc',
+        content: [{ type: 'paragraph' }],
+      };
+      expect(doc.toJSON()).toEqual(expected);
     });
   });
 });
