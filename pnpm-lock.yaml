@@ -1381,8 +1381,8 @@ importers:
         specifier: 3.11.3
         version: 3.11.3
       nanoid:
-        specifier: 3.3.7
-        version: 3.3.7
+        specifier: 3.3.8
+        version: 3.3.8
       serverless-mysql:
         specifier: 1.5.5
         version: 1.5.5
@@ -1760,8 +1760,8 @@ importers:
         specifier: 8.41.0
         version: 8.41.0(@opentelemetry/api@1.9.0)
       nanoid:
-        specifier: 3.3.7
-        version: 3.3.7
+        specifier: 3.3.8
+        version: 3.3.8
       tslib:
         specifier: 2.8.0
         version: 2.8.0
@@ -2746,8 +2746,8 @@ importers:
         specifier: 3.11.3
         version: 3.11.3
       nanoid:
-        specifier: 3.3.7
-        version: 3.3.7
+        specifier: 3.3.8
+        version: 3.3.8
       stripe:
         specifier: 16.9.0
         version: 16.9.0
@@ -2888,8 +2888,8 @@ importers:
         specifier: 3.11.3
         version: 3.11.3
       nanoid:
-        specifier: 3.3.7
-        version: 3.3.7
+        specifier: 3.3.8
+        version: 3.3.8
       tslib:
         specifier: 2.8.0
         version: 2.8.0
@@ -4015,7 +4015,7 @@ importers:
         version: link:../../packages/eslint-config
       '@snowplow/snowtype':
         specifier: ^0.10.1
-        version: 0.10.1(commander@12.1.0)
+        version: 0.10.1(commander@12.1.0)(encoding@0.1.13)
       '@types/jest':
         specifier: 29.5.14
         version: 29.5.14
@@ -4349,8 +4349,8 @@ importers:
         specifier: 3.11.3
         version: 3.11.3
       nanoid:
-        specifier: 3.3.7
-        version: 3.3.7
+        specifier: 3.3.8
+        version: 3.3.8
       striptags:
         specifier: ^3.1.1
         version: 3.2.0
@@ -12081,8 +12081,8 @@ packages:
   nan@2.20.0:
     resolution: {integrity: sha512-bk3gXBZDGILuuo/6sKtr0DQmSThYHLtNCdSdXk9YkxD/jK6X2vmCyyXBBxyqZ4XcnzTyYEAThfX3DCEnLf6igw==}
 
-  nanoid@3.3.7:
-    resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
+  nanoid@3.3.8:
+    resolution: {integrity: sha512-WNLf5Sd8oZxOm+TzppcYk8gVOgP+l58xNy58D0nbUnOxOWRWvlcCV4kUF7ltmI6PsrLl/BgKEyS4mqsGChFN0w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
@@ -19945,20 +19945,20 @@ snapshots:
       got: 11.8.6
       tslib: 2.8.0
 
-  '@snowplow/snowtype-core@0.10.1':
+  '@snowplow/snowtype-core@0.10.1(encoding@0.1.13)':
     dependencies:
       '@fastify/merge-json-schemas': 0.2.0
       handlebars: 4.7.8
       json-pointer: 0.6.2
-      quicktype-core: 23.0.170
+      quicktype-core: 23.0.170(encoding@0.1.13)
     transitivePeerDependencies:
       - encoding
 
-  '@snowplow/snowtype@0.10.1(commander@12.1.0)':
+  '@snowplow/snowtype@0.10.1(commander@12.1.0)(encoding@0.1.13)':
     dependencies:
       '@commander-js/extra-typings': 11.1.0(commander@12.1.0)
       '@inquirer/prompts': 3.3.2
-      '@snowplow/snowtype-core': 0.10.1
+      '@snowplow/snowtype-core': 0.10.1(encoding@0.1.13)
       chalk: 4.1.2
       cli-spinner: 0.2.10
       dotenv: 16.4.5
@@ -25078,7 +25078,7 @@ snapshots:
 
   nan@2.20.0: {}
 
-  nanoid@3.3.7: {}
+  nanoid@3.3.8: {}
 
   napi-build-utils@1.0.2: {}
 
@@ -25676,7 +25676,7 @@ snapshots:
 
   postcss@8.4.49:
     dependencies:
-      nanoid: 3.3.7
+      nanoid: 3.3.8
       picocolors: 1.1.1
       source-map-js: 1.2.1
     optional: true
@@ -25903,7 +25903,7 @@ snapshots:
 
   quick-lru@5.1.1: {}
 
-  quicktype-core@23.0.170:
+  quicktype-core@23.0.170(encoding@0.1.13):
     dependencies:
       '@glideapps/ts-necessities': 2.2.3
       browser-or-node: 3.0.0
