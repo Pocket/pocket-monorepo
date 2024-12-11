@@ -241,7 +241,7 @@ describe('notes', () => {
   describe('filters', () => {
     it('returns only archived notes', async () => {
       const variables = {
-        pagination: { first: 10 },
+        pagination: { first: 30 },
         filter: { archived: true },
       };
       const res = await request(app)
@@ -257,7 +257,7 @@ describe('notes', () => {
     });
     it('returns only not-archived notes', async () => {
       const variables = {
-        pagination: { first: 10 },
+        pagination: { first: 30 },
         filter: { archived: false },
       };
       const res = await request(app)
@@ -273,7 +273,7 @@ describe('notes', () => {
     });
     it('returns notes after a timestamp', async () => {
       const variables = {
-        pagination: { first: 10 },
+        pagination: { first: 30 },
         filter: { since: new Date(now - 1) },
       };
       const res = await request(app)

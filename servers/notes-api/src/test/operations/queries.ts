@@ -59,3 +59,32 @@ export const GET_NOTES = print(gql`
     }
   }
 `);
+
+export const NOTES_FROM_SAVE = print(gql`
+  ${NoteFragment}
+  ${PageInfoFragment}
+  query NotesFromSave(
+    $sort: NoteSortInput
+    $filter: SavedItemNoteFilterInput
+    $pagination: PaginationInput
+    $url: String
+  ) {
+    _entities(representations: { url: $url, __typename: "SavedItem" }) {
+      ... on SavedItem {
+        url
+        notes(sort: $sort, filter: $filter, pagination: $pagination) {
+          pageInfo {
+            ...PageInfoFields
+          }
+          totalCount
+          edges {
+            cursor
+            node {
+              ...NoteFields
+            }
+          }
+        }
+      }
+    }
+  }
+`);

@@ -68,6 +68,15 @@ type Note @key(fields: "id") {
 type SavedItem @key(fields: "url") {
   """The URL of the SavedItem"""
   url: String!
+  """
+  The notes associated with this SavedItem, optionally
+  filtered to retrieve after a 'since' parameter.
+  """
+  notes(
+    pagination: PaginationInput,
+    sort: NoteSortInput,
+    filter: SavedItemNoteFilterInput
+  ): NoteConnection!
 }
 
 """Information about pagination in a connection."""
@@ -171,6 +180,24 @@ input NoteFilterInput {
   notes. If not provided, notes will not be filtered by source url.
   """
   isAttachedToSave: Boolean
+  """
+  Filter to retrieve Notes by archived status (true/false).
+  If not provided, notes will not be filtered by archived status.
+  """
+  archived: Boolean
+  """
+  Filter to retrieve notes after a timestamp, e.g. for syncing.
+  """
+  since: ISOString
+  """
+  Filter to choose whether to include notes marked for server-side
+  deletion in the response (defaults to false).
+  """
+  excludeDeleted: Boolean
+}
+
+"""Filter for retrieving Notes attached to a SavedItem"""
+input SavedItemNoteFilterInput {
   """
   Filter to retrieve Notes by archived status (true/false).
   If not provided, notes will not be filtered by archived status.
@@ -294,6 +321,20 @@ input DeleteNoteInput {
   deletedAt: ISOString
 }
 
+input ArchiveNoteInput {
+  """
+  The ID of the note to archive or unarchive
+  (depends on mutation).
+  """
+  id: ID!
+  """
+  When the note was archived or unarchived. 
+  If not provided, defaults to the server time upon
+  receiving request.
+  """
+  updatedAt: ISOString
+}
+
 type Mutation {
   """
   Create a new note, optionally with title and content
@@ -324,4 +365,18 @@ type Mutation {
   Errors will be included in the errors array if applicable.
   """
   deleteNote(input: DeleteNoteInput!): ID! @requiresScopes(scopes: [["ROLE_USER"]])
+  """
+  Archive a note.
+  If the Note does not exist or is inaccessible for the current user,
+  response will be null and a NOT_FOUND error will be included in the
+  errors array.
+  """
+  archiveNote(input: ArchiveNoteInput!): Note @requiresScopes(scopes: [["ROLE_USER"]])
+  """
+  Unarchive a note.
+  If the Note does not exist or is inaccessible for the current user,
+  response will be null and a NOT_FOUND error will be included in the
+  errors array.
+  """
+  unArchiveNote(input: ArchiveNoteInput!): Note @requiresScopes(scopes: [["ROLE_USER"]])
 }

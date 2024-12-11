@@ -6,6 +6,7 @@ import {
   EditNoteTitleInput,
   EditNoteContentInput,
   DeleteNoteInput,
+  ArchiveNoteInput,
 } from '../__generated__/graphql';
 import { DB, Note as NoteEntity } from '../__generated__/db';
 import { Insertable, NoResultError, Selectable } from 'kysely';
@@ -40,7 +41,10 @@ import { AllSelection } from 'kysely/dist/cjs/parser/select-parser';
 
 type AllNote = AllSelection<DB, 'Note'>;
 
-export type NoteConnectionModel = PaginationResult<Note>;
+export type NoteConnectionModel = PaginationResult<NoteResponse>;
+export type NoteResponse = Omit<Note, 'savedItem'> & {
+  savedItem: { url: string } | null;
+};
 
 /**
  * Model for retrieving and creating Notes
@@ -63,7 +67,7 @@ export class NoteModel {
    * @param note
    * @returns
    */
-  toGraphql(note: Selectable<NoteEntity>): Note {
+  toGraphql(note: Selectable<NoteEntity>): NoteResponse {
     const savedItem = note.sourceUrl != null ? { url: note.sourceUrl } : null;
     return {
       createdAt: note.createdAt,
@@ -105,7 +109,7 @@ export class NoteModel {
    * Get multiple Notes by IDs. Prefer using `load`
    * unless you need to bypass cache behavior.
    */
-  async getMany(ids: readonly string[]): Promise<Note[]> {
+  async getMany(ids: readonly string[]): Promise<NoteResponse[]> {
     const notes = await this.service.getMany(ids);
     return notes != null && notes.length > 0
       ? notes.map((note) => this.toGraphql(note))
@@ -117,7 +121,7 @@ export class NoteModel {
    * behavior. Will return null if ID does not exist
    * or is inaccessible for the user.
    */
-  async getOne(id: string): Promise<Note | null> {
+  async getOne(id: string): Promise<NoteResponse | null> {
     const note = await this.service.get(id);
     return note != null ? this.toGraphql(note) : null;
   }
@@ -126,7 +130,7 @@ export class NoteModel {
    * Will return null if ID does not exist or is inaccessible
    * for the user.
    */
-  async load(id: string): Promise<Note | null> {
+  async load(id: string): Promise<NoteResponse | null> {
     const note = await this.loader.load(id);
     return note != null ? this.toGraphql(note) : null;
   }
@@ -261,6 +265,40 @@ export class NoteModel {
       }
     }
   }
+  /**
+   * Archive a Note
+   */
+  async archive(input: ArchiveNoteInput) {
+    try {
+      const result = await this.service.archive(input.id, input.updatedAt);
+      return this.toGraphql(result);
+    } catch (error) {
+      if (error instanceof NoResultError) {
+        throw new NotFoundError(
+          `Note with id=${input.id} does not exist or is forbidden`,
+        );
+      } else {
+        throw error;
+      }
+    }
+  }
+  /**
+   * Unarchive a Note
+   */
+  async unarchive(input: ArchiveNoteInput) {
+    try {
+      const result = await this.service.unarchive(input.id, input.updatedAt);
+      return this.toGraphql(result);
+    } catch (error) {
+      if (error instanceof NoResultError) {
+        throw new NotFoundError(
+          `Note with id=${input.id} does not exist or is forbidden`,
+        );
+      } else {
+        throw error;
+      }
+    }
+  }
 
   /**
    * Paginate over a note connection
@@ -269,7 +307,7 @@ export class NoteModel {
    */
   async paginate(opts: {
     sort?: NoteSortInput;
-    filter?: NoteFilterInput;
+    filter?: NoteFilterInput & { sourceUrl?: string | undefined };
     pagination?: PaginationInput;
   }): Promise<NoteConnectionModel> {
     const { sort, filter, pagination } = opts;

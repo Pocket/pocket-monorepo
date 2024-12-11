@@ -18,6 +18,8 @@ const config: CodegenConfig = {
         },
         mappers: {
           NoteConnection: '../models/Note#NoteConnectionModel',
+          SavedItem: '../models/SavedItem#SavedItemModel',
+          Note: '../models/Note#NoteResponse',
         },
       },
       plugins: [

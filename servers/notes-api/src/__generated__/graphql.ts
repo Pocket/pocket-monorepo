@@ -2,7 +2,8 @@
 /* eslint-disable */
 /* tslint:disable */
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import { NoteConnectionModel } from '../models/Note';
+import { NoteConnectionModel, NoteResponse } from '../models/Note';
+import { SavedItemModel } from '../models/SavedItem';
 import { IContext } from '../apollo/context';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -11,6 +12,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -24,6 +26,20 @@ export type Scalars = {
   ProseMirrorJson: { input: string; output: string; }
   ValidUrl: { input: URL | string; output: URL | string; }
   _FieldSet: { input: any; output: any; }
+};
+
+export type ArchiveNoteInput = {
+  /**
+   * The ID of the note to archive or unarchive
+   * (depends on mutation).
+   */
+  id: Scalars['ID']['input'];
+  /**
+   * When the note was archived or unarchived.
+   * If not provided, defaults to the server time upon
+   * receiving request.
+   */
+  updatedAt?: InputMaybe<Scalars['ISOString']['input']>;
 };
 
 /**
@@ -113,6 +129,13 @@ export type EditNoteTitleInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /**
+   * Archive a note.
+   * If the Note does not exist or is inaccessible for the current user,
+   * response will be null and a NOT_FOUND error will be included in the
+   * errors array.
+   */
+  archiveNote?: Maybe<Note>;
   /** Create a new note, optionally with title and content */
   createNote: Note;
   /**
@@ -140,6 +163,18 @@ export type Mutation = {
    * errors array.
    */
   editNoteTitle?: Maybe<Note>;
+  /**
+   * Unarchive a note.
+   * If the Note does not exist or is inaccessible for the current user,
+   * response will be null and a NOT_FOUND error will be included in the
+   * errors array.
+   */
+  unArchiveNote?: Maybe<Note>;
+};
+
+
+export type MutationArchiveNoteArgs = {
+  input: ArchiveNoteInput;
 };
 
 
@@ -165,6 +200,11 @@ export type MutationEditNoteContentArgs = {
 
 export type MutationEditNoteTitleArgs = {
   input: EditNoteTitleInput;
+};
+
+
+export type MutationUnArchiveNoteArgs = {
+  input: ArchiveNoteInput;
 };
 
 /**
@@ -340,8 +380,36 @@ export type QueryNotesArgs = {
 
 export type SavedItem = {
   __typename?: 'SavedItem';
+  /**
+   * The notes associated with this SavedItem, optionally
+   * filtered to retrieve after a 'since' parameter.
+   */
+  notes: NoteConnection;
   /** The URL of the SavedItem */
   url: Scalars['String']['output'];
+};
+
+
+export type SavedItemNotesArgs = {
+  filter?: InputMaybe<SavedItemNoteFilterInput>;
+  pagination?: InputMaybe<PaginationInput>;
+  sort?: InputMaybe<NoteSortInput>;
+};
+
+/** Filter for retrieving Notes attached to a SavedItem */
+export type SavedItemNoteFilterInput = {
+  /**
+   * Filter to retrieve Notes by archived status (true/false).
+   * If not provided, notes will not be filtered by archived status.
+   */
+  archived?: InputMaybe<Scalars['Boolean']['input']>;
+  /**
+   * Filter to choose whether to include notes marked for server-side
+   * deletion in the response (defaults to false).
+   */
+  excludeDeleted?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Filter to retrieve notes after a timestamp, e.g. for syncing. */
+  since?: InputMaybe<Scalars['ISOString']['input']>;
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -427,8 +495,9 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
-  CreateNoteFromQuoteInput: CreateNoteFromQuoteInput;
+  ArchiveNoteInput: ArchiveNoteInput;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  CreateNoteFromQuoteInput: CreateNoteFromQuoteInput;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   CreateNoteInput: CreateNoteInput;
   DeleteNoteInput: DeleteNoteInput;
@@ -437,11 +506,11 @@ export type ResolversTypes = ResolversObject<{
   ISOString: ResolverTypeWrapper<Scalars['ISOString']['output']>;
   Markdown: ResolverTypeWrapper<Scalars['Markdown']['output']>;
   Mutation: ResolverTypeWrapper<{}>;
-  Note: ResolverTypeWrapper<Note>;
+  Note: ResolverTypeWrapper<NoteResponse>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   NoteConnection: ResolverTypeWrapper<NoteConnectionModel>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
-  NoteEdge: ResolverTypeWrapper<NoteEdge>;
+  NoteEdge: ResolverTypeWrapper<Omit<NoteEdge, 'node'> & { node?: Maybe<ResolversTypes['Note']> }>;
   NoteFilterInput: NoteFilterInput;
   NoteSortBy: NoteSortBy;
   NoteSortInput: NoteSortInput;
@@ -450,14 +519,16 @@ export type ResolversTypes = ResolversObject<{
   PaginationInput: PaginationInput;
   ProseMirrorJson: ResolverTypeWrapper<Scalars['ProseMirrorJson']['output']>;
   Query: ResolverTypeWrapper<{}>;
-  SavedItem: ResolverTypeWrapper<SavedItem>;
+  SavedItem: ResolverTypeWrapper<SavedItemModel>;
+  SavedItemNoteFilterInput: SavedItemNoteFilterInput;
   ValidUrl: ResolverTypeWrapper<Scalars['ValidUrl']['output']>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
-  CreateNoteFromQuoteInput: CreateNoteFromQuoteInput;
+  ArchiveNoteInput: ArchiveNoteInput;
   ID: Scalars['ID']['output'];
+  CreateNoteFromQuoteInput: CreateNoteFromQuoteInput;
   String: Scalars['String']['output'];
   CreateNoteInput: CreateNoteInput;
   DeleteNoteInput: DeleteNoteInput;
@@ -466,18 +537,19 @@ export type ResolversParentTypes = ResolversObject<{
   ISOString: Scalars['ISOString']['output'];
   Markdown: Scalars['Markdown']['output'];
   Mutation: {};
-  Note: Note;
+  Note: NoteResponse;
   Boolean: Scalars['Boolean']['output'];
   NoteConnection: NoteConnectionModel;
   Int: Scalars['Int']['output'];
-  NoteEdge: NoteEdge;
+  NoteEdge: Omit<NoteEdge, 'node'> & { node?: Maybe<ResolversParentTypes['Note']> };
   NoteFilterInput: NoteFilterInput;
   NoteSortInput: NoteSortInput;
   PageInfo: PageInfo;
   PaginationInput: PaginationInput;
   ProseMirrorJson: Scalars['ProseMirrorJson']['output'];
   Query: {};
-  SavedItem: SavedItem;
+  SavedItem: SavedItemModel;
+  SavedItemNoteFilterInput: SavedItemNoteFilterInput;
   ValidUrl: Scalars['ValidUrl']['output'];
 }>;
 
@@ -490,11 +562,13 @@ export interface MarkdownScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 }
 
 export type MutationResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  archiveNote?: Resolver<Maybe<ResolversTypes['Note']>, ParentType, ContextType, RequireFields<MutationArchiveNoteArgs, 'input'>>;
   createNote?: Resolver<ResolversTypes['Note'], ParentType, ContextType, RequireFields<MutationCreateNoteArgs, 'input'>>;
   createNoteFromQuote?: Resolver<ResolversTypes['Note'], ParentType, ContextType, RequireFields<MutationCreateNoteFromQuoteArgs, 'input'>>;
   deleteNote?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteNoteArgs, 'input'>>;
   editNoteContent?: Resolver<Maybe<ResolversTypes['Note']>, ParentType, ContextType, RequireFields<MutationEditNoteContentArgs, 'input'>>;
   editNoteTitle?: Resolver<Maybe<ResolversTypes['Note']>, ParentType, ContextType, RequireFields<MutationEditNoteTitleArgs, 'input'>>;
+  unArchiveNote?: Resolver<Maybe<ResolversTypes['Note']>, ParentType, ContextType, RequireFields<MutationUnArchiveNoteArgs, 'input'>>;
 }>;
 
 export type NoteResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Note'] = ResolversParentTypes['Note']> = ResolversObject<{
@@ -545,6 +619,7 @@ export type QueryResolvers<ContextType = IContext, ParentType extends ResolversP
 
 export type SavedItemResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['SavedItem'] = ResolversParentTypes['SavedItem']> = ResolversObject<{
   __resolveReference?: ReferenceResolver<Maybe<ResolversTypes['SavedItem']>, { __typename: 'SavedItem' } & GraphQLRecursivePick<ParentType, {"url":true}>, ContextType>;
+  notes?: Resolver<ResolversTypes['NoteConnection'], ParentType, ContextType, Partial<SavedItemNotesArgs>>;
   url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
