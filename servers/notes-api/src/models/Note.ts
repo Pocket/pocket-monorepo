@@ -6,6 +6,9 @@ import {
   EditNoteTitleInput,
   EditNoteContentInput,
   DeleteNoteInput,
+  CreateNoteFromQuoteMarkdownInput,
+  CreateNoteMarkdownInput,
+  EditNoteContentMarkdownInput,
   ArchiveNoteInput,
 } from '../__generated__/graphql';
 import { DB, Note as NoteEntity } from '../__generated__/db';
@@ -13,7 +16,11 @@ import { Insertable, NoResultError, Selectable } from 'kysely';
 import { orderAndMap } from '../utils/dataloader';
 import { IContext } from '../apollo/context';
 import { NotesService } from '../datasources/NoteService';
-import { ProseMirrorDoc, wrapDocInBlockQuote } from './ProseMirrorDoc';
+import {
+  docFromMarkdown,
+  ProseMirrorDoc,
+  wrapDocInBlockQuote,
+} from './ProseMirrorDoc';
 import { DatabaseError } from 'pg';
 import {
   NoteFilterInput,
@@ -174,6 +181,18 @@ export class NoteModel {
     }
   }
   /**
+   * Create a new note, with CommonMark Markdown-formatted content
+   * instead of a JSON representation of a Prosemirror document.
+   */
+  async createFromMarkdown(input: CreateNoteMarkdownInput) {
+    const doc = docFromMarkdown(input.docMarkdown);
+    const createInput: CreateNoteInput = {
+      ...input,
+      docContent: JSON.stringify(doc.toJSON()),
+    };
+    return await this.create(createInput);
+  }
+  /**
    * Create a new Note seeded with a blockquote (optionally with
    * an additional paragraph with the source link).
    */
@@ -200,6 +219,18 @@ export class NoteModel {
         throw error;
       }
     }
+  }
+  /**
+   * Create a new Note seeded with a blockquote (optionally with
+   * an additional paragraph with the source link).
+   */
+  async fromMarkdownQuote(input: CreateNoteFromQuoteMarkdownInput) {
+    const quote = docFromMarkdown(input.quote);
+    const createInput: CreateNoteFromQuoteInput = {
+      ...input,
+      quote: JSON.stringify(quote.toJSON()),
+    };
+    return await this.fromQuote(createInput);
   }
   /**
    * Edit a note's title
@@ -250,6 +281,18 @@ export class NoteModel {
         throw error;
       }
     }
+  }
+  /**
+   * Edit a note's content, replacing it with the
+   * the Commonmark markdown document content input.
+   */
+  async editContentMarkdown(input: EditNoteContentMarkdownInput) {
+    const doc = docFromMarkdown(input.docMarkdown);
+    const editInput: EditNoteContentInput = {
+      ...input,
+      docContent: JSON.stringify(doc.toJSON()),
+    };
+    return await this.editContent(editInput);
   }
   /**
    * Delete a Note

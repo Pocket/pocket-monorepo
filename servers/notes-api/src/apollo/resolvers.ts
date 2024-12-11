@@ -66,14 +66,23 @@ export const resolvers: Resolvers = {
     createNote(root, { input }, context) {
       return context.NoteModel.create(input);
     },
+    createNoteMarkdown(root, { input }, context) {
+      return context.NoteModel.createFromMarkdown(input);
+    },
     createNoteFromQuote(root, { input }, context) {
       return context.NoteModel.fromQuote(input);
+    },
+    createNoteFromQuoteMarkdown(root, { input }, context) {
+      return context.NoteModel.fromMarkdownQuote(input);
     },
     editNoteTitle(root, { input }, context) {
       return context.NoteModel.editTitle(input);
     },
     editNoteContent(root, { input }, context) {
       return context.NoteModel.editContent(input);
+    },
+    editNoteContentMarkdown(root, { input }, context) {
+      return context.NoteModel.editContentMarkdown(input);
     },
     deleteNote(root, { input }, context) {
       return context.NoteModel.deleteNote(input);

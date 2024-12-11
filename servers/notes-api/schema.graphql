@@ -249,6 +249,34 @@ input CreateNoteInput {
   createdAt: ISOString
 }
 
+
+"""
+Input to create a new Note with markdown-formatted
+content string.
+"""
+input CreateNoteMarkdownInput {
+  """Optional title for this Note"""
+  title: String
+  """
+  Client-provided UUID for the new Note.
+  If not provided, will be generated on the server.
+  """
+  id: ID
+  """
+  Optional URL to link this Note to.
+  """
+  source: ValidUrl
+  """
+  The document content in Commonmark Markdown.
+  """
+  docMarkdown: Markdown!
+  """
+  When this note was created. If not provided, defaults to server time upon
+  receiving request.
+  """
+  createdAt: ISOString
+}
+
 """
 Input to create a new Note seeded with copied content from a page.
 The entire content becomes editable and is not able to be "reattached"
@@ -275,6 +303,39 @@ input CreateNoteFromQuoteInput {
   the initial Note document state, and will become editable.
   """
   quote: ProseMirrorJson!
+  """
+  When this note was created. If not provided, defaults to server time upon
+  receiving request.
+  """
+  createdAt: ISOString
+}
+
+"""
+Input to create a new Note seeded with copied content from a page.
+The entire content becomes editable and is not able to be "reattached"
+like a traditional highlight.
+"""
+input CreateNoteFromQuoteMarkdownInput {
+  """Optional title for this Note"""
+  title: String
+  """
+  Client-provided UUID for the new Note.
+  If not provided, will be generated on the server.
+  """
+  id: ID
+  """
+  The Web Resource where the quote is taken from.
+  This should always be sent by the client where possible,
+  but in some cases (e.g. copying from mobile apps) there may
+  not be an accessible source url.
+  """
+  source: ValidUrl
+  """
+  Commonmark Markdown document, which contains the formatted 
+  snipped text. This is used to seed the initial Note 
+  document state, and will become editable.
+  """
+  quote: Markdown!
   """
   When this note was created. If not provided, defaults to server time upon
   receiving request.
@@ -311,6 +372,25 @@ input EditNoteContentInput {
   updatedAt: ISOString
 }
 
+"""
+Input for editing the content of a Note (user-generated),
+providing the content as a Markdown-formatted string.
+"""
+input EditNoteContentMarkdownInput {
+  """
+  The ID of the note to edit
+  """
+  noteId: ID!
+  """
+  Commonmark Markdown string representing the document content.
+  """
+  docMarkdown: Markdown!
+  """
+  The time this update was made (defaults to server time)
+  """
+  updatedAt: ISOString
+}
+
 input DeleteNoteInput {
   """The ID of the note to delete"""
   id: ID!
@@ -341,10 +421,20 @@ type Mutation {
   """
   createNote(input: CreateNoteInput!): Note! @requiresScopes(scopes: [["ROLE_USER"]])
   """
+  Create a new note, optionally with title and markdown content
+  """
+  createNoteMarkdown(input: CreateNoteMarkdownInput!): Note! @requiresScopes(scopes: [["ROLE_USER"]])
+  """
   Create a new note, with a pre-populated block that contains the quoted and cited text
   selected by a user.
   """
   createNoteFromQuote(input: CreateNoteFromQuoteInput!): Note! @requiresScopes(scopes: [["ROLE_USER"]])
+  """
+  Create a new note, with a pre-populated block that contains the quoted and cited text
+  selected by a user.
+  """
+  createNoteFromQuoteMarkdown(input: CreateNoteFromQuoteMarkdownInput!): Note! @requiresScopes(scopes: [["ROLE_USER"]])
+  
   """
   Edit the title of a Note.
   If the Note does not exist or is inaccessible for the current user,
@@ -359,6 +449,14 @@ type Mutation {
   errors array.
   """
   editNoteContent(input: EditNoteContentInput!): Note @requiresScopes(scopes: [["ROLE_USER"]])
+  """
+  Edit the content of a Note, providing a markdown document instead
+  of a Prosemirror JSON.
+  If the Note does not exist or is inaccessible for the current user,
+  response will be null and a NOT_FOUND error will be included in the
+  errors array.
+  """
+  editNoteContentMarkdown(input: EditNoteContentMarkdownInput!): Note @requiresScopes(scopes: [["ROLE_USER"]])
   """
   Delete a note and all attachments. Returns True if the note was successfully
   deleted. If the note cannot be deleted or does not exist, returns False. 
