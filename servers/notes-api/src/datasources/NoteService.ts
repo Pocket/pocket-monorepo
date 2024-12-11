@@ -176,7 +176,9 @@ export class NotesService {
    * @param filters filters to apply to query
    * @returns SelectQueryBuilder with filters applied in where statement(s)
    */
-  filterQuery(filters: NoteFilterInput | undefined) {
+  filterQuery(
+    filters: (NoteFilterInput & { sourceUrl?: string | undefined }) | undefined,
+  ) {
     let qb = this.context.db
       .selectFrom('Note')
       .selectAll()
@@ -206,6 +208,11 @@ export class NotesService {
             }
             case 'excludeDeleted': {
               return value === true ? eb('deleted', '=', false) : undefined;
+            }
+            case 'sourceUrl': {
+              return value != null && typeof value === 'string'
+                ? eb('sourceUrl', '=', value)
+                : undefined;
             }
           }
         });
