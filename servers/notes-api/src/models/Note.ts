@@ -78,6 +78,10 @@ export class NoteModel {
       title: note.title,
       updatedAt: note.updatedAt,
       source: note.sourceUrl,
+      docMarkdown:
+        note.docContent != null
+          ? new ProseMirrorDoc(note.docContent).markdown
+          : null,
       // TODO - Non-default schema
       contentPreview:
         note.docContent != null

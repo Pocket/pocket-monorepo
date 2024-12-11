@@ -12,6 +12,12 @@ describe('ProseMirrorDoc', () => {
       expect(doc.preview).toBeString();
     });
   });
+  describe('markdown', () => {
+    it('smoke test: converts a multi-paragraph input to a string', () => {
+      const doc = new ProseMirrorDoc(basicText, schema);
+      expect(doc.markdown).toBeString();
+    });
+  });
   describe('quote constructor', () => {
     it('wraps quote in blockquote and adds attribution', () => {
       const { input, expectedSource } = fromQuote;

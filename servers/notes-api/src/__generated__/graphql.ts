@@ -226,8 +226,13 @@ export type Note = {
    * storage if this value is true.
    */
   deleted: Scalars['Boolean']['output'];
-  /** JSON representation of a ProseMirror document */
+  /**
+   * JSON representation of a ProseMirror document
+   * (compatible with Markdown)
+   */
   docContent?: Maybe<Scalars['ProseMirrorJson']['output']>;
+  /** Markdown representation of the note content */
+  docMarkdown?: Maybe<Scalars['Markdown']['output']>;
   /** This Note's identifier */
   id: Scalars['ID']['output'];
   /**
@@ -573,6 +578,7 @@ export type NoteResolvers<ContextType = IContext, ParentType extends ResolversPa
   createdAt?: Resolver<ResolversTypes['ISOString'], ParentType, ContextType>;
   deleted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   docContent?: Resolver<Maybe<ResolversTypes['ProseMirrorJson']>, ParentType, ContextType>;
+  docMarkdown?: Resolver<Maybe<ResolversTypes['Markdown']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   savedItem?: Resolver<Maybe<ResolversTypes['SavedItem']>, ParentType, ContextType>;
   source?: Resolver<Maybe<ResolversTypes['ValidUrl']>, ParentType, ContextType>;
