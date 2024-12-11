@@ -78,5 +78,11 @@ export const resolvers: Resolvers = {
     deleteNote(root, { input }, context) {
       return context.NoteModel.deleteNote(input);
     },
+    archiveNote(root, { input }, context) {
+      return context.NoteModel.archive(input);
+    },
+    unArchiveNote(root, { input }, context) {
+      return context.NoteModel.unarchive(input);
+    },
   },
 };

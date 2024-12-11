@@ -316,6 +316,20 @@ input DeleteNoteInput {
   deletedAt: ISOString
 }
 
+input ArchiveNoteInput {
+  """
+  The ID of the note to archive or unarchive
+  (depends on mutation).
+  """
+  id: ID!
+  """
+  When the note was archived or unarchived. 
+  If not provided, defaults to the server time upon
+  receiving request.
+  """
+  updatedAt: ISOString
+}
+
 type Mutation {
   """
   Create a new note, optionally with title and content
@@ -346,4 +360,18 @@ type Mutation {
   Errors will be included in the errors array if applicable.
   """
   deleteNote(input: DeleteNoteInput!): ID! @requiresScopes(scopes: [["ROLE_USER"]])
+  """
+  Archive a note.
+  If the Note does not exist or is inaccessible for the current user,
+  response will be null and a NOT_FOUND error will be included in the
+  errors array.
+  """
+  archiveNote(input: ArchiveNoteInput!): Note @requiresScopes(scopes: [["ROLE_USER"]])
+  """
+  Unarchive a note.
+  If the Note does not exist or is inaccessible for the current user,
+  response will be null and a NOT_FOUND error will be included in the
+  errors array.
+  """
+  unArchiveNote(input: ArchiveNoteInput!): Note @requiresScopes(scopes: [["ROLE_USER"]])
 }

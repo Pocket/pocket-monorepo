@@ -6,6 +6,7 @@ import {
   EditNoteTitleInput,
   EditNoteContentInput,
   DeleteNoteInput,
+  ArchiveNoteInput,
 } from '../__generated__/graphql';
 import { DB, Note as NoteEntity } from '../__generated__/db';
 import { Insertable, NoResultError, Selectable } from 'kysely';
@@ -255,6 +256,40 @@ export class NoteModel {
     } catch (error) {
       if (error instanceof NoResultError) {
         return input.id;
+      } else {
+        throw error;
+      }
+    }
+  }
+  /**
+   * Archive a Note
+   */
+  async archive(input: ArchiveNoteInput) {
+    try {
+      const result = await this.service.archive(input.id, input.updatedAt);
+      return this.toGraphql(result);
+    } catch (error) {
+      if (error instanceof NoResultError) {
+        throw new NotFoundError(
+          `Note with id=${input.id} does not exist or is forbidden`,
+        );
+      } else {
+        throw error;
+      }
+    }
+  }
+  /**
+   * Unarchive a Note
+   */
+  async unarchive(input: ArchiveNoteInput) {
+    try {
+      const result = await this.service.unarchive(input.id, input.updatedAt);
+      return this.toGraphql(result);
+    } catch (error) {
+      if (error instanceof NoResultError) {
+        throw new NotFoundError(
+          `Note with id=${input.id} does not exist or is forbidden`,
+        );
       } else {
         throw error;
       }
