@@ -63,6 +63,15 @@ type Note @key(fields: "id") {
 type SavedItem @key(fields: "url") {
   """The URL of the SavedItem"""
   url: String!
+  """
+  The notes associated with this SavedItem, optionally
+  filtered to retrieve after a 'since' parameter.
+  """
+  notes(
+    pagination: PaginationInput,
+    sort: NoteSortInput,
+    filter: SavedItemNoteFilterInput
+  ): NoteConnection!
 }
 
 """Information about pagination in a connection."""
@@ -166,6 +175,24 @@ input NoteFilterInput {
   notes. If not provided, notes will not be filtered by source url.
   """
   isAttachedToSave: Boolean
+  """
+  Filter to retrieve Notes by archived status (true/false).
+  If not provided, notes will not be filtered by archived status.
+  """
+  archived: Boolean
+  """
+  Filter to retrieve notes after a timestamp, e.g. for syncing.
+  """
+  since: ISOString
+  """
+  Filter to choose whether to include notes marked for server-side
+  deletion in the response (defaults to false).
+  """
+  excludeDeleted: Boolean
+}
+
+"""Filter for retrieving Notes attached to a SavedItem"""
+input SavedItemNoteFilterInput {
   """
   Filter to retrieve Notes by archived status (true/false).
   If not provided, notes will not be filtered by archived status.

@@ -1,6 +1,7 @@
 import { PocketDefaultScalars } from '@pocket-tools/apollo-utils';
 import { Resolvers } from '../__generated__/graphql';
 import { PaginationInput } from '@pocket-tools/apollo-utils';
+import { SavedItemModel } from '../models/SavedItem';
 
 export const resolvers: Resolvers = {
   ...PocketDefaultScalars,
@@ -18,6 +19,25 @@ export const resolvers: Resolvers = {
       } else {
         return -1;
       }
+    },
+  },
+  SavedItem: {
+    notes(parent, { pagination, filter, sort }, context) {
+      // The GraphQL InputMaybe<> type is causing issues with
+      // strict nulls; so doing some manipulation here to
+      // make sure things are undefined vs. null
+      const _pagination: PaginationInput = {
+        ...(pagination?.after != null && { after: pagination.after }),
+        ...(pagination?.first != null && { first: pagination.first }),
+        ...(pagination?.last != null && { last: pagination.last }),
+        ...(pagination?.before != null && { before: pagination.before }),
+      };
+      const opts = {
+        ...(pagination != null && { pagination: _pagination }),
+        ...(filter != null && { filter }),
+        ...(sort != null && { sort }),
+      };
+      return new SavedItemModel(parent.url, context).notes(opts);
     },
   },
   Query: {
