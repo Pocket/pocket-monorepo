@@ -23,6 +23,7 @@ import turndownService from './turndown';
 import TurndownService from 'turndown';
 import { config } from './config';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { isArray } from 'node:util';
 
 export const videoTypeMap = {
   1: VideoType.Youtube,
@@ -109,6 +110,24 @@ const unMarseableTransformers = unMarseableComponents.reduce(
   {},
 );
 
+// Transformer for when there is an error processing a list element
+function listErrorTransformer(root: Node): UnMarseable {
+  let html = '';
+  if (isArray(root)) {
+    root.forEach((node: Node) => {
+      html += (node as Element).outerHTML;
+      node.parentNode.removeChild(node);
+    });
+  } else {
+    html += (root as Element).outerHTML;
+    root.parentNode.removeChild(root);
+  }
+  return {
+    __typename: 'UnMarseable',
+    html: html.trim(),
+  };
+}
+
 // Methods for transforming a subtree of the DOM that represents
 // an article into one or more MarticleComponents.
 // To avoid many if/else statements, create a map of root tag
@@ -187,41 +206,55 @@ const transformers = {
   // Lists can be broken up, so the transformer can return any kind
   // of Marticle* component ( + lists).
   // Kind of cheating on types for documentation purposes
-  UL: (root: Node, article: Item): MarticleElement[] => {
-    const { output, aggFrom } = listTransformer(
-      root,
-      [],
-      'UL',
-      undefined,
-      article,
-    );
-    // Result might contain rows that need to be aggregated into a single
-    // MarticleBulletedList
-    if (aggFrom != null) {
-      const aggOutput = output.splice(aggFrom) as ListElement[];
-      output.push({
-        __typename: 'MarticleBulletedList',
-        rows: aggOutput,
-      });
+  UL: (root: Node, article: Item): MarticleElement[] | UnMarseable => {
+    try {
+      const { output, aggFrom } = listTransformer(
+        root,
+        [],
+        'UL',
+        undefined,
+        article,
+      );
+      // Result might contain rows that need to be aggregated into a single
+      // MarticleBulletedList
+      if (aggFrom != null) {
+        const aggOutput = output.splice(aggFrom) as ListElement[];
+        output.push({
+          __typename: 'MarticleBulletedList',
+          rows: aggOutput.filter(
+            (row) => !Object.keys(row).includes('__typename'), // remove unmarseable rows
+          ),
+        });
+      }
+      return output as MarticleElement[];
+    } catch (err) {
+      serverLogger.error('Error processing UL list', { item: article, err });
+      return listErrorTransformer(root);
     }
-    return output as MarticleElement[];
   },
-  OL: (root: Node, article: Item): MarticleElement[] => {
-    const { output, aggFrom } = listTransformer(
-      root,
-      [],
-      'OL',
-      undefined,
-      article,
-    );
-    if (aggFrom != null) {
-      const aggOutput = output.splice(aggFrom) as NumberedListElement[];
-      output.push({
-        __typename: 'MarticleNumberedList',
-        rows: aggOutput,
-      });
+  OL: (root: Node, article: Item): MarticleElement[] | UnMarseable => {
+    try {
+      const { output, aggFrom } = listTransformer(
+        root,
+        [],
+        'OL',
+        undefined,
+        article,
+      );
+      if (aggFrom != null) {
+        const aggOutput = output.splice(aggFrom) as NumberedListElement[];
+        output.push({
+          __typename: 'MarticleNumberedList',
+          rows: aggOutput.filter(
+            (row) => !Object.keys(row).includes('__typename'), // remove unmarseable rows
+          ),
+        });
+      }
+      return output as MarticleElement[];
+    } catch (err) {
+      serverLogger.error('Error processing OL list', { item: article, err });
+      return listErrorTransformer(root);
     }
-    return output as MarticleElement[];
   },
   LI: (
     children: Node[],
