@@ -54,7 +54,7 @@
     "graphql-tag": "2.12.6",
     "kysely": "0.27.5",
     "pg": "8.13.1",
-    "prisma": "5.21.1",
+    "prisma": "5.22.0",
     "prosemirror-markdown": "1.13.1",
     "prosemirror-model": "1.23.0",
     "prosemirror-state": "1.4.3",
