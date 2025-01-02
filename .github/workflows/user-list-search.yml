@@ -78,19 +78,6 @@ jobs:
       codedeploy-group-name-pattern: UserListSearch-{0}-EventHandler
       function-name-pattern: UserListSearch-{0}-EventHandler
     secrets: inherit
-
-  kinesis-lambda:
-    uses: ./.github/workflows/reuse-build-and-push-lambda.yml
-    needs: [infrastructure]
-    with:
-      scope: user-list-search-kinesis-to-sqs
-      sentry-project: user-list-search
-      s3-bucket-pattern: pocket-userlistsearch-{0}-kinesis-consumer
-      s3-key: kinesis-${{ github.sha }}.zip
-      codedeploy-app-name-pattern: UserListSearch-{0}-UnifiedEventsConsumer
-      codedeploy-group-name-pattern: UserListSearch-{0}-UnifiedEventsConsumer
-      function-name-pattern: UserListSearch-{0}-UnifiedEventsConsumer
-    secrets: inherit
   
   item-update-lambda:
     uses: ./.github/workflows/reuse-build-and-push-lambda.yml
@@ -189,7 +176,6 @@ jobs:
     needs:
       - api
       - events-lambda
-      - kinesis-lambda
       - item-update-lambda
       - item-delete-lambda
       - item-update-backfill-lambda

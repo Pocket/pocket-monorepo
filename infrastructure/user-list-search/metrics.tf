@@ -247,25 +247,6 @@ module "dashboard_alarm" {
           ]
         },
         {
-          x      = 0.0
-          y      = 24.0
-          width  = 12.0
-          height = 6.0
-          properties = {
-            title   = "Event Kinesis Consumer"
-            stacked = false
-            region  = data.aws_region.current.name,
-            stat    = "Average"
-            period  = 60
-          }
-          metrics = [
-            local.metrics.event_consumer_lambda.duration,
-            local.metrics.event_consumer_lambda.errors,
-            merge(local.metrics.event_consumer_lambda.iterator_age, { metadata = { yAxis = "right" } })
-          ]
-
-        },
-        {
           x      = 12.0
           y      = 24.0
           width  = 12.0

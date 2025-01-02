@@ -118,27 +118,6 @@ locals {
       ok_actions    = []
       alarm_actions = []
     }
-
-    event_consumer_lambda_errors = {
-      name        = "${local.prefix}-EventConsumerLambdaErrors"
-      description = "More than 1 error for 3 consecutive minutes"
-
-      metrics = [
-        local.metrics.event_consumer_lambda.duration,
-        local.metrics.event_consumer_lambda.iterator_age,
-        local.metrics.event_consumer_lambda.errors
-      ]
-
-      threshold         = 10
-      operator          = ">"
-      return_data_on_id = local.metrics.event_consumer_lambda.errors.id
-      // The kinesis consumer lambda that we listen on for item updates has more then 10 errors for 10 consecutive minutes
-      period        = 60
-      breaches      = 10
-      tags          = local.tags
-      ok_actions    = []
-      alarm_actions = []
-    }
   }
 
   # TODO: EventHandler metrics

@@ -5,7 +5,7 @@ Sentry.init({
 });
 import { SQSEvent, SQSRecord } from 'aws-lambda';
 import { processUserItem } from './helper';
-import { UserItemsSqsMessage } from './types';
+import { UserItemsSqsMessage } from '@pocket-tools/types';
 
 export const processor = async (event: SQSEvent): Promise<boolean[]> => {
   return await Promise.all(

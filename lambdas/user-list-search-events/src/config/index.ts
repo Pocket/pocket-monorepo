@@ -5,10 +5,11 @@ const localAwsEndpoint =
     : undefined;
 
 export const config = {
+  endpoint: process.env.USER_LIST_SEARCH_URI || 'http://localhost:4000',
+  accountDeletePath: '/batchDelete',
   aws: {
     region: process.env.AWS_REGION || 'us-east-1',
     sqs: {
-      waitTimeSeconds: 20,
       endpoint: localAwsEndpoint,
       userItemsUpdateUrl:
         process.env.SQS_USER_ITEMS_UPDATE_URL ||
