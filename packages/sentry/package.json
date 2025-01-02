@@ -94,7 +94,7 @@
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
     "tsup": "8.3.5",
-    "typescript": "5.5.4"
+    "typescript": "5.7.2"
   },
   "peerDependencies": {
     "@sentry/node": "8.47.0"
