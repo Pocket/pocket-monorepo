@@ -665,6 +665,39 @@ export type CreateNoteFromQuoteInput = {
   title?: InputMaybe<Scalars['String']['input']>;
 };
 
+/**
+ * Input to create a new Note seeded with copied content from a page.
+ * The entire content becomes editable and is not able to be "reattached"
+ * like a traditional highlight.
+ */
+export type CreateNoteFromQuoteMarkdownInput = {
+  /**
+   * When this note was created. If not provided, defaults to server time upon
+   * receiving request.
+   */
+  createdAt?: InputMaybe<Scalars['ISOString']['input']>;
+  /**
+   * Client-provided UUID for the new Note.
+   * If not provided, will be generated on the server.
+   */
+  id?: InputMaybe<Scalars['ID']['input']>;
+  /**
+   * Commonmark Markdown document, which contains the formatted
+   * snipped text. This is used to seed the initial Note
+   * document state, and will become editable.
+   */
+  quote: Scalars['Markdown']['input'];
+  /**
+   * The Web Resource where the quote is taken from.
+   * This should always be sent by the client where possible,
+   * but in some cases (e.g. copying from mobile apps) there may
+   * not be an accessible source url.
+   */
+  source?: InputMaybe<Scalars['ValidUrl']['input']>;
+  /** Optional title for this Note */
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
 /** Input to create a new Note */
 export type CreateNoteInput = {
   /**
@@ -674,6 +707,29 @@ export type CreateNoteInput = {
   createdAt?: InputMaybe<Scalars['ISOString']['input']>;
   /** JSON representation of a ProseMirror document */
   docContent: Scalars['ProseMirrorJson']['input'];
+  /**
+   * Client-provided UUID for the new Note.
+   * If not provided, will be generated on the server.
+   */
+  id?: InputMaybe<Scalars['ID']['input']>;
+  /** Optional URL to link this Note to. */
+  source?: InputMaybe<Scalars['ValidUrl']['input']>;
+  /** Optional title for this Note */
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
+/**
+ * Input to create a new Note with markdown-formatted
+ * content string.
+ */
+export type CreateNoteMarkdownInput = {
+  /**
+   * When this note was created. If not provided, defaults to server time upon
+   * receiving request.
+   */
+  createdAt?: InputMaybe<Scalars['ISOString']['input']>;
+  /** The document content in Commonmark Markdown. */
+  docMarkdown: Scalars['Markdown']['input'];
   /**
    * Client-provided UUID for the new Note.
    * If not provided, will be generated on the server.
@@ -780,6 +836,19 @@ export type DomainMetadata = {
 export type EditNoteContentInput = {
   /** JSON representation of a ProseMirror document */
   docContent: Scalars['ProseMirrorJson']['input'];
+  /** The ID of the note to edit */
+  noteId: Scalars['ID']['input'];
+  /** The time this update was made (defaults to server time) */
+  updatedAt?: InputMaybe<Scalars['ISOString']['input']>;
+};
+
+/**
+ * Input for editing the content of a Note (user-generated),
+ * providing the content as a Markdown-formatted string.
+ */
+export type EditNoteContentMarkdownInput = {
+  /** Commonmark Markdown string representing the document content. */
+  docMarkdown: Scalars['Markdown']['input'];
   /** The ID of the note to edit */
   noteId: Scalars['ID']['input'];
   /** The time this update was made (defaults to server time) */
@@ -1309,6 +1378,13 @@ export type Mutation = {
    * selected by a user.
    */
   createNoteFromQuote: Note;
+  /**
+   * Create a new note, with a pre-populated block that contains the quoted and cited text
+   * selected by a user.
+   */
+  createNoteFromQuoteMarkdown: Note;
+  /** Create a new note, optionally with title and markdown content */
+  createNoteMarkdown: Note;
   /** Create new highlight note. Returns the data for the created Highlight note. */
   createSavedItemHighlightNote?: Maybe<HighlightNote>;
   /** Create new highlight annotation(s). Returns the data for the created Highlight object(s). */
@@ -1380,6 +1456,14 @@ export type Mutation = {
    * errors array.
    */
   editNoteContent?: Maybe<Note>;
+  /**
+   * Edit the content of a Note, providing a markdown document instead
+   * of a Prosemirror JSON.
+   * If the Note does not exist or is inaccessible for the current user,
+   * response will be null and a NOT_FOUND error will be included in the
+   * errors array.
+   */
+  editNoteContentMarkdown?: Maybe<Note>;
   /**
    * Edit the title of a Note.
    * If the Note does not exist or is inaccessible for the current user,
@@ -1647,6 +1731,18 @@ export type MutationCreateNoteFromQuoteArgs = {
 
 
 /** Default Mutation Type */
+export type MutationCreateNoteFromQuoteMarkdownArgs = {
+  input: CreateNoteFromQuoteMarkdownInput;
+};
+
+
+/** Default Mutation Type */
+export type MutationCreateNoteMarkdownArgs = {
+  input: CreateNoteMarkdownInput;
+};
+
+
+/** Default Mutation Type */
 export type MutationCreateSavedItemHighlightNoteArgs = {
   id: Scalars['ID']['input'];
   input: Scalars['String']['input'];
@@ -1751,6 +1847,12 @@ export type MutationDeleteUserByFxaIdArgs = {
 /** Default Mutation Type */
 export type MutationEditNoteContentArgs = {
   input: EditNoteContentInput;
+};
+
+
+/** Default Mutation Type */
+export type MutationEditNoteContentMarkdownArgs = {
+  input: EditNoteContentMarkdownInput;
 };
 
 
