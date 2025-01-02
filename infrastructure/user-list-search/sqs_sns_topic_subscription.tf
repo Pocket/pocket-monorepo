@@ -1,5 +1,6 @@
 locals {
   userEventsSnsTopicArn       = "arn:aws:sns:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.snsTopicName.userEvents}"
+  listEventsSnsTopicArn       = "arn:aws:sns:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.snsTopicName.listEvents}"
   corpusEventsSnsTopicArn     = "arn:aws:sns:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.snsTopicName.corpusEvents}"
   collectionEventsSnsTopicArn = "arn:aws:sns:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.snsTopicName.collectionEvents}"
 }
@@ -18,6 +19,18 @@ resource "aws_sqs_queue" "corpus_events_sns_topic_dlq" {
 
 resource "aws_sns_topic_subscription" "user_events_sns_topic_subscription" {
   topic_arn = local.userEventsSnsTopicArn
+  protocol  = "sqs"
+  endpoint  = aws_sqs_queue.user_list_events.arn
+  # The version of terraform used in this service does not support redrive_policy
+  # an update is required. It is not blocking but should be prioritized soon
+  #  redrive_policy = jsonencode({
+  #    deadLetterTargetArn: aws_sqs_queue.user_events_sns_topic_dlq.arn
+  #  })
+  depends_on = [aws_sqs_queue.user_events_sns_topic_dlq, aws_sqs_queue.user_list_events]
+}
+
+resource "aws_sns_topic_subscription" "list_events_sns_topic_subscription" {
+  topic_arn = local.listEventsSnsTopicArn
   protocol  = "sqs"
   endpoint  = aws_sqs_queue.user_list_events.arn
   # The version of terraform used in this service does not support redrive_policy
@@ -101,7 +114,7 @@ data "aws_iam_policy_document" "user_events_sqs_policy_document" {
     }
     condition {
       test     = "ArnEquals"
-      values   = [local.userEventsSnsTopicArn]
+      values   = [local.userEventsSnsTopicArn, local.listEventsSnsTopicArn]
       variable = "aws:SourceArn"
     }
   }
@@ -198,7 +211,7 @@ data "aws_iam_policy_document" "user_events_sns_topic_dlq_policy_document" {
     }
     condition {
       test     = "ArnEquals"
-      values   = [local.userEventsSnsTopicArn]
+      values   = [local.userEventsSnsTopicArn, local.listEventsSnsTopicArn]
       variable = "aws:SourceArn"
     }
   }

@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/aws-serverless';
 Sentry.init({
   ...config.sentry,
 });
-import type { UserListImportSqsMessage } from './types';
+import type { UserListImportSqsMessage } from '@pocket-tools/types';
 import type { SQSEvent, SQSRecord } from 'aws-lambda';
 import { processUserImport } from './helper';
 

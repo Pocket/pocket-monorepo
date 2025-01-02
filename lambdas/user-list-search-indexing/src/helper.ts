@@ -1,4 +1,7 @@
-import { UserItemsSqsMessage, UserListImportSqsMessage } from './types';
+import {
+  UserItemsSqsMessage,
+  UserListImportSqsMessage,
+} from '@pocket-tools/types';
 import { nanoid } from 'nanoid';
 import { config } from './config';
 

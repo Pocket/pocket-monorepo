@@ -56,6 +56,7 @@ locals {
     userEvents       = local.workspace.sns_topic_user_events
     corpusEvents     = local.workspace.sns_topic_corpus_events
     collectionEvents = local.workspace.sns_topic_collection_events
+    listEvents       = local.workspace.sns_topic_list_events
   }
 
   # environment or workspace-specific local variables go here.
@@ -80,6 +81,7 @@ locals {
       sns_topic_user_events       = "PocketEventBridge-Dev-UserEvents"
       sns_topic_corpus_events     = "PocketEventBridge-Dev-CorpusEvents"
       sns_topic_collection_events = "PocketEventBridge-Dev-CollectionEvents"
+      sns_topic_list_events       = "PocketEventBridge-Dev-ListEvents"
       userApiUri                  = "https://user-list-search.getpocket.dev"
       otlpCollectorUrl            = "https://otel-collector.getpocket.dev:443"
     }
@@ -97,6 +99,7 @@ locals {
       sns_topic_user_events       = "PocketEventBridge-Prod-UserEvents"
       sns_topic_corpus_events     = "PocketEventBridge-Prod-CorpusEvents"
       sns_topic_collection_events = "PocketEventBridge-Prod-CollectionEvents"
+      sns_topic_list_events       = "PocketEventBridge-Prod-ListEvents"
       userApiUri                  = "https://user-list-search.readitlater.com"
       otlpCollectorUrl            = "https://otel-collector.readitlater.com:443"
     }
