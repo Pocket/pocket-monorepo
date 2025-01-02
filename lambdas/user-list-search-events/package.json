@@ -14,7 +14,7 @@
     "test": "jest \"\\.spec\\.ts\" --runInBand --forceExit"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "3.679.0",
+    "@aws-sdk/client-sqs": "3.716.0",
     "@pocket-tools/event-bridge": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
     "@pocket-tools/types": "workspace:*",

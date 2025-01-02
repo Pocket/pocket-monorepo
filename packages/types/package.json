@@ -22,9 +22,7 @@
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "dev": "pnpm run build --watch",
     "format": "eslint --fix",
-    "lint": "eslint --fix-dry-run",
-    "test": "jest",
-    "test:watch": "pnpm run test -- --watch"
+    "lint": "eslint --fix-dry-run"
   },
   "dependencies": {},
   "devDependencies": {

@@ -70,35 +70,6 @@ locals {
         expression = "IF(user_list_import_queue_messages_deleted, user_list_import_queue_messages_deleted, 1)/IF(user_list_import_queue_messages_sent, user_list_import_queue_messages_sent, 1)*100",
       }
     }
-    event_consumer_lambda = {
-      duration = {
-        id        = "event_consumer_lambda_duration"
-        namespace = "AWS/Lambda"
-        metric    = "Duration"
-        statistic = "Sum"
-        dimensions = {
-          FunctionName = aws_lambda_function.unified_events_consumer.function_name
-        }
-      },
-      errors = {
-        id        = "event_consumer_lambda_errors"
-        namespace = "AWS/Lambda"
-        metric    = "Errors"
-        statistic = "Sum"
-        dimensions = {
-          FunctionName = aws_lambda_function.unified_events_consumer.function_name
-        }
-      },
-      iterator_age = {
-        id        = "event_consumer_lambda_iterator_age"
-        namespace = "AWS/Lambda"
-        metric    = "IteratorAge"
-        statistic = "Sum"
-        dimensions = {
-          FunctionName = aws_lambda_function.unified_events_consumer.function_name
-        }
-      }
-    }
 
     list_item_import_lambda = {
       invocations = {

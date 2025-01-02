@@ -2,7 +2,10 @@ import { config } from './config';
 import nock from 'nock';
 import { processUserImport, processUserItem } from './helper';
 
-import { UserItemsSqsMessage, UserListImportSqsMessage } from './types';
+import {
+  UserItemsSqsMessage,
+  UserListImportSqsMessage,
+} from '@pocket-tools/types';
 
 describe('Item functions', () => {
   describe('itemDelete', () => {
