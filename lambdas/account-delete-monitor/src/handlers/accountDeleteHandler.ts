@@ -1,11 +1,11 @@
 import { SQSRecord } from 'aws-lambda';
-import { client } from '../dynamodb';
+import { client } from '../dynamodb.ts';
 import { GetCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
-import { config } from '../config';
+import { config } from '../config.ts';
 // import { expirationTimestamp } from '../utils';
-import { epochMsToIsoDate } from '../utils';
-import { DeleteRequestModel } from '../types';
-import { deleteUserMutationCaller } from '../externalCaller/deleteMutation';
+import { epochMsToIsoDate } from '../utils.ts';
+import { DeleteRequestModel } from '../types.ts';
+import { deleteUserMutationCaller } from '../externalCaller/deleteMutation.ts';
 
 /**
  * Store the account deletion request in DynamoDB for tracking, and to
