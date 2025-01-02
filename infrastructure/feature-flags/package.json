@@ -2,6 +2,7 @@
   "name": "feature-flags-cdk",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "main": "dist/main.js",
   "types": "src/main.ts",
   "scripts": {
