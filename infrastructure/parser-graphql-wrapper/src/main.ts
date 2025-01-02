@@ -1,4 +1,4 @@
-import { config } from './config';
+import { config } from './config/index.ts';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
 import {
   provider as awsProvider,
@@ -21,7 +21,7 @@ import {
 import { Construct } from 'constructs';
 import { App, S3Backend, TerraformStack } from 'cdktf';
 import * as fs from 'fs';
-import { DynamoDB } from './dynamodb';
+import { DynamoDB } from './dynamodb.ts';
 class ParserGraphQLWrapper extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);

@@ -4,7 +4,7 @@ import {
   PocketEventBridgeRuleWithMultipleTargets,
   ApplicationEventBus,
 } from '@pocket-tools/terraform-modules';
-import { config } from '../../config';
+import { config } from '../../config/index.ts';
 import {
   cloudwatchLogGroup,
   dataAwsIamPolicyDocument,
@@ -15,7 +15,7 @@ import {
 } from '@cdktf/provider-aws';
 
 import { Resource } from '@cdktf/provider-null/lib/resource';
-import { eventConfig } from './eventConfig';
+import { eventConfig } from './eventConfig.ts';
 
 export class AllEventsRule extends Construct {
   public readonly cloudwatchLogGroup: cloudwatchLogGroup.CloudwatchLogGroup;
