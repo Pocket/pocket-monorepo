@@ -29,10 +29,7 @@ export function validate(
 ): Response {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res
-      .status(400)
-      .json({ errors: errors.array() })
-      .setHeader('Content-Type', 'application/json');
+    return res.status(400).json({ errors: errors.array() });
   }
   next();
 }
@@ -45,7 +42,7 @@ router.post(
     const requestId = req.body.traceId ?? nanoid();
     const userId = req.body.userId;
 
-    deleteSearchIndexByUserId(userId.toString(), requestId).catch((error) => {
+    deleteSearchIndexByUserId(userId.toString()).catch((error) => {
       const message = `BatchDelete: Error - Failed to delete search index for User ID: ${userId} (requestId='${requestId}')`;
       Sentry.addBreadcrumb({ message });
       Sentry.captureException(error);

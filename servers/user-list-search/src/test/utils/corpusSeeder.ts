@@ -49,6 +49,11 @@ export async function deleteDocuments() {
         body: { query: { match_all: {} } },
         wait_for_completion: true,
       });
+      // Forcemerge the index because with our updates and number of documents the score can change when it should not.
+      // https://kulekci.medium.com/understanding-and-resolving-elasticsearch-score-changes-after-document-updates-a9f426b76e38
+      await client.indices.forcemerge({
+        index,
+      });
       await client.indices.refresh({
         index,
       });

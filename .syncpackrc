@@ -18,7 +18,7 @@
         "@aws-sdk/client-s3",
         "@aws-sdk/**"
       ],
-      "pinVersion": "3.679.0",
+      "pinVersion": "3.696.0",
       "label": "AWS SDK Dependencies should all have the same version (uses a specifc package as the first one for Renovate to latch to)"
     },
     {
@@ -26,7 +26,7 @@
         "@sentry/node",
         "@sentry/**"
       ],
-      "pinVersion": "8.38.0",
+      "pinVersion": "8.47.0",
       "label": "Sentry Dependencies should all have the same version (uses a specifc package as the first one for Renovate to latch to)"
     },
     {

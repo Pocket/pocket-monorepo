@@ -1,4 +1,6 @@
 import { Knex } from 'knex';
+import { client } from '../../datasource/elasticsearch';
+import { config } from '../../config';
 
 export type SeedData = {
   favorite: number;
@@ -12,6 +14,37 @@ export type SeedData = {
   isImage?: number;
   isVideo?: number;
 };
+
+/**
+ * Test cleanup: delete all documents in search indices
+ */
+export async function deleteDocuments() {
+  try {
+    await client.deleteByQuery({
+      index: config.aws.elasticsearch.list.index,
+      body: {
+        query: {
+          match_all: {},
+        },
+      },
+      waitForCompletion: true,
+      conflicts: 'proceed',
+    });
+
+    // Forcemerge the index because with our updates and number of documents the score can change when it should not.
+    // https://kulekci.medium.com/understanding-and-resolving-elasticsearch-score-changes-after-document-updates-a9f426b76e38
+    await client.indices.forcemerge({
+      index: config.aws.elasticsearch.list.index,
+    });
+
+    // Wait for delete to finish
+    await client.indices.refresh({
+      index: config.aws.elasticsearch.list.index,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 export async function loadItemExtended(db, seedData: SeedData) {
   const optionalDefaults = {

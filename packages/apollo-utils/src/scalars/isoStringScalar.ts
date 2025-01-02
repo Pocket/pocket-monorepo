@@ -86,4 +86,11 @@ export const isoStringScalar = new GraphQLScalarType({
 
     return this.parseValue(ast.value);
   },
+  extensions: {
+    codegenScalarType: 'Date | string',
+    jsonSchema: {
+      type: 'string',
+      format: 'date-time',
+    },
+  },
 });

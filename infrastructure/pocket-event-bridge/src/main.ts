@@ -8,25 +8,13 @@ import {
   ApplicationEventBusProps,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
-import { UserApiEvents } from './event-rules/user-api-events/userApiEventRules';
 import { ProspectEvents } from './event-rules/prospect-events/prospectEventRules';
-import { ShareableListEvents } from './event-rules/shareable-lists-api-events/shareableListEventRules';
-import { ShareableListItemEvents } from './event-rules/shareable-lists-api-events/shareableListItemEventRules';
-import { ListApiEvents } from './event-rules/list-api-events/listApiEventRules';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
 import { config } from './config';
 import { AccountDeleteMonitorEvents } from './event-rules/account-delete-monitor';
-import { PremiumPurchase } from './event-rules/premium-purchase';
-import { UserRegistrationEventRule } from './event-rules/user-registration/userRegistrationEventRule';
 import { AllEventsRule } from './event-rules/all-events/allEventRules';
-import { ForgotPassword as ForgotPasswordRequest } from './event-rules/forgot-password-request';
-import { SharesApiEvents } from './event-rules/shares-api-events/pocketShareEventRules';
-import { SearchApiEvents } from './event-rules/search-api-events/pocketSearchEventRules';
-import { CorpusEvents } from './event-rules/corpus-events/corpusEventRules';
-import { ListExportReady } from './event-rules/list-export-request-ready';
 import { PocketEventToTopic } from './eventBridge';
 import { PocketEventType } from '@pocket-tools/event-bridge';
-import { CollectionApiEvents } from './event-rules/collection-events/collectionApiEventRules';
 
 class PocketEventBus extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -64,10 +52,6 @@ class PocketEventBus extends TerraformStack {
       eventBusProps,
     );
 
-    // We are deploying to sets of the same event rules, one for old way of creating event consumers, and one for the new way.
-    // We are doing it this way so that we can rename the topics to a standard naming convention and not break existing infra.
-    // Also all topics must be created before anything can consumer it.
-    this.createOldEventRules(sharedPocketEventBus, alarmSnsTopic);
     this.createEventRules(sharedPocketEventBus, alarmSnsTopic);
 
     /****************
@@ -292,89 +276,6 @@ class PocketEventBus extends TerraformStack {
         source: ['account-data-deleter'],
       },
     });
-  }
-
-  /**
-   * TODO: Follow up and delete all these rules and folders after updating all the consumers to use the new topic.
-   * // https://mozilla-hub.atlassian.net/browse/POCKET-10821
-   * @param sharedPocketEventBus
-   * @param alarmSnsTopic
-   */
-  private createOldEventRules(
-    sharedPocketEventBus: ApplicationEventBus,
-    alarmSnsTopic: dataAwsSnsTopic.DataAwsSnsTopic,
-  ) {
-    // user-api events
-    new UserApiEvents(
-      this,
-      'user-api-events',
-      sharedPocketEventBus,
-      alarmSnsTopic,
-    );
-
-    //'Premium Purchase' event, currently emitted by web-repo
-    new PremiumPurchase(this, 'premium-purchase', alarmSnsTopic);
-
-    //'User Registration' event, currently emitted by web-repo
-    new UserRegistrationEventRule(this, 'user-registration', alarmSnsTopic);
-
-    //'Forgot Password Request' event, currently emitted by web-repo
-    new ForgotPasswordRequest(this, 'forgot-password', alarmSnsTopic);
-
-    new CollectionApiEvents(
-      this,
-      'collection-events',
-      sharedPocketEventBus,
-      alarmSnsTopic,
-    );
-
-    // Shareable List Events for Shareable Lists API service
-    new ShareableListEvents(
-      this,
-      'shareable-list-events',
-      sharedPocketEventBus,
-      alarmSnsTopic,
-    );
-
-    // Shareable List Item Events for Shareable Lists API service
-    new ShareableListItemEvents(
-      this,
-      'shareable-list-item-events',
-      sharedPocketEventBus,
-      alarmSnsTopic,
-    );
-
-    // list-api events
-    new ListApiEvents(
-      this,
-      'list-api-events',
-      sharedPocketEventBus,
-      alarmSnsTopic,
-    );
-    // shares-api events
-    new SharesApiEvents(
-      this,
-      'shares-api-events',
-      sharedPocketEventBus,
-      alarmSnsTopic,
-    );
-    // search-api events
-    new SearchApiEvents(
-      this,
-      'search-api-events',
-      sharedPocketEventBus,
-      alarmSnsTopic,
-    );
-    // Corpus Events (uses the default bus, not the shared event bus)
-    new CorpusEvents(this, 'corpus-events', alarmSnsTopic);
-
-    // List export is available
-    new ListExportReady(
-      this,
-      'list-export-ready-event',
-      sharedPocketEventBus,
-      alarmSnsTopic,
-    );
   }
 }
 

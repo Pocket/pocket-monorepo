@@ -3,6 +3,7 @@ import { client } from './index';
 
 import { bulkDocument } from './elasticsearchBulk';
 import { getDocument } from './elasticsearchSearch';
+import { deleteDocuments } from '../../test/utils/searchIntegrationTestHelpers';
 
 const defaultDocProps = {
   resolved_id: 1,
@@ -19,19 +20,7 @@ const defaultDocProps = {
 
 describe('Elasticsearch Bulk', () => {
   beforeAll(async () => {
-    await client.deleteByQuery({
-      index: config.aws.elasticsearch.list.index,
-      body: {
-        query: {
-          match_all: {},
-        },
-      },
-    });
-
-    // Wait for delete to finish
-    await client.indices.refresh({
-      index: config.aws.elasticsearch.list.index,
-    });
+    await deleteDocuments();
 
     await bulkDocument([
       {
@@ -49,6 +38,10 @@ describe('Elasticsearch Bulk', () => {
     await client.indices.refresh({
       index: config.aws.elasticsearch.list.index,
     });
+  });
+
+  afterAll(async () => {
+    await deleteDocuments();
   });
 
   it('can bulk index a document', async () => {

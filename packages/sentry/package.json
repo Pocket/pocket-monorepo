@@ -76,14 +76,14 @@
     ]
   },
   "dependencies": {
-    "@sentry/node": "8.38.0",
+    "@sentry/node": "8.47.0",
     "tslib": "2.8.0"
   },
   "devDependencies": {
     "@jest/globals": "29.7.0",
     "@pocket-tools/eslint-config": "workspace:*",
     "@semantic-release/exec": "6.0.3",
-    "@sentry/types": "8.38.0",
+    "@sentry/types": "8.47.0",
     "@types/express": "4.17.21",
     "@types/jest": "29.5.14",
     "@types/node": "^22.8.2",
@@ -94,10 +94,10 @@
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
     "tsup": "8.3.5",
-    "typescript": "5.6.3"
+    "typescript": "5.5.4"
   },
   "peerDependencies": {
-    "@sentry/node": "8.38.0"
+    "@sentry/node": "8.47.0"
   },
   "publishConfig": {
     "access": "public"

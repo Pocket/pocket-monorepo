@@ -59,8 +59,11 @@ const server = new ApolloServer({
 });
 
 describe('Server error handling: ', () => {
-  const logErrorSpy = jest.spyOn(defaultLogger, 'error');
-  const sentrySpy = jest.spyOn(Sentry, 'captureException');
+  const logErrorSpy: jest.SpyInstance<typeof defaultLogger> = jest.spyOn(
+    defaultLogger,
+    'error',
+  );
+  const sentrySpy: jest.SpyInstance = jest.spyOn(Sentry, 'captureException');
 
   afterEach(() => {
     logErrorSpy.mockReset();

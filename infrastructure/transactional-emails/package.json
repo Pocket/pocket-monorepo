@@ -15,10 +15,10 @@
   },
   "dependencies": {
     "@cdktf/provider-archive": "10.2.0",
-    "@cdktf/provider-aws": "19.41.1",
+    "@cdktf/provider-aws": "19.43.0",
     "@cdktf/provider-local": "10.1.1",
     "@cdktf/provider-null": "10.0.1",
-    "@cdktf/provider-pagerduty": "13.12.0",
+    "@cdktf/provider-pagerduty": "13.14.1",
     "@pocket-tools/terraform-modules": "workspace:*",
     "cdktf": "0.20.10",
     "cdktf-cli": "0.20.10",
@@ -29,6 +29,6 @@
     "@types/node": "^22.8.2",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "typescript": "5.6.3"
+    "typescript": "5.5.4"
   }
 }

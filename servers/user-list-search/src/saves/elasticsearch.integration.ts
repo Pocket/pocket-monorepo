@@ -2,6 +2,7 @@ import { client } from '../datasource/elasticsearch';
 import { config } from '../config';
 import { bulkDocument } from '../datasource/elasticsearch/elasticsearchBulk';
 import { deleteSearchIndexByUserId } from './elasticsearch';
+import { deleteDocuments } from '../test/utils/searchIntegrationTestHelpers';
 
 const defaultDocProps = {
   resolved_id: 1,
@@ -17,19 +18,7 @@ const defaultDocProps = {
 
 describe('Elasticsearch - Integration', () => {
   beforeEach(async () => {
-    await client.deleteByQuery({
-      index: config.aws.elasticsearch.list.index,
-      body: {
-        query: {
-          match_all: {},
-        },
-      },
-    });
-
-    // Wait for delete to finish
-    await client.indices.refresh({
-      index: config.aws.elasticsearch.list.index,
-    });
+    await deleteDocuments();
 
     await bulkDocument([
       {
@@ -117,7 +106,7 @@ describe('Elasticsearch - Integration', () => {
     const baseRes = await search('1');
     expect(baseRes.hits.total['value']).toBe(3);
 
-    await deleteSearchIndexByUserId('1');
+    await deleteSearchIndexByUserId('1', true);
 
     // Wait for delete to finish
     await client.indices.refresh({
