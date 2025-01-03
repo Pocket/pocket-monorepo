@@ -1,6 +1,6 @@
-import { UserItemsSqsMessage, UserListImportSqsMessage } from './types';
+import { UserItemsSqsMessage, UserListImportSqsMessage } from './types.ts';
 import { nanoid } from 'nanoid';
-import { config } from './config';
+import { config } from './config/index.ts';
 
 /**
  * Processes messages from the itemDelete queue or the itemUpdate queues.
