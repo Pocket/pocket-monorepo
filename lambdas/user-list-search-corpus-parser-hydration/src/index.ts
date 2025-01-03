@@ -1,4 +1,4 @@
-import { config } from './config';
+import { config } from './config.ts';
 import * as Sentry from '@sentry/aws-serverless';
 Sentry.init({
   dsn: config.sentry.dsn,
@@ -11,11 +11,11 @@ import {
   BulkRequestMeta,
   BulkRequestPayload,
   ValidLangEventPayload,
-} from './types';
-import { parserRequest, parserResultToDoc } from './parserRequest';
-import { bulkIndex } from './bulkIndex';
-import { buildCollectionUrl, hasExcerptOrIsCollection } from './utils';
-import { getEmbeddings } from './embeddingsRequest';
+} from './types.ts';
+import { parserRequest, parserResultToDoc } from './parserRequest.ts';
+import { bulkIndex } from './bulkIndex.ts';
+import { buildCollectionUrl, hasExcerptOrIsCollection } from './utils.ts';
+import { getEmbeddings } from './embeddingsRequest.ts';
 import { sqsLambdaEventBridgeEvent } from '@pocket-tools/event-bridge';
 
 /**

@@ -1,7 +1,7 @@
 import nock from 'nock';
 
-import { processor } from '.';
-import { config } from './config';
+import { processor } from './index.ts';
+import { config } from './config.ts';
 import { SQSEvent } from 'aws-lambda';
 
 /**
