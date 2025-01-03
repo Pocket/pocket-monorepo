@@ -1,8 +1,8 @@
-import * as fx from './index';
-import config from './config';
+import * as fx from './index.ts';
+import config from './config.ts';
 import nock from 'nock';
-import * as secretManager from './secretManager';
-import * as mutations from './mutations';
+import * as secretManager from './secretManager.ts';
+import * as mutations from './mutations.ts';
 
 describe('SQS Event Handler', () => {
   let handleMutationErrorsSpy;

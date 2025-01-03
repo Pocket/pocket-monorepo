@@ -1,4 +1,4 @@
-import config from './config';
+import config from './config.ts';
 import { fetchSecret } from '@pocket-tools/lambda-secrets';
 
 //https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-secrets-manager/classes/getsecretvaluecommand.html

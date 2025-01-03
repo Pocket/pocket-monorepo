@@ -1,4 +1,4 @@
-import config from './config';
+import config from './config.ts';
 import * as Sentry from '@sentry/aws-serverless';
 Sentry.init({
   dsn: config.app.sentry.dsn,
@@ -14,7 +14,7 @@ import {
   passwordChangeMutation,
   submitDeleteMutation,
   submitEmailUpdatedMutation,
-} from './mutations';
+} from './mutations.ts';
 
 // these events are defined in ./gateway_lambda/config.ts
 export enum EVENT {

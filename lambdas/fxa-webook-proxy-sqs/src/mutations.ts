@@ -1,10 +1,10 @@
 import { SQSRecord } from 'aws-lambda';
 
-import config from './config';
-import { getFxaPrivateKey } from './secretManager';
+import config from './config.ts';
+import { getFxaPrivateKey } from './secretManager.ts';
 
 import { generateJwt, PocketJWK } from '@pocket-tools/jwt-utils';
-import { FxaEvent } from '.';
+import { FxaEvent } from './index.ts';
 
 // should match the reasons defined in user-api subgraph schema:
 // https://github.com/Pocket/user-api/blob/main/schema.graphql#L69
