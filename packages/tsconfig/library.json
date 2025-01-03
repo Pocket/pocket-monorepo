@@ -5,7 +5,7 @@
     "emitDecoratorMetadata": true,
     "rewriteRelativeImportExtensions": true,
     "allowImportingTsExtensions": true,
-    "target": "ES2024",
+    "target": "ESNext",
     "module": "NodeNext",
     "moduleResolution": "nodenext",
     "lib": [
