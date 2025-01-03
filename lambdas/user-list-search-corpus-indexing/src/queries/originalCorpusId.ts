@@ -1,7 +1,7 @@
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { postRetry } from '../postRetry';
+import { postRetry } from '../postRetry.ts';
 import * as Sentry from '@sentry/aws-serverless';
-import { config } from '../config';
+import { config } from '../config.ts';
 
 /**
  * Fetch the original corpus id for a syndicated article,

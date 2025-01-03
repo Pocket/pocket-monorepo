@@ -1,5 +1,5 @@
 import { PocketEvent, PocketEventType } from '@pocket-tools/event-bridge';
-import { accountDeleteHandler } from './handlerFns';
+import { accountDeleteHandler } from './handlerFns.ts';
 
 // Mapping of detail-type (via event bridge message)
 // to function that should be invoked to process the message

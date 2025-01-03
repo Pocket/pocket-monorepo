@@ -1,5 +1,5 @@
-import { client } from '../dynamodb';
-import { accountDeleteHandler } from './accountDeleteHandler';
+import { client } from '../dynamodb.ts';
+import { accountDeleteHandler } from './accountDeleteHandler.ts';
 import { type SQSRecord } from 'aws-lambda';
 
 describe('Account delete handler', () => {

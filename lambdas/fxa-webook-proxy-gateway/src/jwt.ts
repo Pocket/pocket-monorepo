@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
-import config from './config';
-import { FxaPayload, FxaOpenIdConfigPayload } from './types';
+import config from './config.ts';
+import { FxaPayload, FxaOpenIdConfigPayload } from './types.ts';
 
 export class FxaJwt {
   public readonly token: jwt.Jwt;

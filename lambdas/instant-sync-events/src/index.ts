@@ -1,10 +1,10 @@
-import { config } from './config';
+import { config } from './config.ts';
 import * as Sentry from '@sentry/aws-serverless';
 Sentry.init({
   ...config.sentry,
 });
 import type { SQSEvent } from 'aws-lambda';
-import { instantSyncHandler } from './handlerFn';
+import { instantSyncHandler } from './handlerFn.ts';
 
 /**
  * Processes messages originating from event bridge. The detail-type field in

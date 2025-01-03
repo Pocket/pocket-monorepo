@@ -1,5 +1,5 @@
 import { backOff } from 'exponential-backoff';
-import { config } from '../config';
+import { config } from '../config.ts';
 
 /**
  * Function that establishes the number of back off attempts

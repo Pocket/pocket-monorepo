@@ -1,10 +1,10 @@
 import nock, { cleanAll } from 'nock';
 import { SQSEvent, SQSRecord } from 'aws-lambda';
-import { config } from '../config';
-import * as ssm from '../ssm';
-import { sendAccountDeletionEmail } from '../braze';
+import { config } from '../config.ts';
+import * as ssm from '../ssm.ts';
+import { sendAccountDeletionEmail } from '../braze.ts';
 import { PocketEventType } from '@pocket-tools/event-bridge';
-import { processor } from '..';
+import { processor } from '../index.ts';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 describe('accountDelete handler', () => {

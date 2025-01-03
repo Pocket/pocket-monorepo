@@ -1,4 +1,4 @@
-import { chunkArray } from './util';
+import { chunkArray } from './util.ts';
 
 describe('util', () => {
   describe('chunkArray', () => {

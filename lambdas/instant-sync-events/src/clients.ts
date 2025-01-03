@@ -1,6 +1,6 @@
 import knex, { Knex } from 'knex';
 import { fetchSecret } from '@pocket-tools/lambda-secrets';
-import { config } from './config';
+import { config } from './config.ts';
 import knexServerlessMysql from 'knex-serverless-mysql';
 import serverlessMysql from 'serverless-mysql';
 import * as mysql2 from 'mysql2';
