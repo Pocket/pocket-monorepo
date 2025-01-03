@@ -1,11 +1,11 @@
-import SqsWritable from './sqs/writeable';
+import SqsWritable from './sqs/writeable.ts';
 import _ from 'highland';
 import { SQS } from '@aws-sdk/client-sqs';
 import {
   SqsMessage,
   UserItemsSqsMessage,
   UserListImportSqsMessage,
-} from './sqs/types';
+} from './sqs/types.ts';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 const MAX_JOBS_PER_MESSAGE = 1000;
