@@ -1,5 +1,5 @@
 import { SQSRecord } from 'aws-lambda';
-import { config } from '../config';
+import { config } from '../config.ts';
 
 /**
  * Given an account delete event, queue SQS messages to delete chunks of the
