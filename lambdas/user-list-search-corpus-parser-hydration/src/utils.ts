@@ -1,4 +1,4 @@
-import { BulkRequestMeta } from './types';
+import { BulkRequestMeta } from './types.ts';
 
 /**
  * This method is copied in user-list-search-corpus-indexing

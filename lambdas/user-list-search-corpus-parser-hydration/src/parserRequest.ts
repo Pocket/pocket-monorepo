@@ -1,5 +1,5 @@
-import { ParserDocumentFields, ParserResult } from './types';
-import { config } from './config';
+import { ParserDocumentFields, ParserResult } from './types.ts';
+import { config } from './config.ts';
 import fetchRetry from 'fetch-retry';
 import * as Sentry from '@sentry/aws-serverless';
 import { stripHtml } from 'string-strip-html';
