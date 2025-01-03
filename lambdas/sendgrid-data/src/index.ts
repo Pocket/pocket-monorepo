@@ -1,12 +1,12 @@
-import config from './config';
+import config from './config/index.ts';
 import * as Sentry from '@sentry/aws-serverless';
 Sentry.init({
   dsn: config.sentry.dsn,
   release: config.sentry.release,
   environment: config.environment,
 });
-import { deliverEvents, logEventsError, logEventsReceived } from './sendgrid';
-import { captureException } from './sentry';
+import { deliverEvents, logEventsError, logEventsReceived } from './sendgrid/index.ts';
+import { captureException } from './sentry.ts';
 import type { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 /**
