@@ -1,4 +1,4 @@
-import { getOriginalUrlIfPocketImageCached } from './utils';
+import { getOriginalUrlIfPocketImageCached } from './utils.ts';
 
 describe('getOriginalUrlIfPocketImageCached', () => {
   it('gets the original image if it has been encoded already', () => {
