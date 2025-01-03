@@ -6,6 +6,7 @@
   "license": "ISC",
   "author": "",
   "main": "dist/index.js",
+  "type": "module",
   "files": [
     "dist",
     "package.json"
