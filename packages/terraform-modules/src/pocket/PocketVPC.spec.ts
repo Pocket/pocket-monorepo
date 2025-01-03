@@ -1,6 +1,6 @@
-import { Testing } from 'cdktf';
-import { PocketVPC } from './PocketVPC.js';
 import 'cdktf/lib/testing/adapters/jest';
+import { Testing } from 'cdktf';
+import { PocketVPC } from './PocketVPC.ts';
 import { dataAwsVpc } from '@cdktf/provider-aws';
 
 test('renders a VPC with minimal config', () => {

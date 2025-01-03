@@ -1,5 +1,5 @@
 import { Testing } from 'cdktf';
-import { ApplicationECSAlbCodeDeploy } from './ApplicationECSAlbCodeDeploy.js';
+import { ApplicationECSAlbCodeDeploy } from './ApplicationECSAlbCodeDeploy.ts';
 
 describe('ApplicationECSAlbCodeDeploy', () => {
   it('renders a CodeDeploy without a sns', () => {

@@ -1,4 +1,4 @@
-import { getUnleash, mockUnleash } from '.';
+import { getUnleash, mockUnleash } from './index.ts';
 import { Unleash, destroy } from 'unleash-client';
 
 describe('feature flags client', () => {

@@ -10,6 +10,7 @@ import {
   syntheticsCanary,
 } from '@cdktf/provider-aws';
 import { Construct } from 'constructs';
+import _ from 'lodash';
 
 /**
  *
@@ -217,10 +218,13 @@ export class PocketAwsSyntheticChecks extends Construct {
           executionRoleArn: syntheticRole.arn,
           handler: 'synthetic.uptime',
           runConfig: {
-            environmentVariables: {
-              UPTIME_BODY: uptimeConfig.response,
-              UPTIME_URL: uptimeConfig.url,
-            },
+            environmentVariables: _.omitBy(
+              {
+                UPTIME_BODY: uptimeConfig.response,
+                UPTIME_URL: uptimeConfig.url,
+              },
+              _.isNull,
+            ),
             timeoutInSeconds: 180, // 3 minute timeout
           },
           runtimeVersion: 'syn-nodejs-puppeteer-6.2',
@@ -256,14 +260,16 @@ export class PocketAwsSyntheticChecks extends Construct {
           treatMissingData: 'breaching',
 
           alarmActions:
-            config.alarmTopicArn !== undefined
-              ? [this.config.alarmTopicArn]
-              : null,
+            this.config.alarmTopicArn === undefined ||
+            this.config.alarmTopicArn === null
+              ? undefined
+              : [this.config.alarmTopicArn],
           insufficientDataActions: [],
           okActions:
-            config.alarmTopicArn !== undefined
-              ? [this.config.alarmTopicArn]
-              : null,
+            this.config.alarmTopicArn === undefined ||
+            this.config.alarmTopicArn === null
+              ? undefined
+              : [this.config.alarmTopicArn],
         },
       );
     }
@@ -279,13 +285,16 @@ export class PocketAwsSyntheticChecks extends Construct {
           executionRoleArn: syntheticRole.arn,
           handler: 'synthetic.query',
           runConfig: {
-            environmentVariables: {
-              GRAPHQL_ENDPOINT: queryConfig.endpoint,
-              GRAPHQL_USERID: queryConfig.userId,
-              GRAPHQL_JMESPATH: queryConfig.jmespath,
-              GRAPHQL_QUERY: queryConfig.data,
-              GRAPHQL_RESPONSE: queryConfig.response,
-            },
+            environmentVariables: _.omitBy(
+              {
+                GRAPHQL_ENDPOINT: queryConfig.endpoint,
+                GRAPHQL_USERID: queryConfig.userId,
+                GRAPHQL_JMESPATH: queryConfig.jmespath,
+                GRAPHQL_QUERY: queryConfig.data,
+                GRAPHQL_RESPONSE: queryConfig.response,
+              },
+              _.isNull,
+            ),
             timeoutInSeconds: 180, // 3 minute timeout
           },
           runtimeVersion: 'syn-nodejs-puppeteer-6.2',
@@ -320,16 +329,17 @@ export class PocketAwsSyntheticChecks extends Construct {
           statistic: 'Average',
           threshold: 66,
           treatMissingData: 'breaching',
-
           alarmActions:
-            config.alarmTopicArn !== undefined
-              ? [this.config.alarmTopicArn]
-              : [],
+            this.config.alarmTopicArn === undefined ||
+            this.config.alarmTopicArn === null
+              ? undefined
+              : [this.config.alarmTopicArn],
           insufficientDataActions: [],
           okActions:
-            config.alarmTopicArn !== undefined
-              ? [this.config.alarmTopicArn]
-              : [],
+            this.config.alarmTopicArn === undefined ||
+            this.config.alarmTopicArn === null
+              ? undefined
+              : [this.config.alarmTopicArn],
         },
       );
     }

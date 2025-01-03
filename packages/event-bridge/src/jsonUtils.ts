@@ -1,4 +1,4 @@
-import { isArray, isEmpty, isObject, transform } from 'lodash';
+import _ from 'lodash';
 
 /**
  * For a given object, remove all empty objects from it
@@ -6,24 +6,25 @@ import { isArray, isEmpty, isObject, transform } from 'lodash';
  * @returns Object that has all empty objects removed {}
  */
 export const removeEmptyObjects = (obj: Record<string, any>): any => {
-  if (isArray(obj)) {
+  if (_.isArray(obj)) {
     // Recursively clean each element in the array
     return obj
       .map(removeEmptyObjects) // Apply cleaning to each element
       .filter(
-        (value) => !(isObject(value) && !isArray(value) && isEmpty(value)),
+        (value) =>
+          !(_.isObject(value) && !_.isArray(value) && _.isEmpty(value)),
       ); // Remove empty objects
-  } else if (isObject(obj) && !isArray(obj)) {
+  } else if (_.isObject(obj) && !_.isArray(obj)) {
     // Recursively clean each property in the object
-    return transform(
+    return _.transform(
       obj,
       (result, value, key) => {
         const cleanedValue = removeEmptyObjects(value);
         if (
           !(
-            isObject(cleanedValue) &&
-            !isArray(cleanedValue) &&
-            isEmpty(cleanedValue)
+            _.isObject(cleanedValue) &&
+            !_.isArray(cleanedValue) &&
+            _.isEmpty(cleanedValue)
           )
         ) {
           result[key] = cleanedValue;

@@ -6,19 +6,29 @@ import {
 } from '@cdktf/provider-aws';
 import { Construct } from 'constructs';
 
-export interface ApplicationAutoscalingProps extends TerraformMetaArguments {
+interface ApplicationAutoscalingPropsBase extends TerraformMetaArguments {
   ecsClusterName: string;
   ecsServiceName: string;
   prefix: string;
   scalableDimension: string;
   scaleInThreshold: number;
   scaleOutThreshold: number;
-  stepScaleInAdjustment: number;
-  stepScaleOutAdjustment: number;
   tags?: { [key: string]: string };
   targetMaxCapacity: number;
   targetMinCapacity: number;
 }
+
+interface ApplicationAutoscalingOut extends ApplicationAutoscalingPropsBase {
+  stepScaleOutAdjustment: number;
+}
+
+interface ApplicationAutoscalingIn extends ApplicationAutoscalingPropsBase {
+  stepScaleInAdjustment: number;
+}
+
+export type ApplicationAutoscalingProps =
+  | ApplicationAutoscalingOut
+  | ApplicationAutoscalingIn;
 
 /*
  * Generates an AutoScaling group
@@ -115,22 +125,24 @@ export class ApplicationAutoscaling extends Construct {
     target: appautoscalingTarget.AppautoscalingTarget,
     type: 'In' | 'Out',
   ): appautoscalingPolicy.AppautoscalingPolicy {
-    let stepAdjustment;
+    let stepAdjustment: appautoscalingPolicy.AppautoscalingPolicyStepScalingPolicyConfigurationStepAdjustment[];
 
-    if (type === 'In') {
+    if (type === 'In' && 'stepScaleInAdjustment' in config) {
       stepAdjustment = [
         {
           metricIntervalUpperBound: '0',
           scalingAdjustment: config.stepScaleInAdjustment,
         },
       ];
-    } else {
+    } else if (type === 'Out' && 'stepScaleOutAdjustment' in config) {
       stepAdjustment = [
         {
           metricIntervalLowerBound: '0',
           scalingAdjustment: config.stepScaleOutAdjustment,
         },
       ];
+    } else {
+      throw new Error('Step scaling adjustment is required');
     }
 
     const appAutoscaling = new appautoscalingPolicy.AppautoscalingPolicy(

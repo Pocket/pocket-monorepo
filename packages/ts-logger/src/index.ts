@@ -1,5 +1,5 @@
-export * from './logger';
-export * from './morgan';
+export * from './logger.ts';
+export * from './morgan.ts';
 
-import { Logger, createLogger } from './logger';
+import { Logger, createLogger } from './logger.ts';
 export const serverLogger: Logger = createLogger();

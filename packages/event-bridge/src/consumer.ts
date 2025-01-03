@@ -1,8 +1,8 @@
 import { Consumer, ConsumerOptions } from 'sqs-consumer';
-import { IncomingPocketEvent } from './events';
+import { IncomingPocketEvent } from './events/index.ts';
 import { type Message } from '@aws-sdk/client-sqs';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { sqsPollerEventBridgeEvent } from './utils';
+import { sqsPollerEventBridgeEvent } from './utils.ts';
 
 export type PocketEventBridgeSQSConsumerOptions = Omit<
   ConsumerOptions,

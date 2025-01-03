@@ -12,13 +12,28 @@ import {
   ApplicationECSIAMProps,
   ApplicationECSService,
   ApplicationECSServiceProps,
-} from '../index.js';
-import { PocketVPC } from './PocketVPC.js';
+} from '../index.ts';
+import { PocketVPC } from './PocketVPC.ts';
 
 export type CreateECSServiceArgs = {
   ecs: ApplicationECSService;
   cluster: ApplicationECSCluster;
 };
+
+interface VPCConfig {
+  vpcId: string;
+  privateSubnetIds: string[];
+  publicSubnetIds: string[];
+}
+
+interface AutoscalingConfig {
+  targetMinCapacity: number;
+  targetMaxCapacity: number;
+  stepScaleInAdjustment: number;
+  stepScaleOutAdjustment: number;
+  scaleInThreshold: number;
+  scaleOutThreshold: number;
+}
 
 export interface PocketECSApplicationProps extends TerraformMetaArguments {
   /**
@@ -27,7 +42,7 @@ export interface PocketECSApplicationProps extends TerraformMetaArguments {
    */
   prefix: string;
 
-  shortName?: string;
+  shortName: string;
   /**
    * Optional config to define the region for the service.
    * This is used to define the cloudwatch dashboards
@@ -39,11 +54,7 @@ export interface PocketECSApplicationProps extends TerraformMetaArguments {
    * this construct. A default Pocket VPC will be used if not
    * provided.
    */
-  vpcConfig?: {
-    vpcId: string;
-    privateSubnetIds: string[];
-    publicSubnetIds: string[];
-  };
+  vpcConfig?: VPCConfig;
   /**
    * Tags for all resources created by this construct.
    */
@@ -67,14 +78,7 @@ export interface PocketECSApplicationProps extends TerraformMetaArguments {
    * Options for configuring the autoscaling policy for
    * the ECS service created by this construct.
    */
-  autoscalingConfig?: {
-    targetMinCapacity?: number;
-    targetMaxCapacity?: number;
-    stepScaleInAdjustment?: number;
-    stepScaleOutAdjustment?: number;
-    scaleInThreshold?: number;
-    scaleOutThreshold?: number;
-  };
+  autoscalingConfig?: Partial<AutoscalingConfig>;
   /**
    * Option for defining Cloudwatch alarms
    */
@@ -93,10 +97,14 @@ const DEFAULT_AUTOSCALING_CONFIG = {
   stepScaleOutAdjustment: 2,
 };
 
+type ValidatedConfig = PocketECSApplicationProps & {
+  autoscalingConfig: AutoscalingConfig;
+};
+
 export class PocketECSApplication extends Construct {
   public readonly ecsService: ApplicationECSService;
-  private readonly config: PocketECSApplicationProps;
-  private readonly pocketVPC: PocketECSApplicationProps['vpcConfig'];
+  private readonly config: ValidatedConfig;
+  private readonly pocketVPC: VPCConfig;
 
   constructor(
     scope: Construct,
@@ -106,12 +114,6 @@ export class PocketECSApplication extends Construct {
     super(scope, name);
 
     this.config = PocketECSApplication.validateConfig(config);
-
-    // use default auto-scaling config, but update any user-provided values
-    this.config.autoscalingConfig = {
-      ...DEFAULT_AUTOSCALING_CONFIG,
-      ...config.autoscalingConfig,
-    };
 
     this.pocketVPC = this.getVpcConfig(config);
 
@@ -132,9 +134,7 @@ export class PocketECSApplication extends Construct {
    * @param config
    * @private
    */
-  private getVpcConfig(
-    config: PocketECSApplicationProps,
-  ): PocketECSApplicationProps['vpcConfig'] {
+  private getVpcConfig(config: PocketECSApplicationProps): VPCConfig {
     if (config.vpcConfig !== undefined) {
       return {
         vpcId: config.vpcConfig.vpcId,
@@ -163,10 +163,16 @@ export class PocketECSApplication extends Construct {
    */
   private static validateConfig(
     config: PocketECSApplicationProps,
-  ): PocketECSApplicationProps {
+  ): ValidatedConfig {
     PocketECSApplication.validateAlarmsConfig(config.alarms);
-
-    return config;
+    return {
+      ...config,
+      // use default auto-scaling config, but update any user-provided values
+      autoscalingConfig: {
+        ...DEFAULT_AUTOSCALING_CONFIG,
+        ...config.autoscalingConfig,
+      },
+    } as ValidatedConfig;
   }
 
   private static validateAlarmsConfig(
@@ -193,6 +199,7 @@ export class PocketECSApplication extends Construct {
 
     config.alarms?.forEach(
       (alarm: cloudwatchMetricAlarm.CloudwatchMetricAlarmConfig) => {
+        if (alarm.datapointsToAlarm === undefined) return;
         if (alarm.datapointsToAlarm > alarm.evaluationPeriods) {
           throw new Error(`${alarm.alarmName}: ${errorMessage}`);
         }

@@ -2,7 +2,7 @@ import {
   ApplicationElasticacheCluster,
   ApplicationElasticacheClusterProps,
   ApplicationElasticacheEngine,
-} from './ApplicationElasticacheCluster.js';
+} from './ApplicationElasticacheCluster.ts';
 import { Construct } from 'constructs';
 import { dataAwsVpc, elasticacheReplicationGroup } from '@cdktf/provider-aws';
 
@@ -62,6 +62,9 @@ export class ApplicationRedis extends ApplicationElasticacheCluster {
     );
 
     const subnetGroup = ApplicationRedis.createSubnet(scope, config);
+    if (config.node === undefined) {
+      throw new Error('Node configuration is required');
+    }
 
     return new elasticacheReplicationGroup.ElasticacheReplicationGroup(
       scope,

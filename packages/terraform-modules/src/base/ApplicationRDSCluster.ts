@@ -94,10 +94,10 @@ export class ApplicationRDSCluster extends Construct {
             cidrBlocks: [appVpc.cidrBlock],
             // the following are included due to a bug
             // https://github.com/hashicorp/terraform-cdk/issues/223
-            description: null,
-            ipv6CidrBlocks: null,
-            prefixListIds: null,
-            securityGroups: null,
+            description: undefined,
+            ipv6CidrBlocks: undefined,
+            prefixListIds: undefined,
+            securityGroups: undefined,
           },
         ],
         egress: [
@@ -219,7 +219,7 @@ export class ApplicationRDSCluster extends Construct {
     );
 
     const secretValues: {
-      engine: string;
+      engine?: string;
       host: string;
       read_host: string;
       username: string;
@@ -229,7 +229,7 @@ export class ApplicationRDSCluster extends Construct {
       database_url?: string;
       reader_database_url?: string;
     } = {
-      engine: engine,
+      engine,
       host: rds.endpoint,
       read_host: rds.readerEndpoint,
       username: rds.masterUsername,

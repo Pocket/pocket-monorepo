@@ -42,6 +42,9 @@ export default tseslint.config(
       '**/*.js',
       'codegen.ts',
       'prisma/**/*',
+      'jest.config.ts',
+      'jest.setup.ts',
+      '**/__generated__/**/*',
     ],
   },
   {

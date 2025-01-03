@@ -1,7 +1,7 @@
 import {
   ApplicationECSContainerDefinitionProps,
   buildDefinitionJSON,
-} from './ApplicationECSContainerDefinition';
+} from './ApplicationECSContainerDefinition.ts';
 
 describe('ApplicationECSContainerDefinition', () => {
   describe('buildDefinitionJSON', () => {

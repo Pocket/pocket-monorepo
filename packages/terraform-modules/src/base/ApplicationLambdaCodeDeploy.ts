@@ -154,7 +154,10 @@ export class ApplicationLambdaCodeDeploy extends Construct {
   private setupCodeDeployNotifications(
     codeDeployApp: codedeployApp.CodedeployApp,
   ) {
-    const eventTypeIds = [];
+    if (this.config.deploySnsTopicArn === undefined) {
+      throw new Error('deploySnsTopicArn is required for notifications');
+    }
+    const eventTypeIds: string[] = [];
 
     // the OR condition here sets the notification for failed deploys which is a default when no notification preferences are provided
     if (

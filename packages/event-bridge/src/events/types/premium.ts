@@ -1,5 +1,5 @@
-import { BaseEvent } from './base';
-import { PocketEventType } from '../events';
+import { BaseEvent } from './base.ts';
+import { PocketEventType } from '../events.ts';
 
 export interface PremiumPurchaseEvent extends BaseEvent {
   // 'source': 'web-repo';

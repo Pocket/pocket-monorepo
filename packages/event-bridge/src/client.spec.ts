@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/node';
 import { EventBridgeClient } from '@aws-sdk/client-eventbridge';
-import { AccountDelete, PocketEventType } from './events';
-import { PocketEventBridgeClient } from './client';
+import { AccountDelete, PocketEventType } from './events/index.ts';
+import { PocketEventBridgeClient } from './client.ts';
 
 describe('EventBusHandler', () => {
   const clientStub: jest.SpyInstance = jest

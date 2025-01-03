@@ -1,5 +1,5 @@
 import { initialize, Unleash, UnleashConfig } from 'unleash-client';
-export { mockUnleash } from './mockClient';
+export { mockUnleash } from './mockClient.ts';
 export type { Unleash } from 'unleash-client';
 
 /*

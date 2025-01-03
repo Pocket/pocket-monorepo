@@ -1,8 +1,8 @@
 import { SQSRecord } from 'aws-lambda';
-import { sqsLambdaEventBridgeEvent } from '../../utils';
-import { PocketEventType } from '../events';
-import { ForgotPasswordRequest } from './forgotPasswordRequest';
-import { IncomingBaseEvent } from './base';
+import { sqsLambdaEventBridgeEvent } from '../../utils.ts';
+import { PocketEventType } from '../events.ts';
+import { ForgotPasswordRequest } from './forgotPasswordRequest.ts';
+import { IncomingBaseEvent } from './base.ts';
 
 describe('forgotPasswordRequest event', () => {
   it('throw an error if forgotPassword event payload is missing email', async () => {

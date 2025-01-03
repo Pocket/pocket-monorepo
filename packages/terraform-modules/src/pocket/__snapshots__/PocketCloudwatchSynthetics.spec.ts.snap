@@ -342,8 +342,6 @@ exports[`Pocket Cloudwatch Synthetics renders desired AWS Synthetic Checks 1`] =
   "resource": {
     "aws_cloudwatch_metric_alarm": {
       "test-synthetics_test-synthetics_synthetic_check_alarm_query_0_161FA4E1": {
-        "alarm_actions": [
-        ],
         "alarm_description": "Alert when \${aws_synthetics_canary.test-synthetics_test-synthetics_synthetic_check_query_0_ECB1B9B3.name} canary success percentage has decreased below 66% in the last 15 minutes",
         "alarm_name": "\${aws_synthetics_canary.test-synthetics_test-synthetics_synthetic_check_query_0_ECB1B9B3.name}",
         "comparison_operator": "LessThanThreshold",
@@ -355,15 +353,12 @@ exports[`Pocket Cloudwatch Synthetics renders desired AWS Synthetic Checks 1`] =
         ],
         "metric_name": "SuccessPercent",
         "namespace": "CloudWatchSynthetics",
-        "ok_actions": [
-        ],
         "period": 300,
         "statistic": "Average",
         "threshold": 66,
         "treat_missing_data": "breaching"
       },
       "test-synthetics_test-synthetics_synthetic_check_alarm_uptime_0_47F383EB": {
-        "alarm_actions": null,
         "alarm_description": "Alert when \${aws_synthetics_canary.test-synthetics_test-synthetics_synthetic_check_uptime_0_2398A479.name} canary success percentage has decreased below 66% in the last 15 minutes",
         "alarm_name": "\${aws_synthetics_canary.test-synthetics_test-synthetics_synthetic_check_uptime_0_2398A479.name}",
         "comparison_operator": "LessThanThreshold",
@@ -375,7 +370,6 @@ exports[`Pocket Cloudwatch Synthetics renders desired AWS Synthetic Checks 1`] =
         ],
         "metric_name": "SuccessPercent",
         "namespace": "CloudWatchSynthetics",
-        "ok_actions": null,
         "period": 300,
         "statistic": "Average",
         "threshold": 66,

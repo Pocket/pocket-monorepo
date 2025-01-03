@@ -5,7 +5,7 @@ import {
 } from '@cdktf/provider-aws';
 import { TerraformMetaArguments, TerraformProvider } from 'cdktf';
 import { Construct } from 'constructs';
-import { getRootDomain } from '../utilities.js';
+import { getRootDomain } from '../utilities.ts';
 
 export interface RootDNSProps extends TerraformMetaArguments {
   domain: string;

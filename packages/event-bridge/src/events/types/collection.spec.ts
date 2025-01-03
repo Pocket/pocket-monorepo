@@ -1,7 +1,7 @@
 import { SQSRecord } from 'aws-lambda';
-import { sqsLambdaEventBridgeEvent } from '../../utils';
-import { PocketEventType } from '../events';
-import { CollectionCreated } from './collection';
+import { sqsLambdaEventBridgeEvent } from '../../utils.ts';
+import { PocketEventType } from '../events.ts';
+import { CollectionCreated } from './collection.ts';
 
 describe('collection event', () => {
   it('throw an error if collection event payload is missing collection', async () => {
@@ -58,9 +58,9 @@ describe('collection event', () => {
         }),
       }),
     };
-    const event: CollectionCreated = sqsLambdaEventBridgeEvent(
+    const event: CollectionCreated = (await sqsLambdaEventBridgeEvent(
       recordWithNumberBool as SQSRecord,
-    ) as CollectionCreated;
+    )) as CollectionCreated;
     expect(event.detail.collection.IABChildCategory).toBe(undefined);
   });
 });
