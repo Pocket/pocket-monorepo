@@ -11,7 +11,7 @@ import {
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
-import { config } from './config';
+import { config } from './config/index.ts';
 import {
   ApplicationRDSCluster,
   ApplicationSQSQueue,

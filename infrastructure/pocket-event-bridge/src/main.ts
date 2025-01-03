@@ -8,12 +8,12 @@ import {
   ApplicationEventBusProps,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
-import { ProspectEvents } from './event-rules/prospect-events/prospectEventRules';
+import { ProspectEvents } from './event-rules/prospect-events/prospectEventRules.ts';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
-import { config } from './config';
-import { AccountDeleteMonitorEvents } from './event-rules/account-delete-monitor';
-import { AllEventsRule } from './event-rules/all-events/allEventRules';
-import { PocketEventToTopic } from './eventBridge';
+import { config } from './config/index.ts';
+import { AccountDeleteMonitorEvents } from './event-rules/account-delete-monitor/index.ts';
+import { AllEventsRule } from './event-rules/all-events/allEventRules.ts';
+import { PocketEventToTopic } from './eventBridge.ts';
 import { PocketEventType } from '@pocket-tools/event-bridge';
 
 class PocketEventBus extends TerraformStack {

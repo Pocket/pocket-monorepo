@@ -3,14 +3,11 @@
     "compilerOptions": {
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true,
-      "target": "es2019",
-      "module": "commonjs",
-      "lib": [
-        "es2019",
-        "es2020.bigint",
-        "es2020.string",
-        "es2020.symbol.wellknown"
-      ],
+      "rewriteRelativeImportExtensions": true,
+      "allowImportingTsExtensions": true,
+      "target": "ES2024",
+      "module": "NodeNext",
+      "moduleResolution": "NodeNext",
       "removeComments": true,
       "esModuleInterop": true,
       "noEmitOnError": false,

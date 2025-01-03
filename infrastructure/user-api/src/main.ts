@@ -8,7 +8,7 @@ import {
   dataAwsRegion,
   dataAwsSnsTopic,
 } from '@cdktf/provider-aws';
-import { config } from './config';
+import { config } from './config/index.ts';
 import {
   PocketALBApplication,
   PocketVPC,

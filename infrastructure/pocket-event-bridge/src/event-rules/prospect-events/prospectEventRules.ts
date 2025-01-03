@@ -5,7 +5,7 @@ import {
   ApplicationEventBus,
   PocketEventBridgeTargets,
 } from '@pocket-tools/terraform-modules';
-import { config } from '../../config';
+import { config } from '../../config/index.ts';
 import {
   dataAwsSqsQueue,
   snsTopic,
@@ -15,8 +15,8 @@ import {
   dataAwsSnsTopic,
 } from '@cdktf/provider-aws';
 import { resource } from '@cdktf/provider-null';
-import { eventConfig } from './eventConfig';
-import { createDeadLetterQueueAlarm } from '../utils';
+import { eventConfig } from './eventConfig.ts';
+import { createDeadLetterQueueAlarm } from '../utils.ts';
 
 /**
  * Purposes:

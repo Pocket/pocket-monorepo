@@ -1,4 +1,4 @@
-import { config } from './config';
+import { config } from './config/index.ts';
 import { PocketALBApplication } from '@pocket-tools/terraform-modules';
 import {
   dataAwsCallerIdentity,

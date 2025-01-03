@@ -2,6 +2,7 @@
   "name": "image-api-cdk",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "main": "dist/main.js",
   "types": "src/main.ts",
   "scripts": {
@@ -27,6 +28,6 @@
     "@types/node": "^22.8.2",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "typescript": "5.5.4"
+    "typescript": "5.7.2"
   }
 }

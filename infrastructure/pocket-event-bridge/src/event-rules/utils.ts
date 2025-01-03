@@ -1,4 +1,4 @@
-import { config } from '../config';
+import { config } from '../config/index.ts';
 import { cloudwatchMetricAlarm, dataAwsSnsTopic } from '@cdktf/provider-aws';
 import { Construct } from 'constructs';
 

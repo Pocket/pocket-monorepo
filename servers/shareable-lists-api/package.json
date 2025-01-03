@@ -75,7 +75,7 @@
     "ts-jest": "29.2.5",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "typescript": "5.5.4"
+    "typescript": "5.7.2"
   },
   "prisma": {
     "seed": "ts-node --emit=false prisma/seed.ts"

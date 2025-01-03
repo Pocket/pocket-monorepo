@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import { App, S3Backend, TerraformStack } from 'cdktf';
-import { config } from './config';
+import { config } from './config/index.ts';
 import {
   ApplicationServerlessRedis,
   PocketALBApplication,

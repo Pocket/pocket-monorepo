@@ -1,4 +1,4 @@
-import { config as globalConfig } from '../../config';
+import { config as globalConfig } from '../../config/index.ts';
 
 export const config = {
   queueCheckDelete: {

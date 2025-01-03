@@ -1,8 +1,8 @@
-import { config } from './config';
+import { config } from './config/index.ts';
 import {
   SharedSnowplowConsumerApp,
   SharedSnowplowConsumerProps,
-} from './sharedSnowplowConsumerApp';
+} from './sharedSnowplowConsumerApp.ts';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
 import {
   provider as awsProvider,

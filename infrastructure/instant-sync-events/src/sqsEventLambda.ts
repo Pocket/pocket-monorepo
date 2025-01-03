@@ -1,4 +1,4 @@
-import { config as stackConfig } from './config';
+import { config as stackConfig } from './config/index.ts';
 
 import {
   dataAwsSsmParameter,
