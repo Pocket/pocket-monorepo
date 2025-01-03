@@ -1,6 +1,6 @@
-import { CollectionApprovedItemPayload } from '../types';
-import { config } from '../config';
-import { collectionIdFromCorpus } from '../queries';
+import { CollectionApprovedItemPayload } from '../types.ts';
+import { config } from '../config.ts';
+import { collectionIdFromCorpus } from '../queries/index.ts';
 
 /**
  * Update a Collection entry with additional metadata from
