@@ -1,4 +1,4 @@
-import { sendForgotPasswordEmail } from '../braze';
+import { sendForgotPasswordEmail } from '../braze.ts';
 import { PocketEventType, PocketEvent } from '@pocket-tools/event-bridge';
 
 /**

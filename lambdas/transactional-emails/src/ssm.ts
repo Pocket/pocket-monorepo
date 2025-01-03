@@ -1,5 +1,5 @@
 import { GetParameterCommand, SSM } from '@aws-sdk/client-ssm';
-import { config } from './config';
+import { config } from './config.ts';
 
 const client = new SSM({ region: config.aws.region });
 
