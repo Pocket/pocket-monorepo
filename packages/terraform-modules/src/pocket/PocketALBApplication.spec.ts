@@ -2,7 +2,7 @@ import { TerraformStack, Testing } from 'cdktf';
 import {
   PocketALBApplication,
   PocketALBApplicationProps,
-} from './PocketALBApplication';
+} from './PocketALBApplication.ts';
 
 describe('PocketALBApplication', () => {
   let BASE_CONFIG: PocketALBApplicationProps;

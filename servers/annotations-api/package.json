@@ -11,12 +11,12 @@
     "package.json"
   ],
   "scripts": {
-    "prebuild": "graphql-codegen",
     "build": "rm -rf dist && tsc && npm run build-schema",
     "build-schema": "node dist/server/apollo/buildSchema.js",
     "dev": "npm run build && npm run watch",
     "format": "eslint --fix",
     "lint": "eslint --fix-dry-run",
+    "prebuild": "graphql-codegen",
     "start": "node dist/main.js",
     "test": "jest \"\\.spec\\.ts\"",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",

@@ -2,11 +2,11 @@ import { Testing } from 'cdktf';
 import {
   PocketEventBridgeRuleWithMultipleTargets,
   PocketEventBridgeProps,
-} from './PocketEventBridgeRuleWithMultipleTargets';
+} from './PocketEventBridgeRuleWithMultipleTargets.ts';
 import {
   PocketVersionedLambda,
   PocketVersionedLambdaProps,
-} from './PocketVersionedLambda';
+} from './PocketVersionedLambda.ts';
 import { LAMBDA_RUNTIMES } from '../base/ApplicationVersionedLambda.ts';
 import { sqsQueue } from '@cdktf/provider-aws';
 

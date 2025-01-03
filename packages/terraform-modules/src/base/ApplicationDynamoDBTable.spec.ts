@@ -5,7 +5,7 @@ import {
   ApplicationDynamoDBProps,
   ApplicationDynamoDBTableCapacityMode,
   ApplicationDynamoDBTableStreamViewType,
-} from './ApplicationDynamoDBTable';
+} from './ApplicationDynamoDBTable.ts';
 
 describe('ApplicationDynamoDBTable', () => {
   let BASE_CONFIG: ApplicationDynamoDBProps;
@@ -198,7 +198,7 @@ describe('ApplicationDynamoDBTable', () => {
       );
 
       expect(
-        applicationDynamoDBTable.dynamodb.lifecycle.preventDestroy,
+        applicationDynamoDBTable.dynamodb.lifecycle?.preventDestroy,
       ).toEqual(false);
     });
     expect(synthed).toMatchSnapshot();

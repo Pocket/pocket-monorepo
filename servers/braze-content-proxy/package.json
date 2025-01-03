@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "main": "dist/main.js",
   "scripts": {
-    "prebuild": "graphql-codegen",
     "build": "rm -rf dist && tsc",
     "dev": "pnpm run build && pnpm run watch",
     "format": "eslint --fix",
     "lint": "eslint --fix-dry-run",
+    "prebuild": "graphql-codegen",
     "start": "node dist/main.js",
     "test": "jest \"\\.spec\\.ts\"",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",

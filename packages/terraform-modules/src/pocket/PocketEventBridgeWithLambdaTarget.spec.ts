@@ -2,7 +2,7 @@ import { Testing } from 'cdktf';
 import {
   PocketEventBridgeWithLambdaTarget,
   PocketEventBridgeWithLambdaTargetProps,
-} from './PocketEventBridgeWithLambdaTarget';
+} from './PocketEventBridgeWithLambdaTarget.ts';
 import { LAMBDA_RUNTIMES } from '../base/ApplicationVersionedLambda.ts';
 
 const config: PocketEventBridgeWithLambdaTargetProps = {

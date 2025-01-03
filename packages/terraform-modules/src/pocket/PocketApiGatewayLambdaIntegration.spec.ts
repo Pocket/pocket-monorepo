@@ -3,7 +3,7 @@ import { LAMBDA_RUNTIMES } from '../base/ApplicationVersionedLambda.ts';
 import {
   PocketApiGateway,
   PocketApiGatewayProps,
-} from './PocketApiGatewayLambdaIntegration';
+} from './PocketApiGatewayLambdaIntegration.ts';
 
 const config: PocketApiGatewayProps = {
   name: 'test-api-lambda',
