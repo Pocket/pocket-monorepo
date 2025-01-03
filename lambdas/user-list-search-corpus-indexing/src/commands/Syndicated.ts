@@ -1,7 +1,7 @@
-import { SyndicatedItemPayload } from '../types';
-import { config } from '../config';
-import { upsertApprovedItem } from './ApprovedItem';
-import { originalCorpusId } from '../queries';
+import { SyndicatedItemPayload } from '../types.ts';
+import { config } from '../config.ts';
+import { upsertApprovedItem } from './ApprovedItem.ts';
+import { originalCorpusId } from '../queries/index.ts';
 
 /**
  * Index a Syndicated Item in the search corpus.

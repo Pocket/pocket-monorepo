@@ -1,4 +1,4 @@
-import { config } from './config';
+import { config } from './config.ts';
 import * as Sentry from '@sentry/aws-serverless';
 Sentry.init({
   dsn: config.sentry.dsn,
@@ -16,14 +16,14 @@ import {
   CollectionApprovedItemPayload,
   SyndicatedItemPayload,
   EventPayload,
-} from './types';
-import { upsertCollection } from './commands/Collection';
-import { mergeCollection } from './commands/ApprovedItemCollection';
-import { upsertSyndicatedItem } from './commands/Syndicated';
-import { upsertApprovedItem } from './commands/ApprovedItem';
-import { postRetry } from './postRetry';
+} from './types.ts';
+import { upsertCollection } from './commands/Collection.ts';
+import { mergeCollection } from './commands/ApprovedItemCollection.ts';
+import { upsertSyndicatedItem } from './commands/Syndicated.ts';
+import { upsertApprovedItem } from './commands/ApprovedItem.ts';
+import { postRetry } from './postRetry.ts';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { removeApprovedItem } from './commands/RemoveItem';
+import { removeApprovedItem } from './commands/RemoveItem.ts';
 import {
   PocketEventType,
   sqsLambdaEventBridgeEvent,
