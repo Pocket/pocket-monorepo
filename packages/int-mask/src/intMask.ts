@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import s from 'underscore.string';
-import Mask from './mask';
+import Mask from './mask.ts';
 
 const maskSym = Symbol('Mask memoize');
 
