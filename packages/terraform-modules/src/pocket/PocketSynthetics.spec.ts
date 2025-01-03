@@ -2,7 +2,7 @@ import { Testing } from 'cdktf';
 import {
   PocketSyntheticProps,
   PocketSyntheticCheck,
-} from './PocketSynthetics.js';
+} from './PocketSynthetics.ts';
 
 const config: PocketSyntheticProps = {
   uri: 'acme.getpocket.dev',

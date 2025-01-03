@@ -1,4 +1,4 @@
-import { validatePagination } from './validatePagination';
+import { validatePagination } from './validatePagination.ts';
 
 describe('pagination validation', () => {
   const defaultPageSize = 30;

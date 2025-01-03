@@ -5,7 +5,7 @@ import {
   PocketVersionedLambdaProps,
   ApplicationBaseDNS,
   ApplicationCertificate,
-} from '../index.js';
+} from '../index.ts';
 import { Fn, TerraformMetaArguments } from 'cdktf';
 import {
   lambdaPermission,

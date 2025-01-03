@@ -2,7 +2,7 @@ import { Testing } from 'cdktf';
 import {
   ApplicationECSIAM,
   ApplicationECSIAMProps,
-} from './ApplicationECSIAM.js';
+} from './ApplicationECSIAM.ts';
 
 const BASE_CONFIG: ApplicationECSIAMProps = {
   prefix: 'abides-dev',

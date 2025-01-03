@@ -1,4 +1,4 @@
-import { DataLoaderCacheInterface } from './cache/interface';
+import { DataLoaderCacheInterface } from './cache/interface.ts';
 
 export type BatchFnProps<T, U> = {
   /**

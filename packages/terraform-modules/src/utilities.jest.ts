@@ -1,4 +1,4 @@
-import { getRootDomain, truncateString } from './utilities.js';
+import { getRootDomain, truncateString } from './utilities.ts';
 
 describe('utilities', () => {
   describe('getRootDomain()', () => {
