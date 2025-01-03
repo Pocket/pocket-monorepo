@@ -1,12 +1,12 @@
 import { SQSRecord, SQSBatchResponse, SQSBatchItemFailure } from 'aws-lambda';
-import { readClient, writeClient } from './clients';
-import { client } from './sqs';
+import { readClient, writeClient } from './clients.ts';
+import { client } from './sqs.ts';
 import {
   SendMessageBatchCommand,
   SendMessageBatchCommandOutput,
   SendMessageBatchRequestEntry,
 } from '@aws-sdk/client-sqs';
-import { config } from './config';
+import { config } from './config.ts';
 import { nanoid } from 'nanoid';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { chunk } from 'lodash';
