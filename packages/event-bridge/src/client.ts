@@ -5,10 +5,10 @@ import {
   PutEventsCommandOutput,
   PutEventsRequestEntry,
 } from '@aws-sdk/client-eventbridge';
-import { PocketEvent } from './events';
+import { PocketEvent } from './events/index.ts';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import * as Sentry from '@sentry/node';
-import { OversizedEventError } from './errors';
+import { OversizedEventError } from './errors.ts';
 
 export interface PocketEventBridgeConfig {
   aws?: EventBridgeClientConfig;

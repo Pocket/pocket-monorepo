@@ -1,7 +1,7 @@
 import { SQSRecord } from 'aws-lambda';
-import { sqsLambdaEventBridgeEvent } from '../../utils';
-import { PocketEventType } from '../events';
-import { AccountDelete } from './account';
+import { sqsLambdaEventBridgeEvent } from '../../utils.ts';
+import { PocketEventType } from '../events.ts';
+import { AccountDelete } from './account.ts';
 
 describe('account delete event', () => {
   it('throw an error if account delete event payload is missing email', async () => {

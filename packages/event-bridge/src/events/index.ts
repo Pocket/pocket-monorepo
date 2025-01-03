@@ -1,4 +1,4 @@
-import { PocketEventType } from './events';
+import { PocketEventType } from './events.ts';
 import {
   ForgotPasswordRequest,
   AccountDelete,
@@ -49,10 +49,10 @@ import {
   CollectionUpdated,
   ProspectDismissed,
   IncomingBaseEvent,
-} from './types';
-import { ProspectEvent } from './types/prospect';
-export * from './types';
-export * from './events';
+} from './types/index.ts';
+import { ProspectEvent } from './types/prospect.ts';
+export * from './types/index.ts';
+export * from './events.ts';
 
 export type PocketEvent =
   | ForgotPasswordRequest

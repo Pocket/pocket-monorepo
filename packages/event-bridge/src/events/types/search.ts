@@ -1,5 +1,5 @@
-import { BaseEvent } from './base';
-import { PocketEventType } from '../events';
+import { BaseEvent } from './base.ts';
+import { PocketEventType } from '../events.ts';
 
 export type SearchPocketEventType = PocketEventType.SEARCH_RESPONSE_GENERATED;
 

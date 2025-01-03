@@ -11,6 +11,7 @@
     "prisma"
   ],
   "scripts": {
+    "prebuild": "dotenv -e .env.ci -- prisma generate",
     "build": "rm -rf dist && tsc && npm run build-schema-admin && npm run build-schema-public",
     "build-schema-admin": "node dist/admin/buildSchema.js",
     "build-schema-public": "node dist/public/buildSchema.js",
@@ -23,11 +24,10 @@
     "migrate:deploy": "prisma migrate deploy",
     "migrate:dev": "npm run export-env && prisma migrate dev",
     "migrate:reset": "prisma migrate reset",
-    "prebuild": "dotenv -e .env.ci -- prisma generate",
-    "pretest": "dotenv -e .env.ci -- prisma generate",
-    "pretest-integrations": "dotenv -e .env.ci -- prisma migrate reset --skip-seed --force",
     "start": "npm run migrate:deploy && node dist/main.js",
+    "pretest": "dotenv -e .env.ci -- prisma generate",
     "test": "jest \"\\.spec\\.ts\"",
+    "pretest-integrations": "dotenv -e .env.ci -- prisma migrate reset --skip-seed --force",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",
     "test:watch": "npm test -- --watchAll",
     "watch": "tsc -w & nodemon"
