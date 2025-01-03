@@ -4,11 +4,11 @@
   "description": "",
   "main": "dist/main.js",
   "scripts": {
+    "prebuild": "graphql-codegen",
     "build": "rm -rf dist && tsc",
     "dev": "npm run build && npm run watch",
     "format": "eslint --fix",
     "lint": "eslint --fix-dry-run",
-    "prebuild": "graphql-codegen",
     "start": "node dist/main.js",
     "test": "jest \"\\.spec\\.ts\" --runInBand",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand --force-exit",

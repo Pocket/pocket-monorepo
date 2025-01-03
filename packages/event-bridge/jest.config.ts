@@ -1,11 +1,10 @@
 import type { Config } from 'jest';
 
 const config: Config = {
-  preset: 'ts-jest',
+  preset: 'ts-jest/presets/default-esm', // or other ESM presets
   testEnvironment: 'node',
   testMatch: ['**/?(*.)+(jest|spec).[jt]s?(x)'],
   testPathIgnorePatterns: ['/dist/'],
-  setupFiles: ['./jest.setup.ts'],
   setupFilesAfterEnv: ['jest-extended/all'],
   moduleNameMapper: {
     "^(\\.{1,2}/.*)\\.js$": "$1"

@@ -21,6 +21,8 @@
     "inlineSources": true,
     "sourceRoot": "/",
     "declaration": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true
   }
 }

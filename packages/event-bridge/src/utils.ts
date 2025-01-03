@@ -3,14 +3,14 @@ import {
   IncomingBaseEvent,
   PocketEventType,
   PocketEventTypeMap,
-} from './events';
+} from './events/index.ts';
 import { Ajv } from 'ajv';
 import addFormats from 'ajv-formats';
-import schema from './events/generated/schema.json';
-import { MissingFieldsError } from './errors';
-import { removeEmptyObjects } from './jsonUtils';
+import { MissingFieldsError } from './errors.ts';
+import { removeEmptyObjects } from './jsonUtils.ts';
 import { Message } from '@aws-sdk/client-sqs';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import schema from './events/generated/schema.json' with { type: 'json' };
 
 /**
  * For a given detail type, return the validation schema from our schema.json file
@@ -56,8 +56,8 @@ const parsePocketEvent = <T extends keyof PocketEventTypeMap>(
 
   // https://ajv.js.org/coercion.html
   // Some data comes from Web repo which.. treats everything as a string or bools as 0/1
-  const ajv = new Ajv({ coerceTypes: true });
-  addFormats(ajv);
+  const ajv = new Ajv({ coerceTypes: true, code: { esm: true } });
+  addFormats.default(ajv);
 
   const schemaName = validationSchemaForDetailType(json['detail-type']);
   ajv.compile(schema);

@@ -1,7 +1,7 @@
 // Types below are all copied from:
 
-import { PocketEventType } from '../events';
-import { BaseEvent } from './base';
+import { PocketEventType } from '../events.ts';
+import { BaseEvent } from './base.ts';
 
 export type CorpusPocketEventType =
   | PocketEventType.CORPUS_ITEM_ADDED
