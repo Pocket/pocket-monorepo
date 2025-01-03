@@ -1,2 +1,2 @@
-export * from './intMask';
-export * from './intMaskSlug';
+export * from './intMask.ts';
+export * from './intMaskSlug.ts';
