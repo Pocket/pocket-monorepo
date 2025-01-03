@@ -2,7 +2,7 @@ import { Testing } from 'cdktf';
 import {
   ApplicationECSService,
   ApplicationECSServiceProps,
-} from './ApplicationECSService';
+} from './ApplicationECSService.ts';
 
 let BASE_CONFIG: ApplicationECSServiceProps;
 

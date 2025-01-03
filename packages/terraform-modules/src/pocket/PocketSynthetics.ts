@@ -4,27 +4,29 @@ import {
 } from '@cdktf/provider-newrelic';
 import { Construct } from 'constructs';
 
+interface NRQLConfig {
+  query: string;
+  evaluationOffset: number;
+  violationTimeLimitSeconds: number;
+  closeViolationsOnExpiration: boolean;
+  expirationDuration: number;
+  slideBy: number;
+  aggregationWindow: number;
+  aggregationMethod: string;
+  aggregationDelay: string;
+  critical: {
+    operator: string;
+    threshold: number;
+    thresholdDuration: number;
+    thresholdOccurrences: string;
+  };
+}
+
 export interface PocketSyntheticProps {
   uri: string;
   verifySsl: boolean;
   policyId?: number;
-  nrqlConfig?: {
-    query?: string;
-    evaluationOffset?: number;
-    violationTimeLimitSeconds?: number;
-    closeViolationsOnExpiration?: boolean;
-    expirationDuration?: number;
-    slideBy: number;
-    aggregationWindow: number;
-    aggregationMethod: string;
-    aggregationDelay: string;
-    critical?: {
-      operator?: string;
-      threshold?: number;
-      thresholdDuration?: number;
-      thresholdOccurrences?: string;
-    };
-  };
+  nrqlConfig?: Partial<NRQLConfig>;
 }
 
 const globalCheckLocations = [
@@ -80,22 +82,24 @@ export class PocketSyntheticCheck extends Construct {
       },
     };
 
-    this.config.nrqlConfig = {
+    const nrqlConfig = {
       ...defaultNrqlConfig,
       ...config.nrqlConfig,
-    };
+    } as NRQLConfig;
+
+    this.config.nrqlConfig = nrqlConfig;
 
     new nrqlAlertCondition.NrqlAlertCondition(this, 'alert-condition', {
       name: `${this.name}-nrql`,
       policyId: this.config.policyId,
       fillValue: 0,
       fillOption: 'static',
-      aggregationWindow: this.config.nrqlConfig.aggregationWindow,
-      aggregationMethod: this.config.nrqlConfig.aggregationMethod,
-      aggregationDelay: this.config.nrqlConfig.aggregationDelay,
-      slideBy: this.config.nrqlConfig.slideBy,
+      aggregationWindow: nrqlConfig.aggregationWindow,
+      aggregationMethod: nrqlConfig.aggregationMethod,
+      aggregationDelay: nrqlConfig.aggregationDelay,
+      slideBy: nrqlConfig.slideBy,
       nrql: {
-        query: this.config.nrqlConfig.query,
+        query: nrqlConfig.query,
       },
       violationTimeLimitSeconds:
         this.config.nrqlConfig.violationTimeLimitSeconds,
@@ -103,11 +107,10 @@ export class PocketSyntheticCheck extends Construct {
         this.config.nrqlConfig.closeViolationsOnExpiration,
       expirationDuration: this.config.nrqlConfig.expirationDuration,
       critical: {
-        operator: this.config.nrqlConfig.critical.operator,
-        threshold: this.config.nrqlConfig.critical.threshold,
-        thresholdDuration: this.config.nrqlConfig.critical.thresholdDuration,
-        thresholdOccurrences:
-          this.config.nrqlConfig.critical.thresholdOccurrences,
+        operator: nrqlConfig.critical.operator,
+        threshold: nrqlConfig.critical.threshold,
+        thresholdDuration: nrqlConfig.critical.thresholdDuration,
+        thresholdOccurrences: nrqlConfig.critical.thresholdOccurrences,
       },
     });
   }

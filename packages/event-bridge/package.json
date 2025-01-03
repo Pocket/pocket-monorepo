@@ -19,11 +19,11 @@
     "package.json"
   ],
   "scripts": {
-    "prebuild": "pnpm ts-json-schema-generator --additional-properties --validation-keywords removeEmptyObject --path './src/events/types/index.ts' > ./src/events/generated/schema.json",
     "build": "tsup src/index.ts --format cjs,esm --dts",
     "dev": "pnpm run build --watch",
     "format": "eslint --fix",
     "lint": "eslint --fix-dry-run",
+    "prebuild": "pnpm ts-json-schema-generator --additional-properties --validation-keywords removeEmptyObject --path './src/events/types/index.ts' > ./src/events/generated/schema.json",
     "presemantic-release": "pnpm run build",
     "semantic-release": "semantic-release",
     "test": "jest",

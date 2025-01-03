@@ -3,7 +3,7 @@ import { Testing } from 'cdktf';
 import {
   ApplicationEventBridgeRule,
   ApplicationEventBridgeRuleProps,
-} from './ApplicationEventBridgeRule';
+} from './ApplicationEventBridgeRule.ts';
 
 const config: ApplicationEventBridgeRuleProps = {
   name: 'Test-EventBridge',

@@ -101,6 +101,7 @@ class PushServer extends TerraformStack {
     ];
 
     return new PocketECSApplication(this, 'application', {
+      shortName: 'push',
       tags: config.tags,
       prefix: config.prefix,
       containerConfigs: [

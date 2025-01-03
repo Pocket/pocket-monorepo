@@ -2,7 +2,7 @@ import { Testing } from 'cdktf';
 import {
   ApplicationLambdaCodeDeploy,
   ApplicationVersionedLambdaCodeDeployProps,
-} from './ApplicationLambdaCodeDeploy';
+} from './ApplicationLambdaCodeDeploy.ts';
 
 const config: ApplicationVersionedLambdaCodeDeployProps = {
   name: 'Test-Lambda-Code-Deploy',

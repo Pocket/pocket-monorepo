@@ -8,7 +8,7 @@ import {
   iamRolePolicyAttachment,
 } from '@cdktf/provider-aws';
 import { DynamodbTableTtl } from '@cdktf/provider-aws/lib/dynamodb-table';
-import { IResolvable, TerraformMetaArguments, TerraformProvider } from 'cdktf';
+import { TerraformMetaArguments, TerraformProvider } from 'cdktf';
 import { Construct } from 'constructs';
 
 /**
@@ -85,7 +85,9 @@ export class ApplicationDynamoDBTable extends Construct {
     const ignoreChanges = [
       'read_capacity',
       'write_capacity',
-      ...(config.lifecycle ? config.lifecycle.ignoreChanges : []),
+      ...(Array.isArray(config.lifecycle?.ignoreChanges)
+        ? config.lifecycle.ignoreChanges
+        : []),
     ].filter((value) => typeof value === 'string');
 
     this.dynamodb = new dynamodbTable.DynamodbTable(this, `dynamodb_table`, {
@@ -102,7 +104,7 @@ export class ApplicationDynamoDBTable extends Construct {
       provider: config.provider,
     });
 
-    if (config.readCapacity) {
+    if (config.readCapacity !== undefined) {
       ApplicationDynamoDBTable.setupAutoscaling(
         this,
         config.prefix,
@@ -115,7 +117,7 @@ export class ApplicationDynamoDBTable extends Construct {
       );
     }
 
-    if (config.writeCapacity) {
+    if (config.writeCapacity !== undefined) {
       ApplicationDynamoDBTable.setupAutoscaling(
         this,
         config.prefix,
@@ -142,13 +144,11 @@ export class ApplicationDynamoDBTable extends Construct {
    */
   private static setupAutoscaling(
     scope: Construct,
-    prefix,
+    prefix: string,
     config: ApplicationDynamoDBTableAutoScaleProps,
     dynamoDB: dynamodbTable.DynamodbTable,
     capacityType: ApplicationDynamoDBTableCapacityType,
-    globalSecondaryIndexes:
-      | dynamodbTable.DynamodbTableGlobalSecondaryIndex[]
-      | IResolvable,
+    globalSecondaryIndexes: dynamodbTable.DynamodbTableConfig['globalSecondaryIndex'],
     tags?: { [key: string]: string },
     provider?: TerraformProvider,
   ): void {
@@ -190,6 +190,11 @@ export class ApplicationDynamoDBTable extends Construct {
           capacityType === ApplicationDynamoDBTableCapacityType.Read
             ? gsIndex.readCapacity
             : gsIndex.writeCapacity;
+        if (!minCapacity) {
+          throw new Error(
+            'you must specify a min capacity for each global secondary index',
+          );
+        }
 
         // create an auto scaling policy for each index
         ApplicationDynamoDBTable.createAutoScalingPolicy(

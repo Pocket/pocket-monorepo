@@ -164,18 +164,18 @@ export abstract class ApplicationElasticacheCluster extends Construct {
             //If we have a ingress security group it takes precedence
             securityGroups: config.allowedIngressSecurityGroupIds
               ? config.allowedIngressSecurityGroupIds
-              : null,
+              : undefined,
 
             //IF we do not have a ingress security group lets all the whole vpc access
             cidrBlocks: config.allowedIngressSecurityGroupIds
-              ? null
+              ? undefined
               : [appVpc.cidrBlock],
 
             // the following are included due to a bug
             // https://github.com/hashicorp/terraform-cdk/issues/223
-            description: null,
-            ipv6CidrBlocks: null,
-            prefixListIds: null,
+            description: undefined,
+            ipv6CidrBlocks: undefined,
+            prefixListIds: undefined,
           },
         ],
         tags: config.tags,

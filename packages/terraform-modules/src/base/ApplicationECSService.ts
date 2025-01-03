@@ -1,5 +1,5 @@
-import { Resource } from '@cdktf/provider-null/lib/resource';
-import { Sleep } from '@cdktf/provider-time/lib/sleep';
+import { resource } from '@cdktf/provider-null';
+import { sleep } from '@cdktf/provider-time';
 import { Construct } from 'constructs';
 import { ApplicationECR, ECRProps } from './ApplicationECR.ts';
 import {
@@ -20,7 +20,7 @@ import {
   TerraformOutput,
 } from 'cdktf';
 import { truncateString } from '../utilities.ts';
-import { File } from '@cdktf/provider-local/lib/file';
+import { file } from '@cdktf/provider-local';
 import {
   ecrRepository,
   albListenerRule,
@@ -77,6 +77,8 @@ export interface ApplicationECSServiceProps extends TerraformMetaArguments {
   codeDeploySnsNotificationTopicArn?: string;
 }
 
+type ValidatedConfig = Required<ApplicationECSServiceProps>;
+
 export interface EFSProps {
   id: string;
   arn: string;
@@ -97,7 +99,7 @@ export class ApplicationECSService extends Construct {
   public readonly ecrRepos: ecrRepository.EcrRepository[];
   public readonly taskDefinition: ecsTaskDefinition.EcsTaskDefinition;
   public ecsIam: ApplicationECSIAM;
-  private readonly config: ApplicationECSServiceProps;
+  private readonly config: ValidatedConfig;
 
   constructor(
     scope: Construct,
@@ -130,7 +132,7 @@ export class ApplicationECSService extends Construct {
     const targetGroupNames: string[] = [];
 
     // If we have a alb configuration lets add it.
-    if (config.albConfig) {
+    if (this.config.albConfig) {
       this.mainTargetGroup = this.createTargetGroup('blue');
       ecsServiceDependsOn.push(this.mainTargetGroup.targetGroup);
       // Now that we have our service created, we append the alb listener rule to our HTTPS listener.
@@ -161,8 +163,8 @@ export class ApplicationECSService extends Construct {
       ecsServiceDependsOn.push(listenerRule);
       targetGroupNames.push(this.mainTargetGroup.targetGroup.name);
       ecsLoadBalancerConfig.push({
-        containerName: config.albConfig.containerName,
-        containerPort: config.albConfig.containerPort,
+        containerName: this.config.albConfig.containerName,
+        containerPort: this.config.albConfig.containerPort,
         targetGroupArn: this.mainTargetGroup.targetGroup.arn,
       });
     }
@@ -226,14 +228,18 @@ export class ApplicationECSService extends Construct {
          * ECS Task Definition
          * ECS Placement Strategy Config
          */
-        const nullECSTaskUpdate = new Resource(this, 'update-task-definition', {
-          triggers: { task_arn: taskDef.arn },
-          dependsOn: [
-            taskDef,
-            codeDeployApp.codeDeployApp,
-            codeDeployApp.codeDeployDeploymentGroup,
-          ],
-        });
+        const nullECSTaskUpdate = new resource.Resource(
+          this,
+          'update-task-definition',
+          {
+            triggers: { task_arn: taskDef.arn },
+            dependsOn: [
+              taskDef,
+              codeDeployApp.codeDeployApp,
+              codeDeployApp.codeDeployDeploymentGroup,
+            ],
+          },
+        );
 
         nullECSTaskUpdate.addOverride(
           'provisioner.local-exec.command',
@@ -256,7 +262,7 @@ export class ApplicationECSService extends Construct {
   // set defaults on optional properties
   private static hydrateConfig(
     config: ApplicationECSServiceProps,
-  ): ApplicationECSServiceProps {
+  ): ValidatedConfig {
     config.launchType = config.launchType || 'FARGATE';
     config.deploymentMinimumHealthyPercent =
       config.deploymentMinimumHealthyPercent || 100;
@@ -283,7 +289,7 @@ export class ApplicationECSService extends Construct {
     config.cpu = config.cpu || 512;
     config.memory = config.memory || 2048;
 
-    return config;
+    return config as ValidatedConfig;
   }
 
   /**
@@ -299,7 +305,7 @@ export class ApplicationECSService extends Construct {
     config: ApplicationECSServiceProps,
   ) {
     if (config.useCodePipeline) {
-      const nullCreateTaskDef = new Resource(
+      const nullCreateTaskDef = new resource.Resource(
         this,
         'create-task-definition-file',
         {
@@ -323,7 +329,12 @@ export class ApplicationECSService extends Construct {
     }
 
     if (config.generateAppSpec) {
-      new File(this, 'appspec', {
+      if (config.albConfig === undefined) {
+        throw new Error(
+          'Cannot generate appspec.json without albConfig being defined',
+        );
+      }
+      new file.File(this, 'appspec', {
         content: JSON.stringify({
           version: 1,
           Resources: [
@@ -351,17 +362,19 @@ export class ApplicationECSService extends Construct {
       staticId: true,
     });
 
-    new TerraformOutput(this, 'ecs-task-containerName', {
-      description: 'ECS Task Container Name',
-      value: config.albConfig.containerName,
-      staticId: true,
-    });
+    if (config.albConfig !== undefined) {
+      new TerraformOutput(this, 'ecs-task-containerName', {
+        description: 'ECS Task Container Name',
+        value: config.albConfig.containerName,
+        staticId: true,
+      });
 
-    new TerraformOutput(this, 'ecs-task-containerPort', {
-      description: 'ECS Task Container Port',
-      value: config.albConfig.containerPort,
-      staticId: true,
-    });
+      new TerraformOutput(this, 'ecs-task-containerPort', {
+        description: 'ECS Task Container Port',
+        value: config.albConfig.containerPort,
+        staticId: true,
+      });
+    }
 
     new TerraformOutput(this, 'ecs-task-family', {
       description: 'ECS Task Family',
@@ -437,7 +450,7 @@ export class ApplicationECSService extends Construct {
   private setupECSTaskDefinition(): ECSTaskDefinitionResponse {
     const ecrRepos: ecrRepository.EcrRepository[] = [];
 
-    const containerDefs = [];
+    const containerDefs: string[] = [];
     // Set of unique volumes by volume name
     const volumes: {
       [key: string]: ecsTaskDefinition.EcsTaskDefinitionVolume;
@@ -642,7 +655,7 @@ export class ApplicationECSService extends Construct {
       ],
     };
 
-    const waitTwoMinutes = new Sleep(this, 'waitTwoMinutes', {
+    const waitTwoMinutes = new sleep.Sleep(this, 'waitTwoMinutes', {
       createDuration: '2m',
       dependsOn: [this.ecsIam.taskRoleArn],
     });
