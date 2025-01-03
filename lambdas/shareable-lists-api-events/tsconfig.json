@@ -4,6 +4,6 @@
     "outDir": "dist",
     "rootDir": "src"
   },
-  "exclude": ["node_modules", "jest.config.js", "jest.setup.js"],
+  "exclude": ["node_modules", "jest.config.ys", "jest.setup.ts"],
   "include": ["src/**/*.ts"]
 }
