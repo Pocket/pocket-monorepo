@@ -12,8 +12,8 @@ import {
   ApplicationECSIAMProps,
   ApplicationECSService,
   ApplicationECSServiceProps,
-} from '../index.js';
-import { PocketVPC } from './PocketVPC.js';
+} from '../index.ts';
+import { PocketVPC } from './PocketVPC.ts';
 
 export type CreateECSServiceArgs = {
   ecs: ApplicationECSService;

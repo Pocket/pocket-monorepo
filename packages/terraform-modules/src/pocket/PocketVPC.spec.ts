@@ -1,5 +1,5 @@
 import { Testing } from 'cdktf';
-import { PocketVPC } from './PocketVPC.js';
+import { PocketVPC } from './PocketVPC.ts';
 import 'cdktf/lib/testing/adapters/jest';
 import { dataAwsVpc } from '@cdktf/provider-aws';
 

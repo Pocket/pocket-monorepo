@@ -3,8 +3,8 @@ import { Construct } from 'constructs';
 import {
   ApplicationVersionedLambda,
   LAMBDA_RUNTIMES,
-} from '../base/ApplicationVersionedLambda.js';
-import { ApplicationLambdaCodeDeploy } from '../base/ApplicationLambdaCodeDeploy.js';
+} from '../base/ApplicationVersionedLambda.ts';
+import { ApplicationLambdaCodeDeploy } from '../base/ApplicationLambdaCodeDeploy.ts';
 import {
   cloudwatchMetricAlarm,
   dataAwsIamPolicyDocument,

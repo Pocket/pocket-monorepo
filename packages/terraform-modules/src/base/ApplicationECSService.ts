@@ -1,17 +1,17 @@
 import { Resource } from '@cdktf/provider-null/lib/resource';
 import { Sleep } from '@cdktf/provider-time/lib/sleep';
 import { Construct } from 'constructs';
-import { ApplicationECR, ECRProps } from './ApplicationECR.js';
+import { ApplicationECR, ECRProps } from './ApplicationECR.ts';
 import {
   ApplicationECSIAM,
   ApplicationECSIAMProps,
-} from './ApplicationECSIAM.js';
+} from './ApplicationECSIAM.ts';
 import {
   ApplicationECSContainerDefinitionProps,
   buildDefinitionJSON,
-} from './ApplicationECSContainerDefinition.js';
-import { ApplicationTargetGroup } from './ApplicationTargetGroup.js';
-import { ApplicationECSAlbCodeDeploy } from './ApplicationECSAlbCodeDeploy.js';
+} from './ApplicationECSContainerDefinition.ts';
+import { ApplicationTargetGroup } from './ApplicationTargetGroup.ts';
+import { ApplicationECSAlbCodeDeploy } from './ApplicationECSAlbCodeDeploy.ts';
 import {
   TerraformResource,
   TerraformIterator,
@@ -19,7 +19,7 @@ import {
   Fn,
   TerraformOutput,
 } from 'cdktf';
-import { truncateString } from '../utilities.js';
+import { truncateString } from '../utilities.ts';
 import { File } from '@cdktf/provider-local/lib/file';
 import {
   ecrRepository,
