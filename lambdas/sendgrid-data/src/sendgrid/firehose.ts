@@ -4,8 +4,8 @@ import {
   PutRecordBatchCommandOutput,
   _Record,
 } from '@aws-sdk/client-firehose';
-import config from '../config';
-import { chunkArray } from './util';
+import config from '../config/index.ts';
+import { chunkArray } from './util.ts';
 
 export const encodeRecord = (event: { [key: string]: any }): _Record => {
   return {
