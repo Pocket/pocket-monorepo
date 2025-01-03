@@ -1,10 +1,10 @@
-import { config } from './config';
+import { config } from './config.ts';
 import * as Sentry from '@sentry/aws-serverless';
 Sentry.init({
   ...config.sentry,
 });
 import { SQSEvent } from 'aws-lambda';
-import { handlerMap } from './handlerMap';
+import { handlerMap } from './handlerMap.ts';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { sqsLambdaEventBridgeEvent } from '@pocket-tools/event-bridge';
 
