@@ -1,13 +1,13 @@
-import { config } from './config';
+import { config } from './config/index.ts';
 import * as Sentry from '@sentry/aws-serverless';
 Sentry.init({
   ...config.sentry,
 });
 
 import type { SQSEvent, SQSRecord } from 'aws-lambda';
-import { processUserItem } from './helper';
+import { processUserItem } from './helper.ts';
 
-import { UserItemsSqsMessage } from './types';
+import { UserItemsSqsMessage } from './types.ts';
 
 export const processor = async (event: SQSEvent): Promise<boolean[]> => {
   return await Promise.all(
