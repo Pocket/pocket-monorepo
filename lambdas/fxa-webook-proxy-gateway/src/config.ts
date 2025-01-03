@@ -1,4 +1,4 @@
-import { EVENT } from './types';
+import { EVENT } from './types.ts';
 
 const environment = process.env.ENVIRONMENT || 'development';
 

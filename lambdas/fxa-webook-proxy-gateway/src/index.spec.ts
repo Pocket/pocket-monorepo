@@ -2,8 +2,8 @@ import {
   createSuccessResponseMessage,
   formatResponse,
   generateEvents,
-} from './index';
-import { EVENT, SqsEvent } from './types';
+} from './index.ts';
+import { EVENT, SqsEvent } from './types.ts';
 
 describe('Handler functions', () => {
   describe('Format of API Gateway response', () => {
