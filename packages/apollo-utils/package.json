@@ -13,10 +13,10 @@
   },
   "license": "Apache-2.0",
   "author": "",
+  "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "type": "module",
   "files": [
     "dist",
     "package.json"
