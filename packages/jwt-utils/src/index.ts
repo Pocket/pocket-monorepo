@@ -1,6 +1,6 @@
-import { PocketJWK } from './jwt';
+import { PocketJWK } from './jwt.ts';
 
-export * from './jwt';
+export * from './jwt.ts';
 
 export const dummyJWK: PocketJWK = {
   p: '2NE9Yskv7kZaM_OMvKElEWRKi6peRae3JkMp-TvjqMIO69kV3zQfpb0gfIdcC54_BuGUUUjL9IEDApWas-IBbG33bKoGTzCzNbfML0aQvAHpuvZI6pGAq3OdHgC-kGjb5wyK3tDaP-rS8aVYjrB9jQY7Go-F4xWyikNm-99BJg0',

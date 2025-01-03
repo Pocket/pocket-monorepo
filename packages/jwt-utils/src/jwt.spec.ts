@@ -1,7 +1,7 @@
-import { generateJwt, PocketJWK } from './jwt';
+import { generateJwt, PocketJWK } from './jwt.ts';
 import jwt from 'jsonwebtoken';
 import jwkToPem from 'jwk-to-pem';
-import { dummyJWK } from '.';
+import { dummyJWK } from './index.ts';
 
 describe('jwt test', function () {
   const testPrivateKey: PocketJWK = dummyJWK;
