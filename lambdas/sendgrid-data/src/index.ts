@@ -5,7 +5,11 @@ Sentry.init({
   release: config.sentry.release,
   environment: config.environment,
 });
-import { deliverEvents, logEventsError, logEventsReceived } from './sendgrid/index.ts';
+import {
+  deliverEvents,
+  logEventsError,
+  logEventsReceived,
+} from './sendgrid/index.ts';
 import { captureException } from './sentry.ts';
 import type { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 
