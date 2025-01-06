@@ -2,6 +2,7 @@
   "name": "instant-sync-events",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "dist/index.js",
   "files": [
     "dist",

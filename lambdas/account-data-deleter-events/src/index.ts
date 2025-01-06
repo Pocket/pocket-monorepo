@@ -1,4 +1,4 @@
-import { config } from './config';
+import { config } from './config.ts';
 import * as Sentry from '@sentry/aws-serverless';
 Sentry.init({
   dsn: config.sentry.dsn,
@@ -7,7 +7,7 @@ Sentry.init({
   serverName: config.app.name,
 });
 import { SQSBatchItemFailure, SQSEvent } from 'aws-lambda';
-import { handlers } from './handlers';
+import { handlers } from './handlers/index.ts';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 export async function handlerFn(event: SQSEvent): Promise<any> {

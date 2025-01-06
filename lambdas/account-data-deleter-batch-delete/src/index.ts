@@ -1,4 +1,4 @@
-import { config } from './config';
+import { config } from './config.ts';
 import * as Sentry from '@sentry/aws-serverless';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
@@ -11,9 +11,9 @@ Sentry.init({
 });
 
 import { EventBridgeEvent } from 'aws-lambda';
-import { BatchDeleteDyanmoClient } from './dynamoUtils';
+import { BatchDeleteDyanmoClient } from './dynamoUtils.ts';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { deleteUserMutationCaller } from './externalCaller/deleteMutation';
+import { deleteUserMutationCaller } from './externalCaller/deleteMutation.ts';
 
 const dynamoDBClient = new DynamoDBClient({
   region: config.aws.region,

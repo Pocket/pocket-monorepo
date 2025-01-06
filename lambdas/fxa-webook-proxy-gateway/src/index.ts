@@ -1,4 +1,4 @@
-import config from './config';
+import config from './config.ts';
 import * as Sentry from '@sentry/aws-serverless';
 Sentry.init({
   dsn: config.sentry.dsn,
@@ -8,9 +8,9 @@ Sentry.init({
 });
 
 import type { APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { FxaJwt } from './jwt';
-import { sendMessage } from './sqs';
-import { SqsEvent, FxaPayload } from './types';
+import { FxaJwt } from './jwt.ts';
+import { sendMessage } from './sqs.ts';
+import { SqsEvent, FxaPayload } from './types.ts';
 import { serverLogger } from '@pocket-tools/ts-logger';
 /**
  * Format the response data

@@ -1,6 +1,6 @@
 import { SQSRecord } from 'aws-lambda';
-import { accountDeleteHandler } from './accountDeleteHandler';
-import { accountMergeHandler } from './accountMergeHandler';
+import { accountDeleteHandler } from './accountDeleteHandler.ts';
+import { accountMergeHandler } from './accountMergeHandler.ts';
 
 export enum Event {
   ACCOUNT_DELETION = 'account-deletion',

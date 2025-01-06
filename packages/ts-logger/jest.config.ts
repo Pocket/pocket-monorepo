@@ -5,6 +5,7 @@ const config: Config = {
   testEnvironment: 'node',
   testMatch: ['**/?(*.)+(jest|spec).[jt]s?(x)'],
   testPathIgnorePatterns: ['/dist/'],
+  setupFiles: ['./jest.setup.ts'],
   moduleNameMapper: {
     "^(\\.{1,2}/.*)\\.js$": "$1"
   },

@@ -1,5 +1,5 @@
-import { config } from '../config';
-import { deleteUserMutationCaller, userApiCalls } from './deleteMutation';
+import { config } from '../config.ts';
+import { deleteUserMutationCaller, userApiCalls } from './deleteMutation.ts';
 import nock from 'nock';
 
 describe('deleteUser mutation test', () => {

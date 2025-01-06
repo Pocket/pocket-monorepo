@@ -1,5 +1,5 @@
-import { BulkRequestMeta } from './types';
-import { buildCollectionUrl, hasExcerptOrIsCollection } from './utils';
+import { BulkRequestMeta } from './types.ts';
+import { buildCollectionUrl, hasExcerptOrIsCollection } from './utils.ts';
 
 describe('utils', () => {
   describe('buildCollectionUrl', () => {

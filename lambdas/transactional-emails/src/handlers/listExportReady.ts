@@ -1,4 +1,4 @@
-import { sendListExportReadyEmail } from '../braze';
+import { sendListExportReadyEmail } from '../braze.ts';
 import { PocketEvent, PocketEventType } from '@pocket-tools/event-bridge';
 
 /**

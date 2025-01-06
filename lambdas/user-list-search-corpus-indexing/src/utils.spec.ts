@@ -1,4 +1,4 @@
-import { buildCollectionUrl, extractCollectionSlug } from './utils';
+import { buildCollectionUrl, extractCollectionSlug } from './utils.ts';
 
 describe('utils', () => {
   describe('buildCollectionUrl', () => {
