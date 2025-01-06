@@ -2,7 +2,7 @@ import { Testing } from 'cdktf';
 import {
   PocketECSCodePipeline,
   PocketECSCodePipelineProps,
-} from './PocketECSCodePipeline';
+} from './PocketECSCodePipeline.ts';
 
 const config: PocketECSCodePipelineProps = {
   prefix: 'Test-Env',

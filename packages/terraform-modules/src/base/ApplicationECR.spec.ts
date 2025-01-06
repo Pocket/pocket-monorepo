@@ -1,5 +1,5 @@
 import { Testing } from 'cdktf';
-import { ApplicationECR } from './ApplicationECR.js';
+import { ApplicationECR } from './ApplicationECR.ts';
 
 describe('ApplicationECR', () => {
   it('renders an ECR without tags', () => {

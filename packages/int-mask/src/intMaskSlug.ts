@@ -1,4 +1,4 @@
-import { IntMask } from './intMask';
+import { IntMask } from './intMask.ts';
 import md5 from 'md5';
 
 const ITEM_ID_DELIMENTATOR = '_';

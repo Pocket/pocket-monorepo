@@ -1,4 +1,4 @@
-import { removeEmptyObjects } from './jsonUtils';
+import { removeEmptyObjects } from './jsonUtils.ts';
 
 describe('jsonUtils - removeEmptyObjects', () => {
   it.each([

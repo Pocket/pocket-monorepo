@@ -1,4 +1,4 @@
-import { createLogger, setLogger } from './logger';
+import { createLogger, setLogger } from './logger.ts';
 
 const defaultEnvs = process.env;
 

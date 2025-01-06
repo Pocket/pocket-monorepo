@@ -48,7 +48,7 @@ export class ApplicationEventBridgeRule extends Construct {
   }
 
   private createCloudwatchEventRule() {
-    if (this.config.targets?.length > 5) {
+    if (this.config.targets && this.config.targets?.length > 5) {
       throw new Error('AWS allows only up to 5 targets per event bridge rule');
     }
     const eventBus = this.config.eventBusName ?? 'default';

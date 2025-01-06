@@ -54,6 +54,10 @@ export class ApplicationCertificate extends Construct {
       config.provider,
     );
 
+    if (config.zoneId === undefined) {
+      throw new Error('No zone id provided or found');
+    }
+
     const certificateRecord = ApplicationCertificate.generateRoute53Record(
       this,
       config.zoneId,

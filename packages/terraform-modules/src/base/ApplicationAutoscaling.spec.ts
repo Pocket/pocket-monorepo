@@ -1,9 +1,9 @@
 import { Testing } from 'cdktf';
-import { TestResource } from '../testHelpers.js';
+import { TestResource } from '../testHelpers.ts';
 import {
   ApplicationAutoscaling,
   ApplicationAutoscalingProps,
-} from './ApplicationAutoscaling';
+} from './ApplicationAutoscaling.ts';
 
 describe('ApplicationAutoscaling', () => {
   const props: ApplicationAutoscalingProps = {

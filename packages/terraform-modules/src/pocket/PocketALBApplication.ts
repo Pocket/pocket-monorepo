@@ -20,8 +20,8 @@ import {
   ApplicationECSService,
   ApplicationECSServiceProps,
   ApplicationLoadBalancer,
-} from '../index.js';
-import { PocketVPC } from './PocketVPC.js';
+} from '../index.ts';
+import { PocketVPC } from './PocketVPC.ts';
 
 export interface PocketALBApplicationAlarmProps extends TerraformMetaArguments {
   threshold?: number;
@@ -30,6 +30,21 @@ export interface PocketALBApplicationAlarmProps extends TerraformMetaArguments {
   datapointsToAlarm?: number;
   actions?: string[];
   alarmDescription?: string;
+}
+
+interface VPCConfig {
+  vpcId: string;
+  privateSubnetIds: string[];
+  publicSubnetIds: string[];
+}
+
+interface AutoscalingConfig {
+  targetMinCapacity: number;
+  targetMaxCapacity: number;
+  stepScaleInAdjustment: number;
+  stepScaleOutAdjustment: number;
+  scaleInThreshold: number;
+  scaleOutThreshold: number;
 }
 
 export interface PocketALBApplicationProps extends TerraformMetaArguments {
@@ -49,11 +64,7 @@ export interface PocketALBApplicationProps extends TerraformMetaArguments {
    * this construct. A default Pocket VPC will be used if not
    * provided.
    */
-  vpcConfig?: {
-    vpcId: string;
-    privateSubnetIds: string[];
-    publicSubnetIds: string[];
-  };
+  vpcConfig?: VPCConfig;
   /**
    * Prefix for the name of the application load balancer created
    * as part of this construct. Due to an arbitrary AWS character
@@ -175,14 +186,7 @@ export interface PocketALBApplicationProps extends TerraformMetaArguments {
    * Options for configuring the autoscaling policy for
    * the ECS service created by this construct.
    */
-  autoscalingConfig?: {
-    targetMinCapacity?: number;
-    targetMaxCapacity?: number;
-    stepScaleInAdjustment?: number;
-    stepScaleOutAdjustment?: number;
-    scaleInThreshold?: number;
-    scaleOutThreshold?: number;
-  };
+  autoscalingConfig?: Partial<AutoscalingConfig>;
   /**
    * Option for defining Cloudwatch alarms
    */
@@ -217,13 +221,17 @@ const DEFAULT_AUTOSCALING_CONFIG = {
   stepScaleOutAdjustment: 2,
 };
 
+type ValidatedConfig = PocketALBApplicationProps & {
+  autoscalingConfig: AutoscalingConfig;
+};
+
 export class PocketALBApplication extends Construct {
   public readonly alb: ApplicationLoadBalancer;
   public readonly ecsService: ApplicationECSService;
   public readonly baseDNS: ApplicationBaseDNS;
   public readonly listeners: albListener.AlbListener[];
-  private readonly config: PocketALBApplicationProps;
-  private readonly pocketVPC: PocketALBApplicationProps['vpcConfig'];
+  private readonly config: ValidatedConfig;
+  private readonly pocketVPC: VPCConfig;
   private readonly efs: efsFileSystem.EfsFileSystem;
 
   constructor(
@@ -236,12 +244,6 @@ export class PocketALBApplication extends Construct {
     this.listeners = [];
 
     this.config = PocketALBApplication.validateConfig(config);
-
-    // use default auto-scaling config, but update any user-provided values
-    this.config.autoscalingConfig = {
-      ...DEFAULT_AUTOSCALING_CONFIG,
-      ...config.autoscalingConfig,
-    };
 
     this.pocketVPC = this.getVpcConfig(config);
 
@@ -291,9 +293,7 @@ export class PocketALBApplication extends Construct {
    * @param config
    * @private
    */
-  private getVpcConfig(
-    config: PocketALBApplicationProps,
-  ): PocketALBApplicationProps['vpcConfig'] {
+  private getVpcConfig(config: PocketALBApplicationProps): VPCConfig {
     if (config.vpcConfig !== undefined) {
       return {
         vpcId: config.vpcConfig.vpcId,
@@ -322,12 +322,17 @@ export class PocketALBApplication extends Construct {
    */
   private static validateConfig(
     config: PocketALBApplicationProps,
-  ): PocketALBApplicationProps {
-    config = PocketALBApplication.validateCachedALB(config);
-
+  ): ValidatedConfig {
     PocketALBApplication.validateAlarmsConfig(config.alarms);
 
-    return config;
+    return {
+      // use default auto-scaling config, but update any user-provided values
+      ...PocketALBApplication.validateCachedALB(config),
+      autoscalingConfig: {
+        ...DEFAULT_AUTOSCALING_CONFIG,
+        ...config.autoscalingConfig,
+      },
+    } as ValidatedConfig;
   }
 
   private static validateAlarmsConfig(
@@ -354,6 +359,7 @@ export class PocketALBApplication extends Construct {
 
     config.customAlarms?.forEach(
       (alarm: cloudwatchMetricAlarm.CloudwatchMetricAlarmConfig) => {
+        if (alarm.datapointsToAlarm === undefined) return;
         if (alarm.datapointsToAlarm > alarm.evaluationPeriods) {
           throw new Error(`${alarm.alarmName}: ${errorMessage}`);
         }
@@ -364,6 +370,8 @@ export class PocketALBApplication extends Construct {
   private createEfs(
     config: PocketALBApplicationProps,
   ): efsFileSystem.EfsFileSystem {
+    if (config.efsConfig?.creationToken === undefined)
+      throw new Error('EFS Creation Token is required');
     return new efsFileSystem.EfsFileSystem(this, 'efsFs', {
       creationToken: config.efsConfig.creationToken,
       encrypted: true,
