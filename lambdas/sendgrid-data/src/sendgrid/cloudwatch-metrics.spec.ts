@@ -1,4 +1,4 @@
-import { Event, EventType } from './event';
+import { Event, EventType } from './event.ts';
 import {
   decorateEvent,
   deliver,
@@ -6,8 +6,8 @@ import {
   eventToMetrics,
   mapEventToMetricName,
   getMetricWithDimensions,
-} from './cloudwatch-metrics';
-import config from '../config';
+} from './cloudwatch-metrics.ts';
+import config from '../config/index.ts';
 import { CloudWatchClient, MetricDatum } from '@aws-sdk/client-cloudwatch';
 
 /**

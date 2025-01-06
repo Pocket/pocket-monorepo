@@ -4,7 +4,7 @@ import {
   PocketEventBridgeRuleWithMultipleTargets,
   ApplicationEventBus,
 } from '@pocket-tools/terraform-modules';
-import { config } from '../../config';
+import { config } from '../../config/index.ts';
 import {
   cloudwatchLogGroup,
   dataAwsIamPolicyDocument,
@@ -14,8 +14,8 @@ import {
   dataAwsSnsTopic,
 } from '@cdktf/provider-aws';
 
-import { Resource } from '@cdktf/provider-null/lib/resource';
-import { eventConfig } from './eventConfig';
+import { resource } from '@cdktf/provider-null';
+import { eventConfig } from './eventConfig.ts';
 
 export class AllEventsRule extends Construct {
   public readonly cloudwatchLogGroup: cloudwatchLogGroup.CloudwatchLogGroup;
@@ -38,7 +38,7 @@ export class AllEventsRule extends Construct {
     //to prevent resource deletion in-addition to preventDestroy
     //e.g removing any of the dependsOn resource and running npm build would
     //throw error
-    new Resource(this, 'null-resource', {
+    new resource.Resource(this, 'null-resource', {
       dependsOn: [allEvents.getEventBridge().rule, this.cloudwatchLogGroup],
     });
   }

@@ -1,6 +1,6 @@
-import { config } from './config';
+import { config } from './config/index.ts';
 import nock from 'nock';
-import { processUserImport, processUserItem } from './helper';
+import { processUserImport, processUserItem } from './helper.ts';
 
 import {
   UserItemsSqsMessage,

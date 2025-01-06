@@ -4,12 +4,12 @@ import {
   ApplicationEventBridgeRule,
   ApplicationEventBridgeRuleProps,
   Target,
-} from '../base/ApplicationEventBridgeRule.js';
-import { ApplicationVersionedLambda } from '../base/ApplicationVersionedLambda.js';
+} from '../base/ApplicationEventBridgeRule.ts';
+import { ApplicationVersionedLambda } from '../base/ApplicationVersionedLambda.ts';
 import {
   PocketVersionedLambda,
   PocketVersionedLambdaProps,
-} from './PocketVersionedLambda.js';
+} from './PocketVersionedLambda.ts';
 
 export interface PocketEventBridgeWithLambdaTargetProps
   extends PocketVersionedLambdaProps {

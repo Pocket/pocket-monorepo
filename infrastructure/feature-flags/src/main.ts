@@ -15,7 +15,7 @@ import {
 import { Construct } from 'constructs';
 import { App, S3Backend, TerraformStack } from 'cdktf';
 import fs from 'fs';
-import { config } from './config';
+import { config } from './config/index.ts';
 
 class FeatureFlags extends TerraformStack {
   constructor(scope: Construct, name: string) {

@@ -5,9 +5,9 @@ import {
 } from '@aws-sdk/client-sagemaker-runtime'; // ES Modules import
 import { Agent } from 'http';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
-import { config } from './config';
+import { config } from './config.ts';
 import * as Sentry from '@sentry/aws-serverless';
-import { ParserResult } from './types';
+import { ParserResult } from './types.ts';
 import { ConfiguredRetryStrategy } from '@smithy/util-retry';
 
 let _sagemakerClient: SageMakerRuntimeClient;

@@ -2,7 +2,7 @@ import { ApolloServerPluginUsageReportingDisabled } from '@apollo/server/plugin/
 import { ApolloServerPluginInlineTrace } from '@apollo/server/plugin/inlineTrace';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
-import { sentryPlugin } from '../sentry/apolloSentryPlugin';
+import { sentryPlugin } from '../sentry/apolloSentryPlugin.ts';
 import { Server } from 'http';
 import { ApolloServerPlugin, BaseContext } from '@apollo/server';
 

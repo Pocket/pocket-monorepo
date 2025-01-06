@@ -1,8 +1,8 @@
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { postRetry } from '../postRetry';
+import { postRetry } from '../postRetry.ts';
 import * as Sentry from '@sentry/aws-serverless';
-import { config } from '../config';
-import { extractCollectionSlug } from '../utils';
+import { config } from '../config.ts';
+import { extractCollectionSlug } from '../utils.ts';
 
 /**
  * Fetch the Collection "external ID" representing the

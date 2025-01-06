@@ -1,6 +1,6 @@
 import { Construct } from 'constructs';
 import { App, S3Backend, TerraformStack } from 'cdktf';
-import { config } from './config';
+import { config } from './config/index.ts';
 import { PocketECSApplication } from '@pocket-tools/terraform-modules';
 import * as fs from 'fs';
 
@@ -101,6 +101,7 @@ class PushServer extends TerraformStack {
     ];
 
     return new PocketECSApplication(this, 'application', {
+      shortName: 'push',
       tags: config.tags,
       prefix: config.prefix,
       containerConfigs: [

@@ -1,16 +1,16 @@
 import { Construct } from 'constructs';
 import { App, S3Backend, TerraformStack } from 'cdktf';
-import { config } from './config';
+import { config } from './config/index.ts';
 import {
   ApplicationSQSQueue,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
 import { provider as awsProvider, dataAwsSnsTopic } from '@cdktf/provider-aws';
-import { SqsLambda } from './sqsLambda';
+import { SqsLambda } from './sqsLambda.ts';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import { provider as localProvider } from '@cdktf/provider-local';
-import { ApiGateway } from './apiGateway';
+import { ApiGateway } from './apiGateway.ts';
 
 class FxAWebhookProxy extends TerraformStack {
   constructor(scope: Construct, name: string) {

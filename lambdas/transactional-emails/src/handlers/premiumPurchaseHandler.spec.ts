@@ -1,6 +1,6 @@
-import * as ssm from '../ssm';
+import * as ssm from '../ssm.ts';
 import nock from 'nock';
-import { config } from '../config';
+import { config } from '../config.ts';
 import { SQSEvent, SQSRecord } from 'aws-lambda';
 import {
   IncomingBaseEvent,
@@ -10,7 +10,7 @@ import {
 
 import { cloneDeep } from 'lodash';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { processor } from '..';
+import { processor } from '../index.ts';
 
 function generateRecord(eventPayload: PremiumPurchaseEvent) {
   return {

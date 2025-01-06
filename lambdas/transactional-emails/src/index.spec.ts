@@ -2,7 +2,7 @@ import { cleanAll } from 'nock';
 import { SQSEvent, SQSRecord } from 'aws-lambda';
 import { PocketEventType } from '@pocket-tools/event-bridge';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { processor } from '.';
+import { processor } from './index.ts';
 
 describe('handler', () => {
   let serverLoggerSpy: jest.SpyInstance;

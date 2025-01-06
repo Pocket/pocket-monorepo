@@ -2,8 +2,8 @@ import { Testing } from 'cdktf';
 import {
   PocketEventBridgeWithLambdaTarget,
   PocketEventBridgeWithLambdaTargetProps,
-} from './PocketEventBridgeWithLambdaTarget';
-import { LAMBDA_RUNTIMES } from '../base/ApplicationVersionedLambda.js';
+} from './PocketEventBridgeWithLambdaTarget.ts';
+import { LAMBDA_RUNTIMES } from '../base/ApplicationVersionedLambda.ts';
 
 const config: PocketEventBridgeWithLambdaTargetProps = {
   name: 'test-event-bridge-lambda',

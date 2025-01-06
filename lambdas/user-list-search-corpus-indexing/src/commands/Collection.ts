@@ -1,6 +1,6 @@
 import { CollectionPayload } from '@pocket-tools/event-bridge';
-import { config } from '../config';
-import { buildCollectionUrl } from '../utils';
+import { config } from '../config.ts';
+import { buildCollectionUrl } from '../utils.ts';
 
 /**
  * Index a Collection object in the search cluster.

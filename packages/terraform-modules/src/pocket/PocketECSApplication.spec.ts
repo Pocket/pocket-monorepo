@@ -2,13 +2,14 @@ import { TerraformStack, Testing } from 'cdktf';
 import {
   PocketECSApplication,
   PocketECSApplicationProps,
-} from './PocketECSApplication';
+} from './PocketECSApplication.ts';
 
 describe('PocketECSApplication', () => {
   let BASE_CONFIG: PocketECSApplicationProps;
 
   beforeEach(() => {
     BASE_CONFIG = {
+      shortName: 'appshort',
       prefix: 'testapp',
       containerConfigs: [],
       ecsIamConfig: {
@@ -53,6 +54,18 @@ describe('PocketECSApplication', () => {
         stepScaleOutAdjustment: 2,
         scaleInThreshold: 30,
         scaleOutThreshold: 45,
+      };
+
+      new PocketECSApplication(stack, 'testPocketApp', BASE_CONFIG);
+    });
+    expect(synthed).toMatchSnapshot();
+  });
+
+  it('renders an application with minimal autoscaling group', () => {
+    const synthed = Testing.synthScope((stack) => {
+      BASE_CONFIG.autoscalingConfig = {
+        targetMinCapacity: 2,
+        targetMaxCapacity: 10,
       };
 
       new PocketECSApplication(stack, 'testPocketApp', BASE_CONFIG);

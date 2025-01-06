@@ -1,5 +1,5 @@
-import { config } from './config';
-import { SQSEventLambda } from './sqsEventLambda';
+import { config } from './config/index.ts';
+import { SQSEventLambda } from './sqsEventLambda.ts';
 
 import { provider as archiveProvider } from '@cdktf/provider-archive';
 import {

@@ -11,8 +11,8 @@ import {
   snsTopicPolicy,
   sqsQueue,
 } from '@cdktf/provider-aws';
-import { createDeadLetterQueueAlarm } from './event-rules/utils';
-import { config } from './config';
+import { createDeadLetterQueueAlarm } from './event-rules/utils.ts';
+import { config } from './config/index.ts';
 
 export interface PocketEventToTopicProps {
   eventBusName: string;

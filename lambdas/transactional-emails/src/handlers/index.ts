@@ -1,8 +1,8 @@
-import { accountDeleteHandler } from './accountDelete';
-import { premiumPurchaseHandler } from './premiumPurchaseHandler';
-import { userRegistrationEventHandler } from './userRegistrationEventHandler';
-import { forgotPasswordHandler } from './forgotPassword';
-import { exportReadyHandler } from './listExportReady';
+import { accountDeleteHandler } from './accountDelete.ts';
+import { premiumPurchaseHandler } from './premiumPurchaseHandler.ts';
+import { userRegistrationEventHandler } from './userRegistrationEventHandler.ts';
+import { forgotPasswordHandler } from './forgotPassword.ts';
+import { exportReadyHandler } from './listExportReady.ts';
 import { PocketEvent, PocketEventType } from '@pocket-tools/event-bridge';
 
 // Mapping of detail-type (via event bridge message)

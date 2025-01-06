@@ -1,4 +1,4 @@
-import { mockList } from './list';
+import { mockList } from './list.ts';
 
 describe('mockList', () => {
   it('should produce data when total count is divisible by batch size', () => {

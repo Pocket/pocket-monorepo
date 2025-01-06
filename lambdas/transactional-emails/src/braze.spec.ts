@@ -1,4 +1,4 @@
-import { generateSubscriptionPayloadForEmail } from './braze';
+import { generateSubscriptionPayloadForEmail } from './braze.ts';
 
 describe('generateSubscriptionRequestBody', () => {
   it('should map subscription event', () => {

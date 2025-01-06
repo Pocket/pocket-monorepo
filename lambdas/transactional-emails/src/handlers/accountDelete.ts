@@ -1,4 +1,4 @@
-import { sendAccountDeletionEmail } from '../braze';
+import { sendAccountDeletionEmail } from '../braze.ts';
 import { PocketEvent, PocketEventType } from '@pocket-tools/event-bridge';
 
 /**

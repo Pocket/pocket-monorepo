@@ -3,7 +3,7 @@ import {
   SendMessageCommandOutput,
   SQSClient,
 } from '@aws-sdk/client-sqs';
-import config from './config';
+import config from './config.ts';
 
 export const sqsClient = new SQSClient({
   endpoint: config.aws.endpoint,

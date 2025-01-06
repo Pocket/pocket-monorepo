@@ -1,5 +1,5 @@
-import { Event, handlers } from './handlers';
-import { handlerFn } from './index';
+import { Event, handlers } from './handlers/index.ts';
+import { handlerFn } from './index.ts';
 import { SQSEvent } from 'aws-lambda';
 import * as Sentry from '@sentry/aws-serverless';
 

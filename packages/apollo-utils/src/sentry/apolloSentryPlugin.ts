@@ -5,7 +5,7 @@ import {
   GraphQLRequestListener,
 } from '@apollo/server';
 import { ApolloServerErrorCode } from '@apollo/server/errors';
-import { InternalErrorCode } from '../errorHandler/errorHandler';
+import { InternalErrorCode } from '../errorHandler/errorHandler.ts';
 import { setLogger, Logger } from '@pocket-tools/ts-logger';
 
 export const defaultLogger: Logger = setLogger();

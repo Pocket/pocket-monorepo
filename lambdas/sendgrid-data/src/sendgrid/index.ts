@@ -1,5 +1,5 @@
-import { deliver as deliverFirehose } from './firehose';
-import { deliver as deliverMetrics } from './cloudwatch-metrics';
+import { deliver as deliverFirehose } from './firehose.ts';
+import { deliver as deliverMetrics } from './cloudwatch-metrics.ts';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 export const logEventsReceived = (events: any) => {

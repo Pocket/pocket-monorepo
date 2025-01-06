@@ -1,6 +1,6 @@
 import { DynamoDBClient, DynamoDBClientConfig } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
-import { config } from './config';
+import { config } from './config.ts';
 
 /** Initialize outside of handler to follow best practices
  * Note that TCP connection reuse is enabled by default in v3

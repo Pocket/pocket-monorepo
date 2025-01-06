@@ -1,5 +1,5 @@
-import { PocketEventType } from '../events';
-import { BaseEvent } from './base';
+import { PocketEventType } from '../events.ts';
+import { BaseEvent } from './base.ts';
 
 export type ProspectPocketEventType = PocketEventType.PROSPECT_DISMISSED;
 

@@ -1,1 +1,1 @@
-export * from './searchIndexing';
+export * from './searchIndexing.ts';

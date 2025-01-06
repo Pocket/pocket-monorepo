@@ -1,1 +1,1 @@
-export * from './pocketContextManager';
+export * from './pocketContextManager.ts';

@@ -1,11 +1,11 @@
-import { config } from '../config';
+import { config } from '../config.ts';
 import * as Sentry from '@sentry/aws-serverless';
 import {
   generateSubscriptionPayloadForEmail,
   sendCreateUserAlias,
   sendUserTrack,
   setSubscription,
-} from '../braze';
+} from '../braze.ts';
 import type {
   UsersAliasObject,
   UsersTrackObject,

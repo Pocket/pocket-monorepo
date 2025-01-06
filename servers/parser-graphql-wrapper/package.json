@@ -6,13 +6,13 @@
   "author": "",
   "main": "dist/main.js",
   "scripts": {
+    "prebuild": "graphql-codegen",
     "build": "rm -rf dist && tsc",
     "dev": "npm run build && npm run watch",
     "format": "eslint --fix",
     "generate:database:types:readitlab": "DATABASE_URL=mysql://root@localhost:3306/readitla_b kysely-codegen --include-pattern=\"readitla_b.items_resolver\" --out-file=src/__generated__/readitlab.d.ts",
     "generate:database:types:shares": "DATABASE_URL=mysql://root@localhost:3306/readitla_shares kysely-codegen --include-pattern=\"readitla_shares.share_urls\" --out-file=src/__generated__/readitlaShares.d.ts",
     "lint": "eslint --fix-dry-run",
-    "prebuild": "graphql-codegen",
     "start": "node dist/main.js",
     "test": "jest \"\\.spec\\.ts\" --runInBand",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand --force-exit",
@@ -81,6 +81,6 @@
     "ts-jest": "29.2.5",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "typescript": "5.5.4"
+    "typescript": "5.7.2"
   }
 }

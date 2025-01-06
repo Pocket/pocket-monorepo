@@ -11,12 +11,12 @@
     "package.json"
   ],
   "scripts": {
+    "prebuild": "graphql-codegen",
     "build": "rm -rf dist && tsc && npm run build-schema",
     "build-schema": "node dist/apollo/buildSchema.js",
     "dev": "npm run build && npm run watch",
     "format": "eslint --fix",
     "lint": "eslint --fix-dry-run",
-    "prebuild": "graphql-codegen",
     "start": "node dist/main.js",
     "test": "jest \"\\.spec\\.ts\"",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand",
@@ -64,6 +64,6 @@
     "ts-jest": "29.2.5",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "typescript": "5.5.4"
+    "typescript": "5.7.2"
   }
 }

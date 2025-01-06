@@ -3,7 +3,7 @@ import {
   UserListImportSqsMessage,
 } from '@pocket-tools/types';
 import { nanoid } from 'nanoid';
-import { config } from './config';
+import { config } from './config/index.ts';
 
 /**
  * Processes messages from the itemDelete queue or the itemUpdate queues.

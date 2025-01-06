@@ -117,7 +117,7 @@ export class ApplicationLoadBalancer extends Construct {
       },
     );
 
-    let logsConfig: alb.AlbAccessLogs = undefined;
+    let logsConfig: alb.AlbAccessLogs | undefined = undefined;
     if (config.accessLogs !== undefined) {
       const defaultPrefix = `server-logs/${config.prefix.toLowerCase()}/alb`;
 
