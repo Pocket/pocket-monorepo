@@ -12,7 +12,7 @@ import {
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
-import { config } from './config';
+import { config } from './config/index.ts';
 import {
   ApplicationSQSQueue,
   PocketALBApplication,
@@ -20,8 +20,8 @@ import {
   PocketVPC,
   ApplicationSqsSnsTopicSubscription,
 } from '@pocket-tools/terraform-modules';
-import { DynamoDB } from './dynamodb';
-import { SqsLambda } from './SqsLambda';
+import { DynamoDB } from './dynamodb.ts';
+import { SqsLambda } from './SqsLambda.ts';
 
 class AnnotationsAPI extends TerraformStack {
   constructor(scope: Construct, name: string) {

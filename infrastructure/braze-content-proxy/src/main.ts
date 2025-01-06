@@ -9,7 +9,7 @@ import {
   wafv2WebAcl,
   wafv2IpSet,
 } from '@cdktf/provider-aws';
-import { config } from './config';
+import { config } from './config/index.ts';
 import { PocketALBApplication } from '@pocket-tools/terraform-modules';
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';

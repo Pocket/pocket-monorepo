@@ -9,7 +9,7 @@
     "ts-node": "10.9.2",
     "tslib": "2.8.0",
     "tsup": "8.3.5",
-    "typescript": "5.5.4"
+    "typescript": "5.7.2"
   },
   "engines": {
     "node": "^22.11"
