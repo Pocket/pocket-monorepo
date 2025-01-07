@@ -27,7 +27,7 @@ runs:
   using: 'composite'
   steps:
     - name: Install pnpm & node
-      uses: pocket/pocket-monorepo/.github/actions/install-pnpm-and-node@main
+      uses: ./.github/actions/install-pnpm-and-node
       with:
         scope: ${{ inputs['scope'] }}
     # Theres a really annoying bug in PNPM deploy command that will try and create a folder at /home/pruned which we are not allowed to do, 

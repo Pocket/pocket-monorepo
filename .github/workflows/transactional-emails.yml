@@ -35,7 +35,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-lambda.yml
     needs: [infrastructure]
     with:
-      scope: '@server/transactional-emails'
+      scope: '@lambda/transactional-emails'
       sentry-project: transactional-emails
       s3-bucket-pattern: pocket-transactionalemails-{0}-sqs-event-consumer
       codedeploy-app-name-pattern: TransactionalEmails-{0}-Sqs-Event-Consumer-Lambda

@@ -28,7 +28,7 @@ jobs:
     if: github.event_name == 'pull_request'
     uses: ./.github/workflows/reuse-test-integrations.yml
     with:
-      scope: '@server/account-delete-monitor'
+      scope: '@lambda/account-delete-monitor'
     secrets: inherit
 
   infrastructure:
