@@ -25,6 +25,6 @@ jobs:
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
     with:
-      scope: braze-cdk
+      scope: '@infrastructure/braze'
       stack-output-path: infrastructure/braze/cdktf.out/stacks/braze
     secrets: inherit

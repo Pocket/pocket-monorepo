@@ -1,5 +1,5 @@
 {
-  "name": "parser-graphql-wrapper-cdk",
+  "name": "@infrastructure/parser-graphql-wrapper",
   "version": "1.0.0",
   "private": true,
   "license": "MPL-2.0",

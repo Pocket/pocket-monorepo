@@ -1,5 +1,5 @@
 {
-  "name": "shared-snowplow-consumer-cdk",
+  "name": "@infrastructure/shared-snowplow-consumer",
   "version": "1.0.0",
   "private": true,
   "license": "MPL-2.0",

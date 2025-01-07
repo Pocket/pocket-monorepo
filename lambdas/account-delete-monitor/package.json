@@ -1,5 +1,5 @@
 {
-  "name": "account-delete-monitor",
+  "name": "@lambda/account-delete-monitor",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",

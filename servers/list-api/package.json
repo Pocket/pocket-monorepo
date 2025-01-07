@@ -1,5 +1,5 @@
 {
-  "name": "list-api",
+  "name": "@server/list-api",
   "version": "1.0.0",
   "main": "dist/server/main.js",
   "files": [

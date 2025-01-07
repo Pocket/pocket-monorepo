@@ -1,5 +1,5 @@
 {
-  "name": "user-list-search-corpus-parser-hydration",
+  "name": "@lambda/user-list-search-corpus-parser-hydration",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",

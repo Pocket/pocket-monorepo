@@ -1,5 +1,5 @@
 {
-  "name": "user-list-search-corpus-indexing",
+  "name": "@lambda/user-list-search-corpus-indexing",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",

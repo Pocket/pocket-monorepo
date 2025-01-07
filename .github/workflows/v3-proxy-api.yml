@@ -29,13 +29,13 @@ jobs:
     if: github.event_name == 'pull_request'
     uses: ./.github/workflows/reuse-test-integrations.yml
     with:
-      scope: v3-proxy-api
+      scope: '@server/v3-proxy-api'
     secrets: inherit
 
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
     with:
-      scope: v3-proxy-api-cdk
+      scope: '@infrastructure/v3-proxy-api'
       stack-output-path: infrastructure/v3-proxy-api/cdktf.out/stacks/v3-proxy-api
     secrets: inherit
 
@@ -43,7 +43,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-image.yml
     needs: [infrastructure]
     with:
-      scope: v3-proxy-api
+      scope: '@server/v3-proxy-api'
       app-path: servers/v3-proxy-api
       app-port: 4030
       sentry-project: v3-proxy-api

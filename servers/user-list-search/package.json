@@ -1,5 +1,5 @@
 {
-  "name": "user-list-search",
+  "name": "@server/user-list-search",
   "version": "1.0.0",
   "description": "",
   "main": "dist/main.js",

@@ -30,13 +30,13 @@ jobs:
     if: github.event_name == 'pull_request'
     uses: ./.github/workflows/reuse-test-integrations.yml
     with:
-      scope: shared-snowplow-consumer
+      scope: '@server/shared-snowplow-consumer'
     secrets: inherit
 
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
     with:
-      scope: shared-snowplow-consumer-cdk
+      scope: '@infrastructure/shared-snowplow-consumer'
       stack-output-path: infrastructure/shared-snowplow-consumer/cdktf.out/stacks/shared-snowplow-consumer
     secrets: inherit
 
@@ -44,7 +44,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-image.yml
     needs: [infrastructure]
     with:
-      scope: shared-snowplow-consumer
+      scope: '@server/shared-snowplow-consumer'
       app-path: servers/shared-snowplow-consumer
       app-port: 4015
       sentry-project: shared-snowplow-consumer

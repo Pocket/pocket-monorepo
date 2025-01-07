@@ -1,5 +1,5 @@
 {
-  "name": "otel-collector-cdk",
+  "name": "@infrastructure/otel-collector",
   "version": "1.0.0",
   "private": true,
   "type": "module",

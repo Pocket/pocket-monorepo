@@ -1,5 +1,5 @@
 {
-  "name": "braze-content-proxy",
+  "name": "@server/braze-content-proxy",
   "version": "1.0.0",
   "main": "dist/main.js",
   "scripts": {

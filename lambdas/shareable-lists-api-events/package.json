@@ -1,5 +1,5 @@
 {
-  "name": "shareable-lists-api-events-lambda",
+  "name": "@lambda/shareable-lists-api-events",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",

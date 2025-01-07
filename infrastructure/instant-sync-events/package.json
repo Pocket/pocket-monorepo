@@ -1,5 +1,5 @@
 {
-  "name": "instant-sync-events-cdk",
+  "name": "@infrastructure/instant-sync-events",
   "version": "1.0.0",
   "private": true,
   "license": "MPL-2.0",

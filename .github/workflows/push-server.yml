@@ -29,13 +29,13 @@ jobs:
     if: github.event_name == 'pull_request'
     uses: ./.github/workflows/reuse-test-integrations.yml
     with:
-      scope: push-server
+      scope: '@server/push-server'
     secrets: inherit
 
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
     with:
-      scope: push-server-cdk
+      scope: '@infrastructure/push-server'
       stack-output-path: infrastructure/push-server/cdktf.out/stacks/push-server
     secrets: inherit
 
@@ -43,7 +43,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-image.yml
     needs: [infrastructure]
     with:
-      scope: push-server
+      scope: '@server/push-server'
       app-path: servers/push-server
       sentry-project: push-server
       docker-repo-name-pattern: push-{0}-app

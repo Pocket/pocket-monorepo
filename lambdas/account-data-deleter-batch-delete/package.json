@@ -1,5 +1,5 @@
 {
-  "name": "account-data-deleter-batch-delete",
+  "name": "@lambda/account-data-deleter-batch-delete",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",

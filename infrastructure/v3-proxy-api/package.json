@@ -1,5 +1,5 @@
 {
-  "name": "v3-proxy-api-cdk",
+  "name": "@infrastructure/v3-proxy-api",
   "version": "1.0.0",
   "private": true,
   "license": "MPL-2.0",

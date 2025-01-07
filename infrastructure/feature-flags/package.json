@@ -1,5 +1,5 @@
 {
-  "name": "feature-flags-cdk",
+  "name": "@infrastructure/feature-flags",
   "version": "1.0.0",
   "private": true,
   "type": "module",

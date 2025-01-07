@@ -1,5 +1,5 @@
 {
-  "name": "annotations-api-events-lambda",
+  "name": "@lambda/annotations-api-events",
   "version": "1.0.1",
   "description": "",
   "license": "ISC",
