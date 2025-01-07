@@ -6,13 +6,13 @@
   "author": "",
   "main": "dist/main.js",
   "scripts": {
+    "prebuild": "graphql-codegen",
     "build": "rm -rf dist && tsc",
     "dev": "npm run build && npm run watch",
     "format": "eslint --fix",
     "generate:database:types:readitlab": "DATABASE_URL=mysql://root@localhost:3306/readitla_b kysely-codegen --include-pattern=\"readitla_b.items_resolver\" --out-file=src/__generated__/readitlab.d.ts",
     "generate:database:types:shares": "DATABASE_URL=mysql://root@localhost:3306/readitla_shares kysely-codegen --include-pattern=\"readitla_shares.share_urls\" --out-file=src/__generated__/readitlaShares.d.ts",
     "lint": "eslint --fix-dry-run",
-    "prebuild": "graphql-codegen",
     "start": "node dist/main.js",
     "test": "jest \"\\.spec\\.ts\" --runInBand",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand --force-exit",
@@ -21,12 +21,12 @@
   "dependencies": {
     "@apollo/cache-control-types": "1.0.3",
     "@apollo/datasource-rest": "^6.2.2",
-    "@apollo/server": "4.11.2",
+    "@apollo/server": "4.11.3",
     "@apollo/subgraph": "2.9.3",
     "@apollo/utils.keyvadapter": "3.1.0",
     "@apollo/utils.keyvaluecache": "3.1.0",
-    "@aws-sdk/client-dynamodb": "3.696.0",
-    "@aws-sdk/lib-dynamodb": "3.696.0",
+    "@aws-sdk/client-dynamodb": "3.716.0",
+    "@aws-sdk/lib-dynamodb": "3.716.0",
     "@extractus/oembed-extractor": "^3.2.1",
     "@keyv/redis": "2.8.5",
     "@pocket-tools/apollo-utils": "workspace:*",
@@ -36,7 +36,7 @@
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "8.41.0",
+    "@sentry/node": "8.47.0",
     "cors": "2.8.5",
     "dataloader": "2.2.2",
     "domino": "2.1.6",
@@ -81,6 +81,6 @@
     "ts-jest": "29.2.5",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "typescript": "5.5.4"
+    "typescript": "5.7.2"
   }
 }

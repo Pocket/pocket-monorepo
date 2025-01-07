@@ -5,8 +5,8 @@ import {
   PocketApiGatewayProps,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
-import { config } from './config';
-import { getEnvVariableValues } from './utilities';
+import { config } from './config/index.ts';
+import { getEnvVariableValues } from './utilities.ts';
 import { Construct } from 'constructs';
 import { dataAwsSnsTopic, sqsQueue } from '@cdktf/provider-aws';
 

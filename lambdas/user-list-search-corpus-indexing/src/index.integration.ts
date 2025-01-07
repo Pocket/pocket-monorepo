@@ -1,9 +1,9 @@
-import { bulkIndex, processor } from '.';
-import { EventPayload } from './types';
-import { config } from './config';
-import * as oci from './queries/originalCorpusId';
-import * as ci from './queries/collectionId';
-import * as api from './commands/ApprovedItem';
+import { bulkIndex, processor } from './index.ts';
+import { EventPayload } from './types.ts';
+import { config } from './config.ts';
+import * as oci from './queries/originalCorpusId.ts';
+import * as ci from './queries/collectionId.ts';
+import * as api from './commands/ApprovedItem.ts';
 import { PocketEventType } from '@pocket-tools/event-bridge';
 
 /**

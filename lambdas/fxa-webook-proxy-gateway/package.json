@@ -5,6 +5,7 @@
   "keywords": [],
   "license": "ISC",
   "author": "",
+  "type": "module",
   "main": "dist/index.js",
   "files": [
     "dist",
@@ -18,9 +19,9 @@
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "3.696.0",
+    "@aws-sdk/client-sqs": "3.716.0",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/aws-serverless": "8.41.0",
+    "@sentry/aws-serverless": "8.47.0",
     "jsonwebtoken": "^9.0.0",
     "jwk-to-pem": "^2.0.5",
     "jwks-rsa": "3.1.0",
@@ -39,6 +40,6 @@
     "ts-jest": "29.2.5",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "typescript": "5.5.4"
+    "typescript": "5.7.2"
   }
 }

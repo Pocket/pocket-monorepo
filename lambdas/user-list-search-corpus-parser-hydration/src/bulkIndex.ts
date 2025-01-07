@@ -1,7 +1,7 @@
-import { config } from './config';
+import { config } from './config.ts';
 import * as Sentry from '@sentry/aws-serverless';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { BulkRequestPayload } from './types';
+import { BulkRequestPayload } from './types.ts';
 import fetchRetry from 'fetch-retry';
 const newFetch = fetchRetry(fetch);
 /**

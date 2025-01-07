@@ -5,7 +5,7 @@ import {
   PocketVersionedLambdaProps,
   ApplicationBaseDNS,
   ApplicationCertificate,
-} from '../index.js';
+} from '../index.ts';
 import { Fn, TerraformMetaArguments } from 'cdktf';
 import {
   lambdaPermission,
@@ -129,6 +129,9 @@ export class PocketApiGateway extends Construct {
    * @param config
    */
   private createRoute53Record(config: PocketApiGatewayProps) {
+    if (config.domain == null) {
+      throw new Error('Domain must be provided to create a custom domain');
+    }
     //Set up the Base DNS stack for our application which includes a hosted SubZone
     const baseDNS = new ApplicationBaseDNS(this, `base-dns`, {
       domain: config.domain,

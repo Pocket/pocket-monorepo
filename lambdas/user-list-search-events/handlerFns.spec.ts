@@ -1,7 +1,7 @@
-import { config } from './config';
+import { config } from './config.ts';
 import nock from 'nock';
 import { SQSRecord } from 'aws-lambda';
-import { __handler } from '.';
+import { __handler } from './index.ts';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { PocketEventType } from '@pocket-tools/event-bridge';
 

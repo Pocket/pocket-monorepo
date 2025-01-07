@@ -3,9 +3,9 @@ import {
   PocketEventBridgeProps,
   PocketEventBridgeRuleWithMultipleTargets,
 } from '@pocket-tools/terraform-modules';
-import { config } from '../../config';
-import { config as admConfig } from './config';
-import { createDeadLetterQueueAlarm } from '../utils';
+import { config } from '../../config/index.ts';
+import { config as admConfig } from './config.ts';
+import { createDeadLetterQueueAlarm } from '../utils.ts';
 import {
   dataAwsSqsQueue,
   snsTopic,
@@ -14,7 +14,7 @@ import {
   sqsQueue,
   dataAwsSnsTopic,
 } from '@cdktf/provider-aws';
-import { Resource } from '@cdktf/provider-null/lib/resource';
+import { resource } from '@cdktf/provider-null';
 
 export class AccountDeleteMonitorEvents extends Construct {
   public readonly sqs: dataAwsSqsQueue.DataAwsSqsQueue;
@@ -63,7 +63,7 @@ export class AccountDeleteMonitorEvents extends Construct {
       `${config.prefix}-Dlq-Alarm`,
     );
 
-    new Resource(this, 'null-resource', {
+    new resource.Resource(this, 'null-resource', {
       dependsOn: [userMergeRule.getEventBridge().rule, this.UserMergeTopic],
     });
   }

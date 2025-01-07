@@ -11,6 +11,17 @@
   },
   "license": "Apache-2.0",
   "author": "",
+  "type": "module",
+  "exports": {
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -73,29 +84,29 @@
   },
   "dependencies": {
     "@opentelemetry/api": "1.9.0",
-    "@opentelemetry/auto-instrumentations-node": "0.53.0",
-    "@opentelemetry/context-async-hooks": "1.28.0",
-    "@opentelemetry/core": "1.28.0",
-    "@opentelemetry/exporter-logs-otlp-grpc": "0.55.0",
-    "@opentelemetry/exporter-logs-otlp-http": "0.55.0",
-    "@opentelemetry/exporter-metrics-otlp-grpc": "0.55.0",
-    "@opentelemetry/exporter-metrics-otlp-http": "0.55.0",
-    "@opentelemetry/exporter-trace-otlp-grpc": "0.55.0",
-    "@opentelemetry/exporter-trace-otlp-http": "0.55.0",
+    "@opentelemetry/auto-instrumentations-node": "0.55.0",
+    "@opentelemetry/context-async-hooks": "1.30.0",
+    "@opentelemetry/core": "1.30.0",
+    "@opentelemetry/exporter-logs-otlp-grpc": "0.57.0",
+    "@opentelemetry/exporter-logs-otlp-http": "0.57.0",
+    "@opentelemetry/exporter-metrics-otlp-grpc": "0.57.0",
+    "@opentelemetry/exporter-metrics-otlp-http": "0.57.0",
+    "@opentelemetry/exporter-trace-otlp-grpc": "0.57.0",
+    "@opentelemetry/exporter-trace-otlp-http": "0.57.0",
     "@opentelemetry/id-generator-aws-xray": "1.2.2",
-    "@opentelemetry/instrumentation-knex": "0.42.0",
+    "@opentelemetry/instrumentation-knex": "0.44.0",
     "@opentelemetry/propagator-aws-xray": "1.26.0",
-    "@opentelemetry/resource-detector-aws": "1.8.0",
-    "@opentelemetry/resources": "1.28.0",
-    "@opentelemetry/sdk-metrics": "1.28.0",
-    "@opentelemetry/sdk-node": "0.55.0",
-    "@opentelemetry/sdk-trace-base": "1.28.0",
-    "@opentelemetry/sdk-trace-node": "1.28.0",
+    "@opentelemetry/resource-detector-aws": "1.10.0",
+    "@opentelemetry/resources": "1.30.0",
+    "@opentelemetry/sdk-metrics": "1.30.0",
+    "@opentelemetry/sdk-node": "0.57.0",
+    "@opentelemetry/sdk-trace-base": "1.30.0",
+    "@opentelemetry/sdk-trace-node": "1.30.0",
     "@opentelemetry/semantic-conventions": "1.28.0",
-    "@opentelemetry/winston-transport": "0.8.0",
-    "@prisma/instrumentation": "5.21.1",
-    "@sentry/node": "8.41.0",
-    "@sentry/opentelemetry": "8.41.0",
+    "@opentelemetry/winston-transport": "0.10.0",
+    "@prisma/instrumentation": "5.22.0",
+    "@sentry/node": "8.47.0",
+    "@sentry/opentelemetry": "8.47.0",
     "tslib": "2.8.0",
     "unleash-client": "6.1.2"
   },
@@ -112,7 +123,7 @@
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
     "tsup": "8.3.5",
-    "typescript": "5.5.4"
+    "typescript": "5.7.2"
   },
   "publishConfig": {
     "access": "public"

@@ -18,7 +18,7 @@
     "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json"
   },
   "dependencies": {
-    "@apollo/server": "4.11.2",
+    "@apollo/server": "4.11.3",
     "@apollo/subgraph": "2.9.3",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/event-bridge": "workspace:*",
@@ -27,7 +27,7 @@
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "8.41.0",
+    "@sentry/node": "8.47.0",
     "dataloader": "2.2.2",
     "express": "4.20.0",
     "graphql": "16.9.0",
@@ -40,7 +40,7 @@
   "devDependencies": {
     "@faker-js/faker": "9.1.0",
     "@pocket-tools/eslint-config": "workspace:*",
-    "@sentry/types": "8.41.0",
+    "@sentry/types": "8.47.0",
     "@types/jest": "29.5.14",
     "@types/node": "^22.8.2",
     "@types/supertest": "^6.0.2",
@@ -52,6 +52,6 @@
     "ts-jest": "29.2.5",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "typescript": "5.5.4"
+    "typescript": "5.7.2"
   }
 }

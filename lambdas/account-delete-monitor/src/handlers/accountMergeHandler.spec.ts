@@ -1,5 +1,5 @@
-import { client } from '../dynamodb';
-import { accountMergeHandler } from './accountMergeHandler';
+import { client } from '../dynamodb.ts';
+import { accountMergeHandler } from './accountMergeHandler.ts';
 import { type SQSRecord } from 'aws-lambda';
 
 describe('Account merge handler', () => {

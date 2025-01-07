@@ -3,8 +3,8 @@ import { Construct } from 'constructs';
 import {
   ApplicationVersionedLambda,
   LAMBDA_RUNTIMES,
-} from '../base/ApplicationVersionedLambda.js';
-import { ApplicationLambdaCodeDeploy } from '../base/ApplicationLambdaCodeDeploy.js';
+} from '../base/ApplicationVersionedLambda.ts';
+import { ApplicationLambdaCodeDeploy } from '../base/ApplicationLambdaCodeDeploy.ts';
 import {
   cloudwatchMetricAlarm,
   dataAwsIamPolicyDocument,
@@ -118,6 +118,7 @@ export class PocketVersionedLambda extends Construct {
 
   private createLambdaAlarms(lambda: ApplicationVersionedLambda): void {
     const alarmsConfig = this.config.lambda.alarms;
+    if (!alarmsConfig) return;
 
     const alarms = {
       invocations: 'Invocations',
@@ -128,10 +129,10 @@ export class PocketVersionedLambda extends Construct {
     };
 
     Object.keys(alarms).forEach((name) => {
-      if (alarmsConfig[name]) {
+      if (alarmsConfig[name] !== undefined) {
         this.createLambdaAlarm(lambda, {
           metricName: alarms[name],
-          props: this.config.lambda.alarms[name],
+          props: alarmsConfig[name],
         });
       }
     });
@@ -178,6 +179,8 @@ export class PocketVersionedLambda extends Construct {
 
   private createLambdaCodeDeploy(): void {
     const lambdaConfig = this.config.lambda;
+    if (lambdaConfig.codeDeploy === undefined)
+      throw new Error('CodeDeploy configuration is required');
 
     new ApplicationLambdaCodeDeploy(this, 'lambda-code-deploy', {
       name: this.config.name,

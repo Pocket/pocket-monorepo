@@ -11,6 +11,17 @@
   },
   "license": "Apache-2.0",
   "author": "",
+  "type": "module",
+  "exports": {
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
+  },
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -96,7 +107,7 @@
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
     "tsup": "8.3.5",
-    "typescript": "5.5.4"
+    "typescript": "5.7.2"
   },
   "publishConfig": {
     "access": "public"

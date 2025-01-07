@@ -1,2 +1,2 @@
-export * from './originalCorpusId';
-export * from './collectionId';
+export * from './originalCorpusId.ts';
+export * from './collectionId.ts';

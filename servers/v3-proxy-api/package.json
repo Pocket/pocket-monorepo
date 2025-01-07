@@ -4,11 +4,11 @@
   "description": "",
   "main": "dist/main.js",
   "scripts": {
+    "prebuild": "graphql-codegen",
     "build": "rm -rf dist && tsc",
     "dev": "npm run build && npm run watch",
     "format": "eslint --fix",
     "lint": "eslint --fix-dry-run",
-    "prebuild": "graphql-codegen",
     "start": "node dist/main.js",
     "test": "jest \"\\.spec\\.ts\" --runInBand",
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand --force-exit",
@@ -21,7 +21,7 @@
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "8.41.0",
+    "@sentry/node": "8.47.0",
     "content-type": "1.0.5",
     "cors": "2.8.5",
     "express": "4.20.0",
@@ -52,6 +52,6 @@
     "ts-jest": "29.2.5",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "typescript": "5.5.4"
+    "typescript": "5.7.2"
   }
 }

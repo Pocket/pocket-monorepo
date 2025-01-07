@@ -1,11 +1,11 @@
 import { Knex } from 'knex';
-import { readClient, writeClient } from './clients';
+import { readClient, writeClient } from './clients.ts';
 import * as LambdaSecrets from '@pocket-tools/lambda-secrets';
-import { Message, instantSyncHandler } from './handlerFn';
+import { Message, instantSyncHandler } from './handlerFn.ts';
 import { SQSRecord } from 'aws-lambda';
-import { client as sqs } from './sqs';
+import { client as sqs } from './sqs.ts';
 import { PurgeQueueCommand, ReceiveMessageCommand } from '@aws-sdk/client-sqs';
-import { config } from './config';
+import { config } from './config.ts';
 
 jest.mock('@pocket-tools/lambda-secrets');
 

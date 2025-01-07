@@ -3,8 +3,8 @@ import { gql } from 'graphql-tag';
 import { buildSubgraphSchema } from '@apollo/subgraph';
 import { ApolloServerErrorCode } from '@apollo/server/errors';
 import assert from 'assert';
-import { sentryPlugin, defaultLogger } from '../sentry/apolloSentryPlugin';
-import { errorHandler, NotFoundError } from './errorHandler';
+import { sentryPlugin, defaultLogger } from '../sentry/apolloSentryPlugin.ts';
+import { errorHandler, NotFoundError } from './errorHandler.ts';
 import * as Sentry from '@sentry/node';
 import { ApolloServerPluginUsageReportingDisabled } from '@apollo/server/plugin/disabled';
 import { GraphQLError } from 'graphql';
@@ -59,8 +59,11 @@ const server = new ApolloServer({
 });
 
 describe('Server error handling: ', () => {
-  const logErrorSpy = jest.spyOn(defaultLogger, 'error');
-  const sentrySpy = jest.spyOn(Sentry, 'captureException');
+  const logErrorSpy: jest.SpyInstance<typeof defaultLogger> = jest.spyOn(
+    defaultLogger,
+    'error',
+  );
+  const sentrySpy: jest.SpyInstance = jest.spyOn(Sentry, 'captureException');
 
   afterEach(() => {
     logErrorSpy.mockReset();

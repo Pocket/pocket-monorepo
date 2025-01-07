@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "license": "MPL-2.0",
+  "type": "module",
   "main": "dist/main.js",
   "types": "src/main.ts",
   "scripts": {
@@ -14,13 +15,13 @@
     "watch": "tsc -w"
   },
   "dependencies": {
-    "@cdktf/provider-archive": "10.2.0",
-    "@cdktf/provider-aws": "19.43.0",
+    "@cdktf/provider-archive": "10.3.0",
+    "@cdktf/provider-aws": "19.48.1",
     "@cdktf/provider-local": "10.1.1",
     "@cdktf/provider-null": "10.0.1",
     "@pocket-tools/terraform-modules": "workspace:*",
-    "cdktf": "0.20.10",
-    "cdktf-cli": "0.20.10",
+    "cdktf": "0.20.11",
+    "cdktf-cli": "0.20.11",
     "constructs": "10.4.2"
   },
   "devDependencies": {
@@ -28,6 +29,6 @@
     "@types/node": "^22.8.2",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "typescript": "5.5.4"
+    "typescript": "5.7.2"
   }
 }

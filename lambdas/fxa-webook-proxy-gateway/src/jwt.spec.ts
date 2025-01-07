@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
-import { FxaJwt } from './jwt';
+import { FxaJwt } from './jwt.ts';
 
 describe('jwt', () => {
   const publicKey = fs.readFileSync(__dirname + '/test/jwtRS256.key.pub', {

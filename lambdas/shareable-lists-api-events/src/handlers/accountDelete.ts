@@ -1,5 +1,5 @@
 import { SQSRecord } from 'aws-lambda';
-import { config } from '../config';
+import { config } from '../config.ts';
 import fetchRetry from 'fetch-retry';
 
 const newFetch = fetchRetry(fetch);

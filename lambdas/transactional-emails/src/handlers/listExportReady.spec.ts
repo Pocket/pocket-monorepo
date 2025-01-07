@@ -1,11 +1,11 @@
 import nock, { cleanAll } from 'nock';
 import { SQSEvent, SQSRecord } from 'aws-lambda';
-import { config } from '../config';
-import * as ssm from '../ssm';
-import { sendListExportReadyEmail } from '../braze';
+import { config } from '../config.ts';
+import * as ssm from '../ssm.ts';
+import { sendListExportReadyEmail } from '../braze.ts';
 import { PocketEventType } from '@pocket-tools/event-bridge';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { processor } from '..';
+import { processor } from '../index.ts';
 
 describe('listExportReady handler', () => {
   let serverLoggerSpy: jest.SpyInstance;

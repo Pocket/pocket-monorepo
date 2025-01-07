@@ -1,4 +1,4 @@
-FROM ghcr.io/apollographql/router:v1.58.1@sha256:296acc7cfb23fe4531022988189f0773d8189fcae61fd9877a17ca4a471eada5
+FROM ghcr.io/apollographql/router:v1.59.0@sha256:b889013f3c8e94f15de7fc81001c6dd5cc166562404196bb94c4da33dba17622
 
 USER root
 

@@ -18,14 +18,3 @@ terraform {
 
   required_version = ">= 1.8.3"
 }
-
-data "terraform_remote_state" "incident_management" {
-  backend = "remote"
-
-  config = {
-    organization = "Pocket"
-    workspaces = {
-      name = "incident-management"
-    }
-  }
-}

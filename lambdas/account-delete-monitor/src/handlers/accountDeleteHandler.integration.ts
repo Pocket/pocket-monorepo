@@ -1,10 +1,10 @@
-import { accountDeleteHandler } from './accountDeleteHandler';
+import { accountDeleteHandler } from './accountDeleteHandler.ts';
 import { SQSRecord } from 'aws-lambda';
-import { client, dynamo } from '../dynamodb';
+import { client, dynamo } from '../dynamodb.ts';
 import { GetCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
-import { config } from '../config';
-import * as deleteMutation from '../externalCaller/deleteMutation';
-import { truncateTable } from '../test/utils';
+import { config } from '../config.ts';
+import * as deleteMutation from '../externalCaller/deleteMutation.ts';
+import { truncateTable } from '../test/utils.ts';
 
 describe('Account delete handler', () => {
   const record = {

@@ -1,7 +1,7 @@
-import { config } from './config';
-import { DataDeleterApp, DataDeleterAppConfig } from './dataDeleterApp';
-import { BatchDeleteLambdaResources } from './lambda/batchDeleteLambdaResources';
-import { EventLambda } from './lambda/eventLambda';
+import { config } from './config/index.ts';
+import { DataDeleterApp, DataDeleterAppConfig } from './dataDeleterApp.ts';
+import { BatchDeleteLambdaResources } from './lambda/batchDeleteLambdaResources.ts';
+import { EventLambda } from './lambda/eventLambda.ts';
 
 import { provider as archiveProvider } from '@cdktf/provider-archive';
 import {

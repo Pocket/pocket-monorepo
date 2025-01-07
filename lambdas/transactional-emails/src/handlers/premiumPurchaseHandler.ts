@@ -1,4 +1,4 @@
-import { sendUserTrack } from '../braze';
+import { sendUserTrack } from '../braze.ts';
 import {
   PocketEvent,
   PocketEventType,

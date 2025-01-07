@@ -1,5 +1,5 @@
-import { ValidLanguageApprovedItemPayload } from '../types';
-import { config } from '../config';
+import { ValidLanguageApprovedItemPayload } from '../types.ts';
+import { config } from '../config.ts';
 
 /**
  * Remove an "ApprovedItem" from the search cluster.
