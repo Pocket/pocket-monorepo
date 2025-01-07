@@ -41,8 +41,8 @@ export function SavedItemsSortFactory(params: V3GetParams) {
     if (params.favorite != null) {
       sortBy = SavedItemsSortBy.FavoritedAt;
     } else if (
-      params.state &&
-      ['read', 'archived'].indexOf(params.state) > -1
+      (params.state && params.state === 'read') ||
+      params.state === 'archive'
     ) {
       sortBy = SavedItemsSortBy.ArchivedAt;
     }
