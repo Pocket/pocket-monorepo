@@ -36,7 +36,7 @@ importers:
     devDependencies:
       '@commitlint/cli':
         specifier: 19.6.0
-        version: 19.6.0(@types/node@22.10.5)(typescript@5.8.0-dev.20250103)
+        version: 19.6.0(@types/node@22.10.5)(typescript@5.8.0-dev.20250107)
       '@commitlint/config-conventional':
         specifier: ^19.6.0
         version: 19.6.0
@@ -45,7 +45,7 @@ importers:
         version: link:packages/eslint-config
       syncpack:
         specifier: ^13.0.0
-        version: 13.0.0(typescript@5.8.0-dev.20250103)
+        version: 13.0.0(typescript@5.8.0-dev.20250107)
       tsconfig:
         specifier: workspace:*
         version: link:packages/tsconfig
@@ -1864,11 +1864,11 @@ importers:
         specifier: 1.0.3
         version: 1.0.3(graphql@16.9.0)
       '@apollo/server':
-        specifier: 4.11.2
-        version: 4.11.2(encoding@0.1.13)(graphql@16.9.0)
+        specifier: 4.11.3
+        version: 4.11.3(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/server-plugin-response-cache':
-        specifier: 4.1.3
-        version: 4.1.3(@apollo/server@4.11.2(encoding@0.1.13)(graphql@16.9.0))(graphql@16.9.0)
+        specifier: 4.1.4
+        version: 4.1.4(@apollo/server@4.11.3(encoding@0.1.13)(graphql@16.9.0))(graphql@16.9.0)
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
@@ -2831,8 +2831,8 @@ importers:
         specifier: ^6.2.2
         version: 6.4.1(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/server':
-        specifier: 4.11.2
-        version: 4.11.2(encoding@0.1.13)(graphql@16.9.0)
+        specifier: 4.11.3
+        version: 4.11.3(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
@@ -3076,8 +3076,8 @@ importers:
   servers/feature-flags:
     dependencies:
       '@apollo/server':
-        specifier: 4.11.2
-        version: 4.11.2(encoding@0.1.13)(graphql@16.9.0)
+        specifier: 4.11.3
+        version: 4.11.3(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
@@ -3188,8 +3188,8 @@ importers:
   servers/image-api:
     dependencies:
       '@apollo/server':
-        specifier: 4.11.2
-        version: 4.11.2(encoding@0.1.13)(graphql@16.9.0)
+        specifier: 4.11.3
+        version: 4.11.3(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
@@ -3288,8 +3288,8 @@ importers:
   servers/list-api:
     dependencies:
       '@apollo/server':
-        specifier: 4.11.2
-        version: 4.11.2(encoding@0.1.13)(graphql@16.9.0)
+        specifier: 4.11.3
+        version: 4.11.3(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
@@ -3463,8 +3463,8 @@ importers:
   servers/notes-api:
     dependencies:
       '@apollo/server':
-        specifier: 4.11.2
-        version: 4.11.2(encoding@0.1.13)(graphql@16.9.0)
+        specifier: 4.11.3
+        version: 4.11.3(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
@@ -3620,8 +3620,8 @@ importers:
         specifier: ^6.2.2
         version: 6.4.1(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/server':
-        specifier: 4.11.2
-        version: 4.11.2(encoding@0.1.13)(graphql@16.9.0)
+        specifier: 4.11.3
+        version: 4.11.3(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
@@ -3862,11 +3862,11 @@ importers:
   servers/shareable-lists-api:
     dependencies:
       '@apollo/server':
-        specifier: 4.11.2
-        version: 4.11.2(encoding@0.1.13)(graphql@16.9.0)
+        specifier: 4.11.3
+        version: 4.11.3(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/server-plugin-response-cache':
-        specifier: 4.1.3
-        version: 4.1.3(@apollo/server@4.11.2(encoding@0.1.13)(graphql@16.9.0))(graphql@16.9.0)
+        specifier: 4.1.4
+        version: 4.1.4(@apollo/server@4.11.3(encoding@0.1.13)(graphql@16.9.0))(graphql@16.9.0)
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
@@ -4062,8 +4062,8 @@ importers:
   servers/shares-api:
     dependencies:
       '@apollo/server':
-        specifier: 4.11.2
-        version: 4.11.2(encoding@0.1.13)(graphql@16.9.0)
+        specifier: 4.11.3
+        version: 4.11.3(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
@@ -4183,8 +4183,8 @@ importers:
   servers/user-api:
     dependencies:
       '@apollo/server':
-        specifier: 4.11.2
-        version: 4.11.2(encoding@0.1.13)(graphql@16.9.0)
+        specifier: 4.11.3
+        version: 4.11.3(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
@@ -4286,8 +4286,8 @@ importers:
   servers/user-list-search:
     dependencies:
       '@apollo/server':
-        specifier: 4.11.2
-        version: 4.11.2(encoding@0.1.13)(graphql@16.9.0)
+        specifier: 4.11.3
+        version: 4.11.3(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/subgraph':
         specifier: 2.9.3
         version: 2.9.3(graphql@16.9.0)
@@ -4631,15 +4631,15 @@ packages:
     peerDependencies:
       graphql: 14.x || 15.x || 16.x
 
-  '@apollo/server-plugin-response-cache@4.1.3':
-    resolution: {integrity: sha512-8WaP4Xo9GGIbWn4ZG/TlYKZLo/YI8tuORvxzLOKnZa3EqUvt7iTCGHX491dWNiGkm93VgDDdo5r0WEvLDdHSmQ==}
+  '@apollo/server-plugin-response-cache@4.1.4':
+    resolution: {integrity: sha512-MicQsfTbwIzUc7GCFwY9uOz46ad2q22f4RWy42YEoy4YKGdrnl3X0rfs5GpBliw54nM3fxYIdmvGKeO2W7wMSg==}
     engines: {node: '>=14.16.0'}
     peerDependencies:
       '@apollo/server': ^4.0.1
       graphql: ^16.6.0
 
-  '@apollo/server@4.11.2':
-    resolution: {integrity: sha512-WUTHY7DDek8xAMn4Woa9Bl8duQUDzRYQkosX/d1DtCsBWESZyApR7ndnI5d6+W4KSTtqBHhJFkusEI7CWuIJXg==}
+  '@apollo/server@4.11.3':
+    resolution: {integrity: sha512-mW8idE2q0/BN14mimfJU5DAnoPHZRrAWgwsVLBEdACds+mxapIYxIbI6AH4AsOpxfrpvHts3PCYDbopy1XPW1g==}
     engines: {node: '>=14.16.0'}
     peerDependencies:
       graphql: ^16.6.0
@@ -14354,8 +14354,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.8.0-dev.20250103:
-    resolution: {integrity: sha512-PT/H6jgiDGZHb+f431Oq8uqRe1IhfFDtgoJK/IB1tevn6s5P7O59oe1uuHZKAVtiLfw55tLgOXcE9nen3VteyA==}
+  typescript@5.8.0-dev.20250107:
+    resolution: {integrity: sha512-5S8fQVAfikyl3niFOaTOxfF281giwdT8CLPe1yaZFvzS1p6Az4sTCZsiap9sX6pQ5Kn+7L6SxhjPjFFT5iCVMw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -14923,14 +14923,14 @@ snapshots:
       '@apollo/utils.logger': 2.0.1
       graphql: 16.9.0
 
-  '@apollo/server-plugin-response-cache@4.1.3(@apollo/server@4.11.2(encoding@0.1.13)(graphql@16.9.0))(graphql@16.9.0)':
+  '@apollo/server-plugin-response-cache@4.1.4(@apollo/server@4.11.3(encoding@0.1.13)(graphql@16.9.0))(graphql@16.9.0)':
     dependencies:
-      '@apollo/server': 4.11.2(encoding@0.1.13)(graphql@16.9.0)
+      '@apollo/server': 4.11.3(encoding@0.1.13)(graphql@16.9.0)
       '@apollo/utils.createhash': 2.0.2
       '@apollo/utils.keyvaluecache': 2.1.1
       graphql: 16.9.0
 
-  '@apollo/server@4.11.2(encoding@0.1.13)(graphql@16.9.0)':
+  '@apollo/server@4.11.3(encoding@0.1.13)(graphql@16.9.0)':
     dependencies:
       '@apollo/cache-control-types': 1.0.3(graphql@16.9.0)
       '@apollo/server-gateway-interface': 1.1.1(graphql@16.9.0)
@@ -16682,11 +16682,11 @@ snapshots:
     dependencies:
       commander: 12.1.0
 
-  '@commitlint/cli@19.6.0(@types/node@22.10.5)(typescript@5.8.0-dev.20250103)':
+  '@commitlint/cli@19.6.0(@types/node@22.10.5)(typescript@5.8.0-dev.20250107)':
     dependencies:
       '@commitlint/format': 19.5.0
       '@commitlint/lint': 19.6.0
-      '@commitlint/load': 19.6.1(@types/node@22.10.5)(typescript@5.8.0-dev.20250103)
+      '@commitlint/load': 19.6.1(@types/node@22.10.5)(typescript@5.8.0-dev.20250107)
       '@commitlint/read': 19.5.0
       '@commitlint/types': 19.5.0
       tinyexec: 0.3.2
@@ -16733,15 +16733,15 @@ snapshots:
       '@commitlint/rules': 19.6.0
       '@commitlint/types': 19.5.0
 
-  '@commitlint/load@19.6.1(@types/node@22.10.5)(typescript@5.8.0-dev.20250103)':
+  '@commitlint/load@19.6.1(@types/node@22.10.5)(typescript@5.8.0-dev.20250107)':
     dependencies:
       '@commitlint/config-validator': 19.5.0
       '@commitlint/execute-rule': 19.5.0
       '@commitlint/resolve-extends': 19.5.0
       '@commitlint/types': 19.5.0
       chalk: 5.4.1
-      cosmiconfig: 9.0.0(typescript@5.8.0-dev.20250103)
-      cosmiconfig-typescript-loader: 6.1.0(@types/node@22.10.5)(cosmiconfig@9.0.0(typescript@5.8.0-dev.20250103))(typescript@5.8.0-dev.20250103)
+      cosmiconfig: 9.0.0(typescript@5.8.0-dev.20250107)
+      cosmiconfig-typescript-loader: 6.1.0(@types/node@22.10.5)(cosmiconfig@9.0.0(typescript@5.8.0-dev.20250107))(typescript@5.8.0-dev.20250107)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -16829,11 +16829,11 @@ snapshots:
   '@envelop/core@5.0.2':
     dependencies:
       '@envelop/types': 5.0.0
-      tslib: 2.8.1
+      tslib: 2.8.0
 
   '@envelop/types@5.0.0':
     dependencies:
-      tslib: 2.8.1
+      tslib: 2.8.0
 
   '@esbuild/aix-ppc64@0.23.1':
     optional: true
@@ -17423,7 +17423,7 @@ snapshots:
       '@repeaterjs/repeater': 3.0.6
       '@whatwg-node/disposablestack': 0.0.5
       graphql: 16.9.0
-      tslib: 2.8.1
+      tslib: 2.8.0
       value-or-promise: 1.0.12
 
   '@graphql-tools/git-loader@8.0.16(graphql@16.9.0)':
@@ -17502,7 +17502,7 @@ snapshots:
     dependencies:
       '@graphql-tools/utils': 9.2.1(graphql@16.9.0)
       graphql: 16.9.0
-      tslib: 2.8.1
+      tslib: 2.8.0
 
   '@graphql-tools/merge@9.0.16(graphql@16.9.0)':
     dependencies:
@@ -17564,7 +17564,7 @@ snapshots:
       '@graphql-tools/merge': 8.4.2(graphql@16.9.0)
       '@graphql-tools/utils': 9.2.1(graphql@16.9.0)
       graphql: 16.9.0
-      tslib: 2.8.1
+      tslib: 2.8.0
       value-or-promise: 1.0.12
 
   '@graphql-tools/url-loader@8.0.22(@types/node@22.10.5)(encoding@0.1.13)(graphql@16.9.0)':
@@ -20307,7 +20307,7 @@ snapshots:
   '@types/cookies@0.9.0':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/express': 5.0.0
+      '@types/express': 4.17.21
       '@types/keygrip': 1.0.6
       '@types/node': 22.10.5
 
@@ -20728,7 +20728,7 @@ snapshots:
 
   '@whatwg-node/disposablestack@0.0.5':
     dependencies:
-      tslib: 2.8.1
+      tslib: 2.8.0
 
   '@whatwg-node/fetch@0.10.1':
     dependencies:
@@ -21939,12 +21939,12 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cosmiconfig-typescript-loader@6.1.0(@types/node@22.10.5)(cosmiconfig@9.0.0(typescript@5.8.0-dev.20250103))(typescript@5.8.0-dev.20250103):
+  cosmiconfig-typescript-loader@6.1.0(@types/node@22.10.5)(cosmiconfig@9.0.0(typescript@5.8.0-dev.20250107))(typescript@5.8.0-dev.20250107):
     dependencies:
       '@types/node': 22.10.5
-      cosmiconfig: 9.0.0(typescript@5.8.0-dev.20250103)
+      cosmiconfig: 9.0.0(typescript@5.8.0-dev.20250107)
       jiti: 2.4.2
-      typescript: 5.8.0-dev.20250103
+      typescript: 5.8.0-dev.20250107
 
   cosmiconfig@8.3.6(typescript@5.7.2):
     dependencies:
@@ -21964,14 +21964,14 @@ snapshots:
     optionalDependencies:
       typescript: 5.7.2
 
-  cosmiconfig@9.0.0(typescript@5.8.0-dev.20250103):
+  cosmiconfig@9.0.0(typescript@5.8.0-dev.20250107):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 5.8.0-dev.20250103
+      typescript: 5.8.0-dev.20250107
 
   cpu-features@0.0.2:
     dependencies:
@@ -22313,7 +22313,7 @@ snapshots:
     dependencies:
       semver: 7.6.3
       shelljs: 0.8.5
-      typescript: 5.8.0-dev.20250103
+      typescript: 5.8.0-dev.20250107
 
   dreamopt@0.8.0:
     dependencies:
@@ -27221,13 +27221,13 @@ snapshots:
       '@pkgr/core': 0.1.1
       tslib: 2.8.1
 
-  syncpack@13.0.0(typescript@5.8.0-dev.20250103):
+  syncpack@13.0.0(typescript@5.8.0-dev.20250107):
     dependencies:
       '@effect/schema': 0.71.1(effect@3.6.5)
       chalk: 5.3.0
       chalk-template: 1.1.0
       commander: 12.1.0
-      cosmiconfig: 9.0.0(typescript@5.8.0-dev.20250103)
+      cosmiconfig: 9.0.0(typescript@5.8.0-dev.20250107)
       effect: 3.6.5
       enquirer: 2.4.1
       fast-check: 3.21.0
@@ -27604,7 +27604,7 @@ snapshots:
 
   typescript@5.7.2: {}
 
-  typescript@5.8.0-dev.20250103: {}
+  typescript@5.8.0-dev.20250107: {}
 
   ua-parser-js@1.0.40: {}
 

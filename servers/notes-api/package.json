@@ -36,7 +36,7 @@
     "watch": "concurrently  --names \"CodeGen,TS,Nodemon\" -c \"bgYellow,bgBlue,bgMagenta\" \"graphql-codegen --watch 'src/**/*.ts'\"  \"tsc -w --preserveWatchOutput\" \"nodemon  --config ../../nodemon.json ./dist/main.js\""
   },
   "dependencies": {
-    "@apollo/server": "4.11.2",
+    "@apollo/server": "4.11.3",
     "@apollo/subgraph": "2.9.3",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/event-bridge": "workspace:*",

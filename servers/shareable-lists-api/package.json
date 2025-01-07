@@ -33,8 +33,8 @@
     "watch": "tsc -w & nodemon"
   },
   "dependencies": {
-    "@apollo/server": "4.11.2",
-    "@apollo/server-plugin-response-cache": "4.1.3",
+    "@apollo/server": "4.11.3",
+    "@apollo/server-plugin-response-cache": "4.1.4",
     "@apollo/subgraph": "2.9.3",
     "@apollo/utils.keyvadapter": "3.1.0",
     "@apollo/utils.keyvaluecache": "3.1.0",
