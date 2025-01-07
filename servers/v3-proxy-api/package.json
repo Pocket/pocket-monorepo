@@ -1,5 +1,5 @@
 {
-  "name": "v3-proxy-api",
+  "name": "@server/v3-proxy-api",
   "version": "1.0.0",
   "description": "",
   "main": "dist/main.js",

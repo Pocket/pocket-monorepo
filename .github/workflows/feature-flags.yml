@@ -39,7 +39,7 @@ jobs:
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
     with:
-      scope: feature-flags-cdk
+      scope: '@infrastructure/feature-flags'
       stack-output-path: infrastructure/feature-flags/cdktf.out/stacks/feature-flags
     secrets: inherit
 
@@ -47,7 +47,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-image.yml
     needs: [infrastructure]
     with:
-      scope: feature-flags
+      scope: '@server/feature-flags'
       app-path: servers/feature-flags
       app-port: 4242
       sentry-project: feature-flags

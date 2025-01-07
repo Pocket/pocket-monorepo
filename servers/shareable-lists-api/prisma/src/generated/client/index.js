@@ -177,7 +177,7 @@ exports.Prisma.dmmf = JSON.parse(dmmfString)
  */
 const config = {
   "generator": {
-    "name": "client",
+    "name": "@server/client",
     "provider": {
       "fromEnvVar": null,
       "value": "prisma-client-js"

@@ -1,5 +1,5 @@
 {
-  "name": "client-api-cdk",
+  "name": "@infrastructure/client-api",
   "version": "1.0.0",
   "private": true,
   "type": "module",

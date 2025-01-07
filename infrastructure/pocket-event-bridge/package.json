@@ -1,5 +1,5 @@
 {
-  "name": "pocket-event-bridge-cdk",
+  "name": "@infrastructure/pocket-event-bridge",
   "version": "1.0.0",
   "private": true,
   "license": "MPL-2.0",

@@ -29,7 +29,7 @@ jobs:
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
     with:
-      scope: fxa-webhook-proxy-cdk
+      scope: '@infrastructure/fxa-webhook-proxy'
       stack-output-path: infrastructure/fxa-webhook-proxy/cdktf.out/stacks/fxa-webhook-proxy
     secrets: inherit
 
@@ -37,7 +37,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-lambda.yml
     needs: [infrastructure]
     with:
-      scope: fxa-webhook-proxy-sqs
+      scope: '@lambda/fxa-webhook-proxy-sqs'
       sentry-project: fxa-webhook-proxy
       s3-bucket-pattern: pocket-fxawebhookproxy-{0}-sqs-fxa-events
       codedeploy-app-name-pattern: FxAWebhookProxy-{0}-Sqs-FxA-Events-Lambda
@@ -49,7 +49,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-lambda.yml
     needs: [infrastructure]
     with:
-      scope: fxa-webhook-proxy-gateway
+      scope: '@lambda/fxa-webhook-proxy-gateway'
       sentry-project: fxa-webhook-proxy
       s3-bucket-pattern: pocket-fxawebhookproxy-{0}-apigateway-fxa-events
       codedeploy-app-name-pattern: FxAWebhookProxy-{0}-ApiGateway-FxA-Events-Lambda

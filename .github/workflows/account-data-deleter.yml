@@ -33,13 +33,13 @@ jobs:
     if: github.event_name == 'pull_request'
     uses: ./.github/workflows/reuse-test-integrations.yml
     with:
-      scope: account-data-deleter
+      scope: '@server/account-data-deleter'
     secrets: inherit
 
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
     with:
-      scope: account-data-deleter-cdk
+      scope: '@infrastructure/account-data-deleter'
       stack-output-path: infrastructure/account-data-deleter/cdktf.out/stacks/account-data-deleter
     secrets: inherit
 
@@ -47,7 +47,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-image.yml
     needs: [infrastructure]
     with:
-      scope: account-data-deleter
+      scope: '@server/account-data-deleter'
       app-path: servers/account-data-deleter
       app-port: 4015
       sentry-project: account-data-deleter
@@ -59,7 +59,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-lambda.yml
     needs: [infrastructure]
     with:
-      scope: account-data-deleter-events
+      scope: '@lambda/account-data-deleter-events'
       sentry-project: account-data-deleter
       s3-bucket-pattern: pocket-accountdatadeleter-{0}-sqs-event-consumer
       codedeploy-app-name-pattern: AccountDataDeleter-{0}-Sqs-Event-Consumer-Lambda
@@ -71,7 +71,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-lambda.yml
     needs: [infrastructure]
     with:
-      scope: account-data-deleter-batch-delete
+      scope: '@lambda/account-data-deleter-batch-delete'
       sentry-project: account-data-deleter
       s3-bucket-pattern: pocket-accountdatadeleter-{0}-batchdeletelambda
       codedeploy-app-name-pattern: AccountDataDeleter-{0}-BatchDeleteLambda-Lambda

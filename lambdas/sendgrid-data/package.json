@@ -1,5 +1,5 @@
 {
-  "name": "sendgrid-data",
+  "name": "@lambda/sendgrid-data",
   "version": "1.0.0",
   "description": "",
   "type": "module",

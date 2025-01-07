@@ -31,7 +31,7 @@ jobs:
     if: github.event_name == 'pull_request'
     uses: ./.github/workflows/reuse-test-integrations.yml
     with:
-      scope: list-api
+      scope: '@server/list-api'
     secrets: inherit
 
   apollo:
@@ -42,14 +42,14 @@ jobs:
       schema-file-path: servers/list-api/dist/schema-generated.graphql
       prod-graph-url: https://list-api.readitlater.com
       dev-graph-url: https://list-api.getpocket.dev
-      scope: list-api
+      scope: '@server/list-api'
     secrets:
       apollo-key: ${{ secrets.APOLLO_CLIENT_API_KEY }}
 
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
     with:
-      scope: list-api-cdk
+      scope: '@infrastructure/list-api'
       stack-output-path: infrastructure/list-api/cdktf.out/stacks/list-api
     secrets: inherit
 
@@ -57,7 +57,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-image.yml
     needs: [infrastructure]
     with:
-      scope: list-api
+      scope: '@server/list-api'
       app-path: servers/list-api
       app-port: 4005
       sentry-project: list-api

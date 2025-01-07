@@ -1,5 +1,5 @@
 {
-  "name": "fxa-webhook-proxy-gateway",
+  "name": "@lambda/fxa-webhook-proxy-gateway",
   "version": "1.0.0",
   "description": "",
   "keywords": [],

@@ -27,7 +27,7 @@ jobs:
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
     with:
-      scope: instant-sync-events-cdk
+      scope: '@infrastructure/instant-sync-events'
       stack-output-path: infrastructure/instant-sync-events/cdktf.out/stacks/instant-sync-events
     secrets: inherit
 
@@ -35,7 +35,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-lambda.yml
     needs: [infrastructure]
     with:
-      scope: instant-sync-events
+      scope: '@lambda/instant-sync-events'
       sentry-project: instant-sync-events
       s3-bucket-pattern: pocket-instantsyncevents-{0}-eventtracker
       codedeploy-app-name-pattern: InstantSyncEvents-{0}-EventTracker-Lambda
@@ -48,6 +48,6 @@ jobs:
     uses: ./.github/workflows/reuse-sentry-release.yml
     needs: [lambda]
     with:
-      sentry-project: annotations-api
+      sentry-project: instant-sync-events
       sentry-environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
     secrets: inherit

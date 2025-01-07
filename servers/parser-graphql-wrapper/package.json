@@ -1,5 +1,5 @@
 {
-  "name": "parser-graphql-wrapper",
+  "name": "@server/parser-graphql-wrapper",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",

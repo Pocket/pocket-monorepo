@@ -1,5 +1,5 @@
 {
-  "name": "transactional-emails",
+  "name": "@lambda/transactional-emails",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",

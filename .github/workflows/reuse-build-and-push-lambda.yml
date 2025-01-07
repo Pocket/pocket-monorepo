@@ -52,7 +52,7 @@ jobs:
         - name: Checkout
           uses: actions/checkout@v4
         - name: Build Lambda
-          uses: pocket/pocket-monorepo/.github/actions/build-lambda@main
+          uses: ./.github/actions/build-lambda
           with:
             sentry-project: ${{inputs['sentry-project']}}
             sentry-org: ${{inputs['sentry-org']}}
@@ -72,7 +72,7 @@ jobs:
             aws-region: us-east-1
             role-to-assume: arn:aws:iam::410318598490:role/PocketGHARole
         - name: Build Lambda
-          uses: pocket/pocket-monorepo/.github/actions/build-lambda@main
+          uses: ./.github/actions/build-lambda
           with:
             sentry-project: ${{inputs['sentry-project']}}
             sentry-org: ${{inputs['sentry-org']}}
@@ -81,7 +81,7 @@ jobs:
             s3-bucket: ${{ format(inputs.s3-bucket-pattern, 'dev') }}
             s3-key: ${{ inputs.s3-key }}
         - name: CodeDeploy Lambda
-          uses: pocket/pocket-monorepo/.github/actions/lambda-codedeploy@main
+          uses: ./.github/actions/lambda-codedeploy
           with:
             s3-bucket: ${{ format(inputs.s3-bucket-pattern, 'dev') }}
             s3-key: ${{ inputs.s3-key }}
@@ -101,7 +101,7 @@ jobs:
             aws-region: us-east-1
             role-to-assume: arn:aws:iam::996905175585:role/PocketGHARole
         - name: Build Lambda
-          uses: pocket/pocket-monorepo/.github/actions/build-lambda@main
+          uses: ./.github/actions/build-lambda
           with:
             sentry-project: ${{inputs['sentry-project']}}
             sentry-org: ${{inputs['sentry-org']}}
@@ -110,7 +110,7 @@ jobs:
             s3-bucket: ${{ format(inputs.s3-bucket-pattern, 'prod') }}
             s3-key: ${{ inputs.s3-key }}
         - name: CodeDeploy Lambda
-          uses: pocket/pocket-monorepo/.github/actions/lambda-codedeploy@main
+          uses: ./.github/actions/lambda-codedeploy
           with:
             s3-bucket: ${{ format(inputs.s3-bucket-pattern, 'prod') }}
             s3-key: ${{ inputs.s3-key }}

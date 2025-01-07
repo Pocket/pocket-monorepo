@@ -29,7 +29,7 @@ jobs:
     if: github.event_name == 'pull_request'
     uses: ./.github/workflows/reuse-test-integrations.yml
     with:
-      scope: parser-graphql-wrapper
+      scope: '@server/parser-graphql-wrapper'
     secrets: inherit
 
   apollo:
@@ -57,7 +57,7 @@ jobs:
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
     with:
-      scope: parser-graphql-wrapper-cdk
+      scope: '@infrastructure/parser-graphql-wrapper'
       stack-output-path: infrastructure/parser-graphql-wrapper/cdktf.out/stacks/parser-graphql-wrapper
     secrets: inherit
 
@@ -65,7 +65,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-image.yml
     needs: [infrastructure]
     with:
-      scope: parser-graphql-wrapper
+      scope: '@server/parser-graphql-wrapper'
       app-path: servers/parser-graphql-wrapper
       app-port: 4001
       sentry-project: parser-graphql-wrapper

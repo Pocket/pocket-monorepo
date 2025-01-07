@@ -1,5 +1,5 @@
 {
-  "name": "account-data-deleter-events",
+  "name": "@lambda/account-data-deleter-events",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",

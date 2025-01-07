@@ -25,7 +25,7 @@ jobs:
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
     with:
-      scope: otel-collector-cdk
+      scope: '@infrastructure/otel-collector'
       stack-output-path: infrastructure/otel-collector/cdktf.out/stacks/otel-collector
     secrets: inherit
 
@@ -33,7 +33,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-image.yml
     needs: [infrastructure]
     with:
-      scope: otel-collector
+      scope: '@server/otel-collector'
       docker-repo-name-pattern: otelcollector-{0}-app
       context: servers/otel-collector
       app-path: servers/otel-collector

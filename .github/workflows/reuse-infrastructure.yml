@@ -34,8 +34,6 @@ jobs:
       steps:
         - name: Checkout
           uses: actions/checkout@v4
-        - name: Checkout Actions
-          uses: actions/checkout@v4
         # Get the AWS credentials
         - name: AWS Credentials
           uses: aws-actions/configure-aws-credentials@v4
@@ -44,7 +42,7 @@ jobs:
             role-to-assume: arn:aws:iam::996905175585:role/PocketGHARole
         - name: Execute CDKTF
           if: inputs.raw-terraform == false
-          uses: pocket/pocket-monorepo/.github/actions/cdktf@main
+          uses: ./.github/actions/cdktf
           with:
             stack-output-path: ${{inputs['stack-output-path']}}
             scope: ${{inputs['scope']}}
@@ -56,7 +54,7 @@ jobs:
 
         - name: Execute Raw Terraform
           if: inputs.raw-terraform == true
-          uses: pocket/pocket-monorepo/.github/actions/raw-terraform@main
+          uses: ./.github/actions/raw-terraform
           with:
             stack-output-path: ${{inputs['stack-output-path']}}
             scope: ${{inputs['scope']}}
@@ -88,7 +86,7 @@ jobs:
             role-to-assume: arn:aws:iam::996905175585:role/PocketGHARole
         - name: Execute Development CDKTF
           if: inputs.raw-terraform == false && github.ref == 'refs/heads/dev'
-          uses: pocket/pocket-monorepo/.github/actions/cdktf@main
+          uses: ./.github/actions/cdktf
           with:
             stack-output-path: ${{inputs['stack-output-path']}}
             scope: ${{inputs['scope']}}
@@ -99,7 +97,7 @@ jobs:
             terraform-token: ${{ secrets.TERRAFORM_TOKEN }}
         - name: Execute Developement Raw Terraform
           if: inputs.raw-terraform == true && github.ref == 'refs/heads/dev'
-          uses: pocket/pocket-monorepo/.github/actions/raw-terraform@main
+          uses: ./.github/actions/raw-terraform
           with:
             stack-output-path: ${{inputs['stack-output-path']}}
             scope: ${{inputs['scope']}}
@@ -111,7 +109,7 @@ jobs:
 
         - name: Execute Production CDKTF
           if: inputs.raw-terraform == false && github.ref == 'refs/heads/main'
-          uses: pocket/pocket-monorepo/.github/actions/cdktf@main
+          uses: ./.github/actions/cdktf
           with:
             stack-output-path: ${{inputs['stack-output-path']}}
             scope: ${{inputs['scope']}}
@@ -123,7 +121,7 @@ jobs:
 
         - name: Execute Production Raw Terraform
           if: inputs.raw-terraform == true && github.ref == 'refs/heads/main'
-          uses: pocket/pocket-monorepo/.github/actions/raw-terraform@main
+          uses: ./.github/actions/raw-terraform
           with:
             stack-output-path: ${{inputs['stack-output-path']}}
             scope: ${{inputs['scope']}}

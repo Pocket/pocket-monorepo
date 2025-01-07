@@ -75,7 +75,7 @@ jobs:
           with:
               name: ${{inputs.archive-download-name}}
         - name: Build Docker Image
-          uses: pocket/pocket-monorepo/.github/actions/containerize@main
+          uses: ./.github/actions/containerize
           with:
             docker-repo-name: "${{inputs.development-aws-registry }}/${{ format(inputs.docker-repo-name-pattern, 'dev') }}"
             app-path: ${{inputs.app-path}}
@@ -109,7 +109,7 @@ jobs:
             role-to-assume: arn:aws:iam::410318598490:role/PocketGHARole
         - name: Build and Push Development Docker Image
           id: dev-docker-build
-          uses: pocket/pocket-monorepo/.github/actions/containerize@main
+          uses: ./.github/actions/containerize
           with:
             docker-repo-name: "${{inputs.development-aws-registry }}/${{ format(inputs.docker-repo-name-pattern, 'dev') }}"
             app-path: ${{inputs.app-path}}
@@ -123,7 +123,7 @@ jobs:
             scope: ${{inputs.scope}}
             push: true
         - name: Code Deploy Docker Image
-          uses: pocket/pocket-monorepo/.github/actions/ecs-codedeploy@main
+          uses: ./.github/actions/ecs-codedeploy
           if: fromJSON(inputs.terraform-output).ecs-task-containerName.value != ''
           with:
             docker-image-name: ${{steps.dev-docker-build.outputs.docker-image-name}}
@@ -149,7 +149,7 @@ jobs:
             role-to-assume: arn:aws:iam::996905175585:role/PocketGHARole
         - name: Build and Push Production Docker Image
           id: prod-docker-build
-          uses: pocket/pocket-monorepo/.github/actions/containerize@main
+          uses: ./.github/actions/containerize
           with:
             docker-repo-name: "${{inputs.production-aws-registry }}/${{ format(inputs.docker-repo-name-pattern, 'prod') }}"
             app-path: ${{inputs.app-path}}
@@ -163,7 +163,7 @@ jobs:
             scope: ${{inputs.scope}}
             push: true
         - name: Code Deploy Docker Image
-          uses: pocket/pocket-monorepo/.github/actions/ecs-codedeploy@main
+          uses: ./.github/actions/ecs-codedeploy
           if: fromJSON(inputs.terraform-output).ecs-task-containerName.value != ''
           with:
             docker-image-name: ${{steps.prod-docker-build.outputs.docker-image-name}}

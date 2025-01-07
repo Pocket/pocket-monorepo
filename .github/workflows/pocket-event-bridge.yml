@@ -25,6 +25,6 @@ jobs:
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
     with:
-      scope: pocket-event-bridge-cdk
+      scope: '@infrastructure/pocket-event-bridge'
       stack-output-path: infrastructure/pocket-event-bridge/cdktf.out/stacks/pocket-event-bridge
     secrets: inherit

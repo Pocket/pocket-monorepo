@@ -1,5 +1,5 @@
 {
-  "name": "notes-api",
+  "name": "@server/notes-api",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",
