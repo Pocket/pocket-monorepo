@@ -29,7 +29,7 @@ jobs:
     if: github.event_name == 'pull_request'
     uses: ./.github/workflows/reuse-test-integrations.yml
     with:
-      scope: shareable-lists-api
+      scope: '@server/shareable-lists-api'
     secrets: inherit
 
   apollo:
@@ -40,7 +40,7 @@ jobs:
       schema-file-path: servers/shareable-lists-api/schema-client-api.graphql
       prod-graph-url: https://shareablelistsapi.readitlater.com
       dev-graph-url: https://shareablelistsapi.getpocket.dev
-      scope: shareable-lists-api
+      scope: '@server/shareable-lists-api'
     secrets:
       apollo-key: ${{ secrets.APOLLO_CLIENT_API_KEY }}
 
@@ -52,7 +52,7 @@ jobs:
       schema-file-path: servers/shareable-lists-api/schema-admin-api.graphql
       prod-graph-url: https://shareablelistsapi.readitlater.com/admin
       dev-graph-url: https://shareablelistsapi.getpocket.dev/admin
-      scope: shareable-lists-api
+      scope: '@server/shareable-lists-api'
     secrets:
       apollo-key: ${{ secrets.APOLLO_ADMIN_API_KEY }}
 
@@ -60,7 +60,7 @@ jobs:
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
     with:
-      scope: shareable-lists-api-cdk
+      scope: '@infrastructure/shareable-lists-api'
       stack-output-path: infrastructure/shareable-lists-api/cdktf.out/stacks/shareable-lists-api
     secrets: inherit
 
@@ -68,7 +68,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-image.yml
     needs: [infrastructure]
     with:
-      scope: shareable-lists-api
+      scope: '@server/shareable-lists-api'
       app-path: servers/shareable-lists-api
       app-port: 4029
       sentry-project: shareable-lists-api
@@ -80,7 +80,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-lambda.yml
     needs: [infrastructure]
     with:
-      scope: shareable-lists-api-events-lambda
+      scope: '@lambda/shareable-lists-api-events'
       sentry-project: shareable-lists-api
       s3-bucket-pattern: pocket-shareablelistsapi-{0}-sqs-event-consumer
       codedeploy-app-name-pattern: ShareableListsApi-{0}-Sqs-Event-Consumer-Lambda

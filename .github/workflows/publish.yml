@@ -29,7 +29,7 @@ jobs:
           fetch-depth: 2
 
       - name: Install pnpm & node
-        uses: pocket/pocket-monorepo/.github/actions/install-pnpm-and-node@main
+        uses: ./.github/actions/install-pnpm-and-node
       
       # https://github.com/pnpm/pnpm/issues/3141#issuecomment-1305563972
       - name: Set publishing config

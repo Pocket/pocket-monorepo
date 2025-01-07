@@ -34,7 +34,7 @@ jobs:
     uses: ./.github/workflows/reuse-test-integrations.yml
     with:
       # Only run the tests for our service
-      scope: user-api
+      scope: '@server/user-api'
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
 
@@ -53,7 +53,7 @@ jobs:
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
     with:
-      scope: user-api-cdk
+      scope: '@infrastructure/user-api'
       stack-output-path: infrastructure/user-api/cdktf.out/stacks/user-api
     # Ensure the re-usable workflow is allowed to access the secrets
     secrets: inherit
@@ -63,7 +63,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-image.yml
     needs: [infrastructure]
     with:
-      scope: user-api
+      scope: '@server/user-api'
       app-path: servers/user-api
       app-port: 4006
       sentry-project: user-api

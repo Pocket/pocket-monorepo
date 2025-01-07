@@ -1,5 +1,5 @@
 {
-  "name": "account-data-deleter",
+  "name": "@server/account-data-deleter",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",

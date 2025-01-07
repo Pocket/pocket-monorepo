@@ -29,13 +29,13 @@ jobs:
     if: github.event_name == 'pull_request'
     uses: ./.github/workflows/reuse-test-integrations.yml
     with:
-      scope: braze-content-proxy
+      scope: '@server/braze-content-proxy'
     secrets: inherit
 
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
     with:
-      scope: braze-content-proxy-cdk
+      scope: '@infrastructure/braze-content-proxy'
       stack-output-path: infrastructure/braze-content-proxy/cdktf.out/stacks/braze-content-proxy
     secrets: inherit
 
@@ -43,7 +43,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-image.yml
     needs: [infrastructure]
     with:
-      scope: braze-content-proxy
+      scope: '@server/braze-content-proxy'
       app-path: servers/braze-content-proxy
       app-port: 4500
       sentry-project: braze-content-proxy

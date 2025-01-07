@@ -31,7 +31,7 @@ jobs:
     if: github.event_name == 'pull_request'
     uses: ./.github/workflows/reuse-test-integrations.yml
     with:
-      scope: user-list-search
+      scope: '@server/user-list-search'
     secrets: inherit
 
   apollo:
@@ -42,7 +42,7 @@ jobs:
       schema-file-path: servers/user-list-search/dist/schema-generated.graphql
       prod-graph-url: https://user-list-search.readitlater.com/graphql
       dev-graph-url: https://user-list-search.getpocket.dev/graphql
-      scope: user-list-search
+      scope: '@server/user-list-search'
     secrets:
       apollo-key: ${{ secrets.APOLLO_CLIENT_API_KEY }}
 
@@ -51,14 +51,14 @@ jobs:
     with:
       raw-terraform: true
       stack-output-path: infrastructure/user-list-search
-      scope: user-list-search
+      scope: '@infrastructure/user-list-search'
     secrets: inherit
 
   api:
     uses: ./.github/workflows/reuse-build-and-push-image.yml
     needs: [infrastructure]
     with:
-      scope: user-list-search
+      scope: '@server/user-list-search'
       app-path: servers/user-list-search
       app-port: 4000
       sentry-project: user-list-search
@@ -70,7 +70,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-lambda.yml
     needs: [infrastructure]
     with:
-      scope: user-list-search-events
+      scope: '@lambda/user-list-search-events'
       sentry-project: user-list-search
       s3-bucket-pattern: pocket-userlistsearch-{0}-kinesis-consumer
       s3-key: events-${{ github.sha }}.zip
@@ -83,7 +83,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-lambda.yml
     needs: [infrastructure]
     with:
-      scope: user-list-search-kinesis-to-sqs
+      scope: '@lambda/user-list-search-kinesis-to-sqs'
       sentry-project: user-list-search
       s3-bucket-pattern: pocket-userlistsearch-{0}-kinesis-consumer
       s3-key: kinesis-${{ github.sha }}.zip
@@ -96,7 +96,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-lambda.yml
     needs: [infrastructure]
     with:
-      scope: user-list-search-indexing
+      scope: '@lambda/user-list-search-indexing'
       sentry-project: user-list-search
       s3-bucket-pattern: pocket-userlistsearch-{0}-kinesis-consumer
       s3-key: item-update-${{ github.sha }}.zip
@@ -109,7 +109,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-lambda.yml
     needs: [infrastructure]
     with:
-      scope: user-list-search-indexing
+      scope: '@lambda/user-list-search-indexing'
       sentry-project: user-list-search
       s3-bucket-pattern: pocket-userlistsearch-{0}-kinesis-consumer
       s3-key: item-delete-${{ github.sha }}.zip
@@ -122,7 +122,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-lambda.yml
     needs: [infrastructure]
     with:
-      scope: user-list-search-indexing
+      scope: '@lambda/user-list-search-indexing'
       sentry-project: user-list-search
       s3-bucket-pattern: pocket-userlistsearch-{0}-kinesis-consumer
       s3-key: item-update-backfill-${{ github.sha }}.zip
@@ -135,7 +135,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-lambda.yml
     needs: [infrastructure]
     with:
-      scope: user-list-search-indexing
+      scope: '@lambda/user-list-search-indexing'
       sentry-project: user-list-search
       s3-bucket-pattern: pocket-userlistsearch-{0}-kinesis-consumer
       s3-key: user-list-import-${{ github.sha }}.zip
@@ -148,7 +148,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-lambda.yml
     needs: [infrastructure]
     with:
-      scope: user-list-search-indexing
+      scope: '@lambda/user-list-search-indexing'
       sentry-project: user-list-search
       s3-bucket-pattern: pocket-userlistsearch-{0}-kinesis-consumer
       s3-key: user-list-import-backfill-${{ github.sha }}.zip
@@ -161,7 +161,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-lambda.yml
     needs: [infrastructure]
     with:
-      scope: user-list-search-corpus-indexing
+      scope: '@lambda/user-list-search-corpus-indexing'
       sentry-project: user-list-search
       s3-bucket-pattern: pocket-userlistsearch-{0}-kinesis-consumer
       s3-key: corpus-indexing-${{ github.sha }}.zip
@@ -174,7 +174,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-lambda.yml
     needs: [infrastructure]
     with:
-      scope: user-list-search-corpus-parser-hydration
+      scope: '@lambda/user-list-search-corpus-parser-hydration'
       sentry-project: user-list-search
       s3-bucket-pattern: pocket-userlistsearch-{0}-kinesis-consumer
       s3-key: corpus-parser-hydration-${{ github.sha }}.zip

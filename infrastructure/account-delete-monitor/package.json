@@ -1,5 +1,5 @@
 {
-  "name": "account-delete-monitor-cdk",
+  "name": "@infrastructure/account-delete-monitor",
   "version": "1.0.0",
   "private": true,
   "license": "MPL-2.0",

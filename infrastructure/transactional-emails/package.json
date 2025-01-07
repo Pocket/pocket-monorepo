@@ -1,5 +1,5 @@
 {
-  "name": "transactional-emails-cdk",
+  "name": "@infrastructure/transactional-emails",
   "version": "1.0.0",
   "private": true,
   "license": "MPL-2.0",

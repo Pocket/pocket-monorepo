@@ -29,7 +29,7 @@ jobs:
     if: github.event_name == 'pull_request'
     uses: ./.github/workflows/reuse-test-integrations.yml
     with:
-      scope: image-api
+      scope: '@server/image-api'
     secrets: inherit
 
   apollo:
@@ -57,7 +57,7 @@ jobs:
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
     with:
-      scope: image-api-cdk
+      scope: '@infrastructure/image-api'
       stack-output-path: infrastructure/image-api/cdktf.out/stacks/image-api
     secrets: inherit
 
@@ -65,7 +65,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-image.yml
     needs: [infrastructure]
     with:
-      scope: image-api
+      scope: '@server/image-api'
       app-path: servers/image-api
       app-port: 4867
       sentry-project: image-api

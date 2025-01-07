@@ -1,5 +1,5 @@
 {
-  "name": "shares-api",
+  "name": "@server/shares-api",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",

@@ -1,5 +1,5 @@
 {
-  "name": "user-list-search-events",
+  "name": "@lambda/user-list-search-events",
   "version": "1.0.0",
   "description": "",
   "type": "module",

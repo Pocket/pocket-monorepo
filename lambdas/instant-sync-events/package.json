@@ -1,5 +1,5 @@
 {
-  "name": "instant-sync-events",
+  "name": "@lambda/instant-sync-events",
   "version": "1.0.0",
   "description": "",
   "type": "module",

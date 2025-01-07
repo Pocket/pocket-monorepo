@@ -1,5 +1,5 @@
 {
-  "name": ".prisma/client",
+  "name": "@server/.prisma/client",
   "main": "index.js",
   "browser": "index-browser.js",
   "types": "index.d.ts"

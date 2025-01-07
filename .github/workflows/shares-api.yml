@@ -30,7 +30,7 @@ jobs:
     if: github.event_name == 'pull_request'
     uses: ./.github/workflows/reuse-test-integrations.yml
     with:
-      scope: shares-api
+      scope: '@server/shares-api'
     secrets: inherit
 
   apollo:
@@ -41,14 +41,14 @@ jobs:
       schema-file-path: servers/shares-api/dist/schema-generated.graphql
       prod-graph-url: https://shares-api.readitlater.com
       dev-graph-url: https://shares-api.getpocket.dev
-      scope: shares-api
+      scope: '@server/shares-api'
     secrets:
       apollo-key: ${{ secrets.APOLLO_CLIENT_API_KEY }}
 
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
     with:
-      scope: shares-api-cdk
+      scope: '@infrastructure/shares-api'
       stack-output-path: infrastructure/shares-api/cdktf.out/stacks/shares-api
     secrets: inherit
 
@@ -56,7 +56,7 @@ jobs:
     uses: ./.github/workflows/reuse-build-and-push-image.yml
     needs: [infrastructure]
     with:
-      scope: shares-api
+      scope: '@server/shares-api'
       app-path: servers/shares-api
       app-port: 4031
       sentry-project: shares-api

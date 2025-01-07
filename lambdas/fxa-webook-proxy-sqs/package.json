@@ -1,5 +1,5 @@
 {
-  "name": "fxa-webhook-proxy-sqs",
+  "name": "@lambda/fxa-webhook-proxy-sqs",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",
