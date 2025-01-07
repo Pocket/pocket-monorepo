@@ -1,4 +1,4 @@
-import config from './config';
+import config from './config/index.ts';
 import { initSentry } from '@pocket-tools/sentry';
 
 // Init sentry MUST come before any other imports for auto instrumentation to kick in (request isolation)
@@ -13,7 +13,7 @@ initSentry({
 });
 
 import { nodeSDKBuilder } from '@pocket-tools/tracing';
-import { unleash } from './unleash';
+import { unleash } from './unleash.ts';
 nodeSDKBuilder({ ...config.tracing, unleash: unleash() }).then(() => {
   startServer(config.app.port).then(async () => {
     // init BatchDeleteHandler, SQS queue is not
@@ -24,6 +24,6 @@ nodeSDKBuilder({ ...config.tracing, unleash: unleash() }).then(() => {
   });
 });
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { startServer } from './server';
-import { BatchDeleteHandler } from './server/aws/batchDeleteHandler';
+import { startServer } from './server/index.ts';
+import { BatchDeleteHandler } from './server/aws/batchDeleteHandler.ts';
 import { EventEmitter } from 'events';

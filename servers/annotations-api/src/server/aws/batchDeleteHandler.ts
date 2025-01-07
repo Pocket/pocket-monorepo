@@ -9,15 +9,15 @@ import {
   QueueAttributeName,
 } from '@aws-sdk/client-sqs';
 import * as Sentry from '@sentry/node';
-import config from '../../config';
+import config from '../../config/index.ts';
 import { nanoid } from 'nanoid';
-import { readClient, writeClient } from '../../database/client';
-import { HighlightsDataService } from '../../dataservices/highlights';
+import { readClient, writeClient } from '../../database/client.ts';
+import { HighlightsDataService } from '../../dataservices/highlights.ts';
 import { setTimeout } from 'timers/promises';
-import { failCallback } from '../routes/helper';
+import { failCallback } from '../routes/helper.ts';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { SeverityLevel } from '@sentry/types';
-import { sqs } from './sqs';
+import { sqs } from './sqs.ts';
 import * as otel from '@opentelemetry/api';
 
 export type BatchDeleteMessage = {

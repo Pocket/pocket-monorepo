@@ -4,6 +4,7 @@
   "description": "",
   "license": "ISC",
   "author": "",
+  "type": "module",
   "main": "dist/main.js",
   "files": [
     "dist",

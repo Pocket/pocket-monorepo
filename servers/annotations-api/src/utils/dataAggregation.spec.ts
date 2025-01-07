@@ -1,4 +1,4 @@
-import { groupByCount, sumByKey } from './dataAggregation';
+import { groupByCount, sumByKey } from './dataAggregation.ts';
 
 describe('Data aggregation functions', () => {
   describe('groupByCount', () => {

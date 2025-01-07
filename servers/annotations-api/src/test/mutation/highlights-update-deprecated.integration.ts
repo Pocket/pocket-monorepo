@@ -1,16 +1,16 @@
 import { ApolloServer } from '@apollo/server';
-import { startServer } from '../../server';
+import { startServer } from '../../server/index.ts';
 import request from 'supertest';
 import { print } from 'graphql';
-import { IContext } from '../../server/apollo/context';
-import { readClient, writeClient } from '../../database/client';
-import { seedData } from '../query/highlights-fixtures';
-import { UPDATE_HIGHLIGHT_DEPRECATED } from './highlights-mutations';
-import { HighlightEntity } from '../../types';
-import { CreateHighlightInput } from '../../__generated__/resolvers-types';
-import { UsersMeta } from '../../dataservices/usersMeta';
-import { mysqlTimeString } from '../../dataservices/utils';
-import config from '../../config';
+import { IContext } from '../../server/apollo/context.ts';
+import { readClient, writeClient } from '../../database/client.ts';
+import { seedData } from '../query/highlights-fixtures.ts';
+import { UPDATE_HIGHLIGHT_DEPRECATED } from './highlights-mutations.ts';
+import { HighlightEntity } from '../../types.ts';
+import { CreateHighlightInput } from '../../__generated__/resolvers-types.ts';
+import { UsersMeta } from '../../dataservices/usersMeta.ts';
+import { mysqlTimeString } from '../../dataservices/utils.ts';
+import config from '../../config/index.ts';
 import { Application } from 'express';
 
 describe('Highlights update', () => {

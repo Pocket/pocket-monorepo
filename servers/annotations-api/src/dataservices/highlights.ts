@@ -1,13 +1,13 @@
 import { Knex } from 'knex';
-import { IContext } from '../server/apollo/context';
-import { HighlightEntity } from '../types';
+import { IContext } from '../server/apollo/context.ts';
+import { HighlightEntity } from '../types.ts';
 import { NotFoundError, UserInputError } from '@pocket-tools/apollo-utils';
 import { v4 as uuid } from 'uuid';
-import config from '../config';
-import { groupByCount, sumByKey } from '../utils/dataAggregation';
-import { UsersMeta } from './usersMeta';
-import { SavedItem } from './savedItem';
-import { failCallback } from '../server/routes/helper';
+import config from '../config/index.ts';
+import { groupByCount, sumByKey } from '../utils/dataAggregation.ts';
+import { UsersMeta } from './usersMeta.ts';
+import { SavedItem } from './savedItem.ts';
+import { failCallback } from '../server/routes/helper.ts';
 import { setTimeout } from 'timers/promises';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import {
@@ -16,7 +16,7 @@ import {
   Highlight,
   BatchWriteHighlightsResult,
   BatchWriteHighlightsInput,
-} from '../__generated__/resolvers-types';
+} from '../__generated__/resolvers-types.ts';
 
 export class HighlightsDataService {
   public readonly userId: string;

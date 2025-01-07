@@ -1,6 +1,6 @@
 import { ForbiddenError } from '@pocket-tools/apollo-utils';
-import { HighlightsDataService } from '../dataservices/highlights';
-import { NotesDataService } from '../dataservices/notes';
+import { HighlightsDataService } from '../dataservices/highlights.ts';
+import { NotesDataService } from '../dataservices/notes.ts';
 import {
   BatchWriteHighlightsInput,
   BatchWriteHighlightsResult,
@@ -10,8 +10,8 @@ import {
   UpdateHighlightInput,
   SavedItemAnnotations,
   CreateHighlightByUrlInput,
-} from '../__generated__/resolvers-types';
-import { ParserAPI } from '../dataservices/parserApi';
+} from '../__generated__/resolvers-types.ts';
+import { ParserAPI } from '../dataservices/parserApi.ts';
 
 export class HighlightsModel {
   constructor(

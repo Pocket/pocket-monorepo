@@ -1,5 +1,5 @@
 import { URLSearchParams } from 'url';
-import config from '../config';
+import config from '../config/index.ts';
 import { RESTDataSource } from '@apollo/datasource-rest';
 import md5 from 'md5';
 import { backOff } from 'exponential-backoff';

@@ -1,5 +1,5 @@
 import { SQS } from '@aws-sdk/client-sqs';
-import config from '../../config';
+import config from '../../config/index.ts';
 
 export const sqs = new SQS({
   region: config.aws.region,

@@ -1,7 +1,7 @@
 import { printSubgraphSchema } from '@apollo/subgraph';
 import path from 'path';
 import fs from 'fs';
-import { schema } from './schema';
+import { schema } from './schema.ts';
 
 // Add in constraint directives, for pushing to apollo graph os
 const sdl = printSubgraphSchema(schema);

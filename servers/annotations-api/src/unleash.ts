@@ -1,5 +1,5 @@
 import { getUnleash } from '@pocket-tools/feature-flags-client';
-import config from './config';
+import config from './config/index.ts';
 import type { Unleash } from '@pocket-tools/feature-flags-client';
 
 let _unleash: Unleash;

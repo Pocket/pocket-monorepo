@@ -1,10 +1,10 @@
 import { EventEmitter } from 'events';
-import { BatchDeleteHandler, BatchDeleteMessage } from './batchDeleteHandler';
+import { BatchDeleteHandler, BatchDeleteMessage } from './batchDeleteHandler.ts';
 import { DeleteMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
-import { HighlightsDataService } from '../../dataservices/highlights';
+import { HighlightsDataService } from '../../dataservices/highlights.ts';
 import * as Sentry from '@sentry/node';
 import { SeverityLevel } from '@sentry/types';
-import config from '../../config';
+import config from '../../config/index.ts';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import * as otel from '@opentelemetry/api';
 

@@ -1,18 +1,18 @@
 import { ApolloServer } from '@apollo/server';
-import { startServer } from '../../server';
+import { startServer } from '../../server/index.ts';
 import request from 'supertest';
 import { print } from 'graphql';
-import { IContext } from '../../server/apollo/context';
-import { dynamoClient, readClient, writeClient } from '../../database/client';
-import { seedData } from '../query/highlights-fixtures';
-import { UPDATE_NOTE } from './notes-mutations';
-import { MutationupdateSavedItemHighlightNoteArgs as NoteInput } from '../../__generated__/resolvers-types';
+import { IContext } from '../../server/apollo/context.ts';
+import { dynamoClient, readClient, writeClient } from '../../database/client.ts';
+import { seedData } from '../query/highlights-fixtures.ts';
+import { UPDATE_NOTE } from './notes-mutations.ts';
+import { MutationupdateSavedItemHighlightNoteArgs as NoteInput } from '../../__generated__/resolvers-types.ts';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
-import config from '../../config';
-import { noteSeedCommand } from '../query/notes-fixtures';
-import { NotesDataService } from '../../dataservices/notes';
-import { truncateTable } from '../utils';
+import config from '../../config/index.ts';
+import { noteSeedCommand } from '../query/notes-fixtures.ts';
+import { NotesDataService } from '../../dataservices/notes.ts';
+import { truncateTable } from '../utils.ts';
 import { Application } from 'express';
 
 describe('Notes update', () => {

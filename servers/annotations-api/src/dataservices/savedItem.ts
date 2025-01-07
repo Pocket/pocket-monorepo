@@ -1,7 +1,7 @@
 import { Knex } from 'knex';
-import { IContext } from '../server/apollo/context';
-import { mysqlTimeString } from './utils';
-import config from '../config';
+import { IContext } from '../server/apollo/context.ts';
+import { mysqlTimeString } from './utils.ts';
+import config from '../config/index.ts';
 
 export class SavedItem {
   private readonly userId: string;

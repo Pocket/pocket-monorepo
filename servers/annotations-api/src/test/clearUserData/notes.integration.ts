@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import config from '../../config';
+import config from '../../config/index.ts';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
   DynamoDBDocumentClient,
@@ -7,8 +7,8 @@ import {
   QueryCommandInput,
   QueryCommand,
 } from '@aws-sdk/lib-dynamodb';
-import { batchWriteMockNotes } from '../query/notes-fixtures';
-import { NotesDataService } from '../../dataservices/notes';
+import { batchWriteMockNotes } from '../query/notes-fixtures.ts';
+import { NotesDataService } from '../../dataservices/notes.ts';
 
 describe('clearUserData for Notes data', () => {
   const client = new DynamoDBClient({

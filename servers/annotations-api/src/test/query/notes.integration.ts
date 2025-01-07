@@ -1,15 +1,15 @@
 import { ApolloServer } from '@apollo/server';
-import { startServer } from '../../server';
+import { startServer } from '../../server/index.ts';
 import request from 'supertest';
 import { print } from 'graphql';
-import { IContext } from '../../server/apollo/context';
-import { readClient, writeClient } from '../../database/client';
-import { seedData } from './highlights-fixtures';
-import { noteSeedCommand, GET_NOTES } from './notes-fixtures';
+import { IContext } from '../../server/apollo/context.ts';
+import { readClient, writeClient } from '../../database/client.ts';
+import { seedData } from './highlights-fixtures.ts';
+import { noteSeedCommand, GET_NOTES } from './notes-fixtures.ts';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
-import config from '../../config';
-import { truncateTable } from '../utils';
+import config from '../../config/index.ts';
+import { truncateTable } from '../utils.ts';
 import { Application } from 'express';
 
 describe('Notes on a Highlight', () => {

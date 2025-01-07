@@ -9,12 +9,12 @@ import {
   defaultPlugins,
   sentryPocketMiddleware,
 } from '@pocket-tools/apollo-utils';
-import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4';
+import { createApollo4QueryValidationPlugin } from 'graphql-constraint-directive/apollo4.js';
 
-import { schema } from './apollo';
-import config from '../config';
-import { getContext, IContext } from './apollo/context';
-import queueDeleteRouter from './routes/queueDelete';
+import { schema } from './apollo/index.ts';
+import config from '../config/index.ts';
+import { getContext, IContext } from './apollo/context.ts';
+import queueDeleteRouter from './routes/queueDelete.ts';
 import { setMorgan, serverLogger } from '@pocket-tools/ts-logger';
 
 export async function startServer(port: number): Promise<{

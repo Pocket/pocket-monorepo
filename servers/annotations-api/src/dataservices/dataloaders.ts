@@ -1,6 +1,6 @@
 import DataLoader from 'dataloader';
-import { HighlightNote } from '../types';
-import { NotesDataService } from './notes';
+import { HighlightNote } from '../types.ts';
+import { NotesDataService } from './notes.ts';
 
 /**
  * Function for initializing dataloader. This function should be

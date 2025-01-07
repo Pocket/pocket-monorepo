@@ -10,8 +10,8 @@ import {
   BatchWriteHighlightsInput,
   Resolvers,
   CreateHighlightByUrlInput,
-} from '../../__generated__/resolvers-types';
-import { IContext } from './context';
+} from '../../__generated__/resolvers-types.ts';
+import { IContext } from './context.ts';
 
 export const resolvers: Resolvers = {
   ...PocketDefaultScalars,

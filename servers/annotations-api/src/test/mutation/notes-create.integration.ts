@@ -1,12 +1,12 @@
 import { ApolloServer } from '@apollo/server';
-import { startServer } from '../../server';
+import { startServer } from '../../server/index.ts';
 import request from 'supertest';
 import { print } from 'graphql';
-import { IContext } from '../../server/apollo/context';
-import { readClient, writeClient } from '../../database/client';
-import { seedData } from '../query/highlights-fixtures';
-import { CREATE_NOTE } from './notes-mutations';
-import { MutationcreateSavedItemHighlightNoteArgs as NoteInput } from '../../__generated__/resolvers-types';
+import { IContext } from '../../server/apollo/context.ts';
+import { readClient, writeClient } from '../../database/client.ts';
+import { seedData } from '../query/highlights-fixtures.ts';
+import { CREATE_NOTE } from './notes-mutations.ts';
+import { MutationcreateSavedItemHighlightNoteArgs as NoteInput } from '../../__generated__/resolvers-types.ts';
 import { Application } from 'express';
 
 describe('Notes creation', () => {

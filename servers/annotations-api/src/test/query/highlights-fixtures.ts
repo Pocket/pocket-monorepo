@@ -1,6 +1,6 @@
 import { gql } from 'graphql-tag';
-import { mysqlTimeString } from '../../dataservices/utils';
-import config from '../../config';
+import { mysqlTimeString } from '../../dataservices/utils.ts';
+import config from '../../config/index.ts';
 
 export const GET_HIGHLIGHTS = gql`
   query GetHighlights($itemId: ID) {

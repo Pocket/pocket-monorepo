@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { HighlightNote } from '../../types';
+import { HighlightNote } from '../../types.ts';
 import DataLoader from 'dataloader';
 import {
   AuthenticationError,
@@ -7,13 +7,17 @@ import {
   PocketContextManager,
 } from '@pocket-tools/apollo-utils';
 import express from 'express';
-import { dynamoClient, readClient, writeClient } from '../../database/client';
+import {
+  dynamoClient,
+  readClient,
+  writeClient,
+} from '../../database/client.ts';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { createNotesLoader } from '../../dataservices/dataloaders';
-import { NotesDataService } from '../../dataservices/notes';
-import { HighlightsModel } from '../../models/HighlightsModel';
-import { ParserAPI } from '../../dataservices/parserApi';
-import { HighlightsDataService } from '../../dataservices/highlights';
+import { createNotesLoader } from '../../dataservices/dataloaders.ts';
+import { NotesDataService } from '../../dataservices/notes.ts';
+import { HighlightsModel } from '../../models/HighlightsModel.ts';
+import { ParserAPI } from '../../dataservices/parserApi.ts';
+import { HighlightsDataService } from '../../dataservices/highlights.ts';
 
 export interface IContext extends PocketContext {
   userId: string;

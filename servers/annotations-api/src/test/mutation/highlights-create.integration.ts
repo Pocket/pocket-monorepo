@@ -1,26 +1,26 @@
 import { ApolloServer } from '@apollo/server';
-import { startServer } from '../../server';
+import { startServer } from '../../server/index.ts';
 import request from 'supertest';
 import { print } from 'graphql';
-import { IContext } from '../../server/apollo/context';
-import { readClient, writeClient } from '../../database/client';
-import { seedData } from '../query/highlights-fixtures';
+import { IContext } from '../../server/apollo/context.ts';
+import { readClient, writeClient } from '../../database/client.ts';
+import { seedData } from '../query/highlights-fixtures.ts';
 import {
   CREATE_HIGHLIGHT_BY_URL,
   CREATE_HIGHLIGHTS,
   CREATE_HIGHLIGHTS_WITH_NOTE,
-} from './highlights-mutations';
+} from './highlights-mutations.ts';
 import {
   CreateHighlightByUrlInput,
   CreateHighlightInput,
-} from '../../__generated__/resolvers-types';
-import { UsersMeta } from '../../dataservices/usersMeta';
-import { mysqlTimeString } from '../../dataservices/utils';
-import config from '../../config';
+} from '../../__generated__/resolvers-types.ts';
+import { UsersMeta } from '../../dataservices/usersMeta.ts';
+import { mysqlTimeString } from '../../dataservices/utils.ts';
+import config from '../../config/index.ts';
 import { v4 as uuid } from 'uuid';
 import { Application } from 'express';
 import nock from 'nock';
-import { HighlightsModel } from '../../models/HighlightsModel';
+import { HighlightsModel } from '../../models/HighlightsModel.ts';
 
 describe('Highlights creation', () => {
   let app: Application;

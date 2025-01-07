@@ -1,6 +1,6 @@
-import { NotesDataService } from '../dataservices/notes';
-import { dynamoClient } from '../database/client';
-import { createNotesLoader, orderAndMapNotes } from './dataloaders';
+import { NotesDataService } from '../dataservices/notes.ts';
+import { dynamoClient } from '../database/client.ts';
+import { createNotesLoader, orderAndMapNotes } from './dataloaders.ts';
 
 describe('dataloaders', () => {
   const mockNotesResponse = [
