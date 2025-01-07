@@ -89,18 +89,6 @@ export const V3GetSchema: Schema = {
     },
     toInt: true,
   },
-  count: {
-    default: {
-      options: 30,
-    },
-    isInt: {
-      options: {
-        min: 1,
-        max: 5000,
-      },
-    },
-    toInt: true,
-  },
   tag: {
     optional: true,
     isString: true,
@@ -114,6 +102,30 @@ export const V3GetSchema: Schema = {
     },
     customSanitizer: {
       options: (value) => timeSeconds(value),
+    },
+  },
+  count: {
+    toInt: true,
+    customSanitizer: {
+      options: (value, { req }) => {
+        const hasSince =
+          req.body.since != null || req.query?.since != null ? true : false;
+        // Android client does not paginate results for 'since'
+        if (value == null || value === '' || Number.isNaN(value)) {
+          if (hasSince) {
+            return 5000;
+          } else {
+            return 30;
+          }
+        }
+        return value;
+      },
+    },
+    isInt: {
+      options: {
+        min: 1,
+        max: 5000,
+      },
     },
   },
   updatedBefore: {

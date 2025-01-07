@@ -1266,6 +1266,31 @@ describe('v3Get', () => {
       expect(apiSpy.mock.lastCall?.[3].filter?.updatedSince).toEqual(123123);
       expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
     });
+    it('should set count to 5000 if `since` parameter is passed', async () => {
+      const apiSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).get('/v3/get').query({
+        consumer_key: 'test',
+        access_token: 'test',
+        since: '123123',
+        detailType: 'complete',
+      });
+      expect(apiSpy.mock.lastCall?.[3].pagination?.limit).toEqual(5000);
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+    });
+    it('should set count to 30 if no `since` parameter', async () => {
+      const apiSpy = jest
+        .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
+        .mockImplementation(() => Promise.resolve(mockGraphGetComplete));
+      const response = await request(app).get('/v3/get').query({
+        consumer_key: 'test',
+        access_token: 'test',
+        detailType: 'complete',
+      });
+      expect(apiSpy.mock.lastCall?.[3].pagination?.limit).toEqual(30);
+      expect(response.headers['x-source']).toBe(expectedHeaders['X-Source']);
+    });
     it('should not add contentType filter if value="all"', async () => {
       const apiSpy = jest
         .spyOn(GraphQLCalls, 'callSavedItemsByOffsetComplete')
