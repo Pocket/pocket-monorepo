@@ -22,7 +22,7 @@ export async function startServer(port: number): Promise<{
 }> {
   const app: Application = express();
   const httpServer: Server = createServer(app);
-  const sizeLimit = '15mb';
+  const sizeLimit = '35mb';
 
   app.use(charsetFixHandler);
   app.use(json({ limit: sizeLimit }));
