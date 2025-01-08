@@ -85,9 +85,24 @@ telemetry:
       # https://www.apollographql.com/docs/graphos/reference/router/telemetry/instrumentation/instruments#default_requirement_level
       default_requirement_level: recommended
       router:
-        http.server.active_requests: true # (default false)
-        http.server.request.body.size: true # (default false)
-        http.server.request.duration: true # (default false)
+        http.server.active_requests:
+          attributes:
+            'http.request.header.apollographql-client-name':
+              request_header: 'apollographql-client-name'
+            'http.request.header.apollographql-client-version':
+              request_header: 'apollographql-client-version'
+        http.server.request.body.size:
+          attributes:
+            'http.request.header.apollographql-client-name':
+              request_header: 'apollographql-client-name'
+            'http.request.header.apollographql-client-version':
+              request_header: 'apollographql-client-version'
+        http.server.request.duration:
+          attributes:
+            'http.request.header.apollographql-client-name':
+              request_header: 'apollographql-client-name'
+            'http.request.header.apollographql-client-version':
+              request_header: 'apollographql-client-version'
       subgraph:
         http.client.request.body.size: true # (default false)
         http.client.request.duration: true # (default false)
@@ -130,6 +145,12 @@ telemetry:
       supergraph:
         attributes:
           cost.estimated: true
+      router:
+        attributes:
+          'http.request.header.apollographql-client-name':
+            request_header: 'apollographql-client-name'
+          'http.request.header.apollographql-client-version':
+            request_header: 'apollographql-client-version'
 
   apollo:
     send_variable_values:
