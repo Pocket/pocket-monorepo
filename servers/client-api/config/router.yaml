@@ -82,6 +82,8 @@ demand_control:
 telemetry:
   instrumentation:
     instruments:
+      # https://www.apollographql.com/docs/graphos/reference/router/telemetry/instrumentation/instruments#default_requirement_level
+      default_requirement_level: recommended
       router:
         http.server.active_requests: true # (default false)
         http.server.request.body.size: true # (default false)
