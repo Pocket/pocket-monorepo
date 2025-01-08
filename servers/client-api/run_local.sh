@@ -41,4 +41,4 @@ echo "AWS_LOG_STREAM_NAMES=$AWS_LOG_STREAM_NAMES"
 echo "AWS_LOG_STREAM_ARNS=$AWS_LOG_STREAM_ARNS"
 
 # Execute the original Apollo Router command passed as arguments
-dotenv rover dev --supergraph-config ./config/supergraph.yaml --router-config ./config/router.yaml
+dotenvx run -- rover dev --supergraph-config ./config/supergraph.yaml --router-config ./config/router.yaml
