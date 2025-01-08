@@ -78,7 +78,7 @@ export default {
       process.env.PARSER_BASE_ENDPOINT || 'http://example-parser.com',
     dataPath: process.env.PARSER_DATA_PATH || '/wrapper',
     retries: 3,
-    timeout: 5,
+    timeout: 25,
   },
   dynamoDb: {
     itemSummaryTable: {
