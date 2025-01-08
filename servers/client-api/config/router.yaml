@@ -126,6 +126,7 @@ telemetry:
             graphql.operation.name: true
             cost.delta: true
     spans:
+      mode: spec_compliant
       supergraph:
         attributes:
           cost.estimated: true
