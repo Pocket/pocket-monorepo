@@ -15,6 +15,18 @@ exporters:
     # https://www.googlecloudcommunity.com/gc/Data-Analytics/OpenTelemetry-and-GKE/m-p/674090/highlight/true#M3861
     timeout: 45s
 processors:
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/23847
+  transform/google_logs:
+    log_statements:
+      - context: resource
+        statements:
+          - truncate_all(attributes, 256000)
+      - context: log
+        statements:
+          - set(attributes["truncate-body"], body)
+          - truncate_all(attributes, 256000)
+          - set(body, attributes["truncate-body"])
+          - delete_key(attributes, "truncate-body")
   memory_limiter:
     check_interval: 1s
     limit_percentage: 70
@@ -94,6 +106,7 @@ service:
       receivers: [otlp]
       processors:
         [
+          transform/google_logs,
           resource/cleanup_for_google,
           resourcedetection/ecs,
           memory_limiter,
