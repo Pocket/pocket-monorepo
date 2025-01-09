@@ -43,7 +43,7 @@ import * as Sentry from '@sentry/node';
 import { serverLogger } from '@pocket-tools/ts-logger';
 
 export function getClient(
-  accessToken: string,
+  accessToken: string | null,
   consumerKey: string,
   headers: any,
 ) {
@@ -74,7 +74,7 @@ export function getClient(
 export class GraphQLClientFactory {
   url: string;
   constructor(
-    accessToken: string,
+    accessToken: string | null,
     consumerKey: string,
     private headers: any,
   ) {

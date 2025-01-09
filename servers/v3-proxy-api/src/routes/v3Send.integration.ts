@@ -183,6 +183,15 @@ describe('v3/send', () => {
           });
         expect(response.status).toEqual(400);
       });
+      it('makes request without access token (cookie auth)', async () => {
+        const response = await request(app)
+          .post('/v3/send')
+          .send({
+            consumer_key: 'test',
+            actions: [{ action: 'add', url: 'http://domain.com/path' }],
+          });
+        expect(response.status).toEqual(200);
+      });
       it('returns 400 if proper identifiers are not included', async () => {
         const response = await request(app)
           .post('/v3/send')
