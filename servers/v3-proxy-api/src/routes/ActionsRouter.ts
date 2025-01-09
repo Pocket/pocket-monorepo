@@ -101,7 +101,7 @@ type SendActionResult = {
 export class ActionsRouter {
   protected client: GraphQLClientFactory;
   constructor(
-    accessToken: string,
+    accessToken: string | null,
     consumerKey: string,
     headers: Request['headers'],
   ) {

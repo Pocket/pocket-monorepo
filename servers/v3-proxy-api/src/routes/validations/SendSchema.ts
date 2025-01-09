@@ -2,7 +2,7 @@ import { Schema } from 'express-validator';
 import { MaybeAction } from './SendActionValidators';
 
 export type V3SendParams = {
-  access_token: string;
+  access_token?: string;
   consumer_key: string;
   actions: MaybeAction[];
 };
@@ -17,6 +17,7 @@ export type V3SendParams = {
  */
 export const V3SendSchemaPost: Schema = {
   access_token: {
+    optional: true,
     isString: true,
     notEmpty: {
       errorMessage: '`access_token` cannot be empty',
