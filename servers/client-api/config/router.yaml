@@ -94,10 +94,17 @@ telemetry:
               request_header: 'apollographql-client-version'
         http.server.request.duration:
           attributes:
+            http.response.status_code: true
             'http.request.header.apollographql-client-name':
               request_header: 'apollographql-client-name'
             'http.request.header.apollographql-client-version':
               request_header: 'apollographql-client-version'
+            'graphql.operation.name': # Will set this attribute with the operation name
+              operation_name: string
+            'graphql.errors': # Will set this attribute to true if it contains graphql error (includes unauthorized)
+              on_graphql_error: true
+            'graphql.critical.error':
+              error: reason
       subgraph:
         http.client.request.body.size:
           attributes:
