@@ -1,5 +1,6 @@
 import express, { json, urlencoded } from 'express';
 import multer from 'multer';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 
 const app = express();
 app.use(json({ limit: '1mb' }));
@@ -8,52 +9,71 @@ app.use(multer().none());
 
 const requestJwt = async (
   payload: any,
-  accessToken: string | null | undefined,
-  consumerKey: string | null | undefined,
-  cookie: string | null | undefined,
+  params: URLSearchParams,
+  headers: HeadersInit | undefined,
 ) => {
-  const params = new URLSearchParams();
-  accessToken && params.append('access_token', accessToken);
-  consumerKey && params.append('consumer_key', consumerKey);
   const url = 'https://getpocket.com/v3/jwt';
   const paramString = params.toString();
   const fetchUrl = paramString.length > 0 ? `${url}?${paramString}` : url;
-  let response: any;
-  if (cookie != null) {
-    response = await fetch(fetchUrl, {
-      headers: { cookie },
+  try {
+    const response = await fetch(fetchUrl, {
+      headers,
+      mode: 'cors',
     }).then((res) => res.json());
-  } else {
-    response = await fetch(fetchUrl).then((res) => res.json());
+    if (response.jwt != null) {
+      const decoded = jwtDecode<JwtPayload & { roles?: string[] }>(
+        response.jwt,
+      );
+      payload.context.entries['apollo_authentication::JWT::claims'] = decoded;
+      // Extract scopes for AuthZ directives
+      payload.context.entries['apollo_authentication::JWT::claims'].scope =
+        decoded.roles != null ? decoded.roles.join(' ') : undefined;
+    }
+    return payload;
+  } catch (error) {
+    console.log(error);
+    const response = await fetch(fetchUrl, {
+      headers,
+      mode: 'cors',
+    }).then((res) => res.status);
+    console.log(response);
+    return payload;
   }
-
-  // // It's common to set scopes for use by the Router to enforce AuthZN directives
-
-  // //payload.context.entries['apollo_authentication::JWT::claims'].scope = response.scopes;
-
-  // // Add to context so it is available at subsequent stages
-  // payload.context.entries['authentication::authToken'] = response.jwt;
-  payload.headers['Authorization'] = [`Bearer ${response.jwt}`];
-
-  return payload;
 };
 
 app.post('/', express.json(), async (req, res) => {
   const payload = req.body;
-  const paramString = (req.body.path as string).split('?')[1];
-  // TODO: Process form-data and form urlencoded etc.
-  const params = paramString ? new URLSearchParams(paramString) : undefined;
-  const accessToken = params?.get('access_token');
-  const consumerKey = params?.get('consumer_key');
-  const cookie = payload.headers.cookie;
-
-  let response = payload;
-  switch (payload.stage) {
-    case 'RouterRequest':
-      response = await requestJwt(payload, accessToken, consumerKey, cookie);
-      break;
+  // short-circuit if we already have JWT
+  if (payload.context.entries['apollo_authentication::JWT::claims'] != null) {
+    res.send(payload);
+    return;
   }
 
+  const paramString = (req.body.path as string).split('?')[1];
+
+  // TODO: Process form-data and form urlencoded etc.
+  // short-circuit if no consumer key
+  const givenParams = paramString
+    ? new URLSearchParams(paramString)
+    : undefined;
+  if (givenParams == null || givenParams?.get('consumer_key') == null) {
+    res.send(payload);
+    return;
+  }
+
+  const params = new URLSearchParams();
+  params.append('consumer_key', givenParams!.get('consumer_key')!);
+  params.append('enable_cors', '1');
+  const accessToken = givenParams?.get('access_token');
+  if (accessToken != null) {
+    params.append('access_token', accessToken);
+  }
+  const headers =
+    payload.headers.cookie != null
+      ? { Cookie: payload.headers.cookie }
+      : undefined;
+
+  const response = await requestJwt(payload, params, headers);
   res.send(response);
 });
 

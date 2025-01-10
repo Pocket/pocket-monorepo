@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "express": "4.21.2",
+    "jwt-decode": "^4.0.0",
     "multer": "1.4.5-lts.1"
   },
   "devDependencies": {
