@@ -47,6 +47,7 @@ on:
       terraform-output:
         description: 'The terraform output which is used to get the ECS_Service and Task Defintion arns for codedeploy'
         required: false
+        default: ''
         type: string
       archive-download-name:
         description: 'If specified, download this archive instead of checkout'
@@ -55,117 +56,116 @@ on:
         default: ''
 
 permissions:
-  contents: read  # This is required for actions/checkout
-  id-token: write  # Access the Github JWT for AWS access
+  contents: read # This is required for actions/checkout
+  id-token: write # Access the Github JWT for AWS access
   deployments: write
 
 jobs:
-    # Let's build the image on every pull request just like we would on production
-    pull-request:
-      # Only run this job on a pull request event
-      if: github.event_name == 'pull_request'
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout
-          if: inputs.archive-download-name == ''
-          uses: actions/checkout@v4   
-        - name: Archive download
-          if: inputs.archive-download-name != ''
-          uses: actions/download-artifact@v4
-          with:
-              name: ${{inputs.archive-download-name}}
-        - name: Build Docker Image
-          uses: pocket/pocket-monorepo/.github/actions/containerize@main
-          with:
-            docker-repo-name: "${{inputs.development-aws-registry }}/${{ format(inputs.docker-repo-name-pattern, 'dev') }}"
-            app-path: ${{inputs.app-path}}
-            app-port: ${{inputs.app-port}}
-            context: ${{inputs.context}}
-            sentry-project: ${{inputs.sentry-project}}
-            sentry-org: ${{inputs.sentry-org}}
-            sentry-token: ${{secrets.SENTRY_BEARER}}
-            dockerhub-username: ${{secrets.DOCKERHUB_USERNAME}}
-            dockerhub-token: ${{secrets.DOCKERHUB_TOKEN}}
-            scope: ${{inputs.scope}}
+  # Let's build the image on every pull request just like we would on production
+  pull-request:
+    # Only run this job on a pull request event
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        if: inputs.archive-download-name == ''
+        uses: actions/checkout@v4
+      - name: Archive download
+        if: inputs.archive-download-name != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{inputs.archive-download-name}}
+      - name: Build Docker Image
+        uses: pocket/pocket-monorepo/.github/actions/containerize@main
+        with:
+          docker-repo-name: "${{inputs.development-aws-registry }}/${{ format(inputs.docker-repo-name-pattern, 'dev') }}"
+          app-path: ${{inputs.app-path}}
+          app-port: ${{inputs.app-port}}
+          context: ${{inputs.context}}
+          sentry-project: ${{inputs.sentry-project}}
+          sentry-org: ${{inputs.sentry-org}}
+          sentry-token: ${{secrets.SENTRY_BEARER}}
+          dockerhub-username: ${{secrets.DOCKERHUB_USERNAME}}
+          dockerhub-token: ${{secrets.DOCKERHUB_TOKEN}}
+          scope: ${{inputs.scope}}
 
+  development:
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        if: inputs.archive-download-name == ''
+        uses: actions/checkout@v4
+      - name: Archive download
+        if: inputs.archive-download-name != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{inputs.archive-download-name}}
+      # Get the AWS credentials
+      - name: AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::410318598490:role/PocketGHARole
+      - name: Build and Push Development Docker Image
+        id: dev-docker-build
+        uses: pocket/pocket-monorepo/.github/actions/containerize@main
+        with:
+          docker-repo-name: "${{inputs.development-aws-registry }}/${{ format(inputs.docker-repo-name-pattern, 'dev') }}"
+          app-path: ${{inputs.app-path}}
+          app-port: ${{inputs.app-port}}
+          context: ${{inputs.context}}
+          sentry-project: ${{inputs.sentry-project}}
+          sentry-org: ${{inputs.sentry-org}}
+          sentry-token: ${{secrets.SENTRY_BEARER}}
+          dockerhub-username: ${{secrets.DOCKERHUB_USERNAME}}
+          dockerhub-token: ${{secrets.DOCKERHUB_TOKEN}}
+          scope: ${{inputs.scope}}
+          push: true
+      - name: Code Deploy Docker Image
+        uses: pocket/pocket-monorepo/.github/actions/ecs-codedeploy@main
+        if: inputs.terraform-output != '' && fromJSON(inputs.terraform-output).ecs-task-containerName.value != ''
+        with:
+          docker-image-name: ${{steps.dev-docker-build.outputs.docker-image-name}}
+          terraform-output: ${{ inputs.terraform-output }}
+          name: ${{inputs.scope}}
 
-    development:
-      if: github.ref == 'refs/heads/dev'
-      runs-on: ubuntu-latest
-      steps:        
-        - name: Checkout
-          if: inputs.archive-download-name == ''
-          uses: actions/checkout@v4   
-        - name: Archive download
-          if: inputs.archive-download-name != ''
-          uses: actions/download-artifact@v4
-          with:
-              name: ${{inputs.archive-download-name}}
-        # Get the AWS credentials
-        - name: AWS Credentials
-          uses: aws-actions/configure-aws-credentials@v4
-          with:
-            aws-region: us-east-1
-            role-to-assume: arn:aws:iam::410318598490:role/PocketGHARole
-        - name: Build and Push Development Docker Image
-          id: dev-docker-build
-          uses: pocket/pocket-monorepo/.github/actions/containerize@main
-          with:
-            docker-repo-name: "${{inputs.development-aws-registry }}/${{ format(inputs.docker-repo-name-pattern, 'dev') }}"
-            app-path: ${{inputs.app-path}}
-            app-port: ${{inputs.app-port}}
-            context: ${{inputs.context}}
-            sentry-project: ${{inputs.sentry-project}}
-            sentry-org: ${{inputs.sentry-org}}
-            sentry-token: ${{secrets.SENTRY_BEARER}}
-            dockerhub-username: ${{secrets.DOCKERHUB_USERNAME}}
-            dockerhub-token: ${{secrets.DOCKERHUB_TOKEN}}
-            scope: ${{inputs.scope}}
-            push: true
-        - name: Code Deploy Docker Image
-          uses: pocket/pocket-monorepo/.github/actions/ecs-codedeploy@main
-          if: fromJSON(inputs.terraform-output).ecs-task-containerName.value != ''
-          with:
-            docker-image-name: ${{steps.dev-docker-build.outputs.docker-image-name}}
-            terraform-output: ${{ inputs.terraform-output }}
-            name: ${{inputs.scope}}
-
-    production:
-      if: github.ref == 'refs/heads/main'
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout
-          if: inputs.archive-download-name == ''
-          uses: actions/checkout@v4   
-        - name: Archive download
-          if: inputs.archive-download-name != ''
-          uses: actions/download-artifact@v4
-          with:
-              name: ${{inputs.archive-download-name}}
-        - name: AWS Credentials
-          uses: aws-actions/configure-aws-credentials@v4
-          with:
-            aws-region: us-east-1
-            role-to-assume: arn:aws:iam::996905175585:role/PocketGHARole
-        - name: Build and Push Production Docker Image
-          id: prod-docker-build
-          uses: pocket/pocket-monorepo/.github/actions/containerize@main
-          with:
-            docker-repo-name: "${{inputs.production-aws-registry }}/${{ format(inputs.docker-repo-name-pattern, 'prod') }}"
-            app-path: ${{inputs.app-path}}
-            app-port: ${{inputs.app-port}}
-            context: ${{inputs.context}}
-            sentry-project: ${{inputs.sentry-project}}
-            sentry-org: ${{inputs.sentry-org}}
-            sentry-token: ${{secrets.SENTRY_BEARER}}
-            dockerhub-username: ${{secrets.DOCKERHUB_USERNAME}}
-            dockerhub-token: ${{secrets.DOCKERHUB_TOKEN}}
-            scope: ${{inputs.scope}}
-            push: true
-        - name: Code Deploy Docker Image
-          uses: pocket/pocket-monorepo/.github/actions/ecs-codedeploy@main
-          if: fromJSON(inputs.terraform-output).ecs-task-containerName.value != ''
-          with:
-            docker-image-name: ${{steps.prod-docker-build.outputs.docker-image-name}}
-            terraform-output: ${{ inputs.terraform-output }}
-            name: ${{inputs.scope}}
+  production:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        if: inputs.archive-download-name == ''
+        uses: actions/checkout@v4
+      - name: Archive download
+        if: inputs.archive-download-name != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{inputs.archive-download-name}}
+      - name: AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::996905175585:role/PocketGHARole
+      - name: Build and Push Production Docker Image
+        id: prod-docker-build
+        uses: pocket/pocket-monorepo/.github/actions/containerize@main
+        with:
+          docker-repo-name: "${{inputs.production-aws-registry }}/${{ format(inputs.docker-repo-name-pattern, 'prod') }}"
+          app-path: ${{inputs.app-path}}
+          app-port: ${{inputs.app-port}}
+          context: ${{inputs.context}}
+          sentry-project: ${{inputs.sentry-project}}
+          sentry-org: ${{inputs.sentry-org}}
+          sentry-token: ${{secrets.SENTRY_BEARER}}
+          dockerhub-username: ${{secrets.DOCKERHUB_USERNAME}}
+          dockerhub-token: ${{secrets.DOCKERHUB_TOKEN}}
+          scope: ${{inputs.scope}}
+          push: true
+      - name: Code Deploy Docker Image
+        uses: pocket/pocket-monorepo/.github/actions/ecs-codedeploy@main
+        if: inputs.terraform-output != '' && fromJSON(inputs.terraform-output).ecs-task-containerName.value != ''
+        with:
+          docker-image-name: ${{steps.prod-docker-build.outputs.docker-image-name}}
+          terraform-output: ${{ inputs.terraform-output }}
+          name: ${{inputs.scope}}
