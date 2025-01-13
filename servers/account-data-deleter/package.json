@@ -38,7 +38,7 @@
     "ajv": "8.17.1",
     "archiver": "^7.0.1",
     "csv-stringify": "^6.5.1",
-    "express": "4.20.0",
+    "express": "4.21.2",
     "express-validator": "^7.1.0",
     "knex": "3.1.0",
     "lodash": "4.17.21",

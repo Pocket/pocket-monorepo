@@ -99,7 +99,7 @@
     "@apollo/utils.keyvaluecache": "3.1.0",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "8.47.0",
-    "express": "4.20.0",
+    "express": "4.21.2",
     "graphql": "16.9.0",
     "graphql-tag": "2.12.6",
     "ioredis": "5.4.1",
@@ -129,7 +129,7 @@
     "@apollo/subgraph": "2.9.3",
     "@apollo/utils.keyvadapter": "3.1.0",
     "@apollo/utils.keyvaluecache": "3.1.0",
-    "express": "4.20.0",
+    "express": "4.21.2",
     "graphql": "16.9.0",
     "graphql-tag": "2.12.6"
   },

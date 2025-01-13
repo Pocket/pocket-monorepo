@@ -39,7 +39,7 @@
     "@smithy/util-retry": "3.0.3",
     "elastic-builder": "^2.29.0",
     "elasticsearch": "^16.7.3",
-    "express": "4.20.0",
+    "express": "4.21.2",
     "express-validator": "^7.1.0",
     "graphql": "16.9.0",
     "graphql-constraint-directive": "5.4.2",
