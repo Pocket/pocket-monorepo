@@ -10,6 +10,7 @@ on:
       - '.github/actions/**'
       - '.github/workflows/client-api.yml'
       - '.github/workflows/reuse-*.yml'
+      - 'servers/coprocessor/**'
   push:
     branches:
       - main
@@ -22,8 +23,9 @@ on:
       - '.github/actions/**'
       - '.github/workflows/client-api.yml'
       - '.github/workflows/reuse-*.yml'
-jobs:
+      - 'servers/coprocessor/**'
 
+jobs:
   infrastructure:
     uses: ./.github/workflows/reuse-infrastructure.yml
     with:
@@ -31,9 +33,23 @@ jobs:
       stack-output-path: infrastructure/client-api/cdktf.out/stacks/client-api
     secrets: inherit
 
-  api:
+  coprocessor:
     uses: ./.github/workflows/reuse-build-and-push-image.yml
     needs: [infrastructure]
+    with:
+      scope: '@server/coprocessor'
+      docker-repo-name-pattern: clientapi-{0}-coprocessor
+      context: servers/coprocessor
+      app-path: servers/coprocessor
+      # Do not pass terraform-output because we don't want to redo codedeploy
+      # and it's conditional on this output
+    secrets: inherit
+
+  api:
+    uses: ./.github/workflows/reuse-build-and-push-image.yml
+    # Require coprocessor dependency because we need the image to
+    # be built and pushed prior to codedeploy
+    needs: [infrastructure, coprocessor]
     with:
       scope: '@server/client-api'
       docker-repo-name-pattern: clientapi-{0}-app

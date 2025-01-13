@@ -41,6 +41,10 @@ const requestJwt = async (
   }
 };
 
+app.get('/health', async (req, res) => {
+  res.status(200).send('ok');
+});
+
 app.post('/', express.json(), async (req, res) => {
   const payload = req.body;
   // short-circuit if we already have JWT

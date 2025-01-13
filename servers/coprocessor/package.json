@@ -1,5 +1,5 @@
 {
-  "name": "coprocessor",
+  "name": "@server/coprocessor",
   "version": "1.0.0",
   "description": "",
   "keywords": [],
