@@ -25,6 +25,8 @@ export interface ApplicationECSAlbCodeDeployProps
   targetGroupNames: string[];
   tags?: { [key: string]: string };
   dependsOn?: TerraformResource[];
+  // Docs at Terraform Registry: CodedeployDeploymentGroup#deployment_config_name
+  deploymentConfigName?: string | undefined;
   successTerminationWaitTimeInMinutes?: number;
   notifications?: {
     notifyOnStarted?: boolean;
@@ -66,7 +68,9 @@ export class ApplicationECSAlbCodeDeploy extends Construct {
         {
           dependsOn: config.dependsOn,
           appName: codeDeployApp.name,
-          deploymentConfigName: 'CodeDeployDefault.ECSAllAtOnce',
+          deploymentConfigName:
+            this.config.deploymentConfigName ??
+            'CodeDeployDefault.ECSAllAtOnce',
           deploymentGroupName: `${this.config.prefix}-ECS`,
           serviceRoleArn: ecsCodeDeployRole.arn,
           autoRollbackConfiguration: {

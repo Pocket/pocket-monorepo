@@ -309,6 +309,9 @@ class ClientAPI extends TerraformStack {
         useCodeDeploy: true,
         useCodePipeline: false,
         useTerraformBasedCodeDeploy: false,
+        // Shifts 10 percent of traffic in the first increment.
+        // The remaining 90 percent is deployed five minutes later.
+        deploymentConfigName: 'CodeDeployDefault.ECSCanary10Percent5Minutes',
         generateAppSpec: false,
         snsNotificationTopicArn: snsTopic.arn,
         successTerminationWaitTimeInMinutes: 5,

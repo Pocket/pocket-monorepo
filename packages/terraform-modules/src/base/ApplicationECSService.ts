@@ -64,6 +64,8 @@ export interface ApplicationECSServiceProps extends TerraformMetaArguments {
   useCodePipeline?: boolean;
   generateAppSpec?: boolean;
   successTerminationWaitTimeInMinutes?: number;
+  // Docs at Terraform Registry: CodedeployDeploymentGroup#deployment_config_name
+  deploymentConfigName?: string | undefined;
   codeDeployNotifications?: {
     notifyOnStarted?: boolean; //defaults to true
     notifyOnSucceeded?: boolean; //defaults to true
@@ -205,6 +207,7 @@ export class ApplicationECSService extends Construct {
           clusterName: this.config.ecsClusterName,
           targetGroupNames: targetGroupNames,
           listenerArn: this.config.albConfig.listenerArn,
+          deploymentConfigName: this.config.deploymentConfigName,
           snsNotificationTopicArn:
             this.config.codeDeploySnsNotificationTopicArn,
           tags: this.config.tags,
