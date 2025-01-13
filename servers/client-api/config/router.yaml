@@ -294,7 +294,7 @@ apq:
         urls: ['${env.REDIS_PROTOCOL:-rediss-cluster}://${env.REDIS_ENDPOINT}']
         ttl: 24h # optional, by default no expiration
 coprocessor:
-  url: ${env.COPROCESSOR_URL}
+  url: '${env.COPROCESSOR_URL:-http://localhost:3007}'
   timeout: 100s # The timeout for all coprocessor requests. Defaults to 1 second (1s)
   router: # This coprocessor hooks into the `RouterService`
     request: # By including this key, the `RouterService` sends a coprocessor request whenever it first receives a client request.

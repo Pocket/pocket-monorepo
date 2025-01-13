@@ -239,6 +239,10 @@ class ClientAPI extends TerraformStack {
               value: `${config.tracing.url}`,
             },
             {
+              name: 'COPROCESSOR_URL',
+              value: 'http://localhost:3007',
+            },
+            {
               name: 'REDIS_ENDPOINT',
               value: cache,
             },
