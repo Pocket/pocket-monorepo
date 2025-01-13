@@ -12,9 +12,6 @@
     "format": "eslint --fix",
     "lint": "eslint --fix-dry-run",
     "start": "node dist/index.js",
-    "test": "jest \"\\.spec\\.ts\"",
-    "test-ci": "npm test",
-    "test-integrations": "jest \"\\.integration\\.ts\" --runInBand --ci --watchAll=false --forceExit",
     "watch": "tsc -w --preserveWatchOutput & nodemon --inspect --config ../../nodemon.json"
   },
   "dependencies": {

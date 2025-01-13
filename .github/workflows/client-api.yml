@@ -39,7 +39,6 @@ jobs:
     with:
       scope: '@server/coprocessor'
       docker-repo-name-pattern: clientapi-{0}-coprocessor
-      context: servers/coprocessor
       app-path: servers/coprocessor
       # Do not pass terraform-output because we don't want to redo codedeploy
       # and it's conditional on this output
