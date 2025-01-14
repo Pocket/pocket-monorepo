@@ -1,0 +1,20 @@
+{
+  "extends": "tsconfig/graphql.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "sourceRoot": "",
+    "strict": true,
+    "resolveJsonModule": true,
+    "strictBuiltinIteratorReturn": false,
+    "lib": [
+      "es2019",
+      "es2020.bigint",
+      "es2020.string",
+      "es2020.symbol.wellknown",
+      "dom"
+    ]
+  },
+  "exclude": ["node_modules/", "dist/"],
+  "include": ["src/**/*.ts"]
+}

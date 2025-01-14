@@ -124,6 +124,12 @@ export interface PocketALBApplicationProps extends TerraformMetaArguments {
      */
     useCodeDeploy: boolean;
     /**
+     * How to do the blue/green deployment
+     * Docs at Terraform Registry: CodedeployDeploymentGroup#deployment_config_name
+     * See also: https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations.html
+     */
+    deploymentConfigName?: string | undefined;
+    /**
      * Option to deploy a new version using terraform, instead of externally
      */
     useTerraformBasedCodeDeploy?: boolean;
@@ -644,6 +650,7 @@ export class PocketALBApplication extends Construct {
       ecsClusterArn: ecsCluster.cluster.arn,
       ecsClusterName: ecsCluster.cluster.name,
       useCodeDeploy: this.config.codeDeploy.useCodeDeploy,
+      deploymentConfigName: this.config.codeDeploy.deploymentConfigName,
       codeDeployNotifications: this.config.codeDeploy.notifications,
       useCodePipeline: this.config.codeDeploy.useCodePipeline,
       useTerraformBasedCodeDeploy:

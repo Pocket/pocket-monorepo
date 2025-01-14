@@ -239,6 +239,10 @@ class ClientAPI extends TerraformStack {
               value: `${config.tracing.url}`,
             },
             {
+              name: 'COPROCESSOR_URL',
+              value: 'http://localhost:3007',
+            },
+            {
               name: 'REDIS_ENDPOINT',
               value: cache,
             },
@@ -266,11 +270,54 @@ class ClientAPI extends TerraformStack {
             startPeriod: 0,
           },
         },
+        {
+          name: 'coprocessor',
+          portMappings: [
+            {
+              hostPort: 3007,
+              containerPort: 3007,
+              protocol: 'tcp',
+            },
+          ],
+          envVars: [
+            {
+              name: 'PORT',
+              value: '3007',
+            },
+            {
+              name: 'APP_ENVIRONMENT',
+              value: config.isProd ? 'production' : 'development',
+            },
+          ],
+          logGroup: this.createCustomLogGroup('coprocessor'),
+          logMultilinePattern: '^\\S.+',
+          secretEnvVars: [
+            {
+              name: 'SENTRY_DSN',
+              valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/SENTRY_DSN`,
+            },
+          ],
+          healthCheck: {
+            command: [
+              'CMD-SHELL',
+              'curl -f http://localhost:3007/health || exit 1',
+            ],
+            interval: 15,
+            retries: 3,
+            timeout: 5,
+            startPeriod: 0,
+          },
+        },
       ],
       codeDeploy: {
         useCodeDeploy: true,
         useCodePipeline: false,
         useTerraformBasedCodeDeploy: false,
+        // Shifts 10 percent of traffic in the first increment.
+        // The remaining 90 percent is deployed five minutes later.
+        deploymentConfigName: config.isProd
+          ? 'CodeDeployDefault.ECSCanary10Percent5Minutes'
+          : 'CodeDeployDefault.ECSAllAtOnce',
         generateAppSpec: false,
         snsNotificationTopicArn: snsTopic.arn,
         successTerminationWaitTimeInMinutes: 5,
@@ -281,6 +328,7 @@ class ClientAPI extends TerraformStack {
           notifyOnSucceeded: false,
         },
       },
+      // This doesn't need to be exposed; expose only client-api
       exposedContainer: {
         name: 'app',
         port: 4001,
