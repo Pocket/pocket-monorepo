@@ -18,25 +18,28 @@ const requestJwt = async (
   try {
     const response = await fetch(fetchUrl, {
       headers,
-      mode: 'cors',
-    }).then((res) => res.json());
-    if (response.jwt != null) {
-      const decoded = jwtDecode<JwtPayload & { roles?: string[] }>(
-        response.jwt,
-      );
-      payload.context.entries['apollo_authentication::JWT::claims'] = decoded;
-      // Extract scopes for AuthZ directives
-      payload.context.entries['apollo_authentication::JWT::claims'].scope =
-        decoded.roles != null ? decoded.roles.join(' ') : undefined;
+    });
+    if (response.ok === false) {
+      console.error(response.status);
+      console.error(response.statusText);
+      const responseText = await response.text();
+      console.error(responseText);
+      return payload;
+    } else {
+      const jwtValue = await response.json();
+      if (jwtValue.jwt != null) {
+        const decoded = jwtDecode<JwtPayload & { roles?: string[] }>(
+          jwtValue.jwt,
+        );
+        payload.context.entries['apollo_authentication::JWT::claims'] = decoded;
+        // Extract scopes for AuthZ directives
+        payload.context.entries['apollo_authentication::JWT::claims'].scope =
+          decoded.roles != null ? decoded.roles.join(' ') : undefined;
+      }
+      return payload;
     }
-    return payload;
   } catch (error) {
-    console.log(error);
-    const response = await fetch(fetchUrl, {
-      headers,
-      mode: 'cors',
-    }).then((res) => res.status);
-    console.log(response);
+    console.error(error);
     return payload;
   }
 };
