@@ -47,7 +47,7 @@ on:
       terraform-output:
         description: 'The terraform output which is used to get the ECS_Service and Task Defintion arns for codedeploy'
         required: false
-        default: ''
+        default: '{}'
         type: string
       archive-download-name:
         description: 'If specified, download this archive instead of checkout'
