@@ -70,7 +70,7 @@ runs:
       uses: docker/build-push-action@v6
       with:
         push: ${{inputs.push}}
-        tags: ${{inputs.docker-repo-name}}:${{ github.sha }},latest
+        tags: ${{inputs.docker-repo-name}}:${{ github.sha }},${{inputs.docker-repo-name}}:latest
         context: ${{ inputs.context }}
         build-args: |
           GIT_SHA=${{ github.sha }}
