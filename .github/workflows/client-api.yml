@@ -42,6 +42,7 @@ jobs:
       app-path: servers/coprocessor
       # Do not pass terraform-output because we don't want to redo codedeploy
       # and it's conditional on this output
+      terraform-output: ''
     secrets: inherit
 
   api:
