@@ -39,7 +39,7 @@ inputs:
     required: true
 
 outputs:
-  docker-image-name: 
+  docker-image-name:
     description: The full name with registry of the built docker image
     value: ${{ steps.get-build-name.outputs.docker-image-name }}
 
@@ -49,8 +49,8 @@ runs:
     # can be useful if you want to add emulation support with QEMU to be able to build against more platforms.
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
-    
-    # action will create and boot a builder using by default the docker-container driver. 
+
+    # action will create and boot a builder using by default the docker-container driver.
     # This is not required but recommended using it to be able to build multi-platform images, export cache, etc.
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
@@ -64,13 +64,13 @@ runs:
     - name: Login to Amazon ECR
       if: inputs.push == 'true'
       uses: aws-actions/amazon-ecr-login@v2
-    
+
     - name: Build docker image
       id: docker-build-push
       uses: docker/build-push-action@v6
       with:
         push: ${{inputs.push}}
-        tags: ${{inputs.docker-repo-name}}:${{ github.sha }}
+        tags: ${{inputs.docker-repo-name}}:${{ github.sha }},latest
         context: ${{ inputs.context }}
         build-args: |
           GIT_SHA=${{ github.sha }}
@@ -81,7 +81,7 @@ runs:
           PORT=${{inputs.app-port}}
         secrets: |
           sentry_token=${{ inputs.sentry-token }}
-    - name: Output Build Name 
+    - name: Output Build Name
       id: get-build-name
       shell: bash
       run: |
