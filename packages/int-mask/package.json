@@ -30,7 +30,7 @@
   "dependencies": {
     "lodash": "4.17.21",
     "md5": "2.3.0",
-    "tslib": "2.8.0",
+    "tslib": "2.8.1",
     "underscore.string": "3.3.6"
   },
   "devDependencies": {

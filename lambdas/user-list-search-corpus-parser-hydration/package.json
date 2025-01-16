@@ -18,15 +18,15 @@
     "test-integrations": "jest \"\\.integration\\.ts\" --runInBand"
   },
   "dependencies": {
-    "@aws-sdk/client-sagemaker-runtime": "3.716.0",
+    "@aws-sdk/client-sagemaker-runtime": "3.730.0",
     "@pocket-tools/event-bridge": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/aws-serverless": "8.47.0",
+    "@sentry/aws-serverless": "8.50.0",
     "@smithy/node-http-handler": "3.2.0",
     "@smithy/util-retry": "3.0.3",
     "fetch-retry": "^5.0.6",
     "string-strip-html": "8.4.0",
-    "tslib": "2.8.0"
+    "tslib": "2.8.1"
   },
   "devDependencies": {
     "@pocket-tools/eslint-config": "workspace:*",

@@ -90,14 +90,14 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-eventbridge": "3.716.0",
-    "@aws-sdk/client-sqs": "3.716.0",
+    "@aws-sdk/client-eventbridge": "3.730.0",
+    "@aws-sdk/client-sqs": "3.730.0",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "8.47.0",
+    "@sentry/node": "8.50.0",
     "ajv": "8.17.1",
     "ajv-formats": "3.0.1",
     "lodash": "4.17.21",
-    "sqs-consumer": "11.2.0"
+    "sqs-consumer": "11.4.0"
   },
   "devDependencies": {
     "@jest/globals": "29.7.0",

@@ -15,18 +15,18 @@
     "watch": "tsc -w --preserveWatchOutput & nodemon --config ../../nodemon.json"
   },
   "dependencies": {
-    "@apollo/client": "3.11.6",
+    "@apollo/client": "3.12.6",
     "@graphql-typed-document-node/core": "3.2.0",
     "@pocket-tools/int-mask": "workspace:*",
     "@pocket-tools/jwt-utils": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "8.47.0",
-    "cross-fetch": "4.0.0",
-    "dataloader": "2.2.2",
-    "express": "4.20.0",
+    "@sentry/node": "8.50.0",
+    "cross-fetch": "4.1.0",
+    "dataloader": "2.2.3",
+    "express": "4.21.2",
     "graphql-tag": "2.12.6",
-    "tslib": "2.8.0"
+    "tslib": "2.8.1"
   },
   "devDependencies": {
     "@graphql-codegen/add": "5.0.3",

@@ -32,15 +32,15 @@
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "8.47.0",
-    "axios": "1.7.7",
+    "@sentry/node": "8.50.0",
+    "axios": "1.7.9",
     "axios-retry": "4.5.0",
-    "dataloader": "2.2.2",
-    "express": "4.20.0",
-    "graphql": "16.9.0",
+    "dataloader": "2.2.3",
+    "express": "4.21.2",
+    "graphql": "16.10.0",
     "graphql-tag": "2.12.6",
     "keyv": "4.5.4",
-    "tslib": "2.8.0"
+    "tslib": "2.8.1"
   },
   "devDependencies": {
     "@jest/globals": "29.7.0",

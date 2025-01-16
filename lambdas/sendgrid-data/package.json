@@ -15,12 +15,12 @@
     "test": "jest \"\\.spec\\.ts\""
   },
   "dependencies": {
-    "@aws-sdk/client-cloudwatch": "3.716.0",
-    "@aws-sdk/client-firehose": "3.716.0",
+    "@aws-sdk/client-cloudwatch": "3.730.0",
+    "@aws-sdk/client-firehose": "3.730.0",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sendgrid/client": "^8.0.0",
-    "@sentry/aws-serverless": "8.47.0",
-    "tslib": "2.8.0"
+    "@sentry/aws-serverless": "8.50.0",
+    "tslib": "2.8.1"
   },
   "devDependencies": {
     "@pocket-tools/eslint-config": "workspace:*",
