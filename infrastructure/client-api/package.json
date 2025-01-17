@@ -25,9 +25,9 @@
   },
   "devDependencies": {
     "@pocket-tools/eslint-config": "workspace:*",
-    "@types/node": "^22.8.2",
+    "@types/node": "^22.10.7",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "typescript": "5.7.2"
+    "typescript": "5.7.3"
   }
 }
