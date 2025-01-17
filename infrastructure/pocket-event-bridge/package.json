@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@cdktf/provider-archive": "10.3.0",
-    "@cdktf/provider-aws": "19.48.1",
+    "@cdktf/provider-aws": "19.49.1",
     "@cdktf/provider-local": "10.1.1",
     "@cdktf/provider-null": "10.0.1",
     "@pocket-tools/event-bridge": "workspace:*",
@@ -27,9 +27,9 @@
   },
   "devDependencies": {
     "@pocket-tools/eslint-config": "workspace:*",
-    "@types/node": "^22.8.2",
+    "@types/node": "^22.10.7",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "typescript": "5.7.2"
+    "typescript": "5.7.3"
   }
 }

@@ -24,19 +24,19 @@
     "@sentry/aws-serverless": "8.47.0",
     "exponential-backoff": "^3.1.1",
     "lodash": "4.17.21",
-    "tslib": "2.8.0"
+    "tslib": "2.8.1"
   },
   "devDependencies": {
     "@pocket-tools/eslint-config": "workspace:*",
-    "@types/aws-lambda": "8.10.145",
+    "@types/aws-lambda": "8.10.147",
     "@types/jest": "29.5.14",
-    "@types/lodash": "4.17.13",
-    "@types/node": "^22.8.2",
+    "@types/lodash": "4.17.14",
+    "@types/node": "^22.10.7",
     "jest": "29.7.0",
     "nock": "14.0.0-beta.11",
     "ts-jest": "29.2.5",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "typescript": "5.7.2"
+    "typescript": "5.7.3"
   }
 }
