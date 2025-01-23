@@ -15,13 +15,7 @@ export async function premiumPurchaseHandler(
 ): Promise<Response | null> {
   if (event?.['detail-type'] === PocketEventType.PREMIUM_PURCHASE) {
     const requestBody = generateUserTrackRequestBody(event, event.time);
-    const res = await sendUserTrack(requestBody);
-    if (!res.ok) {
-      throw new Error(
-        `Error ${res.status}: Failed to send premium purchase event`,
-      );
-    }
-    return res;
+    return await sendUserTrack(requestBody);
   }
   return null;
 }

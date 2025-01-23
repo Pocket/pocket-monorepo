@@ -96,16 +96,16 @@ describe('premium purchase handler', () => {
   it('should throw server error if all 3 retries fails', async () => {
     nock(config.braze.endpoint)
       .post(config.braze.userTrackPath)
-      .times(3)
+      .times(4)
       .reply(500, { errors: ['this is server error'] });
 
     await processor({
       Records: [record] as SQSRecord[],
     } as SQSEvent);
     expect(nock.isDone()).toBeTruthy();
-    expect(serverLoggerSpy).toHaveBeenCalled();
-    expect(serverLoggerSpy.mock.calls[0][0]['errorData']['message']).toContain(
-      'Error 500: Failed to send premium purchase event',
+    expect(serverLoggerSpy).toHaveBeenCalledTimes(2);
+    expect(serverLoggerSpy.mock.calls[1][0]['errorData']['message']).toContain(
+      'Error 500: Failed to call User Track endpoint',
     );
   });
 
@@ -117,9 +117,9 @@ describe('premium purchase handler', () => {
       Records: [record] as SQSRecord[],
     } as SQSEvent);
     expect(nock.isDone()).toBeTruthy();
-    expect(serverLoggerSpy).toHaveBeenCalled();
-    expect(serverLoggerSpy.mock.calls[0][0]['errorData']['message']).toContain(
-      'Error 400: Failed to send premium purchase event',
+    expect(serverLoggerSpy).toHaveBeenCalledTimes(2);
+    expect(serverLoggerSpy.mock.calls[1][0]['errorData']['message']).toContain(
+      'Error 400: Failed to call User Track endpoint',
     );
   });
 

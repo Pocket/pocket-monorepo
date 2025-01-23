@@ -93,8 +93,9 @@ describe('user registration event handler', () => {
     await processor({
       Records: [record] as SQSRecord[],
     } as SQSEvent);
-    expect(serverLoggerSpy).toHaveBeenCalled();
-    expect(serverLoggerSpy.mock.calls[0][0]['errorData']['message']).toContain(
+    // Logging the HTTP failure and overall error data
+    expect(serverLoggerSpy).toHaveBeenCalledTimes(2);
+    expect(serverLoggerSpy.mock.calls[1][0]['errorData']['message']).toContain(
       'Error 400: Failed to create user alias',
     );
   });
@@ -118,9 +119,9 @@ describe('user registration event handler', () => {
     await processor({
       Records: [record] as SQSRecord[],
     } as SQSEvent);
-    expect(serverLoggerSpy).toHaveBeenCalled();
-    expect(serverLoggerSpy.mock.calls[0][0]['errorData']['message']).toContain(
-      `Error 400: Failed to set subscription for id: ${config.braze.marketingSubscriptionId}`,
+    expect(serverLoggerSpy).toHaveBeenCalledTimes(2);
+    expect(serverLoggerSpy.mock.calls[1][0]['errorData']['message']).toContain(
+      `Error 400: Failed to update subscription`,
     );
   });
 
@@ -152,7 +153,7 @@ describe('user registration event handler', () => {
   it('should throw server error if all 3 retries fails', async () => {
     nock(config.braze.endpoint)
       .post(config.braze.userTrackPath)
-      .times(3)
+      .times(4)
       .reply(500, { errors: ['this is server error'] });
 
     await processor({
@@ -161,7 +162,7 @@ describe('user registration event handler', () => {
     expect(nock.isDone()).toBeTruthy();
     expect(serverLoggerSpy).toHaveBeenCalled();
     expect(serverLoggerSpy.mock.calls[1][0]['errorData']['message']).toContain(
-      'Error 500: Failed to create user profile',
+      'Error 500: Failed to call User Track endpoint',
     );
   });
 
@@ -176,7 +177,7 @@ describe('user registration event handler', () => {
     expect(nock.isDone()).toBeTruthy();
     expect(serverLoggerSpy).toHaveBeenCalled();
     expect(serverLoggerSpy.mock.calls[1][0]['errorData']['message']).toContain(
-      'Error 400: Failed to create user profile',
+      'Error 400: Failed to call User Track endpoint',
     );
   });
 
