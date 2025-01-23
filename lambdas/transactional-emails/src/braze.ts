@@ -9,7 +9,48 @@ import type {
   CampaignsTriggerSendObject,
 } from 'braze-api';
 import { serverLogger } from '@pocket-tools/ts-logger';
-export const fetchWithBackoff = fetchRetry(fetch);
+
+const fetchWithBackoff = fetchRetry(fetch);
+
+/**
+ * Make a POST request to Braze, with backoff and retry.
+ * Handles logging to Sentry and Cloudwatch on error.
+ */
+async function brazePost(path: string, body: BodyInit) {
+  const brazeApiKey = await getBrazeApiKey();
+  const url = config.braze.endpoint + path;
+  const res = await fetchWithBackoff(url, {
+    retryOn: [500, 502, 503, 504],
+    retries: 3,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${brazeApiKey}`,
+    },
+    body,
+  });
+  if (!res.ok) {
+    Sentry.addBreadcrumb({
+      type: 'http',
+      data: {
+        url,
+        method: 'POST',
+        status_code: res.status,
+        reason: res.statusText,
+      },
+    });
+    serverLogger.error({
+      message: 'HTTP Request to Braze Failed',
+      requestData: {
+        url,
+        method: 'POST',
+        status_code: res.status,
+        reason: res.statusText,
+      },
+    });
+  }
+  return res;
+}
 
 export async function sendForgotPasswordEmail(forgotPasswordOptions: {
   encodedId: string;
@@ -17,8 +58,6 @@ export async function sendForgotPasswordEmail(forgotPasswordOptions: {
   resetPasswordUsername: string;
   resetPasswordToken: string;
 }) {
-  const brazeApiKey = await getBrazeApiKey();
-
   const campaignData: CampaignsTriggerSendObject = {
     campaign_id: config.braze.forgotPasswordCampaignId,
     recipients: [
@@ -33,33 +72,21 @@ export async function sendForgotPasswordEmail(forgotPasswordOptions: {
     ],
   };
 
-  console.info('Sending forgot password email', {
-    campaignData: JSON.stringify(campaignData),
-  });
-
-  const res = await fetchWithBackoff(
-    config.braze.endpoint + config.braze.campaignTriggerPath,
-    {
-      retryOn: [500, 502, 503],
-      retries: 3,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${brazeApiKey}`,
-      },
-      // https://www.braze.com/docs/api/endpoints/messaging/send_messages/post_send_triggered_campaigns/
-      body: JSON.stringify(campaignData),
+  Sentry.addBreadcrumb({
+    type: 'default',
+    data: {
+      hashedUserId: forgotPasswordOptions.encodedId,
+      resetUsername: forgotPasswordOptions.resetPasswordUsername,
     },
-  );
-
-  console.info('Forgot password email response', {
-    response: JSON.stringify(res),
   });
 
+  const body = JSON.stringify(campaignData);
+  const res = await brazePost(config.braze.campaignTriggerPath, body);
   if (!res.ok) {
-    throw new Error(`Error ${res.status}: Failed to send email`);
+    throw new Error(
+      `Error ${res.status}: Failed to send Forgot Password email`,
+    );
   }
-
   return res;
 }
 
@@ -68,12 +95,6 @@ export async function sendListExportReadyEmail(options: {
   archiveUrl?: string;
   requestId: string;
 }) {
-  serverLogger.info({
-    message: 'Sending list export campaign',
-    request: options,
-  });
-  const brazeApiKey = await getBrazeApiKey();
-
   const campaignData: CampaignsTriggerSendObject = {
     campaign_id: config.braze.listExportReadyCampaignId,
     recipients: [
@@ -86,38 +107,19 @@ export async function sendListExportReadyEmail(options: {
       },
     ],
   };
-
-  const res = await fetchWithBackoff(
-    config.braze.endpoint + config.braze.campaignTriggerPath,
-    {
-      retryOn: [500, 502, 503],
-      retries: 3,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${brazeApiKey}`,
-      },
-      // https://www.braze.com/docs/api/endpoints/messaging/send_messages/post_send_triggered_campaigns/
-      body: JSON.stringify(campaignData),
-    },
-  );
-
   Sentry.addBreadcrumb({ data: { campaign: 'ListExportReady', campaignData } });
 
+  const body = JSON.stringify(campaignData);
+  const res = await brazePost(config.braze.campaignTriggerPath, body);
   if (!res.ok) {
-    throw new Error(`Error ${res.status}: Failed to send email`);
+    throw new Error(
+      `Error ${res.status}: Failed to send List Export Ready email`,
+    );
   }
-  serverLogger.info({
-    message: 'Braze response for list export',
-    status: res.status,
-  });
-
   return res;
 }
 
 export async function sendAccountDeletionEmail(email: string) {
-  const brazeApiKey = await getBrazeApiKey();
-
   const campaignData: CampaignsTriggerSendObject = {
     campaign_id: config.braze.accountDeletionCampaignId,
     recipients: [
@@ -129,26 +131,18 @@ export async function sendAccountDeletionEmail(email: string) {
       },
     ],
   };
+  Sentry.addBreadcrumb({
+    data: { campaign: 'AccountDeletion', campaignData },
+  });
 
-  const res = await fetchWithBackoff(
-    config.braze.endpoint + config.braze.campaignTriggerPath,
-    {
-      retryOn: [500, 502, 503],
-      retries: 3,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${brazeApiKey}`,
-      },
-      // https://www.braze.com/docs/api/endpoints/messaging/send_messages/post_send_triggered_campaigns/
-      body: JSON.stringify(campaignData),
-    },
-  );
+  const body = JSON.stringify(campaignData);
+  const res = await brazePost(config.braze.campaignTriggerPath, body);
 
   if (!res.ok) {
-    throw new Error(`Error ${res.status}: Failed to send email`);
+    throw new Error(
+      `Error ${res.status}: Failed to send Account Deletion email`,
+    );
   }
-
   return res;
 }
 
@@ -159,21 +153,15 @@ export async function sendAccountDeletionEmail(email: string) {
  * @param requestBody user track request body for creating user
  */
 export async function sendUserTrack(requestBody: UsersTrackObject) {
-  const brazeApiKey = await getBrazeApiKey();
-
-  return await fetchWithBackoff(
-    config.braze.endpoint + config.braze.userTrackPath,
-    {
-      retryOn: [500, 502, 503],
-      retries: 2,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${brazeApiKey}`,
-      },
-      body: JSON.stringify(requestBody),
-    },
-  );
+  const body = JSON.stringify(requestBody);
+  Sentry.addBreadcrumb({
+    data: { endpoint: config.braze.userTrackPath, ...requestBody },
+  });
+  const res = await brazePost(config.braze.userTrackPath, body);
+  if (!res.ok) {
+    throw new Error(`Error ${res.status}: Failed to call User Track endpoint`);
+  }
+  return res;
 }
 
 /**
@@ -183,24 +171,12 @@ export async function sendUserTrack(requestBody: UsersTrackObject) {
  * @returns response from braze
  */
 export async function sendCreateUserAlias(requestBody: UsersAliasObject) {
-  const brazeApiKey = await getBrazeApiKey();
-  const response = await fetchWithBackoff(
-    config.braze.endpoint + config.braze.userAliasPath,
-    {
-      retryOn: [500, 502, 503],
-      retries: 2,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${brazeApiKey}`,
-      },
-      body: JSON.stringify(requestBody),
-    },
-  );
+  const body = JSON.stringify(requestBody);
+  Sentry.addBreadcrumb({
+    data: { endpoint: config.braze.userAliasPath, ...requestBody },
+  });
+  const response = await brazePost(config.braze.userAliasPath, body);
   if (!response.ok) {
-    Sentry.addBreadcrumb({
-      message: `creating alias failed:` + JSON.stringify(response),
-    });
     throw new Error(`Error ${response.status}: Failed to create user alias`);
   }
   return response;
@@ -209,36 +185,19 @@ export async function sendCreateUserAlias(requestBody: UsersAliasObject) {
 export async function setSubscription(
   requestBody: V2SubscriptionStatusSetObject,
 ) {
-  const brazeApiKey = await getBrazeApiKey();
-  const response = await fetchWithBackoff(
-    config.braze.endpoint + config.braze.setSubscriptionPath,
-    {
-      retryOn: [500, 502, 503],
-      retries: 2,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${brazeApiKey}`,
-      },
-      body: JSON.stringify(requestBody),
-    },
-  );
+  serverLogger.info({
+    message: 'Updating subscription',
+    requestBody,
+  });
+  const body = JSON.stringify(requestBody);
+  Sentry.addBreadcrumb({
+    data: { endpoint: config.braze.userAliasPath, ...requestBody },
+  });
+  const response = await brazePost(config.braze.setSubscriptionPath, body);
   if (!response.ok) {
-    const subscriptionGroupIds: string[] = requestBody.subscription_groups.map(
-      (group) => group.subscription_group_id,
-    );
-    Sentry.addBreadcrumb({
-      message: `subscription failed: ` + JSON.stringify(response),
-    });
-
-    throw new Error(
-      `Error ${
-        response.status
-      }: Failed to set subscription for id: ${subscriptionGroupIds} + ${JSON.stringify(
-        response.body,
-      )}`,
-    );
+    throw new Error(`Error ${response.status}: Failed to update subscription`);
   }
+  return response;
 }
 
 /**

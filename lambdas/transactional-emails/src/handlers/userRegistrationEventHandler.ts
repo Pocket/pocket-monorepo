@@ -11,7 +11,6 @@ import type {
   UsersTrackObject,
   V2SubscriptionStatusSetObject,
 } from 'braze-api';
-import { serverLogger } from '@pocket-tools/ts-logger';
 import {
   AccountRegistration,
   IncomingBaseEvent,
@@ -45,45 +44,34 @@ export type AttributeForUserSubscription = {
 export async function userRegistrationEventHandler(
   event: PocketEvent & IncomingPocketEvent,
 ): Promise<Response | null> {
-  if (event?.['detail-type'] === PocketEventType.ACCOUNT_REGISTRATION) {
-    serverLogger.info(`received user registration event`, {
-      userId: event.detail.encodedUserId,
-    });
-
-    //creating user profile in braze for the user registered
-    const requestBody = generateUserTrackBody(event);
-    const userTrackResponse = await sendUserTrack(requestBody);
-    if (!userTrackResponse.ok) {
-      serverLogger.error(`creating user profile failed`, {
-        userTrackResponse: JSON.stringify(userTrackResponse),
-      });
-      Sentry.addBreadcrumb({
-        message: `creating user profile failed`,
-        data: { userTrackResponse: JSON.stringify(userTrackResponse) },
-      });
-      throw new Error(
-        `Error ${userTrackResponse.status}: Failed to create user profile`,
-      );
-    }
-    //creating alias for the user registered
-    await sendCreateUserAlias(generateUserAliasRequestBody(event));
-
-    //add marketing subscription to user profile
-    //set subscription to pocket hits daily for registered user
-    serverLogger.info(`logging marketing subscription id`, {
-      subscriptionId: config.braze.marketingSubscriptionId,
-    });
-    const marketingSubscription: V2SubscriptionStatusSetObject =
-      generateSubscriptionPayloadForEmail(
-        config.braze.marketingSubscriptionId,
-        true,
-        [event.detail.email],
-      );
-    await setSubscription(marketingSubscription);
-    return userTrackResponse;
+  if (event?.['detail-type'] !== PocketEventType.ACCOUNT_REGISTRATION) {
+    return null;
   }
 
-  return null;
+  Sentry.addBreadcrumb({
+    data: {
+      event: 'User Registration',
+      encodedId: event.detail.encodedUserId,
+    },
+  });
+
+  //creating user profile in braze for the user registered
+  const requestBody = generateUserTrackBody(event);
+  const userTrackResponse = await sendUserTrack(requestBody);
+
+  //creating alias for the user registered
+  await sendCreateUserAlias(generateUserAliasRequestBody(event));
+
+  //add marketing subscription to user profile
+  //set subscription to pocket hits daily for registered user
+  const marketingSubscription: V2SubscriptionStatusSetObject =
+    generateSubscriptionPayloadForEmail(
+      config.braze.marketingSubscriptionId,
+      true,
+      [event.detail.email],
+    );
+  await setSubscription(marketingSubscription);
+  return userTrackResponse;
 }
 
 /**

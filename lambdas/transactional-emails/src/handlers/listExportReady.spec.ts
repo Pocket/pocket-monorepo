@@ -79,9 +79,9 @@ describe('listExportReady handler', () => {
     await processor({
       Records: [record] as SQSRecord[],
     } as SQSEvent);
-    expect(serverLoggerSpy).toHaveBeenCalled();
-    expect(serverLoggerSpy.mock.calls[0][0]['errorData']['message']).toContain(
-      'Error 400: Failed to send email',
+    expect(serverLoggerSpy).toHaveBeenCalledTimes(2);
+    expect(serverLoggerSpy.mock.calls[1][0]['errorData']['message']).toContain(
+      'Error 400: Failed to send List Export Ready email',
     );
   });
 
