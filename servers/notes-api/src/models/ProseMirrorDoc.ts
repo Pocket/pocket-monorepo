@@ -1,14 +1,9 @@
 import { Node, Schema } from 'prosemirror-model';
-import { EditorState, AllSelection } from 'prosemirror-state';
-import { findWrapping } from 'prosemirror-transform';
 import {
   defaultMarkdownSerializer,
   defaultMarkdownParser,
   schema as commonMarkSchema,
 } from 'prosemirror-markdown';
-import { UserInputError } from '@pocket-tools/apollo-utils';
-import { serverLogger } from '@pocket-tools/ts-logger';
-import * as Sentry from '@sentry/node';
 
 /**
  * Class for handling ProseMirror documents

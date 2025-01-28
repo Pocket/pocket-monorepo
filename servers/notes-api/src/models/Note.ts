@@ -2,11 +2,9 @@ import DataLoader from 'dataloader';
 import {
   Note,
   CreateNoteInput,
-  CreateNoteFromQuoteInput,
   EditNoteTitleInput,
   EditNoteContentInput,
   DeleteNoteInput,
-  CreateNoteFromQuoteMarkdownInput,
   CreateNoteMarkdownInput,
   EditNoteContentMarkdownInput,
   ArchiveNoteInput,
