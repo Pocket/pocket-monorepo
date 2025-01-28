@@ -187,8 +187,11 @@ export type EditNoteContentMarkdownInput = {
 export type EditNoteTitleInput = {
   /** The ID of the note to edit */
   id: Scalars['ID']['input'];
-  /** The new title for the note (can be an empty string) */
-  title: Scalars['String']['input'];
+  /**
+   * The new title for the note. If null, sets the title
+   * field to null (deletes it).
+   */
+  title?: InputMaybe<Scalars['String']['input']>;
   /**
    * When the update was made. If not provided, defaults to the server
    * time upon receiving request.
