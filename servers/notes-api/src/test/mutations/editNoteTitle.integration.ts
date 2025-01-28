@@ -68,6 +68,25 @@ describe('note', () => {
     const updatedAt = new Date(res.body.data?.editNoteTitle?.updatedAt);
     expect(updatedAt.getTime() - now.getTime()).toBeLessThanOrEqual(10000); // within 10 seconds of when this test started
   });
+  it('sets title to null', async () => {
+    const now = new Date(Date.now());
+    const { userId, noteId } = notes[1];
+    const input = {
+      id: noteId,
+      title: null,
+    };
+    const res = await request(app)
+      .post(graphQLUrl)
+      .set({ userid: userId })
+      .send({ query: EDIT_NOTE_TITLE, variables: { input } });
+    expect(res.body.errors).toBeUndefined();
+    expect(res.body.data?.editNoteTitle).toMatchObject({
+      title: expect.toBeNil(),
+      updatedAt: expect.toBeDateString(),
+    });
+    const updatedAt = new Date(res.body.data?.editNoteTitle?.updatedAt);
+    expect(updatedAt.getTime() - now.getTime()).toBeLessThanOrEqual(10000); // within 10 seconds of when this test started
+  });
   it('includes not found error for nonexistent note', async () => {
     const input = {
       id: 'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa',

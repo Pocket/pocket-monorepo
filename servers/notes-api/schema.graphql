@@ -346,8 +346,11 @@ input CreateNoteFromQuoteMarkdownInput {
 input EditNoteTitleInput {
   """The ID of the note to edit"""
   id: ID!
-  """The new title for the note (can be an empty string)"""
-  title: String! @constraint(maxLength: 100)
+  """
+  The new title for the note. If null, sets the title
+  field to null (deletes it).
+  """
+  title: String @constraint(maxLength: 100)
   """
   When the update was made. If not provided, defaults to the server
   time upon receiving request.
