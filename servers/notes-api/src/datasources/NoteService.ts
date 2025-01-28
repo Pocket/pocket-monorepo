@@ -74,7 +74,7 @@ export class NotesService {
    */
   async updateTitle(
     noteId: string,
-    title: string,
+    title: string | undefined | null,
     updatedAt?: Date | string | null,
   ) {
     const setUpdate =
