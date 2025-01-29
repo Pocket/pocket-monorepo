@@ -42,72 +42,6 @@ export type ArchiveNoteInput = {
   updatedAt?: InputMaybe<Scalars['ISOString']['input']>;
 };
 
-/**
- * Input to create a new Note seeded with copied content from a page.
- * The entire content becomes editable and is not able to be "reattached"
- * like a traditional highlight.
- */
-export type CreateNoteFromQuoteInput = {
-  /**
-   * When this note was created. If not provided, defaults to server time upon
-   * receiving request.
-   */
-  createdAt?: InputMaybe<Scalars['ISOString']['input']>;
-  /**
-   * Client-provided UUID for the new Note.
-   * If not provided, will be generated on the server.
-   */
-  id?: InputMaybe<Scalars['ID']['input']>;
-  /**
-   * JSON representation of a ProseMirror document, which
-   * contains the formatted snipped text. This is used to seed
-   * the initial Note document state, and will become editable.
-   */
-  quote: Scalars['ProseMirrorJson']['input'];
-  /**
-   * The Web Resource where the quote is taken from.
-   * This should always be sent by the client where possible,
-   * but in some cases (e.g. copying from mobile apps) there may
-   * not be an accessible source url.
-   */
-  source?: InputMaybe<Scalars['ValidUrl']['input']>;
-  /** Optional title for this Note */
-  title?: InputMaybe<Scalars['String']['input']>;
-};
-
-/**
- * Input to create a new Note seeded with copied content from a page.
- * The entire content becomes editable and is not able to be "reattached"
- * like a traditional highlight.
- */
-export type CreateNoteFromQuoteMarkdownInput = {
-  /**
-   * When this note was created. If not provided, defaults to server time upon
-   * receiving request.
-   */
-  createdAt?: InputMaybe<Scalars['ISOString']['input']>;
-  /**
-   * Client-provided UUID for the new Note.
-   * If not provided, will be generated on the server.
-   */
-  id?: InputMaybe<Scalars['ID']['input']>;
-  /**
-   * Commonmark Markdown document, which contains the formatted
-   * snipped text. This is used to seed the initial Note
-   * document state, and will become editable.
-   */
-  quote: Scalars['Markdown']['input'];
-  /**
-   * The Web Resource where the quote is taken from.
-   * This should always be sent by the client where possible,
-   * but in some cases (e.g. copying from mobile apps) there may
-   * not be an accessible source url.
-   */
-  source?: InputMaybe<Scalars['ValidUrl']['input']>;
-  /** Optional title for this Note */
-  title?: InputMaybe<Scalars['String']['input']>;
-};
-
 /** Input to create a new Note */
 export type CreateNoteInput = {
   /**
@@ -210,16 +144,6 @@ export type Mutation = {
   archiveNote?: Maybe<Note>;
   /** Create a new note, optionally with title and content */
   createNote: Note;
-  /**
-   * Create a new note, with a pre-populated block that contains the quoted and cited text
-   * selected by a user.
-   */
-  createNoteFromQuote: Note;
-  /**
-   * Create a new note, with a pre-populated block that contains the quoted and cited text
-   * selected by a user.
-   */
-  createNoteFromQuoteMarkdown: Note;
   /** Create a new note, optionally with title and markdown content */
   createNoteMarkdown: Note;
   /**
@@ -267,16 +191,6 @@ export type MutationArchiveNoteArgs = {
 
 export type MutationCreateNoteArgs = {
   input: CreateNoteInput;
-};
-
-
-export type MutationCreateNoteFromQuoteArgs = {
-  input: CreateNoteFromQuoteInput;
-};
-
-
-export type MutationCreateNoteFromQuoteMarkdownArgs = {
-  input: CreateNoteFromQuoteMarkdownInput;
 };
 
 
@@ -599,10 +513,8 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = ResolversObject<{
   ArchiveNoteInput: ArchiveNoteInput;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
-  CreateNoteFromQuoteInput: CreateNoteFromQuoteInput;
-  String: ResolverTypeWrapper<Scalars['String']['output']>;
-  CreateNoteFromQuoteMarkdownInput: CreateNoteFromQuoteMarkdownInput;
   CreateNoteInput: CreateNoteInput;
+  String: ResolverTypeWrapper<Scalars['String']['output']>;
   CreateNoteMarkdownInput: CreateNoteMarkdownInput;
   DeleteNoteInput: DeleteNoteInput;
   EditNoteContentInput: EditNoteContentInput;
@@ -633,10 +545,8 @@ export type ResolversTypes = ResolversObject<{
 export type ResolversParentTypes = ResolversObject<{
   ArchiveNoteInput: ArchiveNoteInput;
   ID: Scalars['ID']['output'];
-  CreateNoteFromQuoteInput: CreateNoteFromQuoteInput;
-  String: Scalars['String']['output'];
-  CreateNoteFromQuoteMarkdownInput: CreateNoteFromQuoteMarkdownInput;
   CreateNoteInput: CreateNoteInput;
+  String: Scalars['String']['output'];
   CreateNoteMarkdownInput: CreateNoteMarkdownInput;
   DeleteNoteInput: DeleteNoteInput;
   EditNoteContentInput: EditNoteContentInput;
@@ -672,8 +582,6 @@ export interface MarkdownScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 export type MutationResolvers<ContextType = IContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   archiveNote?: Resolver<Maybe<ResolversTypes['Note']>, ParentType, ContextType, RequireFields<MutationArchiveNoteArgs, 'input'>>;
   createNote?: Resolver<ResolversTypes['Note'], ParentType, ContextType, RequireFields<MutationCreateNoteArgs, 'input'>>;
-  createNoteFromQuote?: Resolver<ResolversTypes['Note'], ParentType, ContextType, RequireFields<MutationCreateNoteFromQuoteArgs, 'input'>>;
-  createNoteFromQuoteMarkdown?: Resolver<ResolversTypes['Note'], ParentType, ContextType, RequireFields<MutationCreateNoteFromQuoteMarkdownArgs, 'input'>>;
   createNoteMarkdown?: Resolver<ResolversTypes['Note'], ParentType, ContextType, RequireFields<MutationCreateNoteMarkdownArgs, 'input'>>;
   deleteNote?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteNoteArgs, 'input'>>;
   editNoteContent?: Resolver<Maybe<ResolversTypes['Note']>, ParentType, ContextType, RequireFields<MutationEditNoteContentArgs, 'input'>>;

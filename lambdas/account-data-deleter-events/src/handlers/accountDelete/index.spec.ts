@@ -17,6 +17,10 @@ describe('accountDelete handler', () => {
     }),
   };
 
+  beforeEach(() => {
+    nock(config.endpoint).post(config.fxaRevokePath).reply(200);
+  });
+
   afterEach(() => {
     nock.cleanAll();
     jest.restoreAllMocks();

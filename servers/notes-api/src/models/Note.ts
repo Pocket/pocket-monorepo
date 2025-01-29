@@ -2,11 +2,9 @@ import DataLoader from 'dataloader';
 import {
   Note,
   CreateNoteInput,
-  CreateNoteFromQuoteInput,
   EditNoteTitleInput,
   EditNoteContentInput,
   DeleteNoteInput,
-  CreateNoteFromQuoteMarkdownInput,
   CreateNoteMarkdownInput,
   EditNoteContentMarkdownInput,
   ArchiveNoteInput,
@@ -16,11 +14,7 @@ import { Insertable, NoResultError, Selectable } from 'kysely';
 import { orderAndMap } from '../utils/dataloader';
 import { IContext } from '../apollo/context';
 import { NotesService } from '../datasources/NoteService';
-import {
-  docFromMarkdown,
-  ProseMirrorDoc,
-  wrapDocInBlockQuote,
-} from './ProseMirrorDoc';
+import { docFromMarkdown, ProseMirrorDoc } from './ProseMirrorDoc';
 import { DatabaseError } from 'pg';
 import {
   NoteFilterInput,
@@ -191,46 +185,6 @@ export class NoteModel {
       docContent: JSON.stringify(doc.toJSON()),
     };
     return await this.create(createInput);
-  }
-  /**
-   * Create a new Note seeded with a blockquote (optionally with
-   * an additional paragraph with the source link).
-   */
-  async fromQuote(input: CreateNoteFromQuoteInput) {
-    try {
-      const docContent = JSON.parse(input.quote);
-      const options =
-        input.source != null ? { source: input.source.toString() } : undefined;
-      const quotedDoc = wrapDocInBlockQuote(docContent, options);
-      const createInput: CreateNoteInput = {
-        docContent: JSON.stringify(quotedDoc),
-        createdAt: input.createdAt,
-        id: input.id,
-        title: input.title,
-        source: input.source,
-      };
-      return this.create(createInput);
-    } catch (error) {
-      if (error instanceof SyntaxError) {
-        throw new UserInputError(
-          `Received malformed JSON for docContent: ${error.message}`,
-        );
-      } else {
-        throw error;
-      }
-    }
-  }
-  /**
-   * Create a new Note seeded with a blockquote (optionally with
-   * an additional paragraph with the source link).
-   */
-  async fromMarkdownQuote(input: CreateNoteFromQuoteMarkdownInput) {
-    const quote = docFromMarkdown(input.quote);
-    const createInput: CreateNoteFromQuoteInput = {
-      ...input,
-      quote: JSON.stringify(quote.toJSON()),
-    };
-    return await this.fromQuote(createInput);
   }
   /**
    * Edit a note's title
