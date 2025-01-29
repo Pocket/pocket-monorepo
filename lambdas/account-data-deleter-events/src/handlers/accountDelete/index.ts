@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/aws-serverless';
 import { AccountDeleteEvent } from '../../schemas/accountDeleteEvent.ts';
 import {
   callQueueDeleteEndpoint,
@@ -6,6 +7,8 @@ import {
 } from './postRequest.ts';
 import { SQSRecord } from 'aws-lambda';
 import { AggregateError } from '../../errors/AggregateError.ts';
+import { config } from '../../config.ts';
+import { serverLogger } from '@pocket-tools/ts-logger';
 
 type AccountDeleteBody = {
   userId: string;
@@ -64,17 +67,28 @@ export async function accountDeleteHandler(record: SQSRecord): Promise<void> {
   const fxaRes = await callFxARevokeEndpoint(postBody);
   const errors: Error[] = [];
   for await (const { endpoint, res } of [
-    { endpoint: 'queueDelete', res: queueRes },
-    { endpoint: 'stripeDelete', res: stripeRes },
-    { endpoint: 'fxaDelete', res: fxaRes },
+    { endpoint: config.queueDeletePath, res: queueRes },
+    { endpoint: config.stripeDeletePath, res: stripeRes },
+    { endpoint: config.fxaRevokePath, res: fxaRes },
   ]) {
+    Sentry.addBreadcrumb({
+      type: 'http',
+      data: {
+        status_code: res.status,
+        reason: res.statusText,
+        url: endpoint,
+        payload: postBody,
+      },
+    });
     if (!res.ok) {
-      const data = await res.json();
-      errors.push(
-        new Error(
-          `${endpoint} - ${res.status}\n${JSON.stringify(data.errors)}`,
-        ),
-      );
+      serverLogger.error({
+        message: 'HTTP request failed',
+        endpoint,
+        payload: postBody,
+        status: res.status,
+        reason: res.statusText,
+      });
+      errors.push(new Error(`${endpoint} - ${res.status}: ${res.statusText}}`));
     }
   }
   if (errors.length) {

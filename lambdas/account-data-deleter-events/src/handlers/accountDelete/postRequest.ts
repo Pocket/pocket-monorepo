@@ -15,7 +15,7 @@ async function postRequest(
   body: any,
   path: string,
   endpoint?: string,
-): Promise<any> {
+): Promise<Response> {
   const fetchPath = (endpoint ?? config.endpoint) + path;
   return newFetch(fetchPath, {
     retryOn: [500, 502, 503],
