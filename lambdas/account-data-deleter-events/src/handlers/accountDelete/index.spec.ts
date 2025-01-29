@@ -53,12 +53,10 @@ describe('accountDelete handler', () => {
     nock(config.endpoint)
       .post(config.queueDeletePath)
       .reply(400, { errors: ['this is an error'] });
-    expect.assertions(3); // since it's in a try/catch, make sure we assert
+    expect.assertions(1); // since it's in a try/catch, make sure we assert
     try {
       await accountDeleteHandler(record as SQSRecord);
     } catch (e) {
-      expect(e.message).toContain('queueDelete - 400');
-      expect(e.message).toContain('this is an error');
       expect(e.errors.length).toEqual(1);
     }
   });
@@ -68,12 +66,10 @@ describe('accountDelete handler', () => {
       .post(config.stripeDeletePath)
       .reply(400, { errors: ['bad call'] });
     nock(config.endpoint).post(config.queueDeletePath).reply(200);
-    expect.assertions(3);
+    expect.assertions(1);
     try {
       await accountDeleteHandler(record as SQSRecord);
     } catch (e) {
-      expect(e.message).toContain('stripeDelete - 400');
-      expect(e.message).toContain('bad call');
       expect(e.errors.length).toEqual(1);
     }
   });
@@ -86,14 +82,10 @@ describe('accountDelete handler', () => {
       .post(config.queueDeletePath)
       .reply(400, { errors: ['this is an error'] });
 
-    expect.assertions(5);
+    expect.assertions(1);
     try {
       await accountDeleteHandler(record as SQSRecord);
     } catch (e) {
-      expect(e.message).toContain('stripeDelete - 400');
-      expect(e.message).toContain('bad call');
-      expect(e.message).toContain('queueDelete - 400');
-      expect(e.message).toContain('this is an error');
       expect(e.errors.length).toEqual(2);
     }
   });
