@@ -1,5 +1,9 @@
 import express, { Application, json } from 'express';
-import { queueDeleteRouter, stripeDeleteRouter } from './routes';
+import {
+  queueDeleteRouter,
+  stripeDeleteRouter,
+  revokeFxaRouter,
+} from './routes';
 import { EventEmitter } from 'events';
 import {
   BatchDeleteHandler,
