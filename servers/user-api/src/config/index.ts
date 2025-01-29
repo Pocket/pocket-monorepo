@@ -7,7 +7,6 @@ const tables = {
   tablesWithSensitivePii: [
     'users',
     'user_google_account',
-    'user_firefox_account',
     'user_twitter_auth',
     'users_social_tokens',
     'users_tokens',
@@ -70,6 +69,11 @@ export default {
     userPIITables: {
       // Map of column key containing user ID to table name
       user_id: [...tables.tablesWithSensitivePii],
+      created_by_user_id: ['channels'],
+    },
+    // For test seeds
+    userPIITestSeedTables: {
+      user_id: [...tables.tablesWithSensitivePii, 'user_firefox_account'],
       created_by_user_id: ['channels'],
     },
   },

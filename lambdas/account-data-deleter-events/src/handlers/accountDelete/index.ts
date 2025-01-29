@@ -2,6 +2,7 @@ import { AccountDeleteEvent } from '../../schemas/accountDeleteEvent.ts';
 import {
   callQueueDeleteEndpoint,
   callStripeDeleteEndpoint,
+  callFxARevokeEndpoint,
 } from './postRequest.ts';
 import { SQSRecord } from 'aws-lambda';
 import { AggregateError } from '../../errors/AggregateError.ts';
@@ -47,6 +48,7 @@ export function validatePostBody(
  *       rows from Pocket's internal database
  *   * stripe API - deletes stripe customer data (and internal
  *       stripe-related data in database)
+ *   * FxA Auth API - revokes access tokens from FxA (Mozilla Accounts)
  * @param record the event forwarded from event bridge via SQS
  * @throws Error if the record body does not conform to expected schema
  * @throws AggregateError if any errors encountered making
@@ -59,10 +61,12 @@ export async function accountDeleteHandler(record: SQSRecord): Promise<void> {
   const postBody = validatePostBody(message);
   const queueRes = await callQueueDeleteEndpoint(postBody);
   const stripeRes = await callStripeDeleteEndpoint(postBody);
+  const fxaRes = await callFxARevokeEndpoint(postBody);
   const errors: Error[] = [];
   for await (const { endpoint, res } of [
     { endpoint: 'queueDelete', res: queueRes },
     { endpoint: 'stripeDelete', res: stripeRes },
+    { endpoint: 'fxaDelete', res: fxaRes },
   ]) {
     if (!res.ok) {
       const data = await res.json();

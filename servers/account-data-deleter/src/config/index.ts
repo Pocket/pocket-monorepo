@@ -79,6 +79,12 @@ export const config = {
     apiVersion: '2024-06-20' as const,
     productId: 7,
   },
+  fxa: {
+    clientId: process.env.FXA_CLIENT_ID || 'somefakeclientid',
+    secret: process.env.FXA_CLIENT_SECRET || 'somefakesecret',
+    oauthEndpoint: process.env.FXA_OAUTH_URL || 'https://localhost/',
+    version: 'v1',
+  },
   database: {
     // contains tables for user, list, tags, annotations, etc.
     read: {
