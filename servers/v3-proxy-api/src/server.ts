@@ -52,6 +52,7 @@ export async function startServer(port: number): Promise<{
   app.use('/v3/add', v3AddRouter);
   app.use('/v3/fetch', v3FetchRouter);
   app.use('/v3/send', v3SendRouter);
+  app.use('/v3/send_guid', v3SendRouter);
 
   // NOTE: we on purpose do not setup the sentry middleware in this service since it is a proxy and we log our own errors.
 
