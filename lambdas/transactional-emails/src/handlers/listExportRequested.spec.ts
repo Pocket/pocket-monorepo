@@ -22,36 +22,6 @@ describe('listExportRequested handler', () => {
     jest.restoreAllMocks();
   });
 
-  it('throw an error if event payload is missing encodedId', async () => {
-    nock(config.braze.endpoint)
-      .post(config.braze.campaignTriggerPath)
-      .reply(400, { errors: ['this is an error'] });
-
-    const recordWithoutId = {
-      body: JSON.stringify({
-        Message: JSON.stringify({
-          id: '1234567890',
-          version: '0',
-          account: '123456789012',
-          region: 'us-east-2',
-          time: new Date(),
-          'detail-type': PocketEventType.EXPORT_REQUESTED,
-          source: 'web-repo',
-          detail: {
-            requestId: 'abc123',
-          },
-        }),
-      }),
-    };
-    await processor({
-      Records: [recordWithoutId] as SQSRecord[],
-    } as SQSEvent);
-    expect(serverLoggerSpy).toHaveBeenCalled();
-    expect(serverLoggerSpy.mock.calls[0][0]['errorData']['message']).toContain(
-      "data/detail must have required property 'encodedId'",
-    );
-  });
-
   it('throws an error if email send response is not 200 OK', async () => {
     const record = {
       body: JSON.stringify({
@@ -64,10 +34,17 @@ describe('listExportRequested handler', () => {
           'detail-type': PocketEventType.EXPORT_REQUESTED,
           source: 'web-repo',
           detail: {
+            userId: '12345',
             encodedId: 'abc-123',
             requestId: '000-111',
-            archiveUrl:
-              'https://pocket.co/share/085ba173-fb35-48b0-a76c-33c1561570b9',
+            part: 0,
+            cursor: 0,
+            apiUser: { apiId: '123 ' },
+            user: {
+              id: '12345',
+              hashedId: 'abc-123',
+              isPremium: false,
+            },
           },
         }),
       }),
