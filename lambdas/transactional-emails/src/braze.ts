@@ -119,6 +119,35 @@ export async function sendListExportReadyEmail(options: {
   return res;
 }
 
+export async function sendExportRequestAcknowledged(options: {
+  encodedId: string;
+  requestId: string;
+}) {
+  const campaignData: CampaignsTriggerSendObject = {
+    campaign_id: config.braze.exportRequestAckCampaignId,
+    recipients: [
+      {
+        external_user_id: options.encodedId,
+        trigger_properties: {
+          request_id: options.requestId,
+        },
+      },
+    ],
+  };
+  Sentry.addBreadcrumb({
+    data: { campaign: 'ExportRequestAcknowledged', campaignData },
+  });
+
+  const body = JSON.stringify(campaignData);
+  const res = await brazePost(config.braze.campaignTriggerPath, body);
+  if (!res.ok) {
+    throw new Error(
+      `Error ${res.status}: Failed to send Export Request Acknowledged email`,
+    );
+  }
+  return res;
+}
+
 export async function sendAccountDeletionEmail(email: string) {
   const campaignData: CampaignsTriggerSendObject = {
     campaign_id: config.braze.accountDeletionCampaignId,
