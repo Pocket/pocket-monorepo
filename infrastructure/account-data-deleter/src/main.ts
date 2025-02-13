@@ -112,17 +112,17 @@ class AccountDataDeleter extends TerraformStack {
             filter: {
               prefix: `${partsPrefix}/`,
             },
-            id: 'list-export-part-15days-expire',
+            id: 'list-export-part-10days-expire',
             status: 'Enabled',
-            expiration: { days: 15 },
+            expiration: { days: 10 },
           },
           {
             filter: {
               prefix: `${archivesPrefix}/`,
             },
-            id: 'list-export-archive-30days-expire',
+            id: 'list-export-archive-3days-expire',
             status: 'Enabled',
-            expiration: { days: 30 },
+            expiration: { days: 3 },
           },
         ],
       },
