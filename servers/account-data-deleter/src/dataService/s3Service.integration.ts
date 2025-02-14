@@ -37,6 +37,34 @@ describe('s3Bucket', () => {
   const client = new S3Bucket(config.listExport.exportBucket);
   beforeAll(async () => await cleanupS3Bucket(client));
   afterAll(async () => await cleanupS3Bucket(client));
+  describe('file expiration check', () => {
+    beforeAll(() =>
+      jest.useFakeTimers({
+        now: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000), // add 5 days to now (3 day expire period)
+      }),
+    );
+    afterAll(() => jest.useRealTimers());
+    it('returns false if record is expired but not yet deleted', async () => {
+      const response = await client.writeCsv(
+        [{ a: 'a', b: 'b' }],
+        'archives/part_0000',
+      );
+      const exists = await client.objectExists('archives/part_0000.csv');
+      expect(response).toBeTrue();
+      expect(exists).toBeFalse();
+    });
+    it('returns true if there is no expiration configured', async () => {
+      const response = await client.writeCsv(
+        [{ a: 'a', b: 'b' }],
+        'unexpiring-prefix/part_0000',
+      );
+      const exists = await client.objectExists(
+        'unexpiring-prefix/part_0000.csv',
+      );
+      expect(response).toBeTrue();
+      expect(exists).toBeTrue();
+    });
+  });
   it('writes a list of records to a csv', async () => {
     const records = [
       {
@@ -85,12 +113,12 @@ describe('s3Bucket', () => {
     const exists = await client.objectExists('non/existant/file.txt');
     expect(exists).toBeFalse();
   });
-  it('returns true for object that exists', async () => {
+  it('returns true for object that exists and is not expired', async () => {
     const response = await client.writeCsv(
       [{ a: 'a', b: 'b' }],
-      'existence-testing/part_0000',
+      'archives/part_0000',
     );
-    const exists = await client.objectExists('existence-testing/part_0000.csv');
+    const exists = await client.objectExists('archives/part_0000.csv');
     expect(response).toBeTrue();
     expect(exists).toBeTrue();
   });
