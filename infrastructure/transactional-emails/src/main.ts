@@ -58,7 +58,7 @@ class TransactionalEmails extends TerraformStack {
     });
 
     const topicArns = config.eventBridge.topics.map((topic) => {
-      const topicArn = `arn:aws:sns:${region.name}:${caller.accountId}:${config.eventBridge.prefix}-${config.environment}-${topic}`;
+      const topicArn = `arn:aws:sns:${region.name}:${caller.accountId}:${config.eventBridge.prefix}-${config.environment}-${topic.name}`;
       this.subscribeSqsToSnsTopic(sqsLambda, snsTopicDlq, topicArn, topic);
       return topicArn;
     });
@@ -92,12 +92,12 @@ class TransactionalEmails extends TerraformStack {
     sqsLambda: TransactionalEmailSQSLambda,
     snsTopicDlq: sqsQueue.SqsQueue,
     snsTopicArn: string,
-    topicName: string,
+    topic: { name: string; filterPolicy?: string; filterPolicyScope?: string },
   ) {
     // This Topic already exists and is managed elsewhere
     return new snsTopicSubscription.SnsTopicSubscription(
       this,
-      `${topicName}-sns-subscription`,
+      `${topic.name}-sns-subscription`,
       {
         topicArn: snsTopicArn,
         protocol: 'sqs',
@@ -105,6 +105,8 @@ class TransactionalEmails extends TerraformStack {
         redrivePolicy: JSON.stringify({
           deadLetterTargetArn: snsTopicDlq.arn,
         }),
+        filterPolicy: topic.filterPolicy,
+        filterPolicyScope: topic.filterPolicyScope,
       },
     );
   }

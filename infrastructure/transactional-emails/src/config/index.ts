@@ -34,16 +34,24 @@ export const config = {
       listExportReadyCampaignId: isDev
         ? '45b2e986-d80b-f068-ce9f-5781296e91a4'
         : '8a5f66b9-6e28-48e9-af99-e44e2a16a81a',
+      exportRequestAckCampaignId: 'cab551ad-730e-4a42-8052-a7ae77856a9b',
     },
   },
   eventBridge: {
     prefix: 'PocketEventBridge',
     topics: [
-      'UserEvents',
-      'PremiumPurchaseEvents',
-      'UserRegistrationEvents',
-      'ForgotPasswordEvents',
-      'ListExportReadyEvents',
+      { name: 'UserEvents' },
+      { name: 'PremiumPurchaseEvents' },
+      { name: 'UserRegistrationEvents' },
+      { name: 'ForgotPasswordEvents' },
+      { name: 'ListExportReadyEvents' },
+      {
+        name: 'ListEvents',
+        filterPolicyScope: 'MessageBody',
+        filterPolicy: JSON.stringify({
+          'detail-type': ['list-export-requested'],
+        }),
+      },
     ],
   },
 };

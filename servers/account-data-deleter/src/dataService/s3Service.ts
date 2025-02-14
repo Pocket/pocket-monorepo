@@ -268,11 +268,14 @@ export class S3Bucket {
     try {
       // Design of this sdk means you have to rely on error handling
       // for 404 responses
-      await this.s3.send<HeadObjectCommand>(
+      const res = await this.s3.send<HeadObjectCommand>(
         new HeadObjectCommand({ Bucket: this.bucket, Key: key }),
       );
+      const expired = this.expiresBefore(new Date(), res.Expiration);
       // If it doesn't error it exists (and can be accessed)
-      return true;
+      // So the only boolean check is if it has already expired
+      // but hasn't been cleaned up yet
+      return !expired;
     } catch (err) {
       if (err instanceof ResourceNotFoundException || err.name === 'NotFound') {
         return false;
@@ -287,6 +290,21 @@ export class S3Bucket {
         Sentry.captureException(err, { data: { bucket: this.bucket, key } });
         throw err;
       }
+    }
+  }
+  /** Determine if the file expires before a certain timestamp */
+  expiresBefore(date: Date, expiration: string | undefined) {
+    if (expiration == null) {
+      return false;
+    } else {
+      const expiryDate = expiration.match(
+        'expiry-date="([a-zA-Z0-9,: ]*)"',
+      )?.[1];
+      if (expiryDate == null) {
+        return false;
+      }
+      // The format is like "Tue, 18 Feb 2025 00:00:00 GMT" (GMT/UTC String)
+      return new Date(expiryDate) < date ? true : false;
     }
   }
   /**

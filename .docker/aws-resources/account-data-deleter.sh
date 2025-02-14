@@ -22,6 +22,9 @@ for s3_bucket in "${S3[@]}"; do
   awslocal s3api put-bucket-acl --bucket "${s3_bucket}" --acl public-read
 done
 
+# lifecycle rule on list-exports
+awslocal s3api put-bucket-lifecycle-configuration --bucket "com.getpocket.list-exports" --lifecycle-configuration "file://$(dirname "${BASH_SOURCE[0]}")/s3/export-lifecycle-configuration.json"
+
 bash "$(dirname "${BASH_SOURCE[0]}")/dynamodb.sh"
 bash "$(dirname "${BASH_SOURCE[0]}")/eventbus.sh"
 

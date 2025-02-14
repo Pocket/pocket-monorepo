@@ -4,6 +4,7 @@ import { userRegistrationEventHandler } from './userRegistrationEventHandler.ts'
 import { forgotPasswordHandler } from './forgotPassword.ts';
 import { exportReadyHandler } from './listExportReady.ts';
 import { PocketEvent, PocketEventType } from '@pocket-tools/event-bridge';
+import { exportRequestedHandler } from './listExportRequested.ts';
 
 // Mapping of detail-type (via event bridge message)
 // to function that should be invoked to process the message
@@ -15,4 +16,5 @@ export const handlers: {
   [PocketEventType.ACCOUNT_REGISTRATION]: userRegistrationEventHandler,
   [PocketEventType.FORGOT_PASSWORD]: forgotPasswordHandler,
   [PocketEventType.EXPORT_READY]: exportReadyHandler,
+  [PocketEventType.EXPORT_REQUESTED]: exportRequestedHandler,
 };

@@ -33,5 +33,7 @@ export const config = {
     listExportReadyCampaignId:
       process.env.BRAZE_LIST_EXPORT_READY_CAMPAIGN_ID ||
       'asdasd-asdasd-asdasd-asdasdasd-asdas',
+    exportRequestAckCampaignId:
+      process.env.BRAZE_EXPORT_REQUEST_ACK_CAMPAIGN_ID || 'asd-asf-asdf-asdf',
   },
 };
