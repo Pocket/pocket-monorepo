@@ -1,0 +1,24 @@
+{
+  "Rules": [
+    {
+      "ID": "archive-expiration-3days",
+      "Filter": {
+        "Prefix": "archives/"
+      },
+      "Status": "Enabled",
+      "Expiration": {
+        "Days": 3
+      }
+    },
+    {
+      "ID": "parts-expiration-10days",
+      "Filter": {
+        "Prefix": "parts/"
+      },
+      "Status": "Enabled",
+      "Expiration": {
+        "Days": 10
+      }
+    }
+  ]
+}
