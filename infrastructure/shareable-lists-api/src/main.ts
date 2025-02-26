@@ -14,6 +14,7 @@ import { provider as archiveProvider } from '@cdktf/provider-archive';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import {
   ApplicationRDSCluster,
+  ApplicationSQSQueue,
   ApplicationSqsSnsTopicSubscription,
   PocketALBApplication,
   PocketAwsSyntheticChecks,
@@ -75,12 +76,43 @@ class ShareableListsAPI extends TerraformStack {
       },
     );
 
+    // Export work queue
+    const exportQueue = new ApplicationSQSQueue(
+      this,
+      'sharelists-export-consumer-queue',
+      {
+        name: config.export.queue,
+        tags: config.tags,
+        visibilityTimeoutSeconds: 1800,
+        messageRetentionSeconds: 1209600, //14 days
+        //need to set maxReceiveCount to enable DLQ
+        maxReceiveCount: 3,
+      },
+    );
+
+    // Subscription to list export topic
+    new ApplicationSqsSnsTopicSubscription(
+      this,
+      'list-events-sns-subscription',
+      {
+        name: `${config.export.queue}-SNS`,
+        snsTopicArn: `arn:aws:sns:${pocketVpc.region}:${pocketVpc.accountId}:${config.export.requestTopic}`,
+        sqsQueue: exportQueue.sqsQueue,
+        filterPolicyScope: 'MessageBody',
+        filterPolicy: JSON.stringify({
+          'detail-type': ['list-export-requested'],
+        }),
+        tags: config.tags,
+      },
+    );
+
     const alarmSnsTopic = this.getCodeDeploySnsTopic();
 
     this.createPocketAlbApplication({
       rds: this.createRds(pocketVpc),
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: alarmSnsTopic,
+      exportSqs: exportQueue.sqsQueue,
       region,
       caller,
       cache,
@@ -217,10 +249,18 @@ class ShareableListsAPI extends TerraformStack {
     caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
     snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
+    exportSqs: sqsQueue.SqsQueue;
     cache: { primaryEndpoint: string; readerEndpoint: string };
   }): PocketALBApplication {
-    const { rds, region, caller, secretsManagerKmsAlias, snsTopic, cache } =
-      dependencies;
+    const {
+      rds,
+      region,
+      caller,
+      secretsManagerKmsAlias,
+      snsTopic,
+      cache,
+      exportSqs,
+    } = dependencies;
 
     return new PocketALBApplication(this, 'application', {
       internal: true,
@@ -279,6 +319,10 @@ class ShareableListsAPI extends TerraformStack {
             {
               name: 'REDIS_IS_TLS',
               value: 'true',
+            },
+            {
+              name: 'EXPORT_QUEUE_URL',
+              value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.export.queue}`,
             },
           ],
           logGroup: this.createCustomLogGroup('app'),
@@ -368,6 +412,17 @@ class ShareableListsAPI extends TerraformStack {
               'xray:GetSamplingStatisticSummaries',
             ],
             resources: ['*'],
+            effect: 'Allow',
+          },
+          {
+            // export queue
+            actions: [
+              'sqs:ReceiveMessage',
+              'sqs:DeleteMessage',
+              'sqs:SendMessage',
+              'sqs:SendMessageBatch',
+            ],
+            resources: [exportSqs.arn],
             effect: 'Allow',
           },
           {

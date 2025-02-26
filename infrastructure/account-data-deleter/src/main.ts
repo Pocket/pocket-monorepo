@@ -23,6 +23,8 @@ import {
   ApplicationSQSQueue,
   ApplicationSqsSnsTopicSubscription,
   PocketVPC,
+  ApplicationDynamoDBTable,
+  ApplicationDynamoDBTableCapacityMode,
 } from '@pocket-tools/terraform-modules';
 
 import { App, S3Backend, TerraformStack, Token } from 'cdktf';
@@ -67,6 +69,46 @@ class AccountDataDeleter extends TerraformStack {
       },
     );
 
+    const exportStateDb = new ApplicationDynamoDBTable(
+      this,
+      'export-request-state',
+      {
+        tags: config.tags,
+        prefix: `${config.shortName}-${config.environment}-Export-Request-State`,
+        capacityMode: ApplicationDynamoDBTableCapacityMode.ON_DEMAND,
+        preventDestroyTable: true,
+        tableConfig: {
+          pointInTimeRecovery: {
+            enabled: true,
+          },
+          ttl: {
+            enabled: true,
+            attributeName: 'expiresAt',
+          },
+          hashKey: 'requestId',
+          attribute: [
+            {
+              name: 'requestId',
+              type: 'S',
+            },
+          ],
+        },
+      },
+    );
+
+    const exportRequestQueue = new ApplicationSQSQueue(
+      this,
+      'export-request-consumer-queue',
+      {
+        name: config.envVars.exportRequestQueueName,
+        tags: config.tags,
+        visibilityTimeoutSeconds: 1800,
+        messageRetentionSeconds: 1209600, //14 days
+        //need to set maxReceiveCount to enable DLQ
+        maxReceiveCount: 3,
+      },
+    );
+
     const listExportQueue = new ApplicationSQSQueue(
       this,
       'list-export-consumer-queue',
@@ -80,13 +122,26 @@ class AccountDataDeleter extends TerraformStack {
       },
     );
 
+    const annotationsExportQueue = new ApplicationSQSQueue(
+      this,
+      'annotations-export-consumer-queue',
+      {
+        name: config.envVars.annotationsExportQueueName,
+        tags: config.tags,
+        visibilityTimeoutSeconds: 1800,
+        messageRetentionSeconds: 1209600, //14 days
+        //need to set maxReceiveCount to enable DLQ
+        maxReceiveCount: 3,
+      },
+    );
+
     new ApplicationSqsSnsTopicSubscription(
       this,
       'list-events-sns-subscription',
       {
-        name: `${config.envVars.listExportQueueName}-SNS`,
+        name: `${config.envVars.exportRequestQueueName}-SNS`,
         snsTopicArn: `arn:aws:sns:${pocketVpc.region}:${pocketVpc.accountId}:${config.lambda.snsTopicName.listEvents}`,
-        sqsQueue: listExportQueue.sqsQueue,
+        sqsQueue: exportRequestQueue.sqsQueue,
         filterPolicyScope: 'MessageBody',
         filterPolicy: JSON.stringify({
           'detail-type': ['list-export-requested'],
@@ -193,6 +248,9 @@ class AccountDataDeleter extends TerraformStack {
       snsTopic: this.getCodeDeploySnsTopic(),
       batchDeleteQueue: batchDeleteQueue.sqsQueue,
       listExportQueue: listExportQueue.sqsQueue,
+      exportRequestQueue: exportRequestQueue.sqsQueue,
+      annotationsExportQueue: annotationsExportQueue.sqsQueue,
+      exportStateDb: exportStateDb.dynamodb,
       listExportBucket: exportBucket,
       listExportPartsPrefix: partsPrefix,
       listExportArchivesPrefix: archivesPrefix,

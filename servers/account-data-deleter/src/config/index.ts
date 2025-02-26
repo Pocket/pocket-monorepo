@@ -41,7 +41,33 @@ export const config = {
         messageRetentionSeconds: 1209600, //14 days
         batchSize: 1, // TODO(?): Must be 1
       },
-      exportQueue: {
+      exportRequestQueue: {
+        name: 'export-request',
+        url:
+          process.env.EXPORT_REQUEST_QUEUE_URL ||
+          'http://localhost:4566/000000000000/pocket-export-request-queue',
+        visibilityTimeout: 1000,
+        maxMessages: 1, // Must be 1
+        waitTimeSeconds: 0,
+        defaultPollIntervalSeconds: 60,
+        afterMessagePollIntervalSeconds: 0.5,
+        messageRetentionSeconds: 1209600, //14 days
+        batchSize: 1, // Must be 1
+      },
+      anotationsExportQueue: {
+        name: 'annotations-export',
+        url:
+          process.env.SQS_ANNOTATIONS_EXPORT_QUEUE_URL ||
+          'http://localhost:4566/000000000000/pocket-annotations-export-queue',
+        visibilityTimeout: 1000,
+        maxMessages: 1, // Must be 1
+        waitTimeSeconds: 0,
+        defaultPollIntervalSeconds: 60,
+        afterMessagePollIntervalSeconds: 0.5,
+        messageRetentionSeconds: 1209600, //14 days
+        batchSize: 1, // Must be 1
+      },
+      listExportQueue: {
         name: 'list-export',
         url:
           process.env.SQS_LIST_EXPORT_QUEUE_URL ||

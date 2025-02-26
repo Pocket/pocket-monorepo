@@ -18,6 +18,19 @@ export default {
       },
     },
     region: process.env.AWS_DEFAULT_REGION || 'us-east-1',
+    exportQueue: {
+      name: 'shareablelist-export',
+      url:
+        process.env.SQS_EXPORT_QUEUE_URL ||
+        'http://localhost:4566/000000000000/pocket-shareablelist-export-queue',
+      visibilityTimeout: 1000,
+      maxMessages: 1, // Must be 1
+      waitTimeSeconds: 0,
+      defaultPollIntervalSeconds: 60,
+      afterMessagePollIntervalSeconds: 0.5,
+      messageRetentionSeconds: 1209600, //14 days
+      batchSize: 1, // Must be 1
+    },
   },
   redis: {
     primaryEndpoint: process.env.REDIS_PRIMARY_ENDPOINT || 'localhost',

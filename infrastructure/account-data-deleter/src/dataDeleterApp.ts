@@ -7,6 +7,7 @@ import {
   dataAwsRegion,
   sqsQueue,
   dataAwsSnsTopic,
+  dynamodbTable,
 } from '@cdktf/provider-aws';
 import { S3Bucket } from '@cdktf/provider-aws/lib/s3-bucket';
 
@@ -20,10 +21,13 @@ export type DataDeleterAppConfig = {
   secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
   snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
   batchDeleteQueue: sqsQueue.SqsQueue;
+  exportRequestQueue: sqsQueue.SqsQueue;
+  annotationsExportQueue: sqsQueue.SqsQueue;
   listExportQueue: sqsQueue.SqsQueue;
   listExportBucket: S3Bucket;
   listExportPartsPrefix: string;
   listExportArchivesPrefix: string;
+  exportStateDb: dynamodbTable.DynamodbTable;
   importFileQueue: sqsQueue.SqsQueue;
   importBatchQueue: sqsQueue.SqsQueue;
   listImportBucket: S3Bucket;
@@ -115,8 +119,16 @@ export class DataDeleterApp extends Construct {
               value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.envVars.sqsBatchDeleteQueueName}`,
             },
             {
+              name: 'EXPORT_REQUEST_QUEUE_URL',
+              value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.envVars.exportRequestQueueName}`,
+            },
+            {
               name: 'SQS_LIST_EXPORT_QUEUE_URL',
               value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.envVars.listExportQueueName}`,
+            },
+            {
+              name: 'SQS_ANNOTATIONS_EXPORT_QUEUE_URL',
+              value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.envVars.annotationsExportQueueName}`,
             },
             {
               name: 'SQS_IMPORT_BATCH_QUEUE_URL',
@@ -276,8 +288,10 @@ export class DataDeleterApp extends Construct {
             ],
             resources: [
               this.config.batchDeleteQueue.arn,
-              this.config.listExportQueue.arn,
               this.config.importFileQueue.arn,
+              this.config.listExportQueue.arn,
+              this.config.exportRequestQueue.arn,
+              this.config.annotationsExportQueue.arn,
             ],
             effect: 'Allow',
           },

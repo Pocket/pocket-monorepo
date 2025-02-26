@@ -15,12 +15,13 @@ const eventBusName = `PocketEventBridge-${environment}-Shared-Event-Bus`;
 const releaseSha = process.env.CIRCLE_SHA1;
 
 const s3LogsBucket = isDev ? 'pocket-data-items-dev' : 'pocket-data-items';
+const prefix = `${name}-${environment}`;
 
 export const config = {
   name,
   isDev,
   isProd,
-  prefix: `${name}-${environment}`,
+  prefix,
   circleCIPrefix: `/${name}/CircleCI/${environment}`,
   shortName: 'SLAPI',
   releaseSha,
@@ -38,6 +39,10 @@ export const config = {
     app_code: 'pocket',
     component_code: `pocket-${name.toLowerCase()}`,
     env_code: isDev ? 'dev' : 'prod',
+  },
+  export: {
+    queue: `${prefix}-SharedList-Export`,
+    requestTopic: `PocketEventBridge-${environment}-ListEvents`,
   },
   eventBusName,
   lambda: {
