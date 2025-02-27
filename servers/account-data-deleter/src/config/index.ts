@@ -139,6 +139,8 @@ export const config = {
     tableNames: tables,
   },
   listExport: {
+    dynamoTable:
+      process.env.EXPORT_REQUEST_STATE_TABLE || 'export-request-state',
     exportBucket:
       process.env.LIST_EXPORT_BUCKET || 'com.getpocket.list-exports',
     partsPrefix: process.env.LIST_EXPORT_PARTS_PREFIX || '',

@@ -123,6 +123,10 @@ export class DataDeleterApp extends Construct {
               value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.envVars.exportRequestQueueName}`,
             },
             {
+              name: 'EXPORT_REQUEST_STATE_TABLE',
+              value: this.config.exportStateDb.name,
+            },
+            {
               name: 'SQS_LIST_EXPORT_QUEUE_URL',
               value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.envVars.listExportQueueName}`,
             },

@@ -52,6 +52,18 @@ export interface ExportReady extends BaseEvent {
   };
 }
 
+export interface ExportPartComplete extends BaseEvent {
+  // 'source': 'account-data-deleter' | 'shareable-lists-api';
+  'detail-type': PocketEventType.EXPORT_PART_COMPLETE;
+  detail: {
+    encodedId: string;
+    requestId: string;
+    service: 'list' | 'shareable-lists' | 'annotations';
+    timestamp: string; // ISO-formatted string
+    prefix: string; // 
+  };
+}
+
 export interface AccountPayload {
   email: string;
   isPremium: boolean;

@@ -8,7 +8,6 @@ import { ExportMessage } from '../types';
 import path from 'path';
 import * as Sentry from '@sentry/node';
 import {
-  ExportReady,
   PocketEventBridgeClient,
   PocketEventType,
 } from '@pocket-tools/event-bridge';
@@ -38,16 +37,6 @@ export class ListDataExportService {
     private readonly eventBridge: PocketEventBridgeClient,
   ) {}
 
-  /**
-   * Naming scheme for export archive file
-   */
-  private get zipFileKey(): string {
-    return path.join(
-      config.listExport.archivePrefix,
-      this.encodedId,
-      'pocket.zip',
-    );
-  }
   private get partsPrefix(): string {
     return path.join(config.listExport.partsPrefix, this.encodedId);
   }
@@ -96,12 +85,14 @@ export class ListDataExportService {
     const entries: Array<ListExportEntry & { cursor: number }> = await query;
     return entries;
   }
+
   /**
    * Save a chunk of list data for export.
    * @param requestId ID for tracking the request
    * @param fromId cursor for pagination
    * @param size page size
    * @param part numeric part, for file naming
+   * @returns true if successful, false if an error occurred
    */
   async exportListChunk(
     requestId: string,
@@ -120,7 +111,11 @@ export class ListDataExportService {
               'ListDataExportService - export complete, notifying user (no data)',
             requestId,
           });
-          await this.notifyUser(this.encodedId, requestId);
+          await this.notifyComplete(
+            this.encodedId,
+            requestId,
+            this.partsPrefix,
+          );
         } else {
           serverLogger.warn('Export returned no results');
         }
@@ -131,41 +126,41 @@ export class ListDataExportService {
           entries,
           `${this.partsPrefix}/part_${part.toString().padStart(6, '0')}`,
         );
-        serverLogger.info({
-          message: 'ListDataExportService - zipping files',
-          requestId,
-          prefix: this.partsPrefix,
-          file: this.zipFileKey,
-        });
-        const zipResponse = await this.exportBucket.zipFilesByPrefix(
-          this.partsPrefix,
-          this.zipFileKey,
-        );
-        if (zipResponse != null) {
-          const { Key: zipKey } = zipResponse;
-          const signedUrl = await this.exportBucket.getSignedUrl(
-            zipKey,
-            config.listExport.signedUrlExpiry,
-          );
-          serverLogger.info({
-            message: 'ListDataExportService - export complete, notifying user',
-            requestId,
-            zipKey,
-          });
-          await this.notifyUser(this.encodedId, requestId, signedUrl);
-        } else {
-          const errorMessage = 'Expected a zipfile but did not find any data';
-          Sentry.captureException(errorMessage, {
-            data: { requestId, fromId, part },
-          });
-          serverLogger.error({
-            message: errorMessage,
-            requestId,
-            fromId,
-            part,
-          });
-          throw new Error(errorMessage);
-        }
+        // serverLogger.info({
+        //   message: 'ListDataExportService - zipping files',
+        //   requestId,
+        //   prefix: this.partsPrefix,
+        //   file: this.zipFileKey,
+        // });
+        // const zipResponse = await this.exportBucket.zipFilesByPrefix(
+        //   this.partsPrefix,
+        //   this.zipFileKey,
+        // );
+        // if (zipResponse != null) {
+        //   const { Key: zipKey } = zipResponse;
+        //   const signedUrl = await this.exportBucket.getSignedUrl(
+        //     zipKey,
+        //     config.listExport.signedUrlExpiry,
+        //   );
+        //   serverLogger.info({
+        //     message: 'ListDataExportService - export complete, notifying user',
+        //     requestId,
+        //     zipKey,
+        //   });
+        await this.notifyComplete(this.encodedId, requestId, this.partsPrefix);
+        // } else {
+        //   const errorMessage = 'Expected a zipfile but did not find any data';
+        //   Sentry.captureException(errorMessage, {
+        //     data: { requestId, fromId, part },
+        //   });
+        //   serverLogger.error({
+        //     message: errorMessage,
+        //     requestId,
+        //     fromId,
+        //     part,
+        //   });
+        //   throw new Error(errorMessage);
+        // }
       } else {
         // Will pull in greater than or equal to cursor
         const cursor = entries.splice(size)[0].cursor;
@@ -190,7 +185,9 @@ export class ListDataExportService {
         requestId: requestId,
       });
       Sentry.captureException(err);
+      return false;
     }
+    return true;
   }
   // Put a message onto the queue to trigger the next batch
   async requestNextChunk(requestId: string, fromId: number, part: number) {
@@ -203,23 +200,26 @@ export class ListDataExportService {
     };
     const command = new SendMessageCommand({
       MessageBody: JSON.stringify(body),
-      QueueUrl: config.aws.sqs.exportQueue.url,
+      QueueUrl: config.aws.sqs.listExportQueue.url,
     });
     await sqs.send(command);
     return;
   }
-  // Emit an event to event bridge to notify user
-  async notifyUser(encodedId: string, requestId: string, signedUrl?: string) {
-    const payload: ExportReady = {
-      'detail-type': PocketEventType.EXPORT_READY,
+  // Put notify of status update
+  async notifyComplete(encodedId: string, requestId: string, prefix: string) {
+    const payload: any = {
+      // todo
+      //ExportStatusUpdate = {
+      'detail-type': PocketEventType.EXPORT_PART_COMPLETE,
       source: 'account-data-deleter',
       detail: {
         encodedId,
         requestId,
-        archiveUrl: signedUrl,
+        service: 'list',
+        timestamp: new Date().toISOString(),
+        prefix,
       },
     };
-
     try {
       await this.eventBridge.sendPocketEvent(payload);
     } catch (err) {
@@ -231,23 +231,6 @@ export class ListDataExportService {
       Sentry.captureException(err, { data: { payload } });
       // Re-throw for calling function
       throw err;
-    }
-  }
-
-  /**
-   * Return the signedUrl of an unexpired export for a User
-   * (if it exists, false otherwise)
-   */
-  async lastGoodExport(): Promise<string | false> {
-    const exists = await this.exportBucket.objectExists(this.zipFileKey);
-    if (exists) {
-      return await this.exportBucket.getSignedUrl(
-        this.zipFileKey,
-        config.listExport.signedUrlExpiry,
-        config.listExport.presignedIamUserCredentials,
-      );
-    } else {
-      return false;
     }
   }
 }

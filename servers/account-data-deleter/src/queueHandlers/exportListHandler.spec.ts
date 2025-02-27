@@ -1,6 +1,6 @@
 import { config } from '../config';
 import { ListDataExportService } from '../dataService/listDataExportService';
-import { ExportListHandler } from './exportHandler';
+import { ExportListHandler } from './exportListHandler';
 import { EventEmitter } from 'node:stream';
 
 describe('exportHandler', () => {

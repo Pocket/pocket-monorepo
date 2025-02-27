@@ -11,6 +11,7 @@ export enum PocketEventType {
   ACCOUNT_PASSWORD_CHANGED = 'account-password-changed', //source: user-event
   FORGOT_PASSWORD = 'Forgot Password Request', //source: web-repo
   EXPORT_READY = 'list-export-ready', // source: account-data-deleter
+  EXPORT_PART_COMPLETE = 'export-part-complete', // source: account-data-deleter or shareable-lists-api
   EXPORT_REQUESTED = 'list-export-requested', // source: list-api
   // List Events
   ADD_ITEM = 'ADD_ITEM',

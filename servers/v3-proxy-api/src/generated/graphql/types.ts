@@ -30,6 +30,14 @@ export type Scalars = {
   ValidUrl: { input: any; output: any; }
 };
 
+/** The source of en entity */
+export enum ActivitySource {
+  /** Manually entered through the curation admin tool */
+  Manual = 'MANUAL',
+  /** Created by ML */
+  Ml = 'ML'
+}
+
 /**
  * Input data for adding multiple items to a list.
  * Appends to the end of the list.
@@ -632,72 +640,6 @@ export type CreateHighlightInput = {
   version: Scalars['Int']['input'];
 };
 
-/**
- * Input to create a new Note seeded with copied content from a page.
- * The entire content becomes editable and is not able to be "reattached"
- * like a traditional highlight.
- */
-export type CreateNoteFromQuoteInput = {
-  /**
-   * When this note was created. If not provided, defaults to server time upon
-   * receiving request.
-   */
-  createdAt?: InputMaybe<Scalars['ISOString']['input']>;
-  /**
-   * Client-provided UUID for the new Note.
-   * If not provided, will be generated on the server.
-   */
-  id?: InputMaybe<Scalars['ID']['input']>;
-  /**
-   * JSON representation of a ProseMirror document, which
-   * contains the formatted snipped text. This is used to seed
-   * the initial Note document state, and will become editable.
-   */
-  quote: Scalars['ProseMirrorJson']['input'];
-  /**
-   * The Web Resource where the quote is taken from.
-   * This should always be sent by the client where possible,
-   * but in some cases (e.g. copying from mobile apps) there may
-   * not be an accessible source url.
-   */
-  source?: InputMaybe<Scalars['ValidUrl']['input']>;
-  /** Optional title for this Note */
-  title?: InputMaybe<Scalars['String']['input']>;
-};
-
-/**
- * Input to create a new Note seeded with copied content from a page.
- * The entire content becomes editable and is not able to be "reattached"
- * like a traditional highlight.
- */
-export type CreateNoteFromQuoteMarkdownInput = {
-  /**
-   * When this note was created. If not provided, defaults to server time upon
-   * receiving request.
-   */
-  createdAt?: InputMaybe<Scalars['ISOString']['input']>;
-  /**
-   * Client-provided UUID for the new Note.
-   * If not provided, will be generated on the server.
-   */
-  id?: InputMaybe<Scalars['ID']['input']>;
-  /**
-   * Commonmark Markdown document, which contains the formatted
-   * snipped text. This is used to seed the initial Note
-   * document state, and will become editable.
-   */
-  quote: Scalars['Markdown']['input'];
-  /**
-   * The Web Resource where the quote is taken from.
-   * This should always be sent by the client where possible,
-   * but in some cases (e.g. copying from mobile apps) there may
-   * not be an accessible source url.
-   */
-  source?: InputMaybe<Scalars['ValidUrl']['input']>;
-  /** Optional title for this Note */
-  title?: InputMaybe<Scalars['String']['input']>;
-};
-
 /** Input to create a new Note */
 export type CreateNoteInput = {
   /**
@@ -858,8 +800,11 @@ export type EditNoteContentMarkdownInput = {
 export type EditNoteTitleInput = {
   /** The ID of the note to edit */
   id: Scalars['ID']['input'];
-  /** The new title for the note (can be an empty string) */
-  title: Scalars['String']['input'];
+  /**
+   * The new title for the note. If null, sets the title
+   * field to null (deletes it).
+   */
+  title?: InputMaybe<Scalars['String']['input']>;
   /**
    * When the update was made. If not provided, defaults to the server
    * time upon receiving request.
@@ -1373,16 +1318,6 @@ export type Mutation = {
   createHighlightByUrl: Highlight;
   /** Create a new note, optionally with title and content */
   createNote: Note;
-  /**
-   * Create a new note, with a pre-populated block that contains the quoted and cited text
-   * selected by a user.
-   */
-  createNoteFromQuote: Note;
-  /**
-   * Create a new note, with a pre-populated block that contains the quoted and cited text
-   * selected by a user.
-   */
-  createNoteFromQuoteMarkdown: Note;
   /** Create a new note, optionally with title and markdown content */
   createNoteMarkdown: Note;
   /** Create new highlight note. Returns the data for the created Highlight note. */
@@ -1721,18 +1656,6 @@ export type MutationCreateHighlightByUrlArgs = {
 /** Default Mutation Type */
 export type MutationCreateNoteArgs = {
   input: CreateNoteInput;
-};
-
-
-/** Default Mutation Type */
-export type MutationCreateNoteFromQuoteArgs = {
-  input: CreateNoteFromQuoteInput;
-};
-
-
-/** Default Mutation Type */
-export type MutationCreateNoteFromQuoteMarkdownArgs = {
-  input: CreateNoteFromQuoteMarkdownInput;
 };
 
 
@@ -2574,6 +2497,8 @@ export type Query = {
    * @deprecated Use itemByUrl instead
    */
   getItemByUrl?: Maybe<Item>;
+  /** Retrieves a list of active Sections with their corresponding active SectionItems for a scheduled surface. */
+  getSections: Array<Section>;
   /**
    * Request a specific `Slate` by id
    * @deprecated Please use queries specific to the surface ex. setMomentSlate. If a named query for your surface does not yet exit please reach out to the Data Products team and they will happily provide you with a named query.
@@ -2708,6 +2633,15 @@ export type QueryGetCollectionsArgs = {
  */
 export type QueryGetItemByUrlArgs = {
   url: Scalars['String']['input'];
+};
+
+
+/**
+ * Default root level query type. All authorization checks are done in these queries.
+ * TODO: These belong in a seperate User Service that provides a User object (the user settings will probably exist there too)
+ */
+export type QueryGetSectionsArgs = {
+  filters: SectionFilters;
 };
 
 
@@ -3578,6 +3512,49 @@ export enum SearchStatus {
   Archived = 'ARCHIVED',
   Queued = 'QUEUED'
 }
+
+/** An entity containing Corpus Items. */
+export type Section = {
+  __typename?: 'Section';
+  /** Indicates whether or not a Section is available for display. */
+  active: Scalars['Boolean']['output'];
+  /** The source which created the Section. */
+  createSource: ActivitySource;
+  /** An alternative primary key in UUID format. */
+  externalId: Scalars['ID']['output'];
+  /** The GUID of the Scheduled Surface. Example: 'NEW_TAB_EN_US'. */
+  scheduledSurfaceGuid: Scalars['ID']['output'];
+  /**
+   * An array of active and in-active SectionItems in a Section.
+   * This field returns an empty array when creating a new Section or updating a Section.
+   */
+  sectionItems: Array<SectionItem>;
+  /** Controls the display order of Sections. */
+  sort?: Maybe<Scalars['Int']['output']>;
+  /** The title of the Section displayed to the users. */
+  title: Scalars['String']['output'];
+};
+
+/** Available fields for filtering Sections. */
+export type SectionFilters = {
+  /** Required filter to retrieve Sections & SectionItems for a Scheduled Surface */
+  scheduledSurfaceGuid: Scalars['ID']['input'];
+};
+
+/** A CorpusItem belonging to a Section */
+export type SectionItem = {
+  __typename?: 'SectionItem';
+  /** The associated Corpus Item. */
+  corpusItem: CorpusItem;
+  /** An alternative primary key in UUID format that is generated on creation. */
+  externalId: Scalars['ID']['output'];
+  /**
+   * The initial rank of the SectionItem in relation to its siblings. Used as a
+   * fallback in Merino when there is no engagement/click data available. May only apply to
+   * ML-generated SectionItems.
+   */
+  rank?: Maybe<Scalars['Int']['output']>;
+};
 
 export type ShareContext = {
   __typename?: 'ShareContext';

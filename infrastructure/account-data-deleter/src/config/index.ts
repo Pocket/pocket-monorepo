@@ -43,7 +43,6 @@ export const config = {
     listImportBatchQueue: `${prefix}-List-Import-Batches`,
     databaseTz: 'US/Central',
     eventBusName: `PocketEventBridge-${environment}-Shared-Event-Bus`,
-    shareListSecretName: `ShareableListsApi-Prod/shareablelistsapi-prod20230207160218618400000003`,
   },
   isDev,
   isProd,
@@ -51,6 +50,7 @@ export const config = {
     snsTopicName: {
       userEvents: `PocketEventBridge-${environment}-UserEvents`,
       listEvents: `PocketEventBridge-${environment}-ListEvents`,
+      exportUpdateEvents: `PocketEventBridge-${environment}-ListExportReadyEvents`,
     },
     batchDeleteLambda: {
       name: 'BatchDeleteLambda',

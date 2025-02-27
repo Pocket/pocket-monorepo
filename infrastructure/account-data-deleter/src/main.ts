@@ -150,6 +150,22 @@ class AccountDataDeleter extends TerraformStack {
       },
     );
 
+    // Forward status updates on export components (shareable list, list, annotations)
+    new ApplicationSqsSnsTopicSubscription(
+      this,
+      'export-status-events-sns-subscription',
+      {
+        name: `${config.envVars.exportRequestQueueName}-Status-SNS`,
+        snsTopicArn: `arn:aws:sns:${pocketVpc.region}:${pocketVpc.accountId}:${config.lambda.snsTopicName.exportUpdateEvents}`,
+        sqsQueue: exportRequestQueue.sqsQueue,
+        filterPolicyScope: 'MessageBody',
+        filterPolicy: JSON.stringify({
+          'detail-type': ['export-part-complete'],
+        }),
+        tags: config.tags,
+      },
+    );
+
     // Bucket for exports plus auto-expiry rules
     const exportBucket = new s3Bucket.S3Bucket(this, 'list-export-bucket', {
       bucket: `com.getpocket-${config.environment.toLowerCase()}.list-exports`,

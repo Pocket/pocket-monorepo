@@ -38,7 +38,7 @@ export class ExportListHandler extends QueueHandler {
     super(
       emitter,
       'pollListExport',
-      config.aws.sqs.exportQueue,
+      config.aws.sqs.listExportQueue,
       pollOnInit,
       unleashClient,
     );
@@ -78,33 +78,19 @@ export class ExportListHandler extends QueueHandler {
         exportBucket,
         eventBridgeClient(),
       );
-      // First check if there is an unexpired export
-      const lastGoodExport = await exportService.lastGoodExport();
-      if (lastGoodExport) {
-        serverLogger.info({
-          message: 'ExportListHandler - Found valid export',
-          export: lastGoodExport,
-        });
-        exportService.notifyUser(
-          body.encodedId,
-          body.requestId,
-          lastGoodExport,
-        );
-      } else {
-        serverLogger.info({
-          message: 'ExportListHandler - Exporting list data',
-          requestId: body.requestId,
-          cursor: body.cursor,
-          part: body.part,
-        });
-        // If not, then kick off the export process
-        await exportService.exportListChunk(
-          body.requestId,
-          body.cursor,
-          config.listExport.queryLimit,
-          body.part,
-        );
-      }
+      serverLogger.info({
+        message: 'ExportListHandler - Exporting list data',
+        requestId: body.requestId,
+        cursor: body.cursor,
+        part: body.part,
+      });
+      // If not, then kick off the export process
+      await exportService.exportListChunk(
+        body.requestId,
+        body.cursor,
+        config.listExport.queryLimit,
+        body.part,
+      );
     } catch (error) {
       serverLogger.error({
         message:

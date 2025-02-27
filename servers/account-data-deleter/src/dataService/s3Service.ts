@@ -82,6 +82,41 @@ export class S3Bucket {
     }
   }
   /**
+   * Write a JSON object to a file in S3, using the provided key
+   * (which should not include file
+   * extension; it will be added automatically).
+   * This method will not throw errors if the record fails to write;
+   * errors will be logged in Cloudwatch and Sentry internally.
+   * @param records A valid JSON-serializable object
+   * @param key The file key, without file extension. Can be a
+   * path.
+   * @returns true if the write succeeded, false otherwise
+   */
+  async writeJson(records: any, key: string): Promise<boolean> {
+    try {
+      const uploads = new Upload({
+        client: this.s3,
+        params: {
+          Bucket: `${this.bucket}`,
+          Key: `${key}.json`,
+          ContentType: 'application/json, charset=utf-8',
+          Body: JSON.stringify(records),
+        },
+      });
+      await uploads.done();
+      return true;
+    } catch (err) {
+      serverLogger.error({
+        message: 'Failed to write json to s3',
+        errorData: err,
+        key,
+        bucket: this.bucket,
+      });
+      Sentry.captureException(err, { data: { key, bucket: this.bucket } });
+      throw err;
+    }
+  }
+  /**
    * Zip all files that match a prefix
    * @param prefix
    * @param zipPrefix
@@ -97,7 +132,7 @@ export class S3Bucket {
     try {
       const fileKeys = await this.listAllObjects(prefix);
       if (fileKeys != null && fileKeys.length > 0) {
-        const archive = await this.streamObjectsArchive(fileKeys);
+        const archive = await this.streamObjectsArchive(fileKeys, prefix);
         serverLogger.info({
           message: 'Archiving export files',
           archiveLen: fileKeys.length,
@@ -147,7 +182,7 @@ export class S3Bucket {
    * @param keys
    * @param stream
    */
-  private async streamObjectsArchive(keys: string[]) {
+  private async streamObjectsArchive(keys: string[], prefix: string) {
     const archive = archiver('zip', { zlib: { level: 9 } });
     archive.on('error', function (err) {
       serverLogger.error({
@@ -162,7 +197,7 @@ export class S3Bucket {
         new GetObjectCommand({ Bucket: this.bucket, Key: key }),
       );
       if (response.Body != null) {
-        archive.append(response.Body, { name: path.basename(key) });
+        archive.append(response.Body, { name: path.relative(prefix, key) });
       }
     }
     archive.finalize();

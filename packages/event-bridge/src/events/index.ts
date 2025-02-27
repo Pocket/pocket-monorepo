@@ -49,6 +49,7 @@ import {
   CollectionUpdated,
   ProspectDismissed,
   IncomingBaseEvent,
+  ExportPartComplete,
 } from './types/index.ts';
 import { ProspectEvent } from './types/prospect.ts';
 export * from './types/index.ts';
@@ -59,6 +60,7 @@ export type PocketEvent =
   | AccountEvent
   | ExportReady
   | ExportRequested
+  | ExportPartComplete
   | PremiumPurchaseEvent
   | ListEvent
   | ShareableListEvent
@@ -80,6 +82,7 @@ export type PocketEventTypeMap = {
   [PocketEventType.PREMIUM_PURCHASE]: PremiumPurchaseEvent;
   [PocketEventType.EXPORT_READY]: ExportReady;
   [PocketEventType.EXPORT_REQUESTED]: ExportRequested;
+  [PocketEventType.EXPORT_PART_COMPLETE]: ExportPartComplete;
   [PocketEventType.ADD_ITEM]: AddItem;
   [PocketEventType.DELETE_ITEM]: DeleteItem;
   [PocketEventType.FAVORITE_ITEM]: FavoriteItem;

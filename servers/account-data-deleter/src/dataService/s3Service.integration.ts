@@ -65,6 +65,29 @@ describe('s3Bucket', () => {
       expect(exists).toBeTrue();
     });
   });
+  it('writes records to json', async () => {
+    const records = [
+      {
+        url: 'https://pocket.co/share/ddc34034-3794-4b6e-91b2-fa4992eec4dc',
+        quote: 'remarkable 30x reduction',
+        time_added: 112345578,
+      },
+      {
+        url: 'https://pocket.co/share/f099470a-2752-4a1e-94a0-f16ff666856d',
+        quote: 'what vegetable are you?',
+        time_added: 12345678,
+      },
+    ];
+    const response = await client.writeJson(records, 'json-testing/part_0000');
+    const getObject = new GetObjectCommand({
+      Key: 'json-testing/part_0000.json',
+      Bucket: config.listExport.exportBucket,
+    });
+    const result: GetObjectCommandOutput = await client.s3.send(getObject);
+    const data = await result.Body?.transformToString();
+    expect(response).toBeTrue();
+    expect(data).toEqual(JSON.stringify(records));
+  });
   it('writes a list of records to a csv', async () => {
     const records = [
       {
@@ -124,6 +147,24 @@ describe('s3Bucket', () => {
   });
   it('zips files by prefix', async () => {
     const inputs = [
+      {
+        data: [{ a: 5, b: 6 }],
+        name: 'zip-testing/annotations/part_0000',
+        expectedData: 'a,b\n5,6\n',
+        expectedName: 'annotations/part_0000.csv',
+      },
+      {
+        data: [{ a: 5, b: 6 }],
+        name: 'zip-testing/collections/part_0000',
+        expectedData: 'a,b\n5,6\n',
+        expectedName: 'collections/part_0000.csv',
+      },
+      {
+        data: [{ a: 5, b: 6 }],
+        name: 'zip-testing/collections/part_0001',
+        expectedData: 'a,b\n5,6\n',
+        expectedName: 'collections/part_0001.csv',
+      },
       {
         data: [{ a: 1, b: 2 }],
         name: 'zip-testing/part_0000',

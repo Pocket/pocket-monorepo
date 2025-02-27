@@ -21,8 +21,10 @@
     "watch": "tsc -w --preserveWatchOutput & nodemon --inspect --config ../../nodemon.json"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "3.716.0",
     "@aws-sdk/client-s3": "3.716.0",
     "@aws-sdk/client-sqs": "3.716.0",
+    "@aws-sdk/lib-dynamodb": "3.716.0",
     "@aws-sdk/lib-storage": "3.716.0",
     "@aws-sdk/s3-request-presigner": "3.716.0",
     "@opentelemetry/api": "1.9.0",
