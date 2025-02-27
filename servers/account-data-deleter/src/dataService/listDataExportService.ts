@@ -102,7 +102,19 @@ export class ListDataExportService {
   ) {
     Sentry.addBreadcrumb({ data: { cursor: fromId, part, requestId } });
     try {
-      const entries = await this.fetchListData(fromId, size);
+      const entries: Array<ListExportEntry & { cursor: number }> =
+        config.app.environment === 'development'
+          ? [
+              {
+                title: 'fake title',
+                cursor: 1,
+                url: 'http://localhost',
+                time_added: 12345,
+                status: 'unread',
+                tags: 'todo',
+              },
+            ]
+          : await this.fetchListData(fromId, size);
       // There's no data
       if (entries.length === 0) {
         if (part === 0) {
