@@ -149,37 +149,37 @@ describe('s3Bucket', () => {
     const inputs = [
       {
         data: [{ a: 5, b: 6 }],
-        name: 'zip-testing/annotations/part_0000',
+        name: 'zip-testing/user/annotations/part_0000',
         expectedData: 'a,b\n5,6\n',
         expectedName: 'annotations/part_0000.csv',
       },
       {
         data: [{ a: 5, b: 6 }],
-        name: 'zip-testing/collections/part_0000',
+        name: 'zip-testing/user/collections/part_0000',
         expectedData: 'a,b\n5,6\n',
         expectedName: 'collections/part_0000.csv',
       },
       {
         data: [{ a: 5, b: 6 }],
-        name: 'zip-testing/collections/part_0001',
+        name: 'zip-testing/user/collections/part_0001',
         expectedData: 'a,b\n5,6\n',
         expectedName: 'collections/part_0001.csv',
       },
       {
         data: [{ a: 1, b: 2 }],
-        name: 'zip-testing/part_0000',
+        name: 'zip-testing/user/part_0000',
         expectedData: 'a,b\n1,2\n',
         expectedName: 'part_0000.csv',
       },
       {
         data: [{ a: 3, b: 4 }],
-        name: 'zip-testing/part_0001',
+        name: 'zip-testing/user/part_0001',
         expectedData: 'a,b\n3,4\n',
         expectedName: 'part_0001.csv',
       },
       {
         data: [{ a: 5, b: 6 }],
-        name: 'zip-testing/part_0002',
+        name: 'zip-testing/user/part_0002',
         expectedData: 'a,b\n5,6\n',
         expectedName: 'part_0002.csv',
       },
@@ -187,7 +187,10 @@ describe('s3Bucket', () => {
     for await (const { data, name } of inputs) {
       await client.writeCsv(data, name);
     }
-    const zipKey = await client.zipFilesByPrefix('zip-testing', 'ziptest.zip');
+    const zipKey = await client.zipFilesByPrefix(
+      'zip-testing/user',
+      'ziptest.zip',
+    );
     expect(zipKey).not.toBeUndefined();
     const zipFileResponse = await client.s3.send<GetObjectCommand>(
       new GetObjectCommand({ Bucket: client.bucket, Key: zipKey!.Key }),
@@ -200,7 +203,6 @@ describe('s3Bucket', () => {
     );
     const zip = new AdmZip(buffer);
     const entries = zip.getEntries();
-    // expect(entries.length).toEqual(3);
     // Iterate over the files in the ZIP archive
     entries.forEach((entry, ix) => {
       const content = entry.getData().toString('utf8'); // Get the file content as Buffer

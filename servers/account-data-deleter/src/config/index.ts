@@ -143,8 +143,8 @@ export const config = {
       process.env.EXPORT_REQUEST_STATE_TABLE || 'export-request-state',
     exportBucket:
       process.env.LIST_EXPORT_BUCKET || 'com.getpocket.list-exports',
-    partsPrefix: process.env.LIST_EXPORT_PARTS_PREFIX || '',
-    archivePrefix: process.env.LIST_EXPORT_ARCHIVE_PREFIX || '',
+    partsPrefix: process.env.LIST_EXPORT_PARTS_PREFIX || 'parts',
+    archivePrefix: process.env.LIST_EXPORT_ARCHIVE_PREFIX || 'archives',
     queryLimit: 10000,
     signedUrlExpiry: 60 * 60 * 24 * 2, // 2 days in seconds,
     presignedIamUserCredentials:

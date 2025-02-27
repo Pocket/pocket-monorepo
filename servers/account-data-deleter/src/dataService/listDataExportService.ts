@@ -126,41 +126,7 @@ export class ListDataExportService {
           entries,
           `${this.partsPrefix}/part_${part.toString().padStart(6, '0')}`,
         );
-        // serverLogger.info({
-        //   message: 'ListDataExportService - zipping files',
-        //   requestId,
-        //   prefix: this.partsPrefix,
-        //   file: this.zipFileKey,
-        // });
-        // const zipResponse = await this.exportBucket.zipFilesByPrefix(
-        //   this.partsPrefix,
-        //   this.zipFileKey,
-        // );
-        // if (zipResponse != null) {
-        //   const { Key: zipKey } = zipResponse;
-        //   const signedUrl = await this.exportBucket.getSignedUrl(
-        //     zipKey,
-        //     config.listExport.signedUrlExpiry,
-        //   );
-        //   serverLogger.info({
-        //     message: 'ListDataExportService - export complete, notifying user',
-        //     requestId,
-        //     zipKey,
-        //   });
         await this.notifyComplete(this.encodedId, requestId, this.partsPrefix);
-        // } else {
-        //   const errorMessage = 'Expected a zipfile but did not find any data';
-        //   Sentry.captureException(errorMessage, {
-        //     data: { requestId, fromId, part },
-        //   });
-        //   serverLogger.error({
-        //     message: errorMessage,
-        //     requestId,
-        //     fromId,
-        //     part,
-        //   });
-        //   throw new Error(errorMessage);
-        // }
       } else {
         // Will pull in greater than or equal to cursor
         const cursor = entries.splice(size)[0].cursor;

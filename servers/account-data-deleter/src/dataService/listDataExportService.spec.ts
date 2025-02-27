@@ -14,10 +14,14 @@ describe('ListDataExportService', () => {
   it('notifies that the request is finished if there is no data to export', async () => {
     jest.spyOn(exporter, 'fetchListData').mockResolvedValue([]);
     const notifySpy = jest
-      .spyOn(exporter, 'notifyUser')
+      .spyOn(exporter, 'notifyComplete')
       .mockResolvedValue(undefined);
     await exporter.exportListChunk('12345', -1, 100, 0);
-    expect(notifySpy).toHaveBeenCalledExactlyOnceWith('1a234d', '12345');
+    expect(notifySpy).toHaveBeenCalledExactlyOnceWith(
+      '1a234d',
+      '12345',
+      'parts/1a234d',
+    );
   });
   it('notifies that the request is finished if there is no more data left', async () => {
     const writeSpy = jest
@@ -33,21 +37,14 @@ describe('ListDataExportService', () => {
         status: 'archive',
       },
     ]);
-    jest.spyOn(S3Bucket.prototype, 'zipFilesByPrefix').mockResolvedValue({
-      Key: '/archive/export.zip',
-      Bucket: 'export-bucket',
-    });
-    jest
-      .spyOn(S3Bucket.prototype, 'getSignedUrl')
-      .mockResolvedValue('http://your-archive.zip');
     const notifySpy = jest
-      .spyOn(exporter, 'notifyUser')
+      .spyOn(exporter, 'notifyComplete')
       .mockResolvedValue(undefined);
     await exporter.exportListChunk('12345', -1, 100, 0);
     expect(notifySpy).toHaveBeenCalledExactlyOnceWith(
       '1a234d',
       '12345',
-      'http://your-archive.zip',
+      'parts/1a234d',
     );
     expect(writeSpy).toHaveBeenCalledOnce();
   });
