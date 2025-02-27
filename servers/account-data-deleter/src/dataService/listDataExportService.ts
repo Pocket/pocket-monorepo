@@ -151,7 +151,7 @@ export class ListDataExportService {
         requestId: requestId,
       });
       Sentry.captureException(err);
-      return false;
+      throw err;
     }
     return true;
   }
