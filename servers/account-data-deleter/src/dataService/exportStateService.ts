@@ -42,6 +42,10 @@ export class ExportStateService {
   }
 
   async processUpdate(payload: ExportPartComplete) {
+    serverLogger.info({
+      message: 'ExportListHandler - Processing Status update',
+      body: payload,
+    });
     const result = await this.updateStatus(payload);
     if (result != null && this.isComplete(result)) {
       const signedUrl = await this.getExportUrl(

@@ -12,7 +12,7 @@ import {
   PocketEventType,
 } from '@pocket-tools/event-bridge';
 
-export class ExportStatusHandler extends QueueHandler {
+export class ExportStateHandler extends QueueHandler {
   /**
    * Class for exporting a Pocket User's list in batches from the
    * database, when a user makes an export request.
@@ -64,6 +64,10 @@ export class ExportStatusHandler extends QueueHandler {
       } else {
         throw new Error('Invalid message body');
       }
+      serverLogger.info({
+        message: 'ExportStatusHandler - received request',
+        body: message,
+      });
       const exportBucket = new S3Bucket(config.listExport.exportBucket);
       const orchestrator = new ExportStateService(
         eventBridgeClient(),

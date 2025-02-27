@@ -67,6 +67,24 @@ export class DataDeleterApp extends Construct {
       `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.prefix}/*`,
     ];
 
+    // Don't pull these secrets unless in production (they don't exist in dev)
+    const FxaEnvVars = config.isProd
+      ? [
+          {
+            name: 'FXA_CLIENT_ID',
+            valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Web/${config.environment}/FIREFOX_WEB_AUTH_CLIENT_ID`,
+          },
+          {
+            name: 'FXA_CLIENT_SECRET',
+            valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Web/${config.environment}/FIREFOX_WEB_AUTH_CLIENT_SECRET`,
+          },
+          {
+            name: 'FXA_OAUTH_URL',
+            valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Web/${config.environment}/FIREFOX_AUTH_OAUTH_URL`,
+          },
+        ]
+      : [];
+
     const app = new PocketALBApplication(this, 'application', {
       alarms: {
         http5xxErrorPercentage: {
@@ -233,18 +251,7 @@ export class DataDeleterApp extends Construct {
               name: 'EXPORT_SIGNEDURL_USER_SECRET_KEY',
               valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/EXPORT_USER_CREDS:secretAccessKey::`,
             },
-            {
-              name: 'FXA_CLIENT_ID',
-              valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Web/${config.environment}/FIREFOX_WEB_AUTH_CLIENT_ID`,
-            },
-            {
-              name: 'FXA_CLIENT_SECRET',
-              valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Web/${config.environment}/FIREFOX_WEB_AUTH_CLIENT_SECRET`,
-            },
-            {
-              name: 'FXA_OAUTH_URL',
-              valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Web/${config.environment}/FIREFOX_AUTH_OAUTH_URL`,
-            },
+            ...FxaEnvVars,
           ],
         },
       ],
