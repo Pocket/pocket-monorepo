@@ -337,6 +337,19 @@ export class DataDeleterApp extends Construct {
             ],
             effect: 'Allow',
           },
+          // DynamoDB Status
+          {
+            actions: [
+              'dynamodb:DescribeTable',
+              'dynamodb:Get*',
+              'dynamodb:UpdateItem',
+            ],
+            resources: [
+              this.config.exportStateDb.arn,
+              `${this.config.exportStateDb.arn}/*`,
+            ],
+            effect: 'Allow',
+          },
         ],
         taskExecutionDefaultAttachmentArn:
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
