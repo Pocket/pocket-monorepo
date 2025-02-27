@@ -195,7 +195,8 @@ export class ExportStateService {
             Key: {
               requestId: payload.detail.requestId,
             },
-            UpdateExpression: `SET ${payload.detail.service} = :ss, ${payload.detail.service}CompletedAt = :sca`,
+            ExpressionAttributeNames: { '#ss': payload.detail.service },
+            UpdateExpression: `SET #ss = :ss, ${payload.detail.service}CompletedAt = :sca`,
             ExpressionAttributeValues: {
               ':ss': true,
               ':sca': payload.detail.timestamp,

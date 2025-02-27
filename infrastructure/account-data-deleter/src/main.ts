@@ -21,7 +21,7 @@ import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import {
   ApplicationSQSQueue,
-  ApplicationSqsSnsTopicSubscription,
+  ApplicationSqsSnsTopicsSubscription,
   PocketVPC,
   ApplicationDynamoDBTable,
   ApplicationDynamoDBTableCapacityMode,
@@ -135,33 +135,32 @@ class AccountDataDeleter extends TerraformStack {
       },
     );
 
-    new ApplicationSqsSnsTopicSubscription(
+    new ApplicationSqsSnsTopicsSubscription(
       this,
       'list-events-sns-subscription',
       {
-        name: `${config.envVars.exportRequestQueueName}-SNS`,
-        snsTopicArn: `arn:aws:sns:${pocketVpc.region}:${pocketVpc.accountId}:${config.lambda.snsTopicName.listEvents}`,
+        name: `${config.envVars.exportRequestQueueName}-subs`,
         sqsQueue: exportRequestQueue.sqsQueue,
-        filterPolicyScope: 'MessageBody',
-        filterPolicy: JSON.stringify({
-          'detail-type': ['list-export-requested'],
-        }),
-        tags: config.tags,
-      },
-    );
-
-    // Forward status updates on export components (shareable list, list, annotations)
-    new ApplicationSqsSnsTopicSubscription(
-      this,
-      'export-status-events-sns-subscription',
-      {
-        name: `${config.envVars.exportRequestQueueName}-Status-SNS`,
-        snsTopicArn: `arn:aws:sns:${pocketVpc.region}:${pocketVpc.accountId}:${config.lambda.snsTopicName.exportUpdateEvents}`,
-        sqsQueue: exportRequestQueue.sqsQueue,
-        filterPolicyScope: 'MessageBody',
-        filterPolicy: JSON.stringify({
-          'detail-type': ['export-part-complete'],
-        }),
+        subscriptions: [
+          // Forward initial export request from list topic
+          {
+            name: `${config.envVars.exportRequestQueueName}-SNS`,
+            snsTopicArn: `arn:aws:sns:${pocketVpc.region}:${pocketVpc.accountId}:${config.lambda.snsTopicName.listEvents}`,
+            filterPolicyScope: 'MessageBody',
+            filterPolicy: JSON.stringify({
+              'detail-type': ['list-export-requested'],
+            }),
+          },
+          // Forward status updates on export components (shareable list, list, annotations)
+          {
+            name: `${config.envVars.exportRequestQueueName}-Status-SNS`,
+            snsTopicArn: `arn:aws:sns:${pocketVpc.region}:${pocketVpc.accountId}:${config.lambda.snsTopicName.exportUpdateEvents}`,
+            filterPolicyScope: 'MessageBody',
+            filterPolicy: JSON.stringify({
+              'detail-type': ['export-part-complete'],
+            }),
+          },
+        ],
         tags: config.tags,
       },
     );
