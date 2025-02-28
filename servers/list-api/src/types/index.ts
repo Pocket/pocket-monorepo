@@ -310,3 +310,13 @@ export type ImportLimited = {
   message: string;
   refreshInHours: number;
 };
+
+export type ExportAcknowledgment = {
+  __typename: 'ExportAcknowledgment';
+  requestId: string;
+};
+
+export type ExportDisabled = {
+  __typename: 'ExportDisabled';
+  message: string;
+};

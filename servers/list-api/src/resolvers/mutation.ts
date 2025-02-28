@@ -9,6 +9,8 @@ import {
   SavedItemRefInput,
   SavedItemImportHydrated,
   SavedItemImportInput,
+  ExportAcknowledgment,
+  ExportDisabled,
 } from '../types';
 import { IContext } from '../server/context';
 import { ParserCaller } from '../externalCaller/parserCaller';
@@ -35,8 +37,8 @@ import path from 'path';
 import config from '../config';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import type { NodeJsClient } from '@smithy/types';
-
 import { PocketEventType } from '@pocket-tools/event-bridge';
+
 /**
  * Create or re-add a saved item in a user's list.
  * Note that if the item already exists in a user's list, the item's 'favorite'
@@ -512,6 +514,24 @@ export async function exportList(
   const requestId = uuidv4();
   await exportListEvent(requestId, context.eventContext);
   return requestId;
+}
+
+export async function exportData(
+  root,
+  args,
+  context: IContext,
+): Promise<ExportAcknowledgment | ExportDisabled> {
+  const isDisabled = context.unleash.isEnabled('perm.backend.export-disabled');
+  if (isDisabled) {
+    return {
+      message:
+        'Exporting is temporarily unavailable for a brief maintenance period. Please try again later.',
+      __typename: 'ExportDisabled',
+    };
+  }
+  const requestId = uuidv4();
+  await exportListEvent(requestId, context.eventContext);
+  return { requestId, __typename: 'ExportAcknowledgment' };
 }
 
 /**

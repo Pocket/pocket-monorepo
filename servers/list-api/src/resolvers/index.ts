@@ -26,10 +26,13 @@ import {
   exportList,
   batchImport,
   importUploadUrl,
+  exportData,
 } from './mutation';
 import { tagsSavedItems } from './tag';
 import {
   BaseError,
+  ExportAcknowledgment,
+  ExportDisabled,
   Item,
   NotFound,
   PendingItem,
@@ -61,6 +64,11 @@ const resolvers = {
   },
   SaveByIdResult: {
     __resolveType(parent: PocketSave | NotFound) {
+      return parent.__typename;
+    },
+  },
+  ExportResponse: {
+    __resolveType(parent: ExportAcknowledgment | ExportDisabled) {
       return parent.__typename;
     },
   },
@@ -180,6 +188,7 @@ const resolvers = {
     replaceTags,
     removeTagsByName,
     exportList,
+    exportData,
     batchImport,
     importUploadUrl,
     deleteTagByName: async (
