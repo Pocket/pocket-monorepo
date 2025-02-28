@@ -1,10 +1,11 @@
 import { Unleash } from 'unleash-client';
 import config from '../config';
 import { getUnleash, mockUnleash } from '@pocket-tools/feature-flags-client';
+import { FeatureInterface } from 'unleash-client/lib/feature';
 
 let _unleash: Unleash;
 
-export function getClient(): Unleash {
+export function getClient(localMocks?: FeatureInterface[]): Unleash {
   const unleashConfig = {
     url: config.unleash.endpoint,
     appName: config.serviceName,
@@ -18,7 +19,7 @@ export function getClient(): Unleash {
     }
     return _unleash;
   } else {
-    const { unleash } = mockUnleash([]);
+    const { unleash } = mockUnleash(localMocks ?? []);
     return unleash;
   }
 }

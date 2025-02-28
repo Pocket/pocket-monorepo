@@ -607,6 +607,14 @@ type SavedItemsPage @tag(name: "v3proxy") {
   limit: Int!
 }
 
+type ExportAcknowledgment {
+  requestId: String!
+}
+
+type ExportDisabled {
+  message: String!
+}
+
 type ReaderViewResult @key(fields: "slug") {
   slug: ID!
   """
@@ -707,6 +715,8 @@ enum PendingItemStatus {
 }
 
 union ImportUploadResponse = PreSignedUrl | ImportLimited
+
+union ExportResponse = ExportAcknowledgment | ExportDisabled
 
 """
 A presigned URL for uploading to S3
@@ -1027,7 +1037,14 @@ type Mutation {
   Request for an asynchronous export of a user's list.
   Returns the request ID associated with the request.
   """
-  exportList: String @requiresScopes(scopes: [["ROLE_USER"]])
+  exportList: String @requiresScopes(scopes: [["ROLE_USER"]]) @deprecated(reason: "use exportData")
+  """
+  Request data for export. Returns an acknowledgment with the
+  request ID, or an error message (if the export service is
+  temporarily disabled for maintenance)
+  """
+  exportData: ExportResponse @requiresScopes(scopes: [["ROLE_USER"]])
+
   """
   Import a batch of items and (optional) tags into a user's list.
   Duplicate entries will be replaced. Returns true if the import
