@@ -38,13 +38,18 @@
     "@apollo/subgraph": "2.9.3",
     "@apollo/utils.keyvadapter": "3.1.0",
     "@apollo/utils.keyvaluecache": "3.1.0",
+    "@aws-sdk/client-s3": "3.716.0",
+    "@aws-sdk/client-sqs": "3.716.0",
+    "@aws-sdk/lib-storage": "3.716.0",
     "@keyv/redis": "2.8.5",
+    "@opentelemetry/api": "1.9.0",
     "@pocket-tools/apollo-utils": "workspace:*",
     "@pocket-tools/event-bridge": "workspace:*",
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
     "@prisma/client": "5.22.0",
     "@sentry/node": "8.47.0",
+    "@smithy/node-http-handler": "3.2.0",
     "cors": "2.8.5",
     "express": "4.21.2",
     "express-validator": "^7.1.0",
@@ -64,6 +69,8 @@
   "devDependencies": {
     "@faker-js/faker": "9.4.0",
     "@pocket-tools/eslint-config": "workspace:*",
+    "@sentry/core": "^9.3.0",
+    "@smithy/types": "3.5.0",
     "@types/jest": "29.5.14",
     "@types/node": "^22.10.7",
     "@types/supertest": "^6.0.2",
@@ -75,7 +82,8 @@
     "ts-jest": "29.2.5",
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
-    "typescript": "5.7.3"
+    "typescript": "5.7.3",
+    "unleash-client": "6.1.2"
   },
   "prisma": {
     "seed": "ts-node --emit=false prisma/seed.ts"

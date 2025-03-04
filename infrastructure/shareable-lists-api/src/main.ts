@@ -324,6 +324,11 @@ class ShareableListsAPI extends TerraformStack {
               name: 'EXPORT_QUEUE_URL',
               value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.export.queue}`,
             },
+            {
+              // Align with source: infrastructure/account-data-deleter
+              name: 'EXPORT_BUCKET',
+              value: `com.getpocket-${config.environment.toLowerCase()}.list-exports`,
+            },
           ],
           logGroup: this.createCustomLogGroup('app'),
           logMultilinePattern: '^\\S.+',

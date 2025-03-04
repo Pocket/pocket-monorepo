@@ -12,7 +12,7 @@ describe('ListDataExportService', () => {
   );
   beforeEach(() => jest.restoreAllMocks());
   it('notifies that the request is finished if there is no data to export', async () => {
-    jest.spyOn(exporter, 'fetchListData').mockResolvedValue([]);
+    jest.spyOn(exporter, 'fetchData').mockResolvedValue([]);
     const notifySpy = jest
       .spyOn(exporter, 'notifyComplete')
       .mockResolvedValue(undefined);
@@ -27,7 +27,7 @@ describe('ListDataExportService', () => {
     const writeSpy = jest
       .spyOn(S3Bucket.prototype, 'writeCsv')
       .mockResolvedValue(true);
-    jest.spyOn(exporter, 'fetchListData').mockResolvedValue([
+    jest.spyOn(exporter, 'fetchData').mockResolvedValue([
       {
         cursor: 1,
         tags: '',
@@ -49,7 +49,7 @@ describe('ListDataExportService', () => {
     expect(writeSpy).toHaveBeenCalledOnce();
   });
   it('requests the next chunk using the cursor, incrementing the part', async () => {
-    jest.spyOn(exporter, 'fetchListData').mockResolvedValue([
+    jest.spyOn(exporter, 'fetchData').mockResolvedValue([
       {
         cursor: 1,
         tags: '',
@@ -73,5 +73,35 @@ describe('ListDataExportService', () => {
       .mockResolvedValue(undefined);
     await exporter.exportListChunk('12345', -1, 1, 0);
     expect(nextChunkSpy).toHaveBeenCalledExactlyOnceWith('12345', 2, 1);
+  });
+  it('transforms data prior to writing to csv', async () => {
+    const writeSpy = jest
+      .spyOn(S3Bucket.prototype, 'writeCsv')
+      .mockResolvedValue(true);
+    jest.spyOn(exporter, 'fetchData').mockResolvedValue([
+      {
+        cursor: 1,
+        tags: '',
+        time_added: 12345,
+        url: 'http://',
+        title: 'never',
+        status: 'archive',
+      },
+    ]);
+    jest.spyOn(exporter, 'notifyComplete').mockResolvedValue(undefined);
+    await exporter.exportListChunk('12345', -1, 100, 0);
+    expect(writeSpy).toHaveBeenCalledExactlyOnceWith(
+      [
+        {
+          tags: '',
+          time_added: 12345,
+          url: 'http://',
+          title: 'never',
+          status: 'archive',
+        },
+      ],
+      // Also tests proper key
+      'parts/1a234d/part_000000',
+    );
   });
 });

@@ -1,3 +1,9 @@
+const awsEnvironments = ['production', 'development'];
+const localAwsEndpoint =
+  process.env.NODE_ENV && !awsEnvironments.includes(process.env.NODE_ENV)
+    ? process.env.AWS_ENDPOINT || 'http://localhost:4566'
+    : undefined;
+
 // Environment variables below are set in .aws/src/main.ts
 export default {
   app: {
@@ -18,7 +24,18 @@ export default {
       },
     },
     region: process.env.AWS_DEFAULT_REGION || 'us-east-1',
-    exportQueue: {
+    endpoint: localAwsEndpoint,
+  },
+  export: {
+    // Keep in line with servers/account-data-deleter/src/config
+    bucket: {
+      name: process.env.EXPORT_BUCKET || 'com.getpocket.list-exports',
+      partsPrefix: 'parts',
+    },
+    // Number of lists to export at a time (not the number of items -- this is unlimited
+    // and assumed it fits in memory)
+    queryLimit: 100,
+    workQueue: {
       name: 'shareablelist-export',
       url:
         process.env.SQS_EXPORT_QUEUE_URL ||

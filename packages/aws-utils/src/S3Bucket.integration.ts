@@ -1,40 +1,13 @@
-import {
-  DeleteObjectsCommand,
-  GetObjectCommand,
-  GetObjectCommandOutput,
-  ListObjectsV2Command,
-} from '@aws-sdk/client-s3';
-import { config } from '../config';
-import { S3Bucket } from './s3Service';
+import { GetObjectCommand, GetObjectCommandOutput } from '@aws-sdk/client-s3';
+import { S3Bucket } from './S3Bucket.ts';
 import { stringify } from 'csv-stringify/sync';
-import { setTimeout } from 'node:timers/promises';
 import AdmZip from 'adm-zip';
-/**
- * Empty s3 bucket after tests
- */
-async function cleanupS3Bucket(s3: S3Bucket) {
-  const client = s3.s3;
-  const objectResponse = await client.send<ListObjectsV2Command>(
-    new ListObjectsV2Command({ Bucket: s3.bucket, MaxKeys: 0 }),
-  );
-  const keys = objectResponse.Contents?.map((f) => ({ Key: f.Key! }));
-  if (keys != null) {
-    await client.send(
-      new DeleteObjectsCommand({
-        Bucket: s3.bucket,
-        Delete: { Objects: keys },
-      }),
-    );
-    // Wait a short time
-    // AWS provides waitUntilObjectNotExists method, but the
-    // client types seem to be improperly configured and so
-    // the compiler is throwing error as of 10/10/24
-    await setTimeout(50);
-  }
-}
+import { cleanupS3Bucket } from './s3TestUtils.ts';
 
 describe('s3Bucket', () => {
-  const client = new S3Bucket(config.listExport.exportBucket);
+  // Created in the .docker/ infrastructure
+  const bucket = 'com.getpocket.list-exports';
+  const client = new S3Bucket(bucket, { endpoint: 'http://localhost:4566' });
   beforeAll(async () => await cleanupS3Bucket(client));
   afterAll(async () => await cleanupS3Bucket(client));
   describe('file expiration check', () => {
@@ -81,7 +54,7 @@ describe('s3Bucket', () => {
     const response = await client.writeJson(records, 'json-testing/part_0000');
     const getObject = new GetObjectCommand({
       Key: 'json-testing/part_0000.json',
-      Bucket: config.listExport.exportBucket,
+      Bucket: bucket,
     });
     const result: GetObjectCommandOutput = await client.s3.send(getObject);
     const data = await result.Body?.transformToString();
@@ -106,7 +79,7 @@ describe('s3Bucket', () => {
     const response = await client.writeCsv(records, 'csv-testing/part_0000');
     const getObject = new GetObjectCommand({
       Key: 'csv-testing/part_0000.csv',
-      Bucket: config.listExport.exportBucket,
+      Bucket: bucket,
     });
     const result: GetObjectCommandOutput = await client.s3.send(getObject);
     const data = await result.Body?.transformToString();

@@ -1,16 +1,9 @@
-import { SendMessageCommand } from '@aws-sdk/client-sqs';
-import { serverLogger } from '@pocket-tools/ts-logger';
 import type { Knex } from 'knex';
 import { S3Bucket } from './s3Service';
 import { config } from '../config';
-import { sqs } from '../aws/sqs';
-import { ExportMessage } from '../types';
 import path from 'path';
-import * as Sentry from '@sentry/node';
-import {
-  PocketEventBridgeClient,
-  PocketEventType,
-} from '@pocket-tools/event-bridge';
+import { PocketEventBridgeClient } from '@pocket-tools/event-bridge';
+import { FileExportService } from './FileExportService';
 
 type ListExportEntry = {
   url: string;
@@ -18,6 +11,7 @@ type ListExportEntry = {
   time_added: number; // seconds from epoch
   status: 'archive' | 'unread';
   tags: string; // concatenated array of tags, pipe-separated
+  cursor: number;
 };
 
 /**
@@ -28,17 +22,41 @@ type ListExportEntry = {
  * into one zip archive, keyed with their encodedId
  * (e.g. <export-bucket>/<archive-prefix>/<encodedId/pocket.zip)
  */
-export class ListDataExportService {
+export class ListDataExportService extends FileExportService<
+  ListExportEntry,
+  Omit<ListExportEntry, 'cursor'>
+> {
   constructor(
-    private readonly userId: number,
-    private readonly encodedId: string,
-    private readonly db: Knex,
-    private readonly exportBucket: S3Bucket,
-    private readonly eventBridge: PocketEventBridgeClient,
-  ) {}
+    userId: number,
+    encodedId: string,
+    db: Knex,
+    exportBucket: S3Bucket,
+    eventBridge: PocketEventBridgeClient,
+  ) {
+    super(userId, encodedId, db, exportBucket, eventBridge);
+  }
 
-  private get partsPrefix(): string {
-    return path.join(config.listExport.partsPrefix, this.encodedId);
+  get serviceName() {
+    return 'list' as const;
+  }
+
+  fileKey(part: number) {
+    return path.join(
+      this.partsPrefix,
+      `part_${part.toString().padStart(6, '0')}`,
+    );
+  }
+
+  formatExport(
+    records: ListExportEntry[],
+  ): Array<Omit<ListExportEntry, 'cursor'>> {
+    return records.map(({ cursor, ...entry }) => {
+      return entry;
+    });
+  }
+
+  async write(records: Omit<ListExportEntry, 'cursor'>[], fileKey: string) {
+    await this.exportBucket.writeJson(records, fileKey);
   }
 
   /**
@@ -47,10 +65,22 @@ export class ListDataExportService {
    * @param size size of page
    * @returns Promise<Array<ListExportEntry & { cursor: number }>
    */
-  async fetchListData(
+  async fetchData(
     from: number,
     size: number,
   ): Promise<Array<ListExportEntry & { cursor: number }>> {
+    if (config.app.environment === 'development') {
+      return [
+        {
+          title: 'fake title',
+          cursor: 1,
+          url: 'http://localhost',
+          time_added: 12345,
+          status: 'unread',
+          tags: 'todo',
+        },
+      ];
+    }
     const query = this.db('list')
       .select(
         this.db.raw(
@@ -84,131 +114,5 @@ export class ListDataExportService {
       .limit(size + 1);
     const entries: Array<ListExportEntry & { cursor: number }> = await query;
     return entries;
-  }
-
-  /**
-   * Save a chunk of list data for export.
-   * @param requestId ID for tracking the request
-   * @param fromId cursor for pagination
-   * @param size page size
-   * @param part numeric part, for file naming
-   * @returns true if successful, false if an error occurred
-   */
-  async exportListChunk(
-    requestId: string,
-    fromId: number,
-    size: number,
-    part: number,
-  ) {
-    Sentry.addBreadcrumb({ data: { cursor: fromId, part, requestId } });
-    try {
-      const entries: Array<ListExportEntry & { cursor: number }> =
-        config.app.environment === 'development'
-          ? [
-              {
-                title: 'fake title',
-                cursor: 1,
-                url: 'http://localhost',
-                time_added: 12345,
-                status: 'unread',
-                tags: 'todo',
-              },
-            ]
-          : await this.fetchListData(fromId, size);
-      // There's no data
-      if (entries.length === 0) {
-        if (part === 0) {
-          serverLogger.info({
-            message:
-              'ListDataExportService - export complete, notifying user (no data)',
-            requestId,
-          });
-          await this.notifyComplete(
-            this.encodedId,
-            requestId,
-            this.partsPrefix,
-          );
-        } else {
-          serverLogger.warn('Export returned no results');
-        }
-      }
-      // We're finished!
-      else if (entries.length <= size) {
-        await this.exportBucket.writeCsv(
-          entries,
-          `${this.partsPrefix}/part_${part.toString().padStart(6, '0')}`,
-        );
-        await this.notifyComplete(this.encodedId, requestId, this.partsPrefix);
-      } else {
-        // Will pull in greater than or equal to cursor
-        const cursor = entries.splice(size)[0].cursor;
-        await this.exportBucket.writeCsv(
-          entries,
-          `${this.partsPrefix}/part_${part.toString().padStart(6, '0')}`,
-        );
-        serverLogger.info({
-          message: 'ListDataExportService - Requesting next chunk',
-          requestId,
-          cursor,
-          part: part + 1,
-        });
-        await this.requestNextChunk(requestId, cursor, part + 1);
-      }
-    } catch (err) {
-      serverLogger.error({
-        message: 'Unhandled error occurred during export',
-        errorData: err,
-        cursor: fromId,
-        part,
-        requestId: requestId,
-      });
-      Sentry.captureException(err);
-      throw err;
-    }
-    return true;
-  }
-  // Put a message onto the queue to trigger the next batch
-  async requestNextChunk(requestId: string, fromId: number, part: number) {
-    const body: ExportMessage = {
-      userId: this.userId.toString(),
-      requestId,
-      encodedId: this.encodedId,
-      cursor: fromId,
-      part,
-    };
-    const command = new SendMessageCommand({
-      MessageBody: JSON.stringify(body),
-      QueueUrl: config.aws.sqs.listExportQueue.url,
-    });
-    await sqs.send(command);
-    return;
-  }
-  // Put notify of status update
-  async notifyComplete(encodedId: string, requestId: string, prefix: string) {
-    const payload: any = {
-      // todo
-      //ExportStatusUpdate = {
-      'detail-type': PocketEventType.EXPORT_PART_COMPLETE,
-      source: 'account-data-deleter',
-      detail: {
-        encodedId,
-        requestId,
-        service: 'list',
-        timestamp: new Date().toISOString(),
-        prefix,
-      },
-    };
-    try {
-      await this.eventBridge.sendPocketEvent(payload);
-    } catch (err) {
-      serverLogger.error({
-        message: 'Error sending list-export-ready event',
-        errorData: err,
-        payload,
-      });
-      Sentry.captureException(err, { data: { payload } });
-      // Re-throw for calling function
-      throw err;
-    }
   }
 }

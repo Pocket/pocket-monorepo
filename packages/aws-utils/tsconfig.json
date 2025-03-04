@@ -1,0 +1,11 @@
+{
+  "extends": "tsconfig/library.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "emitDecoratorMetadata": false
+  },
+  "exclude": ["node_modules", "dist"],
+  "include": ["src/**/*.ts", "src/config"],
+  "files": ["node_modules/jest-extended/types/index.d.ts"]
+}

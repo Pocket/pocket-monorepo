@@ -1,0 +1,28 @@
+name: AWS Utilities
+on:
+  pull_request:
+    paths:
+      - 'packages/aws-utils/**'
+      - 'docker-compose.yml'
+      - 'pnpm-lock.yaml'
+      - '.github/actions/**'
+      - '.github/workflows/aws-utils.yml'
+      - '.github/workflows/reuse-test-integrations.yml'
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'packages/aws-utils/**'
+      - 'docker-compose.yml'
+      - 'pnpm-lock.yaml'
+      - '.github/actions/**'
+      - '.github/workflows/aws-utils.yml'
+      - '.github/workflows/reuse-test-integrations.yml'
+jobs:
+  test-integrations:
+    if: github.event_name == 'pull_request'
+    uses: ./.github/workflows/reuse-test-integrations.yml
+    with:
+      scope: '@pocket-tools/aws-utils'
+    secrets: inherit
