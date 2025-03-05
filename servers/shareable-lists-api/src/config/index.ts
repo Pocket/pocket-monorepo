@@ -38,7 +38,7 @@ export default {
     workQueue: {
       name: 'shareablelist-export',
       url:
-        process.env.SQS_EXPORT_QUEUE_URL ||
+        process.env.EXPORT_QUEUE_URL ||
         'http://localhost:4566/000000000000/pocket-shareablelist-export-queue',
       visibilityTimeout: 1000,
       maxMessages: 1, // Must be 1
