@@ -1,6 +1,6 @@
 import { SendMessageCommand } from '@aws-sdk/client-sqs';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { S3Bucket } from './s3Service';
+import { type S3Bucket } from '@pocket-tools/aws-utils';
 import { config } from '../config';
 import { sqs } from '../aws/sqs';
 import { ExportMessage } from '../types';

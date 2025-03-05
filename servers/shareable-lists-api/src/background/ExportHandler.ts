@@ -2,14 +2,15 @@ import { EventEmitter } from 'events';
 import config from '../config';
 import { ExportMessage } from './types';
 import { eventBridgeClient } from '../aws/eventBridgeClient';
-import { type Unleash } from 'unleash-client';
-import { QueueHandler } from './QueueHandler';
+import { QueuePoller, S3Bucket } from '@pocket-tools/aws-utils';
 import { ExportDataService } from './ExportDataService';
-import { S3Bucket } from '../aws/S3Bucket';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { conn } from '../database/client';
+import { sqs } from '../aws/sqs';
 
-export class ExportListHandler extends QueueHandler {
+export class ExportListHandler extends QueuePoller<
+  { Message: string } | ExportMessage
+> {
   /**
    * Class for exporting a Pocket User's list in batches from the
    * database, when a user makes an export request.
@@ -34,14 +35,11 @@ export class ExportListHandler extends QueueHandler {
   constructor(
     public readonly emitter: EventEmitter,
     pollOnInit = true,
-    unleashClient?: Unleash,
   ) {
     super(
-      emitter,
-      'pollListExport',
-      config.export.workQueue,
-      pollOnInit,
-      unleashClient,
+      { emitter, eventName: 'pollListExport' },
+      { config: config.export.workQueue, client: sqs },
+      { pollOnInit },
     );
   }
 
@@ -71,7 +69,10 @@ export class ExportListHandler extends QueueHandler {
       } else {
         throw new Error('Invalid message body');
       }
-      const exportBucket = new S3Bucket(config.export.bucket.name);
+      const exportBucket = new S3Bucket(config.export.bucket.name, {
+        region: config.aws.region,
+        endpoint: config.aws.endpoint,
+      });
       const exportService = new ExportDataService(
         parseInt(body.userId),
         body.encodedId,
@@ -86,7 +87,7 @@ export class ExportListHandler extends QueueHandler {
         part: body.part,
       });
       // If not, then kick off the export process
-      await exportService.processChunk(
+      await exportService.exportChunk(
         body.requestId,
         body.cursor,
         config.export.queryLimit,

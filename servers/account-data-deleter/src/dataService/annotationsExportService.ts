@@ -1,8 +1,9 @@
 import type { Knex } from 'knex';
-import { S3Bucket } from './s3Service';
 import path from 'path';
 import { PocketEventBridgeClient } from '@pocket-tools/event-bridge';
-import { FileExportService } from './FileExportService';
+import { AsyncDataExportService, S3Bucket } from '@pocket-tools/aws-utils';
+import { config } from '../config';
+import { sqs } from '../aws/sqs';
 
 export type AnnotationsExportEntry = {
   url: string;
@@ -21,20 +22,33 @@ export type AnnotationsExportEntry = {
  * ListDataExportService.
  * (e.g. <export-bucket>/<archive-prefix>/<encodedId/pocket.zip)
  */
-export class AnnotationsDataExportService extends FileExportService<
+export class AnnotationsDataExportService extends AsyncDataExportService<
   AnnotationsExportEntry,
   Omit<AnnotationsExportEntry, 'cursor'>
 > {
   constructor(
     userId: number,
     encodedId: string,
-    db: Knex,
+    private db: Knex,
     exportBucket: S3Bucket,
     eventBridge: PocketEventBridgeClient,
   ) {
-    super(userId, encodedId, db, exportBucket, eventBridge);
+    super(
+      { userId, encodedId },
+      {
+        bucket: exportBucket,
+        partsPrefix: config.listExport.partsPrefix,
+      },
+      {
+        workQueue: config.aws.sqs.listExportQueue.url,
+        client: sqs,
+      },
+      {
+        source: 'account-data-deleter',
+        client: eventBridge,
+      },
+    );
   }
-
   get serviceName() {
     return 'annotations' as const;
   }
@@ -47,9 +61,9 @@ export class AnnotationsDataExportService extends FileExportService<
     );
   }
 
-  formatExport(
+  async formatExport(
     records: AnnotationsExportEntry[],
-  ): Array<Omit<AnnotationsExportEntry, 'cursor'>> {
+  ): Promise<Array<Omit<AnnotationsExportEntry, 'cursor'>>> {
     return records.map(({ cursor, ...entry }) => {
       return entry;
     });
@@ -59,7 +73,7 @@ export class AnnotationsDataExportService extends FileExportService<
     records: Omit<AnnotationsExportEntry, 'cursor'>[],
     fileKey: string,
   ) {
-    await this.exportBucket.writeJson(records, fileKey);
+    await this.s3.bucket.writeJson(records, fileKey);
   }
 
   /**
@@ -84,7 +98,7 @@ export class AnnotationsDataExportService extends FileExportService<
             'id as cursor',
             'item_id',
           )
-          .where('user_id', this.userId)
+          .where('user_id', this.user.userId)
           .andWhere('id', '>=', from)
           .andWhere(function () {
             this.where('status', '=', 1).orWhere('status', '=', 0);
@@ -108,7 +122,7 @@ export class AnnotationsDataExportService extends FileExportService<
             'item_id',
           )
           .as('ua')
-          .where('user_id', this.userId)
+          .where('user_id', this.user.userId)
           .andWhere('status', 1),
         function () {
           this.on('ua.item_id', '=', 'cte.item_id');

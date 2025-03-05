@@ -45,7 +45,7 @@ class ExportConcrete extends AsyncDataExportService<
     return Promise.resolve([]);
   }
 
-  formatExport(entries: ExportRecord[]) {
+  async formatExport(entries: ExportRecord[]) {
     return entries;
   }
 

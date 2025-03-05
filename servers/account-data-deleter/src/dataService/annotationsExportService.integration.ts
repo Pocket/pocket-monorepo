@@ -1,17 +1,20 @@
-import { cleanupS3Bucket, seed } from '../testUtils';
+import { seed } from '../testUtils';
 import {
   AnnotationsDataExportService,
   AnnotationsExportEntry,
 } from './annotationsExportService';
 import { writeClient, eventBridgeClient } from './clients';
 import { config } from '../config';
-import { S3Bucket } from './s3Service';
+import { S3Bucket, cleanupS3Bucket } from '@pocket-tools/aws-utils';
 import { GetObjectCommand, GetObjectCommandOutput } from '@aws-sdk/client-s3';
 
 describe('AnnotationsExportService', () => {
   const userId = 453432;
   const encodedId = '4a5b3c';
-  const bucket = new S3Bucket(config.listExport.exportBucket);
+  const bucket = new S3Bucket(config.listExport.exportBucket, {
+    region: config.aws.region,
+    endpoint: config.aws.endpoint,
+  });
   const conn = writeClient();
   beforeAll(async () => {
     await cleanupS3Bucket(bucket);
@@ -35,7 +38,7 @@ describe('AnnotationsExportService', () => {
       bucket,
       eventBridgeClient(),
     );
-    await service.exportListChunk('abc-123', -1, 1000, 0);
+    await service.exportChunk('abc-123', -1, 1000, 0);
     const getObject = new GetObjectCommand({
       Key: 'parts/4a5b3c/annotations/part_000000.json',
       Bucket: config.listExport.exportBucket,

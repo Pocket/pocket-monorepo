@@ -1,12 +1,13 @@
 import { EventEmitter } from 'events';
 import { config } from '../config';
 import { type Unleash } from 'unleash-client';
-import { QueueHandler } from './queueHandler';
-import { S3Bucket } from '../dataService/s3Service';
+import { S3Bucket, QueuePoller } from '@pocket-tools/aws-utils';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { OmnivoreImporter } from '../dataService/importers/OmnivoreImport';
 import * as Sentry from '@sentry/node';
 import { ImportBase } from '../dataService/importers/ImportBase';
+import { unleash } from '../unleash';
+import { sqs } from '../aws/sqs';
 
 /**
  * This isn't everything but it's what we care about
@@ -24,11 +25,14 @@ type SqsS3EventRecord = {
   };
 };
 
-export class ImportListHandler extends QueueHandler {
+type SqsMessage = { Records: SqsS3EventRecord[] };
+
+export class ImportListHandler extends QueuePoller<SqsMessage> {
   // If you add a new importer, update the mapping here
   importMap = {
     omnivore: OmnivoreImporter,
   };
+  unleashClient: Unleash;
   private oldPollQueue: () => Promise<void>;
   /**
    * Class for importing a Pocket User's list in batches from the
@@ -51,15 +55,15 @@ export class ImportListHandler extends QueueHandler {
     pollOnInit = true,
     unleashClient?: Unleash,
   ) {
+    const _unleashClient = unleashClient ?? unleash();
     super(
-      emitter,
-      'pollListImport',
-      config.aws.sqs.importFileQueue,
-      pollOnInit,
-      unleashClient,
+      { emitter, eventName: 'pollListImport' },
+      { config: config.aws.sqs.importFileQueue, client: sqs },
+      { pollOnInit },
     );
     this.oldPollQueue = super.pollQueue;
     this.pollQueue = this.pollQueueHook;
+    this.unleashClient = _unleashClient;
   }
 
   /**
@@ -143,8 +147,11 @@ export class ImportListHandler extends QueueHandler {
       Sentry.captureException(message, { data: application });
       throw new Error(message);
     } else {
-      const s3bucket = new S3Bucket(bucket);
-      return new this.importMap[application](s3bucket, key, this.sqsClient);
+      const s3bucket = new S3Bucket(bucket, {
+        region: config.aws.region,
+        endpoint: config.aws.endpoint,
+      });
+      return new this.importMap[application](s3bucket, key, this.sqs.client);
     }
   }
 }

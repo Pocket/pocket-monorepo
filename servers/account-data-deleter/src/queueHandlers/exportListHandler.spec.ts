@@ -17,7 +17,7 @@ describe('exportHandler', () => {
       part: 1,
     };
     const exportSpy = jest
-      .spyOn(ListDataExportService.prototype, 'exportListChunk')
+      .spyOn(ListDataExportService.prototype, 'exportChunk')
       .mockResolvedValue(true);
     await exportListHandler.handleMessage(message);
     expect(exportSpy).toHaveBeenCalledExactlyOnceWith(

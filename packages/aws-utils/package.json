@@ -92,6 +92,7 @@
     "@aws-sdk/client-sqs": "3.716.0",
     "@aws-sdk/lib-storage": "3.716.0",
     "@aws-sdk/s3-request-presigner": "3.716.0",
+    "@opentelemetry/api": "1.9.0",
     "@pocket-tools/event-bridge": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "8.47.0",
@@ -103,6 +104,7 @@
   "devDependencies": {
     "@pocket-tools/eslint-config": "workspace:*",
     "@semantic-release/exec": "6.0.3",
+    "@sentry/core": "^9.3.0",
     "@smithy/types": "3.5.0",
     "@types/adm-zip": "0.5.7",
     "@types/archiver": "^6.0.3",
@@ -117,7 +119,8 @@
     "ts-node": "10.9.2",
     "tsconfig": "workspace:*",
     "tsup": "8.3.5",
-    "typescript": "5.7.3"
+    "typescript": "5.7.3",
+    "unleash-client": "6.1.2"
   },
   "publishConfig": {
     "access": "public"

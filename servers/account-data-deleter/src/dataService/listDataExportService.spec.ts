@@ -1,79 +1,20 @@
 import { eventBridgeClient, readClient } from './clients';
 import { ListDataExportService } from './listDataExportService';
-import { S3Bucket } from './s3Service';
+import { S3Bucket } from '@pocket-tools/aws-utils';
+import { config } from '../config';
 
 describe('ListDataExportService', () => {
   const exporter = new ListDataExportService(
     1234,
     '1a234d',
     readClient(),
-    new S3Bucket('bucket'),
+    new S3Bucket('bucket', {
+      region: config.aws.region,
+      endpoint: config.aws.endpoint,
+    }),
     eventBridgeClient(),
   );
   beforeEach(() => jest.restoreAllMocks());
-  it('notifies that the request is finished if there is no data to export', async () => {
-    jest.spyOn(exporter, 'fetchData').mockResolvedValue([]);
-    const notifySpy = jest
-      .spyOn(exporter, 'notifyComplete')
-      .mockResolvedValue(undefined);
-    await exporter.exportListChunk('12345', -1, 100, 0);
-    expect(notifySpy).toHaveBeenCalledExactlyOnceWith(
-      '1a234d',
-      '12345',
-      'parts/1a234d',
-    );
-  });
-  it('notifies that the request is finished if there is no more data left', async () => {
-    const writeSpy = jest
-      .spyOn(S3Bucket.prototype, 'writeCsv')
-      .mockResolvedValue(true);
-    jest.spyOn(exporter, 'fetchData').mockResolvedValue([
-      {
-        cursor: 1,
-        tags: '',
-        time_added: 12345,
-        url: 'http://',
-        title: 'never',
-        status: 'archive',
-      },
-    ]);
-    const notifySpy = jest
-      .spyOn(exporter, 'notifyComplete')
-      .mockResolvedValue(undefined);
-    await exporter.exportListChunk('12345', -1, 100, 0);
-    expect(notifySpy).toHaveBeenCalledExactlyOnceWith(
-      '1a234d',
-      '12345',
-      'parts/1a234d',
-    );
-    expect(writeSpy).toHaveBeenCalledOnce();
-  });
-  it('requests the next chunk using the cursor, incrementing the part', async () => {
-    jest.spyOn(exporter, 'fetchData').mockResolvedValue([
-      {
-        cursor: 1,
-        tags: '',
-        time_added: 12345,
-        url: 'http://',
-        title: 'never',
-        status: 'unread',
-      },
-      {
-        cursor: 2,
-        tags: '',
-        time_added: 12345,
-        url: 'http://',
-        title: 'never',
-        status: 'archive',
-      },
-    ]);
-    jest.spyOn(S3Bucket.prototype, 'writeCsv').mockResolvedValue(true);
-    const nextChunkSpy = jest
-      .spyOn(exporter, 'requestNextChunk')
-      .mockResolvedValue(undefined);
-    await exporter.exportListChunk('12345', -1, 1, 0);
-    expect(nextChunkSpy).toHaveBeenCalledExactlyOnceWith('12345', 2, 1);
-  });
   it('transforms data prior to writing to csv', async () => {
     const writeSpy = jest
       .spyOn(S3Bucket.prototype, 'writeCsv')
@@ -89,7 +30,7 @@ describe('ListDataExportService', () => {
       },
     ]);
     jest.spyOn(exporter, 'notifyComplete').mockResolvedValue(undefined);
-    await exporter.exportListChunk('12345', -1, 100, 0);
+    await exporter.exportChunk('12345', -1, 100, 0);
     expect(writeSpy).toHaveBeenCalledExactlyOnceWith(
       [
         {

@@ -44,11 +44,11 @@ export abstract class AsyncDataExportService<I extends { cursor: number }, O> {
     return path.join(this.s3.partsPrefix, this.user.encodedId);
   }
 
-  abstract fileKey(part: number): string;
+  abstract fileKey(identifier: number | string): string;
 
   abstract fetchData(from: number, size: number): Promise<Array<I>>;
 
-  abstract formatExport(entries: I[]): O[];
+  abstract formatExport(entries: I[]): Promise<O[]>;
 
   abstract write(records: O[], fileKey: string): Promise<void>;
 
@@ -89,7 +89,7 @@ export abstract class AsyncDataExportService<I extends { cursor: number }, O> {
       }
       // We're finished!
       else if (entries.length <= size) {
-        const records = this.formatExport(entries);
+        const records = await this.formatExport(entries);
         await this.write(records, this.fileKey(part));
         await this.notifyComplete(
           this.user.encodedId,
@@ -100,7 +100,7 @@ export abstract class AsyncDataExportService<I extends { cursor: number }, O> {
         // Will pull in greater than or equal to cursor
         // Updates array in-place to remove the record
         const cursor = entries.splice(size)[0].cursor;
-        const records = this.formatExport(entries);
+        const records = await this.formatExport(entries);
         await this.write(records, this.fileKey(part));
         serverLogger.info({
           message: `DataExportService::${this.serviceName} - Requesting next chunk`,

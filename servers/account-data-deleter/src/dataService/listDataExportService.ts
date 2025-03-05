@@ -1,9 +1,9 @@
 import type { Knex } from 'knex';
-import { S3Bucket } from './s3Service';
 import { config } from '../config';
 import path from 'path';
 import { PocketEventBridgeClient } from '@pocket-tools/event-bridge';
-import { FileExportService } from './FileExportService';
+import { AsyncDataExportService, S3Bucket } from '@pocket-tools/aws-utils';
+import { sqs } from '../aws/sqs';
 
 type ListExportEntry = {
   url: string;
@@ -22,18 +22,32 @@ type ListExportEntry = {
  * into one zip archive, keyed with their encodedId
  * (e.g. <export-bucket>/<archive-prefix>/<encodedId/pocket.zip)
  */
-export class ListDataExportService extends FileExportService<
+export class ListDataExportService extends AsyncDataExportService<
   ListExportEntry,
   Omit<ListExportEntry, 'cursor'>
 > {
   constructor(
     userId: number,
     encodedId: string,
-    db: Knex,
+    private db: Knex,
     exportBucket: S3Bucket,
     eventBridge: PocketEventBridgeClient,
   ) {
-    super(userId, encodedId, db, exportBucket, eventBridge);
+    super(
+      { userId, encodedId },
+      {
+        bucket: exportBucket,
+        partsPrefix: config.listExport.partsPrefix,
+      },
+      {
+        workQueue: config.aws.sqs.listExportQueue.url,
+        client: sqs,
+      },
+      {
+        source: 'account-data-deleter',
+        client: eventBridge,
+      },
+    );
   }
 
   get serviceName() {
@@ -47,16 +61,16 @@ export class ListDataExportService extends FileExportService<
     );
   }
 
-  formatExport(
+  async formatExport(
     records: ListExportEntry[],
-  ): Array<Omit<ListExportEntry, 'cursor'>> {
+  ): Promise<Array<Omit<ListExportEntry, 'cursor'>>> {
     return records.map(({ cursor, ...entry }) => {
       return entry;
     });
   }
 
   async write(records: Omit<ListExportEntry, 'cursor'>[], fileKey: string) {
-    await this.exportBucket.writeJson(records, fileKey);
+    await this.s3.bucket.writeCsv(records, fileKey);
   }
 
   /**
@@ -92,7 +106,7 @@ export class ListDataExportService extends FileExportService<
         'it.tags',
         this.db.raw(`IF(status = 1, 'archive', 'unread') as status`),
       )
-      .where('user_id', this.userId)
+      .where('user_id', this.user.userId)
       .andWhere('id', '>=', from)
       .andWhere(function () {
         this.where('status', '=', 1).orWhere('status', '=', 0);
@@ -105,7 +119,7 @@ export class ListDataExportService extends FileExportService<
             this.db.raw(`GROUP_CONCAT(tag SEPARATOR '|') AS tags`),
           )
           .as('it')
-          .where('user_id', this.userId)
+          .where('user_id', this.user.userId)
           .groupBy('item_id'),
         function () {
           this.on('it.item_id', '=', 'list.item_id');

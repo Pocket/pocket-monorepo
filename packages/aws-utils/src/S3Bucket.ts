@@ -236,10 +236,10 @@ export class S3Bucket {
       });
       if (credentials) {
         const assumedS3 = new S3Client({
-          endpoint: config.aws.endpoint,
-          region: config.aws.region,
+          endpoint: this.awsConfig?.endpoint,
+          region: this.awsConfig?.region,
           maxAttempts: 3,
-          forcePathStyle: config.aws.endpoint != null ? true : false,
+          forcePathStyle: this.awsConfig?.endpoint != null ? true : false,
           credentials,
         });
         return await getSignedUrl(assumedS3, command, { expiresIn });

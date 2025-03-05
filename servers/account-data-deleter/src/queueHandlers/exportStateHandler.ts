@@ -1,9 +1,7 @@
 import { EventEmitter } from 'events';
 import { config } from '../config';
 import { dynamoClient, eventBridgeClient } from '../dataService/clients';
-import { type Unleash } from 'unleash-client';
-import { QueueHandler } from './queueHandler';
-import { S3Bucket } from '../dataService/s3Service';
+import { S3Bucket, QueuePoller } from '@pocket-tools/aws-utils';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { ExportStateService } from '../dataService/exportStateService';
 import {
@@ -11,8 +9,9 @@ import {
   ExportRequested,
   PocketEventType,
 } from '@pocket-tools/event-bridge';
+import { sqs } from '../aws/sqs';
 
-export class ExportStateHandler extends QueueHandler {
+export class ExportStateHandler extends QueuePoller<{ Message: string }> {
   /**
    * Class for exporting a Pocket User's list in batches from the
    * database, when a user makes an export request.
@@ -29,22 +28,15 @@ export class ExportStateHandler extends QueueHandler {
    * poll events
    * @param pollOnInit whether to start polling when the class is
    * instantiated, primarily for testing (default=true);
-   * @param unleashClient optional unleash client, intended
-   * to use mock for testing. Otherwise will pull in the globally
-   * initialized unleash instance. Can consider DI here and elsewhere
-   * in the future.
    */
   constructor(
     public readonly emitter: EventEmitter,
     pollOnInit = true,
-    unleashClient?: Unleash,
   ) {
     super(
-      emitter,
-      'pollExportState',
-      config.aws.sqs.exportRequestQueue,
-      pollOnInit,
-      unleashClient,
+      { emitter, eventName: 'pollExportState' },
+      { config: config.aws.sqs.exportRequestQueue, client: sqs },
+      { pollOnInit },
     );
   }
 
@@ -68,7 +60,10 @@ export class ExportStateHandler extends QueueHandler {
         message: 'ExportStatusHandler - received request',
         body: message,
       });
-      const exportBucket = new S3Bucket(config.listExport.exportBucket);
+      const exportBucket = new S3Bucket(config.listExport.exportBucket, {
+        region: config.aws.region,
+        endpoint: config.aws.endpoint,
+      });
       const orchestrator = new ExportStateService(
         eventBridgeClient(),
         exportBucket,

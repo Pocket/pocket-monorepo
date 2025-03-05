@@ -1966,6 +1966,9 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: 3.716.0
         version: 3.716.0
+      '@opentelemetry/api':
+        specifier: 1.9.0
+        version: 1.9.0
       '@pocket-tools/event-bridge':
         specifier: workspace:*
         version: link:../event-bridge
@@ -1994,6 +1997,9 @@ importers:
       '@semantic-release/exec':
         specifier: 6.0.3
         version: 6.0.3(semantic-release@24.2.1(typescript@5.7.3))
+      '@sentry/core':
+        specifier: ^9.3.0
+        version: 9.3.0
       '@smithy/types':
         specifier: 3.5.0
         version: 3.5.0
@@ -2039,6 +2045,9 @@ importers:
       typescript:
         specifier: 5.7.3
         version: 5.7.3
+      unleash-client:
+        specifier: 6.1.2
+        version: 6.1.2
 
   packages/backend-benchmarking:
     dependencies:
@@ -2806,6 +2815,9 @@ importers:
       '@pocket-tools/apollo-utils':
         specifier: workspace:*
         version: link:../../packages/apollo-utils
+      '@pocket-tools/aws-utils':
+        specifier: workspace:*
+        version: link:../../packages/aws-utils
       '@pocket-tools/event-bridge':
         specifier: workspace:*
         version: link:../../packages/event-bridge
@@ -3420,6 +3432,9 @@ importers:
       '@pocket-tools/apollo-utils':
         specifier: workspace:*
         version: link:../../packages/apollo-utils
+      '@pocket-tools/aws-utils':
+        specifier: workspace:*
+        version: link:../../packages/aws-utils
       '@pocket-tools/event-bridge':
         specifier: workspace:*
         version: link:../../packages/event-bridge
@@ -4000,6 +4015,9 @@ importers:
       '@pocket-tools/apollo-utils':
         specifier: workspace:*
         version: link:../../packages/apollo-utils
+      '@pocket-tools/aws-utils':
+        specifier: workspace:*
+        version: link:../../packages/aws-utils
       '@pocket-tools/event-bridge':
         specifier: workspace:*
         version: link:../../packages/event-bridge
