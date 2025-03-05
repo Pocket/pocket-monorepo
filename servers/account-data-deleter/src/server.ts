@@ -16,6 +16,7 @@ import { unleash } from './unleash';
 import { Server, createServer } from 'http';
 import * as Sentry from '@sentry/node';
 import { ExportStateHandler } from './queueHandlers/exportStateHandler';
+import { ExportAnnotationsHandler } from './queueHandlers/exportAnnotationsHandler';
 
 export async function startServer(port: number): Promise<{
   server: Server;
@@ -52,6 +53,7 @@ export async function startServer(port: number): Promise<{
   new ExportListHandler(new EventEmitter());
   new ImportListHandler(new EventEmitter());
   new ExportStateHandler(new EventEmitter());
+  new ExportAnnotationsHandler(new EventEmitter());
 
   return { server: httpServer, app };
 }

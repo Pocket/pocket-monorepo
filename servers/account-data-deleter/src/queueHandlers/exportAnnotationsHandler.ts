@@ -2,14 +2,14 @@ import { EventEmitter } from 'events';
 import { config } from '../config';
 import { ExportMessage } from '../types';
 import { eventBridgeClient, readClient } from '../dataService/clients';
-import { ListDataExportService } from '../dataService/listDataExportService';
 import { S3Bucket, QueuePoller } from '@pocket-tools/aws-utils';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { sqs } from '../aws/sqs';
+import { AnnotationsDataExportService } from '../dataService/annotationsExportService';
 
 type ExportMessages = { Message: string } | ExportMessage;
 
-export class ExportListHandler extends QueuePoller<ExportMessages> {
+export class ExportAnnotationsHandler extends QueuePoller<ExportMessages> {
   /**
    * Class for exporting a Pocket User's list in batches from the
    * database, when a user makes an export request.
@@ -32,8 +32,8 @@ export class ExportListHandler extends QueuePoller<ExportMessages> {
     pollOnInit = true,
   ) {
     super(
-      { emitter, eventName: 'pollListExport' },
-      { config: config.aws.sqs.listExportQueue, client: sqs },
+      { emitter, eventName: 'pollAnnotationsExport' },
+      { config: config.aws.sqs.anotationsExportQueue, client: sqs },
       { pollOnInit },
     );
   }
@@ -68,7 +68,7 @@ export class ExportListHandler extends QueuePoller<ExportMessages> {
         region: config.aws.region,
         endpoint: config.aws.endpoint,
       });
-      const exportService = new ListDataExportService(
+      const exportService = new AnnotationsDataExportService(
         parseInt(body.userId),
         body.encodedId,
         readClient(),
@@ -76,7 +76,7 @@ export class ExportListHandler extends QueuePoller<ExportMessages> {
         eventBridgeClient(),
       );
       serverLogger.info({
-        message: 'ExportListHandler - Exporting list data',
+        message: 'ExportAnnotationsHandler - Exporting annotations data',
         requestId: body.requestId,
         cursor: body.cursor,
         part: body.part,

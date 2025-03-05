@@ -8,7 +8,7 @@ import { serverLogger } from '@pocket-tools/ts-logger';
 import { conn } from '../database/client';
 import { sqs } from '../aws/sqs';
 
-export class ExportListHandler extends QueuePoller<
+export class ExportHandler extends QueuePoller<
   { Message: string } | ExportMessage
 > {
   /**
@@ -54,7 +54,7 @@ export class ExportListHandler extends QueuePoller<
     message: { Message: string } | ExportMessage,
   ): Promise<boolean> {
     serverLogger.info({
-      message: 'ExportListHandler - received request',
+      message: 'ExportHandler - received request',
       body: message,
     });
     try {
