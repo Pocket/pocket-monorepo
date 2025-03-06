@@ -13,17 +13,13 @@ import {
   PocketEventBridgeClient,
   PocketEventType,
 } from '@pocket-tools/event-bridge';
-import {
-  DynamoDBDocumentClient,
-  UpdateCommand,
-  GetCommand,
-} from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, UpdateCommand } from '@aws-sdk/lib-dynamodb';
 
 type ExportService = ExportPartComplete['detail']['service'];
 
 type ExportRequestRecord = {
   requestId: string;
-  expiresAt: string;
+  expiresAt: number;
   createdAt: string;
 } & Partial<Record<ExportService, boolean>>;
 
@@ -51,7 +47,7 @@ export class ExportStateService {
       message: 'ExportListHandler - Status update result',
       body: result,
     });
-    if (result != null && (await this.isComplete(result))) {
+    if (result != null && ExportStateService.isComplete(result)) {
       const signedUrl = await this.getExportUrl(
         payload.detail.prefix,
         payload.detail.encodedId,
@@ -109,19 +105,7 @@ export class ExportStateService {
     }
   }
   // Returns true if all parts are complete, false otherwise
-  async isComplete(record: ExportRequestRecord): Promise<boolean> {
-    // Re-request with consistent read, as even though
-    // update results are documented to be strongly
-    // consistent it doesn't actually seem to be
-    const current = await this.dynamo.send(
-      new GetCommand({
-        ConsistentRead: true,
-        TableName: config.listExport.dynamoTable,
-        Key: {
-          requestId: record.requestId,
-        },
-      }),
-    );
+  static isComplete(record: ExportRequestRecord): boolean {
     // No runtime types... some type safety
     const serviceMap: Record<ExportService, null> = {
       list: null,
@@ -132,8 +116,8 @@ export class ExportStateService {
       // Strip illegal character
       _.replace('-', ''),
     );
-    for (const service in services) {
-      if (current[service] !== true) {
+    for (const service of services) {
+      if (record[service] !== true) {
         return false;
       } else {
         continue;
