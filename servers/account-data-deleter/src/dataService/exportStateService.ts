@@ -16,7 +16,7 @@ import {
 import {
   DynamoDBDocumentClient,
   UpdateCommand,
-  UpdateCommandInput,
+  GetCommand,
 } from '@aws-sdk/lib-dynamodb';
 
 type ExportService = ExportPartComplete['detail']['service'];
@@ -47,7 +47,11 @@ export class ExportStateService {
       body: payload,
     });
     const result = await this.updateStatus(payload);
-    if (result != null && this.isComplete(result)) {
+    serverLogger.info({
+      message: 'ExportListHandler - Status update result',
+      body: result,
+    });
+    if (result != null && (await this.isComplete(result))) {
       const signedUrl = await this.getExportUrl(
         payload.detail.prefix,
         payload.detail.encodedId,
@@ -105,7 +109,19 @@ export class ExportStateService {
     }
   }
   // Returns true if all parts are complete, false otherwise
-  isComplete(record: ExportRequestRecord): boolean {
+  async isComplete(record: ExportRequestRecord): Promise<boolean> {
+    // Re-request with consistent read, as even though
+    // update results are documented to be strongly
+    // consistent it doesn't actually seem to be
+    const current = await this.dynamo.send(
+      new GetCommand({
+        ConsistentRead: true,
+        TableName: config.listExport.dynamoTable,
+        Key: {
+          requestId: record.requestId,
+        },
+      }),
+    );
     // No runtime types... some type safety
     const serviceMap: Record<ExportService, null> = {
       list: null,
@@ -117,7 +133,7 @@ export class ExportStateService {
       _.replace('-', ''),
     );
     for (const service in services) {
-      if (record[service] !== true) {
+      if (current[service] !== true) {
         return false;
       } else {
         continue;
