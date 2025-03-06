@@ -112,7 +112,10 @@ export class ExportStateService {
       annotations: null,
       'shareable-lists': null,
     };
-    const services = Object.keys(serviceMap) as ExportService[];
+    const services = (Object.keys(serviceMap) as ExportService[]).map((_) =>
+      // Strip illegal character
+      _.replace('-', ''),
+    );
     for (const service in services) {
       if (record[service] !== true) {
         return false;
@@ -173,36 +176,40 @@ export class ExportStateService {
     payload: ExportPartComplete | ExportRequested,
   ): Promise<ExportRequestRecord | undefined> {
     const now = new Date();
-    const input: UpdateCommandInput =
-      payload['detail-type'] === PocketEventType.EXPORT_REQUESTED
-        ? {
-            // Create new export request record
-            TableName: config.listExport.dynamoTable,
-            Key: {
-              requestId: payload.detail.requestId,
-            },
-            UpdateExpression: `SET expiresAt = :ea, createdAt = :ca`,
-            ExpressionAttributeValues: {
-              ':ea': Math.floor(now.getTime() / 1000) + 60 * 60 * 24 * 17, // 17 days (longer than parts retention),
-              ':ca': now.toISOString(),
-            },
-            ReturnValues: 'ALL_NEW',
-          }
-        : // Update the status of the export request to reflect
-          // completed compontents
-          {
-            TableName: config.listExport.dynamoTable,
-            Key: {
-              requestId: payload.detail.requestId,
-            },
-            ExpressionAttributeNames: { '#ss': payload.detail.service },
-            UpdateExpression: `SET #ss = :ss, ${payload.detail.service}CompletedAt = :sca`,
-            ExpressionAttributeValues: {
-              ':ss': true,
-              ':sca': payload.detail.timestamp,
-            },
-            ReturnValues: 'ALL_NEW',
-          };
+    if (payload['detail-type'] === PocketEventType.EXPORT_REQUESTED) {
+      const input = {
+        // Create new export request record
+        TableName: config.listExport.dynamoTable,
+        Key: {
+          requestId: payload.detail.requestId,
+        },
+        UpdateExpression: `SET expiresAt = :ea, createdAt = :ca`,
+        ExpressionAttributeValues: {
+          ':ea': Math.floor(now.getTime() / 1000) + 60 * 60 * 24 * 17, // 17 days (longer than parts retention),
+          ':ca': now.toISOString(),
+        },
+        ReturnValues: 'ALL_NEW' as const,
+      };
+      const result = await this.dynamo.send(new UpdateCommand(input));
+      return result.Attributes as ExportRequestRecord;
+    }
+    // Update the status of the export request to reflect
+    // completed compontents
+    // Remove illegal character
+    const service = payload.detail.service.replace('-', '');
+    const input = {
+      TableName: config.listExport.dynamoTable,
+      Key: {
+        requestId: payload.detail.requestId,
+      },
+      ExpressionAttributeNames: { '#ss': service },
+      UpdateExpression: `SET #ss = :ss, ${service}CompletedAt = :sca`,
+      ExpressionAttributeValues: {
+        ':ss': true,
+        ':sca': payload.detail.timestamp,
+      },
+      ReturnValues: 'ALL_NEW' as const,
+    };
     const result = await this.dynamo.send(new UpdateCommand(input));
     return result.Attributes as ExportRequestRecord;
   }
