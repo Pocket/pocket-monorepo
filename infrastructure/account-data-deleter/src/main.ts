@@ -23,7 +23,6 @@ import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import {
   ApplicationSQSQueue,
-  ApplicationSqsSnsTopicsSubscription,
   PocketVPC,
   ApplicationDynamoDBTable,
   ApplicationDynamoDBTableCapacityMode,

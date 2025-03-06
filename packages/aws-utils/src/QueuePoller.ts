@@ -8,7 +8,6 @@ import {
 } from '@aws-sdk/client-sqs';
 import * as Sentry from '@sentry/node';
 import { setTimeout } from 'timers/promises';
-import { type Unleash } from 'unleash-client';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import * as otel from '@opentelemetry/api';
 
