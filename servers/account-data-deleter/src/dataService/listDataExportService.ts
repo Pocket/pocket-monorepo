@@ -83,18 +83,6 @@ export class ListDataExportService extends AsyncDataExportService<
     from: number,
     size: number,
   ): Promise<Array<ListExportEntry & { cursor: number }>> {
-    if (config.app.environment === 'development') {
-      return [
-        {
-          title: 'fake title',
-          cursor: 1,
-          url: 'http://localhost',
-          time_added: 12345,
-          status: 'unread',
-          tags: 'todo',
-        },
-      ];
-    }
     const query = this.db('list')
       .select(
         this.db.raw(
