@@ -8,6 +8,7 @@ import {
   dataAwsRegion,
   dataAwsSnsTopic,
   dataAwsSubnets,
+  dataAwsS3Bucket,
 } from '@cdktf/provider-aws';
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
@@ -108,6 +109,15 @@ class ShareableListsAPI extends TerraformStack {
 
     const alarmSnsTopic = this.getCodeDeploySnsTopic();
 
+    // Align with account-data-deleter (source of truth)
+    const exportBucket = new dataAwsS3Bucket.DataAwsS3Bucket(
+      this,
+      'export-bucket',
+      {
+        bucket: `com.getpocket-${config.environment.toLowerCase()}.list-exports`,
+      },
+    );
+
     this.createPocketAlbApplication({
       rds: this.createRds(pocketVpc),
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
@@ -116,6 +126,7 @@ class ShareableListsAPI extends TerraformStack {
       region,
       caller,
       cache,
+      exportBucket,
     });
 
     new PocketAwsSyntheticChecks(this, 'synthetics', {
@@ -251,6 +262,7 @@ class ShareableListsAPI extends TerraformStack {
     snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
     exportSqs: sqsQueue.SqsQueue;
     cache: { primaryEndpoint: string; readerEndpoint: string };
+    exportBucket: dataAwsS3Bucket.DataAwsS3Bucket;
   }): PocketALBApplication {
     const {
       rds,
@@ -260,6 +272,7 @@ class ShareableListsAPI extends TerraformStack {
       snsTopic,
       cache,
       exportSqs,
+      exportBucket,
     } = dependencies;
 
     return new PocketALBApplication(this, 'application', {
@@ -327,7 +340,7 @@ class ShareableListsAPI extends TerraformStack {
             {
               // Align with source: infrastructure/account-data-deleter
               name: 'EXPORT_BUCKET',
-              value: `com.getpocket-${config.environment.toLowerCase()}.list-exports`,
+              value: exportBucket.bucket,
             },
           ],
           logGroup: this.createCustomLogGroup('app'),
@@ -435,6 +448,18 @@ class ShareableListsAPI extends TerraformStack {
             resources: [
               `arn:aws:events:${region.name}:${caller.accountId}:event-bus/${config.eventBusName}`,
             ],
+            effect: 'Allow',
+          },
+          {
+            // Bucket actions
+            actions: ['s3:ListBucket'],
+            resources: [exportBucket.arn],
+            effect: 'Allow',
+          },
+          {
+            // Object actions
+            actions: ['s3:*Object'],
+            resources: [`${exportBucket.arn}/*`],
             effect: 'Allow',
           },
         ],
