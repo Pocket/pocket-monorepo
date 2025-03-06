@@ -3,7 +3,7 @@ import {
   SendMessageBatchRequestEntry,
   SQSClient,
 } from '@aws-sdk/client-sqs';
-import { S3Bucket } from '../s3Service';
+import { type S3Bucket } from '@pocket-tools/aws-utils';
 import AdmZip from 'adm-zip';
 import path from 'path';
 import { sqs } from '../../aws/sqs';

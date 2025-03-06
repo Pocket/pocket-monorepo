@@ -36,7 +36,7 @@ importers:
     devDependencies:
       '@commitlint/cli':
         specifier: 19.6.1
-        version: 19.6.1(@types/node@22.10.7)(typescript@5.8.0-dev.20250128)
+        version: 19.6.1(@types/node@22.10.7)(typescript@5.9.0-dev.20250305)
       '@commitlint/config-conventional':
         specifier: ^19.6.0
         version: 19.6.0
@@ -45,7 +45,7 @@ importers:
         version: link:packages/eslint-config
       syncpack:
         specifier: ^13.0.0
-        version: 13.0.0(typescript@5.8.0-dev.20250128)
+        version: 13.0.0(typescript@5.9.0-dev.20250305)
       tsconfig:
         specifier: workspace:*
         version: link:packages/tsconfig
@@ -1952,6 +1952,103 @@ importers:
         specifier: 5.7.3
         version: 5.7.3
 
+  packages/aws-utils:
+    dependencies:
+      '@aws-sdk/client-s3':
+        specifier: 3.716.0
+        version: 3.716.0
+      '@aws-sdk/client-sqs':
+        specifier: 3.716.0
+        version: 3.716.0
+      '@aws-sdk/lib-storage':
+        specifier: 3.716.0
+        version: 3.716.0(@aws-sdk/client-s3@3.716.0)
+      '@aws-sdk/s3-request-presigner':
+        specifier: 3.716.0
+        version: 3.716.0
+      '@opentelemetry/api':
+        specifier: 1.9.0
+        version: 1.9.0
+      '@pocket-tools/event-bridge':
+        specifier: workspace:*
+        version: link:../event-bridge
+      '@pocket-tools/ts-logger':
+        specifier: workspace:*
+        version: link:../ts-logger
+      '@sentry/node':
+        specifier: 8.47.0
+        version: 8.47.0
+      '@smithy/node-http-handler':
+        specifier: 3.2.0
+        version: 3.2.0
+      adm-zip:
+        specifier: 0.5.16
+        version: 0.5.16
+      archiver:
+        specifier: ^7.0.1
+        version: 7.0.1
+      csv-stringify:
+        specifier: ^6.5.1
+        version: 6.5.2
+    devDependencies:
+      '@pocket-tools/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@semantic-release/exec':
+        specifier: 6.0.3
+        version: 6.0.3(semantic-release@24.2.1(typescript@5.7.3))
+      '@sentry/core':
+        specifier: 8.47.0
+        version: 8.47.0
+      '@smithy/types':
+        specifier: 3.5.0
+        version: 3.5.0
+      '@types/adm-zip':
+        specifier: 0.5.7
+        version: 0.5.7
+      '@types/archiver':
+        specifier: ^6.0.3
+        version: 6.0.3
+      '@types/jest':
+        specifier: 29.5.14
+        version: 29.5.14
+      '@types/morgan':
+        specifier: 1.9.9
+        version: 1.9.9
+      '@types/node':
+        specifier: ^22.10.7
+        version: 22.10.7
+      jest:
+        specifier: 29.7.0
+        version: 29.7.0(@types/node@22.10.7)(ts-node@10.9.2(@types/node@22.10.7)(typescript@5.7.3))
+      jest-extended:
+        specifier: 4.0.2
+        version: 4.0.2(jest@29.7.0(@types/node@22.10.7)(ts-node@10.9.2(@types/node@22.10.7)(typescript@5.7.3)))
+      semantic-release:
+        specifier: 24.2.1
+        version: 24.2.1(typescript@5.7.3)
+      semantic-release-monorepo:
+        specifier: 8.0.2
+        version: 8.0.2(semantic-release@24.2.1(typescript@5.7.3))
+      ts-jest:
+        specifier: 29.2.5
+        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(esbuild@0.24.2)(jest@29.7.0(@types/node@22.10.7)(ts-node@10.9.2(@types/node@22.10.7)(typescript@5.7.3)))(typescript@5.7.3)
+      ts-node:
+        specifier: 10.9.2
+        version: 10.9.2(@types/node@22.10.7)(typescript@5.7.3)
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      tsup:
+        specifier: 8.3.5
+        version: 8.3.5(jiti@2.4.2)(postcss@8.4.49)(tsx@4.19.2)(typescript@5.7.3)(yaml@2.7.0)
+      typescript:
+        specifier: 5.7.3
+        version: 5.7.3
+      unleash-client:
+        specifier: 6.1.2
+        version: 6.1.2
+
   packages/backend-benchmarking:
     dependencies:
       chance:
@@ -2694,12 +2791,18 @@ importers:
 
   servers/account-data-deleter:
     dependencies:
+      '@aws-sdk/client-dynamodb':
+        specifier: 3.716.0
+        version: 3.716.0
       '@aws-sdk/client-s3':
         specifier: 3.716.0
         version: 3.716.0
       '@aws-sdk/client-sqs':
         specifier: 3.716.0
         version: 3.716.0
+      '@aws-sdk/lib-dynamodb':
+        specifier: 3.716.0
+        version: 3.716.0(@aws-sdk/client-dynamodb@3.716.0)
       '@aws-sdk/lib-storage':
         specifier: 3.716.0
         version: 3.716.0(@aws-sdk/client-s3@3.716.0)
@@ -2712,6 +2815,9 @@ importers:
       '@pocket-tools/apollo-utils':
         specifier: workspace:*
         version: link:../../packages/apollo-utils
+      '@pocket-tools/aws-utils':
+        specifier: workspace:*
+        version: link:../../packages/aws-utils
       '@pocket-tools/event-bridge':
         specifier: workspace:*
         version: link:../../packages/event-bridge
@@ -2785,6 +2891,9 @@ importers:
       '@types/adm-zip':
         specifier: 0.5.7
         version: 0.5.7
+      '@types/chance':
+        specifier: 1.1.6
+        version: 1.1.6
       '@types/jest':
         specifier: 29.5.14
         version: 29.5.14
@@ -2794,6 +2903,12 @@ importers:
       '@types/node':
         specifier: ^22.10.7
         version: 22.10.7
+      chance:
+        specifier: 1.1.12
+        version: 1.1.12
+      csv-parse:
+        specifier: ^5.6.0
+        version: 5.6.0
       jest:
         specifier: 29.7.0
         version: 29.7.0(@types/node@22.10.7)(ts-node@10.9.2(@types/node@22.10.7)(typescript@5.7.3))
@@ -3317,6 +3432,9 @@ importers:
       '@pocket-tools/apollo-utils':
         specifier: workspace:*
         version: link:../../packages/apollo-utils
+      '@pocket-tools/aws-utils':
+        specifier: workspace:*
+        version: link:../../packages/aws-utils
       '@pocket-tools/event-bridge':
         specifier: workspace:*
         version: link:../../packages/event-bridge
@@ -3879,12 +3997,27 @@ importers:
       '@apollo/utils.keyvaluecache':
         specifier: 3.1.0
         version: 3.1.0
+      '@aws-sdk/client-s3':
+        specifier: 3.716.0
+        version: 3.716.0
+      '@aws-sdk/client-sqs':
+        specifier: 3.716.0
+        version: 3.716.0
+      '@aws-sdk/lib-storage':
+        specifier: 3.716.0
+        version: 3.716.0(@aws-sdk/client-s3@3.716.0)
       '@keyv/redis':
         specifier: 2.8.5
         version: 2.8.5
+      '@opentelemetry/api':
+        specifier: 1.9.0
+        version: 1.9.0
       '@pocket-tools/apollo-utils':
         specifier: workspace:*
         version: link:../../packages/apollo-utils
+      '@pocket-tools/aws-utils':
+        specifier: workspace:*
+        version: link:../../packages/aws-utils
       '@pocket-tools/event-bridge':
         specifier: workspace:*
         version: link:../../packages/event-bridge
@@ -3900,6 +4033,9 @@ importers:
       '@sentry/node':
         specifier: 8.47.0
         version: 8.47.0
+      '@smithy/node-http-handler':
+        specifier: 3.2.0
+        version: 3.2.0
       cors:
         specifier: 2.8.5
         version: 2.8.5
@@ -3952,6 +4088,12 @@ importers:
       '@pocket-tools/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@sentry/core':
+        specifier: 8.47.0
+        version: 8.47.0
+      '@smithy/types':
+        specifier: 3.5.0
+        version: 3.5.0
       '@types/jest':
         specifier: 29.5.14
         version: 29.5.14
@@ -3988,6 +4130,9 @@ importers:
       typescript:
         specifier: 5.7.3
         version: 5.7.3
+      unleash-client:
+        specifier: 6.1.2
+        version: 6.1.2
 
   servers/shared-snowplow-consumer:
     dependencies:
@@ -7836,6 +7981,9 @@ packages:
   '@types/adm-zip@0.5.7':
     resolution: {integrity: sha512-DNEs/QvmyRLurdQPChqq0Md4zGvPwHerAJYWk9l2jCbD1VPpnzRJorOdiq4zsw09NFbYnhfsoEhWtxIzXpn2yw==}
 
+  '@types/archiver@6.0.3':
+    resolution: {integrity: sha512-a6wUll6k3zX6qs5KlxIggs1P1JcYJaTCx2gnlr+f0S1yd2DoaEwoIK10HmBaLnZwWneBz+JBm0dwcZu0zECBcQ==}
+
   '@types/aws-lambda@8.10.143':
     resolution: {integrity: sha512-u5vzlcR14ge/4pMTTMDQr3MF0wEe38B2F9o84uC4F43vN5DGTy63npRrB6jQhyt+C0lGv4ZfiRcRkqJoZuPnmg==}
 
@@ -8072,6 +8220,9 @@ packages:
 
   '@types/range-parser@1.2.7':
     resolution: {integrity: sha512-hKormJbkJqzQGhziax5PItDUTMAM9uE2XXQmM37dyd4hVM+5aVl7oVxMVUiVQn2oCQFN/LKCZdvSM0pFRqbSmQ==}
+
+  '@types/readdir-glob@1.1.5':
+    resolution: {integrity: sha512-raiuEPUYqXu+nvtY2Pe8s8FEmZ3x5yAH4VkLdihcPdalvsHltomrRC9BzuStrJ9yk06470hS0Crw0f1pXqD+Hg==}
 
   '@types/request@2.48.12':
     resolution: {integrity: sha512-G3sY+NpsA9jnwm0ixhAFQSJ3Q9JkpLZpJbI3GMv0mIAT0y3mRabYeINzal5WOChIiaTEGQYlHOKgkaM9EisWHw==}
@@ -9254,6 +9405,9 @@ packages:
   css-what@6.1.0:
     resolution: {integrity: sha512-HTUrgRJ7r4dsZKU6GjmpfRK1O76h97Z8MfS1G0FozR+oF2kG6Vfe8JE6zwrkbxigziPHinCJ+gCPjA9EaBDtRw==}
     engines: {node: '>= 6'}
+
+  csv-parse@5.6.0:
+    resolution: {integrity: sha512-l3nz3euub2QMg5ouu5U09Ew9Wf6/wQ8I++ch1loQ0ljmzhmfZYrH9fflS22i/PQEvsPvxCwxgz5q7UB8K1JO4Q==}
 
   csv-stringify@6.5.2:
     resolution: {integrity: sha512-RFPahj0sXcmUyjrObAK+DOWtMvMIFV328n4qZJhgX3x2RqkQgOTU2mCUmiFR0CzM6AzChlRSUErjiJeEt8BaQA==}
@@ -14199,8 +14353,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.8.0-dev.20250128:
-    resolution: {integrity: sha512-zxnu5BSmL1qbW+jJyVvkdvIHog6eBy84HKlTJQDV97fqrbPKlS5WJVGj/1xKlbBMA9lyqYsp/ijkuJbaq4mt2g==}
+  typescript@5.9.0-dev.20250305:
+    resolution: {integrity: sha512-Pk7g7VNEo/UZ2R5GPQIEDNY4U/4OLsTBLO0WdZQhloBdQfKQDUibTEmRgDwtxFR0Jf6v1t2A2aL1sY4cROFDig==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -16515,11 +16669,11 @@ snapshots:
     dependencies:
       commander: 12.1.0
 
-  '@commitlint/cli@19.6.1(@types/node@22.10.7)(typescript@5.8.0-dev.20250128)':
+  '@commitlint/cli@19.6.1(@types/node@22.10.7)(typescript@5.9.0-dev.20250305)':
     dependencies:
       '@commitlint/format': 19.5.0
       '@commitlint/lint': 19.6.0
-      '@commitlint/load': 19.6.1(@types/node@22.10.7)(typescript@5.8.0-dev.20250128)
+      '@commitlint/load': 19.6.1(@types/node@22.10.7)(typescript@5.9.0-dev.20250305)
       '@commitlint/read': 19.5.0
       '@commitlint/types': 19.5.0
       tinyexec: 0.3.2
@@ -16566,15 +16720,15 @@ snapshots:
       '@commitlint/rules': 19.6.0
       '@commitlint/types': 19.5.0
 
-  '@commitlint/load@19.6.1(@types/node@22.10.7)(typescript@5.8.0-dev.20250128)':
+  '@commitlint/load@19.6.1(@types/node@22.10.7)(typescript@5.9.0-dev.20250305)':
     dependencies:
       '@commitlint/config-validator': 19.5.0
       '@commitlint/execute-rule': 19.5.0
       '@commitlint/resolve-extends': 19.5.0
       '@commitlint/types': 19.5.0
       chalk: 5.4.1
-      cosmiconfig: 9.0.0(typescript@5.8.0-dev.20250128)
-      cosmiconfig-typescript-loader: 6.1.0(@types/node@22.10.7)(cosmiconfig@9.0.0(typescript@5.8.0-dev.20250128))(typescript@5.8.0-dev.20250128)
+      cosmiconfig: 9.0.0(typescript@5.9.0-dev.20250305)
+      cosmiconfig-typescript-loader: 6.1.0(@types/node@22.10.7)(cosmiconfig@9.0.0(typescript@5.9.0-dev.20250305))(typescript@5.9.0-dev.20250305)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -19905,6 +20059,10 @@ snapshots:
     dependencies:
       '@types/node': 22.10.7
 
+  '@types/archiver@6.0.3':
+    dependencies:
+      '@types/readdir-glob': 1.1.5
+
   '@types/aws-lambda@8.10.143': {}
 
   '@types/aws-lambda@8.10.147': {}
@@ -20182,7 +20340,7 @@ snapshots:
 
   '@types/pg-pool@2.0.6':
     dependencies:
-      '@types/pg': 8.6.1
+      '@types/pg': 8.11.10
 
   '@types/pg@8.11.10':
     dependencies:
@@ -20199,6 +20357,10 @@ snapshots:
   '@types/qs@6.9.17': {}
 
   '@types/range-parser@1.2.7': {}
+
+  '@types/readdir-glob@1.1.5':
+    dependencies:
+      '@types/node': 22.10.7
 
   '@types/request@2.48.12':
     dependencies:
@@ -21588,12 +21750,12 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cosmiconfig-typescript-loader@6.1.0(@types/node@22.10.7)(cosmiconfig@9.0.0(typescript@5.8.0-dev.20250128))(typescript@5.8.0-dev.20250128):
+  cosmiconfig-typescript-loader@6.1.0(@types/node@22.10.7)(cosmiconfig@9.0.0(typescript@5.9.0-dev.20250305))(typescript@5.9.0-dev.20250305):
     dependencies:
       '@types/node': 22.10.7
-      cosmiconfig: 9.0.0(typescript@5.8.0-dev.20250128)
+      cosmiconfig: 9.0.0(typescript@5.9.0-dev.20250305)
       jiti: 2.4.2
-      typescript: 5.8.0-dev.20250128
+      typescript: 5.9.0-dev.20250305
 
   cosmiconfig@8.3.6(typescript@5.7.3):
     dependencies:
@@ -21613,14 +21775,14 @@ snapshots:
     optionalDependencies:
       typescript: 5.7.3
 
-  cosmiconfig@9.0.0(typescript@5.8.0-dev.20250128):
+  cosmiconfig@9.0.0(typescript@5.9.0-dev.20250305):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 5.8.0-dev.20250128
+      typescript: 5.9.0-dev.20250305
 
   cpu-features@0.0.2:
     dependencies:
@@ -21707,6 +21869,8 @@ snapshots:
       nth-check: 2.1.1
 
   css-what@6.1.0: {}
+
+  csv-parse@5.6.0: {}
 
   csv-stringify@6.5.2: {}
 
@@ -21956,7 +22120,7 @@ snapshots:
     dependencies:
       semver: 7.6.3
       shelljs: 0.8.5
-      typescript: 5.8.0-dev.20250128
+      typescript: 5.9.0-dev.20250305
 
   dreamopt@0.8.0:
     dependencies:
@@ -26766,13 +26930,13 @@ snapshots:
       '@pkgr/core': 0.1.1
       tslib: 2.8.1
 
-  syncpack@13.0.0(typescript@5.8.0-dev.20250128):
+  syncpack@13.0.0(typescript@5.9.0-dev.20250305):
     dependencies:
       '@effect/schema': 0.71.1(effect@3.6.5)
       chalk: 5.3.0
       chalk-template: 1.1.0
       commander: 12.1.0
-      cosmiconfig: 9.0.0(typescript@5.8.0-dev.20250128)
+      cosmiconfig: 9.0.0(typescript@5.9.0-dev.20250305)
       effect: 3.6.5
       enquirer: 2.4.1
       fast-check: 3.21.0
@@ -27147,7 +27311,7 @@ snapshots:
 
   typescript@5.7.3: {}
 
-  typescript@5.8.0-dev.20250128: {}
+  typescript@5.9.0-dev.20250305: {}
 
   ua-parser-js@1.0.40: {}
 

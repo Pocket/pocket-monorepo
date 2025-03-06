@@ -2,13 +2,14 @@ import { EventEmitter } from 'events';
 import { config } from '../config';
 import { ExportMessage } from '../types';
 import { eventBridgeClient, readClient } from '../dataService/clients';
-import { type Unleash } from 'unleash-client';
-import { QueueHandler } from './queueHandler';
-import { ListDataExportService } from '../dataService/listDataExportService';
-import { S3Bucket } from '../dataService/s3Service';
+import { S3Bucket, QueuePoller } from '@pocket-tools/aws-utils';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { sqs } from '../aws/sqs';
+import { AnnotationsDataExportService } from '../dataService/annotationsExportService';
 
-export class ExportListHandler extends QueueHandler {
+type ExportMessages = { Message: string } | ExportMessage;
+
+export class ExportAnnotationsHandler extends QueuePoller<ExportMessages> {
   /**
    * Class for exporting a Pocket User's list in batches from the
    * database, when a user makes an export request.
@@ -25,22 +26,15 @@ export class ExportListHandler extends QueueHandler {
    * poll events
    * @param pollOnInit whether to start polling when the class is
    * instantiated, primarily for testing (default=true);
-   * @param unleashClient optional unleash client, intended
-   * to use mock for testing. Otherwise will pull in the globally
-   * initialized unleash instance. Can consider DI here and elsewhere
-   * in the future.
    */
   constructor(
     public readonly emitter: EventEmitter,
     pollOnInit = true,
-    unleashClient?: Unleash,
   ) {
     super(
-      emitter,
-      'pollListExport',
-      config.aws.sqs.exportQueue,
-      pollOnInit,
-      unleashClient,
+      { emitter, eventName: 'pollAnnotationsExport' },
+      { config: config.aws.sqs.anotationsExportQueue, client: sqs },
+      { pollOnInit },
     );
   }
 
@@ -70,41 +64,30 @@ export class ExportListHandler extends QueueHandler {
       } else {
         throw new Error('Invalid message body');
       }
-      const exportBucket = new S3Bucket(config.listExport.exportBucket);
-      const exportService = new ListDataExportService(
+      const exportBucket = new S3Bucket(config.listExport.exportBucket, {
+        region: config.aws.region,
+        endpoint: config.aws.endpoint,
+      });
+      const exportService = new AnnotationsDataExportService(
         parseInt(body.userId),
         body.encodedId,
         readClient(),
         exportBucket,
         eventBridgeClient(),
       );
-      // First check if there is an unexpired export
-      const lastGoodExport = await exportService.lastGoodExport();
-      if (lastGoodExport) {
-        serverLogger.info({
-          message: 'ExportListHandler - Found valid export',
-          export: lastGoodExport,
-        });
-        exportService.notifyUser(
-          body.encodedId,
-          body.requestId,
-          lastGoodExport,
-        );
-      } else {
-        serverLogger.info({
-          message: 'ExportListHandler - Exporting list data',
-          requestId: body.requestId,
-          cursor: body.cursor,
-          part: body.part,
-        });
-        // If not, then kick off the export process
-        await exportService.exportListChunk(
-          body.requestId,
-          body.cursor,
-          config.listExport.queryLimit,
-          body.part,
-        );
-      }
+      serverLogger.info({
+        message: 'ExportAnnotationsHandler - Exporting annotations data',
+        requestId: body.requestId,
+        cursor: body.cursor,
+        part: body.part,
+      });
+      // If not, then kick off the export process
+      await exportService.exportChunk(
+        body.requestId,
+        body.cursor,
+        config.listExport.queryLimit,
+        body.part,
+      );
     } catch (error) {
       serverLogger.error({
         message:

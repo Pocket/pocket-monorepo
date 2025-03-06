@@ -33,6 +33,7 @@ export * from './base/ApplicationRedis.ts';
 export * from './base/ApplicationServerlessRedis.ts';
 export * from './base/ApplicationSQSQueue.ts';
 export * from './base/ApplicationSqsSnsTopicSubscription.ts';
+export * from './base/ApplicationSqsSnsTopicsSubscription.ts';
 export * from './base/ApplicationTargetGroup.ts';
 export * from './base/ApplicationVersionedLambda.ts';
 export * from './base/ApplicationLambdaSnsTopicSubscription.ts';

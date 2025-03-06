@@ -1,0 +1,10 @@
+src
+.github
+.idea
+.prettier*
+eslint.config.mjs
+tsconfig.json
+*.spec.ts
+*.integration.ts
+jest.config.js
+.turbo

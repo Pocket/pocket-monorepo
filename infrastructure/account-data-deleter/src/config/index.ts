@@ -37,6 +37,8 @@ export const config = {
     databasePort: '3306',
     sqsBatchDeleteQueueName: `${prefix}-Sqs-Batch-Delete-Consumer-Queue`,
     listExportQueueName: `${prefix}-List-Export`,
+    exportRequestQueueName: `${prefix}-Export-Request`,
+    annotationsExportQueueName: `${prefix}-Annotations-Export`,
     listImportFileQueue: `${prefix}-List-Import-Files`,
     listImportBatchQueue: `${prefix}-List-Import-Batches`,
     databaseTz: 'US/Central',
@@ -48,6 +50,7 @@ export const config = {
     snsTopicName: {
       userEvents: `PocketEventBridge-${environment}-UserEvents`,
       listEvents: `PocketEventBridge-${environment}-ListEvents`,
+      exportUpdateEvents: `PocketEventBridge-${environment}-ListExportReadyEvents`,
     },
     batchDeleteLambda: {
       name: 'BatchDeleteLambda',

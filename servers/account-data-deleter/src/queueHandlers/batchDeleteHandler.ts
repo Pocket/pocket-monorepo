@@ -7,9 +7,9 @@ import { writeClient } from '../dataService/clients';
 import { AccountDeleteDataService } from '../dataService/accountDeleteDataService';
 import { type Unleash } from 'unleash-client';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { QueueHandler } from './queueHandler';
-import { QueueConfig } from '../types';
+import { QueuePoller, QueueConfig } from '@pocket-tools/aws-utils';
 import { unleash } from '../unleash';
+import { sqs } from '../aws/sqs';
 
 class BatchDeleteHandlerQueueConfig implements QueueConfig {
   batchSize: number;
@@ -58,8 +58,9 @@ class BatchDeleteHandlerQueueConfig implements QueueConfig {
   }
 }
 
-export class BatchDeleteHandler extends QueueHandler {
+export class BatchDeleteHandler extends QueuePoller<SqsMessage> {
   private oldPollQueue: () => Promise<void>;
+  private unleashClient: Unleash;
   /**
    * Class for deleting records in batches from the database,
    * when a user deletes their account. Consumes messages from
@@ -96,9 +97,14 @@ export class BatchDeleteHandler extends QueueHandler {
           'perm.backend.account-delete-post-message-poll-interval',
       },
     );
-    super(emitter, 'pollBatchDelete', queueConfig, pollOnInit, unleashClient);
+    super(
+      { emitter, eventName: 'pollBatchDelete' },
+      { config: queueConfig, client: sqs },
+      { pollOnInit },
+    );
     this.oldPollQueue = super.pollQueue;
     this.pollQueue = this.pollQueueHook;
+    this.unleashClient = _unleashClient;
   }
 
   /**

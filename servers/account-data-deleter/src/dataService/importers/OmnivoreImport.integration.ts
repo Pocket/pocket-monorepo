@@ -1,42 +1,17 @@
-import {
-  DeleteObjectsCommand,
-  ListObjectsV2Command,
-  PutObjectCommand,
-} from '@aws-sdk/client-s3';
+import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { config } from '../../config';
-import { S3Bucket } from '../s3Service';
-import { setTimeout } from 'node:timers/promises';
+
+import { cleanupS3Bucket, S3Bucket } from '@pocket-tools/aws-utils';
 import fs from 'node:fs';
 import path from 'path';
 import { OmnivoreImporter } from './OmnivoreImport';
 import { SQSClient } from '@aws-sdk/client-sqs';
 
-/**
- * Empty s3 bucket after tests
- */
-async function cleanupS3Bucket(s3: S3Bucket) {
-  const client = s3.s3;
-  const objectResponse = await client.send<ListObjectsV2Command>(
-    new ListObjectsV2Command({ Bucket: s3.bucket, MaxKeys: 0 }),
-  );
-  const keys = objectResponse.Contents?.map((f) => ({ Key: f.Key! }));
-  if (keys != null) {
-    await client.send(
-      new DeleteObjectsCommand({
-        Bucket: s3.bucket,
-        Delete: { Objects: keys },
-      }),
-    );
-    // Wait a short time
-    // AWS provides waitUntilObjectNotExists method, but the
-    // client types seem to be improperly configured and so
-    // the compiler is throwing error as of 10/10/24
-    await setTimeout(50);
-  }
-}
-
 describe('importer', () => {
-  const client = new S3Bucket(config.listImport.importBucket);
+  const client = new S3Bucket(config.listImport.importBucket, {
+    region: config.aws.region,
+    endpoint: config.aws.endpoint,
+  });
   const omnivoreKey = 'abc123/omnivore/import.zip';
   const omnivoreInvalid = 'abc123/omnivore/import-invalid.zip';
   const sendSpy = jest.spyOn(SQSClient.prototype, 'send');

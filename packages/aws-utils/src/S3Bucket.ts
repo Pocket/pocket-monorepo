@@ -12,7 +12,6 @@ import { PassThrough, Readable } from 'node:stream';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import * as Sentry from '@sentry/node';
 import { ResourceNotFoundException } from '@aws-sdk/client-sqs';
-import { config } from '../config';
 import archiver from 'archiver';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
 import path from 'node:path';
@@ -22,15 +21,22 @@ export class S3Bucket {
   // Client with type narrowing
   // (types are wide in the library for browser compat)
   s3: NodeJsClient<S3Client>;
-  constructor(public readonly bucket: string) {
+  constructor(
+    public readonly bucket: string,
+    // If not provided, will use the AWS credential fallback process
+    public readonly awsConfig?: {
+      region?: string;
+      endpoint?: string | undefined;
+    },
+  ) {
     this.s3 = new S3Client({
-      endpoint: config.aws.endpoint,
-      region: config.aws.region,
+      endpoint: this.awsConfig?.endpoint,
+      region: this.awsConfig?.region,
       maxAttempts: 3,
       requestHandler: new NodeHttpHandler({
         connectionTimeout: 0, // disable timeout because we might be processing huge zipfiles
       }),
-      forcePathStyle: config.aws.endpoint != null ? true : false,
+      forcePathStyle: this.awsConfig?.endpoint != null ? true : false,
     });
   }
   /**
@@ -82,6 +88,41 @@ export class S3Bucket {
     }
   }
   /**
+   * Write a JSON object to a file in S3, using the provided key
+   * (which should not include file
+   * extension; it will be added automatically).
+   * This method will not throw errors if the record fails to write;
+   * errors will be logged in Cloudwatch and Sentry internally.
+   * @param records A valid JSON-serializable object
+   * @param key The file key, without file extension. Can be a
+   * path.
+   * @returns true if the write succeeded, false otherwise
+   */
+  async writeJson(records: any, key: string): Promise<boolean> {
+    try {
+      const uploads = new Upload({
+        client: this.s3,
+        params: {
+          Bucket: `${this.bucket}`,
+          Key: `${key}.json`,
+          ContentType: 'application/json, charset=utf-8',
+          Body: JSON.stringify(records),
+        },
+      });
+      await uploads.done();
+      return true;
+    } catch (err) {
+      serverLogger.error({
+        message: 'Failed to write json to s3',
+        errorData: err,
+        key,
+        bucket: this.bucket,
+      });
+      Sentry.captureException(err, { data: { key, bucket: this.bucket } });
+      throw err;
+    }
+  }
+  /**
    * Zip all files that match a prefix
    * @param prefix
    * @param zipPrefix
@@ -97,7 +138,7 @@ export class S3Bucket {
     try {
       const fileKeys = await this.listAllObjects(prefix);
       if (fileKeys != null && fileKeys.length > 0) {
-        const archive = await this.streamObjectsArchive(fileKeys);
+        const archive = await this.streamObjectsArchive(fileKeys, prefix);
         serverLogger.info({
           message: 'Archiving export files',
           archiveLen: fileKeys.length,
@@ -147,7 +188,7 @@ export class S3Bucket {
    * @param keys
    * @param stream
    */
-  private async streamObjectsArchive(keys: string[]) {
+  private async streamObjectsArchive(keys: string[], prefix: string) {
     const archive = archiver('zip', { zlib: { level: 9 } });
     archive.on('error', function (err) {
       serverLogger.error({
@@ -162,7 +203,7 @@ export class S3Bucket {
         new GetObjectCommand({ Bucket: this.bucket, Key: key }),
       );
       if (response.Body != null) {
-        archive.append(response.Body, { name: path.basename(key) });
+        archive.append(response.Body, { name: path.relative(prefix, key) });
       }
     }
     archive.finalize();
@@ -195,10 +236,10 @@ export class S3Bucket {
       });
       if (credentials) {
         const assumedS3 = new S3Client({
-          endpoint: config.aws.endpoint,
-          region: config.aws.region,
+          endpoint: this.awsConfig?.endpoint,
+          region: this.awsConfig?.region,
           maxAttempts: 3,
-          forcePathStyle: config.aws.endpoint != null ? true : false,
+          forcePathStyle: this.awsConfig?.endpoint != null ? true : false,
           credentials,
         });
         return await getSignedUrl(assumedS3, command, { expiresIn });

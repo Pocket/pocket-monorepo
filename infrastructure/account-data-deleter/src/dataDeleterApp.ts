@@ -7,6 +7,7 @@ import {
   dataAwsRegion,
   sqsQueue,
   dataAwsSnsTopic,
+  dynamodbTable,
 } from '@cdktf/provider-aws';
 import { S3Bucket } from '@cdktf/provider-aws/lib/s3-bucket';
 
@@ -20,10 +21,13 @@ export type DataDeleterAppConfig = {
   secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
   snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
   batchDeleteQueue: sqsQueue.SqsQueue;
+  exportRequestQueue: sqsQueue.SqsQueue;
+  annotationsExportQueue: sqsQueue.SqsQueue;
   listExportQueue: sqsQueue.SqsQueue;
   listExportBucket: S3Bucket;
   listExportPartsPrefix: string;
   listExportArchivesPrefix: string;
+  exportStateDb: dynamodbTable.DynamodbTable;
   importFileQueue: sqsQueue.SqsQueue;
   importBatchQueue: sqsQueue.SqsQueue;
   listImportBucket: S3Bucket;
@@ -62,6 +66,24 @@ export class DataDeleterApp extends Construct {
       `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.prefix}`,
       `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.prefix}/*`,
     ];
+
+    // Don't pull these secrets unless in production (they don't exist in dev)
+    const FxaEnvVars = config.isProd
+      ? [
+          {
+            name: 'FXA_CLIENT_ID',
+            valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Web/${config.environment}/FIREFOX_WEB_AUTH_CLIENT_ID`,
+          },
+          {
+            name: 'FXA_CLIENT_SECRET',
+            valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Web/${config.environment}/FIREFOX_WEB_AUTH_CLIENT_SECRET`,
+          },
+          {
+            name: 'FXA_OAUTH_URL',
+            valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Web/${config.environment}/FIREFOX_AUTH_OAUTH_URL`,
+          },
+        ]
+      : [];
 
     const app = new PocketALBApplication(this, 'application', {
       alarms: {
@@ -115,8 +137,20 @@ export class DataDeleterApp extends Construct {
               value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.envVars.sqsBatchDeleteQueueName}`,
             },
             {
+              name: 'EXPORT_REQUEST_QUEUE_URL',
+              value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.envVars.exportRequestQueueName}`,
+            },
+            {
+              name: 'EXPORT_REQUEST_STATE_TABLE',
+              value: this.config.exportStateDb.name,
+            },
+            {
               name: 'SQS_LIST_EXPORT_QUEUE_URL',
               value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.envVars.listExportQueueName}`,
+            },
+            {
+              name: 'SQS_ANNOTATIONS_EXPORT_QUEUE_URL',
+              value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.envVars.annotationsExportQueueName}`,
             },
             {
               name: 'SQS_IMPORT_BATCH_QUEUE_URL',
@@ -217,18 +251,7 @@ export class DataDeleterApp extends Construct {
               name: 'EXPORT_SIGNEDURL_USER_SECRET_KEY',
               valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/EXPORT_USER_CREDS:secretAccessKey::`,
             },
-            {
-              name: 'FXA_CLIENT_ID',
-              valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Web/${config.environment}/FIREFOX_WEB_AUTH_CLIENT_ID`,
-            },
-            {
-              name: 'FXA_CLIENT_SECRET',
-              valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Web/${config.environment}/FIREFOX_WEB_AUTH_CLIENT_SECRET`,
-            },
-            {
-              name: 'FXA_OAUTH_URL',
-              valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/Web/${config.environment}/FIREFOX_AUTH_OAUTH_URL`,
-            },
+            ...FxaEnvVars,
           ],
         },
       ],
@@ -276,8 +299,10 @@ export class DataDeleterApp extends Construct {
             ],
             resources: [
               this.config.batchDeleteQueue.arn,
-              this.config.listExportQueue.arn,
               this.config.importFileQueue.arn,
+              this.config.listExportQueue.arn,
+              this.config.exportRequestQueue.arn,
+              this.config.annotationsExportQueue.arn,
             ],
             effect: 'Allow',
           },
@@ -309,6 +334,19 @@ export class DataDeleterApp extends Construct {
             actions: ['events:PutEvents'],
             resources: [
               `arn:aws:events:${region.name}:${caller.accountId}:event-bus/${config.eventBusName}`,
+            ],
+            effect: 'Allow',
+          },
+          // DynamoDB Status
+          {
+            actions: [
+              'dynamodb:DescribeTable',
+              'dynamodb:Get*',
+              'dynamodb:UpdateItem',
+            ],
+            resources: [
+              this.config.exportStateDb.arn,
+              `${this.config.exportStateDb.arn}/*`,
             ],
             effect: 'Allow',
           },

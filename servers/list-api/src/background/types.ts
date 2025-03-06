@@ -1,15 +1,3 @@
-export interface QueueConfig {
-  batchSize: number;
-  url: string;
-  visibilityTimeout: number;
-  maxMessages: number;
-  waitTimeSeconds: number;
-  defaultPollIntervalSeconds: number;
-  afterMessagePollIntervalSeconds: number;
-  messageRetentionSeconds: number;
-  name: string;
-}
-
 /**
  * Payload of an import chunk message sent to SQS
  * Copied from types in AccountDataDeleter

@@ -44,7 +44,13 @@ export const config = {
       { name: 'PremiumPurchaseEvents' },
       { name: 'UserRegistrationEvents' },
       { name: 'ForgotPasswordEvents' },
-      { name: 'ListExportReadyEvents' },
+      {
+        name: 'ListExportReadyEvents',
+        filterPolicyScope: 'MessageBody',
+        filterPolicy: JSON.stringify({
+          'detail-type': ['list-export-ready'],
+        }),
+      },
       {
         name: 'ListEvents',
         filterPolicyScope: 'MessageBody',

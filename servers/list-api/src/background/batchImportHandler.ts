@@ -3,12 +3,13 @@ import * as Sentry from '@sentry/node';
 import config from '../config';
 import { type Unleash } from 'unleash-client';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { QueueHandler } from './queueHandler';
-import { ImportMapping, ImportMessage, QueueConfig } from './types';
+import { QueuePoller, QueueConfig } from '@pocket-tools/aws-utils';
+import { ImportMapping, ImportMessage } from './types';
 import { getClient } from '../featureFlags';
 import { SavedItemImportInput } from '../types';
 import gql from 'graphql-tag';
 import { print } from 'graphql';
+import { sqs } from '../aws/sqs';
 
 /**
  * A slightly silly config to override a value conditionally
@@ -62,11 +63,14 @@ type ImportFunctionMap<T extends keyof ImportMapping> = {
   ) => Promise<Array<SavedItemImportInput>>;
 };
 
-export class BatchImportHandler extends QueueHandler {
+export class BatchImportHandler<
+  T extends keyof ImportMapping,
+> extends QueuePoller<ImportMessage<T>> {
   // If you add a new importer, update the mapping here
   importMap: ImportFunctionMap<'omnivore'> = {
     omnivore: this.fromOmnivore,
   };
+  unleashClient: Unleash;
   private oldPollQueue: () => Promise<void>;
   /**
    * Class for deleting records in batches from the database,
@@ -102,7 +106,12 @@ export class BatchImportHandler extends QueueHandler {
           'perm.backend.batch-import-poll-interval',
       },
     );
-    super(emitter, 'pollBatchImport', queueConfig, pollOnInit, unleashClient);
+    super(
+      { emitter, eventName: 'pollBatchImport' },
+      { config: queueConfig, client: sqs },
+      { pollOnInit },
+    );
+    this.unleashClient = _unleashClient;
     this.oldPollQueue = super.pollQueue;
     this.pollQueue = this.pollQueueHook;
   }
@@ -144,9 +153,7 @@ export class BatchImportHandler extends QueueHandler {
    * @returns whether or not the message was successfully handled
    * (underlying call to AccountDeleteDataService completed without error)
    */
-  async handleMessage<T extends keyof ImportMapping>(
-    body: ImportMessage<T>,
-  ): Promise<boolean> {
+  async handleMessage(body: ImportMessage<T>): Promise<boolean> {
     try {
       const inserts = await this.getImporter(body);
       return await this.makeRequest(body.userId.toString(), inserts);

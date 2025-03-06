@@ -1,5 +1,5 @@
 import { SQSClient } from '@aws-sdk/client-sqs';
-import { S3Bucket } from '../s3Service';
+import { type S3Bucket } from '@pocket-tools/aws-utils';
 import { ImportBase } from './ImportBase';
 import { ImportMessage } from './types';
 import { ImportValidator, OmnivoreImportRecord } from './validation';

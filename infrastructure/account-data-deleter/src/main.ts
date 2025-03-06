@@ -14,6 +14,8 @@ import {
   s3Bucket,
   s3BucketLifecycleConfiguration,
   s3BucketNotification,
+  snsTopicSubscription,
+  sqsQueue,
   sqsQueuePolicy,
 } from '@cdktf/provider-aws';
 
@@ -21,11 +23,19 @@ import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import {
   ApplicationSQSQueue,
-  ApplicationSqsSnsTopicSubscription,
   PocketVPC,
+  ApplicationDynamoDBTable,
+  ApplicationDynamoDBTableCapacityMode,
+  SnsSqsSubscriptionProps,
 } from '@pocket-tools/terraform-modules';
 
-import { App, S3Backend, TerraformStack, Token } from 'cdktf';
+import {
+  App,
+  S3Backend,
+  TerraformResource,
+  TerraformStack,
+  Token,
+} from 'cdktf';
 import { Construct } from 'constructs';
 
 class AccountDataDeleter extends TerraformStack {
@@ -67,6 +77,46 @@ class AccountDataDeleter extends TerraformStack {
       },
     );
 
+    const exportStateDb = new ApplicationDynamoDBTable(
+      this,
+      'export-request-state',
+      {
+        tags: config.tags,
+        prefix: `${config.shortName}-${config.environment}-Export-Request-State`,
+        capacityMode: ApplicationDynamoDBTableCapacityMode.ON_DEMAND,
+        preventDestroyTable: true,
+        tableConfig: {
+          pointInTimeRecovery: {
+            enabled: true,
+          },
+          ttl: {
+            enabled: true,
+            attributeName: 'expiresAt',
+          },
+          hashKey: 'requestId',
+          attribute: [
+            {
+              name: 'requestId',
+              type: 'S',
+            },
+          ],
+        },
+      },
+    );
+
+    const exportRequestQueue = new ApplicationSQSQueue(
+      this,
+      'export-request-consumer-queue',
+      {
+        name: config.envVars.exportRequestQueueName,
+        tags: config.tags,
+        visibilityTimeoutSeconds: 1800,
+        messageRetentionSeconds: 1209600, //14 days
+        //need to set maxReceiveCount to enable DLQ
+        maxReceiveCount: 3,
+      },
+    );
+
     const listExportQueue = new ApplicationSQSQueue(
       this,
       'list-export-consumer-queue',
@@ -80,18 +130,36 @@ class AccountDataDeleter extends TerraformStack {
       },
     );
 
-    new ApplicationSqsSnsTopicSubscription(
+    const annotationsExportQueue = new ApplicationSQSQueue(
       this,
-      'list-events-sns-subscription',
+      'annotations-export-consumer-queue',
       {
-        name: `${config.envVars.listExportQueueName}-SNS`,
+        name: config.envVars.annotationsExportQueueName,
+        tags: config.tags,
+        visibilityTimeoutSeconds: 1800,
+        messageRetentionSeconds: 1209600, //14 days
+        //need to set maxReceiveCount to enable DLQ
+        maxReceiveCount: 3,
+      },
+    );
+
+    this.exportTopicSubscriptions(
+      exportRequestQueue.sqsQueue,
+      {
+        name: `${config.envVars.exportRequestQueueName}-SNS`,
         snsTopicArn: `arn:aws:sns:${pocketVpc.region}:${pocketVpc.accountId}:${config.lambda.snsTopicName.listEvents}`,
-        sqsQueue: listExportQueue.sqsQueue,
         filterPolicyScope: 'MessageBody',
         filterPolicy: JSON.stringify({
           'detail-type': ['list-export-requested'],
         }),
-        tags: config.tags,
+      },
+      {
+        name: `${config.envVars.exportRequestQueueName}-Status-SNS`,
+        snsTopicArn: `arn:aws:sns:${pocketVpc.region}:${pocketVpc.accountId}:${config.lambda.snsTopicName.exportUpdateEvents}`,
+        filterPolicyScope: 'MessageBody',
+        filterPolicy: JSON.stringify({
+          'detail-type': ['export-part-complete'],
+        }),
       },
     );
 
@@ -193,6 +261,9 @@ class AccountDataDeleter extends TerraformStack {
       snsTopic: this.getCodeDeploySnsTopic(),
       batchDeleteQueue: batchDeleteQueue.sqsQueue,
       listExportQueue: listExportQueue.sqsQueue,
+      exportRequestQueue: exportRequestQueue.sqsQueue,
+      annotationsExportQueue: annotationsExportQueue.sqsQueue,
+      exportStateDb: exportStateDb.dynamodb,
       listExportBucket: exportBucket,
       listExportPartsPrefix: partsPrefix,
       listExportArchivesPrefix: archivesPrefix,
@@ -227,6 +298,89 @@ class AccountDataDeleter extends TerraformStack {
     return new dataAwsSnsTopic.DataAwsSnsTopic(this, 'backend_notifications', {
       name: `Backend-${config.environment}-ChatBot`,
     });
+  }
+
+  private exportTopicSubscriptions(
+    forwardQueue: sqsQueue.SqsQueue,
+    exportRequest: SnsSqsSubscriptionProps,
+    exportStatus: SnsSqsSubscriptionProps,
+  ) {
+    const snsTopicDlq = new sqsQueue.SqsQueue(this, 'sns-topic-dql', {
+      name: `${config.envVars.listExportQueueName}-SNS-Topic-DLQ`,
+      tags: config.tags,
+    });
+    // Forward export requests to SQS from the list topic
+    const requestSubscription = new snsTopicSubscription.SnsTopicSubscription(
+      this,
+      'sns-subscription',
+      {
+        topicArn: exportRequest.snsTopicArn,
+        protocol: 'sqs',
+        endpoint: forwardQueue.arn,
+        redrivePolicy: JSON.stringify({
+          deadLetterTargetArn: snsTopicDlq.arn,
+        }),
+        filterPolicy: exportRequest.filterPolicy,
+        filterPolicyScope: exportRequest.filterPolicyScope,
+        dependsOn: [snsTopicDlq],
+      },
+    );
+    const statusSubscription = new snsTopicSubscription.SnsTopicSubscription(
+      this,
+      'sns-subscription-status',
+      {
+        topicArn: exportStatus.snsTopicArn,
+        protocol: 'sqs',
+        endpoint: forwardQueue.arn,
+        redrivePolicy: JSON.stringify({
+          deadLetterTargetArn: snsTopicDlq.arn,
+        }),
+        filterPolicy: exportStatus.filterPolicy,
+        filterPolicyScope: exportStatus.filterPolicyScope,
+        dependsOn: [snsTopicDlq],
+      },
+    );
+    // Create policies for SNS to the SQS and DLQ
+    // Can't use multiple ApplicationSqsSnsTopicSubsriptions because
+    // the policy gets overridden/chosen randomly
+    [
+      { name: 'sns-sqs', resource: forwardQueue },
+      { name: 'sns-dlq', resource: snsTopicDlq },
+    ].forEach((queue) => {
+      const policy = new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
+        this,
+        `${queue.name}-policy-document`,
+        {
+          statement: [
+            {
+              effect: 'Allow',
+              actions: ['sqs:SendMessage'],
+              resources: [queue.resource.arn],
+              principals: [
+                {
+                  identifiers: ['sns.amazonaws.com'],
+                  type: 'Service',
+                },
+              ],
+              condition: [
+                {
+                  test: 'ArnEquals',
+                  variable: 'aws:SourceArn',
+                  values: [exportRequest.snsTopicArn, exportStatus.snsTopicArn],
+                },
+              ],
+            },
+          ],
+          dependsOn: [queue.resource] as TerraformResource[],
+        },
+      ).json;
+
+      new sqsQueuePolicy.SqsQueuePolicy(this, `${queue.name}-policy`, {
+        queueUrl: queue.resource.url,
+        policy: policy,
+      });
+    });
+    return [requestSubscription, statusSubscription];
   }
 
   /**

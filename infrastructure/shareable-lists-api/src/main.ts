@@ -8,12 +8,14 @@ import {
   dataAwsRegion,
   dataAwsSnsTopic,
   dataAwsSubnets,
+  dataAwsS3Bucket,
 } from '@cdktf/provider-aws';
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import {
   ApplicationRDSCluster,
+  ApplicationSQSQueue,
   ApplicationSqsSnsTopicSubscription,
   PocketALBApplication,
   PocketAwsSyntheticChecks,
@@ -75,15 +77,56 @@ class ShareableListsAPI extends TerraformStack {
       },
     );
 
+    // Export work queue
+    const exportQueue = new ApplicationSQSQueue(
+      this,
+      'sharelists-export-consumer-queue',
+      {
+        name: config.export.queue,
+        tags: config.tags,
+        visibilityTimeoutSeconds: 1800,
+        messageRetentionSeconds: 1209600, //14 days
+        //need to set maxReceiveCount to enable DLQ
+        maxReceiveCount: 3,
+      },
+    );
+
+    // Subscription to list export topic
+    new ApplicationSqsSnsTopicSubscription(
+      this,
+      'list-events-sns-subscription',
+      {
+        name: `${config.export.queue}-SNS`,
+        snsTopicArn: `arn:aws:sns:${pocketVpc.region}:${pocketVpc.accountId}:${config.export.requestTopic}`,
+        sqsQueue: exportQueue.sqsQueue,
+        filterPolicyScope: 'MessageBody',
+        filterPolicy: JSON.stringify({
+          'detail-type': ['list-export-requested'],
+        }),
+        tags: config.tags,
+      },
+    );
+
     const alarmSnsTopic = this.getCodeDeploySnsTopic();
+
+    // Align with account-data-deleter (source of truth)
+    const exportBucket = new dataAwsS3Bucket.DataAwsS3Bucket(
+      this,
+      'export-bucket',
+      {
+        bucket: `com.getpocket-${config.environment.toLowerCase()}.list-exports`,
+      },
+    );
 
     this.createPocketAlbApplication({
       rds: this.createRds(pocketVpc),
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: alarmSnsTopic,
+      exportSqs: exportQueue.sqsQueue,
       region,
       caller,
       cache,
+      exportBucket,
     });
 
     new PocketAwsSyntheticChecks(this, 'synthetics', {
@@ -217,10 +260,20 @@ class ShareableListsAPI extends TerraformStack {
     caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
     snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
+    exportSqs: sqsQueue.SqsQueue;
     cache: { primaryEndpoint: string; readerEndpoint: string };
+    exportBucket: dataAwsS3Bucket.DataAwsS3Bucket;
   }): PocketALBApplication {
-    const { rds, region, caller, secretsManagerKmsAlias, snsTopic, cache } =
-      dependencies;
+    const {
+      rds,
+      region,
+      caller,
+      secretsManagerKmsAlias,
+      snsTopic,
+      cache,
+      exportSqs,
+      exportBucket,
+    } = dependencies;
 
     return new PocketALBApplication(this, 'application', {
       internal: true,
@@ -279,6 +332,15 @@ class ShareableListsAPI extends TerraformStack {
             {
               name: 'REDIS_IS_TLS',
               value: 'true',
+            },
+            {
+              name: 'EXPORT_QUEUE_URL',
+              value: `https://sqs.${region.name}.amazonaws.com/${caller.accountId}/${config.export.queue}`,
+            },
+            {
+              // Align with source: infrastructure/account-data-deleter
+              name: 'EXPORT_BUCKET',
+              value: exportBucket.bucket,
             },
           ],
           logGroup: this.createCustomLogGroup('app'),
@@ -371,10 +433,33 @@ class ShareableListsAPI extends TerraformStack {
             effect: 'Allow',
           },
           {
+            // export queue
+            actions: [
+              'sqs:ReceiveMessage',
+              'sqs:DeleteMessage',
+              'sqs:SendMessage',
+              'sqs:SendMessageBatch',
+            ],
+            resources: [exportSqs.arn],
+            effect: 'Allow',
+          },
+          {
             actions: ['events:PutEvents'],
             resources: [
               `arn:aws:events:${region.name}:${caller.accountId}:event-bus/${config.eventBusName}`,
             ],
+            effect: 'Allow',
+          },
+          {
+            // Bucket actions
+            actions: ['s3:ListBucket'],
+            resources: [exportBucket.arn],
+            effect: 'Allow',
+          },
+          {
+            // Object actions
+            actions: ['s3:*Object'],
+            resources: [`${exportBucket.arn}/*`],
             effect: 'Allow',
           },
         ],

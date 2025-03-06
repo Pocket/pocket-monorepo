@@ -2,7 +2,6 @@ import { EventEmitter } from 'events';
 import { DeleteMessageCommand, SQSClient } from '@aws-sdk/client-sqs';
 import { BatchImportHandler } from './batchImportHandler';
 import * as Sentry from '@sentry/node';
-import { SeverityLevel } from '@sentry/types';
 import config from '../config';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { mockUnleash } from '@pocket-tools/feature-flags-client';
@@ -168,7 +167,7 @@ describe('batchImportHandler', () => {
       });
       await batchImportHandler.pollQueue();
       expect(sentryStub).toHaveBeenCalledWith(error, {
-        level: 'fatal' as SeverityLevel,
+        data: { queue: config.aws.sqs.batchImportQueue.url },
       });
       expect(sentryStub).toHaveBeenCalledTimes(1);
       expect(loggerError).toHaveBeenCalledTimes(1);

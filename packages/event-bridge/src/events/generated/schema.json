@@ -2237,6 +2237,55 @@
       ],
       "type": "object"
     },
+    "ExportPartComplete": {
+      "properties": {
+        "detail": {
+          "properties": {
+            "encodedId": {
+              "type": "string"
+            },
+            "prefix": {
+              "type": "string"
+            },
+            "requestId": {
+              "type": "string"
+            },
+            "service": {
+              "enum": [
+                "list",
+                "shareable-lists",
+                "annotations"
+              ],
+              "type": "string"
+            },
+            "timestamp": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "encodedId",
+            "requestId",
+            "service",
+            "timestamp",
+            "prefix"
+          ],
+          "type": "object"
+        },
+        "detail-type": {
+          "const": "export-part-complete",
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "detail",
+        "detail-type",
+        "source"
+      ],
+      "type": "object"
+    },
     "ExportReady": {
       "properties": {
         "detail": {

@@ -272,8 +272,11 @@ class PocketEventBus extends TerraformStack {
       name: 'ListExportReadyEvents',
       tags: config.tags,
       eventPattern: {
-        'detail-type': [PocketEventType.EXPORT_READY],
-        source: ['account-data-deleter'],
+        'detail-type': [
+          PocketEventType.EXPORT_READY,
+          PocketEventType.EXPORT_PART_COMPLETE,
+        ],
+        source: ['account-data-deleter', 'shareable-lists'],
       },
     });
   }

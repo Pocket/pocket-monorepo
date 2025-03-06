@@ -7,9 +7,13 @@ initSentry({
 
 import { startServer } from './express';
 import { serverLogger } from '@pocket-tools/ts-logger';
+import { ExportHandler } from './background/ExportHandler';
+import { EventEmitter } from 'events';
 
 (async () => {
   const { adminUrl, publicUrl } = await startServer(4029);
+  // Start background tasks
+  new ExportHandler(new EventEmitter());
   serverLogger.info(
     `🚀 Public server ready at http://localhost:4029${publicUrl}`,
   );

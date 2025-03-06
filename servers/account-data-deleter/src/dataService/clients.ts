@@ -2,11 +2,14 @@ import knex, { Knex } from 'knex';
 import { config } from '../config';
 import Stripe from 'stripe';
 import { PocketEventBridgeClient } from '@pocket-tools/event-bridge';
+import { DynamoDBClient, DynamoDBClientConfig } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 
 let readDb: Knex;
 let writeDb: Knex;
 let stripe: Stripe;
 let eventBridge: PocketEventBridgeClient;
+let dynamoDb: DynamoDBDocumentClient;
 
 /**
  * Create a stripe client for handling Stripe data
@@ -52,6 +55,32 @@ export function eventBridgeClient(): PocketEventBridgeClient {
     eventBus: { name: config.aws.eventBus.name },
   });
   return eventBridge;
+}
+
+/**
+ * Create shared DynamoDB Client. By default, reuses connections.
+ * This is because the overhead of creating a new TCP connection
+ * for each DynamoDB request might be greater latency than the
+ * operation itself.
+ * See https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/node-reusing-connections.html
+ * @returns DynamoDBClient
+ */
+export function dynamoClient(): DynamoDBDocumentClient {
+  if (dynamoDb) return dynamoDb;
+  const dynamoClientConfig: DynamoDBClientConfig = {
+    region: config.aws.region,
+  };
+  // Set endpoint for local client, otherwise provider default
+  if (config.aws.endpoint != null) {
+    dynamoClientConfig['endpoint'] = config.aws.endpoint;
+  }
+  dynamoDb = new DynamoDBClient(dynamoClientConfig);
+  return DynamoDBDocumentClient.from(dynamoDb, {
+    marshallOptions: {
+      convertEmptyValues: true,
+      removeUndefinedValues: true,
+    },
+  });
 }
 
 /**

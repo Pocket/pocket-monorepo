@@ -3,7 +3,9 @@ set -x
 
 SQS=(
 pocket-account-data-delete-queue
+pocket-export-request-queue
 pocket-list-export-queue
+pocket-annotations-export-queue
 pocket-list-import-batch-queue
 pocket-list-import-file-queue
 )

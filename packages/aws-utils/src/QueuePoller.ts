@@ -7,19 +7,24 @@ import {
   ReceiveMessageCommandOutput,
 } from '@aws-sdk/client-sqs';
 import * as Sentry from '@sentry/node';
-import config from '../config';
 import { setTimeout } from 'timers/promises';
-import { SeverityLevel } from '@sentry/types';
-import { type Unleash } from 'unleash-client';
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { QueueConfig } from './types';
 import * as otel from '@opentelemetry/api';
-import { getClient } from '../featureFlags';
 
-export abstract class QueueHandler {
-  readonly sqsClient: SQSClient;
+export interface QueueConfig {
+  batchSize: number;
+  url: string;
+  visibilityTimeout: number;
+  maxMessages: number;
+  waitTimeSeconds: number;
+  defaultPollIntervalSeconds: number;
+  afterMessagePollIntervalSeconds: number;
+  messageRetentionSeconds: number;
+  name: string;
+}
+
+export abstract class QueuePoller<TMessageBody> {
   private tracer: otel.Tracer;
-  protected unleashClient: Unleash;
 
   /**
    * Class for deleting records in batches from the database,
@@ -42,56 +47,64 @@ export abstract class QueueHandler {
    * in the future.
    */
   constructor(
-    public readonly emitter: EventEmitter,
-    public readonly eventName: string,
-    public readonly queueConfig: QueueConfig,
-    pollOnInit = true,
-    unleashClient?: Unleash,
+    protected events: {
+      emitter: EventEmitter;
+      eventName: string;
+    },
+    protected sqs: {
+      config: QueueConfig;
+      client: SQSClient;
+    },
+    protected opts: {
+      pollOnInit?: boolean;
+    },
   ) {
-    this.sqsClient = new SQSClient({
-      region: config.aws.region,
-      endpoint: config.aws.endpoint,
-      maxAttempts: 3,
-    });
-    this.unleashClient = unleashClient ?? getClient();
+    // Default to polling when class is instantiated (really only when
+    // testing do you want it otherwise)
+    const pollOnInit = opts.pollOnInit != null ? opts.pollOnInit : true;
     this.tracer = otel.trace.getTracer('queue-tracer');
-    emitter.on(this.eventName, async () => await this.pollQueue());
+    events.emitter.on(events.eventName, async () => await this.pollQueue());
     // Start the polling by emitting an initial event
     if (pollOnInit) {
-      emitter.emit(this.eventName);
+      events.emitter.emit(events.eventName);
     }
   }
 
   /**
    * Delete a message that has been handled from the
    * configured queue
-   * @param message SQS Message recieved from queue
+   * @param message SQS Message recieved from BatchDelete queue
    */
   async deleteMessage(message: Message) {
     const deleteParams = {
-      QueueUrl: this.queueConfig.url,
+      QueueUrl: this.sqs.config.url,
       ReceiptHandle: message.ReceiptHandle,
     };
     try {
-      await this.sqsClient.send(new DeleteMessageCommand(deleteParams));
+      await this.sqs.client.send(new DeleteMessageCommand(deleteParams));
     } catch (error) {
       const errorMessage = 'Error deleting message from queue';
       serverLogger.error({
         message: errorMessage,
         error: error,
         errorData: message,
+        queue: this.sqs.config.url,
       });
-      Sentry.addBreadcrumb({ message: errorMessage, data: message });
-      Sentry.captureException(error);
+      Sentry.captureException(error, {
+        data: { ...message, queue: this.sqs.config.url },
+      });
     }
   }
 
   /**
-   * Handle messages from the queue
-   * @param body the body of the SQS message in the queue
+   * Handle messages from the batchDelete queue. Calls
+   * AccountDeleteDataService and forwards any errors to
+   * Cloudwatch and Sentry.
+   * @param body the body of the SQS message in the BatchDelete queue
    * @returns whether or not the message was successfully handled
+   * (underlying call to AccountDeleteDataService completed without error)
    */
-  abstract handleMessage(body: object): Promise<boolean>;
+  abstract handleMessage(body: TMessageBody): Promise<boolean>;
   /**
    * Set a timeout to emit another poll event which will be handled
    * by the listener.
@@ -102,7 +115,7 @@ export abstract class QueueHandler {
       serverLogger.info(`Set next poll timeout at ${timeout}`);
       await setTimeout(timeout);
     }
-    this.emitter.emit(this.eventName);
+    this.events.emitter.emit(this.events.eventName);
   }
 
   /**
@@ -114,7 +127,7 @@ export abstract class QueueHandler {
   async pollQueue() {
     return await Sentry.withIsolationScope(async () => {
       return await this.tracer.startActiveSpan(
-        `poll-queue-${this.queueConfig.name}`,
+        `poll-queue-${this.sqs.config.name}`,
         { root: true },
         async (span: otel.Span) => {
           await this.__pollQueue(span);
@@ -136,20 +149,20 @@ export abstract class QueueHandler {
     const params = {
       // https://github.com/aws/aws-sdk/issues/233
       AttributeNames: ['SentTimestamp'] as any, // see issue above - bug in the SDK
-      MaxNumberOfMessages: this.queueConfig.maxMessages,
+      MaxNumberOfMessages: this.sqs.config.maxMessages,
       MessageAttributeNames: ['All'],
-      QueueUrl: this.queueConfig.url,
-      VisibilityTimeout: this.queueConfig.visibilityTimeout,
-      WaitTimeSeconds: this.queueConfig.waitTimeSeconds,
+      QueueUrl: this.sqs.config.url,
+      VisibilityTimeout: this.sqs.config.visibilityTimeout,
+      WaitTimeSeconds: this.sqs.config.waitTimeSeconds,
     };
 
-    serverLogger.info(`Begining polling of ${this.queueConfig.url}`);
+    serverLogger.info(`Begining polling of ${this.sqs.config.url}`);
 
     let data: ReceiveMessageCommandOutput | null = null;
-    let body: object | null = null;
+    let body: TMessageBody | null = null;
 
     try {
-      data = await this.sqsClient.send(new ReceiveMessageCommand(params));
+      data = await this.sqs.client.send(new ReceiveMessageCommand(params));
       body =
         data.Messages &&
         data.Messages.length > 0 &&
@@ -158,9 +171,14 @@ export abstract class QueueHandler {
           : null;
     } catch (error) {
       const receiveError = 'PollQueue: Error receiving messages from queue';
-      serverLogger.error({ message: receiveError, error: error });
-      Sentry.addBreadcrumb({ message: receiveError });
-      Sentry.captureException(error, { level: 'fatal' as SeverityLevel });
+      serverLogger.error({
+        message: receiveError,
+        error: error,
+        queue: this.sqs.config.url,
+      });
+      Sentry.captureException(error, {
+        data: { queue: this.sqs.config.url },
+      });
       span.recordException(error);
       span.setStatus({ code: otel.SpanStatusCode.ERROR });
     }
@@ -172,12 +190,12 @@ export abstract class QueueHandler {
       }
       // Schedule next message poll
       await this.scheduleNextPoll(
-        this.queueConfig.afterMessagePollIntervalSeconds * 1000,
+        this.sqs.config.afterMessagePollIntervalSeconds * 1000,
       );
     } else {
       // If no messages were found, schedule another poll after a short time
       await this.scheduleNextPoll(
-        this.queueConfig.defaultPollIntervalSeconds * 1000,
+        this.sqs.config.defaultPollIntervalSeconds * 1000,
       );
     }
   }
