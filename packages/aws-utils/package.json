@@ -34,7 +34,7 @@
     "lint": "eslint --fix-dry-run",
     "presemantic-release": "pnpm run build",
     "semantic-release": "semantic-release",
-    "test": "jest",
+    "test": "jest \"\\.spec\\.ts\"",
     "test-integrations": "jest \"\\.integration\\.ts\" --forceExit",
     "test:watch": "pnpm run test -- --watch"
   },
