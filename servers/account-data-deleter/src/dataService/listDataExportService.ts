@@ -86,7 +86,7 @@ export class ListDataExportService extends AsyncDataExportService<
     const query = this.db('list')
       .select(
         this.db.raw(
-          `COALESCE((IF(title = '', given_url, title)), given_url) as title`,
+          `COALESCE((IF(title = '' || title = 'Problem loading page', given_url, title)), given_url) as title`,
         ),
         'given_url as url',
         this.db.raw('UNIX_TIMESTAMP(time_added) as time_added'),
