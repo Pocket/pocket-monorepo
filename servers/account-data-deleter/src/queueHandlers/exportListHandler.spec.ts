@@ -12,11 +12,11 @@ describe('exportHandler', () => {
   beforeEach(() => {
     captureExceptionSpy = jest
       .spyOn(Sentry, 'captureException')
-      .mockImplementation(); // stub, doesn't send
+      .mockImplementation();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks(); // clean up spies
+    jest.restoreAllMocks();
   });
 
   it('works for non-nested SQS messages', async () => {

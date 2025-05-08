@@ -9,11 +9,11 @@ describe('export state service', () => {
   beforeEach(() => {
     captureExceptionSpy = jest
       .spyOn(Sentry, 'captureException')
-      .mockImplementation(); // stub, doesn't send
+      .mockImplementation();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks(); // clean up spies
+    jest.restoreAllMocks();
   });
 
   it('marks complete when all services are true', () => {
