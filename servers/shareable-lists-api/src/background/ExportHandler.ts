@@ -7,6 +7,7 @@ import { ExportDataService } from './ExportDataService';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { conn } from '../database/client';
 import { sqs } from '../aws/sqs';
+import * as Sentry from '@sentry/node';
 
 export class ExportHandler extends QueuePoller<
   { Message: string } | ExportMessage
@@ -102,6 +103,13 @@ export class ExportHandler extends QueuePoller<
         errorMessage: error.message,
       });
       // Underlying services handle logging and observability of their errors
+      Sentry.addBreadcrumb({
+        message: 'ExportHandler - handleMessage - Shareable-lists export failed',
+        data: {
+          message: message,
+        },
+      });
+      Sentry.captureException(error);
       return false;
     }
     return true;

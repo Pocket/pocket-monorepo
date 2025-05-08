@@ -10,6 +10,7 @@ import {
   PocketEventType,
 } from '@pocket-tools/event-bridge';
 import { sqs } from '../aws/sqs';
+import * as Sentry from '@sentry/node';
 
 export class ExportStateHandler extends QueuePoller<{ Message: string }> {
   /**
@@ -48,13 +49,20 @@ export class ExportStateHandler extends QueuePoller<{ Message: string }> {
    * (underlying call to AccountDeleteDataService completed without error)
    */
   async handleMessage(message: { Message: string }) {
+    let body: ExportRequested | ExportPartComplete;
+
     try {
-      let body: ExportRequested | ExportPartComplete;
       // message is nested in layers of SNS/SQS overhead
       if ('Message' in message && message.Message != null) {
         body = JSON.parse(message.Message);
       } else {
-        throw new Error('Invalid message body');
+        const error = new Error('Invalid SQS message body');
+        Sentry.addBreadcrumb({
+          message: 'Invalid SQS message body',
+          data: { messageBody: message },
+        });
+        Sentry.captureException(error);
+        throw error;
       }
       serverLogger.info({
         message: 'ExportStatusHandler - received request',
@@ -83,6 +91,13 @@ export class ExportStateHandler extends QueuePoller<{ Message: string }> {
         errorMessage: error.message,
       });
       // Underlying services handle logging and observability of their errors
+      Sentry.addBreadcrumb({
+        message: 'ExportStateHandler - handleMessage - Export job failed.',
+        data: {
+          errorMessage: error.message,
+          messageBody: message,
+        },
+      });
       return false;
     }
     return true;

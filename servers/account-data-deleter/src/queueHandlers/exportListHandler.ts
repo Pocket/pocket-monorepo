@@ -6,6 +6,7 @@ import { ListDataExportService } from '../dataService/listDataExportService';
 import { S3Bucket, QueuePoller } from '@pocket-tools/aws-utils';
 import { serverLogger } from '@pocket-tools/ts-logger';
 import { sqs } from '../aws/sqs';
+import * as Sentry from '@sentry/node';
 
 type ExportMessages = { Message: string } | ExportMessage;
 
@@ -96,6 +97,13 @@ export class ExportListHandler extends QueuePoller<ExportMessages> {
         request: message,
         errorMessage: error.message,
       });
+      Sentry.addBreadcrumb({
+        message: 'ExportListHandler - handleMessage - List export failed',
+        data: {
+          message: message,
+        },
+      });
+      Sentry.captureException(error);
       // Underlying services handle logging and observability of their errors
       return false;
     }
