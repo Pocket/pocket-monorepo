@@ -67,6 +67,7 @@ export class ExportStateService {
           },
         });
         Sentry.captureException(error);
+        throw error;
       }
     }
   }
