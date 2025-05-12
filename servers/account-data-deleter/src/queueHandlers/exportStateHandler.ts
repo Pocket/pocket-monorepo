@@ -61,7 +61,6 @@ export class ExportStateHandler extends QueuePoller<{ Message: string }> {
           message: 'Invalid SQS message body',
           data: { messageBody: message },
         });
-        Sentry.captureException(error);
         throw error;
       }
       serverLogger.info({
@@ -98,6 +97,7 @@ export class ExportStateHandler extends QueuePoller<{ Message: string }> {
           messageBody: message,
         },
       });
+      Sentry.captureException(error);
       return false;
     }
     return true;

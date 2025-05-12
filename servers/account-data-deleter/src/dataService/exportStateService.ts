@@ -88,7 +88,6 @@ export class ExportStateService {
           message: 'ExportStateService - getExportUrl - create zip archive failed',
           data: { encodedId, prefix },
         });
-        Sentry.captureException(error);
         throw error;
       }
       const { Key: zipKey } = zipResponse;
@@ -102,6 +101,7 @@ export class ExportStateService {
         message: 'ExportStateService - getExportUrl failed',
         data: { encodedId, prefix },
       });
+      // Capture error to Sentry
       Sentry.captureException(error);
       throw error;
     }
@@ -128,7 +128,6 @@ export class ExportStateService {
         payload,
       });
       Sentry.addBreadcrumb({ message: 'ExportStateService - notifyUser - Failed to send EventBridge notification', data: { payload } });
-      Sentry.captureException(err);
       // Re-throw for calling function
       throw err;
     }
@@ -172,7 +171,7 @@ export class ExportStateService {
           cachedExport,
         );
       } catch(error) {
-        Sentry.addBreadcrumb({ message: 'exportStateService - startExport - notifyUser call failed'});
+        Sentry.addBreadcrumb({ message: 'ExportStateService - startExport - notifyUser call failed'});
         Sentry.captureException(error);
         throw error;
       }
@@ -180,7 +179,7 @@ export class ExportStateService {
     await this.updateStatus(payload);
 
     try {
-      Sentry.addBreadcrumb({ message: 'exportStateService - startExport - Adding export messages to list & annotations queues' });
+      Sentry.addBreadcrumb({ message: 'ExportStateService - startExport - Adding export messages to list & annotations queues' });
 
       await this.putExportMessage(payload, config.aws.sqs.listExportQueue.url);
       await this.putExportMessage(payload, config.aws.sqs.anotationsExportQueue.url);
@@ -238,9 +237,18 @@ export class ExportStateService {
         const result = await this.dynamo.send(new UpdateCommand(input));
         return result.Attributes as ExportRequestRecord;
       }
+    } catch(error) {
+      Sentry.addBreadcrumb({
+        message: 'ExportStateService - updateStatus - Dynamo error: failed to create new export record',
+        data: { requestId: payload.detail.requestId },
+      });
+      Sentry.captureException(error);
+      throw error;
+    }
       // Update the status of the export request to reflect
       // completed compontents
       // Remove illegal character
+    try{
       const service = payload.detail.service.replace('-', '');
       const input = {
         TableName: config.listExport.dynamoTable,
@@ -259,7 +267,7 @@ export class ExportStateService {
       return result.Attributes as ExportRequestRecord;
     } catch(error) {
       Sentry.addBreadcrumb({
-        message: 'ExportStateService - updateStatus - Dynamo error: failed to update status of export',
+        message: 'ExportStateService - updateStatus - Dynamo error: failed to update status of export record',
         data: { requestId: payload.detail.requestId },
       });
       Sentry.captureException(error);
