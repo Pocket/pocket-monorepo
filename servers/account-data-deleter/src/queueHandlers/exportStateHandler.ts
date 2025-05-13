@@ -64,7 +64,7 @@ export class ExportStateHandler extends QueuePoller<{ Message: string }> {
         throw error;
       }
       serverLogger.info({
-        message: 'ExportStatusHandler - received request',
+        message: 'ExportStateHandler - received request',
         body: message,
       });
       const exportBucket = new S3Bucket(config.listExport.exportBucket, {
@@ -97,7 +97,7 @@ export class ExportStateHandler extends QueuePoller<{ Message: string }> {
           messageBody: message,
         },
       });
-      Sentry.captureException(error);
+      Sentry.captureException(error, {tags: { component: 'ExportStateHandler', function: 'handleMessage' }});
       return false;
     }
     return true;
