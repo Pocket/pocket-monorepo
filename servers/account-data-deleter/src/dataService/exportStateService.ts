@@ -48,15 +48,27 @@ export class ExportStateService {
       body: result,
     });
     if (result != null && ExportStateService.isComplete(result)) {
-      const signedUrl = await this.getExportUrl(
-        payload.detail.prefix,
-        payload.detail.encodedId,
-      );
-      await this.notifyUser(
-        payload.detail.encodedId,
-        payload.detail.requestId,
-        signedUrl,
-      );
+      try {
+        const signedUrl = await this.getExportUrl(
+          payload.detail.prefix,
+          payload.detail.encodedId,
+        );
+        await this.notifyUser(
+          payload.detail.encodedId,
+          payload.detail.requestId,
+          signedUrl,
+        );
+      } catch(error) {
+        Sentry.addBreadcrumb({
+          message: 'ExportStateService - processUpdate failed',
+          data: {
+            requestId: payload.detail.requestId,
+            encodedId: payload.detail.encodedId,
+          },
+        });
+        Sentry.captureException(error, {tags: { component: 'ExportStateService', function: 'processUpdate' }});
+        throw error;
+      }
     }
   }
 
@@ -65,17 +77,33 @@ export class ExportStateService {
     prefix: string,
     encodedId: string,
   ): Promise<string | undefined> {
-    const zipResponse = await this.exportBucket.zipFilesByPrefix(
-      prefix,
-      this.zipFileKey(encodedId),
-    );
-    if (zipResponse != null) {
+    try {
+      const zipResponse = await this.exportBucket.zipFilesByPrefix(
+        prefix,
+        this.zipFileKey(encodedId),
+      );
+      if (!zipResponse) {
+        const error = new Error('ExportStateService - getExportUrl - Failed to zip export files');
+        Sentry.addBreadcrumb({
+          message: 'ExportStateService - getExportUrl - create zip archive failed',
+          data: { encodedId, prefix },
+        });
+        throw error;
+      }
       const { Key: zipKey } = zipResponse;
       const signedUrl = await this.exportBucket.getSignedUrl(
         zipKey,
         config.listExport.signedUrlExpiry,
       );
       return signedUrl;
+    } catch(error) {
+      Sentry.addBreadcrumb({
+        message: 'ExportStateService - getExportUrl failed',
+        data: { encodedId, prefix },
+      });
+      // Capture error to Sentry
+      Sentry.captureException(error, {tags: { component: 'ExportStateService', function: 'getExportUrl' }});
+      throw error;
     }
   }
 
@@ -99,7 +127,7 @@ export class ExportStateService {
         errorData: err,
         payload,
       });
-      Sentry.captureException(err, { data: { payload } });
+      Sentry.addBreadcrumb({ message: 'ExportStateService - notifyUser - Failed to send EventBridge notification', data: { payload } });
       // Re-throw for calling function
       throw err;
     }
@@ -133,21 +161,32 @@ export class ExportStateService {
     const cachedExport = await this.lastGoodExport(payload.detail.encodedId);
     if (cachedExport) {
       serverLogger.info({
-        message: 'ExportListHandler - Found valid export',
+        message: 'ExportStateService - Found valid export',
         export: cachedExport,
       });
-      this.notifyUser(
-        payload.detail.encodedId,
-        payload.detail.requestId,
-        cachedExport,
-      );
+      try {
+        await this.notifyUser(
+          payload.detail.encodedId,
+          payload.detail.requestId,
+          cachedExport,
+        );
+      } catch(error) {
+        Sentry.addBreadcrumb({ message: 'ExportStateService - startExport - notifyUser call failed'});
+        Sentry.captureException(error, {tags: { component: 'ExportStateService', function: 'startExport' }});
+        throw error;
+      }
     }
     await this.updateStatus(payload);
-    await this.putExportMessage(payload, config.aws.sqs.listExportQueue.url);
-    await this.putExportMessage(
-      payload,
-      config.aws.sqs.anotationsExportQueue.url,
-    );
+
+    try {
+      Sentry.addBreadcrumb({ message: 'ExportStateService - startExport - Adding export messages to list & annotations queues' });
+
+      await this.putExportMessage(payload, config.aws.sqs.listExportQueue.url);
+      await this.putExportMessage(payload, config.aws.sqs.anotationsExportQueue.url);
+    } catch (error) {
+      Sentry.captureException(error, {tags: { component: 'ExportStateService', function: 'startExport' }});
+      throw error;
+    }
     return true;
   }
 
@@ -176,42 +215,64 @@ export class ExportStateService {
     payload: ExportPartComplete | ExportRequested,
   ): Promise<ExportRequestRecord | undefined> {
     const now = new Date();
-    if (payload['detail-type'] === PocketEventType.EXPORT_REQUESTED) {
+    try {
+      if (payload['detail-type'] === PocketEventType.EXPORT_REQUESTED) {
+        serverLogger.info({
+          message: 'ExportStateService - updateStatus - Creating new export request record',
+          body: payload.detail.requestId
+        });
+        const input = {
+          // Create new export request record
+          TableName: config.listExport.dynamoTable,
+          Key: {
+            requestId: payload.detail.requestId,
+          },
+          UpdateExpression: `SET expiresAt = :ea, createdAt = :ca`,
+          ExpressionAttributeValues: {
+            ':ea': Math.floor(now.getTime() / 1000) + 60 * 60 * 24 * 17, // 17 days (longer than parts retention),
+            ':ca': now.toISOString(),
+          },
+          ReturnValues: 'ALL_NEW' as const,
+        };
+        const result = await this.dynamo.send(new UpdateCommand(input));
+        return result.Attributes as ExportRequestRecord;
+      }
+    } catch(error) {
+      Sentry.addBreadcrumb({
+        message: 'ExportStateService - updateStatus - Dynamo error: failed to create new export record',
+        data: { requestId: payload.detail.requestId },
+      });
+      Sentry.captureException(error, {tags: { component: 'ExportStateService', function: 'updateStatus' }});
+      throw error;
+    }
+      // Update the status of the export request to reflect
+      // completed compontents
+      // Remove illegal character
+    try{
+      const service = payload.detail.service.replace('-', '');
       const input = {
-        // Create new export request record
         TableName: config.listExport.dynamoTable,
         Key: {
           requestId: payload.detail.requestId,
         },
-        UpdateExpression: `SET expiresAt = :ea, createdAt = :ca`,
+        ExpressionAttributeNames: { '#ss': service },
+        UpdateExpression: `SET #ss = :ss, ${service}CompletedAt = :sca`,
         ExpressionAttributeValues: {
-          ':ea': Math.floor(now.getTime() / 1000) + 60 * 60 * 24 * 17, // 17 days (longer than parts retention),
-          ':ca': now.toISOString(),
+          ':ss': true,
+          ':sca': payload.detail.timestamp,
         },
         ReturnValues: 'ALL_NEW' as const,
       };
       const result = await this.dynamo.send(new UpdateCommand(input));
       return result.Attributes as ExportRequestRecord;
+    } catch(error) {
+      Sentry.addBreadcrumb({
+        message: 'ExportStateService - updateStatus - Dynamo error: failed to update status of export record',
+        data: { requestId: payload.detail.requestId },
+      });
+      Sentry.captureException(error, {tags: { component: 'ExportStateService', function: 'updateStatus' }});
+      throw error;
     }
-    // Update the status of the export request to reflect
-    // completed compontents
-    // Remove illegal character
-    const service = payload.detail.service.replace('-', '');
-    const input = {
-      TableName: config.listExport.dynamoTable,
-      Key: {
-        requestId: payload.detail.requestId,
-      },
-      ExpressionAttributeNames: { '#ss': service },
-      UpdateExpression: `SET #ss = :ss, ${service}CompletedAt = :sca`,
-      ExpressionAttributeValues: {
-        ':ss': true,
-        ':sca': payload.detail.timestamp,
-      },
-      ReturnValues: 'ALL_NEW' as const,
-    };
-    const result = await this.dynamo.send(new UpdateCommand(input));
-    return result.Attributes as ExportRequestRecord;
   }
 
   /**
