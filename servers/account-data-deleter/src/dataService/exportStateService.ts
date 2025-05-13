@@ -66,7 +66,7 @@ export class ExportStateService {
             encodedId: payload.detail.encodedId,
           },
         });
-        Sentry.captureException(error);
+        Sentry.captureException(error, {tags: { component: 'ExportStateService', function: 'processUpdate' }});
         throw error;
       }
     }
@@ -102,7 +102,7 @@ export class ExportStateService {
         data: { encodedId, prefix },
       });
       // Capture error to Sentry
-      Sentry.captureException(error);
+      Sentry.captureException(error, {tags: { component: 'ExportStateService', function: 'getExportUrl' }});
       throw error;
     }
   }
@@ -172,7 +172,7 @@ export class ExportStateService {
         );
       } catch(error) {
         Sentry.addBreadcrumb({ message: 'ExportStateService - startExport - notifyUser call failed'});
-        Sentry.captureException(error);
+        Sentry.captureException(error, {tags: { component: 'ExportStateService', function: 'startExport' }});
         throw error;
       }
     }
@@ -184,7 +184,7 @@ export class ExportStateService {
       await this.putExportMessage(payload, config.aws.sqs.listExportQueue.url);
       await this.putExportMessage(payload, config.aws.sqs.anotationsExportQueue.url);
     } catch (error) {
-      Sentry.captureException(error);
+      Sentry.captureException(error, {tags: { component: 'ExportStateService', function: 'startExport' }});
       throw error;
     }
     return true;
@@ -242,7 +242,7 @@ export class ExportStateService {
         message: 'ExportStateService - updateStatus - Dynamo error: failed to create new export record',
         data: { requestId: payload.detail.requestId },
       });
-      Sentry.captureException(error);
+      Sentry.captureException(error, {tags: { component: 'ExportStateService', function: 'updateStatus' }});
       throw error;
     }
       // Update the status of the export request to reflect
@@ -270,7 +270,7 @@ export class ExportStateService {
         message: 'ExportStateService - updateStatus - Dynamo error: failed to update status of export record',
         data: { requestId: payload.detail.requestId },
       });
-      Sentry.captureException(error);
+      Sentry.captureException(error, {tags: { component: 'ExportStateService', function: 'updateStatus' }});
       throw error;
     }
   }

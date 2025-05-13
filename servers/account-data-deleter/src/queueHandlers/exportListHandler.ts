@@ -103,7 +103,7 @@ export class ExportListHandler extends QueuePoller<ExportMessages> {
           message: message,
         },
       });
-      Sentry.captureException(error);
+      Sentry.captureException(error, {tags: { component: 'ExportListHandler', function: 'handleMessage' }});
       // Underlying services handle logging and observability of their errors
       return false;
     }

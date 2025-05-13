@@ -65,6 +65,14 @@ describe('exportHandler', () => {
     );
     // check for Sentry error
     expect(captureExceptionSpy).toHaveBeenCalledTimes(1);
-    expect(captureExceptionSpy).toHaveBeenCalledWith(error);
+    expect(captureExceptionSpy).toHaveBeenCalledWith(
+      error,
+      {
+        tags: {
+          component: 'ExportListHandler',
+          function: 'handleMessage',
+        },
+      }
+    );
   });
 });
