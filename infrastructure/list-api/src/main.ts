@@ -173,7 +173,7 @@ class ListAPI extends TerraformStack {
       },
       taskSize: {
         cpu: config.isDev ? 2048 : 4096,
-        memory: config.isDev ? 4096 : 8192,
+        memory: config.isDev ? 4096 : 30720,
       },
       containerConfigs: [
         {
