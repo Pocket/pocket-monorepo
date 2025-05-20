@@ -94,10 +94,14 @@ export class DataDeleterApp extends Construct {
           threshold: 25,
         },
       },
+      taskSize: {
+        cpu: config.isDev ? 512 : 2048,
+        memory: config.isDev ? 2048 : 16384,
+      },
       alb6CharacterPrefix: config.shortName,
       autoscalingConfig: {
-        targetMinCapacity: config.isProd ? 2 : 1,
-        targetMaxCapacity: config.isProd ? 3 : 1,
+        targetMinCapacity: config.isProd ? 10 : 1,
+        targetMaxCapacity: config.isProd ? 100 : 1,
       },
       cdn: false,
       codeDeploy: {
