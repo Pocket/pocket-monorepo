@@ -14,9 +14,6 @@ initSentry({
 
 import { nodeSDKBuilder } from '@pocket-tools/tracing';
 import { unleash } from './unleash';
-import { serverLogger } from '@pocket-tools/ts-logger';
-import { startServer, gracefulShutdown } from './server';
-
 nodeSDKBuilder({ ...config.tracing, unleash: unleash() }).then(async () => {
   const { server } = await startServer(config.app.port);
   serverLogger.info(
@@ -30,3 +27,5 @@ nodeSDKBuilder({ ...config.tracing, unleash: unleash() }).then(async () => {
     gracefulShutdown('MAX_UPTIME_REACHED', server);
   }, MAX_UPTIME);
 });
+import { serverLogger } from '@pocket-tools/ts-logger';
+import { startServer, gracefulShutdown } from './server';
