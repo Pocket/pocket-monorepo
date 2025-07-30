@@ -18,6 +18,9 @@ import * as Sentry from '@sentry/node';
 import { ExportStateHandler } from './queueHandlers/exportStateHandler';
 import { ExportAnnotationsHandler } from './queueHandlers/exportAnnotationsHandler';
 
+// Store queue handlers globally for shutdown access
+let queueHandlers: any[] = [];
+
 export async function startServer(port: number): Promise<{
   server: Server;
   app: Application;
@@ -49,11 +52,37 @@ export async function startServer(port: number): Promise<{
   await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
 
   // Start queue handlers (background polling)
-  new BatchDeleteHandler(new EventEmitter());
-  new ExportListHandler(new EventEmitter());
-  new ImportListHandler(new EventEmitter());
-  new ExportStateHandler(new EventEmitter());
-  new ExportAnnotationsHandler(new EventEmitter());
+  queueHandlers = [
+    new BatchDeleteHandler(new EventEmitter()),
+    new ExportListHandler(new EventEmitter()),
+    new ImportListHandler(new EventEmitter()),
+    new ExportStateHandler(new EventEmitter()),
+    new ExportAnnotationsHandler(new EventEmitter()),
+  ];
 
   return { server: httpServer, app };
+}
+
+export async function gracefulShutdown(
+  signal: string,
+  httpServer: Server,
+): Promise<void> {
+  serverLogger.info(`Received ${signal}, starting graceful shutdown...`);
+
+  // Stop accepting new connections
+  httpServer.close((err) => {
+    if (err) {
+      serverLogger.error('Error closing HTTP server', { error: err });
+    }
+  });
+
+  // Stop all queue pollers
+  try {
+    await Promise.all(queueHandlers.map((handler) => handler.stop()));
+    serverLogger.info('All queue handlers stopped successfully');
+  } catch (error) {
+    serverLogger.error('Error stopping queue handlers', { error });
+  }
+
+  process.exit(0);
 }

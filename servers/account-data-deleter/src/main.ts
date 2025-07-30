@@ -14,12 +14,19 @@ initSentry({
 
 import { nodeSDKBuilder } from '@pocket-tools/tracing';
 import { unleash } from './unleash';
-nodeSDKBuilder({ ...config.tracing, unleash: unleash() }).then(() => {
-  startServer(config.app.port).then(() => {
-    serverLogger.info(
-      `🚀 Public server ready at http://localhost:${config.app.port}`,
-    );
-  });
-});
 import { serverLogger } from '@pocket-tools/ts-logger';
-import { startServer } from './server';
+import { startServer, gracefulShutdown } from './server';
+
+nodeSDKBuilder({ ...config.tracing, unleash: unleash() }).then(async () => {
+  const { server } = await startServer(config.app.port);
+  serverLogger.info(
+    `🚀 Public server ready at http://localhost:${config.app.port}`,
+  );
+
+  // Schedule max uptime restart (24 hours)
+  const MAX_UPTIME = 24 * 60 * 60 * 1000;
+  setTimeout(() => {
+    serverLogger.info('Max uptime reached, initiating graceful shutdown');
+    gracefulShutdown('MAX_UPTIME_REACHED', server);
+  }, MAX_UPTIME);
+});
