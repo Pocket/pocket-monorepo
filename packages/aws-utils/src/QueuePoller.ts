@@ -25,6 +25,8 @@ export interface QueueConfig {
 
 export abstract class QueuePoller<TMessageBody> {
   private tracer: otel.Tracer;
+  private isShuttingDown = false;
+  private isProcessingMessage = false;
 
   /**
    * Class for deleting records in batches from the database,
@@ -111,6 +113,8 @@ export abstract class QueuePoller<TMessageBody> {
    * @param timeout time to wait, in ms, before sending event
    */
   async scheduleNextPoll(timeout: number) {
+    if (this.isShuttingDown) return;
+
     if (timeout > 0) {
       serverLogger.info(`Set next poll timeout at ${timeout}`);
       await setTimeout(timeout);
@@ -161,6 +165,7 @@ export abstract class QueuePoller<TMessageBody> {
     let data: ReceiveMessageCommandOutput | null = null;
     let body: TMessageBody | null = null;
 
+    this.isProcessingMessage = true;
     try {
       data = await this.sqs.client.send(new ReceiveMessageCommand(params));
       body =
@@ -198,5 +203,32 @@ export abstract class QueuePoller<TMessageBody> {
         this.sqs.config.defaultPollIntervalSeconds * 1000,
       );
     }
+    this.isProcessingMessage = false;
+  }
+
+  /**
+   * Stop the queue poller gracefully. Waits for the current message
+   * processing to complete.
+   */
+  async stop(): Promise<void> {
+    this.isShuttingDown = true;
+
+    // Wait for current message to finish processing (max visibility timeout)
+    const maxWaitTime = this.sqs.config.visibilityTimeout * 1000; // Convert to milliseconds
+    const startTime = Date.now();
+
+    while (this.isProcessingMessage) {
+      if (Date.now() - startTime > maxWaitTime) {
+        serverLogger.warn(
+          `Queue poller ${this.sqs.config.name} shutdown timeout after ${this.sqs.config.visibilityTimeout} seconds`,
+        );
+        break;
+      }
+      await setTimeout(100);
+    }
+
+    serverLogger.info(
+      `Queue poller ${this.sqs.config.name} stopped gracefully`,
+    );
   }
 }
