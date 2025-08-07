@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/node';
 import { ExportStateService } from './exportStateService';
 import { PocketEventType } from '@pocket-tools/event-bridge';
 import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import { config } from '../config';
 
 describe('export state service', () => {
   let captureSentryExceptionSpy: jest.SpyInstance;
@@ -63,6 +64,48 @@ describe('export state service', () => {
     expect(captureSentryExceptionSpy).toHaveBeenCalledTimes(1);
     // 2 Sentry breadcrumbs should be added
     expect(addSentryBreadcrumbSpy).toHaveBeenCalledTimes(2);
+  });
+
+  it('getExportUrl() - passes IAM credentials to getSignedUrl when creating export URL', async () => {
+    const mockZipKey = 'archives/user123/pocket.zip';
+    const mockSignedUrl = 'https://s3.amazonaws.com/bucket/file?signed=true';
+
+    // Mock S3 export bucket
+    const mockExportBucket = {
+      zipFilesByPrefix: jest.fn().mockResolvedValue({ Key: mockZipKey }),
+      getSignedUrl: jest.fn().mockResolvedValue(mockSignedUrl),
+    };
+
+    // Mock event bridge
+    const mockEventBridge = {
+      sendPocketEvent: jest.fn(),
+    };
+
+    // Create ExportStateService instance
+    const exportStateService = new ExportStateService(
+      mockEventBridge as any,
+      mockExportBucket as any,
+      {} as DynamoDBDocumentClient,
+    );
+
+    // Call getExportUrl
+    const result = await exportStateService.getExportUrl('prefix/user123', 'encoded123');
+
+    // Verify the signed URL is returned
+    expect(result).toBe(mockSignedUrl);
+
+    // Verify zipFilesByPrefix was called with correct parameters
+    expect(mockExportBucket.zipFilesByPrefix).toHaveBeenCalledWith(
+      'prefix/user123',
+      'archives/encoded123/pocket.zip',
+    );
+
+    // Verify getSignedUrl was called with all three parameters including credentials
+    expect(mockExportBucket.getSignedUrl).toHaveBeenCalledWith(
+      mockZipKey,
+      config.listExport.signedUrlExpiry,
+      config.listExport.presignedIamUserCredentials,
+    );
   });
 
   it('notifyUser() - should NOT capture Sentry error directly when sending notification fails but should add Sentry breadcrumb', async () => {
