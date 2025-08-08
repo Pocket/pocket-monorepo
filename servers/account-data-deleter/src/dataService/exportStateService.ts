@@ -94,6 +94,7 @@ export class ExportStateService {
       const signedUrl = await this.exportBucket.getSignedUrl(
         zipKey,
         config.listExport.signedUrlExpiry,
+        config.listExport.presignedIamUserCredentials,
       );
       return signedUrl;
     } catch(error) {
