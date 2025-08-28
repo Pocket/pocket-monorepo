@@ -97,7 +97,9 @@ export class ExportStateHandler extends QueuePoller<{ Message: string }> {
           messageBody: message,
         },
       });
-      Sentry.captureException(error, {tags: { component: 'ExportStateHandler', function: 'handleMessage' }});
+      Sentry.captureException(error, {
+        tags: { component: 'ExportStateHandler', function: 'handleMessage' },
+      });
       return false;
     }
     return true;
