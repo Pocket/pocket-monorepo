@@ -44,10 +44,6 @@ module "apollo" {
       value = local.workspace.nodeEnv
     },
     {
-      name  = "ELASTICSEARCH_HOST"
-      value = local.elastic.endpoint
-    },
-    {
       name  = "ELASTICSEARCH_INDEX"
       value = local.elastic_index
     },
@@ -74,10 +70,6 @@ module "apollo" {
     {
       name  = "CORPUS_INDEX_DE"
       value = local.corpus_index_de
-    },
-    {
-      name  = "ELASTICSEARCH_DOMAIN"
-      value = local.elastic.domain_name
     },
     {
       name  = "AWS_SQS_ENDPOINT"
