@@ -92,18 +92,6 @@ module "apollo" {
       value = aws_sqs_queue.user_items_update_backfill.id
     },
     {
-      name  = "EMBEDDINGS_ENDPOINT"
-      value = module.corpus_embeddings.sagemaker_endpoint_name
-    },
-    {
-      name  = "CORPUS_SEARCH_DOMAIN"
-      value = module.corpus_embeddings.opensearch_domain_name
-    },
-    {
-      name  = "CORPUS_SEARCH_ENDPOINT"
-      value = module.corpus_embeddings.opensearch_endpoint
-    },
-    {
       name  = "OTLP_COLLECTOR_URL"
       value = local.workspace.otlpCollectorUrl
     }

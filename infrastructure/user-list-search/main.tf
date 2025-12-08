@@ -50,8 +50,3 @@ data "aws_vpc" "vpc" {
 data "aws_cloudwatch_event_bus" "shared" {
   name = "PocketEventBridge-${local.env}-Shared-Event-Bus"
 }
-
-module "corpus_embeddings" {
-  source = "./corpus-embeddings"
-  env    = local.env
-}
