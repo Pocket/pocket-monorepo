@@ -99,17 +99,6 @@ data "aws_iam_policy_document" "ecs_task_role_policy" {
     ]
   }
 
-  ## Allow invoking Sagemaker endpoint
-
-  statement {
-    effect = "Allow"
-    actions = [
-      "sagemaker:InvokeEndpointAsync",
-      "sagemaker:InvokeEndpoint"
-    ]
-    resources = [module.corpus_embeddings.sagemaker_endpoint.arn]
-  }
-
   ## Allow putting events on EventBridge
   statement {
     effect = "Allow"
