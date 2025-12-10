@@ -44,14 +44,6 @@ module "queue_users" {
       value = "production"
     },
     {
-      name  = "ELASTICSEARCH_HOST"
-      value = local.elastic.endpoint
-    },
-    {
-      name  = "ELASTICSEARCH_DOMAIN"
-      value = local.elastic.domain_name
-    },
-    {
       name  = "AWS_SQS_ENDPOINT"
       value = local.sqsEndpoint
     },

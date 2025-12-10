@@ -44,10 +44,6 @@ module "apollo" {
       value = local.workspace.nodeEnv
     },
     {
-      name  = "ELASTICSEARCH_HOST"
-      value = local.elastic.endpoint
-    },
-    {
       name  = "ELASTICSEARCH_INDEX"
       value = local.elastic_index
     },
@@ -76,10 +72,6 @@ module "apollo" {
       value = local.corpus_index_de
     },
     {
-      name  = "ELASTICSEARCH_DOMAIN"
-      value = local.elastic.domain_name
-    },
-    {
       name  = "AWS_SQS_ENDPOINT"
       value = local.sqsEndpoint
     },
@@ -98,18 +90,6 @@ module "apollo" {
     {
       name  = "SQS_USER_ITEMS_UPDATE_BACKFILL_URL"
       value = aws_sqs_queue.user_items_update_backfill.id
-    },
-    {
-      name  = "EMBEDDINGS_ENDPOINT"
-      value = module.corpus_embeddings.sagemaker_endpoint_name
-    },
-    {
-      name  = "CORPUS_SEARCH_DOMAIN"
-      value = module.corpus_embeddings.opensearch_domain_name
-    },
-    {
-      name  = "CORPUS_SEARCH_ENDPOINT"
-      value = module.corpus_embeddings.opensearch_endpoint
     },
     {
       name  = "OTLP_COLLECTOR_URL"

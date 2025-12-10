@@ -57,23 +57,6 @@ locals {
       alarm_actions = []
     }
 
-    elasticsearch_write_block = {
-      name        = "${local.prefix}-ElasticSearchWriteBlockedCritical"
-      description = "Processes can no longer write to ${local.prefix} ElasticSearch"
-      metrics = [
-        local.metrics.elasticsearch.cluster_index_write_blocked,
-      ]
-      threshold         = 1
-      operator          = ">="
-      return_data_on_id = local.metrics.elasticsearch.cluster_index_write_blocked.id
-      // Writes are blocked to elasticsearch for more then 15 minutes
-      period        = 60
-      breaches      = 15
-      tags          = local.tags
-      ok_actions    = []
-      alarm_actions = []
-    }
-
     list_item_update_errors = {
       name        = "${local.prefix}-UserItemUpdateErrors"
       description = "More than 1 error for 3 consecutive minutes"

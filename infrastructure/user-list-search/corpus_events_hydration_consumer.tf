@@ -103,29 +103,6 @@ data "aws_iam_policy_document" "corpus_events_hydration_lambda_execution_policy"
   }
 
   statement {
-    effect  = "Allow"
-    actions = ["es:ESHttp*"]
-    # Access to the bulk APIs for the corpus indices
-    resources = [
-      "${module.corpus_embeddings.opensearch_domain_arn}/_bulk",
-      "${module.corpus_embeddings.opensearch_domain_arn}/${local.corpus_index_en}/_bulk",
-      "${module.corpus_embeddings.opensearch_domain_arn}/${local.corpus_index_de}/_bulk",
-      "${module.corpus_embeddings.opensearch_domain_arn}/${local.corpus_index_es}/_bulk",
-      "${module.corpus_embeddings.opensearch_domain_arn}/${local.corpus_index_it}/_bulk",
-      "${module.corpus_embeddings.opensearch_domain_arn}/${local.corpus_index_fr}/_bulk",
-    ]
-  }
-
-  statement {
-    effect = "Allow"
-    actions = [
-      "sagemaker:InvokeEndpointAsync",
-      "sagemaker:InvokeEndpoint"
-    ]
-    resources = [module.corpus_embeddings.sagemaker_endpoint.arn]
-  }
-
-  statement {
     effect = "Allow"
     actions = [
       "ssm:GetParameter*"

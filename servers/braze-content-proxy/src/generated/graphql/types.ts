@@ -3540,8 +3540,17 @@ export type Section = {
   active: Scalars['Boolean']['output'];
   /** The source which created the Section. */
   createSource: ActivitySource;
+  /** A short description of the Section. */
+  description?: Maybe<Scalars['String']['output']>;
   /** An alternative primary key in UUID format. */
   externalId: Scalars['ID']['output'];
+  /**
+   * An optional description or supporting text for use in hero modules.
+   * Relevant for custom sections.
+   */
+  heroDescription?: Maybe<Scalars['String']['output']>;
+  /** An optional title used in hero modules. Relevant for custom sections. */
+  heroTitle?: Maybe<Scalars['String']['output']>;
   /** Optional IAB metadata returned to the client (i.e. Merino->Firefox, Admin Tools) */
   iab?: Maybe<IabMetadata>;
   /** The GUID of the Scheduled Surface. Example: 'NEW_TAB_EN_US'. */
