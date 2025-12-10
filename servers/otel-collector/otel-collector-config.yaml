@@ -14,6 +14,9 @@ exporters:
       default_log_name: opentelemetry.io/collector-exported-log
     # https://www.googlecloudcommunity.com/gc/Data-Analytics/OpenTelemetry-and-GKE/m-p/674090/highlight/true#M3861
     timeout: 45s
+  googlemanagedprometheus:
+    sending_queue:
+      batch:
 processors:
   # https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/23847
   transform/google_logs:
@@ -99,9 +102,8 @@ service:
           resource/cleanup_for_google,
           resourcedetection/ecs,
           memory_limiter,
-          batch/metrics,
         ]
-      exporters: [googlecloud]
+      exporters: [googlemanagedprometheus]
     logs:
       receivers: [otlp]
       processors:
