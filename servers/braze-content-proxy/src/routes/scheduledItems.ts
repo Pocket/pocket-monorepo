@@ -37,13 +37,12 @@ export const stories = {
     const stories = data ? data.data.scheduledSurface.items : [];
 
     const transformedStories: TransformedCorpusItem[] = stories
-      .filter((item) => item.corpusItem.shortUrl != null)
       .map((item) => {
         return {
           // The id of the Scheduled Surface Item
           id: item.id,
           url: item.corpusItem.url,
-          shortUrl: item.corpusItem.shortUrl,
+          shortUrl: item.corpusItem.url,
           title: item.corpusItem.title,
           topic: item.corpusItem.topic ?? '', // set to an empty string if null
           excerpt: item.corpusItem.excerpt,
