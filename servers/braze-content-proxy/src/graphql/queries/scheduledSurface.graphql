@@ -4,7 +4,6 @@ query PocketHits($date: Date!, $scheduledSurfaceId: ID!) {
       id
       corpusItem {
         url
-        shortUrl
         title
         topic
         excerpt

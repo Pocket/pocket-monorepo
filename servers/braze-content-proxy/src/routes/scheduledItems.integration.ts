@@ -24,7 +24,7 @@ describe('/scheduled-items/:scheduledSurfaceID?date=date&apikey=apikey', () => {
       {
         id: '123-abc',
         url: 'www.test-url.com',
-        shortUrl: 'https://pocket.co/abc',
+        shortUrl: 'www.test-url.com',
         title: 'test-title',
         excerpt: 'test-excerpt',
         imageUrl: 'www.test-image-url.com',
@@ -35,7 +35,7 @@ describe('/scheduled-items/:scheduledSurfaceID?date=date&apikey=apikey', () => {
       {
         id: '456-cde',
         url: 'www.second-test-url.com',
-        shortUrl: 'https://pocket.co/cde',
+        shortUrl: 'www.second-test-url.com',
         title: 'second-test-title',
         excerpt: 'second-test-excerpt',
         imageUrl: 'www.second-test-image-url.com',
