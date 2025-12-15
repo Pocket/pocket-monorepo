@@ -39,20 +39,19 @@ function transformToBrazePayload(
   if (collection == null) {
     throw new Error('Could not render collection, because it had an error');
   } else {
-    const stories: BrazeCollectionStory[] = collection.stories
-      .filter((story) => story.item?.shortUrl != null)
-      .map((story) => {
-        return {
-          title: story.title,
-          url: story.url,
-          excerpt: story.excerpt,
-          imageUrl: getResizedImageUrl(story.imageUrl),
-          authors: story.authors.map((author) => author.name),
-          shortUrl: story.item?.shortUrl,
-          publisher: story.publisher ?? '',
-          externalId: story.externalId,
-        };
-      });
+    const stories: BrazeCollectionStory[] = collection.stories.map((story) => {
+      return {
+        title: story.title,
+        url: story.url,
+        excerpt: story.excerpt,
+        imageUrl: getResizedImageUrl(story.imageUrl),
+        authors: story.authors.map((author) => author.name),
+        // mirror the full url to the short url to stop pocket parser reliance
+        shortUrl: story.url,
+        publisher: story.publisher ?? '',
+        externalId: story.externalId,
+      };
+    });
     return {
       title: collection.title,
       intro: collection.intro,

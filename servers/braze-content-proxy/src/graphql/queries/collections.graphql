@@ -15,9 +15,6 @@ query PocketCollections($slug: String!) {
       authors {
         name
       }
-      item {
-        shortUrl
-      }
       url
     }
   }
