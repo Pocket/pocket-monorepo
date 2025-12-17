@@ -7,7 +7,6 @@ import {
   dataAwsKmsAlias,
   dataAwsRegion,
   dataAwsSnsTopic,
-  dataAwsSubnets,
   dataAwsS3Bucket,
 } from '@cdktf/provider-aws';
 import { provider as localProvider } from '@cdktf/provider-local';
@@ -20,7 +19,6 @@ import {
   PocketALBApplication,
   PocketAwsSyntheticChecks,
   PocketVPC,
-  ApplicationServerlessRedis,
 } from '@pocket-tools/terraform-modules';
 import { Construct } from 'constructs';
 import { App, S3Backend, TerraformStack } from 'cdktf';
@@ -53,7 +51,6 @@ class ShareableListsAPI extends TerraformStack {
     const pocketVpc = new PocketVPC(this, 'pocket-vpc');
     const region = new dataAwsRegion.DataAwsRegion(this, 'region');
 
-    const cache = this.createElasticache(this, pocketVpc);
     const sqsLambda = new SQSLambda(
       this,
       'sqs-event-consumer',
@@ -125,7 +122,6 @@ class ShareableListsAPI extends TerraformStack {
       exportSqs: exportQueue.sqsQueue,
       region,
       caller,
-      cache,
       exportBucket,
     });
 
@@ -152,60 +148,6 @@ class ShareableListsAPI extends TerraformStack {
         },
       ],
     });
-  }
-
-  /**
-   * Creates the elasticache and returns the node address list
-   * @param scope
-   * @private
-   */
-  private createElasticache(
-    scope: Construct,
-    pocketVPC: PocketVPC,
-  ): {
-    primaryEndpoint: string;
-    readerEndpoint: string;
-  } {
-    // Serverless elasticache doesn't support the `e` availablity zone in us-east-1... so we need to filter it out..
-    const privateSubnets = new dataAwsSubnets.DataAwsSubnets(
-      this,
-      `cache_private_subnet_ids`,
-      {
-        filter: [
-          {
-            name: 'subnet-id',
-            values: pocketVPC.privateSubnetIds,
-          },
-          {
-            name: 'availability-zone',
-            values: ['us-east-1a', 'us-east-1c', 'us-east-1d'],
-          },
-        ],
-      },
-    );
-    const elasticache = new ApplicationServerlessRedis(
-      scope,
-      'serverless_redis',
-      {
-        //Usually we would set the security group ids of the service that needs to hit this.
-        //However we don't have the necessary security group because it gets created in PocketALBApplication
-        //So instead we set it to null and allow anything within the vpc to access it.
-        //This is not ideal..
-        //Ideally we need to be able to add security groups to the ALB application.
-        // @ts-expect-error - we need to set the security group ids to undefined
-        allowedIngressSecurityGroupIds: undefined,
-        subnetIds: privateSubnets.ids,
-        tags: config.tags,
-        vpcId: pocketVPC.vpc.id,
-        // add on a serverless to the name, because our previous elasticache will still exist at the old name
-        prefix: `${config.prefix}-serverless`,
-      },
-    );
-
-    return {
-      primaryEndpoint: elasticache.elasticache.endpoint.get(0).address,
-      readerEndpoint: elasticache.elasticache.readerEndpoint.get(0).address,
-    };
   }
 
   /**
@@ -249,6 +191,7 @@ class ShareableListsAPI extends TerraformStack {
           maxCapacity: config.rds.maxCapacity,
         },
         createServerlessV2Instance: true,
+        finalSnapshotIdentifier: `${config.name}-final-snapshot`,
       },
       tags: config.tags,
     });
@@ -261,7 +204,6 @@ class ShareableListsAPI extends TerraformStack {
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
     snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
     exportSqs: sqsQueue.SqsQueue;
-    cache: { primaryEndpoint: string; readerEndpoint: string };
     exportBucket: dataAwsS3Bucket.DataAwsS3Bucket;
   }): PocketALBApplication {
     const {
@@ -270,7 +212,6 @@ class ShareableListsAPI extends TerraformStack {
       caller,
       secretsManagerKmsAlias,
       snsTopic,
-      cache,
       exportSqs,
       exportBucket,
     } = dependencies;
@@ -316,14 +257,6 @@ class ShareableListsAPI extends TerraformStack {
             {
               name: 'NODE_ENV',
               value: process.env.NODE_ENV ?? 'development',
-            },
-            {
-              name: 'REDIS_PRIMARY_ENDPOINT',
-              value: cache.primaryEndpoint,
-            },
-            {
-              name: 'REDIS_READER_ENDPOINT',
-              value: cache.readerEndpoint,
             },
             {
               name: 'REDIS_IS_CLUSTER',
