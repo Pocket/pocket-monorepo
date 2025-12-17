@@ -13,7 +13,6 @@ import { provider as nullProvider } from '@cdktf/provider-null';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
 import { config } from './config/index.ts';
 import {
-  ApplicationRDSCluster,
   ApplicationSQSQueue,
   ApplicationSqsSnsTopicSubscription,
   PocketALBApplication,
@@ -49,7 +48,6 @@ class NotesAPI extends TerraformStack {
     const pocketVPC = new PocketVPC(this, 'pocket-vpc');
 
     const alarmSnsTopic = this.getCodeDeploySnsTopic();
-    const rds = this.createRds(pocketVPC);
     // TODO: Uncomment when ready to implement data deletion
     // const sqs = this.deleteNotificationQueue(pocketVPC);
 
@@ -58,7 +56,6 @@ class NotesAPI extends TerraformStack {
       snsTopic: alarmSnsTopic,
       region,
       caller,
-      rds,
       // sqs,
     });
 
@@ -109,33 +106,6 @@ class NotesAPI extends TerraformStack {
     });
   }
 
-  /**
-   * Create Aurora database
-   * @param pocketVpc
-   * @private
-   */
-  private createRds(pocketVpc: PocketVPC) {
-    return new ApplicationRDSCluster(this, 'rds', {
-      prefix: config.prefix,
-      vpcId: pocketVpc.vpc.id,
-      subnetIds: pocketVpc.privateSubnetIds,
-      rdsConfig: {
-        databaseName: 'pocketnotes',
-        masterUsername: 'pkt_notes',
-        engine: 'aurora-postgresql',
-        engineMode: 'provisioned',
-        engineVersion: '16.4',
-        serverlessv2ScalingConfiguration: {
-          minCapacity: config.rds.minCapacity,
-          maxCapacity: config.rds.maxCapacity,
-        },
-        createServerlessV2Instance: true,
-        finalSnapshotIdentifier: `${config.name}-final-snapshot`,
-      },
-      tags: config.tags,
-    });
-  }
-
   private deleteNotificationQueue(pocketVpc: PocketVPC) {
     const sqs = new ApplicationSQSQueue(this, 'batch-delete-consumer-queue', {
       name: config.envVars.sqsBatchDeleteQueueName,
@@ -166,7 +136,6 @@ class NotesAPI extends TerraformStack {
     caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
     snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
-    rds: ApplicationRDSCluster;
     // sqs: ApplicationSQSQueue;
   }): PocketALBApplication {
     const {
@@ -174,7 +143,6 @@ class NotesAPI extends TerraformStack {
       caller,
       secretsManagerKmsAlias,
       snsTopic,
-      rds,
     } = //, sqs } =
       dependencies;
 
@@ -238,34 +206,6 @@ class NotesAPI extends TerraformStack {
             {
               name: 'UNLEASH_KEY',
               valueFrom: `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/UNLEASH_KEY`,
-            },
-            {
-              name: 'DATABASE_URL',
-              valueFrom: `${rds.secretARN}:database_url::`,
-            },
-            {
-              name: 'DB_WRITE_HOST',
-              valueFrom: `${rds.secretARN}:host::`,
-            },
-            {
-              name: 'DB_READ_HOST',
-              valueFrom: `${rds.secretARN}:host::`,
-            },
-            {
-              name: 'DATABASE_USER',
-              valueFrom: `${rds.secretARN}:username::`,
-            },
-            {
-              name: 'DATABASE_PASSWORD',
-              valueFrom: `${rds.secretARN}:password::`,
-            },
-            {
-              name: 'DATABASE_NAME',
-              valueFrom: `${rds.secretARN}:dbname::`,
-            },
-            {
-              name: 'DATABASE_PORT',
-              valueFrom: `${rds.secretARN}:port::`,
             },
           ],
         },
