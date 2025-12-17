@@ -130,6 +130,7 @@ class NotesAPI extends TerraformStack {
           maxCapacity: config.rds.maxCapacity,
         },
         createServerlessV2Instance: true,
+        finalSnapshotIdentifier: `${config.name}-final-snapshot`,
       },
       tags: config.tags,
     });

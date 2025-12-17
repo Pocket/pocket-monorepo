@@ -13,7 +13,6 @@ import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import {
-  ApplicationRDSCluster,
   ApplicationSQSQueue,
   ApplicationSqsSnsTopicSubscription,
   PocketALBApplication,
@@ -116,7 +115,6 @@ class ShareableListsAPI extends TerraformStack {
     );
 
     this.createPocketAlbApplication({
-      rds: this.createRds(pocketVpc),
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: alarmSnsTopic,
       exportSqs: exportQueue.sqsQueue,
@@ -170,35 +168,7 @@ class ShareableListsAPI extends TerraformStack {
     });
   }
 
-  /**
-   * Creat Aurora database
-   * @param pocketVpc
-   * @private
-   */
-  private createRds(pocketVpc: PocketVPC) {
-    return new ApplicationRDSCluster(this, 'rds', {
-      prefix: config.prefix,
-      vpcId: pocketVpc.vpc.id,
-      subnetIds: pocketVpc.privateSubnetIds,
-      rdsConfig: {
-        databaseName: 'shareablelists',
-        masterUsername: 'pkt_slists',
-        engine: 'aurora-mysql',
-        engineMode: 'provisioned',
-        engineVersion: '8.0.mysql_aurora.3.06.0',
-        serverlessv2ScalingConfiguration: {
-          minCapacity: config.rds.minCapacity,
-          maxCapacity: config.rds.maxCapacity,
-        },
-        createServerlessV2Instance: true,
-        finalSnapshotIdentifier: `${config.name}-final-snapshot`,
-      },
-      tags: config.tags,
-    });
-  }
-
   private createPocketAlbApplication(dependencies: {
-    rds: ApplicationRDSCluster;
     region: dataAwsRegion.DataAwsRegion;
     caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
@@ -207,7 +177,6 @@ class ShareableListsAPI extends TerraformStack {
     exportBucket: dataAwsS3Bucket.DataAwsS3Bucket;
   }): PocketALBApplication {
     const {
-      rds,
       region,
       caller,
       secretsManagerKmsAlias,
@@ -282,30 +251,6 @@ class ShareableListsAPI extends TerraformStack {
             {
               name: 'SENTRY_DSN',
               valueFrom: `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}/SENTRY_DSN`,
-            },
-            {
-              name: 'DATABASE_URL',
-              valueFrom: `${rds.secretARN}:database_url::`,
-            },
-            {
-              name: 'DATABASE_HOST',
-              valueFrom: `${rds.secretARN}:host::`,
-            },
-            {
-              name: 'DATABASE_USER',
-              valueFrom: `${rds.secretARN}:username::`,
-            },
-            {
-              name: 'DATABASE_PASSWORD',
-              valueFrom: `${rds.secretARN}:password::`,
-            },
-            {
-              name: 'DATABASE_NAME',
-              valueFrom: `${rds.secretARN}:dbname::`,
-            },
-            {
-              name: 'DATABASE_PORT',
-              valueFrom: `${rds.secretARN}:port::`,
             },
           ],
         },
