@@ -24,8 +24,6 @@ import { provider as nullProvider } from '@cdktf/provider-null';
 import {
   ApplicationSQSQueue,
   PocketVPC,
-  ApplicationDynamoDBTable,
-  ApplicationDynamoDBTableCapacityMode,
   SnsSqsSubscriptionProps,
 } from '@pocket-tools/terraform-modules';
 
@@ -74,33 +72,6 @@ class AccountDataDeleter extends TerraformStack {
         messageRetentionSeconds: 1209600, //14 days
         //need to set maxReceiveCount to enable DLQ
         maxReceiveCount: 3,
-      },
-    );
-
-    const exportStateDb = new ApplicationDynamoDBTable(
-      this,
-      'export-request-state',
-      {
-        tags: config.tags,
-        prefix: `${config.shortName}-${config.environment}-Export-Request-State`,
-        capacityMode: ApplicationDynamoDBTableCapacityMode.ON_DEMAND,
-        preventDestroyTable: true,
-        tableConfig: {
-          pointInTimeRecovery: {
-            enabled: true,
-          },
-          ttl: {
-            enabled: true,
-            attributeName: 'expiresAt',
-          },
-          hashKey: 'requestId',
-          attribute: [
-            {
-              name: 'requestId',
-              type: 'S',
-            },
-          ],
-        },
       },
     );
 
@@ -263,7 +234,6 @@ class AccountDataDeleter extends TerraformStack {
       listExportQueue: listExportQueue.sqsQueue,
       exportRequestQueue: exportRequestQueue.sqsQueue,
       annotationsExportQueue: annotationsExportQueue.sqsQueue,
-      exportStateDb: exportStateDb.dynamodb,
       listExportBucket: exportBucket,
       listExportPartsPrefix: partsPrefix,
       listExportArchivesPrefix: archivesPrefix,
