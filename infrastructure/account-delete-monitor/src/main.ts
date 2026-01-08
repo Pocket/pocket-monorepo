@@ -1,5 +1,4 @@
 import { config } from './config/index.ts';
-import { DynamoDB } from './dynamodb.ts';
 import { SQSEventLambda } from './sqsEventLambda.ts';
 
 import { provider as archiveProvider } from '@cdktf/provider-archive';
@@ -8,10 +7,6 @@ import {
   dataAwsCallerIdentity,
   dataAwsIamPolicyDocument,
   dataAwsRegion,
-  dynamodbTable,
-  iamRole,
-  iamPolicy,
-  iamRolePolicyAttachment,
   snsTopicSubscription,
   sqsQueue,
   sqsQueuePolicy,
@@ -52,22 +47,10 @@ class AccountDeleteMonitor extends TerraformStack {
     const pocketVPC = new PocketVPC(this, 'pocket-vpc');
     const region = new dataAwsRegion.DataAwsRegion(this, 'region');
 
-    // Create data store
-    const dynamo = new DynamoDB(this, 'event-table');
-
     // Create Lambda to process events and store/analyze records in DB
     const sqsEventLambda = new SQSEventLambda(this, 'EventTracker', {
       vpc: pocketVPC,
-      dynamoTable: dynamo.deleteEventTable,
     });
-
-    // Dynamo Access
-    this.addDynamoPermissions(
-      'EventTracker',
-      sqsEventLambda.construct.lambda.lambdaExecutionRole,
-      dynamo.deleteEventTable.dynamodb,
-      ['dynamodb:*'],
-    );
 
     //dlq for sqs-sns subscription
     const snsTopicDlq = new sqsQueue.SqsQueue(this, 'sns-topic-dql', {
@@ -100,49 +83,6 @@ class AccountDeleteMonitor extends TerraformStack {
       snsTopicDlq,
       userEventTopicArn,
       userMergeTopicArn,
-    );
-  }
-
-  /**
-   * Lambda should have full access to manage dynamodb table
-   * @param lambdaExecutionRole
-   * @param dynamoTable
-   */
-  private addDynamoPermissions(
-    name: string,
-    lambdaExecutionRole: iamRole.IamRole,
-    dynamoTable: dynamodbTable.DynamodbTable,
-    actions: string[],
-  ) {
-    const policy = new iamPolicy.IamPolicy(
-      this,
-      `${name}-lambda-dynamo-policy`,
-      {
-        name: `${this.name}-${name}-DynamoLambdaPolicy`,
-        policy: new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
-          this,
-          `${name}-lambda-dynamo-policy-doc`,
-          {
-            statement: [
-              {
-                effect: 'Allow',
-                actions,
-                resources: [dynamoTable.arn],
-              },
-            ],
-          },
-        ).json,
-        dependsOn: [lambdaExecutionRole],
-      },
-    );
-    return new iamRolePolicyAttachment.IamRolePolicyAttachment(
-      this,
-      `${name}-execution-role-policy-attachment`,
-      {
-        role: lambdaExecutionRole.name,
-        policyArn: policy.arn,
-        dependsOn: [lambdaExecutionRole, policy],
-      },
     );
   }
 

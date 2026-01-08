@@ -14,7 +14,7 @@ import { Construct } from 'constructs';
 export interface SqsLambdaProps {
   vpc: PocketVPC;
   alarms?: PocketVersionedLambdaProps['lambda']['alarms'];
-  dynamoTable: ApplicationDynamoDBTable;
+  dynamoTable?: ApplicationDynamoDBTable;
 }
 
 export class SQSEventLambda extends Construct {
@@ -42,7 +42,8 @@ export class SQSEventLambda extends Construct {
           SENTRY_DSN: sentryDsn,
           ENVIRONMENT:
             stackConfig.environment === 'Prod' ? 'production' : 'development',
-          EVENT_TRACKER_DYNAMO: config.dynamoTable.dynamodb.name,
+          EVENT_TRACKER_DYNAMO:
+            config.dynamoTable ? config.dynamoTable.dynamodb.name : "",
           USER_API_URL: stackConfig.userApi.prodUrl,
         },
         ignoreEnvironmentVars: ['GIT_SHA'],
