@@ -17,7 +17,6 @@ import {
   PocketAwsSyntheticChecks,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
-import { DynamoDB } from './dynamodb.ts';
 
 class SharesAPI extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -44,7 +43,6 @@ class SharesAPI extends TerraformStack {
       'caller',
     );
     const pocketVPC = new PocketVPC(this, 'pocket-vpc');
-    const dynamodb = new DynamoDB(this, 'dynamodb');
 
     const alarmSnsTopic = this.getCodeDeploySnsTopic();
 
@@ -53,7 +51,6 @@ class SharesAPI extends TerraformStack {
       snsTopic: alarmSnsTopic,
       region,
       caller,
-      dynamodb,
     });
 
     const youUpQuery = `query { __typename }`;
@@ -108,9 +105,8 @@ class SharesAPI extends TerraformStack {
     caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
     snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
-    dynamodb: DynamoDB;
   }): PocketALBApplication {
-    const { region, caller, secretsManagerKmsAlias, snsTopic, dynamodb } =
+    const { region, caller, secretsManagerKmsAlias, snsTopic } =
       dependencies;
 
     const UserContextSaltArn = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/USER_CONTEXT_SALT`;
@@ -154,7 +150,7 @@ class SharesAPI extends TerraformStack {
             },
             {
               name: 'SHARES_TABLE',
-              value: dynamodb.sharesTable.dynamodb.name,
+              value: ''
             },
             {
               name: 'SQS_BATCH_DELETE_QUEUE_URL',
@@ -252,24 +248,6 @@ class SharesAPI extends TerraformStack {
               'logs:DescribeLogGroups',
             ],
             resources: ['*'],
-            effect: 'Allow',
-          },
-          {
-            actions: [
-              'dynamodb:BatchGet*',
-              'dynamodb:DescribeTable',
-              'dynamodb:Get*',
-              'dynamodb:Query',
-              'dynamodb:Scan',
-              'dynamodb:UpdateItem',
-              'dynamodb:BatchWrite*',
-              'dynamodb:Delete*',
-              'dynamodb:PutItem',
-            ],
-            resources: [
-              dynamodb.sharesTable.dynamodb.arn,
-              `${dynamodb.sharesTable.dynamodb.arn}/*`,
-            ],
             effect: 'Allow',
           },
           {
