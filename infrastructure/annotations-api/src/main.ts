@@ -20,7 +20,6 @@ import {
   PocketVPC,
   ApplicationSqsSnsTopicSubscription,
 } from '@pocket-tools/terraform-modules';
-import { DynamoDB } from './dynamodb.ts';
 import { SqsLambda } from './SqsLambda.ts';
 
 class AnnotationsAPI extends TerraformStack {
@@ -48,7 +47,6 @@ class AnnotationsAPI extends TerraformStack {
       'caller',
     );
     const pocketVPC = new PocketVPC(this, 'pocket-vpc');
-    const dynamodb = new DynamoDB(this, 'dynamodb');
 
     const sqsLambda = new SqsLambda(
       this,
@@ -86,7 +84,6 @@ class AnnotationsAPI extends TerraformStack {
       snsTopic: alarmTopic,
       region,
       caller,
-      dynamodb,
     });
 
     const getAnnotationsQuery = `{"query": "query { _entities(representations: { id: \\"1\\", __typename: \\"SavedItem\\" }) { ... on SavedItem { annotations { highlights { id } } } } }"}`;
@@ -141,9 +138,8 @@ class AnnotationsAPI extends TerraformStack {
     caller: dataAwsCallerIdentity.DataAwsCallerIdentity;
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
     snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
-    dynamodb: DynamoDB;
   }): PocketALBApplication {
-    const { region, caller, secretsManagerKmsAlias, snsTopic, dynamodb } =
+    const { region, caller, secretsManagerKmsAlias, snsTopic } =
       dependencies;
 
     const PocketSSMPrefix = `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}`;
@@ -196,7 +192,7 @@ class AnnotationsAPI extends TerraformStack {
             },
             {
               name: 'HIGHLIGHT_NOTES_TABLE',
-              value: dynamodb.highlightNotesTable.dynamodb.name,
+              value: '',
             },
             {
               name: 'HIGHLIGHT_NOTES_KEY',
@@ -318,24 +314,6 @@ class AnnotationsAPI extends TerraformStack {
               'logs:DescribeLogGroups',
             ],
             resources: ['*'],
-            effect: 'Allow',
-          },
-          {
-            actions: [
-              'dynamodb:BatchGet*',
-              'dynamodb:DescribeTable',
-              'dynamodb:Get*',
-              'dynamodb:Query',
-              'dynamodb:Scan',
-              'dynamodb:UpdateItem',
-              'dynamodb:BatchWrite*',
-              'dynamodb:Delete*',
-              'dynamodb:PutItem',
-            ],
-            resources: [
-              dynamodb.highlightNotesTable.dynamodb.arn,
-              `${dynamodb.highlightNotesTable.dynamodb.arn}/*`,
-            ],
             effect: 'Allow',
           },
           {
