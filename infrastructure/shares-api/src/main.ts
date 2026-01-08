@@ -297,8 +297,8 @@ class SharesAPI extends TerraformStack {
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },
       autoscalingConfig: {
-        targetMinCapacity: config.isProd ? 2 : 1,
-        targetMaxCapacity: config.isProd ? 10 : 1,
+        targetMinCapacity: 0,
+        targetMaxCapacity: 0,
       },
       alarms: {
         //TODO: When you start using the service add the pagerduty arns as an action `pagerDuty.snsNonCriticalAlarmTopic.arn`

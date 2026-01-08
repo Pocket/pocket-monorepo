@@ -261,8 +261,8 @@ class FeatureFlags extends TerraformStack {
       },
 
       autoscalingConfig: {
-        targetMinCapacity: config.isProd ? 2 : 1,
-        targetMaxCapacity: 12,
+        targetMinCapacity: 0,
+        targetMaxCapacity: 0,
       },
       alarms: {
         // alarms if >= 25% of responses are 5xx over 20 minutes

@@ -100,8 +100,8 @@ export class DataDeleterApp extends Construct {
       },
       alb6CharacterPrefix: config.shortName,
       autoscalingConfig: {
-        targetMinCapacity: config.isProd ? 2 : 1,
-        targetMaxCapacity: config.isProd ? 5 : 1,
+        targetMinCapacity: 0,
+        targetMaxCapacity: 0,
       },
       cdn: false,
       codeDeploy: {

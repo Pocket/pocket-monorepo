@@ -358,8 +358,8 @@ class ParserGraphQLWrapper extends TerraformStack {
       },
 
       autoscalingConfig: {
-        targetMinCapacity: config.environment === 'Prod' ? 12 : 1,
-        targetMaxCapacity: config.environment === 'Prod' ? 20 : 10,
+        targetMinCapacity: 0,
+        targetMaxCapacity: 0,
       },
       alarms: {
         //Triggers critical alert if 25% of request throws 5xx for

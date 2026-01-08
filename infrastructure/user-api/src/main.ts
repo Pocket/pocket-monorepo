@@ -274,8 +274,8 @@ class UserAPI extends TerraformStack {
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },
       autoscalingConfig: {
-        targetMinCapacity: config.environment === 'Prod' ? 3 : 1,
-        targetMaxCapacity: config.environment === 'Prod' ? 10 : 1,
+        targetMinCapacity: 0,
+        targetMaxCapacity: 0,
       },
       alarms: {
         //TODO: When we start using this more we will change from non-critical to critical

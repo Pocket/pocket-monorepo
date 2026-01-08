@@ -163,8 +163,8 @@ export class SharedSnowplowConsumerApp extends Construct {
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },
       autoscalingConfig: {
-        targetMinCapacity: 1,
-        targetMaxCapacity: 5,
+        targetMinCapacity: 0,
+        targetMaxCapacity: 0,
       },
       alarms: {
         http5xxErrorPercentage: {
