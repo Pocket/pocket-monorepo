@@ -356,7 +356,7 @@ class AnnotationsAPI extends TerraformStack {
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },
       autoscalingConfig: {
-        targetMinCapacity: config.isProd ? 2 : 1,
+        targetMinCapacity: 0,
         targetMaxCapacity: config.isProd ? 10 : 1,
       },
       alarms: {
