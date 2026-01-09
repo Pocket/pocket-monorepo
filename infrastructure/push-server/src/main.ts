@@ -215,8 +215,8 @@ class PushServer extends TerraformStack {
           'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy',
       },
       autoscalingConfig: {
-        targetMinCapacity: 2,
-        targetMaxCapacity: 10,
+        targetMinCapacity: 0,
+        targetMaxCapacity: 0,
       },
     });
   }

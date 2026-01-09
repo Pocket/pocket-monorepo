@@ -2,16 +2,9 @@ import { config, config as stackConfig } from '../config/index.ts';
 
 import {
   dataAwsSsmParameter,
-  dataAwsIamPolicyDocument,
-  dynamodbTable,
-  iamPolicy,
-  iamRolePolicyAttachment,
-  iamRole,
   lambdaPermission,
 } from '@cdktf/provider-aws';
 import {
-  ApplicationDynamoDBTable,
-  ApplicationDynamoDBTableCapacityMode,
   ApplicationEventBridgeRule,
   LAMBDA_RUNTIMES,
   PocketVersionedLambda,
@@ -21,8 +14,6 @@ import {
 import { Construct } from 'constructs';
 
 export class BatchDeleteLambdaResources extends Construct {
-  public readonly historicalDeletedUsers: ApplicationDynamoDBTable;
-  public readonly processedDeletedUsers: ApplicationDynamoDBTable;
   public readonly batchDeleteLambda: PocketVersionedLambda;
   constructor(
     scope: Construct,
@@ -32,11 +23,6 @@ export class BatchDeleteLambdaResources extends Construct {
     super(scope, name.toLowerCase());
 
     const { sentryDsn } = this.getEnvVariableValues();
-
-    // Tables for retrieving historically deleted user ID lists
-    // and keeping track of which ones have been processed
-    this.historicalDeletedUsers = this.createHistoricalDeletedUsersTable();
-    this.processedDeletedUsers = this.createProcessedUsersTable();
 
     // lambda fetches the userId from the dynamoDb in batches and calls deleteMutation
     // The IDs are then moved to a separate table for record-keeping
@@ -74,16 +60,6 @@ export class BatchDeleteLambdaResources extends Construct {
         },
         tags: stackConfig.tags,
       },
-    );
-
-    this.addDynamoPermissions(
-      config.lambda.batchDeleteLambda.name,
-      this.batchDeleteLambda.lambda.lambdaExecutionRole,
-      [
-        this.historicalDeletedUsers.dynamodb,
-        this.processedDeletedUsers.dynamodb,
-      ],
-      ['dynamodb:*'],
     );
 
     if (!config.isDev) {
@@ -141,104 +117,5 @@ export class BatchDeleteLambdaResources extends Construct {
     );
 
     return { sentryDsn: sentryDsn.value };
-  }
-
-  /**
-   * Sets up the dynamodb table that contains a list of historically
-   * deleted ("soft-deleted") user IDs
-   * @private
-   */
-  private createHistoricalDeletedUsersTable() {
-    const tableName = config.dynamodb.historicalDeletedUsers.tableName;
-    return new ApplicationDynamoDBTable(this, tableName, {
-      tags: config.tags,
-      prefix: `${config.shortName}-${tableName}`,
-      capacityMode: ApplicationDynamoDBTableCapacityMode.ON_DEMAND,
-      preventDestroyTable: true,
-      tableConfig: {
-        pointInTimeRecovery: {
-          enabled: true,
-        },
-        hashKey: config.dynamodb.historicalDeletedUsers.key,
-        attribute: [
-          {
-            name: config.dynamodb.historicalDeletedUsers.key,
-            type: 'N',
-          },
-        ],
-      },
-    });
-  }
-
-  /**
-   * Sets up the dynamodb table that contains the list of historically
-   * deleted ("soft-deleted") user IDs which have been submitted for
-   * the "hard-delete" process.
-   * @private
-   */
-  private createProcessedUsersTable() {
-    const tableName = config.dynamodb.processedDeletedUsers.tableName;
-    return new ApplicationDynamoDBTable(this, tableName, {
-      tags: config.tags,
-      prefix: `${config.shortName}-${tableName}`,
-      capacityMode: ApplicationDynamoDBTableCapacityMode.ON_DEMAND,
-      preventDestroyTable: true,
-      tableConfig: {
-        pointInTimeRecovery: {
-          enabled: true,
-        },
-        hashKey: config.dynamodb.processedDeletedUsers.key,
-        attribute: [
-          {
-            name: config.dynamodb.processedDeletedUsers.key,
-            type: 'N',
-          },
-        ],
-      },
-    });
-  }
-
-  /**
-   * Lambda should have full access to manage dynamodb table
-   * @param lambdaExecutionRole
-   * @param dynamoTable
-   */
-  private addDynamoPermissions(
-    name: string,
-    lambdaExecutionRole: iamRole.IamRole,
-    dynamoTables: dynamodbTable.DynamodbTable[],
-    actions: string[],
-  ) {
-    const resources = dynamoTables.map((_) => _.arn);
-    const policy = new iamPolicy.IamPolicy(
-      this,
-      `${name}-lambda-dynamo-policy`,
-      {
-        name: `${this.name}-${name}-DynamoLambdaPolicy`,
-        policy: new dataAwsIamPolicyDocument.DataAwsIamPolicyDocument(
-          this,
-          `${name}-lambda-dynamo-policy-doc`,
-          {
-            statement: [
-              {
-                effect: 'Allow',
-                actions,
-                resources,
-              },
-            ],
-          },
-        ).json,
-        dependsOn: [lambdaExecutionRole],
-      },
-    );
-    return new iamRolePolicyAttachment.IamRolePolicyAttachment(
-      this,
-      `${name}-execution-role-policy-attachment`,
-      {
-        role: lambdaExecutionRole.name,
-        policyArn: policy.arn,
-        dependsOn: [lambdaExecutionRole, policy],
-      },
-    );
   }
 }

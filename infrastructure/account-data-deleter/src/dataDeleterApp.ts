@@ -7,7 +7,6 @@ import {
   dataAwsRegion,
   sqsQueue,
   dataAwsSnsTopic,
-  dynamodbTable,
 } from '@cdktf/provider-aws';
 import { S3Bucket } from '@cdktf/provider-aws/lib/s3-bucket';
 
@@ -27,7 +26,6 @@ export type DataDeleterAppConfig = {
   listExportBucket: S3Bucket;
   listExportPartsPrefix: string;
   listExportArchivesPrefix: string;
-  exportStateDb: dynamodbTable.DynamodbTable;
   importFileQueue: sqsQueue.SqsQueue;
   importBatchQueue: sqsQueue.SqsQueue;
   listImportBucket: S3Bucket;
@@ -100,8 +98,8 @@ export class DataDeleterApp extends Construct {
       },
       alb6CharacterPrefix: config.shortName,
       autoscalingConfig: {
-        targetMinCapacity: config.isProd ? 2 : 1,
-        targetMaxCapacity: config.isProd ? 5 : 1,
+        targetMinCapacity: 0,
+        targetMaxCapacity: config.isProd ? 4 : 1,
       },
       cdn: false,
       codeDeploy: {
@@ -146,7 +144,7 @@ export class DataDeleterApp extends Construct {
             },
             {
               name: 'EXPORT_REQUEST_STATE_TABLE',
-              value: this.config.exportStateDb.name,
+              value: '',
             },
             {
               name: 'SQS_LIST_EXPORT_QUEUE_URL',
@@ -338,19 +336,6 @@ export class DataDeleterApp extends Construct {
             actions: ['events:PutEvents'],
             resources: [
               `arn:aws:events:${region.name}:${caller.accountId}:event-bus/${config.eventBusName}`,
-            ],
-            effect: 'Allow',
-          },
-          // DynamoDB Status
-          {
-            actions: [
-              'dynamodb:DescribeTable',
-              'dynamodb:Get*',
-              'dynamodb:UpdateItem',
-            ],
-            resources: [
-              this.config.exportStateDb.arn,
-              `${this.config.exportStateDb.arn}/*`,
             ],
             effect: 'Allow',
           },

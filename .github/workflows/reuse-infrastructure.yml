@@ -39,7 +39,7 @@ jobs:
           uses: aws-actions/configure-aws-credentials@v4
           with:
             aws-region: us-east-1
-            role-to-assume: arn:aws:iam::996905175585:role/PocketGHARole
+            role-to-assume: arn:aws:iam::996905175585:role/PocketGHAReadOnlyRole
         - name: Execute CDKTF
           if: inputs.raw-terraform == false
           uses: pocket/pocket-monorepo/.github/actions/cdktf@main
