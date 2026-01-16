@@ -41,11 +41,13 @@ class AnnotationsAPI extends TerraformStack {
       region: 'us-east-1',
     });
 
+    /*
     const region = new dataAwsRegion.DataAwsRegion(this, 'region');
     const caller = new dataAwsCallerIdentity.DataAwsCallerIdentity(
       this,
       'caller',
     );
+    
     const pocketVPC = new PocketVPC(this, 'pocket-vpc');
 
     const sqsLambda = new SqsLambda(
@@ -110,7 +112,7 @@ class AnnotationsAPI extends TerraformStack {
           url: `${config.domain}/.well-known/apollo/server-health`,
         },
       ],
-    });
+    }); */
   }
 
   /**
@@ -139,8 +141,7 @@ class AnnotationsAPI extends TerraformStack {
     secretsManagerKmsAlias: dataAwsKmsAlias.DataAwsKmsAlias;
     snsTopic: dataAwsSnsTopic.DataAwsSnsTopic;
   }): PocketALBApplication {
-    const { region, caller, secretsManagerKmsAlias, snsTopic } =
-      dependencies;
+    const { region, caller, secretsManagerKmsAlias, snsTopic } = dependencies;
 
     const PocketSSMPrefix = `arn:aws:ssm:${region.name}:${caller.accountId}:parameter/${config.name}/${config.environment}`;
     const databaseSecretsArn = `arn:aws:secretsmanager:${region.name}:${caller.accountId}:secret:${config.name}/${config.environment}/READITLA_DB`;
