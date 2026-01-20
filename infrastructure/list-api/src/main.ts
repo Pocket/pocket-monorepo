@@ -38,7 +38,7 @@ class ListAPI extends TerraformStack {
       region: 'us-east-1',
     });
 
-    const pocketVPC = new PocketVPC(this, 'pocket-vpc');
+    /* const pocketVPC = new PocketVPC(this, 'pocket-vpc');
     const region = new dataAwsRegion.DataAwsRegion(this, 'region');
     const caller = new dataAwsCallerIdentity.DataAwsCallerIdentity(
       this,
@@ -51,7 +51,7 @@ class ListAPI extends TerraformStack {
       region,
       caller,
       vpc: pocketVPC,
-    });
+    }); */
   }
 
   /**
