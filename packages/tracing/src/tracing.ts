@@ -74,26 +74,28 @@ const additionalInstrumentationConstructors = {
 };
 
 export type TracingConfig = {
-  serviceName: string;
+  additionalInstrumentations?: AdditionalInstrumentation[];
+  enableMetrics?: boolean;
+  flagName?: string;
+  graphQLDepth?: number;
+  protocol?: 'GRPC' | 'HTTP';
   release: string;
   samplingRatio?: number;
-  graphQLDepth?: number;
-  url?: string;
-  protocol?: 'GRPC' | 'HTTP';
+  serviceName: string;
   unleash: Unleash;
-  flagName?: string;
-  additionalInstrumentations?: AdditionalInstrumentation[];
+  url?: string;
 };
 
 const tracingDefaults: TracingConfig = {
-  serviceName: 'unknown',
-  release: 'unknown',
-  graphQLDepth: 8,
-  url: 'http://localhost:4318',
-  protocol: 'HTTP',
-  unleash: {} as Unleash, // no-op cause its required in the config
-  flagName: 'perm.backend.sentry-trace-sampler-rate',
   additionalInstrumentations: [],
+  enableMetrics: false,
+  flagName: 'perm.backend.sentry-trace-sampler-rate',
+  graphQLDepth: 8,
+  protocol: 'HTTP',
+  release: 'unknown',
+  serviceName: 'unknown',
+  unleash: {} as Unleash, // no-op cause its required in the config
+  url: 'http://localhost:4318',
 };
 
 // TODO: Remove after issue is fixed
@@ -128,7 +130,9 @@ const batchConfig: BufferConfig = {
  * server start and import to patch all libraries
  */
 export async function nodeSDKBuilder(config: TracingConfig) {
+  // build config from defaults, allowing incoming config to override
   config = { ...tracingDefaults, ...config };
+
   diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.WARN);
 
   /**
@@ -154,18 +158,21 @@ export async function nodeSDKBuilder(config: TracingConfig) {
         })
       : new GRPCOTLPTraceExporter({ url: config.url });
 
-  const _metricReader = new PeriodicExportingMetricReader({
-    exporter:
-      config.protocol === 'HTTP'
-        ? new HTTPOTLPMetricExporter({
-            url: `${config.url}/v1/metrics`,
-          })
-        : new GRPCOTLPMetricExporter({ url: config.url }),
-    // once every 60 seconds, GCP supports 1 every 5 seconds for custom metrics https://cloud.google.com/monitoring/quotas#custom_metrics_quotas
-    // But lets just do 60 seconds for now as we figure it out
-    exportIntervalMillis: 10000,
-    exportTimeoutMillis: 5000,
-  });
+  // only enable metrics if specifically asked for by the implementing service
+  const _metricReader = config.enableMetrics
+    ? new PeriodicExportingMetricReader({
+        exporter:
+          config.protocol === 'HTTP'
+            ? new HTTPOTLPMetricExporter({
+                url: `${config.url}/v1/metrics`,
+              })
+            : new GRPCOTLPMetricExporter({ url: config.url }),
+        // once every 60 seconds, GCP supports 1 every 5 seconds for custom metrics https://cloud.google.com/monitoring/quotas#custom_metrics_quotas
+        // But lets just do 60 seconds for now as we figure it out
+        exportIntervalMillis: 10000,
+        exportTimeoutMillis: 5000,
+      })
+    : undefined;
 
   const _logExporter =
     config.protocol === 'HTTP'
@@ -240,7 +247,7 @@ export async function nodeSDKBuilder(config: TracingConfig) {
     resource: _resource,
     idGenerator: new AWSXRayIdGenerator(),
     spanProcessors: [new BatchSpanProcessor(_traceExporter, batchConfig)],
-    metricReader: _metricReader,
+    metricReader: _metricReader, // either an instance of MetricReader, or undefined
     logRecordProcessors: [
       new logs.BatchLogRecordProcessor(_logExporter, batchConfig),
     ],

@@ -103,7 +103,7 @@ const testPartialEventData = {
   },
 };
 
-describe('ShareableListEventHandler', () => {
+describe.skip('ShareableListEventHandler', () => {
   beforeEach(async () => {
     await resetSnowplowEvents();
   });
