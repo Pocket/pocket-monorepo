@@ -61,6 +61,7 @@ class PocketEventBus extends TerraformStack {
 
     // Events for Account Delete Monitor service
     new AccountDeleteMonitorEvents(this, 'adm-events', alarmSnsTopic);
+
     // prospect events (note that the following behaves differently in prod
     // versus dev - check the file for more details)
     new ProspectEvents(
@@ -69,6 +70,7 @@ class PocketEventBus extends TerraformStack {
       sharedPocketEventBus,
       alarmSnsTopic,
     );
+
     // All events that have a detail type in the bus.
     new AllEventsRule(this, 'all-events', sharedPocketEventBus, alarmSnsTopic);
   }
