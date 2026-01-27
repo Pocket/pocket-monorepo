@@ -5,14 +5,14 @@ import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import {
   ApplicationEventBus,
-  ApplicationEventBusProps,
+  //ApplicationEventBusProps,
   PocketVPC,
 } from '@pocket-tools/terraform-modules';
-import { ProspectEvents } from './event-rules/prospect-events/prospectEventRules.ts';
+//import { ProspectEvents } from './event-rules/prospect-events/prospectEventRules.ts';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
 import { config } from './config/index.ts';
-import { AccountDeleteMonitorEvents } from './event-rules/account-delete-monitor/index.ts';
-import { AllEventsRule } from './event-rules/all-events/allEventRules.ts';
+//import { AccountDeleteMonitorEvents } from './event-rules/account-delete-monitor/index.ts';
+//import { AllEventsRule } from './event-rules/all-events/allEventRules.ts';
 import { PocketEventToTopic } from './eventBridge.ts';
 import { PocketEventType } from '@pocket-tools/event-bridge';
 
@@ -35,24 +35,25 @@ class PocketEventBus extends TerraformStack {
       region: 'us-east-1',
     });
 
-    const alarmSnsTopic = this.getAlarmSnsTopic();
+    //const alarmSnsTopic = this.getAlarmSnsTopic();
 
     // VPC for accessing non-public resources, e.g. elasticsearch
     // for the corpus event lambda consumer
     new PocketVPC(this, 'pocket-shared-vpc');
 
+    /* 
     const eventBusProps: ApplicationEventBusProps = {
       name: `${config.prefix}-Shared-Event-Bus`,
       tags: config.tags,
     };
 
-    const sharedPocketEventBus = new ApplicationEventBus(
+   const sharedPocketEventBus = new ApplicationEventBus(
       this,
       'shared-event-bus',
       eventBusProps,
-    );
+    ); */
 
-    this.createEventRules(sharedPocketEventBus, alarmSnsTopic);
+    //this.createEventRules(sharedPocketEventBus, alarmSnsTopic);
 
     /****************
      * The following events use an older pattern, but are still in use,
@@ -60,17 +61,21 @@ class PocketEventBus extends TerraformStack {
      ****************/
 
     // Events for Account Delete Monitor service
-    new AccountDeleteMonitorEvents(this, 'adm-events', alarmSnsTopic);
+    //new AccountDeleteMonitorEvents(this, 'adm-events', alarmSnsTopic);
+
     // prospect events (note that the following behaves differently in prod
     // versus dev - check the file for more details)
+    /*
     new ProspectEvents(
       this,
       'prospect-events',
       sharedPocketEventBus,
       alarmSnsTopic,
     );
+    */
+
     // All events that have a detail type in the bus.
-    new AllEventsRule(this, 'all-events', sharedPocketEventBus, alarmSnsTopic);
+    //new AllEventsRule(this, 'all-events', sharedPocketEventBus, alarmSnsTopic);
   }
 
   /**

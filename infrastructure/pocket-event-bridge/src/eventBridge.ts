@@ -75,6 +75,7 @@ export class PocketEventToTopic extends Construct {
         eventBusName: this.config.eventBusName,
         preventDestroy: true,
       },
+      // we need to remove targets before we can remove the rules
       targets: [
         {
           arn: this.snsTopic.arn,
