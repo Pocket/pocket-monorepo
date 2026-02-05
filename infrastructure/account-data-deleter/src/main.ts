@@ -12,7 +12,6 @@ class AccountDataDeleter extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
 
-    //new archiveProvider.ArchiveProvider(this, 'archive-provider');
     new awsProvider.AwsProvider(this, 'aws', {
       region: 'us-east-1',
       defaultTags: [{ tags: config.tags }],

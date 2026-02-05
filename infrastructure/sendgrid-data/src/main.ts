@@ -1,12 +1,10 @@
 import { Construct } from 'constructs';
 import { App, S3Backend, TerraformStack } from 'cdktf';
 import { config } from './config/index.ts';
-import { PocketVPC } from '@pocket-tools/terraform-modules';
 import { provider as awsProvider } from '@cdktf/provider-aws';
 import { provider as archiveProvider } from '@cdktf/provider-archive';
 import { provider as nullProvider } from '@cdktf/provider-null';
 import { provider as localProvider } from '@cdktf/provider-local';
-import { ApiGateway } from './apiGateway.ts';
 
 class SendgridData extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -26,10 +24,6 @@ class SendgridData extends TerraformStack {
       key: 'sendgrid-data',
       region: 'us-east-1',
     });
-
-    const vpc = new PocketVPC(this, 'pocket-shared-vpc');
-
-    new ApiGateway(this, 'apigateway-lambda', vpc);
   }
 }
 
