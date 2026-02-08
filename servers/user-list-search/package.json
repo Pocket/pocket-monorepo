@@ -45,7 +45,7 @@
     "graphql-constraint-directive": "5.4.2",
     "graphql-tag": "2.12.6",
     "knex": "3.1.0",
-    "lodash": "4.17.21",
+    "lodash": "4.17.23",
     "mysql2": "3.12.0",
     "nanoid": "3.3.8",
     "striptags": "^3.1.1",

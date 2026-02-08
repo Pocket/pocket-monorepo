@@ -48,7 +48,7 @@
     "html-entities": "2.5.2",
     "keyv": "4.5.4",
     "kysely": "0.27.5",
-    "lodash": "4.17.21",
+    "lodash": "4.17.23",
     "luxon": "3.5.0",
     "markdown-to-txt": "2.0.1",
     "md5": "2.3.0",
