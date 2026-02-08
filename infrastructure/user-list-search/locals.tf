@@ -59,22 +59,22 @@ locals {
       region = "us-east-1"
     }
 
-    UserListSearch-Dev = {
-      domain                      = "user-list-search.getpocket.dev"
-      environment                 = "Dev"
-      es_cluster_enable           = true
-      es_instance_count           = 3
-      es_instance_type            = "t3.medium.elasticsearch"
-      es_master_instance_type     = "t3.small.elasticsearch"
-      es_ebs_volume_size          = 35
-      nodeEnv                     = "development"
-      root_domain                 = "getpocket.dev"
-      sns_topic_user_events       = "PocketEventBridge-Dev-UserEvents"
-      sns_topic_corpus_events     = "PocketEventBridge-Dev-CorpusEvents"
-      sns_topic_collection_events = "PocketEventBridge-Dev-CollectionEvents"
-      userApiUri                  = "https://user-list-search.getpocket.dev"
-      otlpCollectorUrl            = "https://otel-collector.getpocket.dev:443"
-    }
+    # UserListSearch-Dev = {
+    #   domain                      = "user-list-search.getpocket.dev"
+    #   environment                 = "Dev"
+    #   es_cluster_enable           = true
+    #   es_instance_count           = 3
+    #   es_instance_type            = "t3.medium.elasticsearch"
+    #   es_master_instance_type     = "t3.small.elasticsearch"
+    #   es_ebs_volume_size          = 35
+    #   nodeEnv                     = "development"
+    #   root_domain                 = "getpocket.dev"
+    #   sns_topic_user_events       = "PocketEventBridge-Dev-UserEvents"
+    #   sns_topic_corpus_events     = "PocketEventBridge-Dev-CorpusEvents"
+    #   sns_topic_collection_events = "PocketEventBridge-Dev-CollectionEvents"
+    #   userApiUri                  = "https://user-list-search.getpocket.dev"
+    #   otlpCollectorUrl            = "https://otel-collector.getpocket.dev:443"
+    # }
 
     UserListSearch-Prod = {
       domain                      = "user-list-search.readitlater.com"
