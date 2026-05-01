@@ -4,11 +4,13 @@ exports[`ApplicationLoadBalancer renders an ALB with logs with a new bucket 1`] 
 "{
   "data": {
     "aws_elb_service_account": {
-      "testALB_elb-service-account_4BDD06CE": {
+      "testALB_access-elb-service-account_46C6186B": {
+      },
+      "testALB_connection-elb-service-account_01DA28A7": {
       }
     },
     "aws_iam_policy_document": {
-      "testALB_iam-log-bucket-policy-document_C7E41154": {
+      "testALB_access-iam-log-bucket-policy-document_B4319C4B": {
         "statement": [
           {
             "actions": [
@@ -18,13 +20,34 @@ exports[`ApplicationLoadBalancer renders an ALB with logs with a new bucket 1`] 
             "principals": [
               {
                 "identifiers": [
-                  "arn:aws:iam::\${data.aws_elb_service_account.testALB_elb-service-account_4BDD06CE.id}:root"
+                  "arn:aws:iam::\${data.aws_elb_service_account.testALB_access-elb-service-account_46C6186B.id}:root"
                 ],
                 "type": "AWS"
               }
             ],
             "resources": [
-              "arn:aws:s3:::\${aws_s3_bucket.testALB_log-bucket_E9787BB1.bucket}/*"
+              "arn:aws:s3:::\${aws_s3_bucket.testALB_access-log-bucket_3A8C1D83.bucket}/*"
+            ]
+          }
+        ]
+      },
+      "testALB_connection-iam-log-bucket-policy-document_98C0A07B": {
+        "statement": [
+          {
+            "actions": [
+              "s3:PutObject"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "arn:aws:iam::\${data.aws_elb_service_account.testALB_connection-elb-service-account_01DA28A7.id}:root"
+                ],
+                "type": "AWS"
+              }
+            ],
+            "resources": [
+              "arn:aws:s3:::\${aws_s3_bucket.testALB_connection-log-bucket_633AB558.bucket}/*"
             ]
           }
         ]
@@ -35,9 +58,14 @@ exports[`ApplicationLoadBalancer renders an ALB with logs with a new bucket 1`] 
     "aws_alb": {
       "testALB_alb_F6B33218": {
         "access_logs": {
-          "bucket": "\${aws_s3_bucket.testALB_log-bucket_E9787BB1.bucket}",
+          "bucket": "\${aws_s3_bucket.testALB_access-log-bucket_3A8C1D83.bucket}",
           "enabled": true,
           "prefix": "server-logs/test-/alb"
+        },
+        "connection_logs": {
+          "bucket": "\${aws_s3_bucket.testALB_connection-log-bucket_633AB558.bucket}",
+          "enabled": true,
+          "prefix": "server-logs/test-/albConnection"
         },
         "internal": false,
         "name_prefix": "TEST",
@@ -55,8 +83,15 @@ exports[`ApplicationLoadBalancer renders an ALB with logs with a new bucket 1`] 
       }
     },
     "aws_s3_bucket": {
-      "testALB_log-bucket_E9787BB1": {
+      "testALB_access-log-bucket_3A8C1D83": {
         "bucket": "logging-bucket",
+        "tags": {
+          "hobby": "bowling",
+          "name": "thedude"
+        }
+      },
+      "testALB_connection-log-bucket_633AB558": {
+        "bucket": "connection-logging-bucket",
         "tags": {
           "hobby": "bowling",
           "name": "thedude"
@@ -64,9 +99,13 @@ exports[`ApplicationLoadBalancer renders an ALB with logs with a new bucket 1`] 
       }
     },
     "aws_s3_bucket_policy": {
-      "testALB_log-bucket-policy_EB762FB5": {
-        "bucket": "\${aws_s3_bucket.testALB_log-bucket_E9787BB1.bucket}",
-        "policy": "\${data.aws_iam_policy_document.testALB_iam-log-bucket-policy-document_C7E41154.json}"
+      "testALB_access-log-bucket-policy_4EA774F7": {
+        "bucket": "\${aws_s3_bucket.testALB_access-log-bucket_3A8C1D83.bucket}",
+        "policy": "\${data.aws_iam_policy_document.testALB_access-iam-log-bucket-policy-document_B4319C4B.json}"
+      },
+      "testALB_connection-log-bucket-policy_D66BDF5D": {
+        "bucket": "\${aws_s3_bucket.testALB_connection-log-bucket_633AB558.bucket}",
+        "policy": "\${data.aws_iam_policy_document.testALB_connection-iam-log-bucket-policy-document_98C0A07B.json}"
       }
     },
     "aws_security_group": {
@@ -138,11 +177,13 @@ exports[`ApplicationLoadBalancer renders an ALB with logs with a new bucket and 
 "{
   "data": {
     "aws_elb_service_account": {
-      "testALB_elb-service-account_4BDD06CE": {
+      "testALB_access-elb-service-account_46C6186B": {
+      },
+      "testALB_connection-elb-service-account_01DA28A7": {
       }
     },
     "aws_iam_policy_document": {
-      "testALB_iam-log-bucket-policy-document_C7E41154": {
+      "testALB_access-iam-log-bucket-policy-document_B4319C4B": {
         "statement": [
           {
             "actions": [
@@ -152,13 +193,34 @@ exports[`ApplicationLoadBalancer renders an ALB with logs with a new bucket and 
             "principals": [
               {
                 "identifiers": [
-                  "arn:aws:iam::\${data.aws_elb_service_account.testALB_elb-service-account_4BDD06CE.id}:root"
+                  "arn:aws:iam::\${data.aws_elb_service_account.testALB_access-elb-service-account_46C6186B.id}:root"
                 ],
                 "type": "AWS"
               }
             ],
             "resources": [
-              "arn:aws:s3:::\${aws_s3_bucket.testALB_log-bucket_E9787BB1.bucket}/*"
+              "arn:aws:s3:::\${aws_s3_bucket.testALB_access-log-bucket_3A8C1D83.bucket}/*"
+            ]
+          }
+        ]
+      },
+      "testALB_connection-iam-log-bucket-policy-document_98C0A07B": {
+        "statement": [
+          {
+            "actions": [
+              "s3:PutObject"
+            ],
+            "effect": "Allow",
+            "principals": [
+              {
+                "identifiers": [
+                  "arn:aws:iam::\${data.aws_elb_service_account.testALB_connection-elb-service-account_01DA28A7.id}:root"
+                ],
+                "type": "AWS"
+              }
+            ],
+            "resources": [
+              "arn:aws:s3:::\${aws_s3_bucket.testALB_connection-log-bucket_633AB558.bucket}/*"
             ]
           }
         ]
@@ -169,7 +231,12 @@ exports[`ApplicationLoadBalancer renders an ALB with logs with a new bucket and 
     "aws_alb": {
       "testALB_alb_F6B33218": {
         "access_logs": {
-          "bucket": "\${aws_s3_bucket.testALB_log-bucket_E9787BB1.bucket}",
+          "bucket": "\${aws_s3_bucket.testALB_access-log-bucket_3A8C1D83.bucket}",
+          "enabled": true,
+          "prefix": "logs/ahoy/cool/service"
+        },
+        "connection_logs": {
+          "bucket": "\${aws_s3_bucket.testALB_connection-log-bucket_633AB558.bucket}",
           "enabled": true,
           "prefix": "logs/ahoy/cool/service"
         },
@@ -189,8 +256,15 @@ exports[`ApplicationLoadBalancer renders an ALB with logs with a new bucket and 
       }
     },
     "aws_s3_bucket": {
-      "testALB_log-bucket_E9787BB1": {
+      "testALB_access-log-bucket_3A8C1D83": {
         "bucket": "logging-bucket",
+        "tags": {
+          "hobby": "bowling",
+          "name": "thedude"
+        }
+      },
+      "testALB_connection-log-bucket_633AB558": {
+        "bucket": "connection-logging-bucket",
         "tags": {
           "hobby": "bowling",
           "name": "thedude"
@@ -198,9 +272,13 @@ exports[`ApplicationLoadBalancer renders an ALB with logs with a new bucket and 
       }
     },
     "aws_s3_bucket_policy": {
-      "testALB_log-bucket-policy_EB762FB5": {
-        "bucket": "\${aws_s3_bucket.testALB_log-bucket_E9787BB1.bucket}",
-        "policy": "\${data.aws_iam_policy_document.testALB_iam-log-bucket-policy-document_C7E41154.json}"
+      "testALB_access-log-bucket-policy_4EA774F7": {
+        "bucket": "\${aws_s3_bucket.testALB_access-log-bucket_3A8C1D83.bucket}",
+        "policy": "\${data.aws_iam_policy_document.testALB_access-iam-log-bucket-policy-document_B4319C4B.json}"
+      },
+      "testALB_connection-log-bucket-policy_D66BDF5D": {
+        "bucket": "\${aws_s3_bucket.testALB_connection-log-bucket_633AB558.bucket}",
+        "policy": "\${data.aws_iam_policy_document.testALB_connection-iam-log-bucket-policy-document_98C0A07B.json}"
       }
     },
     "aws_security_group": {
@@ -272,8 +350,11 @@ exports[`ApplicationLoadBalancer renders an ALB with logs with an existing bucke
 "{
   "data": {
     "aws_s3_bucket": {
-      "testALB_log-bucket_E9787BB1": {
+      "testALB_access-log-bucket_3A8C1D83": {
         "bucket": "logging-bucket"
+      },
+      "testALB_connection-log-bucket_633AB558": {
+        "bucket": "connection-logging-bucket"
       }
     }
   },
@@ -281,9 +362,14 @@ exports[`ApplicationLoadBalancer renders an ALB with logs with an existing bucke
     "aws_alb": {
       "testALB_alb_F6B33218": {
         "access_logs": {
-          "bucket": "\${data.aws_s3_bucket.testALB_log-bucket_E9787BB1.bucket}",
+          "bucket": "\${data.aws_s3_bucket.testALB_access-log-bucket_3A8C1D83.bucket}",
           "enabled": true,
           "prefix": "server-logs/test-/alb"
+        },
+        "connection_logs": {
+          "bucket": "\${data.aws_s3_bucket.testALB_connection-log-bucket_633AB558.bucket}",
+          "enabled": true,
+          "prefix": "server-logs/test-/albConnection"
         },
         "internal": false,
         "name_prefix": "TEST",
@@ -369,8 +455,11 @@ exports[`ApplicationLoadBalancer renders an ALB with logs with an existing bucke
 "{
   "data": {
     "aws_s3_bucket": {
-      "testALB_log-bucket_E9787BB1": {
+      "testALB_access-log-bucket_3A8C1D83": {
         "bucket": "logging-bucket"
+      },
+      "testALB_connection-log-bucket_633AB558": {
+        "bucket": "connection-logging-bucket"
       }
     }
   },
@@ -378,7 +467,12 @@ exports[`ApplicationLoadBalancer renders an ALB with logs with an existing bucke
     "aws_alb": {
       "testALB_alb_F6B33218": {
         "access_logs": {
-          "bucket": "\${data.aws_s3_bucket.testALB_log-bucket_E9787BB1.bucket}",
+          "bucket": "\${data.aws_s3_bucket.testALB_access-log-bucket_3A8C1D83.bucket}",
+          "enabled": true,
+          "prefix": "logs/ahoy/cool/service"
+        },
+        "connection_logs": {
+          "bucket": "\${data.aws_s3_bucket.testALB_connection-log-bucket_633AB558.bucket}",
           "enabled": true,
           "prefix": "logs/ahoy/cool/service"
         },

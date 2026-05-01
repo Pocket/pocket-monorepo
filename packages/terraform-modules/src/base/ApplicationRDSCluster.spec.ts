@@ -22,12 +22,13 @@ describe('ApplicationRDSCluster', () => {
     expect(synthed).toMatchSnapshot();
   });
 
-  it('renders a RDS cluster with a database URL', () => {
+  it('renders a RDS cluster without a name', () => {
     const synthed = Testing.synthScope((stack) => {
       new ApplicationRDSCluster(stack, 'testRDSCluster', {
         prefix: 'bowling-',
         vpcId: 'rug',
         subnetIds: ['0', '1'],
+        useName: false,
         rdsConfig: {
           masterUsername: 'walter',
           masterPassword: 'bowling',
@@ -42,13 +43,13 @@ describe('ApplicationRDSCluster', () => {
     expect(synthed).toMatchSnapshot();
   });
 
-  it('renders a RDS cluster without a name', () => {
+  it('renders a RDS cluster with cloudwatch exporting', () => {
     const synthed = Testing.synthScope((stack) => {
       new ApplicationRDSCluster(stack, 'testRDSCluster', {
+        enableCloudwatchLogsExports: ['audit', 'error', 'general'],
         prefix: 'bowling-',
         vpcId: 'rug',
         subnetIds: ['0', '1'],
-        useName: false,
         rdsConfig: {
           masterUsername: 'walter',
           masterPassword: 'bowling',

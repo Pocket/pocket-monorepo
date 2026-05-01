@@ -35,6 +35,8 @@ exports[`ApplicationRDSCluster renders a RDS cluster 1`] = `
         "copy_tags_to_snapshot": true,
         "database_name": "walter",
         "db_subnet_group_name": "\${aws_db_subnet_group.testRDSCluster_rds_subnet_group_88022457.name}",
+        "enabled_cloudwatch_logs_exports": [
+        ],
         "engine": "aurora-mysql",
         "lifecycle": {
           "ignore_changes": [
@@ -121,7 +123,7 @@ exports[`ApplicationRDSCluster renders a RDS cluster 1`] = `
 }"
 `;
 
-exports[`ApplicationRDSCluster renders a RDS cluster with a database URL 1`] = `
+exports[`ApplicationRDSCluster renders a RDS cluster with cloudwatch exporting 1`] = `
 "{
   "data": {
     "aws_vpc": {
@@ -156,6 +158,11 @@ exports[`ApplicationRDSCluster renders a RDS cluster with a database URL 1`] = `
         "copy_tags_to_snapshot": true,
         "database_name": "walter",
         "db_subnet_group_name": "\${aws_db_subnet_group.testRDSCluster_rds_subnet_group_88022457.name}",
+        "enabled_cloudwatch_logs_exports": [
+          "audit",
+          "error",
+          "general"
+        ],
         "engine": "aurora-mysql",
         "lifecycle": {
           "ignore_changes": [
@@ -275,6 +282,8 @@ exports[`ApplicationRDSCluster renders a RDS cluster without a name 1`] = `
         "copy_tags_to_snapshot": true,
         "database_name": "walter",
         "db_subnet_group_name": "\${aws_db_subnet_group.testRDSCluster_rds_subnet_group_88022457.name}",
+        "enabled_cloudwatch_logs_exports": [
+        ],
         "engine": "aurora-mysql",
         "lifecycle": {
           "ignore_changes": [
