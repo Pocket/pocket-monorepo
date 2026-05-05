@@ -131,6 +131,7 @@ export class ApplicationRDSCluster extends Construct {
     const configCopy: ApplicationRDSClusterConfig = {
       ...config.rdsConfig,
     };
+
     // Remove non standard rds params for passing through.
     delete configCopy.createServerlessV2Instance;
 
