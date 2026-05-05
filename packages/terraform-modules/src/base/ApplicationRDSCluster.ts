@@ -29,11 +29,6 @@ export type ApplicationRDSClusterConfig = Omit<
 };
 
 export interface ApplicationRDSClusterProps extends TerraformMetaArguments {
-  // optionally export defined logs to cloudwatch
-  // see https://registry.terraform.io/providers/hashicorp/aws/5.83.1/docs/resources/rds_cluster#enabled_cloudwatch_logs_exports-1
-  // for available options
-  // audit, error, general, slowquery, postgresql (PostgreSQL only)
-  enableCloudwatchLogsExports?: string[];
   prefix: string;
   vpcId: string;
   subnetIds: string[];
@@ -136,6 +131,7 @@ export class ApplicationRDSCluster extends Construct {
     const configCopy: ApplicationRDSClusterConfig = {
       ...config.rdsConfig,
     };
+
     // Remove non standard rds params for passing through.
     delete configCopy.createServerlessV2Instance;
 
@@ -155,7 +151,6 @@ export class ApplicationRDSCluster extends Construct {
         ignoreChanges: ['master_username', 'master_password', 'engine_version'],
       },
       provider: config.provider,
-      enabledCloudwatchLogsExports: config.enableCloudwatchLogsExports ?? [],
     });
 
     if (config.rdsConfig.createServerlessV2Instance) {

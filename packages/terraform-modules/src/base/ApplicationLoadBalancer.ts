@@ -172,7 +172,7 @@ export class ApplicationLoadBalancer extends Construct {
     let connectionLogsConfig: alb.AlbConnectionLogs | undefined = undefined;
 
     if (config.connectionLogs !== undefined) {
-      const defaultPrefix = `server-logs/${config.prefix.toLowerCase()}/albConnection`;
+      const defaultPrefix = `server-logs/${config.prefix.toLowerCase()}/alb-connection`;
 
       const prefix =
         config.connectionLogs.prefix === undefined

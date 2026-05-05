@@ -46,7 +46,6 @@ describe('ApplicationRDSCluster', () => {
   it('renders a RDS cluster with cloudwatch exporting', () => {
     const synthed = Testing.synthScope((stack) => {
       new ApplicationRDSCluster(stack, 'testRDSCluster', {
-        enableCloudwatchLogsExports: ['audit', 'error', 'general'],
         prefix: 'bowling-',
         vpcId: 'rug',
         subnetIds: ['0', '1'],
@@ -55,6 +54,7 @@ describe('ApplicationRDSCluster', () => {
           masterPassword: 'bowling',
           databaseName: 'walter',
           engine: 'aurora-mysql',
+          enabledCloudwatchLogsExports: ['audit', 'error', 'general'],
         },
         tags: {
           whodis: 'walter',

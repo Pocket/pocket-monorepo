@@ -93,7 +93,7 @@ export interface PocketALBApplicationProps extends TerraformMetaArguments {
   accessLogs?: {
     /**
      * Existing bucket to dump alb access logs to, one of existingBucket or bucket must be chosen.
-     * If using this options, this module assumes that the bucket already exists in your AWS account and has IAM setup according
+     * If using this option, this module assumes that the bucket already exists in your AWS account and has IAM setup according
      * to https://docs.aws.amazon.com/elasticloadbalancing/latest/application/enable-access-logging.html#attach-bucket-policy which is account wide.
      */
     existingBucket?: string;
@@ -111,14 +111,14 @@ export interface PocketALBApplicationProps extends TerraformMetaArguments {
   };
 
   /**
-   * Optional config to dump alb access logs to a bucket.
+   * Optional config to dump alb connection logs to a bucket.
 
    */
   connectionLogs?: {
     /**
      * Existing bucket to dump alb connection logs to, one of existingBucket or bucket must be chosen.
-     * If using this options, this module assumes that the bucket already exists in your AWS account and has IAM setup according
-     * to https://docs.aws.amazon.com/elasticloadbalancing/latest/application/enable-access-logging.html#attach-bucket-policy which is account wide.
+     * If using this option, this module assumes that the bucket already exists in your AWS account and has IAM setup according
+     * to https://docs.aws.amazon.com/elasticloadbalancing/latest/application/enable-connection-logging.html#attach-bucket-policy which is account wide.
      */
     existingBucket?: string;
 

@@ -65,7 +65,7 @@ exports[`ApplicationLoadBalancer renders an ALB with logs with a new bucket 1`] 
         "connection_logs": {
           "bucket": "\${aws_s3_bucket.testALB_connection-log-bucket_633AB558.bucket}",
           "enabled": true,
-          "prefix": "server-logs/test-/albConnection"
+          "prefix": "server-logs/test-/alb-connection"
         },
         "internal": false,
         "name_prefix": "TEST",
@@ -369,7 +369,7 @@ exports[`ApplicationLoadBalancer renders an ALB with logs with an existing bucke
         "connection_logs": {
           "bucket": "\${data.aws_s3_bucket.testALB_connection-log-bucket_633AB558.bucket}",
           "enabled": true,
-          "prefix": "server-logs/test-/albConnection"
+          "prefix": "server-logs/test-/alb-connection"
         },
         "internal": false,
         "name_prefix": "TEST",
