@@ -88,7 +88,6 @@ export interface PocketALBApplicationProps extends TerraformMetaArguments {
 
   /**
    * Optional config to dump alb access logs to a bucket.
-
    */
   accessLogs?: {
     /**
@@ -112,7 +111,6 @@ export interface PocketALBApplicationProps extends TerraformMetaArguments {
 
   /**
    * Optional config to dump alb connection logs to a bucket.
-
    */
   connectionLogs?: {
     /**
