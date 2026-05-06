@@ -104,7 +104,7 @@ export interface PocketALBApplicationProps extends TerraformMetaArguments {
 
     /**
      * Optional bucket path prefix. If not defined will use server-logs/{service-name}/internal-alb/AWSLogs/{awsaccountid}/elasticloadbalancing/
-     * Be sure to include a trailing /
+     * Be sure to include a trailing slash
      */
     prefix?: string;
   };
@@ -127,7 +127,7 @@ export interface PocketALBApplicationProps extends TerraformMetaArguments {
 
     /**
      * Optional bucket path prefix. If not defined will use server-logs/{service-name}/internal-alb/AWSLogs/{awsaccountid}/elasticloadbalancing/
-     * Be sure to include a trailing /
+     * Be sure to include a trailing slash
      */
     prefix?: string;
   };
