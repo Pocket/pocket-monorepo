@@ -34,7 +34,7 @@
     "@types/lodash": "4.17.14",
     "@types/node": "^22.10.7",
     "jest": "29.7.0",
-    "lodash": "4.17.21",
+    "lodash": "4.17.23",
     "nock": "14.0.0-beta.11",
     "nodemon": "3.1.9",
     "ts-jest": "29.2.5",
