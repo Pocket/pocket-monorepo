@@ -1,6 +1,6 @@
 {
   "name": "@pocket-tools/terraform-modules",
-  "version": "5.21.0",
+  "version": "5.23.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Pocket/pocket-monorepo.git"

@@ -30,7 +30,7 @@ describe('ApplicationLoadBalancer', () => {
     expect(synthed).toMatchSnapshot();
   });
 
-  it('renders an ALB with logs with a new bucket', () => {
+  it('renders an ALB with logs given a new bucket', () => {
     const synthed = Testing.synthScope((stack) => {
       new ApplicationLoadBalancer(stack, 'testALB', {
         prefix: 'test-',

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ApplicationLoadBalancer renders an ALB with logs with a new bucket 1`] = `
+exports[`ApplicationLoadBalancer renders an ALB with logs given a new bucket 1`] = `
 "{
   "data": {
     "aws_elb_service_account": {
