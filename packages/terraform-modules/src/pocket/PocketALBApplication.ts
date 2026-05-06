@@ -87,7 +87,7 @@ export interface PocketALBApplicationProps extends TerraformMetaArguments {
   cdn?: boolean;
 
   /**
-   * Optional config to dump alb access logs to an S3 bucket.
+   * Optional config to dump ALB access logs to an S3 bucket.
    */
   accessLogs?: {
     /**
@@ -110,7 +110,7 @@ export interface PocketALBApplicationProps extends TerraformMetaArguments {
   };
 
   /**
-   * Optional config to dump alb connection logs to an S3 bucket.
+   * Optional config to dump ALB connection logs to an S3 bucket.
    */
   connectionLogs?: {
     /**
