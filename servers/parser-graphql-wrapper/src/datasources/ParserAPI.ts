@@ -40,6 +40,7 @@ export type ParserAPIOptions = {
   noArticle: BoolStringParam;
   createIfNone: BoolStringParam;
   output: 'regular';
+  staging?: BoolStringParam;
 };
 
 export type ParserAPIQueryParams = {
@@ -83,6 +84,7 @@ export class ParserAPI extends RESTDataSource {
     videos: MediaTypeParam.DIV_TAG,
     createIfNone: BoolStringParam.TRUE,
     output: 'regular',
+    staging: BoolStringParam.TRUE,
   };
 
   private cache: KeyValueCache<string, KeyValueCacheSetOptions>;
