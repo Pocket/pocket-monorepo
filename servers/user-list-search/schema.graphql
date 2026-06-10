@@ -480,6 +480,7 @@ enum CorpusLanguage {
   IT
   ES
   FR
+  PL
 }
 
 """A search query for the corpus"""

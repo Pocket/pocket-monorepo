@@ -51,7 +51,8 @@ export enum CorpusLanguage {
   En = 'EN',
   Es = 'ES',
   Fr = 'FR',
-  It = 'IT'
+  It = 'IT',
+  Pl = 'PL'
 }
 
 /** Paginated corpus search result connection */
