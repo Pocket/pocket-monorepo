@@ -1,0 +1,33 @@
+name: Parser GraphQL Wrapper
+on:
+  pull_request:
+    paths:
+      - 'servers/parser-graphql-wrapper/**'
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'servers/parser-graphql-wrapper/**'
+jobs:
+  apollo:
+    uses: ./.github/workflows/reuse-apollo-federation.yml
+    with:
+      federated-graph-name: pocket-client-api
+      graph-name: parser
+      schema-file-path: servers/parser-graphql-wrapper/schema.graphql
+      prod-graph-url: https://parser-graphql-wrapper.readitlater.com
+      dev-graph-url: https://parser-graphql-wrapper.getpocket.dev
+    secrets:
+      apollo-key: ${{ secrets.APOLLO_CLIENT_API_KEY }}
+
+  apollo-admin:
+    uses: ./.github/workflows/reuse-apollo-federation.yml
+    with:
+      federated-graph-name: pocket-admin-api
+      graph-name: parser
+      schema-file-path: servers/parser-graphql-wrapper/schema-admin.graphql
+      prod-graph-url: https://parser-graphql-wrapper.readitlater.com
+      dev-graph-url: https://parser-graphql-wrapper.getpocket.dev
+    secrets:
+      apollo-key: ${{ secrets.APOLLO_ADMIN_API_KEY }}
