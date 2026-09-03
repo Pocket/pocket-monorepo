@@ -27,7 +27,7 @@
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "8.47.0",
+    "@sentry/node": "8.49.0",
     "dataloader": "2.2.3",
     "express": "4.21.2",
     "graphql": "16.10.0",
