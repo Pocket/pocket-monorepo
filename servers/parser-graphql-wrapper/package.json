@@ -61,7 +61,7 @@
   },
   "devDependencies": {
     "@apollo/utils.fetcher": "^3.1.0",
-    "@faker-js/faker": "9.4.0",
+    "@faker-js/faker": "10.5.0",
     "@graphql-codegen/cli": "5.0.3",
     "@graphql-codegen/typescript": "4.1.2",
     "@graphql-codegen/typescript-resolvers": "^4.1.0",
