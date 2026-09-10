@@ -35,7 +35,7 @@
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "8.47.0",
+    "@sentry/node": "8.49.0",
     "@smithy/node-http-handler": "3.2.0",
     "adm-zip": "0.5.16",
     "ajv": "8.17.1",
