@@ -34,7 +34,7 @@
     "@pocket-tools/sentry": "workspace:*",
     "@pocket-tools/tracing": "workspace:*",
     "@pocket-tools/ts-logger": "workspace:*",
-    "@sentry/node": "8.47.0",
+    "@sentry/node": "8.49.0",
     "@smithy/node-http-handler": "3.2.0",
     "@smithy/util-retry": "3.0.3",
     "elastic-builder": "^2.31.0",
