@@ -31,6 +31,49 @@ describe('PocketALBApplication', () => {
     };
   });
 
+  it('points the public record at an external edge, leaving the origin records behind', () => {
+    const synthed = Testing.synthScope((stack) => {
+      new PocketALBApplication(stack, 'testPocketApp', {
+        ...BASE_CONFIG,
+        cdn: true,
+        publicDnsCnameTarget: 'mozilla.map.fastly.net',
+      });
+    });
+    const parsed = JSON.parse(synthed);
+    //no delegated sub-zone, so no delegation record either
+    expect(parsed.resource.aws_route53_zone).toBeUndefined();
+    const records: any[] = Object.values(parsed.resource.aws_route53_record);
+    expect(records.some((r) => r.type === 'NS')).toBe(false);
+    //the public record is a CNAME to the edge, not an alias to the CDN
+    const publicRecord = records.find((r) => r.name === 'testing.bowling.gov');
+    expect(publicRecord.type).toBe('CNAME');
+    expect(publicRecord.records).toEqual(['mozilla.map.fastly.net']);
+    //the origin record is still ours
+    expect(
+      records.some((r) => r.name === 'direct.testing.bowling.gov'),
+    ).toBe(true);
+    expect(synthed).toMatchSnapshot();
+  });
+
+  it('creates no public record for a non-CDN app pointed at an external edge', () => {
+    const synthed = Testing.synthScope((stack) => {
+      new PocketALBApplication(stack, 'testPocketApp', {
+        ...BASE_CONFIG,
+        cdn: false,
+        publicDnsCnameTarget: 'mozilla.map.fastly.net',
+      });
+    });
+    //without a CDN the ALB record would be the public record, so it must not
+    //be created as an alias alongside the CNAME
+    const alb = JSON.parse(synthed).resource.aws_route53_record;
+    const atDomain = Object.values(alb).filter(
+      (r: any) => r.name === 'testing.bowling.gov',
+    );
+    expect(atDomain).toHaveLength(1);
+    expect((atDomain[0] as any).type).toBe('CNAME');
+    expect(synthed).toMatchSnapshot();
+  });
+
   it('renders an application with minimal config', () => {
     const synthed = Testing.synthScope((stack) => {
       new PocketALBApplication(stack, 'testPocketApp', BASE_CONFIG);

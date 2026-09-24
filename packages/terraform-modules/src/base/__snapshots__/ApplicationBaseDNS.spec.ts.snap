@@ -60,6 +60,18 @@ exports[`ApplicationBaseDNS constructor renders base DNS without tags 1`] = `
 }"
 `;
 
+exports[`ApplicationBaseDNS constructor uses the root zone and creates no sub-zone or delegation 1`] = `
+"{
+  "data": {
+    "aws_route53_zone": {
+      "testDNS_main_hosted_zone": {
+        "name": "gobowling.info"
+      }
+    }
+  }
+}"
+`;
+
 exports[`ApplicationBaseDNS generateRoute53Record renders a route 53 record 1`] = `
 "{
   "resource": {
