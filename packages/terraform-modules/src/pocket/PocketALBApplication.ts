@@ -87,6 +87,14 @@ export interface PocketALBApplicationProps extends TerraformMetaArguments {
   cdn?: boolean;
 
   /**
+   * Set when the public record for `domain` is managed outside this stack,
+   * for example when the hostname points at the Fastly WAF edge and this
+   * stack owns only the origin. Skips the record for `domain` itself and
+   * keeps the remaining records in the root hosted zone.
+   */
+  publicDnsManagedExternally?: boolean;
+
+  /**
    * Optional config to dump ALB access logs to an S3 bucket.
    */
   accessLogs?: {
@@ -229,7 +237,7 @@ export interface PocketALBApplicationProps extends TerraformMetaArguments {
 
 interface CreateALBReturn {
   alb: ApplicationLoadBalancer;
-  albRecord: route53Record.Route53Record;
+  albRecord?: route53Record.Route53Record;
   albCertificate: ApplicationCertificate;
 }
 
@@ -273,12 +281,13 @@ export class PocketALBApplication extends Construct {
     this.baseDNS = new ApplicationBaseDNS(this, `base_dns`, {
       domain: config.domain,
       tags: config.tags,
+      useRootZone: config.publicDnsManagedExternally,
     });
 
     const { alb, albRecord, albCertificate } = this.createALB();
     this.alb = alb;
 
-    if (config.cdn) {
+    if (config.cdn && albRecord) {
       this.createCDN(albRecord);
     }
 
@@ -461,25 +470,32 @@ export class PocketALBApplication extends Construct {
       ? `direct.${this.config.domain}`
       : this.config.domain;
 
+    //Without a CDN the ALB record is the public record for `domain`, which is
+    //managed outside this stack when publicDnsManagedExternally is set.
+    const skipAlbRecord =
+      this.config.publicDnsManagedExternally && !this.config.cdn;
+
     //Sets up the record for the ALB.
-    const albRecord = new route53Record.Route53Record(this, `alb_record`, {
-      name: albDomainName,
-      type: 'A',
-      zoneId: this.baseDNS.zoneId,
-      weightedRoutingPolicy: {
-        weight: 1,
-      },
-      alias: {
-        name: alb.alb.dnsName,
-        zoneId: alb.alb.zoneId,
-        evaluateTargetHealth: true,
-      },
-      lifecycle: {
-        ignoreChanges: ['weighted_routing_policy[0].weight'],
-      },
-      setIdentifier: '1',
-      provider: this.config.provider,
-    });
+    const albRecord = skipAlbRecord
+      ? undefined
+      : new route53Record.Route53Record(this, `alb_record`, {
+          name: albDomainName,
+          type: 'A',
+          zoneId: this.baseDNS.zoneId,
+          weightedRoutingPolicy: {
+            weight: 1,
+          },
+          alias: {
+            name: alb.alb.dnsName,
+            zoneId: alb.alb.zoneId,
+            evaluateTargetHealth: true,
+          },
+          lifecycle: {
+            ignoreChanges: ['weighted_routing_policy[0].weight'],
+          },
+          setIdentifier: '1',
+          provider: this.config.provider,
+        });
 
     //Creates the Certificate for the ALB
     const albCertificate = new ApplicationCertificate(this, `alb_certificate`, {
@@ -583,24 +599,26 @@ export class PocketALBApplication extends Construct {
     cdn.addOverride('default_cache_behavior.min_ttl', 0);
 
     //When cached the CDN must point to the Load Balancer
-    new route53Record.Route53Record(this, `cdn_record`, {
-      name: this.config.domain,
-      type: 'A',
-      zoneId: this.baseDNS.zoneId,
-      weightedRoutingPolicy: {
-        weight: 1,
-      },
-      alias: {
-        name: cdn.domainName,
-        zoneId: cdn.hostedZoneId,
-        evaluateTargetHealth: true,
-      },
-      lifecycle: {
-        ignoreChanges: ['weighted_routing_policy[0].weight'],
-      },
-      setIdentifier: '2',
-      provider: this.config.provider,
-    });
+    if (!this.config.publicDnsManagedExternally) {
+      new route53Record.Route53Record(this, `cdn_record`, {
+        name: this.config.domain,
+        type: 'A',
+        zoneId: this.baseDNS.zoneId,
+        weightedRoutingPolicy: {
+          weight: 1,
+        },
+        alias: {
+          name: cdn.domainName,
+          zoneId: cdn.hostedZoneId,
+          evaluateTargetHealth: true,
+        },
+        lifecycle: {
+          ignoreChanges: ['weighted_routing_policy[0].weight'],
+        },
+        setIdentifier: '2',
+        provider: this.config.provider,
+      });
+    }
 
     return cdn;
   }

@@ -10,6 +10,12 @@ import { getRootDomain } from '../utilities.ts';
 export interface RootDNSProps extends TerraformMetaArguments {
   domain: string;
   tags?: { [key: string]: string };
+  /**
+   * Put records in the root hosted zone instead of creating a delegated
+   * sub-zone for `domain`. Use when something outside this stack owns the
+   * record for `domain` itself, such as a hostname pointed at the Fastly WAF.
+   */
+  useRootZone?: boolean;
 }
 
 export class ApplicationBaseDNS extends Construct {
@@ -24,6 +30,11 @@ export class ApplicationBaseDNS extends Construct {
       config.domain,
       config.provider,
     );
+
+    if (config.useRootZone) {
+      this.zoneId = route53MainZone.zoneId;
+      return;
+    }
 
     const route53SubZone = ApplicationBaseDNS.generateRoute53Zone(
       this,
