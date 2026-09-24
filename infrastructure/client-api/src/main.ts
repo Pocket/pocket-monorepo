@@ -201,9 +201,9 @@ class ClientAPI extends TerraformStack {
       tags: config.tags,
       cdn: true,
       domain: config.domain,
-      // client-api.getpocket.{dev,com} point at the Fastly WAF edge; Cloud
-      // Engineering owns that record in the root zone (INFRASEC-3068).
-      publicDnsManagedExternally: true,
+      // client-api.getpocket.{dev,com} are served through the Fastly WAF
+      // edge, which forwards to this stack's CloudFront (INFRASEC-3068).
+      publicDnsCnameTarget: 'mozilla.map.fastly.net',
       wafConfig: {
         aclArn: wafAcl.arn,
       },

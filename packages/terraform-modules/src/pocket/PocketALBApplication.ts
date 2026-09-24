@@ -87,12 +87,12 @@ export interface PocketALBApplicationProps extends TerraformMetaArguments {
   cdn?: boolean;
 
   /**
-   * Set when the public record for `domain` is managed outside this stack,
-   * for example when the hostname points at the Fastly WAF edge and this
-   * stack owns only the origin. Skips the record for `domain` itself and
-   * keeps the remaining records in the root hosted zone.
+   * Point the public record for `domain` at an external edge, such as the
+   * Fastly WAF, rather than at this stack's ALB or CDN. The record becomes a
+   * CNAME to this target, and all records live in the root hosted zone rather
+   * than a delegated sub-zone, because a zone apex cannot be a CNAME.
    */
-  publicDnsManagedExternally?: boolean;
+  publicDnsCnameTarget?: string;
 
   /**
    * Optional config to dump ALB access logs to an S3 bucket.
@@ -281,7 +281,7 @@ export class PocketALBApplication extends Construct {
     this.baseDNS = new ApplicationBaseDNS(this, `base_dns`, {
       domain: config.domain,
       tags: config.tags,
-      useRootZone: config.publicDnsManagedExternally,
+      useRootZone: config.publicDnsCnameTarget !== undefined,
     });
 
     const { alb, albRecord, albCertificate } = this.createALB();
@@ -298,6 +298,19 @@ export class PocketALBApplication extends Construct {
 
     if (config.efsConfig) {
       this.efs = this.createEfs(config);
+    }
+
+    if (config.publicDnsCnameTarget) {
+      //Short TTL so the hostname can be moved to or from the edge in about a
+      //minute, which is what makes a cutover revertible.
+      new route53Record.Route53Record(this, `public_dns_record`, {
+        name: config.domain,
+        type: 'CNAME',
+        ttl: 60,
+        zoneId: this.baseDNS.zoneId,
+        records: [config.publicDnsCnameTarget],
+        provider: config.provider,
+      });
     }
 
     const ecsService = this.createECSService(alb, albCertificate);
@@ -470,10 +483,10 @@ export class PocketALBApplication extends Construct {
       ? `direct.${this.config.domain}`
       : this.config.domain;
 
-    //Without a CDN the ALB record is the public record for `domain`, which is
-    //managed outside this stack when publicDnsManagedExternally is set.
+    //Without a CDN the ALB record is the public record for `domain`, which
+    //becomes the CNAME to the edge when publicDnsCnameTarget is set.
     const skipAlbRecord =
-      this.config.publicDnsManagedExternally && !this.config.cdn;
+      this.config.publicDnsCnameTarget !== undefined && !this.config.cdn;
 
     //Sets up the record for the ALB.
     const albRecord = skipAlbRecord
@@ -599,7 +612,7 @@ export class PocketALBApplication extends Construct {
     cdn.addOverride('default_cache_behavior.min_ttl', 0);
 
     //When cached the CDN must point to the Load Balancer
-    if (!this.config.publicDnsManagedExternally) {
+    if (this.config.publicDnsCnameTarget === undefined) {
       new route53Record.Route53Record(this, `cdn_record`, {
         name: this.config.domain,
         type: 'A',
