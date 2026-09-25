@@ -40,7 +40,7 @@
     "passport-jwt": "4.0.1",
     "tslib": "2.8.1",
     "unleash-client": "6.1.2",
-    "unleash-server": "6.6.0"
+    "unleash-server": "8.0.3"
   },
   "devDependencies": {
     "@pocket-tools/eslint-config": "workspace:*",
