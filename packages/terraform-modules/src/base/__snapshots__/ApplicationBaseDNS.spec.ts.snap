@@ -1,5 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ApplicationBaseDNS constructor creates no sub-zone and no delegation for the root zone 1`] = `
+"{
+  "data": {
+    "aws_route53_zone": {
+      "testDNS_main_hosted_zone": {
+        "name": "gobowling.info"
+      }
+    }
+  }
+}"
+`;
+
 exports[`ApplicationBaseDNS constructor renders base DNS with tags 1`] = `
 "{
   "data": {

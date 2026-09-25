@@ -87,6 +87,15 @@ export interface PocketALBApplicationProps extends TerraformMetaArguments {
   cdn?: boolean;
 
   /**
+   * Point the record for `domain` at an edge outside this stack, such as the
+   * Fastly WAF, instead of at this stack's CDN or ALB. The record becomes a
+   * CNAME to this target, which also means every record lives in the root
+   * hosted zone rather than a delegated sub-zone, because a zone apex cannot
+   * be a CNAME.
+   */
+  publicDnsCnameTarget?: string;
+
+  /**
    * Optional config to dump ALB access logs to an S3 bucket.
    */
   accessLogs?: {
@@ -229,7 +238,9 @@ export interface PocketALBApplicationProps extends TerraformMetaArguments {
 
 interface CreateALBReturn {
   alb: ApplicationLoadBalancer;
-  albRecord: route53Record.Route53Record;
+  //Absent when the record the ALB would get is the public record for `domain`
+  //and that one points at an external edge instead.
+  albRecord?: route53Record.Route53Record;
   albCertificate: ApplicationCertificate;
 }
 
@@ -273,13 +284,27 @@ export class PocketALBApplication extends Construct {
     this.baseDNS = new ApplicationBaseDNS(this, `base_dns`, {
       domain: config.domain,
       tags: config.tags,
+      useRootZone: config.publicDnsCnameTarget !== undefined,
     });
 
     const { alb, albRecord, albCertificate } = this.createALB();
     this.alb = alb;
 
-    if (config.cdn) {
+    if (config.cdn && albRecord) {
       this.createCDN(albRecord);
+    }
+
+    if (config.publicDnsCnameTarget) {
+      //Short TTL, so the domain can be moved to or from the edge in about a
+      //minute. That is what keeps a cutover revertible.
+      new route53Record.Route53Record(this, `public_dns_record`, {
+        name: config.domain,
+        type: 'CNAME',
+        ttl: 60,
+        zoneId: this.baseDNS.zoneId,
+        records: [config.publicDnsCnameTarget],
+        provider: config.provider,
+      });
     }
 
     // If we don't have a CDN add the WAF to the ALB
@@ -461,25 +486,32 @@ export class PocketALBApplication extends Construct {
       ? `direct.${this.config.domain}`
       : this.config.domain;
 
+    //Without a CDN this record is the public record for `domain`, which is a
+    //CNAME to the edge when publicDnsCnameTarget is set.
+    const skipAlbRecord =
+      this.config.publicDnsCnameTarget !== undefined && !this.config.cdn;
+
     //Sets up the record for the ALB.
-    const albRecord = new route53Record.Route53Record(this, `alb_record`, {
-      name: albDomainName,
-      type: 'A',
-      zoneId: this.baseDNS.zoneId,
-      weightedRoutingPolicy: {
-        weight: 1,
-      },
-      alias: {
-        name: alb.alb.dnsName,
-        zoneId: alb.alb.zoneId,
-        evaluateTargetHealth: true,
-      },
-      lifecycle: {
-        ignoreChanges: ['weighted_routing_policy[0].weight'],
-      },
-      setIdentifier: '1',
-      provider: this.config.provider,
-    });
+    const albRecord = skipAlbRecord
+      ? undefined
+      : new route53Record.Route53Record(this, `alb_record`, {
+          name: albDomainName,
+          type: 'A',
+          zoneId: this.baseDNS.zoneId,
+          weightedRoutingPolicy: {
+            weight: 1,
+          },
+          alias: {
+            name: alb.alb.dnsName,
+            zoneId: alb.alb.zoneId,
+            evaluateTargetHealth: true,
+          },
+          lifecycle: {
+            ignoreChanges: ['weighted_routing_policy[0].weight'],
+          },
+          setIdentifier: '1',
+          provider: this.config.provider,
+        });
 
     //Creates the Certificate for the ALB
     const albCertificate = new ApplicationCertificate(this, `alb_certificate`, {
@@ -582,25 +614,28 @@ export class PocketALBApplication extends Construct {
     cdn.addOverride('default_cache_behavior.default_ttl', 0);
     cdn.addOverride('default_cache_behavior.min_ttl', 0);
 
-    //When cached the CDN must point to the Load Balancer
-    new route53Record.Route53Record(this, `cdn_record`, {
-      name: this.config.domain,
-      type: 'A',
-      zoneId: this.baseDNS.zoneId,
-      weightedRoutingPolicy: {
-        weight: 1,
-      },
-      alias: {
-        name: cdn.domainName,
-        zoneId: cdn.hostedZoneId,
-        evaluateTargetHealth: true,
-      },
-      lifecycle: {
-        ignoreChanges: ['weighted_routing_policy[0].weight'],
-      },
-      setIdentifier: '2',
-      provider: this.config.provider,
-    });
+    //When cached the CDN must point to the Load Balancer, unless the domain
+    //resolves to an external edge that uses the CDN as its origin.
+    if (this.config.publicDnsCnameTarget === undefined) {
+      new route53Record.Route53Record(this, `cdn_record`, {
+        name: this.config.domain,
+        type: 'A',
+        zoneId: this.baseDNS.zoneId,
+        weightedRoutingPolicy: {
+          weight: 1,
+        },
+        alias: {
+          name: cdn.domainName,
+          zoneId: cdn.hostedZoneId,
+          evaluateTargetHealth: true,
+        },
+        lifecycle: {
+          ignoreChanges: ['weighted_routing_policy[0].weight'],
+        },
+        setIdentifier: '2',
+        provider: this.config.provider,
+      });
+    }
 
     return cdn;
   }
