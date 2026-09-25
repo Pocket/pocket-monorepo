@@ -48,6 +48,52 @@ describe('PocketALBApplication', () => {
     expect(synthed).toMatchSnapshot();
   });
 
+  it('renders a cdn application whose domain points at an external edge', () => {
+    const synthed = Testing.synthScope((stack) => {
+      BASE_CONFIG.internal = false;
+      BASE_CONFIG.cdn = true;
+      BASE_CONFIG.publicDnsCnameTarget = 'mozilla.map.fastly.net';
+
+      new PocketALBApplication(stack, 'testPocketApp', BASE_CONFIG);
+    });
+    const parsed = JSON.parse(synthed);
+    //no sub-zone means no delegation to it either
+    expect(parsed.resource.aws_route53_zone).toBeUndefined();
+    const records: any[] = Object.values(parsed.resource.aws_route53_record);
+    expect(records.some((record) => record.type === 'NS')).toBe(false);
+    //the domain is a CNAME to the edge rather than an alias to the CDN
+    const publicRecords = records.filter(
+      (record) => record.name === 'testing.bowling.gov',
+    );
+    expect(publicRecords).toHaveLength(1);
+    expect(publicRecords[0].type).toBe('CNAME');
+    expect(publicRecords[0].records).toEqual(['mozilla.map.fastly.net']);
+    //the CDN origin is still ours
+    expect(
+      records.some((record) => record.name === 'direct.testing.bowling.gov'),
+    ).toBe(true);
+  });
+
+  it('renders a non cdn application whose domain points at an external edge', () => {
+    const synthed = Testing.synthScope((stack) => {
+      BASE_CONFIG.internal = false;
+      BASE_CONFIG.cdn = false;
+      BASE_CONFIG.publicDnsCnameTarget = 'mozilla.map.fastly.net';
+
+      new PocketALBApplication(stack, 'testPocketApp', BASE_CONFIG);
+    });
+    //without a CDN the ALB record is the record for the domain, so it must not
+    //be created as an alias next to the CNAME
+    const records: any[] = Object.values(
+      JSON.parse(synthed).resource.aws_route53_record,
+    );
+    const publicRecords = records.filter(
+      (record) => record.name === 'testing.bowling.gov',
+    );
+    expect(publicRecords).toHaveLength(1);
+    expect(publicRecords[0].type).toBe('CNAME');
+  });
+
   it('renders an external application with a waf', () => {
     const synthed = Testing.synthScope((stack) => {
       BASE_CONFIG.internal = false;
