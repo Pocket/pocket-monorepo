@@ -141,7 +141,6 @@ Learn more about the power of Turborepo:
 [![Account Delete Monitor](https://github.com/Pocket/pocket-monorepo/actions/workflows/account-delete-monitor.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/account-delete-monitor.yml)
 [![Braze](https://github.com/Pocket/pocket-monorepo/actions/workflows/braze.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/braze.yml)
 [![Client API](https://github.com/Pocket/pocket-monorepo/actions/workflows/client-api.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/client-api.yml)
-[![Feature Flags](https://github.com/Pocket/pocket-monorepo/actions/workflows/feature-flags.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/feature-flags.yml)
 [![FxA Webhook Proxy](https://github.com/Pocket/pocket-monorepo/actions/workflows/fxa-webhook-proxy.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/fxa-webhook-proxy.yml)
 [![Instant Sync Events](https://github.com/Pocket/pocket-monorepo/actions/workflows/instant-sync-events.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/instant-sync-events.yml)
 [![Parser GraphQL Wrapper](https://github.com/Pocket/pocket-monorepo/actions/workflows/parser-graphql-wrapper.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/parser-graphql-wrapper.yml)
