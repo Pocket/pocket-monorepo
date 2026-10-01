@@ -1,8 +1,0 @@
-fragment SavedItemComplete on SavedItem {
-    ...SavedItemSimple,
-    item {
-        ... on Item {
-            ...ItemComplete
-        }
-    }
-}

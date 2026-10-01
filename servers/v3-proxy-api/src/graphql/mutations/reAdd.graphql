@@ -1,5 +1,0 @@
-mutation ReAddById($id: ID!, $timestamp: ISOString!) {
-  reAddById(id: $id, timestamp: $timestamp) {
-    ...SavedItemWithParserMetadata
-  }
-}

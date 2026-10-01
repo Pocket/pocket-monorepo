@@ -1,3 +1,0 @@
-mutation DeleteTag($tagName: String!, $timestamp: ISOString) {
-  deleteTagByName(tagName: $tagName, timestamp: $timestamp)
-}

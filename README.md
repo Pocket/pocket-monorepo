@@ -73,13 +73,13 @@ cd pocket-monorepo
 cp .env.example .env
 docker compose up --wait
 pnpm install
-pnpm dev --filter=annotations-api...
+pnpm dev --filter=parser-graphql-wrapper...
 ```
 
-Where annotations-api is the server name from package.json you want to run. `...` prefixed informs turborepo to include all dependent workspace packages.
+Where parser-graphql-wrapper is the server name from package.json you want to run. `...` prefixed informs turborepo to include all dependent workspace packages.
 
 You can expand this to run multiple specific servers as well like:
-```pnpm run dev --filter=list-api... --filter=feature-flags...```
+```pnpm run dev --filter=parser-graphql-wrapper... --filter=braze-content-proxy...```
 
 ### Caching
 
@@ -98,7 +98,7 @@ pnpm run test --force
 or
 
 ```bash
-pnpm run test --filter=annocations-api... --force
+pnpm run test --filter=parser-graphql-wrapper... --force
 ```
 
 ### Testing
@@ -138,24 +138,14 @@ Learn more about the power of Turborepo:
 
 ## Service CI Status
 
-[![Account Data Deleter](https://github.com/Pocket/pocket-monorepo/actions/workflows/account-data-deleter.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/account-data-deleter.yml)
 [![Account Delete Monitor](https://github.com/Pocket/pocket-monorepo/actions/workflows/account-delete-monitor.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/account-delete-monitor.yml)
-[![Annotations API](https://github.com/Pocket/pocket-monorepo/actions/workflows/annotations-api.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/annotations-api.yml)
 [![Braze](https://github.com/Pocket/pocket-monorepo/actions/workflows/braze.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/braze.yml)
 [![Client API](https://github.com/Pocket/pocket-monorepo/actions/workflows/client-api.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/client-api.yml)
 [![Feature Flags](https://github.com/Pocket/pocket-monorepo/actions/workflows/feature-flags.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/feature-flags.yml)
 [![FxA Webhook Proxy](https://github.com/Pocket/pocket-monorepo/actions/workflows/fxa-webhook-proxy.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/fxa-webhook-proxy.yml)
-[![Image API](https://github.com/Pocket/pocket-monorepo/actions/workflows/image-api.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/image-api.yml)
 [![Instant Sync Events](https://github.com/Pocket/pocket-monorepo/actions/workflows/instant-sync-events.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/instant-sync-events.yml)
-[![List API](https://github.com/Pocket/pocket-monorepo/actions/workflows/list-api.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/list-api.yml)
 [![Parser GraphQL Wrapper](https://github.com/Pocket/pocket-monorepo/actions/workflows/parser-graphql-wrapper.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/parser-graphql-wrapper.yml)
 [![Pocket Event Bridge](https://github.com/Pocket/pocket-monorepo/actions/workflows/pocket-event-bridge.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/pocket-event-bridge.yml)
 [![Push Server](https://github.com/Pocket/pocket-monorepo/actions/workflows/push-server.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/push-server.yml)
 [![Sendgrid Data](https://github.com/Pocket/pocket-monorepo/actions/workflows/sendgrid-data.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/sendgrid-data.yml)
-[![Shareable Lists API](https://github.com/Pocket/pocket-monorepo/actions/workflows/shareable-lists-api.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/shareable-lists-api.yml)
-[![Shared Snowplow Consumer](https://github.com/Pocket/pocket-monorepo/actions/workflows/shared-snowplow-consumer.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/shared-snowplow-consumer.yml)
-[![Shares API](https://github.com/Pocket/pocket-monorepo/actions/workflows/shares-api.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/shares-api.yml)
 [![Transactional Emails](https://github.com/Pocket/pocket-monorepo/actions/workflows/transactional-emails.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/transactional-emails.yml)
-[![User API](https://github.com/Pocket/pocket-monorepo/actions/workflows/user-api.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/user-api.yml)
-[![User List Search](https://github.com/Pocket/pocket-monorepo/actions/workflows/user-list-search.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/user-list-search.yml)
-[![V3 Proxy API](https://github.com/Pocket/pocket-monorepo/actions/workflows/v3-proxy-api.yml/badge.svg)](https://github.com/Pocket/pocket-monorepo/actions/workflows/v3-proxy-api.yml)

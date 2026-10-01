@@ -1,8 +1,0 @@
-fragment SearchResultHighlights on SavedItemSearchResult {
-  searchHighlights {
-    fullText
-    url
-    tags
-    title
-  }
-}

@@ -1,5 +1,0 @@
-mutation ClearTags($savedItem: SavedItemRef!, $timestamp: ISOString) {
-  clearTags(savedItem: $savedItem, timestamp: $timestamp) {
-    id
-  }
-}
