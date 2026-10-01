@@ -43,23 +43,3 @@ jobs:
       stack-output-path: infrastructure/feature-flags/cdktf.out/stacks/feature-flags
     secrets: inherit
 
-  api:
-    uses: ./.github/workflows/reuse-build-and-push-image.yml
-    needs: [infrastructure]
-    with:
-      scope: '@server/feature-flags'
-      app-path: servers/feature-flags
-      app-port: 4242
-      sentry-project: feature-flags
-      docker-repo-name-pattern: featureflags-{0}-app
-      terraform-output: ${{needs.infrastructure.outputs.terraform-output}}
-    secrets: inherit
-
-  sentry:
-    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
-    uses: ./.github/workflows/reuse-sentry-release.yml
-    needs: [api]
-    with:
-      sentry-project: feature-flags
-      sentry-environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
-    secrets: inherit
