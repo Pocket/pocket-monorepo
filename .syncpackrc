@@ -14,6 +14,26 @@
   },
   "versionGroups": [
     {
+      "label": "apollo-utils peer dependencies are ranges",
+      "packages": [
+        "@pocket-tools/apollo-utils"
+      ],
+      "dependencyTypes": [
+        "peer"
+      ],
+      "isIgnored": true
+    },
+    {
+      "label": "apollo-utils is on Apollo Server 5 while its consumers are still on Apollo Server 4 (HNT-3505)",
+      "packages": [
+        "@pocket-tools/apollo-utils"
+      ],
+      "dependencies": [
+        "@apollo/**",
+        "graphql"
+      ]
+    },
+    {
       "dependencies": [
         "@aws-sdk/client-s3",
         "@aws-sdk/**"

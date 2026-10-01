@@ -11,7 +11,7 @@ These include plugins, dataloader functions, etc.
 
 ## Dependency
 
-1. Update the apollo server version to 3 and node version to 16 to import this package.
+1. Requires `@apollo/server` 5, `graphql` 16.11+ and Node 20+. Use 3.x for Apollo Server 4.
 
 ## Example Usage
 

@@ -92,15 +92,15 @@
   },
   "dependencies": {
     "@apollo/cache-control-types": "1.0.3",
-    "@apollo/server": "4.11.3",
-    "@apollo/server-plugin-response-cache": "4.1.4",
+    "@apollo/server": "5.5.1",
+    "@apollo/server-plugin-response-cache": "5.0.0",
     "@apollo/subgraph": "2.9.3",
-    "@apollo/utils.keyvadapter": "3.1.0",
-    "@apollo/utils.keyvaluecache": "3.1.0",
+    "@apollo/utils.keyvadapter": "4.0.1",
+    "@apollo/utils.keyvaluecache": "4.0.0",
     "@pocket-tools/ts-logger": "workspace:*",
     "@sentry/node": "8.47.0",
     "express": "4.21.2",
-    "graphql": "16.10.0",
+    "graphql": "16.14.2",
     "graphql-tag": "2.12.6",
     "ioredis": "5.4.2",
     "luxon": "3.5.0",
@@ -125,13 +125,13 @@
     "typescript": "5.7.3"
   },
   "peerDependencies": {
-    "@apollo/server": "4.11.3",
-    "@apollo/subgraph": "2.9.3",
-    "@apollo/utils.keyvadapter": "3.1.0",
-    "@apollo/utils.keyvaluecache": "3.1.0",
-    "express": "4.21.2",
-    "graphql": "16.10.0",
-    "graphql-tag": "2.12.6"
+    "@apollo/server": "^5.0.0",
+    "@apollo/subgraph": "^2.9.3",
+    "@apollo/utils.keyvadapter": "^4.0.0",
+    "@apollo/utils.keyvaluecache": "^4.0.0",
+    "express": "^4.21.2 || ^5.0.0",
+    "graphql": "^16.11.0",
+    "graphql-tag": "^2.12.6"
   },
   "publishConfig": {
     "access": "public"

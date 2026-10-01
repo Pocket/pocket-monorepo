@@ -29,7 +29,7 @@
     "@aws-sdk/lib-dynamodb": "3.716.0",
     "@extractus/oembed-extractor": "^3.2.1",
     "@keyv/redis": "2.8.5",
-    "@pocket-tools/apollo-utils": "workspace:*",
+    "@pocket-tools/apollo-utils": "3.15.1",
     "@pocket-tools/feature-flags-client": "workspace:*",
     "@pocket-tools/image-utils": "workspace:*",
     "@pocket-tools/int-mask": "workspace:*",
