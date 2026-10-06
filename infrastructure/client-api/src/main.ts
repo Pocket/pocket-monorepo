@@ -10,6 +10,8 @@ import {
   dataAwsSubnets,
   wafv2IpSet,
   wafv2WebAcl,
+  route53Record,
+  dataAwsRoute53Zone,
 } from '@cdktf/provider-aws';
 import { provider as localProvider } from '@cdktf/provider-local';
 import { provider as nullProvider } from '@cdktf/provider-null';
@@ -51,7 +53,7 @@ class ClientAPI extends TerraformStack {
     const cache = this.createElasticache(this, pocketVPC);
     const alarmTopic = this.getCodeDeploySnsTopic();
 
-    this.createPocketAlbApplication({
+    const clientApiApp = this.createPocketAlbApplication({
       secretsManagerKmsAlias: this.getSecretsManagerKmsAlias(),
       snsTopic: alarmTopic,
       wafAcl: this.createWafACL(),
@@ -59,6 +61,9 @@ class ClientAPI extends TerraformStack {
       region,
       caller,
     });
+
+    // overwrite DNS with manually added fastly settings
+    this.fastlyDnsOverride(clientApiApp);
 
     new PocketAwsSyntheticChecks(this, 'synthetics', {
       alarmTopicArn: config.isProd ? alarmTopic.arn : '',
@@ -74,6 +79,24 @@ class ClientAPI extends TerraformStack {
         },
       ],
     });
+  }
+
+  private fastlyDnsOverride(pocketApp: PocketALBApplication) {
+    //deleted during the cutover; the name is maintained outside this stack
+    pocketApp.baseDNS.node.tryRemoveChild('subhosted_zone');
+    pocketApp.baseDNS.node.tryRemoveChild('subhosted_zone_ns');
+    //without a CDN this is the record for `domain` itself, which is now the
+    //CNAME to the Fastly edge
+    pocketApp.node.tryRemoveChild('alb_record');
+
+    //the ACM validation record survives, but lives in the root zone now
+    const rootZone = pocketApp.node.findChild(
+      'base_dns_main_hosted_zone',
+    ) as dataAwsRoute53Zone.DataAwsRoute53Zone;
+    const certificateRecord = pocketApp.node
+      .findChild('alb_certificate')
+      .node.findChild('certificate_record') as route53Record.Route53Record;
+    certificateRecord.addOverride('zone_id', rootZone.zoneId);
   }
 
   private createWafACL() {
