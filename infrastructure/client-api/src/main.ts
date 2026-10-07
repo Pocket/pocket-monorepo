@@ -318,7 +318,7 @@ class ClientAPI extends TerraformStack {
       },
       autoscalingConfig: {
         targetMinCapacity: config.isProd ? 4 : 1,
-        targetMaxCapacity: config.isProd ? 20 : 10,
+        targetMaxCapacity: config.isProd ? 21 : 11,
       },
       alarms: {
         http5xxErrorPercentage: {
