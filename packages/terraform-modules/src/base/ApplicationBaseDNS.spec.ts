@@ -77,5 +77,19 @@ describe('ApplicationBaseDNS', () => {
       });
       expect(synthed).toMatchSnapshot();
     });
+
+    it('creates no sub-zone and no delegation for the root zone', () => {
+      const synthed = Testing.synthScope((stack) => {
+        new ApplicationBaseDNS(stack, 'testDNS', {
+          domain: 'dev.gobowling.info',
+          useRootZone: true,
+        });
+      });
+      const parsed = JSON.parse(synthed);
+      //the root zone is looked up, never created, and nothing is delegated
+      expect(parsed.data.aws_route53_zone).toBeDefined();
+      expect(parsed.resource).toBeUndefined();
+      expect(synthed).toMatchSnapshot();
+    });
   });
 });

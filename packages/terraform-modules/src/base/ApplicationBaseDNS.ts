@@ -10,6 +10,12 @@ import { getRootDomain } from '../utilities.ts';
 export interface RootDNSProps extends TerraformMetaArguments {
   domain: string;
   tags?: { [key: string]: string };
+  /**
+   * Put records for `domain` in the root hosted zone instead of delegating a
+   * sub-zone to it. Required when the record for `domain` itself has to be a
+   * CNAME, which a zone apex cannot be.
+   */
+  useRootZone?: boolean;
 }
 
 export class ApplicationBaseDNS extends Construct {
@@ -24,6 +30,11 @@ export class ApplicationBaseDNS extends Construct {
       config.domain,
       config.provider,
     );
+
+    if (config.useRootZone) {
+      this.zoneId = route53MainZone.zoneId;
+      return;
+    }
 
     const route53SubZone = ApplicationBaseDNS.generateRoute53Zone(
       this,

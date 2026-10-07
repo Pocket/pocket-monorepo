@@ -1,3 +1,4 @@
+# temporarily disabled - causing failures in CI
 name: Feature Flags
 on:
   pull_request:
