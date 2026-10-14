@@ -1,0 +1,5 @@
+risk_rating:
+  confidentiality: 1
+  integrity: 4
+  availability: 3
+risk_uuid: 1d0af8ef-9807-4e9b-9749-9fec4aac9ae7
