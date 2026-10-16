@@ -25,6 +25,7 @@ export class ParserAPI extends RESTDataSource {
     noArticle: BoolStringParam.TRUE,
     createIfNone: BoolStringParam.FALSE,
     output: 'regular',
+    staging: BoolStringParam.TRUE,
   };
 
   public static generateQueryParams(url: string): ParserAPIQueryParams {
