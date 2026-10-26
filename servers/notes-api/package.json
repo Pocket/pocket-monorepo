@@ -60,7 +60,7 @@
     "prosemirror-state": "1.4.3",
     "prosemirror-transform": "1.10.2",
     "tslib": "2.8.1",
-    "uuid": "^10.0.0"
+    "uuid": "^11.0.0"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "5.0.3",
