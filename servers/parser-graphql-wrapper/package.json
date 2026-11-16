@@ -47,7 +47,7 @@
     "graphql-tag": "2.12.6",
     "html-entities": "2.5.2",
     "keyv": "4.5.4",
-    "kysely": "0.27.5",
+    "kysely": "0.28.17",
     "lodash": "4.17.21",
     "luxon": "3.5.0",
     "markdown-to-txt": "2.0.1",
